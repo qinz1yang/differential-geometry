@@ -369,20 +369,6 @@ theorem component_meets_core [CompactSpace T.core] [LocallyConnectedSpace T.core
 
 end Capping
 
-theorem rfs_capped_simply_connected {M N : Type*} [TopologicalSpace M]
-    [TopologicalSpace N] [ChartedSpace ThreeSpace M] [T2Space M]
-    [CompactSpace M] [SimplyConnectedSpace M] [T2Space N]
-    (T : TubeSystem M) (K : Capping T N) (c : ConnectedComponents N) :
-    SimplyConnectedSpace (ComponentCarrier c) := by
-  sorry
-
-theorem rfs_retained_capped_simply_connected {M N : Type*} [TopologicalSpace M]
-    [TopologicalSpace N] [ChartedSpace ThreeSpace M] [T2Space M]
-    [CompactSpace M] [SimplyConnectedSpace M] [T2Space N]
-    (T : TubeSystem M) (K : Capping T N) (retained : Set (ConnectedComponents N))
-    (c : retained) : SimplyConnectedSpace (ComponentCarrier c.1) :=
-  rfs_capped_simply_connected T K c.1
-
 structure CutCapTopology (M Q D N : Type*) [TopologicalSpace M] [TopologicalSpace Q]
     [TopologicalSpace D] [TopologicalSpace N] where
   tubes : TubeSystem M
