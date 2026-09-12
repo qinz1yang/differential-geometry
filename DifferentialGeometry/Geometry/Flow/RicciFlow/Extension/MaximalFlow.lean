@@ -36,6 +36,28 @@ structure FlowTo (g0 : SmoothRiemannianMetric I M) (T : Real) where
     HasDerivWithinAt (fun s : Real => (S.family.metric s).inner x v w)
       ((-2 : Real) * ricciTensor (I := I) (S.family.metric t) x v w) (Ici 0) t
 
+structure ImmortalFlow (g0 : SmoothRiemannianMetric I M) where
+  S : SolutionOn (I := I) (M := M) (RealTimeInterval.closedInfinite 0)
+  isSol : IsSolutionOn (I := I) S
+  start : S.family.metric 0 = g0
+  joint : ∀ (x0 : M) (i j : Fin (Module.finrank Real E)),
+    ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real) ∞
+      (fun p : Real × M =>
+        Integral.Measure.chartGramMatrix (I := I) (S.family.metric p.1) x0 p.2 i j)
+      (Ici 0 ×ˢ (trivializationAt E (TangentSpace I) x0).baseSet)
+  pde : ∀ t ∈ Ici 0, ∀ x : M, ∀ v w : TangentSpace I x,
+    HasDerivWithinAt (fun s : Real => (S.family.metric s).inner x v w)
+      ((-2 : Real) * ricciTensor (I := I) (S.family.metric t) x v w) (Ici 0) t
+
+structure FiniteMaximalFlow (g0 : SmoothRiemannianMetric I M) where
+  T : Real
+  flow : FlowTo (I := I) (M := M) g0 T
+  maximal : IsMaximalAtEndpoint (I := I) flow.hT flow.S
+
+inductive MaximalForwardRicciFlow (g0 : SmoothRiemannianMetric I M) where
+  | finite (flow : FiniteMaximalFlow (I := I) (M := M) g0)
+  | immortal (flow : ImmortalFlow (I := I) (M := M) g0)
+
 private structure FlowCover
     (g0 : SmoothRiemannianMetric I M) (t : Real) where
   T : Real
@@ -85,6 +107,219 @@ theorem flow_to_eq
     (h0 : 0 ≤ t) (hT : t < T) (hU : t < U) :
     P.S.family.metric t = Q.S.family.metric t :=
   flow_to_agree (I := I) (M := M) P Q t ⟨h0, lt_min hT hU⟩
+
+omit [SigmaCompactSpace M] in
+theorem immortal_flow_eq
+    {g0 : SmoothRiemannianMetric I M}
+    (P Q : ImmortalFlow (I := I) (M := M) g0) :
+    ∀ t ∈ Ici 0, P.S.family.metric t = Q.S.family.metric t := by
+  intro t ht
+  have hT : 0 < t + 1 := by linarith
+  have hagree : ∀ s ∈ Ico 0 (t + 1),
+      P.S.family.metric s = Q.S.family.metric s := by
+    apply ricci_flow_forward_unique (I := I) (M := M)
+      P.S.family.metric Q.S.family.metric hT
+    · intro x0 i j
+      exact (P.joint x0 i j).mono fun p hp => ⟨hp.1.1, hp.2⟩
+    · intro x0 i j
+      exact (Q.joint x0 i j).mono fun p hp => ⟨hp.1.1, hp.2⟩
+    · intro s hs x v w
+      exact P.pde s hs.1 x v w
+    · intro s hs x v w
+      exact Q.pde s hs.1 x v w
+    · exact P.start.trans Q.start.symm
+  exact hagree t ⟨ht, by linarith⟩
+
+omit [SigmaCompactSpace M] in
+theorem immortal_flow_eq_flow_to
+    {g0 : SmoothRiemannianMetric I M} {T t : Real}
+    (P : ImmortalFlow (I := I) (M := M) g0)
+    (Q : FlowTo (I := I) (M := M) g0 T)
+    (h0 : 0 ≤ t) (hT : t < T) :
+    P.S.family.metric t = Q.S.family.metric t := by
+  have hagree : ∀ s ∈ Ico 0 T,
+      P.S.family.metric s = Q.S.family.metric s := by
+    apply ricci_flow_forward_unique (I := I) (M := M)
+      P.S.family.metric Q.S.family.metric Q.hT
+    · intro x0 i j
+      exact (P.joint x0 i j).mono fun p hp => ⟨hp.1.1, hp.2⟩
+    · exact Q.joint
+    · intro s hs x v w
+      exact P.pde s hs.1 x v w
+    · exact Q.pde
+    · exact P.start.trans Q.start.symm
+  exact hagree t ⟨h0, hT⟩
+
+namespace MaximalForwardRicciFlow
+
+def endpoint {g0 : SmoothRiemannianMetric I M} :
+    MaximalForwardRicciFlow (I := I) (M := M) g0 → TimeEndpoint
+  | .finite P => .finite P.T
+  | .immortal _ => .posInf
+
+def metric {g0 : SmoothRiemannianMetric I M}
+    (P : MaximalForwardRicciFlow (I := I) (M := M) g0) :
+    Real → SmoothRiemannianMetric I M :=
+  match P with
+  | .finite P => P.flow.S.family.metric
+  | .immortal P => P.S.family.metric
+
+def IsDefinedAt {g0 : SmoothRiemannianMetric I M}
+    (P : MaximalForwardRicciFlow (I := I) (M := M) g0) (t : Real) : Prop :=
+  0 ≤ t ∧ TimeEndpoint.upperLt t P.endpoint
+
+@[simp] theorem metric_zero
+    {g0 : SmoothRiemannianMetric I M}
+    (P : MaximalForwardRicciFlow (I := I) (M := M) g0) :
+    P.metric 0 = g0 := by
+  cases P with
+  | finite P => simpa [metric] using P.flow.start
+  | immortal P => simpa [metric] using P.start
+
+theorem zero_defined
+    {g0 : SmoothRiemannianMetric I M}
+    (P : MaximalForwardRicciFlow (I := I) (M := M) g0) :
+    P.IsDefinedAt 0 := by
+  cases P with
+  | finite P =>
+      exact ⟨le_rfl, by simpa [endpoint, TimeEndpoint.upperLt] using P.flow.hT⟩
+  | immortal _ => simp [IsDefinedAt, endpoint, TimeEndpoint.upperLt]
+
+omit [SigmaCompactSpace M] in
+theorem metric_eq_flow_to
+    {g0 : SmoothRiemannianMetric I M} {T t : Real}
+    (P : MaximalForwardRicciFlow (I := I) (M := M) g0)
+    (Q : FlowTo (I := I) (M := M) g0 T)
+    (hP : P.IsDefinedAt t) (hT : t < T) :
+    P.metric t = Q.S.family.metric t := by
+  cases P with
+  | finite P =>
+      have htP : t < P.T := by
+        simpa [IsDefinedAt, endpoint, TimeEndpoint.upperLt] using hP.2
+      simpa [metric] using
+        flow_to_eq (I := I) (M := M) P.flow Q hP.1 htP hT
+  | immortal P =>
+      simpa [metric] using
+        immortal_flow_eq_flow_to (I := I) (M := M) P Q hP.1 hT
+
+omit [SigmaCompactSpace M] in
+theorem metric_eq
+    {g0 : SmoothRiemannianMetric I M}
+    (P Q : MaximalForwardRicciFlow (I := I) (M := M) g0)
+    (t : Real) (hP : P.IsDefinedAt t) (hQ : Q.IsDefinedAt t) :
+    P.metric t = Q.metric t := by
+  cases P with
+  | finite P =>
+      have htP : t < P.T := by
+        simpa [IsDefinedAt, endpoint, TimeEndpoint.upperLt] using hP.2
+      cases Q with
+      | finite Q =>
+          have htQ : t < Q.T := by
+            simpa [IsDefinedAt, endpoint, TimeEndpoint.upperLt] using hQ.2
+          simpa [metric] using
+            flow_to_eq (I := I) (M := M) P.flow Q.flow hP.1 htP htQ
+      | immortal Q =>
+          simpa [metric] using
+            (immortal_flow_eq_flow_to (I := I) (M := M) Q P.flow hP.1 htP).symm
+  | immortal P =>
+      cases Q with
+      | finite Q =>
+          have htQ : t < Q.T := by
+            simpa [IsDefinedAt, endpoint, TimeEndpoint.upperLt] using hQ.2
+          simpa [metric] using
+            immortal_flow_eq_flow_to (I := I) (M := M) P Q.flow hP.1 htQ
+      | immortal Q =>
+          simpa [metric] using immortal_flow_eq (I := I) (M := M) P Q t hP.1
+
+end MaximalForwardRicciFlow
+
+omit [SigmaCompactSpace M] in
+theorem exists_immortal_flow_of_not_bddAbove
+    (g0 : SmoothRiemannianMetric I M)
+    (hunbounded : ¬ BddAbove
+      {T : Real | Nonempty (FlowTo (I := I) (M := M) g0 T)}) :
+    Nonempty (ImmortalFlow (I := I) (M := M) g0) := by
+  classical
+  let ends : Set Real :=
+    {T : Real | Nonempty (FlowTo (I := I) (M := M) g0 T)}
+  have hunbounded' : ¬ BddAbove ends := by simpa [ends] using hunbounded
+  have hcover : ∀ t : Real, t ∈ Ici 0 →
+      Nonempty (FlowCover (I := I) (M := M) g0 t) := by
+    intro t _ht
+    have hexists : ∃ T ∈ ends, t < T := by
+      by_contra hnone
+      apply hunbounded'
+      refine ⟨t, ?_⟩
+      intro T hT
+      by_contra hnle
+      exact hnone ⟨T, hT, lt_of_not_ge hnle⟩
+    rcases hexists with ⟨T, hT, htT⟩
+    change Nonempty (FlowTo (I := I) (M := M) g0 T) at hT
+    rcases hT with ⟨P⟩
+    exact ⟨⟨T, P, htT⟩⟩
+  let cover (t : Real) (ht : t ∈ Ici 0) :
+      FlowCover (I := I) (M := M) g0 t :=
+    Classical.choice (hcover t ht)
+  let gmax : Real → SmoothRiemannianMetric I M := fun t =>
+    if ht : t ∈ Ici 0 then
+      (cover t ht).flow.S.family.metric t
+    else g0
+  have hmax_eq : ∀ (t : Real) (ht : t ∈ Ici 0),
+      ∀ {U : Real} (Q : FlowTo (I := I) (M := M) g0 U), t < U →
+        gmax t = Q.S.family.metric t := by
+    intro t ht U Q htU
+    simp only [gmax, dif_pos ht]
+    exact flow_to_eq (I := I) (M := M) (cover t ht).flow Q ht
+      (cover t ht).lt_end htU
+  have hstart : gmax 0 = g0 := by
+    have hzero : (0 : Real) ∈ Ici 0 := le_rfl
+    simp only [gmax, dif_pos hzero]
+    exact (cover 0 hzero).flow.start
+  have hjoint : ∀ (x0 : M) (i j : Fin (Module.finrank Real E)),
+      ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real) ∞
+        (fun p : Real × M =>
+          Integral.Measure.chartGramMatrix (I := I) (gmax p.1) x0 p.2 i j)
+        (Ici 0 ×ˢ (trivializationAt E (TangentSpace I) x0).baseSet) := by
+    intro x0 i j
+    apply contMDiffOn_of_locally_contMDiffOn
+    intro p hp
+    let C : FlowCover (I := I) (M := M) g0 p.1 := cover p.1 hp.1
+    refine ⟨Iio C.T ×ˢ (trivializationAt E (TangentSpace I) x0).baseSet,
+      isOpen_Iio.prod (trivializationAt E (TangentSpace I) x0).open_baseSet,
+      ⟨C.lt_end, hp.2⟩, ?_⟩
+    refine ((C.flow.joint x0 i j).mono ?_).congr ?_
+    · intro q hq
+      exact ⟨⟨hq.1.1.1, hq.2.1⟩, hq.2.2⟩
+    · intro q hq
+      rw [hmax_eq q.1 hq.1.1 C.flow hq.2.1]
+  have hpde : ∀ t ∈ Ici 0, ∀ x : M, ∀ v w : TangentSpace I x,
+      HasDerivWithinAt (fun s : Real => (gmax s).inner x v w)
+        ((-2 : Real) * ricciTensor (I := I) (gmax t) x v w)
+        (Ici 0) t := by
+    intro t ht x v w
+    let C : FlowCover (I := I) (M := M) g0 t := cover t ht
+    have heq : (fun s : Real => (gmax s).inner x v w) =ᶠ[nhdsWithin t (Ici 0)]
+        (fun s : Real => (C.flow.S.family.metric s).inner x v w) := by
+      filter_upwards [self_mem_nhdsWithin,
+        mem_nhdsWithin_of_mem_nhds (Iio_mem_nhds C.lt_end)] with s hs0 hsC
+      exact congrArg (fun g : SmoothRiemannianMetric I M => g.inner x v w)
+        (hmax_eq s hs0 C.flow hsC)
+    have heq_t : (gmax t).inner x v w =
+        (C.flow.S.family.metric t).inner x v w :=
+      congrArg (fun g : SmoothRiemannianMetric I M => g.inner x v w)
+        (hmax_eq t ht C.flow C.lt_end)
+    have htransport :=
+      (C.flow.pde t ⟨ht, C.lt_end⟩ x v w).congr_of_eventuallyEq heq heq_t
+    rw [← hmax_eq t ht C.flow C.lt_end] at htransport
+    exact htransport
+  let Smax : SolutionOn (I := I) (M := M) (RealTimeInterval.closedInfinite 0) :=
+    { base := { metric := gmax } }
+  have hSmax : IsSolutionOn (I := I) Smax := by
+    simpa [Smax] using solutionOn_of_joint_Ici (I := I) (M := M) 0 gmax hjoint hpde
+  refine ⟨⟨Smax, hSmax, ?_, ?_, ?_⟩⟩
+  · simpa [Smax] using hstart
+  · simpa [Smax] using hjoint
+  · simpa [Smax] using hpde
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless] in
 theorem flow_to_extend
@@ -157,18 +392,11 @@ theorem flow_to_extend
   refine ⟨eps, heps, ⟨⟨hwide, Shat, hShat, hstart, hjoint, hpde⟩⟩⟩
 
 omit [SigmaCompactSpace M] in
-theorem exists_max_flow
-    [Nonempty M]
+theorem exists_finite_maximal_flow_of_bddAbove
     (g0 : SmoothRiemannianMetric I M)
-    (hdim : Module.finrank Real E = 3)
-    (hscalar_pos : ∀ x : M,
-      0 < metricScalarAt (I := I) (M := M) g0 x) :
-    ∃ omega : Real, ∃ h0omega : 0 < omega,
-      ∃ Smax : SolutionOn (I := I) (M := M)
-          (RealTimeInterval.closedOpen 0 omega h0omega),
-        IsSolutionOn (I := I) Smax ∧
-          Smax.family.metric 0 = g0 ∧
-          IsMaximalAtEndpoint (I := I) h0omega Smax := by
+    (hends_bdd : BddAbove
+      {T : Real | Nonempty (FlowTo (I := I) (M := M) g0 T)}) :
+    Nonempty (FiniteMaximalFlow (I := I) (M := M) g0) := by
   classical
   let ends : Set Real :=
     {T : Real | Nonempty (FlowTo (I := I) (M := M) g0 T)}
@@ -178,24 +406,11 @@ theorem exists_max_flow
     change Nonempty (FlowTo (I := I) (M := M) g0 T0)
     exact hseed
   have hends_nonempty : ends.Nonempty := ⟨T0, hT0_mem⟩
-  have hscalar_cont : Continuous (fun x : M =>
-      metricScalarAt (I := I) (M := M) g0 x) := by
-    simpa using (metricScalar_smooth (I := I) (M := M) g0).continuous
-  rcases exists_initialScalarMinimum_of_continuous
-      (M := M) (fun _t x => metricScalarAt (I := I) (M := M) g0 x)
-      (by simpa using hscalar_cont) with
-    ⟨c0, hc0⟩
-  have hends_bdd : BddAbove ends := by
-    refine ⟨3 / (2 * c0), ?_⟩
-    intro T hT
-    change Nonempty (FlowTo (I := I) (M := M) g0 T) at hT
-    let P : FlowTo (I := I) (M := M) g0 T := Classical.choice hT
-    exact flow_end_le (I := I) (M := M) g0 hdim hscalar_pos P.hT hc0
-      P.S P.isSol P.start
+  have hends_bdd' : BddAbove ends := by simpa [ends] using hends_bdd
   let omega : Real := sSup ends
   have hT0_le : T0 ≤ omega := by
     dsimp [omega]
-    exact le_csSup hends_bdd hT0_mem
+    exact le_csSup hends_bdd' hT0_mem
   have h0omega : 0 < omega := lt_of_lt_of_le P0.hT hT0_le
   have hcover : ∀ t : Real, t ∈ Ico 0 omega →
       Nonempty (FlowCover (I := I) (M := M) g0 t) := by
@@ -300,8 +515,100 @@ theorem exists_max_flow
       change Nonempty (FlowTo (I := I) (M := M) g0 (omega + eps))
       exact hlong
     have hle : omega + eps ≤ omega := by
-      simpa [omega] using le_csSup hends_bdd hlong_mem
+      simpa [omega] using le_csSup hends_bdd' hlong_mem
     linarith
-  exact ⟨omega, h0omega, Smax, hSmax, hstart_max, hmaximal⟩
+  exact ⟨⟨omega, Pmax, hmaximal⟩⟩
+
+omit [SigmaCompactSpace M] in
+theorem exists_max_flow_of_bddAbove
+    (g0 : SmoothRiemannianMetric I M)
+    (hends_bdd : BddAbove
+      {T : Real | Nonempty (FlowTo (I := I) (M := M) g0 T)}) :
+    ∃ omega : Real, ∃ h0omega : 0 < omega,
+      ∃ Smax : SolutionOn (I := I) (M := M)
+          (RealTimeInterval.closedOpen 0 omega h0omega),
+        IsSolutionOn (I := I) Smax ∧
+          Smax.family.metric 0 = g0 ∧
+          IsMaximalAtEndpoint (I := I) h0omega Smax := by
+  rcases exists_finite_maximal_flow_of_bddAbove (I := I) (M := M) g0 hends_bdd with ⟨P⟩
+  exact ⟨P.T, P.flow.hT, P.flow.S, P.flow.isSol, P.flow.start, P.maximal⟩
+
+omit [SigmaCompactSpace M] in
+theorem exists_max_flow
+    [Nonempty M]
+    (g0 : SmoothRiemannianMetric I M)
+    (hdim : Module.finrank Real E = 3)
+    (hscalar_pos : ∀ x : M,
+      0 < metricScalarAt (I := I) (M := M) g0 x) :
+    ∃ omega : Real, ∃ h0omega : 0 < omega,
+      ∃ Smax : SolutionOn (I := I) (M := M)
+          (RealTimeInterval.closedOpen 0 omega h0omega),
+        IsSolutionOn (I := I) Smax ∧
+          Smax.family.metric 0 = g0 ∧
+          IsMaximalAtEndpoint (I := I) h0omega Smax := by
+  classical
+  have hscalar_cont : Continuous (fun x : M =>
+      metricScalarAt (I := I) (M := M) g0 x) := by
+    simpa using (metricScalar_smooth (I := I) (M := M) g0).continuous
+  rcases exists_initialScalarMinimum_of_continuous
+      (M := M) (fun _t x => metricScalarAt (I := I) (M := M) g0 x)
+      (by simpa using hscalar_cont) with
+    ⟨c0, hc0⟩
+  have hends_bdd : BddAbove
+      {T : Real | Nonempty (FlowTo (I := I) (M := M) g0 T)} := by
+    refine ⟨3 / (2 * c0), ?_⟩
+    intro T hT
+    change Nonempty (FlowTo (I := I) (M := M) g0 T) at hT
+    let P : FlowTo (I := I) (M := M) g0 T := Classical.choice hT
+    exact flow_end_le (I := I) (M := M) g0 hdim hscalar_pos P.hT hc0
+      P.S P.isSol P.start
+  exact exists_max_flow_of_bddAbove (I := I) (M := M) g0 hends_bdd
+
+omit [SigmaCompactSpace M] in
+theorem exists_max_flow_or_immortal
+    (g0 : SmoothRiemannianMetric I M) :
+    (∃ omega : Real, ∃ h0omega : 0 < omega,
+      ∃ Smax : SolutionOn (I := I) (M := M)
+          (RealTimeInterval.closedOpen 0 omega h0omega),
+        IsSolutionOn (I := I) Smax ∧
+          Smax.family.metric 0 = g0 ∧
+          IsMaximalAtEndpoint (I := I) h0omega Smax) ∨
+      Nonempty (ImmortalFlow (I := I) (M := M) g0) := by
+  classical
+  by_cases hends : BddAbove
+      {T : Real | Nonempty (FlowTo (I := I) (M := M) g0 T)}
+  · exact Or.inl (exists_max_flow_of_bddAbove (I := I) (M := M) g0 hends)
+  · exact Or.inr (exists_immortal_flow_of_not_bddAbove (I := I) (M := M) g0 hends)
+
+omit [SigmaCompactSpace M] in
+theorem exists_maximal_forward_ricci_flow
+    (g0 : SmoothRiemannianMetric I M) :
+    Nonempty (MaximalForwardRicciFlow (I := I) (M := M) g0) := by
+  classical
+  by_cases hends : BddAbove
+      {T : Real | Nonempty (FlowTo (I := I) (M := M) g0 T)}
+  · rcases exists_finite_maximal_flow_of_bddAbove
+      (I := I) (M := M) g0 hends with ⟨P⟩
+    exact ⟨MaximalForwardRicciFlow.finite P⟩
+  · rcases exists_immortal_flow_of_not_bddAbove
+      (I := I) (M := M) g0 hends with ⟨P⟩
+    exact ⟨MaximalForwardRicciFlow.immortal P⟩
+
+omit [SigmaCompactSpace M] in
+theorem exists_immortal_or_finite_singularity
+    (g0 : SmoothRiemannianMetric I M)
+    (hdim : Module.finrank Real E = 3) :
+    Nonempty (ImmortalFlow (I := I) (M := M) g0) ∨
+      ∃ omega : Real, ∃ h0omega : 0 < omega,
+        ∃ Smax : SolutionOn (I := I) (M := M)
+            (RealTimeInterval.closedOpen 0 omega h0omega),
+          IsSolutionOn (I := I) Smax ∧
+            Smax.family.metric 0 = g0 ∧
+            FormsSingularityAt (I := I) Smax := by
+  rcases exists_max_flow_or_immortal (I := I) (M := M) g0 with hfinite | himmortal
+  · rcases hfinite with ⟨omega, h0omega, Smax, hSmax, hstart, hmax⟩
+    exact Or.inr ⟨omega, h0omega, Smax, hSmax, hstart,
+      formsSing_of_maximal_metric (I := I) hdim hSmax hmax⟩
+  · exact Or.inl himmortal
 
 end DifferentialGeometry.PDE.RicciFlow

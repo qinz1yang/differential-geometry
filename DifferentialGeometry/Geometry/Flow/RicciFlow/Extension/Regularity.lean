@@ -81,6 +81,40 @@ theorem metricCLMSection_jointContMDiffOn_of_chartGram_Ioo
   rintro ⟨t, m⟩ _
   simp only [Function.comp_apply, hgsh, sub_add_cancel]
 
+omit [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless] [T2Space M]
+    [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
+theorem metricCLMSection_jointContMDiffOn_of_chartGram_Ioi
+    (g : ℝ → SmoothRiemannianMetric I M) (a : ℝ)
+    (hgram : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
+      ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
+        (fun p : ℝ × M =>
+          Integral.Measure.chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
+        (Set.Ioi a ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)) :
+    ContMDiffOn (𝓘(ℝ, ℝ).prod I)
+      (I.prod 𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ)) ∞
+      (fun q : ℝ × M => (TotalSpace.mk' (E →L[ℝ] E →L[ℝ] ℝ)
+        (E := fun y => TangentSpace I y →L[ℝ] TangentSpace I y →L[ℝ] ℝ) q.2
+        ((g q.1).inner q.2)))
+      (Set.Ioi a ×ˢ Set.univ) := by
+  intro q hq
+  let b : ℝ := q.1 + 1
+  have hqb : q.1 < b := by simp [b]
+  have hlocalGram : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
+      ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
+        (fun p : ℝ × M =>
+          Integral.Measure.chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
+        (Set.Ioo a b ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) := by
+    intro x₀ i j
+    exact (hgram x₀ i j).mono fun p hp => ⟨hp.1.1, hp.2⟩
+  have hlocal := metricCLMSection_jointContMDiffOn_of_chartGram_Ioo
+    (I := I) g a b hlocalGram
+  have hmem : q ∈ Set.Ioo a b ×ˢ (Set.univ : Set M) :=
+    ⟨⟨hq.1, hqb⟩, Set.mem_univ _⟩
+  have hopen : IsOpen (Set.Ioo a b ×ˢ (Set.univ : Set M)) :=
+    isOpen_Ioo.prod isOpen_univ
+  exact ((hlocal q hmem).contMDiffAt (hopen.mem_nhds hmem)).contMDiffWithinAt
+
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
 private lemma contOn_partial_iteratedFDeriv_of_contDiffOn
     {F : ℝ × E → ℝ} {U : Set (ℝ × E)} (hUopen : IsOpen U)
@@ -684,6 +718,49 @@ theorem metricFrameComp_jointContMDiffOn_of_chartGram
   rw [Bundle.contMDiffWithinAt_totalSpace] at hpx
   exact hpx.2
 
+omit [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless] [T2Space M]
+    [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
+theorem metricFrameComp_jointContMDiffOn_of_chartGram_Ioi
+    (g : ℝ → SmoothRiemannianMetric I M) (a : ℝ)
+    (hsmooth : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
+      ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
+        (fun p : ℝ × M =>
+          Integral.Measure.chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
+        (Set.Ioi a ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
+    {Idx : Type} (frame : Idx → (x : M) → TangentSpace I x) {u : Set M}
+    (hframe : IsLocalFrameOn I E (∞ : WithTop ℕ∞) frame u) (i j : Idx) :
+    ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ) ∞
+      (fun p : ℝ × M => (g p.1).inner p.2 (frame i p.2) (frame j p.2))
+      (Set.Ioi a ×ˢ u) := by
+  have hψ : ContMDiffOn (𝓘(ℝ, ℝ).prod I)
+      (I.prod 𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ)) ∞
+      (fun q : ℝ × M => (TotalSpace.mk' (E →L[ℝ] E →L[ℝ] ℝ)
+        (E := fun y => TangentSpace I y →L[ℝ] TangentSpace I y →L[ℝ] ℝ) q.2
+        ((g q.1).inner q.2)))
+      (Set.Ioi a ×ˢ u) :=
+    (metricCLMSection_jointContMDiffOn_of_chartGram_Ioi (I := I) g a hsmooth).mono
+      (fun q hq => ⟨hq.1, Set.mem_univ _⟩)
+  have hv : ContMDiffOn (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E)) ∞
+      (fun p : ℝ × M => TotalSpace.mk' E p.2 (frame i p.2)) (Set.Ioi a ×ˢ u) :=
+    (hframe.contMDiffOn i).comp contMDiffOn_snd (fun p hp => hp.2)
+  have hw : ContMDiffOn (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E)) ∞
+      (fun p : ℝ × M => TotalSpace.mk' E p.2 (frame j p.2)) (Set.Ioi a ×ˢ u) :=
+    (hframe.contMDiffOn j).comp contMDiffOn_snd (fun p hp => hp.2)
+  have happ := ContMDiffOn.clm_bundle_apply₂ (F₁ := E) (F₂ := E) (F₃ := ℝ)
+    (E₁ := TangentSpace I (M := M)) (E₂ := TangentSpace I (M := M))
+    (E₃ := Bundle.Trivial M ℝ)
+    (b := fun p : ℝ × M => p.2)
+    (s := Set.Ioi a ×ˢ u)
+    (ψ := fun p : ℝ × M => (g p.1).inner p.2)
+    (v := fun p : ℝ × M => frame i p.2)
+    (w := fun p : ℝ × M => frame j p.2)
+    hψ hv hw
+  intro p hp
+  have hpx := happ p hp
+  rw [Bundle.contMDiffWithinAt_totalSpace] at hpx
+  exact hpx.2
+
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
@@ -708,6 +785,28 @@ theorem metricVariationEquationOn_of_pde
     SolutionOn.family, RicciAtFamily.toTensorField, SolutionOn.ricciAt,
     SolutionFamily.ricciAt,
     DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen,
+    metricRicciAt_apply_eq_ricciTensor] using h
+
+omit [CompactSpace M] [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
+theorem metricVariationEquationOn_of_pde_Ici
+    (g : ℝ → SmoothRiemannianMetric I M) (a : ℝ)
+    (hpde : ∀ t ∈ Set.Ici a, ∀ (x : M) (v w : TangentSpace I x),
+      HasDerivWithinAt (fun s : ℝ => (g s).inner x v w)
+        ((-2 : ℝ) * DifferentialGeometry.Geometry.Curvature.ricciTensor (I := I) (g t) x v w)
+        (Set.Ici a) t) :
+    MetricVariationEquationOn (I := I)
+      ({ base := { metric := g } } :
+        SolutionOn (I := I) (M := M) (RealTimeInterval.closedInfinite a)) := by
+  intro t x X Y
+  have ht : (t : ℝ) ∈ Set.Ioi a := t.2
+  have h := hpde (t : ℝ) (Set.mem_Ici.mpr (le_of_lt ht)) x X Y
+  simpa [MetricVariationEquationOn,
+    DifferentialGeometry.PDE.RicciFlow.MetricConnectionFamilyVariationEquationOn,
+    SolutionOn.family, RicciAtFamily.toTensorField, SolutionOn.ricciAt,
+    SolutionFamily.ricciAt,
+    DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedInfinite,
     metricRicciAt_apply_eq_ricciTensor] using h
 
 omit [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless] in
@@ -789,6 +888,86 @@ theorem metricFamilySmoothOn_of_chartGram
   · exact hcontTensor
   · intro Idx _ frame u hframe i j
     exact metricFrameComp_jointContMDiffOn_of_chartGram (I := I) g a b hsmooth frame hframe i j
+
+omit [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] in
+omit [T2Space M] [SigmaCompactSpace M] in
+theorem metricFamilySmoothOn_of_chartGram_Ici
+    (g : ℝ → SmoothRiemannianMetric I M) (a : ℝ)
+    (hsmooth : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
+      ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
+        (fun p : ℝ × M =>
+          Integral.Measure.chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
+        (Set.Ioi a ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
+    (hcont : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
+      ContinuousOn
+        (fun p : ℝ × M =>
+          Integral.Measure.chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
+        (Set.Ici a ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)) :
+    DifferentialGeometry.Geometry.Curvature.MetricFamilySmoothOn (I := I) (M := M)
+      (RealTimeInterval.closedInfinite a)
+      ({ base := { metric := g } } :
+        SolutionOn (I := I) (M := M) (RealTimeInterval.closedInfinite a)).family.metric := by
+  have hcontTensor :
+      DifferentialGeometry.Geometry.Curvature.tensor0SFamilyContinuousOnSet (I := I) (M := M) 2
+        (Set.Ici a) (fun t x => Tensor0SBundle.metricTensorField (I := I) (g t) x) := by
+    apply metricTensorCont_of_chartGram (K := Set.Ici a) g
+    intro x₀ i j
+    have hincl : ContinuousOn
+        (fun q : {t : ℝ // t ∈ Set.Ici a} × M => ((q.1 : ℝ), q.2))
+        {q : {t : ℝ // t ∈ Set.Ici a} × M |
+          q.2 ∈ (trivializationAt E (TangentSpace I) x₀).baseSet} :=
+      ((continuous_subtype_val.comp continuous_fst).prodMk continuous_snd).continuousOn
+    exact (hcont x₀ i j).comp hincl (fun q hq => ⟨q.1.2, hq⟩)
+  refine ⟨?_, ?_, ?_, ?_⟩
+  · intro x X Y
+    have hcurve : ContMDiffOn 𝓘(ℝ, ℝ) (𝓘(ℝ, ℝ).prod I) ∞
+        (fun t : ℝ => (t, x)) (Set.Ioi a) :=
+      contMDiffOn_id.prodMk contMDiffOn_const
+    have hψ' : ContMDiffOn 𝓘(ℝ, ℝ) (I.prod 𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ)) ∞
+        (fun t : ℝ => (TotalSpace.mk' (E →L[ℝ] E →L[ℝ] ℝ)
+          (E := fun y => TangentSpace I y →L[ℝ] TangentSpace I y →L[ℝ] ℝ) x
+          ((g t).inner x))) (Set.Ioi a) :=
+      (metricCLMSection_jointContMDiffOn_of_chartGram_Ioi (I := I) g a hsmooth).comp
+        hcurve (fun t ht => ⟨ht, Set.mem_univ _⟩)
+    have hv : ContMDiffOn 𝓘(ℝ, ℝ) (I.prod 𝓘(ℝ, E)) ∞
+        (fun _ : ℝ => TotalSpace.mk' E (E := fun y => TangentSpace I y) x X) (Set.Ioi a) :=
+      contMDiffOn_const
+    have hw : ContMDiffOn 𝓘(ℝ, ℝ) (I.prod 𝓘(ℝ, E)) ∞
+        (fun _ : ℝ => TotalSpace.mk' E (E := fun y => TangentSpace I y) x Y) (Set.Ioi a) :=
+      contMDiffOn_const
+    have happ := ContMDiffOn.clm_bundle_apply₂ (F₁ := E) (F₂ := E) (F₃ := ℝ)
+      (E₁ := TangentSpace I (M := M)) (E₂ := TangentSpace I (M := M))
+      (E₃ := Bundle.Trivial M ℝ)
+      (b := fun _ : ℝ => x)
+      (ψ := fun t : ℝ => (g t).inner x)
+      (v := fun _ : ℝ => X) (w := fun _ : ℝ => Y)
+      hψ' hv hw
+    have hscalar : ContMDiffOn 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) ∞
+        (fun t : ℝ => (g t).inner x X Y) (Set.Ioi a) := by
+      intro t ht
+      have hpt := happ t ht
+      rw [Bundle.contMDiffWithinAt_totalSpace] at hpt
+      exact hpt.2
+    exact hscalar.contDiffOn
+  · intro x X Y
+    have hbase :
+        ContinuousOn
+          (fun s : ℝ => Tensor0SBundle.metricTensorField (I := I) (g s) x
+            (DifferentialGeometry.Geometry.Curvature.vec2 X Y))
+          (Set.Ici a) := by
+      rw [continuousOn_iff_continuous_domRestrict]
+      exact hcontTensor.eval_continuous (P := {s : ℝ // s ∈ Set.Ici a})
+        (τ := Subtype.val) (b := fun _ => x) continuous_subtype_val
+        (fun p => p.2) continuous_const
+        (v := fun i _ => DifferentialGeometry.Geometry.Curvature.vec2 X Y i)
+        (fun _ => continuous_const)
+    refine hbase.congr (fun s _ => ?_)
+    simp [Tensor0SBundle.metricTensorField_apply, DifferentialGeometry.Geometry.Curvature.vec2]
+  · exact hcontTensor
+  · intro Idx _ frame u hframe i j
+    exact metricFrameComp_jointContMDiffOn_of_chartGram_Ioi
+      (I := I) g a hsmooth frame hframe i j
 
 omit [CompactSpace M] in
 omit [I.Boundaryless]
@@ -1137,6 +1316,82 @@ theorem solutionOn_of_joint [I.Boundaryless]
         (ricciNorm (I := I)
           ({ base := { metric := g } } : SolutionOn (I := I) (M := M)
             (RealTimeInterval.closedOpen a b hab)) (t : ℝ)) := by
+      refine (DifferentialGeometry.Tensor.RSTensor.normSq02_smooth (I := I) (M := M)
+        (g (t : ℝ)) (metricRicci (I := I) (M := M) (g (t : ℝ)))).congr ?_
+      intro y
+      simp only [ricciNorm, SolutionOn.ricci, SolutionOn.family,
+        SolutionFamily.ricci_apply, SolutionFamily.ricciAt, metricRicci_apply]
+    exact gradientFun_mdiffAt (I := I) (g (t : ℝ)) hs x
+
+omit [I.Boundaryless] in
+omit [CompactSpace M] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+theorem solutionOn_of_joint_Ici [I.Boundaryless]
+    (a : ℝ) (g : ℝ → SmoothRiemannianMetric I M)
+    (hjoint : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
+      ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
+        (fun p : ℝ × M =>
+          Integral.Measure.chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
+        (Set.Ici a ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
+    (hpde : ∀ t ∈ Set.Ici a, ∀ (x : M) (v w : TangentSpace I x),
+      HasDerivWithinAt (fun s : ℝ => (g s).inner x v w)
+        ((-2 : ℝ) * DifferentialGeometry.Geometry.Curvature.ricciTensor (I := I) (g t) x v w)
+        (Set.Ici a) t) :
+    IsSolutionOn (I := I)
+      ({ base := { metric := g } } :
+        SolutionOn (I := I) (M := M) (RealTimeInterval.closedInfinite a)) := by
+  have hsmooth : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
+      ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
+        (fun p : ℝ × M =>
+          Integral.Measure.chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
+        (Set.Ioi a ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) :=
+    fun x₀ i j => (hjoint x₀ i j).mono (Set.prod_mono_left Set.Ioi_subset_Ici_self)
+  have hcont : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
+      ContinuousOn
+        (fun p : ℝ × M =>
+          Integral.Measure.chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
+        (Set.Ici a ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) :=
+    fun x₀ i j => (hjoint x₀ i j).continuousOn
+  refine
+    { smoothMetric := metricFamilySmoothOn_of_chartGram_Ici (I := I) g a hsmooth hcont
+      smoothConnection := ?_
+      equation := metricVariationEquationOn_of_pde_Ici (I := I) g a hpde
+      scalarCont := ?_
+      scalarTime := ?_
+      ricciCont := ?_
+      rm04Cont := ?_
+      ricciNormSpace := ?_
+      ricciNormGrad := ?_ }
+  · intro t
+    simpa [SolutionOn.family, SolutionFamily.connection,
+      DifferentialGeometry.Geometry.Curvature.MetricConnectionFamilyOn.connectionAt]
+      using leviCivitaConnectionOfMetric_contMDiffCovariantDerivative (I := I) (g (t : ℝ))
+  · exact (scalarCont_of_joint (I := I) g (Set.Ici a) (uniqueDiffOn_Ici a) hjoint).congr
+      (fun _ _ => rfl)
+  · intro K t ht hK x
+    simpa [SolutionOn.scalar, SolutionFamily.scalar] using
+      (scalarTime_of_joint (I := I) g (Set.Ici a) (uniqueDiffOn_Ici a) hjoint t
+        (hK ht) x).mono hK
+  · refine DifferentialGeometry.Geometry.Curvature.tensor0SFamilyContinuousOnSet.congr
+      (ricciCont_of_joint (I := I) g (Set.Ici a) (uniqueDiffOn_Ici a) hjoint)
+      (fun t _ x => ?_)
+    simp only [SolutionOn.ricci, SolutionFamily.ricci_apply, SolutionFamily.ricciAt]
+  · refine DifferentialGeometry.Geometry.Curvature.tensor0SFamilyContinuousOnSet.congr
+      (rm04Cont_of_joint (I := I) g (Set.Ici a) (uniqueDiffOn_Ici a) hjoint)
+      (fun t _ x => ?_)
+    simp only [SolutionFamily.rm04, metricRm04_apply]
+  · intro t ht x
+    have h := (DifferentialGeometry.Tensor.RSTensor.normSq02_smooth (I := I) (M := M)
+      (g (t : ℝ)) (metricRicci (I := I) (M := M) (g (t : ℝ)))).mdifferentiableAt
+      (by simp) (x := x)
+    refine h.congr_of_eventuallyEq ?_
+    filter_upwards with y
+    simp only [ricciNorm, SolutionOn.ricci, SolutionOn.family,
+      SolutionFamily.ricci_apply, SolutionFamily.ricciAt, metricRicci_apply]
+  · intro t ht x
+    have hs : ContMDiff I 𝓘(ℝ, ℝ) ∞
+        (ricciNorm (I := I)
+          ({ base := { metric := g } } : SolutionOn (I := I) (M := M)
+            (RealTimeInterval.closedInfinite a)) (t : ℝ)) := by
       refine (DifferentialGeometry.Tensor.RSTensor.normSq02_smooth (I := I) (M := M)
         (g (t : ℝ)) (metricRicci (I := I) (M := M) (g (t : ℝ)))).congr ?_
       intro y
