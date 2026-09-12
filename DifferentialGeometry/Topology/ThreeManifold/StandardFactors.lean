@@ -1,6 +1,7 @@
 import DifferentialGeometry.Topology.Manifold.ClosedOriented
 import DifferentialGeometry.Topology.Manifold.SphereOrientation
 import DifferentialGeometry.Topology.Manifold.ProductOrientation
+import DifferentialGeometry.Topology.Manifold.Quotient
 import DifferentialGeometry.Geometry.Metric.Sphere.Isometry.OrthogonalAction
 import Mathlib.Topology.Covering.Basic
 
@@ -30,19 +31,45 @@ namespace SphericalSpaceFormGroup
 
 variable (G : SphericalSpaceFormGroup)
 
-def orbitSetoid : Setoid (sphere (0 : EuclideanSpace ℝ (Fin 4)) 1) where
-  r x y := ∃ γ : G.group, Geometry.sphereDiffeo (n := 3) γ.val x = y
-  iseqv := {
-    refl := fun x ↦ ⟨1, Subtype.ext rfl⟩
-    symm := by
-      rintro x y ⟨γ, rfl⟩
-      refine ⟨γ⁻¹, ?_⟩
-      apply Subtype.ext
-      change γ.val.symm (γ.val (x : EuclideanSpace ℝ (Fin 4))) = x
-      exact γ.val.symm_apply_apply x
-    trans := by
-      rintro x y z ⟨γ, rfl⟩ ⟨δ, rfl⟩
-      exact ⟨δ * γ, Subtype.ext rfl⟩ }
+instance instMulActionSphere : MulAction G.group (sphere (0 : EuclideanSpace ℝ (Fin 4)) 1) where
+  smul γ x := Geometry.sphereDiffeo (n := 3) γ.val x
+  one_smul x := by
+    apply Subtype.ext
+    change (((1 : G.group) : EuclideanSpace ℝ (Fin 4) ≃ₗᵢ[ℝ] EuclideanSpace ℝ (Fin 4))
+      (x : EuclideanSpace ℝ (Fin 4))) = (x : EuclideanSpace ℝ (Fin 4))
+    simp
+  mul_smul a b x := by
+    apply Subtype.ext
+    change (((a * b : G.group) : EuclideanSpace ℝ (Fin 4) ≃ₗᵢ[ℝ] EuclideanSpace ℝ (Fin 4))
+        (x : EuclideanSpace ℝ (Fin 4))) =
+      ((a : EuclideanSpace ℝ (Fin 4) ≃ₗᵢ[ℝ] EuclideanSpace ℝ (Fin 4))
+        (((b : EuclideanSpace ℝ (Fin 4) ≃ₗᵢ[ℝ] EuclideanSpace ℝ (Fin 4)))
+          (x : EuclideanSpace ℝ (Fin 4))))
+    simp
+
+instance instContMDiffConstSMulSphere :
+    ContMDiffConstSMul (𝓡 3) ∞ G.group (sphere (0 : EuclideanSpace ℝ (Fin 4)) 1) where
+  contMDiff_const_smul γ :=
+    (Geometry.sphereDiffeo (n := 3) γ.val).contMDiff
+
+instance instContinuousConstSMulSphere :
+    ContinuousConstSMul G.group (sphere (0 : EuclideanSpace ℝ (Fin 4)) 1) where
+  continuous_const_smul γ :=
+    ((Geometry.sphereDiffeo (n := 3) γ.val).contMDiff).continuous
+
+instance instIsCancelSMulSphere : IsCancelSMul G.group (sphere (0 : EuclideanSpace ℝ (Fin 4)) 1) where
+  right_cancel' a b c h := by
+    have h1 : (b⁻¹ * a) • c = c := by
+      calc (b⁻¹ * a) • c = b⁻¹ • (a • c) := mul_smul b⁻¹ a c
+        _ = b⁻¹ • (b • c) := by rw [h]
+        _ = c := inv_smul_smul b c
+    have h2 : b⁻¹ * a = 1 := G.free (b⁻¹ * a) c h1
+    calc a = b * (b⁻¹ * a) := (mul_inv_cancel_left b a).symm
+      _ = b * 1 := by rw [h2]
+      _ = b := mul_one b
+
+def orbitSetoid : Setoid (sphere (0 : EuclideanSpace ℝ (Fin 4)) 1) :=
+  MulAction.orbitRel G.group (sphere (0 : EuclideanSpace ℝ (Fin 4)) 1)
 
 abbrev Orbit := Quotient G.orbitSetoid
 
@@ -51,8 +78,20 @@ def projection : sphere (0 : EuclideanSpace ℝ (Fin 4)) 1 → G.Orbit :=
 
 theorem projection_eq_iff (x y : sphere (0 : EuclideanSpace ℝ (Fin 4)) 1) :
     G.projection x = G.projection y ↔
-      ∃ γ : G.group, Geometry.sphereDiffeo (n := 3) γ.val x = y :=
-  Quotient.eq
+      ∃ γ : G.group, Geometry.sphereDiffeo (n := 3) γ.val x = y := by
+  rw [show G.projection x = G.projection y ↔
+      (MulAction.orbitRel G.group (sphere (0 : EuclideanSpace ℝ (Fin 4)) 1)) x y from
+    Quotient.eq,
+    MulAction.orbitRel_apply, MulAction.mem_orbit_iff]
+  refine ⟨fun h => ?_, fun h => ?_⟩
+  · obtain ⟨γ, hγ⟩ := h
+    refine ⟨γ⁻¹, ?_⟩
+    change (γ⁻¹ : G.group) • x = y
+    rw [← hγ, inv_smul_smul]
+  · obtain ⟨γ, hγ⟩ := h
+    have hγ' : γ • x = y := hγ
+    refine ⟨γ⁻¹, ?_⟩
+    rw [← hγ', inv_smul_smul]
 
 theorem projection_surjective : Function.Surjective G.projection :=
   Quotient.mk_surjective
