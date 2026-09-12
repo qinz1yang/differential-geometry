@@ -113,6 +113,42 @@ theorem adjunction_cell_eq_lower_iff {A : Type v} {B : Type w} {X : Type u}
   · rintro ⟨a, rfl, rfl⟩
     exact adjunction_coherence i φ a
 
+theorem connectedSpace_adjunctionSpace {A : Type*} {B : Type*} {X : Type*}
+    [TopologicalSpace B] [TopologicalSpace X] [ConnectedSpace B] [ConnectedSpace X] [Nonempty A]
+    (i : A → B) (φ : A → X) : ConnectedSpace (AdjunctionSpace i φ) := by
+  have hcov : Set.range (adjunctionCell i φ) ∪ Set.range (adjunctionLower (i := i) φ) = univ := by
+    refine Set.eq_univ_of_forall fun q => ?_
+    exact Quot.induction_on q fun s => by
+      cases s with
+      | inl b => exact Or.inl ⟨b, rfl⟩
+      | inr x => exact Or.inr ⟨x, rfl⟩
+  obtain ⟨z⟩ := ‹Nonempty A›
+  have hne : (Set.range (adjunctionCell i φ) ∩
+      Set.range (adjunctionLower (i := i) φ)).Nonempty :=
+    ⟨adjunctionCell i φ (i z),
+      ⟨⟨i z, rfl⟩, ⟨φ z, (adjunction_coherence i φ z).symm⟩⟩⟩
+  rw [connectedSpace_iff_univ, ← hcov]
+  exact IsConnected.union hne (isConnected_range (continuous_adjunctionCell i φ))
+    (isConnected_range (continuous_adjunctionLower i φ))
+
+theorem pathConnectedSpace_adjunctionSpace {A : Type*} {B : Type*} {X : Type*}
+    [TopologicalSpace B] [TopologicalSpace X] [PathConnectedSpace B] [PathConnectedSpace X]
+    [Nonempty A] (i : A → B) (φ : A → X) : PathConnectedSpace (AdjunctionSpace i φ) := by
+  have hcov : Set.range (adjunctionCell i φ) ∪ Set.range (adjunctionLower (i := i) φ) = univ := by
+    refine Set.eq_univ_of_forall fun q => ?_
+    exact Quot.induction_on q fun s => by
+      cases s with
+      | inl b => exact Or.inl ⟨b, rfl⟩
+      | inr x => exact Or.inr ⟨x, rfl⟩
+  obtain ⟨z⟩ := ‹Nonempty A›
+  have hne : (Set.range (adjunctionCell i φ) ∩
+      Set.range (adjunctionLower (i := i) φ)).Nonempty :=
+    ⟨adjunctionCell i φ (i z),
+      ⟨⟨i z, rfl⟩, ⟨φ z, (adjunction_coherence i φ z).symm⟩⟩⟩
+  rw [pathConnectedSpace_iff_univ, ← hcov]
+  exact IsPathConnected.union (isPathConnected_range (continuous_adjunctionCell i φ))
+    (isPathConnected_range (continuous_adjunctionLower i φ)) hne
+
 end AdjunctionSpace
 
 end DifferentialGeometry.Topology

@@ -1,4 +1,5 @@
 import DifferentialGeometry.Topology.Attachment.Basic
+import DifferentialGeometry.Topology.Manifold.Attachment.AdjunctionSeparation
 import Mathlib.Geometry.Manifold.LocalDiffeomorph
 
 open scoped Manifold ContDiff Topology
@@ -95,6 +96,24 @@ theorem continuous_inclusion : Continuous (Subtype.val : c.Punctured → M) :=
 theorem inclusion_injective : Function.Injective (Subtype.val : c.Punctured → M) :=
   Subtype.val_injective
 
+theorem isOpen_chart_image_ball : IsOpen (c.chart '' Metric.ball 0 1) := by
+  have hsub : Metric.ball (0 : EuclideanSpace ℝ (Fin n)) 1 ⊆ c.chart.toPartialEquiv.source :=
+    c.ball_subset_source
+  have hcont : ContinuousOn (⇑c.chart.toPartialEquiv.symm) c.chart.toPartialEquiv.target :=
+    c.chart.contMDiffOn_invFun.continuousOn
+  have hopen : IsOpen (c.chart.toPartialEquiv.target ∩
+      (⇑c.chart.toPartialEquiv.symm) ⁻¹' Metric.ball (0 : EuclideanSpace ℝ (Fin n)) 1) :=
+    hcont.isOpen_inter_preimage c.chart.open_target
+      (Metric.isOpen_ball (x := (0 : EuclideanSpace ℝ (Fin n))) (ε := 1))
+  rw [PartialEquiv.image_eq_target_inter_inv_preimage _ hsub]
+  exact hopen
+
+theorem isClosed_punctured : IsClosed {x : M | x ∉ c.chart '' Metric.ball 0 1} :=
+  c.isOpen_chart_image_ball.isClosed_compl
+
+instance instCompactSpacePunctured [CompactSpace M] : CompactSpace c.Punctured :=
+  isCompact_iff_compactSpace.mp c.isClosed_punctured.isCompact
+
 end BallChart
 
 variable {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
@@ -169,6 +188,34 @@ theorem inl_ne_inr_of_forall (p : c.Punctured) (q : d.Punctured)
   intro hpq
   obtain ⟨z, hz, hz'⟩ := (inl_eq_inr_iff c d a p q).mp hpq
   exact h z hz hz'
+
+theorem nonempty_sphere_of_neZero [NeZero n] :
+    Nonempty (Metric.sphere (0 : EuclideanSpace ℝ (Fin n)) 1) :=
+  let ⟨z, hz⟩ := NormedSpace.sphere_nonempty.mpr (by norm_num : (0:ℝ) ≤ 1)
+  ⟨⟨z, hz⟩⟩
+
+instance instT2Space [T2Space M] [T2Space N] : T2Space (ConnectedSumQuotient c d a) :=
+  DifferentialGeometry.Topology.Manifold.Attachment.adjunction_t2Space c.boundaryMap
+    (d.boundaryMap ∘ a)
+    c.boundaryMap_injective (d.boundaryMap_injective.comp a.injective)
+    c.continuous_boundaryMap (d.continuous_boundaryMap.comp a.continuous)
+
+instance instCompactSpace [CompactSpace c.Punctured] [CompactSpace d.Punctured] :
+    CompactSpace (ConnectedSumQuotient c d a) :=
+  Quot.compactSpace
+
+instance instConnectedSpace [ConnectedSpace c.Punctured] [ConnectedSpace d.Punctured]
+    [Nonempty (Metric.sphere (0 : EuclideanSpace ℝ (Fin n)) 1)] :
+    ConnectedSpace (ConnectedSumQuotient c d a) :=
+  DifferentialGeometry.Topology.connectedSpace_adjunctionSpace c.boundaryMap
+    (d.boundaryMap ∘ a)
+
+instance instPathConnectedSpace [PathConnectedSpace c.Punctured]
+    [PathConnectedSpace d.Punctured]
+    [Nonempty (Metric.sphere (0 : EuclideanSpace ℝ (Fin n)) 1)] :
+    PathConnectedSpace (ConnectedSumQuotient c d a) :=
+  DifferentialGeometry.Topology.pathConnectedSpace_adjunctionSpace c.boundaryMap
+    (d.boundaryMap ∘ a)
 
 theorem isOpen_image_inl {U : Set c.Punctured} (hU : IsOpen U)
     (hdisj : ∀ z, c.boundaryMap z ∉ U) :
