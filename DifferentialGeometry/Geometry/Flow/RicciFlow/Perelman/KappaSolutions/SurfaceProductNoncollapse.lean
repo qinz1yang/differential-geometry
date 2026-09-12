@@ -24,6 +24,8 @@ private local instance surfaceProductNoncollapseBorel : BorelSpace M := ⟨rfl�
 private local instance surfaceProductNoncollapseC1 : IsManifold I 1 M :=
   IsManifold.of_le (n := ∞) (by decide)
 
+variable [I.Boundaryless]
+
 theorem surfaceProduct_tensor_half_noncollapsed
     (h : SmoothRiemannianMetric I M)
     (gP : SmoothRiemannianMetric (I.prod 𝓘(ℝ, ℝ)) (M × ℝ))
