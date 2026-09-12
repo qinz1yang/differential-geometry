@@ -638,6 +638,7 @@ import DifferentialGeometry.Analysis.Heat.Smoothing.Spectral.IteratedDomain
 import DifferentialGeometry.Analysis.Heat.Smoothing.Spectral.Lift
 import DifferentialGeometry.Analysis.HoleFilling
 import DifferentialGeometry.Analysis.InnerProductSpace.Cayley
+import DifferentialGeometry.Analysis.InnerProductSpace.ConformalPair
 import DifferentialGeometry.Analysis.InnerProductSpace.HilbertSchmidt
 import DifferentialGeometry.Analysis.InnerProductSpace.IsometryTransitive
 import DifferentialGeometry.Analysis.InnerProductSpace.MatrixEuclidean
