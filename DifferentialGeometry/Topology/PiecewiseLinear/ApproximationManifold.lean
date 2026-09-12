@@ -113,7 +113,7 @@ theorem plApproximation_of_plApproximationManifold (h : PLApproximationManifold.
   let φ' : S₁ → ℝ := fun x => φ x.1
   have hφ' : Continuous φ' := continuousOn_iff_continuous_domRestrict.mp hφ
   have hφ'pos : ∀ x : S₁, 0 < φ' x := fun x => hφpos x.1 x.2
-  obtain ⟨f, hf, -, hfdist⟩ := h g' φ' hφ' hφ'pos
+  obtain ⟨f, hf, hfdist⟩ := h g' φ' hφ' hφ'pos
   let c₁ := S₁.openPartialHomeomorphSubtypeCoe hS₁
   let c₂ := S₂.openPartialHomeomorphSubtypeCoe hS₂
   let f' : OpenPartialHomeomorph X₁ X₂ := c₁.symm.trans (f.toOpenPartialHomeomorph.trans c₂)

@@ -99,7 +99,8 @@
   （`n = 2` 即 Moise 定理 8.4，`n = 3` 即定理 36.1），`n ≥ 4` 为假；因此条件定理不隐藏目标。
   拼接桥只用 `X₁ = X₂ = X`、`h = id_O`、`φ x = ½·infDist x Oᶜ` 的特例。
   流形语言的同一陈述 **A′ `PLApproximationManifold n`**（`Manifold.lean`：PL `n`-流形 `M₁ M₂`、同胚 `h`、
-  连续正 `φ`，存在 PL 同胚 `f`（`IsPL n n f ∧ IsPL n n f.symm`）φ-逼近 `h`）是未来经典证明的自然目标；
+  连续正 `φ`，存在同胚 `f` 满足 `IsPL n n f` 并 φ-逼近 `h`；逆映射自动 PL：`isPL_symm_of_homeomorph`）
+  是未来经典证明的自然目标；
   `A′ → A` 的归约已证：`plApproximation_of_plApproximationManifold`（`ApproximationManifold.lean`；
   `AtlasOn.subtypeChartedSpace` 把开集上的图册变成子类型上的图卡空间并继承群胚，
   `OpenPartialHomeomorph` 与子类型同胚互换，再用 `isPLAt_iff_of_mem_maximalAtlas` 转回逐图卡群胚条件）。

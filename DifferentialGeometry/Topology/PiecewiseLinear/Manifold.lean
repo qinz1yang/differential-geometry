@@ -96,6 +96,54 @@ theorem isPLAt_iff_of_mem_maximalAtlas [HasGroupoid M (plGroupoid n)]
   rw [continuousWithinAt_univ, preimage_univ] at h
   exact h
 
+theorem isPL_symm_of_homeomorph [HasGroupoid M (plGroupoid n)] {P : Type*} [TopologicalSpace P]
+    [ChartedSpace (EuclideanSpace ℝ (Fin n)) P] [HasGroupoid P (plGroupoid n)]
+    {f : M ≃ₜ P} (hf : IsPL n n f) : IsPL n n f.symm := by
+  intro y
+  set x := f.symm y with hx_def
+  have hfx : f x = y := f.apply_symm_apply y
+  set e := chartAt (EuclideanSpace ℝ (Fin n)) x with he_def
+  set e' := chartAt (EuclideanSpace ℝ (Fin n)) y with he'_def
+  have hmax₁ : e ∈ (plGroupoid n).maximalAtlas M :=
+    StructureGroupoid.chart_mem_maximalAtlas (plGroupoid n) x
+  have hmax₂ : e' ∈ (plGroupoid n).maximalAtlas P :=
+    StructureGroupoid.chart_mem_maximalAtlas (plGroupoid n) y
+  have hxe : x ∈ e.source := mem_chart_source _ x
+  have hye : y ∈ e'.source := mem_chart_source _ y
+  let F : OpenPartialHomeomorph (EuclideanSpace ℝ (Fin n)) (EuclideanSpace ℝ (Fin n)) :=
+    e.symm ≫ₕ f.toOpenPartialHomeomorph ≫ₕ e'
+  have hFsrc : ∀ z, z ∈ F.source ↔ z ∈ e.target ∧ f (e.symm z) ∈ e'.source := by
+    intro z
+    constructor
+    · rintro ⟨hz, -, hz'⟩
+      exact ⟨hz, hz'⟩
+    · rintro ⟨hz, hz'⟩
+      exact ⟨hz, trivial, hz'⟩
+  have hF : IsPiecewiseAffineOn F F.source := by
+    intro z hz
+    obtain ⟨hz1, hz2⟩ := (hFsrc z).mp hz
+    have hz1' : e.symm z ∈ e.source := e.map_target hz1
+    obtain ⟨-, hPA⟩ := (isPLAt_iff_of_mem_maximalAtlas hmax₁ hz1' hmax₂ hz2).mp (hf (e.symm z))
+    rw [e.right_inv hz1] at hPA
+    have hPA' := hPA.inter_of_mem_nhds (F.open_source.mem_nhds hz)
+    rw [univ_inter] at hPA'
+    exact hPA'.congr fun _ _ => rfl
+  have hFsymm : IsPiecewiseAffineOn F.symm F.target := hF.symm
+  have hyF : e' y ∈ F.target := by
+    have hxF : e x ∈ F.source := (hFsrc (e x)).mpr ⟨e.map_source hxe, by rw [e.left_inv hxe, hfx]; exact hye⟩
+    have hFx : F (e x) = e' y := by
+      change e' (f (e.symm (e x))) = e' y
+      rw [e.left_inv hxe, hfx]
+    rw [← hFx]
+    exact F.map_source hxF
+  change IsPLAt n n f.symm y
+  rw [isPLAt_iff_of_mem_maximalAtlas (f := ⇑f.symm) hmax₂ hye hmax₁ hxe]
+  refine ⟨f.symm.continuous.continuousAt, ?_⟩
+  have hPA := (hFsymm (e' y) hyF).congr (g := e ∘ f.symm ∘ e'.symm) fun _ _ => rfl
+  have hPA' : IsPiecewiseAffineWithinAt (e ∘ f.symm ∘ e'.symm) (univ ∩ F.target) (e' y) := by
+    rwa [univ_inter]
+  exact hPA'.of_inter_of_mem_nhds (F.open_target.mem_nhds hyF)
+
 universe u
 
 def PLApproximationManifold (n : ℕ) : Prop :=
@@ -104,6 +152,6 @@ def PLApproximationManifold (n : ℕ) : Prop :=
     [ChartedSpace (EuclideanSpace ℝ (Fin n)) M₁] [ChartedSpace (EuclideanSpace ℝ (Fin n)) M₂]
     [HasGroupoid M₁ (plGroupoid n)] [HasGroupoid M₂ (plGroupoid n)] (h : M₁ ≃ₜ M₂)
     (φ : M₁ → ℝ), Continuous φ → (∀ x, 0 < φ x) →
-    ∃ f : M₁ ≃ₜ M₂, IsPL n n f ∧ IsPL n n f.symm ∧ ∀ x, dist (f x) (h x) < φ x
+    ∃ f : M₁ ≃ₜ M₂, IsPL n n f ∧ ∀ x, dist (f x) (h x) < φ x
 
 end DifferentialGeometry.Topology.PiecewiseLinear
