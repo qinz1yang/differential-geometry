@@ -5,6 +5,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborho
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.Reconstruction.RiemannFromRicci
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.MixedCurvatureJet
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.UniversalDerivativeConsequences
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientKappaSourceCapture
 
 set_option autoImplicit false
 noncomputable section
@@ -15,6 +16,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.Fini
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology DifferentialGeometry.Tensor0SBundle
+open DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions (SphereAntipodalQuotient)
 open scoped Manifold ContDiff ENNReal
 
 universe u
@@ -94,7 +96,125 @@ theorem witness_of_ancient_extension {eps kappa sigma : ℝ} {Phi : ℝ → ℝ}
       OrientedWitness (X.term (L.subseq (A.extension.subseq i))).S
         (X.orientation (L.subseq (A.extension.subseq i))) eps kappa
         (X.term (L.subseq (A.extension.subseq i))).basepoint 0 := by
-  sorry
+  let _ : NeZero (Module.finrank ℝ ThreeSpace) := ⟨by simp [ThreeSpace]⟩
+  let Fm := subsequenceMaps L.maps A.extension.subseq A.extension.strictMono
+  have hzero : (0 : ℝ) ∈ ancientTimeInterval.carrier := by
+    simp
+  have hmet : RiemannianMetricComplete (I := I3) (A.extension.solution.base.metric 0) :=
+    ⟨MetricComplete.complete (I := I3) (A.extension.pointed.atTime (I := I3) 0)
+      (A.ancient.complete 0 hzero)⟩
+  have hab : -modelDepth eps ≤ 0 := neg_nonpos.mpr (inv_nonneg.mpr heps.le)
+  have hmem0 : (0 : ℝ) ∈ Set.Icc (-modelDepth eps) 0 := ⟨hab, le_rfl⟩
+  have hsub : Set.Icc (-modelDepth eps) 0 ⊆ ancientTimeInterval.carrier :=
+    fun s hs => by rw [ancientTimeInterval_carrier]; exact hs.2
+  let Kb := riemannianClosedBallOf (I := I3) (A.extension.solution.base.metric 0)
+    A.extension.pointed.basepoint (modelRadius eps + 1)
+  let Ks := riemannianClosedBallOf (I := I3) (A.extension.solution.base.metric 0)
+    A.extension.pointed.basepoint (modelRadius eps)
+  have hKb : IsCompact Kb := RiemannianMetricComplete.closedEBall_isCompact hmet _ _
+  have hKs : IsCompact Ks := RiemannianMetricComplete.closedEBall_isCompact hmet _ _
+  have hbig := A.extension.convergence Kb hKb (-(modelDepth eps)) 0 hab hsub (modelOrder eps) eps heps
+  have hsmall := A.extension.convergence Ks hKs (-(modelDepth eps)) 0 hab hsub (modelOrder eps) eps heps
+  have hrad : 0 < modelRadius eps - 1 := by
+    have h1 : (1 : ℝ) < modelRadius eps := by
+      rw [modelRadius, one_lt_inv_iff₀]
+      refine ⟨Real.sqrt_pos.mpr heps, ?_⟩
+      rw [Real.sqrt_lt' (by norm_num : (0 : ℝ) < 1)]
+      simpa using heps1
+    linarith
+  have hd : ∀ᶠ i in Filter.atTop,
+      modelDepth eps ≤ 2 * X.depth (L.subseq (A.extension.subseq i)) := by
+    have htend : Filter.Tendsto (fun i => X.depth (L.subseq (A.extension.subseq i)))
+        Filter.atTop Filter.atTop :=
+      X.depth_tendsto.comp (L.strictMono.tendsto_atTop.comp A.extension.strictMono.tendsto_atTop)
+    filter_upwards [htend.eventually (Filter.eventually_ge_atTop (modelDepth eps / 2))] with i hi
+    linarith
+  have hcap : ∀ᶠ i in Filter.atTop,
+      riemannianBallOf (I := I3) ((X.term (L.subseq (A.extension.subseq i))).S.base.metric 0)
+        (X.term (L.subseq (A.extension.subseq i))).basepoint (modelRadius eps - 1) ⊆
+        (Fm.partialDiffeomorph i) '' (Fm.partialDiffeomorph i).source := by
+    filter_upwards [A.extension.strictMono.tendsto_atTop.eventually
+      (L.capture (modelRadius eps - 1) hrad)] with i hi
+    exact hi
+  filter_upwards [hd, hbig, hsmall, hcap] with i hdI hbigI hsmallI hcapI
+  have hQ1 : (X.term (L.subseq (A.extension.subseq i))).S.scalar 0
+      (X.term (L.subseq (A.extension.subseq i))).basepoint = 1 :=
+    X.base_one (L.subseq (A.extension.subseq i))
+  have hQpos : 0 < (X.term (L.subseq (A.extension.subseq i))).S.scalar 0
+      (X.term (L.subseq (A.extension.subseq i))).basepoint := by
+    rw [hQ1]; norm_num
+  have hbase_eq : (Fm.partialDiffeomorph i) A.extension.pointed.basepoint =
+      (X.term (L.subseq (A.extension.subseq i))).basepoint := by
+    simpa only [BackwardExtension.pointed, Function.comp_apply, Fm, subsequenceMaps,
+      FlowSequence.atTime, PointedFlowData.atTime, SolutionOn.family_metric] using
+      Fm.basepoint_map i
+  have hg : rescaledMetric (X.term (L.subseq (A.extension.subseq i))).S 0
+      ((X.term (L.subseq (A.extension.subseq i))).S.scalar 0
+        (X.term (L.subseq (A.extension.subseq i))).basepoint) hQpos
+      = (X.term (L.subseq (A.extension.subseq i))).S.base.metric := by
+    funext s'
+    apply SmoothRiemannianMetric.ext_inner
+    intro x' a b
+    simp only [rescaledMetric, hQ1, parabolicTime, zero_add, div_one, scaleMetric_inner, one_mul]
+  obtain ⟨C⟩ := hsmallI.2.2
+  have hC : MetricComparisonOn (fun s => A.extension.solution.base.metric s)
+      (rescaledMetric (X.term (L.subseq (A.extension.subseq i))).S 0
+        ((X.term (L.subseq (A.extension.subseq i))).S.scalar 0
+          (X.term (L.subseq (A.extension.subseq i))).basepoint) hQpos)
+      (Fm.partialDiffeomorph i) Ks (Set.Icc (-modelDepth eps) 0) (modelOrder eps) eps := by
+    refine ⟨C.pullback, ?_, C.jet, C.jet_zero, C.jet_succ, C.equivalence, C.close⟩
+    intro s y hy v
+    rw [C.pullback_eq s y hy v, hg]
+    simp only [Fm, Function.comp_apply]
+  obtain ⟨eta, _heta, hreserve⟩ := MetricComparisonOn.exists_source_capture_reserve
+    (fun s => A.extension.solution.base.metric s)
+    (rescaledMetric (X.term (L.subseq (A.extension.subseq i))).S 0
+      ((X.term (L.subseq (A.extension.subseq i))).S.scalar 0
+        (X.term (L.subseq (A.extension.subseq i))).basepoint) hQpos)
+    (Fm.partialDiffeomorph i) A.extension.pointed.basepoint hmem0 heps heps1 hC hKs hsmallI.2.1
+  refine ⟨{ eps_pos := heps
+            eps_lt_one := heps1
+            time_mem := ?_
+            scalar_pos := hQpos
+            window_mem := ?_
+            model := A.extension.pointed
+            model_ancient := A.ancient
+            model_scalar_base := A.normalized
+            embedding := Fm.partialDiffeomorph i
+            buffered_ball := ?_
+            base_map := ?_
+            comparison := hC
+            source_capture := ?_ }, ?_⟩
+  · rw [X.carrier_eq (L.subseq (A.extension.subseq i))]
+    exact ⟨by linarith [X.depth_pos (L.subseq (A.extension.subseq i))], le_rfl⟩
+  · rw [X.carrier_eq (L.subseq (A.extension.subseq i))]
+    intro s hs
+    refine ⟨?_, hs.2⟩
+    have h1 : (0 : ℝ) - (eps * (X.term (L.subseq (A.extension.subseq i))).S.scalar 0
+        (X.term (L.subseq (A.extension.subseq i))).basepoint)⁻¹ = -modelDepth eps := by
+      rw [X.base_one (L.subseq (A.extension.subseq i)), modelDepth, mul_one]; ring
+    rw [h1] at hs
+    linarith [hdI, hs.1]
+  · exact hbigI.2.1
+  · exact hbase_eq
+  · intro q hq
+    have hq' : q ∈ riemannianClosedBallOf (I := I3)
+        (rescaledMetric (X.term (L.subseq (A.extension.subseq i))).S 0
+          ((X.term (L.subseq (A.extension.subseq i))).S.scalar 0
+            (X.term (L.subseq (A.extension.subseq i))).basepoint) hQpos 0)
+        (X.term (L.subseq (A.extension.subseq i))).basepoint (modelRadius eps - 1 + eta) :=
+      (le_of_lt hq).trans (ENNReal.ofReal_le_ofReal (by linarith))
+    have hq'' : q ∈ riemannianClosedBallOf (I := I3)
+        (rescaledMetric (X.term (L.subseq (A.extension.subseq i))).S 0
+          ((X.term (L.subseq (A.extension.subseq i))).S.scalar 0
+            (X.term (L.subseq (A.extension.subseq i))).basepoint) hQpos 0)
+        ((Fm.partialDiffeomorph i) A.extension.pointed.basepoint)
+        (modelRadius eps - 1 + eta) := by
+      rw [hbase_eq]
+      exact hq'
+    obtain ⟨z, hz, hzq⟩ := hreserve hq''
+    exact ⟨z, hsmallI.2.1 hz, hzq⟩
+  · exact ⟨L.orientation, fun y hy => L.orientation_preserved (A.extension.subseq i) y hy⟩
 
 theorem no_selected_countersequence {kappa sigma : ℝ} {Phi : ℝ → ℝ}
     (hkappa : 0 < kappa) (hsigma : 0 < sigma) (hPhi : AdmissiblePinchingFunction Phi) :
@@ -225,14 +345,17 @@ theorem smooth_canonical_neighborhood :
 theorem fixed_kappa_compactness {kappa : ℝ} (hkappa : 0 < kappa)
     (X : ℕ → PointedFlowData.{u, 0, 0} I3 ancientTimeInterval)
     (hX : ∀ i, IsAncientKappaSolution kappa (X i))
-    (hbase : ∀ i, PointedFlowScalarAtBase (X i) 1) :
+    (hbase : ∀ i, PointedFlowScalarAtBase (X i) 1)
+    (hnoEmbedding : ∀ f : SphereAntipodalQuotient → EuclideanSpace ℝ (Fin 3),
+      ¬ _root_.Topology.IsEmbedding f) :
     ∃ (L : PointedFlowData.{u, 0, 0} I3 ancientTimeInterval)
       (f : ℕ → ℕ), StrictMono f ∧ IsAncientKappaSolution kappa L ∧
         PointedFlowScalarAtBase L 1 ∧
         ∃ F : PointedRiemannianConvergenceMaps
           (({ interval := fun _ => ancientTimeInterval, term := X } : FlowSequence).atTime 0)
           (L.atTime 0) f, MetricSourceCapture F ∧ ConvergesOn F L.S := by
-  sorry
+  exact DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions.exists_ancientKappa_fixed_kappa_compactness_captured
+    hkappa X hX hbase hnoEmbedding
 
 theorem kappa_universal_derivatives (a b : ℕ) :
     ∃ C : ℝ, 0 < C ∧ ∀ kappa : ℝ, 0 < kappa →

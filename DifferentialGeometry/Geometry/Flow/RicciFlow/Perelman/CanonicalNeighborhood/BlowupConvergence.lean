@@ -1,6 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHornGeometry
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.OrientedBadPointSelection
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Compactness.Construction
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.PointedPinchingLimit
 
 set_option autoImplicit false
 noncomputable section
@@ -114,7 +115,39 @@ theorem blowup_limit_nonnegative {eps kappa sigma : ℝ} {Phi : ℝ → ℝ}
     (canonical_domains : ∀ k,
       conv.domain k = CanonicalMetricCompactness.canonicalSourceData F k) :
     SecLower P.metric 0 Set.univ := by
-  sorry
+  let Y : PointedRiemannianSeq.{u, 0, 0} I3 := X.toFlowSequence.atTime 0
+  have hQ : Filter.Tendsto (fun k => X.scale (f k)) Filter.atTop Filter.atTop :=
+    X.scale_tendsto.comp hf.tendsto_atTop
+  have hpin : ∀ i (y : (Y.obj i).M),
+      curvatureOperatorLowerBoundAt (Y.obj i).metric y
+        (metricAlgebraicCurvatureTensorAt (Y.obj i).metric y)
+        (rescalePinchingFunction (X.scale i) Phi (metricScalarAt (Y.obj i).metric y)) := by
+    intro i y
+    have h0 : (0:ℝ) ∈ (X.interval i).carrier := by
+      rw [X.carrier_eq i]
+      exact ⟨by linarith [X.depth_pos i], le_rfl⟩
+    have h := X.pinching i 0 h0 y
+    have hval : ((X.term i).S.base.rm04 (0:ℝ)) y =
+        metricRm04At ((X.term i).S.base.metric 0) y := by
+      simp only [SolutionFamily.rm04]
+      exact metricRm04_apply _ _
+    have hK : (X.term i).S.scalar (0:ℝ) y =
+        metricScalarAt ((X.term i).S.base.metric 0) y := by
+      simp only [SolutionOn.scalar, SolutionFamily.scalar]
+    simp only [Y, FlowSequence.atTime, PointedFlowData.atTime, SolutionOn.family_metric]
+    refine fun n c v w => ?_
+    have hh := h n c v w
+    simp only [algebraicCurvatureOperatorQuadraticEval, algebraicCurvatureIdentityQuadraticEval,
+      hval, hK] at hh ⊢
+    exact hh
+  have hmain := sectional_nonnegative_of_pointed_admissible_pinching
+    (X := Y) (L := P) (F := F)
+    conv canonical_domains hPhi X.scale (fun i => X.scale_pos i) hQ hpin
+  intro x _ v w
+  have hvec : (fun i => ![v, w, w, v] i) = vec4 (I := I3) v w w v := by
+    funext i
+    fin_cases i <;> simp [vec4]
+  simpa only [SecLower, zero_mul, metricRm04StandardAt_apply, hvec] using hmain x v w
 
 structure TerminalLimit {eps kappa sigma : ℝ} {Phi : ℝ → ℝ}
     (X : NormalizedSequence.{u} eps kappa sigma Phi) where

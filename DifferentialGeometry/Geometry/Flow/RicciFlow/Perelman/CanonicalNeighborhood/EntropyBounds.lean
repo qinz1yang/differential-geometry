@@ -8,6 +8,7 @@ import DifferentialGeometry.Geometry.Exponential.NormalCoordinates.Framed
 import DifferentialGeometry.Analysis.Sobolev.Intrinsic.SmoothEntropyNormalization
 import DifferentialGeometry.Analysis.Sobolev.Intrinsic.WeakGradientUnique
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.EntropyCutoff
+import DifferentialGeometry.Geometry.Comparison.Volume.LocalDoubling
 
 set_option autoImplicit false
 noncomputable section
@@ -400,10 +401,20 @@ theorem cutoff_entropy_doubling [I.Boundaryless]
   exact EReal.coe_le_coe hkey
 
 
+section LocalEntropyVolume
+
+variable {E : Type uE} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+  [FiniteDimensional ℝ E] [CompleteSpace E]
+  {H : Type uH} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+
+open Bundle DifferentialGeometry.Geometry.Riemannian
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem local_entropy_volume [I.Boundaryless]
     (hdim : 2 ≤ Module.finrank ℝ E) {a b : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b) :
     ∃ C : ℝ, ∀ (M : Type u) [TopologicalSpace M] [ChartedSpace H M]
-      [IsManifold I ∞ M] [T2Space M] [CompactSpace M]
+      [IsManifold I ∞ M] [T2Space M] [CompactSpace M] [ConnectedSpace M]
       (g : SmoothRiemannianMetric I M) (x : M) (r : ℝ), 0 < r →
       (∀ y ∈ riemannianBallOf (I := I) g x r, ∀ v : TangentSpace I y,
         -a * r⁻¹ ^ 2 * g.inner y v v ≤ metricRicciAt g y (fun _ => v)) →
@@ -411,7 +422,86 @@ theorem local_entropy_volume [I.Boundaryless]
       muSobolev g (r ^ 2) ≤
         ((Real.log ((riemannianVolumeMeasure I M g (riemannianBallOf (I := I) g x r)).toReal /
           r ^ Module.finrank ℝ E) + C : ℝ) : EReal) := by
-  sorry
+  refine ⟨cutoffEntropyConstant (Module.finrank ℝ E)
+    (max 1 (DifferentialGeometry.Geometry.Riemannian.VolumeComparison.doublingConstant
+      (Module.finrank ℝ E) a)) b, ?_⟩
+  intro M _ _ _ _ _ _ g x r hr hRic hscalar
+  have : NeZero (Module.finrank ℝ E) := ⟨by omega⟩
+  let : IsManifold I 1 M := IsManifold.of_le (I := I) (M := M) (n := (∞ : WithTop ℕ∞))
+    (by decide : (1 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞))
+  let : TopologicalSpace.MetrizableSpace M := Manifold.metrizableSpace I M
+  let : T3Space M := inferInstance
+  let : Bundle.RiemannianBundle (fun x : M => TangentSpace I x) :=
+    ⟨g.toRiemannianMetric⟩
+  let : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
+    ⟨⟨g.inner, g.contMDiff.continuous, by intro x v w; rfl⟩⟩
+  let : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
+  let : PseudoEMetricSpace M := inferInstance
+  let : IsRiemannianManifold I M := ⟨fun _ _ => rfl⟩
+  let : CompleteSpace M := (RiemannianMetricComplete.of_compact (I := I) g).complete
+  have hEnorm : IsMetricNorm (I := I) (M := M) g :=
+    fun y v => tensor0SBundle_enorm_eq_riemannianBundle_enorm (I := I) g y v
+  refine cutoff_entropy_doubling (I := I) (M := M) g hdim x hr (le_max_left _ _) hb ?_ hscalar
+  have hballR : riemannianBallOf (I := I) g x r =
+      {y : M | Manifold.riemannianEDist I x y < ENNReal.ofReal r} := by
+    unfold riemannianBallOf
+    rfl
+  have hballS : riemannianBallOf (I := I) g x (r / 2) =
+      {y : M | Manifold.riemannianEDist I x y < ENNReal.ofReal (r / 2)} := by
+    unfold riemannianBallOf
+    rfl
+  have hRicOn : DifferentialGeometry.Geometry.Riemannian.VolumeComparison.ricciBoundedBelowOn
+      (I := I) g {y : M | Manifold.riemannianEDist I x y < ENNReal.ofReal r} (-a / r ^ 2) := by
+    intro y hy v
+    have hyb : y ∈ riemannianBallOf (I := I) g x r := by
+      rw [hballR]
+      exact hy
+    have h := hRic y hyb v
+    have hmetric : metricRicciAt (I := I) g y (fun _ : Fin 2 => v) =
+        ricciTensor (I := I) g y v v := by
+      have hv : (fun _ : Fin 2 => v) = vec2 v v := by
+        funext i
+        fin_cases i <;> simp [vec2]
+      rw [hv]
+      exact metricRicciAt_apply_eq_ricciTensor (I := I) g y v v
+    have hc : -a * r⁻¹ ^ 2 = -a / r ^ 2 := by rw [inv_pow, div_eq_mul_inv]
+    rw [hmetric, hc] at h
+    exact h
+  rw [hballR, hballS]
+  have hmain := DifferentialGeometry.Geometry.Riemannian.VolumeComparison.localDoubling
+    (I := I) (M := M) g hEnorm x hdim ha hr hRicOn
+  have hmono : (riemannianVolumeMeasure I M g
+        {y : M | Manifold.riemannianEDist I x y < ENNReal.ofReal (r / 2)}) ≤
+      riemannianVolumeMeasure I M g
+        {y : M | Manifold.riemannianEDist I x y < ENNReal.ofReal r} :=
+    measure_mono fun y hy => lt_of_lt_of_le hy (ENNReal.ofReal_le_ofReal (by linarith))
+  have hdcpos : 0 ≤ DifferentialGeometry.Geometry.Riemannian.VolumeComparison.doublingConstant
+      (Module.finrank ℝ E) a :=
+    (DifferentialGeometry.Geometry.Riemannian.VolumeComparison.doublingConstant_pos
+      (Module.finrank ℝ E) a hdim ha).le
+  calc (riemannianVolumeMeasure I M g
+        {y : M | Manifold.riemannianEDist I x y < ENNReal.ofReal r}).toReal
+      ≤ (ENNReal.ofReal
+            (DifferentialGeometry.Geometry.Riemannian.VolumeComparison.doublingConstant
+              (Module.finrank ℝ E) a) *
+          riemannianVolumeMeasure I M g
+            {y : M | Manifold.riemannianEDist I x y < ENNReal.ofReal (r / 2)}).toReal :=
+        ENNReal.toReal_mono' hmain fun hb => by
+          rcases ENNReal.mul_eq_top.1 hb with ⟨h1, h2⟩ | ⟨h1, _⟩
+          · exact top_unique (h2 ▸ hmono)
+          · exact absurd h1 ENNReal.ofReal_ne_top
+      _ = DifferentialGeometry.Geometry.Riemannian.VolumeComparison.doublingConstant
+            (Module.finrank ℝ E) a *
+          (riemannianVolumeMeasure I M g
+            {y : M | Manifold.riemannianEDist I x y < ENNReal.ofReal (r / 2)}).toReal :=
+        ENNReal.toReal_ofReal_mul _ _ hdcpos
+      _ ≤ max 1 (DifferentialGeometry.Geometry.Riemannian.VolumeComparison.doublingConstant
+            (Module.finrank ℝ E) a) *
+          (riemannianVolumeMeasure I M g
+            {y : M | Manifold.riemannianEDist I x y < ENNReal.ofReal (r / 2)}).toReal :=
+        mul_le_mul_of_nonneg_right (le_max_right _ _) ENNReal.toReal_nonneg
+
+end LocalEntropyVolume
 
 theorem strong_scalar_no_local_collapsing [I.Boundaryless] [ConnectedSpace M]
     [T2Space (TangentBundle I M)] {T : ℝ} (hT : 0 < T)

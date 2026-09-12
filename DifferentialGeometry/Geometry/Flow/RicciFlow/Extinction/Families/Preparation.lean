@@ -1,14 +1,23 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.ClassWidth
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Product
 import DifferentialGeometry.Geometry.Geodesic.Chart.Regularity
+import DifferentialGeometry.Geometry.Metric.ShortGeodesic
+import DifferentialGeometry.Geometry.Metric.Comparison.CurveLength
+import DifferentialGeometry.Geometry.Exponential.Intrinsic.Geodesic.Smoothness
+import DifferentialGeometry.Geometry.Comparison.Distance.EndpointRate
+import DifferentialGeometry.Topology.Compactness.DiagonalNeighborhood
+import DifferentialGeometry.Topology.Manifold.ZeroDimensional
 import Mathlib.Analysis.SpecialFunctions.SmoothTransition
 import Mathlib.Analysis.Calculus.IteratedDeriv.Lemmas
 
 noncomputable section
 
-open Bundle Manifold Set MeasureTheory
+open Bundle Manifold Set MeasureTheory Filter
 open scoped Manifold ContDiff Topology
 open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry
+open DifferentialGeometry.Geometry.Riemannian
+open DifferentialGeometry.Geometry.Riemannian.Exponential
 open DifferentialGeometry.Geometry.Riemannian.Geodesic
 
 namespace DifferentialGeometry.PDE.RicciFlow.Extinction.Families
@@ -141,6 +150,9 @@ variable [hT2 : T2Space Q] [hCompact : CompactSpace Q]
     [hConnected : ConnectedSpace Q] [hBoundary : I.Boundaryless]
 include hT2 hCompact hConnected hBoundary
 
+omit [CompleteSpace E] in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem shortSegment_neighborhood (g : SmoothRiemannianMetric I Q) :
     ∃ radius : ℝ, 0 < radius ∧
       (∀ p q, riemannianEDistOf g p q < ENNReal.ofReal radius →
@@ -152,7 +164,307 @@ theorem shortSegment_neighborhood (g : SmoothRiemannianMetric I Q) :
         ({pq : Q × Q | riemannianEDistOf g pq.1 pq.2 < ENNReal.ofReal radius} ×ˢ
           Ioo (-1 : ℝ) 2) ∧
       ∀ p t, t ∈ Icc (0 : ℝ) 1 → shortSegment g p p t = p := by
-  sorry
+  classical
+  by_cases hdim : Module.finrank ℝ E = 0
+  · let _ : Subsingleton Q :=
+      DifferentialGeometry.subsingleton_of_preconnected_of_finrank_eq_zero I hdim
+    have hsub : ∀ a b : Q, a = b := fun a b => Subsingleton.elim a b
+    refine ⟨1, one_pos, ?_, ?_, ?_⟩
+    · intro p q _h
+      obtain rfl : p = q := hsub p q
+      have hex : ∃ c : ℝ → Q, IsShortSegment g p p c :=
+        ⟨fun _ => p, contMDiffOn_const, (isGeodesic_const g p).isGeodesicOn _,
+          rfl, rfl, fun s _ t _ => by simp only [riemannianEDistOf_self, mul_zero]⟩
+      have hshort : shortSegment g p p = Classical.choose hex := by
+        rw [shortSegment, dif_pos hex]
+      refine ⟨?_, ?_⟩
+      · rw [hshort]; exact Classical.choose_spec hex
+      · intro c _hc t _ht; exact hsub _ _
+    · have hconst : (fun z : (Q × Q) × ℝ => shortSegment g z.1.1 z.1.2 z.2) =
+          fun _ => Classical.choice (inferInstance : Nonempty Q) := by
+        funext z; exact hsub _ _
+      rw [hconst]
+      exact contMDiffOn_const
+    · intro p t _ht; exact hsub _ _
+  · let _ : NeZero (Module.finrank ℝ E) := ⟨hdim⟩
+    let : RiemannianBundle (TangentSpace I : Q → Type _) := ⟨g.toRiemannianMetric⟩
+    let : IsContinuousRiemannianBundle E (TangentSpace I : Q → Type _) :=
+      ⟨⟨g.inner, g.contMDiff.continuous, by intro x v w; rfl⟩⟩
+    let : PseudoEMetricSpace Q := .ofRiemannianMetric I Q
+    have hEnorm : IsMetricNorm (I := I) (M := Q) g :=
+      fun x v => tensor0SBundle_enorm_eq_riemannianBundle_enorm (I := I) g x v
+    have hdist : ∀ p q : Q, riemannianEDistOf g p q = edist p q := fun p q => rfl
+    obtain ⟨ε, hε, hinj⟩ :=
+      DifferentialGeometry.Geometry.exists_uniform_diagExp_injective (I := I) g hEnorm
+    obtain ⟨W, hW, hdiagW, hsmoothW⟩ :=
+      exists_smooth_shortGeodesic_neighborhood (I := I) g hEnorm
+    obtain ⟨A, U, _hA, hU, htime, hdiagU, hAUW⟩ :=
+      generalized_tube_lemma (isCompact_Icc : IsCompact (Icc (-1 : ℝ) 2))
+        (isCompact_range (continuous_id.prodMk continuous_id)) hW
+        (by
+          rintro ⟨t, z⟩ ⟨_ht, p, hp⟩
+          change (p, p) = z at hp
+          subst z
+          exact hdiagW t p)
+    obtain ⟨ρs, hρs, hρsU⟩ :=
+      DifferentialGeometry.Analysis.exists_uniform_diagonal_radius hU
+        (fun x => hdiagU (mem_range_self x))
+    have h0mem : (0 : ℝ) ∈ Ioo (-1 : ℝ) 2 := by norm_num
+    have h1mem : (1 : ℝ) ∈ Ioo (-1 : ℝ) 2 := by norm_num
+    have hchar : ∀ (p q : Q) (c : ℝ → Q), IsShortSegment g p q c →
+        ∀ t ∈ Ioo (-1 : ℝ) 2, c t = expMapIntrinsic (I := I) g hEnorm p
+          (t • ((mfderiv 𝓘(ℝ, ℝ) I c 0 (1 : ℝ) : E) : TangentSpace I p)) := by
+      intro p q c hc t ht
+      let v : TangentSpace I p := ((mfderiv 𝓘(ℝ, ℝ) I c 0 (1 : ℝ) : E))
+      have heq : EqOn c (intrinsicGeodesic (I := I) g hEnorm p v) (Ioo (-1 : ℝ) 2) := by
+        refine geo_eqOn_of_initial (I := I) g isOpen_Ioo isPreconnected_Ioo h0mem hc.2.1
+          ((intrinsicGeodesic_isGeodesic (I := I) g hEnorm p v).isGeodesicOn _)
+          hc.1.continuousOn (intrinsicGeodesic_continuous (I := I) g hEnorm p v).continuousOn
+          (by rw [intrinsicGeodesic_zero]; exact hc.2.2.1) ?_
+        exact (intrinsicGeodesic_mfderiv_zero (I := I) g hEnorm p v).symm
+      calc c t = intrinsicGeodesic (I := I) g hEnorm p v t := heq ht
+        _ = intrinsicGeodesic (I := I) g hEnorm p (t • v) 1 :=
+              (intrinsicGeodesic_smul (I := I) g hEnorm p v t).symm
+        _ = expMapIntrinsic (I := I) g hEnorm p (t • v) := rfl
+    have hkey : ∀ (p q : Q) (c₁ c₂ : ℝ → Q), riemannianEDistOf g p q ≠ ⊤ →
+        (riemannianEDistOf g p q).toReal < ε →
+        IsShortSegment g p q c₁ → IsShortSegment g p q c₂ →
+        EqOn c₁ c₂ (Ioo (-1 : ℝ) 2) := by
+      intro p q c₁ c₂ hDne hDlt hc₁ hc₂
+      have hnorm : ∀ (c : ℝ → Q), IsShortSegment g p q c →
+          Real.sqrt (g.inner p
+            (((mfderiv 𝓘(ℝ, ℝ) I c 0 (1 : ℝ) : E)) : TangentSpace I p)
+            (((mfderiv 𝓘(ℝ, ℝ) I c 0 (1 : ℝ) : E)) : TangentSpace I p)) =
+          (riemannianEDistOf g p q).toReal := by
+        intro c hc
+        have hmd : MDifferentiableAt 𝓘(ℝ, ℝ) I c 0 :=
+          (hc.1.contMDiffAt (isOpen_Ioo.mem_nhds h0mem)).mdifferentiableAt (by norm_num)
+        have hlim := riemannianEDistOf_div_tendsto_speed (I := I) g c 0 hmd
+        have hIoo : Ioo (0 : ℝ) 1 ∈ 𝓝[Ioi (0 : ℝ)] (0 : ℝ) := by
+          rw [mem_nhdsWithin_iff_exists_mem_nhds_inter]
+          refine ⟨Ioo (-1 : ℝ) 1, isOpen_Ioo.mem_nhds (by norm_num), ?_⟩
+          rintro h ⟨hh, hpos⟩
+          exact ⟨hpos, hh.2⟩
+        have hev : (fun h : ℝ => (riemannianEDistOf g (c (0 + h)) (c 0)).toReal / h)
+            =ᶠ[𝓝[Ioi (0 : ℝ)] (0 : ℝ)] fun _ => (riemannianEDistOf g p q).toReal := by
+          filter_upwards [hIoo] with h hh
+          have hpos : 0 < h := hh.1
+          have hmem : h ∈ Icc (0 : ℝ) 1 := ⟨le_of_lt hpos, le_of_lt hh.2⟩
+          have hdf := hc.2.2.2.2 h hmem 0 ⟨le_rfl, zero_le_one⟩
+          have habs : |h - 0| = h := by rw [sub_zero, abs_of_pos hpos]
+          rw [habs] at hdf
+          have hprod : (ENNReal.ofReal h * riemannianEDistOf g p q).toReal =
+              h * (riemannianEDistOf g p q).toReal := by
+            rw [ENNReal.toReal_mul, ENNReal.toReal_ofReal (le_of_lt hpos)]
+          rw [zero_add, hdf, hprod]
+          exact mul_div_cancel_left₀ _ (ne_of_gt hpos)
+        have hlim2 : Tendsto (fun h : ℝ =>
+            (riemannianEDistOf g (c (0 + h)) (c 0)).toReal / h) (𝓝[Ioi (0 : ℝ)] (0 : ℝ))
+            (𝓝 (riemannianEDistOf g p q).toReal) :=
+          tendsto_const_nhds.congr' hev.symm
+        have h := tendsto_nhds_unique hlim hlim2
+        rwa [hc.2.2.1] at h
+      have hvt : ∀ (c : ℝ → Q), IsShortSegment g p q c →
+          expMapIntrinsic (I := I) g hEnorm p
+            (((mfderiv 𝓘(ℝ, ℝ) I c 0 (1 : ℝ) : E)) : TangentSpace I p) = q := by
+        intro c hc
+        have h := hchar p q c hc 1 h1mem
+        rw [one_smul, hc.2.2.2.1] at h
+        exact h.symm
+      have hveq : ((mfderiv 𝓘(ℝ, ℝ) I c₁ 0 (1 : ℝ) : E) : TangentSpace I p) =
+          ((mfderiv 𝓘(ℝ, ℝ) I c₂ 0 (1 : ℝ) : E) : TangentSpace I p) := by
+        have hu1 : Real.sqrt (g.inner p
+            (((mfderiv 𝓘(ℝ, ℝ) I c₁ 0 (1 : ℝ) : E)) : TangentSpace I p)
+            (((mfderiv 𝓘(ℝ, ℝ) I c₁ 0 (1 : ℝ) : E)) : TangentSpace I p)) ≤ ε :=
+          (hnorm c₁ hc₁).trans_le hDlt.le
+        have hu2 : Real.sqrt (g.inner p
+            (((mfderiv 𝓘(ℝ, ℝ) I c₂ 0 (1 : ℝ) : E)) : TangentSpace I p)
+            (((mfderiv 𝓘(ℝ, ℝ) I c₂ 0 (1 : ℝ) : E)) : TangentSpace I p)) ≤ ε :=
+          (hnorm c₂ hc₂).trans_le hDlt.le
+        have hdiag : diagExp (I := I) g hEnorm
+              (TotalSpace.mk' E p (((mfderiv 𝓘(ℝ, ℝ) I c₁ 0 (1 : ℝ) : E)) : TangentSpace I p)) =
+            diagExp (I := I) g hEnorm
+              (TotalSpace.mk' E p (((mfderiv 𝓘(ℝ, ℝ) I c₂ 0 (1 : ℝ) : E)) : TangentSpace I p)) := by
+          rw [diagExp_apply, diagExp_apply, hvt c₁ hc₁, hvt c₂ hc₂]
+        have := hinj hu1 hu2 hdiag
+        exact congrArg Bundle.TotalSpace.snd this
+      intro t ht
+      calc c₁ t = expMapIntrinsic (I := I) g hEnorm p
+            (t • ((mfderiv 𝓘(ℝ, ℝ) I c₁ 0 (1 : ℝ) : E) : TangentSpace I p)) :=
+            hchar p q c₁ hc₁ t ht
+        _ = expMapIntrinsic (I := I) g hEnorm p
+            (t • ((mfderiv 𝓘(ℝ, ℝ) I c₂ 0 (1 : ℝ) : E) : TangentSpace I p)) :=
+            congrArg (fun w : TangentSpace I p =>
+              expMapIntrinsic (I := I) g hEnorm p (t • w)) hveq
+        _ = c₂ t := (hchar p q c₂ hc₂ t ht).symm
+    have hseg : ∀ (p q : Q), riemannianEDistOf g p q ≠ ⊤ →
+        IsShortSegment g p q (shortGeodesic g hEnorm p q) := by
+      intro p q hDne
+      set D : ℝ := (riemannianEDistOf g p q).toReal with hDdef
+      have hDnn : 0 ≤ D := ENNReal.toReal_nonneg
+      have hspeed : ∀ u : ℝ, Real.sqrt (g.inner (shortGeodesic g hEnorm p q u)
+          (mfderiv 𝓘(ℝ, ℝ) I (shortGeodesic g hEnorm p q) u (1 : ℝ))
+          (mfderiv 𝓘(ℝ, ℝ) I (shortGeodesic g hEnorm p q) u (1 : ℝ))) = D := by
+        intro u
+        have hred : riemannianEDistOf (I := I) g p q = Manifold.riemannianEDist I p q := rfl
+        have h := shortGeodesic_speed (I := I) g hEnorm hDne u
+        rw [hDdef, hred]
+        exact h
+      have hsmoothInf : ContMDiffOn 𝓘(ℝ, ℝ) I ∞ (shortGeodesic g hEnorm p q) univ :=
+        intrinsicGeodesic_contMDiffOn_infty (I := I) g hEnorm p (minimizingLog g hEnorm p q)
+      have hbound : ∀ {a b : ℝ}, a ≤ b → b ≤ 1 →
+          riemannianEDistOf g (shortGeodesic g hEnorm p q a) (shortGeodesic g hEnorm p q b) ≤
+            ENNReal.ofReal ((b - a) * D) := by
+        intro a b hab hb
+        have h1 := DifferentialGeometry.riemannianEDistOf_le_arcLength (I := I) g hab
+          ((hsmoothInf.of_le (ENat.LEInfty.out (m := (1 : ℕ∞ω)))).mono (subset_univ _))
+        have h2 : Variation.arcLength (I := I) g (shortGeodesic g hEnorm p q) a b = (b - a) * D := by
+          rw [Variation.arcLength]
+          have hconst : (∫ u in a..b, D) = (b - a) * D := by
+            rw [intervalIntegral.integral_const]; ring
+          rw [← hconst]
+          exact intervalIntegral.integral_congr (fun u _ => hspeed u)
+        rwa [h2] at h1
+      have hmain : ∀ s t : ℝ, s ∈ Icc (0 : ℝ) 1 → t ∈ Icc (0 : ℝ) 1 → s ≤ t →
+          riemannianEDistOf g (shortGeodesic g hEnorm p q s) (shortGeodesic g hEnorm p q t) =
+            ENNReal.ofReal ((t - s) * D) := by
+        intro s t hs ht hst
+        have hle : riemannianEDistOf g (shortGeodesic g hEnorm p q s)
+            (shortGeodesic g hEnorm p q t) ≤ ENNReal.ofReal ((t - s) * D) :=
+          hbound hst ht.2
+        have hge : ENNReal.ofReal ((t - s) * D) ≤ riemannianEDistOf g
+            (shortGeodesic g hEnorm p q s) (shortGeodesic g hEnorm p q t) := by
+          set X : ENNReal := riemannianEDistOf g (shortGeodesic g hEnorm p q s)
+            (shortGeodesic g hEnorm p q t) with hXdef
+          have htri1 := riemannianEDistOf_triangle g p (shortGeodesic g hEnorm p q s) q
+          have htri2 := riemannianEDistOf_triangle g (shortGeodesic g hEnorm p q s)
+            (shortGeodesic g hEnorm p q t) q
+          have hA : riemannianEDistOf g p (shortGeodesic g hEnorm p q s) ≤
+              ENNReal.ofReal (s * D) := by
+            simpa only [shortGeodesic_zero, sub_zero] using hbound hs.1 hs.2
+          have hB : riemannianEDistOf g (shortGeodesic g hEnorm p q t) q ≤
+              ENNReal.ofReal ((1 - t) * D) := by
+            simpa only [shortGeodesic_one (I := I) g hEnorm hDne]
+              using hbound ht.2 (le_refl 1)
+          have hcomb : riemannianEDistOf g p q ≤
+              ENNReal.ofReal (s * D) + X + ENNReal.ofReal ((1 - t) * D) := by
+            calc riemannianEDistOf g p q ≤
+                  riemannianEDistOf g p (shortGeodesic g hEnorm p q s) +
+                    riemannianEDistOf g (shortGeodesic g hEnorm p q s) q := htri1
+              _ ≤ ENNReal.ofReal (s * D) + (X + ENNReal.ofReal ((1 - t) * D)) :=
+                  add_le_add hA (htri2.trans (add_le_add le_rfl hB))
+              _ = ENNReal.ofReal (s * D) + X + ENNReal.ofReal ((1 - t) * D) := by
+                  rw [add_assoc]
+          have hDfin : riemannianEDistOf g p q = ENNReal.ofReal D := by
+            rw [hDdef]; exact (ENNReal.ofReal_toReal hDne).symm
+          have hY : ENNReal.ofReal ((1 - (t - s)) * D) ≠ ⊤ := ENNReal.ofReal_ne_top
+          have h1nn : 0 ≤ (t - s) * D := mul_nonneg (sub_nonneg.mpr hst) hDnn
+          have h2nn : 0 ≤ (1 - (t - s)) * D :=
+            mul_nonneg (by linarith [ht.2, hs.1]) hDnn
+          have h3nn : 0 ≤ s * D := mul_nonneg hs.1 hDnn
+          have h4nn : 0 ≤ (1 - t) * D := mul_nonneg (by linarith [ht.2]) hDnn
+          have hleft : ENNReal.ofReal D = ENNReal.ofReal ((t - s) * D) +
+              ENNReal.ofReal ((1 - (t - s)) * D) := by
+            rw [← ENNReal.ofReal_add h1nn h2nn]
+            congr 1; ring
+          have hright : ENNReal.ofReal (s * D) + ENNReal.ofReal ((1 - t) * D) =
+              ENNReal.ofReal ((1 - (t - s)) * D) := by
+            rw [← ENNReal.ofReal_add h3nn h4nn]
+            congr 1; ring
+          have hrhs : ENNReal.ofReal (s * D) + X + ENNReal.ofReal ((1 - t) * D) =
+              X + ENNReal.ofReal ((1 - (t - s)) * D) := by
+            rw [add_comm (ENNReal.ofReal (s * D)) X, add_assoc, hright]
+          rw [hDfin, hleft, hrhs] at hcomb
+          exact (ENNReal.add_le_add_iff_right hY).mp hcomb
+        exact le_antisymm hle hge
+      refine ⟨?_, ?_, ?_, ?_, ?_⟩
+      · exact hsmoothInf.mono (subset_univ _)
+      · exact (intrinsicGeodesic_isGeodesic (I := I) g hEnorm p
+          (minimizingLog g hEnorm p q)).isGeodesicOn _
+      · exact shortGeodesic_zero (I := I) g hEnorm p q
+      · exact shortGeodesic_one (I := I) g hEnorm hDne
+      · intro s hs t ht
+        rcases le_total s t with hst | hts
+        · have h1 := hmain s t hs ht hst
+          have h2 : ENNReal.ofReal ((t - s) * D) =
+              ENNReal.ofReal |s - t| * riemannianEDistOf g p q := by
+            rw [abs_of_nonpos (sub_nonpos.mpr hst), neg_sub,
+              ENNReal.ofReal_mul (sub_nonneg.mpr hst), hDdef, ENNReal.ofReal_toReal hDne]
+          rw [h1, h2]
+        · have h1 := hmain t s ht hs hts
+          have h2 : ENNReal.ofReal ((s - t) * D) =
+              ENNReal.ofReal |s - t| * riemannianEDistOf g p q := by
+            rw [abs_of_nonneg (sub_nonneg.mpr hts), ENNReal.ofReal_mul (sub_nonneg.mpr hts),
+              hDdef, ENNReal.ofReal_toReal hDne]
+          conv_lhs => rw [riemannianEDistOf_comm g (shortGeodesic g hEnorm p q s)
+            (shortGeodesic g hEnorm p q t)]
+          rw [h1, h2]
+    refine ⟨min (ρs : ℝ) ε, lt_min (by exact_mod_cast hρs) hε, ?_, ?_, ?_⟩
+    · intro p q hpq
+      have hne : riemannianEDistOf g p q ≠ ⊤ := ne_top_of_lt (lt_of_lt_of_le hpq le_top)
+      have hDlt : (riemannianEDistOf g p q).toReal < ε :=
+        ENNReal.toReal_ofReal hε.le ▸
+          ((ENNReal.toReal_lt_toReal hne ENNReal.ofReal_ne_top).mpr
+            (lt_of_lt_of_le hpq (ENNReal.ofReal_le_ofReal (min_le_right _ _))))
+      have hex : ∃ c : ℝ → Q, IsShortSegment g p q c := ⟨_, hseg p q hne⟩
+      have hshort : shortSegment g p q = Classical.choose hex := by
+        rw [shortSegment, dif_pos hex]
+      have hspec : IsShortSegment g p q (shortSegment g p q) := by
+        rw [hshort]; exact Classical.choose_spec hex
+      exact ⟨hspec, fun c hc => hkey p q c (shortSegment g p q) hne hDlt hc hspec⟩
+    · have hsmoothA : ContMDiffOn (𝓘(ℝ, ℝ).prod (I.prod I)) I ∞
+          (fun p : ℝ × (Q × Q) => shortGeodesic g hEnorm p.2.1 p.2.2 p.1) (A ×ˢ U) :=
+        hsmoothW.mono hAUW
+      have hswap : ContMDiff ((I.prod I).prod 𝓘(ℝ, ℝ)) (𝓘(ℝ, ℝ).prod (I.prod I)) ∞
+          (fun z : (Q × Q) × ℝ => (z.2, z.1)) :=
+        contMDiff_snd.prodMk contMDiff_fst
+      have hcomp : ContMDiffOn ((I.prod I).prod 𝓘(ℝ, ℝ)) I ∞
+          (fun z : (Q × Q) × ℝ => shortGeodesic g hEnorm z.1.1 z.1.2 z.2)
+          {z : (Q × Q) × ℝ | z.2 ∈ A ∧ z.1 ∈ U} :=
+        hsmoothA.comp hswap.contMDiffOn (fun z hz => hz)
+      have hsubS : ({pq : Q × Q | riemannianEDistOf g pq.1 pq.2 <
+            ENNReal.ofReal (min (ρs : ℝ) ε)} ×ˢ Ioo (-1 : ℝ) 2) ⊆
+          {z : (Q × Q) × ℝ | z.2 ∈ A ∧ z.1 ∈ U} := by
+        rintro ⟨pq, t⟩ ⟨hpq, ht⟩
+        refine ⟨htime ⟨le_of_lt ht.1, le_of_lt ht.2⟩, ?_⟩
+        refine hρsU pq.1 pq.2 ?_
+        rw [← hdist]
+        simpa only [ENNReal.ofReal_coe_nnreal] using le_of_lt (lt_of_lt_of_le hpq
+          (ENNReal.ofReal_le_ofReal (min_le_left _ _)))
+      refine (hcomp.mono hsubS).congr fun z hz => ?_
+      obtain ⟨hzball, hzIoo⟩ := hz
+      have hne : riemannianEDistOf g z.1.1 z.1.2 ≠ ⊤ :=
+        ne_top_of_lt (lt_of_lt_of_le hzball le_top)
+      have hDlt : (riemannianEDistOf g z.1.1 z.1.2).toReal < ε :=
+        ENNReal.toReal_ofReal hε.le ▸
+          ((ENNReal.toReal_lt_toReal hne ENNReal.ofReal_ne_top).mpr
+            (lt_of_lt_of_le hzball (ENNReal.ofReal_le_ofReal (min_le_right _ _))))
+      have hex : ∃ c : ℝ → Q, IsShortSegment g z.1.1 z.1.2 c := ⟨_, hseg z.1.1 z.1.2 hne⟩
+      have hshort : shortSegment g z.1.1 z.1.2 = Classical.choose hex := by
+        rw [shortSegment, dif_pos hex]
+      have hspec : IsShortSegment g z.1.1 z.1.2 (shortSegment g z.1.1 z.1.2) := by
+        rw [hshort]; exact Classical.choose_spec hex
+      exact (hkey z.1.1 z.1.2 (shortGeodesic g hEnorm z.1.1 z.1.2)
+        (shortSegment g z.1.1 z.1.2) hne hDlt (hseg z.1.1 z.1.2 hne) hspec hzIoo).symm
+    · intro p t ht
+      have hp : riemannianEDistOf g p p < ENNReal.ofReal (min (ρs : ℝ) ε) := by
+        rw [riemannianEDistOf_self]
+        exact ENNReal.ofReal_pos.mpr (lt_min (by exact_mod_cast hρs) hε)
+      have hne : riemannianEDistOf g p p ≠ ⊤ := ne_top_of_lt (lt_of_lt_of_le hp le_top)
+      have hDlt : (riemannianEDistOf g p p).toReal < ε :=
+        ENNReal.toReal_ofReal hε.le ▸
+          ((ENNReal.toReal_lt_toReal hne ENNReal.ofReal_ne_top).mpr
+            (lt_of_lt_of_le hp (ENNReal.ofReal_le_ofReal (min_le_right _ _))))
+      have hconstseg : IsShortSegment g p p (fun _ : ℝ => p) :=
+        ⟨contMDiffOn_const, (isGeodesic_const g p).isGeodesicOn _,
+          rfl, rfl, fun s _ t _ => by simp only [riemannianEDistOf_self, mul_zero]⟩
+      have hex : ∃ c : ℝ → Q, IsShortSegment g p p c := ⟨_, hconstseg⟩
+      have hshort : shortSegment g p p = Classical.choose hex := by
+        rw [shortSegment, dif_pos hex]
+      have hspec : IsShortSegment g p p (shortSegment g p p) := by
+        rw [hshort]; exact Classical.choose_spec hex
+      exact (hkey p p (fun _ => p) (shortSegment g p p) hne hDlt hconstseg hspec
+        ⟨by linarith [ht.1], by linarith [ht.2]⟩).symm
 
 theorem rfs_flat_polygon_bounds (g : SmoothRiemannianMetric I Q)
     (P : FlatteningProfile) {d : ℕ} (e : SmoothLoopEmbedding (I := I) (Q := Q) d) :
