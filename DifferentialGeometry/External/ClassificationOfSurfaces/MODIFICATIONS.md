@@ -130,3 +130,38 @@ all-vendor/current declaration linters and standard-only axioms pass.
 The consumer obtains the original mesh from an actual PrePolygon and supplies
 an actual boundary-to-boundary mesh edge. Geometric free-triangle existence,
 smooth rounding and disk filling remain separate obligations.
+
+## Native polygon after two-edge deletion
+
+Moise/GeometricFreeTriangle adds the unchanged upstream
+frontier_triangleCarrier_subset_freeTriangleEdges declaration from
+FreeTriangleMove:402–473, preserving its attached documentation, finite-case
+comment and TriangleMesh variable scope. GEOMETRIC_FREE_SELECTION.json records
+all eight selected declarations. The separately checked old-frontier split is
+unused by this proof and is omitted from production.
+
+PrePolygonDeletion adds six exact native declarations from the strict source
+gate1789236092448851439-schoenflies-e77176ea. Only
+Schoenflies.PrePolygon.exists_prePolygon_closed_region_erase_triangle_of_two_edge_free
+becomes public. It reuses the existing complementary-arc, apex-arc and compact
+frontier recognition helpers; none is duplicated. All nine previous statements
+and proof bodies remain unchanged. The proper base crosscut follows the exact
+source geometry of PolygonalSchoenflies:1416, with the native support equation
+derived from the original frontier. The actual survivor region corresponds to
+PolygonalSchoenflies:2282, using native crosscut closed-side identities and the
+existing closure-of-difference erasure theorem instead of its PolygonalTheta
+mesh stack. No duplicate Jordan proof, PL move or shelling import is added.
+
+The new engine retains the actual erased frontier/support, oriented old
+complementary arc, oriented attaching base arc, endpoint positions and exact
+survivor/triangle intersection. It assumes no original support equation,
+survivor-disk conclusion, shelling or dual tree. TWO_EDGE_ADDITION.patch is the
+exact zero-context addition relative to the previous checked native module;
+DELETION_RECOGNITION.patch continues to record the upstream recognition delta.
+DELETION_PROVENANCE.json retains both the earlier one-edge production evidence
+and the new source gate. Final production request
+1789237030840224641-schoenflies-8667db40 passed in95.18s after freshly compiling
+both changed leaves. All107guards, all14signature/axiom pairs, stock3over all
+imported vendor/current declarations and standard-only axioms pass. Both full
+oriented deletion consumers and the actual count-decrease consumer passed.
+Both edited leaves were already registered in the flat aggregate.

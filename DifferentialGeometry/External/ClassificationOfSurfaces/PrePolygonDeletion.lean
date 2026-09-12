@@ -6,12 +6,13 @@ Adapted compact-frontier recognition from PolygonalSchoenflies.lean at
  e3c7230fe78d7b056a415d9ecae6f77887046b32 to the native separating-curve API.
 See MODIFICATIONS.md and DELETION_PROVENANCE.json for source and local changes.
 -/
-import DifferentialGeometry.External.ClassificationOfSurfaces.Moise.OneEdgeAttachment
+import DifferentialGeometry.External.ClassificationOfSurfaces.Moise.GeometricFreeTriangle
 import DifferentialGeometry.External.Schoenflies.FaceCyclesProof
 import DifferentialGeometry.External.Schoenflies.RealizeSubdiv
 import DifferentialGeometry.External.Schoenflies.TwoArcs
 import DifferentialGeometry.External.Schoenflies.PrePolygonSep
 import DifferentialGeometry.External.Schoenflies.Graph.K33Land
+import DifferentialGeometry.External.Schoenflies.JordanClosed
 
 namespace Schoenflies
 
@@ -405,5 +406,278 @@ theorem PrePolygon.exists_prePolygon_closed_region_erase_triangle_of_one_edge_fr
       (M.eraseTriangle T.1).toPlaneComplex.isCompact_support hQ.symm
       (interior_erase_triangle_support_nonempty_of_one_edge_free M T k hfree)
   exact ⟨n, Q, j, l, hQ, hregion, hl1, hl2, hja, hjb, hRarc, hAarc, hattach⟩
+
+private theorem free_triangle_frontier_eq_edges
+    (M : TriangleMesh) (T : M.Triangle) (k : Fin 3) :
+    frontier (M.triangleCarrier T.1) =
+      (segment ℝ (M.freeTriangleOrder T k 0) (M.freeTriangleOrder T k 2) ∪
+        segment ℝ (M.freeTriangleOrder T k 1) (M.freeTriangleOrder T k 2)) ∪
+          segment ℝ (M.freeTriangleOrder T k 0) (M.freeTriangleOrder T k 1) := by
+  have hedge {e : Finset M.Vertex} (hecard : e.card = 2) (heT : e ⊆ T.1) :
+      convexHull ℝ (M.position '' (e : Set M.Vertex)) ⊆
+        frontier (M.triangleCarrier T.1) := by
+    intro x hx
+    have hxT : x ∈ M.triangleCarrier T.1 :=
+      convexHull_mono (Set.image_mono heT) hx
+    apply (mem_frontier_iff_notMem_interior hxT).mpr
+    intro hxi
+    exact Set.disjoint_left.mp
+      (M.disjoint_interior_triangleCarrier_convexHull_of_subset_card_le_two
+        T heT (by omega)) hxi hx
+  apply Set.Subset.antisymm
+  · simpa only [Set.union_comm] using M.frontier_triangleCarrier_subset_freeTriangleEdges T k
+  · rintro x ((hx | hx) | hx)
+    · apply hedge (M.freeTriangleApexEdge0_card T k) (M.freeTriangleApexEdge0_subset T k)
+      rwa [M.freeTriangleApexEdge0_carrier T k]
+    · apply hedge (M.freeTriangleApexEdge1_card T k) (M.freeTriangleApexEdge1_subset T k)
+      rwa [M.freeTriangleApexEdge1_carrier T k]
+    · apply hedge (M.freeTriangleBaseEdge_card T k) (M.freeTriangleBaseEdge_subset T k)
+      rwa [M.freeTriangleBaseEdge_carrier T k]
+
+private theorem closure_diff_crosscut_side
+    {C E A R : Set Plane} {a b : Plane}
+    (h : IsCrosscut C E a b) (hcut : IsCutPair C a b A R) :
+    closure (closure (inside C) \ closure (inside (A ∪ E))) =
+      closure (inside (R ∪ E)) := by
+  have hsep := jordan_curve_theorem h.curve
+  have hsep₁ := jordan_curve_theorem (h.isJordanCurve_union hcut)
+  have hsep₂ := jordan_curve_theorem (h.isJordanCurve_union hcut.symm)
+  have hsplit := (crosscut_theorem h hcut).1
+  have hdisjoint : Disjoint (closure (inside (A ∪ E))) (inside (R ∪ E)) :=
+    ((crosscut_theorem h hcut).2.1).closure_left hsep₂.isOpen_inside
+  have hE : E ⊆ closure (inside (A ∪ E)) :=
+    Set.Subset.trans Set.subset_union_right ((IsRegionOf.inside (A ∪ E)).subset_closure hsep₁)
+  apply Set.Subset.antisymm
+  · apply closure_minimal _ isClosed_closure
+    rintro x ⟨hxC, hxK⟩
+    rw [(IsRegionOf.inside C).closure_eq hsep] at hxC
+    rcases hxC with hxi | hxc
+    · have hxE : x ∉ E := fun hxe => hxK (hE hxe)
+      have hxSides : x ∈ inside (A ∪ E) ∪ inside (R ∪ E) := hsplit ▸ ⟨hxi, hxE⟩
+      exact subset_closure (hxSides.resolve_left fun hx₁ => hxK (subset_closure hx₁))
+    · have hxR : x ∈ R := by
+        have hxAR : x ∈ A ∪ R := hcut.union_eq.symm ▸ hxc
+        exact hxAR.resolve_left fun hxA =>
+          hxK ((IsRegionOf.inside (A ∪ E)).subset_closure hsep₁ (Or.inl hxA))
+      exact (IsRegionOf.inside (R ∪ E)).subset_closure hsep₂ (Or.inl hxR)
+  · apply closure_mono
+    intro x hx
+    exact ⟨subset_closure ((h.side_subset (fun _ hJ => jordan_curve_theorem hJ) hcut.symm hx).1),
+      fun hxK => Set.disjoint_left.mp hdisjoint hxK hx⟩
+
+private theorem closure_inside_crosscut_sides_inter
+    {C E A R : Set Plane} {a b : Plane}
+    (h : IsCrosscut C E a b) (hcut : IsCutPair C a b A R) :
+    closure (inside (R ∪ E)) ∩ closure (inside (A ∪ E)) = E := by
+  have hsep₁ := jordan_curve_theorem (h.isJordanCurve_union hcut)
+  have hsep₂ := jordan_curve_theorem (h.isJordanCurve_union hcut.symm)
+  have hd := (crosscut_theorem h hcut).2.1
+  have hd₁ := hd.closure_right hsep₁.isOpen_inside
+  have hd₂ := hd.closure_left hsep₂.isOpen_inside
+  apply Set.Subset.antisymm
+  · rintro x ⟨hx₂, hx₁⟩
+    have hxa : x ∈ A ∪ E := by
+      have hx := hx₁
+      rw [(IsRegionOf.inside (A ∪ E)).closure_eq hsep₁] at hx
+      exact hx.resolve_left fun hxi => Set.disjoint_left.mp hd₁ hxi hx₂
+    have hxr : x ∈ R ∪ E := by
+      have hx := hx₂
+      rw [(IsRegionOf.inside (R ∪ E)).closure_eq hsep₂] at hx
+      exact hx.resolve_left fun hxi => Set.disjoint_left.mp hd₂ hx₁ hxi
+    rcases hxa with hxA | hxE
+    · rcases hxr with hxR | hxE
+      · have hxEnds : x ∈ ({a, b} : Set Plane) := hcut.inter_eq ▸ ⟨hxA, hxR⟩
+        rcases hxEnds with rfl | rfl
+        · exact h.arc.left_mem
+        · exact h.arc.right_mem
+      · exact hxE
+    · exact hxE
+  · intro x hx
+    exact ⟨(IsRegionOf.inside (R ∪ E)).subset_closure hsep₂ (Or.inr hx),
+      (IsRegionOf.inside (A ∪ E)).subset_closure hsep₁ (Or.inr hx)⟩
+
+private theorem PrePolygon.two_edge_free_crosscut
+    {m : ℕ} (P : PrePolygon m) (M : TriangleMesh)
+    (hfrontier : frontier M.toPlaneComplex.support = P.carrier)
+    (T : M.Triangle) (k : Fin 3) (hfree : M.IsTwoEdgeFreeTriangle T k) :
+    IsCrosscut P.carrier
+      (segment ℝ (M.freeTriangleOrder T k 0) (M.freeTriangleOrder T k 1))
+      (M.freeTriangleOrder T k 0) (M.freeTriangleOrder T k 1) := by
+  let a := M.freeTriangleOrder T k 0
+  let b := M.freeTriangleOrder T k 1
+  let c := M.freeTriangleOrder T k 2
+  have htrace : P.carrier ∩ M.triangleCarrier T.1 = segment ℝ a c ∪ segment ℝ b c := by
+    rw [← hfrontier]
+    exact hfree
+  have hTsub : M.triangleCarrier T.1 ⊆ M.toPlaneComplex.support := by
+    rw [M.toPlaneComplex_support]
+    exact Set.subset_iUnion_of_subset T.1 (Set.subset_iUnion_of_subset T.2 subset_rfl)
+  have hsupport : M.toPlaneComplex.support = closure (inside P.carrier) :=
+    eq_closure_inside_of_isCompact_frontier_eq P.isSeparating_carrier
+      M.toPlaneComplex.isCompact_support hfrontier
+      ((M.interior_triangleCarrier_nonempty T).mono (interior_mono hTsub))
+  have ha : a ∈ P.carrier := by
+    have hh : a ∈ P.carrier ∩ M.triangleCarrier T.1 :=
+      htrace.symm ▸ Or.inl (left_mem_segment ℝ a c)
+    exact hh.1
+  have hb : b ∈ P.carrier := by
+    have hh : b ∈ P.carrier ∩ M.triangleCarrier T.1 :=
+      htrace.symm ▸ Or.inr (left_mem_segment ℝ b c)
+    exact hh.1
+  refine ⟨P.isJordanCurve_carrier,
+    isArcBetween_segment ((M.freeTriangleOrder_affineIndependent T k).injective.ne (by decide)),
+    isPolygonal_segment a b, ha, hb, ?_⟩
+  intro x hx
+  have hxT : x ∈ M.triangleCarrier T.1 := by
+    apply convexHull_mono (Set.image_mono (M.freeTriangleBaseEdge_subset T k))
+    rw [M.freeTriangleBaseEdge_carrier T k]
+    exact hx.1
+  have hxC : x ∉ P.carrier := by
+    intro hxc
+    exact Set.disjoint_left.mp (M.freeTriangleBase_diff_endpoints_disjoint_apexEdges T k)
+      hx (htrace ▸ ⟨hxc, hxT⟩)
+  have hxClosed : x ∈ closure (inside P.carrier) := hsupport ▸ hTsub hxT
+  rw [(IsRegionOf.inside P.carrier).closure_eq P.isSeparating_carrier] at hxClosed
+  exact hxClosed.resolve_right hxC
+
+private theorem PrePolygon.two_edge_free_region_and_attachment
+    {m : ℕ} (P : PrePolygon m) (M : TriangleMesh)
+    (hfrontier : frontier M.toPlaneComplex.support = P.carrier)
+    (T : M.Triangle) (k : Fin 3) (hfree : M.IsTwoEdgeFreeTriangle T k) :
+    let a := M.freeTriangleOrder T k 0
+    let b := M.freeTriangleOrder T k 1
+    let c := M.freeTriangleOrder T k 2
+    let A := segment ℝ a c ∪ segment ℝ b c
+    let R := closure (P.carrier \ A)
+    let E := segment ℝ a b
+    IsCutPair P.carrier a b A R ∧
+      IsJordanCurve (R ∪ E) ∧
+      (M.eraseTriangle T.1).toPlaneComplex.support = closure (inside (R ∪ E)) ∧
+      (M.eraseTriangle T.1).toPlaneComplex.support ∩ M.triangleCarrier T.1 = E := by
+  let a := M.freeTriangleOrder T k 0
+  let b := M.freeTriangleOrder T k 1
+  let c := M.freeTriangleOrder T k 2
+  let A := segment ℝ a c ∪ segment ℝ b c
+  let R := closure (P.carrier \ A)
+  let E := segment ℝ a b
+  let K := M.triangleCarrier T.1
+  have htrace : P.carrier ∩ K = A := by rw [← hfrontier]; exact hfree
+  have hAC : A ⊆ P.carrier := by
+    intro x hx
+    have hh : x ∈ P.carrier ∩ K := htrace.symm ▸ hx
+    exact hh.1
+  have hA : IsArcBetween A a b := free_triangle_apex_edges_isArcBetween M T k
+  obtain ⟨hR, hcover, hmeet⟩ :=
+    closure_diff_arc_of_subset_jordan P.isJordanCurve_carrier hA hAC
+  have hcut : IsCutPair P.carrier a b A R := ⟨hA, hR, hcover, hmeet⟩
+  have hcross : IsCrosscut P.carrier E a b := P.two_edge_free_crosscut M hfrontier T k hfree
+  have hKregion : K = closure (inside (A ∪ E)) :=
+    eq_closure_inside_of_isCompact_frontier_eq
+      (jordan_curve_theorem (hcross.isJordanCurve_union hcut))
+      ((T.1.finite_toSet.image M.position).isCompact_convexHull ℝ)
+      (free_triangle_frontier_eq_edges M T k) (M.interior_triangleCarrier_nonempty T)
+  have hTsub : K ⊆ M.toPlaneComplex.support := by
+    rw [M.toPlaneComplex_support]
+    exact Set.subset_iUnion_of_subset T.1 (Set.subset_iUnion_of_subset T.2 subset_rfl)
+  have hsupport : M.toPlaneComplex.support = closure (inside P.carrier) :=
+    eq_closure_inside_of_isCompact_frontier_eq P.isSeparating_carrier
+      M.toPlaneComplex.isCompact_support hfrontier
+      ((M.interior_triangleCarrier_nonempty T).mono (interior_mono hTsub))
+  have hremaining : (M.eraseTriangle T.1).toPlaneComplex.support =
+      closure (inside (R ∪ E)) := by
+    rw [M.eraseTriangle_support_eq_closure_diff_triangleCarrier T, hsupport]
+    change closure (closure (inside P.carrier) \ K) = closure (inside (R ∪ E))
+    rw [hKregion]
+    exact closure_diff_crosscut_side hcross hcut
+  refine ⟨hcut, hcross.isJordanCurve_union hcut.symm, hremaining, ?_⟩
+  change (M.eraseTriangle T.1).toPlaneComplex.support ∩ K = E
+  rw [hremaining, hKregion]
+  exact closure_inside_crosscut_sides_inter hcross hcut
+
+theorem PrePolygon.exists_prePolygon_closed_region_erase_triangle_of_two_edge_free
+    {m : ℕ} (P : PrePolygon m) (M : TriangleMesh)
+    (hfrontier : frontier M.toPlaneComplex.support = P.carrier)
+    (T : M.Triangle) (k : Fin 3) (hfree : M.IsTwoEdgeFreeTriangle T k) :
+    let a := M.freeTriangleOrder T k 0
+    let b := M.freeTriangleOrder T k 1
+    let c := M.freeTriangleOrder T k 2
+    let R := closure (P.carrier \ (segment ℝ a c ∪ segment ℝ b c))
+    let E := segment ℝ a b
+    ∃ (n : ℕ) (Q : PrePolygon n) (j : ZMod (n + 3)) (l : ℕ),
+      Q.carrier = frontier (M.eraseTriangle T.1).toPlaneComplex.support ∧
+      (M.eraseTriangle T.1).toPlaneComplex.support = closure (inside Q.carrier) ∧
+      1 ≤ l ∧ l ≤ n + 2 ∧ Q.vertex j = a ∧ Q.vertex (j + (l : ZMod (n + 3))) = b ∧
+      Q.arc j l = R ∧ Q.arc (j + (l : ZMod (n + 3))) (n + 3 - l) = E ∧
+      (M.eraseTriangle T.1).toPlaneComplex.support ∩ M.triangleCarrier T.1 = E := by
+  let a := M.freeTriangleOrder T k 0
+  let b := M.freeTriangleOrder T k 1
+  let c := M.freeTriangleOrder T k 2
+  let A := segment ℝ a c ∪ segment ℝ b c
+  let R := closure (P.carrier \ A)
+  let E := segment ℝ a b
+  let B := (M.eraseTriangle T.1).toPlaneComplex.support
+  let K := M.triangleCarrier T.1
+  obtain ⟨hcut, hJ, hregion, hattach⟩ :=
+    P.two_edge_free_region_and_attachment M hfrontier T k hfree
+  have hcut' : IsCutPair P.carrier a b A R := hcut
+  have hR := hcut'.snd
+  have hcross : IsCrosscut P.carrier E a b := P.two_edge_free_crosscut M hfrontier T k hfree
+  have hE := hcross.arc
+  have hab : a ≠ b := (M.freeTriangleOrder_affineIndependent T k).injective.ne (by decide)
+  have htrace : P.carrier ∩ K = A := by rw [← hfrontier]; exact hfree
+  have hdiff : P.carrier \ K = P.carrier \ A := by
+    ext x
+    constructor
+    · rintro ⟨hxC, hxK⟩
+      refine ⟨hxC, ?_⟩
+      intro hxA
+      have hh : x ∈ P.carrier ∩ K := htrace.symm ▸ hxA
+      exact hxK hh.2
+    · rintro ⟨hxC, hxA⟩
+      exact ⟨hxC, fun hxK => hxA (htrace ▸ ⟨hxC, hxK⟩)⟩
+  have hfill : (P.carrier \ A) ∪ E = R ∪ E := by
+    ext x
+    constructor
+    · rintro (hx | hx)
+      · exact Or.inl (subset_closure hx)
+      · exact Or.inr hx
+    · rintro (hxR | hxE)
+      · by_cases hxA : x ∈ A
+        · have hxEnds : x ∈ ({a, b} : Set Plane) := hcut'.inter_eq ▸ ⟨hxA, hxR⟩
+          rcases hxEnds with rfl | rfl
+          · exact Or.inr hE.left_mem
+          · exact Or.inr hE.right_mem
+        · exact Or.inl ⟨hcut'.snd_subset hxR, hxA⟩
+      · exact Or.inr hxE
+  have hupdate : frontier B = R ∪ E := by
+    have hattach' : B ∩ K = E := hattach
+    have hu : frontier B = (frontier M.toPlaneComplex.support \ K) ∪ (B ∩ K) :=
+      M.frontier_eraseTriangle_support T
+    rw [hu, hfrontier, hattach', hdiff, hfill]
+  have hmeet : R ∩ E = {a, b} := by
+    apply Set.Subset.antisymm
+    · rintro x ⟨hxR, hxE⟩
+      exact hcross.inter_eq ▸ ⟨hxE, hcut'.snd_subset hxR⟩
+    · rintro x (rfl | rfl)
+      · exact ⟨hR.left_mem, hE.left_mem⟩
+      · exact ⟨hR.right_mem, hE.right_mem⟩
+  have hpolyR : IsPolygonal R := by
+    obtain ⟨n, Q, j, l, _, hl1, hl2, _, _, hcase⟩ :=
+      exists_prePolygon_arcs P.isJordanCurve_carrier P.isPolygonal_carrier
+        hcross.left_mem hcross.right_mem hab hcut'.fst hR hcut'.union_eq hcut'.inter_eq
+    rcases hcase with ⟨_, hRarc⟩ | ⟨hRarc, _⟩
+    · rw [← hRarc]
+      exact Q.isPolygonal_arc _ (by omega)
+    · rw [← hRarc]
+      exact Q.isPolygonal_arc j hl1
+  have hpoly : IsPolygonal (R ∪ E) :=
+    hpolyR.union (isPolygonal_segment a b) ⟨a, hR.left_mem, hE.left_mem⟩
+  obtain ⟨n, Q, j, l, hQ, hl1, hl2, hja, hjb, hRarc, hEarc⟩ :=
+    exists_prePolygon_arcs_oriented hJ hpoly (Or.inl hR.left_mem) (Or.inl hR.right_mem)
+      hab hR hE rfl hmeet
+  refine ⟨n, Q, j, l, hQ.trans hupdate.symm, ?_, hl1, hl2, hja, hjb, hRarc, hEarc, hattach⟩
+  rw [hQ]
+  exact hregion
+
 
 end Schoenflies

@@ -36,3 +36,15 @@ realized crosscut. The public partition theorem supplies exact closed-region
 supports, disjoint/nonempty triangle sets and strict count decrease for both
 sides. Final fresh-module/imported gate1789235455742746297-schoenflies-fb8bd5a2
 passes. This closes the crosscut partition child, not free-triangle existence.
+
+
+The two-edge extension adds the second native deletion engine in the same
+PrePolygonDeletion module, reusing its three shared private helpers. Its exact
+support/frontier and oriented complementary/base-arc outputs passed isolated
+source gate1789236092448851439-schoenflies-e77176ea. Final fresh-two-leaf and
+imported consumer gate1789237030840224641-schoenflies-8667db40 passes in95.18s
+with107matching guards and14signature/axiom pairs, stock3and standard axioms. GeometricFreeTriangle now retains eight
+unchanged upstream declarations, including triangle-frontier coverage. The
+original one-edge theorem and seven classification declarations are preserved.
+No new module or aggregate import is needed. Geometric free-triangle existence,
+compatible smooth rounding and disk absorption remain open.
