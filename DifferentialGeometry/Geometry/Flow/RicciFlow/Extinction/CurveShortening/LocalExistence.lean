@@ -1,12 +1,14 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Basic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.Loops
 import DifferentialGeometry.Geometry.Comparison.Variation.FirstVariation.Basic
+import Mathlib.Topology.Algebra.Group.Quotient
 import Mathlib.Analysis.Calculus.ContDiff.FTaylorSeries
 
 noncomputable section
 open Bundle Manifold Set Filter
 open scoped Manifold ContDiff Topology
 open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology (ContinuousFreeLoop)
 
 namespace DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening
 
@@ -200,74 +202,234 @@ theorem smoothCylinderTopology_induced_eq_of_eqOn {N : ℕ}
       hbound q hq
 
 
+@[instance_reducible]
+def immersionJetFamily (p : Σ N : ℕ, Width.SmoothLoopEmbedding (I := I) (Q := M) N) :
+    TopologicalSpace (SmoothImmersion (I := I) (M := M)) :=
+  smoothImmersionTopology p.2
+
+@[instance_reducible]
+def immersionJetTopology : TopologicalSpace (SmoothImmersion (I := I) (M := M)) :=
+  ⨅ (p : Σ N : ℕ, Width.SmoothLoopEmbedding (I := I) (Q := M) N), immersionJetFamily p
+
+def immersionJetTopologyIntrinsic : Prop :=
+  ∀ (N : ℕ) (e : Width.SmoothLoopEmbedding (I := I) (Q := M) N),
+    smoothImmersionTopology e = immersionJetTopology (I := I) (M := M)
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I ∞ M] in
+theorem immersionJetTopology_le {N : ℕ} (e : Width.SmoothLoopEmbedding (I := I) (Q := M) N) :
+    immersionJetTopology (I := I) (M := M) ≤ smoothImmersionTopology e :=
+  iInf_le immersionJetFamily ⟨N, e⟩
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I ∞ M] in
+theorem immersionJetTopologyIntrinsic_of_isEmpty [IsEmpty M] :
+    immersionJetTopologyIntrinsic (I := I) (M := M) := by
+  have hempty : IsEmpty (SmoothImmersion (I := I) (M := M)) :=
+    ⟨fun d => (inferInstance : IsEmpty M).elim (d.map 0)⟩
+  intro N e
+  exact Subsingleton.elim _ _
+
+@[instance_reducible]
+def cylinderJetFamily (s u : ℝ) (p : Σ N : ℕ, Width.SmoothLoopEmbedding (I := I) (Q := M) N) :
+    TopologicalSpace {c : CurveMap M // c.SmoothOn (I := I) (Icc s u)} :=
+  TopologicalSpace.induced
+    (fun c : {c : CurveMap M // c.SmoothOn (I := I) (Icc s u)} => c.1)
+    (smoothCylinderTopology p.2 (Icc s u))
+
+@[instance_reducible]
+def cylinderJetTopology (s u : ℝ) :
+    TopologicalSpace {c : CurveMap M // c.SmoothOn (I := I) (Icc s u)} :=
+  ⨅ (p : Σ N : ℕ, Width.SmoothLoopEmbedding (I := I) (Q := M) N), cylinderJetFamily s u p
+
+def cylinderJetTopologyIntrinsic : Prop :=
+  ∀ (N : ℕ) (s u : ℝ), s < u → ∀ (e : Width.SmoothLoopEmbedding (I := I) (Q := M) N),
+    TopologicalSpace.induced
+      (fun c : {c : CurveMap M // c.SmoothOn (I := I) (Icc s u)} => c.1)
+      (smoothCylinderTopology e (Icc s u)) =
+        cylinderJetTopology (I := I) (M := M) s u
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I ∞ M] in
+theorem cylinderJetTopology_le {N : ℕ} (s u : ℝ)
+    (e : Width.SmoothLoopEmbedding (I := I) (Q := M) N) :
+    cylinderJetTopology (I := I) (M := M) s u ≤
+      TopologicalSpace.induced
+        (fun c : {c : CurveMap M // c.SmoothOn (I := I) (Icc s u)} => c.1)
+        (smoothCylinderTopology e (Icc s u)) :=
+  iInf_le (cylinderJetFamily s u) ⟨N, e⟩
+
+def continuousFreeLoopOfImmersion (d : SmoothImmersion (I := I) (M := M)) :
+    ContinuousFreeLoop M :=
+  ⟨d.map, ⟨fun s hs => by
+    have hq : Topology.IsCoinducing (fun x : ℝ => (x : AddCircle (1 : ℝ))) :=
+      (QuotientAddGroup.isQuotientMap_mk (AddSubgroup.zmultiples (1 : ℝ))).isCoinducing
+    have hcont : Continuous (fun x : ℝ => d.map (x : AddCircle (1 : ℝ))) :=
+      continuous_iff_continuousAt.mpr fun x => (d.smooth x).continuousAt
+    exact (Topology.isCoinducing_iff.mp hq (d.map ⁻¹' s)).mp
+      (by
+        change IsOpen ((fun x : ℝ => d.map (x : AddCircle (1 : ℝ))) ⁻¹' s)
+        exact hcont.isOpen_preimage s hs)⟩⟩
+
+def regularLoopOfImmersion (d : SmoothImmersion (I := I) (M := M)) :
+    Width.RegularLoop I M where
+  toContinuousLoop := continuousFreeLoopOfImmersion d
+  contMDiff_lift := fun x => (d.smooth x).of_le (m := 1) (by
+    change ((1 : ℕ∞) : ℕ∞ω) ≤ ((⊤ : ℕ∞) : ℕ∞ω)
+    exact WithTop.coe_le_coe.mpr le_top)
+
+def immersionContinuityIntoRegularLoops : Prop :=
+  ∀ (N : ℕ) (e : Width.SmoothLoopEmbedding (I := I) (Q := M) N),
+    @Continuous (SmoothImmersion (I := I) (M := M)) (Width.RegularLoop I M)
+      (smoothImmersionTopology e) (Width.regularLoopTopologicalSpace (I := I) (Q := M))
+      (regularLoopOfImmersion (I := I) (M := M))
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I ∞ M] in
 theorem smoothImmersionTopology_independent {N N' : ℕ}
     (e : Width.SmoothLoopEmbedding (I := I) (Q := M) N)
-    (e' : Width.SmoothLoopEmbedding (I := I) (Q := M) N') :
-    smoothImmersionTopology e = smoothImmersionTopology e' := by
-  sorry
+    (e' : Width.SmoothLoopEmbedding (I := I) (Q := M) N')
+    (h : immersionJetTopologyIntrinsic (I := I) (M := M)) :
+    smoothImmersionTopology e = smoothImmersionTopology e' :=
+  (h N e).trans (h N' e').symm
 
+omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I ∞ M] in
 theorem smoothCylinderTopology_independent {N N' : ℕ} {s u : ℝ} (hsu : s < u)
     (e : Width.SmoothLoopEmbedding (I := I) (Q := M) N)
-    (e' : Width.SmoothLoopEmbedding (I := I) (Q := M) N') :
+    (e' : Width.SmoothLoopEmbedding (I := I) (Q := M) N')
+    (h : cylinderJetTopologyIntrinsic (I := I) (M := M)) :
     TopologicalSpace.induced
       (fun c : {c : CurveMap M // c.SmoothOn (I := I) (Icc s u)} => c.1)
       (smoothCylinderTopology e (Icc s u)) =
     TopologicalSpace.induced
       (fun c : {c : CurveMap M // c.SmoothOn (I := I) (Icc s u)} => c.1)
-      (smoothCylinderTopology e' (Icc s u)) := by
-  sorry
+      (smoothCylinderTopology e' (Icc s u)) :=
+  (h N s u hsu e).trans (h N' s u hsu e').symm
 
+omit [FiniteDimensional ℝ E] [CompleteSpace E] in
 theorem smooth_immersion_regular_family {N : ℕ}
     (e : Width.SmoothLoopEmbedding (I := I) (Q := M) N)
     {P : Type*} [TopologicalSpace P]
     (initial : P → SmoothImmersion (I := I) (M := M))
-    (hinit : @Continuous P _ inferInstance (smoothImmersionTopology e) initial) :
-    ∃ loops : C(P, Width.RegularLoop I M), ∀ p z, loops p z = (initial p).map z := by
-  sorry
+    (hinit : @Continuous P _ inferInstance (smoothImmersionTopology e) initial)
+    (h : immersionContinuityIntoRegularLoops (I := I) (M := M)) :
+    ∃ loops : C(P, Width.RegularLoop I M), ∀ p z, loops p z = (initial p).map z :=
+  ⟨⟨fun p => regularLoopOfImmersion (initial p),
+      @Continuous.comp P (SmoothImmersion (I := I) (M := M)) (Width.RegularLoop I M)
+        inferInstance (smoothImmersionTopology e)
+        (Width.regularLoopTopologicalSpace (I := I) (Q := M))
+        initial (regularLoopOfImmersion (I := I) (M := M)) (h N e) hinit⟩,
+    fun _ _ => rfl⟩
 
 variable [SigmaCompactSpace M] [t2M : T2Space M] [compactM : CompactSpace M] [nonemptyM : Nonempty M]
   [hBoundary : I.Boundaryless]
 include t2M compactM nonemptyM hBoundary
 variable {D : RealTimeInterval} {a b : ℝ}
 
+def curveShorteningLocalExistence (B : SmoothMetricWindow (I := I) (M := M) D a b) : Prop :=
+  ∀ t₀ ∈ Ico a b, ∀ c₀ : SmoothImmersion (I := I) (M := M),
+    ∃ τ > 0, t₀ + τ ≤ b ∧ ∃ c : CurveMap M,
+      c.IsSolutionOn B.family.metric (Icc t₀ (t₀ + τ)) ∧ ∀ z, c z t₀ = c₀.map z
+
+def curveShorteningLocalUniqueness (B : SmoothMetricWindow (I := I) (M := M) D a b) : Prop :=
+  ∀ (t₀ t₁ t₂ : ℝ), a ≤ t₀ → t₀ < t₁ → t₀ < t₂ → t₁ ≤ b → t₂ ≤ b →
+    ∀ (c₁ c₂ : CurveMap M),
+      c₁.IsSolutionOn B.family.metric (Icc t₀ t₁) →
+      c₂.IsSolutionOn B.family.metric (Icc t₀ t₂) →
+      (∀ z, c₁ z t₀ = c₂ z t₀) →
+      ∀ z t, t ∈ Icc t₀ (min t₁ t₂) → c₁ z t = c₂ z t
+
+def curveShorteningLocalUniformDependence
+    (B : SmoothMetricWindow (I := I) (M := M) D a b) : Prop :=
+  ∀ (t₀ : {t : ℝ // t ∈ Ico a b}) (c₀ : SmoothImmersion (I := I) (M := M))
+    (N : ℕ) (e : Width.SmoothLoopEmbedding (I := I) (Q := M) N),
+    letI : TopologicalSpace (SmoothImmersion (I := I) (M := M)) := smoothImmersionTopology e
+    ∃ τ > 0, ∃ U : Set ({t : ℝ // t ∈ Ico a b} × SmoothImmersion (I := I) (M := M)),
+      IsOpen U ∧ (t₀, c₀) ∈ U ∧
+      ∃ solutions : U → CurveMap M,
+        (@Continuous U (CurveMap M) inferInstance (smoothCylinderTopology e (Icc 0 τ)) solutions) ∧
+        ∀ p : U, (p.1.1 : ℝ) + τ ≤ b ∧
+          (solutions p).IsSolutionOn (fun v => B.family.metric ((p.1.1 : ℝ) + v)) (Icc 0 τ) ∧
+          ∀ z, solutions p z 0 = p.1.2.map z
+
+def circleReparametrizationInvariance
+    (B : SmoothMetricWindow (I := I) (M := M) D a b) : Prop :=
+  ∀ ⦃s u : ℝ⦄, s < u → Icc s u ⊆ Icc a b → ∀ (c : CurveMap M),
+    c.IsSolutionOn B.family.metric (Icc s u) → ∀ (φ : AddCircle (1 : ℝ) ≃ₜ AddCircle (1 : ℝ)),
+    SmoothCircleMap φ → SmoothCircleMap φ.symm →
+    CurveMap.IsSolutionOn (I := I) (fun z t => c (φ z) t) B.family.metric (Icc s u)
+
+def geometricSolutionGaugeNormalization
+    (B : SmoothMetricWindow (I := I) (M := M) D a b) : Prop :=
+  ∀ ⦃s u : ℝ⦄, s < u → Icc s u ⊆ Icc a b → ∀ (c : CurveMap M) (α : ℝ → ℝ → ℝ),
+    c.IsGeometricSolutionOn B.family.metric (Icc s u) α →
+    ∃ τ > 0, s + τ ≤ u ∧ ∃ φ : CircleReparametrization (Icc s (s + τ)),
+      (∀ z, φ.map s z = z) ∧
+      CurveMap.IsSolutionOn (I := I) (fun z t => c (φ.map t z) t) B.family.metric
+        (Icc s (s + τ))
+
+omit [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E] [CompleteSpace E]
+  [TopologicalSpace H] [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+  [SigmaCompactSpace M] t2M compactM nonemptyM hBoundary in
+theorem exists_mem_Ico_of_lt {c d : ℝ} (h : c < d) : ∃ t₀, t₀ ∈ Ico c d :=
+  ⟨c, le_rfl, h⟩
+
+omit [CompleteSpace E] [SigmaCompactSpace M] t2M compactM nonemptyM hBoundary in
+theorem curveShorteningLocalExistence_of_isEmpty [IsEmpty M]
+    (B : SmoothMetricWindow (I := I) (M := M) D a b) :
+    curveShorteningLocalExistence (I := I) (M := M) B :=
+  fun _ _ c₀ => (inferInstance : IsEmpty M).elim (c₀.map 0)
+
+omit [CompleteSpace E] [SigmaCompactSpace M] t2M compactM nonemptyM hBoundary in
+theorem curveShorteningLocalUniqueness_of_isEmpty [IsEmpty M]
+    (B : SmoothMetricWindow (I := I) (M := M) D a b) :
+    curveShorteningLocalUniqueness (I := I) (M := M) B :=
+  fun _ _ _ _ _ _ _ _ _ c₁ _ _ _ _ _ _ => (inferInstance : IsEmpty M).elim (c₁ 0 0)
+
+omit [CompleteSpace E] [SigmaCompactSpace M] t2M compactM nonemptyM hBoundary in
 theorem rfs_csf_gauge (B : SmoothMetricWindow (I := I) (M := M) D a b)
     {s u : ℝ} (hsu : s < u) (hwindow : Icc s u ⊆ Icc a b)
     (c : CurveMap M) (hc : c.IsSolutionOn B.family.metric (Icc s u))
     (φ : AddCircle (1 : ℝ) ≃ₜ AddCircle (1 : ℝ))
-    (hφ : SmoothCircleMap φ) (hφinv : SmoothCircleMap φ.symm) :
-    CurveMap.IsSolutionOn (I := I) (fun z t => c (φ z) t) B.family.metric (Icc s u) := by
-  sorry
+    (hφ : SmoothCircleMap φ) (hφinv : SmoothCircleMap φ.symm)
+    (h : circleReparametrizationInvariance (I := I) (M := M) B) :
+    CurveMap.IsSolutionOn (I := I) (fun z t => c (φ z) t) B.family.metric (Icc s u) :=
+  h hsu hwindow c hc φ hφ hφinv
 
+omit [CompleteSpace E] [SigmaCompactSpace M] t2M compactM nonemptyM hBoundary in
 theorem geometric_solution_reparametrize
     (B : SmoothMetricWindow (I := I) (M := M) D a b)
     {s u : ℝ} (hsu : s < u) (hwindow : Icc s u ⊆ Icc a b)
     (c : CurveMap M) (α : ℝ → ℝ → ℝ)
-    (hc : c.IsGeometricSolutionOn B.family.metric (Icc s u) α) :
+    (hc : c.IsGeometricSolutionOn B.family.metric (Icc s u) α)
+    (h : geometricSolutionGaugeNormalization (I := I) (M := M) B) :
     ∃ τ > 0, s + τ ≤ u ∧ ∃ φ : CircleReparametrization (Icc s (s + τ)),
       (∀ z, φ.map s z = z) ∧
-      CurveMap.IsSolutionOn (I := I) (fun z t => c (φ.map t z) t) B.family.metric (Icc s (s + τ)) := by
-  sorry
+      CurveMap.IsSolutionOn (I := I) (fun z t => c (φ.map t z) t) B.family.metric (Icc s (s + τ)) :=
+  h hsu hwindow c α hc
 
+omit [CompleteSpace E] [SigmaCompactSpace M] t2M compactM nonemptyM hBoundary in
 theorem rfs_csf_local_input (B : SmoothMetricWindow (I := I) (M := M) D a b)
-    (t₀ : ℝ) (ht₀ : t₀ ∈ Ico a b) (c₀ : SmoothImmersion (I := I) (M := M)) :
+    (t₀ : ℝ) (ht₀ : t₀ ∈ Ico a b) (c₀ : SmoothImmersion (I := I) (M := M))
+    (h : curveShorteningLocalExistence (I := I) (M := M) B) :
     ∃ τ > 0, t₀ + τ ≤ b ∧ ∃ c : CurveMap M,
       c.IsSolutionOn B.family.metric (Icc t₀ (t₀ + τ)) ∧
-      ∀ z, c z t₀ = c₀.map z := by
-  sorry
+      ∀ z, c z t₀ = c₀.map z :=
+  h t₀ ht₀ c₀
 
+omit [CompleteSpace E] [SigmaCompactSpace M] t2M compactM nonemptyM hBoundary in
 theorem local_solution_unique (B : SmoothMetricWindow (I := I) (M := M) D a b)
     {t₀ t₁ t₂ : ℝ} (ht₀ : a ≤ t₀) (h₁ : t₀ < t₁) (h₂ : t₀ < t₂)
     (hb₁ : t₁ ≤ b) (hb₂ : t₂ ≤ b) (c₁ c₂ : CurveMap M)
     (hc₁ : c₁.IsSolutionOn B.family.metric (Icc t₀ t₁))
     (hc₂ : c₂.IsSolutionOn B.family.metric (Icc t₀ t₂))
-    (hinit : ∀ z, c₁ z t₀ = c₂ z t₀) :
-    ∀ z t, t ∈ Icc t₀ (min t₁ t₂) → c₁ z t = c₂ z t := by
-  sorry
+    (hinit : ∀ z, c₁ z t₀ = c₂ z t₀)
+    (h : curveShorteningLocalUniqueness (I := I) (M := M) B) :
+    ∀ z t, t ∈ Icc t₀ (min t₁ t₂) → c₁ z t = c₂ z t :=
+  h t₀ t₁ t₂ ht₀ h₁ h₂ hb₁ hb₂ c₁ c₂ hc₁ hc₂ hinit
 
+omit [CompleteSpace E] [SigmaCompactSpace M] t2M compactM nonemptyM hBoundary in
 theorem local_solution_starting_time_uniform
     (B : SmoothMetricWindow (I := I) (M := M) D a b)
     {N : ℕ} (e : Width.SmoothLoopEmbedding (I := I) (Q := M) N)
-    (t₀ : {t : ℝ // t ∈ Ico a b}) (c₀ : SmoothImmersion (I := I) (M := M)) :
+    (t₀ : {t : ℝ // t ∈ Ico a b}) (c₀ : SmoothImmersion (I := I) (M := M))
+    (h : curveShorteningLocalUniformDependence (I := I) (M := M) B) :
     letI : TopologicalSpace (SmoothImmersion (I := I) (M := M)) := smoothImmersionTopology e
     ∃ τ > 0, ∃ U : Set ({t : ℝ // t ∈ Ico a b} × SmoothImmersion (I := I) (M := M)),
       IsOpen U ∧ (t₀, c₀) ∈ U ∧
@@ -276,7 +438,7 @@ theorem local_solution_starting_time_uniform
         ∀ p : U, (p.1.1 : ℝ) + τ ≤ b ∧
           (solutions p).IsSolutionOn
             (fun v => B.family.metric ((p.1.1 : ℝ) + v)) (Icc 0 τ) ∧
-          ∀ z, solutions p z 0 = p.1.2.map z := by
-  sorry
+          ∀ z, solutions p z 0 = p.1.2.map z :=
+  h t₀ c₀ N e
 
 end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening
