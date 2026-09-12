@@ -4663,6 +4663,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.Variation.Weighted
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Curvature.MultiNormHeat
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Curvature.NormEvolution
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Curvature.NormHeatEquation
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Curvature.NormEvolutionInequality
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Distance.Barrier
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Distance.CalabiSupport
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Distance.Laplacian
