@@ -292,6 +292,8 @@ import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.SobolevBounds.
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.Weitzenbock.IntegratedCovariantTensor
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.Weitzenbock.IntegratedMixedTensor
 import DifferentialGeometry.Analysis.Elliptic.DistributionalSupersolution
+import DifferentialGeometry.Analysis.Elliptic.Euclidean.HarmonicComparison
+import DifferentialGeometry.Analysis.Elliptic.Euclidean.MaximumPrinciple
 import DifferentialGeometry.Analysis.Elliptic.Euclidean.QuadraticGrowth
 import DifferentialGeometry.Analysis.Elliptic.Euclidean.Regularity.CoefficientDerivative
 import DifferentialGeometry.Analysis.Elliptic.Euclidean.Regularity.DifferenceQuotient
@@ -642,6 +644,7 @@ import DifferentialGeometry.Analysis.InnerProductSpace.Cayley
 import DifferentialGeometry.Analysis.InnerProductSpace.ConformalPair
 import DifferentialGeometry.Analysis.InnerProductSpace.HilbertSchmidt
 import DifferentialGeometry.Analysis.InnerProductSpace.IsometryTransitive
+import DifferentialGeometry.Analysis.InnerProductSpace.Laplacian
 import DifferentialGeometry.Analysis.InnerProductSpace.MatrixEuclidean
 import DifferentialGeometry.Analysis.InnerProductSpace.ProperConeFace
 import DifferentialGeometry.Analysis.InnerProductSpace.ProperConeIsometry
