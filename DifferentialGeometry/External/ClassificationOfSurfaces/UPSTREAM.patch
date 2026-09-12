@@ -1032,3 +1032,636 @@
 @@ -6 +7 @@
 -import ClassificationOfSurfaces.Moise.ElementaryMove
 +import DifferentialGeometry.External.ClassificationOfSurfaces.Moise.LineSubdivision
+--- a/ClassificationOfSurfaces/Moise/PolygonalPolyhedron.lean
++++ b/DifferentialGeometry/External/ClassificationOfSurfaces/PrePolygonTriangulation.lean
+@@ -4,0 +5,3 @@
++Modified from PolygonalPolyhedron.lean at e3c7230fe78d7b056a415d9ecae6f77887046b32:
++use local PrePolygon/inside/outside and a private canonical Mathlib adapter;
++remove the duplicate upstream polygonal Jordan dependency. See MODIFICATIONS.md.
+@@ -6,22 +9,88 @@
+-import ClassificationOfSurfaces.Moise.LineSubdivision
+-import ClassificationOfSurfaces.Moise.PolygonalJordan
+-
+-/-!
+-# Polygonal Jordan regions as finite plane complexes
+-
+-This file formalizes Moise Chapter 2, Theorem 2.  The finitely many affine lines containing the
+-edges of a polygon cut an enclosing triangle into a finite triangle mesh.  The triangles on the
+-bounded side of polygonal Jordan form the required finite complex.
+--/
+-
+-namespace LeanEval
+-namespace Topology
+-namespace ClassificationOfSurfaces
+-namespace Moise
+-
+-namespace PolygonalCircle
+-
+-variable (J : PolygonalCircle)
+-
+-/-- The linear functional whose zero set is parallel to the vector from `p` to `q`. -/
+-noncomputable def edgeNormalLinear (p q : Plane) : Plane →ₗ[ℝ] ℝ where
++import DifferentialGeometry.External.ClassificationOfSurfaces.Moise.LineSubdivision
++import DifferentialGeometry.External.Schoenflies.PrePolygonSep
++import Mathlib.Analysis.Convex.SimplicialComplex.Basic
++import Mathlib.Analysis.Normed.Affine.AddTorsorBases
++
++open LeanEval.Topology.ClassificationOfSurfaces.Moise
++  (Plane PlaneComplex TriangleMesh planePoint planePoint_apply_zero planePoint_apply_one
++    affineIndependent_plane_triple_of_det_ne_zero mem_convexHull_range_fin3_of_weights)
++
++private def planeComplexToAbstract (K : PlaneComplex) :
++    PreAbstractSimplicialComplex K.Vertex where
++  faces := K.simplexes
++  isRelLowerSet_faces := by
++    intro s hs
++    refine ⟨K.nonempty_of_mem s hs, ?_⟩
++    intro t hts ht
++    exact K.down_closed s hs t hts ht
++
++private noncomputable def planeComplexToSimplicialComplex (K : PlaneComplex) :
++    Geometry.SimplicialComplex ℝ Plane := by
++  classical
++  refine
++    { (planeComplexToAbstract K).map K.position with
++      indep := ?_
++      inter_subset_convexHull := ?_ }
++  · rintro s ⟨t, ht, rfl⟩
++    apply LeanEval.Topology.ClassificationOfSurfaces.Moise.affineIndependent_finset_coe
++      (K.affineIndependent t ht)
++    intro x hx
++    obtain ⟨v, hv, rfl⟩ := Finset.mem_image.mp hx
++    exact ⟨⟨v, hv⟩, rfl⟩
++  · rintro s t ⟨S, hS, rfl⟩ ⟨T, hT, rfl⟩
++    have hfaces : convexHull ℝ (K.position '' (S : Set K.Vertex)) ∩
++        convexHull ℝ (K.position '' (T : Set K.Vertex)) =
++          convexHull ℝ (K.position '' ((S ∩ T : Finset K.Vertex) : Set K.Vertex)) :=
++      K.face_inter S hS T hT
++    simpa only [Finset.coe_image, Finset.coe_inter,
++      Set.image_inter K.position_injective] using hfaces.le
++
++private theorem planeComplexToSimplicialComplex_faces_finite (K : PlaneComplex) :
++    (planeComplexToSimplicialComplex K).faces.Finite := by
++  classical
++  change ((fun s : Finset K.Vertex => s.image K.position) ''
++    (K.simplexes : Set (Finset K.Vertex))).Finite
++  exact K.simplexes.finite_toSet.image _
++
++private theorem planeComplexToSimplicialComplex_space (K : PlaneComplex) :
++    (planeComplexToSimplicialComplex K).space = K.support := by
++  classical
++  have hcarrier (t : Finset K.Vertex) :
++      convexHull ℝ (t.image K.position : Set Plane) = K.cellCarrier t := by
++    rw [PlaneComplex.cellCarrier, Finset.coe_image]
++  change (⋃ s ∈ ((fun t : Finset K.Vertex => t.image K.position) ''
++      (K.simplexes : Set (Finset K.Vertex))), convexHull ℝ (s : Set Plane)) =
++    ⋃ t ∈ K.simplexes, K.cellCarrier t
++  ext x
++  constructor
++  · intro hx
++    obtain ⟨s, hs, hx⟩ := Set.mem_iUnion₂.mp hx
++    obtain ⟨t, ht, rfl⟩ := hs
++    exact Set.mem_iUnion₂.mpr ⟨t, ht, hcarrier t ▸ hx⟩
++  · intro hx
++    obtain ⟨t, ht, hx⟩ := Set.mem_iUnion₂.mp hx
++    exact Set.mem_iUnion₂.mpr ⟨t.image K.position, ⟨t, ht, rfl⟩,
++      (hcarrier t).symm ▸ hx⟩
++
++private theorem planeComplexToSimplicialComplex_pure (K : PlaneComplex)
++    (hpure : K.IsPure2) :
++    ∀ s ∈ (planeComplexToSimplicialComplex K).faces,
++      ∃ t ∈ (planeComplexToSimplicialComplex K).faces, s ⊆ t ∧ t.card = 3 := by
++  classical
++  rintro s ⟨S, hS, rfl⟩
++  obtain ⟨T, hT, hST, hcard⟩ := hpure S hS
++  refine ⟨T.image K.position, ⟨T, hT, rfl⟩, Finset.image_subset_image hST, ?_⟩
++  rw [Finset.card_image_of_injective _ K.position_injective, hcard]
++
++namespace Schoenflies.PrePolygon
++
++variable {m : ℕ} (P : PrePolygon m)
++
++private theorem isCompact_closure_inside : IsCompact (closure (Schoenflies.inside P.carrier)) :=
++  P.isSeparating_carrier.isBounded_inside.isCompact_closure
++
++private theorem closure_inside_eq_union :
++    closure (Schoenflies.inside P.carrier) = Schoenflies.inside P.carrier ∪ P.carrier :=
++  (IsRegionOf.inside P.carrier).closure_eq P.isSeparating_carrier
++
++private noncomputable def edgeNormalLinear (p q : Plane) : Plane →ₗ[ℝ] ℝ where
+@@ -38,5 +107,4 @@
+-/-- An affine equation for the line containing polygon edge `i`. -/
+-noncomputable def edgeLine (i : ZMod J.n) : Plane →ᵃ[ℝ] ℝ :=
+-  AffineMap.mk' (fun x => edgeNormalLinear (J.vertex i) (J.vertex (i + 1))
+-      (x - J.vertex i))
+-    (edgeNormalLinear (J.vertex i) (J.vertex (i + 1))) (J.vertex i) (by
++private noncomputable def edgeLine (i : ZMod (m + 3)) : Plane →ᵃ[ℝ] ℝ :=
++  AffineMap.mk' (fun x => edgeNormalLinear (P.vertex i) (P.vertex (i + 1))
++      (x - P.vertex i))
++    (edgeNormalLinear (P.vertex i) (P.vertex (i + 1))) (P.vertex i) (by
+@@ -46,2 +114,2 @@
+-@[simp] theorem edgeLine_initial (i : ZMod J.n) :
+-    J.edgeLine i (J.vertex i) = 0 := by
++@[simp] private theorem edgeLine_initial (i : ZMod (m + 3)) :
++    P.edgeLine i (P.vertex i) = 0 := by
+@@ -50,2 +118,2 @@
+-@[simp] theorem edgeLine_terminal (i : ZMod J.n) :
+-    J.edgeLine i (J.vertex (i + 1)) = 0 := by
++@[simp] private theorem edgeLine_terminal (i : ZMod (m + 3)) :
++    P.edgeLine i (P.vertex (i + 1)) = 0 := by
+@@ -55,3 +123,3 @@
+-theorem edgeLine_eq_zero_of_mem_edgeSegment (i : ZMod J.n) {x : Plane}
+-    (hx : x ∈ J.edgeSegment i) : J.edgeLine i x = 0 := by
+-  rw [edgeSegment, segment_eq_image] at hx
++private theorem edgeLine_eq_zero_of_mem_edge (i : ZMod (m + 3)) {x : Plane}
++    (hx : x ∈ P.edge i) : P.edgeLine i x = 0 := by
++  rw [edge, segment_eq_image] at hx
+@@ -62,3 +130,3 @@
+-theorem edgeLine_surjective (i : ZMod J.n) : Function.Surjective (J.edgeLine i) := by
+-  let dx : ℝ := (J.vertex (i + 1) - J.vertex i) 0
+-  let dy : ℝ := (J.vertex (i + 1) - J.vertex i) 1
++private theorem edgeLine_surjective (i : ZMod (m + 3)) : Function.Surjective (P.edgeLine i) := by
++  let dx : ℝ := (P.vertex (i + 1) - P.vertex i) 0
++  let dy : ℝ := (P.vertex (i + 1) - P.vertex i) 1
+@@ -68 +136 @@
+-    apply J.adjacent_ne i
++    apply P.vertex_ne_succ i
+@@ -78,5 +146,5 @@
+-  refine ⟨J.vertex i + (y / (dx ^ 2 + dy ^ 2)) • planePoint (-dy) dx, ?_⟩
+-  change (J.vertex (i + 1) - J.vertex i) 0 *
+-      (J.vertex i + (y / (dx ^ 2 + dy ^ 2)) • planePoint (-dy) dx - J.vertex i) 1 -
+-      (J.vertex (i + 1) - J.vertex i) 1 *
+-      (J.vertex i + (y / (dx ^ 2 + dy ^ 2)) • planePoint (-dy) dx - J.vertex i) 0 = y
++  refine ⟨P.vertex i + (y / (dx ^ 2 + dy ^ 2)) • planePoint (-dy) dx, ?_⟩
++  change (P.vertex (i + 1) - P.vertex i) 0 *
++      (P.vertex i + (y / (dx ^ 2 + dy ^ 2)) • planePoint (-dy) dx - P.vertex i) 1 -
++      (P.vertex (i + 1) - P.vertex i) 1 *
++      (P.vertex i + (y / (dx ^ 2 + dy ^ 2)) • planePoint (-dy) dx - P.vertex i) 0 = y
+@@ -90,3 +158,3 @@
+-theorem interior_edgeLine_nonneg (i : ZMod J.n) :
+-    interior {x | 0 ≤ J.edgeLine i x} = {x | 0 < J.edgeLine i x} := by
+-  let f := J.edgeLine i
++private theorem interior_edgeLine_nonneg (i : ZMod (m + 3)) :
++    interior {x | 0 ≤ P.edgeLine i x} = {x | 0 < P.edgeLine i x} := by
++  let f := P.edgeLine i
+@@ -95 +163 @@
+-    (J.edgeLine_surjective i)).preimage_interior_eq_interior_preimage
++    (P.edgeLine_surjective i)).preimage_interior_eq_interior_preimage
+@@ -98,3 +166,3 @@
+-theorem interior_edgeLine_nonpos (i : ZMod J.n) :
+-    interior {x | J.edgeLine i x ≤ 0} = {x | J.edgeLine i x < 0} := by
+-  let f := J.edgeLine i
++private theorem interior_edgeLine_nonpos (i : ZMod (m + 3)) :
++    interior {x | P.edgeLine i x ≤ 0} = {x | P.edgeLine i x < 0} := by
++  let f := P.edgeLine i
+@@ -103 +171 @@
+-    (J.edgeLine_surjective i)).preimage_interior_eq_interior_preimage
++    (P.edgeLine_surjective i)).preimage_interior_eq_interior_preimage
+@@ -106,5 +174,4 @@
+-/-- The finite list of supporting lines used in Moise's arrangement proof. -/
+-noncomputable def edgeLines : List (Plane →ᵃ[ℝ] ℝ) :=
+-  (Finset.univ : Finset (ZMod J.n)).toList.map J.edgeLine
+-
+-theorem edgeLine_mem_edgeLines (i : ZMod J.n) : J.edgeLine i ∈ J.edgeLines := by
++private noncomputable def edgeLines : List (Plane →ᵃ[ℝ] ℝ) :=
++  (Finset.univ : Finset (ZMod (m + 3))).toList.map P.edgeLine
++
++private theorem edgeLine_mem_edgeLines (i : ZMod (m + 3)) : P.edgeLine i ∈ P.edgeLines := by
+@@ -113,5 +180,4 @@
+-/-- A positive radius of a closed ball containing the closed polygonal region. -/
+-noncomputable def enclosingRadius : ℝ :=
+-  max (J.isCompact_closedRegion.isBounded.subset_closedBall (0 : Plane)).choose 1
+-
+-theorem enclosingRadius_pos : 0 < J.enclosingRadius := by
++private noncomputable def enclosingRadius : ℝ :=
++  max (P.isCompact_closure_inside.isBounded.subset_closedBall (0 : Plane)).choose 1
++
++private theorem enclosingRadius_pos : 0 < P.enclosingRadius := by
+@@ -121,2 +187,2 @@
+-theorem closedRegion_subset_enclosingBall :
+-    J.closedRegion ⊆ Metric.closedBall (0 : Plane) J.enclosingRadius := by
++private theorem closedRegion_subset_enclosingBall :
++    (closure (Schoenflies.inside P.carrier)) ⊆ Metric.closedBall (0 : Plane) P.enclosingRadius := by
+@@ -124 +190 @@
+-  have h := (J.isCompact_closedRegion.isBounded.subset_closedBall (0 : Plane)).choose_spec hx
++  have h := (P.isCompact_closure_inside.isBounded.subset_closedBall (0 : Plane)).choose_spec hx
+@@ -128,2 +194 @@
+-/-- Vertices of a large triangle containing the ball of radius `R`. -/
+-def enclosingTriangleVertices (R : ℝ) : Fin 3 → Plane :=
++private def enclosingTriangleVertices (R : ℝ) : Fin 3 → Plane :=
+@@ -132 +197 @@
+-theorem enclosingTriangleVertices_affineIndependent {R : ℝ} (hR : 0 < R) :
++private theorem enclosingTriangleVertices_affineIndependent {R : ℝ} (hR : 0 < R) :
+@@ -138 +203 @@
+-theorem closedBall_subset_enclosingTriangle {R : ℝ} (hR : 0 < R) :
++private theorem closedBall_subset_enclosingTriangle {R : ℝ} (hR : 0 < R) :
+@@ -172,7 +237,6 @@
+-/-- The one-triangle seed mesh in which the supporting-line arrangement is constructed. -/
+-noncomputable def enclosingMesh : TriangleMesh :=
+-  TriangleMesh.single (enclosingTriangleVertices J.enclosingRadius)
+-    (enclosingTriangleVertices_affineIndependent J.enclosingRadius_pos)
+-
+-theorem closedRegion_subset_enclosingMesh_support :
+-    J.closedRegion ⊆ J.enclosingMesh.toPlaneComplex.support := by
++private noncomputable def enclosingMesh : TriangleMesh :=
++  TriangleMesh.single (enclosingTriangleVertices P.enclosingRadius)
++    (enclosingTriangleVertices_affineIndependent P.enclosingRadius_pos)
++
++private theorem closedRegion_subset_enclosingMesh_support :
++    (closure (Schoenflies.inside P.carrier)) ⊆ P.enclosingMesh.toPlaneComplex.support := by
+@@ -180,26 +244,24 @@
+-  exact J.closedRegion_subset_enclosingBall.trans
+-    (closedBall_subset_enclosingTriangle J.enclosingRadius_pos)
+-
+-/-- The finite mesh obtained by cutting the enclosing triangle along every polygon edge line. -/
+-noncomputable def arrangementMesh : TriangleMesh :=
+-  J.enclosingMesh.refineByLines J.edgeLines
+-
+-theorem arrangementMesh_support :
+-    J.arrangementMesh.toPlaneComplex.support = J.enclosingMesh.toPlaneComplex.support :=
+-  J.enclosingMesh.refineByLines_support J.edgeLines
+-
+-theorem arrangementMesh_isMonochromatic (i : ZMod J.n) :
+-    J.arrangementMesh.IsMonochromatic (J.edgeLine i) :=
+-  J.enclosingMesh.refineByLines_isMonochromatic_of_mem J.edgeLines (J.edgeLine_mem_edgeLines i)
+-
+-theorem closedRegion_subset_arrangementMesh_support :
+-    J.closedRegion ⊆ J.arrangementMesh.toPlaneComplex.support := by
+-  rw [J.arrangementMesh_support]
+-  exact J.closedRegion_subset_enclosingMesh_support
+-
+-/-- Carrier of one maximal triangle in the supporting-line arrangement. -/
+-def arrangementTriangleCarrier (t : Finset J.arrangementMesh.Vertex) : Set Plane :=
+-  convexHull ℝ (J.arrangementMesh.position '' (t : Set _))
+-
+-theorem convex_arrangementTriangleCarrier (t : Finset J.arrangementMesh.Vertex) :
+-    Convex ℝ (J.arrangementTriangleCarrier t) :=
++  exact P.closedRegion_subset_enclosingBall.trans
++    (closedBall_subset_enclosingTriangle P.enclosingRadius_pos)
++
++private noncomputable def arrangementMesh : TriangleMesh :=
++  P.enclosingMesh.refineByLines P.edgeLines
++
++private theorem arrangementMesh_support :
++    P.arrangementMesh.toPlaneComplex.support = P.enclosingMesh.toPlaneComplex.support :=
++  P.enclosingMesh.refineByLines_support P.edgeLines
++
++private theorem arrangementMesh_isMonochromatic (i : ZMod (m + 3)) :
++    P.arrangementMesh.IsMonochromatic (P.edgeLine i) :=
++  P.enclosingMesh.refineByLines_isMonochromatic_of_mem P.edgeLines (P.edgeLine_mem_edgeLines i)
++
++private theorem closedRegion_subset_arrangementMesh_support :
++    (closure (Schoenflies.inside P.carrier)) ⊆ P.arrangementMesh.toPlaneComplex.support := by
++  rw [P.arrangementMesh_support]
++  exact P.closedRegion_subset_enclosingMesh_support
++
++private def arrangementTriangleCarrier (t : Finset P.arrangementMesh.Vertex) : Set Plane :=
++  convexHull ℝ (P.arrangementMesh.position '' (t : Set _))
++
++private theorem convex_arrangementTriangleCarrier (t : Finset P.arrangementMesh.Vertex) :
++    Convex ℝ (P.arrangementTriangleCarrier t) :=
+@@ -208,8 +270,8 @@
+-theorem isClosed_arrangementTriangleCarrier (t : Finset J.arrangementMesh.Vertex) :
+-    IsClosed (J.arrangementTriangleCarrier t) :=
+-  (t.finite_toSet.image J.arrangementMesh.position).isClosed_convexHull ℝ
+-
+-theorem arrangementTriangleCarrier_interior_nonempty
+-    {t : Finset J.arrangementMesh.Vertex} (ht : t ∈ J.arrangementMesh.triangles) :
+-    (interior (J.arrangementTriangleCarrier t)).Nonempty := by
+-  apply (J.convex_arrangementTriangleCarrier t).interior_nonempty_iff_affineSpan_eq_top.mpr
++private theorem isClosed_arrangementTriangleCarrier (t : Finset P.arrangementMesh.Vertex) :
++    IsClosed (P.arrangementTriangleCarrier t) :=
++  (t.finite_toSet.image P.arrangementMesh.position).isClosed_convexHull ℝ
++
++private theorem arrangementTriangleCarrier_interior_nonempty
++    {t : Finset P.arrangementMesh.Vertex} (ht : t ∈ P.arrangementMesh.triangles) :
++    (interior (P.arrangementTriangleCarrier t)).Nonempty := by
++  apply (P.convex_arrangementTriangleCarrier t).interior_nonempty_iff_affineSpan_eq_top.mpr
+@@ -217,2 +279,2 @@
+-  have hrange : Set.range (fun v : t => J.arrangementMesh.position v) =
+-      J.arrangementMesh.position '' (t : Set _) := by
++  have hrange : Set.range (fun v : t => P.arrangementMesh.position v) =
++      P.arrangementMesh.position '' (t : Set _) := by
+@@ -222 +284 @@
+-  have hAI := J.arrangementMesh.affineIndependent_triangle t ht
++  have hAI := P.arrangementMesh.affineIndependent_triangle t ht
+@@ -224,6 +286,6 @@
+-  rw [Fintype.card_coe, J.arrangementMesh.card_triangle t ht]
+-  simp [Plane]
+-
+-theorem closure_interior_arrangementTriangleCarrier
+-    {t : Finset J.arrangementMesh.Vertex} (ht : t ∈ J.arrangementMesh.triangles) :
+-    closure (interior (J.arrangementTriangleCarrier t)) = J.arrangementTriangleCarrier t := by
++  rw [Fintype.card_coe, P.arrangementMesh.card_triangle t ht]
++  simp
++
++private theorem closure_interior_arrangementTriangleCarrier
++    {t : Finset P.arrangementMesh.Vertex} (ht : t ∈ P.arrangementMesh.triangles) :
++    closure (interior (P.arrangementTriangleCarrier t)) = P.arrangementTriangleCarrier t := by
+@@ -231,9 +293,8 @@
+-    closure (interior (J.arrangementTriangleCarrier t)) =
+-        closure (J.arrangementTriangleCarrier t) :=
+-      (J.convex_arrangementTriangleCarrier t).closure_interior_eq_closure_of_nonempty_interior
+-        (J.arrangementTriangleCarrier_interior_nonempty ht)
+-    _ = J.arrangementTriangleCarrier t := (J.isClosed_arrangementTriangleCarrier t).closure_eq
+-
+-/-- Every open triangle chamber of the supporting-line arrangement misses the polygon. -/
+-theorem arrangementTriangle_interior_disjoint_carrier
+-    {t : Finset J.arrangementMesh.Vertex} (ht : t ∈ J.arrangementMesh.triangles) :
++    closure (interior (P.arrangementTriangleCarrier t)) =
++        closure (P.arrangementTriangleCarrier t) :=
++      (P.convex_arrangementTriangleCarrier t).closure_interior_eq_closure_of_nonempty_interior
++        (P.arrangementTriangleCarrier_interior_nonempty ht)
++    _ = P.arrangementTriangleCarrier t := (P.isClosed_arrangementTriangleCarrier t).closure_eq
++
++private theorem arrangementTriangle_interior_disjoint_carrier
++    {t : Finset P.arrangementMesh.Vertex} (ht : t ∈ P.arrangementMesh.triangles) :
+@@ -241,2 +302,2 @@
+-      (interior (J.arrangementTriangleCarrier t))
+-      J.carrier := by
++      (interior (P.arrangementTriangleCarrier t))
++      P.carrier := by
+@@ -246,4 +307,4 @@
+-  have hxzero : J.edgeLine i x = 0 := J.edgeLine_eq_zero_of_mem_edgeSegment i hxi
+-  rcases J.arrangementMesh_isMonochromatic i t ht with hpos | hneg
+-  · have hsubset : J.arrangementTriangleCarrier t ⊆
+-        {y | 0 ≤ J.edgeLine i y} := by
++  have hxzero : P.edgeLine i x = 0 := P.edgeLine_eq_zero_of_mem_edge i hxi
++  rcases P.arrangementMesh_isMonochromatic i t ht with hpos | hneg
++  · have hsubset : P.arrangementTriangleCarrier t ⊆
++        {y | 0 ≤ P.edgeLine i y} := by
+@@ -254 +315 @@
+-      · exact (convex_Ici (0 : ℝ)).affine_preimage (J.edgeLine i)
++      · exact (convex_Ici (0 : ℝ)).affine_preimage (P.edgeLine i)
+@@ -256,2 +317,2 @@
+-    rw [J.interior_edgeLine_nonneg i] at hxstrict
+-    change 0 < J.edgeLine i x at hxstrict
++    rw [P.interior_edgeLine_nonneg i] at hxstrict
++    change 0 < P.edgeLine i x at hxstrict
+@@ -259,2 +320,2 @@
+-  · have hsubset : J.arrangementTriangleCarrier t ⊆
+-        {y | J.edgeLine i y ≤ 0} := by
++  · have hsubset : P.arrangementTriangleCarrier t ⊆
++        {y | P.edgeLine i y ≤ 0} := by
+@@ -265 +326 @@
+-      · exact (convex_Iic (0 : ℝ)).affine_preimage (J.edgeLine i)
++      · exact (convex_Iic (0 : ℝ)).affine_preimage (P.edgeLine i)
+@@ -267,2 +328,2 @@
+-    rw [J.interior_edgeLine_nonpos i] at hxstrict
+-    change J.edgeLine i x < 0 at hxstrict
++    rw [P.interior_edgeLine_nonpos i] at hxstrict
++    change P.edgeLine i x < 0 at hxstrict
+@@ -271,5 +332,5 @@
+-theorem arrangementTriangle_interior_side
+-    {t : Finset J.arrangementMesh.Vertex} (ht : t ∈ J.arrangementMesh.triangles) :
+-    interior (J.arrangementTriangleCarrier t) ⊆ J.interiorRegion ∨
+-      interior (J.arrangementTriangleCarrier t) ⊆ J.exteriorRegion := by
+-  let s := interior (J.arrangementTriangleCarrier t)
++private theorem arrangementTriangle_interior_side
++    {t : Finset P.arrangementMesh.Vertex} (ht : t ∈ P.arrangementMesh.triangles) :
++    interior (P.arrangementTriangleCarrier t) ⊆ (Schoenflies.inside P.carrier) ∨
++      interior (P.arrangementTriangleCarrier t) ⊆ (Schoenflies.outside P.carrier) := by
++  let s := interior (P.arrangementTriangleCarrier t)
+@@ -277,2 +338,2 @@
+-    (J.convex_arrangementTriangleCarrier t).interior.isPreconnected
+-  have hscarrier : s ⊆ J.carrierᶜ := by
++    (P.convex_arrangementTriangleCarrier t).interior.isPreconnected
++  have hscarrier : s ⊆ P.carrierᶜ := by
+@@ -280,3 +341,3 @@
+-    exact Set.disjoint_left.mp (J.arrangementTriangle_interior_disjoint_carrier ht) hx
+-  have hsunion : s ⊆ J.interiorRegion ∪ J.exteriorRegion := by
+-    rw [J.interior_union_exterior]
++    exact Set.disjoint_left.mp (P.arrangementTriangle_interior_disjoint_carrier ht) hx
++  have hsunion : s ⊆ (Schoenflies.inside P.carrier) ∪ (Schoenflies.outside P.carrier) := by
++    rw [Schoenflies.inside_union_outside P.carrier]
+@@ -284 +345 @@
+-  obtain ⟨x, hx⟩ := J.arrangementTriangleCarrier_interior_nonempty ht
++  obtain ⟨x, hx⟩ := P.arrangementTriangleCarrier_interior_nonempty ht
+@@ -287,11 +348,11 @@
+-  · exact Or.inl <| hsconn.subset_left_of_subset_union J.isOpen_interiorRegion
+-      J.isOpen_exteriorRegion J.disjoint_interior_exterior hsunion ⟨x, hx, hxin⟩
+-  · exact Or.inr <| hsconn.subset_right_of_subset_union J.isOpen_interiorRegion
+-      J.isOpen_exteriorRegion J.disjoint_interior_exterior hsunion ⟨x, hx, hxout⟩
+-
+-/-- The arrangement chambers lying on the bounded side of the polygon. -/
+-def IsInteriorArrangementTriangle (t : Finset J.arrangementMesh.Vertex) : Prop :=
+-  interior (J.arrangementTriangleCarrier t) ⊆ J.interiorRegion
+-
+-/-- The finite mesh formed by all bounded-side arrangement chambers. -/
+-noncomputable def closedRegionMesh : TriangleMesh :=
++  · exact Or.inl <| hsconn.subset_left_of_subset_union P.isSeparating_carrier.isOpen_inside
++      P.isSeparating_carrier.isOpen_outside
++      (Schoenflies.disjoint_inside_outside (C := P.carrier)) hsunion ⟨x, hx, hxin⟩
++  · exact Or.inr <| hsconn.subset_right_of_subset_union P.isSeparating_carrier.isOpen_inside
++      P.isSeparating_carrier.isOpen_outside
++      (Schoenflies.disjoint_inside_outside (C := P.carrier)) hsunion ⟨x, hx, hxout⟩
++
++private def isInteriorArrangementTriangle (t : Finset P.arrangementMesh.Vertex) : Prop :=
++  interior (P.arrangementTriangleCarrier t) ⊆ (Schoenflies.inside P.carrier)
++
++private noncomputable def closedRegionMesh : TriangleMesh :=
+@@ -300,5 +361,5 @@
+-    exact J.arrangementMesh.restrictTriangles J.IsInteriorArrangementTriangle
+-
+-theorem closedRegionMesh_triangle_mem {t : Finset J.closedRegionMesh.Vertex} :
+-    t ∈ J.closedRegionMesh.triangles ↔
+-      t ∈ J.arrangementMesh.triangles ∧ J.IsInteriorArrangementTriangle t := by
++    exact P.arrangementMesh.restrictTriangles P.isInteriorArrangementTriangle
++
++private theorem closedRegionMesh_triangle_mem {t : Finset P.closedRegionMesh.Vertex} :
++    t ∈ P.closedRegionMesh.triangles ↔
++      t ∈ P.arrangementMesh.triangles ∧ P.isInteriorArrangementTriangle t := by
+@@ -306,7 +367,7 @@
+-  exact J.arrangementMesh.mem_restrictTriangles_triangles J.IsInteriorArrangementTriangle
+-
+-theorem arrangementTriangleCarrier_subset_closedRegion
+-    {t : Finset J.arrangementMesh.Vertex} (ht : t ∈ J.arrangementMesh.triangles)
+-    (hinside : J.IsInteriorArrangementTriangle t) :
+-    J.arrangementTriangleCarrier t ⊆ J.closedRegion := by
+-  rw [← J.closure_interior_arrangementTriangleCarrier ht, closedRegion]
++  exact P.arrangementMesh.mem_restrictTriangles_triangles P.isInteriorArrangementTriangle
++
++private theorem arrangementTriangleCarrier_subset_closedRegion
++    {t : Finset P.arrangementMesh.Vertex} (ht : t ∈ P.arrangementMesh.triangles)
++    (hinside : P.isInteriorArrangementTriangle t) :
++    P.arrangementTriangleCarrier t ⊆ (closure (Schoenflies.inside P.carrier)) := by
++  rw [← P.closure_interior_arrangementTriangleCarrier ht]
+@@ -315,2 +376,2 @@
+-theorem closedRegionMesh_support_subset :
+-    J.closedRegionMesh.toPlaneComplex.support ⊆ J.closedRegion := by
++private theorem closedRegionMesh_support_subset :
++    P.closedRegionMesh.toPlaneComplex.support ⊆ (closure (Schoenflies.inside P.carrier)) := by
+@@ -321,5 +382,5 @@
+-  obtain ⟨htarr, htinside⟩ := J.closedRegionMesh_triangle_mem.mp ht
+-  exact J.arrangementTriangleCarrier_subset_closedRegion htarr htinside hxt
+-
+-theorem interiorRegion_subset_closedRegionMesh_support :
+-    J.interiorRegion ⊆ J.closedRegionMesh.toPlaneComplex.support := by
++  obtain ⟨htarr, htinside⟩ := P.closedRegionMesh_triangle_mem.mp ht
++  exact P.arrangementTriangleCarrier_subset_closedRegion htarr htinside hxt
++
++private theorem interiorRegion_subset_closedRegionMesh_support :
++    (Schoenflies.inside P.carrier) ⊆ P.closedRegionMesh.toPlaneComplex.support := by
+@@ -327,2 +388,2 @@
+-  have hxclosed : x ∈ J.closedRegion := by
+-    rw [J.closedRegion_eq_union]
++  have hxclosed : x ∈ (closure (Schoenflies.inside P.carrier)) := by
++    rw [P.closure_inside_eq_union]
+@@ -330 +391 @@
+-  have hxsupport := J.closedRegion_subset_arrangementMesh_support hxclosed
++  have hxsupport := P.closedRegion_subset_arrangementMesh_support hxclosed
+@@ -334,2 +395,2 @@
+-  have hxclosure : x ∈ closure (interior (J.arrangementTriangleCarrier t)) := by
+-    rw [J.closure_interior_arrangementTriangleCarrier ht]
++  have hxclosure : x ∈ closure (interior (P.arrangementTriangleCarrier t)) := by
++    rw [P.closure_interior_arrangementTriangleCarrier ht]
+@@ -338,2 +399,2 @@
+-      x ∈ closure (J.interiorRegion ∩ interior (J.arrangementTriangleCarrier t)) :=
+-    J.isOpen_interiorRegion.inter_closure ⟨hxinside, hxclosure⟩
++      x ∈ closure ((Schoenflies.inside P.carrier) ∩ interior (P.arrangementTriangleCarrier t)) :=
++    P.isSeparating_carrier.isOpen_inside.inter_closure ⟨hxinside, hxclosure⟩
+@@ -341 +402 @@
+-      (J.interiorRegion ∩ interior (J.arrangementTriangleCarrier t)).Nonempty :=
++      ((Schoenflies.inside P.carrier) ∩ interior (P.arrangementTriangleCarrier t)).Nonempty :=
+@@ -344 +405 @@
+-      (interior (J.arrangementTriangleCarrier t) ∩ J.interiorRegion).Nonempty := by
++      (interior (P.arrangementTriangleCarrier t) ∩ (Schoenflies.inside P.carrier)).Nonempty := by
+@@ -347,2 +408,2 @@
+-  have htinside : J.IsInteriorArrangementTriangle t := by
+-    rcases J.arrangementTriangle_interior_side ht with hin | hout
++  have htinside : P.isInteriorArrangementTriangle t := by
++    rcases P.arrangementTriangle_interior_side ht with hin | hout
+@@ -351 +412,2 @@
+-      exact False.elim <| Set.disjoint_left.mp J.disjoint_interior_exterior hyinside (hout hyt)
++      exact False.elim <| Set.disjoint_left.mp
++        (Schoenflies.disjoint_inside_outside (C := P.carrier)) hyinside (hout hyt)
+@@ -354,6 +416,5 @@
+-  exact ⟨t, J.closedRegionMesh_triangle_mem.mpr ⟨ht, htinside⟩, hxt⟩
+-
+-theorem closedRegionMesh_support :
+-    J.closedRegionMesh.toPlaneComplex.support = J.closedRegion := by
+-  apply Set.Subset.antisymm J.closedRegionMesh_support_subset
+-  rw [closedRegion]
++  exact ⟨t, P.closedRegionMesh_triangle_mem.mpr ⟨ht, htinside⟩, hxt⟩
++
++private theorem closedRegionMesh_support :
++    P.closedRegionMesh.toPlaneComplex.support = (closure (Schoenflies.inside P.carrier)) := by
++  apply Set.Subset.antisymm P.closedRegionMesh_support_subset
+@@ -361,4 +422,5 @@
+-    J.interiorRegion_subset_closedRegionMesh_support
+-    J.closedRegionMesh.toPlaneComplex.isCompact_support.isClosed
+-
+-theorem disjoint_carrier_exteriorRegion : Disjoint J.carrier J.exteriorRegion := by
++    P.interiorRegion_subset_closedRegionMesh_support
++    P.closedRegionMesh.toPlaneComplex.isCompact_support.isClosed
++
++private theorem disjoint_carrier_exteriorRegion :
++    Disjoint P.carrier (Schoenflies.outside P.carrier) := by
+@@ -367,2 +429,2 @@
+-  have hxcompl : x ∈ J.carrierᶜ := by
+-    rw [← J.interior_union_exterior]
++  have hxcompl : x ∈ P.carrierᶜ := by
++    rw [← Schoenflies.inside_union_outside P.carrier]
+@@ -372,6 +434,8 @@
+-theorem disjoint_closedRegion_exteriorRegion : Disjoint J.closedRegion J.exteriorRegion := by
+-  rw [J.closedRegion_eq_union]
+-  exact J.disjoint_interior_exterior.sup_left J.disjoint_carrier_exteriorRegion
+-
+-/-- The topological boundary of the closed polygonal disk is the original polygon. -/
+-theorem frontier_closedRegion : frontier J.closedRegion = J.carrier := by
++private theorem disjoint_closedRegion_exteriorRegion :
++    Disjoint (closure (Schoenflies.inside P.carrier)) (Schoenflies.outside P.carrier) := by
++  rw [P.closure_inside_eq_union]
++  exact (Schoenflies.disjoint_inside_outside (C := P.carrier)).sup_left
++    P.disjoint_carrier_exteriorRegion
++
++private theorem frontier_closedRegion :
++    frontier (closure (Schoenflies.inside P.carrier)) = P.carrier := by
+@@ -380 +444 @@
+-    have hxclosed : x ∈ J.closedRegion := by
++    have hxclosed : x ∈ (closure (Schoenflies.inside P.carrier)) := by
+@@ -382,2 +446,2 @@
+-      simpa [J.isCompact_closedRegion.isClosed.closure_eq] using hx'
+-    rw [J.closedRegion_eq_union] at hxclosed
++      simpa [P.isCompact_closure_inside.isClosed.closure_eq] using hx'
++    rw [P.closure_inside_eq_union] at hxclosed
+@@ -385,3 +449,3 @@
+-    · have hxint : x ∈ interior J.closedRegion :=
+-        interior_maximal (by rw [J.closedRegion_eq_union]; exact Set.subset_union_left)
+-          J.isOpen_interiorRegion hxinside
++    · have hxint : x ∈ interior (closure (Schoenflies.inside P.carrier)) :=
++        interior_maximal (by rw [P.closure_inside_eq_union]; exact Set.subset_union_left)
++          P.isSeparating_carrier.isOpen_inside hxinside
+@@ -391,2 +455,2 @@
+-    have hxclosed : x ∈ J.closedRegion := by
+-      rw [J.closedRegion_eq_union]
++    have hxclosed : x ∈ (closure (Schoenflies.inside P.carrier)) := by
++      rw [P.closure_inside_eq_union]
+@@ -394 +458 @@
+-    rw [J.isCompact_closedRegion.isClosed.frontier_eq]
++    rw [P.isCompact_closure_inside.isClosed.frontier_eq]
+@@ -397,2 +461,2 @@
+-    have hxclosureExterior : x ∈ closure J.exteriorRegion :=
+-      frontier_subset_closure (J.frontier_exteriorRegion.symm ▸ hxcarrier)
++    have hxclosureExterior : x ∈ closure (Schoenflies.outside P.carrier) :=
++      frontier_subset_closure (P.isSeparating_carrier.frontier_outside.symm ▸ hxcarrier)
+@@ -400 +464,2 @@
+-        x ∈ closure (interior J.closedRegion ∩ J.exteriorRegion) :=
++        x ∈ closure (interior (closure (Schoenflies.inside P.carrier)) ∩
++          Schoenflies.outside P.carrier) :=
+@@ -403 +468 @@
+-    exact Set.disjoint_left.mp J.disjoint_closedRegion_exteriorRegion
++    exact Set.disjoint_left.mp P.disjoint_closedRegion_exteriorRegion
+@@ -406 +471,2 @@
+-theorem interior_closedRegion : interior J.closedRegion = J.interiorRegion := by
++private theorem interior_closedRegion :
++    interior (closure (Schoenflies.inside P.carrier)) = Schoenflies.inside P.carrier := by
+@@ -409,2 +475,2 @@
+-    have hpClosed : p ∈ J.closedRegion := interior_subset hp
+-    rw [J.closedRegion_eq_union] at hpClosed
++    have hpClosed : p ∈ (closure (Schoenflies.inside P.carrier)) := interior_subset hp
++    rw [P.closure_inside_eq_union] at hpClosed
+@@ -413,2 +479,2 @@
+-    · have hpFrontier : p ∈ frontier J.closedRegion := by
+-        rw [J.frontier_closedRegion]
++    · have hpFrontier : p ∈ frontier (closure (Schoenflies.inside P.carrier)) := by
++        rw [P.frontier_closedRegion]
+@@ -417,13 +483,25 @@
+-  · exact interior_maximal (by rw [J.closedRegion_eq_union]; exact Set.subset_union_left)
+-      J.isOpen_interiorRegion
+-
+-theorem isConnected_closedRegion : IsConnected J.closedRegion := by
+-  rw [closedRegion]
+-  exact J.isConnected_interiorRegion.closure
+-
+-end PolygonalCircle
+-
+-end Moise
+-end ClassificationOfSurfaces
+-end Topology
+-end LeanEval
++  · exact interior_maximal (by rw [P.closure_inside_eq_union]; exact Set.subset_union_left)
++      P.isSeparating_carrier.isOpen_inside
++
++private theorem isConnected_closedRegion :
++    IsConnected (closure (Schoenflies.inside P.carrier)) :=
++  P.isSeparating_carrier.isConnected_inside.closure
++
++theorem exists_triangle_mesh_inside :
++    ∃ M : TriangleMesh,
++      M.toPlaneComplex.support = closure (Schoenflies.inside P.carrier) ∧
++        frontier M.toPlaneComplex.support = P.carrier := by
++  refine ⟨P.closedRegionMesh, P.closedRegionMesh_support, ?_⟩
++  rw [P.closedRegionMesh_support]
++  exact P.frontier_closedRegion
++
++theorem exists_simplicial_complex_inside :
++    ∃ K : Geometry.SimplicialComplex ℝ Plane,
++      K.faces.Finite ∧ K.space = closure (Schoenflies.inside P.carrier) ∧
++        ∀ s ∈ K.faces, ∃ t ∈ K.faces, s ⊆ t ∧ t.card = 3 := by
++  refine ⟨planeComplexToSimplicialComplex P.closedRegionMesh.toPlaneComplex,
++    planeComplexToSimplicialComplex_faces_finite _, ?_,
++    planeComplexToSimplicialComplex_pure _ P.closedRegionMesh.toPlaneComplex_isPure2⟩
++  exact (planeComplexToSimplicialComplex_space _).trans P.closedRegionMesh_support
++
++end Schoenflies.PrePolygon

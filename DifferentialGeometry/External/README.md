@@ -31,7 +31,8 @@ relocation are recorded in `Schoenflies/MODIFICATIONS.md`.
 - **Authors**: ClassificationOfSurfaces contributors
 - **License**: Apache-2.0 (`ClassificationOfSurfaces/LICENSE`)
 
-Three selected finite planar mesh, line-subdivision and free-triangle modules.
+Selected finite planar mesh, line-subdivision, free-triangle and geometric
+attachment modules, plus the bridge to the existing native PrePolygon API.
 The original namespace, README, attribution and documentation are retained.
 See `ClassificationOfSurfaces/PORTING.md`, `MODIFICATIONS.md` and `UPSTREAM.patch`
   for scope, exact changes and verification. This port does not include the

@@ -1,6 +1,6 @@
 # Local modifications
 
-Upstream: https://github.com/mccorvie/classification-of-surfaces, revision e3c7230fe78d7b056a415d9ecae6f77887046b32. The original Apache license, README, source copyright/authors and retained declaration documentation are preserved. UPSTREAM.patch records every source-line change against the pinned originals.
+Upstream: https://github.com/mccorvie/classification-of-surfaces, revision e3c7230fe78d7b056a415d9ecae6f77887046b32. The original Apache license, README, source copyright/authors and retained declaration documentation are preserved. UPSTREAM.patch records full-module source changes against the pinned originals. ONE_EDGE_SELECTION.json records the exact immutable sources, declaration locations and unchanged body hashes for the selected attachment layer.
 
 ## Selected scope and imports
 
@@ -21,3 +21,37 @@ FreeTriangle retains all 75 mathematical declarations and proof bodies unchanged
 ## Module placement
 
 Relative to the already checked scratch sources, production preparation changes only internal import prefixes and the header's modification-record path. No mathematical body, namespace, variable scope, source option, linter or dependency pin changes in this step.
+
+## Native polygon triangulation and geometric attachment
+
+PrePolygonTriangulation adapts PolygonalPolyhedron.lean at the same upstream
+revision to the existing Schoenflies.PrePolygon, inside/outside and separation
+APIs. It imports no duplicate PolygonalJordan development. All arrangement,
+refinement, finite image conversion, support and boundary construction mechanics
+remain private. The public exists_simplicial_complex_inside exposes the native
+Mathlib finite pure two-dimensional complex with its exact support equation.
+The public exists_triangle_mesh_inside derives an actual TriangleMesh with
+support equal to closure (inside P.carrier) and frontier equal to P.carrier
+from the same private construction. No triangulation assumption is introduced.
+
+The native adapter repairs finite-face transport using the verified
+affineIndependent_finset_coe helper, explicit convex-hull image equations and
+mem_iUnion₂. AddTorsorBases supplies the pinned convex interior theorem. The
+unused Plane simp argument is removed. Relative to checked private source,
+production changes only import/header paths, exposes the existing simplicial
+result and adds the eight-line mesh existence corollary. UPSTREAM.patch records
+the complete zero-context delta from PolygonalPolyhedron.
+
+Moise/OneEdgeAttachment selects 22 ordered-triangle and edge declarations from
+FreeTriangleMove and six incidence/intersection/frontier declarations from
+PolygonalSchoenflies. All 28 selected declaration bodies, their documentation,
+namespace scopes and original attribution are retained unchanged. Unrelated
+declarations and dependencies are omitted; only the already ported FreeTriangle
+is imported. ONE_EDGE_SELECTION.json records immutable source hashes, exact
+upstream declaration locations and selected body hashes. Relative to checked
+scratch, only the import prefix and modification-notice path change.
+
+The two new production leaves passed fresh module/import consumer gate
+1789231441425991048-schoenflies-788bbe3d. The earlier three-module gate is
+preserved separately; exact final evidence is recorded in PROVENANCE.json. There is no claim of geometric free-triangle selection, remaining
+polygonal-disk recognition, compatible rounding, or smooth disk filling.
