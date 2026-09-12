@@ -3,6 +3,8 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborho
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.SelectedCountersequenceAdapter
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WitnessStrictStability
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.Reconstruction.RiemannFromRicci
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.MixedCurvatureJet
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.UniversalDerivativeConsequences
 
 set_option autoImplicit false
 noncomputable section
@@ -219,23 +221,6 @@ theorem smooth_canonical_neighborhood :
   obtain ⟨Q, hQ, hmodel⟩ := hm delta hd hd1
   exact ⟨Q, hQ, fun x t ht hR => hdelta M _ S o x t (hmodel x t ht hR)⟩
 
-structure MixedCurvatureJet (S : SolutionOn (I := I3) (M := M) D) where
-  value : ∀ a : ℕ, ℕ → ℝ → Tensor0SField (I := I3) (M := M) (n := ∞) (a + 4)
-  spatial : ∀ a t, value a 0 t = curvCovDeriv (I := I3) (S.base.metric t) a
-  time : ∀ a b t, t ∈ D.carrier → ∀ x (v : Fin (a + 4) → TangentSpace I3 x),
-    value a (b + 1) t x v = derivWithin (fun s => value a b s x v) (D.carrier ∩ Set.Iic t) t +
-      ∑ j : Fin (a + 4), value a b t x (Function.update v j
-        (ricciEndAt (S.base.metric t) (metricRicciAt (S.base.metric t) x) (v j)))
-
-
-theorem mixed_curvature_jet_exists (S : SolutionOn (I := I3) (M := M) D)
-    (hS : IsSolutionOn S) : Nonempty (MixedCurvatureJet S) := by
-  sorry
-
-def MixedCurvatureJet.norm {S : SolutionOn (I := I3) (M := M) D}
-    (J : MixedCurvatureJet S) (a b : ℕ) (t : ℝ) (x : M) : ℝ :=
-  Real.sqrt (normSq0S (I := I3) (S.base.metric t) x (a + 4) (J.value a b t x))
-
 theorem fixed_kappa_compactness {kappa : ℝ} (hkappa : 0 < kappa)
     (X : ℕ → PointedFlowData.{u, 0, 0} I3 ancientTimeInterval)
     (hX : ∀ i, IsAncientKappaSolution kappa (X i))
@@ -252,8 +237,8 @@ theorem kappa_universal_derivatives (a b : ℕ) :
     ∃ C : ℝ, 0 < C ∧ ∀ kappa : ℝ, 0 < kappa →
       ∀ P : PointedFlowData.{u, 0, 0} I3 ancientTimeInterval,
         IsAncientKappaSolution kappa P → PointedFlowScalarAtBase P 1 →
-        ∀ J : MixedCurvatureJet P.S, J.norm a b 0 P.basepoint ≤ C := by
-  sorry
+        ∀ J : MixedCurvatureJet P.S, J.norm a b 0 P.basepoint ≤ C :=
+  DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions.exists_kappa_universal_derivatives a b
 
 theorem high_curvature_derivatives (a b : ℕ) :
     ∃ C eta : ℝ, 0 < C ∧ 0 < eta ∧
