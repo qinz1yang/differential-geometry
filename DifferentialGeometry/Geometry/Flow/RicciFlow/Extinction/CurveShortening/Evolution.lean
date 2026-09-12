@@ -352,7 +352,7 @@ theorem rm04_unit_le (B : RicciBackground (I := I) (M := M) D a b)
   have hprod : (∏ a : Fin 4, Real.sqrt ((B.family.metric t).inner p ((vec4 X T T X) a)
       ((vec4 X T T X) a))) = (B.family.metric t).inner p X X := by
     rw [Fin.prod_univ_four]
-    simp [vec4, hTT]
+    simp only [vec4, Fin.isValue, ↓reduceIte, one_ne_zero, hTT, Real.sqrt_one, mul_one, Fin.reduceEq]
     exact Real.mul_self_sqrt (DifferentialGeometry.metric_inner_self_nonneg (B.family.metric t) p X)
   rw [hprod] at h1
   have hnorm : Real.sqrt (normSq0S (B.family.metric t) p 4 (B.family.rm04At t p)) ≤ B.B₁ :=
@@ -383,7 +383,7 @@ theorem ricci_pair_ge (B : RicciBackground (I := I) (M := M) D a b)
   have hprod : (∏ a : Fin 2, Real.sqrt ((B.family.metric t).inner p ((vec2 X X) a)
       ((vec2 X X) a))) = (B.family.metric t).inner p X X := by
     rw [Fin.prod_univ_two]
-    simp [vec2]
+    simp only [vec2, Fin.isValue, Fin.reduceEq, ↓reduceIte]
     exact Real.mul_self_sqrt (DifferentialGeometry.metric_inner_self_nonneg (B.family.metric t) p X)
   rw [hprod] at h1
   have hnorm : Real.sqrt (normSq0S (B.family.metric t) p 2 (B.family.ricciAt t p)) ≤ B.B₀ :=

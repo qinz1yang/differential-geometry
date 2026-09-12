@@ -55,54 +55,54 @@ private theorem endComparisonAngle_mono_of_ray_approximation {g : SmoothRiemanni
   have hlo : ∀ k, 0 < lo k := by
     intro k
     fin_cases k
-    · show 0 < s₁ / 2
+    · change 0 < s₁ / 2
       linarith
-    · show 0 < t₁ / 2
+    · change 0 < t₁ / 2
       linarith
   have hlohi : ∀ k, lo k ≤ hi k := by
     intro k
     fin_cases k
-    · show s₁ / 2 ≤ min a.length d
+    · change s₁ / 2 ≤ min a.length d
       linarith
-    · show t₁ / 2 ≤ min b.length d
+    · change t₁ / 2 ≤ min b.length d
       linarith
   have hia : hi 0 ≤ a.length := by
-    show min a.length d ≤ a.length
+    change min a.length d ≤ a.length
     exact min_le_left _ _
   have hib : hi 1 ≤ b.length := by
-    show min b.length d ≤ b.length
+    change min b.length d ≤ b.length
     exact min_le_left _ _
   have hid : ∀ k, hi k ≤ d := by
     intro k
     fin_cases k
-    · show min a.length d ≤ d
+    · change min a.length d ≤ d
       exact min_le_right _ _
-    · show min b.length d ≤ d
+    · change min b.length d ≤ d
       exact min_le_right _ _
   obtain ⟨A, hA⟩ := hrx a b lo hi hlo hlohi hia hib hid
   have hs₁I : s₁ ∈ Icc (lo 0) (hi 0) := by
     constructor
-    · show s₁ / 2 ≤ s₁
+    · change s₁ / 2 ≤ s₁
       linarith
-    · show s₁ ≤ min a.length d
+    · change s₁ ≤ min a.length d
       linarith
   have hs₂I : s₂ ∈ Icc (lo 0) (hi 0) := by
     constructor
-    · show s₁ / 2 ≤ s₂
+    · change s₁ / 2 ≤ s₂
       linarith
-    · show s₂ ≤ min a.length d
+    · change s₂ ≤ min a.length d
       linarith
   have ht₁I : t₁ ∈ Icc (lo 1) (hi 1) := by
     constructor
-    · show t₁ / 2 ≤ t₁
+    · change t₁ / 2 ≤ t₁
       linarith
-    · show t₁ ≤ min b.length d
+    · change t₁ ≤ min b.length d
       linarith
   have ht₂I : t₂ ∈ Icc (lo 1) (hi 1) := by
     constructor
-    · show t₁ / 2 ≤ t₂
+    · change t₁ / 2 ≤ t₂
       linarith
-    · show t₂ ≤ min b.length d
+    · change t₂ ≤ min b.length d
       linarith
   have heta_s : min s₁ t₁ / 4 ≤ s₁ / 2 := by linarith [min_le_left s₁ t₁, hs₁]
   have heta_t : min s₁ t₁ / 4 ≤ t₁ / 2 := by linarith [min_le_right s₁ t₁, ht₁]

@@ -35,19 +35,19 @@ theorem exists_relative_collar_isotopy
   obtain ⟨G, hG0, hG, hGi, KG, hKG, _, hKGfix, hGiso⟩ :=
     Diffeomorph.exists_isotopy_eq_collar Φ₁ hΦ₁ hi₁ hA hε hw₁
   refine ⟨fun t => (H t).symm.trans (G t), ?_, ?_, ?_, ?_, ?_⟩
-  · show (H 0).symm.trans (G 0) = Diffeomorph.refl 𝓘(ℝ, E) E ∞
+  · change (H 0).symm.trans (G 0) = Diffeomorph.refl 𝓘(ℝ, E) E ∞
     rw [hH0, hG0, Diffeomorph.symm_refl, Diffeomorph.refl_trans]
   · have hfun : (fun q : ℝ × E => ((H q.1).symm.trans (G q.1)) q.2) =
         fun q : ℝ × E => G q.1 ((H q.1).symm q.2) := by
       funext q
-      show G q.1 ((H q.1).symm q.2) = G q.1 ((H q.1).symm q.2)
+      change G q.1 ((H q.1).symm q.2) = G q.1 ((H q.1).symm q.2)
       rfl
     rw [hfun]
     exact hG.comp (contMDiff_fst.prodMk hHi)
   · have hfun : (fun q : ℝ × E => ((H q.1).symm.trans (G q.1)).symm q.2) =
         fun q : ℝ × E => H q.1 ((G q.1).symm q.2) := by
       funext q
-      show H q.1 ((G q.1).symm q.2) = H q.1 ((G q.1).symm q.2)
+      change H q.1 ((G q.1).symm q.2) = H q.1 ((G q.1).symm q.2)
       rfl
     rw [hfun]
     exact hH.comp (contMDiff_fst.prodMk hGi)
@@ -57,7 +57,7 @@ theorem exists_relative_collar_isotopy
       have hxG : x ∉ KG := fun h => hx (Or.inr h)
       have hHx : (H t).symm x = x := by simpa using (hKHfix t).2 hxH
       have hGx : G t x = x := by simpa using (hKGfix t).1 hxG
-      show G t ((H t).symm x) = id x
+      change G t ((H t).symm x) = id x
       rw [hHx, hGx]
       rfl
     · intro x hx
@@ -66,18 +66,18 @@ theorem exists_relative_collar_isotopy
       have hHx : (H t).symm x = x := by simpa using (hKHfix t).2 hxH
       have hGx : G t x = x := by simpa using (hKGfix t).1 hxG
       have hx' : ((H t).symm.trans (G t)) x = x := by
-        show G t ((H t).symm x) = x
+        change G t ((H t).symm x) = x
         rw [hHx, hGx]
       have h2 := Diffeomorph.symm_apply_apply ((H t).symm.trans (G t)) x
       rw [hx'] at h2
-      show ((H t).symm.trans (G t)).symm x = id x
+      change ((H t).symm.trans (G t)).symm x = id x
       rw [h2]
       rfl
   · intro p hp t ht
     have hHt : (H t).symm (Φ₀ (p, t)) = Φ₁ (p, 0) := by
       rw [← hHiso p hp t ht, ← hcore p hp, Diffeomorph.symm_apply_apply]
     have hGt : G t (Φ₁ (p, 0)) = Φ₁ (p, t) := hGiso p hp t ht
-    show G t ((H t).symm (Φ₀ (p, t))) = Φ₁ (p, t)
+    change G t ((H t).symm (Φ₀ (p, t))) = Φ₁ (p, t)
     rw [hHt, hGt]
 
 end DifferentialGeometry.Topology.Collar

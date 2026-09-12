@@ -524,7 +524,7 @@ theorem contDiffOn_leftChart_trans_seamChart (f : OpenPartialHomeomorph M csMode
       have hb : f.symm x ∈ f.source := (symm_mem_of_mem_leftChartSource c f x hx1).1
       rw [← f.left_inv ha, ← f.left_inv hb, h4,
         f.right_inv (leftChartSource_subset_target c f hx1)]
-    show ((leftChart c d a (by norm_num : 0 < (3 : ℕ)) f).trans (seamChartX c d a)) x
+    change ((leftChart c d a (by norm_num : 0 < (3 : ℕ)) f).trans (seamChartX c d a)) x
       = (f.symm.trans ((c.chart.symm).toOpenPartialHomeomorph)) x
     rw [OpenPartialHomeomorph.trans_apply, OpenPartialHomeomorph.trans_apply, h1, hsz]
     change (z : csModel) = c.chart.toPartialEquiv.symm (f.symm x)
@@ -587,7 +587,7 @@ theorem contDiffOn_seamChart_trans_rightChart (g : OpenPartialHomeomorph N csMod
       rw [seamChartX_symm_apply_of_mem c d a hx1] at hx2
       rw [OpenPartialHomeomorph.symm_source, rightChart_target] at hx2
       exact hx2
-    show ((seamChartX c d a).symm.trans
+    change ((seamChartX c d a).symm.trans
         (rightChart c d a (by norm_num : 0 < (3 : ℕ)) g).symm) x
       = g (d.chart (reflectMap a x))
     rw [OpenPartialHomeomorph.trans_apply,
@@ -635,7 +635,7 @@ theorem exists_seamMap_rightChart {g : OpenPartialHomeomorph N csModel} {x : csM
   have hz1 : seamMap c d a z = inr c d a q' := by
     rw [seamMap_of_lt_one c d a z (not_le.mpr hlt), seamRight_eq_of_lt_one c d a z hlt]
     refine congrArg (inr c d a) (Subtype.ext ?_)
-    show (d.radialMap (a (seamDir z)) (2 - ‖(z : csModel)‖) _ : N) =
+    change (d.radialMap (a (seamDir z)) (2 - ‖(z : csModel)‖) _ : N) =
       d.chart (reflectMap a (z : csModel))
     exact radialMap_a_seamDir_coe d a z hlt
   have hqq : q = q' := inr_injective c d a (hqx.symm.trans (hz.symm.trans hz1))
@@ -689,7 +689,7 @@ theorem contDiffOn_rightChart_trans_seamChart (g : OpenPartialHomeomorph N csMod
     · change g.symm x ∈ d.chart.target
       rw [hqv]
       exact d.chart.toPartialEquiv.map_source hzsrc
-    · show (g.symm.trans ((d.chart.symm).toOpenPartialHomeomorph)) x ≠ 0
+    · change (g.symm.trans ((d.chart.symm).toOpenPartialHomeomorph)) x ≠ 0
       change d.chart.toPartialEquiv.symm (g.symm x) ≠ 0
       rw [hz3]
       intro h0
@@ -699,7 +699,7 @@ theorem contDiffOn_rightChart_trans_seamChart (g : OpenPartialHomeomorph N csMod
   · intro x hx
     obtain ⟨hx1, hx2⟩ := mem_inter_of_rightChart_trans_mem c d a hx
     obtain ⟨z, hz, hlt, hqv, hz3⟩ := exists_seamMap_rightChart c d a hx1 hx2
-    show ((rightChart c d a (by norm_num : 0 < (3 : ℕ)) g).trans (seamChartX c d a)) x
+    change ((rightChart c d a (by norm_num : 0 < (3 : ℕ)) g).trans (seamChartX c d a)) x
       = reflectMapInv a ((g.symm.trans ((d.chart.symm).toOpenPartialHomeomorph)) x)
     rw [OpenPartialHomeomorph.trans_apply, hz, seamChartX_apply_seamMap c d a z]
     change (z : csModel) = reflectMapInv a (d.chart.toPartialEquiv.symm (g.symm x))
@@ -753,4 +753,5 @@ theorem exists_chartedSpace_isManifold_of_diffeomorph
     csIsManifold c d aD.toHomeomorph (contDiffOn_reflectMap aD) (contDiffOn_reflectMapInv aD)⟩
 
 end ConnectedSumQuotient
+
 end DifferentialGeometry.Topology

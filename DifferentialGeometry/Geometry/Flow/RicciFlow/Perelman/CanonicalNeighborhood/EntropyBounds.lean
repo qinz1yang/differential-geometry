@@ -81,7 +81,6 @@ private lemma exists_entropyTest_approx [I.Boundaryless] [Nonempty M]
     ∃ W' : EntropyTest g, ContMDiff I 𝓘(ℝ, ℝ) ∞ W'.value ∧
       (∀ x : M, 0 < W'.value x) ∧
       entropyValue g tau W' ≤ entropyValue g tau w + eps := by
-
   obtain ⟨v, hv, hmass, hbound⟩ :=
     HasWeakRiemannianGradLp.exists_smooth_normalized_wform_le (I := I) (M := M)
       (g := g) hdim w.weak_gradient w.value_memLp w.gradient_memLp w.normalized

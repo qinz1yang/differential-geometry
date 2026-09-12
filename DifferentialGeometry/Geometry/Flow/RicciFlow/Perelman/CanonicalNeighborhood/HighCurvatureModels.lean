@@ -40,6 +40,7 @@ def StrictWitness (S : SolutionOn (I := I3) (M := M) D)
           tensor02CovDerivNormWith (I := I3) a (W.comparison.jet b s)
             (W.model.S.base.metric s) (W.model.S.base.metric s) y < eps
 
+omit [SigmaCompactSpace M] in
 theorem oriented_witness_mono (S : SolutionOn (I := I3) (M := M) D)
     (hS : IsSolutionOn S) (o : TangentOrientationSection M)
     {delta eps kappa : ℝ} (hde : delta ≤ eps) (he : eps < 1)

@@ -85,7 +85,7 @@ theorem exists_pos_disjoint_of_shrinking_families
       have h3 : 1 / δ ≤ (Nat.ceil (1 / δ) : ℝ) := Nat.le_ceil _
       linarith
     have h4 : 1 < (n : ℝ) * δ := (div_lt_iff₀ hδ).mp h1
-    show 1 / ((n : ℝ) + 1) < δ
+    change 1 / ((n : ℝ) + 1) < δ
     rw [div_lt_iff₀ (by positivity : (0 : ℝ) < (n : ℝ) + 1)]
     nlinarith
   let g : ℕ → E₁ × E₂ := fun n => (p n, r n)
@@ -102,7 +102,7 @@ theorem exists_pos_disjoint_of_shrinking_families
     rw [Filter.mem_map]
     have huniv : g ⁻¹' T = univ := by
       refine Set.eq_univ_of_forall fun n => ?_
-      show c₁ (p n) = c₂ (r n)
+      change c₁ (p n) = c₂ (r n)
       rw [hpc n, hrd n]
     rw [huniv]
     exact Filter.univ_mem
@@ -129,7 +129,7 @@ theorem exists_pos_disjoint_of_shrinking_families
     (hxT ▸ mem_image_of_mem c₂ (hcore₂ x.2 hb₂))
 
 theorem disjointFamily_of_shrinking_families
-    {X : Type u} [TopologicalSpace X] [T2Space X] {ι : Type v} [Fintype ι]
+    {X : Type u} [TopologicalSpace X] [T2Space X] {ι : Type v} [Finite ι]
     {E : ι → Type u} [∀ i, TopologicalSpace (E i)]
     {K : ∀ i, Set (E i)} (hK : ∀ i, IsCompact (K i))
     {core : ∀ i, Set (E i)} {c : ∀ i, E i → X} (hc : ∀ i, Continuous (c i))
@@ -141,6 +141,7 @@ theorem disjointFamily_of_shrinking_families
     ∃ δ : ℝ, 0 < δ ∧ δ ≤ 1 ∧
       Pairwise fun i j => Disjoint (c i '' V i δ) (c j '' V j δ) := by
   classical
+  let := Fintype.ofFinite ι
   have hpair : ∀ i j : ι, i ≠ j → ∃ δ : ℝ, 0 < δ ∧ δ ≤ 1 ∧
       Disjoint (c i '' V i δ) (c j '' V j δ) :=
     fun i j hij => exists_pos_disjoint_of_shrinking_families (hK i) (hK j) (hc i) (hc j)
@@ -245,7 +246,7 @@ namespace DifferentialGeometry.Topology.Collar
 universe u v
 
 theorem disjointBoundaryCollarFamily
-    {X : Type u} [TopologicalSpace X] [T2Space X] {ι : Type v} [Fintype ι]
+    {X : Type u} [TopologicalSpace X] [T2Space X] {ι : Type v} [Finite ι]
     {S : ι → Type u} [∀ i, TopologicalSpace (S i)] [∀ i, CompactSpace (S i)]
     {e : ∀ i, S i → X} {c : ∀ i, S i × ℝ → X}
     (hc : ∀ i, Topology.IsOpenEmbedding (c i))
@@ -279,7 +280,7 @@ theorem disjointBoundaryCollarFamily
         exact hne (abs_eq_zero.mp hz)
       exact ⟨trivial, by simpa using hzero⟩)
     (fun i j hij => by
-      show Disjoint (c i '' ((univ : Set (S i)) ×ˢ ({0} : Set ℝ)))
+      change Disjoint (c i '' ((univ : Set (S i)) ×ˢ ({0} : Set ℝ)))
         (c j '' ((univ : Set (S j)) ×ˢ ({0} : Set ℝ)))
       rw [image_core_eq_range (c i) (e i) (h0 i), image_core_eq_range (c j) (e j) (h0 j)]
       exact hdisj hij)
@@ -288,7 +289,7 @@ theorem disjointBoundaryCollarFamily
     ext q
     exact ⟨fun h => ⟨trivial, abs_lt.mp h⟩, fun h => abs_lt.mpr h.2⟩
   exact ⟨δ, hδ, fun i j hij => by
-    show Disjoint (c i '' {q : S i × ℝ | |q.2| < δ}) (c j '' {q : S j × ℝ | |q.2| < δ})
+    change Disjoint (c i '' {q : S i × ℝ | |q.2| < δ}) (c j '' {q : S j × ℝ | |q.2| < δ})
     rw [hset i, hset j]
     exact hpair hij⟩
 
@@ -369,19 +370,19 @@ theorem exists_pos_disjoint_halfCollar_pair
     (V₂ := fun δ => (univ : Set B) ×ˢ {t : {t : ℝ // 0 ≤ t} | (t : ℝ) < δ})
     (fun δ hδ hδ1 q hq => ⟨trivial, by
       have hlt : (q.2 : ℝ) < δ := hq.2
-      show (q.2 : ℝ) ≤ 1
+      change (q.2 : ℝ) ≤ 1
       linarith⟩)
     (fun δ hδ hδ1 q hq => ⟨trivial, by
       have hlt : (q.2 : ℝ) < δ := hq.2
-      show (q.2 : ℝ) ≤ 1
+      change (q.2 : ℝ) ≤ 1
       linarith⟩)
     (fun {a b} ha hab q hq => ⟨trivial, by
       have hlt : (q.2 : ℝ) < a := hq.2
-      show (q.2 : ℝ) < b
+      change (q.2 : ℝ) < b
       linarith⟩)
     (fun {a b} ha hab q hq => ⟨trivial, by
       have hlt : (q.2 : ℝ) < a := hq.2
-      show (q.2 : ℝ) < b
+      change (q.2 : ℝ) < b
       linarith⟩)
     (fun x hx => mem_core_of_mem_closure_halfSpace x hx)
     (fun y hy => mem_core_of_mem_closure_halfSpace y hy)
@@ -404,7 +405,7 @@ namespace DifferentialGeometry.Topology.Collar
 universe u v
 
 theorem disjointHalfCollarFamily
-    {X : Type u} [TopologicalSpace X] [T2Space X] {ι : Type v} [Fintype ι]
+    {X : Type u} [TopologicalSpace X] [T2Space X] {ι : Type v} [Finite ι]
     {S : ι → Type u} [∀ i, TopologicalSpace (S i)] [∀ i, CompactSpace (S i)]
     {e : ∀ i, S i → X} {c : ∀ i, S i × {t : ℝ // 0 ≤ t} → X}
     (hc : ∀ i, Continuous (c i))
@@ -422,15 +423,15 @@ theorem disjointHalfCollarFamily
     (fun i => isCompact_univ.prod isCompact_halfSpace_le_one)
     (fun i δ hδ hδ1 q hq => ⟨trivial, by
       have hlt : (q.2 : ℝ) < δ := hq.2
-      show (q.2 : ℝ) ≤ 1
+      change (q.2 : ℝ) ≤ 1
       linarith⟩)
     (fun i {a b} ha hab q hq => ⟨trivial, by
       have hlt : (q.2 : ℝ) < a := hq.2
-      show (q.2 : ℝ) < b
+      change (q.2 : ℝ) < b
       linarith⟩)
     (fun i x hx => mem_core_of_mem_closure_halfSpace x hx)
     (fun i j hij => by
-      show Disjoint (c i '' ((univ : Set (S i)) ×ˢ
+      change Disjoint (c i '' ((univ : Set (S i)) ×ˢ
           {t : {t : ℝ // 0 ≤ t} | (t : ℝ) = 0}))
         (c j '' ((univ : Set (S j)) ×ˢ {t : {t : ℝ // 0 ≤ t} | (t : ℝ) = 0}))
       rw [image_halfCore_eq_range (c i) (e i) (h0 i),
@@ -442,7 +443,7 @@ theorem disjointHalfCollarFamily
     ext q
     exact ⟨fun h => ⟨trivial, h⟩, fun h => h.2⟩
   exact ⟨δ, hδ, fun i j hij => by
-    show Disjoint (c i '' {q : S i × {t : ℝ // 0 ≤ t} | (q.2 : ℝ) < δ})
+    change Disjoint (c i '' {q : S i × {t : ℝ // 0 ≤ t} | (q.2 : ℝ) < δ})
       (c j '' {q : S j × {t : ℝ // 0 ≤ t} | (q.2 : ℝ) < δ})
     rw [hset i, hset j]
     exact hpair hij⟩
@@ -454,7 +455,7 @@ namespace DifferentialGeometry.Topology.Collar
 universe u v
 
 theorem exists_common_width_of_finite_twoSidedCollars
-    {X : Type u} [TopologicalSpace X] [T2Space X] {ι : Type v} [Fintype ι]
+    {X : Type u} [TopologicalSpace X] [T2Space X] {ι : Type v} [Finite ι]
     {S : ι → Type u} [∀ i, TopologicalSpace (S i)] [∀ i, CompactSpace (S i)]
     {e : ∀ i, S i → X}
     (c : ∀ i, DifferentialGeometry.Topology.ThreeManifold.TwoSidedCollar (e i))
