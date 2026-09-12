@@ -39,12 +39,19 @@ theorem diskAreaDensity_ae_eq_energy_of_conformal
 
 
 
+theorem diskArea_integrable_iff_energy_of_conformal
+    (g : SmoothRiemannianMetric 𝓘(ℝ, E) M) (u : C(closedDisk, M))
+    (h : ∀ z ∈ Metric.ball (0 : ℂ) 1, DiskMapConformalAt g (diskExtension u) z) :
+    IntegrableOn (riemannianAreaDensity g (diskExtension u)) (Metric.closedBall 0 1) ↔
+      IntegrableOn (diskMapEnergyDensity g (diskExtension u)) (Metric.closedBall 0 1) :=
+  integrable_congr (diskAreaDensity_ae_eq_energy_of_conformal g u h)
+
 theorem diskArea_integrable_of_conformal_energy
     (g : SmoothRiemannianMetric 𝓘(ℝ, E) M) (u : C(closedDisk, M))
     (h : ∀ z ∈ Metric.ball (0 : ℂ) 1, DiskMapConformalAt g (diskExtension u) z)
     (he : IntegrableOn (diskMapEnergyDensity g (diskExtension u)) (Metric.closedBall 0 1)) :
     IntegrableOn (riemannianAreaDensity g (diskExtension u)) (Metric.closedBall 0 1) :=
-  he.congr (diskAreaDensity_ae_eq_energy_of_conformal g u h).symm
+  (diskArea_integrable_iff_energy_of_conformal g u h).2 he
 
 
 theorem riemannianDiskArea_eq_energy_of_conformal

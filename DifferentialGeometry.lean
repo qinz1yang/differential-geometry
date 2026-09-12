@@ -820,6 +820,7 @@ import DifferentialGeometry.Analysis.Integration.Measure.SublevelSurface
 import DifferentialGeometry.Analysis.Integration.Measure.SublevelVolume
 import DifferentialGeometry.Analysis.Integration.Measure.SurfaceFlux
 import DifferentialGeometry.Analysis.Integration.Measure.TightConvergence
+import DifferentialGeometry.Analysis.Integration.Measure.UniformIntegrability
 import DifferentialGeometry.Analysis.Integration.Measure.UniformPairing
 import DifferentialGeometry.Analysis.Integration.Measure.VolumeDensity
 import DifferentialGeometry.Analysis.Integration.Measure.VolumeDensityFamily
