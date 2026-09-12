@@ -1,5 +1,8 @@
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.Finite
 import DifferentialGeometry.Topology.VanKampen.SimplyConnectedUnion
+import DifferentialGeometry.Topology.VanKampen.ConnectorFreeProductCover
+import DifferentialGeometry.Topology.VanKampen.ConnectedSum
+import DifferentialGeometry.Topology.VanKampen.FiniteConnectedSum
 import DifferentialGeometry.Topology.FundamentalGroup.Sphere
 import DifferentialGeometry.Topology.Manifold.LocallyPathConnected
 import DifferentialGeometry.Topology.Algebra.Group.FreeProductAssociativity
@@ -8,7 +11,7 @@ set_option autoImplicit false
 
 noncomputable section
 
-open scoped Manifold ContDiff
+open scoped Manifold ContDiff ContinuousMap
 
 universe u
 
@@ -178,5 +181,76 @@ theorem finiteConnectedSum_freeProduct_of_connectedSumBased
         Monoid.CoprodI (fun i : Fin L.length =>
           FundamentalGroup (L.get i).Carrier (x i))) :=
   finiteConnectedSumFreeProduct_of_connectedSumBased h
+
+theorem connectedSumBasedFreeProduct_of_open_cover
+    (h : ∀ (M N : ConnectedClosedOrientedManifold.{u} 3),
+      ∃ (BM : ThreeManifold.SmoothEmbeddedClosedThreeCellWithCollar M.Carrier)
+        (BN : ThreeManifold.SmoothEmbeddedClosedThreeCellWithCollar N.Carrier)
+        (U V : Set (connectedSum M N).Carrier),
+        IsOpen U ∧ IsOpen V ∧ U ∪ V = Set.univ ∧
+          chosenPoint (connectedSum M N) ∈ U ∩ V ∧
+          Nonempty (BM.complement ≃ₕ U) ∧ Nonempty (BN.complement ≃ₕ V) ∧
+          SimplyConnectedSpace (↑(U ∩ V))) :
+    ∀ M N : ConnectedClosedOrientedManifold.{u} 3,
+      connectedSumBasedFreeProduct M N := by
+  intro M N
+  obtain ⟨BM, BN, U, V, hU, hV, hUV, hx, ⟨eU⟩, ⟨eV⟩, hUVsconn⟩ := h M N
+  refine ⟨?_⟩
+  letI : PathConnectedSpace BM.complement :=
+    ThreeManifold.pathConnectedSpace_embeddedCellComplement_of_smoothEmbedding_of_twoSidedCellCollar
+      BM.toFun BM.injective_toFun BM.continuous_toFun BM.isSmoothEmbedding_interior
+      BM.twoSidedCollar
+  letI : PathConnectedSpace BN.complement :=
+    ThreeManifold.pathConnectedSpace_embeddedCellComplement_of_smoothEmbedding_of_twoSidedCellCollar
+      BN.toFun BN.injective_toFun BN.continuous_toFun BN.isSmoothEmbedding_interior
+      BN.twoSidedCollar
+  let k₀ : BM.complement := Classical.choice (inferInstance : Nonempty BM.complement)
+  let l₀ : BN.complement := Classical.choice (inferInstance : Nonempty BN.complement)
+  have hUpath : PathConnectedSpace U := ThreeManifold.pathConnectedSpace_of_homotopyEquiv eU
+  have hVpath : PathConnectedSpace V := ThreeManifold.pathConnectedSpace_of_homotopyEquiv eV
+  letI := hUpath
+  letI := hVpath
+  letI := hUVsconn
+  refine ((DifferentialGeometry.Topology.VanKampen.fundamentalGroupEquivFreeProductOfHomotopyEquivOfConnectors
+      U V hU hV hUV (chosenPoint (connectedSum M N)) hx k₀ l₀ eU
+      (PathConnectedSpace.joined (VanKampen.leftBasepoint U (chosenPoint (connectedSum M N)) hx.1)
+        (eU k₀)).somePath eV
+      (PathConnectedSpace.joined (VanKampen.rightBasepoint V (chosenPoint (connectedSum M N)) hx.2)
+        (eV l₀)).somePath).symm.trans
+    ((ThreeManifold.fundamentalGroupSourceFreeProductEquivCoprod k₀ l₀).trans
+      ((BM.fundamentalGroupComplementEquiv k₀).coprodCongr
+        (BN.fundamentalGroupComplementEquiv l₀)))).trans
+    ((FundamentalGroup.fundamentalGroupMulEquivOfPathConnected (k₀ : M.Carrier)
+        (chosenPoint M)).coprodCongr
+      (FundamentalGroup.fundamentalGroupMulEquivOfPathConnected (l₀ : N.Carrier)
+        (chosenPoint N)))
+
+theorem connectedSumBasedFreeProduct_of_neck_realization
+    (h : ∀ (M N : ConnectedClosedOrientedManifold.{u} 3),
+      ∃ (BM : ThreeManifold.SmoothEmbeddedClosedThreeCellWithCollar M.Carrier)
+        (BN : ThreeManifold.SmoothEmbeddedClosedThreeCellWithCollar N.Carrier)
+        (glue : CellBoundary 3 ≃ₜ CellBoundary 3),
+        Nonempty (ThreeManifold.EmbeddedCellConnectedSum BM BN glue ≃ₜ
+          (connectedSum M N).Carrier)) :
+    ∀ M N : ConnectedClosedOrientedManifold.{u} 3,
+      connectedSumBasedFreeProduct M N := by
+  intro M N
+  obtain ⟨BM, BN, glue, ⟨φ⟩⟩ := h M N
+  let b : CellBoundary 3 := ThreeManifold.connectedSumNeckBoundaryBasepoint
+  refine ⟨(FundamentalGroup.fundamentalGroupMulEquivOfPathConnected
+      (φ (ThreeManifold.connectedSumNeckMidpoint BM.boundaryMap BN.boundaryMap glue b))
+      (chosenPoint (connectedSum M N))).symm.trans
+    (((ThreeManifold.fundamentalGroupEquiv_connectedSum BM BN glue b).trans
+      (DifferentialGeometry.Topology.fundamentalGroupMulEquivOfHomotopyEquiv
+        φ.toHomotopyEquiv
+        (ThreeManifold.connectedSumNeckMidpoint BM.boundaryMap BN.boundaryMap glue b)
+        (φ (ThreeManifold.connectedSumNeckMidpoint BM.boundaryMap BN.boundaryMap glue b))
+        rfl)).symm.trans
+      ((ThreeManifold.fundamentalGroupSourceFreeProductEquivCoprod
+          (BM.boundaryMap b : M.Carrier) (BN.boundaryMap (glue b) : N.Carrier)).trans
+        ((FundamentalGroup.fundamentalGroupMulEquivOfPathConnected
+            (BM.boundaryMap b : M.Carrier) (chosenPoint M)).coprodCongr
+          (FundamentalGroup.fundamentalGroupMulEquivOfPathConnected
+            (BN.boundaryMap (glue b) : N.Carrier) (chosenPoint N)))))⟩
 
 end DifferentialGeometry.Topology
