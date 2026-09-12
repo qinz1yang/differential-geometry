@@ -1966,6 +1966,31 @@ theorem diskArea_reparametrize (g : SmoothRiemannianMetric I Q) (u : LipschitzDi
   rw [diskReparamExtension_image φ] at hcov
   exact (integral_congr_ae hj).trans hcov.symm
 
+omit finiteDimensionalE boundarylessI t2Q compactQ connectedQ in
+private theorem sqrt_det_gram_diskBasis (g : SmoothRiemannianMetric I Q) {x : Q}
+    (D : ℂ →L[ℝ] TangentSpace I x) :
+    Real.sqrt (Matrix.det (fun i j : Fin 2 => g.inner x (D (diskBasis i)) (D (diskBasis j)))) =
+      Geometry.tangentTwoJacobian g (D 1) (D Complex.I) := by
+  rw [Geometry.tangentTwoJacobian]
+  refine congrArg Real.sqrt ?_
+  have h0 : diskBasis (0 : Fin 2) = (1 : ℂ) := by simp [diskBasis]
+  have h1 : diskBasis (1 : Fin 2) = Complex.I := by simp [diskBasis]
+  rw [Matrix.det_fin_two (A := fun i j : Fin 2 =>
+    g.inner x (D (diskBasis i)) (D (diskBasis j)))]
+  simp only [h0, h1]
+  rw [g.symm x (D Complex.I) (D 1)]
+  ring
+
+omit finiteDimensionalE boundarylessI t2Q compactQ connectedQ in
+private theorem parametricJacobian_eq_tangentTwoJacobian (g : SmoothRiemannianMetric I Q)
+    (U : ℂ → Q) {s : Set ℂ} {z : ℂ}
+    (hd : MDifferentiableWithinAt 𝓘(ℝ, ℂ) I U s z) :
+    parametricJacobian g U s z = Geometry.tangentTwoJacobian g
+      (mfderivWithin 𝓘(ℝ, ℂ) I U s z (1 : ℂ))
+      (mfderivWithin 𝓘(ℝ, ℂ) I U s z Complex.I) := by
+  rw [parametricJacobian, if_pos hd]
+  exact sqrt_det_gram_diskBasis g (mfderivWithin 𝓘(ℝ, ℂ) I U s z)
+
 section Composition
 
 variable {E' : Type*} [NormedAddCommGroup E'] [NormedSpace ℝ E']
@@ -1974,12 +1999,161 @@ variable {E' : Type*} [NormedAddCommGroup E'] [NormedSpace ℝ E']
   {P : Type*} [TopologicalSpace P] [ChartedSpace H' P] [IsManifold J ∞ P]
   [T2Space P] [CompactSpace P]
 
+omit connectedQ in
 theorem diskArea_lipschitz_comp (g : SmoothRiemannianMetric I Q)
     (h : SmoothRiemannianMetric J P) (f : C(Q, P)) (L : ℝ≥0)
     (hf : ∀ x y, riemannianEDistOf h (f x) (f y) ≤
       (L : ℝ≥0∞) * riemannianEDistOf g x y) (u : LipschitzDisk g) :
     diskArea h (f ∘ u.map) ≤ (L : ℝ) ^ 2 * diskArea g u.map := by
-  sorry
+  classical
+  obtain ⟨Lu, hLu⟩ := u.isLipschitz
+  have hcomp : ∀ z w : Disk, riemannianEDistOf h ((f.comp u.map) z) ((f.comp u.map) w) ≤
+      ((L * Lu : ℝ≥0) : ℝ≥0∞) * edist z w := by
+    intro z w
+    have h1 : riemannianEDistOf h ((f.comp u.map) z) ((f.comp u.map) w) ≤
+        (L : ℝ≥0∞) * riemannianEDistOf g (u.map z) (u.map w) := by
+      simpa only [ContinuousMap.comp_apply] using hf (u.map z) (u.map w)
+    refine h1.trans ?_
+    calc
+      (L : ℝ≥0∞) * riemannianEDistOf g (u.map z) (u.map w)
+          ≤ (L : ℝ≥0∞) * ((Lu : ℝ≥0∞) * edist z w) := mul_le_mul' le_rfl (hLu z w)
+      _ = ((L * Lu : ℝ≥0) : ℝ≥0∞) * edist z w := by rw [ENNReal.coe_mul, mul_assoc]
+  let ud : LipschitzDisk h := ⟨f.comp u.map, L * Lu, hcomp⟩
+  have hudmap : ⇑ud.map = (f ∘ u.map : Disk → P) := rfl
+  have hext : diskExtension (f ∘ u.map) = fun z : ℂ => f (diskExtension u.map z) := by
+    funext z
+    by_cases hz : z ∈ Metric.closedBall (0 : ℂ) 1
+    · simp only [diskExtension, hz, ↓reduceDIte, Function.comp_apply]
+    · simp only [diskExtension, hz, ↓reduceDIte, Function.comp_apply]
+  have hUwithin := LipschitzDisk.ae_mdifferentiable g u
+  have hWwithin := LipschitzDisk.ae_mdifferentiable h ud
+  rw [hudmap, hext] at hWwithin
+  have hUae : ∀ᵐ z ∂volume.restrict (Metric.closedBall (0 : ℂ) 1),
+      MDifferentiableAt 𝓘(ℝ, ℂ) I (diskExtension u.map) z := by
+    filter_upwards [hUwithin, Geometry.ae_disk_interior] with z hz hzi
+    exact hz.mdifferentiableAt (Filter.mem_of_superset (Metric.isOpen_ball.mem_nhds hzi)
+      Metric.ball_subset_closedBall)
+  have hWae : ∀ᵐ z ∂volume.restrict (Metric.closedBall (0 : ℂ) 1),
+      MDifferentiableAt 𝓘(ℝ, ℂ) J (fun z => f (diskExtension u.map z)) z := by
+    filter_upwards [hWwithin, Geometry.ae_disk_interior] with z hz hzi
+    exact hz.mdifferentiableAt (Filter.mem_of_superset (Metric.isOpen_ball.mem_nhds hzi)
+      Metric.ball_subset_closedBall)
+  have hzero_of_deriv_zero : ∀ (W : ℂ → P) (z : ℂ),
+      MDifferentiableWithinAt 𝓘(ℝ, ℂ) J W (Metric.closedBall (0 : ℂ) 1) z →
+      mfderivWithin 𝓘(ℝ, ℂ) J W (Metric.closedBall (0 : ℂ) 1) z = 0 →
+        parametricJacobian h W (Metric.closedBall (0 : ℂ) 1) z = 0 := by
+    set_option backward.isDefEq.respectTransparency false in
+    intro W z hd hderiv
+    have h1 : mfderivWithin 𝓘(ℝ, ℂ) J W (Metric.closedBall (0 : ℂ) 1) z (1 : ℂ) = 0 := by
+      rw [hderiv]
+      simp
+    have hI : mfderivWithin 𝓘(ℝ, ℂ) J W (Metric.closedBall (0 : ℂ) 1) z Complex.I = 0 := by
+      rw [hderiv]
+      simp
+    rw [parametricJacobian_eq_tangentTwoJacobian h W hd, h1, hI]
+    simp only [Geometry.tangentTwoJacobian, map_zero, mul_zero]
+    norm_num
+  have hpoint : ∀ᵐ z ∂volume.restrict (Metric.closedBall (0 : ℂ) 1),
+      parametricJacobian h (fun z => f (diskExtension u.map z)) (Metric.closedBall (0 : ℂ) 1) z ≤
+        (L : ℝ) ^ 2 * parametricJacobian g (diskExtension u.map)
+          (Metric.closedBall (0 : ℂ) 1) z := by
+    filter_upwards [hUae, hWae, Geometry.ae_disk_interior] with z hzU hzW hzi
+    have hsNhds : Metric.closedBall (0 : ℂ) 1 ∈ 𝓝 z :=
+      Filter.mem_of_superset (Metric.isOpen_ball.mem_nhds hzi) Metric.ball_subset_closedBall
+    have hdU : MDifferentiableWithinAt 𝓘(ℝ, ℂ) I (diskExtension u.map)
+        (Metric.closedBall (0 : ℂ) 1) z := hzU.mdifferentiableWithinAt
+    have hdW : MDifferentiableWithinAt 𝓘(ℝ, ℂ) J (fun z => f (diskExtension u.map z))
+        (Metric.closedBall (0 : ℂ) 1) z := hzW.mdifferentiableWithinAt
+    by_cases hF : Module.finrank ℝ E' = 0
+    · have hsubF : Subsingleton E' := Module.finrank_zero_iff.mp hF
+      let : Subsingleton (TangentSpace J (f (diskExtension u.map z))) := hsubF
+      have hderiv : mfderivWithin 𝓘(ℝ, ℂ) J (fun z => f (diskExtension u.map z))
+          (Metric.closedBall (0 : ℂ) 1) z = 0 := by
+        ext v
+        exact Subsingleton.elim _ _
+      rw [hzero_of_deriv_zero _ z hdW hderiv]
+      exact mul_nonneg (sq_nonneg (L : ℝ)) (parametricJacobian_nonneg g _ _ _)
+    · by_cases hE : Module.finrank ℝ E = 0
+      · let : Subsingleton H :=
+          subsingleton_of_subsingleton_model I (Module.finrank_zero_iff.mp hE)
+        have hconstU : diskExtension u.map =ᶠ[𝓝 z] (fun _ => diskExtension u.map z) := by
+          filter_upwards [hzU.continuousAt
+            ((chartAt H (diskExtension u.map z)).open_source.mem_nhds
+              (mem_chart_source H (diskExtension u.map z)))] with y hy
+          exact (chartAt H (diskExtension u.map z)).injOn hy
+            (mem_chart_source H (diskExtension u.map z)) (Subsingleton.elim _ _)
+        have hconstW : (fun z => f (diskExtension u.map z)) =ᶠ[𝓝 z]
+            (fun _ => f (diskExtension u.map z)) := hconstU.fun_comp f
+        have hderiv : mfderivWithin 𝓘(ℝ, ℂ) J (fun z => f (diskExtension u.map z))
+            (Metric.closedBall (0 : ℂ) 1) z = 0 := by
+          rw [mfderivWithin_of_mem_nhds (f := fun z => f (diskExtension u.map z)) hsNhds,
+            hconstW.mfderiv_eq]
+          simp
+        rw [hzero_of_deriv_zero _ z hdW hderiv]
+        exact mul_nonneg (sq_nonneg (L : ℝ)) (parametricJacobian_nonneg g _ _ _)
+      · let : NeZero (Module.finrank ℝ E) := ⟨hE⟩
+        let : NeZero (Module.finrank ℝ E') := ⟨hF⟩
+        have hDU : mfderivWithin 𝓘(ℝ, ℂ) I (diskExtension u.map)
+            (Metric.closedBall (0 : ℂ) 1) z = mfderiv 𝓘(ℝ, ℂ) I (diskExtension u.map) z :=
+          mfderivWithin_of_mem_nhds (f := diskExtension u.map) hsNhds
+        have hDW : mfderivWithin 𝓘(ℝ, ℂ) J (fun z => f (diskExtension u.map z))
+            (Metric.closedBall (0 : ℂ) 1) z =
+              mfderiv 𝓘(ℝ, ℂ) J (fun z => f (diskExtension u.map z)) z :=
+          mfderivWithin_of_mem_nhds (f := fun z => f (diskExtension u.map z)) hsNhds
+        rw [parametricJacobian_eq_tangentTwoJacobian g _ hdU,
+          parametricJacobian_eq_tangentTwoJacobian h _ hdW, hDU, hDW]
+        refine Geometry.tangentTwoJacobian_le_of_combinations g h (L := (L : ℝ)) L.coe_nonneg ?_
+        intro a b
+        have hvW : a • (mfderiv 𝓘(ℝ, ℂ) J (fun z => f (diskExtension u.map z)) z) (1 : ℂ) +
+            b • (mfderiv 𝓘(ℝ, ℂ) J (fun z => f (diskExtension u.map z)) z) Complex.I =
+              (mfderiv 𝓘(ℝ, ℂ) J (fun z => f (diskExtension u.map z)) z)
+                (a • (1 : ℂ) + b • Complex.I) := by
+          set_option backward.isDefEq.respectTransparency false in
+          rw [map_add, map_smul, map_smul]
+        have hvU : a • (mfderiv 𝓘(ℝ, ℂ) I (diskExtension u.map) z) (1 : ℂ) +
+            b • (mfderiv 𝓘(ℝ, ℂ) I (diskExtension u.map) z) Complex.I =
+              (mfderiv 𝓘(ℝ, ℂ) I (diskExtension u.map) z)
+                (a • (1 : ℂ) + b • Complex.I) := by
+          set_option backward.isDefEq.respectTransparency false in
+          rw [map_add, map_smul, map_smul]
+        rw [hvW, hvU]
+        exact Geometry.metric_differential_le_of_edist_le
+          (I := I) (M := Q) (J := J) (N := P) (V := ℂ)
+          (g := g) (h := h) (u := diskExtension u.map)
+          (v := fun z => f (diskExtension u.map z)) (x := z) (L := L) hzU hzW
+          (fun y => hf (diskExtension u.map z) (diskExtension u.map y))
+          (a • (1 : ℂ) + b • Complex.I)
+  have hLHS : diskArea h (f ∘ u.map) =
+      ∫ z in Metric.closedBall (0 : ℂ) 1, parametricJacobian h
+        (fun z => f (diskExtension u.map z)) (Metric.closedBall (0 : ℂ) 1) z := by
+    rw [diskArea]
+    refine integral_congr_ae ?_
+    filter_upwards [ae_restrict_mem Metric.isClosed_closedBall.measurableSet] with z hz
+    exact parametricJacobian_congr_on h (fun w _ => congrFun hext w) hz
+  have hRHS : diskArea g u.map =
+      ∫ z in Metric.closedBall (0 : ℂ) 1, parametricJacobian g
+        (diskExtension u.map) (Metric.closedBall (0 : ℂ) 1) z := rfl
+  have hIntU : IntegrableOn (fun z => parametricJacobian g (diskExtension u.map)
+      (Metric.closedBall (0 : ℂ) 1) z) (Metric.closedBall (0 : ℂ) 1) :=
+    (u.integrable_jacobian g).congr_fun (fun _ _ => rfl)
+      Metric.isClosed_closedBall.measurableSet
+  have hIntW : IntegrableOn (fun z => parametricJacobian h
+      (fun z => f (diskExtension u.map z)) (Metric.closedBall (0 : ℂ) 1) z)
+      (Metric.closedBall (0 : ℂ) 1) := by
+    refine (ud.integrable_jacobian h).congr_fun (fun z hz => ?_)
+      Metric.isClosed_closedBall.measurableSet
+    exact parametricJacobian_congr_on h (fun w _ => by
+      simpa only [hudmap] using congrFun hext w) hz
+  rw [hLHS, hRHS]
+  calc
+    ∫ z in Metric.closedBall (0 : ℂ) 1, parametricJacobian h
+        (fun z => f (diskExtension u.map z)) (Metric.closedBall (0 : ℂ) 1) z
+        ≤ ∫ z in Metric.closedBall (0 : ℂ) 1, (L : ℝ) ^ 2 * parametricJacobian g
+            (diskExtension u.map) (Metric.closedBall (0 : ℂ) 1) z :=
+      integral_mono_ae hIntW (hIntU.const_mul _) hpoint
+    _ = (L : ℝ) ^ 2 * ∫ z in Metric.closedBall (0 : ℂ) 1, parametricJacobian g
+          (diskExtension u.map) (Metric.closedBall (0 : ℂ) 1) z :=
+      integral_const_mul _ _
 
 end Composition
 

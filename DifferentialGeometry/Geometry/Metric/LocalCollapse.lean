@@ -18,11 +18,12 @@ namespace DifferentialGeometry.Geometry
 
 variable {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
   [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
-  {M : Type*} [TopologicalSpace M] [ChartedSpace E M] [IsManifold 𝓘(ℝ, E) ∞ M]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 
 theorem exists_smooth_local_collapse {e : M → F}
-    (he : ContMDiff 𝓘(ℝ, E) 𝓘(ℝ, F) ∞ e) (hemb : _root_.Topology.IsEmbedding e)
-    (p : M) (hi : Injective (mfderiv 𝓘(ℝ, E) 𝓘(ℝ, F) e p)) :
+    (he : ContMDiff I 𝓘(ℝ, F) ∞ e) (hemb : _root_.Topology.IsEmbedding e)
+    (p : M) (hi : Injective (mfderiv I 𝓘(ℝ, F) e p)) :
     ∃ (Φ : F → F) (V : Set F), ContDiff ℝ ∞ Φ ∧
       (∀ q, Φ (e q) = e q) ∧ IsOpen V ∧ e p ∈ V ∧ MapsTo Φ V (range e) := by
   obtain ⟨r, U, hU, hpU, hr, hleft⟩ := exists_local_retraction_of_embedding he hemb p hi

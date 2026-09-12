@@ -28,7 +28,8 @@ theorem ProductCurve.verticalUnit_eq_coverVerticalUnit (c : ProductCurve M)
   rfl
 
 
-theorem coverVerticalUnit_unit (g : SmoothRiemannianMetric I M)
+omit [CompleteSpace E] in
+theorem coverVerticalUnit_unit [T2Space M] (g : SmoothRiemannianMetric I M)
     (lambda : ℝ) (hlambda : 0 < lambda) (p : M × ℝ) :
     (coverProductMetric g lambda hlambda).inner p
       (coverVerticalUnit lambda p) (coverVerticalUnit lambda p) = 1 := by

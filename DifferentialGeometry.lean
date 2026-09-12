@@ -7471,6 +7471,7 @@ import DifferentialGeometry.Topology.FundamentalGroup.Retraction
 import DifferentialGeometry.Topology.FundamentalGroup.SimplyConnectedComponents
 import DifferentialGeometry.Topology.FundamentalGroup.Sphere
 import DifferentialGeometry.Topology.FundamentalGroup.SphericalQuotient
+import DifferentialGeometry.Topology.GeneralLinearGroupConnected
 import DifferentialGeometry.Topology.GraphBand
 import DifferentialGeometry.Topology.GraphBandChart
 import DifferentialGeometry.Topology.GroupAction.Hom
@@ -8170,6 +8171,7 @@ import DifferentialGeometry.Topology.Manifold.SphereCylinderDegree
 import DifferentialGeometry.Topology.Manifold.SphereDiffeomorphDegree
 import DifferentialGeometry.Topology.Manifold.SphereDirection
 import DifferentialGeometry.Topology.Manifold.SphereFixedPointIsotopy
+import DifferentialGeometry.Topology.Manifold.SphereLinearIsometry
 import DifferentialGeometry.Topology.Manifold.SphereOrientation
 import DifferentialGeometry.Topology.Manifold.SphereOrientationIsotopy
 import DifferentialGeometry.Topology.Manifold.SpherePlanarChart
@@ -8484,6 +8486,7 @@ import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.OrientationPrelu
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.OrientationTopology
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.PuncturedImageBall
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.Quotient
+import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.QuotientTransport
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.SeamChart
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.SeamOrientation
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.SeamOrientationGlue
@@ -8588,6 +8591,7 @@ import DifferentialGeometry.Topology.ThreeManifold.Surgery.FiniteCap.SphericalCu
 import DifferentialGeometry.Topology.ThreeManifold.schoenflies
 import DifferentialGeometry.Topology.UniformConvergence
 import DifferentialGeometry.Topology.VanKampen.AmalgamatedProduct
+import DifferentialGeometry.Topology.VanKampen.BallChartEmbeddedCellCollar
 import DifferentialGeometry.Topology.VanKampen.Based
 import DifferentialGeometry.Topology.VanKampen.CollarDeformation
 import DifferentialGeometry.Topology.VanKampen.HomotopyRetract

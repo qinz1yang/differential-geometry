@@ -18,18 +18,21 @@ open scoped Topology ContDiff Manifold
 
 namespace DifferentialGeometry.Geometry
 
+section Boundaryless
+
 variable {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
   [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
-  {M : Type*} [TopologicalSpace M] [ChartedSpace E M] [IsManifold 𝓘(ℝ, E) ∞ M]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [Nonempty M]
 
 
 
 theorem exists_smooth_neighborhood_retraction {e : M → F}
-    (he : ContMDiff 𝓘(ℝ, E) 𝓘(ℝ, F) ∞ e) (hemb : _root_.Topology.IsEmbedding e)
-    (hi : ∀ p, Injective (mfderiv 𝓘(ℝ, E) 𝓘(ℝ, F) e p)) :
+    (he : ContMDiff I 𝓘(ℝ, F) ∞ e) (hemb : _root_.Topology.IsEmbedding e)
+    (hi : ∀ p, Injective (mfderiv I 𝓘(ℝ, F) e p)) :
     ∃ (r : F → M) (U : Set F), IsOpen U ∧ range e ⊆ U ∧
-      ContMDiffOn 𝓘(ℝ, F) 𝓘(ℝ, E) ∞ r U ∧ ∀ p, r (e p) = p := by
+      ContMDiffOn 𝓘(ℝ, F) I ∞ r U ∧ ∀ p, r (e p) = p := by
   classical
   choose Φ V hΦ hfix hV hpV hmap using
     (fun p => exists_smooth_local_collapse he hemb p (hi p))
@@ -57,9 +60,16 @@ theorem exists_smooth_neighborhood_retraction {e : M → F}
     dsimp only [Function.comp_apply]
     rw [← her y hy]
     exact (hleft₀ (r y) (by rwa [her y hy])).symm
-  have hsm : ContMDiffAt 𝓘(ℝ, F) 𝓘(ℝ, E) ∞ (r₀ ∘ R) z :=
+  have hsm : ContMDiffAt 𝓘(ℝ, F) I ∞ (r₀ ∘ R) z :=
     ((hr₀ (R z) hRz).contMDiffAt (hW.mem_nhds hRz)).comp z hR.contMDiff.contMDiffAt
   exact (hsm.congr_of_eventuallyEq hloc).contMDiffWithinAt
+
+end Boundaryless
+
+variable {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+  [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
+  {M : Type*} [TopologicalSpace M] [ChartedSpace E M] [IsManifold 𝓘(ℝ, E) ∞ M]
+  [CompactSpace M] [Nonempty M]
 
 omit [Nonempty M] in
 theorem exists_compact_smooth_embedding [T2Space M] :

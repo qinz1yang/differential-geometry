@@ -1,6 +1,9 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Basic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.LoopModel
 import DifferentialGeometry.Geometry.Metric.Comparison.DistanceScaling
+import DifferentialGeometry.Geometry.Metric.Scaling
+import DifferentialGeometry.Geometry.Metric.Product
+import DifferentialGeometry.Geometry.Metric.Euclidean
 import Mathlib.Analysis.SpecialFunctions.Complex.Circle
 
 noncomputable section
@@ -147,24 +150,34 @@ theorem curvature_nonneg (g : ℝ → SmoothRiemannianMetric I M) (lambda x t : 
 
 end ProductCurve
 
-theorem exists_coverProductMetric (g : SmoothRiemannianMetric I M) (lambda : ℝ) (hlambda : 0 < lambda) :
-    ∃ ĝ : SmoothRiemannianMetric (I.prod 𝓘(ℝ, ℝ)) (M × ℝ),
-      ∀ (p : M × ℝ) (v w : TangentSpace (I.prod 𝓘(ℝ, ℝ)) p),
-        ĝ.inner p v w = g.inner p.1 v.1 w.1 + lambda ^ 2 * v.2 * w.2 := by
-  sorry
-
-def coverProductMetric (g : SmoothRiemannianMetric I M) (lambda : ℝ) (hlambda : 0 < lambda) :
+def coverProductMetric [T2Space M] (g : SmoothRiemannianMetric I M) (lambda : ℝ) (hlambda : 0 < lambda) :
     SmoothRiemannianMetric (I.prod 𝓘(ℝ, ℝ)) (M × ℝ) :=
-  (exists_coverProductMetric g lambda hlambda).choose
+  g.prod (DifferentialGeometry.scaleMetric (I := 𝓘(ℝ, ℝ)) (lambda ^ 2)
+    (pow_pos hlambda 2) (DifferentialGeometry.euclideanMetric (E := ℝ)))
 
-theorem coverProductMetric_inner (g : SmoothRiemannianMetric I M) (lambda : ℝ) (hlambda : 0 < lambda)
+omit [CompleteSpace E] in
+set_option backward.isDefEq.respectTransparency false in
+theorem coverProductMetric_inner [T2Space M] (g : SmoothRiemannianMetric I M) (lambda : ℝ)
+    (hlambda : 0 < lambda)
     (p : M × ℝ) (v w : TangentSpace (I.prod 𝓘(ℝ, ℝ)) p) :
     (coverProductMetric g lambda hlambda).inner p v w =
-      g.inner p.1 v.1 w.1 + lambda ^ 2 * v.2 * w.2 :=
-  (exists_coverProductMetric g lambda hlambda).choose_spec p v w
+      g.inner p.1 v.1 w.1 + lambda ^ 2 * v.2 * w.2 := by
+  rw [coverProductMetric, SmoothRiemannianMetric.prod_inner, DifferentialGeometry.scaleMetric_inner,
+    DifferentialGeometry.euclideanMetric_inner, Real.inner_apply]
+  ring
+
+omit [CompleteSpace E] in
+theorem exists_coverProductMetric [T2Space M] (g : SmoothRiemannianMetric I M) (lambda : ℝ)
+    (hlambda : 0 < lambda) :
+    ∃ ĝ : SmoothRiemannianMetric (I.prod 𝓘(ℝ, ℝ)) (M × ℝ),
+      ∀ (p : M × ℝ) (v w : TangentSpace (I.prod 𝓘(ℝ, ℝ)) p),
+        ĝ.inner p v w = g.inner p.1 v.1 w.1 + lambda ^ 2 * v.2 * w.2 :=
+  ⟨coverProductMetric g lambda hlambda, coverProductMetric_inner g lambda hlambda⟩
 
 
-theorem coverProductMetric_unique (g : SmoothRiemannianMetric I M) (lambda : ℝ) (hlambda : 0 < lambda)
+omit [CompleteSpace E] in
+theorem coverProductMetric_unique [T2Space M]
+    (g : SmoothRiemannianMetric I M) (lambda : ℝ) (hlambda : 0 < lambda)
     (ĝ : SmoothRiemannianMetric (I.prod 𝓘(ℝ, ℝ)) (M × ℝ))
     (hĝ : ∀ (p : M × ℝ) (v w : TangentSpace (I.prod 𝓘(ℝ, ℝ)) p),
       ĝ.inner p v w = g.inner p.1 v.1 w.1 + lambda ^ 2 * v.2 * w.2) :
@@ -192,7 +205,7 @@ theorem exists_quotientProductAtlas : Nonempty (QuotientProductAtlas I M) := by
 
 def quotientProductAtlas : QuotientProductAtlas I M := exists_quotientProductAtlas.some
 
-structure QuotientProductGeometry (A : QuotientProductAtlas I M)
+structure QuotientProductGeometry (A : QuotientProductAtlas I M) [T2Space M]
     (g : SmoothRiemannianMetric I M) (lambda : ℝ) (hlambda : 0 < lambda) where
   metric : letI := A.charts
     letI := A.smoothManifold
@@ -205,7 +218,7 @@ structure QuotientProductGeometry (A : QuotientProductAtlas I M)
         (mfderiv (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, ℝ)) productCoverProjection p w) =
           (coverProductMetric g lambda hlambda).inner p v w
 
-theorem exists_quotientProductGeometry (A : QuotientProductAtlas I M)
+theorem exists_quotientProductGeometry (A : QuotientProductAtlas I M) [T2Space M]
     (g : SmoothRiemannianMetric I M) (lambda : ℝ) (hlambda : 0 < lambda) :
     Nonempty (QuotientProductGeometry A g lambda hlambda) := by
   sorry
@@ -262,7 +275,7 @@ theorem ProductCurve.cover_spatial_derivative (c : ProductCurve M) (J : Set ℝ)
       (NormedSpace.fromTangentSpace (𝕜 := ℝ) x).symm 1 from rfl,
     (NormedSpace.fromTangentSpace (𝕜 := ℝ) x).apply_symm_apply, fderiv_apply_one_eq_deriv]
 
-theorem ProductCurve.cover_covariantDerivative (c : ProductCurve M)
+theorem ProductCurve.cover_covariantDerivative [T2Space M] (c : ProductCurve M)
     (g : ℝ → SmoothRiemannianMetric I M) (lambda : ℝ) (hlambda : 0 < lambda)
     (J : Set ℝ) (hc : c.SmoothOn (I := I) J) (V : c.Field (I := I))
     (hV : ∀ t ∈ J, ContMDiff 𝓘(ℝ, ℝ) (I.prod 𝓘(ℝ, ℝ)).tangent ∞
@@ -277,13 +290,14 @@ section QuotientGeometry
 variable (A : QuotientProductAtlas I M)
 
 
-def quotientProductMetric (g : SmoothRiemannianMetric I M) (lambda : ℝ) (hlambda : 0 < lambda) :
+def quotientProductMetric [T2Space M] (g : SmoothRiemannianMetric I M) (lambda : ℝ)
+    (hlambda : 0 < lambda) :
     letI := A.charts
     letI := A.smoothManifold
     SmoothRiemannianMetric (I.prod 𝓘(ℝ, ℝ)) (M × Surgery.Topology.Circle) :=
   (exists_quotientProductGeometry A g lambda hlambda).some.metric
 
-theorem product_solution_iff (g : ℝ → SmoothRiemannianMetric I M)
+theorem product_solution_iff [T2Space M] (g : ℝ → SmoothRiemannianMetric I M)
     (lambda : ℝ) (hlambda : 0 < lambda) (c : ProductCurve M) {s u : ℝ} (hsu : s < u)
     (J : Set ℝ) (hJ : J = Ico s u ∨ J = Icc s u)
     (hylift : ContinuousOn (fun p : ℝ × ℝ => c.y p.1 p.2) (univ ×ˢ J)) :
@@ -294,7 +308,7 @@ theorem product_solution_iff (g : ℝ → SmoothRiemannianMetric I M)
         (fun t => quotientProductMetric A (g t) lambda hlambda) J := by
   sorry
 
-theorem product_solution_lift (g : ℝ → SmoothRiemannianMetric I M)
+theorem product_solution_lift [T2Space M] (g : ℝ → SmoothRiemannianMetric I M)
     (lambda : ℝ) (hlambda : 0 < lambda) (c : CurveMap (M × Surgery.Topology.Circle)) {s u : ℝ} (hsu : s < u)
     (J : Set ℝ) (hJ : J = Ico s u ∨ J = Icc s u)
     (hc : letI := A.charts

@@ -10,6 +10,7 @@ import Mathlib.Topology.Order.Compact
 import Mathlib.MeasureTheory.Function.LocallyIntegrable
 import Mathlib.MeasureTheory.Measure.Lebesgue.Basic
 import DifferentialGeometry.Geometry.Metric.QuadraticBounds.Unit
+import DifferentialGeometry.Geometry.Metric.NeighborhoodRetraction
 
 noncomputable section
 
@@ -376,9 +377,13 @@ theorem smoothLoopEmbedding_exists :
   obtain ⟨N, e, hs, he, hd⟩ := exists_embedding_euclidean_of_compact (I := I) (M := Q)
   exact ⟨N, ⟨e, hs, he, hd⟩⟩
 
+omit t2Q in
 theorem smoothTubularRetraction_exists {N : ℕ}
     (e : SmoothLoopEmbedding (I := I) (Q := Q) N) : Nonempty (SmoothTubularRetraction e) := by
-  sorry
+  obtain ⟨r, U, hU, hrange, hr, hleft⟩ :=
+    DifferentialGeometry.Geometry.exists_smooth_neighborhood_retraction e.smooth
+      e.isClosedEmbedding.isEmbedding e.injective_mfderiv
+  exact ⟨⟨U, hU, hrange, r, hr, hleft⟩⟩
 
 omit finiteDimensionalE boundarylessI t2Q compactQ connectedQ in
 theorem RegularLoop.isLipschitz

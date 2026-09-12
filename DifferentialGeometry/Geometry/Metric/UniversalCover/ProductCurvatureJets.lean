@@ -1,8 +1,14 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Bounds.BoundedGeometry
+import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.Product
 import DifferentialGeometry.Geometry.Metric.Convergence.Naturality.PullbackCross
 import DifferentialGeometry.Geometry.Metric.Pullback.Cross
+import DifferentialGeometry.Geometry.Metric.UniversalCover.Completeness
+import DifferentialGeometry.Geometry.Metric.UniversalCover.Curvature
 import DifferentialGeometry.Geometry.Metric.UniversalCover.Metric
+import DifferentialGeometry.Tensor.Metric.IsometryNorm
 import DifferentialGeometry.Tensor.Metric.LocalIsometry
+import DifferentialGeometry.Topology.Covering.Smooth.LocalDiffeomorph
+import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Opens
 
 
 set_option autoImplicit false
@@ -170,20 +176,194 @@ theorem curvDerivNorm_le_product_real_of_inner_eq
 
 end RealProduct
 
-section UniversalCoverLift
+section JetTowerBridge
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
   {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
+
+private def curvEquiv : (m : ℕ) → Fin (4 + m) ≃ Fin (m + 4)
+  | 0 => Equiv.refl _
+  | (m + 1) => Tensor0SBundle.frontExtendEquiv (curvEquiv m)
+
+private theorem curv_apply_iterCov (g : SmoothRiemannianMetric I M) :
+    ∀ (m : ℕ) (x : M) (v : Fin (m + 4) → TangentSpace I x),
+      curvCovDeriv (I := I) (M := M) g m x v =
+        (ContinuousMultilinearMap.domDomCongr (curvEquiv m)
+          ((iterCov (I := I) g 4
+            (DifferentialGeometry.Geometry.Curvature.metricRm04
+              (I := I) (M := M) g) m) x)) v := by
+  intro m
+  induction m with
+  | zero =>
+      intro x v
+      rfl
+  | succ m ih =>
+      intro x v
+      have hfield :
+          curvCovDeriv (I := I) (M := M) g m =
+            MultilinearSection.domDomCongr
+              (𝕜 := ℝ) (F := E) (IB := I) (E := TangentSpace I)
+              (∞ : WithTop ℕ∞) (curvEquiv m)
+              (iterCov (I := I) g 4
+                (DifferentialGeometry.Geometry.Curvature.metricRm04
+                  (I := I) (M := M) g) m) := by
+        refine DFunLike.ext _ _ (fun y => ?_)
+        refine ContinuousMultilinearMap.ext (fun w => ?_)
+        exact ih y w
+      calc
+        curvCovDeriv (I := I) (M := M) g (m + 1) x v =
+            curvCovDerivStep (I := I) g m
+              (curvCovDeriv (I := I) (M := M) g m) x v :=
+          congrArg (fun A => A x v)
+            (curvCovDeriv_succ (I := I) (M := M) g m)
+        _ = covStep (I := I) g (m + 4)
+              (curvCovDeriv (I := I) (M := M) g m) x v :=
+          congrArg (fun A => A x v)
+            (curvCovDerivStep_eq_covStep (I := I) (M := M) g m _)
+        _ = covStep (I := I) g (m + 4)
+              (MultilinearSection.domDomCongr
+                (𝕜 := ℝ) (F := E) (IB := I) (E := TangentSpace I)
+                (∞ : WithTop ℕ∞) (curvEquiv m)
+                (iterCov (I := I) g 4
+                  (DifferentialGeometry.Geometry.Curvature.metricRm04
+                    (I := I) (M := M) g) m)) x v :=
+          congrArg (fun A => covStep (I := I) g (m + 4) A x v) hfield
+        _ = (MultilinearSection.domDomCongr
+              (𝕜 := ℝ) (F := E) (IB := I) (E := TangentSpace I)
+              (∞ : WithTop ℕ∞) (Tensor0SBundle.frontExtendEquiv (curvEquiv m))
+              (covStep (I := I) g (4 + m)
+                (iterCov (I := I) g 4
+                  (DifferentialGeometry.Geometry.Curvature.metricRm04
+                    (I := I) (M := M) g) m))) x v :=
+          congrArg (fun A => A x v)
+            (covStep_domDomCongr (I := I) (M := M) g (curvEquiv m) _)
+        _ = (ContinuousMultilinearMap.domDomCongr (curvEquiv (m + 1))
+              ((iterCov (I := I) g 4
+                (DifferentialGeometry.Geometry.Curvature.metricRm04
+                  (I := I) (M := M) g) (m + 1)) x)) v := by
+          rfl
+
+private theorem curvCovDeriv_normSq_eq (g : SmoothRiemannianMetric I M) (m : ℕ) (x : M) :
+    DifferentialGeometry.Tensor0SBundle.normSq0S (I := I) g x (m + 4)
+        (curvCovDeriv (I := I) (M := M) g m x) =
+      DifferentialGeometry.Tensor0SBundle.normSq0S (I := I) g x (4 + m)
+        ((iterCov (I := I) g 4
+          (DifferentialGeometry.Geometry.Curvature.metricRm04
+            (I := I) (M := M) g) m) x) := by
+  classical
+  have hfiber :
+      curvCovDeriv (I := I) (M := M) g m x =
+        ContinuousMultilinearMap.domDomCongr (curvEquiv m)
+          ((iterCov (I := I) g 4
+            (DifferentialGeometry.Geometry.Curvature.metricRm04
+              (I := I) (M := M) g) m) x) := by
+    refine ContinuousMultilinearMap.ext (fun v => ?_)
+    exact curv_apply_iterCov g m x v
+  obtain ⟨basis, hON⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis
+    (I := I) g x
+  have hinv :
+      DifferentialGeometry.Tensor0SBundle.MetricInverseInBasis (I := I) g x basis
+        (DifferentialGeometry.Tensor0SBundle.identityInvMetric
+          (Idx := Fin (Module.finrank ℝ (TangentSpace I x)))) := by
+    have h' := DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal
+      (I := I) g basis hON
+    intro i j
+    simpa [DifferentialGeometry.Tensor0SBundle.identityInvMetric,
+      DifferentialGeometry.Tensor0SBundle.diagonalInvMetric] using h' i j
+  rw [hfiber]
+  exact DifferentialGeometry.Tensor0SBundle.normSq0S_domDomCongr (I := I) g x basis hinv
+    (curvEquiv m)
+    ((iterCov (I := I) g 4
+      (DifferentialGeometry.Geometry.Curvature.metricRm04
+        (I := I) (M := M) g) m) x)
+
+end JetTowerBridge
+
+section UniversalCoverLift
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
   {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [T2Space M] [SigmaCompactSpace M] [ConnectedSpace M]
   [LocallyPathConnectedSpace M] [SemilocallySimplyConnectedSpace M] [Inhabited M]
 
-
+omit [SigmaCompactSpace M] [ConnectedSpace M] in
 theorem curvDerivNorm_liftedMetric
     (g : SmoothRiemannianMetric I M) (m : ℕ) (x' : UniversalCover M) :
     curvDerivNorm (I := I) m (UniversalCover.liftedMetric (I := I) g) x' =
       curvDerivNorm (I := I) m g (UniversalCover.proj x') := by
-  sorry
+  classical
+  let hf : IsLocalDiffeomorph I I ∞ (UniversalCover.proj : UniversalCover M → M) :=
+    UniversalCover.proj_localDiffeo (I := I) (M := M)
+  obtain ⟨Phi, hx, hagrees⟩ := hf x'
+  let U : TopologicalSpace.Opens (UniversalCover M) := ⟨Phi.source, Phi.open_source⟩
+  have hU : (U : Set (UniversalCover M)) ⊆ Phi.source := Set.Subset.rfl
+  let V : TopologicalSpace.Opens M :=
+    ⟨(Phi : UniversalCover M → M) '' (U : Set (UniversalCover M)),
+      image_opens_isOpen Phi hU⟩
+  let Psi : U ≃ₘ⟮I, I⟯ V := DifferentialGeometry.PartialDiffeomorph.toOpensDiffeo Phi hU
+  have hpoint (y : U) : (Psi y : M) = UniversalCover.proj (y : UniversalCover M) := by
+    change (Phi : UniversalCover M → M) (y : UniversalCover M) = _
+    exact (hagrees (hU y.property)).symm
+  have hderiv (y : U) : mfderiv I I (Psi : U → V) y = ContinuousLinearMap.id ℝ E := by
+    have hnear : (UniversalCover.proj : UniversalCover M → M)
+        =ᶠ[nhds (y : UniversalCover M)] (Phi : UniversalCover M → M) :=
+      Filter.eventuallyEq_of_mem (Phi.open_source.mem_nhds (hU y.property)) hagrees
+    have hdf : mfderiv I I (UniversalCover.proj : UniversalCover M → M)
+          (y : UniversalCover M) =
+        mfderiv I I (Phi : UniversalCover M → M) (y : UniversalCover M) :=
+      hnear.mfderiv_eq
+    have hproj : mfderiv I I (UniversalCover.proj : UniversalCover M → M)
+          (y : UniversalCover M) = ContinuousLinearMap.id ℝ E :=
+      (UniversalCover.hasMFDerivAt_proj (I := I) (M := M) (y : UniversalCover M)).mfderiv
+    ext v
+    exact (DifferentialGeometry.PartialDiffeomorph.mfderiv_toOpensDiffeo Phi hU y v).trans
+      ((congrArg (fun L => L v) hdf.symm).trans (congrArg (fun L => L v) hproj))
+  have hmetric (y : U) (v w : TangentSpace I y) :
+      (UniversalCover.liftedMetric (I := I) g).inner (y : UniversalCover M) v w =
+        g.inner (Psi y : M) (mfderiv I I (Psi : U → V) y v)
+          (mfderiv I I (Psi : U → V) y w) := by
+    have hv : mfderiv I I (Psi : U → V) y v = v :=
+      congrArg (fun L => L v) (hderiv y)
+    have hw : mfderiv I I (Psi : U → V) y w = w :=
+      congrArg (fun L => L w) (hderiv y)
+    exact (UniversalCover.liftedMetric_inner_eq (I := I) g
+      (y : UniversalCover M) v w).symm.trans
+      ((congrArg (fun p : M => g.inner p v w) (hpoint y)).symm.trans
+        (congrArg₂ (fun a b => g.inner (Psi y : M) a b) hv hw).symm)
+  have hAB (y : U) (v : Fin 4 → TangentSpace I y) :
+      (DifferentialGeometry.Geometry.Curvature.metricRm04 (I := I)
+          (M := UniversalCover M) (UniversalCover.liftedMetric (I := I) g))
+          (y : UniversalCover M) v =
+        (DifferentialGeometry.Geometry.Curvature.metricRm04 (I := I) (M := M) g)
+          (Psi y : M) (fun i => mfderiv I I (Psi : U → V) y (v i)) := by
+    have hv : (fun i => mfderiv I I (Psi : U → V) y (v i)) = v := by
+      funext i
+      exact congrArg (fun L => L (v i)) (hderiv y)
+    rw [hv]
+    simp only [DifferentialGeometry.Geometry.Curvature.metricRm04_apply]
+    exact (UniversalCover.metricRm04At_liftedMetric_apply (I := I) (M := M) g
+        (y : UniversalCover M) v).trans
+      ((congrArg (fun p : M =>
+        (DifferentialGeometry.Geometry.Curvature.metricRm04At (I := I) (M := M) g) p v)
+        (hpoint y)).symm)
+  have hiter := DifferentialGeometry.Geometry.Tensor.normSq0S_iterCov_of_metric_isometry_on_opens
+    (I := I) (M := UniversalCover M) (N := M)
+    (UniversalCover.liftedMetric (I := I) g) g U V Psi hmetric
+    (DifferentialGeometry.Geometry.Curvature.metricRm04 (I := I) (M := UniversalCover M)
+      (UniversalCover.liftedMetric (I := I) g))
+    (DifferentialGeometry.Geometry.Curvature.metricRm04 (I := I) (M := M) g)
+    hAB m ⟨x', hx⟩
+  have hpx : (Psi ⟨x', hx⟩ : M) = UniversalCover.proj x' := hpoint ⟨x', hx⟩
+  have hsq : curvDerivNormSq (I := I) m (UniversalCover.liftedMetric (I := I) g) x' =
+      curvDerivNormSq (I := I) m g (UniversalCover.proj x') := by
+    rw [curvDerivNormSq, curvDerivNormSq,
+      curvCovDeriv_normSq_eq (UniversalCover.liftedMetric (I := I) g) m x',
+      curvCovDeriv_normSq_eq g m (UniversalCover.proj x')]
+    exact hpx ▸ hiter
+  simp only [curvDerivNorm]
+  rw [hsq]
 
 end UniversalCoverLift
 

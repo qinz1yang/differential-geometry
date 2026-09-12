@@ -2,6 +2,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventData
 import DifferentialGeometry.Geometry.Curvature.Metric.Defs
 import DifferentialGeometry.Geometry.Metric.Cylinder
 import DifferentialGeometry.Geometry.Metric.Sphere.Round.Metric
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.Distance
 import Mathlib.Topology.Constructions
 
 noncomputable section
@@ -141,9 +142,66 @@ structure StaticCapScaffold where
 
 def standardCapClosedCore : Set ThreeSpace := Metric.closedBall 0 standardCapL
 
+private theorem standardCapRho_eq_expNegInvGlue (r : ℝ) : standardCapRho r = expNegInvGlue r := by
+  by_cases hr : r ≤ 0
+  · simp [standardCapRho, expNegInvGlue, hr]
+  · simp only [standardCapRho, expNegInvGlue, if_neg hr]
+    congr 1
+    ring
+
+private theorem standardCapEta_eq_smoothTransition (x : ℝ) :
+    standardCapEta x = Real.smoothTransition (1 - x) := by
+  simp only [standardCapEta, Real.smoothTransition, standardCapRho_eq_expNegInvGlue,
+    sub_sub_cancel]
+  rw [add_comm]
+
+private theorem standardCapAngle_eq (r : ℝ) :
+    standardCapAngle r = DifferentialGeometry.PDE.RicciFlow.StandardCap.angle r := by
+  have h1 : (∫ u in (0 : ℝ)..r, standardCapEta (u - standardCapA0)) =
+      (∫ u in (0 : ℝ)..r,
+        Real.smoothTransition
+          (DifferentialGeometry.PDE.RicciFlow.StandardCap.transitionEnd - u)) := by
+    apply intervalIntegral.integral_congr
+    intro u _
+    change standardCapEta (u - standardCapA0) =
+      Real.smoothTransition
+        (DifferentialGeometry.PDE.RicciFlow.StandardCap.transitionEnd - u)
+    rw [standardCapEta_eq_smoothTransition]
+    congr 1
+    simp only [standardCapA0,
+      DifferentialGeometry.PDE.RicciFlow.StandardCap.transitionStart,
+      DifferentialGeometry.PDE.RicciFlow.StandardCap.transitionEnd]
+    ring
+  simp only [standardCapAngle, DifferentialGeometry.PDE.RicciFlow.StandardCap.angle, one_div]
+  rw [h1]
+
+private theorem standardCapWarp_eq_warpingFunction (r : ℝ) :
+    standardCapWarp r = DifferentialGeometry.PDE.RicciFlow.StandardCap.warpingFunction r := by
+  simp only [standardCapWarp, DifferentialGeometry.PDE.RicciFlow.StandardCap.warpingFunction,
+    standardCapAngle_eq]
+
+private theorem standardCapMetric_eq_metric :
+    standardCapMetric = DifferentialGeometry.PDE.RicciFlow.StandardCap.metric := by
+  have hstd : ∀ (x v w : ThreeSpace),
+      (DifferentialGeometry.PDE.RicciFlow.StandardCap.metric).inner x v w =
+        standardCapInner x v w := by
+    intro x v w
+    by_cases hx : x = 0
+    · subst x
+      rw [DifferentialGeometry.PDE.RicciFlow.StandardCap.metric_inner_zero, standardCapInner,
+        if_pos rfl]
+    · rw [DifferentialGeometry.PDE.RicciFlow.StandardCap.metric_inner_of_ne_zero hx,
+        standardCapInner, if_neg hx]
+      rw [DifferentialGeometry.Geometry.Riemannian.radialBilinearField_apply]
+      simp only [standardCapWarp_eq_warpingFunction]
+      field_simp
+  refine SmoothRiemannianMetric.ext_inner fun x v w => ?_
+  exact (standardCapMetric_inner x v w).trans (hstd x v w).symm
+
 theorem standardCap_edist_zero (x : ThreeSpace) :
     riemannianEDistOf standardCapMetric 0 x = ENNReal.ofReal ‖x‖ := by
-  sorry
+  rw [standardCapMetric_eq_metric]
+  exact DifferentialGeometry.PDE.RicciFlow.StandardCap.edist_zero x
 
 def standardCapWindow (D : ℝ) : TopologicalSpace.Opens ThreeSpace :=
   ⟨Metric.ball 0 (D + 1), Metric.isOpen_ball⟩

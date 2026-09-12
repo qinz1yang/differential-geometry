@@ -33,6 +33,148 @@ theorem CurveMap.sweptDensity_nonneg (c : CurveMap M)
   intro x
   exact mul_nonneg (Real.sqrt_nonneg _) (c.speed_nonneg g x t)
 
+namespace ProductCurve
+
+variable (c : ProductCurve M) (g : ℝ → SmoothRiemannianMetric I M) (lambda : ℝ)
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] in
+theorem inner_X_self (x t : ℝ) :
+    c.inner g lambda x t (c.X (I := I) x t) (c.X (I := I) x t) =
+      (g t).inner (c.projection.lift x t) (c.projection.X (I := I) x t)
+          (c.projection.X (I := I) x t) +
+        lambda ^ 2 * (deriv (fun z => c.y z t) x) ^ 2 := by
+  rw [inner]
+  simp only [X]
+  ring
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] in
+theorem inner_X_self_nonneg (x t : ℝ) :
+    0 ≤ c.inner g lambda x t (c.X (I := I) x t) (c.X (I := I) x t) := by
+  rw [inner_X_self]
+  have h1 : 0 ≤ (g t).inner (c.projection.lift x t) (c.projection.X (I := I) x t)
+      (c.projection.X (I := I) x t) := by
+    rcases eq_or_ne (c.projection.X (I := I) x t) 0 with h | h
+    · simp only [h, map_zero]; rfl
+    · exact ((g t).pos (c.projection.lift x t) _ h).le
+  nlinarith [sq_nonneg (deriv (fun z => c.y z t) x), sq_nonneg lambda]
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] in
+theorem speed_sq (x t : ℝ) :
+    c.speed g lambda x t ^ 2 =
+      c.inner g lambda x t (c.X (I := I) x t) (c.X (I := I) x t) :=
+  Real.sq_sqrt (inner_X_self_nonneg c g lambda x t)
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] in
+theorem projection_speed_sq (x t : ℝ) :
+    c.projection.speed g x t ^ 2 =
+      (g t).inner (c.projection.lift x t) (c.projection.X (I := I) x t)
+        (c.projection.X (I := I) x t) := by
+  rw [CurveMap.speed]
+  exact Real.sq_sqrt (by
+    rcases eq_or_ne (c.projection.X (I := I) x t) 0 with h | h
+    · simp only [h, map_zero]; rfl
+    · exact ((g t).pos (c.projection.lift x t) _ h).le)
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] in
+theorem angle_eq (x t : ℝ) :
+    c.angle g lambda x t =
+      lambda * (c.speed g lambda x t)⁻¹ * deriv (fun z => c.y z t) x := by
+  rw [angle, inner, unitTangent, verticalUnit]
+  simp only [X, Prod.smul_fst, Prod.smul_snd, map_zero, smul_eq_mul]
+  rcases eq_or_ne lambda 0 with h | h
+  · rw [h]; simp
+  · field_simp
+    ring
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] in
+theorem projection_speed_eq {J : Set ℝ} (hlambda : 0 < lambda)
+    (hi : c.projection.ImmersedOn (I := I) J) (x t : ℝ) (ht : t ∈ J) :
+    c.projection.speed g x t =
+      c.horizontalSpeedFraction g lambda x t * c.speed g lambda x t := by
+  set sp : ℝ := c.speed g lambda x t with hsp
+  set psp : ℝ := c.projection.speed g x t with hpsp
+  set dy : ℝ := deriv (fun z => c.y z t) x with hdy
+  set a : ℝ := c.angle g lambda x t with haeq
+  set h : ℝ := c.horizontalSpeedFraction g lambda x t with hh
+  have hsp_nonneg : 0 ≤ sp := c.speed_nonneg g lambda x t
+  have hpsp_nonneg : 0 ≤ psp := c.projection.speed_nonneg g x t
+  have hX : (c.projection.X (I := I) x t) ≠ 0 := hi x t ht
+  have hpos : 0 < (g t).inner (c.projection.lift x t) (c.projection.X (I := I) x t)
+      (c.projection.X (I := I) x t) := (g t).pos (c.projection.lift x t) _ hX
+  have hsp_pos : 0 < sp := by
+    rw [hsp, speed, Real.sqrt_pos, inner]
+    simp only [X]
+    nlinarith [hpos, sq_nonneg (deriv (fun z => c.y z t) x), sq_nonneg lambda]
+  have hsp2_pos : 0 < sp ^ 2 := pow_pos hsp_pos 2
+  have hsq : sp ^ 2 = psp ^ 2 + lambda ^ 2 * dy ^ 2 := by
+    rw [hsp, hpsp, hdy, speed_sq, inner_X_self, projection_speed_sq]
+  have ha : a = lambda * sp⁻¹ * dy := angle_eq c g lambda x t
+  have ha2 : a ^ 2 = lambda ^ 2 * dy ^ 2 / sp ^ 2 := by
+    rw [ha]
+    field_simp [ne_of_gt hsp_pos]
+  have hone : a ^ 2 ≤ 1 := by
+    rw [ha2, div_le_one hsp2_pos]
+    nlinarith [sq_nonneg psp]
+  have hh2 : h ^ 2 = 1 - a ^ 2 := by
+    rw [hh, haeq, horizontalSpeedFraction]
+    exact Real.sq_sqrt (by linarith)
+  have hkey : psp ^ 2 = (h * sp) ^ 2 := by
+    rw [mul_pow, hh2]
+    have hmul : a ^ 2 * sp ^ 2 = lambda ^ 2 * dy ^ 2 := by
+      rw [ha2]
+      field_simp
+    nlinarith [hsq, hmul]
+  rcases sq_eq_sq_iff_eq_or_eq_neg.mp hkey with hcase | hcase
+  · exact hcase
+  · have hnonneg : 0 ≤ h * sp := mul_nonneg (Real.sqrt_nonneg _) hsp_nonneg
+    have hzero : h * sp = 0 := by nlinarith
+    rw [hcase, hzero, neg_zero]
+
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] in
+theorem speed_pos {J : Set ℝ}
+    (hi : c.projection.ImmersedOn (I := I) J) (x t : ℝ) (ht : t ∈ J) :
+    0 < c.speed g lambda x t := by
+  have hX : (c.projection.X (I := I) x t) ≠ 0 := hi x t ht
+  have hpos : 0 < (g t).inner (c.projection.lift x t) (c.projection.X (I := I) x t)
+      (c.projection.X (I := I) x t) := (g t).pos (c.projection.lift x t) _ hX
+  rw [speed, Real.sqrt_pos, inner]
+  simp only [X]
+  nlinarith [hpos, sq_nonneg (deriv (fun z => c.y z t) x), sq_nonneg lambda]
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] in
+theorem horizontalSpeedFraction_pos {J : Set ℝ} (hlambda : 0 < lambda)
+    (hi : c.projection.ImmersedOn (I := I) J) (x t : ℝ) (ht : t ∈ J) :
+    0 < c.horizontalSpeedFraction g lambda x t := by
+  have hsp := speed_pos c g lambda hi x t ht
+  have hpsp := c.projection.speed_pos g hi x t ht
+  have heq := projection_speed_eq c g lambda hlambda hi x t ht
+  have hquot : c.horizontalSpeedFraction g lambda x t =
+      c.projection.speed g x t / c.speed g lambda x t := by
+    rw [heq]
+    field_simp
+  rw [hquot]
+  exact div_pos hpsp hsp
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] in
+theorem unitTangent_fst_eq {J : Set ℝ} (hlambda : 0 < lambda)
+    (hi : c.projection.ImmersedOn (I := I) J) (x t : ℝ) (ht : t ∈ J) :
+    (c.unitTangent g lambda x t).1 =
+      c.horizontalSpeedFraction g lambda x t • c.projection.unitTangent g x t := by
+  have hsp_ne : c.speed g lambda x t ≠ 0 := ne_of_gt (speed_pos c g lambda hi x t ht)
+  have hpsp_ne : c.projection.speed g x t ≠ 0 :=
+    ne_of_gt (c.projection.speed_pos g hi x t ht)
+  have hh_ne : c.horizontalSpeedFraction g lambda x t ≠ 0 :=
+    ne_of_gt (horizontalSpeedFraction_pos c g lambda hlambda hi x t ht)
+  have heq := projection_speed_eq c g lambda hlambda hi x t ht
+  rw [unitTangent, X, Prod.smul_fst, CurveMap.unitTangent, smul_smul]
+  congr 1
+  field_simp
+  rw [heq]
+  ring
+
+end ProductCurve
+
 variable [SigmaCompactSpace M] [hT2 : T2Space M] [hCompact : CompactSpace M]
     [hNonempty : Nonempty M] [hBoundary : I.Boundaryless]
 variable {D : RealTimeInterval} {a b s v : ℝ}
