@@ -446,12 +446,66 @@ section QuotientGeometry
 variable (A : QuotientProductAtlas I M)
 
 
+omit [CompleteSpace E] in
+theorem isLocalDiffeomorph_productCoverProjection (A : QuotientProductAtlas I M)
+    [I.Boundaryless] :
+    letI := A.charts
+    letI := A.smoothManifold
+    IsLocalDiffeomorph (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, ℝ)) ∞
+      (productCoverProjection (M := M)) := by
+  let := A.charts
+  let := A.smoothManifold
+  exact DifferentialGeometry.Topology.Manifold.isLocalDiffeomorph_of_injective_mfderiv
+    (productCoverProjection (M := M)) A.cover_smooth
+    (fun p => (A.cover_derivative_bijective p).injective) rfl
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I ∞ M] in
+theorem surjective_productCoverProjection :
+    Function.Surjective (productCoverProjection (M := M)) := by
+  intro q
+  obtain ⟨s, -, hs⟩ := AddCircle.eq_coe_Ico (p := (1 : ℝ)) q.2
+  exact ⟨(q.1, s), Prod.ext rfl hs⟩
+
+omit [CompleteSpace E] in
+theorem metricFiberCompatible_coverProductMetric (A : QuotientProductAtlas I M) [T2Space M]
+    [I.Boundaryless] (g : SmoothRiemannianMetric I M) (lambda : ℝ) (hlambda : 0 < lambda) :
+    letI := A.charts
+    letI := A.smoothManifold
+    metricFiberCompatible (coverProductMetric g lambda hlambda)
+      (productCoverProjection (M := M)) (isLocalDiffeomorph_productCoverProjection A) := by
+  let := A.charts
+  let := A.smoothManifold
+  exact metricFiberCompatible_of_coverShift_invariant (productCoverProjection (M := M))
+    (isLocalDiffeomorph_productCoverProjection A) g lambda hlambda
+    (fun x y h => exists_coverShift_of_fiber_eq (I := I) h)
+    (fun n z => coverShift_fiber (I := I) n z)
+
 def quotientProductMetric [T2Space M] [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (lambda : ℝ) (hlambda : 0 < lambda) :
     letI := A.charts
     letI := A.smoothManifold
     SmoothRiemannianMetric (I.prod 𝓘(ℝ, ℝ)) (M × Surgery.Topology.Circle) :=
-  (exists_quotientProductGeometry A g lambda hlambda).some.metric
+  let := A.charts
+  let := A.smoothManifold
+  descendedMetric (coverProductMetric g lambda hlambda) (productCoverProjection (M := M))
+    (isLocalDiffeomorph_productCoverProjection A)
+    (surjective_productCoverProjection (M := M))
+    (metricFiberCompatible_coverProductMetric A g lambda hlambda)
+
+omit [CompleteSpace E] in
+theorem quotientProductMetric_localPull (A : QuotientProductAtlas I M) [T2Space M]
+    [I.Boundaryless] (g : SmoothRiemannianMetric I M) (lambda : ℝ) (hlambda : 0 < lambda) :
+    letI := A.charts
+    letI := A.smoothManifold
+    DifferentialGeometry.localPullMetric (quotientProductMetric A g lambda hlambda)
+      (productCoverProjection (M := M)) (isLocalDiffeomorph_productCoverProjection A) =
+      coverProductMetric g lambda hlambda := by
+  let := A.charts
+  let := A.smoothManifold
+  exact localPullMetric_descendedMetric (coverProductMetric g lambda hlambda)
+    (productCoverProjection (M := M)) (isLocalDiffeomorph_productCoverProjection A)
+    (surjective_productCoverProjection (M := M))
+    (metricFiberCompatible_coverProductMetric A g lambda hlambda)
 
 theorem product_solution_iff [T2Space M] [I.Boundaryless]
     (g : ℝ → SmoothRiemannianMetric I M)

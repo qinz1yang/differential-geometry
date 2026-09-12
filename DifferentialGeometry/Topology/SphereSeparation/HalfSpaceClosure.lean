@@ -1954,4 +1954,125 @@ theorem endClosure_boundary_image
 
 end ClosureAtlas
 
+theorem exists_embeddedSphereSideNormalChart_of_isOpen_side
+    [IsManifold (modelWithCornersSelf ℝ EuclideanThree) ∞ N]
+    (he : Manifold.IsSmoothEmbedding (𝓡 2)
+      (modelWithCornersSelf ℝ EuclideanThree) ∞ e)
+    {B C : Set N} (hBopen : IsOpen B) (hCopen : IsOpen C)
+    (hBcompl : B ⊆ (Set.range e)ᶜ)
+    (hdisjoint : Disjoint B C) (hunion : B ∪ C = (Set.range e)ᶜ)
+    (hBclosure : closure B = B ∪ Set.range e)
+    (hCclosure : closure C = C ∪ Set.range e)
+    (x : SphereTwo) :
+    Nonempty (EmbeddedSphereSideNormalChart e B x) := by
+  obtain ⟨c, hpos, hneg⟩ :=
+    exists_embeddedSphereNormalChart_connected_halves he x
+  have hCcompl : C ⊆ (Set.range e)ᶜ := by
+    rw [← hunion]
+    exact Set.subset_union_right
+  have hposc : c.positiveHalf ⊆ B ∨ c.positiveHalf ⊆ C :=
+    hpos.isPreconnected.subset_or_subset hBopen hCopen hdisjoint
+      (fun y hy => by rw [hunion]; exact c.positiveHalf_subset_compl_range hy)
+  have hnegc : c.negativeHalf ⊆ B ∨ c.negativeHalf ⊆ C :=
+    hneg.isPreconnected.subset_or_subset hBopen hCopen hdisjoint
+      (fun y hy => by rw [hunion]; exact c.negativeHalf_subset_compl_range hy)
+  have hxC : e x ∈ closure C := by
+    rw [hCclosure]
+    exact Or.inr ⟨x, rfl⟩
+  have hxB : e x ∈ closure B := by
+    rw [hBclosure]
+    exact Or.inr ⟨x, rfl⟩
+  have hnotBothB : ¬ (c.positiveHalf ⊆ B ∧ c.negativeHalf ⊆ B) := by
+    rintro ⟨hp, hn⟩
+    have hdisjC : Disjoint C c.neighborhood := by
+      rw [Set.disjoint_left]
+      intro y hyC hyN
+      have hyNotRange : y ∉ Set.range e := fun h => hCcompl hyC h
+      have hyDiff : y ∈ c.neighborhood \ Set.range e := ⟨hyN, hyNotRange⟩
+      rw [c.neighborhood_diff_range_eq_halves] at hyDiff
+      rcases hyDiff with hyPos | hyNeg
+      · exact Set.disjoint_left.mp hdisjoint (hp hyPos) hyC
+      · exact Set.disjoint_left.mp hdisjoint (hn hyNeg) hyC
+    have hsub : C ⊆ c.neighborhoodᶜ := fun y hy hyN => Set.disjoint_left.mp hdisjC hy hyN
+    exact (closure_minimal hsub c.isOpen_neighborhood.isClosed_compl hxC)
+      c.image_mem_neighborhood
+  have hnotBothC : ¬ (c.positiveHalf ⊆ C ∧ c.negativeHalf ⊆ C) := by
+    rintro ⟨hp, hn⟩
+    have hdisjB : Disjoint B c.neighborhood := by
+      rw [Set.disjoint_left]
+      intro y hyB hyN
+      have hyNotRange : y ∉ Set.range e := fun h => hBcompl hyB h
+      have hyDiff : y ∈ c.neighborhood \ Set.range e := ⟨hyN, hyNotRange⟩
+      rw [c.neighborhood_diff_range_eq_halves] at hyDiff
+      rcases hyDiff with hyPos | hyNeg
+      · exact Set.disjoint_left.mp hdisjoint hyB (hp hyPos)
+      · exact Set.disjoint_left.mp hdisjoint hyB (hn hyNeg)
+    have hsub : B ⊆ c.neighborhoodᶜ := fun y hy hyN => Set.disjoint_left.mp hdisjB hy hyN
+    exact (closure_minimal hsub c.isOpen_neighborhood.isClosed_compl hxB)
+      c.image_mem_neighborhood
+  rcases hposc with hposB | hposC
+  · rcases hnegc with hnegB | hnegC
+    · exact absurd ⟨hposB, hnegB⟩ hnotBothB
+    · refine ⟨c, .positive, ?_, ?_⟩
+      · intro y hy
+        change y ∈ B ↔ 0 < c.normalCoordinate y
+        constructor
+        · intro hyB
+          have hyNotRange : y ∉ Set.range e := hBcompl hyB
+          have hyDiff : y ∈ c.neighborhood \ Set.range e := ⟨hy, hyNotRange⟩
+          rw [c.neighborhood_diff_range_eq_halves] at hyDiff
+          rcases hyDiff with hyPos | hyNeg
+          · exact hyPos.2
+          · exact False.elim (Set.disjoint_left.1 hdisjoint hyB (hnegC hyNeg))
+        · intro hyPos
+          exact hposB ⟨hy, hyPos⟩
+      · intro y hy
+        change y ∈ closure B ↔ 0 ≤ c.normalCoordinate y
+        rw [hBclosure]
+        constructor
+        · rintro (hyB | hyS)
+          · have hyNotRange : y ∉ Set.range e := hBcompl hyB
+            have hyDiff : y ∈ c.neighborhood \ Set.range e := ⟨hy, hyNotRange⟩
+            rw [c.neighborhood_diff_range_eq_halves] at hyDiff
+            rcases hyDiff with hyPos | hyNeg
+            · exact hyPos.2.le
+            · exact False.elim (Set.disjoint_left.1 hdisjoint hyB (hnegC hyNeg))
+          · exact (c.normalCoordinate_eq_zero_iff hy).2 hyS |>.ge
+        · intro hnonneg
+          rcases hnonneg.eq_or_lt with hzero | hpositive
+          · exact Or.inr ((c.normalCoordinate_eq_zero_iff hy).1 hzero.symm)
+          · exact Or.inl (hposB ⟨hy, hpositive⟩)
+  · rcases hnegc with hnegB | hnegC
+    · refine ⟨c, .negative, ?_, ?_⟩
+      · intro y hy
+        change y ∈ B ↔ 0 < -c.normalCoordinate y
+        rw [neg_pos]
+        constructor
+        · intro hyB
+          have hyNotRange : y ∉ Set.range e := hBcompl hyB
+          have hyDiff : y ∈ c.neighborhood \ Set.range e := ⟨hy, hyNotRange⟩
+          rw [c.neighborhood_diff_range_eq_halves] at hyDiff
+          rcases hyDiff with hyPos | hyNeg
+          · exact False.elim (Set.disjoint_left.1 hdisjoint hyB (hposC hyPos))
+          · exact hyNeg.2
+        · intro hyNeg
+          exact hnegB ⟨hy, hyNeg⟩
+      · intro y hy
+        change y ∈ closure B ↔ 0 ≤ -c.normalCoordinate y
+        rw [hBclosure, neg_nonneg]
+        constructor
+        · rintro (hyB | hyS)
+          · have hyNotRange : y ∉ Set.range e := hBcompl hyB
+            have hyDiff : y ∈ c.neighborhood \ Set.range e := ⟨hy, hyNotRange⟩
+            rw [c.neighborhood_diff_range_eq_halves] at hyDiff
+            rcases hyDiff with hyPos | hyNeg
+            · exact False.elim (Set.disjoint_left.1 hdisjoint hyB (hposC hyPos))
+            · exact hyNeg.2.le
+          · exact (c.normalCoordinate_eq_zero_iff hy).2 hyS |>.le
+        · intro hnonpos
+          rcases hnonpos.eq_or_lt with hzero | hnegative
+          · exact Or.inr ((c.normalCoordinate_eq_zero_iff hy).1 hzero)
+          · exact Or.inl (hnegB ⟨hy, hnegative⟩)
+    · exact absurd ⟨hposC, hnegC⟩ hnotBothC
+
 end DifferentialGeometry.Topology.SphereSeparation

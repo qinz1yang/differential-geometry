@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.Convergence.Window.Bounds
+import DifferentialGeometry.Geometry.Metric.Comparison.DistanceScaling
 import DifferentialGeometry.Geometry.Metric.Pullback.Basic
 import DifferentialGeometry.Geometry.Curvature.Bounds.QuadraticForm
 import DifferentialGeometry.Geometry.Curvature.Bounds.RicciOperatorNorm
@@ -496,6 +497,27 @@ theorem metricUniformEquivalentOn_pullback
   refine ⟨hC, fun x hx v => ?_⟩
   rw [Diffeomorph.pullbackMetric_inner, Diffeomorph.pullbackMetric_inner]
   exact hbound (Φ x) (hV x hx) (mfderiv I I (Φ : M → N) x v)
+
+theorem edistOf_le_of_quad_of_metricDerivNorm
+    (gk gInf : SmoothRiemannianMetric I M) {δ : Real} (hδ1 : δ < 1)
+    (hsmall : forall x : M, (Module.finrank Real (TangentSpace I x) : Real) *
+      metricDerivNorm (I := I) 0 gk gInf gInf x <= δ)
+    (x y : M) :
+    riemannianEDistOf gInf x y <=
+      ENNReal.ofReal (Real.sqrt ((1 - δ)⁻¹)) * riemannianEDistOf gk x y := by
+  have h1δ : (0 : Real) < 1 - δ := by linarith
+  refine edistOf_le_of_quad gk gInf (inv_pos.mpr h1δ) ?_ x y
+  intro z v
+  have hgnn : 0 <= gInf.inner z v v := by
+    by_cases hv : v = 0
+    · subst hv; simp
+    · exact (gInf.pos z v hv).le
+  have hb := metricQuadFormDiff_le_metricDerivNorm gk gInf gInf z v
+  have hbnd : |gk.inner z v v - gInf.inner z v v| <= δ * gInf.inner z v v :=
+    hb.trans (mul_le_mul_of_nonneg_right (hsmall z) hgnn)
+  rw [abs_le] at hbnd
+  rw [le_inv_mul_iff₀ h1δ]
+  nlinarith [hbnd.1]
 
 end
 

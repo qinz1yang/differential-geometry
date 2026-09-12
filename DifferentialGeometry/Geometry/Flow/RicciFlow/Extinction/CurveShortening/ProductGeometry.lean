@@ -4,6 +4,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Ricci.Tra
 import DifferentialGeometry.Geometry.Curvature.DimensionOne.Flat
 import DifferentialGeometry.Geometry.Curvature.Metric.Scaling
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Product
+import DifferentialGeometry.Geometry.Curvature.Naturality.Pullback.LocalIterCov
 
 
 noncomputable section
@@ -276,6 +277,7 @@ theorem coverProduct_iterCov_normSq [I.Boundaryless] (g : SmoothRiemannianMetric
 section QuotientCurvature
 variable (A : QuotientProductAtlas I M)
 
+omit [SigmaCompactSpace M] in
 theorem quotientProduct_iterCov_rm04_apply [I.Boundaryless] (g : SmoothRiemannianMetric I M)
     (lambda : ℝ) (hlambda : 0 < lambda) (m : ℕ) (p : M × ℝ)
     (v : Fin (4 + m) → TangentSpace (I.prod 𝓘(ℝ, ℝ)) p) :
@@ -286,8 +288,33 @@ theorem quotientProduct_iterCov_rm04_apply [I.Boundaryless] (g : SmoothRiemannia
         (fun i => mfderiv (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, ℝ))
           productCoverProjection p (v i)) =
       iterCov g 4 (metricRm04 g) m p.1 (fun i => (v i).1) := by
-  sorry
+  let := A.charts
+  let := A.smoothManifold
+  have hmain := DifferentialGeometry.Geometry.Tensor.iter_cov_localPullMetric
+    (I := I.prod 𝓘(ℝ, ℝ)) (J := I.prod 𝓘(ℝ, ℝ))
+    (M := M × ℝ) (N := M × Surgery.Topology.Circle)
+    (g := quotientProductMetric A g lambda hlambda)
+    (f := productCoverProjection (M := M))
+    (hf := isLocalDiffeomorph_productCoverProjection A)
+    (r := 4)
+    (A := metricRm04 (I := I.prod 𝓘(ℝ, ℝ)) (DifferentialGeometry.localPullMetric (quotientProductMetric A g lambda hlambda)
+        (productCoverProjection (M := M)) (isLocalDiffeomorph_productCoverProjection A)))
+    (B := metricRm04 (I := I.prod 𝓘(ℝ, ℝ)) (quotientProductMetric A g lambda hlambda))
+    (by
+      intro y w
+      rw [DifferentialGeometry.Geometry.Curvature.metricRm04_apply,
+          DifferentialGeometry.Geometry.Curvature.metricRm04_apply]
+      exact DifferentialGeometry.Geometry.Tensor.metricRm04At_localPullMetric
+        (g := quotientProductMetric A g lambda hlambda)
+        (f := productCoverProjection (M := M))
+        (hf := isLocalDiffeomorph_productCoverProjection A) y w)
+    m p v
+  rw [quotientProductMetric_localPull] at hmain
+  rw [coverProduct_iterCov_rm04_apply (I := I) g lambda hlambda m p] at hmain
+  exact hmain.symm
 
+
+omit [SigmaCompactSpace M] in
 theorem quotientProduct_iterCov_ricci_apply [I.Boundaryless] (g : SmoothRiemannianMetric I M)
     (lambda : ℝ) (hlambda : 0 < lambda) (m : ℕ) (p : M × ℝ)
     (v : Fin (2 + m) → TangentSpace (I.prod 𝓘(ℝ, ℝ)) p) :
@@ -298,8 +325,33 @@ theorem quotientProduct_iterCov_ricci_apply [I.Boundaryless] (g : SmoothRiemanni
         (fun i => mfderiv (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, ℝ))
           productCoverProjection p (v i)) =
       iterCov g 2 (metricRicci g) m p.1 (fun i => (v i).1) := by
-  sorry
+  let := A.charts
+  let := A.smoothManifold
+  have hmain := DifferentialGeometry.Geometry.Tensor.iter_cov_localPullMetric
+    (I := I.prod 𝓘(ℝ, ℝ)) (J := I.prod 𝓘(ℝ, ℝ))
+    (M := M × ℝ) (N := M × Surgery.Topology.Circle)
+    (g := quotientProductMetric A g lambda hlambda)
+    (f := productCoverProjection (M := M))
+    (hf := isLocalDiffeomorph_productCoverProjection A)
+    (r := 2)
+    (A := metricRicci (I := I.prod 𝓘(ℝ, ℝ)) (DifferentialGeometry.localPullMetric (quotientProductMetric A g lambda hlambda)
+        (productCoverProjection (M := M)) (isLocalDiffeomorph_productCoverProjection A)))
+    (B := metricRicci (I := I.prod 𝓘(ℝ, ℝ)) (quotientProductMetric A g lambda hlambda))
+    (by
+      intro y w
+      rw [DifferentialGeometry.Geometry.Curvature.metricRicci_apply,
+        DifferentialGeometry.Geometry.Curvature.metricRicci_apply]
+      exact DifferentialGeometry.Geometry.Tensor.metricRicciAt_localPullMetric
+        (g := quotientProductMetric A g lambda hlambda)
+        (f := productCoverProjection (M := M))
+        (hf := isLocalDiffeomorph_productCoverProjection A) y w)
+    m p v
+  rw [quotientProductMetric_localPull] at hmain
+  rw [coverProduct_iterCov_ricci_apply (I := I) g lambda hlambda m p] at hmain
+  exact hmain.symm
 
+
+omit [SigmaCompactSpace M] in
 theorem quotientProduct_iterCov_normSq [I.Boundaryless] (g : SmoothRiemannianMetric I M)
     (lambda : ℝ) (hlambda : 0 < lambda) (m : ℕ) (q : M × Surgery.Topology.Circle) :
     letI := A.charts
@@ -312,7 +364,50 @@ theorem quotientProduct_iterCov_normSq [I.Boundaryless] (g : SmoothRiemannianMet
         (iterCov (quotientProductMetric A g lambda hlambda) 2
           (metricRicci (quotientProductMetric A g lambda hlambda)) m q) =
       normSq0S g q.1 (2 + m) (iterCov g 2 (metricRicci g) m q.1) := by
-  sorry
+  let := A.charts
+  let := A.smoothManifold
+  obtain ⟨p, rfl⟩ := surjective_productCoverProjection (M := M) q
+  refine ⟨?_, ?_⟩
+  · have h := DifferentialGeometry.Geometry.Tensor.normSq0S_iterCov_localPullMetric
+      (I := I.prod 𝓘(ℝ, ℝ)) (M := M × ℝ) (N := M × Surgery.Topology.Circle)
+      (g := quotientProductMetric A g lambda hlambda)
+      (f := productCoverProjection (M := M))
+      (hf := isLocalDiffeomorph_productCoverProjection A)
+      (r := 4)
+      (A := metricRm04 (I := I.prod 𝓘(ℝ, ℝ)) (DifferentialGeometry.localPullMetric (quotientProductMetric A g lambda hlambda)
+        (productCoverProjection (M := M)) (isLocalDiffeomorph_productCoverProjection A)))
+      (B := metricRm04 (I := I.prod 𝓘(ℝ, ℝ)) (quotientProductMetric A g lambda hlambda))
+      (by
+        intro y w
+        rw [DifferentialGeometry.Geometry.Curvature.metricRm04_apply,
+          DifferentialGeometry.Geometry.Curvature.metricRm04_apply]
+        exact DifferentialGeometry.Geometry.Tensor.metricRm04At_localPullMetric
+          (g := quotientProductMetric A g lambda hlambda)
+          (f := productCoverProjection (M := M))
+          (hf := isLocalDiffeomorph_productCoverProjection A) y w)
+      m p
+    rw [quotientProductMetric_localPull] at h
+    exact h.symm.trans (coverProduct_iterCov_normSq (I := I) g lambda hlambda m p).1
+  · have h := DifferentialGeometry.Geometry.Tensor.normSq0S_iterCov_localPullMetric
+      (I := I.prod 𝓘(ℝ, ℝ)) (M := M × ℝ) (N := M × Surgery.Topology.Circle)
+      (g := quotientProductMetric A g lambda hlambda)
+      (f := productCoverProjection (M := M))
+      (hf := isLocalDiffeomorph_productCoverProjection A)
+      (r := 2)
+      (A := metricRicci (I := I.prod 𝓘(ℝ, ℝ)) (DifferentialGeometry.localPullMetric (quotientProductMetric A g lambda hlambda)
+        (productCoverProjection (M := M)) (isLocalDiffeomorph_productCoverProjection A)))
+      (B := metricRicci (I := I.prod 𝓘(ℝ, ℝ)) (quotientProductMetric A g lambda hlambda))
+      (by
+        intro y w
+        rw [DifferentialGeometry.Geometry.Curvature.metricRicci_apply,
+          DifferentialGeometry.Geometry.Curvature.metricRicci_apply]
+        exact DifferentialGeometry.Geometry.Tensor.metricRicciAt_localPullMetric
+          (g := quotientProductMetric A g lambda hlambda)
+          (f := productCoverProjection (M := M))
+          (hf := isLocalDiffeomorph_productCoverProjection A) y w)
+      m p
+    rw [quotientProductMetric_localPull] at h
+    exact h.symm.trans (coverProduct_iterCov_normSq (I := I) g lambda hlambda m p).2
 
 theorem quotientProduct_ricciBackground_C [I.Boundaryless] {D : RealTimeInterval} {a b : ℝ}
     (B : RicciBackground (I := I) (M := M) D a b) (lambda : ℝ) (hlambda : 0 < lambda) :

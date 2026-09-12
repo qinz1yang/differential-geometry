@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.Background
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChartSimplexBlend
+import DifferentialGeometry.Topology.Homology.EuclideanLocalTop
 import Mathlib.AlgebraicTopology.SingularHomology.HomotopyInvariance
 import Mathlib.AlgebraicTopology.SimplicialSet.TopAdj
 import Mathlib.Algebra.Category.ModuleCat.Abelian
@@ -69,6 +70,13 @@ def integralHomologyMap (n : ℕ) (f : C(X, Y)) :
   (integralHomologyFunctor n).map (TopCat.ofHom f)
 
 
+theorem integralHomologyMap_eq_of_homotopic {f g : C(X, Y)}
+    (H : ContinuousMap.Homotopic f g) :
+    integralHomologyMap 3 f = integralHomologyMap 3 g := by
+  exact TopCat.Homotopy.congr_homologyMap_singularChainComplexFunctor
+    (C := ModuleCat.{u} ℤ) (f := TopCat.ofHom f) (g := TopCat.ofHom g)
+    (Classical.choice H) integralCoefficients 3
+
 def pairSubspaceMap (f : C(X, Y)) (A : Set X) (B : Set Y)
     (hf : Set.MapsTo f A B) : TopCat.of A ⟶ TopCat.of B :=
   TopCat.ofHom ⟨fun x => ⟨f x, hf x.property⟩,
@@ -115,6 +123,18 @@ theorem absoluteToRelative_naturality (n : ℕ) (f : C(X, Y))
       congrArg (fun φ : IntegralChains X ⟶ RelativeIntegralChains Y B =>
         HomologicalComplex.homologyMap φ n) (cokernel.π_desc _ _ _)
     _ = _ := HomologicalComplex.homologyMap_comp _ _ n
+
+
+theorem absoluteToRelative_injective_of_subsingleton (A : Set X) (n : ℕ)
+    (h : Subsingleton (IntegralHomology A n)) :
+    Function.Injective (absoluteToRelative X A n) :=
+  DifferentialGeometry.Topology.integralAbsoluteToRelative_injective_of_subsingleton n A h
+
+
+theorem absoluteToRelative_compl_singleton_injective_of_subsingleton (x : X)
+    (h : Subsingleton (IntegralHomology ({x}ᶜ : Set X) 3)) :
+    Function.Injective (absoluteToRelative X ({x}ᶜ) 3) :=
+  absoluteToRelative_injective_of_subsingleton ({x}ᶜ) 3 h
 
 
 def singularSimplexChain {n : ℕ} (f : C(stdSimplex ℝ (Fin (n + 1)), X)) :
@@ -646,6 +666,31 @@ def localOrientationClass (o : TangentOrientationSection M) (x : M) :
 theorem localOrientationClass_spec (o : TangentOrientationSection M) (x : M)
     (S : OrientedChartSimplex o x) : S.localClass = localOrientationClass o x :=
   (Classical.choose_spec (exists_unique_localOrientationClass o x)).1 S
+
+
+omit [IsManifold ThreeModel ∞ M] in
+noncomputable def localIntegralHomologyEquivInt (x : M) :
+    LocalIntegralHomology M x 3 ≃ₗ[ℤ] ℤ := by
+  haveI : T1Space M := ChartedSpace.t1Space ThreeSpace M
+  let uliftChart := (Homeomorph.ulift (X := ThreeSpace)).symm.toOpenPartialHomeomorph
+  letI : InnerProductSpace ℝ (ULift.{u} ThreeSpace) :=
+    { inner := fun x y => inner ℝ x.down y.down
+      norm_sq_eq_re_inner := fun x => norm_sq_eq_re_inner x.down
+      conj_inner_symm := fun x y => inner_conj_symm x.down y.down
+      add_left := fun x y z => inner_add_left x.down y.down z.down
+      smul_left := fun x y r => inner_smul_left x.down y.down r }
+  letI : ChartedSpace (ULift.{u} ThreeSpace) M :=
+    { atlas := (fun e : OpenPartialHomeomorph M ThreeSpace => e.trans uliftChart) ''
+        atlas ThreeSpace M
+      chartAt := fun x => (chartAt ThreeSpace x).trans uliftChart
+      mem_chart_source := fun x => by
+        rw [OpenPartialHomeomorph.trans_source]
+        exact ⟨mem_chart_source ThreeSpace x, trivial⟩
+      chart_mem_atlas := fun x => ⟨chartAt ThreeSpace x, chart_mem_atlas ThreeSpace x, rfl⟩ }
+  have hfin : Module.finrank ℝ (ULift.{u} ThreeSpace) = 1 + 2 :=
+    (ULift.moduleEquiv (R := ℝ) (M := ThreeSpace)).finrank_eq.trans (by simp)
+  exact DifferentialGeometry.Topology.integralManifoldLocalTopEquiv
+    (E := ULift.{u} ThreeSpace) 1 hfin M x
 
 
 theorem localOrientationClass_generator (o : TangentOrientationSection M) (x : M) :

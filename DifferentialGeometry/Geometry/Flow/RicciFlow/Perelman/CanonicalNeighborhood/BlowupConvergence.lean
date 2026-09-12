@@ -2,6 +2,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborho
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.OrientedBadPointSelection
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Compactness.Construction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.PointedPinchingLimit
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.PointedNoncollapse
 
 set_option autoImplicit false
 noncomputable section
@@ -105,7 +106,86 @@ theorem noncollapse_passes_to_limit (X : PointedRiemannianSeq.{u, 0, 0} I3)
     (hradii : Filter.Tendsto radii Filter.atTop Filter.atTop)
     (hsource : ∀ i, MetricNoncollapsed (X.obj i) kappa (Set.Ioc 0 (radii i))) :
     MetricNoncollapsed P kappa Set.univ := by
-  sorry
+  intro z r _ hr hcurvature
+  let _ := capture
+  let : NeZero (Module.finrank ℝ ThreeSpace) := ⟨by simp [ThreeSpace]⟩
+  have hn : Module.finrank ℝ ThreeSpace = 3 := by simp [ThreeSpace]
+  have hconv : ENNReal.ofReal kappa * ENNReal.ofReal r ^ Module.finrank ℝ ThreeSpace =
+      ENNReal.ofReal (kappa * r ^ 3) := by
+    rw [← ENNReal.ofReal_pow hr.le, ← ENNReal.ofReal_mul hkappa.le, hn]
+  have hreference (k : ℕ) : (conv.domain k).referenceMetric = (conv.domain k).limitMetric := by
+    rw [canonical_domains k]
+    rfl
+  let epsilon : ℕ → ℝ := fun j => 1 / ((j : ℝ) + 1)
+  let s : ℕ → ℝ := fun j => r / (1 + epsilon j) ^ 2
+  have hepsilon : Filter.Tendsto epsilon Filter.atTop (𝓝 (0 : ℝ)) :=
+    tendsto_one_div_add_atTop_nhds_zero_nat
+  have hone : Filter.Tendsto (fun j => 1 + epsilon j) Filter.atTop (𝓝 (1 : ℝ)) := by
+    simpa only [add_zero] using
+      (tendsto_const_nhds : Filter.Tendsto (fun _ : ℕ => (1 : ℝ)) Filter.atTop (𝓝 1)).add hepsilon
+  have hs : Filter.Tendsto s Filter.atTop (𝓝 r) := by
+    simpa only [s, Pi.div_def, one_pow, div_one] using
+      (tendsto_const_nhds : Filter.Tendsto (fun _ : ℕ => r) Filter.atTop (𝓝 r)).div
+        (hone.pow 2) (by norm_num : (1 : ℝ) ^ 2 ≠ 0)
+  have hreal : Filter.Tendsto (fun j => ENNReal.ofReal (s j)) Filter.atTop
+      (𝓝 (ENNReal.ofReal r)) := by
+    simpa only [Function.comp_def] using
+      ENNReal.continuous_ofReal.continuousAt.tendsto.comp hs
+  have hleft := ENNReal.Tendsto.const_mul (a := ENNReal.ofReal kappa)
+    (ENNReal.Tendsto.pow (n := Module.finrank ℝ ThreeSpace) hreal)
+    (Or.inr ENNReal.ofReal_ne_top)
+  have hsqrt : Filter.Tendsto
+      (fun j => Real.sqrt ((1 + epsilon j) ^ Module.finrank ℝ ThreeSpace))
+      Filter.atTop (𝓝 (1 : ℝ)) := by
+    simpa only [one_pow, Real.sqrt_one, Function.comp_def] using
+      Real.continuous_sqrt.continuousAt.tendsto.comp
+        (hone.pow (Module.finrank ℝ ThreeSpace))
+  have hcoef : Filter.Tendsto (fun j => ENNReal.ofReal
+      (Real.sqrt ((1 + epsilon j) ^ Module.finrank ℝ ThreeSpace)))
+      Filter.atTop (𝓝 (1 : ℝ≥0∞)) := by
+    simpa only [ENNReal.ofReal_one, Function.comp_def] using
+      ENNReal.continuous_ofReal.continuousAt.tendsto.comp hsqrt
+  have hright : Filter.Tendsto (fun j =>
+      ENNReal.ofReal (Real.sqrt ((1 + epsilon j) ^ Module.finrank ℝ ThreeSpace)) *
+        riemannianVolumeMeasure I3 P.M P.metric (riemannianBallOf P.metric z r))
+      Filter.atTop
+      (𝓝 (riemannianVolumeMeasure I3 P.M P.metric (riemannianBallOf P.metric z r))) := by
+    simpa only [one_mul] using ENNReal.Tendsto.mul_const hcoef (Or.inl one_ne_zero)
+  rw [← hconv]
+  refine le_of_tendsto_of_tendsto' hleft hright fun j => ?_
+  have he : 0 < epsilon j := by dsimp only [epsilon]; positivity
+  have h1 : 0 < 1 + epsilon j := by linarith
+  have hsj : 0 < s j := div_pos hr (sq_pos_of_pos h1)
+  have hbuffer : (1 + epsilon j) * s j < r := by
+    calc
+      (1 + epsilon j) * s j = r / (1 + epsilon j) := by
+        dsimp only [s]
+        field_simp [ne_of_gt h1]
+      _ < r := (div_lt_self hr (by linarith))
+  obtain ⟨kv, hkv⟩ :=
+    DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions.exists_pointed_buffered_ball_volume_le_at
+      (I := I3) (X := X) (L := P) (subseq := f) (Φ := F) conv hreference complete z
+      hsj he hbuffer he
+  obtain ⟨kc, hkc⟩ :=
+    DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions.exists_pointed_ball_curvature_control
+      (I := I3) (X := X) (L := P) (subseq := f) (Φ := F) conv canonical_domains complete z
+      hsj he hbuffer hcurvature
+  obtain ⟨krad, hkrad⟩ := Filter.eventually_atTop.mp
+    ((hradii.comp hf.tendsto_atTop).eventually (Filter.eventually_ge_atTop (s j)))
+  have hnc := hsource (f (max kv (max kc krad))) (F.map (max kv (max kc krad)) z) (s j)
+    ⟨hsj, hkrad (max kv (max kc krad))
+      (le_trans (le_max_right _ _) (le_max_right _ _))⟩
+    hsj
+    (hkc (max kv (max kc krad))
+      (le_trans (le_max_left _ _) (le_max_right _ _)))
+  have hnc' : ENNReal.ofReal kappa * ENNReal.ofReal (s j) ^ Module.finrank ℝ ThreeSpace ≤
+      riemannianVolumeMeasure I3 (X.obj (f (max kv (max kc krad)))).M
+        (X.obj (f (max kv (max kc krad)))).metric
+        (riemannianBallOf (X.obj (f (max kv (max kc krad)))).metric
+          (F.map (max kv (max kc krad)) z) (s j)) := by
+    rw [← ENNReal.ofReal_pow hsj.le, ← ENNReal.ofReal_mul hkappa.le, hn]
+    exact hnc
+  exact hnc'.trans (hkv (max kv (max kc krad)) (le_max_left _ _))
 
 theorem blowup_limit_nonnegative {eps kappa sigma : ℝ} {Phi : ℝ → ℝ}
     (X : NormalizedSequence.{u} eps kappa sigma Phi) (hPhi : AdmissiblePinchingFunction Phi)

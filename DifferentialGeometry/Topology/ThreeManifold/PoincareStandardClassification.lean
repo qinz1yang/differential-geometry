@@ -307,4 +307,55 @@ theorem poincareStandardSumClosed_of_unit_assoc_transport
       finiteConnectedSum_append_of_unit_assoc_transport_diffeo hunitR hunitL hassoc htransportR L K
   · exact fun hf => finiteConnectedSum_congr_of_transport_diffeo htransportL htransportR hf
 
+def poincareStandardConnectedSumClosed : Prop :=
+  ∀ M N : ConnectedClosedOrientedManifold.{u} 3,
+    isPoincareStandard M.Carrier → isPoincareStandard N.Carrier →
+      isPoincareStandard (connectedSum M N).Carrier
+
+theorem isPoincareStandard_connectedSum_of_standardFactor
+    (M N : ConnectedClosedOrientedManifold.{u} 3)
+    (hM : isStandardFactor M) (hN : isStandardFactor N) :
+    isPoincareStandard (connectedSum M N).Carrier := by
+  have h := isPoincareStandard_finite_sum [M, N] (by
+    intro F hF
+    rcases List.mem_cons.mp hF with rfl | hF
+    · exact hM
+    rcases List.mem_cons.mp hF with rfl | hF
+    · exact hN
+    exact absurd hF (by simp))
+  exact h
+
+theorem poincareStandardSumClosed_of_connectedSumClosed
+    (h : poincareStandardConnectedSumClosed.{u}) :
+    poincareStandardSumClosed.{u} := by
+  intro L hL
+  induction L with
+  | nil => exact isPoincareStandard_sphere
+  | cons M L ih =>
+    cases L with
+    | nil => exact hL M (by simp)
+    | cons N L =>
+      have hM : isPoincareStandard M.Carrier := hL M (by simp)
+      have hT : isPoincareStandard (finiteConnectedSum (N :: L)).Carrier :=
+        ih fun F hF => hL F (by simp [hF])
+      exact h M (finiteConnectedSum (N :: L)) hM hT
+
+theorem connectedSumClosed_of_poincareStandardSumClosed
+    (h : poincareStandardSumClosed.{u}) :
+    poincareStandardConnectedSumClosed.{u} := by
+  intro M N hM hN
+  have h2 := h [M, N] (by
+    intro F hF
+    rcases List.mem_cons.mp hF with rfl | hF
+    · exact hM
+    rcases List.mem_cons.mp hF with rfl | hF
+    · exact hN
+    exact absurd hF (by simp))
+  exact h2
+
+theorem poincareStandardSumClosed_iff_connectedSumClosed :
+    poincareStandardSumClosed.{u} ↔ poincareStandardConnectedSumClosed.{u} :=
+  ⟨connectedSumClosed_of_poincareStandardSumClosed,
+    poincareStandardSumClosed_of_connectedSumClosed⟩
+
 end DifferentialGeometry.Topology

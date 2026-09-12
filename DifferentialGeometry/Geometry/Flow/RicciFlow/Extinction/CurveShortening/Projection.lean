@@ -173,6 +173,395 @@ theorem unitTangent_fst_eq {J : Set ℝ} (hlambda : 0 < lambda)
   rw [heq]
   ring
 
+omit [FiniteDimensional ℝ E] [CompleteSpace E] in
+theorem angle_sq_le_one (x t : ℝ) : c.angle g lambda x t ^ 2 ≤ 1 := by
+  rcases eq_or_ne (c.speed g lambda x t) 0 with h0 | h0
+  · have hang : c.angle g lambda x t = 0 := by
+      rw [angle_eq c g lambda x t, h0]
+      simp
+    rw [hang]
+    norm_num
+  · have hang : c.angle g lambda x t * c.speed g lambda x t =
+        lambda * deriv (fun z => c.y z t) x := by
+      rw [angle_eq c g lambda x t]
+      field_simp
+    have hsp2 : c.speed g lambda x t ^ 2 =
+        c.inner g lambda x t (c.X (I := I) x t) (c.X (I := I) x t) :=
+      speed_sq c g lambda x t
+    have hinner : c.inner g lambda x t (c.X (I := I) x t) (c.X (I := I) x t) =
+        (g t).inner (c.projection.lift x t) (c.projection.X (I := I) x t)
+            (c.projection.X (I := I) x t) +
+          lambda ^ 2 * deriv (fun z => c.y z t) x ^ 2 :=
+      inner_X_self c g lambda x t
+    have hsq : (c.angle g lambda x t * c.speed g lambda x t) ^ 2 ≤
+        c.speed g lambda x t ^ 2 := by
+      rw [hang, mul_pow, hsp2, hinner]
+      nlinarith [DifferentialGeometry.metric_inner_self_nonneg (g t) (c.projection.lift x t)
+        (c.projection.X (I := I) x t)]
+    have hpos : 0 < c.speed g lambda x t ^ 2 := by positivity
+    have heq : c.angle g lambda x t ^ 2 =
+        (c.angle g lambda x t * c.speed g lambda x t) ^ 2 / c.speed g lambda x t ^ 2 := by
+      field_simp
+    rw [heq]
+    exact (div_le_one hpos).mpr hsq
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] in
+theorem horizontalSpeedFraction_sq (x t : ℝ) :
+    c.horizontalSpeedFraction g lambda x t ^ 2 = 1 - c.angle g lambda x t ^ 2 :=
+  Real.sq_sqrt (by linarith [angle_sq_le_one c g lambda x t])
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] in
+theorem speed_sq_add (x t : ℝ) :
+    c.speed g lambda x t ^ 2 =
+      (c.projection.speed g x t) ^ 2 +
+        lambda ^ 2 * deriv (fun z => c.y z t) x ^ 2 := by
+  rw [speed_sq c g lambda x t, inner_X_self c g lambda x t,
+    ← projection_speed_sq c g x t]
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I ∞ M] in
+theorem y_deriv_contDiff {J : Set ℝ} (hc : c.SmoothOn (I := I) J)
+    (t : ℝ) (ht : t ∈ J) :
+    ContDiff ℝ ∞ (fun z => deriv (fun w => c.y w t) z) := by
+  have hslice : ContDiffOn ℝ ∞ (fun z : ℝ => c.y z t) univ :=
+    hc.2.comp (contDiff_id.prodMk contDiff_const).contDiffOn
+      (fun z _ => ⟨mem_univ z, ht⟩)
+  have hderiv : ContDiffOn ℝ ∞
+      (derivWithin (fun z : ℝ => c.y z t) univ) univ :=
+    hslice.derivWithin uniqueDiffOn_univ (by rw [ENat.coe_top_add_one])
+  simpa only [derivWithin_univ] using contDiffOn_univ.mp hderiv
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] in
+theorem speed_contDiff {J : Set ℝ} (hc : c.SmoothOn (I := I) J)
+    (hi : c.projection.ImmersedOn (I := I) J) (t : ℝ) (ht : t ∈ J) :
+    ContDiff ℝ ∞ (fun z => c.speed g lambda z t) := by
+  have hp : ContDiff ℝ ∞ (fun z => c.projection.speed g z t) :=
+    CurveMap.speed_contDiff g c.projection J hc.1 hi t ht
+  have hd := y_deriv_contDiff c hc t ht
+  have hu : ContDiff ℝ ∞ (fun z => (c.projection.speed g z t) ^ 2 +
+      lambda ^ 2 * deriv (fun w => c.y w t) z ^ 2) :=
+    (hp.pow 2).add ((contDiff_const (c := lambda ^ 2)).mul (hd.pow 2))
+  have hne : ∀ z, (c.projection.speed g z t) ^ 2 +
+      lambda ^ 2 * deriv (fun w => c.y w t) z ^ 2 ≠ 0 := by
+    intro z
+    have hpos : 0 < c.projection.speed g z t ^ 2 +
+        lambda ^ 2 * deriv (fun w => c.y w t) z ^ 2 := by
+      rw [← speed_sq_add c g lambda z t]
+      exact pow_pos (speed_pos c g lambda hi z t ht) 2
+    exact ne_of_gt hpos
+  have hsqrt := hu.sqrt hne
+  have hfun : (fun z => c.speed g lambda z t) = fun z => Real.sqrt
+      ((c.projection.speed g z t) ^ 2 + lambda ^ 2 * deriv (fun w => c.y w t) z ^ 2) := by
+    funext z
+    rw [← speed_sq_add c g lambda z t, Real.sqrt_sq (c.speed_nonneg g lambda z t)]
+  rw [hfun]
+  exact hsqrt
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] in
+theorem horizontalSpeedFraction_contDiff {J : Set ℝ} (hlambda : 0 < lambda)
+    (hc : c.SmoothOn (I := I) J) (hi : c.projection.ImmersedOn (I := I) J)
+    (t : ℝ) (ht : t ∈ J) :
+    ContDiff ℝ ∞ (fun z => c.horizontalSpeedFraction g lambda z t) := by
+  have hp : ContDiff ℝ ∞ (fun z => c.projection.speed g z t) :=
+    CurveMap.speed_contDiff g c.projection J hc.1 hi t ht
+  have hs := speed_contDiff c g lambda hc hi t ht
+  have hdiv := hp.div hs (fun z => ne_of_gt (speed_pos c g lambda hi z t ht))
+  have hfun : (fun z => c.horizontalSpeedFraction g lambda z t) =
+      fun z => c.projection.speed g z t / c.speed g lambda z t := by
+    funext z
+    have hspeed_c : c.speed g lambda z t ≠ 0 := ne_of_gt (speed_pos c g lambda hi z t ht)
+    rw [projection_speed_eq c g lambda hlambda hi z t ht]
+    field_simp
+  rw [hfun]
+  exact hdiv
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] in
+theorem horizontalSpeedFraction_deriv_contDiff {J : Set ℝ} (hlambda : 0 < lambda)
+    (hc : c.SmoothOn (I := I) J) (hi : c.projection.ImmersedOn (I := I) J)
+    (t : ℝ) (ht : t ∈ J) :
+    ContDiff ℝ ∞ (fun x => deriv (fun z => c.horizontalSpeedFraction g lambda z t) x) := by
+  have hh := horizontalSpeedFraction_contDiff c g lambda hlambda hc hi t ht
+  have hderiv : ContDiffOn ℝ ∞
+      (derivWithin (fun z : ℝ => c.horizontalSpeedFraction g lambda z t) univ) univ :=
+    hh.contDiffOn.derivWithin uniqueDiffOn_univ (by rw [ENat.coe_top_add_one])
+  simpa only [derivWithin_univ] using contDiffOn_univ.mp hderiv
+
+section
+
+open DifferentialGeometry.Geometry.Riemannian.CovariantDerivativeAlong
+
+omit [CompleteSpace E] in
+theorem projection_velocity_sub_curvature [SigmaCompactSpace M] [T2Space M] [I.Boundaryless]
+    (hlambda : 0 < lambda) {J : Set ℝ}
+    (hc : c.IsSolutionOn g lambda J) (hi : c.projection.ImmersedOn (I := I) J)
+    (x t : ℝ) (ht : t ∈ J) :
+    c.projection.velocity J x t - c.projection.curvatureVector g x t =
+      ((c.speed g lambda x t)⁻¹ *
+          deriv (fun z => c.horizontalSpeedFraction g lambda z t) x) •
+          c.projection.unitTangent g x t +
+        (c.horizontalSpeedFraction g lambda x t ^ 2 - 1) •
+          c.projection.curvatureVector g x t := by
+  have hspeed_ne_n : c.speed g lambda x t ≠ 0 := ne_of_gt (speed_pos c g lambda hi x t ht)
+  have hpspn : c.projection.speed g x t ≠ 0 :=
+    ne_of_gt (c.projection.speed_pos g hi x t ht)
+  have hpsp : c.projection.speed g x t =
+      c.horizontalSpeedFraction g lambda x t * c.speed g lambda x t :=
+    projection_speed_eq c g lambda hlambda hi x t ht
+  have hsec : (fun z => (c.unitTangent g lambda z t).1) =
+      fun z => c.horizontalSpeedFraction g lambda z t • c.projection.unitTangent g z t :=
+    funext (fun z => unitTangent_fst_eq c g lambda hlambda hi z t ht)
+  have hhd : DifferentiableAt ℝ (fun z => c.horizontalSpeedFraction g lambda z t) x :=
+    ((horizontalSpeedFraction_contDiff c g lambda hlambda hc.smooth hi t ht).contDiffAt).differentiableAt
+      (by simp)
+  have htau_rep_diff : DifferentiableAt ℝ (chartRepAt (I := I) (fun z => c.projection.lift z t)
+      (fun z => c.projection.unitTangent g z t) x) x :=
+    chartRep_diff (fun z => c.projection.lift z t)
+      (fun z => c.projection.unitTangent g z t)
+      (CurveMap.unitTangent_contMDiff g c.projection J hc.smooth.1 hi t ht) x
+  have hgrad :=
+    covDerivAlong_smulFun
+        (g t) (fun z => c.projection.lift z t)
+      (fun z => c.horizontalSpeedFraction g lambda z t)
+      (fun z => c.projection.unitTangent g z t) x hhd htau_rep_diff
+  have hvel : c.projection.velocity J x t = (c.curvatureVector g lambda x t).1 := by
+    have h := congrArg Prod.fst (hc.equation x t ht)
+    simpa only [velocity] using h
+  have hcv : (c.curvatureVector g lambda x t).1 =
+      (c.speed g lambda x t)⁻¹ • covDerivAlong (g t) (fun z => c.projection.lift z t)
+        (fun z => (c.unitTangent g lambda z t).1) x := by
+    simp only [ProductCurve.curvatureVector, ProductCurve.Ds, ProductCurve.Dx, Prod.smul_fst]
+  have hgrad' : covDerivAlong (g t) (fun z => c.projection.lift z t)
+      (fun z => (c.unitTangent g lambda z t).1) x =
+      deriv (fun z => c.horizontalSpeedFraction g lambda z t) x •
+          c.projection.unitTangent g x t +
+        c.horizontalSpeedFraction g lambda x t •
+          covDerivAlong (g t) (fun z => c.projection.lift z t)
+            (fun z => c.projection.unitTangent g z t) x := by
+    rw [hsec]
+    exact hgrad
+  have hk : c.projection.curvatureVector g x t =
+      (c.projection.speed g x t)⁻¹ •
+        covDerivAlong (g t) (fun z => c.projection.lift z t)
+          (fun z => c.projection.unitTangent g z t) x := by
+    simp only [CurveMap.curvatureVector, CurveMap.Ds, CurveMap.Dx]
+  have hdtau : covDerivAlong (g t) (fun z => c.projection.lift z t)
+      (fun z => c.projection.unitTangent g z t) x =
+      c.projection.speed g x t • c.projection.curvatureVector g x t := by
+    rw [hk, smul_smul, mul_inv_cancel₀ hpspn, one_smul]
+  have hscl : (c.speed g lambda x t)⁻¹ *
+      (c.horizontalSpeedFraction g lambda x t * c.projection.speed g x t) =
+      c.horizontalSpeedFraction g lambda x t ^ 2 := by
+    rw [hpsp]
+    calc (c.speed g lambda x t)⁻¹ *
+          (c.horizontalSpeedFraction g lambda x t *
+            (c.horizontalSpeedFraction g lambda x t * c.speed g lambda x t))
+        = c.horizontalSpeedFraction g lambda x t ^ 2 *
+          ((c.speed g lambda x t)⁻¹ * c.speed g lambda x t) := by ring
+      _ = c.horizontalSpeedFraction g lambda x t ^ 2 := by
+          rw [inv_mul_cancel₀ hspeed_ne_n, mul_one]
+  rw [hvel, hcv, hgrad', hdtau]
+  simp only [smul_add, smul_smul]
+  rw [hscl]
+  module
+
+theorem projection_normalVelocityError [SigmaCompactSpace M] [T2Space M] [I.Boundaryless]
+    (hlambda : 0 < lambda) {J : Set ℝ}
+    (hc : c.IsSolutionOn g lambda J) (hi : c.projection.ImmersedOn (I := I) J)
+    (x t : ℝ) (ht : t ∈ J) :
+    c.projection.normalVelocityError g J x t =
+      -(c.angle g lambda x t ^ 2) • c.projection.curvatureVector g x t := by
+  have htan := tangent_curvature_geometry g c.projection J hc.smooth.1 hi x t ht
+  have htau_tau := htan.1
+  have hkappa_tau := htan.2.1
+  have hW := projection_velocity_sub_curvature c g lambda hlambda hc hi x t ht
+  have hinner : (g t).inner (c.projection.lift x t)
+    (c.projection.velocity J x t - c.projection.curvatureVector g x t)
+      (c.projection.unitTangent g x t) =
+      (c.speed g lambda x t)⁻¹ *
+        deriv (fun z => c.horizontalSpeedFraction g lambda z t) x := by
+    rw [hW]
+    simp only [map_add, map_smul, add_apply, smul_apply,
+      smul_eq_mul, htau_tau, hkappa_tau, mul_one, mul_zero, add_zero]
+  have hHS : c.horizontalSpeedFraction g lambda x t ^ 2 - 1 =
+      -(c.angle g lambda x t ^ 2) := by
+    rw [horizontalSpeedFraction_sq]
+    ring
+  simp only [CurveMap.normalVelocityError]
+  rw [hinner, hW, hHS]
+  module
+
+theorem horizontalSpeedFraction_sq_mul_projection_curvature_le
+    [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] (hlambda : 0 < lambda)
+    {J : Set ℝ} (hc : c.IsSolutionOn g lambda J) (hi : c.projection.ImmersedOn (I := I) J)
+    (x t : ℝ) (ht : t ∈ J) :
+    c.horizontalSpeedFraction g lambda x t ^ 2 * c.projection.curvature g x t ≤
+      c.curvature g lambda x t := by
+  have htan := tangent_curvature_geometry g c.projection J hc.smooth.1 hi x t ht
+  have htau_tau := htan.1
+  have hkappa_tau := htan.2.1
+  have htau_kappa : (g t).inner (c.projection.lift x t) (c.projection.unitTangent g x t)
+      (c.projection.curvatureVector g x t) = 0 := by
+    rw [← (g t).symm (c.projection.lift x t) (c.projection.curvatureVector g x t)
+      (c.projection.unitTangent g x t)]
+    exact hkappa_tau
+  have hkk : (g t).inner (c.projection.lift x t) (c.projection.curvatureVector g x t)
+      (c.projection.curvatureVector g x t) = c.projection.curvatureSq g x t := rfl
+  have hW := projection_velocity_sub_curvature c g lambda hlambda hc hi x t ht
+  have hvel : c.projection.velocity J x t = (c.curvatureVector g lambda x t).1 := by
+    have h := congrArg Prod.fst (hc.equation x t ht)
+    simpa only [velocity] using h
+  have hK1 : c.projection.velocity J x t =
+      ((c.speed g lambda x t)⁻¹ *
+          deriv (fun z => c.horizontalSpeedFraction g lambda z t) x) •
+          c.projection.unitTangent g x t +
+        c.horizontalSpeedFraction g lambda x t ^ 2 •
+          c.projection.curvatureVector g x t := by
+    rw [← sub_add_cancel (c.projection.velocity J x t)
+      (c.projection.curvatureVector g x t), hW]
+    module
+  have h11 : (g t).inner (c.projection.lift x t) (c.projection.velocity J x t)
+      (c.projection.velocity J x t) =
+      ((c.speed g lambda x t)⁻¹ *
+          deriv (fun z => c.horizontalSpeedFraction g lambda z t) x) ^ 2 +
+        (c.horizontalSpeedFraction g lambda x t ^ 2) ^ 2 *
+          c.projection.curvatureSq g x t := by
+    rw [hK1]
+    simp only [map_add, map_smul, add_apply, smul_apply,
+      smul_eq_mul, htau_tau, hkappa_tau, htau_kappa, hkk]
+    ring
+  have hcsq : c.curvatureSq g lambda x t =
+      (g t).inner (c.projection.lift x t) (c.projection.velocity J x t)
+          (c.projection.velocity J x t) +
+        lambda ^ 2 * (c.curvatureVector g lambda x t).2 ^ 2 := by
+    rw [hvel]
+    simp only [ProductCurve.curvatureSq, ProductCurve.normSq, ProductCurve.inner]
+    ring
+  have hle : (c.horizontalSpeedFraction g lambda x t ^ 2) ^ 2 *
+      c.projection.curvatureSq g x t ≤ c.curvatureSq g lambda x t := by
+    rw [hcsq, h11]
+    nlinarith [sq_nonneg ((c.speed g lambda x t)⁻¹ *
+        deriv (fun z => c.horizontalSpeedFraction g lambda z t) x),
+      sq_nonneg (lambda * (c.curvatureVector g lambda x t).2)]
+  have hsqrt : c.horizontalSpeedFraction g lambda x t ^ 2 * c.projection.curvature g x t =
+      Real.sqrt ((c.horizontalSpeedFraction g lambda x t ^ 2) ^ 2 *
+        c.projection.curvatureSq g x t) := by
+    have hcs : c.projection.curvatureSq g x t = c.projection.curvature g x t ^ 2 :=
+      (CurveMap.curvature_sq c.projection g x t).symm
+    rw [hcs]
+    have hsq : (c.horizontalSpeedFraction g lambda x t ^ 2) ^ 2 *
+        c.projection.curvature g x t ^ 2 =
+        (c.horizontalSpeedFraction g lambda x t ^ 2 *
+          c.projection.curvature g x t) ^ 2 := by ring
+    rw [hsq, Real.sqrt_sq (mul_nonneg (sq_nonneg _) (c.projection.curvature_nonneg g x t))]
+  calc c.horizontalSpeedFraction g lambda x t ^ 2 * c.projection.curvature g x t
+      = Real.sqrt ((c.horizontalSpeedFraction g lambda x t ^ 2) ^ 2 *
+          c.projection.curvatureSq g x t) := hsqrt
+    _ ≤ Real.sqrt (c.curvatureSq g lambda x t) := Real.sqrt_le_sqrt hle
+    _ = c.curvature g lambda x t := rfl
+
+theorem curvatureSq_eq [SigmaCompactSpace M] [T2Space M] [I.Boundaryless]
+    (hlambda : 0 < lambda) {J : Set ℝ}
+    (hc : c.IsSolutionOn g lambda J) (hi : c.projection.ImmersedOn (I := I) J)
+    (x t : ℝ) (ht : t ∈ J) :
+    c.curvatureSq g lambda x t =
+      ((c.speed g lambda x t)⁻¹ *
+          deriv (fun z => c.horizontalSpeedFraction g lambda z t) x) ^ 2 +
+        c.horizontalSpeedFraction g lambda x t ^ 4 * c.projection.curvatureSq g x t +
+        lambda ^ 2 * ((c.speed g lambda x t)⁻¹ *
+          deriv (fun z => (c.speed g lambda z t)⁻¹ *
+            deriv (fun w => c.y w t) z) x) ^ 2 := by
+  have htan := tangent_curvature_geometry g c.projection J hc.smooth.1 hi x t ht
+  have htau_tau := htan.1
+  have hkappa_tau := htan.2.1
+  have htau_kappa : (g t).inner (c.projection.lift x t) (c.projection.unitTangent g x t)
+      (c.projection.curvatureVector g x t) = 0 := by
+    rw [← (g t).symm (c.projection.lift x t) (c.projection.curvatureVector g x t)
+      (c.projection.unitTangent g x t)]
+    exact hkappa_tau
+  have hkk : (g t).inner (c.projection.lift x t) (c.projection.curvatureVector g x t)
+      (c.projection.curvatureVector g x t) = c.projection.curvatureSq g x t := rfl
+  have hvel : c.projection.velocity J x t = (c.curvatureVector g lambda x t).1 := by
+    have h := congrArg Prod.fst (hc.equation x t ht)
+    simpa only [velocity] using h
+  have hW := projection_velocity_sub_curvature c g lambda hlambda hc hi x t ht
+  have hK1 : c.projection.velocity J x t =
+      ((c.speed g lambda x t)⁻¹ *
+          deriv (fun z => c.horizontalSpeedFraction g lambda z t) x) •
+          c.projection.unitTangent g x t +
+        c.horizontalSpeedFraction g lambda x t ^ 2 •
+          c.projection.curvatureVector g x t := by
+    rw [← sub_add_cancel (c.projection.velocity J x t)
+      (c.projection.curvatureVector g x t), hW]
+    module
+  have hK2 : (c.curvatureVector g lambda x t).2 =
+      (c.speed g lambda x t)⁻¹ *
+        deriv (fun z => (c.speed g lambda z t)⁻¹ *
+          deriv (fun w => c.y w t) z) x := by
+    simp only [ProductCurve.curvatureVector, ProductCurve.Ds, ProductCurve.Dx,
+      ProductCurve.unitTangent, ProductCurve.X, Prod.smul_snd, smul_eq_mul]
+  have hu : (g t).inner (c.projection.lift x t) (c.projection.velocity J x t)
+      (c.projection.velocity J x t) =
+      ((c.speed g lambda x t)⁻¹ *
+          deriv (fun z => c.horizontalSpeedFraction g lambda z t) x) ^ 2 +
+        (c.horizontalSpeedFraction g lambda x t ^ 2) ^ 2 *
+          c.projection.curvatureSq g x t := by
+    rw [hK1]
+    simp only [map_add, map_smul, add_apply, smul_apply,
+      smul_eq_mul, htau_tau, hkappa_tau, htau_kappa, hkk]
+    ring
+  rw [ProductCurve.curvatureSq, ProductCurve.normSq, ProductCurve.inner, ← hvel, hK2, hu]
+  ring
+
+theorem curvatureSq_continuous [SigmaCompactSpace M] [T2Space M] [I.Boundaryless]
+    (hlambda : 0 < lambda) {J : Set ℝ}
+    (hc : c.IsSolutionOn g lambda J) (hi : c.projection.ImmersedOn (I := I) J)
+    (t : ℝ) (ht : t ∈ J) :
+    Continuous (fun x => c.curvatureSq g lambda x t) := by
+  have hspeed_c := speed_contDiff c g lambda hc.smooth hi t ht
+  have hspeed_ne_n : ∀ z, c.speed g lambda z t ≠ 0 := fun z =>
+    ne_of_gt (speed_pos c g lambda hi z t ht)
+  have hdh := horizontalSpeedFraction_deriv_contDiff c g lambda hlambda hc.smooth hi t ht
+  have hh := horizontalSpeedFraction_contDiff c g lambda hlambda hc.smooth hi t ht
+  have hk := CurveMap.curvatureSq_contDiff g c.projection J hc.smooth.1 hi t ht
+  have hdy := y_deriv_contDiff c hc.smooth t ht
+  have hK2 : ContDiff ℝ ∞ (fun x => deriv (fun z => (c.speed g lambda z t)⁻¹ *
+      deriv (fun w => c.y w t) z) x) := by
+    have hinner : ContDiff ℝ ∞ (fun z => (c.speed g lambda z t)⁻¹ *
+        deriv (fun w => c.y w t) z) := (hspeed_c.inv hspeed_ne_n).mul hdy
+    have hd := hinner.contDiffOn.derivWithin uniqueDiffOn_univ
+      (by rw [ENat.coe_top_add_one])
+    simpa only [derivWithin_univ] using contDiffOn_univ.mp hd
+  have hformula : (fun x => c.curvatureSq g lambda x t) = fun x =>
+      ((c.speed g lambda x t)⁻¹ *
+          deriv (fun z => c.horizontalSpeedFraction g lambda z t) x) ^ 2 +
+        c.horizontalSpeedFraction g lambda x t ^ 4 * c.projection.curvatureSq g x t +
+        lambda ^ 2 * ((c.speed g lambda x t)⁻¹ *
+          deriv (fun z => (c.speed g lambda z t)⁻¹ *
+            deriv (fun w => c.y w t) z) x) ^ 2 :=
+    by
+    funext x
+    exact curvatureSq_eq c g lambda hlambda hc hi x t ht
+  rw [hformula]
+  exact (((((hspeed_c.inv hspeed_ne_n).mul hdh).pow 2).add ((hh.pow 4).mul hk)).add
+    ((contDiff_const (c := lambda ^ 2)).mul (((hspeed_c.inv hspeed_ne_n).mul hK2).pow 2))).continuous
+
+theorem curvature_continuous [SigmaCompactSpace M] [T2Space M] [I.Boundaryless]
+    (hlambda : 0 < lambda) {J : Set ℝ}
+    (hc : c.IsSolutionOn g lambda J) (hi : c.projection.ImmersedOn (I := I) J)
+    (t : ℝ) (ht : t ∈ J) :
+    Continuous (fun x => c.curvature g lambda x t) :=
+  Real.continuous_sqrt.comp (curvatureSq_continuous c g lambda hlambda hc hi t ht)
+
+theorem curvature_mul_speed_integrable [SigmaCompactSpace M] [T2Space M] [I.Boundaryless]
+    (hlambda : 0 < lambda) {J : Set ℝ}
+    (hc : c.IsSolutionOn g lambda J) (hi : c.projection.ImmersedOn (I := I) J)
+    (t : ℝ) (ht : t ∈ J) :
+    IntervalIntegrable (fun x => c.curvature g lambda x t * c.speed g lambda x t)
+      volume 0 1 :=
+  ((curvature_continuous c g lambda hlambda hc hi t ht).mul
+    (speed_contDiff c g lambda hc.smooth hi t ht).continuous).intervalIntegrable 0 1
+
+end
+
 end ProductCurve
 
 variable [SigmaCompactSpace M] [hT2 : T2Space M] [hCompact : CompactSpace M]
@@ -202,7 +591,133 @@ theorem rfs_csf_projected_ramp (B : RicciBackground (I := I) (M := M) D a b)
     (∀ t ∈ Icc s v,
       c.projection.areaError B.family.metric (Icc s v) t ≤
         eta ^ 2 / Real.sqrt (1 - eta ^ 2) * c.totalCurvature B.family.metric lambda t) := by
-  sorry
+  let _ := hsv
+  let _ := hwindow
+  let _ := hCompact
+  let _ := hNonempty
+  constructor
+  · intro x t ht
+    exact ⟨ProductCurve.horizontalSpeedFraction_pos c B.family.metric lambda hlambda hi x t ht,
+      ProductCurve.unitTangent_fst_eq c B.family.metric lambda hlambda hi x t ht,
+      ProductCurve.projection_speed_eq c B.family.metric lambda hlambda hi x t ht,
+      ProductCurve.projection_normalVelocityError c B.family.metric lambda hlambda hc hi x t ht,
+      ProductCurve.horizontalSpeedFraction_sq_mul_projection_curvature_le c B.family.metric
+        lambda hlambda hc hi x t ht⟩
+  · intro t ht
+    have heta_sqrt_pos : 0 < Real.sqrt (1 - eta ^ 2) :=
+      Real.sqrt_pos.2 (by nlinarith [heta_one, sq_nonneg eta])
+    have hpoint : ∀ x, Real.sqrt (c.projection.normSq B.family.metric
+          (c.projection.normalVelocityError B.family.metric (Icc s v)) x t) *
+          c.projection.speed B.family.metric x t ≤
+        eta ^ 2 / Real.sqrt (1 - eta ^ 2) *
+          (c.curvature B.family.metric lambda x t * c.speed B.family.metric lambda x t) := by
+      intro x
+      have hNVE := ProductCurve.projection_normalVelocityError c B.family.metric lambda
+        hlambda hc hi x t ht
+      have ha2 : 0 ≤ c.angle B.family.metric lambda x t ^ 2 := sq_nonneg _
+      have hnorm : c.projection.normSq B.family.metric
+          (c.projection.normalVelocityError B.family.metric (Icc s v)) x t =
+          (c.angle B.family.metric lambda x t ^ 2) ^ 2 *
+            c.projection.curvatureSq B.family.metric x t := by
+        dsimp only [CurveMap.normSq, CurveMap.curvatureSq]
+        rw [hNVE]
+        simp only [map_smul, smul_apply, smul_eq_mul]
+        ring
+      have hsqrt : Real.sqrt (c.projection.normSq B.family.metric
+            (c.projection.normalVelocityError B.family.metric (Icc s v)) x t) =
+          c.angle B.family.metric lambda x t ^ 2 *
+            c.projection.curvature B.family.metric x t := by
+        rw [hnorm, Real.sqrt_mul (sq_nonneg _), Real.sqrt_sq (sq_nonneg _)]
+        rfl
+      have hhpos : 0 < c.horizontalSpeedFraction B.family.metric lambda x t :=
+        ProductCurve.horizontalSpeedFraction_pos c B.family.metric lambda hlambda hi x t ht
+      have hpsp : c.projection.speed B.family.metric x t =
+          c.horizontalSpeedFraction B.family.metric lambda x t *
+            c.speed B.family.metric lambda x t :=
+        ProductCurve.projection_speed_eq c B.family.metric lambda hlambda hi x t ht
+      have h1 : c.projection.curvature B.family.metric x t *
+          (c.horizontalSpeedFraction B.family.metric lambda x t *
+            c.horizontalSpeedFraction B.family.metric lambda x t) ≤
+          c.curvature B.family.metric lambda x t := by
+        nlinarith [ProductCurve.horizontalSpeedFraction_sq_mul_projection_curvature_le
+          c B.family.metric lambda hlambda hc hi x t ht]
+      have hAk : c.angle B.family.metric lambda x t ^ 2 *
+          c.projection.curvature B.family.metric x t *
+          (c.horizontalSpeedFraction B.family.metric lambda x t *
+            c.horizontalSpeedFraction B.family.metric lambda x t) ≤
+          c.angle B.family.metric lambda x t ^ 2 *
+            c.curvature B.family.metric lambda x t := by
+        nlinarith [mul_le_mul_of_nonneg_left h1 ha2]
+      have heta_sq_nonneg : 0 ≤ eta ^ 2 := sq_nonneg eta
+      have hh_ge : Real.sqrt (1 - eta ^ 2) ≤
+          c.horizontalSpeedFraction B.family.metric lambda x t := by
+        rw [ProductCurve.horizontalSpeedFraction]
+        refine Real.sqrt_le_sqrt ?_
+        have h2 : c.angle B.family.metric lambda x t ^ 2 ≤ eta ^ 2 :=
+          by
+            nlinarith [mul_self_le_mul_self (hu x t ht).1.le (hu x t ht).2]
+        linarith
+      have hAh : c.angle B.family.metric lambda x t ^ 2 ≤
+          eta ^ 2 / Real.sqrt (1 - eta ^ 2) *
+            c.horizontalSpeedFraction B.family.metric lambda x t := by
+        have h2 : c.angle B.family.metric lambda x t ^ 2 ≤ eta ^ 2 :=
+          by
+            nlinarith [mul_self_le_mul_self (hu x t ht).1.le (hu x t ht).2]
+        have h3 : 1 ≤ c.horizontalSpeedFraction B.family.metric lambda x t /
+            Real.sqrt (1 - eta ^ 2) := (one_le_div heta_sqrt_pos).mpr hh_ge
+        have h4 : eta ^ 2 ≤ eta ^ 2 / Real.sqrt (1 - eta ^ 2) *
+            c.horizontalSpeedFraction B.family.metric lambda x t := by
+          calc eta ^ 2 = eta ^ 2 * 1 := by ring
+            _ ≤ eta ^ 2 * (c.horizontalSpeedFraction B.family.metric lambda x t /
+                Real.sqrt (1 - eta ^ 2)) := mul_le_mul_of_nonneg_left h3 heta_sq_nonneg
+            _ = eta ^ 2 / Real.sqrt (1 - eta ^ 2) *
+                c.horizontalSpeedFraction B.family.metric lambda x t := by ring
+        linarith
+      have hAC : c.angle B.family.metric lambda x t ^ 2 *
+          c.curvature B.family.metric lambda x t ≤
+          eta ^ 2 / Real.sqrt (1 - eta ^ 2) *
+            (c.curvature B.family.metric lambda x t *
+              c.horizontalSpeedFraction B.family.metric lambda x t) := by
+        have h := mul_le_mul_of_nonneg_right hAh (c.curvature_nonneg B.family.metric lambda x t)
+        nlinarith [h]
+      have hfin : c.angle B.family.metric lambda x t ^ 2 *
+          c.projection.curvature B.family.metric x t *
+          c.horizontalSpeedFraction B.family.metric lambda x t ≤
+          eta ^ 2 / Real.sqrt (1 - eta ^ 2) * c.curvature B.family.metric lambda x t := by
+        refine le_of_mul_le_mul_right ?_ hhpos
+        nlinarith [hAk.trans hAC]
+      rw [hsqrt, hpsp]
+      calc c.angle B.family.metric lambda x t ^ 2 * c.projection.curvature B.family.metric x t *
+            (c.horizontalSpeedFraction B.family.metric lambda x t *
+              c.speed B.family.metric lambda x t)
+          = (c.angle B.family.metric lambda x t ^ 2 *
+              c.projection.curvature B.family.metric x t *
+              c.horizontalSpeedFraction B.family.metric lambda x t) *
+              c.speed B.family.metric lambda x t := by ring
+        _ ≤ (eta ^ 2 / Real.sqrt (1 - eta ^ 2) * c.curvature B.family.metric lambda x t) *
+              c.speed B.family.metric lambda x t :=
+            mul_le_mul_of_nonneg_right hfin (c.speed_nonneg B.family.metric lambda x t)
+        _ = eta ^ 2 / Real.sqrt (1 - eta ^ 2) *
+              (c.curvature B.family.metric lambda x t *
+                c.speed B.family.metric lambda x t) := by ring
+    have hint : IntegrableOn (fun x => c.curvature B.family.metric lambda x t *
+        c.speed B.family.metric lambda x t) (Ioc (0 : ℝ) 1) volume :=
+      (ProductCurve.curvature_mul_speed_integrable c B.family.metric lambda hlambda
+        hc hi t ht).1
+    have hintC : Integrable (fun x => eta ^ 2 / Real.sqrt (1 - eta ^ 2) *
+        (c.curvature B.family.metric lambda x t * c.speed B.family.metric lambda x t))
+        (volume.restrict (Ioc (0 : ℝ) 1)) := hint.const_mul _
+    have hnn : 0 ≤ᵐ[volume.restrict (Ioc (0 : ℝ) 1)]
+        (fun x => Real.sqrt (c.projection.normSq B.family.metric
+          (c.projection.normalVelocityError B.family.metric (Icc s v)) x t) *
+          c.projection.speed B.family.metric x t) :=
+      ae_of_all _ (fun x => mul_nonneg (Real.sqrt_nonneg _)
+        (c.projection.speed_nonneg B.family.metric x t))
+    have hle := MeasureTheory.integral_mono_of_nonneg hnn hintC (ae_of_all _ hpoint)
+    rw [MeasureTheory.integral_const_mul] at hle
+    simpa only [CurveMap.areaError, CurveMap.integral, ProductCurve.totalCurvature,
+      ProductCurve.integral,
+      intervalIntegral.integral_of_le zero_le_one] using hle
 
 theorem rfs_csf_swept_annulus (B : RicciBackground (I := I) (M := M) D a b)
     (γ : ℝ → ContinuousFreeLoop M)
@@ -271,7 +786,17 @@ theorem rfs_csf_projected_ramp_pointwise (B : RicciBackground (I := I) (M := M) 
         -(c.angle B.family.metric lambda x t ^ 2) • c.projection.curvatureVector B.family.metric x t ∧
       c.horizontalSpeedFraction B.family.metric lambda x t ^ 2 *
           c.projection.curvature B.family.metric x t ≤ c.curvature B.family.metric lambda x t := by
-  sorry
+  intro x t ht
+  let _ := hsv
+  let _ := hwindow
+  let _ := hCompact
+  let _ := hNonempty
+  refine ⟨ProductCurve.horizontalSpeedFraction_pos c B.family.metric lambda hlambda hi x t ht,
+    ProductCurve.unitTangent_fst_eq c B.family.metric lambda hlambda hi x t ht,
+    ProductCurve.projection_speed_eq c B.family.metric lambda hlambda hi x t ht, ?_, ?_⟩
+  · exact ProductCurve.projection_normalVelocityError c B.family.metric lambda hlambda hc hi x t ht
+  · exact ProductCurve.horizontalSpeedFraction_sq_mul_projection_curvature_le c B.family.metric
+      lambda hlambda hc hi x t ht
 
 theorem projected_normalVelocityError_norm (B : RicciBackground (I := I) (M := M) D a b)
     (lambda : ℝ) (hlambda : 0 < lambda) (hsv : s < v) (hwindow : Icc s v ⊆ Icc a b)

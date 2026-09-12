@@ -89,6 +89,23 @@ theorem integralRelative_exact_subspace (n : ℕ) (A : Set X) :
     ((integralRelativeChainSequence_shortExact A).homology_exact₁ (n + 1) n (by simp))
 
 
+theorem integralAbsoluteToRelative_injective_of_subsingleton (n : ℕ) (A : Set X)
+    (h : Subsingleton (integralSingularHomology n A)) :
+    Function.Injective (integralAbsoluteToRelative n A) := by
+  intro a b hab
+  have hz : integralAbsoluteToRelative n A (a - b) = 0 := by
+    rw [map_sub, hab, sub_self]
+  have hex := LinearMap.exact_iff.mp (integralRelative_exact_absolute n A)
+  have hmem : a - b ∈ LinearMap.range
+      (integralSingularHomologyMap n (singularSubspaceInclusion A)) := by
+    rw [← hex]
+    exact LinearMap.mem_ker.mpr hz
+  obtain ⟨x, hx⟩ := LinearMap.mem_range.mp hmem
+  have hx0 : x = 0 := h.allEq x 0
+  rw [hx0, map_zero] at hx
+  exact sub_eq_zero.mp hx.symm
+
+
 
 def integralRelativeConnectingEquivOfContractible [ContractibleSpace X]
     (n : ℕ) (hn : n ≠ 0) (A : Set X) :

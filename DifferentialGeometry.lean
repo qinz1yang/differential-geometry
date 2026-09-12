@@ -4244,6 +4244,7 @@ import DifferentialGeometry.Geometry.Curvature.Naturality.Pullback.Basic
 import DifferentialGeometry.Geometry.Curvature.Naturality.Pullback.Cross
 import DifferentialGeometry.Geometry.Curvature.Naturality.Pullback.Local
 import DifferentialGeometry.Geometry.Curvature.Naturality.Pullback.LocalCross
+import DifferentialGeometry.Geometry.Curvature.Naturality.Pullback.LocalIterCov
 import DifferentialGeometry.Geometry.Curvature.NeckChartLeastRicci
 import DifferentialGeometry.Geometry.Curvature.Nonnegative
 import DifferentialGeometry.Geometry.Curvature.OpenEmbeddingPullback
@@ -4800,6 +4801,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.JointReg
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.MixedJetPolynomials
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.PolynomialField
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Raising
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.RmJetEvolutionPolynomial
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.TailEvolution
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Tensor
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.ThreeQuadratic
@@ -4854,7 +4856,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.C
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ComponentFlow
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Connection
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Continuation
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.DerivAlongWithin
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Evolution
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.IntegralBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.LocalExistence
@@ -4895,6 +4896,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.AreaTranspo
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.Loops
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.Plateau
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.PlateauClassical
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.PlateauBridge
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.RegularClass
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.SpanningArea
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.SurgeryWidthEvolution
@@ -6250,6 +6252,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ExtinctionB
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ExtinctionReconstruction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.FiniteHistory
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.FreeLoopClass
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.FundamentalClassRealization
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.GeometricCutoff
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.History
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryAncestry
@@ -6986,12 +6989,14 @@ import DifferentialGeometry.Geometry.MinimalSurface.Plateau.DiskMetricCoefficien
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.DiskMetricDerivative
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.DiskReflectionCovariant
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.DiskReflectionDifferential
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.DiskSmoothLipschitz
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.ExactAttainment
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Existence
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.HomogeneousRegularity
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.ImmersionTraceLift
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.MetricCompleteness
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.MorreyDisk
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.MorreyDiskCriterion
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.NonconstantCoefficient
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.OpenTargetDifferential
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.OpenTargetExtension
@@ -7001,6 +7006,7 @@ import DifferentialGeometry.Geometry.MinimalSurface.Plateau.SmoothDensity
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.SmoothDiskTrace
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.SmoothExtension
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.SmoothTraceLift
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.SpanningDiskAreaDensity
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.TraceAnnulus
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.TracePhaseAnnulus
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.UpperComparison
@@ -7871,6 +7877,7 @@ import DifferentialGeometry.Topology.Manifold.Attachment.RadialInducedBoundaryOr
 import DifferentialGeometry.Topology.Manifold.Attachment.RadialManifold
 import DifferentialGeometry.Topology.Manifold.Attachment.RadialWitness
 import DifferentialGeometry.Topology.Manifold.AddCircle
+import DifferentialGeometry.Topology.Manifold.BallChartTransport
 import DifferentialGeometry.Topology.Manifold.BallDiffeomorphExtension
 import DifferentialGeometry.Topology.Manifold.BicollarComponents
 import DifferentialGeometry.Topology.Manifold.Boundary.DefiningCollar
@@ -8018,6 +8025,7 @@ import DifferentialGeometry.Topology.Manifold.HomeomorphAtlas
 import DifferentialGeometry.Topology.Manifold.HypersurfaceOrientation
 import DifferentialGeometry.Topology.Manifold.ImmersionDifferential
 import DifferentialGeometry.Topology.Manifold.ImmersionEqualDimension
+import DifferentialGeometry.Topology.Manifold.ImmersionImageNhds
 import DifferentialGeometry.Topology.Manifold.ImmersionLiftSource
 import DifferentialGeometry.Topology.Manifold.InjectiveLocalDiffeomorph
 import DifferentialGeometry.Topology.Manifold.InjectiveRegularity
@@ -8514,6 +8522,7 @@ import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.TransportDiffeom
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.SmoothStructure
 import DifferentialGeometry.Topology.ThreeManifold.CutCap
 import DifferentialGeometry.Topology.ThreeManifold.CutCapGluing
+import DifferentialGeometry.Topology.ThreeManifold.CutCapIncidence
 import DifferentialGeometry.Topology.ThreeManifold.CutCapReconstruction
 import DifferentialGeometry.Topology.ThreeManifold.PoincareStandard
 import DifferentialGeometry.Topology.ThreeManifold.PoincareStandardClassification

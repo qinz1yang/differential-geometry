@@ -14,6 +14,17 @@ namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 
 universe u
 
+theorem standardCapL_pos : 0 < standardCapL := by
+  rw [standardCapL, standardCapA0]
+  have h : 0 < Real.pi / Real.sqrt 2 :=
+    div_pos Real.pi_pos (Real.sqrt_pos.2 (by norm_num))
+  linarith
+
+theorem sphereTwo_connectedSpace : ConnectedSpace (Sphere 2) :=
+  isConnected_iff_connectedSpace.mp
+    (isConnected_sphere (E := EuclideanSpace ℝ (Fin 3))
+      (by rw [← Module.finrank_eq_rank]; norm_num) 0 zero_le_one)
+
 structure SmoothSphericalRegion (P : OrientedThreeStage.{u}) where
   region : Set P.Carrier
   compact : IsCompact region
@@ -252,6 +263,438 @@ theorem rfs_comparison_support_of_inputs
      localCollapse_eq := I8_localCollapse_eq
      tip := I8_tip
      tip_eq := I8_tip_eq }⟩
+
+variable {H : ObservedHistory.{u}} {i : Fin H.eventCount} {parameters : CutoffParameters}
+  (G : GeometricCutoffRecord H i parameters)
+  (c : ConnectedComponents (H.stage i.succ).Carrier)
+
+def comparisonLevel (b : G.ChildBoundary c) : ℝ :=
+  (-(G.static b.1).delta⁻¹ + (G.static b.1).witness.tipCoordinate) / 2
+
+theorem comparisonLevel_lower (b : G.ChildBoundary c) :
+    -(G.static b.1).delta⁻¹ < G.comparisonLevel c b := by
+  have h := (G.static b.1).witness.tipCoordinate_lower
+  simp only [comparisonLevel]
+  linarith
+
+theorem comparisonLevel_below_tip (b : G.ChildBoundary c) :
+    G.comparisonLevel c b < (G.static b.1).witness.tipCoordinate := by
+  have h := (G.static b.1).witness.tipCoordinate_lower
+  simp only [comparisonLevel]
+  linarith
+
+theorem comparisonLevel_negative (b : G.ChildBoundary c) : G.comparisonLevel c b < 0 := by
+  have h2 := (G.static b.1).witness.tipCoordinate_upper
+  have h3 := parameters.fixed.collar_pos
+  have h4 : 0 < standardCapL := standardCapL_pos
+  have h5 : 0 < (G.static b.1).delta⁻¹ := inv_pos.mpr (G.static b.1).neck.delta_pos
+  simp only [comparisonLevel]
+  linarith
+
+theorem comparisonLevel_mem_Icc (b : G.ChildBoundary c) :
+    G.comparisonLevel c b ∈ Icc (G.comparisonLevel c b) 0 :=
+  ⟨le_rfl, (G.comparisonLevel_negative c b).le⟩
+
+theorem collarParameter_mem (b : G.ChildBoundary c)
+    (x : Sphere 2 × ↑(Icc (G.comparisonLevel c b) 0)) :
+    -(G.static b.1).delta⁻¹ < (x.2 : ℝ) ∧ (x.2 : ℝ) < (G.static b.1).delta⁻¹ := by
+  have h1 : -(G.static b.1).delta⁻¹ < (x.2 : ℝ) :=
+    lt_of_lt_of_le (G.comparisonLevel_lower c b) x.2.2.1
+  have h2 : (x.2 : ℝ) < (G.static b.1).delta⁻¹ :=
+    lt_of_le_of_lt x.2.2.2 (inv_pos.mpr (G.static b.1).neck.delta_pos)
+  exact ⟨h1, h2⟩
+
+def collarParameter (b : G.ChildBoundary c)
+    (x : Sphere 2 × ↑(Icc (G.comparisonLevel c b) 0)) :
+    neckCentralDomain (G.static b.1).delta :=
+  ⟨⟨(x.1, x.2.1), by
+      obtain ⟨h1, h2⟩ := G.collarParameter_mem c b x
+      exact ⟨by linarith, by linarith⟩⟩,
+    G.collarParameter_mem c b x⟩
+
+theorem collarParameter_apply (b : G.ChildBoundary c)
+    (x : Sphere 2 × ↑(Icc (G.comparisonLevel c b) 0)) :
+    (G.collarParameter c b x).1.1 = (x.1, x.2.1) := rfl
+
+theorem collarBuffer_continuous (b : G.ChildBoundary c) :
+    Continuous (fun x : Sphere 2 × ↑(Icc (G.comparisonLevel c b) 0) =>
+      (⟨(x.1, x.2.1), by
+        obtain ⟨h1, h2⟩ := G.collarParameter_mem c b x
+        exact ⟨by linarith, by linarith⟩⟩ : neckBuffer (G.static b.1).delta)) := by
+  apply Continuous.subtype_mk
+  exact continuous_fst.prodMk (continuous_subtype_val.comp continuous_snd)
+
+theorem collarParameter_continuous (b : G.ChildBoundary c) :
+    Continuous (G.collarParameter c b) :=
+  Continuous.subtype_mk (G.collarBuffer_continuous c b) (fun x => G.collarParameter_mem c b x)
+
+theorem collarSecond_preconnectedSpace (b : G.ChildBoundary c) :
+    PreconnectedSpace ↑(Icc (G.comparisonLevel c b) 0) :=
+  isPreconnected_iff_preconnectedSpace.mp (isPreconnected_Icc (a := G.comparisonLevel c b) (b := 0))
+
+def collarChartFun (b : G.ChildBoundary c) :
+    Sphere 2 × ↑(Icc (G.comparisonLevel c b) 0) → (H.stage i.castSucc).Carrier :=
+  fun x => ((G.static b.1).neck.chart (G.collarParameter c b x)).1
+
+theorem collarChartFun_continuous (b : G.ChildBoundary c) :
+    Continuous (G.collarChartFun c b) :=
+  (continuous_subtype_val.comp (G.static b.1).neck.chart.continuous).comp
+    (continuous_subtype_val.comp (G.collarParameter_continuous c b))
+
+theorem collarChartFun_zero_eq_boundarySphere (b : G.ChildBoundary c) (y : Sphere 2) :
+    G.collarChartFun c b (y, ⟨0, (G.comparisonLevel_negative c b).le, le_rfl⟩) =
+      G.transition.trace.tubes.boundarySphere b.1.1 y := by
+  set z0 : ↑(Icc (G.comparisonLevel c b) 0) :=
+    ⟨0, (G.comparisonLevel_negative c b).le, le_rfl⟩ with hz0
+  set Y : neckBuffer (G.static b.1).delta := (G.collarParameter c b (y, z0)).1 with hY
+  have hY1 : Y.1.1 = y := rfl
+  have hY2 : Y.1.2 = 0 := rfl
+  set W : neckBuffer (G.delta b.1.1.1) :=
+    ⟨(Y.1.1, (if b.1.1.2 then 1 else -1) * (1 + Y.1.2)), G.recenter_in_buffer b.1 Y⟩ with hW
+  have hrc : (G.static b.1).neck.chart Y = (G.neck b.1.1.1).chart W :=
+    G.recenter_chart b.1 Y (G.recenter_in_buffer b.1 Y)
+  set Z : TubeDomain := (y, TubeSystem.boundaryLevel b.1.1.2) with hZ
+  have htube : (G.transition.trace.tubes.tube b.1.1.1 Z) =
+      ((G.neck b.1.1.1).chart ⟨(Z.1, Z.2.1), G.tube_in_buffer b.1.1.1 Z⟩).1 :=
+    G.tube_eq b.1.1.1 Z (G.tube_in_buffer b.1.1.1 Z)
+  have hpair : (Y.1.1, (if b.1.1.2 then 1 else -1) * (1 + Y.1.2)) = (Z.1, Z.2.1) := by
+    rw [hY1, hY2, hZ]
+    cases b.1.1.2 <;> simp [TubeSystem.boundaryLevel]
+  have hWval : W = ⟨(Z.1, Z.2.1), G.tube_in_buffer b.1.1.1 Z⟩ := by
+    rw [hW]
+    exact Subtype.ext hpair
+  calc G.collarChartFun c b (y, z0)
+      = ((G.static b.1).neck.chart Y).1 := by rw [collarChartFun, ← hY]
+    _ = ((G.neck b.1.1.1).chart W).1 := by rw [hrc]
+    _ = ((G.neck b.1.1.1).chart ⟨(Z.1, Z.2.1), G.tube_in_buffer b.1.1.1 Z⟩).1 := by
+          rw [hWval]
+    _ = (G.transition.trace.tubes.tube b.1.1.1 Z) := htube.symm
+    _ = G.transition.trace.tubes.boundarySphere b.1.1 y := rfl
+
+theorem collarChartFun_mem_parent (b : G.ChildBoundary c)
+    (x : Sphere 2 × ↑(Icc (G.comparisonLevel c b) 0)) :
+    ConnectedComponents.mk (G.collarChartFun c b x) = G.transition.childParent c := by
+  let : PreconnectedSpace ↑(Icc (G.comparisonLevel c b) 0) := G.collarSecond_preconnectedSpace c b
+  set z0 : ↑(Icc (G.comparisonLevel c b) 0) :=
+    ⟨0, (G.comparisonLevel_negative c b).le, le_rfl⟩ with hz0
+  have hcont : Continuous (fun z : ↑(Icc (G.comparisonLevel c b) 0) =>
+      G.collarChartFun c b (x.1, z)) :=
+    (G.collarChartFun_continuous c b).comp (continuous_const.prodMk continuous_id)
+  have hpre : IsPreconnected (Set.range fun z : ↑(Icc (G.comparisonLevel c b) 0) =>
+      G.collarChartFun c b (x.1, z)) := isPreconnected_range hcont
+  have hsub := hpre.subset_connectedComponent (Set.mem_range_self z0)
+  have hmem : G.collarChartFun c b (x.1, x.2) ∈
+      connectedComponent (G.collarChartFun c b (x.1, z0)) :=
+    hsub (Set.mem_range_self x.2)
+  have heq1 : ConnectedComponents.mk (G.collarChartFun c b (x.1, x.2)) =
+      ConnectedComponents.mk (G.collarChartFun c b (x.1, z0)) :=
+    ConnectedComponents.coe_eq_coe'.mpr hmem
+  have heq2 : ConnectedComponents.mk (G.collarChartFun c b (x.1, z0)) =
+      G.transition.childParent c := by
+    have hz : z0 = ⟨0, (G.comparisonLevel_negative c b).le, le_rfl⟩ := Subtype.ext rfl
+    rw [hz, G.collarChartFun_zero_eq_boundarySphere c b x.1]
+    exact G.transition.childCore_mem_parent c
+      ⟨⟨G.transition.trace.tubes.boundarySphere b.1.1 x.1,
+        G.transition.trace.tubes.boundarySphere_mem_core b.1.1 x.1⟩, b.2 x.1⟩
+  exact heq1.trans heq2
+
+def collarMap (b : G.ChildBoundary c) :
+    C(Sphere 2 × ↑(Icc (G.comparisonLevel c b) 0), (G.Parent c).Carrier) :=
+  ⟨fun x => ⟨G.collarChartFun c b x, G.collarChartFun_mem_parent c b x⟩,
+    Continuous.subtype_mk (G.collarChartFun_continuous c b)
+      (fun x => G.collarChartFun_mem_parent c b x)⟩
+
+theorem collarMap_apply (b : G.ChildBoundary c)
+    (x : Sphere 2 × ↑(Icc (G.comparisonLevel c b) 0)) :
+    (G.collarMap c b x).1 = ((G.static b.1).neck.chart (G.collarParameter c b x)).1 := rfl
+
+variable {H : ObservedHistory.{u}} {i : Fin H.eventCount} {parameters : CutoffParameters}
+
+theorem retainedBoundary_side_eq (G : GeometricCutoffRecord H i parameters)
+    {α : (H.event i).transition.trace.tubes.Index} {s t : Bool}
+    (hb : (H.event i).RetainedBoundary (α, s)) (hd : (H.event i).RetainedBoundary (α, t)) :
+    s = t := by
+  cases s <;> cases t
+  · rfl
+  · exact absurd hb ((G.one_retained_side α).mp hd)
+  · exact absurd hd ((G.one_retained_side α).mp hb)
+  · rfl
+
+variable (G : GeometricCutoffRecord H i parameters)
+  (c : ConnectedComponents (H.stage i.succ).Carrier)
+
+theorem collarChartFun_mem_neckChart_range (b : G.ChildBoundary c)
+    (x : Sphere 2 × ↑(Icc (G.comparisonLevel c b) 0)) :
+    ∃ w : neckBuffer (G.delta b.1.1.1),
+      G.collarChartFun c b x = ((G.neck b.1.1.1).chart w).1 :=
+  ⟨⟨((G.collarParameter c b x).1.1.1,
+      (if b.1.1.2 then 1 else -1) * (1 + (G.collarParameter c b x).1.1.2)),
+      G.recenter_in_buffer b.1 (G.collarParameter c b x).1⟩,
+    congrArg Subtype.val (G.recenter_chart b.1 (G.collarParameter c b x).1
+      (G.recenter_in_buffer b.1 (G.collarParameter c b x).1))⟩
+
+theorem collarMap_pairwise_disjoint :
+    Pairwise fun b d => Disjoint (Set.range (G.collarMap c b)) (Set.range (G.collarMap c d)) := by
+  intro b d hbd
+  have hne : b.1.1.1 ≠ d.1.1.1 := by
+    intro hidx
+    refine hbd (Subtype.ext (Subtype.ext (Prod.ext hidx ?_)))
+    exact retainedBoundary_side_eq G b.1.2 (hidx.symm ▸ d.1.2)
+  refine Set.disjoint_left.mpr fun p hp hq => ?_
+  obtain ⟨x, hx⟩ := hp
+  obtain ⟨x', hx'⟩ := hq
+  obtain ⟨w, hw⟩ := G.collarChartFun_mem_neckChart_range c b x
+  obtain ⟨w', hw'⟩ := G.collarChartFun_mem_neckChart_range c d x'
+  have hbp : ((G.neck b.1.1.1).chart w).1 = p.1 := hw.symm.trans (congrArg Subtype.val hx)
+  have hdp : ((G.neck d.1.1.1).chart w').1 = p.1 := hw'.symm.trans (congrArg Subtype.val hx')
+  have heq : (G.neck b.1.1.1).chart w = (G.neck d.1.1.1).chart w' := Subtype.ext (hbp.trans hdp.symm)
+  have hmem : ((G.neck b.1.1.1).chart w) ∈ Set.range (G.neck d.1.1.1).chart := by
+    rw [heq]
+    exact Set.mem_range_self w'
+  exact (Set.disjoint_left.mp (G.buffer_disjoint hne)) (Set.mem_range_self w) hmem
+
+theorem collarMap_zero_mem_childCore_range (b : G.ChildBoundary c) (y : Sphere 2) :
+    G.collarMap c b (y, ⟨0, (G.comparisonLevel_negative c b).le, le_rfl⟩) ∈
+      Set.range (G.transition.childCoreIntoParent c) := by
+  refine ⟨⟨⟨G.transition.trace.tubes.boundarySphere b.1.1 y,
+      G.transition.trace.tubes.boundarySphere_mem_core b.1.1 y⟩, b.2 y⟩, ?_⟩
+  apply Subtype.ext
+  exact (G.collarChartFun_zero_eq_boundarySphere c b y).symm
+
+theorem childCoreIntoParent_terminal (x : G.transition.ChildCore c) :
+    (G.transition.childCoreIntoParent c x).1 ∈ (H.event i).incoming.terminalRegularRegion := by
+  have hret : x.1 ∈ G.transition.trace.retainedCore := by
+    obtain ⟨q, hq, _⟩ := G.transition.childCore_mapsTo_child c x
+    exact ⟨q.1, hq⟩
+  exact G.retained_terminal x.1 hret
+
+theorem collarMap_terminal (b : G.ChildBoundary c)
+    (x : Sphere 2 × ↑(Icc (G.comparisonLevel c b) 0)) :
+    (G.collarMap c b x).1 ∈ (H.event i).incoming.terminalRegularRegion := by
+  obtain ⟨w, hw⟩ := G.collarChartFun_mem_neckChart_range c b x
+  have h1 : (G.collarMap c b x).1 = ((G.neck b.1.1.1).chart w).1 := hw
+  rw [h1]
+  exact ((G.neck b.1.1.1).chart w).2
+
+variable {H : ObservedHistory.{u}} {i : Fin H.eventCount} {parameters : CutoffParameters}
+  (G : GeometricCutoffRecord H i parameters)
+  (c : ConnectedComponents (H.stage i.succ).Carrier)
+
+theorem capPoint_mem_child (b : G.ChildBoundary c) (t : ThreeBall) :
+    ConnectedComponents.mk ((G.static b.1).inclusion ((G.static b.1).witness.cap t) :
+      (H.stage i.succ).Carrier) = c := by
+  obtain ⟨q, hq, -⟩ := G.transition.childCap_mapsTo_child c ⟨b.1.1, b.2⟩ t
+  have hcap := (G.static b.1).cap_eq t
+  rw [hcap] at hq
+  have hinj : (G.static b.1).inclusion ((G.static b.1).witness.cap t) = q.1 := Sum.inl.inj hq
+  rw [hinj]
+  exact q.2
+
+theorem tipPoint_mem_child (b : G.ChildBoundary c) :
+    ConnectedComponents.mk ((G.static b.1).inclusion ((G.static b.1).witness.tip) :
+      (H.stage i.succ).Carrier) = c := by
+  obtain ⟨t, -, ht⟩ := (G.static b.1).witness.tip_interior
+  rw [← ht]
+  exact G.capPoint_mem_child c b t
+
+abbrev spherePoint : Sphere 2 := DifferentialGeometry.Topology.sphereTwoNorth
+
+theorem spherePoint_norm (y : Sphere 2) : ‖(y : ThreeSpace)‖ = 1 := by
+  have h : dist (y : ThreeSpace) 0 = 1 := Metric.mem_sphere.mp y.2
+  rwa [dist_eq_norm, sub_zero] at h
+
+theorem capCentralDomain_preconnectedSpace (b : G.ChildBoundary c) :
+    PreconnectedSpace ↑(Ioo (-(G.static b.1).delta⁻¹) (G.static b.1).delta⁻¹) :=
+  isPreconnected_iff_preconnectedSpace.mp isPreconnected_Ioo
+
+def capCentralElement (b : G.ChildBoundary c) :
+    Sphere 2 × ↑(Ioo (-(G.static b.1).delta⁻¹) (G.static b.1).delta⁻¹) →
+      neckCentralDomain (G.static b.1).delta :=
+  fun p => ⟨⟨(p.1, p.2.1), by
+      obtain ⟨h1, h2⟩ := p.2.2
+      exact ⟨by linarith, by linarith⟩⟩, p.2.2⟩
+
+theorem capCentralElement_continuous (b : G.ChildBoundary c) :
+    Continuous (G.capCentralElement c b) := by
+  apply Continuous.subtype_mk
+  apply Continuous.subtype_mk
+  exact continuous_fst.prodMk (continuous_subtype_val.comp continuous_snd)
+
+theorem tipCoordinate_negative (b : G.ChildBoundary c) :
+    (G.static b.1).witness.tipCoordinate < 0 := by
+  have h2 := (G.static b.1).witness.tipCoordinate_upper
+  have h3 := parameters.fixed.collar_pos
+  have h4 : 0 < standardCapL := standardCapL_pos
+  linarith
+
+theorem radialZero_mem_closedCore (b : G.ChildBoundary c) (y : Sphere 2) :
+    (G.static b.1).witness.radial 0 • (y : ThreeSpace) ∈ standardCapClosedCore := by
+  have htip := G.tipCoordinate_negative c b
+  have h0mem : (0 : ℝ) ∈ Icc (G.static b.1).witness.tipCoordinate 0 := ⟨htip.le, le_rfl⟩
+  obtain ⟨hnn, hle⟩ := (G.static b.1).witness.radial_range h0mem
+  rw [standardCapClosedCore, Metric.mem_closedBall, dist_zero_right, norm_smul, spherePoint_norm y,
+    mul_one, Real.norm_eq_abs, abs_of_nonneg hnn]
+  exact hle
+
+def capCentralZero (b : G.ChildBoundary c) :
+    ↑(Ioo (-(G.static b.1).delta⁻¹) (G.static b.1).delta⁻¹) :=
+  ⟨0, ⟨neg_lt_zero.mpr (inv_pos.mpr (G.static b.1).neck.delta_pos),
+    inv_pos.mpr (G.static b.1).neck.delta_pos⟩⟩
+
+def capCentralBase (b : G.ChildBoundary c) (y : Sphere 2) :
+    Sphere 2 × ↑(Ioo (-(G.static b.1).delta⁻¹) (G.static b.1).delta⁻¹) :=
+  (y, G.capCentralZero c b)
+
+def capCollapseMap (b : G.ChildBoundary c) :
+    Sphere 2 × ↑(Ioo (-(G.static b.1).delta⁻¹) (G.static b.1).delta⁻¹) →
+      (H.stage i.succ).Carrier :=
+  fun p => (G.static b.1).inclusion ((G.static b.1).witness.collapse (G.capCentralElement c b p))
+
+theorem capCollapseMap_continuous (b : G.ChildBoundary c) :
+    Continuous (G.capCollapseMap c b) :=
+  (G.static b.1).inclusion.continuous.comp
+    ((G.static b.1).witness.collapse.continuous.comp (G.capCentralElement_continuous c b))
+
+theorem capCollapse_zero_eq (b : G.ChildBoundary c) (y : Sphere 2) :
+    (G.static b.1).witness.collapse (G.capCentralElement c b (G.capCentralBase c b y)) =
+      (G.static b.1).witness.capChart
+        ⟨(G.static b.1).witness.radial 0 • (y : ThreeSpace),
+          G.radialZero_mem_closedCore c b y⟩ :=
+  (G.static b.1).witness.collapse_radial _ (G.tipCoordinate_negative c b) le_rfl _
+
+theorem capCollapseMap_base_eq_capChart (b : G.ChildBoundary c) (y : Sphere 2) :
+    G.capCollapseMap c b (G.capCentralBase c b y) =
+      (G.static b.1).inclusion ((G.static b.1).witness.capChart
+        ⟨(G.static b.1).witness.radial 0 • (y : ThreeSpace),
+          G.radialZero_mem_closedCore c b y⟩) :=
+  congrArg (G.static b.1).inclusion (G.capCollapse_zero_eq c b y)
+
+theorem capCollapseMap_base_mem_child (b : G.ChildBoundary c) (y : Sphere 2) :
+    ConnectedComponents.mk (G.capCollapseMap c b (G.capCentralBase c b y)) = c := by
+  rw [G.capCollapseMap_base_eq_capChart c b y]
+  have hmem : (G.static b.1).witness.capChart
+      ⟨(G.static b.1).witness.radial 0 • (y : ThreeSpace),
+        G.radialZero_mem_closedCore c b y⟩ ∈ Set.range (G.static b.1).witness.cap := by
+    rw [← (G.static b.1).witness.capChart_range]
+    exact Set.mem_range_self _
+  obtain ⟨t, ht⟩ := hmem
+  rw [← ht]
+  exact G.capPoint_mem_child c b t
+
+theorem connectedComponents_mk_eq_of_mem_preconnected {α : Type*} [TopologicalSpace α] {s : Set α}
+    (h : IsPreconnected s) {p q : α} (hp : p ∈ s) (hq : q ∈ s) :
+    ConnectedComponents.mk p = ConnectedComponents.mk q :=
+  ConnectedComponents.coe_eq_coe'.mpr ((h.subset_connectedComponent hq) hp)
+
+theorem capCollapseMap_preconnected (b : G.ChildBoundary c) :
+    IsPreconnected (Set.range (G.capCollapseMap c b)) := by
+  have : PreconnectedSpace (Sphere 2) := sphereTwo_connectedSpace.toPreconnectedSpace
+  have : PreconnectedSpace ↑(Ioo (-(G.static b.1).delta⁻¹) (G.static b.1).delta⁻¹) :=
+    G.capCentralDomain_preconnectedSpace c b
+  exact isPreconnected_range (G.capCollapseMap_continuous c b)
+
+theorem collapsePoint_mem_child (b : G.ChildBoundary c)
+    (x : neckCentralDomain (G.static b.1).delta) :
+    ConnectedComponents.mk ((G.static b.1).inclusion ((G.static b.1).witness.collapse x) :
+      (H.stage i.succ).Carrier) = c := by
+  have hxmem : (G.static b.1).inclusion ((G.static b.1).witness.collapse x) ∈
+      Set.range (G.capCollapseMap c b) := by
+    refine ⟨(x.1.1.1, ⟨x.1.1.2, x.2.1, x.2.2⟩), ?_⟩
+    have hxeq : G.capCentralElement c b (x.1.1.1, ⟨x.1.1.2, x.2.1, x.2.2⟩) = x :=
+      Subtype.ext (Subtype.ext rfl)
+    rw [capCollapseMap, hxeq]
+  exact (connectedComponents_mk_eq_of_mem_preconnected (G.capCollapseMap_preconnected c b)
+    hxmem (Set.mem_range_self (spherePoint, G.capCentralZero c b))).trans
+    (G.capCollapseMap_base_mem_child c b spherePoint)
+
+variable {H : ObservedHistory.{u}} {i : Fin H.eventCount} {parameters : CutoffParameters}
+  (G : GeometricCutoffRecord H i parameters)
+  (c : ConnectedComponents (H.stage i.succ).Carrier)
+
+def localCollapseMap (b : G.ChildBoundary c) :
+    C(neckCentralDomain (G.static b.1).delta, (G.Child c).Carrier) :=
+  ⟨fun x => ⟨(G.static b.1).inclusion ((G.static b.1).witness.collapse x),
+      G.collapsePoint_mem_child c b x⟩,
+    Continuous.subtype_mk
+      ((G.static b.1).inclusion.continuous.comp (G.static b.1).witness.collapse.continuous)
+      (fun x => G.collapsePoint_mem_child c b x)⟩
+
+theorem localCollapseMap_apply (b : G.ChildBoundary c) (x : neckCentralDomain (G.static b.1).delta) :
+    (G.localCollapseMap c b x).1 =
+      (G.static b.1).inclusion ((G.static b.1).witness.collapse x) := rfl
+
+def tipPoint (b : G.ChildBoundary c) : (G.Child c).Carrier :=
+  ⟨(G.static b.1).inclusion ((G.static b.1).witness.tip), G.tipPoint_mem_child c b⟩
+
+theorem tipPoint_apply (b : G.ChildBoundary c) :
+    (G.tipPoint c b).1 = (G.static b.1).inclusion ((G.static b.1).witness.tip) := rfl
+
+theorem collarMap_inter_childCore_range_of_subset_ne_zero
+    (hsubset : ∀ (b : G.ChildBoundary c) (y : Sphere 2)
+      (t : ↑(Icc (G.comparisonLevel c b) 0)),
+      G.collarMap c b (y, t) ∈ Set.range (G.transition.childCoreIntoParent c) → (t : ℝ) = 0)
+    (b : G.ChildBoundary c) :
+    Set.range (G.collarMap c b) ∩ Set.range (G.transition.childCoreIntoParent c) =
+      Set.range (fun y : Sphere 2 =>
+        G.collarMap c b (y, ⟨0, (G.comparisonLevel_negative c b).le, le_rfl⟩)) := by
+  ext p
+  constructor
+  · rintro ⟨hp, hcore⟩
+    obtain ⟨x, rfl⟩ := hp
+    obtain ⟨y, t⟩ := x
+    have ht : (t : ℝ) = 0 := hsubset b y t hcore
+    have ht' : t = ⟨0, (G.comparisonLevel_negative c b).le, le_rfl⟩ := Subtype.ext ht
+    refine ⟨y, ?_⟩
+    rw [ht']
+  · rintro ⟨y, rfl⟩
+    exact ⟨Set.mem_range_self _, G.collarMap_zero_mem_childCore_range c b y⟩
+
+theorem support_terminal_of_region (S : SmoothSphericalRegion (G.Parent c))
+    (hregion : S.region = Set.range (G.transition.childCoreIntoParent c) ∪
+      ⋃ b, Set.range (G.collarMap c b)) :
+    ∀ x ∈ S.region, x.1 ∈ (H.event i).incoming.terminalRegularRegion := by
+  intro x hx
+  rw [hregion] at hx
+  rcases hx with hx | hx
+  · obtain ⟨y, rfl⟩ := hx
+    exact G.childCoreIntoParent_terminal c y
+  · obtain ⟨b, hb⟩ := Set.mem_iUnion.mp hx
+    obtain ⟨w, rfl⟩ := hb
+    exact G.collarMap_terminal c b w
+
+theorem rfs_comparison_support_of_region_data
+    [SimplyConnectedSpace (G.Parent c).Carrier]
+    (S : SmoothSphericalRegion (G.Parent c))
+    (hregion : S.region = Set.range (G.transition.childCoreIntoParent c) ∪
+      ⋃ b, Set.range (G.collarMap c b))
+    (hlabel : G.ChildBoundary c ≃ S.Boundary)
+    (hboundary : ∀ b : G.ChildBoundary c,
+      (Subtype.val : S.region → (G.Parent c).Carrier) '' Set.range (S.sphere (hlabel b)) =
+        Set.range (fun y : Sphere 2 => G.collarMap c b
+          (y, ⟨G.comparisonLevel c b, le_rfl, (G.comparisonLevel_negative c b).le⟩)))
+    (hcollar : ∀ (b : G.ChildBoundary c) (y : Sphere 2) (t : ↑(Icc (G.comparisonLevel c b) 0)),
+      G.collarMap c b (y, t) ∈ Set.range (G.transition.childCoreIntoParent c) → (t : ℝ) = 0) :
+    Nonempty (G.ComparisonSupport c) :=
+  ⟨{ level := G.comparisonLevel c
+     level_lower := G.comparisonLevel_lower c
+     level_below_tip := G.comparisonLevel_below_tip c
+     level_negative := G.comparisonLevel_negative c
+     collarParameter := G.collarParameter c
+     collarParameter_eq := G.collarParameter_apply c
+     collar := G.collarMap c
+     collar_eq := G.collarMap_apply c
+     collar_core_intersection := G.collarMap_inter_childCore_range_of_subset_ne_zero c hcollar
+     collar_disjoint := G.collarMap_pairwise_disjoint c
+     support := S
+     support_eq := hregion
+     support_terminal := G.support_terminal_of_region c S hregion
+     boundaryLabel := hlabel
+     boundary_eq := hboundary
+     exterior := Classical.choice (rfs_exterior_branches (G.Parent c) S)
+     localCollapse := G.localCollapseMap c
+     localCollapse_eq := fun _ _ => rfl
+     tip := G.tipPoint c
+     tip_eq := fun _ => rfl }⟩
 
 theorem rfs_comparison_support
     [SimplyConnectedSpace (G.Parent c).Carrier] : Nonempty (G.ComparisonSupport c) := by
@@ -815,6 +1258,171 @@ theorem rfs_collapse_degree_of_local_inputs
     fun x => K.rfs_whole_parent_map_childCore x,
     K.rfs_whole_parent_map_surjective_of_cover hcov⟩
 
+theorem collarParameter_fst (b : G.ChildBoundary c)
+    (w : Sphere 2 × ↑(Icc (K.level b) 0)) :
+    (K.collarParameter b w).1.1.1 = w.1 :=
+  congrArg Prod.fst (K.collarParameter_eq b w)
+
+theorem collarParameter_snd (b : G.ChildBoundary c)
+    (w : Sphere 2 × ↑(Icc (K.level b) 0)) :
+    (K.collarParameter b w).1.1.2 = (w.2 : ℝ) :=
+  congrArg (fun p : Sphere 2 × ℝ => p.2) (K.collarParameter_eq b w)
+
+private theorem standardCapL_pos : (0 : ℝ) < standardCapL := by
+  have hpi : 0 < Real.pi := Real.pi_pos
+  have hsqrt : 0 < Real.sqrt 2 := Real.sqrt_pos.mpr (by norm_num)
+  have h : 0 < Real.pi / Real.sqrt 2 := div_pos hpi hsqrt
+  simp only [standardCapL, standardCapA0]
+  linarith
+
+theorem exists_collarParameter_collapse_eq_cap (b : G.ChildBoundary c) (x : ThreeBall) :
+    ∃ w : Sphere 2 × ↑(Icc (K.level b) 0),
+      (K.localCollapse b (K.collarParameter b w)).1 =
+        (G.static b.1).inclusion ((G.static b.1).witness.cap x) := by
+  classical
+  have hmem : (G.static b.1).witness.cap x ∈
+      Set.range (G.static b.1).witness.capChart := by
+    rw [(G.static b.1).witness.capChart_range]
+    exact Set.mem_range_self x
+  obtain ⟨x₀, hx₀⟩ := hmem
+  have hnorm_le : ‖x₀.1‖ ≤ standardCapL := by
+    simpa [standardCapClosedCore, Metric.mem_closedBall, dist_eq_norm] using x₀.2
+  by_cases hzero : x₀.1 = 0
+  · refine ⟨((G.static b.1).neck.sphereMark,
+      ⟨K.level b, le_rfl, (K.level_negative b).le⟩), ?_⟩
+    have hx0eq : x₀ = (⟨0, by simpa [standardCapClosedCore, hzero] using x₀.2⟩ :
+        standardCapClosedCore) := Subtype.ext hzero
+    have hcap : (G.static b.1).witness.cap x = (G.static b.1).witness.tip := by
+      rw [← hx₀, hx0eq]
+      exact (G.static b.1).witness.capChart_tip _
+    have hcoll : (G.static b.1).witness.collapse
+        (K.collarParameter b ((G.static b.1).neck.sphereMark,
+          ⟨K.level b, le_rfl, (K.level_negative b).le⟩)) =
+        (G.static b.1).witness.tip := by
+      refine (G.static b.1).witness.collapse_tip _ ?_
+      rw [K.collarParameter_snd b _]
+      exact (K.level_below_tip b).le
+    rw [K.localCollapse_eq b _, hcoll, hcap]
+  · have hpos : 0 < ‖x₀.1‖ := norm_pos_iff.mpr hzero
+    let y : Sphere 2 :=
+      ⟨(‖x₀.1‖⁻¹ : ℝ) • x₀.1, by
+        rw [Metric.mem_sphere, dist_zero_right]
+        rw [norm_smul, Real.norm_of_nonneg (inv_nonneg.mpr (norm_nonneg x₀.1))]
+        exact inv_mul_cancel₀ (ne_of_gt hpos)⟩
+    have htip_le : (G.static b.1).witness.tipCoordinate ≤ 0 := by
+      have h1 := (G.static b.1).witness.tipCoordinate_upper
+      have h2 := parameters.fixed.collar_pos
+      have h3 := standardCapL_pos
+      linarith
+    obtain ⟨zz, hzz, hzzr⟩ : ∃ zz ∈ Set.Icc (G.static b.1).witness.tipCoordinate 0,
+        (G.static b.1).witness.radial zz = ‖x₀.1‖ := by
+      have hsub := intermediate_value_Icc htip_le (G.static b.1).witness.radial_continuous
+      have hmem' : ‖x₀.1‖ ∈ Set.Icc
+          ((G.static b.1).witness.radial (G.static b.1).witness.tipCoordinate)
+          ((G.static b.1).witness.radial 0) := by
+        rw [(G.static b.1).witness.radial_tip, (G.static b.1).witness.radial_boundary]
+        exact ⟨norm_nonneg _, hnorm_le⟩
+      exact hsub hmem'
+    have hzz_gt : (G.static b.1).witness.tipCoordinate < zz := by
+      rcases lt_trichotomy zz (G.static b.1).witness.tipCoordinate with h | h | h
+      · exact absurd h (not_lt.mpr hzz.1)
+      · rw [h, (G.static b.1).witness.radial_tip] at hzzr
+        exact absurd hzzr.symm (ne_of_gt hpos)
+      · exact h
+    have hsmul : (G.static b.1).witness.radial zz • y.1 = x₀.1 := by
+      rw [hzzr]
+      exact smul_inv_smul₀ (ne_of_gt hpos) x₀.1
+    have hlevel : K.level b ≤ (⟨zz, (lt_trans (K.level_below_tip b) hzz_gt).le, hzz.2⟩ :
+        ↑(Icc (K.level b) 0)) := (lt_trans (K.level_below_tip b) hzz_gt).le
+    refine ⟨(y, ⟨zz, hlevel, hzz.2⟩), ?_⟩
+    have hball : (G.static b.1).witness.radial
+        ((K.collarParameter b (y, ⟨zz, hlevel, hzz.2⟩)).1.1.2) •
+        ((K.collarParameter b (y, ⟨zz, hlevel, hzz.2⟩)).1.1.1.1) ∈ standardCapClosedCore := by
+      rw [K.collarParameter_snd b (y, ⟨zz, hlevel, hzz.2⟩),
+        K.collarParameter_fst b (y, ⟨zz, hlevel, hzz.2⟩), hsmul]
+      exact x₀.2
+    have hgt : (G.static b.1).witness.tipCoordinate <
+        (K.collarParameter b (y, ⟨zz, hlevel, hzz.2⟩)).1.1.2 := by
+      rw [K.collarParameter_snd b (y, ⟨zz, hlevel, hzz.2⟩)]
+      exact hzz_gt
+    have hle : (K.collarParameter b (y, ⟨zz, hlevel, hzz.2⟩)).1.1.2 ≤ 0 := by
+      rw [K.collarParameter_snd b (y, ⟨zz, hlevel, hzz.2⟩)]
+      exact hzz.2
+    have hcollapse : (G.static b.1).witness.collapse
+        (K.collarParameter b (y, ⟨zz, hlevel, hzz.2⟩)) =
+        (G.static b.1).witness.capChart x₀ := by
+      rw [(G.static b.1).witness.collapse_radial (K.collarParameter b (y, ⟨zz, hlevel, hzz.2⟩))
+        hgt hle hball]
+      refine congrArg (G.static b.1).witness.capChart (Subtype.ext ?_)
+      simp only [K.collarParameter_snd b (y, ⟨zz, hlevel, hzz.2⟩),
+        K.collarParameter_fst b (y, ⟨zz, hlevel, hzz.2⟩)]
+      exact hsmul
+    rw [K.localCollapse_eq b (K.collarParameter b (y, ⟨zz, hlevel, hzz.2⟩)), hcollapse, hx₀]
+
+theorem rfs_collapse_cover :
+    Set.range (G.transition.childCoreInclusion c) ∪
+      (⋃ b : G.ChildBoundary c, Set.range (fun w : Sphere 2 × ↑(Icc (K.level b) 0) =>
+        K.localCollapse b (K.collarParameter b w))) = univ := by
+  have hcov := G.transition.range_childCoreInclusion_union_range_childCap c
+  refine Set.eq_univ_of_forall fun v => ?_
+  have hv : v ∈ Set.range (G.transition.childCoreInclusion c) ∪
+      ⋃ b : G.transition.ChildCapBoundary c, Set.range (G.transition.childCap c b) := by
+    rw [hcov]
+    trivial
+  rcases hv with h | h
+  · exact Or.inl h
+  · obtain ⟨b, hb⟩ := Set.mem_iUnion.mp h
+    obtain ⟨z, hz⟩ := hb
+    have hbRet : (H.event i).RetainedBoundary b.1 :=
+      G.transition.retainedBoundary_of_mem_childCapBoundary c b
+    obtain ⟨w, hw⟩ := K.exists_collarParameter_collapse_eq_cap
+      (⟨⟨b.1, hbRet⟩, b.2⟩ : G.ChildBoundary c) z
+    refine Or.inr (Set.mem_iUnion.mpr ⟨(⟨⟨b.1, hbRet⟩, b.2⟩ : G.ChildBoundary c), ?_⟩)
+    refine ⟨w, Subtype.ext ?_⟩
+    have hz1 : (G.transition.childCap c b z).1 =
+        (G.static (⟨b.1, hbRet⟩ : (H.event i).RetainedBoundaryIndex)).inclusion
+          ((G.static (⟨b.1, hbRet⟩ : (H.event i).RetainedBoundaryIndex)).witness.cap z) :=
+      Sum.inl.inj ((G.transition.childCapFun_eq c b z).symm.trans
+        ((G.static (⟨b.1, hbRet⟩ : (H.event i).RetainedBoundaryIndex)).cap_eq z))
+    exact hw.trans (hz1.symm.trans (congrArg Subtype.val hz))
+
+
+theorem childCore_subset_old (x : G.transition.ChildCore c) : x.1 ∈ (H.event i).old := by
+  have hcoreCompact : CompactSpace G.transition.trace.tubes.core := G.transition.core_compact
+  have hcoreConnected : LocallyConnectedSpace G.transition.trace.tubes.core :=
+    G.transition.core_locallyConnected
+  have h := CutCapTopology.childCore_subset_retainedCore (E := G.transition.trace) c x.2
+  rw [G.old_eq_retained]
+  exact h
+
+theorem oldOutput_eq_childCoreInclusion (x : G.transition.ChildCore c) :
+    (H.event i).oldOutput ⟨x.1, childCore_subset_old x⟩ =
+      (G.transition.childCoreInclusion c x).1 :=
+  Sum.inl.inj (((H.event i).oldOutput_eq
+    ⟨x.1, childCore_subset_old x⟩).symm.trans (G.transition.childCoreInclusionFun_eq c x))
+
+theorem rfs_collapse_degree_of_lipschitz_and_degree
+    (hlip : ∀ (y z : (G.Parent c).Carrier),
+      ∀ hy : y.1 ∈ (H.event i).incoming.terminalRegularRegion,
+      ∀ hz : z.1 ∈ (H.event i).incoming.terminalRegularRegion,
+      riemannianEDistOf (H.event i).outputMetric (K.rfs_whole_parent_map y).1
+        (K.rfs_whole_parent_map z).1 ≤
+      riemannianEDistOf (H.event i).terminal.metric ⟨y.1, hy⟩ ⟨z.1, hz⟩)
+    (hclass : integralHomologyMap 3 K.rfs_whole_parent_map
+      (fundamentalClass (G.Parent c).orientation) =
+      fundamentalClass (G.Child c).orientation) :
+    K.LocalTerminalLengthControl K.rfs_whole_parent_map ∧
+    (∀ x ∉ K.support.region, ∃ U ∈ 𝓝 x, ∀ y ∈ U,
+      K.rfs_whole_parent_map y = K.rfs_whole_parent_map x) ∧
+    (∀ x : G.transition.ChildCore c,
+      K.rfs_whole_parent_map (G.transition.childCoreIntoParent c x) =
+        G.transition.childCoreInclusion c x) ∧
+    integralHomologyMap 3 K.rfs_whole_parent_map
+      (fundamentalClass (G.Parent c).orientation) =
+      fundamentalClass (G.Child c).orientation ∧
+    Function.Surjective K.rfs_whole_parent_map := by
+  obtain ⟨h1, h2, h3, h4⟩ := K.rfs_collapse_degree_of_local_inputs hlip K.rfs_collapse_cover
+  exact ⟨h1, h2, h3, hclass, h4⟩
 theorem rfs_collapse_degree [SimplyConnectedSpace (G.Parent c).Carrier] :
     K.LocalTerminalLengthControl K.rfs_whole_parent_map ∧
     (∀ x ∉ K.support.region, ∃ U ∈ 𝓝 x, ∀ y ∈ U,

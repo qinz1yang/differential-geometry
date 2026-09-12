@@ -18,7 +18,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimension
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-omit [FiniteDimensional ℝ E] [CompactSpace M] in
+omit [FiniteDimensional ℝ E] [CompactSpace M] [PreconnectedSpace M] in
 theorem attachDiskAnnulus_riemannian_lipschitz
     (g : SmoothRiemannianMetric 𝓘(ℝ, E) M)
     {u : ℂ → M} {H : ℝ × loopCircle → M} {Ku Kh : ℝ≥0}
@@ -31,8 +31,7 @@ theorem attachDiskAnnulus_riemannian_lipschitz
   let : RiemannianBundle (TangentSpace 𝓘(ℝ, E) : M → Type _) := ⟨g.toRiemannianMetric⟩
   let : IsContinuousRiemannianBundle E (TangentSpace 𝓘(ℝ, E) : M → Type _) :=
     ⟨⟨g.inner, g.contMDiff.continuous, by intro x v w; rfl⟩⟩
-  let : EMetricSpace M := .ofRiemannianMetric 𝓘(ℝ, E) M
-  let : MetricSpace M := EMetricSpace.toMetricSpace DifferentialGeometry.Analysis.edist_ne_top_of_preconnected
+  let : PseudoEMetricSpace M := PseudoEMetricSpace.ofRiemannianMetric 𝓘(ℝ, E) M
   have hu' : LipschitzWith Ku u := hu
   have hH' : LipschitzWith Kh H := hH
   exact ⟨_, attachDiskAnnulus_lipschitz hu' hH' hglue⟩
@@ -40,6 +39,7 @@ theorem attachDiskAnnulus_riemannian_lipschitz
 
 
 
+omit [PreconnectedSpace M] in
 theorem attachDiskAnnulus_area (g : SmoothRiemannianMetric 𝓘(ℝ, E) M)
     {u : ℂ → M} {H : ℝ × loopCircle → M} {Ku Kh : ℝ≥0}
     (hu : ∀ z w, riemannianEDistOf g (u z) (u w) ≤ (Ku : ℝ≥0∞) * edist z w)

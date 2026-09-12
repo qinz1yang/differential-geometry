@@ -63,4 +63,20 @@ theorem exists_samePole_normalized_asymptotic_shrinker
              atTop (𝓝 (normalizedShrinkerMass L.metric f))) := by
   sorry
 
+omit [I.Boundaryless] in
+set_option backward.isDefEq.respectTransparency false in
+theorem ancient_reducedVolume_antitone_of_redVolume_antitone
+    (hgap : ∀ (D : RealTimeInterval)
+      (S : SolutionOn (I := I) (M := F.M) D)
+      (T : ℝ) (x : F.M) {tau1 tau2 : ℝ},
+      IsSolutionOn (I := I) S →
+      0 < tau1 → tau1 ≤ tau2 → T ∈ D.carrier →
+      Set.Ico (T - tau2) T ⊆ D.regular →
+      redVolume S T x tau2 ≤ redVolume S T x tau1)
+    (p : F.M) :
+    AntitoneOn (intrinsicReducedVolume F.S 0 p) (Ioi 0) := by
+  intro tau1 h1 tau2 h2 h12
+  exact hgap ancientTimeInterval F.S 0 p F.isSolution h1 h12 (by simp)
+    (fun t ht => ht.2)
+
 end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions

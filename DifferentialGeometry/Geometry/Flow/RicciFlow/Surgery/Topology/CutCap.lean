@@ -406,6 +406,28 @@ theorem childCore_unique [CompactSpace E.tubes.core] [LocallyConnectedSpace E.tu
       E.capping.componentMap d = E.cappedChild c := by
   exact E.capping.rfs_cap_component_bijection.existsUnique _
 
+theorem childCore_subset_retainedCore [CompactSpace E.tubes.core]
+    [LocallyConnectedSpace E.tubes.core] [T2Space N]
+    (c : ConnectedComponents Q) {z : E.tubes.core}
+    (hz : ConnectedComponents.mk z = E.childCore c) : z ∈ E.retainedCore := by
+  classical
+  obtain ⟨q, hq⟩ := ConnectedComponents.surjective_coe c
+  have hcore : E.capping.componentMap (E.childCore c) = E.cappedChild c :=
+    E.capping.componentEquiv.apply_symm_apply _
+  have hx : ConnectedComponents.mk (E.capping.coreInclusion z) = E.cappedChild c := by
+    rw [← hcore, ← hz]
+    rfl
+  have hpres : ConnectedComponents.mk (E.presentation (E.capping.coreInclusion z)) =
+      ConnectedComponents.mk (Sum.inl q : Q ⊕ D) := by
+    have h := congrArg E.presentation.continuous.connectedComponentsMap hx
+    simpa [CutCapTopology.cappedChild, ← hq] using h
+  have hmem : E.presentation (E.capping.coreInclusion z) ∈
+      connectedComponent (Sum.inl q : Q ⊕ D) :=
+    ConnectedComponents.coe_eq_coe'.mp hpres
+  have hrange : E.presentation (E.capping.coreInclusion z) ∈ Set.range (Sum.inl : Q → Q ⊕ D) :=
+    isClopen_range_inl.connectedComponent_subset (Set.mem_range_self q) hmem
+  obtain ⟨q', hq'⟩ := hrange
+  exact ⟨q', hq'.symm⟩
 end CutCapTopology
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology

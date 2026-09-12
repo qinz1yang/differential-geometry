@@ -1373,7 +1373,21 @@ theorem freeLoopAdjunction_natural {Y : Type u} [TopologicalSpace Y]
     (f : C(X, Y)) (a : HomotopyGroup (Fin 3) X x) :
     basedHomotopyMap (loopPostcompose f) (constantLoops x) (freeLoopAdjunction x a) =
       freeLoopAdjunction (f x) (basedHomotopyMap f x a) := by
-  sorry
+  induction a using Quotient.inductionOn with
+  | h c =>
+    change Quotient.mk _
+        (genLoopPostcompose (loopPostcompose f)
+          (genLoopPostcompose (basedLoopInclusion x) (cubeAdjunct c))) =
+      Quotient.mk _
+        (genLoopPostcompose (basedLoopInclusion (f x)) (cubeAdjunct (genLoopPostcompose f c)))
+    refine congrArg (Quotient.mk _) (Subtype.ext (ContinuousMap.ext (fun p =>
+      ContinuousMap.ext (fun z => ?_))))
+    obtain ⟨t, ht, rfl⟩ := AddCircle.eq_coe_Ico (p := (1 : ℝ)) z
+    change f (((cubeAdjunct c) p).1 ((t : ℝ) : Circle)) =
+      ((cubeAdjunct (genLoopPostcompose f c)) p).1 ((t : ℝ) : Circle)
+    rw [cubeAdjunct_apply c p ⟨t, subinterval_mem_I ht⟩,
+      cubeAdjunct_apply (genLoopPostcompose f c) p ⟨t, subinterval_mem_I ht⟩]
+    rfl
 
 variable {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
     [IsManifold ThreeModel ∞ M] [hT2 : T2Space M] [hCompact : CompactSpace M]

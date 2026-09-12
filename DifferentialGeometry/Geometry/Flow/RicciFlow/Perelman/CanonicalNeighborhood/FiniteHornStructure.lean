@@ -1,6 +1,8 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHornDefs
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.BlowupConvergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ConeTerminalExclusion
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHornEndpoint
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHornIntrinsicRays
 import Mathlib.Topology.MetricSpace.Completion
 
 set_option autoImplicit false
@@ -194,6 +196,57 @@ theorem bounded_curvature_at_distance {kappa sigma : ℝ} {Phi : ℝ → ℝ}
       ∀ X : NormalizedSequence.{u} eps kappa sigma Phi,
         BoundedAtDistance X ∧ TerminalDerivativeBounds X := by
   sorry
+
+
+attribute [local instance] FiniteHorn.ambient_metric
+
+structure AmbientEndIsometry {g : SmoothRiemannianMetric I3 W} (H : FiniteHorn g) : Prop where
+  deep : ∃ i, (∀ x ∈ H.subend i, ∀ y ∈ H.subend i,
+      dist x y = dist (H.inclusion x) (H.inclusion y)) ∧
+    ∀ x ∈ H.subend i, dist (x : UniformSpace.Completion W) H.endpoint =
+      dist (H.inclusion x) H.ambient_end
+
+omit [SigmaCompactSpace W] in
+theorem finiteHorn_frontier_escape_of_ambientEndIsometry {g : SmoothRiemannianMetric I3 W}
+    (H : FiniteHorn g) (hiso : AmbientEndIsometry H) :
+    ∀ w : ℕ → W,
+      Filter.Tendsto (fun i => (w i : UniformSpace.Completion W)) Filter.atTop
+        (nhds H.endpoint) →
+      ∀ R : ℝ, 0 < R → ∀ᶠ i in Filter.atTop, ∀ z ∈ H.outer_frontier,
+        R * dist (w i : UniformSpace.Completion W) H.endpoint < dist (H.inclusion (w i)) z := by
+  obtain ⟨i₀, -, hdist⟩ := hiso.deep
+  obtain ⟨δ, hδ, hfar⟩ := H.frontier_far
+  intro w hw R hR
+  have hmem : ∀ᶠ i in Filter.atTop, w i ∈ H.subend i₀ :=
+    finiteHorn_eventually_mem_subend g H hw i₀
+  have hsmall : ∀ᶠ i in Filter.atTop,
+      dist (w i : UniformSpace.Completion W) H.endpoint < δ / (R + 1) := by
+    have hpos : 0 < δ / (R + 1) := div_pos hδ (by linarith)
+    exact hw.eventually (Metric.ball_mem_nhds H.endpoint hpos)
+  filter_upwards [hmem, hsmall] with i hi hsi
+  intro z hz
+  have hzδ : δ ≤ dist z H.ambient_end := hfar z hz
+  have hri : dist (w i : UniformSpace.Completion W) H.endpoint =
+      dist (H.inclusion (w i)) H.ambient_end := hdist (w i) hi
+  have hkey : δ - dist (w i : UniformSpace.Completion W) H.endpoint ≤
+      dist z (H.inclusion (w i)) := by
+    have h := abs_dist_sub_le z (H.inclusion (w i)) H.ambient_end
+    rw [← hri] at h
+    have := (abs_le.mp h).2
+    linarith
+  have hexpand : R * dist (w i : UniformSpace.Completion W) H.endpoint <
+      δ - dist (w i : UniformSpace.Completion W) H.endpoint := by
+    have h := (lt_div_iff₀ (by linarith : (0 : ℝ) < R + 1)).mp hsi
+    nlinarith
+  rw [dist_comm (H.inclusion (w i)) z]
+  linarith
+
+theorem finite_horn_end_rays_of_ambientEndIsometry {g : SmoothRiemannianMetric I3 W}
+    (H : FiniteHorn g) (hiso : AmbientEndIsometry H) : Nonempty (EndGeometry H) :=
+  ⟨{ unique_endpoint := finiteHorn_unique_endpoint g H
+     intrinsic_ambient := hiso.deep
+     rays := finiteHorn_intrinsic_rays g H
+     frontier_escape := finiteHorn_frontier_escape_of_ambientEndIsometry H hiso }⟩
 
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn

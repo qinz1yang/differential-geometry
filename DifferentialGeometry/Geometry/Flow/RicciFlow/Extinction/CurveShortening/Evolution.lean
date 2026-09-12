@@ -1035,6 +1035,75 @@ theorem curvature_evolution_le (B : RicciBackground (I := I) (M := M) D a b)
       2 * B.C * (c.curvatureSq B.family.metric x t + c.curvature B.family.metric x t) :=
   curvature_evolution_le_of_rfs_csf_curvature B hsu hwindow c hc x t ht
 
+omit [CompleteSpace E] in
+theorem CurveMap.inner_normalCurvatureDerivative_curvatureVector_sq
+    (g : ℝ → SmoothRiemannianMetric I M) (c : CurveMap M)
+    (J : Set ℝ) (hc : c.SmoothOn (I := I) J)
+    (hi : c.ImmersedOn (I := I) J) (x t : ℝ) (ht : t ∈ J) :
+    (g t).inner (c.lift x t) (c.normalCurvatureDerivative g x t) (c.curvatureVector g x t) =
+      (1 / 2) * c.ds g (c.curvatureSq g) x t := by
+  have hγ : ContMDiff 𝓘(ℝ, ℝ) I ∞ (fun y : ℝ => c.lift y t) :=
+    contMDiffOn_univ.mp (CurveMap.space_slice_contMDiffOn c J hc t ht)
+  have hVc := CurveMap.curvatureVector_contMDiff g c J hc hi t ht
+  have hd := metric_compat_hasDerivAt_inner (by simp : (1 : WithTop ℕ∞) ≤ ∞)
+    (g t) (fun y : ℝ => c.lift y t) (fun y => c.curvatureVector g y t)
+    (fun y => c.curvatureVector g y t) x hγ
+    (chartRep_diff (I := I) (fun y : ℝ => c.lift y t)
+      (fun y => c.curvatureVector g y t) hVc x)
+    (chartRep_diff (I := I) (fun y : ℝ => c.lift y t)
+      (fun y => c.curvatureVector g y t) hVc x)
+  have hsymm : (g t).inner (c.lift x t) (c.curvatureVector g x t)
+      (covDerivAlong (g t) (fun y : ℝ => c.lift y t) (fun y => c.curvatureVector g y t) x) =
+      (g t).inner (c.lift x t)
+      (covDerivAlong (g t) (fun y : ℝ => c.lift y t) (fun y => c.curvatureVector g y t) x)
+      (c.curvatureVector g x t) :=
+    (g t).symm (c.lift x t) (c.curvatureVector g x t)
+      (covDerivAlong (g t) (fun y : ℝ => c.lift y t) (fun y => c.curvatureVector g y t) x)
+  have hfun : (fun y : ℝ => c.curvatureSq g y t) =
+      (fun y : ℝ => (g t).inner (c.lift y t) (c.curvatureVector g y t)
+        (c.curvatureVector g y t)) := rfl
+  have hderiv : deriv (fun y : ℝ => c.curvatureSq g y t) x =
+      2 * (g t).inner (c.lift x t) (c.Dx g (c.curvatureVector g) x t)
+        (c.curvatureVector g x t) := by
+    rw [hfun, hd.deriv, hsymm]
+    simp only [CurveMap.Dx]
+    ring
+  have hgeom := tangent_curvature_geometry g c J hc hi x t ht
+  have horth : (g t).inner (c.lift x t) (c.curvatureVector g x t) (c.unitTangent g x t) = 0 :=
+    hgeom.2.1
+  have hspos : 0 < c.speed g x t := c.speed_pos g hi x t ht
+  have hds : c.ds g (c.curvatureSq g) x t =
+      (c.speed g x t)⁻¹ * deriv (fun y : ℝ => c.curvatureSq g y t) x := rfl
+  have hDs : c.Ds g (c.curvatureVector g) x t =
+      (c.speed g x t)⁻¹ • c.Dx g (c.curvatureVector g) x t := rfl
+  have hN : c.normalCurvatureDerivative g x t =
+      c.Ds g (c.curvatureVector g) x t + c.curvatureSq g x t • c.unitTangent g x t := rfl
+  rw [hN, map_add, add_apply, map_smul, smul_apply, smul_eq_mul,
+    (g t).symm (c.lift x t) (c.unitTangent g x t) (c.curvatureVector g x t),
+    horth, mul_zero, add_zero]
+  rw [hDs, map_smul, smul_apply, smul_eq_mul]
+  rw [hds, hderiv]
+  field_simp
+
+omit [CompleteSpace E] in
+theorem CurveMap.ds_curvatureSq_sq_le_mul_normSq_normalCurvatureDerivative
+    (g : ℝ → SmoothRiemannianMetric I M) (c : CurveMap M)
+    (J : Set ℝ) (hc : c.SmoothOn (I := I) J)
+    (hi : c.ImmersedOn (I := I) J) (x t : ℝ) (ht : t ∈ J) :
+    (c.ds g (c.curvatureSq g) x t) ^ 2 ≤
+      4 * c.curvatureSq g x t * c.normSq g (c.normalCurvatureDerivative g) x t := by
+  have hkey := CurveMap.inner_normalCurvatureDerivative_curvatureVector_sq g c J hc hi x t ht
+  have hcs := DifferentialGeometry.Analysis.Laplacian.metric_inner_cauchy_schwarz_sq
+    (I := I) (M := M) (g t) (c.lift x t)
+    (c.normalCurvatureDerivative g x t) (c.curvatureVector g x t)
+  have hnn : c.normSq g (c.normalCurvatureDerivative g) x t =
+      (g t).inner (c.lift x t) (c.normalCurvatureDerivative g x t)
+        (c.normalCurvatureDerivative g x t) := rfl
+  have hkk : c.curvatureSq g x t =
+      (g t).inner (c.lift x t) (c.curvatureVector g x t) (c.curvatureVector g x t) := rfl
+  rw [hkey] at hcs
+  rw [← hnn, ← hkk] at hcs
+  nlinarith [hcs]
 
 theorem rfs_csf_regularized_curvature (B : RicciBackground (I := I) (M := M) D a b)
     (hsu : s < u) (hwindow : Icc s u ⊆ Icc a b)

@@ -1,9 +1,11 @@
 import Mathlib.Analysis.Calculus.FDeriv.Equiv
 import Mathlib.MeasureTheory.Function.Jacobian
 import Mathlib.MeasureTheory.Measure.OpenPos
+import Mathlib.Topology.MetricSpace.HausdorffDimension
+import DifferentialGeometry.Analysis.Integration.Measure.HausdorffDimension
 
 open Set MeasureTheory
-open scoped Topology
+open scoped Topology ENNReal
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
 
@@ -54,3 +56,21 @@ theorem Differentiable.dense_regular_values_of_finrank_eq {f : E → F}
   · intro v
     obtain ⟨w, hw⟩ := hbij.2 (e v)
     exact ⟨w, e.injective hw⟩
+
+theorem ContDiffOn.addHaar_image_eq_zero_of_finrank_lt [SecondCountableTopology E]
+    [MeasurableSpace F] [BorelSpace F]
+    (μ : Measure F) [Measure.IsAddHaarMeasure μ]
+    {f : E → F} {s : Set E} (hs : IsOpen s) (hf : ContDiffOn ℝ 1 f s)
+    (hdim : Module.finrank ℝ E < Module.finrank ℝ F) :
+    μ (f '' s) = 0 := by
+  have hloc : dimH (f '' s) ≤ dimH s := by
+    refine dimH_image_le_of_locally_lipschitzOn fun x hx => ?_
+    obtain ⟨K, t, ht, hK⟩ := (hf.contDiffAt (hs.mem_nhds hx)).exists_lipschitzOnWith
+    refine ⟨K, t ∩ s, ?_, hK.mono inter_subset_left⟩
+    exact Filter.mem_inf_iff.mpr ⟨t, ht, s, Filter.mem_principal.mpr subset_rfl, rfl⟩
+  have hlt : dimH (f '' s) < Module.finrank ℝ F := by
+    calc dimH (f '' s) ≤ dimH s := hloc
+      _ ≤ (Module.finrank ℝ E : ℝ≥0∞) :=
+        (dimH_mono (subset_univ s)).trans_eq (Real.dimH_univ_eq_finrank E)
+      _ < (Module.finrank ℝ F : ℝ≥0∞) := by exact_mod_cast hdim
+  exact DifferentialGeometry.MeasureTheory.addHaar_eq_zero_of_dimH_lt μ hlt

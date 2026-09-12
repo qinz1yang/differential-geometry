@@ -1,6 +1,10 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.Plateau
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.AreaEvolution
 import DifferentialGeometry.Geometry.Curvature.Riemann.SectionalCurvature
+import DifferentialGeometry.Geometry.Curvature.DiskBoundary
+import DifferentialGeometry.Geometry.Curvature.DiskRegularizer
+import DifferentialGeometry.Geometry.Curvature.CurveReparametrization
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.AngleTrace
 
 noncomputable section
 
@@ -8,6 +12,7 @@ open Bundle Manifold Set MeasureTheory
 open scoped Manifold ContDiff Topology
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Riemannian
+open DifferentialGeometry.Geometry
 
 namespace DifferentialGeometry.PDE.RicciFlow.Extinction.Width
 
@@ -19,6 +24,194 @@ def diskLogPotential (kappa : ℂ → ℝ) (z : ℂ) : ℝ :=
 
 
 def diskBoundaryCurve : CurveMap ℂ := fun z _ => (diskBoundary z : ℂ)
+
+theorem diskLogPotential_eq_diskRegularizerPotential (kappa : ℂ → ℝ)
+    (hcompact : HasCompactSupport kappa) (hsmooth : ContDiff ℝ ∞ kappa)
+    (hsupport : tsupport kappa ⊆ Metric.ball (0 : ℂ) 1) :
+    ∀ z ∈ Metric.closedBall (0 : ℂ) 1,
+      diskLogPotential kappa z = DifferentialGeometry.Analysis.diskRegularizerPotential kappa z := by
+  intro z hz
+  obtain ⟨ρ, R, hρ, _hρ1, hR, hρR, hsρ⟩ :=
+    DifferentialGeometry.Analysis.exists_disk_support_radii hcompact hsupport
+  rw [DifferentialGeometry.Analysis.diskRegularizerPotential_eq_kernel_integral
+    hcompact hsmooth hρ hρR hsρ (by
+      rw [Metric.mem_ball]
+      exact lt_of_le_of_lt (Metric.mem_closedBall.mp hz) hR)]
+  rw [diskLogPotential]
+  have hset : (∫ w in Metric.closedBall (0 : ℂ) 1,
+      kappa w * (Real.log ‖z - w‖ + Real.log ‖1 - star w * z‖))
+      = ∫ w : ℂ, kappa w * (Real.log ‖z - w‖ + Real.log ‖1 - star w * z‖) := by
+    refine setIntegral_eq_integral_of_forall_compl_eq_zero ?_
+    intro w hw
+    have hk : kappa w = 0 := by
+      by_contra h
+      exact hw (Metric.ball_subset_closedBall
+        (hsupport (subset_tsupport kappa (Function.mem_support.mpr h))))
+    simp only [hk, zero_mul]
+  rw [hset]
+  have hker : (∫ w : ℂ, kappa w * (Real.log ‖z - w‖ + Real.log ‖1 - star w * z‖)) =
+      ∫ w : ℂ, kappa w * DifferentialGeometry.Analysis.diskNeumannLogKernel w z := by
+    refine MeasureTheory.integral_congr_ae ?_
+    filter_upwards with w
+    rw [DifferentialGeometry.Analysis.diskNeumannLogKernel]
+    congr 2
+  rw [hker]
+  ring
+
+theorem sectionalCurvature_complex_eq_planeGaussianCurvature
+    (h : SmoothRiemannianMetric 𝓘(ℝ, ℂ) ℂ) (z : ℂ) :
+    sectionalCurvature (I := 𝓘(ℝ, ℂ)) h z (1 : ℂ) Complex.I = planeGaussianCurvature h z := by
+  erw [sectionalCurvature_eq_metricRm04StandardAt_div]
+  rfl
+
+private theorem diskBoundaryCurve_lift_eq_circleMap (x : ℝ) :
+    diskBoundaryCurve.lift x 0 = circleMap 0 1 (2 * Real.pi * x) := by
+  have h := diskBoundary_angle (2 * Real.pi * x)
+  have hθ : 2 * Real.pi * x / (2 * Real.pi) = x := by
+    field_simp
+  rw [hθ] at h
+  exact h
+
+private theorem mfderiv_circleMap_eq_deriv (θ : ℝ) :
+    mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, ℂ) (circleMap 0 1) θ (1 : ℝ) = deriv (circleMap 0 1) θ := by
+  rw [mfderiv_eq_fderiv]
+  exact fderiv_apply_one_eq_deriv (𝕜 := ℝ) (f := circleMap 0 1) (x := θ)
+
+private theorem mfderiv_circleMap_one (θ : ℝ) :
+    mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, ℂ) (circleMap 0 1) θ (1 : ℝ) =
+      Complex.I * circleMap 0 1 θ := by
+  rw [mfderiv_circleMap_eq_deriv, deriv_circleMap, mul_comm]
+
+private theorem mfderiv_circleMap_ne_zero (θ : ℝ) :
+    mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, ℂ) (circleMap 0 1) θ (1 : ℝ) ≠ 0 := by
+  rw [mfderiv_circleMap_eq_deriv]
+  exact deriv_circleMap_ne_zero (c := 0) (R := 1) (θ := θ) one_ne_zero
+
+private theorem circleMap_one_norm (θ : ℝ) : ‖circleMap 0 1 θ‖ = 1 := by
+  simp [circleMap]
+
+private theorem sqrt_exp_two_mul (a : ℝ) : Real.sqrt (Real.exp (2 * a)) = Real.exp a := by
+  have h : Real.exp (2 * a) = Real.exp a ^ 2 := by
+    rw [pow_two, ← Real.exp_add]
+    congr 1
+    ring
+  rw [h, Real.sqrt_sq (Real.exp_nonneg _)]
+
+private theorem diskMapPartial_self (z v : ℂ) :
+    diskMapPartial id z v = v := by
+  rw [diskMapPartial]
+  have h : mfderiv 𝓘(ℝ, ℂ) 𝓘(ℝ, ℂ) id z = ContinuousLinearMap.id ℝ ℂ :=
+    mfderiv_id
+  rw [h]
+  exact ContinuousLinearMap.id_apply v
+
+private theorem circleMap_conformalCoefficient (F : ℂ → ℝ) (hF : ContDiff ℝ ∞ F) (z : ℂ) :
+    diskMapConformalCoefficient (conformalEuclideanMetric F hF) id z = Real.exp (2 * F z) := by
+  have hcoeff : diskMapConformalCoefficient (conformalEuclideanMetric F hF) id z =
+      (conformalEuclideanMetric F hF).inner z (1 : ℂ) (1 : ℂ) := by
+    rw [diskMapConformalCoefficient]
+    congr 2 <;> exact diskMapPartial_self z _
+  rw [hcoeff, conformalEuclideanMetric_inner]
+  simp
+
+private theorem circleMap_inwardConormal (F : ℂ → ℝ) (hF : ContDiff ℝ ∞ F) (z : ℂ) :
+    diskMapInwardConormal (conformalEuclideanMetric F hF) id z = conformalCircleNormal F z := by
+  rw [diskMapInwardConormal, conformalCircleNormal]
+  rw [diskMapPartial_self, circleMap_conformalCoefficient F hF z, sqrt_exp_two_mul, Real.exp_neg]
+  rfl
+
+private theorem circleMap_conformalAt (F : ℂ → ℝ) (hF : ContDiff ℝ ∞ F) (z : ℂ) :
+    DiskMapConformalAt (conformalEuclideanMetric F hF) id z := by
+  have hpartial1 : diskMapPartial id z (1 : ℂ) = (1 : ℂ) := diskMapPartial_self z _
+  have hpartialI : diskMapPartial id z Complex.I = Complex.I := diskMapPartial_self z _
+  constructor
+  · rw [hpartial1, hpartialI, conformalEuclideanMetric_inner]
+    simp
+  · rw [hpartial1, hpartialI, conformalEuclideanMetric_inner]
+    simp
+
+private theorem circleMap_fderiv_conformalCoefficient (F : ℂ → ℝ) (hF : ContDiff ℝ ∞ F) (z : ℂ) :
+    (fderiv ℝ (diskMapConformalCoefficient (conformalEuclideanMetric F hF) id) z) z =
+      2 * Real.exp (2 * F z) * fderiv ℝ F z z := by
+  have hfun : diskMapConformalCoefficient (conformalEuclideanMetric F hF) id =
+      fun w => Real.exp (2 * F w) := funext (circleMap_conformalCoefficient F hF)
+  rw [hfun]
+  have h : HasFDerivAt (fun w : ℂ => Real.exp (2 * F w))
+      (Real.exp (2 * F z) • ((2 : ℝ) • fderiv ℝ F z)) z := by
+    have h2 : HasFDerivAt (fun w : ℂ => 2 * F w) ((2 : ℝ) • fderiv ℝ F z) z :=
+      (hF.differentiable (by simp) z).hasFDerivAt.const_mul 2
+    exact h2.exp
+  rw [h.fderiv]
+  simp only [smul_apply]
+  ring
+
+private theorem diskBoundaryCurve_curvature_normal (F : ℂ → ℝ) (hF : ContDiff ℝ ∞ F) (x : ℝ) :
+    let z := diskBoundaryCurve.lift x 0
+    (conformalEuclideanMetric F hF).inner z
+        (diskBoundaryCurve.curvatureVector (fun _ => conformalEuclideanMetric F hF) x 0)
+        (-(Real.exp (-F z)) • z)
+      = conformalCircleGeodesicCurvature F hF z := by
+  dsimp only
+  set z : ℂ := diskBoundaryCurve.lift x 0 with hzdef
+  have hz : z = circleMap 0 1 (2 * Real.pi * x) :=
+    hzdef.trans (diskBoundaryCurve_lift_eq_circleMap x)
+  have hcurve : (fun s : ℝ => diskBoundaryCurve.lift s 0) =
+      (circleMap 0 1) ∘ (fun s : ℝ => 2 * Real.pi * s) := by
+    funext s
+    exact diskBoundaryCurve_lift_eq_circleMap s
+  have hφ : ContDiff ℝ ∞ (fun s : ℝ => 2 * Real.pi * s) := by fun_prop
+  have hpos : 0 < deriv (fun s : ℝ => 2 * Real.pi * s) x := by
+    have hd : deriv (fun s : ℝ => 2 * Real.pi * s) x = 2 * Real.pi := by
+      have h := ((hasDerivAt_id x).const_mul (2 * Real.pi)).deriv
+      rw [mul_one] at h
+      exact h
+    rw [hd]
+    positivity
+  have hreparam : riemannianCurveCurvature (conformalEuclideanMetric F hF)
+      (fun s : ℝ => diskBoundaryCurve.lift s 0) x =
+      riemannianCurveCurvature (conformalEuclideanMetric F hF) (circleMap 0 1)
+        (2 * Real.pi * x) := by
+    rw [hcurve]
+    exact riemannianCurveCurvature_reparam_pos (conformalEuclideanMetric F hF)
+      (contDiff_circleMap 0 1).contMDiff (fun t => mfderiv_circleMap_ne_zero t) hφ hpos
+  have hdensity := diskMapBoundaryCurvature_density (conformalEuclideanMetric F hF)
+    isOpen_univ contMDiffOn_id (by intro q _; exact Set.mem_univ q)
+    (fun q _ => circleMap_conformalAt F hF q) (2 * Real.pi * x) (by
+      rw [circleMap_conformalCoefficient F hF (circleMap 0 1 (2 * Real.pi * x))]
+      exact Real.exp_pos _)
+  dsimp only at hdensity
+  simp only [Function.id_comp, id_eq] at hdensity
+  rw [circleMap_inwardConormal F hF (circleMap 0 1 (2 * Real.pi * x)),
+    circleMap_conformalCoefficient F hF (circleMap 0 1 (2 * Real.pi * x)),
+    sqrt_exp_two_mul,
+    circleMap_fderiv_conformalCoefficient F hF (circleMap 0 1 (2 * Real.pi * x))] at hdensity
+  have hright : 1 + 2 * Real.exp (2 * F (circleMap 0 1 (2 * Real.pi * x))) *
+        fderiv ℝ F (circleMap 0 1 (2 * Real.pi * x)) (circleMap 0 1 (2 * Real.pi * x)) /
+        (2 * Real.exp (2 * F (circleMap 0 1 (2 * Real.pi * x)))) =
+      1 + fderiv ℝ F (circleMap 0 1 (2 * Real.pi * x)) (circleMap 0 1 (2 * Real.pi * x)) := by
+    have h2E : (2 : ℝ) * Real.exp (2 * F (circleMap 0 1 (2 * Real.pi * x))) ≠ 0 := by
+      positivity
+    field_simp [h2E]
+  rw [hright] at hdensity
+  have hdiv : (conformalEuclideanMetric F hF).inner (circleMap 0 1 (2 * Real.pi * x))
+        (riemannianCurveCurvature (conformalEuclideanMetric F hF) (circleMap 0 1)
+          (2 * Real.pi * x))
+        (conformalCircleNormal F (circleMap 0 1 (2 * Real.pi * x))) =
+      Real.exp (-F (circleMap 0 1 (2 * Real.pi * x))) *
+        (1 + fderiv ℝ F (circleMap 0 1 (2 * Real.pi * x)) (circleMap 0 1 (2 * Real.pi * x))) := by
+    have hE : Real.exp (F (circleMap 0 1 (2 * Real.pi * x))) ≠ 0 := Real.exp_ne_zero _
+    rw [Real.exp_neg, ← div_eq_inv_mul, eq_div_iff hE]
+    exact hdensity
+  have hcurv : diskBoundaryCurve.curvatureVector (fun _ => conformalEuclideanMetric F hF) x 0 =
+      riemannianCurveCurvature (conformalEuclideanMetric F hF) (circleMap 0 1)
+        (2 * Real.pi * x) := by
+    have h1 : diskBoundaryCurve.curvatureVector (fun _ => conformalEuclideanMetric F hF) x 0 =
+        riemannianCurveCurvature (conformalEuclideanMetric F hF)
+          (fun s : ℝ => diskBoundaryCurve.lift s 0) x := rfl
+    rw [h1, hreparam]
+  rw [hcurv, hz]
+  rw [conformalCircleGeodesicCurvature_eq hF (circleMap_one_norm (2 * Real.pi * x))]
+  simpa only [conformalCircleNormal] using hdiv
 
 theorem geodesic_boundary_regularizer (kappa : ℂ → ℝ)
     (hsmooth : ContDiff ℝ ∞ kappa) (hnonneg : ∀ z, 0 ≤ kappa z)
@@ -35,7 +228,33 @@ theorem geodesic_boundary_regularizer (kappa : ℂ → ℝ)
         let z := diskBoundaryCurve.lift x 0
         h.inner z (diskBoundaryCurve.curvatureVector (fun _ => h) x 0)
           (-(Real.exp (-f z)) • z) * diskBoundaryCurve.speed (fun _ => h) x 0 = 0 := by
-  sorry
+  have hmass : (∫ w : ℂ, kappa w) = 2 * Real.pi := by
+    let _ := hnonneg
+    have hset := setIntegral_eq_integral_of_forall_compl_eq_zero
+      (μ := volume) (s := Metric.closedBall (0 : ℂ) 1) (f := kappa) (fun w hw => by
+        by_contra h
+        exact hw (Metric.ball_subset_closedBall
+          (hsupport (subset_tsupport kappa (Function.mem_support.mpr h)))))
+    exact hset.symm.trans hintegral
+  obtain ⟨F, hF, heq, hcurv, hgeo⟩ :=
+    exists_diskRegularizer_metric hcompact hsmooth hsupport hmass
+  refine ⟨F, conformalEuclideanMetric F hF, hF, ?_, ?_, ?_, ?_⟩
+  · intro z hz
+    rw [diskLogPotential_eq_diskRegularizerPotential kappa hcompact hsmooth hsupport z hz]
+    exact (heq z hz).eq_of_nhds
+  · intro z v w
+    rw [conformalEuclideanMetric_inner]
+  · intro z hz
+    rw [sectionalCurvature_complex_eq_planeGaussianCurvature,
+      ← tangentTwoJacobian_conformalPlane (f := F) hF z]
+    exact hcurv z hz
+  · intro x
+    dsimp only
+    rw [diskBoundaryCurve_curvature_normal F hF x]
+    have hnorm : ‖diskBoundaryCurve.lift x 0‖ = 1 := by
+      rw [diskBoundaryCurve_lift_eq_circleMap x]
+      exact circleMap_one_norm (2 * Real.pi * x)
+    rw [hgeo _ hnorm, zero_mul]
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
     [FiniteDimensional ℝ E] [CompleteSpace E]

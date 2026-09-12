@@ -60,19 +60,15 @@ theorem normalizedShrinkerMass_add_const
 
 end Intrinsic
 
-section NativeComparison
-
-variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
-  [FiniteDimensional ℝ E]
-  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
-  {M : Type*} [PseudoMetricSpace M] [ChartedSpace H M]
-  [IsManifold I ∞ M] [T2Space M] [CompactSpace M]
-
-
-theorem intrinsicReducedVolume_eq_redVolume {D : RealTimeInterval}
+set_option backward.isDefEq.respectTransparency false in
+theorem intrinsicReducedVolume_eq_redVolume
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [FiniteDimensional ℝ E]
+    {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
+    [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M]
+    {D : RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) (T : ℝ) (p : M) (tau : ℝ) :
     intrinsicReducedVolume S T p tau = redVolume S T p tau := rfl
-
-end NativeComparison
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions

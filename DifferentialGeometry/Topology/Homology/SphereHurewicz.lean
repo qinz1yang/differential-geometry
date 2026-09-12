@@ -56,6 +56,14 @@ theorem freeSphereHomologyImage_natural (n : ℕ)
       rfl
 
 
+theorem freeSphereHomologyImage_zsmul (n : ℕ) (k : ℤ)
+    (c : integralSingularHomology (n + 1) (liftedHomotopySphere.{u} n))
+    (a : ZerothHomotopy C(sphere (0 : EuclideanSpace ℝ (Fin (n + 2))) 1, X)) :
+    freeSphereHomologyImage n (k • c) a = k • freeSphereHomologyImage n c a := by
+  induction a using ZerothHomotopy.rec with
+  | mk f => simp only [freeSphereHomologyImage_mk, map_zsmul]
+
+
 
 def sphereHurewicz (n : ℕ) (x : X)
     (c : integralSingularHomology (n + 1) (liftedHomotopySphere.{u} n)) :
@@ -68,6 +76,21 @@ theorem sphereHurewicz_mk (n : ℕ) (x : X)
     (Γ : GenLoop (Fin (n + 1)) X x) :
     sphereHurewicz n x c ⟦Γ⟧ = integralSingularHomologyMap (n + 1)
       ((genLoopSphereHomeomorph n x Γ).val.comp (liftedHomotopySphereDown n)) c := rfl
+
+
+theorem sphereHurewicz_zsmul (n : ℕ) (k : ℤ) (x : X)
+    (c : integralSingularHomology (n + 1) (liftedHomotopySphere.{u} n))
+    (a : HomotopyGroup (Fin (n + 1)) X x) :
+    sphereHurewicz n x (k • c) a = k • sphereHurewicz n x c a :=
+  freeSphereHomologyImage_zsmul n k c _
+
+
+theorem sphereHurewicz_zero (n : ℕ) (x : X)
+    (a : HomotopyGroup (Fin (n + 1)) X x) :
+    sphereHurewicz n x (0 : integralSingularHomology (n + 1)
+      (liftedHomotopySphere.{u} n)) a = 0 := by
+  rw [← zero_zsmul (0 : integralSingularHomology (n + 1) (liftedHomotopySphere.{u} n)),
+    sphereHurewicz_zsmul, zero_smul]
 
 
 theorem sphereHurewicz_one (n : ℕ) (x : X)

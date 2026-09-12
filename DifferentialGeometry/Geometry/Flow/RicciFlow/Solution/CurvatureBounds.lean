@@ -4,6 +4,7 @@ import DifferentialGeometry.Geometry.Metric.Family.Regularity.Pair
 import DifferentialGeometry.Geometry.Metric.Family.JointSmoothness
 import DifferentialGeometry.Geometry.Metric.ModelChange
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Solutions.Pullback
+import DifferentialGeometry.Geometry.Metric.Family.TensorNorm
 
 noncomputable section
 
@@ -68,5 +69,33 @@ theorem exists_curvature_bound_on_closed_interval_of_isSolutionOn
     (metricRm04At (Diffeomorph.pullbackMetricCross (S.family.metric t) Φ.symm) x) ≤ C at hb
   rw [DifferentialGeometry.CheegerGromovCompactness.riemannNormSq_cross] at hb
   exact hb
+
+omit [I.Boundaryless] in
+theorem exists_curvature_bound_on_carrier_interval_of_isSolutionOn
+    {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S)
+    {a b : ℝ} (hsub : Set.Icc a b ⊆ D.carrier) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ t ∈ Set.Icc a b, ∀ x : M,
+      normSq0S (S.family.metric t) x 4 (metricRm04At (S.family.metric t) x) ≤ C := by
+  have hg : tensor0SFamilyContinuousOnSet (I := I) (M := M) 2 (Set.Icc a b)
+      (fun t x => metricTensorField (I := I) (S.base.metric t) x) := by
+    have hmono := tensor0SFamilyContinuousOnSet.mono (I := I) (M := M)
+      hS.smoothMetric.metricTensor_cont (by intro s hs; exact hsub hs)
+    refine tensor0SFamilyContinuousOnSet.congr (I := I) (M := M) hmono ?_
+    intro t _ x
+    rfl
+  have hA : tensor0SFamilyContinuousOnSet (I := I) (M := M) 4 (Set.Icc a b)
+      (fun t x => S.base.rm04 t x) :=
+    tensor0SFamilyContinuousOnSet.mono (I := I) (M := M) hS.rm04Cont
+      (by intro s hs; exact hsub hs)
+  obtain ⟨C, hC⟩ := (isCompact_univ :
+      IsCompact (Set.univ : Set ({t : ℝ // t ∈ Set.Icc a b} × M))).exists_bound_of_continuousOn
+    (continuous_normSq0S_family (I := I) S.base.metric
+      (fun t x => S.base.rm04 t x) hg hA).continuousOn
+  refine ⟨max C 0, le_max_right _ _, fun t ht x => ?_⟩
+  have h := hC (⟨t, ht⟩, x) (Set.mem_univ _)
+  rw [Real.norm_eq_abs] at h
+  have hfin : normSq0S (I := I) (S.base.metric t) x 4 (S.base.rm04 t x) ≤ max C 0 :=
+    (le_abs_self _).trans (h.trans (le_max_left _ _))
+  simpa only [SolutionFamily.rm04, metricRm04_apply, SolutionOn.family_metric] using hfin
 
 end DifferentialGeometry.PDE.RicciFlow

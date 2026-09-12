@@ -464,6 +464,107 @@ theorem childCap_boundary_eq (c : ConnectedComponents Q.Carrier) (b : E.ChildCap
   exact E.childCoreInclusionFun_eq c
     ⟨E.trace.tubes.coreBoundarySphere b.1 (E.trace.capping.attaching b.1 y), b.2 _⟩
 
+theorem range_childCoreInclusion_union_range_childCap
+    (c : ConnectedComponents Q.Carrier) :
+    Set.range (E.childCoreInclusion c) ∪
+      (⋃ b : E.ChildCapBoundary c, Set.range (E.childCap c b)) = univ := by
+  classical
+  have hball : ConnectedSpace ThreeBall :=
+    isConnected_iff_connectedSpace.mp
+      ((convex_closedBall (0 : ThreeSpace) 1).isConnected ⟨0, by simp⟩)
+  obtain ⟨q, rfl⟩ := ConnectedComponents.surjective_coe c
+  refine Set.eq_univ_of_forall fun v => ?_
+  have hv : E.trace.presentation.symm (Sum.inl v.1) ∈
+      Set.range E.trace.capping.coreInclusion ∪
+        ⋃ b, Set.range (E.trace.capping.cap b) := by
+    rw [E.trace.capping.exhaustive]
+    trivial
+  have hcap0 : E.trace.cappedChild (ConnectedComponents.mk q) =
+      ConnectedComponents.mk (E.trace.presentation.symm (Sum.inl q)) := by
+    rw [CutCapTopology.cappedChild]
+    rfl
+  have hcapv : ConnectedComponents.mk (E.trace.presentation.symm (Sum.inl v.1)) =
+      ConnectedComponents.mk (E.trace.presentation.symm (Sum.inl q)) := by
+    have h := congrArg (E.trace.presentation.symm.continuous.comp continuous_inl).connectedComponentsMap
+      (v.2 : ConnectedComponents.mk v.1 = ConnectedComponents.mk q)
+    simpa using h
+  have hcap : E.trace.cappedChild (ConnectedComponents.mk q) =
+      ConnectedComponents.mk (E.trace.presentation.symm (Sum.inl v.1)) :=
+    hcap0.trans hcapv.symm
+  have hcoreCompact : CompactSpace E.trace.tubes.core := E.core_compact
+  have hcoreConnected : LocallyConnectedSpace E.trace.tubes.core := E.core_locallyConnected
+  have hNt2 : T2Space N.Carrier := N.hausdorff
+  have hcore : E.trace.capping.componentMap
+      (E.childCoreComponent (ConnectedComponents.mk q)) =
+      E.trace.cappedChild (ConnectedComponents.mk q) :=
+    E.trace.capping.componentEquiv.apply_symm_apply _
+  rcases hv with hv | hv
+  · obtain ⟨x, hx⟩ := hv
+    have hpres : E.trace.presentation (E.trace.capping.coreInclusion x) = Sum.inl v.1 := by
+      rw [hx, Homeomorph.apply_symm_apply]
+    have hcap2 : ConnectedComponents.mk (E.trace.capping.coreInclusion x) =
+        E.trace.cappedChild (ConnectedComponents.mk q) := by
+      rw [hcap, hx]
+    have hchild : ConnectedComponents.mk x = E.childCoreComponent (ConnectedComponents.mk q) := by
+      apply E.trace.capping.rfs_cap_component_bijection.injective
+      rw [Capping.componentMap_mk, hcore]
+      exact hcap2
+    refine Or.inl ⟨⟨x, hchild⟩, ?_⟩
+    apply Subtype.ext
+    exact Sum.inl.inj ((E.childCoreInclusionFun_eq (ConnectedComponents.mk q)
+      ⟨x, hchild⟩).symm.trans hpres)
+  · obtain ⟨b, hb⟩ := Set.mem_iUnion.mp hv
+    obtain ⟨z, hz⟩ := hb
+    have hpres : E.trace.presentation (E.trace.capping.cap b z) = Sum.inl v.1 := by
+      rw [hz, Homeomorph.apply_symm_apply]
+    have hcap2 : ConnectedComponents.mk (E.trace.capping.cap b z) =
+        E.trace.cappedChild (ConnectedComponents.mk q) := by
+      rw [hcap, ← hz]
+    have hpre : IsPreconnected (Set.range (E.trace.capping.cap b)) :=
+      isPreconnected_range (E.trace.capping.cap b).continuous
+    have hsame : ∀ y : Sphere 2,
+        ConnectedComponents.mk (E.trace.capping.cap b (sphereToThreeBall y)) =
+          ConnectedComponents.mk (E.trace.capping.cap b z) := fun y =>
+      ConnectedComponents.coe_eq_coe'.mpr
+        (hpre.subset_connectedComponent (Set.mem_range_self z)
+          (Set.mem_range_self (sphereToThreeBall y)))
+    have hbound : ∀ y : Sphere 2,
+        ConnectedComponents.mk (E.trace.tubes.coreBoundarySphere b y) =
+          E.childCoreComponent (ConnectedComponents.mk q) := by
+      intro y
+      have hpreB : IsPreconnected (Set.range (E.trace.tubes.coreBoundarySphere b)) := by
+        have hsphere : ConnectedSpace (Sphere 2) := isConnected_iff_connectedSpace.mp
+          (isConnected_sphere (by rw [← Module.finrank_eq_rank]; norm_num)
+            (0 : EuclideanSpace ℝ (Fin 3)) (by norm_num : (0 : ℝ) ≤ 1))
+        exact isPreconnected_range (E.trace.tubes.coreBoundarySphere b).continuous
+      have hall : ConnectedComponents.mk (E.trace.tubes.coreBoundarySphere b y) =
+          ConnectedComponents.mk (E.trace.tubes.coreBoundarySphere b
+            (E.trace.capping.attaching b y)) :=
+        ConnectedComponents.coe_eq_coe'.mpr
+          (hpreB.subset_connectedComponent
+            (Set.mem_range_self (E.trace.capping.attaching b y)) (Set.mem_range_self y))
+      have hkey : ConnectedComponents.mk (E.trace.capping.coreInclusion
+          (E.trace.tubes.coreBoundarySphere b (E.trace.capping.attaching b y))) =
+          E.trace.cappedChild (ConnectedComponents.mk q) := by
+        rw [← E.trace.capping.boundary_eq b y]
+        exact (hsame y).trans hcap2
+      rw [hall]
+      apply E.trace.capping.rfs_cap_component_bijection.injective
+      rw [Capping.componentMap_mk, hcore]
+      exact hkey
+    refine Or.inr (Set.mem_iUnion.mpr ⟨⟨b, hbound⟩, ?_⟩)
+    refine ⟨z, ?_⟩
+    apply Subtype.ext
+    exact Sum.inl.inj ((E.childCapFun_eq (ConnectedComponents.mk q) ⟨b, hbound⟩ z).symm.trans hpres)
+
+theorem retainedBoundary_of_mem_childCapBoundary
+    (c : ConnectedComponents Q.Carrier) (b : E.ChildCapBoundary c) :
+    ∀ y : Sphere 2, E.trace.tubes.coreBoundarySphere b.1 y ∈ E.trace.retainedCore := by
+  have hcoreCompact : CompactSpace E.trace.tubes.core := E.core_compact
+  have hcoreConnected : LocallyConnectedSpace E.trace.tubes.core := E.core_locallyConnected
+  have hNt2 : T2Space N.Carrier := N.hausdorff
+  intro y
+  exact CutCapTopology.childCore_subset_retainedCore E.trace c (b.2 y)
 end SmoothCutCapTransition
 
 namespace SmoothCutCapTransition

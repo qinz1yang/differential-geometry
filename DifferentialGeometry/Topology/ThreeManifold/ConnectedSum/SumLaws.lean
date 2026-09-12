@@ -267,3 +267,52 @@ theorem finiteConnectedSum_append_of_unit_assoc_transport
               (hassoc M (finiteConnectedSum (N :: L)) (finiteConnectedSum K)))
 
 end DifferentialGeometry.Topology
+
+namespace DifferentialGeometry.Topology
+
+universe u v u' v'
+
+def connectedSumTransport : Prop :=
+  ∀ (M : ConnectedClosedOrientedManifold.{u} 3) (M' : ConnectedClosedOrientedManifold.{v} 3)
+    (N : ConnectedClosedOrientedManifold.{u'} 3) (N' : ConnectedClosedOrientedManifold.{v'} 3),
+    Nonempty (ClosedOrientedManifold.OrientedDiffeomorph
+      M.toClosedOrientedManifold M'.toClosedOrientedManifold) →
+    Nonempty (ClosedOrientedManifold.OrientedDiffeomorph
+      N.toClosedOrientedManifold N'.toClosedOrientedManifold) →
+    Nonempty (ClosedOrientedManifold.OrientedDiffeomorph
+      (connectedSum M N).toClosedOrientedManifold
+      (connectedSum M' N').toClosedOrientedManifold)
+
+theorem standardThreeSphereLift_orientedDiffeomorph :
+    Nonempty (ClosedOrientedManifold.OrientedDiffeomorph
+      (standardThreeSphereLift.{u}).toClosedOrientedManifold
+      (standardThreeSphereLift.{v}).toClosedOrientedManifold) :=
+  ⟨(ClosedOrientedManifold.uliftOrientedDiffeomorph.{0, u}
+      standardThreeSphere.toClosedOrientedManifold).symm.trans
+    (ClosedOrientedManifold.uliftOrientedDiffeomorph.{0, v}
+      standardThreeSphere.toClosedOrientedManifold)⟩
+
+theorem finiteConnectedSum_congr_of_connectedSumTransport
+    (h : connectedSumTransport.{u, v, u, v})
+    {L : List (ConnectedClosedOrientedManifold.{u} 3)}
+    {K : List (ConnectedClosedOrientedManifold.{v} 3)}
+    (hf : List.Forall₂ (fun (M : ConnectedClosedOrientedManifold.{u} 3)
+      (N : ConnectedClosedOrientedManifold.{v} 3) =>
+        Nonempty (ClosedOrientedManifold.OrientedDiffeomorph
+          M.toClosedOrientedManifold N.toClosedOrientedManifold)) L K) :
+    Nonempty (ClosedOrientedManifold.OrientedDiffeomorph
+      (finiteConnectedSum L).toClosedOrientedManifold
+      (finiteConnectedSum K).toClosedOrientedManifold) := by
+  induction hf with
+  | nil => exact standardThreeSphereLift_orientedDiffeomorph
+  | cons hhead htail ih =>
+      cases htail with
+      | nil => exact hhead
+      | cons hhead' htail' =>
+          exact h _ _ _ _ hhead ih
+
+theorem connectedSumTransport_of_binaryConnectedSumLaws
+    (h : binaryConnectedSumLaws.{u}) : connectedSumTransport.{u, u, u, u} :=
+  h.2.2.2.2
+
+end DifferentialGeometry.Topology

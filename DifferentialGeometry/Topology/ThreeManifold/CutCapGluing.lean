@@ -189,6 +189,30 @@ theorem localReconstruction_of_incidenceGluing
     E.exists_nat_add_card_eq_card_add_one_of_incidenceGraph_connected (hconn C) hL
   exact ⟨K.length, K, rfl, hKfac, by omega, hdiff⟩
 
+theorem componentConnectedSumDecomposition_of_localReconstruction
+    (h : E.localReconstruction) : E.componentConnectedSumDecomposition := by
+  intro C L hL
+  obtain ⟨b, K, hKlen, hKfac, hcount, hdiff⟩ := h C L hL
+  exact ⟨K, by omega, hKfac, hdiff⟩
+
+theorem localReconstruction_of_componentConnectedSumDecomposition
+    (hcount : ∀ (C : ConnectedComponents M.Carrier)
+      (L : List (ConnectedClosedOrientedManifold.{u} 3)),
+      E.CompleteEnumeration C L → L.length ≤ (E.cutIndices C).card + 1)
+    (h : E.componentConnectedSumDecomposition) : E.localReconstruction := by
+  intro C L hL
+  obtain ⟨K, hKlen, hKfac, hdiff⟩ := h C L hL
+  exact ⟨K.length, K, rfl, hKfac, by have := hcount C L hL; omega, hdiff⟩
+
+theorem componentConnectedSumDecomposition_iff_localReconstruction_of_incidenceGraph_connected
+    (hconn : ∀ C : ConnectedComponents M.Carrier, (E.cutIncidenceGraph C).Connected) :
+    E.localReconstruction ↔ E.componentConnectedSumDecomposition := by
+  refine ⟨E.componentConnectedSumDecomposition_of_localReconstruction, fun h => ?_⟩
+  refine E.localReconstruction_of_componentConnectedSumDecomposition (fun C L hL => ?_) h
+  obtain ⟨b, hb⟩ := E.exists_nat_add_card_eq_card_add_one_of_incidenceGraph_connected
+    (hconn C) hL
+  omega
+
 end SphericalCutCapTransition
 
 namespace FiniteCutCapTrace

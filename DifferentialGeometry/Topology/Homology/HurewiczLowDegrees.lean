@@ -43,4 +43,11 @@ theorem hurewicz_three_isomorphism (x : X)
         sphereHurewicz 2 x c (a * b) = sphereHurewicz 2 x c a + sphereHurewicz 2 x c b := by
   sorry
 
+theorem bijective_sphereHurewicz_iff_bijective_freeSphereHomologyImage (n : ℕ) (x : X)
+    (c : integralSingularHomology (n + 1) (liftedHomotopySphere.{u} n)) :
+    Function.Bijective (sphereHurewicz n x c) ↔
+      Function.Bijective (freeSphereHomologyImage (X := X) n c) :=
+  Equiv.bijective_comp (homotopyGroupFreeSphereEquiv n x)
+    (freeSphereHomologyImage (X := X) n c)
+
 end DifferentialGeometry.Topology
