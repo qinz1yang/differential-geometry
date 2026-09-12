@@ -1,0 +1,109 @@
+import DifferentialGeometry.Topology.ThreeManifold.PoincareStandard
+import DifferentialGeometry.Topology.FundamentalGroup.SphericalQuotient
+import DifferentialGeometry.Topology.FundamentalGroup.Sphere
+import DifferentialGeometry.Topology.FundamentalGroup.HomotopyEquiv
+import DifferentialGeometry.Topology.Algebra.Group.FreeProduct
+import Mathlib.AlgebraicTopology.FundamentalGroupoid.SimplyConnected
+
+noncomputable section
+
+open scoped Manifold ContDiff
+
+namespace DifferentialGeometry.Topology
+
+universe u
+
+private theorem exists_orientedDiffeomorph_finiteConnectedSum_standardThreeSphere
+    (hunit : ∀ M : ConnectedClosedOrientedManifold.{u} 3,
+      Nonempty (ClosedOrientedManifold.OrientedDiffeomorph
+        (connectedSum M standardThreeSphereLift.{u}).toClosedOrientedManifold
+        M.toClosedOrientedManifold))
+    (hcongr : ∀ (L K : List (ConnectedClosedOrientedManifold.{u} 3)),
+      List.Forall₂ (fun (M N : ConnectedClosedOrientedManifold.{u} 3) =>
+        Nonempty (ClosedOrientedManifold.OrientedDiffeomorph
+          M.toClosedOrientedManifold N.toClosedOrientedManifold)) L K →
+      Nonempty (ClosedOrientedManifold.OrientedDiffeomorph
+        (finiteConnectedSum L).toClosedOrientedManifold
+        (finiteConnectedSum K).toClosedOrientedManifold))
+    (L : List (ConnectedClosedOrientedManifold.{u} 3))
+    (hL : ∀ F ∈ L, Nonempty (ClosedOrientedManifold.OrientedDiffeomorph
+      F.toClosedOrientedManifold standardThreeSphereLift.{u}.toClosedOrientedManifold)) :
+    Nonempty (ClosedOrientedManifold.OrientedDiffeomorph
+      (finiteConnectedSum L).toClosedOrientedManifold
+      standardThreeSphereLift.{u}.toClosedOrientedManifold) := by
+  induction L with
+  | nil =>
+    exact ⟨ClosedOrientedManifold.OrientedDiffeomorph.refl _⟩
+  | cons M L ih =>
+    cases L with
+    | nil => exact hL M (by simp)
+    | cons N L =>
+      have ih' : Nonempty (ClosedOrientedManifold.OrientedDiffeomorph
+          (finiteConnectedSum (N :: L)).toClosedOrientedManifold
+          standardThreeSphereLift.{u}.toClosedOrientedManifold) :=
+        ih fun F hF => hL F (by simp [hF])
+      have hforall : List.Forall₂ (fun (M N : ConnectedClosedOrientedManifold.{u} 3) =>
+          Nonempty (ClosedOrientedManifold.OrientedDiffeomorph
+            M.toClosedOrientedManifold N.toClosedOrientedManifold))
+          [M, finiteConnectedSum (N :: L)] [M, standardThreeSphereLift.{u}] :=
+        List.Forall₂.cons ⟨ClosedOrientedManifold.OrientedDiffeomorph.refl _⟩
+          (List.Forall₂.cons ih' List.Forall₂.nil)
+      obtain ⟨c⟩ := hcongr [M, finiteConnectedSum (N :: L)] [M, standardThreeSphereLift.{u}]
+        hforall
+      obtain ⟨u⟩ := hunit M
+      obtain ⟨s⟩ := hL M (by simp)
+      exact ⟨c.trans (u.trans s)⟩
+
+theorem exists_diffeomorph_standardThreeSphere_of_isPoincareStandard
+    (hpi : ∀ (L : List (ConnectedClosedOrientedManifold.{u} 3))
+      (x : (i : Fin L.length) → (L.get i).Carrier)
+      (y : (finiteConnectedSum L).Carrier),
+      Nonempty (FundamentalGroup (finiteConnectedSum L).Carrier y ≃*
+        Monoid.CoprodI (fun i : Fin L.length =>
+          FundamentalGroup (L.get i).Carrier (x i))))
+    (hfactor : ∀ (F : ConnectedClosedOrientedManifold.{u} 3) (p : F.Carrier),
+      isStandardFactor F → Subsingleton (FundamentalGroup F.Carrier p) →
+      Nonempty (ClosedOrientedManifold.OrientedDiffeomorph
+        F.toClosedOrientedManifold standardThreeSphereLift.{u}.toClosedOrientedManifold))
+    (hunit : ∀ M : ConnectedClosedOrientedManifold.{u} 3,
+      Nonempty (ClosedOrientedManifold.OrientedDiffeomorph
+        (connectedSum M standardThreeSphereLift.{u}).toClosedOrientedManifold
+        M.toClosedOrientedManifold))
+    (hcongr : ∀ (L K : List (ConnectedClosedOrientedManifold.{u} 3)),
+      List.Forall₂ (fun (M N : ConnectedClosedOrientedManifold.{u} 3) =>
+        Nonempty (ClosedOrientedManifold.OrientedDiffeomorph
+          M.toClosedOrientedManifold N.toClosedOrientedManifold)) L K →
+      Nonempty (ClosedOrientedManifold.OrientedDiffeomorph
+        (finiteConnectedSum L).toClosedOrientedManifold
+        (finiteConnectedSum K).toClosedOrientedManifold))
+    {M : Type u} [TopologicalSpace M] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
+    [IsManifold (𝓡 3) ∞ M] [T2Space M] [CompactSpace M] [ConnectedSpace M]
+    [SimplyConnectedSpace M] (h : isPoincareStandard M) :
+    Nonempty (M ≃ₘ⟮𝓡 3, 𝓡 3⟯ standardThreeSphereLift.{u}.Carrier) := by
+  classical
+  obtain ⟨P⟩ := h
+  let x : (i : Fin P.factors.length) → (P.factors.get i).Carrier :=
+    fun i => Classical.choice (inferInstance : Nonempty (P.factors.get i).Carrier)
+  let y : (finiteConnectedSum P.factors).Carrier := Classical.choice inferInstance
+  have hbase : Subsingleton (FundamentalGroup (finiteConnectedSum P.factors).Carrier y) := by
+    have he : FundamentalGroup (finiteConnectedSum P.factors).Carrier y ≃*
+        FundamentalGroup M (P.diffeomorph.symm y) :=
+      fundamentalGroupMulEquivOfHomotopyEquiv P.diffeomorph.symm.toHomeomorph.toHomotopyEquiv
+        y (P.diffeomorph.symm y) rfl
+    exact he.subsingleton
+  have hcoprod : Subsingleton (Monoid.CoprodI (fun i : Fin P.factors.length =>
+      FundamentalGroup (P.factors.get i).Carrier (x i))) :=
+    @Equiv.subsingleton _ _ ((hpi P.factors x y).some.symm : _ ≃ _) hbase
+  have hsub : ∀ i : Fin P.factors.length,
+      Subsingleton (FundamentalGroup (P.factors.get i).Carrier (x i)) :=
+    (DifferentialGeometry.Algebra.Group.coprodI_subsingleton_iff _).mp hcoprod
+  have hL : ∀ F ∈ P.factors, Nonempty (ClosedOrientedManifold.OrientedDiffeomorph
+      F.toClosedOrientedManifold standardThreeSphereLift.{u}.toClosedOrientedManifold) := by
+    intro F hF
+    obtain ⟨i, rfl⟩ := List.get_of_mem hF
+    exact hfactor (P.factors.get i) (x i) (P.standard _ hF) (hsub i)
+  obtain ⟨s⟩ := exists_orientedDiffeomorph_finiteConnectedSum_standardThreeSphere
+    hunit hcongr P.factors hL
+  exact ⟨P.diffeomorph.trans s.1⟩
+
+end DifferentialGeometry.Topology
