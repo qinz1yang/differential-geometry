@@ -1,4 +1,5 @@
 import DifferentialGeometry.Topology.ThreeManifold.PoincareStandard
+import DifferentialGeometry.Topology.ThreeManifold.CutCapReconstruction
 import DifferentialGeometry.Topology.FundamentalGroup.SphericalQuotient
 import DifferentialGeometry.Topology.FundamentalGroup.Sphere
 import DifferentialGeometry.Topology.FundamentalGroup.HomotopyEquiv
@@ -53,6 +54,43 @@ private theorem exists_orientedDiffeomorph_finiteConnectedSum_standardThreeSpher
       obtain ⟨u⟩ := hunit M
       obtain ⟨s⟩ := hL M (by simp)
       exact ⟨c.trans (u.trans s)⟩
+
+theorem poincareStandardSumClosed_of_connectedSum_laws
+    (happend : ∀ (L K : List (ConnectedClosedOrientedManifold.{u} 3)),
+      Nonempty ((finiteConnectedSum (L ++ K)).toClosedOrientedManifold.Carrier ≃ₘ⟮𝓡 3, 𝓡 3⟯
+        (connectedSum (finiteConnectedSum L) (finiteConnectedSum K)).toClosedOrientedManifold.Carrier))
+    (hcongr : ∀ {L K : List (ConnectedClosedOrientedManifold.{u} 3)},
+      List.Forall₂ (fun (A B : ConnectedClosedOrientedManifold.{u} 3) =>
+        Nonempty (A.toClosedOrientedManifold.Carrier ≃ₘ⟮𝓡 3, 𝓡 3⟯
+          B.toClosedOrientedManifold.Carrier)) L K →
+      Nonempty ((finiteConnectedSum L).toClosedOrientedManifold.Carrier ≃ₘ⟮𝓡 3, 𝓡 3⟯
+        (finiteConnectedSum K).toClosedOrientedManifold.Carrier)) :
+    poincareStandardSumClosed.{u} := by
+  intro L hL
+  induction L with
+  | nil =>
+    rw [finiteConnectedSum_nil]
+    exact isPoincareStandard_sphere.{u}
+  | cons M L ih =>
+    cases L with
+    | nil => exact hL M (by simp)
+    | cons N L =>
+      have hM : isPoincareStandard M.Carrier := hL M (by simp)
+      have hT : isPoincareStandard (finiteConnectedSum (N :: L)).Carrier :=
+        ih fun F hF => hL F (by simp [hF])
+      obtain ⟨PM⟩ := hM
+      obtain ⟨PT⟩ := hT
+      have hforall : List.Forall₂ (fun (A B : ConnectedClosedOrientedManifold.{u} 3) =>
+          Nonempty (A.toClosedOrientedManifold.Carrier ≃ₘ⟮𝓡 3, 𝓡 3⟯
+            B.toClosedOrientedManifold.Carrier))
+          [M, finiteConnectedSum (N :: L)]
+          [finiteConnectedSum PM.factors, finiteConnectedSum PT.factors] :=
+        List.Forall₂.cons ⟨PM.diffeomorph⟩ (List.Forall₂.cons ⟨PT.diffeomorph⟩ List.Forall₂.nil)
+      obtain ⟨c⟩ := hcongr hforall
+      obtain ⟨ap⟩ := happend PM.factors PT.factors
+      refine isPoincareStandard_of_diffeomorph (c.trans ap.symm) ?_
+      exact isPoincareStandard_finite_sum (PM.factors ++ PT.factors) fun F hF =>
+        (List.mem_append.mp hF).elim (fun h => PM.standard F h) (fun h => PT.standard F h)
 
 theorem exists_diffeomorph_standardThreeSphere_of_isPoincareStandard
     (hpi : ∀ (L : List (ConnectedClosedOrientedManifold.{u} 3))
