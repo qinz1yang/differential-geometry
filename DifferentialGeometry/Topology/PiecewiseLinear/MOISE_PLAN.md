@@ -155,7 +155,9 @@ classification-of-surfaces 的 `Topology/InvarianceOfDomain.lean`）。与光滑
     `exists_chartedSpace_hasGroupoid_plGroupoid_of_plApproximation`（条件性 Moise 三角剖分：`∃ C, HasGroupoid X (plGroupoid n)`）。
   - `Topology.PiecewiseLinear.Smoothing`：接口 `PLSmoothing n`（B）；端点
     `exists_isManifold_of_plApproximation_of_plSmoothing` 与 `n = 3` 的书中接口形式
-    `exists_isManifold_three_of_plApproximation_of_plSmoothing`。
+    `exists_isManifold_three_of_plApproximation_of_plSmoothing`；健全性 `plSmoothing_zero : PLSmoothing 0`，
+    以及由两个 0 维接口实例装配出的**无条件**端点 `exists_isManifold_zero`
+    （紧致 T2 的 0 维拓扑流形有同拓扑光滑结构），验证桥 + 归纳 + 装配链在给定接口时确实合成为真定理。
   - `#print axioms`（临时审计文件 import `Smoothing`）：以上端点及 `IsPiecewiseAffineOn.symm/comp`、
     `AtlasOn.hasGroupoid/restrict`、`exists_isHPolytope_subset_mem_nhds` 均只依赖 `propext`、`Classical.choice`、`Quot.sound`。
     条件性完全由签名中的 `PLApproximation`/`PLSmoothing` 假设表达，树中没有新增 `sorry`/`axiom`。

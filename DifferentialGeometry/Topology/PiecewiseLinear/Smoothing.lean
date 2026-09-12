@@ -29,6 +29,22 @@ theorem exists_isManifold_of_plApproximation_of_plSmoothing (hA : PLApproximatio
   obtain ⟨C, hC⟩ := exists_chartedSpace_hasGroupoid_plGroupoid_of_plApproximation (X := X) hA
   exact hB C hC
 
+theorem plSmoothing_zero : PLSmoothing.{u} 0 := by
+  intro Y _ _ _ C _
+  refine ⟨C, ?_⟩
+  let _ := C
+  have hsub : Subsingleton (EuclideanSpace ℝ (Fin 0)) :=
+    (WithLp.equiv 2 (Fin 0 → ℝ)).subsingleton
+  exact { compatible := fun _ _ =>
+    mem_groupoid_of_pregroupoid.mpr ⟨contDiffOn_of_subsingleton, contDiffOn_of_subsingleton⟩ }
+
+theorem exists_isManifold_zero {M : Type u} [TopologicalSpace M] [T2Space M] [CompactSpace M]
+    [ChartedSpace (EuclideanSpace ℝ (Fin 0)) M] :
+    ∃ C : ChartedSpace (EuclideanSpace ℝ (Fin 0)) M,
+      letI := C
+      IsManifold (𝓡 0) ∞ M :=
+  exists_isManifold_of_plApproximation_of_plSmoothing plApproximation_zero plSmoothing_zero
+
 theorem exists_isManifold_three_of_plApproximation_of_plSmoothing {M : Type u}
     [TopologicalSpace M] [T2Space M] [CompactSpace M]
     [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] (hA : PLApproximation.{u} 3)
