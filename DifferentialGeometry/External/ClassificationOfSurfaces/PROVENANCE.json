@@ -4,7 +4,7 @@
   "license": "Apache-2.0",
   "target_lean": "leanprover/lean4:v4.33.1",
   "target_mathlib": "0df444a360eaa60ab8c11dca51a86af692955474",
-  "scope": "Seven selected source modules; fresh production artifact/imported consumer/linter/axiom gates pass, including geometric free-triangle classification.",
+  "scope": "Eight selected source modules; fresh production artifact/imported consumer/linter/axiom gates pass, including the actual mesh partition along a realized crosscut.",
   "source_files": {
     "DifferentialGeometry/External/ClassificationOfSurfaces/Moise/PlaneComplex.lean": {
       "upstream_sha256": "289d152b60da667c2022c5d811be8718d93a2a95181f7aa31654193a7c1a115a",
@@ -52,6 +52,13 @@
       "target_sha256": "5871952ecf3af05f88472bcaf105e10a3c98e7ea0952a4fd47d2466b209d8be2",
       "checked_request": "1789233897698956242-schoenflies-ff473eb1",
       "source_change_from_checked": "Only required modification-notice path; seven declaration bodies unchanged."
+    },
+    "DifferentialGeometry/External/ClassificationOfSurfaces/TriangleMeshCrosscut.lean": {
+      "upstream_path": "ClassificationOfSurfaces/Moise/PolygonalCrosscut.lean (adapted mesh-side arguments)",
+      "selection_provenance": "CROSSCUT_PROVENANCE.json",
+      "target_sha256": "274fcedb3fab6d079b511d568d40de72cfff0327afcfb3784dcdd78bbe708065",
+      "checked_private_request": "1789235209202169419-schoenflies-6e17e677",
+      "source_change_from_checked": "Five proof bodies/scopes unchanged; only final partition theorem public and attribution path changed."
     }
   },
   "license_sha256": "b40930bbcf80744c86c46a12bc9da056641d722716c378f5659b9e555ef833e1",
@@ -185,5 +192,26 @@
     "aggregate_registration": "Flat DifferentialGeometry.lean import.",
     "full_dg_aggregate_build": false,
     "geometric_free_triangle_existence": false
+  },
+  "crosscut_validation": {
+    "status": "Passed fresh new-module artifact compilation and imported consumer gate.",
+    "request_id": "1789235455742746297-schoenflies-fb8bd5a2",
+    "input_sha256": "7aaaba3821d580d33bb08d2718c4471dc4df302c28ded62affb9c9b4adfe8eb6",
+    "result_sha256": "806edbad2f6638ff0c4a4e1ece9d72b371c3cc16944c2e128a03c28891af1eaf",
+    "job_id": "13781140",
+    "host": "della-r3c2n16",
+    "elapsed_seconds": 76.89479732513428,
+    "peak_rss_bytes": 2236350464,
+    "fresh_artifacts": [
+      "DifferentialGeometry.External.ClassificationOfSurfaces.TriangleMeshCrosscut"
+    ],
+    "artifact_log_sha256": "ae15f07ae57f529c295d58b0f612f338c2d9f69a9cf93a1fa7cb0a6fe3703803",
+    "source_guards_matched": 86,
+    "signature_axiom_pairs": 2,
+    "declaration_linters": "All imported vendor and current consumer declarations: unusedArguments, simpNF, synTaut; source defProp covers kinds.",
+    "transitive_axioms": "All imported vendor and current declarations, including private: only propext, Classical.choice, Quot.sound.",
+    "full_dg_aggregate_build": false,
+    "geometric_free_triangle_existence": false,
+    "smooth_disk_filling": false
   }
 }

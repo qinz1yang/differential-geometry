@@ -30,3 +30,9 @@ edge neighbor. Its one-/two-edge conclusions and contrary-branch vertex data
 use actual mesh geometry. All seven declaration bodies are unchanged upstream
 source; GEOMETRIC_FREE_SELECTION.json records their provenance. Geometric
 free-triangle existence for arbitrary polygon meshes remains separate.
+
+TriangleMeshCrosscut now identifies both actual restricted meshes along a native
+realized crosscut. The public partition theorem supplies exact closed-region
+supports, disjoint/nonempty triangle sets and strict count decrease for both
+sides. Final fresh-module/imported gate1789235455742746297-schoenflies-fb8bd5a2
+passes. This closes the crosscut partition child, not free-triangle existence.

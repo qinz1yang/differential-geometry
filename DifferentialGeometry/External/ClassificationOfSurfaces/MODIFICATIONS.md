@@ -106,3 +106,27 @@ only the new module. Root matched all nine source guards, read all eight
 signature/axiom pairs, and independently matched all seven upstream bodies.
 All imported vendor and consumer declaration linters and standard-only axioms
 pass. This is not a full DifferentialGeometry aggregate build.
+
+## Mesh partition along a native crosscut
+
+TriangleMeshCrosscut adapts the PolygonalCrosscut mesh-side proofs from the same
+pinned upstream revision. It uses the existing native IsCrosscut, IsCutPair,
+inside and crosscut_theorem APIs. The chord remains tied to an actual mesh edge
+by its convex-hull/segment equality. Canonical restrictTriangles gives both
+actual submeshes; no additional mesh alias is introduced. Four proof helpers
+remain private, and only restrict_triangles_crosscut_partition is public.
+It returns both exact closed-region supports, the finite partition, disjointness,
+nonemptiness and both strict triangle-count decreases.
+
+CROSSCUT_PROVENANCE.json records the original locations and hashes.
+CROSSCUT_UPSTREAM_SELECTED.lean.txt preserves all ten selected original bodies
+and documentation; CROSSCUT_ADAPTATION.patch records their exact adaptation.
+Root independently matched those originals against the immutable source and
+retained all five checked native proof bodies/scopes. Private source gate
+1789235209202169419-schoenflies-6e17e677 passed. Final production gate
+1789235455742746297-schoenflies-fb8bd5a2 passed in76.89s, freshly compiling only
+the new module. All86 source guards, both public/consumer type-axiom pairs,
+all-vendor/current declaration linters and standard-only axioms pass.
+The consumer obtains the original mesh from an actual PrePolygon and supplies
+an actual boundary-to-boundary mesh edge. Geometric free-triangle existence,
+smooth rounding and disk filling remain separate obligations.
