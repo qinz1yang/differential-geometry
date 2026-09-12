@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.Construction
+import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.Defs
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.SmoothStructure
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.SeamOrientation
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.LocalDiffeomorphism

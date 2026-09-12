@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.SeamChart
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.InteriorChart
-import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.Construction
+import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.Defs
 import DifferentialGeometry.Topology.Manifold.OpenCoverAtlas
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Atlas
 import Mathlib.Geometry.Manifold.Instances.Sphere
