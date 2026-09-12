@@ -8466,6 +8466,7 @@ import DifferentialGeometry.Topology.SphereSeparation.TubularExcision
 import DifferentialGeometry.Topology.SphereSeparation.TwoSphereDomain
 import DifferentialGeometry.Topology.StandardModel
 import DifferentialGeometry.Topology.ThreeManifold.Closed
+import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.AssemblyReduction
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.Collar
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.Construction
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.Finite
