@@ -342,7 +342,87 @@ theorem transportedSourceMetric_derivNorm_le
         (fixedSourceLimitMetric (I := I) Phi k₀) x ≤
           (canonicalMetricSourceData (I := I) Phi k).derivNormSupOn
             (I := I) ({(x : L.M)} : Set L.M) p := by
-  sorry
+  let : TopologicalSpace L.M := L.topology
+  let : ChartedSpace H L.M := L.charted
+  let : T2Space L.M := L.t2
+  let : IsManifold I ∞ L.M := L.smooth
+  let : SigmaCompactSpace L.M := L.sigmaCompact
+  let : TopologicalSpace (MetricSourceDomain (I := I) Phi k) :=
+    metricSourceDomainTopology (I := I) Phi k
+  let : ChartedSpace H (MetricSourceDomain (I := I) Phi k) :=
+    metricSourceDomainChartedSpace (I := I) Phi k
+  let : T2Space (MetricSourceDomain (I := I) Phi k) :=
+    metric_source_domain_t2 (I := I) Phi k
+  let : IsManifold I ∞ (MetricSourceDomain (I := I) Phi k) :=
+    metric_source_domain_smooth (I := I) Phi k
+  let : SigmaCompactSpace (MetricSourceDomain (I := I) Phi k) :=
+    metric_source_domain_sigma_compact (I := I) Phi k
+      (DifferentialGeometry.Geometry.isSigmaCompact_of_isOpen I (Phi.source_open k))
+  let : TopologicalSpace (X.obj (subseq k)).M := (X.obj (subseq k)).topology
+  let : ChartedSpace H (X.obj (subseq k)).M := (X.obj (subseq k)).charted
+  let : T2Space (X.obj (subseq k)).M := (X.obj (subseq k)).t2
+  let : IsManifold I ∞ (X.obj (subseq k)).M := (X.obj (subseq k)).smooth
+  let : TopologicalSpace (MetricTargetDomain (I := I) Phi k) :=
+    metricTargetDomainTopology (I := I) Phi k
+  let : ChartedSpace H (MetricTargetDomain (I := I) Phi k) :=
+    metricTargetDomainChartedSpace (I := I) Phi k
+  let : T2Space (MetricTargetDomain (I := I) Phi k) :=
+    metric_target_domain_t2 (I := I) Phi k
+  let : IsManifold I ∞ (MetricTargetDomain (I := I) Phi k) :=
+    metric_target_domain_smooth (I := I) Phi k
+  have hlim : transportedLimitMetric (I := I) Phi k₀ k hkk =
+      Diffeomorph.pullbackMetric (I := I)
+        ((L.metric.restrictOpen (I := I) (metricSourceOpenSubset (I := I) Phi k)).restrictOpen
+          (I := I) (nestedSourceOpen (I := I) Phi k₀ k))
+        (nestedSourceDiffeomorph (I := I) Phi k₀ k hkk) := rfl
+  have hsrc : transportedSourceMetric (I := I) Phi k₀ k hkk =
+      Diffeomorph.pullbackMetric (I := I)
+        ((Diffeomorph.pullbackMetric (I := I)
+            ((X.obj (subseq k)).metric.restrictOpen (I := I)
+              (metricTargetOpenSubset (I := I) Phi k))
+            (metricSourceTargetDiffeomorph (I := I) Phi k)).restrictOpen
+          (I := I) (nestedSourceOpen (I := I) Phi k₀ k))
+        (nestedSourceDiffeomorph (I := I) Phi k₀ k hkk) := rfl
+  intro x
+  rw [hsrc, ← transportedLimitMetric_eq (I := I) Phi k₀ k hkk, hlim]
+  have hsig : SigmaCompactSpace (nestedSourceOpen (I := I) Phi k₀ k) :=
+    isSigmaCompact_iff_sigmaCompactSpace.mp
+      (DifferentialGeometry.Geometry.isSigmaCompact_of_isOpen I
+        (nestedSourceOpen (I := I) Phi k₀ k).isOpen)
+  rw [metricDerivNorm_pullback (I := I)
+    (Phi := nestedSourceDiffeomorph (I := I) Phi k₀ k hkk) (a := a) (x := x)]
+  rw [metricDerivNorm_restrictOpen (I := I) (M := MetricSourceDomain (I := I) Phi k)
+    (U := nestedSourceOpen (I := I) Phi k₀ k) (a := a)
+    (x := nestedSourceDiffeomorph (I := I) Phi k₀ k hkk x)]
+  have hK : IsCompact (metricSourceCompactSet (I := I) Phi k ({(x : L.M)} : Set L.M)) :=
+    metric_source_compact_set_is_compact (I := I) Phi k isCompact_singleton (by
+      intro y hy
+      rw [Set.mem_singleton_iff] at hy
+      rw [hy]
+      exact Phi.source_exhausts.monotone hkk x.2)
+  have hx' : ((nestedSourceDiffeomorph (I := I) Phi k₀ k hkk x :
+        nestedSourceOpen (I := I) Phi k₀ k) : MetricSourceDomain (I := I) Phi k) ∈
+      metricSourceCompactSet (I := I) Phi k ({(x : L.M)} : Set L.M) := by
+    change (x : L.M) ∈ ({(x : L.M)} : Set L.M)
+    exact Set.mem_singleton _
+  have hsup := derivNorm_le_sup (I := I) hK (a := a) (p := p) ha
+    (Diffeomorph.pullbackMetric (I := I)
+      ((X.obj (subseq k)).metric.restrictOpen (I := I) (metricTargetOpenSubset (I := I) Phi k))
+      (metricSourceTargetDiffeomorph (I := I) Phi k))
+    (L.metric.restrictOpen (I := I) (metricSourceOpenSubset (I := I) Phi k))
+    (L.metric.restrictOpen (I := I) (metricSourceOpenSubset (I := I) Phi k)) hx'
+  have hDsup : (canonicalMetricSourceData (I := I) Phi k).derivNormSupOn
+      (I := I) ({(x : L.M)} : Set L.M) p =
+      metricDerivNormSupOn (I := I)
+        (metricSourceCompactSet (I := I) Phi k ({(x : L.M)} : Set L.M)) p
+        (Diffeomorph.pullbackMetric (I := I)
+          ((X.obj (subseq k)).metric.restrictOpen (I := I)
+            (metricTargetOpenSubset (I := I) Phi k))
+          (metricSourceTargetDiffeomorph (I := I) Phi k))
+        (L.metric.restrictOpen (I := I) (metricSourceOpenSubset (I := I) Phi k))
+        (L.metric.restrictOpen (I := I) (metricSourceOpenSubset (I := I) Phi k)) := rfl
+  rw [hDsup]
+  exact hsup
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem transportedSourceMetric_ricci_nonneg
