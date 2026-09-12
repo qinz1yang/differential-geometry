@@ -6,6 +6,7 @@ import Mathlib.Data.EReal.Basic
 import DifferentialGeometry.Geometry.Exponential.NormalCoordinates.Framed
 
 import DifferentialGeometry.Analysis.Sobolev.Intrinsic.SmoothEntropyNormalization
+import DifferentialGeometry.Analysis.Sobolev.Intrinsic.WeakGradientUnique
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.EntropyCutoff
 
 set_option autoImplicit false
@@ -210,10 +211,128 @@ theorem mu_monotone [I.Boundaryless] {D : RealTimeInterval}
 
 
 theorem mu_compact_scale_lower [I.Boundaryless]
-    (g : SmoothRiemannianMetric I M) (hdim : 2 ≤ Module.finrank ℝ E)
+    (g : SmoothRiemannianMetric I M) (hdim : Module.finrank ℝ E = 3)
     {a b : ℝ} (ha : 0 < a) (hab : a ≤ b) :
     ∃ L : ℝ, ∀ tau ∈ Set.Icc a b, (L : EReal) ≤ muSmooth g tau := by
-  sorry
+  classical
+  let : MeasurableSpace M := borel M
+  let : BorelSpace M := ⟨rfl⟩
+  have hfin : IsFiniteMeasure (riemannianVolumeMeasure I M g) :=
+    riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace (I := I) (M := M) g
+  let R : M → ℝ := fun x => metricScalarAt (I := I) (M := M) g x
+  have hRcont : Continuous R := by
+    simpa only [R] using (metricScalar_smooth (I := I) (M := M) g).continuous
+  obtain ⟨B, hB⟩ :=
+    DifferentialGeometry.PDE.RicciFlow.Entropy.w_fixed_lower (I := I) (M := M) g hdim b
+  refine ⟨B, ?_⟩
+  intro tau htau
+  obtain ⟨htau0, htb⟩ := (Set.Icc_subset_Ioc_iff hab).mpr ⟨ha, le_rfl⟩ htau
+  unfold muSmooth
+  refine le_iInf fun w => le_iInf fun hw => le_iInf fun hwpos => ?_
+  refine EReal.coe_le_coe ?_
+  let v : M → ℝ := w.value
+  have hv : ContMDiff I 𝓘(ℝ, ℝ) ∞ v := hw
+  have hvpos : ∀ x : M, 0 < v x := hwpos
+  have hmass : (∫ x, v x ^ 2 ∂(riemannianVolumeMeasure I M g)) = 1 := by
+    simpa only [v] using w.normalized
+  have hWlb : B ≤ DifferentialGeometry.PDE.RicciFlow.Entropy.wFunctional
+      (riemannianVolumeMeasure I M g) 3 tau R
+      (fun x => g.inner x
+        (DifferentialGeometry.Geometry.Operator.gradientFun g
+          (DifferentialGeometry.PDE.RicciFlow.Entropy.perelmanPotential 3 tau
+            (fun y => v y * v y)) x)
+        (DifferentialGeometry.Geometry.Operator.gradientFun g
+          (DifferentialGeometry.PDE.RicciFlow.Entropy.perelmanPotential 3 tau
+            (fun y => v y * v y)) x))
+      (DifferentialGeometry.PDE.RicciFlow.Entropy.perelmanPotential 3 tau
+        (fun y => v y * v y)) :=
+    hB ⟨htau0, htb⟩ hv hvpos hmass
+  have hSq := DifferentialGeometry.PDE.RicciFlow.Entropy.w_square_form
+    (riemannianVolumeMeasure I M g) g 3 htau0 R hv hvpos
+  simp only [DifferentialGeometry.Geometry.Connection.gradient_eq_gradFun] at hSq
+  have hae : (fun x : M => (w.gradient x : TangentSpace I x)) =ᵐ[riemannianVolumeMeasure I M g]
+      (fun x => DifferentialGeometry.Geometry.Operator.gradFun g v x) :=
+    DifferentialGeometry.Analysis.Sobolev.IntrinsicLp.HasWeakRiemannianGradLp.ae_eq
+      (g := g) (u := v)
+      (G := fun x : M => (w.gradient x : TangentSpace I x))
+      (G' := fun x => DifferentialGeometry.Geometry.Operator.gradFun g v x)
+      w.weak_gradient
+      (hasWeakRiemannianGradLp_gradFun_of_contMDiff (I := I) (M := M) hv)
+      (by
+        have h2 : MemLp (fun x => Real.sqrt
+            (g.inner x (w.gradient x) (w.gradient x))) 2
+            (riemannianVolumeMeasure I M g) := w.gradient_memLp
+        exact h2.mono_exponent (by norm_num))
+      (by
+        have h2 : MemLp (fun x => Real.sqrt
+            (g.inner x (DifferentialGeometry.Geometry.Operator.gradFun g v x)
+              (DifferentialGeometry.Geometry.Operator.gradFun g v x))) 2
+            (riemannianVolumeMeasure I M g) :=
+          DifferentialGeometry.Analysis.Sobolev.Equivalence.memLp_g_norm_gradFun_smooth
+            (I := I) (M := M) g 2 hv
+        exact h2.mono_exponent (by norm_num))
+  let I₁ : M → ℝ := fun x => 4 * tau * g.inner x (w.gradient x) (w.gradient x) +
+      tau * metricScalarAt (I := I) (M := M) g x * w.value x ^ 2 -
+      w.value x ^ 2 * Real.log (w.value x ^ 2)
+  let I₂ : M → ℝ := fun x =>
+      4 * tau * g.inner x (DifferentialGeometry.Geometry.Operator.gradFun g v x)
+        (DifferentialGeometry.Geometry.Operator.gradFun g v x) +
+      tau * R x * (v x * v x) - (v x * v x) * Real.log (v x * v x)
+  let c : ℝ := Real.log
+    (DifferentialGeometry.PDE.RicciFlow.Entropy.perelmanDensityPrefactor 3 tau) - (3 : ℕ)
+  have henergy : Continuous (fun x => g.inner x
+      (DifferentialGeometry.Geometry.Operator.gradFun g v x)
+      (DifferentialGeometry.Geometry.Operator.gradFun g v x)) := by
+    have hinner := TangentBundle.continuous_g_inner_of_smooth_sections
+      (I := I) (M := M) g
+      (DifferentialGeometry.Geometry.Operator.gradG (I := I) g ⟨v, hv⟩)
+      (DifferentialGeometry.Geometry.Operator.gradG (I := I) g ⟨v, hv⟩)
+    exact hinner.congr (fun _ => rfl)
+  have hsq : Continuous (fun x : M => v x * v x) := hv.continuous.mul hv.continuous
+  have hI₂cont : Continuous I₂ := by
+    have h3 : Continuous (fun x => (v x * v x) * Real.log (v x * v x)) :=
+      hsq.mul (hsq.log fun x => (mul_pos (hvpos x) (hvpos x)).ne')
+    have h1 : Continuous (fun x => 4 * tau * g.inner x
+        (DifferentialGeometry.Geometry.Operator.gradFun g v x)
+        (DifferentialGeometry.Geometry.Operator.gradFun g v x)) := henergy.const_mul (4 * tau)
+    have h2 : Continuous (fun x => tau * R x * (v x * v x)) :=
+      (hRcont.const_mul tau).mul hsq
+    exact ((h1.add h2).sub h3).congr
+      (fun x => by simp only [I₂, Pi.add_apply, Pi.sub_apply])
+  have hI₂int : Integrable I₂ (riemannianVolumeMeasure I M g) :=
+    hI₂cont.integrable_of_hasCompactSupport (HasCompactSupport.of_compactSpace _)
+  have hvvint : Integrable (fun x => v x * v x) (riemannianVolumeMeasure I M g) :=
+    hsq.integrable_of_hasCompactSupport (HasCompactSupport.of_compactSpace _)
+  have hI₁I₂ : (∫ x, I₁ x ∂(riemannianVolumeMeasure I M g)) =
+      ∫ x, I₂ x ∂(riemannianVolumeMeasure I M g) := by
+    apply integral_congr_ae
+    filter_upwards [hae] with x hx
+    simp only [I₁, I₂, R, v, hx, pow_two]
+  have hvvmass : (∫ x, v x * v x ∂(riemannianVolumeMeasure I M g)) = 1 := by
+    rw [← hmass]
+    apply integral_congr_ae
+    filter_upwards with x
+    rw [pow_two]
+  have hI₂add : (∫ x, I₂ x + c * (v x * v x) ∂(riemannianVolumeMeasure I M g)) =
+      (∫ x, I₂ x ∂(riemannianVolumeMeasure I M g)) + c := by
+    rw [integral_add hI₂int (hvvint.const_mul c), integral_const_mul, hvvmass, mul_one]
+  have hc : c = -((3 : ℝ) / 2 * Real.log (4 * Real.pi * tau)) - 3 := by
+    have hpref := DifferentialGeometry.PDE.RicciFlow.Entropy.log_prefactor 3 htau0
+    dsimp only [c]
+    rw [hpref]
+    norm_num
+  have hent : entropyValue g tau w =
+      (∫ x, I₁ x ∂(riemannianVolumeMeasure I M g)) -
+        ((3 : ℝ) / 2 * Real.log (4 * Real.pi * tau)) - 3 := by
+    simp only [entropyValue, I₁, hdim]
+    norm_num
+  have hkey : entropyValue g tau w =
+      (∫ x, I₂ x ∂(riemannianVolumeMeasure I M g)) + c := by
+    rw [hent, hI₁I₂, hc]
+    ring
+  rw [hkey]
+  exact hWlb.trans (le_of_eq (hSq.trans hI₂add))
+
 
 
 def cutoffEntropyConstant (n : ℕ) (D b : ℝ) : ℝ :=
@@ -295,26 +414,23 @@ theorem local_entropy_volume [I.Boundaryless]
           r ^ Module.finrank ℝ E) + C : ℝ) : EReal) := by
   sorry
 
-theorem strong_scalar_no_local_collapsing [I.Boundaryless]
+theorem strong_scalar_no_local_collapsing [I.Boundaryless] [ConnectedSpace M]
     [T2Space (TangentBundle I M)] {T : ℝ} (hT : 0 < T)
     (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closedOpen 0 T hT))
-    (hS : IsSolutionOn S) (hdim : 2 ≤ Module.finrank ℝ E)
+    (hS : IsSolutionOn S) (hdim : Module.finrank ℝ E = 3)
     {rho : ℝ} (hrho : 0 < rho) : StrongScalarNoLocalCollapsing S rho := by
-  sorry
+  have : NeZero (Module.finrank ℝ E) := ⟨by rw [hdim]; norm_num⟩
+  exact DifferentialGeometry.PDE.RicciFlow.Perelman.strongScalarNoLocalCollapsing_three
+    hT S hS hdim hrho
 
-theorem spatial_no_local_collapsing [I.Boundaryless]
+theorem spatial_no_local_collapsing [I.Boundaryless] [ConnectedSpace M]
     [T2Space (TangentBundle I M)] {T : ℝ} (hT : 0 < T)
     (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closedOpen 0 T hT))
-    (hS : IsSolutionOn S) (hdim : 2 ≤ Module.finrank ℝ E)
+    (hS : IsSolutionOn S) (hdim : Module.finrank ℝ E = 3)
     {rho : ℝ} (hrho : 0 < rho) : SpatialNoLocalCollapsing S rho := by
-  let c := scalarFromRmRadius (Module.finrank ℝ E)
-  have hc : 0 < c := scalarFromRmRadius_pos _
-  have h := spatialNoLocalCollapsing_of_strongScalar
-    (strong_scalar_no_local_collapsing hT S hS hdim (div_pos hrho hc))
-  have hscale : scalarFromRmRadius (Module.finrank ℝ E) * (rho / c) = rho := by
-    change c * (rho / c) = rho
-    field_simp [hc.ne']
-  rwa [hscale] at h
+  have : NeZero (Module.finrank ℝ E) := ⟨by rw [hdim]; norm_num⟩
+  exact DifferentialGeometry.PDE.RicciFlow.Perelman.spatialNoLocalCollapsing_three
+    hT S hS hdim hrho
 
 theorem local_metric_injectivity [I.Boundaryless] [NeZero (Module.finrank ℝ E)]
     {kappa : ℝ} (hkappa : 0 < kappa) :
