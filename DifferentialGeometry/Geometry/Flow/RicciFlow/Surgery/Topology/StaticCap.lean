@@ -1,5 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventData
 import DifferentialGeometry.Geometry.Curvature.Metric.Defs
+import DifferentialGeometry.Geometry.Metric.Cylinder
+import DifferentialGeometry.Geometry.Metric.Sphere.Round.Metric
 import Mathlib.Topology.Constructions
 
 noncomputable section
@@ -11,6 +13,8 @@ open scoped Manifold ContDiff Topology InnerProductSpace NNReal ENNReal
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 
 universe u
+
+private local instance : Fact (Module.finrank ℝ ThreeSpace = 2 + 1) := ⟨by simp [ThreeSpace]⟩
 
 abbrev NeckCylinder := Sphere 2 × ℝ
 abbrev NeckCylinderModel := (𝓡 2).prod 𝓘(ℝ, ℝ)
@@ -27,7 +31,54 @@ def shrinkingCylinderInner (v : Iio (1 : ℝ)) (x : NeckCylinder)
 theorem exists_unique_shrinkingCylinderMetric (v : Iio (1 : ℝ)) :
     ∃! g : SmoothRiemannianMetric NeckCylinderModel NeckCylinder,
       ∀ x V W, g.inner x V W = shrinkingCylinderInner v x V W := by
-  sorry
+  have key : ∀ (x : NeckCylinder) (V : TangentSpace NeckCylinderModel x),
+      mfderiv NeckCylinderModel ThreeModel (fun p : NeckCylinder => (p.1.1 : ThreeSpace)) x V
+        = DifferentialGeometry.Geometry.dIncl (E := ThreeSpace) (n := 2) x.1 V.1 := by
+    intro x V
+    rw [show (fun p : NeckCylinder => (p.1.1 : ThreeSpace)) =
+        ((↑) : Sphere 2 → ThreeSpace) ∘ Prod.fst from rfl]
+    rw [mfderiv_comp x
+      ((contMDiff_coe_sphere (E := ThreeSpace) (n := 2) (m := ∞)).contMDiffAt.mdifferentiableAt
+        (by simp))
+      (mdifferentiableAt_fst (x := x))]
+    rw [mfderiv_fst]
+    rfl
+  have hpos : 0 < 2 * (1 - v.1) := by
+    have hv : (v.1 : ℝ) < 1 := v.2
+    linarith
+  let g : SmoothRiemannianMetric NeckCylinderModel NeckCylinder :=
+    DifferentialGeometry.Geometry.Metric.cylinderMetric
+      (scaleMetric (2 * (1 - v.1)) hpos
+        (DifferentialGeometry.Geometry.roundMetric (E := ThreeSpace) (n := 2)))
+  have hg : ∀ x V W, g.inner x V W = shrinkingCylinderInner v x V W := by
+    intro x V W
+    have hsndV : mfderiv NeckCylinderModel 𝓘(ℝ, ℝ) Prod.snd x V = V.2 := by
+      rw [mfderiv_snd]
+      rfl
+    have hsndW : mfderiv NeckCylinderModel 𝓘(ℝ, ℝ) Prod.snd x W = W.2 := by
+      rw [mfderiv_snd]
+      rfl
+    have hround : (DifferentialGeometry.Geometry.roundMetric (E := ThreeSpace) (n := 2)).inner x.1 V.1 W.1 =
+        ⟪DifferentialGeometry.Geometry.dIncl (E := ThreeSpace) (n := 2) x.1 V.1,
+          DifferentialGeometry.Geometry.dIncl (E := ThreeSpace) (n := 2) x.1 W.1⟫_ℝ :=
+      DifferentialGeometry.Geometry.roundMetric_inner (E := ThreeSpace) (n := 2) x.1 V.1 W.1
+    have hcyl : g.inner x V W =
+        2 * (1 - v.1) *
+            (DifferentialGeometry.Geometry.roundMetric (E := ThreeSpace) (n := 2)).inner x.1 V.1 W.1 +
+          V.2 * W.2 := by
+      simp only [g]
+      rw [DifferentialGeometry.Geometry.Metric.cylinderMetric_inner]
+      rw [DifferentialGeometry.scaleMetric_inner (I := 𝓡 2) (2 * (1 - v.1)) hpos
+        (DifferentialGeometry.Geometry.roundMetric (E := ThreeSpace) (n := 2)) x.1 V.1 W.1]
+    have hshrink : shrinkingCylinderInner v x V W =
+        2 * (1 - v.1) *
+            (DifferentialGeometry.Geometry.roundMetric (E := ThreeSpace) (n := 2)).inner x.1 V.1 W.1 +
+          V.2 * W.2 := by
+      rw [shrinkingCylinderInner, key x V, key x W, hsndV, hsndW]
+      exact (congrArg (fun t : ℝ => 2 * (1 - v.1) * t + V.2 * W.2) hround).symm
+    rw [hcyl, hshrink]
+  exact ⟨g, hg, fun g' hg' =>
+    SmoothRiemannianMetric.ext_inner fun x v w => (hg' x v w).trans (hg x v w).symm⟩
 
 def shrinkingCylinderMetric (v : Iio (1 : ℝ)) :
     SmoothRiemannianMetric NeckCylinderModel NeckCylinder :=

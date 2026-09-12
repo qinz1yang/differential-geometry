@@ -15,6 +15,10 @@ import Mathlib.Analysis.Calculus.TangentCone.Real
 import Mathlib.MeasureTheory.Integral.Bochner.Set
 import DifferentialGeometry.Geometry.Metric.Comparison.CompactLowerBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.WeakLength
+import DifferentialGeometry.Geometry.Measure.Area.SpanningComponent
+import DifferentialGeometry.Geometry.Metric.Completeness
+import DifferentialGeometry.Geometry.Metric.Pullback.Cross
+import DifferentialGeometry.Topology.StandardModel
 
 noncomputable section
 
@@ -253,6 +257,86 @@ private theorem mdifferentiableWithinAt_of_injective_derivative_comp
   exact ⟨hu, hcoord.differentiableWithinAt.mdifferentiableWithinAt⟩
 
 end ChartReflection
+
+private theorem pullbackMetricCross_pathELength_integral
+    {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [NormedAddCommGroup F] [NormedSpace ℝ F]
+    [FiniteDimensional ℝ E] [FiniteDimensional ℝ F]
+    {H G : Type*} [TopologicalSpace H] [TopologicalSpace G]
+    {I : ModelWithCorners ℝ E H} {J : ModelWithCorners ℝ F G}
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
+    {N : Type*} [TopologicalSpace N] [ChartedSpace G N] [IsManifold J ∞ N]
+    (g : SmoothRiemannianMetric J N) (Φ : M ≃ₘ⟮I, J⟯ N)
+    {x y : M} (γ : Path x y) (hγ : CMDiff 1 γ) :
+    (∫⁻ t, ENNReal.ofReal (Real.sqrt
+      ((Diffeomorph.pullbackMetricCross g Φ).inner (γ t)
+        (mfderiv% γ t 1) (mfderiv% γ t 1)))) =
+    (∫⁻ t, ENNReal.ofReal (Real.sqrt
+      (g.inner ((γ.map Φ.continuous) t)
+        (mfderiv% (γ.map Φ.continuous) t 1)
+        (mfderiv% (γ.map Φ.continuous) t 1)))) := by
+  apply MeasureTheory.lintegral_congr_ae
+  filter_upwards [] with t
+  have hder := mfderiv_comp_apply t
+    ((Φ.contMDiff.of_le (by norm_num : (1 : ℕ∞ω) ≤ (∞ : ℕ∞ω))).contMDiffAt.mdifferentiableAt
+      (by norm_num))
+    (hγ.contMDiffAt.mdifferentiableAt (by norm_num)) 1
+  rw [Diffeomorph.pullbackMetricCross_inner]
+  have hmap : (γ.map Φ.continuous : unitInterval → N) = Φ ∘ γ := by
+    rw [Path.map_coe]
+  rw [hmap, hder]
+  simp only [Function.comp_apply]
+
+private theorem pullbackMetricCross_riemannianEDistOf
+    {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [NormedAddCommGroup F] [NormedSpace ℝ F]
+    [FiniteDimensional ℝ E] [FiniteDimensional ℝ F]
+    {H G : Type*} [TopologicalSpace H] [TopologicalSpace G]
+    {I : ModelWithCorners ℝ E H} {J : ModelWithCorners ℝ F G}
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
+    {N : Type*} [TopologicalSpace N] [ChartedSpace G N] [IsManifold J ∞ N]
+    (g : SmoothRiemannianMetric J N) (Φ : M ≃ₘ⟮I, J⟯ N) (x y : M) :
+    riemannianEDistOf (I := I) (Diffeomorph.pullbackMetricCross g Φ) x y =
+      riemannianEDistOf (I := J) g (Φ x) (Φ y) := by
+  let _ : CompleteSpace E := FiniteDimensional.complete ℝ E
+  rw [edistOf_iInf (I := I), edistOf_iInf (I := J)]
+  apply le_antisymm
+  · refine le_iInf fun γ' => le_iInf fun hγ' => ?_
+    let γ : Path x y :=
+      { toContinuousMap := (γ'.map Φ.symm.continuous).toContinuousMap
+        source' := by simp
+        target' := by simp }
+    have hγ : CMDiff 1 γ := by
+      change CMDiff 1 (γ'.map Φ.symm.continuous)
+      simpa only [Path.map_coe, Function.comp_def] using
+        ((Φ.symm.contMDiff.of_le (by norm_num : (1 : ℕ∞ω) ≤ (∞ : ℕ∞ω))).comp hγ')
+    have hp : (γ.map Φ.continuous : unitInterval → N) = (γ' : unitInterval → N) := by
+      funext t
+      change Φ ((γ'.map Φ.symm.continuous : unitInterval → M) t) = γ' t
+      simp only [Path.map_coe, Function.comp_apply]
+      exact Φ.apply_symm_apply (γ' t)
+    calc
+      _ ≤ (∫⁻ t, ENNReal.ofReal (Real.sqrt
+          ((Diffeomorph.pullbackMetricCross g Φ).inner (γ t)
+            (mfderiv% γ t 1) (mfderiv% γ t 1)))) :=
+        iInf_le_of_le γ (iInf_le_of_le hγ le_rfl)
+      _ = (∫⁻ t, ENNReal.ofReal (Real.sqrt
+          (g.inner ((γ.map Φ.continuous) t)
+            (mfderiv% (γ.map Φ.continuous) t 1)
+            (mfderiv% (γ.map Φ.continuous) t 1)))) :=
+        pullbackMetricCross_pathELength_integral g Φ γ hγ
+      _ = _ := by rw [hp]
+  · refine le_iInf fun γ => le_iInf fun hγ => ?_
+    let γ' : Path (Φ x) (Φ y) := γ.map Φ.continuous
+    have hγ' : CMDiff 1 γ' := by
+      change CMDiff 1 (γ.map Φ.continuous)
+      simpa only [Path.map_coe, Function.comp_def] using
+        ((Φ.contMDiff.of_le (by norm_num : (1 : ℕ∞ω) ≤ (∞ : ℕ∞ω))).comp hγ)
+    calc
+      _ ≤ (∫⁻ t, ENNReal.ofReal (Real.sqrt
+          (g.inner (γ' t) (mfderiv% γ' t 1) (mfderiv% γ' t 1)))) :=
+        iInf_le_of_le γ' (iInf_le_of_le hγ' le_rfl)
+      _ = _ := (pullbackMetricCross_pathELength_integral g Φ γ hγ).symm
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
@@ -1421,7 +1505,47 @@ omit connectedQ in
 theorem rfs_disk_competitor_exists (g : SmoothRiemannianMetric I Q)
     (γ : ContinuousFreeLoop Q) (hctr : IsContractibleLoop γ) (hlip : IsLipschitzLoop g γ) :
     Nonempty (DiskCompetitor g γ) := by
-  sorry
+  classical
+  obtain ⟨L, hL⟩ := hlip
+  let c : Geometry.Topology.StandardModelCopy I Q E :=
+    Geometry.Topology.standardModelCopy (I := I) (M := Q)
+      (e := ContinuousLinearEquiv.refl ℝ E)
+  let _ : TopologicalSpace c.Q := c.topos
+  let _ : ChartedSpace E c.Q := c.charted
+  let _ : IsManifold 𝓘(ℝ, E) ∞ c.Q := c.mfld
+  let _ : T2Space c.Q := c.t2
+  have _ : CompactSpace c.Q := c.equiv.toHomeomorph.compactSpace
+  have _ : T3Space c.Q := inferInstance
+  let Φ : Q ≃ₘ⟮I, 𝓘(ℝ, E)⟯ c.Q := c.equiv
+  let g' : SmoothRiemannianMetric 𝓘(ℝ, E) c.Q :=
+    Diffeomorph.pullbackMetricCross g Φ.symm
+  let Φc : C(Q, c.Q) := ⟨fun x => Φ x, Φ.continuous⟩
+  let γ' : ContinuousFreeLoop c.Q := Φc.comp γ
+  have hdist (x y : c.Q) :
+      riemannianEDistOf g' x y = riemannianEDistOf g (Φ.symm x) (Φ.symm y) :=
+    pullbackMetricCross_riemannianEDistOf g Φ.symm x y
+  have hγ' : ∀ s t, riemannianEDistOf g' (γ' s) (γ' t) ≤ (L : ℝ≥0∞) * edist s t := by
+    intro s t
+    rw [hdist]
+    simpa only [γ', Φc, ContinuousMap.comp_apply, ContinuousMap.coe_mk, Φ,
+      Diffeomorph.symm_apply_apply] using hL s t
+  have hnullγ : γ.Nullhomotopic := hctr
+  have hnull' : γ'.Nullhomotopic := hnullγ.comp_right Φc
+  obtain ⟨u, hu⟩ :=
+    Geometry.spanningDiskCompetitors_nonempty_of_compact g' hγ' hnull'
+  obtain ⟨htrace, L', hL'⟩ := hu
+  refine ⟨⟨⟨⟨fun z => Φ.symm (u z), Φ.symm.continuous.comp u.continuous⟩, L', ?_⟩, ?_⟩⟩
+  · intro z w
+    change riemannianEDistOf g (Φ.symm (u z)) (Φ.symm (u w)) ≤ (L' : ℝ≥0∞) * edist z w
+    rw [← hdist (u z) (u w)]
+    exact hL' z w
+  · intro θ
+    have hb : u (DifferentialGeometry.Topology.diskBoundary θ) = γ' θ :=
+      congrArg (fun f : C(Surgery.Topology.Circle, c.Q) => f θ) htrace
+    change Φ.symm (u (diskBoundary θ)) = γ θ
+    rw [show diskBoundary θ = DifferentialGeometry.Topology.diskBoundary θ from rfl, hb]
+    change Φ.symm (Φ (γ θ)) = γ θ
+    exact Φ.symm_apply_apply (γ θ)
 
 omit finiteDimensionalE boundarylessI t2Q compactQ connectedQ in
 theorem LipschitzDisk.isLipschitz_trace

@@ -211,11 +211,56 @@ theorem exists_quotientProductGeometry (A : QuotientProductAtlas I M)
   sorry
 
 
+omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I ∞ M] in
 theorem ProductCurve.cover_spatial_derivative (c : ProductCurve M) (J : Set ℝ)
     (hc : c.SmoothOn (I := I) J) (x t : ℝ) (ht : t ∈ J) :
     mfderiv 𝓘(ℝ, ℝ) (I.prod 𝓘(ℝ, ℝ)) (fun z => c.coverLift z t) x (1 : ℝ) =
       c.X (I := I) x t := by
-  sorry
+  have hmem : (x, t) ∈ (univ : Set ℝ) ×ˢ J := ⟨mem_univ x, ht⟩
+  have hz : ContMDiffWithinAt 𝓘(ℝ, ℝ) (𝓘(ℝ, ℝ).prod 𝓘(ℝ, ℝ)) ∞
+      (fun z : ℝ => (z, t)) univ x :=
+    contMDiffWithinAt_id.prodMk contMDiffWithinAt_const
+  have hz' : ContMDiffWithinAt 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ × ℝ) ∞
+      (fun z : ℝ => (z, t)) univ x := by
+    rw [modelWithCornersSelf_prod, ← chartedSpaceSelf_prod]
+    exact hz
+  have hto : Set.MapsTo (fun z : ℝ => (z, t)) univ ((univ : Set ℝ) ×ˢ J) :=
+    fun z _ => ⟨mem_univ z, ht⟩
+  have h1 : MDifferentiableAt 𝓘(ℝ, ℝ) I (fun z => c.projection.lift z t) x := by
+    have hcomp : ContMDiffWithinAt 𝓘(ℝ, ℝ) I ∞
+        ((fun p : ℝ × ℝ => c.projection.lift p.1 p.2) ∘ fun z : ℝ => (z, t)) univ x :=
+      (hc.1 (x, t) hmem).comp x hz' hto
+    exact (contMDiffWithinAt_univ.mp hcomp).mdifferentiableAt (by simp)
+  have h2 : MDifferentiableAt 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) (fun z => c.y z t) x := by
+    have hcomp : ContMDiffWithinAt 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) ∞
+        ((fun p : ℝ × ℝ => c.y p.1 p.2) ∘ fun z : ℝ => (z, t)) univ x :=
+      ((hc.2 (x, t) hmem).contMDiffWithinAt).comp x hz' hto
+    exact (contMDiffWithinAt_univ.mp hcomp).mdifferentiableAt (by simp)
+  have hpair := h1.mfderiv_prod h2
+  change (mfderiv 𝓘(ℝ, ℝ) (I.prod 𝓘(ℝ, ℝ))
+    (fun z => (c.projection.lift z t, c.y z t)) x) (1 : ℝ) = c.X (I := I) x t
+  rw [hpair]
+  change (((mfderiv 𝓘(ℝ, ℝ) I (fun z => c.projection.lift z t) x).prod
+      (mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) (fun z => c.y z t) x))
+      (1 : TangentSpace 𝓘(ℝ, ℝ) x)) = c.X (I := I) x t
+  rw [show ((mfderiv 𝓘(ℝ, ℝ) I (fun z => c.projection.lift z t) x).prod
+      (mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) (fun z => c.y z t) x))
+      (1 : TangentSpace 𝓘(ℝ, ℝ) x) = _ from
+    ContinuousLinearMap.prod_apply (f₁ := mfderiv 𝓘(ℝ, ℝ) I (fun z => c.projection.lift z t) x)
+      (f₂ := mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) (fun z => c.y z t) x)
+      (x := (1 : TangentSpace 𝓘(ℝ, ℝ) x))]
+  refine Prod.ext rfl ?_
+  change ((mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) (fun z => c.y z t) x : ℝ →L[ℝ] ℝ)
+      (1 : TangentSpace 𝓘(ℝ, ℝ) x)) =
+    (NormedSpace.fromTangentSpace (𝕜 := ℝ) (c.y x t)).symm (deriv (fun z => c.y z t) x)
+  apply (NormedSpace.fromTangentSpace (𝕜 := ℝ) (c.y x t)).injective
+  rw [(NormedSpace.fromTangentSpace (𝕜 := ℝ) (c.y x t)).apply_symm_apply]
+  change mvfderiv (I := 𝓘(ℝ, ℝ)) (fun z => c.y z t) x
+      (1 : TangentSpace 𝓘(ℝ, ℝ) x) = deriv (fun z => c.y z t) x
+  rw [DifferentialGeometry.mvfderiv_real_model_eq_fderiv,
+    show (1 : TangentSpace 𝓘(ℝ, ℝ) x) =
+      (NormedSpace.fromTangentSpace (𝕜 := ℝ) x).symm 1 from rfl,
+    (NormedSpace.fromTangentSpace (𝕜 := ℝ) x).apply_symm_apply, fderiv_apply_one_eq_deriv]
 
 theorem ProductCurve.cover_covariantDerivative (c : ProductCurve M)
     (g : ℝ → SmoothRiemannianMetric I M) (lambda : ℝ) (hlambda : 0 < lambda)
