@@ -1,4 +1,5 @@
 import DifferentialGeometry.Topology.VanKampen.ConnectedSum
+import DifferentialGeometry.Topology.VanKampen.BallChartEmbeddedCellCollar
 import DifferentialGeometry.Topology.Collar.Attachment
 import DifferentialGeometry.Topology.Manifold.Attachment.AdjunctionInjectivity
 import DifferentialGeometry.Topology.Manifold.Attachment.AdjunctionSeparation
@@ -505,6 +506,22 @@ def EmbeddedCellAttachingCompatibility {N : Type u} [TopologicalSpace N]
     ∀ b : CellBoundary 3,
       e (B.boundaryMap (glue b)) =
         d.boundaryMap (a (CellAttachment.cellBoundaryThreeHomeomorphSphereTwo b))
+
+theorem embeddedCellChartIdentification_smoothEmbeddedClosedThreeCellWithCollarOfBallChart
+    {M : Type u} [TopologicalSpace M] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
+    [IsManifold (𝓡 3) ∞ M] (c : BallChart 3 (𝓡 3) M) :
+    EmbeddedCellChartIdentification (smoothEmbeddedClosedThreeCellWithCollarOfBallChart c) c :=
+  ⟨ballChartCellComplementHomeomorph c, fun _ => Subtype.ext rfl⟩
+
+theorem embeddedCellAttachingCompatibility_smoothEmbeddedClosedThreeCellWithCollarOfBallChart
+    {N : Type u} [TopologicalSpace N] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) N]
+    [IsManifold (𝓡 3) ∞ N] (d : BallChart 3 (𝓡 3) N)
+    (a : SphereTwo ≃ₜ SphereTwo) :
+    EmbeddedCellAttachingCompatibility (smoothEmbeddedClosedThreeCellWithCollarOfBallChart d)
+      (CellAttachment.cellBoundaryThreeHomeomorphSphereTwo.trans
+        (a.trans CellAttachment.cellBoundaryThreeHomeomorphSphereTwo.symm))
+      d a :=
+  ⟨ballChartCellComplementHomeomorph d, fun _ => Subtype.ext rfl⟩
 
 theorem embeddedCellConnectedSum_homeomorph_connectedSumQuotient
     {M N : Type u} [TopologicalSpace M] [T2Space M] [CompactSpace M]

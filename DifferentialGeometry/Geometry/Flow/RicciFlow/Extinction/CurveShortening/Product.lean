@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Basic
+import DifferentialGeometry.Topology.Manifold.AddCircle
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.LoopModel
 import DifferentialGeometry.Geometry.Metric.Comparison.DistanceScaling
 import DifferentialGeometry.Geometry.Metric.Scaling
@@ -200,8 +201,39 @@ structure QuotientProductAtlas (I : ModelWithCorners ℝ E H) (M : Type*)
     ∀ p : M × ℝ, Function.Bijective
       (mfderiv (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, ℝ)) productCoverProjection p)
 
+omit [FiniteDimensional ℝ E] [CompleteSpace E] in
 theorem exists_quotientProductAtlas : Nonempty (QuotientProductAtlas I M) := by
-  sorry
+  let cs : ChartedSpace (ModelProd H ℝ) (M × Surgery.Topology.Circle) :=
+    prodChartedSpace H M ℝ Surgery.Topology.Circle
+  refine ⟨cs, IsManifold.prod M Surgery.Topology.Circle, ?_, ?_⟩
+  · exact ContMDiff.prodMap contMDiff_id AddCircle.contMDiff_coe
+  · intro p
+    have hd1 : Function.Bijective (mfderiv I I (id : M → M) p.1) := by
+      rw [mfderiv_id]
+      exact ⟨fun a b h => h, fun a => ⟨a, rfl⟩⟩
+    have hd2 : Function.Bijective (mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ)
+        (fun t : ℝ => (t : Surgery.Topology.Circle)) p.2) := AddCircle.bijective_mfderiv_coe p.2
+    have hprod : Function.Bijective ((mfderiv I I (id : M → M) p.1).prodMap
+        (mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) (fun t : ℝ => (t : Surgery.Topology.Circle)) p.2)) := by
+      refine ⟨fun a b hab => ?_, fun c => ?_⟩
+      · refine Prod.ext (hd1.injective ?_) (hd2.injective ?_)
+        · simpa using congrArg Prod.fst hab
+        · simpa using congrArg Prod.snd hab
+      · obtain ⟨a, ha⟩ := hd1.surjective c.1
+        obtain ⟨b, hb⟩ := hd2.surjective c.2
+        exact ⟨(a, b), Prod.ext (by simpa using ha) (by simpa using hb)⟩
+    have hf : HasMFDerivAt I I (id : M → M) p.1 (ContinuousLinearMap.id ℝ E) := by
+      have := (mdifferentiableAt_id (I := I) (x := p.1)).hasMFDerivAt
+      rwa [mfderiv_id] at this
+    have hg : HasMFDerivAt 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ)
+        (fun t : ℝ => (t : Surgery.Topology.Circle)) p.2
+        (mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) (fun t : ℝ => (t : Surgery.Topology.Circle)) p.2) :=
+      (AddCircle.contMDiff_coe.mdifferentiableAt (by decide : (∞ : ℕ∞ω) ≠ 0)).hasMFDerivAt
+    have hbij : Function.Bijective (mfderiv (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, ℝ))
+        (Prod.map id (fun t : ℝ => (t : Surgery.Topology.Circle))) p) := by
+      rw [(hf.prodMap hg).mfderiv]
+      exact hprod
+    exact hbij
 
 def quotientProductAtlas : QuotientProductAtlas I M := exists_quotientProductAtlas.some
 

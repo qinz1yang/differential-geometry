@@ -2,6 +2,7 @@ import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.Finite
 import DifferentialGeometry.Topology.VanKampen.SimplyConnectedUnion
 import DifferentialGeometry.Topology.VanKampen.ConnectorFreeProductCover
 import DifferentialGeometry.Topology.VanKampen.ConnectedSum
+import DifferentialGeometry.Topology.VanKampen.ConnectedSumNeckRealization
 import DifferentialGeometry.Topology.VanKampen.FiniteConnectedSum
 import DifferentialGeometry.Topology.FundamentalGroup.Sphere
 import DifferentialGeometry.Topology.Manifold.LocallyPathConnected
@@ -252,5 +253,30 @@ theorem connectedSumBasedFreeProduct_of_neck_realization
             (BM.boundaryMap b : M.Carrier) (chosenPoint M)).coprodCongr
           (FundamentalGroup.fundamentalGroupMulEquivOfPathConnected
             (BN.boundaryMap (glue b) : N.Carrier) (chosenPoint N)))))⟩
+
+theorem fundamentalGroup_connectedSum_freeProduct
+    (M N : ConnectedClosedOrientedManifold.{u} 3) :
+    connectedSumBasedFreeProduct M N :=
+  connectedSumBasedFreeProduct_of_neck_realization
+    (fun M N =>
+      ⟨ThreeManifold.smoothEmbeddedClosedThreeCellWithCollarOfBallChart
+          (orientedBallChart M).toBallChart,
+        ThreeManifold.smoothEmbeddedClosedThreeCellWithCollarOfBallChart
+          (orientedBallChart N).toBallChart,
+        CellAttachment.cellBoundaryThreeHomeomorphSphereTwo.trans
+          (boundaryAttachment.1.toHomeomorph.trans
+            CellAttachment.cellBoundaryThreeHomeomorphSphereTwo.symm),
+        ThreeManifold.exists_embeddedCellConnectedSum_homeomorph_connectedSum M N _ _
+          (ThreeManifold.embeddedCellChartIdentification_smoothEmbeddedClosedThreeCellWithCollarOfBallChart
+            (orientedBallChart M).toBallChart)
+          (ThreeManifold.embeddedCellAttachingCompatibility_smoothEmbeddedClosedThreeCellWithCollarOfBallChart
+            (orientedBallChart N).toBallChart
+            boundaryAttachment.1.toHomeomorph)⟩)
+    M N
+
+theorem fundamentalGroup_finiteConnectedSum_freeProduct :
+    FiniteConnectedSumFreeProduct.{u} :=
+  finiteConnectedSumFreeProduct_of_connectedSumBased
+    fundamentalGroup_connectedSum_freeProduct
 
 end DifferentialGeometry.Topology

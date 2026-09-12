@@ -300,4 +300,15 @@ theorem smoothEmbeddedClosedThreeCellWithCollarOfBallChart_boundaryMap {M : Type
     ((smoothEmbeddedClosedThreeCellWithCollarOfBallChart c).boundaryMap b : M) =
       c.boundaryMap ⟨(b : E3), by simpa [dist_eq_norm] using b.2⟩ := rfl
 
+noncomputable def ballChartCellComplementHomeomorph {M : Type u} [TopologicalSpace M]
+    [ChartedSpace E3 M] [IsManifold (𝓡 3) ∞ M] (c : BallChart 3 (𝓡 3) M) :
+    (smoothEmbeddedClosedThreeCellWithCollarOfBallChart c).complement ≃ₜ c.Punctured := by
+  have hset : (smoothEmbeddedClosedThreeCellWithCollarOfBallChart c).complement =
+      {x : M | x ∉ c.chart '' Metric.ball (0 : E3) 1} := by
+    rw [SmoothEmbeddedClosedThreeCellWithCollar.complement,
+      smoothEmbeddedClosedThreeCellWithCollarOfBallChart, embeddedCellComplement,
+      embeddedCellInteriorImage_closedCellOfBallChart]
+    rfl
+  exact Homeomorph.setCongr hset
+
 end DifferentialGeometry.Topology.ThreeManifold

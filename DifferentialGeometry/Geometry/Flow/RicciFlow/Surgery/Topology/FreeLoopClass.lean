@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.LoopClass
+import DifferentialGeometry.Topology.Homotopy.CubeInterior
 
 noncomputable section
 
@@ -34,8 +35,242 @@ theorem sphereCubeVector_norm (x : I^(Fin 2)) : ‖sphereCubeVector x‖ = 1 := 
     ring
   nlinarith [norm_nonneg (sphereCubeVector x)]
 
+private def openCubeCoordinate (t : ℝ) : ℝ := (2 * t - 1) / (t * (1 - t))
+
+private def sphereCubeInteriorParam (p : ℝ × ℝ) : ThreeSpace :=
+  WithLp.toLp 2 ![2 * p.1 / (1 + p.1 ^ 2 + p.2 ^ 2), -2 * p.2 / (1 + p.1 ^ 2 + p.2 ^ 2),
+    (p.1 ^ 2 + p.2 ^ 2 - 1) / (1 + p.1 ^ 2 + p.2 ^ 2)]
+
+private lemma sphereCubeVector_eq_param (x : I^(Fin 2)) (hx : x ∉ Cube.boundary (Fin 2)) :
+    sphereCubeVector x = sphereCubeInteriorParam
+      (openCubeCoordinate ((x 0 : I) : ℝ), openCubeCoordinate ((x 1 : I) : ℝ)) := by
+  classical
+  simp only [sphereCubeVector, if_neg hx, sphereCubeInteriorParam, openCubeCoordinate]
+
+private lemma vec3_two (a b c : ℝ) : (![a, b, c] : Fin 3 → ℝ) 2 = c := by
+  rw [Matrix.cons_val_two]
+  rfl
+
+private lemma norm_sq_sphereCubeInteriorParam (p : ℝ × ℝ) :
+    ‖sphereCubeInteriorParam p‖ ^ 2 = 1 := by
+  have hd : 1 + p.1 ^ 2 + p.2 ^ 2 ≠ 0 := by positivity
+  rw [EuclideanSpace.real_norm_sq_eq, Fin.sum_univ_three]
+  simp only [sphereCubeInteriorParam, PiLp.toLp_apply, Matrix.cons_val_zero, Matrix.cons_val_one,
+    vec3_two]
+  field_simp
+  ring
+
+private lemma inner_sphereCubeInteriorParam_single (p : ℝ × ℝ) :
+    inner ℝ (sphereCubeInteriorParam p) (EuclideanSpace.single 2 1) =
+      (p.1 ^ 2 + p.2 ^ 2 - 1) / (1 + p.1 ^ 2 + p.2 ^ 2) := by
+  rw [EuclideanSpace.inner_single_right]
+  simp only [sphereCubeInteriorParam, PiLp.toLp_apply, vec3_two]
+  simp
+
+private lemma norm_single_two : ‖(EuclideanSpace.single 2 1 : ThreeSpace)‖ ^ 2 = 1 := by
+  rw [PiLp.norm_single]
+  norm_num
+
+private lemma norm_sq_sphereCubeInteriorParam_sub_single (p : ℝ × ℝ) :
+    ‖sphereCubeInteriorParam p - EuclideanSpace.single 2 1‖ ^ 2 =
+      4 / (p.1 ^ 2 + p.2 ^ 2 + 1) := by
+  have hd : 1 + p.1 ^ 2 + p.2 ^ 2 ≠ 0 := by positivity
+  rw [norm_sub_sq_real, norm_sq_sphereCubeInteriorParam, inner_sphereCubeInteriorParam_single,
+    norm_single_two]
+  field_simp
+  ring
+
+private lemma continuous_sphereCubeInteriorParam : Continuous sphereCubeInteriorParam := by
+  have hD : Continuous fun p : ℝ × ℝ => 1 + p.1 ^ 2 + p.2 ^ 2 := by fun_prop
+  have hDne : ∀ p : ℝ × ℝ, 1 + p.1 ^ 2 + p.2 ^ 2 ≠ 0 := fun p => by positivity
+  have hA : Continuous fun p : ℝ × ℝ => 2 * p.1 := by fun_prop
+  have hB : Continuous fun p : ℝ × ℝ => 2 * p.2 := by fun_prop
+  have hC : Continuous fun p : ℝ × ℝ => p.1 ^ 2 + p.2 ^ 2 - 1 := by fun_prop
+  unfold sphereCubeInteriorParam
+  refine (PiLp.continuous_toLp 2 (fun _ : Fin 3 => ℝ)).comp ?_
+  refine continuous_pi (fun i => ?_)
+  fin_cases i <;>
+    simp only [neg_mul, Nat.succ_eq_add_one, Nat.reduceAdd, Fin.zero_eta, Fin.isValue,
+      Fin.mk_one, Fin.reduceFinMk, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val] <;>
+    first
+      | exact hA.div₀ hD hDne
+      | exact hB.neg.div₀ hD hDne
+      | exact hC.div₀ hD hDne
+
+private lemma openCubeCoordinate_eq_sub (t : ℝ) (h0 : t ≠ 0) (h1 : t ≠ 1) :
+    openCubeCoordinate t = 1 / (1 - t) - 1 / t := by
+  unfold openCubeCoordinate
+  field_simp
+  ring
+
+private lemma continuousAt_openCubeCoordinate (t : ℝ) (h0 : t ≠ 0) (h1 : t ≠ 1) :
+    ContinuousAt openCubeCoordinate t := by
+  have hsub : ContinuousAt (fun s : ℝ => 1 / (1 - s) - 1 / s) t := by
+    refine ContinuousAt.sub ?_ ?_
+    · exact ContinuousAt.div continuousAt_const (continuousAt_const.sub continuousAt_id)
+        (sub_ne_zero.mpr (Ne.symm h1))
+    · exact ContinuousAt.div continuousAt_const continuousAt_id h0
+  refine hsub.congr ?_
+  filter_upwards [isOpen_ne.mem_nhds h1, isOpen_ne.mem_nhds h0] with s hs1 hs0
+  exact (openCubeCoordinate_eq_sub s hs0 hs1).symm
+
+private lemma continuousAt_cubeCoords_two (z : I^(Fin 2)) (hz : z ∉ Cube.boundary (Fin 2)) :
+    ContinuousAt (fun z' : I^(Fin 2) =>
+      (openCubeCoordinate ((z' 0 : I) : ℝ), openCubeCoordinate ((z' 1 : I) : ℝ))) z := by
+  have hmem : ∀ i : Fin 2, ((z i : I) : ℝ) ≠ 0 ∧ ((z i : I) : ℝ) ≠ 1 := by
+    intro i
+    constructor
+    · intro hc
+      exact hz ⟨i, Or.inl (Subtype.ext hc)⟩
+    · intro hc
+      exact hz ⟨i, Or.inr (Subtype.ext hc)⟩
+  have hc : ∀ i : Fin 2, ContinuousAt (fun z' : I^(Fin 2) =>
+      openCubeCoordinate ((z' i : I) : ℝ)) z := by
+    intro i
+    have h1 : ContinuousAt (fun z' : I^(Fin 2) => ((z' i : I) : ℝ)) z :=
+      ContinuousAt.comp continuous_subtype_val.continuousAt (continuous_apply i).continuousAt
+    exact ContinuousAt.comp (f := fun z' : I^(Fin 2) => ((z' i : I) : ℝ))
+      (continuousAt_openCubeCoordinate _ (hmem i).1 (hmem i).2) h1
+  exact ContinuousAt.prodMk (hc 0) (hc 1)
+
+private lemma one_div_two_mul_le_abs_openCubeCoordinate_left (t : ℝ) (h0 : 0 < t)
+    (h1 : t ≤ 1 / 4) : 1 / (2 * t) ≤ |openCubeCoordinate t| := by
+  unfold openCubeCoordinate
+  have h2 : (0 : ℝ) < 1 - t := by linarith
+  have hpos : 0 < t * (1 - t) := mul_pos h0 h2
+  have hneg : 2 * t - 1 < 0 := by linarith
+  have hval : |(2 * t - 1) / (t * (1 - t))| = (1 - 2 * t) / (t * (1 - t)) := by
+    rw [abs_div, abs_of_pos hpos, abs_of_neg hneg]
+    ring_nf
+  rw [hval, div_le_div_iff₀ (by positivity : (0 : ℝ) < 2 * t) hpos]
+  nlinarith
+
+private lemma one_div_two_mul_le_abs_openCubeCoordinate_right (t : ℝ) (h0 : t < 1)
+    (h1 : 3 / 4 ≤ t) : 1 / (2 * (1 - t)) ≤ |openCubeCoordinate t| := by
+  unfold openCubeCoordinate
+  have h2 : (0 : ℝ) < 1 - t := by linarith
+  have ht0 : 0 < t := by linarith
+  have hpos : 0 < t * (1 - t) := mul_pos ht0 h2
+  have hpos' : 0 < 2 * t - 1 := by linarith
+  have hval : |(2 * t - 1) / (t * (1 - t))| = (2 * t - 1) / (t * (1 - t)) := by
+    rw [abs_div, abs_of_pos hpos, abs_of_pos hpos']
+  rw [hval, div_le_div_iff₀ (by positivity) hpos]
+  nlinarith
+
+private lemma tendsto_sphereCubeVector_of_boundary (x : I^(Fin 2)) (i : Fin 2)
+    (hi : ((x i : I) : ℝ) = 0 ∨ ((x i : I) : ℝ) = 1) :
+    Filter.Tendsto sphereCubeVector (𝓝 x) (𝓝 (EuclideanSpace.single 2 1)) := by
+  rw [Metric.tendsto_nhds]
+  intro ε hε
+  have hε8 : 0 < ε / 8 := by positivity
+  obtain ⟨δ, hδ1, hδε, hδpos⟩ : ∃ δ : ℝ, δ ≤ 1 / 4 ∧ δ ≤ ε / 8 ∧ 0 < δ :=
+    ⟨min (1 / 4) (ε / 8), min_le_left _ _, min_le_right _ _, lt_min (by norm_num) hε8⟩
+  have core : ∀ x' : I^(Fin 2), x' ∉ Cube.boundary (Fin 2) →
+      1 / (2 * δ) ≤ |openCubeCoordinate ((x' i : I) : ℝ)| →
+      dist (sphereCubeVector x') (EuclideanSpace.single 2 1) < ε := by
+    intro x' hb' hbound
+    have hval : sphereCubeVector x' =
+        sphereCubeInteriorParam (openCubeCoordinate ((x' 0 : I) : ℝ),
+          openCubeCoordinate ((x' 1 : I) : ℝ)) :=
+      sphereCubeVector_eq_param x' hb'
+    have hsum : (1 / (2 * δ)) ^ 2 ≤ (openCubeCoordinate ((x' 0 : I) : ℝ)) ^ 2 +
+        (openCubeCoordinate ((x' 1 : I) : ℝ)) ^ 2 := by
+      have hsq : (1 / (2 * δ)) ^ 2 ≤ (openCubeCoordinate ((x' i : I) : ℝ)) ^ 2 := by
+        rw [← sq_abs (openCubeCoordinate ((x' i : I) : ℝ))]
+        exact pow_le_pow_left₀ (by positivity) hbound 2
+      have hle : (openCubeCoordinate ((x' i : I) : ℝ)) ^ 2 ≤
+          ∑ j : Fin 2, (openCubeCoordinate ((x' j : I) : ℝ)) ^ 2 :=
+        Finset.single_le_sum (f := fun j : Fin 2 =>
+          (openCubeCoordinate ((x' j : I) : ℝ)) ^ 2) (fun j _ => sq_nonneg _)
+          (Finset.mem_univ i)
+      rw [Fin.sum_univ_two] at hle
+      exact le_trans hsq hle
+    have hpos : 0 < (1 / (2 * δ)) ^ 2 := by positivity
+    have h4 : 4 / ((openCubeCoordinate ((x' 0 : I) : ℝ)) ^ 2 +
+        (openCubeCoordinate ((x' 1 : I) : ℝ)) ^ 2 + 1) < ε ^ 2 := by
+      have hmono : 4 / ((openCubeCoordinate ((x' 0 : I) : ℝ)) ^ 2 +
+          (openCubeCoordinate ((x' 1 : I) : ℝ)) ^ 2 + 1) ≤ 4 / (1 / (2 * δ)) ^ 2 :=
+        div_le_div_of_nonneg_left (by norm_num) hpos (by linarith)
+      have h16 : 4 / (1 / (2 * δ)) ^ 2 = 16 * δ ^ 2 := by
+        field_simp
+        ring
+      have hδ2 : 16 * δ ^ 2 ≤ ε ^ 2 / 4 := by nlinarith [hδε, hδpos, hε]
+      have hfin : ε ^ 2 / 4 < ε ^ 2 := by nlinarith [hε]
+      linarith [hmono, h16 ▸ hmono, hδ2, hfin]
+    rw [hval, dist_eq_norm]
+    have hsq : ‖sphereCubeInteriorParam (openCubeCoordinate ((x' 0 : I) : ℝ),
+        openCubeCoordinate ((x' 1 : I) : ℝ)) - EuclideanSpace.single 2 1‖ ^ 2 < ε ^ 2 := by
+      rw [norm_sq_sphereCubeInteriorParam_sub_single]
+      exact h4
+    nlinarith [norm_nonneg (sphereCubeInteriorParam
+      (openCubeCoordinate ((x' 0 : I) : ℝ), openCubeCoordinate ((x' 1 : I) : ℝ)) -
+        EuclideanSpace.single 2 1)]
+  rcases hi with hi | hi
+  · have hU : {x' : I^(Fin 2) | ((x' i : I) : ℝ) < δ} ∈ 𝓝 x := by
+      refine IsOpen.mem_nhds ?_ ?_
+      · exact isOpen_lt (continuous_subtype_val.comp (continuous_apply i)) continuous_const
+      · simp only [Set.mem_ofPred_eq]
+        rw [hi]
+        exact hδpos
+    filter_upwards [hU] with x' hx'i
+    by_cases hb' : x' ∈ Cube.boundary (Fin 2)
+    · have hbval : sphereCubeVector x' = EuclideanSpace.single 2 1 := by
+        simp only [sphereCubeVector, hb', if_true]
+      rw [hbval, dist_self]
+      exact hε
+    · refine core x' hb' ?_
+      have hne : ((x' i : I) : ℝ) ≠ 0 := fun hc => hb' ⟨i, Or.inl (Subtype.ext hc)⟩
+      have hge : (0 : ℝ) ≤ ((x' i : I) : ℝ) := (x' i).2.1
+      have hgt : 0 < ((x' i : I) : ℝ) := lt_of_le_of_ne hge (Ne.symm hne)
+      have h1 : 1 / (2 * δ) ≤ 1 / (2 * ((x' i : I) : ℝ)) :=
+        one_div_le_one_div_of_le (by positivity) (by linarith)
+      exact le_trans h1
+        (one_div_two_mul_le_abs_openCubeCoordinate_left _ hgt (by linarith [hx'i, hδ1]))
+  · have hU : {x' : I^(Fin 2) | 1 - δ < ((x' i : I) : ℝ)} ∈ 𝓝 x := by
+      refine IsOpen.mem_nhds ?_ ?_
+      · exact isOpen_lt continuous_const (continuous_subtype_val.comp (continuous_apply i))
+      · simp only [Set.mem_ofPred_eq]
+        rw [hi]
+        linarith
+    filter_upwards [hU] with x' hx'i
+    by_cases hb' : x' ∈ Cube.boundary (Fin 2)
+    · have hbval : sphereCubeVector x' = EuclideanSpace.single 2 1 := by
+        simp only [sphereCubeVector, hb', if_true]
+      rw [hbval, dist_self]
+      exact hε
+    · refine core x' hb' ?_
+      have hne : ((x' i : I) : ℝ) ≠ 1 := fun hc => hb' ⟨i, Or.inr (Subtype.ext hc)⟩
+      have hle : ((x' i : I) : ℝ) ≤ 1 := (x' i).2.2
+      have hlt : ((x' i : I) : ℝ) < 1 := lt_of_le_of_ne hle hne
+      have h1m : 1 - ((x' i : I) : ℝ) < δ := by linarith
+      have h1 : 1 / (2 * δ) ≤ 1 / (2 * (1 - ((x' i : I) : ℝ))) :=
+        one_div_le_one_div_of_le (by positivity) (by linarith)
+      exact le_trans h1
+        (one_div_two_mul_le_abs_openCubeCoordinate_right _ hlt (by linarith [h1m, hδ1]))
+
 theorem sphereCubeVector_continuous : Continuous sphereCubeVector := by
-  sorry
+  rw [continuous_iff_continuousAt]
+  intro x
+  by_cases hx : x ∈ Cube.boundary (Fin 2)
+  · have hxval : sphereCubeVector x = EuclideanSpace.single 2 1 := by
+      simp only [sphereCubeVector, hx, if_true]
+    rw [ContinuousAt, hxval]
+    obtain ⟨i, hi | hi⟩ := hx
+    · exact tendsto_sphereCubeVector_of_boundary x i (Or.inl (by rw [hi]; rfl))
+    · exact tendsto_sphereCubeVector_of_boundary x i (Or.inr (by rw [hi]; rfl))
+  · have hU : (Cube.boundary (Fin 2))ᶜ ∈ 𝓝 x := by
+      refine IsOpen.mem_nhds ?_ hx
+      rw [← DifferentialGeometry.Topology.cubeInterior_eq_compl_boundary]
+      exact DifferentialGeometry.Topology.isOpen_cubeInterior (Fin 2)
+    have heq : (fun x' : I^(Fin 2) => sphereCubeInteriorParam
+          (openCubeCoordinate ((x' 0 : I) : ℝ), openCubeCoordinate ((x' 1 : I) : ℝ))) =ᶠ[𝓝 x]
+        (fun x' : I^(Fin 2) => sphereCubeVector x') := by
+      filter_upwards [hU] with x' hx'
+      exact (sphereCubeVector_eq_param x' hx').symm
+    refine ContinuousAt.congr ?_ heq
+    exact ContinuousAt.comp (f := fun x' : I^(Fin 2) =>
+        (openCubeCoordinate ((x' 0 : I) : ℝ), openCubeCoordinate ((x' 1 : I) : ℝ)))
+      continuous_sphereCubeInteriorParam.continuousAt (continuousAt_cubeCoords_two x hx)
 
 
 def sphereCubeParameter : C(I^(Fin 2), Sphere 2) :=
