@@ -30,11 +30,34 @@ def RampLengthEvolution (B : RicciBackground (I := I) (M := Q) D a b) : Prop :=
       ContinuousOn (c.length B.family.metric lambda) (Icc s t) ∧
       IntervalIntegrable (c.energy B.family.metric lambda) volume s t ∧
       (∀ v ∈ Icc s t, 0 ≤ c.energy B.family.metric lambda v) ∧
-      (∀ v ∈ Ioo s t, HasDerivAt (c.length B.family.metric lambda)
-        (B.B₀ * c.length B.family.metric lambda v - c.energy B.family.metric lambda v) v) ∧
+      (∫ v in s..t, c.energy B.family.metric lambda v) ≤
+        Real.exp (B.B₀ * (t - s)) * c.length B.family.metric lambda s ∧
       (∀ v ∈ Icc s t,
         c.length B.family.metric lambda v ≤
           Real.exp (B.B₀ * (v - s)) * c.length B.family.metric lambda s)
+
+omit [SigmaCompactSpace Q] hCompact hConnected hBoundary in
+theorem rampLengthEvolution_of_hasDerivAt_length
+    (B : RicciBackground (I := I) (M := Q) D a b)
+    (h : ∀ (lambda : ℝ), 0 < lambda → lambda ≤ 1 → ∀ c : ProductCurve Q,
+      c.IsSolutionOn B.family.metric lambda (Icc a b) →
+      ∀ s t : ℝ, a ≤ s → s ≤ t → t ≤ b →
+        ContinuousOn (c.length B.family.metric lambda) (Icc s t) ∧
+        IntervalIntegrable (c.energy B.family.metric lambda) volume s t ∧
+        (∀ v ∈ Icc s t, 0 ≤ c.energy B.family.metric lambda v) ∧
+        (∀ v ∈ Ioo s t, HasDerivAt (c.length B.family.metric lambda)
+          (B.B₀ * c.length B.family.metric lambda v - c.energy B.family.metric lambda v) v) ∧
+        (∀ v ∈ Icc s t,
+          c.length B.family.metric lambda v ≤
+            Real.exp (B.B₀ * (v - s)) * c.length B.family.metric lambda s)) :
+    RampLengthEvolution (I := I) (Q := Q) (D := D) (a := a) (b := b) B := by
+  intro lambda hlambda hlambda_one c hsol s t has hst htb
+  obtain ⟨hcont, hint, hnn, hderiv, hgrowth⟩ :=
+    h lambda hlambda hlambda_one c hsol s t has hst htb
+  exact ⟨hcont, hint, hnn,
+    DifferentialGeometry.Analysis.ODE.integral_le_exp_mul_of_hasDerivAt_sub B.B₀_nonneg hst
+      hcont hderiv hint hnn (productCurve_length_nonneg B.family.metric lambda t c),
+    hgrowth⟩
 
 omit [SigmaCompactSpace Q] hCompact hConnected hBoundary in
 theorem rfs_rampProductBounds_of_length_evolution
@@ -43,17 +66,13 @@ theorem rfs_rampProductBounds_of_length_evolution
     (hcurv : curveShorteningTotalCurvatureBound (I := I) (M := Q) (D := D) (a := a) (b := b) B) :
     RampProductBounds (I := I) (Q := Q) (D := D) (a := a) (b := b) B := by
   intro L Theta hL hTheta lambda hlambda hlambda_one c hsol hlen htot t ht
-  have hB₀ : 0 ≤ B.B₀ := B.B₀_nonneg
   have hexp : 0 ≤ Real.exp (B.B₀ * (t - a)) := Real.exp_nonneg _
   have hgrowth_at : c.length B.family.metric lambda t ≤
       Real.exp (B.B₀ * (t - a)) * c.length B.family.metric lambda a :=
     (hev lambda hlambda hlambda_one c hsol a t le_rfl ht.1 ht.2).2.2.2.2 t ⟨ht.1, le_rfl⟩
   have henergy : (∫ v in a..t, c.energy B.family.metric lambda v) ≤
-      Real.exp (B.B₀ * (t - a)) * c.length B.family.metric lambda a := by
-    obtain ⟨hcont, hint, hnn, hderiv, _⟩ :=
-      hev lambda hlambda hlambda_one c hsol a t le_rfl ht.1 ht.2
-    exact DifferentialGeometry.Analysis.ODE.integral_le_exp_mul_of_hasDerivAt_sub hB₀ ht.1
-      hcont hderiv hint hnn (productCurve_length_nonneg B.family.metric lambda t c)
+      Real.exp (B.B₀ * (t - a)) * c.length B.family.metric lambda a :=
+    (hev lambda hlambda hlambda_one c hsol a t le_rfl ht.1 ht.2).2.2.2.1
   have hreverse : c.length B.family.metric lambda b ≤
       Real.exp (B.B₀ * (b - t)) * c.length B.family.metric lambda t :=
     (hev lambda hlambda hlambda_one c hsol t b ht.1 ht.2 le_rfl).2.2.2.2 b ⟨ht.2, le_rfl⟩
@@ -78,12 +97,8 @@ theorem rfs_goodWindows_energy_of_length_evolution
         (∫ v in a..b, c.energy B.family.metric lambda v) ≤
           Real.exp (B.B₀ * (b - a)) * L₀ := by
   intro lambda hlambda hlambda_one c hsol hlen
-  obtain ⟨hcont, hint, hnn, hderiv, _⟩ :=
+  obtain ⟨-, hint, -, hbound, -⟩ :=
     hev lambda hlambda hlambda_one c hsol a b le_rfl B.lt.le le_rfl
-  have hbound : (∫ v in a..b, c.energy B.family.metric lambda v) ≤
-      Real.exp (B.B₀ * (b - a)) * c.length B.family.metric lambda a :=
-    DifferentialGeometry.Analysis.ODE.integral_le_exp_mul_of_hasDerivAt_sub B.B₀_nonneg B.lt.le
-      hcont hderiv hint hnn (productCurve_length_nonneg B.family.metric lambda b c)
   exact ⟨(intervalIntegrable_iff_integrableOn_Icc_of_le B.lt.le).mp hint,
     hbound.trans (mul_le_mul_of_nonneg_left hlen (Real.exp_nonneg _))⟩
 
