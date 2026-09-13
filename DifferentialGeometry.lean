@@ -6506,6 +6506,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.Observation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.OpenCoreSubmanifold
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.OrientationDegree
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.PoincareControl
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.PuncturedCoreComponent
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.PoincareStandardDiscarded
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.PoincareStandardDiscardedModels
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.Recenter
@@ -9035,6 +9036,7 @@ import DifferentialGeometry.Topology.VanKampen.GroupoidTelescope
 import DifferentialGeometry.Topology.VanKampen.HomotopyEquivalentCover
 import DifferentialGeometry.Topology.VanKampen.HomotopyEquivalentFreeProductCover
 import DifferentialGeometry.Topology.VanKampen.HomotopyEquivalentSimplyConnectedCover
+import DifferentialGeometry.Topology.VanKampen.PairwiseDisjointCoverSeparation
 import DifferentialGeometry.Topology.VanKampen.HomotopyGrid
 import DifferentialGeometry.Topology.VanKampen.HomotopyInvariance
 import DifferentialGeometry.Topology.VanKampen.ParenthesizedFiniteConnectedSum
