@@ -6505,6 +6505,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.Fundamental
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.FundamentalClassRealization
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.FundamentalClassRealizationCriterion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.FundamentalClassDegreeReduction
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.FundamentalClassInputReduction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.FundamentalClassDuality
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.GeometricCutoff
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.History
