@@ -1311,6 +1311,7 @@ import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Scalar.Barrier
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Scalar.Comparison
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Scalar.CompleteHeatComparison
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Scalar.CompleteScalarComparison
+import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Scalar.DriftComparison
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Scalar.EndpointScalarComparison
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Scalar.HeatPotential.Strong
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Scalar.HeatPotential.Weak
