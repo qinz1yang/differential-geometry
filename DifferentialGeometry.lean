@@ -4996,6 +4996,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.SlabScal
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.SliceRegularityFrontier
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.TowerExtinction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.TowerExtinctionHorizon
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.TowerWidthExtinction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.CalculusBackground
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.CanonicalClass
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.ClassWidth
