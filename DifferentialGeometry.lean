@@ -8514,6 +8514,7 @@ import DifferentialGeometry.Topology.Manifold.SmoothInterval
 import DifferentialGeometry.Topology.Manifold.SmoothLiftedCharts
 import DifferentialGeometry.Topology.Manifold.SmoothMapDifferentialCoordinates
 import DifferentialGeometry.Topology.Manifold.SmoothModelTransport
+import DifferentialGeometry.Topology.Manifold.SmoothModelTransportSource
 import DifferentialGeometry.Topology.Manifold.SmoothNormalAtlas
 import DifferentialGeometry.Topology.Manifold.SmoothNormalReorientation
 import DifferentialGeometry.Topology.Manifold.SmoothOpenCover
