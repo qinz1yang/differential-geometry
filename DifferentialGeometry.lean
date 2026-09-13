@@ -6399,6 +6399,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.LoopModel
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.LowDegreeHurewiczCubeBridge
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.MetricEvent
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ObservationTower
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.OpenCoreSubmanifold
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.OrientationDegree
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.PoincareControl
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.Recenter
@@ -8691,6 +8692,8 @@ import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.AssociativeFlatt
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.BallChartTransitionDet
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.BallChartTransportCenter
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.BallChartTransportConnected
+import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.BallMarking
+import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.BallMarkingIsotopy
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.ChoiceIndependence
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.Collar
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.Commutative
