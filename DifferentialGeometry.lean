@@ -43,6 +43,7 @@ import DifferentialGeometry.Analysis.Calculus.Derivative.DifferentialComparison
 import DifferentialGeometry.Analysis.Calculus.Derivative.ForwardTimeDifference
 import DifferentialGeometry.Analysis.Calculus.Derivative.HilbertBasis
 import DifferentialGeometry.Analysis.Calculus.Derivative.ImmersionLiftRegularity
+import DifferentialGeometry.Analysis.Calculus.Derivative.IntervalConstancy
 import DifferentialGeometry.Analysis.Calculus.Derivative.IntervalInteriorDeriv
 import DifferentialGeometry.Analysis.Calculus.Derivative.LeftEndpoint
 import DifferentialGeometry.Analysis.Calculus.Derivative.ParametricIntervalIntegral
@@ -4769,6 +4770,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.Potential.Gradient
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.Span
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.Variation.First
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.Variation.Flow
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.Variation.IntervalRigidity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.Variation.Monotonicity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.Variation.Rigidity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.Variation.WeightedHessian
@@ -5013,6 +5015,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.V
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.VelocityExtensionEuclidean
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.WindowGluing
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.ActualWidth
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.ActualWidthDeformation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.AffineComparison
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.ClassWidth
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.ClassWidthDeformation
@@ -5031,6 +5034,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.Observed
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.ObservedComparisonRecord
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.ObservedRescaling
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.ObservedWidthDini
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.ObservedWidthComparison
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.Preparation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.RampAngleWindow
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.RampFrontierData
@@ -5071,8 +5075,11 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.Plateau
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.PlateauClassical
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.PlateauBridge
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.PlateauUpperComparisonAttainment
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.PlateauMorreyFrontier
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.PlateauUpperComparisonEndpoint
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.PlateauUpperComparisonIntegrability
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.PlateauUpperComparisonReduction
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.PlateauUpperComparisonOneSidedDensity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.PlateauUpperComparisonVariation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.PlateauFluxComparison
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.RegularClass
@@ -5080,6 +5087,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.SpanningAre
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.ShortFamilyContraction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.SurgeryWidthEvolution
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.HistoryWidthJump
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.HistoryWidthJumpComparison
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Gauge.HarmonicMap
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Gauge.InverseFamily
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Gauge.ScaledHarmonicMap
@@ -5168,6 +5176,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborho
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CrossModelDistanceTransfer
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CylinderBallCapture
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CylinderCoOrientationReduction
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CylinderReferenceModel
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.DyadicVolumeScale
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.EarlySlabVolume
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.EndChartTipSideDiameter
@@ -5250,6 +5259,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborho
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.RmNormFromEigenvalues
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.RoundCanonicalWitness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.RoundModelClassification
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.RoundSpaceFormWitness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ScalarComparison
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ScalarCutoff
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ScalarLaplacianJet
@@ -5882,6 +5892,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedVo
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedVolume.Convergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedVolume.Defs
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedVolume.DimensionZero
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedVolume.EqualityRigidity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedVolume.GaussianTail
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedVolume.IntegralConvergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedVolume.LowerBound.FiniteChartBallCover
@@ -7179,6 +7190,7 @@ import DifferentialGeometry.Geometry.Metric.RicciSoliton.SurfaceFlux
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.SurfaceIdentities
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.SurfaceIsometry
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.SurfaceMorse
+import DifferentialGeometry.Geometry.Metric.RicciSoliton.TensorForm
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.UniversalCover
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.WeightedRicci
 import DifferentialGeometry.Geometry.Metric.RiemannianMetricTensor
@@ -7370,6 +7382,7 @@ import DifferentialGeometry.Geometry.MinimalSurface.Plateau.OpenTargetExtension
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.PositiveTrace
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.SelectedConformalDisk
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.SmoothDensity
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.SmoothDensityFrontier
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.SmoothDiskTrace
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.SmoothExtension
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.SmoothTraceLift
