@@ -7,6 +7,7 @@ import DifferentialGeometry.Geometry.Metric.Product
 import DifferentialGeometry.Geometry.Metric.Euclidean
 import DifferentialGeometry.Geometry.Metric.Quotient
 import DifferentialGeometry.Topology.Manifold.OpenEmbedding
+import DifferentialGeometry.Topology.Covering.AddCircleLift
 import Mathlib.Analysis.SpecialFunctions.Complex.Circle
 
 noncomputable section
@@ -555,6 +556,7 @@ theorem quotientProduct_ricciBackground [I.Boundaryless]
 
 end QuotientGeometry
 
+omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I ∞ M] in
 theorem exists_productCurve_lift (c : CurveMap (M × Surgery.Topology.Circle)) {a b : ℝ} (hab : a < b)
     (hbase : CurveMap.SmoothOn (I := I) (fun z t => (c z t).1) (Icc a b))
     (hcircle : ∀ x t, t ∈ Icc a b → ∃ localLift : ℝ × ℝ → ℝ,
@@ -563,6 +565,54 @@ theorem exists_productCurve_lift (c : CurveMap (M × Surgery.Topology.Circle)) {
         (localLift p : Surgery.Topology.Circle) = (c (p.1 : Surgery.Topology.Circle) p.2).2) :
     ∃ ĉ : ProductCurve M, ĉ.SmoothOn (I := I) (Icc a b) ∧
       ∀ z t, t ∈ Icc a b → ĉ.map z t = c z t := by
-  sorry
+  classical
+  set s : Set ℝ := Icc a b with hs
+  have hane : a ∈ s := left_mem_Icc.mpr (le_of_lt hab)
+  have hsconv : Convex ℝ s := convex_Icc a b
+  have hne : s.Nonempty := ⟨a, hane⟩
+  set f : ℝ × ℝ → Surgery.Topology.Circle :=
+    fun p => (c (p.1 : Surgery.Topology.Circle) p.2).2 with hf
+  have hper : ∀ p : ℝ × ℝ, f (p.1 + 1, p.2) = f p := by
+    intro p
+    have h1 : ((p.1 + 1 : ℝ) : Surgery.Topology.Circle) = (p.1 : Surgery.Topology.Circle) := by
+      rw [AddCircle.coe_add, AddCircle.coe_period, add_zero]
+    simp only [f]
+    rw [h1]
+  have hloc : ∀ q ∈ (univ : Set ℝ) ×ˢ s, ∃ φ : ℝ × ℝ → ℝ,
+      ContDiffWithinAt ℝ ∞ φ ((univ : Set ℝ) ×ˢ s) q ∧
+      (fun p => (φ p : Surgery.Topology.Circle)) =ᶠ[𝓝[(univ : Set ℝ) ×ˢ s] q] f := by
+    intro q hq
+    obtain ⟨φ, hφ, hφeq⟩ := hcircle q.1 q.2 hq.2
+    exact ⟨φ, hφ, hφeq⟩
+  obtain ⟨g, d, hg_smooth, hg_lift, hg_inc⟩ :=
+    DifferentialGeometry.Topology.exists_contDiffOn_addCircle_lift_of_periodic
+      hsconv hne f hper hloc
+  let map : CurveMap (M × Surgery.Topology.Circle) := fun z t => c z (if t ∈ s then t else a)
+  let y : ℝ → ℝ → ℝ := fun x t => g (x, if t ∈ s then t else a)
+  have hy_lift : ∀ x t,
+      (y x t : Surgery.Topology.Circle) = (map (x : Surgery.Topology.Circle) t).2 := by
+    intro x t
+    by_cases ht : t ∈ s
+    · simpa [y, map, f, ht] using hg_lift (x, t) ⟨trivial, ht⟩
+    · simpa [y, map, f, ht] using hg_lift (x, a) ⟨trivial, hane⟩
+  have hy_inc : ∀ x t, y (x + 1) t = y x t + d := by
+    intro x t
+    by_cases ht : t ∈ s
+    · simpa [y, ht] using hg_inc (x, t) ⟨trivial, ht⟩
+    · simpa [y, ht] using hg_inc (x, a) ⟨trivial, hane⟩
+  have hmap_eq : ∀ z t, t ∈ s → map z t = c z t := by
+    intro z t ht
+    simp only [map, ht, if_pos]
+  refine ⟨{ map := map, y := y, degree := d, lift_eq := hy_lift, increment := hy_inc }, ?_, ?_⟩
+  · constructor
+    · change ContMDiffOn 𝓘(ℝ, ℝ × ℝ) I ∞
+        (fun p : ℝ × ℝ => (map (p.1 : Surgery.Topology.Circle) p.2).1) (univ ×ˢ s)
+      refine hbase.congr fun p hp => ?_
+      simp only [map, hp.2, if_pos, CurveMap.lift]
+    · change ContDiffOn ℝ ∞ (fun p : ℝ × ℝ => y p.1 p.2) (univ ×ˢ s)
+      refine hg_smooth.congr fun p hp => ?_
+      simp [y, hp.2]
+  · intro z t ht
+    exact hmap_eq z t ht
 
 end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening
