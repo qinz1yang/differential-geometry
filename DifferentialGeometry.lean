@@ -3034,6 +3034,7 @@ import DifferentialGeometry.Geometry.Boundary.Manifold.CollaredQuotientAtlas
 import DifferentialGeometry.Geometry.Boundary.Manifold.CollaredQuotientDouble
 import DifferentialGeometry.Geometry.Boundary.Manifold.CollaredQuotientInteriorAtlas
 import DifferentialGeometry.Geometry.Boundary.Manifold.CollaredQuotientSeamOpen
+import DifferentialGeometry.Geometry.Boundary.Manifold.CollaredQuotientSeamPiece
 import DifferentialGeometry.Geometry.Boundary.Manifold.CollaredQuotientSeamRegion
 import DifferentialGeometry.Geometry.Boundary.Manifold.Component
 import DifferentialGeometry.Geometry.Boundary.Metric.GramMatrix
@@ -4935,6 +4936,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.C
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Evolution
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.GenericCurves
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.GenericCurvesFrontier
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ImmersedPersistence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.IntegralBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.LeastAreaAttainment
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.LocalExistence
@@ -4991,6 +4993,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.ShortExp
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.SlabScalarLowerBarrier
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.SliceRegularityFrontier
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.TowerExtinction
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.TowerExtinctionHorizon
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.CalculusBackground
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.CanonicalClass
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.ClassWidth
