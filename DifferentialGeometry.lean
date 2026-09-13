@@ -8406,6 +8406,7 @@ import DifferentialGeometry.Topology.Manifold.StereographicCover
 import DifferentialGeometry.Topology.Manifold.StereographicCylinder
 import DifferentialGeometry.Topology.Manifold.StripExtension
 import DifferentialGeometry.Topology.Manifold.Submersion
+import DifferentialGeometry.Topology.Manifold.SupportedBallTransport
 import DifferentialGeometry.Topology.Manifold.SubmersionFiber
 import DifferentialGeometry.Topology.Manifold.TransverseDerivative
 import DifferentialGeometry.Topology.Manifold.TransverseFlow
@@ -8701,6 +8702,7 @@ import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.BallChartTransit
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.BallChartTransportCenter
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.BallChartTransportConnected
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.BallMarking
+import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.BallMarkingSupport
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.BallMarkingIsotopy
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.ChoiceIndependence
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.Collar
