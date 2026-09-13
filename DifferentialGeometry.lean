@@ -171,6 +171,8 @@ import DifferentialGeometry.Analysis.Calculus.Trace
 import DifferentialGeometry.Analysis.Calculus.Variation.Comparison
 import DifferentialGeometry.Analysis.Calculus.Variation.Lipschitz
 import DifferentialGeometry.Analysis.Calculus.Variation.Periodic
+import DifferentialGeometry.Analysis.Complex.GradientRegularity
+import DifferentialGeometry.Analysis.Complex.SquareRoot
 import DifferentialGeometry.Analysis.Convex.LogConvexSequence
 import DifferentialGeometry.Analysis.Convex.MatrixRayleigh
 import DifferentialGeometry.Analysis.Convex.MovingSetDistance
