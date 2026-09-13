@@ -708,6 +708,7 @@ import DifferentialGeometry.Analysis.Integration.Holder.Weighted
 import DifferentialGeometry.Analysis.Integration.Integral.CompactSupportDerivative
 import DifferentialGeometry.Analysis.Integration.Integral.CompactSupportParametric
 import DifferentialGeometry.Analysis.Integration.Integral.ComplexSquare
+import DifferentialGeometry.Analysis.Integration.Integral.Laplacian
 import DifferentialGeometry.Analysis.Integration.Integral.Prod
 import DifferentialGeometry.Analysis.Integration.L2.Basic
 import DifferentialGeometry.Analysis.Integration.L2.CompactSupport
