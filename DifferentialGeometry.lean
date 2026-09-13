@@ -8196,6 +8196,7 @@ import DifferentialGeometry.Topology.Manifold.LocalContraction
 import DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.Descent
 import DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.Lift
 import DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.Open
+import DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.OpenCodRestrict
 import DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.PartialDiffeomorph
 import DifferentialGeometry.Topology.Manifold.LocalDiffeomorphRange
 import DifferentialGeometry.Topology.Manifold.LocalExtrema
