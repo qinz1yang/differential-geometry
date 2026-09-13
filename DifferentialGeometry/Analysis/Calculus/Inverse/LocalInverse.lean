@@ -1,5 +1,4 @@
 import Mathlib.Analysis.Calculus.InverseFunctionTheorem.ContDiff
-import Mathlib.Analysis.Normed.Module.Complemented
 
 noncomputable section
 open scoped ContDiff Topology
@@ -52,28 +51,5 @@ theorem exists_localInverse_of_hasFDerivAt_equiv
       ContDiffOn ℝ ∞ e e.source ∧ ContDiffOn ℝ ∞ e.symm e.target ∧
       (∀ x, e x = f x) :=
   exists_localInverse_of_hasFDerivAt_equiv_of_ne_zero (𝕜 := ℝ) (n := ∞) (by simp) hf hU hx₀ hdf
-
-theorem exists_contDiff_submersion_chart_of_hasFDerivAt
-    {𝕜 : Type*} [RCLike 𝕜] {E F : Type*}
-    [NormedAddCommGroup E] [NormedSpace 𝕜 E] [CompleteSpace E]
-    [NormedAddCommGroup F] [NormedSpace 𝕜 F] [CompleteSpace F]
-    {f : E → F} {U : Set E} {a : E} {L : E →L[𝕜] F} {r : ℕ∞ω}
-    (hr : r ≠ 0) (hf : ContDiffOn 𝕜 r f U) (hU : IsOpen U) (ha : a ∈ U)
-    (hdf : HasFDerivAt f L a) (hL : Function.Surjective L)
-    (hker : L.ker.ClosedComplemented) :
-    ∃ e : OpenPartialHomeomorph E (F × L.ker),
-      a ∈ e.source ∧ e.source ⊆ U ∧
-      ContDiffOn 𝕜 r e e.source ∧ ContDiffOn 𝕜 r e.symm e.target ∧
-      ∀ x, (e x).1 = f x := by
-  let : CompleteSpace L.ker := L.isClosed_ker.completeSpace_coe
-  obtain ⟨P, hP⟩ := hker
-  let A := L.equivProdOfSurjectiveOfIsCompl P (LinearMap.range_eq_top.mpr hL)
-    (LinearMap.range_eq_of_proj hP) (LinearMap.isCompl_of_proj hP)
-  have hH : ContDiffOn 𝕜 r (fun x => (f x, P x)) U := hf.prodMk P.contDiff.contDiffOn
-  have hdH : HasFDerivAt (fun x => (f x, P x)) (A : E →L[𝕜] F × L.ker) a :=
-    hdf.prodMk P.hasFDerivAt
-  obtain ⟨e, hea, heU, he, hei, heq⟩ :=
-    exists_localInverse_of_hasFDerivAt_equiv_of_ne_zero hr hH hU ha hdH
-  exact ⟨e, hea, heU, he, hei, fun x => congrArg Prod.fst (heq x)⟩
 
 end DifferentialGeometry.Analysis
