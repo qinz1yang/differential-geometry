@@ -1,11 +1,13 @@
 # Local homology and global classes from coherent local generators
 
 This separate `PoincareLean` project contains a dependency-closed checkpoint of
-105 Poincare modules. It extends the recovered Chapter 35 source at commit
+106 Poincare modules. It extends the recovered Chapter 35 source at commit
 `b45bfa009368c8f5f531e10f4f5280e90079d6ad` and preserves its mathematical objects
 and `Poincare` namespaces. `Poincare.lean` imports every included leaf.
 
 The additions prove:
+
+- excision for the actual relative integral cochain and cohomology maps;
 
 - relative cochains as the kernel of the actual singular-cochain restriction,
   their contravariant pair maps, and the natural exact cohomology sequence;
@@ -52,7 +54,7 @@ The additions prove:
 - a unique compact-neighborhood class with the same normalization in every
   chart whose actual tangent trivialization preserves the base-chart orientation.
 
-The twenty-one new/changed modules and their exact baseline/current hashes are listed in
+The twenty-two new/changed modules and their exact baseline/current hashes are listed in
 [provenance/SNAPSHOT.json](provenance/SNAPSHOT.json). The derivative homotopy
 retains its [upstream attribution and modification record](provenance/README.md).
 
@@ -374,6 +376,27 @@ Stock declaration linters and standard-only axioms pass. All 104 previous
 leaves remain byte-identical and retain earlier compilation evidence.
 This is a foundation for cohomological excision and duality, not a cap-product
 or Poincare-duality theorem.
+
+The cohomological-excision extension adds one coherent 321-line leaf and two
+public theorems, for 106 modules and 82 added exports. It proves a
+quasi-isomorphism for the actual relative-cochain pair map and bijectivity
+of the actual induced cohomology map in every natural degree, for any two
+open sets covering the original space. It reuses the small-chain inclusion,
+projective-complex homotopy equivalence, the public cochain-extension theorem
+and the actual relative-cochain kernel. Comparison and gluing mechanics remain
+private; no second chain or cohomology theory is introduced.
+
+Final portable request `1789305906138803485-topology_checkpoint-d1009f2e`
+passed in Slurm 13821107 in 135.55 seconds. The new leaf and root freshly
+compiled in 1:06.21, maximum RSS 1813796 KiB, with zero diagnostics. All 238 guards
+and 151 signature/axiom pairs pass; all 147 previous pairs are byte-identical.
+Both new public and two consumer readbacks match the original imported gate
+up to scoped set notation. Consumers test actual punctured-real-line excision
+and unique inverse images under the actual map in every natural degree.
+The source gate also checks evaluation of the dual-to-kernel comparison on
+original singular chains. Stock declaration linters and standard-only axioms
+pass. All 105 earlier leaves remain byte-identical. Actual cap products,
+normalization and the Poincare-duality isomorphism still require proofs.
 
 ## Remaining topology work
 

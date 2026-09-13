@@ -5,21 +5,19 @@ additive publication within the shared DifferentialGeometry Git repository. Its 
 library is `Poincare`; its sources retain the original mathematical namespaces.
 
 The source baseline is the recovered Chapter 35 commit
-`b45bfa009368c8f5f531e10f4f5280e90079d6ad`. This checkpoint includes 105 modules
-and 80 added public exports. The latest layer constructs relative cochains
-using the actual restriction kernel, their contravariant pair maps and the
-natural exact cohomology sequence in every natural degree. The preceding
-compact-gluing layer constructs unique global classes and generators from
-locally realized local classes; those source files and APIs are unchanged.
+`b45bfa009368c8f5f531e10f4f5280e90079d6ad`. This checkpoint includes 106 modules
+and 82 added public exports. The latest layer proves excision for the actual
+relative integral cochain and cohomology maps in every natural degree, for
+any two open sets covering the original space. The relative-cochain kernel,
+its pair maps, exact sequence and all 105 earlier source leaves are unchanged.
 
-Final request `1789303157293002715-topology_checkpoint-d51aac36` passed in
-Slurm 13821107 in 143.79 seconds, with 230 guards and 147 signature/axiom pairs.
-All 120 previous pairs are byte-identical. New RelativeCochains and root
-freshly compiled in 1:14.73, maximum RSS 1778808 KiB, with zero diagnostics.
-All 104 previous leaves remain unchanged. Consumers verify an actual nonzero
-relative cochain and connecting-map naturality under the map x ↦ 2x.
-Stock declaration linters and standard-only axioms pass. This does not yet
-prove cohomological excision, cap-product duality or the full topology suite.
+Final request `1789305906138803485-topology_checkpoint-d1009f2e` passed in
+Slurm 13821107 in 135.55 seconds, with 238 guards and 151 signature/axiom pairs.
+All 147 previous pairs are byte-identical. New CochainExcision and the root
+freshly compiled in 1:06.21, maximum RSS 1813796 KiB, with zero diagnostics.
+Consumers verify punctured-real-line excision and unique inverse images under
+the actual map in every degree. Stock declaration linters and standard-only
+axioms pass. This does not yet prove cap-product duality or the full suite.
 
 The preceding signed-chart extension retains its exact public statements.
 

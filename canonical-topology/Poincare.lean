@@ -14,6 +14,7 @@ import Poincare.Topology.Homology.CarrierRestriction
 import Poincare.Topology.Homology.ChainCokernelElements
 import Poincare.Topology.Homology.ChainSupport
 import Poincare.Topology.Homology.ChainsIn
+import Poincare.Topology.Homology.CochainExcision
 import Poincare.Topology.Homology.CochainMaps
 import Poincare.Topology.Homology.Cochains
 import Poincare.Topology.Homology.CompactSupport
