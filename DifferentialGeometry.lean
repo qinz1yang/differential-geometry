@@ -8048,6 +8048,7 @@ import DifferentialGeometry.Topology.LoopSpace.SmoothingLipschitz
 import DifferentialGeometry.Topology.LoopSpace.SmoothingSuperposition
 import DifferentialGeometry.Topology.LoopSpace.SpanningDisk
 import DifferentialGeometry.Topology.LoopSpace.UniformSmoothing
+import DifferentialGeometry.Topology.Manifold.AffineBallTransport
 import DifferentialGeometry.Topology.Manifold.AffineCharts
 import DifferentialGeometry.Topology.Manifold.AmbientSectionExtension
 import DifferentialGeometry.Topology.Manifold.Atlas
