@@ -35,8 +35,8 @@ theorem exists_pLPiece_biUnion [T2Space X] [Nonempty X] [HasGroupoid X (plGroupo
     rw [Finset.set_biUnion_insert, union_comm, hVa]
     exact ⟨T'⟩
 
-theorem exists_pLTriangulation [CompactSpace X] [T2Space X] [Nonempty X]
-    [HasGroupoid X (plGroupoid n)] : Nonempty (PLTriangulation n X) := by
+theorem exists_pLPiece_univ [CompactSpace X] [T2Space X] [Nonempty X]
+    [HasGroupoid X (plGroupoid n)] : Nonempty (PLPiece n X univ) := by
   classical
   choose C hC hCe hCnhds using exists_isHPolytope_image_symm_mem_nhds (n := n) (X := X)
   obtain ⟨t, -, hcover⟩ := isCompact_univ.elim_nhds_subcover
@@ -47,6 +47,11 @@ theorem exists_pLTriangulation [CompactSpace X] [T2Space X] [Nonempty X]
   have huniv : (⋃ x ∈ t, (chartAt (EuclideanSpace ℝ (Fin n)) x).symm '' C x) = univ :=
     eq_univ_of_univ_subset hcover
   rw [huniv] at T
+  exact ⟨T⟩
+
+theorem exists_pLTriangulation [CompactSpace X] [T2Space X] [Nonempty X]
+    [HasGroupoid X (plGroupoid n)] : Nonempty (PLTriangulation n X) := by
+  obtain ⟨T⟩ := exists_pLPiece_univ (n := n) (X := X)
   exact ⟨T.toPLTriangulation⟩
 
 end DifferentialGeometry.Topology.PiecewiseLinear
