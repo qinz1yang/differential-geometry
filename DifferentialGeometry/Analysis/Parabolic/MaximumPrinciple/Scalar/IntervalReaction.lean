@@ -274,4 +274,43 @@ theorem quadratic_reaction_interior_upper_bound
       field_simp [ht.1.ne', hc.ne', hR.ne']
       ring
 
+theorem quadratic_reaction_interior_upper_bound_on_closed_time_interval
+    {u a : ℝ → ℝ → ℝ} {R T c Λ : ℝ}
+    (hR : 0 < R) (hc : 0 < c) (hΛ : 0 ≤ Λ)
+    (hcont : ContinuousOn (fun p : ℝ × ℝ => u p.1 p.2) (Icc (-R) R ×ˢ Icc 0 T))
+    (hu₁ : ∀ t ∈ Ioo 0 T, DifferentiableOn ℝ (fun x => u x t) (Ioo (-R) R))
+    (hu₂ : ∀ t ∈ Ioo 0 T, DifferentiableOn ℝ (deriv (fun x => u x t)) (Ioo (-R) R))
+    (hut : ∀ x ∈ Ioo (-R) R, ∀ t ∈ Ioo 0 T,
+      DifferentiableAt ℝ (fun s => u x s) t)
+    (ha : ∀ x ∈ Ioo (-R) R, ∀ t ∈ Ioo 0 T, a x t ∈ Icc 0 Λ)
+    (hpde : ∀ x ∈ Ioo (-R) R, ∀ t ∈ Ioo 0 T,
+      deriv (fun s => u x s) t - a x t * deriv (deriv (fun y => u y t)) x ≤
+        -c * u x t ^ 2) :
+    ∀ t ∈ Ioc 0 T, ∀ x ∈ Icc (-R / 2) (R / 2),
+      u x t ≤ 16 / (9 * c * t) + 64 * Λ / (c * R ^ 2) := by
+  have hinner := quadratic_reaction_interior_upper_bound hR hc hΛ
+    (hcont.mono (fun p hp => ⟨hp.1, hp.2.1, hp.2.2.le⟩)) hu₁ hu₂ hut ha hpde
+  intro t ht x hx
+  rcases lt_or_eq_of_le ht.2 with hlt | heq
+  · exact hinner t ⟨ht.1, hlt⟩ x hx
+  subst t
+  have hT : 0 < T := ht.1
+  have hxR : x ∈ Icc (-R) R := ⟨by linarith [hx.1], by linarith [hx.2]⟩
+  have hfilter : 𝓝[<] T ≤ 𝓝[Icc 0 T] T := by
+    apply le_inf nhdsWithin_le_nhds
+    apply le_principal_iff.mpr
+    filter_upwards [Ioo_mem_nhdsLT hT] with s hs
+    exact ⟨hs.1.le, hs.2.le⟩
+  have huc : ContinuousOn (fun s => u x s) (Icc 0 T) :=
+    hcont.comp (continuous_const.prodMk continuous_id).continuousOn
+      (fun s hs => ⟨hxR, hs⟩)
+  have huT := (huc T ⟨hT.le, le_rfl⟩).tendsto.mono_left hfilter
+  have hbc : ContinuousAt (fun s : ℝ => 16 / (9 * c * s) + 64 * Λ / (c * R ^ 2)) T :=
+    (continuousAt_const.div (continuousAt_const.mul continuousAt_id)
+      (by positivity : (9 : ℝ) * c * T ≠ 0)).add continuousAt_const
+  exact le_of_tendsto_of_tendsto huT (hbc.tendsto.mono_left nhdsWithin_le_nhds)
+    (by
+      filter_upwards [Ioo_mem_nhdsLT hT] with s hs
+      exact hinner s hs x hx)
+
 end DifferentialGeometry.Analysis.Parabolic
