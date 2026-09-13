@@ -1,9 +1,9 @@
 {
-  "scope": "Dependency-closed104-module checkpoint including compact gluing and global classes/generators from locally realized local classes; tangent-orientation producer and full topology suite incomplete",
+  "scope": "Dependency-closed105-module checkpoint including actual relative cochains, their natural pair maps and exact cohomology sequence; full topology suite incomplete",
   "baseline_commit": "b45bfa009368c8f5f531e10f4f5280e90079d6ad",
   "baseline_ref": "refs/remotes/origin/codex/chapter35",
   "source_project": "PoincareLean",
-  "source_module_count": 104,
+  "source_module_count": 105,
   "roots": [
     "Poincare.Topology.Homology.RelativeMaps",
     "Poincare.Topology.Homology.RelativeHomeomorphism",
@@ -19,7 +19,8 @@
     "Poincare.Topology.Homology.CompactSupport",
     "Poincare.Topology.Homology.ManifoldCompactHomology",
     "Poincare.Topology.Homology.RelativeEmpty",
-    "Poincare.Topology.Homology.ManifoldFundamentalClass"
+    "Poincare.Topology.Homology.ManifoldFundamentalClass",
+    "Poincare.Topology.Homology.RelativeCochains"
   ],
   "changed_sources": [
     {
@@ -99,6 +100,12 @@
       "path": "Poincare/Topology/Homology/ManifoldFundamentalClass.lean",
       "baseline_sha256": null,
       "sha256": "f7d6a5d1e04ec0dc46ef485006abf93d2c29fbac2bb997ba515e214c74bc58fc"
+    },
+    {
+      "module": "Poincare.Topology.Homology.RelativeCochains",
+      "path": "Poincare/Topology/Homology/RelativeCochains.lean",
+      "baseline_sha256": null,
+      "sha256": "a387959e472686cd256747d57323faa3038af6db41f7bda44ddc2422a8f5d709"
     },
     {
       "module": "Poincare.Topology.Homology.RelativeEmpty",
@@ -469,6 +476,12 @@
       "sha256": "f3f7424601f2af6394f6ca375ef6bffd89b11a5ce0b29367a35fdcad27510d31"
     },
     {
+      "module": "Poincare.Topology.Homology.RelativeCochains",
+      "path": "Poincare/Topology/Homology/RelativeCochains.lean",
+      "baseline_sha256": null,
+      "sha256": "a387959e472686cd256747d57323faa3038af6db41f7bda44ddc2422a8f5d709"
+    },
+    {
       "module": "Poincare.Topology.Homology.RelativeEmpty",
       "path": "Poincare/Topology/Homology/RelativeEmpty.lean",
       "baseline_sha256": null,
@@ -772,8 +785,8 @@
   "aggregate": {
     "path": "Poincare.lean",
     "baseline_sha256": "99c3c8e47c19f60ee50a7e0f377e59138cf4ff33ebd4e26530d3c2b7cd47d452",
-    "sha256": "947a0d89e0f352fa313e0f01d5d1d03626cfa62a9de21cf00ad8def3e967e6d0",
-    "change": "Flat104-leaf checkpoint aggregate; full recovered aggregate remains separate"
+    "sha256": "9f0e5c5111a1a0e846e2622d2a3a126af2f543ea43cccc25813c73d5fad98735",
+    "change": "Flat105-leaf checkpoint aggregate; full recovered aggregate remains separate"
   },
   "configuration": [
     {
@@ -807,6 +820,7 @@
     "Mathlib.Algebra.Homology.HomologySequence",
     "Mathlib.Algebra.Homology.HomologySequenceLemmas",
     "Mathlib.Algebra.Homology.QuasiIso",
+    "Mathlib.Algebra.Homology.ShortComplex.Exact",
     "Mathlib.Algebra.Homology.ShortComplex.ModuleCat",
     "Mathlib.Algebra.Module.Submodule.Equiv",
     "Mathlib.Algebra.Module.ULift",
@@ -926,7 +940,32 @@
     "Poincare.Topology.exists_unique_compact_class_of_locally_realized_family",
     "Poincare.Topology.exists_unique_absolute_class_of_locally_realized_family",
     "Poincare.Topology.integralAbsoluteToRelative_bijective_of_local_generators",
-    "Poincare.Topology.exists_unique_absolute_generator_of_locally_realized_family"
+    "Poincare.Topology.exists_unique_absolute_generator_of_locally_realized_family",
+    "Poincare.Topology.integralRelativeCochains",
+    "Poincare.Topology.integralRelativeCochainInclusion",
+    "Poincare.Topology.integralRelativeCochainInclusion_comp",
+    "Poincare.Topology.integralSingularCochainMap_pair_square",
+    "Poincare.Topology.integralRelativeCochainMap",
+    "Poincare.Topology.integralRelativeCochainMap_inclusion",
+    "Poincare.Topology.integralRelativeCochainMap_id",
+    "Poincare.Topology.integralRelativeCochainMap_comp",
+    "Poincare.Topology.integralRelativeCohomology",
+    "Poincare.Topology.integralRelativeCohomologyMap",
+    "Poincare.Topology.integralRelativeCohomologyMap_id",
+    "Poincare.Topology.integralRelativeCohomologyMap_comp",
+    "Poincare.Topology.integralRelativeToAbsoluteCohomology",
+    "Poincare.Topology.integralRelativeToAbsoluteCohomology_natural",
+    "Poincare.Topology.integralRelativeCochainMap_apply",
+    "Poincare.Topology.integralSingularCochainPullback_subspace_surjective",
+    "Poincare.Topology.integralRelativeCochainSequence",
+    "Poincare.Topology.integralRelativeCochainSequence_shortExact",
+    "Poincare.Topology.integralRelativeCochainInclusion_range",
+    "Poincare.Topology.integralRelativeCochainSequenceMap",
+    "Poincare.Topology.integralRelativeCohomologyConnecting",
+    "Poincare.Topology.integralRelativeCohomologyConnecting_natural",
+    "Poincare.Topology.integralRelativeCohomology_exact_absolute",
+    "Poincare.Topology.integralRelativeCohomology_exact_subspace",
+    "Poincare.Topology.integralRelativeCohomology_exact_relative"
   ],
   "historical_authorities": [
     {
@@ -1064,24 +1103,23 @@
     "full_topology_suite_accepted": false
   },
   "validation": {
-    "status": "passed for the selected104-module checkpoint; full topology suite incomplete",
+    "status": "passed for the selected105-module checkpoint; full topology suite incomplete",
     "date": "2026-09-13",
     "slurm_job": "13821107",
     "host": "della-r3c4n2",
-    "request_id": "1789299823301815112-topology_checkpoint-2584f507",
-    "input_sha256": "6b9b2b9f9afdd9885ac3af1a5f848dabdb71f1497fd42d402af9a82db8c8f5d0",
-    "result_sha256": "bc230839a00f0d6ab4c272fe969ac5f67d05e1ef6449eb30379ee7e49ba7a988",
-    "artifact_log_sha256": "5f09f0ff0c91e3594ecd34cdf821ccf79bcb1851ee15220f82a369aa94053a10",
-    "source_config_harness_hash_guards": 222,
+    "request_id": "1789303157293002715-topology_checkpoint-d51aac36",
+    "input_sha256": "20b31d2bce24f0cf5e8ba248c766bc8bed56fed8c8f6806ca6bab02c9838791d",
+    "result_sha256": "a4aa1985316ea7efa300e6780118c8bcc12ded6be5e38000af760db2a3598d86",
+    "artifact_log_sha256": "f1649001ff2f65dacde40f84a28c40d3f96fa1f47c24611aa92f16089e5802a9",
+    "source_config_harness_hash_guards": 230,
     "freshly_built_modules": [
-      "Poincare.Topology.Homology.ManifoldCompactHomology",
-      "Poincare.Topology.Homology.ManifoldFundamentalClass",
+      "Poincare.Topology.Homology.RelativeCochains",
       "Poincare"
     ],
     "root_build": "lake --no-cache --iofail build Poincare",
-    "fresh_build_scope": "Changed ManifoldCompactHomology, new ManifoldFundamentalClass and root freshly compiled with zero diagnostics. Other102 leaves remain byte-identical and retain earlier evidence.",
-    "exact_public_exports": 55,
-    "public_and_consumer_signature_axiom_pairs": 120,
+    "fresh_build_scope": "New RelativeCochains and root freshly compiled with zero diagnostics. All104 earlier leaves remain byte-identical and retain earlier evidence.",
+    "exact_public_exports": 80,
+    "public_and_consumer_signature_axiom_pairs": 147,
     "linters": [
       "unusedArguments",
       "simpNF",
@@ -1096,13 +1134,14 @@
       "Quot.sound"
     ],
     "unexpected_diagnostics": 0,
-    "elapsed_seconds": 159.32610535621643,
-    "peak_summed_rss_bytes": 2820685824,
+    "elapsed_seconds": 143.79369735717773,
+    "peak_summed_rss_bytes": 2842775552,
     "full_topology_suite_accepted": false,
     "consumer_probes": [
-      "All115 prior signature/axiom pairs reproduced byte-identically",
-      "Four new public and nonzero rank-zero consumer readbacks match original imported gate up to finrank qualification and whitespace",
-      "Actual global generator with coordinate1 and actual point-restriction bijectivity on the compact rank-zero model",
+      "All120 prior signature/axiom pairs reproduced byte-identically",
+      "All25 new public and two consumer readbacks match the original imported gate up to namespace qualification and whitespace",
+      "Actual nonzero relative degree-zero cochain for the pair (real line,{0}) evaluates to1 on the constant1 singular simplex",
+      "Actual pair map x to2x commutes with the connecting map in every natural degree",
       "All previously checked noncompact, empty, nonzero, signed-chart and rank-zero examples retained"
     ]
   },
@@ -1821,5 +1860,59 @@
       "Poincare.Topology.Homology.ManifoldFundamentalClass"
     ],
     "source_request_id": "1789299583377147994-topology-135c6250"
+  },
+  "previous_fundamental_class_validation": {
+    "status": "passed for the selected104-module checkpoint; full topology suite incomplete",
+    "date": "2026-09-13",
+    "slurm_job": "13821107",
+    "host": "della-r3c4n2",
+    "request_id": "1789299823301815112-topology_checkpoint-2584f507",
+    "input_sha256": "6b9b2b9f9afdd9885ac3af1a5f848dabdb71f1497fd42d402af9a82db8c8f5d0",
+    "result_sha256": "bc230839a00f0d6ab4c272fe969ac5f67d05e1ef6449eb30379ee7e49ba7a988",
+    "artifact_log_sha256": "5f09f0ff0c91e3594ecd34cdf821ccf79bcb1851ee15220f82a369aa94053a10",
+    "source_config_harness_hash_guards": 222,
+    "freshly_built_modules": [
+      "Poincare.Topology.Homology.ManifoldCompactHomology",
+      "Poincare.Topology.Homology.ManifoldFundamentalClass",
+      "Poincare"
+    ],
+    "root_build": "lake --no-cache --iofail build Poincare",
+    "fresh_build_scope": "Changed ManifoldCompactHomology, new ManifoldFundamentalClass and root freshly compiled with zero diagnostics. Other102 leaves remain byte-identical and retain earlier evidence.",
+    "exact_public_exports": 55,
+    "public_and_consumer_signature_axiom_pairs": 120,
+    "linters": [
+      "unusedArguments",
+      "simpNF",
+      "synTaut",
+      "checkType"
+    ],
+    "linter_scope": "All imported Poincare declarations and current consumers, including private declarations",
+    "defLemma": "Unavailable in the pinned Mathlib; source declaration-kind checks retained.",
+    "allowed_transitive_axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "unexpected_diagnostics": 0,
+    "elapsed_seconds": 159.32610535621643,
+    "peak_summed_rss_bytes": 2820685824,
+    "full_topology_suite_accepted": false,
+    "consumer_probes": [
+      "All115 prior signature/axiom pairs reproduced byte-identically",
+      "Four new public and nonzero rank-zero consumer readbacks match original imported gate up to finrank qualification and whitespace",
+      "Actual global generator with coordinate1 and actual point-restriction bijectivity on the compact rank-zero model",
+      "All previously checked noncompact, empty, nonzero, signed-chart and rank-zero examples retained"
+    ]
+  },
+  "original_relative_cochains_validation": {
+    "request_id": "1789302721767496711-topology-5cffaa78",
+    "input_sha256": "e28c0cb3678b5f12c9fe247397d57980b37f5deb46b3edba0d21773f6f583eed",
+    "elapsed_seconds": 69.69306993484497,
+    "source_guards": 52,
+    "signature_axiom_pairs": 27,
+    "fresh_modules": [
+      "Poincare.Topology.Homology.RelativeCochains"
+    ],
+    "source_request_id": "1789302544298781532-topology-306577bf"
   }
 }

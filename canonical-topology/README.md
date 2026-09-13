@@ -1,11 +1,14 @@
 # Local homology and global classes from coherent local generators
 
 This separate `PoincareLean` project contains a dependency-closed checkpoint of
-104 Poincare modules. It extends the recovered Chapter 35 source at commit
+105 Poincare modules. It extends the recovered Chapter 35 source at commit
 `b45bfa009368c8f5f531e10f4f5280e90079d6ad` and preserves its mathematical objects
 and `Poincare` namespaces. `Poincare.lean` imports every included leaf.
 
 The additions prove:
+
+- relative cochains as the kernel of the actual singular-cochain restriction,
+  their contravariant pair maps, and the natural exact cohomology sequence;
 
 - compact gluing and unique absolute classes from locally realized local classes;
 - a global integral generator and bijective actual point restrictions on a
@@ -49,7 +52,7 @@ The additions prove:
 - a unique compact-neighborhood class with the same normalization in every
   chart whose actual tangent trivialization preserves the base-chart orientation.
 
-The twenty new/changed modules and their exact baseline/current hashes are listed in
+The twenty-one new/changed modules and their exact baseline/current hashes are listed in
 [provenance/SNAPSHOT.json](provenance/SNAPSHOT.json). The derivative homotopy
 retains its [upstream attribution and modification record](provenance/README.md).
 
@@ -350,6 +353,27 @@ in 1:32.34, maximum RSS 1937172 KiB. All 222 guards and 120 signature/axiom
 pairs pass; all 115 previous pairs are byte-identical. The new consumer produces
 an actual nonzero rank-zero global generator with coordinate one. Stock
 linters and standard-only axioms pass. The other 102 leaves remain unchanged.
+
+The relative-cochain extension adds one coherent leaf, for 105 modules and
+80 added public exports. It constructs the actual kernel of singular-cochain
+restriction, its inclusion and pair maps, and the induced relative cohomology
+maps. Identity, composition, evaluation and naturality equations expose the
+original maps. Degreewise extension of cochains makes the actual sequence
+short exact, giving its connecting map, naturality and all three exactness laws.
+No compactness or manifold hypotheses are needed; all natural degrees are included.
+The private degreewise chain retraction is not asserted to be a chain map.
+
+Final portable request `1789303157293002715-topology_checkpoint-d51aac36`
+passed in Slurm 13821107 in 143.79 seconds. The new leaf and root freshly
+compiled without diagnostics in 1:14.73, maximum RSS 1778808 KiB. All 230 guards
+and 147 signature/axiom pairs pass; all 120 previous pairs are byte-identical.
+The 25 new public and two consumer readbacks match the original imported gate.
+Consumers test a relative degree-zero cochain with value one on the actual
+constant-one singular simplex, and connecting-map naturality for x ↦ 2x.
+Stock declaration linters and standard-only axioms pass. All 104 previous
+leaves remain byte-identical and retain earlier compilation evidence.
+This is a foundation for cohomological excision and duality, not a cap-product
+or Poincare-duality theorem.
 
 ## Remaining topology work
 

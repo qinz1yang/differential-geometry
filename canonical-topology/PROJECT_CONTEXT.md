@@ -5,21 +5,21 @@ additive publication within the shared DifferentialGeometry Git repository. Its 
 library is `Poincare`; its sources retain the original mathematical namespaces.
 
 The source baseline is the recovered Chapter 35 commit
-`b45bfa009368c8f5f531e10f4f5280e90079d6ad`. This checkpoint includes 104 modules
-and 55 added public results. The latest layer glues locally realized local
-homology classes over compact supports and constructs a unique absolute class
-on a compact manifold. For a nonempty connected manifold and local generators,
-it proves that the resulting class generates absolute integral homology and
-that every actual absolute-to-point restriction is bijective.
+`b45bfa009368c8f5f531e10f4f5280e90079d6ad`. This checkpoint includes 105 modules
+and 80 added public exports. The latest layer constructs relative cochains
+using the actual restriction kernel, their contravariant pair maps and the
+natural exact cohomology sequence in every natural degree. The preceding
+compact-gluing layer constructs unique global classes and generators from
+locally realized local classes; those source files and APIs are unchanged.
 
-Final request `1789299823301815112-topology_checkpoint-2584f507` passed in
-Slurm 13821107 in 159.33 seconds, with 222 guards and 120 signature/axiom pairs.
-All 115 previous pairs are byte-identical. Changed ManifoldCompactHomology,
-new ManifoldFundamentalClass and root freshly compiled in 1:32.34, maximum
-RSS 1937172 KiB, with zero diagnostics. The other 102 leaves remain unchanged.
-The nonzero rank-zero consumer constructs an actual global generator with
-coordinate one. These theorems take a locally realized family of local classes;
-the production of such generators from a tangent orientation remains separate.
+Final request `1789303157293002715-topology_checkpoint-d51aac36` passed in
+Slurm 13821107 in 143.79 seconds, with 230 guards and 147 signature/axiom pairs.
+All 120 previous pairs are byte-identical. New RelativeCochains and root
+freshly compiled in 1:14.73, maximum RSS 1778808 KiB, with zero diagnostics.
+All 104 previous leaves remain unchanged. Consumers verify an actual nonzero
+relative cochain and connecting-map naturality under the map x ↦ 2x.
+Stock declaration linters and standard-only axioms pass. This does not yet
+prove cohomological excision, cap-product duality or the full topology suite.
 
 The preceding signed-chart extension retains its exact public statements.
 

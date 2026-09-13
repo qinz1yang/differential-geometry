@@ -309,3 +309,25 @@ SNAPSHOT.json preserves the preceding signed-chart gate separately.
 
 The local family is honest prerequisite data, not a completed tangent-orientation
 producer. The full topology suite and missing frozen contract remain unresolved.
+
+## Relative cochains and their exact sequence
+
+`Poincare/Topology/Homology/RelativeCochains.lean` is new original development
+over the recovered `CochainMaps`, `CarrierRestriction` and the pinned Mathlib
+kernel, short-exact-sequence and homology-sequence APIs. It preserves the
+original singular cochains, integral coefficients, chains and pair maps.
+Its 25 public declarations expose the actual kernel inclusion, pullbacks,
+cohomology maps and connecting map, with evaluation and naturality equations.
+Three degreewise chain-retraction helpers remain private. They extend cochains
+by the actual singular-simplex basis and are not claimed to commute with the
+boundary operator. No competing cochain model or external source is introduced.
+
+Source request `1789302544298781532-topology-306577bf` passed 50 guards and
+30 signature/axiom pairs. The original imported check
+`1789302721767496711-topology-5cffaa78` passed 52 guards and 27 pairs after a
+fresh leaf build. Final portable request
+`1789303157293002715-topology_checkpoint-d51aac36` passed 230 guards and
+147 pairs, including all 120 previous pairs unchanged. New leaf and root
+compiled silently; strict declaration linters and standard-only axiom guards
+passed on that same snapshot. The snapshot retains the previous 104-module
+validation separately. All 104 earlier sources remain byte-identical.
