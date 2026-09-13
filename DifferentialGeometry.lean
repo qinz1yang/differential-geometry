@@ -4962,6 +4962,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.R
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.RampUniqueness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Ramps
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.SmoothRegularLoopFamily
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.SmoothSolution
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.SweptAreaEstimates
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.VelocityExtension
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.VelocityExtensionEuclidean
