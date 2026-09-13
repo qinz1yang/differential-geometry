@@ -6539,6 +6539,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.OpenCoreSub
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.OrientationDegree
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.PoincareControl
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.PuncturedCoreComponent
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.PuncturedCoreTubeHalves
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.PoincareStandardDiscarded
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.PoincareStandardDiscardedModels
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.Recenter
@@ -9105,6 +9106,7 @@ import DifferentialGeometry.Topology.VanKampen.SphericalBoundaryChain
 import DifferentialGeometry.Topology.VanKampen.Subdivision
 import DifferentialGeometry.Topology.VanKampen.TorsionFreeCover
 import DifferentialGeometry.Topology.VanKampen.TwoBoundaryCollars
+import DifferentialGeometry.Topology.VanKampen.TwoCoverChain
 import DifferentialGeometry.Topology.VanKampen.TwoSidedCollarCover
 import DifferentialGeometry.Topology.VanKampen.TwoSidedCollarRescale
 import DifferentialGeometry.Topology.VanKampen.TwoSidedCollarRetraction
