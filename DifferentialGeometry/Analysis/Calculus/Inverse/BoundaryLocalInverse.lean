@@ -70,6 +70,17 @@ theorem exists_contDiffOn_extension_across_range_frontier {f : E → F} {U : Set
       rw [Function.comp_apply, OpenPartialHomeomorph.left_inv _ (hV₁U₁ hz).1]
       exact hΨeq ⟨hz, mem_univ z.1, hz0⟩
 
+omit [FiniteDimensional ℝ E] in
+theorem uniqueDiffWithinAt_of_isOpen_inter_range {U : Set E} {x : E} (hU : IsOpen U)
+    (hx : x ∈ U ∩ range I) : UniqueDiffWithinAt ℝ (U ∩ range I) x := by
+  have hInterior : (interior (range I)).Nonempty := by
+    obtain ⟨ε, hε, h⟩ := hI.inwardCoordE_enters (modelBoundaryParam I (hI.projE 0))
+      (by rw [← range_modelBoundaryParam I]; exact mem_range_self _)
+    exact ⟨_, h ε ⟨hε, le_rfl⟩⟩
+  rw [inter_comm]
+  exact (uniqueDiffWithinAt_convex I.convex_range hInterior (subset_closure hx.2)).inter'
+    (mem_nhdsWithin_of_mem_nhds (hU.mem_nhds hx.1))
+
 theorem exists_localInverse_of_hasFDerivWithinAt_equiv_of_ne_zero {f : E → F} {U T : Set E}
     {x : E} {A : E ≃L[ℝ] F} (hU : IsOpen U) (hT : T = U ∩ range I) (hx : x ∈ T)
     (hf : ContDiffOn ℝ ∞ f T) (hd : HasFDerivWithinAt f (A : E →L[ℝ] F) T x) :
@@ -82,20 +93,14 @@ theorem exists_localInverse_of_hasFDerivWithinAt_equiv_of_ne_zero {f : E → F} 
       exists_localInverse_of_hasFDerivAt_equiv_of_ne_zero (𝕜 := ℝ) (n := ∞) (by simp)
         (hf.mono hVU) hVopen hxV (hd.hasFDerivAt hnhds)
     exact ⟨e, hxe, hsub.trans (hVU.trans inter_subset_left), he, hei, fun y _ => heq y⟩
-  · have hIntNonempty : (interior (range I)).Nonempty := by
-      obtain ⟨ε, hε, h⟩ := hI.inwardCoordE_enters (modelBoundaryParam I (hI.projE 0))
-        (by rw [← range_modelBoundaryParam I]; exact mem_range_self _)
-      exact ⟨_, h ε ⟨hε, le_rfl⟩⟩
-    have hxnotint : x ∉ interior (range I) := fun hc =>
+  · have hxnotint : x ∉ interior (range I) := fun hc =>
       hnhds (mem_of_superset (inter_mem (hU.mem_nhds hx.1) (isOpen_interior.mem_nhds hc))
         (fun y hy => ⟨hy.1, interior_subset hy.2⟩))
     have hxfront : x ∈ frontier (range I) := by
       rw [I.isClosed_range.frontier_eq]
       exact ⟨hx.2, hxnotint⟩
-    have hUD : UniqueDiffWithinAt ℝ (U ∩ range I) x := by
-      rw [inter_comm]
-      exact (uniqueDiffWithinAt_convex I.convex_range hIntNonempty (subset_closure hx.2)).inter'
-        (mem_nhdsWithin_of_mem_nhds (hU.mem_nhds hx.1))
+    have hUD : UniqueDiffWithinAt ℝ (U ∩ range I) x :=
+      uniqueDiffWithinAt_of_isOpen_inter_range hU hx
     obtain ⟨V, hV, hxV, hVU, Φ, hΦ, hΦeq⟩ :=
       exists_contDiffOn_extension_across_range_frontier hU hx hf
     have hΦeq' : Φ =ᶠ[𝓝[U ∩ range I] x] f := by
