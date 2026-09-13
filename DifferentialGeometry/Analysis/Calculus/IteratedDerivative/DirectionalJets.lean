@@ -93,49 +93,39 @@ theorem fderivWithin_iteratedFDerivWithin_apply_eq {G W : Type*}
 
 end Analysis
 
+theorem _root_.ContDiffAt.fderiv_iteratedFDeriv_apply
+    {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [NormedAddCommGroup F] [NormedSpace ℝ F]
+    {f : E → F} {x : E} {n : ℕ}
+    (hf : ContDiffAt ℝ (n + 1) f x) (v : E) :
+    fderiv ℝ (iteratedFDeriv ℝ n f) x v =
+      iteratedFDeriv ℝ n (fun y => fderiv ℝ f y v) x := by
+  obtain ⟨t, ht, hft⟩ := hf.contDiffOn le_rfl (by simp)
+  let U := interior t
+  have hU : IsOpen U := isOpen_interior
+  have hxU : x ∈ U := mem_interior_iff_mem_nhds.mpr ht
+  have hcl : U ⊆ closure (interior U) := by
+    rw [hU.interior_eq]
+    exact subset_closure
+  have hh := DifferentialGeometry.Analysis.fderivWithin_iteratedFDerivWithin_apply_eq
+    hU.uniqueDiffOn hcl n (by simpa using hft.mono (show U ⊆ t from interior_subset)) v x hxU
+  have he : EqOn (iteratedFDerivWithin ℝ n f U) (iteratedFDeriv ℝ n f) U :=
+    iteratedFDerivWithin_of_isOpen n hU
+  rw [fderivWithin_congr he (he hxU), fderivWithin_of_isOpen hU hxU,
+    iteratedFDerivWithin_of_isOpen n hU hxU] at hh
+  have hfirst : (fun y => fderivWithin ℝ f U y v) =ᶠ[𝓝 x]
+      (fun y => fderiv ℝ f y v) := by
+    filter_upwards [hU.mem_nhds hxU] with y hy
+    rw [fderivWithin_of_isOpen hU hy]
+  exact hh.trans ((hfirst.iteratedFDeriv ℝ n).eq_of_nhds)
+
 theorem fderiv_iter_apply
     {f : E → F} {x : E} (hf : ContDiffAt ℝ ∞ f x)
     (n : ℕ) (u : E) :
     fderiv ℝ (iteratedFDeriv ℝ n f) x u =
       iteratedFDeriv ℝ n (fun y => fderiv ℝ f y u) x := by
-  have hle :
-      (((n + 1 : ℕ) : ℕ∞) : WithTop ℕ∞) ≤
-        ((⊤ : ℕ∞) : WithTop ℕ∞) :=
-    WithTop.coe_le_coe.mpr le_top
-  have hfn : ContDiffAt ℝ ((n : WithTop ℕ∞) + 1) f x :=
-    hf.of_le (by simpa using hle)
-  have hne : ((n : WithTop ℕ∞) + 1) ≠ ∞ :=
-    Ne.symm (ne_of_beq_false rfl)
-  obtain ⟨t, ht, hft⟩ :=
-    hfn.contDiffOn le_rfl (fun h => (hne h).elim)
-  let U : Set E := interior t
-  have hU : IsOpen U := isOpen_interior
-  have hxU : x ∈ U := mem_interior_iff_mem_nhds.mpr ht
-  have hfU : ContDiffOn ℝ ((n : WithTop ℕ∞) + 1) f U :=
-    hft.mono interior_subset
-  have hUclosure : U ⊆ closure (interior U) := by
-    rw [hU.interior_eq]
-    exact subset_closure
-  have hcomm :=
-    Analysis.fderivWithin_iteratedFDerivWithin_apply_eq
-      hU.uniqueDiffOn hUclosure n hfU u x hxU
-  have hiter :
-      Set.EqOn (iteratedFDerivWithin ℝ n f U)
-        (iteratedFDeriv ℝ n f) U :=
-    iteratedFDerivWithin_of_isOpen n hU
-  rw [fderivWithin_congr hiter (hiter hxU),
-    fderivWithin_of_isOpen hU hxU] at hcomm
-  rw [iteratedFDerivWithin_of_isOpen n hU hxU] at hcomm
-  have hfirst :
-      (fun y => fderivWithin ℝ f U y u) =ᶠ[𝓝 x]
-        fun y => fderiv ℝ f y u := by
-    filter_upwards [hU.mem_nhds hxU] with y hy
-    rw [fderivWithin_of_isOpen hU hy]
-  have hright :
-      iteratedFDeriv ℝ n (fun y => fderivWithin ℝ f U y u) x =
-        iteratedFDeriv ℝ n (fun y => fderiv ℝ f y u) x :=
-    (Filter.EventuallyEq.iteratedFDeriv ℝ hfirst n).eq_of_nhds
-  exact hcomm.trans hright
+  apply ContDiffAt.fderiv_iteratedFDeriv_apply (n := n) (hf.of_le ?_) u
+  exact WithTop.coe_le_coe.mpr (le_top : ((n : ℕ∞) + 1) ≤ ⊤)
 
 theorem iterFDeriv_clm_apply
     {c : E → F →L[ℝ] G} {x : E} (hc : ContDiffAt ℝ ∞ c x)

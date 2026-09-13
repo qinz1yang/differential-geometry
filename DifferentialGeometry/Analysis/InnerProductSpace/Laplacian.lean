@@ -1,4 +1,5 @@
 import DifferentialGeometry.Analysis.InnerProductSpace.HilbertSchmidt
+import DifferentialGeometry.Analysis.Calculus.IteratedDerivative.DirectionalJets
 import Mathlib.Analysis.InnerProductSpace.Laplacian
 import Mathlib.Analysis.InnerProductSpace.Calculus
 import Mathlib.Analysis.Calculus.FDeriv.CompCLM
@@ -223,3 +224,65 @@ theorem laplacian_comp_const_sub
   simp only [e, LinearIsometryEquiv.coe_neg, sub_eq_add_neg]
 
 end DifferentialGeometry.Analysis
+
+theorem ContDiffAt.laplacian_fderiv_apply
+    {E F : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+    [FiniteDimensional ℝ E] [NormedAddCommGroup F] [NormedSpace ℝ F]
+    {f : E → F} {x : E} (hf : ContDiffAt ℝ 3 f x) (v : E) :
+    Laplacian.laplacian (fun y => fderiv ℝ f y v) x =
+      fderiv ℝ (Laplacian.laplacian f) x v := by
+  rw [laplacian_eq_iteratedFDeriv_stdOrthonormalBasis,
+    laplacian_eq_iteratedFDeriv_stdOrthonormalBasis]
+  have hD : DifferentiableAt ℝ (iteratedFDeriv ℝ 2 f) x :=
+    (hf.iteratedFDeriv_right (m := 1) (i := 2) (by norm_num)).differentiableAt (by norm_num)
+  rw [fderiv_fun_sum (fun i _ => hD.continuousMultilinear_apply_const _)]
+  simp only [sum_apply]
+  apply Finset.sum_congr rfl
+  intro i _
+  rw [fderiv_continuousMultilinear_apply_const_apply hD]
+  rw [hf.fderiv_iteratedFDeriv_apply]
+
+theorem ContDiffAt.laplacian_fderiv
+    {E F : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+    [FiniteDimensional ℝ E] [NormedAddCommGroup F] [NormedSpace ℝ F]
+    {f : E → F} {x : E} (hf : ContDiffAt ℝ 3 f x) :
+    Laplacian.laplacian (fderiv ℝ f) x = fderiv ℝ (Laplacian.laplacian f) x := by
+  ext v
+  have hh := (hf.fderiv_right (m := 2) (by norm_num)).laplacian_CLM_comp_left
+    (l := ContinuousLinearMap.apply ℝ F v)
+  change Laplacian.laplacian (fun y => fderiv ℝ f y v) x =
+    Laplacian.laplacian (fderiv ℝ f) x v at hh
+  rw [← hh]
+  exact hf.laplacian_fderiv_apply v
+
+theorem ContDiffAt.laplacian_iteratedFDeriv
+    {E F : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+    [FiniteDimensional ℝ E] [NormedAddCommGroup F] [NormedSpace ℝ F]
+    {f : E → F} {x : E} {n : ℕ} (hf : ContDiffAt ℝ (n + 2) f x) :
+    Laplacian.laplacian (iteratedFDeriv ℝ n f) x =
+      iteratedFDeriv ℝ n (Laplacian.laplacian f) x := by
+  induction n generalizing x with
+  | zero =>
+      exact hf.laplacian_CLM_comp_left
+        (l := (continuousMultilinearCurryFin0 ℝ E F).symm.toContinuousLinearEquiv.toContinuousLinearMap)
+  | succ n ih =>
+      have hiter : ContDiffAt ℝ 3 (iteratedFDeriv ℝ n f) x :=
+        hf.iteratedFDeriv_right (by norm_cast; omega)
+      let e := (continuousMultilinearCurryLeftEquiv ℝ (fun _ : Fin (n + 1) => E) F).symm
+      have heq : iteratedFDeriv ℝ (n + 1) f = e ∘ fderiv ℝ (iteratedFDeriv ℝ n f) :=
+        iteratedFDeriv_succ_eq_comp_left
+      rw [heq]
+      have hl := (hiter.fderiv_right (m := 2) (by norm_num)).laplacian_CLM_comp_left
+        (l := e.toContinuousLinearEquiv.toContinuousLinearMap)
+      change Laplacian.laplacian (e ∘ fderiv ℝ (iteratedFDeriv ℝ n f)) x =
+        e (Laplacian.laplacian (fderiv ℝ (iteratedFDeriv ℝ n f)) x) at hl
+      rw [hl]
+      rw [hiter.laplacian_fderiv]
+      have he : Laplacian.laplacian (iteratedFDeriv ℝ n f) =ᶠ[𝓝 x]
+          iteratedFDeriv ℝ n (Laplacian.laplacian f) := by
+        have hfn : ContDiffAt ℝ (n + 1 + 2 : ℕ) f x := by simpa using hf
+        filter_upwards [hfn.eventually (fun h => ENat.natCast_ne_top (n + 1 + 2)
+          (WithTop.coe_injective h))] with y hy
+        exact ih (hy.of_le (by norm_cast; omega))
+      rw [he.fderiv_eq]
+      rfl

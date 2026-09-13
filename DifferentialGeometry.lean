@@ -154,6 +154,7 @@ import DifferentialGeometry.Analysis.Calculus.SmoothMax
 import DifferentialGeometry.Analysis.Calculus.SmoothTransition
 import DifferentialGeometry.Analysis.Calculus.Smoothness.AnisotropicJoint
 import DifferentialGeometry.Analysis.Calculus.Smoothness.BanachAlgebra
+import DifferentialGeometry.Analysis.Calculus.Smoothness.Closure
 import DifferentialGeometry.Analysis.Calculus.Smoothness.ExtendInterval
 import DifferentialGeometry.Analysis.Calculus.Smoothness.Tsum
 import DifferentialGeometry.Analysis.Calculus.Taylor
@@ -1589,6 +1590,7 @@ import DifferentialGeometry.Analysis.Schauder.Holder.Compactness
 import DifferentialGeometry.Analysis.Schauder.Holder.CompleteSpace
 import DifferentialGeometry.Analysis.Schauder.Holder.Composition
 import DifferentialGeometry.Analysis.Schauder.Holder.DerivativeLimit
+import DifferentialGeometry.Analysis.Schauder.Holder.HigherOrderComposition
 import DifferentialGeometry.Analysis.Schauder.Holder.Interpolation
 import DifferentialGeometry.Analysis.Schauder.Holder.Localization
 import DifferentialGeometry.Analysis.Schauder.Holder.NormedSpace
@@ -4024,6 +4026,7 @@ import DifferentialGeometry.Geometry.Coordinates.Calculus.FixedBaseDerivative
 import DifferentialGeometry.Geometry.Coordinates.Connection.Christoffel
 import DifferentialGeometry.Geometry.Coordinates.Connection.ChristoffelTensor
 import DifferentialGeometry.Geometry.Coordinates.Connection.Coefficients
+import DifferentialGeometry.Geometry.Coordinates.EmbeddedCurve
 import DifferentialGeometry.Geometry.Coordinates.Fields.Scalar
 import DifferentialGeometry.Geometry.Coordinates.Fields.Tensor
 import DifferentialGeometry.Geometry.Coordinates.Fields.Vector
