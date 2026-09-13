@@ -3232,6 +3232,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Bounds.BoundedGeometry
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Bounds.CurvatureOperator
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Bounds.InjectivityRadius
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Bounds.LocalJetSubsequence
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.CompactEmbedding
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Compactness.BonnetMyers
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Compactness.BoundedGeometry
@@ -5343,6 +5344,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.KLim
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.KLimThreeDimensionalBounded
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.KLimUniformLimit
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.LocalAncientFlowCompactness
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.LocalBoundsSubsequence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.LocalCGTInjectivity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.LocalConjugateRadius
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.LocalCurvatureJetBounds
@@ -6897,6 +6899,7 @@ import DifferentialGeometry.Geometry.Metric.RicciSoliton.Anisotropy
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.ChowLuYang
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.CompactAnisotropy
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.CompactRankReduction
+import DifferentialGeometry.Geometry.Metric.RicciSoliton.CylinderDiagonalQuotientVolume
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.CylinderIsometry
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.CylinderOrientation
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.CylinderProduct
