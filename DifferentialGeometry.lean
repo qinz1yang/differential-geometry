@@ -5020,6 +5020,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.DiskVariati
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.DiskAreaMetricFirstVariation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.DiskBoundaryIntegral
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.DiffeomorphismTransport
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.HomogeneousEuclideanCoordinates
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.HomogeneousRegularityBridge
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.LeastArea
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.AreaBridge
