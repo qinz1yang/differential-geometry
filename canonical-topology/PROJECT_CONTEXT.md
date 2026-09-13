@@ -5,17 +5,19 @@ additive publication within the shared DifferentialGeometry Git repository. Its 
 library is `Poincare`; its sources retain the original mathematical namespaces.
 
 The source baseline is the recovered Chapter 35 commit
-`b45bfa009368c8f5f531e10f4f5280e90079d6ad`. This checkpoint includes 99 modules:
-the dependency closure of ten roots covering local homology, derivatives,
+`b45bfa009368c8f5f531e10f4f5280e90079d6ad`. This checkpoint includes 100 modules:
+the dependency closure of eleven roots covering local homology, derivatives,
 determinant signs, oriented chart compatibility, closed-ball classes and
 unique compact chart classes, plus the actual Euclidean3 consumer's dependencies.
-The latest gate freshly compiled RelativeVanishing, EuclideanLocalVanishing,
-CompactVanishing and root
+The latest gate freshly compiled RelativeMayerVietoris and root
 in Slurm 13781140, request
-`1789256733392947972-topology_checkpoint-e20ea2ab`. It passed in 172.69 seconds.
-The same run checked all 35 added public exports and 77 signature/axiom pairs,
-including all 61 previous pairs unchanged. All 96 previous source leaves remain
-byte-identical and retain earlier compilation evidence. New results prove
+`1789257537165329093-topology_checkpoint-6a6afc66`. It passed in 133.73 seconds.
+The same run checked all 40 added public exports and 86 signature/axiom pairs,
+including all 77 previous pairs unchanged. All 99 previous source leaves remain
+byte-identical and retain earlier compilation evidence. New relative
+Mayer–Vietoris results construct compatible lifts and give uniqueness under
+next-degree vanishing, with actual closed-support gluing corollaries.
+The preceding results prove
 H_n(X,X)=0 and local/convex-support homology vanishing above the dimension,
 including empty sets, rank zero and arbitrary real norms. The prior public
 complement-inclusion equivalence and relative restriction

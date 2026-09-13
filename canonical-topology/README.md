@@ -1,7 +1,7 @@
 # Local homology and oriented compact chart classes
 
 This separate `PoincareLean` project contains a dependency-closed checkpoint of
-99 Poincare modules. It extends the recovered Chapter 35 source at commit
+100 Poincare modules. It extends the recovered Chapter 35 source at commit
 `b45bfa009368c8f5f531e10f4f5280e90079d6ad` and preserves its mathematical objects
 and `Poincare` namespaces. `Poincare.lean` imports every included leaf.
 
@@ -41,7 +41,7 @@ The additions prove:
 - a unique compact-neighborhood class with the same normalization in every
   chart whose actual tangent trivialization preserves the base-chart orientation.
 
-The fifteen new/changed modules and their exact baseline/current hashes are listed in
+The sixteen new/changed modules and their exact baseline/current hashes are listed in
 [provenance/SNAPSHOT.json](provenance/SNAPSHOT.json). The derivative homotopy
 retains its [upstream attribution and modification record](provenance/README.md).
 
@@ -225,6 +225,23 @@ Consumers include rank zero, rank one, a sup norm, arbitrary-radius closed-ball
 intersections and open balls. All-package/current-consumer stock linters and
 standard-only axioms passed. All 96 previous leaves remain byte-identical and
 retain their earlier compilation evidence.
+
+The relative Mayer–Vietoris extension adds one 815-line leaf and five public
+results, for 100 modules and 40 added exports. Compatible classes over two
+open subspaces lift to their intersection through the actual relative maps.
+The lift is unique when the next-degree relative group of their union
+vanishes. Closed-support union and disjoint-union gluing are corollaries.
+Neither a preconstructed gluing class nor an ambient-cover equality is assumed.
+
+Final portable request `1789257537165329093-topology_checkpoint-6a6afc66`
+passed in Slurm 13781140 in 133.73 seconds. The new leaf and root freshly
+compiled without diagnostics in 1:12.59, maximum RSS 1778292 KiB. All 138
+guards and 86 signature/axiom pairs passed. All 77 prior pairs and the nine
+new public/consumer pairs match their earlier readbacks byte for byte.
+Consumers verify a nonzero two-point class with local values +1 and -1,
+its uniqueness, a nonzero rank-zero H0 class with unique lift, and degree-zero
+shared-support lifting. Stock linters and standard-only axioms pass.
+All 99 previous leaves remain unchanged and retain earlier build evidence.
 
 ## Remaining topology work
 

@@ -1,9 +1,9 @@
 {
-  "scope": "Dependency-closed 99-module local homology, compact chart-class and vanishing checkpoint; portable gate passed, full topology suite incomplete",
+  "scope": "Dependency-closed 100-module local homology, compact chart-class, vanishing and relative Mayer\u2013Vietoris checkpoint; portable gate passed, full topology suite incomplete",
   "baseline_commit": "b45bfa009368c8f5f531e10f4f5280e90079d6ad",
   "baseline_ref": "refs/remotes/origin/codex/chapter35",
   "source_project": "PoincareLean",
-  "source_module_count": 99,
+  "source_module_count": 100,
   "roots": [
     "Poincare.Topology.Homology.RelativeMaps",
     "Poincare.Topology.Homology.RelativeHomeomorphism",
@@ -14,7 +14,8 @@
     "Poincare.Topology.Homology.LocalOrientation",
     "Poincare.Topology.Homology.LocalBallHomology",
     "Poincare.Topology.Homology.LocalCompactHomology",
-    "Poincare.Topology.Homology.CompactVanishing"
+    "Poincare.Topology.Homology.CompactVanishing",
+    "Poincare.Topology.Homology.RelativeMayerVietoris"
   ],
   "changed_sources": [
     {
@@ -88,6 +89,12 @@
       "path": "Poincare/Topology/Homology/RelativeMaps.lean",
       "baseline_sha256": "3b78b613d4b7e816f6b9f0d57c83ad629e11274cda6f749e25acd1ad17954add",
       "sha256": "37e7765b7eb6da4f7a76751bd0fead9df5fa8b820edf9e4251ccd3330f5b4f0c"
+    },
+    {
+      "module": "Poincare.Topology.Homology.RelativeMayerVietoris",
+      "path": "Poincare/Topology/Homology/RelativeMayerVietoris.lean",
+      "baseline_sha256": null,
+      "sha256": "23c019a33a5908a9dc9a6974480f7c889ac057f2db49efc2c200ede0c74d758c"
     },
     {
       "module": "Poincare.Topology.Homology.RelativeVanishing",
@@ -434,6 +441,12 @@
       "sha256": "37e7765b7eb6da4f7a76751bd0fead9df5fa8b820edf9e4251ccd3330f5b4f0c"
     },
     {
+      "module": "Poincare.Topology.Homology.RelativeMayerVietoris",
+      "path": "Poincare/Topology/Homology/RelativeMayerVietoris.lean",
+      "baseline_sha256": null,
+      "sha256": "23c019a33a5908a9dc9a6974480f7c889ac057f2db49efc2c200ede0c74d758c"
+    },
+    {
       "module": "Poincare.Topology.Homology.RelativeVanishing",
       "path": "Poincare/Topology/Homology/RelativeVanishing.lean",
       "baseline_sha256": null,
@@ -707,8 +720,8 @@
   "aggregate": {
     "path": "Poincare.lean",
     "baseline_sha256": "99c3c8e47c19f60ee50a7e0f377e59138cf4ff33ebd4e26530d3c2b7cd47d452",
-    "sha256": "d396134186b87d381357453b6b0513df15d98e70f2bb18e471d36f1ecd4c758f",
-    "change": "Flat99-leaf checkpoint aggregate; full recovered aggregate remains separate"
+    "sha256": "a4b1f08bc4c0efee9f41939199e6bcb315cebceb474d88b97ec2be255d77afef",
+    "change": "Flat100-leaf checkpoint aggregate; full recovered aggregate remains separate"
   },
   "configuration": [
     {
@@ -738,6 +751,7 @@
     "Mathlib.Algebra.Category.ModuleCat.Projective",
     "Mathlib.Algebra.Exact.Basic",
     "Mathlib.Algebra.Homology.HomologicalComplexAbelian",
+    "Mathlib.Algebra.Homology.HomologicalComplexBiprod",
     "Mathlib.Algebra.Homology.HomologySequence",
     "Mathlib.Algebra.Homology.HomologySequenceLemmas",
     "Mathlib.Algebra.Homology.QuasiIso",
@@ -834,7 +848,12 @@
     "Poincare.Topology.integralLocalHomology_subsingleton_of_finrank_lt",
     "Poincare.Topology.integralRelativeHomology_subsingleton_of_bounded_starConvex",
     "Poincare.Topology.integralRelativeHomology_subsingleton_of_bounded_convex",
-    "Poincare.Topology.integralRelativeHomology_subsingleton_of_compact_convex"
+    "Poincare.Topology.integralRelativeHomology_subsingleton_of_compact_convex",
+    "Poincare.Topology.exists_relative_homology_inter_class",
+    "Poincare.Topology.relative_homology_inter_eq_of_restrictions_eq",
+    "Poincare.Topology.exists_unique_relative_homology_inter_class",
+    "Poincare.Topology.exists_relative_homology_union_class",
+    "Poincare.Topology.exists_relative_homology_disjoint_union_class"
   ],
   "historical_authorities": [
     {
@@ -972,25 +991,23 @@
     "full_topology_suite_accepted": false
   },
   "validation": {
-    "status": "passed for the selected99-module checkpoint; full topology suite incomplete",
+    "status": "passed for the selected100-module checkpoint; full topology suite incomplete",
     "date": "2026-09-12",
     "slurm_job": "13781140",
     "host": "della-r3c2n16",
-    "request_id": "1789256733392947972-topology_checkpoint-e20ea2ab",
-    "input_sha256": "05ff3c4bed3b89232a7169176d3f49baa09eab7fc060cedb2fdbb517edf06a0b",
-    "result_sha256": "aa219d54a219a5c13a45a772b5c20d32501dd6be467e1b2c0822084ad02fc486",
-    "artifact_log_sha256": "7ca672550dc41b324844cee8db3e90fbdcf0923714e093a6605e77b92d9d8486",
-    "source_config_harness_hash_guards": 131,
+    "request_id": "1789257537165329093-topology_checkpoint-6a6afc66",
+    "input_sha256": "7725d5bf22b2fdedc841cb348f4ec050d879d5d772065033f132226b364da57b",
+    "result_sha256": "20cf6d99b52929b6daaf2de953129bba4fe98d784991ecb3b6d6281219b6fbd9",
+    "artifact_log_sha256": "a2636831398c62d84a74dce4d2e592f3201fdb1f1427ca57da6be21cee3ee605",
+    "source_config_harness_hash_guards": 138,
     "freshly_built_modules": [
-      "Poincare.Topology.Homology.RelativeVanishing",
-      "Poincare.Topology.Homology.EuclideanLocalVanishing",
-      "Poincare.Topology.Homology.CompactVanishing",
+      "Poincare.Topology.Homology.RelativeMayerVietoris",
       "Poincare"
     ],
-    "root_build": "lake --no-cache --iofail build +Poincare.Topology.Homology.RelativeVanishing:leanArts +Poincare.Topology.Homology.EuclideanLocalVanishing:leanArts +Poincare.Topology.Homology.CompactVanishing:leanArts Poincare",
-    "fresh_build_scope": "Three added checkpoint leaves and root freshly compiled silently in 1:50.75, RSS1923004KiB. All96 previous leaves remain byte-identical and retain prior compilation evidence.",
-    "exact_public_exports": 35,
-    "public_and_consumer_signature_axiom_pairs": 77,
+    "root_build": "lake --no-cache --iofail build +Poincare.Topology.Homology.RelativeMayerVietoris:leanArts Poincare",
+    "fresh_build_scope": "New RelativeMayerVietoris leaf and root freshly compiled silently in1:12.59, RSS1778292KiB. All99 prior leaves remain byte-identical and retain prior compilation evidence.",
+    "exact_public_exports": 40,
+    "public_and_consumer_signature_axiom_pairs": 86,
     "linters": [
       "unusedArguments",
       "simpNF",
@@ -1005,15 +1022,14 @@
       "Quot.sound"
     ],
     "unexpected_diagnostics": 0,
-    "elapsed_seconds": 172.689603805542,
-    "peak_summed_rss_bytes": 2695966720,
+    "elapsed_seconds": 133.72686767578125,
+    "peak_summed_rss_bytes": 2724450304,
     "full_topology_suite_accepted": false,
     "consumer_probes": [
-      "All61 previous signature/axiom pairs reproduced byte-identically",
-      "Five new and four retained public statements plus seven consumers match original gate except Set.univ/Module.finrank qualification",
-      "Actual H_n(X,X) vanishing including degree zero and arbitrary topological spaces",
-      "Local vanishing above dimension for arbitrary real norms, ranks zero/one/three and arbitrary centers",
-      "Empty compact convex sets, closed-ball intersections for arbitrary radii, and open bounded convex balls"
+      "All77 previous signature/axiom pairs reproduced byte-identically",
+      "All5 new public and4 consumer readbacks match the original imported gate byte-identically",
+      "Actual nonzero Euclidean3 two-point class with prescribed +1 and -1 restrictions",
+      "Uniqueness of the actual two-point class, nonzero rank-zero H0 with unique lift, and shared-support degree-zero lifting"
     ]
   },
   "previous_linear_sign_checkpoint_validation": {
@@ -1399,5 +1415,63 @@
     "fresh_modules": 3,
     "fresh_artifacts": "1:29.09; maximum RSS1902076KiB; zero diagnostics",
     "readback_comparison": "Five new and four retained public statements plus seven consumers; portable readbacks differ only by Set.univ/Module.finrank qualification"
+  },
+  "previous_local_convex_vanishing_validation": {
+    "status": "passed for the selected99-module checkpoint; full topology suite incomplete",
+    "date": "2026-09-12",
+    "slurm_job": "13781140",
+    "host": "della-r3c2n16",
+    "request_id": "1789256733392947972-topology_checkpoint-e20ea2ab",
+    "input_sha256": "05ff3c4bed3b89232a7169176d3f49baa09eab7fc060cedb2fdbb517edf06a0b",
+    "result_sha256": "aa219d54a219a5c13a45a772b5c20d32501dd6be467e1b2c0822084ad02fc486",
+    "artifact_log_sha256": "7ca672550dc41b324844cee8db3e90fbdcf0923714e093a6605e77b92d9d8486",
+    "source_config_harness_hash_guards": 131,
+    "freshly_built_modules": [
+      "Poincare.Topology.Homology.RelativeVanishing",
+      "Poincare.Topology.Homology.EuclideanLocalVanishing",
+      "Poincare.Topology.Homology.CompactVanishing",
+      "Poincare"
+    ],
+    "root_build": "lake --no-cache --iofail build +Poincare.Topology.Homology.RelativeVanishing:leanArts +Poincare.Topology.Homology.EuclideanLocalVanishing:leanArts +Poincare.Topology.Homology.CompactVanishing:leanArts Poincare",
+    "fresh_build_scope": "Three added checkpoint leaves and root freshly compiled silently in 1:50.75, RSS1923004KiB. All96 previous leaves remain byte-identical and retain prior compilation evidence.",
+    "exact_public_exports": 35,
+    "public_and_consumer_signature_axiom_pairs": 77,
+    "linters": [
+      "unusedArguments",
+      "simpNF",
+      "synTaut",
+      "checkType"
+    ],
+    "linter_scope": "All imported Poincare declarations and current consumers, including private declarations",
+    "defLemma": "Unavailable in the pinned Mathlib; source declaration-kind checks retained.",
+    "allowed_transitive_axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "unexpected_diagnostics": 0,
+    "elapsed_seconds": 172.689603805542,
+    "peak_summed_rss_bytes": 2695966720,
+    "full_topology_suite_accepted": false,
+    "consumer_probes": [
+      "All61 previous signature/axiom pairs reproduced byte-identically",
+      "Five new and four retained public statements plus seven consumers match original gate except Set.univ/Module.finrank qualification",
+      "Actual H_n(X,X) vanishing including degree zero and arbitrary topological spaces",
+      "Local vanishing above dimension for arbitrary real norms, ranks zero/one/three and arbitrary centers",
+      "Empty compact convex sets, closed-ball intersections for arbitrary radii, and open bounded convex balls"
+    ]
+  },
+  "original_relative_mayer_vietoris_validation": {
+    "source_request_id": "1789256791259413253-topology-6847705b",
+    "source_guards": 107,
+    "source_signature_axiom_pairs": 47,
+    "source_elapsed_seconds": 48.07295060157776,
+    "imported_request_id": "1789257091124590712-topology-ee641796",
+    "imported_input_sha256": "b1346fb5a248f4822b0bceb0fd29f70e34bddfccf265b40f609225bcbddcc40f",
+    "imported_guards": 107,
+    "imported_signature_axiom_pairs": 9,
+    "imported_elapsed_seconds": 82.50554823875427,
+    "fresh_leaf_build": "30s; artifact44.01s; maximum RSS1707688KiB; zero diagnostics",
+    "public_proof_preservation": "Seven checked scoped child blocks retained with five visibility changes, one exists_unique rename and the public H_n(X,X) vanishing call; five public results and38 private declarations"
   }
 }

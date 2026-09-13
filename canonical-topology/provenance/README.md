@@ -188,3 +188,30 @@ readbacks match the original gate up to `Set.univ`/`Module.finrank` qualificatio
 Stock declaration linters and standard-only transitive axioms pass. Earlier
 validation records remain in SNAPSHOT.json; this is a foundations checkpoint,
 and the full topology suite remains incomplete.
+
+## Relative Mayer–Vietoris classes
+
+`RelativeMayerVietoris.lean` is a new 815-line original development over the
+existing Poincare small-chain/relative complexes and Mathlib homology sequence.
+Its seven checked child blocks retain their exact lexical scopes and proof
+bodies, apart from five public visibility changes, the `exists_unique` rename,
+and using the public relative-universe vanishing theorem in the disjoint case.
+Five natural results are public; 38 quotient/comparison/biproduct mechanics
+remain private. No external source is copied into this leaf.
+
+The primary constructs a matching intersection class for actual open-subspace
+relative homology in every natural degree. Uniqueness explicitly requires
+vanishing of the next-degree union-relative group. Closed-support gluing is a
+corollary; disjoint supports require no agreement hypothesis. All maps are the
+original Poincare relative maps. No fundamental class or point detection is
+assumed. Existing licenses, source bodies and dependency pins are unchanged.
+
+Full-source request `1789256791259413253-topology-6847705b` passed 107 guards
+and 47 signature/axiom pairs. Original imported request
+`1789257091124590712-topology-ee641796` freshly compiled the leaf and reproduced
+the five public and four consumer readbacks exactly. Portable request
+`1789257537165329093-topology_checkpoint-6a6afc66` freshly compiled the leaf
+and root in 1:12.59, maximum RSS 1778292 KiB, then passed 138 guards and all
+86 signature/axiom pairs. All 77 previous pairs and nine new original pairs
+match byte for byte. All 100 portable/original sources match; the 99 prior
+leaves remain unchanged. SNAPSHOT.json preserves the earlier build records.

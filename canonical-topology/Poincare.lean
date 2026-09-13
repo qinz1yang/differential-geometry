@@ -52,6 +52,7 @@ import Poincare.Topology.Homology.Relative
 import Poincare.Topology.Homology.RelativeFunctoriality
 import Poincare.Topology.Homology.RelativeHomeomorphism
 import Poincare.Topology.Homology.RelativeMaps
+import Poincare.Topology.Homology.RelativeMayerVietoris
 import Poincare.Topology.Homology.RelativeVanishing
 import Poincare.Topology.Homology.RelativeZero
 import Poincare.Topology.Homology.SimplexBasis
