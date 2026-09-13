@@ -7847,6 +7847,7 @@ import DifferentialGeometry.Topology.Homology.ContractibleCoverOneEvaluation
 import DifferentialGeometry.Topology.Homology.ContractiblePair
 import DifferentialGeometry.Topology.Homology.ContractiblePairOne
 import DifferentialGeometry.Topology.Homology.Coproduct
+import DifferentialGeometry.Topology.Homology.CubeSphereDegreeUnit
 import DifferentialGeometry.Topology.Homology.CycleLinearEquiv
 import DifferentialGeometry.Topology.Homology.Cycles
 import DifferentialGeometry.Topology.Homology.DoubleEuler
