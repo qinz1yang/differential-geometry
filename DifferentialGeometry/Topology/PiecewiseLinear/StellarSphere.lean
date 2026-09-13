@@ -396,7 +396,7 @@ theorem isPLSphere_simplexAvoiding_pair [FiniteDimensional ℝ E] [DecidableEq E
     have hfinJ := (simplexAvoiding_faces_finite T hT {σ₀, T \ σ₀}).to_subtype
     have hfinS := (stellarComplex_faces_finite hT' ha hc).to_subtype
     have hS : IsPLSphere n (stellarComplex hT' ha hc).space := by
-      rw [stellarComplex_space hT' ha hc hσ₀T hσ', simplexBoundary_space _ hT' (by omega)]
+      rw [stellarComplex_space hT' hσ₀T ha hc hσ', simplexBoundary_space _ hT' (by omega)]
       exact isPLSphere_biUnion_erase _ hT' hcard'
     exact hS.of_isPLHomeomorphOn hiso.isPLHomeomorphOn.symm
 
