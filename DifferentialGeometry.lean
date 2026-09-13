@@ -9050,3 +9050,5 @@ import DifferentialGeometry.Topology.VectorField.Transport
 import DifferentialGeometry.Topology.VectorField.VerticalLinearization
 import DifferentialGeometry.Topology.SphereSeparation.TwoSidedSeparation
 import DifferentialGeometry.Topology.ThreeManifold.SphereTwoTimesCircleLift
+import DifferentialGeometry.Geometry.Metric.Sphere.Quotient.DeckCovering
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.PositiveDeckTopology
