@@ -1,9 +1,9 @@
 {
-  "scope": "Dependency-closed 133-module checkpoint including actual singular cochain homotopies and integral cohomology homotopy invariance; full topology suite incomplete",
+  "scope": "Dependency-closed 134-module checkpoint including positive-degree integral cohomology vanishing for totally disconnected and contractible spaces; full topology suite incomplete",
   "baseline_commit": "b45bfa009368c8f5f531e10f4f5280e90079d6ad",
   "baseline_ref": "refs/remotes/origin/codex/chapter35",
   "source_project": "PoincareLean",
-  "source_module_count": 133,
+  "source_module_count": 134,
   "roots": [
     "Poincare.Topology.Homology.RelativeMaps",
     "Poincare.Topology.Homology.RelativeHomeomorphism",
@@ -33,7 +33,8 @@
     "Poincare.Topology.Homology.RelativeCapToAbsoluteHomology",
     "Poincare.Topology.Homology.RelativeCapCohomologyConnecting",
     "Poincare.Topology.Homology.TwoPointCapDuality",
-    "Poincare.Topology.Homology.CochainHomotopy"
+    "Poincare.Topology.Homology.CochainHomotopy",
+    "Poincare.Topology.Homology.CohomologyVanishing"
   ],
   "changed_sources": [
     {
@@ -72,6 +73,12 @@
       "path": "Poincare/Topology/Homology/CochainHomotopy.lean",
       "baseline_sha256": null,
       "sha256": "9bfca41d38079cb9afd2a3a18116d50b54bb8a6739ad96ec1941da8efe0f5b06"
+    },
+    {
+      "module": "Poincare.Topology.Homology.CohomologyVanishing",
+      "path": "Poincare/Topology/Homology/CohomologyVanishing.lean",
+      "baseline_sha256": null,
+      "sha256": "57289fb4122643cda302a4b948b86e8714b7b0c2f14ccd0bb7766a01c2d045bc"
     },
     {
       "module": "Poincare.Topology.Homology.CompactSupport",
@@ -486,6 +493,12 @@
       "path": "Poincare/Topology/Homology/Cochains.lean",
       "baseline_sha256": "863bbc0d4775ff94ab84e7369c6cff617a39303df6554100387129c2ad524147",
       "sha256": "863bbc0d4775ff94ab84e7369c6cff617a39303df6554100387129c2ad524147"
+    },
+    {
+      "module": "Poincare.Topology.Homology.CohomologyVanishing",
+      "path": "Poincare/Topology/Homology/CohomologyVanishing.lean",
+      "baseline_sha256": null,
+      "sha256": "57289fb4122643cda302a4b948b86e8714b7b0c2f14ccd0bb7766a01c2d045bc"
     },
     {
       "module": "Poincare.Topology.Homology.CompactSupport",
@@ -1166,8 +1179,8 @@
   "aggregate": {
     "path": "Poincare.lean",
     "baseline_sha256": "99c3c8e47c19f60ee50a7e0f377e59138cf4ff33ebd4e26530d3c2b7cd47d452",
-    "sha256": "c52c35fd214907cba8e41b3d700be719fc0b556e4ef861300e432505bfa7117a",
-    "change": "Flat 133-leaf checkpoint aggregate; full recovered aggregate remains separate"
+    "sha256": "0af1d576ee6b4b27239680ce82525aac1a210993adbcf3e8095e3d3ca1c95b42",
+    "change": "Flat 134-leaf checkpoint aggregate; full recovered aggregate remains separate"
   },
   "configuration": [
     {
@@ -1197,6 +1210,7 @@
     "Mathlib.Algebra.Category.ModuleCat.Colimits",
     "Mathlib.Algebra.Category.ModuleCat.Projective",
     "Mathlib.Algebra.Exact.Basic",
+    "Mathlib.Algebra.Homology.AlternatingConst",
     "Mathlib.Algebra.Homology.ConcreteCategory",
     "Mathlib.Algebra.Homology.DerivedCategory.KProjective",
     "Mathlib.Algebra.Homology.HomologicalComplexAbelian",
@@ -1426,7 +1440,9 @@
     "Poincare.Topology.integralSingularCochainsDualIso_natural",
     "Poincare.Topology.integralSingularCochainMapHomotopy",
     "Poincare.Topology.integralSingularCohomologyMap_eq_of_homotopic",
-    "Poincare.Topology.integralSingularCohomologyMap_bijective_of_homotopyEquiv"
+    "Poincare.Topology.integralSingularCohomologyMap_bijective_of_homotopyEquiv",
+    "Poincare.Topology.integralSingularCohomology_subsingleton_of_totallyDisconnectedSpace",
+    "Poincare.Topology.integralSingularCohomology_subsingleton_of_contractibleSpace"
   ],
   "historical_authorities": [
     {
@@ -1564,24 +1580,23 @@
     "full_topology_suite_accepted": false
   },
   "validation": {
-    "status": "passed for the selected 133-module checkpoint; full topology suite incomplete",
+    "status": "passed for the selected 134-module checkpoint; full topology suite incomplete",
     "date": "2026-09-13",
-    "slurm_job": "13821107",
+    "slurm_job": "13846673",
     "host": "della-r3c4n2",
-    "request_id": "1789336555099403798-topology_checkpoint-5d3553b1",
-    "input_sha256": "a4ee5db00f49db453d03400b703ffbf647790cd80406e7c9353cd7f141bdd1a3",
-    "result_sha256": "890857477c85f1ecc69fb78923ed699f8e5e9aa9e9ee05e5d316a7cce69e7300",
-    "artifact_log_sha256": "46dd593fbab679826c3f3707f3d679300ac296214d3a0c23a66dad068d5dcdce",
-    "source_config_harness_hash_guards": 516,
+    "request_id": "1789338860447210678-topology_checkpoint-0c375dc4",
+    "input_sha256": "137ae558a07b31c2dc0517deca9dfc2cde047d90f5f6758893f8707f1a5ce8d0",
+    "result_sha256": "64cc62817f8d1f24e371c08af7e6d5bf93843079ebf3b328d758e6734b99f48e",
+    "artifact_log_sha256": "bd290b7fed65f7cdea25b0aa003fc97e44ea37718cb90cbca930981c37224981",
+    "source_config_harness_hash_guards": 527,
     "freshly_built_modules": [
-      "Poincare.Topology.Homology.CochainHomotopy",
-      "Poincare.Topology.Homology.CochainExcision",
+      "Poincare.Topology.Homology.CohomologyVanishing",
       "Poincare"
     ],
     "root_build": "lake --no-cache --iofail build Poincare",
-    "fresh_build_scope": "CochainHomotopy95, deduplicated CochainExcision294 and root freshly compiled with zero diagnostics; all 131 other published leaves unchanged.",
-    "exact_public_exports": 139,
-    "public_and_consumer_signature_axiom_pairs": 242,
+    "fresh_build_scope": "CohomologyVanishing79 and root freshly compiled with zero diagnostics; all 133 previously published leaves unchanged.",
+    "exact_public_exports": 141,
+    "public_and_consumer_signature_axiom_pairs": 247,
     "linters": [
       "unusedArguments",
       "simpNF",
@@ -1596,15 +1611,15 @@
       "Quot.sound"
     ],
     "unexpected_diagnostics": 0,
-    "elapsed_seconds": 186.48758339881897,
-    "peak_summed_rss_bytes": 3116363776,
+    "elapsed_seconds": 163.1416575908661,
+    "peak_summed_rss_bytes": 3132641280,
     "full_topology_suite_accepted": false,
     "consumer_probes": [
-      "All 234 prior signature/axiom pairs reproduced byte-identically",
-      "All five new public declarations and three consumers match original and source readbacks exactly",
-      "Actual continuous homotopies induce chain homotopies between the original cochain pullback maps, and hence equal cohomology maps in every degree",
-      "Actual native homotopy equivalences induce bijective cohomology pullback maps in every degree",
-      "Cylinder collapse induces the identity for arbitrary X and degree; real constant pullback preserves the nonzero H0 unit; empty-space bijection passes"
+      "All 242 prior signature/axiom pairs reproduced byte-identically",
+      "Both new public declarations and all three consumers match original and source readbacks exactly",
+      "Actual integral cohomology is subsingleton in every positive degree for any totally disconnected space, including empty and discrete spaces",
+      "Actual integral cohomology is subsingleton in every positive degree for any contractible space, using the published actual homotopy invariance",
+      "Real positive-degree classes vanish while the actual H0 unit remains nonzero; natural-number and empty-space positive-degree classes vanish"
     ]
   },
   "previous_linear_sign_checkpoint_validation": {
@@ -3051,5 +3066,61 @@
     ],
     "source_request_id": "1789336316139854611-topology-db318cb3",
     "source_readback_comparison": "all 10 original pairs match source exactly; all 8 new portable pairs match both"
+  },
+  "previous_cochain_homotopy_validation": {
+    "status": "passed for the selected 133-module checkpoint; full topology suite incomplete",
+    "date": "2026-09-13",
+    "slurm_job": "13821107",
+    "host": "della-r3c4n2",
+    "request_id": "1789336555099403798-topology_checkpoint-5d3553b1",
+    "input_sha256": "a4ee5db00f49db453d03400b703ffbf647790cd80406e7c9353cd7f141bdd1a3",
+    "result_sha256": "890857477c85f1ecc69fb78923ed699f8e5e9aa9e9ee05e5d316a7cce69e7300",
+    "artifact_log_sha256": "46dd593fbab679826c3f3707f3d679300ac296214d3a0c23a66dad068d5dcdce",
+    "source_config_harness_hash_guards": 516,
+    "freshly_built_modules": [
+      "Poincare.Topology.Homology.CochainHomotopy",
+      "Poincare.Topology.Homology.CochainExcision",
+      "Poincare"
+    ],
+    "root_build": "lake --no-cache --iofail build Poincare",
+    "fresh_build_scope": "CochainHomotopy95, deduplicated CochainExcision294 and root freshly compiled with zero diagnostics; all 131 other published leaves unchanged.",
+    "exact_public_exports": 139,
+    "public_and_consumer_signature_axiom_pairs": 242,
+    "linters": [
+      "unusedArguments",
+      "simpNF",
+      "synTaut",
+      "checkType"
+    ],
+    "linter_scope": "All imported Poincare declarations and current consumers, including private declarations",
+    "defLemma": "Unavailable in the pinned Mathlib; source declaration-kind checks retained.",
+    "allowed_transitive_axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "unexpected_diagnostics": 0,
+    "elapsed_seconds": 186.48758339881897,
+    "peak_summed_rss_bytes": 3116363776,
+    "full_topology_suite_accepted": false,
+    "consumer_probes": [
+      "All 234 prior signature/axiom pairs reproduced byte-identically",
+      "All five new public declarations and three consumers match original and source readbacks exactly",
+      "Actual continuous homotopies induce chain homotopies between the original cochain pullback maps, and hence equal cohomology maps in every degree",
+      "Actual native homotopy equivalences induce bijective cohomology pullback maps in every degree",
+      "Cylinder collapse induces the identity for arbitrary X and degree; real constant pullback preserves the nonzero H0 unit; empty-space bijection passes"
+    ]
+  },
+  "original_cohomology_vanishing_validation": {
+    "request_id": "1789338679568569152-topology-29d8b462",
+    "input_sha256": "03d4be2e22ae0a2422809c0930eba6187b6fb333ce7905b591727a7b51b95671",
+    "elapsed_seconds": 65.01726698875427,
+    "source_guards": 57,
+    "signature_axiom_pairs": 5,
+    "fresh_modules": [
+      "Poincare.Topology.Homology.CohomologyVanishing"
+    ],
+    "source_request_id": "1789338598420713654-topology-38ad4fa5",
+    "source_readback_comparison": "all five original/portable pairs match source exactly; all 242 preceding portable pairs remain exact"
   }
 }

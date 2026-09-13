@@ -1,11 +1,14 @@
 # Local homology and global classes from coherent local generators
 
 This separate `PoincareLean` project contains a dependency-closed checkpoint of
-133 Poincare modules. It extends the recovered Chapter 35 source at commit
+134 Poincare modules. It extends the recovered Chapter 35 source at commit
 `b45bfa009368c8f5f531e10f4f5280e90079d6ad` and preserves its mathematical objects
 and `Poincare` namespaces. `Poincare.lean` imports every included leaf.
 
 The additions prove:
+
+- vanishing of actual integral cohomology in every positive degree for totally
+  disconnected and contractible spaces;
 
 - homotopy invariance of the actual integral cochain and cohomology maps in
   every degree, with bijective pullback for native homotopy equivalences;
@@ -87,7 +90,7 @@ The additions prove:
 - a unique compact-neighborhood class with the same normalization in every
   chart whose actual tangent trivialization preserves the base-chart orientation.
 
-The forty-eight new/changed modules and their exact baseline/current hashes are listed in
+The fifty new/changed modules and their exact baseline/current hashes are listed in
 [provenance/SNAPSHOT.json](provenance/SNAPSHOT.json). The derivative homotopy
 retains its [upstream attribution and modification record](provenance/README.md).
 
@@ -703,7 +706,7 @@ canonical topology contract remain unresolved.
 
 ## Integral cohomology homotopy invariance
 
-The current checkpoint contains 133 leaves and 139 tracked added public exports.
+That checkpoint contained 133 leaves and 139 tracked added public exports.
 `CochainHomotopy.lean` constructs an actual chain homotopy between the original
 cochain pullback maps from a continuous homotopy. Homotopic maps therefore induce
 equal integral cohomology maps in every degree, and a native homotopy equivalence
@@ -731,3 +734,28 @@ identity in every degree, that the real constant map preserves the nonzero
 H⁰ unit, and that the empty-space case needs no extra assumptions. These
 foundations support the duality development; general manifold duality and the
 native orientation producer remain open.
+
+
+## Positive-degree integral cohomology vanishing
+
+The current checkpoint contains 134 leaves and 141 curated tracked added public
+exports. `CohomologyVanishing.lean` proves that the actual integral cohomology
+group is subsingleton in every positive degree for any totally disconnected
+space and for any contractible space. The 79-line development uses Mathlib's
+alternating singular complex and the existing actual cohomology homotopy maps.
+The zero-degree restriction is essential: the real-line consumer retains a
+nonzero H⁰ unit while all its positive-degree classes vanish. Separate discrete
+natural-number and empty-space consumers pass.
+
+Source request `1789338598420713654-topology-38ad4fa5` passed in 27.54 seconds,
+with 57 guards and six pairs. Original imported request
+`1789338679568569152-topology-29d8b462` passed in 65.02 seconds, with 57 guards
+and five pairs. Final portable request
+`1789338860447210678-topology_checkpoint-0c375dc4` passed in Slurm13846673 in
+163.14 seconds, with 527 guards and 247 signature/axiom pairs. All 242 earlier
+pairs are byte-identical, and all five new pairs match both earlier gates.
+The new leaf and root freshly compiled in 1:11.45 with maximum RSS1,826,368KiB
+and zero diagnostics. All 133 prior published leaves, dependency pins and
+deferred inputs remain unchanged. Stock declaration linters and standard-only
+transitive axiom checks pass. General manifold duality, the native orientation
+producer and the frozen canonical topology contract remain unresolved.

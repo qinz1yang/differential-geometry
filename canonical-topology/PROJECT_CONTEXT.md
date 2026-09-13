@@ -6,22 +6,26 @@ library is `Poincare`; its sources retain the original mathematical namespaces.
 
 The source baseline is the recovered Chapter 35 commit
 `b45bfa009368c8f5f531e10f4f5280e90079d6ad`, supplemented by recovered working-tree
-proofs with separately recorded provenance. This checkpoint includes 133 modules
-and 139 tracked added public exports. The latest coherent 95-line leaf constructs
-actual chain homotopies between the original integral cochain pullback maps.
-Homotopic continuous maps induce equal integral cohomology maps in every degree;
-native homotopy equivalences induce bijective pullbacks. The natural comparison
-with dual singular chains is now shared with the existing excision proof,
-removing 27 duplicated lines while preserving both public excision signatures.
+proofs with separately recorded provenance. This checkpoint includes 134 modules
+and 141 curated tracked added public exports. The latest 79-line leaf proves
+vanishing of actual integral cohomology in every positive degree for any
+totally disconnected or contractible space. It reuses Mathlib's explicit
+alternating singular complex and the already published cohomology homotopy
+invariance, with the same original cochain objects and pullback maps.
 
-Final request `1789336555099403798-topology_checkpoint-5d3553b1` passed in
-Slurm 13821107 in 186.49 seconds, with 516 guards and 242 signature/axiom pairs.
-All 234 earlier pairs are byte-identical; eight new pairs match both the combined
-source gate db318cb3 and original imported gate efb76a39 exactly. The two changed
-leaves and root freshly compiled in 1:34.82, with maximum RSS 1825276 KiB and
-zero diagnostics. All 131 other published leaves remain byte-identical.
-Cylinder-collapse, nonzero real H0 unit and empty-space consumers pass, with
-stock linters and standard-only axioms. No dependency or deferred input changed.
+Final request `1789338860447210678-topology_checkpoint-0c375dc4` passed in
+Slurm 13846673 in 163.14 seconds, with 527 guards and 247 signature/axiom pairs.
+All 242 earlier pairs are byte-identical; the five new public/consumer pairs
+match source gate38ad4fa5 and original imported gate29d8b462 exactly.
+The new leaf and root freshly compiled in 1:11.45, maximum RSS1826368KiB,
+with zero diagnostics. All 133 previously published leaves remain byte-identical.
+Real positive-degree classes vanish while the actual H0 unit is nonzero;
+discrete-natural-number and empty-space consumers also pass. Stock declaration
+linters and standard-only transitive axioms pass. No dependency or deferred
+input changed.
+
+The actual cochain comparison, naturality, homotopy invariance and excision
+results retain their exact public statements and bodies.
 
 The earlier uniquely normalized two-point cap-duality theorem and its fifteen
 unchanged recovered working-tree prerequisites retain their exact statements
