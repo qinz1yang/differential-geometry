@@ -8241,6 +8241,7 @@ import DifferentialGeometry.Topology.Manifold.ChartedSpaceHomeomorph
 import DifferentialGeometry.Topology.Manifold.CollarFamily
 import DifferentialGeometry.Topology.Manifold.RelativeCollar
 import DifferentialGeometry.Topology.Manifold.BoundaryExtrema
+import DifferentialGeometry.Topology.Manifold.BoundaryFrameOrientationSign
 import DifferentialGeometry.Topology.Manifold.BoundaryIntegralCurve
 import DifferentialGeometry.Topology.Manifold.BoundaryOrder
 import DifferentialGeometry.Topology.Manifold.BoundaryOrientationContraction
