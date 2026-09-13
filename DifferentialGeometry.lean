@@ -6432,6 +6432,7 @@ import DifferentialGeometry.Geometry.Gradient.Normalized
 import DifferentialGeometry.Geometry.Gradient.ScaledChartDifferential
 import DifferentialGeometry.Geometry.Gradient.SignedDifference
 import DifferentialGeometry.Geometry.HarmonicMap.BoundaryRegularity
+import DifferentialGeometry.Geometry.HarmonicMap.Closure
 import DifferentialGeometry.Geometry.HarmonicMap.ConformalSource
 import DifferentialGeometry.Geometry.HarmonicMap.Coordinates
 import DifferentialGeometry.Geometry.HarmonicMap.DiskBoundaryRegularity
