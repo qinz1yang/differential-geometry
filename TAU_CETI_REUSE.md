@@ -652,3 +652,37 @@ sources, exact statements, providers, consumers and mathematical diff.
 All four changed leaves were already registered in the flat root. No full
 DG aggregate build, boundary ambient-isotopy theorem or Schoenflies completion
 is claimed by this checkpoint. No dependency or installation changed.
+
+## Ambient isotopy of native boundary families, 2026-09-13
+
+Embedding/AmbientIsotopy now extends a whole-real smooth embedding family of
+any compact native standard-halfspace manifold into finite-dimensional real
+normed space. The output is a native diffeomorphism family with joint forward
+and inverse smoothness, identity at the initial time, both pointwise tracking
+equations on the observation interval, and one compact spatial support inside
+the prescribed open set for every real time. Only the active velocity image
+must lie in that set. A relative corollary fixes one open neighborhood of a
+closed set disjoint from that active image in both directions for all times.
+
+One private flow assembly now serves the boundaryless and boundary primaries.
+It reuses the actual compact spacetime field, existing time-dependent flow,
+right-endpoint ODE uniqueness and common-support theorem. Every public primary
+produces its own field and derives the smooth time curves from joint input;
+no new flow or extension hypothesis is exposed. All four old public signatures
+and three old corollary bodies are retained. This is original repository glue;
+no additional upstream source or dependency was copied.
+
+Private source 1789326341023579625-schoenflies-8c08d370 passes in 61.77 seconds,
+185 guards and 32 pairs. The three new methods were made public without other
+body changes. Final imported request
+1789326881900153489-schoenflies-a4fca4c1 passes in 145.55 seconds, 219 guards
+and 144 pairs. All 138 earlier pairs are byte-identical; all 27 shared source/
+import types match. The changed leaf freshly compiles without diagnostics in
+56.94 seconds, maximum RSS 1827672 KiB, under Slurm 13821107. Stock linters
+and approved-only transitive axioms pass. New consumers force nonzero motion
+of an actual ClosedCell boundary point, identity for a stationary nonempty
+source with empty support, and identity on a reversed observation interval.
+Root reviewed exact source, provider proofs, types, consumers and the diff.
+The existing flat-root import is retained; no full DG aggregate build is claimed.
+Interval-only boundary-source input, general ambient manifolds and the full
+Schoenflies theorem remain open.
