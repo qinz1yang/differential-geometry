@@ -193,6 +193,7 @@ import DifferentialGeometry.Analysis.Elliptic.Barrier.TouchingSupportsDifferenti
 import DifferentialGeometry.Analysis.Elliptic.Coefficients
 import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.BoundaryGradient
 import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.BoundaryGrowth
+import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.BoundaryLifting
 import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.BoundaryRegularity
 import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.Disk.GreenIdentity
 import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.Disk.ImageHarmonic
