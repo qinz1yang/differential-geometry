@@ -1,9 +1,10 @@
 import DifferentialGeometry.Analysis.Integration.Integral.HalfPlaneLaplacian
 import Mathlib.MeasureTheory.Measure.Haar.InnerProductSpace
+import Mathlib.Topology.MetricSpace.Holder
 
 noncomputable section
 open MeasureTheory Set Filter InnerProductSpace
-open scoped Topology ContDiff
+open scoped Topology ContDiff NNReal
 namespace DifferentialGeometry.Analysis
 
 def oddReflection {F : Type*} [AddGroup F] (f : ℂ → F) : ℂ → F :=
@@ -87,13 +88,14 @@ theorem continuous_oddReflection_of_norm_le_mul_im
       (((hf (Complex.conjLIE z) hcz).continuousAt (hU.mem_nhds hcz)).comp
         Complex.conjLIE.continuous.continuousAt).neg
 
-private theorem integral_smul_oddReflection
+private theorem integral_indicator_add_indicator_comp_conj
     {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
-    {φ : ℂ → ℝ} {f : ℂ → F}
-    (h₁ : IntegrableOn (fun z => φ z • f z) {z : ℂ | 0 < z.im})
-    (h₂ : IntegrableOn (fun z => φ (Complex.conjLIE z) • f z) {z : ℂ | 0 < z.im}) :
-    ∫ z : ℂ, φ z • oddReflection f z =
-      ∫ z in {z : ℂ | 0 < z.im}, (φ z - φ (Complex.conjLIE z)) • f z := by
+    {f g : ℂ → F}
+    (hf : IntegrableOn f {z : ℂ | 0 < z.im})
+    (hg : IntegrableOn g {z : ℂ | 0 < z.im}) :
+    (∫ z : ℂ, {z : ℂ | 0 < z.im}.indicator f z +
+      {z : ℂ | z.im < 0}.indicator (g ∘ Complex.conjLIE) z) =
+      ∫ z in {z : ℂ | 0 < z.im}, f z + g z := by
   have hU : MeasurableSet {z : ℂ | 0 < z.im} :=
     (isOpen_lt continuous_const Complex.continuous_im).measurableSet
   have hL : MeasurableSet {z : ℂ | z.im < 0} :=
@@ -104,28 +106,38 @@ private theorem integral_smul_oddReflection
   have hpres := Complex.conjLIE.measurePreserving
   have hemb : MeasurableEmbedding (Complex.conjLIE : ℂ → ℂ) :=
     Complex.conjLIE.toHomeomorph.isClosedEmbedding.measurableEmbedding
-  have hinv (z : ℂ) : Complex.conjLIE (Complex.conjLIE z) = z :=
-    starRingEnd_self_apply z
-  have hlow : IntegrableOn (fun z => φ z • f (Complex.conjLIE z)) {z : ℂ | z.im < 0} := by
+  have hinv (z : ℂ) : Complex.conjLIE (Complex.conjLIE z) = z := starRingEnd_self_apply z
+  have hlow : IntegrableOn (g ∘ Complex.conjLIE) {z : ℂ | z.im < 0} := by
     apply (hpres.integrableOn_comp_preimage hemb).mp
-    change IntegrableOn (fun z => φ (Complex.conjLIE z) • f (Complex.conjLIE (Complex.conjLIE z)))
-      (Complex.conjLIE ⁻¹' {z : ℂ | z.im < 0})
-    simpa only [hp, hinv] using h₂
-  have he (z : ℂ) : φ z • oddReflection f z =
-      {z : ℂ | 0 < z.im}.indicator (fun z => φ z • f z) z -
-      {z : ℂ | z.im < 0}.indicator (fun z => φ z • f (Complex.conjLIE z)) z := by
-    by_cases hi : 0 < z.im <;> by_cases hl : z.im < 0 <;>
-      simp [oddReflection, indicator, hi, hl, smul_sub, Function.comp_apply]
-  simp_rw [he]
-  rw [integral_sub ((integrable_indicator_iff hU).mpr h₁)
+    simpa only [hp, Function.comp_def, hinv] using hg
+  rw [integral_add ((integrable_indicator_iff hU).mpr hf)
     ((integrable_indicator_iff hL).mpr hlow), integral_indicator hU, integral_indicator hL]
   have hchange := hpres.setIntegral_preimage_emb hemb
-    (fun z => φ z • f (Complex.conjLIE z)) {z : ℂ | z.im < 0}
-  simp only [hp, hinv] at hchange
-  rw [← hchange, ← integral_sub h₁ h₂]
+    (g ∘ Complex.conjLIE) {z : ℂ | z.im < 0}
+  simp only [hp, Function.comp_apply, hinv] at hchange
+  change (∫ z in {z : ℂ | 0 < z.im}, f z) +
+    (∫ z in {z : ℂ | z.im < 0}, g (Complex.conjLIE z)) = _
+  rw [← hchange, ← integral_add hf hg]
+
+private theorem integral_smul_oddReflection
+    {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
+    {φ : ℂ → ℝ} {f : ℂ → F}
+    (h₁ : IntegrableOn (fun z => φ z • f z) {z : ℂ | 0 < z.im})
+    (h₂ : IntegrableOn (fun z => φ (Complex.conjLIE z) • f z) {z : ℂ | 0 < z.im}) :
+    ∫ z : ℂ, φ z • oddReflection f z =
+      ∫ z in {z : ℂ | 0 < z.im}, (φ z - φ (Complex.conjLIE z)) • f z := by
+  have he (z : ℂ) : φ z • oddReflection f z =
+      {z : ℂ | 0 < z.im}.indicator (fun z => φ z • f z) z +
+      {z : ℂ | z.im < 0}.indicator ((fun z => -(φ (Complex.conjLIE z) • f z)) ∘ Complex.conjLIE) z := by
+    by_cases hi : 0 < z.im <;> by_cases hl : z.im < 0 <;>
+      simp [oddReflection, indicator, hi, hl, Function.comp_apply, sub_eq_add_neg]
+  simp_rw [he]
+  rw [integral_indicator_add_indicator_comp_conj
+    (g := fun z => -(φ (Complex.conjLIE z) • f z)) h₁ h₂.neg]
   apply integral_congr_ae
   filter_upwards with z
-  rw [sub_smul]
+  rw [sub_smul, sub_eq_add_neg]
+
 
 private theorem integrableOn_smul_of_bound_on_tsupport
     {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
@@ -230,5 +242,156 @@ theorem aestronglyMeasurable_oddReflection
       simpa only [mem_ofPred_eq, Complex.conjLIE_apply, Complex.conj_im, neg_pos] using hz)
   exact ((aestronglyMeasurable_indicator_iff hU).mpr (hf.aestronglyMeasurable hU)).sub
     ((aestronglyMeasurable_indicator_iff hL).mpr (hc.aestronglyMeasurable hL))
+
+def evenReflection {F : Type*} (f : ℂ → F) (z : ℂ) : F := f ⟨z.re, |z.im|⟩
+
+theorem evenReflection_of_im_nonneg {F : Type*} (f : ℂ → F)
+    {z : ℂ} (hz : 0 ≤ z.im) : evenReflection f z = f z := by
+  unfold evenReflection
+  congr 1
+  exact Complex.ext rfl (abs_of_nonneg hz)
+
+theorem evenReflection_of_im_nonpos {F : Type*} (f : ℂ → F)
+    {z : ℂ} (hz : z.im ≤ 0) : evenReflection f z = f (Complex.conjLIE z) := by
+  unfold evenReflection
+  congr 1
+  exact Complex.ext rfl (abs_of_nonpos hz)
+
+theorem evenReflection_conj {F : Type*} (f : ℂ → F) (z : ℂ) :
+    evenReflection f (Complex.conjLIE z) = evenReflection f z := by
+  simp [evenReflection, Complex.conjLIE_apply]
+
+theorem continuous_evenReflection {F : Type*} [TopologicalSpace F] {f : ℂ → F}
+    (hf : ContinuousOn f {z : ℂ | 0 ≤ z.im}) : Continuous (evenReflection f) := by
+  exact hf.comp_continuous
+    (by
+      have he : (fun z : ℂ => (⟨z.re, |z.im|⟩ : ℂ)) =
+          fun z => (z.re : ℂ) + ((|z.im| : ℝ) : ℂ) * Complex.I := by
+        funext z
+        apply Complex.ext <;> simp
+      rw [he]
+      fun_prop) (fun z => abs_nonneg z.im)
+
+theorem holderWith_evenReflection {F : Type*} [PseudoEMetricSpace F] {f : ℂ → F}
+    {K α : ℝ≥0} (hf : HolderOnWith K α f {z : ℂ | 0 ≤ z.im}) :
+    HolderWith K α (evenReflection f) := by
+  have hl : LipschitzWith 1 (fun z : ℂ => (⟨z.re, |z.im|⟩ : ℂ)) := by
+    apply LipschitzWith.mk_one
+    intro z w
+    rw [dist_eq_norm, dist_eq_norm]
+    apply (sq_le_sq₀ (norm_nonneg _) (norm_nonneg _)).mp
+    have h := (sq_le_sq₀ (abs_nonneg _) (abs_nonneg _)).mpr
+      (abs_abs_sub_abs_le_abs_sub z.im w.im)
+    simp only [sq_abs] at h
+    simp only [Complex.sq_norm, Complex.normSq_apply, Complex.sub_re, Complex.sub_im]
+    nlinarith
+  change HolderWith K α (fun z : ℂ => f ⟨z.re, |z.im|⟩)
+  simpa only [Function.comp_def, one_mul, mul_one, NNReal.one_rpow] using
+    hf.comp_holderWith hl.holderWith (fun z => abs_nonneg z.im)
+
+theorem hasCompactSupport_evenReflection {F : Type*} [Zero F] {f : ℂ → F}
+    (hc : HasCompactSupport f) : HasCompactSupport (evenReflection f) := by
+  apply HasCompactSupport.intro (hc.union
+    (Complex.conjLIE.toHomeomorph.isCompact_preimage.mpr hc))
+  intro z hz
+  have hz1 : z ∉ tsupport f := fun h => hz (Or.inl h)
+  have hz2 : Complex.conjLIE z ∉ tsupport f := fun h => hz (Or.inr h)
+  rcases le_total 0 z.im with hp | hn
+  · rw [evenReflection_of_im_nonneg f hp, image_eq_zero_of_notMem_tsupport hz1]
+  · rw [evenReflection_of_im_nonpos f hn, image_eq_zero_of_notMem_tsupport hz2]
+
+private theorem ae_im_ne_zero : ∀ᵐ z : ℂ ∂volume, z.im ≠ 0 := by
+  have h : ∀ᵐ p : ℝ × ℝ ∂(volume.prod volume), p.2 ≠ 0 := by
+    apply (Measure.ae_prod_iff_ae_ae (measurable_snd (measurableSet_singleton 0).compl)).mpr
+    filter_upwards with x
+    simp [ae_iff, measure_singleton]
+  exact Complex.volume_preserving_equiv_real_prod.quasiMeasurePreserving.ae h
+
+theorem evenReflection_congr_ae {F : Type*} {f g : ℂ → F}
+    (hfg : EqOn f g {z : ℂ | 0 < z.im}) : evenReflection f =ᵐ[volume] evenReflection g := by
+  filter_upwards [ae_im_ne_zero] with z hz
+  rcases lt_or_gt_of_ne hz with hn | hp
+  · rw [evenReflection_of_im_nonpos f hn.le, evenReflection_of_im_nonpos g hn.le]
+    exact hfg (by simpa using hn)
+  · rw [evenReflection_of_im_nonneg f hp.le, evenReflection_of_im_nonneg g hp.le]
+    exact hfg hp
+
+private theorem integral_smul_evenReflection
+    {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
+    {φ : ℂ → ℝ} {f : ℂ → F}
+    (h₁ : IntegrableOn (fun z => φ z • f z) {z : ℂ | 0 < z.im})
+    (h₂ : IntegrableOn (fun z => φ (Complex.conjLIE z) • f z) {z : ℂ | 0 < z.im}) :
+    ∫ z : ℂ, φ z • evenReflection f z =
+      ∫ z in {z : ℂ | 0 < z.im}, (φ z + φ (Complex.conjLIE z)) • f z := by
+  have he : (fun z => φ z • evenReflection f z) =ᵐ[volume]
+      (fun z => {z : ℂ | 0 < z.im}.indicator (fun z => φ z • f z) z +
+      {z : ℂ | z.im < 0}.indicator ((fun z => φ (Complex.conjLIE z) • f z) ∘ Complex.conjLIE) z) := by
+    filter_upwards [ae_im_ne_zero] with z hz
+    rcases lt_or_gt_of_ne hz with hn | hp
+    · simp [evenReflection_of_im_nonpos f hn.le, indicator, hn, not_lt_of_ge hn.le, Function.comp_apply]
+    · simp [evenReflection_of_im_nonneg f hp.le, indicator, hp, not_lt_of_ge hp.le]
+  rw [integral_congr_ae he, integral_indicator_add_indicator_comp_conj h₁ h₂]
+  apply integral_congr_ae
+  filter_upwards with z
+  rw [add_smul]
+
+theorem integral_laplacian_smul_evenReflection
+    {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F] [CompleteSpace F]
+    {φ : ℂ → ℝ} {f : ℂ → F}
+    (hφ : ContDiff ℝ 2 φ) (hc : HasCompactSupport φ)
+    (hf : ContDiffOn ℝ 1 f {z : ℂ | 0 ≤ z.im})
+    (hf2 : ContDiffOn ℝ 2 f {z : ℂ | 0 < z.im})
+    (hN : ∀ x : ℝ, fderivWithin ℝ f {z : ℂ | 0 ≤ z.im} x Complex.I = 0)
+    (hL : LocallyIntegrable (Laplacian.laplacian f) (volume.restrict {z : ℂ | 0 < z.im})) :
+    (∫ z : ℂ, Laplacian.laplacian φ z • evenReflection f z) =
+      ∫ z : ℂ, φ z • evenReflection (Laplacian.laplacian f) z := by
+  let ψ : ℂ → ℝ := fun z => φ z + φ (Complex.conjLIE z)
+  have he : ContDiff ℝ 2 (Complex.conjLIE : ℂ → ℂ) := Complex.conjCLE.contDiff
+  have hψ : ContDiff ℝ 2 ψ := hφ.add (hφ.comp he)
+  have hcψ : HasCompactSupport ψ := hc.add (hc.comp_homeomorph Complex.conjLIE.toHomeomorph)
+  have hψN (x : ℝ) : fderiv ℝ ψ x Complex.I = 0 := by
+    have hd := (hφ.differentiable (by norm_num) (x : ℂ)).hasFDerivAt.add
+      ((hφ.differentiable (by norm_num) (Complex.conjLIE x)).hasFDerivAt.comp (x : ℂ)
+        Complex.conjCLE.hasFDerivAt)
+    change fderiv ℝ (φ + φ ∘ Complex.conjLIE) x Complex.I = 0
+    rw [hd.fderiv]
+    simp
+  have hψΔ (z : ℂ) : Laplacian.laplacian ψ z =
+      Laplacian.laplacian φ z + Laplacian.laplacian φ (Complex.conjLIE z) := by
+    change Laplacian.laplacian (φ + φ ∘ Complex.conjLIE) z = _
+    rw [hφ.contDiffAt.laplacian_add (hφ.comp he).contDiffAt,
+      Complex.conjLIE.laplacian_comp φ]
+  have hU : MeasurableSet {z : ℂ | 0 < z.im} :=
+    (isOpen_lt continuous_const Complex.continuous_im).measurableSet
+  have hfc : LocallyIntegrable f (volume.restrict {z : ℂ | 0 < z.im}) := by
+    apply ((continuous_evenReflection hf.continuousOn).locallyIntegrable.mono_measure
+      (Measure.restrict_le_self)).congr
+    filter_upwards [ae_restrict_mem hU] with z hz
+    exact evenReflection_of_im_nonneg f (show 0 < z.im from hz).le
+  have hΔφc : Continuous (Laplacian.laplacian φ) :=
+    continuous_iff_continuousAt.mpr (fun _ => hφ.contDiffAt.continuousAt_laplacian)
+  have hcΔ : HasCompactSupport (Laplacian.laplacian φ) :=
+    hc.of_isClosed_subset (isClosed_tsupport _) (tsupport_laplacian_subset φ)
+  rw [integral_smul_evenReflection
+    (hfc.integrable_smul_left_of_hasCompactSupport hΔφc hcΔ)
+    (hfc.integrable_smul_left_of_hasCompactSupport (hΔφc.comp Complex.conjLIE.continuous)
+      (hcΔ.comp_homeomorph Complex.conjLIE.toHomeomorph)),
+    integral_smul_evenReflection
+    (hL.integrable_smul_left_of_hasCompactSupport hφ.continuous hc)
+    (hL.integrable_smul_left_of_hasCompactSupport (hφ.continuous.comp Complex.conjLIE.continuous)
+      (hc.comp_homeomorph Complex.conjLIE.toHomeomorph))]
+  have hgreen := integral_smul_laplacian_sub_laplacian_smul_half_plane (a := 0)
+    hψ hcψ hf hf2 (hL.integrable_smul_left_of_hasCompactSupport hψ.continuous hcψ)
+  have hΔψc : Continuous (Laplacian.laplacian ψ) :=
+    continuous_iff_continuousAt.mpr (fun _ => hψ.contDiffAt.continuousAt_laplacian)
+  have hcΔψ : HasCompactSupport (Laplacian.laplacian ψ) :=
+    hcψ.of_isClosed_subset (isClosed_tsupport _) (tsupport_laplacian_subset ψ)
+  rw [integral_sub (hL.integrable_smul_left_of_hasCompactSupport hψ.continuous hcψ)
+    (hfc.integrable_smul_left_of_hasCompactSupport hΔψc hcΔψ)] at hgreen
+  have hh : (∫ z in {z : ℂ | 0 < z.im}, ψ z • Laplacian.laplacian f z) =
+      ∫ z in {z : ℂ | 0 < z.im}, Laplacian.laplacian ψ z • f z := by
+    apply sub_eq_zero.mp
+    simpa [hN, hψN] using hgreen
+  simpa only [hψΔ] using hh.symm
 
 end DifferentialGeometry.Analysis

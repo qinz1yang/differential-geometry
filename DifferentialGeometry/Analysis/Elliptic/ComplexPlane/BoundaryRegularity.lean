@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.OddReflection
+import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.Reflection
 import DifferentialGeometry.Analysis.Elliptic.Euclidean.WeakLaplacianRegularity
 import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.BoundaryGradient
 
@@ -141,5 +141,49 @@ theorem exists_contDiff_one_extension_of_norm_laplacian_le
   change χ z • f z = f z
   rw [show χ z = 1 from ballCutoff_eq_one_of_mem_closedBall (by positivity) (by linarith)
     (by simpa only [mem_closedBall, dist_zero_right] using hz.1), one_smul]
+
+private theorem hasCompactSupport_evenReflection_of_laplacian_eq
+    {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
+    {f g : ℂ → F} (hc : HasCompactSupport f)
+    (hg : ContinuousOn g {z : ℂ | 0 ≤ z.im})
+    (hfg : ∀ z : ℂ, 0 < z.im → Laplacian.laplacian f z = g z) :
+    HasCompactSupport (evenReflection g) := by
+  have hcΔ : HasCompactSupport (Laplacian.laplacian f) :=
+    hc.of_isClosed_subset (isClosed_tsupport _) (tsupport_laplacian_subset f)
+  have hcR := hasCompactSupport_evenReflection hcΔ
+  have hzero : EqOn (evenReflection g) (fun _ => 0) (tsupport (evenReflection (Laplacian.laplacian f)))ᶜ := by
+    apply Measure.eqOn_open_of_ae_eq (μ := volume) (hU := hcR.isClosed.isOpen_compl)
+      (hf := (continuous_evenReflection hg).continuousOn) (hg := continuousOn_const)
+    filter_upwards [ae_restrict_of_ae (evenReflection_congr_ae hfg),
+      ae_restrict_mem hcR.isClosed.measurableSet.compl] with z hz hzK
+    rw [← hz, image_eq_zero_of_notMem_tsupport hzK]
+  exact HasCompactSupport.intro hcR (fun z hz => hzero hz)
+
+theorem exists_holder_iteratedFDeriv_two_evenReflection
+    {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F] [CompleteSpace F]
+    {f g : ℂ → F} (hc : HasCompactSupport f)
+    (hf : ContDiffOn ℝ 1 f {z : ℂ | 0 ≤ z.im})
+    (hf2 : ContDiffOn ℝ 2 f {z : ℂ | 0 < z.im})
+    (hN : ∀ x : ℝ, fderivWithin ℝ f {z : ℂ | 0 ≤ z.im} x Complex.I = 0)
+    (hfg : ∀ z : ℂ, 0 < z.im → Laplacian.laplacian f z = g z)
+    {α K : ℝ≥0} (hα : 0 < α) (hα1 : α < 1) (hg : HolderOnWith K α g {z : ℂ | 0 ≤ z.im}) :
+    ∃ C : ℝ≥0, ContDiff ℝ 2 (evenReflection f) ∧
+      HolderWith C α (iteratedFDeriv ℝ 2 (evenReflection f)) := by
+  have hgc := hg.continuousOn hα
+  have hgext := continuous_evenReflection hgc
+  have hcg := hasCompactSupport_evenReflection_of_laplacian_eq hc hgc hfg
+  obtain ⟨B, hB⟩ := hcg.exists_bound_of_continuous hgext
+  have hL : LocallyIntegrable (Laplacian.laplacian f) (volume.restrict {z : ℂ | 0 < z.im}) := by
+    apply (hgext.locallyIntegrable.mono_measure (Measure.restrict_le_self)).congr
+    filter_upwards [ae_restrict_mem (isOpen_lt continuous_const Complex.continuous_im).measurableSet] with z hz
+    rw [evenReflection_of_im_nonneg g (show 0 < z.im from hz).le, hfg z hz]
+  apply exists_holder_iteratedFDeriv_two_of_holder_weak_laplacian
+    (continuous_evenReflection hf.continuousOn) (hasCompactSupport_evenReflection hc)
+    hB ?_ hα hα1 (holderWith_evenReflection hg)
+  intro φ hφ hcφ
+  rw [integral_laplacian_smul_evenReflection hφ hcφ hf hf2 hN hL]
+  apply integral_congr_ae
+  filter_upwards [evenReflection_congr_ae hfg] with z hz
+  rw [hz]
 
 end DifferentialGeometry.Analysis
