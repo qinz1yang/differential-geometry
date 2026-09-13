@@ -1,11 +1,15 @@
 # Local homology and global classes from coherent local generators
 
 This separate `PoincareLean` project contains a dependency-closed checkpoint of
-134 Poincare modules. It extends the recovered Chapter 35 source at commit
+135 Poincare modules. It extends the recovered Chapter 35 source at commit
 `b45bfa009368c8f5f531e10f4f5280e90079d6ad` and preserves its mathematical objects
 and `Poincare` namespaces. `Poincare.lean` imports every included leaf.
 
 The additions prove:
+
+- bijectivity of the actual relative-cohomology connecting map when adjacent
+  ambient groups vanish, and vanishing above degree one for contractible spaces
+  relative to totally disconnected subspaces;
 
 - vanishing of actual integral cohomology in every positive degree for totally
   disconnected and contractible spaces;
@@ -738,7 +742,7 @@ native orientation producer remain open.
 
 ## Positive-degree integral cohomology vanishing
 
-The current checkpoint contains 134 leaves and 141 curated tracked added public
+That checkpoint contains 134 leaves and 141 curated tracked added public
 exports. `CohomologyVanishing.lean` proves that the actual integral cohomology
 group is subsingleton in every positive degree for any totally disconnected
 space and for any contractible space. The 79-line development uses Mathlib's
@@ -759,3 +763,29 @@ and zero diagnostics. All 133 prior published leaves, dependency pins and
 deferred inputs remain unchanged. Stock declaration linters and standard-only
 transitive axiom checks pass. General manifold duality, the native orientation
 producer and the frozen canonical topology contract remain unresolved.
+
+
+## Relative cohomology connecting maps and vanishing
+
+The current checkpoint contains 135 leaves and 144 curated tracked added public
+exports. `RelativeCohomologyVanishing.lean` proves three results on the original
+relative groups and connecting maps. The general connecting-map theorem requires
+only vanishing of the adjacent ambient cohomology groups. Its contractible-space
+corollary applies in every positive degree and to any subspace. Combining this
+with totally disconnected cohomology vanishing gives relative Hn = 0 for n > 1.
+The degree restriction is substantive: a consumer constructs a nonzero H1 class
+for the real line relative to {0,1}, using the published actual cap bijection.
+All higher groups vanish, and the empty-subspace case also passes.
+
+Source request `1789340335050695794-topology-d19badad` passed in 5.12 seconds,
+with 114 guards and five pairs. Original imported request
+`1789340468527059901-topology-77c322e0` passed in 71.41 seconds, with 114 guards
+and five pairs. Final portable request
+`1789340590892191690-topology_checkpoint-29ccbfc4` passed in Slurm13846673 in
+165.16 seconds, with 536 guards and 252 signature/axiom pairs. All 247 earlier
+pairs are byte-identical, and all five new pairs match both earlier gates.
+The new leaf and root freshly compiled in 1:09.79 with maximum RSS1,825,220KiB
+and zero diagnostics. All 134 prior published leaves, dependency pins and
+deferred inputs remain unchanged. Stock declaration linters and standard-only
+transitive axioms pass. These are foundations for duality; the general manifold
+result, native orientation producer and frozen canonical contract remain open.

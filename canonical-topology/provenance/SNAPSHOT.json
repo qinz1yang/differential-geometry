@@ -1,9 +1,9 @@
 {
-  "scope": "Dependency-closed 134-module checkpoint including positive-degree integral cohomology vanishing for totally disconnected and contractible spaces; full topology suite incomplete",
+  "scope": "Dependency-closed 135-module checkpoint including bijectivity of actual relative cohomology connecting maps and higher-degree vanishing for contractible/totally disconnected pairs; full topology suite incomplete",
   "baseline_commit": "b45bfa009368c8f5f531e10f4f5280e90079d6ad",
   "baseline_ref": "refs/remotes/origin/codex/chapter35",
   "source_project": "PoincareLean",
-  "source_module_count": 134,
+  "source_module_count": 135,
   "roots": [
     "Poincare.Topology.Homology.RelativeMaps",
     "Poincare.Topology.Homology.RelativeHomeomorphism",
@@ -34,7 +34,8 @@
     "Poincare.Topology.Homology.RelativeCapCohomologyConnecting",
     "Poincare.Topology.Homology.TwoPointCapDuality",
     "Poincare.Topology.Homology.CochainHomotopy",
-    "Poincare.Topology.Homology.CohomologyVanishing"
+    "Poincare.Topology.Homology.CohomologyVanishing",
+    "Poincare.Topology.Homology.RelativeCohomologyVanishing"
   ],
   "changed_sources": [
     {
@@ -219,6 +220,12 @@
       "path": "Poincare/Topology/Homology/RelativeCochains.lean",
       "baseline_sha256": null,
       "sha256": "a387959e472686cd256747d57323faa3038af6db41f7bda44ddc2422a8f5d709"
+    },
+    {
+      "module": "Poincare.Topology.Homology.RelativeCohomologyVanishing",
+      "path": "Poincare/Topology/Homology/RelativeCohomologyVanishing.lean",
+      "baseline_sha256": null,
+      "sha256": "4b2a2289742bb453027648d52b75e900d85500c2ab0268d81593f0b24d0b4e76"
     },
     {
       "module": "Poincare.Topology.Homology.RelativeEmpty",
@@ -785,6 +792,12 @@
       "sha256": "a387959e472686cd256747d57323faa3038af6db41f7bda44ddc2422a8f5d709"
     },
     {
+      "module": "Poincare.Topology.Homology.RelativeCohomologyVanishing",
+      "path": "Poincare/Topology/Homology/RelativeCohomologyVanishing.lean",
+      "baseline_sha256": null,
+      "sha256": "4b2a2289742bb453027648d52b75e900d85500c2ab0268d81593f0b24d0b4e76"
+    },
+    {
       "module": "Poincare.Topology.Homology.RelativeEmpty",
       "path": "Poincare/Topology/Homology/RelativeEmpty.lean",
       "baseline_sha256": null,
@@ -1179,8 +1192,8 @@
   "aggregate": {
     "path": "Poincare.lean",
     "baseline_sha256": "99c3c8e47c19f60ee50a7e0f377e59138cf4ff33ebd4e26530d3c2b7cd47d452",
-    "sha256": "0af1d576ee6b4b27239680ce82525aac1a210993adbcf3e8095e3d3ca1c95b42",
-    "change": "Flat 134-leaf checkpoint aggregate; full recovered aggregate remains separate"
+    "sha256": "e8be85aab55514f86fc34769412e1f54c56f35b7517359c69ac7e78dcde7762f",
+    "change": "Flat 135-leaf checkpoint aggregate; full recovered aggregate remains separate"
   },
   "configuration": [
     {
@@ -1442,7 +1455,10 @@
     "Poincare.Topology.integralSingularCohomologyMap_eq_of_homotopic",
     "Poincare.Topology.integralSingularCohomologyMap_bijective_of_homotopyEquiv",
     "Poincare.Topology.integralSingularCohomology_subsingleton_of_totallyDisconnectedSpace",
-    "Poincare.Topology.integralSingularCohomology_subsingleton_of_contractibleSpace"
+    "Poincare.Topology.integralSingularCohomology_subsingleton_of_contractibleSpace",
+    "Poincare.Topology.integralRelativeCohomologyConnecting_bijective",
+    "Poincare.Topology.integralRelativeCohomologyConnecting_bijective_of_contractibleSpace",
+    "Poincare.Topology.integralRelativeCohomology_subsingleton_of_contractibleSpace_of_totallyDisconnectedSpace"
   ],
   "historical_authorities": [
     {
@@ -1580,23 +1596,23 @@
     "full_topology_suite_accepted": false
   },
   "validation": {
-    "status": "passed for the selected 134-module checkpoint; full topology suite incomplete",
+    "status": "passed for the selected 135-module checkpoint; full topology suite incomplete",
     "date": "2026-09-13",
     "slurm_job": "13846673",
     "host": "della-r3c4n2",
-    "request_id": "1789338860447210678-topology_checkpoint-0c375dc4",
-    "input_sha256": "137ae558a07b31c2dc0517deca9dfc2cde047d90f5f6758893f8707f1a5ce8d0",
-    "result_sha256": "64cc62817f8d1f24e371c08af7e6d5bf93843079ebf3b328d758e6734b99f48e",
-    "artifact_log_sha256": "bd290b7fed65f7cdea25b0aa003fc97e44ea37718cb90cbca930981c37224981",
-    "source_config_harness_hash_guards": 527,
+    "request_id": "1789340590892191690-topology_checkpoint-29ccbfc4",
+    "input_sha256": "7fb5cc0f9d7149e4b157723e34cc78406308a2932d248807b171bd79b1d5f331",
+    "result_sha256": "fb5cf06c70cf529e80f838c38ee250dc38d5176098efc09d3e17373f302016d6",
+    "artifact_log_sha256": "4f2d66d5b7fc1f3f925144f324e6bed78a6ec7f026f8edd41d395888e6315b78",
+    "source_config_harness_hash_guards": 536,
     "freshly_built_modules": [
-      "Poincare.Topology.Homology.CohomologyVanishing",
+      "Poincare.Topology.Homology.RelativeCohomologyVanishing",
       "Poincare"
     ],
     "root_build": "lake --no-cache --iofail build Poincare",
-    "fresh_build_scope": "CohomologyVanishing79 and root freshly compiled with zero diagnostics; all 133 previously published leaves unchanged.",
-    "exact_public_exports": 141,
-    "public_and_consumer_signature_axiom_pairs": 247,
+    "fresh_build_scope": "RelativeCohomologyVanishing54 and root freshly compiled with zero diagnostics; all 134 previously published leaves unchanged.",
+    "exact_public_exports": 144,
+    "public_and_consumer_signature_axiom_pairs": 252,
     "linters": [
       "unusedArguments",
       "simpNF",
@@ -1611,15 +1627,15 @@
       "Quot.sound"
     ],
     "unexpected_diagnostics": 0,
-    "elapsed_seconds": 163.1416575908661,
-    "peak_summed_rss_bytes": 3132641280,
+    "elapsed_seconds": 165.15921115875244,
+    "peak_summed_rss_bytes": 3140829184,
     "full_topology_suite_accepted": false,
     "consumer_probes": [
-      "All 242 prior signature/axiom pairs reproduced byte-identically",
-      "Both new public declarations and all three consumers match original and source readbacks exactly",
-      "Actual integral cohomology is subsingleton in every positive degree for any totally disconnected space, including empty and discrete spaces",
-      "Actual integral cohomology is subsingleton in every positive degree for any contractible space, using the published actual homotopy invariance",
-      "Real positive-degree classes vanish while the actual H0 unit remains nonzero; natural-number and empty-space positive-degree classes vanish"
+      "All 247 prior signature/axiom pairs reproduced byte-identically",
+      "All three new public declarations and both consumers match original and source readbacks exactly",
+      "The actual connecting map is bijective whenever both adjacent ambient cohomology groups vanish, including the contractible-space positive-degree specialization",
+      "Actual relative cohomology vanishes for contractible ambient spaces and totally disconnected subspaces in degrees greater than one",
+      "Actual H1 of the real line relative to two distinct points remains nonzero while all higher groups vanish; the empty subspace also passes"
     ]
   },
   "previous_linear_sign_checkpoint_validation": {
@@ -3122,5 +3138,60 @@
     ],
     "source_request_id": "1789338598420713654-topology-38ad4fa5",
     "source_readback_comparison": "all five original/portable pairs match source exactly; all 242 preceding portable pairs remain exact"
+  },
+  "previous_cohomology_vanishing_validation": {
+    "status": "passed for the selected 134-module checkpoint; full topology suite incomplete",
+    "date": "2026-09-13",
+    "slurm_job": "13846673",
+    "host": "della-r3c4n2",
+    "request_id": "1789338860447210678-topology_checkpoint-0c375dc4",
+    "input_sha256": "137ae558a07b31c2dc0517deca9dfc2cde047d90f5f6758893f8707f1a5ce8d0",
+    "result_sha256": "64cc62817f8d1f24e371c08af7e6d5bf93843079ebf3b328d758e6734b99f48e",
+    "artifact_log_sha256": "bd290b7fed65f7cdea25b0aa003fc97e44ea37718cb90cbca930981c37224981",
+    "source_config_harness_hash_guards": 527,
+    "freshly_built_modules": [
+      "Poincare.Topology.Homology.CohomologyVanishing",
+      "Poincare"
+    ],
+    "root_build": "lake --no-cache --iofail build Poincare",
+    "fresh_build_scope": "CohomologyVanishing79 and root freshly compiled with zero diagnostics; all 133 previously published leaves unchanged.",
+    "exact_public_exports": 141,
+    "public_and_consumer_signature_axiom_pairs": 247,
+    "linters": [
+      "unusedArguments",
+      "simpNF",
+      "synTaut",
+      "checkType"
+    ],
+    "linter_scope": "All imported Poincare declarations and current consumers, including private declarations",
+    "defLemma": "Unavailable in the pinned Mathlib; source declaration-kind checks retained.",
+    "allowed_transitive_axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "unexpected_diagnostics": 0,
+    "elapsed_seconds": 163.1416575908661,
+    "peak_summed_rss_bytes": 3132641280,
+    "full_topology_suite_accepted": false,
+    "consumer_probes": [
+      "All 242 prior signature/axiom pairs reproduced byte-identically",
+      "Both new public declarations and all three consumers match original and source readbacks exactly",
+      "Actual integral cohomology is subsingleton in every positive degree for any totally disconnected space, including empty and discrete spaces",
+      "Actual integral cohomology is subsingleton in every positive degree for any contractible space, using the published actual homotopy invariance",
+      "Real positive-degree classes vanish while the actual H0 unit remains nonzero; natural-number and empty-space positive-degree classes vanish"
+    ]
+  },
+  "original_relative_cohomology_vanishing_validation": {
+    "request_id": "1789340468527059901-topology-77c322e0",
+    "input_sha256": "1426b00d97af314573b0179c1c0d9be4da80a09cefec73def00c663f6a6a2156",
+    "elapsed_seconds": 71.41144323348999,
+    "source_guards": 114,
+    "signature_axiom_pairs": 5,
+    "fresh_modules": [
+      "Poincare.Topology.Homology.RelativeCohomologyVanishing"
+    ],
+    "source_request_id": "1789340335050695794-topology-d19badad",
+    "source_readback_comparison": "all five original/portable pairs match source exactly; all 247 preceding portable pairs remain exact"
   }
 }

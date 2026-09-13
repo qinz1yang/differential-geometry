@@ -6,23 +6,26 @@ library is `Poincare`; its sources retain the original mathematical namespaces.
 
 The source baseline is the recovered Chapter 35 commit
 `b45bfa009368c8f5f531e10f4f5280e90079d6ad`, supplemented by recovered working-tree
-proofs with separately recorded provenance. This checkpoint includes 134 modules
-and 141 curated tracked added public exports. The latest 79-line leaf proves
-vanishing of actual integral cohomology in every positive degree for any
-totally disconnected or contractible space. It reuses Mathlib's explicit
-alternating singular complex and the already published cohomology homotopy
-invariance, with the same original cochain objects and pullback maps.
+proofs with separately recorded provenance. This checkpoint includes 135 modules
+and 144 curated tracked added public exports. The latest 54-line leaf proves
+bijectivity of the actual relative-cohomology connecting map when both adjacent
+ambient groups vanish, and its positive-degree contractible-space specialization.
+For a contractible ambient space and a totally disconnected subspace, actual
+relative integral cohomology vanishes in every degree greater than one.
 
-Final request `1789338860447210678-topology_checkpoint-0c375dc4` passed in
-Slurm 13846673 in 163.14 seconds, with 527 guards and 247 signature/axiom pairs.
-All 242 earlier pairs are byte-identical; the five new public/consumer pairs
-match source gate38ad4fa5 and original imported gate29d8b462 exactly.
-The new leaf and root freshly compiled in 1:11.45, maximum RSS1826368KiB,
-with zero diagnostics. All 133 previously published leaves remain byte-identical.
-Real positive-degree classes vanish while the actual H0 unit is nonzero;
-discrete-natural-number and empty-space consumers also pass. Stock declaration
+Final request `1789340590892191690-topology_checkpoint-29ccbfc4` passed in
+Slurm 13846673 in 165.16 seconds, with 536 guards and 252 signature/axiom pairs.
+All 247 earlier pairs are byte-identical; the five new public/consumer pairs
+match source gated19badad and original imported gate77c322e0 exactly.
+The new leaf and root freshly compiled in 1:09.79, maximum RSS1825220KiB,
+with zero diagnostics. All 134 previously published leaves remain byte-identical.
+A consumer proves that H1 of the real line relative to {0,1} is nonzero while
+all higher groups vanish; the empty-subspace case also passes. Stock declaration
 linters and standard-only transitive axioms pass. No dependency or deferred
 input changed.
+
+The previously published positive-degree cohomology vanishing, including its
+nonzero H0 consumer, retains its exact statements and bodies.
 
 The actual cochain comparison, naturality, homotopy invariance and excision
 results retain their exact public statements and bodies.
