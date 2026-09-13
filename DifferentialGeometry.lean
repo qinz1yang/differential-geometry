@@ -4580,6 +4580,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Open.Half
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Open.HalfLineFlowLimit
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Open.HalfLineRegularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Open.HalfLineCurvature
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Open.HalfLineCurvatureContinuity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.PointedPullbackExtensions
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.PullbackCurve
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.ScalarConvergence
