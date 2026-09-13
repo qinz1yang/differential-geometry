@@ -5,15 +5,15 @@ The recovered source baseline is commit
 `refs/remotes/origin/codex/chapter35` in the controller's existing Git objects.
 No source baseline was downloaded to prepare this checkpoint.
 
-[SNAPSHOT.json](SNAPSHOT.json) records all 102 supplied module paths and hashes,
-including their baseline hashes and the eighteen new/changed leaves. The thirteen new
+[SNAPSHOT.json](SNAPSHOT.json) records all 103 supplied module paths and hashes,
+including their baseline hashes and the nineteen new/changed leaves. The fourteen new
 files have a null baseline hash. Existing baseline hashes were independently
 compared against the actual Git blobs. Every supplied leaf is byte-identical
 to its current counterpart in the isolated Poincare workspace.
 
 The portable `lakefile.toml` and `lake-manifest.json` are unchanged. The
 `lean-toolchain` copy removes one trailing blank line while retaining its exact
-version. The selected `Poincare.lean` is a checkpoint aggregate for the 102
+version. The selected `Poincare.lean` is a checkpoint aggregate for the 103
 supplied leaves; it does not overwrite the full recovered project's aggregate.
 Original/current hashes for these files are recorded separately.
 
@@ -248,3 +248,25 @@ All 102 original/portable source pairs match. The other 100 prior leaves are
 unchanged. Stock linters and standard-only axioms pass; earlier validation
 records are preserved in SNAPSHOT.json. This does not close the full topology
 suite or replace the missing frozen contract.
+
+## Absolute-to-relative-empty comparison
+
+`RelativeEmpty.lean` contains 51 lines of original code over the actual
+Poincare chain complexes and pinned Mathlib cokernel/homology APIs. Two
+private helpers establish the zero empty-subspace inclusion and bijectivity
+of its actual quotient homology map. The two public declarations give a
+linear equivalence and identify its forward map. No source is copied from
+another project, and all previous 102 leaves and dependency pins are unchanged.
+
+Original imported request `1789262707782850547-topology-b3b344aa` freshly
+compiled the leaf in 0:28.22, maximum RSS 1546112 KiB, and passed five exact
+public/consumer pairs. Portable artifact request
+`1789262781992230755-topology_checkpoint-e5804880` freshly compiled the leaf
+and root in 1:18.48, maximum RSS 1778200 KiB. Its later combined harness
+failed on a duplicate universe declaration; production compilation was silent.
+Final request `1789264345451073915-topology_checkpoint-f04d0bd9` changed only
+that scratch scope and passed in 91.29 seconds, with a cached root build,
+206 guards and 111 exact pairs. All 106 prior pairs are identical, and the
+five added pairs match the original imported gate byte for byte. Stock
+linters and standard-only transitive axioms pass. SNAPSHOT.json preserves
+both the fresh artifact identity and the final successful gate.

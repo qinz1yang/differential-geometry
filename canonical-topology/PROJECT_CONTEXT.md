@@ -5,17 +5,24 @@ additive publication within the shared DifferentialGeometry Git repository. Its 
 library is `Poincare`; its sources retain the original mathematical namespaces.
 
 The source baseline is the recovered Chapter 35 commit
-`b45bfa009368c8f5f531e10f4f5280e90079d6ad`. This checkpoint includes 102 modules:
-the dependency closure of thirteen roots covering local homology, derivatives,
+`b45bfa009368c8f5f531e10f4f5280e90079d6ad`. This checkpoint includes 103 modules:
+the dependency closure of fourteen roots covering local homology, derivatives,
 determinant signs, oriented chart compatibility, compact chart classes,
-Mayer–Vietoris and manifold compact-support homology, plus actual consumer
+Mayer–Vietoris, manifold compact-support homology and the actual
+absolute-to-relative-empty comparison, plus actual consumer
 dependencies. Final request
-`1789261428531126275-topology_checkpoint-fa830b31` passed in Slurm 13781140
-in 211.17 seconds. Changed CompactSupport, affected CompactVanishing,
-new ManifoldCompactHomology and root freshly compiled in 2:26.11 with zero
-diagnostics. All 48 added public exports, 199 guards and 106 signature/axiom
-pairs passed; all 95 previous pairs are byte-identical. The other 100 prior
-source leaves remain byte-identical and retain earlier compilation evidence.
+`1789264345451073915-topology_checkpoint-f04d0bd9` passed in Slurm 13781140
+in 91.29 seconds. RelativeEmpty and root freshly compiled in the preceding
+artifact request e5804880 in 1:18.48 with zero diagnostics; the final gate
+keeps those exact production sources and repairs only the combined consumer
+universe scope. All 50 added public exports, 206 guards and 111 signature/axiom
+pairs pass; all 106 previous pairs and five new original imported pairs match
+byte for byte. All 102 prior leaves remain unchanged and retain their earlier
+compilation evidence.
+
+The actual absolute-to-relative-empty map is now a linear equivalence in
+every degree and topological space, with its defining map equation exposed.
+Nonzero degree-zero and naturality consumers pass.
 
 The new results construct a compact neighborhood on which a class's
 restriction vanishes when its actual point restriction is zero. Compact

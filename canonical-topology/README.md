@@ -1,12 +1,15 @@
 # Local homology and oriented compact chart classes
 
 This separate `PoincareLean` project contains a dependency-closed checkpoint of
-102 Poincare modules. It extends the recovered Chapter 35 source at commit
+103 Poincare modules. It extends the recovered Chapter 35 source at commit
 `b45bfa009368c8f5f531e10f4f5280e90079d6ad` and preserves its mathematical objects
 and `Poincare` namespaces. `Poincare.lean` imports every included leaf.
 
 The additions prove:
 
+- an equivalence from actual absolute integral homology to homology relative
+  to the empty subspace, with its forward map equal to the original
+  absolute-to-relative map, in every natural degree and topological space;
 - composition, neighborhood naturality, restriction and germ laws for the
   actual local integral singular-homology maps;
 - the actual chart/excision commuting square;
@@ -41,7 +44,7 @@ The additions prove:
 - a unique compact-neighborhood class with the same normalization in every
   chart whose actual tangent trivialization preserves the base-chart orientation.
 
-The eighteen new/changed modules and their exact baseline/current hashes are listed in
+The nineteen new/changed modules and their exact baseline/current hashes are listed in
 [provenance/SNAPSHOT.json](provenance/SNAPSHOT.json). The derivative homotopy
 retains its [upstream attribution and modification record](provenance/README.md).
 
@@ -290,6 +293,23 @@ the eleven added public/consumer pairs match the original imported gate up to
 nonzero two-point class, nonclosed support, arbitrary three-manifolds and
 rank-zero manifolds. Stock linters and standard-only axioms pass. The other
 100 prior leaves remain byte-identical and retain earlier compilation evidence.
+
+The relative-empty extension adds `RelativeEmpty`, for 103 leaves and 50
+added exports. It uses the actual zero chain inclusion and cokernel map to
+construct the absolute-to-relative equivalence, retaining the exact forward
+map equation. No connectivity, dimension or nonemptiness assumption is required.
+
+The new leaf and root freshly compiled in Slurm 13781140, request
+`1789262781992230755-topology_checkpoint-e5804880`, in 1:18.48 with maximum
+RSS 1778200 KiB and zero diagnostics. Final request
+`1789264345451073915-topology_checkpoint-f04d0bd9` passed in 91.29 seconds
+after fixing a duplicate universe declaration in the combined consumer harness.
+Production sources were unchanged; the final root build reused those artifacts.
+All 206 guards and 111 signature/axiom pairs pass. The 106 prior pairs and
+five new public/consumer pairs exactly match their earlier readbacks.
+Consumers check a nonzero relative H0 class and both actual-map and equivalence
+naturality. Stock linters and standard-only axioms pass. All 102 prior leaves
+remain byte-identical and retain their earlier compilation evidence.
 
 ## Remaining topology work
 

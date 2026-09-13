@@ -1,9 +1,9 @@
 {
-  "scope": "Dependency-closed 102-module local homology, compact chart classes and manifold compact-support homology checkpoint; portable gate passed, full topology suite incomplete",
+  "scope": "Dependency-closed 103-module local homology, compact-support manifold homology and relative-empty comparison checkpoint; full topology suite incomplete",
   "baseline_commit": "b45bfa009368c8f5f531e10f4f5280e90079d6ad",
   "baseline_ref": "refs/remotes/origin/codex/chapter35",
   "source_project": "PoincareLean",
-  "source_module_count": 102,
+  "source_module_count": 103,
   "roots": [
     "Poincare.Topology.Homology.RelativeMaps",
     "Poincare.Topology.Homology.RelativeHomeomorphism",
@@ -17,7 +17,8 @@
     "Poincare.Topology.Homology.CompactVanishing",
     "Poincare.Topology.Homology.RelativeMayerVietoris",
     "Poincare.Topology.Homology.CompactSupport",
-    "Poincare.Topology.Homology.ManifoldCompactHomology"
+    "Poincare.Topology.Homology.ManifoldCompactHomology",
+    "Poincare.Topology.Homology.RelativeEmpty"
   ],
   "changed_sources": [
     {
@@ -91,6 +92,12 @@
       "path": "Poincare/Topology/Homology/ManifoldCompactHomology.lean",
       "baseline_sha256": null,
       "sha256": "8a0f8e5aa10c8a25d9865d5abfa7c37760515038bcda3c95d565cea83607a6ad"
+    },
+    {
+      "module": "Poincare.Topology.Homology.RelativeEmpty",
+      "path": "Poincare/Topology/Homology/RelativeEmpty.lean",
+      "baseline_sha256": null,
+      "sha256": "299a5dd14ab8ec622d77ba704873fe6fcf057ecef7938dcfe81bb9f17e9dfe73"
     },
     {
       "module": "Poincare.Topology.Homology.RelativeHomeomorphism",
@@ -449,6 +456,12 @@
       "sha256": "f3f7424601f2af6394f6ca375ef6bffd89b11a5ce0b29367a35fdcad27510d31"
     },
     {
+      "module": "Poincare.Topology.Homology.RelativeEmpty",
+      "path": "Poincare/Topology/Homology/RelativeEmpty.lean",
+      "baseline_sha256": null,
+      "sha256": "299a5dd14ab8ec622d77ba704873fe6fcf057ecef7938dcfe81bb9f17e9dfe73"
+    },
+    {
       "module": "Poincare.Topology.Homology.RelativeFunctoriality",
       "path": "Poincare/Topology/Homology/RelativeFunctoriality.lean",
       "baseline_sha256": "542d9a4c7337c9275147dfa870cc6041ecb1a3658019d663d7597cfee7b730c5",
@@ -746,8 +759,8 @@
   "aggregate": {
     "path": "Poincare.lean",
     "baseline_sha256": "99c3c8e47c19f60ee50a7e0f377e59138cf4ff33ebd4e26530d3c2b7cd47d452",
-    "sha256": "fb58df9c8f545b4e6161e417053950f95d8770135cbabe01e9449e579dc8dd70",
-    "change": "Flat102-leaf checkpoint aggregate; full recovered aggregate remains separate"
+    "sha256": "71d1b86c00d30903ac92a91b7b838b8fc05c50408f2b9c9bad88ae5663ea9963",
+    "change": "Flat103-leaf checkpoint aggregate; full recovered aggregate remains separate"
   },
   "configuration": [
     {
@@ -892,7 +905,9 @@
     "Poincare.Topology.integralRelativeHomology_subsingleton_of_finrank_lt",
     "Poincare.Topology.integralRelativeHomology_eq_zero_of_local_restrictions",
     "Poincare.Topology.integralRelativeHomology_eq_of_local_restrictions",
-    "Poincare.Topology.exists_nonzero_local_restriction_of_compact"
+    "Poincare.Topology.exists_nonzero_local_restriction_of_compact",
+    "Poincare.Topology.integralAbsoluteToRelativeEmptyEquiv",
+    "Poincare.Topology.integralAbsoluteToRelativeEmptyEquiv_toLinearMap"
   ],
   "historical_authorities": [
     {
@@ -1030,25 +1045,23 @@
     "full_topology_suite_accepted": false
   },
   "validation": {
-    "status": "passed for the selected102-module checkpoint; full topology suite incomplete",
+    "status": "passed for the selected103-module checkpoint; full topology suite incomplete",
     "date": "2026-09-12",
     "slurm_job": "13781140",
     "host": "della-r3c2n16",
-    "request_id": "1789261428531126275-topology_checkpoint-fa830b31",
-    "input_sha256": "e931f3f76ab00ec8a06ca4e18e3538508f69123ddb92c76e4c119fc59cff8b4c",
-    "result_sha256": "77065438438b2447c0e928983414503cf620530fb72c049e93290c4c86b82fe0",
-    "artifact_log_sha256": "2a3fb94ff539cbf8e495b4b838196bbf7e09bb43c9bc7eb9a216a7417b1a6365",
-    "source_config_harness_hash_guards": 199,
+    "request_id": "1789264345451073915-topology_checkpoint-f04d0bd9",
+    "input_sha256": "1100c5955ebfeffb0967f87db066199189eca8c9306d10ba9f9af12ef5e82f6e",
+    "result_sha256": "9189118a87003e0c5100f15bc9e8b508fd01c65ac91a434c7e479a3a50c38c2f",
+    "artifact_log_sha256": "d2dd8841eff0fd750e5a862eccb13964eac3485a4b768c3988d7bee56be7273c",
+    "source_config_harness_hash_guards": 206,
     "freshly_built_modules": [
-      "Poincare.Topology.Homology.CompactSupport",
-      "Poincare.Topology.Homology.CompactVanishing",
-      "Poincare.Topology.Homology.ManifoldCompactHomology",
+      "Poincare.Topology.Homology.RelativeEmpty",
       "Poincare"
     ],
-    "root_build": "lake --no-cache --iofail build +Poincare.Topology.Homology.ManifoldCompactHomology:leanArts +Poincare.Topology.Homology.CompactSupport:leanArts +Poincare.Topology.Homology.CompactVanishing:leanArts Poincare",
-    "fresh_build_scope": "Changed CompactSupport, affected CompactVanishing, new ManifoldCompactHomology and root freshly compiled silently in2:26.11, RSS1928476KiB. All100 other prior leaves remain byte-identical and retain prior evidence.",
-    "exact_public_exports": 48,
-    "public_and_consumer_signature_axiom_pairs": 106,
+    "root_build": "lake --no-cache --iofail build Poincare",
+    "fresh_build_scope": "RelativeEmpty and root freshly compiled in e5804880 in1:18.48, RSS1778200KiB, zero diagnostics. Final f04d0bd9 replay uses identical production sources and a cached root build0:20.23; only the combined consumer universe scope was repaired. All102 previous leaves unchanged.",
+    "exact_public_exports": 50,
+    "public_and_consumer_signature_axiom_pairs": 111,
     "linters": [
       "unusedArguments",
       "simpNF",
@@ -1063,18 +1076,17 @@
       "Quot.sound"
     ],
     "unexpected_diagnostics": 0,
-    "elapsed_seconds": 211.16668438911438,
-    "peak_summed_rss_bytes": 2770448384,
+    "elapsed_seconds": 91.29033875465393,
+    "peak_summed_rss_bytes": 2779545600,
     "full_topology_suite_accepted": false,
     "consumer_probes": [
-      "All95 previous signature/axiom pairs reproduced byte-identically",
-      "All5 new public and6 consumer readbacks match original imported gate up to Module.finrank/Set.Ioo qualification and formatting",
-      "Actual nonzero two-point class with zero local restriction gives local zero on compact intersection",
-      "Nonclosed noncompact support and degree-zero case",
-      "Arbitrary Hausdorff charted three-manifold and rank-zero manifold high-degree vanishing",
-      "Actual nonzero compact class on arbitrary three-manifold is detected at a produced point",
-      "Rank-zero manifold compact classes are equal when all actual point restrictions agree"
-    ]
+      "All106 previous signature/axiom pairs reproduced byte-identically",
+      "Both new public and three consumer pairs exactly match original imported gate",
+      "Nonzero actual relative H0 class with unique absolute preimage",
+      "Actual map naturality and equivalence naturality for arbitrary continuous maps"
+    ],
+    "fresh_artifact_request_id": "1789262781992230755-topology_checkpoint-e5804880",
+    "fresh_artifact_log_sha256": "753e0e39b8d821f2285d850dad7f406b09d05e628d6433609c6a6375705e3a69"
   },
   "previous_linear_sign_checkpoint_validation": {
     "status": "passed for this 88-module checkpoint; full topology suite incomplete",
@@ -1623,5 +1635,63 @@
     "fresh_modules": 4,
     "fresh_artifacts": "1:54.88; maximum RSS1922364KiB; zero diagnostics",
     "readback_comparison": "All13 public/consumer readbacks exactly match the full-source gate237fc83e"
+  },
+  "previous_manifold_compact_homology_validation": {
+    "status": "passed for the selected102-module checkpoint; full topology suite incomplete",
+    "date": "2026-09-12",
+    "slurm_job": "13781140",
+    "host": "della-r3c2n16",
+    "request_id": "1789261428531126275-topology_checkpoint-fa830b31",
+    "input_sha256": "e931f3f76ab00ec8a06ca4e18e3538508f69123ddb92c76e4c119fc59cff8b4c",
+    "result_sha256": "77065438438b2447c0e928983414503cf620530fb72c049e93290c4c86b82fe0",
+    "artifact_log_sha256": "2a3fb94ff539cbf8e495b4b838196bbf7e09bb43c9bc7eb9a216a7417b1a6365",
+    "source_config_harness_hash_guards": 199,
+    "freshly_built_modules": [
+      "Poincare.Topology.Homology.CompactSupport",
+      "Poincare.Topology.Homology.CompactVanishing",
+      "Poincare.Topology.Homology.ManifoldCompactHomology",
+      "Poincare"
+    ],
+    "root_build": "lake --no-cache --iofail build +Poincare.Topology.Homology.ManifoldCompactHomology:leanArts +Poincare.Topology.Homology.CompactSupport:leanArts +Poincare.Topology.Homology.CompactVanishing:leanArts Poincare",
+    "fresh_build_scope": "Changed CompactSupport, affected CompactVanishing, new ManifoldCompactHomology and root freshly compiled silently in2:26.11, RSS1928476KiB. All100 other prior leaves remain byte-identical and retain prior evidence.",
+    "exact_public_exports": 48,
+    "public_and_consumer_signature_axiom_pairs": 106,
+    "linters": [
+      "unusedArguments",
+      "simpNF",
+      "synTaut",
+      "checkType"
+    ],
+    "linter_scope": "All imported Poincare declarations and current consumers, including private declarations",
+    "defLemma": "Unavailable in the pinned Mathlib; source declaration-kind checks retained.",
+    "allowed_transitive_axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "unexpected_diagnostics": 0,
+    "elapsed_seconds": 211.16668438911438,
+    "peak_summed_rss_bytes": 2770448384,
+    "full_topology_suite_accepted": false,
+    "consumer_probes": [
+      "All95 previous signature/axiom pairs reproduced byte-identically",
+      "All5 new public and6 consumer readbacks match original imported gate up to Module.finrank/Set.Ioo qualification and formatting",
+      "Actual nonzero two-point class with zero local restriction gives local zero on compact intersection",
+      "Nonclosed noncompact support and degree-zero case",
+      "Arbitrary Hausdorff charted three-manifold and rank-zero manifold high-degree vanishing",
+      "Actual nonzero compact class on arbitrary three-manifold is detected at a produced point",
+      "Rank-zero manifold compact classes are equal when all actual point restrictions agree"
+    ]
+  },
+  "original_relative_empty_validation": {
+    "request_id": "1789262707782850547-topology-b3b344aa",
+    "input_sha256": "ab7909409d40da8c15008fc4bc8405c78b2570a11d1387019b62478daffcf7c7",
+    "elapsed_seconds": 52.71762776374817,
+    "source_guards": 26,
+    "signature_axiom_pairs": 5,
+    "fresh_modules": [
+      "Poincare.Topology.Homology.RelativeEmpty"
+    ],
+    "fresh_artifacts": "0:28.22; maximum RSS1546112KiB; zero diagnostics"
   }
 }
