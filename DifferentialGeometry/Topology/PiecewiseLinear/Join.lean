@@ -389,6 +389,179 @@ theorem image_joinSnd_mem_joinComplex {τ : Finset F} (hτ : τ ∈ L.faces) :
     (Or.inr (L.nonempty_of_mem_faces hτ)) (σ := ∅)
   rwa [Finset.image_empty, Finset.empty_union] at this
 
+theorem joinFst_mem_convexHull_image {σ : Finset E} {x : E} (hx : x ∈ convexHull ℝ (σ : Set E)) :
+    joinFst E F x ∈ convexHull ℝ ((σ.image (joinFst E F) : Finset (E × F × ℝ)) : Set (E × F × ℝ)) := by
+  obtain ⟨c, hc0, hc1, hcx⟩ := mem_convexHull_iff_exists_weights.mp hx
+  have h := (mem_convexHull_join_iff σ (∅ : Finset F)).mpr ⟨c, fun _ => 0, hc0, fun _ _ => le_rfl,
+    by rw [hc1, Finset.sum_empty, add_zero], by rw [hcx, Finset.sum_empty, Finset.sum_empty]⟩
+  rwa [Finset.image_empty, Finset.union_empty] at h
+
+theorem joinSnd_mem_convexHull_image {τ : Finset F} {y : F} (hy : y ∈ convexHull ℝ (τ : Set F)) :
+    joinSnd E F y ∈ convexHull ℝ ((τ.image (joinSnd E F) : Finset (E × F × ℝ)) : Set (E × F × ℝ)) := by
+  obtain ⟨d, hd0, hd1, hdy⟩ := mem_convexHull_iff_exists_weights.mp hy
+  have h := (mem_convexHull_join_iff (∅ : Finset E) τ).mpr ⟨fun _ => 0, d, fun _ _ => le_rfl, hd0,
+    by rw [hd1, Finset.sum_empty, zero_add], by rw [hdy, Finset.sum_empty, hd1]⟩
+  rwa [Finset.image_empty, Finset.empty_union] at h
+
+theorem geometricLink_joinComplex_joinFst {v : E} (hv : {v} ∈ K.faces) :
+    SimplicialComplex.geometricLink (joinComplex K L) {joinFst E F v} =
+      joinComplex (SimplicialComplex.geometricLink K {v}) L := by
+  ext t
+  rw [SimplicialComplex.mem_geometricLink_singleton, mem_joinComplex_faces_iff,
+    mem_joinComplex_faces_iff]
+  constructor
+  · rintro ⟨htne, hvt, σ, τ, hσ, hτ, -, hins⟩
+    have hvσ : v ∈ σ := by
+      have hmem : joinFst E F v ∈ σ.image (joinFst E F) ∪ τ.image (joinSnd E F) :=
+        hins ▸ Finset.mem_insert_self _ _
+      rcases Finset.mem_union.mp hmem with h | h
+      · obtain ⟨u, hu, huv⟩ := Finset.mem_image.mp h
+        rw [joinFst_injective huv] at hu
+        exact hu
+      · obtain ⟨w, -, hw⟩ := Finset.mem_image.mp h
+        exact absurd hw.symm (joinFst_ne_joinSnd v w)
+    have hσK : σ ∈ K.faces := by
+      rcases hσ with rfl | h
+      · exact absurd hvσ (Finset.notMem_empty v)
+      · exact h
+    refine ⟨σ.erase v, τ, ?_, hτ, ?_, ?_⟩
+    · rcases (σ.erase v).eq_empty_or_nonempty with h | h
+      · exact Or.inl h
+      · refine Or.inr ((SimplicialComplex.mem_geometricLink_singleton K v _).mpr
+          ⟨h, Finset.notMem_erase v σ, ?_⟩)
+        rw [Finset.insert_erase hvσ]
+        exact hσK
+    · obtain ⟨z, hz⟩ := htne
+      have hz' : z ∈ σ.image (joinFst E F) ∪ τ.image (joinSnd E F) :=
+        hins ▸ Finset.mem_insert_of_mem hz
+      rcases Finset.mem_union.mp hz' with h | h
+      · obtain ⟨u, hu, rfl⟩ := Finset.mem_image.mp h
+        exact Or.inl ⟨u, Finset.mem_erase.mpr ⟨fun huv => hvt (huv ▸ hz), hu⟩⟩
+      · obtain ⟨w, hw, rfl⟩ := Finset.mem_image.mp h
+        exact Or.inr ⟨w, hw⟩
+    · have ht : t = (insert (joinFst E F v) t).erase (joinFst E F v) :=
+        (Finset.erase_insert hvt).symm
+      have hjv : joinFst E F v ∉ τ.image (joinSnd E F) := by
+        intro h
+        obtain ⟨w, -, hw⟩ := Finset.mem_image.mp h
+        exact joinFst_ne_joinSnd v w hw.symm
+      rw [ht, hins, Finset.erase_union_distrib, Finset.image_erase joinFst_injective,
+        Finset.erase_eq_of_notMem hjv]
+  · rintro ⟨σ', τ, hσ', hτ, hne, rfl⟩
+    have hσ'v : v ∉ σ' := by
+      rcases hσ' with rfl | h
+      · exact Finset.notMem_empty v
+      · exact ((SimplicialComplex.mem_geometricLink_singleton K v σ').mp h).2.1
+    have hins : insert v σ' ∈ K.faces := by
+      rcases hσ' with rfl | h
+      · rw [Finset.insert_empty]
+        exact hv
+      · exact ((SimplicialComplex.mem_geometricLink_singleton K v σ').mp h).2.2
+    refine ⟨?_, ?_, insert v σ', τ, Or.inr hins, hτ, Or.inl (Finset.insert_nonempty v σ'), ?_⟩
+    · rcases hne with h | h
+      · exact (h.image _).mono Finset.subset_union_left
+      · exact (h.image _).mono Finset.subset_union_right
+    · intro h
+      rcases Finset.mem_union.mp h with h | h
+      · obtain ⟨u, hu, huv⟩ := Finset.mem_image.mp h
+        exact hσ'v (joinFst_injective huv ▸ hu)
+      · obtain ⟨w, -, hw⟩ := Finset.mem_image.mp h
+        exact joinFst_ne_joinSnd v w hw.symm
+    · rw [Finset.image_insert, Finset.insert_union]
+
+def joinSpace (X : Set E) (Y : Set F) : Set (E × F × ℝ) :=
+  joinFst E F '' X ∪ joinSnd E F '' Y ∪
+    {z | ∃ x ∈ X, ∃ y ∈ Y, ∃ t ∈ Icc (0 : ℝ) 1, z = ((1 - t) • x, t • y, t)}
+
+theorem joinComplex_space : (joinComplex K L).space = joinSpace K.space L.space := by
+  apply Subset.antisymm
+  · intro z hz
+    obtain ⟨t, ⟨σ, τ, hσ, hτ, -, rfl⟩, hzt⟩ := (joinComplex K L).mem_space_iff.mp hz
+    obtain ⟨a, b, ha, hb, hab, rfl⟩ := (mem_convexHull_join_iff σ τ).mp hzt
+    set s : ℝ := ∑ w ∈ τ, b w with hsdef
+    have hs0 : 0 ≤ s := Finset.sum_nonneg hb
+    have hs1 : s ≤ 1 := by linarith [Finset.sum_nonneg ha]
+    have hσsum : ∑ v ∈ σ, a v = 1 - s := by linarith
+    have hσK : 1 - s ≠ 0 → σ ∈ K.faces := by
+      intro hne
+      rcases hσ with rfl | h
+      · exact absurd (by rw [Finset.sum_empty] at hσsum; exact hσsum.symm) hne
+      · exact h
+    have hτL : s ≠ 0 → τ ∈ L.faces := by
+      intro hne
+      rcases hτ with rfl | h
+      · exact absurd (hsdef.trans Finset.sum_empty) hne
+      · exact h
+    rcases eq_or_lt_of_le hs0 with hs0' | hspos
+    · have hs0'' : s = 0 := hs0'.symm
+      have hbzero : ∀ w ∈ τ, b w = 0 := (Finset.sum_eq_zero_iff_of_nonneg hb).mp hs0''
+      have hy0 : ∑ w ∈ τ, b w • w = 0 :=
+        Finset.sum_eq_zero fun w hw => by rw [hbzero w hw, zero_smul]
+      have hne : (1 : ℝ) - s ≠ 0 := by
+        rw [hs0'']
+        norm_num
+      have hx : ∑ v ∈ σ, a v • v ∈ K.space := by
+        refine K.convexHull_subset_space (hσK hne) ?_
+        have := mem_convexHull_of_sum_smul_eq ha (by rw [hs0'']; norm_num : (0 : ℝ) < 1 - s) hσsum
+        rwa [hs0'', sub_zero, inv_one, one_smul] at this
+      exact Or.inl (Or.inl ⟨_, hx, Prod.ext rfl (Prod.ext hy0.symm hs0''.symm)⟩)
+    · rcases eq_or_lt_of_le hs1 with hs1' | hslt
+      · have hazero : ∀ v ∈ σ, a v = 0 :=
+          (Finset.sum_eq_zero_iff_of_nonneg ha).mp (by rw [hσsum, hs1', sub_self])
+        have hx0 : ∑ v ∈ σ, a v • v = 0 :=
+          Finset.sum_eq_zero fun v hv => by rw [hazero v hv, zero_smul]
+        have hy : ∑ w ∈ τ, b w • w ∈ L.space := by
+          refine L.convexHull_subset_space (hτL hspos.ne') ?_
+          have := mem_convexHull_of_sum_smul_eq hb hspos rfl
+          rwa [hs1', inv_one, one_smul] at this
+        exact Or.inl (Or.inr ⟨_, hy, Prod.ext hx0.symm (Prod.ext rfl hs1'.symm)⟩)
+      · have hne : (1 : ℝ) - s ≠ 0 := by linarith
+        refine Or.inr ⟨(1 - s)⁻¹ • ∑ v ∈ σ, a v • v, ?_, s⁻¹ • ∑ w ∈ τ, b w • w, ?_, s, ⟨hs0, hs1⟩,
+          ?_⟩
+        · exact K.convexHull_subset_space (hσK hne)
+            (mem_convexHull_of_sum_smul_eq ha (by linarith) hσsum)
+        · exact L.convexHull_subset_space (hτL hspos.ne') (mem_convexHull_of_sum_smul_eq hb hspos rfl)
+        · rw [smul_smul, mul_inv_cancel₀ hne, one_smul, smul_smul, mul_inv_cancel₀ hspos.ne',
+            one_smul]
+  · rintro z ((⟨x, hx, rfl⟩ | ⟨y, hy, rfl⟩) | ⟨x, hx, y, hy, t, ht, rfl⟩)
+    · obtain ⟨σ, hσ, hxσ⟩ := K.mem_space_iff.mp hx
+      exact (joinComplex K L).convexHull_subset_space (image_joinFst_mem_joinComplex K L hσ)
+        (joinFst_mem_convexHull_image hxσ)
+    · obtain ⟨τ, hτ, hyτ⟩ := L.mem_space_iff.mp hy
+      exact (joinComplex K L).convexHull_subset_space (image_joinSnd_mem_joinComplex K L hτ)
+        (joinSnd_mem_convexHull_image hyτ)
+    · obtain ⟨σ, hσ, hxσ⟩ := K.mem_space_iff.mp hx
+      obtain ⟨τ, hτ, hyτ⟩ := L.mem_space_iff.mp hy
+      exact (joinComplex K L).convexHull_subset_space
+        (union_image_mem_joinComplex K L (Or.inr hσ) (Or.inr hτ)
+          (Or.inl (K.nonempty_of_mem_faces hσ)))
+        (mem_convexHull_join_of σ τ hxσ hyτ ht.1 ht.2)
+
+theorem joinComplex_faces_subset_of_faces_subset {K' : Geometry.SimplicialComplex ℝ E}
+    (hK' : K'.faces ⊆ K.faces) : (joinComplex K' L).faces ⊆ (joinComplex K L).faces := by
+  rintro t ⟨σ, τ, hσ, hτ, hne, rfl⟩
+  refine ⟨σ, τ, ?_, hτ, hne, rfl⟩
+  rcases hσ with rfl | h
+  · exact Or.inl rfl
+  · exact Or.inr (hK' h)
+
+theorem IsSubdivision.joinComplex_left {K' : Geometry.SimplicialComplex ℝ E}
+    (h : IsSubdivision K' K) : IsSubdivision (joinComplex K' L) (joinComplex K L) := by
+  refine ⟨by rw [joinComplex_space, joinComplex_space, h.space_eq], ?_⟩
+  rintro t ⟨σ', τ, hσ', hτ, hne, rfl⟩
+  rcases hσ' with rfl | hσ'
+  · exact ⟨_, union_image_mem_joinComplex K L (Or.inl rfl) hτ hne, subset_rfl⟩
+  obtain ⟨σ, hσ, hsub⟩ := h.exists_face_subset hσ'
+  refine ⟨σ.image (joinFst E F) ∪ τ.image (joinSnd E F),
+    union_image_mem_joinComplex K L (Or.inr hσ) hτ (Or.inl (K.nonempty_of_mem_faces hσ)), ?_⟩
+  refine convexHull_min ?_ (convex_convexHull ℝ _)
+  intro u hu
+  rcases Finset.mem_union.mp (Finset.mem_coe.mp hu) with h' | h'
+  · obtain ⟨v, hv, rfl⟩ := Finset.mem_image.mp h'
+    exact convexHull_mono (Finset.coe_subset.mpr Finset.subset_union_left)
+      (joinFst_mem_convexHull_image (hsub (subset_convexHull ℝ _ (Finset.mem_coe.mpr hv))))
+  · exact subset_convexHull ℝ _ (Finset.mem_coe.mpr (Finset.mem_union_right _ h'))
+
 end JoinComplex
 
 end DifferentialGeometry.Topology.PiecewiseLinear
