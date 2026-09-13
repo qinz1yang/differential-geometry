@@ -1,4 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChildComparisonMetric
+import DifferentialGeometry.Topology.Manifold.ImmersionDifferential
+import DifferentialGeometry.Topology.Manifold.OpenEmbedding
+import DifferentialGeometry.Geometry.Metric.DistancePullback
 
 
 
@@ -65,6 +68,28 @@ namespace GeometricCutoffRecord
 
 variable {H : ObservedHistory.{u}} {i : Fin H.eventCount} {parameters : CutoffParameters}
   (G : GeometricCutoffRecord H i parameters)
+
+theorem inclusion_edist_le (c : ConnectedComponents (H.stage i.succ).Carrier)
+    (b : G.ChildBoundary c) (u v : (G.static b.1).witness.Output) :
+    riemannianEDistOf (H.event i).outputMetric
+        ((G.static b.1).inclusion u) ((G.static b.1).inclusion v) ≤
+      riemannianEDistOf (G.static b.1).witness.metric u v := by
+  have hld : IsLocalDiffeomorph ThreeModel ThreeModel ∞
+      ((G.static b.1).inclusion : (G.static b.1).witness.Output →
+        (H.stage i.succ).Carrier) := by
+    obtain ⟨Q, hQng, hQns, hQimm⟩ := (G.static b.1).inclusion_smooth.isImmersion
+    refine DifferentialGeometry.Topology.Manifold.isLocalDiffeomorph_of_injective_mfderiv _
+      (G.static b.1).inclusion_smooth.contMDiff (fun x => ?_) (by simp)
+    exact DifferentialGeometry.Topology.Manifold.injective_mfderiv_of_isImmersionAt
+      ThreeModel ThreeModel _ x ⟨Q, hQng, hQns, hQimm x⟩
+  have h := DifferentialGeometry.Geometry.Metric.edistOf_le_of_quad_of_localDiffeomorph
+    (G.static b.1).witness.metric
+    (H.event i).outputMetric
+    ((G.static b.1).inclusion : (G.static b.1).witness.Output →
+      (H.stage i.succ).Carrier) hld
+    (c := 1) one_pos (fun x v => by
+      simpa only [one_mul] using ((G.static b.1).inclusion_metric x v v).ge) u v
+  simpa using h
 
 def LocalEDistComparison
     (Kc : (c : ConnectedComponents (H.stage i.succ).Carrier) → G.ComparisonSupport c)
