@@ -6458,6 +6458,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ClosedOrien
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ClosedSlabEndpoints
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.Cohomology
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CollarChildCoreSeparation
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CollapseDegree
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.Comparison
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ComparisonDefs
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ComparisonSupportRegion
@@ -6530,12 +6531,14 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SlabRescali
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SlabSpatialJets
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SlabTensorContinuity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SlabTerminalConvergence
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SphereDiffeomorphismIsotopyConnected
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SphereSmash
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SphericalCappingBridge
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SphericalCappingCompletion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SphericalRegion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SphericalTransitionBridge
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.StandardNeckCutCap
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.StandardNeckRegularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.StaticCap
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SupportRegion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SupportRegionNeck
