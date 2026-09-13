@@ -286,3 +286,39 @@ theorem ContDiffAt.laplacian_iteratedFDeriv
         exact ih (hy.of_le (by norm_cast; omega))
       rw [he.fderiv_eq]
       rfl
+
+private theorem fderiv_fderiv_comp_apply
+    {A E F : Type*} [NormedAddCommGroup A] [NormedSpace ℝ A]
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [NormedAddCommGroup F] [NormedSpace ℝ F]
+    {f : A → E} {g : E → F} {x : A}
+    (hf : ContDiffAt ℝ 2 f x) (hg : ContDiffAt ℝ 2 g (f x)) (v w : A) :
+    fderiv ℝ (fderiv ℝ (g ∘ f)) x v w =
+      fderiv ℝ g (f x) (fderiv ℝ (fderiv ℝ f) x v w) +
+        fderiv ℝ (fderiv ℝ g) (f x) (fderiv ℝ f x v) (fderiv ℝ f x w) := by
+  have hdf := hf.differentiableAt (by norm_num)
+  have hddf := (hf.fderiv_right (m := 1) (by norm_num)).differentiableAt (by norm_num)
+  have hddg := (hg.fderiv_right (m := 1) (by norm_num)).differentiableAt (by norm_num)
+  have hnear : fderiv ℝ (g ∘ f) =ᶠ[𝓝 x]
+      (fun q => (fderiv ℝ g (f q)).comp (fderiv ℝ f q)) := by
+    filter_upwards [hf.eventually (by norm_num),
+      hdf.continuousAt (hg.eventually (by norm_num))] with q hq hgq
+    change ContDiffAt ℝ 2 g (f q) at hgq
+    exact fderiv_comp q (hgq.differentiableAt (by norm_num)) (hq.differentiableAt (by norm_num))
+  rw [hnear.fderiv_eq, fderiv_clm_comp (c := fun q => fderiv ℝ g (f q)) (d := fderiv ℝ f)
+    (hddg.comp x hdf) hddf]
+  rw [fderiv_fun_comp x hddg hdf]
+  rfl
+
+theorem ContDiffAt.laplacian_comp
+    {A E F : Type*} [NormedAddCommGroup A] [InnerProductSpace ℝ A]
+    [FiniteDimensional ℝ A] [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [NormedAddCommGroup F] [NormedSpace ℝ F]
+    {f : A → E} {g : E → F} {x : A}
+    (hf : ContDiffAt ℝ 2 f x) (hg : ContDiffAt ℝ 2 g (f x)) :
+    Laplacian.laplacian (g ∘ f) x = fderiv ℝ g (f x) (Laplacian.laplacian f x) +
+      ∑ i : Fin (Module.finrank ℝ A), fderiv ℝ (fderiv ℝ g) (f x)
+        (fderiv ℝ f x (stdOrthonormalBasis ℝ A i))
+        (fderiv ℝ f x (stdOrthonormalBasis ℝ A i)) := by
+  simp only [laplacian_eq_iteratedFDeriv_stdOrthonormalBasis, iteratedFDeriv_two_apply]
+  simp [fderiv_fderiv_comp_apply hf hg, Finset.sum_add_distrib, map_sum]

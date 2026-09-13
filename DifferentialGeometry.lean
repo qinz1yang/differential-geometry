@@ -1589,10 +1589,13 @@ import DifferentialGeometry.Analysis.Schauder.Holder.CompactRegularity
 import DifferentialGeometry.Analysis.Schauder.Holder.Compactness
 import DifferentialGeometry.Analysis.Schauder.Holder.CompleteSpace
 import DifferentialGeometry.Analysis.Schauder.Holder.Composition
+import DifferentialGeometry.Analysis.Schauder.Holder.DerivativeExtension
 import DifferentialGeometry.Analysis.Schauder.Holder.DerivativeLimit
+import DifferentialGeometry.Analysis.Schauder.Holder.Extension
 import DifferentialGeometry.Analysis.Schauder.Holder.HigherOrderComposition
 import DifferentialGeometry.Analysis.Schauder.Holder.Interpolation
 import DifferentialGeometry.Analysis.Schauder.Holder.Localization
+import DifferentialGeometry.Analysis.Schauder.Holder.Multilinear
 import DifferentialGeometry.Analysis.Schauder.Holder.NormedSpace
 import DifferentialGeometry.Analysis.Schauder.Holder.Operator
 import DifferentialGeometry.Analysis.Schauder.Holder.Scaling

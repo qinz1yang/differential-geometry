@@ -135,4 +135,94 @@ theorem exists_holderOnWith_iteratedFDerivWithin_comp_of_convex
     obtain ⟨C, hC⟩ := exists_holderWith_restrict_of_contDiffOn_isCompact hs hsconv hJ hα1
     exact ⟨C, HolderWith.restrict_iff.mp hC⟩
 
+theorem holderOnWith_iteratedFDerivWithin_succ_iff
+    {𝕜 E F : Type*} [NontriviallyNormedField 𝕜] [NormedAddCommGroup E] [NormedSpace 𝕜 E]
+    [NormedAddCommGroup F] [NormedSpace 𝕜 F]
+    {s : Set E} (hs : UniqueDiffOn 𝕜 s) {u : E → F} {n : ℕ} {K α : ℝ≥0} :
+    HolderOnWith K α (iteratedFDerivWithin 𝕜 (n + 1) u s) s ↔
+      HolderOnWith K α (iteratedFDerivWithin 𝕜 n (fderivWithin 𝕜 u s) s) s := by
+  have heq (x : E) (hx : x ∈ s) (y : E) (hy : y ∈ s) :
+      edist (iteratedFDerivWithin 𝕜 (n + 1) u s x)
+        (iteratedFDerivWithin 𝕜 (n + 1) u s y) =
+      edist (iteratedFDerivWithin 𝕜 n (fderivWithin 𝕜 u s) s x)
+        (iteratedFDerivWithin 𝕜 n (fderivWithin 𝕜 u s) s y) := by
+    rw [iteratedFDerivWithin_succ_eq_comp_right hs hx,
+      iteratedFDerivWithin_succ_eq_comp_right hs hy]
+    exact (continuousMultilinearCurryRightEquiv' 𝕜 n E F).symm.edist_map _ _
+  constructor <;> intro h x hx y hy
+  · rw [← heq x hx y hy]
+    exact h x hx y hy
+  · rw [heq x hx y hy]
+    exact h x hx y hy
+
+private theorem holderOnWith_iteratedFDerivWithin_prodMk
+    {E F G : Type*}
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [NormedAddCommGroup F] [NormedSpace ℝ F]
+    [NormedAddCommGroup G] [NormedSpace ℝ G]
+    {s : Set E} (hs : UniqueDiffOn ℝ s) {n : ℕ} {u : E → F} {v : E → G}
+    (hu : ContDiffOn ℝ n u s) (hv : ContDiffOn ℝ n v s) {K L α : ℝ≥0}
+    (huj : HolderOnWith K α (iteratedFDerivWithin ℝ n u s) s)
+    (hvj : HolderOnWith L α (iteratedFDerivWithin ℝ n v s) s) :
+    HolderOnWith (max K L) α (iteratedFDerivWithin ℝ n (fun x => (u x, v x)) s) s := by
+  intro x hx y hy
+  rw [iteratedFDerivWithin_prodMk (hu x hx) (hv x hx) hs hx le_rfl,
+    iteratedFDerivWithin_prodMk (hu y hy) (hv y hy) hs hy le_rfl]
+  change edist (ContinuousMultilinearMap.prodL ℝ (fun _ : Fin n => E) F G (_, _))
+    (ContinuousMultilinearMap.prodL ℝ (fun _ : Fin n => E) F G (_, _)) ≤ _
+  rw [LinearIsometryEquiv.edist_map]
+  exact holderOnWith_prodMk huj hvj x hx y hy
+
+private theorem exists_holderOnWith_iteratedFDerivWithin_of_contDiffOn
+    {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [NormedAddCommGroup F] [NormedSpace ℝ F]
+    {s : Set E} (hs : IsCompact s) (hc : Convex ℝ s) (hsD : UniqueDiffOn ℝ s)
+    {u : E → F} {n : ℕ} (hu : ContDiffOn ℝ (n + 1) u s)
+    {α : ℝ≥0} (hα : α ≤ 1) :
+    ∃ C : ℝ≥0, HolderOnWith C α (iteratedFDerivWithin ℝ n u s) s := by
+  have hJ : ContDiffOn ℝ 1 (iteratedFDerivWithin ℝ n u s) s := by
+    intro x hx
+    exact (hu x hx).iteratedFDerivWithin_right hsD (by simp [add_comm]) hx
+  obtain ⟨C, hC⟩ := exists_holderWith_restrict_of_contDiffOn_isCompact hs hc hJ hα
+  exact ⟨C, HolderWith.restrict_iff.mp hC⟩
+
+theorem exists_holderOnWith_iteratedFDerivWithin_firstJet
+    {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [NormedAddCommGroup F] [NormedSpace ℝ F]
+    {s : Set E} (hs : IsCompact s) (hc : Convex ℝ s) (hsD : UniqueDiffOn ℝ s)
+    {u : E → F} {n : ℕ} (hu : ContDiffOn ℝ (n + 1) u s) {K α : ℝ≥0}
+    (hα : α ≤ 1) (hjet : HolderOnWith K α (iteratedFDerivWithin ℝ (n + 1) u s) s) :
+    ∃ C : ℝ≥0,
+      ContDiffOn ℝ n (fun x => (x, u x, fderivWithin ℝ u s x)) s ∧
+      HolderOnWith C α
+        (iteratedFDerivWithin ℝ n (fun x => (x, u x, fderivWithin ℝ u s x)) s) s := by
+  obtain ⟨A, hA⟩ := exists_holderOnWith_iteratedFDerivWithin_of_contDiffOn hs hc hsD
+    (contDiffOn_id : ContDiffOn ℝ (n + 1) (fun x : E => x) s) hα
+  obtain ⟨B, hB⟩ := exists_holderOnWith_iteratedFDerivWithin_of_contDiffOn hs hc hsD hu hα
+  have hD := (holderOnWith_iteratedFDerivWithin_succ_iff hsD).mp hjet
+  refine ⟨max A (max B K),
+    contDiffOn_id.prodMk ((hu.of_le (by simp)).prodMk (hu.fderivWithin hsD le_rfl)), ?_⟩
+  exact holderOnWith_iteratedFDerivWithin_prodMk hsD
+    contDiffOn_id ((hu.of_le (by simp)).prodMk (hu.fderivWithin hsD le_rfl)) hA
+    (holderOnWith_iteratedFDerivWithin_prodMk hsD (hu.of_le (by simp))
+      (hu.fderivWithin hsD le_rfl) hB hD)
+
+theorem exists_holderOnWith_iteratedFDerivWithin_firstJet_comp
+    {E F G : Type*}
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [NormedAddCommGroup F] [NormedSpace ℝ F]
+    [NormedAddCommGroup G] [NormedSpace ℝ G]
+    {s : Set E} (hs : IsCompact s) (hc : Convex ℝ s) (hsD : UniqueDiffOn ℝ s)
+    {u : E → F} {n : ℕ} (hu : ContDiffOn ℝ (n + 1) u s) {K α : ℝ≥0}
+    (hα : 0 < α) (hα1 : α ≤ 1)
+    (hjet : HolderOnWith K α (iteratedFDerivWithin ℝ (n + 1) u s) s)
+    {U : Set (E × F × (E →L[ℝ] F))} (hU : IsOpen U)
+    (huU : MapsTo (fun x => (x, u x, fderivWithin ℝ u s x)) s U)
+    {f : (E × F × (E →L[ℝ] F)) → G} (hf : ContDiffOn ℝ (n + 1) f U) :
+    ∃ C : ℝ≥0, HolderOnWith C α
+      (iteratedFDerivWithin ℝ n (fun x => f (x, u x, fderivWithin ℝ u s x)) s) s := by
+  obtain ⟨A, hJ, hA⟩ := exists_holderOnWith_iteratedFDerivWithin_firstJet hs hc hsD hu hα1 hjet
+  exact exists_holderOnWith_iteratedFDerivWithin_comp_of_convex hs hc hsD
+    hJ hα hα1 hA hU huU hf
+
 end DifferentialGeometry.Analysis.Schauder
