@@ -416,7 +416,7 @@ private theorem div_sqrt_lt_mul {L eta s d : ℝ} (hs : 0 < s) (hd : 0 < d)
 
 def NeckEndScale (g : SmoothRiemannianMetric I3 W) (H : FiniteHorn g) (ray : EndRay H.endpoint)
     (d : ℕ → ℝ) : Prop :=
-  ∀ a b : ℝ, -1 < a → a < b → b < 1 / 10 → ∀ᶠ i in Filter.atTop, ∃ j : ℕ,
+  ∀ a b : ℝ, -1 < a → -b ≤ a → a < b → b < 1 / 10 → ∀ᶠ i in Filter.atTop, ∃ j : ℕ,
     {x : W | dist (x : UniformSpace.Completion W) H.endpoint < (1 - a) * d i} ⊆ H.subend j ∧
     H.subend j ⊆ {x : W | dist (x : UniformSpace.Completion W) H.endpoint < (1 + b) * d i} ∧
     (∀ x ∈ H.subend j, (neckTube g H ray d i).height x < 1 / 2)
@@ -443,8 +443,8 @@ theorem neckSectionBarrier_of_neckEndScale (g : SmoothRiemannianMetric I3 W) (H 
     have ha1 : -1 < -(eta / 2) := by linarith
     have hb1 : eta / 2 < 1 / 10 := by linarith
     filter_upwards [eventually_mem_tail g H ray d hd hzero,
-      hscale eta ((eta + 1 / 10) / 2) (by linarith) hb0 hb0',
-      hscale (-(eta / 2)) (eta / 2) ha1 (by linarith) hb1,
+      hscale eta ((eta + 1 / 10) / 2) (by linarith) (by linarith) hb0 hb0',
+      hscale (-(eta / 2)) (eta / 2) ha1 (by linarith) (by linarith) hb1,
       hlarge.eventually_ge_atTop (max 1 ((2 * transverseShortcutConstant W / eta) ^ 2 + 1))]
       with i hgood hj0 hj1 hbig
     obtain ⟨j0, hsub0, _hsup0, hdeep0⟩ := hj0
@@ -549,12 +549,14 @@ theorem neckEndScaleWindow_of_neckEndScale (g : SmoothRiemannianMetric I3 W) (H 
     NeckEndScaleWindow g H ray d := by
   constructor
   · intro e he he10
-    filter_upwards [hscale e ((e + 1 / 10) / 2) (by linarith) (by linarith) (by linarith)]
+    filter_upwards [hscale e ((e + 1 / 10) / 2) (by linarith) (by linarith) (by linarith)
+      (by linarith)]
       with i hi
     obtain ⟨j, hsub, _hsup, hdeep⟩ := hi
     exact ⟨j, hsub, hdeep⟩
   · intro e he he10
-    filter_upwards [hscale (-(e / 2)) e (by linarith) (by linarith) (by linarith)] with i hi
+    filter_upwards [hscale (-(e / 2)) e (by linarith) (by linarith) (by linarith)
+      (by linarith)] with i hi
     obtain ⟨j, hsub, hsup, _hdeep⟩ := hi
     have hrad : 1 - -(e / 2) = 1 + e / 2 := by ring
     rw [hrad] at hsub
@@ -566,7 +568,8 @@ theorem neckEndScale_subend_eq_ball (g : SmoothRiemannianMetric I3 W) (H : Finit
     {eta : ℝ} (heta : 0 < eta) (heta10 : eta < 1 / 10) :
     ∀ᶠ i in Filter.atTop, ∃ j : ℕ, H.subend j =
       {x : W | dist (x : UniformSpace.Completion W) H.endpoint < (1 + eta / 2) * d i} := by
-  filter_upwards [hscale (-(eta / 2)) (eta / 2) (by linarith) (by linarith) (by linarith)]
+  filter_upwards [hscale (-(eta / 2)) (eta / 2) (by linarith) (by linarith) (by linarith)
+    (by linarith)]
     with i hi
   obtain ⟨j, hsub, hsup, _hdeep⟩ := hi
   have hrad : 1 - -(eta / 2) = 1 + eta / 2 := by ring

@@ -20,10 +20,13 @@ variable {W : Type u} [MetricSpace W] [ChartedSpace ThreeSpace W]
   [IsManifold I3 ∞ W] [SigmaCompactSpace W]
 
 omit [SigmaCompactSpace W] in
-theorem not_neckEndScale {g : SmoothRiemannianMetric I3 W} (H : FiniteHorn g)
+theorem not_unrestricted_neckEndScale {g : SmoothRiemannianMetric I3 W} (H : FiniteHorn g)
     (ray : EndRay H.endpoint) (d : ℕ → ℝ) (hd : ∀ i, 0 < d i)
     (hzero : Filter.Tendsto d Filter.atTop (nhds 0)) :
-    ¬ NeckEndScale g H ray d := by
+    ¬ (∀ a b : ℝ, -1 < a → a < b → b < 1 / 10 → ∀ᶠ i in Filter.atTop, ∃ j : ℕ,
+      {x : W | dist (x : UniformSpace.Completion W) H.endpoint < (1 - a) * d i} ⊆ H.subend j ∧
+      H.subend j ⊆ {x : W | dist (x : UniformSpace.Completion W) H.endpoint < (1 + b) * d i} ∧
+      (∀ x ∈ H.subend j, (neckTube g H ray d i).height x < 1 / 2)) := by
   intro hscale
   have hspec : ∀ᶠ i in Filter.atTop, ∃ j : ℕ,
       {x : W | dist (x : UniformSpace.Completion W) H.endpoint < (1 - (-0.9)) * d i} ⊆
