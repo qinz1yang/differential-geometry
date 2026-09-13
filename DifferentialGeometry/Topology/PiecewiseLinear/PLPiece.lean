@@ -23,23 +23,39 @@ theorem IsPiecewiseAffineWithinAt.union {f : E → F} {s t : Set E} {x : E}
     exact ⟨Filter.mem_of_superset hCx subset_union_left,
       Filter.mem_of_superset hDx subset_union_right⟩
 
-theorem IsPiecewiseAffineOn.union_of_isClosed [FiniteDimensional ℝ E] {f : E → F} {s t : Set E}
-    (hs : IsPiecewiseAffineOn f s) (ht : IsPiecewiseAffineOn f t) (hsc : IsClosed s)
-    (htc : IsClosed t) : IsPiecewiseAffineOn f (s ∪ t) := by
+theorem IsPiecewiseAffineOn.union_of_open [FiniteDimensional ℝ E] {f : E → F} {s t : Set E}
+    (hs : IsPiecewiseAffineOn f s) (ht : IsPiecewiseAffineOn f t)
+    (hs' : ∀ x ∈ s, x ∉ t → ∃ O, IsOpen O ∧ x ∈ O ∧ (s ∪ t) ∩ O ⊆ s)
+    (ht' : ∀ x ∈ t, x ∉ s → ∃ O, IsOpen O ∧ x ∈ O ∧ (s ∪ t) ∩ O ⊆ t) :
+    IsPiecewiseAffineOn f (s ∪ t) := by
   intro x hx
   by_cases hxs : x ∈ s <;> by_cases hxt : x ∈ t
   · exact (hs x hxs).union (ht x hxt)
-  · have h := (hs x hxs).inter_of_mem_nhds (htc.isOpen_compl.mem_nhds hxt)
-    have heq : s ∩ tᶜ = (s ∪ t) ∩ tᶜ := by
-      rw [union_inter_distrib_right, inter_compl_self, union_empty]
+  · obtain ⟨O, hO, hxO, hsub⟩ := hs' x hxs hxt
+    have h := (hs x hxs).inter_of_mem_nhds (hO.mem_nhds hxO)
+    have heq : s ∩ O = (s ∪ t) ∩ O :=
+      Subset.antisymm (inter_subset_inter_left _ subset_union_left) fun y hy => ⟨hsub hy, hy.2⟩
     rw [heq] at h
-    exact h.of_inter_of_mem_nhds (htc.isOpen_compl.mem_nhds hxt)
-  · have h := (ht x hxt).inter_of_mem_nhds (hsc.isOpen_compl.mem_nhds hxs)
-    have heq : t ∩ sᶜ = (s ∪ t) ∩ sᶜ := by
-      rw [union_inter_distrib_right, inter_compl_self, empty_union]
+    exact h.of_inter_of_mem_nhds (hO.mem_nhds hxO)
+  · obtain ⟨O, hO, hxO, hsub⟩ := ht' x hxt hxs
+    have h := (ht x hxt).inter_of_mem_nhds (hO.mem_nhds hxO)
+    have heq : t ∩ O = (s ∪ t) ∩ O :=
+      Subset.antisymm (inter_subset_inter_left _ subset_union_right) fun y hy => ⟨hsub hy, hy.2⟩
     rw [heq] at h
-    exact h.of_inter_of_mem_nhds (hsc.isOpen_compl.mem_nhds hxs)
+    exact h.of_inter_of_mem_nhds (hO.mem_nhds hxO)
   · exact absurd hx (by simp [hxs, hxt])
+
+theorem IsPiecewiseAffineOn.union_of_isClosed [FiniteDimensional ℝ E] {f : E → F} {s t : Set E}
+    (hs : IsPiecewiseAffineOn f s) (ht : IsPiecewiseAffineOn f t) (hsc : IsClosed s)
+    (htc : IsClosed t) : IsPiecewiseAffineOn f (s ∪ t) := by
+  refine hs.union_of_open ht (fun x _ hxt => ⟨tᶜ, htc.isOpen_compl, hxt, ?_⟩)
+    fun x _ hxs => ⟨sᶜ, hsc.isOpen_compl, hxs, ?_⟩
+  · rintro y ⟨hy | hy, hyt⟩
+    · exact hy
+    · exact absurd hy hyt
+  · rintro y ⟨hy | hy, hys⟩
+    · exact absurd hy hys
+    · exact hy
 
 theorem isPolyhedron_inter_preimage_of_isCompact [FiniteDimensional ℝ E] {f : E → F} {S : Set E}
     (hf : IsPiecewiseAffineOn f S) {C : Set F} (hC : IsHPolytope C)
@@ -69,12 +85,11 @@ theorem isPolyhedron_inter_preimage_of_isCompact [FiniteDimensional ℝ E] {f : 
 
 universe u
 
-structure PLPiece (n : ℕ) (X : Type u) [TopologicalSpace X]
-    [ChartedSpace (EuclideanSpace ℝ (Fin n)) X] (Y : Set X) where
-  ambientDim : ℕ
-  complex : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin ambientDim))
+structure PLPieceIn (E : Type*) [NormedAddCommGroup E] [NormedSpace ℝ E] (n : ℕ) (X : Type u)
+    [TopologicalSpace X] [ChartedSpace (EuclideanSpace ℝ (Fin n)) X] (Y : Set X) where
+  complex : Geometry.SimplicialComplex ℝ E
   finite_faces : complex.faces.Finite
-  map : EuclideanSpace ℝ (Fin ambientDim) → X
+  map : E → X
   bijOn : BijOn map complex.space Y
   continuousOn : ContinuousOn map complex.space
   isPiecewiseAffineOn_chart : ∀ e ∈ atlas (EuclideanSpace ℝ (Fin n)) X,
@@ -83,23 +98,92 @@ structure PLPiece (n : ℕ) (X : Type u) [TopologicalSpace X]
     IsPiecewiseAffineOn (Function.invFunOn map complex.space ∘ e.symm)
       (e.target ∩ e.symm ⁻¹' Y)
 
+structure PLPiece (n : ℕ) (X : Type u) [TopologicalSpace X]
+    [ChartedSpace (EuclideanSpace ℝ (Fin n)) X] (Y : Set X) where
+  ambientDim : ℕ
+  piece : PLPieceIn (EuclideanSpace ℝ (Fin ambientDim)) n X Y
+
 variable {n : ℕ} {X : Type u} [TopologicalSpace X] [ChartedSpace (EuclideanSpace ℝ (Fin n)) X]
 
 def PLPiece.toPLTriangulation (T : PLPiece n X univ) : PLTriangulation n X where
   ambientDim := T.ambientDim
-  complex := T.complex
-  finite_faces := T.finite_faces.to_subtype
-  map := T.map
-  bijOn := T.bijOn
-  continuousOn := T.continuousOn
-  isPiecewiseAffineOn_chart := T.isPiecewiseAffineOn_chart
+  complex := T.piece.complex
+  finite_faces := T.piece.finite_faces.to_subtype
+  map := T.piece.map
+  bijOn := T.piece.bijOn
+  continuousOn := T.piece.continuousOn
+  isPiecewiseAffineOn_chart := T.piece.isPiecewiseAffineOn_chart
   isPiecewiseAffineOn_chart_symm := fun e he => by
-    have := T.isPiecewiseAffineOn_chart_symm e he
+    have := T.piece.isPiecewiseAffineOn_chart_symm e he
     rwa [preimage_univ, inter_univ] at this
 
-theorem PLPiece.isCompact {Y : Set X} (T : PLPiece n X Y) : IsCompact Y := by
+theorem PLPieceIn.isCompact [FiniteDimensional ℝ E] {Y : Set X} (T : PLPieceIn E n X Y) :
+    IsCompact Y := by
   rw [← T.bijOn.image_eq]
   have := T.finite_faces.to_subtype
-  exact (isPolyhedron_space T.complex).isCompact.image_of_continuousOn T.continuousOn
+  exact (PiecewiseLinear.isPolyhedron_space T.complex).isCompact.image_of_continuousOn
+    T.continuousOn
+
+theorem PLPieceIn.isPolyhedron_space [FiniteDimensional ℝ E] {Y : Set X}
+    (T : PLPieceIn E n X Y) : IsPolyhedron T.complex.space := by
+  have := T.finite_faces.to_subtype
+  exact PiecewiseLinear.isPolyhedron_space T.complex
+
+theorem PLPieceIn.transport [FiniteDimensional ℝ E] [FiniteDimensional ℝ F] {Y : Set X}
+    (T : PLPieceIn E n X Y) (L : E ≃ₗ[ℝ] F) : Nonempty (PLPieceIn F n X Y) := by
+  classical
+  have := T.finite_faces.to_subtype
+  have hLpl : IsPiecewiseAffineOn (⇑L) T.complex.space :=
+    ((isPiecewiseAffineOn_of_affine (L : E →ₗ[ℝ] F).toAffineMap isOpen_univ).mono_of_isPolyhedron
+      T.isPolyhedron_space (subset_univ _)).congr fun _ _ => rfl
+  obtain ⟨K', hfin', hspace', hpl⟩ :=
+    exists_isPLHomeomorphOn_image T.complex hLpl (L.injective.injOn)
+  set Linv := Function.invFunOn (⇑L) T.complex.space with hLinv
+  have hinvpl : IsPiecewiseAffineOn Linv K'.space := hpl.symm.isPiecewiseAffineOn
+  have hinvbij : BijOn Linv K'.space T.complex.space := hpl.symm.bijOn
+  have hinv_mem : ∀ z ∈ K'.space, Linv z ∈ T.complex.space := fun z hz => hinvbij.mapsTo hz
+  refine ⟨⟨K', hfin', T.map ∘ Linv, T.bijOn.comp hinvbij,
+    T.continuousOn.comp hinvpl.continuousOn hinvbij.mapsTo, fun e he => ?_, fun e he => ?_⟩⟩
+  · have h := (T.isPiecewiseAffineOn_chart e he).comp hinvpl
+    have heq : K'.space ∩ Linv ⁻¹' (T.complex.space ∩ T.map ⁻¹' e.source) =
+        K'.space ∩ (T.map ∘ Linv) ⁻¹' e.source := by
+      ext z
+      constructor
+      · rintro ⟨hz, -, hz'⟩
+        exact ⟨hz, hz'⟩
+      · rintro ⟨hz, hz'⟩
+        exact ⟨hz, hinv_mem z hz, hz'⟩
+    rw [heq] at h
+    exact h.congr fun _ _ => rfl
+  · have h := hpl.isPiecewiseAffineOn.comp (T.isPiecewiseAffineOn_chart_symm e he)
+    have hsub : e.target ∩ e.symm ⁻¹' Y ⊆
+        (Function.invFunOn T.map T.complex.space ∘ e.symm) ⁻¹' T.complex.space := fun y hy =>
+      T.bijOn.surjOn.mapsTo_invFunOn hy.2
+    rw [inter_eq_left.mpr hsub] at h
+    refine h.congr fun y hy => ?_
+    have hbij : BijOn (T.map ∘ Linv) K'.space Y := T.bijOn.comp hinvbij
+    have h1 : Function.invFunOn (T.map ∘ Linv) K'.space (e.symm y) ∈ K'.space :=
+      hbij.surjOn.mapsTo_invFunOn hy.2
+    have h2 : (T.map ∘ Linv) (Function.invFunOn (T.map ∘ Linv) K'.space (e.symm y)) = e.symm y :=
+      hbij.invOn_invFunOn.2 hy.2
+    have h3 : Function.invFunOn T.map T.complex.space (e.symm y) ∈ T.complex.space :=
+      T.bijOn.surjOn.mapsTo_invFunOn hy.2
+    have h4 : T.map (Function.invFunOn T.map T.complex.space (e.symm y)) = e.symm y :=
+      T.bijOn.invOn_invFunOn.2 hy.2
+    have h5 : Linv (Function.invFunOn (T.map ∘ Linv) K'.space (e.symm y)) =
+        Function.invFunOn T.map T.complex.space (e.symm y) :=
+      T.bijOn.injOn (hinv_mem _ h1) h3 (h2.trans h4.symm)
+    have h6 : L (Linv (Function.invFunOn (T.map ∘ Linv) K'.space (e.symm y))) =
+        Function.invFunOn (T.map ∘ Linv) K'.space (e.symm y) := hpl.bijOn.invOn_invFunOn.2 h1
+    change Function.invFunOn (T.map ∘ Linv) K'.space (e.symm y) =
+      L (Function.invFunOn T.map T.complex.space (e.symm y))
+    rw [← h5, h6]
+
+theorem PLPieceIn.exists_pLPiece [FiniteDimensional ℝ E] {Y : Set X} (T : PLPieceIn E n X Y) :
+    Nonempty (PLPiece n X Y) := by
+  let L : E ≃ₗ[ℝ] EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) :=
+    (Module.finBasis ℝ E).equivFun.trans (WithLp.linearEquiv 2 ℝ _).symm
+  obtain ⟨T'⟩ := T.transport L
+  exact ⟨⟨_, T'⟩⟩
 
 end DifferentialGeometry.Topology.PiecewiseLinear
