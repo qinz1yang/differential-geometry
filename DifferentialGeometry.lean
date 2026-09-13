@@ -4159,3 +4159,5 @@ import DifferentialGeometry.Topology.JordanSchoenflies
 import DifferentialGeometry.Topology.JordanSeparation
 import DifferentialGeometry.Topology.Embedding.FiniteDimension
 import DifferentialGeometry.Topology.Embedding.SmoothParametricGraph
+import DifferentialGeometry.Analysis.Calculus.LipschitzFamily
+import DifferentialGeometry.Topology.Embedding.Stability

@@ -307,3 +307,44 @@ are unchanged. These are fresh affected-module checks, not a full aggregate buil
 Whole-real smooth input, boundaryless source and finite-dimensional Euclidean
 ambient space remain the stated scope. The stronger interval-only and boundary
 versions and the sphere-rounding family required for Schoenflies remain open.
+
+## Stability of compact manifold embeddings, 2026-09-13
+
+Topology/Embedding/Stability proves that a jointly Cⁿ family has native Cⁿ
+embedding slices near any one embedded slice, for n : ℕ∞ with n ≥ 1.
+The parameter and ambient spaces may be arbitrary finite-dimensional real
+normed spaces. The compact source is a native boundaryless Cⁿ manifold;
+no source finite-dimensionality, nonemptiness, derivative estimate or supplied
+extension certificate is assumed. The old whole-real C∞ target is a direct
+specialization. This is local stability, not an assertion about all parameters.
+
+Analysis/Calculus/LipschitzFamily supplies the general C¹ analytic engine:
+for a jointly C¹ compactly supported function on arbitrary real normed
+parameter, spatial and value spaces, the difference from a fixed slice is
+uniformly ε-Lipschitz in space for nearby parameters. Compact uniformity and
+Mathlib's mean-value theorem prove the bound. The geometric theorem extends
+the family along the fixed initial embedding, then uses the existing
+Diffeomorph.addLipschitz and native embedding postcomposition. No second
+immersion or function-space framework is introduced.
+
+Private generalized request 1789311821322070080-schoenflies-1bd256e3 passed
+in 35.87 seconds with 40 guards and 18 readbacks. Public source ca8d102a passed
+in 7.86 seconds with 42 guards and 18 pairs. Imported request
+1789312288798658195-schoenflies-4b578ec9 passed in 102.44 seconds with 45 guards
+and 18 pairs, all byte-identical to the public source. Both leaves freshly
+compiled without diagnostics in 1:05.02, maximum RSS 1764484 KiB, after adding
+the analytic leaf's explicit ContDiff.Operations import. After removing one
+trailing blank line, final imported request
+1789312563889506874-schoenflies-19041c33 passed in 75.32 seconds with all 45
+current source guards and 18 byte-identical pairs. The changed analytic leaf
+freshly compiled without diagnostics; artifact checking took 37.54 seconds,
+maximum RSS 1497988 KiB. Stock declaration linters and standard-only transitive
+axioms pass. Exact readbacks resolve the printed isCompact_closedBall alias
+to ProperSpace.isCompact_closedBall.
+
+Six consumers cover arbitrary S² families, a shrinking sphere that ceases to
+embed at time one, rank-zero source, empty source, C¹ families with two real
+parameters, and rank-zero parameter space. Both leaves are registered in the
+flat root without changing existing imports. These are fresh leaf and consumer
+checks, not a full DG aggregate build. Interval-only extension and source
+boundary/corner extension remain separate requirements for Chapter 42.
