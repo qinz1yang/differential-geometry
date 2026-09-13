@@ -189,3 +189,39 @@ the identity on a compact interval in a noncompact source, and order zero.
 The new leaf is registered in the flat root. This is not a full aggregate build
 or an ambient isotopy-extension theorem. Time endpoints, source boundaries,
 relative fixing, the actual velocity and its ambient flow remain separate.
+
+## Compactly supported velocity along an embedding family, 2026-09-13
+
+Topology/Embedding/ParametricVelocity constructs the actual jointly smooth
+spatial velocity field for a whole-real C∞ family of native embeddings of a
+compact boundaryless manifold. On any compact part of its spacetime graph,
+the produced field equals the actual time derivative of the given family.
+Its topological support is compact and lies in a prescribed open neighborhood
+of that trace. The interval statement is a thin specialization to Icc × univ;
+empty intervals are included. Native manifold structures are retained.
+
+The proof uses the published graph embedding and smooth extension. The existing
+partial-derivative proof is generalized once in Bundle/PartialMfderiv as the
+natural method ContMDiff.deriv_fst, for arbitrary normed real values. The old
+scalar DifferentialGeometry.contMDiff_partial_deriv_fst has exactly its former
+public signature and is now a thin corollary. Original scalar and scalar-slice
+consumer readbacks match the independent baseline byte for byte. Existing
+analytic call sites and their source files remain unchanged. Their full source
+closure has 1178 missing artifacts; no broad analytic rebuild is claimed.
+
+Private velocity check 1789307469075330896-schoenflies-5dc551d3 passed in
+34.68 seconds with 36 guards and eight pairs. Final public source check
+1789307867190354247-schoenflies-6d437c67 passed in 33.42 seconds with 65 guards
+and nine pairs. Final imported check
+1789308065595270119-schoenflies-8d9030c4 passed in 102.05 seconds with 67 guards
+and nine byte-identical pairs. Both changed/new leaves freshly compiled without
+diagnostics in 1:05.34, maximum RSS 1784880 KiB. Stock declaration linters and
+standard-only transitive axioms pass. Consumers include arbitrary embedded S²
+families, a translated unit sphere whose exact velocity is the supplied vector,
+and an empty interval with empty support. The new leaf is in the flat root.
+These are fresh module/source checks, not a full aggregate build.
+
+This uses existing native proofs; no additional upstream source or dependency
+is copied. The whole-real smoothness hypothesis remains essential to this
+statement. Extension from interval-only data, source boundary faces, relative
+fixing and the ambient isotopy are separate obligations.

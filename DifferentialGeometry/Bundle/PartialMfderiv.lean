@@ -6,26 +6,26 @@ import Mathlib.Analysis.Calculus.Deriv.Basic
 
 open scoped Manifold ContDiff
 
-namespace DifferentialGeometry
-
-theorem contMDiff_partial_deriv_fst
+theorem ContMDiff.deriv_fst
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-    {H : Type*} [TopologicalSpace H] (I : ModelWithCorners ℝ E H)
+    {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-    (F : C^∞⟮𝓘(ℝ, ℝ).prod I, ℝ × M; ℝ⟯) :
-    ContMDiff (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ) ∞
+    {V : Type*} [NormedAddCommGroup V] [NormedSpace ℝ V]
+    {F : ℝ × M → V}
+    (hF : ContMDiff (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, V) ∞ F) :
+    ContMDiff (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, V) ∞
       (fun p : ℝ × M => deriv (fun t => F (t, p.2)) p.1) := by
   rw [contMDiff_infty]
   intro n p₀
   have harg : ContMDiff ((𝓘(ℝ, ℝ).prod I).prod 𝓘(ℝ, ℝ)) (𝓘(ℝ, ℝ).prod I) ∞
       (fun q : (ℝ × M) × ℝ => (q.2, q.1.2)) :=
     ContMDiff.prodMk contMDiff_snd contMDiff_fst.snd
-  have hF : ContMDiff ((𝓘(ℝ, ℝ).prod I).prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) ∞
+  have hF : ContMDiff ((𝓘(ℝ, ℝ).prod I).prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, V) ∞
       (fun q : (ℝ × M) × ℝ => F (q.2, q.1.2)) :=
-    F.contMDiff.comp harg
+    hF.comp harg
   have h_apply :=
     ContMDiffAt.mfderiv_apply
-      (I := 𝓘(ℝ, ℝ)) (I' := 𝓘(ℝ, ℝ))
+      (I := 𝓘(ℝ, ℝ)) (I' := 𝓘(ℝ, V))
       (f := fun (p : ℝ × M) (t : ℝ) => F (t, p.2))
       (g := fun p : ℝ × M => p.1)
       (g₁ := fun p : ℝ × M => p)
@@ -38,5 +38,18 @@ theorem contMDiff_partial_deriv_fst
       contMDiffAt_const
       le_rfl
   simpa [inTangentCoordinates_model_space] using! h_apply
+
+
+
+namespace DifferentialGeometry
+
+theorem contMDiff_partial_deriv_fst
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {H : Type*} [TopologicalSpace H] (I : ModelWithCorners ℝ E H)
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+    (F : C^∞⟮𝓘(ℝ, ℝ).prod I, ℝ × M; ℝ⟯) :
+    ContMDiff (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ) ∞
+      (fun p : ℝ × M => deriv (fun t => F (t, p.2)) p.1) :=
+  F.contMDiff.deriv_fst
 
 end DifferentialGeometry
