@@ -668,6 +668,7 @@ import DifferentialGeometry.Analysis.Integration.CauchyPeak
 import DifferentialGeometry.Analysis.Integration.CompactExhaustionCutoff
 import DifferentialGeometry.Analysis.Integration.CompactExhaustionIntegral
 import DifferentialGeometry.Analysis.Integration.ConformalScalarCurvature
+import DifferentialGeometry.Analysis.Integration.Convolution.Approximation
 import DifferentialGeometry.Analysis.Integration.Convolution.Laplacian
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.BracketDivergenceForm
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.EuclideanHalfSpace
@@ -1164,6 +1165,7 @@ import DifferentialGeometry.Analysis.Parabolic.Euclidean.Cutoff.Gauge
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.Cutoff.LocalSource
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.Duhamel.Frozen
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.Duhamel.FrozenPositiveDefinite
+import DifferentialGeometry.Analysis.Parabolic.Euclidean.Duhamel.Laplacian
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.Duhamel.Representation
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.HarmonicMapFlow.FixedPoint.Quadratic
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.HarmonicMapFlow.FixedPoint.Rough
