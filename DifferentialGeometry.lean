@@ -45,6 +45,7 @@ import DifferentialGeometry.Analysis.Calculus.Derivative.HilbertBasis
 import DifferentialGeometry.Analysis.Calculus.Derivative.ImmersionLiftRegularity
 import DifferentialGeometry.Analysis.Calculus.Derivative.IntervalInteriorDeriv
 import DifferentialGeometry.Analysis.Calculus.Derivative.LeftEndpoint
+import DifferentialGeometry.Analysis.Calculus.Derivative.NormSq
 import DifferentialGeometry.Analysis.Calculus.Derivative.ParametricIntervalIntegral
 import DifferentialGeometry.Analysis.Calculus.Derivative.Punctured
 import DifferentialGeometry.Analysis.Calculus.Derivative.PuncturedBallDerivativeHomotopy
@@ -1255,6 +1256,7 @@ import DifferentialGeometry.Analysis.Parabolic.Euclidean.Nondivergence.OperatorL
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.Nondivergence.Schauder
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.Nondivergence.SolutionCompactness
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.Quasilinear.Flux
+import DifferentialGeometry.Analysis.Parabolic.Euclidean.VectorNorm
 import DifferentialGeometry.Analysis.Parabolic.ExteriorSelfAdjointEvolution
 import DifferentialGeometry.Analysis.Parabolic.HarmonicMapHeatFlow.CoefficientRegularity
 import DifferentialGeometry.Analysis.Parabolic.HarmonicMapHeatFlow.Energy
