@@ -8096,6 +8096,7 @@ import DifferentialGeometry.Topology.LoopSpace.SmoothingSuperposition
 import DifferentialGeometry.Topology.LoopSpace.SpanningDisk
 import DifferentialGeometry.Topology.LoopSpace.UniformSmoothing
 import DifferentialGeometry.Topology.Manifold.AffineBallTransport
+import DifferentialGeometry.Topology.Manifold.AffineBallIsotopy
 import DifferentialGeometry.Topology.Manifold.AffineCharts
 import DifferentialGeometry.Topology.Manifold.AmbientSectionExtension
 import DifferentialGeometry.Topology.Manifold.Atlas
@@ -8112,6 +8113,7 @@ import DifferentialGeometry.Topology.Manifold.AddCircle
 import DifferentialGeometry.Topology.Manifold.BallChartPalaisTransport
 import DifferentialGeometry.Topology.Manifold.BallChartScale
 import DifferentialGeometry.Topology.Manifold.BallChartAffine
+import DifferentialGeometry.Topology.Manifold.BallChartModelIsotopy
 import DifferentialGeometry.Topology.Manifold.BallChartTransport
 import DifferentialGeometry.Topology.Manifold.BallDiffeomorphExtension
 import DifferentialGeometry.Topology.Manifold.BicollarComponents
@@ -8759,6 +8761,7 @@ import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.BallChartTranspo
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.BallChartTransportConnected
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.BallMarking
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.BallMarkingSupport
+import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.BallMarkingRelativeSupport
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.BallMarkingIsotopy
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.ChoiceIndependence
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.Collar
