@@ -8011,6 +8011,7 @@ import DifferentialGeometry.Topology.Manifold.Attachment.RadialWitness
 import DifferentialGeometry.Topology.Manifold.AddCircle
 import DifferentialGeometry.Topology.Manifold.BallChartPalaisTransport
 import DifferentialGeometry.Topology.Manifold.BallChartScale
+import DifferentialGeometry.Topology.Manifold.BallChartAffine
 import DifferentialGeometry.Topology.Manifold.BallChartTransport
 import DifferentialGeometry.Topology.Manifold.BallDiffeomorphExtension
 import DifferentialGeometry.Topology.Manifold.BicollarComponents
@@ -8195,6 +8196,7 @@ import DifferentialGeometry.Topology.Manifold.LocalContraction
 import DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.Descent
 import DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.Lift
 import DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.Open
+import DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.PartialDiffeomorph
 import DifferentialGeometry.Topology.Manifold.LocalDiffeomorphRange
 import DifferentialGeometry.Topology.Manifold.LocalExtrema
 import DifferentialGeometry.Topology.Manifold.LocallyPathConnected
@@ -8648,6 +8650,7 @@ import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.Collar
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.Commutative
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.Construction
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.Defs
+import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.FactorBallChart
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.Finite
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.FiniteLaws
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.InteriorChart
