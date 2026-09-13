@@ -268,3 +268,131 @@ theorem exists_nonzero_local_restriction_of_compact
 end Poincare.Topology
 
 end
+
+
+section
+
+open Set Module
+
+universe u
+
+namespace Poincare.Topology
+
+private theorem relative_local_restriction_comp
+    {X : Type u} [TopologicalSpace X] (n : ℕ) (K L : Set X) (hLK : L ⊆ K)
+    (x : X) (hx : x ∈ L) (a : integralRelativeHomology n Kᶜ) :
+    integralRelativeHomologyMap n (ContinuousMap.id X)
+      (show Kᶜ ⊆ ({x}ᶜ : Set X) from
+        compl_subset_compl.mpr (singleton_subset_iff.mpr (hLK hx))) a =
+      integralRelativeHomologyMap n (ContinuousMap.id X)
+        (show Lᶜ ⊆ ({x}ᶜ : Set X) from
+          compl_subset_compl.mpr (singleton_subset_iff.mpr hx))
+        (integralRelativeHomologyMap n (ContinuousMap.id X)
+          (show Kᶜ ⊆ Lᶜ from compl_subset_compl.mpr hLK) a) :=
+  LinearMap.congr_fun (integralRelativeHomologyMap_comp n
+    (ContinuousMap.id X) (ContinuousMap.id X)
+    (show Kᶜ ⊆ Lᶜ from compl_subset_compl.mpr hLK)
+    (show Lᶜ ⊆ ({x}ᶜ : Set X) from
+      compl_subset_compl.mpr (singleton_subset_iff.mpr hx))) a
+
+theorem exists_unique_compact_class_of_locally_realized_family
+    {E X : Type u} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    [TopologicalSpace X] [T2Space X] [ChartedSpace E X]
+    (n : ℕ) (hn : finrank ℝ E ≤ n) (K : Set X) (hK : IsCompact K)
+    (μ : ∀ x : X, integralLocalHomology n x)
+    (hlocal : ∀ x ∈ K, ∃ L : Set X, IsCompact L ∧ x ∈ interior L ∧
+      ∃ a : integralRelativeHomology n Lᶜ, ∀ y (hy : y ∈ K ∩ L),
+        integralRelativeHomologyMap n (ContinuousMap.id X)
+          (show Lᶜ ⊆ ({y}ᶜ : Set X) from
+            compl_subset_compl.mpr (singleton_subset_iff.mpr hy.2)) a = μ y) :
+    ∃! a : integralRelativeHomology n Kᶜ, ∀ x (hx : x ∈ K),
+      integralRelativeHomologyMap n (ContinuousMap.id X)
+        (show Kᶜ ⊆ ({x}ᶜ : Set X) from
+          compl_subset_compl.mpr (singleton_subset_iff.mpr hx)) a = μ x := by
+  have hp : ∃ L : Set X, IsCompact L ∧ K ⊆ L ∧ L ⊆ K ∧
+      ∃ a : integralRelativeHomology n Lᶜ, ∀ x (hx : x ∈ L),
+        integralRelativeHomologyMap n (ContinuousMap.id X)
+          (show Lᶜ ⊆ ({x}ᶜ : Set X) from
+            compl_subset_compl.mpr (singleton_subset_iff.mpr hx)) a = μ x := by
+    apply hK.induction_on (p := fun S => ∃ L : Set X, IsCompact L ∧ S ⊆ L ∧ L ⊆ K ∧
+      ∃ a : integralRelativeHomology n Lᶜ, ∀ x (hx : x ∈ L),
+        integralRelativeHomologyMap n (ContinuousMap.id X)
+          (show Lᶜ ⊆ ({x}ᶜ : Set X) from
+            compl_subset_compl.mpr (singleton_subset_iff.mpr hx)) a = μ x)
+    · exact ⟨∅, isCompact_empty, subset_rfl, empty_subset K, 0, fun _ hx => hx.elim⟩
+    · intro S T hST hT
+      obtain ⟨L, hL, hTL, hLK, a, ha⟩ := hT
+      exact ⟨L, hL, hST.trans hTL, hLK, a, ha⟩
+    · intro S T hS hT
+      obtain ⟨A, hA, hSA, hAK, a, ha⟩ := hS
+      obtain ⟨B, hB, hTB, hBK, b, hb⟩ := hT
+      let hAI : MapsTo (ContinuousMap.id X) Aᶜ (A ∩ B)ᶜ :=
+        compl_subset_compl.mpr inter_subset_left
+      let hBI : MapsTo (ContinuousMap.id X) Bᶜ (A ∩ B)ᶜ :=
+        compl_subset_compl.mpr inter_subset_right
+      have hab : integralRelativeHomologyMap n (ContinuousMap.id X) hAI a =
+          integralRelativeHomologyMap n (ContinuousMap.id X) hBI b := by
+        apply integralRelativeHomology_eq_of_local_restrictions
+          (E := E) n hn (A ∩ B) (hA.inter hB)
+        intro x hx
+        calc
+          integralRelativeHomologyMap n (ContinuousMap.id X)
+              (show (A ∩ B)ᶜ ⊆ ({x}ᶜ : Set X) from
+                compl_subset_compl.mpr (singleton_subset_iff.mpr hx))
+              (integralRelativeHomologyMap n (ContinuousMap.id X) hAI a) =
+              integralRelativeHomologyMap n (ContinuousMap.id X)
+                (show Aᶜ ⊆ ({x}ᶜ : Set X) from
+                  compl_subset_compl.mpr (singleton_subset_iff.mpr hx.1)) a :=
+            (relative_local_restriction_comp n A (A ∩ B) inter_subset_left x hx a).symm
+          _ = μ x := ha x hx.1
+          _ = integralRelativeHomologyMap n (ContinuousMap.id X)
+              (show Bᶜ ⊆ ({x}ᶜ : Set X) from
+                compl_subset_compl.mpr (singleton_subset_iff.mpr hx.2)) b := (hb x hx.2).symm
+          _ = integralRelativeHomologyMap n (ContinuousMap.id X)
+              (show (A ∩ B)ᶜ ⊆ ({x}ᶜ : Set X) from
+                compl_subset_compl.mpr (singleton_subset_iff.mpr hx))
+              (integralRelativeHomologyMap n (ContinuousMap.id X) hBI b) :=
+            relative_local_restriction_comp n B (A ∩ B) inter_subset_right x hx b
+      obtain ⟨c, hcA, hcB⟩ := exists_relative_homology_union_class n A B
+        hA.isClosed hB.isClosed a b hab
+      refine ⟨A ∪ B, hA.union hB, union_subset_union hSA hTB, union_subset hAK hBK, c, ?_⟩
+      intro x hx
+      rcases hx with hx | hx
+      · calc
+          integralRelativeHomologyMap n (ContinuousMap.id X) _ c =
+              integralRelativeHomologyMap n (ContinuousMap.id X)
+                (show Aᶜ ⊆ ({x}ᶜ : Set X) from
+                  compl_subset_compl.mpr (singleton_subset_iff.mpr hx))
+                (integralRelativeHomologyMap n (ContinuousMap.id X)
+                  (show (A ∪ B)ᶜ ⊆ Aᶜ from compl_subset_compl.mpr subset_union_left) c) :=
+            relative_local_restriction_comp n (A ∪ B) A subset_union_left x hx c
+          _ = μ x := by rw [hcA]; exact ha x hx
+      · calc
+          integralRelativeHomologyMap n (ContinuousMap.id X) _ c =
+              integralRelativeHomologyMap n (ContinuousMap.id X)
+                (show Bᶜ ⊆ ({x}ᶜ : Set X) from
+                  compl_subset_compl.mpr (singleton_subset_iff.mpr hx))
+                (integralRelativeHomologyMap n (ContinuousMap.id X)
+                  (show (A ∪ B)ᶜ ⊆ Bᶜ from compl_subset_compl.mpr subset_union_right) c) :=
+            relative_local_restriction_comp n (A ∪ B) B subset_union_right x hx c
+          _ = μ x := by rw [hcB]; exact hb x hx
+    · intro x hx
+      obtain ⟨L, hL, hxL, a, ha⟩ := hlocal x hx
+      refine ⟨K ∩ interior L, inter_mem_nhdsWithin K (isOpen_interior.mem_nhds hxL),
+        K ∩ L, hK.inter hL, inter_subset_inter_right K interior_subset, inter_subset_left,
+        integralRelativeHomologyMap n (ContinuousMap.id X)
+          (show Lᶜ ⊆ (K ∩ L)ᶜ from compl_subset_compl.mpr inter_subset_right) a, ?_⟩
+      intro y hy
+      exact (relative_local_restriction_comp n L (K ∩ L) inter_subset_right y hy a).symm.trans
+        (ha y hy)
+  obtain ⟨L, _, hKL, hLK, a, ha⟩ := hp
+  have hLK' : L = K := subset_antisymm hLK hKL
+  subst L
+  refine ⟨a, ha, ?_⟩
+  intro b hb
+  exact integralRelativeHomology_eq_of_local_restrictions (E := E) n hn K hK b a
+    (fun x hx => (hb x hx).trans (ha x hx).symm)
+
+end Poincare.Topology
+
+end

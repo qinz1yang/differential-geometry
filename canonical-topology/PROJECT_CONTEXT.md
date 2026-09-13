@@ -5,21 +5,25 @@ additive publication within the shared DifferentialGeometry Git repository. Its 
 library is `Poincare`; its sources retain the original mathematical namespaces.
 
 The source baseline is the recovered Chapter 35 commit
-`b45bfa009368c8f5f531e10f4f5280e90079d6ad`. This checkpoint includes 103 modules:
-the dependency closure of fourteen roots covering local homology, derivatives,
-determinant signs, oriented chart compatibility, compact chart classes,
-Mayer–Vietoris, manifold compact-support homology and the actual
-absolute-to-relative-empty comparison, plus actual consumer
-dependencies. The signed chart-transition extension retains all 103 leaves
-and now exposes 51 added public results. Final request
-`1789297108056477917-topology_checkpoint-27c4be25` passed in Slurm 13821107
-in 88.14 seconds, with 212 guards and 115 signature/axiom pairs. All 111
-previous pairs are byte-identical. LocalOrientation and root freshly compiled
-in the preceding 0b7eb007 request in 1:11.42 with zero diagnostics; the final
-replay uses unchanged production sources and fixes only a duplicate universe
-in the combined consumer harness. The other 102 leaves remain byte-identical.
+`b45bfa009368c8f5f531e10f4f5280e90079d6ad`. This checkpoint includes 104 modules
+and 55 added public results. The latest layer glues locally realized local
+homology classes over compact supports and constructs a unique absolute class
+on a compact manifold. For a nonempty connected manifold and local generators,
+it proves that the resulting class generates absolute integral homology and
+that every actual absolute-to-point restriction is bijective.
 
-The new primary theorem identifies the change between the actual normalized
+Final request `1789299823301815112-topology_checkpoint-2584f507` passed in
+Slurm 13821107 in 159.33 seconds, with 222 guards and 120 signature/axiom pairs.
+All 115 previous pairs are byte-identical. Changed ManifoldCompactHomology,
+new ManifoldFundamentalClass and root freshly compiled in 1:32.34, maximum
+RSS 1937172 KiB, with zero diagnostics. The other 102 leaves remain unchanged.
+The nonzero rank-zero consumer constructs an actual global generator with
+coordinate one. These theorems take a locally realized family of local classes;
+the production of such generators from a tangent orientation remains separate.
+
+The preceding signed-chart extension retains its exact public statements.
+
+The signed-chart theorem identifies the change between the actual normalized
 local top-homology maps of two manifold charts with the sign of their actual
 transition derivative determinant. C¹ regularity and finite-dimensional real
 normed models suffice, including rank zero. The earlier oriented-map theorem
@@ -41,8 +45,7 @@ No orientation or smoothness is required by these results.
 
 The earlier actual Mayer–Vietoris lifts, conditional uniqueness, compact
 carrier and neighborhood-extension results, and oriented compact chart classes
-retain their public statements and proof bodies. Global oriented generators
-remain open.
+retain their public statements and proof bodies. Producing coherent generators from a tangent orientation remains open.
 [provenance/SNAPSHOT.json](provenance/SNAPSHOT.json) records exact source and
 configuration identity and preserves the earlier validation records. It is not
 the full recovered Chapter 35 project.

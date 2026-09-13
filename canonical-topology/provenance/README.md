@@ -285,3 +285,27 @@ including all 111 previous pairs unchanged. The changed leaf and root freshly
 compiled in 0b7eb007; the final replay changes only a duplicate universe in the
 scratch consumer. All 102 other leaves are unchanged. SNAPSHOT.json preserves
 the preceding relative-empty validation and records this checkpoint separately.
+
+## Compact gluing and global generators
+
+The added ManifoldCompactHomology block and new ManifoldFundamentalClass are
+original proofs over the pinned Poincare/Mathlib objects. They reuse actual
+relative Mayer–Vietoris gluing, compact point detection, local-zero neighborhoods,
+and the actual absolute-to-relative-empty equivalence. A locally realized
+family yields a unique global class; local generator laws plus connectedness
+yield the actual global generator and point-restriction isomorphisms. Shared
+identity-map naturality and local-vanishing mechanics remain private.
+No external code, dependency revision or existing public signature changes.
+
+Source request 135c6250 passed in 41.54s with 152 guards and 19 pairs. Original
+imported cb09d399 passed in 104.32s with 152 guards and 9 pairs, after fresh
+two-leaf compilation in 1:10.12, RSS 1920460 KiB. All nine imported pairs are
+byte-identical to source. Portable 2584f507 passed in 159.33s with 222 guards
+and 120 pairs. Changed ManifoldCompactHomology, new ManifoldFundamentalClass
+and root freshly compiled in 1:32.34, RSS 1937172 KiB, with zero diagnostics.
+All 115 previous pairs and 102 unchanged leaves are preserved. The new nonzero rank-zero consumer has actual
+coordinate one. Stock declaration linters and standard-only axioms pass.
+SNAPSHOT.json preserves the preceding signed-chart gate separately.
+
+The local family is honest prerequisite data, not a completed tangent-orientation
+producer. The full topology suite and missing frozen contract remain unresolved.

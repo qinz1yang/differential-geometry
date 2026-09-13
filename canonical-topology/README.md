@@ -1,12 +1,15 @@
-# Local homology and oriented compact chart classes
+# Local homology and global classes from coherent local generators
 
 This separate `PoincareLean` project contains a dependency-closed checkpoint of
-103 Poincare modules. It extends the recovered Chapter 35 source at commit
+104 Poincare modules. It extends the recovered Chapter 35 source at commit
 `b45bfa009368c8f5f531e10f4f5280e90079d6ad` and preserves its mathematical objects
 and `Poincare` namespaces. `Poincare.lean` imports every included leaf.
 
 The additions prove:
 
+- compact gluing and unique absolute classes from locally realized local classes;
+- a global integral generator and bijective actual point restrictions on a
+  nonempty compact connected manifold, from coherent local generators;
 - the determinant-sign formula for the actual normalized top local-homology
   maps of arbitrary overlapping C¹ manifold charts, including rank zero;
 - an equivalence from actual absolute integral homology to homology relative
@@ -46,7 +49,7 @@ The additions prove:
 - a unique compact-neighborhood class with the same normalization in every
   chart whose actual tangent trivialization preserves the base-chart orientation.
 
-The nineteen new/changed modules and their exact baseline/current hashes are listed in
+The twenty new/changed modules and their exact baseline/current hashes are listed in
 [provenance/SNAPSHOT.json](provenance/SNAPSHOT.json). The derivative homotopy
 retains its [upstream attribution and modification record](provenance/README.md).
 
@@ -331,12 +334,30 @@ nonzero local classes under arbitrary overlapping charts and the actual
 Euclidean3 model. Stock linters and standard-only axioms pass. The other
 102 leaves remain byte-identical and retain their earlier build evidence.
 
+The compact-gluing and fundamental-class extension adds one leaf, for 104
+modules and 55 added exports. A locally realized family determines a unique
+compact relative class, and a unique absolute class when the manifold is compact.
+If the manifold is nonempty and connected and each local class generates its
+integral group, the absolute class generates global homology and every actual
+point restriction is bijective. The proof uses actual Mayer–Vietoris gluing,
+compact point detection, local vanishing and connectedness. It assumes neither
+an absolute class nor a preconstructed global homology isomorphism.
+
+Final portable request `1789299823301815112-topology_checkpoint-2584f507`
+passed in Slurm 13821107 in 159.33 seconds. Changed ManifoldCompactHomology,
+new ManifoldFundamentalClass and root freshly compiled without diagnostics
+in 1:32.34, maximum RSS 1937172 KiB. All 222 guards and 120 signature/axiom
+pairs pass; all 115 previous pairs are byte-identical. The new consumer produces
+an actual nonzero rank-zero global generator with coordinate one. Stock
+linters and standard-only axioms pass. The other 102 leaves remain unchanged.
+
 ## Remaining topology work
 
-This checkpoint supplies foundations for the orientation-to-local-homology
-bridge. Coherent oriented local generators, fundamental classes, integral
-duality, normalized homotopy and loop-family classes, and the canonical width
-specializations remain open.
+The bridge from tangent orientation must still produce the coherent local
+generators consumed by the new global theorem. Simply connected orientability,
+integral duality, outward sphere normalization, normalized homotopy and loop-family
+classes, and canonical width specializations remain open. This checkpoint does
+not claim the full oriented-manifold theorem suite.
 
 The separate frozen 87-declaration handoff, its registry and consumers, and
 `handoff/CANONICAL_TOPOLOGY_READY.md` remain unavailable. This package does not
