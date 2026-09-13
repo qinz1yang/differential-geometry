@@ -187,7 +187,10 @@
   "过一点的旗唯一"给出，其顶系数由射线出口点唯一性决定）；`space_cellDerived`；胞腔闭子集是单形之并）、
   `Triangulation.lean`（任意有限族 H-多面体被同一个复形三角剖分且各为子复形之并
   `exists_simplicialComplex_of_forall_isHPolytope`；F1.2 `IsPolyhedron.exists_simplicialComplex`；
-  F2.3 `exists_isSubdivision_subcomplexes`；公共细分 `exists_common_subdivision`）。逐模块检查零错误零警告。
+  F2.3 `exists_isSubdivision_subcomplexes`；公共细分 `exists_common_subdivision`）、
+  `PiecewiseAffineSimplicial.lean`（F3.1 正命题：有限复形上的分片仿射映射在某细分的每个单形上仿射
+  `IsPiecewiseAffineOn.exists_isSubdivision_affineOn_faces`）。逐模块检查零错误零警告；
+  `#print axioms` 仅 `propext`、`Classical.choice`、`Quot.sound`。
 
 - 2026-09-11（Phase 1 第二轮，负责人指示不等完整构建）：`IsPiecewiseAffineOn` 改为基于 `IsPiecewiseAffineWithinAt`
   （`𝓝[s] x`）的定义并重跑整条链；新增 `Manifold.lean`、`Polyhedron.lean`，以及 `Smoothing.lean` 中的
