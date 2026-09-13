@@ -6956,6 +6956,7 @@ import DifferentialGeometry.Geometry.Metric.Sphere.Quotient.PositiveSpaceForm
 import DifferentialGeometry.Geometry.Metric.Sphere.Quotient.RoundMetric
 import DifferentialGeometry.Geometry.Metric.Sphere.Quotient.SpaceForm
 import DifferentialGeometry.Geometry.Metric.Sphere.Quotient.SpaceFormGroup
+import DifferentialGeometry.Geometry.Metric.Sphere.Round.Area
 import DifferentialGeometry.Geometry.Metric.Sphere.Round.BasisPoints
 import DifferentialGeometry.Geometry.Metric.Sphere.Round.ChartGram
 import DifferentialGeometry.Geometry.Metric.Sphere.Round.GraphParametrization
