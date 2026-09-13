@@ -6375,6 +6375,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutCap
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutCapCompletion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CubeSphereGenerator
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.Descendants
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EmbeddedCoreExtinctionTower
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EmptyHistory
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventBridge
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventData
@@ -8210,6 +8211,7 @@ import DifferentialGeometry.Topology.Manifold.HomeomorphAtlas
 import DifferentialGeometry.Topology.Manifold.HypersurfaceOrientation
 import DifferentialGeometry.Topology.Manifold.ImmersionDifferential
 import DifferentialGeometry.Topology.Manifold.ImmersionEqualDimension
+import DifferentialGeometry.Topology.Manifold.ImmersionEqualModelCoordinates
 import DifferentialGeometry.Topology.Manifold.ImmersionImageNhds
 import DifferentialGeometry.Topology.Manifold.ImmersionLiftSource
 import DifferentialGeometry.Topology.Manifold.InjectiveLocalDiffeomorph
