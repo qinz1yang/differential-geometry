@@ -6974,6 +6974,7 @@ import DifferentialGeometry.Geometry.Metric.Sphere.Round.Metric
 import DifferentialGeometry.Geometry.Metric.Sphere.Round.ProjectedConnection
 import DifferentialGeometry.Geometry.Metric.Sphere.Round.ProjectedConnectionLeviCivita
 import DifferentialGeometry.Geometry.Metric.Sphere.Round.Shape
+import DifferentialGeometry.Geometry.Metric.Sphere.Round.TotalArea
 import DifferentialGeometry.Geometry.Metric.Sphere.TwoDimensionalQuotient
 import DifferentialGeometry.Geometry.Metric.Subbundle
 import DifferentialGeometry.Geometry.Metric.TangentAngle
