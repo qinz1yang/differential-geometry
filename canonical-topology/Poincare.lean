@@ -57,6 +57,7 @@ import Poincare.Topology.Homology.PathChains
 import Poincare.Topology.Homology.RadialHomotopy
 import Poincare.Topology.Homology.ReducedZero
 import Poincare.Topology.Homology.Relative
+import Poincare.Topology.Homology.RelativeCapCohomologyConnecting
 import Poincare.Topology.Homology.RelativeCapConnecting
 import Poincare.Topology.Homology.RelativeCapHomology
 import Poincare.Topology.Homology.RelativeCapProduct

@@ -5,25 +5,26 @@ additive publication within the shared DifferentialGeometry Git repository. Its 
 library is `Poincare`; its sources retain the original mathematical namespaces.
 
 The source baseline is the recovered Chapter 35 commit
-`b45bfa009368c8f5f531e10f4f5280e90079d6ad`. This checkpoint includes 115 modules
-and 131 added public exports. The latest coherent 343-line leaf constructs
-the actual relative-cohomology/relative-homology cap product with absolute
-homology output. Its cycle representative, pair-map naturality and both
-absolute/relative projection compatibility laws are exposed. Mathlib's bilinear
-quotient lift performs the descent using actual signed boundary witnesses.
-All 114 earlier leaves are unchanged.
+`b45bfa009368c8f5f531e10f4f5280e90079d6ad`. This checkpoint includes 116 modules
+and 133 added public exports. The latest coherent 167-line leaf proves
+compatibility of the actual relative-to-absolute cap product with the original
+cohomology connecting map. A shared general cycle-lift theorem constructs
+both chain and cochain lifts by short exactness, for arbitrary rings and
+complex shapes; it also replaces the older duplicated chain-lift proof.
+The formula and all degree identifications use the original objects and maps.
+The other 113 earlier leaves are unchanged.
 
-Final request `1789329891086424933-topology_checkpoint-e37273b4` passed in
-Slurm 13821107 in 165.88 seconds, with 305 guards and 225 signature/axiom pairs.
-All 214 earlier pairs are byte-identical. The new leaf and root freshly compiled
-in 1:18.25 with maximum RSS 1812900 KiB and zero diagnostics. Source da3ec091
-and original imported 3bbfb6aa pass 67/20 and 69/11 guards/pairs. All seven new
-public and four consumer pairs match the original, up to scoped set notation.
-Consumers produce nonzero relative cohomology and absolute homology classes
-with positive and negative unit cap actions, and check actual doubling pair-map
-naturality and the positive-degree cycle formula. Stock linters and
-standard-only axioms pass. General duality, the native orientation producer
-and the full oriented-manifold suite remain open.
+Final request `1789332070075371713-topology_checkpoint-289e4b8d` passed in
+Slurm 13821107 in 190.25 seconds, with 316 guards and 231 signature/axiom pairs.
+All 225 earlier pairs are byte-identical. The two changed leaves, new leaf and
+root freshly compiled in 1:40.44 with maximum RSS 1812924 KiB and zero diagnostics.
+Source 1b997eaf and original imported 59c2f7bb pass 80/12 and 80/8 guards/pairs.
+Both new public and all four consumer pairs match the original imported gate.
+Consumers produce nonzero connecting classes and relative homology classes
+from joined endpoints, with positive and negative endpoint cap values. They
+include the concrete pair (real line, {0,1}) and odd-degree compatibility.
+Stock linters and standard-only axioms pass. General duality, the native
+orientation producer and the full oriented-manifold suite remain open.
 
 The preceding signed-chart extension retains its exact public statements.
 

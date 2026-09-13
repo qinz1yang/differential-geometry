@@ -11,35 +11,6 @@ namespace Poincare.Topology
 
 variable {X : Type u} [TopologicalSpace X]
 
-private theorem exists_relative_cycle_lifts (A : Set X) (n : ℕ)
-    (c : LinearMap.ker ((integralRelativeChains A).sc (n + 1)).g.hom) :
-    ∃ b : (integralSingularChains X).X (n + 1),
-      ∃ a : LinearMap.ker ((integralSingularChains A).sc n).g.hom,
-        (integralRelativeChainSequence A).g.f (n + 1) b = c.val ∧
-        (integralSingularChainMap (singularSubspaceInclusion A)).f n a.val =
-          (integralSingularChains X).d (n + 1) n b := by
-  obtain ⟨b, hb⟩ := chainCokernelπ_surjective
-    (integralSingularChainMap (singularSubspaceInclusion A)) (n + 1) c.val
-  change (integralRelativeChainSequence A).g.f (n + 1) b = c.val at hb
-  have hc : (integralRelativeChains A).d (n + 1) n c.val = 0 := by
-    have h := c.property
-    change (integralRelativeChains A).d (n + 1) ((ComplexShape.down ℕ).next (n + 1)) c.val = 0 at h
-    rwa [ChainComplex.next_nat_succ] at h
-  have hdb : (integralRelativeChainSequence A).g.f n
-      ((integralSingularChains X).d (n + 1) n b) = 0 := by
-    have h := congrArg (fun f : (integralSingularChains X).X (n + 1) ⟶
-      (integralRelativeChains A).X n => f b) ((integralRelativeChainSequence A).g.comm (n + 1) n)
-    change (integralRelativeChains A).d (n + 1) n
-      ((integralRelativeChainSequence A).g.f (n + 1) b) = _ at h
-    erw [hb, hc] at h
-    exact h.symm
-  obtain ⟨a, ha⟩ := (chainCokernelπ_eq_zero_iff
-    (integralSingularChainMap (singularSubspaceInclusion A)) n _).1 hdb
-  have haCycle : a ∈ LinearMap.ker ((integralSingularChains A).sc n).g.hom :=
-    (integralRelativeChainSequence_shortExact A).d_eq_zero_of_f_eq_d_apply
-      (n + 1) n b a ha ((ComplexShape.down ℕ).next n)
-  exact ⟨b, ⟨a, haCycle⟩, hb, ha⟩
-
 private theorem cap_cocycle_boundary_signed (k m : ℕ)
     (φ : integralSingularCochain k X) (hφ : integralSingularCoboundary X k (k + 1) φ = 0)
     (b : (integralSingularChains X).X (k + m + 1)) :
@@ -76,7 +47,8 @@ theorem integralRelativeCohomologyCapProduct_connecting (A : Set X) (k m : ℕ)
         (integralRelativeConnecting (k + m) A c) := by
   obtain ⟨φ, rfl⟩ := moduleHomologyClass_surjective ((integralSingularCochains X).sc k) α
   obtain ⟨c, rfl⟩ := moduleHomologyClass_surjective ((integralRelativeChains A).sc (k + (m + 1))) c
-  obtain ⟨b, a, hb, ha⟩ := exists_relative_cycle_lifts A (k + m) c
+  obtain ⟨b, a, hb, ha⟩ := exists_moduleCycle_connecting_lifts
+    (integralRelativeChainSequence_shortExact A) (k + m + 1) (k + m) (by simp) c
   let P := (HomologicalComplex.shortComplexFunctor (ModuleCat.{u} ℤ) (ComplexShape.up ℕ) k).map
     (integralSingularCochainMap (singularSubspaceInclusion A))
   let ψ := moduleCycleMap P φ

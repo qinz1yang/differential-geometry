@@ -1,5 +1,6 @@
 import Poincare.Topology.Homology.ModuleHomologyClasses
 import Mathlib.Algebra.Homology.ConcreteCategory
+import Mathlib.Algebra.Homology.HomologicalComplexAbelian
 
 noncomputable section
 
@@ -42,6 +43,30 @@ theorem moduleHomologyClass_connecting
     exact (moduleCycleIso_inv_eq_cyclesMk (S.X₁.sc j) a).symm
   rw [h3, h1] at h
   exact h
+
+theorem exists_moduleCycle_connecting_lifts
+    {R : Type u} [Ring R] {ι : Type*} {shape : ComplexShape ι}
+    {S : ShortComplex (HomologicalComplex (ModuleCat.{v} R) shape)} (hS : S.ShortExact)
+    (i j : ι) (hij : shape.Rel i j) (c : LinearMap.ker (S.X₃.sc i).g.hom) :
+    ∃ b : S.X₂.X i, ∃ a : LinearMap.ker (S.X₁.sc j).g.hom,
+      S.g.f i b = c.val ∧ S.f.f j a.val = S.X₂.d i j b := by
+  have hi := (HomologicalComplex.shortExact_iff_degreewise_shortExact S).mp hS i
+  have hj := (HomologicalComplex.shortExact_iff_degreewise_shortExact S).mp hS j
+  obtain ⟨b, hb⟩ := (ModuleCat.epi_iff_surjective (S.g.f i)).mp hi.epi_g c.val
+  have hc : S.X₃.d i j c.val = 0 := by
+    have h := c.property
+    change S.X₃.d i (shape.next i) c.val = 0 at h
+    rwa [shape.next_eq' hij] at h
+  have hdb : S.g.f j (S.X₂.d i j b) = 0 := by
+    have h := congrArg (fun f : S.X₂.X i ⟶ S.X₃.X j => f b) (S.g.comm i j)
+    change S.X₃.d i j (S.g.f i b) = S.g.f j (S.X₂.d i j b) at h
+    rw [hb, hc] at h
+    exact h.symm
+  obtain ⟨a, ha⟩ := (ShortComplex.moduleCat_exact_iff _).mp hj.exact _ hdb
+  have haCycle : a ∈ LinearMap.ker (S.X₁.sc j).g.hom :=
+    hS.d_eq_zero_of_f_eq_d_apply i j b a ha (shape.next j)
+  exact ⟨b, ⟨a, haCycle⟩, hb, ha⟩
+
 
 end Poincare.Topology
 

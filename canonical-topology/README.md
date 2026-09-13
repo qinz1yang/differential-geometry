@@ -1,11 +1,14 @@
 # Local homology and global classes from coherent local generators
 
 This separate `PoincareLean` project contains a dependency-closed checkpoint of
-115 Poincare modules. It extends the recovered Chapter 35 source at commit
+116 Poincare modules. It extends the recovered Chapter 35 source at commit
 `b45bfa009368c8f5f531e10f4f5280e90079d6ad` and preserves its mathematical objects
 and `Poincare` namespaces. `Poincare.lean` imports every included leaf.
 
 The additions prove:
+
+- compatibility of the relative-to-absolute cap product with the original
+  cohomology connecting map, using cycle lifts produced by short exactness;
 
 - the actual relative-cohomology/relative-homology cap product with absolute
   homology output, its cycle formula, naturality and both projection laws;
@@ -78,7 +81,7 @@ The additions prove:
 - a unique compact-neighborhood class with the same normalization in every
   chart whose actual tangent trivialization preserves the base-chart orientation.
 
-The thirty-one new/changed modules and their exact baseline/current hashes are listed in
+The thirty-two new/changed modules and their exact baseline/current hashes are listed in
 [provenance/SNAPSHOT.json](provenance/SNAPSHOT.json). The derivative homotopy
 retains its [upstream attribution and modification record](provenance/README.md).
 
@@ -614,6 +617,33 @@ class are the identity and negation. They also check actual doubling pair-map
 naturality and the positive-degree cycle formula. Stock declaration linters
 and standard-only transitive axioms pass. General duality and the full native
 oriented-manifold theorem suite remain open.
+
+The cohomology-connecting extension adds RelativeCapCohomologyConnecting
+(167 lines), shares the general cycle-lift construction in ModuleHomologyConnecting,
+and removes the older duplicate chain-lift proof. The checkpoint now has
+116 leaves and 133 added public exports. It proves
+`(delta alpha) cap c = inclusion_* (alpha cap boundary c)` on the original
+relative cohomology, relative homology and absolute homology groups, in all
+natural degrees. Both connecting maps are the original sequence maps. Both
+sets of chain/cochain lifts are produced from short exactness; none are
+caller hypotheses. The chain boundary identity supplies an explicit boundary
+witness for the difference. There is no extra degree sign in this formula.
+
+Final portable request `1789332070075371713-topology_checkpoint-289e4b8d`
+passed in Slurm 13821107 in 190.25 seconds, with 316 guards and 231 signature/
+axiom pairs. All 225 prior pairs are byte-identical; the 113 untouched earlier
+leaves are unchanged. The two changed leaves, new leaf and root freshly
+compiled in 1:40.44, maximum RSS 1812924 KiB, with zero diagnostics. The two
+new public and four consumer pairs match original imported 59c2f7bb, which
+passed in 105.34 seconds with 80 guards and eight pairs. Final source 1b997eaf
+passed in 41.92 seconds with 80 guards and twelve pairs, including all private
+helpers. Consumers produce actual nonzero cohomology connecting classes and
+relative homology classes from distinct joined endpoints in a totally
+disconnected subspace. Their positive and negative caps are the positive and
+negative endpoint vertex classes. The concrete pair (real line, {0,1}), vertex
+cap evaluation and odd-degree compatibility pass. Stock declaration linters
+and standard-only transitive axioms pass. General Poincare duality and the
+native orientation producer remain open.
 
 ## Remaining topology work
 
