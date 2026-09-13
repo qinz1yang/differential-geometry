@@ -189,6 +189,7 @@ import DifferentialGeometry.Analysis.Elliptic.Barrier.StrongMinimumUpperSupport
 import DifferentialGeometry.Analysis.Elliptic.Barrier.SupportComparison
 import DifferentialGeometry.Analysis.Elliptic.Barrier.TouchingSupportsDifferentiability
 import DifferentialGeometry.Analysis.Elliptic.Coefficients
+import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.BoundaryGradient
 import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.BoundaryGrowth
 import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.Disk.GreenIdentity
 import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.Disk.ImageHarmonic
