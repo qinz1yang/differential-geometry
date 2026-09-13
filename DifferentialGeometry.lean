@@ -8928,6 +8928,7 @@ import DifferentialGeometry.Topology.VanKampen.FiniteConnectedSum
 import DifferentialGeometry.Topology.VanKampen.FiniteConnectedSumFreeProduct
 import DifferentialGeometry.Topology.VanKampen.FreeProduct
 import DifferentialGeometry.Topology.VanKampen.FullGroupoid
+import DifferentialGeometry.Topology.VanKampen.FundamentalGroupUnion
 import DifferentialGeometry.Topology.VanKampen.GroupoidTelescope
 import DifferentialGeometry.Topology.VanKampen.HomotopyEquivalentCover
 import DifferentialGeometry.Topology.VanKampen.HomotopyEquivalentFreeProductCover
