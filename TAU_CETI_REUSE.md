@@ -224,8 +224,9 @@ These are fresh module/source checks, not a full aggregate build.
 
 This uses existing native proofs; no additional upstream source or dependency
 is copied. The whole-real smoothness hypothesis remains essential to this
-statement. Extension from interval-only data, source boundary faces, relative
-fixing and the ambient isotopy are separate obligations.
+statement. Extension from interval-only data and source boundary faces remains
+open. Relative fixing of the velocity remains separate from the relative
+function extension below; the ambient isotopy specialization follows afterward.
 
 ## Relative support for embedded smooth extensions, 2026-09-13
 
@@ -249,3 +250,34 @@ extension and velocity probes and add nonempty zero data with empty ambient
 support at order zero and an actual nonzero smooth transition that vanishes
 near a specified closed half-line. The existing root imports remain unchanged.
 This is a fresh affected-module and consumer gate, not a full aggregate build.
+
+## Ambient extension of an embedding family, 2026-09-13
+
+Topology/Embedding/AmbientIsotopy extends a jointly C∞ whole-real family of
+native embeddings of a compact boundaryless manifold into finite-dimensional
+real normed space. It produces actual ambient diffeomorphisms, jointly C∞
+forward and inverse evaluations, identity at the initial time, both exact
+embedding equations on the chosen closed interval, and one compact spatial
+support inside a prescribed open neighborhood of the trace for all real times.
+The existing velocity and time-dependent flow supply the construction;
+Mathlib's closed-interval ODE uniqueness with right derivatives proves matching.
+No second flow framework, supplied velocity certificate or upstream code is added.
+
+Private source request 1789309381212917316-schoenflies-95698f64 passed in
+36.34 seconds with 69 guards and 13 pairs. Public source request
+1789309501970504343-schoenflies-9857864e passed in 41.37 seconds with 127 guards
+and 13 pairs. Final imported request
+1789309621101432454-schoenflies-f108b7e8 passed in 86.20 seconds with 129 guards
+and 12 public/consumer pairs, all byte-identical to the public source. The leaf
+freshly compiled without diagnostics in 45.99 seconds, maximum RSS 1805112 KiB.
+Stock declaration linters and standard-only transitive axioms pass. Consumers
+retain every conclusion for arbitrary embedded S² families, derive a nonidentity
+endpoint for a genuinely translated sphere, and force identity at all times
+from the empty interval and empty support. The leaf is registered in the flat
+root; this is not a full aggregate build.
+
+This proves the stated whole-real, boundaryless, Euclidean-ambient specialization.
+The stronger interval-only, boundary/corners and general-ambient versions in
+Chapter 42 remain open. An embedding family taking an arbitrary sphere to the
+round sphere is still required for Schoenflies; isotopy extension does not
+produce that family.
