@@ -372,4 +372,29 @@ theorem observedHistoryWidthValue_upperRightDiniLE_of_historyIncoming
     (fun i p hSC => history_incoming_component_dini H i p hSC)
     (fun hfin p hSC => (closed_component_smooth_width (H.finalSlab hfin) p hSC).2.1)
 
+theorem observedComparisonRecord_of_historyWidth_of_scalarLowerBound
+    (H : ObservedHistory.{u})
+    (h0 : ∀ c : ConnectedComponents (H.stage 0).Carrier,
+      SimplyConnectedSpace ((H.stage 0).component c).Carrier)
+    (terminal : ConnectedComponents (H.stage (Fin.last H.eventCount)).Carrier)
+    {c A : ℝ} (hc : 0 < c) (hHpos : 0 < H.horizon)
+    (hscalar : HistoryScalarLowerBound H c)
+    (hinitial : Extinction.Width.historyWidth H h0 terminal
+      (Extinction.Width.historyStageTime H 0) ≤ A)
+    (hcont : ∀ t : Icc (0 : ℝ) H.horizon, t.1 ∉ H.eventTimes →
+      ContinuousAt (Extinction.Width.historyWidth H h0 terminal) t)
+    (hrcont : ∀ i : Fin H.eventCount, H.time i.succ < H.horizon →
+      ContinuousWithinAt (Extinction.Width.historyWidth H h0 terminal)
+        (Ici (Extinction.Width.historyStageTime H i.succ))
+        (Extinction.Width.historyStageTime H i.succ))
+    (hjump : ∀ i : Fin H.eventCount,
+      ENNReal.ofReal (Extinction.Width.historyWidth H h0 terminal
+          (Extinction.Width.historyStageTime H i.succ)) ≤
+        liminf (fun t : Icc (0 : ℝ) H.horizon =>
+          ENNReal.ofReal (Extinction.Width.historyWidth H h0 terminal t))
+          (𝓝[<] (Extinction.Width.historyStageTime H i.succ))) :
+    Nonempty (ObservedComparisonRecord H c A) :=
+  observedComparisonRecord_of_historyWidth H h0 terminal hc hHpos hinitial hcont hrcont hjump
+    (observedHistoryWidthValue_upperRightDiniLE_of_historyIncoming H h0 terminal hc hscalar)
+
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
