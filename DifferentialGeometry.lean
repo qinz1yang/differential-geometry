@@ -4972,6 +4972,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.ComponentDi
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.ComponentDisk
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.ComponentHarmonic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.DiskVariation
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.DiskVariationCurvature
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.DiskVariationBoundary
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.DiskBoundaryIntegral
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.DiffeomorphismTransport
