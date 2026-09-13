@@ -2292,7 +2292,7 @@ private theorem endpoint_interpolation_confinement
     (b : AffineBasis (Fin 3) ℝ Plane) (f : Plane →ᵃ[ℝ] ℝ)
     (hf₀ : f (b 0) = 0) (hfb : 0 < f (b 1)) (hfc : 0 < f (b 2)) (s : ℝ) :
     let C := 1 + (1 + f (b 2) * |s|) / f (b 1) + |s|
-    0 < C ∧ ∀ (ε : ℝ) (p : Plane) (t : ℝ), 0 < ε → -ε < f p →
+    0 < C ∧ ∀ (ε : ℝ) (p : Plane) (t : ℝ), 0 < ε → -ε ≤ f p →
       t ∈ Set.Icc 0 1 → C * ε ≤ 1 / 12 →
       (1 : ℝ) / 4 < b.coord 0 p - b.coord 1 p →
       (1 - t) * (s * (f p - Real.smoothMax ε (f p) 0) - b.coord 2 p) +
@@ -2309,7 +2309,7 @@ private theorem endpoint_interpolation_confinement
   have hC : 0 < C := by dsimp [C]; positivity
   refine ⟨hC, ?_⟩
   intro ε p t hε hx ht hsmall hgap hz
-  have hbounds := matched_interpolation_coordinate_bounds hε hx.le hfb hfc
+  have hbounds := matched_interpolation_coordinate_bounds hε hx hfb hfc
     (affine_triangle_map_apply_of_vertex_zero b f hf₀ p) ht hz
   have h₁ : -C * ε ≤ b.coord 1 p := by
     have hconst : (1 + f (b 2) * |s|) / f (b 1) ≤ C := by
@@ -2333,6 +2333,40 @@ section
 
 namespace Schoenflies
 
+private theorem matched_pair_interpolation_active_left
+    {F : ℝ × ℝ} {ε x r t : ℝ} (hε : 0 < ε) (hr : 0 < r) (s y d : ℝ)
+    (he : F = (s * (x - Real.smoothMax ε x 0) - y,
+      r * (s * (x - Real.smoothMax ε x 0) + Real.smoothMax ε x 0 / d - y)))
+    (ht : t ∈ Set.Icc 0 1) (hz : (1 - t) * F.1 + t * F.2 = 0)
+    (hactive : deriv (fun u => (1 - u) * F.1 + u * F.2) t ≠ 0) : -ε < x := by
+  by_contra hn
+  have hfix := matched_pair_interpolation_stationary_of_left hε (le_of_not_gt hn)
+    hr s y d he ht hz
+  exact hactive (hfix.2.2.2 t)
+
+private theorem endpoint_zero_mem_interior_cthickening
+    (b : AffineBasis (Fin 3) ℝ Plane) (f : Plane →ᵃ[ℝ] ℝ)
+    (hf₀ : f (b 0) = 0) (hfb : 0 < f (b 1)) (hfc : 0 < f (b 2))
+    (s : ℝ) {η ρ t : ℝ} {p : Plane} (hη : 0 < η)
+    (ht : t ∈ Set.Icc 0 1)
+    (hsmall : (1 + (1 + f (b 2) * |s|) / f (b 1) + |s|) * η ≤ 1 / 12)
+    (hdist : (1 + (1 + f (b 2) * |s|) / f (b 1) + |s|) * η *
+      (‖b 1 - b 0‖ + ‖b 2 - b 0‖) < ρ)
+    (hgap : (1 : ℝ) / 4 < b.coord 0 p - b.coord 1 p) :
+    let A := s * (f p - Real.smoothMax η (f p) 0) - b.coord 2 p
+    let B := f (b 2) / f (b 1) *
+      (s * (f p - Real.smoothMax η (f p) 0) +
+        Real.smoothMax η (f p) 0 / f (b 2) - b.coord 2 p)
+    (1 - t) * A + t * B = 0 →
+      -η ≤ f p →
+      p ∈ interior (Metric.cthickening ρ (convexHull ℝ (Set.range b))) := by
+  dsimp only
+  intro hz hstrip
+  obtain ⟨_, _, q, hq, hpq⟩ := (endpoint_interpolation_confinement b f hf₀ hfb hfc s).2
+    η p t hη hstrip ht hsmall hgap hz
+  exact Metric.thickening_subset_interior_cthickening ρ _
+    (Metric.mem_thickening_iff.mpr ⟨q, hq, hpq.trans_lt hdist⟩)
+
 private theorem endpoint_active_zero_mem_interior_cthickening
     (b : AffineBasis (Fin 3) ℝ Plane) (f : Plane →ᵃ[ℝ] ℝ)
     (hf₀ : f (b 0) = 0) (hfb : 0 < f (b 1)) (hfc : 0 < f (b 2))
@@ -2351,15 +2385,10 @@ private theorem endpoint_active_zero_mem_interior_cthickening
       p ∈ interior (Metric.cthickening ρ (convexHull ℝ (Set.range b))) := by
   dsimp only
   intro hz hactive
-  have hstrip : -η < f p := by
-    by_contra hn
-    have hfix := matched_pair_interpolation_stationary_of_left hη (le_of_not_gt hn)
-      (div_pos hfc hfb) s (b.coord 2 p) (f (b 2)) rfl ht hz
-    exact hactive (hfix.2.2.2 t)
-  obtain ⟨_, _, q, hq, hpq⟩ := (endpoint_interpolation_confinement b f hf₀ hfb hfc s).2
-    η p t hη hstrip ht hsmall hgap hz
-  exact Metric.thickening_subset_interior_cthickening ρ _
-    (Metric.mem_thickening_iff.mpr ⟨q, hq, hpq.trans_lt hdist⟩)
+  have hstrip := matched_pair_interpolation_active_left hη (div_pos hfc hfb)
+    s (b.coord 2 p) (f (b 2)) rfl ht hz hactive
+  exact endpoint_zero_mem_interior_cthickening b f hf₀ hfb hfc s hη ht
+    hsmall hdist hgap hz hstrip.le
 
 end Schoenflies
 
@@ -2396,11 +2425,11 @@ private theorem exists_fixed_cover_small_matched_interpolation
       (∀ η ∈ Set.Ioc 0 ε, Set.EqOn (F₁ η) G (U₁ ∩ V)) ∧
       (∀ η ∈ Set.Ioc 0 ε, ∀ t ∈ Set.Icc 0 1, ∀ p ∈ U₀,
         (1 - t) * (F₀ η p).1 + t * (F₀ η p).2 = 0 →
-        deriv (fun u => (1 - u) * (F₀ η p).1 + u * (F₀ η p).2) t ≠ 0 →
+        -η ≤ f₀ p →
         p ∈ interior J) ∧
       (∀ η ∈ Set.Ioc 0 ε, ∀ t ∈ Set.Icc 0 1, ∀ p ∈ U₁,
         (1 - t) * (F₁ η p).1 + t * (F₁ η p).2 = 0 →
-        deriv (fun u => (1 - u) * (F₁ η p).1 + u * (F₁ η p).2) t ≠ 0 →
+        -η ≤ f₁ p →
         p ∈ interior J) ∧
       (∀ t ∈ Set.Icc (0 : ℝ) 1, ∀ p ∈ V,
         (1 - t) * (G p).1 + t * (G p).2 = 0 → p ∈ K) := by
@@ -2494,17 +2523,17 @@ private theorem exists_fixed_cover_small_matched_interpolation
     refine Prod.ext h.1 (h.2.1.trans ?_)
     exact congrArg Neg.neg (Real.smoothMax.comm (by norm_num : (1 / 4 : ℝ) ≠ 0) _ _)
   · intro η hη t ht p hp
-    exact endpoint_active_zero_mem_interior_cthickening b f₀ hf₀ hfb hfc₀ s₀ hη.1 ht
+    exact endpoint_zero_mem_interior_cthickening b f₀ hf₀ hfb hfc₀ s₀ hη.1 ht
       (hbound hη).1 (hbound hη).2.2.1 (hgap₀ p hp)
-  · intro η hη t ht p hp hz hactive
-    have h := endpoint_active_zero_mem_interior_cthickening c f₁
+  · intro η hη t ht p hp hz hstrip
+    have h := endpoint_zero_mem_interior_cthickening c f₁
       (by simpa only [hc0] using hf₁) (by simpa only [hc1] using hfa)
       (by simpa only [hc2] using hfc₁) s₁ hη.1 ht
       (by simpa only [hc1, hc2] using (hbound hη).2.1)
       (by simpa only [hc0, hc1, hc2] using (hbound hη).2.2.2)
       (by simpa only [hcoord0, hcoord1] using hgap₁ p hp)
       (by simpa only [hc1, hc2, hcoord2] using hz)
-      (by simpa only [hc1, hc2, hcoord2] using hactive)
+      hstrip
     simpa only [hcrange] using h
   · intro t ht p hp hz
     exact central_interpolation_zero_mem_triangle b f₀ f₁ hf₀ hfb hfc₀ hf₁ hfa hfc₁
@@ -2519,6 +2548,23 @@ section
 open scoped ContDiff
 
 namespace Schoenflies
+
+private theorem exists_open_matched_pair_eq_smul
+    {F : Plane → ℝ × ℝ} (f : Plane →ᵃ[ℝ] ℝ) {ε : ℝ} (hε : 0 < ε)
+    (s r d : ℝ) (β : Plane → ℝ) {U : Set Plane} (hU : IsOpen U)
+    (he : Set.EqOn F (fun q => (s * (f q - Real.smoothMax ε (f q) 0) - β q,
+      r * (s * (f q - Real.smoothMax ε (f q) 0) +
+        Real.smoothMax ε (f q) 0 / d - β q))) U)
+    {p : Plane} (hp : p ∈ U) (hfp : f p < -ε) :
+    ∃ N : Set Plane, IsOpen N ∧ p ∈ N ∧ N ⊆ U ∩ {q | f q < -ε} ∧
+      Set.EqOn (fun q => (F q).2) (fun q => r * (F q).1) N := by
+  refine ⟨U ∩ {q | f q < -ε},
+    hU.inter (isOpen_lt f.continuous_of_finiteDimensional continuous_const),
+    ⟨hp, hfp⟩, Set.Subset.refl _, ?_⟩
+  intro q hq
+  change (F q).2 = r * (F q).1
+  rw [he hq.1]
+  exact matched_profile_eq_smul_of_le_neg hε hq.2.le s (β q) r d
 
 theorem PrePolygon.exists_regular_interpolation_near_one_edge_free_triangle
     {m : ℕ} (P : PrePolygon m)
@@ -2606,7 +2652,18 @@ theorem PrePolygon.exists_regular_interpolation_near_one_edge_free_triangle
       ∃ J : Set Plane, IsCompact J ∧ M.triangleCarrier T.1 ⊆ interior J ∧
         J ⊆ U₀ ∪ U₁ ∪ V ∧
         (∀ t ∈ Set.Icc (0 : ℝ) 1, ∀ p ∈ U₀ ∪ U₁ ∪ V,
-          H (t, p) = 0 → deriv (fun u => H (u, p)) t ≠ 0 → p ∈ interior J) := by
+          H (t, p) = 0 → deriv (fun u => H (u, p)) t ≠ 0 → p ∈ interior J) ∧
+        (∀ t ∈ Set.Icc (0 : ℝ) 1, ∀ p ∈ U₀,
+          H (t, p) = 0 → -ε ≤ f₀ p → p ∈ interior J) ∧
+        (∀ t ∈ Set.Icc (0 : ℝ) 1, ∀ p ∈ U₁,
+          H (t, p) = 0 → -ε ≤ f₁ p → p ∈ interior J) ∧
+        (∀ t ∈ Set.Icc (0 : ℝ) 1, ∀ p ∈ U₀ ∪ U₁ ∪ V, H (t, p) = 0 → p ∉ J →
+          (p ∈ U₀ ∧ f₀ p < -ε ∧ ∃ N : Set Plane,
+            IsOpen N ∧ p ∈ N ∧ N ⊆ U₀ ∩ {q | f₀ q < -ε} ∧
+              Set.EqOn (fun q => (F q).2) (fun q => f₀ (b 2) / f₀ (b 1) * (F q).1) N) ∨
+          (p ∈ U₁ ∧ f₁ p < -ε ∧ ∃ N : Set Plane,
+            IsOpen N ∧ p ∈ N ∧ N ⊆ U₁ ∩ {q | f₁ q < -ε} ∧
+              Set.EqOn (fun q => (F q).2) (fun q => f₁ (b 2) / f₁ (b 0) * (F q).1) N)) := by
   dsimp only
   let b := LeanEval.Topology.ClassificationOfSurfaces.Moise.affineBasisOfTriangle
     (M.freeTriangleOrder T k) (M.freeTriangleOrder_affineIndependent T k)
@@ -2695,6 +2752,16 @@ theorem PrePolygon.exists_regular_interpolation_near_one_edge_free_triangle
       (hz : (1 - t) * (F p).1 + t * (F p).2 = 0) : p ∈ M.triangleCarrier T.1 := by
     rw [he₂ hp] at hz
     exact hcentral t ht p hp.2 hz
+  have hweak₀ (t : ℝ) (ht : t ∈ Set.Icc 0 1) (p : Plane) (hp : p ∈ W ∩ U₀)
+      (hz : (1 - t) * (F p).1 + t * (F p).2 = 0) (hf : -ε ≤ f₀ p) :
+      p ∈ interior J := by
+    rw [he₀ hp] at hz
+    exact htrace₀ ε ⟨hε, le_rfl⟩ t ht p hp.2 hz hf
+  have hweak₁ (t : ℝ) (ht : t ∈ Set.Icc 0 1) (p : Plane) (hp : p ∈ W ∩ U₁)
+      (hz : (1 - t) * (F p).1 + t * (F p).2 = 0) (hf : -ε ≤ f₁ p) :
+      p ∈ interior J := by
+    rw [he₁ hp] at hz
+    exact htrace₁ ε ⟨hε, le_rfl⟩ t ht p hp.2 hz hf
   refine ⟨v₀, v₁, f₀, f₁, ε, W ∩ U₀, W ∩ U₁, W ∩ V, F,
     hε, hF, hW.inter hU₀, hW.inter hU₁, hW.inter hV,
     ⟨hKW (hbK 0), hb₀⟩, ⟨hKW (hbK 1), hb₁⟩,
@@ -2705,7 +2772,7 @@ theorem PrePolygon.exists_regular_interpolation_near_one_edge_free_triangle
     hreg, contDiff_pair_interpolation hF, (fun t p => deriv_pair_interpolation F p t),
     by intro p; simp, by intro p; simp, hregH, ?_, ?_,
     (fun _ hp => ⟨hεle.trans_lt hp.2.1, hεle.trans_lt hp.2.2⟩),
-    hcentralF, J, hJ, hKJ, ?_, ?_⟩
+    hcentralF, J, hJ, hKJ, ?_, ?_, hweak₀, hweak₁, ?_⟩
   · intro p hp
     rcases hcover hp with (hp₀ | hp₁) | hpV
     · exact Or.inl (Or.inl ⟨hKW hp, hp₀⟩)
@@ -2724,11 +2791,24 @@ theorem PrePolygon.exists_regular_interpolation_near_one_edge_free_triangle
     · exact Or.inr ⟨hJW hp, hpV⟩
   · intro t ht p hp hz hactive
     rcases hp with (hp₀ | hp₁) | hpV
-    · rw [he₀ hp₀] at hz hactive
-      exact htrace₀ ε ⟨hε, le_rfl⟩ t ht p hp₀.2 hz hactive
-    · rw [he₁ hp₁] at hz hactive
-      exact htrace₁ ε ⟨hε, le_rfl⟩ t ht p hp₁.2 hz hactive
+    · exact hweak₀ t ht p hp₀ hz
+        (matched_pair_interpolation_active_left hε (div_pos hfc₀ hfb)
+          _ _ _ (he₀ hp₀) ht hz hactive).le
+    · exact hweak₁ t ht p hp₁ hz
+        (matched_pair_interpolation_active_left hε (div_pos hfc₁ hfa)
+          _ _ _ (he₁ hp₁) ht hz hactive).le
     · exact hKJ (hcentralF t ht p hpV hz)
+  · intro t ht p hp hz hpJ
+    rcases hp with (hp₀ | hp₁) | hpV
+    · have hf : f₀ p < -ε := lt_of_not_ge
+        (fun hn => hpJ (interior_subset (hweak₀ t ht p hp₀ hz hn)))
+      exact Or.inl ⟨hp₀, hf, exists_open_matched_pair_eq_smul f₀ hε
+        _ _ _ _ (hW.inter hU₀) he₀ hp₀ hf⟩
+    · have hf : f₁ p < -ε := lt_of_not_ge
+        (fun hn => hpJ (interior_subset (hweak₁ t ht p hp₁ hz hn)))
+      exact Or.inr ⟨hp₁, hf, exists_open_matched_pair_eq_smul f₁ hε
+        _ _ _ _ (hW.inter hU₁) he₁ hp₁ hf⟩
+    · exact False.elim (hpJ (interior_subset (hKJ (hcentralF t ht p hpV hz))))
 
 end Schoenflies
 
