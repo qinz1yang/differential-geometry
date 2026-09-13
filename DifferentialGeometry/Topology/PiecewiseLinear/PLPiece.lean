@@ -57,6 +57,38 @@ theorem IsPiecewiseAffineOn.union_of_isClosed [FiniteDimensional ℝ E] {f : E �
     · exact absurd hy hys
     · exact hy
 
+theorem IsPiecewiseAffineWithinAt.inter_preimage_of_isHPolytope [FiniteDimensional ℝ E]
+    {f : E → F} {s : Set E} {x : E} (hf : IsPiecewiseAffineWithinAt f s x) {C : Set F}
+    (hC : IsHPolytope C) : IsPiecewiseAffineWithinAt f (s ∩ f ⁻¹' C) x := by
+  obtain ⟨ι, hι, Cs, A, hCA, hnhds⟩ := hf
+  have := hι
+  refine ⟨ι, inferInstance, fun i => Cs i ∩ A i ⁻¹' C, A, fun i =>
+    ⟨(hCA i).1.inter_preimage hC _, ?_, (hCA i).2.2.mono inter_subset_left⟩, ?_⟩
+  · rintro y ⟨hy, hyA⟩
+    refine ⟨(hCA i).2.1 hy, ?_⟩
+    rw [mem_preimage, (hCA i).2.2 hy]
+    exact hyA
+  · have heq : (⋃ i, Cs i ∩ A i ⁻¹' C) = (⋃ i, Cs i) ∩ f ⁻¹' C := by
+      ext y
+      simp only [mem_iUnion, mem_inter_iff, mem_preimage]
+      constructor
+      · rintro ⟨i, hy, hyA⟩
+        refine ⟨⟨i, hy⟩, ?_⟩
+        rw [(hCA i).2.2 hy]
+        exact hyA
+      · rintro ⟨⟨i, hy⟩, hyf⟩
+        refine ⟨i, hy, ?_⟩
+        rw [← (hCA i).2.2 hy]
+        exact hyf
+    rw [heq]
+    exact Filter.inter_mem (nhdsWithin_mono x inter_subset_left hnhds)
+      (Filter.mem_of_superset self_mem_nhdsWithin inter_subset_right)
+
+theorem IsPiecewiseAffineOn.inter_preimage_of_isHPolytope [FiniteDimensional ℝ E] {f : E → F}
+    {s : Set E} (hf : IsPiecewiseAffineOn f s) {C : Set F} (hC : IsHPolytope C) :
+    IsPiecewiseAffineOn f (s ∩ f ⁻¹' C) :=
+  fun x hx => (hf x hx.1).inter_preimage_of_isHPolytope hC
+
 theorem isPolyhedron_inter_preimage_of_isCompact [FiniteDimensional ℝ E] {f : E → F} {S : Set E}
     (hf : IsPiecewiseAffineOn f S) {C : Set F} (hC : IsHPolytope C)
     (hcomp : IsCompact (S ∩ f ⁻¹' C)) : IsPolyhedron (S ∩ f ⁻¹' C) := by
@@ -116,6 +148,25 @@ def PLPiece.toPLTriangulation (T : PLPiece n X univ) : PLTriangulation n X where
   isPiecewiseAffineOn_chart_symm := fun e he => by
     have := T.piece.isPiecewiseAffineOn_chart_symm e he
     rwa [preimage_univ, inter_univ] at this
+
+def PLPieceIn.subdivide {Y : Set X} (T : PLPieceIn E n X Y)
+    (K' : Geometry.SimplicialComplex ℝ E) (h : IsSubdivision K' T.complex)
+    (hfin : K'.faces.Finite) : PLPieceIn E n X Y where
+  complex := K'
+  finite_faces := hfin
+  map := T.map
+  bijOn := by
+    rw [h.space_eq]
+    exact T.bijOn
+  continuousOn := by
+    rw [h.space_eq]
+    exact T.continuousOn
+  isPiecewiseAffineOn_chart := fun e he => by
+    rw [h.space_eq]
+    exact T.isPiecewiseAffineOn_chart e he
+  isPiecewiseAffineOn_chart_symm := fun e he => by
+    rw [h.space_eq]
+    exact T.isPiecewiseAffineOn_chart_symm e he
 
 theorem PLPieceIn.isCompact [FiniteDimensional ℝ E] {Y : Set X} (T : PLPieceIn E n X Y) :
     IsCompact Y := by
