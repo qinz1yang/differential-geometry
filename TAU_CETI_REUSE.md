@@ -516,3 +516,46 @@ Both leaves were already registered in the root. This is not a full DG build.
 Actual quadrant extension still needs a Borel realization of the extended
 normal jets and two-face assembly. Boundary-source ambient isotopy and the
 Schoenflies headline remain open.
+
+## Global smooth extension from a closed quadrant, 2026-09-13
+
+Analysis/Calculus/SmoothExtension/Quadrant proves
+ContDiffOn.exists_contDiff_extension_quadrant. A map smooth only within
+Ici a × (Ici b × univ) has one globally jointly smooth extension agreeing
+on that entire closed quadrant. Both thresholds are arbitrary. The free
+real normed coordinates are finite-dimensional; values may be any real
+Banach space. Rank-zero free coordinates are included. Local and zero-threshold
+construction steps remain private.
+
+Two natural visibility bridges in the existing BorelHalfLineParam expose
+joint smoothness of actual within-normal jets on an arbitrary tangential set,
+and a single global realization of arbitrary smooth compactly supported jet
+coefficients. The latter does not assume a common compact support or finite
+dimension of the parameter space. All original 1345 source lines and their
+lexical scopes are retained; the old public signatures remain exact.
+
+The proof extends each normal jet through the existing HalfSpace theorem,
+multiplies every coefficient and the raw input by the same compact cutoff,
+realizes the coefficients using the original Borel series, and applies the
+accepted within-set jet gluing. Swapping the two real coordinates permits
+HalfSpace to extend the other face. Mathlib's existing convex smooth selection
+then globalizes the local extensions; translation handles both thresholds.
+No new Borel construction, dependency download or upstream source copy is
+introduced. Only the already globally smooth realization uses ordinary normal
+derivatives. The raw input is controlled through within derivatives throughout.
+
+Private combined source 0d906aca passes in 86.41 seconds with 51 guards and 20
+signature/axiom pairs. Final public source 05b80c03 passes in 72.17 seconds with
+45 guards and 20 pairs. Imported request
+1789319285915894643-schoenflies-f52f9acd passes in 275.45 seconds with 184 guards
+and 84 pairs. All 72 earlier boundary/interval/ambient pairs are byte-identical;
+all 17 shared source/import pairs match up to scoped notation. BorelHalfLineParam,
+HalfSpace, Quadrant, both interval-extension leaves and AmbientIsotopy freshly
+compile without diagnostics in 3:32.51, maximum RSS 2021916 KiB. Stock source
+and declaration linters and approved-only transitive axioms pass. Consumers
+include arbitrary and singleton tangential sets, nonzero all-order rank-zero
+jets, nonzero quadrant data with uncontrolled outside values, mixed free-coordinate
+data, and negative thresholds with a nonzero corner value. Root reviewed the
+full changed sources, exact statements, provider proofs, consumers and diff.
+The new leaf is registered in the flat root; this is not a full DG build.
+Native source-boundary isotopy, arbitrary corner depth and Schoenflies remain open.
