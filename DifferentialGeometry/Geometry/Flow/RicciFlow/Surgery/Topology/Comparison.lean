@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ComparisonSupportRegion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SphericalRegion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ComparisonDefs
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ExteriorRegion
@@ -282,7 +283,8 @@ theorem rfs_comparison_support_of_region_data
 
 theorem rfs_comparison_support
     [SimplyConnectedSpace (G.Parent c).Carrier] : Nonempty (G.ComparisonSupport c) := by
-  sorry
+  obtain ⟨S, hlabel, hregion, hboundary⟩ := G.exists_smoothSphericalRegion_supportRegion c
+  exact rfs_comparison_support_of_region_data G c S hregion hlabel hboundary
 
 namespace ComparisonSupport
 
