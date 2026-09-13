@@ -6359,6 +6359,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.FullMetr
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.FullMetricModels
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.FullMetricRetainedCollar
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.FullMetricRetainedCore
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.FullMetricSeam
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.FullPreparedGluing
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.GrowingInitialCylinderCharts
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.HalfClosedRounding
@@ -6895,6 +6896,7 @@ import DifferentialGeometry.Geometry.Metric.FiniteChartBounds
 import DifferentialGeometry.Geometry.Metric.FiniteConstruction
 import DifferentialGeometry.Geometry.Metric.GeodesicInterpolation
 import DifferentialGeometry.Geometry.Metric.Gluing
+import DifferentialGeometry.Geometry.Metric.GluingRestriction
 import DifferentialGeometry.Geometry.Metric.HalfClosedJets
 import DifferentialGeometry.Geometry.Metric.HalfClosedNorm
 import DifferentialGeometry.Geometry.Metric.HalfSpaceExtension
