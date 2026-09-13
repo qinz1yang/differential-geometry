@@ -39,7 +39,7 @@ theorem smooth_critical_values_null {m n : ℕ}
         by_contra h
         exact hdet (LinearMap.det_eq_zero_iff_ker_ne_bot.mpr h)
       exact hx.2 ((LinearMap.injective_iff_surjective).mp (LinearMap.ker_eq_bot.mp hker))
-  · sorry
+  · exact hF.sard hU volume
 
 private theorem surjective_comp_comp_iff_of_isInvertible {V₁ V₂ V₃ : Type*}
     [AddCommGroup V₁] [Module ℝ V₁] [TopologicalSpace V₁]
