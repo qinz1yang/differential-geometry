@@ -1,6 +1,10 @@
 import DifferentialGeometry.Analysis.Elliptic.Euclidean.InteriorGradient
 import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.BoundaryGrowth
 import Mathlib.LinearAlgebra.Complex.FiniteDimensional
+import Mathlib.Topology.Instances.ENNReal.Lemmas
+
+open Set
+open scoped NNReal
 
 namespace DifferentialGeometry.Analysis
 
@@ -102,5 +106,64 @@ theorem exists_bound_fderiv_near_zero_of_norm_laplacian_le
     (fun z hz hi => hd z (hz.trans (by linarith)) hi)
     (fun z hz hi => hg z hz.le hi.le) hquad
   exact ⟨r, hr, hrρ.trans (by linarith), C, hC, hboundD⟩
+
+private theorem halfDisk_subset_closure_open_halfDisk {r : ℝ} (hr : 0 < r) :
+    {z : ℂ | ‖z‖ ≤ r / 2 ∧ 0 ≤ z.im} ⊆ closure {z : ℂ | ‖z‖ < r ∧ 0 < z.im} := by
+  intro z hz
+  rw [Metric.mem_closure_iff]
+  intro ε hε
+  let δ := min (r / 4) (ε / 2)
+  have hδ : 0 < δ := lt_min (by positivity) (by positivity)
+  have hδr : δ ≤ r / 4 := min_le_left _ _
+  have hδε : δ < ε := (min_le_right _ _).trans_lt (by linarith)
+  let w := z + (δ : ℂ) * Complex.I
+  have hi : ‖(δ : ℂ) * Complex.I‖ = δ := by simp [abs_of_pos hδ]
+  have hwn : ‖w‖ < r := by
+    have hh := norm_add_le z ((δ : ℂ) * Complex.I)
+    rw [hi] at hh
+    dsimp [w]
+    linarith [hz.1]
+  have hwi : 0 < w.im := by
+    dsimp [w]
+    simp only [Complex.mul_I_im, Complex.ofReal_re]
+    linarith [hz.2]
+  refine ⟨w, ⟨hwn, hwi⟩, ?_⟩
+  have he : dist z w = δ := by
+    dsimp [w]
+    rw [dist_self_add_right]
+    exact hi
+  exact he.trans_lt hδε
+
+theorem exists_lipschitzOnWith_near_zero_of_norm_laplacian_le
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {f : ℂ → F} {R β : ℝ} (hR : 0 < R) (hβ : 0 ≤ β)
+    (hf : ContinuousOn f {z : ℂ | ‖z‖ ≤ R ∧ 0 ≤ z.im})
+    (hd : ∀ z : ℂ, ‖z‖ < R → 0 < z.im → ContDiffAt ℝ 2 f z)
+    (hΔ : ∀ z : ℂ, ‖z‖ < R → 0 < z.im → ‖Laplacian.laplacian f z‖ ≤
+      β * (fderiv ℝ f z).hilbertSchmidtInner (fderiv ℝ f z))
+    (hzero : ∀ z : ℂ, ‖z‖ ≤ R → z.im = 0 → f z = 0) :
+    ∃ r > (0 : ℝ), r < R ∧ ∃ K : ℝ≥0,
+      LipschitzOnWith K f {z : ℂ | ‖z‖ ≤ r ∧ 0 ≤ z.im} := by
+  obtain ⟨r, hr, hrR, C, hC, hbound⟩ :=
+    exists_bound_fderiv_near_zero_of_norm_laplacian_le hR hβ hf hd hΔ hzero
+  let S := {z : ℂ | ‖z‖ < r ∧ 0 < z.im}
+  have hconv : Convex ℝ S := by
+    simpa only [Metric.ball, dist_zero_right] using!
+      (convex_ball (0 : ℂ) r).inter ((convex_Ioi (0 : ℝ)).linear_preimage Complex.imLm)
+  let K : ℝ≥0 := ⟨C, hC.le⟩
+  have hLip : LipschitzOnWith K f S := by
+    apply Convex.lipschitzOnWith_of_nnnorm_fderiv_le
+      (fun z hz => (hd z (hz.1.trans hrR) hz.2).differentiableAt (by norm_num)) _ hconv
+    intro z hz
+    exact_mod_cast hbound z hz.1 hz.2
+  have hcl : closure S ⊆ {z : ℂ | ‖z‖ ≤ r ∧ 0 ≤ z.im} := by
+    have hs : S ⊆ {z : ℂ | ‖z‖ ≤ r ∧ 0 ≤ z.im} := fun z hz => ⟨hz.1.le, hz.2.le⟩
+    apply closure_minimal hs
+    exact (isClosed_le continuous_norm continuous_const).inter
+      (isClosed_le continuous_const Complex.continuous_im)
+  have hc : ContinuousOn f (closure S) := hf.mono (fun z hz =>
+    ⟨(hcl hz).1.trans hrR.le, (hcl hz).2⟩)
+  refine ⟨r / 2, by positivity, by linarith, K, ?_⟩
+  exact (LipschitzOnWith.closure hc hLip).mono (halfDisk_subset_closure_open_halfDisk hr)
 
 end DifferentialGeometry.Analysis
