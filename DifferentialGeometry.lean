@@ -6407,6 +6407,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CoreInclusi
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutCap
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutCapCompletion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CubeSphereGenerator
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CubeBoundaryFaceChain
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CubeSphereRelativeReduction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.Descendants
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EmbeddedCoreExtinctionTower
@@ -7781,6 +7782,7 @@ import DifferentialGeometry.Topology.Homology.HurewiczNullhomotopyCriterion
 import DifferentialGeometry.Topology.Homology.HurewiczSphereCriterion
 import DifferentialGeometry.Topology.Homology.HurewiczTwoMultiplication
 import DifferentialGeometry.Topology.Homology.Integral
+import DifferentialGeometry.Topology.Homology.IntegralReducedCoefficientBridge
 import DifferentialGeometry.Topology.Homology.LiftedFaces
 import DifferentialGeometry.Topology.Homology.LiftedSimplex
 import DifferentialGeometry.Topology.Homology.LiftedSphere
