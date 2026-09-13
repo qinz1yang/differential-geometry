@@ -32,8 +32,7 @@ theorem exists_noncompact_backward_three_shrinker_cover
     {kappa : ℝ} (hF : IsAncientKappaSolution kappa F)
     (hdim : Module.finrank ℝ E = 3)
     (hnoncompact : @NoncompactSpace F.M F.topology)
-    (tau : ℕ → ℝ) (htau : ∀ i, 0 < tau i) (hescape : Tendsto tau atTop atTop)
-    (hfrontier : NoncompactShrinkerCylinderClassificationTheorem.{uE, uH, u}) :
+    (tau : ℕ → ℝ) (htau : ∀ i, 0 < tau i) (hescape : Tendsto tau atTop atTop) :
     ∃ (q : ℕ → F.M) (L : PointedRiemannianManifold.{u, uE, uH} (I := I)) (phi : ℕ → ℕ),
       StrictMono phi ∧
       ∃ (Phi : PointedRiemannianConvergenceMaps (I := I) (backwardSliceSequence F tau htau q) L phi)
@@ -79,11 +78,8 @@ theorem exists_noncompact_backward_three_shrinker_cover
   have hlimitNoncompact := backwardSliceLimit_noncompact F hF.connected hnoncompact tau htau q Phi
   let _ : NoncompactSpace L.M := hlimitNoncompact
   have hmetricComplete : RiemannianMetricComplete (I := I) L.metric := ⟨hcomplete⟩
-  have hclass : NoncompactShrinkerCylinderClassification (I := I) (M := L.M) L.metric f 1 :=
-    hfrontier (I := I) (M := L.M) (g := L.metric) (f := f) (sigma := 1)
-      (by norm_num) hdim hmetricComplete hsoliton hnonflat
   obtain ⟨Psi, hproduct⟩ := complete_noncompact_three_shrinker_universal_cover_cylinder
-    (I := I) L.metric f (by norm_num : (0 : ℝ) < 1) hdim hmetricComplete hsoliton hnonflat hclass
+    (I := I) L.metric f (by norm_num : (0 : ℝ) < 1) hdim hmetricComplete hsoliton hnonflat
   refine ⟨q, L, phi, hphi, Phi, C, hdomain, hreference, hcomplete,
     hconnected, hlimitNoncompact, Psi, ?_⟩
   intro x s v w a b

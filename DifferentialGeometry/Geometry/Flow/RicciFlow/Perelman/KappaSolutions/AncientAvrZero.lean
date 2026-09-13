@@ -65,7 +65,7 @@ theorem ancientKappaThree_terminal_avr_eq_zero {kappa : ℝ}
       hescape, _hQr, _hratio, hexpand, hscaled, _hlarge, hlocal,
       _hterms, _hbase, _hRm, L, phi, hphi, Phi,
       hconnected, hcomplete, hconv⟩ :=
-    ancientKappaThree_exists_ascr_ancient_limit F hF hdim hnoncompact p hfrontier
+    ancientKappaThree_exists_ascr_ancient_limit F hF hdim hnoncompact p
   have hlocal4 (i : ℕ) (z : F.M)
       (hz : (riemannianEDistOf (I := I) (F.S.base.metric 0) z (x i)).toReal < r i) :
       F.S.scalar 0 z ≤ 4 * F.S.scalar 0 (x i) := by
@@ -135,8 +135,7 @@ local instance ancientAvrAllTimesSigma : SigmaCompactSpace F.M := F.sigmaCompact
 
 theorem ancientKappaThree_avr_eq_zero {kappa : ℝ}
     (hF : IsAncientKappaSolution (I := I) kappa F) (hdim : Module.finrank ℝ E = 3)
-    (hnoncompact : NoncompactSpace F.M) (t0 : ℝ) (ht0 : t0 ∈ D.carrier) (p : F.M)
-    (hfrontier : NoncompactShrinkerCylinderClassificationTheorem.{uE, uH, u}) :
+    (hnoncompact : NoncompactSpace F.M) (t0 : ℝ) (ht0 : t0 ∈ D.carrier) (p : F.M) :
     asymptoticVolumeRatio (I := I) (F.S.base.metric t0) p = 0 := by
   have ht0le : t0 ≤ 0 := by
     simpa only [hF.carrier_eq, Set.mem_Iic] using ht0
@@ -161,12 +160,11 @@ theorem ancientKappaThree_avr_eq_zero {kappa : ℝ}
 
 theorem ancientKappaThree_ascr_eq_top_and_avr_eq_zero {kappa : ℝ}
     (hF : IsAncientKappaSolution (I := I) kappa F) (hdim : Module.finrank ℝ E = 3)
-    (hnoncompact : NoncompactSpace F.M) (t0 : ℝ) (ht0 : t0 ∈ D.carrier) (p : F.M)
-    (hfrontier : NoncompactShrinkerCylinderClassificationTheorem.{uE, uH, u}) :
+    (hnoncompact : NoncompactSpace F.M) (t0 : ℝ) (ht0 : t0 ∈ D.carrier) (p : F.M) :
     asymptoticScalarCurvatureRatio (I := I) (F.S.base.metric t0) p = ⊤ ∧
       asymptoticVolumeRatio (I := I) (F.S.base.metric t0) p = 0 :=
-  ⟨ancientKappaThree_ascr_eq_top F hF hdim hnoncompact t0 ht0 p hfrontier,
-    ancientKappaThree_avr_eq_zero F hF hdim hnoncompact t0 ht0 p hfrontier⟩
+  ⟨ancientKappaThree_ascr_eq_top F hF hdim hnoncompact t0 ht0 p,
+    ancientKappaThree_avr_eq_zero F hF hdim hnoncompact t0 ht0 p⟩
 
 end AllTimes
 

@@ -31,8 +31,7 @@ theorem exists_noncompact_backward_three_limit_avr_zero
     {kappa : ℝ} (hF : IsAncientKappaSolution kappa F)
     (hdim : Module.finrank ℝ E = 3)
     (hnoncompact : @NoncompactSpace F.M F.topology)
-    (tau : ℕ → ℝ) (htau : ∀ i, 0 < tau i) (hescape : Tendsto tau atTop atTop)
-    (hfrontier : NoncompactShrinkerCylinderClassificationTheorem.{uE, uH, u}) :
+    (tau : ℕ → ℝ) (htau : ∀ i, 0 < tau i) (hescape : Tendsto tau atTop atTop) :
     ∃ (q : ℕ → F.M) (L : PointedRiemannianManifold.{u, uE, uH} (I := I)) (phi : ℕ → ℕ),
       StrictMono phi ∧
       ∃ (Phi : PointedRiemannianConvergenceMaps (I := I) (backwardSliceSequence F tau htau q) L phi)
@@ -48,7 +47,7 @@ theorem exists_noncompact_backward_three_limit_avr_zero
          ConnectedSpace L.M ∧ NoncompactSpace L.M ∧
            ∀ p : L.M, asymptoticVolumeRatio (I := I) L.metric p = 0) := by
   obtain ⟨q, L, phi, hphi, Phi, C, hdomain, hreference, hcomplete, hgeometry⟩ :=
-    exists_noncompact_backward_three_shrinker_cover F hF hdim hnoncompact tau htau hescape hfrontier
+    exists_noncompact_backward_three_shrinker_cover F hF hdim hnoncompact tau htau hescape
   let _ : TopologicalSpace L.M := L.topology
   let _ : ChartedSpace H L.M := L.charted
   let _ : IsManifold I ∞ L.M := L.smooth

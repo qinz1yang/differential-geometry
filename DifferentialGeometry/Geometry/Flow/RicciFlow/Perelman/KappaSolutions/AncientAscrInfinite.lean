@@ -36,8 +36,7 @@ local instance ancientAscrTangentT2 : T2Space (TangentBundle I F.M) := F.t2Tange
 
 theorem ancientKappaThree_terminal_ascr_eq_top {kappa : ℝ}
     (hF : IsAncientKappaSolution kappa F) (hdim : Module.finrank ℝ E = 3)
-    (hnoncompact : NoncompactSpace F.M) (p : F.M)
-    (hfrontier : NoncompactShrinkerCylinderClassificationTheorem.{uE, uH, u}) :
+    (hnoncompact : NoncompactSpace F.M) (p : F.M) :
     asymptoticScalarCurvatureRatio (I := I) (F.S.base.metric 0) p = ⊤ := by
   let _ : NeZero (Module.finrank ℝ E) := ⟨by omega⟩
   let _ : ConnectedSpace F.M := hF.connected
@@ -95,7 +94,7 @@ theorem ancientKappaThree_terminal_ascr_eq_top {kappa : ℝ}
     dsimp only [tau]
     linarith
   obtain ⟨q, L, phi, _, Phi, C, _, hreference, hcompleteLimit, hgeometry⟩ :=
-    exists_noncompact_backward_three_limit_avr_zero F hF hdim hnoncompact tau htau hescape hfrontier
+    exists_noncompact_backward_three_limit_avr_zero F hF hdim hnoncompact tau htau hescape
   let _ : TopologicalSpace L.M := L.topology
   let _ : ChartedSpace H L.M := L.charted
   let _ : IsManifold I ∞ L.M := L.smooth

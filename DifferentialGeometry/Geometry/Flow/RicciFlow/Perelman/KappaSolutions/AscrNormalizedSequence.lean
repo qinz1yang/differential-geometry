@@ -30,8 +30,7 @@ local instance ascrNormalizedSigma : SigmaCompactSpace F.M := F.sigmaCompact
 
 theorem ancientKappaThree_exists_ascr_normalized_sequence {kappa : ℝ}
     (hF : IsAncientKappaSolution kappa F) (hdim : Module.finrank ℝ E = 3)
-    (hnoncompact : NoncompactSpace F.M) (p : F.M)
-    (hfrontier : NoncompactShrinkerCylinderClassificationTheorem.{uE, uH, u}) :
+    (hnoncompact : NoncompactSpace F.M) (p : F.M) :
     let hK := ancientKappaThree_toKLim F hF hdim
     let d := fun y z : F.M =>
       (riemannianEDistOf (I := I) (F.S.base.metric 0) y z).toReal
@@ -72,7 +71,7 @@ theorem ancientKappaThree_exists_ascr_normalized_sequence {kappa : ℝ}
   let _ : ConnectedSpace F.M := hF.connected
   have hcomplete : RiemannianMetricComplete (I := I) (F.S.base.metric 0) :=
     ⟨hF.complete 0 (by simp)⟩
-  have hASCR := ancientKappaThree_terminal_ascr_eq_top F hF hdim hnoncompact p hfrontier
+  have hASCR := ancientKappaThree_terminal_ascr_eq_top F hF hdim hnoncompact p
   obtain ⟨x, r, eps, hr, heps, hanti, hepsLimit, hdisjoint, hescape, hQr, hratio, hcontrol⟩ :=
     exists_scalarAscrPointSelection (I := I) (F.S.base.metric 0) hcomplete p hASCR
   obtain ⟨N, hN⟩ := ((tendsto_order.1 hepsLimit).2 1 zero_lt_one).exists_forall_of_atTop

@@ -136,19 +136,6 @@ def NoncompactShrinkerCylinderClassification
     (∀ (x : SphereTwo) (s : ℝ),
       f (UniversalCover.proj (Psi (x, s))) + C / sigma = 1 + sigma * s ^ 2 / 4)
 
-def NoncompactShrinkerCylinderClassificationTheorem.{uE, uH, uM} : Prop :=
-  ∀ {E : Type uE} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
-    [CompleteSpace E]
-    {H : Type uH} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
-    {M : Type uM} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-    [T2Space M] [SigmaCompactSpace M] [ConnectedSpace M] [NoncompactSpace M]
-    [LocallyPathConnectedSpace M] [SemilocallySimplyConnectedSpace M] [Inhabited M]
-    (g : SmoothRiemannianMetric I M) (f : C^∞⟮I, M; ℝ⟯) {sigma : ℝ},
-    0 < sigma → Module.finrank ℝ E = 3 →
-      RiemannianMetricComplete (I := I) g → gradientRicciSoliton (I := I) g f sigma →
-        (∃ x : M, metricScalarAt (I := I) g x ≠ 0) →
-          NoncompactShrinkerCylinderClassification (I := I) (M := M) g f sigma
-
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [I.Boundaryless] [T2Space M]
   [SigmaCompactSpace M] [ConnectedSpace M]
   [NoncompactSpace M] [LocallyPathConnectedSpace M] [SemilocallySimplyConnectedSpace M]

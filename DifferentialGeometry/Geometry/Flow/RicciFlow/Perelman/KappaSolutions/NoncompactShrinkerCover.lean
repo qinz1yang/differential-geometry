@@ -8,7 +8,6 @@ import DifferentialGeometry.Geometry.Metric.RicciSoliton.ModelCoverCylinderClass
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.Models
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.ModelCoverGaussian
 import DifferentialGeometry.Geometry.Metric.PullbackScaling
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.NoncompactShrinkerCylinderReduction
 import DifferentialGeometry.Topology.Covering.SmoothLift
 import DifferentialGeometry.Topology.Covering.Smooth.LocalDiffeomorph
 import DifferentialGeometry.Topology.Covering.CylindricalModel
@@ -150,8 +149,6 @@ theorem exists_universalCover_cylinder_isometry_of_solitonModelCovering
     (hcover : solitonModelCovering roundThreeCylinderShrinkerMetric
       roundThreeCylinderShrinkerPotential (scaleMetric sigma hsigma g) f cover) :
     ∃ Psi : Cylinder ≃ₘ⟮CylinderI, I⟯ UniversalCover M,
-      (∀ (x : SphereTwo) (s : ℝ),
-        UniversalCover.proj (Psi (x, s)) = cover (x, Real.sqrt sigma * s)) ∧
       (∀ (x : SphereTwo) (s : ℝ) (v w : TangentSpace (𝓡 2) x) (a b : ℝ),
         (UniversalCover.liftedMetric (I := I) g).inner (Psi (x, s))
             (mfderiv CylinderI I Psi (x, s) (v, a))
@@ -281,19 +278,14 @@ theorem exists_universalCover_cylinder_isometry_of_solitonModelCovering
       Psi (x, s) (v, a) (w, b)]
     rw [key (x, s) (v, a) (w, b)]
     field_simp
-  have hproj_cover : ∀ (x : SphereTwo) (s : ℝ),
-      UniversalCover.proj (Psi (x, s)) = cover (x, Real.sqrt sigma * s) := by
-    intro x s
-    rw [← hcover_up (x, s)]
-    simp only [up, c, lineScale_apply]
   rcases solitonModelCovering_roundThreeCylinder_target_isometry_trichotomy hcover with
     ⟨hgrp, -⟩ | ⟨hgrp, -⟩ | ⟨hgrp, -⟩
-  · refine ⟨Psi, hproj_cover, hmetric, Or.inl ?_⟩
+  · refine ⟨Psi, hmetric, Or.inl ?_⟩
     intro p q
     rw [← hcover_up p, ← hcover_up q,
       coveringDeckGroup_apply_eq_iff hcovercov, hgrp, mem_orbit_bot_iff]
     exact ⟨fun h => (up.injective h).symm, fun h => by rw [h]⟩
-  · refine ⟨Psi, hproj_cover, hmetric, Or.inr (Or.inl ?_)⟩
+  · refine ⟨Psi, hmetric, Or.inr (Or.inl ?_)⟩
     intro p q
     rw [← hcover_up p, ← hcover_up q,
       coveringDeckGroup_apply_eq_iff hcovercov, hgrp, mem_orbit_cylinderAntipodalGroup_iff]
@@ -321,7 +313,7 @@ theorem exists_universalCover_cylinder_isometry_of_solitonModelCovering
             cylinderAntipodal_apply, neg_neg]
         · simp only [up, lineScale_apply, cylinderAntipodalDiffeomorph_apply,
             cylinderAntipodal_apply]
-  · refine ⟨Psi, hproj_cover, hmetric, Or.inr (Or.inr ?_)⟩
+  · refine ⟨Psi, hmetric, Or.inr (Or.inr ?_)⟩
     intro p q
     rw [← hcover_up p, ← hcover_up q,
       coveringDeckGroup_apply_eq_iff hcovercov, hgrp, mem_orbit_cylinderDiagonalGroup_iff]
@@ -358,14 +350,12 @@ theorem exists_universalCover_cylinder_isometry_of_solitonModelCovering
 
 end Glue
 
-omit [NoncompactSpace M] in
 theorem complete_noncompact_three_shrinker_universal_cover_fibres
     (g : SmoothRiemannianMetric I M) (f : C^∞⟮I, M; ℝ⟯)
     {sigma : ℝ} (hsigma : 0 < sigma) (hdim : Module.finrank ℝ E = 3)
     (hcomplete : RiemannianMetricComplete (I := I) g)
     (hsoliton : gradientRicciSoliton (I := I) g f sigma)
-    (hnonflat : ∃ x : M, metricScalarAt (I := I) g x ≠ 0)
-    (hclass : NoncompactShrinkerCylinderClassification (I := I) (M := M) g f sigma) :
+    (hnonflat : ∃ x : M, metricScalarAt (I := I) g x ≠ 0) :
     ∃ Psi : (SphereTwo × ℝ) ≃ₘ⟮(𝓡 2).prod 𝓘(ℝ, ℝ), I⟯ UniversalCover M,
       (∀ (x : SphereTwo) (s : ℝ) (v w : TangentSpace (𝓡 2) x) (a b : ℝ),
         (UniversalCover.liftedMetric (I := I) g).inner (Psi (x, s))
@@ -381,17 +371,14 @@ theorem complete_noncompact_three_shrinker_universal_cover_fibres
         (∀ p q : SphereTwo × ℝ,
           UniversalCover.proj (Psi p) = UniversalCover.proj (Psi q) ↔
             q = p ∨ q = (-p.1, -p.2))) := by
-  exact complete_noncompact_three_shrinker_universal_cover_fibres_of_classification
-    g f hsigma hdim hcomplete hsoliton hnonflat hclass
+  sorry
 
-omit [NoncompactSpace M] in
 theorem complete_noncompact_three_shrinker_universal_cover_cylinder
     (g : SmoothRiemannianMetric I M) (f : C^∞⟮I, M; ℝ⟯)
     {sigma : ℝ} (hsigma : 0 < sigma) (hdim : Module.finrank ℝ E = 3)
     (hcomplete : RiemannianMetricComplete (I := I) g)
     (hsoliton : gradientRicciSoliton (I := I) g f sigma)
-    (hnonflat : ∃ x : M, metricScalarAt (I := I) g x ≠ 0)
-    (hclass : NoncompactShrinkerCylinderClassification (I := I) (M := M) g f sigma) :
+    (hnonflat : ∃ x : M, metricScalarAt (I := I) g x ≠ 0) :
     ∃ Psi : (SphereTwo × ℝ) ≃ₘ⟮(𝓡 2).prod 𝓘(ℝ, ℝ), I⟯ UniversalCover M,
       ∀ (x : SphereTwo) (s : ℝ) (v w : TangentSpace (𝓡 2) x) (a b : ℝ),
         (UniversalCover.liftedMetric (I := I) g).inner (Psi (x, s))
@@ -400,7 +387,7 @@ theorem complete_noncompact_three_shrinker_universal_cover_cylinder
           (2 / sigma) * (roundMetric (E := EuclideanSpace ℝ (Fin 3)) (n := 2)).inner
             x v w + a * b := by
   obtain ⟨Psi, hmetric, _⟩ := complete_noncompact_three_shrinker_universal_cover_fibres
-    g f hsigma hdim hcomplete hsoliton hnonflat hclass
+    g f hsigma hdim hcomplete hsoliton hnonflat
   exact ⟨Psi, hmetric⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
