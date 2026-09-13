@@ -1,3 +1,9 @@
+import Mathlib.Tactic.Positivity
+import Mathlib.Analysis.Normed.Module.Basic
+import Mathlib.Tactic.FinCases
+import Mathlib.Tactic.Module
+import Mathlib.Tactic.Linarith
+import Mathlib.Topology.MetricSpace.Thickening
 import DifferentialGeometry.Analysis.Calculus.CompactCutoff
 import Mathlib.Analysis.Calculus.ContDiff.Basic
 import DifferentialGeometry.Analysis.Calculus.SmoothMax
@@ -2131,6 +2137,385 @@ end
 
 section
 
+namespace Schoenflies
+
+private theorem smoothMax_sub_left_mem_Icc
+    {ε x : ℝ} (hε : 0 < ε) (hx : -ε ≤ x) :
+    Real.smoothMax ε x 0 - x ∈ Set.Icc 0 ε := by
+  have hl := (le_max_left x 0).trans (Real.smoothMax.max_le hε x 0)
+  have hu := Real.smoothMax.monotone_right ε x (show 0 ≤ x + ε by linarith)
+  have he : Real.smoothMax ε x (x + ε) = x + ε := by
+    rw [Real.smoothMax.eq_max_of_le hε]
+    · exact max_eq_right (by linarith)
+    · rw [show x - (x + ε) = -ε by ring, abs_neg, abs_of_pos hε]
+  rw [he] at hu
+  constructor <;> linarith
+
+private theorem weighted_interpolation_zero_mem_Icc
+    {a b z r t : ℝ} (hab : a ≤ b) (hr : 0 < r) (ht : t ∈ Set.Icc 0 1)
+    (hz : (1 - t) * (a - z) + t * (r * (b - z)) = 0) :
+    z ∈ Set.Icc a b := by
+  constructor
+  · by_contra hn
+    have hza : z < a := lt_of_not_ge hn
+    have hzb : z < b := hza.trans_le hab
+    rcases eq_or_lt_of_le ht.1 with ht₀ | ht₀
+    · rw [← ht₀] at hz
+      simp only [sub_zero, one_mul, zero_mul, add_zero] at hz
+      linarith
+    · have hl := mul_nonneg (sub_nonneg.mpr ht.2) (sub_nonneg.mpr hza.le)
+      have hu := mul_pos ht₀ (mul_pos hr (sub_pos.mpr hzb))
+      linarith
+  · by_contra hn
+    have hbz : b < z := lt_of_not_ge hn
+    have haz : a < z := hab.trans_lt hbz
+    rcases eq_or_lt_of_le ht.1 with ht₀ | ht₀
+    · rw [← ht₀] at hz
+      simp only [sub_zero, one_mul, zero_mul, add_zero] at hz
+      linarith
+    · have hl := mul_nonpos_of_nonneg_of_nonpos
+        (sub_nonneg.mpr ht.2) (sub_nonpos.mpr haz.le)
+      have hu := mul_neg_of_pos_of_neg ht₀ (mul_neg_of_pos_of_neg hr (sub_neg.mpr hbz))
+      linarith
+
+private theorem matched_interpolation_coordinate_bounds
+    {ε x s fb fc y z t : ℝ} (hε : 0 < ε) (hx : -ε ≤ x)
+    (hfb : 0 < fb) (hfc : 0 < fc) (he : x = fb * y + fc * z)
+    (ht : t ∈ Set.Icc 0 1)
+    (hz : (1 - t) * (s * (x - Real.smoothMax ε x 0) - z) +
+      t * (fc / fb * (s * (x - Real.smoothMax ε x 0) +
+        Real.smoothMax ε x 0 / fc - z)) = 0) :
+    -((1 + fc * |s|) / fb) * ε ≤ y ∧ -|s| * ε ≤ z := by
+  have hm := smoothMax_sub_left_mem_Icc hε hx
+  have hm₀ : 0 ≤ Real.smoothMax ε x 0 :=
+    (le_max_right x 0).trans (Real.smoothMax.max_le hε x 0)
+  have hd : |x - Real.smoothMax ε x 0| ≤ ε := by
+    rw [abs_of_nonpos (by linarith [hm.1] : x - Real.smoothMax ε x 0 ≤ 0)]
+    linarith [hm.2]
+  have hs : |s * (x - Real.smoothMax ε x 0)| ≤ |s| * ε := by
+    rw [abs_mul]
+    exact mul_le_mul_of_nonneg_left hd (abs_nonneg s)
+  have hbetween := weighted_interpolation_zero_mem_Icc
+    (le_add_of_nonneg_right (div_nonneg hm₀ hfc.le)) (div_pos hfc hfb) ht hz
+  have hupper := mul_le_mul_of_nonneg_left hbetween.2 hfc.le
+  have hcancel : fc * (Real.smoothMax ε x 0 / fc) = Real.smoothMax ε x 0 :=
+    mul_div_cancel₀ _ hfc.ne'
+  rw [mul_add, hcancel] at hupper
+  have hsupper := mul_le_mul_of_nonneg_left (abs_le.mp hs).2 hfc.le
+  have hy : -(1 + fc * |s|) * ε ≤ fb * y := by
+    nlinarith [hm.2, he]
+  constructor
+  · have hdiv := (div_le_iff₀ hfb).mpr
+      (show -(1 + fc * |s|) * ε ≤ y * fb by nlinarith [hy])
+    calc
+      -((1 + fc * |s|) / fb) * ε = (-(1 + fc * |s|) * ε) / fb := by ring
+      _ ≤ y := hdiv
+  · linarith [(abs_le.mp hs).1, hbetween.1]
+
+end Schoenflies
+
+end
+
+section
+
+namespace Schoenflies
+
+private theorem exists_triangle_point_dist_le_of_coord_lower_bounds
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    (b : AffineBasis (Fin 3) ℝ E) {p : E} {δ : ℝ}
+    (hδ : 0 ≤ δ) (hδsmall : δ ≤ 1 / 12)
+    (h₁ : -δ ≤ b.coord 1 p) (h₂ : -δ ≤ b.coord 2 p)
+    (hgap : (1 : ℝ) / 4 < b.coord 0 p - b.coord 1 p) :
+    ∃ q ∈ convexHull ℝ (Set.range b),
+      dist p q ≤ δ * (‖b 1 - b 0‖ + ‖b 2 - b 0‖) := by
+  classical
+  let d₁ := max (-b.coord 1 p) 0
+  let d₂ := max (-b.coord 2 p) 0
+  have hd₁ : d₁ ∈ Set.Icc 0 δ :=
+    ⟨le_max_right _ _, max_le (by linarith) hδ⟩
+  have hd₂ : d₂ ∈ Set.Icc 0 δ :=
+    ⟨le_max_right _ _, max_le (by linarith) hδ⟩
+  have hw₀ : 0 ≤ b.coord 0 p - d₁ - d₂ := by linarith [hd₁.2, hd₂.2]
+  have hw₁ : 0 ≤ b.coord 1 p + d₁ := by
+    have h : -b.coord 1 p ≤ d₁ := le_max_left _ _
+    linarith
+  have hw₂ : 0 ≤ b.coord 2 p + d₂ := by
+    have h : -b.coord 2 p ≤ d₂ := le_max_left _ _
+    linarith
+  let w : Fin 3 → ℝ := ![b.coord 0 p - d₁ - d₂, b.coord 1 p + d₁, b.coord 2 p + d₂]
+  have hw : ∑ i, w i = 1 := by
+    have hsum := b.sum_coord_apply_eq_one p
+    simp only [Fin.sum_univ_three] at hsum
+    simp only [Fin.sum_univ_three, w, Matrix.cons_val_zero, Matrix.cons_val_one,
+      Matrix.cons_val_two, Matrix.tail_cons, Matrix.head_cons]
+    linarith
+  let q := Finset.univ.affineCombination ℝ b w
+  have hq : q ∈ convexHull ℝ (Set.range b) := by
+    apply affineCombination_mem_convexHull ?_ hw
+    intro i _
+    fin_cases i
+    · exact hw₀
+    · exact hw₁
+    · exact hw₂
+  have hcoord (i : Fin 3) : b.coord i q = w i :=
+    b.coord_apply_combination_of_mem (Finset.mem_univ i) hw
+  have he : q - p = d₁ • (b 1 - b 0) + d₂ • (b 2 - b 0) := by
+    calc
+      q - p = (∑ i, b.coord i q • b i) - ∑ i, b.coord i p • b i := by
+        rw [b.linear_combination_coord_eq_self, b.linear_combination_coord_eq_self]
+      _ = d₁ • (b 1 - b 0) + d₂ • (b 2 - b 0) := by
+        simp only [hcoord, Fin.sum_univ_three, w, Matrix.cons_val_zero,
+          Matrix.cons_val_one, Matrix.cons_val_two, Matrix.tail_cons, Matrix.head_cons]
+        module
+  refine ⟨q, hq, ?_⟩
+  calc
+    dist p q = ‖q - p‖ := by rw [dist_comm, dist_eq_norm]
+    _ = ‖d₁ • (b 1 - b 0) + d₂ • (b 2 - b 0)‖ := by rw [he]
+    _ ≤ ‖d₁ • (b 1 - b 0)‖ + ‖d₂ • (b 2 - b 0)‖ := norm_add_le _ _
+    _ = d₁ * ‖b 1 - b 0‖ + d₂ * ‖b 2 - b 0‖ := by
+      rw [norm_smul, norm_smul, Real.norm_eq_abs, Real.norm_eq_abs,
+        abs_of_nonneg hd₁.1, abs_of_nonneg hd₂.1]
+    _ ≤ δ * ‖b 1 - b 0‖ + δ * ‖b 2 - b 0‖ :=
+      add_le_add (mul_le_mul_of_nonneg_right hd₁.2 (norm_nonneg _))
+        (mul_le_mul_of_nonneg_right hd₂.2 (norm_nonneg _))
+    _ = δ * (‖b 1 - b 0‖ + ‖b 2 - b 0‖) := by ring
+
+end Schoenflies
+
+end
+
+section
+
+namespace Schoenflies
+
+private theorem endpoint_interpolation_confinement
+    (b : AffineBasis (Fin 3) ℝ Plane) (f : Plane →ᵃ[ℝ] ℝ)
+    (hf₀ : f (b 0) = 0) (hfb : 0 < f (b 1)) (hfc : 0 < f (b 2)) (s : ℝ) :
+    let C := 1 + (1 + f (b 2) * |s|) / f (b 1) + |s|
+    0 < C ∧ ∀ (ε : ℝ) (p : Plane) (t : ℝ), 0 < ε → -ε < f p →
+      t ∈ Set.Icc 0 1 → C * ε ≤ 1 / 12 →
+      (1 : ℝ) / 4 < b.coord 0 p - b.coord 1 p →
+      (1 - t) * (s * (f p - Real.smoothMax ε (f p) 0) - b.coord 2 p) +
+        t * (f (b 2) / f (b 1) *
+          (s * (f p - Real.smoothMax ε (f p) 0) +
+            Real.smoothMax ε (f p) 0 / f (b 2) - b.coord 2 p)) = 0 →
+      -C * ε ≤ b.coord 1 p ∧ -C * ε ≤ b.coord 2 p ∧
+        ∃ q ∈ convexHull ℝ (Set.range b),
+          dist p q ≤ C * ε * (‖b 1 - b 0‖ + ‖b 2 - b 0‖) := by
+  dsimp only
+  let C := 1 + (1 + f (b 2) * |s|) / f (b 1) + |s|
+  have hdiv : 0 < (1 + f (b 2) * |s|) / f (b 1) :=
+    div_pos (by positivity) hfb
+  have hC : 0 < C := by dsimp [C]; positivity
+  refine ⟨hC, ?_⟩
+  intro ε p t hε hx ht hsmall hgap hz
+  have hbounds := matched_interpolation_coordinate_bounds hε hx.le hfb hfc
+    (affine_triangle_map_apply_of_vertex_zero b f hf₀ p) ht hz
+  have h₁ : -C * ε ≤ b.coord 1 p := by
+    have hconst : (1 + f (b 2) * |s|) / f (b 1) ≤ C := by
+      dsimp [C]
+      linarith [abs_nonneg s]
+    have h := mul_le_mul_of_nonneg_right hconst hε.le
+    linarith [hbounds.1]
+  have h₂ : -C * ε ≤ b.coord 2 p := by
+    have hconst : |s| ≤ C := by dsimp [C]; linarith
+    have h := mul_le_mul_of_nonneg_right hconst hε.le
+    linarith [hbounds.2]
+  exact ⟨h₁, h₂, exists_triangle_point_dist_le_of_coord_lower_bounds b
+    (mul_nonneg hC.le hε.le) hsmall (by simpa only [neg_mul] using h₁)
+    (by simpa only [neg_mul] using h₂) hgap⟩
+
+end Schoenflies
+
+end
+
+section
+
+namespace Schoenflies
+
+private theorem endpoint_active_zero_mem_interior_cthickening
+    (b : AffineBasis (Fin 3) ℝ Plane) (f : Plane →ᵃ[ℝ] ℝ)
+    (hf₀ : f (b 0) = 0) (hfb : 0 < f (b 1)) (hfc : 0 < f (b 2))
+    (s : ℝ) {η ρ t : ℝ} {p : Plane} (hη : 0 < η)
+    (ht : t ∈ Set.Icc 0 1)
+    (hsmall : (1 + (1 + f (b 2) * |s|) / f (b 1) + |s|) * η ≤ 1 / 12)
+    (hdist : (1 + (1 + f (b 2) * |s|) / f (b 1) + |s|) * η *
+      (‖b 1 - b 0‖ + ‖b 2 - b 0‖) < ρ)
+    (hgap : (1 : ℝ) / 4 < b.coord 0 p - b.coord 1 p) :
+    let A := s * (f p - Real.smoothMax η (f p) 0) - b.coord 2 p
+    let B := f (b 2) / f (b 1) *
+      (s * (f p - Real.smoothMax η (f p) 0) +
+        Real.smoothMax η (f p) 0 / f (b 2) - b.coord 2 p)
+    (1 - t) * A + t * B = 0 →
+      deriv (fun u => (1 - u) * A + u * B) t ≠ 0 →
+      p ∈ interior (Metric.cthickening ρ (convexHull ℝ (Set.range b))) := by
+  dsimp only
+  intro hz hactive
+  have hstrip : -η < f p := by
+    by_contra hn
+    have hfix := matched_pair_interpolation_stationary_of_left hη (le_of_not_gt hn)
+      (div_pos hfc hfb) s (b.coord 2 p) (f (b 2)) rfl ht hz
+    exact hactive (hfix.2.2.2 t)
+  obtain ⟨_, _, q, hq, hpq⟩ := (endpoint_interpolation_confinement b f hf₀ hfb hfc s).2
+    η p t hη hstrip ht hsmall hgap hz
+  exact Metric.thickening_subset_interior_cthickening ρ _
+    (Metric.mem_thickening_iff.mpr ⟨q, hq, hpq.trans_lt hdist⟩)
+
+end Schoenflies
+
+end
+
+section
+
+open scoped ContDiff
+
+namespace Schoenflies
+
+private theorem exists_fixed_cover_small_matched_interpolation
+    (b : AffineBasis (Fin 3) ℝ Plane) (f₀ f₁ : Plane →ᵃ[ℝ] ℝ)
+    (hf₀ : f₀ (b 0) = 0) (hfb : 0 < f₀ (b 1)) (hfc₀ : 0 < f₀ (b 2))
+    (hf₁ : f₁ (b 1) = 0) (hfa : 0 < f₁ (b 0)) (hfc₁ : 0 < f₁ (b 2))
+    (s₀ s₁ : ℝ) {U₀ U₁ : Set Plane} (hU₀ : IsOpen U₀) (hU₁ : IsOpen U₁)
+    (hb₀ : b 0 ∈ U₀) (hb₁ : b 1 ∈ U₁)
+    (hgap₀ : ∀ p ∈ U₀, (1 : ℝ) / 4 < b.coord 0 p - b.coord 1 p)
+    (hgap₁ : ∀ p ∈ U₁, (1 : ℝ) / 4 < b.coord 1 p - b.coord 0 p) :
+    let K := convexHull ℝ (Set.range b)
+    let G := fun p => (-b.coord 2 p,
+      -Real.smoothMax (1 / 4) (-b.coord 0 p) (-b.coord 1 p))
+    let F₀ := fun η p => (s₀ * (f₀ p - Real.smoothMax η (f₀ p) 0) - b.coord 2 p,
+      f₀ (b 2) / f₀ (b 1) * (s₀ * (f₀ p - Real.smoothMax η (f₀ p) 0) +
+        Real.smoothMax η (f₀ p) 0 / f₀ (b 2) - b.coord 2 p))
+    let F₁ := fun η p => (s₁ * (f₁ p - Real.smoothMax η (f₁ p) 0) - b.coord 2 p,
+      f₁ (b 2) / f₁ (b 0) * (s₁ * (f₁ p - Real.smoothMax η (f₁ p) 0) +
+        Real.smoothMax η (f₁ p) 0 / f₁ (b 2) - b.coord 2 p))
+    ∃ (ε₀ ε : ℝ) (J : Set Plane),
+      let V := {p | ε₀ < f₀ p ∧ ε₀ < f₁ p}
+      0 < ε₀ ∧ 0 < ε ∧ ε ≤ ε₀ ∧ IsCompact J ∧ K ⊆ interior J ∧
+      J ⊆ U₀ ∪ U₁ ∪ V ∧ K ⊆ U₀ ∪ U₁ ∪ V ∧
+      (∀ η ∈ Set.Ioc 0 ε, Set.EqOn (F₀ η) G (U₀ ∩ V)) ∧
+      (∀ η ∈ Set.Ioc 0 ε, Set.EqOn (F₁ η) G (U₁ ∩ V)) ∧
+      (∀ η ∈ Set.Ioc 0 ε, ∀ t ∈ Set.Icc 0 1, ∀ p ∈ U₀,
+        (1 - t) * (F₀ η p).1 + t * (F₀ η p).2 = 0 →
+        deriv (fun u => (1 - u) * (F₀ η p).1 + u * (F₀ η p).2) t ≠ 0 →
+        p ∈ interior J) ∧
+      (∀ η ∈ Set.Ioc 0 ε, ∀ t ∈ Set.Icc 0 1, ∀ p ∈ U₁,
+        (1 - t) * (F₁ η p).1 + t * (F₁ η p).2 = 0 →
+        deriv (fun u => (1 - u) * (F₁ η p).1 + u * (F₁ η p).2) t ≠ 0 →
+        p ∈ interior J) ∧
+      (∀ t ∈ Set.Icc (0 : ℝ) 1, ∀ p ∈ V,
+        (1 - t) * (G p).1 + t * (G p).2 = 0 → p ∈ K) := by
+  dsimp only
+  let K := convexHull ℝ (Set.range b)
+  have hK : IsCompact K := (Set.finite_range b).isCompact_convexHull ℝ
+  obtain ⟨ε₀, hε₀, hcover⟩ := exists_affine_triangle_positive_core b f₀ f₁
+    hf₀ hfb hfc₀ hf₁ hfa hfc₁ hU₀ hU₁ hb₀ hb₁
+  let V := {p | ε₀ < f₀ p ∧ ε₀ < f₁ p}
+  have hV : IsOpen V :=
+    (isOpen_lt continuous_const f₀.continuous_of_finiteDimensional).inter
+      (isOpen_lt continuous_const f₁.continuous_of_finiteDimensional)
+  obtain ⟨ρ, hρ, hρsub⟩ := hK.exists_cthickening_subset_open
+    ((hU₀.union hU₁).union hV) hcover
+  let J := Metric.cthickening ρ K
+  have hJ : IsCompact J := hK.cthickening
+  have hKJ : K ⊆ interior J :=
+    (Metric.self_subset_thickening hρ K).trans
+      (Metric.thickening_subset_interior_cthickening ρ K)
+  let c := b.reindex (Equiv.swap (0 : Fin 3) 1)
+  have hc0 : c 0 = b 1 := by simp [c]
+  have hc1 : c 1 = b 0 := by simp [c]
+  have hc2 : c 2 = b 2 := by simp [c, Equiv.swap_apply_def]
+  have hcoord0 : c.coord 0 = b.coord 1 := by simp [c]
+  have hcoord1 : c.coord 1 = b.coord 0 := by simp [c]
+  have hcoord2 : c.coord 2 = b.coord 2 := by simp [c, Equiv.swap_apply_def]
+  have hcrange : Set.range c = Set.range b := by
+    simp only [c, AffineBasis.coe_reindex, EquivLike.range_comp]
+  let C₀ := 1 + (1 + f₀ (b 2) * |s₀|) / f₀ (b 1) + |s₀|
+  let C₁ := 1 + (1 + f₁ (b 2) * |s₁|) / f₁ (b 0) + |s₁|
+  have hC₀ : 0 < C₀ := (endpoint_interpolation_confinement b f₀ hf₀ hfb hfc₀ s₀).1
+  have hC₁ : 0 < C₁ := by
+    simpa only [hc1, hc2] using
+      (endpoint_interpolation_confinement c f₁ (by simpa only [hc0] using hf₁)
+        (by simpa only [hc1] using hfa) (by simpa only [hc2] using hfc₁) s₁).1
+  let L₀ := ‖b 1 - b 0‖ + ‖b 2 - b 0‖
+  let L₁ := ‖b 0 - b 1‖ + ‖b 2 - b 1‖
+  have hL₀ : 0 ≤ L₀ := add_nonneg (norm_nonneg _) (norm_nonneg _)
+  have hL₁ : 0 ≤ L₁ := add_nonneg (norm_nonneg _) (norm_nonneg _)
+  let B := 1 + C₀ + C₁ + C₀ * L₀ + C₁ * L₁
+  have hB : 0 < B := by dsimp [B]; positivity
+  have hC₀B : C₀ ≤ B := by
+    dsimp only [B]
+    linarith only [hC₀, hC₁, mul_nonneg hC₀.le hL₀, mul_nonneg hC₁.le hL₁]
+  have hC₁B : C₁ ≤ B := by
+    dsimp only [B]
+    linarith only [hC₀, hC₁, mul_nonneg hC₀.le hL₀, mul_nonneg hC₁.le hL₁]
+  have hC₀LB : C₀ * L₀ ≤ B := by
+    dsimp only [B]
+    linarith only [hC₀, hC₁, mul_nonneg hC₀.le hL₀, mul_nonneg hC₁.le hL₁]
+  have hC₁LB : C₁ * L₁ ≤ B := by
+    dsimp only [B]
+    linarith only [hC₀, hC₁, mul_nonneg hC₀.le hL₀, mul_nonneg hC₁.le hL₁]
+  obtain ⟨δ, hδ, hδbound⟩ := exists_pos_mul_lt
+    (lt_min (by norm_num : (0 : ℝ) < 1 / 12) hρ) B
+  let ε := min ε₀ δ
+  have hε : 0 < ε := lt_min hε₀ hδ
+  have hε₀bound : ε ≤ ε₀ := min_le_left _ _
+  have hbound {η : ℝ} (hη : η ∈ Set.Ioc 0 ε) :
+      C₀ * η ≤ 1 / 12 ∧ C₁ * η ≤ 1 / 12 ∧
+        C₀ * η * L₀ < ρ ∧ C₁ * η * L₁ < ρ := by
+    have hηδ : η ≤ δ := hη.2.trans (min_le_right _ _)
+    have hBη : B * η < min (1 / 12) ρ :=
+      (mul_le_mul_of_nonneg_left hηδ hB.le).trans_lt hδbound
+    have hsmall := hBη.trans_le (min_le_left _ _)
+    have hdist := hBη.trans_le (min_le_right _ _)
+    refine ⟨((mul_le_mul_of_nonneg_right hC₀B hη.1.le).trans_lt hsmall).le,
+      ((mul_le_mul_of_nonneg_right hC₁B hη.1.le).trans_lt hsmall).le, ?_, ?_⟩
+    · have h := (mul_le_mul_of_nonneg_right hC₀LB hη.1.le).trans_lt hdist
+      calc
+        C₀ * η * L₀ = C₀ * L₀ * η := mul_right_comm _ _ _
+        _ < ρ := h
+    · have h := (mul_le_mul_of_nonneg_right hC₁LB hη.1.le).trans_lt hdist
+      calc
+        C₁ * η * L₁ = C₁ * L₁ * η := mul_right_comm _ _ _
+        _ < ρ := h
+  refine ⟨ε₀, ε, J, hε₀, hε, hε₀bound, hJ, hKJ, hρsub, hcover, ?_, ?_, ?_, ?_, ?_⟩
+  · intro η hη p hp
+    have h := (matched_endpoint_defining_functions_overlap b f₀ hf₀ hfb hfc₀ s₀ hη.1
+      (by norm_num : (0 : ℝ) < 1 / 4)).2.2.2.2.2 p
+      ⟨(hη.2.trans hε₀bound).trans_lt hp.2.1, hgap₀ p hp.1⟩
+    exact Prod.ext h.1 h.2.1
+  · intro η hη p hp
+    have h := (matched_endpoint_defining_functions_overlap c f₁
+      (by simpa only [hc0] using hf₁) (by simpa only [hc1] using hfa)
+      (by simpa only [hc2] using hfc₁) s₁ hη.1
+      (by norm_num : (0 : ℝ) < 1 / 4)).2.2.2.2.2 p
+      ⟨(hη.2.trans hε₀bound).trans_lt hp.2.2,
+        by simpa only [hcoord0, hcoord1] using hgap₁ p hp.1⟩
+    simp only [hc1, hc2, hcoord0, hcoord1, hcoord2] at h
+    refine Prod.ext h.1 (h.2.1.trans ?_)
+    exact congrArg Neg.neg (Real.smoothMax.comm (by norm_num : (1 / 4 : ℝ) ≠ 0) _ _)
+  · intro η hη t ht p hp
+    exact endpoint_active_zero_mem_interior_cthickening b f₀ hf₀ hfb hfc₀ s₀ hη.1 ht
+      (hbound hη).1 (hbound hη).2.2.1 (hgap₀ p hp)
+  · intro η hη t ht p hp hz hactive
+    have h := endpoint_active_zero_mem_interior_cthickening c f₁
+      (by simpa only [hc0] using hf₁) (by simpa only [hc1] using hfa)
+      (by simpa only [hc2] using hfc₁) s₁ hη.1 ht
+      (by simpa only [hc1, hc2] using (hbound hη).2.1)
+      (by simpa only [hc0, hc1, hc2] using (hbound hη).2.2.2)
+      (by simpa only [hcoord0, hcoord1] using hgap₁ p hp)
+      (by simpa only [hc1, hc2, hcoord2] using hz)
+      (by simpa only [hc1, hc2, hcoord2] using hactive)
+    simpa only [hcrange] using h
+  · intro t ht p hp hz
+    exact central_interpolation_zero_mem_triangle b f₀ f₁ hf₀ hfb hfc₀ hf₁ hfa hfc₁
+      (hε₀.trans hp.1) (hε₀.trans hp.2) (by norm_num) (by norm_num) ht hz
+
+end Schoenflies
+
+end
+
+section
+
 open scoped ContDiff
 
 namespace Schoenflies
@@ -2217,7 +2602,11 @@ theorem PrePolygon.exists_regular_interpolation_near_one_edge_free_triangle
           (∀ u : ℝ, deriv (fun s => H (s, p)) u = 0)) ∧
       (∀ p ∈ V, ε < f₀ p ∧ ε < f₁ p) ∧
       (∀ t ∈ Set.Icc (0 : ℝ) 1, ∀ p ∈ V, H (t, p) = 0 →
-        p ∈ M.triangleCarrier T.1) := by
+        p ∈ M.triangleCarrier T.1) ∧
+      ∃ J : Set Plane, IsCompact J ∧ M.triangleCarrier T.1 ⊆ interior J ∧
+        J ⊆ U₀ ∪ U₁ ∪ V ∧
+        (∀ t ∈ Set.Icc (0 : ℝ) 1, ∀ p ∈ U₀ ∪ U₁ ∪ V,
+          H (t, p) = 0 → deriv (fun u => H (u, p)) t ≠ 0 → p ∈ interior J) := by
   dsimp only
   let b := LeanEval.Topology.ClassificationOfSurfaces.Moise.affineBasisOfTriangle
     (M.freeTriangleOrder T k) (M.freeTriangleOrder_affineIndependent T k)
@@ -2240,9 +2629,12 @@ theorem PrePolygon.exists_regular_interpolation_near_one_edge_free_triangle
     change convexHull ℝ (Set.range ((M.position ∘ M.orderedVertex T) ∘ Equiv.swap 2 k)) = _
     rw [EquivLike.range_comp, Set.range_comp, M.range_orderedVertex T]
     rfl
-  obtain ⟨ε, hε, hcover⟩ := exists_affine_triangle_positive_core b f₀ f₁
-    hf₀ hfb hfc₀ hf₁ hfa hfc₁ hU₀ hU₁ hb₀ hb₁
-  let V := {p | ε < f₀ p ∧ ε < f₁ p}
+  obtain ⟨ε₀, ε, J, _, hε, hεle, hJ, hKJ, hJcover, hcover,
+    heleft, heright, htrace₀, htrace₁, hcentral⟩ :=
+    exists_fixed_cover_small_matched_interpolation b f₀ f₁ hf₀ hfb hfc₀ hf₁ hfa hfc₁
+      (b.coord 2 v₀ / f₀ v₀) (b.coord 2 v₁ / f₁ v₁) hU₀ hU₁ hb₀ hb₁
+      (fun _ hp => hp.2) (fun _ hp => hp.2)
+  let V := {p | ε₀ < f₀ p ∧ ε₀ < f₁ p}
   have hV : IsOpen V :=
     (isOpen_lt continuous_const f₀.continuous_of_finiteDimensional).inter
       (isOpen_lt continuous_const f₁.continuous_of_finiteDimensional)
@@ -2262,24 +2654,15 @@ theorem PrePolygon.exists_regular_interpolation_near_one_edge_free_triangle
     (by simpa only [hc2] using hfc₁) s₁ hε
     (show (0 : ℝ) < 1 / 4 by norm_num)
   simp only [hc1, hc2, hcoord0, hcoord1, hcoord2] at hright
-  have hcomm (p : Plane) : -Real.smoothMax (1 / 4) (-b.coord 1 p) (-b.coord 0 p) =
-      -Real.smoothMax (1 / 4) (-b.coord 0 p) (-b.coord 1 p) :=
-    congrArg Neg.neg (Real.smoothMax.comm (by norm_num : (1 / 4 : ℝ) ≠ 0) _ _)
-  have hK : IsCompact (M.triangleCarrier T.1) := by
-    rw [← htriangle]
-    exact (Set.finite_range b).isCompact_convexHull ℝ
-  rw [htriangle] at hcover
-  obtain ⟨F, W, hF, hW, hKW, he₀, he₁, he₂⟩ :=
-    DifferentialGeometry.Analysis.exists_contDiff_glued_near_compact hK hU₀ hU₁ hV
-      hdisjU hcover
+  rw [htriangle] at hcover hKJ hcentral
+  obtain ⟨F, W, hF, hW, hJW, he₀, he₁, he₂⟩ :=
+    DifferentialGeometry.Analysis.exists_contDiff_glued_near_compact hJ hU₀ hU₁ hV
+      hdisjU hJcover
       _ _ _ (hleft.1.prodMk hleft.2.1) (hright.1.prodMk hright.2.1)
       ((hβ 2).neg.prodMk hleft.2.2.1)
-      (fun p hp => by
-        have h := hleft.2.2.2.2.2 p ⟨hp.2.1, hp.1.2⟩
-        exact Prod.ext h.1 h.2.1)
-      (fun p hp => by
-        have h := hright.2.2.2.2.2 p ⟨hp.2.2, hp.1.2⟩
-        exact Prod.ext h.1 (h.2.1.trans (hcomm p)))
+      (heleft ε ⟨hε, le_rfl⟩) (heright ε ⟨hε, le_rfl⟩)
+  have hKW : M.triangleCarrier T.1 ⊆ W :=
+    hKJ.trans (interior_subset.trans hJW)
   have hbK (i : Fin 3) : b i ∈ M.triangleCarrier T.1 := by
     rw [← htriangle]
     exact subset_convexHull ℝ _ ⟨i, rfl⟩
@@ -2308,6 +2691,10 @@ theorem PrePolygon.exists_regular_interpolation_near_one_edge_free_triangle
         hregH 0 (show (0 : ℝ) ∈ Set.Icc 0 1 from ⟨le_rfl, by norm_num⟩) p hp
     · simpa only [sub_self, zero_mul, one_mul, zero_add] using
         hregH 1 (show (1 : ℝ) ∈ Set.Icc 0 1 from ⟨by norm_num, le_rfl⟩) p hp
+  have hcentralF (t : ℝ) (ht : t ∈ Set.Icc 0 1) (p : Plane) (hp : p ∈ W ∩ V)
+      (hz : (1 - t) * (F p).1 + t * (F p).2 = 0) : p ∈ M.triangleCarrier T.1 := by
+    rw [he₂ hp] at hz
+    exact hcentral t ht p hp.2 hz
   refine ⟨v₀, v₁, f₀, f₁, ε, W ∩ U₀, W ∩ U₁, W ∩ V, F,
     hε, hF, hW.inter hU₀, hW.inter hU₁, hW.inter hV,
     ⟨hKW (hbK 0), hb₀⟩, ⟨hKW (hbK 1), hb₁⟩,
@@ -2316,7 +2703,9 @@ theorem PrePolygon.exists_regular_interpolation_near_one_edge_free_triangle
     fun _ hp => hp.2.2, fun _ hp => hp.2.2, he₀, he₁, he₂,
     fun p hp => hgraph₀ p hp.2.1, fun p hp => hgraph₁ p hp.2.1,
     hreg, contDiff_pair_interpolation hF, (fun t p => deriv_pair_interpolation F p t),
-    by intro p; simp, by intro p; simp, hregH, ?_, ?_, (fun _ hp => hp.2), ?_⟩
+    by intro p; simp, by intro p; simp, hregH, ?_, ?_,
+    (fun _ hp => ⟨hεle.trans_lt hp.2.1, hεle.trans_lt hp.2.2⟩),
+    hcentralF, J, hJ, hKJ, ?_, ?_⟩
   · intro p hp
     rcases hcover hp with (hp₀ | hp₁) | hpV
     · exact Or.inl (Or.inl ⟨hKW hp, hp₀⟩)
@@ -2328,14 +2717,18 @@ theorem PrePolygon.exists_regular_interpolation_near_one_edge_free_triangle
   · intro t ht p hp hfp hz
     exact matched_pair_interpolation_stationary_of_left hε hfp (div_pos hfc₁ hfa)
       _ _ _ (he₁ hp) ht hz
-  · intro t ht p hp hz
-    rw [← htriangle]
-    apply central_interpolation_zero_mem_triangle b f₀ f₁ hf₀ hfb hfc₀ hf₁ hfa hfc₁
-      (hε.trans hp.2.1) (hε.trans hp.2.2) (by norm_num : (0 : ℝ) < 1 / 4)
-      (by norm_num) ht
-    change (1 - t) * (F p).1 + t * (F p).2 = 0 at hz
-    rw [he₂ hp] at hz
-    exact hz
+  · intro p hp
+    rcases hJcover hp with (hp₀ | hp₁) | hpV
+    · exact Or.inl (Or.inl ⟨hJW hp, hp₀⟩)
+    · exact Or.inl (Or.inr ⟨hJW hp, hp₁⟩)
+    · exact Or.inr ⟨hJW hp, hpV⟩
+  · intro t ht p hp hz hactive
+    rcases hp with (hp₀ | hp₁) | hpV
+    · rw [he₀ hp₀] at hz hactive
+      exact htrace₀ ε ⟨hε, le_rfl⟩ t ht p hp₀.2 hz hactive
+    · rw [he₁ hp₁] at hz hactive
+      exact htrace₁ ε ⟨hε, le_rfl⟩ t ht p hp₁.2 hz hactive
+    · exact hKJ (hcentralF t ht p hpV hz)
 
 end Schoenflies
 
