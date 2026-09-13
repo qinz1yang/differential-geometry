@@ -6460,6 +6460,8 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.LocalOrient
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.LoopClass
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.LoopModel
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.LowDegreeHurewiczCubeBridge
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.LowDegreeHurewiczCubeCanonical
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.LowDegreeHurewiczThreeSphere
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.MetricEvent
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ObservationTower
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.OpenCoreSubmanifold
@@ -7829,6 +7831,7 @@ import DifferentialGeometry.Topology.Homology.LocalDerivativeComparison
 import DifferentialGeometry.Topology.Homology.LocalHomology
 import DifferentialGeometry.Topology.Homology.LocalLinearMaps
 import DifferentialGeometry.Topology.Homology.LocalizationTransport
+import DifferentialGeometry.Topology.Homology.LowDegreeHurewiczNonvacuity
 import DifferentialGeometry.Topology.Homology.Manifold
 import DifferentialGeometry.Topology.Homology.ManifoldBoundary
 import DifferentialGeometry.Topology.Homology.ManifoldDoubleEuler
