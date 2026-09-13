@@ -3024,6 +3024,7 @@ import DifferentialGeometry.Geometry.Boundary.LocalFlow
 import DifferentialGeometry.Geometry.Boundary.Manifold.Basic
 import DifferentialGeometry.Geometry.Boundary.Manifold.BinaryGluing
 import DifferentialGeometry.Geometry.Boundary.Manifold.CollaredGluing
+import DifferentialGeometry.Geometry.Boundary.Manifold.CollaredGluingRegularity
 import DifferentialGeometry.Geometry.Boundary.Manifold.CollaredQuotientAtlas
 import DifferentialGeometry.Geometry.Boundary.Manifold.CollaredQuotientDouble
 import DifferentialGeometry.Geometry.Boundary.Manifold.Component
