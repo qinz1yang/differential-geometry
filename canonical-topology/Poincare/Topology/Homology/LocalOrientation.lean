@@ -69,106 +69,52 @@ private theorem tangent_trivialization_transition_eq_fderiv
         by simpa only [extChartAt_source] using hy⟩
   simpa only [tangentCoordChange_def, mfld_simps, fderivWithin_univ] using hcomp
 
-private theorem oriented_chart_transition_local_homology
-    {E : Type u} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
-    {M : Type v} [TopologicalSpace M] [ChartedSpace E M] [IsManifold 𝓘(ℝ, E) 1 M]
-    (x y p : M) (hx : p ∈ (chartAt E x).source) (hy : p ∈ (chartAt E y).source)
-    (o : Orientation ℝ (TangentSpace 𝓘(ℝ, E) p) (Fin (Module.finrank ℝ E)))
-    (ω : Orientation ℝ E (Fin (Module.finrank ℝ E)))
-    (hxori : Orientation.map _
-      ((trivializationAt E (TangentSpace 𝓘(ℝ, E)) x).continuousLinearEquivAt ℝ p
-      (by simpa only [TangentBundle.trivializationAt_baseSet] using hx)).toLinearEquiv o = ω)
-    (hyori : Orientation.map _
-      ((trivializationAt E (TangentSpace 𝓘(ℝ, E)) y).continuousLinearEquivAt ℝ p
-      (by simpa only [TangentBundle.trivializationAt_baseSet] using hy)).toLinearEquiv o = ω) :
-    let e := (chartAt E x).symm.trans (chartAt E y)
-    ∃ he : chartAt E x p ∈ e.source,
-      e (chartAt E x p) = chartAt E y p ∧
-      (integralRelativeHomologyMap (Module.finrank ℝ E)
-          (toContinuousMap (Homeomorph.subRight (e (chartAt E x p))))
-          (show MapsTo (Homeomorph.subRight (e (chartAt E x p)))
-            ({e (chartAt E x p)}ᶜ : Set E) ({0}ᶜ : Set E)
-            from fun _ hz => sub_ne_zero.mpr hz)).comp
-          (integralLocalHomologyOpenPartialHomeomorphIso (Module.finrank ℝ E)
-            e (chartAt E x p) he).hom.hom =
-        integralRelativeHomologyMap (Module.finrank ℝ E)
-          (toContinuousMap (Homeomorph.subRight (chartAt E x p)))
-          (show MapsTo (Homeomorph.subRight (chartAt E x p))
-            ({chartAt E x p}ᶜ : Set E) ({0}ᶜ : Set E)
-            from fun _ hz => sub_ne_zero.mpr hz) := by
-  let e := (chartAt E x).symm.trans (chartAt E y)
-  have he : chartAt E x p ∈ e.source := by
-    change chartAt E x p ∈ (chartAt E x).target ∧
-      (chartAt E x).symm (chartAt E x p) ∈ (chartAt E y).source
-    exact ⟨(chartAt E x).map_source hx, by rwa [(chartAt E x).left_inv hx]⟩
-  have hep : e (chartAt E x p) = chartAt E y p := by
-    change chartAt E y ((chartAt E x).symm (chartAt E x p)) = chartAt E y p
-    rw [(chartAt E x).left_inv hx]
-  have hf : HasFDerivAt e (tangentCoordChange 𝓘(ℝ, E) x y p) (chartAt E x p) := by
-    change HasFDerivAt ((chartAt E y) ∘ (chartAt E x).symm)
-      (tangentCoordChange 𝓘(ℝ, E) x y p) (chartAt E x p)
-    simpa only [mfld_simps, hasFDerivWithinAt_univ] using
-      (hasFDerivWithinAt_tangentCoordChange (I := 𝓘(ℝ, E)) (x := x) (y := y) (z := p)
-        ⟨by simpa only [extChartAt_source] using hx,
-          by simpa only [extChartAt_source] using hy⟩)
-  have hf' : HasFDerivAt e.symm (tangentCoordChange 𝓘(ℝ, E) y x p) (e (chartAt E x p)) := by
-    rw [hep]
-    change HasFDerivAt ((chartAt E x) ∘ (chartAt E y).symm)
-      (tangentCoordChange 𝓘(ℝ, E) y x p) (chartAt E y p)
-    simpa only [mfld_simps, hasFDerivWithinAt_univ] using
-      (hasFDerivWithinAt_tangentCoordChange (I := 𝓘(ℝ, E)) (x := y) (y := x) (z := p)
-        ⟨by simpa only [extChartAt_source] using hy,
-          by simpa only [extChartAt_source] using hx⟩)
-  have hdet : 0 < LinearMap.det (fderiv ℝ e (chartAt E x p)).toLinearMap := by
-    have h := det_pos_of_orientations_agree
-      ((trivializationAt E (TangentSpace 𝓘(ℝ, E)) x).continuousLinearEquivAt ℝ p
-      (by simpa only [TangentBundle.trivializationAt_baseSet] using hx)).toLinearEquiv
-      ((trivializationAt E (TangentSpace 𝓘(ℝ, E)) y).continuousLinearEquivAt ℝ p
-      (by simpa only [TangentBundle.trivializationAt_baseSet] using hy)).toLinearEquiv
-      o ω hxori hyori
-    have hd := tangent_trivialization_transition_eq_fderiv x y p hx hy
-    change _ = fderiv ℝ e (chartAt E x p) at hd
-    rw [← hd]
-    exact h
-  refine ⟨he, hep, ?_⟩
-  have hsign := integralLocalHomologyOpenPartialHomeomorphIso_translation_eq_det_sign
-    e (chartAt E x p) he hf.differentiableAt hf'.differentiableAt
-  rw [sign_pos hdet, SignType.coe_one, one_smul] at hsign
-  exact hsign
-
-theorem oriented_local_homology_chart_maps_eq
+theorem integralLocalHomology_chart_maps_eq_det_sign
     {E M : Type u} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
     [TopologicalSpace M] [T1Space M] [ChartedSpace E M] [IsManifold 𝓘(ℝ, E) 1 M]
-    (x y p : M) (hx : p ∈ (chartAt E x).source) (hy : p ∈ (chartAt E y).source)
-    (o : Orientation ℝ (TangentSpace 𝓘(ℝ, E) p) (Fin (Module.finrank ℝ E)))
-    (hori : Orientation.map _
-      ((trivializationAt E (TangentSpace 𝓘(ℝ, E)) x).continuousLinearEquivAt ℝ p
-        (by simpa only [TangentBundle.trivializationAt_baseSet] using hx)).toLinearEquiv o =
-      Orientation.map _
-        ((trivializationAt E (TangentSpace 𝓘(ℝ, E)) y).continuousLinearEquivAt ℝ p
-          (by simpa only [TangentBundle.trivializationAt_baseSet] using hy)).toLinearEquiv o) :
-    (integralRelativeHomologyMap (Module.finrank ℝ E)
+    (x y p : M) (hx : p ∈ (chartAt E x).source) (hy : p ∈ (chartAt E y).source) :
+    (SignType.sign (LinearMap.det
+      (fderiv ℝ ((chartAt E y) ∘ (chartAt E x).symm) (chartAt E x p)).toLinearMap) : ℤ) •
+      (integralRelativeHomologyMap (Module.finrank ℝ E)
         (toContinuousMap (Homeomorph.subRight (chartAt E x p)))
         (show MapsTo (Homeomorph.subRight (chartAt E x p))
-          ({chartAt E x p}ᶜ : Set E) ({0}ᶜ : Set E)
-          from fun _ hz => sub_ne_zero.mpr hz)).comp
+          ({chartAt E x p}ᶜ : Set E) ({0}ᶜ : Set E) from fun _ hz => sub_ne_zero.mpr hz)).comp
         (integralLocalHomologyOpenPartialHomeomorphIso (Module.finrank ℝ E)
           (chartAt E x) p hx).hom.hom =
       (integralRelativeHomologyMap (Module.finrank ℝ E)
         (toContinuousMap (Homeomorph.subRight (chartAt E y p)))
         (show MapsTo (Homeomorph.subRight (chartAt E y p))
-          ({chartAt E y p}ᶜ : Set E) ({0}ᶜ : Set E)
-          from fun _ hz => sub_ne_zero.mpr hz)).comp
+          ({chartAt E y p}ᶜ : Set E) ({0}ᶜ : Set E) from fun _ hz => sub_ne_zero.mpr hz)).comp
         (integralLocalHomologyOpenPartialHomeomorphIso (Module.finrank ℝ E)
           (chartAt E y) p hy).hom.hom := by
   let n := Module.finrank ℝ E
   let e := chartAt E x
   let f := chartAt E y
   let g := e.symm.trans f
-  let ω := Orientation.map _
-    ((trivializationAt E (TangentSpace 𝓘(ℝ, E)) x).continuousLinearEquivAt ℝ p
-      (by simpa only [TangentBundle.trivializationAt_baseSet] using hx)).toLinearEquiv o
-  obtain ⟨hga, _, hsign⟩ := oriented_chart_transition_local_homology x y p hx hy o ω rfl hori.symm
+  let c : ℤ := SignType.sign (LinearMap.det (fderiv ℝ g (e p)).toLinearMap)
+  have hga : e p ∈ g.source := by
+    change e p ∈ e.target ∧ e.symm (e p) ∈ f.source
+    exact ⟨e.map_source hx, by rwa [e.left_inv hx]⟩
+  have hgp : g (e p) = f p := by
+    change f (e.symm (e p)) = f p
+    rw [e.left_inv hx]
+  have hd : HasFDerivAt g (tangentCoordChange 𝓘(ℝ, E) x y p) (e p) := by
+    change HasFDerivAt ((chartAt E y) ∘ (chartAt E x).symm)
+      (tangentCoordChange 𝓘(ℝ, E) x y p) (chartAt E x p)
+    simpa only [mfld_simps, hasFDerivWithinAt_univ] using
+      (hasFDerivWithinAt_tangentCoordChange (I := 𝓘(ℝ, E)) (x := x) (y := y) (z := p)
+        ⟨by simpa only [extChartAt_source] using hx,
+          by simpa only [extChartAt_source] using hy⟩)
+  have hd' : HasFDerivAt g.symm (tangentCoordChange 𝓘(ℝ, E) y x p) (g (e p)) := by
+    rw [hgp]
+    change HasFDerivAt ((chartAt E x) ∘ (chartAt E y).symm)
+      (tangentCoordChange 𝓘(ℝ, E) y x p) (chartAt E y p)
+    simpa only [mfld_simps, hasFDerivWithinAt_univ] using
+      (hasFDerivWithinAt_tangentCoordChange (I := 𝓘(ℝ, E)) (x := y) (y := x) (z := p)
+        ⟨by simpa only [extChartAt_source] using hy,
+          by simpa only [extChartAt_source] using hx⟩)
+  have hsign := integralLocalHomologyOpenPartialHomeomorphIso_translation_eq_det_sign
+    g (e p) hga hd.differentiableAt hd'.differentiableAt
   let U := e.source ∩ f.source
   have hU : IsOpen U := e.open_source.inter f.open_source
   have hpU : p ∈ U := ⟨hx, hy⟩
@@ -209,7 +155,7 @@ theorem oriented_local_homology_chart_maps_eq
   have hTf : MapsTo Tf ({f p}ᶜ : Set E) ({0}ᶜ : Set E) := fun _ hz => sub_ne_zero.mpr hz
   have hTg : MapsTo Tg ({g (e p)}ᶜ : Set E) ({0}ᶜ : Set E) := fun _ hz => sub_ne_zero.mpr hz
   change (integralRelativeHomologyMap n Tg hTg).comp Ig.hom.hom =
-    integralRelativeHomologyMap n Te hTe at hsign
+    c • integralRelativeHomologyMap n Te hTe at hsign
   have heJ : Ie.hom.hom.comp J.hom.hom =
       Jg.hom.hom.comp (integralRelativeHomologyMap n q hq) := by
     rw [integralLocalHomologyOpenPartialHomeomorphIso_comp_neighborhood n e p U hU hpU hUe]
@@ -229,12 +175,13 @@ theorem oriented_local_homology_chart_maps_eq
     ext z
     change f (e.symm (e z)) - f (e.symm (e p)) = f z - f p
     rw [e.left_inv z.property.1, e.left_inv hx]
-  let L := (integralRelativeHomologyMap n Te hTe).comp Ie.hom.hom
+  let L := c • (integralRelativeHomologyMap n Te hTe).comp Ie.hom.hom
   let R := (integralRelativeHomologyMap n Tf hTf).comp If.hom.hom
   have hcomp : L.comp J.hom.hom = R.comp J.hom.hom := by
     calc
-      L.comp J.hom.hom = (integralRelativeHomologyMap n Te hTe).comp
-          (Ie.hom.hom.comp J.hom.hom) := LinearMap.comp_assoc _ _ _
+      L.comp J.hom.hom = (c • integralRelativeHomologyMap n Te hTe).comp
+          (Ie.hom.hom.comp J.hom.hom) := by
+        simp only [L, LinearMap.smul_comp, LinearMap.comp_assoc]
       _ = ((integralRelativeHomologyMap n Tg hTg).comp Ig.hom.hom).comp
           (Ie.hom.hom.comp J.hom.hom) := by rw [hsign]
       _ = (integralRelativeHomologyMap n Tg hTg).comp
@@ -256,6 +203,46 @@ theorem oriented_local_homology_chart_maps_eq
   have h := LinearMap.congr_fun hcomp (J.inv.hom z)
   change L (J.hom.hom (J.inv.hom z)) = R (J.hom.hom (J.inv.hom z)) at h
   rw [hz] at h
+  exact h
+
+theorem oriented_local_homology_chart_maps_eq
+    {E M : Type u} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    [TopologicalSpace M] [T1Space M] [ChartedSpace E M] [IsManifold 𝓘(ℝ, E) 1 M]
+    (x y p : M) (hx : p ∈ (chartAt E x).source) (hy : p ∈ (chartAt E y).source)
+    (o : Orientation ℝ (TangentSpace 𝓘(ℝ, E) p) (Fin (Module.finrank ℝ E)))
+    (hori : Orientation.map _
+      ((trivializationAt E (TangentSpace 𝓘(ℝ, E)) x).continuousLinearEquivAt ℝ p
+        (by simpa only [TangentBundle.trivializationAt_baseSet] using hx)).toLinearEquiv o =
+      Orientation.map _
+        ((trivializationAt E (TangentSpace 𝓘(ℝ, E)) y).continuousLinearEquivAt ℝ p
+          (by simpa only [TangentBundle.trivializationAt_baseSet] using hy)).toLinearEquiv o) :
+    (integralRelativeHomologyMap (Module.finrank ℝ E)
+        (toContinuousMap (Homeomorph.subRight (chartAt E x p)))
+        (show MapsTo (Homeomorph.subRight (chartAt E x p))
+          ({chartAt E x p}ᶜ : Set E) ({0}ᶜ : Set E)
+          from fun _ hz => sub_ne_zero.mpr hz)).comp
+        (integralLocalHomologyOpenPartialHomeomorphIso (Module.finrank ℝ E)
+          (chartAt E x) p hx).hom.hom =
+      (integralRelativeHomologyMap (Module.finrank ℝ E)
+        (toContinuousMap (Homeomorph.subRight (chartAt E y p)))
+        (show MapsTo (Homeomorph.subRight (chartAt E y p))
+          ({chartAt E y p}ᶜ : Set E) ({0}ᶜ : Set E)
+          from fun _ hz => sub_ne_zero.mpr hz)).comp
+        (integralLocalHomologyOpenPartialHomeomorphIso (Module.finrank ℝ E)
+          (chartAt E y) p hy).hom.hom := by
+  have hdet : 0 < LinearMap.det
+      (fderiv ℝ ((chartAt E y) ∘ (chartAt E x).symm) (chartAt E x p)).toLinearMap := by
+    have h := det_pos_of_orientations_agree
+      ((trivializationAt E (TangentSpace 𝓘(ℝ, E)) x).continuousLinearEquivAt ℝ p
+        (by simpa only [TangentBundle.trivializationAt_baseSet] using hx)).toLinearEquiv
+      ((trivializationAt E (TangentSpace 𝓘(ℝ, E)) y).continuousLinearEquivAt ℝ p
+        (by simpa only [TangentBundle.trivializationAt_baseSet] using hy)).toLinearEquiv
+      o _ rfl hori.symm
+    have hd := tangent_trivialization_transition_eq_fderiv x y p hx hy
+    rw [← hd]
+    exact h
+  have h := integralLocalHomology_chart_maps_eq_det_sign x y p hx hy
+  rw [sign_pos hdet, SignType.coe_one, one_smul] at h
   exact h
 
 open ContinuousMap in
@@ -301,3 +288,5 @@ theorem exists_compact_neighborhood_class_with_oriented_chart_maps
       (Orientation.map _ A.symm (Module.finBasis ℝ E).orientation) rfl
 
 end Poincare.Topology
+
+end

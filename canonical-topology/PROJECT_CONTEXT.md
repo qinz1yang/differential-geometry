@@ -10,15 +10,21 @@ the dependency closure of fourteen roots covering local homology, derivatives,
 determinant signs, oriented chart compatibility, compact chart classes,
 Mayer–Vietoris, manifold compact-support homology and the actual
 absolute-to-relative-empty comparison, plus actual consumer
-dependencies. Final request
-`1789264345451073915-topology_checkpoint-f04d0bd9` passed in Slurm 13781140
-in 91.29 seconds. RelativeEmpty and root freshly compiled in the preceding
-artifact request e5804880 in 1:18.48 with zero diagnostics; the final gate
-keeps those exact production sources and repairs only the combined consumer
-universe scope. All 50 added public exports, 206 guards and 111 signature/axiom
-pairs pass; all 106 previous pairs and five new original imported pairs match
-byte for byte. All 102 prior leaves remain unchanged and retain their earlier
-compilation evidence.
+dependencies. The signed chart-transition extension retains all 103 leaves
+and now exposes 51 added public results. Final request
+`1789297108056477917-topology_checkpoint-27c4be25` passed in Slurm 13821107
+in 88.14 seconds, with 212 guards and 115 signature/axiom pairs. All 111
+previous pairs are byte-identical. LocalOrientation and root freshly compiled
+in the preceding 0b7eb007 request in 1:11.42 with zero diagnostics; the final
+replay uses unchanged production sources and fixes only a duplicate universe
+in the combined consumer harness. The other 102 leaves remain byte-identical.
+
+The new primary theorem identifies the change between the actual normalized
+local top-homology maps of two manifold charts with the sign of their actual
+transition derivative determinant. C¹ regularity and finite-dimensional real
+normed models suffice, including rank zero. The earlier oriented-map theorem
+retains its exact statement and now follows from this general sign formula;
+the compact oriented-neighborhood class theorem is unchanged.
 
 The actual absolute-to-relative-empty map is now a linear equivalence in
 every degree and topological space, with its defining map equation exposed.

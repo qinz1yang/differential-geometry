@@ -270,3 +270,18 @@ that scratch scope and passed in 91.29 seconds, with a cached root build,
 five added pairs match the original imported gate byte for byte. Stock
 linters and standard-only transitive axioms pass. SNAPSHOT.json preserves
 both the fresh artifact identity and the final successful gate.
+
+## Signed manifold chart transition
+
+`LocalOrientation` now exposes the actual determinant-sign relation between
+two normalized manifold chart maps. Its previous oriented equality retains
+its exact public statement and consumes this common engine; the compact
+oriented-neighborhood theorem and proof remain unchanged. No source or
+installation was downloaded for this extension.
+
+The original source gate 07e84189 and imported gate 9989c94d pass. Final
+portable gate 27c4be25 passes 212 guards and 115 signature/axiom pairs,
+including all 111 previous pairs unchanged. The changed leaf and root freshly
+compiled in 0b7eb007; the final replay changes only a duplicate universe in the
+scratch consumer. All 102 other leaves are unchanged. SNAPSHOT.json preserves
+the preceding relative-empty validation and records this checkpoint separately.

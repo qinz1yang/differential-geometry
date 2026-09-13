@@ -1,5 +1,5 @@
 {
-  "scope": "Dependency-closed 103-module local homology, compact-support manifold homology and relative-empty comparison checkpoint; full topology suite incomplete",
+  "scope": "Dependency-closed 103-module local homology, signed chart transition, compact-support manifold homology and relative-empty comparison checkpoint; full topology suite incomplete",
   "baseline_commit": "b45bfa009368c8f5f531e10f4f5280e90079d6ad",
   "baseline_ref": "refs/remotes/origin/codex/chapter35",
   "source_project": "PoincareLean",
@@ -79,7 +79,7 @@
       "module": "Poincare.Topology.Homology.LocalOrientation",
       "path": "Poincare/Topology/Homology/LocalOrientation.lean",
       "baseline_sha256": null,
-      "sha256": "c75edd6d472dc57273d9d3ee1ffec230c0f1c7b35e9f040765ad936dc453c530"
+      "sha256": "3329793c5cc00ca1f1d7424a4b5ef3b0c16de73e3df53f041d0bc4b3113fc77b"
     },
     {
       "module": "Poincare.Topology.Homology.LocalStarConvex",
@@ -375,7 +375,7 @@
       "module": "Poincare.Topology.Homology.LocalOrientation",
       "path": "Poincare/Topology/Homology/LocalOrientation.lean",
       "baseline_sha256": null,
-      "sha256": "c75edd6d472dc57273d9d3ee1ffec230c0f1c7b35e9f040765ad936dc453c530"
+      "sha256": "3329793c5cc00ca1f1d7424a4b5ef3b0c16de73e3df53f041d0bc4b3113fc77b"
     },
     {
       "module": "Poincare.Topology.Homology.LocalStarConvex",
@@ -907,7 +907,8 @@
     "Poincare.Topology.integralRelativeHomology_eq_of_local_restrictions",
     "Poincare.Topology.exists_nonzero_local_restriction_of_compact",
     "Poincare.Topology.integralAbsoluteToRelativeEmptyEquiv",
-    "Poincare.Topology.integralAbsoluteToRelativeEmptyEquiv_toLinearMap"
+    "Poincare.Topology.integralAbsoluteToRelativeEmptyEquiv_toLinearMap",
+    "Poincare.Topology.integralLocalHomology_chart_maps_eq_det_sign"
   ],
   "historical_authorities": [
     {
@@ -1046,22 +1047,22 @@
   },
   "validation": {
     "status": "passed for the selected103-module checkpoint; full topology suite incomplete",
-    "date": "2026-09-12",
-    "slurm_job": "13781140",
-    "host": "della-r3c2n16",
-    "request_id": "1789264345451073915-topology_checkpoint-f04d0bd9",
-    "input_sha256": "1100c5955ebfeffb0967f87db066199189eca8c9306d10ba9f9af12ef5e82f6e",
-    "result_sha256": "9189118a87003e0c5100f15bc9e8b508fd01c65ac91a434c7e479a3a50c38c2f",
-    "artifact_log_sha256": "d2dd8841eff0fd750e5a862eccb13964eac3485a4b768c3988d7bee56be7273c",
-    "source_config_harness_hash_guards": 206,
+    "date": "2026-09-13",
+    "slurm_job": "13821107",
+    "host": "della-r3c4n2",
+    "request_id": "1789297108056477917-topology_checkpoint-27c4be25",
+    "input_sha256": "827cea527a28732729b07651acfb0186c3846710332798607d59f2b6d60e326c",
+    "result_sha256": "4f668f4258e92594cc438c371d5b3c8b8584ce2a3d66bbfc803c3402b2e43f0b",
+    "artifact_log_sha256": "c6ce35a3df5a9bb2b2158f2c6211dd80abc11291eb61d69d1f79a60e60589b9f",
+    "source_config_harness_hash_guards": 212,
     "freshly_built_modules": [
-      "Poincare.Topology.Homology.RelativeEmpty",
+      "Poincare.Topology.Homology.LocalOrientation",
       "Poincare"
     ],
     "root_build": "lake --no-cache --iofail build Poincare",
-    "fresh_build_scope": "RelativeEmpty and root freshly compiled in e5804880 in1:18.48, RSS1778200KiB, zero diagnostics. Final f04d0bd9 replay uses identical production sources and a cached root build0:20.23; only the combined consumer universe scope was repaired. All102 previous leaves unchanged.",
-    "exact_public_exports": 50,
-    "public_and_consumer_signature_axiom_pairs": 111,
+    "fresh_build_scope": "LocalOrientation and root freshly compiled in0b7eb007 in1:11.42,RSS1944864KiB with zero diagnostics. Final27c4be25 uses unchanged production sources and removes only a duplicate universe declaration in the combined consumer. Other102 leaves remain byte-identical and retain earlier evidence.",
+    "exact_public_exports": 51,
+    "public_and_consumer_signature_axiom_pairs": 115,
     "linters": [
       "unusedArguments",
       "simpNF",
@@ -1076,17 +1077,17 @@
       "Quot.sound"
     ],
     "unexpected_diagnostics": 0,
-    "elapsed_seconds": 91.29033875465393,
-    "peak_summed_rss_bytes": 2779545600,
+    "elapsed_seconds": 88.13901376724243,
+    "peak_summed_rss_bytes": 2803613696,
     "full_topology_suite_accepted": false,
     "consumer_probes": [
-      "All106 previous signature/axiom pairs reproduced byte-identically",
-      "Both new public and three consumer pairs exactly match original imported gate",
-      "Nonzero actual relative H0 class with unique absolute preimage",
-      "Actual map naturality and equivalence naturality for arbitrary continuous maps"
+      "All111 prior signature/axiom pairs reproduced byte-identically",
+      "New general signed chart transition and three consumer readbacks match original gate up to finrank qualification and whitespace",
+      "Actual nonzero local class transported through arbitrary overlapping charts",
+      "Actual Euclidean3 nonzero chart class; rank-zero cases retained in original consumer suite"
     ],
-    "fresh_artifact_request_id": "1789262781992230755-topology_checkpoint-e5804880",
-    "fresh_artifact_log_sha256": "753e0e39b8d821f2285d850dad7f406b09d05e628d6433609c6a6375705e3a69"
+    "fresh_artifact_request_id": "1789296881793495986-topology_checkpoint-0b7eb007",
+    "fresh_artifact_log_sha256": "7024f5e8a95f095022929818463139c11ad181b53484c436d2c575b724981eff"
   },
   "previous_linear_sign_checkpoint_validation": {
     "status": "passed for this 88-module checkpoint; full topology suite incomplete",
@@ -1693,5 +1694,59 @@
       "Poincare.Topology.Homology.RelativeEmpty"
     ],
     "fresh_artifacts": "0:28.22; maximum RSS1546112KiB; zero diagnostics"
+  },
+  "previous_relative_empty_validation": {
+    "status": "passed for the selected103-module checkpoint; full topology suite incomplete",
+    "date": "2026-09-12",
+    "slurm_job": "13781140",
+    "host": "della-r3c2n16",
+    "request_id": "1789264345451073915-topology_checkpoint-f04d0bd9",
+    "input_sha256": "1100c5955ebfeffb0967f87db066199189eca8c9306d10ba9f9af12ef5e82f6e",
+    "result_sha256": "9189118a87003e0c5100f15bc9e8b508fd01c65ac91a434c7e479a3a50c38c2f",
+    "artifact_log_sha256": "d2dd8841eff0fd750e5a862eccb13964eac3485a4b768c3988d7bee56be7273c",
+    "source_config_harness_hash_guards": 206,
+    "freshly_built_modules": [
+      "Poincare.Topology.Homology.RelativeEmpty",
+      "Poincare"
+    ],
+    "root_build": "lake --no-cache --iofail build Poincare",
+    "fresh_build_scope": "RelativeEmpty and root freshly compiled in e5804880 in1:18.48, RSS1778200KiB, zero diagnostics. Final f04d0bd9 replay uses identical production sources and a cached root build0:20.23; only the combined consumer universe scope was repaired. All102 previous leaves unchanged.",
+    "exact_public_exports": 50,
+    "public_and_consumer_signature_axiom_pairs": 111,
+    "linters": [
+      "unusedArguments",
+      "simpNF",
+      "synTaut",
+      "checkType"
+    ],
+    "linter_scope": "All imported Poincare declarations and current consumers, including private declarations",
+    "defLemma": "Unavailable in the pinned Mathlib; source declaration-kind checks retained.",
+    "allowed_transitive_axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "unexpected_diagnostics": 0,
+    "elapsed_seconds": 91.29033875465393,
+    "peak_summed_rss_bytes": 2779545600,
+    "full_topology_suite_accepted": false,
+    "consumer_probes": [
+      "All106 previous signature/axiom pairs reproduced byte-identically",
+      "Both new public and three consumer pairs exactly match original imported gate",
+      "Nonzero actual relative H0 class with unique absolute preimage",
+      "Actual map naturality and equivalence naturality for arbitrary continuous maps"
+    ],
+    "fresh_artifact_request_id": "1789262781992230755-topology_checkpoint-e5804880",
+    "fresh_artifact_log_sha256": "753e0e39b8d821f2285d850dad7f406b09d05e628d6433609c6a6375705e3a69"
+  },
+  "original_signed_chart_validation": {
+    "request_id": "1789296710136687408-topology-9989c94d",
+    "input_sha256": "c34c485bac9eb0fbba86c8b4d88305d056eaf80d7b68f705269ab20dd4896183",
+    "elapsed_seconds": 90.47761845588684,
+    "source_guards": 166,
+    "signature_axiom_pairs": 6,
+    "fresh_modules": [
+      "Poincare.Topology.Homology.LocalOrientation"
+    ]
   }
 }

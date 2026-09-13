@@ -7,6 +7,8 @@ and `Poincare` namespaces. `Poincare.lean` imports every included leaf.
 
 The additions prove:
 
+- the determinant-sign formula for the actual normalized top local-homology
+  maps of arbitrary overlapping C¹ manifold charts, including rank zero;
 - an equivalence from actual absolute integral homology to homology relative
   to the empty subspace, with its forward map equal to the original
   absolute-to-relative map, in every natural degree and topological space;
@@ -310,6 +312,24 @@ five new public/consumer pairs exactly match their earlier readbacks.
 Consumers check a nonzero relative H0 class and both actual-map and equivalence
 naturality. Stock linters and standard-only axioms pass. All 102 prior leaves
 remain byte-identical and retain their earlier compilation evidence.
+
+The signed-chart extension keeps 103 leaves and adds one public theorem,
+for 51 added exports. It compares the actual chart/excision maps after
+translation to the model origin using the determinant sign of the actual
+coordinate transition. No chosen orientation is required by the new theorem.
+The previous orientation-preserving equality is now a corollary with its exact
+public statement retained; the compact oriented-chart class proof is unchanged.
+
+LocalOrientation and root freshly compiled in Slurm 13821107, request
+`1789296881793495986-topology_checkpoint-0b7eb007`, in 1:11.42 with maximum
+RSS 1944864 KiB and zero diagnostics. Final request
+`1789297108056477917-topology_checkpoint-27c4be25` passed in 88.14 seconds
+after removing a duplicate universe declaration in the combined consumer.
+Production sources were unchanged. All 212 guards and 115 signature/axiom
+pairs pass; the 111 prior pairs are byte-identical. New consumers check
+nonzero local classes under arbitrary overlapping charts and the actual
+Euclidean3 model. Stock linters and standard-only axioms pass. The other
+102 leaves remain byte-identical and retain their earlier build evidence.
 
 ## Remaining topology work
 
