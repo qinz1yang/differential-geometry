@@ -1,6 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChildParent
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.Homology
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.GeometricCutoff
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.StaticNeckChildCore
 import DifferentialGeometry.Topology.Manifold.InteriorImage
 import DifferentialGeometry.Topology.VanKampen.SmoothSphereSeparation
 import DifferentialGeometry.Topology.Manifold.SmoothEmbeddingComposition
@@ -865,9 +866,7 @@ theorem rfs_comparison_support_of_region_data
     (hboundary : ∀ b : G.ChildBoundary c,
       (Subtype.val : S.region → (G.Parent c).Carrier) '' Set.range (S.sphere (hlabel b)) =
         Set.range (fun y : Sphere 2 => G.collarMap c b
-          (y, ⟨G.comparisonLevel c b, le_rfl, (G.comparisonLevel_negative c b).le⟩)))
-    (hcollar : ∀ (b : G.ChildBoundary c) (y : Sphere 2) (t : ↑(Icc (G.comparisonLevel c b) 0)),
-      G.collarMap c b (y, t) ∈ Set.range (G.transition.childCoreIntoParent c) → (t : ℝ) = 0) :
+          (y, ⟨G.comparisonLevel c b, le_rfl, (G.comparisonLevel_negative c b).le⟩))) :
     Nonempty (G.ComparisonSupport c) :=
   ⟨{ level := G.comparisonLevel c
      level_lower := G.comparisonLevel_lower c
@@ -877,7 +876,20 @@ theorem rfs_comparison_support_of_region_data
      collarParameter_eq := G.collarParameter_apply c
      collar := G.collarMap c
      collar_eq := G.collarMap_apply c
-     collar_core_intersection := G.collarMap_inter_childCore_range_of_subset_ne_zero c hcollar
+     collar_core_intersection := G.collarMap_inter_childCore_range_of_subset_ne_zero c (by
+       intro b y t ht
+       by_contra hne
+       obtain ⟨z, hz⟩ := ht
+       have hzval : (z.1.1 : (H.stage i.castSucc).Carrier) =
+           ((G.static b.1).neck.chart (G.collarParameter c b (y, t)).1).1 := by
+         have h1 : (G.transition.childCoreIntoParent c z).1 = (G.collarMap c b (y, t)).1 :=
+           congrArg Subtype.val hz
+         exact h1.trans (G.collarMap_apply c b (y, t))
+       have hneg : (G.collarParameter c b (y, t)).1.1.2 < 0 := by
+         rw [G.collarParameter_apply c b (y, t)]
+         exact lt_of_le_of_ne t.2.2 hne
+       exact G.staticNeckChart_ne_childCore_of_coordinate_negative b.1 c b.2
+         (G.collarParameter c b (y, t)).1 hneg z hzval.symm)
      collar_disjoint := G.collarMap_pairwise_disjoint c
      support := S
      support_eq := hregion

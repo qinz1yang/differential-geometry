@@ -457,14 +457,14 @@ private theorem productCylinder_continuousAt_congr {E : Type*} [NormedAddCommGro
 
 
 
-private theorem continuousAt_comp_same_type {α X : Type*} (tα : TopologicalSpace α)
-    (tX tY : TopologicalSpace X) {f : α → X} {g : X → X} {x : α}
-    (hg : @ContinuousAt X X tX tY g (f x)) (hf : @ContinuousAt α X tα tX f x) :
-    @ContinuousAt α X tα tY (fun a => g (f a)) x := by
-  have h1 : @Filter.Tendsto X X g (@nhds X tX (f x)) (@nhds X tY (g (f x))) := hg
-  have h2 : @Filter.Tendsto α X f (@nhds α tα x) (@nhds X tX (f x)) := hf
-  exact @Filter.Tendsto.comp α X X f g (@nhds α tα x) (@nhds X tX (f x))
-    (@nhds X tY (g (f x))) h1 h2
+private theorem continuousAt_comp {α β X : Type*} (tα : TopologicalSpace α)
+    (tβ : TopologicalSpace β) (tX : TopologicalSpace X) {f : α → β} {g : β → X} {x : α}
+    (hg : @ContinuousAt β X tβ tX g (f x)) (hf : @ContinuousAt α β tα tβ f x) :
+    @ContinuousAt α X tα tX (fun a => g (f a)) x := by
+  have h1 : @Filter.Tendsto β X g (@nhds β tβ (f x)) (@nhds X tX (g (f x))) := hg
+  have h2 : @Filter.Tendsto α β f (@nhds α tα x) (@nhds β tβ (f x)) := hf
+  exact @Filter.Tendsto.comp α β X f g (@nhds α tα x) (@nhds β tβ (f x))
+    (@nhds X tX (g (f x))) h1 h2
 
 end RampSupport
 
@@ -546,14 +546,22 @@ structure RampFamilyInput {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
     {D : RealTimeInterval} {a b : ℝ} {N : ℕ}
     (B : RicciBackground (I := I) (M := M) D a b) (lambda : ℝ)
     (e : Width.SmoothLoopEmbedding (I := I) (Q := M) N) where
-  local_dependence : ∀ c₀ : ProductCurve M, c₀.SmoothOn (I := I) {a} →
-    c₀.IsRampOn B.family.metric lambda {a} →
-    ∃ sol : ProductCurve M → ProductCurve M,
-      @ContinuousAt (ProductCurve M) (ProductCurve M)
-        (smoothProductInitialTopology e a) (smoothProductCylinderTopology e (Icc a b)) sol c₀ ∧
-      ∀ c : ProductCurve M, (sol c).IsSolutionOn B.family.metric lambda (Icc a b) ∧
-        (sol c).IsRampOn B.family.metric lambda (Icc a b) ∧
-        ∀ z, (sol c).map z a = c.map z a
+  local_dependence : ∀ (c₀ : ProductCurve M) (hs₀ : c₀.SmoothOn (I := I) {a})
+      (hr₀ : c₀.IsRampOn B.family.metric lambda {a}),
+    letI := smoothProductInitialTopology e a
+    ∃ sol : (c : ProductCurve M) → c.SmoothOn (I := I) {a} →
+        c.IsRampOn B.family.metric lambda {a} → ProductCurve M,
+      @ContinuousAt
+        {c : ProductCurve M // c.SmoothOn (I := I) {a} ∧
+          c.IsRampOn B.family.metric lambda {a}}
+        (ProductCurve M) inferInstance
+        (smoothProductCylinderTopology e (Icc a b))
+        (fun d => sol d.1 d.2.1 d.2.2) ⟨c₀, hs₀, hr₀⟩ ∧
+      ∀ (c : ProductCurve M) (hs : c.SmoothOn (I := I) {a})
+        (hr : c.IsRampOn B.family.metric lambda {a}),
+        (sol c hs hr).IsSolutionOn B.family.metric lambda (Icc a b) ∧
+          (sol c hs hr).IsRampOn B.family.metric lambda (Icc a b) ∧
+          ∀ z, (sol c hs hr).map z a = c.map z a
 
 private theorem ramp_initialMinAngle_pos {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
     [FiniteDimensional ℝ E] [CompleteSpace E] {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
@@ -657,46 +665,69 @@ theorem rfs_csf_ramp_family (B : RicciBackground (I := I) (M := M) D a b)
         (smoothProductCylinderTopology e (Icc a b)) solutions) ∧
       ∀ p, (solutions p).IsSolutionOn B.family.metric lambda (Icc a b) ∧
         (solutions p).IsRampOn B.family.metric lambda (Icc a b) ∧
-        ∀ z, (solutions p).map z a = (initial p).map z a := by
+        ∀ z, (solutions p).map z a = (initial p).map z a :=
+  letI instInit : TopologicalSpace (ProductCurve M) := smoothProductInitialTopology e a
+  by
   classical
   let _ := hlambda
   let _ := hlambda_one
-  have hdata : ∀ p : P, ∃ sol : ProductCurve M → ProductCurve M,
-      @ContinuousAt (ProductCurve M) (ProductCurve M)
-        (smoothProductInitialTopology e a) (smoothProductCylinderTopology e (Icc a b)) sol
-        (initial p) ∧
-      ∀ c : ProductCurve M, (sol c).IsSolutionOn B.family.metric lambda (Icc a b) ∧
-        (sol c).IsRampOn B.family.metric lambda (Icc a b) ∧
-        ∀ z, (sol c).map z a = c.map z a :=
+  have hdata : ∀ p : P, ∃ sol : (c : ProductCurve M) → c.SmoothOn (I := I) {a} →
+        c.IsRampOn B.family.metric lambda {a} → ProductCurve M,
+      @ContinuousAt
+        {c : ProductCurve M // c.SmoothOn (I := I) {a} ∧
+          c.IsRampOn B.family.metric lambda {a}}
+        (ProductCurve M) inferInstance
+        (smoothProductCylinderTopology e (Icc a b))
+        (fun d => sol d.1 d.2.1 d.2.2) ⟨initial p, hsmooth p, hramp p⟩ ∧
+      ∀ (c : ProductCurve M) (hs : c.SmoothOn (I := I) {a})
+        (hr : c.IsRampOn B.family.metric lambda {a}),
+        (sol c hs hr).IsSolutionOn B.family.metric lambda (Icc a b) ∧
+          (sol c hs hr).IsRampOn B.family.metric lambda (Icc a b) ∧
+          ∀ z, (sol c hs hr).map z a = c.map z a :=
     fun p => L.local_dependence (initial p) (hsmooth p) (hramp p)
-  let S : P → ProductCurve M → ProductCurve M := fun p => Classical.choose (hdata p)
-  have hS : ∀ p : P, @ContinuousAt (ProductCurve M) (ProductCurve M)
-        (smoothProductInitialTopology e a) (smoothProductCylinderTopology e (Icc a b)) (S p)
-        (initial p) ∧
-      ∀ c : ProductCurve M, ((S p) c).IsSolutionOn B.family.metric lambda (Icc a b) ∧
-        ((S p) c).IsRampOn B.family.metric lambda (Icc a b) ∧
-        ∀ z, ((S p) c).map z a = c.map z a :=
+  let S : P → (c : ProductCurve M) → c.SmoothOn (I := I) {a} →
+      c.IsRampOn B.family.metric lambda {a} → ProductCurve M := fun p => Classical.choose (hdata p)
+  have hS : ∀ p : P, @ContinuousAt
+        {c : ProductCurve M // c.SmoothOn (I := I) {a} ∧
+          c.IsRampOn B.family.metric lambda {a}}
+        (ProductCurve M) inferInstance
+        (smoothProductCylinderTopology e (Icc a b))
+        (fun d => S p d.1 d.2.1 d.2.2) ⟨initial p, hsmooth p, hramp p⟩ ∧
+      ∀ (c : ProductCurve M) (hs : c.SmoothOn (I := I) {a})
+        (hr : c.IsRampOn B.family.metric lambda {a}),
+        (S p c hs hr).IsSolutionOn B.family.metric lambda (Icc a b) ∧
+          (S p c hs hr).IsRampOn B.family.metric lambda (Icc a b) ∧
+          ∀ z, (S p c hs hr).map z a = c.map z a :=
     fun p => Classical.choose_spec (hdata p)
-  let solutions : P → ProductCurve M := fun p => S p (initial p)
+  let solutions : P → ProductCurve M := fun p => S p (initial p) (hsmooth p) (hramp p)
   refine ⟨solutions, ?_, ?_⟩
   · refine (@continuous_iff_continuousAt P (ProductCurve M) inferInstance
       (smoothProductCylinderTopology e (Icc a b)) (f := solutions)).mpr ?_
     intro p₀
+    have hψ : @ContinuousAt P
+        {c : ProductCurve M // c.SmoothOn (I := I) {a} ∧
+          c.IsRampOn B.family.metric lambda {a}} inferInstance inferInstance
+        (fun p => (⟨initial p, hsmooth p, hramp p⟩ :
+          {c : ProductCurve M // c.SmoothOn (I := I) {a} ∧
+            c.IsRampOn B.family.metric lambda {a}})) p₀ :=
+      (hcontinuous.subtype_mk (fun p => ⟨hsmooth p, hramp p⟩)).continuousAt
     have hcand : @ContinuousAt P (ProductCurve M) inferInstance
-        (smoothProductCylinderTopology e (Icc a b)) (fun p => S p₀ (initial p)) p₀ :=
-      continuousAt_comp_same_type (inferInstance : TopologicalSpace P)
-        (smoothProductInitialTopology e a) (smoothProductCylinderTopology e (Icc a b))
-        (hS p₀).1
-        (@Continuous.continuousAt P (ProductCurve M) inferInstance
-          (smoothProductInitialTopology e a) initial p₀ hcontinuous)
+        (smoothProductCylinderTopology e (Icc a b))
+        (fun p => S p₀ (initial p) (hsmooth p) (hramp p)) p₀ :=
+      continuousAt_comp (inferInstance : TopologicalSpace P) inferInstance
+        (smoothProductCylinderTopology e (Icc a b)) (hS p₀).1 hψ
     refine productCylinder_continuousAt_congr e ?_ hcand
     filter_upwards with p
     intro z t ht
-    exact (K.unique (initial p) (S p (initial p)) (S p₀ (initial p))
-      ((hS p).2 (initial p)).1 ((hS p₀).2 (initial p)).1
-      ((hS p).2 (initial p)).2.2 ((hS p₀).2 (initial p)).2.2 z t ht).symm
+    exact (K.unique (initial p) (S p (initial p) (hsmooth p) (hramp p))
+      (S p₀ (initial p) (hsmooth p) (hramp p))
+      ((hS p).2 (initial p) (hsmooth p) (hramp p)).1
+      ((hS p₀).2 (initial p) (hsmooth p) (hramp p)).1
+      ((hS p).2 (initial p) (hsmooth p) (hramp p)).2.2
+      ((hS p₀).2 (initial p) (hsmooth p) (hramp p)).2.2 z t ht).symm
   · intro p
-    exact ⟨((hS p).2 (initial p)).1, ((hS p).2 (initial p)).2.1,
-      ((hS p).2 (initial p)).2.2⟩
+    exact ⟨((hS p).2 (initial p) (hsmooth p) (hramp p)).1,
+      ((hS p).2 (initial p) (hsmooth p) (hramp p)).2.1,
+      ((hS p).2 (initial p) (hsmooth p) (hramp p)).2.2⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening

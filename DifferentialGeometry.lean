@@ -4563,6 +4563,8 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Open.Exis
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Open.FlowLimit
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Open.InitialMetric
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Open.MetricLowerBound
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Open.HalfLineExistence
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Open.HalfLineFlowLimit
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.PointedPullbackExtensions
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.PullbackCurve
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.ScalarConvergence
@@ -4906,6 +4908,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.P
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProjectionFrontier
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.RampContinuation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.RampFamilyDependence
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.RampFamilySatisfiability
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Ramps
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.SmoothRegularLoopFamily
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.SweptAreaEstimates
@@ -6195,6 +6198,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.Reconstruct
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.Terminal
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Poincare
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.PoincareStandardReconstruction
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.PoincareStandardReconstructionOppositeInvariance
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.CollapseDomination
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.CollapseMap
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.CollapseProfile
@@ -6364,6 +6368,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SphereSmash
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SphericalCappingBridge
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SphericalCappingCompletion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.StaticCap
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.StaticNeckChildCore
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalMetricUnique
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ThreeFrameOrientation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.VanKampen
@@ -8096,6 +8101,7 @@ import DifferentialGeometry.Topology.Manifold.Diffeomorph.CompactTranslation
 import DifferentialGeometry.Topology.Manifold.Diffeomorph.Preimage
 import DifferentialGeometry.Topology.Manifold.Diffeomorph.Restriction
 import DifferentialGeometry.Topology.Manifold.DiffeomorphFamily
+import DifferentialGeometry.Topology.Manifold.DiffeomorphOrientationDichotomy
 import DifferentialGeometry.Topology.Manifold.DiffeomorphRestriction
 import DifferentialGeometry.Topology.Manifold.EllipsoidRadialGraph
 import DifferentialGeometry.Topology.Manifold.EllipsoidShell
@@ -8623,6 +8629,7 @@ import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.FiniteLaws
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.InteriorChart
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.InteriorChartDerivatives
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.LocalDiffeomorphism
+import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.OppositeInvariance
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.OrientationPrelude
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.OrientationTopology
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.OrientedChartPullback
@@ -8634,6 +8641,7 @@ import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.SeamOrientation
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.SeamOrientationGlue
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.SeamTransition
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.SphereUnitFilling
+import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.SphereCapProfile
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.UnitLaw
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.UnitFillingSmooth
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.UnitFillingBallChart
