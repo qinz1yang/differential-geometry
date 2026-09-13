@@ -106,4 +106,41 @@ theorem isConnected_supportRegion (G : GeometricCutoffRecord H i parameters)
   have hmain : IsConnected (⋃ o, s o) := IsConnected.iUnion_of_reflTransGen hs hK
   simpa only [Set.iUnion_option, s, supportRegion] using hmain
 
+noncomputable def levelSphere (G : GeometricCutoffRecord H i parameters)
+    (c : ConnectedComponents (H.stage i.succ).Carrier) (b : G.ChildBoundary c) :
+    C(Sphere 2, (G.Parent c).Carrier) :=
+  (G.collarMap c b).comp
+    ⟨fun y : Sphere 2 =>
+      (y, ⟨G.comparisonLevel c b, le_rfl, (G.comparisonLevel_negative c b).le⟩),
+      continuous_id.prodMk continuous_const⟩
+
+theorem levelSphere_apply (G : GeometricCutoffRecord H i parameters)
+    (c : ConnectedComponents (H.stage i.succ).Carrier) (b : G.ChildBoundary c) (y : Sphere 2) :
+    levelSphere G c b y =
+      G.collarMap c b (y, ⟨G.comparisonLevel c b, le_rfl,
+        (G.comparisonLevel_negative c b).le⟩) := rfl
+
+theorem levelSphere_mem_supportRegion (G : GeometricCutoffRecord H i parameters)
+    (c : ConnectedComponents (H.stage i.succ).Carrier) (b : G.ChildBoundary c) (y : Sphere 2) :
+    levelSphere G c b y ∈ supportRegion G c :=
+  Or.inr (Set.mem_iUnion.mpr ⟨b, Set.mem_range_self _⟩)
+
+theorem pairwise_disjoint_levelSphere (G : GeometricCutoffRecord H i parameters)
+    (c : ConnectedComponents (H.stage i.succ).Carrier) :
+    Pairwise fun b d => Disjoint (Set.range (levelSphere G c b))
+      (Set.range (levelSphere G c d)) := by
+  intro b d hbd
+  refine Set.disjoint_left.mpr fun z hz hz' => ?_
+  obtain ⟨y, rfl⟩ := hz
+  obtain ⟨y', hy'⟩ := hz'
+  exact Set.disjoint_left.mp (G.collarMap_pairwise_disjoint c hbd)
+    (Set.mem_range_self _)
+    ⟨(y', ⟨G.comparisonLevel c d, le_rfl, (G.comparisonLevel_negative c d).le⟩), hy'⟩
+
+theorem levelSphere_mem_range_collarMap (G : GeometricCutoffRecord H i parameters)
+    (c : ConnectedComponents (H.stage i.succ).Carrier) (b : G.ChildBoundary c) (y : Sphere 2) :
+    levelSphere G c b y ∈ Set.range (G.collarMap c b) :=
+  Set.mem_range_self _
+
+
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
