@@ -468,24 +468,6 @@ end StandardModelDensity
 variable [hBoundary : I.Boundaryless] [hT2 : T2Space Q] [hCompact : CompactSpace Q]
 include hBoundary hT2 hCompact
 
-theorem disk_curvature_inequality (g : SmoothRiemannianMetric I Q)
-    (hdim : Module.finrank ℝ E = 3)
-    (u : SmoothDisk (I := I) (Q := Q))
-    (hnonconstant : ¬ ∃ q : Q, ∀ z : Disk, u.map z = q)
-    (hconformal : u.IsConformal g) (hharmonic : u.IsHarmonic g)
-    (γ : RegularLoop I Q)
-    (hγ : ContMDiff 𝓘(ℝ, ℝ) I ∞ (loopLift γ.toContinuousLoop))
-    (hemb : Topology.IsEmbedding (γ : Surgery.Topology.Circle → Q))
-    (himm : ∀ x, loopVelocity (I := I) γ.toContinuousLoop x ≠ 0)
-    (sigma : SmoothWeaklyMonotoneCircleMap)
-    (htrace : ∀ theta, u.map (diskBoundary theta) = γ (sigma.map theta)) :
-    IntegrableOn (diskExtension (u.sectionalDensity g)) (Metric.closedBall (0 : ℂ) 1) ∧
-      IntervalIntegrable (u.boundaryCurvatureDensity g γ sigma htrace) volume 0 1 ∧
-      2 * Real.pi ≤
-        (∫ z in Metric.closedBall (0 : ℂ) 1, diskExtension (u.sectionalDensity g) z) +
-        ∫ x in (0 : ℝ)..1, u.boundaryCurvatureDensity g γ sigma htrace x := by
-  sorry
-
 def SmoothDisk.metricVariationDensity (u : SmoothDisk (I := I) (Q := Q))
     (g : ℝ → SmoothRiemannianMetric I Q) (J : Set ℝ) (t₀ : ℝ) (z : Disk) : ℝ :=
   if 0 < u.conformalFactor (g t₀) z then
