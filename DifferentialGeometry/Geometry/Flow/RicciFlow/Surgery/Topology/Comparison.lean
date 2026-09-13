@@ -1,8 +1,10 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChildParent
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.Homology
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.GeometricCutoff
+import DifferentialGeometry.Topology.Manifold.InteriorImage
 import DifferentialGeometry.Topology.VanKampen.SmoothSphereSeparation
 import DifferentialGeometry.Topology.Manifold.SmoothEmbeddingComposition
+import DifferentialGeometry.Topology.SphereSeparation.SideClosureDisjoint
 import DifferentialGeometry.Topology.SphereSeparation.HalfSpaceClosure
 
 
@@ -117,8 +119,7 @@ theorem rfs_exterior_branches_of_boundary_sides (P : OrientedThreeStage.{u})
     (hnormal : ∀ b (x : Sphere 2),
       Nonempty (DifferentialGeometry.Topology.SphereSeparation.EmbeddedSphereSideNormalChart
         (fun y : Sphere 2 => (C.sphere b y).1) (side b) x))
-    (hcover : C.region ∪ (⋃ b, closure (side b)) = univ)
-    (hdisjoint : Pairwise fun b d => Disjoint (closure (side b)) (closure (side d))) :
+    (hcover : C.region ∪ (⋃ b, closure (side b)) = univ) :
     Nonempty (ExteriorRegions C) := by
   classical
   have hsphere_mem : ∀ (b : C.Boundary) (y : Sphere 2),
@@ -202,7 +203,20 @@ theorem rfs_exterior_branches_of_boundary_sides (P : OrientedThreeStage.{u})
       (e := fun y : Sphere 2 => (C.sphere b y).1) (hopen b) (hclosure b) (hnormal b)]
     rw [← Set.range_comp]
     rfl
-  · simpa only [exteriorFun] using hdisjoint
+  · exact DifferentialGeometry.Topology.SphereSeparation.pairwise_disjoint_closure_of_isOpen_side
+      (C := C.region)
+      (sphere := fun b => Set.range (fun y : Sphere 2 => (C.sphere b y).1))
+      hopen hconn (fun b x hx => by
+          obtain ⟨y, rfl⟩ := hx
+          exact (C.sphere b y).2)
+      (fun b => Set.disjoint_iff_inter_eq_empty.mpr (hregion b)) hclosure
+      (fun b d hbd => Set.disjoint_left.mpr fun x hx hx' => by
+        obtain ⟨y, hy⟩ := hx
+        obtain ⟨z, hz⟩ := hx'
+        exact Set.disjoint_left.mp (C.sphere_disjoint hbd) ⟨y, rfl⟩
+          ⟨z, Subtype.ext (hz.trans hy.symm)⟩)
+      (fun b => ⟨(C.sphere b DifferentialGeometry.Topology.sphereTwoNorth).1,
+        DifferentialGeometry.Topology.sphereTwoNorth, rfl⟩)
 
 theorem exterior_branch_eq_of_mem (P : OrientedThreeStage.{u}) (C : SmoothSphericalRegion P)
     (E : ExteriorRegions C)
