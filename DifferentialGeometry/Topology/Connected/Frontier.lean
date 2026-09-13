@@ -29,4 +29,20 @@ theorem eq_of_frontier_eq_of_closure_interior_eq
       (inter_comm (interior A) (interior B) ▸ hmeet)
   rw [← hA, ← hB, subset_antisymm hAB hBA]
 
+theorem inter_union_frontier_nonempty_of_subset_union_interior
+    {X : Type*} [TopologicalSpace X] {P S T U : Set X}
+    (hP : IsPreconnected P) (hout : (P \ U).Nonempty)
+    (hmeet : (P ∩ S).Nonempty) (hS : S ⊆ T ∪ interior U) :
+    (P ∩ (T ∪ frontier U)).Nonempty := by
+  obtain ⟨x, hxP, hxS⟩ := hmeet
+  rcases hS hxS with hxT | hxU
+  · exact ⟨x, hxP, Or.inl hxT⟩
+  · by_contra h
+    have hdisj : Disjoint P (frontier U) := Set.disjoint_left.mpr
+      (fun y hyP hyU => h ⟨y, hyP, Or.inr hyU⟩)
+    have hsub := subset_interior_of_isPreconnected_of_disjoint_frontier hP hdisj
+      ⟨x, hxP, hxU⟩
+    obtain ⟨y, hyP, hyU⟩ := hout
+    exact hyU (interior_subset (hsub hyP))
+
 end DifferentialGeometry.Topology
