@@ -30,6 +30,7 @@ import DifferentialGeometry.Analysis.Calculus.PiDeriv
 import DifferentialGeometry.Analysis.Calculus.RatioMonotonicity
 import DifferentialGeometry.Analysis.Calculus.RightDerivative
 import DifferentialGeometry.Analysis.Calculus.RingInverseDeriv
+import DifferentialGeometry.Analysis.Calculus.Sard
 import DifferentialGeometry.Analysis.Calculus.SectionCompD2
 import DifferentialGeometry.Analysis.Calculus.SmoothClamp
 import DifferentialGeometry.Analysis.Calculus.SmoothExtension.BorelHalfLine
@@ -3152,6 +3153,7 @@ import DifferentialGeometry.Topology.DirectLimit
 import DifferentialGeometry.Topology.DirectLimitManifold
 import DifferentialGeometry.Topology.FiberBundleT2
 import DifferentialGeometry.Topology.FiniteAtlasIndexOnCompact
+import DifferentialGeometry.Topology.Morse.Generic
 import DifferentialGeometry.Topology.NearIdentity
 import DifferentialGeometry.Topology.Covering.SemilocallySimplyConnected
 import DifferentialGeometry.Topology.SigmaCompactOpen
