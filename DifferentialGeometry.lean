@@ -3929,6 +3929,7 @@ import DifferentialGeometry.Geometry.Connection.ParallelTransport.Kernel
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.LocalTrivialization
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.Naturality.Pullback
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.Naturality.PullbackCross
+import DifferentialGeometry.Geometry.Connection.ParallelTransport.Naturality.PullbackLocalIso
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.OrthonormalFrame
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.Piecewise
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.Pullback
