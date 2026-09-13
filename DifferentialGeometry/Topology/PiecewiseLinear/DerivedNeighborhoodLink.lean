@@ -235,4 +235,122 @@ theorem geometricLink_derivedNeighborhood_eq_internalJoin {e : Finset E}
         exact ⟨σ, hσ, (hgt x hx).subset hσe⟩
     · rw [Finset.image_insert, Finset.image_union]
 
+theorem faceNeighborhood_faces_subset_secondDerived {e : Finset E}
+    (he : e ∈ (barycentricSubdivision K).faces) (f : Finset E) :
+    (faceNeighborhood e ((barycentricSubdivision K).indep he) f).faces ⊆ (secondDerived K).faces := by
+  rintro u ⟨d, hd, hchain, hne, -, rfl⟩
+  exact ⟨d, isFlag_of_subsets_of_chain K he hd hchain, hne, rfl⟩
+
+open Classical in
+theorem geometricLink_faceNeighborhood_faces_subset_secondDerived {e : Finset E}
+    (he : e ∈ (barycentricSubdivision K).faces) :
+    (SimplicialComplex.geometricLink
+      (faceNeighborhood e ((barycentricSubdivision K).indep he)
+        (e.filter fun v => ∃ σ ∈ L.faces, σ.centroid ℝ id = v)) {e.centroid ℝ id}).faces ⊆
+      (secondDerived K).faces :=
+  (SimplicialComplex.geometricLink_le _ _).trans (faceNeighborhood_faces_subset_secondDerived K he _)
+
+open Classical in
+theorem union_mem_secondDerived_of_lower_upper {e : Finset E}
+    (he : e ∈ (barycentricSubdivision K).faces) (hef : ∃ σ ∈ L.faces, σ.centroid ℝ id ∈ e) :
+    ∀ s ∈ (SimplicialComplex.geometricLink
+      (faceNeighborhood e ((barycentricSubdivision K).indep he)
+        (e.filter fun v => ∃ σ ∈ L.faces, σ.centroid ℝ id = v)) {e.centroid ℝ id}).faces,
+      ∀ t ∈ (upperLink (barycentricSubdivision K) e).faces, s ∪ t ∈ (secondDerived K).faces := by
+  intro s hs t ht
+  obtain ⟨D₁, hD₁, hne₁, hlt, -, rfl⟩ := (mem_geometricLink_faceNeighborhood_iff K L he hef).mp hs
+  obtain ⟨D₂, hD₂, -, hgt, rfl⟩ := (mem_upperLink_faces_iff _ _).mp ht
+  refine ⟨D₁ ∪ D₂, ⟨fun x hx => ?_, fun x hx y hy => ?_⟩, hne₁.mono Finset.subset_union_left,
+    by rw [Finset.image_union]⟩
+  · rcases Finset.mem_union.mp hx with hx | hx
+    · exact hD₁.mem_faces hx
+    · exact hD₂.mem_faces hx
+  · rcases Finset.mem_union.mp hx with hx | hx
+    · rcases Finset.mem_union.mp hy with hy | hy
+      · exact hD₁.subset_or_subset hx hy
+      · exact Or.inl ((hlt x hx).subset.trans (hgt y hy).subset)
+    · rcases Finset.mem_union.mp hy with hy | hy
+      · exact Or.inr ((hlt y hy).subset.trans (hgt x hx).subset)
+      · exact hD₂.subset_or_subset hx hy
+
+open Classical in
+theorem disjoint_lower_upper {e : Finset E}
+    (he : e ∈ (barycentricSubdivision K).faces) (hef : ∃ σ ∈ L.faces, σ.centroid ℝ id ∈ e) :
+    ∀ s ∈ (SimplicialComplex.geometricLink
+      (faceNeighborhood e ((barycentricSubdivision K).indep he)
+        (e.filter fun v => ∃ σ ∈ L.faces, σ.centroid ℝ id = v)) {e.centroid ℝ id}).faces,
+      ∀ t ∈ (upperLink (barycentricSubdivision K) e).faces, Disjoint s t := by
+  intro s hs t ht
+  obtain ⟨D₁, hD₁, -, hlt, -, rfl⟩ := (mem_geometricLink_faceNeighborhood_iff K L he hef).mp hs
+  obtain ⟨D₂, hD₂, -, hgt, rfl⟩ := (mem_upperLink_faces_iff _ _).mp ht
+  rw [Finset.disjoint_left]
+  intro z hz₁ hz₂
+  obtain ⟨x, hx, rfl⟩ := Finset.mem_image.mp hz₁
+  obtain ⟨y, hy, heq⟩ := Finset.mem_image.mp hz₂
+  have hxy := centroid_injOn_barycentricSubdivision K (hD₂.mem_faces hy) (hD₁.mem_faces hx) heq
+  exact (hlt x hx).ne (Finset.Subset.antisymm (hlt x hx).subset (hxy ▸ (hgt y hy).subset))
+
+open Classical in
+theorem geometricLink_derivedNeighborhood_eq {e : Finset E}
+    (he : e ∈ (barycentricSubdivision K).faces) (hef : ∃ σ ∈ L.faces, σ.centroid ℝ id ∈ e) :
+    SimplicialComplex.geometricLink (derivedNeighborhood K L) {e.centroid ℝ id} =
+      internalJoin (secondDerived K)
+        (SimplicialComplex.geometricLink
+          (faceNeighborhood e ((barycentricSubdivision K).indep he)
+            (e.filter fun v => ∃ σ ∈ L.faces, σ.centroid ℝ id = v)) {e.centroid ℝ id})
+        (upperLink (barycentricSubdivision K) e)
+        (geometricLink_faceNeighborhood_faces_subset_secondDerived K L he)
+        (upperLink_faces_subset _ _) (union_mem_secondDerived_of_lower_upper K L he hef) :=
+  geometricLink_derivedNeighborhood_eq_internalJoin K L he hef _ _ _
+
+theorem geometricLink_derivedNeighborhood_eq_of_subset {e : Finset E}
+    (he : e ∈ (barycentricSubdivision K).faces)
+    (hsub : ∀ v ∈ e, ∃ σ ∈ L.faces, σ.centroid ℝ id = v) :
+    SimplicialComplex.geometricLink (derivedNeighborhood K L) {e.centroid ℝ id} =
+      SimplicialComplex.geometricLink (secondDerived K) {e.centroid ℝ id} := by
+  ext t
+  rw [SimplicialComplex.mem_geometricLink_singleton, SimplicialComplex.mem_geometricLink_singleton]
+  constructor
+  · rintro ⟨htne, hct, hins⟩
+    exact ⟨htne, hct, derivedNeighborhood_faces_subset K L hins⟩
+  · rintro ⟨htne, hct, D, hD, hne, hins⟩
+    have heD : e ∈ D := mem_of_centroid_mem_image K hD he (hins ▸ Finset.mem_insert_self _ _)
+    refine ⟨htne, hct, D, hD, hne, fun e' he' => ?_, hins⟩
+    obtain ⟨v, hv⟩ := (barycentricSubdivision K).nonempty_of_mem_faces (hD.mem_faces he')
+    rcases hD.subset_or_subset he' heD with h | h
+    · obtain ⟨σ, hσ, hσv⟩ := hsub v (h hv)
+      exact ⟨σ, hσ, hσv ▸ hv⟩
+    · obtain ⟨w, hw⟩ := (barycentricSubdivision K).nonempty_of_mem_faces he
+      obtain ⟨σ, hσ, hσw⟩ := hsub w hw
+      exact ⟨σ, hσ, hσw ▸ h hw⟩
+
+theorem exists_eq_centroid_of_singleton_mem_barycentricSubdivision {v : E}
+    (hv : {v} ∈ (barycentricSubdivision K).faces) : ∃ e ∈ K.faces, e.centroid ℝ id = v := by
+  obtain ⟨d, hd, hne, hdv⟩ := hv
+  obtain ⟨e, he⟩ := hne
+  have : e.centroid ℝ id ∈ ({v} : Finset E) := by
+    rw [hdv]
+    exact Finset.mem_image_of_mem _ he
+  exact ⟨e, hd.mem_faces he, Finset.mem_singleton.mp this⟩
+
+theorem internalJoin_eq_left_of_faces_eq_empty {A B : Geometry.SimplicialComplex ℝ E}
+    (hA : A.faces ⊆ K.faces) (hB : B.faces ⊆ K.faces)
+    (hunion : ∀ s ∈ A.faces, ∀ t ∈ B.faces, s ∪ t ∈ K.faces) (hBe : B.faces = ∅) :
+    internalJoin K A B hA hB hunion = A := by
+  ext u
+  rw [mem_internalJoin_faces_iff]
+  constructor
+  · rintro ⟨s, t, hs, ht, hne, rfl⟩
+    rcases ht with rfl | ht
+    · rw [Finset.union_empty]
+      rcases hs with rfl | hs
+      · rcases hne with h | h
+        · exact absurd h Finset.not_nonempty_empty
+        · exact absurd h Finset.not_nonempty_empty
+      · exact hs
+    · rw [hBe] at ht
+      exact absurd ht (Set.notMem_empty t)
+  · intro hu
+    exact ⟨u, ∅, Or.inr hu, Or.inl rfl, Or.inl (A.nonempty_of_mem_faces hu), by rw [Finset.union_empty]⟩
+
 end DifferentialGeometry.Topology.PiecewiseLinear
