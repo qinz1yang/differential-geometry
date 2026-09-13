@@ -8,6 +8,9 @@ import DifferentialGeometry.Geometry.Metric.Euclidean
 import DifferentialGeometry.Geometry.Metric.Quotient
 import DifferentialGeometry.Topology.Manifold.OpenEmbedding
 import DifferentialGeometry.Topology.Covering.AddCircleLift
+import DifferentialGeometry.Geometry.Connection.ProductAlongCurveInterior
+import DifferentialGeometry.Geometry.Connection.ParallelTransport.Derivative.CovariantDerivativeScaling
+import DifferentialGeometry.Geometry.Connection.ParallelTransport.Construction.Existence
 import Mathlib.Analysis.SpecialFunctions.Complex.Circle
 
 noncomputable section
@@ -432,15 +435,55 @@ theorem ProductCurve.cover_spatial_derivative (c : ProductCurve M) (J : Set ℝ)
       (NormedSpace.fromTangentSpace (𝕜 := ℝ) x).symm 1 from rfl,
     (NormedSpace.fromTangentSpace (𝕜 := ℝ) x).apply_symm_apply, fderiv_apply_one_eq_deriv]
 
+omit [CompleteSpace E] in
 theorem ProductCurve.cover_covariantDerivative [T2Space M] (c : ProductCurve M)
     (g : ℝ → SmoothRiemannianMetric I M) (lambda : ℝ) (hlambda : 0 < lambda)
     (J : Set ℝ) (hc : c.SmoothOn (I := I) J) (V : c.Field (I := I))
     (hV : ∀ t ∈ J, ContMDiff 𝓘(ℝ, ℝ) (I.prod 𝓘(ℝ, ℝ)).tangent ∞
       (fun x => (⟨c.coverLift x t, V x t⟩ : TangentBundle (I.prod 𝓘(ℝ, ℝ)) (M × ℝ))))
-    (x t : ℝ) (ht : t ∈ J) :
+    (x t : ℝ) (ht : t ∈ J) (hint : I.IsInteriorPoint (c.projection.lift x t)) :
     covDerivAlong (coverProductMetric (g t) lambda hlambda) (fun z => c.coverLift z t)
       (fun z => V z t) x = c.Dx g V x t := by
-  sorry
+  let _ := hc
+  have hsec : ContMDiffAt 𝓘(ℝ, ℝ) (I.prod 𝓘(ℝ, ℝ)).tangent ∞
+      (fun z => (⟨c.coverLift z t, V z t⟩ :
+        TangentBundle (I.prod 𝓘(ℝ, ℝ)) (M × ℝ))) x :=
+    (hV t ht).contMDiffAt
+  have hprod : ContMDiffAt 𝓘(ℝ, ℝ) (I.tangent.prod 𝓘(ℝ, ℝ).tangent) ∞
+      (fun z => (equivTangentBundleProd I M 𝓘(ℝ, ℝ) ℝ)
+        (⟨c.coverLift z t, V z t⟩ : TangentBundle (I.prod 𝓘(ℝ, ℝ)) (M × ℝ))) x :=
+    (contMDiff_equivTangentBundleProd (I := I) (I' := 𝓘(ℝ, ℝ)) (M := M) (M' := ℝ)
+      (n := ∞)).contMDiffAt.comp x hsec
+  have hfirst : MDifferentiableAt 𝓘(ℝ, ℝ) I.tangent
+      (fun z => (⟨c.projection.lift z t, (V z t).1⟩ : TangentBundle I M)) x :=
+    ((contMDiff_fst (I := I.tangent) (J := 𝓘(ℝ, ℝ).tangent) (M := TangentBundle I M)
+      (N := TangentBundle 𝓘(ℝ, ℝ) ℝ)).contMDiffAt.comp x hprod).mdifferentiableAt (by simp)
+  have hsecond : MDifferentiableAt 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ).tangent
+      (fun z => (⟨c.y z t, (V z t).2⟩ : TangentBundle 𝓘(ℝ, ℝ) ℝ)) x :=
+    ((contMDiff_snd (I := I.tangent) (J := 𝓘(ℝ, ℝ).tangent) (M := TangentBundle I M)
+      (N := TangentBundle 𝓘(ℝ, ℝ) ℝ)).contMDiffAt.comp x hprod).mdifferentiableAt (by simp)
+  have hintReal : (𝓘(ℝ, ℝ)).IsInteriorPoint (c.y x t) := by
+    simp [ModelWithCorners.IsInteriorPoint]
+  have hsplit :=
+    DifferentialGeometry.Geometry.Connection.covDerivAlong_prod_of_isInteriorPoint
+    (I := I) (I' := 𝓘(ℝ, ℝ))
+    (g := g t) (g' := DifferentialGeometry.scaleMetric (I := 𝓘(ℝ, ℝ)) (lambda ^ 2)
+      (pow_pos hlambda 2) (DifferentialGeometry.euclideanMetric (E := ℝ)))
+    (γ := fun z => c.projection.lift z t) (γ' := fun z => c.y z t)
+    (Z := fun z => (V z t).1) (Z' := fun z => (V z t).2) x hfirst hsecond hint hintReal
+  have hflat := covDerivAlong_scaleEuclideanLine_eq_deriv (lambda ^ 2) (pow_pos hlambda 2)
+    (fun z => c.y z t) (fun z => (V z t).2) x
+  have hcongr :=
+    DifferentialGeometry.Geometry.Riemannian.Variation.covDerivAlong_congr_of_eventuallyEq
+      (g := coverProductMetric (g t) lambda hlambda) (γ := fun z => c.coverLift z t)
+    (V := fun z => V z t)
+    (W := fun u => ((fun z => (V z t).1) u, (fun z => (V z t).2) u)) (t := x)
+    (Filter.Eventually.of_forall fun u => Prod.mk.eta.symm)
+  have hcur : (fun z => c.coverLift z t) = fun u => (c.projection.lift u t, c.y u t) := rfl
+  rw [hcongr]
+  unfold coverProductMetric
+  rw [hcur, ProductCurve.Dx]
+  exact hsplit.trans (by rw [hflat]; rfl)
 
 section QuotientGeometry
 

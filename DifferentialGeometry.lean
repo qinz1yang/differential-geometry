@@ -3924,6 +3924,7 @@ import DifferentialGeometry.Geometry.Connection.ParsevalFrameField
 import DifferentialGeometry.Geometry.Connection.Principal
 import DifferentialGeometry.Geometry.Connection.Product
 import DifferentialGeometry.Geometry.Connection.ProductAlongCurve
+import DifferentialGeometry.Geometry.Connection.ProductAlongCurveInterior
 import DifferentialGeometry.Geometry.Connection.Pullback
 import DifferentialGeometry.Geometry.Connection.PullbackHom
 import DifferentialGeometry.Geometry.Connection.PullbackMetric
@@ -5142,6 +5143,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborho
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.SlabRicciTensorLimit
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.SlabRm04Limit
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.SlabScalarLimit
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.SphereSeparationDiffeomorphEuclidean
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.TerminalBackwardExtension
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.TerminalCarrierBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.TerminalChartJets
