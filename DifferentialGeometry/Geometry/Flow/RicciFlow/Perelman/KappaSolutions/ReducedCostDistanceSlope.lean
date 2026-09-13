@@ -143,6 +143,58 @@ theorem ancientKappaThree_reducedCost_two_point_of_slope
   ancientKappaThree_reducedCost_two_point_of_distanceBound (I := I) F
     (reducedCostDistanceBound_of_slope (I := I) F h) hF hdim p q htau
 
+theorem reducedCostDistanceSlope_of_growth
+    (h : ReducedCostDistanceGrowth (I := I) F) : ReducedCostDistanceSlope (I := I) F := by
+  intro kappa hF hdim
+  dsimp only
+  intro x a b tau htau hle hfar
+  obtain ⟨gamma₁, gamma₂, speed, h0₁, h0₂, h1₁, h1₂, hcont, hderiv, hint, hbound⟩ :=
+    h hF hdim x a b htau hle hfar
+  let U : ℝ → ℝ := fun s => (Real.sqrt tau)⁻¹ *
+    (riemannianEDistOf (F.S.base.metric (-(tau * s))) (gamma₁ s) (gamma₂ s)).toReal
+  let G : ℝ → ℝ := fun t =>
+    ((4 + 2 * ((Module.finrank ℝ E : ℝ) - 1) + Real.sqrt 3) * t ^ (-(3 / 4) : ℝ) +
+      4 * Real.sqrt 3 * t ^ (-(1 / 4) : ℝ) + 3 * t ^ ((1 / 4) : ℝ)) *
+      Real.sqrt (redLength F.S 0 x b tau + 1) +
+    Real.sqrt 3 * t ^ (-(3 / 4) : ℝ) * Real.sqrt (redLength F.S 0 x a tau + 1)
+  have hderivU : ∀ t ∈ Ioo (0 : ℝ) 1, HasDerivAt U (speed t) t := hderiv
+  have hboundU : ∀ t ∈ Ioc (0 : ℝ) 1, |speed t| ≤ G t := hbound
+  have hcontU : ContinuousOn U (Icc 0 1) := hcont
+  have hIntU : ∀ c ∈ Ioc (0 : ℝ) 1, IntervalIntegrable speed volume c 1 := by
+    intro c hc
+    refine hint.mono_set (fun y hy => ?_)
+    rw [uIcc_of_le hc.2] at hy
+    rw [uIcc_of_le (by norm_num : (0 : ℝ) ≤ 1)]
+    exact ⟨hc.1.le.trans hy.1, hy.2⟩
+  have hftcU : ∀ c ∈ Ioc (0 : ℝ) 1, ∀ y ∈ Icc c 1,
+      (∫ r in c..y, speed r) = U y - U c := by
+    intro c hc y hy
+    refine intervalIntegral.integral_eq_sub_of_hasDerivAt_of_le hy.1 ?_ ?_ ?_
+    · exact hcontU.mono (Icc_subset_Icc hc.1.le hy.2)
+    · intro r hr
+      exact hderivU r ⟨hc.1.trans hr.1, hr.2.trans_le hy.2⟩
+    · refine hint.mono_set ?_
+      intro r hr
+      rw [uIcc_of_le hy.1] at hr
+      rw [uIcc_of_le (by norm_num : (0 : ℝ) ≤ 1)]
+      exact ⟨hc.1.le.trans hr.1, le_trans hr.2 hy.2⟩
+  refine ⟨gamma₁, gamma₂, h0₁, h0₂, h1₁, h1₂, hcontU, ?_, ?_⟩
+  · intro c hc
+    have hAcInt : AbsolutelyContinuousOnInterval (fun y => ∫ r in c..y, speed r) c 1 :=
+      (hIntU c hc).absolutelyContinuousOnInterval_intervalIntegral left_mem_uIcc
+    have hAcConst : AbsolutelyContinuousOnInterval (fun _ : ℝ => U c) c 1 :=
+      (LipschitzWith.const (U c)).lipschitzOnWith.absolutelyContinuousOnInterval
+    refine (hAcConst.add hAcInt).congr ?_
+    intro y hy
+    rw [uIcc_of_le hc.2] at hy
+    simp only [Pi.add_apply]
+    linarith [hftcU c hc y hy]
+  · intro t ht eps heps
+    have hspeed : speed t ≤ G t := (abs_le.mp (hboundU t ⟨ht.1, ht.2.le⟩)).2
+    filter_upwards [((hderivU t ht).tendsto_slope.mono_left (nhdsGT_le_nhdsNE t)).eventually_lt_const
+      (by linarith : speed t < G t + eps)] with s hs
+    exact le_of_lt hs
+
 theorem reducedCostAdditiveBound_of_distanceBound
     (h : ReducedCostDistanceBound (I := I) F) : ReducedCostAdditiveBound (I := I) F := by
   intro kappa hF hdim
