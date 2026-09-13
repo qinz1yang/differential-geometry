@@ -1,9 +1,9 @@
 {
-  "scope": "Dependency-closed 113-module checkpoint including signed compatibility of the actual relative cap product and connecting map; full topology suite incomplete",
+  "scope": "Dependency-closed 114-module checkpoint including the actual relative-cochain/relative-chain cap product with absolute-chain output; full topology suite incomplete",
   "baseline_commit": "b45bfa009368c8f5f531e10f4f5280e90079d6ad",
   "baseline_ref": "refs/remotes/origin/codex/chapter35",
   "source_project": "PoincareLean",
-  "source_module_count": 113,
+  "source_module_count": 114,
   "roots": [
     "Poincare.Topology.Homology.RelativeMaps",
     "Poincare.Topology.Homology.RelativeHomeomorphism",
@@ -28,7 +28,8 @@
     "Poincare.Topology.Homology.RelativeCapProduct",
     "Poincare.Topology.Homology.RelativeCapHomology",
     "Poincare.Topology.Homology.ModuleHomologyConnecting",
-    "Poincare.Topology.Homology.RelativeCapConnecting"
+    "Poincare.Topology.Homology.RelativeCapConnecting",
+    "Poincare.Topology.Homology.RelativeCapToAbsolute"
   ],
   "changed_sources": [
     {
@@ -156,6 +157,12 @@
       "path": "Poincare/Topology/Homology/RelativeCapProduct.lean",
       "baseline_sha256": null,
       "sha256": "65452486ad9779a4164548b03d151dd164944b5c770740bb49a39b2c055bd3fe"
+    },
+    {
+      "module": "Poincare.Topology.Homology.RelativeCapToAbsolute",
+      "path": "Poincare/Topology/Homology/RelativeCapToAbsolute.lean",
+      "baseline_sha256": null,
+      "sha256": "47d270cceeb451499c4bb664e3f276c27e0272df377072c34dc2832fbd28db08"
     },
     {
       "module": "Poincare.Topology.Homology.RelativeCochains",
@@ -580,6 +587,12 @@
       "sha256": "65452486ad9779a4164548b03d151dd164944b5c770740bb49a39b2c055bd3fe"
     },
     {
+      "module": "Poincare.Topology.Homology.RelativeCapToAbsolute",
+      "path": "Poincare/Topology/Homology/RelativeCapToAbsolute.lean",
+      "baseline_sha256": null,
+      "sha256": "47d270cceeb451499c4bb664e3f276c27e0272df377072c34dc2832fbd28db08"
+    },
+    {
       "module": "Poincare.Topology.Homology.RelativeCochains",
       "path": "Poincare/Topology/Homology/RelativeCochains.lean",
       "baseline_sha256": null,
@@ -889,8 +902,8 @@
   "aggregate": {
     "path": "Poincare.lean",
     "baseline_sha256": "99c3c8e47c19f60ee50a7e0f377e59138cf4ff33ebd4e26530d3c2b7cd47d452",
-    "sha256": "0fe58bdce9c12013582d08a1e9a9efc96ab7ec5e7e0d88b0e58d374bab200455",
-    "change": "Flat 113-leaf checkpoint aggregate; full recovered aggregate remains separate"
+    "sha256": "0b919e46eb6bb9d302778ad865ec8bb7f52985b1b75547b67477a96bf854dada",
+    "change": "Flat 114-leaf checkpoint aggregate; full recovered aggregate remains separate"
   },
   "configuration": [
     {
@@ -1117,7 +1130,13 @@
     "Poincare.Topology.integralRelativeCohomologyCapProduct_unit",
     "Poincare.Topology.integralRelativeCohomologyCapProduct_absoluteToRelative",
     "Poincare.Topology.moduleHomologyClass_connecting",
-    "Poincare.Topology.integralRelativeCohomologyCapProduct_connecting"
+    "Poincare.Topology.integralRelativeCohomologyCapProduct_connecting",
+    "Poincare.Topology.integralRelativeCapProductToAbsolute",
+    "Poincare.Topology.integralRelativeCapProductToAbsolute_\u03c0",
+    "Poincare.Topology.integralRelativeCapProductToAbsolute_project",
+    "Poincare.Topology.integralRelativeCapProductToAbsolute_natural",
+    "Poincare.Topology.integralRelativeCapProductToAbsolute_boundary",
+    "Poincare.Topology.integralRelativeCapProductToAbsolute_boundary_eq_zero"
   ],
   "historical_authorities": [
     {
@@ -1255,24 +1274,23 @@
     "full_topology_suite_accepted": false
   },
   "validation": {
-    "status": "passed for the selected 113-module checkpoint; full topology suite incomplete",
+    "status": "passed for the selected 114-module checkpoint; full topology suite incomplete",
     "date": "2026-09-13",
     "slurm_job": "13821107",
     "host": "della-r3c4n2",
-    "request_id": "1789325313509362620-topology_checkpoint-9c71d0f8",
-    "input_sha256": "04f4478811fab9bbd8711df98f11b234344f409f4b02b10a9a6b15d7bb6055b1",
-    "result_sha256": "e5770e9f9f29cfb5c757590f9437030089ef9edf335af142754529065d8a68c7",
-    "artifact_log_sha256": "2049f84d1eb56b0795b2f45975909cbd61cb8aaed5f628b1f65f330ab64357d7",
-    "source_config_harness_hash_guards": 289,
+    "request_id": "1789328051059665070-topology_checkpoint-3eafcb3e",
+    "input_sha256": "8c788ee7b0633388f5ca7b14cc8f7d701ba1738aa33cf5f90f5558a69181e088",
+    "result_sha256": "102622c63753108f57ca083b5781e9a0f68a94ac0da96ff6d80336914c270a8f",
+    "artifact_log_sha256": "fba4e41d925b140742b466681f5a496f22ee3e09a8511a63b6a0e5c134788575",
+    "source_config_harness_hash_guards": 297,
     "freshly_built_modules": [
-      "Poincare.Topology.Homology.ModuleHomologyConnecting",
-      "Poincare.Topology.Homology.RelativeCapConnecting",
+      "Poincare.Topology.Homology.RelativeCapToAbsolute",
       "Poincare"
     ],
     "root_build": "lake --no-cache --iofail build Poincare",
-    "fresh_build_scope": "ModuleHomologyConnecting, RelativeCapConnecting and root freshly compiled with zero diagnostics. All 111 earlier leaves remain byte-identical and retain earlier evidence.",
-    "exact_public_exports": 118,
-    "public_and_consumer_signature_axiom_pairs": 205,
+    "fresh_build_scope": "RelativeCapToAbsolute and root freshly compiled with zero diagnostics. All 113 earlier leaves remain byte-identical and retain earlier evidence.",
+    "exact_public_exports": 124,
+    "public_and_consumer_signature_axiom_pairs": 214,
     "linters": [
       "unusedArguments",
       "simpNF",
@@ -1287,15 +1305,15 @@
       "Quot.sound"
     ],
     "unexpected_diagnostics": 0,
-    "elapsed_seconds": 177.11344170570374,
-    "peak_summed_rss_bytes": 2981109760,
+    "elapsed_seconds": 160.12046098709106,
+    "peak_summed_rss_bytes": 3007520768,
     "full_topology_suite_accepted": false,
     "consumer_probes": [
-      "All 200 prior signature/axiom pairs reproduced byte-identically",
-      "Both new public and three consumer readbacks match the original imported gate",
-      "Actual original connecting-map formula for arbitrary rings and complex shapes",
-      "The negative degree-one and positive degree-two signs for actual relative cap and connecting maps",
-      "A nonzero actual relative H1 class of the real line modulo its unit zero-sphere, whose connecting image is nonzero and preserved by cap with the unit"
+      "All 205 prior signature/axiom pairs reproduced byte-identically",
+      "Six new public and three new consumer pairs match the original imported gate; the unchanged cochain producer is reused from the earlier harness",
+      "Actual relative-cochain/relative-chain bilinear cap with absolute-chain output, original projection and pair-map naturality",
+      "A nonzero actual relative vertex and its positive and negative cochain cap values",
+      "The odd-degree signed boundary identity and actual doubling-map naturality"
     ]
   },
   "previous_linear_sign_checkpoint_validation": {
@@ -2447,5 +2465,60 @@
       "Poincare.Topology.Homology.RelativeCapConnecting"
     ],
     "source_request_id": "1789325147316543963-topology-377c15d2"
+  },
+  "previous_relative_cap_connecting_validation": {
+    "status": "passed for the selected 113-module checkpoint; full topology suite incomplete",
+    "date": "2026-09-13",
+    "slurm_job": "13821107",
+    "host": "della-r3c4n2",
+    "request_id": "1789325313509362620-topology_checkpoint-9c71d0f8",
+    "input_sha256": "04f4478811fab9bbd8711df98f11b234344f409f4b02b10a9a6b15d7bb6055b1",
+    "result_sha256": "e5770e9f9f29cfb5c757590f9437030089ef9edf335af142754529065d8a68c7",
+    "artifact_log_sha256": "2049f84d1eb56b0795b2f45975909cbd61cb8aaed5f628b1f65f330ab64357d7",
+    "source_config_harness_hash_guards": 289,
+    "freshly_built_modules": [
+      "Poincare.Topology.Homology.ModuleHomologyConnecting",
+      "Poincare.Topology.Homology.RelativeCapConnecting",
+      "Poincare"
+    ],
+    "root_build": "lake --no-cache --iofail build Poincare",
+    "fresh_build_scope": "ModuleHomologyConnecting, RelativeCapConnecting and root freshly compiled with zero diagnostics. All 111 earlier leaves remain byte-identical and retain earlier evidence.",
+    "exact_public_exports": 118,
+    "public_and_consumer_signature_axiom_pairs": 205,
+    "linters": [
+      "unusedArguments",
+      "simpNF",
+      "synTaut",
+      "checkType"
+    ],
+    "linter_scope": "All imported Poincare declarations and current consumers, including private declarations",
+    "defLemma": "Unavailable in the pinned Mathlib; source declaration-kind checks retained.",
+    "allowed_transitive_axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "unexpected_diagnostics": 0,
+    "elapsed_seconds": 177.11344170570374,
+    "peak_summed_rss_bytes": 2981109760,
+    "full_topology_suite_accepted": false,
+    "consumer_probes": [
+      "All 200 prior signature/axiom pairs reproduced byte-identically",
+      "Both new public and three consumer readbacks match the original imported gate",
+      "Actual original connecting-map formula for arbitrary rings and complex shapes",
+      "The negative degree-one and positive degree-two signs for actual relative cap and connecting maps",
+      "A nonzero actual relative H1 class of the real line modulo its unit zero-sphere, whose connecting image is nonzero and preserved by cap with the unit"
+    ]
+  },
+  "original_relative_cap_to_absolute_validation": {
+    "request_id": "1789327981967675066-topology-c9515b2c",
+    "input_sha256": "14add208252099b53bb744217578186aebe1e9fd04a5eddb079e14bb29b1d959",
+    "elapsed_seconds": 80.48159384727478,
+    "source_guards": 60,
+    "signature_axiom_pairs": 10,
+    "fresh_modules": [
+      "Poincare.Topology.Homology.RelativeCapToAbsolute"
+    ],
+    "source_request_id": "1789327882418270408-topology-98ee7c44"
   }
 }

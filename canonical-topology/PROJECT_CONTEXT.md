@@ -5,21 +5,24 @@ additive publication within the shared DifferentialGeometry Git repository. Its 
 library is `Poincare`; its sources retain the original mathematical namespaces.
 
 The source baseline is the recovered Chapter 35 commit
-`b45bfa009368c8f5f531e10f4f5280e90079d6ad`. This checkpoint includes 113 modules
-and 118 added public exports. The latest two leaves (48 and 124 lines) prove
-the original connecting-map formula on concrete cycle classes for arbitrary
-rings and complex shapes, and signed compatibility of the actual relative
-cap product and connecting map. The original categorical objects and Mathlib's
-existing connecting-map computation are reused. All 111 earlier leaves are unchanged.
+`b45bfa009368c8f5f531e10f4f5280e90079d6ad`. This checkpoint includes 114 modules
+and 124 added public exports. The latest coherent 226-line leaf constructs
+cap of actual relative cochains and relative chains with absolute-chain output,
+with the original projection law, compatibility with the preceding relative
+cap product, actual pair-map naturality, signed boundary and cycle laws.
+It uses the original kernel/cokernel, cap naturality and Mathlib quotient lift.
+All 113 earlier leaves are unchanged.
 
-Final request `1789325313509362620-topology_checkpoint-9c71d0f8` passed in
-Slurm 13821107 in 177.11 seconds, with 289 guards and 205 signature/axiom pairs.
-All 200 earlier pairs are byte-identical. The two new leaves and root freshly
-compiled in 1:30.09 with maximum RSS 1815000 KiB and zero diagnostics. Source
-377c15d2 and original imported dc5e47d2 pass with 127/9 and 130/5 guards/pairs;
-all five new portable pairs match the original. Odd/even degree signs and a
-nonzero connecting image for the real-line/zero-sphere pair pass. Stock linters
-and standard-only axioms pass. General duality, the native orientation producer
+Final request `1789328051059665070-topology_checkpoint-3eafcb3e` passed in
+Slurm 13821107 in 160.12 seconds, with 297 guards and 214 signature/axiom pairs.
+All 205 earlier pairs are byte-identical. The new leaf and root freshly compiled
+in 1:14.06 with maximum RSS 1813376 KiB and zero diagnostics. Source 98ee7c44
+and original imported c9515b2c pass 58/14 and 60/10 guards/pairs. All six new
+public and three new consumer pairs match the original; the unchanged
+cochain producer is reused from the earlier harness. Nonzero relative vertex,
+negative-cochain action, odd-degree boundary sign and actual doubling-map
+consumers pass. Stock linters and standard-only axioms pass. Relative-cohomology
+descent of this pairing, general duality, the native orientation producer
 and the full oriented-manifold suite remain open.
 
 The preceding signed-chart extension retains its exact public statements.

@@ -1,11 +1,14 @@
 # Local homology and global classes from coherent local generators
 
 This separate `PoincareLean` project contains a dependency-closed checkpoint of
-113 Poincare modules. It extends the recovered Chapter 35 source at commit
+114 Poincare modules. It extends the recovered Chapter 35 source at commit
 `b45bfa009368c8f5f531e10f4f5280e90079d6ad` and preserves its mathematical objects
 and `Poincare` namespaces. `Poincare.lean` imports every included leaf.
 
 The additions prove:
+
+- the bilinear cap product of actual relative cochains and relative chains
+  with absolute-chain output, its projection, naturality and signed boundary laws;
 
 - compatibility of the actual relative cap product with the original connecting
   map, including its degree sign, and a general cycle-class connecting formula;
@@ -72,7 +75,7 @@ The additions prove:
 - a unique compact-neighborhood class with the same normalization in every
   chart whose actual tangent trivialization preserves the base-chart orientation.
 
-The twenty-nine new/changed modules and their exact baseline/current hashes are listed in
+The thirty new/changed modules and their exact baseline/current hashes are listed in
 [provenance/SNAPSHOT.json](provenance/SNAPSHOT.json). The derivative homotopy
 retains its [upstream attribution and modification record](provenance/README.md).
 
@@ -559,6 +562,30 @@ actual relative H1 class of the real line modulo its unit zero-sphere with
 nonzero connecting image preserved by cap with the unit. Stock declaration
 linters and standard-only transitive axioms pass. General Poincare duality
 and the complete oriented-manifold suite remain open.
+
+The relative-to-absolute cap extension adds one coherent 226-line leaf and six
+public exports, for 114 modules and 124 added exports. It constructs
+`C^k(X,A; Z) x C_(k+m)(X,A; Z) -> C_m(X; Z)` on the original relative cochain
+kernel and relative chain cokernel. Naturality of the original cap product
+shows that cochains vanishing on A annihilate chains from A, so the quotient
+lift has absolute output. Its original projection formula, compatibility with
+the earlier relative cap product, pair-map naturality, signed boundary identity
+and cycle preservation are proved in all natural degrees and topological spaces.
+No alternative chain representation or compatibility assumption is introduced.
+
+Final portable request `1789328051059665070-topology_checkpoint-3eafcb3e`
+passed in Slurm 13821107 in 160.12 seconds, with 297 guards and 214 signature/
+axiom pairs. All 205 prior pairs are byte-identical and all 113 earlier leaves
+are unchanged. RelativeCapToAbsolute and root freshly compiled in 1:14.06,
+maximum RSS 1813376 KiB, with zero diagnostics. The six public and three new
+consumer pairs match original imported c9515b2c, which passed in 80.48 seconds
+with 60 guards and ten pairs; its unchanged cochain producer is reused in the
+portable harness. Final source 98ee7c44 passes in 44.28 seconds with 58 guards
+and 14 pairs, checking all private helpers. Consumers check a nonzero actual
+relative vertex with positive and negative cap values, the odd-degree boundary
+sign and actual doubling-map naturality. Stock declaration linters and
+standard-only transitive axioms pass. Descent of this pairing to relative
+cohomology and absolute homology, and general duality, remain open.
 
 ## Remaining topology work
 
