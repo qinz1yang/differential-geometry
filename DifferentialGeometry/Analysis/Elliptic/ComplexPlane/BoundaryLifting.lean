@@ -13,6 +13,13 @@ import Mathlib.Analysis.Complex.Convex
 import Mathlib.Analysis.Normed.Operator.BoundedLinearMaps
 import Mathlib.Tactic.Module
 import Mathlib.Analysis.InnerProductSpace.Laplacian
+import DifferentialGeometry.Analysis.Schauder.Holder.Localization
+import Mathlib.Analysis.Calculus.ContDiff.RCLike
+import Mathlib.Analysis.Calculus.BumpFunction.Normed
+import Mathlib.Analysis.Calculus.BumpFunction.InnerProduct
+import DifferentialGeometry.Analysis.InnerProductSpace.Laplacian
+import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.LaplacianCalculus
+import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.Gradient
 
 noncomputable section
 open MeasureTheory Set Filter Metric
@@ -787,5 +794,291 @@ theorem exists_holderOnWith_laplacianWithin_quadraticBoundaryLifting
   rw [laplacianWithin_quadraticBoundaryLifting hρ hρc hb hz,
     laplacianWithin_quadraticBoundaryLifting hρ hρc hb hw]
   exact h z w
+
+theorem hasCompactSupport_smul_quadraticBoundaryLifting
+    {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
+    {ρ ζ : ℝ → ℝ} (hρ : HasCompactSupport ρ) (hζ : HasCompactSupport ζ)
+    {b : ℝ → F} (hb : HasCompactSupport b) :
+    HasCompactSupport (fun z : ℂ => ζ z.im • quadraticBoundaryLifting ρ b z) := by
+  obtain ⟨R, hR, hRbound⟩ := hρ.isBounded.exists_pos_norm_le
+  obtain ⟨T, hT, hTbound⟩ := hζ.isBounded.exists_pos_norm_le
+  obtain ⟨A, hA, hAbound⟩ := hb.isBounded.exists_pos_norm_le
+  apply HasCompactSupport.intro (isCompact_closedBall (0 : ℂ) (A + T * R + T))
+  intro z hz
+  by_cases hζz : ζ z.im = 0
+  · rw [hζz, zero_smul]
+  have ht : |z.im| ≤ T := hTbound _ (subset_tsupport _ hζz)
+  have hi : (∫ q : ℝ, ρ q • b (z.re - z.im * q)) = 0 := by
+    apply integral_eq_zero_of_ae
+    exact Filter.Eventually.of_forall fun q => by
+      change ρ q • b (z.re - z.im * q) = 0
+      by_cases hρq : ρ q = 0
+      · rw [hρq, zero_smul]
+      have hq : |q| ≤ R := hRbound _ (subset_tsupport _ hρq)
+      have hbq : b (z.re - z.im * q) = 0 := by
+        apply image_eq_zero_of_notMem_tsupport
+        intro hmem
+        have hr : |z.re - z.im * q| ≤ A := hAbound _ hmem
+        have hs : |z.re| ≤ A + T * R := by
+          calc
+            |z.re| = |(z.re - z.im * q) + z.im * q| := by congr 1; ring
+            _ ≤ |z.re - z.im * q| + |z.im * q| := by
+              simpa only [Real.norm_eq_abs] using norm_add_le (z.re - z.im * q) (z.im * q)
+            _ ≤ A + T * R := add_le_add hr (by
+              rw [abs_mul]
+              exact mul_le_mul ht hq (abs_nonneg _) hT.le)
+        apply hz
+        rw [mem_closedBall, dist_zero_right]
+        exact (Complex.norm_le_abs_re_add_abs_im z).trans (add_le_add hs ht)
+      rw [hbq, smul_zero]
+  simp only [quadraticBoundaryLifting, hi, smul_zero]
+
+private theorem contDiffOn_two_laplacian_trace_lifting
+    {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F] [CompleteSpace F]
+    {b : ℝ → F} (hb : Continuous b) (hc : HasCompactSupport b)
+    (η : ContDiffBump (0 : ℝ)) :
+    let L : ℂ → F := fun z => η z.im • quadraticBoundaryLifting (η.normed volume) b z
+    HasCompactSupport L ∧
+      ContDiffOn ℝ 2 L {z : ℂ | 0 ≤ z.im} ∧
+      ContDiffOn ℝ ∞ L {z : ℂ | 0 < z.im} ∧
+      ∀ s : ℝ, L (s : ℂ) = 0 ∧
+        HasFDerivWithinAt L (0 : ℂ →L[ℝ] F) {z : ℂ | 0 ≤ z.im} (s : ℂ) ∧
+        InnerProductSpace.laplacianWithin L {z : ℂ | 0 ≤ z.im} (s : ℂ) = b s := by
+  let ρ : ℝ → ℝ := η.normed volume
+  let L : ℂ → F := fun z => η z.im • quadraticBoundaryLifting ρ b z
+  have hL : HasCompactSupport L :=
+    hasCompactSupport_smul_quadraticBoundaryLifting η.hasCompactSupport_normed η.hasCompactSupport hc
+  have hC2 : ContDiffOn ℝ 2 L {z : ℂ | 0 ≤ z.im} :=
+    (η.contDiff.comp Complex.imCLM.contDiff).contDiffOn.smul
+      (contDiffOn_two_quadraticBoundaryLifting η.contDiff_normed η.hasCompactSupport_normed hb)
+  have hCinf : ContDiffOn ℝ ∞ L {z : ℂ | 0 < z.im} :=
+    (η.contDiff.comp Complex.imCLM.contDiff).contDiffOn.smul
+      (contDiffOn_quadraticBoundaryLifting η.contDiff_normed η.hasCompactSupport_normed hb.locallyIntegrable)
+  refine ⟨hL, hC2, hCinf, ?_⟩
+  intro s
+  have he : L =ᶠ[𝓝 (s : ℂ)] quadraticBoundaryLifting ρ b := by
+    have ht : Tendsto Complex.im (𝓝 (s : ℂ)) (𝓝 0) := by
+      simpa only [Complex.ofReal_im] using Complex.continuous_im.continuousAt.tendsto (x := (s : ℂ))
+    filter_upwards [ht.eventually η.eventuallyEq_one] with z hz
+    change η z.im = (1 : ℝ) at hz
+    change η z.im • quadraticBoundaryLifting ρ b z = quadraticBoundaryLifting ρ b z
+    rw [hz, one_smul]
+  have hew : L =ᶠ[𝓝[{z : ℂ | 0 ≤ z.im}] (s : ℂ)] quadraticBoundaryLifting ρ b :=
+    he.filter_mono nhdsWithin_le_nhds
+  refine ⟨?_, ?_, ?_⟩
+  · change L (s : ℂ) = 0
+    rw [he.eq_of_nhds, quadraticBoundaryLifting_real]
+  · exact (hasFDerivWithinAt_zero_quadraticBoundaryLifting_real η.contDiff_normed
+      η.hasCompactSupport_normed hb s).congr_of_eventuallyEq hew he.eq_of_nhds
+  · change InnerProductSpace.laplacianWithin L {z : ℂ | 0 ≤ z.im} (s : ℂ) = b s
+    rw [(InnerProductSpace.laplacianWithin_congr_nhdsWithin hew uniqueDiffOn_nonneg_im).eq_of_nhdsWithin
+      (by simp : (s : ℂ) ∈ {z : ℂ | 0 ≤ z.im}),
+      laplacianWithin_quadraticBoundaryLifting_real η.contDiff_normed η.hasCompactSupport_normed hb s]
+    rw [show (∫ q : ℝ, ρ q) = 1 from η.integral_normed, one_smul]
+
+theorem exists_contDiffOn_two_laplacian_trace_lifting
+    {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F] [CompleteSpace F]
+    {b : ℝ → F} (hb : Continuous b) (hc : HasCompactSupport b) :
+    ∃ L : ℂ → F, HasCompactSupport L ∧
+      ContDiffOn ℝ 2 L {z : ℂ | 0 ≤ z.im} ∧
+      ContDiffOn ℝ ∞ L {z : ℂ | 0 < z.im} ∧
+      ∀ s : ℝ, L (s : ℂ) = 0 ∧
+        HasFDerivWithinAt L (0 : ℂ →L[ℝ] F) {z : ℂ | 0 ≤ z.im} (s : ℂ) ∧
+        InnerProductSpace.laplacianWithin L {z : ℂ | 0 ≤ z.im} (s : ℂ) = b s := by
+  exact ⟨_, contDiffOn_two_laplacian_trace_lifting hb hc
+    (⟨1, 2, by norm_num, by norm_num⟩ : ContDiffBump (0 : ℝ))⟩
+
+private theorem exists_norm_bound_and_holderWith_compactSupport
+    {E G : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [NormedAddCommGroup G] [NormedSpace ℝ G]
+    {f : E → G} (hf : ContDiff ℝ 1 f) (hc : HasCompactSupport f)
+    {α : ℝ≥0} (hα : α ≤ 1) :
+    ∃ M K : ℝ≥0, (∀ x, ‖f x‖ ≤ M) ∧ HolderWith K α f := by
+  obtain ⟨B, hB⟩ := hc.exists_bound_of_continuous hf.continuous
+  let M : ℝ≥0 := ⟨max B 0, le_max_right _ _⟩
+  have hM : ∀ x, ‖f x‖ ≤ M := fun x => (hB x).trans (le_max_left _ _)
+  obtain ⟨K, hK⟩ := ContDiff.lipschitzWith_of_hasCompactSupport hc hf one_ne_zero
+  exact ⟨M, max (2 * M) K, hM,
+    (Schauder.holderWith_zero_of_norm_le hM).of_le_of_le hK.holderWith (by positivity) hα⟩
+
+private theorem exists_holderWith_smul_comp_im_of_norm_le
+    {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
+    {a : ℝ → ℝ} (ha : ContDiff ℝ 1 a) (hc : HasCompactSupport a)
+    {f : ℂ → F} {N K α : ℝ≥0} (hf : HolderWith K α f)
+    (hN : ∀ z, ‖f z‖ ≤ N) (hα : α ≤ 1) :
+    ∃ C : ℝ≥0, HolderWith C α (fun z : ℂ => a z.im • f z) := by
+  obtain ⟨M, A, hM, hA⟩ := exists_norm_bound_and_holderWith_compactSupport ha hc hα
+  have hp : HolderWith (A * ‖Complex.imCLM‖₊ ^ (α : ℝ)) α (fun z : ℂ => a z.im) := by
+    simpa only [mul_one, Function.comp_def, Complex.imCLM_apply] using
+      hA.comp Complex.imCLM.lipschitz.holderWith
+  have h := Schauder.holderWith_smul_of_norm_le hp hf (fun z => hM z.im) hN
+  exact ⟨_, h⟩
+
+private theorem norm_integral_comp_re_sub_im_mul_le
+    {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
+    {ρ : ℝ → ℝ} (hρ : Continuous ρ) (hc : HasCompactSupport ρ)
+    {b : ℝ → F} {M : ℝ} (hM : ∀ x, ‖b x‖ ≤ M) (z : ℂ) :
+    ‖∫ q : ℝ, ρ q • b (z.re - z.im * q)‖ ≤ (∫ q : ℝ, ‖ρ q‖) * M := by
+  have hi : Integrable (fun q : ℝ => ‖ρ q‖) volume :=
+    hρ.norm.integrable_of_hasCompactSupport hc.norm
+  calc
+    ‖∫ q : ℝ, ρ q • b (z.re - z.im * q)‖ ≤ ∫ q : ℝ, ‖ρ q‖ * M := by
+      apply norm_integral_le_of_norm_le (hi.mul_const M)
+      exact Eventually.of_forall fun q => by
+        rw [norm_smul]
+        exact mul_le_mul_of_nonneg_left (hM _) (norm_nonneg _)
+    _ = _ := integral_mul_const M (fun q : ℝ => ‖ρ q‖)
+
+private theorem exists_holderWith_weighted_boundary_average
+    {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
+    {a ρ : ℝ → ℝ} (ha : ContDiff ℝ 1 a) (hac : HasCompactSupport a)
+    (hρ : Continuous ρ) (hc : HasCompactSupport ρ)
+    {b : ℝ → F} (hb : Continuous b) (hbc : HasCompactSupport b)
+    {K α : ℝ≥0} (hH : HolderWith K α b) (hα : α ≤ 1) :
+    ∃ C : ℝ≥0, HolderWith C α
+      (fun z : ℂ => a z.im • ∫ q : ℝ, ρ q • b (z.re - z.im * q)) := by
+  obtain ⟨B, hB⟩ := hbc.exists_bound_of_continuous hb
+  have hA := holderWith_integral_comp_re_sub_im_mul hρ hc hb hH
+  have hN (z : ℂ) : ‖∫ q : ℝ, ρ q • b (z.re - z.im * q)‖ ≤
+      ((∫ q : ℝ, ‖ρ q‖) * max B 0).toNNReal :=
+    (norm_integral_comp_re_sub_im_mul_le hρ hc
+      (fun x => (hB x).trans (le_max_left _ _)) z).trans (Real.le_coe_toNNReal _)
+  exact exists_holderWith_smul_comp_im_of_norm_le ha hac hA hN hα
+
+private def boundaryLiftingLaplacian
+    {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
+    (ρ ζ : ℝ → ℝ) (b : ℝ → F) (z : ℂ) : F :=
+  ζ z.im • (∫ q : ℝ, (((1 + q ^ 2) / 2) * deriv (deriv ρ) q) • b (z.re - z.im * q)) +
+    (z.im * deriv ζ z.im) • (∫ q : ℝ, (ρ q - q * deriv ρ q) • b (z.re - z.im * q)) +
+    (z.im ^ 2 / 2 * deriv (deriv ζ) z.im) • (∫ q : ℝ, ρ q • b (z.re - z.im * q))
+
+private theorem exists_holderWith_boundaryLiftingLaplacian
+    {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
+    {ρ ζ : ℝ → ℝ} (hρ : ContDiff ℝ 2 ρ) (hρc : HasCompactSupport ρ)
+    (hζ : ContDiff ℝ 3 ζ) (hζc : HasCompactSupport ζ)
+    {b : ℝ → F} (hb : Continuous b) (hbc : HasCompactSupport b)
+    {K α : ℝ≥0} (hH : HolderWith K α b) (hα : α ≤ 1) :
+    ∃ C : ℝ≥0, HolderWith C α (boundaryLiftingLaplacian ρ ζ b) := by
+  have hρd : ContDiff ℝ 1 (deriv ρ) := (contDiff_succ_iff_deriv.mp hρ).2.2
+  have hζd : ContDiff ℝ 2 (deriv ζ) := (contDiff_succ_iff_deriv.mp hζ).2.2
+  have hζdd : ContDiff ℝ 1 (deriv (deriv ζ)) := (contDiff_succ_iff_deriv.mp hζd).2.2
+  obtain ⟨C0, h0⟩ := exists_holderWith_weighted_boundary_average
+    (hζ.of_le (by norm_num)) hζc
+    (((continuous_const.add (continuous_id.pow 2)).div_const 2).mul hρd.continuous_deriv_one)
+    hρc.deriv.deriv.mul_left hb hbc hH hα
+  obtain ⟨C1, h1⟩ := exists_holderWith_weighted_boundary_average
+    (contDiff_id.mul (hζd.of_le (by norm_num))) hζc.deriv.mul_left
+    (hρ.continuous.sub (continuous_id.mul hρd.continuous))
+    (hρc.sub hρc.deriv.mul_left) hb hbc hH hα
+  obtain ⟨C2, h2⟩ := exists_holderWith_weighted_boundary_average
+    (((contDiff_id.pow 2).div_const 2).mul hζdd) hζc.deriv.deriv.mul_left
+    hρ.continuous hρc hb hbc hH hα
+  exact ⟨C0 + C1 + C2, (h0.add h1).add h2⟩
+
+private theorem laplacian_comp_im
+    {ζ : ℝ → ℝ} (hζ : ContDiff ℝ 2 ζ) (z : ℂ) :
+    Laplacian.laplacian (fun w : ℂ => ζ w.im) z = deriv (deriv ζ) z.im := by
+  have hi : fderiv ℝ Complex.im = fun _ : ℂ => Complex.imCLM := by
+    funext w
+    exact Complex.imCLM.fderiv
+  have hzero : Laplacian.laplacian Complex.im z = 0 := by
+    simp only [InnerProductSpace.laplacian_eq_iteratedFDeriv_complexPlane,
+      iteratedFDeriv_two_apply, hi, fderiv_const_apply, zero_apply, add_zero]
+  have h := laplacian_comp_scalar (f := Complex.im) (φ := ζ)
+    Complex.imCLM.contDiff.contDiffAt (hζ.contDiffAt (x := z.im))
+  simpa only [Function.comp_def, hzero, hi, Complex.imCLM_apply, Complex.one_im,
+    Complex.I_im, zero_pow (by norm_num : (2 : ℕ) ≠ 0), one_pow, zero_add,
+    mul_zero, mul_one] using h
+
+private theorem gradient_comp_im
+    {ζ : ℝ → ℝ} (hζ : Differentiable ℝ ζ) (z : ℂ) :
+    gradient (fun w : ℂ => ζ w.im) z = deriv ζ z.im • Complex.I := by
+  have hd := (hζ z.im).hasDerivAt.comp_hasFDerivAt z Complex.imCLM.hasFDerivAt
+  change HasFDerivAt (fun w : ℂ => ζ w.im) (deriv ζ z.im • Complex.imCLM) z at hd
+  apply Complex.ext
+  · simp only [gradient_complex_re, hd.fderiv, smul_apply, Complex.imCLM_apply,
+      Complex.one_im, smul_eq_mul, mul_zero, Complex.real_smul, Complex.mul_re,
+      Complex.ofReal_re, Complex.I_re, Complex.ofReal_im, Complex.I_im,
+      zero_mul, zero_sub, neg_zero]
+  · simp only [gradient_complex_im, hd.fderiv, smul_apply, Complex.imCLM_apply,
+      Complex.I_im, smul_eq_mul, mul_one, Complex.real_smul, Complex.mul_im,
+      Complex.ofReal_re, Complex.ofReal_im, Complex.I_re, zero_mul, add_zero]
+
+private theorem laplacian_smul_quadraticBoundaryLifting
+    {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
+    {ρ ζ : ℝ → ℝ} (hρ : ContDiff ℝ 2 ρ) (hρc : HasCompactSupport ρ)
+    (hζ : ContDiff ℝ 2 ζ) {b : ℝ → F} (hb : Continuous b) {z : ℂ} (hz : 0 < z.im) :
+    Laplacian.laplacian (fun w : ℂ => ζ w.im • quadraticBoundaryLifting ρ b w) z =
+      boundaryLiftingLaplacian ρ ζ b z := by
+  have hQ : ContDiffAt ℝ 2 (quadraticBoundaryLifting ρ b) z :=
+    (contDiffOn_quadraticBoundaryLifting hρ hρc hb.locallyIntegrable z hz).contDiffAt
+      ((isOpen_lt continuous_const Complex.continuous_im).mem_nhds hz)
+  have he : InnerProductSpace.laplacianWithin (quadraticBoundaryLifting ρ b)
+      {w : ℂ | 0 ≤ w.im} z = Laplacian.laplacian (quadraticBoundaryLifting ρ b) z := by
+    rw [InnerProductSpace.laplacianWithin_eq_iteratedFDerivWithin_complexPlane _ uniqueDiffOn_nonneg_im hz.le,
+      InnerProductSpace.laplacian_eq_iteratedFDeriv_complexPlane]
+    simp only [iteratedFDerivWithin_eq_iteratedFDeriv uniqueDiffOn_nonneg_im hQ hz.le]
+  have hΔ := (laplacianWithin_quadraticBoundaryLifting hρ hρc hb hz.le)
+  rw [he] at hΔ
+  have hζi : ContDiffAt ℝ 2 (fun w : ℂ => ζ w.im) z :=
+    (hζ.comp Complex.imCLM.contDiff).contDiffAt
+  rw [hζi.laplacian_fun_smul hQ,
+    hΔ, gradient_comp_im (hζ.differentiable (by norm_num)), laplacian_comp_im hζ,
+    fderiv_quadraticBoundaryLifting (hρ.of_le (by norm_num)) hρc hb hz]
+  simp only [quadraticBoundaryLiftingDerivative, quadraticBoundaryLifting,
+    boundaryLiftingLaplacian, add_apply, ContinuousLinearMap.smulRight_apply,
+    Complex.reCLM_apply, Complex.imCLM_apply, Complex.real_smul,
+    Complex.mul_re, Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im,
+    Complex.I_re, Complex.I_im, mul_zero, mul_one, zero_sub,
+    add_zero, smul_smul]
+  module
+
+theorem exists_holderOnWith_laplacianWithin_lifting
+    {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F] [CompleteSpace F]
+    {b : ℝ → F} (hb : Continuous b) (hc : HasCompactSupport b)
+    {K α : ℝ≥0} (hH : HolderWith K α b) (hα : α ≤ 1) :
+    ∃ L : ℂ → F, HasCompactSupport L ∧
+      ContDiffOn ℝ 2 L {z : ℂ | 0 ≤ z.im} ∧
+      ContDiffOn ℝ ∞ L {z : ℂ | 0 < z.im} ∧
+      (∀ s : ℝ, L (s : ℂ) = 0 ∧
+        HasFDerivWithinAt L (0 : ℂ →L[ℝ] F) {z : ℂ | 0 ≤ z.im} (s : ℂ) ∧
+        InnerProductSpace.laplacianWithin L {z : ℂ | 0 ≤ z.im} (s : ℂ) = b s) ∧
+      ∃ C : ℝ≥0, HolderOnWith C α
+        (InnerProductSpace.laplacianWithin L {z : ℂ | 0 ≤ z.im}) {z : ℂ | 0 ≤ z.im} := by
+  let η : ContDiffBump (0 : ℝ) := ⟨1, 2, by norm_num, by norm_num⟩
+  let ρ : ℝ → ℝ := η.normed volume
+  let L : ℂ → F := fun z => η z.im • quadraticBoundaryLifting ρ b z
+  obtain ⟨hL, hC2, hCinf, hjet⟩ := contDiffOn_two_laplacian_trace_lifting hb hc η
+  obtain ⟨C, hG⟩ := exists_holderWith_boundaryLiftingLaplacian (ρ := ρ) (ζ := (η : ℝ → ℝ))
+    η.contDiff_normed η.hasCompactSupport_normed η.contDiff η.hasCompactSupport hb hc hH hα
+  refine ⟨L, hL, hC2, hCinf, hjet, C, ?_⟩
+  have heq : EqOn (InnerProductSpace.laplacianWithin L {z : ℂ | 0 ≤ z.im})
+      (boundaryLiftingLaplacian ρ (η : ℝ → ℝ) b) {z : ℂ | 0 ≤ z.im} := by
+    intro z hz
+    change 0 ≤ z.im at hz
+    rcases hz.eq_or_lt with hz0 | hzpos
+    · have he : (z.re : ℂ) = z := by
+        apply Complex.ext
+        · rfl
+        · exact hz0
+      rw [← he, (hjet z.re).2.2]
+      have hη0 : η (0 : ℝ) = 1 := η.eventuallyEq_one.eq_of_nhds
+      simp only [boundaryLiftingLaplacian, Complex.ofReal_im, Complex.ofReal_re,
+        zero_mul, sub_zero, zero_pow (by norm_num : (2 : ℕ) ≠ 0), zero_div,
+        zero_smul, add_zero, hη0, one_smul, integral_smul_const]
+      rw [integral_quadratic_laplacian_kernel η.contDiff_normed η.hasCompactSupport_normed,
+        η.integral_normed, one_smul]
+    · have hLc : ContDiffAt ℝ 2 L z :=
+        hC2.contDiffAt (mem_of_superset
+          ((isOpen_lt continuous_const Complex.continuous_im).mem_nhds hzpos)
+          (fun w hw => (show 0 < w.im from hw).le))
+      rw [InnerProductSpace.laplacianWithin_eq_iteratedFDerivWithin_complexPlane _ uniqueDiffOn_nonneg_im hz]
+      simp only [iteratedFDerivWithin_eq_iteratedFDeriv uniqueDiffOn_nonneg_im hLc hz]
+      rw [← congrFun (InnerProductSpace.laplacian_eq_iteratedFDeriv_complexPlane L) z]
+      exact laplacian_smul_quadraticBoundaryLifting η.contDiff_normed
+        η.hasCompactSupport_normed η.contDiff hb hzpos
+  intro z hz w hw
+  rw [heq hz, heq hw]
+  exact hG z w
 
 end DifferentialGeometry.Analysis

@@ -1,6 +1,7 @@
 import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.Reflection
 import DifferentialGeometry.Analysis.Elliptic.Euclidean.WeakLaplacianRegularity
 import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.BoundaryGradient
+import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.BoundaryLifting
 
 noncomputable section
 open Set Filter MeasureTheory Metric InnerProductSpace
@@ -185,5 +186,73 @@ theorem exists_holder_iteratedFDeriv_two_evenReflection
   apply integral_congr_ae
   filter_upwards [evenReflection_congr_ae hfg] with z hz
   rw [hz]
+
+private theorem upper_unique_diff : UniqueDiffOn ℝ {z : ℂ | 0 ≤ z.im} := by
+  apply uniqueDiffOn_convex (convex_halfSpace_im_ge 0)
+  refine ⟨Complex.I, mem_interior_iff_mem_nhds.mpr ?_⟩
+  have hH : {z : ℂ | 0 < z.im} ∈ 𝓝 Complex.I :=
+    (isOpen_lt continuous_const Complex.continuous_im).mem_nhds (by simp)
+  exact mem_of_superset hH (fun z hz => (show 0 ≤ z.im from hz.le))
+
+private theorem laplacianWithin_eq_at_of_contDiffAt
+    {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
+    {f : ℂ → F} {z : ℂ} (hz : 0 ≤ z.im) (hf : ContDiffAt ℝ 2 f z) :
+    laplacianWithin f {w : ℂ | 0 ≤ w.im} z = Laplacian.laplacian f z := by
+  rw [laplacianWithin_eq_iteratedFDerivWithin_complexPlane _ upper_unique_diff hz,
+    laplacian_eq_iteratedFDeriv_complexPlane]
+  simp only [iteratedFDerivWithin_eq_iteratedFDeriv upper_unique_diff hf hz]
+
+private theorem neumann_from_boundary_lifting
+    {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F] [CompleteSpace F]
+    {L : ℂ → F} (hc : HasCompactSupport L)
+    (hC2 : ContDiffOn ℝ 2 L {z : ℂ | 0 ≤ z.im})
+    (hN : ∀ s : ℝ, HasFDerivWithinAt L (0 : ℂ →L[ℝ] F)
+      {z : ℂ | 0 ≤ z.im} (s : ℂ))
+    {K α : ℝ≥0} (hH : HolderOnWith K α
+      (laplacianWithin L {z : ℂ | 0 ≤ z.im}) {z : ℂ | 0 ≤ z.im})
+    (hα : 0 < α) (hα1 : α < 1) :
+    ∃ C : ℝ≥0, ContDiff ℝ 2 (evenReflection L) ∧
+      HolderWith C α (iteratedFDeriv ℝ 2 (evenReflection L)) ∧
+      EqOn (evenReflection L) L {z : ℂ | 0 ≤ z.im} := by
+  have hC1 : ContDiffOn ℝ 1 L {z : ℂ | 0 ≤ z.im} := hC2.of_le (by norm_num)
+  have hC2o : ContDiffOn ℝ 2 L {z : ℂ | 0 < z.im} :=
+    hC2.mono (fun z hz => (show 0 ≤ z.im from hz.le))
+  have hnormal (s : ℝ) : fderivWithin ℝ L {z : ℂ | 0 ≤ z.im} (s : ℂ) Complex.I = 0 := by
+    rw [(hN s).fderivWithin (upper_unique_diff _ (by simp))]
+    rfl
+  have hLap (z : ℂ) (hz : 0 < z.im) : Laplacian.laplacian L z =
+      laplacianWithin L {w : ℂ | 0 ≤ w.im} z := by
+    exact (laplacianWithin_eq_at_of_contDiffAt hz.le ((hC2o z hz).contDiffAt
+      ((isOpen_lt continuous_const Complex.continuous_im).mem_nhds hz))).symm
+  obtain ⟨C, hC, hHC⟩ := exists_holder_iteratedFDeriv_two_evenReflection hc hC1 hC2o
+    hnormal hLap hα hα1 hH
+  exact ⟨C, hC, hHC, fun z hz => evenReflection_of_im_nonneg L hz⟩
+
+theorem exists_holder_iteratedFDeriv_two_laplacian_trace_lifting
+    {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F] [CompleteSpace F]
+    {b : ℝ → F} (hc : HasCompactSupport b)
+    {K α : ℝ≥0} (hH : HolderWith K α b) (hα : 0 < α) (hα1 : α < 1) :
+    ∃ G : ℂ → F, HasCompactSupport G ∧ ContDiff ℝ 2 G ∧
+      ContDiffOn ℝ ∞ G {z : ℂ | 0 < z.im} ∧
+      (∀ s : ℝ, G (s : ℂ) = 0 ∧ fderiv ℝ G (s : ℂ) = 0 ∧
+        Laplacian.laplacian G (s : ℂ) = b s) ∧
+      ∃ C : ℝ≥0, HolderWith C α (iteratedFDeriv ℝ 2 G) := by
+  obtain ⟨L, hLc, hL2, hLi, hjet, B, hB⟩ :=
+    exists_holderOnWith_laplacianWithin_lifting (hH.continuous hα) hc hH hα1.le
+  have hN := fun s => (hjet s).2.1
+  obtain ⟨C, hG2, hGC, heq⟩ := neumann_from_boundary_lifting hLc hL2 hN hB hα hα1
+  refine ⟨evenReflection L, hasCompactSupport_evenReflection hLc, hG2,
+    hLi.congr (fun z hz => heq (show 0 ≤ z.im from hz.le)), ?_, C, hGC⟩
+  intro s
+  have hs : (s : ℂ) ∈ {z : ℂ | 0 ≤ z.im} := by simp
+  refine ⟨(heq hs).trans (hjet s).1, ?_, ?_⟩
+  · rw [← fderivWithin_eq_fderiv (upper_unique_diff _ hs)
+      (hG2.differentiable (by norm_num) (s : ℂ)),
+      fderivWithin_congr' heq hs, (hN s).fderivWithin (upper_unique_diff _ hs)]
+  · have he : evenReflection L =ᶠ[𝓝[{z : ℂ | 0 ≤ z.im}] (s : ℂ)] L :=
+      heq.eventuallyEq_of_mem self_mem_nhdsWithin
+    rw [← laplacianWithin_eq_at_of_contDiffAt hs hG2.contDiffAt,
+      (laplacianWithin_congr_nhdsWithin he upper_unique_diff).eq_of_nhdsWithin hs,
+      (hjet s).2.2]
 
 end DifferentialGeometry.Analysis
