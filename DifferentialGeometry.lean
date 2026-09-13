@@ -4166,3 +4166,4 @@ import DifferentialGeometry.Analysis.Calculus.SmoothExtension.ConvexOpen
 import DifferentialGeometry.Topology.Embedding.IntervalExtension
 import DifferentialGeometry.Analysis.Calculus.SmoothExtension.HalfSpace
 import DifferentialGeometry.Analysis.Calculus.SmoothExtension.Quadrant
+import DifferentialGeometry.Topology.Planar.PolygonGraphCharts
