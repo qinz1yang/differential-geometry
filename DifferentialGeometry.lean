@@ -4154,3 +4154,5 @@ import DifferentialGeometry.External.Schoenflies.Windows
 import DifferentialGeometry.Topology.JordanCurve
 import DifferentialGeometry.Topology.JordanSchoenflies
 import DifferentialGeometry.Topology.JordanSeparation
+import DifferentialGeometry.Topology.Embedding.FiniteDimension
+import DifferentialGeometry.Topology.Embedding.SmoothParametricGraph

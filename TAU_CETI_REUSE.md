@@ -129,6 +129,32 @@ the actual unit sphere and a singleton fiber over any topological parameter.
 The first also retains joint smoothness of the actual graph. The leaf is
 registered in the flat root; no full aggregate build is claimed.
 
-The native smooth-immersion step for a moving graph remains separate. Neither
-this topological theorem nor the inspected upstream ambient-isotopy definitions
-supply an isotopy-extension theorem.
+The native smooth-immersion step is now supplied by
+Topology/Embedding/SmoothParametricGraph. For a jointly smooth family of native
+smooth embeddings of a compact boundaryless manifold into finite-dimensional
+real normed space, it proves that the actual parameterized graph is a native
+smooth embedding. The parameter space may be any real Banach space. The
+fixed-complement immersion engine requires no compactness of the source.
+Topology/Embedding/FiniteDimension derives a chosen normal complement of the
+correct codimension from a native immersion at any order, over a complete
+nontrivially normed field and with arbitrary corners. Source-model finite
+dimensionality is derived locally; no source nonemptiness is assumed.
+
+The graph proof reuses the published local retraction, the existing parameter
+inverse-function engine and the existing local-diffeomorphism transport proof.
+An eight-line wrapper preserves the fixed normal complement without copying
+that transport proof. All six previous public transport statements and bodies
+are retained. This is original glue; no additional upstream source was copied.
+
+Private graph check 1789305462130027714-schoenflies-30a41974 passed in34.30s,
+30guards17pairs. Final public source68465e15 passed36.98s,28guards17pairs.
+Imported1789305862830682920-schoenflies-6e6d83c9 passed105.89s,56guards13pairs.
+All public and consumer types retain their source content, with scoped notation
+expanded by the imported driver. The three changed/new leaves freshly compiled
+in1:14.56, maximum RSS1704808KiB, with zero diagnostics. Imported-package and
+consumer declaration linters and standard-only transitive axioms pass. Probes
+include an arbitrary actual S2 family with literal real complement, the unit
+sphere, and a noncompact real-line identity family with zero codimension.
+Both new leaves are registered in the flat root; no full DG aggregate build
+is claimed. Compact velocity extension, relative vanishing, time endpoints,
+source boundary faces and arbitrary ambient isotopy extension remain separate.
