@@ -4,6 +4,7 @@ import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.SphereCapFilling
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.LeftUnitLaw
 import DifferentialGeometry.Topology.ThreeManifold.PoincareStandardFactorOrientationReduction
 import DifferentialGeometry.Topology.ThreeManifold.PoincareStandardOrientationRefinement
+import DifferentialGeometry.Topology.ThreeManifold.SphericalSpaceFormOrientationClosure
 
 noncomputable section
 
@@ -23,12 +24,11 @@ variable {M : ClosedOrientedManifold.{u} 3}
 theorem isPoincareStandard_of_standardDecomposition [ConnectedSpace M.Carrier]
     (W : PoincareControlledExtinction M g)
     (hsum : ∀ i : Fin W.history.eventCount,
-      (W.history.cutCapTrace.transition i).componentConnectedSumStandardDecomposition)
-    (hstd : factorOrientationClosure.{u}) :
+      (W.history.cutCapTrace.transition i).componentConnectedSumStandardDecomposition) :
     Topology.isPoincareStandard M.Carrier :=
   W.history.cutCapTrace.isPoincareStandard_of_initialIdentification_of_standardDecomposition
     hsum W.controlled (W.history.extinct_trace W.extinct)
-    (poincareStandardSumClosed_of_factorOrientationClosure hstd) M
+    poincareStandardSumClosed_holds M
     W.initial.cutCapIdentification
 
 end PoincareControlledExtinction
@@ -36,16 +36,14 @@ end PoincareControlledExtinction
 theorem exists_diffeomorph_standardThreeSphere_of_standardDecomposition
     {M : Topology.ClosedOrientedManifold.{u} 3} {g : SmoothRiemannianMetric (𝓡 3) M.Carrier}
     (W : PoincareControlledExtinction M g)
-    (hstd : Topology.factorOrientationClosure.{u})
     (hsum : ∀ i : Fin W.history.eventCount,
       (W.history.cutCapTrace.transition i).componentConnectedSumStandardDecomposition)
     [ConnectedSpace M.Carrier] [SimplyConnectedSpace M.Carrier] :
     Nonempty (M.Carrier ≃ₘ⟮𝓡 3, 𝓡 3⟯ Topology.standardThreeSphereLift.{u}.Carrier) :=
   Topology.exists_diffeomorph_standardThreeSphere_of_isPoincareStandard
-    (W.isPoincareStandard_of_standardDecomposition hsum hstd)
+    (W.isPoincareStandard_of_standardDecomposition hsum)
 
 theorem smoothPoincareConjecture_of_standardDecomposition
-    (hstd : Topology.factorOrientationClosure.{u})
     (hsum : ∀ (H : FiniteSurgeryHistory.{u}) (i : Fin H.eventCount),
       (H.cutCapTrace.transition i).componentConnectedSumStandardDecomposition)
     (hext : ∀ (M : Topology.ConnectedClosedOrientedManifold.{u} 3)
@@ -60,7 +58,6 @@ theorem smoothPoincareConjecture_of_standardDecomposition
     (E := EuclideanSpace ℝ (Fin 3)) (M := M) (n := 3) (by simp)
   exact exists_diffeomorph_standardThreeSphere_of_standardDecomposition
     (W := (hext { Carrier := M, orientation := o } g).some)
-    (hstd := hstd)
     (hsum := fun i => hsum _ i)
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery

@@ -812,6 +812,7 @@ import DifferentialGeometry.Analysis.Integration.Measure.PullbackCross
 import DifferentialGeometry.Analysis.Integration.Measure.PullbackGradient
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Basic
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.CompactVolumeEquivalence
+import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Covering
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Euclidean
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Exponential
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.GaussianTail
@@ -8650,6 +8651,7 @@ import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.AssociativeFlatt
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.BallChartTransitionDet
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.BallChartTransportCenter
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.BallChartTransportConnected
+import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.ChoiceIndependence
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.Collar
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.Commutative
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.Construction
@@ -8709,6 +8711,7 @@ import DifferentialGeometry.Topology.ThreeManifold.SmoothSchoenflies
 import DifferentialGeometry.Topology.ThreeManifold.SphereMappingTorus
 import DifferentialGeometry.Topology.ThreeManifold.SphereTwoTimesCircleHomology
 import DifferentialGeometry.Topology.ThreeManifold.SphereTwoTimesCircleOrientationClosure
+import DifferentialGeometry.Topology.ThreeManifold.SphericalSpaceFormOrientationClosure
 import DifferentialGeometry.Topology.ThreeManifold.SphericalSpaceFormTrivial
 import DifferentialGeometry.Topology.ThreeManifold.StandardFactors
 import DifferentialGeometry.Topology.ThreeManifold.StandardSphere
