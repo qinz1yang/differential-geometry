@@ -1298,6 +1298,7 @@ import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.LocalizedEigenva
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.LogarithmicBarrier
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.OpenIntervalKernel
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.ParallelConvex
+import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.PeriodicComparison
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.PositiveSystem
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.RankOneSupport
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.RankSpreading
@@ -4909,6 +4910,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.P
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProductGeometry
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Projection
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProjectionFrontier
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.RampAngleEvolution
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.RampContinuation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.RampFamilyDependence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.RampFamilySatisfiability
