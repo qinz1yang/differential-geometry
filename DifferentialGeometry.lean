@@ -64,6 +64,7 @@ import DifferentialGeometry.Analysis.Calculus.Interpolation.RelativeRectangleDif
 import DifferentialGeometry.Analysis.Calculus.Interpolation.RelativeRectangleExtension
 import DifferentialGeometry.Analysis.Calculus.Interpolation.SmallPerturbation
 import DifferentialGeometry.Analysis.Calculus.Interpolation.VerticalInterpolation
+import DifferentialGeometry.Analysis.Calculus.Inverse.BoundaryLocalInverse
 import DifferentialGeometry.Analysis.Calculus.Inverse.ContinuousLinearMapNeumann
 import DifferentialGeometry.Analysis.Calculus.Inverse.CoordinateDerivativeEquiv
 import DifferentialGeometry.Analysis.Calculus.Inverse.DerivativePerturbation
@@ -3021,6 +3022,7 @@ import DifferentialGeometry.Geometry.Boundary.LevelComponents
 import DifferentialGeometry.Geometry.Boundary.LiftedChart
 import DifferentialGeometry.Geometry.Boundary.LocalFlow
 import DifferentialGeometry.Geometry.Boundary.Manifold.Basic
+import DifferentialGeometry.Geometry.Boundary.Manifold.BinaryGluing
 import DifferentialGeometry.Geometry.Boundary.Manifold.CollaredGluing
 import DifferentialGeometry.Geometry.Boundary.Manifold.CollaredQuotientAtlas
 import DifferentialGeometry.Geometry.Boundary.Manifold.Component
