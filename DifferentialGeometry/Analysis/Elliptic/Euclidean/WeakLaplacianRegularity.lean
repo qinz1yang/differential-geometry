@@ -186,5 +186,44 @@ theorem contDiff_two_of_holder_weak_laplacian
     exact (heatSup_contDiff_two zero_lt_one ub).sub
       (heatDuhamel_const_contDiff_two hα zero_lt_one gb hg)
 
+theorem exists_holder_iteratedFDeriv_two_of_holder_weak_laplacian
+    {u g : V → F} (hu : Continuous u) (hcu : HasCompactSupport u)
+    {B : ℝ} (hB : ∀ x, ‖g x‖ ≤ B)
+    (hw : ∀ φ : V → ℝ, ContDiff ℝ 2 φ → HasCompactSupport φ →
+      (∫ y, Laplacian.laplacian φ y • u y) = ∫ y, φ y • g y)
+    {α K : ℝ≥0} (hα : 0 < α) (hα1 : α < 1) (hg : HolderWith K α g) :
+    ∃ C : ℝ≥0, ContDiff ℝ 2 u ∧ HolderWith C α (iteratedFDeriv ℝ 2 u) := by
+  have hu2 := contDiff_two_of_holder_weak_laplacian hu hcu hB hw hα hg
+  rcases subsingleton_or_nontrivial V with hV | hV
+  · let : Subsingleton V := hV
+    refine ⟨0, hu2, ?_⟩
+    intro x y
+    rw [Subsingleton.elim x y, edist_self]
+    exact zero_le
+  · let : Nontrivial V := hV
+    let ub : BoundedContinuousFunction V F :=
+      (⟨⟨u, hu⟩, hcu⟩ : CompactlySupportedContinuousMap V F).toBoundedContinuousFunction
+    let gb : BoundedContinuousFunction V F :=
+      ⟨⟨g, hg.continuous hα⟩, ⟨2 * B, fun x y => by
+        rw [dist_eq_norm]
+        exact (norm_sub_le _ _).trans (by linarith [hB x, hB y])⟩⟩
+    have he : u = (fun x => heatSup 1 ub x) - heatDuhamel 1 (fun _ => gb) := by
+      funext x
+      exact eq_heatSup_sub_heatDuhamel_of_weak_laplacian ub gb hcu
+        (hg.uniformContinuous hα) hw zero_lt_one x
+    have hheat := heatSup_iteratedFDeriv_two_holder hα1.le zero_lt_one ub
+    have hduh := topSpatialJet_holderWith_restrict
+      (heatDuhamel_const_schauder_estimate hα hα1 (S := 2) zero_lt_one (by norm_num)
+        gb (B := ‖gb‖₊) le_rfl hg)
+    have hduh' : HolderWith (heatDuhamelConstSchauderConst (V := V) α K ‖gb‖₊ 1) α
+        (iteratedFDeriv ℝ 2 (heatDuhamel 1 (fun _ => gb))) := by
+      intro x y
+      exact hduh ⟨x, mem_univ x⟩ ⟨y, mem_univ y⟩
+    refine ⟨heatSupHessianHolderConst (V := V) 1 ub +
+      heatDuhamelConstSchauderConst (V := V) α K ‖gb‖₊ 1, hu2, ?_⟩
+    rw [he, iteratedFDeriv_sub (heatSup_contDiff_two zero_lt_one ub)
+      (heatDuhamel_const_contDiff_two hα zero_lt_one gb hg)]
+    exact holderWith_sub hheat hduh'
+
 
 end DifferentialGeometry.Analysis
