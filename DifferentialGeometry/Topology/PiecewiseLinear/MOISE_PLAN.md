@@ -212,7 +212,7 @@
   `HasGroupoid _ (plGroupoid (n+1))`、图卡与逆图卡在环境坐标下分片仿射；`combinatorialManifoldPLStructure_succ`）、
   `CombinatorialZero.lean`（`n = 0`；`combinatorialManifoldPLStructure : ∀ n, CombinatorialManifoldPLStructure n`）。
   逐模块检查零错误零警告；`#print axioms` 仅标准公理（`.lake/scratch/AuditF7.lean`、`AuditF8.lean`）。
-  这样 Phase 1 的 T1 接口已由 Phase 3 车道 F 证明；T2 `PLManifoldTriangulation n` 的存在部分 `exists_pLTriangulation`（紧致 T2 非空 PL 流形有 `PLTriangulation`；`Gluing`/`ChartPiece`/`Subcomplex`/`SubdivisionTransport`/`ChartGlue`/`TriangulationExistence`）已证，组合流形性质 T2.e 待做；`PLManifoldTriangulation n` 增加了 `[Nonempty X]`（空流形没有 `PLTriangulation`）。
+  这样 Phase 1 的 T1、T2 接口都已由 Phase 3 车道 F 证明：`combinatorialManifoldPLStructure : ∀ n, CombinatorialManifoldPLStructure n` 与 `plManifoldTriangulation : ∀ n, PLManifoldTriangulation n`（`Gluing`/`ChartPiece`/`Subcomplex`/`SubdivisionTransport`/`ChartGlue`/`TriangulationExistence`/`StarComplex`/`Combinatorial`，2026-09-13）；`PLManifoldTriangulation n` 增加了 `[Nonempty X]`（空流形没有 `PLTriangulation`，因 `map : ℝ^N → X`）。
 
 - 2026-09-11（Phase 1 第二轮，负责人指示不等完整构建）：`IsPiecewiseAffineOn` 改为基于 `IsPiecewiseAffineWithinAt`
   （`𝓝[s] x`）的定义并重跑整条链；新增 `Manifold.lean`、`Polyhedron.lean`，以及 `Smoothing.lean` 中的
