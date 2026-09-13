@@ -5,21 +5,22 @@ additive publication within the shared DifferentialGeometry Git repository. Its 
 library is `Poincare`; its sources retain the original mathematical namespaces.
 
 The source baseline is the recovered Chapter 35 commit
-`b45bfa009368c8f5f531e10f4f5280e90079d6ad`. This checkpoint includes 108 modules
-and 96 added public exports. The latest 381-line CapHomology leaf descends the
-actual cap product to both cohomology and homology. It exposes the actual cycle
-map, representative law, map naturality, constant-one H^0 unit, unit cap action
-in every degree and unit naturality. All 107 earlier leaves are unchanged.
+`b45bfa009368c8f5f531e10f4f5280e90079d6ad`. This checkpoint includes 109 modules
+and 103 added public exports. The latest 178-line ConnectedZeroCohomology leaf
+identifies actual H^0 of a path-connected space with the integers, normalized
+by the actual constant-one unit. It exposes the inverse, class-evaluation law,
+map naturality, actual degree-zero cap action and its generator criterion.
+All 108 earlier leaves are unchanged.
 
-Final request `1789315948183120646-topology_checkpoint-62c7e035` passed in
-Slurm 13821107 in 152.18 seconds, with 254 guards and 171 signature/axiom pairs.
-All 160 earlier pairs are byte-identical. New CapHomology and the root freshly
-compiled in 1:15.15 with maximum RSS 1814324 KiB and zero diagnostics. Source
-57c362c8 and original imported 204a2b9d pass with 40/24 and 42/11 guards/pairs;
-the new portable pairs match the original. Actual nonzero H0/unit classes,
-negative-unit action, doubling-map naturality and degree-one representative
+Final request `1789317973755893458-topology_checkpoint-3343921c` passed in
+Slurm 13821107 in 154.94 seconds, with 262 guards and 181 signature/axiom pairs.
+All 171 earlier pairs are byte-identical. The new leaf and root freshly compiled
+in 1:14.10 with maximum RSS 1812808 KiB and zero diagnostics. Source b66ae903
+and original imported 18a032ba pass with 47/15 and 49/10 guards/pairs; the new
+portable pairs match the original. Nonzero negative-three cohomology, actual
+cap bijectivity with a vertex class, negative-unit action and doubling-map
 consumers pass. Stock linters and standard-only axioms pass. Relative cap
-products, duality isomorphisms and the full oriented-manifold suite remain open.
+products, general duality and the full oriented-manifold suite remain open.
 
 The preceding signed-chart extension retains its exact public statements.
 
