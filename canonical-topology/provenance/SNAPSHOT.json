@@ -1,9 +1,9 @@
 {
-  "scope": "Dependency-closed 132-module checkpoint including uniquely normalized cap duality for a simply connected T1 space relative to two distinct points; full topology suite incomplete",
+  "scope": "Dependency-closed 133-module checkpoint including actual singular cochain homotopies and integral cohomology homotopy invariance; full topology suite incomplete",
   "baseline_commit": "b45bfa009368c8f5f531e10f4f5280e90079d6ad",
   "baseline_ref": "refs/remotes/origin/codex/chapter35",
   "source_project": "PoincareLean",
-  "source_module_count": 132,
+  "source_module_count": 133,
   "roots": [
     "Poincare.Topology.Homology.RelativeMaps",
     "Poincare.Topology.Homology.RelativeHomeomorphism",
@@ -32,7 +32,8 @@
     "Poincare.Topology.Homology.RelativeCapToAbsolute",
     "Poincare.Topology.Homology.RelativeCapToAbsoluteHomology",
     "Poincare.Topology.Homology.RelativeCapCohomologyConnecting",
-    "Poincare.Topology.Homology.TwoPointCapDuality"
+    "Poincare.Topology.Homology.TwoPointCapDuality",
+    "Poincare.Topology.Homology.CochainHomotopy"
   ],
   "changed_sources": [
     {
@@ -64,7 +65,13 @@
       "module": "Poincare.Topology.Homology.CochainExcision",
       "path": "Poincare/Topology/Homology/CochainExcision.lean",
       "baseline_sha256": null,
-      "sha256": "4510be02f043f9ef5bc64a5118bd6cee8d938389cefde48c369052f3c3aa4f95"
+      "sha256": "d12835e102951b1dfe45c2e8796f1e7c534de986e9c7eff6f4001480f1b1c940"
+    },
+    {
+      "module": "Poincare.Topology.Homology.CochainHomotopy",
+      "path": "Poincare/Topology/Homology/CochainHomotopy.lean",
+      "baseline_sha256": null,
+      "sha256": "9bfca41d38079cb9afd2a3a18116d50b54bb8a6739ad96ec1941da8efe0f5b06"
     },
     {
       "module": "Poincare.Topology.Homology.CompactSupport",
@@ -460,7 +467,13 @@
       "module": "Poincare.Topology.Homology.CochainExcision",
       "path": "Poincare/Topology/Homology/CochainExcision.lean",
       "baseline_sha256": null,
-      "sha256": "4510be02f043f9ef5bc64a5118bd6cee8d938389cefde48c369052f3c3aa4f95"
+      "sha256": "d12835e102951b1dfe45c2e8796f1e7c534de986e9c7eff6f4001480f1b1c940"
+    },
+    {
+      "module": "Poincare.Topology.Homology.CochainHomotopy",
+      "path": "Poincare/Topology/Homology/CochainHomotopy.lean",
+      "baseline_sha256": null,
+      "sha256": "9bfca41d38079cb9afd2a3a18116d50b54bb8a6739ad96ec1941da8efe0f5b06"
     },
     {
       "module": "Poincare.Topology.Homology.CochainMaps",
@@ -1153,8 +1166,8 @@
   "aggregate": {
     "path": "Poincare.lean",
     "baseline_sha256": "99c3c8e47c19f60ee50a7e0f377e59138cf4ff33ebd4e26530d3c2b7cd47d452",
-    "sha256": "566499c86f28c7b7917571fbe0c6be38a3d3459567db5276e896358b3e2ff4ac",
-    "change": "Flat 132-leaf checkpoint aggregate; full recovered aggregate remains separate"
+    "sha256": "c52c35fd214907cba8e41b3d700be719fc0b556e4ef861300e432505bfa7117a",
+    "change": "Flat 133-leaf checkpoint aggregate; full recovered aggregate remains separate"
   },
   "configuration": [
     {
@@ -1260,6 +1273,7 @@
     "Mathlib.Topology.Homeomorph.Lemmas",
     "Mathlib.Topology.Homotopy.Basic",
     "Mathlib.Topology.Homotopy.Contractible",
+    "Mathlib.Topology.Homotopy.Equiv",
     "Mathlib.Topology.Instances.AddCircle.Real",
     "Mathlib.Topology.Maps.Proper.Basic",
     "Mathlib.Topology.MetricSpace.Bounded",
@@ -1407,7 +1421,12 @@
     "Poincare.Topology.integralRelativeCohomologyCapToAbsolute_absoluteToRelative",
     "Poincare.Topology.exists_moduleCycle_connecting_lifts",
     "Poincare.Topology.integralRelativeCohomologyCapToAbsolute_connecting",
-    "Poincare.Topology.exists_unique_relative_pair_cap_bijective"
+    "Poincare.Topology.exists_unique_relative_pair_cap_bijective",
+    "Poincare.Topology.integralSingularCochainsDualIso",
+    "Poincare.Topology.integralSingularCochainsDualIso_natural",
+    "Poincare.Topology.integralSingularCochainMapHomotopy",
+    "Poincare.Topology.integralSingularCohomologyMap_eq_of_homotopic",
+    "Poincare.Topology.integralSingularCohomologyMap_bijective_of_homotopyEquiv"
   ],
   "historical_authorities": [
     {
@@ -1545,38 +1564,24 @@
     "full_topology_suite_accepted": false
   },
   "validation": {
-    "status": "passed for the selected 132-module checkpoint; full topology suite incomplete",
+    "status": "passed for the selected 133-module checkpoint; full topology suite incomplete",
     "date": "2026-09-13",
     "slurm_job": "13821107",
     "host": "della-r3c4n2",
-    "request_id": "1789334015172615434-topology_checkpoint-405abd43",
-    "input_sha256": "fa4e49ca8c06ab76842995e3d958179c2c47b17b74b03895345b5d8b7d886337",
-    "result_sha256": "27770ade1e835b0a0e92c63babf743367d339a255fe9947768a38aa0a4900bbd",
-    "artifact_log_sha256": "3868468ef51abc58f63c6c4b552be8d5188f8798db68096c346bc6a4d64c1594",
-    "source_config_harness_hash_guards": 408,
+    "request_id": "1789336555099403798-topology_checkpoint-5d3553b1",
+    "input_sha256": "a4ee5db00f49db453d03400b703ffbf647790cd80406e7c9353cd7f141bdd1a3",
+    "result_sha256": "890857477c85f1ecc69fb78923ed699f8e5e9aa9e9ee05e5d316a7cce69e7300",
+    "artifact_log_sha256": "46dd593fbab679826c3f3707f3d679300ac296214d3a0c23a66dad068d5dcdce",
+    "source_config_harness_hash_guards": 516,
     "freshly_built_modules": [
-      "Poincare.Topology.Homotopy.PlaneTriangle",
-      "Poincare.Topology.Homotopy.TriangleEdges",
-      "Poincare.Topology.Homotopy.TriangleFaces",
-      "Poincare.Topology.Homotopy.TriangleBoundaryQuotient",
-      "Poincare.Topology.Homotopy.TrianglePathBoundary",
-      "Poincare.Topology.LoopSpace.Basic",
-      "Poincare.Topology.LoopSpace.BasedCircle",
-      "Poincare.Topology.LoopSpace.SpanningDisk",
-      "Poincare.Topology.LoopSpace.ContinuousFilling",
-      "Poincare.Topology.LoopSpace.SimplyConnectedTarget",
-      "Poincare.Topology.Homotopy.ConvexPlaneExtension",
-      "Poincare.Topology.Homology.PathEvaluation",
-      "Poincare.Topology.Homology.TriangleFilling",
-      "Poincare.Topology.Homology.PathCones",
-      "Poincare.Topology.Homology.CochainCones",
-      "Poincare.Topology.Homology.TwoPointCapDuality",
+      "Poincare.Topology.Homology.CochainHomotopy",
+      "Poincare.Topology.Homology.CochainExcision",
       "Poincare"
     ],
     "root_build": "lake --no-cache --iofail build Poincare",
-    "fresh_build_scope": "New TwoPointCapDuality301, fifteen unchanged recovered working-tree sources totaling1207 lines, and the root freshly compiled with zero diagnostics. These fifteen prerequisites were absent from the recovered Git baseline; all116 previously published leaves remain byte-identical.",
-    "exact_public_exports": 134,
-    "public_and_consumer_signature_axiom_pairs": 234,
+    "fresh_build_scope": "CochainHomotopy95, deduplicated CochainExcision294 and root freshly compiled with zero diagnostics; all 131 other published leaves unchanged.",
+    "exact_public_exports": 139,
+    "public_and_consumer_signature_axiom_pairs": 242,
     "linters": [
       "unusedArguments",
       "simpNF",
@@ -1591,15 +1596,15 @@
       "Quot.sound"
     ],
     "unexpected_diagnostics": 0,
-    "elapsed_seconds": 439.3468978404999,
-    "peak_summed_rss_bytes": 3110625280,
+    "elapsed_seconds": 186.48758339881897,
+    "peak_summed_rss_bytes": 3116363776,
     "full_topology_suite_accepted": false,
     "consumer_probes": [
-      "All231 prior signature/axiom pairs reproduced byte-identically",
-      "New public theorem and both consumers match original imported and source readbacks",
-      "For any simply connected T1 space and two distinct points, actual connecting normalization uniquely specifies a relative class whose actual cap map is bijective",
-      "Actual path and cochain cones supply first-homology and first-cohomology vanishing, without a Hurewicz axiom",
-      "Concrete real-line/{0,1} class and cohomology input are nonzero, with positive and negative endpoint cap values; negated class also gives bijection"
+      "All 234 prior signature/axiom pairs reproduced byte-identically",
+      "All five new public declarations and three consumers match original and source readbacks exactly",
+      "Actual continuous homotopies induce chain homotopies between the original cochain pullback maps, and hence equal cohomology maps in every degree",
+      "Actual native homotopy equivalences induce bijective cohomology pullback maps in every degree",
+      "Cylinder collapse induces the identity for arbitrary X and degree; real constant pullback preserves the nonzero H0 unit; empty-space bijection passes"
     ]
   },
   "previous_linear_sign_checkpoint_validation": {
@@ -2975,5 +2980,76 @@
     ],
     "source_request_id": "1789333825377750044-topology-fe1516cb",
     "source_readback_comparison": "all three new pairs match source and both imported gates"
+  },
+  "previous_two_point_cap_duality_validation": {
+    "status": "passed for the selected 132-module checkpoint; full topology suite incomplete",
+    "date": "2026-09-13",
+    "slurm_job": "13821107",
+    "host": "della-r3c4n2",
+    "request_id": "1789334015172615434-topology_checkpoint-405abd43",
+    "input_sha256": "fa4e49ca8c06ab76842995e3d958179c2c47b17b74b03895345b5d8b7d886337",
+    "result_sha256": "27770ade1e835b0a0e92c63babf743367d339a255fe9947768a38aa0a4900bbd",
+    "artifact_log_sha256": "3868468ef51abc58f63c6c4b552be8d5188f8798db68096c346bc6a4d64c1594",
+    "source_config_harness_hash_guards": 408,
+    "freshly_built_modules": [
+      "Poincare.Topology.Homotopy.PlaneTriangle",
+      "Poincare.Topology.Homotopy.TriangleEdges",
+      "Poincare.Topology.Homotopy.TriangleFaces",
+      "Poincare.Topology.Homotopy.TriangleBoundaryQuotient",
+      "Poincare.Topology.Homotopy.TrianglePathBoundary",
+      "Poincare.Topology.LoopSpace.Basic",
+      "Poincare.Topology.LoopSpace.BasedCircle",
+      "Poincare.Topology.LoopSpace.SpanningDisk",
+      "Poincare.Topology.LoopSpace.ContinuousFilling",
+      "Poincare.Topology.LoopSpace.SimplyConnectedTarget",
+      "Poincare.Topology.Homotopy.ConvexPlaneExtension",
+      "Poincare.Topology.Homology.PathEvaluation",
+      "Poincare.Topology.Homology.TriangleFilling",
+      "Poincare.Topology.Homology.PathCones",
+      "Poincare.Topology.Homology.CochainCones",
+      "Poincare.Topology.Homology.TwoPointCapDuality",
+      "Poincare"
+    ],
+    "root_build": "lake --no-cache --iofail build Poincare",
+    "fresh_build_scope": "New TwoPointCapDuality301, fifteen unchanged recovered working-tree sources totaling1207 lines, and the root freshly compiled with zero diagnostics. These fifteen prerequisites were absent from the recovered Git baseline; all116 previously published leaves remain byte-identical.",
+    "exact_public_exports": 134,
+    "public_and_consumer_signature_axiom_pairs": 234,
+    "linters": [
+      "unusedArguments",
+      "simpNF",
+      "synTaut",
+      "checkType"
+    ],
+    "linter_scope": "All imported Poincare declarations and current consumers, including private declarations",
+    "defLemma": "Unavailable in the pinned Mathlib; source declaration-kind checks retained.",
+    "allowed_transitive_axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "unexpected_diagnostics": 0,
+    "elapsed_seconds": 439.3468978404999,
+    "peak_summed_rss_bytes": 3110625280,
+    "full_topology_suite_accepted": false,
+    "consumer_probes": [
+      "All231 prior signature/axiom pairs reproduced byte-identically",
+      "New public theorem and both consumers match original imported and source readbacks",
+      "For any simply connected T1 space and two distinct points, actual connecting normalization uniquely specifies a relative class whose actual cap map is bijective",
+      "Actual path and cochain cones supply first-homology and first-cohomology vanishing, without a Hurewicz axiom",
+      "Concrete real-line/{0,1} class and cohomology input are nonzero, with positive and negative endpoint cap values; negated class also gives bijection"
+    ]
+  },
+  "original_cochain_homotopy_validation": {
+    "request_id": "1789336493259203996-topology-efb76a39",
+    "input_sha256": "ed007259c7df231797453b0de1edc6eb8cc0cda4d5b6b1243c6fc323fa15a468",
+    "elapsed_seconds": 98.19653272628784,
+    "source_guards": 117,
+    "signature_axiom_pairs": 10,
+    "fresh_modules": [
+      "Poincare.Topology.Homology.CochainHomotopy",
+      "Poincare.Topology.Homology.CochainExcision"
+    ],
+    "source_request_id": "1789336316139854611-topology-db318cb3",
+    "source_readback_comparison": "all 10 original pairs match source exactly; all 8 new portable pairs match both"
   }
 }

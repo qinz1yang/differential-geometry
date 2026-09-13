@@ -1,11 +1,14 @@
 # Local homology and global classes from coherent local generators
 
 This separate `PoincareLean` project contains a dependency-closed checkpoint of
-132 Poincare modules. It extends the recovered Chapter 35 source at commit
+133 Poincare modules. It extends the recovered Chapter 35 source at commit
 `b45bfa009368c8f5f531e10f4f5280e90079d6ad` and preserves its mathematical objects
 and `Poincare` namespaces. `Poincare.lean` imports every included leaf.
 
 The additions prove:
+
+- homotopy invariance of the actual integral cochain and cohomology maps in
+  every degree, with bijective pullback for native homotopy equivalences;
 
 - a uniquely normalized relative class for a simply connected T1 space and two
   distinct points, whose actual cap map from relative H¹ to absolute H₀ is bijective;
@@ -665,7 +668,7 @@ selected source checkpoint.
 
 ## Two-point cap duality
 
-The checkpoint now contains 132 leaves and 134 tracked added public exports.
+That checkpoint contained 132 leaves and 134 tracked added public exports.
 `exists_unique_relative_pair_cap_bijective` takes any simply connected T1 space
 and two distinct points x and y. It produces the unique relative H₁ class with
 connecting image [y] − [x], and proves that cap with this class is a bijection
@@ -696,3 +699,35 @@ classes and cohomology inputs with positive and negative endpoint cap values,
 and prove bijectivity for the negated class too. This is a concrete duality
 case; general manifold duality, the native orientation producer and the frozen
 canonical topology contract remain unresolved.
+
+
+## Integral cohomology homotopy invariance
+
+The current checkpoint contains 133 leaves and 139 tracked added public exports.
+`CochainHomotopy.lean` constructs an actual chain homotopy between the original
+cochain pullback maps from a continuous homotopy. Homotopic maps therefore induce
+equal integral cohomology maps in every degree, and a native homotopy equivalence
+induces a bijective pullback. No connectivity, dimension or compactness assumption
+is needed. The comparison with dual singular chains is natural in the actual maps.
+
+The coherent new module has 95 lines. The existing excision proof now imports
+its shared comparison and naturality lemmas, removing 27 lines of duplicated
+proofs. Both public excision signatures are unchanged. All 131 other published
+leaves remain byte-identical; no dependency pin or deferred input changed.
+
+Combined source request `1789336316139854611-topology-db318cb3` passed in
+43.38 seconds with 116 guards and 27 pairs. Original imported request
+`1789336493259203996-topology-efb76a39` passed in 98.20 seconds, with 117 guards
+and 10 pairs. Final portable request
+`1789336555099403798-topology_checkpoint-5d3553b1` passed in Slurm 13821107 in
+186.49 seconds, with 516 guards and 242 signature/axiom pairs. All 234 previous
+pairs are byte-identical, and all eight new pairs match both earlier gates.
+The two changed leaves and root freshly compiled in 1:34.82, with maximum RSS
+1,825,276 KiB and zero diagnostics. Stock declaration linters and standard-only
+transitive axioms pass.
+
+Consumers verify that collapsing the real coordinate of X × ℝ induces the
+identity in every degree, that the real constant map preserves the nonzero
+H⁰ unit, and that the empty-space case needs no extra assumptions. These
+foundations support the duality development; general manifold duality and the
+native orientation producer remain open.

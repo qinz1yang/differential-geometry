@@ -6,27 +6,29 @@ library is `Poincare`; its sources retain the original mathematical namespaces.
 
 The source baseline is the recovered Chapter 35 commit
 `b45bfa009368c8f5f531e10f4f5280e90079d6ad`, supplemented by recovered working-tree
-proofs with separately recorded provenance. This checkpoint includes 132 modules
-and 134 tracked added public exports. The latest coherent 301-line leaf proves
-that any simply connected T1 space relative to two distinct points has a unique
-relative H₁ class normalized by connecting image [y] − [x], and that cap with
-this class is a bijection from actual relative H¹ to actual absolute H₀.
+proofs with separately recorded provenance. This checkpoint includes 133 modules
+and 139 tracked added public exports. The latest coherent 95-line leaf constructs
+actual chain homotopies between the original integral cochain pullback maps.
+Homotopic continuous maps induce equal integral cohomology maps in every degree;
+native homotopy equivalences induce bijective pullbacks. The natural comparison
+with dual singular chains is now shared with the existing excision proof,
+removing 27 duplicated lines while preserving both public excision signatures.
 
-Fifteen existing recovered working-tree sources, totaling 1,207 lines, supply
-first-homology and first-cohomology vanishing through actual path/cochain cones,
-triangle fillings and disk contractions. These sources were absent from the
-recovered Git baseline and are included unchanged. All 116 earlier published
-leaves are unchanged. No Hurewicz axiom is used for this result.
+Final request `1789336555099403798-topology_checkpoint-5d3553b1` passed in
+Slurm 13821107 in 186.49 seconds, with 516 guards and 242 signature/axiom pairs.
+All 234 earlier pairs are byte-identical; eight new pairs match both the combined
+source gate db318cb3 and original imported gate efb76a39 exactly. The two changed
+leaves and root freshly compiled in 1:34.82, with maximum RSS 1825276 KiB and
+zero diagnostics. All 131 other published leaves remain byte-identical.
+Cylinder-collapse, nonzero real H0 unit and empty-space consumers pass, with
+stock linters and standard-only axioms. No dependency or deferred input changed.
 
-Final request `1789334015172615434-topology_checkpoint-405abd43` passed in
-Slurm 13821107 in 439.35 seconds, with 408 guards and 234 signature/axiom pairs.
-All 231 earlier pairs are byte-identical. The sixteen added leaves and root
-freshly compiled in 5:47.42 with maximum RSS 1890444 KiB and zero diagnostics.
-Source fe1516cb and original imported 32ae5cfd pass 104/14 and 106/3 guards/pairs.
-All three new portable readbacks match both earlier gates. Nonzero real-line
-pair consumers check positive and negative cap values and the negated-class
-bijection. Stock linters and standard-only axioms pass. This concrete case does
-not close general duality, the native orientation producer or the full suite.
+The earlier uniquely normalized two-point cap-duality theorem and its fifteen
+unchanged recovered working-tree prerequisites retain their exact statements
+and bodies. Those prerequisites were absent from the recovered Git baseline;
+their provenance remains separately recorded. The concrete simply connected
+T1 two-point duality case does not close general manifold duality, the native
+orientation producer or the full canonical theorem suite.
 
 The preceding signed-chart extension retains its exact public statements.
 

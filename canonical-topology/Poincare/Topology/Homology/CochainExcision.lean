@@ -1,6 +1,6 @@
 import Poincare.Topology.Homology.SmallHomology
 import Mathlib.Algebra.Homology.DerivedCategory.KProjective
-import Poincare.Topology.Homology.CochainMaps
+import Poincare.Topology.Homology.CochainHomotopy
 import Mathlib.CategoryTheory.Linear.Yoneda
 import Mathlib.Algebra.Homology.Opposite
 import Poincare.Topology.Homology.RelativeCochains
@@ -78,20 +78,6 @@ private def integralChainDualHomotopyEquiv
     apply F.mapHomotopy
     rw [← G.map_comp, ← G.map_id]
     simpa only [op_comp, op_id] using e.homotopyHomInvId.op
-
-private def integralSingularCochainsDualIso (X : Type u) [TopologicalSpace X] :
-    integralChainDual (integralSingularChains X) ≅ integralSingularCochains X := by
-  refine HomologicalComplex.Hom.isoOfComponents (fun n =>
-    (ModuleCat.homLinearEquiv (R := ℤ) (S := ℤ)
-      (M := (integralSingularChains X).X n)
-      (N := integralSingularCoefficients)).toModuleIso) ?_
-  intro i j _
-  apply ModuleCat.hom_ext
-  apply LinearMap.ext
-  intro φ
-  apply LinearMap.ext
-  intro c
-  rfl
 
 private def integralDualShortSequence
     (S : ShortComplex (ChainComplex (ModuleCat.{u} ℤ) ℕ)) :
@@ -221,19 +207,6 @@ private theorem integralRelativeDualMap_openExcision
   rw [← integralExcisionSmallMap_comparison, integralChainDualMap_comp]
   infer_instance
 
-private theorem integralSingularCochainsDualIso_natural
-    {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y] (f : ContinuousMap X Y) :
-    integralChainDualMap (integralSingularChainMap f) ≫
-        (integralSingularCochainsDualIso X).hom =
-      (integralSingularCochainsDualIso Y).hom ≫ integralSingularCochainMap f := by
-  ext n : 1
-  apply ModuleCat.hom_ext
-  apply LinearMap.ext
-  intro φ
-  apply LinearMap.ext
-  intro c
-  rfl
-
 private def integralRelativeCochainsDualIso {X : Type u} [TopologicalSpace X] (A : Set X) :
     integralChainDual (integralRelativeChains A) ≅ integralRelativeCochains A := by
   have hS := integralRelativeDualSequence_shortExact A
@@ -242,7 +215,7 @@ private def integralRelativeCochainsDualIso {X : Type u} [TopologicalSpace X] (A
       (integralRelativeCochainSequence A).zero)
     hS.fIsKernel (integralRelativeCochainSequence_shortExact A).fIsKernel
     (Arrow.isoMk (integralSingularCochainsDualIso X) (integralSingularCochainsDualIso A)
-      (integralSingularCochainsDualIso_natural (singularSubspaceInclusion A)))
+      (integralSingularCochainsDualIso_natural (singularSubspaceInclusion A)).symm)
 
 private theorem integralRelativeCochainsDualIso_hom_inclusion
     {X : Type u} [TopologicalSpace X] (A : Set X) :
@@ -253,7 +226,7 @@ private theorem integralRelativeCochainsDualIso_hom_inclusion
   let T := integralRelativeCochainSequence A
   let φ : Arrow.mk S.g ≅ Arrow.mk T.g :=
     Arrow.isoMk (integralSingularCochainsDualIso X) (integralSingularCochainsDualIso A)
-      (integralSingularCochainsDualIso_natural (singularSubspaceInclusion A))
+      (integralSingularCochainsDualIso_natural (singularSubspaceInclusion A)).symm
   change (KernelFork.ofι S.f S.zero).mapOfIsLimit
       (integralRelativeCochainSequence_shortExact A).fIsKernel φ.hom ≫
       (KernelFork.ofι T.f T.zero).ι = _
