@@ -53,7 +53,7 @@ theorem iteratedFDerivWithin_prod_match_zero_of_jet_vanish
         rw [fderivWithin_iteratedFDerivWithin_apply_eq hUD hSclo n
           (hD.of_le
             (WithTop.coe_le_coe.mpr le_top :
-              ((n : WithTop ℕ∞) + 2) ≤ ∞))
+              ((n : WithTop ℕ∞) + 1) ≤ ∞))
           ((1:ℝ), (0:E)) (0, z) hmem]
         have hDt : ContDiffOn ℝ ∞ (fun y => fderivWithin ℝ D S y ((1:ℝ), (0:E))) S := by
           have hfd : ContDiffOn ℝ ∞ (fderivWithin ℝ D S) S :=

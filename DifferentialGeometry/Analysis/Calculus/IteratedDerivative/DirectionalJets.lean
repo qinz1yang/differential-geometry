@@ -29,7 +29,7 @@ theorem fderivWithin_iteratedFDerivWithin_apply_eq {G W : Type*}
     [NormedAddCommGroup W] [NormedSpace ℝ W]
     {s : Set G} (hs : UniqueDiffOn ℝ s) (hs' : s ⊆ closure (interior s))
     (n : ℕ) {f : G → W}
-    (hf : ContDiffOn ℝ ((n : WithTop ℕ∞) + 2) f s) (u : G) :
+    (hf : ContDiffOn ℝ ((n : WithTop ℕ∞) + 1) f s) (u : G) :
     ∀ x ∈ s,
       fderivWithin ℝ (iteratedFDerivWithin ℝ n f s) s x u =
         iteratedFDerivWithin ℝ n
@@ -99,19 +99,19 @@ theorem fderiv_iter_apply
     fderiv ℝ (iteratedFDeriv ℝ n f) x u =
       iteratedFDeriv ℝ n (fun y => fderiv ℝ f y u) x := by
   have hle :
-      (((n + 2 : ℕ) : ℕ∞) : WithTop ℕ∞) ≤
+      (((n + 1 : ℕ) : ℕ∞) : WithTop ℕ∞) ≤
         ((⊤ : ℕ∞) : WithTop ℕ∞) :=
     WithTop.coe_le_coe.mpr le_top
-  have hfn : ContDiffAt ℝ ((n : WithTop ℕ∞) + 2) f x :=
+  have hfn : ContDiffAt ℝ ((n : WithTop ℕ∞) + 1) f x :=
     hf.of_le (by simpa using hle)
-  have hne : ((n : WithTop ℕ∞) + 2) ≠ ∞ :=
+  have hne : ((n : WithTop ℕ∞) + 1) ≠ ∞ :=
     Ne.symm (ne_of_beq_false rfl)
   obtain ⟨t, ht, hft⟩ :=
     hfn.contDiffOn le_rfl (fun h => (hne h).elim)
   let U : Set E := interior t
   have hU : IsOpen U := isOpen_interior
   have hxU : x ∈ U := mem_interior_iff_mem_nhds.mpr ht
-  have hfU : ContDiffOn ℝ ((n : WithTop ℕ∞) + 2) f U :=
+  have hfU : ContDiffOn ℝ ((n : WithTop ℕ∞) + 1) f U :=
     hft.mono interior_subset
   have hUclosure : U ⊆ closure (interior U) := by
     rw [hU.interior_eq]

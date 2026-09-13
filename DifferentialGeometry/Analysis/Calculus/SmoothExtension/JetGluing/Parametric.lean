@@ -175,12 +175,12 @@ theorem iteratedFDerivWithin_seam_match {V : Set E} (hV : IsOpen V) :
       rw [fderivWithin_iteratedFDerivWithin_apply_eq hUDL hSLclo n
           (hL.of_le
             (WithTop.coe_le_coe.mpr le_top :
-              ((n : WithTop ℕ∞) + 2) ≤ ∞))
+              ((n : WithTop ℕ∞) + 1) ≤ ∞))
           ((1:ℝ), (0:E)) (0, z) hmemL,
         fderivWithin_iteratedFDerivWithin_apply_eq hUDR hSRclo n
           (hR.of_le
             (WithTop.coe_le_coe.mpr le_top :
-              ((n : WithTop ℕ∞) + 2) ≤ ∞))
+              ((n : WithTop ℕ∞) + 1) ≤ ∞))
           ((1:ℝ), (0:E)) (0, z) hmemR]
       have hDtL : ContDiffOn ℝ ∞ (fun y => fderivWithin ℝ fL sL y ((1:ℝ), (0:E))) sL :=
         (hL.fderivWithin hUDL (by exact_mod_cast le_top)).clm_apply contDiffOn_const
