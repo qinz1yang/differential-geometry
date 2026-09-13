@@ -4994,6 +4994,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.DiskVariati
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.DiskVariationCurvature
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.DiskVariationBoundary
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.DiskVariationBoundaryFlux
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.DiskAreaMetricFirstVariation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.DiskBoundaryIntegral
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.DiffeomorphismTransport
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.LeastArea
@@ -7221,6 +7222,7 @@ import DifferentialGeometry.Geometry.MinimalSurface.Variation.DiskDivergence
 import DifferentialGeometry.Geometry.MinimalSurface.Variation.DiskFirstVariation
 import DifferentialGeometry.Geometry.MinimalSurface.Variation.DiskIsotopyDensity
 import DifferentialGeometry.Geometry.MinimalSurface.Variation.DiskIsotopyIntegral
+import DifferentialGeometry.Geometry.MinimalSurface.Variation.DiskAreaMetricVariation
 import DifferentialGeometry.Geometry.MinimalSurface.Variation.DiskMetricIntegral
 import DifferentialGeometry.Geometry.MinimalSurface.Variation.DiskMetricVariation
 import DifferentialGeometry.Geometry.MinimalSurface.Variation.ParameterMetricDerivative
