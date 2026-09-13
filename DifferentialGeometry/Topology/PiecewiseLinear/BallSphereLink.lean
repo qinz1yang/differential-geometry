@@ -112,6 +112,42 @@ theorem isPLSphere_geometricLink_iff_of_isPLHomeomorphOn_stdSimplex {n : ℕ}
   rw [hball, hsph, isPLBall_geometricLink_iff_of_isSubdivision_simplexComplex hT hcard hK₀' hφ'u,
     isPLSphere_geometricLink_iff_of_isSubdivision_simplexComplex hT hcard hK₀' hφ'u]
 
+theorem isPLBall_geometricLink_iff_of_isPLHomeomorphOn_simplexComplex {F : Type*}
+    [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F] {n : ℕ}
+    (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces] {T : Finset F}
+    (hT : AffineIndependent ℝ ((↑) : T → F)) (hcard : T.card = n + 2) {f : F → E}
+    (hf : IsPLHomeomorphOn f (simplexComplex T hT).space K.space) {u : E} (hu : {u} ∈ K.faces) :
+    IsPLBall n (SimplicialComplex.geometricLink K {u}).space ↔
+      u ∈ f '' (simplexBoundary T hT).space := by
+  classical
+  have hfin₀ : Finite (simplexComplex T hT).faces := (simplexComplex_faces_finite _ hT).to_subtype
+  obtain ⟨K₀', K', φ', hK₀', hfin₀', hK', hfin', hiso, -⟩ :=
+    exists_isGlueIso_of_isPLHomeomorphOn _ K hf
+  have : Finite K₀'.faces := hfin₀'.to_subtype
+  have : Finite K'.faces := hfin'.to_subtype
+  have hu' : {u} ∈ K'.faces := hK'.singleton_mem hu
+  have hφ'u : {φ' u} ∈ K₀'.faces := hiso.symm.singleton_mem hu'
+  have hfφ' : f (φ' u) = u := hiso.right _ hu' u (Finset.mem_singleton_self u)
+  have hφ'K₀ : φ' u ∈ (simplexComplex T hT).space := by
+    rw [← hK₀'.space_eq]
+    exact K₀'.convexHull_subset_space hφ'u (subset_convexHull ℝ _ (by simp))
+  have hg := (hiso.symm.geometricLink hu').isPLHomeomorphOn
+  have hlink : IsPLBall n (SimplicialComplex.geometricLink K {u}).space ↔
+      IsPLBall n (SimplicialComplex.geometricLink K₀' {φ' u}).space := by
+    rw [← isPLBall_geometricLink_iff_of_isSubdivision hK' hu]
+    exact ⟨fun h => h.of_isPLHomeomorphOn hg, fun h => h.of_isPLHomeomorphOn hg.symm⟩
+  rw [hlink, isPLBall_geometricLink_iff_of_isSubdivision_simplexComplex hT hcard hK₀' hφ'u]
+  constructor
+  · intro h
+    exact ⟨φ' u, h, hfφ'⟩
+  · rintro ⟨y, hy, hyu⟩
+    have hyK₀ : y ∈ (simplexComplex T hT).space := by
+      obtain ⟨s, hs, hys⟩ := (simplexBoundary _ hT).mem_space_iff.mp hy
+      exact (simplexComplex _ hT).convexHull_subset_space
+        (simplexBoundary_faces_subset_simplexComplex _ hT hs) hys
+    have heq : y = φ' u := hf.1.injOn hyK₀ hφ'K₀ (by rw [hyu, hfφ'])
+    exact heq ▸ hy
+
 theorem isPLSphere_or_isPLBall_geometricLink_of_isPLBall {n : ℕ}
     (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces] (hK : IsPLBall (n + 1) K.space) {u : E}
     (hu : {u} ∈ K.faces) :

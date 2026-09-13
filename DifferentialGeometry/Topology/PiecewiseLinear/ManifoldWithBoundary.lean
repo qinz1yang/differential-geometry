@@ -20,6 +20,61 @@ theorem IsCombinatorialManifold.isCombinatorialManifoldWithBoundary {n : ℕ}
   | zero => exact h
   | succ n => exact fun v hv => Or.inl (h v hv)
 
+open Classical in
+theorem IsGlueIso.isCombinatorialManifoldWithBoundary {F : Type*} [NormedAddCommGroup F]
+    [NormedSpace ℝ F] [FiniteDimensional ℝ E] [FiniteDimensional ℝ F] {n : ℕ}
+    {K : Geometry.SimplicialComplex ℝ E} {L : Geometry.SimplicialComplex ℝ F} [Finite K.faces]
+    [Finite L.faces] {φ : E → F} {φ' : F → E} (h : IsGlueIso K L φ φ')
+    (hK : IsCombinatorialManifoldWithBoundary n K) : IsCombinatorialManifoldWithBoundary n L := by
+  cases n with
+  | zero =>
+    intro w hw
+    have hv : {φ' w} ∈ K.faces := h.symm.singleton_mem hw
+    have hφ : φ (φ' w) = w := h.right _ hw w (Finset.mem_singleton_self w)
+    have hiso := h.geometricLink hv
+    rw [hφ] at hiso
+    rw [Set.eq_empty_iff_forall_notMem]
+    intro t ht
+    have := hiso.image₂ t ht
+    rw [hK _ hv] at this
+    exact this
+  | succ n =>
+    intro w hw
+    have hv : {φ' w} ∈ K.faces := h.symm.singleton_mem hw
+    have hφ : φ (φ' w) = w := h.right _ hw w (Finset.mem_singleton_self w)
+    have hiso := h.geometricLink hv
+    rw [hφ] at hiso
+    have hpl := hiso.isPLHomeomorphOn
+    rcases hK _ hv with hs | hb
+    · exact Or.inl (hs.of_isPLHomeomorphOn hpl)
+    · exact Or.inr (hb.of_isPLHomeomorphOn hpl)
+
+open Classical in
+theorem IsGlueIso.isCombinatorialManifold {F : Type*} [NormedAddCommGroup F]
+    [NormedSpace ℝ F] [FiniteDimensional ℝ E] [FiniteDimensional ℝ F] {n : ℕ}
+    {K : Geometry.SimplicialComplex ℝ E} {L : Geometry.SimplicialComplex ℝ F} [Finite K.faces]
+    [Finite L.faces] {φ : E → F} {φ' : F → E} (h : IsGlueIso K L φ φ')
+    (hK : IsCombinatorialManifold n K) : IsCombinatorialManifold n L := by
+  cases n with
+  | zero =>
+    intro w hw
+    have hv : {φ' w} ∈ K.faces := h.symm.singleton_mem hw
+    have hφ : φ (φ' w) = w := h.right _ hw w (Finset.mem_singleton_self w)
+    have hiso := h.geometricLink hv
+    rw [hφ] at hiso
+    rw [Set.eq_empty_iff_forall_notMem]
+    intro t ht
+    have := hiso.image₂ t ht
+    rw [hK _ hv] at this
+    exact this
+  | succ n =>
+    intro w hw
+    have hv : {φ' w} ∈ K.faces := h.symm.singleton_mem hw
+    have hφ : φ (φ' w) = w := h.right _ hw w (Finset.mem_singleton_self w)
+    have hiso := h.geometricLink hv
+    rw [hφ] at hiso
+    exact (hK _ hv).of_isPLHomeomorphOn hiso.isPLHomeomorphOn
+
 section Boundary
 
 variable [DecidableEq E] (n : ℕ) (K : Geometry.SimplicialComplex ℝ E)
