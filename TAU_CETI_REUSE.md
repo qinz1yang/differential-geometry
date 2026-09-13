@@ -348,3 +348,40 @@ parameters, and rank-zero parameter space. Both leaves are registered in the
 flat root without changing existing imports. These are fresh leaf and consumer
 checks, not a full DG aggregate build. Interval-only extension and source
 boundary/corner extension remain separate requirements for Chapter 42.
+
+## Smooth manifold maps from closed time intervals, 2026-09-13
+
+Topology/Manifold/IntervalExtension proves
+Manifold.exists_contMDiff_extension_Icc: an actual jointly C∞ map given only
+within Icc a b times a native boundaryless manifold extends to one whole-real
+jointly C∞ map agreeing throughout that closed interval. The real source model
+is finite-dimensional; the manifold is Hausdorff and sigma compact, and the
+values may be an arbitrary real Banach space. No compact source or ordered
+endpoints are required. A singleton uses the actual spatial slice, and an empty
+interval permits vacuous agreement. The positive-interval proof stays private.
+
+The proof reuses the existing BorelHalfLineParam construction, native extended
+charts and Mathlib's smooth convex-selection theorem. The latter glues local
+extensions while fixing every prescribed value. Root inspected the full
+1345-line parametric Borel proof, full 325-line BorelHalfLine and 162-line mixed-jet
+matching source, the decisive DirectionalJet derivative-commutation body and
+the actual partition-of-unity selection construction. Borel rescaling depends
+on the degree; geometric derivative bounds produce one jointly smooth series.
+Both endpoint seams match every mixed jet. Tangential chart coordinates are
+interior points because the source is boundaryless. These are actual reused
+proofs, without installing or upgrading dependencies. The four missing old
+artifacts compiled offline in Slurm 13821107 in 2:33.05, RSS 2019788 KiB, with zero
+diagnostics.
+
+Private request 03eafb96 passed in 39.60 seconds with 39 guards and 14 pairs. Public source
+1789313621356943063-schoenflies-747fbd47 passed in 34.97 seconds with 39 guards and 14 pairs. Final import
+1789313711633052192-schoenflies-afd3ed69 passed in 114.89 seconds with 40 guards and 13 pairs, all
+byte-identical to the public source. The public leaf freshly compiled without
+diagnostics; artifact checking took 1:16.07, RSS 1794604 KiB. Stock declaration
+linters and standard-only transitive axioms pass. Five consumers cover arbitrary
+sphere maps, a translated sphere discontinuously truncated outside the closed
+interval with both endpoint values preserved, noncompact source and arbitrary
+Banach values, a rank-zero singleton and an empty interval. The new leaf is
+registered in the unchanged flat-root import list. This is a fresh leaf and
+consumer check, not a full DG aggregate build. Source-boundary/corner extension,
+embedding preservation and the full Schoenflies theorem remain separate.

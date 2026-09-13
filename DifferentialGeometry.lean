@@ -4161,3 +4161,4 @@ import DifferentialGeometry.Topology.Embedding.FiniteDimension
 import DifferentialGeometry.Topology.Embedding.SmoothParametricGraph
 import DifferentialGeometry.Analysis.Calculus.LipschitzFamily
 import DifferentialGeometry.Topology.Embedding.Stability
+import DifferentialGeometry.Topology.Manifold.IntervalExtension
