@@ -3032,6 +3032,8 @@ import DifferentialGeometry.Geometry.Boundary.Manifold.CollaredGluingCollarSmoot
 import DifferentialGeometry.Geometry.Boundary.Manifold.CollaredGluingRegularity
 import DifferentialGeometry.Geometry.Boundary.Manifold.CollaredQuotientAtlas
 import DifferentialGeometry.Geometry.Boundary.Manifold.CollaredQuotientDouble
+import DifferentialGeometry.Geometry.Boundary.Manifold.CollaredQuotientInteriorAtlas
+import DifferentialGeometry.Geometry.Boundary.Manifold.CollaredQuotientSeamOpen
 import DifferentialGeometry.Geometry.Boundary.Manifold.CollaredQuotientSeamRegion
 import DifferentialGeometry.Geometry.Boundary.Manifold.Component
 import DifferentialGeometry.Geometry.Boundary.Metric.GramMatrix
