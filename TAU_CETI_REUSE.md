@@ -483,3 +483,36 @@ guards, provenance and staged diff. The leaf is registered in the root; this
 is not a full DG aggregate build. An extension at a genuine corner still
 requires mixed-jet matching and within-set seam gluing. This halfspace result
 does not itself remove the native manifold source-boundary restriction.
+
+## Mixed jets and seam gluing at tangential boundaries, 2026-09-13
+
+The existing IteratedFDerivProdMatch and JetGlueParam proofs now handle
+parameter sets with unique within derivatives. Turning equality of all normal
+jets into equality of all full mixed jets additionally requires the set to lie
+in the closure of its interior. Gluing already matching full Taylor jets does
+not require that extra density assumption. The actual conditional splice is
+smooth within the entire product, including its tangential boundary. The five
+old open-set signatures remain verbatim as thin corollaries. No finite
+dimension, completeness, compactness or nonempty assumption is introduced.
+
+The proofs are generalized in place. Off the seam, within-neighborhood
+transport replaces the use of an ambient derivative. At the seam, the existing
+Taylor-series union proof and normal/tangential derivative induction are reused.
+No new series construction or imported third-party source is needed. Nonzero
+quadrant inputs, their actual splice and derivative, arbitrary tangential
+halfspaces, rank-zero parameters and every old interface have consumer checks.
+
+Final MixedJet source 798ca8bc passes in 88.23 seconds with 39 guards and 15
+signature/axiom pairs, including unchanged full Borel and jet-gluing sources.
+Final JetGlue source 7563da60 passes in 44.84 seconds with 39 guards and 17 pairs.
+Imported request 1789317404826458436-schoenflies-65e83222 passes in 298.23 seconds
+with 181 guards and 72 pairs. Seven affected modules freshly compile without
+diagnostics in 3:55.50, maximum RSS 2018424 KiB. All 46 prior interval/ambient
+readbacks and every shared boundary/halfspace readback are byte-identical.
+Stock source/declaration linters and standard-only transitive axioms pass.
+Root reviewed full sources, consumers, decisive provider proofs and the diff.
+Both leaves were already registered in the root. This is not a full DG build.
+
+Actual quadrant extension still needs a Borel realization of the extended
+normal jets and two-face assembly. Boundary-source ambient isotopy and the
+Schoenflies headline remain open.

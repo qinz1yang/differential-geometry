@@ -14,22 +14,19 @@ section ProdMatch
 variable {E F : Type*}
     [NormedAddCommGroup E] [NormedSpace ℝ E] [NormedAddCommGroup F] [NormedSpace ℝ F]
 
-theorem iteratedFDerivWithin_prod_match_zero_of_jet_vanish
-    {D : ℝ × E → F} {V : Set E} (hV : IsOpen V)
+theorem iteratedFDerivWithin_prod_match_zero_of_jet_vanish_of_uniqueDiffOn
+    {D : ℝ × E → F} {V : Set E} (hV : UniqueDiffOn ℝ V)
+    (hVclo : V ⊆ closure (interior V))
     (hD : ContDiffOn ℝ ∞ D (Set.Ici (0 : ℝ) ×ˢ V))
     (hjet : ∀ i : ℕ, ∀ w ∈ V,
       iteratedDerivWithin i (fun t => D (t, w)) (Set.Ici 0) 0 = 0)
     (n : ℕ) {z : E} (hz : z ∈ V) :
     iteratedFDerivWithin ℝ n D (Set.Ici (0:ℝ) ×ˢ V) (0, z) = 0 := by
   set S : Set (ℝ × E) := Set.Ici (0:ℝ) ×ˢ V with hS_def
-  have hUD : UniqueDiffOn ℝ S := UniqueDiffOn.prod (uniqueDiffOn_Ici 0) hV.uniqueDiffOn
+  have hUD : UniqueDiffOn ℝ S := UniqueDiffOn.prod (uniqueDiffOn_Ici 0) hV
   have hSclo : S ⊆ closure (interior S) := by
-    have hsub : Set.Ioi (0:ℝ) ×ˢ V ⊆ interior S := by
-      rw [hS_def, interior_prod_eq, interior_Ici, hV.interior_eq]
-    refine fun p hp => closure_mono hsub ?_
-    rw [hS_def] at hp
-    rw [closure_prod_eq, closure_Ioi]
-    exact ⟨hp.1, subset_closure hp.2⟩
+    rw [hS_def, interior_prod_eq, interior_Ici, closure_prod_eq, closure_Ioi]
+    exact Set.prod_mono subset_rfl hVclo
   clear_value S
   induction n generalizing D z with
   | zero =>
@@ -99,16 +96,17 @@ theorem iteratedFDerivWithin_prod_match_zero_of_jet_vanish
           rw [fderivWithin_congr hEq (hEq hz), fderivWithin_const_apply]
         have hchain : fderivWithin ℝ (g ∘ ι) V z
             = (fderivWithin ℝ g S (0, z)).comp (ContinuousLinearMap.inr ℝ ℝ E) := by
-          rw [fderivWithin_comp z hgdiff hιdiff hιmaps (hV.uniqueDiffOn z hz),
-            hιfd.fderivWithin (hV.uniqueDiffOn z hz)]
+          rw [fderivWithin_comp z hgdiff hιdiff hιmaps (hV z hz),
+            hιfd.fderivWithin (hV z hz)]
         have happ := congrArg (fun L => L e) (hchain.symm.trans hcompzero)
         simpa [hg_def, ContinuousLinearMap.inr_apply] using happ
       rw [htrans, hseam, smul_zero, add_zero]
     rw [hsuff]
     simp only [LinearIsometryEquiv.map_zero]
 
-theorem iteratedFDerivWithin_prod_match
-    {Φ ψ : ℝ × E → F} {V : Set E} (hV : IsOpen V)
+theorem iteratedFDerivWithin_prod_match_of_uniqueDiffOn
+    {Φ ψ : ℝ × E → F} {V : Set E} (hV : UniqueDiffOn ℝ V)
+    (hVclo : V ⊆ closure (interior V))
     (hΦ : ContDiffOn ℝ ∞ Φ (Set.Ici (0 : ℝ) ×ˢ V)) (hψ : ContDiffOn ℝ ∞ ψ (Set.Ici (0 : ℝ) ×ˢ V))
     (htjet : ∀ i : ℕ, Set.EqOn (fun w => iteratedDerivWithin i (fun t => Φ (t, w)) (Set.Ici 0) 0)
                                (fun w => iteratedDerivWithin i (fun t => ψ (t, w)) (Set.Ici 0) 0) V)
@@ -116,7 +114,7 @@ theorem iteratedFDerivWithin_prod_match
     iteratedFDerivWithin ℝ n Φ (Set.Ici (0:ℝ) ×ˢ V) (0, z)
       = iteratedFDerivWithin ℝ n ψ (Set.Ici (0:ℝ) ×ˢ V) (0, z) := by
   set S : Set (ℝ × E) := Set.Ici (0:ℝ) ×ˢ V with hS_def
-  have hUD : UniqueDiffOn ℝ S := UniqueDiffOn.prod (uniqueDiffOn_Ici 0) hV.uniqueDiffOn
+  have hUD : UniqueDiffOn ℝ S := UniqueDiffOn.prod (uniqueDiffOn_Ici 0) hV
   have hmem : ((0:ℝ), z) ∈ S := ⟨Set.self_mem_Ici, hz⟩
   have hΦn : ContDiffWithinAt ℝ n Φ S (0, z) :=
     (hΦ (0, z) hmem).of_le (by exact_mod_cast le_top)
@@ -152,11 +150,34 @@ theorem iteratedFDerivWithin_prod_match
     rw [hsubt, iteratedDerivWithin_sub Set.self_mem_Ici (uniqueDiffOn_Ici 0) hΦw hψw,
       htjetw, sub_self]
   have hzero : iteratedFDerivWithin ℝ n (Φ - ψ) S (0, z) = 0 :=
-    iteratedFDerivWithin_prod_match_zero_of_jet_vanish hV hD hjet n hz
+    iteratedFDerivWithin_prod_match_zero_of_jet_vanish_of_uniqueDiffOn hV hVclo hD hjet n hz
   rw [hzero] at hsub
   exact sub_eq_zero.mp hsub.symm
+
+theorem iteratedFDerivWithin_prod_match_zero_of_jet_vanish
+    {D : ℝ × E → F} {V : Set E} (hV : IsOpen V)
+    (hD : ContDiffOn ℝ ∞ D (Set.Ici (0 : ℝ) ×ˢ V))
+    (hjet : ∀ i : ℕ, ∀ w ∈ V,
+      iteratedDerivWithin i (fun t => D (t, w)) (Set.Ici 0) 0 = 0)
+    (n : ℕ) {z : E} (hz : z ∈ V) :
+    iteratedFDerivWithin ℝ n D (Set.Ici (0:ℝ) ×ˢ V) (0, z) = 0 :=
+  iteratedFDerivWithin_prod_match_zero_of_jet_vanish_of_uniqueDiffOn hV.uniqueDiffOn
+    (by rw [hV.interior_eq]; exact subset_closure) hD hjet n hz
+
+theorem iteratedFDerivWithin_prod_match
+    {Φ ψ : ℝ × E → F} {V : Set E} (hV : IsOpen V)
+    (hΦ : ContDiffOn ℝ ∞ Φ (Set.Ici (0 : ℝ) ×ˢ V)) (hψ : ContDiffOn ℝ ∞ ψ (Set.Ici (0 : ℝ) ×ˢ V))
+    (htjet : ∀ i : ℕ, Set.EqOn (fun w => iteratedDerivWithin i (fun t => Φ (t, w)) (Set.Ici 0) 0)
+                               (fun w => iteratedDerivWithin i (fun t => ψ (t, w)) (Set.Ici 0) 0) V)
+    (n : ℕ) {z : E} (hz : z ∈ V) :
+    iteratedFDerivWithin ℝ n Φ (Set.Ici (0:ℝ) ×ˢ V) (0, z)
+      = iteratedFDerivWithin ℝ n ψ (Set.Ici (0:ℝ) ×ˢ V) (0, z) :=
+  iteratedFDerivWithin_prod_match_of_uniqueDiffOn hV.uniqueDiffOn
+    (by rw [hV.interior_eq]; exact subset_closure) hΦ hψ htjet n hz
 
 end ProdMatch
 
 end Analysis
 end DifferentialGeometry
+
+end
