@@ -452,3 +452,34 @@ empty support forcing identity at every time. All old map/family/velocity,
 whole-real ambient and relative fixed-neighborhood consumers replay unchanged.
 Root reviewed full source, exact types, actual provider bodies, all guards and
 the complete diff. This is a fresh leaf and consumer check, not a full DG build.
+
+## Global extension from a closed halfspace, 2026-09-13
+
+Analysis/Calculus/SmoothExtension/HalfSpace proves
+ContDiffOn.exists_contDiff_extension_Ici_prod. A map smooth only within
+Ici a times the entire tangential vector space has one globally smooth
+extension agreeing on that full closed halfspace. The tangential real normed
+space is finite-dimensional; values may be any real Banach space. The normal
+threshold is arbitrary and rank-zero tangential spaces are included.
+
+The 41-line proof globalizes the actual existing one-face parametric Borel
+extension using Mathlib's smooth convex selection and its partition-of-unity
+construction. Root read the full underlying Borel construction previously and
+reread its complete one-face seam proof and the actual selection body for this
+checkpoint. No dependency download, new Borel series or upstream code copy is
+needed. An arbitrary-index family consumer shows that all chosen extensions
+have the same entire ambient domain, without exchanging two neighborhood
+quantifiers. No regular dependence on that index or extension-operator bound
+is claimed. Further probes check nonzero normal motion of a piecewise input
+and PUnit as the actual tangential model.
+
+Private f0784e05 passed in4.01seconds with38guards8pairs after explicit interval
+membership conversions. Public3873ab63 passed33.74seconds38/8. Final imported
+1789315827485508273-schoenflies-5f3b7c4d passed105.90seconds39/8, all8types
+byte-identical to source. The new leaf freshly compiled without diagnostics
+in1:11.77, maximumRSS1770384KiB. Stock declaration linters and approved-only
+transitive axioms pass. Root reviewed exact source, consumers, signatures,
+guards, provenance and staged diff. The leaf is registered in the root; this
+is not a full DG aggregate build. An extension at a genuine corner still
+requires mixed-jet matching and within-set seam gluing. This halfspace result
+does not itself remove the native manifold source-boundary restriction.

@@ -4164,3 +4164,4 @@ import DifferentialGeometry.Topology.Embedding.Stability
 import DifferentialGeometry.Topology.Manifold.IntervalExtension
 import DifferentialGeometry.Analysis.Calculus.SmoothExtension.ConvexOpen
 import DifferentialGeometry.Topology.Embedding.IntervalExtension
+import DifferentialGeometry.Analysis.Calculus.SmoothExtension.HalfSpace
