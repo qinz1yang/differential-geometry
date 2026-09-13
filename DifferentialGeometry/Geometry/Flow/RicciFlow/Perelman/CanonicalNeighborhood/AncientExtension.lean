@@ -346,19 +346,6 @@ theorem uniform_moving_slice_propagation {kappa sigma : ℝ} {Phi : ℝ → ℝ}
               B.solution.scalar s y ≤ C := by
   sorry
 
-theorem open_nonnegative_sphere_separation
-    (P : PointedRiemannianManifold.{u, 0, 0} I3) (hcomp : MetricComplete P)
-    (hconn : ConnectedSpace P.M) (o : TangentOrientationSection P.M)
-    (hopen : ¬ CompactSpace P.M) (hsec : SecLower P.metric 0 Set.univ)
-    (f : Sphere 2 → P.M) (hf : ContMDiff I2 I3 ∞ f) (he : _root_.Topology.IsEmbedding f)
-    (himm : ∀ x, Function.Injective (mfderiv I2 I3 f x)) :
-    ¬ IsPreconnected (Set.range f)ᶜ ∧
-      ∀ p z : P.M, p ∉ Set.range f → z ∉ Set.range f →
-        ∀ c : TransversePath p z (Set.range f),
-          (c.intersection = 1 ∨ c.intersection = -1) →
-            z ∉ connectedComponentIn (Set.range f)ᶜ p := by
-  sorry
-
 theorem far_point_separating_neck {kappa sigma : ℝ} {Phi : ℝ → ℝ}
     (hkappa : 0 < kappa) (hsigma : 0 < sigma) (hPhi : AdmissiblePinchingFunction Phi) :
     ∃ epsStar : ℝ, 0 < epsStar ∧ ∀ eps : ℝ, 0 < eps → eps ≤ epsStar →

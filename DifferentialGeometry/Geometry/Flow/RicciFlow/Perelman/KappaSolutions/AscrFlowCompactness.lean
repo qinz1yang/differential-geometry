@@ -156,7 +156,8 @@ theorem exists_terminalCurvatureNormalizedFlowSeq_three_ancient_limit
 
 theorem ancientKappaThree_exists_ascr_ancient_limit
     (hF : IsAncientKappaSolution (I := I) kappa F) (hdim : Module.finrank ℝ E = 3)
-    (hnoncompact : NoncompactSpace F.M) (p : F.M) :
+    (hnoncompact : NoncompactSpace F.M) (p : F.M)
+    (hfrontier : NoncompactShrinkerCylinderClassificationTheorem.{uE, uH, u}) :
     let hK := ancientKappaThree_toKLim F hF hdim
     let d := fun y z : F.M =>
       (riemannianEDistOf (I := I) (F.S.base.metric 0) y z).toReal
@@ -213,7 +214,7 @@ theorem ancientKappaThree_exists_ascr_ancient_limit
       hescape, hQr, hratio, hexpand, hscaledEscape, hlocal,
       hterms, _hcomplete, _hconnected, _hnoncollapse, _hoperator, _hbase,
       _hbackward, _heventual⟩ :=
-    ancientKappaThree_exists_ascr_normalized_sequence F hF hdim hnoncompact p
+    ancientKappaThree_exists_ascr_normalized_sequence F hF hdim hnoncompact p hfrontier
   obtain ⟨N, hN⟩ := eventually_atTop.mp (hexpand.eventually_gt_atTop (1 / 4))
   let shift : ℕ → ℕ := fun i => N + i
   have hshift : StrictMono shift := by

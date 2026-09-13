@@ -55,7 +55,8 @@ theorem noncompact_backward_three_shrinker_classification
     (Phi : PointedRiemannianConvergenceMaps (I := I) (backwardSliceSequence F tau htau q) L phi)
     (hcomplete : MetricComplete (I := I) L) (hconnected : ConnectedSpace L.M)
     (f : C^∞⟮I, L.M; ℝ⟯) (hsoliton : gradientRicciSoliton (I := I) L.metric f 1)
-    (hnonflat : ∃ x : L.M, metricScalarAt (I := I) L.metric x ≠ 0) :
+    (hnonflat : ∃ x : L.M, metricScalarAt (I := I) L.metric x ≠ 0)
+    (hclass : NoncompactShrinkerCylinderClassification (I := I) (M := L.M) L.metric f 1) :
     NoncompactSpace L.M ∧
       ∃ Psi : Cylinder ≃ₘ⟮CI, I⟯ UniversalCover L.M,
         (∀ (y : S) (s : ℝ) (v w : TangentSpace (𝓡 2) y) (a b : ℝ),
@@ -72,7 +73,7 @@ theorem noncompact_backward_three_shrinker_classification
   have hmetricComplete : RiemannianMetricComplete (I := I) L.metric := ⟨hcomplete⟩
   obtain ⟨Psi, hproduct, hfibres⟩ :=
     complete_noncompact_three_shrinker_universal_cover_fibres
-      L.metric f (by norm_num : (0 : ℝ) < 1) hdim hmetricComplete hsoliton hnonflat
+      L.metric f (by norm_num : (0 : ℝ) < 1) hdim hmetricComplete hsoliton hnonflat hclass
   have hproduct' : ∀ (y : S) (s : ℝ) (v w : TangentSpace (𝓡 2) y) (a b : ℝ),
       (UniversalCover.liftedMetric (I := I) L.metric).inner (Psi (y, s))
           (mfderiv CI I Psi (y, s) (v, a)) (mfderiv CI I Psi (y, s) (w, b)) =

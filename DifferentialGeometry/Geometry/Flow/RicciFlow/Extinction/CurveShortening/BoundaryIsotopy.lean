@@ -147,9 +147,10 @@ private theorem phaseFlow_trajectory_eq (X : ℝ → (p : M) → TangentSpace I 
       (fun q : ℝ × M => (TotalSpace.mk' E q.2 (X q.1 q.2) : TangentBundle I M)))
     (χ : ℝ → ℝ) (hχ : ContDiff ℝ ∞ χ) (hχc : HasCompactSupport χ)
     {r : ℝ} (hr : 0 < r) {a b : ℝ} {γ : ℝ → ContinuousFreeLoop M}
-    (hvelX : ∀ t ∈ Icc a b, ∀ z : Surgery.Topology.Circle,
+    (hvelIci : ∀ t ∈ Ico a b, ∀ z : Surgery.Topology.Circle,
       HasMFDerivWithinAt 𝓘(ℝ, ℝ) I (fun s : ℝ => γ s z) (Ici t) t
-        ((1 : ℝ →L[ℝ] ℝ).smulRight (X t (γ t z))) ∧
+        ((1 : ℝ →L[ℝ] ℝ).smulRight (X t (γ t z))))
+    (hvelIic : ∀ t ∈ Ioc a b, ∀ z : Surgery.Topology.Circle,
       HasMFDerivWithinAt 𝓘(ℝ, ℝ) I (fun s : ℝ => γ s z) (Iic t) t
         ((1 : ℝ →L[ℝ] ℝ).smulRight (X t (γ t z))))
     {τ u : ℝ} (hτ : τ ∈ Icc a b) (hτu : τ + u ∈ Icc a b) (hu : 0 ≤ u)
@@ -206,24 +207,28 @@ private theorem phaseFlow_trajectory_eq (X : ℝ → (p : M) → TangentSpace I 
         rw [hσ, hχτ]
         simp only [one_smul, Prod.smul_snd]
       exact (hraw.congr_mfderiv hL).hasMFDerivWithinAt
-    have hB : ∀ t ∈ Icc (0 : ℝ) u,
+    have hB : ∀ t ∈ Ico (0 : ℝ) u,
         HasMFDerivWithinAt 𝓘(ℝ, ℝ) I (fun u' : ℝ => γ (τ + u') z) (Ici 0) t
           ((1 : ℝ →L[ℝ] ℝ).smulRight (X (τ + t) (γ (τ + t) z))) := by
       intro t ht
-      have hmem : τ + t ∈ Icc a b := by
-        refine ⟨?_, ?_⟩
-        · exact le_trans hτ.1 (by linarith [ht.1])
-        · exact le_trans (by linarith [ht.2]) hτu.2
-      have h1 := (hvelX (τ + t) hmem z).1
-      have h2 := (hvelX (τ + t) hmem z).2
+      have hpl : a ≤ τ + t := le_trans hτ.1 (by linarith [ht.1])
+      have hpr : τ + t < b := by linarith [ht.2, hτu.2]
       have houter : HasMFDerivWithinAt 𝓘(ℝ, ℝ) I (fun r' : ℝ => γ r' z) (Ici τ) (τ + t)
-          ((1 : ℝ →L[ℝ] ℝ).smulRight (X (τ + t) (γ (τ + t) z))) :=
-        (h1.union h2).mono (by
-          intro r' hr'
-          simp only [mem_Ici, mem_union, mem_Iic] at hr' ⊢
-          rcases le_total (τ + t) r' with h | h
-          · exact Or.inl h
-          · exact Or.inr h)
+          ((1 : ℝ →L[ℝ] ℝ).smulRight (X (τ + t) (γ (τ + t) z))) := by
+        by_cases hpa : a < τ + t
+        · have h1 := hvelIci (τ + t) ⟨hpl, hpr⟩ z
+          have h2 := hvelIic (τ + t) ⟨hpa, le_of_lt hpr⟩ z
+          exact (h1.union h2).mono (by
+            intro r' hr'
+            simp only [mem_Ici, mem_union, mem_Iic] at hr' ⊢
+            rcases le_total (τ + t) r' with h | h
+            · exact Or.inl h
+            · exact Or.inr h)
+        · have hpa' : τ + t = a := le_antisymm (le_of_not_gt hpa) hpl
+          exact (hvelIci (τ + t) ⟨hpl, hpr⟩ z).mono (by
+            intro r' hr'
+            simp only [mem_Ici] at hr' ⊢
+            linarith [hr', hpa', hτ.1])
       have hinner : HasMFDerivWithinAt 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ)
           (fun u' : ℝ => τ + u') (Ici 0) t
           (1 : ℝ →L[ℝ] ℝ) :=
@@ -269,7 +274,7 @@ private theorem phaseFlow_trajectory_eq (X : ℝ → (p : M) → TangentSpace I 
         (X := fun u' : ℝ => fun p : M => X (τ + u') p) u hpos hsmoothIcc
         (fun t : ℝ => fun p : M => (Ψ t (τ, p)).2) (fun t : ℝ => fun _ : M => γ (τ + t) z)
         (γ τ z) (γ τ z) (fun t ht => hA t ⟨ht.1, ht.2.le⟩)
-        (fun t ht => hB t ⟨ht.1, ht.2.le⟩) hstart
+        hB hstart
     have hhalf : (Ψ (u / 2) (τ, γ τ z)).2 = γ (τ + u / 2) z :=
       hIco (u / 2) ⟨by linarith, by linarith⟩
     have hsub : Icc (u / 2) u ⊆ Ici (0 : ℝ) := by
@@ -282,8 +287,48 @@ private theorem phaseFlow_trajectory_eq (X : ℝ → (p : M) → TangentSpace I 
       fun t ht => (hA t ⟨by linarith [ht.1, hpos], ht.2⟩).mono hsub
     have hB' : ∀ t ∈ Icc (u / 2) u,
         HasMFDerivWithinAt 𝓘(ℝ, ℝ) I (fun u' : ℝ => γ (τ + u') z) (Icc (u / 2) u) t
-          ((1 : ℝ →L[ℝ] ℝ).smulRight (X (τ + t) (γ (τ + t) z))) :=
-      fun t ht => (hB t ⟨by linarith [ht.1, hpos], ht.2⟩).mono hsub
+          ((1 : ℝ →L[ℝ] ℝ).smulRight (X (τ + t) (γ (τ + t) z))) := by
+      intro t ht
+      have hpl : a < τ + t := by linarith [ht.1, hpos, hτ.1]
+      have hpr : τ + t ≤ b := by linarith [ht.2, hτu.2]
+      have hinner : HasMFDerivWithinAt 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ)
+          (fun u' : ℝ => τ + u') (Icc (u / 2) u) t
+          (1 : ℝ →L[ℝ] ℝ) :=
+        (((hasFDerivAt_id t).const_add τ)).hasMFDerivAt.hasMFDerivWithinAt
+      have hclm : ((1 : ℝ →L[ℝ] ℝ).smulRight (X (τ + t) (γ (τ + t) z))).comp
+          (1 : ℝ →L[ℝ] ℝ) =
+          (1 : ℝ →L[ℝ] ℝ).smulRight (X (τ + t) (γ (τ + t) z)) := by
+        apply ContinuousLinearMap.ext
+        intro c
+        change c • X (τ + t) (γ (τ + t) z) = c • X (τ + t) (γ (τ + t) z)
+        rfl
+      by_cases hpb : τ + t < b
+      · have h1 := hvelIci (τ + t) ⟨hpl.le, hpb⟩ z
+        have h2 := hvelIic (τ + t) ⟨hpl, hpr⟩ z
+        have houter : HasMFDerivWithinAt 𝓘(ℝ, ℝ) I (fun r' : ℝ => γ r' z)
+            (Icc a b) (τ + t)
+            ((1 : ℝ →L[ℝ] ℝ).smulRight (X (τ + t) (γ (τ + t) z))) :=
+          (h1.union h2).mono (by
+            intro r' hr'
+            simp only [mem_Icc] at hr' ⊢
+            rcases le_total (τ + t) r' with h | h
+            · exact Or.inl h
+            · exact Or.inr h)
+        have hmt : MapsTo (fun u' : ℝ => τ + u') (Icc (u / 2) u) (Icc a b) := by
+          intro u' hu'
+          simp only [mem_Icc] at hu' ⊢
+          exact ⟨by linarith [hu'.1, hpos, hτ.1], by linarith [hu'.2, hτu.2]⟩
+        exact (houter.comp t hinner hmt).congr_mfderiv hclm
+      · have hpb' : τ + t = b := le_antisymm hpr (le_of_not_gt hpb)
+        have houter : HasMFDerivWithinAt 𝓘(ℝ, ℝ) I (fun r' : ℝ => γ r' z)
+            (Iic (τ + t)) (τ + t)
+            ((1 : ℝ →L[ℝ] ℝ).smulRight (X (τ + t) (γ (τ + t) z))) :=
+          hvelIic (τ + t) ⟨hpl, hpr⟩ z
+        have hmt : MapsTo (fun u' : ℝ => τ + u') (Icc (u / 2) u) (Iic (τ + t)) := by
+          intro u' hu'
+          simp only [mem_Iic] at hu' ⊢
+          linarith [hu'.2, hτu.2, hpb']
+        exact (houter.comp t hinner hmt).congr_mfderiv hclm
     exact DifferentialGeometry.Analysis.ODE.integralCurves_eqOn_Icc_of_agree_at_left
       (X := fun u' : ℝ => fun p : M => X (τ + u') p) (u + 1) hsmoothIoo
       (fun t : ℝ => fun p : M => (Ψ t (τ, p)).2) (fun t : ℝ => fun _ : M => γ (τ + t) z)
@@ -449,7 +494,7 @@ theorem rfs_csf_boundary_isotopy_of_velocityExtension (a b : ℝ)
         (univ ×ˢ (Icc a b ∩ Ioo (t₀ - ε) (t₀ + ε))) ∧
       (∀ p, Φ t₀ p = p) ∧
       ∀ t ∈ Icc a b ∩ Ioo (t₀ - ε) (t₀ + ε), ∀ z, Φ t (γ t₀ z) = γ t z := by
-  obtain ⟨X, hX, hvelX⟩ := hvel
+  obtain ⟨X, hX, hvelIci, hvelIic⟩ := hvel
   let bmp : ContDiffBump (t₀ : ℝ) := ⟨2, 3, by norm_num, by norm_num⟩
   let χ : ℝ → ℝ := ⇑bmp
   have hχ : ContDiff ℝ ∞ χ := bmp.contDiff
@@ -533,7 +578,8 @@ theorem rfs_csf_boundary_isotopy_of_velocityExtension (a b : ℝ)
         linarith
       have htu : t₀ + (t - t₀) = t := by ring
       have htraj := phaseFlow_trajectory_eq (I := I) X hX χ hχ hχc (r := (3 : ℝ) / 2)
-        (by norm_num) (hvelX := hvelX) (hτ := ht₀) (hτu := by rw [htu]; exact hta)
+        (by norm_num) (hvelIci := hvelIci) (hvelIic := hvelIic) (hτ := ht₀)
+        (hτu := by rw [htu]; exact hta)
         (hu := by linarith) (hur := hur0) (hχ1 := hχsub) (z := z)
       rw [htu] at htraj
       exact htraj
@@ -551,7 +597,8 @@ theorem rfs_csf_boundary_isotopy_of_velocityExtension (a b : ℝ)
         have hgt2 : -(2 - 3 / 2) < t - t₀ := (abs_lt.mp hd2).1
         constructor <;> linarith [hs.1, hs.2]
       have htraj := phaseFlow_trajectory_eq (I := I) X hX χ hχ hχc (r := (3 : ℝ) / 2)
-        (by norm_num) (hvelX := hvelX) (hτ := hta) (hτu := by rw [htu]; exact ht₀)
+        (by norm_num) (hvelIci := hvelIci) (hvelIic := hvelIic) (hτ := hta)
+        (hτu := by rw [htu]; exact ht₀)
         (hu := by linarith) (hur := hur1) (hχ1 := hχt) (z := z)
       rw [htu] at htraj
       have hd1 : dist (t₀ - t) 0 < 3 / 2 := by

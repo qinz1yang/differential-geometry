@@ -802,9 +802,10 @@ def LoopFamilyVelocityExtension (a b : ℝ) (γ : ℝ → ContinuousFreeLoop M) 
     ContMDiff (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E)) ∞
       (fun q : ℝ × M =>
         (TotalSpace.mk' E q.2 (X q.1 q.2) : TangentBundle I M)) ∧
-    ∀ t ∈ Icc a b, ∀ z : Surgery.Topology.Circle,
+    (∀ t ∈ Ico a b, ∀ z : Surgery.Topology.Circle,
       HasMFDerivWithinAt 𝓘(ℝ, ℝ) I (fun s : ℝ => γ s z) (Ici t) t
-        ((1 : ℝ →L[ℝ] ℝ).smulRight (X t (γ t z))) ∧
+        ((1 : ℝ →L[ℝ] ℝ).smulRight (X t (γ t z)))) ∧
+    ∀ t ∈ Ioc a b, ∀ z : Surgery.Topology.Circle,
       HasMFDerivWithinAt 𝓘(ℝ, ℝ) I (fun s : ℝ => γ s z) (Iic t) t
         ((1 : ℝ →L[ℝ] ℝ).smulRight (X t (γ t z)))
 
@@ -813,18 +814,21 @@ omit [FiniteDimensional ℝ E] [CompleteSpace E] hBoundary hT2 hCompact hNonempt
 theorem loopFamilyVelocityExtension_zero (a b : ℝ)
     (γ : ℝ → ContinuousFreeLoop M) (hconst : ∀ t t' : ℝ, γ t = γ t') :
     LoopFamilyVelocityExtension (I := I) a b γ := by
-  refine ⟨fun _ _ => 0, ?_, ?_⟩
+  refine ⟨fun _ _ => 0, ?_, ?_, ?_⟩
   · exact (Bundle.contMDiff_zeroSection ℝ (TangentSpace I (M := M))).comp
       (contMDiff_snd (I := 𝓘(ℝ, ℝ)) (J := I) (n := ∞))
   · intro t _ z
     have hpt : (fun s : ℝ => γ s z) = fun _ : ℝ => γ t z := by
       funext s
       rw [hconst s t]
-    constructor
-    · rw [hpt, ContinuousLinearMap.smulRight_zero]
-      exact hasMFDerivWithinAt_const (γ t z) (Ici t) t
-    · rw [hpt, ContinuousLinearMap.smulRight_zero]
-      exact hasMFDerivWithinAt_const (γ t z) (Iic t) t
+    rw [hpt, ContinuousLinearMap.smulRight_zero]
+    exact hasMFDerivWithinAt_const (γ t z) (Ici t) t
+  · intro t _ z
+    have hpt : (fun s : ℝ => γ s z) = fun _ : ℝ => γ t z := by
+      funext s
+      rw [hconst s t]
+    rw [hpt, ContinuousLinearMap.smulRight_zero]
+    exact hasMFDerivWithinAt_const (γ t z) (Iic t) t
 
 omit hBoundary hCompact hNonempty [SigmaCompactSpace M] in
 theorem rfs_csf_area_error (B : RicciBackground (I := I) (M := M) D a b)

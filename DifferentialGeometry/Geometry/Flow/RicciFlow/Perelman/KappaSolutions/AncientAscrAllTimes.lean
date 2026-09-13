@@ -27,7 +27,8 @@ local instance ancientAscrAllTimesC1 : IsManifold I 1 F.M :=
 
 theorem ancientKappaThree_ascr_eq_top {kappa : ℝ}
     (hF : IsAncientKappaSolution (I := I) kappa F) (hdim : Module.finrank ℝ E = 3)
-    (hnoncompact : NoncompactSpace F.M) (t0 : ℝ) (ht0 : t0 ∈ D.carrier) (p : F.M) :
+    (hnoncompact : NoncompactSpace F.M) (t0 : ℝ) (ht0 : t0 ∈ D.carrier) (p : F.M)
+    (hfrontier : NoncompactShrinkerCylinderClassificationTheorem.{uE, uH, u}) :
     asymptoticScalarCurvatureRatio (I := I) (F.S.base.metric t0) p = ⊤ := by
   have ht0le : t0 ≤ 0 := by
     simpa only [hF.carrier_eq, Set.mem_Iic] using ht0
@@ -48,7 +49,7 @@ theorem ancientKappaThree_ascr_eq_top {kappa : ℝ}
         @asymptoticScalarCurvatureRatio E _ _ _ _ H _ I F.M F.topology F.charted F.smooth
           (G.S.base.metric 0) p :=
       hascr.symm
-    _ = ⊤ := ancientKappaThree_terminal_ascr_eq_top G hG hdim hnoncompactG p
+    _ = ⊤ := ancientKappaThree_terminal_ascr_eq_top G hG hdim hnoncompactG p hfrontier
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 
