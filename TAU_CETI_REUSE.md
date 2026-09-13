@@ -751,3 +751,37 @@ parameters, and an empty source with rank-zero ambient space. Root reviewed
 actual source, providers, consumer proofs and the full diff. Existing root
 registration is retained. No full DG aggregate build or Schoenflies
 completion is asserted; interval-only boundary isotopy is the next step.
+
+## Interval-only isotopy for native boundary sources, 2026-09-13
+
+Embedding/IntervalExtension and AmbientIsotopy now accept embedding families
+jointly smooth only within the given closed time interval, on a compact native
+standard-halfspace manifold. The family extension gives one whole-real smooth
+family with every slice an embedding and exact agreement on the closed product.
+It requires ordered endpoints; empty interval data cannot supply an embedding.
+The ambient result accepts arbitrary endpoints and returns identity for a
+reversed interval. Its forward and inverse families are jointly smooth, start
+at identity, satisfy both tracking equations, and share one compact spatial
+support inside the prescribed open neighborhood for every real time.
+
+One private arbitrary-model time-clamp helper factors the previous proof;
+endpoint stability supplies a larger open interval of embedding times, and the
+existing smooth convex cutoff fixes the original closed interval exactly.
+The old boundaryless family signature is unchanged. All 267 preceding ambient
+source lines, including the shared velocity/flow mechanism, remain unchanged.
+The new ambient theorem is thin glue over the published boundary ambient
+producer. No chart, smoothing or ODE theory is duplicated or downloaded.
+
+Source 1789329328458174239-schoenflies-c41305e6 passes in 53.60 seconds,
+189 guards and 41 signature/axiom pairs. Final imported request
+1789329433846909792-schoenflies-482a47af passes in 152.42 seconds,
+241 guards and 164 pairs. All 155 previous signature/axiom texts are
+byte-identical and 37 shared source/import types match. Both changed leaves
+freshly compile in 1:08.61, maximum RSS 1837532 KiB, with zero diagnostics
+in Slurm 13821107. Stock linters and standard-only transitive axioms pass.
+Consumers cover truncated nonzero boundary motion, singleton and reversed
+intervals, prescribed support for a native closed two-cell in three-space,
+empty boundary sources and rank-zero ambient space. Root reviewed all proofs,
+providers, types and the full diff; existing root imports remain registered.
+No full DG aggregate build is claimed. General ambient manifolds, relative
+interval fixing and the remaining Schoenflies gluing are separate obligations.

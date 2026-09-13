@@ -264,4 +264,40 @@ theorem exists_contDiff_compact_ambient_isotopy_halfspace_eqOn_nhds
   intro z hz hzS
   exact (hSU hzS).2 hz
 
+theorem exists_contDiff_compact_ambient_isotopy_halfspace_Icc
+    {d : ℕ} {M : Type*} [TopologicalSpace M]
+    [ChartedSpace (EuclideanHalfSpace (d + 1)) M] [IsManifold (𝓡∂ (d + 1)) ∞ M]
+    [CompactSpace M]
+    {V : Type*} [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimensional ℝ V]
+    {e : ℝ × M → V} {a b : ℝ}
+    (he : ContMDiffOn (𝓘(ℝ, ℝ).prod (𝓡∂ (d + 1))) 𝓘(ℝ, V) ∞ e (Icc a b ×ˢ univ))
+    (hf : ∀ t ∈ Icc a b, IsSmoothEmbedding (𝓡∂ (d + 1)) 𝓘(ℝ, V) ∞ (fun x => e (t, x)))
+    {U : Set V} (hU : IsOpen U) (heU : e '' (Icc a b ×ˢ univ) ⊆ U) :
+    ∃ Φ : ℝ → (V ≃ₘ[ℝ] V),
+      ContDiff ℝ ∞ (fun q : ℝ × V => Φ q.1 q.2) ∧
+      ContDiff ℝ ∞ (fun q : ℝ × V => (Φ q.1).symm q.2) ∧
+      Φ a = Diffeomorph.refl 𝓘(ℝ, V) V ∞ ∧
+      (∀ t ∈ Icc a b, ∀ x, Φ t (e (a, x)) = e (t, x) ∧
+        (Φ t).symm (e (t, x)) = e (a, x)) ∧
+      ∃ S : Set V, IsCompact S ∧ S ⊆ U ∧ ∀ t : ℝ,
+        EqOn (Φ t) id Sᶜ ∧ EqOn (Φ t).symm id Sᶜ := by
+  by_cases hab : a ≤ b
+  · obtain ⟨G, hG, hGemb, hGe⟩ := exists_isSmoothEmbedding_extension_Icc_halfspace hab he hf
+    have hGU : G '' (Icc a b ×ˢ univ) ⊆ U := by
+      rintro _ ⟨q, hq, rfl⟩
+      rw [hGe hq]
+      exact heU ⟨q, hq, rfl⟩
+    obtain ⟨Φ, hΦ, hΦi, hΦa, hΦe, hS⟩ :=
+      exists_contDiff_compact_ambient_isotopy_halfspace hG hGemb hU hGU
+    refine ⟨Φ, hΦ, hΦi, hΦa, ?_, hS⟩
+    intro t ht x
+    have hGa : G (a, x) = e (a, x) := hGe ⟨⟨le_rfl, hab⟩, mem_univ x⟩
+    have hGt : G (t, x) = e (t, x) := hGe ⟨ht, mem_univ x⟩
+    simpa only [hGa, hGt] using hΦe t ht x
+  · refine ⟨fun _ => Diffeomorph.refl 𝓘(ℝ, V) V ∞,
+      contDiff_snd, contDiff_snd, rfl, ?_, ∅, isCompact_empty, empty_subset U, ?_⟩
+    · intro t ht
+      exact (hab (ht.1.trans ht.2)).elim
+    · exact fun _ => ⟨fun _ _ => rfl, fun _ _ => rfl⟩
+
 end Manifold
