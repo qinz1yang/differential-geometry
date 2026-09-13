@@ -6535,6 +6535,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalReg
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ThreeFrameOrientation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.VanKampen
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.WeakLength
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.WorldBridges
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.DeTurckWindow
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Algebra.Relowering
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Algebra.TensorDecomposition
