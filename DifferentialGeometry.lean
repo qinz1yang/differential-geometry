@@ -4972,6 +4972,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.W
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.ActualWidth
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.AffineComparison
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.ClassWidth
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.ClassWidthDeformation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.Deformation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.DiniComparison
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.EssentialClass
@@ -4985,6 +4986,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.InitialR
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.ObservedComparison
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.ObservedComparisonRecord
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.ObservedRescaling
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.ObservedWidthDini
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.Preparation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.RampAngleWindow
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.RampFrontierData
@@ -5028,6 +5030,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.RegularClas
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.SpanningArea
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.ShortFamilyContraction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.SurgeryWidthEvolution
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.HistoryWidthJump
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Gauge.HarmonicMap
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Gauge.InverseFamily
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Gauge.ScaledHarmonicMap

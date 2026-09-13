@@ -102,7 +102,7 @@ omit [CompleteSpace E] in
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 theorem compact_homogeneous_regularity
-    [I.Boundaryless] [T2Space Q] [CompactSpace Q] [ConnectedSpace Q] [Nonempty Q]
+    [I.Boundaryless] [T2Space Q] [CompactSpace Q] [ConnectedSpace Q]
     (g : SmoothRiemannianMetric I Q) (n : ℕ) (hn : 1 ≤ n)
     (hdim : Module.finrank ℝ E = n) :
     ∃ d : MetricSpace Q,
