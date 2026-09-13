@@ -72,7 +72,8 @@ theorem exists_isPLHomeomorphOn_coneComplex [FiniteDimensional ℝ E] [FiniteDim
     (hL : IsConeBase p L) {q : F} {L' : Geometry.SimplicialComplex ℝ F} [Finite L'.faces]
     (hL' : IsConeBase q L') {f : E → F} (hf : IsPLHomeomorphOn f L.space L'.space) :
     ∃ g : E → F, IsPLHomeomorphOn g (coneComplex hL).space (coneComplex hL').space ∧
-      EqOn g f L.space ∧ g p = q := by
+      EqOn g f L.space ∧ g p = q ∧
+      ∀ z ∈ L.space, ∀ s : ℝ, 0 ≤ s → s ≤ 1 → g (p + s • (z - p)) = q + s • (f z - q) := by
   obtain ⟨L₁, hL₁, hfin₁, hAff⟩ := hf.isPiecewiseAffineOn.exists_isSubdivision_affineOn_faces L
   obtain ⟨L'₁, hL'₁, hfin'₁, hAff'⟩ :=
     hf.isPiecewiseAffineOn_invFunOn.exists_isSubdivision_affineOn_faces L'
@@ -130,7 +131,7 @@ theorem exists_isPLHomeomorphOn_coneComplex [FiniteDimensional ℝ E] [FiniteDim
       · rw [hg'_apply w hw s hs.le hs', hg_apply _ (hf.bijOn.surjOn.mapsTo_invFunOn hw) s hs.le hs',
           hf'f w hw]
   have hbij : BijOn g (coneComplex hL).space (coneComplex hL').space := hinv.bijOn hmaps hmaps'
-  refine ⟨g, ⟨hbij, ?_, ?_⟩, fun z hz => ?_, hgp⟩
+  refine ⟨g, ⟨hbij, ?_, ?_⟩, fun z hz => ?_, hgp, hg_apply⟩
   · rw [← hspace]
     exact isPiecewiseAffineOn_simplicialMap _ φ
   · have hpl : IsPiecewiseAffineOn g' (coneComplex hL').space := by

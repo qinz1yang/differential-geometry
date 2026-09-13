@@ -199,6 +199,13 @@
   （`isPLSphere_geometricLink_of_mem_nhds`：`finrank E = n+1` 且 `K.space ∈ 𝓝 p` ⟹ 顶点 link 是 PL `n`-球面）。
   逐模块检查零错误零警告；九个端点 `#print axioms` 仅标准公理（`.lake/scratch/AuditF5.lean`）。
 
+- 2026-09-13（车道 F 第五批，锥与锥延拓 F3.4）：`ConeComplex.lean`（锥复形 `coneComplex`、`closedStar_eq_coneComplex_space`）、
+  `ConeBase.lean`（`affineIndependent_insert_iff`、锥底在细分下稳定、`isConeBase_simplexBoundary`）、`ConeExtension.lean`
+  （`exists_isPLHomeomorphOn_coneComplex`：锥底间 PL 同胚的锥延拓，保射线）、`StdSimplexCone.lean`
+  （标准单形是中心对边界的锥；`IsConeBase.isPLBall_of_isPLSphere`、`isPLBall_closedStar`、
+  `IsCombinatorialManifold.isPLBall_closedStar`）。逐模块检查零错误零警告；七个端点 `#print axioms` 仅标准公理
+  （`.lake/scratch/AuditF6.lean`）。
+
 - 2026-09-11（Phase 1 第二轮，负责人指示不等完整构建）：`IsPiecewiseAffineOn` 改为基于 `IsPiecewiseAffineWithinAt`
   （`𝓝[s] x`）的定义并重跑整条链；新增 `Manifold.lean`、`Polyhedron.lean`，以及 `Smoothing.lean` 中的
   `PLSmoothingModel`/`plSmoothing_of_plSmoothingModel`。九个模块逐个 `lake env lean` 加 lakefile 选项检查零错误零警告；
