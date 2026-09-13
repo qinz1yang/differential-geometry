@@ -238,6 +238,32 @@ theorem exists_terminalParabolicScalarBallBoundAtSameTime_modelScale
     exact terminalParabolicScalarBallBoundAtSameTime_of_rmBallBoundAtSameTime X
       (-(c / 2)) ρ (hprop eps heps hle sigma hsigma Phi hPhi X hric ρ hρ hρc)
 
+theorem exists_terminalParabolicScalarBallBoundAtSameTime_baseScale
+    {kappa : ℝ} (hmod : ModelCurvatureBoundNearBase.{u, 0, 0} I3 kappa) :
+    ∃ epsStar r C : ℝ, 0 < epsStar ∧ 0 < r ∧ 0 < C ∧
+      ∀ eps : ℝ, 0 < eps → eps ≤ epsStar → ∀ sigma : ℝ, 0 < sigma →
+        ∀ Phi : ℝ → ℝ, AdmissiblePinchingFunction Phi →
+          ∀ X : NormalizedSequence.{u} eps kappa sigma Phi, ∀ ρ : ℝ, 0 < ρ → ρ ≤ r →
+            TerminalParabolicScalarBallBoundAtSameTime X 0 ρ := by
+  obtain ⟨epsStar, r, C, hepsStar, hr, hC, hprop⟩ :=
+    exists_eventually_scalar_le_at_boundedDistance (kappa := kappa) hmod
+  refine ⟨epsStar, r, C, hepsStar, hr, hC, ?_⟩
+  intro eps heps hle sigma hsigma Phi hPhi X ρ hρ hρr
+  refine terminalParabolicScalarBallBoundAtSameTime_of_eventually X ?_ ⟨C, hC, ?_⟩
+  · intro i y hy
+    rw [X.carrier_eq i]
+    exact ⟨by linarith [X.depth_pos i, hy.1], hy.2⟩
+  · filter_upwards [hprop eps heps hle sigma hsigma Phi hPhi X] with i hi
+    intro t ht y hy
+    have ht0 : t = 0 := le_antisymm ht.2 ht.1
+    subst ht0
+    refine hi y ?_
+    have hmono := ENNReal.toReal_mono ENNReal.ofReal_ne_top hy
+    have hle' : (riemannianEDistOf (I := I3) ((X.term i).S.base.metric 0)
+        (X.term i).basepoint y).toReal ≤ ρ := by
+      simpa only [ENNReal.toReal_ofReal hρ.le] using hmono
+    simpa only [metricDistance] using le_trans hle' hρr
+
 theorem ricciTensorBoundProducer_of_uniformScalarBound_and_curvatureOperatorNonnegative
     {kappa sigma : ℝ} {Phi : ℝ → ℝ} {C epsStar : ℝ} (hC : 0 < C) (hepsStar : 0 < epsStar)
     (hscal : ∀ eps : ℝ, 0 < eps → eps ≤ epsStar →
