@@ -1,3 +1,6 @@
+import DifferentialGeometry.Geometry.HarmonicMap.DiskBoundaryRegularity
+import DifferentialGeometry.Geometry.HarmonicMap.Closure
+import DifferentialGeometry.Topology.Manifold.ClosedDiskExtension
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.Plateau
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.ComponentHarmonic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.ComponentDifferential
@@ -325,7 +328,136 @@ theorem classical_plateau_boundary_regularity
       Width.diskArea g u.map ≤ Width.diskArea g w.map) :
     ∃ w : Width.SmoothDisk (I := I) (Q := Q),
       w.map = u.map ∧ w.IsConformal g ∧ w.IsHarmonic g := by
-  sorry
+  suffices ∃ w : SmoothDisk (I := I) (Q := Q),
+      w.map = u.map ∧ w.IsConformal g ∧ w.IsHarmonic g ∧
+      IntegrableOn (diskJacobian g w.map) (Metric.closedBall (0 : ℂ) 1) ∧
+      (∀ v : SmoothDisk (I := I) (Q := Q),
+        (∀ theta, v.map (diskBoundary theta) = gamma theta) →
+        diskArea g w.map ≤ diskArea g v.map) by
+    obtain ⟨w, heq, hc, hh, _, _⟩ := this
+    exact ⟨w, heq, hc, hh⟩
+  let U := diskExtension u.map
+  have hUc : ContinuousOn U (Metric.closedBall (0 : ℂ) 1) := by
+    apply continuousOn_iff_continuous_domRestrict.mpr
+    exact u.map.continuous.congr (fun z => (diskExtension_coe u.map z).symm)
+  have hgerm {z : ℂ} (hz : z ∈ Metric.ball (0 : ℂ) 1)
+      (F : DiskLocalExtension (I := I) u.map ⟨z, Metric.ball_subset_closedBall hz⟩) :
+      F.map =ᶠ[𝓝 z] U := by
+    filter_upwards [F.isOpen_domain.mem_nhds F.mem_domain, Metric.isOpen_ball.mem_nhds hz] with w hw hb
+    exact F.agrees ⟨hw, Metric.ball_subset_closedBall hb⟩
+  have hUi : ContMDiffOn 𝓘(ℝ, ℂ) I ∞ U (Metric.ball (0 : ℂ) 1) := by
+    intro z hz
+    obtain ⟨F⟩ := u.smooth ⟨z, Metric.ball_subset_closedBall hz⟩ hz
+    exact ((F.smooth.contMDiffAt (F.isOpen_domain.mem_nhds F.mem_domain)).congr_of_eventuallyEq
+      (hgerm hz F).symm).contMDiffWithinAt
+  have hH : ∀ z ∈ Metric.ball (0 : ℂ) 1, Geometry.planarTension g U z = 0 := by
+    intro z hz
+    obtain ⟨F⟩ := u.smooth ⟨z, Metric.ball_subset_closedBall hz⟩ hz
+    have he := diskLocalTension_congr_germ g F.map U z (hgerm hz F)
+    exact he.symm.trans (hharm _ hz F)
+  have hd (z : ℂ) (hz : z ∈ Metric.ball (0 : ℂ) 1) (v : ℂ) :
+      (u.differential ⟨z, Metric.ball_subset_closedBall hz⟩ v : E) = mfderiv 𝓘(ℝ, ℂ) I U z v := by
+    change mfderivWithin 𝓘(ℝ, ℂ) I U (Metric.closedBall (0 : ℂ) 1) z v = _
+    rw [mfderivWithin_of_mem_nhds (Filter.mem_of_superset
+      (Metric.isOpen_ball.mem_nhds hz) Metric.ball_subset_closedBall)]
+  have hconf' (z : ℂ) (hz : z ∈ Metric.ball (0 : ℂ) 1) :
+      g.inner (U z) (mfderiv 𝓘(ℝ, ℂ) I U z (1 : ℂ)) (mfderiv 𝓘(ℝ, ℂ) I U z Complex.I) = 0 ∧
+      g.inner (U z) (mfderiv 𝓘(ℝ, ℂ) I U z (1 : ℂ)) (mfderiv 𝓘(ℝ, ℂ) I U z (1 : ℂ)) =
+        g.inner (U z) (mfderiv 𝓘(ℝ, ℂ) I U z Complex.I) (mfderiv 𝓘(ℝ, ℂ) I U z Complex.I) := by
+    have h := hconf ⟨z, Metric.ball_subset_closedBall hz⟩ hz
+    have he : U z = u.map ⟨z, Metric.ball_subset_closedBall hz⟩ := diskExtension_coe u.map ⟨z, Metric.ball_subset_closedBall hz⟩
+    let G : Q → E →L[ℝ] E →L[ℝ] ℝ := fun q => g.inner q
+    change G (U z) (mfderiv 𝓘(ℝ, ℂ) I U z (1 : ℂ)) (mfderiv 𝓘(ℝ, ℂ) I U z Complex.I) = 0 ∧
+      G (U z) (mfderiv 𝓘(ℝ, ℂ) I U z (1 : ℂ)) (mfderiv 𝓘(ℝ, ℂ) I U z (1 : ℂ)) =
+      G (U z) (mfderiv 𝓘(ℝ, ℂ) I U z Complex.I) (mfderiv 𝓘(ℝ, ℂ) I U z Complex.I)
+    rw [← hd z hz (1 : ℂ), ← hd z hz Complex.I, he]
+    exact h
+  have htr (z : ℂ) (hz : ‖z‖ = 1) : U z ∈ range (gamma : Surgery.Topology.Circle → Q) := by
+    let c : Circle := ⟨z, by
+      change z ∈ Metric.sphere (0 : ℂ) 1
+      exact mem_sphere_zero_iff_norm.mpr hz⟩
+    obtain ⟨θ, hθ⟩ := (AddCircle.homeomorphCircle (T := (1 : ℝ)) one_ne_zero).surjective c
+    obtain ⟨t, ht⟩ := QuotientAddGroup.mk_surjective θ
+    obtain ⟨φ, _, _, hφ⟩ := htrace
+    have hb : (diskBoundary (t : Surgery.Topology.Circle) : ℂ) = z := by
+      change (AddCircle.toCircle (t : Surgery.Topology.Circle) : ℂ) = z
+      rw [ht, ← AddCircle.homeomorphCircle_apply one_ne_zero, hθ]
+    refine ⟨(φ t : Surgery.Topology.Circle), ?_⟩
+    rw [← hb]
+    change gamma (φ t : Surgery.Topology.Circle) = diskExtension u.map (diskBoundary (t : Surgery.Topology.Circle))
+    rw [diskExtension_coe]
+    exact (hφ t).symm
+  let : FiniteDimensional ℝ E := .of_finrank_pos (by rw [hdim]; norm_num)
+  have hreg := Geometry.contMDiffOn_closedDisk_of_embedded_loop g (by norm_num : (0 : ℝ) < 1)
+    hemb hsmooth himm hUc hUi htr (fun z hz => (hconf' z hz).1)
+    (fun z hz => (hconf' z hz).2) hH
+  obtain ⟨V, hVc, hVU₀, N, hN, hKN, hV⟩ :=
+    DifferentialGeometry.Topology.exists_contMDiffOn_extension_closedDisk hreg
+  have hi : EqOn V U (Metric.ball (0 : ℂ) 1) :=
+    hVU₀.mono Metric.ball_subset_closedBall
+  have hVU := hi.of_subset_closure hVc.continuousOn hUc
+    Metric.ball_subset_closedBall
+    (by rw [closure_ball (0 : ℂ) (by norm_num : (1 : ℝ) ≠ 0)])
+  let w : SmoothDisk (I := I) (Q := Q) := {
+    map := u.map
+    smooth := fun z => ⟨{
+      map := V
+      domain := N
+      isOpen_domain := hN
+      mem_domain := hKN z.property
+      smooth := hV
+      agrees := fun q hq => hVU hq.2 }⟩ }
+  have hgV {q : ℂ} (hq : q ∈ Metric.ball (0 : ℂ) 1) : V =ᶠ[𝓝 q] U :=
+    Filter.eventuallyEq_of_mem (Metric.isOpen_ball.mem_nhds hq) (fun r hr => hVU (Metric.ball_subset_closedBall hr))
+  let G : Q → E →L[ℝ] E →L[ℝ] ℝ := fun q => g.inner q
+  have hCV (q : ℂ) (hq : q ∈ Metric.ball (0 : ℂ) 1) :
+      g.inner (V q) (mfderiv 𝓘(ℝ, ℂ) I V q (1 : ℂ)) (mfderiv 𝓘(ℝ, ℂ) I V q Complex.I) = 0 ∧
+      g.inner (V q) (mfderiv 𝓘(ℝ, ℂ) I V q (1 : ℂ)) (mfderiv 𝓘(ℝ, ℂ) I V q (1 : ℂ)) =
+        g.inner (V q) (mfderiv 𝓘(ℝ, ℂ) I V q Complex.I) (mfderiv 𝓘(ℝ, ℂ) I V q Complex.I) := by
+    have hD : (mfderiv 𝓘(ℝ, ℂ) I V q : ℂ →L[ℝ] E) = mfderiv 𝓘(ℝ, ℂ) I U q := (hgV hq).mfderiv_eq
+    change G (V q) (mfderiv 𝓘(ℝ, ℂ) I V q (1 : ℂ)) (mfderiv 𝓘(ℝ, ℂ) I V q Complex.I) = 0 ∧
+      G (V q) (mfderiv 𝓘(ℝ, ℂ) I V q (1 : ℂ)) (mfderiv 𝓘(ℝ, ℂ) I V q (1 : ℂ)) =
+      G (V q) (mfderiv 𝓘(ℝ, ℂ) I V q Complex.I) (mfderiv 𝓘(ℝ, ℂ) I V q Complex.I)
+    rw [hD, (hgV hq).eq_of_nhds]
+    exact hconf' q hq
+  have hVC (q : ℂ) (hq : q ∈ Metric.closedBall (0 : ℂ) 1) :=
+    Geometry.conformal_mfderiv_of_mem_closure g
+      (s := Metric.ball (0 : ℂ) 1) (by simpa only [closure_ball (0 : ℂ) (by norm_num : (1 : ℝ) ≠ 0)] using hq)
+      ((hV.of_le (ENat.natCast_le_of_coe_top_le_withTop le_rfl 1)).contMDiffAt (hN.mem_nhds (hKN hq)))
+      (fun r hr => (hCV r hr).1) (fun r hr => (hCV r hr).2)
+  have hwd (q : Disk) (v : ℂ) : (w.differential q v : E) = mfderiv 𝓘(ℝ, ℂ) I V q v := by
+    have hcongr : EqOn U V (Metric.closedBall (0 : ℂ) 1) := hVU.symm
+    have h1 := mfderivWithin_congr_of_mem (I := 𝓘(ℝ, ℂ)) (I' := I) hcongr q.property
+    have hmd := (hV.contMDiffAt (hN.mem_nhds (hKN q.property))).mdifferentiableAt (by simp)
+    have h2 := mfderivWithin_eq_mfderiv (disk_uniqueDiffWithinAt q).uniqueMDiffWithinAt hmd
+    change mfderivWithin 𝓘(ℝ, ℂ) I U (Metric.closedBall (0 : ℂ) 1) q v = _
+    exact congrArg (fun D : ℂ →L[ℝ] E => D v) (h1.trans h2)
+  refine ⟨w, rfl, ?_, ?_, ?_, ?_⟩
+  · intro q
+    have hp : V q = u.map q := (hVU q.property).trans (diskExtension_coe _ q)
+    change G (u.map q) (w.differential q (1 : ℂ)) (w.differential q Complex.I) = 0 ∧
+      G (u.map q) (w.differential q (1 : ℂ)) (w.differential q (1 : ℂ)) =
+      G (u.map q) (w.differential q Complex.I) (w.differential q Complex.I)
+    rw [hwd, hwd, ← hp]
+    exact hVC q q.property
+  · intro q F
+    have hqcl : (q : ℂ) ∈ closure (F.domain ∩ Metric.ball (0 : ℂ) 1) :=
+      F.isOpen_domain.inter_closure ⟨F.mem_domain, by
+        simpa only [closure_ball (0 : ℂ) (by norm_num : (1 : ℝ) ≠ 0)] using q.property⟩
+    apply Geometry.planarTension_eq_zero_of_mem_closure g hqcl
+      ((F.smooth.of_le (ENat.natCast_le_of_coe_top_le_withTop le_rfl 2)).contMDiffAt
+        (F.isOpen_domain.mem_nhds F.mem_domain))
+    intro r hr
+    let Fr : DiskLocalExtension (I := I) u.map ⟨r, Metric.ball_subset_closedBall hr.2⟩ := {
+      map := F.map
+      domain := F.domain
+      isOpen_domain := F.isOpen_domain
+      mem_domain := hr.1
+      smooth := F.smooth
+      agrees := F.agrees }
+    exact hharm _ hr.2 Fr
+  · exact hfinite
+  · exact hmin
 
 namespace ComponentTopology
 
