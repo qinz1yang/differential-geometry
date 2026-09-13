@@ -159,6 +159,7 @@ import DifferentialGeometry.Analysis.Calculus.SmoothMax
 import DifferentialGeometry.Analysis.Calculus.SmoothTransition
 import DifferentialGeometry.Analysis.Calculus.Smoothness.AnisotropicJoint
 import DifferentialGeometry.Analysis.Calculus.Smoothness.BanachAlgebra
+import DifferentialGeometry.Analysis.Calculus.Smoothness.Closure
 import DifferentialGeometry.Analysis.Calculus.Smoothness.ExtendInterval
 import DifferentialGeometry.Analysis.Calculus.Smoothness.Tsum
 import DifferentialGeometry.Analysis.Calculus.Taylor
@@ -176,6 +177,12 @@ import DifferentialGeometry.Analysis.Calculus.Trace
 import DifferentialGeometry.Analysis.Calculus.Variation.Comparison
 import DifferentialGeometry.Analysis.Calculus.Variation.Lipschitz
 import DifferentialGeometry.Analysis.Calculus.Variation.Periodic
+import DifferentialGeometry.Analysis.Complex.BoundaryTrace
+import DifferentialGeometry.Analysis.Complex.ConformalBoundary
+import DifferentialGeometry.Analysis.Complex.ConformalGradientHolder
+import DifferentialGeometry.Analysis.Complex.DiskBoundaryChart
+import DifferentialGeometry.Analysis.Complex.GradientRegularity
+import DifferentialGeometry.Analysis.Complex.SquareRoot
 import DifferentialGeometry.Analysis.Convex.LogConvexSequence
 import DifferentialGeometry.Analysis.Convex.MatrixRayleigh
 import DifferentialGeometry.Analysis.Convex.MovingSetDistance
@@ -194,6 +201,12 @@ import DifferentialGeometry.Analysis.Elliptic.Barrier.StrongMinimumUpperSupport
 import DifferentialGeometry.Analysis.Elliptic.Barrier.SupportComparison
 import DifferentialGeometry.Analysis.Elliptic.Barrier.TouchingSupportsDifferentiability
 import DifferentialGeometry.Analysis.Elliptic.Coefficients
+import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.BoundaryGradient
+import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.BoundaryGrowth
+import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.BoundaryLifting
+import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.BoundaryRegularity
+import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.ConformalBoundaryRegularity
+import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.DerivativeRecovery
 import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.Disk.GreenIdentity
 import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.Disk.ImageHarmonic
 import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.Disk.ImagePotential
@@ -205,6 +218,8 @@ import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.Disk.RegularizerLapla
 import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.Disk.SupportMargin
 import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.Gradient
 import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.GreenIdentity
+import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.HalfDiskBarrier
+import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.HalfDiskRegularity
 import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.LaplacianCalculus
 import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.LaplacianConvolution
 import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.LaplacianMinimum
@@ -214,6 +229,7 @@ import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.LogarithmicPotential.
 import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.LogarithmicPotential.FundamentalSolution
 import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.LogarithmicPotential.LogSumAtZeros
 import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.LogarithmicPotential.LogSumLaplacian
+import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.Reflection
 import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.PolarDivergence
 import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.Regularization.Boundary
 import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.Regularization.Defs
@@ -221,6 +237,7 @@ import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.Regularization.Integr
 import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.Regularization.Limit
 import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.Regularization.Vanishing
 import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.Strip
+import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.TangentialRegularity
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.ChartCoordinateExpansion.ChartComponentFrameTrace
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.ChartCoordinateExpansion.CoordinateFormula.ChristoffelTraceCorrection
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.ChartCoordinateExpansion.CoordinateFormula.Decomposition
@@ -297,6 +314,11 @@ import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.SobolevBounds.
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.Weitzenbock.IntegratedCovariantTensor
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.Weitzenbock.IntegratedMixedTensor
 import DifferentialGeometry.Analysis.Elliptic.DistributionalSupersolution
+import DifferentialGeometry.Analysis.Elliptic.Euclidean.GradientEstimate
+import DifferentialGeometry.Analysis.Elliptic.Euclidean.HarmonicComparison
+import DifferentialGeometry.Analysis.Elliptic.Euclidean.InteriorGradient
+import DifferentialGeometry.Analysis.Elliptic.Euclidean.MaximumPrinciple
+import DifferentialGeometry.Analysis.Elliptic.Euclidean.QuadraticGrowth
 import DifferentialGeometry.Analysis.Elliptic.Euclidean.Regularity.CoefficientDerivative
 import DifferentialGeometry.Analysis.Elliptic.Euclidean.Regularity.DifferenceQuotient
 import DifferentialGeometry.Analysis.Elliptic.Euclidean.Regularity.Differentiation
@@ -305,6 +327,7 @@ import DifferentialGeometry.Analysis.Elliptic.Euclidean.Regularity.SecondOrder
 import DifferentialGeometry.Analysis.Elliptic.Euclidean.Restriction
 import DifferentialGeometry.Analysis.Elliptic.Euclidean.WeakFormulation
 import DifferentialGeometry.Analysis.Elliptic.Euclidean.WeakHarnack
+import DifferentialGeometry.Analysis.Elliptic.Euclidean.WeakLaplacianRegularity
 import DifferentialGeometry.Analysis.Elliptic.HarmonicRigidity
 import DifferentialGeometry.Analysis.Elliptic.Lichnerowicz
 import DifferentialGeometry.Analysis.Elliptic.LichnerowiczSpectral
@@ -643,8 +666,10 @@ import DifferentialGeometry.Analysis.Heat.Smoothing.Spectral.IteratedDomain
 import DifferentialGeometry.Analysis.Heat.Smoothing.Spectral.Lift
 import DifferentialGeometry.Analysis.HoleFilling
 import DifferentialGeometry.Analysis.InnerProductSpace.Cayley
+import DifferentialGeometry.Analysis.InnerProductSpace.ConformalPair
 import DifferentialGeometry.Analysis.InnerProductSpace.HilbertSchmidt
 import DifferentialGeometry.Analysis.InnerProductSpace.IsometryTransitive
+import DifferentialGeometry.Analysis.InnerProductSpace.Laplacian
 import DifferentialGeometry.Analysis.InnerProductSpace.MatrixEuclidean
 import DifferentialGeometry.Analysis.InnerProductSpace.ProperConeFace
 import DifferentialGeometry.Analysis.InnerProductSpace.ProperConeIsometry
@@ -658,6 +683,8 @@ import DifferentialGeometry.Analysis.Integration.CauchyPeak
 import DifferentialGeometry.Analysis.Integration.CompactExhaustionCutoff
 import DifferentialGeometry.Analysis.Integration.CompactExhaustionIntegral
 import DifferentialGeometry.Analysis.Integration.ConformalScalarCurvature
+import DifferentialGeometry.Analysis.Integration.Convolution.Approximation
+import DifferentialGeometry.Analysis.Integration.Convolution.Laplacian
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.BracketDivergenceForm
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.EuclideanHalfSpace
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Global.CompactSupport
@@ -703,6 +730,8 @@ import DifferentialGeometry.Analysis.Integration.Holder.Weighted
 import DifferentialGeometry.Analysis.Integration.Integral.CompactSupportDerivative
 import DifferentialGeometry.Analysis.Integration.Integral.CompactSupportParametric
 import DifferentialGeometry.Analysis.Integration.Integral.ComplexSquare
+import DifferentialGeometry.Analysis.Integration.Integral.HalfPlaneLaplacian
+import DifferentialGeometry.Analysis.Integration.Integral.Laplacian
 import DifferentialGeometry.Analysis.Integration.Integral.Prod
 import DifferentialGeometry.Analysis.Integration.IntervalEndpointBound
 import DifferentialGeometry.Analysis.Integration.L2.Basic
@@ -829,6 +858,7 @@ import DifferentialGeometry.Analysis.Integration.Measure.SublevelSurface
 import DifferentialGeometry.Analysis.Integration.Measure.SublevelVolume
 import DifferentialGeometry.Analysis.Integration.Measure.SurfaceFlux
 import DifferentialGeometry.Analysis.Integration.Measure.TightConvergence
+import DifferentialGeometry.Analysis.Integration.Measure.UniformIntegrability
 import DifferentialGeometry.Analysis.Integration.Measure.UniformPairing
 import DifferentialGeometry.Analysis.Integration.Measure.VolumeDensity
 import DifferentialGeometry.Analysis.Integration.Measure.VolumeDensityFamily
@@ -1157,6 +1187,7 @@ import DifferentialGeometry.Analysis.Parabolic.Euclidean.Cutoff.Gauge
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.Cutoff.LocalSource
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.Duhamel.Frozen
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.Duhamel.FrozenPositiveDefinite
+import DifferentialGeometry.Analysis.Parabolic.Euclidean.Duhamel.Laplacian
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.Duhamel.Representation
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.HarmonicMapFlow.FixedPoint.Quadratic
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.HarmonicMapFlow.FixedPoint.Rough
@@ -1578,8 +1609,13 @@ import DifferentialGeometry.Analysis.Schauder.Holder.CompactRegularity
 import DifferentialGeometry.Analysis.Schauder.Holder.Compactness
 import DifferentialGeometry.Analysis.Schauder.Holder.CompleteSpace
 import DifferentialGeometry.Analysis.Schauder.Holder.Composition
+import DifferentialGeometry.Analysis.Schauder.Holder.DerivativeExtension
+import DifferentialGeometry.Analysis.Schauder.Holder.DerivativeLimit
+import DifferentialGeometry.Analysis.Schauder.Holder.Extension
+import DifferentialGeometry.Analysis.Schauder.Holder.HigherOrderComposition
 import DifferentialGeometry.Analysis.Schauder.Holder.Interpolation
 import DifferentialGeometry.Analysis.Schauder.Holder.Localization
+import DifferentialGeometry.Analysis.Schauder.Holder.Multilinear
 import DifferentialGeometry.Analysis.Schauder.Holder.NormedSpace
 import DifferentialGeometry.Analysis.Schauder.Holder.Operator
 import DifferentialGeometry.Analysis.Schauder.Holder.Scaling
@@ -4042,6 +4078,8 @@ import DifferentialGeometry.Geometry.Coordinates.Calculus.FixedBaseDerivative
 import DifferentialGeometry.Geometry.Coordinates.Connection.Christoffel
 import DifferentialGeometry.Geometry.Coordinates.Connection.ChristoffelTensor
 import DifferentialGeometry.Geometry.Coordinates.Connection.Coefficients
+import DifferentialGeometry.Geometry.Coordinates.ConformalEnergy
+import DifferentialGeometry.Geometry.Coordinates.EmbeddedCurve
 import DifferentialGeometry.Geometry.Coordinates.Fields.Scalar
 import DifferentialGeometry.Geometry.Coordinates.Fields.Tensor
 import DifferentialGeometry.Geometry.Coordinates.Fields.Vector
@@ -4067,6 +4105,7 @@ import DifferentialGeometry.Geometry.Coordinates.NablaComponents.TensorRS.Formul
 import DifferentialGeometry.Geometry.Coordinates.NablaComponents.TensorRS.ModelBridge
 import DifferentialGeometry.Geometry.Coordinates.NablaComponents.TensorRS.RankOneTwo
 import DifferentialGeometry.Geometry.Coordinates.NablaComponents.TwoTensor
+import DifferentialGeometry.Geometry.Coordinates.OrthogonalCurve
 import DifferentialGeometry.Geometry.Curvature.Algebraic.CurvatureOperatorCone
 import DifferentialGeometry.Geometry.Curvature.Algebraic.CurvatureOperatorConeMetric
 import DifferentialGeometry.Geometry.Curvature.Algebraic.Form
@@ -6661,6 +6700,11 @@ import DifferentialGeometry.Geometry.Gradient.CylinderPerturbation
 import DifferentialGeometry.Geometry.Gradient.Normalized
 import DifferentialGeometry.Geometry.Gradient.ScaledChartDifferential
 import DifferentialGeometry.Geometry.Gradient.SignedDifference
+import DifferentialGeometry.Geometry.HarmonicMap.BoundaryRegularity
+import DifferentialGeometry.Geometry.HarmonicMap.Closure
+import DifferentialGeometry.Geometry.HarmonicMap.ConformalSource
+import DifferentialGeometry.Geometry.HarmonicMap.Coordinates
+import DifferentialGeometry.Geometry.HarmonicMap.DiskBoundaryRegularity
 import DifferentialGeometry.Geometry.Hodge.Codifferential
 import DifferentialGeometry.Geometry.LieDerivative.Tensor
 import DifferentialGeometry.Geometry.LieGroup.Orthogonal
@@ -7032,6 +7076,7 @@ import DifferentialGeometry.Geometry.Metric.ProjectiveSpace
 import DifferentialGeometry.Geometry.Metric.Pullback.Basic
 import DifferentialGeometry.Geometry.Metric.Pullback.Completeness
 import DifferentialGeometry.Geometry.Metric.Pullback.CovariantDerivative
+import DifferentialGeometry.Geometry.Metric.Pullback.Coefficients
 import DifferentialGeometry.Geometry.Metric.Pullback.Cross
 import DifferentialGeometry.Geometry.Metric.Pullback.Euclidean
 import DifferentialGeometry.Geometry.Metric.Pullback.Evaluation.ChainRule
@@ -8281,6 +8326,7 @@ import DifferentialGeometry.Topology.Manifold.BoundaryCollar.UniformFlow
 import DifferentialGeometry.Topology.Manifold.BoundaryCollar.UniformInwardFlow
 import DifferentialGeometry.Topology.Manifold.BoundaryCollar.UnitSpeedField
 import DifferentialGeometry.Topology.Manifold.ChartedSpaceHomeomorph
+import DifferentialGeometry.Topology.Manifold.ClosedDiskExtension
 import DifferentialGeometry.Topology.Manifold.CollarFamily
 import DifferentialGeometry.Topology.Manifold.RelativeCollar
 import DifferentialGeometry.Topology.Manifold.BoundaryExtrema
@@ -8371,6 +8417,7 @@ import DifferentialGeometry.Topology.Manifold.FiniteInteriorCharts
 import DifferentialGeometry.Topology.Manifold.FinitePointBumps
 import DifferentialGeometry.Topology.Manifold.FlowInjectivity
 import DifferentialGeometry.Topology.Manifold.FunctionExtension
+import DifferentialGeometry.Topology.Manifold.HalfSpaceExtension
 import DifferentialGeometry.Topology.Manifold.HalfClosedInterval
 import DifferentialGeometry.Topology.Manifold.HalfClosedIntervalInclusion
 import DifferentialGeometry.Topology.Manifold.HalfClosedIntervalSmoothMaps
@@ -8538,6 +8585,7 @@ import DifferentialGeometry.Topology.Manifold.SmoothEmbeddingFromOpen
 import DifferentialGeometry.Topology.Manifold.SmoothEmbeddingLocalDiffeomorph
 import DifferentialGeometry.Topology.Manifold.SmoothEmbeddingOpenTarget
 import DifferentialGeometry.Topology.Manifold.SmoothEmbeddingRestriction
+import DifferentialGeometry.Topology.Manifold.SmoothExtension
 import DifferentialGeometry.Topology.Manifold.SmoothInterval
 import DifferentialGeometry.Topology.Manifold.SmoothLiftedCharts
 import DifferentialGeometry.Topology.Manifold.SmoothMapDifferentialCoordinates

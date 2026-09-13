@@ -1,4 +1,6 @@
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.DiskDifferential
+import DifferentialGeometry.Analysis.InnerProductSpace.ConformalPair
+import DifferentialGeometry.Geometry.Metric.TensorInner.Fiber.MetricData
 
 
 
@@ -27,6 +29,21 @@ theorem DiskMapConformalAt.areaDensity_eq_energy
   rw [← h.2]
   ring
 
+theorem DiskMapConformalAt.energy_le_sum_sub_smul
+    {g : SmoothRiemannianMetric 𝓘(ℝ, E) M} {U : ℂ → M} {z : ℂ}
+    (h : DiskMapConformalAt g U z) (t : TangentSpace 𝓘(ℝ, E) (U z)) (a b : ℝ) :
+    diskMapEnergyDensity g U z ≤
+      g.inner (U z) (diskMapPartial U z 1 - a • t) (diskMapPartial U z 1 - a • t) +
+        g.inner (U z) (diskMapPartial U z Complex.I - b • t)
+          (diskMapPartial U z Complex.I - b • t) := by
+  have hB : (Tensor0SBundle.tangentFlatLinear g (U z)).IsPosSemidef :=
+    ⟨⟨g.symm (U z)⟩, ⟨metric_inner_self_nonneg g (U z)⟩⟩
+  have hbound := hB.apply_self_le_sum_sub_smul_of_orthogonal h.1 h.2 t a b
+  simp only [Tensor0SBundle.tangentFlatLinear_apply] at hbound
+  unfold diskMapEnergyDensity
+  rw [← h.2, add_self_div_two]
+  exact hbound
+
 
 
 theorem diskAreaDensity_ae_eq_energy_of_conformal
@@ -39,12 +56,19 @@ theorem diskAreaDensity_ae_eq_energy_of_conformal
 
 
 
+theorem diskArea_integrable_iff_energy_of_conformal
+    (g : SmoothRiemannianMetric 𝓘(ℝ, E) M) (u : C(closedDisk, M))
+    (h : ∀ z ∈ Metric.ball (0 : ℂ) 1, DiskMapConformalAt g (diskExtension u) z) :
+    IntegrableOn (riemannianAreaDensity g (diskExtension u)) (Metric.closedBall 0 1) ↔
+      IntegrableOn (diskMapEnergyDensity g (diskExtension u)) (Metric.closedBall 0 1) :=
+  integrable_congr (diskAreaDensity_ae_eq_energy_of_conformal g u h)
+
 theorem diskArea_integrable_of_conformal_energy
     (g : SmoothRiemannianMetric 𝓘(ℝ, E) M) (u : C(closedDisk, M))
     (h : ∀ z ∈ Metric.ball (0 : ℂ) 1, DiskMapConformalAt g (diskExtension u) z)
     (he : IntegrableOn (diskMapEnergyDensity g (diskExtension u)) (Metric.closedBall 0 1)) :
     IntegrableOn (riemannianAreaDensity g (diskExtension u)) (Metric.closedBall 0 1) :=
-  he.congr (diskAreaDensity_ae_eq_energy_of_conformal g u h).symm
+  (diskArea_integrable_iff_energy_of_conformal g u h).2 he
 
 
 theorem riemannianDiskArea_eq_energy_of_conformal

@@ -1,6 +1,7 @@
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.SmoothDiskTrace
 import DifferentialGeometry.Geometry.Metric.ConvexSourceLipschitz
 import DifferentialGeometry.Geometry.Measure.Area.Reparametrization
+import DifferentialGeometry.Topology.Manifold.ClosedDiskExtension
 
 
 
@@ -71,7 +72,34 @@ theorem SmoothDiskExtension.comp_diskReflection {u : C(closedDisk, M)} {U : ℂ 
 
 variable [IsManifold 𝓘(ℝ, E) ∞ M]
 
+theorem exists_smoothDiskExtension_of_locally_extendable
+    (u : C(closedDisk, M))
+    (hloc : ∀ x : closedDisk, ∃ U : ℂ → M, ∃ V : Set ℂ,
+      IsOpen V ∧ (x : ℂ) ∈ V ∧ ContMDiffOn 𝓘(ℝ, ℂ) 𝓘(ℝ, E) ∞ U V ∧
+        ∀ y : closedDisk, (y : ℂ) ∈ V → U y = u y) :
+    ∃ U : ℂ → M, SmoothDiskExtension (E := E) u U := by
+  obtain ⟨U, _, heq, N, hN, hKN, hUs⟩ :=
+    DifferentialGeometry.Topology.exists_contMDiffOn_extension_closedBall
+      (I := 𝓘(ℝ, E)) (n := ⊤) (0 : ℂ) (by norm_num : (0 : ℝ) ≤ 1) u hloc
+  exact ⟨U, heq, N, hN, hKN, hUs⟩
 
+
+
+
+theorem exists_smoothDiskExtension_of_diskSmoothUpToBoundary [CompleteSpace E]
+    {u : C(closedDisk, M)} (hu : DiskSmoothUpToBoundary (E := E) u) :
+    ∃ U : ℂ → M, SmoothDiskExtension (E := E) u U := by
+  obtain ⟨g, _, heq, N, hN, hKN, hgs⟩ :=
+    DifferentialGeometry.Topology.exists_contMDiffOn_extension_closedDisk
+      (I := 𝓘(ℝ, E)) (show ContMDiffOn 𝓘(ℝ, ℂ) 𝓘(ℝ, E) ∞
+        (diskExtension u) (Metric.closedBall (0 : ℂ) 1) from hu)
+  exact ⟨g, fun z => (heq z.property).trans (diskExtension_coe u z), N, hN, hKN, hgs⟩
+
+theorem diskSmoothUpToBoundary_iff_exists_smoothDiskExtension [CompleteSpace E]
+    (u : C(closedDisk, M)) :
+    DiskSmoothUpToBoundary (E := E) u ↔ ∃ U : ℂ → M, SmoothDiskExtension (E := E) u U :=
+  ⟨exists_smoothDiskExtension_of_diskSmoothUpToBoundary,
+    fun ⟨_, hU⟩ => hU.smoothUpToBoundary⟩
 
 theorem SmoothDiskExtension.lipschitz (g : SmoothRiemannianMetric 𝓘(ℝ, E) M)
     {u : C(closedDisk, M)} {U : ℂ → M} (h : SmoothDiskExtension (E := E) u U) :
