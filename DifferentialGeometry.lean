@@ -6471,7 +6471,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SphereSmash
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SphericalCappingBridge
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SphericalCappingCompletion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SphericalRegion
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SphericalTransitionBridge
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.StaticCap
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SupportRegion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SupportRegionNeck
@@ -8742,6 +8741,7 @@ import DifferentialGeometry.Topology.SphereSeparation.SingularSubdivision
 import DifferentialGeometry.Topology.SphereSeparation.SmallChainsPrism
 import DifferentialGeometry.Topology.SphereSeparation.SmoothClosure
 import DifferentialGeometry.Topology.SphereSeparation.SmoothEmbeddingComposition
+import DifferentialGeometry.Topology.SphereSeparation.SmoothSchoenfliesBallFilling
 import DifferentialGeometry.Topology.SphereSeparation.SourceTheorems
 import DifferentialGeometry.Topology.SphereSeparation.SpecializedDuality
 import DifferentialGeometry.Topology.SphereSeparation.SphereCellularComparison
