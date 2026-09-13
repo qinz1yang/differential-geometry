@@ -6359,6 +6359,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ComparisonS
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ControlledExtinction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ControlledExtinctionAssembly
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ControlledExtinctionTower
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CoreInclusionRestriction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutCap
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutCapCompletion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CubeSphereGenerator
@@ -7443,6 +7444,7 @@ import DifferentialGeometry.Topology.Attachment.Defs
 import DifferentialGeometry.Topology.Attachment.MappingCylinder
 import DifferentialGeometry.Topology.Attachment.MappingCylinderGluing
 import DifferentialGeometry.Topology.Attachment.QuotientIteration
+import DifferentialGeometry.Topology.Attachment.SequentialGluing
 import DifferentialGeometry.Topology.Attachment.Union
 import DifferentialGeometry.Topology.Category.TopCat.Adjunction
 import DifferentialGeometry.Topology.Category.TopCat.ClosedCover
@@ -8706,6 +8708,7 @@ import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.OrientationTopol
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.OrientedChartPullback
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.OrientedFactorBallChart
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.OrientedLaws
+import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.OrientedLawsAssembly
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.OrientedTransport
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.PuncturedImageBall
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.Quotient
