@@ -39,6 +39,7 @@ import Poincare.Topology.Homology.LocalHomology
 import Poincare.Topology.Homology.LocalLinearMaps
 import Poincare.Topology.Homology.LocalOrientation
 import Poincare.Topology.Homology.LocalStarConvex
+import Poincare.Topology.Homology.ManifoldCompactHomology
 import Poincare.Topology.Homology.MeshBoundary
 import Poincare.Topology.Homology.MeshIteration
 import Poincare.Topology.Homology.ModuleHomologyClasses

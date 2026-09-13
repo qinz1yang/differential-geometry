@@ -138,3 +138,119 @@ theorem exists_relative_homology_class_on_compact_neighborhood
 end Poincare.Topology
 
 end
+
+
+section
+
+open CategoryTheory CategoryTheory.Limits Set
+
+universe v
+
+namespace Poincare.Topology
+
+theorem exists_compact_neighborhood_relative_restriction_eq_zero
+    {X : Type v} [TopologicalSpace X] [T2Space X] [LocallyCompactSpace X]
+    (n : ℕ) (K U : Set X) (x : X) (hxK : x ∈ K) (hU : IsOpen U) (hxU : x ∈ U)
+    (a : integralRelativeHomology n Kᶜ)
+    (ha : integralRelativeHomologyMap n (ContinuousMap.id X)
+      (show MapsTo (ContinuousMap.id X) Kᶜ ({x}ᶜ : Set X) from
+        compl_subset_compl.mpr (singleton_subset_iff.mpr hxK)) a = 0) :
+    ∃ L : Set X, IsCompact L ∧ x ∈ interior L ∧ L ⊆ U ∧
+      integralRelativeHomologyMap n (ContinuousMap.id X)
+        (show MapsTo (ContinuousMap.id X) Kᶜ (K ∩ L)ᶜ from
+          compl_subset_compl.mpr inter_subset_left) a = 0 := by
+  let hKx : MapsTo (ContinuousMap.id X) Kᶜ ({x}ᶜ : Set X) :=
+    compl_subset_compl.mpr (singleton_subset_iff.mpr hxK)
+  let ρx := integralRelativeChainMap (ContinuousMap.id X) hKx
+  let φx := (HomologicalComplex.shortComplexFunctor (ModuleCat.{v} ℤ)
+    (ComplexShape.down ℕ) n).map ρx
+  obtain ⟨z, hz⟩ := moduleHomologyClass_surjective ((integralRelativeChains Kᶜ).sc n) a
+  have hz0 : moduleHomologyClass ((integralRelativeChains ({x}ᶜ : Set X)).sc n)
+      (moduleCycleMap φx z) = 0 := by
+    rw [← moduleHomologyClass_map]
+    change integralRelativeHomologyMap n (ContinuousMap.id X) hKx
+      (moduleHomologyClass ((integralRelativeChains Kᶜ).sc n) z) = 0
+    rw [hz]
+    exact ha
+  obtain ⟨d, hd⟩ := (moduleHomologyClass_eq_zero_iff _ _).mp hz0
+  let p := (ComplexShape.down ℕ).prev n
+  let πK : integralSingularChains X ⟶ integralRelativeChains Kᶜ :=
+    cokernel.π (integralSingularChainMap (singularSubspaceInclusion Kᶜ))
+  let πx : integralSingularChains X ⟶ integralRelativeChains ({x}ᶜ : Set X) :=
+    cokernel.π (integralSingularChainMap (singularSubspaceInclusion ({x}ᶜ : Set X)))
+  obtain ⟨c, hc⟩ := chainCokernelπ_surjective
+    (integralSingularChainMap (singularSubspaceInclusion Kᶜ)) n z.val
+  obtain ⟨e, he⟩ := chainCokernelπ_surjective
+    (integralSingularChainMap (singularSubspaceInclusion ({x}ᶜ : Set X))) p d
+  change πK.f n c = z.val at hc
+  change πx.f p e = d at he
+  change (integralRelativeChains ({x}ᶜ : Set X)).d p n d = ρx.f n z.val at hd
+  have hprojx : ρx.f n (πK.f n c) = πx.f n c := by
+    have h := integralRelativeChainMap_π (ContinuousMap.id X) hKx
+    rw [integralSingularChainMap_id, Category.id_comp] at h
+    exact congrArg (fun f : integralSingularChains X ⟶
+      integralRelativeChains ({x}ᶜ : Set X) => f.f n c) h
+  have hde : πx.f n ((integralSingularChains X).d p n e) = πx.f n c := by
+    calc
+      πx.f n ((integralSingularChains X).d p n e) =
+          (integralRelativeChains ({x}ᶜ : Set X)).d p n (πx.f p e) :=
+        (congrArg (fun f : (integralSingularChains X).X p ⟶
+          (integralRelativeChains ({x}ᶜ : Set X)).X n => f e) (πx.comm p n)).symm
+      _ = (integralRelativeChains ({x}ᶜ : Set X)).d p n d := by rw [he]
+      _ = ρx.f n z.val := hd
+      _ = ρx.f n (πK.f n c) := by rw [hc]
+      _ = πx.f n c := hprojx
+  have hrem : c - (integralSingularChains X).d p n e ∈
+      integralSingularChainsIn n ({x}ᶜ : Set X) := by
+    have hzero : πx.f n (c - (integralSingularChains X).d p n e) = 0 := by
+      change (πx.f n).hom (c - (integralSingularChains X).d p n e) = 0
+      rw [map_sub]
+      exact sub_eq_zero.mpr hde.symm
+    rw [integralSingularChainsIn_eq_range]
+    exact (chainCokernelπ_eq_zero_iff _ n _).mp hzero
+  obtain ⟨L, hL, hxL, hLU, hremL⟩ := exists_compact_neighborhood_avoiding_integral_chain
+    n {x} U isCompact_singleton hU (singleton_subset_iff.mpr hxU)
+    (c - (integralSingularChains X).d p n e) hrem
+  let πL : integralSingularChains X ⟶ integralRelativeChains (K ∩ L)ᶜ :=
+    cokernel.π (integralSingularChainMap (singularSubspaceInclusion (K ∩ L)ᶜ))
+  have hremKL : c - (integralSingularChains X).d p n e ∈
+      integralSingularChainsIn n (K ∩ L)ᶜ :=
+    integralSingularChainsIn_mono n (compl_subset_compl.mpr inter_subset_right) hremL
+  have hremzero : πL.f n (c - (integralSingularChains X).d p n e) = 0 := by
+    apply (chainCokernelπ_eq_zero_iff _ n _).mpr
+    rw [integralSingularChainsIn_eq_range] at hremKL
+    obtain ⟨b, hb⟩ := hremKL
+    exact ⟨b, hb⟩
+  have hremEq : πL.f n c = πL.f n ((integralSingularChains X).d p n e) := by
+    change (πL.f n).hom (c - (integralSingularChains X).d p n e) = 0 at hremzero
+    rw [map_sub] at hremzero
+    exact sub_eq_zero.mp hremzero
+  let hKL : MapsTo (ContinuousMap.id X) Kᶜ (K ∩ L)ᶜ :=
+    compl_subset_compl.mpr inter_subset_left
+  let ρL := integralRelativeChainMap (ContinuousMap.id X) hKL
+  let φL := (HomologicalComplex.shortComplexFunctor (ModuleCat.{v} ℤ)
+    (ComplexShape.down ℕ) n).map ρL
+  refine ⟨L, hL, hxL (mem_singleton x), hLU, ?_⟩
+  rw [← hz]
+  change ShortComplex.homologyMap φL
+    (moduleHomologyClass ((integralRelativeChains Kᶜ).sc n) z) = 0
+  rw [moduleHomologyClass_map, moduleHomologyClass_eq_zero_iff]
+  refine ⟨πL.f p e, ?_⟩
+  change (integralRelativeChains (K ∩ L)ᶜ).d p n (πL.f p e) = ρL.f n z.val
+  have hprojL : ρL.f n (πK.f n c) = πL.f n c := by
+    have h := integralRelativeChainMap_π (ContinuousMap.id X) hKL
+    rw [integralSingularChainMap_id, Category.id_comp] at h
+    exact congrArg (fun f : integralSingularChains X ⟶ integralRelativeChains (K ∩ L)ᶜ =>
+      f.f n c) h
+  calc
+    (integralRelativeChains (K ∩ L)ᶜ).d p n (πL.f p e) =
+        πL.f n ((integralSingularChains X).d p n e) :=
+      congrArg (fun f : (integralSingularChains X).X p ⟶
+        (integralRelativeChains (K ∩ L)ᶜ).X n => f e) (πL.comm p n)
+    _ = πL.f n c := hremEq.symm
+    _ = ρL.f n (πK.f n c) := hprojL.symm
+    _ = ρL.f n z.val := by rw [hc]
+
+end Poincare.Topology
+
+end

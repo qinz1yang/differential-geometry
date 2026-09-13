@@ -5,27 +5,31 @@ additive publication within the shared DifferentialGeometry Git repository. Its 
 library is `Poincare`; its sources retain the original mathematical namespaces.
 
 The source baseline is the recovered Chapter 35 commit
-`b45bfa009368c8f5f531e10f4f5280e90079d6ad`. This checkpoint includes 101 modules:
-the dependency closure of twelve roots covering local homology, derivatives,
+`b45bfa009368c8f5f531e10f4f5280e90079d6ad`. This checkpoint includes 102 modules:
+the dependency closure of thirteen roots covering local homology, derivatives,
 determinant signs, oriented chart compatibility, compact chart classes,
-Mayer–Vietoris and compact-support vanishing, plus the actual Euclidean3
-consumer dependencies. The latest gate freshly compiled CompactSupport,
-CompactVanishing and root in Slurm 13781140, request
-`1789259440438453253-topology_checkpoint-e60efd1d`. It passed in 151.16 seconds.
-The same run checked all 43 added public exports and 95 signature/axiom pairs,
-including all 86 previous pairs unchanged. The other 99 prior source leaves
-remain byte-identical and retain earlier compilation evidence.
+Mayer–Vietoris and manifold compact-support homology, plus actual consumer
+dependencies. Final request
+`1789261428531126275-topology_checkpoint-fa830b31` passed in Slurm 13781140
+in 211.17 seconds. Changed CompactSupport, affected CompactVanishing,
+new ManifoldCompactHomology and root freshly compiled in 2:26.11 with zero
+diagnostics. All 48 added public exports, 199 guards and 106 signature/axiom
+pairs passed; all 95 previous pairs are byte-identical. The other 100 prior
+source leaves remain byte-identical and retain earlier compilation evidence.
 
-The new results give a compact carrier for each actual finite singular chain,
-extend any compact-support relative class to a compact neighborhood inside a
-prescribed open set, and prove actual H_n(E,E\K)=0 for every compact K when
-n exceeds the dimension. They allow arbitrary real norms, nonconvex compact
-sets, empty sets and rank zero. Neighborhood extension works for all degrees
-in locally compact Hausdorff spaces. The existing bounded star-convex/convex
-results and compact-convex compatibility theorem remain unchanged.
-The earlier actual Mayer–Vietoris lifts, conditional uniqueness and oriented
-compact chart classes retain their public signatures. Global oriented
-generators remain open.
+The new results construct a compact neighborhood on which a class's
+restriction vanishes when its actual point restriction is zero. Compact
+relative homology on any Hausdorff manifold charted over a finite-dimensional
+real normed model vanishes above the model dimension. In the model dimension
+or above, point restrictions determine compact classes, and every nonzero
+compact class has a nonzero point restriction. Rank zero, nonclosed supports
+for local vanishing, and noncompact ambient manifolds are included.
+No orientation or smoothness is required by these results.
+
+The earlier actual Mayer–Vietoris lifts, conditional uniqueness, compact
+carrier and neighborhood-extension results, and oriented compact chart classes
+retain their public statements and proof bodies. Global oriented generators
+remain open.
 [provenance/SNAPSHOT.json](provenance/SNAPSHOT.json) records exact source and
 configuration identity and preserves the earlier validation records. It is not
 the full recovered Chapter 35 project.

@@ -5,15 +5,15 @@ The recovered source baseline is commit
 `refs/remotes/origin/codex/chapter35` in the controller's existing Git objects.
 No source baseline was downloaded to prepare this checkpoint.
 
-[SNAPSHOT.json](SNAPSHOT.json) records all 96 supplied module paths and hashes,
-including their baseline hashes and the twelve new/changed leaves. The eight new
+[SNAPSHOT.json](SNAPSHOT.json) records all 102 supplied module paths and hashes,
+including their baseline hashes and the eighteen new/changed leaves. The thirteen new
 files have a null baseline hash. Existing baseline hashes were independently
 compared against the actual Git blobs. Every supplied leaf is byte-identical
 to its current counterpart in the isolated Poincare workspace.
 
 The portable `lakefile.toml` and `lake-manifest.json` are unchanged. The
 `lean-toolchain` copy removes one trailing blank line while retaining its exact
-version. The selected `Poincare.lean` is a checkpoint aggregate for the 96
+version. The selected `Poincare.lean` is a checkpoint aggregate for the 102
 supplied leaves; it does not overwrite the full recovered project's aggregate.
 Original/current hashes for these files are recorded separately.
 
@@ -215,3 +215,36 @@ and root in 1:12.59, maximum RSS 1778292 KiB, then passed 138 guards and all
 86 signature/axiom pairs. All 77 previous pairs and nine new original pairs
 match byte for byte. All 100 portable/original sources match; the 99 prior
 leaves remain unchanged. SNAPSHOT.json preserves the earlier build records.
+
+## Compact support and manifold point restrictions
+
+`CompactSupport` contains original proofs giving a finite compact carrier for
+the same singular chain, extension of relative classes to compact neighborhoods,
+and local zero restriction on a produced compact neighborhood intersection.
+`CompactVanishing` now proves vanishing for arbitrary compact subsets of a
+finite-dimensional real normed space. These use the original chain quotient,
+the published local vanishing and actual Mayer–Vietoris engines.
+
+`ManifoldCompactHomology` is new original code transporting compact vanishing
+through actual chart isomorphisms and finite compact chart covers. It then
+uses the local-zero theorem and native compact induction for point detection,
+equality, and existence of a nonzero local restriction. Shared construction
+mechanics remain private; five additional natural results are public across
+this checkpoint's two edited leaves. No external source is copied, no
+DifferentialGeometry source is vendored, and no dependency pin changes.
+
+The original source gate237fc83e and imported gate4432c7fe passed. The latter
+freshly compiled four required leaves in 1:54.88, maximum RSS 1922364 KiB,
+then checked 150 guards and thirteen exact public/consumer pairs. Those pairs
+match the full-source readbacks byte for byte.
+
+Portable request `1789261428531126275-topology_checkpoint-fa830b31` freshly
+compiled CompactSupport, CompactVanishing, ManifoldCompactHomology and root
+in 2:26.11, maximum RSS 1928476 KiB, with zero diagnostics. Its complete gate
+passed in 211.17 seconds with 199 guards and 106 signature/axiom pairs.
+All 95 previous pairs are identical; the eleven new pairs match the original
+imported gate up to Module.finrank/Set.Ioo qualification and formatting.
+All 102 original/portable source pairs match. The other 100 prior leaves are
+unchanged. Stock linters and standard-only axioms pass; earlier validation
+records are preserved in SNAPSHOT.json. This does not close the full topology
+suite or replace the missing frozen contract.

@@ -1,7 +1,7 @@
 # Local homology and oriented compact chart classes
 
 This separate `PoincareLean` project contains a dependency-closed checkpoint of
-101 Poincare modules. It extends the recovered Chapter 35 source at commit
+102 Poincare modules. It extends the recovered Chapter 35 source at commit
 `b45bfa009368c8f5f531e10f4f5280e90079d6ad` and preserves its mathematical objects
 and `Poincare` namespaces. `Poincare.lean` imports every included leaf.
 
@@ -41,7 +41,7 @@ The additions prove:
 - a unique compact-neighborhood class with the same normalization in every
   chart whose actual tangent trivialization preserves the base-chart orientation.
 
-The seventeen new/changed modules and their exact baseline/current hashes are listed in
+The eighteen new/changed modules and their exact baseline/current hashes are listed in
 [provenance/SNAPSHOT.json](provenance/SNAPSHOT.json). The derivative homotopy
 retains its [upstream attribution and modification record](provenance/README.md).
 
@@ -266,6 +266,30 @@ singular chain and its prescribed compact carrier, extension of a nonzero
 Euclidean3 local class, empty-space and degree-zero cases, nonconvex compact
 supports and rank zero. Stock linters and standard-only transitive axioms pass.
 The other 99 previous leaves remain unchanged and retain their earlier evidence.
+
+The manifold extension adds `ManifoldCompactHomology` and extends
+`CompactSupport`, for 102 modules and 48 added exports. A class whose actual
+point restriction is zero vanishes on a produced compact neighborhood
+intersection inside any prescribed open neighborhood. This permits arbitrary
+supports, all degrees, and locally compact Hausdorff ambient spaces.
+
+For Hausdorff manifolds charted over any finite-dimensional real normed model,
+compact-support relative homology vanishes above the model dimension. In the
+model dimension or above, the actual point restrictions determine a compact
+class uniquely; every nonzero compact class has a nonzero point restriction.
+Rank zero is included. No smoothness, orientation, connectedness, second
+countability, or compactness of the entire manifold is required.
+
+Final portable request `1789261428531126275-topology_checkpoint-fa830b31`
+passed in Slurm 13781140 in 211.17 seconds. Changed `CompactSupport`, affected
+`CompactVanishing`, new `ManifoldCompactHomology`, and the root freshly compiled
+without diagnostics in 2:26.11, maximum RSS 1928476 KiB. All 199 guards and
+106 signature/axiom pairs passed. The 95 previous pairs are byte-identical;
+the eleven added public/consumer pairs match the original imported gate up to
+`Module.finrank`/`Set.Ioo` qualification and formatting. Consumers include a
+nonzero two-point class, nonclosed support, arbitrary three-manifolds and
+rank-zero manifolds. Stock linters and standard-only axioms pass. The other
+100 prior leaves remain byte-identical and retain earlier compilation evidence.
 
 ## Remaining topology work
 
