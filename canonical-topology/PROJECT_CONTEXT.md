@@ -5,19 +5,19 @@ additive publication within the shared DifferentialGeometry Git repository. Its 
 library is `Poincare`; its sources retain the original mathematical namespaces.
 
 The source baseline is the recovered Chapter 35 commit
-`b45bfa009368c8f5f531e10f4f5280e90079d6ad`. This checkpoint includes 106 modules
-and 82 added public exports. The latest layer proves excision for the actual
-relative integral cochain and cohomology maps in every natural degree, for
-any two open sets covering the original space. The relative-cochain kernel,
-its pair maps, exact sequence and all 105 earlier source leaves are unchanged.
+`b45bfa009368c8f5f531e10f4f5280e90079d6ad`. This checkpoint includes 107 modules
+and 88 added public exports. The latest layer constructs the actual bilinear
+integral cap product, simplex evaluation, continuous-map naturality, signed
+boundary identity, augmentation unit and positive-degree cycle preservation.
+It retains the original chains and cochains. All 106 earlier leaves are unchanged.
 
-Final request `1789305906138803485-topology_checkpoint-d1009f2e` passed in
-Slurm 13821107 in 135.55 seconds, with 238 guards and 151 signature/axiom pairs.
-All 147 previous pairs are byte-identical. New CochainExcision and the root
-freshly compiled in 1:06.21, maximum RSS 1813796 KiB, with zero diagnostics.
-Consumers verify punctured-real-line excision and unique inverse images under
-the actual map in every degree. Stock declaration linters and standard-only
-axioms pass. This does not yet prove cap-product duality or the full suite.
+Final request `1789311873800562167-topology_checkpoint-2d616ff1` passed in
+Slurm 13821107 in 144.28 seconds, with 246 guards and 160 signature/axiom pairs.
+All 151 previous pairs are byte-identical. New CapProduct and the root freshly
+compiled in 1:11.29, maximum RSS 1814116 KiB, with zero diagnostics. Consumers
+verify nonzero unit and negative-unit action, the actual augmentation cocycle
+and the degree-one boundary sign. Stock declaration linters and standard-only
+axioms pass. Homology descent, relative cap products and duality remain open.
 
 The preceding signed-chart extension retains its exact public statements.
 

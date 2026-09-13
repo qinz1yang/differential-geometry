@@ -1,11 +1,14 @@
 # Local homology and global classes from coherent local generators
 
 This separate `PoincareLean` project contains a dependency-closed checkpoint of
-106 Poincare modules. It extends the recovered Chapter 35 source at commit
+107 Poincare modules. It extends the recovered Chapter 35 source at commit
 `b45bfa009368c8f5f531e10f4f5280e90079d6ad` and preserves its mathematical objects
 and `Poincare` namespaces. `Poincare.lean` imports every included leaf.
 
 The additions prove:
+
+- the actual bilinear integral cap product, simplex formula, map naturality,
+  signed boundary identity, augmentation unit and preservation of cycles;
 
 - excision for the actual relative integral cochain and cohomology maps;
 
@@ -54,7 +57,7 @@ The additions prove:
 - a unique compact-neighborhood class with the same normalization in every
   chart whose actual tangent trivialization preserves the base-chart orientation.
 
-The twenty-two new/changed modules and their exact baseline/current hashes are listed in
+The twenty-three new/changed modules and their exact baseline/current hashes are listed in
 [provenance/SNAPSHOT.json](provenance/SNAPSHOT.json). The derivative homotopy
 retains its [upstream attribution and modification record](provenance/README.md).
 
@@ -397,6 +400,26 @@ The source gate also checks evaluation of the dual-to-kernel comparison on
 original singular chains. Stock declaration linters and standard-only axioms
 pass. All 105 earlier leaves remain byte-identical. Actual cap products,
 normalization and the Poincare-duality isomorphism still require proofs.
+
+The cap-product extension adds one coherent 433-line leaf and six public
+exports, for 107 modules and 88 added exports. It uses the original singular
+chains, cochains, differential and augmentation. The front/back simplex formula
+is explicit, and naturality uses the original maps. The boundary identity has
+the standard degree sign; a cocycle caps cycles to cycles in positive output
+degree. The augmentation acts as the identity in every degree, including zero.
+Simplex-index, summation and degree-transport mechanics remain private.
+
+Final portable request `1789311873800562167-topology_checkpoint-2d616ff1`
+passed in Slurm 13821107 in 144.28 seconds, with 246 guards and 160 signature/
+axiom pairs. All 151 previous pairs are byte-identical. New CapProduct and the
+root freshly compiled without diagnostics in 1:11.29, maximum RSS 1814116 KiB.
+All 106 prior leaves are unchanged. The six public and three consumer readbacks
+match the original imported gate. Consumers test a nonzero degree-zero vertex,
+its images under augmentation and negative augmentation, the actual unit
+cocycle and the negative sign in the degree-one boundary law. Stock declaration
+linters and standard-only transitive axioms pass. Source dea3b95f separately
+checks every private helper. Homology/cohomology descent, relative cap products
+and the Poincare-duality isomorphism remain open.
 
 ## Remaining topology work
 
