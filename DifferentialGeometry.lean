@@ -3247,6 +3247,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Bounds.Lo
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.CompactEmbedding
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Compactness.BonnetMyers
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Compactness.BoundedGeometry
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Compactness.BoundedGeometryCanonical
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Compactness.CanonicalLimit
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Compactness.Construction
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Compactness.LocalJets
