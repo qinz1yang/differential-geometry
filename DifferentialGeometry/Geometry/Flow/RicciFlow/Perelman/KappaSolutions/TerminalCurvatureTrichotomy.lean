@@ -107,6 +107,44 @@ theorem exists_nullPlane_of_not_forall_curvatureOperatorPositiveAt
 
 end TerminalNullPlaneDichotomy
 
+def TerminalNullPlaneSplitting (F : PointedFlowData.{u, uE, uH} (I := I) D) : Prop :=
+  ∀ x : F.M, ∀ a b : TangentSpace I x,
+    0 < (F.S.base.metric 0).inner x a a * (F.S.base.metric 0).inner x b b -
+        ((F.S.base.metric 0).inner x a b) ^ 2 →
+      metricRm04StandardAt (I := I) (M := F.M) (F.S.base.metric 0) x a b b a = 0 →
+        (∀ y : F.M, F.rmNormSq (I := I) 0 y = 0) ∨
+          Nonempty (TerminalSurfaceProduct (I := I) (F.S.base.metric 0))
+
+theorem klim_terminal_curvature_trichotomy_of_nullPlaneSplitting
+    (hsplit : TerminalNullPlaneSplitting (I := I) F)
+    {kappa : ℝ} (hK : KLim (I := I) kappa F) (hdim : Module.finrank ℝ E = 3) :
+    DifferentialGeometry.Geometry.HasPositiveSectionalCurvature (I := I) (F.S.base.metric 0) ∨
+      (∀ x : F.M, F.rmNormSq (I := I) 0 x = 0) ∨
+      Nonempty (TerminalSurfaceProduct (I := I) (F.S.base.metric 0)) := by
+  by_cases hpos : DifferentialGeometry.Geometry.HasPositiveSectionalCurvature (I := I)
+    (F.S.base.metric 0)
+  · exact Or.inl hpos
+  · refine Or.inr ?_
+    have hnot : ¬ ∀ x : F.M,
+        CurvatureOperatorPositiveAt (I := I) (M := F.M) (F.S.base.metric 0) x :=
+      fun h => hpos ((hasPositiveSectionalCurvature_iff_forall_curvatureOperatorPositiveAt
+        (I := I) (M := F.M) (F.S.base.metric 0) hdim).mpr h)
+    have hnonneg : ∀ x : F.M,
+        metricAlgebraicCurvatureTensorAt (I := I) (M := F.M) (F.S.base.metric 0) x ∈
+          algebraicCurvatureOperatorNonnegativeCone (I := I) (M := F.M) := by
+      intro x
+      apply mem_algebraicCurvatureOperatorNonnegativeCone.mpr
+      intro n c v w
+      have h0 : (0 : ℝ) ∈ D.carrier := by
+        simpa only [hK.carrier_eq, Set.mem_Iic] using (le_rfl : (0 : ℝ) ≤ 0)
+      have h := hK.nonnegativeCurvatureOperator 0 h0 x n c v w
+      simpa only [algebraicCurvatureOperatorQuadraticEval, metricAlgebraicCurvatureTensorAt,
+        tensor04StandardAt, SolutionFamily.rm04, metricRm04_apply] using h
+    obtain ⟨x, a, b, hgram, hnull⟩ :=
+      exists_nullPlane_of_not_forall_curvatureOperatorPositiveAt (I := I) (M := F.M)
+        (F.S.base.metric 0) hdim hnonneg hnot
+    exact hsplit x a b hgram hnull
+
 end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 
 end

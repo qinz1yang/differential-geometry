@@ -1,6 +1,8 @@
 import DifferentialGeometry.Geometry.Neck.NormalizedDatum
 import DifferentialGeometry.Geometry.Metric.CylinderAxial
 import DifferentialGeometry.Topology.Manifold.OpenSubtype
+import DifferentialGeometry.Topology.Manifold.SmoothEmbeddingDiffeomorph
+import DifferentialGeometry.Topology.Manifold.SmoothEmbeddingOpenTarget
 
 set_option autoImplicit false
 noncomputable section
@@ -42,6 +44,27 @@ theorem contMDiff_recenteringCylinderMap {ε δ σ : ℝ} (hσ : σ ^ 2 = 1)
     ContMDiff IC IC ∞ (recenteringCylinderMap hσ hfit) :=
   (contMDiff_inclusion (cylinderAxialImage_bufferedCylinder_le hσ hfit)).comp
     (cylinderAxialRestrict (I := 𝓡 2) σ σ hσ (bufferedCylinder ε)).contMDiff
+
+theorem isSmoothEmbedding_recenteringCylinderMap {ε δ σ : ℝ} (hσ : σ ^ 2 = 1)
+    (hfit : ε⁻¹ + 1 ≤ δ⁻¹) :
+    IsSmoothEmbedding IC IC ∞ (recenteringCylinderMap hσ hfit) := by
+  have hd : IsSmoothEmbedding IC IC ∞
+      ((cylinderAxialDiffeomorph (I := 𝓡 2) σ σ hσ :
+          (S2 × ℝ) ≃ₘ⟮IC, IC⟯ (S2 × ℝ)) ∘
+        (Subtype.val : ↥(bufferedCylinder ε) → S2 × ℝ)) :=
+    DifferentialGeometry.Topology.Manifold.isSmoothEmbedding_diffeomorph_comp
+      (f := (Subtype.val : ↥(bufferedCylinder ε) → S2 × ℝ))
+      (hf := IsSmoothEmbedding.of_opens (bufferedCylinder ε))
+      (D := cylinderAxialDiffeomorph (I := 𝓡 2) σ σ hσ)
+  refine DifferentialGeometry.Topology.Manifold.isSmoothEmbedding_intoOpen
+    (I := IC) (J := IC) (U := bufferedCylinder δ)
+    (f := recenteringCylinderMap hσ hfit) ?_
+  have hfun : (Subtype.val ∘ recenteringCylinderMap hσ hfit) =
+      ((cylinderAxialDiffeomorph (I := 𝓡 2) σ σ hσ :
+          (S2 × ℝ) ≃ₘ⟮IC, IC⟯ (S2 × ℝ)) ∘
+        (Subtype.val : ↥(bufferedCylinder ε) → S2 × ℝ)) := rfl
+  rw [hfun]
+  exact hd
 
 theorem injective_recenteringCylinderMap {ε δ σ : ℝ} (hσ : σ ^ 2 = 1)
     (hfit : ε⁻¹ + 1 ≤ δ⁻¹) : Injective (recenteringCylinderMap hσ hfit) := by

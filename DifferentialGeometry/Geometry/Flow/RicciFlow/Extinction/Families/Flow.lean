@@ -387,4 +387,177 @@ theorem rfs_prepared_family_solution_initial_bounds
   · rw [← hcurvβ]
     exact hcurv.trans_le (hinitial p).2.2
 
+omit hCompact hConnected hBoundary in
+def RampProductBounds (B : RicciBackground (I := I) (M := Q) D a b) : Prop :=
+  ∀ (L Theta : ℝ), 0 ≤ L → 0 ≤ Theta → ∀ (lambda : ℝ), 0 < lambda → lambda ≤ 1 →
+    ∀ c : ProductCurve Q,
+      c.IsSolutionOn B.family.metric lambda (Icc a b) →
+      c.length B.family.metric lambda a ≤ L →
+      c.totalCurvature B.family.metric lambda a ≤ Theta →
+      ∀ t ∈ Icc a b,
+        c.length B.family.metric lambda t ≤ Real.exp (B.B₀ * (t - a)) * L ∧
+        c.length B.family.metric lambda b ≤
+          Real.exp (B.B₀ * (b - t)) * c.length B.family.metric lambda t ∧
+        (∫ v in a..t, c.energy B.family.metric lambda v) ≤
+          Real.exp (B.B₀ * (t - a)) * L ∧
+        c.totalCurvature B.family.metric lambda t + c.length B.family.metric lambda t ≤
+          Real.exp ((B.C + B.B₀) * (t - a)) * (Theta + L)
+
+omit hCompact hConnected hBoundary in
+def RampProjectedLength (B : RicciBackground (I := I) (M := Q) D a b) : Prop :=
+  ∀ (lambda : ℝ), 0 < lambda → lambda ≤ 1 → ∀ c : ProductCurve Q,
+    c.IsSolutionOn B.family.metric lambda (Icc a b) →
+    ∀ γ : ℝ → ContinuousFreeLoop Q, (∀ z, γ b z = c.projection z b) →
+      loopLength (B.family.metric b) (γ b) ≤ c.length B.family.metric lambda b
+
+omit [SigmaCompactSpace Q] hCompact hConnected hBoundary in
+theorem rfs_ramp_projected_length (B : RicciBackground (I := I) (M := Q) D a b) :
+    RampProjectedLength (I := I) (Q := Q) (D := D) (a := a) (b := b) B := by
+  intro lambda hlambda hlambda_one c hsol γ hγ
+  have hlift : Width.loopLift (γ b) = fun t => c.projection.lift t b := by
+    funext t
+    simp only [Width.loopLift]
+    exact hγ (t : Surgery.Topology.Circle)
+  have hb : b ∈ Icc a b := ⟨B.lt.le, le_rfl⟩
+  have hspeed_cont : Continuous (fun t => c.speed B.family.metric lambda t b) :=
+    (c.speed_contDiff_of_immersedOn B.family.metric lambda hlambda hsol.smooth hsol.immersed b
+      hb).continuous
+  have hlen : c.length B.family.metric lambda b =
+      ∫ t in Icc (0 : ℝ) 1, c.speed B.family.metric lambda t b := by
+    rw [ProductCurve.length, ProductCurve.integral,
+      intervalIntegral.integral_of_le (by norm_num : (0 : ℝ) ≤ 1),
+      MeasureTheory.integral_Icc_eq_integral_Ioc]
+    simp
+  rw [Width.loopLength_eq_integral_curveSpeed, hlift, hlen]
+  refine MeasureTheory.integral_mono_of_nonneg
+    (Filter.Eventually.of_forall fun t => Real.sqrt_nonneg _)
+    (hspeed_cont.continuousOn.integrableOn_Icc) (Filter.Eventually.of_forall fun t => ?_)
+  exact ProductCurve.projection_speed_le c B.family.metric lambda t b
+
+omit hCompact hConnected hBoundary in
+def RampAreaBounds (B : RicciBackground (I := I) (M := Q) D a b) (Ainit : ℝ) : Prop :=
+  ∀ (L Theta : ℝ), 0 ≤ L → 0 ≤ Theta → ∀ (lambda : ℝ), 0 < lambda → lambda ≤ 1 →
+    ∀ c : ProductCurve Q,
+      c.IsSolutionOn B.family.metric lambda (Icc a b) →
+      c.length B.family.metric lambda a ≤ L →
+      c.totalCurvature B.family.metric lambda a ≤ Theta →
+      ∀ γ : ℝ → ContinuousFreeLoop Q,
+        (∀ t ∈ Icc a b, ∀ z, γ t z = c.projection z t) →
+        (∀ t ∈ Icc a b, IsContractibleLoop (γ t)) →
+        loopFamilyLeastArea B.family.metric γ a ≤ Ainit →
+        ContinuousOn (loopFamilyLeastArea B.family.metric γ) (Icc a b) ∧
+        (∀ t ∈ Icc a b, 0 ≤ loopFamilyLeastArea B.family.metric γ t ∧
+          loopFamilyLeastArea B.family.metric γ t ≤
+            Real.exp (2 * B.B₀ * (b - a)) *
+              (Ainit + (b - a) * ((Theta + L) * Real.exp ((B.C + B.B₀) * (b - a))))) ∧
+        (∀ s ∈ Icc a b, ∀ t ∈ Icc s b,
+          loopFamilyLeastArea B.family.metric γ t - loopFamilyLeastArea B.family.metric γ s ≤
+            Real.exp (2 * B.B₀ * (b - a)) *
+              (2 * B.B₀ * (Real.exp (2 * B.B₀ * (b - a)) *
+                  (Ainit + (b - a) * ((Theta + L) * Real.exp ((B.C + B.B₀) * (b - a))))) +
+                (Theta + L) * Real.exp ((B.C + B.B₀) * (b - a))) * (t - s))
+
+omit [SigmaCompactSpace Q] hCompact hConnected hBoundary in
+theorem rfs_ramp_uniform_bounds_of_frontier
+    (B : RicciBackground (I := I) (M := Q) D a b)
+    (L₀ Theta₀ Ainit : ℝ) (hL₀ : 0 ≤ L₀) (hTheta₀ : 0 ≤ Theta₀) (hAinit : 0 ≤ Ainit)
+    (hproduct : RampProductBounds (I := I) (Q := Q) (D := D) (a := a) (b := b) B)
+    (harea : RampAreaBounds (I := I) (Q := Q) (D := D) (a := a) (b := b) B Ainit) :
+    let delta := b - a
+    let Lbar := Real.exp (B.B₀ * delta) * L₀
+    let Thetabar := (Theta₀ + L₀) * Real.exp ((B.C + B.B₀) * delta)
+    let Abar := Real.exp (2 * B.B₀ * delta) * (Ainit + delta * Thetabar)
+    let Cup := Real.exp (2 * B.B₀ * delta) * (2 * B.B₀ * Abar + Thetabar)
+    ∀ lambda : ℝ, 0 < lambda → lambda ≤ 1 → ∀ c : ProductCurve Q,
+      c.IsSolutionOn B.family.metric lambda (Icc a b) →
+      c.IsRampOn B.family.metric lambda (Icc a b) → c.degree = 1 →
+      ∀ γ : ℝ → ContinuousFreeLoop Q,
+        (∀ t ∈ Icc a b, ∀ z, γ t z = c.projection z t) →
+        (∀ t ∈ Icc a b, IsContractibleLoop (γ t)) →
+        c.length B.family.metric lambda a ≤ L₀ →
+        c.totalCurvature B.family.metric lambda a ≤ Theta₀ →
+        loopFamilyLeastArea B.family.metric γ a ≤ Ainit →
+        ContinuousOn (loopFamilyLeastArea B.family.metric γ) (Icc a b) ∧
+        (∀ t ∈ Icc a b,
+          c.length B.family.metric lambda t ≤ Lbar ∧
+          c.totalCurvature B.family.metric lambda t ≤ Thetabar ∧
+          0 ≤ loopFamilyLeastArea B.family.metric γ t ∧
+          loopFamilyLeastArea B.family.metric γ t ≤ Abar) ∧
+        (∫ t in a..b, c.energy B.family.metric lambda t) ≤ Lbar ∧
+        ∀ s ∈ Icc a b, ∀ t ∈ Icc s b,
+          loopFamilyLeastArea B.family.metric γ t - loopFamilyLeastArea B.family.metric γ s ≤
+            Cup * (t - s) := by
+  refine rfs_ramp_uniform_bounds_of_product_bounds B L₀ Theta₀ Ainit hL₀ hTheta₀ hAinit
+    (fun lambda hlambda hlambda_one c hsol hlen hcurv t ht => ?_)
+    (fun lambda hlambda hlambda_one c hsol γ hγ hctr hlen hcurv hA => ?_)
+  · obtain ⟨h₁, -, h₃, h₄⟩ := hproduct L₀ Theta₀ hL₀ hTheta₀ lambda hlambda hlambda_one c hsol
+      hlen hcurv t ht
+    exact ⟨h₁, h₃, h₄⟩
+  · simpa only [rampThetabar, rampAbar, rampCup] using harea L₀ Theta₀ hL₀ hTheta₀ lambda
+      hlambda hlambda_one c hsol hlen hcurv γ hγ hctr hA
+
+omit [SigmaCompactSpace Q] hCompact hConnected hBoundary in
+def RampFamilyFlowSolutions (B : RicciBackground (I := I) (M := Q) D a b) {d : ℕ}
+    (e : SmoothLoopEmbedding (I := I) (Q := Q) d)
+    (prepared : RegularFamily (I := I) (Q := Q) (Sphere 2)) (lambda : ℝ) : Prop :=
+  ∃ solutions : Sphere 2 → ProductCurve Q,
+    @Continuous (Sphere 2) (ProductCurve Q) inferInstance
+      (smoothProductCylinderTopology e (Icc a b)) solutions ∧
+    ∀ p, (solutions p).IsSolutionOn B.family.metric lambda (Icc a b) ∧
+      (solutions p).IsRampOn B.family.metric lambda (Icc a b) ∧
+      (solutions p).degree = 1 ∧
+      ∀ z, (solutions p).map z a = ((prepared p).1 z, z)
+
+omit [SigmaCompactSpace Q] hCompact hConnected hBoundary in
+def RampFamilyProjectedDeformation (B : RicciBackground (I := I) (M := Q) D a b) {d : ℕ}
+    (e : SmoothLoopEmbedding (I := I) (Q := Q) d)
+    (prepared : RegularFamily (I := I) (Q := Q) (Sphere 2)) (lambda : ℝ) : Prop :=
+  ∀ solutions : Sphere 2 → ProductCurve Q,
+    @Continuous (Sphere 2) (ProductCurve Q) inferInstance
+      (smoothProductCylinderTopology e (Icc a b)) solutions →
+    (∀ p, (solutions p).IsSolutionOn B.family.metric lambda (Icc a b) ∧
+      (solutions p).IsRampOn B.family.metric lambda (Icc a b) ∧
+      (solutions p).degree = 1 ∧
+      ∀ z, (solutions p).map z a = ((prepared p).1 z, z)) →
+    ∃ projected : C(Icc a b, RegularFamily (I := I) (Q := Q) (Sphere 2)),
+      (∀ t : Icc a b, ∀ p z,
+        ((projected t) p).1 z = (solutions p).projection z t) ∧
+      projected ⟨a, le_rfl, B.lt.le⟩ = prepared ∧
+      (∀ t : Icc a b, HasContinuousSmoothLoopJets e (projected t)) ∧
+      ∀ t : Icc a b,
+        FreeHomotopyClass.mk (contractibleRegularLoopInclusion.comp (projected t)) =
+          FreeHomotopyClass.mk (contractibleRegularLoopInclusion.comp prepared)
+
+omit [SigmaCompactSpace Q] hCompact hConnected hBoundary in
+theorem rfs_prepared_family_flow_of_frontier (B : RicciBackground (I := I) (M := Q) D a b)
+    {d : ℕ} (e : SmoothLoopEmbedding (I := I) (Q := Q) d)
+    (prepared : RegularFamily (I := I) (Q := Q) (Sphere 2))
+    (hsmooth : HasContinuousSmoothLoopJets e prepared)
+    (lambda : ℝ) (hlambda : 0 < lambda) (hlambda_one : lambda ≤ 1)
+    (hsolutions : RampFamilyFlowSolutions (I := I) (Q := Q) (D := D) (a := a) (b := b) B e prepared
+      lambda)
+    (hprojected : RampFamilyProjectedDeformation (I := I) (Q := Q) (D := D) (a := a) (b := b) B e
+      prepared lambda) :
+    ∃ solutions : Sphere 2 → ProductCurve Q,
+      ∃ projected : C(Icc a b, RegularFamily (I := I) (Q := Q) (Sphere 2)),
+        @Continuous (Sphere 2) (ProductCurve Q) inferInstance
+          (smoothProductCylinderTopology e (Icc a b)) solutions ∧
+        (∀ p, (solutions p).IsSolutionOn B.family.metric lambda (Icc a b) ∧
+          (solutions p).IsRampOn B.family.metric lambda (Icc a b) ∧
+          (solutions p).degree = 1 ∧
+          ∀ z, (solutions p).map z a = ((prepared p).1 z, z)) ∧
+        (∀ t : Icc a b, ∀ p z,
+          ((projected t) p).1 z = (solutions p).projection z t) ∧
+        projected ⟨a, le_rfl, B.lt.le⟩ = prepared ∧
+        (∀ t : Icc a b, HasContinuousSmoothLoopJets e (projected t)) ∧
+        ∀ t : Icc a b,
+          FreeHomotopyClass.mk (contractibleRegularLoopInclusion.comp (projected t)) =
+            FreeHomotopyClass.mk (contractibleRegularLoopInclusion.comp prepared) := by
+  let _ := hsmooth
+  let _ := hlambda
+  let _ := hlambda_one
+  obtain ⟨solutions, hcont, hdata⟩ := hsolutions
+  obtain ⟨projected, hproj, hat, hjets, hclass⟩ := hprojected solutions hcont hdata
+  exact ⟨solutions, projected, hcont, hdata, hproj, hat, hjets, hclass⟩
+
 end DifferentialGeometry.PDE.RicciFlow.Extinction.Families

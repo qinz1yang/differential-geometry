@@ -327,4 +327,16 @@ theorem gradientRicciSoliton_existsUnique_normalized
   let x : M := Classical.choice (inferInstance : Nonempty M)
   exact (hD.1 x).symm.trans (hC x)
 
+omit [SigmaCompactSpace M] in
+theorem gradientRicciSoliton_exists_hamiltonNormalized
+    [ConnectedSpace M]
+    {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; Real⟯}
+    (hsol : gradientRicciSoliton (I := I) g f 1) :
+    ∃ f' : C^∞⟮I, M; Real⟯,
+      gradientRicciSoliton (I := I) g f' 1 ∧ hamiltonNormalized (I := I) g f' 1 := by
+  obtain ⟨c, hc⟩ :=
+    gradientRicciSoliton_existsUnique_hamiltonNormalized_add_const hsol
+      (by norm_num : (1 : Real) ≠ 0)
+  exact ⟨f + ContMDiffMap.const c, gradientRicciSoliton_add_const hsol c, hc.1⟩
+
 end DifferentialGeometry.Geometry

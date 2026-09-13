@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CappingCover
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventData
+import DifferentialGeometry.Topology.VanKampen.SimplyConnectedUnion
 import Mathlib.Analysis.Convex.PathConnected
 import Mathlib.Geometry.Manifold.MFDeriv.Atlas
 import Mathlib.LinearAlgebra.Dimension.Constructions
@@ -464,6 +465,24 @@ theorem childCap_boundary_eq (c : ConnectedComponents Q.Carrier) (b : E.ChildCap
   rw [← E.childCapFun_eq c b (sphereToThreeBall y), E.trace.capping.boundary_eq]
   exact E.childCoreInclusionFun_eq c
     ⟨E.trace.tubes.coreBoundarySphere b.1 (E.trace.capping.attaching b.1 y), b.2 _⟩
+
+def childCarrierOpenCover (E : SmoothCutCapTransition P Q D N) : Prop :=
+  ∀ c : ConnectedComponents Q.Carrier,
+    SimplyConnectedSpace (P.component (E.childParent c)).Carrier →
+    ∃ (U V : Set (E.ChildCarrier c)) (x₀ : E.ChildCarrier c),
+      IsOpen U ∧ IsOpen V ∧ U ∪ V = univ ∧ x₀ ∈ U ∧ x₀ ∈ V ∧
+      Set.range (E.childCoreInclusion c) ⊆ U ∧
+      (⋃ b : E.ChildCapBoundary c, Set.range (E.childCap c b)) ⊆ V ∧
+      SimplyConnectedSpace U ∧ SimplyConnectedSpace V ∧
+      PathConnectedSpace (↑(U ∩ V))
+
+theorem child_simplyConnected_of_childCarrierOpenCover (E : SmoothCutCapTransition P Q D N)
+    (h : E.childCarrierOpenCover) (c : ConnectedComponents Q.Carrier)
+    [SimplyConnectedSpace (P.component (E.childParent c)).Carrier] :
+    SimplyConnectedSpace (Q.component c).Carrier := by
+  obtain ⟨U, V, x₀, hU, hV, hcov, hxU, hxV, _, _, hSU, hSV, hpc⟩ := h c inferInstance
+  exact @DifferentialGeometry.Topology.VanKampen.simplyConnectedSpace_of_open_cover
+    (E.ChildCarrier c) _ U V hU hV hcov x₀ ⟨hxU, hxV⟩ hSU hSV hpc
 
 theorem childCore_compactSpace (c : ConnectedComponents Q.Carrier) : CompactSpace (E.ChildCore c) := by
   let := E.core_compact

@@ -10,6 +10,9 @@ import DifferentialGeometry.Geometry.Metric.RicciSoliton.PositiveRoundness
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorPositiveSectional
 import DifferentialGeometry.Geometry.Curvature.Algebraic.CurvatureOperatorConeMetric
 import DifferentialGeometry.Geometry.Curvature.Metric.LeviCivita
+import DifferentialGeometry.Geometry.Metric.RicciSoliton.CylinderQuotients
+import DifferentialGeometry.Geometry.Metric.ProjectiveSpace
+import DifferentialGeometry.Analysis.Integration.Measure.PullbackCross
 
 
 set_option autoImplicit false
@@ -247,5 +250,131 @@ theorem normalized_nonflat_three_shrinker_round_or_mass_of_noncompact_mass
       hnco f hsoliton hnormal hcompact
     exact Or.inl ⟨hcompact, hround.1, hround.2⟩
   · exact Or.inr (hnoncompactMass hcompact)
+
+private instance euclideanThreeFinrankFact :
+    Fact (Module.finrank ℝ (EuclideanSpace ℝ (Fin 3)) = 2 + 1) := ⟨by simp⟩
+
+omit [CompleteSpace E] [I.Boundaryless] in
+theorem normalizedShrinkerMass_pullbackMetricCross
+    {E' : Type*} [NormedAddCommGroup E'] [NormedSpace ℝ E'] [FiniteDimensional ℝ E']
+    {H' : Type*} [TopologicalSpace H'] {J : ModelWithCorners ℝ E' H'} [J.Boundaryless]
+    {N : Type*} [TopologicalSpace N] [ChartedSpace H' N] [IsManifold J ∞ N]
+    [T2Space N] [SigmaCompactSpace N]
+    (hfin : Module.finrank ℝ E = Module.finrank ℝ E')
+    (g : SmoothRiemannianMetric I L.M) (f : C^∞⟮I, L.M; ℝ⟯)
+    (e : N ≃ₘ⟮J, I⟯ L.M) :
+    normalizedShrinkerMass (I := I) (M := L.M) g f =
+      normalizedShrinkerMass (I := J) (M := N) (Diffeomorph.pullbackMetricCross g e)
+        (fun y => f (e y)) := by
+  let _ : MeasurableSpace L.M := borel L.M
+  let _ : BorelSpace L.M := ⟨rfl⟩
+  let _ : MeasurableSpace N := borel N
+  let _ : BorelSpace N := ⟨rfl⟩
+  unfold normalizedShrinkerMass
+  rw [hfin]
+  rw [DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure_pullback_cross
+    (I := J) (J := I) (M := N) (N := L.M) g e]
+  have hmeas : Measurable (fun y : N => ENNReal.ofReal (Real.exp
+      (-(f (e y)) - ((Module.finrank ℝ E' : ℝ) / 2) * Real.log (4 * Real.pi)))) :=
+    ENNReal.measurable_ofReal.comp (Real.measurable_exp.comp
+      (((f.contMDiff.continuous.measurable.comp e.contMDiff.continuous.measurable).neg).sub
+        measurable_const))
+  rw [MeasureTheory.lintegral_map
+    (μ := DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure (I := I) (M := L.M) g)
+    (g := (e.symm : L.M → N)) hmeas e.symm.contMDiff.continuous.measurable]
+  refine MeasureTheory.lintegral_congr_ae (Filter.Eventually.of_forall fun x => ?_)
+  simp only [Diffeomorph.apply_symm_apply]
+
+def NoncompactShrinkerIsometryModels
+    (g : SmoothRiemannianMetric I L.M) (f : C^∞⟮I, L.M; ℝ⟯) : Prop :=
+  (∃ e : (Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1 × ℝ) ≃ₘ⟮
+        (𝓡 2).prod 𝓘(ℝ, ℝ), I⟯ L.M,
+      Diffeomorph.pullbackMetricCross g e = roundThreeCylinderShrinkerMetric ∧
+        ∀ x : Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1 × ℝ,
+          f (e x) = 1 + x.2 ^ 2 / 4) ∨
+    (∃ e : (RealProjectivePlane × ℝ) ≃ₘ⟮(𝓡 2).prod 𝓘(ℝ, ℝ), I⟯ L.M,
+      Diffeomorph.pullbackMetricCross g e =
+          ((DifferentialGeometry.scaleMetric 2 (by norm_num)
+              (roundProjectiveMetric (E := EuclideanSpace ℝ (Fin 3)) (n := 2))).prod
+            (euclideanMetric (E := ℝ))) ∧
+        ∀ x : RealProjectivePlane × ℝ, f (e x) = 1 + x.2 ^ 2 / 4) ∨
+    (∃ e : (CylinderDiagonalQuotient) ≃ₘ⟮(𝓡 2).prod 𝓘(ℝ, ℝ), I⟯ L.M,
+      Diffeomorph.pullbackMetricCross g e = cylinderDiagonalQuotientMetric ∧
+        ∀ x : CylinderDiagonalQuotient, f (e x) = cylinderDiagonalQuotientPotential x)
+
+def NoncompactShrinkerModelMasses : Prop :=
+  (normalizedShrinkerMass (I := (𝓡 2).prod 𝓘(ℝ, ℝ))
+      (M := Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1 × ℝ)
+      roundThreeCylinderShrinkerMetric
+      (fun x : Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1 × ℝ =>
+        roundThreeCylinderShrinkerPotential x) =
+    ENNReal.ofReal (2 * Real.exp (-1))) ∧
+  (normalizedShrinkerMass (I := (𝓡 2).prod 𝓘(ℝ, ℝ)) (M := RealProjectivePlane × ℝ)
+      ((DifferentialGeometry.scaleMetric 2 (by norm_num)
+          (roundProjectiveMetric (E := EuclideanSpace ℝ (Fin 3)) (n := 2))).prod
+        (euclideanMetric (E := ℝ)))
+      (fun x : RealProjectivePlane × ℝ => 1 + x.2 ^ 2 / 4) =
+    ENNReal.ofReal (Real.exp (-1))) ∧
+  (normalizedShrinkerMass (I := (𝓡 2).prod 𝓘(ℝ, ℝ))
+      (M := CylinderDiagonalQuotient) cylinderDiagonalQuotientMetric
+      (fun x : CylinderDiagonalQuotient => cylinderDiagonalQuotientPotential x) =
+    ENNReal.ofReal (Real.exp (-1)))
+
+theorem normalized_nonflat_three_shrinker_round_or_mass_of_noncompactModels
+    (hdim : Module.finrank ℝ E = 3) (f : C^∞⟮I, L.M; ℝ⟯)
+    (hmodels : NoncompactShrinkerIsometryModels (I := I) L L.metric f)
+    (hmasses : NoncompactShrinkerModelMasses) :
+    (CompactSpace L.M ∧ (∀ x : L.M, metricScalarAt L.metric x = (3 : ℝ) / 2) ∧
+      ∀ x : L.M, ∀ v : TangentSpace I x,
+        ricciTensor L.metric x v v = ((3 / 2 : ℝ) / 3) * L.metric.inner x v v) ∨
+    normalizedShrinkerMass L.metric f = ENNReal.ofReal (2 * Real.exp (-1)) ∨
+    normalizedShrinkerMass L.metric f = ENNReal.ofReal (Real.exp (-1)) := by
+  have hfin : Module.finrank ℝ E = Module.finrank ℝ (EuclideanSpace ℝ (Fin 2) × ℝ) :=
+    hdim.trans (by simp)
+  rcases hmodels with ⟨e, hmetric, hpot⟩ | ⟨e, hmetric, hpot⟩ | ⟨e, hmetric, hpot⟩
+  · refine Or.inr (Or.inl ?_)
+    calc normalizedShrinkerMass L.metric f
+        = normalizedShrinkerMass (Diffeomorph.pullbackMetricCross L.metric e)
+            (fun y => f (e y)) :=
+          normalizedShrinkerMass_pullbackMetricCross (I := I) (L := L)
+            (J := (𝓡 2).prod 𝓘(ℝ, ℝ))
+            (N := Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1 × ℝ)
+            hfin L.metric f e
+      _ = normalizedShrinkerMass roundThreeCylinderShrinkerMetric
+            (fun x : Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1 × ℝ =>
+              roundThreeCylinderShrinkerPotential x) := by
+          rw [hmetric]
+          congr 1 with x
+          simpa only [roundThreeCylinderShrinkerPotential_apply] using hpot x
+      _ = ENNReal.ofReal (2 * Real.exp (-1)) := hmasses.1
+  · refine Or.inr (Or.inr ?_)
+    calc normalizedShrinkerMass L.metric f
+        = normalizedShrinkerMass (Diffeomorph.pullbackMetricCross L.metric e)
+            (fun y => f (e y)) :=
+          normalizedShrinkerMass_pullbackMetricCross (I := I) (L := L)
+            (J := (𝓡 2).prod 𝓘(ℝ, ℝ)) (N := RealProjectivePlane × ℝ)
+            hfin L.metric f e
+      _ = normalizedShrinkerMass
+            ((DifferentialGeometry.scaleMetric 2 (by norm_num)
+                (roundProjectiveMetric (E := EuclideanSpace ℝ (Fin 3)) (n := 2))).prod
+              (euclideanMetric (E := ℝ)))
+            (fun x : RealProjectivePlane × ℝ => 1 + x.2 ^ 2 / 4) := by
+          rw [hmetric]
+          congr 1 with x
+          exact hpot x
+      _ = ENNReal.ofReal (Real.exp (-1)) := hmasses.2.1
+  · refine Or.inr (Or.inr ?_)
+    calc normalizedShrinkerMass L.metric f
+        = normalizedShrinkerMass (Diffeomorph.pullbackMetricCross L.metric e)
+            (fun y => f (e y)) :=
+          normalizedShrinkerMass_pullbackMetricCross (I := I) (L := L)
+            (J := (𝓡 2).prod 𝓘(ℝ, ℝ)) (N := CylinderDiagonalQuotient)
+            hfin L.metric f e
+      _ = normalizedShrinkerMass cylinderDiagonalQuotientMetric
+            (fun x : CylinderDiagonalQuotient => cylinderDiagonalQuotientPotential x) := by
+          rw [hmetric]
+          congr 1 with x
+          exact hpot x
+      _ = ENNReal.ofReal (Real.exp (-1)) := hmasses.2.2
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions

@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Evolution
 import DifferentialGeometry.Analysis.ODE.Gronwall.Integral
+import DifferentialGeometry.Analysis.Calculus.Derivative.ParametricIntervalIntegral
 
 noncomputable section
 open Bundle Manifold Set MeasureTheory Filter
@@ -15,6 +16,1305 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 variable [SigmaCompactSpace M] [T2Space M]
 variable [hBoundary : I.Boundaryless] {D : RealTimeInterval} {a b s u : ℝ}
 include hBoundary
+
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] hBoundary in
+private theorem continuousOn_integral_of_continuousOn {F : ℝ → ℝ → ℝ}
+    (hF : ContinuousOn (fun p : ℝ × ℝ => F p.1 p.2) ((univ : Set ℝ) ×ˢ Icc s u)) :
+    ContinuousOn (fun t : ℝ => ∫ x in (0 : ℝ)..1, F x t) (Icc s u) := by
+  intro t₀ ht₀
+  refine DifferentialGeometry.Analysis.Calculus.continuousWithinAt_paramIntervalIntegral
+    isCompact_Icc ?_ ht₀
+  exact hF.comp (ContinuousOn.prodMk continuousOn_snd continuousOn_fst)
+    (fun p hp => ⟨mem_univ _, hp.1⟩)
+
+omit [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E] [CompleteSpace E]
+  [TopologicalSpace H] hBoundary in
+private theorem contDiffOn_derivWithin_snd {s u : ℝ} (hsu : s < u) {F : ℝ → ℝ → ℝ}
+    (hF : ContDiffOn ℝ ∞ (fun p : ℝ × ℝ => F p.1 p.2) (univ ×ˢ Icc s u)) :
+    ContDiffOn ℝ ∞ (fun p : ℝ × ℝ => derivWithin (fun τ => F p.1 τ) (Icc s u) p.2)
+      (univ ×ˢ Icc s u) := by
+  have hFmd : ContMDiffOn (𝓘(ℝ, ℝ).prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) ∞
+      (fun p : ℝ × ℝ => F p.1 p.2) (univ ×ˢ Icc s u) := by
+    have h := contMDiffOn_iff_contDiffOn.mpr hF
+    rw [modelWithCornersSelf_prod, ← chartedSpaceSelf_prod] at h
+    exact h
+  have key : ContMDiffOn (𝓘(ℝ, ℝ).prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) ∞
+      (fun p : ℝ × ℝ => derivWithin (fun τ => F p.1 τ) (Icc s u) p.2)
+      (univ ×ˢ Icc s u) := by
+    intro p₀ hp₀
+    have hf : ContMDiffWithinAt ((𝓘(ℝ, ℝ).prod 𝓘(ℝ, ℝ)).prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) ∞
+        (fun q : (ℝ × ℝ) × ℝ => F q.1.1 q.2) ((univ ×ˢ Icc s u) ×ˢ Icc s u)
+        (p₀, p₀.2) := by
+      have harg : ContMDiffWithinAt ((𝓘(ℝ, ℝ).prod 𝓘(ℝ, ℝ)).prod 𝓘(ℝ, ℝ))
+          (𝓘(ℝ, ℝ).prod 𝓘(ℝ, ℝ)) ∞
+          (fun q : (ℝ × ℝ) × ℝ => (q.1.1, q.2)) ((univ ×ˢ Icc s u) ×ˢ Icc s u) (p₀, p₀.2) :=
+        contMDiffWithinAt_fst.fst.prodMk contMDiffWithinAt_snd
+      exact (hFmd p₀ hp₀).comp (p₀, p₀.2) harg
+        (fun q hq => (⟨mem_univ _, hq.2⟩ : (q.1.1, q.2) ∈ (univ : Set ℝ) ×ˢ Icc s u))
+    have hmain := ContMDiffWithinAt.mfderivWithin_apply
+      (I := 𝓘(ℝ, ℝ)) (I' := 𝓘(ℝ, ℝ))
+      (J := 𝓘(ℝ, ℝ).prod 𝓘(ℝ, ℝ)) (J' := 𝓘(ℝ, ℝ).prod 𝓘(ℝ, ℝ))
+      (f := fun (p : ℝ × ℝ) (y : ℝ) => F p.1 y)
+      (g := fun p : ℝ × ℝ => p.2)
+      (g₁ := fun p : ℝ × ℝ => p)
+      (g₂ := fun _ : ℝ × ℝ => (1 : ℝ))
+      (t := univ ×ˢ Icc s u) (u := Icc s u) (v := univ ×ˢ Icc s u) (x₀ := p₀)
+      (m := ∞) (n := ∞) hf contMDiffWithinAt_snd contMDiffWithinAt_id
+      (contMDiffWithinAt_const (c := (1 : ℝ))) le_rfl (fun _ hx => hx) hp₀
+      (fun _ hx => hx.2) (uniqueDiffOn_Icc hsu).uniqueMDiffOn
+    simpa only [inTangentCoordinates_model_space, mfderivWithin_eq_fderivWithin, derivWithin]
+      using hmain
+  have key' := key
+  rw [← modelWithCornersSelf_prod, chartedSpaceSelf_prod] at key'
+  exact contMDiffOn_iff_contDiffOn.mp key'
+
+omit [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E] [CompleteSpace E]
+  [TopologicalSpace H] hBoundary in
+private theorem contDiffOn_paramIntervalIntegral_Icc {s u : ℝ} (hsu : s < u) {F : ℝ → ℝ → ℝ}
+    (hF : ContDiffOn ℝ ∞ (fun p : ℝ × ℝ => F p.1 p.2) (univ ×ˢ Icc s u)) :
+    ContDiffOn ℝ ∞ (fun τ : ℝ => ∫ x in (0 : ℝ)..1, F x τ) (Icc s u) := by
+  have hS : UniqueDiffOn ℝ (Icc s u) := uniqueDiffOn_Icc hsu
+  have key : ∀ k : ℕ, ∀ {F : ℝ → ℝ → ℝ},
+      ContDiffOn ℝ ∞ (fun p : ℝ × ℝ => F p.1 p.2) (univ ×ˢ Icc s u) →
+      ContDiffOn ℝ (k : ℕ∞ω) (fun τ : ℝ => ∫ x in (0 : ℝ)..1, F x τ) (Icc s u) := by
+    intro k
+    induction k with
+    | zero =>
+      intro F hF
+      refine contDiffOn_zero.mpr ?_
+      intro t₀ ht₀
+      refine DifferentialGeometry.Analysis.Calculus.continuousWithinAt_paramIntervalIntegral
+        isCompact_Icc ?_ ht₀
+      exact hF.continuousOn.comp
+        (ContinuousOn.prodMk continuousOn_snd continuousOn_fst)
+        (fun p hp => ⟨mem_univ _, hp.1⟩)
+    | succ k ih =>
+      intro F hF
+      have hG : ContDiffOn ℝ ∞
+          (fun p : ℝ × ℝ => derivWithin (fun τ => F p.1 τ) (Icc s u) p.2)
+          (univ ×ˢ Icc s u) := contDiffOn_derivWithin_snd hsu hF
+      have hderiv : ∀ x t, t ∈ Icc s u →
+          HasDerivWithinAt (fun τ => F x τ)
+            (derivWithin (fun τ => F x τ) (Icc s u) t) (Icc s u) t := by
+        intro x t ht
+        have hx : ContDiffWithinAt ℝ ∞ (fun τ : ℝ => F x τ) (Icc s u) t := by
+          have harg : ContDiffWithinAt ℝ ∞ (fun τ : ℝ => (x, τ)) (Icc s u) t :=
+            contDiffWithinAt_const.prodMk contDiffWithinAt_id
+          exact (hF.contDiffWithinAt ⟨mem_univ x, ht⟩).comp t harg
+            (fun τ hτ => ⟨mem_univ x, hτ⟩)
+        exact (hx.differentiableWithinAt (by norm_num)).hasDerivWithinAt
+      have hmain := DifferentialGeometry.Analysis.Calculus.hasDerivWithinAt_paramIntervalIntegral
+        hF.continuousOn hG.continuousOn hderiv
+      rw [Nat.cast_succ, contDiffOn_succ_iff_derivWithin hS]
+      refine ⟨fun t ht => (hmain t ht).differentiableWithinAt, ?_, ?_⟩
+      · intro hk
+        exact absurd hk (by simp)
+      · refine (ih (F := fun x τ => derivWithin (fun r => F x r) (Icc s u) τ) hG).congr
+          (fun t ht => ?_)
+        exact (hmain t ht).derivWithin (hS t ht)
+  rw [contDiffOn_iff_forall_nat_le]
+  intro m _
+  exact key m hF
+
+
+private theorem ricciTangent_ge_neg (B : RicciBackground (I := I) (M := M) D a b)
+    (hwindow : Icc s u ⊆ Icc a b)
+    (c : CurveMap M) (hc : c.IsSolutionOn B.family.metric (Icc s u))
+    (x τ : ℝ) (hτ : τ ∈ Icc s u) :
+    -B.B₀ ≤ c.ricciTangent B.family x τ := by
+  have htt : (B.family.metric τ).inner (c.lift x τ)
+      (c.unitTangent B.family.metric x τ) (c.unitTangent B.family.metric x τ) = 1 :=
+    (tangent_curvature_geometry B.family.metric c (Icc s u) hc.smooth hc.immersed x τ hτ).1
+  have h := ricci_pair_ge B τ (hwindow hτ) (c.unitTangent B.family.metric x τ)
+  rw [htt, mul_one] at h
+  simpa only [CurveMap.ricciTangent] using h
+
+private theorem ricciTangent_integral_ge (B : RicciBackground (I := I) (M := M) D a b)
+    (hwindow : Icc s u ⊆ Icc a b)
+    (c : CurveMap M) (hc : c.IsSolutionOn B.family.metric (Icc s u))
+    (v : ℝ) (hv : v ∈ Icc s u) :
+    -B.B₀ * c.length B.family.metric v ≤
+      c.integral B.family.metric (c.ricciTangent B.family) v := by
+  have hv' : Continuous fun x : ℝ => c.speed B.family.metric x v :=
+    (c.speed_contDiff B.family.metric (Icc s u) hc.smooth hc.immersed v hv).continuous
+  have hr' : Continuous fun x : ℝ => c.ricciTangent B.family x v := by
+    have h := (CurveMap.ricciTangent_continuousOn B hwindow c hc).comp
+      (s := (univ : Set ℝ))
+      (continuous_id.prodMk continuous_const).continuousOn (fun x _ => ⟨mem_univ x, hv⟩)
+    exact continuousOn_univ.mp h
+  have hmono := intervalIntegral.integral_mono_on (μ := volume) (by norm_num : (0 : ℝ) ≤ 1)
+    (f := fun x : ℝ => -B.B₀ * c.speed B.family.metric x v)
+    (g := fun x : ℝ => c.ricciTangent B.family x v * c.speed B.family.metric x v)
+    ((continuous_const.mul hv').intervalIntegrable 0 1) ((hr'.mul hv').intervalIntegrable 0 1)
+    (fun x _ => mul_le_mul_of_nonneg_right
+      (ricciTangent_ge_neg B hwindow c hc x v hv) (c.speed_nonneg B.family.metric x v))
+  have hleft : (∫ x in (0 : ℝ)..1, -B.B₀ * c.speed B.family.metric x v) =
+      -B.B₀ * c.length B.family.metric v := by
+    rw [intervalIntegral.integral_const_mul]
+    simp only [CurveMap.length, CurveMap.integral, one_mul]
+  have hright : (∫ x in (0 : ℝ)..1, c.ricciTangent B.family x v *
+      c.speed B.family.metric x v) = c.integral B.family.metric (c.ricciTangent B.family) v := rfl
+  rw [hleft, hright] at hmono
+  exact hmono
+
+omit [SigmaCompactSpace M] hBoundary in
+private theorem contDiffOn_length (B : RicciBackground (I := I) (M := M) D a b)
+    (hsu : s < u) (hwindow : Icc s u ⊆ Icc a b)
+    (c : CurveMap M) (hc : c.IsSolutionOn B.family.metric (Icc s u)) :
+    ContDiffOn ℝ ∞ (c.length B.family.metric) (Icc s u) := by
+  have h := contDiffOn_paramIntervalIntegral_Icc hsu (F := fun x t => c.speed B.family.metric x t)
+    (CurveMap.Field.smoothOn_speed B.family.metric B.smooth
+      (fun _ hr => B.regular (hwindow hr)) c hc.smooth hc.immersed)
+  refine h.congr (fun t _ => ?_)
+  simp only [CurveMap.length, CurveMap.integral, one_mul]
+
+omit [SigmaCompactSpace M] in
+private theorem joint_continuousOn_curvature (B : RicciBackground (I := I) (M := M) D a b)
+    (hsu : s < u) (hwindow : Icc s u ⊆ Icc a b)
+    (c : CurveMap M) (hc : c.IsSolutionOn B.family.metric (Icc s u)) :
+    ContinuousOn (fun p : ℝ × ℝ => c.curvature B.family.metric p.1 p.2)
+      ((univ : Set ℝ) ×ˢ Icc s u) :=
+  (Real.continuous_sqrt.comp_continuousOn
+    (CurveMap.Field.smoothOn_curvatureSq B.family.metric B.smooth
+      (fun _ hr => B.regular (hwindow hr)) (uniqueDiffOn_Icc hsu) c hc.smooth
+      hc.immersed).continuousOn)
+
+omit [SigmaCompactSpace M] hBoundary in
+private theorem joint_continuousOn_speed (B : RicciBackground (I := I) (M := M) D a b)
+    (hwindow : Icc s u ⊆ Icc a b)
+    (c : CurveMap M) (hc : c.IsSolutionOn B.family.metric (Icc s u)) :
+    ContinuousOn (fun p : ℝ × ℝ => c.speed B.family.metric p.1 p.2)
+      ((univ : Set ℝ) ×ˢ Icc s u) :=
+  (CurveMap.Field.smoothOn_speed B.family.metric B.smooth
+    (fun _ hr => B.regular (hwindow hr)) c hc.smooth hc.immersed).continuousOn
+
+omit [SigmaCompactSpace M] in
+private theorem continuousOn_totalCurvature (B : RicciBackground (I := I) (M := M) D a b)
+    (hsu : s < u) (hwindow : Icc s u ⊆ Icc a b)
+    (c : CurveMap M) (hc : c.IsSolutionOn B.family.metric (Icc s u)) :
+    ContinuousOn (c.totalCurvature B.family.metric) (Icc s u) := by
+  have hjoin : ContinuousOn (fun p : ℝ × ℝ =>
+      c.curvature B.family.metric p.1 p.2 * c.speed B.family.metric p.1 p.2)
+      ((univ : Set ℝ) ×ˢ Icc s u) :=
+    (joint_continuousOn_curvature B hsu hwindow c hc).mul
+      (joint_continuousOn_speed B hwindow c hc)
+  have h := continuousOn_integral_of_continuousOn
+    (F := fun x t => c.curvature B.family.metric x t * c.speed B.family.metric x t) hjoin
+  refine h.congr (fun t _ => ?_)
+  simp only [CurveMap.totalCurvature, CurveMap.integral]
+
+omit [SigmaCompactSpace M] in
+private theorem continuousOn_energy (B : RicciBackground (I := I) (M := M) D a b)
+    (hsu : s < u) (hwindow : Icc s u ⊆ Icc a b)
+    (c : CurveMap M) (hc : c.IsSolutionOn B.family.metric (Icc s u)) :
+    ContinuousOn (c.energy B.family.metric) (Icc s u) := by
+  have hjoin : ContinuousOn (fun p : ℝ × ℝ =>
+      c.curvatureSq B.family.metric p.1 p.2 * c.speed B.family.metric p.1 p.2)
+      ((univ : Set ℝ) ×ˢ Icc s u) :=
+    (CurveMap.Field.smoothOn_curvatureSq B.family.metric B.smooth
+      (fun _ hr => B.regular (hwindow hr)) (uniqueDiffOn_Icc hsu) c hc.smooth
+      hc.immersed).continuousOn.mul (joint_continuousOn_speed B hwindow c hc)
+  have h := continuousOn_integral_of_continuousOn
+    (F := fun x t => c.curvatureSq B.family.metric x t * c.speed B.family.metric x t) hjoin
+  refine h.congr (fun t _ => ?_)
+  simp only [CurveMap.energy, CurveMap.integral]
+
+omit [SigmaCompactSpace M] hBoundary in
+private theorem continuousOn_ricciTangent_integral (B : RicciBackground (I := I) (M := M) D a b)
+    (hwindow : Icc s u ⊆ Icc a b)
+    (c : CurveMap M) (hc : c.IsSolutionOn B.family.metric (Icc s u)) :
+    ContinuousOn (c.integral B.family.metric (c.ricciTangent B.family)) (Icc s u) := by
+  have hjoin : ContinuousOn (fun p : ℝ × ℝ =>
+      c.ricciTangent B.family p.1 p.2 * c.speed B.family.metric p.1 p.2)
+      ((univ : Set ℝ) ×ˢ Icc s u) :=
+    (CurveMap.ricciTangent_continuousOn B hwindow c hc).mul
+      (joint_continuousOn_speed B hwindow c hc)
+  exact continuousOn_integral_of_continuousOn
+    (F := fun x t => c.ricciTangent B.family x t * c.speed B.family.metric x t) hjoin
+
+private theorem length_hasDerivWithinAt (B : RicciBackground (I := I) (M := M) D a b)
+    (hsu : s < u) (hwindow : Icc s u ⊆ Icc a b)
+    (c : CurveMap M) (hc : c.IsSolutionOn B.family.metric (Icc s u))
+    (t : ℝ) (ht : t ∈ Icc s u) :
+    HasDerivWithinAt (c.length B.family.metric)
+      (-c.energy B.family.metric t -
+        c.integral B.family.metric (c.ricciTangent B.family) t) (Icc s u) t := by
+  have hsp := CurveMap.speedEvolution_of_pairingEvolution B c hc.immersed
+    (CurveMap.pairingEvolution B hsu hwindow c hc)
+  have hv := joint_continuousOn_speed B hwindow c hc
+  have hq := CurveMap.q_continuousOn B hsu hwindow c hc
+  have hmain := DifferentialGeometry.Analysis.Calculus.hasDerivWithinAt_paramIntervalIntegral
+    hv (hq.neg.mul hv) (fun x τ hτ => hsp x τ hτ)
+  have hfun : c.length B.family.metric =
+      fun τ : ℝ => ∫ x in (0 : ℝ)..1, c.speed B.family.metric x τ := by
+    funext τ
+    simp only [CurveMap.length, CurveMap.integral, one_mul]
+  rw [hfun]
+  refine (hmain t ht).congr_deriv ?_
+  have hκ : Continuous fun x : ℝ => c.curvatureSq B.family.metric x t :=
+    (c.curvatureSq_contDiff B.family.metric (Icc s u) hc.smooth hc.immersed
+      t ht).continuous
+  have hv' : Continuous fun x : ℝ => c.speed B.family.metric x t :=
+    (c.speed_contDiff B.family.metric (Icc s u) hc.smooth hc.immersed
+      t ht).continuous
+  have hric : Continuous fun x : ℝ => c.ricciTangent B.family x t := by
+    have h := (CurveMap.ricciTangent_continuousOn B hwindow c hc).comp
+      (s := (univ : Set ℝ))
+      (continuous_id.prodMk continuous_const).continuousOn (fun x _ => ⟨mem_univ x, ht⟩)
+    exact continuousOn_univ.mp h
+  have hsplit : ∀ x : ℝ, -(c.q B.family x t) * c.speed B.family.metric x t =
+      -((c.curvatureSq B.family.metric x t + c.ricciTangent B.family x t) *
+        c.speed B.family.metric x t) := by
+    intro x
+    simp only [CurveMap.q]
+    ring
+  have hsplit2 : ∀ x : ℝ,
+      (c.curvatureSq B.family.metric x t + c.ricciTangent B.family x t) *
+        c.speed B.family.metric x t =
+      c.curvatureSq B.family.metric x t * c.speed B.family.metric x t +
+        c.ricciTangent B.family x t * c.speed B.family.metric x t := by
+    intro x
+    ring
+  rw [intervalIntegral.integral_congr (fun x _ => hsplit x), intervalIntegral.integral_neg]
+  rw [intervalIntegral.integral_congr (fun x _ => hsplit2 x)]
+  rw [intervalIntegral.integral_add
+    (f := fun x : ℝ => c.curvatureSq B.family.metric x t * c.speed B.family.metric x t)
+    (g := fun x : ℝ => c.ricciTangent B.family x t * c.speed B.family.metric x t)
+    ((hκ.mul hv').intervalIntegrable 0 1) ((hric.mul hv').intervalIntegrable 0 1)]
+  simp only [CurveMap.energy, CurveMap.integral]
+  ring
+
+private theorem derivWithin_length (B : RicciBackground (I := I) (M := M) D a b)
+    (hsu : s < u) (hwindow : Icc s u ⊆ Icc a b)
+    (c : CurveMap M) (hc : c.IsSolutionOn B.family.metric (Icc s u))
+    (t : ℝ) (ht : t ∈ Icc s u) :
+    derivWithin (c.length B.family.metric) (Icc s u) t =
+      -c.energy B.family.metric t -
+        c.integral B.family.metric (c.ricciTangent B.family) t :=
+  (length_hasDerivWithinAt B hsu hwindow c hc t ht).derivWithin
+    ((uniqueDiffOn_Icc hsu) t ht)
+
+private theorem speed_le_exp_mul (B : RicciBackground (I := I) (M := M) D a b)
+    (hsu : s < u) (hwindow : Icc s u ⊆ Icc a b)
+    (c : CurveMap M) (hc : c.IsSolutionOn B.family.metric (Icc s u))
+    (x r t : ℝ) (hr : r ∈ Icc s u) (ht : t ∈ Icc s u) (hrt : r ≤ t) :
+    c.speed B.family.metric x t ≤ Real.exp (B.B₀ * (t - r)) * c.speed B.family.metric x r := by
+  have hsp := CurveMap.speedEvolution_of_pairingEvolution B c hc.immersed
+    (CurveMap.pairingEvolution B hsu hwindow c hc)
+  have hsub : Icc r t ⊆ Icc s u := Icc_subset_Icc hr.1 ht.2
+  have hcont' : ContinuousOn
+      (fun τ => c.speed B.family.metric x τ * Real.exp (-B.B₀ * (τ - r))) (Icc s u) := by
+    refine ContinuousOn.mul ?_ ?_
+    · exact fun τ hτ => (hsp x τ hτ).continuousWithinAt
+    · exact Real.continuous_exp.comp_continuousOn
+        ((continuousOn_id.sub continuousOn_const).const_mul (-B.B₀))
+  have hcont : ContinuousOn
+      (fun τ => c.speed B.family.metric x τ * Real.exp (-B.B₀ * (τ - r))) (Icc r t) :=
+    hcont'.mono hsub
+  have hderiv : ∀ τ ∈ interior (Icc r t),
+      deriv (fun σ => c.speed B.family.metric x σ * Real.exp (-B.B₀ * (σ - r))) τ ≤ 0 := by
+    intro τ hτ
+    rw [interior_Icc] at hτ
+    have hτI : τ ∈ Icc s u := hsub ⟨hτ.1.le, hτ.2.le⟩
+    have h1 : HasDerivAt (fun σ => c.speed B.family.metric x σ)
+        (-(c.q B.family x τ) * c.speed B.family.metric x τ) τ :=
+      (hsp x τ hτI).hasDerivAt (Icc_mem_nhds (lt_of_le_of_lt hr.1 hτ.1)
+        (lt_of_lt_of_le hτ.2 ht.2))
+    have h2 : HasDerivAt (fun σ => Real.exp (-B.B₀ * (σ - r)))
+        (Real.exp (-B.B₀ * (τ - r)) * (-B.B₀)) τ := by
+      have h3 : HasDerivAt (fun σ : ℝ => -B.B₀ * (σ - r)) (-B.B₀) τ := by
+        simpa using ((hasDerivAt_id τ).sub_const r).const_mul (-B.B₀)
+      simpa using h3.exp
+    have hdv : deriv (fun σ => c.speed B.family.metric x σ * Real.exp (-B.B₀ * (σ - r))) τ =
+        (-(c.q B.family x τ) * c.speed B.family.metric x τ) * Real.exp (-B.B₀ * (τ - r)) +
+          c.speed B.family.metric x τ * (Real.exp (-B.B₀ * (τ - r)) * (-B.B₀)) :=
+      (h1.mul h2).deriv
+    rw [hdv]
+    have hvnn : 0 ≤ c.speed B.family.metric x τ := c.speed_nonneg B.family.metric x τ
+    have hexp : 0 < Real.exp (-B.B₀ * (τ - r)) := Real.exp_pos _
+    have hq : -B.B₀ ≤ c.q B.family x τ := by
+      have h := ricciTangent_ge_neg B hwindow c hc x τ hτI
+      have h2' : 0 ≤ c.curvatureSq B.family.metric x τ := by
+        rw [← CurveMap.curvature_sq c B.family.metric x τ]
+        exact sq_nonneg _
+      simp only [CurveMap.q]
+      linarith
+    have hfac : (-(c.q B.family x τ) * c.speed B.family.metric x τ) *
+          Real.exp (-B.B₀ * (τ - r)) +
+        c.speed B.family.metric x τ * (Real.exp (-B.B₀ * (τ - r)) * (-B.B₀))
+        = -(Real.exp (-B.B₀ * (τ - r)) *
+            (c.speed B.family.metric x τ * (c.q B.family x τ + B.B₀))) := by ring
+    rw [hfac]
+    nlinarith [hexp, mul_nonneg hvnn (by linarith : (0:ℝ) ≤ c.q B.family x τ + B.B₀)]
+  have hdiff : DifferentiableOn ℝ
+      (fun σ => c.speed B.family.metric x σ * Real.exp (-B.B₀ * (σ - r)))
+      (interior (Icc r t)) := by
+    intro τ hτ
+    rw [interior_Icc] at hτ
+    have hτI : τ ∈ Icc s u := hsub ⟨hτ.1.le, hτ.2.le⟩
+    have h1 : HasDerivAt (fun σ => c.speed B.family.metric x σ)
+        (-(c.q B.family x τ) * c.speed B.family.metric x τ) τ :=
+      (hsp x τ hτI).hasDerivAt (Icc_mem_nhds (lt_of_le_of_lt hr.1 hτ.1)
+        (lt_of_lt_of_le hτ.2 ht.2))
+    have h2 : HasDerivAt (fun σ => Real.exp (-B.B₀ * (σ - r)))
+        (Real.exp (-B.B₀ * (τ - r)) * (-B.B₀)) τ := by
+      have h3 : HasDerivAt (fun σ : ℝ => -B.B₀ * (σ - r)) (-B.B₀) τ := by
+        simpa using ((hasDerivAt_id τ).sub_const r).const_mul (-B.B₀)
+      simpa using h3.exp
+    exact (h1.mul h2).differentiableAt.differentiableWithinAt
+  have hmono := antitoneOn_of_deriv_nonpos (convex_Icc r t) hcont hdiff hderiv
+  have h1 := hmono (left_mem_Icc.mpr hrt) (right_mem_Icc.mpr hrt) hrt
+  have hφr : (fun σ => c.speed B.family.metric x σ * Real.exp (-B.B₀ * (σ - r))) r =
+      c.speed B.family.metric x r := by simp
+  rw [hφr] at h1
+  have h3 := mul_le_mul_of_nonneg_right h1 (Real.exp_nonneg (B.B₀ * (t - r)))
+  have h4 : (c.speed B.family.metric x t * Real.exp (-B.B₀ * (t - r))) *
+      Real.exp (B.B₀ * (t - r)) = c.speed B.family.metric x t := by
+    rw [mul_assoc, ← Real.exp_add]
+    ring_nf
+    simp
+  rw [h4] at h3
+  calc c.speed B.family.metric x t ≤
+        c.speed B.family.metric x r * Real.exp (B.B₀ * (t - r)) := h3
+    _ = Real.exp (B.B₀ * (t - r)) * c.speed B.family.metric x r := by ring
+
+private theorem length_le_exp_mul (B : RicciBackground (I := I) (M := M) D a b)
+    (hsu : s < u) (hwindow : Icc s u ⊆ Icc a b)
+    (c : CurveMap M) (hc : c.IsSolutionOn B.family.metric (Icc s u))
+    (r t : ℝ) (hr : r ∈ Icc s u) (ht : t ∈ Icc s u) (hrt : r ≤ t) :
+    c.length B.family.metric t ≤ Real.exp (B.B₀ * (t - r)) * c.length B.family.metric r := by
+  have hvt : Continuous fun x : ℝ => c.speed B.family.metric x t :=
+    (c.speed_contDiff B.family.metric (Icc s u) hc.smooth hc.immersed t ht).continuous
+  have hvr : Continuous fun x : ℝ => c.speed B.family.metric x r :=
+    (c.speed_contDiff B.family.metric (Icc s u) hc.smooth hc.immersed r hr).continuous
+  have hmono := intervalIntegral.integral_mono_on (μ := volume) (by norm_num : (0 : ℝ) ≤ 1)
+    (hvt.intervalIntegrable 0 1)
+    ((continuous_const.mul hvr).intervalIntegrable 0 1)
+    (fun x _ => speed_le_exp_mul B hsu hwindow c hc x r t hr ht hrt)
+  have hconst : (∫ x in (0 : ℝ)..1,
+        Real.exp (B.B₀ * (t - r)) * c.speed B.family.metric x r) =
+      Real.exp (B.B₀ * (t - r)) * c.length B.family.metric r := by
+    rw [intervalIntegral.integral_const_mul]
+    simp only [CurveMap.length, CurveMap.integral, one_mul]
+  calc c.length B.family.metric t = ∫ x in (0 : ℝ)..1, c.speed B.family.metric x t := by
+        simp only [CurveMap.length, CurveMap.integral, one_mul]
+    _ ≤ ∫ x in (0 : ℝ)..1, Real.exp (B.B₀ * (t - r)) * c.speed B.family.metric x r := hmono
+    _ = Real.exp (B.B₀ * (t - r)) * c.length B.family.metric r := hconst
+
+omit [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E] [CompleteSpace E]
+  [TopologicalSpace H] hBoundary in
+private theorem hasDerivWithinAt_Ioi_of_Icc {A B : ℝ} {f : ℝ → ℝ} {x c : ℝ}
+    (hA : A ≤ x) (hxB : x < B) (h : HasDerivWithinAt f c (Icc A B) x) :
+    HasDerivWithinAt f c (Ioi x) x := by
+  have hsub : Ioo x B ⊆ Icc A B := fun z hz => ⟨hA.trans hz.1.le, hz.2.le⟩
+  have hmono : HasDerivWithinAt f c (Ioo x B) x := h.mono hsub
+  have h1 : Filter.Tendsto (slope f x) (𝓝[Ioo x B] x) (𝓝 c) :=
+    (hasDerivWithinAt_iff_tendsto_slope' (by simp : x ∉ Ioo x B)).mp hmono
+  rw [nhdsWithin_Ioo_eq_nhdsGT hxB] at h1
+  exact (hasDerivWithinAt_iff_tendsto_slope' (by simp : x ∉ Ioi x)).mpr h1
+
+omit [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E] [CompleteSpace E]
+  [TopologicalSpace H] [SigmaCompactSpace M] [T2Space M] hBoundary in
+private theorem integral_exp_mul_sub (B : ℝ) (hB : B ≠ 0) (r t : ℝ) :
+    (∫ v in r..t, Real.exp (B * (v - r))) = (Real.exp (B * (t - r)) - 1) / B := by
+  have hderiv : ∀ v ∈ uIcc r t,
+      HasDerivAt (fun w : ℝ => Real.exp (B * (w - r)) / B) (Real.exp (B * (v - r))) v := by
+    intro v _
+    have h1 : HasDerivAt (fun w : ℝ => B * (w - r)) B v := by
+      simpa using ((hasDerivAt_id v).sub_const r).const_mul B
+    have h2 : HasDerivAt (fun w : ℝ => Real.exp (B * (w - r))) (Real.exp (B * (v - r)) * B) v :=
+      h1.exp
+    have h3 : HasDerivAt (fun w : ℝ => Real.exp (B * (w - r)) / B)
+        (Real.exp (B * (v - r)) * B / B) v := h2.div_const B
+    simpa [hB] using h3
+  have hint : IntervalIntegrable (fun v : ℝ => Real.exp (B * (v - r))) volume r t :=
+    ((Real.continuous_exp.comp (continuous_const.mul (continuous_id.sub continuous_const)))).intervalIntegrable r t
+  rw [intervalIntegral.integral_eq_sub_of_hasDerivAt hderiv hint]
+  have hrr : Real.exp (B * (r - r)) = 1 := by simp
+  rw [hrr]
+  field_simp
+
+omit [SigmaCompactSpace M] hBoundary in
+private theorem length_nonneg (B : RicciBackground (I := I) (M := M) D a b)
+    (c : CurveMap M) (t : ℝ) : 0 ≤ c.length B.family.metric t := by
+  rw [CurveMap.length, CurveMap.integral]
+  exact intervalIntegral.integral_nonneg (by norm_num : (0 : ℝ) ≤ 1)
+    (fun x _ => mul_nonneg zero_le_one (c.speed_nonneg B.family.metric x t))
+
+private theorem energy_integral_le (B : RicciBackground (I := I) (M := M) D a b)
+    (hsu : s < u) (hwindow : Icc s u ⊆ Icc a b)
+    (c : CurveMap M) (hc : c.IsSolutionOn B.family.metric (Icc s u))
+    (r t : ℝ) (hr : r ∈ Icc s u) (ht : t ∈ Icc s u) (hrt : r ≤ t) :
+    (∫ v in r..t, c.energy B.family.metric v) ≤
+      Real.exp (B.B₀ * (t - r)) * c.length B.family.metric r := by
+  have hsub : Icc r t ⊆ Icc s u := Icc_subset_Icc hr.1 ht.2
+  have hLcont : ContinuousOn (c.length B.family.metric) (Icc r t) :=
+    ((contDiffOn_length B hsu hwindow c hc).continuousOn).mono hsub
+  have hEcont : ContinuousOn (c.energy B.family.metric) (Icc r t) :=
+    (continuousOn_energy B hsu hwindow c hc).mono hsub
+  have hφcont : ContinuousOn (fun v : ℝ => -c.energy B.family.metric v +
+      B.B₀ * c.length B.family.metric v) (Icc r t) :=
+    (hEcont.neg).add (continuousOn_const.mul hLcont)
+  have hderiv : ∀ v ∈ Ioo r t,
+      HasDerivWithinAt (c.length B.family.metric)
+        (derivWithin (c.length B.family.metric) (Icc s u) v) (Ioi v) v := by
+    intro v hv
+    refine hasDerivWithinAt_Ioi_of_Icc (f := c.length B.family.metric) (x := v)
+      (hr.1.trans hv.1.le) (lt_of_lt_of_le hv.2 ht.2) ?_
+    refine (length_hasDerivWithinAt B hsu hwindow c hc v
+      ⟨hr.1.trans hv.1.le, (hv.2.le.trans ht.2)⟩).congr_deriv ?_
+    exact (derivWithin_length B hsu hwindow c hc v
+      ⟨hr.1.trans hv.1.le, (hv.2.le.trans ht.2)⟩).symm
+  have hmain := intervalIntegral.sub_le_integral_of_hasDeriv_right_of_le hrt hLcont hderiv
+    (hφcont.integrableOn_compact isCompact_Icc)
+    (fun v hv => by
+      rw [derivWithin_length B hsu hwindow c hc v
+        ⟨hr.1.trans hv.1.le, hv.2.le.trans ht.2⟩]
+      have hI := ricciTangent_integral_ge B hwindow c hc v
+        (hsub ⟨hv.1.le, hv.2.le⟩)
+      have hEnn : 0 ≤ c.energy B.family.metric v := by
+        rw [CurveMap.energy, CurveMap.integral]
+        exact intervalIntegral.integral_nonneg (by norm_num : (0 : ℝ) ≤ 1)
+          (fun x _ => mul_nonneg (c.normSq_nonneg B.family.metric
+            (c.curvatureVector B.family.metric) x v) (c.speed_nonneg B.family.metric x v))
+      linarith)
+  have hmain' : c.length B.family.metric t - c.length B.family.metric r ≤
+      -(∫ v in r..t, c.energy B.family.metric v) +
+        B.B₀ * ∫ v in r..t, c.length B.family.metric v := by
+    have hsplit : (∫ v in r..t, -c.energy B.family.metric v +
+        B.B₀ * c.length B.family.metric v) =
+        -(∫ v in r..t, c.energy B.family.metric v) +
+          B.B₀ * ∫ v in r..t, c.length B.family.metric v := by
+      rw [intervalIntegral.integral_add (f := fun v : ℝ => -c.energy B.family.metric v)
+        (g := fun v : ℝ => B.B₀ * c.length B.family.metric v)
+        (hEcont.neg.intervalIntegrable_of_Icc hrt)
+        ((continuousOn_const.mul hLcont).intervalIntegrable_of_Icc hrt)]
+      rw [intervalIntegral.integral_neg, intervalIntegral.integral_const_mul]
+    rw [hsplit] at hmain
+    exact hmain
+  have hLbound : (∫ v in r..t, c.length B.family.metric v) ≤
+      c.length B.family.metric r * ∫ v in r..t, Real.exp (B.B₀ * (v - r)) := by
+    rw [← intervalIntegral.integral_const_mul]
+    refine intervalIntegral.integral_mono_on (μ := volume) hrt ?_ ?_
+      (fun v hv => (length_le_exp_mul B hsu hwindow c hc r v hr (hsub hv)
+        (by linarith [hv.1] : r ≤ v)).trans_eq (mul_comm _ _))
+    · exact hLcont.intervalIntegrable_of_Icc hrt
+    · exact (continuousOn_const.mul
+        ((Real.continuous_exp.comp (continuous_const.mul
+          (continuous_id.sub continuous_const))).continuousOn)).intervalIntegrable_of_Icc hrt
+  have hlen_nn : 0 ≤ c.length B.family.metric r := length_nonneg B c r
+  have hLt_nn : 0 ≤ c.length B.family.metric t := length_nonneg B c t
+  rcases eq_or_ne B.B₀ 0 with hb | hb
+  · simp only [hb, zero_mul, Real.exp_zero, one_mul]
+    have hmain'' : c.length B.family.metric t - c.length B.family.metric r ≤
+        -(∫ v in r..t, c.energy B.family.metric v) := by
+      have h := hmain'
+      rw [hb, zero_mul, add_zero] at h
+      exact h
+    linarith [hmain'', hLt_nn]
+  · have hexp := integral_exp_mul_sub B.B₀ hb r t
+    have hstep : B.B₀ * (c.length B.family.metric r *
+        ∫ v in r..t, Real.exp (B.B₀ * (v - r))) =
+        c.length B.family.metric r * (Real.exp (B.B₀ * (t - r)) - 1) := by
+      rw [hexp]
+      field_simp
+    have hmul : B.B₀ * (∫ v in r..t, c.length B.family.metric v) ≤
+        B.B₀ * (c.length B.family.metric r *
+          ∫ v in r..t, Real.exp (B.B₀ * (v - r))) :=
+      mul_le_mul_of_nonneg_left hLbound B.B₀_nonneg
+    have hgoal : (∫ v in r..t, c.energy B.family.metric v) ≤
+        c.length B.family.metric r * Real.exp (B.B₀ * (t - r)) := by
+      linarith [hmain', hmul, hstep, hlen_nn, hLt_nn]
+    rwa [mul_comm] at hgoal
+
+omit [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E] [CompleteSpace E]
+  [TopologicalSpace H] hBoundary in
+private theorem deriv_add_period_eq {f : ℝ → ℝ} {x : ℝ} (hper : Function.Periodic f 1)
+    (hfd : DifferentiableAt ℝ f (x + 1)) :
+    deriv f (x + 1) = deriv f x := by
+  have hcomp : HasDerivAt (fun y : ℝ => f (y + 1)) (deriv f (x + 1)) x := by
+    have h := hfd.hasDerivAt.comp x ((hasDerivAt_id x).add_const 1)
+    rw [mul_one] at h
+    exact h
+  have heq : (fun y : ℝ => f (y + 1)) = f := funext (fun y => hper y)
+  rw [heq] at hcomp
+  exact hcomp.deriv.symm
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I ∞ M] [SigmaCompactSpace M]
+  [T2Space M] hBoundary in
+private theorem sliceMDiff (c : CurveMap M) (hc : c.SmoothOn (I := I) (Icc s u))
+    (v : ℝ) (hv : v ∈ Icc s u) :
+    ∀ y, MDifferentiableAt 𝓘(ℝ, ℝ) I (fun z => c.lift z v) y := fun y =>
+  (contMDiffOn_univ.mp (c.space_slice_contMDiffOn (Icc s u) hc v hv)).mdifferentiableAt
+    (by norm_num)
+
+omit [SigmaCompactSpace M] in
+private theorem curvatureSq_add_period (B : RicciBackground (I := I) (M := M) D a b)
+    (_hwindow : Icc s u ⊆ Icc a b) (c : CurveMap M)
+    (hc : c.IsSolutionOn B.family.metric (Icc s u)) (v : ℝ) (hv : v ∈ Icc s u) (x : ℝ) :
+    c.curvatureSq B.family.metric (x + 1) v = c.curvatureSq B.family.metric x v := by
+  have hγ := sliceMDiff c hc.smooth v hv
+  have hs : c.speed B.family.metric (x + 1) v = c.speed B.family.metric x v :=
+    c.speed_add_period B.family.metric v x (hγ (x + 1))
+  have hD : c.Dx B.family.metric (c.unitTangent B.family.metric) (x + 1) v =
+      c.Dx B.family.metric (c.unitTangent B.family.metric) x v :=
+    c.Dx_add_period B.family.metric v x (c.unitTangent B.family.metric)
+      (fun y => c.unitTangent_add_period B.family.metric v y (hγ (y + 1)))
+      (c.unitTangent_contMDiff B.family.metric (Icc s u) hc.smooth hc.immersed v hv) (hγ (x + 1))
+  have hH : c.curvatureVector B.family.metric (x + 1) v = c.curvatureVector B.family.metric x v := by
+    change (c.speed B.family.metric (x + 1) v)⁻¹ • c.Dx B.family.metric
+        (c.unitTangent B.family.metric) (x + 1) v =
+      (c.speed B.family.metric x v)⁻¹ • c.Dx B.family.metric
+        (c.unitTangent B.family.metric) x v
+    rw [hs, hD]
+    rfl
+  have hl : c.lift (x + 1) v = c.lift x v := c.lift_add_period v x
+  change (B.family.metric v).inner (c.lift (x + 1) v)
+      (c.curvatureVector B.family.metric (x + 1) v) (c.curvatureVector B.family.metric (x + 1) v) =
+    (B.family.metric v).inner (c.lift x v)
+      (c.curvatureVector B.family.metric x v) (c.curvatureVector B.family.metric x v)
+  rw [hH, hl]
+
+omit [SigmaCompactSpace M] in
+private theorem regularizedCurvature_add_period (B : RicciBackground (I := I) (M := M) D a b)
+    (hwindow : Icc s u ⊆ Icc a b) (c : CurveMap M)
+    (hc : c.IsSolutionOn B.family.metric (Icc s u)) (ε : ℝ) (v : ℝ) (hv : v ∈ Icc s u)
+    (x : ℝ) :
+    c.regularizedCurvature B.family.metric ε (x + 1) v =
+      c.regularizedCurvature B.family.metric ε x v := by
+  have h := curvatureSq_add_period B hwindow c hc v hv x
+  simp only [CurveMap.regularizedCurvature, h]
+
+private theorem regularizedCurvature_slice_contDiff (B : RicciBackground (I := I) (M := M) D a b)
+    (hsu : s < u) (hwindow : Icc s u ⊆ Icc a b) (c : CurveMap M)
+    (hc : c.IsSolutionOn B.family.metric (Icc s u)) (ε : ℝ) (hε : 0 < ε)
+    (v : ℝ) (hv : v ∈ Icc s u) :
+    ContDiff ℝ ∞ (fun x : ℝ => c.regularizedCurvature B.family.metric ε x v) := by
+  have hjoint := (rfs_csf_regularized_curvature B hsu hwindow c hc ε hε).1
+  have hinner : ContDiffOn ℝ ∞ (fun x : ℝ => (x, v)) (univ : Set ℝ) :=
+    (contDiff_id.prodMk contDiff_const).contDiffOn
+  have h := hjoint.comp hinner (fun x _ => ⟨mem_univ x, hv⟩)
+  rwa [contDiffOn_univ] at h
+
+private theorem integral_ds_ds_regularizedCurvature_mul_speed_eq_zero
+    (B : RicciBackground (I := I) (M := M) D a b)
+    (hsu : s < u) (hwindow : Icc s u ⊆ Icc a b) (c : CurveMap M)
+    (hc : c.IsSolutionOn B.family.metric (Icc s u)) (ε : ℝ) (hε : 0 < ε)
+    (v : ℝ) (hv : v ∈ Icc s u) :
+    (∫ x in (0 : ℝ)..1, c.ds B.family.metric (c.ds B.family.metric
+        (c.regularizedCurvature B.family.metric ε)) x v * c.speed B.family.metric x v) = 0 := by
+  set F : ℝ → ℝ := fun x => c.regularizedCurvature B.family.metric ε x v with hFdef
+  have hFsmooth : ContDiff ℝ ∞ F := regularizedCurvature_slice_contDiff B hsu hwindow c hc ε hε v hv
+  have hFper : Function.Periodic F 1 := fun x => regularizedCurvature_add_period B hwindow c hc ε v hv x
+  set ψ : ℝ → ℝ := fun x => (c.speed B.family.metric x v)⁻¹ * deriv F x with hψdef
+  have hspos : ∀ x : ℝ, 0 < c.speed B.family.metric x v :=
+    fun x => c.speed_pos B.family.metric hc.immersed x v hv
+  have hspos' : ∀ x : ℝ, c.speed B.family.metric x v ≠ 0 := fun x => ne_of_gt (hspos x)
+  have hγ := sliceMDiff c hc.smooth v hv
+  have hψper : Function.Periodic ψ 1 := by
+    intro x
+    have hs : c.speed B.family.metric (x + 1) v = c.speed B.family.metric x v :=
+      c.speed_add_period B.family.metric v x (hγ (x + 1))
+    have hd : deriv F (x + 1) = deriv F x :=
+      deriv_add_period_eq hFper (hFsmooth.differentiable (by simp) (x + 1))
+    simp only [hψdef, hs, hd]
+  have hψsmooth : ContDiff ℝ ∞ ψ := by
+    have hsd : ContDiff ℝ ∞ (fun x : ℝ => c.speed B.family.metric x v) :=
+      c.speed_contDiff B.family.metric (Icc s u) hc.smooth hc.immersed v hv
+    exact (hsd.inv (fun x => hspos' x)).mul (hFsmooth.iterate_deriv 1)
+  have hderiveq : (∫ x in (0 : ℝ)..1, deriv ψ x) = ψ 1 - ψ 0 :=
+    intervalIntegral.integral_deriv_eq_sub
+      (fun x _ => hψsmooth.differentiable (by simp) x)
+      ((hψsmooth.continuous_deriv (by simp)).continuousOn.intervalIntegrable)
+  have hcongr : ∀ x : ℝ, c.ds B.family.metric (c.ds B.family.metric
+      (c.regularizedCurvature B.family.metric ε)) x v * c.speed B.family.metric x v =
+      deriv ψ x := by
+    intro x
+    have h2 : c.ds B.family.metric (c.ds B.family.metric (c.regularizedCurvature B.family.metric ε))
+        x v = (c.speed B.family.metric x v)⁻¹ * deriv ψ x := rfl
+    rw [h2]
+    field_simp [hspos' x]
+  rw [intervalIntegral.integral_congr (fun x _ => hcongr x), hderiveq]
+  have h10 : ψ 1 = ψ 0 := by simpa using hψper 0
+  rw [h10, sub_self]
+
+
+
+
+private theorem regularizedCurvature_joint (B : RicciBackground (I := I) (M := M) D a b)
+    (hsu : s < u) (hwindow : Icc s u ⊆ Icc a b) (c : CurveMap M)
+    (hc : c.IsSolutionOn B.family.metric (Icc s u)) (ε : ℝ) (hε : 0 < ε) :
+    ContDiffOn ℝ ∞ (fun p : ℝ × ℝ => c.regularizedCurvature B.family.metric ε p.1 p.2)
+      ((univ : Set ℝ) ×ˢ Icc s u) :=
+  (rfs_csf_regularized_curvature B hsu hwindow c hc ε hε).1
+
+private theorem hasDerivWithinAt_regularizedCurvature_slice
+    (B : RicciBackground (I := I) (M := M) D a b)
+    (hsu : s < u) (hwindow : Icc s u ⊆ Icc a b) (c : CurveMap M)
+    (hc : c.IsSolutionOn B.family.metric (Icc s u)) (ε : ℝ) (hε : 0 < ε)
+    (x : ℝ) (v : ℝ) (hv : v ∈ Icc s u) :
+    HasDerivWithinAt (fun τ => c.regularizedCurvature B.family.metric ε x τ)
+      (derivWithin (fun τ => c.regularizedCurvature B.family.metric ε x τ) (Icc s u) v)
+      (Icc s u) v := by
+  have hjoint := regularizedCurvature_joint B hsu hwindow c hc ε hε
+  have hx : ContDiffWithinAt ℝ ∞
+      (fun τ : ℝ => c.regularizedCurvature B.family.metric ε x τ) (Icc s u) v := by
+    have harg : ContDiffWithinAt ℝ ∞ (fun τ : ℝ => (x, τ)) (Icc s u) v :=
+      contDiffWithinAt_const.prodMk contDiffWithinAt_id
+    exact (hjoint.contDiffWithinAt ⟨mem_univ x, hv⟩).comp v harg
+      (fun τ hτ => ⟨mem_univ x, hτ⟩)
+  exact (hx.differentiableWithinAt (by norm_num)).hasDerivWithinAt
+
+private theorem continuousOn_derivWithin_regularizedCurvature
+    (B : RicciBackground (I := I) (M := M) D a b)
+    (hsu : s < u) (hwindow : Icc s u ⊆ Icc a b) (c : CurveMap M)
+    (hc : c.IsSolutionOn B.family.metric (Icc s u)) (ε : ℝ) (hε : 0 < ε) :
+    ContinuousOn (fun p : ℝ × ℝ =>
+      derivWithin (fun τ => c.regularizedCurvature B.family.metric ε p.1 τ) (Icc s u) p.2)
+      ((univ : Set ℝ) ×ˢ Icc s u) :=
+  (contDiffOn_derivWithin_snd hsu (regularizedCurvature_joint B hsu hwindow c hc ε hε)).continuousOn
+
+private theorem hasDerivWithinAt_integral_regularizedCurvature
+    (B : RicciBackground (I := I) (M := M) D a b)
+    (hsu : s < u) (hwindow : Icc s u ⊆ Icc a b) (c : CurveMap M)
+    (hc : c.IsSolutionOn B.family.metric (Icc s u)) (ε : ℝ) (hε : 0 < ε)
+    (v : ℝ) (hv : v ∈ Icc s u) :
+    HasDerivWithinAt
+      (fun τ => c.integral B.family.metric (c.regularizedCurvature B.family.metric ε) τ)
+      (∫ x in (0 : ℝ)..1,
+        derivWithin (fun τ => c.regularizedCurvature B.family.metric ε x τ) (Icc s u) v *
+            c.speed B.family.metric x v +
+          c.regularizedCurvature B.family.metric ε x v *
+            (-(c.q B.family x v) * c.speed B.family.metric x v)) (Icc s u) v := by
+  have hRj := regularizedCurvature_joint B hsu hwindow c hc ε hε
+  have hvj := joint_continuousOn_speed B hwindow c hc
+  have hqj := CurveMap.q_continuousOn B hsu hwindow c hc
+  have hFc : ContinuousOn (fun p : ℝ × ℝ =>
+      c.regularizedCurvature B.family.metric ε p.1 p.2 * c.speed B.family.metric p.1 p.2)
+      ((univ : Set ℝ) ×ˢ Icc s u) := hRj.continuousOn.mul hvj
+  have hGc : ContinuousOn (fun p : ℝ × ℝ =>
+      derivWithin (fun τ => c.regularizedCurvature B.family.metric ε p.1 τ) (Icc s u) p.2 *
+          c.speed B.family.metric p.1 p.2 +
+        c.regularizedCurvature B.family.metric ε p.1 p.2 *
+          (-(c.q B.family p.1 p.2) * c.speed B.family.metric p.1 p.2))
+      ((univ : Set ℝ) ×ˢ Icc s u) :=
+    (continuousOn_derivWithin_regularizedCurvature B hsu hwindow c hc ε hε).mul hvj |>.add
+      (hRj.continuousOn.mul (hqj.neg.mul hvj))
+  have hsp := CurveMap.speedEvolution_of_pairingEvolution B c hc.immersed
+    (CurveMap.pairingEvolution B hsu hwindow c hc)
+  have hmain := DifferentialGeometry.Analysis.Calculus.hasDerivWithinAt_paramIntervalIntegral
+    (F := fun x τ => c.regularizedCurvature B.family.metric ε x τ * c.speed B.family.metric x τ)
+    (G := fun x τ =>
+      derivWithin (fun σ => c.regularizedCurvature B.family.metric ε x σ) (Icc s u) τ *
+          c.speed B.family.metric x τ +
+        c.regularizedCurvature B.family.metric ε x τ *
+          (-(c.q B.family x τ) * c.speed B.family.metric x τ))
+    hFc hGc (fun x τ hτ =>
+      (hasDerivWithinAt_regularizedCurvature_slice B hsu hwindow c hc ε hε x τ hτ).mul
+        (hsp x τ hτ))
+  exact hmain v hv
+
+
+
+
+private theorem derivWithin_length_le (B : RicciBackground (I := I) (M := M) D a b)
+    (hsu : s < u) (hwindow : Icc s u ⊆ Icc a b)
+    (c : CurveMap M) (hc : c.IsSolutionOn B.family.metric (Icc s u))
+    (v : ℝ) (hv : v ∈ Icc s u) :
+    derivWithin (c.length B.family.metric) (Icc s u) v ≤ B.B₀ * c.length B.family.metric v := by
+  rw [derivWithin_length B hsu hwindow c hc v hv]
+  have hI := ricciTangent_integral_ge B hwindow c hc v hv
+  have hEnn : 0 ≤ c.energy B.family.metric v := by
+    rw [CurveMap.energy, CurveMap.integral]
+    exact intervalIntegral.integral_nonneg (by norm_num : (0 : ℝ) ≤ 1)
+      (fun x _ => mul_nonneg (c.normSq_nonneg B.family.metric
+        (c.curvatureVector B.family.metric) x v) (c.speed_nonneg B.family.metric x v))
+  linarith
+
+private theorem regularizedTotalCurvature_derivWithin_le
+    (B : RicciBackground (I := I) (M := M) D a b)
+    (hsu : s < u) (hwindow : Icc s u ⊆ Icc a b) (c : CurveMap M)
+    (hc : c.IsSolutionOn B.family.metric (Icc s u)) (ε : ℝ) (hε : 0 < ε)
+    (v : ℝ) (hv : v ∈ Icc s u) :
+    derivWithin (fun τ => c.integral B.family.metric
+        (c.regularizedCurvature B.family.metric ε) τ) (Icc s u) v ≤
+      (B.C + B.B₀) * c.integral B.family.metric (c.regularizedCurvature B.family.metric ε) v +
+        B.C * c.length B.family.metric v := by
+  have huniq : UniqueDiffWithinAt ℝ (Icc s u) v := (uniqueDiffOn_Icc hsu) v hv
+  have hderiv := (hasDerivWithinAt_integral_regularizedCurvature B hsu hwindow c hc ε hε v hv)
+  rw [hderiv.derivWithin huniq]
+  have hRj := regularizedCurvature_joint B hsu hwindow c hc ε hε
+  have hvj := joint_continuousOn_speed B hwindow c hc
+  have hspv : Continuous fun x : ℝ => c.speed B.family.metric x v := by
+    have h := hvj.comp (s := (univ : Set ℝ))
+      (continuous_id.prodMk continuous_const).continuousOn (fun x _ => ⟨mem_univ x, hv⟩)
+    exact continuousOn_univ.mp h
+  have hDv : Continuous fun x : ℝ =>
+      derivWithin (fun τ => c.regularizedCurvature B.family.metric ε x τ) (Icc s u) v := by
+    have h := (continuousOn_derivWithin_regularizedCurvature B hsu hwindow c hc ε hε).comp
+      (s := (univ : Set ℝ)) (continuous_id.prodMk continuous_const).continuousOn
+      (fun x _ => ⟨mem_univ x, hv⟩)
+    exact continuousOn_univ.mp h
+  have hqv : Continuous fun x : ℝ => c.q B.family x v := by
+    have h := (CurveMap.q_continuousOn B hsu hwindow c hc).comp (s := (univ : Set ℝ))
+      (continuous_id.prodMk continuous_const).continuousOn (fun x _ => ⟨mem_univ x, hv⟩)
+    exact continuousOn_univ.mp h
+  have hRx : Continuous fun x : ℝ => c.regularizedCurvature B.family.metric ε x v :=
+    (regularizedCurvature_slice_contDiff B hsu hwindow c hc ε hε v hv).continuous
+  have hstep : ∀ x : ℝ,
+      derivWithin (fun τ => c.regularizedCurvature B.family.metric ε x τ) (Icc s u) v *
+          c.speed B.family.metric x v +
+        c.regularizedCurvature B.family.metric ε x v *
+          (-(c.q B.family x v) * c.speed B.family.metric x v) ≤
+      c.ds B.family.metric (c.ds B.family.metric (c.regularizedCurvature B.family.metric ε)) x v *
+          c.speed B.family.metric x v +
+        (((B.C + B.B₀) * c.regularizedCurvature B.family.metric ε x v) *
+            c.speed B.family.metric x v + B.C * c.speed B.family.metric x v) := by
+    intro x
+    have h3 := (rfs_csf_regularized_curvature B hsu hwindow c hc ε hε).2.2 x v hv
+    have hRnn : 0 ≤ c.regularizedCurvature B.family.metric ε x v :=
+      le_trans (c.curvature_nonneg B.family.metric x v)
+        (sub_nonneg.mp ((rfs_csf_regularized_curvature B hsu hwindow c hc ε hε).2.1 x v hv).1)
+    have hric := ricciTangent_ge_neg B hwindow c hc x v hv
+    have hvnn := c.speed_nonneg B.family.metric x v
+    have hq : c.q B.family x v =
+        c.curvatureSq B.family.metric x v + c.ricciTangent B.family x v := rfl
+    have hnegric : -c.ricciTangent B.family x v ≤ B.B₀ := by linarith [hric]
+    have hkey : -(c.regularizedCurvature B.family.metric ε x v *
+        c.ricciTangent B.family x v) ≤
+        B.B₀ * c.regularizedCurvature B.family.metric ε x v := by
+      have h := mul_le_mul_of_nonneg_left hnegric hRnn
+      rw [mul_neg, ← mul_comm B.B₀] at h
+      exact h
+    have h1 := mul_le_mul_of_nonneg_right h3 hvnn
+    have h2 : c.regularizedCurvature B.family.metric ε x v *
+        (-(c.q B.family x v) * c.speed B.family.metric x v) =
+        -(c.regularizedCurvature B.family.metric ε x v *
+            c.curvatureSq B.family.metric x v * c.speed B.family.metric x v) -
+          c.regularizedCurvature B.family.metric ε x v *
+            c.ricciTangent B.family x v * c.speed B.family.metric x v := by
+      rw [hq]
+      ring
+    have hmid : derivWithin (fun τ => c.regularizedCurvature B.family.metric ε x τ) (Icc s u) v *
+          c.speed B.family.metric x v +
+        c.regularizedCurvature B.family.metric ε x v *
+          (-(c.q B.family x v) * c.speed B.family.metric x v) ≤
+        (c.ds B.family.metric (c.ds B.family.metric
+              (c.regularizedCurvature B.family.metric ε)) x v +
+          B.C * c.regularizedCurvature B.family.metric ε x v + B.C -
+          c.regularizedCurvature B.family.metric ε x v * c.ricciTangent B.family x v) *
+          c.speed B.family.metric x v := by
+      rw [h2]
+      nlinarith [h1]
+    have hfin : (c.ds B.family.metric (c.ds B.family.metric
+            (c.regularizedCurvature B.family.metric ε)) x v +
+          B.C * c.regularizedCurvature B.family.metric ε x v + B.C -
+          c.regularizedCurvature B.family.metric ε x v * c.ricciTangent B.family x v) *
+          c.speed B.family.metric x v ≤
+        (c.ds B.family.metric (c.ds B.family.metric
+            (c.regularizedCurvature B.family.metric ε)) x v +
+          (B.C + B.B₀) * c.regularizedCurvature B.family.metric ε x v + B.C) *
+          c.speed B.family.metric x v := by
+      refine mul_le_mul_of_nonneg_right ?_ hvnn
+      linarith [hkey]
+    have hconv : (c.ds B.family.metric (c.ds B.family.metric
+            (c.regularizedCurvature B.family.metric ε)) x v +
+          (B.C + B.B₀) * c.regularizedCurvature B.family.metric ε x v + B.C) *
+          c.speed B.family.metric x v =
+        c.ds B.family.metric (c.ds B.family.metric (c.regularizedCurvature B.family.metric ε)) x v *
+            c.speed B.family.metric x v +
+          (((B.C + B.B₀) * c.regularizedCurvature B.family.metric ε x v) *
+              c.speed B.family.metric x v + B.C * c.speed B.family.metric x v) := by
+      ring
+    rw [hconv] at hfin
+    linarith [hmid, hfin]
+  have hψa : ContDiff ℝ ∞ (fun x : ℝ => (c.speed B.family.metric x v)⁻¹ *
+      deriv (fun z : ℝ => c.regularizedCurvature B.family.metric ε z v) x) := by
+    have hsd : ContDiff ℝ ∞ (fun x : ℝ => c.speed B.family.metric x v) :=
+      c.speed_contDiff B.family.metric (Icc s u) hc.smooth hc.immersed v hv
+    exact (hsd.inv (fun x => ne_of_gt (c.speed_pos B.family.metric hc.immersed x v hv))).mul
+      ((regularizedCurvature_slice_contDiff B hsu hwindow c hc ε hε v hv).iterate_deriv 1)
+  have hds_ds_eq : ∀ x : ℝ, c.ds B.family.metric (c.ds B.family.metric
+      (c.regularizedCurvature B.family.metric ε)) x v =
+      (c.speed B.family.metric x v)⁻¹ * deriv (fun y : ℝ => (c.speed B.family.metric y v)⁻¹ *
+        deriv (fun z : ℝ => c.regularizedCurvature B.family.metric ε z v) y) x := fun x => rfl
+  have hInt1 : IntervalIntegrable (fun x : ℝ => c.ds B.family.metric (c.ds B.family.metric
+      (c.regularizedCurvature B.family.metric ε)) x v * c.speed B.family.metric x v) volume 0 1 := by
+    have hfun : (fun x : ℝ => c.ds B.family.metric (c.ds B.family.metric
+        (c.regularizedCurvature B.family.metric ε)) x v * c.speed B.family.metric x v) =
+        (fun x => deriv (fun y : ℝ => (c.speed B.family.metric y v)⁻¹ *
+          deriv (fun z : ℝ => c.regularizedCurvature B.family.metric ε z v) y) x) := by
+      funext x
+      rw [hds_ds_eq x]
+      field_simp [ne_of_gt (c.speed_pos B.family.metric hc.immersed x v hv)]
+    rw [hfun]
+    exact (hψa.continuous_deriv (by simp)).intervalIntegrable 0 1
+  have hInt2 : IntervalIntegrable (fun x : ℝ => ((B.C + B.B₀) *
+      c.regularizedCurvature B.family.metric ε x v) * c.speed B.family.metric x v) volume 0 1 :=
+    ((continuous_const.mul hRx).mul hspv).intervalIntegrable 0 1
+  have hInt3 : IntervalIntegrable (fun x : ℝ => B.C * c.speed B.family.metric x v) volume 0 1 :=
+    ((continuous_const.mul hspv)).intervalIntegrable 0 1
+  set A : ℝ → ℝ := fun x => c.ds B.family.metric (c.ds B.family.metric
+      (c.regularizedCurvature B.family.metric ε)) x v * c.speed B.family.metric x v with hA
+  set Bx : ℝ → ℝ := fun x => ((B.C + B.B₀) * c.regularizedCurvature B.family.metric ε x v) *
+      c.speed B.family.metric x v with hBx
+  set Cc : ℝ → ℝ := fun x => B.C * c.speed B.family.metric x v with hCc
+  have hIntA : IntervalIntegrable A volume 0 1 := by rw [hA]; exact hInt1
+  have hIntB : IntervalIntegrable Bx volume 0 1 := by rw [hBx]; exact hInt2
+  have hIntC : IntervalIntegrable Cc volume 0 1 := by rw [hCc]; exact hInt3
+  have hmono := intervalIntegral.integral_mono_on (μ := volume) (by norm_num : (0 : ℝ) ≤ 1)
+    (f := fun x : ℝ =>
+      derivWithin (fun τ => c.regularizedCurvature B.family.metric ε x τ) (Icc s u) v *
+          c.speed B.family.metric x v +
+        c.regularizedCurvature B.family.metric ε x v *
+          (-(c.q B.family x v) * c.speed B.family.metric x v))
+    (g := fun x : ℝ => A x + (Bx x + Cc x))
+    (((hDv.mul hspv).add (hRx.mul (hqv.neg.mul hspv))).intervalIntegrable 0 1)
+    (hIntA.add (hIntB.add hIntC))
+    (fun x _ => by
+      have h := hstep x
+      simpa only [hA, hBx, hCc] using h)
+  refine hmono.trans ?_
+  have e1 : (∫ x in (0 : ℝ)..1, A x + (Bx x + Cc x)) =
+      (∫ x in (0 : ℝ)..1, A x) + ((∫ x in (0 : ℝ)..1, Bx x) + ∫ x in (0 : ℝ)..1, Cc x) := by
+    have hsplit2 : (∫ x in (0 : ℝ)..1, Bx x + Cc x) =
+        (∫ x in (0 : ℝ)..1, Bx x) + ∫ x in (0 : ℝ)..1, Cc x :=
+      intervalIntegral.integral_add (f := Bx) (g := Cc) hIntB hIntC
+    calc (∫ x in (0 : ℝ)..1, A x + (Bx x + Cc x))
+        = (∫ x in (0 : ℝ)..1, A x) + (∫ x in (0 : ℝ)..1, Bx x + Cc x) :=
+          intervalIntegral.integral_add (f := A) (g := fun x : ℝ => Bx x + Cc x)
+            hIntA (hIntB.add hIntC)
+      _ = (∫ x in (0 : ℝ)..1, A x) + ((∫ x in (0 : ℝ)..1, Bx x) + ∫ x in (0 : ℝ)..1, Cc x) := by
+          rw [hsplit2]
+  have e2 : (∫ x in (0 : ℝ)..1, Bx x) =
+      (B.C + B.B₀) * (∫ x in (0 : ℝ)..1,
+        c.regularizedCurvature B.family.metric ε x v * c.speed B.family.metric x v) := by
+    rw [hBx]
+    have hfun2 : (fun x : ℝ => ((B.C + B.B₀) * c.regularizedCurvature B.family.metric ε x v) *
+        c.speed B.family.metric x v) = fun x : ℝ => (B.C + B.B₀) *
+        (c.regularizedCurvature B.family.metric ε x v * c.speed B.family.metric x v) := by
+      funext x
+      ring
+    rw [hfun2]
+    rw [intervalIntegral.integral_const_mul]
+  have e3 : (∫ x in (0 : ℝ)..1, Cc x) = B.C * (∫ x in (0 : ℝ)..1, c.speed B.family.metric x v) := by
+    rw [hCc]
+    exact intervalIntegral.integral_const_mul B.C _
+  rw [e1]
+  simp only [hA, hBx, hCc]
+  rw [integral_ds_ds_regularizedCurvature_mul_speed_eq_zero B hsu hwindow c hc ε hε v hv, zero_add]
+  rw [e2, e3]
+  simp only [CurveMap.integral, CurveMap.length, one_mul]
+  exact le_of_eq (by ring)
+
+
+private theorem derivWithin_integral_regularizedCurvature
+    (B : RicciBackground (I := I) (M := M) D a b)
+    (hsu : s < u) (hwindow : Icc s u ⊆ Icc a b) (c : CurveMap M)
+    (hc : c.IsSolutionOn B.family.metric (Icc s u)) (ε : ℝ) (hε : 0 < ε)
+    (v : ℝ) (hv : v ∈ Icc s u) :
+    derivWithin (fun τ => c.integral B.family.metric
+        (c.regularizedCurvature B.family.metric ε) τ) (Icc s u) v =
+      ∫ x in (0 : ℝ)..1,
+        derivWithin (fun τ => c.regularizedCurvature B.family.metric ε x τ) (Icc s u) v *
+            c.speed B.family.metric x v +
+          c.regularizedCurvature B.family.metric ε x v *
+            (-(c.q B.family x v) * c.speed B.family.metric x v) :=
+  (hasDerivWithinAt_integral_regularizedCurvature B hsu hwindow c hc ε hε v hv).derivWithin
+    ((uniqueDiffOn_Icc hsu) v hv)
+
+private theorem totalCurvature_le_regularized (B : RicciBackground (I := I) (M := M) D a b)
+    (hsu : s < u) (hwindow : Icc s u ⊆ Icc a b) (c : CurveMap M)
+    (hc : c.IsSolutionOn B.family.metric (Icc s u)) (ε : ℝ) (hε : 0 < ε)
+    (v : ℝ) (hv : v ∈ Icc s u) :
+    c.totalCurvature B.family.metric v ≤
+        c.integral B.family.metric (c.regularizedCurvature B.family.metric ε) v ∧
+      c.integral B.family.metric (c.regularizedCurvature B.family.metric ε) v ≤
+        c.totalCurvature B.family.metric v + ε * c.length B.family.metric v := by
+  have hperr := rfs_csf_regularized_curvature B hsu hwindow c hc ε hε
+  have hv' : Continuous fun x : ℝ => c.speed B.family.metric x v :=
+    (c.speed_contDiff B.family.metric (Icc s u) hc.smooth hc.immersed v hv).continuous
+  have hcurv : Continuous fun x : ℝ => c.curvature B.family.metric x v :=
+    (Real.continuous_sqrt.comp
+      ((c.curvatureSq_contDiff B.family.metric (Icc s u) hc.smooth hc.immersed v hv).continuous))
+  have hreg : Continuous fun x : ℝ => c.regularizedCurvature B.family.metric ε x v :=
+    (regularizedCurvature_slice_contDiff B hsu hwindow c hc ε hε v hv).continuous
+  have hmono := intervalIntegral.integral_mono_on (μ := volume) (by norm_num : (0 : ℝ) ≤ 1)
+    (f := fun x : ℝ => c.curvature B.family.metric x v * c.speed B.family.metric x v)
+    (g := fun x : ℝ => c.regularizedCurvature B.family.metric ε x v * c.speed B.family.metric x v)
+    ((hcurv.mul hv').intervalIntegrable 0 1) ((hreg.mul hv').intervalIntegrable 0 1)
+    (fun x _ => mul_le_mul_of_nonneg_right
+      (sub_nonneg.mp (hperr.2.1 x v hv).1) (c.speed_nonneg B.family.metric x v))
+  have hmono2 := intervalIntegral.integral_mono_on (μ := volume) (by norm_num : (0 : ℝ) ≤ 1)
+    (f := fun x : ℝ => c.regularizedCurvature B.family.metric ε x v * c.speed B.family.metric x v)
+    (g := fun x : ℝ => c.curvature B.family.metric x v * c.speed B.family.metric x v +
+      ε * c.speed B.family.metric x v)
+    ((hreg.mul hv').intervalIntegrable 0 1)
+    (((hcurv.mul hv').add (continuous_const.mul hv')).intervalIntegrable 0 1)
+    (fun x _ => by
+      have h1 := (hperr.2.1 x v hv).2
+      calc c.regularizedCurvature B.family.metric ε x v * c.speed B.family.metric x v
+          ≤ (c.curvature B.family.metric x v + ε) * c.speed B.family.metric x v :=
+            mul_le_mul_of_nonneg_right (by linarith) (c.speed_nonneg B.family.metric x v)
+        _ = c.curvature B.family.metric x v * c.speed B.family.metric x v +
+            ε * c.speed B.family.metric x v := by ring)
+  constructor
+  · have h1 : (∫ x in (0 : ℝ)..1, c.curvature B.family.metric x v * c.speed B.family.metric x v) ≤
+        ∫ x in (0 : ℝ)..1, c.regularizedCurvature B.family.metric ε x v * c.speed B.family.metric x v :=
+      hmono
+    simpa only [CurveMap.totalCurvature, CurveMap.integral] using h1
+  · have hsplit : (∫ x in (0 : ℝ)..1, c.curvature B.family.metric x v * c.speed B.family.metric x v +
+        ε * c.speed B.family.metric x v) =
+        (∫ x in (0 : ℝ)..1, c.curvature B.family.metric x v * c.speed B.family.metric x v) +
+          ε * (∫ x in (0 : ℝ)..1, c.speed B.family.metric x v) := by
+      rw [intervalIntegral.integral_add
+        (f := fun x : ℝ => c.curvature B.family.metric x v * c.speed B.family.metric x v)
+        (g := fun x : ℝ => ε * c.speed B.family.metric x v)
+        ((hcurv.mul hv').intervalIntegrable 0 1) ((continuous_const.mul hv').intervalIntegrable 0 1)]
+      rw [intervalIntegral.integral_const_mul]
+    rw [hsplit] at hmono2
+    simpa only [CurveMap.totalCurvature, CurveMap.length, CurveMap.integral, one_mul] using hmono2
+
+private theorem regularizedTotalCurvature_sub_le_integral
+    (B : RicciBackground (I := I) (M := M) D a b)
+    (hsu : s < u) (hwindow : Icc s u ⊆ Icc a b) (c : CurveMap M)
+    (hc : c.IsSolutionOn B.family.metric (Icc s u)) (ε : ℝ) (hε : 0 < ε)
+    (r t : ℝ) (hr : r ∈ Icc s u) (ht : t ∈ Icc s u) (hrt : r ≤ t) :
+    c.integral B.family.metric (c.regularizedCurvature B.family.metric ε) t ≤
+      c.integral B.family.metric (c.regularizedCurvature B.family.metric ε) r +
+        ∫ v in r..t, ((B.C + B.B₀) * c.integral B.family.metric
+            (c.regularizedCurvature B.family.metric ε) v + B.C * c.length B.family.metric v) := by
+  have hsub : Icc r t ⊆ Icc s u := Icc_subset_Icc hr.1 ht.2
+  have hcont : ContinuousOn (fun τ => c.integral B.family.metric
+      (c.regularizedCurvature B.family.metric ε) τ) (Icc r t) :=
+    ((continuousOn_integral_of_continuousOn
+      ((regularizedCurvature_joint B hsu hwindow c hc ε hε).continuousOn.mul
+        (joint_continuousOn_speed B hwindow c hc))).mono hsub)
+  have hderiv : ∀ v ∈ Ico r t, HasDerivWithinAt (fun τ => c.integral B.family.metric
+      (c.regularizedCurvature B.family.metric ε) τ)
+      (derivWithin (fun τ => c.integral B.family.metric
+        (c.regularizedCurvature B.family.metric ε) τ) (Icc s u) v) (Ioi v) v := by
+    intro v hv
+    have h0 := hasDerivWithinAt_integral_regularizedCurvature B hsu hwindow c hc ε hε v
+      ⟨hr.1.trans hv.1, hv.2.le.trans ht.2⟩
+    rw [← derivWithin_integral_regularizedCurvature B hsu hwindow c hc ε hε v
+      ⟨hr.1.trans hv.1, hv.2.le.trans ht.2⟩] at h0
+    exact hasDerivWithinAt_Ioi_of_Icc (A := s) (B := u) (f := fun τ => c.integral B.family.metric
+      (c.regularizedCurvature B.family.metric ε) τ) (x := v) (hr.1.trans hv.1)
+      (lt_of_lt_of_le hv.2 ht.2) h0
+  have hLcont : ContinuousOn (c.length B.family.metric) (Icc r t) :=
+    ((contDiffOn_length B hsu hwindow c hc).continuousOn).mono hsub
+  have hφcont : ContinuousOn (fun v : ℝ => (B.C + B.B₀) * c.integral B.family.metric
+      (c.regularizedCurvature B.family.metric ε) v + B.C * c.length B.family.metric v)
+      (Icc r t) :=
+    (ContinuousOn.const_mul hcont (B.C + B.B₀)).add (ContinuousOn.const_mul hLcont B.C)
+  have hmain := intervalIntegral.sub_le_integral_of_hasDeriv_right_of_le_Ico hrt hcont hderiv
+    (hφcont.integrableOn_compact isCompact_Icc)
+    (fun v hv => by
+      exact regularizedTotalCurvature_derivWithin_le B hsu hwindow c hc ε hε v
+        ⟨hr.1.trans hv.1, hv.2.le.trans ht.2⟩)
+  linarith [hmain]
+
+
+
+
+
+private theorem totalCurvature_sub_le_integral (B : RicciBackground (I := I) (M := M) D a b)
+    (hsu : s < u) (hwindow : Icc s u ⊆ Icc a b) (c : CurveMap M)
+    (hc : c.IsSolutionOn B.family.metric (Icc s u))
+    (r t : ℝ) (hr : r ∈ Icc s u) (ht : t ∈ Icc s u) (hrt : r ≤ t) :
+    c.totalCurvature B.family.metric t ≤ c.totalCurvature B.family.metric r +
+      ∫ v in r..t, ((B.C + B.B₀) * c.totalCurvature B.family.metric v +
+        B.C * c.length B.family.metric v) := by
+  have hsub : Icc r t ⊆ Icc s u := Icc_subset_Icc hr.1 ht.2
+  have hKnn : 0 ≤ B.C + B.B₀ := by
+    rw [RicciBackground.C]
+    linarith [B.B₀_nonneg, B.B₁_nonneg, B.B₂_nonneg]
+  have hLr_nn : 0 ≤ c.length B.family.metric r := length_nonneg B c r
+  have hLcont : ContinuousOn (c.length B.family.metric) (Icc r t) :=
+    ((contDiffOn_length B hsu hwindow c hc).continuousOn).mono hsub
+  have hΘcont : ContinuousOn (c.totalCurvature B.family.metric) (Icc r t) :=
+    (continuousOn_totalCurvature B hsu hwindow c hc).mono hsub
+  refine le_of_forall_pos_le_add fun δ hδ => ?_
+  set S₀ : ℝ := ∫ v in r..t, c.length B.family.metric v with hS₀
+  have hSnn : 0 ≤ S₀ := by
+    rw [hS₀]
+    exact intervalIntegral.integral_nonneg hrt (fun v _ => length_nonneg B c v)
+  have hden : 0 < 1 + (c.length B.family.metric r + (B.C + B.B₀) * S₀) := by
+    nlinarith [hLr_nn, hSnn, mul_nonneg hKnn hSnn]
+  set ε : ℝ := δ / (1 + (c.length B.family.metric r + (B.C + B.B₀) * S₀)) with hεdef
+  have hεpos : 0 < ε := div_pos hδ hden
+  have hεsmall : ε * (c.length B.family.metric r + (B.C + B.B₀) * S₀) ≤ δ := by
+    have h2 : ε * (1 + (c.length B.family.metric r + (B.C + B.B₀) * S₀)) ≤ δ := by
+      have hX : ε * (1 + (c.length B.family.metric r + (B.C + B.B₀) * S₀)) =
+          δ * (1 + (c.length B.family.metric r + (B.C + B.B₀) * S₀)) /
+            (1 + (c.length B.family.metric r + (B.C + B.B₀) * S₀)) := by
+        rw [hεdef]
+        ring
+      rw [hX, div_le_iff₀ hden]
+    nlinarith [h2, hεpos.le, mul_nonneg hKnn hSnn, hLr_nn]
+  have hstar := regularizedTotalCurvature_sub_le_integral B hsu hwindow c hc ε hεpos
+    r t hr ht hrt
+  have hcmp_t := (totalCurvature_le_regularized B hsu hwindow c hc ε hεpos t ht).1
+  have hcmp_r := (totalCurvature_le_regularized B hsu hwindow c hc ε hεpos r hr).2
+  have hΘεcont : ContinuousOn (fun v : ℝ => c.integral B.family.metric
+      (c.regularizedCurvature B.family.metric ε) v) (Icc r t) :=
+    (continuousOn_integral_of_continuousOn
+      ((regularizedCurvature_joint B hsu hwindow c hc ε hεpos).continuousOn.mul
+        (joint_continuousOn_speed B hwindow c hc))).mono hsub
+  have hInt1 : IntervalIntegrable (fun v : ℝ => (B.C + B.B₀) * c.integral B.family.metric
+      (c.regularizedCurvature B.family.metric ε) v + B.C * c.length B.family.metric v)
+      volume r t :=
+    ((ContinuousOn.const_mul hΘεcont (B.C + B.B₀)).add
+      (ContinuousOn.const_mul hLcont B.C)).intervalIntegrable_of_Icc hrt
+  have hInt2 : IntervalIntegrable (fun v : ℝ => (B.C + B.B₀) * c.totalCurvature B.family.metric v +
+      B.C * c.length B.family.metric v) volume r t :=
+    ((ContinuousOn.const_mul hΘcont (B.C + B.B₀)).add
+      (ContinuousOn.const_mul hLcont B.C)).intervalIntegrable_of_Icc hrt
+  have hInt3 : IntervalIntegrable (fun v : ℝ => (B.C + B.B₀) * ε * c.length B.family.metric v)
+      volume r t :=
+    (ContinuousOn.const_mul hLcont ((B.C + B.B₀) * ε)).intervalIntegrable_of_Icc hrt
+  have hint_mono : (∫ v in r..t, ((B.C + B.B₀) * c.integral B.family.metric
+        (c.regularizedCurvature B.family.metric ε) v + B.C * c.length B.family.metric v)) ≤
+      (∫ v in r..t, ((B.C + B.B₀) * c.totalCurvature B.family.metric v +
+          B.C * c.length B.family.metric v) + (B.C + B.B₀) * ε * c.length B.family.metric v) := by
+    refine intervalIntegral.integral_mono_on (μ := volume) hrt hInt1 ?_ (fun v hv => ?_)
+    · exact (hInt2.add hInt3)
+    · have h1 := (totalCurvature_le_regularized B hsu hwindow c hc ε hεpos v (hsub hv)).2
+      have hLnn := length_nonneg B c v
+      nlinarith [h1, hKnn, hLnn]
+  have hsplit3 : (∫ v in r..t, ((B.C + B.B₀) * c.totalCurvature B.family.metric v +
+        B.C * c.length B.family.metric v) + (B.C + B.B₀) * ε * c.length B.family.metric v) =
+      (∫ v in r..t, ((B.C + B.B₀) * c.totalCurvature B.family.metric v +
+          B.C * c.length B.family.metric v)) + (B.C + B.B₀) * ε * S₀ := by
+    rw [intervalIntegral.integral_add
+      (f := fun v : ℝ => (B.C + B.B₀) * c.totalCurvature B.family.metric v +
+        B.C * c.length B.family.metric v)
+      (g := fun v : ℝ => (B.C + B.B₀) * ε * c.length B.family.metric v) hInt2 hInt3]
+    congr 1
+    rw [hS₀]
+    have hfun3 : (fun v : ℝ => (B.C + B.B₀) * ε * c.length B.family.metric v) =
+        fun v : ℝ => ((B.C + B.B₀) * ε) * c.length B.family.metric v := by
+      funext v
+      ring
+    rw [hfun3]
+    rw [intervalIntegral.integral_const_mul]
+  linarith [hstar, hcmp_t, hcmp_r, hint_mono, hsplit3.le, hεsmall]
+
+
+
+
+
+private theorem exp_neg_mul_regularizedTotalCurvature_add_length_le
+    (B : RicciBackground (I := I) (M := M) D a b)
+    (hsu : s < u) (hwindow : Icc s u ⊆ Icc a b) (c : CurveMap M)
+    (hc : c.IsSolutionOn B.family.metric (Icc s u)) (ε : ℝ) (hε : 0 < ε)
+    (r t : ℝ) (hr : r ∈ Icc s u) (ht : t ∈ Icc s u) (hrt : r ≤ t) :
+    Real.exp (-(B.C + B.B₀) * (t - r)) *
+        (c.integral B.family.metric (c.regularizedCurvature B.family.metric ε) t +
+          c.length B.family.metric t) ≤
+      Real.exp (-(B.C + B.B₀) * (r - r)) *
+        (c.integral B.family.metric (c.regularizedCurvature B.family.metric ε) r +
+          c.length B.family.metric r) := by
+  have hsub : Icc r t ⊆ Icc s u := Icc_subset_Icc hr.1 ht.2
+  set V : ℝ → ℝ := fun v => Real.exp (-(B.C + B.B₀) * (v - r)) *
+    (c.integral B.family.metric (c.regularizedCurvature B.family.metric ε) v +
+      c.length B.family.metric v) with hV
+  have hΘcont : ContinuousOn (fun v : ℝ => c.integral B.family.metric
+      (c.regularizedCurvature B.family.metric ε) v) (Icc r t) :=
+    (continuousOn_integral_of_continuousOn
+      ((regularizedCurvature_joint B hsu hwindow c hc ε hε).continuousOn.mul
+        (joint_continuousOn_speed B hwindow c hc))).mono hsub
+  have hLcont : ContinuousOn (c.length B.family.metric) (Icc r t) :=
+    ((contDiffOn_length B hsu hwindow c hc).continuousOn).mono hsub
+  have hcont : ContinuousOn V (Icc r t) := by
+    refine ContinuousOn.mul ?_ (hΘcont.add hLcont)
+    exact Real.continuous_exp.comp_continuousOn
+      ((continuousOn_id.sub continuousOn_const).const_mul (-(B.C + B.B₀)))
+  have hdiff : DifferentiableOn ℝ V (interior (Icc r t)) := by
+    intro v hv
+    rw [interior_Icc] at hv
+    have hvS : v ∈ Icc s u := ⟨hr.1.trans hv.1.le, hv.2.le.trans ht.2⟩
+    have hΘ : HasDerivAt (fun τ => c.integral B.family.metric
+        (c.regularizedCurvature B.family.metric ε) τ)
+        (derivWithin (fun τ => c.integral B.family.metric
+          (c.regularizedCurvature B.family.metric ε) τ) (Icc s u) v) v :=
+      ((hasDerivWithinAt_integral_regularizedCurvature B hsu hwindow c hc ε hε v hvS).hasDerivAt
+        (Icc_mem_nhds (lt_of_le_of_lt hr.1 hv.1) (lt_of_lt_of_le hv.2 ht.2))).congr_deriv
+        (derivWithin_integral_regularizedCurvature B hsu hwindow c hc ε hε v hvS).symm
+    have hLd : HasDerivAt (c.length B.family.metric)
+        (derivWithin (c.length B.family.metric) (Icc s u) v) v :=
+      ((length_hasDerivWithinAt B hsu hwindow c hc v hvS).hasDerivAt
+        (Icc_mem_nhds (lt_of_le_of_lt hr.1 hv.1) (lt_of_lt_of_le hv.2 ht.2))).congr_deriv
+        (derivWithin_length B hsu hwindow c hc v hvS).symm
+    have hexp : HasDerivAt (fun τ : ℝ => Real.exp (-(B.C + B.B₀) * (τ - r)))
+        (Real.exp (-(B.C + B.B₀) * (v - r)) * (-(B.C + B.B₀))) v := by
+      have h3 : HasDerivAt (fun τ : ℝ => -(B.C + B.B₀) * (τ - r)) (-(B.C + B.B₀)) v := by
+        simpa using ((hasDerivAt_id v).sub_const r).const_mul (-(B.C + B.B₀))
+      simpa using h3.exp
+    exact ((hexp.mul (hΘ.add hLd)).differentiableAt).differentiableWithinAt
+  have hderiv : ∀ v ∈ interior (Icc r t), deriv V v ≤ 0 := by
+    intro v hv
+    rw [interior_Icc] at hv
+    have hvS : v ∈ Icc s u := ⟨hr.1.trans hv.1.le, hv.2.le.trans ht.2⟩
+    have hΘ : HasDerivAt (fun τ => c.integral B.family.metric
+        (c.regularizedCurvature B.family.metric ε) τ)
+        (derivWithin (fun τ => c.integral B.family.metric
+          (c.regularizedCurvature B.family.metric ε) τ) (Icc s u) v) v :=
+      ((hasDerivWithinAt_integral_regularizedCurvature B hsu hwindow c hc ε hε v hvS).hasDerivAt
+        (Icc_mem_nhds (lt_of_le_of_lt hr.1 hv.1) (lt_of_lt_of_le hv.2 ht.2))).congr_deriv
+        (derivWithin_integral_regularizedCurvature B hsu hwindow c hc ε hε v hvS).symm
+    have hLd : HasDerivAt (c.length B.family.metric)
+        (derivWithin (c.length B.family.metric) (Icc s u) v) v :=
+      ((length_hasDerivWithinAt B hsu hwindow c hc v hvS).hasDerivAt
+        (Icc_mem_nhds (lt_of_le_of_lt hr.1 hv.1) (lt_of_lt_of_le hv.2 ht.2))).congr_deriv
+        (derivWithin_length B hsu hwindow c hc v hvS).symm
+    have hexp : HasDerivAt (fun τ : ℝ => Real.exp (-(B.C + B.B₀) * (τ - r)))
+        (Real.exp (-(B.C + B.B₀) * (v - r)) * (-(B.C + B.B₀))) v := by
+      have h3 : HasDerivAt (fun τ : ℝ => -(B.C + B.B₀) * (τ - r)) (-(B.C + B.B₀)) v := by
+        simpa using ((hasDerivAt_id v).sub_const r).const_mul (-(B.C + B.B₀))
+      simpa using h3.exp
+    have hdv : deriv V v = Real.exp (-(B.C + B.B₀) * (v - r)) * (-(B.C + B.B₀)) *
+          (c.integral B.family.metric (c.regularizedCurvature B.family.metric ε) v +
+            c.length B.family.metric v) +
+        Real.exp (-(B.C + B.B₀) * (v - r)) *
+          (derivWithin (fun τ => c.integral B.family.metric
+              (c.regularizedCurvature B.family.metric ε) τ) (Icc s u) v +
+            derivWithin (c.length B.family.metric) (Icc s u) v) := by
+      rw [hV]
+      exact (hexp.mul (hΘ.add hLd)).deriv
+    rw [hdv]
+    have hdΘ := regularizedTotalCurvature_derivWithin_le B hsu hwindow c hc ε hε v hvS
+    have hdL := derivWithin_length_le B hsu hwindow c hc v hvS
+    have hexp_pos : 0 < Real.exp (-(B.C + B.B₀) * (v - r)) := Real.exp_pos _
+    have hfac : -(B.C + B.B₀) *
+          (c.integral B.family.metric (c.regularizedCurvature B.family.metric ε) v +
+            c.length B.family.metric v) +
+        (derivWithin (fun τ => c.integral B.family.metric
+              (c.regularizedCurvature B.family.metric ε) τ) (Icc s u) v +
+            derivWithin (c.length B.family.metric) (Icc s u) v) =
+        (derivWithin (fun τ => c.integral B.family.metric
+              (c.regularizedCurvature B.family.metric ε) τ) (Icc s u) v -
+            (B.C + B.B₀) * c.integral B.family.metric
+              (c.regularizedCurvature B.family.metric ε) v) +
+          (derivWithin (c.length B.family.metric) (Icc s u) v -
+            (B.C + B.B₀) * c.length B.family.metric v) := by ring
+    have hfun4 : Real.exp (-(B.C + B.B₀) * (v - r)) * (-(B.C + B.B₀)) *
+          (c.integral B.family.metric (c.regularizedCurvature B.family.metric ε) v +
+            c.length B.family.metric v) +
+        Real.exp (-(B.C + B.B₀) * (v - r)) *
+          (derivWithin (fun τ => c.integral B.family.metric
+              (c.regularizedCurvature B.family.metric ε) τ) (Icc s u) v +
+            derivWithin (c.length B.family.metric) (Icc s u) v) =
+        Real.exp (-(B.C + B.B₀) * (v - r)) *
+          (-(B.C + B.B₀) *
+              (c.integral B.family.metric (c.regularizedCurvature B.family.metric ε) v +
+                c.length B.family.metric v) +
+            (derivWithin (fun τ => c.integral B.family.metric
+                (c.regularizedCurvature B.family.metric ε) τ) (Icc s u) v +
+              derivWithin (c.length B.family.metric) (Icc s u) v)) := by
+      ring
+    rw [hfun4]
+    rw [hfac]
+    have h1 : derivWithin (fun τ => c.integral B.family.metric
+          (c.regularizedCurvature B.family.metric ε) τ) (Icc s u) v -
+        (B.C + B.B₀) * c.integral B.family.metric
+          (c.regularizedCurvature B.family.metric ε) v ≤ B.C * c.length B.family.metric v := by
+      linarith [hdΘ]
+    have h2 : derivWithin (c.length B.family.metric) (Icc s u) v -
+        (B.C + B.B₀) * c.length B.family.metric v ≤
+        -(B.C) * c.length B.family.metric v := by
+      linarith [hdL]
+    have h3 : (derivWithin (fun τ => c.integral B.family.metric
+          (c.regularizedCurvature B.family.metric ε) τ) (Icc s u) v -
+        (B.C + B.B₀) * c.integral B.family.metric
+          (c.regularizedCurvature B.family.metric ε) v) +
+        (derivWithin (c.length B.family.metric) (Icc s u) v -
+          (B.C + B.B₀) * c.length B.family.metric v) ≤ 0 := by
+      linarith [h1, h2]
+    exact mul_nonpos_of_nonneg_of_nonpos hexp_pos.le h3
+  have hanti := antitoneOn_of_deriv_nonpos (convex_Icc r t) hcont hdiff hderiv
+  exact hanti (left_mem_Icc.mpr hrt) (right_mem_Icc.mpr hrt) hrt
+
+private theorem totalCurvature_add_length_le_exp (B : RicciBackground (I := I) (M := M) D a b)
+    (hsu : s < u) (hwindow : Icc s u ⊆ Icc a b) (c : CurveMap M)
+    (hc : c.IsSolutionOn B.family.metric (Icc s u))
+    (r t : ℝ) (hr : r ∈ Icc s u) (ht : t ∈ Icc s u) (hrt : r ≤ t) :
+    c.totalCurvature B.family.metric t + c.length B.family.metric t ≤
+      Real.exp ((B.C + B.B₀) * (t - r)) *
+        (c.totalCurvature B.family.metric r + c.length B.family.metric r) := by
+  have hsub : Icc r t ⊆ Icc s u := Icc_subset_Icc hr.1 ht.2
+  have hLr_nn : 0 ≤ c.length B.family.metric r := length_nonneg B c r
+  refine le_of_forall_pos_le_add fun δ hδ => ?_
+  have hden : 0 < 1 + Real.exp ((B.C + B.B₀) * (t - r)) * c.length B.family.metric r := by
+    have := Real.exp_pos ((B.C + B.B₀) * (t - r))
+    nlinarith [hLr_nn]
+  set ε : ℝ := δ / (1 + Real.exp ((B.C + B.B₀) * (t - r)) * c.length B.family.metric r) with hεdef
+  have hεpos : 0 < ε := div_pos hδ hden
+  have hsmall : ε * Real.exp ((B.C + B.B₀) * (t - r)) * c.length B.family.metric r ≤ δ := by
+    have hexpnn : 0 ≤ Real.exp ((B.C + B.B₀) * (t - r)) * c.length B.family.metric r :=
+      mul_nonneg (Real.exp_nonneg _) hLr_nn
+    have h2 : ε * (Real.exp ((B.C + B.B₀) * (t - r)) * c.length B.family.metric r) ≤ δ := by
+      rw [hεdef]
+      rw [div_mul_eq_mul_div, div_le_iff₀ hden]
+      nlinarith [hδ.le, hexpnn]
+    simpa only [mul_assoc] using h2
+  have hV := exp_neg_mul_regularizedTotalCurvature_add_length_le B hsu hwindow c hc ε hεpos
+    r t hr ht hrt
+  have hexpK : 0 < Real.exp ((B.C + B.B₀) * (t - r)) :=
+    Real.exp_pos ((B.C + B.B₀) * (t - r))
+  have h1 : c.integral B.family.metric (c.regularizedCurvature B.family.metric ε) t +
+        c.length B.family.metric t ≤
+      Real.exp ((B.C + B.B₀) * (t - r)) *
+        (c.integral B.family.metric (c.regularizedCurvature B.family.metric ε) r +
+          c.length B.family.metric r) := by
+    have h := mul_le_mul_of_nonneg_right hV hexpK.le
+    have hrr : Real.exp (-(B.C + B.B₀) * (r - r)) = 1 := by simp
+    rw [hrr] at h
+    have hexp1 : Real.exp (-(B.C + B.B₀) * (t - r)) *
+        Real.exp ((B.C + B.B₀) * (t - r)) = 1 := by
+      rw [← Real.exp_add]
+      ring_nf
+      simp
+    have h1' : (Real.exp (-(B.C + B.B₀) * (t - r)) *
+        (c.integral B.family.metric (c.regularizedCurvature B.family.metric ε) t +
+          c.length B.family.metric t)) * Real.exp ((B.C + B.B₀) * (t - r)) =
+        c.integral B.family.metric (c.regularizedCurvature B.family.metric ε) t +
+          c.length B.family.metric t := by
+      calc (Real.exp (-(B.C + B.B₀) * (t - r)) *
+            (c.integral B.family.metric (c.regularizedCurvature B.family.metric ε) t +
+              c.length B.family.metric t)) * Real.exp ((B.C + B.B₀) * (t - r))
+          = (Real.exp (-(B.C + B.B₀) * (t - r)) * Real.exp ((B.C + B.B₀) * (t - r))) *
+              (c.integral B.family.metric (c.regularizedCurvature B.family.metric ε) t +
+                c.length B.family.metric t) := by ring
+        _ = c.integral B.family.metric (c.regularizedCurvature B.family.metric ε) t +
+              c.length B.family.metric t := by rw [hexp1, one_mul]
+    have h2' : (1 * (c.integral B.family.metric (c.regularizedCurvature B.family.metric ε) r +
+        c.length B.family.metric r)) * Real.exp ((B.C + B.B₀) * (t - r)) =
+        Real.exp ((B.C + B.B₀) * (t - r)) *
+          (c.integral B.family.metric (c.regularizedCurvature B.family.metric ε) r +
+            c.length B.family.metric r) := by ring
+    rwa [h1', h2'] at h
+  have h2 := (totalCurvature_le_regularized B hsu hwindow c hc ε hεpos t ht).1
+  have h3 := (totalCurvature_le_regularized B hsu hwindow c hc ε hεpos r hr).2
+  have h4 : Real.exp ((B.C + B.B₀) * (t - r)) * (ε * c.length B.family.metric r) ≤ δ := by
+    nlinarith [hsmall]
+  have hstep : Real.exp ((B.C + B.B₀) * (t - r)) *
+      (c.totalCurvature B.family.metric r + ε * c.length B.family.metric r +
+        c.length B.family.metric r) ≤
+      Real.exp ((B.C + B.B₀) * (t - r)) *
+        (c.totalCurvature B.family.metric r + c.length B.family.metric r) + δ := by
+    nlinarith [h4]
+  have h5 : Real.exp ((B.C + B.B₀) * (t - r)) *
+      (c.integral B.family.metric (c.regularizedCurvature B.family.metric ε) r +
+        c.length B.family.metric r) ≤
+      Real.exp ((B.C + B.B₀) * (t - r)) *
+        (c.totalCurvature B.family.metric r + ε * c.length B.family.metric r +
+          c.length B.family.metric r) := by
+    refine mul_le_mul_of_nonneg_left ?_ hexpK.le
+    linarith [h3]
+  linarith [h1, h2, h5, hstep]
 
 theorem rfs_csf_integral_bounds (B : RicciBackground (I := I) (M := M) D a b)
     (hsu : s < u) (hwindow : Icc s u ⊆ Icc a b)
@@ -34,7 +1334,16 @@ theorem rfs_csf_integral_bounds (B : RicciBackground (I := I) (M := M) D a b)
       c.totalCurvature B.family.metric t + c.length B.family.metric t ≤
         Real.exp ((B.C + B.B₀) * (t - r)) *
           (c.totalCurvature B.family.metric r + c.length B.family.metric r)) := by
-  sorry
+  refine ⟨contDiffOn_length B hsu hwindow c hc,
+    continuousOn_totalCurvature B hsu hwindow c hc,
+    continuousOn_energy B hsu hwindow c hc, ?_, ?_⟩
+  · intro t ht
+    exact derivWithin_length B hsu hwindow c hc t ht
+  · rintro r hr t ht
+    exact ⟨length_le_exp_mul B hsu hwindow c hc r t hr ⟨hr.1.trans ht.1, ht.2⟩ ht.1,
+      energy_integral_le B hsu hwindow c hc r t hr ⟨hr.1.trans ht.1, ht.2⟩ ht.1,
+      totalCurvature_sub_le_integral B hsu hwindow c hc r t hr ⟨hr.1.trans ht.1, ht.2⟩ ht.1,
+      totalCurvature_add_length_le_exp B hsu hwindow c hc r t hr ⟨hr.1.trans ht.1, ht.2⟩ ht.1⟩
 
 theorem totalCurvature_upper_right_slope
     (B : RicciBackground (I := I) (M := M) D a b)

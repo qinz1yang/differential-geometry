@@ -34,7 +34,7 @@ theorem classFamilyMaxima_nonempty (g : SmoothRiemannianMetric 𝓘(ℝ, E) M)
     (classFamilyMaxima g e (he.of_le (by exact_mod_cast le_top)) hemb ξ).Nonempty :=
   (regularFamilyRepresentatives_nonempty g e he hemb ξ).image _
 
-
+omit [PreconnectedSpace M] in
 theorem classFamilyMaxima_bddBelow (g : SmoothRiemannianMetric 𝓘(ℝ, E) M)
     (e : M → EuclideanSpace ℝ (Fin n))
     (he : ContMDiff 𝓘(ℝ, E) 𝓘(ℝ, EuclideanSpace ℝ (Fin n)) ∞ e)
@@ -54,7 +54,7 @@ def classWidth (g : SmoothRiemannianMetric 𝓘(ℝ, E) M)
     (hemb : _root_.Topology.IsEmbedding e) (ξ : loopFamilyClass M) : ℝ :=
   sInf (classFamilyMaxima g e he hemb ξ)
 
-
+omit [PreconnectedSpace M] in
 theorem classWidth_isGLB (g : SmoothRiemannianMetric 𝓘(ℝ, E) M)
     (e : M → EuclideanSpace ℝ (Fin n))
     (he : ContMDiff 𝓘(ℝ, E) 𝓘(ℝ, EuclideanSpace ℝ (Fin n)) ∞ e)
@@ -66,7 +66,7 @@ theorem classWidth_isGLB (g : SmoothRiemannianMetric 𝓘(ℝ, E) M)
   isGLB_csInf (classFamilyMaxima_nonempty g e he hemb ξ)
     (classFamilyMaxima_bddBelow g e he hemb hi ξ)
 
-
+omit [PreconnectedSpace M] in
 theorem classWidth_nonneg (g : SmoothRiemannianMetric 𝓘(ℝ, E) M)
     (e : M → EuclideanSpace ℝ (Fin n))
     (he : ContMDiff 𝓘(ℝ, E) 𝓘(ℝ, EuclideanSpace ℝ (Fin n)) ∞ e)
@@ -78,7 +78,7 @@ theorem classWidth_nonneg (g : SmoothRiemannianMetric 𝓘(ℝ, E) M)
   rintro _ ⟨Γ, _, rfl⟩
   exact regularFamilyMaximum_nonneg g e he hemb hi Γ
 
-
+omit [PreconnectedSpace M] in
 theorem classWidth_le_familyMaximum (g : SmoothRiemannianMetric 𝓘(ℝ, E) M)
     (e : M → EuclideanSpace ℝ (Fin n))
     (he : ContMDiff 𝓘(ℝ, E) 𝓘(ℝ, EuclideanSpace ℝ (Fin n)) ∞ e)

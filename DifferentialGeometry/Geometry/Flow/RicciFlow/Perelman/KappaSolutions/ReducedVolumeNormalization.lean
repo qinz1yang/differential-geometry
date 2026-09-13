@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedVolume.Basic
+import DifferentialGeometry.Geometry.Metric.RicciSoliton.Normalized
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.Defs
 
 
@@ -70,5 +71,20 @@ theorem intrinsicReducedVolume_eq_redVolume
     {D : RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) (T : ℝ) (p : M) (tau : ℝ) :
     intrinsicReducedVolume S T p tau = redVolume S T p tau := rfl
+
+theorem exists_gradientRicciSoliton_isHamiltonNormalizedPotential
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+    [T2Space M] [SigmaCompactSpace M] [ConnectedSpace M]
+    {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; ℝ⟯}
+    (hsol : gradientRicciSoliton (I := I) g f 1) :
+    ∃ f' : C^∞⟮I, M; ℝ⟯,
+      gradientRicciSoliton (I := I) g f' 1 ∧
+        IsHamiltonNormalizedPotential (I := I) g f' := by
+  obtain ⟨f', hsol', hham⟩ :=
+    DifferentialGeometry.Geometry.gradientRicciSoliton_exists_hamiltonNormalized hsol
+  refine ⟨f', hsol', fun x => ?_⟩
+  simpa only [one_mul, Connection.gradient_eq_gradFun] using hham x
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions

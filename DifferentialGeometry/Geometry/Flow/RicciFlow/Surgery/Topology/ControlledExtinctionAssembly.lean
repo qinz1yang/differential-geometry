@@ -146,48 +146,4 @@ theorem exists_poincare_controlled_extinction_of_observedHistory
       (H.event i).transition (hc i) (hctrl i)
   · exact ⟨rfl, hempty⟩
 
-theorem exists_poincare_controlled_extinction_of_uniform_records
-    (P : OrientedThreeStage.{u}) (g : P.Metric) (H : ObservedHistory.{u})
-    (A : InitialIdentification P g H) [Nonempty P.Carrier]
-    (hc : (i : Fin H.eventCount) → SmoothCutCapCompletion (H.event i).transition)
-    (hout : (i : Fin H.eventCount) →
-      letI : ChartedSpace (EuclideanHalfSpace 3) (H.event i).old := (H.event i).oldCharts
-      IsSmoothEmbedding (𝓡∂ 3) ThreeModel ∞
-        (fun x : (H.event i).old => (H.event i).transition.trace.capping.coreInclusion x.1))
-    (hctrl : ∀ i : Fin H.eventCount, ∀ c : ConnectedComponents (H.event i).discarded.Carrier,
-      DifferentialGeometry.Topology.isPoincareStandard
-        ((H.event i).discarded.toClosedOrientedManifold.component c).Carrier)
-    {c A₀ : ℝ}
-    (hthreshold : DifferentialGeometry.PDE.RicciFlow.Extinction.Families.extinctionThreshold c A₀ <
-      H.horizon)
-    (records : ∀ _Q : ConnectedComponents (H.stage (Fin.last H.eventCount)).Carrier,
-      Nonempty (ObservedComparisonRecord H c A₀)) :
-    Nonempty (PoincareControlledExtinction P.toClosedOrientedManifold g) :=
-  exists_poincare_controlled_extinction_of_observedHistory P g H A hc hout hctrl
-    (H.final_empty_of_uniform_records hthreshold records)
-
-theorem exists_poincare_controlled_extinction_of_closedOriented_uniform_records
-    (M : DifferentialGeometry.Topology.ConnectedClosedOrientedManifold.{u} 3)
-    [Nonempty M.Carrier] (g : SmoothRiemannianMetric (𝓡 3) M.Carrier)
-    (H : ObservedHistory.{u})
-    (A : InitialIdentification
-      (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold) g H)
-    (hc : (i : Fin H.eventCount) → SmoothCutCapCompletion (H.event i).transition)
-    (hout : (i : Fin H.eventCount) →
-      letI : ChartedSpace (EuclideanHalfSpace 3) (H.event i).old := (H.event i).oldCharts
-      IsSmoothEmbedding (𝓡∂ 3) ThreeModel ∞
-        (fun x : (H.event i).old => (H.event i).transition.trace.capping.coreInclusion x.1))
-    (hctrl : ∀ i : Fin H.eventCount, ∀ c : ConnectedComponents (H.event i).discarded.Carrier,
-      DifferentialGeometry.Topology.isPoincareStandard
-        ((H.event i).discarded.toClosedOrientedManifold.component c).Carrier)
-    {c A₀ : ℝ}
-    (hthreshold : DifferentialGeometry.PDE.RicciFlow.Extinction.Families.extinctionThreshold c A₀ <
-      H.horizon)
-    (records : ∀ _Q : ConnectedComponents (H.stage (Fin.last H.eventCount)).Carrier,
-      Nonempty (ObservedComparisonRecord H c A₀)) :
-    Nonempty (PoincareControlledExtinction M.toClosedOrientedManifold g) := by
-  exact @exists_poincare_controlled_extinction_of_uniform_records
-    (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold) g H A
-    ‹Nonempty M.Carrier› hc hout hctrl _ _ hthreshold records
-
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology

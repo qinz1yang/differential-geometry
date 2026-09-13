@@ -477,8 +477,9 @@ theorem tendsto_regularLeastArea_of_uniform_metric
       add_lt_add_of_le_of_lt (mul_le_mul_of_nonneg_left hBbound hδ.le) hhalf
     _ ≤ ε := by linarith
 
-include finiteDimensionalE boundarylessI t2Q compactQ connectedQ in
-theorem continuousOn_regularLeastArea_family
+omit connectedQ in
+include finiteDimensionalE boundarylessI t2Q compactQ in
+theorem continuousOn_regularLeastArea_family [Nonempty Q]
     (D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval)
     (g : ℝ → SmoothRiemannianMetric I Q)
     (hg : DifferentialGeometry.Geometry.Curvature.MetricFamilySmoothOn D g)

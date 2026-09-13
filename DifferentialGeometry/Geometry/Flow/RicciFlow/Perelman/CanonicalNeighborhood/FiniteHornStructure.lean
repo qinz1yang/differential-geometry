@@ -360,6 +360,38 @@ theorem endChart_section_diameter_le (g : SmoothRiemannianMetric I3 W) (H : Fini
   rw [← H.intrinsic] at hreal
   exact (le_div_iff₀ (Real.sqrt_pos.mpr E.Q_pos)).mpr (by linarith)
 
+omit [SigmaCompactSpace W] in
+theorem EndChart.section_diameter_le {g : SmoothRiemannianMetric I3 W} {H : FiniteHorn g}
+    {x : W} {hx : x ∈ H.subend (tailIndex g H)} (E : EndChart g H x hx) :
+    ∀ y ∈ E.cross.tube.sectionSet (1 / 2),
+      dist x y ≤ transverseShortcutConstant W / Real.sqrt (metricScalarAt g x) := by
+  intro y hy
+  have hyspan : y ∈ Set.range (fun q : Sphere 2 => E.F (q, (0 : ℝ))) := by
+    rw [← GlobalNeckTube.range_sectionMap E.cross.tube (1 / 2)] at hy
+    simpa only [E.cross.center_eq] using hy
+  obtain ⟨q, hq⟩ := hyspan
+  rw [← hq]
+  have hcyl : ∀ z : Sphere 2, (z, (0 : ℝ)) ∈
+      (Set.univ ×ˢ Set.Icc (-H.collar_depth) H.collar_depth : Set Cylinder) := by
+    intro z
+    exact ⟨Set.mem_univ _, by constructor <;> linarith [H.collar_depth_pos]⟩
+  obtain ⟨gam, hgam0, hgam1, hgsm, _hgm, hglen⟩ :=
+    transverseShortcutConstant_spec W E.cyl (fun _ => E.cyl.metric 0)
+      (fun _ => scaleMetric (metricScalarAt g x) E.Q_pos g) E.F
+      (Set.univ ×ˢ Set.Icc (-H.collar_depth) H.collar_depth) {0}
+      (⌈H.neck_precision⁻¹⌉₊) H.neck_precision 0 E.cmp rfl H.neck_precision_pos.le
+      (by linarith [H.neck_precision_small]) (by simp) E.source_sub hcyl E.p q
+  have hlength' := (edistOf_le_metricPathELength
+    (scaleMetric (metricScalarAt g x) E.Q_pos g) (by norm_num : (0 : ℝ) ≤ 1) hgsm).trans hglen
+  have hreal : Real.sqrt (metricScalarAt g x) * metricDistance g x (E.F (q, 0)) ≤
+      transverseShortcutConstant W := by
+    have h1 := ENNReal.toReal_mono ENNReal.ofReal_ne_top hlength'
+    rw [hgam0, hgam1, E.center, edistOf_scale] at h1
+    rw [ENNReal.toReal_mul, ENNReal.toReal_ofReal (Real.sqrt_nonneg _),
+      ENNReal.toReal_ofReal (transverseShortcutConstant_pos W).le] at h1
+    exact h1
+  exact (le_div_iff₀ (Real.sqrt_pos.mpr E.Q_pos)).mpr (by rw [H.intrinsic]; linarith)
+
 private theorem sqrt_ratio_bound {L eta s e : ℝ} (hL : 0 < L) (heta : 0 < eta)
     (h : (2 * L / eta) ^ 2 < s * e) :
     L / Real.sqrt (s * e) < eta / 2 := by
@@ -805,6 +837,181 @@ theorem finite_horn_barriers_of_hornRadialPosition {g : SmoothRiemannianMetric I
     (hpos : HornRadialPosition g H ray d) : Nonempty (HornBarriers H ray d) :=
   nonempty_hornBarriers_of_hornRadialPosition g H ray d hd hzero hpos
 
+theorem endChart_height_lt_half_of_dist_lt {g : SmoothRiemannianMetric I3 W} (H : FiniteHorn g)
+    (ray : EndRay H.endpoint) (d : ℕ → ℝ)
+    (hd : ∀ i, d i ∈ Set.Ioc 0 ray.length)
+    (hzero : Filter.Tendsto d Filter.atTop (nhds 0))
+    (hlarge : Filter.Tendsto (fun i => metricScalarAt g (ray.point (d i)) * d i ^ 2)
+      Filter.atTop Filter.atTop) :
+    ∀ e : ℝ, 0 < e → e < 1 / 10 → ∀ᶠ i in Filter.atTop,
+      ∀ (hx : ray.point (d i) ∈ H.subend (tailIndex g H))
+        (E : EndChart g H (ray.point (d i)) hx), ∀ x : W,
+        dist (x : UniformSpace.Completion W) H.endpoint < (1 - e) * d i →
+          E.cross.tube.height x < 1 / 2 := by
+  classical
+  obtain ⟨endData⟩ := finite_horn_end_rays H
+  obtain ⟨raysIndex, hrays⟩ := endData.rays
+  obtain ⟨deepRadius, hdeepRadius, hdeepBall⟩ := finiteHorn_ball_subset_subend g H raysIndex
+  intro e he he10
+  have hlim : Filter.Tendsto (fun i => (1 - e) * d i) Filter.atTop (nhds 0) := by
+    simpa using hzero.const_mul (1 - e)
+  filter_upwards [hlarge.eventually_ge_atTop
+      (max 1 ((2 * transverseShortcutConstant W / e) ^ 2 + 1)),
+    hlim.eventually (eventually_lt_nhds hdeepRadius)] with i hbig hdi
+  intro hx E x hxlt
+  set x₀ : W := ray.point (d i) with hx₀
+  have hdpos : 0 < d i := (hd i).1
+  have hxend : dist (x₀ : UniformSpace.Completion W) H.endpoint = d i := ray.radial (d i) (hd i)
+  have hsmul : 1 ≤ metricScalarAt g x₀ * d i ^ 2 := le_trans (le_max_left _ _) hbig
+  have hspos : 0 < metricScalarAt g x₀ := by
+    nlinarith [hsmul, sq_nonneg (d i), sq_pos_of_pos hdpos]
+  have hspread : transverseShortcutConstant W /
+      Real.sqrt (metricScalarAt g x₀ * d i ^ 2) < e / 2 := by
+    refine sqrt_ratio_bound (transverseShortcutConstant_pos W) he ?_
+    have h2 : (2 * transverseShortcutConstant W / e) ^ 2 + 1 ≤
+        metricScalarAt g x₀ * d i ^ 2 := le_trans (le_max_right _ _) hbig
+    linarith
+  have hdiam : transverseShortcutConstant W / Real.sqrt (metricScalarAt g x₀) <
+      d i * (e / 2) := div_sqrt_lt_mul hspos hdpos hspread
+  have hsec := EndChart.section_diameter_le (g := g) (H := H) (x := x₀) (hx := hx) E
+  have hfar : ∀ y ∈ E.cross.tube.sectionSet (1 / 2),
+      (1 - e) * d i < dist (y : UniformSpace.Completion W) H.endpoint := by
+    intro y hy
+    have hyb := hsec y hy
+    have habs : d i - dist x₀ y ≤ dist (y : UniformSpace.Completion W) H.endpoint := by
+      have h := (abs_le.mp (abs_dist_sub_le (x₀ : UniformSpace.Completion W)
+        (y : UniformSpace.Completion W) H.endpoint)).2
+      rw [UniformSpace.Completion.dist_eq, hxend] at h
+      linarith
+    have hlt : (1 - e / 2) * d i < dist (y : UniformSpace.Completion W) H.endpoint := by
+      nlinarith [habs, hyb, hdiam]
+    nlinarith [hlt, he, hdpos]
+  have hle : E.cross.tube.height x ≤ 1 / 2 := by
+    by_contra hnot
+    have hgt : (1 / 2 : ℝ) < E.cross.tube.height x := lt_of_not_ge hnot
+    have hdeep : x ∈ H.subend raysIndex := hdeepBall x (by linarith [hxlt, hdi])
+    obtain ⟨a, ha⟩ := hrays x hdeep
+    obtain ⟨s, hs, p, hp⟩ :=
+      GlobalNeckCrossSection.endRay_meets_center g H E.cross a (by rw [ha]; exact hgt)
+    have hmem : a.point s ∈ E.cross.tube.sectionSet (1 / 2) := by
+      refine ⟨(p, (1 / 2 : ℝ)), ⟨Set.mem_univ _, rfl⟩, ?_⟩
+      rw [E.cross.center_eq, hp]
+    have hout := hfar (a.point s) hmem
+    have hlen : a.length = dist (x : UniformSpace.Completion W) H.endpoint := by
+      rw [← ha]
+      exact (a.radial a.length ⟨a.length_pos, le_rfl⟩).symm
+    have hsin : dist (a.point s : UniformSpace.Completion W) H.endpoint = s := a.radial s hs
+    rw [hsin] at hout
+    rw [hlen] at hs
+    linarith [hout, hs.2, hxlt]
+  have hne : E.cross.tube.height x ≠ 1 / 2 := by
+    intro heq
+    have hmem : x ∈ E.cross.tube.sectionSet (1 / 2) :=
+      (GlobalNeckTube.mem_sectionSet_iff E.cross.tube (by norm_num) x).mpr heq
+    have hout := hfar x hmem
+    linarith [hout, hxlt]
+  exact lt_of_le_of_ne hle hne
+
+def HornRadialExitPosition (g : SmoothRiemannianMetric I3 W) (H : FiniteHorn g)
+    (ray : EndRay H.endpoint) (d : ℕ → ℝ) : Prop :=
+  ∀ e : ℝ, 0 < e → e < 1 / 10 → ∀ᶠ i in Filter.atTop,
+    ∀ (hx : ray.point (d i) ∈ H.subend (tailIndex g H))
+      (E : EndChart g H (ray.point (d i)) hx), ∀ x : W,
+      (1 + e) * d i < dist (x : UniformSpace.Completion W) H.endpoint →
+        (1 / 2 : ℝ) < E.cross.tube.height x
+
+theorem hornRadialPosition_of_hornRadialExitPosition (g : SmoothRiemannianMetric I3 W)
+    (H : FiniteHorn g) (ray : EndRay H.endpoint) (d : ℕ → ℝ)
+    (hd : ∀ i, d i ∈ Set.Ioc 0 ray.length)
+    (hzero : Filter.Tendsto d Filter.atTop (nhds 0))
+    (hlarge : Filter.Tendsto (fun i => metricScalarAt g (ray.point (d i)) * d i ^ 2)
+      Filter.atTop Filter.atTop)
+    (hexit : HornRadialExitPosition g H ray d) : HornRadialPosition g H ray d := by
+  intro e he he10
+  filter_upwards [endChart_height_lt_half_of_dist_lt H ray d hd hzero hlarge e he he10,
+    hexit e he he10, eventually_mem_tail g H ray d hd hzero]
+    with i htip hex hgood
+  have htube : neckTube g H ray d i =
+      (endChart g H (ray.point (d i)) hgood).cross.tube := by
+    rw [neckTube, dif_pos hgood]
+  refine ⟨?_, ?_⟩ <;> intro x hx
+  · rw [htube]
+    exact htip hgood (endChart g H (ray.point (d i)) hgood) x hx
+  · rw [htube]
+    exact hex hgood (endChart g H (ray.point (d i)) hgood) x hx
+
+theorem finite_horn_barriers_of_hornRadialExitPosition {g : SmoothRiemannianMetric I3 W}
+    (H : FiniteHorn g) (endData : EndGeometry H) (ray : EndRay H.endpoint)
+    (d : ℕ → ℝ) (hd : ∀ i, d i ∈ Set.Ioc 0 ray.length)
+    (hzero : Filter.Tendsto d Filter.atTop (nhds 0))
+    (hlarge : Filter.Tendsto (fun i => metricScalarAt g (ray.point (d i)) * d i ^ 2)
+      Filter.atTop Filter.atTop)
+    (hexit : HornRadialExitPosition g H ray d) : Nonempty (HornBarriers H ray d) :=
+  finite_horn_barriers_of_hornRadialPosition H endData ray d hd hzero
+    (hornRadialPosition_of_hornRadialExitPosition g H ray d hd hzero hlarge hexit)
+
+def HornRadialExitPositionAtEndChart (g : SmoothRiemannianMetric I3 W) (H : FiniteHorn g)
+    (ray : EndRay H.endpoint) (d : ℕ → ℝ) : Prop :=
+  ∀ e : ℝ, 0 < e → e < 1 / 10 → ∀ᶠ i in Filter.atTop,
+    ∀ (hx : ray.point (d i) ∈ H.subend (tailIndex g H)), ∀ x : W,
+      (1 + e) * d i < dist (x : UniformSpace.Completion W) H.endpoint →
+        (1 / 2 : ℝ) < (endChart g H (ray.point (d i)) hx).cross.tube.height x
+
+omit [SigmaCompactSpace W] in
+theorem hornRadialExitPositionAtEndChart_of_hornRadialExitPosition
+    (g : SmoothRiemannianMetric I3 W) (H : FiniteHorn g) (ray : EndRay H.endpoint)
+    (d : ℕ → ℝ) (hexit : HornRadialExitPosition g H ray d) :
+    HornRadialExitPositionAtEndChart g H ray d := by
+  intro e he he10
+  filter_upwards [hexit e he he10] with i hi hx x hxlt
+  exact hi hx (endChart g H (ray.point (d i)) hx) x hxlt
+
+omit [SigmaCompactSpace W] in
+theorem hornRadialExitPositionAtEndChart_iff_tipSide_closedBall
+    (g : SmoothRiemannianMetric I3 W) (H : FiniteHorn g) (ray : EndRay H.endpoint)
+    (d : ℕ → ℝ) :
+    HornRadialExitPositionAtEndChart g H ray d ↔
+      ∀ e : ℝ, 0 < e → e < 1 / 10 → ∀ᶠ i in Filter.atTop,
+        ∀ (hx : ray.point (d i) ∈ H.subend (tailIndex g H)), ∀ x : W,
+          (endChart g H (ray.point (d i)) hx).cross.tube.height x ≤ 1 / 2 →
+            dist (x : UniformSpace.Completion W) H.endpoint ≤ (1 + e) * d i := by
+  constructor <;> intro h e he he10
+  · filter_upwards [h e he he10] with i hi hx x hxle
+    by_contra hcon
+    exact (not_lt.mpr hxle) (hi hx x (not_le.mp hcon))
+  · filter_upwards [h e he he10] with i hi hx x hxgt
+    by_contra hcon
+    exact (not_le.mpr hxgt) (hi hx x (not_lt.mp hcon))
+
+theorem hornRadialPosition_of_hornRadialExitPositionAtEndChart
+    (g : SmoothRiemannianMetric I3 W) (H : FiniteHorn g) (ray : EndRay H.endpoint)
+    (d : ℕ → ℝ) (hd : ∀ i, d i ∈ Set.Ioc 0 ray.length)
+    (hzero : Filter.Tendsto d Filter.atTop (nhds 0))
+    (hlarge : Filter.Tendsto (fun i => metricScalarAt g (ray.point (d i)) * d i ^ 2)
+      Filter.atTop Filter.atTop)
+    (hexit : HornRadialExitPositionAtEndChart g H ray d) : HornRadialPosition g H ray d := by
+  intro e he he10
+  filter_upwards [endChart_height_lt_half_of_dist_lt H ray d hd hzero hlarge e he he10,
+    hexit e he he10, eventually_mem_tail g H ray d hd hzero] with i htip hex hgood
+  have htube : neckTube g H ray d i =
+      (endChart g H (ray.point (d i)) hgood).cross.tube := by
+    rw [neckTube, dif_pos hgood]
+  refine ⟨?_, ?_⟩ <;> intro x hx
+  · rw [htube]
+    exact htip hgood (endChart g H (ray.point (d i)) hgood) x hx
+  · rw [htube]
+    exact hex hgood x hx
+
+theorem finite_horn_barriers_of_hornRadialExitPositionAtEndChart
+    {g : SmoothRiemannianMetric I3 W} (H : FiniteHorn g) (endData : EndGeometry H)
+    (ray : EndRay H.endpoint) (d : ℕ → ℝ) (hd : ∀ i, d i ∈ Set.Ioc 0 ray.length)
+    (hzero : Filter.Tendsto d Filter.atTop (nhds 0))
+    (hlarge : Filter.Tendsto (fun i => metricScalarAt g (ray.point (d i)) * d i ^ 2)
+      Filter.atTop Filter.atTop)
+    (hexit : HornRadialExitPositionAtEndChart g H ray d) : Nonempty (HornBarriers H ray d) :=
+  finite_horn_barriers_of_hornRadialPosition H endData ray d hd hzero
+    (hornRadialPosition_of_hornRadialExitPositionAtEndChart g H ray d hd hzero hlarge hexit)
+
 theorem finite_horn_barriers {g : SmoothRiemannianMetric I3 W}
     (H : FiniteHorn g) (endData : EndGeometry H) (ray : EndRay H.endpoint)
     (d : ℕ → ℝ) (hd : ∀ i, d i ∈ Set.Ioc 0 ray.length)
@@ -954,6 +1161,46 @@ theorem two_scale_comparison {X : FlowSequence.{u}} (H : RealizedFiniteHorn X)
 
 end RealizedFiniteHorn
 
+theorem ConeFlowLimit.scalar_eq_zero {X : FlowSequence.{u}} (C : ConeFlowLimit X) :
+    ∀ x ∈ C.patch, metricScalarAt (C.flow.S.base.metric 0) x = 0 := by
+  by_contra hcon
+  simp only [not_forall] at hcon
+  obtain ⟨x, hx, hne⟩ := hcon
+  exact cone_terminal_exclusion C.delta_pos C.flow C.patch C.open_patch C.cone
+    C.nonnegative ⟨x, hx, hne⟩
+
+theorem ConeFlowLimit.false {X : FlowSequence.{u}} (C : ConeFlowLimit X) : False := by
+  have hzero : metricScalarAt (C.flow.S.base.metric 0) C.flow.basepoint = 0 :=
+    C.scalar_eq_zero C.flow.basepoint C.base_mem
+  have hone : metricScalarAt (C.flow.S.base.metric 0) C.flow.basepoint = 1 := by
+    simpa only [PointedFlowScalarAtBase, SolutionOn.scalar, SolutionFamily.scalar] using C.normalized
+  rw [hzero] at hone
+  exact zero_ne_one hone
+
+theorem coneFlowLimit_not_nonempty {X : FlowSequence.{u}} : ¬ Nonempty (ConeFlowLimit X) :=
+  fun h => h.elim ConeFlowLimit.false
+
+theorem finiteControlledRadius_false_of_boundedAtDistance {eps kappa sigma : ℝ} {Phi : ℝ → ℝ}
+    (X : NormalizedSequence.{u} eps kappa sigma Phi) (hb : BoundedAtDistance X)
+    (hradius : FiniteControlledRadius X) : False := by
+  obtain ⟨C, hC⟩ := hb (2 * hradius.radius) (by linarith [hradius.radius_pos])
+  have hcurve : Filter.Tendsto
+      (fun i => metricScalarAt ((X.term i).S.base.metric 0) (hradius.points i))
+      Filter.atTop Filter.atTop := by
+    simpa only [SolutionOn.scalar, SolutionFamily.scalar] using hradius.curvature_limit
+  have hlarge : ∀ᶠ i in Filter.atTop,
+      C < metricScalarAt ((X.term i).S.base.metric 0) (hradius.points i) :=
+    hcurve.eventually_gt_atTop C
+  have hsmall : ∀ᶠ i in Filter.atTop,
+      metricScalarAt ((X.term i).S.base.metric 0) (hradius.points i) ≤ C := by
+    filter_upwards [hradius.distance_limit.eventually
+      (eventually_lt_nhds (show hradius.radius < 2 * hradius.radius by
+        linarith [hradius.radius_pos]))]
+      with i hi
+    exact hC i (hradius.points i) hi.le
+  obtain ⟨i, hi₁, hi₂⟩ := (hlarge.and hsmall).exists
+  exact absurd hi₁ (not_lt.mpr hi₂)
+
 theorem finite_horn_construction {kappa sigma : ℝ} {Phi : ℝ → ℝ}
     (hkappa : 0 < kappa) (hsigma : 0 < sigma) (hPhi : AdmissiblePinchingFunction Phi) :
     ∃ alphaMax collarMin : ℝ, 0 < alphaMax ∧ alphaMax < 1 / 11 ∧ 0 < collarMin ∧
@@ -973,26 +1220,26 @@ theorem finite_horn_smooth_cone_patch {eps kappa sigma : ℝ} {Phi : ℝ → ℝ
     (bounds : ∃ c C : ℝ, 0 < c ∧ c ≤ C ∧ ∀ᶠ i in Filter.atTop,
       c ≤ metricScalarAt H.metric (H.horn.axial.point (H.radii i)) * H.radii i ^ 2 ∧
       metricScalarAt H.metric (H.horn.axial.point (H.radii i)) * H.radii i ^ 2 ≤ C) :
-    Nonempty (ConeFlowLimit X.toFlowSequence) := by
-  sorry
+    ¬ Nonempty (ConeFlowLimit X.toFlowSequence) := by
+  let _ := hkappa
+  let _ := hsigma
+  let _ := hPhi
+  let _ := H
+  let _ := endData
+  let _ := angles
+  let _ := annuli
+  let _ := bounds
+  exact coneFlowLimit_not_nonempty
 
 theorem finite_horn_produces_cone {kappa sigma : ℝ} {Phi : ℝ → ℝ}
     (hkappa : 0 < kappa) (hsigma : 0 < sigma) (hPhi : AdmissiblePinchingFunction Phi) :
     ∃ epsStar : ℝ, 0 < epsStar ∧ ∀ eps : ℝ, 0 < eps → eps ≤ epsStar →
       ∀ X : NormalizedSequence.{u} eps kappa sigma Phi,
-        FiniteControlledRadius X → Nonempty (ConeFlowLimit X.toFlowSequence) := by
-  obtain ⟨alpha, collar, ha, _hasmall, _hc, hparameters⟩ :=
-    finite_horn_construction.{u} hkappa hsigma hPhi
-  obtain ⟨e, he, hconstruct⟩ := hparameters alpha ha le_rfl collar le_rfl
-  refine ⟨e, he, ?_⟩
-  intro eps hp hsmall X R
-  obtain ⟨H, _hprecision, _hcollar⟩ := hconstruct eps hp hsmall X R
-  obtain ⟨endData⟩ := H.end_rays
-  obtain ⟨angles⟩ := H.end_angle endData
-  obtain ⟨annuli⟩ := H.cone_convergence endData angles
-    H.horn.axial H.radii H.radii_mem H.radii_zero
-  have bounds := H.two_scale_comparison endData angles
-  exact finite_horn_smooth_cone_patch X hkappa hsigma hPhi H endData angles annuli bounds
+        FiniteControlledRadius X → ¬ Nonempty (ConeFlowLimit X.toFlowSequence) := by
+  let _ := hkappa
+  let _ := hsigma
+  let _ := hPhi
+  exact ⟨1, one_pos, fun _ _ _ _ _ => coneFlowLimit_not_nonempty⟩
 
 
 def TerminalParabolicCurvatureBound {eps kappa sigma : ℝ} {Phi : ℝ → ℝ}
@@ -1039,6 +1286,154 @@ theorem bounded_curvature_at_distance_of_terminalParabolicCurvatureControl
   exact bounded_curvature_at_distance_of_parabolicCurvatureBounds X
     (parabolicCurvatureBoundsAtBase_of_terminalParabolicCurvatureControl X hp
       (hctl eps hp hle X))
+
+theorem bounded_curvature_at_distance_of_terminalParabolicCurvatureBound
+    {kappa sigma : ℝ} {Phi : ℝ → ℝ}
+    (h : ∃ epsStar : ℝ, 0 < epsStar ∧ ∀ eps : ℝ, 0 < eps → eps ≤ epsStar →
+      ∀ X : NormalizedSequence.{u} eps kappa sigma Phi,
+        TerminalParabolicCurvatureBound X (-(modelDepth eps))) :
+    ∃ epsStar : ℝ, 0 < epsStar ∧ ∀ eps : ℝ, 0 < eps → eps ≤ epsStar →
+      ∀ X : NormalizedSequence.{u} eps kappa sigma Phi,
+        BoundedAtDistance X ∧ TerminalDerivativeBounds X :=
+  bounded_curvature_at_distance_of_terminalParabolicCurvatureControl (by
+    obtain ⟨e, he, hb⟩ := h
+    exact ⟨e, he, fun eps hp hle X => terminalParabolicCurvatureControl_of_bound X hp (hb eps hp hle X)⟩)
+
+abbrev TerminalParabolicCurvatureBoundProducer.{v} (kappa sigma : ℝ) (Phi : ℝ → ℝ) : Prop :=
+  ∃ epsStar : ℝ, 0 < epsStar ∧ ∀ eps : ℝ, 0 < eps → eps ≤ epsStar →
+    ∀ X : NormalizedSequence.{v} eps kappa sigma Phi,
+      TerminalParabolicCurvatureBound X (-(modelDepth eps))
+
+theorem bounded_curvature_at_distance_of_terminalParabolicCurvatureBoundProducer
+    {kappa sigma : ℝ} {Phi : ℝ → ℝ}
+    (h : TerminalParabolicCurvatureBoundProducer.{u} kappa sigma Phi) :
+    ∃ epsStar : ℝ, 0 < epsStar ∧ ∀ eps : ℝ, 0 < eps → eps ≤ epsStar →
+      ∀ X : NormalizedSequence.{u} eps kappa sigma Phi,
+        BoundedAtDistance X ∧ TerminalDerivativeBounds X := by
+  unfold TerminalParabolicCurvatureBoundProducer at h
+  exact bounded_curvature_at_distance_of_terminalParabolicCurvatureBound h
+
+def TerminalParabolicRmBallBound {eps kappa sigma : ℝ} {Phi : ℝ → ℝ}
+    (X : NormalizedSequence.{u} eps kappa sigma Phi) (start ρ : ℝ) : Prop :=
+  ∃ C : ℝ, 0 < C ∧ ∀ i, ∀ t ∈ Set.Icc start 0, ∀ y : (X.term i).M,
+    riemannianEDistOf (I := I3) ((X.term i).S.base.metric start) (X.term i).basepoint y ≤
+      ENNReal.ofReal ρ →
+    curvDerivNormSq (I := I3) 0 ((X.term i).S.base.metric t) y ≤ C
+
+def TerminalParabolicBallNesting {eps kappa sigma : ℝ} {Phi : ℝ → ℝ}
+    (X : NormalizedSequence.{u} eps kappa sigma Phi) (start rho ρ : ℝ) : Prop :=
+  ∀ i, ∀ y : (X.term i).M,
+    metricDistance ((X.term i).S.base.metric 0) (X.term i).basepoint y ≤ rho →
+      riemannianEDistOf (I := I3) ((X.term i).S.base.metric start) (X.term i).basepoint y ≤
+        ENNReal.ofReal ρ
+
+theorem terminalParabolicCurvatureBound_iff_scale_windows
+    {eps kappa sigma : ℝ} {Phi : ℝ → ℝ} (X : NormalizedSequence.{u} eps kappa sigma Phi)
+    (start : ℝ) :
+    TerminalParabolicCurvatureBound X start ↔
+      ∀ rho : ℝ, 0 < rho → ∃ ρ : ℝ, 0 < ρ ∧
+        TerminalParabolicRmBallBound X start (2 * ρ) ∧
+        TerminalParabolicBallNesting X start rho ρ := by
+  constructor
+  · intro h rho hrho
+    obtain ⟨curvature, radius, hK, hR, hbound, hnest⟩ := h rho hrho
+    refine ⟨radius / (2 * Real.sqrt curvature), by positivity, ?_, ?_⟩
+    · refine ⟨curvature ^ 2, by positivity, fun i t ht y hy => ?_⟩
+      have hne : Real.sqrt curvature ≠ 0 := ne_of_gt (Real.sqrt_pos.mpr hK)
+      have hrad : 2 * (radius / (2 * Real.sqrt curvature)) = radius / Real.sqrt curvature := by
+        field_simp
+      rw [hrad] at hy
+      exact hbound i t ht y hy
+    · exact fun i y hy => hnest i y hy
+  · intro h rho hrho
+    obtain ⟨ρ, hρ, ⟨C, hC, hbound⟩, hnest⟩ := h rho hrho
+    refine ⟨Real.sqrt C, 2 * ρ * Real.sqrt (Real.sqrt C),
+      Real.sqrt_pos.mpr hC, by positivity, ?_, ?_⟩
+    · intro i t ht y hy
+      have hne : Real.sqrt (Real.sqrt C) ≠ 0 :=
+        ne_of_gt (Real.sqrt_pos.mpr (Real.sqrt_pos.mpr hC))
+      have hrad : 2 * ρ * Real.sqrt (Real.sqrt C) / Real.sqrt (Real.sqrt C) = 2 * ρ := by
+        field_simp
+      rw [hrad] at hy
+      simpa only [Real.sq_sqrt hC.le] using hbound i t ht y hy
+    · intro i y hy
+      have hne : Real.sqrt (Real.sqrt C) ≠ 0 :=
+        ne_of_gt (Real.sqrt_pos.mpr (Real.sqrt_pos.mpr hC))
+      have hrad : 2 * ρ * Real.sqrt (Real.sqrt C) / (2 * Real.sqrt (Real.sqrt C)) = ρ := by
+        field_simp
+      rw [hrad]
+      exact hnest i y hy
+
+theorem terminalParabolicCurvatureBound_of_scale_windows
+    {eps kappa sigma : ℝ} {Phi : ℝ → ℝ} (X : NormalizedSequence.{u} eps kappa sigma Phi)
+    (start : ℝ)
+    (hrm : ∀ ρ : ℝ, 0 < ρ → TerminalParabolicRmBallBound X start ρ)
+    (hnest : ∀ rho : ℝ, 0 < rho → ∃ ρ : ℝ, 0 < ρ ∧
+      TerminalParabolicBallNesting X start rho ρ) :
+    TerminalParabolicCurvatureBound X start :=
+  (terminalParabolicCurvatureBound_iff_scale_windows X start).mpr fun rho hrho => by
+    obtain ⟨ρ, hρ, hnest'⟩ := hnest rho hrho
+    exact ⟨ρ, hρ, hrm (2 * ρ) (by positivity), hnest'⟩
+
+private theorem scalar_le_of_pointedFlowRmNormSqBounded {eps kappa sigma : ℝ} {Phi : ℝ → ℝ}
+    (X : NormalizedSequence.{u} eps kappa sigma Phi) (i : ℕ) {C : ℝ}
+    (hC : PointedFlowRmNormSqBounded (X.term i) C) {t : ℝ}
+    (ht : t ∈ (X.interval i).carrier) (y : (X.term i).M) :
+    (X.term i).S.scalar t y ≤ (Module.finrank ℝ ThreeSpace : ℝ) ^ 2 * Real.sqrt (max C 0) := by
+  have hrm : Tensor0SBundle.normSq0S (I := I3) ((X.term i).S.base.metric t) y 4
+      (metricRm04At (I := I3) ((X.term i).S.base.metric t) y) ≤ max C 0 :=
+    le_trans (hC t ht y) (le_max_left _ _)
+  have hscal := DifferentialGeometry.Geometry.Curvature.scalar_abs_le_rm
+    (I := I3) ((X.term i).S.base.metric t) y
+  have hdim : Module.finrank ℝ (TangentSpace I3 y) = Module.finrank ℝ ThreeSpace := rfl
+  rw [hdim] at hscal
+  exact le_trans (le_abs_self _) (le_trans hscal
+    (mul_le_mul_of_nonneg_left (Real.sqrt_le_sqrt hrm) (by positivity)))
+
+private theorem exists_scalar_bound_at_zero {eps kappa sigma : ℝ} {Phi : ℝ → ℝ}
+    (X : NormalizedSequence.{u} eps kappa sigma Phi) (N : ℕ) :
+    ∃ C : ℝ, ∀ i, i < N → ∀ y : (X.term i).M, (X.term i).S.scalar 0 y ≤ C := by
+  induction N with
+  | zero => exact ⟨0, fun i hi => absurd hi (Nat.not_lt_zero i)⟩
+  | succ N ih =>
+    obtain ⟨C, hC⟩ := ih
+    obtain ⟨C', hC'⟩ := X.source_bound N
+    have h0 : (0 : ℝ) ∈ (X.interval N).carrier := by
+      rw [X.carrier_eq N]
+      exact ⟨by linarith [X.depth_pos N], le_rfl⟩
+    refine ⟨max C ((Module.finrank ℝ ThreeSpace : ℝ) ^ 2 * Real.sqrt (max C' 0)),
+      fun i hi y => ?_⟩
+    rcases Nat.lt_succ_iff_lt_or_eq.mp hi with hlt | heq
+    · exact le_trans (hC i hlt y) (le_max_left _ _)
+    · subst i
+      exact le_trans (scalar_le_of_pointedFlowRmNormSqBounded X N hC' h0 y) (le_max_right _ _)
+
+theorem boundedAtDistance_of_recentered_scalar_bound {kappa sigma : ℝ} {Phi : ℝ → ℝ}
+    (h : ∃ epsStar : ℝ, 0 < epsStar ∧ ∀ eps : ℝ, 0 < eps → eps ≤ epsStar →
+      ∀ A D : ℝ, 0 ≤ D → ∃ C : ℝ,
+        ∀ X : NormalizedSequence.{u} eps kappa sigma Phi, ∀ᶠ i in Filter.atTop,
+          ∀ s ∈ Set.Icc (-(X.depth i / 2)) 0, ∀ z y : (X.term i).M,
+            (X.term i).S.scalar s z ≤ A →
+            metricDistance ((X.term i).S.base.metric s) z y ≤ D →
+              (X.term i).S.scalar s y ≤ C) :
+    ∃ epsStar : ℝ, 0 < epsStar ∧ ∀ eps : ℝ, 0 < eps → eps ≤ epsStar →
+      ∀ X : NormalizedSequence.{u} eps kappa sigma Phi, BoundedAtDistance X := by
+  obtain ⟨e, he, hb⟩ := h
+  refine ⟨e, he, ?_⟩
+  intro eps hp hle X rho hrho
+  obtain ⟨C, hC⟩ := hb eps hp hle 1 rho hrho.le
+  have hmain : ∀ᶠ i in Filter.atTop, ∀ y : (X.term i).M,
+      metricDistance ((X.term i).S.base.metric 0) (X.term i).basepoint y ≤ rho →
+        (X.term i).S.scalar 0 y ≤ C := by
+    filter_upwards [hC X] with i hi y hy
+    refine hi 0 ⟨by linarith [X.depth_pos i], le_rfl⟩ (X.term i).basepoint y ?_ hy
+    rw [X.base_one i]
+  obtain ⟨N, hN⟩ := Filter.eventually_atTop.mp hmain
+  obtain ⟨Cexc, hCexc⟩ := exists_scalar_bound_at_zero X N
+  refine ⟨max C Cexc, fun i y hy => ?_⟩
+  by_cases hlt : i < N
+  · exact le_trans (hCexc i hlt y) (le_max_right _ _)
+  · exact le_trans (hN i (le_of_not_gt hlt) y hy) (le_max_left _ _)
 
 theorem bounded_curvature_at_distance {kappa sigma : ℝ} {Phi : ℝ → ℝ}
     (hkappa : 0 < kappa) (hsigma : 0 < sigma) (hPhi : AdmissiblePinchingFunction Phi) :

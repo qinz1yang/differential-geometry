@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.PointedFlowSlices
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Compactness.Construction
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Canonical.ReferenceChange
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Foundations.InjectivityRadius
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ModelWitness
 
@@ -111,6 +112,137 @@ theorem exists_local_ancient_flow_compactness_form_iff
     rw [hC k]
     with_unfolding_all
       rfl
+
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+theorem exists_metricConvergenceData_canonical_at_all_times_iff
+    {X : PointedFlowSeq.{u, uE, uH} (I := I)}
+    (L : PointedFlowData.{u, uE, uH} (I := I) X.D) (phi : ℕ → ℕ)
+    (Phi : PointedCGHMaps (I := I) X (L.atTime (I := I) 0) phi) :
+    (∀ t ∈ X.D.carrier,
+      ∃ C : MetricConvergenceData (I := I)
+          (Phi.atTime (X := X) (L := L) (phi := phi) t),
+        (∀ k, C.domain k = CanonicalMetricCompactness.canonicalSourceData
+          (I := I) (Phi.atTime (X := X) (L := L) (phi := phi) t) k) ∧
+        (∀ k,
+          let D := C.domain k
+          let _ : TopologicalSpace
+            (MetricSourceDomain (I := I)
+              (Phi.atTime (X := X) (L := L) (phi := phi) t) k) := D.topology
+          let _ : ChartedSpace H
+            (MetricSourceDomain (I := I)
+              (Phi.atTime (X := X) (L := L) (phi := phi) t) k) := D.charted
+          let _ : IsManifold I ∞
+            (MetricSourceDomain (I := I)
+              (Phi.atTime (X := X) (L := L) (phi := phi) t) k) := D.smooth
+          D.referenceMetric = D.limitMetric)) ↔
+    (∀ t ∈ X.D.carrier,
+      ∀ K : Set (L.atTime (I := I) t).M,
+        (let _ : TopologicalSpace (L.atTime (I := I) t).M := L.topology
+         IsCompact K) →
+        ∀ p : ℕ, ∀ ε : ℝ, 0 < ε →
+          ∃ k0 : ℕ, ∀ k : ℕ, k0 ≤ k →
+            (CanonicalMetricCompactness.canonicalSourceData (I := I)
+              (Phi.atTime (X := X) (L := L) (phi := phi) t) k).derivNormSupOn
+                (I := I) K p < ε) := by
+  refine forall_congr' (fun t => ?_)
+  by_cases ht : t ∈ X.D.carrier
+  · simp only [ht, true_implies]
+    exact exists_metricConvergenceData_canonicalSourceData_iff (I := I)
+      (Phi.atTime (X := X) (L := L) (phi := phi) t)
+  · simp only [ht, false_implies]
+
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+theorem exists_local_ancient_flow_compactness_iff_canonical_convergence
+    (X : PointedFlowSeq.{u, uE, uH} (I := I)) :
+    (∃ (L : PointedFlowData.{u, uE, uH} (I := I) X.D) (phi : ℕ → ℕ),
+      StrictMono phi ∧
+      ∃ Phi : PointedCGHMaps (I := I) X (L.atTime (I := I) 0) phi,
+        (let _ : TopologicalSpace L.M := L.topology
+         ConnectedSpace L.M) ∧
+        (∀ t ∈ X.D.carrier, MetricComplete (I := I) (L.atTime (I := I) t)) ∧
+        ∀ t ∈ X.D.carrier,
+          ∃ C : MetricConvergenceData (I := I) (Phi.atTime (L := L) t),
+            (∀ k, C.domain k = CanonicalMetricCompactness.canonicalSourceData
+              (I := I) (Phi.atTime (L := L) t) k) ∧
+            (∀ k,
+              let D := C.domain k
+              let _ : TopologicalSpace
+                (MetricSourceDomain (I := I) (Phi.atTime (L := L) t) k) := D.topology
+              let _ : ChartedSpace H
+                (MetricSourceDomain (I := I) (Phi.atTime (L := L) t) k) := D.charted
+              let _ : IsManifold I ∞
+                (MetricSourceDomain (I := I) (Phi.atTime (L := L) t) k) := D.smooth
+              D.referenceMetric = D.limitMetric)) ↔
+    (∃ (L : PointedFlowData.{u, uE, uH} (I := I) X.D) (phi : ℕ → ℕ),
+      StrictMono phi ∧
+      ∃ Phi : PointedCGHMaps (I := I) X (L.atTime (I := I) 0) phi,
+        (let _ : TopologicalSpace L.M := L.topology
+         ConnectedSpace L.M) ∧
+        (∀ t ∈ X.D.carrier, MetricComplete (I := I) (L.atTime (I := I) t)) ∧
+        ∀ t ∈ X.D.carrier,
+          ∀ K : Set (L.atTime (I := I) t).M,
+            (let _ : TopologicalSpace (L.atTime (I := I) t).M := L.topology
+             IsCompact K) →
+            ∀ p : ℕ, ∀ ε : ℝ, 0 < ε →
+              ∃ k0 : ℕ, ∀ k : ℕ, k0 ≤ k →
+                (CanonicalMetricCompactness.canonicalSourceData (I := I)
+                  (Phi.atTime (L := L) t) k).derivNormSupOn (I := I) K p < ε) := by
+  constructor
+  · rintro ⟨L, phi, hphi, Phi, hconn, hcomplete, hconv⟩
+    exact ⟨L, phi, hphi, Phi, hconn, hcomplete,
+      (exists_metricConvergenceData_canonical_at_all_times_iff L phi Phi).mp hconv⟩
+  · rintro ⟨L, phi, hphi, Phi, hconn, hcomplete, hconv⟩
+    exact ⟨L, phi, hphi, Phi, hconn, hcomplete,
+      (exists_metricConvergenceData_canonical_at_all_times_iff L phi Phi).mpr hconv⟩
+
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+theorem exists_local_pointed_metric_compactness_of_ancient_flow_limit
+    (X : PointedFlowSeq.{u, uE, uH} (I := I))
+    (hD : X.D = ancientTimeInterval)
+    (L : PointedFlowData.{u, uE, uH} (I := I) X.D) (phi : ℕ → ℕ) (hphi : StrictMono phi)
+    (Phi : PointedCGHMaps (I := I) X (L.atTime (I := I) 0) phi)
+    (hconn : let _ : TopologicalSpace L.M := L.topology; ConnectedSpace L.M)
+    (hcomp : ∀ t ∈ X.D.carrier, MetricComplete (I := I) (L.atTime (I := I) t))
+    (hconv : ∀ t ∈ X.D.carrier,
+      ∃ C : MetricConvergenceData (I := I)
+          (Phi.atTime (X := X) (L := L) (phi := phi) t),
+        (∀ k, C.domain k = CanonicalMetricCompactness.canonicalSourceData
+          (I := I) (Phi.atTime (X := X) (L := L) (phi := phi) t) k) ∧
+        (∀ k,
+          let D := C.domain k
+          let _ : TopologicalSpace
+            (MetricSourceDomain (I := I)
+              (Phi.atTime (X := X) (L := L) (phi := phi) t) k) := D.topology
+          let _ : ChartedSpace H
+            (MetricSourceDomain (I := I)
+              (Phi.atTime (X := X) (L := L) (phi := phi) t) k) := D.charted
+          let _ : IsManifold I ∞
+            (MetricSourceDomain (I := I)
+              (Phi.atTime (X := X) (L := L) (phi := phi) t) k) := D.smooth
+          D.referenceMetric = D.limitMetric)) :
+    ∃ P : MetricCompactLimit (I := I) (X.atZero (I := I)),
+      (∀ k, P.convergence.metrics.domain k =
+        CanonicalMetricCompactness.canonicalSourceData (I := I) P.maps k) ∧
+      (∀ k,
+        let D := P.convergence.metrics.domain k
+        let _ : TopologicalSpace (MetricSourceDomain (I := I) P.maps k) := D.topology
+        let _ : ChartedSpace H (MetricSourceDomain (I := I) P.maps k) := D.charted
+        let _ : IsManifold I ∞ (MetricSourceDomain (I := I) P.maps k) := D.smooth
+        D.referenceMetric = D.limitMetric) ∧
+      (let _ : TopologicalSpace P.limit.M := P.limit.topology
+       ConnectedSpace P.limit.M) := by
+  have h0 : (0 : ℝ) ∈ X.D.carrier := by
+    simp only [hD, ancientTimeInterval_carrier, Set.mem_Iic, le_refl]
+  obtain ⟨C, hC, hrefC⟩ := hconv 0 h0
+  let P : MetricCompactLimit (I := I) (X.atZero (I := I)) :=
+    ⟨phi, hphi, L.atTime (I := I) 0, hcomp 0 h0,
+      Phi.atTime (X := X) (L := L) (phi := phi) 0, ⟨C⟩⟩
+  refine ⟨P, ?_, ?_, ?_⟩
+  · intro k
+    exact hC k
+  · intro k
+    exact hrefC k
+  · exact hconn
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 

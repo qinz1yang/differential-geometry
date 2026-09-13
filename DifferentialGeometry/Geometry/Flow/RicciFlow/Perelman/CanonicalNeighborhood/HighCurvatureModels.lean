@@ -604,7 +604,7 @@ theorem high_curvature_derivatives (a b : ℕ) :
         (S : SolutionOn (I := I3) (M := M) (RealTimeInterval.closedOpen 0 T hT))
         (hS : IsSolutionOn S) (o : TangentOrientationSection M),
         ∃ Q0 : ℝ, 0 < Q0 ∧ ∀ J : MixedCurvatureJet S, ∀ x t,
-          t ∈ Set.Ico 0 T → Q0 ≤ S.scalar t x →
+          t ∈ Set.Ioo 0 T → Q0 ≤ S.scalar t x →
           ∀ y ∈ riemannianBallOf (I := I3) (S.base.metric t) x (eta / Real.sqrt (S.scalar t x)),
             0 < S.scalar t y ∧ J.norm a b t y ≤
               C * Real.rpow (S.scalar t y) (1 + (a : ℝ) / 2 + b) := by

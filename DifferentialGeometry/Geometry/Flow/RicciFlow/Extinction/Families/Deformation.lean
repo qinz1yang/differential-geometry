@@ -699,4 +699,323 @@ theorem rfs_uniform_ramp_alternative_of_product_bounds
     hlength hwindows hcontinuous hDini herror
     lambda hlambda hlambda_one c hsol hramp hdeg γ hγ hctr hlen0 hcurv0 hAinit0
 
+omit [SigmaCompactSpace Q] hBoundary in
+def RampWindowInput (B : RicciBackground (I := I) (M := Q) D a b)
+    (L₀ Theta₀ Ainit : ℝ) (ell eta threshold d : ℝ) : Prop :=
+  ∃ lambda₀ : ℝ, 0 < lambda₀ ∧ lambda₀ ≤ 1 ∧
+    (∀ (lambda : ℝ), 0 < lambda → lambda ≤ lambda₀ → ∀ c : ProductCurve Q,
+      c.IsSolutionOn B.family.metric lambda (Icc a b) →
+      c.IsRampOn B.family.metric lambda (Icc a b) → c.degree = 1 →
+      c.length B.family.metric lambda a ≤ L₀ →
+      c.totalCurvature B.family.metric lambda a ≤ Theta₀ →
+      (∀ t ∈ Icc a b, Real.exp (-(B.B₀ * (b - a))) * ell ≤ c.length B.family.metric lambda t) →
+      ∃ starts : Finset ℝ,
+        goodWindowUnion starts d ⊆ Ioo a b ∧
+        volume (Icc a b \ goodWindowUnion starts d) ≤
+          ENNReal.ofReal (d + Real.exp (B.B₀ * (b - a)) * L₀ / threshold) ∧
+        ∀ x t, t ∈ goodWindowUnion starts d →
+          0 < c.angle B.family.metric lambda x t ∧
+          c.angle B.family.metric lambda x t ≤ eta) ∧
+    (∀ (lambda : ℝ), 0 < lambda → lambda ≤ lambda₀ → ∀ c : ProductCurve Q,
+      c.IsSolutionOn B.family.metric lambda (Icc a b) →
+      c.IsRampOn B.family.metric lambda (Icc a b) → c.degree = 1 →
+      c.length B.family.metric lambda a ≤ L₀ →
+      c.totalCurvature B.family.metric lambda a ≤ Theta₀ →
+      ∀ γ : ℝ → ContinuousFreeLoop Q, (∀ t ∈ Icc a b, ∀ z, γ t z = c.projection z t) →
+      (∀ t ∈ Icc a b, IsContractibleLoop (γ t)) →
+      loopFamilyLeastArea B.family.metric γ a ≤ Ainit →
+      ∀ starts : Finset ℝ,
+        (∀ x t, t ∈ goodWindowUnion starts d →
+          0 < c.angle B.family.metric lambda x t ∧ c.angle B.family.metric lambda x t ≤ eta) →
+      ∀ t ∈ Ico a b, t ∈ goodWindowUnion starts d → ∀ eps > 0, ∃ dd > 0,
+        ∀ h ∈ Ioo (0 : ℝ) dd, t + h ≤ b →
+          (loopFamilyLeastArea B.family.metric γ (t + h) -
+              loopFamilyLeastArea B.family.metric γ t) / h ≤
+            -2 * Real.pi - halfScalarMinimum B.family t * loopFamilyLeastArea B.family.metric γ t +
+              eta ^ 2 / Real.sqrt (1 - eta ^ 2) * rampCurv B.B₀ B.C L₀ Theta₀ a b + eps)
+
+omit [SigmaCompactSpace Q] hBoundary in
+theorem rfs_uniform_ramp_alternative_of_frontier
+    (B : RicciBackground (I := I) (M := Q) D a b)
+    (hdim : Module.finrank ℝ E = 3)
+    (L₀ Theta₀ Ainit : ℝ) (hL₀ : 0 ≤ L₀) (hTheta₀ : 0 ≤ Theta₀) (hAinit : 0 ≤ Ainit)
+    (ell epsilon : ℝ) (hell : 0 < ell) (hepsilon : 0 < epsilon)
+    (hproduct : RampProductBounds B) (harea : RampAreaBounds B Ainit)
+    (hwindow : ∀ eta : ℝ, 0 < eta → eta < 1 → ∀ threshold : ℝ, 1 ≤ threshold →
+      ∀ d : ℝ, 0 < d → RampWindowInput B L₀ Theta₀ Ainit ell eta threshold d) :
+    ∃ lambda₀ : ℝ, 0 < lambda₀ ∧ lambda₀ ≤ 1 ∧
+      ∀ lambda : ℝ, 0 < lambda → lambda ≤ lambda₀ → ∀ c : ProductCurve Q,
+        c.IsSolutionOn B.family.metric lambda (Icc a b) →
+        c.IsRampOn B.family.metric lambda (Icc a b) → c.degree = 1 →
+        ∀ γ : ℝ → ContinuousFreeLoop Q,
+          (∀ t ∈ Icc a b, ∀ z, γ t z = c.projection z t) →
+          (∀ t ∈ Icc a b, IsContractibleLoop (γ t)) →
+          c.length B.family.metric lambda a ≤ L₀ →
+          c.totalCurvature B.family.metric lambda a ≤ Theta₀ →
+          loopFamilyLeastArea B.family.metric γ a ≤ Ainit →
+          loopLength (B.family.metric b) (γ b) < ell ∨
+            loopFamilyLeastArea B.family.metric γ b ≤
+              affineComparison B.family a b (loopFamilyLeastArea B.family.metric γ a) + epsilon := by
+  let _ := hdim
+  have hΔ : 0 ≤ b - a := sub_nonneg.mpr B.lt.le
+  have hM : 0 ≤ scalarComparisonBound B.family a b := (rfs_width_flow_background B).2.2.1
+  have hΘbar0 : 0 ≤ rampCurv B.B₀ B.C L₀ Theta₀ a b :=
+    mul_nonneg (by linarith only [hL₀, hTheta₀]) (Real.exp_nonneg _)
+  have hAbar0 : 0 ≤ rampArea B.B₀ B.C L₀ Theta₀ Ainit a b := by
+    simp only [rampArea]
+    exact mul_nonneg (Real.exp_nonneg _) (add_nonneg hAinit (mul_nonneg hΔ hΘbar0))
+  have hCup0 : 0 ≤ rampRate B.B₀ B.C L₀ Theta₀ Ainit a b := by
+    simp only [rampRate]
+    exact mul_nonneg (Real.exp_nonneg _)
+      (add_nonneg (mul_nonneg (by linarith only [B.B₀_nonneg]) hAbar0) hΘbar0)
+  set T2 : ℝ := Real.exp (2 * scalarComparisonBound B.family a b * (b - a)) with hT2
+  set E : ℝ := Real.exp (B.B₀ * (b - a)) with hE
+  set Θbar : ℝ := rampCurv B.B₀ B.C L₀ Theta₀ a b with hΘbar
+  set Abar : ℝ := rampArea B.B₀ B.C L₀ Theta₀ Ainit a b with hAbar
+  set Cup : ℝ := rampRate B.B₀ B.C L₀ Theta₀ Ainit a b with hCup
+  set S : ℝ := Cup + scalarComparisonBound B.family a b * Abar + 2 * Real.pi with hS
+  have hT2pos : 0 < T2 := by rw [hT2]; exact Real.exp_pos _
+  have hEpos : 0 < E := by rw [hE]; exact Real.exp_pos _
+  have hΘnn : 0 ≤ Θbar := by rw [hΘbar]; exact hΘbar0
+  have hAnn : 0 ≤ Abar := by rw [hAbar]; exact hAbar0
+  have hCnn : 0 ≤ Cup := by rw [hCup]; exact hCup0
+  have hSnn : 0 ≤ S := by
+    rw [hS]
+    exact add_nonneg (add_nonneg hCnn (mul_nonneg hM hAnn)) (by positivity)
+  set G : ℝ := Θbar * (b - a) + 1 with hG
+  have hG1 : 1 ≤ G := by
+    rw [hG]
+    have h := mul_nonneg hΘnn hΔ
+    linarith only [h]
+  have hGpos : 0 < G := lt_of_lt_of_le one_pos hG1
+  set K : ℝ := T2 * S + T2 * G + 1 with hK
+  have hK1 : 1 ≤ K := by
+    rw [hK]
+    have h1 : 0 ≤ T2 * S := mul_nonneg hT2pos.le hSnn
+    have h2 : 0 ≤ T2 * G := mul_nonneg hT2pos.le hGpos.le
+    linarith only [h1, h2]
+  have hKpos : 0 < K := lt_of_lt_of_le one_pos hK1
+  have hT2G : T2 * G ≤ K := by
+    rw [hK]
+    have h1 : 0 ≤ T2 * S := mul_nonneg hT2pos.le hSnn
+    linarith only [h1]
+  have hT2S : T2 * S ≤ K := by
+    rw [hK]
+    have h1 : 0 ≤ T2 * G := mul_nonneg hT2pos.le hGpos.le
+    linarith only [h1]
+  set eta : ℝ := min (1 / 2) (epsilon / (3 * K)) with heta
+  have h3Kpos : 0 < 3 * K := by linarith only [hKpos]
+  have heta_pos : 0 < eta := by
+    rw [heta]
+    exact lt_min (by norm_num) (div_pos hepsilon h3Kpos)
+  have heta_half : eta ≤ 1 / 2 := by rw [heta]; exact min_le_left _ _
+  have heta_one : eta < 1 := lt_of_le_of_lt heta_half (by norm_num)
+  have heta_le : eta ≤ epsilon / (3 * K) := by rw [heta]; exact min_le_right _ _
+  have hetaK : eta * K ≤ epsilon / 3 := by
+    have h1 := mul_le_mul_of_nonneg_right heta_le hKpos.le
+    have h2 : epsilon / (3 * K) * K = epsilon / 3 := by field_simp
+    linarith only [h1, h2]
+  have heta_sq : eta ^ 2 ≤ 1 / 4 := by nlinarith only [heta_half, heta_pos]
+  have hsqrt_pos : 0 < Real.sqrt (1 - eta ^ 2) := Real.sqrt_pos.2 (by nlinarith only [heta_sq])
+  have heta_le_sqrt : eta ≤ Real.sqrt (1 - eta ^ 2) := by
+    rw [Real.le_sqrt heta_pos.le (by nlinarith only [heta_sq])]
+    nlinarith only [heta_sq]
+  have hfrac : eta ^ 2 / Real.sqrt (1 - eta ^ 2) ≤ eta := by
+    rw [div_le_iff₀ hsqrt_pos]
+    nlinarith only [heta_le_sqrt, heta_pos.le]
+  set threshold : ℝ := max 1 (3 * K * E * L₀ / epsilon) with hthreshold
+  have hthreshold_one : 1 ≤ threshold := by rw [hthreshold]; exact le_max_left _ _
+  have hthreshold_pos : 0 < threshold := lt_of_lt_of_le one_pos hthreshold_one
+  have hthreshold_le : 3 * K * E * L₀ / epsilon ≤ threshold := by
+    rw [hthreshold]; exact le_max_right _ _
+  have hEL : E * L₀ / threshold ≤ epsilon / (3 * K) := by
+    rw [div_le_div_iff₀ hthreshold_pos h3Kpos]
+    have h1 := mul_le_mul_of_nonneg_right hthreshold_le hepsilon.le
+    rw [div_mul_cancel₀ _ (ne_of_gt hepsilon)] at h1
+    nlinarith only [h1]
+  set delta : ℝ := min 1 (epsilon / (3 * K)) with hdelta
+  have hdelta_pos : 0 < delta := by
+    rw [hdelta]
+    exact lt_min one_pos (div_pos hepsilon h3Kpos)
+  have hdelta_one : delta ≤ 1 := by rw [hdelta]; exact min_le_left _ _
+  have hdelta_le : delta ≤ epsilon / (3 * K) := by rw [hdelta]; exact min_le_right _ _
+  set r₀ : ℝ := E * ell / 2 with hr₀
+  have hr₀_pos : 0 < r₀ := by
+    rw [hr₀]
+    exact div_pos (mul_pos hEpos hell) (by norm_num)
+  set r : ℝ := min r₀ (min (Real.exp (-(B.B₀ * (b - a))) * ell / 2)
+    (delta ^ 2 / threshold)) with hr
+  have hr_pos : 0 < r := by
+    rw [hr]
+    refine lt_min hr₀_pos (lt_min ?_ (div_pos (pow_pos hdelta_pos 2) hthreshold_pos))
+    exact div_pos (mul_pos (Real.exp_pos _) hell) (by norm_num)
+  have hr_le : r ≤ delta ^ 2 / threshold := by
+    rw [hr]
+    exact le_trans (min_le_right _ _) (min_le_right _ _)
+  set d : ℝ := delta * r ^ 2 with hd
+  have hd_pos : 0 < d := by rw [hd]; exact mul_pos hdelta_pos (pow_pos hr_pos 2)
+  have hd_le : d ≤ epsilon / (3 * K) := by
+    rw [hd]
+    have h1 : r ^ 2 ≤ (delta ^ 2 / threshold) ^ 2 := pow_le_pow_left₀ hr_pos.le hr_le 2
+    have h2 : delta * r ^ 2 ≤ delta * (delta ^ 2 / threshold) ^ 2 :=
+      mul_le_mul_of_nonneg_left h1 hdelta_pos.le
+    have h3 : delta * (delta ^ 2 / threshold) ^ 2 = delta ^ 5 / threshold ^ 2 := by
+      rw [div_pow]
+      ring
+    have h6 : delta ^ 5 ≤ 1 := pow_le_one₀ hdelta_pos.le hdelta_one
+    have h4 : delta ^ 5 / threshold ^ 2 ≤ delta ^ 5 := by
+      rw [div_le_iff₀ (pow_pos hthreshold_pos 2)]
+      have h5 : 1 ≤ threshold ^ 2 := by nlinarith only [hthreshold_one]
+      have h7 : 0 < delta ^ 5 := pow_pos hdelta_pos 5
+      nlinarith only [h6, h5, h7]
+    have h5 : delta ^ 5 ≤ delta := by
+      calc delta ^ 5 = delta ^ 4 * delta := by ring
+        _ ≤ 1 * delta :=
+            mul_le_mul_of_nonneg_right (pow_le_one₀ hdelta_pos.le hdelta_one) hdelta_pos.le
+        _ = delta := one_mul _
+    linarith only [h2, h3, h4, h5, hdelta_le]
+  have hterm1 : T2 * (eta ^ 2 / Real.sqrt (1 - eta ^ 2) * Θbar * (b - a)) ≤ epsilon / 3 := by
+    have hA0 : 0 ≤ eta ^ 2 / Real.sqrt (1 - eta ^ 2) :=
+      div_nonneg (sq_nonneg _) (Real.sqrt_nonneg _)
+    have hX0 : 0 ≤ Θbar * (b - a) := mul_nonneg hΘnn hΔ
+    have hstep1 : eta ^ 2 / Real.sqrt (1 - eta ^ 2) * Θbar * (b - a) ≤ eta * G := by
+      have h1 : eta ^ 2 / Real.sqrt (1 - eta ^ 2) * Θbar * (b - a) =
+          (eta ^ 2 / Real.sqrt (1 - eta ^ 2)) * (Θbar * (b - a)) := by ring
+      rw [h1]
+      calc (eta ^ 2 / Real.sqrt (1 - eta ^ 2)) * (Θbar * (b - a))
+          ≤ eta * (Θbar * (b - a)) := mul_le_mul_of_nonneg_right hfrac hX0
+        _ ≤ eta * G := by
+            rw [hG]
+            exact mul_le_mul_of_nonneg_left (le_add_of_nonneg_right zero_le_one) heta_pos.le
+    have hstep2 : T2 * (eta * G) ≤ epsilon / 3 := by
+      have h1 : T2 * (eta * G) = eta * (T2 * G) := by ring
+      have h2 : eta * (T2 * G) ≤ eta * K := mul_le_mul_of_nonneg_left hT2G heta_pos.le
+      linarith only [h1, h2, hetaK]
+    exact le_trans (mul_le_mul_of_nonneg_left hstep1 hT2pos.le) hstep2
+  have hterm2 : T2 * (S * (E * L₀ / threshold)) ≤ epsilon / 3 := by
+    have h1 : T2 * (S * (E * L₀ / threshold)) = T2 * S * (E * L₀ / threshold) := by ring
+    rw [h1]
+    have h2 : T2 * S * (E * L₀ / threshold) ≤ K * (E * L₀ / threshold) :=
+      mul_le_mul_of_nonneg_right hT2S (div_nonneg (mul_nonneg hEpos.le hL₀) hthreshold_pos.le)
+    have h3 := mul_le_mul_of_nonneg_left hEL hKpos.le
+    have h4 : K * (epsilon / (3 * K)) = epsilon / 3 := by field_simp
+    linarith only [h2, h3, h4]
+  have hterm3 : T2 * (S * d) ≤ epsilon / 3 := by
+    have h1 : T2 * (S * d) = T2 * S * d := by ring
+    rw [h1]
+    have h2 : T2 * S * d ≤ K * d := mul_le_mul_of_nonneg_right hT2S hd_pos.le
+    have h3 := mul_le_mul_of_nonneg_left hd_le hKpos.le
+    have h4 : K * (epsilon / (3 * K)) = epsilon / 3 := by field_simp
+    linarith only [h2, h3, h4]
+  have hkey : T2 * (eta ^ 2 / Real.sqrt (1 - eta ^ 2) * Θbar * (b - a) +
+      S * (d + E * L₀ / threshold)) ≤ epsilon := by
+    nlinarith only [hterm1, hterm2, hterm3]
+  have herror : Real.exp (2 * scalarComparisonBound B.family a b * (b - a)) *
+      (eta ^ 2 / Real.sqrt (1 - eta ^ 2) * rampCurv B.B₀ B.C L₀ Theta₀ a b * (b - a) +
+        (rampRate B.B₀ B.C L₀ Theta₀ Ainit a b + scalarComparisonBound B.family a b *
+          rampArea B.B₀ B.C L₀ Theta₀ Ainit a b + 2 * Real.pi) *
+          (d + Real.exp (B.B₀ * (b - a)) * L₀ / threshold)) ≤ epsilon := by
+    simpa only [hT2, hE, hΘbar, hAbar, hCup, hS] using hkey
+  obtain ⟨lambda₀, hl₀, hl₀_one, hwindows, hDini⟩ :=
+    hwindow eta heta_pos heta_one threshold hthreshold_one d hd_pos
+  refine rfs_uniform_ramp_alternative_of_product_bounds B L₀ Theta₀ Ainit hL₀ hTheta₀ hAinit
+    ell epsilon hell hepsilon ?_ (rfs_ramp_projected_length B) ?_ delta r₀ hdelta_pos hr₀_pos eta
+    threshold heta_pos hthreshold_pos r d hr hd lambda₀ hl₀ hl₀_one hwindows hDini herror
+  · intro L Theta hL hT lambda hlambda hlambda_one c hsol hlen hcurv t ht
+    simpa only [rampLen, rampCurv, mul_comm] using
+      hproduct L Theta hL hT lambda hlambda hlambda_one c hsol hlen hcurv t ht
+  · intro L Theta hL hT lambda hlambda hlambda_one c hsol hlen hcurv γ hγ hctr hA
+    simpa only [rampArea, rampRate, rampCurv] using
+      harea L Theta hL hT lambda hlambda hlambda_one c hsol hlen hcurv γ hγ hctr hA
+
+omit [SigmaCompactSpace Q] hBoundary in
+def PreparedFamilyApproximation (B : RicciBackground (I := I) (M := Q) D a b) {d : ℕ}
+    (e : SmoothLoopEmbedding (I := I) (Q := Q) d)
+    (Γ : RegularFamily (I := I) (Q := Q) (Sphere 2)) (L₀ Theta₀ Ainit : ℝ) : Prop :=
+  ∀ (eta : ℝ), 0 < eta →
+    ∃ prepared : RegularFamily (I := I) (Q := Q) (Sphere 2),
+      HasContinuousSmoothLoopJets e prepared ∧
+      ContinuousMap.Homotopic prepared Γ ∧
+      (∀ p, |regularLeastArea (B.family.metric a) (prepared p) -
+        regularLeastArea (B.family.metric a) (Γ p)| < eta) ∧
+      ∀ p (lambda : ℝ), 0 < lambda → lambda ≤ 1 →
+        (initialRamp (prepared p).1).SmoothOn (I := I) univ ∧
+        (initialRamp (prepared p).1).IsRampOn (fun _ => B.family.metric a) lambda univ ∧
+        (initialRamp (prepared p).1).length (fun _ => B.family.metric a) lambda 0 ≤ L₀ ∧
+        (initialRamp (prepared p).1).totalCurvature (fun _ => B.family.metric a) lambda 0 ≤ Theta₀ ∧
+        regularLeastArea (B.family.metric a) (prepared p) ≤ Ainit
+
+omit [SigmaCompactSpace Q] hBoundary in
+def PreparedFamilyFlowData (B : RicciBackground (I := I) (M := Q) D a b) {d : ℕ}
+    (e : SmoothLoopEmbedding (I := I) (Q := Q) d) (L₀ Theta₀ : ℝ) : Prop :=
+  ∀ (lambda : ℝ), 0 < lambda → lambda ≤ 1 →
+    ∀ (prepared : RegularFamily (I := I) (Q := Q) (Sphere 2)),
+      HasContinuousSmoothLoopJets e prepared →
+    ∃ solutions : Sphere 2 → ProductCurve Q,
+      ∃ projected : C(Icc a b, RegularFamily (I := I) (Q := Q) (Sphere 2)),
+        @Continuous (Sphere 2) (ProductCurve Q) inferInstance
+          (smoothProductCylinderTopology e (Icc a b)) solutions ∧
+        (∀ p, (solutions p).IsSolutionOn B.family.metric lambda (Icc a b) ∧
+          (solutions p).IsRampOn B.family.metric lambda (Icc a b) ∧ (solutions p).degree = 1) ∧
+        (∀ t : Icc a b, ∀ p z,
+          ((projected t) p).1 z = (solutions p).projection z t) ∧
+        projected ⟨a, le_rfl, B.lt.le⟩ = prepared ∧
+        (∀ t : Icc a b, HasContinuousSmoothLoopJets e (projected t)) ∧
+        (∀ t : Icc a b,
+          FreeHomotopyClass.mk (contractibleRegularLoopInclusion.comp (projected t)) =
+            FreeHomotopyClass.mk (contractibleRegularLoopInclusion.comp prepared)) ∧
+        (∀ p, (solutions p).length B.family.metric lambda a ≤ L₀ ∧
+          (solutions p).totalCurvature B.family.metric lambda a ≤ Theta₀)
+
+omit [SigmaCompactSpace Q] hBoundary in
+def RampAlternativeData (B : RicciBackground (I := I) (M := Q) D a b)
+    (ell epsilon : ℝ) : Prop :=
+  ∀ (L Theta A : ℝ), 0 ≤ L → 0 ≤ Theta → 0 ≤ A →
+    ∃ lambda₀ : ℝ, 0 < lambda₀ ∧ lambda₀ ≤ 1 ∧
+      ∀ lambda : ℝ, 0 < lambda → lambda ≤ lambda₀ → ∀ c : ProductCurve Q,
+        c.IsSolutionOn B.family.metric lambda (Icc a b) →
+        c.IsRampOn B.family.metric lambda (Icc a b) → c.degree = 1 →
+        ∀ γ : ℝ → ContinuousFreeLoop Q,
+          (∀ t ∈ Icc a b, ∀ z, γ t z = c.projection z t) →
+          (∀ t ∈ Icc a b, IsContractibleLoop (γ t)) →
+          c.length B.family.metric lambda a ≤ L →
+          c.totalCurvature B.family.metric lambda a ≤ Theta →
+          loopFamilyLeastArea B.family.metric γ a ≤ A →
+          loopLength (B.family.metric b) (γ b) < ell ∨
+            loopFamilyLeastArea B.family.metric γ b ≤
+              affineComparison B.family a b (loopFamilyLeastArea B.family.metric γ a) +
+                epsilon / 2
+
+omit [SigmaCompactSpace Q] hBoundary in
+theorem rfs_family_deformation_of_frontier
+    (B : RicciBackground (I := I) (M := Q) D a b) {d : ℕ}
+    (e : SmoothLoopEmbedding (I := I) (Q := Q) d)
+    (Γ : RegularFamily (I := I) (Q := Q) (Sphere 2))
+    (epsilon ell : ℝ) (hepsilon : 0 < epsilon)
+    (L₀ Theta₀ Ainit : ℝ) (hL₀ : 0 ≤ L₀) (hTheta₀ : 0 ≤ Theta₀) (hAinit : 0 ≤ Ainit)
+    (hprepared : PreparedFamilyApproximation B e Γ L₀ Theta₀ Ainit)
+    (hflow : PreparedFamilyFlowData B e L₀ Theta₀)
+    (halt : RampAlternativeData B ell epsilon) :
+    ∃ lambda : ℝ, 0 < lambda ∧ lambda ≤ 1 ∧
+      ∃ solutions : Sphere 2 → ProductCurve Q,
+        ∃ deformed : C(Icc a b, RegularFamily (I := I) (Q := Q) (Sphere 2)),
+          @Continuous (Sphere 2) (ProductCurve Q) inferInstance
+            (smoothProductCylinderTopology e (Icc a b)) solutions ∧
+          (∀ p, (solutions p).IsSolutionOn B.family.metric lambda (Icc a b) ∧
+            (solutions p).IsRampOn B.family.metric lambda (Icc a b) ∧ (solutions p).degree = 1) ∧
+          (∀ t : Icc a b, ∀ p z,
+            ((deformed t) p).1 z = (solutions p).projection z t) ∧
+          (∀ t : Icc a b, HasContinuousSmoothLoopJets e (deformed t) ∧
+            FreeHomotopyClass.mk (contractibleRegularLoopInclusion.comp (deformed t)) =
+              FreeHomotopyClass.mk (contractibleRegularLoopInclusion.comp Γ)) ∧
+          (∀ p, |regularLeastArea (B.family.metric a) ((deformed ⟨a, le_rfl, B.lt.le⟩) p) -
+            regularLeastArea (B.family.metric a) (Γ p)| < epsilon) ∧
+          ∀ p,
+            loopLength (B.family.metric b)
+              (((deformed ⟨b, B.lt.le, le_rfl⟩) p).1.toContinuousLoop) < ell ∨
+            regularLeastArea (B.family.metric b) ((deformed ⟨b, B.lt.le, le_rfl⟩) p) ≤
+              affineComparison B.family a b (regularLeastArea (B.family.metric a) (Γ p)) + epsilon :=
+  rfs_family_deformation_of_prepared_flow B e Γ epsilon ell hepsilon L₀ Theta₀ Ainit hL₀ hTheta₀
+    hAinit hprepared hflow halt
+
 end DifferentialGeometry.PDE.RicciFlow.Extinction.Families

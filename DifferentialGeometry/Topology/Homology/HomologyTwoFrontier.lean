@@ -58,19 +58,4 @@ theorem subsingleton_integralSingularHomology_two_of_injective_intersection_pair
     integralSingularHomology_one_subsingleton (X := X)
   @Function.Injective.subsingleton _ _ β hβ inferInstance
 
-theorem exists_injective_cohomology_one_of_subsingleton_integralSingularHomology_two
-    (h : Subsingleton (integralSingularHomology 2 X)) :
-    ∃ f : integralSingularHomology 2 X →ₗ[ℤ] integralSingularCohomology 1 X,
-      Function.Injective f :=
-  ⟨0, fun a b _ => h.elim a b⟩
-
-theorem subsingleton_integralSingularHomology_two_iff_exists_injective_cohomology_one
-    [SimplyConnectedSpace X] :
-    Subsingleton (integralSingularHomology 2 X) ↔
-      ∃ f : integralSingularHomology 2 X →ₗ[ℤ] integralSingularCohomology 1 X,
-        Function.Injective f :=
-  ⟨exists_injective_cohomology_one_of_subsingleton_integralSingularHomology_two,
-    fun h => h.elim fun f hf =>
-      subsingleton_integralSingularHomology_two_of_injective_cohomology_one f hf⟩
-
 end DifferentialGeometry.Topology

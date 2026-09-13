@@ -154,7 +154,7 @@ def contractibleRegularLoopEquiv :
 
 section RegularContinuity
 
-variable [CompactSpace Q] [T3Space Q] [ConnectedSpace Q]
+variable [CompactSpace Q] [T3Space Q] [Nonempty Q]
   {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
 
 theorem toLipschitzContractible_regularLoop (g : SmoothRiemannianMetric 𝓘(ℝ, E) Q)
@@ -331,7 +331,7 @@ theorem regularContractibleLoopTopologicalSpace_eq_induced
 theorem continuous_regularLeastArea_stdModel
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
     {Q : Type*} [TopologicalSpace Q] [ChartedSpace E Q] [IsManifold 𝓘(ℝ, E) ∞ Q]
-    [CompactSpace Q] [T3Space Q] [ConnectedSpace Q]
+    [CompactSpace Q] [T3Space Q] [Nonempty Q]
     (g : SmoothRiemannianMetric 𝓘(ℝ, E) Q) :
     Continuous (regularLeastArea g) := by
   obtain ⟨N, e, he, hs, hd⟩ :=
@@ -441,15 +441,14 @@ theorem continuous_regularLeastArea
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {Q : Type*} [TopologicalSpace Q] [ChartedSpace H Q] [IsManifold I ∞ Q]
-    [I.Boundaryless] [T2Space Q] [CompactSpace Q] [ConnectedSpace Q]
+    [I.Boundaryless] [T2Space Q] [CompactSpace Q] [Nonempty Q]
     (g : SmoothRiemannianMetric I Q) : Continuous (regularLeastArea g) := by
   classical
   let c : Geometry.Topology.StandardModelCopy I Q E :=
     Geometry.Topology.standardModelCopy (I := I) (M := Q)
       (e := ContinuousLinearEquiv.refl ℝ E)
   let _ : CompactSpace c.Q := c.equiv.toHomeomorph.compactSpace
-  let _ : ConnectedSpace c.Q :=
-    c.equiv.toHomeomorph.surjective.connectedSpace c.equiv.toHomeomorph.continuous
+  let _ : Nonempty c.Q := ⟨c.equiv (Classical.choice (inferInstance : Nonempty Q))⟩
   have _ : T3Space c.Q := inferInstance
   let Ψ : c.Q ≃ₘ⟮𝓘(ℝ, E), I⟯ Q := c.equiv.symm
   let Φc : C(Q, c.Q) := ⟨c.equiv, c.equiv.continuous⟩

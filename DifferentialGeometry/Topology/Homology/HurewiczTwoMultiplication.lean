@@ -894,3 +894,23 @@ theorem hurewicz_two_mul (x : X)
     abel
 
 end DifferentialGeometry.Topology
+
+namespace DifferentialGeometry.Topology
+
+theorem isSphereHomologyGenerator_squareSphereFundamentalClass_iff_coordinate :
+    IsSphereHomologyGenerator.{u} 1 squareSphereFundamentalClass ↔
+      integralLiftedSphereTopEquiv.{u} 1 squareSphereFundamentalClass = 1 ∨
+        integralLiftedSphereTopEquiv.{u} 1 squareSphereFundamentalClass = -1 := by
+  constructor
+  · intro h
+    rcases (isSphereHomologyGenerator_iff_eq_or_eq_neg_integralLiftedSphereGenerator 1
+      squareSphereFundamentalClass).mp h with h' | h'
+    · exact Or.inl (by rw [h', integralLiftedSphereGenerator_coordinate])
+    · exact Or.inr (by rw [h', map_neg, integralLiftedSphereGenerator_coordinate])
+  · rintro (h | h)
+    · exact ⟨integralLiftedSphereTopEquiv 1, h⟩
+    · refine ⟨(integralLiftedSphereTopEquiv 1).trans (LinearEquiv.neg ℤ), ?_⟩
+      rw [LinearEquiv.trans_apply, h]
+      simp
+
+end DifferentialGeometry.Topology

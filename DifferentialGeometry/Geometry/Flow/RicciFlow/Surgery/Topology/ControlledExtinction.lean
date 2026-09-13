@@ -48,18 +48,4 @@ theorem controlled_extinct_trace :
 
 end PoincareControlledExtinction
 
-theorem exists_poincare_controlled_extinction (M : ConnectedClosedOrientedManifold.{u} 3)
-    [SimplyConnectedSpace M.Carrier] (g : SmoothRiemannianMetric (𝓡 3) M.Carrier) :
-    Nonempty (PoincareControlledExtinction M.toClosedOrientedManifold g) := by
-  sorry
-
-theorem exists_poincare_controlled_extinction_on (M : Type u) [TopologicalSpace M]
-    [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] [IsManifold (𝓡 3) ∞ M]
-    [T2Space M] [CompactSpace M] [ConnectedSpace M] [SimplyConnectedSpace M]
-    (g : SmoothRiemannianMetric (𝓡 3) M) (o : ManifoldOrientation (𝓡 3) M 3) :
-    Nonempty (PoincareControlledExtinction
-      ({ Carrier := M, orientation := o } : ClosedOrientedManifold 3) g) :=
-  exists_poincare_controlled_extinction
-    ({ Carrier := M, orientation := o } : ConnectedClosedOrientedManifold 3) g
-
 end DifferentialGeometry.PDE.RicciFlow.Surgery

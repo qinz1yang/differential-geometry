@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.ClassWidth
+import DifferentialGeometry.Analysis.Calculus.SmoothExtension.JetGluing.Seam
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Product
 import DifferentialGeometry.Geometry.Geodesic.Chart.Regularity
 import DifferentialGeometry.Geometry.Metric.ShortGeodesic
@@ -613,6 +614,92 @@ theorem iteratedDeriv_comp_eq_zero_of_flat {F : Type*} [NormedAddCommGroup F] [N
   rw [hzero]
   exact ContinuousMultilinearMap.map_coord_zero _ j (by simp)
 
+omit [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E] [CompleteSpace E]
+  [TopologicalSpace H] [TopologicalSpace Q] [ChartedSpace H Q] [IsManifold I ∞ Q]
+  hT2 hCompact hConnected hBoundary in
+theorem iteratedDeriv_comp_eq_zero_of_flat_of_contDiffAt {F : Type*}
+    [NormedAddCommGroup F] [NormedSpace ℝ F]
+    {φ : ℝ → F} {ψ : ℝ → ℝ} {x₀ : ℝ} (hφ : ContDiffAt ℝ ∞ φ (ψ x₀))
+    (hψ : ContDiffAt ℝ ∞ ψ x₀) (hflat : ∀ m, 0 < m → iteratedDeriv m ψ x₀ = 0)
+    {m : ℕ} (hm : 0 < m) : iteratedDeriv m (φ ∘ ψ) x₀ = 0 := by
+  rw [iteratedDeriv_vcomp_eq_sum_orderedFinpartition hφ hψ
+    (by exact_mod_cast le_top : (m : ℕ∞ω) ≤ (∞ : ℕ∞ω))]
+  refine Finset.sum_eq_zero fun c _ => ?_
+  obtain ⟨j, -⟩ := c.cover (⟨0, hm⟩ : Fin m)
+  have hzero : (fun j : Fin c.length => iteratedDeriv (c.partSize j) ψ x₀) = 0 := by
+    funext j
+    exact hflat (c.partSize j) (c.partSize_pos j)
+  rw [hzero]
+  exact ContinuousMultilinearMap.map_coord_zero _ j (by simp)
+
+omit [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E] [CompleteSpace E]
+  [TopologicalSpace H] [TopologicalSpace Q] [ChartedSpace H Q] [IsManifold I ∞ Q]
+  hT2 hCompact hConnected hBoundary in
+theorem iteratedDeriv_comp_const_mul_sub {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
+    {f : ℝ → F} {m : ℕ} (hf : ContDiff ℝ m f) (N i x : ℝ) :
+    iteratedDeriv m (fun y : ℝ => f (N * y - i)) x = N ^ m • iteratedDeriv m f (N * x - i) := by
+  set c : ℝ := N * x - i with hc
+  have hfun : (fun y : ℝ => f (N * y - i)) =
+      fun y : ℝ => (fun z : ℝ => f (N * z + c)) (y - x) := by
+    funext y
+    congr 1
+    rw [hc]; ring
+  rw [hfun, iteratedDeriv_comp_sub_const m (fun z : ℝ => f (N * z + c)) x]
+  simp only
+  have hcomp := iteratedDeriv_comp_const_smul
+    (f := fun w : ℝ => f (w + c)) (hf.comp (contDiff_id.add contDiff_const)) N
+  rw [hcomp]
+  simp only
+  have h2 : iteratedDeriv m (fun w : ℝ => f (w + c)) 0 = iteratedDeriv m f c := by
+    rw [iteratedDeriv_comp_add_const m f c]
+    simp only [zero_add]
+  have hNz : N * (x - x) = (0 : ℝ) := by rw [sub_self, mul_zero]
+  rw [hNz, h2, hc]
+
+omit [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E] [CompleteSpace E]
+  [TopologicalSpace H] [TopologicalSpace Q] [ChartedSpace H Q] [IsManifold I ∞ Q]
+  hT2 hCompact hConnected hBoundary in
+theorem iteratedDeriv_comp_beta_mul_sub_eq_zero (P : FlatteningProfile) {F : Type*}
+    [NormedAddCommGroup F] [NormedSpace ℝ F] {φ : ℝ → F} {c : ℝ}
+    (hφ : ContDiffAt ℝ ∞ φ (P.beta c)) {N : ℝ} (hN : N ≠ 0) (i : ℝ)
+    (hbeta : ∀ k, 0 < k → iteratedDeriv k P.beta c = 0) {m : ℕ} (hm : 0 < m) :
+    iteratedDeriv m (φ ∘ fun y : ℝ => P.beta (N * y - i)) ((i + c) / N) = 0 := by
+  have harg : N * ((i + c) / N) - i = c := by
+    field_simp
+    ring
+  have hinner : ContDiffAt ℝ ∞ (fun y : ℝ => N * y - i) ((i + c) / N) :=
+    ((contDiff_const.mul contDiff_id).sub contDiff_const).contDiffAt
+  have hφ' : ContDiffAt ℝ ∞ φ (P.beta (N * ((i + c) / N) - i)) := by
+    rw [harg]; exact hφ
+  have hψ' : ContDiffAt ℝ ∞ (fun y : ℝ => P.beta (N * y - i)) ((i + c) / N) :=
+    ContDiffAt.comp (f := fun y : ℝ => N * y - i) (g := P.beta) ((i + c) / N)
+      (by rw [harg]; exact P.contDiff_beta.contDiffAt) hinner
+  refine iteratedDeriv_comp_eq_zero_of_flat_of_contDiffAt (ψ := fun y : ℝ => P.beta (N * y - i))
+    (x₀ := (i + c) / N) hφ' hψ' ?_ hm
+  intro k hk
+  rw [iteratedDeriv_comp_const_mul_sub (f := P.beta) (m := k)
+      (P.contDiff_beta.of_le (by exact_mod_cast le_top : (k : ℕ∞ω) ≤ (∞ : ℕ∞ω))) N i ((i + c) / N),
+    harg]
+  rw [hbeta k hk, smul_zero]
+
+omit [CompleteSpace E] hCompact hConnected in
+omit hT2 hBoundary in
+theorem flatPolygon_add_one (g : SmoothRiemannianMetric I Q) (P : FlatteningProfile) (N : ℕ)
+    (γ : Surgery.Topology.Circle → Q) (x : ℝ) :
+    flatPolygon g P N γ ((x + 1 : ℝ) : Surgery.Topology.Circle) =
+      flatPolygon g P N γ (x : Surgery.Topology.Circle) := by
+  rw [AddCircle.coe_add_period (p := (1 : ℝ)) x]
+
+omit [CompleteSpace E] hCompact hConnected in
+omit hT2 hBoundary in
+theorem flatPolygon_add_int (g : SmoothRiemannianMetric I Q) (P : FlatteningProfile) (N : ℕ)
+    (γ : Surgery.Topology.Circle → Q) (k : ℤ) (x : ℝ) :
+    flatPolygon g P N γ ((x + k : ℝ) : Surgery.Topology.Circle) =
+      flatPolygon g P N γ (x : Surgery.Topology.Circle) := by
+  have hx : (x + (k : ℝ) : ℝ) = x + k • (1 : ℝ) := by simp
+  rw [hx, AddCircle.coe_add, AddCircle.coe_zsmul, AddCircle.coe_period, zsmul_zero, add_zero]
+
+
 omit [CompleteSpace E] hT2 hCompact hConnected hBoundary in
 theorem flatPolygon_coe_apply (g : SmoothRiemannianMetric I Q) (P : FlatteningProfile) (N : ℕ)
     (γ : Surgery.Topology.Circle → Q) {x : ℝ} (hx : x ∈ Ico (0 : ℝ) 1) :
@@ -650,6 +737,84 @@ theorem flatPolygon_apply_of_mem_Ico (g : SmoothRiemannianMetric I Q) (P : Flatt
     linarith [hx.2, hle]
   have hxI : x ∈ Ico (0 : ℝ) 1 := ⟨hx0, hx1⟩
   rw [flatPolygon_coe_apply g P N γ hxI, hfloor]
+
+omit [CompleteSpace E] hCompact hConnected in
+omit hT2 hBoundary in
+theorem flatPolygon_eventuallyEq_right (g : SmoothRiemannianMetric I Q) (P : FlatteningProfile)
+    {N : ℕ} (hN : 0 < N) (γ : Surgery.Topology.Circle → Q) {i : ℤ} (hi : 0 ≤ i) (hiN : i < N) :
+    (fun x : ℝ => flatPolygon g P N γ (x : Surgery.Topology.Circle))
+      =ᶠ[𝓝[Set.Ici ((i : ℝ) / N)] ((i : ℝ) / N)]
+      (fun x : ℝ => shortSegment g (polygonVertex γ N i) (polygonVertex γ N (i + 1))
+        (P.beta ((N : ℝ) * x - i))) := by
+  have hNR : (0 : ℝ) < N := by exact_mod_cast hN
+  have hx0 : (i : ℝ) / N ∈ Ico (0 : ℝ) 1 := by
+    refine ⟨div_nonneg (by exact_mod_cast hi) hNR.le, ?_⟩
+    rw [div_lt_one hNR]
+    exact_mod_cast hiN
+  have hlt : (i : ℝ) / N < ((i : ℝ) + 1) / N := by
+    rw [div_lt_div_iff_of_pos_right hNR]
+    linarith
+  have hnbhd : (Icc ((i : ℝ) / N) (((i : ℝ) + 1) / N) ∩ Iio (((i : ℝ) + 1) / N))
+      ∈ 𝓝[Set.Ici ((i : ℝ) / N)] ((i : ℝ) / N) :=
+    inter_mem (Icc_mem_nhdsGE hlt) (nhdsWithin_le_nhds (Iio_mem_nhds hlt))
+  filter_upwards [hnbhd] with x hx
+  rcases eq_or_lt_of_le hx.1.1 with hxe | hxlt
+  · subst hxe
+    rw [flatPolygon_coe_apply g P N γ hx0]
+    have hfloor : ⌊(N : ℝ) * ((i : ℝ) / N)⌋ = i := by
+      rw [mul_div_cancel₀ _ (ne_of_gt hNR), Int.floor_intCast]
+    rw [hfloor]
+  · have hmem : x ∈ Ico ((i : ℝ) / N) (((i : ℝ) + 1) / N) := ⟨hxlt.le, hx.2⟩
+    exact flatPolygon_apply_of_mem_Ico g P N γ hN hi hiN hmem
+
+omit [CompleteSpace E] hCompact hConnected in
+omit hT2 hBoundary in
+theorem flatPolygon_eventuallyEq_left (g : SmoothRiemannianMetric I Q) (P : FlatteningProfile)
+    {N : ℕ} (hN : 0 < N) (γ : Surgery.Topology.Circle → Q) {i : ℤ} (hi : 0 < i) (hiN : i < N)
+    (hsegL : IsShortSegment g (polygonVertex γ N (i - 1)) (polygonVertex γ N i)
+      (shortSegment g (polygonVertex γ N (i - 1)) (polygonVertex γ N i)))
+    (hsegR : IsShortSegment g (polygonVertex γ N i) (polygonVertex γ N (i + 1))
+      (shortSegment g (polygonVertex γ N i) (polygonVertex γ N (i + 1)))) :
+    (fun x : ℝ => flatPolygon g P N γ (x : Surgery.Topology.Circle))
+      =ᶠ[𝓝[Set.Iic ((i : ℝ) / N)] ((i : ℝ) / N)]
+      (fun x : ℝ => shortSegment g (polygonVertex γ N (i - 1)) (polygonVertex γ N i)
+        (P.beta ((N : ℝ) * x - ((i : ℝ) - 1)))) := by
+  have hNR : (0 : ℝ) < N := by exact_mod_cast hN
+  have hi1 : (0 : ℤ) ≤ i - 1 := by omega
+  have hi1N : i - 1 < (N : ℤ) := by omega
+  have hx0 : (i : ℝ) / N ∈ Ico (0 : ℝ) 1 := by
+    refine ⟨div_nonneg (by exact_mod_cast (by omega : (0 : ℤ) ≤ i)) hNR.le, ?_⟩
+    rw [div_lt_one hNR]
+    exact_mod_cast hiN
+  have hlt : (((i : ℝ) - 1) / N) < (i : ℝ) / N := by
+    rw [div_lt_div_iff_of_pos_right hNR]
+    linarith
+  have hnbhd : (Icc (((i : ℝ) - 1) / N) ((i : ℝ) / N) ∩ Ioi (((i : ℝ) - 1) / N))
+      ∈ 𝓝[Set.Iic ((i : ℝ) / N)] ((i : ℝ) / N) :=
+    inter_mem (Icc_mem_nhdsLE hlt) (nhdsWithin_le_nhds (Ioi_mem_nhds hlt))
+  filter_upwards [hnbhd] with x hx
+  rcases eq_or_lt_of_le hx.1.2 with hxe | hxlt
+  · subst hxe
+    rw [flatPolygon_coe_apply g P N γ hx0]
+    have hfloor : ⌊(N : ℝ) * ((i : ℝ) / N)⌋ = i := by
+      rw [mul_div_cancel₀ _ (ne_of_gt hNR), Int.floor_intCast]
+    rw [hfloor]
+    have h0 : (N : ℝ) * ((i : ℝ) / N) - i = 0 := by
+      rw [mul_div_cancel₀ _ (ne_of_gt hNR), sub_self]
+    have h1 : (N : ℝ) * ((i : ℝ) / N) - ((i : ℝ) - 1) = 1 := by
+      rw [mul_div_cancel₀ _ (ne_of_gt hNR)]
+      ring
+    rw [h0, h1, P.beta_zero, P.beta_one, hsegR.2.2.1, hsegL.2.2.2.1]
+  · have hcast : (((i - 1 : ℤ)) : ℝ) = (i : ℝ) - 1 := by push_cast; ring
+    have hcast1 : (((i - 1 : ℤ)) : ℝ) + 1 = (i : ℝ) := by push_cast; ring
+    have hmem : x ∈ Ico ((((i - 1 : ℤ)) : ℝ) / N) (((((i - 1 : ℤ)) : ℝ) + 1) / N) := by
+      refine ⟨?_, ?_⟩
+      · rw [hcast]; exact hx.2.le
+      · rw [hcast1]; exact hxlt
+    have hthis := flatPolygon_apply_of_mem_Ico g P N γ hN hi1 hi1N hmem
+    have hz : i - 1 + 1 = i := by omega
+    rw [hcast, hz] at hthis
+    exact hthis
 
 omit [CompleteSpace E] hCompact hConnected in
 theorem IsShortSegment.speed_eq (g : SmoothRiemannianMetric I Q) {p q : Q} {c : ℝ → Q}
@@ -950,6 +1115,316 @@ theorem flatPolygon_loopLength_eq_sum (g : SmoothRiemannianMetric I Q) (P : Flat
   rw [Fin.sum_univ_eq_sum_range
     (fun k : ℕ => (riemannianEDistOf g (polygonVertex γ N (k : ℤ))
       (polygonVertex γ N ((k : ℤ) + 1))).toReal)]
+
+omit [CompleteSpace E] hT2 hCompact hConnected hBoundary in
+private theorem contDiffAt_map_shortSegment (g : SmoothRiemannianMetric I Q) {d : ℕ}
+    (e : SmoothLoopEmbedding (I := I) (Q := Q) d) {p q : Q}
+    (h : IsShortSegment g p q (shortSegment g p q)) {s : ℝ} (hs : s ∈ Ioo (-1 : ℝ) 2) :
+    ContDiffAt ℝ ∞ (fun y : ℝ => e.map (shortSegment g p q y)) s :=
+  ((e.smooth.contMDiffAt).comp s (h.1.contMDiffAt (isOpen_Ioo.mem_nhds hs))).contDiffAt
+
+omit [CompleteSpace E] hT2 hCompact hConnected hBoundary in
+private theorem contMDiffOn_shortSegment_beta (g : SmoothRiemannianMetric I Q)
+    (P : FlatteningProfile) {p q : Q} (h : IsShortSegment g p q (shortSegment g p q))
+    {c e : ℝ} {s : Set ℝ} (hmap : ∀ x ∈ s, c * x + e ∈ Icc (0 : ℝ) 1) :
+    ContMDiffOn 𝓘(ℝ, ℝ) I ∞ (fun x : ℝ => shortSegment g p q (P.beta (c * x + e))) s := by
+  have hinner : ContMDiffOn 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) ∞ (fun x : ℝ => P.beta (c * x + e)) s :=
+    (P.contDiff_beta.contMDiff.comp
+      (((contDiff_const.mul contDiff_id).add contDiff_const).contMDiff)).contMDiffOn
+  refine h.1.comp hinner fun x hx => ?_
+  have hx' := hmap x hx
+  exact ⟨by linarith [(P.beta_mem_Icc hx').1], by linarith [(P.beta_mem_Icc hx').2]⟩
+
+omit [TopologicalSpace Q] in
+omit [CompleteSpace E] hT2 hCompact hConnected hBoundary in
+private theorem polygonVertex_add_int (γ : Surgery.Topology.Circle → Q) (N : ℕ) (i k : ℤ) :
+    polygonVertex γ N (i + k * N) = polygonVertex γ N i := by
+  rcases Nat.eq_zero_or_pos N with hN | hN
+  · subst hN; simp
+  · have hNne : (N : ℝ) ≠ 0 := by exact_mod_cast hN.ne'
+    have hcast : (((i + k * N : ℤ)) : ℝ) = (i : ℝ) + (k : ℝ) * N := by push_cast; ring
+    have hdiv : ((i : ℝ) + (k : ℝ) * N) / N = (i : ℝ) / N + (k : ℝ) := by
+      rw [add_div, mul_div_cancel_right₀ _ hNne]
+    simp only [polygonVertex, hcast, hdiv]
+    have hsmul : (i : ℝ) / N + (k : ℝ) = (i : ℝ) / N + k • (1 : ℝ) := by rw [zsmul_one]
+    rw [hsmul, AddCircle.coe_add, AddCircle.coe_zsmul, AddCircle.coe_period, zsmul_zero,
+      add_zero]
+
+omit [CompleteSpace E] hT2 hCompact hConnected hBoundary in
+private theorem contDiffAt_chart_shortSegment (g : SmoothRiemannianMetric I Q) {p q pt : Q}
+    (h : IsShortSegment g p q (shortSegment g p q)) {s : ℝ} (hs : s ∈ Ioo (-1 : ℝ) 2)
+    (hv : shortSegment g p q s = pt) :
+    ContDiffAt ℝ ∞ (fun y : ℝ => (extChartAt I pt) (shortSegment g p q y)) s := by
+  have h1 : ContMDiffAt 𝓘(ℝ, ℝ) I ∞ (shortSegment g p q) s := h.1.contMDiffAt (isOpen_Ioo.mem_nhds hs)
+  have h2 : ContMDiffAt I 𝓘(ℝ, E) ∞ (extChartAt I pt) (shortSegment g p q s) := by
+    rw [hv]; exact contMDiffAt_extChartAt
+  exact (h2.comp s h1).contDiffAt
+
+omit [CompleteSpace E] hT2 hCompact hConnected hBoundary in
+private theorem flatPolygon_eventuallyEq_left_zero (g : SmoothRiemannianMetric I Q)
+    (P : FlatteningProfile) {N : ℕ} (hN : 0 < N) (γ : Surgery.Topology.Circle → Q)
+    (hsegR : IsShortSegment g (polygonVertex γ N 0) (polygonVertex γ N 1)
+      (shortSegment g (polygonVertex γ N 0) (polygonVertex γ N 1)))
+    (hsegL : IsShortSegment g (polygonVertex γ N (-1)) (polygonVertex γ N 0)
+      (shortSegment g (polygonVertex γ N (-1)) (polygonVertex γ N 0))) :
+    (fun x : ℝ => flatPolygon g P N γ (x : Surgery.Topology.Circle))
+      =ᶠ[𝓝[Set.Iic 0] 0]
+      (fun x : ℝ => shortSegment g (polygonVertex γ N (-1)) (polygonVertex γ N 0)
+        (P.beta ((N : ℝ) * x - (-1)))) := by
+  have hNR : (0 : ℝ) < N := by exact_mod_cast hN
+  have hlt : -(1 / (N : ℝ)) < 0 := by
+    have hp : (0 : ℝ) < 1 / (N : ℝ) := by positivity
+    linarith
+  have hmem0 : (0 : ℤ) ≤ ((N : ℤ) - 1) := by omega
+  have hmem1 : ((N : ℤ) - 1) < N := by omega
+  refine Filter.eventuallyEq_iff_exists_mem.mpr ⟨Icc (-(1 / (N : ℝ))) 0, Icc_mem_nhdsLE hlt, ?_⟩
+  intro x hx
+  rcases eq_or_lt_of_le hx.2 with hx0 | hx0
+  · subst hx0
+    dsimp only
+    have hxI : (0 : ℝ) ∈ Ico (0 : ℝ) 1 := ⟨le_rfl, zero_lt_one⟩
+    rw [flatPolygon_coe_apply g P N γ hxI]
+    have hfloor : ⌊(N : ℝ) * 0⌋ = (0 : ℤ) := by simp
+    rw [hfloor]
+    norm_num
+    rw [P.beta_zero, P.beta_one, hsegR.2.2.1, hsegL.2.2.2.1]
+  · have hx1 : x + 1 ∈ Ico ((((N : ℤ) - 1 : ℤ) : ℝ) / (N : ℝ))
+        (((((N : ℤ) - 1 : ℤ) : ℝ) + 1) / (N : ℝ)) := by
+      constructor
+      · have hcastN : ((((N : ℤ) - 1 : ℤ) : ℝ)) = (N : ℝ) - 1 := by push_cast; ring
+        rw [div_le_iff₀ hNR, hcastN]
+        have hx' : -(1 / (N : ℝ)) ≤ x := hx.1
+        have hmul : -(1 / (N : ℝ)) * N ≤ x * N := mul_le_mul_of_nonneg_right hx' hNR.le
+        rw [neg_mul, one_div, inv_mul_cancel₀ hNR.ne'] at hmul
+        linarith
+      · have hN1 : (((((N : ℤ) - 1 : ℤ) : ℝ)) + 1) = (N : ℝ) := by push_cast; ring
+        have hdiv : (((((N : ℤ) - 1 : ℤ) : ℝ)) + 1) / (N : ℝ) = 1 := by
+          rw [hN1, div_self hNR.ne']
+        rw [hdiv]
+        linarith
+    dsimp only
+    have hF : flatPolygon g P N γ ((x : ℝ) : Surgery.Topology.Circle)
+        = flatPolygon g P N γ ((x + 1 : ℝ) : Surgery.Topology.Circle) :=
+      (flatPolygon_add_one g P N γ x).symm
+    rw [hF, flatPolygon_apply_of_mem_Ico g P N γ hN hmem0 hmem1 hx1]
+    have hpvL : polygonVertex γ N ((N : ℤ) - 1) = polygonVertex γ N (-1) := by
+      have h := polygonVertex_add_int γ N (-1) 1
+      have harg : (-1 : ℤ) + 1 * (N : ℤ) = (N : ℤ) - 1 := by ring
+      rwa [harg] at h
+    have hpvR : polygonVertex γ N (((N : ℤ) - 1) + 1) = polygonVertex γ N (0 : ℤ) := by
+      have h := polygonVertex_add_int γ N (0 : ℤ) 1
+      have harg : (0 : ℤ) + 1 * (N : ℤ) = ((N : ℤ) - 1) + 1 := by ring
+      rwa [harg] at h
+    have harg : (N : ℝ) * (x + 1) - ((((N : ℤ) - 1 : ℤ)) : ℝ) = (N : ℝ) * x - (-1) := by
+      push_cast; ring
+    rw [hpvL, hpvR, harg]
+
+
+omit [CompleteSpace E] hT2 hCompact hConnected hBoundary in
+theorem iteratedDeriv_map_flatPolygon_eq_zero (g : SmoothRiemannianMetric I Q)
+    (P : FlatteningProfile) {d : ℕ} (e : SmoothLoopEmbedding (I := I) (Q := Q) d) {N : ℕ}
+    (hN : 0 < N) (γ : Surgery.Topology.Circle → Q)
+    (hseg : ∀ i : ℤ, 0 ≤ i → i < N → IsShortSegment g (polygonVertex γ N i)
+      (polygonVertex γ N (i + 1))
+      (shortSegment g (polygonVertex γ N i) (polygonVertex γ N (i + 1))))
+    {i : ℤ} (hi : 0 ≤ i) (hiN : i < N) {m : ℕ} (hm : 0 < m) :
+    iteratedDeriv m (fun x : ℝ => e.map (flatPolygon g P N γ (x : Surgery.Topology.Circle)))
+      ((i : ℝ) / N) = 0 := by
+  have hNR : (0 : ℝ) < N := by exact_mod_cast hN
+  have hsegR : IsShortSegment g (polygonVertex γ N i) (polygonVertex γ N (i + 1))
+      (shortSegment g (polygonVertex γ N i) (polygonVertex γ N (i + 1))) := hseg i hi hiN
+  have hsegL : IsShortSegment g (polygonVertex γ N (i - 1)) (polygonVertex γ N i)
+      (shortSegment g (polygonVertex γ N (i - 1)) (polygonVertex γ N i)) := by
+    rcases eq_or_lt_of_le hi with h0 | h0
+    · rw [← h0]
+      have hA : polygonVertex γ N ((0 : ℤ) - 1) = polygonVertex γ N ((N : ℤ) - 1) := by
+        have h := polygonVertex_add_int γ N (-1) 1
+        have harg : (-1 : ℤ) + 1 * (N : ℤ) = (N : ℤ) - 1 := by ring
+        rw [harg] at h
+        simpa only [zero_sub] using h.symm
+      have hB : polygonVertex γ N (0 : ℤ) = polygonVertex γ N (N : ℤ) := by
+        have h := polygonVertex_add_int γ N (0 : ℤ) 1
+        have harg : (0 : ℤ) + 1 * (N : ℤ) = (N : ℤ) := by ring
+        rw [harg] at h
+        exact h.symm
+      rw [hA, hB]
+      simpa only [sub_add_cancel] using hseg ((N : ℤ) - 1) (by omega) (by omega)
+    · simpa only [sub_add_cancel] using hseg (i - 1) (by omega) (by omega)
+  set L : ℝ → Q := fun x => shortSegment g (polygonVertex γ N (i - 1)) (polygonVertex γ N i)
+    (P.beta ((N : ℝ) * x - ((i : ℝ) - 1))) with hL_def
+  set R : ℝ → Q := fun x => shortSegment g (polygonVertex γ N i) (polygonVertex γ N (i + 1))
+    (P.beta ((N : ℝ) * x - (i : ℝ))) with hR_def
+  have hφL : ContDiffAt ℝ ∞ (fun y : ℝ => e.map
+      (shortSegment g (polygonVertex γ N (i - 1)) (polygonVertex γ N i) y)) (P.beta 1) :=
+    contDiffAt_map_shortSegment g e hsegL (by rw [P.beta_one]; norm_num)
+  have hφR : ContDiffAt ℝ ∞ (fun y : ℝ => e.map
+      (shortSegment g (polygonVertex γ N i) (polygonVertex γ N (i + 1)) y)) (P.beta 0) :=
+    contDiffAt_map_shortSegment g e hsegR (by rw [P.beta_zero]; norm_num)
+  have hLcd : ContDiffAt ℝ ∞ (fun x : ℝ => e.map (L x)) ((i : ℝ) / N) := by
+    rw [hL_def]
+    have hinner : ContDiffAt ℝ ∞ (fun x : ℝ => P.beta ((N : ℝ) * x - ((i : ℝ) - 1)))
+        ((i : ℝ) / N) :=
+      ContDiffAt.comp (f := fun x : ℝ => (N : ℝ) * x - ((i : ℝ) - 1)) (g := P.beta) _
+        (P.contDiff_beta.contDiffAt)
+        (((contDiff_const.mul contDiff_id).sub contDiff_const).contDiffAt)
+    exact ContDiffAt.comp (f := fun x : ℝ => P.beta ((N : ℝ) * x - ((i : ℝ) - 1)))
+      (g := fun y : ℝ => e.map (shortSegment g (polygonVertex γ N (i - 1)) (polygonVertex γ N i) y))
+      _ (by rw [mul_div_cancel₀ _ (ne_of_gt hNR), sub_sub_cancel]; exact hφL) hinner
+  have hRcd : ContDiffAt ℝ ∞ (fun x : ℝ => e.map (R x)) ((i : ℝ) / N) := by
+    rw [hR_def]
+    have hinner : ContDiffAt ℝ ∞ (fun x : ℝ => P.beta ((N : ℝ) * x - (i : ℝ))) ((i : ℝ) / N) :=
+      ContDiffAt.comp (f := fun x : ℝ => (N : ℝ) * x - (i : ℝ)) (g := P.beta) _
+        (P.contDiff_beta.contDiffAt)
+        (((contDiff_const.mul contDiff_id).sub contDiff_const).contDiffAt)
+    exact ContDiffAt.comp (f := fun x : ℝ => P.beta ((N : ℝ) * x - (i : ℝ)))
+      (g := fun y : ℝ => e.map (shortSegment g (polygonVertex γ N i) (polygonVertex γ N (i + 1)) y))
+      _ (by rw [mul_div_cancel₀ _ (ne_of_gt hNR), sub_self]; exact hφR) hinner
+  have hLx : L ((i : ℝ) / N) = polygonVertex γ N i := by
+    rw [hL_def]
+    dsimp only
+    rw [mul_div_cancel₀ _ (ne_of_gt hNR), sub_sub_cancel, P.beta_one, hsegL.2.2.2.1]
+  have hRx : R ((i : ℝ) / N) = polygonVertex γ N i := by
+    rw [hR_def]
+    dsimp only
+    rw [mul_div_cancel₀ _ (ne_of_gt hNR), sub_self, P.beta_zero, hsegR.2.2.1]
+  have heL : (fun x : ℝ => flatPolygon g P N γ (x : Surgery.Topology.Circle))
+      =ᶠ[𝓝[Iic ((i : ℝ) / N)] ((i : ℝ) / N)] L := by
+    rcases eq_or_lt_of_le hi with h0 | h0
+    · have hsegR' : IsShortSegment g (polygonVertex γ N 0) (polygonVertex γ N 1)
+          (shortSegment g (polygonVertex γ N 0) (polygonVertex γ N 1)) := by
+        have h1 : (0 : ℤ) = i := h0
+        have h2 : (1 : ℤ) = i + 1 := by rw [← h0]; norm_num
+        rw [h1, h2]
+        exact hsegR
+      have hsegL' : IsShortSegment g (polygonVertex γ N (-1)) (polygonVertex γ N 0)
+          (shortSegment g (polygonVertex γ N (-1)) (polygonVertex γ N 0)) := by
+        have h1 : (-1 : ℤ) = i - 1 := by rw [← h0]; norm_num
+        have h2 : (0 : ℤ) = i := h0
+        rw [h1, h2]
+        exact hsegL
+      rw [hL_def, ← h0]
+      simp only [Int.cast_zero, zero_div, zero_sub]
+      exact flatPolygon_eventuallyEq_left_zero g P hN γ hsegR' hsegL'
+    · rw [hL_def]
+      exact flatPolygon_eventuallyEq_left g P hN γ h0 hiN hsegL hsegR
+  have heR : (fun x : ℝ => flatPolygon g P N γ (x : Surgery.Topology.Circle))
+      =ᶠ[𝓝[Ici ((i : ℝ) / N)] ((i : ℝ) / N)] R := by
+    rw [hR_def]
+    exact flatPolygon_eventuallyEq_right g P hN γ hi hiN
+  obtain ⟨sL, hsL, heqL⟩ := Filter.eventuallyEq_iff_exists_mem.mp heL
+  obtain ⟨a₁, ha₁, hsub₁⟩ := mem_nhdsLE_iff_exists_Icc_subset.mp hsL
+  obtain ⟨sR, hsR, heqR⟩ := Filter.eventuallyEq_iff_exists_mem.mp heR
+  obtain ⟨b₁, hb₁, hsub₁'⟩ := mem_nhdsGE_iff_exists_Icc_subset.mp hsR
+  have ha : max a₁ (((i : ℝ) - 1) / N) < (i : ℝ) / N := by
+    refine max_lt ha₁ ?_
+    rw [div_lt_div_iff_of_pos_right hNR]
+    linarith
+  have hb : (i : ℝ) / N < min b₁ (((i : ℝ) + 1) / N) := by
+    refine lt_min hb₁ ?_
+    rw [div_lt_div_iff_of_pos_right hNR]
+    linarith
+  have hF₁ : ∀ x ∈ Icc a₁ ((i : ℝ) / N),
+      flatPolygon g P N γ (x : Surgery.Topology.Circle) = L x :=
+    fun x hx => heqL (hsub₁ hx)
+  have hF₁' : ∀ x ∈ Icc ((i : ℝ) / N) b₁,
+      flatPolygon g P N γ (x : Surgery.Topology.Circle) = R x :=
+    fun x hx => heqR (hsub₁' hx)
+  have hML : ContDiffOn ℝ ∞ (fun x : ℝ => e.map (L x))
+      (Icc (max a₁ (((i : ℝ) - 1) / N)) ((i : ℝ) / N)) := by
+    rw [hL_def]
+    refine ((e.smooth.comp_contMDiffOn ?_).contDiffOn)
+    refine contMDiffOn_shortSegment_beta g P hsegL ?_
+    intro x hx
+    have h1 : ((i : ℝ) - 1) / N ≤ x := le_trans (le_max_right a₁ _) hx.1
+    have h1' : (i : ℝ) - 1 ≤ x * N := (div_le_iff₀ hNR).mp h1
+    have h2 : x * N ≤ (i : ℝ) := (le_div_iff₀ hNR).mp hx.2
+    constructor
+    · linarith
+    · linarith
+  have hMR : ContDiffOn ℝ ∞ (fun x : ℝ => e.map (R x))
+      (Icc ((i : ℝ) / N) (min b₁ (((i : ℝ) + 1) / N))) := by
+    rw [hR_def]
+    refine ((e.smooth.comp_contMDiffOn ?_).contDiffOn)
+    refine contMDiffOn_shortSegment_beta g P hsegR ?_
+    intro x hx
+    have h1 : (i : ℝ) ≤ x * N := (div_le_iff₀ hNR).mp hx.1
+    have h2 : x ≤ ((i : ℝ) + 1) / N := le_trans hx.2 (min_le_right b₁ _)
+    have h2' : x * N ≤ (i : ℝ) + 1 := (le_div_iff₀ hNR).mp h2
+    constructor
+    · linarith
+    · linarith
+  have hjet : ∀ n : ℕ,
+      iteratedDerivWithin n (fun x : ℝ => e.map (L x))
+        (Icc (max a₁ (((i : ℝ) - 1) / N)) ((i : ℝ) / N)) ((i : ℝ) / N)
+      = iteratedDerivWithin n (fun x : ℝ => e.map (R x))
+        (Icc ((i : ℝ) / N) (min b₁ (((i : ℝ) + 1) / N))) ((i : ℝ) / N) := by
+    intro n
+    rcases Nat.eq_zero_or_pos n with hn0 | hn0
+    · subst hn0
+      simp only [iteratedDerivWithin_zero]
+      rw [hLx, hRx]
+    · have h1 : iteratedDeriv n (fun x : ℝ => e.map (L x)) ((i : ℝ) / N) = 0 := by
+        rw [hL_def]
+        have h := iteratedDeriv_comp_beta_mul_sub_eq_zero (P := P)
+          (φ := fun y : ℝ => e.map
+            (shortSegment g (polygonVertex γ N (i - 1)) (polygonVertex γ N i) y))
+          (c := 1) hφL (ne_of_gt hNR) ((i : ℝ) - 1)
+          (fun k hk => P.iteratedDeriv_beta_one hk) hn0
+        have hpt : ((i : ℝ) - 1 + 1) / (N : ℝ) = (i : ℝ) / N := by rw [sub_add_cancel]
+        rwa [hpt] at h
+      have h2 : iteratedDeriv n (fun x : ℝ => e.map (R x)) ((i : ℝ) / N) = 0 := by
+        rw [hR_def]
+        have h := iteratedDeriv_comp_beta_mul_sub_eq_zero (P := P)
+          (φ := fun y : ℝ => e.map
+            (shortSegment g (polygonVertex γ N i) (polygonVertex γ N (i + 1)) y))
+          (c := 0) hφR (ne_of_gt hNR) (i : ℝ)
+          (fun k hk => P.iteratedDeriv_beta_zero hk) hn0
+        have hpt : ((i : ℝ) + 0) / (N : ℝ) = (i : ℝ) / N := by rw [add_zero]
+        rwa [hpt] at h
+      rw [iteratedDerivWithin_eq_iteratedDeriv (uniqueDiffOn_Icc ha)
+          (hLcd.of_le (WithTop.coe_le_coe.mpr le_top : (n : ℕ∞ω) ≤ ∞))
+          ⟨ha.le, le_rfl⟩,
+        iteratedDerivWithin_eq_iteratedDeriv (uniqueDiffOn_Icc hb)
+          (hRcd.of_le (WithTop.coe_le_coe.mpr le_top : (n : ℕ∞ω) ≤ ∞))
+          ⟨le_rfl, hb.le⟩, h1, h2]
+  have hG : ContDiffAt ℝ ∞ (fun x : ℝ => if x ≤ (i : ℝ) / N then e.map (L x) else e.map (R x))
+      ((i : ℝ) / N) :=
+    DifferentialGeometry.Analysis.SmoothExtension.contDiffAt_ite_of_jet_match ha hb hML hMR hjet
+  have hEqOn : Set.EqOn (fun x : ℝ => if x ≤ (i : ℝ) / N then e.map (L x) else e.map (R x))
+      (fun x : ℝ => e.map (R x)) (Ici ((i : ℝ) / N)) := by
+    intro x hx
+    rcases eq_or_lt_of_le (mem_Ici.mp hx) with h | h
+    · subst h
+      simp only [if_pos le_rfl, hLx, hRx]
+    · simp only [if_neg (not_le.mpr h)]
+  have hFG : (fun x : ℝ => e.map (flatPolygon g P N γ (x : Surgery.Topology.Circle)))
+      =ᶠ[𝓝 ((i : ℝ) / N)]
+      (fun x : ℝ => if x ≤ (i : ℝ) / N then e.map (L x) else e.map (R x)) := by
+    refine Filter.eventuallyEq_iff_exists_mem.mpr
+      ⟨Icc (max a₁ (((i : ℝ) - 1) / N)) (min b₁ (((i : ℝ) + 1) / N)),
+        Icc_mem_nhds ha hb, fun x hx => ?_⟩
+    dsimp only
+    by_cases h : x ≤ (i : ℝ) / N
+    · have hxL : x ∈ Icc a₁ ((i : ℝ) / N) := ⟨le_trans (le_max_left a₁ _) hx.1, h⟩
+      rw [hF₁ x hxL, if_pos h]
+    · have hxR : x ∈ Icc ((i : ℝ) / N) b₁ :=
+        ⟨le_of_lt (not_le.mp h), le_trans hx.2 (min_le_left b₁ _)⟩
+      rw [hF₁' x hxR, if_neg h]
+  rw [Filter.EventuallyEq.iteratedDeriv_eq m hFG]
+  rw [← iteratedDerivWithin_eq_iteratedDeriv (uniqueDiffOn_Ici ((i : ℝ) / N))
+    (hG.of_le (WithTop.coe_le_coe.mpr le_top : (m : ℕ∞ω) ≤ ∞)) (mem_Ici.mpr le_rfl)]
+  rw [(iteratedDerivWithin_congr hEqOn) (mem_Ici.mpr le_rfl)]
+  rw [iteratedDerivWithin_eq_iteratedDeriv (uniqueDiffOn_Ici ((i : ℝ) / N))
+    (hRcd.of_le (WithTop.coe_le_coe.mpr le_top : (m : ℕ∞ω) ≤ ∞)) (mem_Ici.mpr le_rfl)]
+  rw [hR_def]
+  dsimp only
+  have h := iteratedDeriv_comp_beta_mul_sub_eq_zero (P := P)
+    (φ := fun y : ℝ => e.map
+      (shortSegment g (polygonVertex γ N i) (polygonVertex γ N (i + 1)) y))
+    (c := 0) hφR (ne_of_gt hNR) (i : ℝ)
+    (fun k hk => P.iteratedDeriv_beta_zero hk) hm
+  have hpt : ((i : ℝ) + 0) / (N : ℝ) = (i : ℝ) / N := by rw [add_zero]
+  rwa [hpt] at h
 
 theorem rfs_flat_polygon_bounds (g : SmoothRiemannianMetric I Q)
     (P : FlatteningProfile) {d : ℕ} (e : SmoothLoopEmbedding (I := I) (Q := Q) d) :

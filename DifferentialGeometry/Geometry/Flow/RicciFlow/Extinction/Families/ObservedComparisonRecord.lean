@@ -340,74 +340,6 @@ theorem observedComparisonRecord_of_historyWidth (H : ObservedHistory.{u})
        exact hinitial }⟩
 
 
-theorem observedComparisonRecord_of_historyWidthData (H : ObservedHistory.{u})
-    (h0 : ∀ c : ConnectedComponents (H.stage 0).Carrier,
-      SimplyConnectedSpace ((H.stage 0).component c).Carrier)
-    (terminal : ConnectedComponents (H.stage (Fin.last H.eventCount)).Carrier)
-    {c A : ℝ} (hc : 0 < c) (hHpos : 0 < H.horizon)
-    (hdata : (∀ t, 0 ≤ Extinction.Width.historyWidth H h0 terminal t ∧
-        ENNReal.ofReal (Extinction.Width.historyWidth H h0 terminal t) < ⊤) ∧
-      Extinction.Width.historyWidth H h0 terminal
-          (Extinction.Width.historyStageTime H 0) ≤ A ∧
-      (∀ t, (∀ i : Fin H.eventCount, t.1 ≠ H.time i.succ) →
-        ContinuousAt (Extinction.Width.historyWidth H h0 terminal) t) ∧
-      (∀ i : Fin H.eventCount,
-        ENNReal.ofReal (Extinction.Width.historyWidth H h0 terminal
-            (Extinction.Width.historyStageTime H i.succ)) ≤
-          liminf (fun t : Icc (0 : ℝ) H.horizon =>
-            ENNReal.ofReal (Extinction.Width.historyWidth H h0 terminal t))
-            (𝓝[<] (Extinction.Width.historyStageTime H i.succ))) ∧
-      ∀ i : Fin H.eventCount, H.time i.succ < H.horizon →
-        ContinuousWithinAt (Extinction.Width.historyWidth H h0 terminal)
-          (Ici (Extinction.Width.historyStageTime H i.succ))
-          (Extinction.Width.historyStageTime H i.succ))
-    (hdini : ∀ t ∈ Ico (0 : ℝ) H.horizon, t ∉ H.eventTimes →
-      UpperRightDiniLE (observedHistoryWidthValue H h0 terminal) t
-        (-2 * Real.pi + 3 * observedHistoryWidthValue H h0 terminal t / (4 * (t + c)))) :
-    Nonempty (ObservedComparisonRecord H c A) :=
-  observedComparisonRecord_of_historyWidth H h0 terminal hc hHpos hdata.2.1
-    (fun t htE => hdata.2.2.1 t (fun i h => htE ⟨i, h.symm⟩)) hdata.2.2.2.2 hdata.2.2.2.1 hdini
-
-theorem exists_poincare_controlled_extinction_of_widthData
-    (P : OrientedThreeStage.{u}) (g : P.Metric) (H : ObservedHistory.{u})
-    (A : InitialIdentification P g H) [Nonempty P.Carrier]
-    [ConnectedSpace P.Carrier] [SimplyConnectedSpace P.Carrier]
-    (hc : (i : Fin H.eventCount) → SmoothCutCapCompletion (H.event i).transition)
-    (hout : (i : Fin H.eventCount) →
-      letI : ChartedSpace (EuclideanHalfSpace 3) (H.event i).old := (H.event i).oldCharts
-      IsSmoothEmbedding (𝓡∂ 3) ThreeModel ∞
-        (fun x : (H.event i).old => (H.event i).transition.trace.capping.coreInclusion x.1))
-    (hctrl : ∀ i : Fin H.eventCount, ∀ c : ConnectedComponents (H.event i).discarded.Carrier,
-      DifferentialGeometry.Topology.isPoincareStandard
-        ((H.event i).discarded.toClosedOrientedManifold.component c).Carrier)
-    (parameters : CutoffParameters)
-    (cutoff : ∀ i : Fin H.eventCount, GeometricCutoffRecord H i parameters)
-    (terminal : ConnectedComponents (H.stage (Fin.last H.eventCount)).Carrier)
-    {c A₀ : ℝ} (hcpos : 0 < c) (hA₀ : 0 ≤ A₀)
-    (hthreshold : extinctionThreshold c A₀ < H.horizon)
-    (hwidth : Extinction.Width.historyWidth H
-      (Extinction.Width.initialIdentification_components_simplyConnected P g H A) terminal
-      (Extinction.Width.historyStageTime H 0) ≤ A₀)
-    (hdini : ∀ t ∈ Ico (0 : ℝ) H.horizon, t ∉ H.eventTimes →
-      UpperRightDiniLE (observedHistoryWidthValue H
-        (Extinction.Width.initialIdentification_components_simplyConnected P g H A) terminal) t
-        (-2 * Real.pi + 3 * observedHistoryWidthValue H
-          (Extinction.Width.initialIdentification_components_simplyConnected P g H A) terminal t /
-            (4 * (t + c)))) :
-    Nonempty (PoincareControlledExtinction P.toClosedOrientedManifold g) := by
-  have hHpos : 0 < H.horizon :=
-    (extinctionThreshold_nonneg hcpos hA₀).trans_lt hthreshold
-  refine exists_poincare_controlled_extinction_of_uniform_records P g H A hc hout hctrl
-    hthreshold (fun Q => ?_)
-  exact observedComparisonRecord_of_historyWidthData H _ terminal hcpos hHpos
-    ⟨fun t => ⟨Extinction.Width.historyWidth_nonneg H _ terminal t, ENNReal.ofReal_lt_top⟩,
-      hwidth,
-      fun t ht => Extinction.Width.historyWidth_continuousAt_of_not_event H _ terminal t ht,
-      fun i => Extinction.Width.historyWidth_event_jump H parameters cutoff _ terminal i,
-      fun i hi => Extinction.Width.historyWidth_rightContinuousAt_event H _ terminal i hi⟩
-    hdini
-
-
 theorem upperRightDiniLE_of_incrementBound {V W : ℝ → ℝ} {t m c : ℝ} (hc : 0 < c) (ht0 : 0 ≤ t)
     (hVW : V =ᶠ[𝓝[>] t] W) (hVt : V t = W t) (hWt : 0 ≤ W t)
     (hm : -3 / (4 * (t + c)) ≤ m)
@@ -466,5 +398,15 @@ theorem historyScalarLowerBound_half {H : ObservedHistory.{u}} {c : ℝ} (hc : 0
     ring
   rw [h2]
   exact div_le_div_of_nonneg_right hb (by norm_num)
+
+namespace ObservedComparisonRecord
+
+variable {H : ObservedHistory.{u}} {c A : ℝ}
+
+theorem not_nonempty_of_threshold_lt (h : extinctionThreshold c A < H.horizon) :
+    ¬ Nonempty (ObservedComparisonRecord H c A) :=
+  fun hne => (isEmpty_of_threshold_lt h).false hne.some
+
+end ObservedComparisonRecord
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology

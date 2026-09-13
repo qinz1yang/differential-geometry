@@ -418,8 +418,9 @@ namespace DifferentialGeometry.Topology
 universe u
 
 def SelfTransport : Prop :=
-  ∀ {M : ClosedOrientedManifold.{u} 3} (c c' : OrientedBallChart M),
-    Manifold.BallChartTransport c.toBallChart c'.toBallChart
+  ∀ {M : ConnectedClosedOrientedManifold.{u} 3}
+    (c c' : OrientedBallChart M.toClosedOrientedManifold),
+    OrientedBallChartTransport c c'
 
 def OrientedBallChartPullback : Prop :=
   ∀ {M M' : ClosedOrientedManifold.{u} 3}
@@ -444,7 +445,7 @@ theorem connectedSumQuotient_diffeomorph_of_selfTransport (h : SelfTransport.{u}
       (ConnectedSumQuotient.contDiffOn_reflectMapInv a.1)
     Nonempty (ConnectedSumQuotient c.toBallChart d.toBallChart a.1.toHomeomorph ≃ₘ⟮𝓡 3, 𝓡 3⟯
       ConnectedSumQuotient c'.toBallChart d'.toBallChart a.1.toHomeomorph) :=
-  nonempty_connectedSumQuotient_diffeomorph_of_ballChartTransport c c' d d' a
+  nonempty_connectedSumQuotient_diffeomorph_of_orientedBallChartTransport c c' d d' a
     (h c c') (h d d')
 
 theorem connectedSum_diffeomorph_of_ballChartTransport
@@ -526,7 +527,7 @@ theorem connectedSum_transport_right_of_orientedPullback
       (connectedSum M P').toClosedOrientedManifold.Carrier) := by
   obtain ⟨d, hd⟩ := hpull Ψ (orientedBallChart P') hΨ
   exact connectedSum_diffeomorph_of_ballChartTransport M P P' d (orientedBallChart P')
-    (hself (orientedBallChart P) d) (Manifold.BallChartTransport.refl _) Ψ hd
+    (hself (orientedBallChart P) d).toBallChartTransport (Manifold.BallChartTransport.refl _) Ψ hd
 
 theorem connectedSum_transport_left_of_orientedPullback
     (hself : SelfTransport.{u}) (hpull : OrientedBallChartPullback.{u})
@@ -537,38 +538,6 @@ theorem connectedSum_transport_left_of_orientedPullback
       (connectedSum M' Q).toClosedOrientedManifold.Carrier) := by
   obtain ⟨c, hc⟩ := hpull Φ (orientedBallChart M') hΦ
   exact connectedSum_diffeomorph_of_ballChartTransport_left Q M M' c (orientedBallChart M')
-    (hself (orientedBallChart M) c) (Manifold.BallChartTransport.refl _) Φ hc
-
-def BinaryConnectedSumAssociative : Prop :=
-  ∀ X Y Z : ConnectedClosedOrientedManifold.{u} 3,
-    Nonempty ((connectedSum (connectedSum X Y) Z).toClosedOrientedManifold.Carrier
-        ≃ₘ⟮𝓡 3, 𝓡 3⟯
-      (connectedSum X (connectedSum Y Z)).toClosedOrientedManifold.Carrier)
-
-def PlainConnectedSumTransport : Prop :=
-  ∀ (M : ConnectedClosedOrientedManifold.{u} 3) (P P' : ConnectedClosedOrientedManifold.{u} 3),
-    Nonempty (P.Carrier ≃ₘ⟮𝓡 3, 𝓡 3⟯ P'.Carrier) →
-    Nonempty ((connectedSum M P).toClosedOrientedManifold.Carrier ≃ₘ⟮𝓡 3, 𝓡 3⟯
-      (connectedSum M P').toClosedOrientedManifold.Carrier)
-
-def PlainConnectedSumTransportLeft : Prop :=
-  ∀ (M M' : ConnectedClosedOrientedManifold.{u} 3) (Q : ConnectedClosedOrientedManifold.{u} 3),
-    Nonempty (M.Carrier ≃ₘ⟮𝓡 3, 𝓡 3⟯ M'.Carrier) →
-    Nonempty ((connectedSum M Q).toClosedOrientedManifold.Carrier ≃ₘ⟮𝓡 3, 𝓡 3⟯
-      (connectedSum M' Q).toClosedOrientedManifold.Carrier)
-
-theorem plain_transport_right_of_plainConnectedSumTransport
-    (h : PlainConnectedSumTransport.{u}) (M N N' : ConnectedClosedOrientedManifold.{u} 3)
-    (hΨ : Nonempty (N.Carrier ≃ₘ⟮𝓡 3, 𝓡 3⟯ N'.Carrier)) :
-    Nonempty ((connectedSum M N).toClosedOrientedManifold.Carrier ≃ₘ⟮𝓡 3, 𝓡 3⟯
-      (connectedSum M N').toClosedOrientedManifold.Carrier) :=
-  h M N N' hΨ
-
-theorem plain_transport_left_of_plainConnectedSumTransportLeft
-    (h : PlainConnectedSumTransportLeft.{u}) (M M' N : ConnectedClosedOrientedManifold.{u} 3)
-    (hΦ : Nonempty (M.Carrier ≃ₘ⟮𝓡 3, 𝓡 3⟯ M'.Carrier)) :
-    Nonempty ((connectedSum M N).toClosedOrientedManifold.Carrier ≃ₘ⟮𝓡 3, 𝓡 3⟯
-      (connectedSum M' N).toClosedOrientedManifold.Carrier) :=
-  h M M' N hΦ
+    (hself (orientedBallChart M) c).toBallChartTransport (Manifold.BallChartTransport.refl _) Φ hc
 
 end DifferentialGeometry.Topology

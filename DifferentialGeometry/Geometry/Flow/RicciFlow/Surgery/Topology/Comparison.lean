@@ -27,6 +27,21 @@ theorem sphereTwo_connectedSpace : ConnectedSpace (Sphere 2) :=
     (isConnected_sphere (E := EuclideanSpace ℝ (Fin 3))
       (by rw [← Module.finrank_eq_rank]; norm_num) 0 zero_le_one)
 
+theorem riemannianCurveLength_eq_zero_of_apply_eq_const
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+    (g : SmoothRiemannianMetric I M) (γ : ℝ → M) {a b : ℝ} {q : M}
+    (h : ∀ t ∈ Icc a b, γ t = q) : riemannianCurveLength g γ a b = 0 := by
+  unfold riemannianCurveLength
+  refine le_antisymm (iSup_le fun p => ?_) bot_le
+  have hsum : (∑ i ∈ Finset.range p.1,
+      riemannianEDistOf g (γ (p.2.1 (i + 1))) (γ (p.2.1 i))) = 0 :=
+    Finset.sum_eq_zero fun i _ => by
+      rw [h _ (p.2.2.2 (i + 1)), h _ (p.2.2.2 i)]
+      exact riemannianEDistOf_self g q
+  rw [hsum]
+
 structure SmoothSphericalRegion (P : OrientedThreeStage.{u}) where
   region : Set P.Carrier
   compact : IsCompact region
@@ -90,6 +105,104 @@ theorem rfs_exterior_branches_of_side_data (P : OrientedThreeStage.{u})
     (hcover : C.region ∪ (⋃ b, (side b).region) = univ) :
     Nonempty (ExteriorRegions C) :=
   ⟨⟨side, hcover, hinter, hbdry, hdisj⟩⟩
+
+theorem rfs_exterior_branches_of_boundary_sides (P : OrientedThreeStage.{u})
+    [ConnectedSpace P.Carrier] [SimplyConnectedSpace P.Carrier] (C : SmoothSphericalRegion P)
+    (side : C.Boundary → Set P.Carrier)
+    (hopen : ∀ b, IsOpen (side b))
+    (hconn : ∀ b, IsConnected (side b))
+    (hregion : ∀ b, side b ∩ C.region = ∅)
+    (hclosure : ∀ b, closure (side b) = side b ∪
+      Set.range (fun y : Sphere 2 => (C.sphere b y).1))
+    (hnormal : ∀ b (x : Sphere 2),
+      Nonempty (DifferentialGeometry.Topology.SphereSeparation.EmbeddedSphereSideNormalChart
+        (fun y : Sphere 2 => (C.sphere b y).1) (side b) x))
+    (hcover : C.region ∪ (⋃ b, closure (side b)) = univ)
+    (hdisjoint : Pairwise fun b d => Disjoint (closure (side b)) (closure (side d))) :
+    Nonempty (ExteriorRegions C) := by
+  classical
+  have hsphere_mem : ∀ (b : C.Boundary) (y : Sphere 2),
+      (C.sphere b y).1 ∈ closure (side b) := fun b y => by
+    rw [hclosure b]
+    exact Or.inr (Set.mem_range_self y)
+  let exteriorFun : C.Boundary → SmoothSphericalRegion P := fun b =>
+    letI : ChartedSpace (EuclideanHalfSpace 3) ↥(closure (side b)) :=
+      DifferentialGeometry.Topology.SphereSeparation.sideClosureChartedSpace
+        (hopen b) (hclosure b) (hnormal b)
+    letI : IsManifold (𝓡∂ 3) ∞ ↥(closure (side b)) :=
+      DifferentialGeometry.Topology.SphereSeparation.sideClosureIsManifold
+        (hopen b) (hclosure b) (hnormal b)
+    let sphereMap : PUnit → C(Sphere 2, ↥(closure (side b))) := fun _ =>
+      ⟨fun y => ⟨(C.sphere b y).1, hsphere_mem b y⟩,
+        Continuous.subtype_mk (C.sphere_smooth b).contMDiff.continuous _⟩
+    { region := closure (side b)
+      compact := isClosed_closure.isCompact
+      connected := (hconn b).closure
+      charts := inferInstance
+      smooth := inferInstance
+      induced :=
+        DifferentialGeometry.Topology.SphereSeparation.sideClosure_inclusion_isSmoothEmbedding
+          (hopen b) (hclosure b) (hnormal b)
+      interior_connected := by
+        rw [DifferentialGeometry.Topology.SphereSeparation.sideClosure_interior_image
+          (hopen b) (hclosure b) (hnormal b)]
+        exact hconn b
+      Boundary := PUnit
+      finiteBoundary := inferInstance
+      sphere := sphereMap
+      sphere_smooth := fun _ => C.sphere_smooth b
+      sphere_disjoint := fun b' d h => absurd (Subsingleton.elim b' d) h
+      boundary_eq := by
+        have himg := DifferentialGeometry.Topology.SphereSeparation.sideClosure_boundary_image
+          (e := fun y : Sphere 2 => (C.sphere b y).1) (hopen b) (hclosure b) (hnormal b)
+        have hiff : ∀ q : ↥(closure (side b)),
+            q ∈ (𝓡∂ 3).boundary ↥(closure (side b)) ↔
+              q.1 ∈ Set.range (fun y : Sphere 2 => (C.sphere b y).1) := by
+          intro q
+          constructor
+          · intro hq
+            rw [← himg]
+            exact ⟨q, hq, rfl⟩
+          · rintro ⟨y, hy⟩
+            have hmem : (C.sphere b y).1 ∈
+                (Subtype.val : ↥(closure (side b)) → P.Carrier) ''
+                  (𝓡∂ 3).boundary ↥(closure (side b)) := by
+              rw [himg]
+              exact ⟨y, rfl⟩
+            obtain ⟨q', hq', hq'val⟩ := hmem
+            have hq'e : q' = q := Subtype.ext (hq'val.trans hy)
+            rwa [hq'e] at hq'
+        ext q
+        rw [hiff q]
+        simp only [Set.mem_iUnion, Set.mem_range]
+        constructor
+        · rintro ⟨y, hy⟩
+          exact ⟨PUnit.unit, y, Subtype.ext hy⟩
+        · rintro ⟨b', y, hy⟩
+          exact ⟨y, congrArg Subtype.val hy⟩ }
+  refine ⟨{ exterior := exteriorFun
+            cover := ?_
+            intersection := ?_
+            boundary_eq := ?_
+            disjoint := ?_ }⟩
+  · simpa only [exteriorFun] using hcover
+  · intro b
+    change closure (side b) ∩ C.region =
+      (Subtype.val : C.region → P.Carrier) '' Set.range (C.sphere b)
+    rw [hclosure b, Set.union_inter_distrib_right, hregion b, Set.empty_union]
+    have hsub : Set.range (fun y : Sphere 2 => (C.sphere b y).1) ⊆ C.region := by
+      rintro x ⟨y, rfl⟩
+      exact (C.sphere b y).2
+    rw [Set.inter_eq_left.mpr hsub]
+    rw [← Set.range_comp]
+    rfl
+  · intro b
+    dsimp only [exteriorFun]
+    rw [DifferentialGeometry.Topology.SphereSeparation.sideClosure_boundary_image
+      (e := fun y : Sphere 2 => (C.sphere b y).1) (hopen b) (hclosure b) (hnormal b)]
+    rw [← Set.range_comp]
+    rfl
+  · simpa only [exteriorFun] using hdisjoint
 
 theorem exterior_branch_eq_of_mem (P : OrientedThreeStage.{u}) (C : SmoothSphericalRegion P)
     (E : ExteriorRegions C)
@@ -1245,6 +1358,36 @@ theorem rfs_whole_parent_map_locallyConstant_of_notMem {x : (G.Parent c).Carrier
   rw [K.rfs_whole_parent_map_eq_tip_of_mem_exterior b₀ hxS,
     K.rfs_whole_parent_map_eq_tip_of_mem_exterior b₀ hyS]
 
+theorem rfs_whole_parent_map_curveLength_eq_zero_of_mapsTo_compl
+    {γ : ℝ → (G.Parent c).Carrier} {a b : ℝ}
+    (hγ : ContinuousOn γ (Icc a b))
+    (hmap : ∀ t ∈ Icc a b, γ t ∉ K.support.region) :
+    riemannianCurveLength (H.event i).outputMetric
+      (fun t => (K.rfs_whole_parent_map (γ t)).1) a b = 0 := by
+  by_cases hab : a ≤ b
+  · refine riemannianCurveLength_eq_zero_of_apply_eq_const _ _
+      (q := (K.rfs_whole_parent_map (γ a)).1) ?_
+    let γ' : Icc a b → (G.Parent c).Carrier := fun t => γ t
+    have hcont : Continuous γ' := hγ.domRestrict
+    have hlc : IsLocallyConstant (fun t : Icc a b => K.rfs_whole_parent_map (γ' t)) := by
+      rw [IsLocallyConstant.iff_exists_open]
+      intro t
+      have ht : γ t ∉ K.support.region := hmap t t.2
+      obtain ⟨U, hU, hfU⟩ := K.rfs_whole_parent_map_locallyConstant_of_notMem ht
+      obtain ⟨V, hVU, hVo, htV⟩ := mem_nhds_iff.mp hU
+      exact ⟨γ' ⁻¹' V, hcont.isOpen_preimage V hVo, htV,
+        fun s hs => hfU (γ' s) (hVU hs)⟩
+    have hpre : PreconnectedSpace (Icc a b) :=
+      isPreconnected_iff_preconnectedSpace.mp isPreconnected_Icc
+    have hconst := congrFun (@IsLocallyConstant.eq_const (Icc a b)
+      ((G.Child c).Carrier) inferInstance hpre
+      (fun t : Icc a b => K.rfs_whole_parent_map (γ' t)) hlc ⟨a, left_mem_Icc.mpr hab⟩)
+    intro t ht
+    exact congrArg Subtype.val (hconst ⟨t, ht⟩)
+  · exact riemannianCurveLength_eq_zero_of_apply_eq_const _ _
+      (q := (K.rfs_whole_parent_map (γ a)).1)
+      (fun t ht => absurd (ht.1.trans ht.2) hab)
+
 theorem rfs_whole_parent_map_surjective_of_cover
     (hcov : Set.range (G.transition.childCoreInclusion c) ∪
       (⋃ b : G.ChildBoundary c, Set.range (fun w : Sphere 2 × ↑(Icc (K.level b) 0) =>
@@ -1503,6 +1646,92 @@ theorem rfs_collapse_degree [SimplyConnectedSpace (G.Parent c).Carrier] :
   sorry
 
 end ComparisonSupport
+
+theorem rfs_child_comparison_of_local_length_comparison
+    (Kc : (c : ConnectedComponents (H.stage i.succ).Carrier) → G.ComparisonSupport c)
+    (hdegree : ∀ c, integralHomologyMap 3 (Kc c).rfs_whole_parent_map
+      (fundamentalClass (G.Parent c).orientation) =
+      fundamentalClass (G.Child c).orientation)
+    (hlocal : ∃ s₀ ∈ Ico (H.time i.castSucc) (H.time i.succ), ∃ ell : ℝ → ℝ,
+      (∀ s ∈ Ioo s₀ (H.time i.succ), 1 ≤ ell s) ∧
+      Filter.Tendsto ell (𝓝[<] (H.time i.succ)) (𝓝 1) ∧
+      ∀ c, ∀ s ∈ Ioo s₀ (H.time i.succ), ∀ x ∈ (Kc c).support.region,
+        ∃ U ∈ 𝓝 x, ∀ (a b : ℝ) (γ : ℝ → (G.Parent c).Carrier),
+          a ≤ b → ContinuousOn γ (Icc a b) → MapsTo γ (Icc a b) U →
+          riemannianCurveLength ((H.stage i.castSucc).componentMetric
+            ((H.event i).incoming.flow.base.metric s)
+            (G.transition.childParent c)) γ a b ≠ ⊤ →
+          riemannianCurveLength
+            ((H.stage i.succ).componentMetric (H.event i).outputMetric c)
+            (fun t => (Kc c).rfs_whole_parent_map (γ t)) a b ≤
+          ENNReal.ofReal (ell s) * riemannianCurveLength
+            ((H.stage i.castSucc).componentMetric
+              ((H.event i).incoming.flow.base.metric s) (G.transition.childParent c)) γ a b) :
+    ∃ f : (c : ConnectedComponents (H.stage i.succ).Carrier) →
+        C((G.Parent c).Carrier, (G.Child c).Carrier),
+      (∀ c, ∃ K : G.ComparisonSupport c, f c = K.rfs_whole_parent_map) ∧
+      (∀ c, integralHomologyMap 3 (f c)
+          (fundamentalClass (G.Parent c).orientation) =
+        fundamentalClass (G.Child c).orientation) ∧
+      ∃ s₀ ∈ Ico (H.time i.castSucc) (H.time i.succ), ∃ ell : ℝ → ℝ,
+        (∀ s ∈ Ioo s₀ (H.time i.succ), 1 ≤ ell s) ∧
+        Filter.Tendsto ell (𝓝[<] (H.time i.succ)) (𝓝 1) ∧
+        ∀ c, ∀ s ∈ Ioo s₀ (H.time i.succ), ∀ x y : (G.Parent c).Carrier,
+          riemannianEDistOf ((H.stage i.succ).componentMetric (H.event i).outputMetric c)
+            (f c x) (f c y) ≤ ENNReal.ofReal (ell s) *
+            riemannianEDistOf ((H.stage i.castSucc).componentMetric
+              ((H.event i).incoming.flow.base.metric s) (G.transition.childParent c)) x y := by
+  obtain ⟨s₀, hs₀, ell, hell, htend, hloc⟩ := hlocal
+  refine ⟨fun c => (Kc c).rfs_whole_parent_map, fun c => ⟨Kc c, rfl⟩,
+    fun c => hdegree c, s₀, hs₀, ell, hell, htend, ?_⟩
+  intro c s hs x y
+  let gs : SmoothRiemannianMetric ThreeModel (G.Parent c).Carrier :=
+    (H.stage i.castSucc).componentMetric ((H.event i).incoming.flow.base.metric s)
+      (G.transition.childParent c)
+  let hc : SmoothRiemannianMetric ThreeModel (G.Child c).Carrier :=
+    (H.stage i.succ).componentMetric (H.event i).outputMetric c
+  have hL : (0 : ℝ) ≤ ell s := le_trans zero_le_one (hell s hs)
+  have hlocFull : ∀ x : (G.Parent c).Carrier, ∃ U ∈ 𝓝 x,
+      ∀ (a b : ℝ) (γ : ℝ → (G.Parent c).Carrier),
+        a ≤ b → ContinuousOn γ (Icc a b) → MapsTo γ (Icc a b) U →
+        riemannianCurveLength gs γ a b ≠ ⊤ →
+        riemannianCurveLength hc (fun t => (Kc c).rfs_whole_parent_map (γ t)) a b ≤
+          ENNReal.ofReal (ell s) * riemannianCurveLength gs γ a b := by
+    intro x
+    by_cases hx : x ∈ (Kc c).support.region
+    · obtain ⟨U, hU, hU'⟩ := hloc c s hs x hx
+      exact ⟨U, hU, hU'⟩
+    · obtain ⟨U, hU, hconst⟩ := (Kc c).rfs_whole_parent_map_locallyConstant_of_notMem hx
+      refine ⟨U, hU, fun a b γ hab hγ hmap hfin => ?_⟩
+      have hone : ∀ t ∈ Icc a b, (fun t => (Kc c).rfs_whole_parent_map (γ t)) t =
+          (Kc c).rfs_whole_parent_map x :=
+        fun t ht => hconst (γ t) (hmap ht)
+      have hzero := riemannianCurveLength_eq_zero_of_apply_eq_const (g := hc)
+        (γ := fun t => (Kc c).rfs_whole_parent_map (γ t))
+        (a := a) (b := b) (q := (Kc c).rfs_whole_parent_map x) hone
+      rw [hzero]
+      exact bot_le
+  let : SecondCountableTopology (G.Parent c).Carrier :=
+    ChartedSpace.secondCountable_of_sigmaCompact ThreeSpace (G.Parent c).Carrier
+  let : SecondCountableTopology (G.Child c).Carrier :=
+    ChartedSpace.secondCountable_of_sigmaCompact ThreeSpace (G.Child c).Carrier
+  by_cases hfin : riemannianEDistOf gs x y = ⊤
+  · rw [hfin, ENNReal.mul_top (ne_of_gt (ENNReal.ofReal_pos.mpr
+      (lt_of_lt_of_le (zero_lt_one : (0 : ℝ) < 1) (hell s hs))))]
+    exact le_top
+  · have hlocCoe : ∀ x : (G.Parent c).Carrier, ∃ U ∈ 𝓝 x,
+        ∀ (a b : ℝ) (γ : ℝ → (G.Parent c).Carrier),
+          a ≤ b → ContinuousOn γ (Icc a b) → MapsTo γ (Icc a b) U →
+          riemannianCurveLength gs γ a b ≠ ⊤ →
+          riemannianCurveLength hc (fun t => (Kc c).rfs_whole_parent_map (γ t)) a b ≤
+            ↑(NNReal.mk (ell s) hL) * riemannianCurveLength gs γ a b :=
+      fun x => by
+        obtain ⟨U, hU, hU'⟩ := hlocFull x
+        exact ⟨U, hU, fun a b γ hab hγ hmap hfin => by
+          simpa only [ENNReal.ofReal_eq_coe_nnreal hL] using hU' a b γ hab hγ hmap hfin⟩
+    have h := rfs_local_to_global_length_of_ne_top gs hc
+      ((Kc c).rfs_whole_parent_map) (NNReal.mk (ell s) hL) hlocCoe hfin
+    rwa [ENNReal.ofReal_eq_coe_nnreal hL]
 
 theorem rfs_child_comparison
     (hSC : ∀ p : ConnectedComponents (H.stage i.castSucc).Carrier,

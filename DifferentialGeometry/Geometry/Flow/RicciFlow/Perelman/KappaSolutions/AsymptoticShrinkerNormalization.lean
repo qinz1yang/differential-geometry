@@ -79,4 +79,29 @@ theorem ancient_reducedVolume_antitone_of_redVolume_antitone
   exact hgap ancientTimeInterval F.S 0 p F.isSolution h1 h12 (by simp)
     (fun t ht => ht.2)
 
+section IcoSlab
+
+variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+  [T2Space M] [SigmaCompactSpace M]
+
+omit [I.Boundaryless] in
+def redVolumeIcoSlabAntitone {D : RealTimeInterval}
+    (S : SolutionOn (I := I) (M := M) D) : Prop :=
+  ∀ (T : ℝ) (x : M) {tau1 tau2 : ℝ},
+    IsSolutionOn (I := I) S →
+    0 < tau1 → tau1 ≤ tau2 → T ∈ D.carrier →
+    Set.Ico (T - tau2) T ⊆ D.regular →
+    redVolume S T x tau2 ≤ redVolume S T x tau1
+
+end IcoSlab
+
+omit [I.Boundaryless] in
+theorem ancient_reducedVolume_antitone_of_icoSlabAntitone
+    (h : ∀ (D : RealTimeInterval) (S : SolutionOn (I := I) (M := F.M) D),
+      redVolumeIcoSlabAntitone (I := I) (D := D) S)
+    (p : F.M) :
+    AntitoneOn (intrinsicReducedVolume F.S 0 p) (Ioi 0) :=
+  ancient_reducedVolume_antitone_of_redVolume_antitone F
+    (fun D S T x => h D S T x) p
+
 end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions

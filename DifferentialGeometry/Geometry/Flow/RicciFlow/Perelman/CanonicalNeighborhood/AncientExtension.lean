@@ -454,11 +454,15 @@ def HalfLineExtensionAncient {eps kappa sigma : ℝ} {Phi : ℝ → ℝ}
     {X : NormalizedSequence.{u} eps kappa sigma Phi} {L : TerminalLimit X}
     {J : RealTimeInterval} (B : BackwardExtension L J) : Prop :=
   ∀ g : ℝ → SmoothRiemannianMetric I3 L.space.M, IsHalfLineExtension B g →
-    ∀ hsol : IsSolutionOn ({ base := { metric := g } } :
+    ∃ hsol : IsSolutionOn ({ base := { metric := g } } :
         SolutionOn (I := I3) (M := L.space.M) ancientTimeInterval),
-      ∃ C : ℝ,
-        IsAncientKappaSolution kappa (flowOfMetric ancientTimeInterval L.space g hsol) ∧
-        PointedFlowRmNormSqBounded (flowOfMetric ancientTimeInterval L.space g hsol) C
+      IsAncientKappaSolution kappa (flowOfMetric ancientTimeInterval L.space g hsol)
+
+theorem halfLineExtensionIsFlow_of_ancient {eps kappa sigma : ℝ} {Phi : ℝ → ℝ}
+    {X : NormalizedSequence.{u} eps kappa sigma Phi} {L : TerminalLimit X}
+    {J : RealTimeInterval} {B : BackwardExtension L J} (h : HalfLineExtensionAncient B) :
+    HalfLineExtensionIsFlow B :=
+  fun g hg => (h g hg).1
 
 theorem pointedFlowScalarAtBase_flowOfMetric {eps kappa sigma : ℝ} {Phi : ℝ → ℝ}
     {X : NormalizedSequence.{u} eps kappa sigma Phi} {L : TerminalLimit X}
@@ -479,20 +483,17 @@ theorem pointedFlowScalarAtBase_flowOfMetric {eps kappa sigma : ℝ} {Phi : ℝ 
 def HalfLineAnalyticInputs {eps kappa sigma : ℝ} {Phi : ℝ → ℝ}
     {X : NormalizedSequence.{u} eps kappa sigma Phi} {L : TerminalLimit X}
     {J : RealTimeInterval} (B : BackwardExtension L J) : Prop :=
-  HalfLineExtensionExists B ∧ HalfLineExtensionIsFlow B ∧
-    HalfLineExtensionSliceGeometry B ∧ HalfLineExtensionCurvatureBound B ∧
-    HalfLineExtensionAncient B
+  HalfLineExtensionExists B ∧ HalfLineExtensionSliceGeometry B ∧
+    HalfLineExtensionCurvatureBound B ∧ HalfLineExtensionAncient B
 
 theorem ancientExtension_of_halfLine {eps kappa sigma : ℝ} {Phi : ℝ → ℝ}
     {X : NormalizedSequence.{u} eps kappa sigma Phi} {L : TerminalLimit X}
     {J : RealTimeInterval} (B : BackwardExtension L J)
     (h : HalfLineAnalyticInputs B) :
     Nonempty (AncientExtension B) := by
-  obtain ⟨⟨g, hg0, hagree, diagonal, hdiag, hconv⟩, hflow, hgeom, hrm, hanc⟩ := h
+  obtain ⟨⟨g, hg0, hagree, diagonal, hdiag, hconv⟩, hgeom, hrm, hanc⟩ := h
   have hlim : IsHalfLineExtension B g := ⟨hg0, hagree, diagonal, hdiag, hconv⟩
-  have hsol : IsSolutionOn ({ base := { metric := g } } :
-      SolutionOn (I := I3) (M := L.space.M) ancientTimeInterval) := hflow g hlim
-  obtain ⟨C, hanc1, hanc3⟩ := hanc g hlim hsol
+  obtain ⟨hsol, hanc1⟩ := hanc g hlim
   have hanc2 : PointedFlowScalarAtBase
       (flowOfMetric ancientTimeInterval L.space g hsol) 1 :=
     pointedFlowScalarAtBase_flowOfMetric hlim.1 hsol
@@ -515,7 +516,7 @@ theorem ancientExtension_of_halfLine {eps kappa sigma : ℝ} {Phi : ℝ → ℝ}
             maps_agree := rfl
             ancient := hanc1
             normalized := hanc2
-            global_rm := ⟨C, hanc3⟩ }⟩
+            global_rm := ⟨Cr, fun t ht x => hCr t ht x⟩ }⟩
 
 theorem ancient_extension_of_frontier {kappa sigma : ℝ} {Phi : ℝ → ℝ}
     (h : ∃ epsStar : ℝ, 0 < epsStar ∧ ∀ eps : ℝ, 0 < eps → eps ≤ epsStar →

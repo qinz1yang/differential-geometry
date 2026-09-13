@@ -564,6 +564,17 @@ theorem localReconstruction_of_isEmpty_index [IsEmpty E.tubes.Index]
   E.localReconstruction_of_noTubeRealization hr fun _ =>
     Finset.not_nonempty_iff_eq_empty.mp fun h => h.elim fun a _ => isEmptyElim a
 
+theorem componentConnectedSumDecomposition_of_noTubeRealization (hr : E.NoTubeRealization)
+    (hC : ∀ C : ConnectedComponents M.Carrier, E.cutIndices C = ∅) :
+    E.componentConnectedSumDecomposition :=
+  E.componentConnectedSumDecomposition_of_localReconstruction
+    (E.localReconstruction_of_noTubeRealization hr hC)
+
+theorem componentConnectedSumDecomposition_of_isEmpty_index [IsEmpty E.tubes.Index]
+    (hr : E.NoTubeRealization) : E.componentConnectedSumDecomposition :=
+  E.componentConnectedSumDecomposition_of_localReconstruction
+    (E.localReconstruction_of_isEmpty_index hr)
+
 end SphericalCutCapTransition
 
 namespace FiniteCutCapTrace

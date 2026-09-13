@@ -1955,7 +1955,6 @@ theorem endClosure_boundary_image
 end ClosureAtlas
 
 theorem exists_embeddedSphereSideNormalChart_of_isOpen_side
-    [IsManifold (modelWithCornersSelf ℝ EuclideanThree) ∞ N]
     (he : Manifold.IsSmoothEmbedding (𝓡 2)
       (modelWithCornersSelf ℝ EuclideanThree) ∞ e)
     {B C : Set N} (hBopen : IsOpen B) (hCopen : IsOpen C)

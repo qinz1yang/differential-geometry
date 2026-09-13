@@ -947,6 +947,106 @@ def euclideanStandardSimplexClass : integralLocalHomology 3 (0 : DifferentialGeo
   simplexLocalClass (0 : DifferentialGeometry.Topology.liftedSphereSpace.{u} 1) liftedPositiveTetrahedron
     (fun i q => liftedPositiveTetrahedron_face_ne_zero i q)
 
+def puncturedSimplexBoundary {X : Type u} [TopologicalSpace X] (p : X)
+    (σ : C(stdSimplex ℝ (Fin 4), X))
+    (hσ : ∀ (i : Fin 4) (q : stdSimplex ℝ (Fin 3)), σ (orientedSimplexFace i q) ≠ p) :
+    integralSingularCoefficients ⟶ (integralSingularChains ({(p : X)}ᶜ : Set X)).X 2 :=
+  ∑ i : Fin 4, (-1 : ℤ) ^ i.val • integralSimplexChainMap 2 (euclideanPuncturedFace p σ hσ i)
+
+theorem puncturedSimplexBoundary_chain {X : Type u} [TopologicalSpace X] (p : X)
+    (σ : C(stdSimplex ℝ (Fin 4), X))
+    (hσ : ∀ (i : Fin 4) (q : stdSimplex ℝ (Fin 3)), σ (orientedSimplexFace i q) ≠ p) :
+    puncturedSimplexBoundary p σ hσ ≫
+        (integralSingularChainMap (singularSubspaceInclusion ({(p : X)}ᶜ : Set X))).f 2 =
+      integralSimplexChainMap 3 σ ≫ (integralSingularChains X).d 3 2 := by
+  rw [puncturedSimplexBoundary, Preadditive.sum_comp]
+  rw [Finset.sum_congr rfl (fun i _ => by
+    rw [Linear.smul_comp, euclideanPuncturedFace_chain p σ hσ i])]
+  rw [← euclideanSimplexChain_boundary σ]
+
+theorem puncturedSimplexBoundary_boundary {X : Type u} [TopologicalSpace X] (p : X)
+    (σ : C(stdSimplex ℝ (Fin 4), X))
+    (hσ : ∀ (i : Fin 4) (q : stdSimplex ℝ (Fin 3)), σ (orientedSimplexFace i q) ≠ p) :
+    puncturedSimplexBoundary p σ hσ ≫
+      (integralSingularChains ({(p : X)}ᶜ : Set X)).d 2 1 = 0 := by
+  rw [← cancel_mono
+    ((integralSingularChainMap (singularSubspaceInclusion ({(p : X)}ᶜ : Set X))).f 1)]
+  rw [zero_comp, Category.assoc,
+    ← (integralSingularChainMap (singularSubspaceInclusion ({(p : X)}ᶜ : Set X))).comm 2 1,
+    ← Category.assoc, puncturedSimplexBoundary_chain p σ hσ, Category.assoc,
+    HomologicalComplex.d_comp_d, comp_zero]
+
+theorem integralRelativeConnecting_simplexLocalClass {X : Type u} [TopologicalSpace X] (p : X)
+    (σ : C(stdSimplex ℝ (Fin 4), X))
+    (hσ : ∀ (i : Fin 4) (q : stdSimplex ℝ (Fin 3)), σ (orientedSimplexFace i q) ≠ p) :
+    integralRelativeConnecting 2 ({(p : X)}ᶜ : Set X) (simplexLocalClass p σ hσ) =
+      (((integralSingularChains ({(p : X)}ᶜ : Set X)).liftCycles
+        (puncturedSimplexBoundary p σ hσ) 1 ((ComplexShape.down ℕ).next_eq' (by rfl))
+        (puncturedSimplexBoundary_boundary p σ hσ)) ≫
+        (integralSingularChains ({(p : X)}ᶜ : Set X)).homologyπ 2) (ULift.up 1) :=
+  integralRelativeConnecting_liftCycles_apply 1 ({(p : X)}ᶜ : Set X)
+    (integralSimplexChainMap 3 σ) (euclideanRelativeChain_boundary p σ hσ)
+    (puncturedSimplexBoundary p σ hσ) (puncturedSimplexBoundary_boundary p σ hσ)
+    (puncturedSimplexBoundary_chain p σ hσ)
+
+def euclideanStandardSimplexBoundaryClass :
+    integralSingularHomology 2
+      ({(0 : DifferentialGeometry.Topology.liftedSphereSpace.{u} 1)}ᶜ :
+        Set (DifferentialGeometry.Topology.liftedSphereSpace.{u} 1)) :=
+  (((integralSingularChains ({(0 : DifferentialGeometry.Topology.liftedSphereSpace.{u} 1)}ᶜ :
+      Set (DifferentialGeometry.Topology.liftedSphereSpace.{u} 1))).liftCycles
+      (puncturedSimplexBoundary (0 : DifferentialGeometry.Topology.liftedSphereSpace.{u} 1)
+        liftedPositiveTetrahedron (fun i q => liftedPositiveTetrahedron_face_ne_zero i q))
+      1 ((ComplexShape.down ℕ).next_eq' (by rfl)) (puncturedSimplexBoundary_boundary _ _ _)) ≫
+    (integralSingularChains ({(0 : DifferentialGeometry.Topology.liftedSphereSpace.{u} 1)}ᶜ :
+      Set (DifferentialGeometry.Topology.liftedSphereSpace.{u} 1))).homologyπ 2) (ULift.up 1)
+
+theorem integralRelativeConnecting_euclideanStandardSimplexClass :
+    integralRelativeConnecting 2
+        ({(0 : DifferentialGeometry.Topology.liftedSphereSpace.{u} 1)}ᶜ)
+        euclideanStandardSimplexClass =
+      euclideanStandardSimplexBoundaryClass :=
+  integralRelativeConnecting_simplexLocalClass 0 liftedPositiveTetrahedron
+    (fun i q => liftedPositiveTetrahedron_face_ne_zero i q)
+
+theorem euclideanStandardSimplexClass_generator_iff_isUnit_boundaryClass :
+    Function.Bijective (fun z : ℤ => z • euclideanStandardSimplexClass.{u}) ↔
+      IsUnit (integralSphereTopHomologyEquiv 1
+        (DifferentialGeometry.Topology.liftedSphereSpace.{u} 1) (liftedSphereSpace_finrank 1)
+        (integralPuncturedSpaceSphereHomologyEquiv
+          (DifferentialGeometry.Topology.liftedSphereSpace.{u} 1) 2
+          euclideanStandardSimplexBoundaryClass)) := by
+  rw [← isUnit_apply_iff_bijective_zsmul
+    (integralEuclideanLocalTopZeroEquiv (DifferentialGeometry.Topology.liftedSphereSpace.{u} 1) 1
+      (liftedSphereSpace_finrank 1)) euclideanStandardSimplexClass]
+  have h : integralEuclideanLocalTopZeroEquiv (DifferentialGeometry.Topology.liftedSphereSpace.{u} 1) 1
+      (liftedSphereSpace_finrank 1) euclideanStandardSimplexClass =
+      integralSphereTopHomologyEquiv 1 (DifferentialGeometry.Topology.liftedSphereSpace.{u} 1)
+        (liftedSphereSpace_finrank 1)
+        (integralPuncturedSpaceSphereHomologyEquiv
+          (DifferentialGeometry.Topology.liftedSphereSpace.{u} 1) 2
+          (integralRelativeConnecting 2
+            ({(0 : DifferentialGeometry.Topology.liftedSphereSpace.{u} 1)}ᶜ)
+            euclideanStandardSimplexClass)) := by
+    unfold integralEuclideanLocalTopZeroEquiv
+    rw [LinearEquiv.trans_apply, LinearEquiv.trans_apply]
+    rfl
+  rw [h, integralRelativeConnecting_euclideanStandardSimplexClass]
+
+theorem euclideanStandardSimplexClass_generator_iff_forall_exists_zsmul :
+    Function.Bijective (fun z : ℤ => z • euclideanStandardSimplexClass.{u}) ↔
+      ∀ a : integralSingularHomology 2
+          ({(0 : DifferentialGeometry.Topology.liftedSphereSpace.{u} 1)}ᶜ :
+            Set (DifferentialGeometry.Topology.liftedSphereSpace.{u} 1)),
+        ∃ k : ℤ, a = k • euclideanStandardSimplexBoundaryClass :=
+  (euclideanStandardSimplexClass_generator_iff_isUnit_boundaryClass).trans
+    (isUnit_apply_iff_forall_exists_zsmul
+      ((integralPuncturedSpaceSphereHomologyEquiv
+        (DifferentialGeometry.Topology.liftedSphereSpace.{u} 1) 2).trans
+        (integralSphereTopHomologyEquiv 1 (DifferentialGeometry.Topology.liftedSphereSpace.{u} 1)
+          (liftedSphereSpace_finrank 1)))
+      euclideanStandardSimplexBoundaryClass)
+
 theorem integralSimplexChainMap_naturality {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
     (n : ℕ) (f : C(X, Y)) (s : C(stdSimplex ℝ (Fin (n + 1)), X)) :
     integralSimplexChainMap n s ≫ (integralSingularChainMap f).f n = integralSimplexChainMap n (f.comp s) := by

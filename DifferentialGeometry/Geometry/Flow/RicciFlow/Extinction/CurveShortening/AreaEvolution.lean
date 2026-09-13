@@ -3,6 +3,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Scalar.JointRegula
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.LeastArea
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.ClassWidth
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.LocalExistence
+import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothDependence.GlobalClosedManifold
 import Mathlib.Analysis.Calculus.MeanValue
 import Mathlib.Analysis.ODE.Gronwall
 import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
@@ -705,6 +706,28 @@ theorem loopFamilyLeastArea_nonneg (g : ℝ → SmoothRiemannianMetric I M)
   Width.leastArea_nonneg (g t) (γ t) (hctr t ht)
     ((regularLoopSlice γ hγ t ht).isLipschitz (g t))
 
+omit [FiniteDimensional ℝ E] [CompleteSpace E] hBoundary hT2 hCompact hNonempty in
+theorem loopFamilyLeastArea_eq_regularLeastAreaSlice
+    (g : ℝ → SmoothRiemannianMetric I M) (γ : ℝ → ContinuousFreeLoop M)
+    {J : Set ℝ} (hγ : (curveOfLoopFamily γ).SmoothOn (I := I) J)
+    (hctr : ∀ t ∈ J, IsContractibleLoop (γ t)) (t : ℝ) (ht : t ∈ J) :
+    loopFamilyLeastArea g γ t =
+      Width.regularLeastArea (g t) ⟨regularLoopSlice γ hγ t ht, hctr t ht⟩ := rfl
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] hBoundary hT2 hCompact hNonempty in
+theorem loopFamily_spacetimeMap_injective
+    (γ : ℝ → ContinuousFreeLoop M) {J : Set ℝ}
+    (hemb : ∀ t ∈ J, Topology.IsEmbedding (γ t)) :
+    Set.InjOn (fun p : ℝ × Surgery.Topology.Circle => (p.1, γ p.1 p.2))
+      (J ×ˢ univ) := by
+  intro p hp p' hp' h
+  obtain ⟨t, z⟩ := p
+  obtain ⟨t', z'⟩ := p'
+  have htt : t = t' := congrArg Prod.fst h
+  have hz : γ t z = γ t' z' := congrArg Prod.snd h
+  have hz' : γ t z = γ t z' := by rw [← htt] at hz; exact hz
+  exact Prod.ext htt ((hemb t (Set.mem_prod.mp hp).1).injective hz')
+
 variable [SigmaCompactSpace M]
 variable {D : RealTimeInterval} {a b : ℝ}
 
@@ -749,8 +772,8 @@ theorem RicciBackground.continuousOn_scalarMinimum
   continuousOn_scalarMinimum_of_isSolutionOn (I := I)
     (show SolutionOn (I := I) (M := M) D from ⟨B.family⟩) B.equation B.regular
 
-omit hNonempty [SigmaCompactSpace M] in
-theorem continuousOn_loopFamilyLeastArea_of_continuousRegularFamily [ConnectedSpace M]
+omit [SigmaCompactSpace M] in
+theorem continuousOn_loopFamilyLeastArea_of_continuousRegularFamily
     (B : RicciBackground (I := I) (M := M) D a b)
     (γ : ℝ → ContinuousFreeLoop M)
     (Γ : ℝ → Width.ContractibleRegularLoop (I := I) (Q := M))
@@ -773,6 +796,35 @@ theorem rfs_csf_boundary_isotopy (γ : ℝ → ContinuousFreeLoop M)
       (∀ p, Φ t₀ p = p) ∧
       ∀ t ∈ Icc a b ∩ Ioo (t₀ - ε) (t₀ + ε), ∀ z, Φ t (γ t₀ z) = γ t z := by
   sorry
+
+def LoopFamilyVelocityExtension (a b : ℝ) (γ : ℝ → ContinuousFreeLoop M) : Prop :=
+  ∃ X : ℝ → (p : M) → TangentSpace I p,
+    ContMDiff (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E)) ∞
+      (fun q : ℝ × M =>
+        (TotalSpace.mk' E q.2 (X q.1 q.2) : TangentBundle I M)) ∧
+    ∀ t ∈ Icc a b, ∀ z : Surgery.Topology.Circle,
+      HasMFDerivWithinAt 𝓘(ℝ, ℝ) I (fun s : ℝ => γ s z) (Ici t) t
+        ((1 : ℝ →L[ℝ] ℝ).smulRight (X t (γ t z))) ∧
+      HasMFDerivWithinAt 𝓘(ℝ, ℝ) I (fun s : ℝ => γ s z) (Iic t) t
+        ((1 : ℝ →L[ℝ] ℝ).smulRight (X t (γ t z)))
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] hBoundary hT2 hCompact hNonempty
+  [SigmaCompactSpace M] in
+theorem loopFamilyVelocityExtension_zero (a b : ℝ)
+    (γ : ℝ → ContinuousFreeLoop M) (hconst : ∀ t t' : ℝ, γ t = γ t') :
+    LoopFamilyVelocityExtension (I := I) a b γ := by
+  refine ⟨fun _ _ => 0, ?_, ?_⟩
+  · exact (Bundle.contMDiff_zeroSection ℝ (TangentSpace I (M := M))).comp
+      (contMDiff_snd (I := 𝓘(ℝ, ℝ)) (J := I) (n := ∞))
+  · intro t _ z
+    have hpt : (fun s : ℝ => γ s z) = fun _ : ℝ => γ t z := by
+      funext s
+      rw [hconst s t]
+    constructor
+    · rw [hpt, ContinuousLinearMap.smulRight_zero]
+      exact hasMFDerivWithinAt_const (γ t z) (Ici t) t
+    · rw [hpt, ContinuousLinearMap.smulRight_zero]
+      exact hasMFDerivWithinAt_const (γ t z) (Iic t) t
 
 omit hBoundary hCompact hNonempty [SigmaCompactSpace M] in
 theorem rfs_csf_area_error (B : RicciBackground (I := I) (M := M) D a b)
@@ -1246,5 +1298,20 @@ theorem rfs_csf_immersed_area (B : RicciBackground (I := I) (M := M) D a b)
           -2 * Real.pi - scalarMinimum B.family t * loopFamilyLeastArea B.family.metric γ t / 2 +
             (curveOfLoopFamily γ).areaError B.family.metric (Icc a b) t + ε) := by
   sorry
+
+
+def LiftLoopFamily (X : ℝ → (p : M) → TangentSpace I p) :
+    ℝ → (p : ℝ × M) → TangentSpace (𝓘(ℝ,ℝ).prod I) p :=
+  fun _ (q : ℝ × M) => ((1:ℝ), X q.1 q.2)
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] hBoundary hT2 hCompact hNonempty
+  [SigmaCompactSpace M] in
+theorem liftLoopFamily_contMDiff (X : ℝ → (p : M) → TangentSpace I p)
+    (hX : ContMDiff (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E)) ∞
+      (fun q : ℝ × M => (TotalSpace.mk' E q.2 (X q.1 q.2) : TangentBundle I M))) :
+    ContMDiff (𝓘(ℝ, ℝ).prod I) ((𝓘(ℝ, ℝ).prod I).prod 𝓘(ℝ, ℝ × E)) ∞
+      (fun p : ℝ × M => (⟨p, LiftLoopFamily (I := I) X p.1 p⟩ :
+        TangentBundle (𝓘(ℝ, ℝ).prod I) (ℝ × M))) :=
+  DifferentialGeometry.Analysis.ODE.autonomizedFlowVF_section_contMDiff (I := I) X hX
 
 end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening

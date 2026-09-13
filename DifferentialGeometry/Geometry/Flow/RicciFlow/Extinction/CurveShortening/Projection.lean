@@ -1,5 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Ramps
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.AreaEvolution
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.SweptAreaEstimates
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProjectionFrontier
 import Mathlib.MeasureTheory.Integral.IntervalIntegral.Periodic
 
 noncomputable section
@@ -20,19 +22,6 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 def ProductCurve.horizontalSpeedFraction (c : ProductCurve M)
     (g : ℝ → SmoothRiemannianMetric I M) (lambda x t : ℝ) : ℝ :=
   Real.sqrt (1 - c.angle g lambda x t ^ 2)
-
-def CurveMap.sweptDensity (c : CurveMap M) (g : ℝ → SmoothRiemannianMetric I M)
-    (J : Set ℝ) (t : ℝ) : ℝ :=
-  ∫ x in (0 : ℝ)..1,
-    Real.sqrt (c.normSq g (c.velocity (I := I) J) x t) * c.speed g x t
-
-omit [FiniteDimensional ℝ E] [CompleteSpace E] in
-theorem CurveMap.sweptDensity_nonneg (c : CurveMap M)
-    (g : ℝ → SmoothRiemannianMetric I M) (J : Set ℝ) (t : ℝ) :
-    0 ≤ c.sweptDensity g J t := by
-  apply intervalIntegral.integral_nonneg_of_forall (by norm_num : (0 : ℝ) ≤ 1)
-  intro x
-  exact mul_nonneg (Real.sqrt_nonneg _) (c.speed_nonneg g x t)
 
 namespace ProductCurve
 
@@ -322,6 +311,17 @@ theorem speed_sq_add (x t : ℝ) :
         lambda ^ 2 * deriv (fun z => c.y z t) x ^ 2 := by
   rw [speed_sq c g lambda x t, inner_X_self c g lambda x t,
     ← projection_speed_sq c g x t]
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] in
+theorem projection_speed_le (x t : ℝ) :
+    c.projection.speed g x t ≤ c.speed g lambda x t := by
+  have hsq : c.projection.speed g x t ^ 2 ≤ c.speed g lambda x t ^ 2 := by
+    rw [speed_sq_add]
+    nlinarith [mul_nonneg (sq_nonneg lambda) (sq_nonneg (deriv (fun z => c.y z t) x))]
+  calc c.projection.speed g x t = Real.sqrt (c.projection.speed g x t ^ 2) :=
+        (Real.sqrt_sq (c.projection.speed_nonneg g x t)).symm
+    _ ≤ Real.sqrt (c.speed g lambda x t ^ 2) := Real.sqrt_le_sqrt hsq
+    _ = c.speed g lambda x t := Real.sqrt_sq (c.speed_nonneg g lambda x t)
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I ∞ M] in
 theorem y_deriv_contDiff {J : Set ℝ} (hc : c.SmoothOn (I := I) J)
@@ -887,15 +887,102 @@ theorem rfs_csf_projected_ramp (B : RicciBackground (I := I) (M := M) D a b)
       ProductCurve.integral,
       intervalIntegral.integral_of_le zero_le_one] using hle
 
+omit [SigmaCompactSpace M] hCompact hNonempty hBoundary in
 theorem rfs_csf_swept_annulus (B : RicciBackground (I := I) (M := M) D a b)
+    (hslope : curveShorteningLeastAreaSlope (I := I) (M := M) B)
     (γ : ℝ → ContinuousFreeLoop M)
     (hγ : (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a b))
-    (hctr : ∀ t ∈ Icc a b, IsContractibleLoop (γ t))
+    (hcont : ContinuousOn (loopFamilyLeastArea B.family.metric γ) (Icc a b))
     (s t : ℝ) (hs : s ∈ Icc a b) (ht : t ∈ Icc s b) :
     loopFamilyLeastArea B.family.metric γ t ≤ Real.exp (2 * B.B₀ * (t - s)) *
       (loopFamilyLeastArea B.family.metric γ s +
         ∫ v in s..t, (curveOfLoopFamily γ).sweptDensity B.family.metric (Icc a b) v) := by
-  sorry
+  have hst : s ≤ t := ht.1
+  have hsub : Icc s t ⊆ Icc a b := Icc_subset_Icc hs.1 ht.2
+  have hS := continuousOn_sweptDensity B γ hγ
+  have hS' : ContinuousOn (fun v => (curveOfLoopFamily γ).sweptDensity B.family.metric (Icc a b) v)
+      (Icc s t) := hS.mono hsub
+  have hDini : ∀ v ∈ Ico s t, v ∉ (∅ : Finset ℝ) → ∀ ε > 0, ∃ δ > 0,
+      ∀ h ∈ Ioo (0 : ℝ) δ, v + h ≤ t →
+        (loopFamilyLeastArea B.family.metric γ (v + h) -
+            loopFamilyLeastArea B.family.metric γ v) / h ≤
+          -(-(2 * B.B₀)) * loopFamilyLeastArea B.family.metric γ v +
+            (curveOfLoopFamily γ).sweptDensity B.family.metric (Icc a b) v + ε := by
+    intro v hv _ ε hε
+    obtain ⟨δ, hδpos, hδ⟩ := hslope γ hγ hcont v
+      ⟨le_trans hs.1 hv.1, lt_of_lt_of_le hv.2 ht.2⟩ ε hε
+    exact ⟨δ, hδpos, fun h hh hb => by
+      simpa only [neg_mul, neg_neg] using hδ h hh (le_trans hb ht.2)⟩
+  have hmain := rfs_csf_area_comparison_ode
+    (fun x => loopFamilyLeastArea B.family.metric γ x)
+    (fun _ : ℝ => -(2 * B.B₀))
+    (fun v => (curveOfLoopFamily γ).sweptDensity B.family.metric (Icc a b) v)
+    s t hst (hcont.mono hsub) continuousOn_const hS' ∅ hDini
+  have hInt : (∫ w in s..t, (-(2 * B.B₀) : ℝ)) = -(2 * B.B₀) * (t - s) := by
+    rw [intervalIntegral.integral_const]
+    ring
+  have hIntv : ∀ v : ℝ, (∫ w in s..v, (-(2 * B.B₀) : ℝ)) = -(2 * B.B₀) * (v - s) := by
+    intro v
+    rw [intervalIntegral.integral_const]
+    ring
+  have hcongr : (∫ v in s..t, Real.exp (∫ w in s..v, (-(2 * B.B₀) : ℝ)) *
+        (curveOfLoopFamily γ).sweptDensity B.family.metric (Icc a b) v) =
+      ∫ v in s..t, Real.exp (-(2 * B.B₀) * (v - s)) *
+        (curveOfLoopFamily γ).sweptDensity B.family.metric (Icc a b) v := by
+    refine intervalIntegral.integral_congr (fun v _ => ?_)
+    rw [hIntv v]
+  rw [hInt, hcongr] at hmain
+  have hExpMul : ∀ x : ℝ,
+      Real.exp (2 * B.B₀ * (t - s)) * (Real.exp (-(2 * B.B₀) * (t - s)) * x) = x := by
+    intro x
+    rw [← mul_assoc, ← Real.exp_add]
+    have hzero : 2 * B.B₀ * (t - s) + -(2 * B.B₀) * (t - s) = 0 := by ring
+    rw [hzero, Real.exp_zero, one_mul]
+  have hstep1 : loopFamilyLeastArea B.family.metric γ t ≤
+      Real.exp (2 * B.B₀ * (t - s)) *
+        (loopFamilyLeastArea B.family.metric γ s +
+          ∫ v in s..t, Real.exp (-(2 * B.B₀) * (v - s)) *
+            (curveOfLoopFamily γ).sweptDensity B.family.metric (Icc a b) v) := by
+    have hpos : 0 < Real.exp (2 * B.B₀ * (t - s)) := Real.exp_pos _
+    have h := mul_le_mul_of_nonneg_left hmain hpos.le
+    rwa [hExpMul] at h
+  have hle1 : ∀ v ∈ Icc s t,
+      Real.exp (-(2 * B.B₀) * (v - s)) *
+        (curveOfLoopFamily γ).sweptDensity B.family.metric (Icc a b) v ≤
+        (curveOfLoopFamily γ).sweptDensity B.family.metric (Icc a b) v := by
+    intro v hv
+    have hexp_le : Real.exp (-(2 * B.B₀) * (v - s)) ≤ 1 := by
+      rw [Real.exp_le_one_iff]
+      have hv0 : 0 ≤ v - s := sub_nonneg.mpr hv.1
+      nlinarith [B.B₀_nonneg]
+    have hnnv := CurveMap.sweptDensity_nonneg (c := curveOfLoopFamily γ) B.family.metric (Icc a b) v
+    calc Real.exp (-(2 * B.B₀) * (v - s)) *
+          (curveOfLoopFamily γ).sweptDensity B.family.metric (Icc a b) v
+        ≤ 1 * (curveOfLoopFamily γ).sweptDensity B.family.metric (Icc a b) v :=
+          mul_le_mul_of_nonneg_right hexp_le hnnv
+      _ = (curveOfLoopFamily γ).sweptDensity B.family.metric (Icc a b) v := one_mul _
+  have hint1 : IntervalIntegrable (fun v => Real.exp (-(2 * B.B₀) * (v - s)) *
+      (curveOfLoopFamily γ).sweptDensity B.family.metric (Icc a b) v) volume s t :=
+    (((Real.continuous_exp.comp
+        (continuous_const.mul (continuous_id.sub continuous_const))).continuousOn.mul
+        hS')).intervalIntegrable_of_Icc hst
+  have hint2 : IntervalIntegrable
+      (fun v => (curveOfLoopFamily γ).sweptDensity B.family.metric (Icc a b) v) volume s t :=
+    hS'.intervalIntegrable_of_Icc hst
+  have hfinal : (∫ v in s..t, Real.exp (-(2 * B.B₀) * (v - s)) *
+        (curveOfLoopFamily γ).sweptDensity B.family.metric (Icc a b) v) ≤
+      ∫ v in s..t, (curveOfLoopFamily γ).sweptDensity B.family.metric (Icc a b) v :=
+    intervalIntegral.integral_mono_on hst hint1 hint2 hle1
+  have hstep2 : Real.exp (2 * B.B₀ * (t - s)) *
+        (loopFamilyLeastArea B.family.metric γ s +
+          ∫ v in s..t, Real.exp (-(2 * B.B₀) * (v - s)) *
+            (curveOfLoopFamily γ).sweptDensity B.family.metric (Icc a b) v) ≤
+      Real.exp (2 * B.B₀ * (t - s)) *
+        (loopFamilyLeastArea B.family.metric γ s +
+          ∫ v in s..t, (curveOfLoopFamily γ).sweptDensity B.family.metric (Icc a b) v) := by
+    refine mul_le_mul_of_nonneg_left ?_ (Real.exp_pos _).le
+    exact add_le_add le_rfl hfinal
+  exact hstep1.trans hstep2
 
 omit hCompact hNonempty in
 theorem projected_sweptDensity_le_totalCurvature
@@ -968,7 +1055,10 @@ theorem exp_increment_le (k h delta : ℝ) (hk : 0 ≤ k) (hh : 0 ≤ h) (hdelta
   have hmul := mul_le_mul_of_nonneg_left hmono (mul_nonneg hk hh)
   nlinarith
 
+omit hNonempty in
 theorem rfs_csf_projection_upper_control (B : RicciBackground (I := I) (M := M) D a b)
+    (hslope : curveShorteningLeastAreaSlope (I := I) (M := M) B)
+    (hcurv : curveShorteningTotalCurvatureBound (I := I) (M := M) B)
     (L₀ Theta₀ A₀ : ℝ) (hL₀ : 0 ≤ L₀) (hTheta₀ : 0 ≤ Theta₀) (hA₀ : 0 ≤ A₀) :
     let delta := b - a
     let ThetaStar := (Theta₀ + L₀) * Real.exp ((B.C + B.B₀) * delta)
@@ -976,9 +1066,11 @@ theorem rfs_csf_projection_upper_control (B : RicciBackground (I := I) (M := M) 
     let C_A := Real.exp (2 * B.B₀ * delta) * (2 * B.B₀ * AStar + ThetaStar)
     ∀ lambda : ℝ, 0 < lambda → lambda ≤ 1 → ∀ c : ProductCurve M,
       c.IsSolutionOn B.family.metric lambda (Icc a b) →
+      c.projection.ImmersedOn (I := I) (Icc a b) →
       ∀ γ : ℝ → ContinuousFreeLoop M,
         (∀ z t, t ∈ Icc a b → γ t z = c.projection z t) →
         (∀ t ∈ Icc a b, IsContractibleLoop (γ t)) →
+        ContinuousOn (loopFamilyLeastArea B.family.metric γ) (Icc a b) →
         c.length B.family.metric lambda a ≤ L₀ →
         c.totalCurvature B.family.metric lambda a ≤ Theta₀ →
         loopFamilyLeastArea B.family.metric γ a ≤ A₀ →
@@ -987,7 +1079,152 @@ theorem rfs_csf_projection_upper_control (B : RicciBackground (I := I) (M := M) 
         ∀ s ∈ Icc a b, ∀ t ∈ Icc s b,
           loopFamilyLeastArea B.family.metric γ t - loopFamilyLeastArea B.family.metric γ s ≤
             C_A * (t - s) := by
-  sorry
+  dsimp only
+  intro lambda hlambda hlambda_one c hc hi γ hagree hctr hLcont hlen htot hLa
+  set d : ℝ := b - a with hd
+  set T : ℝ := (Theta₀ + L₀) * Real.exp ((B.C + B.B₀) * d) with hT
+  set A : ℝ := Real.exp (2 * B.B₀ * d) * (A₀ + d * T) with hA
+  set CA : ℝ := Real.exp (2 * B.B₀ * d) * (2 * B.B₀ * A + T) with hCA
+  have hd0 : 0 ≤ d := by
+    rw [hd]
+    linarith [B.lt.le]
+  have hB0' : 0 ≤ 2 * B.B₀ := by linarith [B.B₀_nonneg]
+  have hC : 0 ≤ B.C + B.B₀ := by
+    rw [RicciBackground.C]
+    nlinarith [B.B₀_nonneg, B.B₁_nonneg, B.B₂_nonneg]
+  have hγ : (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a b) := by
+    rw [CurveMap.SmoothOn]
+    refine hc.smooth.1.congr ?_
+    intro p hp
+    exact hagree (p.1 : AddCircle (1 : ℝ)) p.2 hp.2
+  have hTheta : ∀ t ∈ Icc a b, c.totalCurvature B.family.metric lambda t ≤ T := by
+    intro t ht
+    have h := totalCurvature_le_mul_exp_of_growth_bound B hcurv lambda hlambda hlambda_one c hc
+      Theta₀ L₀ htot hlen t ht
+    rw [hT, hd]
+    exact h
+  have hSle : ∀ t ∈ Icc a b,
+      (curveOfLoopFamily γ).sweptDensity B.family.metric (Icc a b) t ≤
+        c.totalCurvature B.family.metric lambda t := by
+    intro t ht
+    have hcongr : (curveOfLoopFamily γ).sweptDensity B.family.metric (Icc a b) t =
+        c.projection.sweptDensity B.family.metric (Icc a b) t :=
+      CurveMap.sweptDensity_congr (fun z s hs => hagree z s hs) t ht
+    rw [hcongr]
+    exact projected_sweptDensity_le_totalCurvature B lambda hlambda c hc hi t ht
+  have hT0 : 0 ≤ T := by
+    rw [hT]
+    exact mul_nonneg (add_nonneg hTheta₀ hL₀) (Real.exp_pos _).le
+  have hA0 : 0 ≤ A := by
+    rw [hA]
+    exact mul_nonneg (Real.exp_pos _).le (add_nonneg hA₀ (mul_nonneg hd0 hT0))
+  have hLnn : ∀ t ∈ Icc a b, 0 ≤ loopFamilyLeastArea B.family.metric γ t :=
+    fun t ht => loopFamilyLeastArea_nonneg B.family.metric γ hγ hctr t ht
+  have hIntS : ∀ (s : ℝ) (t : ℝ), s ∈ Icc a b → t ∈ Icc s b →
+      (∫ v in s..t, (curveOfLoopFamily γ).sweptDensity B.family.metric (Icc a b) v) ≤
+        (t - s) * T := by
+    intro s t hs ht
+    have hst : s ≤ t := ht.1
+    have hsub : Icc s t ⊆ Icc a b := Icc_subset_Icc hs.1 ht.2
+    have hScont : ContinuousOn (fun v => (curveOfLoopFamily γ).sweptDensity
+        B.family.metric (Icc a b) v) (Icc s t) :=
+      (continuousOn_sweptDensity B γ hγ).mono hsub
+    have hint : IntervalIntegrable (fun v => (curveOfLoopFamily γ).sweptDensity
+        B.family.metric (Icc a b) v) volume s t := hScont.intervalIntegrable_of_Icc hst
+    have h1 : (∫ v in s..t, (curveOfLoopFamily γ).sweptDensity B.family.metric (Icc a b) v) ≤
+        ∫ v in s..t, T :=
+      intervalIntegral.integral_mono_on hst hint intervalIntegrable_const
+        (fun v hv => (hSle v (hsub hv)).trans (hTheta v (hsub hv)))
+    have h2 : (∫ v in s..t, T) = (t - s) * T := by
+      rw [intervalIntegral.integral_const]
+      ring
+    rw [h2] at h1
+    exact h1
+  have htight : ∀ t ∈ Icc a b, loopFamilyLeastArea B.family.metric γ t ≤
+      Real.exp (2 * B.B₀ * d) * (A₀ + d * T) := by
+    intro t ht
+    have hs := rfs_csf_swept_annulus B hslope γ hγ hLcont a t
+      ⟨le_rfl, B.lt.le⟩ ht
+    have hexp : Real.exp (2 * B.B₀ * (t - a)) ≤ Real.exp (2 * B.B₀ * d) := by
+      rw [Real.exp_le_exp, hd]
+      exact mul_le_mul_of_nonneg_left (by linarith [ht.2]) hB0'
+    have hI := hIntS a t ⟨le_rfl, B.lt.le⟩ ht
+    have hId : (∫ v in a..t, (curveOfLoopFamily γ).sweptDensity B.family.metric (Icc a b) v) ≤
+        d * T := by
+      have hta : t - a ≤ d := by
+        rw [hd]
+        linarith [ht.2]
+      nlinarith [hT0, hI, hta]
+    have hInn : 0 ≤ ∫ v in a..t,
+        (curveOfLoopFamily γ).sweptDensity B.family.metric (Icc a b) v :=
+      intervalIntegral.integral_nonneg (by linarith [ht.1])
+        (fun v _ => CurveMap.sweptDensity_nonneg (c := curveOfLoopFamily γ)
+          B.family.metric (Icc a b) v)
+    have hsum : loopFamilyLeastArea B.family.metric γ a +
+        (∫ v in a..t, (curveOfLoopFamily γ).sweptDensity B.family.metric (Icc a b) v) ≤
+        A₀ + d * T := add_le_add hLa hId
+    have hnn_sum : 0 ≤ loopFamilyLeastArea B.family.metric γ a +
+        (∫ v in a..t, (curveOfLoopFamily γ).sweptDensity B.family.metric (Icc a b) v) := by
+      linarith [hLnn a ⟨le_rfl, B.lt.le⟩, hInn]
+    exact hs.trans (mul_le_mul hexp hsum hnn_sum (Real.exp_pos _).le)
+  have hpart1 : ∀ t ∈ Icc a b, 0 ≤ loopFamilyLeastArea B.family.metric γ t ∧
+      loopFamilyLeastArea B.family.metric γ t ≤ A := by
+    intro t ht
+    refine ⟨hLnn t ht, ?_⟩
+    rw [hA]
+    exact htight t ht
+  have hpart2 : ∀ s ∈ Icc a b, ∀ t ∈ Icc s b,
+      loopFamilyLeastArea B.family.metric γ t - loopFamilyLeastArea B.family.metric γ s ≤
+        CA * (t - s) := by
+    intro s hs t ht
+    have hst : s ≤ t := ht.1
+    have hts : 0 ≤ t - s := sub_nonneg.mpr hst
+    have hLsnn : 0 ≤ loopFamilyLeastArea B.family.metric γ s := (hpart1 s hs).1
+    have hLAs : loopFamilyLeastArea B.family.metric γ s ≤ A := (hpart1 s hs).2
+    have hInc := exp_increment_le (2 * B.B₀) (t - s) d hB0' hts
+      (by rw [hd]; linarith [ht.2, hs.1])
+    have hExpLe : Real.exp (2 * B.B₀ * (t - s)) ≤ Real.exp (2 * B.B₀ * d) := by
+      rw [Real.exp_le_exp, hd]
+      exact mul_le_mul_of_nonneg_left (by linarith [ht.2, hs.1]) hB0'
+    have hInn : 0 ≤ ∫ v in s..t,
+        (curveOfLoopFamily γ).sweptDensity B.family.metric (Icc a b) v :=
+      intervalIntegral.integral_nonneg hst
+        (fun v _ => CurveMap.sweptDensity_nonneg (c := curveOfLoopFamily γ)
+          B.family.metric (Icc a b) v)
+    have hI := hIntS s t hs ht
+    have hswept' := rfs_csf_swept_annulus B hslope γ hγ hLcont s t hs ht
+    have hmain : loopFamilyLeastArea B.family.metric γ t -
+        loopFamilyLeastArea B.family.metric γ s ≤
+        (Real.exp (2 * B.B₀ * (t - s)) - 1) * loopFamilyLeastArea B.family.metric γ s +
+          Real.exp (2 * B.B₀ * (t - s)) *
+            (∫ v in s..t, (curveOfLoopFamily γ).sweptDensity B.family.metric (Icc a b) v) := by
+      have hsplit : Real.exp (2 * B.B₀ * (t - s)) *
+          (loopFamilyLeastArea B.family.metric γ s +
+            ∫ v in s..t, (curveOfLoopFamily γ).sweptDensity B.family.metric (Icc a b) v) =
+          Real.exp (2 * B.B₀ * (t - s)) * loopFamilyLeastArea B.family.metric γ s +
+            Real.exp (2 * B.B₀ * (t - s)) *
+              (∫ v in s..t, (curveOfLoopFamily γ).sweptDensity B.family.metric (Icc a b) v) :=
+        mul_add _ _ _
+      linarith [hswept', hsplit]
+    have h1 : (Real.exp (2 * B.B₀ * (t - s)) - 1) * loopFamilyLeastArea B.family.metric γ s ≤
+        (2 * B.B₀ * Real.exp (2 * B.B₀ * d) * (t - s)) * A := by
+      refine mul_le_mul hInc hLAs hLsnn ?_
+      exact mul_nonneg (mul_nonneg hB0' (Real.exp_pos _).le) hts
+    have h2 : Real.exp (2 * B.B₀ * (t - s)) *
+        (∫ v in s..t, (curveOfLoopFamily γ).sweptDensity B.family.metric (Icc a b) v) ≤
+        Real.exp (2 * B.B₀ * d) * ((t - s) * T) :=
+      mul_le_mul hExpLe hI hInn (Real.exp_pos _).le
+    calc loopFamilyLeastArea B.family.metric γ t -
+          loopFamilyLeastArea B.family.metric γ s
+        ≤ (Real.exp (2 * B.B₀ * (t - s)) - 1) * loopFamilyLeastArea B.family.metric γ s +
+          Real.exp (2 * B.B₀ * (t - s)) *
+            (∫ v in s..t, (curveOfLoopFamily γ).sweptDensity B.family.metric (Icc a b) v) := hmain
+      _ ≤ (2 * B.B₀ * Real.exp (2 * B.B₀ * d) * (t - s)) * A +
+          Real.exp (2 * B.B₀ * d) * ((t - s) * T) := add_le_add h1 h2
+      _ = CA * (t - s) := by
+        rw [hCA]
+        ring
+  exact ⟨hpart1, hpart2⟩
 
 theorem rfs_csf_projected_ramp_pointwise (B : RicciBackground (I := I) (M := M) D a b)
     (lambda : ℝ) (hlambda : 0 < lambda) (hsv : s < v) (hwindow : Icc s v ⊆ Icc a b)

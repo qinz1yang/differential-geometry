@@ -46,6 +46,11 @@ theorem horizon_le_threshold (R : ObservedComparisonRecord H c A) :
   · exact R.bound_nonneg
   · exact R.initial_le
 
+theorem isEmpty_of_threshold_lt {H : ObservedHistory.{u}} {c A : ℝ}
+    (h : extinctionThreshold c A < H.horizon) :
+    IsEmpty (ObservedComparisonRecord H c A) :=
+  ⟨fun R => not_lt_of_ge R.horizon_le_threshold h⟩
+
 theorem integrated_bound (R : ObservedComparisonRecord H c A)
     {t : ℝ} (ht : t ∈ Icc 0 H.horizon) :
     R.value t / (t + c) ^ (3 / 4 : ℝ) ≤ A / c ^ (3 / 4 : ℝ) -
