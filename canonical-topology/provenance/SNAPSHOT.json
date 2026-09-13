@@ -1,9 +1,9 @@
 {
-  "scope": "Dependency-closed 110-module checkpoint including the actual relative cap product and its naturality, boundary and unit laws; full topology suite incomplete",
+  "scope": "Dependency-closed 111-module checkpoint including the actual ordinary-cohomology/relative-homology cap pairing, naturality, unit and projection laws; full topology suite incomplete",
   "baseline_commit": "b45bfa009368c8f5f531e10f4f5280e90079d6ad",
   "baseline_ref": "refs/remotes/origin/codex/chapter35",
   "source_project": "PoincareLean",
-  "source_module_count": 110,
+  "source_module_count": 111,
   "roots": [
     "Poincare.Topology.Homology.RelativeMaps",
     "Poincare.Topology.Homology.RelativeHomeomorphism",
@@ -25,7 +25,8 @@
     "Poincare.Topology.Homology.CapProduct",
     "Poincare.Topology.Homology.CapHomology",
     "Poincare.Topology.Homology.ConnectedZeroCohomology",
-    "Poincare.Topology.Homology.RelativeCapProduct"
+    "Poincare.Topology.Homology.RelativeCapProduct",
+    "Poincare.Topology.Homology.RelativeCapHomology"
   ],
   "changed_sources": [
     {
@@ -129,6 +130,12 @@
       "path": "Poincare/Topology/Homology/ManifoldFundamentalClass.lean",
       "baseline_sha256": null,
       "sha256": "f7d6a5d1e04ec0dc46ef485006abf93d2c29fbac2bb997ba515e214c74bc58fc"
+    },
+    {
+      "module": "Poincare.Topology.Homology.RelativeCapHomology",
+      "path": "Poincare/Topology/Homology/RelativeCapHomology.lean",
+      "baseline_sha256": null,
+      "sha256": "1525737b0ff6dc8393419aa0256c149a7ff0c4e9bd06f4a67c306defd67ccd6b"
     },
     {
       "module": "Poincare.Topology.Homology.RelativeCapProduct",
@@ -535,6 +542,12 @@
       "sha256": "f3f7424601f2af6394f6ca375ef6bffd89b11a5ce0b29367a35fdcad27510d31"
     },
     {
+      "module": "Poincare.Topology.Homology.RelativeCapHomology",
+      "path": "Poincare/Topology/Homology/RelativeCapHomology.lean",
+      "baseline_sha256": null,
+      "sha256": "1525737b0ff6dc8393419aa0256c149a7ff0c4e9bd06f4a67c306defd67ccd6b"
+    },
+    {
       "module": "Poincare.Topology.Homology.RelativeCapProduct",
       "path": "Poincare/Topology/Homology/RelativeCapProduct.lean",
       "baseline_sha256": null,
@@ -850,8 +863,8 @@
   "aggregate": {
     "path": "Poincare.lean",
     "baseline_sha256": "99c3c8e47c19f60ee50a7e0f377e59138cf4ff33ebd4e26530d3c2b7cd47d452",
-    "sha256": "4bc3bd8640045667c827eb23e4a1e65a4b63aee1e33f4fcc2a47fbaf57250e3c",
-    "change": "Flat 110-leaf checkpoint aggregate; full recovered aggregate remains separate"
+    "sha256": "7aedee5f4e215185030b6565bf8d53bda372039c9651a42adfb7a664b9d652d2",
+    "change": "Flat 111-leaf checkpoint aggregate; full recovered aggregate remains separate"
   },
   "configuration": [
     {
@@ -931,6 +944,7 @@
     "Mathlib.LinearAlgebra.Matrix.ToLin",
     "Mathlib.LinearAlgebra.Matrix.Transvection",
     "Mathlib.LinearAlgebra.Orientation",
+    "Mathlib.LinearAlgebra.Quotient.Bilinear",
     "Mathlib.LinearAlgebra.Span.Basic",
     "Mathlib.Tactic.Abel",
     "Mathlib.Tactic.FieldSimp",
@@ -1067,7 +1081,14 @@
     "Poincare.Topology.integralRelativeCapProduct_natural",
     "Poincare.Topology.integralRelativeCapProduct_boundary",
     "Poincare.Topology.integralRelativeCapProduct_augmentation",
-    "Poincare.Topology.integralRelativeCapProduct_boundary_eq_zero"
+    "Poincare.Topology.integralRelativeCapProduct_boundary_eq_zero",
+    "Poincare.Topology.integralRelativeCapCycleMap",
+    "Poincare.Topology.integralRelativeCapCycleMap_apply",
+    "Poincare.Topology.integralRelativeCohomologyCapProduct",
+    "Poincare.Topology.integralRelativeCohomologyCapProduct_class",
+    "Poincare.Topology.integralRelativeCohomologyCapProduct_natural",
+    "Poincare.Topology.integralRelativeCohomologyCapProduct_unit",
+    "Poincare.Topology.integralRelativeCohomologyCapProduct_absoluteToRelative"
   ],
   "historical_authorities": [
     {
@@ -1205,23 +1226,23 @@
     "full_topology_suite_accepted": false
   },
   "validation": {
-    "status": "passed for the selected 110-module checkpoint; full topology suite incomplete",
+    "status": "passed for the selected 111-module checkpoint; full topology suite incomplete",
     "date": "2026-09-13",
     "slurm_job": "13821107",
     "host": "della-r3c4n2",
-    "request_id": "1789320638820840783-topology_checkpoint-ed0e45ce",
-    "input_sha256": "67c519b316c9b928b47d0b027d4bec36f8566e3dfedf779d4ec0eb9e37a5ecc8",
-    "result_sha256": "1cfa2028de3a03b3eb1395a3930b502149cb49205cc2b302c0bfc4d5551109a2",
-    "artifact_log_sha256": "29f577ba8c4dbb20f0372a58bc33413efcc1e4fe4ed135db40648f1255e33817",
-    "source_config_harness_hash_guards": 270,
+    "request_id": "1789323402557190933-topology_checkpoint-28c15b3f",
+    "input_sha256": "7720162394ce319d9f0d8cbca3b8c4c81d2035801d041a9153940971a454e931",
+    "result_sha256": "0030cdf9b40c8f7131a03afa319c4e88a8168b0dc89be21e432cfefc0f61d7b3",
+    "artifact_log_sha256": "a8e112d79c6c1119aba23f26c82b6980b24eb612dec013b96f61afea2c582a9b",
+    "source_config_harness_hash_guards": 278,
     "freshly_built_modules": [
-      "Poincare.Topology.Homology.RelativeCapProduct",
+      "Poincare.Topology.Homology.RelativeCapHomology",
       "Poincare"
     ],
     "root_build": "lake --no-cache --iofail build Poincare",
-    "fresh_build_scope": "New RelativeCapProduct and root freshly compiled with zero diagnostics. All 109 earlier leaves remain byte-identical and retain earlier evidence.",
-    "exact_public_exports": 109,
-    "public_and_consumer_signature_axiom_pairs": 189,
+    "fresh_build_scope": "New RelativeCapHomology and root freshly compiled with zero diagnostics. All 110 earlier leaves remain byte-identical and retain earlier evidence.",
+    "exact_public_exports": 116,
+    "public_and_consumer_signature_axiom_pairs": 200,
     "linters": [
       "unusedArguments",
       "simpNF",
@@ -1236,15 +1257,16 @@
       "Quot.sound"
     ],
     "unexpected_diagnostics": 0,
-    "elapsed_seconds": 145.89112973213196,
-    "peak_summed_rss_bytes": 2946682880,
+    "elapsed_seconds": 151.30371689796448,
+    "peak_summed_rss_bytes": 2962329600,
     "full_topology_suite_accepted": false,
     "consumer_probes": [
-      "All 181 prior signature/axiom pairs reproduced byte-identically",
-      "Six new public and two consumer readbacks match the original imported gate",
-      "An actual projected vertex relative to the empty subspace is nonzero",
-      "Augmentation and negative augmentation act by identity and negation on that vertex",
-      "The actual doubling map of the pair (real line, nonpositive halfline) satisfies cap naturality in all degrees"
+      "All 189 prior signature/axiom pairs reproduced byte-identically",
+      "Seven new public and four consumer readbacks match the original imported gate",
+      "A nonzero actual H0 class relative to the empty subspace, with identity and negative-unit action",
+      "Actual doubling pair-map naturality for the original homology/cohomology maps in all degrees",
+      "Degree-one cohomology and degree-two relative-cycle representative formula",
+      "Compatibility with the original absolute-to-relative-empty linear equivalence in all degrees"
     ]
   },
   "previous_linear_sign_checkpoint_validation": {
@@ -2286,5 +2308,59 @@
       "Poincare.Topology.Homology.RelativeCapProduct"
     ],
     "source_request_id": "1789320055081393538-topology-c465c911"
+  },
+  "previous_relative_cap_product_validation": {
+    "status": "passed for the selected 110-module checkpoint; full topology suite incomplete",
+    "date": "2026-09-13",
+    "slurm_job": "13821107",
+    "host": "della-r3c4n2",
+    "request_id": "1789320638820840783-topology_checkpoint-ed0e45ce",
+    "input_sha256": "67c519b316c9b928b47d0b027d4bec36f8566e3dfedf779d4ec0eb9e37a5ecc8",
+    "result_sha256": "1cfa2028de3a03b3eb1395a3930b502149cb49205cc2b302c0bfc4d5551109a2",
+    "artifact_log_sha256": "29f577ba8c4dbb20f0372a58bc33413efcc1e4fe4ed135db40648f1255e33817",
+    "source_config_harness_hash_guards": 270,
+    "freshly_built_modules": [
+      "Poincare.Topology.Homology.RelativeCapProduct",
+      "Poincare"
+    ],
+    "root_build": "lake --no-cache --iofail build Poincare",
+    "fresh_build_scope": "New RelativeCapProduct and root freshly compiled with zero diagnostics. All 109 earlier leaves remain byte-identical and retain earlier evidence.",
+    "exact_public_exports": 109,
+    "public_and_consumer_signature_axiom_pairs": 189,
+    "linters": [
+      "unusedArguments",
+      "simpNF",
+      "synTaut",
+      "checkType"
+    ],
+    "linter_scope": "All imported Poincare declarations and current consumers, including private declarations",
+    "defLemma": "Unavailable in the pinned Mathlib; source declaration-kind checks retained.",
+    "allowed_transitive_axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "unexpected_diagnostics": 0,
+    "elapsed_seconds": 145.89112973213196,
+    "peak_summed_rss_bytes": 2946682880,
+    "full_topology_suite_accepted": false,
+    "consumer_probes": [
+      "All 181 prior signature/axiom pairs reproduced byte-identically",
+      "Six new public and two consumer readbacks match the original imported gate",
+      "An actual projected vertex relative to the empty subspace is nonzero",
+      "Augmentation and negative augmentation act by identity and negation on that vertex",
+      "The actual doubling map of the pair (real line, nonpositive halfline) satisfies cap naturality in all degrees"
+    ]
+  },
+  "original_relative_cap_homology_validation": {
+    "request_id": "1789323396552868216-topology-80bb4f3a",
+    "input_sha256": "24b8463a25284ed1fc60aef9846b048df7be520db5a1c267c6a09daee71b1f51",
+    "elapsed_seconds": 72.43840146064758,
+    "source_guards": 54,
+    "signature_axiom_pairs": 11,
+    "fresh_modules": [
+      "Poincare.Topology.Homology.RelativeCapHomology"
+    ],
+    "source_request_id": "1789323340677722699-topology-d9b0d60a"
   }
 }

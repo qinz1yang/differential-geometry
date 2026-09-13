@@ -5,21 +5,24 @@ additive publication within the shared DifferentialGeometry Git repository. Its 
 library is `Poincare`; its sources retain the original mathematical namespaces.
 
 The source baseline is the recovered Chapter 35 commit
-`b45bfa009368c8f5f531e10f4f5280e90079d6ad`. This checkpoint includes 110 modules
-and 109 added public exports. The latest 234-line RelativeCapProduct leaf
-constructs the actual ordinary-cochain/relative-chain pairing, its projection
-equation, pair-map naturality, signed boundary identity, augmentation unit and
-cycle preservation. All 109 earlier leaves are unchanged.
+`b45bfa009368c8f5f531e10f4f5280e90079d6ad`. This checkpoint includes 111 modules
+and 116 added public exports. The latest 337-line RelativeCapHomology leaf
+constructs the actual ordinary-cohomology/relative-homology cap pairing, with
+its public cycle map, representative formula, pair-map naturality, constant-one
+unit and absolute-to-relative projection compatibility. Mathlib's existing
+bilinear quotient lift and the original categorical homology objects are reused.
+All 110 earlier leaves are unchanged.
 
-Final request `1789320638820840783-topology_checkpoint-ed0e45ce` passed in
-Slurm 13821107 in 145.89 seconds, with 270 guards and 189 signature/axiom pairs.
-All 181 earlier pairs are byte-identical. The new leaf and root freshly compiled
-in 1:13.41 with maximum RSS 1814244 KiB and zero diagnostics. Source c465c911
-and original imported 7a8adef4 pass with 39/14 and 41/8 guards/pairs; the new
-portable pairs match the original up to scoped set notation. Nonzero projected
-vertex, unit and negative-unit actions, and actual doubling pair-map naturality
-consumers pass. Stock linters and standard-only axioms pass. Relative homology
-descent, general duality and the full oriented-manifold suite remain open.
+Final request `1789323402557190933-topology_checkpoint-28c15b3f` passed in
+Slurm 13821107 in 151.30 seconds, with 278 guards and 200 signature/axiom pairs.
+All 189 earlier pairs are byte-identical. The new leaf and root freshly compiled
+in 1:13.03 with maximum RSS 1814496 KiB and zero diagnostics. Source d9b0d60a
+and original imported 80bb4f3a pass with 52/21 and 54/11 guards/pairs; the new
+portable pairs match the original up to scoped set notation. Nonzero relative
+H0, unit and negative-unit actions, doubling pair-map naturality, degree-one
+cycle formula and relative-empty equivalence consumers pass. Stock linters
+and standard-only axioms pass. General duality, the native orientation producer
+and the full oriented-manifold suite remain open.
 
 The preceding signed-chart extension retains its exact public statements.
 
