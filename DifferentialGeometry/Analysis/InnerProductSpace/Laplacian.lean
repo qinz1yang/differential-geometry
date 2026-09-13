@@ -208,4 +208,18 @@ theorem tsupport_laplacian_subset
     (fun h => hz (tsupport_iteratedFDeriv_subset (𝕜 := ℝ) (f := f) 2 h))
   simp [laplacian_eq_iteratedFDeriv_stdOrthonormalBasis, he]
 
+theorem laplacian_comp_const_sub
+    {E F : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+    [FiniteDimensional ℝ E] [NormedAddCommGroup F] [NormedSpace ℝ F]
+    (f : E → F) (a z : E) :
+    Laplacian.laplacian (fun w => f (a - w)) z = Laplacian.laplacian f (a - z) := by
+  let e := LinearIsometryEquiv.neg ℝ (E := E)
+  have he := e.laplacian_comp (fun w => f (a + w)) z
+  have hf : (fun w => f (a - w)) = (fun w => f (a + w)) ∘ e := by
+    ext w
+    simp [e, sub_eq_add_neg]
+  rw [hf, he]
+  simp only [laplacian_eq_iteratedFDeriv_stdOrthonormalBasis, iteratedFDeriv_comp_add_left]
+  simp only [e, LinearIsometryEquiv.coe_neg, sub_eq_add_neg]
+
 end DifferentialGeometry.Analysis

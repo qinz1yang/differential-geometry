@@ -309,6 +309,7 @@ import DifferentialGeometry.Analysis.Elliptic.Euclidean.Regularity.SecondOrder
 import DifferentialGeometry.Analysis.Elliptic.Euclidean.Restriction
 import DifferentialGeometry.Analysis.Elliptic.Euclidean.WeakFormulation
 import DifferentialGeometry.Analysis.Elliptic.Euclidean.WeakHarnack
+import DifferentialGeometry.Analysis.Elliptic.Euclidean.WeakLaplacianRegularity
 import DifferentialGeometry.Analysis.Elliptic.HarmonicRigidity
 import DifferentialGeometry.Analysis.Elliptic.Lichnerowicz
 import DifferentialGeometry.Analysis.Elliptic.LichnerowiczSpectral
@@ -664,6 +665,7 @@ import DifferentialGeometry.Analysis.Integration.CauchyPeak
 import DifferentialGeometry.Analysis.Integration.CompactExhaustionCutoff
 import DifferentialGeometry.Analysis.Integration.CompactExhaustionIntegral
 import DifferentialGeometry.Analysis.Integration.ConformalScalarCurvature
+import DifferentialGeometry.Analysis.Integration.Convolution.Laplacian
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.BracketDivergenceForm
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.EuclideanHalfSpace
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Global.CompactSupport
@@ -1576,6 +1578,7 @@ import DifferentialGeometry.Analysis.Schauder.Holder.CompactRegularity
 import DifferentialGeometry.Analysis.Schauder.Holder.Compactness
 import DifferentialGeometry.Analysis.Schauder.Holder.CompleteSpace
 import DifferentialGeometry.Analysis.Schauder.Holder.Composition
+import DifferentialGeometry.Analysis.Schauder.Holder.DerivativeLimit
 import DifferentialGeometry.Analysis.Schauder.Holder.Interpolation
 import DifferentialGeometry.Analysis.Schauder.Holder.Localization
 import DifferentialGeometry.Analysis.Schauder.Holder.NormedSpace
