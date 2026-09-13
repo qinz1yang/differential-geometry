@@ -7,7 +7,7 @@ import Mathlib.MeasureTheory.Measure.Lebesgue.EqHaar
 import Mathlib.MeasureTheory.Measure.OpenPos
 import Mathlib.Topology.MetricSpace.HausdorffDimension
 import DifferentialGeometry.Analysis.Integration.Measure.HausdorffDimension
-import DifferentialGeometry.Analysis.Calculus.Inverse.LocalInverse
+import DifferentialGeometry.Analysis.Calculus.Inverse.LocalSubmersion
 import Mathlib.Analysis.Calculus.TaylorIntegral
 import Mathlib.Analysis.Normed.Module.HahnBanach
 import Mathlib.MeasureTheory.Measure.Prod
@@ -292,21 +292,20 @@ private theorem isOpen_surjective [FiniteDimensional ℝ F] :
     IsOpen {L : E →L[ℝ] F | Function.Surjective L} := by
   rw [isOpen_iff_mem_nhds]
   intro L hL
-  obtain ⟨R, hR⟩ := L.toLinearMap.exists_rightInverse_of_surjective
-    (LinearMap.range_eq_top.mpr hL)
-  let R' : F →L[ℝ] E := R.toContinuousLinearMap
-  have hLR : L.comp R' = ContinuousLinearMap.id ℝ F := by
+  obtain ⟨R, hR⟩ :=
+    ContinuousLinearMap.HasRightInverse.of_surjective_of_finiteDimensional hL
+  have hLR : L.comp R = ContinuousLinearMap.id ℝ F := by
     ext x
-    exact congrArg (fun A : F →ₗ[ℝ] F => A x) hR
-  have hnh : Set.range (fun A : F ≃L[ℝ] F => (A : F →L[ℝ] F)) ∈ 𝓝 (L.comp R') := by
+    exact hR x
+  have hnh : Set.range (fun A : F ≃L[ℝ] F => (A : F →L[ℝ] F)) ∈ 𝓝 (L.comp R) := by
     rw [hLR]
     exact (ContinuousLinearEquiv.refl ℝ F).nhds
-  have hc : Continuous (fun S : E →L[ℝ] F => S.comp R') :=
+  have hc : Continuous (fun S : E →L[ℝ] F => S.comp R) :=
     continuous_id.clm_comp continuous_const
   apply Filter.mem_of_superset (hc.continuousAt.preimage_mem_nhds hnh)
   rintro S ⟨A, hA⟩
-  change (A : F →L[ℝ] F) = S.comp R' at hA
-  have hs : Function.Surjective (S.comp R') := by
+  change (A : F →L[ℝ] F) = S.comp R at hA
+  have hs : Function.Surjective (S.comp R) := by
     rw [← hA]
     exact A.surjective
   exact Function.Surjective.of_comp hs
@@ -686,10 +685,11 @@ private theorem volume_image_stratum_eq_zero
   intro x hx
   obtain ⟨h, hh, hzero, hL⟩ := exists_scalar_jet_detector hU hf hx.1 hx.2.2.2
   let L := fderiv ℝ h x
-  obtain ⟨e,hxe,heU,he,hei,hefirst⟩ :=
-    exists_contDiff_submersion_chart_of_hasFDerivAt (by simp) hh hU hx.1
+  obtain ⟨e,hxe,heU,he,hei,hefirst,_⟩ :=
+    exists_localProjection_of_hasRightInverse hh hU hx.1
       ((hh.contDiffAt (hU.mem_nhds hx.1)).differentiableAt (by simp)).hasFDerivAt
-      (surjective_scalar_of_ne_zero hL) L.ker_closedComplemented_of_finiteDimensional_range
+      (ContinuousLinearMap.HasRightInverse.of_surjective_of_finiteDimensional
+        (surjective_scalar_of_ne_zero hL))
   let V : Set L.ker := {z | (0,z) ∈ e.target}
   have hV : IsOpen V := e.open_target.preimage (continuous_const.prodMk continuous_id)
   have hins : ContDiffOn ℝ ∞ (fun z : L.ker => ((0 : ℝ), z)) V :=
@@ -729,10 +729,11 @@ private theorem volume_image_nonzero_derivative_critical_eq_zero
     ((T.hasFDerivAt.comp a hfa.hasFDerivAt).fst).fderiv
   have hL : fderiv ℝ h a ≠ 0 := hd ▸ hTnz
   let L := fderiv ℝ h a
-  obtain ⟨e,hae,heU,he,hei,hefirst⟩ :=
-    exists_contDiff_submersion_chart_of_hasFDerivAt (by simp) hh hU ha.1
+  obtain ⟨e,hae,heU,he,hei,hefirst,_⟩ :=
+    exists_localProjection_of_hasRightInverse hh hU ha.1
       ((hh.contDiffAt (hU.mem_nhds ha.1)).differentiableAt (by simp)).hasFDerivAt
-      (surjective_scalar_of_ne_zero hL) L.ker_closedComplemented_of_finiteDimensional_range
+      (ContinuousLinearMap.HasRightInverse.of_surjective_of_finiteDimensional
+        (surjective_scalar_of_ne_zero hL))
   let G : ℝ × L.ker → ℝ × EuclideanSpace ℝ (Fin q) := (T ∘ f) ∘ e.symm
   have hTf : ContDiffOn ℝ ∞ (T ∘ f) e.source :=
     (hf.mono heU).continuousLinearMap_comp T.toContinuousLinearMap
