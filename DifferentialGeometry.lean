@@ -8255,6 +8255,7 @@ import DifferentialGeometry.Topology.Manifold.EmbeddedHypersurface.TopFormCoorie
 import DifferentialGeometry.Topology.Manifold.EmbeddedHypersurface.TopFormNormal
 import DifferentialGeometry.Topology.Manifold.EndpointShift
 import DifferentialGeometry.Topology.Manifold.EuclideanBoundaryCoordinates
+import DifferentialGeometry.Topology.Manifold.EuclideanHalfSpaceProd
 import DifferentialGeometry.Topology.Manifold.ExtChartAt
 import DifferentialGeometry.Topology.Manifold.FiniteChartBalls
 import DifferentialGeometry.Topology.Manifold.FiniteInteriorCharts
