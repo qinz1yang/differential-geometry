@@ -79,5 +79,32 @@ this is a fresh leaf and imported-source gate, not a full aggregate build.
 Local slice charts do not establish a global tubular neighborhood or ambient
 isotopy extension.
 
+## Native local retraction, 2026-09-13
+
+Topology/Embedding/Retraction consumes the accepted slice-chart theorem and
+constructs an open neighborhood stable under projection onto the embedded
+slice. The original source manifold is recovered through Mathlib's embedding
+homeomorphism and its immersion criterion for smoothness. The resulting map
+is smooth, its embedded image remains in the same neighborhood, and it fixes
+every source point whose image lies in that neighborhood. Both source and
+ambient models are boundaryless. No replacement smooth structure is introduced.
+
+This is original native glue. Inspected proof patterns include the coordinate
+projection and immersion-lifting step in Tau Ceti's
+[Boundary/Collar/Diffeomorph.lean](https://github.com/TauCetiProject/TauCeti/blob/3358033ba2fd35f321356dceaf2372a0fd6c0bfd/TauCeti/Geometry/Manifold/Boundary/Collar/Diffeomorph.lean#L105)
+and the native embedding inverse in
+[LocallyFlat/Basic.lean](https://github.com/TauCetiProject/TauCeti/blob/3358033ba2fd35f321356dceaf2372a0fd6c0bfd/TauCeti/Geometry/Manifold/LocallyFlat/Basic.lean#L754).
+Those sources belong to The Tau Ceti contributors under the same Apache 2.0
+license. Their supplied collar structures are not imported or assumed here.
+
+Source gate 1789302206549346026-schoenflies-1067041b passed in 3.43 seconds
+with 16 guards and three signature/axiom pairs. Imported gate
+1789302368061612316-schoenflies-b705f016 passed in 73.77 seconds with 18
+guards and three pairs. The new module freshly compiled without diagnostics;
+the public method and arbitrary-embedded-S2 and unit-sphere consumers pass
+the stock declaration linters and standard-only transitive axiom checks.
+The leaf is registered in the flat root. These checks do not establish a
+full aggregate build, a global retraction, or a joint-time tubular neighborhood.
+
 Distinct critical values, global positioning of an embedded sphere, smooth
 relative disk absorption and full Schoenflies remain open.
