@@ -24,14 +24,15 @@ private theorem timeDependentFlow_eqOn_Icc
     hγ hγ' (fun _ _ => mem_univ _)
     (by simp only [Diffeomorph.timeDependentFlow_refl, Diffeomorph.coe_refl, id_eq])
 
-theorem exists_contDiff_compact_ambient_isotopy
+theorem exists_contDiff_compact_ambient_isotopy_of_tsupport_image_subset
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [CompactSpace M]
     {V : Type*} [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimensional ℝ V]
     {e : ℝ × M → V} (he : ContMDiff (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, V) ∞ e)
     (hf : ∀ t, IsSmoothEmbedding I 𝓘(ℝ, V) ∞ (fun x => e (t, x)))
-    {a b : ℝ} {U : Set V} (hU : IsOpen U) (heU : e '' (Icc a b ×ˢ univ) ⊆ U) :
+    {a b : ℝ} {U : Set V} (hU : IsOpen U) (heU : e '' ((Icc a b ×ˢ univ) ∩
+      tsupport (fun q : ℝ × M => deriv (fun s => e (s, q.2)) q.1)) ⊆ U) :
     ∃ Φ : ℝ → (V ≃ₘ[ℝ] V),
       ContDiff ℝ ∞ (fun q : ℝ × V => Φ q.1 q.2) ∧
       ContDiff ℝ ∞ (fun q : ℝ × V => (Φ q.1).symm q.2) ∧
@@ -40,11 +41,14 @@ theorem exists_contDiff_compact_ambient_isotopy
         (Φ t).symm (e (t, x)) = e (a, x)) ∧
       ∃ S : Set V, IsCompact S ∧ S ⊆ U ∧ ∀ t : ℝ,
         EqOn (Φ t) id Sᶜ ∧ EqOn (Φ t).symm id Sᶜ := by
-  have htrace : (fun q : ℝ × M => (q.1, e q)) '' (Icc a b ×ˢ univ) ⊆ univ ×ˢ U := by
+  have htrace : (fun q : ℝ × M => (q.1, e q)) ''
+      ((Icc a b ×ˢ univ) ∩
+        tsupport (fun q : ℝ × M => deriv (fun s => e (s, q.2)) q.1)) ⊆ univ ×ˢ U := by
     rintro _ ⟨q, hq, rfl⟩
     exact ⟨mem_univ _, heU ⟨q, hq, rfl⟩⟩
-  obtain ⟨X, hX, hXc, hXU, hXe⟩ := exists_contDiff_compact_velocity_extension_Icc
-    he hf (isOpen_univ.prod hU) htrace
+  obtain ⟨X, hX, hXc, hXU, hXe⟩ :=
+    exists_contDiff_compact_velocity_extension_Icc_of_tsupport_image_subset
+      he hf (isOpen_univ.prod hU) htrace
   let Φ : ℝ → (V ≃ₘ[ℝ] V) := fun t => Diffeomorph.timeDependentFlow X hX hXc a t
   refine ⟨Φ, (Diffeomorph.contDiff_timeDependentFlow X hX hXc).comp
     (contDiff_const.prodMk (contDiff_fst.prodMk contDiff_snd)),
@@ -67,5 +71,59 @@ theorem exists_contDiff_compact_ambient_isotopy
     exact (Φ t).symm_apply_apply _
   · rintro _ ⟨q, hq, rfl⟩
     exact (hXU hq).2
+
+theorem exists_contDiff_compact_ambient_isotopy
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [CompactSpace M]
+    {V : Type*} [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimensional ℝ V]
+    {e : ℝ × M → V} (he : ContMDiff (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, V) ∞ e)
+    (hf : ∀ t, IsSmoothEmbedding I 𝓘(ℝ, V) ∞ (fun x => e (t, x)))
+    {a b : ℝ} {U : Set V} (hU : IsOpen U) (heU : e '' (Icc a b ×ˢ univ) ⊆ U) :
+    ∃ Φ : ℝ → (V ≃ₘ[ℝ] V),
+      ContDiff ℝ ∞ (fun q : ℝ × V => Φ q.1 q.2) ∧
+      ContDiff ℝ ∞ (fun q : ℝ × V => (Φ q.1).symm q.2) ∧
+      Φ a = Diffeomorph.refl 𝓘(ℝ, V) V ∞ ∧
+      (∀ t ∈ Icc a b, ∀ x, Φ t (e (a, x)) = e (t, x) ∧
+        (Φ t).symm (e (t, x)) = e (a, x)) ∧
+      ∃ S : Set V, IsCompact S ∧ S ⊆ U ∧ ∀ t : ℝ,
+        EqOn (Φ t) id Sᶜ ∧ EqOn (Φ t).symm id Sᶜ :=
+  exists_contDiff_compact_ambient_isotopy_of_tsupport_image_subset he hf hU
+    ((image_mono inter_subset_left).trans heU)
+
+theorem exists_contDiff_compact_ambient_isotopy_eqOn_nhds
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [CompactSpace M]
+    {V : Type*} [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimensional ℝ V]
+    {e : ℝ × M → V} (he : ContMDiff (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, V) ∞ e)
+    (hf : ∀ t, IsSmoothEmbedding I 𝓘(ℝ, V) ∞ (fun x => e (t, x)))
+    {a b : ℝ} {U : Set V} (hU : IsOpen U)
+    (heU : e '' ((Icc a b ×ˢ univ) ∩
+      tsupport (fun q : ℝ × M => deriv (fun s => e (s, q.2)) q.1)) ⊆ U)
+    {D : Set V} (hD : IsClosed D)
+    (hDA : Disjoint D (e '' ((Icc a b ×ˢ univ) ∩
+      tsupport (fun q : ℝ × M => deriv (fun s => e (s, q.2)) q.1)))) :
+    ∃ Φ : ℝ → (V ≃ₘ[ℝ] V),
+      ContDiff ℝ ∞ (fun q : ℝ × V => Φ q.1 q.2) ∧
+      ContDiff ℝ ∞ (fun q : ℝ × V => (Φ q.1).symm q.2) ∧
+      Φ a = Diffeomorph.refl 𝓘(ℝ, V) V ∞ ∧
+      (∀ t ∈ Icc a b, ∀ x, Φ t (e (a, x)) = e (t, x) ∧
+        (Φ t).symm (e (t, x)) = e (a, x)) ∧
+      ∃ S : Set V, IsCompact S ∧ S ⊆ U ∧
+        (∀ t : ℝ, EqOn (Φ t) id Sᶜ ∧ EqOn (Φ t).symm id Sᶜ) ∧
+        ∃ W : Set V, IsOpen W ∧ D ⊆ W ∧
+          ∀ t : ℝ, EqOn (Φ t) id W ∧ EqOn (Φ t).symm id W := by
+  have hactive : e '' ((Icc a b ×ˢ univ) ∩
+      tsupport (fun q : ℝ × M => deriv (fun s => e (s, q.2)) q.1)) ⊆ U ∩ Dᶜ := by
+    intro z hz
+    exact ⟨heU hz, fun hzD => Set.disjoint_left.mp hDA hzD hz⟩
+  obtain ⟨Φ, hΦ, hΦi, hΦa, hΦe, S, hS, hSU, hΦS⟩ :=
+    exists_contDiff_compact_ambient_isotopy_of_tsupport_image_subset he hf
+      (hU.inter hD.isOpen_compl) hactive
+  refine ⟨Φ, hΦ, hΦi, hΦa, hΦe, S, hS, hSU.trans inter_subset_left, hΦS,
+    Sᶜ, hS.isClosed.isOpen_compl, ?_, hΦS⟩
+  intro z hz hzS
+  exact (hSU hzS).2 hz
 
 end Manifold

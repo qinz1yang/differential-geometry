@@ -14,11 +14,12 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   {V : Type*} [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimensional ℝ V]
   {e : ℝ × M → V}
 
-theorem exists_contDiff_compact_velocity_extension
+theorem exists_contDiff_compact_velocity_extension_of_tsupport_image_subset
     (he : ContMDiff (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, V) ∞ e)
     (hf : ∀ t, IsSmoothEmbedding I 𝓘(ℝ, V) ∞ (fun x => e (t, x)))
     {K : Set (ℝ × M)} (hK : IsCompact K)
-    {O : Set (ℝ × V)} (hO : IsOpen O) (hKO : (fun q => (q.1, e q)) '' K ⊆ O) :
+    {O : Set (ℝ × V)} (hO : IsOpen O) (hKO : (fun q : ℝ × M => (q.1, e q)) ''
+      (K ∩ tsupport (fun q : ℝ × M => deriv (fun s => e (s, q.2)) q.1)) ⊆ O) :
     ∃ X : ℝ × V → V, ContDiff ℝ ∞ X ∧ HasCompactSupport X ∧ tsupport X ⊆ O ∧
       EqOn (fun q => X (q.1, e q)) (fun q => deriv (fun s => e (s, q.2)) q.1) K := by
   have hgraph := isSmoothEmbedding_parametric_graph he hf
@@ -26,7 +27,31 @@ theorem exists_contDiff_compact_velocity_extension
   have hv : ContMDiff (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, V) ∞
       (fun q : ℝ × M => deriv (fun s => e (s, q.2)) q.1) :=
     he.deriv_fst
-  exact hgraph.exists_contDiff_compact_extension hv hK hO hKO
+  exact hgraph.exists_contDiff_compact_extension_of_tsupport_image_subset hv hK hO hKO
+
+theorem exists_contDiff_compact_velocity_extension
+    (he : ContMDiff (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, V) ∞ e)
+    (hf : ∀ t, IsSmoothEmbedding I 𝓘(ℝ, V) ∞ (fun x => e (t, x)))
+    {K : Set (ℝ × M)} (hK : IsCompact K)
+    {O : Set (ℝ × V)} (hO : IsOpen O) (hKO : (fun q => (q.1, e q)) '' K ⊆ O) :
+    ∃ X : ℝ × V → V, ContDiff ℝ ∞ X ∧ HasCompactSupport X ∧ tsupport X ⊆ O ∧
+      EqOn (fun q => X (q.1, e q)) (fun q => deriv (fun s => e (s, q.2)) q.1) K :=
+  exists_contDiff_compact_velocity_extension_of_tsupport_image_subset he hf hK hO
+    ((image_mono inter_subset_left).trans hKO)
+
+theorem exists_contDiff_compact_velocity_extension_Icc_of_tsupport_image_subset
+    (he : ContMDiff (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, V) ∞ e)
+    (hf : ∀ t, IsSmoothEmbedding I 𝓘(ℝ, V) ∞ (fun x => e (t, x)))
+    {a b : ℝ} {O : Set (ℝ × V)} (hO : IsOpen O)
+    (hOe : (fun q : ℝ × M => (q.1, e q)) ''
+      ((Icc a b ×ˢ univ) ∩
+        tsupport (fun q : ℝ × M => deriv (fun s => e (s, q.2)) q.1)) ⊆ O) :
+    ∃ X : ℝ × V → V, ContDiff ℝ ∞ X ∧ HasCompactSupport X ∧ tsupport X ⊆ O ∧
+      ∀ t ∈ Icc a b, ∀ x, X (t, e (t, x)) = deriv (fun s => e (s, x)) t := by
+  obtain ⟨X, hX, hXc, hXO, hXe⟩ :=
+    exists_contDiff_compact_velocity_extension_of_tsupport_image_subset he hf
+      (isCompact_Icc.prod isCompact_univ) hO hOe
+  exact ⟨X, hX, hXc, hXO, fun t ht x => hXe (x := (t, x)) ⟨ht, mem_univ x⟩⟩
 
 theorem exists_contDiff_compact_velocity_extension_Icc
     (he : ContMDiff (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, V) ∞ e)
@@ -34,9 +59,8 @@ theorem exists_contDiff_compact_velocity_extension_Icc
     {a b : ℝ} {O : Set (ℝ × V)} (hO : IsOpen O)
     (hOe : (fun q => (q.1, e q)) '' (Icc a b ×ˢ univ) ⊆ O) :
     ∃ X : ℝ × V → V, ContDiff ℝ ∞ X ∧ HasCompactSupport X ∧ tsupport X ⊆ O ∧
-      ∀ t ∈ Icc a b, ∀ x, X (t, e (t, x)) = deriv (fun s => e (s, x)) t := by
-  obtain ⟨X, hX, hXc, hXO, hXe⟩ := exists_contDiff_compact_velocity_extension he hf
-    (isCompact_Icc.prod isCompact_univ) hO hOe
-  exact ⟨X, hX, hXc, hXO, fun t ht x => hXe (x := (t, x)) ⟨ht, mem_univ x⟩⟩
+      ∀ t ∈ Icc a b, ∀ x, X (t, e (t, x)) = deriv (fun s => e (s, x)) t :=
+  exists_contDiff_compact_velocity_extension_Icc_of_tsupport_image_subset he hf hO
+    ((image_mono inter_subset_left).trans hOe)
 
 end Manifold

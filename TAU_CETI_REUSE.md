@@ -281,3 +281,29 @@ The stronger interval-only, boundary/corners and general-ambient versions in
 Chapter 42 remain open. An embedding family taking an arbitrary sphere to the
 round sphere is still required for Schoenflies; isotopy extension does not
 produce that family.
+
+## Relative ambient isotopy, 2026-09-13
+
+The velocity and ambient isotopy constructions now require only the image of
+points in the topological support of the actual time derivative to lie in the
+prescribed open set. They still match the entire chosen compact set or time
+interval. A closed set disjoint from this active image has a produced open
+neighborhood fixed by both the isotopy and its inverse at every real time.
+The original three public signatures remain thin compatible corollaries.
+The existing embedded extension and time-dependent flow proofs are reused.
+
+Source request 1789310722740437247-schoenflies-2cb3d58b passed in 50.12 seconds
+with 136 guards and 31 signature/axiom pairs. Final imported request
+1789310981089422100-schoenflies-faf431fc passed in 120.12 seconds with 134 guards
+and 30 public/consumer pairs, all byte-identical to the source readbacks. All
+nine earlier velocity/scalar pairs and twelve earlier ambient-isotopy pairs
+remain byte-identical. Both changed leaves freshly compiled without diagnostics
+in 1:11.73, maximum RSS 1812824 KiB. Stock declaration linters and standard-only
+transitive axioms pass. Consumers include a stationary sphere with empty support
+and identity at all times, and a nontrivially translated sphere fixing an actual
+neighborhood of a sufficiently distant point. The existing flat-root imports
+are unchanged. These are fresh affected-module checks, not a full aggregate build.
+
+Whole-real smooth input, boundaryless source and finite-dimensional Euclidean
+ambient space remain the stated scope. The stronger interval-only and boundary
+versions and the sphere-rounding family required for Schoenflies remain open.
