@@ -7395,6 +7395,7 @@ import DifferentialGeometry.Topology.Attachment.Basic
 import DifferentialGeometry.Topology.Attachment.Defs
 import DifferentialGeometry.Topology.Attachment.MappingCylinder
 import DifferentialGeometry.Topology.Attachment.MappingCylinderGluing
+import DifferentialGeometry.Topology.Attachment.QuotientIteration
 import DifferentialGeometry.Topology.Attachment.Union
 import DifferentialGeometry.Topology.Category.TopCat.Adjunction
 import DifferentialGeometry.Topology.Category.TopCat.ClosedCover
