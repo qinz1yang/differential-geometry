@@ -7,22 +7,25 @@ library is `Poincare`; its sources retain the original mathematical namespaces.
 The source baseline is the recovered Chapter 35 commit
 `b45bfa009368c8f5f531e10f4f5280e90079d6ad`, supplemented by recovered working-tree
 proofs with separately recorded provenance. This checkpoint includes 135 modules
-and 144 curated tracked added public exports. The latest 54-line leaf proves
-bijectivity of the actual relative-cohomology connecting map when both adjacent
-ambient groups vanish, and its positive-degree contractible-space specialization.
-For a contractible ambient space and a totally disconnected subspace, actual
-relative integral cohomology vanishes in every degree greater than one.
+and 148 curated tracked added public exports. Four new results prove injectivity
+of the actual relative-to-absolute H0 map for arbitrary pairs, injectivity of
+H0 pullback from any nonempty space into a path-connected space, relative H0
+vanishing for a path-connected ambient space and nonempty subspace, and actual
+cohomology vanishing for empty spaces in every degree.
 
-Final request `1789340590892191690-topology_checkpoint-29ccbfc4` passed in
-Slurm 13846673 in 165.16 seconds, with 536 guards and 252 signature/axiom pairs.
-All 247 earlier pairs are byte-identical; the five new public/consumer pairs
-match source gated19badad and original imported gate77c322e0 exactly.
-The new leaf and root freshly compiled in 1:09.79, maximum RSS1825220KiB,
-with zero diagnostics. All 134 previously published leaves remain byte-identical.
-A consumer proves that H1 of the real line relative to {0,1} is nonzero while
-all higher groups vanish; the empty-subspace case also passes. Stock declaration
-linters and standard-only transitive axioms pass. No dependency or deferred
-input changed.
+Final request `1789342341942512570-topology_checkpoint-9be18633` passed in
+Slurm 13846673 in 208.80 seconds, with 548 guards and 259 signature/axiom pairs.
+All 252 preceding pairs are byte-identical; all 19 original imported pairs and
+all seven new source pairs match exactly. The three changed leaves and root
+freshly compiled in 1:56.44, maximum RSS 1,825,036 KiB, with zero diagnostics.
+All 132 other published leaves remain byte-identical. Consumers include a
+nonempty disconnected pullback source, H0(R,{0,1})=0, and H0(R,empty) nonzero.
+The last case tests the essential nonempty-subspace assumption. Stock
+linters and standard-only transitive axioms pass. Dependency pins and deferred
+inputs are unchanged; the general duality and orientation producer remain open.
+
+The earlier relative cohomology connecting-map bijections and higher-degree
+vanishing retain their exact statements and bodies.
 
 The previously published positive-degree cohomology vanishing, including its
 nonzero H0 consumer, retains its exact statements and bodies.

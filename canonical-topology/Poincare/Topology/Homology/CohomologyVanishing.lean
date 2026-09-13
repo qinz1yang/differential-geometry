@@ -1,4 +1,5 @@
 import Poincare.Topology.Homology.CochainHomotopy
+import Poincare.Topology.Homology.SimplexBasis
 import Mathlib.Algebra.Homology.AlternatingConst
 import Mathlib.Topology.Homotopy.Contractible
 
@@ -73,6 +74,18 @@ theorem integralSingularCohomology_subsingleton_of_contractibleSpace
     rw [Subsingleton.elim (integralSingularCohomologyMap n g α) 0, map_zero] at ha
     exact ha
   exact ⟨fun α β => (hz α).trans (hz β).symm⟩
+
+theorem integralSingularCohomology_subsingleton_of_isEmpty
+    (X : Type u) [TopologicalSpace X] [IsEmpty X] (n : ℕ) :
+    Subsingleton (integralSingularCohomology n X) := by
+  have hs : Subsingleton (integralSingularCochain n X) := by
+    refine ⟨fun φ ψ => (integralSingularChainBasis n X).ext fun σ => ?_⟩
+    exact isEmptyElim (integralSingularSimplexEquiv n X σ
+      ⟨Pi.single (0 : Fin (n + 1)) 1, single_mem_stdSimplex ℝ 0⟩)
+  apply ModuleCat.isZero_iff_subsingleton.mp
+  apply HomologicalComplex.ExactAt.isZero_homology
+  exact ((integralSingularCochains X).sc n).exact_of_isZero_X₂
+    (ModuleCat.isZero_iff_subsingleton.mpr hs)
 
 end Poincare.Topology
 

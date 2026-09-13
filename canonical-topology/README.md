@@ -7,6 +7,11 @@ and `Poincare` namespaces. `Poincare.lean` imports every included leaf.
 
 The additions prove:
 
+- degree-zero relative cohomology vanishing for a path-connected ambient space
+  and nonempty subspace, injectivity of its map to absolute cohomology,
+  injectivity of H0 pullback along maps from nonempty spaces into path-connected
+  spaces, and cohomology vanishing for empty spaces in every degree;
+
 - bijectivity of the actual relative-cohomology connecting map when adjacent
   ambient groups vanish, and vanishing above degree one for contractible spaces
   relative to totally disconnected subspaces;
@@ -94,7 +99,7 @@ The additions prove:
 - a unique compact-neighborhood class with the same normalization in every
   chart whose actual tangent trivialization preserves the base-chart orientation.
 
-The fifty new/changed modules and their exact baseline/current hashes are listed in
+The fifty-one new/changed modules and their exact baseline/current hashes are listed in
 [provenance/SNAPSHOT.json](provenance/SNAPSHOT.json). The derivative homotopy
 retains its [upstream attribution and modification record](provenance/README.md).
 
@@ -755,7 +760,7 @@ Source request `1789338598420713654-topology-38ad4fa5` passed in 27.54 seconds,
 with 57 guards and six pairs. Original imported request
 `1789338679568569152-topology-29d8b462` passed in 65.02 seconds, with 57 guards
 and five pairs. Final portable request
-`1789338860447210678-topology_checkpoint-0c375dc4` passed in Slurm13846673 in
+`1789338860447210678-topology_checkpoint-0c375dc4` passed in Slurm 13846673 in
 163.14 seconds, with 527 guards and 247 signature/axiom pairs. All 242 earlier
 pairs are byte-identical, and all five new pairs match both earlier gates.
 The new leaf and root freshly compiled in 1:11.45 with maximum RSS1,826,368KiB
@@ -767,7 +772,7 @@ producer and the frozen canonical topology contract remain unresolved.
 
 ## Relative cohomology connecting maps and vanishing
 
-The current checkpoint contains 135 leaves and 144 curated tracked added public
+That checkpoint contained 135 leaves and 144 curated tracked added public
 exports. `RelativeCohomologyVanishing.lean` proves three results on the original
 relative groups and connecting maps. The general connecting-map theorem requires
 only vanishing of the adjacent ambient cohomology groups. Its contractible-space
@@ -781,7 +786,7 @@ Source request `1789340335050695794-topology-d19badad` passed in 5.12 seconds,
 with 114 guards and five pairs. Original imported request
 `1789340468527059901-topology-77c322e0` passed in 71.41 seconds, with 114 guards
 and five pairs. Final portable request
-`1789340590892191690-topology_checkpoint-29ccbfc4` passed in Slurm13846673 in
+`1789340590892191690-topology_checkpoint-29ccbfc4` passed in Slurm 13846673 in
 165.16 seconds, with 536 guards and 252 signature/axiom pairs. All 247 earlier
 pairs are byte-identical, and all five new pairs match both earlier gates.
 The new leaf and root freshly compiled in 1:09.79 with maximum RSS1,825,220KiB
@@ -789,3 +794,33 @@ and zero diagnostics. All 134 prior published leaves, dependency pins and
 deferred inputs remain unchanged. Stock declaration linters and standard-only
 transitive axioms pass. These are foundations for duality; the general manifold
 result, native orientation producer and frozen canonical contract remain open.
+
+
+## Degree-zero relative and empty-space cohomology
+
+The current checkpoint contains 135 leaves and 148 curated tracked added public
+exports. Four new results extend three existing leaves. The actual relative H0
+map to absolute H0 is injective for every pair. Pullback on actual H0 is injective
+for any continuous map from a nonempty space into a path-connected space; the
+source need not be connected. The relative H0 group vanishes when the ambient
+space is path connected and the subspace is nonempty. Actual cohomology of an
+empty space vanishes in every degree, including zero.
+
+The proofs use the original cochain kernel, the beginning of the actual long
+exact sequence, normalized H0 naturality, and the actual singular-simplex basis.
+Consumers prove H0(R,{0,1})=0, test a disconnected Bool pullback source, and
+produce a nonzero class in H0(R,empty). Thus the nonempty-subspace condition
+is essential; no alternate cohomology model or deferred input is introduced.
+
+Source request `1789341649851406926-topology-29a611d0` passed in 3.99 seconds
+with 77 guards and 7 pairs. Original imported request
+`1789342225419287952-topology-9f416a67` passed in 96.95 seconds with 78 guards
+and 19 pairs, after adding the missing SimplexBasis import to the moved leaf.
+Final portable request `1789342341942512570-topology_checkpoint-9be18633`
+passed in Slurm 13846673 in 208.80 seconds with 548 guards and 259 pairs.
+All 252 preceding pairs are byte-identical; all 19 original imported pairs and
+all 7 new source pairs match exactly. The three changed leaves and root freshly
+compiled in 1:56.44, maximum RSS 1,825,036 KiB, with zero diagnostics. All 132 other
+published leaves remain byte-identical. Stock declaration linters and
+standard-only transitive axioms pass. The full canonical topology suite,
+general manifold duality and native orientation producer remain incomplete.

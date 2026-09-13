@@ -1,5 +1,5 @@
 {
-  "scope": "Dependency-closed 135-module checkpoint including bijectivity of actual relative cohomology connecting maps and higher-degree vanishing for contractible/totally disconnected pairs; full topology suite incomplete",
+  "scope": "Dependency-closed 135-module checkpoint including degree-zero relative cohomology vanishing for path-connected ambient spaces and nonempty subspaces; full topology suite incomplete",
   "baseline_commit": "b45bfa009368c8f5f531e10f4f5280e90079d6ad",
   "baseline_ref": "refs/remotes/origin/codex/chapter35",
   "source_project": "PoincareLean",
@@ -79,7 +79,7 @@
       "module": "Poincare.Topology.Homology.CohomologyVanishing",
       "path": "Poincare/Topology/Homology/CohomologyVanishing.lean",
       "baseline_sha256": null,
-      "sha256": "57289fb4122643cda302a4b948b86e8714b7b0c2f14ccd0bb7766a01c2d045bc"
+      "sha256": "e140de0b00f2b5304bf90bd1ea7b69d1a8f841c9b26eaa623a9f10043ceb5d8b"
     },
     {
       "module": "Poincare.Topology.Homology.CompactSupport",
@@ -97,7 +97,7 @@
       "module": "Poincare.Topology.Homology.ConnectedZeroCohomology",
       "path": "Poincare/Topology/Homology/ConnectedZeroCohomology.lean",
       "baseline_sha256": null,
-      "sha256": "bf75aae8a0cfb7d275fd7cc428a5f41db71a30fc6e16b821c7e94dde9a2c72c5"
+      "sha256": "c86374f2cc60c9d676ce159321bb67279f11c33c421d52cb65cbce80723c825a"
     },
     {
       "module": "Poincare.Topology.Homology.EuclideanLocalVanishing",
@@ -225,7 +225,7 @@
       "module": "Poincare.Topology.Homology.RelativeCohomologyVanishing",
       "path": "Poincare/Topology/Homology/RelativeCohomologyVanishing.lean",
       "baseline_sha256": null,
-      "sha256": "4b2a2289742bb453027648d52b75e900d85500c2ab0268d81593f0b24d0b4e76"
+      "sha256": "53f5e22c573919667515d244517b91a4e6b6b10432fdb9302b265261d8d9fb15"
     },
     {
       "module": "Poincare.Topology.Homology.RelativeEmpty",
@@ -505,7 +505,7 @@
       "module": "Poincare.Topology.Homology.CohomologyVanishing",
       "path": "Poincare/Topology/Homology/CohomologyVanishing.lean",
       "baseline_sha256": null,
-      "sha256": "57289fb4122643cda302a4b948b86e8714b7b0c2f14ccd0bb7766a01c2d045bc"
+      "sha256": "e140de0b00f2b5304bf90bd1ea7b69d1a8f841c9b26eaa623a9f10043ceb5d8b"
     },
     {
       "module": "Poincare.Topology.Homology.CompactSupport",
@@ -523,7 +523,7 @@
       "module": "Poincare.Topology.Homology.ConnectedZeroCohomology",
       "path": "Poincare/Topology/Homology/ConnectedZeroCohomology.lean",
       "baseline_sha256": null,
-      "sha256": "bf75aae8a0cfb7d275fd7cc428a5f41db71a30fc6e16b821c7e94dde9a2c72c5"
+      "sha256": "c86374f2cc60c9d676ce159321bb67279f11c33c421d52cb65cbce80723c825a"
     },
     {
       "module": "Poincare.Topology.Homology.ConnectedZeroHomology",
@@ -795,7 +795,7 @@
       "module": "Poincare.Topology.Homology.RelativeCohomologyVanishing",
       "path": "Poincare/Topology/Homology/RelativeCohomologyVanishing.lean",
       "baseline_sha256": null,
-      "sha256": "4b2a2289742bb453027648d52b75e900d85500c2ab0268d81593f0b24d0b4e76"
+      "sha256": "53f5e22c573919667515d244517b91a4e6b6b10432fdb9302b265261d8d9fb15"
     },
     {
       "module": "Poincare.Topology.Homology.RelativeEmpty",
@@ -1458,7 +1458,11 @@
     "Poincare.Topology.integralSingularCohomology_subsingleton_of_contractibleSpace",
     "Poincare.Topology.integralRelativeCohomologyConnecting_bijective",
     "Poincare.Topology.integralRelativeCohomologyConnecting_bijective_of_contractibleSpace",
-    "Poincare.Topology.integralRelativeCohomology_subsingleton_of_contractibleSpace_of_totallyDisconnectedSpace"
+    "Poincare.Topology.integralRelativeCohomology_subsingleton_of_contractibleSpace_of_totallyDisconnectedSpace",
+    "Poincare.Topology.integralSingularCohomologyMap_zero_injective_of_pathConnectedSpace",
+    "Poincare.Topology.integralSingularCohomology_subsingleton_of_isEmpty",
+    "Poincare.Topology.integralRelativeToAbsoluteCohomology_zero_injective",
+    "Poincare.Topology.integralRelativeCohomology_zero_subsingleton_of_pathConnectedSpace"
   ],
   "historical_authorities": [
     {
@@ -1600,19 +1604,21 @@
     "date": "2026-09-13",
     "slurm_job": "13846673",
     "host": "della-r3c4n2",
-    "request_id": "1789340590892191690-topology_checkpoint-29ccbfc4",
-    "input_sha256": "7fb5cc0f9d7149e4b157723e34cc78406308a2932d248807b171bd79b1d5f331",
-    "result_sha256": "fb5cf06c70cf529e80f838c38ee250dc38d5176098efc09d3e17373f302016d6",
-    "artifact_log_sha256": "4f2d66d5b7fc1f3f925144f324e6bed78a6ec7f026f8edd41d395888e6315b78",
-    "source_config_harness_hash_guards": 536,
+    "request_id": "1789342341942512570-topology_checkpoint-9be18633",
+    "input_sha256": "7c0e42081f4722d00284a49d1dacfdce76eb5cf7c5a3cd2b63d08285ee7a9e97",
+    "result_sha256": "b2d7ae5fa87f25e372c3ceda50806271816ba7903273341738bc50b4fbe22cee",
+    "artifact_log_sha256": "6191ba5536489c4f0b0f8593cd633b8e6bda42bc084b23f7eaa450ff22081ad8",
+    "source_config_harness_hash_guards": 548,
     "freshly_built_modules": [
+      "Poincare.Topology.Homology.ConnectedZeroCohomology",
+      "Poincare.Topology.Homology.CohomologyVanishing",
       "Poincare.Topology.Homology.RelativeCohomologyVanishing",
       "Poincare"
     ],
     "root_build": "lake --no-cache --iofail build Poincare",
-    "fresh_build_scope": "RelativeCohomologyVanishing54 and root freshly compiled with zero diagnostics; all 134 previously published leaves unchanged.",
-    "exact_public_exports": 144,
-    "public_and_consumer_signature_axiom_pairs": 252,
+    "fresh_build_scope": "ConnectedZeroCohomology196, CohomologyVanishing92, RelativeCohomologyVanishing82 and root freshly compiled with zero diagnostics; all 132 other published leaves unchanged.",
+    "exact_public_exports": 148,
+    "public_and_consumer_signature_axiom_pairs": 259,
     "linters": [
       "unusedArguments",
       "simpNF",
@@ -1627,15 +1633,17 @@
       "Quot.sound"
     ],
     "unexpected_diagnostics": 0,
-    "elapsed_seconds": 165.15921115875244,
-    "peak_summed_rss_bytes": 3140829184,
+    "elapsed_seconds": 208.80082988739014,
+    "peak_summed_rss_bytes": 3146784768,
     "full_topology_suite_accepted": false,
     "consumer_probes": [
-      "All 247 prior signature/axiom pairs reproduced byte-identically",
-      "All three new public declarations and both consumers match original and source readbacks exactly",
-      "The actual connecting map is bijective whenever both adjacent ambient cohomology groups vanish, including the contractible-space positive-degree specialization",
-      "Actual relative cohomology vanishes for contractible ambient spaces and totally disconnected subspaces in degrees greater than one",
-      "Actual H1 of the real line relative to two distinct points remains nonzero while all higher groups vanish; the empty subspace also passes"
+      "All 252 prior signature/axiom pairs reproduced byte-identically",
+      "All 19 original public/consumer pairs and all seven new source pairs match the portable readbacks exactly",
+      "Actual relative-to-absolute H0 map is injective for arbitrary pairs",
+      "Actual H0 pullback is injective from any nonempty space into a path-connected space, including the disconnected Bool source",
+      "Actual relative H0 vanishes for a path-connected ambient space and a nonempty subspace",
+      "Actual cohomology of an empty space vanishes in every degree, including zero",
+      "Actual H0 of the real line relative to the empty subspace is nonzero, witnessing necessity of the nonempty-subspace assumption"
     ]
   },
   "previous_linear_sign_checkpoint_validation": {
@@ -3193,5 +3201,77 @@
     ],
     "source_request_id": "1789340335050695794-topology-d19badad",
     "source_readback_comparison": "all five original/portable pairs match source exactly; all 247 preceding portable pairs remain exact"
+  },
+  "previous_relative_cohomology_vanishing_validation": {
+    "status": "passed for the selected 135-module checkpoint; full topology suite incomplete",
+    "date": "2026-09-13",
+    "slurm_job": "13846673",
+    "host": "della-r3c4n2",
+    "request_id": "1789340590892191690-topology_checkpoint-29ccbfc4",
+    "input_sha256": "7fb5cc0f9d7149e4b157723e34cc78406308a2932d248807b171bd79b1d5f331",
+    "result_sha256": "fb5cf06c70cf529e80f838c38ee250dc38d5176098efc09d3e17373f302016d6",
+    "artifact_log_sha256": "4f2d66d5b7fc1f3f925144f324e6bed78a6ec7f026f8edd41d395888e6315b78",
+    "source_config_harness_hash_guards": 536,
+    "freshly_built_modules": [
+      "Poincare.Topology.Homology.RelativeCohomologyVanishing",
+      "Poincare"
+    ],
+    "root_build": "lake --no-cache --iofail build Poincare",
+    "fresh_build_scope": "RelativeCohomologyVanishing54 and root freshly compiled with zero diagnostics; all 134 previously published leaves unchanged.",
+    "exact_public_exports": 144,
+    "public_and_consumer_signature_axiom_pairs": 252,
+    "linters": [
+      "unusedArguments",
+      "simpNF",
+      "synTaut",
+      "checkType"
+    ],
+    "linter_scope": "All imported Poincare declarations and current consumers, including private declarations",
+    "defLemma": "Unavailable in the pinned Mathlib; source declaration-kind checks retained.",
+    "allowed_transitive_axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "unexpected_diagnostics": 0,
+    "elapsed_seconds": 165.15921115875244,
+    "peak_summed_rss_bytes": 3140829184,
+    "full_topology_suite_accepted": false,
+    "consumer_probes": [
+      "All 247 prior signature/axiom pairs reproduced byte-identically",
+      "All three new public declarations and both consumers match original and source readbacks exactly",
+      "The actual connecting map is bijective whenever both adjacent ambient cohomology groups vanish, including the contractible-space positive-degree specialization",
+      "Actual relative cohomology vanishes for contractible ambient spaces and totally disconnected subspaces in degrees greater than one",
+      "Actual H1 of the real line relative to two distinct points remains nonzero while all higher groups vanish; the empty subspace also passes"
+    ]
+  },
+  "original_zero_cohomology_validation": {
+    "request_id": "1789342225419287952-topology-9f416a67",
+    "input_sha256": "226a3a7acb250517da293af09f5c8faa310378f585e3fc76b5bb4c3c3350b6b1",
+    "elapsed_seconds": 96.95342540740967,
+    "source_guards": 78,
+    "signature_axiom_pairs": 19,
+    "fresh_modules": [
+      "Poincare.Topology.Homology.ConnectedZeroCohomology",
+      "Poincare.Topology.Homology.CohomologyVanishing",
+      "Poincare.Topology.Homology.RelativeCohomologyVanishing"
+    ],
+    "fresh_module_note": "ConnectedZeroCohomology compiled at identical source in preceding 5bb1c93f; remaining two compiled after adding the missing SimplexBasis import in 9f416a67. Final 9f416a67 imports all three with zero diagnostics.",
+    "source_request_id": "1789341649851406926-topology-29a611d0",
+    "source_readback_comparison": "all seven new source pairs match original and portable exactly; all 252 preceding portable pairs remain exact",
+    "known_source_guard_replacements": {
+      "/scratch/gpfs/KARTHIKN/ayush/canonical-topology-spinoff/Poincare/Topology/Homology/ConnectedZeroCohomology.lean": {
+        "baseline": "bf75aae8a0cfb7d275fd7cc428a5f41db71a30fc6e16b821c7e94dde9a2c72c5",
+        "current": "c86374f2cc60c9d676ce159321bb67279f11c33c421d52cb65cbce80723c825a"
+      },
+      "/scratch/gpfs/KARTHIKN/ayush/canonical-topology-spinoff/Poincare/Topology/Homology/CohomologyVanishing.lean": {
+        "baseline": "57289fb4122643cda302a4b948b86e8714b7b0c2f14ccd0bb7766a01c2d045bc",
+        "current": "e140de0b00f2b5304bf90bd1ea7b69d1a8f841c9b26eaa623a9f10043ceb5d8b"
+      },
+      "/scratch/gpfs/KARTHIKN/ayush/canonical-topology-spinoff/Poincare/Topology/Homology/RelativeCohomologyVanishing.lean": {
+        "baseline": "4b2a2289742bb453027648d52b75e900d85500c2ab0268d81593f0b24d0b4e76",
+        "current": "53f5e22c573919667515d244517b91a4e6b6b10432fdb9302b265261d8d9fb15"
+      }
+    }
   }
 }

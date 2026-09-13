@@ -1,3 +1,4 @@
+import Poincare.Topology.Homology.ConnectedZeroCohomology
 import Poincare.Topology.Homology.CohomologyVanishing
 import Poincare.Topology.Homology.RelativeCochains
 
@@ -47,6 +48,33 @@ theorem integralRelativeCohomology_subsingleton_of_contractibleSpace_of_totallyD
   have hz (α : integralRelativeCohomology (n - 1 + 1) A) : α = 0 := by
     obtain ⟨β, rfl⟩ := hs α
     rw [Subsingleton.elim β 0, map_zero]
+  exact ⟨fun α β => (hz α).trans (hz β).symm⟩
+
+open CategoryTheory CategoryTheory.Limits in
+theorem integralRelativeToAbsoluteCohomology_zero_injective
+    {X : Type u} [TopologicalSpace X] (A : Set X) :
+    Function.Injective (integralRelativeToAbsoluteCohomology 0 A) := by
+  let _ : Mono ((integralRelativeCochainInclusion A).f 0) := by
+    change Mono ((HomologicalComplex.eval (ModuleCat.{u} ℤ) (.up ℕ) 0).map
+      (kernel.ι (integralSingularCochainMap (singularSubspaceInclusion A))))
+    infer_instance
+  have h := HomologicalComplex.mono_homologyMap_of_mono_of_not_rel
+    (integralRelativeCochainInclusion A) 0 (by intro i; simp)
+  exact (ModuleCat.mono_iff_injective _).mp h
+
+theorem integralRelativeCohomology_zero_subsingleton_of_pathConnectedSpace
+    {X : Type u} [TopologicalSpace X] [PathConnectedSpace X]
+    (A : Set X) (hA : A.Nonempty) : Subsingleton (integralRelativeCohomology 0 A) := by
+  let _ : Nonempty A := hA.to_subtype
+  have hi := integralRelativeToAbsoluteCohomology_zero_injective A
+  have hj := integralSingularCohomologyMap_zero_injective_of_pathConnectedSpace
+    (singularSubspaceInclusion A)
+  have hz (α : integralRelativeCohomology 0 A) : α = 0 := by
+    apply hi
+    apply hj
+    rw [map_zero, map_zero]
+    exact (integralRelativeCohomology_exact_absolute 0 A
+      (integralRelativeToAbsoluteCohomology 0 A α)).mpr ⟨α, rfl⟩
   exact ⟨fun α β => (hz α).trans (hz β).symm⟩
 
 end Poincare.Topology

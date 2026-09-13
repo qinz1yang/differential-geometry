@@ -173,6 +173,24 @@ theorem integralSingularCohomologyCapProduct_zero_bijective_iff
     simp only [zsmul_eq_mul, mul_one, Int.cast_id]
   rw [heq]
 
+theorem integralSingularCohomologyMap_zero_injective_of_pathConnectedSpace
+    {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
+    [PathConnectedSpace X] [Nonempty Y] (f : ContinuousMap Y X) :
+    Function.Injective (integralSingularCohomologyMap 0 f) := by
+  let g : ContinuousMap X Y := ContinuousMap.const X (Classical.choice inferInstance)
+  have hcomp : (integralSingularCohomologyMap 0 g).comp
+      (integralSingularCohomologyMap 0 f) = LinearMap.id := by
+    rw [← integralSingularCohomologyMap_comp]
+    ext α
+    apply (integralSingularCohomologyZeroEquiv X).injective
+    exact integralSingularCohomologyZeroEquiv_natural (f.comp g) α
+  intro α β h
+  have hh := congrArg (integralSingularCohomologyMap 0 g) h
+  change ((integralSingularCohomologyMap 0 g).comp
+    (integralSingularCohomologyMap 0 f)) α =
+      ((integralSingularCohomologyMap 0 g).comp (integralSingularCohomologyMap 0 f)) β at hh
+  simpa only [hcomp, LinearMap.id_apply] using hh
+
 end Poincare.Topology
 
 end
