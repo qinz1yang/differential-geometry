@@ -4895,6 +4895,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Extension.Restart.SolutionBo
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.AreaEvolution
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.BackgroundBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Basic
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.BoundaryIsotopy
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.CalculusGeometry
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ComponentFlow
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Connection
