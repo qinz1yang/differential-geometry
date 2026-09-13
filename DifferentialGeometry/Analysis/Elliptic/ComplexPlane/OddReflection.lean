@@ -203,4 +203,32 @@ theorem integral_laplacian_smul_oddReflection
     (μ := volume) hψ hcψ hψ0 hf (fun z _ hz => hg z hz) (fun z _ hz => hB z hz)
   simpa only [hψΔ] using hgreen.symm
 
+theorem oddReflection_norm_le_of_bound
+    {F : Type*} [NormedAddCommGroup F] {f : ℂ → F} {B : ℝ}
+    (hB : ∀ z : ℂ, 0 < z.im → ‖f z‖ ≤ B) (z : ℂ) :
+    ‖oddReflection f z‖ ≤ B := by
+  have hB0 : 0 ≤ B := (norm_nonneg (f Complex.I)).trans (hB Complex.I (by simp))
+  rcases lt_trichotomy (0 : ℝ) z.im with hp | hz | hn
+  · rw [oddReflection_of_im_pos f hp]
+    exact hB z hp
+  · rw [oddReflection_of_im_zero f hz.symm, norm_zero]
+    exact hB0
+  · rw [oddReflection_of_im_neg f hn, norm_neg]
+    apply hB
+    simpa only [Complex.conjLIE_apply, Complex.conj_im, neg_pos] using hn
+
+theorem aestronglyMeasurable_oddReflection
+    {F : Type*} [NormedAddCommGroup F] {f : ℂ → F} {μ : Measure ℂ}
+    (hf : ContinuousOn f {z : ℂ | 0 < z.im}) :
+    AEStronglyMeasurable (oddReflection f) μ := by
+  have hU : MeasurableSet {z : ℂ | 0 < z.im} :=
+    (isOpen_lt continuous_const Complex.continuous_im).measurableSet
+  have hL : MeasurableSet {z : ℂ | z.im < 0} :=
+    (isOpen_lt Complex.continuous_im continuous_const).measurableSet
+  have hc : ContinuousOn (f ∘ Complex.conjLIE) {z : ℂ | z.im < 0} :=
+    hf.comp Complex.conjLIE.continuous.continuousOn (fun z hz => by
+      simpa only [mem_ofPred_eq, Complex.conjLIE_apply, Complex.conj_im, neg_pos] using hz)
+  exact ((aestronglyMeasurable_indicator_iff hU).mpr (hf.aestronglyMeasurable hU)).sub
+    ((aestronglyMeasurable_indicator_iff hL).mpr (hc.aestronglyMeasurable hL))
+
 end DifferentialGeometry.Analysis
