@@ -48,7 +48,7 @@ theorem contDiffOn_one_closure_of_sq_gradient_add_eq
   refine ⟨closure s, ?_, by simp, D, hhas, contDiffOn_zero.mpr hDc⟩
   simpa only [insert_eq_of_mem hz] using (self_mem_nhdsWithin : closure s ∈ 𝓝[closure s] z)
 
-private theorem complex_sq_add_eq_of_conformal_pair
+theorem sq_add_eq_of_conformal_pair
     {V : Type*} [NormedAddCommGroup V] [NormedSpace ℝ V]
     (B : V →L[ℝ] V →L[ℝ] ℝ) (hB : B.toBilinForm.IsSymm)
     (v w t : V) (p q : ℝ) (ht : B t t ≠ 0)
@@ -110,7 +110,7 @@ theorem contDiffOn_one_closure_of_conformal_pair
       ((Complex.continuous_ofReal.comp_continuousOn hQi).mul_const _)
   apply contDiffOn_one_closure_of_sq_gradient_add_eq hs ho hf hd hAc hQc
   intro z hz
-  have hh := complex_sq_add_eq_of_conformal_pair (B z) (hBs z hz)
+  have hh := sq_add_eq_of_conformal_pair (B z) (hBs z hz)
     (v z) (w z) (t z) (fderiv ℝ f z 1) (fderiv ℝ f z Complex.I)
     (hBt z (subset_closure hz)) (horth z hz) (heq z hz)
   change (gradient f z + A z) ^ 2 = Q z
