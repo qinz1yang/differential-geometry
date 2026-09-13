@@ -7810,6 +7810,7 @@ import DifferentialGeometry.Topology.Homology.ExcisionQuotient
 import DifferentialGeometry.Topology.Homology.FineAffineImages
 import DifferentialGeometry.Topology.Homology.HomologyTwoFrontier
 import DifferentialGeometry.Topology.Homology.Homotopy
+import DifferentialGeometry.Topology.Homology.HurewiczBijectionFrontier
 import DifferentialGeometry.Topology.Homology.HurewiczEquivalences
 import DifferentialGeometry.Topology.Homology.HurewiczFrontier
 import DifferentialGeometry.Topology.Homology.HurewiczLowDegreeBasepoint
