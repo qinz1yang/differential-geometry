@@ -23,16 +23,6 @@ attribute [local instance] PointedRiemannianManifold.topology
   PointedRiemannianManifold.t2 PointedRiemannianManifold.sigmaCompact
   PointedRiemannianManifold.t2TangentBundle
 
-theorem open_nonnegative_sphere_separation
-    (P : PointedRiemannianManifold.{u, 0, 0} I3)
-    (f : Sphere 2 → P.M) (d : SphereSides (Set.range f)) :
-    ¬ IsPreconnected (Set.range f)ᶜ ∧
-      ∀ p z : P.M, p ∉ Set.range f → z ∉ Set.range f →
-        ∀ c : TransversePath p z (Set.range f),
-          (c.intersection = 1 ∨ c.intersection = -1) →
-            z ∉ connectedComponentIn (Set.range f)ᶜ p :=
-  not_isPreconnected_compl_and_not_mem_connectedComponentIn_of_sphereSides d
-
 theorem nonempty_sphereSides_range_coe_sphere :
     Nonempty (SphereSides (Set.range (fun x : Sphere 2 => (x : ThreeSpace)))) :=
   ⟨(jordanBrouwer_openThreeSpace (fun x : Sphere 2 => (x : ThreeSpace))
@@ -49,6 +39,6 @@ theorem sphere_separation_of_diffeomorph_euclidean
         ∀ c : TransversePath p z (Set.range f),
           (c.intersection = 1 ∨ c.intersection = -1) →
             z ∉ connectedComponentIn (Set.range f)ᶜ p :=
-  open_nonnegative_sphere_separation P f (jordanBrouwer_openThreeSpace f he ψ).toSphereSides
+  open_nonnegative_sphere_separation P f (jordanBrouwer_openThreeSpace f he ψ).toTwoSidedSeparation
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn

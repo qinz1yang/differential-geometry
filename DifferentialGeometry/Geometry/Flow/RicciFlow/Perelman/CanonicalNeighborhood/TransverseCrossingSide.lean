@@ -1,5 +1,6 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.TransverseCrossingPath
-import DifferentialGeometry.Topology.SphereSeparation.LocalSides
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.TransverseGeometry
+import DifferentialGeometry.Topology.SphereSeparation.TwoSidedSeparation
+import Mathlib.Analysis.Normed.Module.Connected
 
 set_option autoImplicit false
 noncomputable section
@@ -10,11 +11,12 @@ namespace DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.Fini
 
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
-open DifferentialGeometry.Topology.SphereSeparation (SphereSides)
+open DifferentialGeometry.Topology.SphereSeparation (TwoSidedSeparation)
 
 universe u
 variable {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
   [IsManifold I3 ∞ M]
+
 
 private theorem isPathConnected_sphereTwo : IsPathConnected (Sphere 2) := by
   have hrank : 1 < Module.rank ℝ (EuclideanSpace ℝ (Fin (2 + 1))) := by
@@ -138,9 +140,9 @@ theorem TransversePath.collarStrip_subset_bands {p z : M} {sphere : Set M}
 
 omit [IsManifold I3 ∞ M] in
 theorem TransversePath.bands_opposite_sides {p z : M} {sphere : Set M}
-    (c : TransversePath p z sphere) (d : SphereSides sphere) :
-    (c.negativeBand ⊆ d.compactSide ∧ c.positiveBand ⊆ d.endSide) ∨
-      (c.negativeBand ⊆ d.endSide ∧ c.positiveBand ⊆ d.compactSide) := by
+    (c : TransversePath p z sphere) (d : TwoSidedSeparation sphere) :
+    (c.negativeBand ⊆ d.positiveSide ∧ c.positiveBand ⊆ d.negativeSide) ∨
+      (c.negativeBand ⊆ d.negativeSide ∧ c.positiveBand ⊆ d.positiveSide) := by
   have hS : sphere.Nonempty := by
     obtain ⟨q, hq⟩ := sphereTwo_nonempty
     refine ⟨c.collar (⟨q, hq⟩, 0), ?_⟩
@@ -467,11 +469,11 @@ private theorem zmod_two_eq_add_card_of_between (F : Finset ℝ) (a b : ℝ)
 omit [IsManifold I3 ∞ M] in
 theorem TransversePath.not_mem_connectedComponentIn_of_intersection
     {p z : M} {sphere : Set M} (c : TransversePath p z sphere)
-    (d : SphereSides sphere) (hp : p ∉ sphere) (hz : z ∉ sphere)
+    (d : TwoSidedSeparation sphere) (hp : p ∉ sphere) (hz : z ∉ sphere)
     (hint : c.intersection = 1 ∨ c.intersection = -1) :
     z ∉ connectedComponentIn sphereᶜ p := by
   classical
-  let f : ℝ → ZMod 2 := fun t => if c.curve t ∈ d.compactSide then 1 else 0
+  let f : ℝ → ZMod 2 := fun t => if c.curve t ∈ d.positiveSide then 1 else 0
   have hfconst : ∀ t t' : ℝ, (0 : ℝ) ≤ t → t ≤ t' → t' ≤ 1 →
       (∀ s ∈ c.crossings, ¬ (t ≤ s ∧ s ≤ t')) → f t = f t' := by
     intro t t' ht0 htt' ht'1 hnone
@@ -482,18 +484,18 @@ theorem TransversePath.not_mem_connectedComponentIn_of_intersection
       exact hnone w ((c.crossings_eq w hw01).mp hwsphere) hw
     have hpre : IsPreconnected (c.curve '' Icc t t') :=
       isPreconnected_Icc.image c.curve (c.continuous.mono (Icc_subset_Icc ht0 ht'1))
-    rcases d.subset_compactSide_or_subset_endSide hpre hsub with h | h
-    · have htB : c.curve t ∈ d.compactSide := h ⟨t, ⟨le_rfl, htt'⟩, rfl⟩
-      have ht'B : c.curve t' ∈ d.compactSide := h ⟨t', ⟨htt', le_rfl⟩, rfl⟩
-      change (if c.curve t ∈ d.compactSide then (1 : ZMod 2) else 0) =
-        (if c.curve t' ∈ d.compactSide then (1 : ZMod 2) else 0)
+    rcases d.subset_positiveSide_or_subset_negativeSide hpre hsub with h | h
+    · have htB : c.curve t ∈ d.positiveSide := h ⟨t, ⟨le_rfl, htt'⟩, rfl⟩
+      have ht'B : c.curve t' ∈ d.positiveSide := h ⟨t', ⟨htt', le_rfl⟩, rfl⟩
+      change (if c.curve t ∈ d.positiveSide then (1 : ZMod 2) else 0) =
+        (if c.curve t' ∈ d.positiveSide then (1 : ZMod 2) else 0)
       rw [if_pos htB, if_pos ht'B]
-    · have htB : c.curve t ∉ d.compactSide :=
+    · have htB : c.curve t ∉ d.positiveSide :=
         fun hcon => Set.disjoint_left.mp d.disjoint hcon (h ⟨t, ⟨le_rfl, htt'⟩, rfl⟩)
-      have ht'B : c.curve t' ∉ d.compactSide :=
+      have ht'B : c.curve t' ∉ d.positiveSide :=
         fun hcon => Set.disjoint_left.mp d.disjoint hcon (h ⟨t', ⟨htt', le_rfl⟩, rfl⟩)
-      change (if c.curve t ∈ d.compactSide then (1 : ZMod 2) else 0) =
-        (if c.curve t' ∈ d.compactSide then (1 : ZMod 2) else 0)
+      change (if c.curve t ∈ d.positiveSide then (1 : ZMod 2) else 0) =
+        (if c.curve t' ∈ d.positiveSide then (1 : ZMod 2) else 0)
       rw [if_neg htB, if_neg ht'B]
   have hflip : ∀ s ∈ c.crossings, ∃ A : ZMod 2,
       (∃ ε : ℝ, 0 < ε ∧ ∀ t ∈ Ioo (s - ε) s, f t = A) ∧
@@ -504,32 +506,32 @@ theorem TransversePath.not_mem_connectedComponentIn_of_intersection
       rcases c.exists_band_neighborhood_of_mem_crossings hs with hloc | hloc
       · obtain ⟨ε, hε, h1, h2⟩ := hloc
         refine ⟨1, ⟨⟨ε, hε, fun t ht => ?_⟩, ⟨ε, hε, fun t ht => ?_⟩⟩⟩
-        · change (if c.curve t ∈ d.compactSide then (1 : ZMod 2) else 0) = 1
+        · change (if c.curve t ∈ d.positiveSide then (1 : ZMod 2) else 0) = 1
           rw [if_pos (hNB (h1 t ht))]
-        · change (if c.curve t ∈ d.compactSide then (1 : ZMod 2) else 0) = 1 + 1
+        · change (if c.curve t ∈ d.positiveSide then (1 : ZMod 2) else 0) = 1 + 1
           rw [if_neg (fun hcon => Set.disjoint_left.mp d.disjoint hcon (hPE (h2 t ht))),
             zmodTwo_one_add_one]
       · obtain ⟨ε, hε, h1, h2⟩ := hloc
         refine ⟨0, ⟨⟨ε, hε, fun t ht => ?_⟩, ⟨ε, hε, fun t ht => ?_⟩⟩⟩
-        · change (if c.curve t ∈ d.compactSide then (1 : ZMod 2) else 0) = 0
+        · change (if c.curve t ∈ d.positiveSide then (1 : ZMod 2) else 0) = 0
           rw [if_neg (fun hcon => Set.disjoint_left.mp d.disjoint hcon (hPE (h1 t ht)))]
-        · change (if c.curve t ∈ d.compactSide then (1 : ZMod 2) else 0) = 0 + 1
+        · change (if c.curve t ∈ d.positiveSide then (1 : ZMod 2) else 0) = 0 + 1
           rw [if_pos (hNB (h2 t ht))]
           ring
     · obtain ⟨hNE, hPB⟩ := hcase
       rcases c.exists_band_neighborhood_of_mem_crossings hs with hloc | hloc
       · obtain ⟨ε, hε, h1, h2⟩ := hloc
         refine ⟨0, ⟨⟨ε, hε, fun t ht => ?_⟩, ⟨ε, hε, fun t ht => ?_⟩⟩⟩
-        · change (if c.curve t ∈ d.compactSide then (1 : ZMod 2) else 0) = 0
+        · change (if c.curve t ∈ d.positiveSide then (1 : ZMod 2) else 0) = 0
           rw [if_neg (fun hcon => Set.disjoint_left.mp d.disjoint hcon (hNE (h1 t ht)))]
-        · change (if c.curve t ∈ d.compactSide then (1 : ZMod 2) else 0) = 0 + 1
+        · change (if c.curve t ∈ d.positiveSide then (1 : ZMod 2) else 0) = 0 + 1
           rw [if_pos (hPB (h2 t ht))]
           ring
       · obtain ⟨ε, hε, h1, h2⟩ := hloc
         refine ⟨1, ⟨⟨ε, hε, fun t ht => ?_⟩, ⟨ε, hε, fun t ht => ?_⟩⟩⟩
-        · change (if c.curve t ∈ d.compactSide then (1 : ZMod 2) else 0) = 1
+        · change (if c.curve t ∈ d.positiveSide then (1 : ZMod 2) else 0) = 1
           rw [if_pos (hPB (h1 t ht))]
-        · change (if c.curve t ∈ d.compactSide then (1 : ZMod 2) else 0) = 1 + 1
+        · change (if c.curve t ∈ d.positiveSide then (1 : ZMod 2) else 0) = 1 + 1
           rw [if_neg (fun hcon => Set.disjoint_left.mp d.disjoint hcon (hNE (h2 t ht))),
             zmodTwo_one_add_one]
   have h0 : (0 : ℝ) ∉ c.crossings := fun h => absurd (c.crossings_interior 0 h).1 (lt_irrefl 0)
@@ -566,29 +568,30 @@ theorem TransversePath.not_mem_connectedComponentIn_of_intersection
     rw [hcard] at hpar
     exact hpar
   have hne01 : f 1 ≠ f 0 := fun hcon => zmodTwo_add_one_ne_self (f 0) (hf01.symm.trans hcon)
-  have hf0 : f 0 = (if p ∈ d.compactSide then (1 : ZMod 2) else 0) := by
-    change (if c.curve 0 ∈ d.compactSide then (1 : ZMod 2) else 0) = _
+  have hf0 : f 0 = (if p ∈ d.positiveSide then (1 : ZMod 2) else 0) := by
+    change (if c.curve 0 ∈ d.positiveSide then (1 : ZMod 2) else 0) = _
     rw [c.start]
-  have hf1 : f 1 = (if z ∈ d.compactSide then (1 : ZMod 2) else 0) := by
-    change (if c.curve 1 ∈ d.compactSide then (1 : ZMod 2) else 0) = _
+  have hf1 : f 1 = (if z ∈ d.positiveSide then (1 : ZMod 2) else 0) := by
+    change (if c.curve 1 ∈ d.positiveSide then (1 : ZMod 2) else 0) = _
     rw [c.finish]
-  by_cases hpB : p ∈ d.compactSide
-  · have hzB : z ∉ d.compactSide := by
+  by_cases hpB : p ∈ d.positiveSide
+  · have hzB : z ∉ d.positiveSide := by
       intro hzB'
       exact hne01 (by rw [hf0, hf1, if_pos hpB, if_pos hzB'])
-    have hzE : z ∈ d.endSide := by
-      have hmem : z ∈ d.compactSide ∪ d.endSide := by rw [d.union_eq_compl]; exact hz
+    have hzE : z ∈ d.negativeSide := by
+      have hmem : z ∈ d.positiveSide ∪ d.negativeSide := by rw [d.union_eq_compl]; exact hz
       exact hmem.resolve_left hzB
     exact d.not_mem_connectedComponentIn_of_mem_other_side_symm hpB hzE
-  · have hpE : p ∈ d.endSide := by
-      have hmem : p ∈ d.compactSide ∪ d.endSide := by rw [d.union_eq_compl]; exact hp
+  · have hpE : p ∈ d.negativeSide := by
+      have hmem : p ∈ d.positiveSide ∪ d.negativeSide := by rw [d.union_eq_compl]; exact hp
       exact hmem.resolve_left hpB
-    have hzB : z ∈ d.compactSide := by
+    have hzB : z ∈ d.positiveSide := by
       by_contra hzB'
-      have hzE : z ∈ d.endSide := by
-        have hmem : z ∈ d.compactSide ∪ d.endSide := by rw [d.union_eq_compl]; exact hz
+      have hzE : z ∈ d.negativeSide := by
+        have hmem : z ∈ d.positiveSide ∪ d.negativeSide := by rw [d.union_eq_compl]; exact hz
         exact hmem.resolve_left hzB'
       exact hne01 (by rw [hf0, hf1, if_neg hpB, if_neg hzB'])
     exact d.not_mem_connectedComponentIn_of_mem_other_side hpE hzB
+
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn

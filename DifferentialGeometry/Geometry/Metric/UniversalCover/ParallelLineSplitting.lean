@@ -7,22 +7,24 @@ open scoped Manifold ContDiff Topology
 
 set_option autoImplicit false
 
+universe uH uM
+
 noncomputable section
 
 namespace DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover
 
 structure GlobalSurfaceProductSplitting
-    {H : Type} [TopologicalSpace H]
+    {H : Type uH} [TopologicalSpace H]
     {I : ModelWithCorners ℝ
       (DifferentialGeometry.Topology.Morse.MorseModel 3) H}
     [I.Boundaryless]
-    {M : Type} [TopologicalSpace M] [ChartedSpace H M]
+    {M : Type uM} [TopologicalSpace M] [ChartedSpace H M]
     [IsManifold I ∞ M] [T2Space M]
     [SigmaCompactSpace M] [ConnectedSpace M] [LocallyPathConnectedSpace M]
     [DifferentialGeometry.Geometry.Riemannian.Topology.SemilocallySimplyConnectedSpace M]
     [Inhabited M]
     (g : SmoothRiemannianMetric I M) where
-  N : Type
+  N : Type uM
   [topologyN : TopologicalSpace N]
   [chartedN : ChartedSpace
     (DifferentialGeometry.Topology.Morse.MorseModel 2) N]
@@ -77,11 +79,11 @@ structure GlobalSurfaceProductSplitting
       metricN.inner y u v + r * q
 
 def HasGlobalSurfaceProductSplitting
-    {H : Type} [TopologicalSpace H]
+    {H : Type uH} [TopologicalSpace H]
     {I : ModelWithCorners ℝ
       (DifferentialGeometry.Topology.Morse.MorseModel 3) H}
     [I.Boundaryless]
-    {M : Type} [TopologicalSpace M] [ChartedSpace H M]
+    {M : Type uM} [TopologicalSpace M] [ChartedSpace H M]
     [IsManifold I ∞ M] [T2Space M]
     [SigmaCompactSpace M] [ConnectedSpace M] [Nonempty M]
     (g : SmoothRiemannianMetric I M) : Prop :=
@@ -95,11 +97,11 @@ def HasGlobalSurfaceProductSplitting
 
 theorem exists_global_product_diffeomorph_of_parallel_line
     {m : ℕ}
-    {H : Type} [TopologicalSpace H]
+    {H : Type uH} [TopologicalSpace H]
     {I : ModelWithCorners ℝ
       (DifferentialGeometry.Topology.Morse.MorseModel (m + 1)) H}
     [I.Boundaryless]
-    {M : Type} [TopologicalSpace M] [ChartedSpace H M]
+    {M : Type uM} [TopologicalSpace M] [ChartedSpace H M]
     [IsManifold I ∞ M] [T2Space M]
     [SigmaCompactSpace M] [ConnectedSpace M] [Nonempty M]
     (g : SmoothRiemannianMetric I M)
@@ -116,7 +118,7 @@ theorem exists_global_product_diffeomorph_of_parallel_line
   let _ : DifferentialGeometry.Geometry.Riemannian.Topology.SemilocallySimplyConnectedSpace M :=
     manifold_semilocallySimplyConnectedSpace (I := I)
   let _ : Inhabited M := ⟨Classical.choice (inferInstance : Nonempty M)⟩
-    ∃ (N : Type) (_ : TopologicalSpace N)
+    ∃ (N : Type uM) (_ : TopologicalSpace N)
       (hcs : ChartedSpace
         (DifferentialGeometry.Topology.Morse.MorseModel m) N),
       let _ := hcs
@@ -187,16 +189,17 @@ theorem exists_global_product_diffeomorph_of_parallel_line
     (I := I) (M := M) g S hSrank hS
   exact
     DifferentialGeometry.Geometry.Connection.ContMDiffVectorSubbundle.exists_global_product_diffeomorph_of_rank_eq_one
+      (I := I) (M := UniversalCover M)
       (liftedMetric (I := I) g) hg'
       (liftTangentSubbundle (I := I) (M := M) S)
-      (by simpa using hSrank) hS'
+      (show (liftTangentSubbundle (I := I) (M := M) S).rank = 1 from by simpa using hSrank) hS'
 
 theorem hasGlobalSurfaceProductSplitting_of_parallel_line
-    {H : Type} [TopologicalSpace H]
+    {H : Type uH} [TopologicalSpace H]
     {I : ModelWithCorners ℝ
       (DifferentialGeometry.Topology.Morse.MorseModel 3) H}
     [I.Boundaryless]
-    {M : Type} [TopologicalSpace M] [ChartedSpace H M]
+    {M : Type uM} [TopologicalSpace M] [ChartedSpace H M]
     [IsManifold I ∞ M] [T2Space M]
     [SigmaCompactSpace M] [ConnectedSpace M] [Nonempty M]
     (g : SmoothRiemannianMetric I M)

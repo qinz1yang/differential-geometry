@@ -4,6 +4,8 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborho
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ModelCurvaturePropagation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.PointedScalarConvergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CanonicalStrictBounds
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.TransverseCrossingSeparation
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.TransverseGeometry
 
 set_option autoImplicit false
 noncomputable section
@@ -29,32 +31,6 @@ variable {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
   [IsManifold I3 ∞ M] [T2Space M] [SigmaCompactSpace M]
   {D : RealTimeInterval}
 
-structure TransversePath (p z : M) (sphere : Set M) where
-  curve : ℝ → M
-  continuous : ContinuousOn curve (Set.Icc 0 1)
-  start : curve 0 = p
-  finish : curve 1 = z
-  collar : PartialDiffeomorph IC I3 Cylinder M ∞
-  collar_domain : Set.univ ×ˢ Set.Icc (-1) 1 ⊆ collar.source
-  central_eq : sphere = collar '' (Set.univ ×ˢ ({0} : Set ℝ))
-  crossings : Finset ℝ
-  crossings_interior : ∀ s ∈ crossings, s ∈ Set.Ioo 0 1
-  crossings_eq : ∀ s ∈ Set.Icc (0 : ℝ) 1, curve s ∈ sphere ↔ s ∈ crossings
-  transverse : ∀ s ∈ crossings,
-    deriv (fun t => (collar.symm (curve t)).2) s ≠ 0
-
-def TransversePath.intersection {p z : M} {sphere : Set M}
-    (c : TransversePath p z sphere) : ℤ :=
-  ∑ s ∈ c.crossings, if 0 < deriv (fun t => (c.collar.symm (c.curve t)).2) s then 1 else -1
-
-
-structure MinimizingArm (g : SmoothRiemannianMetric I3 M) (x : M) where
-  length : ℝ
-  length_pos : 0 < length
-  point : ℝ → M
-  start : point 0 = x
-  minimizing : ∀ s ∈ Set.Icc 0 length, ∀ t ∈ Set.Icc 0 length,
-    metricDistance g (point s) (point t) = |s - t|
 
 structure SpatialNeck (g : SmoothRiemannianMetric I3 M) (eps : ℝ) (x : M) where
   eps_pos : 0 < eps
