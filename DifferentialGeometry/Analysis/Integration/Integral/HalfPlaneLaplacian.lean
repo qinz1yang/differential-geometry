@@ -1,3 +1,6 @@
+import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.HalfSpace
+import Mathlib.Analysis.Complex.Convex
+import Mathlib.MeasureTheory.Measure.Lebesgue.Complex
 import DifferentialGeometry.Analysis.Integration.Integral.Laplacian
 import DifferentialGeometry.Analysis.Calculus.Cutoff.Profile
 import DifferentialGeometry.Analysis.InnerProductSpace.Laplacian
@@ -389,5 +392,344 @@ theorem integral_smul_laplacian_eq_integral_laplacian_smul_upper_half_plane_of_n
       ∫ z in {z : ℂ | 0 < z.im}, Laplacian.laplacian φ z • f z ∂μ :=
   integral_smul_laplacian_eq_integral_laplacian_smul_upper_half_plane hφ hc hz hf hfg
     (integrableOn_smul_laplacian_upper_half_plane_of_bound hφ.continuous hc hf hB)
+
+private theorem tendsto_integral_horizontal_of_continuousOn
+    {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
+    {f : ℂ → F} {a : ℝ} (hf : ContinuousOn f {z : ℂ | a ≤ z.im})
+    (hc : HasCompactSupport f) :
+    Tendsto (fun t : ℝ => ∫ x : ℝ, f (x + t * Complex.I)) (𝓝[>] a)
+      (𝓝 (∫ x : ℝ, f ((x : ℂ) + a * Complex.I))) := by
+  obtain ⟨R, hR, hs⟩ := hc.isBounded.subset_closedBall_lt 0 (0 : ℂ)
+  have hch : IsCompact (tsupport f ∩ {z : ℂ | a ≤ z.im}) :=
+    hc.inter_right (isClosed_le continuous_const Complex.continuous_im)
+  obtain ⟨A, hA⟩ := hch.exists_bound_of_continuousOn (hf.mono inter_subset_right)
+  let C := max A 0
+  have hC : 0 ≤ C := le_max_right _ _
+  have hnorm (z : ℂ) (hz : a ≤ z.im) : ‖f z‖ ≤ C := by
+    by_cases hzs : z ∈ tsupport f
+    · exact (hA z ⟨hzs, hz⟩).trans (le_max_left _ _)
+    · rw [image_eq_zero_of_notMem_tsupport hzs, norm_zero]
+      exact hC
+  have hzero (x t : ℝ) (hx : x ∉ Icc (-R) R) : f (x + t * Complex.I) = 0 := by
+    apply image_eq_zero_of_notMem_tsupport
+    intro hz
+    have hh : ‖(x : ℂ) + t * Complex.I‖ ≤ R := by simpa using hs hz
+    have hxR : |x| ≤ R := by
+      have h := Complex.abs_re_le_norm ((x : ℂ) + t * Complex.I)
+      simpa using h.trans hh
+    exact hx (abs_le.mp hxR)
+  apply tendsto_integral_filter_of_dominated_convergence ((Icc (-R) R).indicator (fun _ => C))
+  · filter_upwards [self_mem_nhdsWithin] with t ht
+    have hl : Continuous (fun x : ℝ => f (x + t * Complex.I)) :=
+      hf.comp_continuous (Complex.continuous_ofReal.add continuous_const)
+        (fun x => by simpa using (show a < t from ht).le)
+    exact hl.aestronglyMeasurable
+  · filter_upwards [self_mem_nhdsWithin] with t ht
+    apply Eventually.of_forall
+    intro x
+    by_cases hx : x ∈ Icc (-R) R
+    · rw [indicator_of_mem hx]
+      exact hnorm _ (by simpa using (show a < t from ht).le)
+    · rw [indicator_of_notMem hx, hzero x t hx, norm_zero]
+  · apply (integrable_indicator_iff measurableSet_Icc).mpr
+    exact (continuous_const : Continuous (fun _ : ℝ => C)).continuousOn.integrableOn_compact isCompact_Icc
+  · apply Eventually.of_forall
+    intro x
+    have hline : ContinuousWithinAt (fun t : ℝ => f (x + t * Complex.I)) (Ici a) a :=
+      (hf ((x : ℂ) + a * Complex.I) (by simp)).comp_of_eq (f := fun t : ℝ => (x : ℂ) + t * Complex.I)
+        (by fun_prop) (fun t ht => by simpa using ht) (by simp)
+    simpa using hline.tendsto.mono_left (nhdsWithin_mono _ Ioi_subset_Ici_self)
+
+private theorem tendsto_integral_half_plane_of_integrableOn
+    {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
+    {f : ℂ → F} {a : ℝ} (hf : IntegrableOn f {z : ℂ | a < z.im}) :
+    Tendsto (fun t : ℝ => ∫ z in {z : ℂ | t < z.im}, f z) (𝓝[>] a)
+      (𝓝 (∫ z in {z : ℂ | a < z.im}, f z)) := by
+  let H : Set ℂ := {z | a < z.im}
+  let G (t : ℝ) : ℂ → F := {z : ℂ | t < z.im}.indicator f
+  have hT : Tendsto (fun t : ℝ => ∫ z in H, G t z) (𝓝[>] a) (𝓝 (∫ z in H, f z)) := by
+    apply tendsto_integral_filter_of_dominated_convergence (fun z => ‖f z‖)
+    · apply Eventually.of_forall
+      intro t
+      exact hf.aestronglyMeasurable.indicator
+        (isOpen_lt continuous_const Complex.continuous_im).measurableSet
+    · apply Eventually.of_forall
+      intro t
+      apply Eventually.of_forall
+      intro z
+      by_cases hz : t < z.im <;> simp [G, hz]
+    · exact hf.norm
+    · filter_upwards [ae_restrict_mem
+        (isOpen_lt continuous_const Complex.continuous_im).measurableSet] with z hz
+      apply tendsto_const_nhds.congr'
+      filter_upwards [(eventually_lt_nhds (show a < z.im from hz)).filter_mono nhdsWithin_le_nhds] with t ht
+      simp [G, ht]
+  apply hT.congr'
+  filter_upwards [self_mem_nhdsWithin] with t ht
+  change (∫ z in H, {z : ℂ | t < z.im}.indicator f z) = _
+  have hsub : {z : ℂ | t < z.im} ⊆ H :=
+    fun z hz => lt_trans (show a < t from ht) (show t < z.im from hz)
+  rw [integral_indicator (isOpen_lt continuous_const Complex.continuous_im).measurableSet,
+    Measure.restrict_restrict (isOpen_lt continuous_const Complex.continuous_im).measurableSet,
+    inter_eq_left.mpr hsub]
+
+
+variable {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F] [CompleteSpace F]
+
+omit [CompleteSpace F] in
+private theorem integral_half_plane_eq_prod (f : ℂ → F) (a : ℝ) :
+    (∫ z in {z : ℂ | a < z.im}, f z) =
+      ∫ p : ℝ × ℝ, f (Complex.equivRealProdCLM.symm p)
+        ∂(volume.prod (volume.restrict (Ioi a))) := by
+  have he := Complex.volume_preserving_equiv_real_prod.symm
+  have hr := he.restrict_preimage (s := {z : ℂ | a < z.im}) (isOpen_lt continuous_const Complex.continuous_im).measurableSet
+  have hi := hr.integral_comp' f
+  have hs : Complex.measurableEquivRealProd.symm ⁻¹' {z : ℂ | a < z.im} = univ ×ˢ Ioi a := by
+    ext p
+    simp
+  have hmap : (Complex.measurableEquivRealProd.symm : ℝ × ℝ → ℂ) =
+      Complex.equivRealProdCLM.symm := by
+    funext p
+    apply Complex.ext <;> simp [Complex.equivRealProdCLM_symm_apply]
+  rw [hs, hmap] at hi
+  simpa only [Measure.volume_eq_prod, ← Measure.prod_restrict, Measure.restrict_univ] using hi.symm
+
+omit [CompleteSpace F] in
+private theorem fderivWithin_comp_equivRealProd
+    {f : ℂ → F} {a : ℝ} (hf : ContDiffOn ℝ 1 f {z | a ≤ z.im})
+    {p : ℝ × ℝ} (hp : a < p.2) (w : ℝ × ℝ) :
+    fderivWithin ℝ f {z | a ≤ z.im} (Complex.equivRealProdCLM.symm p)
+        (Complex.equivRealProdCLM.symm w) =
+      fderivWithin ℝ (f ∘ Complex.equivRealProdCLM.symm) (univ ×ˢ Ici a) p w := by
+  let e := Complex.equivRealProdCLM.symm
+  have hep : e p ∈ {z : ℂ | a < z.im} := hp
+  have heN : {z : ℂ | a ≤ z.im} ∈ 𝓝 (e p) :=
+    mem_of_superset ((isOpen_lt continuous_const Complex.continuous_im).mem_nhds hep)
+      (fun z (h : a < z.im) => show a ≤ z.im from h.le)
+  have hpN : univ ×ˢ Ici a ∈ 𝓝 p :=
+    mem_of_superset ((isOpen_univ.prod isOpen_Ioi).mem_nhds ⟨mem_univ _, hp⟩)
+      (prod_mono Subset.rfl Ioi_subset_Ici_self)
+  have hd := (hf.differentiableOn one_ne_zero (e p)
+    (show a ≤ (e p).im from (show a < (e p).im from hp).le)).differentiableAt heN
+  rw [fderivWithin_of_mem_nhds heN, fderivWithin_of_mem_nhds hpN]
+  have hdv := hd.hasFDerivAt.comp p e.hasFDerivAt
+  rw [hdv.fderiv]
+  rfl
+
+private theorem integral_fderivWithin_im_half_plane
+    {f : ℂ → F} {a : ℝ} (hf : ContDiffOn ℝ 1 f {z | a ≤ z.im})
+    (hc : HasCompactSupport f) :
+    (∫ z in {z : ℂ | a < z.im}, fderivWithin ℝ f {z | a ≤ z.im} z Complex.I) =
+      -∫ x : ℝ, f (x + a * Complex.I) := by
+  let e := Complex.equivRealProdCLM.symm
+  let v : ℝ × ℝ → F := f ∘ e
+  have hv : ContDiffOn ℝ 1 v (univ ×ˢ Ici a) := by
+    apply hf.comp e.contDiff.contDiffOn
+    intro p hp
+    exact hp.2
+  have hcv : HasCompactSupport v := hc.comp_isClosedEmbedding e.toHomeomorph.isClosedEmbedding
+  have h := integral_fderivWithin_normal_half_space_of_hasCompactSupport (mu := volume) hv hcv
+  rw [integral_half_plane_eq_prod]
+  have heq : ∀ᵐ p ∂(volume.prod (volume.restrict (Ioi a))),
+      fderivWithin ℝ f {z | a ≤ z.im} (e p) Complex.I =
+        fderivWithin ℝ v (univ ×ˢ Ici a) p (0, 1) := by
+    have hmem : ∀ᵐ p : ℝ × ℝ ∂(volume.prod (volume.restrict (Ioi a))), p.2 ∈ Ioi a := by
+      apply (Measure.ae_prod_iff_ae_ae (measurable_snd measurableSet_Ioi)).mpr
+      filter_upwards with x
+      exact ae_restrict_mem measurableSet_Ioi
+    filter_upwards [hmem] with p hp
+    simpa only [v, e, Complex.equivRealProdCLM_symm_apply, Complex.ofReal_zero,
+      Complex.ofReal_one, one_mul, zero_add] using fderivWithin_comp_equivRealProd hf hp (0, 1)
+  rw [integral_congr_ae heq, h]
+  simp only [v, Function.comp_apply, e, Complex.equivRealProdCLM_symm_apply]
+
+omit [CompleteSpace F] in
+private theorem integral_fderivWithin_re_half_plane
+    {f : ℂ → F} {a : ℝ} (hf : ContDiffOn ℝ 1 f {z | a ≤ z.im})
+    (hc : HasCompactSupport f) :
+    (∫ z in {z : ℂ | a < z.im}, fderivWithin ℝ f {z | a ≤ z.im} z 1) = 0 := by
+  let e := Complex.equivRealProdCLM.symm
+  let v : ℝ × ℝ → F := f ∘ e
+  have hv : ContDiffOn ℝ 1 v (univ ×ˢ Ici a) := by
+    apply hf.comp e.contDiff.contDiffOn
+    intro p hp
+    exact hp.2
+  have hcv : HasCompactSupport v := hc.comp_isClosedEmbedding e.toHomeomorph.isClosedEmbedding
+  have h := integral_fderivWithin_tangent_half_space_eq_zero_of_hasCompactSupport (mu := volume) hv hcv (1 : ℝ)
+  rw [integral_half_plane_eq_prod]
+  have heq : ∀ᵐ p ∂(volume.prod (volume.restrict (Ioi a))),
+      fderivWithin ℝ f {z | a ≤ z.im} (e p) 1 =
+        fderivWithin ℝ v (univ ×ˢ Ici a) p (1, 0) := by
+    have hmem : ∀ᵐ p : ℝ × ℝ ∂(volume.prod (volume.restrict (Ioi a))), p.2 ∈ Ioi a := by
+      apply (Measure.ae_prod_iff_ae_ae (measurable_snd measurableSet_Ioi)).mpr
+      filter_upwards with x
+      exact ae_restrict_mem measurableSet_Ioi
+    filter_upwards [hmem] with p hp
+    simpa only [v, e, Complex.equivRealProdCLM_symm_apply, Complex.ofReal_zero,
+      Complex.ofReal_one, zero_mul, add_zero] using fderivWithin_comp_equivRealProd hf hp (1, 0)
+  rw [integral_congr_ae heq, h]
+
+
+omit [CompleteSpace F] in
+private theorem integrableOn_fderiv_half_plane
+    {f : ℂ → F} {a : ℝ} (hf : ∀ z ∈ {z : ℂ | a ≤ z.im}, ContDiffAt ℝ 1 f z)
+    (hc : HasCompactSupport f) (v : ℂ) :
+    IntegrableOn (fun z => fderiv ℝ f z v) {z : ℂ | a < z.im} := by
+  let d : ℂ → F := fun z => fderiv ℝ f z v
+  have hd : ContinuousOn d {z : ℂ | a ≤ z.im} := by
+    intro z hz
+    exact (((hf z hz).fderiv_right (m := 0) (by norm_num)).continuousAt.clm_apply
+      continuousAt_const).continuousWithinAt
+  have hdc : HasCompactSupport d := hc.fderiv_apply ℝ v
+  have hi : IntegrableOn d {z : ℂ | a ≤ z.im} := by
+    apply (integrableOn_iff_integrable_of_support_subset (subset_tsupport d)).mp
+    rw [IntegrableOn, Measure.restrict_restrict (isClosed_tsupport _).measurableSet]
+    exact (hd.mono inter_subset_right).integrableOn_compact
+      (hdc.inter_right (isClosed_le continuous_const Complex.continuous_im))
+  exact hi.mono_set (fun z (hz : a < z.im) => show a ≤ z.im from hz.le)
+
+omit [CompleteSpace F] in
+private theorem integral_fderiv_half_plane_eq_fderivWithin (f : ℂ → F) (a : ℝ) (v : ℂ) :
+    (∫ z in {z : ℂ | a < z.im}, fderiv ℝ f z v) =
+      ∫ z in {z : ℂ | a < z.im}, fderivWithin ℝ f {z | a ≤ z.im} z v := by
+  apply setIntegral_congr_fun (isOpen_lt continuous_const Complex.continuous_im).measurableSet
+  intro z hz
+  change fderiv ℝ f z v = fderivWithin ℝ f {z | a ≤ z.im} z v
+  have hN : {z : ℂ | a ≤ z.im} ∈ 𝓝 z :=
+    mem_of_superset ((isOpen_lt continuous_const Complex.continuous_im).mem_nhds hz)
+      (fun w (hw : a < w.im) => show a ≤ w.im from hw.le)
+  exact congrArg (fun L : ℂ →L[ℝ] F => L v)
+    (fderivWithin_of_mem_nhds (𝕜 := ℝ) (f := f) hN).symm
+
+private theorem integral_fderiv_re_add_fderiv_im_half_plane
+    {A B : ℂ → F} {a : ℝ}
+    (hA : ∀ z ∈ {z : ℂ | a ≤ z.im}, ContDiffAt ℝ 1 A z)
+    (hB : ∀ z ∈ {z : ℂ | a ≤ z.im}, ContDiffAt ℝ 1 B z)
+    (hcA : HasCompactSupport A) (hcB : HasCompactSupport B) :
+    (∫ z in {z : ℂ | a < z.im}, fderiv ℝ A z 1 + fderiv ℝ B z Complex.I) =
+      -∫ x : ℝ, B (x + a * Complex.I) := by
+  rw [integral_add (integrableOn_fderiv_half_plane hA hcA 1)
+    (integrableOn_fderiv_half_plane hB hcB Complex.I),
+    integral_fderiv_half_plane_eq_fderivWithin, integral_fderiv_half_plane_eq_fderivWithin,
+    integral_fderivWithin_re_half_plane (fun z hz => (hA z hz).contDiffWithinAt) hcA,
+    integral_fderivWithin_im_half_plane (fun z hz => (hB z hz).contDiffWithinAt) hcB, zero_add]
+
+omit [CompleteSpace F] in
+private theorem fderiv_green_flux
+    {φ : ℂ → ℝ} {f : ℂ → F} {z : ℂ}
+    (hφ : ContDiffAt ℝ 2 φ z) (hf : ContDiffAt ℝ 2 f z) (v : ℂ) :
+    fderiv ℝ (fun w => φ w • fderiv ℝ f w v - fderiv ℝ φ w v • f w) z v =
+      φ z • fderiv ℝ (fun w => fderiv ℝ f w v) z v -
+        fderiv ℝ (fun w => fderiv ℝ φ w v) z v • f z := by
+  have hfd : DifferentiableAt ℝ (fun w => fderiv ℝ f w v) z := ((hf.fderiv_right (m := 1) (by norm_num)).clm_apply contDiffAt_const).differentiableAt
+    (by norm_num)
+  have hφd : DifferentiableAt ℝ (fun w => fderiv ℝ φ w v) z := ((hφ.fderiv_right (m := 1) (by norm_num)).clm_apply contDiffAt_const).differentiableAt
+    (by norm_num)
+  have h := ((hφ.differentiableAt (by norm_num)).hasFDerivAt.smul hfd.hasFDerivAt).sub
+    (hφd.hasFDerivAt.smul (hf.differentiableAt (by norm_num)).hasFDerivAt)
+  change (fderiv ℝ ((φ • fun w => fderiv ℝ f w v) -
+    (fun w => fderiv ℝ φ w v) • f) z) v = _
+  rw [h.fderiv]
+  simp only [sub_apply, add_apply, smul_apply, ContinuousLinearMap.smulRight_apply]
+  abel
+
+omit [CompleteSpace F] in
+private theorem laplacian_eq_fderiv_re_add_fderiv_im {f : ℂ → F} {z : ℂ}
+    (hf : ContDiffAt ℝ 2 f z) :
+    Laplacian.laplacian f z = fderiv ℝ (fun w => fderiv ℝ f w 1) z 1 +
+      fderiv ℝ (fun w => fderiv ℝ f w Complex.I) z Complex.I := by
+  have hd := (hf.fderiv_right (m := 1) (by norm_num)).differentiableAt (by norm_num)
+  rw [laplacian_eq_iteratedFDeriv_complexPlane]
+  rw [fderiv_clm_apply hd (differentiableAt_const (1 : ℂ)),
+    fderiv_clm_apply hd (differentiableAt_const Complex.I)]
+  simp [iteratedFDeriv_two_apply]
+
+private theorem integral_smul_laplacian_sub_laplacian_smul_half_plane_of_contDiffAt
+    {φ : ℂ → ℝ} {f : ℂ → F} {a : ℝ}
+    (hφ : ContDiff ℝ 2 φ) (hc : HasCompactSupport φ)
+    (hf : ∀ z ∈ {z : ℂ | a ≤ z.im}, ContDiffAt ℝ 2 f z) :
+    (∫ z in {z : ℂ | a < z.im}, φ z • Laplacian.laplacian f z -
+      Laplacian.laplacian φ z • f z) =
+      -∫ x : ℝ, φ (x + a * Complex.I) • fderiv ℝ f (x + a * Complex.I) Complex.I -
+        fderiv ℝ φ (x + a * Complex.I) Complex.I • f (x + a * Complex.I) := by
+  let flux (v : ℂ) (z : ℂ) : F := φ z • fderiv ℝ f z v - fderiv ℝ φ z v • f z
+  have hflux (v : ℂ) (z : ℂ) (hz : a ≤ z.im) : ContDiffAt ℝ 1 (flux v) z :=
+    ((hφ.contDiffAt.of_le (by norm_num)).smul
+      (((hf z hz).fderiv_right (m := 1) (by norm_num)).clm_apply contDiffAt_const)).sub
+      (((hφ.contDiffAt.fderiv_right (m := 1) (by norm_num)).clm_apply contDiffAt_const).smul
+        ((hf z hz).of_le (by norm_num)))
+  have hfluxcs (v : ℂ) : HasCompactSupport (flux v) :=
+    hc.smul_right.sub (hc.fderiv_apply ℝ v).smul_right
+  have h := integral_fderiv_re_add_fderiv_im_half_plane (hflux 1) (hflux Complex.I)
+    (hfluxcs 1) (hfluxcs Complex.I)
+  refine (setIntegral_congr_fun (isOpen_lt continuous_const Complex.continuous_im).measurableSet
+    (fun z hz => ?_)).trans h
+  change φ z • Laplacian.laplacian f z - Laplacian.laplacian φ z • f z =
+    fderiv ℝ (fun w => φ w • fderiv ℝ f w 1 - fderiv ℝ φ w 1 • f w) z 1 +
+      fderiv ℝ (fun w => φ w • fderiv ℝ f w Complex.I - fderiv ℝ φ w Complex.I • f w) z Complex.I
+  have hz' : a ≤ z.im := (show a < z.im from hz).le
+  rw [fderiv_green_flux hφ.contDiffAt (hf z hz') 1,
+    fderiv_green_flux hφ.contDiffAt (hf z hz') Complex.I,
+    laplacian_eq_fderiv_re_add_fderiv_im (hf z hz'),
+    laplacian_eq_fderiv_re_add_fderiv_im hφ.contDiffAt, smul_add, add_smul]
+  abel
+
+theorem integral_smul_laplacian_sub_laplacian_smul_half_plane
+    {φ : ℂ → ℝ} {f : ℂ → F} {a : ℝ}
+    (hφ : ContDiff ℝ 2 φ) (hc : HasCompactSupport φ)
+    (hf : ContDiffOn ℝ 1 f {z : ℂ | a ≤ z.im})
+    (hf2 : ContDiffOn ℝ 2 f {z : ℂ | a < z.im})
+    (hL : IntegrableOn (fun z => φ z • Laplacian.laplacian f z) {z : ℂ | a < z.im}) :
+    (∫ z in {z : ℂ | a < z.im}, φ z • Laplacian.laplacian f z -
+      Laplacian.laplacian φ z • f z) =
+      -∫ x : ℝ, φ ((x : ℂ) + a * Complex.I) •
+        fderivWithin ℝ f {z : ℂ | a ≤ z.im} ((x : ℂ) + a * Complex.I) Complex.I -
+        fderiv ℝ φ ((x : ℂ) + a * Complex.I) Complex.I • f ((x : ℂ) + a * Complex.I) := by
+  let H : Set ℂ := {z | a < z.im}
+  let S : Set ℂ := {z | a ≤ z.im}
+  have hH : IsOpen H := isOpen_lt continuous_const Complex.continuous_im
+  have hS : IsClosed S := isClosed_le continuous_const Complex.continuous_im
+  have hHS : H ⊆ S := fun z hz => (show a < z.im from hz).le
+  have hU : UniqueDiffOn ℝ S := by
+    apply uniqueDiffOn_convex (convex_halfSpace_im_ge a)
+    exact ⟨((a + 1 : ℝ) : ℂ) * Complex.I, mem_interior_iff_mem_nhds.mpr
+      (mem_of_superset (hH.mem_nhds (by simp [H])) hHS)⟩
+  have hdf : ContinuousOn (fderivWithin ℝ f S) S := hf.continuousOn_fderivWithin hU le_rfl
+  let B (z : ℂ) : F := φ z • fderivWithin ℝ f S z Complex.I - fderiv ℝ φ z Complex.I • f z
+  have hBc : ContinuousOn B S :=
+    (hφ.continuous.continuousOn.smul (hdf.clm_apply continuousOn_const)).sub
+      (((hφ.continuous_fderiv (by norm_num)).clm_apply continuous_const).continuousOn.smul hf.continuousOn)
+  have hBs : HasCompactSupport B := hc.smul_right.sub (hc.fderiv_apply ℝ Complex.I).smul_right
+  have hΔφ : Continuous (Laplacian.laplacian φ) :=
+    continuous_iff_continuousAt.mpr (fun _ => hφ.contDiffAt.continuousAt_laplacian)
+  have hΔφs : HasCompactSupport (Laplacian.laplacian φ) :=
+    hc.of_isClosed_subset (isClosed_tsupport _) (tsupport_laplacian_subset φ)
+  have hRf : IntegrableOn (fun z => Laplacian.laplacian φ z • f z) H := by
+    let q (z : ℂ) := Laplacian.laplacian φ z • f z
+    have hqs : HasCompactSupport q := hΔφs.smul_right
+    have hq : IntegrableOn q S := by
+      apply (integrableOn_iff_integrable_of_support_subset (subset_tsupport q)).mp
+      rw [IntegrableOn, Measure.restrict_restrict (isClosed_tsupport _).measurableSet]
+      exact ((hΔφ.continuousOn.smul hf.continuousOn).mono inter_subset_right).integrableOn_compact
+        (hqs.inter_right hS)
+    exact hq.mono_set hHS
+  have hleft := tendsto_integral_half_plane_of_integrableOn (hL.sub hRf)
+  have hright := (tendsto_integral_horizontal_of_continuousOn hBc hBs).neg
+  apply tendsto_nhds_unique hleft
+  apply hright.congr'
+  filter_upwards [self_mem_nhdsWithin] with t ht
+  have hta : a < t := ht
+  have hft (z : ℂ) (hz : t ≤ z.im) : ContDiffAt ℝ 2 f z :=
+    (hf2 z (lt_of_lt_of_le hta hz)).contDiffAt (hH.mem_nhds (lt_of_lt_of_le hta hz))
+  have htr := integral_smul_laplacian_sub_laplacian_smul_half_plane_of_contDiffAt hφ hc hft
+  refine Eq.symm (htr.trans ?_)
+  congr 1
+  apply integral_congr_ae
+  apply Eventually.of_forall
+  intro x
+  have hxH : (x : ℂ) + t * Complex.I ∈ H := by simpa [H] using hta
+  have hxS : S ∈ 𝓝 ((x : ℂ) + t * Complex.I) := mem_of_superset (hH.mem_nhds hxH) hHS
+  simp only [B, fderivWithin_of_mem_nhds hxS]
+
 
 end DifferentialGeometry.Analysis
