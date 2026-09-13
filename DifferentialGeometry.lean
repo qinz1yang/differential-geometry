@@ -171,6 +171,7 @@ import DifferentialGeometry.Analysis.Calculus.Trace
 import DifferentialGeometry.Analysis.Calculus.Variation.Comparison
 import DifferentialGeometry.Analysis.Calculus.Variation.Lipschitz
 import DifferentialGeometry.Analysis.Calculus.Variation.Periodic
+import DifferentialGeometry.Analysis.Complex.BoundaryTrace
 import DifferentialGeometry.Analysis.Complex.ConformalBoundary
 import DifferentialGeometry.Analysis.Complex.ConformalGradientHolder
 import DifferentialGeometry.Analysis.Complex.GradientRegularity
@@ -209,6 +210,7 @@ import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.Disk.SupportMargin
 import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.Gradient
 import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.GreenIdentity
 import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.HalfDiskBarrier
+import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.HalfDiskRegularity
 import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.LaplacianCalculus
 import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.LaplacianConvolution
 import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.LaplacianMinimum
@@ -4045,6 +4047,7 @@ import DifferentialGeometry.Geometry.Coordinates.NablaComponents.TensorRS.Formul
 import DifferentialGeometry.Geometry.Coordinates.NablaComponents.TensorRS.ModelBridge
 import DifferentialGeometry.Geometry.Coordinates.NablaComponents.TensorRS.RankOneTwo
 import DifferentialGeometry.Geometry.Coordinates.NablaComponents.TwoTensor
+import DifferentialGeometry.Geometry.Coordinates.OrthogonalCurve
 import DifferentialGeometry.Geometry.Curvature.Algebraic.CurvatureOperatorCone
 import DifferentialGeometry.Geometry.Curvature.Algebraic.CurvatureOperatorConeMetric
 import DifferentialGeometry.Geometry.Curvature.Algebraic.Form

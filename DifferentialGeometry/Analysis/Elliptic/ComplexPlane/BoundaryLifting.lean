@@ -13,6 +13,7 @@ import Mathlib.Analysis.Complex.Convex
 import Mathlib.Analysis.Normed.Operator.BoundedLinearMaps
 import Mathlib.Tactic.Module
 import Mathlib.Analysis.InnerProductSpace.Laplacian
+import DifferentialGeometry.Analysis.Schauder.Holder.CompactRegularity
 import DifferentialGeometry.Analysis.Schauder.Holder.Localization
 import Mathlib.Analysis.Calculus.ContDiff.RCLike
 import Mathlib.Analysis.Calculus.BumpFunction.Normed
@@ -888,26 +889,13 @@ theorem exists_contDiffOn_two_laplacian_trace_lifting
   exact ⟨_, contDiffOn_two_laplacian_trace_lifting hb hc
     (⟨1, 2, by norm_num, by norm_num⟩ : ContDiffBump (0 : ℝ))⟩
 
-private theorem exists_norm_bound_and_holderWith_compactSupport
-    {E G : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-    [NormedAddCommGroup G] [NormedSpace ℝ G]
-    {f : E → G} (hf : ContDiff ℝ 1 f) (hc : HasCompactSupport f)
-    {α : ℝ≥0} (hα : α ≤ 1) :
-    ∃ M K : ℝ≥0, (∀ x, ‖f x‖ ≤ M) ∧ HolderWith K α f := by
-  obtain ⟨B, hB⟩ := hc.exists_bound_of_continuous hf.continuous
-  let M : ℝ≥0 := ⟨max B 0, le_max_right _ _⟩
-  have hM : ∀ x, ‖f x‖ ≤ M := fun x => (hB x).trans (le_max_left _ _)
-  obtain ⟨K, hK⟩ := ContDiff.lipschitzWith_of_hasCompactSupport hc hf one_ne_zero
-  exact ⟨M, max (2 * M) K, hM,
-    (Schauder.holderWith_zero_of_norm_le hM).of_le_of_le hK.holderWith (by positivity) hα⟩
-
 private theorem exists_holderWith_smul_comp_im_of_norm_le
     {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
     {a : ℝ → ℝ} (ha : ContDiff ℝ 1 a) (hc : HasCompactSupport a)
     {f : ℂ → F} {N K α : ℝ≥0} (hf : HolderWith K α f)
     (hN : ∀ z, ‖f z‖ ≤ N) (hα : α ≤ 1) :
     ∃ C : ℝ≥0, HolderWith C α (fun z : ℂ => a z.im • f z) := by
-  obtain ⟨M, A, hM, hA⟩ := exists_norm_bound_and_holderWith_compactSupport ha hc hα
+  obtain ⟨M, A, hM, hA⟩ := Schauder.exists_norm_bound_and_holderWith_of_contDiff_hasCompactSupport ha hc hα
   have hp : HolderWith (A * ‖Complex.imCLM‖₊ ^ (α : ℝ)) α (fun z : ℂ => a z.im) := by
     simpa only [mul_one, Function.comp_def, Complex.imCLM_apply] using
       hA.comp Complex.imCLM.lipschitz.holderWith

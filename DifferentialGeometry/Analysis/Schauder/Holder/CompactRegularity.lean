@@ -22,6 +22,19 @@ theorem exists_norm_bound_of_continuousOn_isCompact
   intro x hx
   exact (hC x hx).trans (le_max_left _ _)
 
+theorem exists_norm_bound_and_holderWith_of_contDiff_hasCompactSupport
+    {E G : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [NormedAddCommGroup G] [NormedSpace ℝ G]
+    {f : E → G} (hf : ContDiff ℝ 1 f) (hc : HasCompactSupport f)
+    {α : ℝ≥0} (hα : α ≤ 1) :
+    ∃ M K : ℝ≥0, (∀ x, ‖f x‖ ≤ M) ∧ HolderWith K α f := by
+  obtain ⟨B, hB⟩ := hc.exists_bound_of_continuous hf.continuous
+  let M : ℝ≥0 := ⟨max B 0, le_max_right _ _⟩
+  have hM : ∀ x, ‖f x‖ ≤ M := fun x => (hB x).trans (le_max_left _ _)
+  obtain ⟨K, hK⟩ := ContDiff.lipschitzWith_of_hasCompactSupport hc hf one_ne_zero
+  exact ⟨M, max (2 * M) K, hM,
+    (Schauder.holderWith_zero_of_norm_le hM).of_le_of_le hK.holderWith (by positivity) hα⟩
+
 theorem exists_holderWith_restrict_of_contDiffOn_isCompact
     {s : Set V} (hs : IsCompact s) (hsconv : Convex Real s)
     {f : V → F} (hf : ContDiffOn Real 1 f s)
