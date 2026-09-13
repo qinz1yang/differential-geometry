@@ -7110,6 +7110,7 @@ import DifferentialGeometry.Geometry.Metric.Sphere.Quotient.PositiveCover
 import DifferentialGeometry.Geometry.Metric.Sphere.Quotient.PositiveSpaceForm
 import DifferentialGeometry.Geometry.Metric.Sphere.Quotient.RoundMetric
 import DifferentialGeometry.Geometry.Metric.Sphere.Quotient.SpaceForm
+import DifferentialGeometry.Geometry.Metric.Sphere.Quotient.SpaceFormCovering
 import DifferentialGeometry.Geometry.Metric.Sphere.Quotient.SpaceFormGroup
 import DifferentialGeometry.Geometry.Metric.Sphere.Round.Area
 import DifferentialGeometry.Geometry.Metric.Sphere.Round.BasisPoints
