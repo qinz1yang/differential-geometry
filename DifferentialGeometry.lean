@@ -3226,6 +3226,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric.CenteredJetBounds
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric.Convergence
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric.Extension
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric.FrameBridge
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric.Framed
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric.FramedBounds
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric.JetBounds
