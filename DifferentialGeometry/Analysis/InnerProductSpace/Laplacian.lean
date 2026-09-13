@@ -322,3 +322,57 @@ theorem ContDiffAt.laplacian_comp
         (fderiv ℝ f x (stdOrthonormalBasis ℝ A i)) := by
   simp only [laplacian_eq_iteratedFDeriv_stdOrthonormalBasis, iteratedFDeriv_two_apply]
   simp [fderiv_fderiv_comp_apply hf hg, Finset.sum_add_distrib, map_sum]
+
+private theorem norm_complex_clm_le_add {E : Type*}
+    [NormedAddCommGroup E] [NormedSpace ℝ E] (L : ℂ →L[ℝ] E) :
+    ‖L‖ ≤ ‖L 1‖ + ‖L Complex.I‖ := by
+  apply L.opNorm_le_bound (by positivity)
+  intro z
+  have he : L z = z.re • L 1 + z.im • L Complex.I := by
+    rw [← map_smul, ← map_smul, ← map_add]
+    congr 1
+    simp only [Complex.real_smul, mul_one, Complex.re_add_im]
+  rw [he]
+  calc
+    ‖z.re • L 1 + z.im • L Complex.I‖ ≤ ‖z.re • L 1‖ + ‖z.im • L Complex.I‖ := norm_add_le _ _
+    _ = |z.re| * ‖L 1‖ + |z.im| * ‖L Complex.I‖ := by simp only [norm_smul, Real.norm_eq_abs]
+    _ ≤ ‖z‖ * ‖L 1‖ + ‖z‖ * ‖L Complex.I‖ := by
+      gcongr
+      · exact Complex.abs_re_le_norm z
+      · exact Complex.abs_im_le_norm z
+    _ = (‖L 1‖ + ‖L Complex.I‖) * ‖z‖ := by ring
+
+private theorem norm_sq_complex_clm_le_twice {E : Type*}
+    [NormedAddCommGroup E] [NormedSpace ℝ E] (L : ℂ →L[ℝ] E) :
+    ‖L‖ ^ 2 ≤ 2 * (‖L 1‖ ^ 2 + ‖L Complex.I‖ ^ 2) := by
+  have h := norm_complex_clm_le_add L
+  have hsq := (sq_le_sq₀ (norm_nonneg _) (by positivity)).mpr h
+  nlinarith [sq_nonneg (‖L 1‖ - ‖L Complex.I‖)]
+
+theorem ContDiffAt.norm_laplacian_clm_comp_le_of_energy_bound
+    {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [NormedAddCommGroup F] [NormedSpace ℝ F] {X : ℂ → E} {z : ℂ}
+    (hX : ContDiffAt ℝ 2 X z) (P : E →L[ℝ] F) {a b : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b)
+    (hΔ : ‖Laplacian.laplacian X z‖ ≤ a * ‖fderiv ℝ X z‖ ^ 2)
+    (hE : ‖fderiv ℝ X z 1‖ ^ 2 + ‖fderiv ℝ X z Complex.I‖ ^ 2 ≤
+      b * (‖fderiv ℝ (P ∘ X) z 1‖ ^ 2 + ‖fderiv ℝ (P ∘ X) z Complex.I‖ ^ 2)) :
+    ‖Laplacian.laplacian (P ∘ X) z‖ ≤ (4 * ‖P‖ * a * b) * ‖fderiv ℝ (P ∘ X) z‖ ^ 2 := by
+  have hnorm := norm_sq_complex_clm_le_twice (fderiv ℝ X z)
+  have hunit (v : ℂ) (hv : ‖v‖ = 1) :
+      ‖fderiv ℝ (P ∘ X) z v‖ ^ 2 ≤ ‖fderiv ℝ (P ∘ X) z‖ ^ 2 := by
+    apply (sq_le_sq₀ (norm_nonneg _) (norm_nonneg _)).mpr
+    simpa only [hv, mul_one] using (fderiv ℝ (P ∘ X) z).le_opNorm v
+  have hsum : ‖fderiv ℝ (P ∘ X) z 1‖ ^ 2 + ‖fderiv ℝ (P ∘ X) z Complex.I‖ ^ 2 ≤
+      2 * ‖fderiv ℝ (P ∘ X) z‖ ^ 2 := by
+    linarith [hunit 1 norm_one, hunit Complex.I Complex.norm_I]
+  rw [hX.laplacian_CLM_comp_left]
+  change ‖P (Laplacian.laplacian X z)‖ ≤ _
+  calc
+    ‖P (Laplacian.laplacian X z)‖ ≤ ‖P‖ * ‖Laplacian.laplacian X z‖ := P.le_opNorm _
+    _ ≤ ‖P‖ * (a * ‖fderiv ℝ X z‖ ^ 2) := mul_le_mul_of_nonneg_left hΔ (norm_nonneg _)
+    _ ≤ ‖P‖ * (a * (2 * (b * (2 * ‖fderiv ℝ (P ∘ X) z‖ ^ 2)))) := by
+      apply mul_le_mul_of_nonneg_left _ (norm_nonneg _)
+      apply mul_le_mul_of_nonneg_left _ ha
+      exact hnorm.trans (mul_le_mul_of_nonneg_left
+        (hE.trans (mul_le_mul_of_nonneg_left hsum hb)) (by norm_num))
+    _ = (4 * ‖P‖ * a * b) * ‖fderiv ℝ (P ∘ X) z‖ ^ 2 := by ring

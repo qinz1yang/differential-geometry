@@ -46,7 +46,7 @@ private theorem chartRep_partial_eventually
   exact chart_partial_general ((hU.contMDiffAt (hs.mem_nhds ht)).mdifferentiableAt (by simp))
     a (hsrc _ ht) w
 
-private theorem covariant_partial_chart_general [I.Boundaryless]
+theorem chart_covDerivAlong_mfderiv_line [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) {U : ℂ → M} {s : Set ℂ}
     (hs : IsOpen s) (hU : ContMDiffOn 𝓘(ℝ, ℂ) I 2 U s)
     {a : M} (hsrc : ∀ z ∈ s, U z ∈ (chartAt H a).source)
@@ -122,14 +122,14 @@ private theorem covariant_partial_chart_general [I.Boundaryless]
     chartCovDerivAlong_def, hderrep, hdercurve, hrep0, hcurve0]
 
 
-private def planarCovariantPartial (g : SmoothRiemannianMetric I M) (U : ℂ → M)
+def planarCovDeriv (g : SmoothRiemannianMetric I M) (U : ℂ → M)
     (z v w : ℂ) : TangentSpace I (U z) := by
   simpa only [zero_smul, add_zero] using covDerivAlong g (fun t : ℝ => U (z + t • v))
     (fun t => mfderiv 𝓘(ℝ, ℂ) I U (z + t • v) w) 0
 
-private def planarTension (g : SmoothRiemannianMetric I M) (U : ℂ → M) (z : ℂ) :
+def planarTension (g : SmoothRiemannianMetric I M) (U : ℂ → M) (z : ℂ) :
     TangentSpace I (U z) :=
-  planarCovariantPartial g U z 1 1 + planarCovariantPartial g U z Complex.I Complex.I
+  planarCovDeriv g U z 1 1 + planarCovDeriv g U z Complex.I Complex.I
 
 private theorem laplacian_chart_eq_of_tension_general [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) {U : ℂ → M} {s : Set ℂ}
@@ -153,11 +153,11 @@ private theorem laplacian_chart_eq_of_tension_general [I.Boundaryless]
   have hzero := congrArg
     ((trivializationAt E (TangentSpace I) a).continuousLinearMapAt ℝ (U z)) hτ
   rw [planarTension, map_add, map_zero] at hzero
-  have hpair (v : ℂ) := covariant_partial_chart_general g hs hU hsrc hz v v
+  have hpair (v : ℂ) := chart_covDerivAlong_mfderiv_line g hs hU hsrc hz v v
   dsimp only at hpair
   have hpair' (v : ℂ) :
       (trivializationAt E (TangentSpace I) a).continuousLinearMapAt ℝ (U z)
-        (planarCovariantPartial g U z v v) =
+        (planarCovDeriv g U z v v) =
         fderiv ℝ (fun q => fderiv ℝ X q v) z v +
           chartChristoffelContraction g a (fderiv ℝ X z v) (fderiv ℝ X z v) (X z) := by
     have hh := hpair v

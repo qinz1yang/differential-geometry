@@ -175,6 +175,7 @@ import DifferentialGeometry.Analysis.Calculus.Variation.Periodic
 import DifferentialGeometry.Analysis.Complex.BoundaryTrace
 import DifferentialGeometry.Analysis.Complex.ConformalBoundary
 import DifferentialGeometry.Analysis.Complex.ConformalGradientHolder
+import DifferentialGeometry.Analysis.Complex.DiskBoundaryChart
 import DifferentialGeometry.Analysis.Complex.GradientRegularity
 import DifferentialGeometry.Analysis.Complex.SquareRoot
 import DifferentialGeometry.Analysis.Convex.LogConvexSequence
@@ -6797,6 +6798,7 @@ import DifferentialGeometry.Geometry.Metric.ProjectiveSpace
 import DifferentialGeometry.Geometry.Metric.Pullback.Basic
 import DifferentialGeometry.Geometry.Metric.Pullback.Completeness
 import DifferentialGeometry.Geometry.Metric.Pullback.CovariantDerivative
+import DifferentialGeometry.Geometry.Metric.Pullback.Coefficients
 import DifferentialGeometry.Geometry.Metric.Pullback.Cross
 import DifferentialGeometry.Geometry.Metric.Pullback.Euclidean
 import DifferentialGeometry.Geometry.Metric.Pullback.Evaluation.ChainRule
