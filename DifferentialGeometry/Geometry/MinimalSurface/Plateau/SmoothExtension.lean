@@ -1,6 +1,7 @@
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.SmoothDiskTrace
 import DifferentialGeometry.Geometry.Metric.ConvexSourceLipschitz
 import DifferentialGeometry.Geometry.Measure.Area.Reparametrization
+import DifferentialGeometry.Topology.Manifold.SmoothExtension
 
 
 
@@ -70,6 +71,18 @@ theorem SmoothDiskExtension.comp_diskReflection {u : C(closedDisk, M)} {U : ℂ 
   · exact hU.comp ((Complex.conjCLE : ℂ →L[ℝ] ℂ).contMDiff.contMDiffOn) (fun z hz => hz)
 
 variable [IsManifold 𝓘(ℝ, E) ∞ M]
+
+theorem exists_smoothDiskExtension_of_locally_extendable
+    (u : C(closedDisk, M))
+    (hloc : ∀ x : closedDisk, ∃ U : ℂ → M, ∃ V : Set ℂ,
+      IsOpen V ∧ (x : ℂ) ∈ V ∧ ContMDiffOn 𝓘(ℝ, ℂ) 𝓘(ℝ, E) ∞ U V ∧
+        ∀ y : closedDisk, (y : ℂ) ∈ V → U y = u y) :
+    ∃ U : ℂ → M, SmoothDiskExtension (E := E) u U := by
+  obtain ⟨U, _, heq, N, hN, hKN, hUs⟩ :=
+    DifferentialGeometry.Topology.exists_contMDiffOn_extension_closedBall
+      (I := 𝓘(ℝ, E)) (n := ⊤) (0 : ℂ) (by norm_num : (0 : ℝ) ≤ 1) u hloc
+  exact ⟨U, heq, N, hN, hKN, hUs⟩
+
 
 
 
