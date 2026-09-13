@@ -7431,6 +7431,7 @@ import DifferentialGeometry.Topology.Compactness.UniformBounds
 import DifferentialGeometry.Topology.Compactness.UniformInjectivity
 import DifferentialGeometry.Topology.Connected.BallComplement
 import DifferentialGeometry.Topology.Connected.CollarCover
+import DifferentialGeometry.Topology.Connected.CoverBySides
 import DifferentialGeometry.Topology.Connected.Dense
 import DifferentialGeometry.Topology.Connected.DomainEquality
 import DifferentialGeometry.Topology.Connected.EndpointCollarStrip
@@ -8587,6 +8588,7 @@ import DifferentialGeometry.Topology.SphereSeparation.LocallyNilpotentHomotopy
 import DifferentialGeometry.Topology.SphereSeparation.ManifoldInverseFunction
 import DifferentialGeometry.Topology.SphereSeparation.Nesting
 import DifferentialGeometry.Topology.SphereSeparation.NestingSeparation
+import DifferentialGeometry.Topology.SphereSeparation.NormalChartHalves
 import DifferentialGeometry.Topology.SphereSeparation.NormalizeDerivative
 import DifferentialGeometry.Topology.SphereSeparation.OpenThreeSpace
 import DifferentialGeometry.Topology.SphereSeparation.OuterBoundary
