@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.ShortFamilyContraction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.SpanningArea
 import DifferentialGeometry.Geometry.Measure.Area.LeastArea
 import DifferentialGeometry.Geometry.Measure.Area.LeastAreaWeakBoundary
@@ -501,7 +502,8 @@ theorem short_loop_disk_bridge
 
 def IsWeaklyMonotoneCircleMap (ψ : C(Surgery.Topology.Circle, Surgery.Topology.Circle)) : Prop :=
   ∃ φ : ℝ → ℝ, Continuous φ ∧ Monotone φ ∧
-    (∀ t, φ (t + 1) = φ t + 1) ∧ ∀ t : ℝ, ψ (t : Surgery.Topology.Circle) = (φ t : Surgery.Topology.Circle)
+    (∀ t, φ (t + 1) = φ t + 1) ∧
+      ∀ t : ℝ, ψ (t : Surgery.Topology.Circle) = (φ t : Surgery.Topology.Circle)
 
 theorem isWeaklyMonotoneCircleMap_id :
     IsWeaklyMonotoneCircleMap (ContinuousMap.id Surgery.Topology.Circle) :=
@@ -662,8 +664,21 @@ theorem rfs_short_loop_fillings (g : SmoothRiemannianMetric I Q) :
           (∀ k, loopLength g (Γ k).1.toContinuousLoop < σ) →
           ∃ q : Q, ContinuousMap.Homotopic (contractibleRegularLoopInclusion.comp Γ)
             (ContinuousMap.const (Sphere 2)
-              (⟨constantLoops q, isContractibleLoop_constant q⟩ : ContractibleContinuousLoop Q))) := by
-  sorry
+              (⟨constantLoops q, isContractibleLoop_constant q⟩ :
+                ContractibleContinuousLoop Q))) := by
+  obtain ⟨σ₁, K₀, hσ₁, hK₀, hfill⟩ := short_loop_disk_bridge g
+  obtain ⟨σ₂, hσ₂, hcontract⟩ :=
+    exists_short_regularFamily_contracting_radius (I := I) (Q := Q) g
+  obtain ⟨σ₃, hσ₃, hnull⟩ := exists_short_sphere_family_null_radius (I := I) (Q := Q) g
+  refine ⟨min σ₁ (min σ₂ σ₃), K₀, lt_min hσ₁ (lt_min hσ₂ hσ₃), hK₀, ?_, ?_, ?_⟩
+  · intro γ hlip hshort
+    exact hfill γ hlip (lt_of_lt_of_le hshort (min_le_left _ _))
+  · intro K _ _ Γ hshort
+    exact hcontract Γ fun k =>
+      lt_of_lt_of_le (hshort k) (le_trans (min_le_right _ _) (min_le_left _ _))
+  · intro hpi Γ hshort
+    exact hnull hpi Γ fun k =>
+      lt_of_lt_of_le (hshort k) (le_trans (min_le_right _ _) (min_le_right _ _))
 
 theorem short_loop_disk (g : SmoothRiemannianMetric I Q) :
     ∃ σ : ℝ, 0 < σ ∧ ∃ K : ℝ, 0 ≤ K ∧
