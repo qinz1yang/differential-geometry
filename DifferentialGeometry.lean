@@ -3179,6 +3179,7 @@ import DifferentialGeometry.Topology.Embedding.LinearEquiv
 import DifferentialGeometry.Topology.Embedding.LocalDiffeomorph
 import DifferentialGeometry.Topology.Embedding.ParametricGraph
 import DifferentialGeometry.Topology.Embedding.Retraction
+import DifferentialGeometry.Topology.Embedding.Extension
 import DifferentialGeometry.Topology.Embedding.SliceChart
 import DifferentialGeometry.Topology.Embedding.Sphere
 import DifferentialGeometry.Topology.Handle.Embedding

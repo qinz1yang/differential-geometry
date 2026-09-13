@@ -146,15 +146,46 @@ An eight-line wrapper preserves the fixed normal complement without copying
 that transport proof. All six previous public transport statements and bodies
 are retained. This is original glue; no additional upstream source was copied.
 
-Private graph check 1789305462130027714-schoenflies-30a41974 passed in34.30s,
-30guards17pairs. Final public source68465e15 passed36.98s,28guards17pairs.
-Imported1789305862830682920-schoenflies-6e6d83c9 passed105.89s,56guards13pairs.
+Private graph check 1789305462130027714-schoenflies-30a41974 passed in 34.30 seconds,
+with 30 guards and 17 pairs. Public source 68465e15 passed in 36.98 seconds,
+with 28 guards and 17 pairs. Imported check
+1789305862830682920-schoenflies-6e6d83c9 passed in 105.89 seconds,
+with 56 guards and 13 pairs.
 All public and consumer types retain their source content, with scoped notation
 expanded by the imported driver. The three changed/new leaves freshly compiled
-in1:14.56, maximum RSS1704808KiB, with zero diagnostics. Imported-package and
+in 1:14.56, maximum RSS 1704808 KiB, with zero diagnostics. Imported-package and
 consumer declaration linters and standard-only transitive axioms pass. Probes
 include an arbitrary actual S2 family with literal real complement, the unit
 sphere, and a noncompact real-line identity family with zero codimension.
 Both new leaves are registered in the flat root; no full DG aggregate build
 is claimed. Compact velocity extension, relative vanishing, time endpoints,
 source boundary faces and arbitrary ambient isotopy extension remain separate.
+
+## Extension from an embedded subset, 2026-09-13
+
+Topology/Embedding/Extension proves a global Cⁿ extension of a native Cⁿ map
+from a subset whose embedded image is closed. For a compact subset it produces
+an extension with compact topological support inside any prescribed open set
+containing the image. Orders include every finite order and C∞. The source
+uses its actual boundaryless model; the ambient is a finite-dimensional real
+normed space, and the values lie in any real normed space. Neither compactness
+of the entire source nor completeness of the value space is assumed.
+
+The proof composes with the existing local retractions, uses pinned Mathlib's
+smooth partition-of-unity gluing of convex value constraints, then applies its
+smooth cutoff between the compact image and a compact neighborhood. The exact
+extension equation and actual support inclusion remain public. This is original
+native glue; no additional upstream source or dependency was copied.
+
+Public source check 1789306923296827846-schoenflies-dbd64b12 passed in
+36.20 seconds with 18 guards and six signature/axiom pairs. Final imported
+check 1789307005086953798-schoenflies-6a6370ef passed in 73.18 seconds with
+20 guards and six pairs. All six readbacks preserve their exact mathematical
+content, with only scoped notation and formatting differences. The fresh leaf
+compiled without diagnostics in 41.26 seconds, maximum RSS 1772716 KiB.
+Stock declaration linters and standard-only transitive axioms pass. Consumers
+check an arbitrary embedded S² map, the actual nonzero unit-sphere identity,
+the identity on a compact interval in a noncompact source, and order zero.
+The new leaf is registered in the flat root. This is not a full aggregate build
+or an ambient isotopy-extension theorem. Time endpoints, source boundaries,
+relative fixing, the actual velocity and its ambient flow remain separate.
