@@ -9,6 +9,7 @@ import DifferentialGeometry.Topology.Manifold.ImmersionImageNhds
 import DifferentialGeometry.Topology.Manifold.OpenSubtypeDiffeomorph
 import DifferentialGeometry.Topology.Manifold.ChartPartialDiffeomorph
 import DifferentialGeometry.Topology.Manifold.EuclideanBoundaryCoordinates
+import DifferentialGeometry.Topology.Manifold.ConnectedInterior
 
 attribute [local instance]
   DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.SmoothCutCapTransition.coreCharts
@@ -551,7 +552,7 @@ theorem isBoundaryPoint_iff_exists_levelSphere
     letI := C.toChartedSpace
     (𝓡∂ 3).IsBoundaryPoint x ↔
       ∃ b : G.ChildBoundary c, x.val ∈ Set.range (levelSphere G c b) := by
-  letI := C.toChartedSpace
+  let := C.toChartedSpace
   rw [C.isBoundaryPoint_iff x]
   exact hbdry x
 
@@ -561,14 +562,14 @@ theorem isConnected_interiorImage_supportRegion
     letI := C.isManifold
     IsConnected ((Subtype.val : (supportRegion G c) → (G.Parent c).Carrier) ''
       (𝓡∂ 3).interior (supportRegion G c)) := by
-  letI := C.toChartedSpace
-  letI := C.isManifold
-  have hconn : IsConnected (supportRegion G c) := G.isConnected_supportRegion c
+  let := C.toChartedSpace
+  let := C.isManifold
+  have hconn : IsConnected (supportRegion G c) := isConnected_supportRegion G c
   let : ConnectedSpace (supportRegion G c) := isConnected_iff_connectedSpace.mp hconn
   have hpre : IsPreconnected ((𝓡∂ 3).interior (supportRegion G c)) :=
     DifferentialGeometry.Topology.Manifold.isPreconnected_manifold_interior
   have hne : ((𝓡∂ 3).interior (supportRegion G c)).Nonempty :=
-    DifferentialGeometry.Topology.Manifold.dense_manifold_interior.nonempty hconn.nonempty
+    DifferentialGeometry.Topology.Manifold.dense_manifold_interior.nonempty
   exact ⟨hne.image _, hpre.image _ continuous_subtype_val.continuousOn⟩
 
 noncomputable def sphereFun (b : G.ChildBoundary c) : C(Sphere 2, (supportRegion G c)) :=

@@ -72,10 +72,6 @@ theorem
     exists_diffeomorph_standardThreeSphere_of_standardDecomposition_of_oppositeInvariance
     {M : Topology.ClosedOrientedManifold.{u} 3} {g : SmoothRiemannianMetric (𝓡 3) M.Carrier}
     (W : PoincareControlledExtinction M g)
-    (hunitR : ∀ X : Topology.ConnectedClosedOrientedManifold.{u} 3,
-      Nonempty ((Topology.connectedSum X
-        Topology.standardThreeSphereLift.{u}).toClosedOrientedManifold.Carrier
-        ≃ₘ⟮𝓡 3, 𝓡 3⟯ X.toClosedOrientedManifold.Carrier))
     (hunitL : ∀ X : Topology.ConnectedClosedOrientedManifold.{u} 3,
       Nonempty ((Topology.connectedSum Topology.standardThreeSphereLift.{u} X
         ).toClosedOrientedManifold.Carrier
@@ -91,16 +87,12 @@ theorem
     [ConnectedSpace M.Carrier] [SimplyConnectedSpace M.Carrier] :
     Nonempty (M.Carrier ≃ₘ⟮𝓡 3, 𝓡 3⟯ Topology.standardThreeSphereLift.{u}.Carrier) :=
   exists_diffeomorph_standardThreeSphere_of_standardDecomposition (W := W)
-    (hunitR := hunitR) (hunitL := hunitL) (hassoc := hassoc)
+    (hunitL := hunitL) (hassoc := hassoc)
     (htransportL := Topology.connectedSum_transport_left_of_oppositeInvariance hop)
     (htransportR := Topology.connectedSum_transport_right_of_oppositeInvariance hop)
     (hsum := hsum)
 
 theorem smoothPoincareConjecture_of_standardDecomposition_of_oppositeInvariance
-    (hunitR : ∀ X : Topology.ConnectedClosedOrientedManifold.{u} 3,
-      Nonempty ((Topology.connectedSum X
-        Topology.standardThreeSphereLift.{u}).toClosedOrientedManifold.Carrier
-        ≃ₘ⟮𝓡 3, 𝓡 3⟯ X.toClosedOrientedManifold.Carrier))
     (hunitL : ∀ X : Topology.ConnectedClosedOrientedManifold.{u} 3,
       Nonempty ((Topology.connectedSum Topology.standardThreeSphereLift.{u} X
         ).toClosedOrientedManifold.Carrier
@@ -119,7 +111,7 @@ theorem smoothPoincareConjecture_of_standardDecomposition_of_oppositeInvariance
       Nonempty (PoincareControlledExtinction M.toClosedOrientedManifold g)) :
     smoothPoincareConjecture.{u} :=
   smoothPoincareConjecture_of_standardDecomposition
-    (hunitR := hunitR) (hunitL := hunitL) (hassoc := hassoc)
+    (hunitL := hunitL) (hassoc := hassoc)
     (htransportL := Topology.connectedSum_transport_left_of_oppositeInvariance hop)
     (htransportR := Topology.connectedSum_transport_right_of_oppositeInvariance hop)
     (hsum := hsum) (hext := hext)
