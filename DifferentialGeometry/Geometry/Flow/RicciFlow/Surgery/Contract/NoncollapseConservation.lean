@@ -1,6 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing.BelowScaleVolume
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing.Invariance
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.MetricStep
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.NoncollapseLocalization
 
 set_option autoImplicit false
 
@@ -121,22 +122,76 @@ theorem surgeryRegionMissesParabolicBalls_comp (S S' S'' : SolutionOn (I := I) (
   exact (surgeryRegionMissesParabolicBalls_iff S S'' rho).2 fun t r hr hrle s hs => by
     rw [h₂' t r hr hrle s hs, h₁' t r hr hrle s hs]
 
+omit [FiniteDimensional Real E] [IsManifold I 1 M] [T2Space M] [SigmaCompactSpace M] in
+theorem metric_eq_of_surgeryRegionMissesParabolicBalls (S S' : SolutionOn (I := I) (M := M) D)
+    {rho : Real} (hrho : 0 < rho) (h : surgeryRegionMissesParabolicBalls S S' rho)
+    (t : D.FlowTime) :
+    S'.base.metric (t : Real) = S.base.metric (t : Real) :=
+  ((surgeryRegionMissesParabolicBalls_iff S S' rho).1 h) t rho hrho le_rfl (t : Real)
+    ⟨by linarith [sq_nonneg rho], le_rfl⟩
+
+omit [FiniteDimensional Real E] [IsManifold I 1 M] [T2Space M] [SigmaCompactSpace M] in
+theorem metric_eq_of_surgeryRegionMissesParabolicBalls_of_mem
+    (S S' : SolutionOn (I := I) (M := M) D) {rho s : Real} (hrho : 0 < rho)
+    (h : surgeryRegionMissesParabolicBalls S S' rho)
+    (hs : ∃ t : D.FlowTime, (t : Real) - rho ^ 2 ≤ s ∧ s ≤ (t : Real)) :
+    S'.base.metric s = S.base.metric s := by
+  obtain ⟨t, ht⟩ := hs
+  exact ((surgeryRegionMissesParabolicBalls_iff S S' rho).1 h) t rho hrho le_rfl s ht
+
+omit [FiniteDimensional Real E] [IsManifold I 1 M] [T2Space M] [SigmaCompactSpace M] in
+theorem metricDomination_of_surgeryRegionMissesParabolicBalls
+    (S S' : SolutionOn (I := I) (M := M) D) {rho : Real}
+    (h : surgeryRegionMissesParabolicBalls S S' rho) :
+    metricDomination S S' rho := by
+  intro t r hr hrle s hs x v
+  rw [((surgeryRegionMissesParabolicBalls_iff S S' rho).1 h) t r hr hrle s hs]
+
+omit [FiniteDimensional Real E] [IsManifold I 1 M] [T2Space M] [SigmaCompactSpace M] in
+theorem surgeryRegionAgreesOnParabolicBalls_of_surgeryRegionMissesParabolicBalls
+    (S S' : SolutionOn (I := I) (M := M) D) {rho : Real}
+    (h : surgeryRegionMissesParabolicBalls S S' rho) :
+    surgeryRegionAgreesOnParabolicBalls S S' rho := by
+  intro t B' hr s hs
+  refine ⟨Set.univ, isOpen_univ, Set.subset_univ _, fun x _ v w => ?_⟩
+  have hmetric := ((surgeryRegionMissesParabolicBalls_iff S S' rho).1 h) t B'.radius
+    B'.radius_pos hr s hs
+  rw [hmetric]
+
+omit [FiniteDimensional Real E] [IsManifold I 1 M] [T2Space M] [SigmaCompactSpace M] in
+theorem isSurgeryNoncollapsingStep_of_surgeryRegionMissesParabolicBalls
+    (S S' : SolutionOn (I := I) (M := M) D) {rho : Real}
+    (h : surgeryRegionMissesParabolicBalls S S' rho) :
+    isSurgeryNoncollapsingStep S S' rho :=
+  ⟨metricDomination_of_surgeryRegionMissesParabolicBalls S S' h,
+    surgeryRegionAgreesOnParabolicBalls_of_surgeryRegionMissesParabolicBalls S S' h⟩
+
+omit [FiniteDimensional Real E] [IsManifold I 1 M] [T2Space M] [SigmaCompactSpace M] in
+theorem surgeryRegion_misses_parabolicBalls_of_agreesOn
+    (S S' : SolutionOn (I := I) (M := M) D) {rho : Real}
+    (h : surgeryRegionAgreesOnParabolicBalls S S' rho) :
+    ∀ (t : D.FlowTime) (B' : FlowMetricBall S' t), B'.radius ≤ rho →
+      ∀ s ∈ Set.Icc ((t : Real) - B'.radius ^ 2) (t : Real),
+        ∀ x ∈ B'.setAt s, (s, x) ∉ surgeryRegion S S' := by
+  intro t B' hr s hs x hx
+  obtain ⟨U, _hUopen, hball, hagree⟩ := h t B' hr s hs
+  exact (not_mem_surgeryRegion_iff S S' (s, x)).2 (hagree x (hball hx))
+
 theorem kappaNoncollapsedBelowScale_of_surgeryRegionMisses
     (S S' : SolutionOn (I := I) (M := M) D) (kappa rho : Real)
     (h : KappaNoncollapsedBelowScale S kappa rho)
     (hmiss : surgeryRegionMissesParabolicBalls S S' rho) :
     KappaNoncollapsedBelowScale S' kappa rho :=
-  kappaNoncollapsedBelowScale_of_metric_eqOn S S' kappa rho h
-    ((surgeryRegionMissesParabolicBalls_iff S S' rho).1 hmiss)
+  kappaNoncollapsedBelowScale_of_isSurgeryNoncollapsingStep S S' kappa rho h
+    (isSurgeryNoncollapsingStep_of_surgeryRegionMissesParabolicBalls S S' hmiss)
 
 theorem spatiallyKappaNoncollapsedBelowScale_of_surgeryRegionMisses
     (S S' : SolutionOn (I := I) (M := M) D) (kappa rho : Real)
     (h : SpatiallyKappaNoncollapsedBelowScale S kappa rho)
     (hmiss : surgeryRegionMissesParabolicBalls S S' rho) :
     SpatiallyKappaNoncollapsedBelowScale S' kappa rho :=
-  spatiallyKappaNoncollapsedBelowScale_of_metric_eqOn S S' kappa rho h fun t r hr hrle =>
-    metric_eq_of_forall_not_mem_surgeryRegion S S' fun x =>
-      hmiss t r hr hrle (t : Real) ⟨by linarith [sq_nonneg r], le_rfl⟩ x
+  spatiallyKappaNoncollapsedBelowScale_of_isSurgeryNoncollapsingStep S S' kappa rho h
+    (isSurgeryNoncollapsingStep_of_surgeryRegionMissesParabolicBalls S S' hmiss)
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery
 
@@ -174,7 +229,15 @@ theorem OldData.noncollapsingBelowScale_of_surgeryRegionMisses (d : OldData)
     (h : d.noncollapsingBelowScale S rho)
     (hmiss : surgeryRegionMissesParabolicBalls S S' rho) :
     d.noncollapsingBelowScale S' rho :=
-  kappaNoncollapsedBelowScale_of_surgeryRegionMisses S S' d.noncollapsing rho h hmiss
+  kappaNoncollapsedBelowScale_of_isSurgeryNoncollapsingStep S S' d.noncollapsing rho h
+    (isSurgeryNoncollapsingStep_of_surgeryRegionMissesParabolicBalls S S' hmiss)
+
+theorem OldData.noncollapsingBelowScale_of_isSurgeryNoncollapsingStep (d : OldData)
+    (S S' : SolutionOn (I := ThreeModel) (M := M) D) (rho : Real)
+    (h : d.noncollapsingBelowScale S rho)
+    (hstep : isSurgeryNoncollapsingStep S S' rho) :
+    d.noncollapsingBelowScale S' rho :=
+  kappaNoncollapsedBelowScale_of_isSurgeryNoncollapsingStep S S' d.noncollapsing rho h hstep
 
 theorem OldData.mul_pow_le_volume_toReal_of_noncollapsingBelowScale (d : OldData)
     (S : SolutionOn (I := ThreeModel) (M := M) D) {rho : Real}
@@ -227,5 +290,28 @@ theorem isEnlargementInput_iff_forall_exists :
   ⟨fun h d => h d d.noncollapsing_pos, fun h d _ => h d⟩
 
 end Data
+
+section OldDataCountermodel
+
+variable {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
+  [IsManifold ThreeModel ∞ M]
+variable [IsManifold ThreeModel 1 M]
+variable [T2Space M] [SigmaCompactSpace M]
+variable {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
+
+open DifferentialGeometry.PDE.RicciFlow.Perelman (KappaNoncollapsedBelowScale FlowMetricBall
+  mul_pow_le_volume_toReal_of_kappaNoncollapsedBelowScale)
+
+theorem exists_oldData_noncollapsing_not_noncollapsingBelowScale
+    (S : SolutionOn (I := ThreeModel) (M := M) D) {rho v : Real} (hv : 0 < v)
+    {t : D.FlowTime} (B : FlowMetricBall S t) (hr : B.radius ≤ rho)
+    (hB : B.IsRmControlled) (hvol : B.volume ≠ ⊤)
+    (hlt : (B.volume).toReal < v * B.radius ^ Module.finrank Real ThreeSpace) :
+    ∃ d : OldData, d.noncollapsing = v ∧ ¬ d.noncollapsingBelowScale S rho := by
+  obtain ⟨d, hd⟩ := exists_oldData_noncollapsing_eq v hv
+  exact ⟨d, hd, fun h => d.not_noncollapsingBelowScale_of_volume_toReal_lt S
+    B hr hB hvol (by rw [hd]; exact hlt) h⟩
+
+end OldDataCountermodel
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
