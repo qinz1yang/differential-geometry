@@ -407,11 +407,6 @@ theorem exists_oriented_ball_chart (M : ConnectedClosedOrientedManifold.{u} 3) :
   obtain ⟨φ, hsub, hpres⟩ := exists_oriented_ball_chart_data M
   exact ⟨{ chart := φ, closedBall_subset_source := hsub, preserves_orientation := hpres }⟩
 
-
-theorem exists_boundary_attachment : Nonempty BoundaryAttachment := by
-  exact ⟨Topology.Manifold.sphereAntipodalDiffeomorph,
-    sphereAntipodalDiffeomorph_preservesOrientation_opposite⟩
-
 private theorem exists_manifoldOrientation_of_ballCharts
     (M : ConnectedClosedOrientedManifold.{u} 3)
     (N : ConnectedClosedOrientedManifold.{v} 3)
@@ -484,13 +479,6 @@ def smoothConnectedSum (M : ConnectedClosedOrientedManifold.{u} 3)
         OrientationAssembly.collarMap_isLocalDiffeomorph' c.toBallChart d.toBallChart a.1
       interiorLeft_preserves_orientation := (Classical.choose_spec hO).1
       interiorRight_preserves_orientation := (Classical.choose_spec hO).2 }
-
-theorem exists_smooth_connected_sum (M : ConnectedClosedOrientedManifold.{u} 3)
-    (N : ConnectedClosedOrientedManifold.{v} 3)
-    (c : OrientedBallChart M.toClosedOrientedManifold)
-    (d : OrientedBallChart N.toClosedOrientedManifold) (a : BoundaryAttachment) :
-    Nonempty (SmoothConnectedSum c d a) :=
-  ⟨smoothConnectedSum M N c d a⟩
 
 theorem smoothConnectedSum_charts (M : ConnectedClosedOrientedManifold.{u} 3)
     (N : ConnectedClosedOrientedManifold.{v} 3)

@@ -28,9 +28,9 @@ theorem isOrientedPoincareStandardSumClosed_holds :
 theorem nonempty_smoothConnectedSum_sphere_sphereTwoTimesCircle :
     Nonempty (SmoothConnectedSum (orientedBallChart standardThreeSphereLift.{0})
       (orientedBallChart sphereTwoTimesCircleLift) boundaryAttachment) :=
-  exists_smooth_connected_sum standardThreeSphereLift.{0} sphereTwoTimesCircleLift
+  ⟨smoothConnectedSum standardThreeSphereLift.{0} sphereTwoTimesCircleLift
     (orientedBallChart standardThreeSphereLift.{0})
-    (orientedBallChart sphereTwoTimesCircleLift) boundaryAttachment
+    (orientedBallChart sphereTwoTimesCircleLift) boundaryAttachment⟩
 
 theorem isPoincareStandard_connectedSum_sphere_sphereTwoTimesCircle :
     isPoincareStandard
