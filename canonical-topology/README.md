@@ -1,11 +1,14 @@
 # Local homology and global classes from coherent local generators
 
 This separate `PoincareLean` project contains a dependency-closed checkpoint of
-109 Poincare modules. It extends the recovered Chapter 35 source at commit
+110 Poincare modules. It extends the recovered Chapter 35 source at commit
 `b45bfa009368c8f5f531e10f4f5280e90079d6ad` and preserves its mathematical objects
 and `Poincare` namespaces. `Poincare.lean` imports every included leaf.
 
 The additions prove:
+
+- the actual ordinary-cochain/relative-chain cap product, its projection law,
+  pair-map naturality, signed boundary identity, unit and cycle laws;
 
 - normalized degree-zero cohomology of any path-connected space as the integers,
   its class-evaluation law and naturality, and the actual degree-zero cap action;
@@ -63,7 +66,7 @@ The additions prove:
 - a unique compact-neighborhood class with the same normalization in every
   chart whose actual tangent trivialization preserves the base-chart orientation.
 
-The twenty-five new/changed modules and their exact baseline/current hashes are listed in
+The twenty-six new/changed modules and their exact baseline/current hashes are listed in
 [provenance/SNAPSHOT.json](provenance/SNAPSHOT.json). The derivative homotopy
 retains its [upstream attribution and modification record](provenance/README.md).
 
@@ -477,6 +480,27 @@ the actual cap map with a vertex class, negative-unit action, and the actual
 doubling map inducing the identity on H^0. Stock declaration linters and
 standard-only transitive axioms pass. Relative cap products, general duality
 and the native orientation producer remain open.
+
+The relative cap-product extension adds one coherent 234-line leaf and six
+public exports, for 110 modules and 109 added exports. It descends the existing
+ordinary cochain cap product to the original categorical relative chain complex.
+The projection equation, naturality under actual continuous pair maps, signed
+boundary identity, augmentation unit and cycle preservation hold in every
+natural degree and topological space. This is an absolute-cochain/relative-chain
+pairing; it does not assert a general relative cohomology pairing or duality.
+
+Final portable request `1789320638820840783-topology_checkpoint-ed0e45ce`
+passed in Slurm 13821107 in 145.89 seconds, with 270 guards and 189 signature/
+axiom pairs. All 181 previous pairs are byte-identical and all 109 previous
+leaves are unchanged. RelativeCapProduct and the root freshly compiled without
+diagnostics in 1:13.41, maximum RSS 1814244 KiB. The six public and two consumer
+pairs match original imported 7a8adef4 up to scoped set notation; that gate
+passed in 69.03 seconds with 41 guards and eight pairs. Source c465c911 passed
+in 30.60 seconds with 39 guards and 14 pairs, including every private helper.
+Consumers check a nonzero actual projected vertex, identity and negative-unit
+actions, and naturality for doubling on the pair (real line, nonpositive
+halfline). Stock declaration linters and standard-only transitive axioms pass.
+Relative homology descent and general Poincare duality remain open.
 
 ## Remaining topology work
 

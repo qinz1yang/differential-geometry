@@ -5,22 +5,21 @@ additive publication within the shared DifferentialGeometry Git repository. Its 
 library is `Poincare`; its sources retain the original mathematical namespaces.
 
 The source baseline is the recovered Chapter 35 commit
-`b45bfa009368c8f5f531e10f4f5280e90079d6ad`. This checkpoint includes 109 modules
-and 103 added public exports. The latest 178-line ConnectedZeroCohomology leaf
-identifies actual H^0 of a path-connected space with the integers, normalized
-by the actual constant-one unit. It exposes the inverse, class-evaluation law,
-map naturality, actual degree-zero cap action and its generator criterion.
-All 108 earlier leaves are unchanged.
+`b45bfa009368c8f5f531e10f4f5280e90079d6ad`. This checkpoint includes 110 modules
+and 109 added public exports. The latest 234-line RelativeCapProduct leaf
+constructs the actual ordinary-cochain/relative-chain pairing, its projection
+equation, pair-map naturality, signed boundary identity, augmentation unit and
+cycle preservation. All 109 earlier leaves are unchanged.
 
-Final request `1789317973755893458-topology_checkpoint-3343921c` passed in
-Slurm 13821107 in 154.94 seconds, with 262 guards and 181 signature/axiom pairs.
-All 171 earlier pairs are byte-identical. The new leaf and root freshly compiled
-in 1:14.10 with maximum RSS 1812808 KiB and zero diagnostics. Source b66ae903
-and original imported 18a032ba pass with 47/15 and 49/10 guards/pairs; the new
-portable pairs match the original. Nonzero negative-three cohomology, actual
-cap bijectivity with a vertex class, negative-unit action and doubling-map
-consumers pass. Stock linters and standard-only axioms pass. Relative cap
-products, general duality and the full oriented-manifold suite remain open.
+Final request `1789320638820840783-topology_checkpoint-ed0e45ce` passed in
+Slurm 13821107 in 145.89 seconds, with 270 guards and 189 signature/axiom pairs.
+All 181 earlier pairs are byte-identical. The new leaf and root freshly compiled
+in 1:13.41 with maximum RSS 1814244 KiB and zero diagnostics. Source c465c911
+and original imported 7a8adef4 pass with 39/14 and 41/8 guards/pairs; the new
+portable pairs match the original up to scoped set notation. Nonzero projected
+vertex, unit and negative-unit actions, and actual doubling pair-map naturality
+consumers pass. Stock linters and standard-only axioms pass. Relative homology
+descent, general duality and the full oriented-manifold suite remain open.
 
 The preceding signed-chart extension retains its exact public statements.
 
