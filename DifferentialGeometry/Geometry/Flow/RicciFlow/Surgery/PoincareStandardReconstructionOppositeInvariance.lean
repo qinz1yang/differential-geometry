@@ -1,6 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Poincare
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.PoincareStandardReconstruction
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.OppositeInvariance
+import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.LeftUnitLaw
 
 set_option autoImplicit false
 noncomputable section
@@ -21,10 +22,6 @@ theorem
       Nonempty ((Topology.connectedSum X
         Topology.standardThreeSphereLift.{u}).toClosedOrientedManifold.Carrier
         ≃ₘ⟮𝓡 3, 𝓡 3⟯ X.toClosedOrientedManifold.Carrier))
-    (hunitL : ∀ X : Topology.ConnectedClosedOrientedManifold.{u} 3,
-      Nonempty ((Topology.connectedSum Topology.standardThreeSphereLift.{u} X
-        ).toClosedOrientedManifold.Carrier
-        ≃ₘ⟮𝓡 3, 𝓡 3⟯ X.toClosedOrientedManifold.Carrier))
     (hassoc : ∀ X Y Z : Topology.ConnectedClosedOrientedManifold.{u} 3,
       Nonempty ((Topology.connectedSum (Topology.connectedSum X Y) Z
         ).toClosedOrientedManifold.Carrier
@@ -36,7 +33,9 @@ theorem
     [ConnectedSpace M.Carrier] [SimplyConnectedSpace M.Carrier] :
     Nonempty (M.Carrier ≃ₘ⟮𝓡 3, 𝓡 3⟯ Topology.standardThreeSphereLift.{u}.Carrier) :=
   exists_diffeomorph_standardThreeSphere_of_poincareControlledExtinction (W := W)
-    (hunitR := hunitR) (hunitL := hunitL) (hassoc := hassoc)
+    (hunitR := hunitR)
+    (hunitL := fun X => Topology.nonempty_diffeomorph_connectedSum_sphere_left_unit X)
+    (hassoc := hassoc)
     (htransportL := Topology.connectedSum_transport_left_of_oppositeInvariance hop)
     (htransportR := Topology.connectedSum_transport_right_of_oppositeInvariance hop)
     (hsum := hsum)
@@ -45,10 +44,6 @@ theorem smoothPoincareConjecture_of_poincareControlledExtinction_of_oppositeInva
     (hunitR : ∀ X : Topology.ConnectedClosedOrientedManifold.{u} 3,
       Nonempty ((Topology.connectedSum X
         Topology.standardThreeSphereLift.{u}).toClosedOrientedManifold.Carrier
-        ≃ₘ⟮𝓡 3, 𝓡 3⟯ X.toClosedOrientedManifold.Carrier))
-    (hunitL : ∀ X : Topology.ConnectedClosedOrientedManifold.{u} 3,
-      Nonempty ((Topology.connectedSum Topology.standardThreeSphereLift.{u} X
-        ).toClosedOrientedManifold.Carrier
         ≃ₘ⟮𝓡 3, 𝓡 3⟯ X.toClosedOrientedManifold.Carrier))
     (hassoc : ∀ X Y Z : Topology.ConnectedClosedOrientedManifold.{u} 3,
       Nonempty ((Topology.connectedSum (Topology.connectedSum X Y) Z
@@ -63,7 +58,9 @@ theorem smoothPoincareConjecture_of_poincareControlledExtinction_of_oppositeInva
       Nonempty (PoincareControlledExtinction M.toClosedOrientedManifold g)) :
     smoothPoincareConjecture.{u} :=
   smoothPoincareConjecture_of_poincareControlledExtinction
-    (hunitR := hunitR) (hunitL := hunitL) (hassoc := hassoc)
+    (hunitR := hunitR)
+    (hunitL := fun X => Topology.nonempty_diffeomorph_connectedSum_sphere_left_unit X)
+    (hassoc := hassoc)
     (htransportL := Topology.connectedSum_transport_left_of_oppositeInvariance hop)
     (htransportR := Topology.connectedSum_transport_right_of_oppositeInvariance hop)
     (hsum := hsum) (hext := hext)
@@ -72,10 +69,6 @@ theorem
     exists_diffeomorph_standardThreeSphere_of_standardDecomposition_of_oppositeInvariance
     {M : Topology.ClosedOrientedManifold.{u} 3} {g : SmoothRiemannianMetric (𝓡 3) M.Carrier}
     (W : PoincareControlledExtinction M g)
-    (hunitL : ∀ X : Topology.ConnectedClosedOrientedManifold.{u} 3,
-      Nonempty ((Topology.connectedSum Topology.standardThreeSphereLift.{u} X
-        ).toClosedOrientedManifold.Carrier
-        ≃ₘ⟮𝓡 3, 𝓡 3⟯ X.toClosedOrientedManifold.Carrier))
     (hassoc : ∀ X Y Z : Topology.ConnectedClosedOrientedManifold.{u} 3,
       Nonempty ((Topology.connectedSum (Topology.connectedSum X Y) Z
         ).toClosedOrientedManifold.Carrier
@@ -87,16 +80,12 @@ theorem
     [ConnectedSpace M.Carrier] [SimplyConnectedSpace M.Carrier] :
     Nonempty (M.Carrier ≃ₘ⟮𝓡 3, 𝓡 3⟯ Topology.standardThreeSphereLift.{u}.Carrier) :=
   exists_diffeomorph_standardThreeSphere_of_standardDecomposition (W := W)
-    (hunitL := hunitL) (hassoc := hassoc)
+    (hassoc := hassoc)
     (htransportL := Topology.connectedSum_transport_left_of_oppositeInvariance hop)
     (htransportR := Topology.connectedSum_transport_right_of_oppositeInvariance hop)
     (hsum := hsum)
 
 theorem smoothPoincareConjecture_of_standardDecomposition_of_oppositeInvariance
-    (hunitL : ∀ X : Topology.ConnectedClosedOrientedManifold.{u} 3,
-      Nonempty ((Topology.connectedSum Topology.standardThreeSphereLift.{u} X
-        ).toClosedOrientedManifold.Carrier
-        ≃ₘ⟮𝓡 3, 𝓡 3⟯ X.toClosedOrientedManifold.Carrier))
     (hassoc : ∀ X Y Z : Topology.ConnectedClosedOrientedManifold.{u} 3,
       Nonempty ((Topology.connectedSum (Topology.connectedSum X Y) Z
         ).toClosedOrientedManifold.Carrier
@@ -111,7 +100,7 @@ theorem smoothPoincareConjecture_of_standardDecomposition_of_oppositeInvariance
       Nonempty (PoincareControlledExtinction M.toClosedOrientedManifold g)) :
     smoothPoincareConjecture.{u} :=
   smoothPoincareConjecture_of_standardDecomposition
-    (hunitL := hunitL) (hassoc := hassoc)
+    (hassoc := hassoc)
     (htransportL := Topology.connectedSum_transport_left_of_oppositeInvariance hop)
     (htransportR := Topology.connectedSum_transport_right_of_oppositeInvariance hop)
     (hsum := hsum) (hext := hext)

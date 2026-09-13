@@ -1,6 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Poincare
 import DifferentialGeometry.Topology.ThreeManifold.CutCapStandardReconstruction
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.SphereCapFillingIsometry
+import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.LeftUnitLaw
 
 noncomputable section
 
@@ -32,10 +33,6 @@ end PoincareControlledExtinction
 theorem exists_diffeomorph_standardThreeSphere_of_standardDecomposition
     {M : Topology.ClosedOrientedManifold.{u} 3} {g : SmoothRiemannianMetric (𝓡 3) M.Carrier}
     (W : PoincareControlledExtinction M g)
-    (hunitL : ∀ X : Topology.ConnectedClosedOrientedManifold.{u} 3,
-      Nonempty ((Topology.connectedSum Topology.standardThreeSphereLift.{u} X
-        ).toClosedOrientedManifold.Carrier
-        ≃ₘ⟮𝓡 3, 𝓡 3⟯ X.toClosedOrientedManifold.Carrier))
     (hassoc : ∀ X Y Z : Topology.ConnectedClosedOrientedManifold.{u} 3,
       Nonempty ((Topology.connectedSum (Topology.connectedSum X Y) Z
         ).toClosedOrientedManifold.Carrier
@@ -66,13 +63,10 @@ theorem exists_diffeomorph_standardThreeSphere_of_standardDecomposition
     (W.isPoincareStandard_of_standardDecomposition hsum
       (Topology.poincareStandardSumClosed_of_unit_assoc_transport
         (fun X => Topology.nonempty_diffeomorph_connectedSum_sphere_right_unit X)
-        hunitL hassoc htransportL htransportR))
+        (fun X => Topology.nonempty_diffeomorph_connectedSum_sphere_left_unit X)
+        hassoc htransportL htransportR))
 
 theorem smoothPoincareConjecture_of_standardDecomposition
-    (hunitL : ∀ X : Topology.ConnectedClosedOrientedManifold.{u} 3,
-      Nonempty ((Topology.connectedSum Topology.standardThreeSphereLift.{u} X
-        ).toClosedOrientedManifold.Carrier
-        ≃ₘ⟮𝓡 3, 𝓡 3⟯ X.toClosedOrientedManifold.Carrier))
     (hassoc : ∀ X Y Z : Topology.ConnectedClosedOrientedManifold.{u} 3,
       Nonempty ((Topology.connectedSum (Topology.connectedSum X Y) Z
         ).toClosedOrientedManifold.Carrier
@@ -103,7 +97,7 @@ theorem smoothPoincareConjecture_of_standardDecomposition
     (E := EuclideanSpace ℝ (Fin 3)) (M := M) (n := 3) (by simp)
   exact exists_diffeomorph_standardThreeSphere_of_standardDecomposition
     (W := (hext { Carrier := M, orientation := o } g).some)
-    (hunitL := hunitL) (hassoc := hassoc)
+    (hassoc := hassoc)
     (htransportL := htransportL) (htransportR := htransportR)
     (hsum := fun i => hsum _ i)
 
