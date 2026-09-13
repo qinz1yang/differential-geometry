@@ -4730,7 +4730,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.Span
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.Variation.First
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.Variation.Flow
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.Variation.Monotonicity
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.Variation.Rigidity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.Variation.WeightedHessian
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Curvature.MultiNormHeat
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Curvature.NormEvolution
