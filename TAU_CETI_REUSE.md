@@ -686,3 +686,36 @@ Root reviewed exact source, provider proofs, types, consumers and the diff.
 The existing flat-root import is retained; no full DG aggregate build is claimed.
 Interval-only boundary-source input, general ambient manifolds and the full
 Schoenflies theorem remain open.
+
+## Interval map extension for native boundary sources, 2026-09-13
+
+Manifold/IntervalExtension now produces one whole-real jointly smooth extension
+of actual interval-only data on a native standard-halfspace manifold, agreeing
+on the entire closed time interval times the source. The source may be
+noncompact; Hausdorffness and sigma compactness suffice. Values may lie in any
+real Banach space. The public theorem handles arbitrary endpoints, including
+singleton and reversed intervals, without demanding regularity outside the
+specified interval or changing the native source smooth structure.
+
+The proof reuses the published quadrant extension and compact cutoff at the
+time/boundary corner. Reflection handles the terminal endpoint with the same
+local proof. Actual fixed extended charts transport within-domain germs;
+the existing convex-selection argument glues them into one global extension.
+The old boundaryless result and its public proof body are unchanged. Both
+variants share one private local-to-global gluing engine; model-coordinate
+mechanics remain private. No upstream source or dependency was added.
+
+Final source 1789328029780055032-schoenflies-02b58f53 passes in 45.79 seconds,
+64 guards and 23 signature/axiom pairs. Final imported request
+1789328149774300563-schoenflies-38e88eff passes in 184.37 seconds, 225 guards
+and 149 pairs. All 144 earlier pairs are byte-identical and all 15 shared
+source/import pairs match. Manifold.IntervalExtension, Embedding.IntervalExtension
+and AmbientIsotopy freshly compile in 1:41.88, maximum RSS 1837688 KiB,
+with zero diagnostics under Slurm 13821107. Stock linters and standard-only
+transitive axioms pass. Consumers cover nonzero motion of an actual ClosedCell
+boundary point, exact values at both endpoints for every source point,
+singleton/reversed intervals, noncompact halfspaces and arbitrary Banach values.
+Root reviewed all bodies, exact types, providers, consumers and the full diff.
+The existing root import is retained; no full DG aggregate build is claimed.
+This is a smooth map extension. Boundary interval embedding stability and the
+interval-only boundary ambient isotopy remain separate obligations.
