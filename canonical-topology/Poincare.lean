@@ -16,6 +16,7 @@ import Poincare.Topology.Homology.ChainSupport
 import Poincare.Topology.Homology.ChainsIn
 import Poincare.Topology.Homology.CochainMaps
 import Poincare.Topology.Homology.Cochains
+import Poincare.Topology.Homology.CompactSupport
 import Poincare.Topology.Homology.CompactVanishing
 import Poincare.Topology.Homology.ConnectedZeroHomology
 import Poincare.Topology.Homology.ContractibleCoverOne

@@ -1,7 +1,7 @@
 # Local homology and oriented compact chart classes
 
 This separate `PoincareLean` project contains a dependency-closed checkpoint of
-100 Poincare modules. It extends the recovered Chapter 35 source at commit
+101 Poincare modules. It extends the recovered Chapter 35 source at commit
 `b45bfa009368c8f5f531e10f4f5280e90079d6ad` and preserves its mathematical objects
 and `Poincare` namespaces. `Poincare.lean` imports every included leaf.
 
@@ -41,7 +41,7 @@ The additions prove:
 - a unique compact-neighborhood class with the same normalization in every
   chart whose actual tangent trivialization preserves the base-chart orientation.
 
-The sixteen new/changed modules and their exact baseline/current hashes are listed in
+The seventeen new/changed modules and their exact baseline/current hashes are listed in
 [provenance/SNAPSHOT.json](provenance/SNAPSHOT.json). The derivative homotopy
 retains its [upstream attribution and modification record](provenance/README.md).
 
@@ -242,6 +242,30 @@ Consumers verify a nonzero two-point class with local values +1 and -1,
 its uniqueness, a nonzero rank-zero H0 class with unique lift, and degree-zero
 shared-support lifting. Stock linters and standard-only axioms pass.
 All 99 previous leaves remain unchanged and retain earlier build evidence.
+
+The compact-support extension adds `CompactSupport` and extends
+`CompactVanishing`, for 101 modules and 43 added exports. Every actual finite
+singular chain has a compact carrier inside its given carrier set. Every
+relative class supported on a compact set extends to a compact neighborhood
+inside a prescribed open set, in any locally compact Hausdorff space and all
+degrees. These are actual classes with the original restriction-map equation.
+
+The general vanishing theorem proves H_n(E,E\K)=0 whenever K is compact and
+n exceeds the dimension of the finite-dimensional real normed space E.
+There is no convexity hypothesis; empty supports and rank zero are included.
+It reuses the published local/convex vanishing and actual Mayer–Vietoris
+restriction injectivity through a finite closed-ball neighborhood.
+
+Final portable request `1789259440438453253-topology_checkpoint-e60efd1d`
+passed in Slurm 13781140 in 151.16 seconds. The new leaf, changed leaf and
+root freshly compiled without diagnostics in 1:26.53, maximum RSS 1914684 KiB.
+All 146 guards and 95 signature/axiom pairs passed. All 86 previous pairs are
+byte-identical; the nine added pairs match the original imported gate except
+for `Module.finrank` and `Set.Ioo` qualification. Consumers check a nonzero
+singular chain and its prescribed compact carrier, extension of a nonzero
+Euclidean3 local class, empty-space and degree-zero cases, nonconvex compact
+supports and rank zero. Stock linters and standard-only transitive axioms pass.
+The other 99 previous leaves remain unchanged and retain their earlier evidence.
 
 ## Remaining topology work
 

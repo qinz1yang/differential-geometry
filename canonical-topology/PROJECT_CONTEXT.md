@@ -5,25 +5,27 @@ additive publication within the shared DifferentialGeometry Git repository. Its 
 library is `Poincare`; its sources retain the original mathematical namespaces.
 
 The source baseline is the recovered Chapter 35 commit
-`b45bfa009368c8f5f531e10f4f5280e90079d6ad`. This checkpoint includes 100 modules:
-the dependency closure of eleven roots covering local homology, derivatives,
-determinant signs, oriented chart compatibility, closed-ball classes and
-unique compact chart classes, plus the actual Euclidean3 consumer's dependencies.
-The latest gate freshly compiled RelativeMayerVietoris and root
-in Slurm 13781140, request
-`1789257537165329093-topology_checkpoint-6a6afc66`. It passed in 133.73 seconds.
-The same run checked all 40 added public exports and 86 signature/axiom pairs,
-including all 77 previous pairs unchanged. All 99 previous source leaves remain
-byte-identical and retain earlier compilation evidence. New relative
-Mayer–Vietoris results construct compatible lifts and give uniqueness under
-next-degree vanishing, with actual closed-support gluing corollaries.
-The preceding results prove
-H_n(X,X)=0 and local/convex-support homology vanishing above the dimension,
-including empty sets, rank zero and arbitrary real norms. The prior public
-complement-inclusion equivalence and relative restriction
-isomorphism work for bounded star-convex sets about a member in arbitrary real
-normed spaces and every natural degree. The closed-ball public statements and
-entire proof bodies are preserved. Global oriented generators remain open.
+`b45bfa009368c8f5f531e10f4f5280e90079d6ad`. This checkpoint includes 101 modules:
+the dependency closure of twelve roots covering local homology, derivatives,
+determinant signs, oriented chart compatibility, compact chart classes,
+Mayer–Vietoris and compact-support vanishing, plus the actual Euclidean3
+consumer dependencies. The latest gate freshly compiled CompactSupport,
+CompactVanishing and root in Slurm 13781140, request
+`1789259440438453253-topology_checkpoint-e60efd1d`. It passed in 151.16 seconds.
+The same run checked all 43 added public exports and 95 signature/axiom pairs,
+including all 86 previous pairs unchanged. The other 99 prior source leaves
+remain byte-identical and retain earlier compilation evidence.
+
+The new results give a compact carrier for each actual finite singular chain,
+extend any compact-support relative class to a compact neighborhood inside a
+prescribed open set, and prove actual H_n(E,E\K)=0 for every compact K when
+n exceeds the dimension. They allow arbitrary real norms, nonconvex compact
+sets, empty sets and rank zero. Neighborhood extension works for all degrees
+in locally compact Hausdorff spaces. The existing bounded star-convex/convex
+results and compact-convex compatibility theorem remain unchanged.
+The earlier actual Mayer–Vietoris lifts, conditional uniqueness and oriented
+compact chart classes retain their public signatures. Global oriented
+generators remain open.
 [provenance/SNAPSHOT.json](provenance/SNAPSHOT.json) records exact source and
 configuration identity and preserves the earlier validation records. It is not
 the full recovered Chapter 35 project.
