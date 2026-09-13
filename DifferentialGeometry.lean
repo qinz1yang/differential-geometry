@@ -296,6 +296,7 @@ import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.Weitzenbock.In
 import DifferentialGeometry.Analysis.Elliptic.DistributionalSupersolution
 import DifferentialGeometry.Analysis.Elliptic.Euclidean.GradientEstimate
 import DifferentialGeometry.Analysis.Elliptic.Euclidean.HarmonicComparison
+import DifferentialGeometry.Analysis.Elliptic.Euclidean.InteriorGradient
 import DifferentialGeometry.Analysis.Elliptic.Euclidean.MaximumPrinciple
 import DifferentialGeometry.Analysis.Elliptic.Euclidean.QuadraticGrowth
 import DifferentialGeometry.Analysis.Elliptic.Euclidean.Regularity.CoefficientDerivative
