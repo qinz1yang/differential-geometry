@@ -7814,6 +7814,7 @@ import DifferentialGeometry.Topology.Homology.SphereHurewicz
 import DifferentialGeometry.Topology.Homology.SpherePuncture
 import DifferentialGeometry.Topology.Homology.SphereRank
 import DifferentialGeometry.Topology.Homology.SphereTopHomology
+import DifferentialGeometry.Topology.Homology.SquareBoundaryDegree
 import DifferentialGeometry.Topology.Homology.SquareFundamentalChain
 import DifferentialGeometry.Topology.Homology.Subdivision.AffinePieces
 import DifferentialGeometry.Topology.Homology.Subdivision.AffineSimplex
