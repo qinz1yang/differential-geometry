@@ -98,6 +98,27 @@ theorem MetricFamilySmoothOn.parameterPullback
   rw [Diffeomorph.mfderiv_symm_apply_mfderiv_apply φ x v,
     Diffeomorph.mfderiv_symm_apply_mfderiv_apply φ x w, φ.symm_apply_apply]
 
+theorem exists_metricFamilySmoothOn_parameterPullback :
+    ∃ (G : ℝ → SmoothRiemannianMetric 𝓘(ℝ, ℂ) ℂ)
+      (Φ : ℝ → ℂ ≃ₘ⟮𝓘(ℝ, ℂ), 𝓘(ℝ, ℂ)⟯ ℂ),
+      MetricFamilySmoothOn (RealTimeInterval.openInterval (-1) 1 0 (by norm_num))
+        (fun t => Diffeomorph.pullbackMetric (G t) (Φ t)) := by
+  refine ⟨fun _ => DifferentialGeometry.Geometry.euclideanMetric ℂ,
+    fun _ => Diffeomorph.refl 𝓘(ℝ, ℂ) ℂ ∞, ?_⟩
+  let D' := RealTimeInterval.openInterval (-1) 1 0 (by norm_num)
+  have hG : MetricFamilySmoothOn (I := 𝓘(ℝ, ℂ)) (M := ℂ) D'
+      (fun _ => DifferentialGeometry.Geometry.euclideanMetric ℂ) :=
+    DifferentialGeometry.Geometry.Curvature.metricFamilySmoothOn_stationary
+      (DifferentialGeometry.Geometry.euclideanMetric ℂ) D'
+  have hΦ : ContMDiffOn ((𝓘(ℝ, ℝ)).prod 𝓘(ℝ, ℂ)) 𝓘(ℝ, ℂ) ∞
+      (fun p : ℝ × ℂ => (Diffeomorph.refl 𝓘(ℝ, ℂ) ℂ ∞) p.2) (Set.univ ×ˢ Set.univ) :=
+    contMDiffOn_snd
+  have hsub : D'.carrier ⊆ Set.univ ∩ D'.regular := fun t ht => ⟨trivial, ht⟩
+  exact MetricFamilySmoothOn.parameterPullback
+    (Geometry.Topology.standardModelCopy (I := 𝓘(ℝ, ℂ)) (M := ℂ)
+      (ContinuousLinearEquiv.refl ℝ ℂ))
+    hG isOpen_univ hΦ D' rfl hsub
+
 end DifferentialGeometry.Geometry.Curvature
 
 namespace DifferentialGeometry.PDE.RicciFlow.Extinction.Width
