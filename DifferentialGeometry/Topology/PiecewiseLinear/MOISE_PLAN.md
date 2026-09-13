@@ -192,6 +192,13 @@
   `IsPiecewiseAffineOn.exists_isSubdivision_affineOn_faces`）。逐模块检查零错误零警告；
   `#print axioms` 仅 `propext`、`Classical.choice`、`Quot.sound`。
 
+- 2026-09-13（车道 F 第四批，link 唯一性 F3.3）：`PLHomeomorph.lean`（PL 同胚复合/逆/转移）、`Cone.lean`（径向投影、锥底、
+  顶点 link 的径向单射性）、`SimplicialImage.lean`（单纯映射像复形）、`RadialProjection.lean`（伪径向投影是 PL 同胚
+  `exists_isPLHomeomorphOn_of_radial`）、`LinkSubdivision.lean`（顶点 link 在细分下 PL 不变）、`SimplexBoundary.lean`
+  （单形边界复形、`isPLSphere_biUnion_erase`、任意小单形邻域）、`LinkEuclidean.lean`
+  （`isPLSphere_geometricLink_of_mem_nhds`：`finrank E = n+1` 且 `K.space ∈ 𝓝 p` ⟹ 顶点 link 是 PL `n`-球面）。
+  逐模块检查零错误零警告；九个端点 `#print axioms` 仅标准公理（`.lake/scratch/AuditF5.lean`）。
+
 - 2026-09-11（Phase 1 第二轮，负责人指示不等完整构建）：`IsPiecewiseAffineOn` 改为基于 `IsPiecewiseAffineWithinAt`
   （`𝓝[s] x`）的定义并重跑整条链；新增 `Manifold.lean`、`Polyhedron.lean`，以及 `Smoothing.lean` 中的
   `PLSmoothingModel`/`plSmoothing_of_plSmoothingModel`。九个模块逐个 `lake env lean` 加 lakefile 选项检查零错误零警告；
