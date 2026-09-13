@@ -6309,6 +6309,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.Assembly
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.EndNeckContractReduction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.EndNeckFields
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.MetricStep
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.PoincareStandardControl
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.Reconstruction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.Terminal
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Poincare
@@ -8869,6 +8870,7 @@ import DifferentialGeometry.Topology.ThreeManifold.CutCapReconstruction
 import DifferentialGeometry.Topology.ThreeManifold.CutCapStandardReconstruction
 import DifferentialGeometry.Topology.ThreeManifold.PoincareStandard
 import DifferentialGeometry.Topology.ThreeManifold.PoincareStandardClassification
+import DifferentialGeometry.Topology.ThreeManifold.PoincareStandardComponentwise
 import DifferentialGeometry.Topology.ThreeManifold.PoincareStandardDiscarded
 import DifferentialGeometry.Topology.ThreeManifold.PoincareStandardDiscardedModels
 import DifferentialGeometry.Topology.ThreeManifold.PoincareStandardFactorOrientation
