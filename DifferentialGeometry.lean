@@ -6418,6 +6418,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.BasedTransp
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CappingCover
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChartOrientation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChartSimplexBlend
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CappedChildPi1
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChildCarrierStarCover
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChildCoreDeformationRetract
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChildParent
@@ -8877,6 +8878,7 @@ import DifferentialGeometry.Topology.ThreeManifold.SphereTwoTimesCircleOrientati
 import DifferentialGeometry.Topology.ThreeManifold.SphericalSpaceFormOrientationClosure
 import DifferentialGeometry.Topology.ThreeManifold.SphericalSpaceFormProjective
 import DifferentialGeometry.Topology.ThreeManifold.SphericalSpaceFormTrivial
+import DifferentialGeometry.Topology.ThreeManifold.SphericalSpaceFormTriviality
 import DifferentialGeometry.Topology.ThreeManifold.StandardFactors
 import DifferentialGeometry.Topology.ThreeManifold.StandardSphere
 import DifferentialGeometry.Topology.ThreeManifold.Surgery.FiniteCap.CoreAmbientCoordinates
@@ -9006,6 +9008,7 @@ import DifferentialGeometry.Topology.VanKampen.HomotopyEquivalentSimplyConnected
 import DifferentialGeometry.Topology.VanKampen.HomotopyGrid
 import DifferentialGeometry.Topology.VanKampen.HomotopyInvariance
 import DifferentialGeometry.Topology.VanKampen.ParenthesizedFiniteConnectedSum
+import DifferentialGeometry.Topology.VanKampen.Pi1FiniteConnectedSum
 import DifferentialGeometry.Topology.VanKampen.PoincareStandardConnectedSum
 import DifferentialGeometry.Topology.VanKampen.ProjectiveConnectedSum
 import DifferentialGeometry.Topology.VanKampen.Representative
