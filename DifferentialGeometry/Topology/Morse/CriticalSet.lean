@@ -91,23 +91,28 @@ private theorem chart_fderiv_eq_zero_of_critical [IsManifold I 1 M]
       (mfderiv 𝓘(ℝ, E) I (extChartAt I p).symm (extChartAt I p q)) at hc
   exact hc.trans (by ext v; rfl)
 
+private theorem eventually_not_isCriticalPointAt [IsManifold I 1 M]
+    {f : M → ℝ} {p : M} (hf : ContMDiffAt I 𝓘(ℝ, ℝ) 1 f p)
+    (hp : ¬ IsCriticalPointAt I f p) :
+    ∀ᶠ q in nhds p, ¬ IsCriticalPointAt I f q := by
+  have hne : fderiv ℝ (fun y => f ((extChartAt I p).symm y)) (extChartAt I p p) ≠ 0 := by
+    intro hz
+    apply hp
+    exact (mfderiv_eq_chart_fderiv I (hf.mdifferentiableAt one_ne_zero)).trans hz
+  have hc := ((contDiffAt_chart I hf).fderiv_right (m := 0) (by norm_num)).continuousAt
+  have hc' := hc.comp (continuousAt_extChartAt (I := I) p)
+  have hev := hc'.eventually (isOpen_compl_singleton.mem_nhds hne)
+  have hnear : ∀ᶠ q in nhds p, ContMDiffAt I 𝓘(ℝ, ℝ) 1 f q :=
+    (contMDiffAt_iff_contMDiffAt_nhds (by norm_num)).mp hf
+  filter_upwards [hev, extChartAt_source_mem_nhds (I := I) p, hnear] with q hq hsrc hfq
+  intro hcrit
+  exact hq (chart_fderiv_eq_zero_of_critical I p q (hfq.mdifferentiableAt one_ne_zero) hsrc hcrit)
+
 theorem isClosed_setOf_isCriticalPointAt [IsManifold I 1 M]
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) 1 f) :
     IsClosed {p | IsCriticalPointAt I f p} := by
   rw [← isOpen_compl_iff]
-  apply isOpen_iff_mem_nhds.mpr
-  intro p hp
-  have hne : fderiv ℝ (fun y => f ((extChartAt I p).symm y)) (extChartAt I p p) ≠ 0 := by
-    change ¬ IsCriticalPointAt I f p at hp
-    intro hz
-    apply hp
-    exact (mfderiv_eq_chart_fderiv I ((hf p).mdifferentiableAt one_ne_zero)).trans hz
-  have hc := ((contDiffAt_chart I (hf p)).fderiv_right (m := 0) (by norm_num)).continuousAt
-  have hc' := hc.comp (continuousAt_extChartAt (I := I) p)
-  have hev := hc'.eventually (isOpen_compl_singleton.mem_nhds hne)
-  filter_upwards [hev, extChartAt_source_mem_nhds (I := I) p] with q hq hsrc
-  intro hcrit
-  exact hq (chart_fderiv_eq_zero_of_critical I p q ((hf q).mdifferentiableAt one_ne_zero) hsrc hcrit)
+  exact isOpen_iff_mem_nhds.mpr fun p hp => eventually_not_isCriticalPointAt I (hf p) hp
 
 theorem IsNondegenerateCriticalPointAt.isolated [FiniteDimensional ℝ E] [IsManifold I 2 M]
     {f : M → ℝ} {p : M} (hf : ContMDiffAt I 𝓘(ℝ, ℝ) 2 f p)
@@ -127,17 +132,38 @@ theorem IsNondegenerateCriticalPointAt.isolated [FiniteDimensional ℝ E] [IsMan
     chart_fderiv_eq_zero_of_critical I p p (hf1.mdifferentiableAt one_ne_zero)
       (mem_extChartAt_source p) hnd.1]
 
+theorem finite_critical_points_of_isCompact [FiniteDimensional ℝ E] [IsManifold I 2 M]
+    {f : M → ℝ} {K : Set M} (hK : IsCompact K)
+    (hf : ∀ p ∈ K, ContMDiffAt I 𝓘(ℝ, ℝ) 2 f p)
+    (hnd : ∀ p ∈ K, IsCriticalPointAt I f p → IsNondegenerateCriticalPointAt I f p) :
+    {p ∈ K | IsCriticalPointAt I f p}.Finite := by
+  let : CompactSpace K := isCompact_iff_compactSpace.mp hK
+  have hc : IsClosed {p : K | IsCriticalPointAt I f p} := by
+    rw [← isOpen_compl_iff]
+    apply isOpen_iff_mem_nhds.mpr
+    intro p hp
+    exact continuous_subtype_val.continuousAt.eventually
+      (eventually_not_isCriticalPointAt I ((hf p p.property).of_le (by norm_num)) hp)
+  have hcompact : IsCompact {p ∈ K | IsCriticalPointAt I f p} := by
+    convert hc.isCompact.image continuous_subtype_val using 1
+    ext p
+    simp only [Set.mem_ofPred_eq, Set.mem_image, Subtype.exists, exists_and_right,
+      exists_eq_right]
+    tauto
+  apply hcompact.finite
+  apply IsDiscrete.of_nhdsWithin
+  intro p hp
+  rw [Filter.le_pure_iff]
+  filter_upwards [((hnd p hp.1 hp.2).isolated I (hf p hp.1)).filter_mono nhdsWithin_le_nhds,
+    self_mem_nhdsWithin] with q hq hcrit
+  exact hq hcrit.2
+
 theorem finite_critical_points [FiniteDimensional ℝ E] [IsManifold I 2 M] [CompactSpace M]
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) 2 f)
     (hnd : ∀ p, IsCriticalPointAt I f p → IsNondegenerateCriticalPointAt I f p) :
     {p | IsCriticalPointAt I f p}.Finite := by
-  apply (isClosed_setOf_isCriticalPointAt I (hf.of_le (by norm_num : (1 : WithTop ℕ∞) ≤ 2))).isCompact.finite
-  apply IsDiscrete.of_nhdsWithin
-  intro p hp
-  rw [Filter.le_pure_iff]
-  filter_upwards [((hnd p hp).isolated I (hf p)).filter_mono nhdsWithin_le_nhds,
-    self_mem_nhdsWithin] with q hq hcrit
-  exact hq hcrit
+  simpa only [Set.mem_univ, true_and] using finite_critical_points_of_isCompact I
+    isCompact_univ (fun p _ => hf p) (fun p _ => hnd p)
 
 end
 end DifferentialGeometry.Topology.Morse
