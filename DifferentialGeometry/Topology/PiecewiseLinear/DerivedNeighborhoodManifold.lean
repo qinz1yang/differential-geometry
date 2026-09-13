@@ -1,4 +1,5 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.DerivedNeighborhoodLink
+import DifferentialGeometry.Topology.PiecewiseLinear.FaceNeighborhoodLink
 import DifferentialGeometry.Topology.PiecewiseLinear.JoinBall
 import DifferentialGeometry.Topology.PiecewiseLinear.ManifoldSubdivision
 
@@ -92,5 +93,41 @@ theorem isPLBall_geometricLink_derivedNeighborhood_of_lower [FiniteDimensional �
       (upperLink_faces_subset _ _) (union_mem_secondDerived_of_lower_upper K L he hef) hempty
     rw [heq]
     exact hlower
+
+open Classical in
+theorem IsCombinatorialManifoldWithBoundary.derivedNeighborhood [FiniteDimensional ℝ E] {n : ℕ}
+    {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces]
+    (h : IsCombinatorialManifoldWithBoundary (n + 1) K) (L : Geometry.SimplicialComplex ℝ E) :
+    IsCombinatorialManifoldWithBoundary (n + 1)
+      (DifferentialGeometry.Topology.PiecewiseLinear.derivedNeighborhood K L) := by
+  intro v hv
+  have hvK'' : {v} ∈ (PiecewiseLinear.secondDerived K).faces := derivedNeighborhood_faces_subset K L hv
+  obtain ⟨e, he, rfl⟩ :=
+    exists_eq_centroid_of_singleton_mem_barycentricSubdivision (PiecewiseLinear.barycentricSubdivision K) hvK''
+  have hef : ∃ σ ∈ L.faces, σ.centroid ℝ id ∈ e :=
+    (singleton_centroid_mem_derivedNeighborhood_iff K L he).mp hv
+  by_cases hsub : ∀ w ∈ e, ∃ σ ∈ L.faces, σ.centroid ℝ id = w
+  · exact isPLSphere_or_isPLBall_geometricLink_derivedNeighborhood_of_subset K L h he hsub
+  · obtain ⟨w, hw⟩ := not_forall.mp hsub
+    obtain ⟨hwe, hwL⟩ := Classical.not_imp.mp hw
+    have hfT : (e.filter fun x => ∃ σ ∈ L.faces, σ.centroid ℝ id = x) ⊆ e :=
+      Finset.filter_subset _ _
+    have hfne : (e.filter fun x => ∃ σ ∈ L.faces, σ.centroid ℝ id = x).Nonempty := by
+      obtain ⟨σ, hσ, hσe⟩ := hef
+      exact ⟨_, Finset.mem_filter.mpr ⟨hσe, σ, hσ, rfl⟩⟩
+    have hfe : (e.filter fun x => ∃ σ ∈ L.faces, σ.centroid ℝ id = x) ≠ e := by
+      intro heq
+      have hwf : w ∈ e.filter fun x => ∃ σ ∈ L.faces, σ.centroid ℝ id = x := by
+        rw [heq]
+        exact hwe
+      exact hwL (Finset.mem_filter.mp hwf).2
+    obtain ⟨k, hk⟩ : ∃ k, e.card = k + 2 := by
+      refine ⟨e.card - 2, ?_⟩
+      have h1 := Finset.card_lt_card (Finset.ssubset_iff_subset_ne.mpr ⟨hfT, hfe⟩)
+      have h2 := Finset.card_pos.mpr hfne
+      omega
+    exact Or.inr (isPLBall_geometricLink_derivedNeighborhood_of_lower K L h he hef hk
+      (isPLBall_geometricLink_faceNeighborhood_centroid ((PiecewiseLinear.barycentricSubdivision K).indep he)
+        hfT hfne hfe hk))
 
 end DifferentialGeometry.Topology.PiecewiseLinear
