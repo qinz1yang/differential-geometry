@@ -108,3 +108,27 @@ full aggregate build, a global retraction, or a joint-time tubular neighborhood.
 
 Distinct critical values, global positioning of an embedded sphere, smooth
 relative disk absorption and full Schoenflies remain open.
+
+## Graphs of compact parameterized families, 2026-09-13
+
+Topology/Embedding/ParametricGraph proves properness of the actual map
+(t,x) ↦ (t,e(t,x)) for jointly continuous e, compact X and Hausdorff target Y.
+Fiberwise injectivity gives a closed embedding. The parameter space need not
+be compact or Hausdorff. These two general topological results use the pinned
+Mathlib proper-projection and ultrafilter APIs; this is original glue, with
+no copied Tau Ceti or Lean Pool code.
+
+The private source check 1789303104679795989-schoenflies-cc7d654a passed in
+31.29 seconds with 11 guards and five signature/axiom pairs. Final imported
+check 1789303194374561190-schoenflies-af96cedc passed in 47.28 seconds with
+15 guards and five pairs; all five exact types match the source check.
+Fresh leaf artifact generation took 17.46 seconds, maximum RSS 996164 KiB,
+with zero diagnostics. Stock declaration linters and standard-only axioms
+pass. Consumers use an arbitrary smooth family of embedded two-spheres,
+the actual unit sphere and a singleton fiber over any topological parameter.
+The first also retains joint smoothness of the actual graph. The leaf is
+registered in the flat root; no full aggregate build is claimed.
+
+The native smooth-immersion step for a moving graph remains separate. Neither
+this topological theorem nor the inspected upstream ambient-isotopy definitions
+supply an isotopy-extension theorem.
