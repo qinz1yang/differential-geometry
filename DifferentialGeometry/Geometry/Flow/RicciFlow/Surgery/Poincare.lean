@@ -1,5 +1,6 @@
 import DifferentialGeometry.Topology.ThreeManifold.CutCapGluing
 import DifferentialGeometry.Topology.ThreeManifold.PoincareStandardClassification
+import DifferentialGeometry.Topology.ThreeManifold.PoincareStandardFactorOrientationReduction
 import DifferentialGeometry.Topology.ThreeManifold.PoincareStandardOrientationRefinement
 import DifferentialGeometry.Topology.VanKampen.FiniteConnectedSumFreeProduct
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ExtinctionReconstruction
@@ -17,14 +18,14 @@ universe u
 theorem exists_diffeomorph_standardThreeSphere_of_poincareControlledExtinction
     {M : Topology.ClosedOrientedManifold.{u} 3} {g : SmoothRiemannianMetric (𝓡 3) M.Carrier}
     (W : PoincareControlledExtinction M g)
-    (hrefinement : Topology.poincareStandardOrientationRefinement.{u})
+    (hstd : Topology.factorOrientationClosure.{u})
     (hsum : ∀ i : Fin W.history.eventCount,
       (W.history.cutCapTrace.transition i).componentConnectedSumDecomposition)
     [ConnectedSpace M.Carrier] [SimplyConnectedSpace M.Carrier] :
     Nonempty (M.Carrier ≃ₘ⟮𝓡 3, 𝓡 3⟯ Topology.standardThreeSphereLift.{u}.Carrier) :=
   Topology.exists_diffeomorph_standardThreeSphere_of_isPoincareStandard
     (W.isPoincareStandard hsum
-      (Topology.poincareStandardSumClosed_of_orientationRefinement hrefinement))
+      (Topology.poincareStandardSumClosed_of_factorOrientationClosure hstd))
 
 def smoothPoincareConjecture : Prop :=
   ∀ (M : Type u) [TopologicalSpace M] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
@@ -33,7 +34,7 @@ def smoothPoincareConjecture : Prop :=
     Nonempty (M ≃ₘ⟮𝓡 3, 𝓡 3⟯ Topology.standardThreeSphereLift.{u}.Carrier)
 
 theorem smoothPoincareConjecture_of_poincareControlledExtinction
-    (hrefinement : Topology.poincareStandardOrientationRefinement.{u})
+    (hstd : Topology.factorOrientationClosure.{u})
     (hsum : ∀ (H : FiniteSurgeryHistory.{u}) (i : Fin H.eventCount),
       (H.cutCapTrace.transition i).componentConnectedSumDecomposition)
     (hext : ∀ (M : Topology.ConnectedClosedOrientedManifold.{u} 3) [SimplyConnectedSpace M.Carrier]
@@ -46,7 +47,7 @@ theorem smoothPoincareConjecture_of_poincareControlledExtinction
     (E := EuclideanSpace ℝ (Fin 3)) (M := M) (n := 3) (by simp)
   exact exists_diffeomorph_standardThreeSphere_of_poincareControlledExtinction
     (W := (hext { Carrier := M, orientation := o } g).some)
-    (hrefinement := hrefinement)
+    (hstd := hstd)
     (hsum := fun i => hsum _ i)
 
 def topologicalPoincareConjecture : Prop :=
