@@ -559,3 +559,49 @@ data, and negative thresholds with a nonzero corner value. Root reviewed the
 full changed sources, exact statements, provider proofs, consumers and diff.
 The new leaf is registered in the flat root; this is not a full DG build.
 Native source-boundary isotopy, arbitrary corner depth and Schoenflies remain open.
+
+## Smooth extension along native boundary embeddings, 2026-09-13
+
+Embedding/Extension now proves local and global extension along native
+IsSmoothEmbedding maps with standard EuclideanHalfSpace (d+1) source model.
+The local primary uses the actual IsImmersionAtOfComplement at one point and
+IsInducing, and agrees with the supplied data at every embedded point in its
+produced ambient open set. Ambient spaces may be arbitrary real normed spaces;
+the extended values are Banach. Global closed-image and compact-support
+corollaries require finite ambient dimension for Mathlib's smooth convex
+selection. The support-sensitive compact theorem needs only the image of
+K intersect tsupport g in the prescribed open set, while extending on all K.
+There is no whole-source compactness, extra Hausdorffness or nonemptiness premise.
+
+The written-in-charts calculation adapts the existing SliceChart proof from
+TauCeti/Geometry/Manifold/LocallyFlat/Smooth.lean at revision
+3358033ba2fd35f321356dceaf2372a0fd6c0bfd. Its original Apache header is retained.
+Native domain chart, codomain chart and complement equivalence all come from
+the same immersion witness. Existing HalfSpace/Borel extension controls the
+actual within-range germ; no smooth boundary retraction is assumed. IsInducing
+turns source-local equality into equality on all embedded points of an ambient
+neighborhood. No foreign boundary model or dependency is installed.
+
+One private convex-selection engine and one support-cutoff engine now serve
+both boundary and boundaryless interfaces. All four earlier embedding-extension
+signatures remain exact, including finite regularity and arbitrary normed values.
+Calculus/Cutoff supplies the natural within-set cutoff product at any order;
+the old whole-space theorem is a thin corollary. CompactCutoff localizes a
+within-set smooth function with an ambient equality germ and compact support,
+at any finite order or C-infinity, without complete values.
+
+Final source request 1789321985369070517-schoenflies-a81424a9 passes in 38.89
+seconds with 46 guards and 30 signature/axiom pairs. All nine earlier source
+pairs match baseline 67e158ba exactly. Imported request
+1789322127727898034-schoenflies-f3d17a60 passes in 292.20 seconds with 190 guards
+and 108 pairs. All 84 previous imported pairs and all 25 shared source/import
+pairs are byte-identical. Eight changed or affected leaves freshly compile
+without diagnostics in 3:43.91, maximum RSS 1830328 KiB. Stock source and
+declaration linters and approved-only transitive axioms pass. Consumers include
+nonconstant data on the whole noncompact halfline, compact extension with
+boundary value one, zero data with empty allowed support, order-zero arbitrary
+normed values, and a localized quadrant function uncontrolled off its domain.
+Root reviewed the full proof bodies, exact types, consumers and mathematical diff.
+These existing leaves remain registered in the flat root; this is not a full
+DG aggregate build. Moving boundary graphs, boundary-source isotopy, arbitrary
+corner depth and the Schoenflies headline remain open.

@@ -21,3 +21,8 @@ slice-chart proof from the same Tau Ceti revision.
 Copyright (c) 2026 The Tau Ceti contributors. All rights reserved.
 Released under the Apache License 2.0. The original header is retained;
 TAU_CETI_REUSE.md records the source and local modifications.
+
+DifferentialGeometry/Topology/Embedding/Extension.lean adapts that same
+slice-chart calculation to native standard-halfspace source models.
+The Tau Ceti copyright and Apache-2.0 header are retained. See
+TAU_CETI_REUSE.md for the extension proof and validation scope.
