@@ -7744,6 +7744,7 @@ import DifferentialGeometry.Topology.Homology.HomologyTwoFrontier
 import DifferentialGeometry.Topology.Homology.Homotopy
 import DifferentialGeometry.Topology.Homology.HurewiczEquivalences
 import DifferentialGeometry.Topology.Homology.HurewiczFrontier
+import DifferentialGeometry.Topology.Homology.HurewiczLowDegreeBasepoint
 import DifferentialGeometry.Topology.Homology.HurewiczLowDegrees
 import DifferentialGeometry.Topology.Homology.HurewiczNullhomotopyCriterion
 import DifferentialGeometry.Topology.Homology.HurewiczSphereCriterion
