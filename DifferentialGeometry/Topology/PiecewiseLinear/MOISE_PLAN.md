@@ -180,6 +180,14 @@
   及其邻域性质 `regularNeighborhood_mem_nhdsWithin`）、`SimplexBall.lean`（仿射无关有限集的凸包是 PL 球
   `isPLBall_convexHull_of_affineIndependent`）。同样逐模块检查零错误零警告，十七个端点公理审计只含标准公理。
   推送至 `origin/codex/moise-smoothing`。
+- 2026-09-12（车道 F 第三批，胞腔复形）：`Arrangement.lean`（有限族仿射泛函的符号向量胞腔：开/闭胞腔、符号序 `SignLE`、
+  吸收引理 `combo_mem_openCell`、边界点的严格坐标、闭胞腔闭且凸、沿开胞腔点的线段延伸、射线出口点存在
+  `exists_exit_of_mem_openCell` 与唯一 `exit_unique`）、`CellComplex.lean`（紧致"胞腔闭"集 `P` 的胞腔族、
+  胞腔旗、`cellDerived l P` 是 `Geometry.SimplicialComplex`（仿射无关性由顶胞腔的严格坐标给出；交集公理由
+  "过一点的旗唯一"给出，其顶系数由射线出口点唯一性决定）；`space_cellDerived`；胞腔闭子集是单形之并）、
+  `Triangulation.lean`（任意有限族 H-多面体被同一个复形三角剖分且各为子复形之并
+  `exists_simplicialComplex_of_forall_isHPolytope`；F1.2 `IsPolyhedron.exists_simplicialComplex`；
+  F2.3 `exists_isSubdivision_subcomplexes`；公共细分 `exists_common_subdivision`）。逐模块检查零错误零警告。
 
 - 2026-09-11（Phase 1 第二轮，负责人指示不等完整构建）：`IsPiecewiseAffineOn` 改为基于 `IsPiecewiseAffineWithinAt`
   （`𝓝[s] x`）的定义并重跑整条链；新增 `Manifold.lean`、`Polyhedron.lean`，以及 `Smoothing.lean` 中的
