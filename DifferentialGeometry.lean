@@ -4962,6 +4962,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.Deformat
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.DiniComparison
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.EssentialClass
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.FaceLimit
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.FlatPolygonRampCurvature
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.Flow
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.GapComparison
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.GoodWindows
