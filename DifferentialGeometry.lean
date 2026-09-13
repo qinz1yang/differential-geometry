@@ -5067,6 +5067,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.DiskBoundar
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.DiffeomorphismTransport
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.HomogeneousEuclideanCoordinates
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.HomogeneousRegularityBridge
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.MorreyDiskHomogeneousCoordinates
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.LeastArea
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.AreaBridge
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.AreaTransport
