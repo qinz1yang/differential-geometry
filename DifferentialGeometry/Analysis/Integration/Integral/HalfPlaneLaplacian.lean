@@ -207,9 +207,7 @@ private theorem boundaryCutoff_eventually_one {z : ℂ} (hz : 0 < z.im) :
 
 private theorem laplacian_eq_zero_of_notMem_tsupport {φ : ℂ → ℝ} {z : ℂ}
     (hz : z ∉ tsupport φ) : Laplacian.laplacian φ z = 0 := by
-  have he : iteratedFDeriv ℝ 2 φ z = 0 := image_eq_zero_of_notMem_tsupport
-    (fun h => hz (tsupport_iteratedFDeriv_subset (𝕜 := ℝ) (f := φ) 2 h))
-  simp [laplacian_eq_iteratedFDeriv_complexPlane, he]
+  exact image_eq_zero_of_notMem_tsupport (fun h => hz (tsupport_laplacian_subset φ h))
 
 private theorem exists_bound_fderiv_of_contDiff_hasCompactSupport {φ : ℂ → ℝ}
     (hφ : ContDiff ℝ 2 φ) (hc : HasCompactSupport φ) :
@@ -365,12 +363,7 @@ private theorem integrableOn_smul_laplacian_upper_half_plane_of_bound
   have hU : MeasurableSet {z : ℂ | 0 < z.im} :=
     (isOpen_lt continuous_const Complex.continuous_im).measurableSet
   have hl : ContinuousOn (Laplacian.laplacian f) {z : ℂ | 0 < z.im} := by
-    intro z hz
-    have hd := ((hf z hz).fderiv_right (m := 1) (by norm_num)).fderiv_right (m := 0) (by norm_num)
-    simp only [laplacian_eq_iteratedFDeriv_complexPlane, iteratedFDeriv_two_apply,
-      Matrix.cons_val_zero, Matrix.cons_val_one]
-    exact (((hd.continuousAt.clm_apply continuousAt_const).clm_apply continuousAt_const).add
-      ((hd.continuousAt.clm_apply continuousAt_const).clm_apply continuousAt_const)).continuousWithinAt
+    exact fun z hz => (hf z hz).continuousAt_laplacian.continuousWithinAt
   obtain ⟨A, hA⟩ := hc.exists_bound_of_continuousOn hφ.continuousOn
   apply (integrableOn_iff_integrable_of_support_subset
     ((Function.support_smul_subset_left φ (Laplacian.laplacian f)).trans (subset_tsupport φ))).mp

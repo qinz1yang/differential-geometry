@@ -212,6 +212,7 @@ import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.LogarithmicPotential.
 import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.LogarithmicPotential.FundamentalSolution
 import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.LogarithmicPotential.LogSumAtZeros
 import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.LogarithmicPotential.LogSumLaplacian
+import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.OddReflection
 import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.PolarDivergence
 import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.Regularization.Boundary
 import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.Regularization.Defs

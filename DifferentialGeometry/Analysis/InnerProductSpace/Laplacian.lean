@@ -163,3 +163,49 @@ theorem ContDiffAt.norm_laplacian_fun_smul_le
     _ ≤ _ := by
       simp only [norm_smul, Real.norm_ofNat]
       nlinarith only [hn]
+
+theorem LinearIsometryEquiv.laplacian_comp
+    {E G F : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+    [FiniteDimensional ℝ E] [NormedAddCommGroup G] [InnerProductSpace ℝ G]
+    [FiniteDimensional ℝ G] [NormedAddCommGroup F] [NormedSpace ℝ F]
+    (e : E ≃ₗᵢ[ℝ] G) (f : G → F) (x : E) :
+    Laplacian.laplacian (f ∘ e) x = Laplacian.laplacian f (e x) := by
+  let b := stdOrthonormalBasis ℝ E
+  have he := e.toContinuousLinearEquiv.iteratedFDerivWithin_comp_right f
+    (s := Set.univ) uniqueDiffOn_univ (x := x) (Set.mem_univ _) 2
+  simp only [Set.preimage_univ, iteratedFDerivWithin_univ] at he
+  change iteratedFDeriv ℝ 2 (f ∘ e) x =
+    (iteratedFDeriv ℝ 2 f (e x)).compContinuousLinearMap
+      (fun _ => e.toContinuousLinearEquiv.toContinuousLinearMap) at he
+  rw [laplacian_eq_iteratedFDeriv_orthonormalBasis _ b,
+    laplacian_eq_iteratedFDeriv_orthonormalBasis _ (b.map e)]
+  dsimp only
+  rw [he]
+  simp only [ContinuousMultilinearMap.compContinuousLinearMap_apply, OrthonormalBasis.map_apply,
+    Matrix.vec_single_eq_const, Matrix.vecCons_const]
+  rfl
+
+theorem ContDiffAt.continuousAt_laplacian
+    {E F : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+    [FiniteDimensional ℝ E] [NormedAddCommGroup F] [NormedSpace ℝ F]
+    {f : E → F} {x : E} (hf : ContDiffAt ℝ 2 f x) :
+    ContinuousAt (Laplacian.laplacian f) x := by
+  rw [laplacian_eq_iteratedFDeriv_stdOrthonormalBasis]
+  exact tendsto_finsetSum _ (fun i _ =>
+    (hf.continuousAt_iteratedFDeriv (by norm_num : (2 : ℕ∞ω) ≤ 2)).eval_const _)
+
+namespace DifferentialGeometry.Analysis
+open Set
+
+theorem tsupport_laplacian_subset
+    {E F : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+    [FiniteDimensional ℝ E] [NormedAddCommGroup F] [NormedSpace ℝ F] (f : E → F) :
+    tsupport (Laplacian.laplacian f) ⊆ tsupport f := by
+  apply closure_minimal _ (isClosed_tsupport f)
+  intro z hz
+  contrapose! hz
+  have he : iteratedFDeriv ℝ 2 f z = 0 := image_eq_zero_of_notMem_tsupport
+    (fun h => hz (tsupport_iteratedFDeriv_subset (𝕜 := ℝ) (f := f) 2 h))
+  simp [laplacian_eq_iteratedFDeriv_stdOrthonormalBasis, he]
+
+end DifferentialGeometry.Analysis
