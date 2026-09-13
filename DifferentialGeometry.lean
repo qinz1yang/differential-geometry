@@ -6470,6 +6470,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.Fundamental
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.FundamentalClassRealization
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.FundamentalClassRealizationCriterion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.FundamentalClassDegreeReduction
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.FundamentalClassDuality
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.GeometricCutoff
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.History
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryAncestry
@@ -7882,6 +7883,7 @@ import DifferentialGeometry.Topology.Homology.OpenExcision
 import DifferentialGeometry.Topology.Homology.PathChains
 import DifferentialGeometry.Topology.Homology.PathCones
 import DifferentialGeometry.Topology.Homology.PathEvaluation
+import DifferentialGeometry.Topology.Homology.PoincareDualityThreeFrontier
 import DifferentialGeometry.Topology.Homology.RadialHomotopy
 import DifferentialGeometry.Topology.Homology.RayComplementCoverEvaluation
 import DifferentialGeometry.Topology.Homology.Reduced
@@ -8889,6 +8891,7 @@ import DifferentialGeometry.Topology.ThreeManifold.PoincareStandardSumClosedAsso
 import DifferentialGeometry.Topology.ThreeManifold.SmoothSchoenflies
 import DifferentialGeometry.Topology.ThreeManifold.SmoothSchoenfliesRoundSphere
 import DifferentialGeometry.Topology.ThreeManifold.SphereMappingTorus
+import DifferentialGeometry.Topology.ThreeManifold.SphereTwoTimesCircleCohomology
 import DifferentialGeometry.Topology.ThreeManifold.SphereTwoTimesCircleHomology
 import DifferentialGeometry.Topology.ThreeManifold.SphereTwoTimesCircleOrientationClosure
 import DifferentialGeometry.Topology.ThreeManifold.SphericalSpaceFormOrientationClosure
