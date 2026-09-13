@@ -294,6 +294,7 @@ import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.SobolevBounds.
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.Weitzenbock.IntegratedCovariantTensor
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.Weitzenbock.IntegratedMixedTensor
 import DifferentialGeometry.Analysis.Elliptic.DistributionalSupersolution
+import DifferentialGeometry.Analysis.Elliptic.Euclidean.GradientEstimate
 import DifferentialGeometry.Analysis.Elliptic.Euclidean.HarmonicComparison
 import DifferentialGeometry.Analysis.Elliptic.Euclidean.MaximumPrinciple
 import DifferentialGeometry.Analysis.Elliptic.Euclidean.QuadraticGrowth
