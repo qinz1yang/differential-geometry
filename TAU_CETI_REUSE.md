@@ -420,3 +420,35 @@ singletons, rank zero, empty sources with arbitrary normed model, and the origin
 Banach-valued map-extension consumers. These are fresh leaf/source and consumer
 checks, not a full DG aggregate build. Boundary/corners and the actual
 Schoenflies isotopy-family producer remain open.
+
+## Ambient isotopy from interval-only input, 2026-09-13
+
+Manifold.exists_contDiff_compact_ambient_isotopy_Icc now accepts joint smoothness
+and native embedding slices only on Icc a b. The compact source is boundaryless;
+the ambient space is a finite-dimensional real normed space. It constructs
+native ambient diffeomorphisms with joint C∞ forward and inverse maps, identity
+at a, BOTH exact tracking equations on the closed interval, and ONE compact
+spatial support inside the prescribed open neighborhood of the trace. Both
+directions fix its complement for all real times. Arbitrary endpoints are
+allowed: a reversed interval uses the identity family and empty support.
+
+This is a thin application of the published interval embedding-family extension
+and the existing compact velocity/flow engine. All earlier AmbientIsotopy proof
+bodies and public signatures are retained. No supplied extension, velocity or
+flow is assumed; no ordinary derivative identity for raw interval data at an
+endpoint is asserted. The genuinely whole-real extension is what the existing
+ODE proof differentiates. Source-boundary/corners, general ambient manifolds and
+the actual Schoenflies family producer remain open.
+
+Private request efe400b6 passed in 51.82 seconds with 169 guards and 38 pairs.
+Public source1789315199912929650-schoenflies-50b2497e passed in 68.96 seconds,
+175 guards and47pairs. Final imported1789315305984021990-schoenflies-096d3a15
+passed in136.03seconds,175guards46pairs, all46typesbyte-identical to source.
+The changed leaf freshly compiled without diagnostics in1:18.32, maximum
+RSS1822700KiB. Stock declaration linters and approved-only axioms pass. New
+consumers include arbitrary interval S² families, an actual nonzero translated
+sphere truncated to zero outside [0,1], and arbitrary empty-interval input with
+empty support forcing identity at every time. All old map/family/velocity,
+whole-real ambient and relative fixed-neighborhood consumers replay unchanged.
+Root reviewed full source, exact types, actual provider bodies, all guards and
+the complete diff. This is a fresh leaf and consumer check, not a full DG build.
