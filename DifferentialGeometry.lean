@@ -3919,6 +3919,7 @@ import DifferentialGeometry.Geometry.Connection.ParallelTransport.VectorBundle
 import DifferentialGeometry.Geometry.Connection.ParsevalFrameField
 import DifferentialGeometry.Geometry.Connection.Principal
 import DifferentialGeometry.Geometry.Connection.Product
+import DifferentialGeometry.Geometry.Connection.ProductAlongCurve
 import DifferentialGeometry.Geometry.Connection.Pullback
 import DifferentialGeometry.Geometry.Connection.PullbackHom
 import DifferentialGeometry.Geometry.Connection.PullbackMetric
@@ -4895,6 +4896,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.C
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Connection
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Continuation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ContinuationFrontier
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.CoverCovariantDerivative
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.CurvatureLength
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Evolution
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.IntegralBounds
@@ -5092,6 +5094,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborho
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ModelTheorem
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ModelWitness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NeckArmNoReturn
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NeckRegionBoundary
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NeckTransportDecoupled
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.OrientedBadPointSelection
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.OrientedModelTheorem
@@ -6320,6 +6323,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ClosedSlabE
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.Cohomology
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CollarChildCoreSeparation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.Comparison
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ComparisonDefs
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ControlledExtinction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ControlledExtinctionAssembly
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ControlledExtinctionTower
@@ -6333,6 +6337,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventData
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventExtension
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventRescaling
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EuclideanSimplexGeneratorCriterion
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ExteriorRegion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ExtinctionBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ExtinctionReconstruction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.FiniteHistory
@@ -6370,6 +6375,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SlabTermina
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SphereSmash
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SphericalCappingBridge
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SphericalCappingCompletion
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SphericalRegion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.StaticCap
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.StaticNeckChildCore
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalMetricUnique
