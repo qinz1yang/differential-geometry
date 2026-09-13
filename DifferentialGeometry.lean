@@ -5001,6 +5001,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.CalculusBac
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.CanonicalClass
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.ClassWidth
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.Comparison
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.ComparisonLimit
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.ComponentDifferential
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.ComponentDisk
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.ComponentHarmonic
