@@ -42,6 +42,7 @@ import DifferentialGeometry.Analysis.Calculus.Derivative.DifferentialComparison
 import DifferentialGeometry.Analysis.Calculus.Derivative.ForwardTimeDifference
 import DifferentialGeometry.Analysis.Calculus.Derivative.HilbertBasis
 import DifferentialGeometry.Analysis.Calculus.Derivative.ImmersionLiftRegularity
+import DifferentialGeometry.Analysis.Calculus.Derivative.IntervalInteriorDeriv
 import DifferentialGeometry.Analysis.Calculus.Derivative.LeftEndpoint
 import DifferentialGeometry.Analysis.Calculus.Derivative.ParametricIntervalIntegral
 import DifferentialGeometry.Analysis.Calculus.Derivative.Punctured
@@ -4981,6 +4982,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.ComponentHa
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.DiskVariation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.DiskVariationCurvature
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.DiskVariationBoundary
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.DiskVariationBoundaryFlux
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.DiskBoundaryIntegral
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.DiffeomorphismTransport
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.LeastArea
