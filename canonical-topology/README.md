@@ -1,11 +1,14 @@
 # Local homology and global classes from coherent local generators
 
 This separate `PoincareLean` project contains a dependency-closed checkpoint of
-114 Poincare modules. It extends the recovered Chapter 35 source at commit
+115 Poincare modules. It extends the recovered Chapter 35 source at commit
 `b45bfa009368c8f5f531e10f4f5280e90079d6ad` and preserves its mathematical objects
 and `Poincare` namespaces. `Poincare.lean` imports every included leaf.
 
 The additions prove:
+
+- the actual relative-cohomology/relative-homology cap product with absolute
+  homology output, its cycle formula, naturality and both projection laws;
 
 - the bilinear cap product of actual relative cochains and relative chains
   with absolute-chain output, its projection, naturality and signed boundary laws;
@@ -75,7 +78,7 @@ The additions prove:
 - a unique compact-neighborhood class with the same normalization in every
   chart whose actual tangent trivialization preserves the base-chart orientation.
 
-The thirty new/changed modules and their exact baseline/current hashes are listed in
+The thirty-one new/changed modules and their exact baseline/current hashes are listed in
 [provenance/SNAPSHOT.json](provenance/SNAPSHOT.json). The derivative homotopy
 retains its [upstream attribution and modification record](provenance/README.md).
 
@@ -586,6 +589,31 @@ relative vertex with positive and negative cap values, the odd-degree boundary
 sign and actual doubling-map naturality. Stock declaration linters and
 standard-only transitive axioms pass. Descent of this pairing to relative
 cohomology and absolute homology, and general duality, remain open.
+
+The relative-to-absolute homology extension adds one coherent 343-line leaf
+and seven public exports, for 115 modules and 131 added exports. It constructs
+`H^k(X,A; Z) x H_(k+m)(X,A; Z) -> H_m(X; Z)` using the original relative
+cochain and chain complexes and actual absolute homology. The cycle map,
+representative formula, naturality under actual pair maps, compatibility with
+absolute-to-relative projection on output, and compatibility with projected
+absolute input are proved. Signed boundary witnesses and Mathlib's bilinear
+quotient lift give the descent through both actual cycles/boundaries quotients.
+No alternate homology representation or assumed compatibility is introduced.
+
+Final portable request `1789329891086424933-topology_checkpoint-e37273b4`
+passed in Slurm 13821107 in 165.88 seconds, with 305 guards and 225 signature/
+axiom pairs. All 214 prior pairs are byte-identical and all 114 earlier leaves
+are unchanged. RelativeCapToAbsoluteHomology and root freshly compiled in
+1:18.25, maximum RSS 1812900 KiB, with zero diagnostics. All seven public and
+four consumer pairs match original imported 3bbfb6aa up to scoped set notation;
+that gate passed in 80.21 seconds with 69 guards and eleven pairs. Final source
+da3ec091 passed in 18.51 seconds with 67 guards and twenty pairs, including
+all private helpers. Consumers produce a nonzero relative cohomology class for
+the empty pair whose positive and negative cap actions on a nonzero homology
+class are the identity and negation. They also check actual doubling pair-map
+naturality and the positive-degree cycle formula. Stock declaration linters
+and standard-only transitive axioms pass. General duality and the full native
+oriented-manifold theorem suite remain open.
 
 ## Remaining topology work
 

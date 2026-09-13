@@ -61,6 +61,7 @@ import Poincare.Topology.Homology.RelativeCapConnecting
 import Poincare.Topology.Homology.RelativeCapHomology
 import Poincare.Topology.Homology.RelativeCapProduct
 import Poincare.Topology.Homology.RelativeCapToAbsolute
+import Poincare.Topology.Homology.RelativeCapToAbsoluteHomology
 import Poincare.Topology.Homology.RelativeCochains
 import Poincare.Topology.Homology.RelativeEmpty
 import Poincare.Topology.Homology.RelativeFunctoriality
