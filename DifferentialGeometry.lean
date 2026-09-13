@@ -3177,6 +3177,7 @@ import DifferentialGeometry.Topology.Embedding.Convex
 import DifferentialGeometry.Topology.Embedding.Radial
 import DifferentialGeometry.Topology.Embedding.LinearEquiv
 import DifferentialGeometry.Topology.Embedding.LocalDiffeomorph
+import DifferentialGeometry.Topology.Embedding.SliceChart
 import DifferentialGeometry.Topology.Embedding.Sphere
 import DifferentialGeometry.Topology.Handle.Embedding
 import DifferentialGeometry.Topology.ThreeManifold.schoenflies

@@ -15,3 +15,9 @@ Copyright (c) 2026 Joseph Tooby-Smith and The Tau Ceti contributors.
 All rights reserved. Released under the Apache License 2.0.
 Original file headers are retained. See TAU_CETI_REUSE.md for authors,
 exact source paths, local modifications and validation scope.
+
+DifferentialGeometry/Topology/Embedding/SliceChart.lean adapts the local
+slice-chart proof from the same Tau Ceti revision.
+Copyright (c) 2026 The Tau Ceti contributors. All rights reserved.
+Released under the Apache License 2.0. The original header is retained;
+TAU_CETI_REUSE.md records the source and local modifications.

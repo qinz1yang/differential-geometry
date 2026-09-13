@@ -3,13 +3,14 @@
 These native modules adapt Apache 2.0 source from
 [Tau Ceti at 3358033ba2fd35f321356dceaf2372a0fd6c0bfd](https://github.com/TauCetiProject/TauCeti/tree/3358033ba2fd35f321356dceaf2372a0fd6c0bfd).
 The repository LICENSE supplies the license text. Original copyright and
-author headers remain in both Lean files; NOTICE also records attribution.
+author headers remain in the Lean files; NOTICE also records attribution.
 The upstream root NOTICE path returns 404 at this pinned revision.
 
 | Native module | Upstream source and authors |
 | --- | --- |
 | Analysis/Calculus/Sard | [Sard/EqualDimension.lean](https://github.com/TauCetiProject/TauCeti/blob/3358033ba2fd35f321356dceaf2372a0fd6c0bfd/TauCeti/Analysis/Calculus/Sard/EqualDimension.lean), Joseph Tooby-Smith and Codex |
 | Topology/Morse/Generic | [Morse/Generic.lean](https://github.com/TauCetiProject/TauCeti/blob/3358033ba2fd35f321356dceaf2372a0fd6c0bfd/TauCeti/Analysis/Calculus/Morse/Generic.lean), The Tau Ceti contributors |
+| Topology/Embedding/SliceChart | [LocallyFlat/Smooth.lean](https://github.com/TauCetiProject/TauCeti/blob/3358033ba2fd35f321356dceaf2372a0fd6c0bfd/TauCeti/Geometry/Manifold/LocallyFlat/Smooth.lean), The Tau Ceti contributors |
 
 The Haar-null transport also adapts
 [Haar/NormedSpace.lean](https://github.com/TauCetiProject/TauCeti/blob/3358033ba2fd35f321356dceaf2372a0fd6c0bfd/TauCeti/MeasureTheory/Measure/Haar/NormedSpace.lean),
@@ -36,6 +37,17 @@ everywhere, density and arbitrarily small operator-norm perturbations on the
 original open set. Tangent-space coercions, obsolete lemma names and the
 quadratic consumer were adapted to the pinned compiler. Mechanics stay private.
 
+The slice-chart proof retains the two open restrictions from Tau Ceti: one
+forces slice points to belong to the immersion chart, and the other excludes
+distant branches of the embedded range. It uses native immersion charts and
+returns an OpenPartialHomeomorph with ContMDiffOn laws for both directions.
+Its exact image equation uses the entire range of the given map. The source
+may have corners; only the ambient model must be boundaryless. The general
+engine needs a topologically inducing map and an immersion at the given point;
+the smooth-embedding method is its corollary. No Tau embedding, slice or local
+flatness definitions are imported. Continuous-linear-equivalence smoothness
+and the Euclidean sphere's dimension instance were adapted to the pinned APIs.
+
 ## Verification
 
 Source request 1789297179397566825-schoenflies-73efb952 passed in Slurm 13821107
@@ -52,6 +64,20 @@ propext, Classical.choice and Quot.sound. Consumers exhibit the actual critical
 point of a perturbed real quadratic and a nondegenerate point of a constant
 function on the rank-zero model. Both leaves are registered in the flat root.
 These checks are not a completed full DifferentialGeometry aggregate build.
+
+The slice-chart source gate, 1789301170338217570-schoenflies-b3900a3e, passed
+in the same Slurm allocation in 34.41 seconds, with 14 guards and five
+signature/axiom pairs. The final imported gate,
+1789301267798740740-schoenflies-d05544f3, passed in 81.91 seconds, with 16
+guards and five pairs. The new module freshly compiled with zero diagnostics;
+artifact generation took 50.32 seconds with maximum RSS 1639036 KiB.
+Both public methods and all three consumers have standard-only transitive
+axioms and pass the stock declaration linters listed above. Consumers cover
+an arbitrary smooth embedded two-sphere, the actual unit sphere inclusion,
+and a model-with-corners inclusion. The leaf is registered in the flat root;
+this is a fresh leaf and imported-source gate, not a full aggregate build.
+Local slice charts do not establish a global tubular neighborhood or ambient
+isotopy extension.
 
 Distinct critical values, global positioning of an embedded sphere, smooth
 relative disk absorption and full Schoenflies remain open.
