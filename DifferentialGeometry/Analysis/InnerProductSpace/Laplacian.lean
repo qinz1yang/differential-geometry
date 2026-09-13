@@ -2,6 +2,7 @@ import DifferentialGeometry.Analysis.InnerProductSpace.HilbertSchmidt
 import Mathlib.Analysis.InnerProductSpace.Laplacian
 import Mathlib.Analysis.InnerProductSpace.Calculus
 import Mathlib.Analysis.Calculus.FDeriv.CompCLM
+import Mathlib.Analysis.Calculus.Gradient.Basic
 import Mathlib.Tactic.NormNum
 import Mathlib.Tactic.Ring
 
@@ -68,3 +69,97 @@ theorem InnerProductSpace.laplacian_norm_sq
     simp only [laplacian_eq_iteratedFDeriv_stdOrthonormalBasis, iteratedFDeriv_two_apply,
       he, fderiv_fun_const, Pi.zero_apply, _root_.zero_apply, Finset.sum_const_zero]
   simpa [hid, ContinuousLinearMap.hilbertSchmidtInner] using h
+
+private theorem second_partial_smul
+    {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [NormedAddCommGroup F] [NormedSpace ℝ F]
+    {a : E → ℝ} {f : E → F} {x : E}
+    (ha : ContDiffAt ℝ 2 a x) (hf : ContDiffAt ℝ 2 f x) (v w : E) :
+    fderiv ℝ (fun q => fderiv ℝ (fun y => a y • f y) q v) x w =
+      a x • fderiv ℝ (fderiv ℝ f) x w v +
+        (fderiv ℝ a x w) • (fderiv ℝ f x v) +
+        (fderiv ℝ a x v) • (fderiv ℝ f x w) +
+        (fderiv ℝ (fderiv ℝ a) x w v) • f x := by
+  have had := ha.differentiableAt (by norm_num)
+  have hfd := hf.differentiableAt (by norm_num)
+  have hadd := (ha.fderiv_right (m := 1) (by norm_num)).differentiableAt (by norm_num)
+  have hfdd := (hf.fderiv_right (m := 1) (by norm_num)).differentiableAt (by norm_num)
+  have hpa := hadd.clm_apply (differentiableAt_const v)
+  have hpf := hfdd.clm_apply (differentiableAt_const v)
+  have hnear : (fun q => fderiv ℝ (fun y => a y • f y) q v) =ᶠ[𝓝 x]
+      (fun q => a q • fderiv ℝ f q v + (fderiv ℝ a q v) • f q) := by
+    filter_upwards [ha.eventually (by norm_num), hf.eventually (by norm_num)] with q haq hfq
+    rw [fderiv_fun_smul (haq.differentiableAt (by norm_num))
+      (hfq.differentiableAt (by norm_num))]
+    simp
+  rw [hnear.fderiv_eq]
+  erw [fderiv_fun_add (had.smul hpf) (hpa.smul hfd),
+    fderiv_fun_smul had hpf, fderiv_fun_smul hpa hfd,
+    fderiv_clm_apply hfdd (differentiableAt_const v),
+    fderiv_clm_apply hadd (differentiableAt_const v)]
+  simp
+  abel
+
+private theorem laplacian_fun_smul_sum
+    {E F : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+    [FiniteDimensional ℝ E] [NormedAddCommGroup F] [NormedSpace ℝ F]
+    {a : E → ℝ} {f : E → F} {x : E}
+    (ha : ContDiffAt ℝ 2 a x) (hf : ContDiffAt ℝ 2 f x) :
+    Laplacian.laplacian (fun y => a y • f y) x =
+      a x • Laplacian.laplacian f x +
+        (2 : ℝ) • (∑ i : Fin (Module.finrank ℝ E),
+          (fderiv ℝ a x ((stdOrthonormalBasis ℝ E) i)) •
+            (fderiv ℝ f x ((stdOrthonormalBasis ℝ E) i))) +
+        Laplacian.laplacian a x • f x := by
+  rw [laplacian_eq_iteratedFDeriv_stdOrthonormalBasis,
+    laplacian_eq_iteratedFDeriv_stdOrthonormalBasis,
+    laplacian_eq_iteratedFDeriv_stdOrthonormalBasis]
+  simp only [iteratedFDeriv_two_apply, Matrix.cons_val_zero, Matrix.cons_val_one]
+  have hdd := ((ha.smul hf).fderiv_right (m := 1) (by norm_num)).differentiableAt
+    (by norm_num)
+  have he (v : E) :
+      fderiv ℝ (fderiv ℝ (fun y => a y • f y)) x v v =
+        fderiv ℝ (fun q => fderiv ℝ (fun y => a y • f y) q v) x v := by
+    erw [fderiv_clm_apply hdd (differentiableAt_const v)]
+    simp
+    rfl
+  simp only [he, second_partial_smul ha hf, Finset.sum_add_distrib,
+    ← Finset.smul_sum, ← Finset.sum_smul, two_smul]
+  abel
+
+theorem ContDiffAt.laplacian_fun_smul
+    {E F : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+    [FiniteDimensional ℝ E] [NormedAddCommGroup F] [NormedSpace ℝ F]
+    {a : E → ℝ} {f : E → F} {x : E}
+    (ha : ContDiffAt ℝ 2 a x) (hf : ContDiffAt ℝ 2 f x) :
+    Laplacian.laplacian (fun y => a y • f y) x =
+      a x • Laplacian.laplacian f x +
+        (2 : ℝ) • (fderiv ℝ f x (gradient a x)) +
+        Laplacian.laplacian a x • f x := by
+  rw [laplacian_fun_smul_sum ha hf]
+  have he := congrArg (fderiv ℝ f x) ((stdOrthonormalBasis ℝ E).sum_repr' (gradient a x))
+  simp only [map_sum, map_smul, inner_gradient_right, conj_trivial] at he
+  rw [he]
+
+theorem ContDiffAt.norm_laplacian_fun_smul_le
+    {E F : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+    [FiniteDimensional ℝ E] [NormedAddCommGroup F] [NormedSpace ℝ F]
+    {a : E → ℝ} {f : E → F} {x : E}
+    (ha : ContDiffAt ℝ 2 a x) (hf : ContDiffAt ℝ 2 f x) :
+    ‖Laplacian.laplacian (fun y => a y • f y) x‖ ≤
+      ‖a x‖ * ‖Laplacian.laplacian f x‖ +
+        2 * ‖fderiv ℝ a x‖ * ‖fderiv ℝ f x‖ +
+        ‖Laplacian.laplacian a x‖ * ‖f x‖ := by
+  rw [ha.laplacian_fun_smul hf]
+  have hn : ‖fderiv ℝ f x (gradient a x)‖ ≤
+      ‖fderiv ℝ a x‖ * ‖fderiv ℝ f x‖ := by
+    simpa only [gradient, LinearIsometryEquiv.norm_map, mul_comm] using
+      (fderiv ℝ f x).le_opNorm (gradient a x)
+  calc
+    _ ≤ ‖a x • Laplacian.laplacian f x‖ +
+        ‖(2 : ℝ) • fderiv ℝ f x (gradient a x)‖ +
+        ‖Laplacian.laplacian a x • f x‖ :=
+      (norm_add_le _ _).trans (add_le_add (norm_add_le _ _) le_rfl)
+    _ ≤ _ := by
+      simp only [norm_smul, Real.norm_ofNat]
+      nlinarith only [hn]
