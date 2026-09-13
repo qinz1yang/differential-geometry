@@ -1,9 +1,18 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ComparisonDefs
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SupportRegion
+import DifferentialGeometry.Topology.Manifold.PartialDiffeomorphTrans
 import DifferentialGeometry.Topology.Manifold.SmoothEmbeddingOpenTarget
 import DifferentialGeometry.Topology.Manifold.SmoothEmbeddingComposition
 import DifferentialGeometry.Topology.Manifold.OpenEmbedding
 import DifferentialGeometry.Topology.Manifold.ImmersionDifferential
+import DifferentialGeometry.Topology.Manifold.ImmersionImageNhds
+import DifferentialGeometry.Topology.Manifold.OpenSubtypeDiffeomorph
+import DifferentialGeometry.Topology.Manifold.ChartPartialDiffeomorph
+import DifferentialGeometry.Topology.Manifold.EuclideanBoundaryCoordinates
+
+attribute [local instance]
+  DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.SmoothCutCapTransition.coreCharts
+  DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.SmoothCutCapTransition.coreSmooth
 
 noncomputable section
 
@@ -267,6 +276,271 @@ theorem exists_diffeomorph_range_staticNeck (b : G.ChildBoundary c) :
         ((G.staticNeckPoint_isSmoothEmbedding c b).isImmersion.isImmersionAt z))
       hdim
   exact ⟨V, Φ, hV, hval, hsymm⟩
+
+theorem extChartAt_neckBuffer_snd_apply
+    (b : G.ChildBoundary c) (z₀ z : neckBuffer (G.static b.1).delta) :
+    (extChartAt NeckCylinderModel z₀ z).2 = z.1.2 := by
+  rw [extChartAt, OpenPartialHomeomorph.extend_coe]
+  rw [TopologicalSpace.Opens.chartAt_eq, OpenPartialHomeomorph.subtypeRestr_coe]
+  simp only [Set.domRestrict_apply, Function.comp_apply]
+  rw [prodChartedSpace_chartAt, OpenPartialHomeomorph.prod_apply, chartAt_self_eq]
+  rfl
+
+theorem exists_staticNeck_inverse (b : G.ChildBoundary c) :
+    ∃ σ : PartialDiffeomorph ThreeModel NeckCylinderModel (G.Parent c).Carrier
+        ↥(neckBuffer (G.static b.1).delta) ∞,
+      σ.source = Set.range (G.staticNeckPoint c b) ∧
+      (∀ y, y ∈ Set.range (G.staticNeckPoint c b) → G.staticNeckPoint c b (σ y) = y) ∧
+      (∀ z, σ (G.staticNeckPoint c b z) = z) := by
+  obtain ⟨V, Φ, hV, hval, hsymm⟩ := G.exists_diffeomorph_range_staticNeck c b
+  let y₀ : Sphere 2 := DifferentialGeometry.Topology.sphereTwoNorth
+  have hδpos : 0 < ((G.static b.1).delta)⁻¹ := inv_pos.mpr (G.static b.1).neck.delta_pos
+  have hz₀ : (y₀, (0 : ℝ)) ∈ neckBuffer (G.static b.1).delta := ⟨by linarith, by linarith⟩
+  have hVne : Nonempty V :=
+    ⟨⟨G.staticNeckPoint c b ⟨(y₀, 0), hz₀⟩, by
+      change G.staticNeckPoint c b ⟨(y₀, 0), hz₀⟩ ∈ (V : Set (G.Parent c).Carrier)
+      rw [hV]
+      exact Set.mem_range_self _⟩⟩
+  let σ : PartialDiffeomorph ThreeModel NeckCylinderModel (G.Parent c).Carrier
+      ↥(neckBuffer (G.static b.1).delta) ∞ :=
+    (DifferentialGeometry.Manifold.openSubtypePartialDiffeomorph ThreeModel V hVne).symm.trans
+      Φ.symm.toPartialDiffeomorph
+  have hσapply : ∀ (y : (G.Parent c).Carrier) (hy : y ∈ V),
+      σ y = Φ.symm (⟨y, hy⟩ : V) := by
+    intro y hy
+    rw [show σ y = (Φ.symm.toPartialEquiv)
+        ((DifferentialGeometry.Manifold.openSubtypePartialDiffeomorph ThreeModel V
+          hVne).symm.toPartialEquiv y) from rfl]
+    rw [DifferentialGeometry.Manifold.openSubtypePartialDiffeomorph_symm_apply ThreeModel V hVne hy]
+    rfl
+  refine ⟨σ, ?_, ?_, ?_⟩
+  · rw [show σ.source = ((DifferentialGeometry.Manifold.openSubtypePartialDiffeomorph ThreeModel V
+        hVne).symm.toPartialEquiv.trans Φ.symm.toPartialEquiv).source from rfl]
+    rw [PartialEquiv.trans_source]
+    rw [PartialDiffeomorph.symm_toPartialEquiv_source]
+    rw [show (DifferentialGeometry.Manifold.openSubtypePartialDiffeomorph ThreeModel V
+        hVne).target = (V : Set (G.Parent c).Carrier) from
+      DifferentialGeometry.Manifold.openSubtypePartialDiffeomorph_target ThreeModel V hVne]
+    rw [show Φ.symm.toPartialEquiv.source = Set.univ from rfl]
+    simp only [Set.preimage_univ, Set.inter_univ]
+    exact hV
+  · intro y hy
+    have hyV : y ∈ V := by
+      change y ∈ (V : Set (G.Parent c).Carrier)
+      rw [hV]
+      exact hy
+    rw [hσapply y hyV]
+    exact hsymm ⟨y, hyV⟩
+  · intro z
+    have hzV : G.staticNeckPoint c b z ∈ V := by
+      change G.staticNeckPoint c b z ∈ (V : Set (G.Parent c).Carrier)
+      rw [hV]
+      exact Set.mem_range_self z
+    rw [hσapply _ hzV]
+    have hz : (⟨G.staticNeckPoint c b z, hzV⟩ : V) = Φ z := Subtype.ext (hval z).symm
+    rw [hz, Diffeomorph.symm_apply_apply]
+
+theorem exists_ambientChart_staticNeckImage (b : G.ChildBoundary c)
+    (z₀ : neckBuffer (G.static b.1).delta) :
+    ∃ φ : PartialDiffeomorph ThreeModel ThreeModel (G.Parent c).Carrier
+        (EuclideanSpace ℝ (Fin 3)) ∞,
+      G.staticNeckPoint c b z₀ ∈ φ.source ∧
+      φ (G.staticNeckPoint c b z₀) 0 = z₀.1.2 - G.comparisonLevel c b ∧
+      ∀ y ∈ φ.source, (y ∈ supportRegion G c ↔ 0 ≤ φ y 0) := by
+  obtain ⟨σ, hσsource, hσinv, hσleft⟩ := G.exists_staticNeck_inverse c b
+  let χ := extChartAtPartialDiffeomorph (I := NeckCylinderModel) ∞ z₀
+  let ψ : PartialDiffeomorph (modelWithCornersSelf ℝ (EuclideanSpace ℝ (Fin 2) × ℝ))
+      (modelWithCornersSelf ℝ (EuclideanSpace ℝ (Fin 3)))
+      (EuclideanSpace ℝ (Fin 2) × ℝ) (EuclideanSpace ℝ (Fin 3)) ∞ :=
+    ((DifferentialGeometry.Topology.translateDiffeomorph
+        ((0 : EuclideanSpace ℝ (Fin 2)), -(G.comparisonLevel c b))).trans
+      (DifferentialGeometry.Topology.normalFirstEquiv 2).toDiffeomorph).toPartialDiffeomorph
+  let φ := (σ.trans χ).trans ψ
+  have hφsource : φ.source = σ.source ∩ σ ⁻¹' (extChartAt NeckCylinderModel z₀).source := by
+    rw [show φ.source = (σ.trans χ).source ∩ (σ.trans χ) ⁻¹' ψ.source from
+      PartialDiffeomorph.trans_source _ _]
+    rw [show (σ.trans χ).source = σ.source ∩ σ ⁻¹' χ.source from
+      PartialDiffeomorph.trans_source _ _]
+    rw [show ψ.source = Set.univ from rfl, Set.preimage_univ, Set.inter_univ]
+    rfl
+  have hbase : G.staticNeckPoint c b z₀ ∈ φ.source := by
+    rw [hφsource]
+    exact ⟨by rw [hσsource]; exact Set.mem_range_self z₀,
+      by rw [Set.mem_preimage, hσleft z₀]; exact mem_extChartAt_source z₀⟩
+  have hcoord : ∀ y ∈ φ.source, φ y 0 = (σ y).1.2 - G.comparisonLevel c b := by
+    intro y hy
+    rw [hφsource] at hy
+    rw [PartialDiffeomorph.trans_apply, PartialDiffeomorph.trans_apply]
+    change (DifferentialGeometry.Topology.normalFirstEquiv 2
+      ((extChartAt NeckCylinderModel z₀) (σ y) +
+        ((0 : EuclideanSpace ℝ (Fin 2)), -(G.comparisonLevel c b)))) 0 =
+      (σ y).1.2 - G.comparisonLevel c b
+    rw [DifferentialGeometry.Topology.normalFirstEquiv_zero, Prod.snd_add,
+      extChartAt_neckBuffer_snd_apply]
+    simp [sub_eq_add_neg]
+  refine ⟨φ, hbase, ?_, ?_⟩
+  · rw [hcoord (G.staticNeckPoint c b z₀) hbase, hσleft z₀]
+  · intro y hy
+    have hyφ := hy
+    rw [hφsource] at hy
+    have hyσ := hy.1
+    have hyrange : y ∈ Set.range (G.staticNeckPoint c b) := by
+      rw [← hσsource]; exact hyσ
+    have hσy : G.staticNeckPoint c b (σ y) = y := hσinv y hyrange
+    rw [hcoord y hyφ]
+    constructor
+    · intro hyK
+      have hlev : G.comparisonLevel c b ≤ (σ y).1.2 :=
+        (G.staticNeckPoint_mem_supportRegion_iff c b (σ y)).mp (by rwa [hσy])
+      linarith
+    · intro h0
+      rw [← hσy]
+      exact (G.staticNeckPoint_mem_supportRegion_iff c b (σ y)).mpr (by linarith)
+
+theorem collarMap_mem_range_staticNeckPoint (b : G.ChildBoundary c)
+    (w : Sphere 2 × ↑(Icc (G.comparisonLevel c b) 0)) :
+    G.collarMap c b w ∈ Set.range (G.staticNeckPoint c b) := by
+  refine ⟨(G.collarParameter c b w).1, ?_⟩
+  apply Subtype.ext
+  rw [G.staticNeckPoint_apply, G.collarMap_apply]
+
+theorem mem_childCore_range_of_notMem_staticNeckImage (y : (G.Parent c).Carrier)
+    (hy : y ∈ supportRegion G c)
+    (hnot : ∀ b : G.ChildBoundary c, y ∉ Set.range (G.staticNeckPoint c b)) :
+    y ∈ Set.range (G.transition.childCoreIntoParent c) := by
+  rw [supportRegion, mem_union, mem_iUnion] at hy
+  rcases hy with h | ⟨b, hb⟩
+  · exact h
+  · obtain ⟨w, hw⟩ := hb
+    exact absurd (hw ▸ G.collarMap_mem_range_staticNeckPoint c b w) (hnot b)
+
+theorem exists_childCore_boundary_sphere_of_not_interior (x : G.transition.ChildCore c)
+    (hx : ¬ (𝓡∂ 3).IsInteriorPoint x.1) :
+    ∃ b : G.ChildBoundary c, ∃ y : Sphere 2,
+      G.transition.trace.tubes.coreBoundarySphere b.1.1 y = x.1 := by
+  let : CompactSpace G.transition.trace.tubes.core := G.transition.core_compact
+  let : LocallyConnectedSpace G.transition.trace.tubes.core := G.transition.core_locallyConnected
+  have hbd : x.1 ∈ (𝓡∂ 3).boundary G.transition.trace.tubes.core := by
+    by_contra h
+    exact hx ((ModelWithCorners.isInteriorPoint_iff_not_isBoundaryPoint (I := 𝓡∂ 3) x.1).mpr h)
+  rw [G.transition.core_boundary] at hbd
+  obtain ⟨b', hb'⟩ := Set.mem_iUnion.mp hbd
+  obtain ⟨y, hy⟩ := hb'
+  have hcomp : ConnectedComponents.mk (G.transition.trace.tubes.coreBoundarySphere b' y) =
+      G.transition.childCoreComponent c := hy ▸ x.2
+  have hall : ∀ y' : Sphere 2,
+      ConnectedComponents.mk (G.transition.trace.tubes.coreBoundarySphere b' y') =
+        G.transition.childCoreComponent c := by
+    intro y'
+    let : ConnectedSpace (Sphere 2) := sphere_connectedSpace
+    have hpre : IsPreconnected
+        (Set.range (G.transition.trace.tubes.coreBoundarySphere b')) :=
+      isPreconnected_range (G.transition.trace.tubes.coreBoundarySphere b').continuous
+    exact (ConnectedComponents.coe_eq_coe'.mpr
+      ((hpre.subset_connectedComponent (Set.mem_range_self y))
+        (Set.mem_range_self y'))).trans hcomp
+  exact ⟨⟨⟨b', fun y' => CutCapTopology.childCore_subset_retainedCore _ c (hall y')⟩, hall⟩,
+    y, hy⟩
+
+theorem childCore_boundary_mem_range_staticNeckPoint (x : G.transition.ChildCore c)
+    (hx : ¬ (𝓡∂ 3).IsInteriorPoint x.1) :
+    ∃ b : G.ChildBoundary c,
+      G.transition.childCoreIntoParent c x ∈ Set.range (G.staticNeckPoint c b) := by
+  obtain ⟨b, y, hy⟩ := G.exists_childCore_boundary_sphere_of_not_interior c x hx
+  have hδpos : 0 < ((G.static b.1).delta)⁻¹ := inv_pos.mpr (G.static b.1).neck.delta_pos
+  have hz : (y, (0 : ℝ)) ∈ neckBuffer (G.static b.1).delta := ⟨by linarith, by linarith⟩
+  refine ⟨b, ⟨⟨(y, 0), hz⟩, ?_⟩⟩
+  have hxval : (x.1.1 : (H.stage i.castSucc).Carrier) =
+      (G.transition.trace.tubes.boundarySphere b.1.1 y : (H.stage i.castSucc).Carrier) :=
+    (congrArg (fun z : G.transition.trace.tubes.core =>
+      (z.1 : (H.stage i.castSucc).Carrier)) hy).symm
+  apply Subtype.ext
+  change ((G.static b.1).neck.chart ⟨(y, (0 : ℝ)), hz⟩).1 =
+    (x.1.1 : (H.stage i.castSucc).Carrier)
+  rw [hxval]
+  change ((G.static b.1).neck.chart ⟨(y, (0 : ℝ)), hz⟩).1 =
+    (G.transition.trace.tubes.tube b.1.1.1
+      (y, TubeSystem.boundaryLevel b.1.1.2) : (H.stage i.castSucc).Carrier)
+  rw [G.tube_eq b.1.1.1 (y, TubeSystem.boundaryLevel b.1.1.2)
+    (G.tube_in_buffer b.1.1.1 _)]
+  rw [G.staticNeckChart_eq_neckChart b.1 ⟨(y, (0 : ℝ)), hz⟩]
+  have hbl : (if b.1.1.2 then (1 : ℝ) else -1) * (1 + (0 : ℝ)) =
+      (TubeSystem.boundaryLevel b.1.1.2 : ℝ) := by
+    cases hb : b.1.1.2 <;> simp [TubeSystem.boundaryLevel]
+  exact congrArg
+    (fun w : neckBuffer (G.delta b.1.1.1) => ((G.neck b.1.1.1).chart w).1)
+    (Subtype.ext (Prod.ext rfl hbl))
+
+theorem exists_isOpen_subset_supportRegion_of_childCore_notMem_staticNeckImage
+    (x : G.transition.ChildCore c)
+    (hnot : ∀ b : G.ChildBoundary c,
+      G.transition.childCoreIntoParent c x ∉ Set.range (G.staticNeckPoint c b)) :
+    ∃ V : Set (G.Parent c).Carrier, IsOpen V ∧
+      G.transition.childCoreIntoParent c x ∈ V ∧ V ⊆ supportRegion G c := by
+  have hint : (𝓡∂ 3).IsInteriorPoint x.1 := by
+    by_contra hx
+    obtain ⟨b, hb⟩ := G.childCore_boundary_mem_range_staticNeckPoint c x hx
+    exact hnot b hb
+  let : CompactSpace G.transition.trace.tubes.core := G.transition.core_compact
+  let : LocallyConnectedSpace G.transition.trace.tubes.core :=
+    G.transition.core_locallyConnected
+  obtain ⟨z₀, hz₀⟩ := ConnectedComponents.surjective_coe (G.transition.childCoreComponent c)
+  have hUeq : ({z : G.transition.trace.tubes.core |
+      ConnectedComponents.mk z = G.transition.childCoreComponent c} : Set _) =
+      connectedComponent z₀ := by
+    ext z
+    rw [← hz₀]
+    exact ConnectedComponents.coe_eq_coe'
+  have hUopen : IsOpen ({z : G.transition.trace.tubes.core |
+      ConnectedComponents.mk z = G.transition.childCoreComponent c} : Set _) := by
+    rw [hUeq]
+    exact isOpen_connectedComponent
+  have hxU : x.1 ∈ ({z : G.transition.trace.tubes.core |
+      ConnectedComponents.mk z = G.transition.childCoreComponent c} : Set _) := x.2
+  have hnhds : ({z : G.transition.trace.tubes.core |
+      ConnectedComponents.mk z = G.transition.childCoreComponent c} : Set _) ∈ 𝓝 x.1 :=
+    hUopen.mem_nhds hxU
+  have hW : Subtype.val ''
+      ({z : G.transition.trace.tubes.core |
+        ConnectedComponents.mk z = G.transition.childCoreComponent c} : Set _) ∈
+      𝓝 (x.1.1 : (H.stage i.castSucc).Carrier) :=
+    DifferentialGeometry.Topology.immersion_image_mem_nhds
+      (G.transition.core_induced.isImmersion.isImmersionAt x.1)
+      (by simp [ThreeSpace]) hint hnhds
+  obtain ⟨O, hOW, hOopen, hxO⟩ := mem_nhds_iff.mp hW
+  refine ⟨Subtype.val ⁻¹' O, hOopen.preimage continuous_subtype_val, hxO, ?_⟩
+  rintro y hy
+  obtain ⟨w, hwU, hweq⟩ := hOW hy
+  exact Or.inl ⟨⟨w, hwU⟩, Subtype.ext hweq⟩
+theorem exists_smoothBoundaryAtlas :
+    Nonempty (DifferentialGeometry.Topology.SmoothBoundaryAtlas ThreeModel 3
+      (supportRegion G c)) := by
+  classical
+  have hchart : ∀ x : (supportRegion G c),
+      ∃ φ : PartialDiffeomorph ThreeModel ThreeModel (G.Parent c).Carrier
+          (EuclideanSpace ℝ (Fin 3)) ∞,
+        x.val ∈ φ.source ∧ ∀ y ∈ φ.source, (y ∈ supportRegion G c ↔ 0 ≤ φ y 0) := by
+    intro x
+    by_cases hx : ∃ b : G.ChildBoundary c, x.val ∈ Set.range (G.staticNeckPoint c b)
+    · obtain ⟨b, z₀, hz₀⟩ := hx
+      obtain ⟨φ, hφ, -, hmem⟩ := G.exists_ambientChart_staticNeckImage c b z₀
+      exact ⟨φ, hz₀ ▸ hφ, hmem⟩
+    · have hcore : x.val ∈ Set.range (G.transition.childCoreIntoParent c) :=
+        G.mem_childCore_range_of_notMem_staticNeckImage c x.val x.2 (by
+          intro b hb
+          exact hx ⟨b, hb⟩)
+      obtain ⟨x', hx'⟩ := hcore
+      obtain ⟨V, hVopen, hx'V, hVsub⟩ :=
+        G.exists_isOpen_subset_supportRegion_of_childCore_notMem_staticNeckImage c x' (by
+          intro b hb
+          exact hx ⟨b, hx' ▸ hb⟩)
+      obtain ⟨φ, hxin, hsub, hpos⟩ :=
+        DifferentialGeometry.Topology.exists_positiveChart_of_mem_open (n := 3) hVopen (hx' ▸ hx'V)
+      refine ⟨φ, hxin, ?_⟩
+      intro y hy
+      exact iff_of_true (hVsub (hsub hy)) (hpos y hy).le
+  choose φ hφ hmem using hchart
+  exact ⟨{ ambientChart := φ, mem_source := hφ, mem_iff := hmem }⟩
 
 end GeometricCutoffRecord
 

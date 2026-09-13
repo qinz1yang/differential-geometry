@@ -8251,6 +8251,7 @@ import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Chart
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Composition
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Opens
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.SmoothInverse
+import DifferentialGeometry.Topology.Manifold.PartialDiffeomorphTrans
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Tangent
 import DifferentialGeometry.Topology.Manifold.PartitionDerivative
 import DifferentialGeometry.Topology.Manifold.PartitionOfUnity
