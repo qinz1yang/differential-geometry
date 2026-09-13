@@ -7747,6 +7747,7 @@ import DifferentialGeometry.Topology.Homology.Integral
 import DifferentialGeometry.Topology.Homology.LiftedFaces
 import DifferentialGeometry.Topology.Homology.LiftedSimplex
 import DifferentialGeometry.Topology.Homology.LiftedSphere
+import DifferentialGeometry.Topology.Homology.LiftedSquareBoundaryDegree
 import DifferentialGeometry.Topology.Homology.Local.Chart
 import DifferentialGeometry.Topology.Homology.Local.ClosedBall
 import DifferentialGeometry.Topology.Homology.Local.ClosedBallFiniteSet
