@@ -1321,6 +1321,7 @@ import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Scalar.Hopf.Comp
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Scalar.Hopf.HeatPotential
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Scalar.Hopf.HeatPotentialBoundary
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Scalar.Hopf.ManifoldBoundary
+import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Scalar.IntervalReaction
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Scalar.Localized
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Scalar.MetricFamily
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Scalar.Strong
