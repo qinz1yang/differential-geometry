@@ -385,3 +385,38 @@ Banach values, a rank-zero singleton and an empty interval. The new leaf is
 registered in the unchanged flat-root import list. This is a fresh leaf and
 consumer check, not a full DG aggregate build. Source-boundary/corner extension,
 embedding preservation and the full Schoenflies theorem remain separate.
+
+## Embedding families from closed time intervals, 2026-09-13
+
+Topology/Embedding/IntervalExtension now produces a whole-real smooth family
+of native embeddings from joint smoothness and embedding slices only on a
+nonempty closed time interval. Agreement holds on the entire original interval,
+including both endpoints. Compact boundaryless source and finite-dimensional
+real ambient space are the natural hypotheses; source finite dimension and
+Hausdorffness are derived locally from an actual embedding when the source is
+nonempty. An empty source is handled independently. Singleton intervals work.
+Empty interval data alone cannot produce an embedding, as a sphere-to-point
+consumer verifies, so the family theorem correctly requires a <= b.
+
+The proof reuses the published map extension and local embedding stability.
+It obtains a larger OPEN interval of embedded slices and composes with a smooth
+time map fixing the original interval. Analysis/Calculus/SmoothExtension/ConvexOpen
+provides the natural general helper: a smooth map into a nonempty convex open
+set fixing a prescribed compact subset. The existing compact bump constructs
+it by convex interpolation. No smooth retraction onto a closed interval is
+asserted. The two new leaves are 67 and 28 lines and are registered in the root.
+
+Public source request 1789314346667667796-schoenflies-72da2402 passed in 42.16
+seconds with 73 guards and 27 type/axiom pairs. Imported request
+1789314879940888683-schoenflies-765d6356 passed in 87.65 seconds with 74 guards;
+all 27 types are byte-identical to source. The embedding leaf freshly compiled
+without diagnostics in 47.97 seconds, maximum RSS 1771024 KiB. ConvexOpen had
+already freshly compiled at these exact bytes in request e0ca0e78; that earlier
+combined source probe failed only because it both imported and redeclared the
+same helper. The final source gate elaborates both final leaf bodies directly.
+Stock declaration linters and approved-only transitive axioms pass. Consumers
+include an actual nonzero truncated translated sphere, arbitrary sphere families,
+singletons, rank zero, empty sources with arbitrary normed model, and the original
+Banach-valued map-extension consumers. These are fresh leaf/source and consumer
+checks, not a full DG aggregate build. Boundary/corners and the actual
+Schoenflies isotopy-family producer remain open.
