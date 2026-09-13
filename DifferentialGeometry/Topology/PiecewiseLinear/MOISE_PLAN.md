@@ -206,6 +206,14 @@
   `IsCombinatorialManifold.isPLBall_closedStar`）。逐模块检查零错误零警告；七个端点 `#print axioms` 仅标准公理
   （`.lake/scratch/AuditF6.lean`）。
 
+- 2026-09-13（车道 F 第六批，T1 组合流形的 PL 图册）：`OpenStar.lean`（顶点开星、锥描述、相对开性、
+  星同胚 `exists_starHomeo`）、`StdChart.lean`（标准单形开单形与 `EuclideanSpace ℝ (Fin (n+1))` 中开集
+  `stdTarget` 之间的仿射投影/提升）、`VertexChart.lean`（顶点图卡 `vertexChart`、图册 `combinatorialChartedSpace`、
+  `HasGroupoid _ (plGroupoid (n+1))`、图卡与逆图卡在环境坐标下分片仿射；`combinatorialManifoldPLStructure_succ`）、
+  `CombinatorialZero.lean`（`n = 0`；`combinatorialManifoldPLStructure : ∀ n, CombinatorialManifoldPLStructure n`）。
+  逐模块检查零错误零警告；`#print axioms` 仅标准公理（`.lake/scratch/AuditF7.lean`、`AuditF8.lean`）。
+  这样 Phase 1 的 T1 接口已由 Phase 3 车道 F 证明；T2 `PLManifoldTriangulation n` 待做。
+
 - 2026-09-11（Phase 1 第二轮，负责人指示不等完整构建）：`IsPiecewiseAffineOn` 改为基于 `IsPiecewiseAffineWithinAt`
   （`𝓝[s] x`）的定义并重跑整条链；新增 `Manifold.lean`、`Polyhedron.lean`，以及 `Smoothing.lean` 中的
   `PLSmoothingModel`/`plSmoothing_of_plSmoothingModel`。九个模块逐个 `lake env lean` 加 lakefile 选项检查零错误零警告；
