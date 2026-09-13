@@ -605,3 +605,50 @@ Root reviewed the full proof bodies, exact types, consumers and mathematical dif
 These existing leaves remain registered in the flat root; this is not a full
 DG aggregate build. Moving boundary graphs, boundary-source isotopy, arbitrary
 corner depth and the Schoenflies headline remain open.
+
+## Moving graphs and velocity for native boundary sources, 2026-09-13
+
+HalfSpace now exposes the local within-halfspace equality germ obtained from
+its existing global extension and CompactCutoff. Thresholds are arbitrary,
+tangential models are finite-dimensional real normed spaces, and values are
+Banach. Extension uses one private coordinate permutation for products of a
+parameter space and the standard halfspace; the static case specializes it
+at PUnit. One native immersion-chart engine serves both source models, and
+the earlier global convex-selection and support-cutoff bodies are retained.
+The Tau Ceti chart calculation remains in Extension with its original header.
+
+A natural local parametric theorem produces an actual jointly smooth ambient
+map, identity on the entire reference slice, tracking the source family near
+the given native immersion point. It assumes no supplied extension, graph,
+source compactness or inducing map. SmoothParametricGraph uses this theorem
+and a single shared block inverse-function proof for its boundary and
+boundaryless variants. Native graph immersion needs no chosen complement;
+compact source upgrades the graph to a smooth embedding using the existing
+proper-graph result. Finite-dimensional parameters are required for the
+halfspace extension; the old boundaryless Banach-parameter API is preserved.
+
+ParametricVelocity applies the native graph theorem, the existing intrinsic
+time derivative and supported product-halfspace extension to produce an
+actual compact spacetime field. Its primary works on arbitrary compact K;
+only the graph image of K intersected with the support of the actual velocity
+must lie in the prescribed open set. Equality holds on all K. Interval and
+full-trace variants are thin corollaries. These results require whole-real
+smooth input; interval-only boundary-source data remains a separate step.
+
+Source 1789325347944126518-schoenflies-55745096 passes in 70.93 seconds,
+with 115 guards and 66 signature/axiom pairs. All 16 old public signatures
+match their saved readbacks. Final imported request
+1789326288989400183-schoenflies-8ad8bcca passes in 336.03 seconds, with 213
+guards and 138 pairs. All 108 prior imported pairs are byte-identical; all
+55 shared source/import types match. HalfSpace, Quadrant, Extension,
+SmoothParametricGraph, ParametricVelocity, Stability, IntervalExtension and
+AmbientIsotopy freshly compile without diagnostics in 4:11.48, maximum RSS
+1858308 KiB. All checks run in Slurm 13821107 on della-r3c4n2 with one CPU.
+Stock source/declaration linters and approved-only transitive axioms pass.
+Consumers include nonzero motion at an actual ClosedCell boundary, stationary
+nonempty input with empty support, arbitrary parameter families, rank zero,
+empty source and all previous boundaryless interfaces. Root reviewed the
+sources, exact statements, providers, consumers and mathematical diff.
+All four changed leaves were already registered in the flat root. No full
+DG aggregate build, boundary ambient-isotopy theorem or Schoenflies completion
+is claimed by this checkpoint. No dependency or installation changed.

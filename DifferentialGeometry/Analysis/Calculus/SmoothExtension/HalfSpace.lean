@@ -1,4 +1,5 @@
 import DifferentialGeometry.Analysis.Calculus.SmoothExtension.BorelHalfLineParam
+import DifferentialGeometry.Analysis.Calculus.CompactCutoff
 import Mathlib.Geometry.Manifold.PartitionOfUnity
 
 open scoped ContDiff Manifold Topology
@@ -37,5 +38,19 @@ theorem exists_contDiff_extension_Ici_prod
   obtain ⟨G, hG⟩ := exists_contMDiffMap_forall_mem_convex_of_local
     (I := 𝓘(ℝ, ℝ × E)) (n := (⊤ : ℕ∞)) hC hlocal
   exact ⟨G, G.contMDiff.contDiff, fun q hq => hG q (mem_Ici.mp hq.1)⟩
+
+theorem exists_contDiff_extension_Ici_prod_nhdsWithin
+    {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    [NormedAddCommGroup F] [NormedSpace ℝ F] [CompleteSpace F]
+    {f : ℝ × E → F} {a : ℝ} {U : Set (ℝ × E)}
+    (hf : ContDiffOn ℝ ∞ f ((Ici a ×ˢ univ) ∩ U))
+    (hU : IsOpen U) {x : ℝ × E} (hx : x ∈ U) :
+    ∃ G : ℝ × E → F, ContDiff ℝ ∞ G ∧ G =ᶠ[𝓝[Ici a ×ˢ univ] x] f := by
+  obtain ⟨g, hg, -, hgeq⟩ :=
+    DifferentialGeometry.Analysis.exists_contDiffOn_cutoff_extension hU hf hx
+  obtain ⟨G, hG, hGg⟩ := hg.exists_contDiff_extension_Ici_prod
+  refine ⟨G, hG, ?_⟩
+  filter_upwards [self_mem_nhdsWithin, hgeq.filter_mono nhdsWithin_le_nhds] with y hy hyeq
+  exact (hGg hy).trans hyeq
 
 end ContDiffOn
