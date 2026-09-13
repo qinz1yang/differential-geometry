@@ -5,22 +5,20 @@ additive publication within the shared DifferentialGeometry Git repository. Its 
 library is `Poincare`; its sources retain the original mathematical namespaces.
 
 The source baseline is the recovered Chapter 35 commit
-`b45bfa009368c8f5f531e10f4f5280e90079d6ad`. This checkpoint includes 111 modules
-and 116 added public exports. The latest 337-line RelativeCapHomology leaf
-constructs the actual ordinary-cohomology/relative-homology cap pairing, with
-its public cycle map, representative formula, pair-map naturality, constant-one
-unit and absolute-to-relative projection compatibility. Mathlib's existing
-bilinear quotient lift and the original categorical homology objects are reused.
-All 110 earlier leaves are unchanged.
+`b45bfa009368c8f5f531e10f4f5280e90079d6ad`. This checkpoint includes 113 modules
+and 118 added public exports. The latest two leaves (48 and 124 lines) prove
+the original connecting-map formula on concrete cycle classes for arbitrary
+rings and complex shapes, and signed compatibility of the actual relative
+cap product and connecting map. The original categorical objects and Mathlib's
+existing connecting-map computation are reused. All 111 earlier leaves are unchanged.
 
-Final request `1789323402557190933-topology_checkpoint-28c15b3f` passed in
-Slurm 13821107 in 151.30 seconds, with 278 guards and 200 signature/axiom pairs.
-All 189 earlier pairs are byte-identical. The new leaf and root freshly compiled
-in 1:13.03 with maximum RSS 1814496 KiB and zero diagnostics. Source d9b0d60a
-and original imported 80bb4f3a pass with 52/21 and 54/11 guards/pairs; the new
-portable pairs match the original up to scoped set notation. Nonzero relative
-H0, unit and negative-unit actions, doubling pair-map naturality, degree-one
-cycle formula and relative-empty equivalence consumers pass. Stock linters
+Final request `1789325313509362620-topology_checkpoint-9c71d0f8` passed in
+Slurm 13821107 in 177.11 seconds, with 289 guards and 205 signature/axiom pairs.
+All 200 earlier pairs are byte-identical. The two new leaves and root freshly
+compiled in 1:30.09 with maximum RSS 1815000 KiB and zero diagnostics. Source
+377c15d2 and original imported dc5e47d2 pass with 127/9 and 130/5 guards/pairs;
+all five new portable pairs match the original. Odd/even degree signs and a
+nonzero connecting image for the real-line/zero-sphere pair pass. Stock linters
 and standard-only axioms pass. General duality, the native orientation producer
 and the full oriented-manifold suite remain open.
 

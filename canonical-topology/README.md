@@ -1,11 +1,14 @@
 # Local homology and global classes from coherent local generators
 
 This separate `PoincareLean` project contains a dependency-closed checkpoint of
-111 Poincare modules. It extends the recovered Chapter 35 source at commit
+113 Poincare modules. It extends the recovered Chapter 35 source at commit
 `b45bfa009368c8f5f531e10f4f5280e90079d6ad` and preserves its mathematical objects
 and `Poincare` namespaces. `Poincare.lean` imports every included leaf.
 
 The additions prove:
+
+- compatibility of the actual relative cap product with the original connecting
+  map, including its degree sign, and a general cycle-class connecting formula;
 
 - the ordinary-cohomology/relative-homology cap product on the original groups,
   its cycle formula, naturality, unit and absolute-to-relative compatibility;
@@ -69,7 +72,7 @@ The additions prove:
 - a unique compact-neighborhood class with the same normalization in every
   chart whose actual tangent trivialization preserves the base-chart orientation.
 
-The twenty-seven new/changed modules and their exact baseline/current hashes are listed in
+The twenty-nine new/changed modules and their exact baseline/current hashes are listed in
 [provenance/SNAPSHOT.json](provenance/SNAPSHOT.json). The derivative homotopy
 retains its [upstream attribution and modification record](provenance/README.md).
 
@@ -531,6 +534,31 @@ action, actual doubling pair-map naturality, the degree-one/degree-two cycle
 formula, and compatibility with the original relative-empty equivalence in
 all degrees. Stock declaration linters and standard-only transitive axioms
 pass. General Poincare duality and the complete oriented-manifold suite remain open.
+
+The connecting-map extension adds ModuleHomologyConnecting (48 lines) and
+RelativeCapConnecting (124 lines), for 113 modules and 118 added exports.
+The general formula computes the original connecting map on concrete cycle
+classes for arbitrary rings and complex shapes. It uses Mathlib's existing
+connecting-map computation. The topological theorem proves
+`δ(α ∩ c) = (-1)^k (i*α ∩ δc)` on the actual integral groups for any pair,
+any cohomological degree k and every nonnegative output degree. Actual chain
+lifts, the existing signed boundary formula and naturality supply the proof.
+No new homology object or assumed compatibility law is introduced.
+
+Final portable request `1789325313509362620-topology_checkpoint-9c71d0f8`
+passed in Slurm 13821107 in 177.11 seconds, with 289 guards and 205 signature/
+axiom pairs. All 200 prior pairs are byte-identical and all 111 prior leaves
+are unchanged. The two new leaves and root freshly compiled in 1:30.09,
+maximum RSS 1815000 KiB, with zero diagnostics. The two public and three
+consumer pairs match original imported dc5e47d2, which passed in 96.53 seconds
+with 130 guards and five pairs. Its two fresh leaves took 55.92 seconds with
+maximum RSS 1581632 KiB and zero diagnostics. Final source 377c15d2 passes
+in 10.71 seconds with 127 guards and nine pairs, including every private helper.
+Consumers check the negative degree-one and positive degree-two signs and an
+actual relative H1 class of the real line modulo its unit zero-sphere with
+nonzero connecting image preserved by cap with the unit. Stock declaration
+linters and standard-only transitive axioms pass. General Poincare duality
+and the complete oriented-manifold suite remain open.
 
 ## Remaining topology work
 

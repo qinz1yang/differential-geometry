@@ -48,6 +48,7 @@ import Poincare.Topology.Homology.ManifoldFundamentalClass
 import Poincare.Topology.Homology.MeshBoundary
 import Poincare.Topology.Homology.MeshIteration
 import Poincare.Topology.Homology.ModuleHomologyClasses
+import Poincare.Topology.Homology.ModuleHomologyConnecting
 import Poincare.Topology.Homology.ModuleHomologyCriterion
 import Poincare.Topology.Homology.ModuleHomologyMaps
 import Poincare.Topology.Homology.OneDimensionalSphere
@@ -56,6 +57,7 @@ import Poincare.Topology.Homology.PathChains
 import Poincare.Topology.Homology.RadialHomotopy
 import Poincare.Topology.Homology.ReducedZero
 import Poincare.Topology.Homology.Relative
+import Poincare.Topology.Homology.RelativeCapConnecting
 import Poincare.Topology.Homology.RelativeCapHomology
 import Poincare.Topology.Homology.RelativeCapProduct
 import Poincare.Topology.Homology.RelativeCochains
