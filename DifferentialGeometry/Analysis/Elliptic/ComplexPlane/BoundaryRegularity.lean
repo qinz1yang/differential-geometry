@@ -1,3 +1,4 @@
+import Mathlib.Analysis.InnerProductSpace.PiL2
 import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.Reflection
 import DifferentialGeometry.Analysis.Elliptic.Euclidean.WeakLaplacianRegularity
 import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.BoundaryGradient
@@ -408,5 +409,105 @@ theorem exists_contDiff_two_extension_of_holder_laplacian
     change oddReflection w z + G z = f z
     rw [oddReflection_eq_of_im_nonneg w hwaxis hz]
     exact sub_add_cancel _ _
+
+private theorem norm_sq_le_basisEquiv_mul_hilbertSchmidt
+    {E F : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+    [FiniteDimensional ℝ E] [NormedAddCommGroup F] [InnerProductSpace ℝ F]
+    (A : E →L[ℝ] F) :
+    ‖A‖ ^ 2 ≤ ‖((stdOrthonormalBasis ℝ E).continuousLinearMapEquiv (V := F)).symm.toContinuousLinearMap‖ ^ 2 *
+      A.hilbertSchmidtInner A := by
+  let L := (stdOrthonormalBasis ℝ E).continuousLinearMapEquiv (V := F)
+  have h := L.symm.toContinuousLinearMap.le_opNorm (L A)
+  change ‖L.symm (L A)‖ ≤ ‖L.symm.toContinuousLinearMap‖ * ‖L A‖ at h
+  rw [L.symm_apply_apply] at h
+  have hs := (sq_le_sq₀ (norm_nonneg _) (mul_nonneg (norm_nonneg _) (norm_nonneg _))).mpr h
+  rw [mul_pow] at hs
+  have he : ‖L A‖ ^ 2 = A.hilbertSchmidtInner A := by
+    rw [ContinuousLinearMap.hilbertSchmidtInner_eq_inner (stdOrthonormalBasis ℝ E)]
+    exact (real_inner_self_eq_norm_sq _).symm
+  rw [he] at hs
+  exact hs
+
+private theorem exists_contDiff_one_extension_of_quadratic_growth_equiv
+    {E F : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [CompleteSpace E]
+    [NormedAddCommGroup F] [NormedSpace ℝ F] (e : F ≃L[ℝ] E)
+    {f : ℂ → F} {R β : ℝ} (hR : 0 < R) (hβ : 0 ≤ β)
+    (hf : ContinuousOn f {z : ℂ | ‖z‖ ≤ R ∧ 0 ≤ z.im})
+    (hd : ∀ z : ℂ, ‖z‖ < R → 0 < z.im → ContDiffAt ℝ 2 f z)
+    (hΔ : ∀ z : ℂ, ‖z‖ < R → 0 < z.im → ‖Laplacian.laplacian f z‖ ≤
+      β * ‖fderiv ℝ f z‖ ^ 2)
+    (hzero : ∀ z : ℂ, ‖z‖ ≤ R → z.im = 0 → f z = 0)
+    {α : ℝ≥0} (hα : 0 < α) (hα1 : α < 1) :
+    ∃ ρ > (0 : ℝ), ρ < R ∧ ∃ u : ℂ → F, ∃ C : ℝ≥0,
+      ContDiff ℝ 1 u ∧ HolderWith C α (fderiv ℝ u) ∧
+        EqOn u f {z : ℂ | ‖z‖ ≤ ρ ∧ 0 ≤ z.im} := by
+  let w := e ∘ f
+  let L := (stdOrthonormalBasis ℝ ℂ).continuousLinearMapEquiv (V := E)
+  let B : ℝ := ‖e.toContinuousLinearMap‖ * β * ‖e.symm.toContinuousLinearMap‖ ^ 2 *
+    ‖L.symm.toContinuousLinearMap‖ ^ 2
+  have hB : 0 ≤ B := by dsimp [B]; positivity
+  have hwd (z : ℂ) (hz : ‖z‖ < R) (hi : 0 < z.im) : ContDiffAt ℝ 2 w z :=
+    e.contDiff.contDiffAt.comp z (hd z hz hi)
+  have hwΔ (z : ℂ) (hz : ‖z‖ < R) (hi : 0 < z.im) :
+      ‖Laplacian.laplacian w z‖ ≤ B * (fderiv ℝ w z).hilbertSchmidtInner (fderiv ℝ w z) := by
+    have hde : fderiv ℝ f z = e.symm.toContinuousLinearMap.comp (fderiv ℝ w z) := by
+      have h := e.symm.hasFDerivAt.comp z ((hwd z hz hi).differentiableAt (by norm_num)).hasFDerivAt
+      have he : e.symm ∘ w = f := by funext x; exact e.symm_apply_apply (f x)
+      rw [he] at h
+      exact h.fderiv
+    have hn : ‖fderiv ℝ f z‖ ≤ ‖e.symm.toContinuousLinearMap‖ * ‖fderiv ℝ w z‖ := by
+      rw [hde]
+      exact ContinuousLinearMap.opNorm_comp_le _ _
+    have hns := (sq_le_sq₀ (norm_nonneg _) (mul_nonneg (norm_nonneg _) (norm_nonneg _))).mpr hn
+    rw [mul_pow] at hns
+    have hhs := norm_sq_le_basisEquiv_mul_hilbertSchmidt (fderiv ℝ w z)
+    have hla : Laplacian.laplacian w z = e (Laplacian.laplacian f z) := by
+      exact (hd z hz hi).laplacian_CLM_comp_left (l := e.toContinuousLinearMap)
+    rw [hla]
+    calc
+      ‖e (Laplacian.laplacian f z)‖ ≤ ‖e.toContinuousLinearMap‖ * ‖Laplacian.laplacian f z‖ :=
+        e.toContinuousLinearMap.le_opNorm _
+      _ ≤ ‖e.toContinuousLinearMap‖ * (β * ‖fderiv ℝ f z‖ ^ 2) :=
+        mul_le_mul_of_nonneg_left (hΔ z hz hi) (norm_nonneg _)
+      _ ≤ ‖e.toContinuousLinearMap‖ * (β * (‖e.symm.toContinuousLinearMap‖ ^ 2 *
+          (‖L.symm.toContinuousLinearMap‖ ^ 2 *
+            (fderiv ℝ w z).hilbertSchmidtInner (fderiv ℝ w z)))) := by
+        apply mul_le_mul_of_nonneg_left _ (norm_nonneg _)
+        apply mul_le_mul_of_nonneg_left _ hβ
+        exact hns.trans (mul_le_mul_of_nonneg_left hhs (sq_nonneg _))
+      _ = B * (fderiv ℝ w z).hilbertSchmidtInner (fderiv ℝ w z) := by dsimp [B]; ring
+  obtain ⟨ρ, hρ, hρR, u, C, hu, hDu, hue⟩ :=
+    exists_contDiff_one_extension_of_norm_laplacian_le hR hB
+      (e.continuous.comp_continuousOn hf) hwd hwΔ
+      (fun z hz hi => by dsimp [w]; rw [hzero z hz hi, map_zero]) hα hα1
+  let A := ContinuousLinearMap.compL ℝ ℂ E F e.symm.toContinuousLinearMap
+  have he (z : ℂ) : fderiv ℝ (e.symm ∘ u) z = A (fderiv ℝ u z) :=
+    (e.symm.hasFDerivAt.comp z (hu.differentiable (by norm_num) z).hasFDerivAt).fderiv
+  refine ⟨ρ, hρ, hρR, e.symm ∘ u, ‖A‖₊ * C,
+    e.symm.contDiff.comp hu, ?_, ?_⟩
+  · have h := A.lipschitz.holderWith.comp hDu
+    intro x y
+    rw [he x, he y]
+    simpa only [Function.comp_def, one_mul, NNReal.coe_one, NNReal.rpow_one] using! h x y
+  · intro z hz
+    change e.symm (u z) = f z
+    rw [hue hz]
+    exact e.symm_apply_apply (f z)
+
+theorem exists_contDiff_one_extension_of_norm_laplacian_le_mul_norm_fderiv_sq
+    {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
+    {f : ℂ → F} {R β : ℝ} (hR : 0 < R) (hβ : 0 ≤ β)
+    (hf : ContinuousOn f {z : ℂ | ‖z‖ ≤ R ∧ 0 ≤ z.im})
+    (hd : ∀ z : ℂ, ‖z‖ < R → 0 < z.im → ContDiffAt ℝ 2 f z)
+    (hΔ : ∀ z : ℂ, ‖z‖ < R → 0 < z.im → ‖Laplacian.laplacian f z‖ ≤
+      β * ‖fderiv ℝ f z‖ ^ 2)
+    (hzero : ∀ z : ℂ, ‖z‖ ≤ R → z.im = 0 → f z = 0)
+    {α : ℝ≥0} (hα : 0 < α) (hα1 : α < 1) :
+    ∃ ρ > (0 : ℝ), ρ < R ∧ ∃ u : ℂ → F, ∃ C : ℝ≥0,
+      ContDiff ℝ 1 u ∧ HolderWith C α (fderiv ℝ u) ∧
+        EqOn u f {z : ℂ | ‖z‖ ≤ ρ ∧ 0 ≤ z.im} := by
+  let E := EuclideanSpace ℝ (Fin (Module.finrank ℝ F))
+  let e : F ≃L[ℝ] E := ContinuousLinearEquiv.ofFinrankEq finrank_euclideanSpace_fin.symm
+  exact exists_contDiff_one_extension_of_quadratic_growth_equiv e hR hβ hf hd hΔ hzero hα hα1
 
 end DifferentialGeometry.Analysis

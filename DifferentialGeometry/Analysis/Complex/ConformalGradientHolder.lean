@@ -1,6 +1,8 @@
 import DifferentialGeometry.Analysis.Complex.GradientRegularity
 import DifferentialGeometry.Analysis.Schauder.Holder.Bilinear
 import Mathlib.Analysis.Calculus.MeanValue
+import Mathlib.Analysis.Calculus.TangentCone.Real
+import Mathlib.Topology.Order.Compact
 
 noncomputable section
 open Set InnerProductSpace
@@ -448,6 +450,204 @@ theorem holderOnWith_fderivWithin_of_conformal_transverse
   · apply holderOn_recover_derivative hu hXd hfd ht
       (hY.of_le hdiam (show α / 2 ≤ α from div_le_self (by positivity) (by norm_num)))
     simpa only [NNReal.coe_one] using hfH
+
+end
+
+section
+
+open Filter
+open scoped Topology ContDiff
+
+private theorem uniqueDiffOn_closure_of_open_convex {s : Set ℂ}
+    (hs : Convex ℝ s) (ho : IsOpen s) : UniqueDiffOn ℝ (closure s) := by
+  by_cases he : s = ∅
+  · simpa only [he, closure_empty] using (uniqueDiffOn_empty (𝕜 := ℝ) (E := ℂ))
+  · exact uniqueDiffOn_convex hs.closure ((Set.nonempty_iff_ne_empty.mpr he).mono
+      (ho.subset_interior_iff.mpr subset_closure))
+
+variable {V : Type*} [NormedAddCommGroup V] [NormedSpace ℝ V]
+private local instance : NormedAddCommGroup (V →L[ℝ] V →L[ℝ] ℝ) := inferInstance
+private local instance : NormedSpace ℝ (V →L[ℝ] V →L[ℝ] ℝ) := inferInstance
+
+private theorem contDiffOn_closure_of_conformal_transverse
+    {s : Set ℂ} (hs : Convex ℝ s) (ho : IsOpen s)
+    {X : ℂ → V} {f : ℂ → ℝ} {t : V}
+    (hf : ContinuousOn f (closure s)) (hfi : ContDiffOn ℝ 1 f s)
+    (hXi : ContDiffOn ℝ 1 X s)
+    (hY : ContDiffOn ℝ 1 (fun z => X z - f z • t) (closure s))
+    {B : ℂ → V →L[ℝ] V →L[ℝ] ℝ} (hB : ContinuousOn B (closure s))
+    (hBs : ∀ z ∈ s, (B z).toBilinForm.IsSymm)
+    (hBt : ∀ z ∈ closure s, B z t t ≠ 0)
+    (horth : ∀ z ∈ s, B z (fderiv ℝ X z 1) (fderiv ℝ X z Complex.I) = 0)
+    (heq : ∀ z ∈ s, B z (fderiv ℝ X z 1) (fderiv ℝ X z 1) =
+      B z (fderiv ℝ X z Complex.I) (fderiv ℝ X z Complex.I)) :
+    ContDiffOn ℝ 1 f (closure s) ∧ ContDiffOn ℝ 1 X (closure s) := by
+  have hu := uniqueDiffOn_closure_of_open_convex hs ho
+  let Y := fun z => X z - f z • t
+  let v := fun z => fderivWithin ℝ Y (closure s) z 1
+  let w := fun z => fderivWithin ℝ Y (closure s) z Complex.I
+  have hD : ContinuousOn (fderivWithin ℝ Y (closure s)) (closure s) :=
+    hY.continuousOn_fderivWithin hu (by norm_num)
+  have hdec (z : ℂ) (hz : z ∈ s) (u : ℂ) :
+      fderivWithin ℝ Y (closure s) z u + fderiv ℝ f z u • t = fderiv ℝ X z u := by
+    rw [fderivWithin_of_mem_nhds (mem_of_superset (ho.mem_nhds hz) subset_closure)]
+    have hdX := (hXi.contDiffAt (ho.mem_nhds hz)).differentiableAt (by norm_num)
+    have hdf := (hfi.contDiffAt (ho.mem_nhds hz)).differentiableAt (by norm_num)
+    have hdY := (hdX.hasFDerivAt.sub (hdf.hasFDerivAt.smul_const t)).fderiv
+    change fderiv ℝ Y z = _ at hdY
+    rw [hdY]
+    simp
+  have hfc : ContDiffOn ℝ 1 f (closure s) := by
+    apply DifferentialGeometry.Analysis.contDiffOn_one_closure_of_conformal_pair hs ho hf hfi hB
+      (hD.clm_apply continuousOn_const) (hD.clm_apply continuousOn_const) continuousOn_const hBs hBt
+    · intro z hz
+      change B z (v z + fderiv ℝ f z 1 • t) (w z + fderiv ℝ f z Complex.I • t) = 0
+      dsimp only [v, w]
+      rw [hdec z hz, hdec z hz]
+      exact horth z hz
+    · intro z hz
+      change B z (v z + fderiv ℝ f z 1 • t) (v z + fderiv ℝ f z 1 • t) =
+        B z (w z + fderiv ℝ f z Complex.I • t) (w z + fderiv ℝ f z Complex.I • t)
+      dsimp only [v, w]
+      rw [hdec z hz, hdec z hz]
+      exact heq z hz
+  refine ⟨hfc, ?_⟩
+  have hsum : ContDiffOn ℝ 1 (fun z => (X z - f z • t) + f z • t) (closure s) :=
+    hY.add (hfc.smul contDiffOn_const)
+  simpa only [sub_add_cancel] using hsum
+
+private theorem exists_nnreal_bound_of_compact
+    {A F : Type*} [TopologicalSpace A] [NormedAddCommGroup F]
+    {s : Set A} (hs : IsCompact s) {F₀ : A → F} (hF : ContinuousOn F₀ s) :
+    ∃ C : ℝ≥0, ∀ z ∈ s, ‖F₀ z‖ ≤ C := by
+  obtain ⟨C, hC⟩ := hs.exists_bound_of_continuousOn hF
+  exact ⟨Real.toNNReal C, fun z hz => (hC z hz).trans (Real.le_coe_toNNReal C)⟩
+
+private theorem exists_holderOnWith_closure_unit
+    {s : Set ℂ} (hs : Convex ℝ s) (ho : IsOpen s) (hc : IsCompact (closure s))
+    {X : ℂ → V} {f : ℂ → ℝ} {t : V} (ht : ‖t‖ ≤ 1)
+    (hX : ContDiffOn ℝ 1 X (closure s)) (hf : ContDiffOn ℝ 1 f (closure s))
+    {g : V → V →L[ℝ] V →L[ℝ] ℝ} {Ω : Set V} (hΩ : IsOpen Ω)
+    (hg : ContDiffOn ℝ 1 g Ω) (hXs : MapsTo X (closure s) Ω)
+    (hgs : ∀ x ∈ Ω, (g x).toBilinForm.IsSymm)
+    (hgt : ∀ z ∈ closure s, 0 < g (X z) t t)
+    {H α : ℝ≥0} (hα : 0 < α) (hα1 : α ≤ 1)
+    (hY : HolderOnWith H α (fderivWithin ℝ (fun z => X z - f z • t) (closure s)) (closure s))
+    (horth : ∀ z ∈ s, g (X z) (fderiv ℝ X z 1) (fderiv ℝ X z Complex.I) = 0)
+    (heq : ∀ z ∈ s, g (X z) (fderiv ℝ X z 1) (fderiv ℝ X z 1) =
+      g (X z) (fderiv ℝ X z Complex.I) (fderiv ℝ X z Complex.I)) :
+    ∃ C : ℝ≥0, HolderOnWith C (α / 2) (fderivWithin ℝ X (closure s)) (closure s) := by
+  have hu := uniqueDiffOn_closure_of_open_convex hs ho
+  have hgc : ContinuousOn (fun z => g (X z)) (closure s) :=
+    hg.continuousOn.comp hX.continuousOn hXs
+  have hDgc : ContinuousOn (fun z => fderiv ℝ g (X z)) (closure s) :=
+    (hg.continuousOn_fderiv_of_isOpen hΩ (by norm_num)).comp hX.continuousOn hXs
+  have hDXc := hX.continuousOn_fderivWithin hu (by norm_num)
+  obtain ⟨G, hG⟩ := exists_nnreal_bound_of_compact hc hgc
+  obtain ⟨G', hG'⟩ := exists_nnreal_bound_of_compact hc hDgc
+  obtain ⟨L, hL⟩ := exists_nnreal_bound_of_compact hc hDXc
+  have hYc : ContDiffOn ℝ 1 (fun z => X z - f z • t) (closure s) :=
+    hX.sub (hf.smul contDiffOn_const)
+  obtain ⟨M, hM⟩ := exists_nnreal_bound_of_compact hc
+    (hYc.continuousOn_fderivWithin hu (by norm_num))
+  obtain ⟨l, hl, hgl⟩ := hc.exists_forall_le'
+    ((hgc.clm_apply continuousOn_const).clm_apply continuousOn_const) hgt
+  let l₀ : ℝ≥0 := ⟨l, hl.le⟩
+  obtain ⟨R, hR⟩ := exists_nnreal_bound_of_compact hc (continuous_id.continuousOn : ContinuousOn id (closure s))
+  have hdiam : ∀ x ∈ closure s, ∀ y ∈ closure s, edist x y ≤ (2 * R : ℝ≥0) := by
+    intro x hx y hy
+    have hd : dist x y ≤ (2 * R : ℝ≥0) := by
+      calc
+        dist x y ≤ ‖x‖ + ‖y‖ := dist_le_norm_add_norm _ _
+        _ ≤ R + R := add_le_add (hR x hx) (hR y hy)
+        _ = (2 * R : ℝ≥0) := by simp only [NNReal.coe_mul, NNReal.coe_ofNat]; ring
+    simpa only [edist_dist, ENNReal.ofReal_coe_nnreal] using ENNReal.ofReal_le_ofReal hd
+  let D := fderivWithin ℝ X (closure s)
+  have hv : ContinuousOn (fun z => D z 1) (closure s) := hDXc.clm_apply continuousOn_const
+  have hw : ContinuousOn (fun z => D z Complex.I) (closure s) := hDXc.clm_apply continuousOn_const
+  have hDi (z : ℂ) (hz : z ∈ s) : D z = fderiv ℝ X z :=
+    fderivWithin_of_mem_nhds (mem_of_superset (ho.mem_nhds hz) subset_closure)
+  have hoi : EqOn (fun z => g (X z) (D z 1) (D z Complex.I)) (fun _ => 0) s := by
+    intro z hz
+    dsimp only
+    rw [hDi z hz]
+    exact horth z hz
+  have hei : EqOn (fun z => g (X z) (D z 1) (D z 1))
+      (fun z => g (X z) (D z Complex.I) (D z Complex.I)) s := by
+    intro z hz
+    dsimp only
+    rw [hDi z hz]
+    exact heq z hz
+  have horth' : ∀ z ∈ closure s, g (X z) (D z 1) (D z Complex.I) = 0 :=
+    fun z hz => hoi.of_subset_closure ((hgc.clm_apply hv).clm_apply hw) continuousOn_const
+      subset_closure Subset.rfl hz
+  have heq' : ∀ z ∈ closure s, g (X z) (D z 1) (D z 1) =
+      g (X z) (D z Complex.I) (D z Complex.I) :=
+    fun z hz => hei.of_subset_closure ((hgc.clm_apply hv).clm_apply hv) ((hgc.clm_apply hw).clm_apply hw)
+      subset_closure Subset.rfl hz
+  have hfinal := DifferentialGeometry.Analysis.holderOnWith_fderivWithin_of_conformal_transverse
+    hs.closure hu (hX.differentiableOn (by norm_num)) hf (l := l₀) hl hα hα1 hdiam
+    (fun z hz => (hg.contDiffAt (hΩ.mem_nhds (hXs hz))).differentiableAt (by norm_num))
+    hG' hL hY hM hG ht (fun z hz => hgs _ (hXs hz)) hgl horth' heq'
+  exact ⟨_, hfinal.2⟩
+
+theorem contDiffOn_one_closure_and_holderOnWith_of_conformal_transverse
+    {s : Set ℂ} (hs : Convex ℝ s) (ho : IsOpen s) (hc : IsCompact (closure s))
+    {X : ℂ → V} {f : ℂ → ℝ} {t : V}
+    (hf : ContinuousOn f (closure s)) (hfi : ContDiffOn ℝ 1 f s)
+    (hY : ContDiffOn ℝ 1 (fun z => X z - f z • t) (closure s))
+    {g : V → V →L[ℝ] V →L[ℝ] ℝ} {Ω : Set V} (hΩ : IsOpen Ω)
+    (hg : ContDiffOn ℝ 1 g Ω) (hXs : MapsTo X (closure s) Ω)
+    (hgs : ∀ x ∈ Ω, (g x).toBilinForm.IsSymm)
+    (hgt : ∀ z ∈ closure s, 0 < g (X z) t t)
+    {H α : ℝ≥0} (hα : 0 < α) (hα1 : α ≤ 1)
+    (hYH : HolderOnWith H α (fderivWithin ℝ (fun z => X z - f z • t) (closure s)) (closure s))
+    (horth : ∀ z ∈ s, g (X z) (fderiv ℝ X z 1) (fderiv ℝ X z Complex.I) = 0)
+    (heq : ∀ z ∈ s, g (X z) (fderiv ℝ X z 1) (fderiv ℝ X z 1) =
+      g (X z) (fderiv ℝ X z Complex.I) (fderiv ℝ X z Complex.I)) :
+    ContDiffOn ℝ 1 f (closure s) ∧ ContDiffOn ℝ 1 X (closure s) ∧
+      ∃ C : ℝ≥0, HolderOnWith C (α / 2) (fderivWithin ℝ X (closure s)) (closure s) := by
+  have hXc : ContinuousOn X (closure s) := by
+    have hsum : ContinuousOn (fun z => (X z - f z • t) + f z • t) (closure s) :=
+      hY.continuousOn.add (hf.smul continuousOn_const)
+    simpa only [sub_add_cancel] using hsum
+  have hXi : ContDiffOn ℝ 1 X s := by
+    have hsum : ContDiffOn ℝ 1 (fun z => (X z - f z • t) + f z • t) s :=
+      (hY.mono subset_closure).add (hfi.smul contDiffOn_const)
+    simpa only [sub_add_cancel] using hsum
+  obtain ⟨hfc, hX⟩ := contDiffOn_closure_of_conformal_transverse hs ho hf hfi hXi hY
+    (hg.continuousOn.comp hXc hXs) (fun z hz => hgs _ (hXs (subset_closure hz)))
+    (fun z hz => (hgt z hz).ne') horth heq
+  refine ⟨hfc, hX, ?_⟩
+  let c : ℝ := max ‖t‖ 1
+  have hcpos : 0 < c := lt_of_lt_of_le zero_lt_one (le_max_right _ _)
+  let t' := c⁻¹ • t
+  let f' := fun z => c * f z
+  have ht' : ‖t'‖ ≤ 1 := by
+    calc
+      ‖t'‖ = ‖t‖ / c := by
+        simp only [t', norm_smul, Real.norm_of_nonneg (inv_nonneg.mpr hcpos.le), div_eq_mul_inv, mul_comm]
+      _ ≤ 1 := (div_le_one hcpos).mpr (le_max_left _ _)
+  have hscale (z : ℂ) : f' z • t' = f z • t := by
+    dsimp only [f', t']
+    rw [smul_smul]
+    congr 1
+    calc
+      (c * f z) * c⁻¹ = (c * c⁻¹) * f z := by ring
+      _ = f z := by rw [mul_inv_cancel₀ hcpos.ne', one_mul]
+  have hYeq : (fun z => X z - f' z • t') = (fun z => X z - f z • t) := by
+    funext z
+    rw [hscale]
+  have hgt' : ∀ z ∈ closure s, 0 < g (X z) t' t' := by
+    intro z hz
+    change 0 < g (X z) (c⁻¹ • t) (c⁻¹ • t)
+    simp only [map_smul, smul_apply, smul_eq_mul]
+    exact mul_pos (inv_pos.mpr hcpos) (mul_pos (inv_pos.mpr hcpos) (hgt z hz))
+  have hf' : ContDiffOn ℝ 1 f' (closure s) := contDiffOn_const.mul hfc
+  have hYH' : HolderOnWith H α (fderivWithin ℝ (fun z => X z - f' z • t') (closure s))
+      (closure s) := by rw [hYeq]; exact hYH
+  exact exists_holderOnWith_closure_unit hs ho hc ht' hX hf'
+    hΩ hg hXs hgs hgt' hα hα1 hYH' horth heq
 
 end
 

@@ -199,6 +199,7 @@ import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.BoundaryGradient
 import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.BoundaryGrowth
 import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.BoundaryLifting
 import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.BoundaryRegularity
+import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.ConformalBoundaryRegularity
 import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.DerivativeRecovery
 import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.Disk.GreenIdentity
 import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.Disk.ImageHarmonic
