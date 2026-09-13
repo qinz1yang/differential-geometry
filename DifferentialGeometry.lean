@@ -6306,6 +6306,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.BasedTransp
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CappingCover
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChartOrientation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChartSimplexBlend
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChildCarrierStarCover
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChildParent
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ClosedOrientedStage
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ClosedSlabEndpoints
@@ -8783,6 +8784,7 @@ import DifferentialGeometry.Topology.VanKampen.Representative
 import DifferentialGeometry.Topology.VanKampen.RetractPushout
 import DifferentialGeometry.Topology.VanKampen.SelectedObjects
 import DifferentialGeometry.Topology.VanKampen.SimplyConnectedCover
+import DifferentialGeometry.Topology.VanKampen.SimplyConnectedStarCover
 import DifferentialGeometry.Topology.VanKampen.SimplyConnectedUnion
 import DifferentialGeometry.Topology.VanKampen.SmoothCollarBoundary
 import DifferentialGeometry.Topology.VanKampen.SmoothSideDefiningFunction
