@@ -25,4 +25,3 @@ theorem ContDiffBump.tendstoUniformly_normed_convolution {ι : Type*} {l : Filte
     exact (hδu (lt_trans hy hn)).le
   rw [dist_comm]
   exact hh.trans_lt (half_lt_self hε)
-

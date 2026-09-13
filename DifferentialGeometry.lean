@@ -199,6 +199,7 @@ import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.BoundaryGradient
 import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.BoundaryGrowth
 import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.BoundaryLifting
 import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.BoundaryRegularity
+import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.DerivativeRecovery
 import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.Disk.GreenIdentity
 import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.Disk.ImageHarmonic
 import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.Disk.ImagePotential
@@ -229,6 +230,7 @@ import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.Regularization.Integr
 import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.Regularization.Limit
 import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.Regularization.Vanishing
 import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.Strip
+import DifferentialGeometry.Analysis.Elliptic.ComplexPlane.TangentialRegularity
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.ChartCoordinateExpansion.ChartComponentFrameTrace
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.ChartCoordinateExpansion.CoordinateFormula.ChristoffelTraceCorrection
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.ChartCoordinateExpansion.CoordinateFormula.Decomposition
@@ -4029,6 +4031,7 @@ import DifferentialGeometry.Geometry.Coordinates.Calculus.FixedBaseDerivative
 import DifferentialGeometry.Geometry.Coordinates.Connection.Christoffel
 import DifferentialGeometry.Geometry.Coordinates.Connection.ChristoffelTensor
 import DifferentialGeometry.Geometry.Coordinates.Connection.Coefficients
+import DifferentialGeometry.Geometry.Coordinates.ConformalEnergy
 import DifferentialGeometry.Geometry.Coordinates.EmbeddedCurve
 import DifferentialGeometry.Geometry.Coordinates.Fields.Scalar
 import DifferentialGeometry.Geometry.Coordinates.Fields.Tensor
@@ -6426,6 +6429,7 @@ import DifferentialGeometry.Geometry.Gradient.CylinderPerturbation
 import DifferentialGeometry.Geometry.Gradient.Normalized
 import DifferentialGeometry.Geometry.Gradient.ScaledChartDifferential
 import DifferentialGeometry.Geometry.Gradient.SignedDifference
+import DifferentialGeometry.Geometry.HarmonicMap.Coordinates
 import DifferentialGeometry.Geometry.Hodge.Codifferential
 import DifferentialGeometry.Geometry.LieDerivative.Tensor
 import DifferentialGeometry.Geometry.LieGroup.Orthogonal

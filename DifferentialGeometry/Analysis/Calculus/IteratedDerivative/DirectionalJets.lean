@@ -127,24 +127,20 @@ theorem fderiv_iter_apply
   apply ContDiffAt.fderiv_iteratedFDeriv_apply (n := n) (hf.of_le ?_) u
   exact WithTop.coe_le_coe.mpr (le_top : ((n : ℕ∞) + 1) ≤ ⊤)
 
+private theorem iteratedFDeriv_clm_apply
+    {c : E → F →L[ℝ] G} {x : E} {n : ℕ} (hc : ContDiffAt ℝ n c x)
+    (u : F) (m : Fin n → E) :
+    iteratedFDeriv ℝ n (fun y => c y u) x m =
+      iteratedFDeriv ℝ n c x m u := by
+  exact congrArg (fun A => A m)
+    ((ContinuousLinearMap.apply ℝ G u).iteratedFDeriv_comp_left hc le_rfl)
+
 theorem iterFDeriv_clm_apply
     {c : E → F →L[ℝ] G} {x : E} (hc : ContDiffAt ℝ ∞ c x)
     (n : ℕ) (u : F) (m : Fin n → E) :
     iteratedFDeriv ℝ n (fun y => c y u) x m =
-      iteratedFDeriv ℝ n c x m u := by
-  have hcn : ContDiffAt ℝ n c x :=
-    hc.of_le (by exact_mod_cast le_top : (n : WithTop ℕ∞) ≤ ∞)
-  obtain ⟨t, ht, hct⟩ := hcn.contDiffOn le_rfl (by simp)
-  let U : Set E := interior t
-  have hU : IsOpen U := isOpen_interior
-  have hxU : x ∈ U := mem_interior_iff_mem_nhds.mpr ht
-  have hcU : ContDiffOn ℝ n c U := hct.mono interior_subset
-  have hwithin :=
-    iteratedFDerivWithin_clm_apply_const_apply
-      hU.uniqueDiffOn hcU le_rfl hxU (u := u) (m := m)
-  rw [iteratedFDerivWithin_of_isOpen n hU hxU,
-    iteratedFDerivWithin_of_isOpen n hU hxU] at hwithin
-  exact hwithin
+      iteratedFDeriv ℝ n c x m u :=
+  iteratedFDeriv_clm_apply (hc.of_le (by exact_mod_cast le_top)) u m
 
 theorem iterFDeriv_apply₂
     {W : Type*} [NormedAddCommGroup W] [NormedSpace ℝ W]
@@ -161,8 +157,8 @@ theorem iterFDeriv_apply₂
     _ = iteratedFDeriv ℝ n c x m u v := by
       rw [iterFDeriv_clm_apply hc n u m]
 
-theorem iterFDeriv_rotate
-    {f : E → F} {x : E} (hf : ContDiffAt ℝ ∞ f x) (n : ℕ) :
+private theorem iteratedFDeriv_rotate
+    {f : E → F} {x : E} (n : ℕ) (hf : ContDiffAt ℝ n f x) :
     (iteratedFDeriv ℝ n f x).domDomCongr (finRotate n) =
       iteratedFDeriv ℝ n f x := by
   cases n with
@@ -185,8 +181,8 @@ theorem iterFDeriv_rotate
       have hlast : w (Fin.last n) = v 0 := by
         change v (finRotate (n + 1) (Fin.last n)) = v 0
         rw [finRotate_last]
-      have hDf : ContDiffAt ℝ ∞ (fun y => fderiv ℝ f y) x :=
-        hf.fderiv_right (m := ∞) le_rfl
+      have hDf : ContDiffAt ℝ n (fun y => fderiv ℝ f y) x :=
+        hf.fderiv_right (by norm_cast)
       calc
         iteratedFDeriv ℝ (n + 1) f x w =
             iteratedFDeriv ℝ n (fun y => fderiv ℝ f y) x
@@ -196,11 +192,17 @@ theorem iterFDeriv_rotate
               (Fin.tail v) (v 0) := by rw [hinit, hlast]
         _ = iteratedFDeriv ℝ n (fun y => fderiv ℝ f y (v 0)) x
               (Fin.tail v) :=
-          (iterFDeriv_clm_apply hDf n (v 0) (Fin.tail v)).symm
+          (iteratedFDeriv_clm_apply hDf (v 0) (Fin.tail v)).symm
         _ = fderiv ℝ (iteratedFDeriv ℝ n f) x (v 0) (Fin.tail v) := by
-          rw [← fderiv_iter_apply hf n (v 0)]
+          rw [← hf.fderiv_iteratedFDeriv_apply (v 0)]
         _ = iteratedFDeriv ℝ (n + 1) f x v :=
           (iteratedFDeriv_succ_apply_left v).symm
+
+theorem iterFDeriv_rotate
+    {f : E → F} {x : E} (hf : ContDiffAt ℝ ∞ f x) (n : ℕ) :
+    (iteratedFDeriv ℝ n f x).domDomCongr (finRotate n) =
+      iteratedFDeriv ℝ n f x :=
+  iteratedFDeriv_rotate n (hf.of_le (by exact_mod_cast le_top))
 
 private def iterFDerivStab {n : ℕ}
     (A : ContinuousMultilinearMap ℝ (fun _ : Fin n => E) F) :
@@ -218,9 +220,8 @@ private def iterFDerivStab {n : ℕ}
     have h := hσ (fun i => v (σ⁻¹ i))
     simpa only [Equiv.Perm.coe_inv, Equiv.symm_apply_apply] using h.symm
 
-theorem iterFDeriv_perm
-    {f : E → F} {x : E} (hf : ContDiffAt ℝ ∞ f x)
-    {n : ℕ} (σ : Equiv.Perm (Fin n)) :
+theorem _root_.ContDiffAt.iteratedFDeriv_perm
+    {f : E → F} {x : E} {n : ℕ} (hf : ContDiffAt ℝ n f x) (σ : Equiv.Perm (Fin n)) :
     (iteratedFDeriv ℝ n f x).domDomCongr σ =
       iteratedFDeriv ℝ n f x := by
   induction n generalizing f with
@@ -248,7 +249,7 @@ theorem iterFDeriv_perm
           have hc : c ∈ H := by
             change ∀ v, A (fun i => v (c i)) = A v
             intro v
-            have hrot := iterFDeriv_rotate hf (k + 2)
+            have hrot := iteratedFDeriv_rotate (k + 2) hf
             have happ := congrArg
               (fun B : ContinuousMultilinearMap ℝ
                 (fun _ : Fin (k + 2) => E) F => B v) hrot
@@ -303,10 +304,10 @@ theorem iterFDeriv_perm
                     Fin.val_castSucc]
                   split_ifs <;> rfl
                 have hDf :
-                    ContDiffAt ℝ ∞ (fun y => fderiv ℝ f y) x :=
-                  hf.fderiv_right (m := ∞) le_rfl
+                    ContDiffAt ℝ (k + 2 : ℕ) (fun y => fderiv ℝ f y) x :=
+                  hf.fderiv_right (by norm_cast)
                 have hg :
-                    ContDiffAt ℝ ∞
+                    ContDiffAt ℝ (k + 2 : ℕ)
                       (fun y => fderiv ℝ f y (v (Fin.last (k + 2)))) x :=
                   hDf.clm_apply contDiffAt_const
                 have htail := ih hg st
@@ -336,7 +337,7 @@ theorem iterFDeriv_perm
                           (v (Fin.last (k + 2)))) x
                         (Fin.init w) := by
                     rw [hlast]
-                    exact (iterFDeriv_clm_apply hDf (k + 2)
+                    exact (iteratedFDeriv_clm_apply hDf
                       (v (Fin.last (k + 2))) (Fin.init w)).symm
                   _ = iteratedFDeriv ℝ (k + 2)
                         (fun y => fderiv ℝ f y
@@ -347,7 +348,7 @@ theorem iterFDeriv_perm
                   _ = iteratedFDeriv ℝ (k + 2)
                         (fun y => fderiv ℝ f y) x
                         (Fin.init v) (v (Fin.last (k + 2))) :=
-                    iterFDeriv_clm_apply hDf (k + 2)
+                    iteratedFDeriv_clm_apply hDf
                       (v (Fin.last (k + 2))) (Fin.init v)
                   _ = A v :=
                     (iteratedFDeriv_succ_apply_right v).symm
@@ -374,6 +375,13 @@ theorem iterFDeriv_perm
           ext v
           rw [ContinuousMultilinearMap.domDomCongr_apply]
           exact hσH v
+
+theorem iterFDeriv_perm
+    {f : E → F} {x : E} (hf : ContDiffAt ℝ ∞ f x)
+    {n : ℕ} (σ : Equiv.Perm (Fin n)) :
+    (iteratedFDeriv ℝ n f x).domDomCongr σ =
+      iteratedFDeriv ℝ n f x :=
+  ContDiffAt.iteratedFDeriv_perm (hf.of_le (by exact_mod_cast le_top)) σ
 
 theorem iteratedDeriv_line
     {f : E → F} {x v : E} (hf : ContDiffAt ℝ ∞ f x) (n : ℕ) :
