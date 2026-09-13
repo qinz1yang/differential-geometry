@@ -542,6 +542,52 @@ theorem exists_smoothBoundaryAtlas :
   choose φ hφ hmem using hchart
   exact ⟨{ ambientChart := φ, mem_source := hφ, mem_iff := hmem }⟩
 
+theorem isBoundaryPoint_iff_exists_levelSphere
+    (C : DifferentialGeometry.Topology.SmoothBoundaryAtlas ThreeModel 3 (supportRegion G c))
+    (hbdry : ∀ x : (supportRegion G c),
+      C.ambientChart x x.val 0 = 0 ↔
+        ∃ b : G.ChildBoundary c, x.val ∈ Set.range (levelSphere G c b))
+    (x : (supportRegion G c)) :
+    letI := C.toChartedSpace
+    (𝓡∂ 3).IsBoundaryPoint x ↔
+      ∃ b : G.ChildBoundary c, x.val ∈ Set.range (levelSphere G c b) := by
+  letI := C.toChartedSpace
+  rw [C.isBoundaryPoint_iff x]
+  exact hbdry x
+
+theorem isConnected_interiorImage_supportRegion
+    (C : DifferentialGeometry.Topology.SmoothBoundaryAtlas ThreeModel 3 (supportRegion G c)) :
+    letI := C.toChartedSpace
+    letI := C.isManifold
+    IsConnected ((Subtype.val : (supportRegion G c) → (G.Parent c).Carrier) ''
+      (𝓡∂ 3).interior (supportRegion G c)) := by
+  letI := C.toChartedSpace
+  letI := C.isManifold
+  have hconn : IsConnected (supportRegion G c) := G.isConnected_supportRegion c
+  let : ConnectedSpace (supportRegion G c) := isConnected_iff_connectedSpace.mp hconn
+  have hpre : IsPreconnected ((𝓡∂ 3).interior (supportRegion G c)) :=
+    DifferentialGeometry.Topology.Manifold.isPreconnected_manifold_interior
+  have hne : ((𝓡∂ 3).interior (supportRegion G c)).Nonempty :=
+    DifferentialGeometry.Topology.Manifold.dense_manifold_interior.nonempty hconn.nonempty
+  exact ⟨hne.image _, hpre.image _ continuous_subtype_val.continuousOn⟩
+
+noncomputable def sphereFun (b : G.ChildBoundary c) : C(Sphere 2, (supportRegion G c)) :=
+  ⟨fun y => ⟨levelSphere G c b y, levelSphere_mem_supportRegion G c b y⟩,
+    Continuous.subtype_mk (levelSphere G c b).continuous _⟩
+
+theorem sphereFun_apply (b : G.ChildBoundary c) (y : Sphere 2) :
+    (sphereFun G c b y).1 = levelSphere G c b y := rfl
+
+theorem sphereFun_pairwise_disjoint :
+    Pairwise fun b d : G.ChildBoundary c =>
+      Disjoint (Set.range (sphereFun G c b)) (Set.range (sphereFun G c d)) := by
+  intro b d hbd
+  refine Set.disjoint_left.mpr fun z hz hz' => ?_
+  obtain ⟨y, rfl⟩ := hz
+  obtain ⟨y', hy'⟩ := hz'
+  exact Set.disjoint_left.mp (pairwise_disjoint_levelSphere G c hbd)
+    (Set.mem_range_self y) ⟨y', congrArg Subtype.val hy'⟩
+
 end GeometricCutoffRecord
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology

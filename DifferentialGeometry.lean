@@ -8645,6 +8645,7 @@ import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.BallChartTransit
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.BallChartTransportCenter
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.BallChartTransportConnected
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.Collar
+import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.Commutative
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.Construction
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.Defs
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.Finite
