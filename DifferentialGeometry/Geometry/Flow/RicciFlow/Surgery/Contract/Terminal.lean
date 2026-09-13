@@ -2,6 +2,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.GeometricCu
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.MetricEvent
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ClosedOrientedStage
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryExtension
+import DifferentialGeometry.Topology.Manifold.SmoothTwoSidedCollar
 import DifferentialGeometry.Topology.ThreeManifold.CutCapReconstruction
 import DifferentialGeometry.Topology.ThreeManifold.PoincareStandard
 import DifferentialGeometry.Topology.ThreeManifold.StandardFactors
@@ -64,9 +65,25 @@ structure TerminalCorePresentation (D : OneStepIncoming.{u}) (ε Λ : ℝ) where
   component_finite : component.Finite
   core : ConnectedComponents ↥D.slab.terminalRegularOpen →
     Set ↥D.slab.terminalRegularOpen
-  core_isOpen : ∀ c, IsOpen (core c)
-  core_isCompact : ∀ c, IsCompact (core c)
-  core_isConnected : ∀ c, IsConnected (core c)
+  core_isCompact : ∀ c ∈ component, IsCompact (core c)
+  core_isConnected : ∀ c ∈ component, IsConnected (core c)
+  core_empty : ∀ c, c ∉ component → core c = ∅
+  core_charts : ∀ c, c ∈ component → ChartedSpace (EuclideanHalfSpace 3) (core c)
+  core_smooth : ∀ c (hc : c ∈ component),
+    letI := core_charts c hc
+    IsManifold (𝓡∂ 3) ∞ (core c)
+  core_induced : ∀ c (hc : c ∈ component),
+    letI := core_charts c hc
+    IsSmoothEmbedding (𝓡∂ 3) ThreeModel ∞
+      (Subtype.val : core c → ↥D.slab.terminalRegularOpen)
+  core_interior_eq : ∀ c (hc : c ∈ component),
+    letI := core_charts c hc
+    (Subtype.val : core c → ↥D.slab.terminalRegularOpen) ''
+      (𝓡∂ 3).interior (core c) = interior (core c)
+  core_boundary_eq : ∀ c (hc : c ∈ component),
+    letI := core_charts c hc
+    (Subtype.val : core c → ↥D.slab.terminalRegularOpen) ''
+      (𝓡∂ 3).boundary (core c) = frontier (core c)
   component_iff_meets_low : ∀ c : ConnectedComponents ↥D.slab.terminalRegularOpen,
     c ∈ component ↔ ∃ x : ↥D.slab.terminalRegularOpen, ConnectedComponents.mk x = c ∧
       metricScalarAt D.terminal.metric x ≤ (coreRadius ^ 2)⁻¹
@@ -80,18 +97,30 @@ structure TerminalCorePresentation (D : OneStepIncoming.{u}) (ε Λ : ℝ) where
   horn : ∀ c, hornIndex c → NeckCylinder → ↥D.slab.terminalRegularOpen
   horn_smooth : ∀ c e, ContMDiffOn NeckCylinderModel ThreeModel ∞ (horn c e)
     (Set.univ ×ˢ Set.Ici (0 : ℝ))
+  horn_interior_embedding : ∀ c e,
+    let U : TopologicalSpace.Opens NeckCylinder :=
+      ⟨Set.univ ×ˢ Set.Ioi (0 : ℝ), isOpen_univ.prod isOpen_Ioi⟩
+    IsSmoothEmbedding NeckCylinderModel ThreeModel ∞ (fun p : U => horn c e p)
   horn_injOn : ∀ c e, Set.InjOn (horn c e) (Set.univ ×ˢ Set.Ici (0 : ℝ))
   horn_proper : ∀ c e, IsProperMap fun p : HalfNeckCylinder => horn c e p.1
   horn_range_disjoint : ∀ c e e', e ≠ e' →
     Disjoint (Set.range fun p : HalfNeckCylinder => horn c e p.1)
       (Set.range fun p : HalfNeckCylinder => horn c e' p.1)
   horn_meets_core : ∀ c e,
-    Set.range (fun y : Sphere 2 => horn c e (y, 0)) ∩ core c =
+    (Set.range fun p : HalfNeckCylinder => horn c e p.1) ∩ core c =
       Set.range fun y : Sphere 2 => horn c e (y, 0)
+  horn_base_covers_boundary : ∀ c ∈ component,
+    frontier (core c) = ⋃ e : hornIndex c, Set.range fun y : Sphere 2 => horn c e (y, 0)
+  horn_collar : ∀ c (e : hornIndex c),
+    SmoothTwoSidedCollar (𝓡 2) ThreeModel (fun y : Sphere 2 => horn c e (y, 0))
+  horn_collar_core_side : ∀ c e (p : Sphere 2 × symmetricOpenInterval (horn_collar c e).radius),
+    (horn_collar c e).toFun p ∈ core c ↔ (p.2 : ℝ) ≤ 0
+  horn_collar_eq : ∀ c e (p : Sphere 2 × symmetricOpenInterval (horn_collar c e).radius),
+    0 ≤ (p.2 : ℝ) → (horn_collar c e).toFun p = horn c e (p.1, p.2)
   horn_covers_component : ∀ c ∈ component,
     {x : ↥D.slab.terminalRegularOpen | ConnectedComponents.mk x = c} =
       core c ∪ ⋃ e : hornIndex c, Set.range fun p : HalfNeckCylinder => horn c e p.1
-  horn_scalar_large : ∀ c e y u, 0 < u →
+  horn_scalar_large : ∀ c e y u, 0 ≤ u →
     (coreRadius ^ 2)⁻¹ < metricScalarAt D.terminal.metric (horn c e (y, u))
   horn_base_scalar : ∀ c e y,
     metricScalarAt D.terminal.metric (horn c e (y, 0)) ≤ Λ * (coreRadius ^ 2)⁻¹
@@ -103,6 +132,62 @@ structure TerminalCorePresentation (D : OneStepIncoming.{u}) (ε Λ : ℝ) where
     x ∈ interior (Set.range fun p : HalfNeckCylinder => horn c e p.1) →
     ∃ (δ : ℝ) (k : ℕ) (neck : NormalizedNeck D.terminal.metric δ k),
       neck.center = x ∧ δ ≤ ε ∧ ⌊ε⁻¹⌋₊ + 1 ≤ k
+
+namespace TerminalCorePresentation
+
+variable {D : OneStepIncoming.{u}} {ε Λ : ℝ} (P : TerminalCorePresentation D ε Λ)
+
+theorem core_subset_component (c : ConnectedComponents ↥D.slab.terminalRegularOpen)
+    (hc : c ∈ P.component) :
+    P.core c ⊆ {x | ConnectedComponents.mk x = c} := by
+  intro x hx
+  have h : x ∈ P.core c ∪ ⋃ e : P.hornIndex c,
+      Set.range fun p : HalfNeckCylinder => P.horn c e p.1 := Or.inl hx
+  rw [← P.horn_covers_component c hc] at h
+  exact h
+
+theorem horn_base_mem_core (c : ConnectedComponents ↥D.slab.terminalRegularOpen)
+    (e : P.hornIndex c) (y : Sphere 2) : P.horn c e (y, 0) ∈ P.core c := by
+  have h : P.horn c e (y, 0) ∈
+      (Set.range fun p : HalfNeckCylinder => P.horn c e p.1) ∩ P.core c := by
+    rw [P.horn_meets_core]
+    exact ⟨y, rfl⟩
+  exact h.2
+
+theorem horn_pos_notMem_core (c : ConnectedComponents ↥D.slab.terminalRegularOpen)
+    (e : P.hornIndex c) (y : Sphere 2) {t : ℝ} (ht : 0 < t) :
+    P.horn c e (y, t) ∉ P.core c := by
+  intro hx
+  have h : P.horn c e (y, t) ∈
+      (Set.range fun p : HalfNeckCylinder => P.horn c e p.1) ∩ P.core c :=
+    ⟨⟨⟨(y, t), ht.le⟩, rfl⟩, hx⟩
+  rw [P.horn_meets_core] at h
+  obtain ⟨z, hz⟩ := h
+  have hzmem : (z, (0 : ℝ)) ∈ Set.univ ×ˢ Set.Ici (0 : ℝ) :=
+    ⟨Set.mem_univ _, show (0 : ℝ) ≤ 0 from le_rfl⟩
+  have hymem : (y, t) ∈ Set.univ ×ˢ Set.Ici (0 : ℝ) := ⟨Set.mem_univ _, ht.le⟩
+  have he := P.horn_injOn c e hzmem hymem hz
+  exact (ne_of_gt ht) (congrArg Prod.snd he).symm
+
+theorem frontier_scalar_le (c : ConnectedComponents ↥D.slab.terminalRegularOpen)
+    (hc : c ∈ P.component) {x : ↥D.slab.terminalRegularOpen}
+    (hx : x ∈ frontier (P.core c)) :
+    metricScalarAt D.terminal.metric x ≤ Λ * (P.coreRadius ^ 2)⁻¹ := by
+  rw [P.horn_base_covers_boundary c hc] at hx
+  obtain ⟨e, y, rfl⟩ := Set.mem_iUnion.mp hx
+  exact P.horn_base_scalar c e y
+
+theorem nonempty_hornIndex_of_not_isCompact_component
+    (c : ConnectedComponents ↥D.slab.terminalRegularOpen) (hc : c ∈ P.component)
+    (h : ¬ IsCompact {x : ↥D.slab.terminalRegularOpen | ConnectedComponents.mk x = c}) :
+    Nonempty (P.hornIndex c) := by
+  by_contra he
+  let : IsEmpty (P.hornIndex c) := not_nonempty_iff.mp he
+  apply h
+  rw [P.horn_covers_component c hc, Set.iUnion_of_empty, Set.union_empty]
+  exact P.core_isCompact c hc
+
+end TerminalCorePresentation
 
 structure TerminalCorePresentationInput (τ ε : ℝ) where
   tau_pos : 0 < τ
