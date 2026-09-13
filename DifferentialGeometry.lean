@@ -5005,6 +5005,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.TowerExt
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.TowerWidthExtinction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.CalculusBackground
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.CanonicalClass
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.CanonicalComparisonLimit
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.ClassWidth
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.Comparison
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.ComparisonLimit
@@ -8588,6 +8589,7 @@ import DifferentialGeometry.Topology.Morse.BoundaryModification
 import DifferentialGeometry.Topology.Morse.BoundaryMorse
 import DifferentialGeometry.Topology.Morse.BoundaryPerturbation
 import DifferentialGeometry.Topology.Morse.BoundaryRegularVectorField
+import DifferentialGeometry.Topology.Morse.EuclideanModel
 import DifferentialGeometry.Topology.Morse.BoundarySublevels
 import DifferentialGeometry.Topology.Morse.CellAdjunction
 import DifferentialGeometry.Topology.Morse.CellAttachment
