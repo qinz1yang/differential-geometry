@@ -102,7 +102,7 @@ theorem erase_eq_union_sdiff_of_mem : T.erase a = σ₀.erase a ∪ T \ σ₀ :=
     · exact ⟨hva, hσ₀T hvσ⟩
     · exact ⟨fun h => hvσ (h ▸ ha), hvT⟩
 
-include hT' hσ₀T ha hc
+include hT' ha hc
 
 theorem isConeBase_stellar :
     IsConeBase c (simplexAvoiding (T.erase a) hT' {σ₀.erase a, T \ σ₀}) :=
@@ -110,7 +110,7 @@ theorem isConeBase_stellar :
     (sdiff_subset_erase_of_mem ha) hc
 
 theorem stellar_cross {s : Finset E} (hs : s ∈ (simplexAvoiding (T.erase a) hT' {T \ σ₀}).faces)
-    {t : Finset E} (ht : t ∈ (coneComplex (isConeBase_stellar hT' hσ₀T ha hc)).faces) :
+    {t : Finset E} (ht : t ∈ (coneComplex (isConeBase_stellar hT' ha hc)).faces) :
     convexHull ℝ (s : Set E) ∩ convexHull ℝ (t : Set E) ⊆
       convexHull ℝ ((s : Set E) ∩ (t : Set E)) := by
   have hτ₀ : T \ σ₀ ∈ ({T \ σ₀} : Finset (Finset E)) := Finset.mem_singleton_self _
@@ -124,7 +124,7 @@ theorem stellar_cross {s : Finset E} (hs : s ∈ (simplexAvoiding (T.erase a) hT
     subst hxc
     exact absurd ((simplexAvoiding _ hT' _).convexHull_subset_space hs hxs) hcB
   · rintro x ⟨hxs, hxt⟩
-    have hcσ : c ∉ σ := (isConeBase_stellar hT' hσ₀T ha hc).notMem_face hσ
+    have hcσ : c ∉ σ := (isConeBase_stellar hT' ha hc).notMem_face hσ
     have hxσ : x ∈ convexHull ℝ (σ : Set E) := by
       rcases exists_combo_of_mem_convexHull_insert hcσ hxt with rfl | ⟨z, hz, r, hr0, hr1, rfl⟩
       · exact absurd ((simplexAvoiding _ hT' _).convexHull_subset_space hs hxs) hcB
@@ -143,20 +143,21 @@ theorem stellar_cross {s : Finset E} (hs : s ∈ (simplexAvoiding (T.erase a) hT
 
 def stellarComplex : Geometry.SimplicialComplex ℝ E :=
   unionComplex (simplexAvoiding (T.erase a) hT' {T \ σ₀})
-    (coneComplex (isConeBase_stellar hT' hσ₀T ha hc)) fun _ hs _ ht =>
-      stellar_cross hT' hσ₀T ha hc hs ht
+    (coneComplex (isConeBase_stellar hT' ha hc)) fun _ hs _ ht =>
+      stellar_cross hT' ha hc hs ht
 
 theorem mem_stellarComplex_faces_iff {t : Finset E} :
-    t ∈ (stellarComplex hT' hσ₀T ha hc).faces ↔
+    t ∈ (stellarComplex hT' ha hc).faces ↔
       t ∈ (simplexAvoiding (T.erase a) hT' {T \ σ₀}).faces ∨
-        t ∈ (coneComplex (isConeBase_stellar hT' hσ₀T ha hc)).faces := Iff.rfl
+        t ∈ (coneComplex (isConeBase_stellar hT' ha hc)).faces := Iff.rfl
 
-theorem stellarComplex_faces_finite : (stellarComplex hT' hσ₀T ha hc).faces.Finite :=
+theorem stellarComplex_faces_finite : (stellarComplex hT' ha hc).faces.Finite :=
   unionComplex_faces_finite _ _ _ (simplexAvoiding_faces_finite _ _ _)
     (coneComplex_faces_finite _ (simplexAvoiding_faces_finite _ _ _))
 
+include hσ₀T in
 theorem stellarComplex_space (hσ' : (σ₀.erase a).Nonempty) :
-    (stellarComplex hT' hσ₀T ha hc).space = (simplexBoundary (T.erase a) hT').space := by
+    (stellarComplex hT' ha hc).space = (simplexBoundary (T.erase a) hT').space := by
   have hτ₀T' : T \ σ₀ ⊆ T.erase a := sdiff_subset_erase_of_mem ha
   have hτ₀ne : (T \ σ₀).Nonempty := nonempty_of_mem_openSimplex hc
   have hσ'T' : σ₀.erase a ⊆ T.erase a := Finset.erase_subset_erase a hσ₀T
@@ -222,8 +223,9 @@ theorem stellarComplex_space (hσ' : (σ₀.erase a).Nonempty) :
       subst hσ
       exact hτ₀F
 
+include hσ₀T in
 theorem isGlueIso_stellar (hσ' : (σ₀.erase a).Nonempty) :
-    IsGlueIso (simplexAvoiding T hT {σ₀, T \ σ₀}) (stellarComplex hT' hσ₀T ha hc) (swapVertex a c)
+    IsGlueIso (simplexAvoiding T hT {σ₀, T \ σ₀}) (stellarComplex hT' ha hc) (swapVertex a c)
       (swapVertex c a) := by
   have hτ₀T : T \ σ₀ ⊆ T := Finset.sdiff_subset
   have haτ₀ : a ∉ T \ σ₀ := fun h => (Finset.mem_sdiff.mp h).2 ha
@@ -250,9 +252,9 @@ theorem isGlueIso_stellar (hσ' : (σ₀.erase a).Nonempty) :
   have hcJ' : ∀ s ∈ (simplexAvoiding (T.erase a) hT' {σ₀.erase a, T \ σ₀}).faces, c ∉ s :=
     fun s hs hcs => hs.2.2 (T \ σ₀) (Finset.mem_insert_of_mem (Finset.mem_singleton_self _))
       (hcT s (hs.2.1.trans (Finset.erase_subset a T)) hcs)
-  have haS : ∀ t ∈ (stellarComplex hT' hσ₀T ha hc).faces, a ∉ t := by
+  have haS : ∀ t ∈ (stellarComplex hT' ha hc).faces, a ∉ t := by
     intro t ht
-    rcases (mem_stellarComplex_faces_iff hT' hσ₀T ha hc).mp ht with ht | ht
+    rcases (mem_stellarComplex_faces_iff hT' ha hc).mp ht with ht | ht
     · exact fun h => Finset.notMem_erase a T (ht.2.1 h)
     · rcases (mem_coneComplex_faces_iff _).mp ht with ht | rfl | ⟨σ, hσ, rfl⟩
       · exact fun h => Finset.notMem_erase a T (ht.2.1 h)
@@ -293,7 +295,7 @@ theorem isGlueIso_stellar (hσ' : (σ₀.erase a).Nonempty) :
       subst hσ
       exact hτ₀s
   · intro t ht
-    rcases (mem_stellarComplex_faces_iff hT' hσ₀T ha hc).mp ht with ht | ht
+    rcases (mem_stellarComplex_faces_iff hT' ha hc).mp ht with ht | ht
     · obtain ⟨htne, htT, hA⟩ := ht
       rw [image_swapVertex_of_notMem (hcB t ⟨htne, htT, hA⟩)]
       refine ⟨htne, htT.trans (Finset.erase_subset a T), ?_⟩
@@ -392,9 +394,9 @@ theorem isPLSphere_simplexAvoiding_pair [FiniteDimensional ℝ E] [DecidableEq E
   · have hc : (T \ σ₀).centroid ℝ id ∈ openSimplex (T \ σ₀) := centroid_mem_openSimplex hτ₀ne
     have hiso := isGlueIso_stellar hT hT' hσ₀T ha hc hσ'
     have hfinJ := (simplexAvoiding_faces_finite T hT {σ₀, T \ σ₀}).to_subtype
-    have hfinS := (stellarComplex_faces_finite hT' hσ₀T ha hc).to_subtype
-    have hS : IsPLSphere n (stellarComplex hT' hσ₀T ha hc).space := by
-      rw [stellarComplex_space hT' hσ₀T ha hc hσ', simplexBoundary_space _ hT' (by omega)]
+    have hfinS := (stellarComplex_faces_finite hT' ha hc).to_subtype
+    have hS : IsPLSphere n (stellarComplex hT' ha hc).space := by
+      rw [stellarComplex_space hT' ha hc hσ₀T hσ', simplexBoundary_space _ hT' (by omega)]
       exact isPLSphere_biUnion_erase _ hT' hcard'
     exact hS.of_isPLHomeomorphOn hiso.isPLHomeomorphOn.symm
 
