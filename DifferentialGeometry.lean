@@ -6484,6 +6484,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.OpenCoreSub
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.OrientationDegree
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.PoincareControl
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.PoincareStandardDiscarded
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.PoincareStandardDiscardedModels
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.Recenter
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.RecenterAux
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.RetainedCoreTower
@@ -8859,6 +8860,7 @@ import DifferentialGeometry.Topology.ThreeManifold.CutCapStandardReconstruction
 import DifferentialGeometry.Topology.ThreeManifold.PoincareStandard
 import DifferentialGeometry.Topology.ThreeManifold.PoincareStandardClassification
 import DifferentialGeometry.Topology.ThreeManifold.PoincareStandardDiscarded
+import DifferentialGeometry.Topology.ThreeManifold.PoincareStandardDiscardedModels
 import DifferentialGeometry.Topology.ThreeManifold.PoincareStandardFactorOrientation
 import DifferentialGeometry.Topology.ThreeManifold.PoincareStandardFactorOrientationReduction
 import DifferentialGeometry.Topology.ThreeManifold.PoincareStandardModels
