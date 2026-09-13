@@ -5,26 +5,28 @@ additive publication within the shared DifferentialGeometry Git repository. Its 
 library is `Poincare`; its sources retain the original mathematical namespaces.
 
 The source baseline is the recovered Chapter 35 commit
-`b45bfa009368c8f5f531e10f4f5280e90079d6ad`. This checkpoint includes 116 modules
-and 133 added public exports. The latest coherent 167-line leaf proves
-compatibility of the actual relative-to-absolute cap product with the original
-cohomology connecting map. A shared general cycle-lift theorem constructs
-both chain and cochain lifts by short exactness, for arbitrary rings and
-complex shapes; it also replaces the older duplicated chain-lift proof.
-The formula and all degree identifications use the original objects and maps.
-The other 113 earlier leaves are unchanged.
+`b45bfa009368c8f5f531e10f4f5280e90079d6ad`, supplemented by recovered working-tree
+proofs with separately recorded provenance. This checkpoint includes 132 modules
+and 134 tracked added public exports. The latest coherent 301-line leaf proves
+that any simply connected T1 space relative to two distinct points has a unique
+relative H₁ class normalized by connecting image [y] − [x], and that cap with
+this class is a bijection from actual relative H¹ to actual absolute H₀.
 
-Final request `1789332070075371713-topology_checkpoint-289e4b8d` passed in
-Slurm 13821107 in 190.25 seconds, with 316 guards and 231 signature/axiom pairs.
-All 225 earlier pairs are byte-identical. The two changed leaves, new leaf and
-root freshly compiled in 1:40.44 with maximum RSS 1812924 KiB and zero diagnostics.
-Source 1b997eaf and original imported 59c2f7bb pass 80/12 and 80/8 guards/pairs.
-Both new public and all four consumer pairs match the original imported gate.
-Consumers produce nonzero connecting classes and relative homology classes
-from joined endpoints, with positive and negative endpoint cap values. They
-include the concrete pair (real line, {0,1}) and odd-degree compatibility.
-Stock linters and standard-only axioms pass. General duality, the native
-orientation producer and the full oriented-manifold suite remain open.
+Fifteen existing recovered working-tree sources, totaling 1,207 lines, supply
+first-homology and first-cohomology vanishing through actual path/cochain cones,
+triangle fillings and disk contractions. These sources were absent from the
+recovered Git baseline and are included unchanged. All 116 earlier published
+leaves are unchanged. No Hurewicz axiom is used for this result.
+
+Final request `1789334015172615434-topology_checkpoint-405abd43` passed in
+Slurm 13821107 in 439.35 seconds, with 408 guards and 234 signature/axiom pairs.
+All 231 earlier pairs are byte-identical. The sixteen added leaves and root
+freshly compiled in 5:47.42 with maximum RSS 1890444 KiB and zero diagnostics.
+Source fe1516cb and original imported 32ae5cfd pass 104/14 and 106/3 guards/pairs.
+All three new portable readbacks match both earlier gates. Nonzero real-line
+pair consumers check positive and negative cap values and the negated-class
+bijection. Stock linters and standard-only axioms pass. This concrete case does
+not close general duality, the native orientation producer or the full suite.
 
 The preceding signed-chart extension retains its exact public statements.
 

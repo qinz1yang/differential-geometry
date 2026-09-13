@@ -16,6 +16,7 @@ import Poincare.Topology.Homology.CarrierRestriction
 import Poincare.Topology.Homology.ChainCokernelElements
 import Poincare.Topology.Homology.ChainSupport
 import Poincare.Topology.Homology.ChainsIn
+import Poincare.Topology.Homology.CochainCones
 import Poincare.Topology.Homology.CochainExcision
 import Poincare.Topology.Homology.CochainMaps
 import Poincare.Topology.Homology.Cochains
@@ -54,6 +55,8 @@ import Poincare.Topology.Homology.ModuleHomologyMaps
 import Poincare.Topology.Homology.OneDimensionalSphere
 import Poincare.Topology.Homology.OpenExcision
 import Poincare.Topology.Homology.PathChains
+import Poincare.Topology.Homology.PathCones
+import Poincare.Topology.Homology.PathEvaluation
 import Poincare.Topology.Homology.RadialHomotopy
 import Poincare.Topology.Homology.ReducedZero
 import Poincare.Topology.Homology.Relative
@@ -105,6 +108,8 @@ import Poincare.Topology.Homology.SubdivisionNaturality
 import Poincare.Topology.Homology.SubdivisionSmallness
 import Poincare.Topology.Homology.SubspaceCarriers
 import Poincare.Topology.Homology.TotallyDisconnectedZero
+import Poincare.Topology.Homology.TriangleFilling
+import Poincare.Topology.Homology.TwoPointCapDuality
 import Poincare.Topology.Homology.TwoPointReducedZero
 import Poincare.Topology.Homology.TwoSetSmallChains
 import Poincare.Topology.Homology.UniversalHomotopyBoundary
@@ -113,4 +118,15 @@ import Poincare.Topology.Homology.UniversalSubdivisionIteration
 import Poincare.Topology.Homology.ZeroAugmentation
 import Poincare.Topology.Homology.ZeroChainClasses
 import Poincare.Topology.Homology.ZeroHomologyMaps
+import Poincare.Topology.Homotopy.ConvexPlaneExtension
+import Poincare.Topology.Homotopy.PlaneTriangle
 import Poincare.Topology.Homotopy.StarConvexComplement
+import Poincare.Topology.Homotopy.TriangleBoundaryQuotient
+import Poincare.Topology.Homotopy.TriangleEdges
+import Poincare.Topology.Homotopy.TriangleFaces
+import Poincare.Topology.Homotopy.TrianglePathBoundary
+import Poincare.Topology.LoopSpace.BasedCircle
+import Poincare.Topology.LoopSpace.Basic
+import Poincare.Topology.LoopSpace.ContinuousFilling
+import Poincare.Topology.LoopSpace.SimplyConnectedTarget
+import Poincare.Topology.LoopSpace.SpanningDisk

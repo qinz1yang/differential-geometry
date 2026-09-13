@@ -1,9 +1,9 @@
 {
-  "scope": "Dependency-closed 116-module checkpoint including compatibility of the actual relative-to-absolute cap product with the cohomology connecting map; full topology suite incomplete",
+  "scope": "Dependency-closed 132-module checkpoint including uniquely normalized cap duality for a simply connected T1 space relative to two distinct points; full topology suite incomplete",
   "baseline_commit": "b45bfa009368c8f5f531e10f4f5280e90079d6ad",
   "baseline_ref": "refs/remotes/origin/codex/chapter35",
   "source_project": "PoincareLean",
-  "source_module_count": 116,
+  "source_module_count": 132,
   "roots": [
     "Poincare.Topology.Homology.RelativeMaps",
     "Poincare.Topology.Homology.RelativeHomeomorphism",
@@ -31,7 +31,8 @@
     "Poincare.Topology.Homology.RelativeCapConnecting",
     "Poincare.Topology.Homology.RelativeCapToAbsolute",
     "Poincare.Topology.Homology.RelativeCapToAbsoluteHomology",
-    "Poincare.Topology.Homology.RelativeCapCohomologyConnecting"
+    "Poincare.Topology.Homology.RelativeCapCohomologyConnecting",
+    "Poincare.Topology.Homology.TwoPointCapDuality"
   ],
   "changed_sources": [
     {
@@ -51,6 +52,13 @@
       "path": "Poincare/Topology/Homology/CapProduct.lean",
       "baseline_sha256": null,
       "sha256": "2026e7f24d2210b244817fb0c6aba15df7b7851e22f261a6ac7aef82e5cc251e"
+    },
+    {
+      "module": "Poincare.Topology.Homology.CochainCones",
+      "path": "Poincare/Topology/Homology/CochainCones.lean",
+      "baseline_sha256": null,
+      "sha256": "9e8ab9296427738a558054e7d68bfb0c619e5e6a69e70efe2336f073d98c1057",
+      "provenance": "pre-existing recovered working-tree source, first included in portable checkpoint"
     },
     {
       "module": "Poincare.Topology.Homology.CochainExcision",
@@ -143,6 +151,20 @@
       "sha256": "b6494c2aeffa4ac46f6358dd9555b2093162dda408521c35b59f6dd51140e576"
     },
     {
+      "module": "Poincare.Topology.Homology.PathCones",
+      "path": "Poincare/Topology/Homology/PathCones.lean",
+      "baseline_sha256": null,
+      "sha256": "847d86e025dd50435d21046f5e807cb5d5fab425daed1bdf4df7007af66ec75c",
+      "provenance": "pre-existing recovered working-tree source, first included in portable checkpoint"
+    },
+    {
+      "module": "Poincare.Topology.Homology.PathEvaluation",
+      "path": "Poincare/Topology/Homology/PathEvaluation.lean",
+      "baseline_sha256": null,
+      "sha256": "235b6eb6aecaa60c9599ae3c2c190a55eaf3d260a04144e097bf7e3785aa0dc3",
+      "provenance": "pre-existing recovered working-tree source, first included in portable checkpoint"
+    },
+    {
       "module": "Poincare.Topology.Homology.RelativeCapCohomologyConnecting",
       "path": "Poincare/Topology/Homology/RelativeCapCohomologyConnecting.lean",
       "baseline_sha256": null,
@@ -221,10 +243,101 @@
       "sha256": "6e3fa2156309518597f9ccc00ea87c6cfd424480c54674d5d3d6b64e4e207b0a"
     },
     {
+      "module": "Poincare.Topology.Homology.TriangleFilling",
+      "path": "Poincare/Topology/Homology/TriangleFilling.lean",
+      "baseline_sha256": null,
+      "sha256": "6031feba84b4741690457d6fe4520d1d94658da04774ee15b9e47c8016623995",
+      "provenance": "pre-existing recovered working-tree source, first included in portable checkpoint"
+    },
+    {
+      "module": "Poincare.Topology.Homology.TwoPointCapDuality",
+      "path": "Poincare/Topology/Homology/TwoPointCapDuality.lean",
+      "baseline_sha256": null,
+      "sha256": "d522adbf35f6c2970b167367f85bf0aab741f6920b79f927fc573bf2984f6666",
+      "provenance": "new root proof"
+    },
+    {
+      "module": "Poincare.Topology.Homotopy.ConvexPlaneExtension",
+      "path": "Poincare/Topology/Homotopy/ConvexPlaneExtension.lean",
+      "baseline_sha256": null,
+      "sha256": "e59a0c15b8084eea808f285e6ed019a05929adedc251caffa4498f132e4459c4",
+      "provenance": "pre-existing recovered working-tree source, first included in portable checkpoint"
+    },
+    {
+      "module": "Poincare.Topology.Homotopy.PlaneTriangle",
+      "path": "Poincare/Topology/Homotopy/PlaneTriangle.lean",
+      "baseline_sha256": null,
+      "sha256": "3a3cd7b1ed0331d08740a47e57c949b8169f7d43d31bf9c8b57f0ccbb2386d29",
+      "provenance": "pre-existing recovered working-tree source, first included in portable checkpoint"
+    },
+    {
       "module": "Poincare.Topology.Homotopy.StarConvexComplement",
       "path": "Poincare/Topology/Homotopy/StarConvexComplement.lean",
       "baseline_sha256": null,
       "sha256": "ff5c10ae8999a75c2aba098b19905573557f750dfc7eac075e53000cdbdc799b"
+    },
+    {
+      "module": "Poincare.Topology.Homotopy.TriangleBoundaryQuotient",
+      "path": "Poincare/Topology/Homotopy/TriangleBoundaryQuotient.lean",
+      "baseline_sha256": null,
+      "sha256": "292638c0b0e5b96e341beb793cc2f8ca50f710143d77b1254803789cce6cb882",
+      "provenance": "pre-existing recovered working-tree source, first included in portable checkpoint"
+    },
+    {
+      "module": "Poincare.Topology.Homotopy.TriangleEdges",
+      "path": "Poincare/Topology/Homotopy/TriangleEdges.lean",
+      "baseline_sha256": null,
+      "sha256": "2f9807e3b8dbc6ecb0cd99e7558ab449133ef401cee3d9043610e65f83fb00a2",
+      "provenance": "pre-existing recovered working-tree source, first included in portable checkpoint"
+    },
+    {
+      "module": "Poincare.Topology.Homotopy.TriangleFaces",
+      "path": "Poincare/Topology/Homotopy/TriangleFaces.lean",
+      "baseline_sha256": null,
+      "sha256": "26ec4e0ce4eb406379dcad396368156046a159de44deaacd4a8f2c7258a34b96",
+      "provenance": "pre-existing recovered working-tree source, first included in portable checkpoint"
+    },
+    {
+      "module": "Poincare.Topology.Homotopy.TrianglePathBoundary",
+      "path": "Poincare/Topology/Homotopy/TrianglePathBoundary.lean",
+      "baseline_sha256": null,
+      "sha256": "b5452a7e5db259257e1a9fbf089fcd589895048231a5ee4ffe36312bd992a70a",
+      "provenance": "pre-existing recovered working-tree source, first included in portable checkpoint"
+    },
+    {
+      "module": "Poincare.Topology.LoopSpace.BasedCircle",
+      "path": "Poincare/Topology/LoopSpace/BasedCircle.lean",
+      "baseline_sha256": null,
+      "sha256": "c87b424651a6a7c0c9e31d9502e60b74216d020122029fa52622abfab8ef25c5",
+      "provenance": "pre-existing recovered working-tree source, first included in portable checkpoint"
+    },
+    {
+      "module": "Poincare.Topology.LoopSpace.Basic",
+      "path": "Poincare/Topology/LoopSpace/Basic.lean",
+      "baseline_sha256": null,
+      "sha256": "4673fc054f71e9063a837fcdd60e475f44ef7362d9aefea947066126b0c0ed77",
+      "provenance": "pre-existing recovered working-tree source, first included in portable checkpoint"
+    },
+    {
+      "module": "Poincare.Topology.LoopSpace.ContinuousFilling",
+      "path": "Poincare/Topology/LoopSpace/ContinuousFilling.lean",
+      "baseline_sha256": null,
+      "sha256": "76d8a8f4da9225f8fc815a7e686fe97d3e9184ed25158471d09bad43a0337bf4",
+      "provenance": "pre-existing recovered working-tree source, first included in portable checkpoint"
+    },
+    {
+      "module": "Poincare.Topology.LoopSpace.SimplyConnectedTarget",
+      "path": "Poincare/Topology/LoopSpace/SimplyConnectedTarget.lean",
+      "baseline_sha256": null,
+      "sha256": "a7d322495d06d8787f738956c2f63789194674f454bab47fa5d40c33bd384bff",
+      "provenance": "pre-existing recovered working-tree source, first included in portable checkpoint"
+    },
+    {
+      "module": "Poincare.Topology.LoopSpace.SpanningDisk",
+      "path": "Poincare/Topology/LoopSpace/SpanningDisk.lean",
+      "baseline_sha256": null,
+      "sha256": "a53eae10d7a6f158c8d12febd33ca8b4b653fde4d7bbcf9bdc3b067b68514bf1",
+      "provenance": "pre-existing recovered working-tree source, first included in portable checkpoint"
     }
   ],
   "poincare_sources": [
@@ -335,6 +448,13 @@
       "path": "Poincare/Topology/Homology/ChainsIn.lean",
       "baseline_sha256": "fc328ef54a8b97c3185392c6c6aede89668419b340bacca140192543d88bbd83",
       "sha256": "fc328ef54a8b97c3185392c6c6aede89668419b340bacca140192543d88bbd83"
+    },
+    {
+      "module": "Poincare.Topology.Homology.CochainCones",
+      "path": "Poincare/Topology/Homology/CochainCones.lean",
+      "baseline_sha256": null,
+      "sha256": "9e8ab9296427738a558054e7d68bfb0c619e5e6a69e70efe2336f073d98c1057",
+      "provenance": "pre-existing recovered working-tree source, first included in portable checkpoint"
     },
     {
       "module": "Poincare.Topology.Homology.CochainExcision",
@@ -563,6 +683,20 @@
       "path": "Poincare/Topology/Homology/PathChains.lean",
       "baseline_sha256": "66b896ed9eac3cd9193e6cba7ff2103a13618fa163582f25a3b8630e34a2efb6",
       "sha256": "66b896ed9eac3cd9193e6cba7ff2103a13618fa163582f25a3b8630e34a2efb6"
+    },
+    {
+      "module": "Poincare.Topology.Homology.PathCones",
+      "path": "Poincare/Topology/Homology/PathCones.lean",
+      "baseline_sha256": null,
+      "sha256": "847d86e025dd50435d21046f5e807cb5d5fab425daed1bdf4df7007af66ec75c",
+      "provenance": "pre-existing recovered working-tree source, first included in portable checkpoint"
+    },
+    {
+      "module": "Poincare.Topology.Homology.PathEvaluation",
+      "path": "Poincare/Topology/Homology/PathEvaluation.lean",
+      "baseline_sha256": null,
+      "sha256": "235b6eb6aecaa60c9599ae3c2c190a55eaf3d260a04144e097bf7e3785aa0dc3",
+      "provenance": "pre-existing recovered working-tree source, first included in portable checkpoint"
     },
     {
       "module": "Poincare.Topology.Homology.RadialHomotopy",
@@ -871,6 +1005,20 @@
       "sha256": "90c354b5cd6148631a4122c9ccadc95d73bd15f9c7d5d6ae0895ed6172882756"
     },
     {
+      "module": "Poincare.Topology.Homology.TriangleFilling",
+      "path": "Poincare/Topology/Homology/TriangleFilling.lean",
+      "baseline_sha256": null,
+      "sha256": "6031feba84b4741690457d6fe4520d1d94658da04774ee15b9e47c8016623995",
+      "provenance": "pre-existing recovered working-tree source, first included in portable checkpoint"
+    },
+    {
+      "module": "Poincare.Topology.Homology.TwoPointCapDuality",
+      "path": "Poincare/Topology/Homology/TwoPointCapDuality.lean",
+      "baseline_sha256": null,
+      "sha256": "d522adbf35f6c2970b167367f85bf0aab741f6920b79f927fc573bf2984f6666",
+      "provenance": "new root proof"
+    },
+    {
       "module": "Poincare.Topology.Homology.TwoPointReducedZero",
       "path": "Poincare/Topology/Homology/TwoPointReducedZero.lean",
       "baseline_sha256": "9a45ae2895ddb8dcce541775cb7b9dbb4bc2738df94a661c1c8e7391b026b7dc",
@@ -919,17 +1067,94 @@
       "sha256": "ff96bdb01077e8c63f760e0cc3715cf9299b90dd24fc9fc72dd97eb171e6b36a"
     },
     {
+      "module": "Poincare.Topology.Homotopy.ConvexPlaneExtension",
+      "path": "Poincare/Topology/Homotopy/ConvexPlaneExtension.lean",
+      "baseline_sha256": null,
+      "sha256": "e59a0c15b8084eea808f285e6ed019a05929adedc251caffa4498f132e4459c4",
+      "provenance": "pre-existing recovered working-tree source, first included in portable checkpoint"
+    },
+    {
+      "module": "Poincare.Topology.Homotopy.PlaneTriangle",
+      "path": "Poincare/Topology/Homotopy/PlaneTriangle.lean",
+      "baseline_sha256": null,
+      "sha256": "3a3cd7b1ed0331d08740a47e57c949b8169f7d43d31bf9c8b57f0ccbb2386d29",
+      "provenance": "pre-existing recovered working-tree source, first included in portable checkpoint"
+    },
+    {
       "module": "Poincare.Topology.Homotopy.StarConvexComplement",
       "path": "Poincare/Topology/Homotopy/StarConvexComplement.lean",
       "baseline_sha256": null,
       "sha256": "ff5c10ae8999a75c2aba098b19905573557f750dfc7eac075e53000cdbdc799b"
+    },
+    {
+      "module": "Poincare.Topology.Homotopy.TriangleBoundaryQuotient",
+      "path": "Poincare/Topology/Homotopy/TriangleBoundaryQuotient.lean",
+      "baseline_sha256": null,
+      "sha256": "292638c0b0e5b96e341beb793cc2f8ca50f710143d77b1254803789cce6cb882",
+      "provenance": "pre-existing recovered working-tree source, first included in portable checkpoint"
+    },
+    {
+      "module": "Poincare.Topology.Homotopy.TriangleEdges",
+      "path": "Poincare/Topology/Homotopy/TriangleEdges.lean",
+      "baseline_sha256": null,
+      "sha256": "2f9807e3b8dbc6ecb0cd99e7558ab449133ef401cee3d9043610e65f83fb00a2",
+      "provenance": "pre-existing recovered working-tree source, first included in portable checkpoint"
+    },
+    {
+      "module": "Poincare.Topology.Homotopy.TriangleFaces",
+      "path": "Poincare/Topology/Homotopy/TriangleFaces.lean",
+      "baseline_sha256": null,
+      "sha256": "26ec4e0ce4eb406379dcad396368156046a159de44deaacd4a8f2c7258a34b96",
+      "provenance": "pre-existing recovered working-tree source, first included in portable checkpoint"
+    },
+    {
+      "module": "Poincare.Topology.Homotopy.TrianglePathBoundary",
+      "path": "Poincare/Topology/Homotopy/TrianglePathBoundary.lean",
+      "baseline_sha256": null,
+      "sha256": "b5452a7e5db259257e1a9fbf089fcd589895048231a5ee4ffe36312bd992a70a",
+      "provenance": "pre-existing recovered working-tree source, first included in portable checkpoint"
+    },
+    {
+      "module": "Poincare.Topology.LoopSpace.BasedCircle",
+      "path": "Poincare/Topology/LoopSpace/BasedCircle.lean",
+      "baseline_sha256": null,
+      "sha256": "c87b424651a6a7c0c9e31d9502e60b74216d020122029fa52622abfab8ef25c5",
+      "provenance": "pre-existing recovered working-tree source, first included in portable checkpoint"
+    },
+    {
+      "module": "Poincare.Topology.LoopSpace.Basic",
+      "path": "Poincare/Topology/LoopSpace/Basic.lean",
+      "baseline_sha256": null,
+      "sha256": "4673fc054f71e9063a837fcdd60e475f44ef7362d9aefea947066126b0c0ed77",
+      "provenance": "pre-existing recovered working-tree source, first included in portable checkpoint"
+    },
+    {
+      "module": "Poincare.Topology.LoopSpace.ContinuousFilling",
+      "path": "Poincare/Topology/LoopSpace/ContinuousFilling.lean",
+      "baseline_sha256": null,
+      "sha256": "76d8a8f4da9225f8fc815a7e686fe97d3e9184ed25158471d09bad43a0337bf4",
+      "provenance": "pre-existing recovered working-tree source, first included in portable checkpoint"
+    },
+    {
+      "module": "Poincare.Topology.LoopSpace.SimplyConnectedTarget",
+      "path": "Poincare/Topology/LoopSpace/SimplyConnectedTarget.lean",
+      "baseline_sha256": null,
+      "sha256": "a7d322495d06d8787f738956c2f63789194674f454bab47fa5d40c33bd384bff",
+      "provenance": "pre-existing recovered working-tree source, first included in portable checkpoint"
+    },
+    {
+      "module": "Poincare.Topology.LoopSpace.SpanningDisk",
+      "path": "Poincare/Topology/LoopSpace/SpanningDisk.lean",
+      "baseline_sha256": null,
+      "sha256": "a53eae10d7a6f158c8d12febd33ca8b4b653fde4d7bbcf9bdc3b067b68514bf1",
+      "provenance": "pre-existing recovered working-tree source, first included in portable checkpoint"
     }
   ],
   "aggregate": {
     "path": "Poincare.lean",
     "baseline_sha256": "99c3c8e47c19f60ee50a7e0f377e59138cf4ff33ebd4e26530d3c2b7cd47d452",
-    "sha256": "708e3d212c17a60b39be5ac6e109df979ffd199791bffe5315809f1a452a33d3",
-    "change": "Flat 116-leaf checkpoint aggregate; full recovered aggregate remains separate"
+    "sha256": "566499c86f28c7b7917571fbe0c6be38a3d3459567db5276e896358b3e2ff4ac",
+    "change": "Flat 132-leaf checkpoint aggregate; full recovered aggregate remains separate"
   },
   "configuration": [
     {
@@ -973,6 +1198,7 @@
     "Mathlib.Algebra.Module.ULift",
     "Mathlib.Algebra.Order.Archimedean.Basic",
     "Mathlib.Algebra.Ring.Parity",
+    "Mathlib.AlgebraicTopology.FundamentalGroupoid.SimplyConnected",
     "Mathlib.AlgebraicTopology.SimplexCategory.Basic",
     "Mathlib.AlgebraicTopology.SingularHomology.HomologyZero",
     "Mathlib.AlgebraicTopology.SingularHomology.HomotopyInvariance",
@@ -980,7 +1206,9 @@
     "Mathlib.Analysis.Calculus.FDeriv.Basic",
     "Mathlib.Analysis.Calculus.FDeriv.Comp",
     "Mathlib.Analysis.Calculus.FDeriv.Congr",
+    "Mathlib.Analysis.Complex.Basic",
     "Mathlib.Analysis.Convex.Contractible",
+    "Mathlib.Analysis.Convex.GaugeRescale",
     "Mathlib.Analysis.Convex.StdSimplex",
     "Mathlib.Analysis.InnerProductSpace.PiL2",
     "Mathlib.Analysis.InnerProductSpace.Projection.FiniteDimensional",
@@ -991,6 +1219,7 @@
     "Mathlib.Analysis.Normed.Module.Convex",
     "Mathlib.Analysis.Normed.Module.FiniteDimension",
     "Mathlib.Analysis.Normed.Operator.LinearIsometry",
+    "Mathlib.Analysis.SpecialFunctions.Complex.Circle",
     "Mathlib.CategoryTheory.Limits.Yoneda",
     "Mathlib.CategoryTheory.Linear.Yoneda",
     "Mathlib.Data.Fin.Tuple.Basic",
@@ -1014,6 +1243,7 @@
     "Mathlib.LinearAlgebra.Span.Basic",
     "Mathlib.Tactic.Abel",
     "Mathlib.Tactic.FieldSimp",
+    "Mathlib.Tactic.FinCases",
     "Mathlib.Tactic.Linarith",
     "Mathlib.Tactic.Module",
     "Mathlib.Tactic.NormNum",
@@ -1024,15 +1254,20 @@
     "Mathlib.Topology.Compactness.Compact",
     "Mathlib.Topology.Compactness.LocallyCompact",
     "Mathlib.Topology.Connected.Clopen",
+    "Mathlib.Topology.Connected.LocallyConnected",
     "Mathlib.Topology.Connected.TotallyDisconnected",
+    "Mathlib.Topology.ContinuousMap.Compact",
     "Mathlib.Topology.Homeomorph.Lemmas",
     "Mathlib.Topology.Homotopy.Basic",
     "Mathlib.Topology.Homotopy.Contractible",
+    "Mathlib.Topology.Instances.AddCircle.Real",
+    "Mathlib.Topology.Maps.Proper.Basic",
     "Mathlib.Topology.MetricSpace.Bounded",
     "Mathlib.Topology.MetricSpace.ProperSpace",
     "Mathlib.Topology.MetricSpace.Pseudo.Defs",
     "Mathlib.Topology.MetricSpace.Pseudo.Lemmas",
     "Mathlib.Topology.OpenPartialHomeomorph.Continuity",
+    "Mathlib.Topology.Path",
     "Mathlib.Topology.Separation.Hausdorff"
   ],
   "differential_geometry_imports": [],
@@ -1171,7 +1406,8 @@
     "Poincare.Topology.integralRelativeCohomologyCapToAbsolute_project",
     "Poincare.Topology.integralRelativeCohomologyCapToAbsolute_absoluteToRelative",
     "Poincare.Topology.exists_moduleCycle_connecting_lifts",
-    "Poincare.Topology.integralRelativeCohomologyCapToAbsolute_connecting"
+    "Poincare.Topology.integralRelativeCohomologyCapToAbsolute_connecting",
+    "Poincare.Topology.exists_unique_relative_pair_cap_bijective"
   ],
   "historical_authorities": [
     {
@@ -1309,25 +1545,38 @@
     "full_topology_suite_accepted": false
   },
   "validation": {
-    "status": "passed for the selected 116-module checkpoint; full topology suite incomplete",
+    "status": "passed for the selected 132-module checkpoint; full topology suite incomplete",
     "date": "2026-09-13",
     "slurm_job": "13821107",
     "host": "della-r3c4n2",
-    "request_id": "1789332070075371713-topology_checkpoint-289e4b8d",
-    "input_sha256": "e67cca679e162d88ad47e3e3070fb459e22bc077d567d401443f1c3b38b79175",
-    "result_sha256": "09d2b60390ee5eee3fd7bd2138ddbefbcb88ae16796eadb8562989d1451ad967",
-    "artifact_log_sha256": "6eabba29ea56141924d48b38f8221ed51aea7f55436854d0e0bfe87f17dc6024",
-    "source_config_harness_hash_guards": 316,
+    "request_id": "1789334015172615434-topology_checkpoint-405abd43",
+    "input_sha256": "fa4e49ca8c06ab76842995e3d958179c2c47b17b74b03895345b5d8b7d886337",
+    "result_sha256": "27770ade1e835b0a0e92c63babf743367d339a255fe9947768a38aa0a4900bbd",
+    "artifact_log_sha256": "3868468ef51abc58f63c6c4b552be8d5188f8798db68096c346bc6a4d64c1594",
+    "source_config_harness_hash_guards": 408,
     "freshly_built_modules": [
-      "Poincare.Topology.Homology.ModuleHomologyConnecting",
-      "Poincare.Topology.Homology.RelativeCapConnecting",
-      "Poincare.Topology.Homology.RelativeCapCohomologyConnecting",
+      "Poincare.Topology.Homotopy.PlaneTriangle",
+      "Poincare.Topology.Homotopy.TriangleEdges",
+      "Poincare.Topology.Homotopy.TriangleFaces",
+      "Poincare.Topology.Homotopy.TriangleBoundaryQuotient",
+      "Poincare.Topology.Homotopy.TrianglePathBoundary",
+      "Poincare.Topology.LoopSpace.Basic",
+      "Poincare.Topology.LoopSpace.BasedCircle",
+      "Poincare.Topology.LoopSpace.SpanningDisk",
+      "Poincare.Topology.LoopSpace.ContinuousFilling",
+      "Poincare.Topology.LoopSpace.SimplyConnectedTarget",
+      "Poincare.Topology.Homotopy.ConvexPlaneExtension",
+      "Poincare.Topology.Homology.PathEvaluation",
+      "Poincare.Topology.Homology.TriangleFilling",
+      "Poincare.Topology.Homology.PathCones",
+      "Poincare.Topology.Homology.CochainCones",
+      "Poincare.Topology.Homology.TwoPointCapDuality",
       "Poincare"
     ],
     "root_build": "lake --no-cache --iofail build Poincare",
-    "fresh_build_scope": "ModuleHomologyConnecting, RelativeCapConnecting, RelativeCapCohomologyConnecting and root freshly compiled with zero diagnostics. The other 113 earlier leaves remain byte-identical and retain earlier evidence.",
-    "exact_public_exports": 133,
-    "public_and_consumer_signature_axiom_pairs": 231,
+    "fresh_build_scope": "New TwoPointCapDuality301, fifteen unchanged recovered working-tree sources totaling1207 lines, and the root freshly compiled with zero diagnostics. These fifteen prerequisites were absent from the recovered Git baseline; all116 previously published leaves remain byte-identical.",
+    "exact_public_exports": 134,
+    "public_and_consumer_signature_axiom_pairs": 234,
     "linters": [
       "unusedArguments",
       "simpNF",
@@ -1342,16 +1591,15 @@
       "Quot.sound"
     ],
     "unexpected_diagnostics": 0,
-    "elapsed_seconds": 190.24830174446106,
-    "peak_summed_rss_bytes": 3083481088,
+    "elapsed_seconds": 439.3468978404999,
+    "peak_summed_rss_bytes": 3110625280,
     "full_topology_suite_accepted": false,
     "consumer_probes": [
-      "All 225 prior signature/axiom pairs reproduced byte-identically",
-      "Two new public and four consumer pairs match the original imported gate",
-      "Actual cohomology-connecting/cap compatibility on the original groups and maps in all natural degrees",
-      "General cycle lifts produced by short exactness for arbitrary rings and complex shapes; shared by both connecting compatibility laws",
-      "Actual joined endpoints in a totally disconnected subspace produce nonzero cohomology connecting and relative homology classes with positive and negative cap values",
-      "Concrete real-line pair {0,1}, vertex cap evaluation and odd-degree compatibility"
+      "All231 prior signature/axiom pairs reproduced byte-identically",
+      "New public theorem and both consumers match original imported and source readbacks",
+      "For any simply connected T1 space and two distinct points, actual connecting normalization uniquely specifies a relative class whose actual cap map is bijective",
+      "Actual path and cochain cones supply first-homology and first-cohomology vanishing, without a Hurewicz axiom",
+      "Concrete real-line/{0,1} class and cohomology input are nonzero, with positive and negative endpoint cap values; negated class also gives bijection"
     ]
   },
   "previous_linear_sign_checkpoint_validation": {
@@ -2669,5 +2917,63 @@
       "Poincare.Topology.Homology.RelativeCapCohomologyConnecting"
     ],
     "source_request_id": "1789331817324272724-topology-1b997eaf"
+  },
+  "previous_relative_cohomology_cap_connecting_validation": {
+    "status": "passed for the selected 116-module checkpoint; full topology suite incomplete",
+    "date": "2026-09-13",
+    "slurm_job": "13821107",
+    "host": "della-r3c4n2",
+    "request_id": "1789332070075371713-topology_checkpoint-289e4b8d",
+    "input_sha256": "e67cca679e162d88ad47e3e3070fb459e22bc077d567d401443f1c3b38b79175",
+    "result_sha256": "09d2b60390ee5eee3fd7bd2138ddbefbcb88ae16796eadb8562989d1451ad967",
+    "artifact_log_sha256": "6eabba29ea56141924d48b38f8221ed51aea7f55436854d0e0bfe87f17dc6024",
+    "source_config_harness_hash_guards": 316,
+    "freshly_built_modules": [
+      "Poincare.Topology.Homology.ModuleHomologyConnecting",
+      "Poincare.Topology.Homology.RelativeCapConnecting",
+      "Poincare.Topology.Homology.RelativeCapCohomologyConnecting",
+      "Poincare"
+    ],
+    "root_build": "lake --no-cache --iofail build Poincare",
+    "fresh_build_scope": "ModuleHomologyConnecting, RelativeCapConnecting, RelativeCapCohomologyConnecting and root freshly compiled with zero diagnostics. The other 113 earlier leaves remain byte-identical and retain earlier evidence.",
+    "exact_public_exports": 133,
+    "public_and_consumer_signature_axiom_pairs": 231,
+    "linters": [
+      "unusedArguments",
+      "simpNF",
+      "synTaut",
+      "checkType"
+    ],
+    "linter_scope": "All imported Poincare declarations and current consumers, including private declarations",
+    "defLemma": "Unavailable in the pinned Mathlib; source declaration-kind checks retained.",
+    "allowed_transitive_axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "unexpected_diagnostics": 0,
+    "elapsed_seconds": 190.24830174446106,
+    "peak_summed_rss_bytes": 3083481088,
+    "full_topology_suite_accepted": false,
+    "consumer_probes": [
+      "All 225 prior signature/axiom pairs reproduced byte-identically",
+      "Two new public and four consumer pairs match the original imported gate",
+      "Actual cohomology-connecting/cap compatibility on the original groups and maps in all natural degrees",
+      "General cycle lifts produced by short exactness for arbitrary rings and complex shapes; shared by both connecting compatibility laws",
+      "Actual joined endpoints in a totally disconnected subspace produce nonzero cohomology connecting and relative homology classes with positive and negative cap values",
+      "Concrete real-line pair {0,1}, vertex cap evaluation and odd-degree compatibility"
+    ]
+  },
+  "original_two_point_cap_duality_validation": {
+    "request_id": "1789333902525193988-topology-32ae5cfd",
+    "input_sha256": "9cefe235f04fd3bf7c7b174014e4c8be5c559e243c6a7b70d6e2a254f2b30b99",
+    "elapsed_seconds": 87.70299315452576,
+    "source_guards": 106,
+    "signature_axiom_pairs": 3,
+    "fresh_modules": [
+      "Poincare.Topology.Homology.TwoPointCapDuality"
+    ],
+    "source_request_id": "1789333825377750044-topology-fe1516cb",
+    "source_readback_comparison": "all three new pairs match source and both imported gates"
   }
 }

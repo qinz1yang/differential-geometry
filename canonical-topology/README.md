@@ -1,11 +1,14 @@
 # Local homology and global classes from coherent local generators
 
 This separate `PoincareLean` project contains a dependency-closed checkpoint of
-116 Poincare modules. It extends the recovered Chapter 35 source at commit
+132 Poincare modules. It extends the recovered Chapter 35 source at commit
 `b45bfa009368c8f5f531e10f4f5280e90079d6ad` and preserves its mathematical objects
 and `Poincare` namespaces. `Poincare.lean` imports every included leaf.
 
 The additions prove:
+
+- a uniquely normalized relative class for a simply connected T1 space and two
+  distinct points, whose actual cap map from relative H¹ to absolute H₀ is bijective;
 
 - compatibility of the relative-to-absolute cap product with the original
   cohomology connecting map, using cycle lifts produced by short exactness;
@@ -81,7 +84,7 @@ The additions prove:
 - a unique compact-neighborhood class with the same normalization in every
   chart whose actual tangent trivialization preserves the base-chart orientation.
 
-The thirty-two new/changed modules and their exact baseline/current hashes are listed in
+The forty-eight new/changed modules and their exact baseline/current hashes are listed in
 [provenance/SNAPSHOT.json](provenance/SNAPSHOT.json). The derivative homotopy
 retains its [upstream attribution and modification record](provenance/README.md).
 
@@ -658,3 +661,38 @@ The separate frozen 87-declaration handoff, its registry and consumers, and
 replace that contract or assert completion of T1--T9/C1--C5. It introduces no
 deferred inputs. The recovered full Poincare project remains separate from this
 selected source checkpoint.
+
+
+## Two-point cap duality
+
+The checkpoint now contains 132 leaves and 134 tracked added public exports.
+`exists_unique_relative_pair_cap_bijective` takes any simply connected T1 space
+and two distinct points x and y. It produces the unique relative H₁ class with
+connecting image [y] − [x], and proves that cap with this class is a bijection
+from the actual relative H¹ group to the actual absolute H₀ group. The class,
+normalization and cap map use the original singular objects throughout.
+
+The coherent new proof is 301 lines. Its prerequisites reuse fifteen existing
+recovered working-tree sources, totaling 1,207 lines, without modification.
+These sources were absent from the recovered Git baseline; their provenance
+and exact hashes are recorded separately in `provenance/SNAPSHOT.json`. They
+construct path and cochain cones through actual triangle fillings and disk
+contractions, giving first-homology and first-cohomology vanishing for simply
+connected spaces. No Hurewicz axiom is used.
+
+Source request `1789333825377750044-topology-fe1516cb` passed in 11.23 seconds
+with 104 guards and 14 signature/axiom pairs. The original imported request
+`1789333902525193988-topology-32ae5cfd` passed in 87.70 seconds, with 106 guards
+and three pairs. Final portable request
+`1789334015172615434-topology_checkpoint-405abd43` passed in Slurm 13821107 in
+439.35 seconds, with 408 guards and 234 pairs. All 231 previous pairs are
+byte-identical; all three new pairs match both the source and original import
+readbacks. All 116 previously published leaves remain byte-identical.
+
+The sixteen added leaves and root freshly compiled in 5:47.42, with maximum
+RSS 1,890,444 KiB and zero diagnostics. Stock declaration linters and transitive
+axiom checks passed. The real-line/{0,1} consumers produce nonzero relative
+classes and cohomology inputs with positive and negative endpoint cap values,
+and prove bijectivity for the negated class too. This is a concrete duality
+case; general manifold duality, the native orientation producer and the frozen
+canonical topology contract remain unresolved.
