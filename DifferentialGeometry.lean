@@ -6304,6 +6304,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Restriction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.RicciNorm
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Stationary
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.Assembly
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.EndNeckContractReduction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.EndNeckFields
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.MetricStep
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.Reconstruction
