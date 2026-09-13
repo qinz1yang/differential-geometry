@@ -6636,6 +6636,7 @@ import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Time
 import DifferentialGeometry.Geometry.Metric.Convergence.Curvature.CoordinateBounds
 import DifferentialGeometry.Geometry.Metric.Convergence.Curvature.LaplacianDifference
 import DifferentialGeometry.Geometry.Metric.Convergence.Curvature.RicciFromJets
+import DifferentialGeometry.Geometry.Metric.Convergence.Curvature.RiemannTensor
 import DifferentialGeometry.Geometry.Metric.Convergence.Curvature.Scalar
 import DifferentialGeometry.Geometry.Metric.Convergence.Defs
 import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.Arity
