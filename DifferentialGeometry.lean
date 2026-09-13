@@ -7783,6 +7783,7 @@ import DifferentialGeometry.Topology.Homology.LiftedSimplex
 import DifferentialGeometry.Topology.Homology.LiftedSphere
 import DifferentialGeometry.Topology.Homology.LiftedSphereRelativeBridge
 import DifferentialGeometry.Topology.Homology.LiftedSquareBoundaryDegree
+import DifferentialGeometry.Topology.Homology.LiftedSquareBoundaryPuncture
 import DifferentialGeometry.Topology.Homology.Local.Chart
 import DifferentialGeometry.Topology.Homology.Local.ClosedBall
 import DifferentialGeometry.Topology.Homology.Local.ClosedBallFiniteSet
@@ -7875,6 +7876,7 @@ import DifferentialGeometry.Topology.Homology.SpherePuncture
 import DifferentialGeometry.Topology.Homology.SphereRank
 import DifferentialGeometry.Topology.Homology.SphereTopHomology
 import DifferentialGeometry.Topology.Homology.SquareBoundaryDegree
+import DifferentialGeometry.Topology.Homology.SquareBoundaryPunctured
 import DifferentialGeometry.Topology.Homology.SquareFundamentalChain
 import DifferentialGeometry.Topology.Homology.Subdivision.AffinePieces
 import DifferentialGeometry.Topology.Homology.Subdivision.AffineSimplex
