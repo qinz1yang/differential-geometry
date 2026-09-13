@@ -6509,6 +6509,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.Fundamental
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.FundamentalClassDegreeReduction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.FundamentalClassInputReduction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.FundamentalClassDuality
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.FundamentalClassNoncompactDuality
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.GeometricCutoff
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.History
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryAncestry
@@ -7858,6 +7859,7 @@ import DifferentialGeometry.Topology.Homology.ClosedManifold
 import DifferentialGeometry.Topology.Homology.CochainCones
 import DifferentialGeometry.Topology.Homology.CochainMaps
 import DifferentialGeometry.Topology.Homology.Cochains
+import DifferentialGeometry.Topology.Homology.CohomologyHomeomorphInvariance
 import DifferentialGeometry.Topology.Homology.ConnectedZeroHomology
 import DifferentialGeometry.Topology.Homology.ContractibleCoverChainEvaluation
 import DifferentialGeometry.Topology.Homology.ContractibleCoverOne
@@ -7926,6 +7928,7 @@ import DifferentialGeometry.Topology.Homology.MeshIteration
 import DifferentialGeometry.Topology.Homology.ModuleHomologyClasses
 import DifferentialGeometry.Topology.Homology.ModuleHomologyCriterion
 import DifferentialGeometry.Topology.Homology.ModuleHomologyMaps
+import DifferentialGeometry.Topology.Homology.NoncompactPoincareDualityFrontier
 import DifferentialGeometry.Topology.Homology.OneDimensionalSphere
 import DifferentialGeometry.Topology.Homology.OpenCover
 import DifferentialGeometry.Topology.Homology.OpenExcision
