@@ -6209,7 +6209,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.Reconstruct
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.Terminal
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Poincare
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.PoincareStandardReconstruction
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.PoincareStandardReconstructionOppositeInvariance
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.CollapseDomination
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.CollapseMap
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.CollapseProfile
@@ -8687,6 +8686,7 @@ import DifferentialGeometry.Topology.ThreeManifold.CutCapReconstruction
 import DifferentialGeometry.Topology.ThreeManifold.CutCapStandardReconstruction
 import DifferentialGeometry.Topology.ThreeManifold.PoincareStandard
 import DifferentialGeometry.Topology.ThreeManifold.PoincareStandardClassification
+import DifferentialGeometry.Topology.ThreeManifold.PoincareStandardOriented
 import DifferentialGeometry.Topology.ThreeManifold.SmoothSchoenflies
 import DifferentialGeometry.Topology.ThreeManifold.SphereTwoTimesCircleHomology
 import DifferentialGeometry.Topology.ThreeManifold.SphericalSpaceFormTrivial

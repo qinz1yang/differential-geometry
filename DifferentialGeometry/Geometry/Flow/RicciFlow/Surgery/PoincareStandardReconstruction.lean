@@ -33,56 +33,16 @@ end PoincareControlledExtinction
 theorem exists_diffeomorph_standardThreeSphere_of_standardDecomposition
     {M : Topology.ClosedOrientedManifold.{u} 3} {g : SmoothRiemannianMetric (𝓡 3) M.Carrier}
     (W : PoincareControlledExtinction M g)
-    (hassoc : ∀ X Y Z : Topology.ConnectedClosedOrientedManifold.{u} 3,
-      Nonempty ((Topology.connectedSum (Topology.connectedSum X Y) Z
-        ).toClosedOrientedManifold.Carrier
-        ≃ₘ⟮𝓡 3, 𝓡 3⟯
-        (Topology.connectedSum X (Topology.connectedSum Y Z)).toClosedOrientedManifold.Carrier))
-    (htransportL : ∀ X X' Y : Topology.ConnectedClosedOrientedManifold.{u} 3,
-      Nonempty (X.toClosedOrientedManifold.Carrier ≃ₘ⟮𝓡 3, 𝓡 3⟯
-        X'.toClosedOrientedManifold.Carrier) →
-      Nonempty ((Topology.connectedSum X Y).toClosedOrientedManifold.Carrier
-        ≃ₘ⟮𝓡 3, 𝓡 3⟯ (Topology.connectedSum X' Y).toClosedOrientedManifold.Carrier))
-    (htransportR : ∀ X Y Y' :
-      Topology.ConnectedClosedOrientedManifold.{u} 3,
-      Nonempty (Y.toClosedOrientedManifold.Carrier ≃ₘ⟮𝓡 3, 𝓡 3⟯
-        Y'.toClosedOrientedManifold.Carrier) →
-      Nonempty ((Topology.connectedSum X Y).toClosedOrientedManifold.Carrier
-        ≃ₘ⟮𝓡 3, 𝓡 3⟯ (Topology.connectedSum X Y').toClosedOrientedManifold.Carrier))
+    (hsumClosed : Topology.poincareStandardSumClosed.{u})
     (hsum : ∀ i : Fin W.history.eventCount,
       (W.history.cutCapTrace.transition i).componentConnectedSumStandardDecomposition)
     [ConnectedSpace M.Carrier] [SimplyConnectedSpace M.Carrier] :
     Nonempty (M.Carrier ≃ₘ⟮𝓡 3, 𝓡 3⟯ Topology.standardThreeSphereLift.{u}.Carrier) :=
   Topology.exists_diffeomorph_standardThreeSphere_of_isPoincareStandard
-    Topology.fundamentalGroup_finiteConnectedSum_freeProduct
-    (fun G p => Topology.SphericalSpaceFormGroup.nonempty_fundamentalGroupManifoldEquiv G p)
-    Topology.exists_orientedDiffeomorph_standardThreeSphere_of_subsingleton_group
-    (fun p => Topology.exists_fundamentalGroupMulEquivInt_sphereTwoTimesCircle p)
-    (fun X => Topology.nonempty_diffeomorph_connectedSum_sphere_right_unit X)
-    (fun _ _ hf => Topology.finiteConnectedSum_congr_of_transport htransportL htransportR hf)
-    (W.isPoincareStandard_of_standardDecomposition hsum
-      (Topology.poincareStandardSumClosed_of_unit_assoc_transport
-        (fun X => Topology.nonempty_diffeomorph_connectedSum_sphere_right_unit X)
-        (fun X => Topology.nonempty_diffeomorph_connectedSum_sphere_left_unit X)
-        hassoc htransportL htransportR))
+    (W.isPoincareStandard_of_standardDecomposition hsum hsumClosed)
 
 theorem smoothPoincareConjecture_of_standardDecomposition
-    (hassoc : ∀ X Y Z : Topology.ConnectedClosedOrientedManifold.{u} 3,
-      Nonempty ((Topology.connectedSum (Topology.connectedSum X Y) Z
-        ).toClosedOrientedManifold.Carrier
-        ≃ₘ⟮𝓡 3, 𝓡 3⟯
-        (Topology.connectedSum X (Topology.connectedSum Y Z)).toClosedOrientedManifold.Carrier))
-    (htransportL : ∀ X X' Y : Topology.ConnectedClosedOrientedManifold.{u} 3,
-      Nonempty (X.toClosedOrientedManifold.Carrier ≃ₘ⟮𝓡 3, 𝓡 3⟯
-        X'.toClosedOrientedManifold.Carrier) →
-      Nonempty ((Topology.connectedSum X Y).toClosedOrientedManifold.Carrier
-        ≃ₘ⟮𝓡 3, 𝓡 3⟯ (Topology.connectedSum X' Y).toClosedOrientedManifold.Carrier))
-    (htransportR : ∀ X Y Y' :
-      Topology.ConnectedClosedOrientedManifold.{u} 3,
-      Nonempty (Y.toClosedOrientedManifold.Carrier ≃ₘ⟮𝓡 3, 𝓡 3⟯
-        Y'.toClosedOrientedManifold.Carrier) →
-      Nonempty ((Topology.connectedSum X Y).toClosedOrientedManifold.Carrier
-        ≃ₘ⟮𝓡 3, 𝓡 3⟯ (Topology.connectedSum X Y').toClosedOrientedManifold.Carrier))
+    (hsumClosed : Topology.poincareStandardSumClosed.{u})
     (hsum : ∀ (H : FiniteSurgeryHistory.{u}) (i : Fin H.eventCount),
       (H.cutCapTrace.transition i).componentConnectedSumStandardDecomposition)
     (hext : ∀ (M : Topology.ConnectedClosedOrientedManifold.{u} 3)
@@ -97,8 +57,7 @@ theorem smoothPoincareConjecture_of_standardDecomposition
     (E := EuclideanSpace ℝ (Fin 3)) (M := M) (n := 3) (by simp)
   exact exists_diffeomorph_standardThreeSphere_of_standardDecomposition
     (W := (hext { Carrier := M, orientation := o } g).some)
-    (hassoc := hassoc)
-    (htransportL := htransportL) (htransportR := htransportR)
+    (hsumClosed := hsumClosed)
     (hsum := fun i => hsum _ i)
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery
