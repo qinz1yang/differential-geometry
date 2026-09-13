@@ -719,3 +719,35 @@ Root reviewed all bodies, exact types, providers, consumers and the full diff.
 The existing root import is retained; no full DG aggregate build is claimed.
 This is a smooth map extension. Boundary interval embedding stability and the
 interval-only boundary ambient isotopy remain separate obligations.
+
+## Stability of native boundary embeddings, 2026-09-13
+
+Embedding/Stability now proves that a jointly smooth family from a compact
+native standard-halfspace manifold remains a smooth embedding near any
+parameter whose slice is an embedding. Parameters and ambient values are
+finite-dimensional real normed spaces; the parameter may have rank zero.
+The statement needs no supplied extension, whole-family embedding certificate,
+source Hausdorffness or source nonemptiness. It preserves the native charts.
+The old boundaryless finite-order theorem retains its exact public type.
+
+Both variants share the existing compact-extension/Lipschitz perturbation
+proof through one private helper. The boundary variant uses the published
+product-halfspace extension along the constant reference graph, requiring
+only the reference slice to embed. No new chart, flow or external dependency
+was added; the preceding Tau Ceti attribution remains applicable to its
+already integrated lower-level slice machinery.
+
+Source 1789328149815422300-schoenflies-3782dc8b passes in 42.76 seconds,
+76 guards and 20 signature/axiom pairs. Final imported request
+1789328598581222769-schoenflies-e70c1c39 passes in 174.72 seconds,
+231 guards and 155 pairs. All 149 preceding signature/axiom texts are
+byte-identical, and ten shared source/import types match. Stability,
+Embedding.IntervalExtension and AmbientIsotopy freshly compile in 1:34.17,
+maximum RSS 1841296 KiB, with zero diagnostics in Slurm 13821107.
+Stock declaration linters and standard-only transitive axioms pass.
+Consumers cover nonzero boundary translation, a shrinking family that
+collapses away from the guaranteed neighborhood, two parameters, rank-zero
+parameters, and an empty source with rank-zero ambient space. Root reviewed
+actual source, providers, consumer proofs and the full diff. Existing root
+registration is retained. No full DG aggregate build or Schoenflies
+completion is asserted; interval-only boundary isotopy is the next step.
