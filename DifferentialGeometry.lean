@@ -7,6 +7,7 @@ import DifferentialGeometry.Analysis.Calculus.CompactSupportSection
 import DifferentialGeometry.Analysis.Calculus.Compactness.ArzelaAscoli
 import DifferentialGeometry.Analysis.Calculus.Compactness.BilinearForm
 import DifferentialGeometry.Analysis.Calculus.Compactness.DiagonalSubsequence
+import DifferentialGeometry.Analysis.Calculus.Compactness.EventuallyBounded
 import DifferentialGeometry.Analysis.Calculus.Compactness.SmoothMap
 import DifferentialGeometry.Analysis.Calculus.Compactness.Superposition
 import DifferentialGeometry.Analysis.Calculus.ContDiff.Support
@@ -3112,6 +3113,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.N
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.NormalChart.Intrinsic
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.NormalChart.MetricLimits
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.NormalChart.TransitionLimits
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.NormalCoordinates.BallRadiusProfile
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.NormalCoordinates.Convergence
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.NormalCoordinates.IntrinsicGeometry
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.NormalCoordinates.Phase
@@ -3170,6 +3172,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.MappingCon
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.MappingControl.LocalDiffeomorphism
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.MetricCompactness.Assumptions
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.MetricCompactness.StableNet
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.MetricCompactness.StaircaseBase
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Partition.Basic
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Partition.HatWeights
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Partition.NormalBump
