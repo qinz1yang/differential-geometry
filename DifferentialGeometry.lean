@@ -5851,6 +5851,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing.FlowB
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing.FlowBall.Functional
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing.FlowBall.MetricComparison
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing.FlowBall.VolumeComparison
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing.Invariance
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing.Monotonicity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing.Parabolic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing.Persistence.Basic
