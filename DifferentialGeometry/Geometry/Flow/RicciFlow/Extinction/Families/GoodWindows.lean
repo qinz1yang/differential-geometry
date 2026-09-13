@@ -768,33 +768,6 @@ theorem rfs_finite_good_windows_of_energy_bound (B : RicciBackground (I := I) (M
   exact productCurve_curvature_le_of_window B.family.metric lambda x t w (K.coefficient 0) d
     hdpos (K.coefficient_pos 0).le (by linarith [htw.1, hdpos]) hbound
 
-
-
-theorem rfs_finite_good_windows (B : RicciBackground (I := I) (M := Q) D a b)
-    (L₀ Theta₀ : ℝ) (K : CurveShorteningRegularityInput B L₀ Theta₀) :
-    let delta := localRegularityDelta B L₀ Theta₀ K
-    let r₀ := localRegularityRadius B L₀ Theta₀ K
-    let areg := localRegularityCoefficient B L₀ Theta₀ K 0
-    let C_E := Real.exp (B.B₀ * (b - a)) * L₀
-    ∀ ell threshold : ℝ, 0 < ell → 0 < threshold →
-      let r := min r₀ (min (ell / 2) (delta ^ 2 / threshold))
-      let d := delta * r ^ 2
-      d < b - a →
-      ∀ lambda : ℝ, 0 < lambda → lambda ≤ 1 → ∀ c : ProductCurve Q,
-        c.IsSolutionOn B.family.metric lambda (Icc a b) →
-        c.IsRampOn B.family.metric lambda (Icc a b) → c.degree = 1 →
-        c.length B.family.metric lambda a ≤ L₀ →
-        c.totalCurvature B.family.metric lambda a ≤ Theta₀ →
-        (∀ t ∈ Icc a b, ell ≤ c.length B.family.metric lambda t) →
-        ∃ starts : Finset ℝ,
-          (∀ w ∈ starts, w ∈ Icc a (b - d) ∧ c.energy B.family.metric lambda w ≤ threshold) ∧
-          goodWindowUnion starts d ⊆ Ioo a b ∧
-          volume (Icc a b \ goodWindowUnion starts d) ≤ ENNReal.ofReal (d + C_E / threshold) ∧
-          (∀ x t, t ∈ goodWindowUnion starts d →
-            c.curvature B.family.metric lambda x t ≤ Real.sqrt (2 * areg / d)) ∧
-          ∀ w ∈ starts, Icc (w + 5 * d / 8) (w + 7 * d / 8) ⊆ Ioo (w + d / 2) (w + d) := by
-  sorry
-
 omit [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E] [CompleteSpace E]
   [TopologicalSpace H] [TopologicalSpace Q] [ChartedSpace H Q] [IsManifold I ∞ Q]
   hT2 hCompact hConnected hBoundary in
