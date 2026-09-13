@@ -14,19 +14,19 @@ namespace DifferentialGeometry.Geometry
 open Curvature
 open Riemannian.Topology.UniversalCover
 
-variable {E : Type} [NormedAddCommGroup E] [NormedSpace Real E]
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
   [FiniteDimensional Real E]
-variable {H : Type} [TopologicalSpace H]
+variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
-variable {M : Type} [TopologicalSpace M] [ChartedSpace H M]
+variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M] [ConnectedSpace M]
   [LocallyPathConnectedSpace M]
   [Riemannian.Topology.SemilocallySimplyConnectedSpace M] [Inhabited M]
-variable {E₂ : Type} [NormedAddCommGroup E₂] [NormedSpace Real E₂]
+variable {E₂ : Type*} [NormedAddCommGroup E₂] [NormedSpace Real E₂]
   [FiniteDimensional Real E₂]
-variable {H₂ : Type} [TopologicalSpace H₂]
+variable {H₂ : Type*} [TopologicalSpace H₂]
 variable {J : ModelWithCorners Real E₂ H₂} [J.Boundaryless]
-variable {N : Type} [TopologicalSpace N] [ChartedSpace H₂ N]
+variable {N : Type*} [TopologicalSpace N] [ChartedSpace H₂ N]
   [IsManifold J ∞ N] [T2Space N] [SigmaCompactSpace N] [SimplyConnectedSpace N]
 
 theorem exists_roundThreeCylinder_solitonModelCovering_of_product_diffeomorph

@@ -13,6 +13,7 @@ import DifferentialGeometry.Topology.Covering.Smooth.LocalDiffeomorph
 import DifferentialGeometry.Topology.Covering.CylindricalModel
 import DifferentialGeometry.Topology.ProjectiveSpace.SphereHalfTurnFrame
 import DifferentialGeometry.Topology.Manifold.LocallyPathConnected
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Soliton.Classification
 
 set_option autoImplicit false
 
@@ -371,7 +372,30 @@ theorem complete_noncompact_three_shrinker_universal_cover_fibres
         (∀ p q : SphereTwo × ℝ,
           UniversalCover.proj (Psi p) = UniversalCover.proj (Psi q) ↔
             q = p ∨ q = (-p.1, -p.2))) := by
-  sorry
+  obtain ⟨C, ⟨hC, hnorm⟩, -⟩ :=
+    gradientRicciSoliton_existsUnique_normalized (I := I) hcomplete hsoliton hsigma
+  rcases normalizedGradientRicciSoliton_solitonModelCovering_classification (I := I)
+    hnorm hdim with ⟨hg, -, -⟩ | ⟨hs, -, -⟩ | ⟨hc, -, -⟩
+  · obtain ⟨cover, hcover⟩ := hg
+    exfalso
+    obtain ⟨e, he, -⟩ :=
+      (exists_solitonModelCovering_gaussian_iff (I := I)
+        (V := EuclideanSpace ℝ (Fin 3))).mp ⟨cover, hcover⟩
+    obtain ⟨x, hx⟩ := hnonflat
+    have hRic : ∀ v w : TangentSpace I x,
+        ricciTensor (I := I) (scaleMetric (I := I) sigma hsigma g) x v w = 0 := by
+      intro v w
+      rw [← he, ricciTensor_pullbackCross]
+      exact euclideanMetric_ricciTensor (e x) _ _
+    have hzero : metricScalarAt (I := I) (scaleMetric (I := I) sigma hsigma g) x = 0 :=
+      metricScalarAt_eq_zero_of_ricciTensor_eq_zero _ x hRic
+    rw [metricScalarAt_scaleMetric] at hzero
+    exact hx ((mul_eq_zero.mp hzero).resolve_left (inv_ne_zero hsigma.ne'))
+  · obtain ⟨cover, hcover⟩ := hs
+    exact absurd (compactSpace_of_solitonModelCovering (I := I) hcover)
+      (not_compactSpace_iff.mpr inferInstance)
+  · obtain ⟨cover, hcover⟩ := hc
+    exact exists_universalCover_cylinder_isometry_of_solitonModelCovering (I := I) hsigma hcover
 
 theorem complete_noncompact_three_shrinker_universal_cover_cylinder
     (g : SmoothRiemannianMetric I M) (f : C^∞⟮I, M; ℝ⟯)

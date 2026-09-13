@@ -19,10 +19,10 @@ private instance euclideanThreeFinrankFact :
 private instance euclideanFourFinrankFact :
     Fact (Module.finrank Real (EuclideanSpace Real (Fin 4)) = 3 + 1) := ⟨by simp⟩
 
-variable {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
-  {H : Type} [TopologicalSpace H]
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+  {H : Type*} [TopologicalSpace H]
   {I : ModelWithCorners ℝ E H} [I.Boundaryless]
-  {M : Type} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [T2Space M] [SigmaCompactSpace M] [ConnectedSpace M]
 
 theorem normalizedGradientRicciSoliton_solitonModelCovering_trichotomy

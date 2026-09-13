@@ -15,10 +15,10 @@ private instance euclideanThreeFinrankFact :
 
 section Classification
 
-variable {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
-  {H : Type} [TopologicalSpace H]
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+  {H : Type*} [TopologicalSpace H]
   {I : ModelWithCorners ℝ E H} [I.Boundaryless]
-  {M : Type} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [T2Space M] [SigmaCompactSpace M] [ConnectedSpace M]
 
 open Curvature Curvature.DimensionThree
@@ -102,10 +102,10 @@ namespace DifferentialGeometry.Geometry
 
 open Curvature Curvature.DimensionThree
 
-variable {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
-  {H : Type} [TopologicalSpace H]
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+  {H : Type*} [TopologicalSpace H]
   {I : ModelWithCorners ℝ E H} [I.Boundaryless]
-  {M : Type} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [T2Space M] [SigmaCompactSpace M] [ConnectedSpace M]
 
 theorem gradientRicciSoliton_classification_with_scaling_and_orientation
