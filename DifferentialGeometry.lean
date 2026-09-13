@@ -4979,6 +4979,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.ClassWid
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.Deformation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.DiniComparison
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.EssentialClass
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.ExtinctionTimeBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.FaceLimit
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.FlatPolygonRampCurvature
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.Flow
@@ -6550,6 +6551,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.RecenterAux
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.RetainedCoreTower
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.RetainedCorePresentation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.RetainedCoreUniformRecords
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.RetainedCoreExtinctionTimeBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.RfsHomotopyGroupsConditional
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SlabRescaling
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SlabSpatialJets
