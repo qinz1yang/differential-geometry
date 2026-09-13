@@ -255,4 +255,158 @@ theorem exists_holder_iteratedFDeriv_two_laplacian_trace_lifting
       (laplacianWithin_congr_nhdsWithin he upper_unique_diff).eq_of_nhdsWithin hs,
       (hjet s).2.2]
 
+private theorem exists_lipschitzOnWith_of_contDiffOn_compactSupport
+    {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [NormedAddCommGroup F] [NormedSpace ℝ F]
+    {s : Set E} (hs : IsClosed s) (hconv : Convex ℝ s) (hu : UniqueDiffOn ℝ s)
+    {f : E → F} (hf : ContDiffOn ℝ 1 f s) (hc : HasCompactSupport f) :
+    ∃ L : ℝ≥0, LipschitzOnWith L f s := by
+  have hd := hf.continuousOn_fderivWithin hu (by norm_num)
+  have hk := (hc.inter_right hs).image_of_continuousOn (hd.mono inter_subset_right)
+  obtain ⟨R, hR, hbound⟩ := hk.isBounded.exists_pos_norm_le
+  refine ⟨⟨R, hR.le⟩, hconv.lipschitzOnWith_of_nnnorm_hasFDerivWithin_le
+    (fun z hz => (hf.differentiableOn (by norm_num) z hz).hasFDerivWithinAt) ?_⟩
+  intro z hz
+  apply NNReal.coe_le_coe.mp
+  change ‖fderivWithin ℝ f s z‖ ≤ R
+  by_cases hzs : z ∈ tsupport f
+  · exact hbound _ ⟨z, ⟨hzs, hz⟩, rfl⟩
+  · have he := (notMem_tsupport_iff_eventuallyEq.mp hzs).fderivWithin_eq_of_nhds
+      (𝕜 := ℝ) (s := s)
+    rw [he]
+    simpa using hR.le
+
+theorem exists_holder_iteratedFDeriv_two_oddReflection
+    {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F] [CompleteSpace F]
+    {f g : ℂ → F} (hc : HasCompactSupport f)
+    (hf : ContDiffOn ℝ 1 f {z : ℂ | 0 ≤ z.im})
+    (hf2 : ContDiffOn ℝ 2 f {z : ℂ | 0 < z.im})
+    (hzero : ∀ s : ℝ, f (s : ℂ) = 0)
+    (hfg : ∀ z : ℂ, 0 < z.im → Laplacian.laplacian f z = g z)
+    {K α : ℝ≥0} (hα : 0 < α) (hα1 : α < 1)
+    (hg : HolderOnWith K α g {z : ℂ | 0 ≤ z.im})
+    (hgzero : ∀ s : ℝ, g (s : ℂ) = 0) :
+    ∃ C : ℝ≥0, ContDiff ℝ 2 (oddReflection f) ∧
+      HolderWith C α (iteratedFDeriv ℝ 2 (oddReflection f)) := by
+  obtain ⟨L, hL⟩ := exists_lipschitzOnWith_of_contDiffOn_compactSupport
+    (isClosed_le continuous_const Complex.continuous_im) (convex_halfSpace_im_ge 0)
+    upper_unique_diff hf hc
+  have hgrowth (z : ℂ) (hz : 0 < z.im) : ‖f z‖ ≤ L * z.im := by
+    have hh := hL.norm_sub_le hz.le (show (z.re : ℂ) ∈ {w : ℂ | 0 ≤ w.im} from by simp)
+    rw [hzero z.re, sub_zero] at hh
+    have he : z - (z.re : ℂ) = (z.im : ℂ) * Complex.I := by
+      apply Complex.ext <;> simp
+    simpa only [he, norm_mul, Complex.norm_I, mul_one, Complex.norm_real,
+      Real.norm_eq_abs, abs_of_pos hz] using hh
+  have hg0 (z : ℂ) (hz : z.im = 0) : g z = 0 := by
+    have he : (z.re : ℂ) = z := by apply Complex.ext <;> simp [hz]
+    rw [← he, hgzero]
+  have hGH := holderWith_oddReflection hg hg0
+  have hcΔ : HasCompactSupport (Laplacian.laplacian f) :=
+    hc.of_isClosed_subset (isClosed_tsupport _) (tsupport_laplacian_subset f)
+  have hcg : HasCompactSupport (oddReflection g) := by
+    rw [← oddReflection_congr hfg]
+    exact hasCompactSupport_oddReflection hcΔ
+  obtain ⟨B, hB⟩ := hcg.exists_bound_of_continuous (hGH.continuous hα)
+  have hDelta (z : ℂ) (hz : 0 < z.im) : ‖Laplacian.laplacian f z‖ ≤ B := by
+    rw [hfg z hz, ← oddReflection_of_im_pos g hz]
+    exact hB z
+  have hfc : ContinuousOn f {z : ℂ | 0 < z.im} := hf2.continuousOn
+  apply exists_holder_iteratedFDeriv_two_of_holder_weak_laplacian
+    (continuous_oddReflection_of_norm_le_mul_im hfc hgrowth)
+    (hasCompactSupport_oddReflection hc) hB ?_ hα hα1 hGH
+  intro φ hφ hcφ
+  rw [integral_laplacian_smul_oddReflection hφ hcφ
+    (fun z hz => (hf2 z hz).contDiffAt
+      ((isOpen_lt continuous_const Complex.continuous_im).mem_nhds hz)) hgrowth hDelta,
+    oddReflection_congr hfg]
+
+private theorem holderWith_laplacian_of_iteratedFDeriv_two
+    {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
+    {f : ℂ → F} {K α : ℝ≥0} (hf : HolderWith K α (iteratedFDeriv ℝ 2 f)) :
+    HolderWith (2 * K) α (Laplacian.laplacian f) := by
+  have heval (v : Fin 2 → ℂ) (hv : ‖v‖ ≤ 1) :
+      HolderWith K α (fun z => iteratedFDeriv ℝ 2 f z v) := by
+    have hl : LipschitzWith 1
+        (fun A : ContinuousMultilinearMap ℝ (fun _ : Fin 2 => ℂ) F => A v) := by
+      apply LipschitzWith.mk_one
+      intro A B
+      rw [dist_eq_norm, dist_eq_norm]
+      exact (A - B).unit_le_opNorm hv
+    simpa only [Function.comp_def, one_mul, mul_one, NNReal.coe_one, NNReal.rpow_one] using hl.holderWith.comp hf
+  have h1 : ‖(![1, 1] : Fin 2 → ℂ)‖ ≤ 1 := by
+    apply (pi_norm_le_iff_of_nonneg zero_le_one).2
+    intro i
+    fin_cases i <;> norm_num
+  have hI : ‖(![Complex.I, Complex.I] : Fin 2 → ℂ)‖ ≤ 1 := by
+    apply (pi_norm_le_iff_of_nonneg zero_le_one).2
+    intro i
+    fin_cases i <;> norm_num
+  rw [laplacian_eq_iteratedFDeriv_complexPlane]
+  intro x y
+  simpa only [two_mul, Pi.add_apply] using
+    ((heval ![1, 1] h1).add (heval ![Complex.I, Complex.I] hI)) x y
+
+theorem exists_contDiff_two_extension_of_holder_laplacian
+    {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F] [CompleteSpace F]
+    {f g : ℂ → F} (hc : HasCompactSupport f)
+    (hf : ContDiffOn ℝ 1 f {z : ℂ | 0 ≤ z.im})
+    (hf2 : ContDiffOn ℝ 2 f {z : ℂ | 0 < z.im})
+    (hzero : ∀ s : ℝ, f (s : ℂ) = 0)
+    (hfg : ∀ z : ℂ, 0 < z.im → Laplacian.laplacian f z = g z)
+    {K α : ℝ≥0} (hα : 0 < α) (hα1 : α < 1)
+    (hg : HolderOnWith K α g {z : ℂ | 0 ≤ z.im}) :
+    ∃ u : ℂ → F, HasCompactSupport u ∧ ContDiff ℝ 2 u ∧
+      (∃ C : ℝ≥0, HolderWith C α (iteratedFDeriv ℝ 2 u)) ∧
+      EqOn u f {z : ℂ | 0 ≤ z.im} := by
+  let b : ℝ → F := fun x => g (x : ℂ)
+  have hbH : HolderWith K α b := by
+    intro x y
+    simpa only [b, Complex.isometry_ofReal.edist_eq] using
+      hg (x : ℂ) (by simp) (y : ℂ) (by simp)
+  have hcg := hasCompactSupport_evenReflection_of_laplacian_eq hc (hg.continuousOn hα) hfg
+  have hbc : HasCompactSupport b := by
+    have he : b = evenReflection g ∘ ((↑) : ℝ → ℂ) := by
+      funext x
+      exact (evenReflection_of_im_nonneg g (by simp : (0 : ℝ) ≤ (x : ℂ).im)).symm
+    rw [he]
+    exact hcg.comp_isClosedEmbedding Complex.isometry_ofReal.isClosedEmbedding
+  obtain ⟨G, hcG, hG2, _, hGjet, C, hGH⟩ :=
+    exists_holder_iteratedFDeriv_two_laplacian_trace_lifting hbc hbH hα hα1
+  let w : ℂ → F := fun z => f z - G z
+  let q : ℂ → F := fun z => g z - Laplacian.laplacian G z
+  have hwc : HasCompactSupport w := hc.sub hcG
+  have hw1 : ContDiffOn ℝ 1 w {z : ℂ | 0 ≤ z.im} :=
+    hf.sub ((hG2.of_le (by norm_num)).contDiffOn)
+  have hw2 : ContDiffOn ℝ 2 w {z : ℂ | 0 < z.im} := hf2.sub hG2.contDiffOn
+  have hw0 (s : ℝ) : w (s : ℂ) = 0 := by
+    simp only [w, hzero s, (hGjet s).1, sub_self]
+  have hwq (z : ℂ) (hz : 0 < z.im) : Laplacian.laplacian w z = q z := by
+    change Laplacian.laplacian (f - G) z = _
+    rw [((hf2 z hz).contDiffAt
+      ((isOpen_lt continuous_const Complex.continuous_im).mem_nhds hz)).laplacian_sub hG2.contDiffAt]
+    rw [hfg z hz]
+  have hqH : HolderOnWith (K + 2 * C) α q {z : ℂ | 0 ≤ z.im} :=
+    HolderWith.restrict_iff.mp (Schauder.holderWith_sub hg.holderWith
+      ((holderWith_laplacian_of_iteratedFDeriv_two hGH).holderOnWith _).holderWith)
+  have hq0 (s : ℝ) : q (s : ℂ) = 0 := by
+    change g (s : ℂ) - Laplacian.laplacian G (s : ℂ) = 0
+    rw [(hGjet s).2.2]
+    exact sub_self _
+  obtain ⟨A, hU2, hUH⟩ := exists_holder_iteratedFDeriv_two_oddReflection
+    hwc hw1 hw2 hw0 hwq hα hα1 hqH hq0
+  refine ⟨fun z => oddReflection w z + G z,
+    (hasCompactSupport_oddReflection hwc).add hcG, hU2.add hG2, ?_, ?_⟩
+  · refine ⟨A + C, ?_⟩
+    rw [fun_iteratedFDeriv_add hU2 hG2]
+    exact hUH.add hGH
+  · intro z hz
+    have hwaxis (y : ℂ) (hy : y.im = 0) : w y = 0 := by
+      have he : (y.re : ℂ) = y := by apply Complex.ext <;> simp [hy]
+      rw [← he]
+      exact hw0 y.re
+    change oddReflection w z + G z = f z
+    rw [oddReflection_eq_of_im_nonneg w hwaxis hz]
+    exact sub_add_cancel _ _
+
 end DifferentialGeometry.Analysis

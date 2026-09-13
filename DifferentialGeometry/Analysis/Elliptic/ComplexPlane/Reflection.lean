@@ -119,6 +119,78 @@ private theorem integral_indicator_add_indicator_comp_conj
     (∫ z in {z : ℂ | z.im < 0}, g (Complex.conjLIE z)) = _
   rw [← hchange, ← integral_add hf hg]
 
+theorem oddReflection_congr {F : Type*} [AddGroup F] {f g : ℂ → F}
+    (hfg : EqOn f g {z : ℂ | 0 < z.im}) : oddReflection f = oddReflection g := by
+  funext z
+  rcases lt_trichotomy (0 : ℝ) z.im with hp | hz | hn
+  · rw [oddReflection_of_im_pos f hp, oddReflection_of_im_pos g hp, hfg hp]
+  · rw [oddReflection_of_im_zero f hz.symm, oddReflection_of_im_zero g hz.symm]
+  · rw [oddReflection_of_im_neg f hn, oddReflection_of_im_neg g hn,
+      hfg (by simpa using hn)]
+
+private theorem oddReflection_eq_neg_of_im_nonpos
+    {F : Type*} [AddGroup F] {f : ℂ → F}
+    (hzero : ∀ z : ℂ, z.im = 0 → f z = 0) {z : ℂ} (hz : z.im ≤ 0) :
+    oddReflection f z = -f (Complex.conjLIE z) := by
+  calc
+    oddReflection f z = -oddReflection f (Complex.conjLIE z) := by
+      rw [oddReflection_conj, neg_neg]
+    _ = -f (Complex.conjLIE z) := by
+      rw [oddReflection_eq_of_im_nonneg f hzero (by simpa using hz)]
+
+theorem holderWith_oddReflection
+    {F : Type*} [NormedAddCommGroup F] {f : ℂ → F} {K α : ℝ≥0}
+    (hf : HolderOnWith K α f {z : ℂ | 0 ≤ z.im})
+    (hzero : ∀ z : ℂ, z.im = 0 → f z = 0) :
+    HolderWith (2 * K) α (oddReflection f) := by
+  have hnorm {z : ℂ} (hz : 0 ≤ z.im) {d : ℝ} (hd : |z.im| ≤ d) :
+      ‖f z‖ ≤ K * d ^ (α : ℝ) := by
+    have hdist : dist z (z.re : ℂ) = |z.im| := by
+      rw [dist_eq_norm]
+      have he : z - (z.re : ℂ) = (z.im : ℂ) * Complex.I := by
+        apply Complex.ext <;> simp
+      rw [he, norm_mul, Complex.norm_I, mul_one, Complex.norm_real, Real.norm_eq_abs]
+    have hh := hf.dist_le_of_le hz (show (z.re : ℂ) ∈ {w : ℂ | 0 ≤ w.im} from by simp)
+      (hdist.trans_le hd)
+    simpa only [hzero (z.re : ℂ) (by simp), dist_zero_right] using hh
+  have hcross {z w : ℂ} (hz : 0 ≤ z.im) (hw : w.im ≤ 0) :
+      dist (oddReflection f z) (oddReflection f w) ≤ (2 * K : ℝ≥0) * dist z w ^ (α : ℝ) := by
+    have hdiff : z.im - w.im ≤ dist z w := by
+      have hh := Complex.abs_im_le_norm (z - w)
+      rw [Complex.sub_im, abs_of_nonneg (sub_nonneg.mpr (hw.trans hz))] at hh
+      simpa only [dist_eq_norm] using hh
+    have hzdist : |z.im| ≤ dist z w := by rw [abs_of_nonneg hz]; linarith
+    have hwdist : |(Complex.conjLIE w).im| ≤ dist z w := by
+      simp only [Complex.conjLIE_apply, Complex.conj_im, abs_neg, abs_of_nonpos hw]
+      linarith
+    rw [oddReflection_eq_of_im_nonneg f hzero hz,
+      oddReflection_eq_neg_of_im_nonpos hzero hw, dist_eq_norm, sub_neg_eq_add]
+    exact (norm_add_le _ _).trans (by
+      have h1 := hnorm hz hzdist
+      have h2 := hnorm (z := Complex.conjLIE w) (by simpa using hw) hwdist
+      simp only [NNReal.coe_mul, NNReal.coe_ofNat]
+      linarith)
+  have hsame {z w : ℂ} (hz : 0 ≤ z.im) (hw : 0 ≤ w.im) :
+      dist (f z) (f w) ≤ (2 * K : ℝ≥0) * dist z w ^ (α : ℝ) := by
+    apply (hf.dist_le hz hw).trans
+    apply mul_le_mul_of_nonneg_right _ (Real.rpow_nonneg (dist_nonneg) _)
+    simp only [NNReal.coe_mul, NNReal.coe_ofNat]
+    linarith [K.coe_nonneg]
+  intro z w
+  rw [edist_nndist, edist_nndist, ← ENNReal.coe_rpow_of_nonneg _ α.coe_nonneg,
+    ← ENNReal.coe_mul, ENNReal.coe_le_coe, ← NNReal.coe_le_coe]
+  simp only [coe_nndist, NNReal.coe_mul, NNReal.coe_rpow, NNReal.coe_ofNat]
+  rcases le_total 0 z.im with hz | hz <;> rcases le_total 0 w.im with hw | hw
+  · rw [oddReflection_eq_of_im_nonneg f hzero hz, oddReflection_eq_of_im_nonneg f hzero hw]
+    exact hsame hz hw
+  · exact hcross hz hw
+  · simpa only [dist_comm, NNReal.coe_mul, NNReal.coe_ofNat] using hcross hw hz
+  · rw [oddReflection_eq_neg_of_im_nonpos hzero hz,
+      oddReflection_eq_neg_of_im_nonpos hzero hw, dist_neg_neg]
+    have hh := hsame (z := Complex.conjLIE z) (w := Complex.conjLIE w)
+      (by simpa using hz) (by simpa using hw)
+    simpa only [Complex.conjLIE.isometry.dist_eq, NNReal.coe_mul, NNReal.coe_ofNat] using hh
+
 private theorem integral_smul_oddReflection
     {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
     {φ : ℂ → ℝ} {f : ℂ → F}

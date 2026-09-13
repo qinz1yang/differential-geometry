@@ -171,6 +171,7 @@ import DifferentialGeometry.Analysis.Calculus.Trace
 import DifferentialGeometry.Analysis.Calculus.Variation.Comparison
 import DifferentialGeometry.Analysis.Calculus.Variation.Lipschitz
 import DifferentialGeometry.Analysis.Calculus.Variation.Periodic
+import DifferentialGeometry.Analysis.Complex.ConformalBoundary
 import DifferentialGeometry.Analysis.Complex.ConformalGradientHolder
 import DifferentialGeometry.Analysis.Complex.GradientRegularity
 import DifferentialGeometry.Analysis.Complex.SquareRoot
@@ -8069,6 +8070,7 @@ import DifferentialGeometry.Topology.Manifold.FiniteInteriorCharts
 import DifferentialGeometry.Topology.Manifold.FinitePointBumps
 import DifferentialGeometry.Topology.Manifold.FlowInjectivity
 import DifferentialGeometry.Topology.Manifold.FunctionExtension
+import DifferentialGeometry.Topology.Manifold.HalfSpaceExtension
 import DifferentialGeometry.Topology.Manifold.HalfClosedInterval
 import DifferentialGeometry.Topology.Manifold.HalfClosedIntervalInclusion
 import DifferentialGeometry.Topology.Manifold.HalfClosedIntervalSmoothMaps
