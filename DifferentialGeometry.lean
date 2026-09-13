@@ -8282,6 +8282,7 @@ import DifferentialGeometry.Topology.Manifold.BoundaryIntegralCurve
 import DifferentialGeometry.Topology.Manifold.BoundaryOrder
 import DifferentialGeometry.Topology.Manifold.BoundaryOrientationContraction
 import DifferentialGeometry.Topology.Manifold.BoundaryOrientationFrameChange
+import DifferentialGeometry.Topology.Manifold.BoundaryOrientationOutwardFrame
 import DifferentialGeometry.Topology.Manifold.BoundaryOrientationVariation
 import DifferentialGeometry.Topology.Manifold.BoundaryVectorField
 import DifferentialGeometry.Topology.Manifold.BufferedBumpCovering
@@ -8925,6 +8926,7 @@ import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.UnitFillingBallC
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.SumLaws
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.TransportDiffeomorphism
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.SmoothStructure
+import DifferentialGeometry.Topology.ThreeManifold.CoreCapOppositeSides
 import DifferentialGeometry.Topology.ThreeManifold.CutCap
 import DifferentialGeometry.Topology.ThreeManifold.CutCapGluing
 import DifferentialGeometry.Topology.ThreeManifold.CutCapIncidence
