@@ -89,6 +89,22 @@ theorem IsPiecewiseAffineOn.inter_preimage_of_isHPolytope [FiniteDimensional ℝ
     IsPiecewiseAffineOn f (s ∩ f ⁻¹' C) :=
   fun x hx => (hf x hx.1).inter_preimage_of_isHPolytope hC
 
+theorem IsPiecewiseAffineWithinAt.inter_of_isHPolytope [FiniteDimensional ℝ E] {f : E → F}
+    {s : Set E} {x : E} (hf : IsPiecewiseAffineWithinAt f s x) {C : Set E} (hC : IsHPolytope C) :
+    IsPiecewiseAffineWithinAt f (s ∩ C) x := by
+  obtain ⟨ι, hι, Cs, A, hCA, hnhds⟩ := hf
+  have := hι
+  refine ⟨ι, inferInstance, fun i => Cs i ∩ C, A, fun i => ⟨(hCA i).1.inter hC,
+    inter_subset_inter_left _ (hCA i).2.1, (hCA i).2.2.mono inter_subset_left⟩, ?_⟩
+  rw [← iUnion_inter]
+  exact Filter.inter_mem (nhdsWithin_mono x inter_subset_left hnhds)
+    (Filter.mem_of_superset self_mem_nhdsWithin inter_subset_right)
+
+theorem IsPiecewiseAffineOn.inter_of_isHPolytope [FiniteDimensional ℝ E] {f : E → F} {s : Set E}
+    (hf : IsPiecewiseAffineOn f s) {C : Set E} (hC : IsHPolytope C) :
+    IsPiecewiseAffineOn f (s ∩ C) :=
+  fun x hx => (hf x hx.1).inter_of_isHPolytope hC
+
 theorem isPolyhedron_inter_preimage_of_isCompact [FiniteDimensional ℝ E] {f : E → F} {S : Set E}
     (hf : IsPiecewiseAffineOn f S) {C : Set F} (hC : IsHPolytope C)
     (hcomp : IsCompact (S ∩ f ⁻¹' C)) : IsPolyhedron (S ∩ f ⁻¹' C) := by
@@ -167,6 +183,32 @@ def PLPieceIn.subdivide {Y : Set X} (T : PLPieceIn E n X Y)
   isPiecewiseAffineOn_chart_symm := fun e he => by
     rw [h.space_eq]
     exact T.isPiecewiseAffineOn_chart_symm e he
+
+theorem space_bot : (⊥ : Geometry.SimplicialComplex ℝ E).space = ∅ := by
+  ext x
+  simp only [Geometry.SimplicialComplex.space, mem_iUnion, mem_empty_iff_false, iff_false,
+    not_exists]
+  intro s hs
+  exact absurd hs (Set.notMem_empty s)
+
+noncomputable def PLPieceIn.empty (E : Type*) [NormedAddCommGroup E] [NormedSpace ℝ E] [Nonempty X] :
+    PLPieceIn E n X ∅ where
+  complex := ⊥
+  finite_faces := Set.finite_empty
+  map := fun _ => Classical.arbitrary X
+  bijOn := by
+    rw [space_bot]
+    exact ⟨fun x hx => absurd hx (Set.notMem_empty x), fun x hx => absurd hx (Set.notMem_empty x),
+      fun y hy => absurd hy (Set.notMem_empty y)⟩
+  continuousOn := by
+    rw [space_bot]
+    exact continuousOn_empty _
+  isPiecewiseAffineOn_chart := fun e _ => by
+    rw [space_bot, empty_inter]
+    exact fun x hx => absurd hx (Set.notMem_empty x)
+  isPiecewiseAffineOn_chart_symm := fun e _ => by
+    rw [preimage_empty, inter_empty]
+    exact fun x hx => absurd hx (Set.notMem_empty x)
 
 theorem PLPieceIn.isCompact [FiniteDimensional ℝ E] {Y : Set X} (T : PLPieceIn E n X Y) :
     IsCompact Y := by

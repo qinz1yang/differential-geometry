@@ -81,7 +81,7 @@ structure PLTriangulation (n : ℕ) (X : Type u) [TopologicalSpace X]
 
 def PLManifoldTriangulation (n : ℕ) : Prop :=
   ∀ {X : Type u} [TopologicalSpace X] [T2Space X] [SecondCountableTopology X] [CompactSpace X]
-    (C : ChartedSpace (EuclideanSpace ℝ (Fin n)) X),
+    [Nonempty X] (C : ChartedSpace (EuclideanSpace ℝ (Fin n)) X),
     (letI := C; HasGroupoid X (plGroupoid n)) →
     letI := C
     ∃ T : PLTriangulation n X, IsCombinatorialManifold n T.complex
