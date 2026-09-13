@@ -1311,6 +1311,7 @@ import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Scalar.Barrier
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Scalar.Comparison
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Scalar.CompleteHeatComparison
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Scalar.CompleteScalarComparison
+import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Scalar.DriftComparison
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Scalar.EndpointScalarComparison
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Scalar.HeatPotential.Strong
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Scalar.HeatPotential.Weak
@@ -3907,6 +3908,7 @@ import DifferentialGeometry.Geometry.Connection.ParallelTransport.Construction.L
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.Construction.Smoothness
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.ConvexFamily
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.CovariantDerivativeRegularity
+import DifferentialGeometry.Geometry.Connection.ParallelTransport.Derivative.AlongCurveKato
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.Derivative.CovariantDerivativeAlong
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.Derivative.CovariantDerivativeDifference
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.Derivative.CovariantDerivativeScaling
@@ -6434,6 +6436,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.PoincareCon
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.Recenter
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.RecenterAux
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.RetainedCoreTower
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.RetainedCorePresentation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SlabRescaling
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SlabSpatialJets
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SlabTensorContinuity
