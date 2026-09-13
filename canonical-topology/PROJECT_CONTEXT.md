@@ -5,19 +5,21 @@ additive publication within the shared DifferentialGeometry Git repository. Its 
 library is `Poincare`; its sources retain the original mathematical namespaces.
 
 The source baseline is the recovered Chapter 35 commit
-`b45bfa009368c8f5f531e10f4f5280e90079d6ad`. This checkpoint includes 107 modules
-and 88 added public exports. The latest layer constructs the actual bilinear
-integral cap product, simplex evaluation, continuous-map naturality, signed
-boundary identity, augmentation unit and positive-degree cycle preservation.
-It retains the original chains and cochains. All 106 earlier leaves are unchanged.
+`b45bfa009368c8f5f531e10f4f5280e90079d6ad`. This checkpoint includes 108 modules
+and 96 added public exports. The latest 381-line CapHomology leaf descends the
+actual cap product to both cohomology and homology. It exposes the actual cycle
+map, representative law, map naturality, constant-one H^0 unit, unit cap action
+in every degree and unit naturality. All 107 earlier leaves are unchanged.
 
-Final request `1789311873800562167-topology_checkpoint-2d616ff1` passed in
-Slurm 13821107 in 144.28 seconds, with 246 guards and 160 signature/axiom pairs.
-All 151 previous pairs are byte-identical. New CapProduct and the root freshly
-compiled in 1:11.29, maximum RSS 1814116 KiB, with zero diagnostics. Consumers
-verify nonzero unit and negative-unit action, the actual augmentation cocycle
-and the degree-one boundary sign. Stock declaration linters and standard-only
-axioms pass. Homology descent, relative cap products and duality remain open.
+Final request `1789315948183120646-topology_checkpoint-62c7e035` passed in
+Slurm 13821107 in 152.18 seconds, with 254 guards and 171 signature/axiom pairs.
+All 160 earlier pairs are byte-identical. New CapHomology and the root freshly
+compiled in 1:15.15 with maximum RSS 1814324 KiB and zero diagnostics. Source
+57c362c8 and original imported 204a2b9d pass with 40/24 and 42/11 guards/pairs;
+the new portable pairs match the original. Actual nonzero H0/unit classes,
+negative-unit action, doubling-map naturality and degree-one representative
+consumers pass. Stock linters and standard-only axioms pass. Relative cap
+products, duality isomorphisms and the full oriented-manifold suite remain open.
 
 The preceding signed-chart extension retains its exact public statements.
 

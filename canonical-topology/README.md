@@ -1,11 +1,14 @@
 # Local homology and global classes from coherent local generators
 
 This separate `PoincareLean` project contains a dependency-closed checkpoint of
-107 Poincare modules. It extends the recovered Chapter 35 source at commit
+108 Poincare modules. It extends the recovered Chapter 35 source at commit
 `b45bfa009368c8f5f531e10f4f5280e90079d6ad` and preserves its mathematical objects
 and `Poincare` namespaces. `Poincare.lean` imports every included leaf.
 
 The additions prove:
+
+- the bilinear pairing on actual integral cohomology and homology, its cycle
+  representative law, naturality, constant-one unit and unit naturality;
 
 - the actual bilinear integral cap product, simplex formula, map naturality,
   signed boundary identity, augmentation unit and preservation of cycles;
@@ -57,7 +60,7 @@ The additions prove:
 - a unique compact-neighborhood class with the same normalization in every
   chart whose actual tangent trivialization preserves the base-chart orientation.
 
-The twenty-three new/changed modules and their exact baseline/current hashes are listed in
+The twenty-four new/changed modules and their exact baseline/current hashes are listed in
 [provenance/SNAPSHOT.json](provenance/SNAPSHOT.json). The derivative homotopy
 retains its [upstream attribution and modification record](provenance/README.md).
 
@@ -418,8 +421,34 @@ match the original imported gate. Consumers test a nonzero degree-zero vertex,
 its images under augmentation and negative augmentation, the actual unit
 cocycle and the negative sign in the degree-one boundary law. Stock declaration
 linters and standard-only transitive axioms pass. Source dea3b95f separately
-checks every private helper. Homology/cohomology descent, relative cap products
-and the Poincare-duality isomorphism remain open.
+checks every private helper. That chain-level checkpoint did not yet include
+homology/cohomology descent, relative cap products or the Poincare-duality
+isomorphism.
+
+The cap-homology extension adds one coherent 381-line leaf and eight public
+exports, for 108 modules and 96 added exports. The actual integral cap product
+descends through both canonical cycles/boundaries quotients, giving
+H^k(X; Z) →L (H_(k+m)(X; Z) →L H_m(X; Z)) for every space and natural k,m.
+Its representative law uses the public cycle map and the original chain cap
+product. Naturality uses the original cohomology and homology maps. The actual
+constant-one cocycle defines the unit in H^0; cap with that unit acts by the
+canonical degree identification in every degree. The unit is natural under
+all continuous maps. Boundary witnesses, quotient lifts and degree transports
+remain private. No new chain or homology representation is introduced.
+
+Final portable request `1789315948183120646-topology_checkpoint-62c7e035`
+passed in Slurm 13821107 in 152.18 seconds, with 254 guards and 171 signature/
+axiom pairs. All 160 prior pairs are byte-identical, and all 107 prior leaves
+are unchanged. CapHomology and the root freshly compiled without diagnostics
+in 1:15.15, maximum RSS 1814324 KiB. The eight public and three consumer
+readbacks match original imported 204a2b9d, which passed in 98.08 seconds with
+42 guards and 11 pairs. Source 57c362c8 passes in 44.16 seconds with 40 guards
+and 24 pairs, checking every private helper as well.
+Consumers prove nonzero H0 and H^0-unit classes, identity and negative-unit
+action on actual homology, actual-map naturality for doubling, and the degree-one
+cohomology/degree-two cycle representative formula. Stock declaration linters
+and standard-only transitive axioms pass. Relative cap products, the duality
+isomorphism and the complete orientation-to-duality theorem remain open.
 
 ## Remaining topology work
 

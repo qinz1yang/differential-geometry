@@ -9,6 +9,7 @@ import Poincare.Topology.Homology.AffineSubdivision
 import Poincare.Topology.Homology.AffineZeroCone
 import Poincare.Topology.Homology.Augmentation
 import Poincare.Topology.Homology.BarycenterBounds
+import Poincare.Topology.Homology.CapHomology
 import Poincare.Topology.Homology.CapProduct
 import Poincare.Topology.Homology.CarrierMaps
 import Poincare.Topology.Homology.CarrierRestriction
