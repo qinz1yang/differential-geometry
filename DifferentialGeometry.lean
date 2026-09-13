@@ -6531,6 +6531,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SupportRegi
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.StaticNeckChildCore
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalCurvatureBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalMetricUnique
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalRegularRegionTail
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ThreeFrameOrientation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.VanKampen
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.WeakLength
