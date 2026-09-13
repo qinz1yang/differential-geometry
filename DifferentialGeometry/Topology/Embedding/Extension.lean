@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.Embedding.Retraction
-import Mathlib.Geometry.Manifold.PartitionOfUnity
+import DifferentialGeometry.Analysis.Calculus.CompactCutoff
 
 open scoped ContDiff Manifold Topology
 
@@ -46,28 +46,53 @@ theorem IsSmoothEmbedding.exists_contDiff_extension_of_isClosed_image
     (I := 𝓘(ℝ, V)) (n := n) hC hlocal
   exact ⟨G, G.contMDiff.contDiff, fun x hx => hG (f x) x hx rfl⟩
 
-theorem IsSmoothEmbedding.exists_contDiff_compact_extension
+theorem IsSmoothEmbedding.exists_contDiff_compact_extension_of_tsupport_image_subset
     (hf : IsSmoothEmbedding I 𝓘(ℝ, V) n f) (hg : ContMDiff I 𝓘(ℝ, F) n g)
-    (hK : IsCompact K) {O : Set V} (hO : IsOpen O) (hKO : f '' K ⊆ O) :
+    (hK : IsCompact K) {O : Set V} (hO : IsOpen O)
+    (hKO : f '' (K ∩ tsupport g) ⊆ O) :
     ∃ G : V → F, ContDiff ℝ n G ∧ HasCompactSupport G ∧
       tsupport G ⊆ O ∧ EqOn (G ∘ f) g K := by
   have himage : IsCompact (f '' K) := hK.image hf.isEmbedding.continuous
   obtain ⟨G, hG, hGf⟩ := hf.exists_contDiff_extension_of_isClosed_image hg himage.isClosed
-  obtain ⟨L, hL, hKL, hLO⟩ := exists_compact_between himage hO hKO
-  obtain ⟨χ, hχone, hχzero, _⟩ := exists_contMDiffMap_one_nhds_of_subset_interior
-    (I := 𝓘(ℝ, V)) (n := n) himage.isClosed hKL
-  have hχL : tsupport (χ : V → ℝ) ⊆ L := by
-    apply closure_minimal _ hL.isClosed
-    intro z hz
-    by_contra hn
-    exact hz (hχzero z hn)
-  let G' : V → F := fun z => χ z • G z
-  have hG'L : tsupport G' ⊆ L := (tsupport_smul_subset_left χ G).trans hχL
-  refine ⟨G', χ.contMDiff.contDiff.smul hG,
-    hL.of_isClosed_subset (isClosed_tsupport G') hG'L, hG'L.trans hLO, ?_⟩
+  have hA : IsCompact (f '' (K ∩ tsupport g)) :=
+    (hK.inter_right (isClosed_tsupport g)).image hf.isEmbedding.continuous
+  obtain ⟨χ, hχ, hχc, hχone, hχO, -⟩ :=
+    DifferentialGeometry.Analysis.exists_bump_compact hA hO hKO
+  have hχn : ContDiff ℝ n χ := hχ.of_le (WithTop.coe_le_coe.mpr le_top)
+  refine ⟨fun z => χ z • G z, hχn.smul hG, hχc.smul_right,
+    (tsupport_smul_subset_left χ G).trans hχO, ?_⟩
   intro x hx
   change χ (f x) • G (f x) = g x
-  rw [hχone.self_of_nhdsSet (f x) (mem_image_of_mem f hx), one_smul]
-  exact hGf hx
+  rw [show G (f x) = g x from hGf hx]
+  by_cases hxg : x ∈ tsupport g
+  · rw [hχone.self_of_nhdsSet (mem_image_of_mem f ⟨hx, hxg⟩), Pi.one_apply, one_smul]
+  · rw [image_eq_zero_of_notMem_tsupport hxg, smul_zero]
+
+theorem IsSmoothEmbedding.exists_contDiff_compact_extension_eq_zero_nhds
+    (hf : IsSmoothEmbedding I 𝓘(ℝ, V) n f) (hg : ContMDiff I 𝓘(ℝ, F) n g)
+    (hK : IsCompact K) {O : Set V} (hO : IsOpen O)
+    (hKO : f '' (K ∩ tsupport g) ⊆ O)
+    {D : Set V} (hD : IsClosed D) (hDA : Disjoint D (f '' (K ∩ tsupport g))) :
+    ∃ G : V → F, ContDiff ℝ n G ∧ HasCompactSupport G ∧ tsupport G ⊆ O ∧
+      EqOn (G ∘ f) g K ∧ ∃ W : Set V, IsOpen W ∧ D ⊆ W ∧ EqOn G 0 W := by
+  have hAO : f '' (K ∩ tsupport g) ⊆ O ∩ Dᶜ := by
+    intro z hz
+    exact ⟨hKO hz, fun hzD => Set.disjoint_left.mp hDA hzD hz⟩
+  obtain ⟨G, hG, hGc, hGO, hGf⟩ :=
+    hf.exists_contDiff_compact_extension_of_tsupport_image_subset hg hK
+      (hO.inter hD.isOpen_compl) hAO
+  refine ⟨G, hG, hGc, hGO.trans inter_subset_left, hGf,
+    (tsupport G)ᶜ, (isClosed_tsupport G).isOpen_compl, ?_, ?_⟩
+  · intro z hz hzG
+    exact (hGO hzG).2 hz
+  · exact fun z hz => image_eq_zero_of_notMem_tsupport hz
+
+theorem IsSmoothEmbedding.exists_contDiff_compact_extension
+    (hf : IsSmoothEmbedding I 𝓘(ℝ, V) n f) (hg : ContMDiff I 𝓘(ℝ, F) n g)
+    (hK : IsCompact K) {O : Set V} (hO : IsOpen O) (hKO : f '' K ⊆ O) :
+    ∃ G : V → F, ContDiff ℝ n G ∧ HasCompactSupport G ∧
+      tsupport G ⊆ O ∧ EqOn (G ∘ f) g K :=
+  hf.exists_contDiff_compact_extension_of_tsupport_image_subset hg hK hO
+    ((image_mono inter_subset_left).trans hKO)
 
 end Manifold

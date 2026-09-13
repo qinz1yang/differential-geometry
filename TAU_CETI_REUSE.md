@@ -187,8 +187,9 @@ Stock declaration linters and standard-only transitive axioms pass. Consumers
 check an arbitrary embedded S² map, the actual nonzero unit-sphere identity,
 the identity on a compact interval in a noncompact source, and order zero.
 The new leaf is registered in the flat root. This is not a full aggregate build
-or an ambient isotopy-extension theorem. Time endpoints, source boundaries,
-relative fixing, the actual velocity and its ambient flow remain separate.
+or an ambient isotopy-extension theorem. Time endpoints and source boundaries
+remain separate. The subsequent velocity and relative-extension layers are
+described below.
 
 ## Compactly supported velocity along an embedding family, 2026-09-13
 
@@ -225,3 +226,26 @@ This uses existing native proofs; no additional upstream source or dependency
 is copied. The whole-real smoothness hypothesis remains essential to this
 statement. Extension from interval-only data, source boundary faces, relative
 fixing and the ambient isotopy are separate obligations.
+
+## Relative support for embedded smooth extensions, 2026-09-13
+
+The compact extension now needs only the image of K intersected with the
+input function's topological support to lie in the prescribed open set.
+A second method produces an open neighborhood of a closed fixed set on which
+the extension vanishes, provided that fixed set misses the active image.
+The original full-image method retains its exact public signature as a thin
+corollary. Both results cover finite smoothness orders and C∞, arbitrary
+normed values and noncompact boundaryless source manifolds. They reuse the
+existing compact bump producer, removing the repeated cutoff construction.
+
+Source request 1789309035946733917-schoenflies-9ec53756 passed in 36.42 seconds,
+with 71 guards and 20 signature/axiom pairs. Final imported request
+1789309174856603358-schoenflies-cf3c89bf passed in 108.61 seconds, with 74 guards
+and the same 20 byte-identical pairs. All nine previous velocity/scalar pairs
+remain byte-identical. Extension and its velocity dependent freshly compiled
+without diagnostics in 1:10.23, maximum RSS 1787880 KiB. Stock declaration
+linters and standard-only transitive axioms pass. Consumers retain all earlier
+extension and velocity probes and add nonempty zero data with empty ambient
+support at order zero and an actual nonzero smooth transition that vanishes
+near a specified closed half-line. The existing root imports remain unchanged.
+This is a fresh affected-module and consumer gate, not a full aggregate build.
