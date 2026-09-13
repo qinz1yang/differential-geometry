@@ -34,11 +34,11 @@ theorem affineIndependent_of_subset {T τ : Finset E} (hT : AffineIndependent �
     (hτ : τ ⊆ T) : AffineIndependent ℝ ((↑) : τ → E) :=
   AffineIndependent.mono (t := (T : Set E)) hT (Finset.coe_subset.mpr hτ)
 
-def boundaryFaces (T : Finset E) : Set (Finset E) := {τ | τ ⊆ T ∧ τ.Nonempty ∧ τ ≠ T}
+def simplexBoundaryFaces (T : Finset E) : Set (Finset E) := {τ | τ ⊆ T ∧ τ.Nonempty ∧ τ ≠ T}
 
-def boundaryComplex (T : Finset E) (hT : AffineIndependent ℝ ((↑) : T → E)) :
+def simplexBoundary (T : Finset E) (hT : AffineIndependent ℝ ((↑) : T → E)) :
     Geometry.SimplicialComplex ℝ E where
-  faces := boundaryFaces T
+  faces := simplexBoundaryFaces T
   isRelLowerSet_faces := by
     rintro τ ⟨hτT, hne, hτ⟩
     exact ⟨hne, fun u huτ hu =>
@@ -50,11 +50,11 @@ def boundaryComplex (T : Finset E) (hT : AffineIndependent ℝ ((↑) : T → E)
     rintro τ₁ τ₂ ⟨h₁, -, -⟩ ⟨h₂, -, -⟩
     exact convexHull_inter_subset_of_affineIndependent hT h₁ h₂
 
-theorem mem_boundaryComplex_faces_iff {T : Finset E} {hT : AffineIndependent ℝ ((↑) : T → E)}
-    {τ : Finset E} : τ ∈ (boundaryComplex T hT).faces ↔ τ ⊆ T ∧ τ.Nonempty ∧ τ ≠ T := Iff.rfl
+theorem mem_simplexBoundary_faces_iff {T : Finset E} {hT : AffineIndependent ℝ ((↑) : T → E)}
+    {τ : Finset E} : τ ∈ (simplexBoundary T hT).faces ↔ τ ⊆ T ∧ τ.Nonempty ∧ τ ≠ T := Iff.rfl
 
-theorem boundaryComplex_faces_finite (T : Finset E) (hT : AffineIndependent ℝ ((↑) : T → E)) :
-    (boundaryComplex T hT).faces.Finite :=
+theorem simplexBoundary_faces_finite (T : Finset E) (hT : AffineIndependent ℝ ((↑) : T → E)) :
+    (simplexBoundary T hT).faces.Finite :=
   (Set.toFinite (T.powerset : Set (Finset E))).subset fun _ hτ =>
     Finset.mem_coe.mpr (Finset.mem_powerset.mpr hτ.1)
 
@@ -62,9 +62,9 @@ section Boundary
 
 variable [DecidableEq E]
 
-theorem boundaryComplex_space (T : Finset E) (hT : AffineIndependent ℝ ((↑) : T → E))
+theorem simplexBoundary_space (T : Finset E) (hT : AffineIndependent ℝ ((↑) : T → E))
     (hcard : 2 ≤ T.card) :
-    (boundaryComplex T hT).space = ⋃ v ∈ T, convexHull ℝ ((T.erase v : Finset E) : Set E) := by
+    (simplexBoundary T hT).space = ⋃ v ∈ T, convexHull ℝ ((T.erase v : Finset E) : Set E) := by
   ext x
   rw [Geometry.SimplicialComplex.mem_space_iff, mem_iUnion₂]
   constructor
