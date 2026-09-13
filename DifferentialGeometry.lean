@@ -3022,6 +3022,7 @@ import DifferentialGeometry.Geometry.Boundary.LiftedChart
 import DifferentialGeometry.Geometry.Boundary.LocalFlow
 import DifferentialGeometry.Geometry.Boundary.Manifold.Basic
 import DifferentialGeometry.Geometry.Boundary.Manifold.CollaredGluing
+import DifferentialGeometry.Geometry.Boundary.Manifold.CollaredQuotientAtlas
 import DifferentialGeometry.Geometry.Boundary.Manifold.Component
 import DifferentialGeometry.Geometry.Boundary.Metric.GramMatrix
 import DifferentialGeometry.Geometry.Boundary.Metric.Induced
