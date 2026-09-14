@@ -3186,6 +3186,7 @@ import DifferentialGeometry.Topology.Embedding.AmbientIsotopy
 import DifferentialGeometry.Topology.Embedding.Retraction
 import DifferentialGeometry.Topology.Embedding.Extension
 import DifferentialGeometry.Topology.Embedding.SliceChart
+import DifferentialGeometry.Topology.Embedding.LocalSeparation
 import DifferentialGeometry.Topology.Embedding.Sphere
 import DifferentialGeometry.Topology.Handle.Embedding
 import DifferentialGeometry.Topology.ThreeManifold.schoenflies
