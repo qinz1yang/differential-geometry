@@ -215,4 +215,46 @@ theorem openCoverLinkingRealization_and_not_hurewiczThreeSphereGeneration
     not_hurewiczThreeSphereGeneration_of_subsingleton_homotopyGroup_of_not_subsingleton_homology
       x hpi hnh⟩
 
+def openCoverBoundaryMap (k : ℕ) (A B : Set X)
+    (u : C(closedBall (0 : EuclideanSpace ℝ (Fin (k + 2))) 1, ↥A))
+    (v : C(closedBall (0 : EuclideanSpace ℝ (Fin (k + 2))) 1, ↥B))
+    (h : ∀ q : sphere (0 : EuclideanSpace ℝ (Fin (k + 2))) 1,
+      (u (sphereBallBoundaryInclusion (k + 2) q) : X) =
+        (v (sphereBallBoundaryInclusion (k + 2) q) : X)) :
+    C(sphere (0 : EuclideanSpace ℝ (Fin (k + 2))) 1, ↥(subspaceIntersection A B)) :=
+  ⟨fun q => ⟨⟨(u (sphereBallBoundaryInclusion (k + 2) q)).1,
+      (h q).symm ▸ (v (sphereBallBoundaryInclusion (k + 2) q)).2⟩,
+    (u (sphereBallBoundaryInclusion (k + 2) q)).2⟩,
+   ((continuous_subtype_val.comp (u.continuous.comp
+      (sphereBallBoundaryInclusion (k + 2)).continuous)).subtype_mk _).subtype_mk _⟩
+
+theorem exists_boundary_agreeing_ballMaps (k : ℕ) (A B : Set X)
+    (z : ↥(subspaceIntersection A B)) :
+    ∃ (u : C(closedBall (0 : EuclideanSpace ℝ (Fin (k + 2))) 1, ↥A))
+      (v : C(closedBall (0 : EuclideanSpace ℝ (Fin (k + 2))) 1, ↥B)),
+      ∀ q : sphere (0 : EuclideanSpace ℝ (Fin (k + 2))) 1,
+        (u (sphereBallBoundaryInclusion (k + 2) q) : X) =
+          (v (sphereBallBoundaryInclusion (k + 2) q) : X) :=
+  ⟨ContinuousMap.const _ ⟨z.1.1, z.2⟩, ContinuousMap.const _ z.1, fun _ => rfl⟩
+
+def OpenCoverGluedSphereLinking (k : ℕ) (A B : Set X) (hA : IsOpen A) (hB : IsOpen B)
+    (hcover : A ∪ B = univ) : Prop :=
+  ∀ (u : C(closedBall (0 : EuclideanSpace ℝ (Fin (k + 2))) 1, ↥A))
+    (v : C(closedBall (0 : EuclideanSpace ℝ (Fin (k + 2))) 1, ↥B))
+    (h : ∀ q : sphere (0 : EuclideanSpace ℝ (Fin (k + 2))) 1,
+      (u (sphereBallBoundaryInclusion (k + 2) q) : X) =
+        (v (sphereBallBoundaryInclusion (k + 2) q) : X)),
+    integralOpenCoverLinkingMap (k + 1) A B hA hB hcover
+        (freeSphereHomologyImage (k + 1) (integralLiftedSphereGenerator.{u} (k + 1))
+          (ZerothHomotopy.mk (gluedSphereMap (k + 1)
+            ((singularSubspaceInclusion A).comp u) ((singularSubspaceInclusion B).comp v) h))) =
+      freeSphereHomologyImage k (integralLiftedSphereGenerator.{u} k)
+        (ZerothHomotopy.mk (openCoverBoundaryMap k A B u v h))
+
+theorem openCoverGluedSphereLinking_of_subsingleton_linking (k : ℕ) (A B : Set X)
+    (hA : IsOpen A) (hB : IsOpen B) (hcover : A ∪ B = univ)
+    (hI : Subsingleton (integralSingularHomology (k + 1) ↥(subspaceIntersection A B))) :
+    OpenCoverGluedSphereLinking k A B hA hB hcover :=
+  fun _ _ _ => Subsingleton.elim _ _
+
 end DifferentialGeometry.Topology

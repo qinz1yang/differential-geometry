@@ -1,3 +1,4 @@
+import DifferentialGeometry.Topology.Algebra.Group.FinitelyGeneratedFundamentalGroup
 import DifferentialGeometry.Topology.Algebra.Module.RankInvariant
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSumSummandCountUnique
 import DifferentialGeometry.Topology.ThreeManifold.CutCapCutComponentRealizationReduction
@@ -62,6 +63,13 @@ theorem rationalFiniteAbelianizationFundamentalGroupClosedThreeManifold_of_finit
     RationalFiniteAbelianizationFundamentalGroupClosedThreeManifold.{u} :=
   fun M p => Module.Finite.base_change (R := ℤ) (A := ℚ)
     (M := Additive (Abelianization (FundamentalGroup M.Carrier p))) (h := h M p)
+
+theorem rationalFiniteAbelianizationFundamentalGroupClosedThreeManifold_of_finitelyGeneratedFundamentalGroup
+    (h : FinitelyGeneratedFundamentalGroupClosedThreeManifold.{u}) :
+    RationalFiniteAbelianizationFundamentalGroupClosedThreeManifold.{u} :=
+  fun M p => Module.Finite.base_change (R := ℤ) (A := ℚ)
+    (M := Additive (Abelianization (FundamentalGroup M.Carrier p)))
+    (h := moduleFinite_int_additive_abelianization_of_groupFG (h M p))
 
 private theorem forall_mem_cons_cons_of_isSphereTwoTimesCircleFactor
     {S : ConnectedClosedOrientedManifold.{u} 3} (hS : isSphereTwoTimesCircleFactor S) :
