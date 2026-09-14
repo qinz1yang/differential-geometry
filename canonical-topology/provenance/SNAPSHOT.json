@@ -1,9 +1,9 @@
 {
-  "scope": "Dependency-closed 135-module checkpoint including the actual relative-to-absolute empty-pair cohomology equivalence in every degree; full topology suite incomplete",
+  "scope": "Dependency-closed 136-module checkpoint including bijectivity of actual relative homology and cohomology maps induced by isomorphisms on ambient spaces and subspaces; full topology suite incomplete",
   "baseline_commit": "b45bfa009368c8f5f531e10f4f5280e90079d6ad",
   "baseline_ref": "refs/remotes/origin/codex/chapter35",
   "source_project": "PoincareLean",
-  "source_module_count": 135,
+  "source_module_count": 136,
   "roots": [
     "Poincare.Topology.Homology.RelativeMaps",
     "Poincare.Topology.Homology.RelativeHomeomorphism",
@@ -35,7 +35,8 @@
     "Poincare.Topology.Homology.TwoPointCapDuality",
     "Poincare.Topology.Homology.CochainHomotopy",
     "Poincare.Topology.Homology.CohomologyVanishing",
-    "Poincare.Topology.Homology.RelativeCohomologyVanishing"
+    "Poincare.Topology.Homology.RelativeCohomologyVanishing",
+    "Poincare.Topology.Homology.RelativeComparison"
   ],
   "changed_sources": [
     {
@@ -226,6 +227,12 @@
       "path": "Poincare/Topology/Homology/RelativeCohomologyVanishing.lean",
       "baseline_sha256": null,
       "sha256": "53f5e22c573919667515d244517b91a4e6b6b10432fdb9302b265261d8d9fb15"
+    },
+    {
+      "module": "Poincare.Topology.Homology.RelativeComparison",
+      "path": "Poincare/Topology/Homology/RelativeComparison.lean",
+      "baseline_sha256": null,
+      "sha256": "8f03c0c0a69fb4f47e6a8815fef721b4668fbb4b4aba55669da727d198f39425"
     },
     {
       "module": "Poincare.Topology.Homology.RelativeEmpty",
@@ -798,6 +805,12 @@
       "sha256": "53f5e22c573919667515d244517b91a4e6b6b10432fdb9302b265261d8d9fb15"
     },
     {
+      "module": "Poincare.Topology.Homology.RelativeComparison",
+      "path": "Poincare/Topology/Homology/RelativeComparison.lean",
+      "baseline_sha256": null,
+      "sha256": "8f03c0c0a69fb4f47e6a8815fef721b4668fbb4b4aba55669da727d198f39425"
+    },
+    {
       "module": "Poincare.Topology.Homology.RelativeEmpty",
       "path": "Poincare/Topology/Homology/RelativeEmpty.lean",
       "baseline_sha256": null,
@@ -1192,8 +1205,8 @@
   "aggregate": {
     "path": "Poincare.lean",
     "baseline_sha256": "99c3c8e47c19f60ee50a7e0f377e59138cf4ff33ebd4e26530d3c2b7cd47d452",
-    "sha256": "e8be85aab55514f86fc34769412e1f54c56f35b7517359c69ac7e78dcde7762f",
-    "change": "Flat 135-leaf checkpoint aggregate; full recovered aggregate remains separate"
+    "sha256": "5598ba91cad8c9a08b5ea9da63f21ad24a4a7ce3d17e47bd802ce1d199a1297f",
+    "change": "Flat 136-leaf checkpoint aggregate; full recovered aggregate remains separate"
   },
   "configuration": [
     {
@@ -1464,7 +1477,9 @@
     "Poincare.Topology.integralRelativeToAbsoluteCohomology_zero_injective",
     "Poincare.Topology.integralRelativeCohomology_zero_subsingleton_of_pathConnectedSpace",
     "Poincare.Topology.integralRelativeToAbsoluteCohomologyEmptyEquiv",
-    "Poincare.Topology.integralRelativeToAbsoluteCohomologyEmptyEquiv_toLinearMap"
+    "Poincare.Topology.integralRelativeToAbsoluteCohomologyEmptyEquiv_toLinearMap",
+    "Poincare.Topology.integralRelativeHomologyMap_bijective_of_absolute_and_subspace",
+    "Poincare.Topology.integralRelativeCohomologyMap_bijective_of_absolute_and_subspace"
   ],
   "historical_authorities": [
     {
@@ -1602,24 +1617,23 @@
     "full_topology_suite_accepted": false
   },
   "validation": {
-    "status": "passed for the selected 135-module checkpoint; full topology suite incomplete",
+    "status": "passed for the selected 136-module checkpoint; full topology suite incomplete",
     "date": "2026-09-13",
     "slurm_job": "13846673",
     "host": "della-r3c4n2",
-    "request_id": "1789344380600270048-topology_checkpoint-5607f5e7",
-    "input_sha256": "8e363bfc88048413e7c23162b086249c0825990253667ade43f6c8f1c4628d3e",
-    "result_sha256": "2cdca26c81d039bfbd61438dc8ade863a3a0c87805b774a287bb27a2c1cbad46",
-    "artifact_log_sha256": "11dc1d3e6f727d097646216f743af8c9a27941633dfb01a7ead1d600a76f793e",
-    "source_config_harness_hash_guards": 556,
+    "request_id": "1789346230320663951-topology_checkpoint-74c7df20",
+    "input_sha256": "24c2209ac11195b62bcd1f655c46cacfc1bc52173394508e26d89ba3bf24b8a7",
+    "result_sha256": "7640c98fb703740e8f48e45a7d313ac849c1e9397ca9023e25e18b3c12781174",
+    "artifact_log_sha256": "36455a2ac84b5a1fab28eef1ae04c9788ce26856f2736f688dd27568c53b4778",
+    "source_config_harness_hash_guards": 565,
     "freshly_built_modules": [
-      "Poincare.Topology.Homology.RelativeEmpty",
-      "Poincare.Topology.Homology.ManifoldFundamentalClass",
+      "Poincare.Topology.Homology.RelativeComparison",
       "Poincare"
     ],
     "root_build": "lake --no-cache --iofail build Poincare",
-    "fresh_build_scope": "RelativeEmpty89, affected ManifoldFundamentalClass and root freshly compiled with zero diagnostics; all 134 other published leaf sources unchanged.",
-    "exact_public_exports": 150,
-    "public_and_consumer_signature_axiom_pairs": 264,
+    "fresh_build_scope": "RelativeComparison61 and root freshly compiled with zero diagnostics; all 135 previously published leaves unchanged.",
+    "exact_public_exports": 152,
+    "public_and_consumer_signature_axiom_pairs": 267,
     "linters": [
       "unusedArguments",
       "simpNF",
@@ -1634,15 +1648,15 @@
       "Quot.sound"
     ],
     "unexpected_diagnostics": 0,
-    "elapsed_seconds": 198.3604633808136,
-    "peak_summed_rss_bytes": 3153793024,
+    "elapsed_seconds": 165.32918572425842,
+    "peak_summed_rss_bytes": 3160055808,
     "full_topology_suite_accepted": false,
     "consumer_probes": [
-      "All 259 prior signature/axiom pairs reproduced byte-identically",
-      "All seven original imported public/consumer pairs match the source and portable readbacks exactly",
-      "The actual relative-to-absolute empty-pair cohomology map is an equivalence in every degree and topological space",
-      "A real-line H0 class in the relative empty group is nonzero and maps to the absolute unit",
-      "Both directions commute with the actual induced cohomology maps"
+      "All 264 prior signature/axiom pairs reproduced byte-identically",
+      "Both new public declarations and the actual sphere-pair consumer match original and source readbacks modulo only Set.MapsTo qualification; axioms exact",
+      "The actual relative homology and cohomology pair maps are bijective when the actual ambient and subspace maps are bijective in every degree",
+      "The identity of any real normed space induces bijections from the sphere pair to the punctured-space pair in every degree, with contravariant cohomology direction preserved",
+      "The consumer uses the actual inverse radial homotopy equivalence and includes rank-zero normed spaces without a positivity assumption"
     ]
   },
   "previous_linear_sign_checkpoint_validation": {
@@ -3338,5 +3352,61 @@
         "current": "d66c7111318994319207df6e503087f6f8e737053724e8ee8f5f6ade181fdfe9"
       }
     }
+  },
+  "previous_relative_empty_cohomology_validation": {
+    "status": "passed for the selected 135-module checkpoint; full topology suite incomplete",
+    "date": "2026-09-13",
+    "slurm_job": "13846673",
+    "host": "della-r3c4n2",
+    "request_id": "1789344380600270048-topology_checkpoint-5607f5e7",
+    "input_sha256": "8e363bfc88048413e7c23162b086249c0825990253667ade43f6c8f1c4628d3e",
+    "result_sha256": "2cdca26c81d039bfbd61438dc8ade863a3a0c87805b774a287bb27a2c1cbad46",
+    "artifact_log_sha256": "11dc1d3e6f727d097646216f743af8c9a27941633dfb01a7ead1d600a76f793e",
+    "source_config_harness_hash_guards": 556,
+    "freshly_built_modules": [
+      "Poincare.Topology.Homology.RelativeEmpty",
+      "Poincare.Topology.Homology.ManifoldFundamentalClass",
+      "Poincare"
+    ],
+    "root_build": "lake --no-cache --iofail build Poincare",
+    "fresh_build_scope": "RelativeEmpty89, affected ManifoldFundamentalClass and root freshly compiled with zero diagnostics; all 134 other published leaf sources unchanged.",
+    "exact_public_exports": 150,
+    "public_and_consumer_signature_axiom_pairs": 264,
+    "linters": [
+      "unusedArguments",
+      "simpNF",
+      "synTaut",
+      "checkType"
+    ],
+    "linter_scope": "All imported Poincare declarations and current consumers, including private declarations",
+    "defLemma": "Unavailable in the pinned Mathlib; source declaration-kind checks retained.",
+    "allowed_transitive_axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "unexpected_diagnostics": 0,
+    "elapsed_seconds": 198.3604633808136,
+    "peak_summed_rss_bytes": 3153793024,
+    "full_topology_suite_accepted": false,
+    "consumer_probes": [
+      "All 259 prior signature/axiom pairs reproduced byte-identically",
+      "All seven original imported public/consumer pairs match the source and portable readbacks exactly",
+      "The actual relative-to-absolute empty-pair cohomology map is an equivalence in every degree and topological space",
+      "A real-line H0 class in the relative empty group is nonzero and maps to the absolute unit",
+      "Both directions commute with the actual induced cohomology maps"
+    ]
+  },
+  "original_relative_comparison_validation": {
+    "request_id": "1789346229792232785-topology-50ffdb89",
+    "input_sha256": "893a1f49cbab7424b317fa3d717ff2f0865bf3cef069b1fba3e225e43ec5adeb",
+    "elapsed_seconds": 74.71861720085144,
+    "source_guards": 59,
+    "signature_axiom_pairs": 3,
+    "fresh_modules": [
+      "Poincare.Topology.Homology.RelativeComparison"
+    ],
+    "source_request_id": "1789346140432591695-topology-488a4577",
+    "source_readback_comparison": "all three original pairs match source exactly; portable types differ only by Set.MapsTo qualification and axioms are exact; all 264 preceding portable pairs remain exact"
   }
 }

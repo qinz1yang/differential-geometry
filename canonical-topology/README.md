@@ -1,11 +1,14 @@
 # Local homology and global classes from coherent local generators
 
 This separate `PoincareLean` project contains a dependency-closed checkpoint of
-135 Poincare modules. It extends the recovered Chapter 35 source at commit
+136 Poincare modules. It extends the recovered Chapter 35 source at commit
 `b45bfa009368c8f5f531e10f4f5280e90079d6ad` and preserves its mathematical objects
 and `Poincare` namespaces. `Poincare.lean` imports every included leaf.
 
 The additions prove:
+
+- bijectivity of the actual relative homology and cohomology pair maps when
+  the ambient and subspace maps induce bijections in every degree;
 
 - the equivalence between actual cohomology relative to the empty subspace
   and ordinary cohomology, with forward map equal to the original
@@ -832,7 +835,7 @@ general manifold duality and native orientation producer remain incomplete.
 
 ## Cohomology relative to the empty subspace
 
-The current checkpoint contains 135 leaves and 150 curated tracked added public
+That checkpoint contained 135 leaves and 150 curated tracked added public
 exports. `integralRelativeToAbsoluteCohomologyEmptyEquiv` identifies actual
 relative cohomology of the empty pair with ordinary cohomology in every degree
 and topological space. Its `_toLinearMap` theorem pins the forward map to the
@@ -854,3 +857,31 @@ root freshly compiled in 1:41.51, maximum RSS 1,921,264 KiB, with zero
 diagnostics. All 134 other published leaf sources remain byte-identical. Stock
 linters and standard-only transitive axioms pass. The full canonical topology
 suite, general manifold duality and native orientation producer remain open.
+
+## Relative homology and cohomology comparison
+
+The current checkpoint contains 136 leaves and 152 curated tracked added public
+exports. `RelativeComparison` proves that the original relative homology and
+cohomology maps of a continuous map of pairs are bijective when its actual
+ambient and subspace maps are bijective in every degree. The proof uses the
+existing short exact sequences and Mathlib's quasi-isomorphism comparison,
+including the opposite-category argument for contravariant cohomology.
+
+The consumer uses the identity on any real normed space as a map from the
+unit-sphere pair to the punctured-space pair. Its restriction is the actual
+inverse radial homotopy equivalence. Both induced relative maps are bijective
+in every degree, with the correct opposite cohomology direction, including
+rank-zero spaces. No new relative object or arbitrary replacement map is used.
+
+Source request `1789346140432591695-topology-488a4577` passed in 18.02 seconds
+with 59 guards and 3 pairs. Original imported request
+`1789346229792232785-topology-50ffdb89` passed in 74.72 seconds with 59 guards
+and 3 pairs. Final portable request
+`1789346230320663951-topology_checkpoint-74c7df20` passed in Slurm 13846673
+in 165.33 seconds, with 565 guards and 267 pairs. All 264 earlier pairs are
+byte-identical. The three new original pairs match source exactly; portable
+types differ only in printing `MapsTo` instead of `Set.MapsTo`, with identical
+axiom readbacks. The new leaf and root freshly compiled in 1:11.03, maximum
+RSS 1,825,392 KiB, with zero diagnostics. All 135 earlier leaf sources are
+unchanged. Stock linters and standard-only transitive axioms pass. General
+manifold duality, native orientation and the full canonical suite remain open.

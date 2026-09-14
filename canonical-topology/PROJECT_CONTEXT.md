@@ -6,22 +6,25 @@ library is `Poincare`; its sources retain the original mathematical namespaces.
 
 The source baseline is the recovered Chapter 35 commit
 `b45bfa009368c8f5f531e10f4f5280e90079d6ad`, supplemented by recovered working-tree
-proofs with separately recorded provenance. This checkpoint includes 135 modules
-and 150 curated tracked added public exports. The latest addition identifies
-actual cohomology relative to the empty subspace with ordinary cohomology in
-every degree and topological space. Its forward map is the original
-relative-to-absolute cohomology map. Nonzero real-line H0 and naturality in both
-directions are checked using the actual induced maps.
+proofs with separately recorded provenance. This checkpoint includes 136 modules
+and 152 curated tracked added public exports. The latest addition proves
+bijectivity of actual relative homology and cohomology pair maps from
+bijectivity of the actual ambient and subspace maps in every degree. Its
+consumer compares the unit-sphere pair with the punctured-space pair using
+the identity and the original radial homotopy equivalence, including rank zero.
 
-Final request `1789344380600270048-topology_checkpoint-5607f5e7` passed in
-Slurm 13846673 in 198.36 seconds, with 556 guards and 264 signature/axiom pairs.
-All 259 preceding pairs are byte-identical; all seven original imported pairs
-match both source and portable readbacks. The changed RelativeEmpty leaf,
-affected ManifoldFundamentalClass and root freshly compiled in 1:41.51,
-maximum RSS 1,921,264 KiB, with zero diagnostics. All 134 other published leaf
-sources remain byte-identical. Stock linters and standard-only transitive axioms
-pass. Dependency pins and deferred inputs are unchanged. General manifold
-duality and the native orientation producer remain open.
+Final request `1789346230320663951-topology_checkpoint-74c7df20` passed in
+Slurm 13846673 in 165.33 seconds, with 565 guards and 267 signature/axiom pairs.
+All 264 preceding pairs are byte-identical. All three new original pairs match
+source exactly; portable types differ only by `Set.MapsTo` qualification, and
+axiom readbacks are identical. RelativeComparison and root freshly compiled
+in 1:11.03, maximum RSS 1,825,392 KiB, with zero diagnostics. All 135 earlier
+leaf sources remain byte-identical. Stock linters and standard-only transitive
+axioms pass. Dependency pins and deferred inputs are unchanged. General
+manifold duality and the native orientation producer remain open.
+
+The preceding empty-pair cohomology equivalence and its actual forward-map
+equation retain their exact statements and bodies.
 
 The preceding degree-zero relative and empty-space cohomology results retain
 their exact statements and bodies, including the nonempty-subspace assumption
