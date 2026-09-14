@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.IntegralBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Product
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.CalculusGeometry
-import Mathlib.MeasureTheory.Integral.IntervalIntegral.Periodic
+import DifferentialGeometry.Analysis.Integration.Periodic
 
 noncomputable section
 open Bundle Manifold Set MeasureTheory
@@ -130,15 +130,8 @@ private theorem intervalIntegral_le_integral_zero_one {f : ℝ → ℝ} {p q : �
     (hper : Function.Periodic f 1) (hint : IntervalIntegrable f volume 0 1)
     (hnn : ∀ x, 0 ≤ f x) (hqp : q ≤ p + 1) :
     (∫ x in p..q, f x) ≤ ∫ x in 0..1, f x := by
-  have hall : ∀ a b : ℝ, IntervalIntegrable f volume a b :=
-    hper.intervalIntegrable₀ (by norm_num) hint
-  have hsplit : (∫ x in p..q, f x) + (∫ x in q..(p + 1), f x) = ∫ x in p..(p + 1), f x :=
-    intervalIntegral.integral_add_adjacent_intervals (hall p q) (hall q (p + 1))
-  have hper' : (∫ x in p..p + 1, f x) = ∫ x in 0..1, f x := by
-    simpa using hper.intervalIntegral_add_eq p 0
-  have hnonneg : 0 ≤ ∫ x in q..(p + 1), f x :=
-    intervalIntegral.integral_nonneg hqp fun x _ => hnn x
-  linarith
+  simpa only [zero_add] using hper.intervalIntegral_le_period
+    (a := 0) (by simpa only [zero_add] using hint) hnn hqp
 
 omit [CompleteSpace E] [SigmaCompactSpace M] t2M in
 theorem arc_totalCurvature_le_sqrt [I.Boundaryless] (g : ℝ → SmoothRiemannianMetric I M)
