@@ -6772,6 +6772,7 @@ import DifferentialGeometry.Geometry.Metric.Comparison.DistanceScaling
 import DifferentialGeometry.Geometry.Metric.Comparison.DistanceTent
 import DifferentialGeometry.Geometry.Metric.Comparison.Finiteness
 import DifferentialGeometry.Geometry.Metric.Comparison.PathLength
+import DifferentialGeometry.Geometry.Metric.Comparison.ScalarBarrier
 import DifferentialGeometry.Geometry.Metric.CompleteMetricExists
 import DifferentialGeometry.Geometry.Metric.Completeness
 import DifferentialGeometry.Geometry.Metric.CompletenessPullback
