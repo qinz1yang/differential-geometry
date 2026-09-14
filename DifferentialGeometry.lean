@@ -4170,6 +4170,7 @@ import DifferentialGeometry.Geometry.Curvature.Coordinates.MetricJet.ChartBridge
 import DifferentialGeometry.Geometry.Curvature.Coordinates.MetricJet.Curvature
 import DifferentialGeometry.Geometry.Curvature.Coordinates.MetricJet.CurvatureFromJet
 import DifferentialGeometry.Geometry.Curvature.Coordinates.MetricJet.EntryDerivatives
+import DifferentialGeometry.Geometry.Curvature.Coordinates.MetricJet.NormalCoordinateSecondJet
 import DifferentialGeometry.Geometry.Curvature.Coordinates.RiemannTensorBridge
 import DifferentialGeometry.Geometry.Curvature.Coordinates.ScalarTrace
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Bounds.CovariantTwoTensor.FiberNorm
@@ -5351,6 +5352,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborho
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.PositiveDeckGroup
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.PositiveSectionalLowerBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.PositiveSectionalScalingTransport
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.RadialLevelCalibration
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.RayClampedParameter
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.RecenteredFarField
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.RecenteredScalarBoundReduction
@@ -6743,6 +6745,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ControlledE
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ControlledExtinctionTower
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CoreCompatibleExtinctionTower
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CoreInclusionRestriction
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CoreRestrictedDistanceComparison
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutCap
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutCapCompletion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutCapPresentation
@@ -6817,6 +6820,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.LowDegreeHu
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.LowDegreeHurewiczCubeCanonical
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.LowDegreeHurewiczThreeSphere
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.MetricEvent
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.NeckC1Alignment
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.NeckMarkSideBridge
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.NeckRecenteringFields
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.NeckTubeIndexBridge
@@ -6863,6 +6867,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SphericalRe
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SphericalTransitionBridge
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.StandardNeckCutCap
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.StandardNeckCutCapInstance
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.StandardNeckCylinderEmbedding
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.StandardNeckRegularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.StandardNeckTubeEmbedding
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.StaticCap
@@ -7472,6 +7477,7 @@ import DifferentialGeometry.Geometry.Metric.Sphere.Quotient.Descent
 import DifferentialGeometry.Geometry.Metric.Sphere.Quotient.PositiveCover
 import DifferentialGeometry.Geometry.Metric.Sphere.Quotient.PositiveSpaceForm
 import DifferentialGeometry.Geometry.Metric.Sphere.Quotient.RoundMetric
+import DifferentialGeometry.Geometry.Metric.Sphere.Quotient.RoundMetricDescent
 import DifferentialGeometry.Geometry.Metric.Sphere.Quotient.SpaceForm
 import DifferentialGeometry.Geometry.Metric.Sphere.Quotient.SpaceFormCovering
 import DifferentialGeometry.Geometry.Metric.Sphere.Quotient.SpaceFormGroup
@@ -9341,6 +9347,7 @@ import DifferentialGeometry.Topology.ThreeManifold.CutCapReconstruction
 import DifferentialGeometry.Topology.ThreeManifold.CutCapStandardReconstruction
 import DifferentialGeometry.Topology.ThreeManifold.CutCapUncutCappingRealization
 import DifferentialGeometry.Topology.ThreeManifold.CutCapUncutComponentRealization
+import DifferentialGeometry.Topology.ThreeManifold.PartialGraphRealization
 import DifferentialGeometry.Topology.ThreeManifold.PoincareStandard
 import DifferentialGeometry.Topology.ThreeManifold.PoincareStandardClassification
 import DifferentialGeometry.Topology.ThreeManifold.PoincareStandardComponentwise
