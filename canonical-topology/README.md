@@ -1,11 +1,15 @@
 # Local homology and global classes from coherent local generators
 
 This separate `PoincareLean` project contains a dependency-closed checkpoint of
-139 Poincare modules. It extends the recovered Chapter 35 source at commit
+141 Poincare modules. It extends the recovered Chapter 35 source at commit
 `b45bfa009368c8f5f531e10f4f5280e90079d6ad` and preserves its mathematical objects
 and `Poincare` namespaces. `Poincare.lean` imports every included leaf.
 
 The additions prove:
+
+- bijectivity of actual top-degree integral cap product on every positive-dimensional
+  unit sphere exactly at its two top-homology generators, with the existing
+  generator normalization and actual radial cohomology comparison;
 
 - compatibility of the actual cap product with contractible-cover degree
   shifts, equality of the normalized integer pairings, and equivalence of
@@ -974,7 +978,7 @@ full canonical topology contract remain open.
 
 ## Cap products and contractible-cover degree shifts
 
-The current checkpoint contains 139 leaves and 162 curated tracked added
+That checkpoint contained 139 leaves and 162 curated tracked added
 public exports. `CapContractibleCover` proves that the actual cap product
 with degree-zero homology output commutes with the existing cohomology and
 homology degree shifts for a cover by two contractible open sets. The equation
@@ -1001,3 +1005,40 @@ only Set.univ / Module.finrank qualification and whitespace; axiom readbacks
 are exact. Strict source and stock declaration linters and standard-only
 transitive axioms pass. General manifold duality, native orientation and the
 full canonical topology contract remain open.
+
+
+## Sphere top-degree cap duality
+
+The current checkpoint contains 141 leaves and 165 curated tracked added public
+exports. `integralSingularCohomologyCapProduct_sphere_bijective_iff` states that
+cap H^(n+1) to H0 on the unit sphere of a real inner-product space of dimension
+n+2 is bijective precisely when the existing top-homology coordinate of the
+class is +1 or -1. The specified generator corollary uses exactly the inverse
+of `integralSphereTopHomologyEquiv` at 1. Arbitrary universes are supported.
+
+The proof uses the actual two-point cap theorem, the original radial and
+stereographic maps, and induction through the existing contractible-cover cap
+compatibility. Its private integer-pairing argument pins the result to the
+previously computed generator. `RadialCohomology` exposes the actual identity
+pair-map cohomology comparison for arbitrary real normed spaces in every degree.
+Its previous private body is shared once; the real-line public theorem retains
+its exact signature and proof body except for that helper call.
+
+Consumers check both generators, reject zero and twice the generator, produce
+a nonzero actual H2 class on the Euclidean3 unit sphere, check unique radial
+cohomology preimages, and retain the normalized real-line public interface.
+Source `1789354967942228867-topology-27146e50` passed in16.30s with183 guards
+and18 signature/axiom pairs. Original imported check
+`1789355126709747824-topology-56aa92fc` passed in134.36s with185 guards and10
+pairs. Final portable check `1789355243051423740-topology_checkpoint-94f52e51`
+passed in Slurm13846673 in223.61s with613 guards and291 pairs. The three changed
+leaves and package root freshly compiled in2:03.31, maximum RSS2001020KiB,
+with zero diagnostics.
+
+All282 preceding readback pairs are byte-identical and all138 other preceding
+leaf sources unchanged. All10 shared source/original/portable types agree
+modulo only Set.univ, Module.finrank and Set.MapsTo qualification and whitespace;
+axiom readbacks are exact. Strict source and stock declaration linters and
+standard-only transitive axioms pass. This proves top-degree sphere pairing;
+all-degree general manifold duality, outward normalization, native orientation
+and the full frozen canonical topology contract remain open.

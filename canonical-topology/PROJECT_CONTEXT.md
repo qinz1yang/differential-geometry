@@ -6,21 +6,24 @@ library is `Poincare`; its sources retain the original mathematical namespaces.
 
 The source baseline is the recovered Chapter 35 commit
 `b45bfa009368c8f5f531e10f4f5280e90079d6ad`, supplemented by recovered working-tree
-proofs with separately recorded provenance. This checkpoint includes 139 modules
-and 162 curated tracked added public exports. The latest addition identifies
-the actual cap product under the existing homology/cohomology degree shifts
-for two contractible open sets, retaining both H0 inclusion maps. The original
-normalized augmentation gives equal integer pairings and equivalent bijectivity.
-Actual nonzero sphere-class and zero-class failure consumers pass.
+proofs with separately recorded provenance. This checkpoint includes 141 modules
+and 165 curated tracked added public exports. The latest addition proves that
+actual top-degree cap product on every positive-dimensional unit sphere is
+bijective exactly for the two generators of its existing integral top homology.
+It applies to finite-dimensional real inner-product spaces in arbitrary universes.
+The previously computed generator, its negative, zero and twice the generator
+are checked explicitly. The actual sphere-to-puncture cohomology comparison is
+shared once; the uniquely normalized real-line public theorem is preserved.
 
-Source27ea60d9 passed7.31s147guards5pairs; original0ba98f35 passed84.90s148/5.
-Portable72a2e129 passed167.25s597/282. The new leaf and root freshly compiled
-in1:11.18, RSS1825324KiB, zero diagnostics. All277 preceding pairs are
-byte-identical, all138 preceding leaves unchanged, and all5 new source,
-original and portable readbacks agree modulo only Set.univ / Module.finrank
-qualification and whitespace; axiom readbacks are exact. Strict source and
-stock declaration linters and standard-only transitive axioms pass.
-Pins and deferred inputs are unchanged. General manifold duality, the native
+Source27146e50 passed16.30s183guards18pairs; original56aa92fc passed134.36s185/10.
+Portable94f52e51 passed223.61s613/291. The three changed leaves and root freshly
+compiled in2:03.31, RSS2001020KiB, zero diagnostics. All282 preceding pairs are
+byte-identical and all138 other preceding leaves unchanged. All10 shared
+source/original/portable types agree modulo only Set.univ, Module.finrank and
+Set.MapsTo qualification and whitespace; axiom readbacks are exact. Strict
+source and stock declaration linters and standard-only transitive axioms pass.
+Pins and deferred inputs are unchanged. This is top-degree sphere duality;
+general manifold duality, outward orientation normalization, the native
 orientation producer and the full frozen contract remain open.
 
 The preceding cohomology cover shift, its actual forward/inverse equations,

@@ -61,6 +61,7 @@ import Poincare.Topology.Homology.OpenExcision
 import Poincare.Topology.Homology.PathChains
 import Poincare.Topology.Homology.PathCones
 import Poincare.Topology.Homology.PathEvaluation
+import Poincare.Topology.Homology.RadialCohomology
 import Poincare.Topology.Homology.RadialHomotopy
 import Poincare.Topology.Homology.RealLocalDuality
 import Poincare.Topology.Homology.ReducedZero
@@ -97,6 +98,7 @@ import Poincare.Topology.Homology.SmallCycles
 import Poincare.Topology.Homology.SmallHomology
 import Poincare.Topology.Homology.SmallRelative
 import Poincare.Topology.Homology.SmallSubspaceInclusion
+import Poincare.Topology.Homology.SphereCapDuality
 import Poincare.Topology.Homology.SphereHomologyOne
 import Poincare.Topology.Homology.SphereHomologyShift
 import Poincare.Topology.Homology.SphereHomologyVanishing
