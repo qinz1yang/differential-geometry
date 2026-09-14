@@ -301,6 +301,101 @@ theorem trans_bounds_on
       exact ENNReal.ofReal_le_ofReal (hydist k)
     exact d.metric_deriv n i k hnk (y k) hy z (hVrad' hz)
 
+theorem exists_transition_limit_subsequence
+    {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
+    {hd : InjectivityRadiusDecay (I := I) X}
+    (d : SeqBallNormalChartData (I := I) X hd) (hreal : hd.RealizesDistance)
+    (n : Nat) (x y : ∀ k : Nat, (X.obj k).M)
+    {U V Ua Va : Set E}
+    (hU : IsOpen U) (hV : IsOpen V)
+    (hUa : IsOpen Ua) (hVa : IsOpen Va)
+    (hUanorm : ∃ Z : Real, ∀ z ∈ Ua, ‖z‖ ≤ Z)
+    (hVanorm : ∃ Z : Real, ∀ z ∈ Va, ‖z‖ ≤ Z)
+    (hxdist : ∀ k, hd.dist k (x k) (X.obj k).basepoint ≤ (n : Real))
+    (hydist : ∀ k, hd.dist k (y k) (X.obj k).basepoint ≤ (n : Real))
+    (hUarad : ∀ k,
+      Ua ⊆ Metric.ball (0 : E)
+        (d.ratio * hd.mu (hd.dist k (x k) (X.obj k).basepoint)))
+    (hVarad : ∀ k,
+      Va ⊆ Metric.ball (0 : E)
+        (d.ratio * hd.mu (hd.dist k (y k) (X.obj k).basepoint)))
+    (hovlJ : ∀ k, d.chartOverlapOn k (x k) (y k) U)
+    (hovlJbar : ∀ k, d.chartOverlapOn k (y k) (x k) V)
+    (hmapJ : ∀ k, Set.MapsTo
+      (d.chartTransition k (x k) (y k)) U Va)
+    (hmapJbar : ∀ k, Set.MapsTo
+      (d.chartTransition k (y k) (x k)) V Ua) :
+    ∃ (phi : Nat → Nat) (Jinf : E → E) (Jbarinf : E → E),
+      StrictMono phi ∧
+      ContDiffOn Real (⊤ : ℕ∞) Jinf U ∧
+      ContDiffOn Real (⊤ : ℕ∞) Jbarinf V ∧
+      MapCInfConvergenceOnCompacts U
+        (fun k => d.chartTransition (phi k)
+          (x (phi k)) (y (phi k))) Jinf ∧
+      MapCInfConvergenceOnCompacts V
+        (fun k => d.chartTransition (phi k)
+          (y (phi k)) (x (phi k))) Jbarinf ∧
+      (∀ z ∈ U, Jinf z ∈ V → Jbarinf (Jinf z) = z) ∧
+      (∀ z ∈ V, Jbarinf z ∈ U → Jinf (Jbarinf z) = z) := by
+  have hJ : ∀ k, ContDiffOn Real (⊤ : ℕ∞)
+      (d.chartTransition k (x k) (y k)) U := by
+    intro k
+    let : TopologicalSpace (X.obj k).M := (X.obj k).topology
+    let : ChartedSpace H (X.obj k).M := (X.obj k).charted
+    let : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
+    let : T2Space (TangentBundle I (X.obj k).M) :=
+      (X.obj k).t2TangentBundle
+    have hovl' :
+        (d.chart k (x k)).OverlapOn (d.chart k (y k)) U := by
+      simpa only [SeqBallNormalChartData.chartOverlapOn] using hovlJ k
+    simpa only [SeqBallNormalChartData.chartTransition] using
+      (d.chart k (x k)).transition_smooth (d.chart k (y k)) hovl'
+  have hJbar : ∀ k, ContDiffOn Real (⊤ : ℕ∞)
+      (d.chartTransition k (y k) (x k)) V := by
+    intro k
+    let : TopologicalSpace (X.obj k).M := (X.obj k).topology
+    let : ChartedSpace H (X.obj k).M := (X.obj k).charted
+    let : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
+    let : T2Space (TangentBundle I (X.obj k).M) :=
+      (X.obj k).t2TangentBundle
+    have hovl' :
+        (d.chart k (y k)).OverlapOn (d.chart k (x k)) V := by
+      simpa only [SeqBallNormalChartData.chartOverlapOn] using hovlJbar k
+    simpa only [SeqBallNormalChartData.chartTransition] using
+      (d.chart k (y k)).transition_smooth (d.chart k (x k)) hovl'
+  apply exists_smooth_inverse_limit_subsequence_on hU hV
+    (fun k => d.chartTransition k (x k) (y k))
+    (fun k => d.chartTransition k (y k) (x k))
+    hJ hJbar
+  · exact d.trans_bounds_on hreal n x y U Va hU hVa hVanorm hxdist hydist
+      hVarad hovlJ hmapJ
+  · exact d.trans_bounds_on hreal n y x V Ua hV hUa hUanorm hydist hxdist
+      hUarad hovlJbar hmapJbar
+  · intro k z hz
+    let : TopologicalSpace (X.obj k).M := (X.obj k).topology
+    let : ChartedSpace H (X.obj k).M := (X.obj k).charted
+    let : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
+    let : T2Space (TangentBundle I (X.obj k).M) :=
+      (X.obj k).t2TangentBundle
+    have hovl' :
+        (d.chart k (x k)).OverlapOn (d.chart k (y k)) U := by
+      simpa only [SeqBallNormalChartData.chartOverlapOn] using hovlJ k
+    simpa only [SeqBallNormalChartData.chartTransition] using
+      (d.chart k (x k)).transition_cancel
+        (d.chart k (y k)) hovl' hz
+  · intro k z hz
+    let : TopologicalSpace (X.obj k).M := (X.obj k).topology
+    let : ChartedSpace H (X.obj k).M := (X.obj k).charted
+    let : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
+    let : T2Space (TangentBundle I (X.obj k).M) :=
+      (X.obj k).t2TangentBundle
+    have hovl' :
+        (d.chart k (y k)).OverlapOn (d.chart k (x k)) V := by
+      simpa only [SeqBallNormalChartData.chartOverlapOn] using hovlJbar k
+    simpa only [SeqBallNormalChartData.chartTransition] using
+      (d.chart k (y k)).transition_cancel
+        (d.chart k (x k)) hovl' hz
+
 end SeqBallNormalChartData
 
 end Staircase
