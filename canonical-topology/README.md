@@ -1,11 +1,15 @@
 # Local homology and global classes from coherent local generators
 
 This separate `PoincareLean` project contains a dependency-closed checkpoint of
-151 Poincare modules. It extends the recovered Chapter 35 source at commit
+154 Poincare modules. It extends the recovered Chapter 35 source at commit
 `b45bfa009368c8f5f531e10f4f5280e90079d6ad` and preserves its mathematical objects
 and `Poincare` namespaces. `Poincare.lean` imports every included leaf.
 
 The additions prove:
+
+- actual integral compactly supported cohomology as a module colimit, its
+  compact-space comparison, open-embedding extension and uniquely determined
+  cap maps with explicit representative and forgetful laws;
 
 - outward tangent orientations on the native unit sphere in every dimension,
   constructed from the actual tangent inclusion derivative and ambient volume
@@ -1307,3 +1311,30 @@ Source `1789415403088387390-topology-d59cc6b9` passed in 20.69 seconds with 335 
 Positive-dimensional outward homology normalization, the adjunction sign,
 general integral manifold duality and the missing frozen topology contract
 remain open. This checkpoint does not close the full topology suite.
+
+
+## Compactly supported cohomology and cap maps
+
+This 154-module checkpoint tracks 223 curated added public exports. The twenty
+new public declarations use actual integral relative cohomology, compact sets
+and Mathlib's ModuleCat colimit. Representatives, eventual-zero detection,
+descent and the forgetful map are explicit. For compact spaces the forgetful
+map is bijective in every degree, including zero and the empty space.
+
+Open-embedding excision supplies extension maps for compactly supported
+cohomology into Hausdorff spaces, with actual representative and forgetful
+squares and public identity and composition laws. A coherent family in actual
+relative homology determines a unique cap map to ordinary homology. For a
+family induced by an absolute class, this is ordinary cap after forgetting
+compact supports. These results do not assert cap bijectivity or general
+manifold Poincare duality.
+
+Source `1789418778428144132-topology-b70d689d` passed in 15.62 seconds with 477 guards and 46 signature/axiom pairs. Original imported `1789419477860964482-topology-d3393e9d` passed in 134.39 seconds with 1207 guards and 127 pairs. Portable `1789420070970770813-topology_checkpoint-07293782` passed in 96.63 seconds with 1503 guards and 427 pairs in Slurm 13879784. Unchanged-source build `1789419477997391095-topology_checkpoint-650f90d8` freshly compiled all 12 affected leaves and the portable root in 1:35.19, maximum RSS 2,012,168 KiB, with zero compilation diagnostics. Its duplicate-universe harness failure is retained as failed history; the repaired final harness above is the accepted strict result. All 393 preceding portable and 82 preceding original readback pairs are byte-identical. All 41 non-helper accepted source readbacks are byte-identical; the helper changes only its axiom declaration name. All 46 source readbacks agree with both imported checks modulo the exact seven private-name mappings, qualification and whitespace; ordered axioms are exact and standard-only, with two recorded private-name line-wrap changes. Strict source and stock declaration linters pass. All 150 preceding unedited leaves remain unchanged.
+
+The six external consumers cover a proper open interval, nonzero extension from
+a point into the integers, compact manifold generators, a nonzero sphere unit
+cap, degree-zero vanishing on the real line and the empty compact space.
+Open-embedding cap naturality, general integral manifold duality,
+positive-dimensional outward homology normalization, adjunction signs and the
+missing frozen topology contract remain open. Neither full theorem suite is
+claimed complete.

@@ -1,9 +1,9 @@
 {
-  "scope": "Dependency-closed 151-module checkpoint with actual outward tangent orientations on native unit spheres, orientation reversal, and actual outward normalization of the real zero-sphere boundary class in every fixed native chart. Earlier local integral cap bijections and global generators are retained. Positive-dimensional outward homology normalization, the adjunction sign, general integral manifold duality and the missing frozen suite remain open.",
+  "scope": "Dependency-closed 154-module checkpoint with actual integral compactly supported cohomology as a ModuleCat colimit, open-embedding pushforward with representative, forgetful, identity and composition laws, and uniquely determined cap maps for coherent relative homology families. Earlier local cap bijections, fundamental generators and outward orientations remain unchanged. General manifold duality, cap naturality under open embeddings, higher-dimensional outward normalization, adjunction signs and the missing frozen suite remain open.",
   "baseline_commit": "b45bfa009368c8f5f531e10f4f5280e90079d6ad",
   "baseline_ref": "refs/remotes/origin/codex/chapter35",
   "source_project": "PoincareLean",
-  "source_module_count": 151,
+  "source_module_count": 154,
   "roots": [
     "Poincare.Topology.Homology.RelativeMaps",
     "Poincare.Topology.Homology.RelativeHomeomorphism",
@@ -51,7 +51,10 @@
     "Poincare.Topology.Homology.OneDimensionalLocalCapDuality",
     "Poincare.Topology.Homology.ManifoldLocalCapDuality",
     "Poincare.Topology.Manifold.SphereOrientation",
-    "Poincare.Topology.Homology.ZeroSphereOrientation"
+    "Poincare.Topology.Homology.ZeroSphereOrientation",
+    "Poincare.Topology.Homology.CompactlySupportedCohomology.Defs",
+    "Poincare.Topology.Homology.CompactlySupportedCohomology.Cap",
+    "Poincare.Topology.Homology.CompactlySupportedCohomology.OpenEmbedding"
   ],
   "changed_sources": [
     {
@@ -89,7 +92,7 @@
       "module": "Poincare.Topology.Homology.CochainExcision",
       "path": "Poincare/Topology/Homology/CochainExcision.lean",
       "baseline_sha256": null,
-      "sha256": "112456b0bbcecf39a68ec6d676951267ec8876b6c9ccde87017517d937644e6e"
+      "sha256": "58f4fa226c586651dee9707878a62618b8872837c35bd4d657e0e273b7dc210d"
     },
     {
       "module": "Poincare.Topology.Homology.CochainHomotopy",
@@ -502,6 +505,27 @@
       "baseline_sha256": null,
       "sha256": "eb07e06bf93957e2c756fe3b1dff523bf12b1c98fc824d4122bf3fc9d9f4a799",
       "provenance": "New original proof that the actual real zero-sphere boundary class has the outward sign in every fixed native chart, using the original point restriction, chart excision and coordinate translation maps."
+    },
+    {
+      "module": "Poincare.Topology.Homology.CompactlySupportedCohomology.Defs",
+      "path": "Poincare/Topology/Homology/CompactlySupportedCohomology/Defs.lean",
+      "baseline_sha256": null,
+      "sha256": "bc4b6d7b22ef64f25536cea94d60e6da620a90f1c1d5e3053810e8d822ca2ff5",
+      "provenance": "New original integral compactly supported singular cohomology as the actual Mathlib ModuleCat direct-limit colimit, with canonical representatives, descent, forgetful map and compact-space comparison; the empty-set comparison reuses the existing relative cohomology equivalence."
+    },
+    {
+      "module": "Poincare.Topology.Homology.CompactlySupportedCohomology.Cap",
+      "path": "Poincare/Topology/Homology/CompactlySupportedCohomology/Cap.lean",
+      "baseline_sha256": null,
+      "sha256": "cd04fbb7858c3e6744dcbc5e5cde9e5198a84a68010b9cb4cdafd1c4014c2d69",
+      "provenance": "New original construction of the unique cap map determined by a coherent family in actual relative homology, with the absolute-class specialization identified with ordinary cap after forgetting compact supports."
+    },
+    {
+      "module": "Poincare.Topology.Homology.CompactlySupportedCohomology.OpenEmbedding",
+      "path": "Poincare/Topology/Homology/CompactlySupportedCohomology/OpenEmbedding.lean",
+      "baseline_sha256": null,
+      "sha256": "b5315514826abc3b5f08809630d9aa5dd2e37af9f6089f070ccfd0c5a113adc2",
+      "provenance": "New original extension of actual compactly supported cohomology through an open embedding into a Hausdorff space, obtained from existing pair cohomology excision and retaining representative, forgetful, identity and composition laws."
     }
   ],
   "poincare_sources": [
@@ -630,7 +654,7 @@
       "module": "Poincare.Topology.Homology.CochainExcision",
       "path": "Poincare/Topology/Homology/CochainExcision.lean",
       "baseline_sha256": null,
-      "sha256": "112456b0bbcecf39a68ec6d676951267ec8876b6c9ccde87017517d937644e6e"
+      "sha256": "58f4fa226c586651dee9707878a62618b8872837c35bd4d657e0e273b7dc210d"
     },
     {
       "module": "Poincare.Topology.Homology.CochainHomotopy",
@@ -1433,13 +1457,34 @@
       "baseline_sha256": null,
       "sha256": "eb07e06bf93957e2c756fe3b1dff523bf12b1c98fc824d4122bf3fc9d9f4a799",
       "provenance": "New original proof that the actual real zero-sphere boundary class has the outward sign in every fixed native chart, using the original point restriction, chart excision and coordinate translation maps."
+    },
+    {
+      "module": "Poincare.Topology.Homology.CompactlySupportedCohomology.Defs",
+      "path": "Poincare/Topology/Homology/CompactlySupportedCohomology/Defs.lean",
+      "baseline_sha256": null,
+      "sha256": "bc4b6d7b22ef64f25536cea94d60e6da620a90f1c1d5e3053810e8d822ca2ff5",
+      "provenance": "New original integral compactly supported singular cohomology as the actual Mathlib ModuleCat direct-limit colimit, with canonical representatives, descent, forgetful map and compact-space comparison; the empty-set comparison reuses the existing relative cohomology equivalence."
+    },
+    {
+      "module": "Poincare.Topology.Homology.CompactlySupportedCohomology.Cap",
+      "path": "Poincare/Topology/Homology/CompactlySupportedCohomology/Cap.lean",
+      "baseline_sha256": null,
+      "sha256": "cd04fbb7858c3e6744dcbc5e5cde9e5198a84a68010b9cb4cdafd1c4014c2d69",
+      "provenance": "New original construction of the unique cap map determined by a coherent family in actual relative homology, with the absolute-class specialization identified with ordinary cap after forgetting compact supports."
+    },
+    {
+      "module": "Poincare.Topology.Homology.CompactlySupportedCohomology.OpenEmbedding",
+      "path": "Poincare/Topology/Homology/CompactlySupportedCohomology/OpenEmbedding.lean",
+      "baseline_sha256": null,
+      "sha256": "b5315514826abc3b5f08809630d9aa5dd2e37af9f6089f070ccfd0c5a113adc2",
+      "provenance": "New original extension of actual compactly supported cohomology through an open embedding into a Hausdorff space, obtained from existing pair cohomology excision and retaining representative, forgetful, identity and composition laws."
     }
   ],
   "aggregate": {
     "path": "Poincare.lean",
     "baseline_sha256": "99c3c8e47c19f60ee50a7e0f377e59138cf4ff33ebd4e26530d3c2b7cd47d452",
-    "sha256": "1f3ca431a2a8e696544c24fc10dd44ea98716b37b0222c680b887a908bb4ad38",
-    "change": "Flat 151-leaf checkpoint aggregate; recovered project remains separate"
+    "sha256": "c490e2e5c9ee4f8750c23571ccf0c647172dba7526e49e5193d16a377575aba4",
+    "change": "Flat 154-leaf checkpoint aggregate; recovered project remains separate"
   },
   "configuration": [
     {
@@ -1467,6 +1512,7 @@
     "Mathlib.Algebra.BigOperators.GroupWithZero.Finset",
     "Mathlib.Algebra.Category.ModuleCat.Abelian",
     "Mathlib.Algebra.Category.ModuleCat.Colimits",
+    "Mathlib.Algebra.Category.ModuleCat.Limits",
     "Mathlib.Algebra.Category.ModuleCat.Projective",
     "Mathlib.Algebra.Exact.Basic",
     "Mathlib.Algebra.Group.Equiv.Basic",
@@ -1569,7 +1615,8 @@
     "Mathlib.Topology.MetricSpace.Pseudo.Lemmas",
     "Mathlib.Topology.OpenPartialHomeomorph.Continuity",
     "Mathlib.Topology.Path",
-    "Mathlib.Topology.Separation.Hausdorff"
+    "Mathlib.Topology.Separation.Hausdorff",
+    "Mathlib.Topology.Sets.Compacts"
   ],
   "differential_geometry_imports": [],
   "third_party_license_sha256": "b40930bbcf80744c86c46a12bc9da056641d722716c378f5659b9e555ef833e1",
@@ -1777,7 +1824,27 @@
     "Poincare.Topology.sphereOutwardOrientation_neg",
     "Poincare.Topology.sphereOutwardOrientation_real_positive",
     "Poincare.Topology.sphereOutwardOrientation_real_negative",
-    "Poincare.Topology.zero_sphere_boundary_class_outward_chart_maps"
+    "Poincare.Topology.zero_sphere_boundary_class_outward_chart_maps",
+    "Poincare.Topology.integralCompactlySupportedCohomology",
+    "Poincare.Topology.integralRelativeToCompactlySupportedCohomology",
+    "Poincare.Topology.integralRelativeToCompactlySupportedCohomology_map",
+    "Poincare.Topology.integralCompactlySupportedCohomology_exists_representative",
+    "Poincare.Topology.integralRelativeToCompactlySupportedCohomology_eq_zero_iff",
+    "Poincare.Topology.integralCompactlySupportedCohomology_hom_ext",
+    "Poincare.Topology.integralCompactlySupportedCohomologyDesc",
+    "Poincare.Topology.integralCompactlySupportedCohomologyDesc_representative",
+    "Poincare.Topology.integralCompactlySupportedToSingularCohomology",
+    "Poincare.Topology.integralCompactlySupportedToSingularCohomology_representative",
+    "Poincare.Topology.integralCompactlySupportedToSingularCohomology_bijective",
+    "Poincare.Topology.exists_unique_integralCompactlySupportedCohomology_cap",
+    "Poincare.Topology.exists_unique_integralCompactlySupportedCohomology_cap_of_absolute",
+    "Poincare.Topology.integralCompactlySupportedCohomologyPushforward",
+    "Poincare.Topology.integralCompactlySupportedCohomologyPushforward_relative",
+    "Poincare.Topology.integralCompactlySupportedCohomologyPushforward_forget",
+    "Poincare.Topology.integralCompactlySupportedCohomologyPushforward_id",
+    "Poincare.Topology.integralCompactlySupportedCohomologyPushforward_comp",
+    "Poincare.Topology.integralRelativeCohomologyMap_bijective_of_isOpenEmbedding_of_isClosed_image",
+    "Poincare.Topology.integralRelativeCohomologyMap_bijective_of_isOpenEmbedding"
   ],
   "historical_authorities": [
     {
@@ -1915,29 +1982,22 @@
     "full_topology_suite_accepted": false
   },
   "validation": {
-    "status": "passed for the selected 151-module checkpoint; full topology suite incomplete",
+    "status": "passed for the selected 154-module checkpoint; full topology suite incomplete",
     "date": "2026-09-14",
     "slurm_job": "13879784",
     "host": "della-h14n10",
-    "request_id": "1789415899102782476-topology_checkpoint-acf37420",
-    "input_sha256": "159ecea9482a76abfcc883436ec9f5ebd70532db6cfb30624fdb576930da5e17",
-    "result_sha256": "227447021becdb1cae796ad2d6cb7cdf1e680334b420f37c0e3a09ed8f3fdf28",
-    "artifact_log_sha256": "e7bb3a7961945396cc3f4e121f74994a0c3ba63f2430e39536f3e7496c437b4e",
-    "source_config_harness_hash_guards": 1427,
+    "request_id": "1789420070970770813-topology_checkpoint-07293782",
+    "input_sha256": "e93f83a8f17cecf7ffa00fd50084cb83c9f76bb5f71d3c46b9704acdbfd5b528",
+    "result_sha256": "00249f38032a855faefdd7b3f209009534b30448bf136e5ab5405e670c5f87f2",
+    "artifact_log_sha256": "53b9a0cdab37d4e557f9019ee9739a552da8832f1f7bf4e736ad10ec9dc7470b",
+    "source_config_harness_hash_guards": 1503,
     "freshly_built_modules": [
-      "Poincare.Topology.Manifold.SphereOrientation",
-      "Poincare.Topology.Homology.RelativeZero",
-      "Poincare.Topology.Homology.LocalCharts",
-      "Poincare.Topology.Homology.ZeroSphereOrientation",
-      "Poincare.Topology.Homology.LocalBallHomology",
-      "Poincare.Topology.Homology.LocalCompactHomology",
-      "Poincare.Topology.Homology.LocalLinearMaps",
-      "Poincare.Topology.Homology.LocalDerivativeComparison",
-      "Poincare.Topology.Homology.EuclideanLocalTop",
-      "Poincare.Topology.Homology.EuclideanLocalVanishing",
-      "Poincare.Topology.Homology.LocalOrientation",
-      "Poincare.Topology.Homology.CompactVanishing",
-      "Poincare.Topology.Homology.ManifoldCompactHomology",
+      "Poincare.Topology.Homology.CompactlySupportedCohomology.Defs",
+      "Poincare.Topology.Homology.CompactlySupportedCohomology.Cap",
+      "Poincare.Topology.Homology.CochainExcision",
+      "Poincare.Topology.Homology.CompactlySupportedCohomology.OpenEmbedding",
+      "Poincare.Topology.Homology.CohomologyContractibleCover",
+      "Poincare.Topology.Homology.CapContractibleCover",
       "Poincare.Topology.Homology.SphereCohomologyVanishing",
       "Poincare.Topology.Homology.EuclideanLocalCohomologyVanishing",
       "Poincare.Topology.Homology.SphereCapDuality",
@@ -1947,16 +2007,16 @@
       "Poincare"
     ],
     "root_build": "lake --no-cache --iofail build Poincare",
-    "fresh_build_scope": "All 19 affected leaves and portable root freshly compiled in 2:46.11, RSS 2835528 KiB, zero diagnostics. All 147 preceding unedited leaves retain exact bytes; unchanged leaves outside the affected closure retain their previous compilation evidence.",
-    "exact_public_exports": 203,
-    "public_and_consumer_signature_axiom_pairs": 393,
+    "fresh_build_scope": "Unchanged-source build 1789419477997391095-topology_checkpoint-650f90d8: all 12 affected leaves and portable root freshly compiled in 1:35.19, RSS 2012168 KiB, zero diagnostics. All 150 preceding unedited leaves retain exact bytes; unchanged leaves outside the affected closure retain their previous compilation evidence.",
+    "exact_public_exports": 223,
+    "public_and_consumer_signature_axiom_pairs": 427,
     "linters": [
       "unusedArguments",
       "simpNF",
       "synTaut",
       "checkType"
     ],
-    "linter_scope": "All imported Poincare declarations and current consumers, including private declarations",
+    "linter_scope": "Complete declarations of the 12 changed or affected modules plus all current consumers, including private and generated declarations, selected once through the stock module-prefix API",
     "defLemma": "Unavailable in the pinned Mathlib; source declaration-kind checks retained.",
     "allowed_transitive_axioms": [
       "propext",
@@ -1964,34 +2024,27 @@
       "Quot.sound"
     ],
     "unexpected_diagnostics": 0,
-    "elapsed_seconds": 266.69274616241455,
-    "peak_summed_rss_bytes": 3537391616,
+    "elapsed_seconds": 96.63303470611572,
+    "peak_summed_rss_bytes": 4032737280,
     "full_topology_suite_accepted": false,
     "consumer_probes": [
-      "All 380 preceding portable and 66 preceding original readback pairs are byte-identical",
-      "Nine new public interfaces and three actual consumers agree with the accepted source types and standard-only axioms",
-      "Outward sphere orientation uses the actual tangent inclusion derivative and contracted ambient volume form",
-      "On the real zero-sphere, the actual boundary class has the outward sign in every fixed native chart",
-      "The closed-ball connecting class maps to [+1] minus [-1] through the actual radial map",
-      "The actual positive chart image and zero-dimensional model vertex are nonzero"
+      "All 393 preceding portable and 82 preceding original readback pairs are byte-identical",
+      "All 41 non-helper accepted source readbacks are byte-identical; the empty helper changes only its axiom declaration name",
+      "All 46 source/public/private/consumer readbacks agree through exact private names and qualification/whitespace only",
+      "Actual compact-support colimit representatives, descent and compact/empty comparison",
+      "Proper interval excision and nonzero point-to-integers open extension",
+      "Actual global manifold generator, nonzero sphere unit cap and real-line degree-zero vanishing"
     ],
     "parser_sha256": "d5596498ac375c6e1e72738d49070e3f89a692cda36f2c1397add3a2ade6cbaf",
     "artifact_build_evidence": {
-      "sha256": "e7bb3a7961945396cc3f4e121f74994a0c3ba63f2430e39536f3e7496c437b4e",
+      "sha256": "53b9a0cdab37d4e557f9019ee9739a552da8832f1f7bf4e736ad10ec9dc7470b",
       "freshly_built_modules": [
-        "Poincare.Topology.Manifold.SphereOrientation",
-        "Poincare.Topology.Homology.RelativeZero",
-        "Poincare.Topology.Homology.LocalCharts",
-        "Poincare.Topology.Homology.ZeroSphereOrientation",
-        "Poincare.Topology.Homology.LocalBallHomology",
-        "Poincare.Topology.Homology.LocalCompactHomology",
-        "Poincare.Topology.Homology.LocalLinearMaps",
-        "Poincare.Topology.Homology.LocalDerivativeComparison",
-        "Poincare.Topology.Homology.EuclideanLocalTop",
-        "Poincare.Topology.Homology.EuclideanLocalVanishing",
-        "Poincare.Topology.Homology.LocalOrientation",
-        "Poincare.Topology.Homology.CompactVanishing",
-        "Poincare.Topology.Homology.ManifoldCompactHomology",
+        "Poincare.Topology.Homology.CompactlySupportedCohomology.Defs",
+        "Poincare.Topology.Homology.CompactlySupportedCohomology.Cap",
+        "Poincare.Topology.Homology.CochainExcision",
+        "Poincare.Topology.Homology.CompactlySupportedCohomology.OpenEmbedding",
+        "Poincare.Topology.Homology.CohomologyContractibleCover",
+        "Poincare.Topology.Homology.CapContractibleCover",
         "Poincare.Topology.Homology.SphereCohomologyVanishing",
         "Poincare.Topology.Homology.EuclideanLocalCohomologyVanishing",
         "Poincare.Topology.Homology.SphereCapDuality",
@@ -2000,8 +2053,10 @@
         "Poincare.Topology.Homology.ManifoldFundamentalClass",
         "Poincare"
       ],
-      "elapsed": "2:46.11",
-      "rss_kib": 2835528
+      "elapsed": "1:35.19",
+      "rss_kib": 2012168,
+      "request_id": "1789419477997391095-topology_checkpoint-650f90d8",
+      "evidence_scope": "Fresh unchanged-source compilation only; its failed harness is not accepted proof evidence"
     }
   },
   "previous_linear_sign_checkpoint_validation": {
@@ -4976,5 +5031,145 @@
     "old_portable_pairs_unchanged": 380,
     "comparison": "Old readbacks byte-identical; shared types agree modulo only qualification and whitespace; axiom suffixes exact",
     "historical_guard_mapping_sha256": "a11f6f71c616df8bedf4d6202e315a1f432af4269d05122787babe085ddcf26d"
+  },
+  "previous_compactly_supported_cohomology_validation": {
+    "status": "passed for the selected 151-module checkpoint; full topology suite incomplete",
+    "date": "2026-09-14",
+    "slurm_job": "13879784",
+    "host": "della-h14n10",
+    "request_id": "1789415899102782476-topology_checkpoint-acf37420",
+    "input_sha256": "159ecea9482a76abfcc883436ec9f5ebd70532db6cfb30624fdb576930da5e17",
+    "result_sha256": "227447021becdb1cae796ad2d6cb7cdf1e680334b420f37c0e3a09ed8f3fdf28",
+    "artifact_log_sha256": "e7bb3a7961945396cc3f4e121f74994a0c3ba63f2430e39536f3e7496c437b4e",
+    "source_config_harness_hash_guards": 1427,
+    "freshly_built_modules": [
+      "Poincare.Topology.Manifold.SphereOrientation",
+      "Poincare.Topology.Homology.RelativeZero",
+      "Poincare.Topology.Homology.LocalCharts",
+      "Poincare.Topology.Homology.ZeroSphereOrientation",
+      "Poincare.Topology.Homology.LocalBallHomology",
+      "Poincare.Topology.Homology.LocalCompactHomology",
+      "Poincare.Topology.Homology.LocalLinearMaps",
+      "Poincare.Topology.Homology.LocalDerivativeComparison",
+      "Poincare.Topology.Homology.EuclideanLocalTop",
+      "Poincare.Topology.Homology.EuclideanLocalVanishing",
+      "Poincare.Topology.Homology.LocalOrientation",
+      "Poincare.Topology.Homology.CompactVanishing",
+      "Poincare.Topology.Homology.ManifoldCompactHomology",
+      "Poincare.Topology.Homology.SphereCohomologyVanishing",
+      "Poincare.Topology.Homology.EuclideanLocalCohomologyVanishing",
+      "Poincare.Topology.Homology.SphereCapDuality",
+      "Poincare.Topology.Homology.EuclideanLocalCapDuality",
+      "Poincare.Topology.Homology.ManifoldLocalCapDuality",
+      "Poincare.Topology.Homology.ManifoldFundamentalClass",
+      "Poincare"
+    ],
+    "root_build": "lake --no-cache --iofail build Poincare",
+    "fresh_build_scope": "All 19 affected leaves and portable root freshly compiled in 2:46.11, RSS 2835528 KiB, zero diagnostics. All 147 preceding unedited leaves retain exact bytes; unchanged leaves outside the affected closure retain their previous compilation evidence.",
+    "exact_public_exports": 203,
+    "public_and_consumer_signature_axiom_pairs": 393,
+    "linters": [
+      "unusedArguments",
+      "simpNF",
+      "synTaut",
+      "checkType"
+    ],
+    "linter_scope": "All imported Poincare declarations and current consumers, including private declarations",
+    "defLemma": "Unavailable in the pinned Mathlib; source declaration-kind checks retained.",
+    "allowed_transitive_axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "unexpected_diagnostics": 0,
+    "elapsed_seconds": 266.69274616241455,
+    "peak_summed_rss_bytes": 3537391616,
+    "full_topology_suite_accepted": false,
+    "consumer_probes": [
+      "All 380 preceding portable and 66 preceding original readback pairs are byte-identical",
+      "Nine new public interfaces and three actual consumers agree with the accepted source types and standard-only axioms",
+      "Outward sphere orientation uses the actual tangent inclusion derivative and contracted ambient volume form",
+      "On the real zero-sphere, the actual boundary class has the outward sign in every fixed native chart",
+      "The closed-ball connecting class maps to [+1] minus [-1] through the actual radial map",
+      "The actual positive chart image and zero-dimensional model vertex are nonzero"
+    ],
+    "parser_sha256": "d5596498ac375c6e1e72738d49070e3f89a692cda36f2c1397add3a2ade6cbaf",
+    "artifact_build_evidence": {
+      "sha256": "e7bb3a7961945396cc3f4e121f74994a0c3ba63f2430e39536f3e7496c437b4e",
+      "freshly_built_modules": [
+        "Poincare.Topology.Manifold.SphereOrientation",
+        "Poincare.Topology.Homology.RelativeZero",
+        "Poincare.Topology.Homology.LocalCharts",
+        "Poincare.Topology.Homology.ZeroSphereOrientation",
+        "Poincare.Topology.Homology.LocalBallHomology",
+        "Poincare.Topology.Homology.LocalCompactHomology",
+        "Poincare.Topology.Homology.LocalLinearMaps",
+        "Poincare.Topology.Homology.LocalDerivativeComparison",
+        "Poincare.Topology.Homology.EuclideanLocalTop",
+        "Poincare.Topology.Homology.EuclideanLocalVanishing",
+        "Poincare.Topology.Homology.LocalOrientation",
+        "Poincare.Topology.Homology.CompactVanishing",
+        "Poincare.Topology.Homology.ManifoldCompactHomology",
+        "Poincare.Topology.Homology.SphereCohomologyVanishing",
+        "Poincare.Topology.Homology.EuclideanLocalCohomologyVanishing",
+        "Poincare.Topology.Homology.SphereCapDuality",
+        "Poincare.Topology.Homology.EuclideanLocalCapDuality",
+        "Poincare.Topology.Homology.ManifoldLocalCapDuality",
+        "Poincare.Topology.Homology.ManifoldFundamentalClass",
+        "Poincare"
+      ],
+      "elapsed": "2:46.11",
+      "rss_kib": 2835528
+    }
+  },
+  "original_compactly_supported_cohomology_validation": {
+    "request_id": "1789419477860964482-topology-d3393e9d",
+    "input_sha256": "fc6fd9692a46090b652b7af673a2842d8304c6cacdda6f82ddc74f928d337baa",
+    "result_sha256": "8026ab09be925127fed9e0048b2efd83886bb2d1860116b16706bd613d77e33b",
+    "elapsed_seconds": 134.39157962799072,
+    "slurm_job": "13879784",
+    "host": "della-h14n10",
+    "parser_sha256": "d5596498ac375c6e1e72738d49070e3f89a692cda36f2c1397add3a2ade6cbaf",
+    "source_guards": 1207,
+    "signature_axiom_pairs": 127,
+    "fresh_artifacts": {
+      "sha256": "99c5f641282b346ef8ff1c50f86f011068f26acee9753eceb24c8b96e475fb46",
+      "freshly_built_modules": [
+        "Poincare.Topology.Homology.CompactlySupportedCohomology.Defs",
+        "Poincare.Topology.Homology.CompactlySupportedCohomology.Cap",
+        "Poincare.Topology.Homology.CochainExcision",
+        "Poincare.Topology.Homology.CompactlySupportedCohomology.OpenEmbedding",
+        "Poincare.Topology.Homology.CohomologyContractibleCover",
+        "Poincare.Topology.Homology.CapContractibleCover",
+        "Poincare.Topology.Homology.SphereCohomologyVanishing",
+        "Poincare.Topology.Homology.EuclideanLocalCohomologyVanishing",
+        "Poincare.Topology.Homology.SphereCapDuality",
+        "Poincare.Topology.Homology.EuclideanLocalCapDuality",
+        "Poincare.Topology.Homology.ManifoldLocalCapDuality",
+        "Poincare.Topology.Homology.ManifoldFundamentalClass"
+      ],
+      "elapsed": "1:27.27",
+      "rss_kib": 2022904
+    },
+    "source": {
+      "request_id": "1789418778428144132-topology-b70d689d",
+      "input_sha256": "deffbc3dd41820f454041d6f275088f50dfa4895cb226ea9f81b5c09e91b79d5",
+      "result_sha256": "4527d5cad250fbbb43bde20458b333a49a02dd9a870cf3d1a53a20df373052e9",
+      "elapsed_seconds": 15.61845588684082,
+      "slurm_job": "13879784",
+      "host": "della-h14n10",
+      "parser_sha256": "d5596498ac375c6e1e72738d49070e3f89a692cda36f2c1397add3a2ade6cbaf",
+      "source_guards": 477,
+      "signature_axiom_pairs": 46
+    },
+    "source_shared_readback_count": 46,
+    "original_portable_shared_readback_count": 127,
+    "old_original_pairs_unchanged": 82,
+    "old_portable_pairs_unchanged": 393,
+    "comparison": "Old imported readbacks byte-identical; source and shared types agree modulo exact seven private-name mappings and qualification/whitespace only; ordered axiom lists exact with two explicitly allowed private-name line-wrap changes",
+    "source_regression_pairs": 42,
+    "source_regression_byte_identical_non_helper_pairs": 41,
+    "production_guard_mapping_sha256": "11d3c69a6d766413ea7542dd82140ae0d235ea3217bab09be2a00b47288af3b1",
+    "private_readback_mapping_sha256": "ce686fb782b0659011f0ff697d672ff4ad622b7290d2a15938014ea339d743b6"
   }
 }
