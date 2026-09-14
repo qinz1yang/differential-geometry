@@ -134,6 +134,19 @@ theorem nonempty_eventMasterFlow_of_finalSlab_eq_closedPrefix (H : RetainedCoreH
   exists_eventMasterFlow_of_appendEventCompatible H E hne
     (H.appendEventCompatible_of_finalSlab_eq_closedPrefix E hhor hcap)
 
+theorem appendEvent_isPrefixOf_of_finalSlab_eq_closedPrefix (H : RetainedCoreHistory P)
+    {Q : OrientedThreeStage.{u}} {s : ℝ}
+    (hs : H.time (Fin.last H.eventCount) < s)
+    (E : RetainedCoreEvent (H.stage (Fin.last H.eventCount)) Q
+      (H.time (Fin.last H.eventCount)) s)
+    (hinit : E.toMetricCutCapEvent.incoming.flow.base.metric (H.time (Fin.last H.eventCount)) =
+      H.initialMetric (Fin.last H.eventCount)) (hhor : H.horizon < s)
+    (hcap : ∀ hh : H.time (Fin.last H.eventCount) < H.horizon,
+      H.finalSlab hh = E.incoming.closedPrefix H.horizon hh hhor) :
+    (H.toHistory).IsPrefixOf (H.appendEvent hs E hinit).toHistory :=
+  appendEvent_isPrefixOf H hs E hinit hhor
+    (H.appendEventCompatible_of_finalSlab_eq_closedPrefix E hhor hcap)
+
 end RetainedCoreHistory
 
 def HasExtinctCoreEvent (P : OrientedThreeStage.{u}) (g : P.Metric) : Prop :=
