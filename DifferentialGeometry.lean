@@ -3177,6 +3177,7 @@ import DifferentialGeometry.Topology.Diffeomorph.Convex
 import DifferentialGeometry.Topology.Diffeomorph.Radial
 import DifferentialGeometry.Topology.Diffeomorph.SphereIsotopy
 import DifferentialGeometry.Topology.Diffeomorph.DisjointSupport
+import DifferentialGeometry.Topology.Embedding.Derivative
 import DifferentialGeometry.Topology.Embedding.Diffeomorph
 import DifferentialGeometry.Topology.Embedding.Convex
 import DifferentialGeometry.Topology.Embedding.Radial
