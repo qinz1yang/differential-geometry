@@ -9949,3 +9949,6 @@ import DifferentialGeometry.Topology.Connected.ComponentIn
 import DifferentialGeometry.Topology.VanKampen.TwoSidedCollarRestriction
 import DifferentialGeometry.Topology.VanKampen.TwoSidedCollarSimplyConnected
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.CurvatureDerivativeBounds
+import DifferentialGeometry.Analysis.FunctionalAnalysis.PiLpMap
+import DifferentialGeometry.Analysis.Integration.Lp.PiLp
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.H1.FiniteProduct
