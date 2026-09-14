@@ -6750,6 +6750,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.Background
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.Backward
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.BallDiffeomorph
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.BasedTransport
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CapAmbientDerivatives
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CapPersistence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CappingCover
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChartOrientation
