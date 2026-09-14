@@ -5214,6 +5214,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborho
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.AncientExtensionLocalInputs
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.AncientExtensionReduction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.AncientExtensionTerminalInputs
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.AncientLimitScalarBarrier
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.AncientModelClassification
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.BackgroundJetTransfer
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.BadPointSelection
@@ -5840,6 +5841,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Stai
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.StaircaseEngineAssembly
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.StaircaseEngineInterface
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.StaircaseMetricBoundsAssembly
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.StaircasePhaseChartBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.StaircaseRadiusProfile
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.StaircaseStageComparisonReplay
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.StaircaseStageRegularityReplay
@@ -7985,6 +7987,7 @@ import DifferentialGeometry.Topology.Algebra.Group.AmalgamatedProduct
 import DifferentialGeometry.Topology.Algebra.Group.FiniteFreeProductInduction
 import DifferentialGeometry.Topology.Algebra.Group.FiniteTorsionFree
 import DifferentialGeometry.Topology.Algebra.Group.FinitelyGeneratedFundamentalGroup
+import DifferentialGeometry.Topology.Algebra.Group.FinitelyGeneratedFundamentalGroupRationalHurewicz
 import DifferentialGeometry.Topology.Algebra.Group.FreeProduct
 import DifferentialGeometry.Topology.Algebra.Group.FreeProductAssociativity
 import DifferentialGeometry.Topology.Algebra.Group.PoincareStandard
@@ -8425,6 +8428,7 @@ import DifferentialGeometry.Topology.Homology.SphereHomologyVanishing
 import DifferentialGeometry.Topology.Homology.SphereHurewicz
 import DifferentialGeometry.Topology.Homology.SpherePuncture
 import DifferentialGeometry.Topology.Homology.SphereRank
+import DifferentialGeometry.Topology.Homology.SphereThreeTwoBallGluing
 import DifferentialGeometry.Topology.Homology.SphereTopHomology
 import DifferentialGeometry.Topology.Homology.SquareBoundaryDegree
 import DifferentialGeometry.Topology.Homology.SquareBoundaryPunctured
