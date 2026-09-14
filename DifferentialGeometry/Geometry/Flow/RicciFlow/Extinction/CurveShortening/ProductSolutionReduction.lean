@@ -34,6 +34,14 @@ def CoverSmoothLift (A : QuotientProductAtlas I M) [T2Space M] [I.Boundaryless]
   letI := A.smoothManifold
   c.map.SmoothOn (I := I.prod 𝓘(ℝ, ℝ)) J → c.SmoothOn (I := I) J
 
+omit [FiniteDimensional ℝ E] [CompleteSpace E] in
+theorem CoverSmoothLift_empty (A : QuotientProductAtlas I M) [T2Space M] [I.Boundaryless]
+    (c : ProductCurve M) : CoverSmoothLift A c ∅ := by
+  let := A.charts
+  let := A.smoothManifold
+  intro _
+  exact ⟨fun p hp => absurd hp.2 (by simp), fun p hp => absurd hp.2 (by simp)⟩
+
 omit [CompleteSpace E] in
 theorem map_isSolutionOn_of_frontiers
     (A : QuotientProductAtlas I M) [T2Space M] [I.Boundaryless]
@@ -78,6 +86,34 @@ theorem isSolutionOn_of_map_isSolutionOn_of_coverSmoothLift
     (c.map_curvatureVector_eq A g lambda hlambda hc hU x t ht).trans
       (hm.equation x t ht).symm
   exact (A.cover_derivative_bijective (c.coverLift x t)).injective (h1.trans h2.symm)
+
+omit [CompleteSpace E] [FiniteDimensional ℝ E] in
+theorem Field.smoothOn_X (c : ProductCurve M) {J : Set ℝ} (hc : c.SmoothOn (I := I) J) :
+    (c.X (I := I)).SmoothOn (I := I) J := by
+  have hjoint : ContMDiffOn 𝓘(ℝ, ℝ × ℝ) (I.prod 𝓘(ℝ, ℝ)) ∞
+      (fun p : ℝ × ℝ => c.coverLift p.1 p.2) ((univ : Set ℝ) ×ˢ J) := by
+    intro p hp
+    exact (hc.1 p hp).prodMk (hc.2 p hp).contMDiffWithinAt
+  have hcover : ContMDiffOn (𝓘(ℝ, ℝ).prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, ℝ)) ∞
+      (fun p : ℝ × ℝ => c.coverLift p.1 p.2) ((univ : Set ℝ) ×ˢ J) := by
+    have h := hjoint
+    rw [modelWithCornersSelf_prod, ← chartedSpaceSelf_prod] at h
+    exact h
+  have hj := ContMDiffOn.time_mfderivWithin (I := 𝓘(ℝ, ℝ)) (I' := I.prod 𝓘(ℝ, ℝ))
+    (N := M × ℝ) (γ := fun x t => c.coverLift x t) (s := (univ : Set ℝ)) (u := J)
+    (n := ∞) (m := ∞) hcover uniqueDiffOn_univ le_rfl
+  intro t ht
+  have hslice : ContMDiffOn 𝓘(ℝ, ℝ) (I.prod 𝓘(ℝ, ℝ)).tangent ∞
+      (fun x : ℝ => (⟨c.coverLift x t, mfderivWithin 𝓘(ℝ, ℝ) (I.prod 𝓘(ℝ, ℝ))
+        (fun y => c.coverLift y t) univ x (1 : ℝ)⟩ :
+        TangentBundle (I.prod 𝓘(ℝ, ℝ)) (M × ℝ))) univ :=
+    hj.comp (contMDiffOn_id.prodMk contMDiffOn_const) (fun x _ => ⟨mem_univ x, ht⟩)
+  exact contMDiffOn_univ.mp (hslice.congr (fun x _ => by
+    have hx : mfderivWithin 𝓘(ℝ, ℝ) (I.prod 𝓘(ℝ, ℝ)) (fun y => c.coverLift y t) univ x
+        (1 : ℝ) = c.X (I := I) x t := by
+      rw [mfderivWithin_univ]
+      exact c.cover_spatial_derivative (I := I) J hc x t ht
+    rw [hx]))
 
 omit [CompleteSpace E] in
 theorem product_solution_iff_of_frontiers
