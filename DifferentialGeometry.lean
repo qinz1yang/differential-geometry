@@ -6915,6 +6915,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.RetainedCor
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.RetainedCoreUniformRecords
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.RetainedCoreExtinctionTimeBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.RfsHomotopyGroupsConditional
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.RfsHomotopyGroupsCriterion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.RfsHomotopyGroupsHypothesis
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.RfsHypothesisProducer
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.RfsTopologyFrontier
