@@ -267,5 +267,105 @@ theorem curvatureDerivative_bernstein_bound_of_curvatureSq_le_div
   dsimp only [Λ, τ]
   ring
 
+theorem bernstein_bound_of_coupled_scalar_inequalities
+    (g : ℝ → SmoothRiemannianMetric I M) (hsu : s < u)
+    (c : CurveMap M) (hc : c.SmoothOn (I := I) (Icc s u)) (hi : c.ImmersedOn (I := I) (Icc s u))
+    (f0 f1 : ℝ → ℝ → ℝ)
+    (hf0 : ContDiffOn ℝ ∞ (fun p : ℝ × ℝ => f0 p.1 p.2) (univ ×ˢ Icc s u))
+    (hf1 : ContDiffOn ℝ ∞ (fun p : ℝ × ℝ => f1 p.1 p.2) (univ ×ˢ Icc s u))
+    (hper0 : ∀ t ∈ Icc s u, Function.Periodic (fun x => f0 x t) 1)
+    (hper1 : ∀ t ∈ Icc s u, Function.Periodic (fun x => f1 x t) 1)
+    (hn0 : ∀ x, 0 ≤ f0 x u) (hn1 : ∀ x t, t ∈ Icc s u → 0 ≤ f1 x t)
+    (L α β γ : ℝ) (hγ : 0 ≤ γ) (hα : α * (u - s) ≤ 1)
+    (hpde0 : ∀ x t, t ∈ Icc s u →
+      derivWithin (f0 x) (Icc s u) t - c.ds g (c.ds g f0) x t ≤ -f1 x t + β)
+    (hpde1 : ∀ x t, t ∈ Icc s u →
+      derivWithin (f1 x) (Icc s u) t - c.ds g (c.ds g f1) x t ≤ α * f1 x t + γ)
+    (hinit : ∀ x, f0 x s ≤ L) :
+    ∀ x, f1 x u ≤ 2 * L / (u - s) + γ * (u - s) + 2 * β := by
+  let F := fun x t => (t - s) * f1 x t + 2 * f0 x t
+  have hf : ContDiffOn ℝ ∞ (fun p : ℝ × ℝ => F p.1 p.2) (univ ×ˢ Icc s u) :=
+    ((contDiffOn_snd.sub contDiffOn_const).mul hf1).add (contDiffOn_const.mul hf0)
+  have hper : ∀ t ∈ Icc s u, Function.Periodic (fun x => F x t) 1 := by
+    intro t ht x
+    dsimp only [F]
+    have hp0 := hper0 t ht x
+    have hp1 := hper1 t ht x
+    dsimp only at hp0 hp1
+    rw [hp0, hp1]
+  have hspace (f : ℝ → ℝ → ℝ)
+      (hf : ContDiffOn ℝ ∞ (fun p : ℝ × ℝ => f p.1 p.2) (univ ×ˢ Icc s u))
+      (t : ℝ) (ht : t ∈ Icc s u) : ContDiff ℝ ∞ (fun x => f x t) := by
+    have hh := hf.comp ((contDiff_id.prodMk contDiff_const).contDiffOn (s := univ))
+      (fun x _ => ⟨mem_univ x, ht⟩)
+    exact contDiffOn_univ.mp hh
+  have hdspace (f : ℝ → ℝ → ℝ)
+      (hf : ContDiffOn ℝ ∞ (fun p : ℝ × ℝ => f p.1 p.2) (univ ×ˢ Icc s u))
+      (t : ℝ) (ht : t ∈ Icc s u) : ContDiff ℝ ∞ (fun x => c.ds g f x t) := by
+    have hh : ContDiff ℝ ∞ (fun x => deriv (fun y => f y t) x) := by
+      simpa using (hspace f hf t ht).iterate_deriv 1
+    exact ((c.speed_contDiff g (Icc s u) hc hi t ht).inv
+      (fun x => (c.speed_pos g hi x t ht).ne')).mul hh
+  have htime (f : ℝ → ℝ → ℝ)
+      (hf : ContDiffOn ℝ ∞ (fun p : ℝ × ℝ => f p.1 p.2) (univ ×ˢ Icc s u))
+      (x t : ℝ) (ht : t ∈ Icc s u) : DifferentiableWithinAt ℝ (f x) (Icc s u) t := by
+    have hp : ContDiffWithinAt ℝ ∞ (fun r : ℝ => (x, r)) (Icc s u) t :=
+      contDiffWithinAt_const.prodMk contDiffWithinAt_id
+    exact ((hf (x, t) ⟨mem_univ x, ht⟩).comp t hp (fun r hr => ⟨mem_univ x, hr⟩)).differentiableWithinAt (by simp)
+  have hds (x t : ℝ) (ht : t ∈ Icc s u) :
+      c.ds g F x t = (t - s) * c.ds g f1 x t + 2 * c.ds g f0 x t := by
+    have h1 := (hspace f1 hf1 t ht).differentiable (by simp) x
+    have h0 := (hspace f0 hf0 t ht).differentiable (by simp) x
+    dsimp only [CurveMap.ds, F]
+    rw [deriv_fun_add (h1.const_mul (t - s)) (h0.const_mul 2), deriv_const_mul_field, deriv_const_mul_field]
+    ring
+  have hlap (x t : ℝ) (ht : t ∈ Icc s u) :
+      c.ds g (c.ds g F) x t = (t - s) * c.ds g (c.ds g f1) x t + 2 * c.ds g (c.ds g f0) x t := by
+    have h1 := (hdspace f1 hf1 t ht).differentiable (by simp) x
+    have h0 := (hdspace f0 hf0 t ht).differentiable (by simp) x
+    change (c.speed g x t)⁻¹ * deriv (fun y => c.ds g F y t) x = _
+    rw [funext (fun y => hds y t ht), deriv_fun_add (h1.const_mul (t - s)) (h0.const_mul 2),
+      deriv_const_mul_field, deriv_const_mul_field]
+    dsimp only [CurveMap.ds]
+    ring
+  have hdt (x t : ℝ) (ht : t ∈ Icc s u) :
+      derivWithin (F x) (Icc s u) t = f1 x t + (t - s) * derivWithin (f1 x) (Icc s u) t +
+        2 * derivWithin (f0 x) (Icc s u) t := by
+    have h1 := (htime f1 hf1 x t ht).hasDerivWithinAt
+    have h0 := (htime f0 hf0 x t ht).hasDerivWithinAt
+    have hθ : HasDerivWithinAt (fun r : ℝ => r - s) 1 (Icc s u) t :=
+      (hasDerivWithinAt_id t (Icc s u)).sub_const s
+    have hh := ((hθ.mul h1).add (h0.const_mul 2)).derivWithin (uniqueDiffOn_Icc hsu t ht)
+    change derivWithin (F x) (Icc s u) t = _ at hh
+    simpa only [one_mul, mul_one] using hh
+  have hpde : ∀ x t, t ∈ Icc s u → derivWithin (F x) (Icc s u) t ≤
+      c.ds g (c.ds g F) x t + (γ * (u - s) + 2 * β) := by
+    intro x t ht
+    have hθ0 : 0 ≤ t - s := sub_nonneg.mpr ht.1
+    have hθ : t - s ≤ u - s := sub_le_sub_right ht.2 s
+    have hαθ : α * (t - s) ≤ 1 := by
+      by_cases ha : 0 ≤ α
+      · exact (mul_le_mul_of_nonneg_left hθ ha).trans hα
+      · exact (mul_nonpos_of_nonpos_of_nonneg (le_of_not_ge ha) hθ0).trans zero_le_one
+    have h1 := mul_le_mul_of_nonneg_left (hpde1 x t ht) hθ0
+    have h0 := mul_le_mul_of_nonneg_left (hpde0 x t ht) (by norm_num : (0 : ℝ) ≤ 2)
+    have hneg := mul_nonpos_of_nonpos_of_nonneg (sub_nonpos.mpr hαθ) (hn1 x t ht)
+    have hsource := mul_le_mul_of_nonneg_left hθ hγ
+    rw [hdt x t ht, hlap x t ht]
+    nlinarith only [h1, h0, hneg, hsource]
+  have hinitF : ∀ x, F x s ≤ 2 * L := by
+    intro x
+    dsimp only [F]
+    simp only [sub_self, zero_mul, zero_add]
+    exact mul_le_mul_of_nonneg_left (hinit x) (by norm_num)
+  have hmp := scalar_linear_upper_bound g hsu c hc hi F hper hf (2 * L) (γ * (u - s) + 2 * β) hpde hinitF
+  intro x
+  have hh := hmp x u ⟨hsu.le, le_rfl⟩
+  have hpositive := sub_pos.mpr hsu
+  have hdiv : (u - s) * (2 * L / (u - s)) = 2 * L := by field_simp
+  dsimp only [F] at hh
+  apply (mul_le_mul_iff_right₀ hpositive).mp
+  nlinarith only [hh, hn0 x, hdiv]
+
 end CurveMap
 end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening
