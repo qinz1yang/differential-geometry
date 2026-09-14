@@ -1,11 +1,15 @@
 # Local homology and global classes from coherent local generators
 
 This separate `PoincareLean` project contains a dependency-closed checkpoint of
-138 Poincare modules. It extends the recovered Chapter 35 source at commit
+139 Poincare modules. It extends the recovered Chapter 35 source at commit
 `b45bfa009368c8f5f531e10f4f5280e90079d6ad` and preserves its mathematical objects
 and `Poincare` namespaces. `Poincare.lean` imports every included leaf.
 
 The additions prove:
+
+- compatibility of the actual cap product with contractible-cover degree
+  shifts, equality of the normalized integer pairings, and equivalence of
+  their bijectivity under the same maps;
 
 - cohomology degree shift for two contractible open sets covering a space,
   with actual relative, excision and connecting maps in both directions,
@@ -935,7 +939,7 @@ native orientation and the full canonical topology suite remain open.
 
 ## Cohomology of a contractible open cover
 
-The current checkpoint contains 138 leaves and 159 curated tracked added
+That checkpoint contained 138 leaves and 159 curated tracked added
 public exports. `integralCohomologyContractibleCoverEquiv` identifies H^(n+2)(X)
 with H^(n+1)(A intersect B) for two actual contractible open subspaces covering
 X. Its connecting equation and inverse formula expose the original relative,
@@ -965,4 +969,35 @@ portable pairs agree modulo only Set.univ qualification and whitespace;
 axiom readbacks are exact. The other 136 earlier leaves are unchanged.
 Strict source and stock declaration linters and standard-only transitive
 axiom checks pass. General manifold duality, native orientation and the
+full canonical topology contract remain open.
+
+
+## Cap products and contractible-cover degree shifts
+
+The current checkpoint contains 139 leaves and 162 curated tracked added
+public exports. `CapContractibleCover` proves that the actual cap product
+with degree-zero homology output commutes with the existing cohomology and
+homology degree shifts for a cover by two contractible open sets. The equation
+retains both actual H0 inclusion maps. Applying the original normalized
+augmentation gives equality of the integer pairings and equivalence of
+pairing bijectivity across the shift.
+
+A consumer produces a nonzero class on an actual sphere from its previously
+computed homology and checks the pairing equation on that class. A second
+consumer proves that pairing against the zero class cannot be bijective.
+These checks use the existing singular objects and maps throughout.
+
+Source `1789352129438587532-topology-27ea60d9` passed in 7.31 seconds with
+147 guards and 5 signature/axiom pairs. Original imported check
+`1789352195214306220-topology-0ba98f35` passed in 84.90 seconds with 148 guards
+and 5 pairs. Final portable check
+`1789352266674960866-topology_checkpoint-72a2e129` passed in Slurm 13846673
+in 167.25 seconds with 597 guards and 282 pairs. The new leaf and package root
+freshly compiled in 1:11.18, maximum RSS 1,825,324 KiB, with zero diagnostics.
+
+All 277 preceding pairs are byte-identical, and all 138 earlier leaves remain
+unchanged. The five new source, original and portable readbacks agree modulo
+only Set.univ / Module.finrank qualification and whitespace; axiom readbacks
+are exact. Strict source and stock declaration linters and standard-only
+transitive axioms pass. General manifold duality, native orientation and the
 full canonical topology contract remain open.

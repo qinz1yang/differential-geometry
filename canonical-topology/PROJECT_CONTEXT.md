@@ -6,24 +6,25 @@ library is `Poincare`; its sources retain the original mathematical namespaces.
 
 The source baseline is the recovered Chapter 35 commit
 `b45bfa009368c8f5f531e10f4f5280e90079d6ad`, supplemented by recovered working-tree
-proofs with separately recorded provenance. This checkpoint includes 138 modules
-and 159 curated tracked added public exports. The latest addition proves
-cohomology degree shift for a cover by two contractible open sets, with the
-actual relative/excision/connecting maps and inverse formula exposed.
-Relative-to-absolute cohomology comparison for a contractible subspace includes
-every positive degree; degree one uses the actual unit-class restriction.
-Native sphere and pole-complement consumers check these interfaces.
+proofs with separately recorded provenance. This checkpoint includes 139 modules
+and 162 curated tracked added public exports. The latest addition identifies
+the actual cap product under the existing homology/cohomology degree shifts
+for two contractible open sets, retaining both H0 inclusion maps. The original
+normalized augmentation gives equal integer pairings and equivalent bijectivity.
+Actual nonzero sphere-class and zero-class failure consumers pass.
 
-Source322a5c49 passed23.61s131guards12pairs; original3b354745 passed101.18s130/12.
-Portable868e1ec3 freshly compiled both changed leaves and root in1:21.04,
-RSS1826080KiB,zero diagnostics. Its consumer harness had a duplicate universe
-declaration; corrected94b7a925 passed76.62s588/277 using exact unchanged source
-artifacts. All270 preceding pairs are byte-identical, and all12 new/affected
-source-original-portable pairs differ only by Set.univ qualification and
-whitespace. All axiom readbacks exact; other136 earlier leaves unchanged.
-Strict source and stock declaration linters and standard-only transitive
-axioms pass. Pins and deferred inputs are unchanged. General manifold duality,
-the native orientation producer and the full frozen contract remain open.
+Source27ea60d9 passed7.31s147guards5pairs; original0ba98f35 passed84.90s148/5.
+Portable72a2e129 passed167.25s597/282. The new leaf and root freshly compiled
+in1:11.18, RSS1825324KiB, zero diagnostics. All277 preceding pairs are
+byte-identical, all138 preceding leaves unchanged, and all5 new source,
+original and portable readbacks agree modulo only Set.univ / Module.finrank
+qualification and whitespace; axiom readbacks are exact. Strict source and
+stock declaration linters and standard-only transitive axioms pass.
+Pins and deferred inputs are unchanged. General manifold duality, the native
+orientation producer and the full frozen contract remain open.
+
+The preceding cohomology cover shift, its actual forward/inverse equations,
+and relative-to-absolute comparison in every positive degree are unchanged.
 
 The preceding unique real-line local class, its normalization and actual cap
 bijection, and the generic pair-map cap transport remain unchanged.
