@@ -105,8 +105,10 @@ theorem exists_samePole_normalized_asymptotic_shrinker_of_limit_shrinker
        let _ : T2Space L.M := L.t2
        let _ : SigmaCompactSpace L.M := L.sigmaCompact
        (∃ x : L.M, metricScalarAt L.metric x ≠ 0) ∧
-       (∀ x : L.M, ∀ (n : ℕ) (c : Fin n → ℝ) (v w : Fin n → TangentSpace I x),
-         0 ≤ ∑ i, ∑ j, c i * c j * metricRm04StandardAt L.metric x (v i) (w i) (w j) (v j)) ∧
+       (∀ x : L.M, ∀ (n : ℕ) (c : Fin n → ℝ)
+           (v w : Fin n → TangentSpace I x),
+         0 ≤ ∑ i, ∑ j,
+           c i * c j * metricRm04StandardAt L.metric x (v i) (w i) (w j) (v j)) ∧
        ∃ f : C^∞⟮I, L.M; ℝ⟯,
          gradientRicciSoliton L.metric f 1 ∧
          IsHamiltonNormalizedPotential L.metric f ∧
@@ -116,7 +118,8 @@ theorem exists_samePole_normalized_asymptotic_shrinker_of_limit_shrinker
       StrictMono phi ∧
       (∀ i, lCost F.S 0 p (q i) (tau i) / (2 * Real.sqrt (tau i)) ≤
         (Module.finrank ℝ E : ℝ) / 2) ∧
-      ∃ (Phi : PointedRiemannianConvergenceMaps (I := I) (backwardSliceSequence F tau htau q) L phi)
+      ∃ (Phi : PointedRiemannianConvergenceMaps (I := I)
+            (backwardSliceSequence F tau htau q) L phi)
         (C : MetricConvergenceData (I := I) Phi),
         (∀ k, C.domain k = CanonicalMetricCompactness.canonicalSourceData Phi k) ∧
         MetricComplete (I := I) L ∧
@@ -127,8 +130,10 @@ theorem exists_samePole_normalized_asymptotic_shrinker_of_limit_shrinker
          let _ : SigmaCompactSpace L.M := L.sigmaCompact
          ConnectedSpace L.M ∧
          (∃ x : L.M, metricScalarAt L.metric x ≠ 0) ∧
-         (∀ x : L.M, ∀ (n : ℕ) (c : Fin n → ℝ) (v w : Fin n → TangentSpace I x),
-           0 ≤ ∑ i, ∑ j, c i * c j * metricRm04StandardAt L.metric x (v i) (w i) (w j) (v j)) ∧
+         (∀ x : L.M, ∀ (n : ℕ) (c : Fin n → ℝ)
+             (v w : Fin n → TangentSpace I x),
+           0 ≤ ∑ i, ∑ j,
+             c i * c j * metricRm04StandardAt L.metric x (v i) (w i) (w j) (v j)) ∧
          ∃ f : C^∞⟮I, L.M; ℝ⟯,
            gradientRicciSoliton L.metric f 1 ∧
            IsHamiltonNormalizedPotential L.metric f ∧

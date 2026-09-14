@@ -6924,6 +6924,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.Orientation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.OrientedDegreeGenerator
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.PoincareControl
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.PuncturedCoreComponent
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.PuncturedCoreCutChainProducer
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.PuncturedCoreTubeHalves
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.PuncturedCoreTwoCover
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.PoincareStandardDiscardReduction
