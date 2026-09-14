@@ -2,6 +2,7 @@ import DifferentialGeometry.Geometry.Connection.ParallelTransport.Naturality.Pul
 import DifferentialGeometry.Geometry.Metric.Pullback.Euclidean
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProductCoveringMap
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.CoverCovariantDerivative
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProductSliceSmoothness
 import Mathlib.Tactic.Ring
 
 noncomputable section
@@ -187,6 +188,109 @@ theorem physicalLift_Ds [I.Boundaryless] (c : ProductCurve M)
     c.physicalLift_covariantDerivative g lambda hlambda t V hV x]
   exact (c.physicalField_smul lambda (fun z s => (c.speed g lambda z s)⁻¹)
     (c.Dx g V) x t).symm
+
+theorem physicalLift_unitTangent (c : ProductCurve M)
+    (g : ℝ → SmoothRiemannianMetric I M) (lambda : ℝ) (hlambda : lambda ≠ 0)
+    {J : Set ℝ} (hc : c.SmoothOn (I := I) J) (t : ℝ) (ht : t ∈ J) (x : ℝ) :
+    let X := mfderiv 𝓘(ℝ, ℝ) (I.prod 𝓘(ℝ, ℝ)) (fun z => c.physicalLift lambda z t) x 1;
+    (Real.sqrt ((coverProductMetric (g t) 1 zero_lt_one).inner
+      (c.physicalLift lambda x t) X X))⁻¹ • X =
+        c.physicalField lambda (c.unitTangent g lambda) x t := by
+  dsimp only
+  rw [c.physicalLift_speed g lambda hlambda hc x t ht,
+    c.physicalLift_spatial_derivative lambda hlambda hc x t ht]
+  exact (c.physicalField_smul lambda (fun z s => (c.speed g lambda z s)⁻¹)
+    (c.X (I := I)) x t).symm
+
+variable [I.Boundaryless]
+
+theorem physicalLift_iteratedDs (c : ProductCurve M)
+    (g : ℝ → SmoothRiemannianMetric I M) (lambda : ℝ) (hlambda : 0 < lambda)
+    {J : Set ℝ} (hc : c.SmoothOn (I := I) J) (hi : c.ImmersedOn (I := I) J)
+    (t : ℝ) (ht : t ∈ J) (V : c.Field (I := I))
+    (hV : ContMDiff 𝓘(ℝ, ℝ) (I.prod 𝓘(ℝ, ℝ)).tangent ∞
+      (fun x => (⟨c.coverLift x t, V x t⟩ :
+        TangentBundle (I.prod 𝓘(ℝ, ℝ)) (M × ℝ)))) (m : ℕ) :
+    let γ := fun x => c.physicalLift lambda x t;
+    let G := coverProductMetric (g t) 1 zero_lt_one;
+    let X := fun x => mfderiv 𝓘(ℝ, ℝ) (I.prod 𝓘(ℝ, ℝ)) γ x 1;
+    let Ds := fun (W : (x : ℝ) → TangentSpace (I.prod 𝓘(ℝ, ℝ)) (γ x)) x =>
+      (Real.sqrt (G.inner (γ x) (X x) (X x)))⁻¹ • covDerivAlong G γ W x;
+    Ds^[m] (fun x => c.physicalField lambda V x t) =
+      fun x => c.physicalField lambda (c.iteratedDs g lambda m V) x t := by
+  let γ := fun x => c.physicalLift lambda x t
+  let G := coverProductMetric (g t) 1 zero_lt_one
+  let X := fun x => mfderiv 𝓘(ℝ, ℝ) (I.prod 𝓘(ℝ, ℝ)) γ x 1
+  let D := fun (W : (x : ℝ) → TangentSpace (I.prod 𝓘(ℝ, ℝ)) (γ x)) x =>
+    (Real.sqrt (G.inner (γ x) (X x) (X x)))⁻¹ • covDerivAlong G γ W x
+  change D^[m] (fun x => c.physicalField lambda V x t) = _
+  induction m with
+  | zero => rfl
+  | succ m ih =>
+    rw [Function.iterate_succ_apply', ih]
+    funext x
+    simpa only [iteratedDs, Function.iterate_succ_apply'] using
+      c.physicalLift_Ds g lambda hlambda hc t ht (c.iteratedDs g lambda m V)
+        (c.cover_iteratedDs_contMDiff g lambda hlambda hc hi V t ht hV m) x
+
+theorem physicalLift_curvatureVector (c : ProductCurve M)
+    (g : ℝ → SmoothRiemannianMetric I M) (lambda : ℝ) (hlambda : 0 < lambda)
+    {J : Set ℝ} (hc : c.SmoothOn (I := I) J) (hi : c.ImmersedOn (I := I) J)
+    (t : ℝ) (ht : t ∈ J) (x : ℝ) :
+    let γ := fun x => c.physicalLift lambda x t;
+    let G := coverProductMetric (g t) 1 zero_lt_one;
+    let X := fun x => mfderiv 𝓘(ℝ, ℝ) (I.prod 𝓘(ℝ, ℝ)) γ x 1;
+    let T := fun x => (Real.sqrt (G.inner (γ x) (X x) (X x)))⁻¹ • X x;
+    (Real.sqrt (G.inner (γ x) (X x) (X x)))⁻¹ • covDerivAlong G γ T x =
+      c.physicalField lambda (c.curvatureVector g lambda) x t := by
+  dsimp only
+  have hT := funext (c.physicalLift_unitTangent g lambda hlambda.ne' hc t ht)
+  rw [hT]
+  exact c.physicalLift_Ds g lambda hlambda hc t ht (c.unitTangent g lambda)
+    (c.cover_unitTangent_contMDiff g lambda hlambda hc hi t ht) x
+
+theorem physicalLift_solution_equation (c : ProductCurve M)
+    (g : ℝ → SmoothRiemannianMetric I M) (lambda : ℝ) (hlambda : 0 < lambda)
+    {J : Set ℝ} (hc : c.IsSolutionOn g lambda J) (t : ℝ) (ht : t ∈ J)
+    (huniq : UniqueMDiffWithinAt 𝓘(ℝ, ℝ) J t) (x : ℝ) :
+    let γ := fun x => c.physicalLift lambda x t;
+    let G := coverProductMetric (g t) 1 zero_lt_one;
+    let X := fun x => mfderiv 𝓘(ℝ, ℝ) (I.prod 𝓘(ℝ, ℝ)) γ x 1;
+    let T := fun x => (Real.sqrt (G.inner (γ x) (X x) (X x)))⁻¹ • X x;
+    mfderivWithin 𝓘(ℝ, ℝ) (I.prod 𝓘(ℝ, ℝ))
+      (fun s => c.physicalLift lambda x s) J t 1 =
+        (Real.sqrt (G.inner (γ x) (X x) (X x)))⁻¹ • covDerivAlong G γ T x := by
+  dsimp only
+  rw [c.physicalLift_time_derivative lambda hlambda.ne' hc.smooth x t ht huniq,
+    c.physicalLift_curvatureVector g lambda hlambda hc.smooth hc.immersed t ht x]
+  exact congrArg (fun v => (v.1, lambda * v.2)) (hc.equation x t ht)
+
+theorem physicalLift_iteratedDs_curvature_normSq (c : ProductCurve M)
+    (g : ℝ → SmoothRiemannianMetric I M) (lambda : ℝ) (hlambda : 0 < lambda)
+    {J : Set ℝ} (hc : c.SmoothOn (I := I) J) (hi : c.ImmersedOn (I := I) J)
+    (t : ℝ) (ht : t ∈ J) (m : ℕ) (x : ℝ) :
+    let γ := fun x => c.physicalLift lambda x t;
+    let G := coverProductMetric (g t) 1 zero_lt_one;
+    let X := fun x => mfderiv 𝓘(ℝ, ℝ) (I.prod 𝓘(ℝ, ℝ)) γ x 1;
+    let T := fun x => (Real.sqrt (G.inner (γ x) (X x) (X x)))⁻¹ • X x;
+    let Ds := fun (W : (x : ℝ) → TangentSpace (I.prod 𝓘(ℝ, ℝ)) (γ x)) x =>
+      (Real.sqrt (G.inner (γ x) (X x) (X x)))⁻¹ • covDerivAlong G γ W x;
+    let W := Ds^[m] (Ds T);
+    G.inner (γ x) (W x) (W x) =
+      c.normSq g lambda (c.iteratedDs g lambda m (c.curvatureVector g lambda)) x t := by
+  let γ := fun x => c.physicalLift lambda x t
+  let G := coverProductMetric (g t) 1 zero_lt_one
+  let X := fun x => mfderiv 𝓘(ℝ, ℝ) (I.prod 𝓘(ℝ, ℝ)) γ x 1
+  let T := fun x => (Real.sqrt (G.inner (γ x) (X x) (X x)))⁻¹ • X x
+  let D := fun (W : (x : ℝ) → TangentSpace (I.prod 𝓘(ℝ, ℝ)) (γ x)) x =>
+    (Real.sqrt (G.inner (γ x) (X x) (X x)))⁻¹ • covDerivAlong G γ W x
+  have hH : D T = fun x => c.physicalField lambda (c.curvatureVector g lambda) x t :=
+    funext (c.physicalLift_curvatureVector g lambda hlambda hc hi t ht)
+  have hiter := c.physicalLift_iteratedDs g lambda hlambda hc hi t ht
+    (c.curvatureVector g lambda) (c.cover_curvatureVector_contMDiff g lambda hlambda hc hi t ht) m
+  change G.inner (γ x) ((D^[m] (D T)) x) ((D^[m] (D T)) x) = _
+  rw [hH, hiter]
+  exact c.physicalField_normSq g lambda (c.iteratedDs g lambda m (c.curvatureVector g lambda)) x t
 
 end ProductCurve
 
