@@ -142,7 +142,7 @@ def HasBackwardSliceShrinkerInput [NeZero (Module.finrank ℝ E)]
   ∃ q : ℕ → F.M, backwardSliceApproximateMetricCompactness F hF tau htau q ∧
     backwardSliceLimitGradientShrinker F tau htau q p
 
-theorem exists_backward_slice_asymptotic_shrinker_of_input [NeZero (Module.finrank ℝ E)]
+theorem exists_backward_slice_asymptotic_shrinker_of_shrinkerInput [NeZero (Module.finrank ℝ E)]
     {kappa : ℝ} (hF : IsAncientKappaSolution kappa F)
     (tau : ℕ → ℝ) (htau : ∀ i, 0 < tau i) (p : F.M)
     (hmono : AntitoneOn (intrinsicReducedVolume F.S 0 p) (Set.Ioi 0))
