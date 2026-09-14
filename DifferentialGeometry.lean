@@ -5039,6 +5039,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.S
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.SweptAreaEstimates
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.VelocityExtension
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.VelocityExtensionEuclidean
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.VelocityExtensionLocalGluing
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.VelocityExtensionManifoldFrontier
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.VelocityExtensionProducer
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.WindowGluing
@@ -5146,6 +5147,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.SmoothExact
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.SurgeryWidthEvolution
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.HistoryWidthJump
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.HistoryWidthJumpComparison
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.WidthEvolutionReduction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Gauge.HarmonicMap
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Gauge.InverseFamily
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Gauge.ScaledHarmonicMap
@@ -5295,6 +5297,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborho
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHornTwoScale
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FlowConvergenceAssembly
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.GoodPointNeckArmFrontier
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.GoodPointNeckArmReduction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.GoodPointDerivatives
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.GrowingScaleNoncollapse
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.HighCurvatureBlowupFrontierReduction
@@ -6543,6 +6546,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.PoincareSta
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.ReflectionShiftCoOrientation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.Reconstruction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.ReducedLengthRealization
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.StepInputFrontierAudit
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.Terminal
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Poincare
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.PoincareLocalReconstruction
@@ -6783,6 +6787,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.OrientedDeg
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.PoincareControl
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.PuncturedCoreComponent
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.PuncturedCoreTubeHalves
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.PoincareStandardDiscardReduction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.PoincareStandardDiscarded
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.PoincareStandardDiscardedModels
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.PresentedStaticCapReduction
@@ -7859,6 +7864,7 @@ import DifferentialGeometry.Tensor.RicciIdentity.SlotAlgebra
 import DifferentialGeometry.Topology.Algebra.Group.AmalgamatedProduct
 import DifferentialGeometry.Topology.Algebra.Group.FiniteFreeProductInduction
 import DifferentialGeometry.Topology.Algebra.Group.FiniteTorsionFree
+import DifferentialGeometry.Topology.Algebra.Group.FinitelyGeneratedFundamentalGroup
 import DifferentialGeometry.Topology.Algebra.Group.FreeProduct
 import DifferentialGeometry.Topology.Algebra.Group.FreeProductAssociativity
 import DifferentialGeometry.Topology.Algebra.Group.PoincareStandard
@@ -8252,6 +8258,7 @@ import DifferentialGeometry.Topology.Homology.RelativeMaps
 import DifferentialGeometry.Topology.Homology.RelativeReducedCollapse
 import DifferentialGeometry.Topology.Homology.RelativeZero
 import DifferentialGeometry.Topology.Homology.SimplexBasis
+import DifferentialGeometry.Topology.Homology.SimplexBoundaryFilling
 import DifferentialGeometry.Topology.Homology.SimplexBoundary
 import DifferentialGeometry.Topology.Homology.SimplexEvaluation
 import DifferentialGeometry.Topology.Homology.SimplexMaps
@@ -8609,6 +8616,7 @@ import DifferentialGeometry.Topology.Manifold.Collar.SeamDiffeomorph
 import DifferentialGeometry.Topology.Manifold.CollarPartitionError
 import DifferentialGeometry.Topology.Manifold.CollarPartitionPatch
 import DifferentialGeometry.Topology.Manifold.CollarStep
+import DifferentialGeometry.Topology.Manifold.CollarStraighteningProducer
 import DifferentialGeometry.Topology.Manifold.CompactBicollar
 import DifferentialGeometry.Topology.Manifold.CompactPlanarIsotopy
 import DifferentialGeometry.Topology.Manifold.CompactSectionExtension
