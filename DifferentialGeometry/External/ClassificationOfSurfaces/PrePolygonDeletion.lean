@@ -289,7 +289,7 @@ namespace Schoenflies
 
 /-- A compact set with nonempty interior and polygonal frontier is the closed region bounded by
 that polygon.  This recognition lemma lets Figure 3.3 identify the new disk from its frontier. -/
-private theorem eq_closure_inside_of_isCompact_frontier_eq
+theorem eq_closure_inside_of_isCompact_frontier_eq
     {C S : Set Plane} (hC : IsSeparating C) (hS : IsCompact S)
     (hfrontier : frontier S = C) (hinterior : (interior S).Nonempty) :
     S = closure (Schoenflies.inside C) := by

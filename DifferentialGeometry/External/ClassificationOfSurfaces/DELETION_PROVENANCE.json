@@ -10,7 +10,7 @@
   "upstream_declaration_sha256": "a044458e37a7e9e9902a43eab6eb4f9efaf449713e4332e4793d38fc04e637cb",
   "recognition_delta": "DELETION_RECOGNITION.patch",
   "recognition_delta_sha256": "658619dbb1ae5aa7522980cec0dbcb7a8c6e44f25219b384f2e70c13bd810364",
-  "production_source_sha256": "8606d4955c9c51e082266072c8ae5f74051f15715c4b2371ef4c1827cb01f99e",
+  "production_source_sha256": "5a655aaba60d6af5bd1de7aabdd2731670001fff4fa0a8bb77166cb504d89ec2",
   "checked_native_sources": {
     "PrePolygonComplementaryArc.lean": "50f40d9782ba0cf1e9299b0286a0a6cb96a84c29ae95b1796f8dc3c8a9ed0a00",
     "PrePolygonDeletionFrontier.lean": "ce270b01e08c05958e524c4591c89e0c37a12fcce45919c3ad2a4a9e30c20de5",
@@ -54,11 +54,10 @@
     "Append six exact checked native declarations; promote only the two-edge closed-region engine.",
     "Reuse the existing three private helpers exactly once; preserve all nine old declarations and their scopes.",
     "Import the extended GeometricFreeTriangle and precise native JordanClosed leaf; no new module or aggregate import.",
-    "Omit the unused upstream old-frontier split from production."
+    "Omit the unused upstream old-frontier split from production.",
+    "Expose the existing compact-frontier recognition theorem in place; remove only private, preserving its exact type, body, scopes, imports, documentation and attribution."
   ],
   "remaining_obligations": [
-    "Final production validation of the integrated two-edge extension.",
-    "Produce an actual geometric free triangle without assuming the desired certificate.",
     "Compatible smooth rounding and disk absorption."
   ],
   "previous_production_source_sha256": "18c50c759e669e4829959317fb5508d735d795a73a0bf33264f1278605eb4efe",
@@ -94,7 +93,7 @@
     "full_dg_aggregate_build": false,
     "smooth_disk_filling": false
   },
-  "production_validation": {
+  "previous_production_validation": {
     "status": "Passed fresh two-changed-module artifact compilation and imported consumer gate.",
     "request_id": "1789237030840224641-schoenflies-8667db40",
     "input_sha256": "a439332ae519433237dfdfb3f8a0417a0f97c1cb61a382293b14b312f4b138f5",
@@ -135,7 +134,8 @@
   },
   "public_declarations": [
     "Schoenflies.PrePolygon.exists_prePolygon_closed_region_erase_triangle_of_one_edge_free",
-    "Schoenflies.PrePolygon.exists_prePolygon_closed_region_erase_triangle_of_two_edge_free"
+    "Schoenflies.PrePolygon.exists_prePolygon_closed_region_erase_triangle_of_two_edge_free",
+    "Schoenflies.eq_closure_inside_of_isCompact_frontier_eq"
   ],
   "two_edge_source_check": {
     "status": "Passed isolated exact-source gate; final production gate pending.",
@@ -171,5 +171,60 @@
     "PrePolygon.two_edge_free_crosscut": "7f1e06337daf86f892a73dacaf730e9f5eb1d84988093aa37db9dc184f79ed94",
     "PrePolygon.two_edge_free_region_and_attachment": "d7d01ecb5e6d92535a76a5469abb96a883a29852b089e8cb75df35a44522657e",
     "PrePolygon.exists_prePolygon_closed_region_erase_triangle_of_two_edge_free": "a01b12b9d8cf186acabddbf43ababd8612da72254a163d4b54341f3f09513d80"
-  }
+  },
+  "production_validation": {
+    "status": "Passed fresh source and three affected-module artifact/imported consumer checks; full suite incomplete",
+    "source_request_id": "1789362982620563234-schoenflies-df7d5553",
+    "source_input_sha256": "ae2b608ba3d72facac52df0fdef47a232f3f5a0e822b765faaaefcdf5c3f491d",
+    "request_id": "1789363143577746519-schoenflies-574d6ec8",
+    "input_sha256": "d17401ad885107f9eb3deb6eca1973b9b5d6afab5a201d821089862d8cce5f9e",
+    "response_file_sha256": "aa93d0d6cba7033829b728a3ecd7bec0a424d62b9b884b011a4131d641172765",
+    "source_sha256": "5a655aaba60d6af5bd1de7aabdd2731670001fff4fa0a8bb77166cb504d89ec2",
+    "source_guards": 150,
+    "source_pairs": 10,
+    "imported_guards": 251,
+    "imported_pairs": 13,
+    "identical_source_imported_pairs": 10,
+    "unchanged_prior_deletion_pairs": 6,
+    "unchanged_pg_pi_pairs": 3,
+    "artifact_modules": [
+      "DifferentialGeometry.External.ClassificationOfSurfaces.PrePolygonDeletion",
+      "DifferentialGeometry.Topology.Planar.PolygonGraphCharts",
+      "DifferentialGeometry.Topology.Planar.PolygonIsotopy"
+    ],
+    "artifact_elapsed": "2:34.62",
+    "artifact_max_rss_kib": 2179376,
+    "artifact_log_sha256": "7a5557a7f6d56e8f82013b6ea779957e417ca7e8a9a39a480bfe938c82e44802",
+    "strict_source_and_declaration_linters": true,
+    "approved_axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "full_dg_aggregate_build": false
+  },
+  "previous_visibility_promotion_source_sha256": "8606d4955c9c51e082266072c8ae5f74051f15715c4b2371ef4c1827cb01f99e",
+  "recognition_visibility_promotion": {
+    "declaration": "Schoenflies.eq_closure_inside_of_isCompact_frontier_eq",
+    "line": 292,
+    "change": "Remove the single private visibility modifier; no mathematical change.",
+    "previous_module_sha256": "8606d4955c9c51e082266072c8ae5f74051f15715c4b2371ef4c1827cb01f99e",
+    "module_sha256": "5a655aaba60d6af5bd1de7aabdd2731670001fff4fa0a8bb77166cb504d89ec2",
+    "previous_declaration_sha256": "dca7880c4937eab91c05e91b560a330b85aa2f4002f5e637d8058b35fa99f3da",
+    "public_declaration_sha256": "476b04eced8751e414248bc299767699b515e05ede42f480a81e57e88b0b59ee",
+    "unchanged_proof_body_sha256": "d7fb3ade3f2e71449ea77de14d966b75a7e56aba652f5a5bed6a95febc437a41",
+    "proof_body_lines": 70,
+    "declaration_hash_convention": "Declaration through final proof line, including one final newline; excludes documentation. Proof body begins after := by and includes its final newline.",
+    "preserved_other_declarations": 14,
+    "historical_recognition_delta": "DELETION_RECOGNITION.patch remains unchanged and records the original upstream-to-private-native adaptation.",
+    "direct_leaf_dependent": "DifferentialGeometry.Topology.Planar.PolygonGraphCharts",
+    "additional_transitive_leaf_dependent": "DifferentialGeometry.Topology.Planar.PolygonIsotopy",
+    "aggregate_registration": "PrePolygonDeletion is already imported by the flat DifferentialGeometry aggregate.",
+    "validation": "Passed source df7d5553 and imported574d6ec8, with exact signature and standard-axiom checks; no aggregate build claim."
+  },
+  "previous_remaining_obligations": [
+    "Final production validation of the integrated two-edge extension.",
+    "Produce an actual geometric free triangle without assuming the desired certificate.",
+    "Compatible smooth rounding and disk absorption."
+  ]
 }
