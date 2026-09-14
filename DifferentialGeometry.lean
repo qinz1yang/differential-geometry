@@ -4969,6 +4969,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Extension.Maximal.Time
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extension.Regularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extension.Restart.Basic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extension.Restart.SolutionBounds
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.AreaErrorBridge
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.AreaEvolution
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.AreaEvolutionCountermodel
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.AreaEvolutionFrontier
@@ -5049,6 +5050,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.V
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.VelocityExtensionLocalGluing
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.VelocityExtensionManifoldFrontier
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.VelocityExtensionProducer
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.VelocityExtensionTraceCover
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.WindowGluing
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.ActualWidth
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.ActualWidthDeformation
@@ -5550,6 +5552,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Cros
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.CrossModelCurvatureTransport
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.CrossModelMetricConvergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.CrossModelNoncollapse
+import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorNormedSpace
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.CrossModelTimeJets
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.CrossVolumeNaturality
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.CurvatureNormalization
@@ -5707,6 +5710,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Poin
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.PointedUniformTimeJets
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.PointedZeroComparison
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.PreliminaryCompactness
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.RankOneSplitting
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.RankOneTerminalBounded
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.ReactionDefectVanishing
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.ReducedCostBounds
@@ -8632,6 +8636,7 @@ import DifferentialGeometry.Topology.Manifold.BoundaryOrientationContraction
 import DifferentialGeometry.Topology.Manifold.BoundaryOrientationFrameChange
 import DifferentialGeometry.Topology.Manifold.BoundaryOrientationOutwardFrame
 import DifferentialGeometry.Topology.Manifold.BoundaryOrientationVariation
+import DifferentialGeometry.Topology.Manifold.BoundaryTransitionFlow
 import DifferentialGeometry.Topology.Manifold.BoundaryVectorField
 import DifferentialGeometry.Topology.Manifold.BufferedBumpCovering
 import DifferentialGeometry.Topology.Manifold.BufferedFunctionCutoff

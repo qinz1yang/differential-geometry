@@ -155,7 +155,8 @@ def SmoothDisk.boundaryNormalVelocityError (u : SmoothDisk (I := 𝓘(ℝ, E)) (
     TangentSpace 𝓘(ℝ, E) (u.map (diskBoundary (x : Surgery.Topology.Circle))) :=
   let T := u.boundaryTangent (diskBoundary (x : Surgery.Topology.Circle))
   let W := u.boundaryNormalVelocity g gamma sigma htrace V x
-  W - g.inner (u.map (diskBoundary (x : Surgery.Topology.Circle))) W T • T
+  W - (g.inner (u.map (diskBoundary (x : Surgery.Topology.Circle))) W T /
+    g.inner (u.map (diskBoundary (x : Surgery.Topology.Circle))) T T) • T
 
 def SmoothDisk.boundaryAreaError (u : SmoothDisk (I := 𝓘(ℝ, E)) (Q := Q))
     (g : SmoothRiemannianMetric 𝓘(ℝ, E) Q) (gamma : RegularLoop 𝓘(ℝ, E) Q)
@@ -238,6 +239,7 @@ theorem SmoothDisk.boundaryFluxDensity_sub_boundaryCurvatureDensity_le
       g (u.map z) (u.boundaryNormalVelocity g gamma sigma htrace V x) (u.boundaryTangent z)
       (u.inwardConormal g z)
       (g.inner (u.map z) (u.boundaryNormalVelocity g gamma sigma htrace V x)
+        (u.boundaryTangent z) / g.inner (u.map z) (u.boundaryTangent z)
         (u.boundaryTangent z)) hνT hνν
     exact mul_le_mul_of_nonneg_right hmain (Real.sqrt_nonneg _)
   · have hz0 : diskMapConformalCoefficient g U (z : ℂ) = 0 :=

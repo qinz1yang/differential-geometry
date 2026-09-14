@@ -76,6 +76,7 @@ theorem SmoothDisk.boundaryCurvatureDensity_sub_boundaryFluxDensity_le
       g (u.map z) (u.boundaryNormalVelocity g gamma sigma htrace V x) (u.boundaryTangent z)
       (u.inwardConormal g z)
       (g.inner (u.map z) (u.boundaryNormalVelocity g gamma sigma htrace V x)
+        (u.boundaryTangent z) / g.inner (u.map z) (u.boundaryTangent z)
         (u.boundaryTangent z)) hνT hνν
     rw [← neg_mul]
     exact mul_le_mul_of_nonneg_right hmain (Real.sqrt_nonneg _)
