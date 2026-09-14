@@ -118,16 +118,6 @@ theorem rfs_csf_embedded_area_of_rfs_csf_immersed_area
               (curveOfLoopFamily γ).areaError B.family.metric (Icc a b) t + ε) :=
   fun B hdim γ hγ hi hctr _hemb => h B hdim γ hγ hi hctr
 
-omit [FiniteDimensional ℝ E] [CompleteSpace E] hBoundary hT2 hCompact hNonempty
-  [SigmaCompactSpace M] in
-theorem loopFamilyVelocityExtension_of_subset {a' b' : ℝ} {γ : ℝ → ContinuousFreeLoop M}
-    (ha : a' ≤ a) (hb : b ≤ b') (h : LoopFamilyVelocityExtension (I := I) a' b' γ) :
-    LoopFamilyVelocityExtension (I := I) a b γ := by
-  obtain ⟨X, hX, hIco, hIoc⟩ := h
-  exact ⟨X, hX,
-    fun t ht z => hIco t ⟨le_trans ha ht.1, lt_of_lt_of_le ht.2 hb⟩ z,
-    fun t ht z => hIoc t ⟨lt_of_le_of_lt ha ht.1, le_trans ht.2 hb⟩ z⟩
-
 omit [CompleteSpace E] hNonempty in
 theorem rfs_csf_boundary_isotopy_of_velocityExtension_exists
     (hvel : ∀ (a' b' : ℝ) (γ : ℝ → ContinuousFreeLoop M),

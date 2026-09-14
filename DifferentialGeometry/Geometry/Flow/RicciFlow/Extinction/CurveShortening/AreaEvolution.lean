@@ -3,6 +3,8 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Scalar.JointRegula
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.LeastArea
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.ClassWidth
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.LocalExistence
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.LoopFamilyVelocityExtension
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.VelocityExtensionChartReading
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothDependence.GlobalClosedManifold
 import Mathlib.Analysis.Calculus.MeanValue
 import Mathlib.Analysis.ODE.Gronwall
@@ -675,8 +677,6 @@ theorem areaError_eq_zero (c : CurveMap M) (g : ℝ → SmoothRiemannianMetric I
 end CurveMap
 
 
-def curveOfLoopFamily (γ : ℝ → ContinuousFreeLoop M) : CurveMap M := fun z t => γ t z
-
 def loopFamilyLeastArea (g : ℝ → SmoothRiemannianMetric I M)
     (γ : ℝ → ContinuousFreeLoop M) (t : ℝ) : ℝ :=
   sInf (Width.competitorAreas (g t) (γ t))
@@ -795,40 +795,11 @@ theorem rfs_csf_boundary_isotopy (γ : ℝ → ContinuousFreeLoop M)
         (univ ×ˢ (Icc a b ∩ Ioo (t₀ - ε) (t₀ + ε))) ∧
       (∀ p, Φ t₀ p = p) ∧
       ∀ t ∈ Icc a b ∩ Ioo (t₀ - ε) (t₀ + ε), ∀ z, Φ t (γ t₀ z) = γ t z := by
-  sorry
-
-def LoopFamilyVelocityExtension (a b : ℝ) (γ : ℝ → ContinuousFreeLoop M) : Prop :=
-  ∃ X : ℝ → (p : M) → TangentSpace I p,
-    ContMDiff (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E)) ∞
-      (fun q : ℝ × M =>
-        (TotalSpace.mk' E q.2 (X q.1 q.2) : TangentBundle I M)) ∧
-    (∀ t ∈ Ico a b, ∀ z : Surgery.Topology.Circle,
-      HasMFDerivWithinAt 𝓘(ℝ, ℝ) I (fun s : ℝ => γ s z) (Ici t) t
-        ((1 : ℝ →L[ℝ] ℝ).smulRight (X t (γ t z)))) ∧
-    ∀ t ∈ Ioc a b, ∀ z : Surgery.Topology.Circle,
-      HasMFDerivWithinAt 𝓘(ℝ, ℝ) I (fun s : ℝ => γ s z) (Iic t) t
-        ((1 : ℝ →L[ℝ] ℝ).smulRight (X t (γ t z)))
-
-omit [FiniteDimensional ℝ E] [CompleteSpace E] hBoundary hT2 hCompact hNonempty
-  [SigmaCompactSpace M] in
-theorem loopFamilyVelocityExtension_zero (a b : ℝ)
-    (γ : ℝ → ContinuousFreeLoop M) (hconst : ∀ t t' : ℝ, γ t = γ t') :
-    LoopFamilyVelocityExtension (I := I) a b γ := by
-  refine ⟨fun _ _ => 0, ?_, ?_, ?_⟩
-  · exact (Bundle.contMDiff_zeroSection ℝ (TangentSpace I (M := M))).comp
-      (contMDiff_snd (I := 𝓘(ℝ, ℝ)) (J := I) (n := ∞))
-  · intro t _ z
-    have hpt : (fun s : ℝ => γ s z) = fun _ : ℝ => γ t z := by
-      funext s
-      rw [hconst s t]
-    rw [hpt, ContinuousLinearMap.smulRight_zero]
-    exact hasMFDerivWithinAt_const (γ t z) (Ici t) t
-  · intro t _ z
-    have hpt : (fun s : ℝ => γ s z) = fun _ : ℝ => γ t z := by
-      funext s
-      rw [hconst s t]
-    rw [hpt, ContinuousLinearMap.smulRight_zero]
-    exact hasMFDerivWithinAt_const (γ t z) (Iic t) t
+  let _ : CompleteSpace E := inferInstance
+  let _ := hNonempty
+  exact rfs_csf_boundary_isotopy_of_hasBoundaryIsotopyVelocityExtension (I := I) (M := M)
+    (fun _ hγ hi hemb => loopFamilyVelocityExtension_of_smoothOn (I := I) hγ hi hemb)
+    γ hγ hi hemb t₀ ht₀ hab
 
 omit hBoundary hCompact hNonempty [SigmaCompactSpace M] in
 theorem rfs_csf_area_error (B : RicciBackground (I := I) (M := M) D a b)
@@ -1303,19 +1274,5 @@ theorem rfs_csf_immersed_area (B : RicciBackground (I := I) (M := M) D a b)
             (curveOfLoopFamily γ).areaError B.family.metric (Icc a b) t + ε) := by
   sorry
 
-
-def LiftLoopFamily (X : ℝ → (p : M) → TangentSpace I p) :
-    ℝ → (p : ℝ × M) → TangentSpace (𝓘(ℝ,ℝ).prod I) p :=
-  fun _ (q : ℝ × M) => ((1:ℝ), X q.1 q.2)
-
-omit [FiniteDimensional ℝ E] [CompleteSpace E] hBoundary hT2 hCompact hNonempty
-  [SigmaCompactSpace M] in
-theorem liftLoopFamily_contMDiff (X : ℝ → (p : M) → TangentSpace I p)
-    (hX : ContMDiff (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E)) ∞
-      (fun q : ℝ × M => (TotalSpace.mk' E q.2 (X q.1 q.2) : TangentBundle I M))) :
-    ContMDiff (𝓘(ℝ, ℝ).prod I) ((𝓘(ℝ, ℝ).prod I).prod 𝓘(ℝ, ℝ × E)) ∞
-      (fun p : ℝ × M => (⟨p, LiftLoopFamily (I := I) X p.1 p⟩ :
-        TangentBundle (𝓘(ℝ, ℝ).prod I) (ℝ × M))) :=
-  DifferentialGeometry.Analysis.ODE.autonomizedFlowVF_section_contMDiff (I := I) X hX
 
 end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening

@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.LocalExistence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.VelocityExtensionLocalGluing
 import DifferentialGeometry.Geometry.Connection.ChartFrame.ChartSection
 import DifferentialGeometry.Analysis.Calculus.Inverse.SmoothLocalInverse

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.AreaEvolution
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.LoopFamilyVelocityExtension
 import DifferentialGeometry.Topology.Diffeomorph.Flow
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Global.InteriorInterval
 import Mathlib.Geometry.Manifold.MFDeriv.SpecificFunctions
