@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.CoordinateTangentVariation
 import DifferentialGeometry.Analysis.Calculus.Derivative.WeightedChainRule
+import DifferentialGeometry.Analysis.Calculus.Cutoff.Linear
 
 noncomputable section
 open Bundle Manifold Set Filter
@@ -8,6 +9,7 @@ open DifferentialGeometry.Geometry.Riemannian.CovariantDerivativeAlong
 open DifferentialGeometry.Geometry.Riemannian.AlongCurve
 open DifferentialGeometry.Geometry.Riemannian.Geodesic
 open DifferentialGeometry.Geometry.Riemannian
+open DifferentialGeometry.Analysis
 
 namespace DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening.ProductCurve
 
@@ -279,6 +281,98 @@ theorem physical_chart_cutoff_derivative_bound (c : ProductCurve M)
     · exact mul_le_mul hD₁ hspace2norm (norm_nonneg _) hD₁nn
   refine (add_le_add htimebound hspatial).trans_eq ?_
   ring
+
+
+theorem physical_axial_cutoff_derivative_bound (c : ProductCurve M)
+    (g : ℝ → SmoothRiemannianMetric I M) (lambda : ℝ) (hlambda : 0 < lambda)
+    {J : Set ℝ} (hc : c.IsSolutionOn g lambda J)
+    (A : (E × ℝ) →L[ℝ] F) (β : M × ℝ) (x t : ℝ) (ht : t ∈ J)
+    (huniq : UniqueDiffWithinAt ℝ J t) {C B : ℝ} (hC : 0 ≤ C) (hB : 0 ≤ B)
+    (L : F →L[ℝ] ℝ) (hL : ‖L‖ ≤ 1) (center d : ℝ) (hd : 0 < d) :
+    let γ := fun y τ => c.physicalLift lambda y τ
+    let G := coverProductMetric (g t) 1 zero_lt_one
+    let W := fun y τ => A (extChartAt (I.prod 𝓘(ℝ, ℝ)) β (γ y τ))
+    let φ := fun y τ => ballCutoff center (d / 2) d (L (W y τ))
+    γ x t ∈ (chartAt (ModelProd H ℝ) β).source →
+    (∀ V : TangentSpace (I.prod 𝓘(ℝ, ℝ)) (γ x t),
+      ‖A ((trivializationAt (E × ℝ) (TangentSpace (I.prod 𝓘(ℝ, ℝ))) β).continuousLinearMapAt
+        ℝ (γ x t) V)‖ ≤ C * Real.sqrt (G.inner (γ x t) V V)) →
+    (∀ u v : E × ℝ,
+      ‖A (chartChristoffelContraction G β u v (extChartAt (I.prod 𝓘(ℝ, ℝ)) β (γ x t)))‖ ≤
+        B * ‖A u‖ * ‖A v‖) →
+    ‖derivWithin (φ x) J t‖ + ‖c.ds g lambda (c.ds g lambda φ) x t‖ ≤
+      (8 * CutoffProfile.derivBound * C / d) * c.curvature g lambda x t +
+        (16 * CutoffProfile.derivBound / d ^ 2 + 4 * CutoffProfile.derivBound * B / d) * C ^ 2 := by
+  dsimp only
+  intro hβ hupper hΓ
+  have hprofile : ContDiff ℝ ∞ (fun w => ballCutoff center (d / 2) d (L w)) :=
+    (ballCutoff_contDiff center (d / 2) d).comp L.contDiff
+  have hb := ballCutoff_comp_linear_half_radius_derivative_bounds L hL center d hd
+    (A (extChartAt (I.prod 𝓘(ℝ, ℝ)) β (c.physicalLift lambda x t)))
+  have h := c.physical_chart_cutoff_derivative_bound g lambda hlambda hc A β x t ht huniq hC hB
+    (fun w => ballCutoff center (d / 2) d (L w)) hβ hupper hΓ
+    (hprofile.contDiffAt.of_le (WithTop.coe_le_coe.mpr le_top)) hb.1 hb.2
+  refine h.trans_eq ?_
+  ring
+
+theorem physical_axial_cutoff_derivative_bound_of_curvatureSq_le (c : ProductCurve M)
+    (g : ℝ → SmoothRiemannianMetric I M) (lambda : ℝ) (hlambda : 0 < lambda)
+    {J : Set ℝ} (hc : c.IsSolutionOn g lambda J)
+    (A : (E × ℝ) →L[ℝ] F) (β : M × ℝ) (x t : ℝ) (ht : t ∈ J)
+    (huniq : UniqueDiffWithinAt ℝ J t) {C B K τ r : ℝ}
+    (hC : 0 < C) (hB : 0 ≤ B) (hK : 0 ≤ K) (hτ : 0 < τ) (hr : 0 < r) (hr1 : r ≤ 1)
+    (hcurv : c.curvatureSq g lambda x t ≤ K / τ)
+    (L : F →L[ℝ] ℝ) (hL : ‖L‖ ≤ 1) (center : ℝ) :
+    let γ := fun y σ => c.physicalLift lambda y σ
+    let G := coverProductMetric (g t) 1 zero_lt_one
+    let W := fun y σ => A (extChartAt (I.prod 𝓘(ℝ, ℝ)) β (γ y σ))
+    let d := r / (8 * C)
+    let φ := fun y σ => ballCutoff center (d / 2) d (L (W y σ))
+    γ x t ∈ (chartAt (ModelProd H ℝ) β).source →
+    (∀ V : TangentSpace (I.prod 𝓘(ℝ, ℝ)) (γ x t),
+      ‖A ((trivializationAt (E × ℝ) (TangentSpace (I.prod 𝓘(ℝ, ℝ))) β).continuousLinearMapAt
+        ℝ (γ x t) V)‖ ≤ C * Real.sqrt (G.inner (γ x t) V V)) →
+    (∀ u v : E × ℝ,
+      ‖A (chartChristoffelContraction G β u v (extChartAt (I.prod 𝓘(ℝ, ℝ)) β (γ x t)))‖ ≤
+        B * ‖A u‖ * ‖A v‖) →
+    ‖derivWithin (φ x) J t‖ + ‖c.ds g lambda (c.ds g lambda φ) x t‖ ≤
+      (64 * CutoffProfile.derivBound * C ^ 2 * Real.sqrt K / r) / Real.sqrt τ +
+        (1024 * CutoffProfile.derivBound * C ^ 4 + 32 * CutoffProfile.derivBound * B * C ^ 3) / r ^ 2 := by
+  dsimp only
+  intro hβ hupper hΓ
+  have hd : 0 < r / (8 * C) := by positivity
+  have h := c.physical_axial_cutoff_derivative_bound g lambda hlambda hc A β x t ht huniq hC.le hB
+    L hL center (r / (8 * C)) hd hβ hupper hΓ
+  have hk : c.curvature g lambda x t ≤ Real.sqrt K / Real.sqrt τ := by
+    rw [← Real.sqrt_div hK]
+    exact Real.sqrt_le_sqrt hcurv
+  have hcoef : 0 ≤ 8 * CutoffProfile.derivBound * C / (r / (8 * C)) := by
+    exact div_nonneg (mul_nonneg (mul_nonneg (by norm_num) CutoffProfile.derivBound_nonneg) hC.le) hd.le
+  have h1 := mul_le_mul_of_nonneg_left hk hcoef
+  have he₁ : (8 * CutoffProfile.derivBound * C / (r / (8 * C))) *
+      (Real.sqrt K / Real.sqrt τ) =
+        (64 * CutoffProfile.derivBound * C ^ 2 * Real.sqrt K / r) / Real.sqrt τ := by
+    field_simp
+    ring
+  have he₂ : (16 * CutoffProfile.derivBound / (r / (8 * C)) ^ 2 +
+      4 * CutoffProfile.derivBound * B / (r / (8 * C))) * C ^ 2 =
+        1024 * CutoffProfile.derivBound * C ^ 4 / r ^ 2 +
+          32 * CutoffProfile.derivBound * B * C ^ 3 / r := by
+    field_simp
+    ring
+  have hsmall : 32 * CutoffProfile.derivBound * B * C ^ 3 / r ≤
+      32 * CutoffProfile.derivBound * B * C ^ 3 / r ^ 2 := by
+    have hJ := CutoffProfile.derivBound_nonneg
+    apply div_le_div_of_nonneg_left (by positivity) (by positivity)
+    nlinarith
+  rw [he₁] at h1
+  rw [he₂] at h
+  have h2 : 1024 * CutoffProfile.derivBound * C ^ 4 / r ^ 2 +
+      32 * CutoffProfile.derivBound * B * C ^ 3 / r ≤
+        (1024 * CutoffProfile.derivBound * C ^ 4 + 32 * CutoffProfile.derivBound * B * C ^ 3) / r ^ 2 := by
+    rw [add_div]
+    exact add_le_add le_rfl hsmall
+  exact h.trans (add_le_add h1 h2)
 
 
 end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening.ProductCurve

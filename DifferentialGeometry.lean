@@ -26,6 +26,7 @@ import DifferentialGeometry.Analysis.Calculus.Cutoff.Clamp.Smooth
 import DifferentialGeometry.Analysis.Calculus.Cutoff.Compact
 import DifferentialGeometry.Analysis.Calculus.Cutoff.IntervalCutoffEstimate
 import DifferentialGeometry.Analysis.Calculus.Cutoff.LipschitzCutoff
+import DifferentialGeometry.Analysis.Calculus.Cutoff.Linear
 import DifferentialGeometry.Analysis.Calculus.Cutoff.Profile
 import DifferentialGeometry.Analysis.Calculus.Cutoff.SmallGermCutoff
 import DifferentialGeometry.Analysis.Calculus.Cutoff.SmoothTransition
