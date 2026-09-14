@@ -2291,4 +2291,83 @@ theorem exists_small_homeomorph_generalPosition [FiniteDimensional ℝ E]
   have hcross := hasPLCrossingAt_of_transverse_faces K' L hK' hL hdimE htrans hx'
   rwa [hKA] at hcross
 
+open Classical in
+theorem exists_continuousLinearMap_injOn [FiniteDimensional ℝ E] {A : Set E}
+    (hA : A.Finite) (ℓ₀ : E →L[ℝ] ℝ) {ε : ℝ} (hε : 0 < ε) :
+    ∃ ℓ : E →L[ℝ] ℝ, dist ℓ ℓ₀ < ε ∧ Set.InjOn ℓ A := by
+  have : Finite A := hA.to_subtype
+  let I := {p : A × A // p.1 ≠ p.2}
+  let B : I → AffineSubspace ℝ (E →L[ℝ] ℝ) := fun i =>
+    (LinearMap.ker ((ContinuousLinearMap.apply ℝ ℝ
+      ((i.1.1 : E) - (i.1.2 : E))).toLinearMap)).toAffineSubspace
+  have hB : ∀ i, B i ≠ ⊤ := by
+    intro i hi
+    have hd : (i.1.1 : E) - (i.1.2 : E) ≠ 0 := fun h =>
+      i.2 (Subtype.ext (sub_eq_zero.mp h))
+    obtain ⟨f, _, hf⟩ := LinearMap.exists_extend_of_notMem
+      (0 : (⊥ : Submodule ℝ E) →ₗ[ℝ] ℝ) (by simpa using hd) 1
+    have hmem : LinearMap.toContinuousLinearMap f ∈ B i := by rw [hi]; trivial
+    change f ((i.1.1 : E) - (i.1.2 : E)) = 0 at hmem
+    rw [hf] at hmem
+    exact one_ne_zero hmem
+  obtain ⟨ℓ, hclose, havoid⟩ := exists_mem_ball_notMem_affineSubspaces B hB hε
+  refine ⟨ℓ, hclose, fun x hx y hy hxy => ?_⟩
+  by_contra hne
+  let i : I := ⟨(⟨x, hx⟩, ⟨y, hy⟩), fun h => hne (congrArg Subtype.val h)⟩
+  apply havoid i
+  change ℓ (x - y) = 0
+  rw [map_sub, hxy, sub_self]
+
+theorem add_smul_sub_mem_openSimplex {s : Finset E} {x y : E}
+    (hx : x ∈ openSimplex s) (hy : y ∈ convexHull ℝ (s : Set E))
+    {r : ℝ} (hr : 0 ≤ r) (hr1 : r < 1) : x + r • (y - x) ∈ openSimplex s := by
+  obtain ⟨α, hαpos, hαsum, hαx⟩ := hx
+  obtain ⟨β, hβpos, hβsum, hβy⟩ := mem_convexHull_iff_exists_weights.mp hy
+  refine ⟨fun v => (1 - r) * α v + r * β v, fun v hv => ?_, ?_, ?_⟩
+  · exact add_pos_of_pos_of_nonneg (mul_pos (sub_pos.mpr hr1) (hαpos v hv))
+      (mul_nonneg hr (hβpos v hv))
+  · rw [Finset.sum_add_distrib, ← Finset.mul_sum, ← Finset.mul_sum, hαsum, hβsum]
+    ring
+  · simp_rw [add_smul, mul_smul]
+    rw [Finset.sum_add_distrib, ← Finset.smul_sum, ← Finset.smul_sum, hαx, hβy]
+    simp only [sub_smul, one_smul, smul_sub]
+    abel
+
+open Classical in
+theorem exists_affineIndependent_openSimplex_superset [FiniteDimensional ℝ E]
+    (n : ℕ) (hn : Module.finrank ℝ E = n) {C : Set E} (hC : Bornology.IsBounded C) :
+    ∃ T : Finset E, AffineIndependent ℝ ((↑) : T → E) ∧ T.card = n + 1 ∧
+      C ⊆ openSimplex T := by
+  obtain ⟨S, hS, hScard, h0, _, hnhds⟩ := exists_openSimplex_nhds n hn (0 : E) Filter.univ_mem
+  obtain ⟨r, hr, hball⟩ := Metric.mem_nhds_iff.mp hnhds
+  obtain ⟨R, hR⟩ := hC.subset_ball (0 : E)
+  let a : ℝ := 2 * (|R| + 1) / r
+  have ha : 0 < a := by dsimp [a]; positivity
+  let A : E →ᵃ[ℝ] E := a • AffineMap.id ℝ E
+  have hA : ∀ x, A x = a • x := fun _ => rfl
+  have hAinj : Function.Injective A := fun _ _ h => smul_right_injective E ha.ne' h
+  refine ⟨S.image A, affineIndependent_image_of_injOn_convexHull A hS hAinj.injOn, ?_, ?_⟩
+  · rw [Finset.card_image_of_injective _ hAinj, hScard]
+  · intro y hy
+    have hyR : ‖y‖ < |R| + 1 := by
+      have hy' : ‖y‖ < R := by simpa only [Metric.mem_ball, dist_zero_right] using hR hy
+      linarith [le_abs_self R]
+    have hnorm : ‖(2 : ℝ) • (a⁻¹ • y)‖ < r := by
+      rw [norm_smul, norm_smul, Real.norm_of_nonneg (by norm_num : (0 : ℝ) ≤ 2),
+        Real.norm_of_nonneg (inv_nonneg.mpr ha.le)]
+      have haeq : a * r = 2 * (|R| + 1) := by dsimp [a]; exact div_mul_cancel₀ _ hr.ne'
+      apply (mul_lt_mul_iff_right₀ ha).mp
+      calc a * (2 * (a⁻¹ * ‖y‖)) = 2 * ‖y‖ := by field_simp
+        _ < 2 * (|R| + 1) := by linarith
+        _ = a * r := haeq.symm
+    have hz : a⁻¹ • y ∈ openSimplex S := by
+      have h := add_smul_sub_mem_openSimplex h0
+        (hball (by simpa only [Metric.mem_ball, dist_zero_right] using hnorm))
+        (by norm_num : (0 : ℝ) ≤ 1 / 2) (by norm_num : (1 : ℝ) / 2 < 1)
+      simpa only [sub_zero, zero_add, smul_smul, show (1 : ℝ) / 2 * (2 * a⁻¹) = a⁻¹ by ring] using h
+    obtain ⟨w, hwpos, hwsum, hwy⟩ := hz
+    rw [mem_openSimplex_image_iff hAinj.injOn]
+    refine ⟨w, hwpos, hwsum, ?_⟩
+    rw [← affineMap_apply_sum_smul_comp A (fun v => v) hwsum, hwy, hA, smul_smul,
+      mul_inv_cancel₀ ha.ne', one_smul]
 end DifferentialGeometry.Topology.PiecewiseLinear
