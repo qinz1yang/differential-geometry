@@ -1980,4 +1980,47 @@ theorem rfs_csf_regularized_curvature (B : RicciBackground (I := I) (M := M) D a
       hc.immersed ε B.C hε hCnn x t ht hdiff.hasDerivWithinAt
       (curvature_evolution_le B hsu hwindow c hc x t ht)
 
+theorem weighted_regularized_curvature_density_evolution_le
+    (B : RicciBackground (I := I) (M := M) D a b)
+    (hsu : s < u) (hwindow : Icc s u ⊆ Icc a b)
+    (c : CurveMap M) (hc : c.IsSolutionOn B.family.metric (Icc s u))
+    (ε : ℝ) (hε : 0 < ε) (x t : ℝ) (ht : t ∈ Icc s u)
+    {φ : ℝ → ℝ} {φt : ℝ} (hφ : HasDerivWithinAt φ φt (Icc s u) t) (hφn : 0 ≤ φ t) :
+    derivWithin (fun τ => φ τ * c.regularizedCurvature B.family.metric ε x τ *
+        c.speed B.family.metric x τ) (Icc s u) t ≤
+      φt * c.regularizedCurvature B.family.metric ε x t * c.speed B.family.metric x t +
+      φ t * c.ds B.family.metric (c.ds B.family.metric
+        (c.regularizedCurvature B.family.metric ε)) x t * c.speed B.family.metric x t +
+      (B.C + B.B₀) * φ t * c.regularizedCurvature B.family.metric ε x t *
+        c.speed B.family.metric x t + B.C * φ t * c.speed B.family.metric x t := by
+  have hreg := rfs_csf_regularized_curvature B hsu hwindow c hc ε hε
+  have hRt : HasDerivWithinAt (fun τ => c.regularizedCurvature B.family.metric ε x τ)
+      (derivWithin (fun τ => c.regularizedCurvature B.family.metric ε x τ) (Icc s u) t)
+      (Icc s u) t := by
+    have harg : ContDiffWithinAt ℝ ∞ (fun τ : ℝ => (x, τ)) (Icc s u) t :=
+      contDiffWithinAt_const.prodMk contDiffWithinAt_id
+    exact ((hreg.1.contDiffWithinAt ⟨mem_univ x, ht⟩).comp t harg
+      (fun τ hτ => ⟨mem_univ x, hτ⟩)).differentiableWithinAt (by norm_num) |>.hasDerivWithinAt
+  have hvt := CurveMap.speedEvolution_of_pairingEvolution B c hc.immersed
+    (CurveMap.pairingEvolution B hsu hwindow c hc) x t ht
+  have hd := ((hφ.mul hRt).mul hvt).derivWithin ((uniqueDiffOn_Icc hsu) t ht)
+  change derivWithin (fun τ => φ τ * c.regularizedCurvature B.family.metric ε x τ *
+    c.speed B.family.metric x τ) (Icc s u) t = _ at hd
+  rw [hd]
+  have hunit := (tangent_curvature_geometry B.family.metric c (Icc s u)
+    hc.smooth hc.immersed x t ht).1
+  have hric := ricci_pair_ge B t (hwindow ht) (c.unitTangent B.family.metric x t)
+  rw [hunit, mul_one] at hric
+  have hric' : -B.B₀ ≤ c.ricciTangent B.family x t := by
+    simpa only [CurveMap.ricciTangent] using hric
+  have hRnn : 0 ≤ c.regularizedCurvature B.family.metric ε x t :=
+    (c.curvature_nonneg B.family.metric x t).trans (sub_nonneg.mp (hreg.2.1 x t ht).1)
+  have hvn := c.speed_nonneg B.family.metric x t
+  have hevol := mul_le_mul_of_nonneg_right
+    (mul_le_mul_of_nonneg_left (hreg.2.2 x t ht) hφn) hvn
+  have hricbound := mul_le_mul_of_nonneg_left hric'
+    (mul_nonneg (mul_nonneg hφn hRnn) hvn)
+  dsimp only [CurveMap.q, Pi.mul_apply]
+  nlinarith only [hevol, hricbound]
+
 end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening

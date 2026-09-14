@@ -772,63 +772,17 @@ private theorem regularizedTotalCurvature_derivWithin_le
         (((B.C + B.B₀) * c.regularizedCurvature B.family.metric ε x v) *
             c.speed B.family.metric x v + B.C * c.speed B.family.metric x v) := by
     intro x
-    have h3 := (rfs_csf_regularized_curvature B hsu hwindow c hc ε hε).2.2 x v hv
-    have hRnn : 0 ≤ c.regularizedCurvature B.family.metric ε x v :=
-      le_trans (c.curvature_nonneg B.family.metric x v)
-        (sub_nonneg.mp ((rfs_csf_regularized_curvature B hsu hwindow c hc ε hε).2.1 x v hv).1)
-    have hric := ricciTangent_ge_neg B hwindow c hc x v hv
-    have hvnn := c.speed_nonneg B.family.metric x v
-    have hq : c.q B.family x v =
-        c.curvatureSq B.family.metric x v + c.ricciTangent B.family x v := rfl
-    have hnegric : -c.ricciTangent B.family x v ≤ B.B₀ := by linarith [hric]
-    have hkey : -(c.regularizedCurvature B.family.metric ε x v *
-        c.ricciTangent B.family x v) ≤
-        B.B₀ * c.regularizedCurvature B.family.metric ε x v := by
-      have h := mul_le_mul_of_nonneg_left hnegric hRnn
-      rw [mul_neg, ← mul_comm B.B₀] at h
-      exact h
-    have h1 := mul_le_mul_of_nonneg_right h3 hvnn
-    have h2 : c.regularizedCurvature B.family.metric ε x v *
-        (-(c.q B.family x v) * c.speed B.family.metric x v) =
-        -(c.regularizedCurvature B.family.metric ε x v *
-            c.curvatureSq B.family.metric x v * c.speed B.family.metric x v) -
-          c.regularizedCurvature B.family.metric ε x v *
-            c.ricciTangent B.family x v * c.speed B.family.metric x v := by
-      rw [hq]
-      ring
-    have hmid : derivWithin (fun τ => c.regularizedCurvature B.family.metric ε x τ) (Icc s u) v *
-          c.speed B.family.metric x v +
-        c.regularizedCurvature B.family.metric ε x v *
-          (-(c.q B.family x v) * c.speed B.family.metric x v) ≤
-        (c.ds B.family.metric (c.ds B.family.metric
-              (c.regularizedCurvature B.family.metric ε)) x v +
-          B.C * c.regularizedCurvature B.family.metric ε x v + B.C -
-          c.regularizedCurvature B.family.metric ε x v * c.ricciTangent B.family x v) *
-          c.speed B.family.metric x v := by
-      rw [h2]
-      nlinarith [h1]
-    have hfin : (c.ds B.family.metric (c.ds B.family.metric
-            (c.regularizedCurvature B.family.metric ε)) x v +
-          B.C * c.regularizedCurvature B.family.metric ε x v + B.C -
-          c.regularizedCurvature B.family.metric ε x v * c.ricciTangent B.family x v) *
-          c.speed B.family.metric x v ≤
-        (c.ds B.family.metric (c.ds B.family.metric
-            (c.regularizedCurvature B.family.metric ε)) x v +
-          (B.C + B.B₀) * c.regularizedCurvature B.family.metric ε x v + B.C) *
-          c.speed B.family.metric x v := by
-      refine mul_le_mul_of_nonneg_right ?_ hvnn
-      linarith [hkey]
-    have hconv : (c.ds B.family.metric (c.ds B.family.metric
-            (c.regularizedCurvature B.family.metric ε)) x v +
-          (B.C + B.B₀) * c.regularizedCurvature B.family.metric ε x v + B.C) *
-          c.speed B.family.metric x v =
-        c.ds B.family.metric (c.ds B.family.metric (c.regularizedCurvature B.family.metric ε)) x v *
-            c.speed B.family.metric x v +
-          (((B.C + B.B₀) * c.regularizedCurvature B.family.metric ε x v) *
-              c.speed B.family.metric x v + B.C * c.speed B.family.metric x v) := by
-      ring
-    rw [hconv] at hfin
-    linarith [hmid, hfin]
+    have h := weighted_regularized_curvature_density_evolution_le B hsu hwindow c hc ε hε x v hv
+      (φ := fun _ => 1) (φt := 0) (hasDerivWithinAt_const v (Icc s u) 1) zero_le_one
+    have hsp := CurveMap.speedEvolution_of_pairingEvolution B c hc.immersed
+      (CurveMap.pairingEvolution B hsu hwindow c hc) x v hv
+    have hd := ((hasDerivWithinAt_regularizedCurvature_slice B hsu hwindow c hc ε hε x v hv).mul
+      hsp).derivWithin ((uniqueDiffOn_Icc hsu) v hv)
+    change derivWithin (fun τ => c.regularizedCurvature B.family.metric ε x τ *
+      c.speed B.family.metric x τ) (Icc s u) v = _ at hd
+    simp only [one_mul, zero_mul, zero_add, mul_one] at h
+    rw [hd] at h
+    simpa only [add_assoc] using h
   have hψa : ContDiff ℝ ∞ (fun x : ℝ => (c.speed B.family.metric x v)⁻¹ *
       deriv (fun z : ℝ => c.regularizedCurvature B.family.metric ε z v) x) := by
     have hsd : ContDiff ℝ ∞ (fun x : ℝ => c.speed B.family.metric x v) :=
