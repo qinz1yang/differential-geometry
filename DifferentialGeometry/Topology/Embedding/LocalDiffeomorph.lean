@@ -86,6 +86,14 @@ private theorem isImmersionAtOfComplement_isLocalDiffeomorphAt_comp
     rw [hΦeq hyΦ, hcancel]
     exact congrArg L (hf.writtenInCharts (htarget hy))
 
+theorem IsImmersionAtOfComplement.isLocalDiffeomorphAt_comp
+    {P : Type*} [TopologicalSpace P] [ChartedSpace G P] {g : N → P}
+    [IsManifold J n P] (hf : IsImmersionAtOfComplement F I J n f x)
+    (hg : IsLocalDiffeomorphAt J J n g (f x)) :
+    IsImmersionAtOfComplement F I J n (g ∘ f) x :=
+  isImmersionAtOfComplement_isLocalDiffeomorphAt_comp
+    (ContinuousLinearEquiv.refl 𝕜 E') (Diffeomorph.refl J G n) (fun _ => rfl) hf hg
+
 theorem IsImmersionAt.isLocalDiffeomorphAt_comp
     {P : Type*} [TopologicalSpace P] [ChartedSpace G P] {g : N → P}
     [IsManifold J n P] (hf : IsImmersionAt I J n f x)

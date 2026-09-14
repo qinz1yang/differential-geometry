@@ -140,7 +140,7 @@
     "root_independent_review": "All ten guarded hashes match final current source; all24 signature/axiom messages read; actual finite nonempty simplicial face/intersection and mesh support/frontier/deletion consumers pass; all28 selected attachment declaration bodies independently match pinned upstream sources.",
     "aggregate_registration": "All five leaves registered in DifferentialGeometry.lean."
   },
-  "deletion_provenance_sha256": "02e8681f2502f18b66b41c494192f7e44456f30c7098a8c1c681ab1c7a4c3aca",
+  "deletion_provenance_sha256": "0d947cf2c359d35d9523616ed73545d5703e809e6b93da90e1ab2edc13fa9cf9",
   "deletion_validation": {
     "status": "Passed fresh one-new-module artifact and imported public consumer gate.",
     "request_id": "1789233891983857661-schoenflies-42a7b73c",

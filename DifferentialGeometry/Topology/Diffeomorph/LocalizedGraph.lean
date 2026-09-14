@@ -1,3 +1,7 @@
+import Mathlib.Topology.MetricSpace.Thickening
+import Mathlib.Topology.UniformSpace.HeineCantor
+import Mathlib.Analysis.Normed.Group.Real
+import Mathlib.Topology.Connected.Clopen
 import DifferentialGeometry.Topology.Diffeomorph.Fiberwise
 import DifferentialGeometry.Topology.Diffeomorph.Perturbation
 import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension
@@ -315,5 +319,222 @@ theorem exists_isotopy_graphOn_of_hasCompactSupport {E : Type*}
   · simpa only [F, zero_mul, add_zero] using himage
   · simpa only [F, zero_mul, add_zero] using hepi
   · simpa only [F, zero_mul, add_zero] using hstrict
+
+end Diffeomorph
+
+namespace Diffeomorph
+
+open scoped Topology
+
+private theorem exists_uniform_graph_tube {E : Type*} [PseudoMetricSpace E]
+    {g : ℝ × E → ℝ} (hg : Continuous g) {K : Set E} (hK : IsCompact K)
+    {O : Set (E × ℝ)} (hO : IsOpen O)
+    (htrace : ∀ t ∈ Set.Icc (0 : ℝ) 1, ∀ x ∈ K, (x, g (t, x)) ∈ O) :
+    ∃ δ > 0, ∀ t ∈ Set.Icc (0 : ℝ) 1, ∀ x ∈ K, ∀ y : ℝ,
+      ‖y - g (t, x)‖ ≤ δ → (x, y) ∈ O := by
+  let S := (fun p : ℝ × E => (p.2, g p)) '' (Set.Icc (0 : ℝ) 1 ×ˢ K)
+  have hS : IsCompact S := (isCompact_Icc.prod hK).image (continuous_snd.prodMk hg)
+  have hSO : S ⊆ O := by
+    rintro z ⟨⟨t, x⟩, ⟨ht, hx⟩, rfl⟩
+    exact htrace t ht x hx
+  obtain ⟨δ, hδ, hsub⟩ := hS.exists_cthickening_subset_open hO hSO
+  refine ⟨δ, hδ, ?_⟩
+  intro t ht x hx y hy
+  apply hsub
+  apply Metric.mem_cthickening_of_dist_le (x, y) (x, g (t, x)) δ S
+    ⟨(t, x), ⟨ht, hx⟩, rfl⟩
+  rw [Prod.dist_eq, dist_self, dist_eq_norm]
+  exact (max_eq_right (norm_nonneg (y - g (t, x)))).trans_le hy
+
+private theorem exists_uniform_graph_time_step {E : Type*} [PseudoMetricSpace E]
+    {g : ℝ × E → ℝ} (hg : Continuous g) {K : Set E} (hK : IsCompact K)
+    {D : ℝ} (hD : 0 < D) :
+    ∃ η > 0, ∀ a ∈ Set.Icc (0 : ℝ) 1, ∀ b ∈ Set.Icc (0 : ℝ) 1,
+      dist a b ≤ η → ∀ x ∈ K, ‖g (b, x) - g (a, x)‖ ≤ D := by
+  obtain ⟨η, hη, hstep⟩ := Metric.uniformContinuousOn_iff_le.mp
+    ((isCompact_Icc.prod hK).uniformContinuousOn_of_continuous hg.continuousOn) D hD
+  refine ⟨η, hη, ?_⟩
+  intro a ha b hb hab x hx
+  apply hstep (b, x) ⟨hb, hx⟩ (a, x) ⟨ha, hx⟩
+  simpa only [Prod.dist_eq, dist_self, max_eq_left (dist_nonneg), dist_comm] using hab
+
+private theorem exists_local_graph_isotopy_in_open {E : Type*}
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    {g : ℝ × E → ℝ} (hg : ContDiff ℝ ∞ g) {K : Set E} (hK : IsCompact K)
+    (hfixed : ∀ t ∈ Set.Icc (0 : ℝ) 1, ∀ x ∉ K, g (t, x) = g (0, x))
+    {O : Set (E × ℝ)} (hO : IsOpen O)
+    (htrace : ∀ t ∈ Set.Icc (0 : ℝ) 1, ∀ x ∈ K, (x, g (t, x)) ∈ O) :
+    ∃ η > 0, ∀ a ∈ Set.Icc (0 : ℝ) 1, ∀ b ∈ Set.Icc (0 : ℝ) 1,
+      dist a b ≤ η →
+      ∃ H : ℝ → ((E × ℝ) ≃ₘ[ℝ] (E × ℝ)),
+        ContDiff ℝ ∞ (fun z : ℝ × (E × ℝ) => H z.1 z.2) ∧
+        ContDiff ℝ ∞ (fun z : ℝ × (E × ℝ) => (H z.1).symm z.2) ∧
+        H 0 = Diffeomorph.refl 𝓘(ℝ, E × ℝ) (E × ℝ) ∞ ∧
+        (∀ (t : ℝ) (p : E × ℝ), (H t p).1 = p.1) ∧
+        (∀ x : E, H 1 (x, g (a, x)) = (x, g (b, x))) ∧
+        (∀ s : Set E, H 1 '' {p : E × ℝ | p.1 ∈ s ∧ g (a, p.1) ≤ p.2} =
+          {p : E × ℝ | p.1 ∈ s ∧ g (b, p.1) ≤ p.2}) ∧
+        (∀ s : Set E, H 1 '' {p : E × ℝ | p.1 ∈ s ∧ g (a, p.1) < p.2} =
+          {p : E × ℝ | p.1 ∈ s ∧ g (b, p.1) < p.2}) ∧
+        ∃ C : Set (E × ℝ), IsCompact C ∧ C ⊆ O ∧ ∀ t : ℝ,
+          Set.EqOn (H t) id Cᶜ ∧ Set.EqOn (H t).symm id Cᶜ := by
+  obtain ⟨δ, hδ, htube⟩ := exists_uniform_graph_tube hg.continuous hK hO htrace
+  let bump : ContDiffBump (0 : ℝ) := ⟨1, 2, by norm_num, by norm_num⟩
+  obtain ⟨B, hB⟩ := ContDiff.lipschitzWith_of_hasCompactSupport bump.hasCompactSupport
+    bump.contDiff (show (∞ : ℕ∞ω) ≠ 0 by simp)
+  let R : ℝ := δ / 2
+  have hR : 0 < R := half_pos hδ
+  let D : ℝ≥0 := ⟨R / (2 * ((B : ℝ) + 1)), by positivity⟩
+  have hD : 0 < (D : ℝ) := div_pos hR (by positivity)
+  have hDmul : (D : ℝ) * (2 * ((B : ℝ) + 1)) = R :=
+    div_mul_cancel₀ R (by positivity)
+  have hcoeff : (D : ℝ) * B * R⁻¹ ≤ 1 / 2 := by
+    apply (mul_inv_le_iff₀ hR).mpr
+    nlinarith [D.coe_nonneg, B.coe_nonneg]
+  obtain ⟨η, hη, hstep⟩ := exists_uniform_graph_time_step hg.continuous hK hD
+  refine ⟨η, hη, ?_⟩
+  intro a ha b hb hab
+  let f : ℝ × E → ℝ := fun p => g (a, p.2) + p.1 * (g (b, p.2) - g (a, p.2))
+  have hfa : ContDiff ℝ ∞ (fun p : ℝ × E => g (a, p.2)) :=
+    hg.comp (contDiff_const.prodMk contDiff_snd)
+  have hfb : ContDiff ℝ ∞ (fun p : ℝ × E => g (b, p.2)) :=
+    hg.comp (contDiff_const.prodMk contDiff_snd)
+  have hf : ContDiff ℝ ∞ f := hfa.add (contDiff_fst.mul (hfb.sub hfa))
+  have hfzero (x : E) : f (0, x) = g (a, x) := by simp only [f, zero_mul, add_zero]
+  have hfone (x : E) : f (1, x) = g (b, x) := by
+    dsimp only [f]
+    ring
+  have hffixed : ∀ s ∈ Set.Icc (0 : ℝ) 1, ∀ x ∉ K, f (s, x) = f (0, x) := by
+    intro s hs x hx
+    simp only [f, hfixed a ha x hx, hfixed b hb x hx, sub_self, mul_zero, add_zero]
+  have hfbound : ∀ s ∈ Set.Icc (0 : ℝ) 1, ∀ x ∈ K, ‖f (s, x) - f (0, x)‖ ≤ D := by
+    intro s hs x hx
+    rw [hfzero]
+    change ‖g (a, x) + s * (g (b, x) - g (a, x)) - g (a, x)‖ ≤ D
+    rw [add_sub_cancel_left, norm_mul, Real.norm_eq_abs, abs_of_nonneg hs.1]
+    exact (mul_le_mul_of_nonneg_right hs.2 (norm_nonneg _)).trans
+      (by simpa only [one_mul] using hstep a ha b hb hab x hx)
+  obtain ⟨H, hH, hiH, hzero, hfst, hgraph, _, _, hepi, hstrict, hcompact, hfix⟩ :=
+    exists_isotopy_graphOn_family_with_support hf hK hffixed bump hB hfbound hR hcoeff
+  refine ⟨H, hH, hiH, hzero, hfst, ?_, ?_, ?_,
+    {p | p.1 ∈ K ∧ ‖p.2 - f (0, p.1)‖ ≤ bump.rOut * R}, hcompact, ?_, hfix⟩
+  · intro x
+    simpa only [Real.smoothTransition.one, hfzero, hfone] using hgraph 1 x
+  · intro s
+    simpa only [Real.smoothTransition.one, hfzero, hfone] using hepi 1 s
+  · intro s
+    simpa only [Real.smoothTransition.one, hfzero, hfone] using hstrict 1 s
+  · intro p hp
+    apply htube a ha p.1 hp.1 p.2
+    have h := hp.2
+    rw [hfzero] at h
+    change ‖p.2 - g (a, p.1)‖ ≤ 2 * (δ / 2) at h
+    linarith
+
+theorem exists_isotopy_graphOn_endpoints_in_open {E : Type*}
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    {g : ℝ × E → ℝ} (hg : ContDiff ℝ ∞ g) {K : Set E} (hK : IsCompact K)
+    (hfixed : ∀ t ∈ Set.Icc (0 : ℝ) 1, ∀ x ∉ K, g (t, x) = g (0, x))
+    {O : Set (E × ℝ)} (hO : IsOpen O)
+    (htrace : ∀ t ∈ Set.Icc (0 : ℝ) 1, ∀ x ∈ K, (x, g (t, x)) ∈ O) :
+    ∃ H : ℝ → ((E × ℝ) ≃ₘ[ℝ] (E × ℝ)),
+      ContDiff ℝ ∞ (fun z : ℝ × (E × ℝ) => H z.1 z.2) ∧
+      ContDiff ℝ ∞ (fun z : ℝ × (E × ℝ) => (H z.1).symm z.2) ∧
+      H 0 = Diffeomorph.refl 𝓘(ℝ, E × ℝ) (E × ℝ) ∞ ∧
+      (∀ (t : ℝ) (p : E × ℝ), (H t p).1 = p.1) ∧
+      (∀ x : E, H 1 (x, g (0, x)) = (x, g (1, x))) ∧
+      (∀ s : Set E, H 1 '' {p : E × ℝ | p.1 ∈ s ∧ g (0, p.1) ≤ p.2} =
+        {p : E × ℝ | p.1 ∈ s ∧ g (1, p.1) ≤ p.2}) ∧
+      (∀ s : Set E, H 1 '' {p : E × ℝ | p.1 ∈ s ∧ g (0, p.1) < p.2} =
+        {p : E × ℝ | p.1 ∈ s ∧ g (1, p.1) < p.2}) ∧
+      ∃ C : Set (E × ℝ), IsCompact C ∧ C ⊆ O ∧ ∀ t : ℝ,
+        Set.EqOn (H t) id Cᶜ ∧ Set.EqOn (H t).symm id Cᶜ := by
+  let P : ℝ → ℝ → Prop := fun a b =>
+    ∃ H : ℝ → ((E × ℝ) ≃ₘ[ℝ] (E × ℝ)),
+      ContDiff ℝ ∞ (fun z : ℝ × (E × ℝ) => H z.1 z.2) ∧
+      ContDiff ℝ ∞ (fun z : ℝ × (E × ℝ) => (H z.1).symm z.2) ∧
+      H 0 = Diffeomorph.refl 𝓘(ℝ, E × ℝ) (E × ℝ) ∞ ∧
+      (∀ (t : ℝ) (p : E × ℝ), (H t p).1 = p.1) ∧
+      (∀ x : E, H 1 (x, g (a, x)) = (x, g (b, x))) ∧
+      (∀ s : Set E, H 1 '' {p : E × ℝ | p.1 ∈ s ∧ g (a, p.1) ≤ p.2} =
+        {p : E × ℝ | p.1 ∈ s ∧ g (b, p.1) ≤ p.2}) ∧
+      (∀ s : Set E, H 1 '' {p : E × ℝ | p.1 ∈ s ∧ g (a, p.1) < p.2} =
+        {p : E × ℝ | p.1 ∈ s ∧ g (b, p.1) < p.2}) ∧
+      ∃ C : Set (E × ℝ), IsCompact C ∧ C ⊆ O ∧ ∀ t : ℝ,
+        Set.EqOn (H t) id Cᶜ ∧ Set.EqOn (H t).symm id Cᶜ
+  change P 0 1
+  obtain ⟨η, hη, hlocal⟩ := exists_local_graph_isotopy_in_open hg hK hfixed hO htrace
+  apply (isPreconnected_Icc : IsPreconnected (Set.Icc (0 : ℝ) 1)).induction₂
+    P ?_ ?_ ?_ (by simp) (by simp)
+  · intro a ha
+    filter_upwards [self_mem_nhdsWithin,
+      nhdsWithin_le_nhds (Metric.ball_mem_nhds a hη)] with b hb hab
+    exact hlocal a ha b hb (by
+      have h : dist a b < η := by simpa only [Metric.mem_ball, dist_comm] using hab
+      exact h.le)
+  · intro a b c ha hb hc hab hbc
+    obtain ⟨H, hH, hiH, hH0, hHfst, hHgraph, hHepi, hHstrict, C, hC, hCO, hHfix⟩ := hab
+    obtain ⟨J, hJ, hiJ, hJ0, hJfst, hJgraph, hJepi, hJstrict, D, hD, hDO, hJfix⟩ := hbc
+    let L : ℝ → ((E × ℝ) ≃ₘ[ℝ] (E × ℝ)) := fun t => (H t).trans (J t)
+    have hLf : ContDiff ℝ ∞ (fun z : ℝ × (E × ℝ) => L z.1 z.2) :=
+      hJ.comp (contDiff_fst.prodMk hH)
+    have hLi : ContDiff ℝ ∞ (fun z : ℝ × (E × ℝ) => (L z.1).symm z.2) :=
+      hiH.comp (contDiff_fst.prodMk hiJ)
+    refine ⟨L, hLf, hLi, ?_, ?_, ?_, ?_, ?_, C ∪ D, hC.union hD,
+      Set.union_subset hCO hDO, ?_⟩
+    · apply Diffeomorph.ext
+      intro p
+      change J 0 (H 0 p) = p
+      rw [hH0, hJ0]
+      rfl
+    · intro t p
+      change (J t (H t p)).1 = p.1
+      rw [hJfst, hHfst]
+    · intro x
+      change J 1 (H 1 (x, g (a, x))) = (x, g (c, x))
+      rw [hHgraph, hJgraph]
+    · intro s
+      change (J 1 ∘ H 1) '' _ = _
+      rw [Set.image_comp, hHepi, hJepi]
+    · intro s
+      change (J 1 ∘ H 1) '' _ = _
+      rw [Set.image_comp, hHstrict, hJstrict]
+    · intro t
+      constructor
+      · intro p hp
+        have hpC : p ∉ C := fun h => hp (Or.inl h)
+        have hpD : p ∉ D := fun h => hp (Or.inr h)
+        change J t (H t p) = p
+        rw [(hHfix t).1 hpC, id_eq]
+        exact (hJfix t).1 hpD
+      · intro p hp
+        have hpC : p ∉ C := fun h => hp (Or.inl h)
+        have hpD : p ∉ D := fun h => hp (Or.inr h)
+        change (H t).symm ((J t).symm p) = p
+        rw [(hJfix t).2 hpD, id_eq]
+        exact (hHfix t).2 hpC
+  · intro a b ha hb hab
+    obtain ⟨H, hH, hiH, hH0, hfst, hgraph, hepi, hstrict, C, hC, hCO, hfix⟩ := hab
+    refine ⟨fun t => (H t).symm, hiH, ?_, ?_, ?_, ?_, ?_, ?_, C, hC, hCO, ?_⟩
+    · exact hH
+    · change (H 0).symm = Diffeomorph.refl 𝓘(ℝ, E × ℝ) (E × ℝ) ∞
+      rw [hH0]
+      rfl
+    · intro t p
+      have h := hfst t ((H t).symm p)
+      rw [(H t).apply_symm_apply] at h
+      exact h.symm
+    · intro x
+      change (H 1).symm (x, g (b, x)) = (x, g (a, x))
+      exact (congrArg (H 1).symm (hgraph x)).symm.trans
+        ((H 1).symm_apply_apply (x, g (a, x)))
+    · intro s
+      rw [← hepi s]
+      exact (H 1).symm_image_image _
+    · intro s
+      rw [← hstrict s]
+      exact (H 1).symm_image_image _
+    · intro t
+      exact (hfix t).symm
 
 end Diffeomorph

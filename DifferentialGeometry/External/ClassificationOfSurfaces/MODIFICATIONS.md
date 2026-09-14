@@ -205,3 +205,67 @@ private sources,17 unchanged proof bodies and the sole producer-call rename.
 The deletion consumer retains actual survivor support/frontier and count
 decrease. The new leaf is registered in the flat aggregate. This is a fresh
 leaf/imported REPL gate, not a full DifferentialGeometry aggregate build.
+
+
+## Shared region interior for polygon vertex charts
+
+`Schoenflies.interior_closure_inside_of_separating` in `TriangleMeshCrosscut`
+is now public. Its exact body, surrounding scopes, vendor header and existing
+crosscut consumer are unchanged. The native `PolygonVertexCharts` development
+imports this one provider to identify the actual interior of the closed bounded
+polygon region. No second proof body or alternate region object is introduced.
+
+The new chart theorem produces an affine equivalence at any native polygon
+vertex, with the exact incoming/outgoing vertex images and a slope that is zero
+exactly for a straight subdivision. One sign simultaneously identifies the
+actual closed region, interior, frontier and carrier. Consumers check a genuine
+unit-triangle corner, an inserted straight midpoint with unchanged carrier,
+and actual points on both sides in the same produced neighborhood.
+
+Source f31dbe47 passed in26.62s with138 guards and21 readback pairs. Imported
+c9fd3e0b passed in105.49s with142 guards and6 pairs in Slurm13846673. Both changed
+leaves freshly compiled in1:07.27, maximum RSS1712316KiB, with zero diagnostics.
+All five shared source/imported pairs and the original public crosscut partition
+pair match byte-for-byte. Stock declaration linters and standard-only transitive
+axioms pass. The new leaf is registered in the flat aggregate. This is not an
+aggregate DifferentialGeometry build, compact global rounding, or smooth disk
+filling. CROSSCUT_PROVENANCE.json preserves the previous validation record.
+
+
+## Public compact-frontier recognition
+
+`Schoenflies.eq_closure_inside_of_isCompact_frontier_eq` in
+`PrePolygonDeletion.lean` is public. The only Lean source change is removal of
+`private` from its declaration. Its name, complete type, 70-line proof body,
+original documentation, Apache notice, imports and lexical scopes are unchanged;
+all fourteen other declarations are unchanged. The existing one- and two-edge
+deletion engines continue to use this same provider.
+
+The theorem recognizes any compact planar set with nonempty interior and a
+separating frontier as the closure of the canonical bounded complementary
+region. It requires no polygonal presentation or supplied support equation.
+Native prescribed-region preparation can now import the existing recognition
+proof directly. No second production proof, wrapper, alias or module is added.
+
+DELETION_PROVENANCE.json retains the earlier one- and two-edge validation
+records and distinguishes this visibility change and its validation.
+DELETION_RECOGNITION.patch remains the historical upstream-to-private-native
+adaptation; the later single-token visibility change is recorded separately.
+
+Source df7d5553 passes in 27.41 seconds; imported574d6ec8 passes in 202.03
+seconds, with three fresh affected artifacts in 2:34.62 and peak RSS 2179376
+KiB. All ten source/imported pairs, six earlier deletion pairs and three PG/PI
+pairs are byte-identical. Strict source and declaration linters and standard-only
+transitive axioms pass. The stored response classifier was reviewed with the
+strict multiline-command parser; original responses remain unchanged. This is
+not an aggregate DifferentialGeometry build or a smooth disk theorem.
+
+
+## Integration metadata correction
+
+During integration of Ayush commit 4ca15d0de, the top-level provenance manifest
+was synchronized with the already recorded public visibility of
+PrePolygonDeletion.eq_closure_inside_of_isCompact_frontier_eq and
+TriangleMeshCrosscut.interior_closure_inside_of_separating. The two source hashes
+and the deletion-provenance hash were refreshed; historical validation records
+were preserved. No additional vendored proof-body change was made.
