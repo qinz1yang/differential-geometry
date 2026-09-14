@@ -277,6 +277,22 @@ theorem isSmoothEmbedding_collarFillingModel :
       (DifferentialGeometry.Topology.Ehresmann.affineIntervalDiffeomorph (-2) 2))
   simpa [collarFillingModel, Function.comp_def] using h
 
+private def collarModelPunctured : TopologicalSpace.Opens (Sphere 2 × Icc (0 : ℝ) 1) :=
+  ⟨{z : Sphere 2 × Icc (0 : ℝ) 1 | 0 < (z.2 : ℝ)},
+    isOpen_lt continuous_const (continuous_subtype_val.comp continuous_snd)⟩
+
+theorem isSmoothEmbedding_collarFillingModel_restrictOpen :
+    IsSmoothEmbedding ((𝓡 2).prod (𝓡∂ 1)) ((𝓡 2).prod (𝓡∂ 1)) ∞
+      (collarFillingModel ∘ (Subtype.val : ↥collarModelPunctured →
+        Sphere 2 × Icc (0 : ℝ) 1)) := by
+  have h := DifferentialGeometry.Topology.Manifold.isSmoothEmbedding_diffeomorph_comp
+    (I := (𝓡 2).prod (𝓡∂ 1)) (J := (𝓡 2).prod (𝓡∂ 1))
+    (Subtype.val : ↥collarModelPunctured → Sphere 2 × Icc (0 : ℝ) 1)
+    (IsSmoothEmbedding.of_opens collarModelPunctured)
+    ((Diffeomorph.refl (𝓡 2) (Sphere 2) ∞).prodCongr
+      (DifferentialGeometry.Topology.Ehresmann.affineIntervalDiffeomorph (-2) 2))
+  simpa [collarFillingModel, Function.comp_def] using h
+
 theorem range_collarFillingModel : range collarFillingModel = univ := by
   ext z
   refine ⟨fun _ => mem_univ z, fun _ => ?_⟩
@@ -441,7 +457,7 @@ theorem not_continuous_extension_collarFilling
     (hkey ⟨-(EuclideanSpace.single (0 : Fin 3) (1 : ℝ)), hmem'⟩)
   exact hne (Prod.ext_iff.mp hEq).1
 
-def ClosedCellBoundaryRetractionFree : Prop :=
+def ClosedCellBoundaryBijectionFree : Prop :=
   ¬ ∃ φ : DifferentialGeometry.Topology.ClosedCell 3 → Sphere 2,
       Continuous φ ∧ Function.Bijective (φ ∘ DifferentialGeometry.Topology.sphereToClosedCell)
 
@@ -461,7 +477,7 @@ theorem exists_boundaryBijection_of_boundarySliceCorrespondence
     exact ⟨w, by simp only [Function.comp_apply, hbd w]⟩
 
 theorem not_exists_smoothEmbedding_of_boundarySliceCorrespondence
-    (h : ClosedCellBoundaryRetractionFree) :
+    (h : ClosedCellBoundaryBijectionFree) :
     ¬ ∃ (e : DifferentialGeometry.Topology.ClosedCell 3 → TubeDomain) (b : Icc (-2 : ℝ) 2),
         IsSmoothEmbedding (𝓡∂ 3) ((𝓡 2).prod (𝓡∂ 1)) ∞ e ∧
           ∀ z : Sphere 2, e (DifferentialGeometry.Topology.sphereToClosedCell z) = (z, b) := by
