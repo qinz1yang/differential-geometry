@@ -57,4 +57,26 @@ theorem hasFDerivAt_capSRaw (v : E3) :
           ((2 * standardNeckCapAmbientRadius ^ 2) • innerSL ℝ v))) v :=
   (hasFDerivAt_capDenInv v).const_mul (2 * standardNeckCapAmbientRadius)
 
+theorem hasFDerivAt_capTRaw (v : E3) :
+    HasFDerivAt ((fun w : E3 => 1 - standardNeckCapAmbientRadius ^ 2 * ‖w‖ ^ 2) *
+        ((fun x : ℝ => x⁻¹) ∘ standardNeckCapDenAmbient))
+      ((1 - standardNeckCapAmbientRadius ^ 2 * ‖v‖ ^ 2) •
+          ContinuousLinearMap.toSpanSingleton ℝ (-(standardNeckCapDenAmbient v ^ 2)⁻¹) ∘SL
+            ((2 * standardNeckCapAmbientRadius ^ 2) • (innerSL ℝ) v) +
+        ((fun x : ℝ => x⁻¹) ∘ standardNeckCapDenAmbient) v • -(2 * standardNeckCapAmbientRadius ^ 2) • (innerSL ℝ) v)
+      v :=
+  (hasFDerivAt_capNumT v).mul (hasFDerivAt_capDenInv v)
+
+theorem hasFDerivAt_capURaw (v : E3) :
+    HasFDerivAt ((fun w : E3 => 2 * standardNeckCapAmbientRadius *
+        ((fun x : ℝ => x⁻¹) ∘ standardNeckCapDenAmbient) w) • id)
+      ((2 * standardNeckCapAmbientRadius *
+            ((fun x : ℝ => x⁻¹) ∘ standardNeckCapDenAmbient) v) • ContinuousLinearMap.id ℝ E3 +
+          ((2 * standardNeckCapAmbientRadius) •
+                ContinuousLinearMap.toSpanSingleton ℝ (-(standardNeckCapDenAmbient v ^ 2)⁻¹) ∘SL
+                  ((2 * standardNeckCapAmbientRadius ^ 2) • (innerSL ℝ) v)).smulRight
+            (id v))
+      v :=
+  (hasFDerivAt_capSRaw v).smul (hasFDerivAt_id v)
+
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
