@@ -7,6 +7,9 @@ and `Poincare` namespaces. `Poincare.lean` imports every included leaf.
 
 The additions prove:
 
+- local constancy of the actual outward sphere tangent orientation in every
+  fixed native chart, including the real zero-sphere;
+
 - actual integral compactly supported cohomology as a module colimit, its
   compact-space comparison, open-embedding extension and uniquely determined
   cap maps with explicit representative and forgetful laws;
@@ -1338,3 +1341,18 @@ Open-embedding cap naturality, general integral manifold duality,
 positive-dimensional outward homology normalization, adjunction signs and the
 missing frozen topology contract remain open. Neither full theorem suite is
 claimed complete.
+
+## Local constancy of outward sphere orientations
+
+This 154-module checkpoint tracks 224 curated added public exports. The actual
+outward tangent orientation is locally constant after transport through each
+fixed native sphere chart. The ambient orientation and chart center remain
+ordinary inputs; the conclusion holds in every dimension, including zero.
+The S2 consumers use actual tangent vectors and transported orientations, and
+the real zero-sphere consumer retains the negative endpoint orientation.
+
+Source `1789419839469028859-topology-0c249c94` passed in 20.92 seconds with 79 guards and 14 signature/axiom pairs. Original `1789421445432683568-topology-f85de60d` passed in 36.45 seconds with 1285 guards and 136 pairs; portable `1789421445488001509-topology_checkpoint-0b7ae135` passed in 84.33 seconds with 1581 guards and 436 pairs. Both run in Slurm 13879784. Unchanged-source build `1789421119629364733-topology_checkpoint-c89d5038` freshly compiled both affected leaves and the portable root in 0:28.79, maximum RSS 1,933,852 KiB, with zero compilation diagnostics. Its failed consumer harness remains failed history; the repaired strict checks above supply final acceptance evidence. All 127 preceding original and 427 preceding portable readback pairs are byte-identical. All fourteen source readbacks agree through exact private names, qualification and whitespace, with one recorded ordered axiom-line wrap. The prior private binder spelling change remains explicitly recorded. Strict source and stock declaration linters pass, transitive axioms are standard-only, and all 153 other leaves remain unchanged.
+
+Positive-dimensional outward homology normalization, the adjunction sign,
+general integral manifold duality and the missing frozen contract remain open.
+This checkpoint does not close either full theorem suite.
