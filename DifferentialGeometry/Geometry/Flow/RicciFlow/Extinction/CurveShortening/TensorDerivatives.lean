@@ -66,4 +66,51 @@ theorem contDiffAt_tensor_eval (c : CurveMap M) {r : ℕ}
   apply contMDiffWithinAt_univ.mp
   exact hh
 
+
+theorem ds_tensor_eval_update (c : CurveMap M) (g : ℝ → SmoothRiemannianMetric I M) {r : ℕ}
+    (A : ℝ → Tensor0SField (I := I) (M := M) (n := ∞) r) (V : Fin r → c.Field (I := I))
+    (W : c.Field (I := I)) (p : Fin r) (x t : ℝ)
+    (hγ : MDifferentiableAt 𝓘(ℝ, ℝ) I (fun y => c.lift y t) x)
+    (hV : ∀ i, DifferentiableAt ℝ (chartRepAt (I := I) (fun y => c.lift y t) (fun y => V i y t) x) x)
+    (hW : DifferentiableAt ℝ (chartRepAt (I := I) (fun y => c.lift y t) (fun y => W y t) x) x) :
+    c.ds g (fun y τ => A τ (c.lift y τ) (Function.update (fun i => V i y τ) p (W y τ))) x t -
+      A t (c.lift x t) (Function.update (fun i => V i x t) p (c.Ds g W x t)) =
+      totalNabla0SFun r (LeviCivita (g t)) (A t) (c.lift x t)
+        (Fin.cons (c.unitTangent g x t) (Function.update (fun i => V i x t) p (W x t))) +
+      ∑ i ∈ Finset.univ.erase p, A t (c.lift x t)
+        (Function.update (Function.update (fun j => V j x t) p (W x t)) i (c.Ds g (V i) x t)) := by
+  classical
+  let U := Function.update V p W
+  have hU (i : Fin r) : DifferentiableAt ℝ
+      (chartRepAt (I := I) (fun y => c.lift y t) (fun y => U i y t) x) x := by
+    by_cases hi : i = p
+    · subst i
+      simpa [U] using hW
+    · simpa only [U, Function.update_of_ne hi] using hV i
+  have heq (y τ : ℝ) : (fun i => U i y τ) = Function.update (fun i => V i y τ) p (W y τ) := by
+    funext i
+    by_cases hi : i = p
+    · subst i; simp [U]
+    · simp [U, Function.update_of_ne hi]
+  have hd := c.ds_tensor_eval g A U x t hγ hU
+  simp_rw [heq] at hd
+  have hsum := Finset.sum_erase_add (Finset.univ : Finset (Fin r))
+    (fun i => A t (c.lift x t)
+      (Function.update (Function.update (fun j => V j x t) p (W x t)) i (c.Ds g (U i) x t)))
+    (Finset.mem_univ p)
+  have hp : A t (c.lift x t)
+      (Function.update (Function.update (fun j => V j x t) p (W x t)) p (c.Ds g (U p) x t)) =
+      A t (c.lift x t) (Function.update (fun j => V j x t) p (c.Ds g W x t)) := by
+    simp [U]
+  have hoff : (∑ i ∈ Finset.univ.erase p, A t (c.lift x t)
+      (Function.update (Function.update (fun j => V j x t) p (W x t)) i (c.Ds g (U i) x t))) =
+      ∑ i ∈ Finset.univ.erase p, A t (c.lift x t)
+        (Function.update (Function.update (fun j => V j x t) p (W x t)) i (c.Ds g (V i) x t)) := by
+    apply Finset.sum_congr rfl
+    intro i hi
+    simp only [U, Function.update_of_ne (Finset.ne_of_mem_erase hi)]
+  rw [hp, hoff] at hsum
+  rw [← hsum] at hd
+  linarith only [hd]
+
 end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening.CurveMap

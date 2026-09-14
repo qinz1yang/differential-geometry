@@ -185,5 +185,11 @@ theorem iteratedDs_smul
         rw [show m + 1 - i = m - i + 1 by omega]
         module
 
+omit [CompleteSpace E] [SigmaCompactSpace M] [I.Boundaryless] [T2Space M] in
+theorem iteratedDs_unitTangent_succ (c : CurveMap M)
+    (g : ℝ → SmoothRiemannianMetric I M) (m : ℕ) :
+    c.iteratedDs g (m + 1) (c.unitTangent g) = c.iteratedDs g m (c.curvatureVector g) := by
+  simp only [CurveMap.iteratedDs, Function.iterate_succ_apply, CurveMap.curvatureVector]
+
 end CurveMap
 end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening
