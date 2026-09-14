@@ -5406,6 +5406,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborho
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.SphereSeparationDiffeomorphEuclidean
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.SubendRadialLevelSharpness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.TerminalBackwardExtension
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.TerminalScalarEscape
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.TerminalCarrierBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.TerminalChartJets
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.TerminalCovariantBounds
@@ -5549,6 +5550,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Back
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.BackwardMetricComparisonNecks
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.BackwardNeckWitness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.BackwardSliceSequence
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.BackwardSliceShrinkerReduction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.BicollarAxialOrder
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.BicollarBandExtension
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.BicollarCompactBand
@@ -5833,6 +5835,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Stai
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.StaircaseClassOneReplay
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.StaircaseCompactnessReduction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.StaircaseEngineAssembly
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.StaircaseEngineInterface
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.StaircaseMetricBoundsAssembly
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.StaircaseStageComparisonReplay
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.StaircaseStageRegularityReplay
@@ -6927,6 +6930,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.StandardNec
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.StandardNeckTubeEmbedding
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.StaticCap
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.StaticCapWitnessProducer
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TimedEventTower
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TowerBookkeeping
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TowerInductionStep
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SupportRegion
@@ -9422,6 +9426,7 @@ import DifferentialGeometry.Topology.ThreeManifold.CutCapReconstruction
 import DifferentialGeometry.Topology.ThreeManifold.CutCapStandardReconstruction
 import DifferentialGeometry.Topology.ThreeManifold.CutCapUncutCappingRealization
 import DifferentialGeometry.Topology.ThreeManifold.CutCapUncutComponentRealization
+import DifferentialGeometry.Topology.ThreeManifold.DisjointUnionInitialRealization
 import DifferentialGeometry.Topology.ThreeManifold.MarkedBallTubeProducer
 import DifferentialGeometry.Topology.ThreeManifold.PartialGraphRealization
 import DifferentialGeometry.Topology.ThreeManifold.PartialRealizationAnalytic
