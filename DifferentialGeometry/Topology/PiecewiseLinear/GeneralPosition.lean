@@ -3032,4 +3032,51 @@ theorem exists_generalPosition_height_fibers [FiniteDimensional ℝ E]
       exact hasPLCrossingAt_fiber_of_notMem_vertices K hK.isCombinatorialManifoldWithBoundary
         hdimE ℓ.toLinearMap hℓlin hinj hx hxv
 
+theorem dist_simplicialMap_le_of_dist_vertices_le {F : Type*}
+    [NormedAddCommGroup F] [NormedSpace ℝ F] (K : Geometry.SimplicialComplex ℝ E)
+    {φ ψ : E → F} {ε : ℝ} (h : ∀ v ∈ K.vertices, dist (φ v) (ψ v) ≤ ε)
+    {x : E} (hx : x ∈ K.space) : dist (simplicialMap K φ x) (simplicialMap K ψ x) ≤ ε := by
+  obtain ⟨s, hs, hxs⟩ := K.mem_space_iff.mp hx
+  have hsum : ∑ v ∈ s, weights s x v • (φ v - ψ v) ∈ closedBall (0 : F) ε :=
+    (convex_closedBall (0 : F) ε).sum_mem (fun v hv => weights_nonneg hxs hv) (sum_weights hxs)
+      fun v hv => by
+        have hvK := K.down_closed hs (Finset.singleton_subset_iff.mpr hv) (Finset.singleton_nonempty v)
+        simpa only [Metric.mem_closedBall, dist_zero_right, dist_eq_norm, sub_zero] using h v hvK
+  rw [simplicialMap_eq_of_mem K φ hs hxs, simplicialMap_eq_of_mem K ψ hs hxs, dist_eq_norm]
+  simpa only [Metric.mem_closedBall, dist_zero_right, smul_sub, Finset.sum_sub_distrib] using hsum
+
+theorem dist_simplicialMap_lt_of_dist_vertices_lt {F : Type*}
+    [NormedAddCommGroup F] [NormedSpace ℝ F] (K : Geometry.SimplicialComplex ℝ E)
+    {φ ψ : E → F} {ε : ℝ} (h : ∀ v ∈ K.vertices, dist (φ v) (ψ v) < ε)
+    {x : E} (hx : x ∈ K.space) : dist (simplicialMap K φ x) (simplicialMap K ψ x) < ε := by
+  obtain ⟨s, hs, hxs⟩ := K.mem_space_iff.mp hx
+  have hsum : ∑ v ∈ s, weights s x v • (φ v - ψ v) ∈ ball (0 : F) ε :=
+    (convex_ball (0 : F) ε).sum_mem (fun v hv => weights_nonneg hxs hv) (sum_weights hxs)
+      fun v hv => by
+        have hvK := K.down_closed hs (Finset.singleton_subset_iff.mpr hv) (Finset.singleton_nonempty v)
+        simpa only [Metric.mem_ball, dist_zero_right, dist_eq_norm, sub_zero] using h v hvK
+  rw [simplicialMap_eq_of_mem K φ hs hxs, simplicialMap_eq_of_mem K ψ hs hxs, dist_eq_norm]
+  simpa only [Metric.mem_ball, dist_zero_right, smul_sub, Finset.sum_sub_distrib] using hsum
+
+theorem simplicialMap_eqOn_of_eqOn_vertices {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
+    (K : Geometry.SimplicialComplex ℝ E) {φ ψ : E → F} (h : EqOn φ ψ K.vertices) :
+    EqOn (simplicialMap K φ) (simplicialMap K ψ) K.space := by
+  intro x hx
+  apply dist_le_zero.mp
+  exact dist_simplicialMap_le_of_dist_vertices_le K
+    (fun v hv => by rw [h hv, dist_self]) hx
+
+theorem simplicialMap_eqOn_of_faces_subset {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
+    (K L : Geometry.SimplicialComplex ℝ E) (hLK : L.faces ⊆ K.faces) (φ : E → F) :
+    EqOn (simplicialMap K φ) (simplicialMap L φ) L.space := by
+  intro x hx
+  obtain ⟨s, hs, hxs⟩ := L.mem_space_iff.mp hx
+  rw [simplicialMap_eq_of_mem K φ (hLK hs) hxs, simplicialMap_eq_of_mem L φ hs hxs]
+
+theorem simplicialMap_eqOn_subcomplex_of_eqOn_vertices {F : Type*}
+    [NormedAddCommGroup F] [NormedSpace ℝ F] (K L : Geometry.SimplicialComplex ℝ E)
+    (hLK : L.faces ⊆ K.faces) {φ ψ : E → F} (h : EqOn φ ψ L.vertices) :
+    EqOn (simplicialMap K φ) (simplicialMap K ψ) L.space :=
+  (simplicialMap_eqOn_of_faces_subset K L hLK φ).trans
+    ((simplicialMap_eqOn_of_eqOn_vertices L h).trans (simplicialMap_eqOn_of_faces_subset K L hLK ψ).symm)
 end DifferentialGeometry.Topology.PiecewiseLinear
