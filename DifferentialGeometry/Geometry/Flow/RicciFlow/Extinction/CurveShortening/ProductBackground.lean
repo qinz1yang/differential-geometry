@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProductGeometry
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.BackgroundBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.ProductLine
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Descent
 
@@ -101,5 +102,46 @@ theorem exists_quotientProduct_ricciBackground_on_regular [I.Boundaryless]
       simpa only [covStep_apply, SolutionFamily.connection, SolutionFamily.ricci,
         quotientProductFamily] using he }
   exact ⟨Bhat, rfl, rfl, rfl, rfl, rfl⟩
+
+theorem RicciBackground.exists_uniform_product_curvature_derivative_bounds
+    [I.Boundaryless] [CompactSpace M] {D : RealTimeInterval} {a b : ℝ}
+    (A : QuotientProductAtlas I M) (B : RicciBackground (I := I) (M := M) D a b) :
+    ∃ C : ℝ, B.C ≤ C ∧
+      (∀ t ∈ Icc a b, ∀ p : M, normSq0S (B.family.metric t) p 5
+        (totalNabla0SFun 4 (B.family.connection t) (B.family.rm04 t) p) ≤ C ^ 2) ∧
+      (∀ t ∈ Icc a b, ∀ p : M, normSq0S (B.family.metric t) p 4
+        (totalNabla0SFun 3 (B.family.connection t)
+          (covStep (B.family.metric t) 2 (B.family.ricci t)) p) ≤ C ^ 2) ∧
+      (∀ lambda : ℝ, ∀ hlambda : 0 < lambda,
+        letI := A.charts
+        letI := A.smoothManifold
+        let G := quotientProductFamily A B.family lambda hlambda
+        ∀ t ∈ Icc a b, ∀ q : M × Surgery.Topology.Circle,
+          normSq0S (G.metric t) q 5 (totalNabla0SFun 4 (G.connection t) (G.rm04 t) q) ≤ C ^ 2 ∧
+          normSq0S (G.metric t) q 4 (totalNabla0SFun 3 (G.connection t)
+            (covStep (G.metric t) 2 (G.ricci t)) q) ≤ C ^ 2) := by
+  obtain ⟨C, hC, hR, hRic⟩ := B.exists_curvature_derivative_bounds
+  refine ⟨C, hC, hR, hRic, ?_⟩
+  intro lambda hlambda
+  let _ := A.charts
+  let _ := A.smoothManifold
+  dsimp only
+  intro t ht q
+  constructor
+  · have hn := (quotientProduct_iterCov_normSq A (B.family.metric t) lambda hlambda 1 q).1
+    have hh := hn.trans_le (hR t ht q.1)
+    change normSq0S (quotientProductMetric A (B.family.metric t) lambda hlambda) q 5
+      (covStep (quotientProductMetric A (B.family.metric t) lambda hlambda) 4
+        (metricRm04 (quotientProductMetric A (B.family.metric t) lambda hlambda)) q) ≤ C ^ 2 at hh
+    simpa only [covStep_apply, SolutionFamily.connection, SolutionFamily.rm04,
+      quotientProductFamily] using hh
+  · have hn := (quotientProduct_iterCov_normSq A (B.family.metric t) lambda hlambda 2 q).2
+    have hh := hn.trans_le (hRic t ht q.1)
+    change normSq0S (quotientProductMetric A (B.family.metric t) lambda hlambda) q 4
+      (covStep (quotientProductMetric A (B.family.metric t) lambda hlambda) 3
+        (covStep (quotientProductMetric A (B.family.metric t) lambda hlambda) 2
+          (metricRicci (quotientProductMetric A (B.family.metric t) lambda hlambda))) q) ≤ C ^ 2 at hh
+    simpa only [covStep_apply, SolutionFamily.connection, SolutionFamily.ricci,
+      quotientProductFamily] using hh
 
 end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening
