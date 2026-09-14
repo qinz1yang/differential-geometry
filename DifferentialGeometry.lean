@@ -4978,6 +4978,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.P
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.PhysicalChartContainment
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.PhysicalCoordinates
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.PhysicalLift
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.PhysicalProjection
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Product
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProductBackground
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProductCoveringMap

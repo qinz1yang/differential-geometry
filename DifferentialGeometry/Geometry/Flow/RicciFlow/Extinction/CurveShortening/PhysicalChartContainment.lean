@@ -165,22 +165,18 @@ theorem physicalLift_arc_mem_chart_closedBall_and_displacement_le (c : ProductCu
     e.mapsTo_image_closedBall_of_integral_bound_of_mem_Icc hx hR hγ.continuousOn hstart
       (isCompact_closedBall _ _) htarget (fun y _ hβ => hfd y hβ) hv (fun y _ => hvn y) hb
       (hvint.trans_lt hsmall)
-  have hcont : ContinuousOn (e ∘ γ) (Icc p q) :=
-    e.continuousOn.comp hγ.continuousOn (fun y hy => hVs (hstay hy))
   have hordered {y z : ℝ} (hy : y ∈ Icc p q) (hz : z ∈ Icc p q) (hyz : y ≤ z) :
       ‖e (γ z) - e (γ y)‖ ≤ C * c.arcLength g lambda p q t := by
     have hsub : Icc y z ⊆ Icc p q := Icc_subset_Icc hy.1 hz.2
-    have hvi : IntervalIntegrable v volume y z := by
-      apply hv.mono_set
-      rw [uIcc_of_le hpq, uIcc_of_le hyz]
-      exact hsub
-    have hd : DifferentiableOn ℝ (e ∘ γ) (Ioo y z) := fun w hw =>
-      (hfd w (hVs (hstay (hsub (Ioo_subset_Icc_self hw))))).differentiableWithinAt
-    have hh := norm_sub_le_integral_of_norm_deriv_le_of_le hyz (hcont.mono hsub) hd
-      (ae_of_all _ (fun w hw => hb w ⟨hy.1.trans_lt hw.1, hw.2.trans_le hz.2⟩
-        (hstay (hsub (Ioo_subset_Icc_self hw))))) hvi
-    exact (hh.trans (intervalIntegral.integral_mono_interval hy.1 hyz hz.2
-      (ae_of_all _ hvn) hv)).trans_eq hvint
+    have hh := c.norm_physical_chart_sub_le_arcLength g lambda hlambda hc hi hyz ht A.toContinuousLinearMap β
+      (fun w hw => hVs (hstay (hsub hw)))
+      (fun w hw => hupper w ⟨hy.1.trans_lt hw.1, hw.2.trans_le hz.2⟩
+        (hstay (hsub (Ioo_subset_Icc_self hw))))
+    have hlen : c.arcLength g lambda y z t ≤ c.arcLength g lambda p q t :=
+      intervalIntegral.integral_mono_interval hy.1 hyz hz.2
+        (ae_of_all _ (fun w => c.speed_nonneg g lambda w t))
+        ((c.speed_contDiff_of_immersedOn g lambda hlambda hc hi t ht).continuous.intervalIntegrable p q)
+    exact hh.trans (mul_le_mul_of_nonneg_left hlen hC)
   refine ⟨hstay, ?_⟩
   intro y hy z hz
   rcases le_total y z with hyz | hzy

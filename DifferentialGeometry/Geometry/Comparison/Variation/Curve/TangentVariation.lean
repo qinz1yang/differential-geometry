@@ -24,15 +24,7 @@ private theorem contDiffAt_chart_coordinates
       (fun s => (TotalSpace.mk' E (γ s) (V s) : TangentBundle I M)) x)
     (hβ : γ x ∈ (chartAt H β).source) :
     ContDiffAt ℝ 1 (fun s => A (chartRepAtBase β γ V s)) x := by
-  let e := trivializationAt E (TangentSpace I) β
-  have hmem : γ x ∈ e.baseSet := by rwa [TangentBundle.trivializationAt_baseSet]
-  have hγ := (contMDiffAt_tangentField_iff.mp hV).1
-  have hread := ((e.contMDiffAt_iff (e.mem_source.mpr hmem)).mp hV).2
-  have heq : (fun s => chartRepAtBase β γ V s) =ᶠ[𝓝 x]
-      (fun s => (e (TotalSpace.mk' E (γ s) (V s))).2) := by
-    filter_upwards [hγ.continuousAt.preimage_mem_nhds (e.open_baseSet.mem_nhds hmem)] with s hs
-    exact e.continuousLinearMapAt_apply_of_mem ℝ hs (V s)
-  exact A.contDiff.contDiffAt.comp x (hread.contDiffAt.congr_of_eventuallyEq heq)
+  exact A.contDiff.contDiffAt.comp x (contDiffAt_chartRepAtBase β hV hβ)
 
 theorem norm_deriv_normalize_chartRepAtBase_le
     (g : SmoothRiemannianMetric I M) {γ : ℝ → M} {V : ∀ s, TangentSpace I (γ s)}

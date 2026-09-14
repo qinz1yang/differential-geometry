@@ -1,9 +1,11 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.CoordinateTangentVariation
+import DifferentialGeometry.Analysis.Calculus.Displacement
 import DifferentialGeometry.Analysis.Calculus.Derivative.WeightedChainRule
 import DifferentialGeometry.Analysis.Calculus.Cutoff.Linear
 
 noncomputable section
 open Bundle Manifold Set Filter
+open MeasureTheory (volume ae_of_all)
 open scoped Manifold ContDiff Topology
 open DifferentialGeometry.Geometry.Riemannian.CovariantDerivativeAlong
 open DifferentialGeometry.Geometry.Riemannian.AlongCurve
@@ -84,6 +86,46 @@ theorem norm_physical_chart_arclength_derivative_le (c : ProductCurve M)
   have h := hupper (c.physicalField lambda (c.unitTangent g lambda) x t)
   rw [c.physical_unitTangent_inner_self g lambda hlambda hc hi t ht x, Real.sqrt_one, mul_one] at h
   exact h
+
+omit [I.Boundaryless] in
+theorem norm_physical_chart_sub_le_arcLength (c : ProductCurve M)
+    (g : ℝ → SmoothRiemannianMetric I M) (lambda : ℝ) (hlambda : 0 < lambda)
+    {J : Set ℝ} (hc : c.SmoothOn (I := I) J) (hi : c.ImmersedOn (I := I) J)
+    {p q t C : ℝ} (hpq : p ≤ q) (ht : t ∈ J)
+    (A : (E × ℝ) →L[ℝ] F) (β : M × ℝ) :
+    let γ := fun y => c.physicalLift lambda y t
+    let W := fun y => A (extChartAt (I.prod 𝓘(ℝ, ℝ)) β (γ y))
+    (∀ y ∈ Icc p q, γ y ∈ (chartAt (ModelProd H ℝ) β).source) →
+    (∀ y ∈ Ioo p q, ∀ v : TangentSpace (I.prod 𝓘(ℝ, ℝ)) (γ y),
+      ‖A ((trivializationAt (E × ℝ) (TangentSpace (I.prod 𝓘(ℝ, ℝ))) β).continuousLinearMapAt
+        ℝ (γ y) v)‖ ≤ C * Real.sqrt ((coverProductMetric (g t) 1 zero_lt_one).inner (γ y) v v)) →
+    ‖W q - W p‖ ≤ C * c.arcLength g lambda p q t := by
+  dsimp only
+  intro hchart hupper
+  let W := fun y => A (extChartAt (I.prod 𝓘(ℝ, ℝ)) β (c.physicalLift lambda y t))
+  have hW (y : ℝ) (hy : y ∈ Icc p q) : ContDiffAt ℝ ∞ W y := by
+    apply contDiffWithinAt_univ.mp
+    exact (c.contDiffWithinAt_physical_chart lambda hc A β y t ht (hchart y hy)).comp
+      (f := fun z : ℝ => (z, t)) y (contDiffWithinAt_id.prodMk contDiffWithinAt_const)
+      (fun z _ => ⟨mem_univ z, ht⟩)
+  have hv : IntervalIntegrable (fun y => C * c.speed g lambda y t) volume p q :=
+    ((c.speed_contDiff_of_immersedOn g lambda hlambda hc hi t ht).continuous.const_mul C).intervalIntegrable _ _
+  have hd (y : ℝ) (hy : y ∈ Ioo p q) : ‖deriv W y‖ ≤ C * c.speed g lambda y t := by
+    have hs := c.speed_pos_of_immersedOn g lambda hlambda hi y t ht
+    have h := c.norm_physical_chart_arclength_derivative_le g lambda hlambda hc hi A β y t ht
+      (hchart y (Ioo_subset_Icc_self hy)) (hupper y hy)
+    rw [norm_smul, Real.norm_eq_abs, abs_of_pos (inv_pos.mpr hs)] at h
+    calc
+      ‖deriv W y‖ = c.speed g lambda y t * ((c.speed g lambda y t)⁻¹ * ‖deriv W y‖) := by
+        rw [← mul_assoc, mul_inv_cancel₀ hs.ne', one_mul]
+      _ ≤ c.speed g lambda y t * C := mul_le_mul_of_nonneg_left h hs.le
+      _ = C * c.speed g lambda y t := mul_comm _ _
+  have h := norm_sub_le_integral_of_norm_deriv_le_of_le hpq
+    (fun y hy => (hW y hy).continuousAt.continuousWithinAt)
+    (fun y hy => ((hW y (Ioo_subset_Icc_self hy)).differentiableAt (by simp)).differentiableWithinAt)
+    (ae_of_all _ hd) hv
+  exact h.trans_eq (intervalIntegral.integral_const_mul _ _)
+
 
 theorem norm_physical_chart_second_arclength_derivative_le (c : ProductCurve M)
     (g : ℝ → SmoothRiemannianMetric I M) (lambda : ℝ) (hlambda : 0 < lambda)
