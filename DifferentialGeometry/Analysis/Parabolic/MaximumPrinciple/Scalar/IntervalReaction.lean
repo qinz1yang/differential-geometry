@@ -1,6 +1,8 @@
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.PeriodicComparison
+import Mathlib.Analysis.Calculus.Deriv.Add
 import Mathlib.Analysis.Calculus.Deriv.Mul
 import Mathlib.Analysis.Calculus.Deriv.Pow
+import Mathlib.Analysis.Real.Sqrt
 
 open Set Filter
 open scoped Topology
@@ -77,7 +79,7 @@ private theorem cutoff_quadratic_bound_at_maximum
   apply (le_div_iff₀ hc).2
   nlinarith only [hnonpos]
 
-theorem cutoff_quadratic_reaction_upper_bound_on_interval
+theorem cutoff_quadratic_reaction_upper_bound_on_interval_of_reaction_on_pos
     {u a : ℝ → ℝ → ℝ} {φ : ℝ → ℝ} {l r T c D E : ℝ}
     (hc : 0 < c) (herror : 0 ≤ D + 2 * E)
     (hcont : ContinuousOn (fun p : ℝ × ℝ => u p.1 p.2) (Icc l r ×ˢ Ico 0 T))
@@ -90,7 +92,7 @@ theorem cutoff_quadratic_reaction_upper_bound_on_interval
     (hut : ∀ x ∈ Ioo l r, ∀ t ∈ Ioo 0 T,
       DifferentiableAt ℝ (fun s => u x s) t)
     (ha : ∀ x ∈ Ioo l r, ∀ t ∈ Ioo 0 T, 0 ≤ a x t)
-    (hpde : ∀ x ∈ Ioo l r, ∀ t ∈ Ioo 0 T,
+    (hpde : ∀ x ∈ Ioo l r, ∀ t ∈ Ioo 0 T, 0 < u x t →
       deriv (fun s => u x s) t - a x t * deriv (deriv (fun y => u y t)) x ≤
         -c * u x t ^ 2)
     (hcut : ∀ x ∈ Ioo l r, ∀ t ∈ Ioo 0 T, -a x t * deriv (deriv φ) x ≤ D)
@@ -155,11 +157,34 @@ theorem cutoff_quadratic_reaction_upper_bound_on_interval
   rw [hd.neg.deriv] at htime
   have hlocal := cutoff_quadratic_bound_at_maximum hs hφy (hφ y hmem.1).2 huy hc
     (by simpa only [one_mul, neg_nonpos, id_eq, mul_assoc] using htime) hspace
-    (hpde y hy s hst) (hcut y hy s hst) (hgrad y hy s hst)
+    (hpde y hy s hst huy) (hcut y hy s hst) (hgrad y hy s hst)
   have hmono : (1 + s * (D + 2 * E)) / c ≤ (1 + S * (D + 2 * E)) / c := by
     apply div_le_div_of_nonneg_right _ hc.le
     linarith [mul_le_mul_of_nonneg_right hmem.2.2 herror]
   exact (hmax' (x, S) ⟨hx, hS.1.le, le_rfl⟩).trans (hlocal.trans hmono)
+
+theorem cutoff_quadratic_reaction_upper_bound_on_interval
+    {u a : ℝ → ℝ → ℝ} {φ : ℝ → ℝ} {l r T c D E : ℝ}
+    (hc : 0 < c) (herror : 0 ≤ D + 2 * E)
+    (hcont : ContinuousOn (fun p : ℝ × ℝ => u p.1 p.2) (Icc l r ×ˢ Ico 0 T))
+    (hφcont : ContinuousOn φ (Icc l r))
+    (hφ : ∀ x ∈ Icc l r, φ x ∈ Icc 0 1) (hl : φ l = 0) (hr : φ r = 0)
+    (hφ₁ : DifferentiableOn ℝ φ (Ioo l r))
+    (hφ₂ : DifferentiableOn ℝ (deriv φ) (Ioo l r))
+    (hu₁ : ∀ t ∈ Ioo 0 T, DifferentiableOn ℝ (fun x => u x t) (Ioo l r))
+    (hu₂ : ∀ t ∈ Ioo 0 T, DifferentiableOn ℝ (deriv (fun x => u x t)) (Ioo l r))
+    (hut : ∀ x ∈ Ioo l r, ∀ t ∈ Ioo 0 T,
+      DifferentiableAt ℝ (fun s => u x s) t)
+    (ha : ∀ x ∈ Ioo l r, ∀ t ∈ Ioo 0 T, 0 ≤ a x t)
+    (hpde : ∀ x ∈ Ioo l r, ∀ t ∈ Ioo 0 T,
+      deriv (fun s => u x s) t - a x t * deriv (deriv (fun y => u y t)) x ≤
+        -c * u x t ^ 2)
+    (hcut : ∀ x ∈ Ioo l r, ∀ t ∈ Ioo 0 T, -a x t * deriv (deriv φ) x ≤ D)
+    (hgrad : ∀ x ∈ Ioo l r, ∀ t ∈ Ioo 0 T, a x t * deriv φ x ^ 2 ≤ E * φ x) :
+    ∀ t ∈ Ioo 0 T, ∀ x ∈ Icc l r,
+      t * (φ x * u x t) ≤ (1 + t * (D + 2 * E)) / c := by
+  exact cutoff_quadratic_reaction_upper_bound_on_interval_of_reaction_on_pos hc herror hcont
+    hφcont hφ hl hr hφ₁ hφ₂ hu₁ hu₂ hut ha (fun x hx t ht _ => hpde x hx t ht) hcut hgrad
 
 private noncomputable def intervalCutoff (R x : ℝ) : ℝ := (1 - (x / R) ^ 2) ^ 2
 
@@ -215,7 +240,7 @@ private theorem intervalCutoff_derivative_bounds {R x a Λ : ℝ}
     dsimp [intervalCutoff]
     convert hscaled using 1 <;> first | rfl | (field_simp [hR.ne'] <;> ring)
 
-theorem quadratic_reaction_interior_upper_bound
+theorem quadratic_reaction_interior_upper_bound_of_reaction_on_pos
     {u a : ℝ → ℝ → ℝ} {R T c Λ : ℝ}
     (hR : 0 < R) (hc : 0 < c) (hΛ : 0 ≤ Λ)
     (hcont : ContinuousOn (fun p : ℝ × ℝ => u p.1 p.2) (Icc (-R) R ×ˢ Ico 0 T))
@@ -224,7 +249,7 @@ theorem quadratic_reaction_interior_upper_bound
     (hut : ∀ x ∈ Ioo (-R) R, ∀ t ∈ Ioo 0 T,
       DifferentiableAt ℝ (fun s => u x s) t)
     (ha : ∀ x ∈ Ioo (-R) R, ∀ t ∈ Ioo 0 T, a x t ∈ Icc 0 Λ)
-    (hpde : ∀ x ∈ Ioo (-R) R, ∀ t ∈ Ioo 0 T,
+    (hpde : ∀ x ∈ Ioo (-R) R, ∀ t ∈ Ioo 0 T, 0 < u x t →
       deriv (fun s => u x s) t - a x t * deriv (deriv (fun y => u y t)) x ≤
         -c * u x t ^ 2) :
     ∀ t ∈ Ioo 0 T, ∀ x ∈ Icc (-R / 2) (R / 2),
@@ -232,7 +257,7 @@ theorem quadratic_reaction_interior_upper_bound
   have hφcont : ContinuousOn (intervalCutoff R) (Icc (-R) R) :=
     (show Differentiable ℝ (intervalCutoff R) from
       fun x => (hasDerivAt_intervalCutoff R x).differentiableAt).continuous.continuousOn
-  have hbound := cutoff_quadratic_reaction_upper_bound_on_interval
+  have hbound := cutoff_quadratic_reaction_upper_bound_on_interval_of_reaction_on_pos
     (u := u) (a := a) (φ := intervalCutoff R)
     (D := 4 * Λ / R ^ 2) (E := 16 * Λ / R ^ 2) hc (by positivity) hcont hφcont
     (fun x hx => intervalCutoff_bounds hR hx)
@@ -274,10 +299,10 @@ theorem quadratic_reaction_interior_upper_bound
       field_simp [ht.1.ne', hc.ne', hR.ne']
       ring
 
-theorem quadratic_reaction_interior_upper_bound_on_closed_time_interval
+theorem quadratic_reaction_interior_upper_bound
     {u a : ℝ → ℝ → ℝ} {R T c Λ : ℝ}
     (hR : 0 < R) (hc : 0 < c) (hΛ : 0 ≤ Λ)
-    (hcont : ContinuousOn (fun p : ℝ × ℝ => u p.1 p.2) (Icc (-R) R ×ˢ Icc 0 T))
+    (hcont : ContinuousOn (fun p : ℝ × ℝ => u p.1 p.2) (Icc (-R) R ×ˢ Ico 0 T))
     (hu₁ : ∀ t ∈ Ioo 0 T, DifferentiableOn ℝ (fun x => u x t) (Ioo (-R) R))
     (hu₂ : ∀ t ∈ Ioo 0 T, DifferentiableOn ℝ (deriv (fun x => u x t)) (Ioo (-R) R))
     (hut : ∀ x ∈ Ioo (-R) R, ∀ t ∈ Ioo 0 T,
@@ -286,9 +311,26 @@ theorem quadratic_reaction_interior_upper_bound_on_closed_time_interval
     (hpde : ∀ x ∈ Ioo (-R) R, ∀ t ∈ Ioo 0 T,
       deriv (fun s => u x s) t - a x t * deriv (deriv (fun y => u y t)) x ≤
         -c * u x t ^ 2) :
+    ∀ t ∈ Ioo 0 T, ∀ x ∈ Icc (-R / 2) (R / 2),
+      u x t ≤ 16 / (9 * c * t) + 64 * Λ / (c * R ^ 2) := by
+  exact quadratic_reaction_interior_upper_bound_of_reaction_on_pos hR hc hΛ hcont hu₁ hu₂ hut ha
+    (fun x hx t ht _ => hpde x hx t ht)
+
+theorem quadratic_reaction_interior_upper_bound_on_closed_time_interval_of_reaction_on_pos
+    {u a : ℝ → ℝ → ℝ} {R T c Λ : ℝ}
+    (hR : 0 < R) (hc : 0 < c) (hΛ : 0 ≤ Λ)
+    (hcont : ContinuousOn (fun p : ℝ × ℝ => u p.1 p.2) (Icc (-R) R ×ˢ Icc 0 T))
+    (hu₁ : ∀ t ∈ Ioo 0 T, DifferentiableOn ℝ (fun x => u x t) (Ioo (-R) R))
+    (hu₂ : ∀ t ∈ Ioo 0 T, DifferentiableOn ℝ (deriv (fun x => u x t)) (Ioo (-R) R))
+    (hut : ∀ x ∈ Ioo (-R) R, ∀ t ∈ Ioo 0 T,
+      DifferentiableAt ℝ (fun s => u x s) t)
+    (ha : ∀ x ∈ Ioo (-R) R, ∀ t ∈ Ioo 0 T, a x t ∈ Icc 0 Λ)
+    (hpde : ∀ x ∈ Ioo (-R) R, ∀ t ∈ Ioo 0 T, 0 < u x t →
+      deriv (fun s => u x s) t - a x t * deriv (deriv (fun y => u y t)) x ≤
+        -c * u x t ^ 2) :
     ∀ t ∈ Ioc 0 T, ∀ x ∈ Icc (-R / 2) (R / 2),
       u x t ≤ 16 / (9 * c * t) + 64 * Λ / (c * R ^ 2) := by
-  have hinner := quadratic_reaction_interior_upper_bound hR hc hΛ
+  have hinner := quadratic_reaction_interior_upper_bound_of_reaction_on_pos hR hc hΛ
     (hcont.mono (fun p hp => ⟨hp.1, hp.2.1, hp.2.2.le⟩)) hu₁ hu₂ hut ha hpde
   intro t ht x hx
   rcases lt_or_eq_of_le ht.2 with hlt | heq
@@ -312,5 +354,97 @@ theorem quadratic_reaction_interior_upper_bound_on_closed_time_interval
     (by
       filter_upwards [Ioo_mem_nhdsLT hT] with s hs
       exact hinner s hs x hx)
+
+theorem quadratic_reaction_interior_upper_bound_on_closed_time_interval
+    {u a : ℝ → ℝ → ℝ} {R T c Λ : ℝ}
+    (hR : 0 < R) (hc : 0 < c) (hΛ : 0 ≤ Λ)
+    (hcont : ContinuousOn (fun p : ℝ × ℝ => u p.1 p.2) (Icc (-R) R ×ˢ Icc 0 T))
+    (hu₁ : ∀ t ∈ Ioo 0 T, DifferentiableOn ℝ (fun x => u x t) (Ioo (-R) R))
+    (hu₂ : ∀ t ∈ Ioo 0 T, DifferentiableOn ℝ (deriv (fun x => u x t)) (Ioo (-R) R))
+    (hut : ∀ x ∈ Ioo (-R) R, ∀ t ∈ Ioo 0 T,
+      DifferentiableAt ℝ (fun s => u x s) t)
+    (ha : ∀ x ∈ Ioo (-R) R, ∀ t ∈ Ioo 0 T, a x t ∈ Icc 0 Λ)
+    (hpde : ∀ x ∈ Ioo (-R) R, ∀ t ∈ Ioo 0 T,
+      deriv (fun s => u x s) t - a x t * deriv (deriv (fun y => u y t)) x ≤
+        -c * u x t ^ 2) :
+    ∀ t ∈ Ioc 0 T, ∀ x ∈ Icc (-R / 2) (R / 2),
+      u x t ≤ 16 / (9 * c * t) + 64 * Λ / (c * R ^ 2) := by
+  exact quadratic_reaction_interior_upper_bound_on_closed_time_interval_of_reaction_on_pos
+    hR hc hΛ hcont hu₁ hu₂ hut ha
+    (fun x hx t ht _ => hpde x hx t ht)
+
+private theorem quadratic_reaction_shift_le {c K D u : ℝ}
+    (hc : 0 < c) (hK : 0 ≤ K) (hD : 0 ≤ D)
+    (hu : 0 < u - (K / c + Real.sqrt (D / c))) :
+    -c * u ^ 2 + K * u + D ≤ -c * (u - (K / c + Real.sqrt (D / c))) ^ 2 := by
+  let q := Real.sqrt (D / c)
+  let S := K / c + q
+  have hq : 0 ≤ q := Real.sqrt_nonneg _
+  have hq2 : c * q ^ 2 = D := by
+    rw [Real.sq_sqrt (div_nonneg hD hc.le)]
+    exact mul_div_cancel₀ D hc.ne'
+  have hS : c * S = K + c * q := by
+    dsimp [S]
+    field_simp
+  have hp : c * S ^ 2 - K * S - D = K * q := by
+    nlinarith only [congrArg (fun z : ℝ => z * S) hS,
+      congrArg (fun z : ℝ => z * q) hS, hq2]
+  have hcross : 0 ≤ (2 * c * S - K) * (u - S) :=
+    mul_nonneg (by nlinarith only [hS, hK, mul_nonneg hc.le hq]) hu.le
+  change -c * u ^ 2 + K * u + D ≤ -c * (u - S) ^ 2
+  nlinarith only [hp, hcross, mul_nonneg hK hq]
+
+theorem quadratic_reaction_with_source_interior_upper_bound_on_closed_time_interval
+    {u a : ℝ → ℝ → ℝ} {R T c Λ K D : ℝ}
+    (hR : 0 < R) (hc : 0 < c) (hΛ : 0 ≤ Λ) (hK : 0 ≤ K) (hD : 0 ≤ D)
+    (hcont : ContinuousOn (fun p : ℝ × ℝ => u p.1 p.2) (Icc (-R) R ×ˢ Icc 0 T))
+    (hu₁ : ∀ t ∈ Ioo 0 T, DifferentiableOn ℝ (fun x => u x t) (Ioo (-R) R))
+    (hu₂ : ∀ t ∈ Ioo 0 T, DifferentiableOn ℝ (deriv (fun x => u x t)) (Ioo (-R) R))
+    (hut : ∀ x ∈ Ioo (-R) R, ∀ t ∈ Ioo 0 T,
+      DifferentiableAt ℝ (fun s => u x s) t)
+    (ha : ∀ x ∈ Ioo (-R) R, ∀ t ∈ Ioo 0 T, a x t ∈ Icc 0 Λ)
+    (hpde : ∀ x ∈ Ioo (-R) R, ∀ t ∈ Ioo 0 T,
+      deriv (fun s => u x s) t - a x t * deriv (deriv (fun y => u y t)) x ≤
+        -c * u x t ^ 2 + K * u x t + D) :
+    ∀ t ∈ Ioc 0 T, ∀ x ∈ Icc (-R / 2) (R / 2),
+      u x t ≤ K / c + Real.sqrt (D / c) + 16 / (9 * c * t) + 64 * Λ / (c * R ^ 2) := by
+  let S := K / c + Real.sqrt (D / c)
+  have hb := quadratic_reaction_interior_upper_bound_on_closed_time_interval_of_reaction_on_pos
+    (u := fun x t => u x t - S) (a := a) hR hc hΛ
+    (hcont.sub continuousOn_const)
+    (fun t ht => (hu₁ t ht).sub_const S)
+    (fun t ht => by simpa only [deriv_sub_const_fun] using hu₂ t ht)
+    (fun x hx t ht => (hut x hx t ht).sub_const S) ha
+    (by
+      intro x hx t ht hpos
+      simp only [deriv_sub_const, deriv_sub_const_fun]
+      exact (hpde x hx t ht).trans (quadratic_reaction_shift_le hc hK hD hpos))
+  intro t ht x hx
+  have h := hb t ht x hx
+  dsimp only [S] at h
+  linarith only [h]
+
+theorem quadratic_reaction_with_source_interior_upper_bound
+    {u a : ℝ → ℝ → ℝ} {R T c Λ K D : ℝ}
+    (hR : 0 < R) (hc : 0 < c) (hΛ : 0 ≤ Λ) (hK : 0 ≤ K) (hD : 0 ≤ D)
+    (hcont : ContinuousOn (fun p : ℝ × ℝ => u p.1 p.2) (Icc (-R) R ×ˢ Ico 0 T))
+    (hu₁ : ∀ t ∈ Ioo 0 T, DifferentiableOn ℝ (fun x => u x t) (Ioo (-R) R))
+    (hu₂ : ∀ t ∈ Ioo 0 T, DifferentiableOn ℝ (deriv (fun x => u x t)) (Ioo (-R) R))
+    (hut : ∀ x ∈ Ioo (-R) R, ∀ t ∈ Ioo 0 T,
+      DifferentiableAt ℝ (fun s => u x s) t)
+    (ha : ∀ x ∈ Ioo (-R) R, ∀ t ∈ Ioo 0 T, a x t ∈ Icc 0 Λ)
+    (hpde : ∀ x ∈ Ioo (-R) R, ∀ t ∈ Ioo 0 T,
+      deriv (fun s => u x s) t - a x t * deriv (deriv (fun y => u y t)) x ≤
+        -c * u x t ^ 2 + K * u x t + D) :
+    ∀ t ∈ Ioo 0 T, ∀ x ∈ Icc (-R / 2) (R / 2),
+      u x t ≤ K / c + Real.sqrt (D / c) + 16 / (9 * c * t) + 64 * Λ / (c * R ^ 2) := by
+  intro t ht x hx
+  have hsub {s : ℝ} (hs : s ∈ Ioo 0 t) : s ∈ Ioo 0 T := ⟨hs.1, hs.2.trans ht.2⟩
+  exact quadratic_reaction_with_source_interior_upper_bound_on_closed_time_interval
+    (T := t) hR hc hΛ hK hD
+    (hcont.mono (fun p hp => ⟨hp.1, hp.2.1, hp.2.2.trans_lt ht.2⟩))
+    (fun s hs => hu₁ s (hsub hs)) (fun s hs => hu₂ s (hsub hs))
+    (fun y hy s hs => hut y hy s (hsub hs)) (fun y hy s hs => ha y hy s (hsub hs))
+    (fun y hy s hs => hpde y hy s (hsub hs)) t ⟨ht.1, le_rfl⟩ x hx
 
 end DifferentialGeometry.Analysis.Parabolic
