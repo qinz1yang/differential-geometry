@@ -1,11 +1,14 @@
 # Local homology and global classes from coherent local generators
 
 This separate `PoincareLean` project contains a dependency-closed checkpoint of
-154 Poincare modules. It extends the recovered Chapter 35 source at commit
+155 Poincare modules. It extends the recovered Chapter 35 source at commit
 `b45bfa009368c8f5f531e10f4f5280e90079d6ad` and preserves its mathematical objects
 and `Poincare` namespaces. `Poincare.lean` imports every included leaf.
 
 The additions prove:
+
+- naturality of the actual compact-support cap maps under open embeddings,
+  with both representative laws and the absolute-class specialization;
 
 - local constancy of the actual outward sphere tangent orientation in every
   fixed native chart, including the real zero-sphere;
@@ -1356,3 +1359,25 @@ Source `1789419839469028859-topology-0c249c94` passed in 20.92 seconds with 79 g
 Positive-dimensional outward homology normalization, the adjunction sign,
 general integral manifold duality and the missing frozen contract remain open.
 This checkpoint does not close either full theorem suite.
+
+## Compact-support cap naturality under open embeddings
+
+This 155-module checkpoint tracks 226 curated added public exports. Two new
+public theorems construct the cap maps from actual coherent relative-homology
+families and prove the square with compact-support extension and ordinary
+homology pushforward. Both representative laws remain public. The absolute-class
+specialization uses the actual image of the source class and identifies both
+maps with ordinary cap after forgetting compact support.
+
+The statements cover all natural degrees and open embeddings into Hausdorff
+spaces, without a manifold, compactness or positive-degree assumption. The
+proper point-to-integers consumer produces nonzero source, target and
+compact-support classes and checks the actual cap values and full square.
+The three representative, excision-extensionality and cap-square helpers stay
+private. All 154 preceding source leaves and public APIs remain unchanged.
+
+Source `1789419937125041916-topology-d82efff4` passed in 16.86 seconds with 243 guards and 39 signature/axiom pairs. Original `1789423067944195099-topology-01d7710a` passed in 48.69 seconds with 1321 guards and 143 pairs; portable `1789423068007160847-topology_checkpoint-d240eeba` passed in 96.31 seconds with 1617 guards and 443 pairs. Both ran in Slurm 13879784. The portable CapNaturality leaf and root freshly compiled in 0:16.86, maximum RSS 1,831,844 KiB, with zero diagnostics. All 136 preceding original and 436 preceding portable readback pairs are byte-identical. All 39 source types are byte-identical in the original check, with 36 complete pairs unchanged. The three new private axiom heads and one ordered axiom-line wrap are explicit. All 39 source and 143 shared imported readbacks agree through exact private heads, qualification and whitespace, without binder changes. Strict source and stock declaration linters pass, transitive axioms are standard-only, and all 154 preceding source leaves remain unchanged.
+
+General integral manifold duality, positive-dimensional outward homology
+normalization, the adjunction sign and the missing frozen contract remain open.
+Neither full theorem suite is complete.

@@ -59,9 +59,14 @@ in the existing Della tmux session. Never retry SSH to `della-vis1`.
 All sustained compilation, Kimina and Lean REPL checks run under Slurm on CPU
 compute nodes, using `--account=karthikn --partition=cpu --qos=short`, one CPU,
 and memory sized from measured requirements. No GPU is needed. Keep
-`LEAN_NUM_THREADS=1` and one active proof check across both projects. Reuse the
-long-lived shared allocation and distinct warm project sessions; the main
-controller owns Slurm, services, queue operations and allocation renewal.
+`LEAN_NUM_THREADS=1` per worker. The owner explicitly authorized multiple
+concurrent Kimina workers and Slurm allocations on 2026-09-14, superseding the
+earlier single-check limit. Reuse long-lived allocations and distinct warm
+project sessions, with separate worker queues, locks and loopback services.
+The main controller owns Slurm, services, queue operations and renewal, and
+coordinates artifact generation so imported project and transitive dependency
+artifacts stay stable during checks. Additional workers run source-only checks
+against existing artifacts. Independent final reviews may run concurrently.
 Do not submit a separate allocation for each check or duplicate a pending job.
 
 Reuse the existing exact sources and caches offline. Do not download, upgrade,

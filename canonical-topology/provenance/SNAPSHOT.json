@@ -1,9 +1,9 @@
 {
-  "scope": "Dependency-closed 154-module checkpoint adding fixed-native-chart local constancy of the actual outward sphere tangent orientation in every dimension, including zero. Earlier compactly supported cohomology, cap maps, local cap bijections and fundamental generators retain their exact APIs. Positive-dimensional outward homology normalization, adjunction signs, general integral manifold duality and the missing frozen topology suite remain open.",
+  "scope": "Dependency-closed 155-module checkpoint adding actual compact-support cap naturality under open embeddings, with representative laws and the absolute-class specialization. Earlier APIs and source leaves remain unchanged. General integral manifold duality, positive-dimensional outward homology normalization, adjunction signs and the missing frozen topology suite remain open.",
   "baseline_commit": "b45bfa009368c8f5f531e10f4f5280e90079d6ad",
   "baseline_ref": "refs/remotes/origin/codex/chapter35",
   "source_project": "PoincareLean",
-  "source_module_count": 154,
+  "source_module_count": 155,
   "roots": [
     "Poincare.Topology.Homology.RelativeMaps",
     "Poincare.Topology.Homology.RelativeHomeomorphism",
@@ -54,7 +54,8 @@
     "Poincare.Topology.Homology.ZeroSphereOrientation",
     "Poincare.Topology.Homology.CompactlySupportedCohomology.Defs",
     "Poincare.Topology.Homology.CompactlySupportedCohomology.Cap",
-    "Poincare.Topology.Homology.CompactlySupportedCohomology.OpenEmbedding"
+    "Poincare.Topology.Homology.CompactlySupportedCohomology.OpenEmbedding",
+    "Poincare.Topology.Homology.CompactlySupportedCohomology.CapNaturality"
   ],
   "changed_sources": [
     {
@@ -526,6 +527,13 @@
       "baseline_sha256": null,
       "sha256": "b5315514826abc3b5f08809630d9aa5dd2e37af9f6089f070ccfd0c5a113adc2",
       "provenance": "New original extension of actual compactly supported cohomology through an open embedding into a Hausdorff space, obtained from existing pair cohomology excision and retaining representative, forgetful, identity and composition laws."
+    },
+    {
+      "module": "Poincare.Topology.Homology.CompactlySupportedCohomology.CapNaturality",
+      "path": "Poincare/Topology/Homology/CompactlySupportedCohomology/CapNaturality.lean",
+      "baseline_sha256": null,
+      "sha256": "eeda1443308ef692c6f4e8f301efd202151f4ecfd5f22d8b0e3009869d7d3fe6",
+      "provenance": "New original compact-support cap naturality under open embeddings, reusing actual compact-support colimits, cap descent and open excision; exact accepted Revision5 source preserved, with representative laws and the absolute-class specialization."
     }
   ],
   "poincare_sources": [
@@ -1478,13 +1486,20 @@
       "baseline_sha256": null,
       "sha256": "b5315514826abc3b5f08809630d9aa5dd2e37af9f6089f070ccfd0c5a113adc2",
       "provenance": "New original extension of actual compactly supported cohomology through an open embedding into a Hausdorff space, obtained from existing pair cohomology excision and retaining representative, forgetful, identity and composition laws."
+    },
+    {
+      "module": "Poincare.Topology.Homology.CompactlySupportedCohomology.CapNaturality",
+      "path": "Poincare/Topology/Homology/CompactlySupportedCohomology/CapNaturality.lean",
+      "baseline_sha256": null,
+      "sha256": "eeda1443308ef692c6f4e8f301efd202151f4ecfd5f22d8b0e3009869d7d3fe6",
+      "provenance": "New original compact-support cap naturality under open embeddings, reusing actual compact-support colimits, cap descent and open excision; exact accepted Revision5 source preserved, with representative laws and the absolute-class specialization."
     }
   ],
   "aggregate": {
     "path": "Poincare.lean",
     "baseline_sha256": "99c3c8e47c19f60ee50a7e0f377e59138cf4ff33ebd4e26530d3c2b7cd47d452",
-    "sha256": "c490e2e5c9ee4f8750c23571ccf0c647172dba7526e49e5193d16a377575aba4",
-    "change": "Flat 154-leaf checkpoint aggregate; recovered project remains separate"
+    "sha256": "688a12c87a958bd6a2ceb39129812a466db05063364a51aa8b2215e93462986b",
+    "change": "Flat 155-leaf checkpoint aggregate; recovered project remains separate"
   },
   "configuration": [
     {
@@ -1848,7 +1863,9 @@
     "Poincare.Topology.integralCompactlySupportedCohomologyPushforward_comp",
     "Poincare.Topology.integralRelativeCohomologyMap_bijective_of_isOpenEmbedding_of_isClosed_image",
     "Poincare.Topology.integralRelativeCohomologyMap_bijective_of_isOpenEmbedding",
-    "Poincare.Topology.sphereOutwardOrientation_chart_isLocallyConstant"
+    "Poincare.Topology.sphereOutwardOrientation_chart_isLocallyConstant",
+    "Poincare.Topology.exists_integralCompactlySupportedCohomology_cap_natural",
+    "Poincare.Topology.exists_integralCompactlySupportedCohomology_cap_of_absolute_natural"
   ],
   "historical_authorities": [
     {
@@ -1986,31 +2003,30 @@
     "full_topology_suite_accepted": false
   },
   "validation": {
-    "status": "passed for the selected 154-module checkpoint; full topology suite incomplete",
+    "status": "passed for the selected 155-module checkpoint; full topology suite incomplete",
     "date": "2026-09-14",
     "slurm_job": "13879784",
     "host": "della-h14n10",
-    "request_id": "1789421445488001509-topology_checkpoint-0b7ae135",
-    "input_sha256": "d8d941f4d6464c766728a24d7429da4266ea5cbf72318f2547d9f5a02eaf0e81",
-    "result_sha256": "d4fe4556c5c1bc11ea31c5a15a4f1671630b465e299e22e148a6a6df14e10191",
-    "artifact_log_sha256": "2968f7f5cce1796066b7461fa307d3debfa49d3f6215cce45d2262b5e82bf319",
-    "source_config_harness_hash_guards": 1581,
+    "request_id": "1789423068007160847-topology_checkpoint-d240eeba",
+    "input_sha256": "7325f2331617357d37225f63de3cc172fa4a5048d3dfa0d03f0a283f7d2a2f7c",
+    "result_sha256": "d5c230ff66af8e72cecdb1dbfcf520c6d2c4d57ca69d2bc0aca30494f6646215",
+    "artifact_log_sha256": "361e031713c9aba079bcdc085532cc7793a7be8b26e8030990a91313da76f188",
+    "source_config_harness_hash_guards": 1617,
     "freshly_built_modules": [
-      "Poincare.Topology.Manifold.SphereOrientation",
-      "Poincare.Topology.Homology.ZeroSphereOrientation",
+      "Poincare.Topology.Homology.CompactlySupportedCohomology.CapNaturality",
       "Poincare"
     ],
     "root_build": "lake --no-cache --iofail build Poincare",
-    "fresh_build_scope": "Fresh SphereOrientation, affected ZeroSphereOrientation and portable root; all 153 other source leaves retain exact bytes.",
-    "exact_public_exports": 224,
-    "public_and_consumer_signature_axiom_pairs": 436,
+    "fresh_build_scope": "Fresh CapNaturality leaf and portable root; all 154 preceding leaves retain exact bytes.",
+    "exact_public_exports": 226,
+    "public_and_consumer_signature_axiom_pairs": 443,
     "linters": [
       "unusedArguments",
       "simpNF",
       "synTaut",
       "checkType"
     ],
-    "linter_scope": "Complete declarations of SphereOrientation and ZeroSphereOrientation plus all current consumers, including private and generated declarations, selected once through the stock module-prefix API",
+    "linter_scope": "Complete CapNaturality module plus all current consumers, including private and generated declarations, selected once through the stock module-prefix API",
     "defLemma": "Unavailable in the pinned Mathlib; source declaration-kind checks retained.",
     "allowed_transitive_axioms": [
       "propext",
@@ -2018,27 +2034,51 @@
       "Quot.sound"
     ],
     "unexpected_diagnostics": 0,
-    "elapsed_seconds": 84.33067607879639,
-    "peak_summed_rss_bytes": 3875438592,
+    "elapsed_seconds": 96.31448340415955,
+    "peak_summed_rss_bytes": 3576463360,
     "full_topology_suite_accepted": false,
     "consumer_probes": [
-      "All 127 preceding original and 427 preceding portable readback pairs are byte-identical",
-      "All fourteen source readbacks agree through exact private names, qualification and whitespace",
-      "Actual S2 chart tangent volume is nonzero and transported outward orientations agree locally",
-      "Actual real zero-sphere negative endpoint orientation is retained"
+      "All 136 preceding original and 436 preceding portable readback pairs are byte-identical",
+      "All 39 accepted source types are byte-identical in the original check; all 36 non-new-private pairs are byte-identical",
+      "All 39 source and 143 shared imported readbacks agree through exact private heads, qualification and whitespace; one ordered axiom wrap",
+      "Proper point-to-integers open embedding has nonzero source, target and compact-support classes, actual cap values and the full naturality square"
     ],
     "parser_sha256": "d5596498ac375c6e1e72738d49070e3f89a692cda36f2c1397add3a2ade6cbaf",
     "artifact_build_evidence": {
-      "sha256": "2968f7f5cce1796066b7461fa307d3debfa49d3f6215cce45d2262b5e82bf319",
+      "sha256": "361e031713c9aba079bcdc085532cc7793a7be8b26e8030990a91313da76f188",
       "freshly_built_modules": [
-        "Poincare.Topology.Manifold.SphereOrientation",
-        "Poincare.Topology.Homology.ZeroSphereOrientation",
+        "Poincare.Topology.Homology.CompactlySupportedCohomology.CapNaturality",
         "Poincare"
       ],
-      "elapsed": "0:28.79",
-      "rss_kib": 1933852,
-      "request_id": "1789421119629364733-topology_checkpoint-c89d5038",
-      "evidence_scope": "Fresh unchanged-source compilation only; its failed harness is not accepted proof evidence"
+      "elapsed": "0:16.86",
+      "rss_kib": 1831844,
+      "request_id": "1789423068007160847-topology_checkpoint-d240eeba"
+    },
+    "subsequent_authority_changes": {
+      "sha256": "5c893123c1208e6b18ad090563a8989b24f425b242ebc78ffc1d3ae358f2d919",
+      "reason": "Explicit September 14 user authorization of multiple persistent Kimina workers, Slurm allocations and independent final reviewers; no mathematical or compiler gate changed.",
+      "entries": [
+        {
+          "path": "/scratch/gpfs/KARTHIKN/ayush/differential-geometry-schoenflies/AGENTS.md",
+          "before": "d46824ae53fcf2031fa861af22afcdca0dca3b5994e4115144f80029d92f5c82",
+          "after": "7a68aa63f968c86b42605d75762f58fb73d67dff58794ec0a3334d98a71b36fa"
+        },
+        {
+          "path": "/scratch/gpfs/KARTHIKN/ayush/differential-geometry-schoenflies/differential-geometry-dev/canonical-topology/AGENTS.md",
+          "before": "bbea3864a1ef46d4a4b12818758e212939d869d368f8f8fd1e8fc0cb6600bf6c",
+          "after": "2fe968c1164d1883b3ac8c11ddc397aa723f7b97ee73be640592db53df791abc"
+        },
+        {
+          "path": "/scratch/gpfs/KARTHIKN/ayush/differential-geometry-schoenflies/plan/della_two_projects_prompt.md",
+          "before": "ebaf78cdb6877ca14c39d244451982b3db5d43d2d2d68567f555102ef222bc1f",
+          "after": "155c1e3235a84dfa86285794b5d4ae37cf441f247a155e7b67ad2759b27e0c01"
+        },
+        {
+          "path": "/scratch/gpfs/KARTHIKN/ayush/differential-geometry-schoenflies/plan/plan_smooth_schoenflies.md",
+          "before": "a4fddbf7c201776a55b3a6afecdd895c40a23ac8e7a0f810c1c3c44a2f007927",
+          "after": "a25a0933f2b44f354f958f1eb09d65a3cff2215563ff0fe99ad3535b91d0d76a"
+        }
+      ]
     }
   },
   "previous_linear_sign_checkpoint_validation": {
@@ -5270,5 +5310,123 @@
     "source_shared_readback_count": 14,
     "original_portable_shared_readback_count": 136,
     "comparison": "Old readbacks byte-identical; exact twelve private heads, qualification and whitespace; one explicitly allowed ordered axiom-line wrap for real_sphere_outward_form_value"
+  },
+  "previous_compact_support_cap_naturality_validation": {
+    "status": "passed for the selected 154-module checkpoint; full topology suite incomplete",
+    "date": "2026-09-14",
+    "slurm_job": "13879784",
+    "host": "della-h14n10",
+    "request_id": "1789421445488001509-topology_checkpoint-0b7ae135",
+    "input_sha256": "d8d941f4d6464c766728a24d7429da4266ea5cbf72318f2547d9f5a02eaf0e81",
+    "result_sha256": "d4fe4556c5c1bc11ea31c5a15a4f1671630b465e299e22e148a6a6df14e10191",
+    "artifact_log_sha256": "2968f7f5cce1796066b7461fa307d3debfa49d3f6215cce45d2262b5e82bf319",
+    "source_config_harness_hash_guards": 1581,
+    "freshly_built_modules": [
+      "Poincare.Topology.Manifold.SphereOrientation",
+      "Poincare.Topology.Homology.ZeroSphereOrientation",
+      "Poincare"
+    ],
+    "root_build": "lake --no-cache --iofail build Poincare",
+    "fresh_build_scope": "Fresh SphereOrientation, affected ZeroSphereOrientation and portable root; all 153 other source leaves retain exact bytes.",
+    "exact_public_exports": 224,
+    "public_and_consumer_signature_axiom_pairs": 436,
+    "linters": [
+      "unusedArguments",
+      "simpNF",
+      "synTaut",
+      "checkType"
+    ],
+    "linter_scope": "Complete declarations of SphereOrientation and ZeroSphereOrientation plus all current consumers, including private and generated declarations, selected once through the stock module-prefix API",
+    "defLemma": "Unavailable in the pinned Mathlib; source declaration-kind checks retained.",
+    "allowed_transitive_axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "unexpected_diagnostics": 0,
+    "elapsed_seconds": 84.33067607879639,
+    "peak_summed_rss_bytes": 3875438592,
+    "full_topology_suite_accepted": false,
+    "consumer_probes": [
+      "All 127 preceding original and 427 preceding portable readback pairs are byte-identical",
+      "All fourteen source readbacks agree through exact private names, qualification and whitespace",
+      "Actual S2 chart tangent volume is nonzero and transported outward orientations agree locally",
+      "Actual real zero-sphere negative endpoint orientation is retained"
+    ],
+    "parser_sha256": "d5596498ac375c6e1e72738d49070e3f89a692cda36f2c1397add3a2ade6cbaf",
+    "artifact_build_evidence": {
+      "sha256": "2968f7f5cce1796066b7461fa307d3debfa49d3f6215cce45d2262b5e82bf319",
+      "freshly_built_modules": [
+        "Poincare.Topology.Manifold.SphereOrientation",
+        "Poincare.Topology.Homology.ZeroSphereOrientation",
+        "Poincare"
+      ],
+      "elapsed": "0:28.79",
+      "rss_kib": 1933852,
+      "request_id": "1789421119629364733-topology_checkpoint-c89d5038",
+      "evidence_scope": "Fresh unchanged-source compilation only; its failed harness is not accepted proof evidence"
+    }
+  },
+  "original_compact_support_cap_naturality_validation": {
+    "request_id": "1789423067944195099-topology-01d7710a",
+    "input_sha256": "63461925f0ecf1b8fc05a87366120a9766ac231efca040e0d15cf2226cf79ff9",
+    "result_sha256": "22d2ad1c8afcaa9e07bf135f8e8a14a15f088a0375a60c0e7c254e6fd178b009",
+    "elapsed_seconds": 48.69119119644165,
+    "slurm_job": "13879784",
+    "host": "della-h14n10",
+    "parser_sha256": "d5596498ac375c6e1e72738d49070e3f89a692cda36f2c1397add3a2ade6cbaf",
+    "source_guards": 1321,
+    "signature_axiom_pairs": 143,
+    "fresh_artifacts": {
+      "sha256": "7ed0ba579803573c8c9c2732e934f9d0ea8ce21344654bf758492a195658b42e",
+      "freshly_built_modules": [
+        "Poincare.Topology.Homology.CompactlySupportedCohomology.CapNaturality"
+      ],
+      "elapsed": "0:10.53",
+      "rss_kib": 1714968,
+      "request_id": "1789423067944195099-topology-01d7710a"
+    },
+    "source": {
+      "request_id": "1789419937125041916-topology-d82efff4",
+      "input_sha256": "6ef8e877f0d5d7a9b20220503c029d61d271a91706181cdf3019b6b7ae8b5b19",
+      "result_sha256": "857305055e2826a0761f5a812c9adcecdb1fc72e3b56e0d2589afdfc9ffb28a6",
+      "elapsed_seconds": 16.86391830444336,
+      "slurm_job": "13879784",
+      "host": "della-h14n10",
+      "parser_sha256": "d5596498ac375c6e1e72738d49070e3f89a692cda36f2c1397add3a2ade6cbaf",
+      "source_guards": 243,
+      "signature_axiom_pairs": 39
+    },
+    "old_original_pairs_unchanged": 136,
+    "old_portable_pairs_unchanged": 436,
+    "source_shared_readback_count": 39,
+    "original_portable_shared_readback_count": 143,
+    "comparison": "Old imported readbacks byte-identical; all 39 original source types and 36 pairs byte-identical; exact fifteen private heads and qualification/whitespace only across projects, with one ordered axiom wrap for compact_support_cap_natural; no binder or alpha normalization",
+    "subsequent_authority_changes": {
+      "sha256": "5c893123c1208e6b18ad090563a8989b24f425b242ebc78ffc1d3ae358f2d919",
+      "reason": "Explicit September 14 user authorization of multiple persistent Kimina workers, Slurm allocations and independent final reviewers; no mathematical or compiler gate changed.",
+      "entries": [
+        {
+          "path": "/scratch/gpfs/KARTHIKN/ayush/differential-geometry-schoenflies/AGENTS.md",
+          "before": "d46824ae53fcf2031fa861af22afcdca0dca3b5994e4115144f80029d92f5c82",
+          "after": "7a68aa63f968c86b42605d75762f58fb73d67dff58794ec0a3334d98a71b36fa"
+        },
+        {
+          "path": "/scratch/gpfs/KARTHIKN/ayush/differential-geometry-schoenflies/differential-geometry-dev/canonical-topology/AGENTS.md",
+          "before": "bbea3864a1ef46d4a4b12818758e212939d869d368f8f8fd1e8fc0cb6600bf6c",
+          "after": "2fe968c1164d1883b3ac8c11ddc397aa723f7b97ee73be640592db53df791abc"
+        },
+        {
+          "path": "/scratch/gpfs/KARTHIKN/ayush/differential-geometry-schoenflies/plan/della_two_projects_prompt.md",
+          "before": "ebaf78cdb6877ca14c39d244451982b3db5d43d2d2d68567f555102ef222bc1f",
+          "after": "155c1e3235a84dfa86285794b5d4ae37cf441f247a155e7b67ad2759b27e0c01"
+        },
+        {
+          "path": "/scratch/gpfs/KARTHIKN/ayush/differential-geometry-schoenflies/plan/plan_smooth_schoenflies.md",
+          "before": "a4fddbf7c201776a55b3a6afecdd895c40a23ac8e7a0f810c1c3c44a2f007927",
+          "after": "a25a0933f2b44f354f958f1eb09d65a3cff2215563ff0fe99ad3535b91d0d76a"
+        }
+      ]
+    }
   }
 }

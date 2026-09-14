@@ -152,3 +152,4 @@ import Poincare.Topology.Homology.ZeroSphereOrientation
 import Poincare.Topology.Homology.CompactlySupportedCohomology.Defs
 import Poincare.Topology.Homology.CompactlySupportedCohomology.Cap
 import Poincare.Topology.Homology.CompactlySupportedCohomology.OpenEmbedding
+import Poincare.Topology.Homology.CompactlySupportedCohomology.CapNaturality
