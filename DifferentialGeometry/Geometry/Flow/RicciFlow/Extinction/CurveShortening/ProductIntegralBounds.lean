@@ -18,6 +18,35 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
     {D : RealTimeInterval} {a b s u : ℝ}
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
+theorem exists_centered_arcLength_eq (c : ProductCurve M) (g : ℝ → SmoothRiemannianMetric I M)
+    (lambda : ℝ) (hlambda : 0 < lambda) {J : Set ℝ}
+    (hc : c.SmoothOn (I := I) J) (hi : c.ImmersedOn (I := I) J)
+    (x t : ℝ) (ht : t ∈ J) {r : ℝ} (hr : 0 < r) (hlen : r ≤ c.length g lambda t) :
+    ∃ p q : ℝ, p < x ∧ x < q ∧ q ≤ p + 1 ∧
+      c.arcLength g lambda p x t = r / 2 ∧ c.arcLength g lambda x q t = r / 2 ∧
+        c.arcLength g lambda p q t = r := by
+  have hsp := (c.speed_contDiff_of_immersedOn g lambda hlambda hc hi t ht).continuous
+  have hperiod := c.speed_periodic g lambda hc t ht
+  have hlen' : r ≤ ∫ y in (0 : ℝ)..0 + 1, c.speed g lambda y t := by
+    simpa only [ProductCurve.length, ProductCurve.integral, one_mul, zero_add] using hlen
+  obtain ⟨p, q, hpx, hxq, hqp, hleft, hright, hall⟩ :=
+    hperiod.exists_centered_intervalIntegral_eq hsp zero_le_one hr.le hlen' x
+  have hpx' : p < x := by
+    by_contra h
+    have heq : p = x := le_antisymm hpx (le_of_not_gt h)
+    subst p
+    rw [intervalIntegral.integral_same] at hleft
+    linarith
+  have hxq' : x < q := by
+    by_contra h
+    have heq : q = x := le_antisymm (le_of_not_gt h) hxq
+    subst q
+    rw [intervalIntegral.integral_same] at hright
+    linarith
+  exact ⟨p, q, hpx', hxq', hqp, hleft, hright, hall⟩
+
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
 theorem arcLength_le_length (c : ProductCurve M) (g : ℝ → SmoothRiemannianMetric I M)
     (lambda : ℝ) (hlambda : 0 < lambda) {J : Set ℝ}
     (hc : c.SmoothOn (I := I) J) (hi : c.ImmersedOn (I := I) J)
