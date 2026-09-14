@@ -5015,6 +5015,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.P
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProductCoveringDerivative
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProductCoveringMap
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProductCurveFieldRegularity
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProductCurveShortTime
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProductCurveSmoothLift
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProductGeometry
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProductSolutionCorrespondence
@@ -5057,6 +5058,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.Essentia
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.ExtinctionTimeBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.ExtinctionTimeThreshold
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.FaceLimit
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.FamilyDeformationReduction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.FlatPolygonRampCurvature
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.Flow
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.FlowDeformationFrontierAudit
@@ -5523,6 +5525,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Bico
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.BufferedMixedCurvature
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.BufferedNeckNumerics
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.BumpMetricTimeJets
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.CGHSubsequenceClosure
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.CanonicalPointedMetricControl
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.CollapsedBallGeometry
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.CollapsedReducedVolume
@@ -6540,6 +6543,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.HornCylinde
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.InitialSphericalFrontier
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.InitialSphericalFrontierEpsilonUniformity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.InitialSphericalFrontierNormalization
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.LocalStabilityInputWitness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.InitialTerminalRegionFrontier
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.LocalSurgeryNoncollapsing
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.MetricStep
@@ -6553,6 +6557,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.PoincareSta
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.ReflectionShiftCoOrientation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.Reconstruction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.ReducedLengthRealization
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.RoundDegreeInputRefutation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.StepInputFrontierAudit
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.Terminal
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Poincare
@@ -6683,6 +6688,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChildCarrie
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChildCarrierStarCover
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChildComparisonAssembly
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChildComparisonCanonicalSupport
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChildComparisonFrontierReduction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChildComparisonLocalLength
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChildComparisonMetric
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChildCoreComponentRetraction
@@ -6773,6 +6779,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryResc
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryRestriction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistorySlices
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.Homology
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HomotopyGroupsAssembly
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.IncomingSlabCapBall
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.LinearOrientation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.LocalClassRealizationLocality
