@@ -19,7 +19,7 @@ universe u
 
 variable {D : OneStepIncoming.{u}}
 
-def TerminalCorePresentation.mono_lambda {ε Λ Λ' : ℝ}
+def TerminalCorePresentation.monoLambda {ε Λ Λ' : ℝ}
     (P : TerminalCorePresentation D ε Λ) (hΛ : Λ ≤ Λ') :
     TerminalCorePresentation D ε Λ' where
   epsilon_pos := P.epsilon_pos
@@ -30,9 +30,14 @@ def TerminalCorePresentation.mono_lambda {ε Λ Λ' : ℝ}
   component := P.component
   component_finite := P.component_finite
   core := P.core
-  core_isOpen := P.core_isOpen
   core_isCompact := P.core_isCompact
   core_isConnected := P.core_isConnected
+  core_empty := P.core_empty
+  coreCharts := P.coreCharts
+  core_smooth := P.core_smooth
+  core_induced := P.core_induced
+  core_interior_eq := P.core_interior_eq
+  core_boundary_eq := P.core_boundary_eq
   component_iff_meets_low := P.component_iff_meets_low
   low_mem_interior_core := P.low_mem_interior_core
   hornIndex := P.hornIndex
@@ -40,10 +45,15 @@ def TerminalCorePresentation.mono_lambda {ε Λ Λ' : ℝ}
   hornIndex_empty := P.hornIndex_empty
   horn := P.horn
   horn_smooth := P.horn_smooth
+  horn_interior_embedding := P.horn_interior_embedding
   horn_injOn := P.horn_injOn
   horn_proper := P.horn_proper
   horn_range_disjoint := P.horn_range_disjoint
   horn_meets_core := P.horn_meets_core
+  horn_base_covers_boundary := P.horn_base_covers_boundary
+  hornCollar := P.hornCollar
+  horn_collar_core_side := P.horn_collar_core_side
+  horn_collar_eq := P.horn_collar_eq
   horn_covers_component := P.horn_covers_component
   horn_scalar_large := P.horn_scalar_large
   horn_base_scalar := fun c e y =>
@@ -52,7 +62,7 @@ def TerminalCorePresentation.mono_lambda {ε Λ Λ' : ℝ}
   horn_scalar_diverges := P.horn_scalar_diverges
   horn_spatial_neck := P.horn_spatial_neck
 
-def TerminalCorePresentation.mono_epsilon {ε ε' Λ : ℝ}
+def TerminalCorePresentation.monoEpsilon {ε ε' Λ : ℝ}
     (P : TerminalCorePresentation D ε Λ) (hε : ε ≤ ε') :
     TerminalCorePresentation D ε' Λ where
   epsilon_pos := lt_of_lt_of_le P.epsilon_pos hε
@@ -63,9 +73,14 @@ def TerminalCorePresentation.mono_epsilon {ε ε' Λ : ℝ}
   component := P.component
   component_finite := P.component_finite
   core := P.core
-  core_isOpen := P.core_isOpen
   core_isCompact := P.core_isCompact
   core_isConnected := P.core_isConnected
+  core_empty := P.core_empty
+  coreCharts := P.coreCharts
+  core_smooth := P.core_smooth
+  core_induced := P.core_induced
+  core_interior_eq := P.core_interior_eq
+  core_boundary_eq := P.core_boundary_eq
   component_iff_meets_low := P.component_iff_meets_low
   low_mem_interior_core := P.low_mem_interior_core
   hornIndex := P.hornIndex
@@ -73,10 +88,15 @@ def TerminalCorePresentation.mono_epsilon {ε ε' Λ : ℝ}
   hornIndex_empty := P.hornIndex_empty
   horn := P.horn
   horn_smooth := P.horn_smooth
+  horn_interior_embedding := P.horn_interior_embedding
   horn_injOn := P.horn_injOn
   horn_proper := P.horn_proper
   horn_range_disjoint := P.horn_range_disjoint
   horn_meets_core := P.horn_meets_core
+  horn_base_covers_boundary := P.horn_base_covers_boundary
+  hornCollar := P.hornCollar
+  horn_collar_core_side := P.horn_collar_core_side
+  horn_collar_eq := P.horn_collar_eq
   horn_covers_component := P.horn_covers_component
   horn_scalar_large := P.horn_scalar_large
   horn_base_scalar := P.horn_base_scalar
@@ -111,7 +131,7 @@ theorem TerminalCorePresentation.lowSet_subset_iUnion_core {ε Λ : ℝ}
   obtain ⟨c, hc, hxc⟩ := P.low_mem_core hx
   exact Set.mem_biUnion hc hxc
 
-def TerminalCorePresentationInput.mono_epsilon {τ ε ε' : ℝ}
+def TerminalCorePresentationInput.monoEpsilon {τ ε ε' : ℝ}
     (P : TerminalCorePresentationInput.{u} τ ε) (hε : ε ≤ ε') (hε' : ε' < 1) :
     TerminalCorePresentationInput.{u} τ ε' where
   tau_pos := P.tau_pos
@@ -119,9 +139,9 @@ def TerminalCorePresentationInput.mono_epsilon {τ ε ε' : ℝ}
   epsilon_lt_one := hε'
   lambda := P.lambda
   one_le_lambda := P.one_le_lambda
-  presentation := fun D hτ => (P.presentation D hτ).map (fun Q => Q.mono_epsilon hε)
+  presentation := fun D hτ => (P.presentation D hτ).map (fun Q => Q.monoEpsilon hε)
 
-def TerminalCorePresentationInput.mono_lambda {τ ε : ℝ}
+def TerminalCorePresentationInput.monoLambda {τ ε : ℝ}
     (P : TerminalCorePresentationInput.{u} τ ε) {Λ' : ℝ}
     (hΛ : P.lambda ≤ Λ') (hΛ' : 1 ≤ Λ') :
     TerminalCorePresentationInput.{u} τ ε where
@@ -130,9 +150,9 @@ def TerminalCorePresentationInput.mono_lambda {τ ε : ℝ}
   epsilon_lt_one := P.epsilon_lt_one
   lambda := Λ'
   one_le_lambda := hΛ'
-  presentation := fun D hτ => (P.presentation D hτ).map (fun Q => Q.mono_lambda hΛ)
+  presentation := fun D hτ => (P.presentation D hτ).map (fun Q => Q.monoLambda hΛ)
 
-def TerminalCorePresentationInput.mono_params {τ ε ε' : ℝ}
+def TerminalCorePresentationInput.monoParams {τ ε ε' : ℝ}
     (P : TerminalCorePresentationInput.{u} τ ε) {Λ' : ℝ}
     (hε : ε ≤ ε') (hε' : ε' < 1) (hΛ : P.lambda ≤ Λ') (hΛ' : 1 ≤ Λ') :
     TerminalCorePresentationInput.{u} τ ε' where
@@ -142,7 +162,7 @@ def TerminalCorePresentationInput.mono_params {τ ε ε' : ℝ}
   lambda := Λ'
   one_le_lambda := hΛ'
   presentation := fun D hτ =>
-    (P.presentation D hτ).map (fun Q => (Q.mono_epsilon hε).mono_lambda hΛ)
+    (P.presentation D hτ).map (fun Q => (Q.monoEpsilon hε).monoLambda hΛ)
 
 section MetricMonotonicity
 
@@ -232,7 +252,7 @@ theorem historicalNeckRecognition.mono_order {τ ε d Λ : ℝ} {k j : ℕ}
   obtain ⟨A⟩ := hrec D P c e h hh0 hhH hτ hscale
   exact ⟨A.lowerOrder hjk hlow⟩
 
-def GlobalStepInputs.mono_order {p : CutoffParameters} {τ ε d : ℝ} {k j : ℕ}
+def GlobalStepInputs.monoOrder {p : CutoffParameters} {τ ε d : ℝ} {k j : ℕ}
     {DiscardedCutOpen : Type u → Prop}
     (G : GlobalStepInputs.{u} p τ ε d k DiscardedCutOpen) (hjk : j ≤ k)
     (hlow : 2 * ⌊d⁻¹⌋₊ + 4 ≤ j) :

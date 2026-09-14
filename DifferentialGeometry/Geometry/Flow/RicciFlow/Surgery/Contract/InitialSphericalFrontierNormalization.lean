@@ -53,9 +53,9 @@ theorem hasInitialSphericalFrontier_witness_window {τ : ℝ}
         Nonempty (TerminalCorePresentation.{u} D ε Λ)) := by
   obtain ⟨ε, Λ, hε, hε1, hΛ, h⟩ := H
   exact ⟨ε, Λ, hε, hε1, hΛ, h,
-    fun ε' hε' _ D hD => (h D hD).map (fun P => P.mono_epsilon hε')⟩
+    fun ε' hε' _ D hD => (h D hD).map (fun P => P.monoEpsilon hε')⟩
 
-def TerminalCorePresentationInput.mono_tau {τ τ' ε : ℝ}
+def TerminalCorePresentationInput.monoTau {τ τ' ε : ℝ}
     (P : TerminalCorePresentationInput.{u} τ ε) (hτ : τ ≤ τ') (hτ' : 0 < τ') :
     TerminalCorePresentationInput.{u} τ' ε where
   tau_pos := hτ'
@@ -73,7 +73,7 @@ theorem exists_terminalCorePresentationInput_iff_eventually :
   constructor
   · rintro ⟨τ, ε, hτ, hε, hε1, ⟨P⟩⟩
     exact ⟨τ, ε, hτ, hε, hε1,
-      fun τ' hτ' => ⟨P.mono_tau hτ' (lt_of_lt_of_le hτ hτ')⟩⟩
+      fun τ' hτ' => ⟨P.monoTau hτ' (lt_of_lt_of_le hτ hτ')⟩⟩
   · rintro ⟨T, ε, hT, hε, hε1, h⟩
     exact ⟨T, ε, hT, hε, hε1, h T le_rfl⟩
 

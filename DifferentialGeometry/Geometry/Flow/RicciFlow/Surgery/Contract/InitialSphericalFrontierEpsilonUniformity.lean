@@ -34,7 +34,7 @@ theorem hasInitialSphericalFrontier_epsilon_step {τ ε ε' Λ : ℝ} (hε : ε 
       Nonempty (TerminalCorePresentation.{u} D ε Λ)) :
     ∀ D : OneStepIncoming.{u}, τ ≤ D.endTime →
       Nonempty (TerminalCorePresentation.{u} D ε' Λ) :=
-  fun D hD => (h D hD).map (fun P => P.mono_epsilon hε)
+  fun D hD => (h D hD).map (fun P => P.monoEpsilon hε)
 
 theorem exists_epsilon_upwardMonotoneFamily_not_forall :
     ∃ F : ℝ → Prop, (∀ ⦃ε ε' : ℝ⦄, ε ≤ ε' → F ε → F ε') ∧

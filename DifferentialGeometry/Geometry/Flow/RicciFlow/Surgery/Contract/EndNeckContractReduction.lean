@@ -193,30 +193,8 @@ theorem TerminalCorePresentation.coreRadius_inv_sq_lt_scalar_of_not_mem_core {ε
     {x : ↥D.slab.terminalRegularOpen} (hxc : ConnectedComponents.mk x = c)
     (hx : x ∉ P.core c) :
     (P.coreRadius ^ 2)⁻¹ < metricScalarAt D.terminal.metric x := by
-  have hcover := P.horn_covers_component c hc
-  have hmem : x ∈ P.core c ∪
-      ⋃ e : P.hornIndex c, Set.range fun p : HalfNeckCylinder => P.horn c e p.1 := by
-    rw [← hcover]
-    exact hxc
-  rcases hmem with hcore | hhorn
-  · exact absurd hcore hx
-  · obtain ⟨e, p, hp⟩ := Set.mem_iUnion.mp hhorn
-    by_cases hz : p.1.2 = 0
-    · have hbase : Set.range (fun y : Sphere 2 => P.horn c e (y, 0)) ⊆ P.core c := by
-        intro z hz'
-        have : z ∈ Set.range (fun y : Sphere 2 => P.horn c e (y, 0)) ∩ P.core c := by
-          rw [P.horn_meets_core c e]
-          exact hz'
-        exact this.2
-      have hpoint : P.horn c e (p.1.1, (0 : ℝ)) = x := by
-        rw [← hp]
-        congr 1
-        exact Prod.ext rfl hz.symm
-      exact absurd (hpoint ▸ hbase ⟨p.1.1, rfl⟩) hx
-    · have hpos : 0 < p.1.2 := lt_of_le_of_ne p.2 (Ne.symm hz)
-      have hlarge := P.horn_scalar_large c e p.1.1 p.1.2 hpos
-      have hpoint : P.horn c e (p.1.1, p.1.2) = x := by
-        rw [← hp]
-      rwa [hpoint] at hlarge
+  apply lt_of_not_ge
+  intro h
+  exact hx (interior_subset (P.low_mem_interior_core c hc x hxc h))
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology

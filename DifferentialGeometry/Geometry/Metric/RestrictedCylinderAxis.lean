@@ -45,4 +45,18 @@ theorem restrictedCylinderAxis_inner
     (contMDiff_snd.mdifferentiable (by decide : (∞ : WithTop ℕ∞) ≠ 0) (x : M × ℝ))
   exact (cylinderMetric_axis_inner g (x : M × ℝ) v).trans h.symm
 
+theorem gradFun_restricted_height_eq_restrictedCylinderAxis
+    [FiniteDimensional ℝ E] [T2Space M]
+    (g : SmoothRiemannianMetric I M) (U : TopologicalSpace.Opens (M × ℝ)) (x : U) :
+    DifferentialGeometry.Geometry.Operator.gradFun ((cylinderMetric g).restrictOpen U)
+      (fun y : U ↦ (y : M × ℝ).2) x = restrictedCylinderAxis U x := by
+  apply DifferentialGeometry.Geometry.Operator.metricFlatLinear_injective
+    ((cylinderMetric g).restrictOpen U) x
+  ext v
+  rw [DifferentialGeometry.Geometry.Operator.metricFlatLinear_apply,
+    DifferentialGeometry.Geometry.Operator.metricFlatLinear_apply,
+    DifferentialGeometry.Geometry.Operator.inner_gradFun,
+    restrictedCylinderAxis_inner]
+  rfl
+
 end DifferentialGeometry.Geometry.Metric

@@ -9858,3 +9858,10 @@ import DifferentialGeometry.Topology.Planar.PolygonGraphCharts
 import DifferentialGeometry.Topology.Planar.PolygonIsotopy
 import DifferentialGeometry.Topology.Planar.PolygonRounding
 import DifferentialGeometry.Topology.Planar.PolygonVertexCharts
+import DifferentialGeometry.Geometry.Gradient.ScaledChart
+import DifferentialGeometry.Geometry.Metric.Comparison.ScalarBarrier
+import DifferentialGeometry.Topology.Collar.CompactRegion
+import DifferentialGeometry.Topology.Frontier
+import DifferentialGeometry.Topology.Manifold.GraphBand
+import DifferentialGeometry.Topology.Manifold.ProductChartCollar
+import DifferentialGeometry.Topology.Order.DisjointGraphs
