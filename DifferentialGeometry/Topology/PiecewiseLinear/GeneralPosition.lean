@@ -1549,4 +1549,169 @@ theorem exists_small_homeomorph_inter_isCombinatorialManifoldWithBoundary [Finit
   rw [hKA] at hGspace
   exact ⟨h, G, hh, hclose, hfix, hGfin, hGspace, hGman⟩
 
+theorem isPLHomeomorphOn_shear [FiniteDimensional ℝ E] (ℓ : E →ₗ[ℝ] ℝ) {v : E}
+    (hv : ℓ v = 0) {φ : ℝ → ℝ} (hφ : IsPiecewiseAffineOn φ univ) :
+    IsPLHomeomorphOn (fun x => x + φ (ℓ x) • v) univ univ := by
+  have hℓ : IsPiecewiseAffineOn ℓ univ :=
+    isPiecewiseAffineOn_of_affine ℓ.toAffineMap isOpen_univ
+  have hcomp : IsPiecewiseAffineOn (fun x => φ (ℓ x)) univ := by
+    change IsPiecewiseAffineOn (φ ∘ ℓ) univ
+    simpa only [preimage_univ, inter_self] using hφ.comp hℓ
+  have hpl : ∀ w : E, IsPiecewiseAffineOn (fun x => x + φ (ℓ x) • w) univ := by
+    intro w
+    exact (isPiecewiseAffineOn_id isOpen_univ).add
+      (hcomp.affine_comp (LinearMap.toSpanSingleton ℝ E w).toAffineMap)
+  let f : E → E := fun x => x + φ (ℓ x) • v
+  let g : E → E := fun x => x + φ (ℓ x) • (-v)
+  have hleft : Function.LeftInverse g f := by
+    intro x
+    change x + φ (ℓ x) • v + φ (ℓ (x + φ (ℓ x) • v)) • (-v) = x
+    rw [map_add, map_smul, hv, smul_eq_mul, mul_zero, add_zero, smul_neg, add_neg_cancel_right]
+  have hright : Function.RightInverse g f := by
+    intro x
+    change x + φ (ℓ x) • (-v) + φ (ℓ (x + φ (ℓ x) • (-v))) • v = x
+    rw [map_add, map_smul, map_neg, hv, neg_zero, smul_eq_mul, mul_zero, add_zero, smul_neg]
+    abel
+  have hbij : BijOn f univ univ :=
+    ⟨mapsTo_univ _ _, fun _ _ _ _ h => hleft.injective h,
+      fun y _ => ⟨g y, mem_univ _, hright y⟩⟩
+  refine ⟨hbij, hpl v, (hpl (-v)).congr fun y hy => ?_⟩
+  exact hleft.injective ((hbij.invOn_invFunOn.2 hy).trans (hright y).symm)
+
+open Classical in
+theorem exists_isPLHomeomorphOn_straighten_rays [FiniteDimensional ℝ E]
+    (ℓ : E →ₗ[ℝ] ℝ) {u v : E} (hu : 0 < ℓ u) (hv : ℓ v < 0) :
+    ∃ h : E → E, IsPLHomeomorphOn h univ univ ∧ EqOn h id (LinearMap.ker ℓ : Set E) ∧
+      (∀ r : ℝ, 0 ≤ r → h (r • u) = r • u) ∧
+      (∀ r : ℝ, 0 ≤ r → h (r • v) = (r * (ℓ v / ℓ u)) • u) ∧
+      (∀ x y, ℓ x = 0 → h (x + y) = x + h y) ∧
+      ∀ W : Submodule ℝ E, u ∈ W → v ∈ W → h '' (W : Set E) = (W : Set E) := by
+  let w : E := (ℓ u)⁻¹ • u - (ℓ v)⁻¹ • v
+  have hw : ℓ w = 0 := by
+    dsimp [w]
+    rw [map_sub, map_smul, map_smul]
+    change (ℓ u)⁻¹ * ℓ u - (ℓ v)⁻¹ * ℓ v = 0
+    rw [inv_mul_cancel₀ hu.ne', inv_mul_cancel₀ hv.ne, sub_self]
+  have hmin : IsPiecewiseAffineOn (fun r : ℝ => min r 0) univ :=
+    (isPiecewiseAffineOn_id isOpen_univ).min
+      (isPiecewiseAffineOn_of_affine (AffineMap.const ℝ ℝ 0) isOpen_univ)
+  let h : E → E := fun x => x + min (ℓ x) 0 • w
+  have hh : IsPLHomeomorphOn h univ univ := isPLHomeomorphOn_shear ℓ hw hmin
+  refine ⟨h, hh, ?_, ?_, ?_, ?_, ?_⟩
+  · intro x hx
+    have hx0 : ℓ x = 0 := hx
+    change x + min (ℓ x) 0 • w = x
+    rw [hx0, min_self, zero_smul, add_zero]
+  · intro r hr
+    change r • u + min (ℓ (r • u)) 0 • w = r • u
+    rw [map_smul]
+    change r • u + min (r * ℓ u) 0 • w = r • u
+    rw [min_eq_right (mul_nonneg hr hu.le), zero_smul, add_zero]
+  · intro r hr
+    change r • v + min (ℓ (r • v)) 0 • w = (r * (ℓ v / ℓ u)) • u
+    rw [map_smul]
+    change r • v + min (r * ℓ v) 0 • w = (r * (ℓ v / ℓ u)) • u
+    rw [min_eq_left (mul_nonpos_of_nonneg_of_nonpos hr hv.le)]
+    dsimp [w]
+    simp only [smul_sub, smul_smul, mul_assoc, mul_inv_cancel₀ hv.ne, mul_one, div_eq_mul_inv]
+    abel
+  · intro x y hx
+    change x + y + min (ℓ (x + y)) 0 • w = x + (y + min (ℓ y) 0 • w)
+    rw [map_add, hx, zero_add, add_assoc]
+  · intro W huW hvW
+    have hwW : w ∈ W := W.sub_mem (W.smul_mem _ huW) (W.smul_mem _ hvW)
+    apply Subset.antisymm
+    · rintro _ ⟨x, hx, rfl⟩
+      exact W.add_mem hx (W.smul_mem _ hwW)
+    · intro y hy
+      obtain ⟨x, _, hxy⟩ := hh.bijOn.surjOn (mem_univ y)
+      have hxW : x ∈ W := by
+        have hy' : x + min (ℓ x) 0 • w ∈ W := by
+          change x + min (ℓ x) 0 • w = y at hxy
+          rw [hxy]
+          exact hy
+        exact (W.add_mem_iff_left (W.smul_mem (min (ℓ x) 0) hwW)).mp hy'
+      exact ⟨x, hxW, hxy⟩
+
+theorem exists_linearMap_eq_one_neg_of_disjoint {V : Type*} [AddCommGroup V] [Module ℝ V]
+    {S T : Submodule ℝ V} (hdis : Disjoint S T) {u v : V} (huT : u ∈ T) (hvT : v ∈ T)
+    (hu : u ≠ 0) (hv : v ≠ 0) (hnot : ∀ c : ℝ, 0 < c → v ≠ c • u) :
+    ∃ ℓ : V →ₗ[ℝ] ℝ, S ≤ LinearMap.ker ℓ ∧ ℓ u = 1 ∧ ℓ v < 0 := by
+  classical
+  have huS : u ∉ S := fun hus => hu (Submodule.disjoint_def.mp hdis _ hus huT)
+  obtain ⟨f, hf, hfu⟩ := LinearMap.exists_extend_of_notMem (0 : S →ₗ[ℝ] ℝ) huS 1
+  have hfS : S ≤ LinearMap.ker f := by
+    intro x hx
+    have h := congrArg (fun L : S →ₗ[ℝ] ℝ => L ⟨x, hx⟩) hf
+    change f x = 0 at h
+    exact h
+  let P : Submodule ℝ V := S ⊔ Submodule.span ℝ {u}
+  by_cases hvP : v ∈ P
+  · obtain ⟨s, hs, w, hw, hswv⟩ := Submodule.mem_sup.mp hvP
+    obtain ⟨c, rfl⟩ := Submodule.mem_span_singleton.mp hw
+    have hsT : s ∈ T := by
+      have heq : s = v - c • u := by rw [← hswv]; abel
+      rw [heq]
+      exact T.sub_mem hvT (T.smul_mem _ huT)
+    have hs0 := Submodule.disjoint_def.mp hdis _ hs hsT
+    rw [hs0, zero_add] at hswv
+    have hcne : c ≠ 0 := by
+      intro hc0
+      rw [hc0, zero_smul] at hswv
+      exact hv hswv.symm
+    have hcle : c ≤ 0 := le_of_not_gt fun hc => hnot c hc hswv.symm
+    refine ⟨f, hfS, hfu, ?_⟩
+    rw [← hswv, map_smul, hfu]
+    change c * 1 < 0
+    simpa only [mul_one] using lt_of_le_of_ne hcle hcne
+  · obtain ⟨g, hg, hgv⟩ := LinearMap.exists_extend_of_notMem (f.domRestrict P) hvP (-1)
+    have hgP : ∀ x ∈ P, g x = f x := by
+      intro x hx
+      exact congrArg (fun L : P →ₗ[ℝ] ℝ => L ⟨x, hx⟩) hg
+    refine ⟨g, ?_, ?_, by rw [hgv]; norm_num⟩
+    · intro x hx
+      have hfx : f x = 0 := hfS hx
+      change g x = 0
+      rw [hgP x (Submodule.mem_sup_left hx), hfx]
+    · rw [hgP u (Submodule.mem_sup_right (Submodule.subset_span (Set.mem_singleton u))), hfu]
+
+open Classical in
+theorem exists_isPLHomeomorphOn_straighten_two_halfSpaces [FiniteDimensional ℝ E]
+    {S T : Submodule ℝ E} (hdis : Disjoint S T) {u v : E} (huT : u ∈ T) (hvT : v ∈ T)
+    (hu : u ≠ 0) (hv : v ≠ 0) (hnot : ∀ c : ℝ, 0 < c → v ≠ c • u) :
+    ∃ h : E → E, IsPLHomeomorphOn h univ univ ∧ EqOn h id (S : Set E) ∧
+      h '' (T : Set E) = (T : Set E) ∧
+      h '' ({x | ∃ s ∈ S, ∃ r : ℝ, 0 ≤ r ∧ x = s + r • u} ∪
+        {x | ∃ s ∈ S, ∃ r : ℝ, 0 ≤ r ∧ x = s + r • v}) =
+          (S ⊔ Submodule.span ℝ {u} : Submodule ℝ E) := by
+  obtain ⟨ℓ, hℓS, hℓu, hℓv⟩ := exists_linearMap_eq_one_neg_of_disjoint hdis huT hvT hu hv hnot
+  have hℓupos : 0 < ℓ u := by rw [hℓu]; norm_num
+  obtain ⟨h, hh, hfix, hru, hrv, hadd, hsubspace⟩ :=
+    exists_isPLHomeomorphOn_straighten_rays ℓ hℓupos hℓv
+  have huform : ∀ s ∈ S, ∀ r : ℝ, 0 ≤ r → h (s + r • u) = s + r • u := by
+    intro s hs r hr
+    rw [hadd s (r • u) (hℓS hs), hru r hr]
+  have hvform : ∀ s ∈ S, ∀ r : ℝ, 0 ≤ r → h (s + r • v) = s + (r * ℓ v) • u := by
+    intro s hs r hr
+    rw [hadd s (r • v) (hℓS hs), hrv r hr, hℓu, div_one]
+  refine ⟨h, hh, hfix.mono hℓS, hsubspace T huT hvT, ?_⟩
+  have huP : u ∈ S ⊔ Submodule.span ℝ {u} :=
+    Submodule.mem_sup_right (Submodule.subset_span (Set.mem_singleton u))
+  apply Subset.antisymm
+  · rintro _ ⟨x, hx, rfl⟩
+    rcases hx with ⟨s, hs, r, hr, rfl⟩ | ⟨s, hs, r, hr, rfl⟩
+    · rw [huform s hs r hr]
+      exact Submodule.add_mem _ (Submodule.mem_sup_left hs) (Submodule.smul_mem _ _ huP)
+    · rw [hvform s hs r hr]
+      exact Submodule.add_mem _ (Submodule.mem_sup_left hs) (Submodule.smul_mem _ _ huP)
+  · intro x hx
+    obtain ⟨s, hs, w, hw, hsw⟩ := Submodule.mem_sup.mp hx
+    obtain ⟨r, rfl⟩ := Submodule.mem_span_singleton.mp hw
+    by_cases hr : 0 ≤ r
+    · exact ⟨s + r • u, Or.inl ⟨s, hs, r, hr, rfl⟩, (huform s hs r hr).trans hsw⟩
+    · have hrc : 0 ≤ r / ℓ v := div_nonneg_of_nonpos (le_of_not_ge hr) hℓv.le
+      refine ⟨s + (r / ℓ v) • v, Or.inr ⟨s, hs, r / ℓ v, hrc, rfl⟩, ?_⟩
+      rw [hvform s hs _ hrc, div_mul_cancel₀ _ hℓv.ne]
+      exact hsw
+
 end DifferentialGeometry.Topology.PiecewiseLinear
