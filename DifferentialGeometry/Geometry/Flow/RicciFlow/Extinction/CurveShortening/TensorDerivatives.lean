@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Basic
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.Derivative.TensorDerivativeAlong
+import DifferentialGeometry.Tensor.Multilinear.Bundle.Evaluation
 
 noncomputable section
 open Bundle Manifold Set Filter
@@ -48,5 +49,21 @@ theorem ds_tensor_eval (c : CurveMap M) (g : ℝ → SmoothRiemannianMetric I M)
   rw [CurveMap.ds, hd.deriv, hn]
   simp_rw [hv]
   rw [mul_add, Finset.mul_sum]
+
+omit [I.Boundaryless] [T2Space M] in
+theorem contDiffAt_tensor_eval (c : CurveMap M) {r : ℕ}
+    (A : Tensor0SField (I := I) (M := M) (n := ∞) r) (V : Fin r → c.Field (I := I))
+    (x t : ℝ) (hγ : ContMDiffAt 𝓘(ℝ, ℝ) I ∞ (fun y => c.lift y t) x)
+    (hV : ∀ i, ContMDiffAt 𝓘(ℝ, ℝ) I.tangent ∞
+      (fun y => (⟨c.lift y t, V i y t⟩ : TangentBundle I M)) x) :
+    ContDiffAt ℝ ∞ (fun y => A (c.lift y t) (fun i => V i y t)) x := by
+  have hh := DifferentialGeometry.TensorMultilinear.contMDiffWithinAt_section_apply_base r
+    (fun y => c.lift y t) hγ.contMDiffWithinAt
+    (fun y => A (c.lift y t))
+    ((A.contMDiff.contMDiffAt.comp x hγ).contMDiffWithinAt (s := univ))
+    (fun i y => V i y t) (fun i => (hV i).contMDiffWithinAt)
+  apply contMDiffAt_iff_contDiffAt.mp
+  apply contMDiffWithinAt_univ.mp
+  exact hh
 
 end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening.CurveMap
