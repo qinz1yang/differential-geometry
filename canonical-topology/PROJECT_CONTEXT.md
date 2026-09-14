@@ -7,7 +7,27 @@ Its sources retain the original mathematical objects and namespaces.
 The recovered Chapter 35 baseline is commit
 `b45bfa009368c8f5f531e10f4f5280e90079d6ad`, supplemented by recovered working-tree
 proofs with separately recorded provenance. This checkpoint includes 146 modules
-and 182 curated tracked added public exports.
+and 185 curated tracked added public exports.
+
+Actual top local integral homology now has a generator in every finite-dimensional
+real normed space, including ranks zero and one. On a compact simply connected
+Hausdorff C1 manifold without boundary, the actual top-degree absolute-to-point
+restriction is bijective. Every prescribed local class therefore has a unique
+absolute preimage. These statements construct the model generator and tangent
+orientation internally and require no supplied orientation field or locality.
+
+Source 67ea80b6 passed in 52.58s with 222 guards and seven pairs. Original
+imported 303a2b3a passed in 137.86s with 984 guards and 34 pairs. Portable efa87b9b
+passed in Slurm 13879784 in 217.19s with 1272 guards and 350 pairs. Nine affected
+leaves and the portable root freshly compiled in 2:01.42, maximum RSS 2844500KiB,
+with zero diagnostics. All 344 previous portable and 28 previous original
+pairs are byte-identical; all 144 other source leaves are unchanged. All six
+shared new source/original/portable pairs agree modulo qualification and
+whitespace, with exact standard-only axioms. Strict source and stock declaration
+linters pass. Rank-zero and real-line consumers force actual nonzero generators;
+the rank-zero unique absolute-preimage consumer also passes.
+
+The preceding orientation checkpoint remains available unchanged:
 
 A simply connected finite-dimensional real C1 manifold now has an actual tangent
 orientation field prescribed at any supplied point, with locally constant
@@ -19,8 +39,9 @@ or orientation field. The model and manifold universes are independent.
 Three external consumers preserve a negative rank-zero orientation and feed the
 produced field into the existing unique local integral-class family and global
 fundamental-class engines, retaining all actual chart, excision and translation
-equations. The model local class remains explicit; global generator conclusions
-require a model generator and a nonempty compact connected manifold. Existing
+equations. Those general oriented engines retain an explicit model local class;
+their generator conclusions accept a model generator and a nonempty compact
+connected manifold. The new simply connected corollaries construct these inputs. Existing
 local-frame and locality-based public interfaces remain unchanged.
 
 Source 0413d3cf passed in 75.81s with 249 guards and 46 signature/axiom pairs.

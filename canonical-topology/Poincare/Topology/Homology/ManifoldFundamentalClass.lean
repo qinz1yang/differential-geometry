@@ -2,6 +2,9 @@ import Poincare.Topology.Homology.LocalOrientation
 import Poincare.Topology.Homology.ManifoldCompactHomology
 import Poincare.Topology.Homology.RelativeEmpty
 import Mathlib.Topology.Connected.Clopen
+import Poincare.Topology.Homology.EuclideanLocalTop
+
+section
 
 open Set Module
 open scoped Topology
@@ -372,3 +375,45 @@ theorem exists_unique_absolute_generator_of_tangent_local_frames
     (tangent_orientation_locality_of_local_frames o hframes)
 
 end Poincare.Topology
+
+end
+
+section
+
+open Bundle Module Set
+open scoped Manifold
+
+universe u
+
+namespace Poincare.Topology
+
+theorem integralAbsoluteToRelative_bijective_of_simplyConnected
+    {E M : Type u} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    [TopologicalSpace M] [T2Space M] [ChartedSpace E M] [IsManifold 𝓘(ℝ, E) 1 M]
+    [CompactSpace M] [SimplyConnectedSpace M] (p : M) :
+    Function.Bijective (integralAbsoluteToRelative (finrank ℝ E) ({p}ᶜ : Set M)) := by
+  let ω := (Module.finBasis ℝ E).orientation
+  let ωp := Orientation.map (Fin (finrank ℝ E))
+    ((trivializationAt E (TangentSpace 𝓘(ℝ, E)) p).continuousLinearEquivAt ℝ p
+      (by simpa only [TangentBundle.trivializationAt_baseSet] using
+        mem_chart_source E p)).symm.toLinearEquiv ω
+  obtain ⟨o, _, hlocal⟩ := exists_tangent_orientation_locality_of_simplyConnected p ωp
+  obtain ⟨c, hc⟩ := exists_integralLocalHomology_generator (0 : E)
+  obtain ⟨_, _, _, _, hpoints⟩ :=
+    exists_unique_absolute_generator_of_tangent_orientation_locality o ω c hc hlocal
+  exact hpoints p
+
+theorem exists_unique_absolute_class_of_simplyConnected
+    {E M : Type u} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    [TopologicalSpace M] [T2Space M] [ChartedSpace E M] [IsManifold 𝓘(ℝ, E) 1 M]
+    [CompactSpace M] [SimplyConnectedSpace M] (p : M)
+    (c : integralLocalHomology (finrank ℝ E) p) :
+    ∃! a : integralSingularHomology (finrank ℝ E) M,
+      integralAbsoluteToRelative (finrank ℝ E) ({p}ᶜ : Set M) a = c := by
+  have h := integralAbsoluteToRelative_bijective_of_simplyConnected (E := E) p
+  obtain ⟨a, ha⟩ := h.2 c
+  exact ⟨a, ha, fun b hb => h.1 (hb.trans ha.symm)⟩
+
+end Poincare.Topology
+
+end

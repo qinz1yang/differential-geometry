@@ -1,5 +1,10 @@
 import Poincare.Topology.Homology.SphereHomologyVanishing
 import Poincare.Topology.Homology.LocalCharts
+import Poincare.Topology.Homology.ContractibleCoverOne
+import Poincare.Topology.Homology.RelativeEmpty
+import Mathlib.Analysis.Normed.Module.FiniteDimension
+
+section
 
 /-! # Actual top local homology of Euclidean spaces and their manifolds -/
 
@@ -43,3 +48,79 @@ def integralManifoldLocalTopEquiv (n : ℕ) (hd : finrank ℝ E = n + 2)
     (integralEuclideanLocalTopEquiv E n hd (chartAt E x x))
 
 end Poincare.Topology
+
+end
+
+end
+
+section
+
+noncomputable section
+
+open CategoryTheory Metric Module Set
+
+universe u
+
+namespace Poincare.Topology
+
+private def innerProductLocalTopEquiv
+    (E : Type u) [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] :
+    integralLocalHomology (finrank ℝ E) (0 : E) ≃ₗ[ℤ] ℤ := by
+  by_cases hlarge : 2 ≤ finrank ℝ E
+  · have hd : finrank ℝ E = (finrank ℝ E - 2) + 2 := by omega
+    rw [hd]
+    exact integralEuclideanLocalTopZeroEquiv E (finrank ℝ E - 2) hd
+  by_cases hzero : finrank ℝ E = 0
+  · have hempty : ({0}ᶜ : Set E) = ∅ := by
+      ext x
+      constructor
+      · intro hx
+        exact (hx (finrank_zero_iff_forall_zero.mp hzero x)).elim
+      · intro hx
+        exact hx.elim
+    change integralRelativeHomology (finrank ℝ E) ({0}ᶜ : Set E) ≃ₗ[ℤ] ℤ
+    rw [hzero, hempty]
+    exact (integralAbsoluteToRelativeEmptyEquiv 0 E).symm.trans
+      (integralSingularHomologyZeroEquiv (X := E))
+  have hone : finrank ℝ E = 1 := by omega
+  change integralRelativeHomology (finrank ℝ E) ({0}ᶜ : Set E) ≃ₗ[ℤ] ℤ
+  rw [hone]
+  exact (((integralRelativeConnectingZeroKernelEquiv ({0}ᶜ : Set E)).trans
+    (integralZeroMapKernelReducedEquiv (singularSubspaceInclusion ({0}ᶜ : Set E)))).trans
+      (integralReducedZeroHomotopyEquiv (puncturedSpaceSphereHomotopyEquiv E))).trans
+        (integralZeroSphereReducedEquiv hone)
+
+theorem exists_integralLocalHomology_generator
+    {E : Type u} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    (p : E) :
+    ∃ c : integralLocalHomology (finrank ℝ E) p,
+      Function.Bijective (fun k : ℤ => k • c) := by
+  let ι := Module.Free.ChooseBasisIndex ℝ E
+  let b : Basis ι ℝ E := Module.Free.chooseBasis ℝ E
+  let e : E ≃L[ℝ] EuclideanSpace ℝ ι :=
+    b.equivFunL.trans (PiLp.continuousLinearEquiv 2 ℝ (fun _ : ι => ℝ)).symm
+  let h := e.toHomeomorph.trans (Homeomorph.subRight (e p))
+  have hp : h p = 0 := sub_self (e p)
+  have he := (integralLocalHomologyHomeomorphIso (finrank ℝ E) h p).toLinearEquiv
+  rw [hp] at he
+  have hzero : integralLocalHomology (finrank ℝ E) (0 : EuclideanSpace ℝ ι) ≃ₗ[ℤ] ℤ := by
+    rw [e.toLinearEquiv.finrank_eq]
+    exact innerProductLocalTopEquiv (EuclideanSpace ℝ ι)
+  let f := he.trans hzero
+  let c := f.symm 1
+  have hmap (k : ℤ) : f (k • c) = k := by
+    rw [map_zsmul]
+    change k • f (f.symm 1) = k
+    rw [f.apply_symm_apply]
+    exact mul_one k
+  refine ⟨c, ?_, ?_⟩
+  · intro k l hkl
+    exact (hmap k).symm.trans ((congrArg f hkl).trans (hmap l))
+  · intro a
+    exact ⟨f a, f.injective (hmap (f a))⟩
+
+end Poincare.Topology
+
+end
+
+end

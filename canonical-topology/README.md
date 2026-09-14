@@ -7,6 +7,13 @@ and `Poincare` namespaces. `Poincare.lean` imports every included leaf.
 
 The additions prove:
 
+- an actual top local integral-homology generator in every finite-dimensional
+  real normed space, including ranks zero and one; on a compact simply connected
+  Hausdorff C1 manifold without boundary, the actual top-degree restriction at
+  any point is bijective, so every prescribed local class has a unique absolute
+  preimage. These corollaries construct their model generator and tangent
+  orientation internally;
+
 - an actual tangent orientation field on a simply connected finite-dimensional
   real C1 manifold,
   prescribed at a given point, with locality in every fixed native chart;
@@ -147,7 +154,7 @@ The additions prove:
 - a unique compact-neighborhood class with the same normalization in every
   chart whose actual tangent trivialization preserves the base-chart orientation.
 
-The 62 new/changed modules and their exact baseline/current hashes are listed in
+The 63 new/changed modules and their exact baseline/current hashes are listed in
 [provenance/SNAPSHOT.json](provenance/SNAPSHOT.json). The derivative homotopy
 retains its [upstream attribution and modification record](provenance/README.md).
 
@@ -165,7 +172,24 @@ On Della all sustained checks belong to the shared Slurm CPU worker. Use the
 existing exact caches offline; local cache paths and any validation-only path
 manifest stay outside the published package files.
 
-The current simply connected orientation checkpoint contains 146 modules and
+The current fundamental-class checkpoint contains 146 modules and 185 curated
+added public exports. Source request `1789399938999694374-topology-67ea80b6`
+passed in 52.58 seconds with 222 guards and seven signature/axiom pairs.
+Original imported request `1789400696276798218-topology-303a2b3a` passed in
+137.86 seconds with 984 guards and 34 pairs. Portable request
+`1789400759348748258-topology_checkpoint-efa87b9b` passed in Slurm 13879784 in
+217.19 seconds with 1272 guards and 350 pairs. Nine affected leaves and the
+root freshly compiled in 2:01.42, maximum RSS 2844500KiB, with zero diagnostics.
+All 344 previous portable and 28 previous original readback pairs are
+byte-identical; all 144 other source leaves are unchanged. All six shared new
+source/original/portable pairs agree modulo qualification and whitespace,
+with exact axiom readbacks. Strict source and stock declaration linters and
+standard-only transitive axioms pass. Consumers require nonzero actual local
+generators in ranks zero and one and an actual unique absolute preimage in
+rank zero. One missing section terminator in the initial merged file was
+repaired before the successful fresh builds; no proof statement changed.
+
+The preceding simply connected orientation checkpoint contains 146 modules and
 182 curated added public exports. Source request
 `1789375369216347265-topology-0413d3cf` passed in 75.81 seconds with 249 guards
 and 46 signature/axiom pairs. Original imported request
