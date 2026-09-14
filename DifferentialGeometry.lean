@@ -3174,6 +3174,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.Cons
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.Construction.ScaleSelection
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.Existence
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.NormalCoordinates.BoundedGeometry
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.NormalCoordinates.BoundedGeometryReplay
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.NormalCoordinates.ChartEquation
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.NormalCoordinates.DerivativeBounds
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.NormalCoordinates.Hessian
@@ -5629,6 +5630,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Harn
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.ImmersionInducedMetric
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.IntegratedHarnackCalculus
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.IntrinsicLineNullPlane
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.KLimAlmostAncientCollapseReduction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.KLimCurvatureBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.KLimFixedKappaCompactness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.KLimHarnackCollapseBound
@@ -6761,6 +6763,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChildCarrie
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChildComparisonAssembly
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChildComparisonCanonicalSupport
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChildComparisonFrontierReduction
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChildComparisonInputReduction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChildComparisonLocalLength
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChildComparisonMetric
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChildCoreComponentRetraction
@@ -9327,6 +9330,7 @@ import DifferentialGeometry.Topology.SphereSeparation.TubularExcision
 import DifferentialGeometry.Topology.SphereSeparation.TwoSphereDomain
 import DifferentialGeometry.Topology.StandardModel
 import DifferentialGeometry.Topology.ThreeManifold.Closed
+import DifferentialGeometry.Topology.ThreeManifold.CollaredSphereGluing
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.AssemblyReduction
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.Associative
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.AssociativeFlattening
