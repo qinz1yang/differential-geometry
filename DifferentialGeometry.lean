@@ -7796,6 +7796,7 @@ import DifferentialGeometry.Topology.Flow.PeriodicOrbit
 import DifferentialGeometry.Topology.Flow.ReturnArc
 import DifferentialGeometry.Topology.Flow.ReturnBoundary
 import DifferentialGeometry.Topology.Flow.TransverseReturns
+import DifferentialGeometry.Topology.Frontier
 import DifferentialGeometry.Topology.FundamentalGroup.BasepointChange
 import DifferentialGeometry.Topology.FundamentalGroup.Circle
 import DifferentialGeometry.Topology.FundamentalGroup.HomotopyEquiv
@@ -8688,6 +8689,7 @@ import DifferentialGeometry.Topology.Morse.SublevelRestriction
 import DifferentialGeometry.Topology.Morse.SublevelTangentSection
 import DifferentialGeometry.Topology.NearIdentity
 import DifferentialGeometry.Topology.OpenCover.Disjoint
+import DifferentialGeometry.Topology.Order.DisjointGraphs
 import DifferentialGeometry.Topology.Order.FiniteSeparation
 import DifferentialGeometry.Topology.Order.Interval
 import DifferentialGeometry.Topology.Order.IntervalPush
