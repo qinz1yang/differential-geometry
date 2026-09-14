@@ -821,4 +821,170 @@ theorem IsCombinatorialManifoldWithBoundary.codimension_one_cofaces [FiniteDimen
   rw [geometricLink_space_eq_coface_vertices_of_card_le K s hbound] at hlink
   exact hlink.symm.imp isPLBall_zero_iff.mp isPLSphere_zero_iff.mp
 
+open Classical in
+theorem eventually_mem_openSimplex_insert_of_mem_vectorSpan {s : Finset E} {x d w : E}
+    (hx : x ∈ openSimplex s) (hd : d ∈ vectorSpan ℝ (s : Set E)) (hw : w ∉ s) :
+    ∀ᶠ t : ℝ in 𝓝 0, 0 < t → x + t • (w - x + d) ∈ openSimplex (insert w s) := by
+  obtain ⟨α, hαpos, hαsum, hαx⟩ := hx
+  obtain ⟨β, hβsum, hβd⟩ := exists_weights_zero_of_mem_vectorSpan hd
+  have hopen : IsOpen (⋂ v : s, {t : ℝ | 0 < α v + t * (β v - α v)}) :=
+    isOpen_iInter_of_finite fun _ => isOpen_lt continuous_const (by fun_prop)
+  have hzero : (0 : ℝ) ∈ ⋂ v : s, {t : ℝ | 0 < α v + t * (β v - α v)} := by
+    apply mem_iInter.mpr
+    intro v
+    simpa using hαpos v v.property
+  apply Filter.mem_of_superset (hopen.mem_nhds hzero)
+  intro t ht htpos
+  let c : E → ℝ := fun v => if v = w then t else α v + t * (β v - α v)
+  have hcw : c w = t := if_pos rfl
+  have hcs : ∀ v ∈ s, c v = α v + t * (β v - α v) :=
+    fun v hv => if_neg (ne_of_mem_of_not_mem hv hw)
+  refine ⟨c, ?_, ?_, ?_⟩
+  · intro v hv
+    rcases Finset.mem_insert.mp hv with rfl | hv
+    · rw [hcw]
+      exact htpos
+    · rw [hcs v hv]
+      exact mem_iInter.mp ht ⟨v, hv⟩
+  · rw [Finset.sum_insert hw, hcw, Finset.sum_congr rfl hcs, Finset.sum_add_distrib,
+      ← Finset.mul_sum, Finset.sum_sub_distrib, hαsum, hβsum]
+    ring
+  · rw [Finset.sum_insert hw, hcw,
+      Finset.sum_congr rfl (fun v hv => by rw [hcs v hv])]
+    simp_rw [add_smul, mul_smul, sub_smul]
+    rw [Finset.sum_add_distrib, ← Finset.smul_sum, Finset.sum_sub_distrib, hαx, hβd]
+    module
+
+open Classical in
+theorem exists_direction_into_simplex_of_transverse_submodule {s : Finset E} {x w : E}
+    (hx : x ∈ openSimplex s) (hw : w ∉ affineSpan ℝ (s : Set E)) (V : Submodule ℝ E)
+    (htrans : vectorSpan ℝ (s : Set E) ⊔ V = ⊤) :
+    ∃ d ∈ V, d ≠ 0 ∧
+      ∀ᶠ t : ℝ in 𝓝 0, 0 < t → x + t • d ∈ openSimplex (insert w s) := by
+  have hmem : w - x ∈ vectorSpan ℝ (s : Set E) ⊔ V := htrans ▸ Submodule.mem_top
+  obtain ⟨u, hu, d, hd, hud⟩ := Submodule.mem_sup.mp hmem
+  have hdne : d ≠ 0 := by
+    intro hd0
+    rw [hd0, add_zero] at hud
+    have hdir : w - x ∈ (affineSpan ℝ (s : Set E)).direction := by
+      rw [direction_affineSpan, ← hud]
+      exact hu
+    have hxp : x ∈ affineSpan ℝ (s : Set E) :=
+      convexHull_subset_affineSpan _ (openSimplex_subset_convexHull s hx)
+    have hwspan := AffineSubspace.vadd_mem_of_mem_direction hdir hxp
+    apply hw
+    simpa only [vadd_eq_add, sub_add_cancel] using hwspan
+  have hws : w ∉ s := fun h => hw (mem_affineSpan ℝ (Finset.mem_coe.mpr h))
+  have heq : w - x + -u = d := by rw [← hud]; abel
+  have hray := eventually_mem_openSimplex_insert_of_mem_vectorSpan hx
+    (Submodule.neg_mem _ hu) hws
+  rw [heq] at hray
+  exact ⟨d, hd, hdne, hray⟩
+
+open Classical in
+theorem exists_ray_into_transverse_face {s t : Finset E} {x w a : E}
+    (hx : x ∈ openSimplex s) (hy : x + a ∈ openSimplex t)
+    (hw : w ∉ affineSpan ℝ (s : Set E))
+    (htrans : vectorSpan ℝ (s : Set E) ⊔ vectorSpan ℝ (t : Set E) = ⊤) :
+    ∃ d, d ≠ 0 ∧ ∀ᶠ r : ℝ in 𝓝 0, 0 < r →
+      x + r • d ∈ openSimplex (insert w s) ∧ x + a + r • d ∈ openSimplex t := by
+  obtain ⟨d, hd, hdne, hs⟩ :=
+    exists_direction_into_simplex_of_transverse_submodule hx hw (vectorSpan ℝ (t : Set E)) htrans
+  have ht := eventually_mem_openSimplex_of_mem_vectorSpan hy hd
+  refine ⟨d, hdne, ?_⟩
+  filter_upwards [hs, ht] with r hrs hrt
+  exact fun hr => ⟨hrs hr, hrt⟩
+
+open Classical in
+theorem exists_ray_mem_geometricLink_space_of_eventually (G : Geometry.SimplicialComplex ℝ E)
+    [Finite G.faces] {x d : E} (hx : {x} ∈ G.faces) (hd : d ≠ 0)
+    (hG : ∀ᶠ r : ℝ in 𝓝 0, 0 < r → x + r • d ∈ G.space) :
+    ∃ c : ℝ, 0 < c ∧ x + c • d ∈ (SimplicialComplex.geometricLink G {x}).space := by
+  obtain ⟨ε, hε, hball⟩ := Metric.mem_nhds_iff.mp hG
+  let y := x + (ε / 2) • d
+  have hy : y ≠ x := by
+    intro h
+    have hzero : (ε / 2) • d = 0 := by
+      have heq : x + (ε / 2) • d = x + 0 := h.trans (add_zero x).symm
+      exact add_left_cancel heq
+    exact hd ((smul_eq_zero.mp hzero).resolve_left (by positivity))
+  have hseg : ∀ t : ℝ, 0 < t → t ≤ 1 → x + t • (y - x) ∈ G.space := by
+    intro t ht ht1
+    have hpos : 0 < t * (ε / 2) := mul_pos ht (by positivity)
+    have hlt : t * (ε / 2) < ε := by nlinarith
+    have hmem : t * (ε / 2) ∈ ball (0 : ℝ) ε := by
+      simpa only [mem_ball, dist_zero_right, Real.norm_eq_abs, abs_of_pos hpos] using hlt
+    have h := hball hmem hpos
+    have heq : x + t • (y - x) = x + (t * (ε / 2)) • d := by
+      dsimp [y]
+      rw [add_sub_cancel_left, smul_smul]
+    rwa [heq]
+  obtain ⟨c, hc, hclink⟩ := exists_ray_mem_geometricLink_space G hx hseg hy
+  refine ⟨c * (ε / 2), mul_pos hc (by positivity), ?_⟩
+  simpa only [y, add_sub_cancel_left, smul_smul] using hclink
+
+open Classical in
+theorem exists_neighbor_on_ray_of_eventually (G : Geometry.SimplicialComplex ℝ E) [Finite G.faces]
+    (hcard : ∀ s ∈ G.faces, s.card ≤ 2) {x d : E} (hx : {x} ∈ G.faces) (hd : d ≠ 0)
+    (hG : ∀ᶠ r : ℝ in 𝓝 0, 0 < r → x + r • d ∈ G.space) :
+    ∃ c : ℝ, 0 < c ∧ x + c • d ≠ x ∧ {x, x + c • d} ∈ G.faces := by
+  obtain ⟨c, hc, hclink⟩ := exists_ray_mem_geometricLink_space_of_eventually G hx hd hG
+  rw [geometricLink_space_eq_neighbors_of_card_le G hcard x] at hclink
+  exact ⟨c, hc, hclink⟩
+
+open Classical in
+theorem exists_pos_smul_sub_eq_of_mem_transverse_cone {s : Finset E} {x w y z : E}
+    (hx : x ∈ convexHull ℝ (s : Set E))
+    (hy : y ∈ convexHull ℝ ((insert w s : Finset E) : Set E))
+    (hz : z ∈ convexHull ℝ ((insert w s : Finset E) : Set E)) (hyx : y ≠ x) (hzx : z ≠ x)
+    (V : Submodule ℝ E) (hyV : y - x ∈ V) (hzV : z - x ∈ V)
+    (hdis : Disjoint (vectorSpan ℝ (s : Set E)) V) :
+    ∃ c : ℝ, 0 < c ∧ y - x = c • (z - x) := by
+  have hnot : ∀ q, q - x ∈ V → q ≠ x → q ∉ convexHull ℝ (s : Set E) := by
+    intro q hqV hqx hq
+    have hdir : q - x ∈ vectorSpan ℝ (s : Set E) := by
+      simpa only [direction_affineSpan, vsub_eq_sub] using AffineSubspace.vsub_mem_direction
+        (convexHull_subset_affineSpan _ hq) (convexHull_subset_affineSpan _ hx)
+    exact hqx (sub_eq_zero.mp (Submodule.disjoint_def.mp hdis _ hdir hqV))
+  have hw : w ∉ s := by
+    intro hws
+    rw [Finset.insert_eq_of_mem hws] at hy
+    exact hnot y hyV hyx hy
+  have hcombo : ∀ q ∈ convexHull ℝ ((insert w s : Finset E) : Set E), q - x ∈ V → q ≠ x →
+      ∃ p ∈ convexHull ℝ (s : Set E), ∃ c : ℝ, 0 < c ∧
+        q - x = c • (w - x) + (1 - c) • (p - x) := by
+    intro q hq hqV hqx
+    rcases exists_combo_of_mem_convexHull_insert hw hq with rfl | ⟨p, hp, c, hc, hc1, hqc⟩
+    · exact ⟨x, hx, 1, one_pos, by simp⟩
+    · have hclt : c < 1 := lt_of_le_of_ne hc1 (by
+        intro hcEq
+        rw [hcEq, one_smul, add_sub_cancel] at hqc
+        exact hnot q hqV hqx (hqc ▸ hp))
+      refine ⟨p, hp, 1 - c, by linarith, ?_⟩
+      rw [hqc]
+      module
+  obtain ⟨p, hp, α, hα, hyp⟩ := hcombo y hy hyV hyx
+  obtain ⟨q, hq, β, hβ, hzq⟩ := hcombo z hz hzV hzx
+  have hpdir : p - x ∈ vectorSpan ℝ (s : Set E) := by
+    simpa only [direction_affineSpan, vsub_eq_sub] using AffineSubspace.vsub_mem_direction
+      (convexHull_subset_affineSpan _ hp) (convexHull_subset_affineSpan _ hx)
+  have hqdir : q - x ∈ vectorSpan ℝ (s : Set E) := by
+    simpa only [direction_affineSpan, vsub_eq_sub] using AffineSubspace.vsub_mem_direction
+      (convexHull_subset_affineSpan _ hq) (convexHull_subset_affineSpan _ hx)
+  have heq : β • (y - x) - α • (z - x) =
+      (β * (1 - α)) • (p - x) - (α * (1 - β)) • (q - x) := by
+    rw [hyp, hzq]
+    module
+  have hdir : β • (y - x) - α • (z - x) ∈ vectorSpan ℝ (s : Set E) := by
+    rw [heq]
+    exact Submodule.sub_mem _ (Submodule.smul_mem _ _ hpdir) (Submodule.smul_mem _ _ hqdir)
+  have hV : β • (y - x) - α • (z - x) ∈ V :=
+    Submodule.sub_mem _ (Submodule.smul_mem _ _ hyV) (Submodule.smul_mem _ _ hzV)
+  have hzero : β • (y - x) = α • (z - x) :=
+    sub_eq_zero.mp (Submodule.disjoint_def.mp hdis _ hdir hV)
+  refine ⟨α / β, div_pos hα hβ, ?_⟩
+  calc y - x = β⁻¹ • (β • (y - x)) := by rw [smul_smul, inv_mul_cancel₀ hβ.ne', one_smul]
+    _ = β⁻¹ • (α • (z - x)) := by rw [hzero]
+    _ = (α / β) • (z - x) := by rw [smul_smul, div_eq_inv_mul]
+
 end DifferentialGeometry.Topology.PiecewiseLinear
