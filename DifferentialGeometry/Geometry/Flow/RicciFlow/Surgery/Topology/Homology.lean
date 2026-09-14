@@ -1,4 +1,5 @@
 import DifferentialGeometry.Topology.ThreeManifold.LocalOrientationRealization
+import DifferentialGeometry.Topology.ThreeManifold.LocalOrientationGenerator
 
 noncomputable section
 
@@ -14,10 +15,6 @@ variable {X} {Y : Type u} [TopologicalSpace Y]
 variable {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
     [IsManifold ThreeModel ∞ M]
 variable {o : TangentOrientationSection M} {x : M}
-
-theorem localOrientationClass_generator (o : TangentOrientationSection M) (x : M) :
-    Function.Bijective (fun z : ℤ => z • localOrientationClass o x) := by
-  sorry
 
 variable [hT2 : T2Space M] [hCompact : CompactSpace M]
 include hT2 hCompact
@@ -52,7 +49,23 @@ include hConnected
 
 theorem fundamentalClass_generator (o : TangentOrientationSection M) :
     Function.Bijective (fun z : ℤ => z • fundamentalClass o) := by
-  sorry
+  let uliftChart := (Homeomorph.ulift (X := ThreeSpace)).symm.toOpenPartialHomeomorph
+  let : ChartedSpace (ULift.{u} ThreeSpace) M :=
+    { atlas := (fun e : OpenPartialHomeomorph M ThreeSpace => e.trans uliftChart) ''
+        atlas ThreeSpace M
+      chartAt := fun x => (chartAt ThreeSpace x).trans uliftChart
+      mem_chart_source := fun x => by
+        rw [OpenPartialHomeomorph.trans_source]
+        exact ⟨mem_chart_source ThreeSpace x, trivial⟩
+      chart_mem_atlas := fun x => ⟨chartAt ThreeSpace x, chart_mem_atlas ThreeSpace x, rfl⟩ }
+  obtain ⟨a, _, hu, ha, _⟩ :=
+    DifferentialGeometry.Topology.exists_unique_absolute_generator_of_locally_realized_family
+      (E := ULift.{u} ThreeSpace) 3
+      (by rw [(ULift.moduleEquiv (R := ℝ) (M := ThreeSpace)).finrank_eq]; simp)
+      (localOrientationClass o) (localOrientationClass_generator o)
+      (localOrientationClass_locally_realized o)
+  rw [hu (fundamentalClass o) (fundamentalClass_local o)]
+  exact ha
 
 omit hT2 hCompact hConnected in
 theorem exists_unique_fundamentalClass_of_exists (o : TangentOrientationSection M)
