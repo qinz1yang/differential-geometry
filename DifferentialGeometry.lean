@@ -5772,6 +5772,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Sphe
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.SplitSurfaceAncientGeometry
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.SplitSurfaceKappaSolution
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.StaircaseCompactnessReduction
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.StaircaseEngineAssembly
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.StandardHarnackLimit
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.StaticSurfaceLineContradiction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.StaticSurfaceLocalCompactness
@@ -8264,6 +8265,7 @@ import DifferentialGeometry.Topology.Homology.RelativeHomeomorphism
 import DifferentialGeometry.Topology.Homology.RelativeMaps
 import DifferentialGeometry.Topology.Homology.RelativeReducedCollapse
 import DifferentialGeometry.Topology.Homology.RelativeZero
+import DifferentialGeometry.Topology.Homology.SecondHomologyVanishingClosedThreeManifold
 import DifferentialGeometry.Topology.Homology.SimplexBasis
 import DifferentialGeometry.Topology.Homology.SimplexBoundaryFilling
 import DifferentialGeometry.Topology.Homology.SimplexBoundary
@@ -8772,6 +8774,7 @@ import DifferentialGeometry.Topology.Manifold.OrientationFrameDictionary
 import DifferentialGeometry.Topology.Manifold.OrientationLinearVariation
 import DifferentialGeometry.Topology.Manifold.OrientationTransport
 import DifferentialGeometry.Topology.Manifold.OrientationTransportVariation
+import DifferentialGeometry.Topology.Manifold.OrientedBallChartStraightening
 import DifferentialGeometry.Topology.Manifold.OrientedProductChart
 import DifferentialGeometry.Topology.Manifold.ParameterizedInverse
 import DifferentialGeometry.Topology.Manifold.ParametrizationDerivative
