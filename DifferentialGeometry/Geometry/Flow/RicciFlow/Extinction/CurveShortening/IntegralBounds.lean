@@ -1,6 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Evolution
 import DifferentialGeometry.Analysis.ODE.Gronwall.Integral
 import DifferentialGeometry.Analysis.Calculus.Derivative.ParametricIntervalIntegral
+import DifferentialGeometry.Analysis.Integration.IntervalGreenIdentity
 
 noncomputable section
 open Bundle Manifold Set MeasureTheory Filter
@@ -717,6 +718,127 @@ private theorem hasDerivWithinAt_integral_regularizedCurvature
 
 
 
+
+theorem weighted_regularized_total_curvature_derivWithin_le
+    (B : RicciBackground (I := I) (M := M) D a b)
+    (hsu : s < u) (hwindow : Icc s u ⊆ Icc a b)
+    (c : CurveMap M) (hc : c.IsSolutionOn B.family.metric (Icc s u))
+    (ε : ℝ) (hε : 0 < ε) {p q t : ℝ} (hpq : p ≤ q) (ht : t ∈ Icc s u)
+    {φ φt : ℝ → ℝ → ℝ}
+    (hφc : ContinuousOn (fun z : ℝ × ℝ => φ z.1 z.2) (Icc p q ×ˢ Icc s u))
+    (hφtc : ContinuousOn (fun z : ℝ × ℝ => φt z.1 z.2) (Icc p q ×ˢ Icc s u))
+    (hφt : ∀ x ∈ Icc p q, ∀ τ ∈ Icc s u,
+      HasDerivWithinAt (fun σ => φ x σ) (φt x τ) (Icc s u) τ)
+    (hφxx : ∀ x ∈ Icc p q, ContDiffAt ℝ 2 (fun y => φ y t) x)
+    (hφn : ∀ x ∈ Icc p q, 0 ≤ φ x t)
+    (hφp : φ p t = 0) (hφq : φ q t = 0)
+    (hφp' : deriv (fun y => φ y t) p = 0)
+    (hφq' : deriv (fun y => φ y t) q = 0) :
+    derivWithin (fun τ => ∫ x in p..q,
+      φ x τ * c.regularizedCurvature B.family.metric ε x τ * c.speed B.family.metric x τ)
+      (Icc s u) t ≤
+      ∫ x in p..q, ((φt x t + c.ds B.family.metric (c.ds B.family.metric φ) x t +
+        (B.C + B.B₀) * φ x t) * c.regularizedCurvature B.family.metric ε x t +
+        B.C * φ x t) * c.speed B.family.metric x t := by
+  have hsub : Icc p q ×ˢ Icc s u ⊆ (univ : Set ℝ) ×ˢ Icc s u :=
+    Set.prod_mono (Set.subset_univ _) Subset.rfl
+  have hRj := (regularizedCurvature_joint B hsu hwindow c hc ε hε).continuousOn.mono hsub
+  have hvj := (joint_continuousOn_speed B hwindow c hc).mono hsub
+  have hqj := (CurveMap.q_continuousOn B hsu hwindow c hc).mono hsub
+  have hRtj := (continuousOn_derivWithin_regularizedCurvature B hsu hwindow c hc ε hε).mono hsub
+  let G : ℝ → ℝ → ℝ := fun x τ =>
+    (φt x τ * c.regularizedCurvature B.family.metric ε x τ +
+      φ x τ * derivWithin (fun σ => c.regularizedCurvature B.family.metric ε x σ) (Icc s u) τ) *
+      c.speed B.family.metric x τ + φ x τ * c.regularizedCurvature B.family.metric ε x τ *
+      (-(c.q B.family x τ) * c.speed B.family.metric x τ)
+  have hGc : ContinuousOn (fun z : ℝ × ℝ => G z.1 z.2) (Icc p q ×ˢ Icc s u) :=
+    ((hφtc.mul hRj).add (hφc.mul hRtj)).mul hvj |>.add
+      ((hφc.mul hRj).mul (hqj.neg.mul hvj))
+  have hsp := CurveMap.speedEvolution_of_pairingEvolution B c hc.immersed
+    (CurveMap.pairingEvolution B hsu hwindow c hc)
+  have hpoint : ∀ x ∈ Icc p q, ∀ τ ∈ Icc s u,
+      HasDerivWithinAt (fun σ => φ x σ * c.regularizedCurvature B.family.metric ε x σ *
+        c.speed B.family.metric x σ) (G x τ) (Icc s u) τ := by
+    intro x hx τ hτ
+    exact ((hφt x hx τ hτ).mul
+      (hasDerivWithinAt_regularizedCurvature_slice B hsu hwindow c hc ε hε x τ hτ)).mul
+      (hsp x τ hτ)
+  have hd := DifferentialGeometry.Analysis.Calculus.hasDerivWithinAt_paramIntervalIntegral_on_interval
+    hpq ((hφc.mul hRj).mul hvj) hGc hpoint t ht
+  rw [hd.derivWithin ((uniqueDiffOn_Icc hsu) t ht)]
+  let v := fun x => c.speed B.family.metric x t
+  let h := fun x => c.regularizedCurvature B.family.metric ε x t
+  let w := fun x => φ x t
+  let P := fun x => (v x)⁻¹
+  have hv : ContDiff ℝ ∞ v := c.speed_contDiff B.family.metric (Icc s u) hc.smooth hc.immersed t ht
+  have hvne : ∀ x, v x ≠ 0 := fun x => ne_of_gt (c.speed_pos B.family.metric hc.immersed x t ht)
+  have hh : ContDiff ℝ ∞ h := regularizedCurvature_slice_contDiff B hsu hwindow c hc ε hε t ht
+  have hP : ContDiff ℝ ∞ P := hv.inv hvne
+  have hPh : ContDiff ℝ ∞ (fun x => P x * deriv h x) := hP.mul (hh.iterate_deriv 1)
+  have hw : ∀ x ∈ uIcc p q, ContDiffAt ℝ 2 w x := by
+    simpa only [uIcc_of_le hpq] using hφxx
+  have hPw : ∀ x ∈ uIcc p q, ContDiffAt ℝ 1 (fun y => P y * deriv w y) x :=
+    fun x hx => (hP.of_le (by simp)).contDiffAt.mul ((hw x hx).derivWithin (by norm_num))
+  have hgreen := DifferentialGeometry.Analysis.Integration.integral_mul_deriv_mul_deriv_eq
+    hw (fun x _ => (hh.of_le (show (2 : ℕ∞ω) ≤ ∞ from WithTop.coe_le_coe.mpr le_top)).contDiffAt)
+    (fun x _ => (hP.of_le (show (1 : ℕ∞ω) ≤ ∞ by simp)).contDiffAt)
+  have hgreen' : (∫ x in p..q, w x * deriv (fun y => P y * deriv h y) x) =
+      ∫ x in p..q, h x * deriv (fun y => P y * deriv w y) x := by
+    simpa only [w, hφp, hφq, hφp', hφq', zero_mul, mul_zero, sub_zero, zero_sub, neg_zero,
+      zero_add] using hgreen
+  let f := fun x => φt x t * h x * v x + (B.C + B.B₀) * w x * h x * v x +
+    B.C * w x * v x
+  have hφts : ContinuousOn (fun x => φt x t) (uIcc p q) := by
+    rw [uIcc_of_le hpq]
+    exact hφtc.comp (continuousOn_id.prodMk continuousOn_const) (fun x hx => ⟨hx, ht⟩)
+  have hws : ContinuousOn w (uIcc p q) := fun x hx => (hw x hx).continuousAt.continuousWithinAt
+  have hf : ContinuousOn f (uIcc p q) :=
+    ((hφts.mul hh.continuous.continuousOn).mul hv.continuous.continuousOn).add
+      (((continuousOn_const.mul hws).mul hh.continuous.continuousOn).mul hv.continuous.continuousOn)
+      |>.add ((continuousOn_const.mul hws).mul hv.continuous.continuousOn)
+  have hdiffh : ContinuousOn (fun x => w x * deriv (fun y => P y * deriv h y) x) (uIcc p q) :=
+    hws.mul (hPh.continuous_deriv (by simp)).continuousOn
+  have hdiffw : ContinuousOn (fun x => h x * deriv (fun y => P y * deriv w y) x) (uIcc p q) :=
+    hh.continuous.continuousOn.mul (fun x hx =>
+      ((hPw x hx).derivWithin (m := 0) (by norm_num)).continuousAt.continuousWithinAt)
+  have hGs : ContinuousOn (fun x => G x t) (uIcc p q) := by
+    rw [uIcc_of_le hpq]
+    exact hGc.comp (continuousOn_id.prodMk continuousOn_const) (fun x hx => ⟨hx, ht⟩)
+  calc
+    (∫ x in p..q, G x t) ≤ ∫ x in p..q,
+        f x + w x * deriv (fun y => P y * deriv h y) x := by
+      apply intervalIntegral.integral_mono_on hpq hGs.intervalIntegrable (hf.add hdiffh).intervalIntegrable
+      intro x hx
+      have he := weighted_regularized_curvature_density_evolution_le B hsu hwindow c hc ε hε x t ht
+        (hφt x hx t ht) (hφn x hx)
+      rw [(hpoint x hx t ht).derivWithin ((uniqueDiffOn_Icc hsu) t ht)] at he
+      have heq : c.ds B.family.metric (c.ds B.family.metric
+          (c.regularizedCurvature B.family.metric ε)) x t * v x =
+          deriv (fun y => P y * deriv h y) x := by
+        change (v x)⁻¹ * deriv (fun y => P y * deriv h y) x * v x = _
+        field_simp [hvne x]
+      change G x t ≤ _ at he
+      dsimp only [f, w, h, v]
+      rw [show φ x t * c.ds B.family.metric (c.ds B.family.metric
+        (c.regularizedCurvature B.family.metric ε)) x t * c.speed B.family.metric x t =
+        φ x t * deriv (fun y => P y * deriv h y) x from by
+          rw [mul_assoc, heq]] at he
+      dsimp only [Pi.add_apply, h] at he ⊢
+      linarith only [he]
+    _ = (∫ x in p..q, f x) + ∫ x in p..q, h x * deriv (fun y => P y * deriv w y) x := by
+      rw [intervalIntegral.integral_add hf.intervalIntegrable hdiffh.intervalIntegrable, hgreen']
+    _ = ∫ x in p..q, f x + h x * deriv (fun y => P y * deriv w y) x :=
+      (intervalIntegral.integral_add hf.intervalIntegrable hdiffw.intervalIntegrable).symm
+    _ = _ := by
+      apply intervalIntegral.integral_congr
+      intro x _
+      have heq : c.ds B.family.metric (c.ds B.family.metric φ) x t * v x =
+          deriv (fun y => P y * deriv w y) x := by
+        change (v x)⁻¹ * deriv (fun y => P y * deriv w y) x * v x = _
+        field_simp [hvne x]
+      dsimp only [f, w, h, v]
+      rw [← heq]
+      ring
 
 private theorem derivWithin_length_le (B : RicciBackground (I := I) (M := M) D a b)
     (hsu : s < u) (hwindow : Icc s u ⊆ Icc a b)

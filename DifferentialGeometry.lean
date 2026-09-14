@@ -710,6 +710,7 @@ import DifferentialGeometry.Analysis.Integration.Integral.CompactSupportDerivati
 import DifferentialGeometry.Analysis.Integration.Integral.CompactSupportParametric
 import DifferentialGeometry.Analysis.Integration.Integral.ComplexSquare
 import DifferentialGeometry.Analysis.Integration.Integral.Prod
+import DifferentialGeometry.Analysis.Integration.IntervalGreenIdentity
 import DifferentialGeometry.Analysis.Integration.IntervalEndpointBound
 import DifferentialGeometry.Analysis.Integration.L2.Basic
 import DifferentialGeometry.Analysis.Integration.L2.CompactSupport
