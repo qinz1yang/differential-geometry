@@ -42,4 +42,25 @@ theorem norm_sub_le_of_norm_deriv_sq_le_inv {f : ℝ → E} {T A : ℝ}
   rw [← Real.sqrt_eq_rpow] at h
   exact h.trans_eq (by rw [Real.sqrt_mul hA]; ring)
 
+theorem norm_sub_le_integral_norm_deriv_of_mem_Icc {f : ℝ → E} {a b x y : ℝ}
+    (hf : ContinuousOn f (Icc a b)) (hfd : DifferentiableOn ℝ f (Ioo a b))
+    (hi : IntervalIntegrable (fun s => ‖deriv f s‖) volume a b)
+    (hx : x ∈ Icc a b) (hy : y ∈ Icc a b) :
+    ‖f x - f y‖ ≤ ∫ s in a..b, ‖deriv f s‖ := by
+  have hordered {u v : ℝ} (hu : u ∈ Icc a b) (hv : v ∈ Icc a b) (huv : u ≤ v) :
+      ‖f v - f u‖ ≤ ∫ s in a..b, ‖deriv f s‖ := by
+    have hint : IntervalIntegrable (fun s => ‖deriv f s‖) volume u v := by
+      apply hi.mono_set
+      rw [uIcc_of_le huv, uIcc_of_le (hu.1.trans hu.2)]
+      exact Icc_subset_Icc hu.1 hv.2
+    have h := norm_sub_le_integral_of_norm_deriv_le_of_le huv
+      (hf.mono (Icc_subset_Icc hu.1 hv.2))
+      (hfd.mono (Ioo_subset_Ioo hu.1 hv.2)) (ae_of_all _ (fun _ _ => le_rfl)) hint
+    exact h.trans (intervalIntegral.integral_mono_interval hu.1 huv hv.2
+      (ae_of_all _ (fun s => norm_nonneg (deriv f s))) hi)
+  rcases le_total x y with hxy | hyx
+  · rw [norm_sub_rev]
+    exact hordered hx hy hxy
+  · exact hordered hy hx hyx
+
 end DifferentialGeometry.Analysis

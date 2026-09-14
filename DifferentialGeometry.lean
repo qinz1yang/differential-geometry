@@ -16,6 +16,7 @@ import DifferentialGeometry.Analysis.Calculus.ContinuousMapDerivative
 import DifferentialGeometry.Analysis.Calculus.CriticalHolder
 import DifferentialGeometry.Analysis.Calculus.CriticalImageDimension
 import DifferentialGeometry.Analysis.Calculus.CriticalPointPerturbation
+import DifferentialGeometry.Analysis.Calculus.CurveProjection
 import DifferentialGeometry.Analysis.Calculus.Cutoff.Ball
 import DifferentialGeometry.Analysis.Calculus.Cutoff.BallRadialFunction
 import DifferentialGeometry.Analysis.Calculus.Cutoff.Basic
