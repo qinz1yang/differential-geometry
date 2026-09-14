@@ -6489,6 +6489,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.RicciNorm
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Stationary
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.Assembly
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.BallEmbeddingIsotopy
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.BallEmbeddingIsotopyObstruction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.DiscardedSideCurvatureGap
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.DiscardedSideDecompositionFrontier
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.DiscardedSideGeometry
@@ -9213,6 +9214,7 @@ import DifferentialGeometry.Topology.ThreeManifold.CutCapNoTubeComponentReductio
 import DifferentialGeometry.Topology.ThreeManifold.CutCapNoTubeReduction
 import DifferentialGeometry.Topology.ThreeManifold.CutCapReconstruction
 import DifferentialGeometry.Topology.ThreeManifold.CutCapStandardReconstruction
+import DifferentialGeometry.Topology.ThreeManifold.CutCapUncutComponentRealization
 import DifferentialGeometry.Topology.ThreeManifold.PoincareStandard
 import DifferentialGeometry.Topology.ThreeManifold.PoincareStandardClassification
 import DifferentialGeometry.Topology.ThreeManifold.PoincareStandardComponentwise
