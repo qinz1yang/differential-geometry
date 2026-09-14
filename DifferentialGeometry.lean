@@ -5089,6 +5089,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.PlateauUppe
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.PlateauUpperComparisonReduction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.PlateauUpperComparisonOneSidedDensity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.PlateauUpperComparisonVariation
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.PlateauDensityBridge
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.PlateauFluxComparison
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.RegularClass
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.SpanningArea
@@ -7998,6 +7999,7 @@ import DifferentialGeometry.Topology.Homology.HurewiczEquivalences
 import DifferentialGeometry.Topology.Homology.HurewiczFrontier
 import DifferentialGeometry.Topology.Homology.HurewiczLowDegreeBasepoint
 import DifferentialGeometry.Topology.Homology.HurewiczLowDegreeCriterion
+import DifferentialGeometry.Topology.Homology.HurewiczLowDegreeFrontier
 import DifferentialGeometry.Topology.Homology.HurewiczLowDegrees
 import DifferentialGeometry.Topology.Homology.HurewiczNullhomotopyCriterion
 import DifferentialGeometry.Topology.Homology.HurewiczOneAbelianization
