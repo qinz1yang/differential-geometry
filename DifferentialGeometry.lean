@@ -3174,6 +3174,7 @@ import DifferentialGeometry.Topology.Diffeomorph.LevelTransport
 import DifferentialGeometry.Topology.Diffeomorph.Translation
 import DifferentialGeometry.Topology.Diffeomorph.Convex
 import DifferentialGeometry.Topology.Diffeomorph.Radial
+import DifferentialGeometry.Topology.Diffeomorph.SphereIsotopy
 import DifferentialGeometry.Topology.Diffeomorph.DisjointSupport
 import DifferentialGeometry.Topology.Embedding.Diffeomorph
 import DifferentialGeometry.Topology.Embedding.Convex
@@ -3189,6 +3190,7 @@ import DifferentialGeometry.Topology.Embedding.SliceChart
 import DifferentialGeometry.Topology.Embedding.LocalSeparation
 import DifferentialGeometry.Topology.Embedding.Sphere
 import DifferentialGeometry.Topology.Handle.Embedding
+import DifferentialGeometry.Topology.Handle.BallIsotopy
 import DifferentialGeometry.Topology.ThreeManifold.schoenflies
 import DifferentialGeometry.Topology.Covering.Basic
 import DifferentialGeometry.Topology.Covering.CountablePi1
