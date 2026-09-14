@@ -7625,6 +7625,7 @@ import DifferentialGeometry.Topology.ClosureSupremum
 import DifferentialGeometry.Topology.Collar.Attachment
 import DifferentialGeometry.Topology.Collar.AttachmentRescaling
 import DifferentialGeometry.Topology.Collar.AttachmentSeam
+import DifferentialGeometry.Topology.Collar.CompactRegion
 import DifferentialGeometry.Topology.Collar.Rescaling
 import DifferentialGeometry.Topology.Collar.Superlevel
 import DifferentialGeometry.Topology.CollarSeparator
