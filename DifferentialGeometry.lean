@@ -5070,6 +5070,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.Observed
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.Preparation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.PreparedFamilyFrontier
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.RampAngleWindow
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.RampExistenceReduction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.RampFrontierData
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.RampLengthEvolution
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.RampUniformReduction
@@ -8506,6 +8507,7 @@ import DifferentialGeometry.Topology.Manifold.BallChartPalaisTransport
 import DifferentialGeometry.Topology.Manifold.BallChartScale
 import DifferentialGeometry.Topology.Manifold.BallChartAffine
 import DifferentialGeometry.Topology.Manifold.BallChartModelIsotopy
+import DifferentialGeometry.Topology.Manifold.BallChartStraightening
 import DifferentialGeometry.Topology.Manifold.BallChartTransport
 import DifferentialGeometry.Topology.Manifold.BallDiffeomorphExtension
 import DifferentialGeometry.Topology.Manifold.BicollarComponents
