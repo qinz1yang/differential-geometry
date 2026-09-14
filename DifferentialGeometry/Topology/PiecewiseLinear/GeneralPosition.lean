@@ -115,6 +115,170 @@ theorem IsPiecewiseAffineOn.min [FiniteDimensional ℝ E] {f g : E → ℝ} {s :
   · rw [min_eq_left hle, max_eq_left (neg_le_neg hle), neg_neg]
   · rw [min_eq_right hle, max_eq_right (neg_le_neg hle), neg_neg]
 
+theorem IsPiecewiseAffineOn.abs [FiniteDimensional ℝ E] {f : E → ℝ} {s : Set E}
+    (hf : IsPiecewiseAffineOn f s) : IsPiecewiseAffineOn (fun x => |f x|) s := by
+  have h := hf.max (hf.affine_comp (-AffineMap.id ℝ ℝ))
+  change IsPiecewiseAffineOn (fun x => Max.max (f x) (-f x)) s at h
+  refine h.congr fun x _ => ?_
+  change |f x| = Max.max (f x) (-f x)
+  rcases le_total 0 (f x) with hle | hle
+  · rw [abs_of_nonneg hle, max_eq_left (by linarith)]
+  · rw [abs_of_nonpos hle, max_eq_right (by linarith)]
+
+theorem isPiecewiseAffineOn_norm_pi {ι : Type*} [Fintype ι] :
+    IsPiecewiseAffineOn (fun p : ι → ℝ => ‖p‖) univ := by
+  classical
+  have hs : ∀ s : Finset ι,
+      IsPiecewiseAffineOn (fun p : ι → ℝ => (((s.sup fun i => (‖p i‖₊ : NNReal)) : NNReal) : ℝ)) univ := by
+    intro s
+    induction s using Finset.induction_on with
+    | empty =>
+      exact isPiecewiseAffineOn_of_affine (AffineMap.const ℝ (ι → ℝ) (0 : ℝ)) isOpen_univ
+    | @insert i s hi ih =>
+      have hcoord : IsPiecewiseAffineOn (fun p : ι → ℝ => p i) univ :=
+        isPiecewiseAffineOn_of_affine
+          (ContinuousLinearMap.proj (R := ℝ) (φ := fun _ : ι => ℝ) i).toLinearMap.toAffineMap isOpen_univ
+      have h := hcoord.abs.max ih
+      refine h.congr fun p _ => ?_
+      simp only [Finset.sup_insert, NNReal.coe_max, coe_nnnorm, Real.norm_eq_abs]
+  exact (hs Finset.univ).congr fun p _ => Pi.norm_def p
+
+theorem exists_piecewiseAffine_lipschitz_cutoff_at [FiniteDimensional ℝ E] {p : E} {U : Set E}
+    (hU : U ∈ 𝓝 p) :
+    ∃ (φ : E → ℝ) (k : NNReal), IsPiecewiseAffineOn φ univ ∧ LipschitzWith k φ ∧
+      (∀ x, 0 ≤ φ x ∧ φ x ≤ 1) ∧ φ ⁻¹' {1} ∈ 𝓝 p ∧ EqOn φ (fun _ => 0) Uᶜ := by
+  classical
+  obtain ⟨ε, hε, hball⟩ := Metric.mem_nhds_iff.mp hU
+  let L := (Module.finBasis ℝ E).equivFunL
+  let S : ℝ := ‖L.symm.toContinuousLinearMap‖ + 1
+  have hS : 0 < S := by dsimp [S]; positivity
+  let r : ℝ := ε / (3 * S)
+  have hr : 0 < r := div_pos hε (by positivity)
+  let ψ : E → ℝ := fun x => ‖L (x - p)‖
+  have hψpl : IsPiecewiseAffineOn ψ univ := by
+    have hB : IsPiecewiseAffineOn (fun x => L (x - p)) univ :=
+      isPiecewiseAffineOn_of_affine
+        (L.toLinearMap.toAffineMap.comp (AffineMap.id ℝ E - AffineMap.const ℝ E p)) isOpen_univ
+    have h := isPiecewiseAffineOn_norm_pi.comp hB
+    rw [preimage_univ, inter_univ] at h
+    exact h.congr fun _ _ => rfl
+  have hψlip : LipschitzWith ‖L.toContinuousLinearMap‖₊ ψ := by
+    apply LipschitzWith.of_dist_le_mul
+    intro x y
+    have heq : L (x - p) - L (y - p) = L (x - y) := by
+      rw [← map_sub]
+      congr 1
+      abel
+    calc dist (ψ x) (ψ y) ≤ ‖L (x - p) - L (y - p)‖ := dist_norm_norm_le _ _
+      _ = ‖L (x - y)‖ := by rw [heq]
+      _ ≤ ‖L.toContinuousLinearMap‖ * ‖x - y‖ := L.toContinuousLinearMap.le_opNorm _
+      _ = _ := by rw [dist_eq_norm]; rfl
+  have hbound : ∀ x, ‖x - p‖ ≤ S * ψ x := by
+    intro x
+    have h := L.symm.toContinuousLinearMap.le_opNorm (L (x - p))
+    change ‖L.symm (L (x - p))‖ ≤ ‖L.symm.toContinuousLinearMap‖ * ψ x at h
+    rw [L.symm_apply_apply] at h
+    have hψpos : 0 ≤ ψ x := norm_nonneg _
+    dsimp [S]
+    nlinarith
+  let g : E → ℝ := fun x => 2 - ψ x / r
+  have hgpl : IsPiecewiseAffineOn g univ := by
+    have h := hψpl.affine_comp (AffineMap.const ℝ ℝ 2 - r⁻¹ • AffineMap.id ℝ ℝ)
+    refine h.congr fun x _ => ?_
+    change 2 - ψ x / r = 2 - r⁻¹ * ψ x
+    ring
+  let k : NNReal := ⟨‖L.toContinuousLinearMap‖ / r, by positivity⟩
+  have hglip : LipschitzWith k g := by
+    apply LipschitzWith.of_dist_le_mul
+    intro x y
+    have h := hψlip.dist_le_mul x y
+    simp only [dist_eq_norm, Real.norm_eq_abs, coe_nnnorm] at h
+    change |(2 - ψ x / r) - (2 - ψ y / r)| ≤ (‖L.toContinuousLinearMap‖ / r) * dist x y
+    calc
+      |(2 - ψ x / r) - (2 - ψ y / r)| = |ψ x - ψ y| / r := by
+        rw [show (2 - ψ x / r) - (2 - ψ y / r) = -(ψ x - ψ y) / r by ring,
+          abs_div, abs_neg, abs_of_pos hr]
+      _ ≤ (‖L.toContinuousLinearMap‖ * ‖x - y‖) / r := div_le_div_of_nonneg_right h hr.le
+      _ = (‖L.toContinuousLinearMap‖ / r) * dist x y := by rw [dist_eq_norm]; ring
+  let φ : E → ℝ := fun x => min 1 (max 0 (g x))
+  have hφpl : IsPiecewiseAffineOn φ univ :=
+    (isPiecewiseAffineOn_of_affine (AffineMap.const ℝ E (1 : ℝ)) isOpen_univ).min
+      ((isPiecewiseAffineOn_of_affine (AffineMap.const ℝ E (0 : ℝ)) isOpen_univ).max hgpl)
+  have hφlip : LipschitzWith (max 0 (max 0 k)) φ :=
+    (LipschitzWith.const 1).min ((LipschitzWith.const 0).max hglip)
+  refine ⟨φ, max 0 (max 0 k), hφpl, hφlip, fun x => ⟨?_, min_le_left _ _⟩, ?_, ?_⟩
+  · exact le_min (by norm_num) (le_max_left _ _)
+  · have hneigh : {x | ψ x < r} ∈ 𝓝 p :=
+      (isOpen_lt hψlip.continuous continuous_const).mem_nhds
+        (by change ‖L (p - p)‖ < r; simpa using hr)
+    apply Filter.mem_of_superset hneigh
+    intro x hx
+    change min 1 (max 0 (2 - ψ x / r)) = 1
+    apply min_eq_left
+    apply le_trans _ (le_max_right _ _)
+    have hdiv : ψ x / r < 1 := (div_lt_one hr).mpr hx
+    linarith
+  · intro x hx
+    have hlarge : 2 * r ≤ ψ x := by
+      by_contra h
+      have hψlt : ψ x < 2 * r := lt_of_not_ge h
+      apply hx
+      apply hball
+      change dist x p < ε
+      rw [dist_eq_norm]
+      calc ‖x - p‖ ≤ S * ψ x := hbound x
+        _ < S * (2 * r) := mul_lt_mul_of_pos_left hψlt hS
+        _ < ε := by dsimp [r]; field_simp; nlinarith
+    change min 1 (max 0 (2 - ψ x / r)) = 0
+    have hg : 2 - ψ x / r ≤ 0 := by
+      have hdiv : 2 ≤ ψ x / r := (le_div_iff₀ hr).mpr hlarge
+      linarith
+    rw [max_eq_left hg, min_eq_right (by norm_num)]
+
+theorem exists_piecewiseAffine_lipschitz_cutoff [FiniteDimensional ℝ E] {C U : Set E}
+    (hC : IsCompact C) (hU : IsOpen U) (hCU : C ⊆ U) :
+    ∃ (φ : E → ℝ) (k : NNReal), IsPiecewiseAffineOn φ univ ∧ LipschitzWith k φ ∧
+      (∀ x, 0 ≤ φ x ∧ φ x ≤ 1) ∧ EqOn φ (fun _ => 1) C ∧ EqOn φ (fun _ => 0) Uᶜ := by
+  classical
+  choose f k hf hk hb hn hz using fun p : C =>
+    exists_piecewiseAffine_lipschitz_cutoff_at (hU.mem_nhds (hCU p.property))
+  have hcover : C ⊆ ⋃ p : C, interior (f p ⁻¹' {1}) := by
+    intro x hx
+    exact mem_iUnion.mpr ⟨⟨x, hx⟩, mem_interior_iff_mem_nhds.mpr (hn ⟨x, hx⟩)⟩
+  obtain ⟨t, ht⟩ := hC.elim_finite_subcover (fun p : C => interior (f p ⁻¹' {1}))
+    (fun _ => isOpen_interior) hcover
+  have hfinite : ∀ s : Finset C, ∃ (g : E → ℝ) (kg : NNReal),
+      IsPiecewiseAffineOn g univ ∧ LipschitzWith kg g ∧ (∀ x, 0 ≤ g x ∧ g x ≤ 1) ∧
+        EqOn g (fun _ => 0) Uᶜ ∧ ∀ i ∈ s, ∀ x, f i x ≤ g x := by
+    intro s
+    induction s using Finset.induction_on with
+    | empty =>
+      refine ⟨fun _ => 0, 0,
+        isPiecewiseAffineOn_of_affine (AffineMap.const ℝ E (0 : ℝ)) isOpen_univ,
+        LipschitzWith.const 0, fun _ => ⟨le_refl _, by norm_num⟩, fun _ _ => rfl, ?_⟩
+      simp
+    | @insert i s hi ih =>
+      obtain ⟨g, kg, hgpl, hglip, hgb, hgz, hgdom⟩ := ih
+      refine ⟨fun x => max (f i x) (g x), max (k i) kg, (hf i).max hgpl, (hk i).max hglip,
+        fun x => ⟨le_trans (hb i x).1 (le_max_left _ _), max_le (hb i x).2 (hgb x).2⟩, ?_, ?_⟩
+      · intro x hx
+        change max (f i x) (g x) = 0
+        rw [hz i hx, hgz hx, max_self]
+      · intro j hj x
+        rcases Finset.mem_insert.mp hj with rfl | hj
+        · exact le_max_left _ _
+        · exact le_trans (hgdom j hj x) (le_max_right _ _)
+  obtain ⟨g, kg, hgpl, hglip, hgb, hgz, hgdom⟩ := hfinite t
+  refine ⟨g, kg, hgpl, hglip, hgb, ?_, hgz⟩
+  intro x hx
+  obtain ⟨i, hi⟩ := mem_iUnion.mp (ht hx)
+  obtain ⟨hit, hix⟩ := mem_iUnion.mp hi
+  have hfx : x ∈ f i ⁻¹' {1} := interior_subset hix
+  change f i x = 1 at hfx
+  apply le_antisymm (hgb x).2
+  rw [← hfx]
+  exact hgdom i hit x
+
 theorem isPLHomeomorphOn_id_add_of_lipschitz [FiniteDimensional ℝ E] {f : E → E} {k : NNReal}
     (hf : IsPiecewiseAffineOn f univ) (hlip : LipschitzWith k f) (hk : k < 1) :
     IsPLHomeomorphOn (fun x => x + f x) univ univ := by
@@ -265,5 +429,55 @@ theorem exists_small_translation_transverse_faces [FiniteDimensional ℝ E]
       (x + a - t.centroid ℝ id) - (x - s.centroid ℝ id) := by abel
   rw [heq]
   exact Submodule.sub_mem _ (Submodule.mem_sup_right hydir) (Submodule.mem_sup_left hxdir)
+
+open Classical in
+theorem exists_small_homeomorph_transverse_faces [FiniteDimensional ℝ E]
+    (K L : Geometry.SimplicialComplex ℝ E) [Finite K.faces] [Finite L.faces]
+    {U : Set E} (hU : IsOpen U) (hKU : K.space ⊆ U) {ε : ℝ} (hε : 0 < ε) :
+    ∃ (a : E) (h : E → E), ‖a‖ < ε ∧ IsPLHomeomorphOn h univ univ ∧
+      (∀ x, dist (h x) x < ε) ∧ EqOn h id Uᶜ ∧ EqOn h (fun x => x + a) K.space ∧
+      ∀ s ∈ K.faces, ∀ t ∈ L.faces,
+        (h '' convexHull ℝ (s : Set E) ∩ convexHull ℝ (t : Set E)).Nonempty →
+          vectorSpan ℝ (s : Set E) ⊔ vectorSpan ℝ (t : Set E) = ⊤ := by
+  obtain ⟨φ, k, hφpl, hφlip, hφb, hφK, hφU⟩ :=
+    exists_piecewiseAffine_lipschitz_cutoff (isPolyhedron_space K).isCompact hU hKU
+  obtain ⟨δ, hδ, hkδ⟩ := exists_pos_mul_lt (a := (1 : ℝ)) zero_lt_one (k : ℝ)
+  obtain ⟨a, ha, _, htrans⟩ := exists_small_translation_transverse_faces K L (lt_min hε hδ)
+  have haε : ‖a‖ < ε := lt_of_lt_of_le ha (min_le_left _ _)
+  have haδ : ‖a‖ < δ := lt_of_lt_of_le ha (min_le_right _ _)
+  let f : E → E := fun x => φ x • a
+  have hfpl : IsPiecewiseAffineOn f univ :=
+    hφpl.affine_comp (LinearMap.toSpanSingleton ℝ E a).toAffineMap
+  have hflip : LipschitzWith (k * ‖a‖₊) f := by
+    apply LipschitzWith.of_dist_le_mul
+    intro x y
+    rw [dist_eq_norm]
+    change ‖φ x • a - φ y • a‖ ≤ (↑(k * ‖a‖₊) : ℝ) * dist x y
+    rw [← sub_smul, norm_smul, NNReal.coe_mul, coe_nnnorm]
+    have h := hφlip.dist_le_mul x y
+    rw [dist_eq_norm] at h
+    calc ‖φ x - φ y‖ * ‖a‖ ≤ ((k : ℝ) * dist x y) * ‖a‖ :=
+        mul_le_mul_of_nonneg_right h (norm_nonneg _)
+      _ = (k : ℝ) * ‖a‖ * dist x y := by ring
+  have hsmall : k * ‖a‖₊ < 1 := by
+    change (k : ℝ) * ‖a‖ < 1
+    exact lt_of_le_of_lt (mul_le_mul_of_nonneg_left haδ.le k.coe_nonneg) hkδ
+  let h : E → E := fun x => x + f x
+  have heq : EqOn h (fun x => x + a) K.space := by
+    intro x hx
+    change x + φ x • a = x + a
+    rw [hφK hx, one_smul]
+  refine ⟨a, h, haε, isPLHomeomorphOn_id_add_of_lipschitz hfpl hflip hsmall, ?_, ?_, heq, ?_⟩
+  · intro x
+    change dist (x + φ x • a) x < ε
+    rw [dist_eq_norm, add_sub_cancel_left, norm_smul, Real.norm_eq_abs, abs_of_nonneg (hφb x).1]
+    exact lt_of_le_of_lt (by nlinarith [(hφb x).2, norm_nonneg a]) haε
+  · intro x hx
+    change x + φ x • a = x
+    rw [hφU hx, zero_smul, add_zero]
+  · intro s hs t ht hinter
+    apply htrans s hs t ht
+    obtain ⟨y, ⟨x, hx, rfl⟩, hy⟩ := hinter
+    refine ⟨h x, ⟨x, hx, (heq (K.convexHull_subset_space hs hx)).symm⟩, hy⟩
 
 end DifferentialGeometry.Topology.PiecewiseLinear
