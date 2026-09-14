@@ -6917,6 +6917,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ConnectedSu
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SphereSmash
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SphericalCappingBridge
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SphericalCappingCompletion
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SphericalCollarFilling
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SphericalRegion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SphericalTransitionBridge
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.StandardNeckCutCap
@@ -9414,6 +9415,7 @@ import DifferentialGeometry.Topology.ThreeManifold.CutCapIncidenceCycleRank
 import DifferentialGeometry.Topology.ThreeManifold.CutCapIncidenceSpanningTree
 import DifferentialGeometry.Topology.ThreeManifold.CutCapIndexCoverage
 import DifferentialGeometry.Topology.ThreeManifold.CutCapLocalReconstructionReduction
+import DifferentialGeometry.Topology.ThreeManifold.CutCapMarkedGraphBridge
 import DifferentialGeometry.Topology.ThreeManifold.CutCapNoTubeComponentReduction
 import DifferentialGeometry.Topology.ThreeManifold.CutCapNoTubeReduction
 import DifferentialGeometry.Topology.ThreeManifold.CutCapReconstruction
