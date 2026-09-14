@@ -6659,6 +6659,7 @@ import DifferentialGeometry.Geometry.Geodesic.SyngeReturnDeterminant
 import DifferentialGeometry.Geometry.Gradient.AffineCoordinate
 import DifferentialGeometry.Geometry.Gradient.CylinderPerturbation
 import DifferentialGeometry.Geometry.Gradient.Normalized
+import DifferentialGeometry.Geometry.Gradient.ScaledChart
 import DifferentialGeometry.Geometry.Gradient.ScaledChartDifferential
 import DifferentialGeometry.Geometry.Gradient.SignedDifference
 import DifferentialGeometry.Geometry.Hodge.Codifferential
