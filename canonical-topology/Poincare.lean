@@ -142,3 +142,4 @@ import Poincare.Topology.LoopSpace.Basic
 import Poincare.Topology.LoopSpace.ContinuousFilling
 import Poincare.Topology.LoopSpace.SimplyConnectedTarget
 import Poincare.Topology.LoopSpace.SpanningDisk
+import Poincare.Topology.Manifold.TangentOrientation

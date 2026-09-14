@@ -1,11 +1,16 @@
 # Local homology and global classes from coherent local generators
 
 This separate `PoincareLean` project contains a dependency-closed checkpoint of
-144 Poincare modules. It extends the recovered Chapter 35 source at commit
+145 Poincare modules. It extends the recovered Chapter 35 source at commit
 `b45bfa009368c8f5f531e10f4f5280e90079d6ad` and preserves its mathematical objects
 and `Poincare` namespaces. `Poincare.lean` imports every included leaf.
 
 The additions prove:
+
+- locality of the actual tangent orientation coordinates in each fixed chart
+  from supplied compatible continuous local frames, including rank zero;
+  and the resulting unique local homology family and absolute-generator
+  corollaries, retaining all actual chart equations;
 
 - a unique family of actual local integral homology classes from a tangent
   orientation field locally constant in each fixed chart, with all normalized
@@ -135,7 +140,7 @@ The additions prove:
 - a unique compact-neighborhood class with the same normalization in every
   chart whose actual tangent trivialization preserves the base-chart orientation.
 
-The 60 new/changed modules and their exact baseline/current hashes are listed in
+The 61 new/changed modules and their exact baseline/current hashes are listed in
 [provenance/SNAPSHOT.json](provenance/SNAPSHOT.json). The derivative homotopy
 retains its [upstream attribution and modification record](provenance/README.md).
 
@@ -1133,7 +1138,7 @@ tracks 177 curated added public exports. Source request
 `1789364627887445433-topology_checkpoint-d9ef4819` passed in Slurm13846673:
 209.63seconds,678 guards,330 signature/axiom pairs. The two changed leaves and
 root freshly compiled in 1:39.96 with maximum RSS1981068KiB and zero diagnostics.
-All322 earlier pairs were reproduced byte-identically; all142 other leaves are
+All322 earlier pairs were reproduced byte-identically; all 142 other leaves are
 unchanged. All14 common source/imported/portable readbacks agree modulo only
 Set.univ, Module.finrank and Set.MapsTo qualification and whitespace, with exact
 axiom readbacks. Stock declaration linters and standard-only transitive axioms
@@ -1143,3 +1148,28 @@ The locality hypothesis concerns tangent orientations in fixed charts, not
 homology classes or locally constant chart functions. Producing a compatible
 native orientation field, outward normalization and general manifold duality
 remain open; the missing frozen contract remains missing.
+
+
+The supplied-local-frame extension contains 145 modules and 180 curated added
+public exports. `TangentOrientation` proves locality using actual continuous
+Mathlib local frames and native tangent trivializations; the model, manifold
+and frame-index universes are independent. The two homology corollaries retain
+the existing unique class and normalized chart equations, including zero model
+classes locally and a nonzero global generator under the generator hypothesis.
+No global coherent orientation is assumed to have been constructed.
+
+Source request `1789368064919272216-topology-8ce18e56` passed in 59.72seconds
+with 223 guards and 41 signature/axiom pairs. Original imported request
+`1789369099798197930-topology-473d714f` passed in 173.57seconds with 217 guards
+and 23 pairs. Portable request
+`1789369099859704260-topology_checkpoint-e4a3e8f8` passed in Slurm 13864417
+in 262.34seconds with 708 guards and 339 pairs. The three affected leaves and
+root freshly compiled in 2:21.07, maximum RSS 1985840KiB, zero diagnostics.
+All 330 preceding pairs were reproduced byte-identically; all 142 other leaves
+are unchanged. All 23 common readbacks agree modulo only qualification and
+whitespace, with exact standard-only axiom closures. Stock declaration linters
+and strict source linters pass. Concrete Fin0 local frames, orientation
+negation and exclusion of the opposite orientation are checked, along with
+actual local and global class consumers and every preceding regression probe.
+The coherent native orientation producer, outward normalization, general
+manifold duality and the missing frozen contract remain open.

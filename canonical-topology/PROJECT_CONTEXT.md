@@ -1,33 +1,40 @@
 # Poincare local-homology checkpoint
 
 This directory is a separate portable `PoincareLean` project prepared for
-additive publication within the shared DifferentialGeometry Git repository. Its Lean
-library is `Poincare`; its sources retain the original mathematical namespaces.
+additive publication within the shared DifferentialGeometry Git repository.
+Its sources retain the original mathematical objects and namespaces.
 
-The source baseline is the recovered Chapter 35 commit
+The recovered Chapter 35 baseline is commit
 `b45bfa009368c8f5f531e10f4f5280e90079d6ad`, supplemented by recovered working-tree
-proofs with separately recorded provenance. This checkpoint includes 144 modules
-and 177 curated tracked added public exports. From a tangent orientation field
-whose coordinates are locally constant in each fixed chart, the new theorem
-constructs a unique family of actual local integral homology classes with all
-chart/excision/translation equations and compact local realizations. Any model
-class is permitted, including zero. With a model generator and a nonempty compact
-connected manifold, the second theorem constructs the unique absolute integral
-generator with the same chart equations and bijective point restrictions.
-These are conditional class-production results. The native compatible tangent
-orientation producer, outward normalization and general manifold duality remain open.
+proofs with separately recorded provenance. This checkpoint includes 145 modules
+and 180 curated tracked added public exports.
 
-Source b6c3464d passed in 59.54s, with 217 guards and 32 type/axiom pairs.
-Original imported d4ad29d5 passed in 123.12s, with 210 guards and 14 pairs.
-Portable d9ef4819 passed in 209.63s, with 678 guards and 330 pairs. Both changed
-leaves and the root freshly compiled in 1:39.96, RSS1981068KiB, zero diagnostics.
-All322 preceding pairs are byte-identical and all142 other leaves unchanged.
-All14 common source/original/portable types agree modulo only Set.univ,
-Module.finrank and Set.MapsTo qualification and whitespace; axioms are exact.
-Strict source and stock declaration linters and standard-only transitive axioms
-pass. Consumers check actual model coordinates, a nonzero negative rank-zero
-global generator, reversal of the orientation field and the zero model class
-with actual compact local realization. Pins and deferred inputs remain unchanged.
+Actual continuous local tangent frames representing a supplied orientation field
+now imply local constancy of its coordinates in each fixed tangent chart. This
+uses the native Mathlib local-frame, orientation and tangent trivialization APIs.
+The frame theorem allows independent model, manifold and index universes and
+includes rank zero. Two corollaries feed this locality into the existing unique
+local integral-homology family and global fundamental-class constructions.
+They retain all actual chart, excision and translation equations. The local
+model class may be zero; a global generator requires a model generator and a
+nonempty compact connected manifold. The more general locality-based engines
+retain their public statements and proofs.
+
+Source 8ce18e56 passed in 59.72s with 223 guards and 41 signature/axiom pairs.
+Original imported 473d714f passed in 173.57s with 217 guards and 23 pairs.
+Portable e4a3e8f8 passed in Slurm 13864417 in 262.34s with 708 guards and 339 pairs.
+All three affected leaves and the portable root freshly compiled in 2:21.07,
+maximum RSS 1985840KiB, with zero diagnostics. All 330 previous readback pairs
+are byte-identical and all 142 other leaves unchanged. All 23 common source,
+original and portable types agree modulo only qualification and whitespace;
+axiom readbacks are exact. Strict source and stock declaration linters and
+standard-only transitive axioms pass. Consumers include actual Fin0 frames,
+opposite-orientation exclusion, exact local class equations and a nonzero global
+generator; previous negative rank-zero, zero-model and reversal probes remain.
+
+These are conditional results from supplied compatible local frames. The native
+coherent orientation producer, outward sphere normalization, general manifold
+duality and the missing frozen canonical-topology contract remain open.
 
 The preceding all-degree sphere, Euclidean point and bounded star-convex cap
 bijections retain their exact public statements and proof bodies. Their classes,

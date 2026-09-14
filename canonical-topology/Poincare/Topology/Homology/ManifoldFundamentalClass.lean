@@ -319,3 +319,56 @@ theorem exists_unique_absolute_generator_of_tangent_orientation_locality
     exact (hb x x (mem_chart_source E x)).trans (hmaps x x (mem_chart_source E x)).symm
 
 end Poincare.Topology
+
+namespace Poincare.Topology
+
+open Classical in
+theorem exists_unique_absolute_generator_of_tangent_local_frames
+    {E M : Type u} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    [TopologicalSpace M] [T2Space M] [ChartedSpace E M] [IsManifold 𝓘(ℝ, E) 1 M]
+    [CompactSpace M] [PreconnectedSpace M] [Nonempty M]
+    (o : ∀ x : M, Orientation ℝ (TangentSpace 𝓘(ℝ, E) x) (Fin (Module.finrank ℝ E)))
+    (ω : Orientation ℝ E (Fin (Module.finrank ℝ E)))
+    (c : integralLocalHomology (Module.finrank ℝ E) (0 : E))
+    (hc : Function.Bijective (fun k : ℤ => k • c))
+    (hframes : ∀ p : M, ∃ U : Set M, IsOpen U ∧ p ∈ U ∧
+      ∃ s : Fin (Module.finrank ℝ E) → (x : M) → TangentSpace 𝓘(ℝ, E) x,
+        ∃ hs : IsLocalFrameOn 𝓘(ℝ, E) E 0 s U,
+          ∀ (x : M) (hx : x ∈ U), (hs.toBasisAt hx).orientation = o x) :
+    ∃ a : integralSingularHomology (Module.finrank ℝ E) M,
+      (∀ (p x : M) (hx : x ∈ (chartAt E p).source),
+        ((integralRelativeHomologyMap (Module.finrank ℝ E)
+          (toContinuousMap (Homeomorph.subRight (chartAt E p x)))
+          (show MapsTo (Homeomorph.subRight (chartAt E p x))
+            ({chartAt E p x}ᶜ : Set E) ({0}ᶜ : Set E) from
+              fun _ hz => sub_ne_zero.mpr hz)).comp
+          (integralLocalHomologyOpenPartialHomeomorphIso (Module.finrank ℝ E)
+            (chartAt E p) x hx).hom.hom)
+          (integralAbsoluteToRelative (Module.finrank ℝ E) ({x}ᶜ : Set M) a) =
+            if (Orientation.map _
+          ((trivializationAt E (TangentSpace 𝓘(ℝ, E)) p).continuousLinearEquivAt ℝ x
+            (by simpa only [TangentBundle.trivializationAt_baseSet] using
+              hx)).toLinearEquiv
+          (o x)) = ω then c else -c) ∧
+      (∀ b : integralSingularHomology (Module.finrank ℝ E) M,
+        (∀ (p x : M) (hx : x ∈ (chartAt E p).source),
+          ((integralRelativeHomologyMap (Module.finrank ℝ E)
+          (toContinuousMap (Homeomorph.subRight (chartAt E p x)))
+          (show MapsTo (Homeomorph.subRight (chartAt E p x))
+            ({chartAt E p x}ᶜ : Set E) ({0}ᶜ : Set E) from
+              fun _ hz => sub_ne_zero.mpr hz)).comp
+          (integralLocalHomologyOpenPartialHomeomorphIso (Module.finrank ℝ E)
+            (chartAt E p) x hx).hom.hom)
+            (integralAbsoluteToRelative (Module.finrank ℝ E) ({x}ᶜ : Set M) b) =
+              if (Orientation.map _
+          ((trivializationAt E (TangentSpace 𝓘(ℝ, E)) p).continuousLinearEquivAt ℝ x
+            (by simpa only [TangentBundle.trivializationAt_baseSet] using
+              hx)).toLinearEquiv
+          (o x)) = ω then c else -c) → b = a) ∧
+      Function.Bijective (fun k : ℤ => k • a) ∧
+      ∀ x : M, Function.Bijective
+        (integralAbsoluteToRelative (Module.finrank ℝ E) ({x}ᶜ : Set M)) := by
+  exact exists_unique_absolute_generator_of_tangent_orientation_locality o ω c hc
+    (tangent_orientation_locality_of_local_frames o hframes)
+
+end Poincare.Topology

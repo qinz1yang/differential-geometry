@@ -1,9 +1,9 @@
 {
-  "scope": "Dependency-closed 144-module checkpoint including conditional local and global integral class production from fixed-chart tangent-orientation locality; native orientability, outward calibration and full suite remain incomplete",
+  "scope": "Dependency-closed 145-module checkpoint including tangent orientation locality from supplied actual continuous local frames and its local/global integral class corollaries; coherent native orientation, outward calibration and full suite remain open",
   "baseline_commit": "b45bfa009368c8f5f531e10f4f5280e90079d6ad",
   "baseline_ref": "refs/remotes/origin/codex/chapter35",
   "source_project": "PoincareLean",
-  "source_module_count": 144,
+  "source_module_count": 145,
   "roots": [
     "Poincare.Topology.Homology.RelativeMaps",
     "Poincare.Topology.Homology.RelativeHomeomorphism",
@@ -44,7 +44,8 @@
     "Poincare.Topology.Homology.SphereCapDuality",
     "Poincare.Topology.Homology.SphereCohomologyVanishing",
     "Poincare.Topology.Homology.EuclideanLocalCapDuality",
-    "Poincare.Topology.Homology.EuclideanLocalCohomologyVanishing"
+    "Poincare.Topology.Homology.EuclideanLocalCohomologyVanishing",
+    "Poincare.Topology.Manifold.TangentOrientation"
   ],
   "changed_sources": [
     {
@@ -172,7 +173,7 @@
       "module": "Poincare.Topology.Homology.LocalOrientation",
       "path": "Poincare/Topology/Homology/LocalOrientation.lean",
       "baseline_sha256": null,
-      "sha256": "0f1fbfb839ee41af403d0bb3fe7bfb811f8ce151861fa0f7fcfa50b8781e99d7"
+      "sha256": "8912d87afbe44f9b9fe909848cc51c526580f0c5e2d5fa331e746698aababc56"
     },
     {
       "module": "Poincare.Topology.Homology.LocalStarConvex",
@@ -190,7 +191,7 @@
       "module": "Poincare.Topology.Homology.ManifoldFundamentalClass",
       "path": "Poincare/Topology/Homology/ManifoldFundamentalClass.lean",
       "baseline_sha256": null,
-      "sha256": "263dd95670aa9f087a3fa05e80cd86c679be76fe461420b79f35ed8fcd8ec653"
+      "sha256": "d5268083f15257641b9c0c8d7c5ee47025bc0c0db2c212cf58937b026e301c04"
     },
     {
       "module": "Poincare.Topology.Homology.ModuleHomologyConnecting",
@@ -422,6 +423,13 @@
       "baseline_sha256": null,
       "sha256": "a53eae10d7a6f158c8d12febd33ca8b4b653fde4d7bbcf9bdc3b067b68514bf1",
       "provenance": "pre-existing recovered working-tree source, first included in portable checkpoint"
+    },
+    {
+      "module": "Poincare.Topology.Manifold.TangentOrientation",
+      "path": "Poincare/Topology/Manifold/TangentOrientation.lean",
+      "baseline_sha256": null,
+      "sha256": "d5c7df6b6a5ed8c2503a9382ea4a3591e4ede1e0fbb2606cf41d4a7069c7b7e6",
+      "provenance": "New source proved from actual Mathlib continuous local frames; not a recovered or assumed wt10 orientation source"
     }
   ],
   "poincare_sources": [
@@ -730,7 +738,7 @@
       "module": "Poincare.Topology.Homology.LocalOrientation",
       "path": "Poincare/Topology/Homology/LocalOrientation.lean",
       "baseline_sha256": null,
-      "sha256": "0f1fbfb839ee41af403d0bb3fe7bfb811f8ce151861fa0f7fcfa50b8781e99d7"
+      "sha256": "8912d87afbe44f9b9fe909848cc51c526580f0c5e2d5fa331e746698aababc56"
     },
     {
       "module": "Poincare.Topology.Homology.LocalStarConvex",
@@ -748,7 +756,7 @@
       "module": "Poincare.Topology.Homology.ManifoldFundamentalClass",
       "path": "Poincare/Topology/Homology/ManifoldFundamentalClass.lean",
       "baseline_sha256": null,
-      "sha256": "263dd95670aa9f087a3fa05e80cd86c679be76fe461420b79f35ed8fcd8ec653"
+      "sha256": "d5268083f15257641b9c0c8d7c5ee47025bc0c0db2c212cf58937b026e301c04"
     },
     {
       "module": "Poincare.Topology.Homology.MeshBoundary",
@@ -1304,13 +1312,20 @@
       "baseline_sha256": null,
       "sha256": "a53eae10d7a6f158c8d12febd33ca8b4b653fde4d7bbcf9bdc3b067b68514bf1",
       "provenance": "pre-existing recovered working-tree source, first included in portable checkpoint"
+    },
+    {
+      "module": "Poincare.Topology.Manifold.TangentOrientation",
+      "path": "Poincare/Topology/Manifold/TangentOrientation.lean",
+      "baseline_sha256": null,
+      "sha256": "d5c7df6b6a5ed8c2503a9382ea4a3591e4ede1e0fbb2606cf41d4a7069c7b7e6",
+      "provenance": "New source proved from actual Mathlib continuous local frames; not a recovered or assumed wt10 orientation source"
     }
   ],
   "aggregate": {
     "path": "Poincare.lean",
     "baseline_sha256": "99c3c8e47c19f60ee50a7e0f377e59138cf4ff33ebd4e26530d3c2b7cd47d452",
-    "sha256": "9d0d59adb145e16daaca793f20e62154045f49dfed3415a868f2f5f696d04529",
-    "change": "Flat 144-leaf checkpoint aggregate; full recovered aggregate remains separate"
+    "sha256": "bd52f4dea3f74e2465c78914cb6d4c914b1d23eeac3898815995854a9ea7eb03",
+    "change": "Flat 145-leaf checkpoint aggregate; full recovered aggregate remains separate"
   },
   "configuration": [
     {
@@ -1385,6 +1400,7 @@
     "Mathlib.Data.Sign.Basic",
     "Mathlib.Geometry.Manifold.ChartedSpace",
     "Mathlib.Geometry.Manifold.Instances.Sphere",
+    "Mathlib.Geometry.Manifold.VectorBundle.LocalFrame",
     "Mathlib.Geometry.Manifold.VectorBundle.Tangent",
     "Mathlib.LinearAlgebra.Basis.Basic",
     "Mathlib.LinearAlgebra.Determinant",
@@ -1420,6 +1436,7 @@
     "Mathlib.Topology.Homotopy.Contractible",
     "Mathlib.Topology.Homotopy.Equiv",
     "Mathlib.Topology.Instances.AddCircle.Real",
+    "Mathlib.Topology.Instances.Matrix",
     "Mathlib.Topology.Maps.Proper.Basic",
     "Mathlib.Topology.MetricSpace.Bounded",
     "Mathlib.Topology.MetricSpace.ProperSpace",
@@ -1609,7 +1626,10 @@
     "Poincare.Topology.integralEuclideanLocalTopZeroEquiv_cap_bijective_of_add_eq",
     "Poincare.Topology.integralBoundedStarConvexLocalHomologyIso_cap_bijective_of_add_eq",
     "Poincare.Topology.exists_locally_realized_family_of_tangent_orientation_locality",
-    "Poincare.Topology.exists_unique_absolute_generator_of_tangent_orientation_locality"
+    "Poincare.Topology.exists_unique_absolute_generator_of_tangent_orientation_locality",
+    "Poincare.Topology.tangent_orientation_locality_of_local_frames",
+    "Poincare.Topology.exists_locally_realized_family_of_tangent_local_frames",
+    "Poincare.Topology.exists_unique_absolute_generator_of_tangent_local_frames"
   ],
   "historical_authorities": [
     {
@@ -1747,24 +1767,25 @@
     "full_topology_suite_accepted": false
   },
   "validation": {
-    "status": "passed for the selected 144-module checkpoint; full topology suite incomplete",
+    "status": "passed for the selected 145-module checkpoint; full topology suite incomplete",
     "date": "2026-09-14",
-    "slurm_job": "13846673",
-    "host": "della-r3c4n2",
-    "request_id": "1789364627887445433-topology_checkpoint-d9ef4819",
-    "input_sha256": "06ee1e097cd84b915fa8eeae039cb76582d9ed32aab10a296a1db2e4db473136",
-    "result_sha256": "a221d158350c69ca0ba74be7f7c4b7207f71678af106a9fd0d63c048e820d362",
-    "artifact_log_sha256": "1c616f8d13e04ae19520c91b17de0539bd730c89a8aa2506f828b292b6d07ded",
-    "source_config_harness_hash_guards": 678,
+    "slurm_job": "13864417",
+    "host": "della-r3c4n16",
+    "request_id": "1789369099859704260-topology_checkpoint-e4a3e8f8",
+    "input_sha256": "f558c51afaac4ffe12028079ee4057e05cf6aca524621dc276b9168180100e89",
+    "result_sha256": "d977b26de07c32b3dcb07af6272a9babc855ddc8201a9637ac63311cf654d849",
+    "artifact_log_sha256": "b3576eba96bb123b9aff6d23f10b22f9cf21e895a919fb54bb99397bb2debb9b",
+    "source_config_harness_hash_guards": 708,
     "freshly_built_modules": [
+      "Poincare.Topology.Manifold.TangentOrientation",
       "Poincare.Topology.Homology.LocalOrientation",
       "Poincare.Topology.Homology.ManifoldFundamentalClass",
       "Poincare"
     ],
     "root_build": "lake --no-cache --iofail build Poincare",
-    "fresh_build_scope": "Both changed leaves and root freshly compiled in 1:39.96, RSS 1981068KiB, zero diagnostics; all142 other preceding leaves unchanged",
-    "exact_public_exports": 177,
-    "public_and_consumer_signature_axiom_pairs": 330,
+    "fresh_build_scope": "Three affected leaves and root freshly compiled in 2:21.07, RSS 1985840KiB, zero diagnostics; all142 other preceding leaves unchanged",
+    "exact_public_exports": 180,
+    "public_and_consumer_signature_axiom_pairs": 339,
     "linters": [
       "unusedArguments",
       "simpNF",
@@ -1779,16 +1800,18 @@
       "Quot.sound"
     ],
     "unexpected_diagnostics": 0,
-    "elapsed_seconds": 209.62855291366577,
-    "peak_summed_rss_bytes": 3337711616,
+    "elapsed_seconds": 262.33983159065247,
+    "peak_summed_rss_bytes": 3367784448,
     "full_topology_suite_accepted": false,
     "consumer_probes": [
-      "All322 preceding signature/axiom pairs reproduced byte-identically",
-      "All6 old public types in the two modified leaves retained",
-      "Actual tangent-chart orientation coordinates and a nonzero negative rank-zero global generator",
-      "Negating the supplied orientation field negates the produced local family under actual chart maps",
-      "Zero model class remains permitted and yields the zero family with actual compact local realization",
-      "All14 common source/original/portable readbacks agree modulo only Set.univ, Module.finrank, Set.MapsTo qualification and whitespace; all axiom readbacks exact"
+      "All330 preceding signature/axiom pairs reproduced byte-identically",
+      "All8 old public types and old proof bodies in the two changed homology leaves retained",
+      "Actual continuous local frames imply orientation locality in fixed native tangent charts",
+      "Orientation negation, opposite-orientation exclusion and concrete Fin0 native frames/locality",
+      "The local family retains the exact supplied model class and all native chart equations",
+      "The global supplied-frame corollary retains every native chart equation and produces a nonzero generator",
+      "Old negative rank-zero, zero model class and orientation-reversal consumers retained",
+      "All23 common source/original/portable types agree modulo only Set.univ, Module.finrank, Set.MapsTo qualification and whitespace; all axiom readbacks exact"
     ]
   },
   "previous_linear_sign_checkpoint_validation": {
@@ -3951,5 +3974,66 @@
     "fresh_build_rss_kib": 1963760,
     "readback_comparison": "All14 common source/original/portable types agree modulo only qualification and whitespace; axioms exact; all322 prior portable pairs exact",
     "original_source_guards": 210
+  },
+  "previous_tangent_local_frame_validation": {
+    "status": "passed for the selected 144-module checkpoint; full topology suite incomplete",
+    "date": "2026-09-14",
+    "slurm_job": "13846673",
+    "host": "della-r3c4n2",
+    "request_id": "1789364627887445433-topology_checkpoint-d9ef4819",
+    "input_sha256": "06ee1e097cd84b915fa8eeae039cb76582d9ed32aab10a296a1db2e4db473136",
+    "result_sha256": "a221d158350c69ca0ba74be7f7c4b7207f71678af106a9fd0d63c048e820d362",
+    "artifact_log_sha256": "1c616f8d13e04ae19520c91b17de0539bd730c89a8aa2506f828b292b6d07ded",
+    "source_config_harness_hash_guards": 678,
+    "freshly_built_modules": [
+      "Poincare.Topology.Homology.LocalOrientation",
+      "Poincare.Topology.Homology.ManifoldFundamentalClass",
+      "Poincare"
+    ],
+    "root_build": "lake --no-cache --iofail build Poincare",
+    "fresh_build_scope": "Both changed leaves and root freshly compiled in 1:39.96, RSS 1981068KiB, zero diagnostics; all142 other preceding leaves unchanged",
+    "exact_public_exports": 177,
+    "public_and_consumer_signature_axiom_pairs": 330,
+    "linters": [
+      "unusedArguments",
+      "simpNF",
+      "synTaut",
+      "checkType"
+    ],
+    "linter_scope": "All imported Poincare declarations and current consumers, including private declarations",
+    "defLemma": "Unavailable in the pinned Mathlib; source declaration-kind checks retained.",
+    "allowed_transitive_axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "unexpected_diagnostics": 0,
+    "elapsed_seconds": 209.62855291366577,
+    "peak_summed_rss_bytes": 3337711616,
+    "full_topology_suite_accepted": false,
+    "consumer_probes": [
+      "All322 preceding signature/axiom pairs reproduced byte-identically",
+      "All6 old public types in the two modified leaves retained",
+      "Actual tangent-chart orientation coordinates and a nonzero negative rank-zero global generator",
+      "Negating the supplied orientation field negates the produced local family under actual chart maps",
+      "Zero model class remains permitted and yields the zero family with actual compact local realization",
+      "All14 common source/original/portable readbacks agree modulo only Set.univ, Module.finrank, Set.MapsTo qualification and whitespace; all axiom readbacks exact"
+    ]
+  },
+  "original_tangent_local_frame_validation": {
+    "source_request_id": "1789368064919272216-topology-8ce18e56",
+    "source_input_sha256": "9a2a99e6ed4ab8caf2dee5f81e2a25c89c05d34a02d580fca532e24eac36b7d3",
+    "source_elapsed_seconds": 59.717857360839844,
+    "source_guards": 223,
+    "source_signature_axiom_pairs": 41,
+    "request_id": "1789369099798197930-topology-473d714f",
+    "input_sha256": "14cfcec225e6ccad689ea4587982a836a8206cc03d41311f1189305357c69c37",
+    "elapsed_seconds": 173.5746386051178,
+    "original_source_guards": 217,
+    "signature_axiom_pairs": 23,
+    "artifact_log_sha256": "a11d7d4df384a438209f75a219fc4007ad0b80110f4e8210271fd73324162709",
+    "fresh_build_elapsed": "2:01.96",
+    "fresh_build_rss_kib": 1984140,
+    "readback_comparison": "All23 common source/original/portable types agree modulo only qualification and whitespace; axioms exact; all330 prior portable pairs exact"
   }
 }

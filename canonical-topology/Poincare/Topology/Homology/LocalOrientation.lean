@@ -1,3 +1,4 @@
+import Poincare.Topology.Manifold.TangentOrientation
 import Poincare.Topology.Homology.LocalDerivativeComparison
 import Poincare.Topology.Homology.LocalCompactHomology
 import Mathlib.LinearAlgebra.Orientation
@@ -479,6 +480,52 @@ theorem exists_locally_realized_family_of_tangent_orientation_locality
       (mem_chart_source E x)).toLinearEquiv.injective
     exact (hν.1 x x (mem_chart_source E x)).trans
       (hmaps x x (mem_chart_source E x)).symm
+
+end Poincare.Topology
+
+end
+
+section
+open Bundle Set
+open scoped Manifold Topology
+
+universe u
+
+namespace Poincare.Topology
+
+open Classical in
+theorem exists_locally_realized_family_of_tangent_local_frames
+    {E M : Type u} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    [TopologicalSpace M] [T2Space M] [ChartedSpace E M] [IsManifold 𝓘(ℝ, E) 1 M]
+    (o : ∀ x : M, Orientation ℝ (TangentSpace 𝓘(ℝ, E) x) (Fin (Module.finrank ℝ E)))
+    (ω : Orientation ℝ E (Fin (Module.finrank ℝ E)))
+    (c : integralLocalHomology (Module.finrank ℝ E) (0 : E))
+    (hframes : ∀ p : M, ∃ U : Set M, IsOpen U ∧ p ∈ U ∧
+      ∃ s : Fin (Module.finrank ℝ E) → (x : M) → TangentSpace 𝓘(ℝ, E) x,
+        ∃ hs : IsLocalFrameOn 𝓘(ℝ, E) E 0 s U,
+          ∀ (x : M) (hx : x ∈ U), (hs.toBasisAt hx).orientation = o x) :
+    ∃! μ : ∀ x : M, integralLocalHomology (Module.finrank ℝ E) x,
+      (∀ (p x : M) (hx : x ∈ (chartAt E p).source),
+        ((integralRelativeHomologyMap (Module.finrank ℝ E)
+          (toContinuousMap (Homeomorph.subRight (chartAt E p x)))
+          (show MapsTo (Homeomorph.subRight (chartAt E p x))
+            ({chartAt E p x}ᶜ : Set E) ({0}ᶜ : Set E) from
+              fun _ hz => sub_ne_zero.mpr hz)).comp
+          (integralLocalHomologyOpenPartialHomeomorphIso (Module.finrank ℝ E)
+            (chartAt E p) x hx).hom.hom) (μ x) =
+          if (Orientation.map _
+          ((trivializationAt E (TangentSpace 𝓘(ℝ, E)) p).continuousLinearEquivAt ℝ x
+            (by simpa only [TangentBundle.trivializationAt_baseSet] using
+              hx)).toLinearEquiv
+          (o x)) = ω then c else -c) ∧
+      ∀ p : M, ∃ L : Set M, IsCompact L ∧ p ∈ interior L ∧
+        ∃ a : integralRelativeHomology (Module.finrank ℝ E) Lᶜ,
+          ∀ (x : M) (hx : x ∈ L),
+            integralRelativeHomologyMap (Module.finrank ℝ E) (ContinuousMap.id M)
+              (show Lᶜ ⊆ ({x}ᶜ : Set M) from
+                compl_subset_compl.mpr (singleton_subset_iff.mpr hx)) a = μ x := by
+  exact exists_locally_realized_family_of_tangent_orientation_locality o ω c
+    (tangent_orientation_locality_of_local_frames o hframes)
 
 end Poincare.Topology
 
