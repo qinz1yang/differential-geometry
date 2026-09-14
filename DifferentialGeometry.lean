@@ -6721,6 +6721,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventExtens
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventRescaling
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EuclideanSimplexGeneratorCriterion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ExteriorRegion
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ExtinctEventModelConstruction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ExtinctObservationNucleus
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ExtinctionFrontierLattice
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ExtinctionFrontierSatisfiability
