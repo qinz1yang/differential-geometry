@@ -5003,6 +5003,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.L
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.LocalRegularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.LocalRegularityFrontier
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.LoopFamilyContinuity
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.LoopFamilyDiskAreaVariation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.MinimalDiskAreaVariation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.OpenConnection
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ParabolicMappingTheory
@@ -5115,6 +5116,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.PlateauUppe
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.PlateauDensityBridge
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.PlateauDensityTransport
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.PlateauFluxComparison
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.PlateauFrontierMinimality
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.RegularClass
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.SpanningArea
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.ShortFamilyContraction
@@ -6678,6 +6680,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.Fundamental
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.FundamentalClassReduction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.FundamentalClassInputReduction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.FundamentalClassGeneratorFrontier
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.FundamentalClassMinimalHypotheses
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.FundamentalClassWellDefined
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.FundamentalClassDuality
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.FundamentalClassDisconnectedObstruction
@@ -9180,6 +9183,7 @@ import DifferentialGeometry.Topology.ThreeManifold.PoincareStandardSumClosed
 import DifferentialGeometry.Topology.ThreeManifold.PoincareStandardSumClosedAssociative
 import DifferentialGeometry.Topology.ThreeManifold.SmoothSchoenflies
 import DifferentialGeometry.Topology.ThreeManifold.SmoothSchoenfliesBallFillingFrontier
+import DifferentialGeometry.Topology.ThreeManifold.SmoothSchoenfliesCore
 import DifferentialGeometry.Topology.ThreeManifold.SmoothSchoenfliesFrontier
 import DifferentialGeometry.Topology.ThreeManifold.SmoothSchoenfliesRoundSphere
 import DifferentialGeometry.Topology.ThreeManifold.SmoothSchoenfliesRoundSphereBall
