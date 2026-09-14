@@ -859,7 +859,7 @@ open Classical in
 theorem exists_direction_into_simplex_of_transverse_submodule {s : Finset E} {x w : E}
     (hx : x ∈ openSimplex s) (hw : w ∉ affineSpan ℝ (s : Set E)) (V : Submodule ℝ E)
     (htrans : vectorSpan ℝ (s : Set E) ⊔ V = ⊤) :
-    ∃ d ∈ V, d ≠ 0 ∧
+    ∃ d ∈ V, d ≠ 0 ∧ w - x - d ∈ vectorSpan ℝ (s : Set E) ∧
       ∀ᶠ t : ℝ in 𝓝 0, 0 < t → x + t • d ∈ openSimplex (insert w s) := by
   have hmem : w - x ∈ vectorSpan ℝ (s : Set E) ⊔ V := htrans ▸ Submodule.mem_top
   obtain ⟨u, hu, d, hd, hud⟩ := Submodule.mem_sup.mp hmem
@@ -879,7 +879,10 @@ theorem exists_direction_into_simplex_of_transverse_submodule {s : Finset E} {x 
   have hray := eventually_mem_openSimplex_insert_of_mem_vectorSpan hx
     (Submodule.neg_mem _ hu) hws
   rw [heq] at hray
-  exact ⟨d, hd, hdne, hray⟩
+  have hproj : w - x - d ∈ vectorSpan ℝ (s : Set E) := by
+    rw [← hud, add_sub_cancel_right]
+    exact hu
+  exact ⟨d, hd, hdne, hproj, hray⟩
 
 open Classical in
 theorem exists_ray_into_transverse_face {s t : Finset E} {x w a : E}
@@ -888,7 +891,7 @@ theorem exists_ray_into_transverse_face {s t : Finset E} {x w a : E}
     (htrans : vectorSpan ℝ (s : Set E) ⊔ vectorSpan ℝ (t : Set E) = ⊤) :
     ∃ d, d ≠ 0 ∧ ∀ᶠ r : ℝ in 𝓝 0, 0 < r →
       x + r • d ∈ openSimplex (insert w s) ∧ x + a + r • d ∈ openSimplex t := by
-  obtain ⟨d, hd, hdne, hs⟩ :=
+  obtain ⟨d, hd, hdne, _, hs⟩ :=
     exists_direction_into_simplex_of_transverse_submodule hx hw (vectorSpan ℝ (t : Set E)) htrans
   have ht := eventually_mem_openSimplex_of_mem_vectorSpan hy hd
   refine ⟨d, hdne, ?_⟩
@@ -1713,5 +1716,356 @@ theorem exists_isPLHomeomorphOn_straighten_two_halfSpaces [FiniteDimensional ℝ
       refine ⟨s + (r / ℓ v) • v, Or.inr ⟨s, hs, r / ℓ v, hrc, rfl⟩, ?_⟩
       rw [hvform s hs _ hrc, div_mul_cancel₀ _ hℓv.ne]
       exact hsw
+
+theorem eventually_mem_halfSpaces_iff_exists_pos_smul_mem [FiniteDimensional ℝ E]
+    {ι : Type*} [Finite ι] (ℓ : ι → E →ₗ[ℝ] ℝ) (b : ι → ℝ) {x : E}
+    (hx : ∀ i, ℓ i x ≤ b i) :
+    ∀ᶠ y in 𝓝 x, (∀ i, ℓ i y ≤ b i) ↔
+      ∃ r : ℝ, 0 < r ∧ ∀ i, ℓ i (x + r • (y - x)) ≤ b i := by
+  have hopen : IsOpen (⋂ i : {j // ℓ j x < b j}, {y | ℓ i.val y < b i.val}) :=
+    isOpen_iInter_of_finite fun i => isOpen_lt (ℓ i.val).continuous_of_finiteDimensional continuous_const
+  have hxin : x ∈ ⋂ i : {j // ℓ j x < b j}, {y | ℓ i.val y < b i.val} :=
+    mem_iInter.mpr fun i => i.property
+  apply Filter.mem_of_superset (hopen.mem_nhds hxin)
+  intro y hy
+  constructor
+  · intro hyall
+    exact ⟨1, one_pos, by simpa only [one_smul, add_sub_cancel] using hyall⟩
+  · rintro ⟨r, hr, hmem⟩ i
+    rcases lt_or_eq_of_le (hx i) with hi | hi
+    · exact (mem_iInter.mp hy ⟨i, hi⟩).le
+    · have hbound := hmem i
+      rw [map_add, map_smul, map_sub, hi] at hbound
+      change b i + r * (ℓ i y - b i) ≤ b i at hbound
+      nlinarith
+
+theorem IsHPolytope.eventually_mem_iff_exists_pos_smul_mem [FiniteDimensional ℝ E]
+    {P : Set E} (hP : IsHPolytope P) {x : E} (hx : x ∈ P) :
+    ∀ᶠ y in 𝓝 x, y ∈ P ↔ ∃ r : ℝ, 0 < r ∧ x + r • (y - x) ∈ P := by
+  obtain ⟨_, ι, hι, ℓ, b, rfl⟩ := hP
+  have := hι
+  exact eventually_mem_halfSpaces_iff_exists_pos_smul_mem ℓ b hx
+
+theorem exists_pos_smul_mem_convexHull_iff_mem_vectorSpan {s : Finset E} {x d : E}
+    (hx : x ∈ openSimplex s) :
+    (∃ r : ℝ, 0 < r ∧ x + r • d ∈ convexHull ℝ (s : Set E)) ↔
+      d ∈ vectorSpan ℝ (s : Set E) := by
+  constructor
+  · rintro ⟨r, hr, hmem⟩
+    have hdir : r • d ∈ vectorSpan ℝ (s : Set E) := by
+      simpa only [direction_affineSpan, vsub_eq_sub, add_sub_cancel_left] using
+        AffineSubspace.vsub_mem_direction (convexHull_subset_affineSpan _ hmem)
+          (convexHull_subset_affineSpan _ (openSimplex_subset_convexHull _ hx))
+    have h := Submodule.smul_mem _ r⁻¹ hdir
+    simpa only [smul_smul, inv_mul_cancel₀ hr.ne', one_smul] using h
+  · intro hd
+    obtain ⟨ε, hε, hball⟩ := Metric.mem_nhds_iff.mp
+      (eventually_mem_openSimplex_of_mem_vectorSpan hx hd)
+    have hpos : 0 < ε / 2 := by positivity
+    have hmem : ε / 2 ∈ ball (0 : ℝ) ε := by
+      simp only [mem_ball, dist_zero_right, Real.norm_eq_abs, abs_of_pos hpos]
+      linarith
+    exact ⟨ε / 2, hpos, openSimplex_subset_convexHull _ (hball hmem)⟩
+
+theorem eventually_mem_convexHull_iff_sub_mem_vectorSpan [FiniteDimensional ℝ E]
+    {s : Finset E} (hs : AffineIndependent ℝ ((↑) : s → E)) {x : E} (hx : x ∈ openSimplex s) :
+    ∀ᶠ y in 𝓝 x, y ∈ convexHull ℝ (s : Set E) ↔ y - x ∈ vectorSpan ℝ (s : Set E) := by
+  have hlocal := (isHPolytope_convexHull_of_affineIndependent s hs).eventually_mem_iff_exists_pos_smul_mem
+    (openSimplex_subset_convexHull _ hx)
+  filter_upwards [hlocal] with y hy
+  exact hy.trans (exists_pos_smul_mem_convexHull_iff_mem_vectorSpan hx)
+
+open Classical in
+theorem exists_pos_smul_mem_convexHull_insert_iff {s : Finset E} {x w d : E}
+    (hx : x ∈ openSimplex s) (hw : w ∉ s) :
+    (∃ r : ℝ, 0 < r ∧ x + r • d ∈ convexHull ℝ ((insert w s : Finset E) : Set E)) ↔
+      ∃ z ∈ vectorSpan ℝ (s : Set E), ∃ t : ℝ, 0 ≤ t ∧ d = z + t • (w - x) := by
+  constructor
+  · rintro ⟨r, hr, hmem⟩
+    rcases exists_combo_of_mem_convexHull_insert hw hmem with hq | ⟨p, hp, c, hc, hc1, hq⟩
+    · refine ⟨0, Submodule.zero_mem _, r⁻¹, (inv_pos.mpr hr).le, ?_⟩
+      have hrd : r • d = w - x := by rw [← hq, add_sub_cancel_left]
+      rw [zero_add, ← hrd, smul_smul, inv_mul_cancel₀ hr.ne', one_smul]
+    · have hpdir : p - x ∈ vectorSpan ℝ (s : Set E) := by
+        simpa only [direction_affineSpan, vsub_eq_sub] using AffineSubspace.vsub_mem_direction
+          (convexHull_subset_affineSpan _ hp)
+          (convexHull_subset_affineSpan _ (openSimplex_subset_convexHull _ hx))
+      have hrd : r • d = c • (p - x) + (1 - c) • (w - x) := by
+        calc
+          r • d = (x + r • d) - x := by abel
+          _ = (w + c • (p - w)) - x := by rw [hq]
+          _ = c • (p - x) + (1 - c) • (w - x) := by module
+      refine ⟨(c / r) • (p - x), Submodule.smul_mem _ _ hpdir,
+        (1 - c) / r, div_nonneg (sub_nonneg.mpr hc1) hr.le, ?_⟩
+      calc
+        d = r⁻¹ • (r • d) := by rw [smul_smul, inv_mul_cancel₀ hr.ne', one_smul]
+        _ = (c / r) • (p - x) + ((1 - c) / r) • (w - x) := by
+          rw [hrd]
+          simp only [smul_add, smul_smul, div_eq_inv_mul]
+  · rintro ⟨z, hz, t, ht, hd⟩
+    rcases eq_or_lt_of_le ht with ht0 | htpos
+    · have hdz : d = z := by rw [← ht0, zero_smul, add_zero] at hd; exact hd
+      obtain ⟨r, hr, hmem⟩ := (exists_pos_smul_mem_convexHull_iff_mem_vectorSpan hx).mpr (hdz ▸ hz)
+      refine ⟨r, hr, convexHull_mono ?_ hmem⟩
+      exact Finset.coe_subset.mpr (Finset.subset_insert _ _)
+    · have hray := eventually_mem_openSimplex_insert_of_mem_vectorSpan hx
+        (Submodule.smul_mem _ t⁻¹ hz) hw
+      obtain ⟨ε, hε, hball⟩ := Metric.mem_nhds_iff.mp hray
+      have hpos : 0 < ε / 2 := by positivity
+      have hmem : ε / 2 ∈ ball (0 : ℝ) ε := by
+        simp only [mem_ball, dist_zero_right, Real.norm_eq_abs, abs_of_pos hpos]
+        linarith
+      have hq := openSimplex_subset_convexHull _ (hball hmem hpos)
+      have hd' : d = t • (w - x + t⁻¹ • z) := by
+        rw [smul_add, smul_smul, mul_inv_cancel₀ htpos.ne', one_smul, add_comm]
+        exact hd
+      refine ⟨(ε / 2) / t, div_pos hpos htpos, ?_⟩
+      rw [hd', smul_smul, div_mul_cancel₀ _ htpos.ne']
+      exact hq
+
+open Classical in
+theorem eventually_mem_convexHull_insert_iff [FiniteDimensional ℝ E] {s : Finset E} {w x : E}
+    (hs : AffineIndependent ℝ ((↑) : ↥(insert w s : Finset E) → E))
+    (hx : x ∈ openSimplex s) (hw : w ∉ s) :
+    ∀ᶠ y in 𝓝 x, y ∈ convexHull ℝ ((insert w s : Finset E) : Set E) ↔
+      ∃ z ∈ vectorSpan ℝ (s : Set E), ∃ t : ℝ, 0 ≤ t ∧ y - x = z + t • (w - x) := by
+  have hxmem : x ∈ convexHull ℝ ((insert w s : Finset E) : Set E) :=
+    convexHull_mono (Finset.coe_subset.mpr (Finset.subset_insert _ _))
+      (openSimplex_subset_convexHull _ hx)
+  have hlocal := (isHPolytope_convexHull_of_affineIndependent (insert w s) hs).eventually_mem_iff_exists_pos_smul_mem hxmem
+  filter_upwards [hlocal] with y hy
+  exact hy.trans (exists_pos_smul_mem_convexHull_insert_iff hx hw)
+
+theorem eventually_mem_space_iff_mem_coface (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
+    {s : Finset E} (hs : s ∈ K.faces) {x : E} (hx : x ∈ openSimplex s) :
+    ∀ᶠ y in 𝓝 x, y ∈ K.space ↔
+      ∃ u ∈ K.faces, s ⊆ u ∧ y ∈ convexHull ℝ (u : Set E) := by
+  obtain ⟨U, hU, hUsub⟩ := mem_nhdsWithin_iff_exists_mem_nhds_inter.mp (closedStar_mem_nhdsWithin K x)
+  filter_upwards [hU] with y hy
+  constructor
+  · intro hyK
+    have hstar := hUsub ⟨hy, hyK⟩
+    obtain ⟨u, ⟨hu, hxu⟩, hyu⟩ := mem_iUnion₂.mp hstar
+    exact ⟨u, hu, face_subset_of_mem_openSimplex_of_mem_convexHull K hs hu hx hxu, hyu⟩
+  · rintro ⟨u, hu, _, hyu⟩
+    exact K.convexHull_subset_space hu hyu
+
+theorem eventually_mem_space_iff_sub_mem_vectorSpan [FiniteDimensional ℝ E]
+    (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces] {s : Finset E} (hs : s ∈ K.faces)
+    (hmax : ∀ u ∈ K.faces, s ⊆ u → u.card ≤ s.card) {x : E} (hx : x ∈ openSimplex s) :
+    ∀ᶠ y in 𝓝 x, y ∈ K.space ↔ y - x ∈ vectorSpan ℝ (s : Set E) := by
+  filter_upwards [eventually_mem_space_iff_mem_coface K hs hx,
+    eventually_mem_convexHull_iff_sub_mem_vectorSpan (K.indep hs) hx] with y hcoface hsimplex
+  constructor
+  · intro hy
+    obtain ⟨u, hu, hsu, hyu⟩ := hcoface.mp hy
+    have hus : u = s := (Finset.eq_of_subset_of_card_le hsu (hmax u hu hsu)).symm
+    exact hsimplex.mp (hus ▸ hyu)
+  · intro hy
+    exact K.convexHull_subset_space hs (hsimplex.mpr hy)
+
+open Classical in
+theorem eventually_mem_space_iff_mem_codimension_one_cone [FiniteDimensional ℝ E]
+    (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces] {s : Finset E} (hs : s ∈ K.faces)
+    (hbound : ∀ u ∈ K.faces, s ⊆ u → u.card ≤ s.card + 1)
+    (hcoface : ∃ w, w ∉ s ∧ insert w s ∈ K.faces) {x : E} (hx : x ∈ openSimplex s) :
+    ∀ᶠ y in 𝓝 x, y ∈ K.space ↔ ∃ w, w ∉ s ∧ insert w s ∈ K.faces ∧
+      ∃ z ∈ vectorSpan ℝ (s : Set E), ∃ r : ℝ, 0 ≤ r ∧ y - x = z + r • (w - x) := by
+  let A : Set E := {w | w ∉ s ∧ insert w s ∈ K.faces}
+  have hAfin : A.Finite := by
+    apply ((Set.toFinite K.faces).biUnion fun u _ => u.finite_toSet).subset
+    intro w hw
+    exact mem_biUnion hw.2 (Finset.mem_insert_self _ _)
+  have : Finite A := hAfin.to_subtype
+  have hall : ∀ᶠ y in 𝓝 x, ∀ w : A,
+      y ∈ convexHull ℝ ((insert (w : E) s : Finset E) : Set E) ↔
+        ∃ z ∈ vectorSpan ℝ (s : Set E), ∃ r : ℝ, 0 ≤ r ∧ y - x = z + r • ((w : E) - x) :=
+    Filter.eventually_all.mpr fun w => eventually_mem_convexHull_insert_iff
+      (K.indep w.property.2) hx w.property.1
+  filter_upwards [eventually_mem_space_iff_mem_coface K hs hx,
+    eventually_mem_convexHull_iff_sub_mem_vectorSpan (K.indep hs) hx, hall] with y hlocal hbase hall
+  constructor
+  · intro hy
+    obtain ⟨u, hu, hsu, hyu⟩ := hlocal.mp hy
+    by_cases hus : u = s
+    · obtain ⟨w, hw, hws⟩ := hcoface
+      refine ⟨w, hw, hws, y - x, hbase.mp (hus ▸ hyu), 0, le_rfl, ?_⟩
+      rw [zero_smul, add_zero]
+    · have hlt : s.card < u.card :=
+        Finset.card_lt_card (Finset.ssubset_iff_subset_ne.mpr ⟨hsu, Ne.symm hus⟩)
+      have hubound := hbound u hu hsu
+      have hcard : s.card + 1 = u.card := by omega
+      obtain ⟨w, hw, hwu⟩ := Finset.exists_eq_insert_iff.mpr ⟨hsu, hcard⟩
+      have hws : insert w s ∈ K.faces := hwu.symm ▸ hu
+      exact ⟨w, hw, hws, (hall ⟨w, hw, hws⟩).mp (hwu.symm ▸ hyu)⟩
+  · rintro ⟨w, hw, hws, hcone⟩
+    exact K.convexHull_subset_space hws ((hall ⟨w, hw, hws⟩).mpr hcone)
+
+theorem not_pos_smul_of_eventually_mem_distinct_openSimplex (K : Geometry.SimplicialComplex ℝ E)
+    {s t : Finset E} (hs : s ∈ K.faces) (ht : t ∈ K.faces) (hst : s ≠ t) {x u v : E}
+    (hu : ∀ᶠ r : ℝ in 𝓝 0, 0 < r → x + r • u ∈ openSimplex s)
+    (hv : ∀ᶠ r : ℝ in 𝓝 0, 0 < r → x + r • v ∈ openSimplex t) :
+    ∀ c : ℝ, 0 < c → v ≠ c • u := by
+  intro c hc heq
+  have htend : Filter.Tendsto (fun r : ℝ => r / c) (𝓝 0) (𝓝 0) := by
+    simpa only [id_eq, zero_div] using (continuous_id.div_const c).tendsto 0
+  have hfalse : ∀ᶠ r : ℝ in 𝓝 0, 0 < r → False := by
+    filter_upwards [hu, htend.eventually hv] with r hru hrv hr
+    have hvt := hrv (div_pos hr hc)
+    rw [heq, smul_smul, div_mul_cancel₀ _ hc.ne'] at hvt
+    exact hst (face_eq_of_mem_openSimplex K hs ht (hru hr) hvt)
+  obtain ⟨ε, hε, hball⟩ := Metric.mem_nhds_iff.mp hfalse
+  have hpos : 0 < ε / 2 := by positivity
+  have hmem : ε / 2 ∈ ball (0 : ℝ) ε := by
+    simp only [mem_ball, dist_zero_right, Real.norm_eq_abs, abs_of_pos hpos]
+    linarith
+  exact hball hmem hpos
+
+theorem halfSpace_eq_of_sub_mem {V : Type*} [AddCommGroup V] [Module ℝ V]
+    (S : Submodule ℝ V) {u v : V} (huv : u - v ∈ S) :
+    {x | ∃ s ∈ S, ∃ r : ℝ, 0 ≤ r ∧ x = s + r • u} =
+      {x | ∃ s ∈ S, ∃ r : ℝ, 0 ≤ r ∧ x = s + r • v} := by
+  ext x
+  constructor
+  · rintro ⟨s, hs, r, hr, rfl⟩
+    refine ⟨s + r • (u - v), S.add_mem hs (S.smul_mem _ huv), r, hr, ?_⟩
+    module
+  · rintro ⟨s, hs, r, hr, rfl⟩
+    refine ⟨s - r • (u - v), S.sub_mem hs (S.smul_mem _ huv), r, hr, ?_⟩
+    module
+
+open Classical in
+theorem exists_isPLHomeomorphOn_linearize_coface_pair [FiniteDimensional ℝ E]
+    (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces] {s : Finset E} (hs : s ∈ K.faces)
+    (hbound : ∀ t ∈ K.faces, s ⊆ t → t.card ≤ s.card + 1) {x a b : E}
+    (hx : x ∈ openSimplex s) (hab : a ≠ b)
+    (hpair : {w | w ∉ s ∧ insert w s ∈ K.faces} = {a, b}) (T : Submodule ℝ E)
+    (hcompl : IsCompl (vectorSpan ℝ (s : Set E)) T) :
+    ∃ (u : E) (h : E → E), u ∈ T ∧ u ≠ 0 ∧ IsPLHomeomorphOn h univ univ ∧ h x = 0 ∧
+      (∀ y, y - x ∈ T ↔ h y ∈ T) ∧
+      ∀ᶠ y in 𝓝 x, y ∈ K.space ↔ h y ∈ vectorSpan ℝ (s : Set E) ⊔ Submodule.span ℝ {u} := by
+  have ha : a ∉ s ∧ insert a s ∈ K.faces := by
+    change a ∈ {w | w ∉ s ∧ insert w s ∈ K.faces}
+    rw [hpair]
+    exact Set.mem_insert a _
+  have hb : b ∉ s ∧ insert b s ∈ K.faces := by
+    change b ∈ {w | w ∉ s ∧ insert w s ∈ K.faces}
+    rw [hpair]
+    simp only [Set.mem_insert_iff, Set.mem_singleton_iff, or_true]
+  obtain ⟨u, huT, hu, hau, hru⟩ := exists_direction_into_simplex_of_transverse_submodule hx
+    (notMem_affineSpan_of_affineIndependent_insert ha.1 (K.indep ha.2)) T hcompl.sup_eq_top
+  obtain ⟨v, hvT, hv, hbv, hrv⟩ := exists_direction_into_simplex_of_transverse_submodule hx
+    (notMem_affineSpan_of_affineIndependent_insert hb.1 (K.indep hb.2)) T hcompl.sup_eq_top
+  have hfaces : insert a s ≠ insert b s := by
+    intro heq
+    have hamem : a ∈ insert b s := heq ▸ Finset.mem_insert_self a s
+    rcases Finset.mem_insert.mp hamem with heq | has
+    · exact hab heq
+    · exact ha.1 has
+  have hnot := not_pos_smul_of_eventually_mem_distinct_openSimplex K ha.2 hb.2 hfaces hru hrv
+  obtain ⟨F, hF, hfix, hFT, hFcone⟩ := exists_isPLHomeomorphOn_straighten_two_halfSpaces
+    hcompl.disjoint huT hvT hu hv hnot
+  let C : E → Set E := fun d =>
+    {q | ∃ z ∈ vectorSpan ℝ (s : Set E), ∃ r : ℝ, 0 ≤ r ∧ q = z + r • d}
+  have hCa : C (a - x) = C u := halfSpace_eq_of_sub_mem _ hau
+  have hCb : C (b - x) = C v := halfSpace_eq_of_sub_mem _ hbv
+  have hlocal : ∀ᶠ y in 𝓝 x, y ∈ K.space ↔ y - x ∈ C u ∪ C v := by
+    filter_upwards [eventually_mem_space_iff_mem_codimension_one_cone K hs hbound ⟨a, ha⟩ hx]
+      with y hy
+    constructor
+    · intro hyK
+      obtain ⟨w, hws, hwface, hcone⟩ := hy.mp hyK
+      have hwm : w ∈ {z | z ∉ s ∧ insert z s ∈ K.faces} := ⟨hws, hwface⟩
+      rw [hpair] at hwm
+      rcases hwm with rfl | hwb
+      · exact Or.inl (hCa ▸ hcone)
+      · have hwb' : w = b := hwb
+        subst w
+        exact Or.inr (hCb ▸ hcone)
+    · intro hyC
+      apply hy.mpr
+      rcases hyC with hyu | hyv
+      · refine ⟨a, ha.1, ha.2, ?_⟩
+        change y - x ∈ C (a - x)
+        rwa [hCa]
+      · refine ⟨b, hb.1, hb.2, ?_⟩
+        change y - x ∈ C (b - x)
+        rwa [hCb]
+  have hFinj : Function.Injective F := fun p q hpq => hF.bijOn.injOn (mem_univ p) (mem_univ q) hpq
+  have hmem : ∀ (P : Set E) (y : E), F y ∈ F '' P ↔ y ∈ P := by
+    intro P y
+    constructor
+    · rintro ⟨z, hz, heq⟩
+      exact hFinj heq ▸ hz
+    · exact fun hy => ⟨y, hy, rfl⟩
+  let h : E → E := fun y => F (y - x)
+  have hh : IsPLHomeomorphOn h univ univ := by
+    have hcomp := (isPLHomeomorphOn_add_const (-x)).trans hF
+    apply hcomp.congr
+    intro y _
+    change F (y - x) = F (y + -x)
+    rw [sub_eq_add_neg]
+  refine ⟨u, h, huT, hu, hh, ?_, ?_, ?_⟩
+  · change F (x - x) = 0
+    rw [sub_self]
+    exact hfix (Submodule.zero_mem _)
+  · intro y
+    change y - x ∈ T ↔ F (y - x) ∈ T
+    have hm := hmem (T : Set E) (y - x)
+    rw [hFT] at hm
+    exact hm.symm
+  · filter_upwards [hlocal] with y hy
+    change (y ∈ K.space) ↔ F (y - x) ∈ vectorSpan ℝ (s : Set E) ⊔ Submodule.span ℝ {u}
+    have hFcone' : F '' (C u ∪ C v) =
+        (vectorSpan ℝ (s : Set E) ⊔ Submodule.span ℝ {u} : Submodule ℝ E) := hFcone
+    have hm := hmem (C u ∪ C v) (y - x)
+    rw [hFcone'] at hm
+    exact hy.trans hm.symm
+
+open Classical in
+theorem exists_isPLHomeomorphOn_linearize_codimension_one [FiniteDimensional ℝ E]
+    (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces] {n : ℕ}
+    (hK : IsCombinatorialManifoldWithBoundary (n + 1) K) {s : Finset E} (hs : s ∈ K.faces)
+    (hcard : s.card = n + 1) {x : E} (hx : x ∈ openSimplex s) (T : Submodule ℝ E)
+    (hcompl : IsCompl (vectorSpan ℝ (s : Set E)) T) :
+    ∃ (u : E) (h : E → E), u ∈ T ∧ u ≠ 0 ∧ IsPLHomeomorphOn h univ univ ∧ h x = 0 ∧
+      (∀ y, y - x ∈ T ↔ h y ∈ T) ∧
+      ((∀ᶠ y in 𝓝 x, y ∈ K.space ↔ h y ∈ vectorSpan ℝ (s : Set E) ⊔ Submodule.span ℝ {u}) ∨
+        ∀ᶠ y in 𝓝 x, y ∈ K.space ↔ ∃ z ∈ vectorSpan ℝ (s : Set E),
+          ∃ r : ℝ, 0 ≤ r ∧ h y = z + r • u) := by
+  have hbound : ∀ t ∈ K.faces, s ⊆ t → t.card ≤ s.card + 1 := by
+    intro t ht _
+    rw [hcard]
+    exact hK.card_le K ht
+  rcases hK.codimension_one_cofaces K hs hcard with ⟨a, ha⟩ | ⟨a, b, hab, habset⟩
+  · have hac : a ∉ s ∧ insert a s ∈ K.faces := by
+      change a ∈ {w | w ∉ s ∧ insert w s ∈ K.faces}
+      rw [ha]
+      exact Set.mem_singleton a
+    obtain ⟨u, huT, hu, hau, _⟩ := exists_direction_into_simplex_of_transverse_submodule hx
+      (notMem_affineSpan_of_affineIndependent_insert hac.1 (K.indep hac.2)) T hcompl.sup_eq_top
+    let C : E → Set E := fun d =>
+      {q | ∃ z ∈ vectorSpan ℝ (s : Set E), ∃ r : ℝ, 0 ≤ r ∧ q = z + r • d}
+    have hCa : C (a - x) = C u := halfSpace_eq_of_sub_mem _ hau
+    have hh : IsPLHomeomorphOn (fun y : E => y - x) univ univ := by
+      simpa only [sub_eq_add_neg] using isPLHomeomorphOn_add_const (-x)
+    refine ⟨u, fun y => y - x, huT, hu, hh, sub_self x, fun _ => Iff.rfl, Or.inr ?_⟩
+    filter_upwards [eventually_mem_space_iff_mem_codimension_one_cone K hs hbound ⟨a, hac⟩ hx]
+      with y hy
+    change (y ∈ K.space) ↔ y - x ∈ C u
+    rw [← hCa]
+    constructor
+    · intro hyK
+      obtain ⟨w, hw, hwface, hcone⟩ := hy.mp hyK
+      have hwm : w ∈ {z | z ∉ s ∧ insert z s ∈ K.faces} := ⟨hw, hwface⟩
+      rw [ha] at hwm
+      have hwa : w = a := hwm
+      subst w
+      exact hcone
+    · intro hcone
+      exact hy.mpr ⟨a, hac.1, hac.2, hcone⟩
+  · obtain ⟨u, h, huT, hu, hh, hhx, hT, hlocal⟩ :=
+      exists_isPLHomeomorphOn_linearize_coface_pair K hs hbound hx hab habset T hcompl
+    exact ⟨u, h, huT, hu, hh, hhx, hT, Or.inl hlocal⟩
 
 end DifferentialGeometry.Topology.PiecewiseLinear
