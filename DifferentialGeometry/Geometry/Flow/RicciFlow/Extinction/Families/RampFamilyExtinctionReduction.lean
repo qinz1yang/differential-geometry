@@ -314,6 +314,14 @@ theorem isShortSegment_of_lt_shortSegmentRadius (g : SmoothRiemannianMetric I Q)
     IsShortSegment g p q (shortSegment g p q) :=
   (Classical.choose_spec (shortSegment_neighborhood (I := I) (Q := Q) g)).2.1 p q h |>.1
 
+omit [CompleteSpace E] [SigmaCompactSpace Q] in
+theorem isShortSegment_shortSegment_self (g : SmoothRiemannianMetric I Q) (p : Q) :
+    IsShortSegment g p p (shortSegment g p p) :=
+  (Classical.choose_spec (shortSegment_neighborhood (I := I) (Q := Q) g)).2.1 p p (by
+    rw [riemannianEDistOf_self]
+    exact ENNReal.ofReal_pos.mpr
+      (Classical.choose_spec (shortSegment_neighborhood (I := I) (Q := Q) g)).1) |>.1
+
 structure PreparedFamilyShortEdgeFrontier (g : SmoothRiemannianMetric I Q) {d : ℕ}
     (e : SmoothLoopEmbedding (I := I) (Q := Q) d)
     (Γ : RegularFamily (I := I) (Q := Q) (Sphere 2)) (eta : ℝ) where

@@ -70,6 +70,27 @@ theorem finiteHorn_frontiers_of_hornOnLimit {X : FlowSequence.{u}} {L : CheegerG
       ScaleCurvatureUpperBound K.horn K.horn.axial K.radii :=
   ⟨K.depth_ok, K.directionNet, K.separatedRays, K.coneRealization, K.curvatureUpper⟩
 
+theorem nonempty_hornOnLimit_of_collarDepthFrontiers {X : FlowSequence.{u}}
+    {L : CheegerGromovLimit X} {H₀ : ℝ}
+    (hnet : ∀ (g : SmoothRiemannianMetric I3 L.space) (H : FiniteHorn g),
+      H₀ ≤ H.collar_depth → ScaleDirectionNet g H)
+    (hsep : ∀ (g : SmoothRiemannianMetric I3 L.space) (H : FiniteHorn g),
+      H₀ ≤ H.collar_depth → ScaleSeparatedEndRays g H)
+    (hcone : ∀ (g : SmoothRiemannianMetric I3 L.space) (H : FiniteHorn g),
+      H₀ ≤ H.collar_depth →
+      ∀ (angles : EndAngles H) (ray : EndRay H.endpoint) (d : ℕ → ℝ),
+        (∀ i, d i ∈ Set.Ioc 0 ray.length) → Filter.Tendsto d Filter.atTop (nhds 0) →
+        ConeDistanceRealization H angles ray d)
+    (horn : FiniteHorn L.metric)
+    (hdepth : max H₀ (hornDepthThreshold L.space) ≤ horn.collar_depth)
+    (hupper : ScaleCurvatureUpperBound horn horn.axial (hornScaleRadii horn)) :
+    Nonempty (HornOnLimit X L) :=
+  nonempty_hornOnLimit_of_finiteHorn_of_frontiers horn
+    ((le_max_right H₀ (hornDepthThreshold L.space)).trans hdepth)
+    (hnet L.metric horn ((le_max_left H₀ (hornDepthThreshold L.space)).trans hdepth))
+    (hsep L.metric horn ((le_max_left H₀ (hornDepthThreshold L.space)).trans hdepth))
+    (hcone L.metric horn ((le_max_left H₀ (hornDepthThreshold L.space)).trans hdepth)) hupper
+
 def FiniteHornEndRealization.{v} (kappa sigma : ℝ) (Phi : ℝ → ℝ) : Prop :=
   ∃ epsStar : ℝ, 0 < epsStar ∧ ∀ eps : ℝ, 0 < eps → eps ≤ epsStar →
     ∀ X : NormalizedSequence.{v} eps kappa sigma Phi,

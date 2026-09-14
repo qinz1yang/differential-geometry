@@ -97,6 +97,11 @@ theorem not_subsequenceCurvatureEscape (L : ConeBlowupLimit X) :
 
 end ConeBlowupLimit
 
+theorem not_nonempty_coneBlowupLimit {eps kappa sigma : ℝ} {Phi : ℝ → ℝ}
+    {X : NormalizedSequence.{u} eps kappa sigma Phi} :
+    ¬ Nonempty (ConeBlowupLimit X) :=
+  fun h => h.elim fun L => L.false
+
 def ConeBlowupLimitRealization.{v} (kappa sigma : ℝ) (Phi : ℝ → ℝ) : Prop :=
   ∃ epsStar : ℝ, 0 < epsStar ∧ ∀ eps : ℝ, 0 < eps → eps ≤ epsStar →
     ∀ X : NormalizedSequence.{v} eps kappa sigma Phi,
@@ -117,6 +122,21 @@ theorem noSubsequenceCurvatureEscapeShell_of_coneBlowupLimitRealization
   obtain ⟨e, he, hb⟩ := h
   exact ⟨e, he, fun eps hp hle X =>
     fun hsub => (hb eps hp hle X hsub).elim fun L => L.not_subsequenceCurvatureEscape hsub⟩
+
+theorem coneBlowupLimitRealization_iff_noSubsequenceCurvatureEscapeShell
+    {kappa sigma : ℝ} {Phi : ℝ → ℝ} :
+    ConeBlowupLimitRealization.{u} kappa sigma Phi ↔
+      NoSubsequenceCurvatureEscapeShell.{u} kappa sigma Phi :=
+  ⟨noSubsequenceCurvatureEscapeShell_of_coneBlowupLimitRealization,
+    fun ⟨e, he, hn⟩ => ⟨e, he, fun eps hp hle X hsub => (hn eps hp hle X hsub).elim⟩⟩
+
+theorem coneLimitEscapeShell_iff_coneBlowupLimitRealization
+    {kappa sigma : ℝ} {Phi : ℝ → ℝ} :
+    ConeLimitEscapeShell.{u} kappa sigma Phi ↔
+      ConeBlowupLimitRealization.{u} kappa sigma Phi :=
+  ⟨fun h => coneBlowupLimitRealization_iff_noSubsequenceCurvatureEscapeShell.mpr
+      (coneLimitEscapeShell_iff_noSubsequenceCurvatureEscapeShell.mp h),
+    coneLimitEscapeShell_of_coneBlowupLimitRealization⟩
 
 theorem boundedAtDistanceShell_of_smallScale_of_coneBlowupLimitRealization
     {kappa sigma : ℝ} {Phi : ℝ → ℝ}
@@ -147,6 +167,29 @@ theorem bounded_curvature_at_distance_of_smallScale_of_coneBlowupLimitRealizatio
         BoundedAtDistance X ∧ TerminalDerivativeBounds X :=
   bounded_curvature_at_distance_of_noSubsequenceCurvatureEscapeShell_and_terminalDerivativeBoundProducer
     hsmall (noSubsequenceCurvatureEscapeShell_of_coneBlowupLimitRealization h) hder
+
+theorem boundedAtDistanceShell_of_modelCurvatureBound_of_coneBlowupLimitRealization
+    {kappa sigma : ℝ} {Phi : ℝ → ℝ}
+    (hmod : ModelCurvatureBoundNearBase.{u, 0, 0} I3 kappa) (hsigma : 0 < sigma)
+    (hPhi : AdmissiblePinchingFunction Phi)
+    (h : ConeBlowupLimitRealization.{u} kappa sigma Phi) :
+    BoundedAtDistanceShell.{u} kappa sigma Phi := by
+  obtain ⟨e, r, he, hr, hb⟩ := exists_pos_curvatureBoundedWithin_of_modelScale hmod
+  exact boundedAtDistanceShell_of_smallScale_of_coneBlowupLimitRealization
+    ⟨e, r, he, hr, fun eps hp hle X => hb eps hp hle sigma hsigma Phi hPhi X⟩ h
+
+theorem bounded_curvature_at_distance_of_modelCurvatureBound_of_coneBlowupLimitRealization
+    {kappa sigma : ℝ} {Phi : ℝ → ℝ}
+    (hmod : ModelCurvatureBoundNearBase.{u, 0, 0} I3 kappa) (hsigma : 0 < sigma)
+    (hPhi : AdmissiblePinchingFunction Phi)
+    (h : ConeBlowupLimitRealization.{u} kappa sigma Phi)
+    (hder : TerminalDerivativeBoundProducer.{u} kappa sigma Phi) :
+    ∃ epsStar : ℝ, 0 < epsStar ∧ ∀ eps : ℝ, 0 < eps → eps ≤ epsStar →
+      ∀ X : NormalizedSequence.{u} eps kappa sigma Phi,
+        BoundedAtDistance X ∧ TerminalDerivativeBounds X := by
+  obtain ⟨e, r, he, hr, hb⟩ := exists_pos_curvatureBoundedWithin_of_modelScale hmod
+  exact bounded_curvature_at_distance_of_smallScale_of_coneBlowupLimitRealization
+    ⟨e, r, he, hr, fun eps hp hle X => hb eps hp hle sigma hsigma Phi hPhi X⟩ h hder
 
 private def emptyConeChart : ConeChart (euclideanMetric (E := ThreeSpace)) (∅ : Set ThreeSpace) where
   surface := EuclideanSpace ℝ (Fin 2)
