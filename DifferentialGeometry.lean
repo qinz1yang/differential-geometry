@@ -47,6 +47,7 @@ import DifferentialGeometry.Analysis.Calculus.Derivative.ImmersionLiftRegularity
 import DifferentialGeometry.Analysis.Calculus.Derivative.IntervalInteriorDeriv
 import DifferentialGeometry.Analysis.Calculus.Derivative.LeftEndpoint
 import DifferentialGeometry.Analysis.Calculus.Derivative.NormSq
+import DifferentialGeometry.Analysis.Calculus.Derivative.Normalize
 import DifferentialGeometry.Analysis.Calculus.Derivative.ParametricIntervalIntegral
 import DifferentialGeometry.Analysis.Calculus.Derivative.Punctured
 import DifferentialGeometry.Analysis.Calculus.Derivative.PuncturedBallDerivativeHomotopy
@@ -3579,6 +3580,7 @@ import DifferentialGeometry.Geometry.Comparison.Variation.Curve.PathLength
 import DifferentialGeometry.Geometry.Comparison.Variation.Curve.PrescribedTangentInOpenSet
 import DifferentialGeometry.Geometry.Comparison.Variation.Curve.SmoothCurveGerm
 import DifferentialGeometry.Geometry.Comparison.Variation.Curve.SpeedDerivative
+import DifferentialGeometry.Geometry.Comparison.Variation.Curve.TangentVariation
 import DifferentialGeometry.Geometry.Comparison.Variation.CurveEnergy
 import DifferentialGeometry.Geometry.Comparison.Variation.EndpointInterpolation
 import DifferentialGeometry.Geometry.Comparison.Variation.EndpointParallel
