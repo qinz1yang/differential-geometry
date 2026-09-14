@@ -3,6 +3,7 @@ import DifferentialGeometry.Analysis.Calculus.AnalyticTransfer
 import DifferentialGeometry.Analysis.Calculus.ApproximatesLinearOn
 import DifferentialGeometry.Analysis.Calculus.Asymptotics.FlatExponentialIntegral
 import DifferentialGeometry.Analysis.Calculus.BumpPerturbation
+import DifferentialGeometry.Analysis.Calculus.ChartContainment
 import DifferentialGeometry.Analysis.Calculus.CompactSupportSection
 import DifferentialGeometry.Analysis.Calculus.Compactness.ArzelaAscoli
 import DifferentialGeometry.Analysis.Calculus.Compactness.BilinearForm
