@@ -1321,6 +1321,7 @@ import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.RankOneSupport
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.RankSpreading
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Reaction
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Scalar.Barrier
+import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Scalar.Bootstrap
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Scalar.Comparison
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Scalar.CompleteHeatComparison
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Scalar.CompleteScalarComparison

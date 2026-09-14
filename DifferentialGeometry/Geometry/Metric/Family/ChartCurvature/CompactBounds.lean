@@ -276,4 +276,94 @@ theorem exists_finite_extChartAt_prod_euclidean_linear_bounds [I.Boundaryless] [
       _ ≤ (a * B * b ^ 2 + 1) * ‖A u‖ * ‖A v‖ := by
         nlinarith only [hprod', mul_nonneg (norm_nonneg (A u)) (norm_nonneg (A v))]
 
+theorem exists_uniform_extChartAt_prod_euclidean_bounds [I.Boundaryless] [CompactSpace M] [T2Space M]
+    {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDimensional ℝ V]
+    {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
+    (A : (E × V) ≃L[ℝ] F) {D : RealTimeInterval} {g : ℝ → SmoothRiemannianMetric I M}
+    (hg : MetricFamilySmoothOn D g) {J : Set ℝ}
+    (hJreg : J ⊆ D.regular) (hJ : UniqueDiffOn ℝ J) (hJc : IsCompact J) :
+    ∃ R C B : ℝ, 0 < R ∧ 1 ≤ C ∧ 0 ≤ B ∧ ∀ x : M × V, ∃ β : M × V,
+      let e := (chartAt (ModelProd H V) β).transHomeomorph
+        (((I.prod 𝓘(ℝ, V)).toHomeomorph).trans A.toHomeomorph)
+      let U := e.symm '' Metric.closedBall (e x) R
+      x ∈ e.source ∧ Metric.closedBall (e x) R ⊆ e.target ∧
+      (∀ t ∈ J, ∀ z ∈ U, ∀ v : TangentSpace (I.prod 𝓘(ℝ, V)) z,
+        Real.sqrt (((g t).prod (euclideanMetric (E := V))).inner z v v) ≤ C *
+          ‖A ((trivializationAt (E × V) (TangentSpace (I.prod 𝓘(ℝ, V))) β).continuousLinearMapAt ℝ z v)‖ ∧
+        ‖A ((trivializationAt (E × V) (TangentSpace (I.prod 𝓘(ℝ, V))) β).continuousLinearMapAt ℝ z v)‖ ≤
+          C * Real.sqrt (((g t).prod (euclideanMetric (E := V))).inner z v v)) ∧
+      (∀ t ∈ J, ∀ z ∈ U, ∀ v w : E × V,
+        ‖A (chartChristoffelContraction ((g t).prod (euclideanMetric (E := V))) β v w
+          (extChartAt (I.prod 𝓘(ℝ, V)) β z))‖ ≤ B * ‖A v‖ * ‖A w‖) := by
+  obtain ⟨ρ, C, B, hρ, hC, hB, S, K, hK, hcover, hnorm, hΓ⟩ :=
+    hg.exists_finite_extChartAt_prod_euclidean_linear_bounds A hJreg hJ hJc
+  let d := ‖A.symm.toContinuousLinearMap‖ + 1
+  let R := ρ / (2 * d)
+  have hd : 0 < d := by dsimp [d]; positivity
+  have hR : 0 < R := by dsimp [R]; positivity
+  have had : ‖A.symm.toContinuousLinearMap‖ ≤ d := by dsimp [d]; linarith
+  refine ⟨R, C + 1, B, hR, by linarith only [hC], hB.le, ?_⟩
+  intro x
+  obtain ⟨p, hp, hxp, hball⟩ := hcover x.1
+  let β : M × V := (p, 0)
+  let e := (chartAt (ModelProd H V) β).transHomeomorph
+    (((I.prod 𝓘(ℝ, V)).toHomeomorph).trans A.toHomeomorph)
+  have heval (z : M × V) : e z = A (extChartAt I p z.1, z.2) := by
+    change A (extChartAt (I.prod 𝓘(ℝ, V)) β z) = _
+    rw [extChartAt_prod]
+    rfl
+  have hsource (z : M × V) : z ∈ e.source ↔ z.1 ∈ (extChartAt I p).source := by
+    change (z.1 ∈ (chartAt H p).source ∧ z.2 ∈ (univ : Set V)) ↔ _
+    simp only [mem_univ, and_true, extChartAt_source]
+  have hcoords : A.symm (e x) = (extChartAt I p x.1, x.2) := by rw [heval, A.symm_apply_apply]
+  have hbase (w : F) (hw : w ∈ Metric.closedBall (e x) R) : (A.symm w).1 ∈ K p := by
+    apply hball
+    change dist (A.symm w).1 (extChartAt I p x.1) ≤ ρ
+    have hwn : ‖w - e x‖ ≤ R := by simpa only [Metric.mem_closedBall, dist_eq_norm] using hw
+    calc
+      dist (A.symm w).1 (extChartAt I p x.1) = ‖(A.symm (w - e x)).1‖ := by
+        rw [map_sub, hcoords, dist_eq_norm]
+        rfl
+      _ ≤ ‖A.symm (w - e x)‖ := norm_fst_le _
+      _ ≤ ‖A.symm.toContinuousLinearMap‖ * ‖w - e x‖ := A.symm.toContinuousLinearMap.le_opNorm _
+      _ ≤ d * R := mul_le_mul had hwn (norm_nonneg _) hd.le
+      _ = ρ / 2 := by dsimp only [R]; field_simp
+      _ ≤ ρ := by linarith only [hρ]
+  have htarget : Metric.closedBall (e x) R ⊆ e.target := by
+    intro w hw
+    have hwt : (A.symm w).1 ∈ (extChartAt I p).target := (hK p hp).2 (hbase w hw)
+    let z : M × V := ((extChartAt I p).symm (A.symm w).1, (A.symm w).2)
+    have hz : z ∈ e.source := (hsource z).mpr ((extChartAt I p).map_target hwt)
+    have heq : e z = w := by
+      rw [heval]
+      change A (extChartAt I p ((extChartAt I p).symm (A.symm w).1), (A.symm w).2) = w
+      rw [(extChartAt I p).right_inv hwt]
+      exact A.apply_symm_apply w
+    rw [← heq]
+    exact e.map_source hz
+  have hregion (z : M × V) (hz : z ∈ e.symm '' Metric.closedBall (e x) R) :
+      z.1 ∈ (extChartAt I p).source ∧ extChartAt I p z.1 ∈ K p := by
+    obtain ⟨w, hw, rfl⟩ := hz
+    have hs := e.map_target (htarget hw)
+    have heq := congrArg (fun v => (A.symm v).1) (e.right_inv (htarget hw))
+    rw [heval, A.symm_apply_apply] at heq
+    refine ⟨(hsource _).mp hs, ?_⟩
+    change extChartAt I p (e.symm w).1 = (A.symm w).1 at heq
+    rw [heq]
+    exact hbase w hw
+  refine ⟨β, (hsource x).mpr hxp, htarget, ?_, ?_⟩
+  · intro t ht z hz v
+    obtain ⟨hzs, hzk⟩ := hregion z hz
+    obtain ⟨hlow, hupp⟩ := hnorm p hp t ht z.1 hzs hzk (0 : V) z.2 v
+    constructor
+    · exact hlow.trans (mul_le_mul_of_nonneg_right (by linarith : C ≤ C + 1) (norm_nonneg _))
+    · exact hupp.trans (mul_le_mul_of_nonneg_right (by linarith : C ≤ C + 1) (Real.sqrt_nonneg _))
+  · intro t ht z hz v w
+    obtain ⟨hzs, hzk⟩ := hregion z hz
+    have hh := hΓ p hp t ht z.1 hzs hzk (0 : V) z.2 v w
+    change ‖A (chartChristoffelContraction ((g t).prod (euclideanMetric (E := V))) β v w
+      (extChartAt (I.prod 𝓘(ℝ, V)) β z))‖ ≤ _
+    rw [extChartAt_prod]
+    exact hh
+
 end DifferentialGeometry.Geometry.Curvature.MetricFamilySmoothOn

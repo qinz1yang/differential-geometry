@@ -184,4 +184,59 @@ theorem physicalLift_arc_mem_chart_closedBall_and_displacement_le (c : ProductCu
     exact hordered hy hz hyz
   · exact hordered hz hy hzy
 
+theorem physicalLift_arc_mem_chart_closedBall_and_time_displacement_le (c : ProductCurve M)
+    (g : ℝ → SmoothRiemannianMetric I M) (lambda : ℝ) (hlambda : 0 < lambda)
+    {J : Set ℝ} (hc : c.IsSolutionOn g lambda J) {s u p q x C K R : ℝ}
+    (hsu : s ≤ u) (hinterval : Icc s u ⊆ J) (hx : x ∈ Icc p q)
+    (hC : 0 ≤ C) (hK : 0 ≤ K) (hR : 0 < R) (A : (E × ℝ) ≃L[ℝ] F) (β : M × ℝ) :
+    let γ := fun y τ => c.physicalLift lambda y τ
+    let e := (chartAt (ModelProd H ℝ) β).transHomeomorph
+      (((I.prod 𝓘(ℝ, ℝ)).toHomeomorph).trans A.toHomeomorph)
+    let V := e.symm '' Metric.closedBall (e (γ x s)) R
+    γ x s ∈ e.source → Metric.closedBall (e (γ x s)) R ⊆ e.target →
+    (∀ τ ∈ Icc s u, ∀ z ∈ V, ∀ v : TangentSpace (I.prod 𝓘(ℝ, ℝ)) z,
+      ‖A ((trivializationAt (E × ℝ) (TangentSpace (I.prod 𝓘(ℝ, ℝ))) β).continuousLinearMapAt
+        ℝ z v)‖ ≤ C * Real.sqrt ((coverProductMetric (g τ) 1 zero_lt_one).inner z v v)) →
+    (∀ τ ∈ Ioc s u, ∀ y ∈ Icc p q, c.curvatureSq g lambda y τ ≤ K / (τ - s)) →
+    C * c.arcLength g lambda p q s < R / 4 → 2 * C * Real.sqrt (K * (u - s)) < R / 4 →
+    (∀ τ ∈ Icc s u, ∀ y ∈ Icc p q, γ y τ ∈ V) ∧
+    (∀ τ ∈ Icc s u, ∀ y ∈ Icc p q,
+      ‖e (γ y τ) - e (γ y s)‖ ≤ 2 * C * Real.sqrt (K * (τ - s))) := by
+  dsimp only
+  intro hstart htarget hupper hcurv hsmall hmove
+  let γ := fun y τ => c.physicalLift lambda y τ
+  let e := (chartAt (ModelProd H ℝ) β).transHomeomorph
+    (((I.prod 𝓘(ℝ, ℝ)).toHomeomorph).trans A.toHomeomorph)
+  let V := e.symm '' Metric.closedBall (e (γ x s)) R
+  let V₀ := e.symm '' Metric.closedBall (e (γ x s)) (R / 4)
+  have hR₀ : 0 < R / 4 := by positivity
+  have hball₀ : Metric.closedBall (e (γ x s)) (R / 4) ⊆ Metric.closedBall (e (γ x s)) R :=
+    Metric.closedBall_subset_closedBall (by linarith only [hR])
+  have hV₀ : V₀ ⊆ V := image_mono hball₀
+  have hVsource : V ⊆ e.source := by
+    rintro z ⟨w, hw, rfl⟩
+    exact e.map_target (htarget hw)
+  have hs : s ∈ J := hinterval ⟨le_rfl, hsu⟩
+  obtain ⟨hinit, hinitdist⟩ := c.physicalLift_arc_mem_chart_closedBall_and_displacement_le
+    g lambda hlambda hc.smooth hc.immersed hx hs hC hR₀ A β hstart (hball₀.trans htarget)
+    (fun y _ hy => hupper s ⟨le_rfl, hsu⟩ (γ y s) (hV₀ hy)) hsmall
+  have hball (y : ℝ) (hy : y ∈ Icc p q) :
+      Metric.closedBall (e (γ y s)) (R / 4) ⊆ Metric.closedBall (e (γ x s)) R := by
+    apply Metric.closedBall_subset_closedBall'
+    have hd := hinitdist y hy x hx
+    rw [dist_eq_norm]
+    linarith only [hd, hsmall, hR]
+  have hpoint (y : ℝ) (hy : y ∈ Icc p q) :
+      MapsTo (γ y) (Icc s u) (e.symm '' Metric.closedBall (e (γ y s)) (R / 4)) ∧
+        ∀ τ ∈ Icc s u, ‖e (γ y τ) - e (γ y s)‖ ≤ 2 * C * Real.sqrt (K * (τ - s)) := by
+    exact c.physicalLift_mem_chart_closedBall_and_displacement_le g lambda hlambda hc hsu hinterval
+      hC hK hR₀ A β y (hVsource (hV₀ (hinit hy))) ((hball y hy).trans htarget)
+      (fun τ hτ hz => hupper τ (Ioo_subset_Icc_self hτ) (γ y τ) (image_mono (hball y hy) hz))
+      (fun τ hτ _ => hcurv τ ⟨hτ.1, hτ.2.le⟩ y hy) hmove
+  constructor
+  · intro τ hτ y hy
+    exact image_mono (hball y hy) ((hpoint y hy).1 hτ)
+  · intro τ hτ y hy
+    exact (hpoint y hy).2 τ hτ
+
 end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening.ProductCurve
