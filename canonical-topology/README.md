@@ -7,6 +7,12 @@ and `Poincare` namespaces. `Poincare.lean` imports every included leaf.
 
 The additions prove:
 
+- a unique family of actual local integral homology classes from a tangent
+  orientation field locally constant in each fixed chart, with all normalized
+  chart-map equations and compact local realizations; and, from a model generator
+  on a nonempty compact connected manifold, the unique absolute generator with
+  those same equations and bijective point restrictions;
+
 - actual cap bijections in every complementary degree on positive-dimensional
   spheres at the existing generator, off-degree sphere cohomology vanishing,
   and all complementary-degree local cap bijections at the existing Euclidean
@@ -1119,3 +1125,21 @@ pass. Consumers include low H0/H1 vanishing, negative generators, nonzero top
 preimages, the sharp zero-cap distinction, arbitrary centers and closed balls
 of every nonnegative radius including zero. General manifold duality, native
 orientation production and the frozen canonical topology contract remain open.
+
+The conditional tangent-orientation class extension retains 144 modules and
+tracks 177 curated added public exports. Source request
+`1789364091124715206-topology-b6c3464d` and original imported request
+`1789364621444397301-topology-d4ad29d5` passed. Final portable request
+`1789364627887445433-topology_checkpoint-d9ef4819` passed in Slurm13846673:
+209.63seconds,678 guards,330 signature/axiom pairs. The two changed leaves and
+root freshly compiled in 1:39.96 with maximum RSS1981068KiB and zero diagnostics.
+All322 earlier pairs were reproduced byte-identically; all142 other leaves are
+unchanged. All14 common source/imported/portable readbacks agree modulo only
+Set.univ, Module.finrank and Set.MapsTo qualification and whitespace, with exact
+axiom readbacks. Stock declaration linters and standard-only transitive axioms
+pass. External consumers include an actual nonzero negative rank-zero generator,
+orientation reversal and zero model class with compact local realization.
+The locality hypothesis concerns tangent orientations in fixed charts, not
+homology classes or locally constant chart functions. Producing a compatible
+native orientation field, outward normalization and general manifold duality
+remain open; the missing frozen contract remains missing.

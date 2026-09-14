@@ -7,34 +7,31 @@ library is `Poincare`; its sources retain the original mathematical namespaces.
 The source baseline is the recovered Chapter 35 commit
 `b45bfa009368c8f5f531e10f4f5280e90079d6ad`, supplemented by recovered working-tree
 proofs with separately recorded provenance. This checkpoint includes 144 modules
-and 175 curated tracked added public exports. Actual cap product with the
-existing positive-dimensional sphere generator is bijective in every
-complementary degree. The existing Euclidean point-complement generator and
-its inverse under the existing bounded star-convex restriction now also give
-bijective actual cap in every complementary degree, in dimensions at least two.
-The old top-degree public signatures are preserved as corollaries. Off-top
-local relative cohomology vanishes. The shared bounded-set cohomology comparison
-works in every degree at any center in any real normed space, without finite
-dimension, closedness, compactness or interior assumptions. All results retain
-arbitrary universes. The generic relative H1 vanishing proof is shared once.
+and 177 curated tracked added public exports. From a tangent orientation field
+whose coordinates are locally constant in each fixed chart, the new theorem
+constructs a unique family of actual local integral homology classes with all
+chart/excision/translation equations and compact local realizations. Any model
+class is permitted, including zero. With a model generator and a nonempty compact
+connected manifold, the second theorem constructs the unique absolute integral
+generator with the same chart equations and bijective point restrictions.
+These are conditional class-production results. The native compatible tangent
+orientation producer, outward normalization and general manifold duality remain open.
 
-Source b87934df passed in 50.53s, with 235 guards and 70 type/axiom pairs.
-Original imported13dfe70d passed in 414.29s275guards80pairs. Portablebdf67fa9
-passed in 488.27s653guards322pairs. All14 affected leaves and root freshly
-compiled in 6:22.87, RSS2023432KiB, zero diagnostics. All307 preceding pairs
-are byte-identical and all139 other earlier leaves unchanged. All57 shared
-source/original/portable types agree modulo only Set.univ, Module.finrank and
-Set.MapsTo qualification and whitespace; axioms are exact. All80 original and
-portable pairs agree under the same comparison. Strict source and stock
-declaration linters and standard-only transitive axioms pass. Pins and deferred
-inputs remain unchanged.
+Source b6c3464d passed in 59.54s, with 217 guards and 32 type/axiom pairs.
+Original imported d4ad29d5 passed in 123.12s, with 210 guards and 14 pairs.
+Portable d9ef4819 passed in 209.63s, with 678 guards and 330 pairs. Both changed
+leaves and the root freshly compiled in 1:39.96, RSS1981068KiB, zero diagnostics.
+All322 preceding pairs are byte-identical and all142 other leaves unchanged.
+All14 common source/original/portable types agree modulo only Set.univ,
+Module.finrank and Set.MapsTo qualification and whitespace; axioms are exact.
+Strict source and stock declaration linters and standard-only transitive axioms
+pass. Consumers check actual model coordinates, a nonzero negative rank-zero
+global generator, reversal of the orientation field and the zero model class
+with actual compact local realization. Pins and deferred inputs remain unchanged.
 
-Consumers check low H0/H1 vanishing, negative generators, nonzero top preimages,
-zero-class cap bijectivity exactly in positive output degree, arbitrary-center
-bounded-support pullback, and closed balls of every nonnegative radius including
-zero. These are sphere and Euclidean local model results. General manifold
-duality, outward orientation normalization, native orientation production and
-the frozen contract remain open.
+The preceding all-degree sphere, Euclidean point and bounded star-convex cap
+bijections retain their exact public statements and proof bodies. Their classes,
+normalizations and degree-zero consumers are unchanged.
 
 The preceding cohomology cover shift, its actual forward/inverse equations,
 and relative-to-absolute comparison in every positive degree are unchanged.

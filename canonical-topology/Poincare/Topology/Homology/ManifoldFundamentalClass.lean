@@ -1,3 +1,4 @@
+import Poincare.Topology.Homology.LocalOrientation
 import Poincare.Topology.Homology.ManifoldCompactHomology
 import Poincare.Topology.Homology.RelativeEmpty
 import Mathlib.Topology.Connected.Clopen
@@ -192,5 +193,129 @@ theorem exists_unique_absolute_generator_of_locally_realized_family
   exact ⟨a, ha, hu,
     absolute_generator_of_local_generators (E := E) n hn a hgena (Classical.arbitrary X),
     integralAbsoluteToRelative_bijective_of_local_generators (E := E) n hn a hgena⟩
+
+end Poincare.Topology
+
+open CategoryTheory Bundle
+open scoped Manifold
+
+namespace Poincare.Topology
+
+open Classical in
+theorem exists_unique_absolute_generator_of_tangent_orientation_locality
+    {E M : Type u} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    [TopologicalSpace M] [T2Space M] [ChartedSpace E M] [IsManifold 𝓘(ℝ, E) 1 M]
+    [CompactSpace M] [PreconnectedSpace M] [Nonempty M]
+    (o : ∀ x : M, Orientation ℝ (TangentSpace 𝓘(ℝ, E) x) (Fin (Module.finrank ℝ E)))
+    (ω : Orientation ℝ E (Fin (Module.finrank ℝ E)))
+    (c : integralLocalHomology (Module.finrank ℝ E) (0 : E))
+    (hc : Function.Bijective (fun k : ℤ => k • c))
+    (hlocal : ∀ p : M, ∃ (U : Set M) (hUs : U ⊆ (chartAt E p).source),
+      IsOpen U ∧ p ∈ U ∧ ∀ (x : M) (hx : x ∈ U),
+        (Orientation.map _
+          ((trivializationAt E (TangentSpace 𝓘(ℝ, E)) p).continuousLinearEquivAt ℝ x
+            (by simpa only [TangentBundle.trivializationAt_baseSet] using
+              (hUs hx))).toLinearEquiv
+          (o x)) =
+          (Orientation.map _
+          ((trivializationAt E (TangentSpace 𝓘(ℝ, E)) p).continuousLinearEquivAt ℝ p
+            (by simpa only [TangentBundle.trivializationAt_baseSet] using
+              (mem_chart_source E p))).toLinearEquiv
+          (o p))) :
+    ∃ a : integralSingularHomology (Module.finrank ℝ E) M,
+      (∀ (p x : M) (hx : x ∈ (chartAt E p).source),
+        ((integralRelativeHomologyMap (Module.finrank ℝ E)
+          (toContinuousMap (Homeomorph.subRight (chartAt E p x)))
+          (show MapsTo (Homeomorph.subRight (chartAt E p x))
+            ({chartAt E p x}ᶜ : Set E) ({0}ᶜ : Set E) from
+              fun _ hz => sub_ne_zero.mpr hz)).comp
+          (integralLocalHomologyOpenPartialHomeomorphIso (Module.finrank ℝ E)
+            (chartAt E p) x hx).hom.hom)
+          (integralAbsoluteToRelative (Module.finrank ℝ E) ({x}ᶜ : Set M) a) =
+            if (Orientation.map _
+          ((trivializationAt E (TangentSpace 𝓘(ℝ, E)) p).continuousLinearEquivAt ℝ x
+            (by simpa only [TangentBundle.trivializationAt_baseSet] using
+              hx)).toLinearEquiv
+          (o x)) = ω then c else -c) ∧
+      (∀ b : integralSingularHomology (Module.finrank ℝ E) M,
+        (∀ (p x : M) (hx : x ∈ (chartAt E p).source),
+          ((integralRelativeHomologyMap (Module.finrank ℝ E)
+          (toContinuousMap (Homeomorph.subRight (chartAt E p x)))
+          (show MapsTo (Homeomorph.subRight (chartAt E p x))
+            ({chartAt E p x}ᶜ : Set E) ({0}ᶜ : Set E) from
+              fun _ hz => sub_ne_zero.mpr hz)).comp
+          (integralLocalHomologyOpenPartialHomeomorphIso (Module.finrank ℝ E)
+            (chartAt E p) x hx).hom.hom)
+            (integralAbsoluteToRelative (Module.finrank ℝ E) ({x}ᶜ : Set M) b) =
+              if (Orientation.map _
+          ((trivializationAt E (TangentSpace 𝓘(ℝ, E)) p).continuousLinearEquivAt ℝ x
+            (by simpa only [TangentBundle.trivializationAt_baseSet] using
+              hx)).toLinearEquiv
+          (o x)) = ω then c else -c) → b = a) ∧
+      Function.Bijective (fun k : ℤ => k • a) ∧
+      ∀ x : M, Function.Bijective
+        (integralAbsoluteToRelative (Module.finrank ℝ E) ({x}ᶜ : Set M)) := by
+  let normalizedChartLocalIso (n : ℕ) (p x : M) (hx : x ∈ (chartAt E p).source) :
+      integralLocalHomology n x ≅ integralLocalHomology n (0 : E) :=
+    integralLocalHomologyOpenPartialHomeomorphIso n (chartAt E p) x hx ≪≫
+      integralRelativeHomologyHomeomorphIso n (Homeomorph.subRight (chartAt E p x))
+        ({chartAt E p x}ᶜ : Set E) {0}ᶜ
+        (fun _ hz => sub_ne_zero.mpr hz)
+        (fun z hz heq => by
+          apply hz
+          change z + chartAt E p x = chartAt E p x at heq
+          exact add_right_cancel (heq.trans (zero_add _).symm))
+  let tangentChartOrientation (p x : M) (hx : x ∈ (chartAt E p).source)
+      (o : Orientation ℝ (TangentSpace 𝓘(ℝ, E) x) (Fin (Module.finrank ℝ E))) :
+      Orientation ℝ E (Fin (Module.finrank ℝ E)) :=
+    Orientation.map _
+      ((trivializationAt E (TangentSpace 𝓘(ℝ, E)) p).continuousLinearEquivAt ℝ x
+        (by simpa only [TangentBundle.trivializationAt_baseSet] using hx)).toLinearEquiv o
+  obtain ⟨μ, ⟨hmaps, hreal⟩, _⟩ :=
+    exists_locally_realized_family_of_tangent_orientation_locality o ω c hlocal
+  have hgen (x : M) : Function.Bijective (fun k : ℤ => k • μ x) := by
+    let e := (normalizedChartLocalIso (Module.finrank ℝ E) x x
+      (mem_chart_source E x)).toLinearEquiv
+    let d := if tangentChartOrientation x x (mem_chart_source E x) (o x) = ω then c else -c
+    have hd : Function.Bijective (fun k : ℤ => k • d) := by
+      dsimp only [d]
+      split_ifs
+      · exact hc
+      · refine ⟨?_, ?_⟩
+        · intro k l h
+          apply neg_injective
+          apply hc.1
+          simpa only [neg_zsmul, zsmul_neg] using h
+        · intro b
+          obtain ⟨k, hk⟩ := hc.2 b
+          exact ⟨-k, by simpa only [neg_zsmul, zsmul_neg, neg_neg] using hk⟩
+    have hmap (k : ℤ) : e (k • μ x) = k • d := by
+      rw [map_zsmul]
+      change k • (normalizedChartLocalIso (Module.finrank ℝ E) x x
+        (mem_chart_source E x)).hom.hom (μ x) = k • d
+      have hcoord : (normalizedChartLocalIso (Module.finrank ℝ E) x x
+          (mem_chart_source E x)).hom.hom (μ x) = d := hmaps x x (mem_chart_source E x)
+      rw [hcoord]
+    refine ⟨?_, ?_⟩
+    · intro k l h
+      apply hd.1
+      change k • d = l • d
+      change k • μ x = l • μ x at h
+      rw [← hmap k, ← hmap l, h]
+    · intro b
+      obtain ⟨k, hk⟩ := hd.2 (e b)
+      exact ⟨k, e.injective ((hmap k).trans hk)⟩
+  obtain ⟨a, ha, hu, hga, hpa⟩ := exists_unique_absolute_generator_of_locally_realized_family
+    (E := E) (Module.finrank ℝ E) le_rfl μ hgen hreal
+  refine ⟨a, ?_, ?_, hga, hpa⟩
+  · intro p x hx
+    rw [ha x]
+    exact hmaps p x hx
+  · intro b hb
+    apply hu b
+    intro x
+    apply (normalizedChartLocalIso (Module.finrank ℝ E) x x
+      (mem_chart_source E x)).toLinearEquiv.injective
+    exact (hb x x (mem_chart_source E x)).trans (hmaps x x (mem_chart_source E x)).symm
 
 end Poincare.Topology
