@@ -4945,6 +4945,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.C
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Continuation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ContinuationFrontier
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ContractibleLoopPerturbation
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.CoordinateTangentVariation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.CoverCovariantDerivative
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.CurvatureLength
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Evolution
