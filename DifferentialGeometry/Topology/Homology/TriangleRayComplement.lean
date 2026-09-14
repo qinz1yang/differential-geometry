@@ -217,4 +217,3 @@ theorem puncturedPlaneRayOverlapSign_apply
       ULift.up (decide (x.val.val.val.down 0 < x.val.val.val.down 1)) := rfl
 
 end DifferentialGeometry.Topology.SimplexDegree
-
