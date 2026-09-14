@@ -18,7 +18,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimension
   {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
 
 omit [I.Boundaryless] in
-private theorem physical_unitTangent_contMDiff (c : ProductCurve M)
+theorem physical_unitTangent_contMDiff (c : ProductCurve M)
     (g : ℝ → SmoothRiemannianMetric I M) (lambda : ℝ) (hlambda : 0 < lambda)
     {J : Set ℝ} (hc : c.SmoothOn (I := I) J) (hi : c.ImmersedOn (I := I) J)
     (t : ℝ) (ht : t ∈ J) :
@@ -44,7 +44,7 @@ private theorem physical_unitTangent_contMDiff (c : ProductCurve M)
   exact congrArg (fun W => (⟨γ x, W⟩ : TangentBundle (I.prod 𝓘(ℝ, ℝ)) (M × ℝ))) heq.symm
 
 omit [I.Boundaryless] in
-private theorem physical_unitTangent_inner_self (c : ProductCurve M)
+theorem physical_unitTangent_inner_self (c : ProductCurve M)
     (g : ℝ → SmoothRiemannianMetric I M) (lambda : ℝ) (hlambda : 0 < lambda)
     {J : Set ℝ} (hc : c.SmoothOn (I := I) J) (hi : c.ImmersedOn (I := I) J)
     (t : ℝ) (ht : t ∈ J) (x : ℝ) :
@@ -68,7 +68,7 @@ private theorem physical_unitTangent_inner_self (c : ProductCurve M)
   rw [hn]
   field_simp
 
-private theorem physical_unitTangent_covariant_norm (c : ProductCurve M)
+theorem physical_unitTangent_covariant_norm (c : ProductCurve M)
     (g : ℝ → SmoothRiemannianMetric I M) (lambda : ℝ) (hlambda : 0 < lambda)
     {J : Set ℝ} (hc : c.SmoothOn (I := I) J) (hi : c.ImmersedOn (I := I) J)
     (t : ℝ) (ht : t ∈ J) (x : ℝ) :
