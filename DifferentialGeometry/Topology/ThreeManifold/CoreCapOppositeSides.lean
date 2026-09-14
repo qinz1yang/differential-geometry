@@ -140,7 +140,7 @@ def SphericalTubeSystem.outwardNormalFirstIsStandardSphereOrientation
       simp)).det
       (Fin.cons (T.outwardVector b z) (Fin.cons (d v) (Fin.cons (d w) ![])))) ↔
       (EuclideanSpace.basisFun (Fin 3) ℝ).toBasis.det
-        (Fin.cons z.1 (Fin.cons (e v) (Fin.cons (e w) ![]))) > 0
+        (Fin.cons z.1 (Fin.cons (e v) (Fin.cons (e w) ![]))) < 0
 
 theorem image_inter_disjoint_of_core_cap_intersection_witness :
     (id : ℝ → ℝ) '' {z : ℝ | z ≠ 0} ∩ Set.range (fun _ : ℝ => (0 : ℝ)) = ∅ :=

@@ -45,7 +45,7 @@ def SmoothCutCapTransition.attachingFrameReversing (X : SmoothCutCapTransition P
       (Subtype.val : Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1 →
         EuclideanSpace ℝ (Fin 3)) (X.attaching b z)
     (EuclideanSpace.basisFun (Fin 3) ℝ).toBasis.det
-        (Fin.cons (X.attaching b z).1 (Fin.cons (e (A v)) (Fin.cons (e (A w)) ![]))) > 0 ↔
+        (Fin.cons (X.attaching b z).1 (Fin.cons (e (A v)) (Fin.cons (e (A w)) ![]))) < 0 ↔
       (EuclideanSpace.basisFun (Fin 3) ℝ).toBasis.det
         (Fin.cons z.1 (Fin.cons
           ((mfderiv (𝓡 2) (𝓡 3)
