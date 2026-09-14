@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProductBackground
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.CurvatureConcentration
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProductSolution
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.IntegralBounds
 import DifferentialGeometry.Analysis.Integration.Periodic
@@ -273,5 +274,68 @@ theorem weighted_total_curvature_le_of_initial_and_sqrt_cutoff_bound
   dsimp only [Q] at hbound
   linarith
 
+
+omit [SigmaCompactSpace M] in
+theorem exists_uniform_curvature_concentration [CompactSpace M]
+    (B : RicciBackground (I := I) (M := M) D a b) :
+    ∃ C : ℝ, B.C ≤ C ∧ ∀ lambda : ℝ, 0 < lambda → ∀ c : ProductCurve M,
+      ∀ J : Set ℝ, UniqueDiffOn ℝ J → c.IsSolutionOn B.family.metric lambda J →
+      ∀ s u K : ℝ, s < u → Icc s u ⊆ Icc a b → Icc s u ⊆ J → 1 ≤ K → u - s ≤ 1 →
+      (∀ x t, t ∈ Ioc s u → c.curvatureSq B.family.metric lambda x t ≤ K / (t - s)) →
+      ∀ p q : ℝ, p ≤ q →
+      1 / (64 * (1 + 64 * (1 + C)) * Real.sqrt (K / (u - s))) ≤ c.arcLength B.family.metric lambda p q u →
+      K / (2 * (u - s)) ≤ c.curvatureSq B.family.metric lambda p u →
+      ∃ v ∈ Icc p q,
+        c.arcLength B.family.metric lambda p v u = 1 / (64 * (1 + 64 * (1 + C)) * Real.sqrt (K / (u - s))) ∧
+        1 / (128 * (1 + 64 * (1 + C))) ≤ c.arcTotalCurvature B.family.metric lambda p v u := by
+  let A : QuotientProductAtlas I M := quotientProductAtlas
+  obtain ⟨C, hC, _, _, hprod⟩ := B.exists_uniform_product_curvature_derivative_bounds A
+  refine ⟨C, hC, ?_⟩
+  intro lambda hlambda c J hJ hc s u K hsu hwindow hinterval hK hlen hk p q hpq harc hpeak
+  let _ := A.charts
+  let _ := A.smoothManifold
+  obtain ⟨D', _, _, hBG⟩ := exists_quotientProduct_ricciBackground_on_regular A B
+  obtain ⟨Bhat, hfamily, _, _, _, hBC⟩ := hBG lambda hlambda
+  have hm : Bhat.family.metric = fun τ => quotientProductMetric A (B.family.metric τ) lambda hlambda :=
+    congrArg (fun G => G.metric) hfamily
+  have hsol : c.map.IsSolutionOn Bhat.family.metric (Icc s u) := by
+    rw [hm]
+    exact (c.isSolutionOn_map A B.family.metric lambda hlambda hJ hc).mono hinterval
+      (fun t ht => (uniqueDiffOn_Icc hsu t ht).uniqueMDiffWithinAt)
+  have hsq (x t : ℝ) (ht : t ∈ Icc s u) :
+      c.map.curvatureSq Bhat.family.metric x t = c.curvatureSq B.family.metric lambda x t := by
+    rw [hm]
+    exact c.map_curvatureSq_eq A B.family.metric lambda hlambda hc.smooth hc.immersed x t (hinterval ht)
+  have hlenEq (p q : ℝ) : c.map.arcLength Bhat.family.metric p q u = c.arcLength B.family.metric lambda p q u := by
+    change (∫ x in p..q, c.map.speed Bhat.family.metric x u) = ∫ x in p..q, c.speed B.family.metric lambda x u
+    apply intervalIntegral.integral_congr
+    intro x hx
+    rw [hm]
+    exact c.map_speed_eq A B.family.metric lambda hlambda hc.smooth x u (hinterval ⟨hsu.le, le_rfl⟩)
+  have htcEq (p q : ℝ) : c.map.arcTotalCurvature Bhat.family.metric p q u = c.arcTotalCurvature B.family.metric lambda p q u := by
+    change (∫ x in p..q, c.map.curvature Bhat.family.metric x u * c.map.speed Bhat.family.metric x u) =
+      ∫ x in p..q, c.curvature B.family.metric lambda x u * c.speed B.family.metric lambda x u
+    apply intervalIntegral.integral_congr
+    intro x hx
+    change Real.sqrt (c.map.curvatureSq Bhat.family.metric x u) * _ = _
+    rw [hsq x u ⟨hsu.le, le_rfl⟩, hm,
+      c.map_speed_eq A B.family.metric lambda hlambda hc.smooth x u (hinterval ⟨hsu.le, le_rfl⟩)]
+    rfl
+  have hC' : Bhat.C ≤ C := hBC.trans_le hC
+  have hDR (x t : ℝ) (ht : t ∈ Icc s u) :
+      DifferentialGeometry.Tensor0SBundle.normSq0S (Bhat.family.metric t) (c.map.lift x t) 5
+        (DifferentialGeometry.Tensor0SBundle.totalNabla0SFun 4 (Bhat.family.connection t) (Bhat.family.rm04 t) (c.map.lift x t)) ≤ C ^ 2 := by
+    rw [hfamily]
+    exact (hprod lambda hlambda t (hwindow ht) (c.map.lift x t)).1
+  have hDDRic (x t : ℝ) (ht : t ∈ Icc s u) :
+      DifferentialGeometry.Tensor0SBundle.normSq0S (Bhat.family.metric t) (c.map.lift x t) 4
+        (DifferentialGeometry.Tensor0SBundle.totalNabla0SFun 3 (Bhat.family.connection t)
+          (DifferentialGeometry.CheegerGromovCompactness.covStep (Bhat.family.metric t) 2 (Bhat.family.ricci t)) (c.map.lift x t)) ≤ C ^ 2 := by
+    rw [hfamily]
+    exact (hprod lambda hlambda t (hwindow ht) (c.map.lift x t)).2
+  obtain ⟨v, hv, heq, htc⟩ := c.map.exists_arcTotalCurvature_ge_of_curvatureSq_le_div Bhat hsu hwindow
+    hsol C K hC' hK hlen (fun x t ht => by rw [hsq x t ⟨ht.1.le, ht.2⟩]; exact hk x t ht)
+    hDR hDDRic hpq (by rwa [hlenEq]) (by rwa [hsq p u ⟨hsu.le, le_rfl⟩])
+  exact ⟨v, hv, (hlenEq p v).symm.trans heq, (htcEq p v).symm ▸ htc⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening.ProductCurve
