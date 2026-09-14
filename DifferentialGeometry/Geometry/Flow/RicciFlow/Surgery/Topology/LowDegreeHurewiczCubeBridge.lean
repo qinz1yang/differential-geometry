@@ -2,7 +2,7 @@ import DifferentialGeometry.Topology.Homology.SphereHurewicz
 import DifferentialGeometry.Topology.Homology.SphereGenerator
 import DifferentialGeometry.Topology.Homology.HurewiczFrontier
 import DifferentialGeometry.Topology.Homotopy.CubeSphereProjection
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.LoopClass
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HurewiczCube
 
 noncomputable section
 
