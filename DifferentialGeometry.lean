@@ -4971,6 +4971,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.L
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.MinimalDiskAreaVariation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.OpenConnection
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ParabolicMappingTheory
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.PhysicalChartContainment
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.PhysicalCoordinates
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.PhysicalLift
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Product
