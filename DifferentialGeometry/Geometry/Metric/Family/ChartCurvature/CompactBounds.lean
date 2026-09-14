@@ -1,4 +1,5 @@
 import DifferentialGeometry.Analysis.Calculus.TimeJet.EndpointJets
+import DifferentialGeometry.Geometry.Metric.Comparison.CompactLowerBound
 import DifferentialGeometry.Geometry.Metric.Family.ChartCurvature.MetricFamilySmoothOn
 import DifferentialGeometry.Topology.Manifold.FiniteChartBalls
 
@@ -75,5 +76,39 @@ theorem exists_finite_extChartAt_jet_bounds [I.Boundaryless] [CompactSpace M]
   refine ⟨max C₁ C₂, hC₁.trans_le (le_max_left _ _), ?_, ?_⟩
   · exact fun p hp i j t ht x hx => (hb₁ ⟨p, hp⟩ i j t ht x hx).trans (le_max_left _ _)
   · exact fun p hp i j l t ht x hx => (hb₂ ⟨p, hp⟩ i j l t ht x hx).trans (le_max_right _ _)
+
+theorem exists_finite_extChartAt_metric_bounds [I.Boundaryless] [CompactSpace M]
+    {D : RealTimeInterval} {g : ℝ → SmoothRiemannianMetric I M}
+    (hg : MetricFamilySmoothOn D g) {J : Set ℝ}
+    (hJreg : J ⊆ D.regular) (hJ : UniqueDiffOn ℝ J) (hJc : IsCompact J) :
+    ∃ ρ C : ℝ, 0 < ρ ∧ 0 < C ∧ ∃ S : Finset M, ∃ K : M → Set E,
+      (∀ p ∈ S, IsCompact (K p) ∧ K p ⊆ (extChartAt I p).target) ∧
+      (∀ q, ∃ p ∈ S, q ∈ (extChartAt I p).source ∧
+        Metric.closedBall (extChartAt I p q) ρ ⊆ K p) ∧
+      (∀ p ∈ S, ∀ t ∈ J, ∀ q ∈ (extChartAt I p).source, extChartAt I p q ∈ K p →
+        ∀ v : TangentSpace I q,
+          Real.sqrt ((g t).inner q v v) ≤ C *
+            ‖(trivializationAt E (TangentSpace I) p).continuousLinearMapAt ℝ q v‖ ∧
+          ‖(trivializationAt E (TangentSpace I) p).continuousLinearMapAt ℝ q v‖ ≤
+            C * Real.sqrt ((g t).inner q v v)) ∧
+      ∀ k : ℕ, ∃ B : ℝ, 0 < B ∧
+        (∀ p ∈ S, ∀ i j t, t ∈ J → ∀ x ∈ K p,
+          ‖iteratedFDeriv ℝ k (chartGramOnE (g t) p i j) x‖ ≤ B) ∧
+        (∀ p ∈ S, ∀ i j l t, t ∈ J → ∀ x ∈ K p,
+          ‖iteratedFDeriv ℝ k (chartChristoffel (g t) p i j l) x‖ ≤ B) := by
+  obtain ⟨ρ, hρ, S, K, hK, hcover, hjets⟩ := exists_finite_extChartAt_jet_bounds hg hJreg hJ hJc
+  obtain ⟨C, hC, hcomp⟩ := hg.exists_chart_norm_comparison_on_compact hJreg hJc
+    (fun p : S => (p : M)) (fun p => K p)
+    (fun p => (hK p p.property).2) (fun p => (hK p p.property).1)
+  refine ⟨ρ, C, hρ, hC, S, K, hK, hcover, ?_, hjets⟩
+  intro p hp t ht q hq hKq v
+  let e := trivializationAt E (TangentSpace I) p
+  have he : q ∈ e.baseSet := by
+    rwa [TangentBundle.trivializationAt_baseSet, ← extChartAt_source (I := I)]
+  have h := hcomp ⟨p, hp⟩ t ht (extChartAt I p q) hKq (e.continuousLinearMapAt ℝ q v)
+  dsimp only at h
+  rw [(extChartAt I p).left_inv hq] at h
+  rw [e.symmL_continuousLinearMapAt he] at h
+  exact h
 
 end DifferentialGeometry.Geometry.Curvature.MetricFamilySmoothOn
