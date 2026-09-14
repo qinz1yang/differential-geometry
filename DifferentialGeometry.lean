@@ -5044,6 +5044,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.R
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.RampUniformExtensionReduction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.RampUniqueness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Ramps
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ResidualFrontier
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.SliceRegularityImmersed
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.TransportedAreaVariation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.SlopeEstimateReduction
@@ -5090,6 +5091,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.Preparat
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.PreparedFamilyFrontier
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.RampAngleWindow
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.RampExistenceReduction
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.RampFamilyExtinctionReduction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.RampFrontierData
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.RampLengthEvolution
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.RampUniformReduction
@@ -5206,6 +5208,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborho
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.AncientConvergenceSubsequence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.AncientExtension
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.AncientExtensionAudit
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.AncientExtensionFrontier
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.AncientExtensionLimitInputs
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.AncientExtensionLocalInputs
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.AncientExtensionReduction
@@ -5249,6 +5252,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborho
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CompleteTriangleEquality
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ConcurrentKernelHessian
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ConcurrentRicciEvolution
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ConeBlowupLimitReduction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ConeChartCoordinates
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ConeKoszul
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ConeLocalMetric
@@ -5273,6 +5277,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborho
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.EntropyCutoff
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.EntropyTestSobolev
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.EscapeFiniteHornLimitRealization
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.EscapeReindexingReduction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.EuclideanSphereSeparation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FarPointSeparatingNeckFrontier
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHornAmbientCollar
@@ -8628,6 +8633,7 @@ import DifferentialGeometry.Topology.Manifold.AddCircle
 import DifferentialGeometry.Topology.Manifold.BallChartPalaisTransport
 import DifferentialGeometry.Topology.Manifold.BallChartScale
 import DifferentialGeometry.Topology.Manifold.BallChartAffine
+import DifferentialGeometry.Topology.Manifold.BallChartCenterAlignment
 import DifferentialGeometry.Topology.Manifold.BallChartModelIsotopy
 import DifferentialGeometry.Topology.Manifold.BallChartStraightening
 import DifferentialGeometry.Topology.Manifold.BallChartStraighteningTube
