@@ -272,7 +272,7 @@ structure SmoothCutCapTransition (P Q D N : OrientedThreeStage.{u}) where
           (Subtype.val : ThreeBall → ThreeSpace) x).toLinearMap hi).symm.trans
           (LinearEquiv.ofBijective
             (mfderiv (𝓡∂ 3) ThreeModel (trace.capping.cap b) x).toLinearMap hj))
-        ((EuclideanSpace.basisFun (Fin 3) ℝ).toBasis.orientation) ≠
+        ((EuclideanSpace.basisFun (Fin 3) ℝ).toBasis.orientation) =
           N.orientation.orientation (trace.capping.cap b x)
   presentation : N.Carrier ≃ₘ⟮ThreeModel, ThreeModel⟯ (Q.Carrier ⊕ D.Carrier)
   presentation_eq : (presentation : N.Carrier → Q.Carrier ⊕ D.Carrier) = trace.presentation
