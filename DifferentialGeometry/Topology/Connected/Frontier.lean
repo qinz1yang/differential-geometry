@@ -1,4 +1,5 @@
 import Mathlib.Topology.Connected.Basic
+import DifferentialGeometry.Topology.Frontier
 
 namespace DifferentialGeometry.Topology
 
@@ -44,5 +45,41 @@ theorem inter_union_frontier_nonempty_of_subset_union_interior
       ⟨x, hxP, hxU⟩
     obtain ⟨y, hyP, hyU⟩ := hout
     exact hyU (interior_subset (hsub hyP))
+
+theorem frontier_union_eq_iUnion_of_isPreconnected
+    {X ι : Type*} [TopologicalSpace X] {A B : Set X} (F : ι → Set X)
+    (hF : ∀ i, IsPreconnected (F i)) (hfront : frontier A = ⋃ i, F i)
+    (hB : frontier B ⊆ interior A) :
+    frontier (A ∪ B) = ⋃ i ∈ {i | Disjoint (F i) (closure B)}, F i := by
+  rw [frontier_union_eq_sdiff_closure_of_frontier_subset_interior hB]
+  have hsub (i : ι) : F i ⊆ frontier A := by
+    rw [hfront]
+    exact subset_iUnion F i
+  have havoid (i : ι) : Disjoint (F i) (frontier B) :=
+    Set.disjoint_left.mpr (fun x hxi hxB ↦ (hsub i hxi).2 (hB hxB))
+  ext x
+  constructor
+  · rintro ⟨hxA, hxB⟩
+    obtain ⟨i, hxi⟩ := mem_iUnion.mp (hfront ▸ hxA)
+    have hdisjoint : Disjoint (F i) (closure B) := by
+      apply Set.disjoint_left.mpr
+      intro y hyi hyB
+      have hyint : y ∈ interior B := by
+        by_contra hy
+        exact Set.disjoint_left.mp (havoid i) hyi ⟨hyB, hy⟩
+      have hin := subset_interior_of_isPreconnected_of_disjoint_frontier
+        (hF i) (havoid i) ⟨y, hyi, hyint⟩
+      exact hxB (interior_subset_closure (hin hxi))
+    exact mem_iUnion₂.mpr ⟨i, hdisjoint, hxi⟩
+  · intro hx
+    obtain ⟨i, hi, hxi⟩ := mem_iUnion₂.mp hx
+    exact ⟨hsub i hxi, fun hxB ↦ Set.disjoint_left.mp hi hxi hxB⟩
+
+theorem frontier_union_eq_iUnion_of_isClosed_of_isPreconnected
+    {X ι : Type*} [TopologicalSpace X] {A B : Set X} (F : ι → Set X)
+    (hF : ∀ i, IsPreconnected (F i)) (hfront : frontier A = ⋃ i, F i)
+    (hclosed : IsClosed B) (hB : frontier B ⊆ interior A) :
+    frontier (A ∪ B) = ⋃ i ∈ {i | Disjoint (F i) B}, F i := by
+  rw [frontier_union_eq_iUnion_of_isPreconnected F hF hfront hB, hclosed.closure_eq]
 
 end DifferentialGeometry.Topology
