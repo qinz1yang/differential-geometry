@@ -147,3 +147,5 @@ import Poincare.LinearAlgebra.Orientation
 import Poincare.Algebra.Pairing
 import Poincare.Topology.Homology.ManifoldLocalCapDuality
 import Poincare.Topology.Homology.OneDimensionalLocalCapDuality
+import Poincare.Topology.Manifold.SphereOrientation
+import Poincare.Topology.Homology.ZeroSphereOrientation

@@ -6,8 +6,34 @@ Its sources retain the original mathematical objects and namespaces.
 
 The recovered Chapter 35 baseline is commit
 `b45bfa009368c8f5f531e10f4f5280e90079d6ad`, supplemented by recovered working-tree
-proofs with separately recorded provenance. This checkpoint includes 146 modules
-and 186 curated tracked added public exports.
+proofs with separately recorded provenance. This checkpoint includes 151 modules
+and 203 curated tracked added public exports.
+
+## Outward sphere orientations and the real zero-sphere boundary
+
+This 151-module checkpoint tracks 203 curated added public exports. The nine
+new public declarations use the existing sphere, tangent, chain and homology
+objects. Two reusable degree-zero vertex laws extend RelativeZero; the actual
+chart/excision vertex equation extends LocalCharts. SphereOrientation contains
+the outward tangent construction, and ZeroSphereOrientation proves its real
+zero-sphere homology normalization. The chart center and tested point remain
+independent. Three private mechanics and three external consumers retain the
+actual maps and nonzero classes.
+
+Source `1789415403088387390-topology-d59cc6b9` passed in 20.69 seconds with 335 guards and 19 signature/axiom pairs. Original imported `1789415898956497386-topology-2f1867f5` passed in 203.72 seconds with 1139 guards and 82 pairs. Portable `1789415899102782476-topology_checkpoint-acf37420` passed in 266.69 seconds with 1427 guards and 393 pairs in Slurm 13879784. All 19 affected leaves and the portable root freshly compiled in 2:46.11, maximum RSS 2,835,528 KiB, with zero diagnostics. All 380 preceding portable and 66 preceding original readback pairs are byte-identical. New public and consumer types agree with the accepted source modulo only qualification and whitespace; transitive axioms are exact and standard-only. Strict source and stock declaration linters pass. All 147 preceding unedited leaves remain unchanged.
+
+Positive-dimensional outward homology normalization, the adjunction sign,
+general integral manifold duality and the missing frozen topology contract
+remain open. This checkpoint does not close the full topology suite.
+
+
+The preceding global-generator and local-cap checkpoints remain available.
+The 149-module layer proves actual top local cap bijections at every generator
+on finite-dimensional real normed spaces and preconnected native-chart
+manifolds, including ranks zero and one. On a compact simply connected
+manifold, the same global class supplies every local cap argument.
+
+The earlier global-generator evidence is preserved below:
 
 Actual top local integral homology now has a generator in every finite-dimensional
 real normed space, including ranks zero and one. On a compact simply connected

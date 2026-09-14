@@ -1,11 +1,18 @@
 # Local homology and global classes from coherent local generators
 
 This separate `PoincareLean` project contains a dependency-closed checkpoint of
-149 Poincare modules. It extends the recovered Chapter 35 source at commit
+151 Poincare modules. It extends the recovered Chapter 35 source at commit
 `b45bfa009368c8f5f531e10f4f5280e90079d6ad` and preserves its mathematical objects
 and `Poincare` namespaces. `Poincare.lean` imports every included leaf.
 
 The additions prove:
+
+- outward tangent orientations on the native unit sphere in every dimension,
+  constructed from the actual tangent inclusion derivative and ambient volume
+  form, with orientation reversal and the positive and negative real endpoints;
+  on the real zero-sphere, the actual boundary class [+1] minus [-1] has the
+  outward sign under point restriction, chart excision and coordinate translation
+  in every fixed native chart;
 
 - bijectivity of the actual top-degree local integral cap product at every local
   generator on finite-dimensional real normed spaces and preconnected manifolds
@@ -1282,3 +1289,21 @@ binder order; transitive axioms agree. Stock declaration linters and strict sour
 checks pass. All 137 preceding unedited leaves retain their exact bytes.
 Outward normalization, general manifold duality and the missing frozen canonical
 topology contract remain open.
+
+
+## Outward sphere orientations and the real zero-sphere boundary
+
+This 151-module checkpoint tracks 203 curated added public exports. The nine
+new public declarations use the existing sphere, tangent, chain and homology
+objects. Two reusable degree-zero vertex laws extend RelativeZero; the actual
+chart/excision vertex equation extends LocalCharts. SphereOrientation contains
+the outward tangent construction, and ZeroSphereOrientation proves its real
+zero-sphere homology normalization. The chart center and tested point remain
+independent. Three private mechanics and three external consumers retain the
+actual maps and nonzero classes.
+
+Source `1789415403088387390-topology-d59cc6b9` passed in 20.69 seconds with 335 guards and 19 signature/axiom pairs. Original imported `1789415898956497386-topology-2f1867f5` passed in 203.72 seconds with 1139 guards and 82 pairs. Portable `1789415899102782476-topology_checkpoint-acf37420` passed in 266.69 seconds with 1427 guards and 393 pairs in Slurm 13879784. All 19 affected leaves and the portable root freshly compiled in 2:46.11, maximum RSS 2,835,528 KiB, with zero diagnostics. All 380 preceding portable and 66 preceding original readback pairs are byte-identical. New public and consumer types agree with the accepted source modulo only qualification and whitespace; transitive axioms are exact and standard-only. Strict source and stock declaration linters pass. All 147 preceding unedited leaves remain unchanged.
+
+Positive-dimensional outward homology normalization, the adjunction sign,
+general integral manifold duality and the missing frozen topology contract
+remain open. This checkpoint does not close the full topology suite.
