@@ -5022,6 +5022,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.P
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProductSolutionIffContinuous
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProductSolutionLift
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProductSolutionReduction
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProductWindowSmoothness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Projection
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProjectionFrontier
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.QuotientProductRicciBackground
@@ -5083,6 +5084,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.RampFron
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.RampLengthEvolution
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.RampUniformReduction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.RampWindowData
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.RampWindowDependence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.ScalarComparison
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.ScalarRescaling
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.ScalarThreshold
@@ -5310,6 +5312,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborho
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.HighCurvatureDerivativeEstimate
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.HighCurvatureDerivativeFrontier
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.HighCurvatureFlowBridge
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.HighCurvatureModelExistenceClean
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.HighCurvatureModelFrontier
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.HighCurvatureModelWitnesses
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.HighCurvatureModels
@@ -5779,6 +5782,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Sphe
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.SphereShortConnector
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.SplitSurfaceAncientGeometry
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.SplitSurfaceKappaSolution
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.StaircaseChartEngine
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.StaircaseCompactnessReduction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.StaircaseEngineAssembly
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.StandardHarnackLimit
@@ -6682,6 +6686,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CapPersiste
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CappingCover
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChartOrientation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChartSimplexBlend
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChartTailHornBridge
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CappedChildPi1
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChildCarrierCollaredStarCover
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChildCarrierCoreCapCoverFrontier
@@ -6769,6 +6774,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.Fundamental
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.GeometricCutoff
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.GeometricCutoffFrontier
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.GeometricCutoffGeometryReduction
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.GeometricCutoffRemainingFields
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HextBoundaryFrameReduction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.History
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryAncestry
@@ -6828,6 +6834,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SlabRescali
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SlabSpatialJets
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SlabTensorContinuity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SlabTerminalConvergence
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SmoothCutCapTransitionInstance
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SphereDiffeomorphismIsotopyConnected
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ConnectedSumChoiceIndependence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ConnectedSumChoiceIndependenceStructures
@@ -8154,6 +8161,7 @@ import DifferentialGeometry.Topology.Homology.ChainSupport
 import DifferentialGeometry.Topology.Homology.ChainSupportCompact
 import DifferentialGeometry.Topology.Homology.ChainsIn
 import DifferentialGeometry.Topology.Homology.ClosedManifold
+import DifferentialGeometry.Topology.Homology.ClosedThreeManifoldH3Duality
 import DifferentialGeometry.Topology.Homology.CochainCones
 import DifferentialGeometry.Topology.Homology.CochainMaps
 import DifferentialGeometry.Topology.Homology.Cochains
@@ -8733,6 +8741,7 @@ import DifferentialGeometry.Topology.Manifold.InverseFunctionTheorem.Parametric
 import DifferentialGeometry.Topology.Manifold.Involution.LocalLift
 import DifferentialGeometry.Topology.Manifold.Involution.QuotientManifold
 import DifferentialGeometry.Topology.Manifold.Involution.QuotientProjection
+import DifferentialGeometry.Topology.Manifold.IsotopyOrientation
 import DifferentialGeometry.Topology.Manifold.LieBracketNaturality
 import DifferentialGeometry.Topology.Manifold.LiftedChartLocalDiffeomorph
 import DifferentialGeometry.Topology.Manifold.LinePatch
