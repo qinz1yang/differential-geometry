@@ -214,21 +214,6 @@ theorem normalized_nonflat_three_shrinker_round
     rw [hric, hinner]
     exact hricciJ (Φ x) ((mfderiv I J (Φ : L.M → L.M) x) v)
 
-theorem normalized_nonflat_three_shrinker_round_or_mass
-    (hdim : Module.finrank ℝ E = 3) (hcomplete : MetricComplete (I := I) L)
-    (hconnected : ConnectedSpace L.M)
-    (hnonflat : ∃ x : L.M, metricScalarAt L.metric x ≠ 0)
-    (hnco : ∀ x : L.M, ∀ (n : ℕ) (c : Fin n → ℝ) (v w : Fin n → TangentSpace I x),
-      0 ≤ ∑ i, ∑ j, c i * c j * metricRm04StandardAt L.metric x (v i) (w i) (w j) (v j))
-    (f : C^∞⟮I, L.M; ℝ⟯) (hsoliton : gradientRicciSoliton L.metric f 1)
-    (hnormal : IsHamiltonNormalizedPotential L.metric f) :
-    (CompactSpace L.M ∧ (∀ x : L.M, metricScalarAt L.metric x = (3 : ℝ) / 2) ∧
-      ∀ x : L.M, ∀ v : TangentSpace I x,
-        ricciTensor L.metric x v v = ((3 / 2 : ℝ) / 3) * L.metric.inner x v v) ∨
-    normalizedShrinkerMass L.metric f = ENNReal.ofReal (2 * Real.exp (-1)) ∨
-    normalizedShrinkerMass L.metric f = ENNReal.ofReal (Real.exp (-1)) := by
-  sorry
-
 theorem normalized_nonflat_three_shrinker_round_or_mass_of_noncompact_mass
     (hdim : Module.finrank ℝ E = 3)
     (hconnected : ConnectedSpace L.M)

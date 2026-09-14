@@ -1,6 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.RoundBackwardSpaceForm
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AsymptoticShrinkerNormalization
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.ShrinkerMassClassification
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.NoncompactShrinkerMassClassification
 
 
 set_option autoImplicit false
@@ -52,7 +53,7 @@ theorem ancientKappaThree_reducedVolume_lower
   let _ : SigmaCompactSpace L.M := L.sigmaCompact
   obtain ⟨hconnected, hnonflat, hnco, f, hsoliton, hnormal, hmass⟩ := hgeometry
   have hmassLower : ENNReal.ofReal (Real.exp (-1)) ≤ normalizedShrinkerMass L.metric f := by
-    rcases normalized_nonflat_three_shrinker_round_or_mass L hdim hcomplete hconnected
+    rcases normalized_nonflat_three_shrinker_classification L hdim hcomplete hconnected
       hnonflat hnco f hsoliton hnormal with hround | hdouble | hsingle
     · obtain ⟨hcompact, hscalar, hEin⟩ := hround
       obtain ⟨hT, D, e, hmetric⟩ :=
