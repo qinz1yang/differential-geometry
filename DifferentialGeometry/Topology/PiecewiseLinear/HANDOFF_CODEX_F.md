@@ -484,3 +484,175 @@ open Classical in theorem IsCombinatorialManifoldWithBoundary.derivedNeighborhoo
   推送 `codex/moise-smoothing`。
 - 保持 `.lake/scratch/AuditF<k>.lean` 递增（下一个是 AuditF18）。
 - 汇报时给出：完成的砖、端点名、审计结果、聚焦检查退出码、未完成项与确切障碍（目标/错误）。
+
+## 9. 砖 6 之后的计划（2026-09-14 晚追加；砖 1–5 已完成，砖 6 收尾中）
+
+### 9.0 砖 6 的收尾方式（F4.3）
+
+Codex 按路线 (a) 已闭合：`upperLink` 球面性、`dualCell`/`splittingDisk` 球性、与图的载体交集、
+`graphDualCell`（顶点胞腔 = 导出邻域限制到 `closedStar v bK`）的覆盖与交集。**未闭合且不要硬做**：
+`graphDualCell K L v` 是 PL 3-球。分析（最大重心坐标刻画，`mem_faceNeighborhood_space_iff`）：
+`C_v = closedStar v K'' ∪ ⋃_{a} T_a`，`T_a` 是沿 `v` 出发的射线、在屋顶盘 `R_a ⊆ ∂(closedStar v K'')` 之上
+的"烟囱"（棱柱）；因此 `C_v` 是球 ⟺ "PL 3-球沿边界上的 2-盘附加棱柱仍是 3-球"，这是计划行 S.5
+（Moise 23.9–23.11）的实例，其标准证明需要 S.4（ℝ³ 的 PL Schoenflies）或正则邻域定理（RS 3.26），
+本树都没有。两条可行路线：
+- (S) 等车道 S 的 S.5（推荐；§32 的消费者 Q 车道在 C、S、H 之后才开工，不急）。
+- (X) 显式坐标拉直：在锥坐标 `(θ, r, t)`（`Λ = lk v bK` 上 `St(a, Λ) = a ∗ lk(a, Λ)` 的极坐标 `(θ, r)`，
+  射线参数 `t`）里写出锥 `v ∗ Λ` 到 `C_v` 的分片仿射同胚（烟囱墙 `{r = r₀(θ), t ∈ [t₀, 1]}` 由顶面
+  一段拉直而来），估计 2k–4k 行，只解决这一实例。
+结论：F4.3 记为 **partial**，剩余项 = "顶点胞腔球性（依赖 S.5）"；Q 车道陈述在 S.5 完成前以
+显式假设 `hcell : ∀ v, {v} ∈ L.faces → IsPLBall 3 (graphDualCell K L v).space` 携带（条件性定理，
+报告中注明），**不用 sorry**。在计划 §8 增加 R8："F4.3 的胞腔球性依赖 S.5；早先行数估计未含此项"。
+砖 6 提交后把上述决定写入计划行 F4.3 的状态列。
+
+### 9.1 砖 7 `LocalManifold.lean` —— F4.2 的局部版本（F6.2 一般情形的前置）
+
+动机：§0.1 要求 A′ 覆盖非紧致 `M₁`（开子集）。非紧 PL 流形 `X` 中紧致集 `C` 的多面体流形邻域只能
+在一个紧致多面体 `Q ⊇ C`（有限个图卡多胞形之并，`exists_pLPiece_biUnion`）内用导出邻域构造，而 `Q`
+的三角剖分 `K` 只在 `Int Q` 内是流形，所以需要 F4.2 只假设"靠近 `L` 处是流形"的版本。现有证明里
+整体假设只在以下地方使用，且都只需要"含该面的某个顶点的 link 是球/球面"：
+`IsCombinatorialManifoldWithBoundary.card_le`（`ManifoldSubdivision.lean`，取面的一个顶点）、
+`.isPLSphere_or_isPLBall_geometricLink`（`BoundaryFaces.lean`，取面的一个顶点）、`.of_isSubdivision`
+（在 `x ∈ openSimplex t` 处用 `t` 的面 link 二分法与 `card_le`；`k > m` 分支用
+`isPLSphere_geometricLink_of_forall_card_le`，其证明经 `starAvoiding_eq_simplexBoundary_of_forall_card_le`
+只需要**包含 `t` 的面**的顶点数上界——先核实，若不是则加一个 `_of_subset` 变体）、
+`IsCombinatorialManifoldWithBoundary.derivedNeighborhood` 与 `upperLink_faces_eq_empty_of_card`
+（`DerivedNeighborhoodManifold.lean`，对与 `V(L')` 相交的 `K'` 面 `e` 用 `card_le` 与面 link 二分法，
+对 `e ⊆ V(L')` 的顶点用 `h.secondDerived`）。
+
+```lean
+open Classical in
+def IsLocallyCombinatorialManifoldWithBoundary (n : ℕ) (K : Geometry.SimplicialComplex ℝ E)
+    (A : Set E) : Prop :=
+  ∀ v, {v} ∈ K.faces → (∃ s ∈ K.faces, v ∈ s ∧ (convexHull ℝ (s : Set E) ∩ A).Nonempty) →
+    IsPLSphere n (SimplicialComplex.geometricLink K {v}).space ∨
+      IsPLBall n (SimplicialComplex.geometricLink K {v}).space
+-- 含义：与 A 相交的每个单形的每个顶点都有好 link（流形维数 n+1）。
+theorem IsCombinatorialManifoldWithBoundary.isLocally (h : … (n+1) K) (A) : IsLocally… n K A
+theorem IsLocallyCombinatorialManifoldWithBoundary.mono (h : … n K A) (hBA : B ⊆ A) : … n K B
+theorem IsLocallyCombinatorialManifoldWithBoundary.card_le (h : … n K A) (hs : s ∈ K.faces)
+    (hsA : (convexHull ℝ ↑s ∩ A).Nonempty) : s.card ≤ n + 2
+theorem IsLocallyCombinatorialManifoldWithBoundary.isPLSphere_or_isPLBall_geometricLink (h) (hs) (hsA)
+    (hcard : s.card = k + 1) (hk : k ≤ n) : IsPLSphere (n - k) (lk K s).space ∨ IsPLBall (n - k) (lk K s).space
+theorem IsLocallyCombinatorialManifoldWithBoundary.of_isSubdivision [Finite K.faces] [Finite K'.faces]
+    (h : … n K A) (hK' : IsSubdivision K' K) : … n K' A
+-- 证明：K' 的顶点 x 落在 K 的某个面 t 的开单形中；x 所在的与 A 相交的 K'-单形 s' ⊆ convexHull ↑t'（细分），
+-- 于是 t' 与 A 相交、t ⊆ t'（`face_subset_of_mem_openSimplex_of_mem_convexHull`），t 的顶点都有好 link；
+-- 其余照抄 `IsCombinatorialManifoldWithBoundary.of_isSubdivision`。
+theorem IsLocallyCombinatorialManifoldWithBoundary.derivedNeighborhood [FiniteDimensional ℝ E]
+    {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces] (L : Geometry.SimplicialComplex ℝ E)
+    (hL : L.faces ⊆ K.faces) (h : IsLocallyCombinatorialManifoldWithBoundary n K L.space) :
+    IsCombinatorialManifoldWithBoundary (n + 1) (PiecewiseLinear.derivedNeighborhood K L)
+-- 证明：照抄 `DerivedNeighborhoodManifold.lean`，把 `h.barycentricSubdivision`/`h.secondDerived`
+-- 换成 `of_isSubdivision` 两次，把 `hK'.card_le`/`hK'.isPLSphere_or_isPLBall_geometricLink` 换成局部版
+-- （与 `V(L')` 相交的面与 `L.space` 相交：`σ̂ ∈ convexHull ↑σ ⊆ L.space`）。
+```
+新文件不改动现有公共定理；`hL` 只在需要 `V(L') ⊆ L.space` 时使用。
+
+### 9.2 砖 8 `ExhaustionGeneral.lean` —— F6.2 一般情形（非紧、第二可数）
+
+```lean
+theorem PLPieceIn.isPLSphere_geometricLink_of_image_mem_nhds [FiniteDimensional ℝ E] [DecidableEq E]
+    {m : ℕ} {X : Type u} [TopologicalSpace X] [ChartedSpace (EuclideanSpace ℝ (Fin (m + 1))) X]
+    [T2Space X] {Y : Set X} (T : PLPieceIn E (m + 1) X Y) {v : E} (hv : {v} ∈ T.complex.faces)
+    (e : OpenPartialHomeomorph X (EuclideanSpace ℝ (Fin (m + 1))))
+    (he : e ∈ atlas (EuclideanSpace ℝ (Fin (m + 1))) X)
+    (hstar : closedStar T.complex v ⊆ T.map ⁻¹' e.source)
+    (hnhds : T.map '' closedStar T.complex v ∈ 𝓝 (T.map v)) :
+    IsPLSphere m (SimplicialComplex.geometricLink T.complex {v}).space
+-- 把 `Combinatorial.lean` 的 `PLPieceIn.isPLSphere_geometricLink`（`Y = univ`）推广：`univ` 只用来得到
+-- `hnhds`。核心仍是 `LinkEuclidean.lean` 的 `isPLSphere_geometricLink_of_mem_nhds`。
+theorem PLPieceIn.image_mem_nhds_of_mem_nhds [FiniteDimensional ℝ E] [T2Space X] {Y : Set X}
+    (T : PLPieceIn E n X Y) {x : E} (hx : x ∈ T.complex.space) (hY : Y ∈ 𝓝 (T.map x)) {A : Set E}
+    (hA : A ∈ 𝓝[T.complex.space] x) : T.map '' A ∈ 𝓝 (T.map x)
+-- 推广 `Exhaustion.lean` 的 `PLPieceIn.image_mem_nhds`（同一证明，最后与 `hY` 取交）。
+theorem exists_pLPiece_of_isCompact [T2Space X] [Nonempty X] [HasGroupoid X (plGroupoid n)]
+    {C U : Set X} (hC : IsCompact C) (hU : IsOpen U) (hCU : C ⊆ U) :
+    ∃ Q : Set X, IsCompact Q ∧ Nonempty (PLPiece n X Q) ∧ C ⊆ interior Q ∧ Q ⊆ U
+-- 每点 x ∈ C 取图卡 `chartAt`、`e.target ∩ e '' (e.source ∩ U)` 内含 `e x` 的小方体 `C_x`（H-多胞形、
+-- `e x` 的邻域），`V x := e.symm '' C_x`；紧致性取有限子覆盖；`exists_pLPiece_biUnion`。
+theorem PLPieceIn.exists_isPolyhedralManifoldWithBoundary_neighborhood_of_subset_interior
+    [FiniteDimensional ℝ E] {m : ℕ} {X : Type u} [TopologicalSpace X]
+    [ChartedSpace (EuclideanSpace ℝ (Fin (m + 1))) X] [T2Space X] {Q : Set X}
+    (T : PLPieceIn E (m + 1) X Q) {C : Set X} (hC : IsCompact C) (hCQ : C ⊆ interior Q) :
+    ∃ P : Set X, IsCompact P ∧ IsPolyhedralManifoldWithBoundary (n := m + 1) (m + 1) P ∧
+      C ⊆ interior P ∧ P ⊆ interior Q
+-- 路线 = `IsCombinatorialManifoldWithBoundary.exists_isSubdivision_neighborhood` 的证明，其中 `O` 取
+-- `T.map ⁻¹' interior Q` 对应的开集（`continuousOn_iff'`），`K'` 细分、`L := restrict K' Q'`（Codex 的内核
+-- 条件保证与 `L.space` 相交的单形整体落在 `O` 内），流形性用砖 7：`IsLocally… m K' L.space` 由
+-- `isPLSphere_geometricLink_of_image_mem_nhds` 在 `O` 内的顶点处给出（`T.map v ∈ interior Q`，
+-- `closedStar` 经 `image_mem_nhds_of_mem_nhds` 是邻域）；然后 `(T.subdivide K' …).restrict N …`。
+theorem exists_isPolyhedralManifoldWithBoundary_neighborhood {m : ℕ} {X : Type u} [TopologicalSpace X]
+    [ChartedSpace (EuclideanSpace ℝ (Fin (m + 1))) X] [T2Space X] [Nonempty X]
+    [HasGroupoid X (plGroupoid (m + 1))] {C U : Set X} (hC : IsCompact C) (hU : IsOpen U) (hCU : C ⊆ U) :
+    ∃ P : Set X, IsCompact P ∧ IsPolyhedralManifoldWithBoundary (n := m + 1) (m + 1) P ∧
+      C ⊆ interior P ∧ P ⊆ U
+theorem exists_exhaustion_of_isOpen {m : ℕ} {X : Type u} [TopologicalSpace X]
+    [ChartedSpace (EuclideanSpace ℝ (Fin (m + 1))) X] [T2Space X] [SecondCountableTopology X]
+    [Nonempty X] [HasGroupoid X (plGroupoid (m + 1))] {U : Set X} (hU : IsOpen U) :
+    ∃ N : ℕ → Set X, (∀ i, IsCompact (N i) ∧
+      IsPolyhedralManifoldWithBoundary (n := m + 1) (m + 1) (N i) ∧
+      N i ⊆ interior (N (i + 1))) ∧ ⋃ i, N i = U
+-- 紧致穷竭：`X` 局部紧（`ChartedSpace.locallyCompactSpace`），开子集 `↥U` 局部紧、第二可数，
+-- Mathlib 实例 `sigmaCompactSpace_of_locallyCompact_secondCountable` 给 `SigmaCompactSpace ↥U`，
+-- `CompactExhaustion.choice ↥U`（字段 `isCompact`、`subset_interior_succ`、`iUnion_eq`），经 `Subtype.val`
+-- 搬回 `X`（`U` 开，子类型内部 = `X` 内部）；递归：`N (i+1)` 取 `N i ∪ C (i+1)` 的多面体流形邻域。
+-- `U = ∅` 或 `X` 空的退化情形单独处理（`PLPieceIn.empty`）。
+```
+完成后把 `Exhaustion.lean` 的紧致版保留为特例，计划行 F6.2 改为 done，并在 E.3 行注明消费的名字。
+
+### 9.3 砖 9 `BoundaryExtension.lean` —— F3.4 的组合边界形式（PL Alexander 技巧）
+
+```lean
+open Classical in
+theorem exists_isPLHomeomorphOn_of_boundaryComplex [FiniteDimensional ℝ E] [FiniteDimensional ℝ F]
+    {n : ℕ} (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
+    (L : Geometry.SimplicialComplex ℝ F) [Finite L.faces]
+    (hK : IsPLBall (n + 1) K.space) (hL : IsPLBall (n + 1) L.space) {g : E → F}
+    (hg : IsPLHomeomorphOn g (boundaryComplex (n + 1) K).space (boundaryComplex (n + 1) L).space) :
+    ∃ G : E → F, IsPLHomeomorphOn G K.space L.space ∧ EqOn G g (boundaryComplex (n + 1) K).space
+```
+路线：`hK`、`hL` 给 `f₁ : stdSimplex → K.space`、`f₂`；`boundaryComplex_space_of_isPLHomeomorphOn_stdSimplex`
+（`BoundaryOfBall.lean`）把两个边界复形空间写成 `f_i '' (simplexBoundary (stdVertices n) _).space`；
+`h := invFunOn f₂ _ ∘ g ∘ f₁` 是模型边界到自身的 PLH；`StdSimplexCone.lean`："标准单形 = 中心对其边界
+的锥"，`simplexBoundary` 是 `IsConeBase`；`exists_isPLHomeomorphOn_coneComplex` 把 `h` 延拓为
+`H : stdSimplex → stdSimplex`，在边界上等于 `h`；`G := f₂ ∘ H ∘ invFunOn f₁ _`，用 `IsPLHomeomorphOn.trans`
+与 `.congr`。消费者：S.7、P.2（`n = 1`）、后续所有"边界同胚延拓到胞腔"。计划行 F3.4 改为
+"done（组合边界形式）；`frontier` 形式待 E.0 不变域后由 S.1 给出"。
+
+### 9.4 砖 10–11：车道 S 前半开工与 F4.3 收尾（依赖顺序 P.1 → S.5 → F4.3 胞腔球性）
+
+- 砖 10 = P.1（多边形 Schoenflies，Moise 3.6/5.3）：`theorem isPLBall_of_isPLSphere_one {J : Set (EuclideanSpace ℝ (Fin 2))}
+  (hJ : IsPLSphere 1 J) : ∃ D, IsPLBall 2 D ∧ (∂D = J) ∧ Bornology.IsBounded D`（边界用砖 9 的组合边界，
+  或 `frontier`——二者在 ℝ² 中等价需要 S.1 型论证，先用组合边界）。路线按 Moise §3 组合证明：多边形有
+  对角线（§3.4 型引理，用本树 `Topology/PlanarJordan/*` 的分离性质）、沿对角线切成两个更小多边形归纳、
+  "两个 PL 2-盘沿公共边界弧并起来是 PL 2-盘"（用砖 9 的 `n = 1` 实例 + "PL 1-球面去掉开弧是弧"的组合
+  引理）。不依赖 vendored 拓扑 Schoenflies。估计 2k–4k 行。
+- 砖 11 = S.5-lite：`isPLBall_union_of_isPLBall_inter`（两个 PL 3-球沿边界 2-盘之并是 3-球）。Moise 的证明
+  用 S.4；若 S.4 尚远，可先做 (X) 路线的显式实例仅供 F4.3。二者之一完成后补 `isPLBall_graphDualCell`
+  并把 Q 车道的 `hcell` 假设去掉。
+
+### 9.5 砖 12–13：F5.1 / F5.2 一般位置（计划 R2）
+
+先定表示再推广，样板取 §26.6（B.6，最简单的曲面对情形）：
+- 表示：`S₁ S₂ ⊆ EuclideanSpace ℝ (Fin 3)` 紧致多面体 2-流形（`IsPolyhedron` + 三角剖分是组合 2-流形带边）；
+  结论对象"横截的有限多边形/折线之并"用 1 维组合流形 `IsCombinatorialManifoldWithBoundary 1` 陈述。
+- 机制：把 `S₁` 的三角剖分顶点做微小通用扰动（顶点映射的 `simplicialImage`；小扰动保持仿射无关与复形
+  公理需要专门引理），扰动量避开有限个"坏"仿射子空间（Mathlib：真子空间 Lebesgue 测度零、
+  `MeasureTheory.Measure.addHaar_submodule` 型引理 + 平移；开球测度正），得到分片仿射同胚 `h`（在给定闭集外
+  恒同、`ε`-接近恒同）；横截性 ⟹ 每对三角形交于线段 ⟹ 交集是 1 维组合流形。
+- F5.2（奇异 2-胞腔正规形式）复用同一扰动引理，多出"至多 2 对 1"的奇点集分析（§25 L2 前言）。
+估计 6k–10k + 4k–8k；这是 F 车道最后的大项，做完后 F 车道只剩 F4.3 的 S.5 依赖项。
+
+### 9.6 可并行/待用户决定
+
+- E.0（D6 不变域移植，`theorem invariance_of_domain_open_map` 与流形版）：树里目前没有不变域，独立于 F，
+  可交给第二个 worker；导入源须先 `#print axioms`。
+- 车道 H 开工前的 R3 决定（单纯链 vs 本库奇异同调）：本车道已用本库奇异同调的 Euler 示性数桥
+  （`IsPLBall.not_isPLSphere`），建议 H 也走奇异同调 + `Homology/Subdivision*` 的比较素材；需用户确认。
+- 车道 S 的 S.1（`Bd M = Fr M`）需要 E.0；S.2–S.4 是 §17，与 F5.1 的平面族变体互相依赖：F5.1 先做。
+
+### 9.7 顺序
+
+砖 6 收尾 → 砖 7 → 砖 8（F6.2 done）→ 砖 9（F3.4 done）→ 砖 10（P.1）→ 砖 12（F5.1）→ 砖 13（F5.2）
+→ 砖 11（S.5-lite 或 (X)）→ F4.3 done。E.0 随时可并行。每砖闭环与记录规则同 §0、§7。
