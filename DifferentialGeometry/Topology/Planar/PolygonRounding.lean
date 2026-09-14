@@ -1,3 +1,4 @@
+import DifferentialGeometry.Topology.Planar.CornerRounding
 import DifferentialGeometry.Topology.Planar.PolygonIsotopy
 import Mathlib.Geometry.Manifold.Diffeomorph
 import DifferentialGeometry.External.ClassificationOfSurfaces.PrePolygonDeletion
@@ -550,11 +551,13 @@ private theorem PrePolygon.regular_frontier_of_finite_replacement
     exact ⟨L ∩ V, G, hL.inter hV, ⟨hpL, hpV⟩, hG, hGreg,
       fun q hq => ⟨hweak q hq, hnew q hq⟩⟩
 
-theorem PrePolygon.exists_finite_compact_vertex_rounding
+theorem PrePolygon.exists_normalized_finite_compact_vertex_rounding
     {m : ℕ} (P : PrePolygon m) (O : ZMod (m + 3) → Set Plane)
     (hO : ∀ i, IsOpen (O i)) (hiO : ∀ i, P.vertex i ∈ O i) :
     ∃ (e : ZMod (m + 3) → Plane ≃ᵃ[ℝ] Plane)
-      (U : ZMod (m + 3) → Set Plane) (d σ ε R : ZMod (m + 3) → ℝ),
+      (U : ZMod (m + 3) → Set Plane) (d σ ε R r : ZMod (m + 3) → ℝ),
+      (∀ i, 0 < r i ∧ e i (P.vertex (i - 1)) = Plane.mk (-1) 0 ∧
+        e i (P.vertex (i + 1)) = Plane.mk (r i) (d i * r i)) ∧
       (∀ i, IsOpen (U i) ∧ P.vertex i ∈ U i ∧ U i ⊆ O i ∧
         e i (P.vertex i) = 0 ∧ (d i = 0 ∨ d i = 1) ∧
         (σ i = -1 ∨ σ i = 1) ∧
@@ -578,7 +581,7 @@ theorem PrePolygon.exists_finite_compact_vertex_rounding
         ∀ q ∈ V, (q ∈ D' ↔ 0 ≤ G q) ∧
           (q ∈ interior D' ↔ 0 < G q) ∧ (q ∈ frontier D' ↔ G q = 0) := by
   classical
-  choose e A _ d σ hA _ hiA _ hd hσ he0 _ _ hstraight hside using
+  choose e A r d σ hA _ hiA hr hd hσ he0 heprev henext hstraight hside using
     (fun i => P.exists_affine_vertex_graph_sides i)
   obtain ⟨U, hU, hdisj⟩ := exists_pairwise_disjoint_open_neighborhoods P.vertex P.vertex_inj
     (fun i => A i ∩ O i) (fun i => (hA i).inter (hO i)) (fun i => ⟨hiA i, hiO i⟩)
@@ -615,7 +618,8 @@ theorem PrePolygon.exists_finite_compact_vertex_rounding
     (fun i => isClosed_le continuous_const (hH i).continuous) hNK hKU hdisj heq
   have hsides (i) := regular_region_sides_of_local_eq hD'.isClosed (hU i).1
     (hH i).continuous (fun p _ _ => hreg i p) (hlocal i)
-  refine ⟨e, U, d, σ, ε, R, ?_, hdisj, ?_, hD', hout,
+  refine ⟨e, U, d, σ, ε, R, r, fun i => ⟨hr i, heprev i, henext i⟩,
+    ?_, hdisj, ?_, hD', hout,
     fun i => ⟨hH i, hreg i, fun p hp => ⟨hlocal i p hp, hsides i p hp⟩⟩, ?_⟩
   · exact fun i => ⟨(hU i).1, (hU i).2.1,
       fun p hp => ((hU i).2.2 hp).2, hea i, hd i, hσ i, hstraight i, hε i, hεR i,
@@ -623,6 +627,38 @@ theorem PrePolygon.exists_finite_compact_vertex_rounding
   · exact fun i => ⟨(hround i).1, hN i, hK i, hKU i⟩
   · exact P.regular_frontier_of_finite_replacement hD'.isClosed U K H
       (fun i => (hU i).1) (fun i => (hU i).2.1) hK hKU hH hreg hlocal hout
+
+
+theorem PrePolygon.exists_finite_compact_vertex_rounding
+    {m : ℕ} (P : PrePolygon m) (O : ZMod (m + 3) → Set Plane)
+    (hO : ∀ i, IsOpen (O i)) (hiO : ∀ i, P.vertex i ∈ O i) :
+    ∃ (e : ZMod (m + 3) → Plane ≃ᵃ[ℝ] Plane)
+      (U : ZMod (m + 3) → Set Plane) (d σ ε R : ZMod (m + 3) → ℝ),
+      (∀ i, IsOpen (U i) ∧ P.vertex i ∈ U i ∧ U i ⊆ O i ∧
+        e i (P.vertex i) = 0 ∧ (d i = 0 ∨ d i = 1) ∧
+        (σ i = -1 ∨ σ i = 1) ∧
+        (d i = 0 ↔ Plane.det (P.vertex (i - 1) - P.vertex i)
+          (P.vertex (i + 1) - P.vertex i) = 0) ∧ 0 < ε i ∧ 3 * ε i < R i ∧
+        ∀ p ∈ U i, p ∈ closure (inside P.carrier) ↔
+          0 ≤ σ i * ((e i p) 1 - d i * max ((e i p) 0) 0)) ∧
+      (Pairwise fun i j => Disjoint (U i) (U j)) ∧
+      let N := fun i => e i ⁻¹' ball (0 : Plane) (R i)
+      let K := fun i => e i ⁻¹' closedBall (0 : Plane) (R i)
+      let H := fun i p => σ i * ((e i p) 1 - d i * Real.smoothMax (ε i) ((e i p) 0) 0)
+      let D := closure (inside P.carrier)
+      let D' := (D \ ⋃ i, N i) ∪ ⋃ i, K i ∩ {p | 0 ≤ H i p}
+      (∀ i, P.vertex i ∈ N i ∧ IsOpen (N i) ∧ IsCompact (K i) ∧ K i ⊆ U i) ∧
+      IsCompact D' ∧ (∀ p ∉ ⋃ i, K i, p ∈ D' ↔ p ∈ D) ∧
+      (∀ i, ContDiff ℝ ∞ (H i) ∧ (∀ p, fderiv ℝ (H i) p ≠ 0) ∧
+        ∀ p ∈ U i, (p ∈ D' ↔ 0 ≤ H i p) ∧
+          (p ∈ interior D' ↔ 0 < H i p) ∧ (p ∈ frontier D' ↔ H i p = 0)) ∧
+      ∀ p ∈ frontier D', ∃ (V : Set Plane) (G : Plane → ℝ),
+        IsOpen V ∧ p ∈ V ∧ ContDiff ℝ ∞ G ∧ (∀ q, fderiv ℝ G q ≠ 0) ∧
+        ∀ q ∈ V, (q ∈ D' ↔ 0 ≤ G q) ∧
+          (q ∈ interior D' ↔ 0 < G q) ∧ (q ∈ frontier D' ↔ G q = 0) := by
+  obtain ⟨e, U, d, σ, ε, R, _, _, hrest⟩ :=
+    P.exists_normalized_finite_compact_vertex_rounding O hO hiO
+  exact ⟨e, U, d, σ, ε, R, hrest⟩
 
 end Schoenflies
 
@@ -2269,6 +2305,119 @@ theorem PrePolygon.exists_prescribed_rounding_isotopy_of_one_edge_free_triangle
     hD₂, hV₂, hKV₂, hV₂W, hsides₂, houtside, hraw₂, hliteral, hretained,
     hpD₂, hnonemptyD₂, hregular₂,
     hE₀, hsignE, hrawE, hnearE, houtE, hliteralE⟩
+
+end Schoenflies
+
+end
+
+section
+open Set Metric
+open scoped ContDiff Manifold
+
+namespace Schoenflies
+
+theorem PrePolygon.exists_normalized_compatible_finite_vertex_roundings
+    {m : ℕ} (P : PrePolygon m) (O : ZMod (m + 3) → Set Plane)
+    (hO : ∀ i, IsOpen (O i)) (hiO : ∀ i, P.vertex i ∈ O i) :
+    ∃ (e : ZMod (m + 3) → Plane ≃ᵃ[ℝ] Plane)
+      (U : ZMod (m + 3) → Set Plane) (d σ δ R r : ZMod (m + 3) → ℝ),
+      (∀ i, 0 < r i ∧ e i (P.vertex (i - 1)) = Plane.mk (-1) 0 ∧
+        e i (P.vertex (i + 1)) = Plane.mk (r i) (d i * r i)) ∧
+      (∀ i, IsOpen (U i) ∧ P.vertex i ∈ U i ∧ U i ⊆ O i ∧
+        e i (P.vertex i) = 0 ∧ (d i = 0 ∨ d i = 1) ∧
+        (σ i = -1 ∨ σ i = 1) ∧
+        (d i = 0 ↔ Plane.det (P.vertex (i - 1) - P.vertex i)
+          (P.vertex (i + 1) - P.vertex i) = 0) ∧ 0 < δ i ∧ 3 * δ i < R i ∧
+        ∀ p ∈ U i, p ∈ closure (inside P.carrier) ↔
+          0 ≤ σ i * ((e i p) 1 - d i * max ((e i p) 0) 0)) ∧
+      (Pairwise fun i j => Disjoint (U i) (U j)) ∧
+      let N := fun i => e i ⁻¹' ball (0 : Plane) (R i)
+      let K := fun i => e i ⁻¹' closedBall (0 : Plane) (R i)
+      let F := fun ε i p => σ i * ((e i p) 1 - d i * Real.smoothMax (ε i) ((e i p) 0) 0)
+      let D := fun ε => (closure (inside P.carrier) \ ⋃ i, N i) ∪
+        ⋃ i, K i ∩ {p | 0 ≤ F ε i p}
+      (∀ i, P.vertex i ∈ N i ∧ IsOpen (N i) ∧ IsCompact (K i) ∧ K i ⊆ U i) ∧
+      (∀ ε : ZMod (m + 3) → ℝ, (∀ i, 0 < ε i ∧ ε i ≤ δ i) →
+        IsCompact (D ε) ∧
+          (∀ p ∉ ⋃ i, K i, p ∈ D ε ↔ p ∈ closure (inside P.carrier)) ∧
+          ∀ p ∈ frontier (D ε), ∃ (V : Set Plane) (G : Plane → ℝ),
+            IsOpen V ∧ p ∈ V ∧ ContDiff ℝ ∞ G ∧ fderiv ℝ G p ≠ 0 ∧
+            ∀ q ∈ V, (q ∈ D ε ↔ 0 ≤ G q) ∧
+              (q ∈ interior (D ε) ↔ 0 < G q) ∧ (q ∈ frontier (D ε) ↔ G q = 0)) ∧
+      ∀ ε₀ ε₁ : ZMod (m + 3) → ℝ,
+        (∀ i, 0 < ε₀ i ∧ ε₀ i ≤ δ i) → (∀ i, 0 < ε₁ i ∧ ε₁ i ≤ δ i) →
+        ∃ (Φ : ℝ → (Plane ≃ₘ[ℝ] Plane)) (C : Set Plane),
+          ContDiff ℝ ∞ (fun z : ℝ × Plane => Φ z.1 z.2) ∧
+          ContDiff ℝ ∞ (fun z : ℝ × Plane => (Φ z.1).symm z.2) ∧
+          Φ 0 = Diffeomorph.refl 𝓘(ℝ, Plane) Plane ∞ ∧
+          IsCompact C ∧ C ⊆ ⋃ i, N i ∧
+          (∀ t : ℝ, EqOn (Φ t) id Cᶜ ∧ EqOn (Φ t).symm id Cᶜ) ∧
+          Φ 1 '' D ε₀ = D ε₁ ∧
+          Φ 1 '' interior (D ε₀) = interior (D ε₁) ∧
+          Φ 1 '' frontier (D ε₀) = frontier (D ε₁) := by
+  obtain ⟨e, U, d, σ, δ, R, r, hnorm, hc, hdisj, hn, hD, hout, _, hglobal⟩ :=
+    P.exists_normalized_finite_compact_vertex_rounding O hO hiO
+  let N := fun i => e i ⁻¹' ball (0 : Plane) (R i)
+  let K := fun i => e i ⁻¹' closedBall (0 : Plane) (R i)
+  let F := fun (ε : ZMod (m + 3) → ℝ) i p =>
+    σ i * ((e i p) 1 - d i * Real.smoothMax (ε i) ((e i p) 0) 0)
+  let D := fun ε => (closure (inside P.carrier) \ ⋃ i, N i) ∪
+    ⋃ i, K i ∩ {p | 0 ≤ F ε i p}
+  have hd (i) : d i = 0 ∨ d i = 1 := (hc i).2.2.2.2.1
+  have hσ (i) : σ i = -1 ∨ σ i = 1 := (hc i).2.2.2.2.2.1
+  have hδ (i) : 0 < δ i := (hc i).2.2.2.2.2.2.2.1
+  have hδR (i) : 3 * δ i < R i := (hc i).2.2.2.2.2.2.2.2.1
+  have hNK (i) : N i ⊆ K i := preimage_mono ball_subset_closedBall
+  have hdisjK : Pairwise fun i j => Disjoint (K i) (K j) := by
+    intro i j hij
+    exact (hdisj hij).mono (hn i).2.2.2 (hn j).2.2.2
+  have hisotopy (ε₀ ε₁ : ZMod (m + 3) → ℝ)
+      (hε₀ : ∀ i, 0 < ε₀ i ∧ ε₀ i ≤ δ i)
+      (hε₁ : ∀ i, 0 < ε₁ i ∧ ε₁ i ≤ δ i) :
+      ∃ (Φ : ℝ → (Plane ≃ₘ[ℝ] Plane)) (C : Set Plane),
+        ContDiff ℝ ∞ (fun z : ℝ × Plane => Φ z.1 z.2) ∧
+        ContDiff ℝ ∞ (fun z : ℝ × Plane => (Φ z.1).symm z.2) ∧
+        Φ 0 = Diffeomorph.refl 𝓘(ℝ, Plane) Plane ∞ ∧
+        IsCompact C ∧ C ⊆ ⋃ i, N i ∧
+        (∀ t : ℝ, EqOn (Φ t) id Cᶜ ∧ EqOn (Φ t).symm id Cᶜ) ∧
+        Φ 1 '' D ε₀ = D ε₁ ∧
+        Φ 1 '' interior (D ε₀) = interior (D ε₁) ∧
+        Φ 1 '' frontier (D ε₀) = frontier (D ε₁) := by
+    have hR (i) : 3 * max (ε₀ i) (ε₁ i) < R i :=
+      (mul_le_mul_of_nonneg_left (max_le (hε₀ i).2 (hε₁ i).2)
+        (by norm_num : (0 : ℝ) ≤ 3)).trans_lt (hδR i)
+    obtain ⟨Φ, C, hΦ, hi, hz, hC, hCN, hfix, himage⟩ :=
+      exists_isotopy_between_finite_affine_corner_replacements e ε₀ ε₁ R d σ
+        (fun i => (hε₀ i).1) (fun i => (hε₁ i).1) hR hd hσ hdisjK
+    exact ⟨Φ, C, hΦ, hi, hz, hC, hCN, hfix, himage (closure (inside P.carrier))⟩
+  refine ⟨e, U, d, σ, δ, R, r, hnorm, hc, hdisj, hn, ?_, hisotopy⟩
+  intro ε hε
+  change IsCompact (D ε) ∧
+    (∀ p ∉ ⋃ i, K i, p ∈ D ε ↔ p ∈ closure (inside P.carrier)) ∧
+    ∀ p ∈ frontier (D ε), ∃ (V : Set Plane) (G : Plane → ℝ),
+      IsOpen V ∧ p ∈ V ∧ ContDiff ℝ ∞ G ∧ fderiv ℝ G p ≠ 0 ∧
+      ∀ q ∈ V, (q ∈ D ε ↔ 0 ≤ G q) ∧
+        (q ∈ interior (D ε) ↔ 0 < G q) ∧ (q ∈ frontier (D ε) ↔ G q = 0)
+  obtain ⟨Ψ, C, _, _, _, _, hCN, hfix, himage, _, _⟩ :=
+    hisotopy δ ε (fun i => ⟨hδ i, le_rfl⟩) hε
+  have hregular : ∀ p ∈ frontier (D δ), ∃ (V : Set Plane) (G : Plane → ℝ),
+      IsOpen V ∧ p ∈ V ∧ ContDiff ℝ ∞ G ∧ fderiv ℝ G p ≠ 0 ∧
+      ∀ q ∈ V, (q ∈ D δ ↔ 0 ≤ G q) ∧
+        (q ∈ interior (D δ) ↔ 0 < G q) ∧ (q ∈ frontier (D δ) ↔ G q = 0) := by
+    intro p hp
+    obtain ⟨V, G, hV, hpV, hG, hreg, hsides⟩ := hglobal p hp
+    exact ⟨V, G, hV, hpV, hG, hreg p, hsides⟩
+  refine ⟨?_, ?_, ?_⟩
+  · rw [← himage]
+    exact hD.image (Ψ 1).continuous
+  · intro p hp
+    have hpC : p ∉ C := fun h => hp ((iUnion_mono hNK) (hCN h))
+    have heq : (Ψ 1).symm p = p := (hfix 1).2 hpC
+    have hm : p ∈ Ψ 1 '' D δ ↔ (Ψ 1).symm p ∈ D δ := Set.mem_image_equiv
+    rw [← himage, hm, heq]
+    exact hout p hp
+  · rw [← himage]
+    exact (Ψ 1).regular_frontier_image hregular
 
 end Schoenflies
 

@@ -4173,3 +4173,4 @@ import DifferentialGeometry.Topology.Planar.PolygonGraphCharts
 import DifferentialGeometry.Topology.Planar.PolygonVertexCharts
 import DifferentialGeometry.Topology.Planar.PolygonRounding
 import DifferentialGeometry.Topology.Planar.PolygonIsotopy
+import DifferentialGeometry.Topology.Planar.CornerRounding
