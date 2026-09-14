@@ -1,9 +1,13 @@
-import Mathlib.Analysis.InnerProductSpace.Basic
+import Mathlib.Analysis.InnerProductSpace.Calculus
+import Mathlib.Analysis.Calculus.Deriv.Add
+import Mathlib.Analysis.Calculus.Deriv.Inv
+import Mathlib.Analysis.Calculus.Deriv.Pow
 import Mathlib.Tactic.Linarith
 import Mathlib.Tactic.LinearCombination
 import Mathlib.Tactic.Positivity
 
-open scoped InnerProductSpace
+open Filter
+open scoped Topology InnerProductSpace
 
 namespace DifferentialGeometry.Analysis.Parabolic
 
@@ -62,5 +66,30 @@ theorem graph_second_derivative_reaction_le (p q r : E) (hp : ‖p‖ ≤ 1 / 4)
   have hscaled := mul_le_mul_of_nonneg_right hcoef (by positivity : 0 ≤ ‖q‖ ^ 4)
   have hgrad : 0 ≤ a * ‖r‖ ^ 2 := by positivity
   exact hbound.trans (by nlinarith only [hscaled, hgrad])
+
+theorem hasDerivAt_graphDiffusionCoefficient {p : ℝ → E} {q : E} {x : ℝ}
+    (hp : HasDerivAt p q x) :
+    HasDerivAt (fun y => graphDiffusionCoefficient (p y))
+      (-2 * graphDiffusionCoefficient (p x) ^ 2 * ⟪p x, q⟫_ℝ) x := by
+  have h := (hp.norm_sq.const_add 1).inv (by positivity : 1 + ‖p x‖ ^ 2 ≠ 0)
+  convert h using 1 <;> first | rfl | (simp only [graphDiffusionCoefficient, div_eq_mul_inv, ← inv_pow]; ring)
+
+theorem hasDerivAt_deriv_graphDiffusionCoefficient {p : ℝ → E} {x : ℝ}
+    (hp : ∀ᶠ y in 𝓝 x, DifferentiableAt ℝ p y)
+    (hp' : DifferentiableAt ℝ (deriv p) x) :
+    HasDerivAt (deriv (fun y => graphDiffusionCoefficient (p y)))
+      (8 * graphDiffusionCoefficient (p x) ^ 3 * ⟪p x, deriv p x⟫_ℝ ^ 2 -
+        2 * graphDiffusionCoefficient (p x) ^ 2 *
+          (‖deriv p x‖ ^ 2 + ⟪p x, deriv (deriv p) x⟫_ℝ)) x := by
+  have heq : deriv (fun y => graphDiffusionCoefficient (p y)) =ᶠ[𝓝 x]
+      fun y => -2 * graphDiffusionCoefficient (p y) ^ 2 * ⟪p y, deriv p y⟫_ℝ := by
+    filter_upwards [hp] with y hy
+    exact (hasDerivAt_graphDiffusionCoefficient hy.hasDerivAt).deriv
+  have ha := hasDerivAt_graphDiffusionCoefficient hp.self_of_nhds.hasDerivAt
+  have hi := hp.self_of_nhds.hasDerivAt.inner ℝ hp'.hasDerivAt
+  have hd := (((ha.pow 2).const_mul (-2)).mul hi).congr_of_eventuallyEq heq
+  rw [real_inner_self_eq_norm_sq] at hd
+  simp only [Pi.pow_apply] at hd
+  convert hd using 1 <;> first | rfl | ring
 
 end DifferentialGeometry.Analysis.Parabolic
