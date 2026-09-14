@@ -247,7 +247,7 @@ theorem compact_homogeneous_regularity
       exact hCb (Φ p) i j y (hcube hy)
 
 
-private theorem classical_plateau_morrey_of_finite_lipschitz
+theorem classical_plateau_morrey_of_finite_lipschitz
     [I.Boundaryless] [T2Space Q]
     (g : SmoothRiemannianMetric I Q) (hdim : Module.finrank ℝ E = 3)
     (d : EMetricSpace Q)

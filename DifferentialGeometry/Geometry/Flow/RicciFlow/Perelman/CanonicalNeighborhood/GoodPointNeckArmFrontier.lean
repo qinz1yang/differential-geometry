@@ -89,4 +89,65 @@ theorem good_point_neck_separation_of_frontier {kappa alpha theta C epsStar : �
     exists_transversePath_of_armNeckHeights neck a b hs hv hheights
   exact ⟨neck, path, hsign, hnoA, hnoB, hdiam⟩
 
+def NeckCoreDiameterBound : Prop :=
+  ∃ C : ℝ, 0 < C ∧
+    ∀ (M : Type u) [TopologicalSpace M] [ChartedSpace ThreeSpace M]
+      [IsManifold I3 ∞ M] [T2Space M] [SigmaCompactSpace M]
+      (J : RealTimeInterval) (S : SolutionOn (I := I3) (M := M) J)
+      (eps : ℝ) (x : M) (t : ℝ) (neck : StrongNeck S eps x t),
+      ∀ y ∈ neck.map '' (Set.univ ×ˢ Set.Icc (-10 : ℝ) 10),
+        ∀ z ∈ neck.map '' (Set.univ ×ˢ Set.Icc (-10 : ℝ) 10),
+          riemannianEDistOf (rescaledMetric S t (S.scalar t x) neck.Q_pos 0) y z ≤
+            ENNReal.ofReal C
+
+def NeckAxialBound : Prop :=
+  ∃ Ax : ℝ, 0 < Ax ∧
+    ∀ (M : Type u) [TopologicalSpace M] [ChartedSpace ThreeSpace M]
+      [IsManifold I3 ∞ M] [T2Space M] [SigmaCompactSpace M]
+      (J : RealTimeInterval) (S : SolutionOn (I := I3) (M := M) J)
+      (eps : ℝ) (x : M) (t : ℝ) (neck : StrongNeck S eps x t)
+      (p : Sphere 2) (k : ℝ), |k| ≤ 10 →
+        riemannianEDistOf (rescaledMetric S t (S.scalar t x) neck.Q_pos 0)
+          (neck.map (p, k)) (neck.map (p, 0)) ≤ ENNReal.ofReal Ax
+
+theorem metricDistance_core_le_of_neckCoreDiameterBound
+    (h : NeckCoreDiameterBound.{u}) :
+    ∃ C : ℝ, 0 < C ∧
+      ∀ (M : Type u) [TopologicalSpace M] [ChartedSpace ThreeSpace M]
+        [IsManifold I3 ∞ M] [T2Space M] [SigmaCompactSpace M]
+        (J : RealTimeInterval) (S : SolutionOn (I := I3) (M := M) J)
+        (eps : ℝ) (x : M) (t : ℝ) (neck : StrongNeck S eps x t),
+        ∀ y ∈ neck.map '' (Set.univ ×ˢ Set.Icc (-10 : ℝ) 10),
+          ∀ z ∈ neck.map '' (Set.univ ×ˢ Set.Icc (-10 : ℝ) 10),
+            metricDistance (S.base.metric t) y z ≤ C / Real.sqrt (S.scalar t x) := by
+  obtain ⟨C, hC, hbound⟩ := h
+  refine ⟨C, hC, ?_⟩
+  intro M _ _ _ _ _ J S eps x t neck y hy z hz
+  have hb := hbound M J S eps x t neck y hy z hz
+  have hscale : riemannianEDistOf (rescaledMetric S t (S.scalar t x) neck.Q_pos 0) y z =
+      ENNReal.ofReal (Real.sqrt (S.scalar t x)) *
+        riemannianEDistOf (S.base.metric t) y z :=
+    edistOf_rescaledMetric_zero S t (S.scalar t x) neck.Q_pos y z
+  rw [hscale] at hb
+  have hQpos : 0 < Real.sqrt (S.scalar t x) := Real.sqrt_pos.mpr neck.Q_pos
+  have hreal : Real.sqrt (S.scalar t x) *
+      (riemannianEDistOf (S.base.metric t) y z).toReal ≤ C := by
+    have h1 := ENNReal.toReal_mono ENNReal.ofReal_ne_top hb
+    rwa [ENNReal.toReal_mul, ENNReal.toReal_ofReal hQpos.le, ENNReal.toReal_ofReal hC.le] at h1
+  have hdiv : (riemannianEDistOf (S.base.metric t) y z).toReal ≤
+      C / Real.sqrt (S.scalar t x) := by
+    rw [le_div_iff₀ hQpos]
+    simpa only [mul_comm] using hreal
+  simpa only [metricDistance] using hdiv
+
+theorem two_mul_lt_one_div_eleven_of_lt_one_div_fortyfour {a : ℝ} (h : a < 1 / 44) :
+    2 * a < 1 / 11 := by
+  linarith
+
+theorem ten_lt_inv_two_mul_of_pos_of_lt_one_div_fortyfour {a : ℝ} (ha : 0 < a) (h : a < 1 / 44) :
+    10 < (2 * a)⁻¹ := by
+  have hpos : 0 < 2 * a := by linarith
+  rw [inv_eq_one_div, lt_div_iff₀ hpos]
+  linarith
+
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn

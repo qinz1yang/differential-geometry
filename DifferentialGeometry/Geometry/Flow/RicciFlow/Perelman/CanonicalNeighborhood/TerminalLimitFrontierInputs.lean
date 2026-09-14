@@ -99,6 +99,81 @@ theorem terminal_limit_compactness_frontier_of_terminal_limit_exists {kappa sigm
   exact ⟨P, L.canonical_domains, L.connected, L.capture, L.precompact, L.connected_domains,
     L.nested, ⟨L.orientation, L.orientation_preserved⟩, L.noncollapse⟩
 
+theorem exists_metricScalarAt_upper_bound_of_compactSpace
+    (P : PointedRiemannianManifold.{u, 0, 0} I3) [CompactSpace P.M] :
+    ∃ C : ℝ, ∀ x : P.M, metricScalarAt P.metric x ≤ C := by
+  obtain ⟨x₀, -, hmax⟩ := isCompact_univ.exists_isMaxOn ⟨P.basepoint, Set.mem_univ _⟩
+    (metricScalar_smooth (I := I3) P.metric).continuous.continuousOn
+  exact ⟨metricScalarAt P.metric x₀, fun x => hmax (Set.mem_univ x)⟩
+
+def TerminalLimitCompactLimitSpaceFrontier (kappa sigma : ℝ) (Phi : ℝ → ℝ) : Prop :=
+  ∃ epsStar : ℝ, 0 < epsStar ∧ ∀ eps : ℝ, 0 < eps → eps ≤ epsStar →
+    ∀ X : NormalizedSequence.{u} eps kappa sigma Phi,
+      BoundedAtDistance X → TerminalDerivativeBounds X →
+        ∀ P : MetricCompactLimit.{u, 0, 0} (I := I3) (X.toFlowSequence.atTime 0),
+          (∀ k, P.convergence.metrics.domain k =
+            CanonicalMetricCompactness.canonicalSourceData P.maps k) →
+          (hconn : ConnectedSpace P.limit.M) → MetricSourceCapture P.maps →
+          (∀ i, IsCompact (closure (P.maps.partialDiffeomorph i).source)) →
+          (∀ i, IsConnected (P.maps.partialDiffeomorph i).source) →
+          (∀ i, closure (P.maps.partialDiffeomorph i).source ⊆
+            (P.maps.partialDiffeomorph (i + 1)).source) →
+          (∃ o : TangentOrientationSection P.limit.M,
+            ∀ i y, y ∈ (P.maps.partialDiffeomorph i).source →
+              ∃ hf : Function.Bijective (mfderiv I3 I3 (P.maps.partialDiffeomorph i) y),
+                PreservesTangentOrientationAt o (X.orientation (P.subseq i))
+                  (P.maps.partialDiffeomorph i) y hf) →
+          MetricNoncollapsed P.limit kappa Set.univ →
+            CompactSpace P.limit.M
+
+def TerminalLimitNoncompactScalarBoundFrontier (kappa sigma : ℝ) (Phi : ℝ → ℝ) : Prop :=
+  ∃ epsStar : ℝ, 0 < epsStar ∧ ∀ eps : ℝ, 0 < eps → eps ≤ epsStar →
+    ∀ X : NormalizedSequence.{u} eps kappa sigma Phi,
+      BoundedAtDistance X → TerminalDerivativeBounds X →
+        ∀ P : MetricCompactLimit.{u, 0, 0} (I := I3) (X.toFlowSequence.atTime 0),
+          (∀ k, P.convergence.metrics.domain k =
+            CanonicalMetricCompactness.canonicalSourceData P.maps k) →
+          (hconn : ConnectedSpace P.limit.M) → MetricSourceCapture P.maps →
+          (∀ i, IsCompact (closure (P.maps.partialDiffeomorph i).source)) →
+          (∀ i, IsConnected (P.maps.partialDiffeomorph i).source) →
+          (∀ i, closure (P.maps.partialDiffeomorph i).source ⊆
+            (P.maps.partialDiffeomorph (i + 1)).source) →
+          (∃ o : TangentOrientationSection P.limit.M,
+            ∀ i y, y ∈ (P.maps.partialDiffeomorph i).source →
+              ∃ hf : Function.Bijective (mfderiv I3 I3 (P.maps.partialDiffeomorph i) y),
+                PreservesTangentOrientationAt o (X.orientation (P.subseq i))
+                  (P.maps.partialDiffeomorph i) y hf) →
+          MetricNoncollapsed P.limit kappa Set.univ →
+          ¬ CompactSpace P.limit.M →
+            ∃ C : ℝ, ∀ x, metricScalarAt P.limit.metric x ≤ C
+
+theorem terminal_limit_scalar_bound_frontier_of_compact_limits {kappa sigma : ℝ}
+    {Phi : ℝ → ℝ} (h : TerminalLimitCompactLimitSpaceFrontier.{u} kappa sigma Phi) :
+    TerminalLimitScalarBoundFrontier.{u} kappa sigma Phi := by
+  obtain ⟨e, he, hmain⟩ := h
+  exact ⟨e, he, fun eps heps hle X hb hd P hcanon hconn hcap hpre hcd hnested hor hnc =>
+    @exists_metricScalarAt_upper_bound_of_compactSpace P.limit
+      (hmain eps heps hle X hb hd P hcanon hconn hcap hpre hcd hnested hor hnc)⟩
+
+theorem terminal_limit_scalar_bound_frontier_of_noncompact {kappa sigma : ℝ} {Phi : ℝ → ℝ}
+    (h : TerminalLimitNoncompactScalarBoundFrontier.{u} kappa sigma Phi) :
+    TerminalLimitScalarBoundFrontier.{u} kappa sigma Phi := by
+  obtain ⟨e, he, hmain⟩ := h
+  refine ⟨e, he, fun eps heps hle X hb hd P hcanon hconn hcap hpre hcd hnested hor hnc => ?_⟩
+  by_cases hcompact : CompactSpace P.limit.M
+  · exact @exists_metricScalarAt_upper_bound_of_compactSpace P.limit hcompact
+  · exact hmain eps heps hle X hb hd P hcanon hconn hcap hpre hcd hnested hor hnc hcompact
+
+theorem terminal_limit_global_bound_of_noncompact_frontier {kappa sigma : ℝ} {Phi : ℝ → ℝ}
+    (hPhi : AdmissiblePinchingFunction Phi)
+    (hcompact : TerminalLimitCompactnessFrontier.{u} kappa sigma Phi)
+    (hnoncompact : TerminalLimitNoncompactScalarBoundFrontier.{u} kappa sigma Phi) :
+    ∃ epsStar : ℝ, 0 < epsStar ∧ ∀ eps : ℝ, 0 < eps → eps ≤ epsStar →
+      ∀ X : NormalizedSequence.{u} eps kappa sigma Phi,
+        BoundedAtDistance X → TerminalDerivativeBounds X → Nonempty (TerminalLimit X) :=
+  terminal_limit_global_bound_of_frontiers hPhi hcompact
+    (terminal_limit_scalar_bound_frontier_of_noncompact hnoncompact)
+
 def SlabLimitSpatialJets {X : FlowSequence.{u}} {depthBound : ℝ}
     (L : StaticTerminalLimit X depthBound) (delta : ℝ) (hd : 0 < delta) : Prop :=
   ∀ g : ℝ → SmoothRiemannianMetric I3 L.space.M, IsSlabLimit L delta hd g →

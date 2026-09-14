@@ -5049,7 +5049,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.Observed
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.ObservedWidthDini
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.ObservedWidthComparison
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.Preparation
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.PreparationReduction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.RampAngleWindow
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.RampFrontierData
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.RampLengthEvolution
@@ -5635,7 +5634,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Redu
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.ReducedCostDistanceBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.ReducedCostDistanceGrowth
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.ReducedCostDistanceSlope
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.ReducedCostGradientSpeed
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.ReducedCostTwoPoint
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.ReducedCostTwoPointCoercivity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.ReducedVolumeNormalization

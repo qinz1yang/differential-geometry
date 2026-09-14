@@ -102,6 +102,16 @@ def HighCurvatureDerivativePullback (a b : ℕ) (eta : ℝ) : Prop :=
                 Real.rpow (S.scalar t y) (1 + (a : ℝ) / 2 + b) *
                   mixedCurvatureNorm P.S a b 0 P.basepoint
 
+theorem jetLocalBound_of_isEmpty (a b : ℕ) {C eta : ℝ}
+    (h : ∀ (M : Type u) [TopologicalSpace M] [ChartedSpace ThreeSpace M]
+      [IsManifold I3 ∞ M] [T2Space M] [CompactSpace M] [ConnectedSpace M]
+      [T2Space (TangentBundle I3 M)] (T : ℝ) (hT : 0 < T)
+      (S : SolutionOn (I := I3) (M := M) (RealTimeInterval.closedOpen 0 T hT)),
+      IsEmpty (MixedCurvatureJet S)) :
+    JetLocalBound.{u} a b C eta := by
+  intro M _ _ _ _ _ _ _ T hT S _ _
+  refine ⟨1, one_pos, fun J x t ht hQ y hy => False.elim ((h M T hT S).false J)⟩
+
 theorem ancientModelMixedBound_of_universalMixedJetBound (a b : ℕ) {C : ℝ}
     (h : UniversalMixedJetBound.{u} a b C) :
     AncientModelMixedBound.{u} a b C := by
