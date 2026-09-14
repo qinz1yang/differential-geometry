@@ -9910,3 +9910,5 @@ import DifferentialGeometry.Geometry.Metric.Product.ChartBounds
 import DifferentialGeometry.Topology.Homology.ManifoldLocalization
 import DifferentialGeometry.Topology.ThreeManifold.HomologyLocalization
 import DifferentialGeometry.Topology.ThreeManifold.SphereFundamentalClass
+import DifferentialGeometry.Topology.Compactness.RunningMaximum
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ScalarRunningMaximum
