@@ -3079,4 +3079,166 @@ theorem simplicialMap_eqOn_subcomplex_of_eqOn_vertices {F : Type*}
     EqOn (simplicialMap K φ) (simplicialMap K ψ) L.space :=
   (simplicialMap_eqOn_of_faces_subset K L hLK φ).trans
     ((simplicialMap_eqOn_of_eqOn_vertices L h).trans (simplicialMap_eqOn_of_faces_subset K L hLK ψ).symm)
+
+open Classical in
+theorem convexHull_insert_inter_affineSubspace {s : Finset E} {p : E}
+    (A : AffineSubspace ℝ E) (hs : (s : Set E) ⊆ A) (hp : p ∉ A) :
+    convexHull ℝ ((insert p s : Finset E) : Set E) ∩ (A : Set E) = convexHull ℝ (s : Set E) := by
+  have hsA : convexHull ℝ (s : Set E) ⊆ A := convexHull_min hs A.convex
+  apply Set.Subset.antisymm
+  · rintro x ⟨hx, hxA⟩
+    have hps : p ∉ s := fun h => hp (hs h)
+    rcases exists_combo_of_mem_convexHull_insert hps hx with rfl | ⟨z, hz, c, _, _, hxc⟩
+    · exact False.elim (hp hxA)
+    by_cases hc : c = 1
+    · rw [hc, one_smul, add_sub_cancel] at hxc
+      rwa [hxc]
+    · have hzA := hsA hz
+      have hdir : x - z ∈ A.direction := AffineSubspace.vsub_mem_direction hxA hzA
+      have heq : x - z = (1 - c) • (p - z) := by
+        rw [hxc]
+        simp only [smul_sub, sub_smul, one_smul]
+        abel
+      have hpd := A.direction.smul_mem (1 - c)⁻¹ hdir
+      rw [heq, smul_smul, inv_mul_cancel₀ (sub_ne_zero.mpr (Ne.symm hc)), one_smul] at hpd
+      exact False.elim (hp ((AffineSubspace.vsub_right_mem_direction_iff_mem hzA p).mp hpd))
+  · intro x hx
+    exact ⟨convexHull_mono (by intro y hy; exact Finset.mem_insert_of_mem hy) hx, hsA hx⟩
+
+open Classical in
+theorem convexHull_insert_inter_eq_of_notMem_affineSpan {s t : Finset E} {p : E}
+    (hp : p ∉ affineSpan ℝ ((s : Set E) ∪ (t : Set E))) :
+    convexHull ℝ ((insert p s : Finset E) : Set E) ∩ convexHull ℝ (t : Set E) =
+      convexHull ℝ (s : Set E) ∩ convexHull ℝ (t : Set E) := by
+  let A := affineSpan ℝ ((s : Set E) ∪ (t : Set E))
+  have hsA : (s : Set E) ⊆ A := fun x hx => subset_affineSpan ℝ _ (Or.inl hx)
+  have htA : convexHull ℝ (t : Set E) ⊆ A :=
+    convexHull_min (fun x hx => subset_affineSpan ℝ _ (Or.inr hx)) A.convex
+  apply Set.Subset.antisymm
+  · intro x hx
+    exact ⟨(convexHull_insert_inter_affineSubspace A hsA hp).subset ⟨hx.1, htA hx.2⟩, hx.2⟩
+  · intro x hx
+    exact ⟨convexHull_mono (by intro y hy; exact Finset.mem_insert_of_mem hy) hx.1, hx.2⟩
+
+open Classical in
+theorem exists_affineSubspace_insert_transverse [FiniteDimensional ℝ E] (s t : Finset E)
+    (htrans : (convexHull ℝ (s : Set E) ∩ convexHull ℝ (t : Set E)).Nonempty →
+      vectorSpan ℝ (s : Set E) ⊔ vectorSpan ℝ (t : Set E) = ⊤) :
+    ∃ A : AffineSubspace ℝ E, A ≠ ⊤ ∧ ∀ p ∉ A,
+      (convexHull ℝ ((insert p s : Finset E) : Set E) ∩ convexHull ℝ (t : Set E)).Nonempty →
+        vectorSpan ℝ ((insert p s : Finset E) : Set E) ⊔ vectorSpan ℝ (t : Set E) = ⊤ := by
+  let S := vectorSpan ℝ (s : Set E)
+  let T := vectorSpan ℝ (t : Set E)
+  have hgrow : ∀ p, S ⊔ T ≤ vectorSpan ℝ ((insert p s : Finset E) : Set E) ⊔ T := fun p =>
+    sup_le_sup (vectorSpan_mono ℝ (by intro x hx; exact Finset.mem_insert_of_mem hx)) le_rfl
+  have hbot : (⊥ : AffineSubspace ℝ E) ≠ ⊤ := by
+    intro h
+    have hz : (0 : E) ∈ (⊥ : AffineSubspace ℝ E) := by rw [h]; trivial
+    exact hz
+  by_cases hST : S ⊔ T = ⊤
+  · refine ⟨⊥, hbot, fun p _ _ => top_unique ?_⟩
+    rw [← hST]
+    exact hgrow p
+  let U := affineSpan ℝ ((s : Set E) ∪ (t : Set E))
+  by_cases hU : U ≠ ⊤
+  · refine ⟨U, hU, fun p hp hinter => top_unique ?_⟩
+    rw [convexHull_insert_inter_eq_of_notMem_affineSpan hp] at hinter
+    rw [← htrans hinter]
+    exact hgrow p
+  have hUtop : U = ⊤ := not_ne_iff.mp hU
+  have hsne : s.Nonempty := by
+    by_contra hs
+    have hs0 : s = ∅ := Finset.not_nonempty_iff_eq_empty.mp hs
+    have hdir := congrArg AffineSubspace.direction hUtop
+    apply hST
+    simpa only [U, S, T, hs0, Finset.coe_empty, Set.empty_union, direction_affineSpan,
+      vectorSpan_empty, bot_sup_eq, AffineSubspace.direction_top] using hdir
+  have htne : t.Nonempty := by
+    by_contra ht
+    have ht0 : t = ∅ := Finset.not_nonempty_iff_eq_empty.mp ht
+    have hdir := congrArg AffineSubspace.direction hUtop
+    apply hST
+    simpa only [U, S, T, ht0, Finset.coe_empty, Set.union_empty, direction_affineSpan,
+      vectorSpan_empty, sup_bot_eq, AffineSubspace.direction_top] using hdir
+  obtain ⟨a, ha⟩ := hsne
+  obtain ⟨b, hb⟩ := htne
+  have hdir : (S ⊔ T) ⊔ Submodule.span ℝ {b - a} = ⊤ := by
+    have h := congrArg AffineSubspace.direction hUtop
+    dsimp [U] at h
+    rw [AffineSubspace.span_union, AffineSubspace.direction_sup
+      (subset_affineSpan ℝ (s : Set E) ha) (subset_affineSpan ℝ (t : Set E) hb),
+      direction_affineSpan, direction_affineSpan, AffineSubspace.direction_top] at h
+    exact h
+  have hba : b - a ∉ S ⊔ T := by
+    intro h
+    have hsub : Submodule.span ℝ {b - a} ≤ S ⊔ T := Submodule.span_le.mpr (Set.singleton_subset_iff.mpr h)
+    rw [sup_eq_left.mpr hsub] at hdir
+    exact hST hdir
+  let A := AffineSubspace.mk' a (S ⊔ T)
+  have hA : A ≠ ⊤ := by
+    intro h
+    have h' := congrArg AffineSubspace.direction h
+    rw [AffineSubspace.direction_mk', AffineSubspace.direction_top] at h'
+    exact hST h'
+  refine ⟨A, hA, fun p hp _ => ?_⟩
+  have hpa : p - a ∉ S ⊔ T := by
+    intro h
+    apply hp
+    exact AffineSubspace.mem_mk'.mpr h
+  have htop : (S ⊔ T) ⊔ Submodule.span ℝ {p - a} = ⊤ :=
+    (Submodule.sup_span_singleton_eq_top_iff hpa).mpr
+      ((Submodule.sup_span_singleton_eq_top_iff hba).mp hdir)
+  apply top_unique
+  rw [← htop]
+  refine sup_le (hgrow p) (Submodule.span_le.mpr (Set.singleton_subset_iff.mpr ?_))
+  exact Submodule.mem_sup_left (vsub_mem_vectorSpan ℝ
+    (show p ∈ ((insert p s : Finset E) : Set E) from Finset.mem_insert_self p s)
+    (show a ∈ ((insert p s : Finset E) : Set E) from Finset.mem_insert_of_mem ha))
+
+open Classical in
+theorem affineIndependent_insert_of_notMem_affineSpan {s : Finset E}
+    (hs : AffineIndependent ℝ ((↑) : s → E)) {p : E} (hp : p ∉ affineSpan ℝ (s : Set E)) :
+    AffineIndependent ℝ ((↑) : ↥(insert p s : Finset E) → E) := by
+  apply (affineIndependent_insert_iff (fun h => hp (subset_affineSpan ℝ _ h)) hs).mpr
+  rintro ⟨w, hw, hwp⟩
+  apply hp
+  have hmem := affineCombination_mem_affineSpan_image hw
+    (s' := (s : Set E)) (fun v hv hnot => False.elim (hnot hv)) (id : E → E)
+  rw [Finset.affineCombination_eq_linear_combination s id w hw] at hmem
+  simpa only [id_eq, Set.image_id', hwp] using hmem
+
+open Classical in
+theorem exists_small_point_affineIndependent_insert_transverse [FiniteDimensional ℝ E]
+    {ι κ : Type*} [Finite ι] [Finite κ] (s : ι → Finset E) (t : κ → Finset E)
+    (hs : ∀ i, AffineIndependent ℝ ((↑) : s i → E))
+    (hcard : ∀ i, (s i).card ≤ Module.finrank ℝ E)
+    (htrans : ∀ i j, (convexHull ℝ (s i : Set E) ∩ convexHull ℝ (t j : Set E)).Nonempty →
+      vectorSpan ℝ (s i : Set E) ⊔ vectorSpan ℝ (t j : Set E) = ⊤)
+    (p₀ : E) {ε : ℝ} (hε : 0 < ε) :
+    ∃ p : E, dist p p₀ < ε ∧
+      (∀ i, p ∉ affineSpan ℝ (s i : Set E) ∧
+        AffineIndependent ℝ ((↑) : ↥(insert p (s i) : Finset E) → E)) ∧
+      ∀ i j, (convexHull ℝ ((insert p (s i) : Finset E) : Set E) ∩
+        convexHull ℝ (t j : Set E)).Nonempty →
+          vectorSpan ℝ ((insert p (s i) : Finset E) : Set E) ⊔ vectorSpan ℝ (t j : Set E) = ⊤ := by
+  have hspan : ∀ i, affineSpan ℝ (s i : Set E) ≠ ⊤ := by
+    intro i htop
+    have hrange : Set.range ((↑) : s i → E) = (s i : Set E) := by ext x; simp
+    have htop' : affineSpan ℝ (Set.range ((↑) : s i → E)) = ⊤ := by rwa [hrange]
+    have h := (hs i).affineSpan_eq_top_iff_card_eq_finrank_add_one.mp htop'
+    simp only [Fintype.card_coe] at h
+    have hi := hcard i
+    omega
+  choose B hB hgood using fun q : ι × κ => exists_affineSubspace_insert_transverse
+    (s q.1) (t q.2) (htrans q.1 q.2)
+  let A : ι ⊕ (ι × κ) → AffineSubspace ℝ E := Sum.elim (fun i => affineSpan ℝ (s i : Set E)) B
+  have hA : ∀ q, A q ≠ ⊤ := by
+    rintro (i | q)
+    · exact hspan i
+    · exact hB q
+  obtain ⟨p, hp, havoid⟩ := exists_mem_ball_notMem_affineSubspaces A hA hε
+  exact ⟨p, hp, fun i => ⟨havoid (Sum.inl i),
+      affineIndependent_insert_of_notMem_affineSpan (hs i) (havoid (Sum.inl i))⟩,
+    fun i j => hgood (i, j) p (havoid (Sum.inr (i, j)))⟩
+
 end DifferentialGeometry.Topology.PiecewiseLinear
