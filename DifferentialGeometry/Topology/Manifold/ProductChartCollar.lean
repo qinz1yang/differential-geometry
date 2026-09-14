@@ -111,4 +111,29 @@ theorem exists_smoothTwoSidedCollar_of_product_chart_graph [CompactSpace N]
   apply Subtype.ext
   exact hg (p.1, p.2.val)
 
+theorem exists_smoothTwoSidedCollar_of_reparametrized_product_chart_graph
+    [CompactSpace N]
+    {E₀ : Type*} [NormedAddCommGroup E₀] [NormedSpace ℝ E₀]
+    {H₀ : Type*} [TopologicalSpace H₀] {I₀ : ModelWithCorners ℝ E₀ H₀}
+    {N₀ : Type*} [TopologicalSpace N₀] [ChartedSpace H₀ N₀]
+    (O : TopologicalSpace.Opens (N × ℝ)) (V : TopologicalSpace.Opens M)
+    (Φ : Diffeomorph (I.prod 𝓘(ℝ)) J O V ∞)
+    (a : N → ℝ) (ha : ContMDiff I 𝓘(ℝ) ∞ a)
+    (hgraph : ∀ p, (p, a p) ∈ O)
+    (e : N₀ → M) (η : Diffeomorph I₀ I N₀ N ∞)
+    (heq : ∀ p, e p = (Φ ⟨(η p, a (η p)), hgraph (η p)⟩ : M))
+    {r : ℝ} (hr : 0 < r) :
+    ∃ c : SmoothTwoSidedCollar I₀ J e,
+      c.radius < r ∧
+      (∀ p t, t ∈ Icc (-c.radius) c.radius → (η p, a (η p) + t) ∈ O) ∧
+      ∀ p : N₀ × symmetricOpenInterval c.radius,
+        ∃ hp : (η p.1, a (η p.1) + (p.2 : ℝ)) ∈ O,
+          c.toFun p = (Φ ⟨(η p.1, a (η p.1) + (p.2 : ℝ)), hp⟩ : M) := by
+  have he : e = fun p ↦ (Φ ⟨(η p, a (η p)), hgraph (η p)⟩ : M) := funext heq
+  subst e
+  obtain ⟨c, hcr, hstrip, hpoint⟩ :=
+    exists_smoothTwoSidedCollar_of_product_chart_graph O V Φ a ha hgraph hr
+  exact ⟨c.reparametrize η, hcr, (fun p t ht ↦ hstrip (η p) t ht),
+    fun p ↦ hpoint (η p.1, p.2)⟩
+
 end DifferentialGeometry.Topology

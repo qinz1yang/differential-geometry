@@ -97,6 +97,30 @@ theorem transAmbientModel_toFun {F' : Type*} [NormedAddCommGroup F'] [NormedSpac
       (h.toDiffeomorph p) = h.toDiffeomorph p
     rfl
 
+variable {E' : Type*} [NormedAddCommGroup E'] [NormedSpace ℝ E']
+variable {H' : Type*} [TopologicalSpace H'] {I' : ModelWithCorners ℝ E' H'}
+variable {S' : Type*} [TopologicalSpace S'] [ChartedSpace H' S']
+
+def reparametrize (d : Diffeomorph I' I S' S ∞) :
+    SmoothTwoSidedCollar I' J (e ∘ d) where
+  radius := h.radius
+  radius_pos := h.radius_pos
+  neighborhood := h.neighborhood
+  toDiffeomorph :=
+    (d.prodCongr (Diffeomorph.refl 𝓘(ℝ) (symmetricOpenInterval h.radius) ∞)).trans
+      h.toDiffeomorph
+  zero_eq := fun s ↦ h.zero_eq (d s)
+
+@[simp] theorem reparametrize_radius (d : Diffeomorph I' I S' S ∞) :
+    (h.reparametrize d).radius = h.radius := rfl
+
+@[simp] theorem reparametrize_neighborhood (d : Diffeomorph I' I S' S ∞) :
+    (h.reparametrize d).neighborhood = h.neighborhood := rfl
+
+@[simp] theorem reparametrize_toFun (d : Diffeomorph I' I S' S ∞)
+    (p : S' × symmetricOpenInterval h.radius) :
+    (h.reparametrize d).toFun p = h.toFun (d p.1, p.2) := rfl
+
 end SmoothTwoSidedCollar
 
 end DifferentialGeometry.Topology
