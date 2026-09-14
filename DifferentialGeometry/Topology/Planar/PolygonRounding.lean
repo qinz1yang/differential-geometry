@@ -827,7 +827,7 @@ open scoped ContDiff Topology
 
 namespace Schoenflies
 
-theorem PrePolygon.exists_relative_compact_rounding
+theorem PrePolygon.exists_normalized_relative_compact_rounding
     {m : ℕ} (P : PrePolygon m) {D L W O : Set Plane}
     (hD : IsCompact D) (hL : IsClosed L) (hW : IsOpen W) (hLW : L ⊆ W)
     (hO : IsOpen O) (hvO : ∀ i, P.vertex i ∉ W → P.vertex i ∈ O)
@@ -837,7 +837,30 @@ theorem PrePolygon.exists_relative_compact_rounding
         ContDiff ℝ ∞ G ∧ fderiv ℝ G p ≠ 0 ∧
         ∀ q ∈ N, (q ∈ D ↔ 0 ≤ G q) ∧
           (q ∈ interior D ↔ 0 < G q) ∧ (q ∈ frontier D ↔ G q = 0)) :
-    ∃ (D' V : Set Plane), IsCompact D' ∧ IsOpen V ∧ L ⊆ V ∧ V ⊆ W ∧
+    let I := {i : ZMod (m + 3) // P.vertex i ∉ W}
+    ∃ (e : I → Plane ≃ᵃ[ℝ] Plane) (U : I → Set Plane) (d σ ε R r : I → ℝ),
+      (∀ i, 0 < r i ∧ e i (P.vertex (i.val - 1)) = Plane.mk (-1) 0 ∧
+        e i (P.vertex (i.val + 1)) = Plane.mk (r i) (d i * r i)) ∧
+      (∀ i, IsOpen (U i) ∧ P.vertex i.val ∈ U i ∧ U i ⊆ Lᶜ ∩ O ∧
+        e i (P.vertex i.val) = 0 ∧ (d i = 0 ∨ d i = 1) ∧
+        (σ i = -1 ∨ σ i = 1) ∧
+        (d i = 0 ↔ Plane.det (P.vertex (i.val - 1) - P.vertex i.val)
+          (P.vertex (i.val + 1) - P.vertex i.val) = 0) ∧ 0 < ε i ∧ 3 * ε i < R i ∧
+        ∀ p ∈ U i, p ∈ D ↔ 0 ≤ σ i * ((e i p) 1 - d i * max ((e i p) 0) 0)) ∧
+      (Pairwise fun i j => Disjoint (U i) (U j)) ∧
+      let N := fun i => e i ⁻¹' ball (0 : Plane) (R i)
+      let K := fun i => e i ⁻¹' closedBall (0 : Plane) (R i)
+      let H := fun i p => σ i * ((e i p) 1 - d i * Real.smoothMax (ε i) ((e i p) 0) 0)
+      let D' := (D \ ⋃ i, N i) ∪ ⋃ i, K i ∩ {p | 0 ≤ H i p}
+      let V := W ∩ (⋃ i, K i)ᶜ
+      (∀ i, P.vertex i.val ∈ N i ∧ IsOpen (N i) ∧ IsCompact (K i) ∧ K i ⊆ U i) ∧
+      (∀ i, ContDiff ℝ ∞ (H i) ∧ (∀ p, fderiv ℝ (H i) p ≠ 0) ∧
+        ∀ p ∈ U i, (p ∈ D' ↔ 0 ≤ H i p) ∧
+          (p ∈ interior D' ↔ 0 < H i p) ∧ (p ∈ frontier D' ↔ H i p = 0)) ∧
+      (∀ p ∉ ⋃ i, K i, (p ∈ D' ↔ p ∈ D) ∧
+        (p ∈ interior D' ↔ p ∈ interior D) ∧
+        (p ∈ frontier D' ↔ p ∈ frontier D)) ∧
+      IsCompact D' ∧ IsOpen V ∧ L ⊆ V ∧ V ⊆ W ∧
       (∀ p ∈ V, (p ∈ D' ↔ p ∈ D) ∧
         (p ∈ interior D' ↔ p ∈ interior D) ∧
         (p ∈ frontier D' ↔ p ∈ frontier D)) ∧
@@ -850,7 +873,7 @@ theorem PrePolygon.exists_relative_compact_rounding
           (q ∈ interior D' ↔ 0 < G q) ∧ (q ∈ frontier D' ↔ G q = 0) := by
   classical
   let I := {i : ZMod (m + 3) // P.vertex i ∉ W}
-  choose e A _ d σ hA _ hiA _ hd hσ he0 _ _ _ hside using
+  choose e A r d σ hA _ hiA hr hd hσ he0 heprev henext hstraight hside using
     (fun i : I => P.exists_affine_vertex_graph_sides i.val)
   have hinj : Function.Injective (fun i : I => P.vertex i.val) :=
     P.vertex_inj.comp Subtype.val_injective
@@ -903,11 +926,49 @@ theorem PrePolygon.exists_relative_compact_rounding
     intro hpK
     obtain ⟨i, hpi⟩ := Set.mem_iUnion.mp hpK
     exact hp ((hU i).2.2 (hKU i hpi)).2
-  refine ⟨D', V, hD', hV, hLV, Set.inter_subset_left,
+  have hsides (i) := regular_region_sides_of_local_eq hD'.isClosed (hU i).1
+    (hH i).continuous (fun p _ _ => hreg i p) (hlocal i)
+  have houter : ∀ p ∉ ⋃ i, K i, (p ∈ D' ↔ p ∈ D) ∧
+      (p ∈ interior D' ↔ p ∈ interior D) ∧
+      (p ∈ frontier D' ↔ p ∈ frontier D) :=
+    region_sides_of_open_local_eq hD.isClosed hD'.isClosed
+      (isCompact_iUnion hK).isClosed.isOpen_compl hout
+  refine ⟨e, U, d, σ, ε, R, r, fun i => ⟨hr i, heprev i, henext i⟩,
+    ?_, hdisj, ?_, ?_, houter, hD', hV, hLV, Set.inter_subset_left,
     region_sides_of_open_local_eq hD.isClosed hD'.isClosed hV heqV, houtside, ?_⟩
-  exact P.regular_frontier_of_partial_replacement hD.isClosed hD'.isClosed
-    hL hLW hold hgood U K H (fun i => (hU i).1) (fun i => (hU i).2.1)
-    hK hKU hH hreg hlocal hout
+  · exact fun i => ⟨(hU i).1, (hU i).2.1,
+      fun p hp => ⟨((hU i).2.2 hp).1.2, ((hU i).2.2 hp).2⟩,
+      hea i, hd i, hσ i, hstraight i, hε i, hεR i, hsideD i⟩
+  · exact fun i => ⟨(hround i).1, hN i, hK i, hKU i⟩
+  · exact fun i => ⟨hH i, hreg i, fun p hp => ⟨hlocal i p hp, hsides i p hp⟩⟩
+  · exact P.regular_frontier_of_partial_replacement hD.isClosed hD'.isClosed
+      hL hLW hold hgood U K H (fun i => (hU i).1) (fun i => (hU i).2.1)
+      hK hKU hH hreg hlocal hout
+
+theorem PrePolygon.exists_relative_compact_rounding
+    {m : ℕ} (P : PrePolygon m) {D L W O : Set Plane}
+    (hD : IsCompact D) (hL : IsClosed L) (hW : IsOpen W) (hLW : L ⊆ W)
+    (hO : IsOpen O) (hvO : ∀ i, P.vertex i ∉ W → P.vertex i ∈ O)
+    (hold : ∀ p ∉ L, p ∈ D ↔ p ∈ closure (inside P.carrier))
+    (hgood : ∀ p ∈ frontier D, p ∈ W →
+      ∃ (N : Set Plane) (G : Plane → ℝ), IsOpen N ∧ p ∈ N ∧
+        ContDiff ℝ ∞ G ∧ fderiv ℝ G p ≠ 0 ∧
+        ∀ q ∈ N, (q ∈ D ↔ 0 ≤ G q) ∧
+          (q ∈ interior D ↔ 0 < G q) ∧ (q ∈ frontier D ↔ G q = 0)) :
+    ∃ (D' V : Set Plane), IsCompact D' ∧ IsOpen V ∧ L ⊆ V ∧ V ⊆ W ∧
+      (∀ p ∈ V, (p ∈ D' ↔ p ∈ D) ∧
+        (p ∈ interior D' ↔ p ∈ interior D) ∧
+        (p ∈ frontier D' ↔ p ∈ frontier D)) ∧
+      (∀ p ∉ O, (p ∈ D' ↔ p ∈ D) ∧
+        (p ∈ interior D' ↔ p ∈ interior D) ∧
+        (p ∈ frontier D' ↔ p ∈ frontier D)) ∧
+      ∀ p ∈ frontier D', ∃ (N : Set Plane) (G : Plane → ℝ),
+        IsOpen N ∧ p ∈ N ∧ ContDiff ℝ ∞ G ∧ fderiv ℝ G p ≠ 0 ∧
+        ∀ q ∈ N, (q ∈ D' ↔ 0 ≤ G q) ∧
+          (q ∈ interior D' ↔ 0 < G q) ∧ (q ∈ frontier D' ↔ G q = 0) := by
+  obtain ⟨e, U, d, σ, ε, R, r, _, _, _, _, _, _, hround⟩ :=
+    P.exists_normalized_relative_compact_rounding hD hL hW hLW hO hvO hold hgood
+  exact ⟨_, _, hround⟩
 
 end Schoenflies
 
