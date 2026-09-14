@@ -128,39 +128,23 @@ theorem graph_second_derivative_norm_sq_parabolic_eq {f : ℝ → ℝ → E} {U 
   have hpe : ∀ᶠ y in 𝓝 x, DifferentiableAt ℝ (fun z => p z t) y := by
     filter_upwards [hU.mem_nhds hx] with y hy
     exact (hps y hy).differentiableAt (by simp)
-  have hqe : ∀ᶠ y in 𝓝 x, DifferentiableAt ℝ (fun z => q z t) y := by
-    filter_upwards [hU.mem_nhds hx] with y hy
-    exact (hqs y hy).differentiableAt (by simp)
-  have hqxx : DifferentiableAt ℝ (deriv (fun y => q y t)) x :=
-    ((hqs x hx).derivWithin (m := ∞) (by simp)).differentiableAt (by simp)
-  have hqt : DifferentiableAt ℝ (fun s => q x s) t :=
-    ((hqat x hx).comp t (contDiffAt_const.prodMk contDiffAt_id)).differentiableAt (by simp)
   have hacd : ContDiffAt ℝ ∞ a x :=
     (contDiffAt_const.add ((hps x hx).norm_sq ℝ)).inv (by positivity : 1 + ‖p x t‖ ^ 2 ≠ 0)
-  have hprod := iteratedDerivWithin_smul (n := 2) (Set.mem_univ x) uniqueDiffOn_univ
-    (hacd.of_le (by exact WithTop.coe_le_coe.mpr le_top)).contDiffWithinAt
-    ((hqs x hx).of_le (by exact WithTop.coe_le_coe.mpr le_top)).contDiffWithinAt
-  simp only [iteratedDerivWithin_univ] at hprod
-  norm_num [Finset.sum_range_succ, iteratedDeriv_succ, iteratedDeriv_zero] at hprod
-  have hpeq : (fun y => deriv (fun s => f y s) t) =ᶠ[𝓝 x]
-      (fun y => a y • q y t) := by
-    filter_upwards [hU.mem_nhds hx] with y hy
-    exact heq y hy t ht
-  have hcomm : deriv (fun s => q x s) t = deriv (deriv (fun y => a y • q y t)) x :=
-    (deriv_deriv_deriv_time_comm hU hV hf hx ht).trans hpeq.deriv.deriv_eq
+  have hnorm := second_derivative_norm_sq_parabolic_eq (b := fun _ _ => (0 : E))
+    (a := fun y s => graphDiffusionCoefficient (p y s)) hU hV hf
+    (fun y hy s hs => by simpa only [add_zero] using heq y hy s hs) hx ht
+    (hacd.of_le (by exact WithTop.coe_le_coe.mpr le_top)) contDiffAt_const
   have ha' := (hasDerivAt_graphDiffusionCoefficient hpe.self_of_nhds.hasDerivAt).deriv
   have ha'' := (hasDerivAt_deriv_graphDiffusionCoefficient hpe
     ((hqs x hx).differentiableAt (by simp))).deriv
   change deriv (fun s => ‖q x s‖ ^ 2) t - a x *
     deriv (deriv (fun y => ‖q y t‖ ^ 2)) x = _
-  rw [norm_sq_parabolic_eq hqe hqxx hqt, hcomm]
-  change deriv (deriv (fun y => a y • q y t)) x = _ at hprod
-  rw [hprod]
+  rw [hnorm]
   change deriv a x = -2 * a x ^ 2 * ⟪p x t, q x t⟫_ℝ at ha'
   change deriv (deriv a) x = 8 * a x ^ 3 * ⟪p x t, q x t⟫_ℝ ^ 2 -
     2 * a x ^ 2 * (‖q x t‖ ^ 2 + ⟪p x t, deriv (fun y => q y t) x⟫_ℝ) at ha''
   rw [ha', ha'']
-  simp only [inner_sub_right, inner_add_right, real_inner_smul_right, real_inner_self_eq_norm_sq, two_smul]
+  simp only [deriv_const', deriv_const, inner_zero_right, add_zero, mul_zero]
   dsimp [a, p, q]
   ring
 
