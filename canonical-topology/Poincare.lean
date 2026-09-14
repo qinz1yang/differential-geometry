@@ -60,6 +60,7 @@ import Poincare.Topology.Homology.PathChains
 import Poincare.Topology.Homology.PathCones
 import Poincare.Topology.Homology.PathEvaluation
 import Poincare.Topology.Homology.RadialHomotopy
+import Poincare.Topology.Homology.RealLocalDuality
 import Poincare.Topology.Homology.ReducedZero
 import Poincare.Topology.Homology.Relative
 import Poincare.Topology.Homology.RelativeCapCohomologyConnecting

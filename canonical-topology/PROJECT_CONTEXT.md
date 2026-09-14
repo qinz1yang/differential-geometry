@@ -6,22 +6,29 @@ library is `Poincare`; its sources retain the original mathematical namespaces.
 
 The source baseline is the recovered Chapter 35 commit
 `b45bfa009368c8f5f531e10f4f5280e90079d6ad`, supplemented by recovered working-tree
-proofs with separately recorded provenance. This checkpoint includes 136 modules
-and 152 curated tracked added public exports. The latest addition proves
-bijectivity of actual relative homology and cohomology pair maps from
-bijectivity of the actual ambient and subspace maps in every degree. Its
-consumer compares the unit-sphere pair with the punctured-space pair using
-the identity and the original radial homotopy equivalence, including rank zero.
+proofs with separately recorded provenance. This checkpoint includes 137 modules
+and 154 curated tracked added public exports. The latest addition constructs
+unique normalized local H1(R,R\{0};Z) class with boundary [+1]-[-1] and bijective
+actual cap map from relative H¹ to absolute H₀. It reuses two-point cap duality,
+actual sphere-to-puncture comparison, and the original connecting maps.
+The accompanying natural pair-map theorem transports cap bijectivity with
+the actual pushed-forward homology class. The consumer forces the produced
+class nonzero and distinct from its negative, and verifies both cap signs.
 
-Final request `1789346230320663951-topology_checkpoint-74c7df20` passed in
-Slurm 13846673 in 165.33 seconds, with 565 guards and 267 signature/axiom pairs.
-All 264 preceding pairs are byte-identical. All three new original pairs match
-source exactly; portable types differ only by `Set.MapsTo` qualification, and
-axiom readbacks are identical. RelativeComparison and root freshly compiled
-in 1:11.03, maximum RSS 1,825,392 KiB, with zero diagnostics. All 135 earlier
-leaf sources remain byte-identical. Stock linters and standard-only transitive
-axioms pass. Dependency pins and deferred inputs are unchanged. General
+Final request `1789348676973246883-topology_checkpoint-646e24a8` passed in
+Slurm13846673 in254.03s with577guards270signature/axiom pairs. All267 preceding
+pairs are byte-identical. New original/portable types differ only in
+Set.MapsTo qualification and whitespace. The standalone generic source grouped
+X/Y before instances; the final inherited module scope orders X/instance/Y/instance.
+Both real-line source types and all axiom readbacks are unchanged. Two changed
+leaves, two affected cap modules and root freshly compiled in2:35.63,
+maximum RSS1,885,652KiB, zero diagnostics. All135 other preceding leaves are
+unchanged. Strict source and stock declaration linters and standard-only
+transitive axioms pass. Pins and deferred inputs are unchanged. General
 manifold duality and the native orientation producer remain open.
+
+The preceding actual relative homology/cohomology comparison theorem and its
+sphere-to-puncture consumer retain their exact statements and bodies.
 
 The preceding empty-pair cohomology equivalence and its actual forward-map
 equation retain their exact statements and bodies.

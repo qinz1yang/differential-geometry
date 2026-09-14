@@ -1,11 +1,15 @@
 # Local homology and global classes from coherent local generators
 
 This separate `PoincareLean` project contains a dependency-closed checkpoint of
-136 Poincare modules. It extends the recovered Chapter 35 source at commit
+137 Poincare modules. It extends the recovered Chapter 35 source at commit
 `b45bfa009368c8f5f531e10f4f5280e90079d6ad` and preserves its mathematical objects
 and `Poincare` namespaces. `Poincare.lean` imports every included leaf.
 
 The additions prove:
+
+- a unique actual local H1 class of the real line normalized by boundary
+  [+1] minus [-1], with bijective relative H¹ to absolute H₀ cap map, and
+  transport of cap bijectivity by the actual maps of pairs;
 
 - bijectivity of the actual relative homology and cohomology pair maps when
   the ambient and subspace maps induce bijections in every degree;
@@ -860,7 +864,7 @@ suite, general manifold duality and native orientation producer remain open.
 
 ## Relative homology and cohomology comparison
 
-The current checkpoint contains 136 leaves and 152 curated tracked added public
+That checkpoint contained 136 leaves and 152 curated tracked added public
 exports. `RelativeComparison` proves that the original relative homology and
 cohomology maps of a continuous map of pairs are bijective when its actual
 ambient and subspace maps are bijective in every degree. The proof uses the
@@ -885,3 +889,40 @@ axiom readbacks. The new leaf and root freshly compiled in 1:11.03, maximum
 RSS 1,825,392 KiB, with zero diagnostics. All 135 earlier leaf sources are
 unchanged. Stock linters and standard-only transitive axioms pass. General
 manifold duality, native orientation and the full canonical suite remain open.
+
+
+## Real-line local cap duality
+
+The current checkpoint contains 137 leaves and 154 curated tracked added public
+exports. `exists_unique_real_local_cap_bijective` produces the unique class in
+actual H1(R, R\{0}; Z) whose boundary is [+1] minus [-1] and whose actual cap
+map from relative H¹ to absolute H₀ is bijective. The proof compares the
+unit-sphere pair {-1,+1} with the punctured-line pair through the identity,
+using the original radial homotopy equivalence, the proved two-point cap
+calculation, and the original connecting-map naturality and injectivity.
+
+The generic `integralRelativeCohomologyCapToAbsolute_bijective_map` transports
+cap bijectivity along the actual pair map, with the homology class equal to
+its actual pushforward. It assumes bijectivity of the relevant ordinary
+homology and relative cohomology maps. The external real-line consumer
+forces the produced class to be nonzero and distinct from its negative;
+cap against the negative class is also bijective.
+
+Source request `1789348336408768804-topology-223216fb` passed in 23.67 seconds
+with 157 guards and 4 pairs. Original imported request
+`1789348458762407886-topology-1cbf98d6` passed in 157.30 seconds with 156 guards
+and 3 pairs. Final portable request
+`1789348676973246883-topology_checkpoint-646e24a8` passed in Slurm 13846673
+in 254.03 seconds with 577 guards and 270 pairs. All 267 previous pairs remain
+byte-identical. The three original and portable new types match modulo only
+Set.MapsTo qualification and whitespace; axiom readbacks are exact. The
+standalone source generic theorem grouped X/Y before their instances, while
+the final module inherits X/instance/Y/instance order; the mathematical inputs
+are unchanged. Both real-line source types are unchanged.
+
+RealLocalDuality, RelativeCapToAbsoluteHomology, the two affected cap modules
+and the root freshly compiled in 2:35.63, maximum RSS 1,885,652 KiB, with zero
+diagnostics. The other 135 prior leaf sources are unchanged. Strict source
+and stock declaration linters and standard-only transitive axioms pass.
+This proves a local one-dimensional duality case; general manifold duality,
+native orientation and the full canonical topology suite remain open.
