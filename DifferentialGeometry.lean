@@ -3192,6 +3192,7 @@ import DifferentialGeometry.Topology.Embedding.SliceChart
 import DifferentialGeometry.Topology.Embedding.LocalSeparation
 import DifferentialGeometry.Topology.Embedding.Sphere
 import DifferentialGeometry.Topology.Handle.Embedding
+import DifferentialGeometry.Topology.Handle.Rescaling
 import DifferentialGeometry.Topology.Handle.BallIsotopy
 import DifferentialGeometry.Topology.ThreeManifold.schoenflies
 import DifferentialGeometry.Topology.Covering.Basic
