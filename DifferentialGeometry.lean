@@ -3194,6 +3194,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.AtomWeight
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.AtomWeights.Convergence
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.AtomWeights.SmoothLimit
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.AtomWeights.Subsequence
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CenterMap.ClassOneReplay
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CenterMap.Construction.ChartSolution
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CenterMap.Construction.Extension
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CenterMap.Construction.Fill
@@ -5296,6 +5297,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborho
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ConeConvergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHornDirectionCompactness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHornEndAngleMonotone
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHornEndFrontier
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHornEndpoint
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHornDefs
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHornGeometry
@@ -5628,6 +5630,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.KLim
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.KLimMetricTimeControl
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.KLimNormalization
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.KLimPositiveTerminalBounded
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.KLimSeedCollapseInputs
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.KLimSelectedFlowCompactness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.KLimSelectedInjectivity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.KLimSelectedLimitGeometry
@@ -6764,6 +6767,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CollapseDeg
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.Comparison
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ComparisonClassDegreeData
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ComparisonDefs
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ComparisonResidualFrontier
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ComparisonSupportRegion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ComponentPathConnected
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ControlledExtinction
