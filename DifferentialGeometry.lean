@@ -170,6 +170,7 @@ import DifferentialGeometry.Analysis.Calculus.TimeJet.EndpointJets
 import DifferentialGeometry.Analysis.Calculus.TimeJet.EndpointTower
 import DifferentialGeometry.Analysis.Calculus.TimeJet.Evolution
 import DifferentialGeometry.Analysis.Calculus.TimeJet.Matching
+import DifferentialGeometry.Analysis.Calculus.TimeJet.PartialDerivatives
 import DifferentialGeometry.Analysis.Calculus.TimeJet.PolynomialEvolution
 import DifferentialGeometry.Analysis.Calculus.TimeJet.SliceBootstrap
 import DifferentialGeometry.Analysis.Calculus.TimeJet.SliceSwap
