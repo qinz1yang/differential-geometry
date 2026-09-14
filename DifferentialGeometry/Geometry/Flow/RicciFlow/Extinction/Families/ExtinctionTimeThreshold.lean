@@ -1,8 +1,11 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.TowerExtinctionBound
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ExtinctionBound
 
 set_option autoImplicit false
 
 noncomputable section
+
+open Set
 
 open scoped Topology Manifold
 
@@ -67,6 +70,83 @@ theorem not_extinctBy_extinctionThreshold_zero (T : ObservationTower P g) {c : �
     ¬ T.ExtinctBy (extinctionThreshold c 0) :=
   T.not_extinctBy_extinctionThreshold_of_nonpos (by
     rw [(extinctionThreshold_eq_zero_iff hc le_rfl).mpr rfl])
+
+theorem time_last_le_extinctionThreshold_of_uniformRecordsAbove (T : ObservationTower P g)
+    {c A b : ℝ} (hB0 : 0 ≤ extinctionThreshold c A) (hrec : T.UniformRecordsAbove c A)
+    (hb : 0 < b) :
+    (T.observe b hb.le).time (Fin.last (T.observe b hb.le).eventCount) ≤
+      extinctionThreshold c A := by
+  have habove : T.ExtinctAbove (extinctionThreshold c A) :=
+    T.extinctAbove_extinctionThreshold_of_uniformRecordsAbove hrec
+  refine ObservedHistory.time_last_le_of_nonemptySliceBounded (T.observe b hb.le) hB0 ?_
+  intro t hne
+  have hsub : t = (⟨t.1, t.2.1, t.2.2⟩ : Icc (0 : ℝ) (T.observe b hb.le).horizon) :=
+    Subtype.ext rfl
+  rw [hsub] at hne
+  by_contra hnot
+  have ht : extinctionThreshold c A < t.1 := lt_of_not_ge hnot
+  have ht0 : 0 < t.1 := lt_of_le_of_lt hB0 ht
+  have hstage := T.observe_slice_stage t.1 b ht0.le hb.le t.2.2 ⟨t.1, t.2.1, le_rfl⟩
+  have haccess : (T.observe t.1 ht0.le).activeStage ⟨t.1, t.2.1, le_rfl⟩ =
+      Fin.last (T.observe t.1 ht0.le).eventCount :=
+    ObservedHistory.activeStage_at_horizon (T.observe t.1 ht0.le)
+  have hslice : IsEmpty ((T.observe t.1 ht0.le).stageAt ⟨t.1, t.2.1, le_rfl⟩).Carrier := by
+    change IsEmpty ((T.observe t.1 ht0.le).stage
+      ((T.observe t.1 ht0.le).activeStage ⟨t.1, t.2.1, le_rfl⟩)).Carrier
+    rw [haccess]
+    exact habove t.1 ht0 ht
+  exact (not_nonempty_iff.mpr (hstage ▸ hslice)) hne
+
+theorem extinctBy_extinctionThreshold_of_uniformRecordsAbove_of_nonempty
+    (T : ObservationTower P g) [Nonempty P.Carrier] {c A : ℝ} (hc : 0 < c) (hA : 0 ≤ A)
+    (hrec : T.UniformRecordsAbove c A) :
+    T.ExtinctBy (extinctionThreshold c A) := by
+  have hB0 : 0 ≤ extinctionThreshold c A := extinctionThreshold_nonneg hc hA
+  have habove : T.ExtinctAbove (extinctionThreshold c A) :=
+    T.extinctAbove_extinctionThreshold_of_uniformRecordsAbove hrec
+  have hb : 0 < max 1 (extinctionThreshold c A + 1) :=
+    lt_of_lt_of_le one_pos (le_max_left 1 (extinctionThreshold c A + 1))
+  have hlt : extinctionThreshold c A < max 1 (extinctionThreshold c A + 1) :=
+    lt_of_lt_of_le (lt_add_one (extinctionThreshold c A))
+      (le_max_right 1 (extinctionThreshold c A + 1))
+  let H := T.observe (max 1 (extinctionThreshold c A + 1)) hb.le
+  have hemptyH : IsEmpty (H.stage (Fin.last H.eventCount)).Carrier :=
+    habove (max 1 (extinctionThreshold c A + 1)) hb hlt
+  have hstage0 : Nonempty (H.stage 0).Carrier :=
+    (T.observeInitial (max 1 (extinctionThreshold c A + 1)) hb.le).initial_nonempty
+  have hn : 0 < H.eventCount := @ObservedHistory.eventCount_pos_of_final_empty H hstage0 hemptyH
+  have hbnd : H.time (Fin.last H.eventCount) ≤ extinctionThreshold c A :=
+    T.time_last_le_extinctionThreshold_of_uniformRecordsAbove hB0 hrec hb
+  have hTb : H.time (Fin.last H.eventCount) ≤ max 1 (extinctionThreshold c A + 1) :=
+    H.time_le_horizon_at (Fin.last H.eventCount)
+  have hIsExt : ObservedHistory.IsExtinctAtHorizon
+      (H.restrict ⟨H.time (Fin.last H.eventCount), H.time_nonneg _, hTb⟩) := by
+    change IsEmpty ((H.restrict ⟨H.time (Fin.last H.eventCount), H.time_nonneg _, hTb⟩).stage
+      (Fin.last (H.restrict ⟨H.time (Fin.last H.eventCount), H.time_nonneg _,
+        hTb⟩).eventCount)).Carrier
+    rw [← ObservedHistory.activeStage_at_horizon
+      (H.restrict ⟨H.time (Fin.last H.eventCount), H.time_nonneg _, hTb⟩)]
+    change IsEmpty ((H.restrict ⟨H.time (Fin.last H.eventCount), H.time_nonneg _, hTb⟩).stageAt
+      ⟨H.time (Fin.last H.eventCount), H.time_nonneg _, le_rfl⟩).Carrier
+    rw [ObservedHistory.restrict_stageAt H
+      ⟨H.time (Fin.last H.eventCount), H.time_nonneg _, hTb⟩
+      ⟨H.time (Fin.last H.eventCount), H.time_nonneg _,
+        le_rfl⟩]
+    rw [show H.stageAt ⟨H.time (Fin.last H.eventCount), H.time_nonneg _, hTb⟩ =
+      H.stage (Fin.last H.eventCount) from
+      congrArg H.stage (H.activeStage_at_time (Fin.last H.eventCount))]
+    exact hemptyH
+  exact ⟨H.time (Fin.last H.eventCount), H.last_time_pos hn, hbnd,
+    (ObservedHistory.isExtinctAtHorizon_iff_of_samePresentation
+      (T.observe_restrict (H.time (Fin.last H.eventCount)) (max 1 (extinctionThreshold c A + 1))
+        (H.time_nonneg _) hb.le hTb)).mp hIsExt⟩
+
+theorem uniformRecordsAbove_iff_extinctBy_extinctionThreshold (T : ObservationTower P g)
+    [Nonempty P.Carrier] {c A : ℝ} (hc : 0 < c) (hA : 0 ≤ A) :
+    T.UniformRecordsAbove c A ↔ T.ExtinctBy (extinctionThreshold c A) :=
+  ⟨fun h => T.extinctBy_extinctionThreshold_of_uniformRecordsAbove_of_nonempty hc hA h,
+    fun h => T.uniformRecordsAbove_of_extinctAbove_extinctionThreshold
+      (T.extinctAbove_of_extinctBy h)⟩
 
 def RecordsAtEveryPositiveHorizon (T : ObservationTower P g) (c A : ℝ) : Prop :=
   ∀ (b : ℝ) (hb : 0 < b),

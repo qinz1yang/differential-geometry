@@ -5010,8 +5010,10 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.P
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Product
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProductCoveringDerivative
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProductCoveringMap
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProductCurveFieldRegularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProductCurveSmoothLift
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProductGeometry
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProductSolutionIffContinuous
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProductSolutionReduction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Projection
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProjectionFrontier
@@ -5072,6 +5074,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.SliceReg
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.TowerExtinction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.TowerExtinctionBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.TowerExtinctionHorizon
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.TowerExtinctionLevel
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.TowerWidthExtinction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.UniformRampFrontier
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.CalculusBackground
@@ -5106,6 +5109,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.PlateauClas
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.PlateauClassicalExistence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.PlateauBridge
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.PlateauDiskDensityEquivalence
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.PlateauDiskDensitySmoothTrace
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.PlateauUpperComparisonAttainment
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.PlateauUpperComparisonDensity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.PlateauMorreyFrontier
@@ -6700,6 +6704,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.Fundamental
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.FundamentalClassDisconnectedObstruction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.FundamentalClassNoncompactDuality
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.GeometricCutoff
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.GeometricCutoffFrontier
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HextBoundaryFrameReduction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.History
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryAncestry
@@ -6742,6 +6747,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.PuncturedDu
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.PuncturedVanishingHypotheses
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.Recenter
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.RecenterAux
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.RetainedCoreExtinctHistory
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.RetainedCoreTower
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.RetainedCorePresentation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.RetainedCoreUniformRecords
@@ -9184,6 +9190,7 @@ import DifferentialGeometry.Topology.ThreeManifold.CutCapGluingPresentation
 import DifferentialGeometry.Topology.ThreeManifold.CutCapIncidence
 import DifferentialGeometry.Topology.ThreeManifold.CutCapDecompositionAssembly
 import DifferentialGeometry.Topology.ThreeManifold.CutCapFactorNormalization
+import DifferentialGeometry.Topology.ThreeManifold.CutCapFrontierCanonicalReduction
 import DifferentialGeometry.Topology.ThreeManifold.CutCapGraphSumFrontier
 import DifferentialGeometry.Topology.ThreeManifold.CutCapIncidenceCycleRank
 import DifferentialGeometry.Topology.ThreeManifold.CutCapLocalReconstructionReduction
@@ -9205,6 +9212,7 @@ import DifferentialGeometry.Topology.ThreeManifold.PoincareStandardSumClosed
 import DifferentialGeometry.Topology.ThreeManifold.PoincareStandardSumClosedAssociative
 import DifferentialGeometry.Topology.ThreeManifold.SmoothSchoenflies
 import DifferentialGeometry.Topology.ThreeManifold.SmoothSchoenfliesBallFillingFrontier
+import DifferentialGeometry.Topology.ThreeManifold.SmoothSchoenfliesCanonicalForm
 import DifferentialGeometry.Topology.ThreeManifold.SmoothSchoenfliesObstruction
 import DifferentialGeometry.Topology.ThreeManifold.SmoothSchoenfliesCore
 import DifferentialGeometry.Topology.ThreeManifold.SmoothSchoenfliesFrontier
