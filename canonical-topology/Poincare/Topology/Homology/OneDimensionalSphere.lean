@@ -1,7 +1,7 @@
 import Poincare.Topology.Homology.SpherePuncture
 import Mathlib.Analysis.InnerProductSpace.Projection.FiniteDimensional
 
-/-! # The actual unit sphere of a one-dimensional real inner product space -/
+/-! # The actual unit sphere of a one-dimensional real normed space -/
 
 noncomputable section
 
@@ -11,13 +11,13 @@ universe u
 
 namespace Poincare.Topology
 
-variable {E : Type u} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
-  [FiniteDimensional ℝ E]
+variable {E : Type u} [NormedAddCommGroup E] [NormedSpace ℝ E]
 
 /-- In dimension one, the actual unit sphere consists precisely of the
 specified unit vector and its antipode. -/
 theorem oneDimUnitSphere_eq_or_antipode (hd : finrank ℝ E = 1)
     (v x : sphere (0 : E) 1) : x = v ∨ x = -v := by
+  let : FiniteDimensional ℝ E := Module.finite_of_finrank_eq_succ hd
   have hv : (v : E) ≠ 0 := by
     intro h
     have hn := norm_eq_of_mem_sphere v

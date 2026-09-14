@@ -1,3 +1,4 @@
+import Poincare.Topology.Homology.LocalHomology
 import Poincare.Topology.Homology.SmallHomology
 import Mathlib.Algebra.Homology.DerivedCategory.KProjective
 import Poincare.Topology.Homology.CochainHomotopy
@@ -288,6 +289,26 @@ theorem integralRelativeCohomologyMap_openExcision
   exact (ConcreteCategory.isIso_iff_bijective _).mp (inferInstanceAs (IsIso
     (HomologicalComplex.homologyMap (integralRelativeCochainMap (singularSubspaceInclusion B)
       (subspaceIntersection_mapsTo A B)) n)))
+
+theorem integralRelativeCohomologyMap_point_neighborhood_bijective
+    {X : Type u} [TopologicalSpace X] [T1Space X] (n : ℕ) (x : X)
+    (U : Set X) (hU : IsOpen U) (hx : x ∈ U) :
+    Function.Bijective (integralRelativeCohomologyMap n (singularSubspaceInclusion U)
+      (neighborhoodPointComplement_mapsTo x U hx)) := by
+  have hcover : ({x}ᶜ : Set X) ∪ U = univ := by
+    apply eq_univ_of_forall
+    intro y
+    by_cases hy : y = x
+    · exact Or.inr (hy.symm ▸ hx)
+    · exact Or.inl hy
+  have h := integralRelativeCohomologyMap_openExcision n ({x}ᶜ : Set X) U
+    isOpen_compl_singleton hU hcover
+  have H : ∀ hf : MapsTo (singularSubspaceInclusion U)
+      (subspaceIntersection ({x}ᶜ : Set X) U) ({x}ᶜ : Set X),
+      Function.Bijective (integralRelativeCohomologyMap n (singularSubspaceInclusion U) hf) :=
+    fun _ => h
+  rw [subspaceIntersection_point_complement x U hx] at H
+  exact H _
 
 end Poincare.Topology
 

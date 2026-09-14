@@ -144,3 +144,6 @@ import Poincare.Topology.LoopSpace.SimplyConnectedTarget
 import Poincare.Topology.LoopSpace.SpanningDisk
 import Poincare.Topology.Manifold.TangentOrientation
 import Poincare.LinearAlgebra.Orientation
+import Poincare.Algebra.Pairing
+import Poincare.Topology.Homology.ManifoldLocalCapDuality
+import Poincare.Topology.Homology.OneDimensionalLocalCapDuality

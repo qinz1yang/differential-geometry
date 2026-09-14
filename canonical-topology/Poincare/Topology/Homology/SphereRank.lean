@@ -12,14 +12,29 @@ universe u
 
 namespace Poincare.Topology
 
-variable {E : Type u} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
-  [FiniteDimensional ℝ E]
+variable {E : Type u} [NormedAddCommGroup E]
+
+section
+
+variable [NormedSpace ℝ E]
 
 /-- Positive actual dimension supplies an actual unit vector. -/
 def unitSpherePointOfFinrankPos (h : 0 < finrank ℝ E) : sphere (0 : E) 1 := by
   letI := Module.nontrivial_of_finrank_pos h
   exact ⟨(NormedSpace.sphere_nonempty (E := E) (x := 0)).mpr (by norm_num) |>.choose,
     (NormedSpace.sphere_nonempty (E := E) (x := 0)).mpr (by norm_num) |>.choose_spec⟩
+
+/-- The actual reduced H0 of a zero-sphere is Z, with a proved two-point
+model and the normalized original augmentation. -/
+def integralZeroSphereReducedEquiv (hd : finrank ℝ E = 1) :
+    integralReducedHomologyZero (sphere (0 : E) 1) ≃ₗ[ℤ] ℤ := by
+  let v := unitSpherePointOfFinrankPos (E := E) (by omega)
+  letI := oneDimUnitSphere_finite hd v
+  exact integralTwoPointReducedZeroEquiv (oneDimUnitSphereEquivBool hd v)
+
+end
+
+variable [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
 
 omit [FiniteDimensional ℝ E] in
 /-- Passing to the actual pole hyperplane lowers dimension by exactly one. -/
@@ -38,13 +53,5 @@ theorem unitSphere_pathConnected_of_finrank (hd : 1 < finrank ℝ E) :
   apply unitSphere_pathConnected_of_rank
   rw [← finrank_eq_rank ℝ E]
   exact_mod_cast hd
-
-/-- The actual reduced H0 of a zero-sphere is Z, with a proved two-point
-model and the normalized original augmentation. -/
-def integralZeroSphereReducedEquiv (hd : finrank ℝ E = 1) :
-    integralReducedHomologyZero (sphere (0 : E) 1) ≃ₗ[ℤ] ℤ := by
-  let v := unitSpherePointOfFinrankPos (E := E) (by omega)
-  letI := oneDimUnitSphere_finite hd v
-  exact integralTwoPointReducedZeroEquiv (oneDimUnitSphereEquivBool hd v)
 
 end Poincare.Topology

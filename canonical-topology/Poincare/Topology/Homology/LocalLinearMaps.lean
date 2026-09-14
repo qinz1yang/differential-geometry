@@ -545,7 +545,7 @@ private def unitSphereNegation : C(sphere (0 : E) 1, sphere (0 : E) 1) :=
   ⟨fun x => -x, by fun_prop⟩
 
 private theorem integralReducedZeroMap_oneDimSphere_neg
-    [FiniteDimensional ℝ E] (hd : finrank ℝ E = 1)
+    (hd : finrank ℝ E = 1)
     (a : integralReducedHomologyZero (sphere (0 : E) 1)) :
     integralSingularHomologyMap 0 (unitSphereNegation (E := E)) a.val = -a.val := by
   let := Module.nontrivial_of_finrank_pos (show 0 < finrank ℝ E by omega)

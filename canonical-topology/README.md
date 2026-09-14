@@ -1,11 +1,16 @@
 # Local homology and global classes from coherent local generators
 
 This separate `PoincareLean` project contains a dependency-closed checkpoint of
-146 Poincare modules. It extends the recovered Chapter 35 source at commit
+149 Poincare modules. It extends the recovered Chapter 35 source at commit
 `b45bfa009368c8f5f531e10f4f5280e90079d6ad` and preserves its mathematical objects
 and `Poincare` namespaces. `Poincare.lean` imports every included leaf.
 
 The additions prove:
+
+- bijectivity of the actual top-degree local integral cap product at every local
+  generator on finite-dimensional real normed spaces and preconnected manifolds
+  with native charts, including ranks zero and one. On a compact simply connected
+  C1 manifold, one actual global generator supplies every local cap argument;
 
 - one actual top integral homology generator on a compact simply connected
   Hausdorff C1 manifold without boundary, with generator laws at every actual
@@ -1248,3 +1253,32 @@ negation and exclusion of the opposite orientation are checked, along with
 actual local and global class consumers and every preceding regression probe.
 The coherent native orientation producer, outward normalization, general
 manifold duality and the missing frozen contract remain open.
+
+
+## Local cap product at arbitrary integral generators
+
+The checkpoint contains 149 modules and 194 curated added public exports.
+The model theorem includes ranks zero and one; the manifold theorem uses actual
+neighborhood excision and chart maps, and retains the prescribed local class.
+The existing simply connected global-generator theorem supplies all local cap
+bijections for the same global class. The shared integer-pairing proofs now live
+in their algebraic topic home; six sphere interfaces use weaker normed-space
+assumptions. Existing public cap corollaries keep their types.
+
+Final original request `1789412261080365406-topology-eb9a1787` passed in 83.91 seconds
+with 1085 guards and 66 signature/axiom pairs. Portable request
+`1789412261238405352-topology_checkpoint-b0e4ea6f` passed in 142.01 seconds with
+1373 guards and 380 pairs, in Slurm 13879784. Initial compilation of all 29 affected
+leaves and the portable root was silent. After removing one newly redundant
+private finite-dimension binder, all four affected leaves and the portable root
+were freshly compiled again in 58.40 seconds, maximum RSS 2,075,972 KiB, with zero
+diagnostics. The other 25 affected leaves retain their unchanged fresh evidence.
+
+All 353 preceding portable and 37 preceding original readback pairs are
+byte-identical. Source/import comparisons also verified the eight new public
+interfaces, six generalizations and actual consumer probes. Five readback
+presentations differ only by explicitly reviewed variable renaming or independent
+binder order; transitive axioms agree. Stock declaration linters and strict source
+checks pass. All 137 preceding unedited leaves retain their exact bytes.
+Outward normalization, general manifold duality and the missing frozen canonical
+topology contract remain open.

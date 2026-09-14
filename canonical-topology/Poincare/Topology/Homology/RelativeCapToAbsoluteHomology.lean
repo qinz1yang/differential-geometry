@@ -284,6 +284,30 @@ theorem integralRelativeCohomologyCapToAbsolute_natural (k m : ℕ)
   exact congrArg (fun L : (integralRelativeChains A).X (k + m) →ₗ[ℤ]
     (integralSingularChains Y).X m => L c.val) (integralRelativeCapProductToAbsolute_natural k m f hf φ.val)
 
+theorem integralRelativeCohomologyCapToAbsolute_bijective_map_iff
+    (k m : ℕ) (f : ContinuousMap X Y) {A : Set X} {B : Set Y}
+    (hf : Set.MapsTo f A B)
+    (habs : Function.Bijective (integralSingularHomologyMap m f))
+    (hcoh : Function.Bijective (integralRelativeCohomologyMap k f hf))
+    (c : integralRelativeHomology (k + m) A) :
+    Function.Bijective (fun β : integralRelativeCohomology k B =>
+      integralRelativeCohomologyCapToAbsolute B k m β
+        (integralRelativeHomologyMap (k + m) f hf c)) ↔
+      Function.Bijective (fun α : integralRelativeCohomology k A =>
+        integralRelativeCohomologyCapToAbsolute A k m α c) := by
+  have heq : (fun β : integralRelativeCohomology k B =>
+      integralRelativeCohomologyCapToAbsolute B k m β
+        (integralRelativeHomologyMap (k + m) f hf c)) =
+      ((integralSingularHomologyMap m f) ∘
+        (fun α : integralRelativeCohomology k A =>
+          integralRelativeCohomologyCapToAbsolute A k m α c)) ∘
+            (integralRelativeCohomologyMap k f hf) := by
+    funext β
+    exact (integralRelativeCohomologyCapToAbsolute_natural k m f hf β c).symm
+  rw [heq]
+  exact (Function.Bijective.of_comp_iff _ hcoh).trans
+    (Function.Bijective.of_comp_iff' habs _)
+
 theorem integralRelativeCohomologyCapToAbsolute_bijective_map
     (k m : ℕ) (f : ContinuousMap X Y) {A : Set X} {B : Set Y}
     (hf : Set.MapsTo f A B)
@@ -294,18 +318,8 @@ theorem integralRelativeCohomologyCapToAbsolute_bijective_map
       integralRelativeCohomologyCapToAbsolute A k m α c)) :
     Function.Bijective (fun β : integralRelativeCohomology k B =>
       integralRelativeCohomologyCapToAbsolute B k m β
-        (integralRelativeHomologyMap (k + m) f hf c)) := by
-  have heq : (fun β : integralRelativeCohomology k B =>
-      integralRelativeCohomologyCapToAbsolute B k m β
-        (integralRelativeHomologyMap (k + m) f hf c)) =
-      (integralSingularHomologyMap m f) ∘
-        (fun α : integralRelativeCohomology k A =>
-          integralRelativeCohomologyCapToAbsolute A k m α c) ∘
-            (integralRelativeCohomologyMap k f hf) := by
-    funext β
-    exact (integralRelativeCohomologyCapToAbsolute_natural k m f hf β c).symm
-  rw [heq]
-  exact habs.comp (hc.comp hcoh)
+        (integralRelativeHomologyMap (k + m) f hf c)) :=
+  (integralRelativeCohomologyCapToAbsolute_bijective_map_iff k m f hf habs hcoh c).mpr hc
 
 
 private local instance absoluteCocycle_module (n : ℕ) :

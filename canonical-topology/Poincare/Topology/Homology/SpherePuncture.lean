@@ -12,7 +12,27 @@ universe u
 
 namespace Poincare.Topology
 
-variable {E : Type u} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+variable {E : Type u} [NormedAddCommGroup E]
+
+section
+
+variable [NormedSpace ℝ E]
+
+/-- A unit vector and its antipode are distinct. -/
+theorem unitSphere_ne_antipode (v : sphere (0 : E) 1) : v ≠ -v := by
+  intro h
+  have he : (v : E) = -(v : E) := congrArg Subtype.val h
+  have hz : (2 : ℝ) • (v : E) = 0 := by
+    rw [two_smul]
+    exact (congrArg (fun x : E => x + (v : E)) he).trans (neg_add_cancel _)
+  have hv : (v : E) = 0 := (smul_eq_zero.mp hz).resolve_left (by norm_num)
+  have hn := norm_eq_of_mem_sphere v
+  rw [hv, norm_zero] at hn
+  norm_num at hn
+
+end
+
+variable [InnerProductSpace ℝ E]
 
 /-- Stereographic projection identifies the original sphere minus its
 specified pole with the actual orthogonal hyperplane. -/
@@ -30,18 +50,6 @@ theorem spherePunctureHomeomorph_apply (v : sphere (0 : E) 1)
 theorem spherePuncture_contractible (v : sphere (0 : E) 1) :
     ContractibleSpace ({v}ᶜ : Set (sphere (0 : E) 1)) :=
   (spherePunctureHomeomorph v).contractibleSpace
-
-/-- A unit vector and its antipode are distinct. -/
-theorem unitSphere_ne_antipode (v : sphere (0 : E) 1) : v ≠ -v := by
-  intro h
-  have he : (v : E) = -(v : E) := congrArg Subtype.val h
-  have hz : (2 : ℝ) • (v : E) = 0 := by
-    rw [two_smul]
-    exact (congrArg (fun x : E => x + (v : E)) he).trans (neg_add_cancel _)
-  have hv : (v : E) = 0 := (smul_eq_zero.mp hz).resolve_left (by norm_num)
-  have hn := norm_eq_of_mem_sphere v
-  rw [hv, norm_zero] at hn
-  norm_num at hn
 
 /-- The two original antipodal pole complements cover the entire sphere. -/
 theorem spherePunctures_cover (v : sphere (0 : E) 1) :

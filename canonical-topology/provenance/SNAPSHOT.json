@@ -1,9 +1,9 @@
 {
-  "scope": "Dependency-closed 146-module checkpoint with actual top integral generators on compact simply connected native C1 manifolds, and generator laws at every actual point restriction. Outward normalization, general integral duality and frozen suite remain open.",
+  "scope": "Dependency-closed 149-module checkpoint with actual top local integral cap bijections at every generator on finite-dimensional real normed models and preconnected native-chart manifolds, including ranks zero and one. One compact simply connected manifold global generator supplies all actual local restrictions and cap bijections. Outward normalization, general integral manifold duality and the frozen suite remain open.",
   "baseline_commit": "b45bfa009368c8f5f531e10f4f5280e90079d6ad",
   "baseline_ref": "refs/remotes/origin/codex/chapter35",
   "source_project": "PoincareLean",
-  "source_module_count": 146,
+  "source_module_count": 149,
   "roots": [
     "Poincare.Topology.Homology.RelativeMaps",
     "Poincare.Topology.Homology.RelativeHomeomorphism",
@@ -46,7 +46,10 @@
     "Poincare.Topology.Homology.EuclideanLocalCapDuality",
     "Poincare.Topology.Homology.EuclideanLocalCohomologyVanishing",
     "Poincare.Topology.Manifold.TangentOrientation",
-    "Poincare.LinearAlgebra.Orientation"
+    "Poincare.LinearAlgebra.Orientation",
+    "Poincare.Algebra.Pairing",
+    "Poincare.Topology.Homology.OneDimensionalLocalCapDuality",
+    "Poincare.Topology.Homology.ManifoldLocalCapDuality"
   ],
   "changed_sources": [
     {
@@ -84,7 +87,7 @@
       "module": "Poincare.Topology.Homology.CochainExcision",
       "path": "Poincare/Topology/Homology/CochainExcision.lean",
       "baseline_sha256": null,
-      "sha256": "d12835e102951b1dfe45c2e8796f1e7c534de986e9c7eff6f4001480f1b1c940"
+      "sha256": "112456b0bbcecf39a68ec6d676951267ec8876b6c9ccde87017517d937644e6e"
     },
     {
       "module": "Poincare.Topology.Homology.CochainHomotopy",
@@ -126,7 +129,7 @@
       "module": "Poincare.Topology.Homology.EuclideanLocalCapDuality",
       "path": "Poincare/Topology/Homology/EuclideanLocalCapDuality.lean",
       "baseline_sha256": null,
-      "sha256": "c4887e6fecf50ed9269af3b29fad81aa419b48ce7b3c21f1062e95e075648552"
+      "sha256": "0c21a66d3811953e546c8d2c17b0907cb5608862824d6cabd79cf82c7248f8f6"
     },
     {
       "module": "Poincare.Topology.Homology.EuclideanLocalCohomologyVanishing",
@@ -174,7 +177,7 @@
       "module": "Poincare.Topology.Homology.LocalLinearMaps",
       "path": "Poincare/Topology/Homology/LocalLinearMaps.lean",
       "baseline_sha256": null,
-      "sha256": "d9284f07e88a77db3a9f90fa22291b8c2c6a5d3c7036f30e26865afe8ec0459d"
+      "sha256": "6801d8ee90c9fea0f86b80c3d13b7de6db65e7b6e240563903fe6e2dd4da8280"
     },
     {
       "module": "Poincare.Topology.Homology.LocalOrientation",
@@ -198,13 +201,19 @@
       "module": "Poincare.Topology.Homology.ManifoldFundamentalClass",
       "path": "Poincare/Topology/Homology/ManifoldFundamentalClass.lean",
       "baseline_sha256": null,
-      "sha256": "5e2a7255f8c7fa71d0a299af64338473e5dce0719efd54a92193734fcb3d2305"
+      "sha256": "1a44a1498b6f7987b3bc2eb5af27ed98d4a27734bd6a26c090a730445099735d"
     },
     {
       "module": "Poincare.Topology.Homology.ModuleHomologyConnecting",
       "path": "Poincare/Topology/Homology/ModuleHomologyConnecting.lean",
       "baseline_sha256": null,
       "sha256": "b6494c2aeffa4ac46f6358dd9555b2093162dda408521c35b59f6dd51140e576"
+    },
+    {
+      "module": "Poincare.Topology.Homology.OneDimensionalSphere",
+      "path": "Poincare/Topology/Homology/OneDimensionalSphere.lean",
+      "baseline_sha256": "2823e5659e11088a67fef0c7aa604a1348df69eab3d36870a3c615b029085f42",
+      "sha256": "cf363b7365ae5d58f1c8d335b12a23f6b3d15192b29ec36926447c49b37707d1"
     },
     {
       "module": "Poincare.Topology.Homology.PathCones",
@@ -266,7 +275,7 @@
       "module": "Poincare.Topology.Homology.RelativeCapToAbsoluteHomology",
       "path": "Poincare/Topology/Homology/RelativeCapToAbsoluteHomology.lean",
       "baseline_sha256": null,
-      "sha256": "30acab850f67ebec408abe4ee9bf8999cc6f6d6da381acc1dedfd3355585dd08"
+      "sha256": "a2bdc131a8a613dccc970c478c25285c275053971ff3180cbc18f8f5994ed280"
     },
     {
       "module": "Poincare.Topology.Homology.RelativeCochains",
@@ -326,13 +335,25 @@
       "module": "Poincare.Topology.Homology.SphereCapDuality",
       "path": "Poincare/Topology/Homology/SphereCapDuality.lean",
       "baseline_sha256": null,
-      "sha256": "5cb5771d86a3c641ae297ac0726030bbc2b2fa1d16a65246404e0335ec4f8c62"
+      "sha256": "a864dad52080bbf740ffc245a43c99c8a4d582f3d6e71ad2149428ec8a2a72ef"
     },
     {
       "module": "Poincare.Topology.Homology.SphereCohomologyVanishing",
       "path": "Poincare/Topology/Homology/SphereCohomologyVanishing.lean",
       "baseline_sha256": null,
       "sha256": "d59d478679072ff8d67c9f373599d3cd697b6687993eb68673f6f420ed1d8e4f"
+    },
+    {
+      "module": "Poincare.Topology.Homology.SpherePuncture",
+      "path": "Poincare/Topology/Homology/SpherePuncture.lean",
+      "baseline_sha256": "b2d7f194600b43f6ad6f1f805aedad90d9d3d3bee292c57264ebb3d99f0897c1",
+      "sha256": "508908a9a234805ad180c25fd6f128d5348cd77eb7a51df9a5f1e60e61187249"
+    },
+    {
+      "module": "Poincare.Topology.Homology.SphereRank",
+      "path": "Poincare/Topology/Homology/SphereRank.lean",
+      "baseline_sha256": "18b4612b248c42978437e058d870ed8d794d4ae6500a21c601adce12080e194e",
+      "sha256": "ab12a0f1cbb66e53a16b1ad2dd616f7baffdcf7dcdb9ec041cb5eb6a0dfc4fe6"
     },
     {
       "module": "Poincare.Topology.Homology.TriangleFilling",
@@ -444,6 +465,27 @@
       "baseline_sha256": null,
       "sha256": "1a1cda8dd67762b6cf03d846150a8d2dfcc685f2f064f16aba410539e3aae279",
       "provenance": "Generalization of the existing private orientation-map composition proof to Mathlib Orientation.map assumptions; shared by tangent and homology developments"
+    },
+    {
+      "module": "Poincare.Algebra.Pairing",
+      "path": "Poincare/Algebra/Pairing.lean",
+      "baseline_sha256": null,
+      "sha256": "093dda26b935a6837b8a264769296ece71cd6dcc5f5675992d847ba9752b58e1",
+      "provenance": "Shared existing additive pairing proofs moved from private sphere cap helpers into their algebraic topic home; proof bodies unchanged."
+    },
+    {
+      "module": "Poincare.Topology.Homology.OneDimensionalLocalCapDuality",
+      "path": "Poincare/Topology/Homology/OneDimensionalLocalCapDuality.lean",
+      "baseline_sha256": null,
+      "sha256": "1bceddd6778b77956be9ce7f3b7e200ba8932d74f75df297104e21906047896b",
+      "provenance": "Existing actual rank-one cap producer generalized to real normed spaces and shared below sphere and all-rank local cap duality."
+    },
+    {
+      "module": "Poincare.Topology.Homology.ManifoldLocalCapDuality",
+      "path": "Poincare/Topology/Homology/ManifoldLocalCapDuality.lean",
+      "baseline_sha256": null,
+      "sha256": "a760fe45c8a20c99abb924b6ce63a535f6ff8c4d09d5e6910f2fcc151ff49304",
+      "provenance": "Actual top local cap at a prescribed local integral generator transported through a connected open native-chart neighborhood to ambient degree-zero homology."
     }
   ],
   "poincare_sources": [
@@ -572,7 +614,7 @@
       "module": "Poincare.Topology.Homology.CochainExcision",
       "path": "Poincare/Topology/Homology/CochainExcision.lean",
       "baseline_sha256": null,
-      "sha256": "d12835e102951b1dfe45c2e8796f1e7c534de986e9c7eff6f4001480f1b1c940"
+      "sha256": "112456b0bbcecf39a68ec6d676951267ec8876b6c9ccde87017517d937644e6e"
     },
     {
       "module": "Poincare.Topology.Homology.CochainHomotopy",
@@ -656,7 +698,7 @@
       "module": "Poincare.Topology.Homology.EuclideanLocalCapDuality",
       "path": "Poincare/Topology/Homology/EuclideanLocalCapDuality.lean",
       "baseline_sha256": null,
-      "sha256": "c4887e6fecf50ed9269af3b29fad81aa419b48ce7b3c21f1062e95e075648552"
+      "sha256": "0c21a66d3811953e546c8d2c17b0907cb5608862824d6cabd79cf82c7248f8f6"
     },
     {
       "module": "Poincare.Topology.Homology.EuclideanLocalCohomologyVanishing",
@@ -746,7 +788,7 @@
       "module": "Poincare.Topology.Homology.LocalLinearMaps",
       "path": "Poincare/Topology/Homology/LocalLinearMaps.lean",
       "baseline_sha256": null,
-      "sha256": "d9284f07e88a77db3a9f90fa22291b8c2c6a5d3c7036f30e26865afe8ec0459d"
+      "sha256": "6801d8ee90c9fea0f86b80c3d13b7de6db65e7b6e240563903fe6e2dd4da8280"
     },
     {
       "module": "Poincare.Topology.Homology.LocalOrientation",
@@ -770,7 +812,7 @@
       "module": "Poincare.Topology.Homology.ManifoldFundamentalClass",
       "path": "Poincare/Topology/Homology/ManifoldFundamentalClass.lean",
       "baseline_sha256": null,
-      "sha256": "5e2a7255f8c7fa71d0a299af64338473e5dce0719efd54a92193734fcb3d2305"
+      "sha256": "1a44a1498b6f7987b3bc2eb5af27ed98d4a27734bd6a26c090a730445099735d"
     },
     {
       "module": "Poincare.Topology.Homology.MeshBoundary",
@@ -812,7 +854,7 @@
       "module": "Poincare.Topology.Homology.OneDimensionalSphere",
       "path": "Poincare/Topology/Homology/OneDimensionalSphere.lean",
       "baseline_sha256": "2823e5659e11088a67fef0c7aa604a1348df69eab3d36870a3c615b029085f42",
-      "sha256": "2823e5659e11088a67fef0c7aa604a1348df69eab3d36870a3c615b029085f42"
+      "sha256": "cf363b7365ae5d58f1c8d335b12a23f6b3d15192b29ec36926447c49b37707d1"
     },
     {
       "module": "Poincare.Topology.Homology.OpenExcision",
@@ -904,7 +946,7 @@
       "module": "Poincare.Topology.Homology.RelativeCapToAbsoluteHomology",
       "path": "Poincare/Topology/Homology/RelativeCapToAbsoluteHomology.lean",
       "baseline_sha256": null,
-      "sha256": "30acab850f67ebec408abe4ee9bf8999cc6f6d6da381acc1dedfd3355585dd08"
+      "sha256": "a2bdc131a8a613dccc970c478c25285c275053971ff3180cbc18f8f5994ed280"
     },
     {
       "module": "Poincare.Topology.Homology.RelativeCochains",
@@ -1066,7 +1108,7 @@
       "module": "Poincare.Topology.Homology.SphereCapDuality",
       "path": "Poincare/Topology/Homology/SphereCapDuality.lean",
       "baseline_sha256": null,
-      "sha256": "5cb5771d86a3c641ae297ac0726030bbc2b2fa1d16a65246404e0335ec4f8c62"
+      "sha256": "a864dad52080bbf740ffc245a43c99c8a4d582f3d6e71ad2149428ec8a2a72ef"
     },
     {
       "module": "Poincare.Topology.Homology.SphereCohomologyVanishing",
@@ -1096,13 +1138,13 @@
       "module": "Poincare.Topology.Homology.SpherePuncture",
       "path": "Poincare/Topology/Homology/SpherePuncture.lean",
       "baseline_sha256": "b2d7f194600b43f6ad6f1f805aedad90d9d3d3bee292c57264ebb3d99f0897c1",
-      "sha256": "b2d7f194600b43f6ad6f1f805aedad90d9d3d3bee292c57264ebb3d99f0897c1"
+      "sha256": "508908a9a234805ad180c25fd6f128d5348cd77eb7a51df9a5f1e60e61187249"
     },
     {
       "module": "Poincare.Topology.Homology.SphereRank",
       "path": "Poincare/Topology/Homology/SphereRank.lean",
       "baseline_sha256": "18b4612b248c42978437e058d870ed8d794d4ae6500a21c601adce12080e194e",
-      "sha256": "18b4612b248c42978437e058d870ed8d794d4ae6500a21c601adce12080e194e"
+      "sha256": "ab12a0f1cbb66e53a16b1ad2dd616f7baffdcf7dcdb9ec041cb5eb6a0dfc4fe6"
     },
     {
       "module": "Poincare.Topology.Homology.SphereTopHomology",
@@ -1340,13 +1382,34 @@
       "baseline_sha256": null,
       "sha256": "1a1cda8dd67762b6cf03d846150a8d2dfcc685f2f064f16aba410539e3aae279",
       "provenance": "Generalization of the existing private orientation-map composition proof to Mathlib Orientation.map assumptions; shared by tangent and homology developments"
+    },
+    {
+      "module": "Poincare.Algebra.Pairing",
+      "path": "Poincare/Algebra/Pairing.lean",
+      "baseline_sha256": null,
+      "sha256": "093dda26b935a6837b8a264769296ece71cd6dcc5f5675992d847ba9752b58e1",
+      "provenance": "Shared existing additive pairing proofs moved from private sphere cap helpers into their algebraic topic home; proof bodies unchanged."
+    },
+    {
+      "module": "Poincare.Topology.Homology.OneDimensionalLocalCapDuality",
+      "path": "Poincare/Topology/Homology/OneDimensionalLocalCapDuality.lean",
+      "baseline_sha256": null,
+      "sha256": "1bceddd6778b77956be9ce7f3b7e200ba8932d74f75df297104e21906047896b",
+      "provenance": "Existing actual rank-one cap producer generalized to real normed spaces and shared below sphere and all-rank local cap duality."
+    },
+    {
+      "module": "Poincare.Topology.Homology.ManifoldLocalCapDuality",
+      "path": "Poincare/Topology/Homology/ManifoldLocalCapDuality.lean",
+      "baseline_sha256": null,
+      "sha256": "a760fe45c8a20c99abb924b6ce63a535f6ff8c4d09d5e6910f2fcc151ff49304",
+      "provenance": "Actual top local cap at a prescribed local integral generator transported through a connected open native-chart neighborhood to ambient degree-zero homology."
     }
   ],
   "aggregate": {
     "path": "Poincare.lean",
     "baseline_sha256": "99c3c8e47c19f60ee50a7e0f377e59138cf4ff33ebd4e26530d3c2b7cd47d452",
-    "sha256": "cb3a65ea9ae97486152ea98f1c9dca01eca746834df94bfa2d46c6928f49275e",
-    "change": "Flat 146-leaf checkpoint aggregate; recovered project remains separate"
+    "sha256": "1f008a3e26eaaf7bcf488d428178fb0e451aeab202149abbd45d5c9c10a75404",
+    "change": "Flat 149-leaf checkpoint aggregate; recovered project remains separate"
   },
   "configuration": [
     {
@@ -1376,7 +1439,9 @@
     "Mathlib.Algebra.Category.ModuleCat.Colimits",
     "Mathlib.Algebra.Category.ModuleCat.Projective",
     "Mathlib.Algebra.Exact.Basic",
+    "Mathlib.Algebra.Group.Equiv.Basic",
     "Mathlib.Algebra.Group.Int.Units",
+    "Mathlib.Algebra.Group.Units.Basic",
     "Mathlib.Algebra.Homology.AlternatingConst",
     "Mathlib.Algebra.Homology.ConcreteCategory",
     "Mathlib.Algebra.Homology.DerivedCategory.KProjective",
@@ -1419,6 +1484,7 @@
     "Mathlib.Data.Bundle",
     "Mathlib.Data.Fin.Tuple.Basic",
     "Mathlib.Data.Finset.Dedup",
+    "Mathlib.Data.Int.Cast.Lemmas",
     "Mathlib.Data.Sign.Basic",
     "Mathlib.Geometry.Manifold.ChartedSpace",
     "Mathlib.Geometry.Manifold.Instances.Sphere",
@@ -1438,6 +1504,7 @@
     "Mathlib.LinearAlgebra.Quotient.Bilinear",
     "Mathlib.LinearAlgebra.Span.Basic",
     "Mathlib.Tactic.Abel",
+    "Mathlib.Tactic.Conv",
     "Mathlib.Tactic.FieldSimp",
     "Mathlib.Tactic.FinCases",
     "Mathlib.Tactic.Linarith",
@@ -1661,7 +1728,15 @@
     "Poincare.Topology.exists_integralLocalHomology_generator",
     "Poincare.Topology.integralAbsoluteToRelative_bijective_of_simplyConnected",
     "Poincare.Topology.exists_unique_absolute_class_of_simplyConnected",
-    "Poincare.Topology.exists_integralSingularHomology_generator_of_simplyConnected"
+    "Poincare.Topology.exists_integralSingularHomology_generator_of_simplyConnected",
+    "Poincare.additive_pairing_bijective_at_generator",
+    "Poincare.additive_pairing_bijective_iff_isUnit",
+    "Poincare.Topology.exists_integralLocalHomology_cap_bijective_of_finrank_one",
+    "Poincare.Topology.integralRelativeCohomologyCapToAbsolute_bijective_map_iff",
+    "Poincare.Topology.integralRelativeCohomologyMap_point_neighborhood_bijective",
+    "Poincare.Topology.integralLocalHomology_cap_bijective_of_generator",
+    "Poincare.Topology.integralManifoldLocalHomology_cap_bijective_of_generator",
+    "Poincare.Topology.exists_integralSingularHomology_generator_with_local_cap_bijections_of_simplyConnected"
   ],
   "historical_authorities": [
     {
@@ -1799,23 +1874,51 @@
     "full_topology_suite_accepted": false
   },
   "validation": {
-    "status": "passed for the selected 146-module checkpoint; full topology suite incomplete",
+    "status": "passed for the selected 149-module checkpoint; full topology suite incomplete",
     "date": "2026-09-14",
     "slurm_job": "13879784",
     "host": "della-h14n10",
-    "request_id": "1789404939261823565-topology_checkpoint-ffc421f5",
-    "input_sha256": "ae506cb65c33abc5ab724a1892dd73e688bbdc08bf83e7ef5443426f8663ffee",
-    "result_sha256": "52d08d8e2c1b8bd6fd663eb73208b6d6c7872f8acfdb20d8b2f55e612ae9f26e",
-    "artifact_log_sha256": "1b777b8f410c6929841095ac9587c5e302e0f3851e7f0046ad4428688f2cbecb",
-    "source_config_harness_hash_guards": 1284,
+    "request_id": "1789412261238405352-topology_checkpoint-b0e4ea6f",
+    "input_sha256": "7ad43a2d5e84a6f323dde54ef28ca27d6cc413b68a35173da97caeb4b7e0aff2",
+    "result_sha256": "6356cb6c0133b79448e4b69e3d5ad7cf99e9af3e978c21a41bb9afb60ec5568d",
+    "artifact_log_sha256": "baed5f43459647b13339ed87235e14ab2ed8751f47027ffa94462cc2a38800ad",
+    "source_config_harness_hash_guards": 1373,
     "freshly_built_modules": [
+      "Poincare.Algebra.Pairing",
+      "Poincare.Topology.Homology.CochainExcision",
+      "Poincare.Topology.Homology.CohomologyContractibleCover",
+      "Poincare.Topology.Homology.RelativeCapToAbsoluteHomology",
+      "Poincare.Topology.Homology.RelativeCapCohomologyConnecting",
+      "Poincare.Topology.Homology.CapContractibleCover",
+      "Poincare.Topology.Homology.SpherePuncture",
+      "Poincare.Topology.Homology.OneDimensionalSphere",
+      "Poincare.Topology.Homology.SphereHomologyShift",
+      "Poincare.Topology.Homology.SphereHomologyOne",
+      "Poincare.Topology.Homology.SphereRank",
+      "Poincare.Topology.Homology.SphereTopHomology",
+      "Poincare.Topology.Homology.SphereHomologyVanishing",
+      "Poincare.Topology.Homology.EuclideanLocalTop",
+      "Poincare.Topology.Homology.EuclideanLocalVanishing",
+      "Poincare.Topology.Homology.CompactVanishing",
+      "Poincare.Topology.Homology.SphereCohomologyVanishing",
+      "Poincare.Topology.Homology.EuclideanLocalCohomologyVanishing",
+      "Poincare.Topology.Homology.TwoPointCapDuality",
+      "Poincare.Topology.Homology.OneDimensionalLocalCapDuality",
+      "Poincare.Topology.Homology.SphereCapDuality",
+      "Poincare.Topology.Homology.EuclideanLocalCapDuality",
+      "Poincare.Topology.Homology.LocalLinearMaps",
+      "Poincare.Topology.Homology.LocalDerivativeComparison",
+      "Poincare.Topology.Homology.LocalOrientation",
+      "Poincare.Topology.Homology.ManifoldCompactHomology",
+      "Poincare.Topology.Homology.ManifoldLocalCapDuality",
       "Poincare.Topology.Homology.ManifoldFundamentalClass",
+      "Poincare.Topology.Homology.RealLocalDuality",
       "Poincare"
     ],
     "root_build": "lake --no-cache --iofail build Poincare",
-    "fresh_build_scope": "ManifoldFundamentalClass and root freshly compiled in 0:21.29, RSS 1965752KiB, zero diagnostics; all145 other source leaves unchanged",
-    "exact_public_exports": 186,
-    "public_and_consumer_signature_axiom_pairs": 353,
+    "fresh_build_scope": "Initial 29-leaf and root compilation was silent; after the private binder repair, all four affected leaves and the portable root freshly compiled in 0:58.40, RSS 2075972KiB, zero diagnostics. The other25 affected leaves retain their fresh initial evidence and all137 preceding unedited leaves retain exact source bytes",
+    "exact_public_exports": 194,
+    "public_and_consumer_signature_axiom_pairs": 380,
     "linters": [
       "unusedArguments",
       "simpNF",
@@ -1830,17 +1933,145 @@
       "Quot.sound"
     ],
     "unexpected_diagnostics": 0,
-    "elapsed_seconds": 103.8892650604248,
-    "peak_summed_rss_bytes": 3416932352,
+    "elapsed_seconds": 142.0094394683838,
+    "peak_summed_rss_bytes": 3504754688,
     "full_topology_suite_accepted": false,
     "consumer_probes": [
-      "All350 preceding portable and34 original readback pairs byte-identical",
-      "Actual global top integral generator and every actual point restriction generator",
-      "Rank-zero global and local generators are nonzero and tied by the actual restriction",
-      "One global generator yields a unique integer coefficient for every point-local class",
-      "No model generator, orientation field, global class or bijection input in the new headline",
-      "All3 new source/original/portable types agree modulo qualification/whitespace; axioms exact"
-    ]
+      "All353 preceding portable and37 preceding original readback pairs byte-identical",
+      "Eight new public cap and pairing interfaces agree with their accepted source-layer types and axioms",
+      "Six generalized sphere interfaces agree with accepted normed source readbacks; exact old typed examples compile",
+      "Rank-zero and real-line local generators are nonzero and cap onto the actual vertex class uniquely",
+      "The same actual global class restricts to every actual local cap argument",
+      "Rank-one cap classes are nonzero, distinguish their negatives, and both signs give bijections",
+      "Normed reduced zero-sphere generator maps to one under its actual equivalence and has bijective integer multiples",
+      "Old normalized Euclidean cap and old forward cap transport remain exact-type corollaries"
+    ],
+    "parser_sha256": "d5596498ac375c6e1e72738d49070e3f89a692cda36f2c1397add3a2ade6cbaf",
+    "artifact_build_evidence": {
+      "sha256": "baed5f43459647b13339ed87235e14ab2ed8751f47027ffa94462cc2a38800ad",
+      "freshly_built_modules": [
+        "Poincare.Algebra.Pairing",
+        "Poincare.Topology.Homology.CochainExcision",
+        "Poincare.Topology.Homology.CohomologyContractibleCover",
+        "Poincare.Topology.Homology.RelativeCapToAbsoluteHomology",
+        "Poincare.Topology.Homology.RelativeCapCohomologyConnecting",
+        "Poincare.Topology.Homology.CapContractibleCover",
+        "Poincare.Topology.Homology.SpherePuncture",
+        "Poincare.Topology.Homology.OneDimensionalSphere",
+        "Poincare.Topology.Homology.SphereHomologyShift",
+        "Poincare.Topology.Homology.SphereHomologyOne",
+        "Poincare.Topology.Homology.SphereRank",
+        "Poincare.Topology.Homology.SphereTopHomology",
+        "Poincare.Topology.Homology.SphereHomologyVanishing",
+        "Poincare.Topology.Homology.EuclideanLocalTop",
+        "Poincare.Topology.Homology.EuclideanLocalVanishing",
+        "Poincare.Topology.Homology.CompactVanishing",
+        "Poincare.Topology.Homology.SphereCohomologyVanishing",
+        "Poincare.Topology.Homology.EuclideanLocalCohomologyVanishing",
+        "Poincare.Topology.Homology.TwoPointCapDuality",
+        "Poincare.Topology.Homology.OneDimensionalLocalCapDuality",
+        "Poincare.Topology.Homology.SphereCapDuality",
+        "Poincare.Topology.Homology.EuclideanLocalCapDuality",
+        "Poincare.Topology.Homology.LocalLinearMaps",
+        "Poincare.Topology.Homology.LocalDerivativeComparison",
+        "Poincare.Topology.Homology.LocalOrientation",
+        "Poincare.Topology.Homology.ManifoldCompactHomology",
+        "Poincare.Topology.Homology.ManifoldLocalCapDuality",
+        "Poincare.Topology.Homology.ManifoldFundamentalClass",
+        "Poincare.Topology.Homology.RealLocalDuality",
+        "Poincare"
+      ],
+      "elapsed": "0:58.40",
+      "rss_kib": 2075972,
+      "initial_source_build": {
+        "request_id": "1789411341508155309-topology_checkpoint-b38fd596",
+        "input_sha256": "8be388c698f613123a8609f513ea792f5ed450b9e2f74ff7fd52b46689dc663a",
+        "result_sha256": "ef56db0a4a1ca6924c9279ea2829bdaf622c3daa8e3beb982d04f39fd96acd82",
+        "elapsed_seconds": 308.37268233299255,
+        "slurm_job": "13879784",
+        "host": "della-h14n10",
+        "parser_sha256": "d5596498ac375c6e1e72738d49070e3f89a692cda36f2c1397add3a2ade6cbaf",
+        "artifacts": {
+          "sha256": "9f327cf88a321d233b497dab5116b29e1558daad662ab1ac972b9a0eaef52487",
+          "freshly_built_modules": [
+            "Poincare.Algebra.Pairing",
+            "Poincare.Topology.Homology.SpherePuncture",
+            "Poincare.Topology.Homology.OneDimensionalSphere",
+            "Poincare.Topology.Homology.SphereHomologyShift",
+            "Poincare.Topology.Homology.SphereHomologyOne",
+            "Poincare.Topology.Homology.SphereRank",
+            "Poincare.Topology.Homology.RelativeCapToAbsoluteHomology",
+            "Poincare.Topology.Homology.RelativeCapCohomologyConnecting",
+            "Poincare.Topology.Homology.TwoPointCapDuality",
+            "Poincare.Topology.Homology.OneDimensionalLocalCapDuality",
+            "Poincare.Topology.Homology.CochainExcision",
+            "Poincare.Topology.Homology.CohomologyContractibleCover",
+            "Poincare.Topology.Homology.SphereTopHomology",
+            "Poincare.Topology.Homology.SphereHomologyVanishing",
+            "Poincare.Topology.Homology.CapContractibleCover",
+            "Poincare.Topology.Homology.EuclideanLocalTop",
+            "Poincare.Topology.Homology.EuclideanLocalVanishing",
+            "Poincare.Topology.Homology.SphereCohomologyVanishing",
+            "Poincare.Topology.Homology.SphereCapDuality",
+            "Poincare.Topology.Homology.EuclideanLocalCohomologyVanishing",
+            "Poincare.Topology.Homology.EuclideanLocalCapDuality",
+            "Poincare.Topology.Homology.ManifoldLocalCapDuality",
+            "Poincare.Topology.Homology.LocalLinearMaps",
+            "Poincare.Topology.Homology.CompactVanishing",
+            "Poincare.Topology.Homology.LocalDerivativeComparison",
+            "Poincare.Topology.Homology.ManifoldCompactHomology",
+            "Poincare.Topology.Homology.LocalOrientation",
+            "Poincare.Topology.Homology.RealLocalDuality",
+            "Poincare.Topology.Homology.ManifoldFundamentalClass",
+            "Poincare"
+          ],
+          "elapsed": "3:41.27",
+          "rss_kib": 2829520
+        },
+        "acceptance": "Initial artifact compilation succeeded; subsequent declaration lint failed; final repaired checks required."
+      },
+      "final_repair_build": {
+        "request_id": "1789412261238405352-topology_checkpoint-b0e4ea6f",
+        "sha256": "baed5f43459647b13339ed87235e14ab2ed8751f47027ffa94462cc2a38800ad",
+        "freshly_built_modules": [
+          "Poincare.Topology.Homology.LocalLinearMaps",
+          "Poincare.Topology.Homology.LocalDerivativeComparison",
+          "Poincare.Topology.Homology.LocalOrientation",
+          "Poincare.Topology.Homology.ManifoldFundamentalClass",
+          "Poincare"
+        ],
+        "elapsed": "0:58.40",
+        "rss_kib": 2075972
+      },
+      "retained_initial_modules": [
+        "Poincare.Algebra.Pairing",
+        "Poincare.Topology.Homology.CochainExcision",
+        "Poincare.Topology.Homology.CohomologyContractibleCover",
+        "Poincare.Topology.Homology.RelativeCapToAbsoluteHomology",
+        "Poincare.Topology.Homology.RelativeCapCohomologyConnecting",
+        "Poincare.Topology.Homology.CapContractibleCover",
+        "Poincare.Topology.Homology.SpherePuncture",
+        "Poincare.Topology.Homology.OneDimensionalSphere",
+        "Poincare.Topology.Homology.SphereHomologyShift",
+        "Poincare.Topology.Homology.SphereHomologyOne",
+        "Poincare.Topology.Homology.SphereRank",
+        "Poincare.Topology.Homology.SphereTopHomology",
+        "Poincare.Topology.Homology.SphereHomologyVanishing",
+        "Poincare.Topology.Homology.EuclideanLocalTop",
+        "Poincare.Topology.Homology.EuclideanLocalVanishing",
+        "Poincare.Topology.Homology.CompactVanishing",
+        "Poincare.Topology.Homology.SphereCohomologyVanishing",
+        "Poincare.Topology.Homology.EuclideanLocalCohomologyVanishing",
+        "Poincare.Topology.Homology.TwoPointCapDuality",
+        "Poincare.Topology.Homology.OneDimensionalLocalCapDuality",
+        "Poincare.Topology.Homology.SphereCapDuality",
+        "Poincare.Topology.Homology.EuclideanLocalCapDuality",
+        "Poincare.Topology.Homology.ManifoldCompactHomology",
+        "Poincare.Topology.Homology.ManifoldLocalCapDuality",
+        "Poincare.Topology.Homology.RealLocalDuality"
+      ],
+      "scope": "Initial silent full affected build retained only for unchanged sources and unaffected dependencies; the repaired module, all four affected leaves, and portable root are freshly rebuilt. Initial declaration-linter failures are not accepted."
+    }
   },
   "previous_linear_sign_checkpoint_validation": {
     "status": "passed for this 88-module checkpoint; full topology suite incomplete",
@@ -4293,5 +4524,272 @@
       "rss_kib": 1965276
     },
     "comparison": "All3 new shared pairs agree;350 preceding portable and34 original pairs byte-identical"
+  },
+  "previous_all_rank_local_cap_validation": {
+    "status": "passed for the selected 146-module checkpoint; full topology suite incomplete",
+    "date": "2026-09-14",
+    "slurm_job": "13879784",
+    "host": "della-h14n10",
+    "request_id": "1789404939261823565-topology_checkpoint-ffc421f5",
+    "input_sha256": "ae506cb65c33abc5ab724a1892dd73e688bbdc08bf83e7ef5443426f8663ffee",
+    "result_sha256": "52d08d8e2c1b8bd6fd663eb73208b6d6c7872f8acfdb20d8b2f55e612ae9f26e",
+    "artifact_log_sha256": "1b777b8f410c6929841095ac9587c5e302e0f3851e7f0046ad4428688f2cbecb",
+    "source_config_harness_hash_guards": 1284,
+    "freshly_built_modules": [
+      "Poincare.Topology.Homology.ManifoldFundamentalClass",
+      "Poincare"
+    ],
+    "root_build": "lake --no-cache --iofail build Poincare",
+    "fresh_build_scope": "ManifoldFundamentalClass and root freshly compiled in 0:21.29, RSS 1965752KiB, zero diagnostics; all145 other source leaves unchanged",
+    "exact_public_exports": 186,
+    "public_and_consumer_signature_axiom_pairs": 353,
+    "linters": [
+      "unusedArguments",
+      "simpNF",
+      "synTaut",
+      "checkType"
+    ],
+    "linter_scope": "All imported Poincare declarations and current consumers, including private declarations",
+    "defLemma": "Unavailable in the pinned Mathlib; source declaration-kind checks retained.",
+    "allowed_transitive_axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "unexpected_diagnostics": 0,
+    "elapsed_seconds": 103.8892650604248,
+    "peak_summed_rss_bytes": 3416932352,
+    "full_topology_suite_accepted": false,
+    "consumer_probes": [
+      "All350 preceding portable and34 original readback pairs byte-identical",
+      "Actual global top integral generator and every actual point restriction generator",
+      "Rank-zero global and local generators are nonzero and tied by the actual restriction",
+      "One global generator yields a unique integer coefficient for every point-local class",
+      "No model generator, orientation field, global class or bijection input in the new headline",
+      "All3 new source/original/portable types agree modulo qualification/whitespace; axioms exact"
+    ]
+  },
+  "original_all_rank_local_cap_validation": {
+    "request_id": "1789412261080365406-topology-eb9a1787",
+    "input_sha256": "4de797767c056cfffbe76f6125f4ed979b0ff087c45b4eb871853cf33897349d",
+    "result_sha256": "2de81f9ea69c6b095e5671f9387664d2ed9485a12c0386c69bd14afe6e736053",
+    "elapsed_seconds": 83.91308403015137,
+    "slurm_job": "13879784",
+    "host": "della-h14n10",
+    "parser_sha256": "d5596498ac375c6e1e72738d49070e3f89a692cda36f2c1397add3a2ade6cbaf",
+    "source_guards": 1085,
+    "signature_axiom_pairs": 66,
+    "fresh_artifacts": {
+      "sha256": "b3e03731cff9f217bf4b50ec418cdead881087b17f12483cc39116f879070697",
+      "freshly_built_modules": [
+        "Poincare.Algebra.Pairing",
+        "Poincare.Topology.Homology.CochainExcision",
+        "Poincare.Topology.Homology.CohomologyContractibleCover",
+        "Poincare.Topology.Homology.RelativeCapToAbsoluteHomology",
+        "Poincare.Topology.Homology.RelativeCapCohomologyConnecting",
+        "Poincare.Topology.Homology.CapContractibleCover",
+        "Poincare.Topology.Homology.SpherePuncture",
+        "Poincare.Topology.Homology.OneDimensionalSphere",
+        "Poincare.Topology.Homology.SphereHomologyShift",
+        "Poincare.Topology.Homology.SphereHomologyOne",
+        "Poincare.Topology.Homology.SphereRank",
+        "Poincare.Topology.Homology.SphereTopHomology",
+        "Poincare.Topology.Homology.SphereHomologyVanishing",
+        "Poincare.Topology.Homology.EuclideanLocalTop",
+        "Poincare.Topology.Homology.EuclideanLocalVanishing",
+        "Poincare.Topology.Homology.CompactVanishing",
+        "Poincare.Topology.Homology.SphereCohomologyVanishing",
+        "Poincare.Topology.Homology.EuclideanLocalCohomologyVanishing",
+        "Poincare.Topology.Homology.TwoPointCapDuality",
+        "Poincare.Topology.Homology.OneDimensionalLocalCapDuality",
+        "Poincare.Topology.Homology.SphereCapDuality",
+        "Poincare.Topology.Homology.EuclideanLocalCapDuality",
+        "Poincare.Topology.Homology.LocalLinearMaps",
+        "Poincare.Topology.Homology.LocalDerivativeComparison",
+        "Poincare.Topology.Homology.LocalOrientation",
+        "Poincare.Topology.Homology.ManifoldCompactHomology",
+        "Poincare.Topology.Homology.ManifoldLocalCapDuality",
+        "Poincare.Topology.Homology.ManifoldFundamentalClass",
+        "Poincare.Topology.Homology.RealLocalDuality"
+      ],
+      "elapsed": "0:52.91",
+      "rss_kib": 2069252,
+      "initial_source_build": {
+        "request_id": "1789411341437560068-topology-1536a6e1",
+        "input_sha256": "5d8d44bc94cce87cfe32440a169301a3876a482c8049078c5a10235fad4ad84f",
+        "result_sha256": "6a1645bc61ee822ed1bd4ddb4af618d98c8b8b5cdbbcf9bb7461598b5efb416d",
+        "elapsed_seconds": 245.7647020816803,
+        "slurm_job": "13879784",
+        "host": "della-h14n10",
+        "parser_sha256": "d5596498ac375c6e1e72738d49070e3f89a692cda36f2c1397add3a2ade6cbaf",
+        "artifacts": {
+          "sha256": "ac43863704462706e1f9b5b3137726f46722d4a51d7b66ade2961b0b1a47b036",
+          "freshly_built_modules": [
+            "Poincare.Algebra.Pairing",
+            "Poincare.Topology.Homology.SpherePuncture",
+            "Poincare.Topology.Homology.OneDimensionalSphere",
+            "Poincare.Topology.Homology.SphereHomologyShift",
+            "Poincare.Topology.Homology.SphereHomologyOne",
+            "Poincare.Topology.Homology.SphereRank",
+            "Poincare.Topology.Homology.RelativeCapToAbsoluteHomology",
+            "Poincare.Topology.Homology.RelativeCapCohomologyConnecting",
+            "Poincare.Topology.Homology.TwoPointCapDuality",
+            "Poincare.Topology.Homology.OneDimensionalLocalCapDuality",
+            "Poincare.Topology.Homology.CochainExcision",
+            "Poincare.Topology.Homology.CohomologyContractibleCover",
+            "Poincare.Topology.Homology.SphereTopHomology",
+            "Poincare.Topology.Homology.SphereHomologyVanishing",
+            "Poincare.Topology.Homology.CapContractibleCover",
+            "Poincare.Topology.Homology.EuclideanLocalTop",
+            "Poincare.Topology.Homology.EuclideanLocalVanishing",
+            "Poincare.Topology.Homology.SphereCohomologyVanishing",
+            "Poincare.Topology.Homology.SphereCapDuality",
+            "Poincare.Topology.Homology.EuclideanLocalCohomologyVanishing",
+            "Poincare.Topology.Homology.EuclideanLocalCapDuality",
+            "Poincare.Topology.Homology.ManifoldLocalCapDuality",
+            "Poincare.Topology.Homology.LocalLinearMaps",
+            "Poincare.Topology.Homology.CompactVanishing",
+            "Poincare.Topology.Homology.LocalDerivativeComparison",
+            "Poincare.Topology.Homology.ManifoldCompactHomology",
+            "Poincare.Topology.Homology.LocalOrientation",
+            "Poincare.Topology.Homology.RealLocalDuality",
+            "Poincare.Topology.Homology.ManifoldFundamentalClass"
+          ],
+          "elapsed": "3:34.68",
+          "rss_kib": 2835776
+        },
+        "acceptance": "Initial artifact compilation succeeded; subsequent declaration lint failed; final repaired checks required."
+      },
+      "final_repair_build": {
+        "request_id": "1789412261080365406-topology-eb9a1787",
+        "sha256": "b3e03731cff9f217bf4b50ec418cdead881087b17f12483cc39116f879070697",
+        "freshly_built_modules": [
+          "Poincare.Topology.Homology.LocalLinearMaps",
+          "Poincare.Topology.Homology.LocalDerivativeComparison",
+          "Poincare.Topology.Homology.LocalOrientation",
+          "Poincare.Topology.Homology.ManifoldFundamentalClass"
+        ],
+        "elapsed": "0:52.91",
+        "rss_kib": 2069252
+      },
+      "retained_initial_modules": [
+        "Poincare.Algebra.Pairing",
+        "Poincare.Topology.Homology.CochainExcision",
+        "Poincare.Topology.Homology.CohomologyContractibleCover",
+        "Poincare.Topology.Homology.RelativeCapToAbsoluteHomology",
+        "Poincare.Topology.Homology.RelativeCapCohomologyConnecting",
+        "Poincare.Topology.Homology.CapContractibleCover",
+        "Poincare.Topology.Homology.SpherePuncture",
+        "Poincare.Topology.Homology.OneDimensionalSphere",
+        "Poincare.Topology.Homology.SphereHomologyShift",
+        "Poincare.Topology.Homology.SphereHomologyOne",
+        "Poincare.Topology.Homology.SphereRank",
+        "Poincare.Topology.Homology.SphereTopHomology",
+        "Poincare.Topology.Homology.SphereHomologyVanishing",
+        "Poincare.Topology.Homology.EuclideanLocalTop",
+        "Poincare.Topology.Homology.EuclideanLocalVanishing",
+        "Poincare.Topology.Homology.CompactVanishing",
+        "Poincare.Topology.Homology.SphereCohomologyVanishing",
+        "Poincare.Topology.Homology.EuclideanLocalCohomologyVanishing",
+        "Poincare.Topology.Homology.TwoPointCapDuality",
+        "Poincare.Topology.Homology.OneDimensionalLocalCapDuality",
+        "Poincare.Topology.Homology.SphereCapDuality",
+        "Poincare.Topology.Homology.EuclideanLocalCapDuality",
+        "Poincare.Topology.Homology.ManifoldCompactHomology",
+        "Poincare.Topology.Homology.ManifoldLocalCapDuality",
+        "Poincare.Topology.Homology.RealLocalDuality"
+      ],
+      "scope": "Initial silent full affected build retained only for unchanged sources and unaffected dependencies; the repaired module, all four affected leaves, and portable root are freshly rebuilt. Initial declaration-linter failures are not accepted."
+    },
+    "source_layers": {
+      "model": {
+        "request_id": "1789404984108669748-topology-4c99740c",
+        "input_sha256": "4af6572c1aa397c54660cf1d64dee1268041abd70b48bcf2762ce3ad824a4867",
+        "result_sha256": "b1c69519edc80c717f786edf9a26c96e84f35cf1b615964742261df0db0e56e4",
+        "elapsed_seconds": 18.055850744247437,
+        "slurm_job": "13879784",
+        "host": "della-h14n10",
+        "parser_sha256": "d5596498ac375c6e1e72738d49070e3f89a692cda36f2c1397add3a2ade6cbaf",
+        "request_file": "/scratch/gpfs/KARTHIKN/ayush/differential-geometry-schoenflies/.changes/slurm-prepared/simply-connected-local-cap/Revision1/PublishedGeneratorRebase/Focused-request.json",
+        "request_file_sha256": "ee3b3c2b6dfa1b4401e2223bf53f6ed0c04529deb17bff4f729bbb2e0a51b33a",
+        "signature_axiom_pairs": 11,
+        "source_guards": 1007
+      },
+      "chart": {
+        "request_id": "1789408565893375890-topology-e967c3bf",
+        "input_sha256": "1d42034fe5398773d2aa92b1815b8000fc6a09fcd0af483f96a93151adcd72ed",
+        "result_sha256": "573e339150aec5cd1989c728d403f853dc01861bc62a56935cd1e6ecc5c61796",
+        "elapsed_seconds": 26.972943782806396,
+        "slurm_job": "13879784",
+        "host": "della-h14n10",
+        "parser_sha256": "d5596498ac375c6e1e72738d49070e3f89a692cda36f2c1397add3a2ade6cbaf",
+        "request_file": "/scratch/gpfs/KARTHIKN/ayush/differential-geometry-schoenflies/.changes/slurm-prepared/simply-connected-local-cap/ChartTransport/Revision1/PublishedGeneratorRebase/Focused-request.json",
+        "request_file_sha256": "92d49f1f58b952b702ee0e77ef38d4a419d4ceae5451daedec22565d5e0098e7",
+        "signature_axiom_pairs": 18,
+        "source_guards": 1015
+      },
+      "iff": {
+        "request_id": "1789408692039296048-topology-088d8860",
+        "input_sha256": "567ad9517aec11ab6aa5876700e80098fe644b974b3b74ac919e2fc0321a8885",
+        "result_sha256": "ccff599f5474be684fff4abd784d3c7ed97d384cca16983fcde5350b053562a9",
+        "elapsed_seconds": 8.155593395233154,
+        "slurm_job": "13879784",
+        "host": "della-h14n10",
+        "parser_sha256": "d5596498ac375c6e1e72738d49070e3f89a692cda36f2c1397add3a2ade6cbaf",
+        "request_file": "/scratch/gpfs/KARTHIKN/ayush/differential-geometry-schoenflies/.changes/slurm-prepared/simply-connected-local-cap/ChartTransport/Revision1/TransportIff/Focused-request.json",
+        "request_file_sha256": "271a6a3ca74e978ce215aada48df1128b4d028043d39fbc1442813c7e773b0c9",
+        "signature_axiom_pairs": 3,
+        "source_guards": 1019
+      },
+      "pairing": {
+        "request_id": "1789409460982566576-topology-79799148",
+        "input_sha256": "0e314ebf96f8042599e90049bae856debc073f9852cf8aa38819ecc7a21c8e26",
+        "result_sha256": "6d343bba95abdc26e31d712c7ed7b322ee2c7f971460a896bbb0d2dc03b0a178",
+        "elapsed_seconds": 7.534071207046509,
+        "slurm_job": "13879784",
+        "host": "della-h14n10",
+        "parser_sha256": "d5596498ac375c6e1e72738d49070e3f89a692cda36f2c1397add3a2ade6cbaf",
+        "request_file": "/scratch/gpfs/KARTHIKN/ayush/differential-geometry-schoenflies/.changes/slurm-prepared/simply-connected-local-cap/PublicPreparation/PairingImportRepair/Focused-request.json",
+        "request_file_sha256": "dc277e1dff823cca299eb6ee2c68badcac8e0899195a31103e2dadcc4badd406",
+        "signature_axiom_pairs": 2,
+        "source_guards": 1022
+      },
+      "corollary": {
+        "request_id": "1789410045471699873-topology-511e07b6",
+        "input_sha256": "34cd8341aee7f424635bbccddc2ee33175b3009fa53aa4406735330c5d0b3d39",
+        "result_sha256": "36f91e432da02cdf62ca20e5d4b41bfd6c6158a41c79f9446418ede80fd4ad9e",
+        "elapsed_seconds": 17.46687889099121,
+        "slurm_job": "13879784",
+        "host": "della-h14n10",
+        "parser_sha256": "d5596498ac375c6e1e72738d49070e3f89a692cda36f2c1397add3a2ade6cbaf",
+        "request_file": "/scratch/gpfs/KARTHIKN/ayush/differential-geometry-schoenflies/.changes/slurm-prepared/simply-connected-local-cap/PublicPreparation/GeneralPrimary/FocusedCorollary/Focused-request.json",
+        "request_file_sha256": "fc47da5ff15efeb0f773ddece96b65c4f0ffb567319dc56bcf9c519cdf290c5c",
+        "signature_axiom_pairs": 12,
+        "source_guards": 1012
+      },
+      "rank": {
+        "request_id": "1789410779916300365-topology-c728a802",
+        "input_sha256": "3dbb2400089a11216fd382577c2603a9d72cb535dc323b517d2cc0f5d4c0abb1",
+        "result_sha256": "763bed6904f92f1358460e363db321fa2628b08baf9c04135036c01f15f266d0",
+        "elapsed_seconds": 15.829755067825317,
+        "slurm_job": "13879784",
+        "host": "della-h14n10",
+        "parser_sha256": "d5596498ac375c6e1e72738d49070e3f89a692cda36f2c1397add3a2ade6cbaf",
+        "request_file": "/scratch/gpfs/KARTHIKN/ayush/differential-geometry-schoenflies/.changes/slurm-prepared/rank-one-cap-generalization/Revision2/Focused-request.json",
+        "request_file_sha256": "323caf4ecb648e4d2c7dbdab0cae27425b609aa32b873c3a488cbe8ac3ec2e0a",
+        "signature_axiom_pairs": 25,
+        "source_guards": 309
+      }
+    },
+    "shared_readback_count": 29,
+    "comparison": "All353 old portable and37 old original pairs byte-identical; shared current pairs and source-layer interfaces checked",
+    "intentional_public_generalizations": [
+      "Poincare.Topology.unitSphere_ne_antipode",
+      "Poincare.Topology.oneDimUnitSphere_eq_or_antipode",
+      "Poincare.Topology.oneDimUnitSphereEquivBool",
+      "Poincare.Topology.oneDimUnitSphere_finite",
+      "Poincare.Topology.unitSpherePointOfFinrankPos",
+      "Poincare.Topology.integralZeroSphereReducedEquiv"
+    ]
   }
 }
