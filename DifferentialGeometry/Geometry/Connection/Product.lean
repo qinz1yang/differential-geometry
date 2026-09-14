@@ -151,20 +151,23 @@ theorem leviCivita_prod
   exact leviCivita_productVectorField_apply g h Zs Ws x (X x.1, Y x.2)
 
 
-theorem connectionForm_leviCivita_prod (g : SmoothRiemannianMetric I M) (h : SmoothRiemannianMetric J N)
-    (p : M × N) (v w : E × F) :
+theorem connectionForm_leviCivita_prod_of_mem (g : SmoothRiemannianMetric I M) (h : SmoothRiemannianMetric J N)
+    (p : M × N) {q : M × N}
+    (hq : q ∈ (trivializationAt (E × F) (TangentSpace (I.prod J)) p).baseSet)
+    (v : TangentSpace (I.prod J) q) (w : E × F) :
     (LeviCivita (I := I.prod J) (g.prod h)).connectionForm
-        (trivializationAt (E × F) (TangentSpace (I.prod J)) p) p v w =
+        (trivializationAt (E × F) (TangentSpace (I.prod J)) p) q v w =
       ((LeviCivita (I := I) g).connectionForm
-          (trivializationAt E (TangentSpace I) p.1) p.1 v.1 w.1,
+          (trivializationAt E (TangentSpace I) p.1) q.1 v.1 w.1,
        (LeviCivita (I := J) h).connectionForm
-          (trivializationAt F (TangentSpace J) p.2) p.2 v.2 w.2) := by
-  have hp : p ∈ (trivializationAt (E × F) (TangentSpace (I.prod J)) p).baseSet :=
-    FiberBundle.mem_baseSet_trivializationAt (E × F) (TangentSpace (I.prod J)) p
-  have h1 : p.1 ∈ (trivializationAt E (TangentSpace I) p.1).baseSet :=
-    FiberBundle.mem_baseSet_trivializationAt E (TangentSpace I) p.1
-  have h2 : p.2 ∈ (trivializationAt F (TangentSpace J) p.2).baseSet :=
-    FiberBundle.mem_baseSet_trivializationAt F (TangentSpace J) p.2
+          (trivializationAt F (TangentSpace J) p.2) q.2 v.2 w.2) := by
+  have hp := hq
+  have hbase : q.1 ∈ (trivializationAt E (TangentSpace I) p.1).baseSet ∧
+      q.2 ∈ (trivializationAt F (TangentSpace J) p.2).baseSet := by
+    simpa only [TangentBundle.trivializationAt_baseSet, prodChartedSpace_chartAt,
+      OpenPartialHomeomorph.prod_source, Set.mem_prod] using hq
+  have h1 := hbase.1
+  have h2 := hbase.2
   obtain ⟨Y₁, hY₁⟩ := exists_contMDiffSection_eqOn_nhd (I := I) (F := E)
     (V := (TangentSpace I : M → Type _)) (n := (⊤ : ℕ∞)) (ι := Unit)
     (s := fun _ => fun y : M => (trivializationAt E (TangentSpace I) p.1).symmL ℝ y w.1)
@@ -179,11 +182,11 @@ theorem connectionForm_leviCivita_prod (g : SmoothRiemannianMetric I M) (h : Smo
     (fun _ => Bundle.Trivialization.contMDiffOn_symmL_section (I := J)
       (trivializationAt F (TangentSpace J) p.2) w.2)
     (trivializationAt F (TangentSpace J) p.2).open_baseSet h2
-  have hY₁' : ∀ᶠ y in nhds p.1,
+  have hY₁' : ∀ᶠ y in nhds q.1,
       (Y₁ () : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) y
         = (trivializationAt E (TangentSpace I) p.1).symmL ℝ y w.1 :=
     hY₁.mono (fun y hy => hy ())
-  have hY₂' : ∀ᶠ y in nhds p.2,
+  have hY₂' : ∀ᶠ y in nhds q.2,
       (Y₂ () : Cₛ^∞⟮J; F, (TangentSpace J : N → Type _)⟯) y
         = (trivializationAt F (TangentSpace J) p.2).symmL ℝ y w.2 :=
     hY₂.mono (fun y hy => hy ())
@@ -195,89 +198,49 @@ theorem connectionForm_leviCivita_prod (g : SmoothRiemannianMetric I M) (h : Smo
   rw [CovariantDerivative.connectionForm_apply _ _ hp v w,
     CovariantDerivative.connectionForm_apply _ _ h1 v.1 w.1,
     CovariantDerivative.connectionForm_apply _ _ h2 v.2 w.2]
-  have hY₁p : ∀ᶠ y : M × N in nhds p,
+  have hY₁p : ∀ᶠ y : M × N in nhds q,
       (Y₁ () : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) y.1
         = (trivializationAt E (TangentSpace I) p.1).symmL ℝ y.1 w.1 :=
     ((continuous_fst : Continuous (Prod.fst : M × N → M)).continuousAt.eventually hY₁')
-  have hY₂p : ∀ᶠ y : M × N in nhds p,
+  have hY₂p : ∀ᶠ y : M × N in nhds q,
       (Y₂ () : Cₛ^∞⟮J; F, (TangentSpace J : N → Type _)⟯) y.2
         = (trivializationAt F (TangentSpace J) p.2).symmL ℝ y.2 w.2 :=
     ((continuous_snd : Continuous (Prod.snd : M × N → N)).continuousAt.eventually hY₂')
-  have hsec : ψ =ᶠ[nhds p] φ := by
+  have hsec : ψ =ᶠ[nhds q] φ := by
     rw [hψdef, hφdef]
     filter_upwards [(trivializationAt (E × F) (TangentSpace (I.prod J)) p).open_baseSet.mem_nhds hp,
       hY₁p, hY₂p] with y hy hy1 hy2
     rw [trivializationAt_symmL_prod (I := I) (J := J) p y hy, hy1, hy2]
-  have hA₁ : ContMDiffAt (I.prod J) (I.prod 𝓘(ℝ, E)) ∞
-      (fun y : M × N => (TotalSpace.mk' E y.1
-        ((trivializationAt E (TangentSpace I) p.1).symmL ℝ y.1 w.1))) p :=
-    ContMDiffAt.comp p
-      ((Bundle.Trivialization.contMDiffOn_symmL_section (I := I)
-        (trivializationAt E (TangentSpace I) p.1) w.1).contMDiffAt
-        ((trivializationAt E (TangentSpace I) p.1).open_baseSet.mem_nhds h1))
-      contMDiff_fst.contMDiffAt
-  have hA₂ : ContMDiffAt (I.prod J) (J.prod 𝓘(ℝ, F)) ∞
-      (fun y : M × N => (TotalSpace.mk' F y.2
-        ((trivializationAt F (TangentSpace J) p.2).symmL ℝ y.2 w.2))) p :=
-    ContMDiffAt.comp p
-      ((Bundle.Trivialization.contMDiffOn_symmL_section (I := J)
-        (trivializationAt F (TangentSpace J) p.2) w.2).contMDiffAt
-        ((trivializationAt F (TangentSpace J) p.2).open_baseSet.mem_nhds h2))
-      contMDiff_snd.contMDiffAt
-  have hpairφ : ContMDiffAt (I.prod J) ((I.prod 𝓘(ℝ, E)).prod (J.prod 𝓘(ℝ, F))) ∞
-      (fun y : M × N =>
-        (TotalSpace.mk' E y.1 ((Y₁ () : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) y.1),
-         TotalSpace.mk' F y.2 ((Y₂ () : Cₛ^∞⟮J; F, (TangentSpace J : N → Type _)⟯) y.2))) p :=
-    (ContMDiffAt.comp p
-        ((Y₁ () : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯).contMDiff.contMDiffAt)
-        contMDiff_fst.contMDiffAt).prodMk
-      (ContMDiffAt.comp p
-        ((Y₂ () : Cₛ^∞⟮J; F, (TangentSpace J : N → Type _)⟯).contMDiff.contMDiffAt)
-        contMDiff_snd.contMDiffAt)
-  have hglobSmooth : ContMDiffAt (I.prod J) (I.prod J).tangent ∞ (T% φ) p := by
+  have hglobSmooth : ContMDiffAt (I.prod J) (I.prod J).tangent ∞ (T% φ) q := by
     rw [hφdef]
-    exact ContMDiffAt.comp p
-      ((contMDiff_equivTangentBundleProd_symm (I := I) (I' := J) (M := M) (M' := N)).contMDiffAt)
-      hpairφ
-  have hglob : MDiffAt (T% φ) p := hglobSmooth.mdifferentiableAt (by simp)
-  have hsecT : (T% ψ) =ᶠ[nhds p] (T% φ) := by
+    exact (productVectorField (Y₁ ()) (Y₂ ())).contMDiff.contMDiffAt
+  have hglob : MDiffAt (T% φ) q := hglobSmooth.mdifferentiableAt (by simp)
+  have hsecT : (T% ψ) =ᶠ[nhds q] (T% φ) := by
     filter_upwards [hsec] with y hy
     rw [hy]
-  have hloc : MDiffAt (T% ψ) p := hglob.congr_of_eventuallyEq hsecT
+  have hloc : MDiffAt (T% ψ) q := hglob.congr_of_eventuallyEq hsecT
   have hcov2 := ((LeviCivita (I := I.prod J) (g.prod h)).isCovariantDerivativeOnUniv).congr_of_eventuallyEq
     hloc hglob Filter.univ_mem hsec
   have hcov2v : (LeviCivita (I := I.prod J) (g.prod h))
-        (fun y : M × N => (trivializationAt (E × F) (TangentSpace (I.prod J)) p).symmL ℝ y w) p v =
+        (fun y : M × N => (trivializationAt (E × F) (TangentSpace (I.prod J)) p).symmL ℝ y w) q v =
       (LeviCivita (I := I.prod J) (g.prod h))
         (fun y : M × N => ((Y₁ () : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) y.1,
-          (Y₂ () : Cₛ^∞⟮J; F, (TangentSpace J : N → Type _)⟯) y.2)) p v := by
+          (Y₂ () : Cₛ^∞⟮J; F, (TangentSpace J : N → Type _)⟯) y.2)) q v := by
     have h := congrArg (fun L => L v) hcov2
     rwa [hψdef, hφdef] at h
-  have hlev := leviCivita_prod (I := I) (J := J) g h
-    (DifferentialGeometry.Geometry.Curvature.smoothExtensionTangent (I := I) p.1 v.1)
-    (Y₁ ())
-    (DifferentialGeometry.Geometry.Curvature.smoothExtensionTangent (I := J) p.2 v.2)
-    (Y₂ ())
-    (DifferentialGeometry.Geometry.Curvature.smoothExtensionTangent_contMDiff (I := I) p.1 v.1)
-    ((Y₁ () : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯).contMDiff)
-    (DifferentialGeometry.Geometry.Curvature.smoothExtensionTangent_contMDiff (I := J) p.2 v.2)
-    ((Y₂ () : Cₛ^∞⟮J; F, (TangentSpace J : N → Type _)⟯).contMDiff)
-    p
   have hlev' : (LeviCivita (I := I.prod J) (g.prod h))
         (fun y : M × N => ((Y₁ () : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) y.1,
-          (Y₂ () : Cₛ^∞⟮J; F, (TangentSpace J : N → Type _)⟯) y.2)) p v =
-      ((LeviCivita (I := I) g) (Y₁ ()) p.1 v.1,
-       (LeviCivita (I := J) h) (Y₂ ()) p.2 v.2) := by
-    have h := hlev
-    rw [DifferentialGeometry.Geometry.Curvature.smoothExtensionTangent_eq (I := I) p.1 v.1,
-      DifferentialGeometry.Geometry.Curvature.smoothExtensionTangent_eq (I := J) p.2 v.2] at h
-    rw [← Prod.eta v]
-    exact h
+          (Y₂ () : Cₛ^∞⟮J; F, (TangentSpace J : N → Type _)⟯) y.2)) q v =
+      ((LeviCivita (I := I) g) (Y₁ ()) q.1 v.1,
+       (LeviCivita (I := J) h) (Y₂ ()) q.2 v.2) := by
+    rw [LeviCivita_eq_leviCivitaConnectionOfMetric, LeviCivita_eq_leviCivitaConnectionOfMetric,
+      LeviCivita_eq_leviCivitaConnectionOfMetric]
+    exact leviCivita_productVectorField_apply g h (Y₁ ()) (Y₂ ()) q v
   rw [hcov2v, hlev']
   have hconnY₁ : (LeviCivita (I := I) g)
-        (Y₁ () : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) p.1 =
+        (Y₁ () : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) q.1 =
       (LeviCivita (I := I) g)
-        (fun y : M => (trivializationAt E (TangentSpace I) p.1).symmL ℝ y w.1) p.1 :=
+        (fun y : M => (trivializationAt E (TangentSpace I) p.1).symmL ℝ y w.1) q.1 :=
     ((LeviCivita (I := I) g).isCovariantDerivativeOnUniv).congr_of_eventuallyEq
       ((Y₁ () : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯).mdifferentiableAt)
       (((Bundle.Trivialization.contMDiffOn_symmL_section (I := I)
@@ -285,18 +248,29 @@ theorem connectionForm_leviCivita_prod (g : SmoothRiemannianMetric I M) (h : Smo
         ((trivializationAt E (TangentSpace I) p.1).open_baseSet.mem_nhds h1)).mdifferentiableAt (by simp))
       Filter.univ_mem hY₁'
   have hconnY₂ : (LeviCivita (I := J) h)
-        (Y₂ () : Cₛ^∞⟮J; F, (TangentSpace J : N → Type _)⟯) p.2 =
+        (Y₂ () : Cₛ^∞⟮J; F, (TangentSpace J : N → Type _)⟯) q.2 =
       (LeviCivita (I := J) h)
-        (fun y : N => (trivializationAt F (TangentSpace J) p.2).symmL ℝ y w.2) p.2 :=
+        (fun y : N => (trivializationAt F (TangentSpace J) p.2).symmL ℝ y w.2) q.2 :=
     ((LeviCivita (I := J) h).isCovariantDerivativeOnUniv).congr_of_eventuallyEq
       ((Y₂ () : Cₛ^∞⟮J; F, (TangentSpace J : N → Type _)⟯).mdifferentiableAt)
       (((Bundle.Trivialization.contMDiffOn_symmL_section (I := J)
         (trivializationAt F (TangentSpace J) p.2) w.2).contMDiffAt
         ((trivializationAt F (TangentSpace J) p.2).open_baseSet.mem_nhds h2)).mdifferentiableAt (by simp))
       Filter.univ_mem hY₂'
-  exact (DifferentialGeometry.trivializationAt_continuousLinearMapAt_prod (I := I) (J := J) p
-    (((LeviCivita (I := I) g) (Y₁ ()) p.1) v.1,
-     ((LeviCivita (I := J) h) (Y₂ ()) p.2) v.2)).trans
+  exact (DifferentialGeometry.trivializationAt_continuousLinearMapAt_prod_of_mem (I := I) (J := J) p hq
+    (((LeviCivita (I := I) g) (Y₁ ()) q.1) v.1,
+     ((LeviCivita (I := J) h) (Y₂ ()) q.2) v.2)).trans
     (by rw [hconnY₁, hconnY₂])
+
+theorem connectionForm_leviCivita_prod (g : SmoothRiemannianMetric I M) (h : SmoothRiemannianMetric J N)
+    (p : M × N) (v w : E × F) :
+    (LeviCivita (I := I.prod J) (g.prod h)).connectionForm
+        (trivializationAt (E × F) (TangentSpace (I.prod J)) p) p v w =
+      ((LeviCivita (I := I) g).connectionForm
+          (trivializationAt E (TangentSpace I) p.1) p.1 v.1 w.1,
+       (LeviCivita (I := J) h).connectionForm
+          (trivializationAt F (TangentSpace J) p.2) p.2 v.2 w.2) := by
+  exact connectionForm_leviCivita_prod_of_mem g h p
+    (FiberBundle.mem_baseSet_trivializationAt (E × F) (TangentSpace (I.prod J)) p) v w
 
 end DifferentialGeometry.Geometry.Connection

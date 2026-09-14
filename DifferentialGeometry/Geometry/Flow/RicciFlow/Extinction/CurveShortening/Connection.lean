@@ -1425,33 +1425,7 @@ theorem connectionForm_leviCivita_apply_chart
     (X : TangentSpace I x) (v : E) :
     (LeviCivita g).connectionForm (trivializationAt E (TangentSpace I) α) x X v =
       chartChristoffelContraction g α (trivToE (I := I) α x X) v (extChartAt I α x) := by
-  let e := trivializationAt E (TangentSpace I) α
-  have he : x ∈ e.baseSet := chartLeviCivitaGoodSet_mem_baseSet hx
-  let σ := fun y => e.symmL ℝ y v
-  have hσ : MDifferentiableAt I (I.prod 𝓘(ℝ, E)) (T% σ) x := by
-    rw [e.mdifferentiableAt_section_iff I σ he]
-    apply (mdifferentiableAt_const (c := v)).congr_of_eventuallyEq
-    filter_upwards [e.open_baseSet.mem_nhds he] with y hy
-    rw [← e.continuousLinearMapAt_apply_of_mem ℝ hy]
-    exact e.continuousLinearMapAt_symmL hy v
-  have hrepr (y : M) (hy : y ∈ e.baseSet) : chartESectionRepr (I := I) α σ y = v := by
-    rw [chartE_section_repr_eq_trivToE]
-    exact e.continuousLinearMapAt_symmL hy v
-  have hconst : (chartESectionRepr (I := I) α σ ∘ (extChartAt I α).symm) =ᶠ[𝓝 (extChartAt I α x)]
-      fun _ => v := by
-    filter_upwards [isOpen_interior.mem_nhds
-      (chartLeviCivitaGoodSet_extChartAt_mem_interior hx)] with z hz
-    apply hrepr
-    have h := (extChartAt I α).map_target (interior_subset hz)
-    simpa only [e, TangentBundle.trivializationAt_baseSet, extChartAt_source] using h
-  have hD : fderiv ℝ (chartESectionRepr (I := I) α σ ∘ (extChartAt I α).symm)
-      (extChartAt I α x) = 0 := by
-    rw [hconst.fderiv_eq, fderiv_const_apply]
-  rw [CovariantDerivative.connectionForm_apply _ _ he,
-    LeviCivita_chart_apply g α hx hσ X, chartLeviCivita_apply g α σ hx X,
-    hD, zero_apply, zero_add, hrepr x he]
-  change e.continuousLinearMapAt ℝ x (e.symmL ℝ x (christoffelCorrection g α x v X)) = _
-  rw [e.continuousLinearMapAt_symmL he, correction_eq_contr]
+  exact DifferentialGeometry.Geometry.Connection.connectionForm_leviCivita_apply g α hx X v
 
 omit [CompleteSpace E] [SigmaCompactSpace M] in
 theorem Dt_eq_derivAlongWithin (g : ℝ → SmoothRiemannianMetric I M) (c : CurveMap M)
