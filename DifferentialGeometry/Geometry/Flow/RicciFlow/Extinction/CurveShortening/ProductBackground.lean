@@ -144,4 +144,58 @@ theorem RicciBackground.exists_uniform_product_curvature_derivative_bounds
     simpa only [covStep_apply, SolutionFamily.connection, SolutionFamily.ricci,
       quotientProductFamily] using hh
 
+theorem RicciBackground.exists_uniform_product_iterCov_bounds
+    [I.Boundaryless] [CompactSpace M] {D : RealTimeInterval} {a b : ℝ}
+    (A : QuotientProductAtlas I M) (B : RicciBackground (I := I) (M := M) D a b) (m : ℕ) :
+    ∃ C : ℝ, 1 ≤ C ∧
+      (∀ t ∈ Icc a b, ∀ p : M,
+        normSq0S (B.family.metric t) p (4 + m)
+          (iterCov (B.family.metric t) 4 (B.family.rm04 t) m p) ≤ C ^ 2 ∧
+        normSq0S (B.family.metric t) p (2 + m)
+          (iterCov (B.family.metric t) 2 (B.family.ricci t) m p) ≤ C ^ 2) ∧
+      (∀ lambda : ℝ, ∀ hlambda : 0 < lambda,
+        letI := A.charts
+        letI := A.smoothManifold
+        let G := quotientProductFamily A B.family lambda hlambda
+        ∀ t ∈ Icc a b, ∀ q : M × Surgery.Topology.Circle,
+          normSq0S (G.metric t) q (4 + m) (iterCov (G.metric t) 4 (G.rm04 t) m q) ≤ C ^ 2 ∧
+          normSq0S (G.metric t) q (2 + m) (iterCov (G.metric t) 2 (G.ricci t) m q) ≤ C ^ 2) := by
+  let F : SolutionOn (I := I) (M := M) D := ⟨B.family⟩
+  obtain ⟨_, _, hbound⟩ := rfs_csf_background F B.equation B.lt B.regular
+  obtain ⟨K, hK, hRm⟩ := hbound m
+  let N := (Module.finrank ℝ E : ℝ) ^ ((2 + m) + 2) * K ^ 2
+  have hN : 0 ≤ N := by dsimp only [N]; positivity
+  let C := K + N + 1
+  have hC : 1 ≤ C := by dsimp only [C]; linarith only [hK, hN]
+  have hKC : K ≤ C := by dsimp only [C]; linarith only [hN]
+  have hNC : N ≤ C := by dsimp only [C]; linarith only [hK]
+  have hbase (t : ℝ) (ht : t ∈ Icc a b) (p : M) :
+      normSq0S (B.family.metric t) p (4 + m)
+        (iterCov (B.family.metric t) 4 (B.family.rm04 t) m p) ≤ C ^ 2 ∧
+      normSq0S (B.family.metric t) p (2 + m)
+        (iterCov (B.family.metric t) 2 (B.family.ricci t) m p) ≤ C ^ 2 := by
+    have hh := hRm t ht p
+    rw [nablaKRm_eq_iterCov] at hh
+    have hr := ricTower_normSq_le F t m p
+    rw [nablaKRm_eq_iterCov] at hr
+    change normSq0S (B.family.metric t) p (2 + m)
+      (iterCov (B.family.metric t) 2 (B.family.ricci t) m p) ≤
+      (Module.finrank ℝ E : ℝ) ^ ((2 + m) + 2) *
+        normSq0S (B.family.metric t) p (4 + m)
+          (iterCov (B.family.metric t) 4 (B.family.rm04 t) m p) at hr
+    refine ⟨hh.trans (pow_le_pow_left₀ hK hKC 2), ?_⟩
+    have hNbound : normSq0S (B.family.metric t) p (2 + m)
+        (iterCov (B.family.metric t) 2 (B.family.ricci t) m p) ≤ N :=
+      hr.trans (mul_le_mul_of_nonneg_left hh (by positivity))
+    exact hNbound.trans (hNC.trans (by nlinarith only [hC]))
+  refine ⟨C, hC, hbase, ?_⟩
+  intro lambda hlambda
+  let _ := A.charts
+  let _ := A.smoothManifold
+  dsimp only
+  intro t ht q
+  have hnorm := quotientProduct_iterCov_normSq A (B.family.metric t) lambda hlambda m q
+  exact ⟨hnorm.1.trans_le (hbase t ht q.1).1, hnorm.2.trans_le (hbase t ht q.1).2⟩
+
+
 end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening

@@ -4961,6 +4961,8 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.C
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.CurvatureLength
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Evolution
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.DerivativeEvolution
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.HigherDerivativeEvolution
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.IteratedDerivatives
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Bernstein
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.CurvatureBootstrap
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.CurvatureBound
