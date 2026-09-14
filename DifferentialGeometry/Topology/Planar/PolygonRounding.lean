@@ -1,3 +1,4 @@
+import Mathlib.LinearAlgebra.Ray
 import DifferentialGeometry.Topology.Planar.CornerRounding
 import DifferentialGeometry.Topology.Planar.PolygonIsotopy
 import Mathlib.Geometry.Manifold.Diffeomorph
@@ -3946,6 +3947,1486 @@ theorem PrePolygon.exists_local_rounding_isotopy_of_two_edge_free_triangle
   · exact ((H 1).toHomeomorph.image_frontier D).trans (congrArg frontier himage)
   · exact ((H 1).symm.toHomeomorph.image_interior E).trans (congrArg interior hinverseImage)
   · exact ((H 1).symm.toHomeomorph.image_frontier E).trans (congrArg frontier hinverseImage)
+
+end Schoenflies
+
+end
+
+section
+
+open Set Metric
+
+namespace Schoenflies
+
+private theorem PrePolygon.exists_ball_carrier_eq_incident_edges
+    {m : ℕ} (P : PrePolygon m) (i : ZMod (m + 3)) :
+    ∃ r > 0, ball (P.vertex i) r ∩ P.carrier =
+      ball (P.vertex i) r ∩ (P.edge (i - 1) ∪ P.edge i) := by
+  classical
+  let s := Finset.univ.filter fun j : ZMod (m + 3) => j ≠ i - 1 ∧ j ≠ i
+  let C : Set Plane := ⋃ j ∈ s, P.edge j
+  have hC : IsClosed C :=
+    (s.isCompact_biUnion (fun _ _ => isCompact_segment _ _)).isClosed
+  have hiC : P.vertex i ∉ C := by
+    intro hi
+    obtain ⟨j, hj, hij⟩ := Set.mem_iUnion₂.mp hi
+    obtain ⟨hjpred, hji⟩ := (Finset.mem_filter.mp hj).2
+    rcases PrePolygon.vertex_mem_edge_elim hij with he | he
+    · exact hji (P.vertex_inj he).symm
+    · change P.vertex i = P.vertex (j + 1) at he
+      exact hjpred (by rw [P.vertex_inj he, add_sub_cancel_right])
+  obtain ⟨r, hr, hball⟩ := Metric.isOpen_iff.mp hC.isOpen_compl (P.vertex i) hiC
+  refine ⟨r, hr, Set.Subset.antisymm ?_ ?_⟩
+  · rintro p ⟨hp, hpC⟩
+    obtain ⟨j, hpj⟩ := Set.mem_iUnion.mp hpC
+    refine ⟨hp, ?_⟩
+    by_cases hjpred : j = i - 1
+    · exact Or.inl (hjpred ▸ hpj)
+    by_cases hji : j = i
+    · exact Or.inr (hji ▸ hpj)
+    exact False.elim (hball hp (Set.mem_iUnion₂.mpr
+      ⟨j, Finset.mem_filter.mpr ⟨Finset.mem_univ _, hjpred, hji⟩, hpj⟩))
+  · rintro p ⟨hp, hpedge⟩
+    exact ⟨hp, hpedge.elim (fun h => P.edge_subset_carrier _ h)
+      (fun h => P.edge_subset_carrier _ h)⟩
+
+end Schoenflies
+
+end
+
+section
+
+open Set Metric
+
+namespace Schoenflies
+
+private theorem exists_pos_smul_sub_of_mem_segment_ne_left
+    {E : Type*} [AddCommGroup E] [Module ℝ E] {a b x : E}
+    (hx : x ∈ segment ℝ a b) (hxa : x ≠ a) :
+    ∃ t : ℝ, 0 < t ∧ x - a = t • (b - a) := by
+  obtain ⟨u, v, _, hv, huv, h⟩ := hx
+  have hu : u = 1 - v := by linarith only [huv]
+  have hsub : x - a = v • (b - a) := by
+    rw [← h, hu]
+    module
+  have hvne : v ≠ 0 := by
+    intro he
+    rw [he, zero_smul] at hsub
+    exact hxa (sub_eq_zero.mp hsub)
+  exact ⟨v, lt_of_le_of_ne hv (Ne.symm hvne), hsub⟩
+
+private theorem sameRay_or_of_local_segment_subset
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {a b c d : E} {U : Set E} (hU : IsOpen U) (haU : a ∈ U)
+    (hlocal : ∀ x ∈ U, x ∈ segment ℝ a b →
+      x ∈ segment ℝ a c ∪ segment ℝ a d) :
+    SameRay ℝ (b - a) (c - a) ∨ SameRay ℝ (b - a) (d - a) := by
+  by_cases hba : b = a
+  · exact Or.inl (by rw [hba, sub_self]; exact SameRay.zero_left _)
+  have hcont : Continuous (fun t : ℝ => a + t • (b - a)) := by fun_prop
+  have hzero : (0 : ℝ) ∈ (fun t : ℝ => a + t • (b - a)) ⁻¹' U := by
+    simpa only [mem_preimage, zero_smul, add_zero] using haU
+  obtain ⟨δ, hδ, hδU⟩ := Metric.isOpen_iff.mp (hU.preimage hcont) 0 hzero
+  let t : ℝ := min δ 1 / 2
+  have ht : 0 < t := half_pos (lt_min hδ zero_lt_one)
+  have htδ : t < δ := (half_lt_self (lt_min hδ zero_lt_one)).trans_le (min_le_left _ _)
+  have ht1 : t < 1 := (half_lt_self (lt_min hδ zero_lt_one)).trans_le (min_le_right _ _)
+  let x : E := a + t • (b - a)
+  have hxU : x ∈ U := hδU (by
+    rw [mem_ball, Real.dist_eq, sub_zero, abs_of_pos ht]
+    exact htδ)
+  have hxab : x ∈ segment ℝ a b := by
+    refine ⟨1 - t, t, sub_nonneg.mpr ht1.le, ht.le, by ring, ?_⟩
+    dsimp [x]
+    module
+  have hxsub : x - a = t • (b - a) := add_sub_cancel_left _ _
+  have hxa : x ≠ a := by
+    intro he
+    have hz : t • (b - a) = 0 := by rw [← hxsub, he, sub_self]
+    exact (smul_ne_zero ht.ne' (sub_ne_zero.mpr hba)) hz
+  rcases hlocal x hxU hxab with hxc | hxd
+  · obtain ⟨v, hv, hxv⟩ := exists_pos_smul_sub_of_mem_segment_ne_left hxc hxa
+    exact Or.inl (Or.inr (Or.inr ⟨t, v, ht, hv, hxsub.symm.trans hxv⟩))
+  · obtain ⟨v, hv, hxv⟩ := exists_pos_smul_sub_of_mem_segment_ne_left hxd hxa
+    exact Or.inr (Or.inr (Or.inr ⟨t, v, ht, hv, hxsub.symm.trans hxv⟩))
+
+private theorem exists_pos_smul_pair_of_sameRay_or
+    {u v x y : Plane} (huv : Plane.det u v ≠ 0) (hx : x ≠ 0) (hy : y ≠ 0)
+    (hu : SameRay ℝ u x ∨ SameRay ℝ u y)
+    (hv : SameRay ℝ v x ∨ SameRay ℝ v y) :
+    Plane.det x y ≠ 0 ∧ ∃ r s : ℝ, 0 < r ∧ 0 < s ∧
+      ((u = r • x ∧ v = s • y) ∨ (u = r • y ∧ v = s • x)) := by
+  have hune : u ≠ 0 := by intro he; apply huv; simp [he, Plane.det]
+  have hvne : v ≠ 0 := by intro he; apply huv; simp [he, Plane.det]
+  rcases hu with hu | hu <;> rcases hv with hv | hv
+  · obtain ⟨r, _, hur⟩ := hu.exists_pos_right hune hx
+    obtain ⟨s, _, hvs⟩ := hv.exists_pos_right hvne hx
+    exact False.elim (huv (by simp [hur, hvs]))
+  · obtain ⟨r, hr, hur⟩ := hu.exists_pos_right hune hx
+    obtain ⟨s, hs, hvs⟩ := hv.exists_pos_right hvne hy
+    refine ⟨?_, r, s, hr, hs, Or.inl ⟨hur, hvs⟩⟩
+    intro he
+    exact huv (by simp [hur, hvs, he])
+  · obtain ⟨r, hr, hur⟩ := hu.exists_pos_right hune hy
+    obtain ⟨s, hs, hvs⟩ := hv.exists_pos_right hvne hx
+    refine ⟨?_, r, s, hr, hs, Or.inr ⟨hur, hvs⟩⟩
+    intro he
+    have hyx : Plane.det y x = 0 := by rw [Plane.det_comm, he, neg_zero]
+    exact huv (by simp [hur, hvs, hyx])
+  · obtain ⟨r, _, hur⟩ := hu.exists_pos_right hune hy
+    obtain ⟨s, _, hvs⟩ := hv.exists_pos_right hvne hy
+    exact False.elim (huv (by simp [hur, hvs]))
+
+private theorem PrePolygon.exists_pos_smul_incident_edges_of_local_carrier_eq
+    {m n : ℕ} (P : PrePolygon m) (Q : PrePolygon n)
+    (i : ZMod (m + 3)) (j : ZMod (n + 3))
+    (hij : Q.vertex j = P.vertex i) {U : Set Plane}
+    (hU : IsOpen U) (hiU : P.vertex i ∈ U)
+    (hcar : ∀ x ∈ U, x ∈ P.carrier ↔ x ∈ Q.carrier)
+    (hdet : Plane.det (P.vertex (i - 1) - P.vertex i)
+      (P.vertex (i + 1) - P.vertex i) ≠ 0) :
+    Plane.det (Q.vertex (j - 1) - Q.vertex j)
+      (Q.vertex (j + 1) - Q.vertex j) ≠ 0 ∧
+    ∃ r s : ℝ, 0 < r ∧ 0 < s ∧
+      ((P.vertex (i - 1) - P.vertex i = r • (Q.vertex (j - 1) - Q.vertex j) ∧
+        P.vertex (i + 1) - P.vertex i = s • (Q.vertex (j + 1) - Q.vertex j)) ∨
+       (P.vertex (i - 1) - P.vertex i = r • (Q.vertex (j + 1) - Q.vertex j) ∧
+        P.vertex (i + 1) - P.vertex i = s • (Q.vertex (j - 1) - Q.vertex j))) := by
+  obtain ⟨ρ, hρ, hlocal⟩ := Q.exists_ball_carrier_eq_incident_edges j
+  let V := U ∩ ball (Q.vertex j) ρ
+  have hV : IsOpen V := hU.inter isOpen_ball
+  have hiV : P.vertex i ∈ V := ⟨hiU, by rw [← hij]; exact mem_ball_self hρ⟩
+  have hQprev : Q.vertex (j - 1) - Q.vertex j ≠ 0 := by
+    apply sub_ne_zero.mpr
+    intro he
+    have hi := Q.vertex_inj he
+    exact ClosedPolygon.succ_ne_self (j - 1) (by simpa only [sub_add_cancel] using hi.symm)
+  have hQnext : Q.vertex (j + 1) - Q.vertex j ≠ 0 :=
+    sub_ne_zero.mpr (fun he => ClosedPolygon.succ_ne_self j (Q.vertex_inj he))
+  have hQ (x : Plane) (hx : x ∈ V) (hxP : x ∈ P.carrier) :
+      x ∈ segment ℝ (P.vertex i) (Q.vertex (j - 1)) ∪
+        segment ℝ (P.vertex i) (Q.vertex (j + 1)) := by
+    have hxQ : x ∈ ball (Q.vertex j) ρ ∩ Q.carrier := ⟨hx.2, (hcar x hx.1).mp hxP⟩
+    rw [hlocal] at hxQ
+    have he := hxQ.2
+    change x ∈ segment ℝ (Q.vertex (j - 1)) (Q.vertex (j - 1 + 1)) ∪
+      segment ℝ (Q.vertex j) (Q.vertex (j + 1)) at he
+    rw [sub_add_cancel, segment_symm ℝ (Q.vertex (j - 1)), hij] at he
+    exact he
+  have hprev := sameRay_or_of_local_segment_subset hV hiV (fun x hx hseg =>
+    hQ x hx (P.edge_subset_carrier (i - 1) (by
+      change x ∈ segment ℝ (P.vertex (i - 1)) (P.vertex (i - 1 + 1))
+      rw [sub_add_cancel, segment_symm]
+      exact hseg)))
+  have hnext := sameRay_or_of_local_segment_subset hV hiV (fun x hx hseg =>
+    hQ x hx (P.edge_subset_carrier i hseg))
+  rw [← hij] at hprev hnext
+  have hdet' : Plane.det (P.vertex (i - 1) - Q.vertex j)
+      (P.vertex (i + 1) - Q.vertex j) ≠ 0 := by simpa only [hij] using hdet
+  have h := exists_pos_smul_pair_of_sameRay_or hdet' hQprev hQnext hprev hnext
+  simpa only [hij] using h
+
+end Schoenflies
+
+end
+
+section
+
+open Set Metric
+
+namespace Schoenflies
+
+private theorem PrePolygon.exists_vertex_eq_of_isCornerAt
+    {m : ℕ} (P : PrePolygon m) {p : Plane} (hp : IsCornerAt P.carrier p) :
+    ∃ i : ZMod (m + 3), P.vertex i = p := by
+  obtain ⟨i, hpi⟩ := Set.mem_iUnion.mp hp.1
+  by_cases hend : p = P.vertex i ∨ p = P.vertex (i + 1)
+  · rcases hend with rfl | rfl
+    exacts [⟨i, rfl⟩, ⟨i + 1, rfl⟩]
+  · exfalso
+    push Not at hend
+    have hopen : p ∈ openSegment ℝ (P.vertex i) (P.vertex (i + 1)) :=
+      mem_openSegment_of_ne_left_right (Ne.symm hend.1) (Ne.symm hend.2) hpi
+    obtain ⟨r, hr, hball⟩ := exists_pos_forall_of_finite
+      (S := {j : ZMod (m + 3) | j ≠ i}) (Set.toFinite _)
+      (P := fun j ε => ∀ y ∈ ball p ε, y ∉ P.edge j)
+      (fun _ _ _ _ hδε hQ y hy => hQ y (ball_subset_ball hδε hy))
+      (fun j hj => by
+        obtain ⟨ρ, hρ, hsub⟩ := Metric.isOpen_iff.mp
+          (isCompact_segment (P.vertex j) (P.vertex (j + 1))).isClosed.isOpen_compl p
+          (PrePolygon.notMem_edge_of_mem_openSegment hj hopen)
+        exact ⟨ρ, hρ, fun y hy => hsub hy⟩)
+    refine hp.2 ⟨P.vertex i, P.vertex (i + 1), hopen, r, hr, ?_⟩
+    rintro z ⟨hzb, hzC⟩
+    obtain ⟨j, hzj⟩ := Set.mem_iUnion.mp hzC
+    by_cases hji : j = i
+    · exact hji ▸ hzj
+    · exact absurd hzj (hball j hji z hzb)
+
+private theorem PrePolygon.isCornerAt_vertex_of_det_ne_zero
+    {m : ℕ} (P : PrePolygon m) (i : ZMod (m + 3))
+    (hcorner : Plane.det (P.vertex (i - 1) - P.vertex i)
+      (P.vertex (i + 1) - P.vertex i) ≠ 0) :
+    IsCornerAt P.carrier (P.vertex i) := by
+  refine ⟨P.vertex_mem_carrier i, ?_⟩
+  rintro ⟨a, b, hvab, r, hr, hsub⟩
+  apply hcorner
+  set u : Plane := P.vertex (i + 1) - P.vertex i with hu
+  set w : Plane := P.vertex (i - 1) - P.vertex i with hw
+  set t : ℝ := min 1 (r / (2 * (‖u‖ + ‖w‖ + 1))) with ht
+  have hM : (0 : ℝ) < ‖u‖ + ‖w‖ + 1 := by positivity
+  have htpos : 0 < t := lt_min one_pos (by positivity)
+  have htle : t ≤ 1 := min_le_left _ _
+  have key : ∀ v : Plane, ‖v‖ ≤ ‖u‖ + ‖w‖ + 1 → t * ‖v‖ < r := by
+    intro v hv
+    calc t * ‖v‖ ≤ (r / (2 * (‖u‖ + ‖w‖ + 1))) * ‖v‖ :=
+          mul_le_mul_of_nonneg_right (min_le_right _ _) (norm_nonneg v)
+      _ < r := by
+          rw [div_mul_eq_mul_div, div_lt_iff₀ (by positivity)]
+          nlinarith [norm_nonneg v]
+  have hstep : ∀ v : Plane, ‖v‖ ≤ ‖u‖ + ‖w‖ + 1 →
+      P.vertex i + t • v ∈ ball (P.vertex i) r := by
+    intro v hv
+    rw [mem_ball, dist_eq_norm, add_sub_cancel_left, norm_smul, Real.norm_eq_abs,
+      abs_of_pos htpos]
+    exact key v hv
+  have hxmem : P.vertex i + t • u ∈ segment ℝ a b := by
+    refine hsub ⟨hstep u (by linarith [norm_nonneg w]), ?_⟩
+    refine P.edge_subset_carrier i ⟨1 - t, t, by linarith, htpos.le, by ring, ?_⟩
+    rw [hu]
+    module
+  have hymem : P.vertex i + t • w ∈ segment ℝ a b := by
+    refine hsub ⟨hstep w (by linarith [norm_nonneg u]), ?_⟩
+    refine P.edge_subset_carrier (i - 1) ⟨t, 1 - t, htpos.le, by linarith, by ring, ?_⟩
+    rw [hw, sub_add_cancel]
+    module
+  have hvmem : P.vertex i ∈ segment ℝ a b := openSegment_subset_segment ℝ _ _ hvab
+  have hdet := det_eq_zero_of_mem_segment hymem hxmem hvmem
+  rw [add_sub_cancel_left, add_sub_cancel_left, Plane.det_smul_left,
+    Plane.det_smul_right] at hdet
+  exact (mul_eq_zero.mp ((mul_eq_zero.mp hdet).resolve_left htpos.ne')).resolve_left
+    htpos.ne'
+
+private theorem IsCornerAt.of_local_subset
+    {C D U : Set Plane} {p : Plane} (hp : IsCornerAt C p)
+    (hU : IsOpen U) (hpU : p ∈ U) (hCD : ∀ x ∈ U, x ∈ C → x ∈ D) :
+    IsCornerAt D p := by
+  refine ⟨hCD p hpU hp.1, ?_⟩
+  rintro ⟨a, b, hpab, r, hr, hsub⟩
+  obtain ⟨ρ, hρ, hρU⟩ := Metric.isOpen_iff.mp hU p hpU
+  apply hp.2
+  refine ⟨a, b, hpab, min r ρ, lt_min hr hρ, ?_⟩
+  rintro x ⟨hxb, hxC⟩
+  exact hsub ⟨ball_subset_ball (min_le_left _ _) hxb,
+    hCD x (hρU (ball_subset_ball (min_le_right _ _) hxb)) hxC⟩
+
+private theorem PrePolygon.exists_matching_vertex_of_local_carrier_eq
+    {m n : ℕ} (P : PrePolygon m) (Q : PrePolygon n) (i : ZMod (m + 3))
+    {U : Set Plane} (hU : IsOpen U) (hiU : P.vertex i ∈ U)
+    (hcar : ∀ x ∈ U, x ∈ P.carrier ↔ x ∈ Q.carrier)
+    (hdet : Plane.det (P.vertex (i - 1) - P.vertex i)
+      (P.vertex (i + 1) - P.vertex i) ≠ 0) :
+    ∃ j : ZMod (n + 3), Q.vertex j = P.vertex i ∧
+      Plane.det (Q.vertex (j - 1) - Q.vertex j)
+        (Q.vertex (j + 1) - Q.vertex j) ≠ 0 ∧
+      ∃ r s : ℝ, 0 < r ∧ 0 < s ∧
+        ((P.vertex (i - 1) - P.vertex i = r • (Q.vertex (j - 1) - Q.vertex j) ∧
+          P.vertex (i + 1) - P.vertex i = s • (Q.vertex (j + 1) - Q.vertex j)) ∨
+         (P.vertex (i - 1) - P.vertex i = r • (Q.vertex (j + 1) - Q.vertex j) ∧
+          P.vertex (i + 1) - P.vertex i = s • (Q.vertex (j - 1) - Q.vertex j))) := by
+  have hp := (P.isCornerAt_vertex_of_det_ne_zero i hdet).of_local_subset hU hiU
+    (fun x hx hxP => (hcar x hx).mp hxP)
+  obtain ⟨j, hj⟩ := Q.exists_vertex_eq_of_isCornerAt hp
+  exact ⟨j, hj, P.exists_pos_smul_incident_edges_of_local_carrier_eq Q i j hj
+    hU hiU hcar hdet⟩
+
+end Schoenflies
+
+end
+
+section
+
+open Set
+
+namespace Schoenflies
+
+private def cornerSwap : Plane ≃ₗ[ℝ] Plane := by
+  let L : Plane →ₗ[ℝ] Plane :=
+    { toFun := fun p => Plane.mk (-p 0) (p 1 - p 0)
+      map_add' := by
+        intro p q
+        ext i
+        fin_cases i <;> simp [Plane.mk] <;> ring
+      map_smul' := by
+        intro r p
+        ext i
+        fin_cases i <;> simp [Plane.mk]
+        ring }
+  exact LinearEquiv.ofInvolutive L (by
+    intro p
+    ext i
+    fin_cases i <;> simp [L, Plane.mk])
+
+private theorem cornerSwap_profiles (p : Plane) :
+    (cornerSwap p) 1 - max ((cornerSwap p) 0) 0 = p 1 - max (p 0) 0 ∧
+    ∀ ε : ℝ, ε ≠ 0 → (cornerSwap p) 1 - Real.smoothMax ε ((cornerSwap p) 0) 0 =
+      p 1 - Real.smoothMax ε (p 0) 0 := by
+  change (p 1 - p 0) - max (-p 0) 0 = p 1 - max (p 0) 0 ∧ _
+  constructor
+  · rcases le_total (p 0) 0 with h | h
+    · rw [max_eq_right h, max_eq_left (neg_nonneg.mpr h)]
+      ring
+    · rw [max_eq_left h, max_eq_right (neg_nonpos.mpr h)]
+      ring
+  · intro ε hε
+    change (p 1 - p 0) - Real.smoothMax ε (-p 0) 0 = _
+    have h := Real.smoothMax.add_right ε 0 (p 0) (-p 0)
+    simp only [zero_add, add_neg_cancel] at h
+    rw [h, Real.smoothMax.comm hε 0 (p 0)]
+    ring
+
+private theorem corner_profiles_smul {a : ℝ} (ha : 0 < a) (p : Plane) :
+    (a • p) 1 - max ((a • p) 0) 0 = a * (p 1 - max (p 0) 0) ∧
+    ∀ ε : ℝ, (a • p) 1 - Real.smoothMax (a * ε) ((a • p) 0) 0 =
+      a * (p 1 - Real.smoothMax ε (p 0) 0) := by
+  have hmax := mul_max_of_nonneg (p 0) (0 : ℝ) ha.le
+  simp only [mul_zero] at hmax
+  constructor
+  · change a * p 1 - max (a * p 0) 0 = _
+    rw [← hmax]
+    ring
+  · intro ε
+    have h := Real.smoothMax.mul_left a ε (p 0) 0
+    simp only [mul_zero] at h
+    change a * p 1 - Real.smoothMax (a * ε) (a * p 0) 0 = _
+    rw [h]
+    ring
+
+private theorem exists_scaled_affine_corner_chart
+    (e : Plane ≃ᵃ[ℝ] Plane) {a b c : Plane} {A B : ℝ} (hA : A ≠ 0)
+    (ha : e a = Plane.mk (-A) 0) (hb : e b = Plane.mk B B) (hc : e c = 0) :
+    ∃ f : Plane ≃ᵃ[ℝ] Plane, f c = 0 ∧ f a = Plane.mk (-1) 0 ∧
+      f b = Plane.mk (B / A) (B / A) ∧ ∀ p, f p = A⁻¹ • e p := by
+  let f := e.trans (LinearEquiv.smulOfNeZero ℝ Plane A⁻¹ (inv_ne_zero hA)).toAffineEquiv
+  have hf (p : Plane) : f p = A⁻¹ • e p := rfl
+  refine ⟨f, ?_, ?_, ?_, hf⟩
+  · rw [hf, hc, smul_zero]
+  · rw [hf, ha]
+    ext i
+    fin_cases i
+    · change A⁻¹ * (-A) = -1
+      rw [mul_neg, inv_mul_cancel₀ hA]
+    · change A⁻¹ * 0 = 0
+      exact mul_zero _
+  · rw [hf, hb]
+    ext i
+    fin_cases i <;> change A⁻¹ * B = B / A <;> ring
+
+private theorem exists_reanchored_affine_corner_chart
+    (e : Plane ≃ᵃ[ℝ] Plane) {a b c a' b' : Plane} {r α β : ℝ}
+    (hr : 0 < r) (hα : 0 < α) (hβ : 0 < β)
+    (ha' : e a' = Plane.mk (-1) 0) (hb' : e b' = Plane.mk r r) (hc : e c = 0)
+    (hmatch : (a - c = α • (a' - c) ∧ b - c = β • (b' - c)) ∨
+      (a - c = α • (b' - c) ∧ b - c = β • (a' - c))) :
+    ∃ (f : Plane ≃ᵃ[ℝ] Plane) (ρ ℓ : ℝ), 0 < ρ ∧ 0 < ℓ ∧
+      f c = 0 ∧ f a = Plane.mk (-1) 0 ∧ f b = Plane.mk ρ ρ ∧
+      ((∀ p, f p = ℓ • e p) ∨ (∀ p, f p = ℓ • cornerSwap (e p))) ∧
+      (∀ p, (f p) 1 - max ((f p) 0) 0 = ℓ * ((e p) 1 - max ((e p) 0) 0)) ∧
+      ∀ ε : ℝ, ε ≠ 0 → ∀ p,
+        (f p) 1 - Real.smoothMax (ℓ * ε) ((f p) 0) 0 =
+          ℓ * ((e p) 1 - Real.smoothMax ε ((e p) 0) 0) := by
+  have hmap (x y : Plane) (s : ℝ) (h : x - c = s • (y - c)) : e x = s • e y := by
+    have hv (q : Plane) : e.linear (q - c) = e q := by
+      have hv' : e.linear (q - c) = e q - e c := e.toAffineMap.linearMap_vsub q c
+      simpa only [hc, sub_zero] using hv'
+    rw [← hv, h, map_smul, hv]
+  obtain ⟨f, ρ, ℓ, hρ, hℓ, hfc, hfa, hfb, hform⟩ :
+      ∃ (f : Plane ≃ᵃ[ℝ] Plane) (ρ ℓ : ℝ), 0 < ρ ∧ 0 < ℓ ∧
+        f c = 0 ∧ f a = Plane.mk (-1) 0 ∧ f b = Plane.mk ρ ρ ∧
+        ((∀ p, f p = ℓ • e p) ∨ (∀ p, f p = ℓ • cornerSwap (e p))) := by
+    rcases hmatch with h | h
+    · have hea : e a = Plane.mk (-α) 0 := by
+        rw [hmap a a' α h.1, ha']
+        ext i
+        fin_cases i <;> simp [Plane.mk]
+      have heb : e b = Plane.mk (β * r) (β * r) := by
+        rw [hmap b b' β h.2, hb']
+        ext i
+        fin_cases i <;> rfl
+      obtain ⟨f, hfc, hfa, hfb, hf⟩ :=
+        exists_scaled_affine_corner_chart e hα.ne' hea heb hc
+      exact ⟨f, β * r / α, α⁻¹, div_pos (mul_pos hβ hr) hα, inv_pos.mpr hα,
+        hfc, hfa, hfb, Or.inl hf⟩
+    · let E := e.trans cornerSwap.toAffineEquiv
+      have hEc : E c = 0 := by change cornerSwap (e c) = 0; rw [hc, map_zero]
+      have hEa : E a = Plane.mk (-(α * r)) 0 := by
+        change cornerSwap (e a) = _
+        rw [hmap a b' α h.1, hb']
+        change Plane.mk (-(α * r)) (α * r - α * r) = Plane.mk (-(α * r)) 0
+        rw [sub_self]
+      have hEb : E b = Plane.mk β β := by
+        change cornerSwap (e b) = _
+        rw [hmap b a' β h.2, ha']
+        change Plane.mk (-(β * (-1))) (β * 0 - β * (-1)) = Plane.mk β β
+        simp only [mul_neg_one, neg_neg, mul_zero, zero_sub]
+      obtain ⟨f, hfc, hfa, hfb, hf⟩ :=
+        exists_scaled_affine_corner_chart E (mul_pos hα hr).ne' hEa hEb hEc
+      exact ⟨f, β / (α * r), (α * r)⁻¹, div_pos hβ (mul_pos hα hr),
+        inv_pos.mpr (mul_pos hα hr), hfc, hfa, hfb, Or.inr hf⟩
+  refine ⟨f, ρ, ℓ, hρ, hℓ, hfc, hfa, hfb, hform, ?_, ?_⟩
+  · intro p
+    rcases hform with h | h
+    · rw [h p]
+      exact (corner_profiles_smul hℓ (e p)).1
+    · rw [h p, (corner_profiles_smul hℓ (cornerSwap (e p))).1,
+        (cornerSwap_profiles (e p)).1]
+  · intro ε hε p
+    rcases hform with h | h
+    · rw [h p]
+      exact (corner_profiles_smul hℓ (e p)).2 ε
+    · rw [h p, (corner_profiles_smul hℓ (cornerSwap (e p))).2 ε,
+        (cornerSwap_profiles (e p)).2 ε hε]
+
+end Schoenflies
+
+end
+
+section
+
+open Set Metric
+
+namespace Schoenflies
+
+private theorem replacement_eq_core_of_local_agreement
+    {X : Type*} {D A C N K : Set X} (hCN : C ⊆ N) (hNK : N ⊆ K)
+    (heq : ∀ p ∈ K \ C, p ∈ A ↔ p ∈ D) :
+    (D \ N) ∪ (K ∩ A) = (D \ C) ∪ (C ∩ A) := by
+  ext p
+  by_cases hpC : p ∈ C
+  · have hpN := hCN hpC
+    have hpK := hNK hpN
+    simp only [mem_union, mem_sdiff, mem_inter_iff, hpC, hpN, hpK, not_true_eq_false,
+      and_false, true_and, false_or]
+  · by_cases hpK : p ∈ K
+    · have hpAD := heq p ⟨hpK, hpC⟩
+      by_cases hpN : p ∈ N <;> simp [hpC, hpN, hpK, hpAD]
+    · have hpN : p ∉ N := fun h => hpK (hNK h)
+      simp [hpC, hpN, hpK]
+
+private theorem replacement_eq_of_common_core
+    {X : Type*} [TopologicalSpace X] {D A C N₀ K₀ N₁ K₁ : Set X}
+    (hC : C ⊆ N₀ ∩ N₁) (hNK₀ : N₀ ⊆ K₀) (hNK₁ : N₁ ⊆ K₁)
+    (heq : ∀ p ∈ (K₀ ∪ K₁) \ C, p ∈ A ↔ p ∈ D) :
+    let D₀ := (D \ N₀) ∪ (K₀ ∩ A)
+    let D₁ := (D \ N₁) ∪ (K₁ ∩ A)
+    D₀ = D₁ ∧ interior D₀ = interior D₁ ∧ frontier D₀ = frontier D₁ := by
+  have h₀ := replacement_eq_core_of_local_agreement (fun p hp => (hC hp).1) hNK₀
+    (fun p hp => heq p ⟨Or.inl hp.1, hp.2⟩)
+  have h₁ := replacement_eq_core_of_local_agreement (fun p hp => (hC hp).2) hNK₁
+    (fun p hp => heq p ⟨Or.inr hp.1, hp.2⟩)
+  have h := h₀.trans h₁.symm
+  exact ⟨h, congrArg interior h, congrArg frontier h⟩
+
+private theorem affine_corner_replacement_eq_of_common_core
+    (e : Plane ≃ᵃ[ℝ] Plane) {ε d σ : ℝ} {D N₀ K₀ N₁ K₁ : Set Plane}
+    (hε : 0 < ε) (hd : d = 0 ∨ d = 1) (hσ : σ = -1 ∨ σ = 1)
+    (hNK₀ : N₀ ⊆ K₀) (hNK₁ : N₁ ⊆ K₁)
+    (hC : e ⁻¹' closedBall (0 : Plane) (3 * ε) ⊆ N₀ ∩ N₁)
+    (hside : ∀ p ∈ K₀ ∪ K₁, p ∈ D ↔
+      0 ≤ σ * ((e p) 1 - d * max ((e p) 0) 0)) :
+    let A := {p | 0 ≤ σ * ((e p) 1 - d * Real.smoothMax ε ((e p) 0) 0)}
+    let D₀ := (D \ N₀) ∪ (K₀ ∩ A)
+    let D₁ := (D \ N₁) ∪ (K₁ ∩ A)
+    D₀ = D₁ ∧ interior D₀ = interior D₁ ∧ frontier D₀ = frontier D₁ := by
+  apply replacement_eq_of_common_core hC hNK₀ hNK₁
+  intro p hp
+  have hnorm : 3 * ε < ‖e p‖ := by
+    apply lt_of_not_ge
+    intro h
+    exact hp.2 (mem_closedBall_zero_iff.mpr h)
+  exact (smooth_corner_signs_eq_outside_ball hε hd hσ hnorm).1.trans
+    (hside p hp.1).symm
+
+private theorem exists_width_affine_corner_replacement_eq
+    (e : Plane ≃ᵃ[ℝ] Plane) {c : Plane} {d σ δ : ℝ} {D N₀ K₀ N₁ K₁ : Set Plane}
+    (hc : e c = 0) (hδ : 0 < δ) (hd : d = 0 ∨ d = 1) (hσ : σ = -1 ∨ σ = 1)
+    (hN₀ : IsOpen N₀) (hN₁ : IsOpen N₁) (hcN₀ : c ∈ N₀) (hcN₁ : c ∈ N₁)
+    (hNK₀ : N₀ ⊆ K₀) (hNK₁ : N₁ ⊆ K₁)
+    (hside : ∀ p ∈ K₀ ∪ K₁, p ∈ D ↔
+      0 ≤ σ * ((e p) 1 - d * max ((e p) 0) 0)) :
+    ∃ η : ℝ, 0 < η ∧ η ≤ δ ∧ ∀ ε : ℝ, 0 < ε → ε ≤ η →
+      let A := {p | 0 ≤ σ * ((e p) 1 - d * Real.smoothMax ε ((e p) 0) 0)}
+      let D₀ := (D \ N₀) ∪ (K₀ ∩ A)
+      let D₁ := (D \ N₁) ∪ (K₁ ∩ A)
+      e ⁻¹' closedBall (0 : Plane) (3 * ε) ⊆ N₀ ∩ N₁ ∧
+        D₀ = D₁ ∧ interior D₀ = interior D₁ ∧ frontier D₀ = frontier D₁ := by
+  obtain ⟨η, hη, hηδ, _, hsmall⟩ := exists_small_affine_corner_width e hc
+    (hN₀.inter hN₁) ⟨hcN₀, hcN₁⟩ hδ hδ
+  refine ⟨η, hη, hηδ, fun ε hε hεη => ?_⟩
+  exact ⟨hsmall ε hεη, affine_corner_replacement_eq_of_common_core e hε hd hσ
+    hNK₀ hNK₁ (hsmall ε hεη) hside⟩
+
+end Schoenflies
+
+end
+
+section
+
+open Set Metric
+
+namespace Schoenflies
+
+private theorem exists_small_equal_reanchored_corner_replacements
+    (e f : Plane ≃ᵃ[ℝ] Plane) {c : Plane} {ℓ σ R δ : ℝ} {D U : Set Plane}
+    (hec : e c = 0) (hfc : f c = 0) (hℓ : 0 < ℓ) (hR : 0 < R) (hδ : 0 < δ)
+    (hσ : σ = -1 ∨ σ = 1) (hU : IsOpen U) (hcU : c ∈ U)
+    (hKU : e ⁻¹' closedBall (0 : Plane) R ⊆ U)
+    (hside : ∀ p ∈ U, p ∈ D ↔ 0 ≤ σ * ((e p) 1 - max ((e p) 0) 0))
+    (hraw : ∀ p, (f p) 1 - max ((f p) 0) 0 = ℓ * ((e p) 1 - max ((e p) 0) 0))
+    (hsmooth : ∀ ε : ℝ, ε ≠ 0 → ∀ p,
+      (f p) 1 - Real.smoothMax (ℓ * ε) ((f p) 0) 0 =
+        ℓ * ((e p) 1 - Real.smoothMax ε ((e p) 0) 0)) :
+    ∃ S η : ℝ, 0 < S ∧ 0 < η ∧ η ≤ δ ∧ f ⁻¹' closedBall (0 : Plane) S ⊆ U ∧
+      (∀ p ∈ U, p ∈ D ↔ 0 ≤ σ * ((f p) 1 - max ((f p) 0) 0)) ∧
+      ∀ ε : ℝ, 0 < ε → ε ≤ η →
+        let D₀ := (D \ e ⁻¹' ball (0 : Plane) R) ∪
+          (e ⁻¹' closedBall (0 : Plane) R) ∩
+            {p | 0 ≤ σ * ((e p) 1 - Real.smoothMax ε ((e p) 0) 0)}
+        let D₁ := (D \ f ⁻¹' ball (0 : Plane) S) ∪
+          (f ⁻¹' closedBall (0 : Plane) S) ∩
+            {p | 0 ≤ σ * ((f p) 1 - Real.smoothMax (ℓ * ε) ((f p) 0) 0)}
+        3 * ε < R ∧ 3 * (ℓ * ε) < S ∧
+          D₀ = D₁ ∧ interior D₀ = interior D₁ ∧ frontier D₀ = frontier D₁ := by
+  obtain ⟨S, hS, hcS, hSU⟩ := exists_affine_closed_ball_subset hU f hcU hfc
+  let ζ := min δ (min (R / 4) (S / (4 * ℓ)))
+  have hζ : 0 < ζ := lt_min hδ (lt_min (div_pos hR (by norm_num))
+    (div_pos hS (mul_pos (by norm_num) hℓ)))
+  have he : Continuous e := e.toAffineMap.continuous_of_finiteDimensional
+  have hf : Continuous f := f.toAffineMap.continuous_of_finiteDimensional
+  have hcR : c ∈ e ⁻¹' ball (0 : Plane) R := by
+    change e c ∈ ball (0 : Plane) R
+    rw [hec]
+    exact mem_ball_self hR
+  obtain ⟨η, hη, hηζ, hcut⟩ := exists_width_affine_corner_replacement_eq e hec hζ
+    (d := 1) (Or.inr rfl) hσ (isOpen_ball.preimage he) (isOpen_ball.preimage hf)
+    hcR hcS (preimage_mono ball_subset_closedBall) (preimage_mono ball_subset_closedBall)
+    (D := D) (K₀ := e ⁻¹' closedBall (0 : Plane) R)
+    (K₁ := f ⁻¹' closedBall (0 : Plane) S) (by
+      intro p hp
+      simpa only [one_mul] using hside p (hp.elim (fun h => hKU h) (fun h => hSU h)))
+  refine ⟨S, η, hS, hη, hηζ.trans (min_le_left _ _), hSU, ?_, ?_⟩
+  · intro p hp
+    rw [hraw p, mul_left_comm σ ℓ, mul_nonneg_iff_of_pos_left hℓ]
+    exact hside p hp
+  · intro ε hε hεη
+    have hεR : ε ≤ R / 4 := hεη.trans
+      (hηζ.trans ((min_le_right _ _).trans (min_le_left _ _)))
+    have hεS : ε ≤ S / (4 * ℓ) := hεη.trans
+      (hηζ.trans ((min_le_right _ _).trans (min_le_right _ _)))
+    have hεSmul : ε * (4 * ℓ) ≤ S :=
+      (le_div_iff₀ (mul_pos (by norm_num) hℓ)).mp hεS
+    have hsmallR : 3 * ε < R := by linarith only [hεR, hR]
+    have hsmallS : 3 * (ℓ * ε) < S := by nlinarith only [hεSmul, hS]
+    have hA : {p | 0 ≤ σ * ((f p) 1 - Real.smoothMax (ℓ * ε) ((f p) 0) 0)} =
+        {p | 0 ≤ σ * ((e p) 1 - Real.smoothMax ε ((e p) 0) 0)} := by
+      ext p
+      simp only [mem_ofPred_eq, hsmooth ε hε.ne' p, mul_left_comm σ ℓ,
+        mul_nonneg_iff_of_pos_left hℓ]
+    have h := (hcut ε hε hεη).2
+    simp only [one_mul] at h
+    dsimp only
+    rw [hA]
+    exact ⟨hsmallR, hsmallS, h⟩
+
+end Schoenflies
+
+end
+
+section
+
+open Set Metric
+
+namespace Schoenflies
+
+private theorem PrePolygon.exists_equal_reanchored_corner_replacement
+    {m n : ℕ} (P : PrePolygon m) (Q : PrePolygon n)
+    (i : ZMod (m + 3)) (j : ZMod (n + 3)) (hij : Q.vertex j = P.vertex i)
+    (e : Plane ≃ᵃ[ℝ] Plane) {r d σ R δ : ℝ} {D V U : Set Plane}
+    (hnorm : 0 < r ∧ e (Q.vertex j) = 0 ∧
+      e (Q.vertex (j - 1)) = Plane.mk (-1) 0 ∧
+      e (Q.vertex (j + 1)) = Plane.mk r (d * r))
+    (hd : d = 0 ∨ d = 1)
+    (hstraight : d = 0 ↔ Plane.det (Q.vertex (j - 1) - Q.vertex j)
+      (Q.vertex (j + 1) - Q.vertex j) = 0)
+    (hσ : σ = -1 ∨ σ = 1) (hR : 0 < R) (hδ : 0 < δ)
+    (hV : IsOpen V) (hjV : Q.vertex j ∈ V) (hKV : e ⁻¹' closedBall (0 : Plane) R ⊆ V)
+    (hside : ∀ p ∈ V, p ∈ D ↔ 0 ≤ σ * ((e p) 1 - d * max ((e p) 0) 0))
+    (hU : IsOpen U) (hiU : P.vertex i ∈ U)
+    (hcar : ∀ x ∈ U, x ∈ P.carrier ↔ x ∈ Q.carrier)
+    (hdet : Plane.det (P.vertex (i - 1) - P.vertex i)
+      (P.vertex (i + 1) - P.vertex i) ≠ 0) :
+    ∃ (f : Plane ≃ᵃ[ℝ] Plane) (ρ ℓ S η : ℝ),
+      d = 1 ∧ 0 < ρ ∧ 0 < ℓ ∧
+      f (P.vertex i) = 0 ∧ f (P.vertex (i - 1)) = Plane.mk (-1) 0 ∧
+      f (P.vertex (i + 1)) = Plane.mk ρ ρ ∧
+      ((∀ p, f p = ℓ • e p) ∨ (∀ p, f p = ℓ • cornerSwap (e p))) ∧
+      (∀ p, (f p) 1 - max ((f p) 0) 0 = ℓ * ((e p) 1 - max ((e p) 0) 0)) ∧
+      (∀ ε : ℝ, ε ≠ 0 → ∀ p,
+        (f p) 1 - Real.smoothMax (ℓ * ε) ((f p) 0) 0 =
+          ℓ * ((e p) 1 - Real.smoothMax ε ((e p) 0) 0)) ∧
+      0 < S ∧ 0 < η ∧ η ≤ δ ∧ f ⁻¹' closedBall (0 : Plane) S ⊆ V ∧
+      (∀ p ∈ V, p ∈ D ↔ 0 ≤ σ * ((f p) 1 - max ((f p) 0) 0)) ∧
+      ∀ ε : ℝ, 0 < ε → ε ≤ η →
+        let D₀ := (D \ e ⁻¹' ball (0 : Plane) R) ∪
+          (e ⁻¹' closedBall (0 : Plane) R) ∩
+            {p | 0 ≤ σ * ((e p) 1 - d * Real.smoothMax ε ((e p) 0) 0)}
+        let D₁ := (D \ f ⁻¹' ball (0 : Plane) S) ∪
+          (f ⁻¹' closedBall (0 : Plane) S) ∩
+            {p | 0 ≤ σ * ((f p) 1 - Real.smoothMax (ℓ * ε) ((f p) 0) 0)}
+        3 * ε < R ∧ 3 * (ℓ * ε) < S ∧
+          D₀ = D₁ ∧ interior D₀ = interior D₁ ∧ frontier D₀ = frontier D₁ := by
+  obtain ⟨hdetQ, α, β, hα, hβ, hmatch⟩ :=
+    P.exists_pos_smul_incident_edges_of_local_carrier_eq Q i j hij hU hiU hcar hdet
+  have hdj : d = 1 := hd.resolve_left (fun h => hdetQ (hstraight.mp h))
+  have hb : e (Q.vertex (j + 1)) = Plane.mk r r := by
+    simpa only [hdj, one_mul] using hnorm.2.2.2
+  have hec : e (P.vertex i) = 0 := by simpa only [hij] using hnorm.2.1
+  obtain ⟨f, ρ, ℓ, hρ, hℓ, hfc, hfa, hfb, hform, hraw, hsmooth⟩ :=
+    exists_reanchored_affine_corner_chart e hnorm.1 hα hβ hnorm.2.2.1 hb hec
+      (by simpa only [hij] using hmatch)
+  obtain ⟨S, η, hS, hη, hηδ, hSV, hsidef, hcompare⟩ :=
+    exists_small_equal_reanchored_corner_replacements e f hec hfc hℓ hR hδ hσ hV
+      (hij ▸ hjV) hKV (D := D)
+      (by intro p hp; simpa only [hdj, one_mul] using hside p hp) hraw hsmooth
+  refine ⟨f, ρ, ℓ, S, η, hdj, hρ, hℓ, hfc, hfa, hfb, hform, hraw, hsmooth,
+    hS, hη, hηδ, hSV, hsidef, ?_⟩
+  intro ε hε hεη
+  simpa only [hdj, one_mul] using hcompare ε hε hεη
+
+end Schoenflies
+
+end
+
+section
+
+open Set
+
+namespace Schoenflies
+
+private theorem PrePolygon.exists_corner_equiv_of_local_carrier_eq
+    {m n : ℕ} (P : PrePolygon m) (Q : PrePolygon n)
+    {U : Set Plane} (hU : IsOpen U)
+    (hcar : ∀ x ∈ U, x ∈ P.carrier ↔ x ∈ Q.carrier) :
+    let I := {i : ZMod (m + 3) // P.vertex i ∈ U ∧
+      Plane.det (P.vertex (i - 1) - P.vertex i) (P.vertex (i + 1) - P.vertex i) ≠ 0}
+    let J := {j : ZMod (n + 3) // Q.vertex j ∈ U ∧
+      Plane.det (Q.vertex (j - 1) - Q.vertex j) (Q.vertex (j + 1) - Q.vertex j) ≠ 0}
+    ∃ e : I ≃ J, ∀ i, Q.vertex (e i) = P.vertex i := by
+  classical
+  let I := {i : ZMod (m + 3) // P.vertex i ∈ U ∧
+    Plane.det (P.vertex (i - 1) - P.vertex i) (P.vertex (i + 1) - P.vertex i) ≠ 0}
+  let J := {j : ZMod (n + 3) // Q.vertex j ∈ U ∧
+    Plane.det (Q.vertex (j - 1) - Q.vertex j) (Q.vertex (j + 1) - Q.vertex j) ≠ 0}
+  have hex (i : I) : ∃ j : J, Q.vertex j = P.vertex i := by
+    obtain ⟨j, hj, hdet, _⟩ :=
+      P.exists_matching_vertex_of_local_carrier_eq Q i hU i.property.1 hcar i.property.2
+    exact ⟨⟨j, hj.symm ▸ i.property.1, hdet⟩, hj⟩
+  choose f hf using hex
+  have hinj : Function.Injective f := by
+    intro i j hij
+    apply Subtype.ext
+    exact P.vertex_inj ((hf i).symm.trans ((congrArg (fun k : J => Q.vertex k) hij).trans
+      (hf j)))
+  have hsurj : Function.Surjective f := by
+    intro j
+    obtain ⟨i, hi, hdet, _⟩ := Q.exists_matching_vertex_of_local_carrier_eq P j hU
+      j.property.1 (fun x hx => (hcar x hx).symm) j.property.2
+    let i' : I := ⟨i, hi.symm ▸ j.property.1, hdet⟩
+    refine ⟨i', Subtype.ext (Q.vertex_inj ?_)⟩
+    exact (hf i').trans hi
+  exact ⟨Equiv.ofBijective f ⟨hinj, hsurj⟩, hf⟩
+
+end Schoenflies
+
+end
+
+section
+
+open Set Metric
+
+namespace Schoenflies
+
+private theorem indexed_replacement_eq_subtype_of_inactive
+    {X ι : Type*} (D : Set X) (N K A : ι → Set X) (active : ι → Prop)
+    (hNK : ∀ i, N i ⊆ K i) (hdisj : Pairwise fun i j => Disjoint (K i) (K j))
+    (hinactive : ∀ i, ¬active i → ∀ x ∈ K i, x ∈ A i ↔ x ∈ D) :
+    (D \ ⋃ i, N i) ∪ ⋃ i, K i ∩ A i =
+      (D \ ⋃ i : {i // active i}, N i) ∪ ⋃ i : {i // active i}, K i ∩ A i := by
+  classical
+  ext x
+  have hdisjoint (i j : ι) (hij : i ≠ j) (hi : x ∈ K i) (hj : x ∈ K j) : False :=
+    Set.disjoint_left.mp (hdisj hij) hi hj
+  constructor
+  · rintro (⟨hxD, hxN⟩ | hxA)
+    · refine Or.inl ⟨hxD, ?_⟩
+      intro hx
+      obtain ⟨i, hi⟩ := mem_iUnion.mp hx
+      exact hxN (mem_iUnion.mpr ⟨i, hi⟩)
+    · obtain ⟨i, hiK, hiA⟩ := mem_iUnion.mp hxA
+      by_cases hi : active i
+      · exact Or.inr (mem_iUnion.mpr ⟨⟨i, hi⟩, hiK, hiA⟩)
+      · refine Or.inl ⟨(hinactive i hi x hiK).mp hiA, ?_⟩
+        intro hx
+        obtain ⟨j, hj⟩ := mem_iUnion.mp hx
+        exact hdisjoint i j (fun h => hi (h.symm ▸ j.property)) hiK (hNK j hj)
+  · rintro (⟨hxD, hxN⟩ | hxA)
+    · by_cases hx : x ∈ ⋃ i, N i
+      · obtain ⟨i, hi⟩ := mem_iUnion.mp hx
+        have hnactive : ¬active i := fun h => hxN (mem_iUnion.mpr ⟨⟨i, h⟩, hi⟩)
+        exact Or.inr (mem_iUnion.mpr
+          ⟨i, hNK i hi, (hinactive i hnactive x (hNK i hi)).mpr hxD⟩)
+      · exact Or.inl ⟨hxD, hx⟩
+    · obtain ⟨i, hi⟩ := mem_iUnion.mp hxA
+      exact Or.inr (mem_iUnion.mpr ⟨i, hi⟩)
+
+private theorem affine_corner_replacement_eq_nonstraight
+    {ι : Type*} (D : Set Plane) (e : ι → Plane ≃ᵃ[ℝ] Plane) (ε R d σ : ι → ℝ)
+    (hdisj : Pairwise fun i j => Disjoint
+      (e i ⁻¹' closedBall (0 : Plane) (R i)) (e j ⁻¹' closedBall (0 : Plane) (R j)))
+    (hside : ∀ i, d i = 0 → ∀ p ∈ e i ⁻¹' closedBall (0 : Plane) (R i),
+      p ∈ D ↔ 0 ≤ σ i * ((e i p) 1 - d i * max ((e i p) 0) 0)) :
+    let N := fun i => e i ⁻¹' ball (0 : Plane) (R i)
+    let K := fun i => e i ⁻¹' closedBall (0 : Plane) (R i)
+    let A := fun i => {p | 0 ≤ σ i * ((e i p) 1 -
+      d i * Real.smoothMax (ε i) ((e i p) 0) 0)}
+    let D₀ := (D \ ⋃ i, N i) ∪ ⋃ i, K i ∩ A i
+    let D₁ := (D \ ⋃ i : {i // d i ≠ 0}, N i) ∪ ⋃ i : {i // d i ≠ 0}, K i ∩ A i
+    D₀ = D₁ ∧ interior D₀ = interior D₁ ∧ frontier D₀ = frontier D₁ := by
+  dsimp only
+  have heq := indexed_replacement_eq_subtype_of_inactive D
+    (fun i => e i ⁻¹' ball (0 : Plane) (R i))
+    (fun i => e i ⁻¹' closedBall (0 : Plane) (R i))
+    (fun i => {p | 0 ≤ σ i * ((e i p) 1 -
+      d i * Real.smoothMax (ε i) ((e i p) 0) 0)})
+    (fun i => d i ≠ 0) (fun _ => preimage_mono ball_subset_closedBall) hdisj
+    (fun i hi p hp => by
+      have hd : d i = 0 := not_ne_iff.mp hi
+      simpa only [mem_ofPred_eq, hd, zero_mul, sub_zero] using (hside i hd p hp).symm)
+  exact ⟨heq, congrArg interior heq, congrArg frontier heq⟩
+
+end Schoenflies
+
+end
+
+section
+
+open Set
+
+namespace Schoenflies
+
+private theorem PrePolygon.exists_corner_equiv_on_subset
+    {m n : ℕ} (P : PrePolygon m) (Q : PrePolygon n)
+    {S U : Set Plane} (hU : IsOpen U) (hSU : S ⊆ U)
+    (hcar : ∀ x ∈ U, x ∈ P.carrier ↔ x ∈ Q.carrier) :
+    let I := {i : ZMod (m + 3) // P.vertex i ∈ S ∧
+      Plane.det (P.vertex (i - 1) - P.vertex i) (P.vertex (i + 1) - P.vertex i) ≠ 0}
+    let J := {j : ZMod (n + 3) // Q.vertex j ∈ S ∧
+      Plane.det (Q.vertex (j - 1) - Q.vertex j) (Q.vertex (j + 1) - Q.vertex j) ≠ 0}
+    ∃ e : I ≃ J, ∀ i, Q.vertex (e i) = P.vertex i := by
+  obtain ⟨e, he⟩ := P.exists_corner_equiv_of_local_carrier_eq Q hU hcar
+  let p : ZMod (m + 3) → Prop := fun i =>
+    Plane.det (P.vertex (i - 1) - P.vertex i) (P.vertex (i + 1) - P.vertex i) ≠ 0
+  let q : ZMod (n + 3) → Prop := fun j =>
+    Plane.det (Q.vertex (j - 1) - Q.vertex j) (Q.vertex (j + 1) - Q.vertex j) ≠ 0
+  let rP := Equiv.subtypeSubtypeEquivSubtype
+    (p := fun i => P.vertex i ∈ U ∧ p i) (q := fun i => P.vertex i ∈ S ∧ p i)
+    (fun h => ⟨hSU h.1, h.2⟩)
+  let rQ := Equiv.subtypeSubtypeEquivSubtype
+    (p := fun j => Q.vertex j ∈ U ∧ q j) (q := fun j => Q.vertex j ∈ S ∧ q j)
+    (fun h => ⟨hSU h.1, h.2⟩)
+  let e' := e.subtypeEquiv
+    (p := fun i : {i : ZMod (m + 3) // P.vertex i ∈ U ∧ p i} =>
+      P.vertex i ∈ S ∧ p i)
+    (q := fun j : {j : ZMod (n + 3) // Q.vertex j ∈ U ∧ q j} =>
+      Q.vertex j ∈ S ∧ q j)
+    (fun i => ⟨fun h => ⟨(he i).symm ▸ h.1, (e i).property.2⟩,
+      fun h => ⟨he i ▸ h.1, i.property.2⟩⟩)
+  exact ⟨rP.symm.trans (e'.trans rQ), fun i => he (rP.symm i).val⟩
+
+end Schoenflies
+
+end
+
+section
+
+open Set Metric
+
+namespace Schoenflies
+
+private theorem PrePolygon.exists_replacement_reindexing_on_subset
+    {m n : ℕ} (P : PrePolygon m) (Q : PrePolygon n)
+    {S U : Set Plane} (hU : IsOpen U) (hSU : S ⊆ U)
+    (hcar : ∀ x ∈ U, x ∈ P.carrier ↔ x ∈ Q.carrier)
+    (D : Set Plane) (e : {j : ZMod (n + 3) // Q.vertex j ∈ S} → Plane ≃ᵃ[ℝ] Plane)
+    (R d σ : {j : ZMod (n + 3) // Q.vertex j ∈ S} → ℝ)
+    (hstraight : ∀ j, d j = 0 ↔
+      Plane.det (Q.vertex ((j : ZMod (n + 3)) - 1) - Q.vertex j)
+        (Q.vertex ((j : ZMod (n + 3)) + 1) - Q.vertex j) = 0)
+    (hdisj : Pairwise fun i j => Disjoint
+      (e i ⁻¹' closedBall (0 : Plane) (R i)) (e j ⁻¹' closedBall (0 : Plane) (R j)))
+    (hside : ∀ i, d i = 0 → ∀ p ∈ e i ⁻¹' closedBall (0 : Plane) (R i),
+      p ∈ D ↔
+        0 ≤ σ i * ((e i p) 1 - d i * max ((e i p) 0) 0)) :
+    let I := {i : ZMod (m + 3) // P.vertex i ∈ S ∧
+      Plane.det (P.vertex (i - 1) - P.vertex i) (P.vertex (i + 1) - P.vertex i) ≠ 0}
+    let J := {j : ZMod (n + 3) // Q.vertex j ∈ S}
+    ∃ j : I → J, Function.Injective j ∧
+      (∀ i, Q.vertex (j i) = P.vertex i ∧ d (j i) ≠ 0) ∧
+      (∀ k : J, d k ≠ 0 → ∃ i, j i = k) ∧
+      ∀ ε : J → ℝ,
+        let N := fun i => e i ⁻¹' ball (0 : Plane) (R i)
+        let K := fun i => e i ⁻¹' closedBall (0 : Plane) (R i)
+        let A := fun i => {p | 0 ≤ σ i * ((e i p) 1 -
+          d i * Real.smoothMax (ε i) ((e i p) 0) 0)}
+        let D₀ := (D \ ⋃ i, N i) ∪ ⋃ i, K i ∩ A i
+        let D₁ := (D \ ⋃ i, N (j i)) ∪ ⋃ i, K (j i) ∩ A (j i)
+        D₀ = D₁ ∧ interior D₀ = interior D₁ ∧ frontier D₀ = frontier D₁ := by
+  classical
+  let I := {i : ZMod (m + 3) // P.vertex i ∈ S ∧
+    Plane.det (P.vertex (i - 1) - P.vertex i) (P.vertex (i + 1) - P.vertex i) ≠ 0}
+  let J := {j : ZMod (n + 3) // Q.vertex j ∈ S}
+  let C := {j : ZMod (n + 3) // Q.vertex j ∈ S ∧
+    Plane.det (Q.vertex (j - 1) - Q.vertex j) (Q.vertex (j + 1) - Q.vertex j) ≠ 0}
+  obtain ⟨v, hv⟩ := P.exists_corner_equiv_on_subset Q hU hSU hcar
+  let j : I → J := fun i => ⟨(v i).val, (v i).property.1⟩
+  have hj (i : I) : Q.vertex (j i) = P.vertex i := hv i
+  have hdj (i : I) : d (j i) ≠ 0 :=
+    fun h => (v i).property.2 ((hstraight (j i)).mp h)
+  have hinj : Function.Injective j := by
+    intro i k h
+    apply Subtype.ext
+    exact P.vertex_inj ((hj i).symm.trans
+      ((congrArg (fun k : J => Q.vertex k) h).trans (hj k)))
+  have hcover (k : J) (hk : d k ≠ 0) : ∃ i, j i = k := by
+    let k' : C := ⟨k, k.property, fun h => hk ((hstraight k).mpr h)⟩
+    obtain ⟨i, hi⟩ := v.surjective k'
+    exact ⟨i, Subtype.ext (congrArg (fun z : C => z.val) hi)⟩
+  refine ⟨j, hinj, fun i => ⟨hj i, hdj i⟩, hcover, fun ε => ?_⟩
+  let f : I → {k : J // d k ≠ 0} := fun i => ⟨j i, hdj i⟩
+  have hf : Function.Surjective f := by
+    intro k
+    obtain ⟨i, hi⟩ := hcover k k.property
+    exact ⟨i, Subtype.ext hi⟩
+  have heq := (affine_corner_replacement_eq_nonstraight
+    D e ε R d σ hdisj hside).1
+  rw [← hf.iUnion_comp (fun k => e k ⁻¹' ball (0 : Plane) (R k)),
+    ← hf.iUnion_comp (fun k => (e k ⁻¹' closedBall (0 : Plane) (R k)) ∩
+      {p | 0 ≤ σ k * ((e k p) 1 - d k * Real.smoothMax (ε k) ((e k p) 0) 0)})] at heq
+  exact ⟨heq, congrArg interior heq, congrArg frontier heq⟩
+
+end Schoenflies
+
+end
+
+section
+
+open Set
+
+namespace Schoenflies
+
+private theorem mem_indexed_replacement_iff_single
+    {X ι : Type*} {D : Set X} {U N K A : ι → Set X}
+    (hNK : ∀ i, N i ⊆ K i) (hKU : ∀ i, K i ⊆ U i)
+    (hdisj : Pairwise fun i j => Disjoint (U i) (U j))
+    (i : ι) {p : X} (hp : p ∈ U i) :
+    p ∈ ((D \ ⋃ j, N j) ∪ ⋃ j, K j ∩ A j) ↔ p ∈ (D \ N i) ∪ (K i ∩ A i) := by
+  have houtside (j : ι) (hji : j ≠ i) (hpj : p ∈ U j) : False :=
+    Set.disjoint_left.mp (hdisj hji) hpj hp
+  constructor
+  · rintro (⟨hpD, hpN⟩ | hpK)
+    · exact Or.inl ⟨hpD, fun h => hpN (mem_iUnion.mpr ⟨i, h⟩)⟩
+    · obtain ⟨j, hpj, hpa⟩ := mem_iUnion.mp hpK
+      by_cases hji : j = i
+      · exact Or.inr (hji ▸ ⟨hpj, hpa⟩)
+      · exact False.elim (houtside j hji (hKU j hpj))
+  · rintro (⟨hpD, hpN⟩ | hpK)
+    · refine Or.inl ⟨hpD, ?_⟩
+      intro hpall
+      obtain ⟨j, hpj⟩ := mem_iUnion.mp hpall
+      by_cases hji : j = i
+      · exact hpN (hji ▸ hpj)
+      · exact houtside j hji (hKU j (hNK j hpj))
+    · exact Or.inr (mem_iUnion.mpr ⟨i, hpK⟩)
+
+private theorem indexed_replacement_eq_of_single_eq
+    {X ι : Type*} {D : Set X} {U : ι → Set X} {N K A : Fin 2 → ι → Set X}
+    (hNK : ∀ k i, N k i ⊆ K k i) (hKU : ∀ k i, K k i ⊆ U i)
+    (hdisj : Pairwise fun i j => Disjoint (U i) (U j))
+    (heq : ∀ i, (D \ N 0 i) ∪ (K 0 i ∩ A 0 i) =
+      (D \ N 1 i) ∪ (K 1 i ∩ A 1 i)) :
+    (D \ ⋃ i, N 0 i) ∪ ⋃ i, K 0 i ∩ A 0 i =
+      (D \ ⋃ i, N 1 i) ∪ ⋃ i, K 1 i ∩ A 1 i := by
+  ext p
+  by_cases hp : ∃ i, p ∈ U i
+  · obtain ⟨i, hpi⟩ := hp
+    have h₀ := mem_indexed_replacement_iff_single (D := D) (A := A 0)
+      (hNK 0) (hKU 0) hdisj i hpi
+    have h₁ := mem_indexed_replacement_iff_single (D := D) (A := A 1)
+      (hNK 1) (hKU 1) hdisj i hpi
+    rw [heq i] at h₀
+    exact h₀.trans h₁.symm
+  · have hN (k : Fin 2) : p ∉ ⋃ i, N k i := by
+      intro h
+      obtain ⟨i, hi⟩ := mem_iUnion.mp h
+      exact hp ⟨i, hKU k i (hNK k i hi)⟩
+    constructor
+    · rintro (⟨hpD, _⟩ | hpA)
+      · exact Or.inl ⟨hpD, hN 1⟩
+      · obtain ⟨i, hi, _⟩ := mem_iUnion.mp hpA
+        exact False.elim (hp ⟨i, hKU 0 i hi⟩)
+    · rintro (⟨hpD, _⟩ | hpA)
+      · exact Or.inl ⟨hpD, hN 0⟩
+      · obtain ⟨i, hi, _⟩ := mem_iUnion.mp hpA
+        exact False.elim (hp ⟨i, hKU 1 i hi⟩)
+
+end Schoenflies
+
+end
+
+section
+
+open Set Metric
+open scoped ContDiff Manifold
+
+namespace Schoenflies
+
+private theorem PrePolygon.exists_isotopy_to_reanchored_replacement
+    {m n : ℕ} (P : PrePolygon m) (Q : PrePolygon n)
+    {S U : Set Plane} (hU : IsOpen U) (hSU : S ⊆ U)
+    (hcar : ∀ x ∈ U, x ∈ P.carrier ↔ x ∈ Q.carrier)
+    (D : Set Plane) (e : {j : ZMod (n + 3) // Q.vertex j ∈ S} → Plane ≃ᵃ[ℝ] Plane)
+    (V : {j : ZMod (n + 3) // Q.vertex j ∈ S} → Set Plane)
+    (r d σ R θ : {j : ZMod (n + 3) // Q.vertex j ∈ S} → ℝ)
+    (hnorm : ∀ j, 0 < r j ∧ e j (Q.vertex j) = 0 ∧
+      e j (Q.vertex ((j : ZMod (n + 3)) - 1)) = Plane.mk (-1) 0 ∧
+      e j (Q.vertex ((j : ZMod (n + 3)) + 1)) = Plane.mk (r j) (d j * r j))
+    (hd : ∀ j, d j = 0 ∨ d j = 1)
+    (hstraight : ∀ j, d j = 0 ↔
+      Plane.det (Q.vertex ((j : ZMod (n + 3)) - 1) - Q.vertex j)
+        (Q.vertex ((j : ZMod (n + 3)) + 1) - Q.vertex j) = 0)
+    (hσ : ∀ j, σ j = -1 ∨ σ j = 1) (hθ : ∀ j, 0 < θ j ∧ 3 * θ j < R j)
+    (hV : ∀ j, IsOpen (V j) ∧ Q.vertex j ∈ V j)
+    (hdisj : Pairwise fun i j => Disjoint (V i) (V j))
+    (hKV : ∀ j, e j ⁻¹' closedBall (0 : Plane) (R j) ⊆ V j)
+    (hside : ∀ j, ∀ p ∈ V j, p ∈ D ↔
+      0 ≤ σ j * ((e j p) 1 - d j * max ((e j p) 0) 0)) :
+    let I := {i : ZMod (m + 3) // P.vertex i ∈ S ∧
+      Plane.det (P.vertex (i - 1) - P.vertex i) (P.vertex (i + 1) - P.vertex i) ≠ 0}
+    let J := {j : ZMod (n + 3) // Q.vertex j ∈ S}
+    ∃ (j : I → J) (f : I → Plane ≃ᵃ[ℝ] Plane) (ρ ℓ A η : I → ℝ),
+      Function.Injective j ∧ (∀ k : J, d k ≠ 0 → ∃ i, j i = k) ∧
+      (∀ i, Q.vertex (j i) = P.vertex i ∧ d (j i) = 1 ∧ 0 < ρ i ∧ 0 < ℓ i ∧
+        f i (P.vertex i) = 0 ∧ f i (P.vertex ((i : ZMod (m + 3)) - 1)) = Plane.mk (-1) 0 ∧
+        f i (P.vertex ((i : ZMod (m + 3)) + 1)) = Plane.mk (ρ i) (ρ i) ∧
+        ((∀ p, f i p = ℓ i • e (j i) p) ∨
+          (∀ p, f i p = ℓ i • cornerSwap (e (j i) p))) ∧
+        (∀ p, (f i p) 1 - max ((f i p) 0) 0 =
+          ℓ i * ((e (j i) p) 1 - max ((e (j i) p) 0) 0)) ∧
+        (∀ ε : ℝ, ε ≠ 0 → ∀ p,
+          (f i p) 1 - Real.smoothMax (ℓ i * ε) ((f i p) 0) 0 =
+            ℓ i * ((e (j i) p) 1 - Real.smoothMax ε ((e (j i) p) 0) 0)) ∧
+        0 < A i ∧ 0 < η i ∧ η i ≤ θ (j i) ∧
+        f i ⁻¹' closedBall (0 : Plane) (A i) ⊆ V (j i) ∧
+        ∀ p ∈ V (j i), p ∈ D ↔
+          0 ≤ σ (j i) * ((f i p) 1 - max ((f i p) 0) 0)) ∧
+      ∀ ε : I → ℝ, (∀ i, 0 < ε i ∧ ε i ≤ η i) →
+        let D₀ := (D \ ⋃ k : J, e k ⁻¹' ball (0 : Plane) (R k)) ∪
+          ⋃ k : J, (e k ⁻¹' closedBall (0 : Plane) (R k)) ∩
+            {p | 0 ≤ σ k * ((e k p) 1 - d k * Real.smoothMax (θ k) ((e k p) 0) 0)}
+        let E := (D \ ⋃ i, e (j i) ⁻¹' ball (0 : Plane) (R (j i))) ∪
+          ⋃ i, (e (j i) ⁻¹' closedBall (0 : Plane) (R (j i))) ∩
+            {p | 0 ≤ σ (j i) * ((e (j i) p) 1 -
+              d (j i) * Real.smoothMax (ε i) ((e (j i) p) 0) 0)}
+        let D₁ := (D \ ⋃ i, f i ⁻¹' ball (0 : Plane) (A i)) ∪
+          ⋃ i, (f i ⁻¹' closedBall (0 : Plane) (A i)) ∩
+            {p | 0 ≤ σ (j i) * ((f i p) 1 - Real.smoothMax (ℓ i * ε i) ((f i p) 0) 0)}
+        (∀ i, 3 * ε i < R (j i) ∧ 3 * (ℓ i * ε i) < A i) ∧
+        E = D₁ ∧ interior E = interior D₁ ∧ frontier E = frontier D₁ ∧
+        ∃ (Φ : ℝ → Plane ≃ₘ[ℝ] Plane) (C : Set Plane),
+          ContDiff ℝ ∞ (fun z : ℝ × Plane => Φ z.1 z.2) ∧
+          ContDiff ℝ ∞ (fun z : ℝ × Plane => (Φ z.1).symm z.2) ∧
+          Φ 0 = Diffeomorph.refl 𝓘(ℝ, Plane) Plane ∞ ∧
+          IsCompact C ∧ C ⊆ ⋃ i, V (j i) ∧
+          (∀ t, EqOn (Φ t) id Cᶜ ∧ EqOn (Φ t).symm id Cᶜ) ∧
+          Φ 1 '' D₀ = D₁ ∧ Φ 1 '' interior D₀ = interior D₁ ∧
+          Φ 1 '' frontier D₀ = frontier D₁ := by
+  classical
+  let I := {i : ZMod (m + 3) // P.vertex i ∈ S ∧
+    Plane.det (P.vertex (i - 1) - P.vertex i) (P.vertex (i + 1) - P.vertex i) ≠ 0}
+  let J := {j : ZMod (n + 3) // Q.vertex j ∈ S}
+  have hdisjK : Pairwise fun i j => Disjoint
+      (e i ⁻¹' closedBall (0 : Plane) (R i)) (e j ⁻¹' closedBall (0 : Plane) (R j)) :=
+    fun i j hij => (hdisj hij).mono (hKV i) (hKV j)
+  obtain ⟨j, hji, hj, hcover, hreindex⟩ :=
+    P.exists_replacement_reindexing_on_subset Q hU hSU hcar D e R d σ hstraight hdisjK
+      (fun i _ p hp => hside i p (hKV i hp))
+  have hR (k : J) : 0 < R k :=
+    (mul_pos (by norm_num : (0 : ℝ) < 3) (hθ k).1).trans (hθ k).2
+  have hlocal (i : I) := P.exists_equal_reanchored_corner_replacement Q i (j i) (hj i).1
+    (e (j i)) (hnorm (j i)) (hd (j i)) (hstraight (j i)) (hσ (j i)) (hR (j i))
+    (hθ (j i)).1 (hV (j i)).1 (hV (j i)).2 (hKV (j i)) (hside (j i))
+    hU (hSU i.property.1) hcar i.property.2
+  choose f ρ ℓ A η hdj hρ hℓ hfc hfa hfb hform hraw hsmooth
+    hA hη hηθ hAV hsidef hcompare using hlocal
+  have hdisj' : Pairwise fun i k : I => Disjoint (V (j i)) (V (j k)) :=
+    fun i k hik => hdisj (fun h => hik (hji h))
+  refine ⟨j, f, ρ, ℓ, A, η, hji, hcover, ?_, ?_⟩
+  · intro i
+    exact ⟨(hj i).1, hdj i, hρ i, hℓ i, hfc i, hfa i, hfb i, hform i,
+      hraw i, hsmooth i, hA i, hη i, hηθ i, hAV i, hsidef i⟩
+  · intro ε hε
+    let B := fun w : I → ℝ => (D \ ⋃ i, e (j i) ⁻¹' ball (0 : Plane) (R (j i))) ∪
+      ⋃ i, (e (j i) ⁻¹' closedBall (0 : Plane) (R (j i))) ∩
+        {p | 0 ≤ σ (j i) * ((e (j i) p) 1 -
+          d (j i) * Real.smoothMax (w i) ((e (j i) p) 0) 0)}
+    let F := (D \ ⋃ i, f i ⁻¹' ball (0 : Plane) (A i)) ∪
+      ⋃ i, (f i ⁻¹' closedBall (0 : Plane) (A i)) ∩
+        {p | 0 ≤ σ (j i) * ((f i p) 1 - Real.smoothMax (ℓ i * ε i) ((f i p) 0) 0)}
+    have hεR (i : I) := (hcompare i (ε i) (hε i).1 (hε i).2).1
+    have hεA (i : I) := (hcompare i (ε i) (hε i).1 (hε i).2).2.1
+    let N : Fin 2 → I → Set Plane := ![fun i => e (j i) ⁻¹' ball (0 : Plane) (R (j i)),
+      fun i => f i ⁻¹' ball (0 : Plane) (A i)]
+    let K : Fin 2 → I → Set Plane :=
+      ![fun i => e (j i) ⁻¹' closedBall (0 : Plane) (R (j i)),
+        fun i => f i ⁻¹' closedBall (0 : Plane) (A i)]
+    let G : Fin 2 → I → Set Plane :=
+      ![fun i => {p | 0 ≤ σ (j i) * ((e (j i) p) 1 -
+          d (j i) * Real.smoothMax (ε i) ((e (j i) p) 0) 0)},
+        fun i => {p | 0 ≤ σ (j i) * ((f i p) 1 -
+          Real.smoothMax (ℓ i * ε i) ((f i p) 0) 0)}]
+    have hNK (k : Fin 2) (i : I) : N k i ⊆ K k i := by
+      fin_cases k <;> exact preimage_mono ball_subset_closedBall
+    have hKU (k : Fin 2) (i : I) : K k i ⊆ V (j i) := by
+      fin_cases k
+      · exact hKV (j i)
+      · exact hAV i
+    have hBF : B ε = F := indexed_replacement_eq_of_single_eq
+      (A := G) hNK hKU hdisj'
+      (fun i => (hcompare i (ε i) (hε i).1 (hε i).2).2.2.1)
+    refine ⟨fun i => ⟨hεR i, hεA i⟩, hBF, congrArg interior hBF, congrArg frontier hBF, ?_⟩
+    let w : Fin 2 → I → ℝ := ![fun i => θ (j i), ε]
+    have hw (k : Fin 2) (i : I) : 0 < w k i := by
+      fin_cases k
+      · exact (hθ (j i)).1
+      · exact (hε i).1
+    have hwR (k : Fin 2) (i : I) : 3 * w k i < R (j i) := by
+      fin_cases k
+      · exact (hθ (j i)).2
+      · exact hεR i
+    obtain ⟨Φ, C, hΦ, hiΦ, hzero, hC, hCV, hfix, hB, hI, hF⟩ :=
+      exists_isotopy_between_normalized_corner_replacements (fun _ i => e (j i))
+        (fun i => Q.vertex ((j i : ZMod (n + 3)) - 1))
+        (fun i => Q.vertex ((j i : ZMod (n + 3)) + 1)) (fun i => Q.vertex (j i))
+        (fun _ i => V (j i)) (fun _ i => r (j i)) (fun _ i => d (j i))
+        (fun _ i => σ (j i)) w (fun _ i => R (j i)) (D := D)
+        (fun _ i => ⟨(hnorm (j i)).1, (hnorm (j i)).2.2.1,
+          (hnorm (j i)).2.2.2, (hnorm (j i)).2.1⟩)
+        (fun _ i => (hV (j i)).1) (fun _ i => hd (j i)) (fun _ i => hσ (j i))
+        hw hwR (fun _ i => hKV (j i)) (fun _ => hdisj') (fun _ i => hside (j i))
+    change Φ 1 '' B (fun i => θ (j i)) = B ε at hB
+    change Φ 1 '' interior (B (fun i => θ (j i))) = interior (B ε) at hI
+    change Φ 1 '' frontier (B (fun i => θ (j i))) = frontier (B ε) at hF
+    refine ⟨Φ, C, hΦ, hiΦ, hzero, hC, by simpa only [union_self] using hCV, hfix, ?_⟩
+    have heq := (hreindex θ).1
+    rw [heq]
+    exact ⟨hB.trans hBF, hI.trans (congrArg interior hBF), hF.trans (congrArg frontier hBF)⟩
+
+end Schoenflies
+
+end
+
+section
+
+open Set Metric
+open scoped ContDiff Manifold
+
+namespace Schoenflies
+
+private theorem PrePolygon.exists_relative_rounding_isotopy_with_reanchored_corners
+    {m n : ℕ} (P : PrePolygon m) (Q : PrePolygon n) {D L W O : Set Plane}
+    (hcar : ∀ x ∉ L, x ∈ P.carrier ↔ x ∈ Q.carrier)
+    (hD : IsCompact D) (hL : IsClosed L) (hW : IsOpen W) (hLW : L ⊆ W)
+    (hO : IsOpen O) (hvO : ∀ i, Q.vertex i ∉ W → Q.vertex i ∈ O)
+    (hold : ∀ p ∉ L, p ∈ D ↔ p ∈ closure (inside Q.carrier))
+    (hgood : ∀ p ∈ frontier D, p ∈ W →
+      ∃ (N : Set Plane) (G : Plane → ℝ), IsOpen N ∧ p ∈ N ∧
+        ContDiff ℝ ∞ G ∧ fderiv ℝ G p ≠ 0 ∧
+        ∀ q ∈ N, (q ∈ D ↔ 0 ≤ G q) ∧
+          (q ∈ interior D ↔ 0 < G q) ∧ (q ∈ frontier D ↔ G q = 0)) :
+    let I := {i : ZMod (m + 3) // P.vertex i ∉ W ∧
+      Plane.det (P.vertex (i - 1) - P.vertex i) (P.vertex (i + 1) - P.vertex i) ≠ 0}
+    let J := {j : ZMod (n + 3) // Q.vertex j ∉ W}
+    ∃ (e : J → Plane ≃ᵃ[ℝ] Plane) (V : J → Set Plane) (r d σ R θ : J → ℝ)
+      (j : I → J) (f : I → Plane ≃ᵃ[ℝ] Plane) (ρ ℓ A ε : I → ℝ)
+      (Φ : ℝ → Plane ≃ₘ[ℝ] Plane) (C : Set Plane),
+      (∀ k, 0 < r k ∧ e k (Q.vertex k) = 0 ∧
+        e k (Q.vertex ((k : ZMod (n + 3)) - 1)) = Plane.mk (-1) 0 ∧
+        e k (Q.vertex ((k : ZMod (n + 3)) + 1)) = Plane.mk (r k) (d k * r k)) ∧
+      (∀ k, IsOpen (V k) ∧ Q.vertex k ∈ V k ∧ V k ⊆ Lᶜ ∩ O ∧
+        (d k = 0 ∨ d k = 1) ∧ (σ k = -1 ∨ σ k = 1) ∧
+        0 < θ k ∧ 3 * θ k < R k ∧ e k ⁻¹' closedBall (0 : Plane) (R k) ⊆ V k ∧
+        ∀ p ∈ V k, p ∈ D ↔ 0 ≤ σ k * ((e k p) 1 - d k * max ((e k p) 0) 0)) ∧
+      Function.Injective j ∧ (∀ k : J, d k ≠ 0 → ∃ i, j i = k) ∧
+      (∀ i, Q.vertex (j i) = P.vertex i ∧ d (j i) = 1 ∧
+        0 < ρ i ∧ 0 < ℓ i ∧ 0 < ε i ∧ ε i ≤ θ (j i) ∧
+        3 * ε i < R (j i) ∧ 3 * (ℓ i * ε i) < A i ∧
+        f i (P.vertex i) = 0 ∧ f i (P.vertex ((i : ZMod (m + 3)) - 1)) = Plane.mk (-1) 0 ∧
+        f i (P.vertex ((i : ZMod (m + 3)) + 1)) = Plane.mk (ρ i) (ρ i) ∧
+        f i ⁻¹' closedBall (0 : Plane) (A i) ⊆ V (j i) ∧
+        (∀ p ∈ V (j i), p ∈ D ↔
+          0 ≤ σ (j i) * ((f i p) 1 - max ((f i p) 0) 0)) ∧
+        ∀ p, (f i p) 1 - Real.smoothMax (ℓ i * ε i) ((f i p) 0) 0 =
+          ℓ i * ((e (j i) p) 1 - Real.smoothMax (ε i) ((e (j i) p) 0) 0)) ∧
+      let D₀ := (D \ ⋃ k, e k ⁻¹' ball (0 : Plane) (R k)) ∪
+        ⋃ k, (e k ⁻¹' closedBall (0 : Plane) (R k)) ∩
+          {p | 0 ≤ σ k * ((e k p) 1 - d k * Real.smoothMax (θ k) ((e k p) 0) 0)}
+      let D₁ := (D \ ⋃ i, f i ⁻¹' ball (0 : Plane) (A i)) ∪
+        ⋃ i, (f i ⁻¹' closedBall (0 : Plane) (A i)) ∩
+          {p | 0 ≤ σ (j i) * ((f i p) 1 - Real.smoothMax (ℓ i * ε i) ((f i p) 0) 0)}
+      IsCompact D₀ ∧
+      (∀ p ∈ frontier D₀, ∃ (N : Set Plane) (G : Plane → ℝ),
+        IsOpen N ∧ p ∈ N ∧ ContDiff ℝ ∞ G ∧ fderiv ℝ G p ≠ 0 ∧
+        ∀ q ∈ N, (q ∈ D₀ ↔ 0 ≤ G q) ∧
+          (q ∈ interior D₀ ↔ 0 < G q) ∧ (q ∈ frontier D₀ ↔ G q = 0)) ∧
+      ContDiff ℝ ∞ (fun z : ℝ × Plane => Φ z.1 z.2) ∧
+      ContDiff ℝ ∞ (fun z : ℝ × Plane => (Φ z.1).symm z.2) ∧
+      Φ 0 = Diffeomorph.refl 𝓘(ℝ, Plane) Plane ∞ ∧ IsCompact C ∧ C ⊆ Lᶜ ∩ O ∧
+      (∀ t, EqOn (Φ t) id Cᶜ ∧ EqOn (Φ t).symm id Cᶜ) ∧
+      Φ 1 '' D₀ = D₁ ∧ Φ 1 '' interior D₀ = interior D₁ ∧
+      Φ 1 '' frontier D₀ = frontier D₁ := by
+  obtain ⟨e, V, d, σ, θ, R, r, hnorm, hc, hdisj, hn, _, _,
+    hcompact, _, _, _, _, _, hregular⟩ :=
+    Q.exists_normalized_relative_compact_rounding hD hL hW hLW hO hvO hold hgood
+  have hnorm' k : 0 < r k ∧ e k (Q.vertex k) = 0 ∧
+      e k (Q.vertex (k.val - 1)) = Plane.mk (-1) 0 ∧
+      e k (Q.vertex (k.val + 1)) = Plane.mk (r k) (d k * r k) :=
+    ⟨(hnorm k).1, (hc k).2.2.2.1, (hnorm k).2⟩
+  obtain ⟨j, f, ρ, ℓ, A, η, hji, hcover, hf, hcompare⟩ :=
+    P.exists_isotopy_to_reanchored_replacement Q hL.isOpen_compl
+      (show Wᶜ ⊆ Lᶜ from fun _ hp h => hp (hLW h)) hcar D e V r d σ R θ
+      hnorm' (fun k => (hc k).2.2.2.2.1) (fun k => (hc k).2.2.2.2.2.2.1)
+      (fun k => (hc k).2.2.2.2.2.1)
+      (fun k => ⟨(hc k).2.2.2.2.2.2.2.1, (hc k).2.2.2.2.2.2.2.2.1⟩)
+      (fun k => ⟨(hc k).1, (hc k).2.1⟩) hdisj (fun k => (hn k).2.2.2)
+      (fun k => (hc k).2.2.2.2.2.2.2.2.2)
+  let ε := fun i => η i / 2
+  have hε i : 0 < ε i ∧ ε i ≤ η i := by
+    obtain ⟨_, _, _, _, _, _, _, _, _, _, _, hη, _⟩ := hf i
+    exact ⟨half_pos hη, half_le_self hη.le⟩
+  obtain ⟨hbound, _, _, _, Φ, C, hΦ, hiΦ, hzero, hC, hCV, hfix, himage, hinter, hfront⟩ :=
+    hcompare ε hε
+  refine ⟨e, V, r, d, σ, R, θ, j, f, ρ, ℓ, A, ε, Φ, C, hnorm', ?_,
+    hji, hcover, ?_, hcompact, hregular, hΦ, hiΦ, hzero, hC, ?_, hfix,
+    himage, hinter, hfront⟩
+  · intro k
+    obtain ⟨hV, hk, hVO, _, hd, hσ, _, hθ, hR, hside⟩ := hc k
+    exact ⟨hV, hk, hVO, hd, hσ, hθ, hR, (hn k).2.2.2, hside⟩
+  · intro i
+    obtain ⟨hj, hd, hρ, hℓ, hfc, hfa, hfb, _, _, hsmooth, _, _, hηθ, hAV, hside⟩ := hf i
+    exact ⟨hj, hd, hρ, hℓ, (hε i).1, (hε i).2.trans hηθ,
+      (hbound i).1, (hbound i).2, hfc, hfa, hfb, hAV, hside,
+      hsmooth (ε i) (hε i).1.ne'⟩
+  · intro p hp
+    obtain ⟨i, hi⟩ := mem_iUnion.mp (hCV hp)
+    exact (hc (j i)).2.2.1 hi
+
+end Schoenflies
+
+end
+
+section
+
+open Set Metric
+open scoped ContDiff Manifold Topology
+
+namespace Diffeomorph
+
+end Diffeomorph
+
+namespace Function.Injective
+
+private theorem image_indexed_replacement_of_eqOn
+    {X ι : Type*} {f : X → X} (hf : Injective f) (D : Set X) (N K A : ι → Set X)
+    (hNK : ∀ i, N i ⊆ K i) (hfix : ∀ i, EqOn f id (K i)) :
+    f '' ((D \ ⋃ i, N i) ∪ ⋃ i, K i ∩ A i) =
+      (f '' D \ ⋃ i, N i) ∪ ⋃ i, K i ∩ A i := by
+  have hN : f '' (⋃ i, N i) = ⋃ i, N i := by
+    apply EqOn.image_eq_self
+    intro p hp
+    obtain ⟨i, hpi⟩ := mem_iUnion.mp hp
+    exact hfix i (hNK i hpi)
+  have hA : f '' (⋃ i, K i ∩ A i) = ⋃ i, K i ∩ A i := by
+    apply EqOn.image_eq_self
+    intro p hp
+    obtain ⟨i, hpi, _⟩ := mem_iUnion.mp hp
+    exact hfix i hpi
+  rw [image_union, image_sdiff hf, hN, hA]
+
+end Function.Injective
+
+namespace Schoenflies
+
+private theorem affine_corner_replacement_image_of_fixed_charts
+    {ι : Type*} (e : ι → Plane ≃ᵃ[ℝ] Plane) (ε R d σ : ι → ℝ)
+    (φ : Plane ≃ₜ Plane) {D L : Set Plane}
+    (hKL : ∀ i, e i ⁻¹' closedBall (0 : Plane) (R i) ⊆ Lᶜ)
+    (hfix : EqOn φ id Lᶜ) :
+    let N := fun i => e i ⁻¹' ball (0 : Plane) (R i)
+    let K := fun i => e i ⁻¹' closedBall (0 : Plane) (R i)
+    let H := fun i p => σ i * ((e i p) 1 - d i * Real.smoothMax (ε i) ((e i p) 0) 0)
+    let D₀ := (D \ ⋃ i, N i) ∪ ⋃ i, K i ∩ {p | 0 ≤ H i p}
+    let D₁ := (φ '' D \ ⋃ i, N i) ∪ ⋃ i, K i ∩ {p | 0 ≤ H i p}
+    φ '' D₀ = D₁ ∧ φ '' interior D₀ = interior D₁ ∧ φ '' frontier D₀ = frontier D₁ := by
+  dsimp only
+  have himage := φ.injective.image_indexed_replacement_of_eqOn D
+    (fun i => e i ⁻¹' ball (0 : Plane) (R i))
+    (fun i => e i ⁻¹' closedBall (0 : Plane) (R i))
+    (fun i => {p | 0 ≤ σ i * ((e i p) 1 - d i * Real.smoothMax (ε i) ((e i p) 0) 0)})
+    (fun _ => preimage_mono ball_subset_closedBall) (fun i => hfix.mono (hKL i))
+  exact ⟨himage, (φ.image_interior _).trans (congrArg interior himage),
+    (φ.image_frontier _).trans (congrArg frontier himage)⟩
+
+end Schoenflies
+
+end
+
+section
+
+open Set Metric
+open scoped ContDiff Manifold Topology
+
+namespace Schoenflies
+
+theorem PrePolygon.exists_two_edge_free_relative_rounding_splice
+    {m : ℕ} (P : PrePolygon m)
+    (M : LeanEval.Topology.ClassificationOfSurfaces.Moise.TriangleMesh)
+    (hfrontier : frontier M.toPlaneComplex.support = P.carrier)
+    (T : M.Triangle) (k : Fin 3) (hfree : M.IsTwoEdgeFreeTriangle T k) :
+    let b := LeanEval.Topology.ClassificationOfSurfaces.Moise.affineBasisOfTriangle
+      (M.freeTriangleOrder T k) (M.freeTriangleOrder_affineIndependent T k)
+    let R := closure (P.carrier \ (segment ℝ (b 0) (b 2) ∪ segment ℝ (b 1) (b 2)))
+    let N := (interior M.toPlaneComplex.support ∩
+      {p | 0 < b.coord 0 p ∧ 0 < b.coord 1 p}) ∪
+        ((M.eraseTriangle T.1).toPlaneComplex.supportᶜ ∩ {p | 0 < b.coord 2 p})
+    ∃ (v₀ v₁ : Plane) (r₀ r₁ : ℝ) (f₀ f₁ : Plane →ᵃ[ℝ] ℝ)
+      (e₀ e₁ : Plane ≃ᵃ[ℝ] Plane) (ε₀ ε : ℝ) (J W K : Set Plane)
+      (F : Plane → ℝ × ℝ) (H : ℝ → Plane ≃ₘ[ℝ] Plane),
+      let s₀ := b.coord 2 v₀ / f₀ v₀
+      let s₁ := b.coord 2 v₁ / f₁ v₁
+      let U₀ := ball (b 0) r₀ ∩ {p | (1 : ℝ) / 4 < b.coord 0 p - b.coord 1 p}
+      let U₁ := ball (b 1) r₁ ∩ {p | (1 : ℝ) / 4 < b.coord 1 p - b.coord 0 p}
+      let V := {p | ε₀ < f₀ p ∧ ε₀ < f₁ p} ∩ N
+      let D := (M.toPlaneComplex.support \ interior K) ∪ (K ∩ {p | (F p).1 ≤ 0})
+      let E := ((M.eraseTriangle T.1).toPlaneComplex.support \ interior K) ∪
+        (K ∩ {p | (F p).2 ≤ 0})
+      (0 < r₀ ∧ 0 < r₁ ∧ Disjoint (ball (b 0) r₀) (ball (b 1) r₁) ∧
+      segment ℝ (b 0) v₀ ⊆ R ∧ segment ℝ (b 1) v₁ ⊆ R ∧
+      f₀ (b 0) = 0 ∧ 0 < f₀ (b 1) ∧ 0 < f₀ (b 2) ∧ f₀ v₀ < 0 ∧
+      f₁ (b 1) = 0 ∧ 0 < f₁ (b 0) ∧ 0 < f₁ (b 2) ∧ f₁ v₁ < 0 ∧
+      (∀ p, (e₀ p) 0 = f₀ p ∧ (e₀ p) 1 = b.coord 2 p) ∧
+      (∀ p, (e₁ p) 0 = f₁ p ∧ (e₁ p) 1 = b.coord 2 p) ∧
+      0 < ε₀ ∧ 0 < ε ∧ ε ≤ ε₀ ∧ IsCompact J ∧
+      M.triangleCarrier T.1 ⊆ interior J ∧ IsOpen W ∧ J ⊆ W ∧
+      W ⊆ U₀ ∪ U₁ ∪ V ∧ ContDiff ℝ ∞ F ∧
+      EqOn F (fun p =>
+        (-(f₀ (b 2) / f₀ (b 1) * (s₀ * (f₀ p - Real.smoothMax ε (f₀ p) 0) +
+          Real.smoothMax ε (f₀ p) 0 / f₀ (b 2) - b.coord 2 p)),
+          -(s₀ * (f₀ p - Real.smoothMax ε (f₀ p) 0) - b.coord 2 p))) (W ∩ U₀) ∧
+      EqOn F (fun p =>
+        (-(f₁ (b 2) / f₁ (b 0) * (s₁ * (f₁ p - Real.smoothMax ε (f₁ p) 0) +
+          Real.smoothMax ε (f₁ p) 0 / f₁ (b 2) - b.coord 2 p)),
+          -(s₁ * (f₁ p - Real.smoothMax ε (f₁ p) 0) - b.coord 2 p))) (W ∩ U₁) ∧
+      EqOn F (fun p => (Real.smoothMax (1 / 4) (-b.coord 0 p) (-b.coord 1 p),
+        b.coord 2 p)) (W ∩ V) ∧
+      (∀ t ∈ Icc (0 : ℝ) 1, ∀ p ∈ W ∩ V,
+        (1 - t) * (F p).1 + t * (F p).2 = 0 → p ∈ M.triangleCarrier T.1) ∧
+      (∀ t ∈ Icc (0 : ℝ) 1, ∀ p ∈ W,
+        fderiv ℝ (fun q => (1 - t) * (F q).1 + t * (F q).2) p ≠ 0) ∧
+      (∀ p ∈ W, p ∉ interior J →
+        (p ∈ M.toPlaneComplex.support ↔ (F p).1 ≤ 0) ∧
+        (p ∈ interior M.toPlaneComplex.support ↔ (F p).1 < 0) ∧
+        (p ∈ frontier M.toPlaneComplex.support ↔ (F p).1 = 0)) ∧
+      (∀ p ∈ W, p ∉ interior J →
+        (p ∈ (M.eraseTriangle T.1).toPlaneComplex.support ↔ (F p).2 ≤ 0) ∧
+        (p ∈ interior (M.eraseTriangle T.1).toPlaneComplex.support ↔ (F p).2 < 0) ∧
+        (p ∈ frontier (M.eraseTriangle T.1).toPlaneComplex.support ↔ (F p).2 = 0)) ∧
+      IsCompact K ∧ J ⊆ interior K ∧ K ⊆ W ∧
+      ContDiff ℝ ∞ (fun z : ℝ × Plane => H z.1 z.2) ∧
+      ContDiff ℝ ∞ (fun z : ℝ × Plane => (H z.1).symm z.2) ∧
+      H 0 = Diffeomorph.refl 𝓘(ℝ, Plane) Plane ∞ ∧
+      (∀ t, EqOn (H t) id Kᶜ ∧ EqOn (H t).symm id Kᶜ ∧
+        (∀ p, H t p ∈ W ↔ p ∈ W) ∧ (∀ p, (H t).symm p ∈ W ↔ p ∈ W)) ∧
+      (∀ p ∈ W, ((F p).1 = 0 ↔ (F (H 1 p)).2 = 0) ∧
+        ((F p).1 < 0 ↔ (F (H 1 p)).2 < 0) ∧ ((F p).1 ≤ 0 ↔ (F (H 1 p)).2 ≤ 0)) ∧
+      (∀ p ∈ W, ((F p).2 = 0 ↔ (F ((H 1).symm p)).1 = 0) ∧
+        ((F p).2 < 0 ↔ (F ((H 1).symm p)).1 < 0) ∧
+        ((F p).2 ≤ 0 ↔ (F ((H 1).symm p)).1 ≤ 0)) ∧
+      IsCompact D ∧ IsCompact E ∧
+      (∀ p ∈ W, (p ∈ D ↔ (F p).1 ≤ 0) ∧
+        (p ∈ interior D ↔ (F p).1 < 0) ∧ (p ∈ frontier D ↔ (F p).1 = 0)) ∧
+      (∀ p ∈ W, (p ∈ E ↔ (F p).2 ≤ 0) ∧
+        (p ∈ interior E ↔ (F p).2 < 0) ∧ (p ∈ frontier E ↔ (F p).2 = 0)) ∧
+      (∀ p ∉ K, (p ∈ D ↔ p ∈ M.toPlaneComplex.support) ∧
+        (p ∈ interior D ↔ p ∈ interior M.toPlaneComplex.support) ∧
+        (p ∈ frontier D ↔ p ∈ frontier M.toPlaneComplex.support)) ∧
+      (∀ p ∉ K, (p ∈ E ↔ p ∈ (M.eraseTriangle T.1).toPlaneComplex.support) ∧
+        (p ∈ interior E ↔ p ∈ interior (M.eraseTriangle T.1).toPlaneComplex.support) ∧
+        (p ∈ frontier E ↔ p ∈ frontier (M.eraseTriangle T.1).toPlaneComplex.support)) ∧
+      (H 1) '' D = E ∧ (H 1) '' interior D = interior E ∧
+      (H 1) '' frontier D = frontier E ∧
+      (H 1).symm '' E = D ∧ (H 1).symm '' interior E = interior D ∧
+      (H 1).symm '' frontier E = frontier D) ∧
+      ∃ (n : ℕ) (Q : PrePolygon n),
+        Q.carrier = frontier (M.eraseTriangle T.1).toPlaneComplex.support ∧
+        (M.eraseTriangle T.1).toPlaneComplex.support = closure (inside Q.carrier) ∧
+      let I := {i : ZMod (m + 3) // P.vertex i ∉ W ∧
+        Plane.det (P.vertex (i - 1) - P.vertex i) (P.vertex (i + 1) - P.vertex i) ≠ 0}
+      let J := {j : ZMod (n + 3) // Q.vertex j ∉ W}
+      ∃ (e : J → Plane ≃ᵃ[ℝ] Plane) (V : J → Set Plane) (r d σ R θ : J → ℝ)
+        (j : I → J) (f : I → Plane ≃ᵃ[ℝ] Plane) (ρ ℓ A η : I → ℝ)
+        (Ψ : ℝ → Plane ≃ₘ[ℝ] Plane) (C : Set Plane),
+        (∀ k, 0 < r k ∧ e k (Q.vertex k) = 0 ∧
+          e k (Q.vertex ((k : ZMod (n + 3)) - 1)) = Plane.mk (-1) 0 ∧
+          e k (Q.vertex ((k : ZMod (n + 3)) + 1)) = Plane.mk (r k) (d k * r k)) ∧
+        (∀ k, IsOpen (V k) ∧ Q.vertex k ∈ V k ∧ V k ⊆ Kᶜ ∧
+          (d k = 0 ∨ d k = 1) ∧ (σ k = -1 ∨ σ k = 1) ∧
+          0 < θ k ∧ 3 * θ k < R k ∧ e k ⁻¹' closedBall (0 : Plane) (R k) ⊆ V k ∧
+          ∀ p ∈ V k, p ∈ E ↔ 0 ≤ σ k * ((e k p) 1 - d k * max ((e k p) 0) 0)) ∧
+        Function.Injective j ∧ (∀ k : J, d k ≠ 0 → ∃ i, j i = k) ∧
+        (∀ i, Q.vertex (j i) = P.vertex i ∧ d (j i) = 1 ∧
+          0 < ρ i ∧ 0 < ℓ i ∧ 0 < η i ∧ η i ≤ θ (j i) ∧
+          3 * η i < R (j i) ∧ 3 * (ℓ i * η i) < A i ∧
+          f i (P.vertex i) = 0 ∧ f i (P.vertex ((i : ZMod (m + 3)) - 1)) = Plane.mk (-1) 0 ∧
+          f i (P.vertex ((i : ZMod (m + 3)) + 1)) = Plane.mk (ρ i) (ρ i) ∧
+          f i ⁻¹' closedBall (0 : Plane) (A i) ⊆ V (j i) ∧
+          (∀ p ∈ V (j i), p ∈ E ↔
+            0 ≤ σ (j i) * ((f i p) 1 - max ((f i p) 0) 0)) ∧
+          ∀ p, (f i p) 1 - Real.smoothMax (ℓ i * η i) ((f i p) 0) 0 =
+            ℓ i * ((e (j i) p) 1 - Real.smoothMax (η i) ((e (j i) p) 0) 0)) ∧
+        let D₀ := (E \ ⋃ k, e k ⁻¹' ball (0 : Plane) (R k)) ∪
+          ⋃ k, (e k ⁻¹' closedBall (0 : Plane) (R k)) ∩
+            {p | 0 ≤ σ k * ((e k p) 1 - d k * Real.smoothMax (θ k) ((e k p) 0) 0)}
+        let D₁ := (E \ ⋃ i, f i ⁻¹' ball (0 : Plane) (A i)) ∪
+          ⋃ i, (f i ⁻¹' closedBall (0 : Plane) (A i)) ∩
+            {p | 0 ≤ σ (j i) * ((f i p) 1 - Real.smoothMax (ℓ i * η i) ((f i p) 0) 0)}
+        IsCompact D₀ ∧
+        (∀ p ∈ frontier D₀, ∃ (N : Set Plane) (G : Plane → ℝ),
+          IsOpen N ∧ p ∈ N ∧ ContDiff ℝ ∞ G ∧ fderiv ℝ G p ≠ 0 ∧
+          ∀ q ∈ N, (q ∈ D₀ ↔ 0 ≤ G q) ∧
+            (q ∈ interior D₀ ↔ 0 < G q) ∧ (q ∈ frontier D₀ ↔ G q = 0)) ∧
+        ContDiff ℝ ∞ (fun z : ℝ × Plane => Ψ z.1 z.2) ∧
+        ContDiff ℝ ∞ (fun z : ℝ × Plane => (Ψ z.1).symm z.2) ∧
+        Ψ 0 = Diffeomorph.refl 𝓘(ℝ, Plane) Plane ∞ ∧ IsCompact C ∧ C ⊆ Kᶜ ∧
+        (∀ t, EqOn (Ψ t) id Cᶜ ∧ EqOn (Ψ t).symm id Cᶜ) ∧
+        Ψ 1 '' D₀ = D₁ ∧ Ψ 1 '' interior D₀ = interior D₁ ∧
+        Ψ 1 '' frontier D₀ = frontier D₁ ∧
+        let D₂ := (D \ ⋃ i, f i ⁻¹' ball (0 : Plane) (A i)) ∪
+          ⋃ i, (f i ⁻¹' closedBall (0 : Plane) (A i)) ∩
+            {p | 0 ≤ σ (j i) * ((f i p) 1 - Real.smoothMax (ℓ i * η i) ((f i p) 0) 0)}
+        ∃ Γ : ℝ → Plane ≃ₘ[ℝ] Plane,
+          (∀ t, Γ t = (H t).trans (Ψ t).symm) ∧
+          ContDiff ℝ ∞ (fun z : ℝ × Plane => Γ z.1 z.2) ∧
+          ContDiff ℝ ∞ (fun z : ℝ × Plane => (Γ z.1).symm z.2) ∧
+          Γ 0 = Diffeomorph.refl 𝓘(ℝ, Plane) Plane ∞ ∧ IsCompact (K ∪ C) ∧
+          (∀ t, EqOn (Γ t) id (K ∪ C)ᶜ ∧ EqOn (Γ t).symm id (K ∪ C)ᶜ) ∧
+          Γ 1 '' D₂ = D₀ ∧ Γ 1 '' interior D₂ = interior D₀ ∧
+          Γ 1 '' frontier D₂ = frontier D₀ := by
+  dsimp only
+  obtain ⟨v₀, v₁, r₀, r₁, f₀, f₁, e₀, e₁, ε₀, ε, J, W, K, F, H, hdata⟩ :=
+    P.exists_local_rounding_isotopy_of_two_edge_free_triangle M hfrontier T k hfree
+  have hs := hdata
+  rcases hs with ⟨_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, hTJ,
+    hW, _, _, hF, _, _, _, _, hreg, _, _, hK, hJK, hKW, hH, hHi, hH0, hfix,
+    _, _, _, hE, _, hEsides, _, hEraw, hDE, _, _, _, _, _⟩
+  let D := (M.toPlaneComplex.support \ interior K) ∪ (K ∩ {p | (F p).1 ≤ 0})
+  let E := ((M.eraseTriangle T.1).toPlaneComplex.support \ interior K) ∪
+    (K ∩ {p | (F p).2 ≤ 0})
+  obtain ⟨n, Q, _, _, hQ, hregion, _⟩ :=
+    P.exists_prePolygon_closed_region_erase_triangle_of_two_edge_free M hfrontier T k hfree
+  have hTK : M.triangleCarrier T.1 ⊆ K :=
+    fun _ hp => interior_subset (hJK (interior_subset (hTJ hp)))
+  have hcar : ∀ p ∉ K, p ∈ P.carrier ↔ p ∈ Q.carrier := by
+    intro p hp
+    have hpT : p ∉ M.triangleCarrier T.1 := fun h => hp (hTK h)
+    rw [hQ, M.frontier_eraseTriangle_support T, hfrontier]
+    simp only [mem_union, mem_sdiff, mem_inter_iff, hpT, not_false_eq_true, and_true,
+      and_false, or_false]
+  have hold : ∀ p ∉ K, p ∈ E ↔ p ∈ closure (inside Q.carrier) := by
+    intro p hp
+    rw [← hregion]
+    exact (hEraw p hp).1
+  have hgood : ∀ p ∈ frontier E, p ∈ W →
+      ∃ (N : Set Plane) (G : Plane → ℝ), IsOpen N ∧ p ∈ N ∧
+        ContDiff ℝ ∞ G ∧ fderiv ℝ G p ≠ 0 ∧
+        ∀ q ∈ N, (q ∈ E ↔ 0 ≤ G q) ∧
+          (q ∈ interior E ↔ 0 < G q) ∧ (q ∈ frontier E ↔ G q = 0) := by
+    intro p _ hp
+    have hreg₁ : fderiv ℝ (fun q => (F q).2) p ≠ 0 := by
+      simpa only [sub_self, zero_mul, one_mul, zero_add] using
+        hreg 1 ⟨zero_le_one, le_rfl⟩ p hp
+    refine ⟨W, fun q => -(F q).2, hW, hp, hF.snd.neg, ?_, ?_⟩
+    · rw [fderiv_fun_neg]
+      exact neg_ne_zero.mpr hreg₁
+    · intro q hq
+      simpa only [neg_nonneg, neg_pos, neg_eq_zero] using hEsides q hq
+  obtain ⟨e, V, r, d, σ, R, θ, j, f, ρ, ℓ, A, η, Ψ, C, hnorm, hc, hji, hcover,
+    hf, hcompact, hregular, hΨ, hΨi, hΨ0, hC, hCK, hfixΨ, hΨimage, hΨinter, hΨfront⟩ :=
+    P.exists_relative_rounding_isotopy_with_reanchored_corners Q hcar hE hK.isClosed hW hKW
+      hK.isClosed.isOpen_compl (fun i hi h => hi (hKW h)) hold hgood
+  have hcut i : f i ⁻¹' closedBall (0 : Plane) (A i) ⊆ Kᶜ := by
+    obtain ⟨_, _, _, _, _, _, _, _, _, _, _, hAV, _⟩ := hf i
+    exact fun _ hp => ((hc (j i)).2.2.1 (hAV hp)).1
+  let D₀ := (E \ ⋃ i, e i ⁻¹' ball (0 : Plane) (R i)) ∪
+    ⋃ i, (e i ⁻¹' closedBall (0 : Plane) (R i)) ∩
+      {p | 0 ≤ σ i * ((e i p) 1 - d i * Real.smoothMax (θ i) ((e i p) 0) 0)}
+  let D₁ := (E \ ⋃ i, f i ⁻¹' ball (0 : Plane) (A i)) ∪
+    ⋃ i, (f i ⁻¹' closedBall (0 : Plane) (A i)) ∩
+      {p | 0 ≤ σ (j i) * ((f i p) 1 - Real.smoothMax (ℓ i * η i) ((f i p) 0) 0)}
+  let D₂ := (D \ ⋃ i, f i ⁻¹' ball (0 : Plane) (A i)) ∪
+    ⋃ i, (f i ⁻¹' closedBall (0 : Plane) (A i)) ∩
+      {p | 0 ≤ σ (j i) * ((f i p) 1 - Real.smoothMax (ℓ i * η i) ((f i p) 0) 0)}
+  have hDE' : (H 1).toHomeomorph '' D = E := hDE
+  have hΨimage' : Ψ 1 '' D₀ = D₁ := hΨimage
+  have hHD : H 1 '' D₂ = D₁ := by
+    have hh := (affine_corner_replacement_image_of_fixed_charts f
+      (fun i => ℓ i * η i) A (fun _ => 1) (fun i => σ (j i)) (H 1).toHomeomorph
+      (D := D) hcut (hfix 1).1).1
+    rw [hDE'] at hh
+    simpa only [D₂, D₁, Diffeomorph.coe_toHomeomorph, one_mul] using hh
+  have hΨinverse : (Ψ 1).symm '' D₁ = D₀ := by
+    rw [← hΨimage']
+    exact (Ψ 1).symm_image_image D₀
+  have hΨi0 : (Ψ 0).symm = Diffeomorph.refl 𝓘(ℝ, Plane) Plane ∞ := by
+    rw [hΨ0]
+    rfl
+  obtain ⟨Γ, hΓeq, hΓ, hΓi, hΓ0, hKC, hΓfix, hΓimage, hΓinter, hΓfront⟩ :=
+    Diffeomorph.exists_compact_isotopy_image_trans H (fun t => (Ψ t).symm)
+      hH hHi hH0 hK (fun t => ⟨(hfix t).1, (hfix t).2.1⟩) hΨi
+      (by
+        change ContDiff ℝ ∞ (fun z : ℝ × Plane => Ψ z.1 z.2)
+        exact hΨ) hΨi0 hC
+      (fun t => by
+        change EqOn (Ψ t).symm id Cᶜ ∧ EqOn (Ψ t) id Cᶜ
+        exact (hfixΨ t).symm)
+      hHD hΨinverse
+  refine ⟨v₀, v₁, r₀, r₁, f₀, f₁, e₀, e₁, ε₀, ε, J, W, K, F, H, hdata,
+    n, Q, hQ, hregion, e, V, r, d, σ, R, θ, j, f, ρ, ℓ, A, η, Ψ, C,
+    hnorm, ?_, hji, hcover, hf, hcompact, hregular, hΨ, hΨi, hΨ0, hC,
+    hCK.trans inter_subset_left, hfixΨ, hΨimage, hΨinter, hΨfront,
+    Γ, hΓeq, hΓ, hΓi, hΓ0, hKC, hΓfix, hΓimage, hΓinter, hΓfront⟩
+  intro i
+  obtain ⟨hV, hi, hVK, hd, hσ, hθ, hR, hKV, hside⟩ := hc i
+  exact ⟨hV, hi, hVK.trans inter_subset_left, hd, hσ, hθ, hR, hKV, hside⟩
 
 end Schoenflies
 
