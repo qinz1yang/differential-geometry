@@ -551,30 +551,6 @@ theorem quotientProductMetric_localPull (A : QuotientProductAtlas I M) [T2Space 
     (surjective_productCoverProjection (M := M))
     (metricFiberCompatible_coverProductMetric A g lambda hlambda)
 
-theorem product_solution_iff [T2Space M] [I.Boundaryless]
-    (g : ℝ → SmoothRiemannianMetric I M)
-    (lambda : ℝ) (hlambda : 0 < lambda) (c : ProductCurve M) {s u : ℝ} (hsu : s < u)
-    (J : Set ℝ) (hJ : J = Ico s u ∨ J = Icc s u)
-    (hylift : ContinuousOn (fun p : ℝ × ℝ => c.y p.1 p.2) (univ ×ˢ J)) :
-    letI := A.charts
-    letI := A.smoothManifold
-    c.IsSolutionOn g lambda J ↔
-      c.map.IsSolutionOn (I := I.prod 𝓘(ℝ, ℝ))
-        (fun t => quotientProductMetric A (g t) lambda hlambda) J := by
-  sorry
-
-theorem product_solution_lift [T2Space M] [I.Boundaryless]
-    (g : ℝ → SmoothRiemannianMetric I M)
-    (lambda : ℝ) (hlambda : 0 < lambda) (c : CurveMap (M × Surgery.Topology.Circle)) {s u : ℝ} (hsu : s < u)
-    (J : Set ℝ) (hJ : J = Ico s u ∨ J = Icc s u)
-    (hc : letI := A.charts
-      letI := A.smoothManifold
-      c.IsSolutionOn (I := I.prod 𝓘(ℝ, ℝ))
-      (fun t => quotientProductMetric A (g t) lambda hlambda) J) :
-    ∃ ĉ : ProductCurve M, ĉ.IsSolutionOn g lambda J ∧
-      ∀ z t, t ∈ J → ĉ.map z t = c z t := by
-  sorry
-
 variable [SigmaCompactSpace M] [T2Space M]
 
 def quotientProductFamily [I.Boundaryless]
@@ -586,16 +562,6 @@ def quotientProductFamily [I.Boundaryless]
     letI := A.charts
     letI := A.smoothManifold
     exact ⟨fun t => quotientProductMetric A (G.metric t) lambda hlambda⟩
-
-theorem quotientProduct_ricciBackground [I.Boundaryless]
-    {D : Geometry.Curvature.RealTimeInterval} {a b : ℝ}
-    (B : RicciBackground (I := I) (M := M) D a b) (lambda : ℝ) (hlambda : 0 < lambda) :
-    letI := A.charts
-    letI := A.smoothManifold
-    ∃ Bhat : RicciBackground (I := I.prod 𝓘(ℝ, ℝ)) (M := M × Surgery.Topology.Circle) D a b,
-      Bhat.family = quotientProductFamily A B.family lambda hlambda ∧
-      Bhat.B₀ = B.B₀ ∧ Bhat.B₁ = B.B₁ ∧ Bhat.B₂ = B.B₂ := by
-  sorry
 
 end QuotientGeometry
 

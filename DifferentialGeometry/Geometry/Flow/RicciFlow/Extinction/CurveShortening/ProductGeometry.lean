@@ -771,34 +771,6 @@ theorem quotientProduct_iterCov_normSq [I.Boundaryless] (g : SmoothRiemannianMet
     rw [quotientProductMetric_localPull] at h
     exact h.symm.trans (coverProduct_iterCov_normSq (I := I) g lambda hlambda m p).2
 
-theorem quotientProduct_ricciBackground_C [I.Boundaryless] {D : RealTimeInterval} {a b : ℝ}
-    (B : RicciBackground (I := I) (M := M) D a b) (lambda : ℝ) (hlambda : 0 < lambda) :
-    letI := A.charts
-    letI := A.smoothManifold
-    ∃ Bhat : RicciBackground (I := I.prod 𝓘(ℝ, ℝ)) (M := M × Surgery.Topology.Circle) D a b,
-      Bhat.family = quotientProductFamily A B.family lambda hlambda ∧
-      Bhat.B₀ = B.B₀ ∧ Bhat.B₁ = B.B₁ ∧ Bhat.B₂ = B.B₂ ∧ Bhat.C = B.C := by
-  let := A.charts
-  let := A.smoothManifold
-  obtain ⟨Bhat, hf, h0, h1, h2⟩ := quotientProduct_ricciBackground A B lambda hlambda
-  exact ⟨Bhat, hf, h0, h1, h2, by simp only [RicciBackground.C, h0, h1, h2]⟩
-
-theorem rfs_csf_ramp_geometry [I.Boundaryless] [CompactSpace M]
-    {D : RealTimeInterval} {a b : ℝ}
-    (F : SolutionOn (I := I) (M := M) D)
-    (hF : DifferentialGeometry.PDE.RicciFlow.IsSolutionOn F)
-    (hab : a < b) (hreg : Icc a b ⊆ D.regular) :
-    ∃ B : RicciBackground (I := I) (M := M) D a b, B.family = F.base ∧
-      ∀ lambda : ℝ, ∀ hlambda : 0 < lambda,
-        letI := A.charts
-        letI := A.smoothManifold
-        ∃ Bhat : RicciBackground (I := I.prod 𝓘(ℝ, ℝ)) (M := M × Surgery.Topology.Circle) D a b,
-          Bhat.family = quotientProductFamily A F.base lambda hlambda ∧
-          Bhat.B₀ = B.B₀ ∧ Bhat.B₁ = B.B₁ ∧ Bhat.B₂ = B.B₂ ∧ Bhat.C = B.C := by
-  obtain ⟨B, hB, _⟩ := rfs_csf_background F hF hab hreg
-  refine ⟨B, hB, ?_⟩
-  intro lambda hlambda
-  simpa only [hB] using quotientProduct_ricciBackground_C A B lambda hlambda
 end QuotientCurvature
 
 end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening
