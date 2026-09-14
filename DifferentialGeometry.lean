@@ -5030,6 +5030,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.R
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.RampDifferenceEquation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.RampFamilyDependence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.RampFamilySatisfiability
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.RampUniformExtensionReduction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.RampUniqueness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Ramps
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.SliceRegularityImmersed
@@ -5599,6 +5600,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.KLim
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.KLimThreeBounded
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.KLimThreeDimensionalBounded
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.KLimUniformLimit
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.KappaSeedFrontierConsolidation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.LocalAncientFlowCompactness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.LocalAncientFlowCompactnessExtensionWitness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.LocalAncientFlowCompactnessReduction
@@ -5692,6 +5694,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Poin
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.PointedZeroComparison
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.PreliminaryCompactness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.RankOneTerminalBounded
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.ReactionDefectVanishing
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.ReducedCostBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.ReducedCostDistanceBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.ReducedCostDistanceGrowth

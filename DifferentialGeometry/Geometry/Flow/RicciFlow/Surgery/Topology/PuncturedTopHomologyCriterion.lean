@@ -158,8 +158,8 @@ open DifferentialGeometry.Topology
 open scoped Manifold ContDiff
 
 theorem subsingleton_compl_singleton_three_of_infiniteCyclicTopHomology
-    {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M] [IsManifold ThreeModel ∞ M]
-    [T2Space M] [CompactSpace M] [ConnectedSpace M] [SimplyConnectedSpace M]
+    {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
+    [T2Space M] [CompactSpace M] [SimplyConnectedSpace M]
     (x₀ : M) (hpd : noncompactPoincareDualityTwoOne ({x₀}ᶜ : Set M))
     (he : Nonempty (IntegralHomology M 3 ≃ₗ[ℤ] ℤ)) :
     Subsingleton (IntegralHomology ({x₀}ᶜ : Set M) 3) := by
@@ -203,7 +203,7 @@ theorem subsingleton_compl_singleton_three_of_infiniteCyclicTopHomology
     x₀).mpr hinj
 
 theorem nonempty_integralHomology_linearEquiv_int_of_punctured_subsingleton
-    {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M] [IsManifold ThreeModel ∞ M]
+    {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
     (x₀ : M) (h₃ : Subsingleton (IntegralHomology ({x₀}ᶜ : Set M) 3))
     (hsurj : Function.Surjective (absoluteToRelative M ({x₀}ᶜ) 3)) :
     Nonempty (IntegralHomology M 3 ≃ₗ[ℤ] ℤ) :=

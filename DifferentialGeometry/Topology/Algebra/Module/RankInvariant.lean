@@ -85,11 +85,6 @@ theorem not_nonempty_addEquiv_prod_fin_int_one_zero :
     ¬ Nonempty (ℤ × (Fin 1 → ℤ) ≃+ ℤ × (Fin 0 → ℤ)) :=
   fun ⟨e⟩ => Nat.one_ne_zero (nat_eq_of_addEquiv_prod_fin_int_of_finite ℤ e)
 
-theorem nat_eq_of_addEquiv_prod_fin_int_swap :
-    (1 : ℕ) = 1 :=
-  nat_eq_of_addEquiv_prod_fin_int_of_finite (ℤ × ℤ)
-    (AddEquiv.prodCongr (AddEquiv.prodComm (M := ℤ) (N := ℤ)) (AddEquiv.refl (Fin 1 → ℤ)))
-
 private def sumPUnitEquivNat : ℕ ⊕ PUnit.{1} ≃ ℕ where
   toFun := Sum.elim (· + 1) fun _ => 0
   invFun n := if n = 0 then Sum.inr PUnit.unit else Sum.inl (n - 1)
