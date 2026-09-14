@@ -1,6 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Evolution
 import DifferentialGeometry.Analysis.ODE.Gronwall.Integral
 import DifferentialGeometry.Analysis.Calculus.Derivative.ParametricIntervalIntegral
+import DifferentialGeometry.Analysis.Calculus.TimeJet.PartialDerivatives
 import DifferentialGeometry.Analysis.Integration.IntervalGreenIdentity
 import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
 
@@ -36,40 +37,9 @@ private theorem contDiffOn_derivWithin_snd {s u : ℝ} (hsu : s < u) {F : ℝ �
     (hF : ContDiffOn ℝ ∞ (fun p : ℝ × ℝ => F p.1 p.2) (univ ×ˢ Icc s u)) :
     ContDiffOn ℝ ∞ (fun p : ℝ × ℝ => derivWithin (fun τ => F p.1 τ) (Icc s u) p.2)
       (univ ×ˢ Icc s u) := by
-  have hFmd : ContMDiffOn (𝓘(ℝ, ℝ).prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) ∞
-      (fun p : ℝ × ℝ => F p.1 p.2) (univ ×ˢ Icc s u) := by
-    have h := contMDiffOn_iff_contDiffOn.mpr hF
-    rw [modelWithCornersSelf_prod, ← chartedSpaceSelf_prod] at h
-    exact h
-  have key : ContMDiffOn (𝓘(ℝ, ℝ).prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) ∞
-      (fun p : ℝ × ℝ => derivWithin (fun τ => F p.1 τ) (Icc s u) p.2)
-      (univ ×ˢ Icc s u) := by
-    intro p₀ hp₀
-    have hf : ContMDiffWithinAt ((𝓘(ℝ, ℝ).prod 𝓘(ℝ, ℝ)).prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) ∞
-        (fun q : (ℝ × ℝ) × ℝ => F q.1.1 q.2) ((univ ×ˢ Icc s u) ×ˢ Icc s u)
-        (p₀, p₀.2) := by
-      have harg : ContMDiffWithinAt ((𝓘(ℝ, ℝ).prod 𝓘(ℝ, ℝ)).prod 𝓘(ℝ, ℝ))
-          (𝓘(ℝ, ℝ).prod 𝓘(ℝ, ℝ)) ∞
-          (fun q : (ℝ × ℝ) × ℝ => (q.1.1, q.2)) ((univ ×ˢ Icc s u) ×ˢ Icc s u) (p₀, p₀.2) :=
-        contMDiffWithinAt_fst.fst.prodMk contMDiffWithinAt_snd
-      exact (hFmd p₀ hp₀).comp (p₀, p₀.2) harg
-        (fun q hq => (⟨mem_univ _, hq.2⟩ : (q.1.1, q.2) ∈ (univ : Set ℝ) ×ˢ Icc s u))
-    have hmain := ContMDiffWithinAt.mfderivWithin_apply
-      (I := 𝓘(ℝ, ℝ)) (I' := 𝓘(ℝ, ℝ))
-      (J := 𝓘(ℝ, ℝ).prod 𝓘(ℝ, ℝ)) (J' := 𝓘(ℝ, ℝ).prod 𝓘(ℝ, ℝ))
-      (f := fun (p : ℝ × ℝ) (y : ℝ) => F p.1 y)
-      (g := fun p : ℝ × ℝ => p.2)
-      (g₁ := fun p : ℝ × ℝ => p)
-      (g₂ := fun _ : ℝ × ℝ => (1 : ℝ))
-      (t := univ ×ˢ Icc s u) (u := Icc s u) (v := univ ×ˢ Icc s u) (x₀ := p₀)
-      (m := ∞) (n := ∞) hf contMDiffWithinAt_snd contMDiffWithinAt_id
-      (contMDiffWithinAt_const (c := (1 : ℝ))) le_rfl (fun _ hx => hx) hp₀
-      (fun _ hx => hx.2) (uniqueDiffOn_Icc hsu).uniqueMDiffOn
-    simpa only [inTangentCoordinates_model_space, mfderivWithin_eq_fderivWithin, derivWithin]
-      using hmain
-  have key' := key
-  rw [← modelWithCornersSelf_prod, chartedSpaceSelf_prod] at key'
-  exact contMDiffOn_iff_contDiffOn.mp key'
+  intro p hp
+  exact DifferentialGeometry.Analysis.contDiffWithinAt_derivWithin_snd
+    (uniqueDiffOn_Icc hsu) hp (hF p hp) (by simp)
 
 omit [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E] [CompleteSpace E]
   [TopologicalSpace H] hBoundary in

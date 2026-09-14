@@ -15,6 +15,20 @@ theorem contDiffAt_deriv_fst {Φ : ℝ × E → F} {z : ℝ × E}
     hΦ.comp (z, z.1) (contDiffAt_snd.prodMk contDiffAt_fst.snd)
   exact (hcomp.fderiv contDiffAt_fst hmn).clm_apply contDiffAt_const
 
+theorem contDiffWithinAt_derivWithin_snd {Φ : E × ℝ → F} {U : Set E} {J : Set ℝ}
+    {z : E × ℝ} {m n : WithTop ℕ∞} (hJ : UniqueDiffOn ℝ J) (hz : z ∈ U ×ˢ J)
+    (hΦ : ContDiffWithinAt ℝ n Φ (U ×ˢ J) z) (hmn : m + 1 ≤ n) :
+    ContDiffWithinAt ℝ m (fun p : E × ℝ => derivWithin (fun τ => Φ (p.1, τ)) J p.2)
+      (U ×ˢ J) z := by
+  have hcomp : ContDiffWithinAt ℝ n
+      (fun p : (E × ℝ) × ℝ => Φ (p.1.1, p.2)) ((U ×ˢ J) ×ˢ J) (z, z.2) :=
+    hΦ.comp (f := fun p : (E × ℝ) × ℝ => (p.1.1, p.2)) (z, z.2) (contDiffWithinAt_fst.fst.prodMk contDiffWithinAt_snd)
+      (fun p hp => ⟨hp.1.1, hp.2⟩)
+  exact hcomp.fderivWithin_apply (f := fun (p : E × ℝ) (τ : ℝ) => Φ (p.1, τ))
+    (g := fun p : E × ℝ => p.2) (k := fun _ => (1 : ℝ))
+    contDiffWithinAt_snd contDiffWithinAt_const hJ hmn hz (fun _ hp => hp.2)
+
+
 theorem deriv_deriv_time_comm_on_open {G : ℝ → ℝ → F} {U V : Set ℝ}
     (hU : IsOpen U) (hV : IsOpen V)
     (hG : ContDiffOn ℝ ∞ (Function.uncurry G) (U ×ˢ V))
