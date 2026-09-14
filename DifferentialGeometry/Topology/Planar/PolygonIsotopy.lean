@@ -103,6 +103,10 @@ theorem PrePolygon.exists_compactly_supported_isotopy_near_one_edge_free_triangl
           (p ∈ U₁ ∧ f₁ p < -ε ∧ ∃ N : Set Plane,
             IsOpen N ∧ p ∈ N ∧ N ⊆ U₁ ∩ {q | f₁ q < -ε} ∧
               Set.EqOn (fun q => (F q).2) (fun q => f₁ (b 2) / f₁ (b 0) * (F q).1) N)) ∧
+        (∀ p ∈ V,
+          (p ∈ M.toPlaneComplex.support ↔ 0 ≤ b.coord 2 p) ∧
+          (p ∈ interior M.toPlaneComplex.support ↔ 0 < b.coord 2 p) ∧
+          (p ∈ frontier M.toPlaneComplex.support ↔ b.coord 2 p = 0)) ∧
         ∃ (K : Set Plane) (X : ℝ × Plane → Plane) (Ω : Set (ℝ × Plane))
           (κ : ℝ × Plane → ℝ),
           IsCompact K ∧ J ⊆ interior K ∧ K ⊆ U₀ ∪ U₁ ∪ V ∧
@@ -136,7 +140,7 @@ theorem PrePolygon.exists_compactly_supported_isotopy_near_one_edge_free_triangl
     hf₀, hfb, hfc₀, hfv₀, hf₁, hfa, hfc₁, hfv₁, hgap₀, hgap₁,
     he₀, he₁, heV, hgraph₀, hgraph₁, hreg, hH, hderiv, hstart, hend,
     hregH, hstat₀, hstat₁, hposV, hcentral,
-    J, hJ, htriangleJ, hJW, hactive, hweak₀, hweak₁, hexterior⟩ :=
+    J, hJ, htriangleJ, hJW, hactive, hweak₀, hweak₁, hexterior, hraw⟩ :=
     P.exists_regular_interpolation_near_one_edge_free_triangle M hfrontier T k hfree
   obtain ⟨K, X, Ω, κ, hK, hJK, hKW, hX, hsX, hΩ, hΩcover, hΩW, hκ, htransport, hXzero⟩ :=
     DifferentialGeometry.Analysis.exists_contDiff_compactly_supported_proportional_vector_field
@@ -154,7 +158,7 @@ theorem PrePolygon.exists_compactly_supported_isotopy_near_one_edge_free_triangl
     hf₀, hfb, hfc₀, hfv₀, hf₁, hfa, hfc₁, hfv₁, hgap₀, hgap₁,
     he₀, he₁, heV, hgraph₀, hgraph₁, hreg, hH, hderiv, hstart, hend,
     hregH, hstat₀, hstat₁, hposV, hcentral,
-    J, hJ, htriangleJ, hJW, hactive, hweak₀, hweak₁, hexterior,
+    J, hJ, htriangleJ, hJW, hactive, hweak₀, hweak₁, hexterior, hraw,
     K, X, Ω, κ, hK, hJK, hKW, hX, hsX, hΩ, hΩcover, hΩW, hκ, htransport, hXzero, ?_⟩
   let Φ : ℝ → (Plane ≃ₘ[ℝ] Plane) := fun t => Diffeomorph.timeDependentFlow X hX hsX 0 t
   have hzero (t : ℝ) (p : Plane) (hp : p ∉ U₀ ∪ U₁ ∪ V) : X (t, p) = 0 :=

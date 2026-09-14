@@ -20,6 +20,150 @@ import Mathlib.Analysis.Convex.PathConnected
 import Mathlib.Analysis.Normed.Affine.AddTorsorBases
 import Mathlib.Topology.Order.DenselyOrdered
 
+
+namespace LeanEval.Topology.ClassificationOfSurfaces.Moise
+
+private theorem TriangleMesh.one_edge_free_central_neighborhood
+    (M : TriangleMesh) (T : M.Triangle) (k : Fin 3)
+    (hfree : M.IsOneEdgeFreeTriangle T k) :
+    let b := affineBasisOfTriangle (M.freeTriangleOrder T k)
+      (M.freeTriangleOrder_affineIndependent T k)
+    let N := (interior M.toPlaneComplex.support ∩ {p | 0 < b.coord 2 p}) ∪
+      ((M.eraseTriangle T.1).toPlaneComplex.supportᶜ ∩
+        {p | 0 < b.coord 0 p ∧ 0 < b.coord 1 p})
+    IsOpen N ∧ M.triangleCarrier T.1 \ {b 0, b 1} ⊆ N ∧
+      ∀ p ∈ N,
+        (p ∈ M.toPlaneComplex.support ↔ 0 ≤ b.coord 2 p) ∧
+        (p ∈ interior M.toPlaneComplex.support ↔ 0 < b.coord 2 p) ∧
+        (p ∈ frontier M.toPlaneComplex.support ↔ b.coord 2 p = 0) := by
+  dsimp only
+  let b := affineBasisOfTriangle (M.freeTriangleOrder T k)
+    (M.freeTriangleOrder_affineIndependent T k)
+  let S := M.toPlaneComplex.support
+  let B := (M.eraseTriangle T.1).toPlaneComplex.support
+  let C := M.triangleCarrier T.1
+  let N := (interior S ∩ {p | 0 < b.coord 2 p}) ∪
+    (Bᶜ ∩ {p | 0 < b.coord 0 p ∧ 0 < b.coord 1 p})
+  have hS : IsClosed S := M.toPlaneComplex.isCompact_support.isClosed
+  have hB : IsClosed B := (M.eraseTriangle T.1).toPlaneComplex.isCompact_support.isClosed
+  have hsplit : S = B ∪ C := M.support_eq_eraseTriangle_union_triangleCarrier T.2
+  have hCS : C ⊆ S := by rw [hsplit]; exact Set.subset_union_right
+  have htriangle : convexHull ℝ (Set.range b) = C := by
+    change convexHull ℝ (Set.range ((M.position ∘ M.orderedVertex T) ∘ Equiv.swap 2 k)) = _
+    rw [EquivLike.range_comp, Set.range_comp, M.range_orderedVertex T]
+    rfl
+  have hcoords : C = {p | ∀ i, 0 ≤ b.coord i p} :=
+    htriangle.symm.trans b.convexHull_eq_nonneg_coord
+  have hinterior : interior C = {p | ∀ i, 0 < b.coord i p} := by
+    rw [← htriangle, b.interior_convexHull]
+  have hfree' : frontier S ∩ C = segment ℝ (b 0) (b 1) := hfree
+  have hattach : B ∩ C = segment ℝ (b 0) (b 2) ∪ segment ℝ (b 1) (b 2) :=
+    M.eraseTriangle_support_inter_triangleCarrier_of_oneEdgeFree T k hfree
+  have hN : IsOpen N :=
+    (isOpen_interior.inter
+      (isOpen_lt continuous_const (b.coord 2).continuous_of_finiteDimensional)).union
+      (hB.isOpen_compl.inter
+        ((isOpen_lt continuous_const (b.coord 0).continuous_of_finiteDimensional).inter
+          (isOpen_lt continuous_const (b.coord 1).continuous_of_finiteDimensional)))
+  have hcover : C \ {b 0, b 1} ⊆ N := by
+    rintro p ⟨hpC, hpends⟩
+    have hpcoord : ∀ i, 0 ≤ b.coord i p := by
+      rw [hcoords] at hpC
+      exact hpC
+    by_cases hp2 : 0 < b.coord 2 p
+    · refine Or.inl ⟨(mem_interior_iff_notMem_frontier (hCS hpC)).mpr ?_, hp2⟩
+      intro hpF
+      have hpbase := hfree' ▸ (show p ∈ frontier S ∩ C from ⟨hpF, hpC⟩)
+      have hImage : b.coord 2 p ∈ (b.coord 2) '' segment ℝ (b 0) (b 1) :=
+        ⟨p, hpbase, rfl⟩
+      rw [image_segment] at hImage
+      have hz : b.coord 2 p = 0 := by simpa [b.coord_apply, Fin.ext_iff] using hImage
+      exact hp2.ne' hz
+    · have hp2zero : b.coord 2 p = 0 := le_antisymm (le_of_not_gt hp2) (hpcoord 2)
+      have hsum := b.sum_coord_apply_eq_one p
+      simp only [Fin.sum_univ_three, hp2zero, add_zero] at hsum
+      have hp0 : 0 < b.coord 0 p := by
+        by_contra! h
+        have hz : b.coord 0 p = 0 := le_antisymm h (hpcoord 0)
+        have hp1 : b.coord 1 p = 1 := by linarith only [hsum, hz]
+        have he : p = b 1 := by
+          apply b.ext_elem
+          intro i
+          fin_cases i
+          · exact hz.trans (b.coord_apply_ne (by decide : (0 : Fin 3) ≠ 1)).symm
+          · exact hp1.trans (b.coord_apply_eq 1).symm
+          · exact hp2zero.trans (b.coord_apply_ne (by decide : (2 : Fin 3) ≠ 1)).symm
+        exact hpends (Or.inr he)
+      have hp1 : 0 < b.coord 1 p := by
+        by_contra! h
+        have hz : b.coord 1 p = 0 := le_antisymm h (hpcoord 1)
+        have hp0one : b.coord 0 p = 1 := by linarith only [hsum, hz]
+        have he : p = b 0 := by
+          apply b.ext_elem
+          intro i
+          fin_cases i
+          · exact hp0one.trans (b.coord_apply_eq 0).symm
+          · exact hz.trans (b.coord_apply_ne (by decide : (1 : Fin 3) ≠ 0)).symm
+          · exact hp2zero.trans (b.coord_apply_ne (by decide : (2 : Fin 3) ≠ 0)).symm
+        exact hpends (Or.inl he)
+      refine Or.inr ⟨?_, hp0, hp1⟩
+      intro hpB
+      have hpA := hattach ▸ (show p ∈ B ∩ C from ⟨hpB, hpC⟩)
+      rcases hpA with hpac | hpbc
+      · have hImage : b.coord 1 p ∈ (b.coord 1) '' segment ℝ (b 0) (b 2) :=
+          ⟨p, hpac, rfl⟩
+        rw [image_segment] at hImage
+        have hz : b.coord 1 p = 0 := by simpa [b.coord_apply, Fin.ext_iff] using hImage
+        exact hp1.ne' hz
+      · have hImage : b.coord 0 p ∈ (b.coord 0) '' segment ℝ (b 1) (b 2) :=
+          ⟨p, hpbc, rfl⟩
+        rw [image_segment] at hImage
+        have hz : b.coord 0 p = 0 := by simpa [b.coord_apply, Fin.ext_iff] using hImage
+        exact hp0.ne' hz
+  refine ⟨hN, hcover, ?_⟩
+  intro p hpN
+  have hweak : p ∈ S ↔ 0 ≤ b.coord 2 p := by
+    rcases hpN with hp | hp
+    · exact iff_of_true (interior_subset hp.1) hp.2.le
+    · constructor
+      · intro hpS
+        have hpC : p ∈ C := (hsplit ▸ hpS).resolve_left hp.1
+        exact (hcoords ▸ hpC) 2
+      · intro hp2
+        apply hCS
+        rw [hcoords]
+        intro i
+        fin_cases i
+        · exact hp.2.1.le
+        · exact hp.2.2.le
+        · exact hp2
+  have hstrict : p ∈ interior S ↔ 0 < b.coord 2 p := by
+    rcases hpN with hp | hp
+    · exact iff_of_true hp.1 hp.2
+    · have hI : p ∈ interior S ↔ p ∈ interior C := by
+        constructor
+        · intro hpI
+          have hpBC : p ∈ interior (B ∪ C) := hsplit ▸ hpI
+          exact interior_union_inter_interior_compl_left_subset
+            ⟨hpBC, hB.isOpen_compl.interior_eq.symm ▸ hp.1⟩
+        · exact fun hpI => interior_mono hCS hpI
+      rw [hI, hinterior]
+      constructor
+      · exact fun h => h 2
+      · intro hp2 i
+        fin_cases i
+        · exact hp.2.1
+        · exact hp.2.2
+        · exact hp2
+  refine ⟨hweak, hstrict, ?_⟩
+  rw [hS.frontier_eq]
+  change (p ∈ S ∧ p ∉ interior S) ↔ b.coord 2 p = 0
+  rw [hweak, hstrict, not_lt]
+  exact ⟨fun h => le_antisymm h.2 h.1, fun h => ⟨h.ge, h.le⟩⟩
+
+end LeanEval.Topology.ClassificationOfSurfaces.Moise
+
+
 section
 
 namespace Schoenflies
@@ -2407,7 +2551,9 @@ private theorem exists_fixed_cover_small_matched_interpolation
     (s₀ s₁ : ℝ) {U₀ U₁ : Set Plane} (hU₀ : IsOpen U₀) (hU₁ : IsOpen U₁)
     (hb₀ : b 0 ∈ U₀) (hb₁ : b 1 ∈ U₁)
     (hgap₀ : ∀ p ∈ U₀, (1 : ℝ) / 4 < b.coord 0 p - b.coord 1 p)
-    (hgap₁ : ∀ p ∈ U₁, (1 : ℝ) / 4 < b.coord 1 p - b.coord 0 p) :
+    (hgap₁ : ∀ p ∈ U₁, (1 : ℝ) / 4 < b.coord 1 p - b.coord 0 p)
+    (N : Set Plane) (hN : IsOpen N)
+    (hKN : convexHull ℝ (Set.range b) \ {b 0, b 1} ⊆ N) :
     let K := convexHull ℝ (Set.range b)
     let G := fun p => (-b.coord 2 p,
       -Real.smoothMax (1 / 4) (-b.coord 0 p) (-b.coord 1 p))
@@ -2418,7 +2564,7 @@ private theorem exists_fixed_cover_small_matched_interpolation
       f₁ (b 2) / f₁ (b 0) * (s₁ * (f₁ p - Real.smoothMax η (f₁ p) 0) +
         Real.smoothMax η (f₁ p) 0 / f₁ (b 2) - b.coord 2 p))
     ∃ (ε₀ ε : ℝ) (J : Set Plane),
-      let V := {p | ε₀ < f₀ p ∧ ε₀ < f₁ p}
+      let V := {p | ε₀ < f₀ p ∧ ε₀ < f₁ p} ∩ N
       0 < ε₀ ∧ 0 < ε ∧ ε ≤ ε₀ ∧ IsCompact J ∧ K ⊆ interior J ∧
       J ⊆ U₀ ∪ U₁ ∪ V ∧ K ⊆ U₀ ∪ U₁ ∪ V ∧
       (∀ η ∈ Set.Ioc 0 ε, Set.EqOn (F₀ η) G (U₀ ∩ V)) ∧
@@ -2436,12 +2582,24 @@ private theorem exists_fixed_cover_small_matched_interpolation
   dsimp only
   let K := convexHull ℝ (Set.range b)
   have hK : IsCompact K := (Set.finite_range b).isCompact_convexHull ℝ
-  obtain ⟨ε₀, hε₀, hcover⟩ := exists_affine_triangle_positive_core b f₀ f₁
+  obtain ⟨ε₀, hε₀, hcover₀⟩ := exists_affine_triangle_positive_core b f₀ f₁
     hf₀ hfb hfc₀ hf₁ hfa hfc₁ hU₀ hU₁ hb₀ hb₁
-  let V := {p | ε₀ < f₀ p ∧ ε₀ < f₁ p}
+  let V := {p | ε₀ < f₀ p ∧ ε₀ < f₁ p} ∩ N
   have hV : IsOpen V :=
-    (isOpen_lt continuous_const f₀.continuous_of_finiteDimensional).inter
-      (isOpen_lt continuous_const f₁.continuous_of_finiteDimensional)
+    ((isOpen_lt continuous_const f₀.continuous_of_finiteDimensional).inter
+      (isOpen_lt continuous_const f₁.continuous_of_finiteDimensional)).inter hN
+  have hcover : K ⊆ U₀ ∪ U₁ ∪ V := by
+    intro p hp
+    by_cases hp₀ : p = b 0
+    · exact Or.inl (Or.inl (hp₀.symm ▸ hb₀))
+    by_cases hp₁ : p = b 1
+    · exact Or.inl (Or.inr (hp₁.symm ▸ hb₁))
+    rcases hcover₀ hp with (h₀ | h₁) | hV
+    · exact Or.inl (Or.inl h₀)
+    · exact Or.inl (Or.inr h₁)
+    · exact Or.inr ⟨hV, hKN ⟨hp, by
+        simp only [Set.mem_insert_iff, Set.mem_singleton_iff, not_or]
+        exact ⟨hp₀, hp₁⟩⟩⟩
   obtain ⟨ρ, hρ, hρsub⟩ := hK.exists_cthickening_subset_open
     ((hU₀.union hU₁).union hV) hcover
   let J := Metric.cthickening ρ K
@@ -2510,14 +2668,14 @@ private theorem exists_fixed_cover_small_matched_interpolation
   · intro η hη p hp
     have h := (matched_endpoint_defining_functions_overlap b f₀ hf₀ hfb hfc₀ s₀ hη.1
       (by norm_num : (0 : ℝ) < 1 / 4)).2.2.2.2.2 p
-      ⟨(hη.2.trans hε₀bound).trans_lt hp.2.1, hgap₀ p hp.1⟩
+      ⟨(hη.2.trans hε₀bound).trans_lt hp.2.1.1, hgap₀ p hp.1⟩
     exact Prod.ext h.1 h.2.1
   · intro η hη p hp
     have h := (matched_endpoint_defining_functions_overlap c f₁
       (by simpa only [hc0] using hf₁) (by simpa only [hc1] using hfa)
       (by simpa only [hc2] using hfc₁) s₁ hη.1
       (by norm_num : (0 : ℝ) < 1 / 4)).2.2.2.2.2 p
-      ⟨(hη.2.trans hε₀bound).trans_lt hp.2.2,
+      ⟨(hη.2.trans hε₀bound).trans_lt hp.2.1.2,
         by simpa only [hcoord0, hcoord1] using hgap₁ p hp.1⟩
     simp only [hc1, hc2, hcoord0, hcoord1, hcoord2] at h
     refine Prod.ext h.1 (h.2.1.trans ?_)
@@ -2537,7 +2695,7 @@ private theorem exists_fixed_cover_small_matched_interpolation
     simpa only [hcrange] using h
   · intro t ht p hp hz
     exact central_interpolation_zero_mem_triangle b f₀ f₁ hf₀ hfb hfc₀ hf₁ hfa hfc₁
-      (hε₀.trans hp.1) (hε₀.trans hp.2) (by norm_num) (by norm_num) ht hz
+      (hε₀.trans hp.1.1) (hε₀.trans hp.1.2) (by norm_num) (by norm_num) ht hz
 
 end Schoenflies
 
@@ -2663,7 +2821,11 @@ theorem PrePolygon.exists_regular_interpolation_near_one_edge_free_triangle
               Set.EqOn (fun q => (F q).2) (fun q => f₀ (b 2) / f₀ (b 1) * (F q).1) N) ∨
           (p ∈ U₁ ∧ f₁ p < -ε ∧ ∃ N : Set Plane,
             IsOpen N ∧ p ∈ N ∧ N ⊆ U₁ ∩ {q | f₁ q < -ε} ∧
-              Set.EqOn (fun q => (F q).2) (fun q => f₁ (b 2) / f₁ (b 0) * (F q).1) N)) := by
+              Set.EqOn (fun q => (F q).2) (fun q => f₁ (b 2) / f₁ (b 0) * (F q).1) N)) ∧
+        (∀ p ∈ V,
+          (p ∈ M.toPlaneComplex.support ↔ 0 ≤ b.coord 2 p) ∧
+          (p ∈ interior M.toPlaneComplex.support ↔ 0 < b.coord 2 p) ∧
+          (p ∈ frontier M.toPlaneComplex.support ↔ b.coord 2 p = 0)) := by
   dsimp only
   let b := LeanEval.Topology.ClassificationOfSurfaces.Moise.affineBasisOfTriangle
     (M.freeTriangleOrder T k) (M.freeTriangleOrder_affineIndependent T k)
@@ -2686,15 +2848,23 @@ theorem PrePolygon.exists_regular_interpolation_near_one_edge_free_triangle
     change convexHull ℝ (Set.range ((M.position ∘ M.orderedVertex T) ∘ Equiv.swap 2 k)) = _
     rw [EquivLike.range_comp, Set.range_comp, M.range_orderedVertex T]
     rfl
+  let N := (interior M.toPlaneComplex.support ∩ {p | 0 < b.coord 2 p}) ∪
+    ((M.eraseTriangle T.1).toPlaneComplex.supportᶜ ∩
+      {p | 0 < b.coord 0 p ∧ 0 < b.coord 1 p})
+  obtain ⟨hN, hNC, hNsides⟩ := M.one_edge_free_central_neighborhood T k hfree
+  change IsOpen N at hN
+  have hKN : convexHull ℝ (Set.range b) \ {b 0, b 1} ⊆ N := by
+    rw [htriangle]
+    exact hNC
   obtain ⟨ε₀, ε, J, _, hε, hεle, hJ, hKJ, hJcover, hcover,
     heleft, heright, htrace₀, htrace₁, hcentral⟩ :=
     exists_fixed_cover_small_matched_interpolation b f₀ f₁ hf₀ hfb hfc₀ hf₁ hfa hfc₁
       (b.coord 2 v₀ / f₀ v₀) (b.coord 2 v₁ / f₁ v₁) hU₀ hU₁ hb₀ hb₁
-      (fun _ hp => hp.2) (fun _ hp => hp.2)
-  let V := {p | ε₀ < f₀ p ∧ ε₀ < f₁ p}
+      (fun _ hp => hp.2) (fun _ hp => hp.2) N hN hKN
+  let V := {p | ε₀ < f₀ p ∧ ε₀ < f₁ p} ∩ N
   have hV : IsOpen V :=
-    (isOpen_lt continuous_const f₀.continuous_of_finiteDimensional).inter
-      (isOpen_lt continuous_const f₁.continuous_of_finiteDimensional)
+    ((isOpen_lt continuous_const f₀.continuous_of_finiteDimensional).inter
+      (isOpen_lt continuous_const f₁.continuous_of_finiteDimensional)).inter hN
   let s₀ := b.coord 2 v₀ / f₀ v₀
   let s₁ := b.coord 2 v₁ / f₁ v₁
   have hleft := matched_endpoint_defining_functions_overlap b f₀ hf₀ hfb hfc₀ s₀ hε
@@ -2771,8 +2941,9 @@ theorem PrePolygon.exists_regular_interpolation_near_one_edge_free_triangle
     fun p hp => hgraph₀ p hp.2.1, fun p hp => hgraph₁ p hp.2.1,
     hreg, contDiff_pair_interpolation hF, (fun t p => deriv_pair_interpolation F p t),
     by intro p; simp, by intro p; simp, hregH, ?_, ?_,
-    (fun _ hp => ⟨hεle.trans_lt hp.2.1, hεle.trans_lt hp.2.2⟩),
-    hcentralF, J, hJ, hKJ, ?_, ?_, hweak₀, hweak₁, ?_⟩
+    (fun _ hp => ⟨hεle.trans_lt hp.2.1.1, hεle.trans_lt hp.2.1.2⟩),
+    hcentralF, J, hJ, hKJ, ?_, ?_, hweak₀, hweak₁, ?_,
+    fun p hp => hNsides p hp.2.2⟩
   · intro p hp
     rcases hcover hp with (hp₀ | hp₁) | hpV
     · exact Or.inl (Or.inl ⟨hKW hp, hp₀⟩)
