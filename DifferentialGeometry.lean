@@ -3170,6 +3170,7 @@ import DifferentialGeometry.Topology.Diffeomorph.LocalizedGraph
 import DifferentialGeometry.Topology.Diffeomorph.Perturbation
 import DifferentialGeometry.Topology.Diffeomorph.Restriction
 import DifferentialGeometry.Topology.Diffeomorph.TimeDependentFlow
+import DifferentialGeometry.Topology.Diffeomorph.LevelTransport
 import DifferentialGeometry.Topology.Diffeomorph.Translation
 import DifferentialGeometry.Topology.Diffeomorph.Convex
 import DifferentialGeometry.Topology.Diffeomorph.Radial
