@@ -7,22 +7,25 @@ library is `Poincare`; its sources retain the original mathematical namespaces.
 The source baseline is the recovered Chapter 35 commit
 `b45bfa009368c8f5f531e10f4f5280e90079d6ad`, supplemented by recovered working-tree
 proofs with separately recorded provenance. This checkpoint includes 135 modules
-and 148 curated tracked added public exports. Four new results prove injectivity
-of the actual relative-to-absolute H0 map for arbitrary pairs, injectivity of
-H0 pullback from any nonempty space into a path-connected space, relative H0
-vanishing for a path-connected ambient space and nonempty subspace, and actual
-cohomology vanishing for empty spaces in every degree.
+and 150 curated tracked added public exports. The latest addition identifies
+actual cohomology relative to the empty subspace with ordinary cohomology in
+every degree and topological space. Its forward map is the original
+relative-to-absolute cohomology map. Nonzero real-line H0 and naturality in both
+directions are checked using the actual induced maps.
 
-Final request `1789342341942512570-topology_checkpoint-9be18633` passed in
-Slurm 13846673 in 208.80 seconds, with 548 guards and 259 signature/axiom pairs.
-All 252 preceding pairs are byte-identical; all 19 original imported pairs and
-all seven new source pairs match exactly. The three changed leaves and root
-freshly compiled in 1:56.44, maximum RSS 1,825,036 KiB, with zero diagnostics.
-All 132 other published leaves remain byte-identical. Consumers include a
-nonempty disconnected pullback source, H0(R,{0,1})=0, and H0(R,empty) nonzero.
-The last case tests the essential nonempty-subspace assumption. Stock
-linters and standard-only transitive axioms pass. Dependency pins and deferred
-inputs are unchanged; the general duality and orientation producer remain open.
+Final request `1789344380600270048-topology_checkpoint-5607f5e7` passed in
+Slurm 13846673 in 198.36 seconds, with 556 guards and 264 signature/axiom pairs.
+All 259 preceding pairs are byte-identical; all seven original imported pairs
+match both source and portable readbacks. The changed RelativeEmpty leaf,
+affected ManifoldFundamentalClass and root freshly compiled in 1:41.51,
+maximum RSS 1,921,264 KiB, with zero diagnostics. All 134 other published leaf
+sources remain byte-identical. Stock linters and standard-only transitive axioms
+pass. Dependency pins and deferred inputs are unchanged. General manifold
+duality and the native orientation producer remain open.
+
+The preceding degree-zero relative and empty-space cohomology results retain
+their exact statements and bodies, including the nonempty-subspace assumption
+for relative H0 vanishing and its nonzero empty-subspace consumer.
 
 The earlier relative cohomology connecting-map bijections and higher-degree
 vanishing retain their exact statements and bodies.

@@ -1,5 +1,5 @@
 {
-  "scope": "Dependency-closed 135-module checkpoint including degree-zero relative cohomology vanishing for path-connected ambient spaces and nonempty subspaces; full topology suite incomplete",
+  "scope": "Dependency-closed 135-module checkpoint including the actual relative-to-absolute empty-pair cohomology equivalence in every degree; full topology suite incomplete",
   "baseline_commit": "b45bfa009368c8f5f531e10f4f5280e90079d6ad",
   "baseline_ref": "refs/remotes/origin/codex/chapter35",
   "source_project": "PoincareLean",
@@ -231,7 +231,7 @@
       "module": "Poincare.Topology.Homology.RelativeEmpty",
       "path": "Poincare/Topology/Homology/RelativeEmpty.lean",
       "baseline_sha256": null,
-      "sha256": "299a5dd14ab8ec622d77ba704873fe6fcf057ecef7938dcfe81bb9f17e9dfe73"
+      "sha256": "d66c7111318994319207df6e503087f6f8e737053724e8ee8f5f6ade181fdfe9"
     },
     {
       "module": "Poincare.Topology.Homology.RelativeHomeomorphism",
@@ -801,7 +801,7 @@
       "module": "Poincare.Topology.Homology.RelativeEmpty",
       "path": "Poincare/Topology/Homology/RelativeEmpty.lean",
       "baseline_sha256": null,
-      "sha256": "299a5dd14ab8ec622d77ba704873fe6fcf057ecef7938dcfe81bb9f17e9dfe73"
+      "sha256": "d66c7111318994319207df6e503087f6f8e737053724e8ee8f5f6ade181fdfe9"
     },
     {
       "module": "Poincare.Topology.Homology.RelativeFunctoriality",
@@ -1462,7 +1462,9 @@
     "Poincare.Topology.integralSingularCohomologyMap_zero_injective_of_pathConnectedSpace",
     "Poincare.Topology.integralSingularCohomology_subsingleton_of_isEmpty",
     "Poincare.Topology.integralRelativeToAbsoluteCohomology_zero_injective",
-    "Poincare.Topology.integralRelativeCohomology_zero_subsingleton_of_pathConnectedSpace"
+    "Poincare.Topology.integralRelativeCohomology_zero_subsingleton_of_pathConnectedSpace",
+    "Poincare.Topology.integralRelativeToAbsoluteCohomologyEmptyEquiv",
+    "Poincare.Topology.integralRelativeToAbsoluteCohomologyEmptyEquiv_toLinearMap"
   ],
   "historical_authorities": [
     {
@@ -1604,21 +1606,20 @@
     "date": "2026-09-13",
     "slurm_job": "13846673",
     "host": "della-r3c4n2",
-    "request_id": "1789342341942512570-topology_checkpoint-9be18633",
-    "input_sha256": "7c0e42081f4722d00284a49d1dacfdce76eb5cf7c5a3cd2b63d08285ee7a9e97",
-    "result_sha256": "b2d7ae5fa87f25e372c3ceda50806271816ba7903273341738bc50b4fbe22cee",
-    "artifact_log_sha256": "6191ba5536489c4f0b0f8593cd633b8e6bda42bc084b23f7eaa450ff22081ad8",
-    "source_config_harness_hash_guards": 548,
+    "request_id": "1789344380600270048-topology_checkpoint-5607f5e7",
+    "input_sha256": "8e363bfc88048413e7c23162b086249c0825990253667ade43f6c8f1c4628d3e",
+    "result_sha256": "2cdca26c81d039bfbd61438dc8ade863a3a0c87805b774a287bb27a2c1cbad46",
+    "artifact_log_sha256": "11dc1d3e6f727d097646216f743af8c9a27941633dfb01a7ead1d600a76f793e",
+    "source_config_harness_hash_guards": 556,
     "freshly_built_modules": [
-      "Poincare.Topology.Homology.ConnectedZeroCohomology",
-      "Poincare.Topology.Homology.CohomologyVanishing",
-      "Poincare.Topology.Homology.RelativeCohomologyVanishing",
+      "Poincare.Topology.Homology.RelativeEmpty",
+      "Poincare.Topology.Homology.ManifoldFundamentalClass",
       "Poincare"
     ],
     "root_build": "lake --no-cache --iofail build Poincare",
-    "fresh_build_scope": "ConnectedZeroCohomology196, CohomologyVanishing92, RelativeCohomologyVanishing82 and root freshly compiled with zero diagnostics; all 132 other published leaves unchanged.",
-    "exact_public_exports": 148,
-    "public_and_consumer_signature_axiom_pairs": 259,
+    "fresh_build_scope": "RelativeEmpty89, affected ManifoldFundamentalClass and root freshly compiled with zero diagnostics; all 134 other published leaf sources unchanged.",
+    "exact_public_exports": 150,
+    "public_and_consumer_signature_axiom_pairs": 264,
     "linters": [
       "unusedArguments",
       "simpNF",
@@ -1633,17 +1634,15 @@
       "Quot.sound"
     ],
     "unexpected_diagnostics": 0,
-    "elapsed_seconds": 208.80082988739014,
-    "peak_summed_rss_bytes": 3146784768,
+    "elapsed_seconds": 198.3604633808136,
+    "peak_summed_rss_bytes": 3153793024,
     "full_topology_suite_accepted": false,
     "consumer_probes": [
-      "All 252 prior signature/axiom pairs reproduced byte-identically",
-      "All 19 original public/consumer pairs and all seven new source pairs match the portable readbacks exactly",
-      "Actual relative-to-absolute H0 map is injective for arbitrary pairs",
-      "Actual H0 pullback is injective from any nonempty space into a path-connected space, including the disconnected Bool source",
-      "Actual relative H0 vanishes for a path-connected ambient space and a nonempty subspace",
-      "Actual cohomology of an empty space vanishes in every degree, including zero",
-      "Actual H0 of the real line relative to the empty subspace is nonzero, witnessing necessity of the nonempty-subspace assumption"
+      "All 259 prior signature/axiom pairs reproduced byte-identically",
+      "All seven original imported public/consumer pairs match the source and portable readbacks exactly",
+      "The actual relative-to-absolute empty-pair cohomology map is an equivalence in every degree and topological space",
+      "A real-line H0 class in the relative empty group is nonzero and maps to the absolute unit",
+      "Both directions commute with the actual induced cohomology maps"
     ]
   },
   "previous_linear_sign_checkpoint_validation": {
@@ -3271,6 +3270,72 @@
       "/scratch/gpfs/KARTHIKN/ayush/canonical-topology-spinoff/Poincare/Topology/Homology/RelativeCohomologyVanishing.lean": {
         "baseline": "4b2a2289742bb453027648d52b75e900d85500c2ab0268d81593f0b24d0b4e76",
         "current": "53f5e22c573919667515d244517b91a4e6b6b10432fdb9302b265261d8d9fb15"
+      }
+    }
+  },
+  "previous_zero_cohomology_validation": {
+    "status": "passed for the selected 135-module checkpoint; full topology suite incomplete",
+    "date": "2026-09-13",
+    "slurm_job": "13846673",
+    "host": "della-r3c4n2",
+    "request_id": "1789342341942512570-topology_checkpoint-9be18633",
+    "input_sha256": "7c0e42081f4722d00284a49d1dacfdce76eb5cf7c5a3cd2b63d08285ee7a9e97",
+    "result_sha256": "b2d7ae5fa87f25e372c3ceda50806271816ba7903273341738bc50b4fbe22cee",
+    "artifact_log_sha256": "6191ba5536489c4f0b0f8593cd633b8e6bda42bc084b23f7eaa450ff22081ad8",
+    "source_config_harness_hash_guards": 548,
+    "freshly_built_modules": [
+      "Poincare.Topology.Homology.ConnectedZeroCohomology",
+      "Poincare.Topology.Homology.CohomologyVanishing",
+      "Poincare.Topology.Homology.RelativeCohomologyVanishing",
+      "Poincare"
+    ],
+    "root_build": "lake --no-cache --iofail build Poincare",
+    "fresh_build_scope": "ConnectedZeroCohomology196, CohomologyVanishing92, RelativeCohomologyVanishing82 and root freshly compiled with zero diagnostics; all 132 other published leaves unchanged.",
+    "exact_public_exports": 148,
+    "public_and_consumer_signature_axiom_pairs": 259,
+    "linters": [
+      "unusedArguments",
+      "simpNF",
+      "synTaut",
+      "checkType"
+    ],
+    "linter_scope": "All imported Poincare declarations and current consumers, including private declarations",
+    "defLemma": "Unavailable in the pinned Mathlib; source declaration-kind checks retained.",
+    "allowed_transitive_axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "unexpected_diagnostics": 0,
+    "elapsed_seconds": 208.80082988739014,
+    "peak_summed_rss_bytes": 3146784768,
+    "full_topology_suite_accepted": false,
+    "consumer_probes": [
+      "All 252 prior signature/axiom pairs reproduced byte-identically",
+      "All 19 original public/consumer pairs and all seven new source pairs match the portable readbacks exactly",
+      "Actual relative-to-absolute H0 map is injective for arbitrary pairs",
+      "Actual H0 pullback is injective from any nonempty space into a path-connected space, including the disconnected Bool source",
+      "Actual relative H0 vanishes for a path-connected ambient space and a nonempty subspace",
+      "Actual cohomology of an empty space vanishes in every degree, including zero",
+      "Actual H0 of the real line relative to the empty subspace is nonzero, witnessing necessity of the nonempty-subspace assumption"
+    ]
+  },
+  "original_relative_empty_cohomology_validation": {
+    "request_id": "1789344358322364357-topology-d1f16239",
+    "input_sha256": "db4c92d3af5fdd1632d5447160a54562e45e82dcaa27cfa1cb65d2680851daf3",
+    "elapsed_seconds": 79.0443685054779,
+    "source_guards": 70,
+    "signature_axiom_pairs": 7,
+    "fresh_modules": [
+      "Poincare.Topology.Homology.RelativeEmpty"
+    ],
+    "fresh_module_note": "RelativeEmpty89 freshly compiled, then seven original public/consumer pairs and all imported package declarations checked with zero diagnostics.",
+    "source_request_id": "1789344192619282403-topology-f01f0e05",
+    "source_readback_comparison": "all seven shared source/public consumer pairs match original and portable exactly; all 259 preceding portable pairs remain exact; four additional private source lemmas checked separately",
+    "production_source_promotion": {
+      "/scratch/gpfs/KARTHIKN/ayush/canonical-topology-spinoff/Poincare/Topology/Homology/RelativeEmpty.lean": {
+        "baseline": "299a5dd14ab8ec622d77ba704873fe6fcf057ecef7938dcfe81bb9f17e9dfe73",
+        "current": "d66c7111318994319207df6e503087f6f8e737053724e8ee8f5f6ade181fdfe9"
       }
     }
   }

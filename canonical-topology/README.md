@@ -7,6 +7,10 @@ and `Poincare` namespaces. `Poincare.lean` imports every included leaf.
 
 The additions prove:
 
+- the equivalence between actual cohomology relative to the empty subspace
+  and ordinary cohomology, with forward map equal to the original
+  relative-to-absolute map, in every degree and topological space;
+
 - degree-zero relative cohomology vanishing for a path-connected ambient space
   and nonempty subspace, injectivity of its map to absolute cohomology,
   injectivity of H0 pullback along maps from nonempty spaces into path-connected
@@ -798,7 +802,7 @@ result, native orientation producer and frozen canonical contract remain open.
 
 ## Degree-zero relative and empty-space cohomology
 
-The current checkpoint contains 135 leaves and 148 curated tracked added public
+That checkpoint contained 135 leaves and 148 curated tracked added public
 exports. Four new results extend three existing leaves. The actual relative H0
 map to absolute H0 is injective for every pair. Pullback on actual H0 is injective
 for any continuous map from a nonempty space into a path-connected space; the
@@ -824,3 +828,29 @@ compiled in 1:56.44, maximum RSS 1,825,036 KiB, with zero diagnostics. All 132 o
 published leaves remain byte-identical. Stock declaration linters and
 standard-only transitive axioms pass. The full canonical topology suite,
 general manifold duality and native orientation producer remain incomplete.
+
+
+## Cohomology relative to the empty subspace
+
+The current checkpoint contains 135 leaves and 150 curated tracked added public
+exports. `integralRelativeToAbsoluteCohomologyEmptyEquiv` identifies actual
+relative cohomology of the empty pair with ordinary cohomology in every degree
+and topological space. Its `_toLinearMap` theorem pins the forward map to the
+original relative-to-absolute cohomology map. The proof reuses the vanishing
+empty-subspace chain map, dualizes it, and applies the actual cochain kernel
+inclusion and its homology map. The existing homology empty-pair equivalence is
+unchanged. Consumers produce a nonzero relative real-line H0 class mapping to
+the ordinary unit and check naturality of the equivalence and its inverse.
+
+Source request `1789344192619282403-topology-f01f0e05` passed in 19.09 seconds
+with 71 guards and 11 pairs. Original imported request
+`1789344358322364357-topology-d1f16239` passed in 79.04 seconds with 70 guards
+and 7 pairs. Final portable request
+`1789344380600270048-topology_checkpoint-5607f5e7` passed in Slurm 13846673
+in 198.36 seconds, with 556 guards and 264 pairs. All 259 preceding pairs are
+byte-identical; all seven original public/consumer pairs match both source and
+portable readbacks. RelativeEmpty, affected ManifoldFundamentalClass and the
+root freshly compiled in 1:41.51, maximum RSS 1,921,264 KiB, with zero
+diagnostics. All 134 other published leaf sources remain byte-identical. Stock
+linters and standard-only transitive axioms pass. The full canonical topology
+suite, general manifold duality and native orientation producer remain open.

@@ -1,3 +1,4 @@
+import Poincare.Topology.Homology.RelativeCochains
 import Poincare.Topology.Homology.SimplexBasis
 import Poincare.Topology.Homology.RelativeMaps
 
@@ -45,6 +46,43 @@ theorem integralAbsoluteToRelativeEmptyEquiv_toLinearMap
     (n : ℕ) (X : Type u) [TopologicalSpace X] :
     (integralAbsoluteToRelativeEmptyEquiv n X).toLinearMap =
       integralAbsoluteToRelative n (∅ : Set X) := rfl
+
+private theorem integralSingularCochainMap_empty_eq_zero
+    (X : Type u) [TopologicalSpace X] :
+    integralSingularCochainMap (singularSubspaceInclusion (∅ : Set X)) = 0 := by
+  apply HomologicalComplex.hom_ext
+  intro n
+  apply ModuleCat.hom_ext
+  change integralSingularCochainPullback n (singularSubspaceInclusion (∅ : Set X)) = 0
+  apply LinearMap.ext
+  intro φ
+  apply LinearMap.ext
+  intro c
+  change φ ((integralSingularChainMap (singularSubspaceInclusion (∅ : Set X))).f n c) = 0
+  rw [integralSingularChainMap_empty_eq_zero]
+  exact map_zero φ
+
+private theorem integralRelativeToAbsoluteCohomology_empty_bijective
+    (X : Type u) [TopologicalSpace X] (n : ℕ) :
+    Function.Bijective (integralRelativeToAbsoluteCohomology n (∅ : Set X)) := by
+  let ι := integralRelativeCochainInclusion (∅ : Set X)
+  have hι : IsIso ι := by
+    change IsIso (kernel.ι (integralSingularCochainMap (singularSubspaceInclusion (∅ : Set X))))
+    rw [integralSingularCochainMap_empty_eq_zero]
+    infer_instance
+  have hi : IsIso (HomologicalComplex.homologyMap ι n) := inferInstance
+  exact (ConcreteCategory.isIso_iff_bijective _).mp hi
+
+def integralRelativeToAbsoluteCohomologyEmptyEquiv
+    (n : ℕ) (X : Type u) [TopologicalSpace X] :
+    integralRelativeCohomology n (∅ : Set X) ≃ₗ[ℤ] integralSingularCohomology n X :=
+  LinearEquiv.ofBijective (integralRelativeToAbsoluteCohomology n (∅ : Set X))
+    (integralRelativeToAbsoluteCohomology_empty_bijective X n)
+
+theorem integralRelativeToAbsoluteCohomologyEmptyEquiv_toLinearMap
+    (n : ℕ) (X : Type u) [TopologicalSpace X] :
+    (integralRelativeToAbsoluteCohomologyEmptyEquiv n X).toLinearMap =
+      integralRelativeToAbsoluteCohomology n (∅ : Set X) := rfl
 
 end Poincare.Topology
 
