@@ -6934,6 +6934,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SphericalCa
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SphericalCollarFilling
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SphericalRegion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SphericalTransitionBridge
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.StandardNeckCapImmersion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.StandardNeckCutCap
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.StandardNeckCutCapInstance
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.StandardNeckCylinderEmbedding
@@ -8312,6 +8313,7 @@ import DifferentialGeometry.Topology.Homology.HurewiczThreeReduction
 import DifferentialGeometry.Topology.Homology.HurewiczNullhomotopyCriterion
 import DifferentialGeometry.Topology.Homology.HurewiczOneAbelianization
 import DifferentialGeometry.Topology.Homology.HurewiczOneKernel
+import DifferentialGeometry.Topology.Homology.HurewiczOnePathLoopBridge
 import DifferentialGeometry.Topology.Homology.HurewiczSphereCriterion
 import DifferentialGeometry.Topology.Homology.HurewiczSphereGenerationCriterion
 import DifferentialGeometry.Topology.Homology.HurewiczThreeWitness
@@ -8373,6 +8375,7 @@ import DifferentialGeometry.Topology.Homology.PoincareDualityThreeFrontier
 import DifferentialGeometry.Topology.Homology.PoincareDualityTwoOnePairing
 import DifferentialGeometry.Topology.Homology.PuncturedLefschetzDuality
 import DifferentialGeometry.Topology.Homology.RadialHomotopy
+import DifferentialGeometry.Topology.Homology.RationalHurewiczOne
 import DifferentialGeometry.Topology.Homology.RayComplementCoverEvaluation
 import DifferentialGeometry.Topology.Homology.Reduced
 import DifferentialGeometry.Topology.Homology.Reduced.Comparison
@@ -9410,6 +9413,7 @@ import DifferentialGeometry.Topology.ThreeManifold.CoreCapOppositeSides
 import DifferentialGeometry.Topology.ThreeManifold.CutCap
 import DifferentialGeometry.Topology.ThreeManifold.CutCapCappedPresentationRealization
 import DifferentialGeometry.Topology.ThreeManifold.CutCapCollaredQuotientGluing
+import DifferentialGeometry.Topology.ThreeManifold.CutCapComponentCarrierIdentification
 import DifferentialGeometry.Topology.ThreeManifold.CutCapCutComponentGluingReduction
 import DifferentialGeometry.Topology.ThreeManifold.CutCapCutComponentPieceGluing
 import DifferentialGeometry.Topology.ThreeManifold.CutCapCutComponentRealizationReduction
