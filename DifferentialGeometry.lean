@@ -9919,3 +9919,4 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.P
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProductSecondDerivativeBernstein
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProductAllOrderDerivativeBernstein
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProductCurveRegularityInput
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProductRegularity
