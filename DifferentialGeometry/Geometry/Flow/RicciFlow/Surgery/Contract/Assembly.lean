@@ -22,7 +22,8 @@ structure PoincareExtinctionContracts (DiscardedCutOpen : Type u → Prop) where
   incidenceConnectedInput :
     ∀ (H : DifferentialGeometry.PDE.RicciFlow.Surgery.FiniteSurgeryHistory.{u})
     (i : Fin H.eventCount) (C : ConnectedComponents (H.stage i.castSucc).Carrier),
-    ((H.cutCapTrace.transition i).cutIncidenceGraph C).Connected
+    ((H.cutCapTrace.transition i).cutIncidenceGraph C).Connected :=
+    fun H i C => H.cutCapTrace.cutIncidenceGraph_connected i C
   componentSumInput :
     ∀ (H : DifferentialGeometry.PDE.RicciFlow.Surgery.FiniteSurgeryHistory.{u})
     (i : Fin H.eventCount), (H.cutCapTrace.transition i).componentConnectedSumDecomposition
