@@ -26,7 +26,8 @@ theorem not_slope_bound_of_constant_area {A S Err : ℝ → ℝ} {a b : ℝ} (ha
   obtain ⟨δ, hδpos, hδ⟩ := h a ⟨le_rfl, hab⟩ Real.pi Real.pi_pos
   obtain ⟨k, hkpos, hkδ, hkb⟩ :
       ∃ k : ℝ, 0 < k ∧ k < δ ∧ k ≤ (b - a) / 2 := by
-    refine ⟨min (δ / 2) ((b - a) / 2), lt_min (by linarith) (by linarith), ?_, min_le_right _ _⟩
+    refine ⟨min (δ / 2) ((b - a) / 2), lt_min (by linarith) (by linarith), ?_,
+      min_le_right _ _⟩
     exact lt_of_le_of_lt (min_le_left _ _) (by linarith)
   have hak : a + k ≤ b := by linarith
   have hAeq : A (a + k) = A a := hA (a + k) ⟨by linarith, hak⟩
@@ -36,9 +37,29 @@ theorem not_slope_bound_of_constant_area {A S Err : ℝ → ℝ} {a b : ℝ} (ha
   have hneg : 0 ≤ -Real.pi - S a * A a / 2 := by linarith
   linarith [Real.pi_pos, hSA]
 
+theorem two_pi_add_half_scalar_area_le_error_of_constant_area {A S Err : ℝ → ℝ} {a b : ℝ}
+    (hab : a < b) (hA : ∀ t ∈ Icc a b, A t = A a)
+    (h : ∀ t ∈ Ico a b, ∀ ε > 0, ∃ δ > 0, ∀ h ∈ Ioo (0 : ℝ) δ, t + h ≤ b →
+      (A (t + h) - A t) / h ≤ -2 * Real.pi - S t * A t / 2 + Err t + ε) :
+    2 * Real.pi + S a * A a / 2 ≤ Err a := by
+  refine le_of_forall_pos_le_add fun ε hε => ?_
+  obtain ⟨δ, hδpos, hδ⟩ := h a ⟨le_rfl, hab⟩ (ε / 2) (by linarith)
+  obtain ⟨k, hkpos, hkδ, hkb⟩ :
+      ∃ k : ℝ, 0 < k ∧ k < δ ∧ k ≤ (b - a) / 2 := by
+    refine ⟨min (δ / 2) ((b - a) / 2), lt_min (by linarith) (by linarith), ?_,
+      min_le_right _ _⟩
+    exact lt_of_le_of_lt (min_le_left _ _) (by linarith)
+  have hak : a + k ≤ b := by linarith
+  have hAeq : A (a + k) = A a := hA (a + k) ⟨by linarith, hak⟩
+  have hquot : (A (a + k) - A a) / k = 0 := by rw [hAeq, sub_self, zero_div]
+  have hle := hδ k ⟨hkpos, hkδ⟩ hak
+  rw [hquot] at hle
+  linarith
+
 theorem exists_not_slope_bound_data :
     ∀ {S : ℝ → ℝ} {a : ℝ}, S a = 0 →
-      ¬ (∀ t ∈ Ico a (a + 1), ∀ ε > 0, ∃ δ > 0, ∀ h ∈ Ioo (0 : ℝ) δ, t + h ≤ a + 1 →
+      ¬ (∀ t ∈ Ico a (a + 1), ∀ ε > 0, ∃ δ > 0,
+          ∀ h ∈ Ioo (0 : ℝ) δ, t + h ≤ a + 1 →
         (0 - 0) / h ≤ -2 * Real.pi - S t * 0 / 2 + 0 + ε) := by
   intro S a hS
   refine not_slope_bound_of_constant_area (A := fun _ => 0) (S := S) (Err := fun _ => 0)

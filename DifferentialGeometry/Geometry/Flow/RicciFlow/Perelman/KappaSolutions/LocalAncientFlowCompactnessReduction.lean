@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.PointedFlowSlices
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.LocalMetricCompactnessSeed
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.LocalMetricCompactnessStaircase
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.LocalCurvatureJetBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Canonical.ReferenceChange
 
@@ -61,26 +62,15 @@ theorem ancientZeroBallJetBound_of_local_curvature_bound
   ⟨exists_eventually_curvDerivNorm_le_of_local_curvature_bound_atZero (I := I) X hD
     hcomplete hdim hlocal hlower⟩
 
-abbrev BallGeometryCompactSeed (Y : PointedRiemannianSeq.{u, uE, uH} (I := I)) : Prop :=
-  SeqMetricComplete (I := I) Y →
-  (∀ i : ℕ,
-    let _ : TopologicalSpace (Y.obj i).M := (Y.obj i).topology
-    ConnectedSpace (Y.obj i).M) →
-  BaseInjBound (I := I) Y →
-  Nonempty (SeqBallGeometry (I := I) Y) →
-  ∃ ψ : ℕ → ℕ, StrictMono ψ ∧
-    ∃ b : MetricCompactSeed (I := I) (Y.subseq ψ),
-      Nonempty (BoundedGeometryNormalChartData (I := I) (Y.subseq ψ) b.decay)
-
-theorem ballGeometryCompactSeed_of_seqBoundedGeometry
+theorem staircaseMetricCompactSeedFrontier_of_seqBoundedGeometry
     (Y : PointedRiemannianSeq.{u, uE, uH} (I := I))
     (hgeom : SeqBoundedGeometry (I := I) Y) :
-    BallGeometryCompactSeed (I := I) Y := by
+    StaircaseMetricCompactSeedFrontier (I := I) Y := by
   intro hcomplete hconnected hinj _hball
   exact exists_metricCompactSeed_of_seqBoundedGeometry (I := I) Y hcomplete hconnected
     hgeom hinj
 
-theorem exists_metricCompactLimit_atZero_of_ballGeometryCompactSeed
+theorem exists_metricCompactLimit_atZero_of_staircaseMetricCompactSeedFrontier
     (X : PointedFlowSeq.{u, uE, uH} (I := I))
     (hD : X.D = ancientTimeInterval)
     (hcomplete : FlowMetricComplete (I := I) X)
@@ -89,8 +79,8 @@ theorem exists_metricCompactLimit_atZero_of_ballGeometryCompactSeed
       ConnectedSpace (X.term i).M)
     (hinj : FlowScaleInjectivityBound (I := I) X)
     (hzero : AncientZeroBallJetBound (I := I) X)
-    (hball : ∀ Y : PointedRiemannianSeq.{u, uE, uH} (I := I),
-      BallGeometryCompactSeed (I := I) Y) :
+    (hseed : ∀ Y : PointedRiemannianSeq.{u, uE, uH} (I := I),
+      StaircaseMetricCompactSeedFrontier (I := I) Y) :
     ∃ P : MetricCompactLimit.{u, uE, uH} (I := I) (X.atZero (I := I)),
       (∀ k : ℕ, P.convergence.metrics.domain k =
         CanonicalMetricCompactness.canonicalSourceData (I := I) P.maps k) ∧
@@ -104,9 +94,9 @@ theorem exists_metricCompactLimit_atZero_of_ballGeometryCompactSeed
        ConnectedSpace P.limit.M) := by
   have h0 : (0 : ℝ) ∈ X.D.carrier := by
     simp only [hD, ancientTimeInterval_carrier, Set.mem_Iic, le_refl]
-  exact exists_local_pointed_metric_compactness_of_local_boundedGeometry_frontier (I := I)
-    (X.atZero (I := I)) (hcomplete.at_time h0) (fun i => hconnected i) hinj
-    hzero.bound (fun Y hc hn hi hb => hball Y hc hn hi hb)
+  exact exists_local_pointed_metric_compactness_of_staircaseApproximateIsometryFrontier (I := I)
+    (X.atZero (I := I)) (hcomplete.at_time h0) (fun i => hconnected i) hinj hzero.bound
+    (staircaseApproximateIsometryFrontier_of_metricCompactSeedFrontier hseed)
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem eventually_le_edistOf_atZero_of_lower_bound
@@ -195,8 +185,8 @@ theorem exists_local_ancient_flow_compactness_of_frontier
       ConnectedSpace (X.term i).M)
     (hinj : FlowScaleInjectivityBound (I := I) X)
     (hzero : AncientZeroBallJetBound (I := I) X)
-    (hball : ∀ Y : PointedRiemannianSeq.{u, uE, uH} (I := I),
-      BallGeometryCompactSeed (I := I) Y)
+    (hseed : ∀ Y : PointedRiemannianSeq.{u, uE, uH} (I := I),
+      StaircaseMetricCompactSeedFrontier (I := I) Y)
     (hext : ∀ P : MetricCompactLimit.{u, uE, uH} (I := I) (X.atZero (I := I)),
       (∀ k : ℕ, P.convergence.metrics.domain k =
         CanonicalMetricCompactness.canonicalSourceData (I := I) P.maps k) →
@@ -226,8 +216,8 @@ theorem exists_local_ancient_flow_compactness_of_frontier
                 (MetricSourceDomain (I := I) (Phi.atTime (L := L) t) k) := D.smooth
               D.referenceMetric = D.limitMetric) := by
   obtain ⟨P, hdom, _href, hconn⟩ :=
-    exists_metricCompactLimit_atZero_of_ballGeometryCompactSeed (I := I) X hD hcomplete
-      hconnected hinj hzero hball
+    exists_metricCompactLimit_atZero_of_staircaseMetricCompactSeedFrontier (I := I) X hD hcomplete
+      hconnected hinj hzero hseed
   obtain ⟨phi, hphi, L, Phi, he⟩ := hext P hdom hconn
   refine ⟨L, phi, hphi, Phi, ?_, he.slice_complete, fun t ht => ?_⟩
   · exact Eq.subst (motive := fun Q : PointedRiemannianManifold.{u, uE, uH} (I := I) =>
@@ -295,8 +285,8 @@ theorem exists_local_ancient_flow_compactness_of_local_curvature_bound_and_front
         ∀ t ∈ Set.Icc (-T) 0, ∀ x : (X.term i).M, ∀ v : TangentSpace I x,
           c * ((X.term i).S.base.metric 0).inner x v v ≤
             ((X.term i).S.base.metric t).inner x v v)
-    (hball : ∀ Y : PointedRiemannianSeq.{u, uE, uH} (I := I),
-      BallGeometryCompactSeed (I := I) Y)
+    (hseed : ∀ Y : PointedRiemannianSeq.{u, uE, uH} (I := I),
+      StaircaseMetricCompactSeedFrontier (I := I) Y)
     (hext : ∀ P : MetricCompactLimit.{u, uE, uH} (I := I) (X.atZero (I := I)),
       (∀ k : ℕ, P.convergence.metrics.domain k =
         CanonicalMetricCompactness.canonicalSourceData (I := I) P.maps k) →
@@ -327,7 +317,7 @@ theorem exists_local_ancient_flow_compactness_of_local_curvature_bound_and_front
               D.referenceMetric = D.limitMetric) :=
   exists_local_ancient_flow_compactness_of_frontier (I := I) X hD hcomplete hconnected hinj
     (ancientZeroBallJetBound_of_local_curvature_bound (I := I) X hD hcomplete hdim hlocal hlower)
-    hball hext
+    hseed hext
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 

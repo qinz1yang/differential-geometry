@@ -21,7 +21,7 @@ def ConnectedSumAttachmentIndependence (M : ConnectedClosedOrientedManifold.{u} 
       (smoothConnectedSum M N c d a'
         ).toConnectedClosedOrientedManifold.toClosedOrientedManifold)
 
-theorem boundaryAttachmentCollarExtensionOrientedDiffeomorphism_of_connectedSumAttachmentIndependence
+theorem collarExtensionOrientedDiffeomorphism_of_connectedSumAttachmentIndependence
     {M : ConnectedClosedOrientedManifold.{u} 3} {N : ConnectedClosedOrientedManifold.{v} 3}
     {c : OrientedBallChart M.toClosedOrientedManifold}
     {d : OrientedBallChart N.toClosedOrientedManifold}
@@ -29,7 +29,7 @@ theorem boundaryAttachmentCollarExtensionOrientedDiffeomorphism_of_connectedSumA
     boundaryAttachmentCollarExtensionOrientedDiffeomorphism M N c d :=
   fun a a' _ => h a a'
 
-theorem connectedSumAttachmentIndependence_of_boundaryAttachmentCollarExtensionOrientedDiffeomorphism
+theorem connectedSumAttachmentIndependence_of_collarExtensionOrientedDiffeomorphism
     {M : ConnectedClosedOrientedManifold.{u} 3} {N : ConnectedClosedOrientedManifold.{v} 3}
     {c : OrientedBallChart M.toClosedOrientedManifold}
     {d : OrientedBallChart N.toClosedOrientedManifold}
@@ -56,7 +56,7 @@ theorem nonempty_orientedDiffeomorph_smoothConnectedSum_of_attachmentIndependenc
   obtain ⟨k⟩ := nonempty_orientedDiffeomorph_smoothConnectedSum_of_rightChart c' d d' a'
   exact ⟨f.trans (g.trans k)⟩
 
-theorem connectedSum_choice_independent_of_smoothConnectedSumDataUniqueness_and_attachmentIndependence
+theorem connectedSum_choice_independent_of_dataUniqueness_and_attachmentIndependence
     {M : ConnectedClosedOrientedManifold.{u} 3} {N : ConnectedClosedOrientedManifold.{v} 3}
     (c c' : OrientedBallChart M.toClosedOrientedManifold)
     (d d' : OrientedBallChart N.toClosedOrientedManifold) (a a' : BoundaryAttachment)

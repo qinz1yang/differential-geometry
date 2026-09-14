@@ -2,6 +2,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.Assembly
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ControlledExtinctionAssembly
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SphereDiffeomorphismIsotopyConnected
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.OrientedLawsAssembly
+import DifferentialGeometry.Topology.ThreeManifold.CutCapDecompositionAssembly
 import DifferentialGeometry.Topology.ThreeManifold.CutCapIncidence
 import DifferentialGeometry.Topology.ThreeManifold.SphericalSpaceFormOrientationClosure
 
@@ -26,11 +27,8 @@ theorem componentConnectedSumDecomposition_iff_localReconstruction
     (∀ i : Fin H.eventCount,
         (H.cutCapTrace.transition i).componentConnectedSumDecomposition) ↔
       ∀ i : Fin H.eventCount, (H.cutCapTrace.transition i).localReconstruction :=
-  forall_congr' fun i =>
-    ((H.cutCapTrace.transition i).componentConnectedSumDecomposition_iff_localReconstruction_of_incidenceGraph_connected
-      fun C =>
-        DifferentialGeometry.Topology.FiniteCutCapTrace.cutIncidenceGraph_connected
-          H.cutCapTrace i C).symm
+  DifferentialGeometry.Topology.FiniteCutCapTrace.componentConnectedSumDecomposition_iff_localReconstruction
+    H.cutCapTrace
 
 theorem connectedSum_standardThreeSphere_right_orientedDiffeomorph
     (N : DifferentialGeometry.Topology.ConnectedClosedOrientedManifold.{u} 3) :

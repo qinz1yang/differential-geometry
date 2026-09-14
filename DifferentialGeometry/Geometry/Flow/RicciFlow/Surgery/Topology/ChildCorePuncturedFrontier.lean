@@ -71,12 +71,6 @@ theorem childCoreSimplyConnected_of_componentwisePuncturedCore
     ∀ c : ConnectedComponents Q.Carrier, SimplyConnectedSpace (E.ChildCore c) :=
   fun c => E.simplyConnectedSpace_childCore_of_puncturedCoreComponent c (h c)
 
-theorem componentwisePuncturedCore_iff_childCoreSimplyConnected :
-    E.ComponentwisePuncturedCoreSimpleConnected ↔
-      ∀ c : ConnectedComponents Q.Carrier, SimplyConnectedSpace (E.ChildCore c) :=
-  ⟨E.childCoreSimplyConnected_of_componentwisePuncturedCore,
-    E.componentwisePuncturedCore_of_childCoreSimplyConnected⟩
-
 theorem child_simplyConnected_of_frontiers
     (hcover : E.childCoreCapCoverProducer)
     (hpc : E.ComponentwisePuncturedCoreSimpleConnected)

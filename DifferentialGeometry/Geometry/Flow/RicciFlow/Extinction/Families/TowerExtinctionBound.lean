@@ -6,7 +6,7 @@ set_option autoImplicit false
 
 noncomputable section
 
-open scoped Manifold ContDiff
+open scoped Manifold
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 

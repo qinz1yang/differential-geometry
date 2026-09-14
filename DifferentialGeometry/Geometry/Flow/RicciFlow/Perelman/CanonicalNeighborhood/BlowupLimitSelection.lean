@@ -87,6 +87,41 @@ def BlowupLimitSelection {T : ℝ} (hT : 0 < T)
           ∃ hf : Function.Bijective (mfderiv I3 I3 (F.partialDiffeomorph i) y),
             PreservesTangentOrientationAt ori o (F.partialDiffeomorph i) y hf)
 
+theorem pointedFlowScalarAtBase_one_of_canonicalMetricSourceConverges {T : ℝ} (hT : 0 < T)
+    (S : SolutionOn (I := I3) (M := M) (RealTimeInterval.closedOpen 0 T hT))
+    (hS : IsSolutionOn S) (x : ℕ → M) (t : ℕ → ℝ)
+    (htmem : ∀ i, t i ∈ Set.Ico (0 : ℝ) T) (htpos : ∀ i, 0 < t i)
+    (hpos : ∀ i, 0 < S.scalar (t i) (x i))
+    {L : PointedFlowData.{u, 0, 0} (I := I3) ancientTimeInterval} {phi : ℕ → ℕ}
+    {F : PointedRiemannianConvergenceMaps (I := I3)
+      ((highCurvatureFlowSequence hT S hS x t htmem htpos hpos).atTime 0)
+      (L.atTime (I := I3) 0) phi}
+    (hconv : ∀ K : Set L.M, IsCompact K → metricSourceConvergesOn (I := I3) F
+      (CanonicalMetricCompactness.canonicalSourceData (I := I3) F) K 2) :
+    PointedFlowScalarAtBase (I := I3) L 1 := by
+  have hlim :=
+    DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions.pointedScalar_tendsto_of_canonical_metric_convergence
+      (I := I3)
+      (X := (highCurvatureFlowSequence hT S hS x t htmem htpos hpos).atTime 0)
+      (L := L.atTime (I := I3) 0) (subseq := phi) (Phi := F) hconv L.basepoint
+  have hconst : ∀ k : ℕ, metricScalarAt (I := I3)
+      (((highCurvatureFlowSequence hT S hS x t htmem htpos hpos).atTime 0).obj
+        (phi k)).metric (F.map k L.basepoint) = 1 := by
+    intro k
+    have hmap : F.map k L.basepoint =
+        (((highCurvatureFlowSequence hT S hS x t htmem htpos hpos).atTime 0).obj
+          (phi k)).basepoint := by
+      simpa only [PointedRiemannianConvergenceMaps.map, PointedFlowData.atTime]
+        using F.basepoint_map k
+    rw [hmap]
+    exact highCurvatureFlowSequence_scalar_base_one hT S hS x t htmem htpos hpos (phi k)
+  rw [funext hconst] at hlim
+  have hone : metricScalarAt (I := I3) (L.atTime (I := I3) 0).metric L.basepoint = 1 :=
+    (tendsto_nhds_unique tendsto_const_nhds hlim).symm
+  change L.S.scalar 0 L.basepoint = 1
+  simpa only [PointedFlowData.atTime, SolutionOn.family_metric, SolutionOn.scalar,
+    SolutionFamily.scalar] using hone
+
 theorem maximalPointSlabCompactness_of_blowupLimitSelection {T : ℝ} (hT : 0 < T)
     (S : SolutionOn (I := I3) (M := M) (RealTimeInterval.closedOpen 0 T hT))
     (hS : IsSolutionOn S) (o : TangentOrientationSection M) {kappa : ℝ} (hkappa : 0 < kappa)
@@ -96,29 +131,9 @@ theorem maximalPointSlabCompactness_of_blowupLimitSelection {T : ℝ} (hT : 0 < 
   obtain ⟨L, phi, F, hphi, hconn, hcomplete, hnonneg, hscalar, hnoncoll, hconvT, hcmp,
     hcap, ori, hori⟩ := h theta htheta x t htpos htmem0 hpos
   obtain ⟨Ft, hFt⟩ := hconvT 0 le_rfl
-  have hbase : PointedFlowScalarAtBase (I := I3) L 1 := by
-    have hlim :=
-      DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions.pointedScalar_tendsto_of_canonical_metric_convergence
-        (I := I3)
-        (X := (highCurvatureFlowSequence hT S hS x t htmem0 htpos hpos).atTime 0)
-        (L := L.atTime (I := I3) 0) (subseq := phi) (Phi := Ft) hFt L.basepoint
-    have hconst : ∀ k : ℕ, metricScalarAt (I := I3)
-        (((highCurvatureFlowSequence hT S hS x t htmem0 htpos hpos).atTime 0).obj
-          (phi k)).metric (Ft.map k L.basepoint) = 1 := by
-      intro k
-      have hmap : Ft.map k L.basepoint =
-          (((highCurvatureFlowSequence hT S hS x t htmem0 htpos hpos).atTime 0).obj
-            (phi k)).basepoint := by
-        simpa only [PointedRiemannianConvergenceMaps.map, PointedFlowData.atTime]
-          using Ft.basepoint_map k
-      rw [hmap]
-      exact highCurvatureFlowSequence_scalar_base_one hT S hS x t htmem0 htpos hpos (phi k)
-    rw [funext hconst] at hlim
-    have hone : metricScalarAt (I := I3) (L.atTime (I := I3) 0).metric L.basepoint = 1 :=
-      (tendsto_nhds_unique tendsto_const_nhds hlim).symm
-    change L.S.scalar 0 L.basepoint = 1
-    simpa only [PointedFlowData.atTime, SolutionOn.family_metric, SolutionOn.scalar,
-      SolutionFamily.scalar] using hone
+  have hbase : PointedFlowScalarAtBase (I := I3) L 1 :=
+    pointedFlowScalarAtBase_one_of_canonicalMetricSourceConverges hT S hS x t htmem0 htpos
+      hpos hFt
   have hzero : (0 : ℝ) ∈ ancientTimeInterval.carrier := by
     rw [ancientTimeInterval_carrier]
     exact Set.mem_Iic.mpr le_rfl
@@ -158,6 +173,19 @@ theorem maximalPointSlabCompactness_iff_exists_blowupLimitSelection {T : ℝ} (h
     exact exists_blowupLimitSelection_of_maximalPointSlabCompactness hT S hS o h
   · rintro ⟨kappa, hkappa, h⟩
     exact maximalPointSlabCompactness_of_blowupLimitSelection hT S hS o hkappa h
+
+theorem maximal_point_singularity_model_of_blowupLimitSelection
+    [CompactSpace M] [ConnectedSpace M] [T2Space (TangentBundle I3 M)] {T : ℝ} (hT : 0 < T)
+    (S : SolutionOn (I := I3) (M := M) (RealTimeInterval.closedOpen 0 T hT))
+    (hS : IsSolutionOn S) (o : TangentOrientationSection M) {kappa : ℝ} (hkappa : 0 < kappa)
+    (h : BlowupLimitSelection hT S hS o kappa) :
+    ∃ kappa : ℝ, 0 < kappa ∧ ∀ theta : ℝ, 0 < theta →
+      ∀ (x : ℕ → M) (t : ℕ → ℝ), (∀ i, t i ∈ Set.Ico theta T) →
+        (∀ i s, s ∈ Set.Icc 0 (t i) → ∀ y, S.scalar s y ≤ S.scalar (t i) (x i)) →
+        Filter.Tendsto (fun i => S.scalar (t i) (x i)) Filter.atTop Filter.atTop →
+        ∃ L : BlowupLimit S o kappa x t, PointedFlowScalarBounded L.model 1 :=
+  maximal_point_singularity_model_of_maximalPointSlabCompactness hT S hS o
+    (maximalPointSlabCompactness_of_blowupLimitSelection hT S hS o hkappa h)
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
 
