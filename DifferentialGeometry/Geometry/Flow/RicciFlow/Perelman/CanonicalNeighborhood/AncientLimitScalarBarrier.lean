@@ -79,6 +79,9 @@ universe u
 
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+open DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
+  (ancientKappa_scalar_pos ancientKappa_scalarLowerBarrier_lt
+    ancientKappa_scalarBase_lowerBarrier_lt)
 open scoped Manifold ContDiff ENNReal
 
 attribute [local instance] PointedFlowData.topology PointedFlowData.charted
@@ -117,15 +120,11 @@ theorem scalarLowerBarrier_strict_of_maximalPointSlabLimitSelection
   obtain ⟨F0, hF0⟩ := hconvT 0 le_rfl
   have hbase : PointedFlowScalarAtBase (I := I3) L 1 :=
     pointedFlowScalarAtBase_of_metricConvergence_at_zero hT S hS x t htmem0 htpos hpos L phi F0 hF0
-  exact ⟨L, phi, hphi, hanc, hbase,
-    fun t' ht' y =>
-      DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions.ancientKappa_scalar_pos
-        L hdim hanc
-        (by simpa only [ancientTimeInterval_carrier, Set.mem_Iic] using ht') y,
-    fun t' ht' =>
-      DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions.ancientKappa_scalarLowerBarrier_lt
-        L hdim hanc hc ht',
-    DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions.ancientKappa_scalarBase_lowerBarrier_lt
-      L hdim hanc hc L.basepoint⟩
+  refine ⟨L, phi, hphi, hanc, hbase, ?_, ?_, ?_⟩
+  · intro t' ht' y
+    exact ancientKappa_scalar_pos L hdim hanc
+      (by simpa only [ancientTimeInterval_carrier, Set.mem_Iic] using ht') y
+  · exact fun t' ht' => ancientKappa_scalarLowerBarrier_lt L hdim hanc hc ht'
+  · exact ancientKappa_scalarBase_lowerBarrier_lt L hdim hanc hc L.basepoint
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
