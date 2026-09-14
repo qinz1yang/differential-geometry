@@ -6742,6 +6742,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.Fundamental
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.FundamentalClassExistenceReduction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.GeometricCutoff
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.GeometricCutoffFrontier
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.GeometricCutoffGeometryReduction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HextBoundaryFrameReduction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.History
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryAncestry
@@ -9236,6 +9237,7 @@ import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.SmoothStructure
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSumSummandCountUnique
 import DifferentialGeometry.Topology.ThreeManifold.CoreCapOppositeSides
 import DifferentialGeometry.Topology.ThreeManifold.CutCap
+import DifferentialGeometry.Topology.ThreeManifold.CutCapCappedPresentationRealization
 import DifferentialGeometry.Topology.ThreeManifold.CutCapCutComponentGluingReduction
 import DifferentialGeometry.Topology.ThreeManifold.CutCapCutComponentRealizationReduction
 import DifferentialGeometry.Topology.ThreeManifold.CutCapCutSphericalGraphSumRealization
