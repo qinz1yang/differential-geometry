@@ -309,6 +309,103 @@ theorem rfs_child_comparison_of_canonicalUniformConvergence
     (TerminalParentRegionConvexity.mono G hregion (le_of_lt hs₁.1))
     multiplier hmap hgenerator hpositive
 
+namespace ComparisonSupport
+
+variable {c : ConnectedComponents (H.stage i.succ).Carrier}
+
+theorem rfs_whole_parent_map_class_eq_of_multiplierForm
+    (K : G.ComparisonSupport c)
+    (a : IntegralHomology (G.Parent c).Carrier 3)
+    (b : IntegralHomology (G.Child c).Carrier 3)
+    {k : ℤ}
+    (hmap : integralHomologyMap 3 K.rfs_whole_parent_map a = k • b)
+    (hgen : ∃ φ : IntegralHomology (G.Child c).Carrier 3 →ₗ[ℤ] ℤ,
+      φ (integralHomologyMap 3 K.rfs_whole_parent_map a) = 1)
+    (hk : 0 < k) :
+    integralHomologyMap 3 K.rfs_whole_parent_map a = b :=
+  (DifferentialGeometry.Topology.eq_of_pos_zsmul_and_linearMap_eq_one
+    (A := IntegralHomology (G.Child c).Carrier 3)
+    ⟨k, hgen.choose, hmap, hk, hgen.choose_spec⟩).1
+
+end ComparisonSupport
+
+theorem rfs_child_comparison_of_localEDistComparison_and_class_generator
+    (Kc : (c : ConnectedComponents (H.stage i.succ).Carrier) → G.ComparisonSupport c)
+    (a : (c : ConnectedComponents (H.stage i.succ).Carrier) →
+      IntegralHomology (G.Parent c).Carrier 3)
+    (b : (c : ConnectedComponents (H.stage i.succ).Carrier) →
+      IntegralHomology (G.Child c).Carrier 3)
+    (convergenceTime : ℝ)
+    (hconvergenceTime : convergenceTime ∈ Ico (H.time i.castSucc) (H.time i.succ))
+    (scale : ℝ → ℝ)
+    (hscale_one : ∀ s ∈ Ioo convergenceTime (H.time i.succ), 1 ≤ scale s)
+    (hscale_tendsto : Filter.Tendsto scale (𝓝[<] (H.time i.succ)) (𝓝 1))
+    (hlocalEDist : G.LocalEDistComparison Kc convergenceTime scale)
+    (multiplier : (c : ConnectedComponents (H.stage i.succ).Carrier) → ℤ)
+    (hmap : ∀ c : ConnectedComponents (H.stage i.succ).Carrier,
+      integralHomologyMap 3 (Kc c).rfs_whole_parent_map (a c) = multiplier c • b c)
+    (hgenerator : ∀ c : ConnectedComponents (H.stage i.succ).Carrier,
+      ∃ φ : IntegralHomology (G.Child c).Carrier 3 →ₗ[ℤ] ℤ,
+        φ (integralHomologyMap 3 (Kc c).rfs_whole_parent_map (a c)) = 1)
+    (hpositive : ∀ c : ConnectedComponents (H.stage i.succ).Carrier, 0 < multiplier c) :
+    ∃ f : (c : ConnectedComponents (H.stage i.succ).Carrier) →
+        C((G.Parent c).Carrier, (G.Child c).Carrier),
+      (∀ c, ∃ K : G.ComparisonSupport c, f c = K.rfs_whole_parent_map) ∧
+      (∀ c, integralHomologyMap 3 (f c) (a c) = b c) ∧
+      ∃ s₀ ∈ Ico (H.time i.castSucc) (H.time i.succ), ∃ ell : ℝ → ℝ,
+        (∀ s ∈ Ioo s₀ (H.time i.succ), 1 ≤ ell s) ∧
+        Filter.Tendsto ell (𝓝[<] (H.time i.succ)) (𝓝 1) ∧
+        ∀ c, ∀ s ∈ Ioo s₀ (H.time i.succ), ∀ x y : (G.Parent c).Carrier,
+          riemannianEDistOf ((H.stage i.succ).componentMetric (H.event i).outputMetric c)
+            (f c x) (f c y) ≤ ENNReal.ofReal (ell s) *
+            riemannianEDistOf ((H.stage i.castSucc).componentMetric
+              ((H.event i).incoming.flow.base.metric s) (G.transition.childParent c)) x y := by
+  obtain ⟨f, hf, hlen⟩ := G.rfs_child_comparison_metric_of_local_length_comparison Kc
+    (G.localLengthComparison_of_localEDistComparison Kc hconvergenceTime hlocalEDist
+      hscale_one hscale_tendsto)
+  exact ⟨f, fun c => ⟨Kc c, hf c⟩, fun c => by
+      rw [hf c]
+      exact ComparisonSupport.rfs_whole_parent_map_class_eq_of_multiplierForm (Kc c) (a c) (b c)
+        (hmap c) (hgenerator c) (hpositive c), hlen⟩
+
+theorem rfs_child_comparison_of_canonicalLocalEDistComparison_and_class_generator
+    (hSC : ∀ p : ConnectedComponents (H.stage i.castSucc).Carrier,
+      SimplyConnectedSpace ((H.stage i.castSucc).component p).Carrier)
+    (a : (c : ConnectedComponents (H.stage i.succ).Carrier) →
+      IntegralHomology (G.Parent c).Carrier 3)
+    (b : (c : ConnectedComponents (H.stage i.succ).Carrier) →
+      IntegralHomology (G.Child c).Carrier 3)
+    (convergenceTime : ℝ)
+    (hconvergenceTime : convergenceTime ∈ Ico (H.time i.castSucc) (H.time i.succ))
+    (scale : ℝ → ℝ)
+    (hscale_one : ∀ s ∈ Ioo convergenceTime (H.time i.succ), 1 ≤ scale s)
+    (hscale_tendsto : Filter.Tendsto scale (𝓝[<] (H.time i.succ)) (𝓝 1))
+    (hlocalEDist : G.LocalEDistComparison (G.canonicalComparisonSupport hSC) convergenceTime scale)
+    (multiplier : (c : ConnectedComponents (H.stage i.succ).Carrier) → ℤ)
+    (hmap : ∀ c : ConnectedComponents (H.stage i.succ).Carrier,
+      integralHomologyMap 3 (G.canonicalComparisonSupport hSC c).rfs_whole_parent_map (a c) =
+        multiplier c • b c)
+    (hgenerator : ∀ c : ConnectedComponents (H.stage i.succ).Carrier,
+      ∃ φ : IntegralHomology (G.Child c).Carrier 3 →ₗ[ℤ] ℤ,
+        φ (integralHomologyMap 3 (G.canonicalComparisonSupport hSC c).rfs_whole_parent_map
+          (a c)) = 1)
+    (hpositive : ∀ c : ConnectedComponents (H.stage i.succ).Carrier, 0 < multiplier c) :
+    ∃ f : (c : ConnectedComponents (H.stage i.succ).Carrier) →
+        C((G.Parent c).Carrier, (G.Child c).Carrier),
+      (∀ c, ∃ K : G.ComparisonSupport c, f c = K.rfs_whole_parent_map) ∧
+      (∀ c, integralHomologyMap 3 (f c) (a c) = b c) ∧
+      ∃ s₀ ∈ Ico (H.time i.castSucc) (H.time i.succ), ∃ ell : ℝ → ℝ,
+        (∀ s ∈ Ioo s₀ (H.time i.succ), 1 ≤ ell s) ∧
+        Filter.Tendsto ell (𝓝[<] (H.time i.succ)) (𝓝 1) ∧
+        ∀ c, ∀ s ∈ Ioo s₀ (H.time i.succ), ∀ x y : (G.Parent c).Carrier,
+          riemannianEDistOf ((H.stage i.succ).componentMetric (H.event i).outputMetric c)
+            (f c x) (f c y) ≤ ENNReal.ofReal (ell s) *
+            riemannianEDistOf ((H.stage i.castSucc).componentMetric
+              ((H.event i).incoming.flow.base.metric s) (G.transition.childParent c)) x y :=
+  G.rfs_child_comparison_of_localEDistComparison_and_class_generator
+    (G.canonicalComparisonSupport hSC) a b convergenceTime hconvergenceTime scale hscale_one
+    hscale_tendsto hlocalEDist multiplier hmap hgenerator hpositive
+
 end GeometricCutoffRecord
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
@@ -328,7 +425,10 @@ run_cmd do
       ``DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.GeometricCutoffRecord.rfs_child_comparison_of_reducedInputs,
       ``DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.GeometricCutoffRecord.rfs_child_comparison_of_canonicalReducedInputs,
       ``DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.GeometricCutoffRecord.rfs_child_comparison_of_canonicalTerminalInputs,
-      ``DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.GeometricCutoffRecord.rfs_child_comparison_of_canonicalUniformConvergence] do
+      ``DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.GeometricCutoffRecord.rfs_child_comparison_of_canonicalUniformConvergence,
+      ``DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.GeometricCutoffRecord.ComparisonSupport.rfs_whole_parent_map_class_eq_of_multiplierForm,
+      ``DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.GeometricCutoffRecord.rfs_child_comparison_of_localEDistComparison_and_class_generator,
+      ``DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.GeometricCutoffRecord.rfs_child_comparison_of_canonicalLocalEDistComparison_and_class_generator] do
     let axs ← Lean.collectAxioms n
     unless axs.all (fun a => allowed.contains a) do
       throwError "unexpected dependencies for {n}: {axs}"
