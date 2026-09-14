@@ -44,6 +44,7 @@ import DifferentialGeometry.Analysis.Calculus.SmoothExtension.Local
 import DifferentialGeometry.Analysis.Calculus.SmoothExtension.SmoothJetGlue
 import DifferentialGeometry.Analysis.Calculus.CriticalPointPerturbation
 import DifferentialGeometry.Analysis.Calculus.LevelPreservation
+import DifferentialGeometry.Analysis.Calculus.ProportionalTransport
 import DifferentialGeometry.Analysis.Calculus.SmoothMax
 import DifferentialGeometry.Analysis.Calculus.SmoothTransition
 import DifferentialGeometry.Analysis.Calculus.SpaceJet
