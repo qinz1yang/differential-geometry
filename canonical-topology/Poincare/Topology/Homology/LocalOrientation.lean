@@ -13,17 +13,6 @@ universe u v w
 
 namespace Poincare.Topology
 
-private theorem orientation_map_linearEquiv_trans
-    {E : Type u} {F : Type v} {G : Type w}
-    [AddCommGroup E] [Module ℝ E]
-    [AddCommGroup F] [Module ℝ F]
-    [AddCommGroup G] [Module ℝ G]
-    {ι : Type*} (A : E ≃ₗ[ℝ] F) (B : F ≃ₗ[ℝ] G) (o : Orientation ℝ E ι) :
-    Orientation.map ι (A.trans B) o =
-      Orientation.map ι B (Orientation.map ι A o) := by
-  induction o using Module.Ray.ind with
-  | h f hf => rfl
-
 private theorem det_pos_of_orientations_agree
     {E : Type u} {F : Type v}
     [AddCommGroup E] [Module ℝ E] [FiniteDimensional ℝ E]
@@ -37,7 +26,7 @@ private theorem det_pos_of_orientations_agree
     rw [← hA]
     exact (Orientation.map _ A).symm_apply_apply o
   apply (Orientation.map_eq_iff_det_pos ω (A.symm.trans B) (by simp)).mp
-  rw [orientation_map_linearEquiv_trans, hinv, hB]
+  rw [Poincare.orientation_map_trans, hinv, hB]
 
 private theorem tangent_trivialization_transition_eq_fderiv
     {E : Type u} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -314,7 +303,7 @@ private theorem orientation_coordinate_class_transition
   let a := Orientation.map (Fin (finrank ℝ E)) A o
   let b := Orientation.map (Fin (finrank ℝ E)) B o
   have hmap : Orientation.map _ (A.symm.trans B) a = b := by
-    rw [orientation_map_linearEquiv_trans]
+    rw [Poincare.orientation_map_trans]
     change Orientation.map _ B ((Orientation.map _ A).symm (Orientation.map _ A o)) = b
     rw [Equiv.symm_apply_apply]
   have hpos (h : b = a) : 0 < LinearMap.det (A.symm.trans B : E →ₗ[ℝ] E) :=

@@ -1,11 +1,18 @@
 # Local homology and global classes from coherent local generators
 
 This separate `PoincareLean` project contains a dependency-closed checkpoint of
-145 Poincare modules. It extends the recovered Chapter 35 source at commit
+146 Poincare modules. It extends the recovered Chapter 35 source at commit
 `b45bfa009368c8f5f531e10f4f5280e90079d6ad` and preserves its mathematical objects
 and `Poincare` namespaces. `Poincare.lean` imports every included leaf.
 
 The additions prove:
+
+- an actual tangent orientation field on a simply connected finite-dimensional
+  real C1 manifold,
+  prescribed at a given point, with locality in every fixed native chart;
+  this includes rank zero and requires no supplied global frame or orientation
+  field. The produced field feeds the existing local and global integral-class
+  engines, retaining their actual chart equations and model-class normalization;
 
 - locality of the actual tangent orientation coordinates in each fixed chart
   from supplied compatible continuous local frames, including rank zero;
@@ -140,7 +147,7 @@ The additions prove:
 - a unique compact-neighborhood class with the same normalization in every
   chart whose actual tangent trivialization preserves the base-chart orientation.
 
-The 61 new/changed modules and their exact baseline/current hashes are listed in
+The 62 new/changed modules and their exact baseline/current hashes are listed in
 [provenance/SNAPSHOT.json](provenance/SNAPSHOT.json). The derivative homotopy
 retains its [upstream attribution and modification record](provenance/README.md).
 
@@ -157,6 +164,27 @@ The package root target is `lake build Poincare`, run from this directory.
 On Della all sustained checks belong to the shared Slurm CPU worker. Use the
 existing exact caches offline; local cache paths and any validation-only path
 manifest stay outside the published package files.
+
+The current simply connected orientation checkpoint contains 146 modules and
+182 curated added public exports. Source request
+`1789375369216347265-topology-0413d3cf` passed in 75.81 seconds with 249 guards
+and 46 signature/axiom pairs. Original imported request
+`1789375613489715616-topology-926c3536` passed in 192.45 seconds with 966 guards
+and 28 pairs. Portable request
+`1789375633140214810-topology_checkpoint-6e8cae83` passed in Slurm 13864417 in
+278.82 seconds with 1254 guards and 344 pairs. Four affected leaves and the
+root freshly compiled in 2:39.99, maximum RSS 1985332KiB, with zero diagnostics.
+All 339 preceding pairs are byte-identical, and all 143 other preceding leaves
+are unchanged. All 28 shared source/original/portable types agree modulo only
+qualification and whitespace; axiom readbacks are exact. Strict source and
+stock declaration linters and standard-only transitive axioms pass.
+Consumers preserve a prescribed negative rank-zero orientation and produce
+actual local and absolute homology classes with all chart and normalization
+laws. The covering construction uses the actual tangent transition maps;
+its topology and implementation helpers stay private.
+
+The validation history below records preceding checkpoints and their scope at
+the time. The current remaining obligations are listed in Remaining topology work.
 
 The 74-module checkpoint passed its final affected-module/root build and
 consumer/linter/axiom gate in Slurm 13781140, request
@@ -706,11 +734,12 @@ native orientation producer remain open.
 
 ## Remaining topology work
 
-The bridge from tangent orientation must still produce the coherent local
-generators consumed by the new global theorem. Simply connected orientability,
-integral duality, outward sphere normalization, normalized homotopy and loop-family
-classes, and canonical width specializations remain open. This checkpoint does
-not claim the full oriented-manifold theorem suite.
+Simply connected tangent orientability and the bridge to coherent local classes
+are now proved. The class engines retain an explicit model class, and global
+generator results require its generator property. Integral manifold duality,
+outward sphere normalization, normalized homotopy and loop-family classes, and
+canonical width specializations remain open. This checkpoint does not claim
+the full oriented-manifold theorem suite.
 
 The separate frozen 87-declaration handoff, its registry and consumers, and
 `handoff/CANONICAL_TOPOLOGY_READY.md` remain unavailable. This package does not
