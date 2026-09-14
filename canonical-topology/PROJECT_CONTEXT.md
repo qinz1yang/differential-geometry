@@ -6,32 +6,35 @@ library is `Poincare`; its sources retain the original mathematical namespaces.
 
 The source baseline is the recovered Chapter 35 commit
 `b45bfa009368c8f5f531e10f4f5280e90079d6ad`, supplemented by recovered working-tree
-proofs with separately recorded provenance. This checkpoint includes 143 modules
-and 169 curated tracked added public exports. Actual cap product with the
-existing positive-dimensional sphere generator is now bijective in every
-complementary degree. Actual sphere cohomology vanishes away from degrees zero
-and the sphere dimension, including zero spheres. The existing Euclidean
-point-complement generator also gives bijective top-degree relative cap, and
-its inverse image under the existing restriction map does so for any bounded
-star-convex set containing zero. Such a set needs neither closedness nor
-compactness nor interior. All these results retain arbitrary universes.
+proofs with separately recorded provenance. This checkpoint includes 144 modules
+and 175 curated tracked added public exports. Actual cap product with the
+existing positive-dimensional sphere generator is bijective in every
+complementary degree. The existing Euclidean point-complement generator and
+its inverse under the existing bounded star-convex restriction now also give
+bijective actual cap in every complementary degree, in dimensions at least two.
+The old top-degree public signatures are preserved as corollaries. Off-top
+local relative cohomology vanishes. The shared bounded-set cohomology comparison
+works in every degree at any center in any real normed space, without finite
+dimension, closedness, compactness or interior assumptions. All results retain
+arbitrary universes. The generic relative H1 vanishing proof is shared once.
 
-The two public source checks e5173b4f and f5ea4a84 passed in 50.03s and 44.77s,
-with 201 guards each and 25/7 type-axiom pairs. Original imported3da4250d passed
-in 159.15s206guards22pairs. Portablef19b28fb passed 238.84s630guards307pairs.
-Three changed leaves and root freshly compiled in 2:15.94, RSS  2011324KiB, zero
-diagnostics. All 291 preceding pairs are byte-identical and all 140 other old
-leaves unchanged. All 22 shared source/original/portable types agree modulo
-only Set.univ, Module.finrank and Set.MapsTo qualification and whitespace;
-axiom readbacks are exact. Strict source and stock declaration linters and
-standard-only transitive axioms pass. Pins and deferred inputs are unchanged.
+Source b87934df passed in 50.53s, with 235 guards and 70 type/axiom pairs.
+Original imported13dfe70d passed in 414.29s275guards80pairs. Portablebdf67fa9
+passed in 488.27s653guards322pairs. All14 affected leaves and root freshly
+compiled in 6:22.87, RSS2023432KiB, zero diagnostics. All307 preceding pairs
+are byte-identical and all139 other earlier leaves unchanged. All57 shared
+source/original/portable types agree modulo only Set.univ, Module.finrank and
+Set.MapsTo qualification and whitespace; axioms are exact. All80 original and
+portable pairs agree under the same comparison. Strict source and stock
+declaration linters and standard-only transitive axioms pass. Pins and deferred
+inputs remain unchanged.
 
-Consumers check the same generator and its negative, unit-cap normalization,
-the genuine distinction between middle-degree and top-degree zero-class cap,
-nonzero local cohomology preimages, the actual bounded-support restriction,
-and closed-ball classes of both signs including radius zero. These are sphere
-and Euclidean local model results. General manifold duality, outward orientation
-normalization, native orientation production and the frozen contract remain open.
+Consumers check low H0/H1 vanishing, negative generators, nonzero top preimages,
+zero-class cap bijectivity exactly in positive output degree, arbitrary-center
+bounded-support pullback, and closed balls of every nonnegative radius including
+zero. These are sphere and Euclidean local model results. General manifold
+duality, outward orientation normalization, native orientation production and
+the frozen contract remain open.
 
 The preceding cohomology cover shift, its actual forward/inverse equations,
 and relative-to-absolute comparison in every positive degree are unchanged.

@@ -1,11 +1,7 @@
 import Poincare.Topology.Homology.SphereCapDuality
 import Poincare.Topology.Homology.EuclideanLocalTop
 import Poincare.Topology.Homology.RelativeCapCohomologyConnecting
-import Poincare.Topology.Homology.RelativeCohomologyVanishing
-import Poincare.Topology.Homology.LocalStarConvex
-import Poincare.Topology.Homology.RelativeComparison
-import Poincare.Topology.Homology.CochainHomotopy
-import Poincare.Topology.Homology.RelativeCapToAbsoluteHomology
+import Poincare.Topology.Homology.EuclideanLocalCohomologyVanishing
 
 noncomputable section
 
@@ -17,7 +13,7 @@ section
 
 open Set Metric
 
-theorem integralEuclideanLocalTopZeroEquiv_cap_bijective
+private theorem integralEuclideanLocalTopZeroEquiv_cap_top_bijective
     (n : ℕ) (E : Type u) [NormedAddCommGroup E] [InnerProductSpace ℝ E]
     [FiniteDimensional ℝ E] (hd : Module.finrank ℝ E = n + 2) :
     Function.Bijective (fun α : integralRelativeCohomology (n + 2) ({0}ᶜ : Set E) =>
@@ -84,7 +80,7 @@ section
 
 open Set
 
-theorem integralBoundedStarConvexLocalHomologyIso_cap_bijective
+private theorem integralBoundedStarConvexLocalHomologyIso_cap_top_bijective
     (n : ℕ) (E : Type u) [NormedAddCommGroup E] [InnerProductSpace ℝ E]
     [FiniteDimensional ℝ E] (hd : Module.finrank ℝ E = n + 2)
     {K : Set E} (h0 : (0 : E) ∈ K) (hs : StarConvex ℝ 0 K) (hK : Bornology.IsBounded K) :
@@ -94,19 +90,9 @@ theorem integralBoundedStarConvexLocalHomologyIso_cap_bijective
           ((integralEuclideanLocalTopZeroEquiv E n hd).symm 1))) := by
   let hf : MapsTo (ContinuousMap.id E) Kᶜ ({0}ᶜ : Set E) :=
     compl_subset_compl.mpr (singleton_subset_iff.mpr h0)
-  let e := boundedStarConvexComplementHomotopyEquiv h0 hs hK
-  have he : singularPairRestriction (ContinuousMap.id E) hf = e.toFun := by
-    rw [boundedStarConvexComplementHomotopyEquiv_toFun]
-    rfl
   have hcoh : Function.Bijective
-      (integralRelativeCohomologyMap (n + 2) (ContinuousMap.id E) hf) := by
-    apply integralRelativeCohomologyMap_bijective_of_absolute_and_subspace
-    · intro k
-      rw [integralSingularCohomologyMap_id]
-      exact Function.bijective_id
-    · intro k
-      rw [he]
-      exact integralSingularCohomologyMap_bijective_of_homotopyEquiv e k
+      (integralRelativeCohomologyMap (n + 2) (ContinuousMap.id E) hf) :=
+    integralRelativeCohomologyMap_boundedStarConvex_bijective (n + 2) h0 hs hK
   let i := (integralBoundedStarConvexLocalHomologyIso (n + 2) h0 hs hK).toLinearEquiv
   let c0 := (integralEuclideanLocalTopZeroEquiv E n hd).symm 1
   let c := i.symm c0
@@ -129,9 +115,67 @@ theorem integralBoundedStarConvexLocalHomologyIso_cap_bijective
     exact hn
   apply (Function.Bijective.of_comp_iff f hcoh).mp
   rw [hcap]
-  exact integralEuclideanLocalTopZeroEquiv_cap_bijective n E hd
+  exact integralEuclideanLocalTopZeroEquiv_cap_top_bijective n E hd
 
 end
+
+section
+
+open CategoryTheory Metric Module Set
+
+theorem integralEuclideanLocalTopZeroEquiv_cap_bijective_of_add_eq
+    (n k m : ℕ) (E : Type u) [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+    [FiniteDimensional ℝ E] (hd : finrank ℝ E = n + 2) (hkm : k + m = n + 2) :
+    Function.Bijective (fun α : integralRelativeCohomology k ({0}ᶜ : Set E) =>
+      integralRelativeCohomologyCapToAbsolute ({0}ᶜ : Set E) k m α
+        ((eqToHom (congrArg (fun j => integralRelativeHomology j ({0}ᶜ : Set E)) hkm.symm))
+          ((integralEuclideanLocalTopZeroEquiv E n hd).symm 1))) := by
+  by_cases hm : m = 0
+  · subst m
+    have hk : k = n + 2 := by omega
+    subst k
+    exact integralEuclideanLocalTopZeroEquiv_cap_top_bijective n E hd
+  let _ := integralEuclideanRelativeCohomology_subsingleton n k E hd (by omega)
+  let _ := integralSingularHomology_subsingleton_of_contractible m hm E
+  exact ⟨fun _ _ _ => Subsingleton.elim _ _, fun β => ⟨0, Subsingleton.elim _ β⟩⟩
+
+theorem integralBoundedStarConvexLocalHomologyIso_cap_bijective_of_add_eq
+    (n k m : ℕ) (E : Type u) [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+    [FiniteDimensional ℝ E] (hd : finrank ℝ E = n + 2) (hkm : k + m = n + 2)
+    {K : Set E} (h0 : (0 : E) ∈ K) (hs : StarConvex ℝ 0 K) (hK : Bornology.IsBounded K) :
+    Function.Bijective (fun α : integralRelativeCohomology k Kᶜ =>
+      integralRelativeCohomologyCapToAbsolute Kᶜ k m α
+        ((eqToHom (congrArg (fun j => integralRelativeHomology j Kᶜ) hkm.symm))
+          ((integralBoundedStarConvexLocalHomologyIso (n + 2) h0 hs hK).toLinearEquiv.symm
+            ((integralEuclideanLocalTopZeroEquiv E n hd).symm 1)))) := by
+  by_cases hm : m = 0
+  · subst m
+    have hk : k = n + 2 := by omega
+    subst k
+    exact integralBoundedStarConvexLocalHomologyIso_cap_top_bijective n E hd h0 hs hK
+  let _ := integralBoundedStarConvexRelativeCohomology_subsingleton n k E hd (by omega) h0 hs hK
+  let _ := integralSingularHomology_subsingleton_of_contractible m hm E
+  exact ⟨fun _ _ _ => Subsingleton.elim _ _, fun β => ⟨0, Subsingleton.elim _ β⟩⟩
+
+end
+
+theorem integralEuclideanLocalTopZeroEquiv_cap_bijective
+    (n : ℕ) (E : Type u) [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+    [FiniteDimensional ℝ E] (hd : Module.finrank ℝ E = n + 2) :
+    Function.Bijective (fun α : integralRelativeCohomology (n + 2) ({0}ᶜ : Set E) =>
+      integralRelativeCohomologyCapToAbsolute ({0}ᶜ : Set E) (n + 2) 0 α
+        ((integralEuclideanLocalTopZeroEquiv E n hd).symm 1)) :=
+  integralEuclideanLocalTopZeroEquiv_cap_bijective_of_add_eq n (n + 2) 0 E hd rfl
+
+theorem integralBoundedStarConvexLocalHomologyIso_cap_bijective
+    (n : ℕ) (E : Type u) [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+    [FiniteDimensional ℝ E] (hd : Module.finrank ℝ E = n + 2)
+    {K : Set E} (h0 : (0 : E) ∈ K) (hs : StarConvex ℝ 0 K) (hK : Bornology.IsBounded K) :
+    Function.Bijective (fun α : integralRelativeCohomology (n + 2) Kᶜ =>
+      integralRelativeCohomologyCapToAbsolute Kᶜ (n + 2) 0 α
+        ((integralBoundedStarConvexLocalHomologyIso (n + 2) h0 hs hK).toLinearEquiv.symm
+          ((integralEuclideanLocalTopZeroEquiv E n hd).symm 1))) :=
+  integralBoundedStarConvexLocalHomologyIso_cap_bijective_of_add_eq n (n + 2) 0 E hd rfl h0 hs hK
 
 end Poincare.Topology
 

@@ -125,6 +125,26 @@ theorem integralRelativeToAbsoluteCohomology_bijective_of_contractibleSpace
       (by omega)
     exact integralRelativeToAbsoluteCohomology_bijective (n + 1) A
 
+theorem integralRelativeCohomology_one_subsingleton_of_contractibleSpace_of_pathConnectedSpace
+    {X : Type u} [TopologicalSpace X] [ContractibleSpace X]
+    (A : Set X) [PathConnectedSpace A] : Subsingleton (integralRelativeCohomology 1 A) := by
+  let _ := integralSingularCohomology_subsingleton_of_contractibleSpace X 1 (by decide)
+  have hs := integralRelativeCohomology_exact_relative 0 A
+  have hright : integralRelativeToAbsoluteCohomology 1 A = 0 := by
+    ext α
+    exact Subsingleton.elim _ _
+  rw [hright, LinearMap.exact_zero_iff_surjective] at hs
+  have hz (α : integralRelativeCohomology 1 A) : α = 0 := by
+    obtain ⟨β, rfl⟩ := hs α
+    let z := integralSingularCohomologyZeroEquiv A β
+    have hpre : integralSingularCohomologyMap 0 (singularSubspaceInclusion A)
+        (z • integralSingularCohomologyUnit X) = β := by
+      rw [map_zsmul, integralSingularCohomologyMap_unit,
+        ← integralSingularCohomologyZeroEquiv_symm_apply]
+      exact (integralSingularCohomologyZeroEquiv A).symm_apply_apply β
+    exact (integralRelativeCohomology_exact_subspace 0 A β).mpr ⟨_, hpre⟩
+  exact ⟨fun α β => (hz α).trans (hz β).symm⟩
+
 end Poincare.Topology
 
 end

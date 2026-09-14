@@ -33,6 +33,7 @@ import Poincare.Topology.Homology.ContractiblePair
 import Poincare.Topology.Homology.ContractiblePairOne
 import Poincare.Topology.Homology.Cycles
 import Poincare.Topology.Homology.EuclideanLocalCapDuality
+import Poincare.Topology.Homology.EuclideanLocalCohomologyVanishing
 import Poincare.Topology.Homology.EuclideanLocalTop
 import Poincare.Topology.Homology.EuclideanLocalVanishing
 import Poincare.Topology.Homology.ExcisionQuotient

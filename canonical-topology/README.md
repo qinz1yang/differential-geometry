@@ -1,7 +1,7 @@
 # Local homology and global classes from coherent local generators
 
 This separate `PoincareLean` project contains a dependency-closed checkpoint of
-143 Poincare modules. It extends the recovered Chapter 35 source at commit
+144 Poincare modules. It extends the recovered Chapter 35 source at commit
 `b45bfa009368c8f5f531e10f4f5280e90079d6ad` and preserves its mathematical objects
 and `Poincare` namespaces. `Poincare.lean` imports every included leaf.
 
@@ -9,8 +9,9 @@ The additions prove:
 
 - actual cap bijections in every complementary degree on positive-dimensional
   spheres at the existing generator, off-degree sphere cohomology vanishing,
-  and top local cap bijections at the existing Euclidean point and bounded
-  star-convex generators;
+  and all complementary-degree local cap bijections at the existing Euclidean
+  point and bounded star-convex generators, with off-top relative cohomology
+  vanishing;
 
 - bijectivity of actual top-degree integral cap product on every positive-dimensional
   unit sphere exactly at its two top-homology generators, with the existing
@@ -128,7 +129,7 @@ The additions prove:
 - a unique compact-neighborhood class with the same normalization in every
   chart whose actual tangent trivialization preserves the base-chart orientation.
 
-The 59 new/changed modules and their exact baseline/current hashes are listed in
+The 60 new/changed modules and their exact baseline/current hashes are listed in
 [provenance/SNAPSHOT.json](provenance/SNAPSHOT.json). The derivative homotopy
 retains its [upstream attribution and modification record](provenance/README.md).
 
@@ -1086,3 +1087,35 @@ for every nonnegative radius including zero.
 
 The full canonical topology contract, native orientation producer, outward
 sphere normalization and general manifold duality remain open.
+
+
+## All-degree Euclidean local cap duality
+
+The checkpoint contains 144 leaves and 175 curated added public exports.
+The existing normalized point-complement class and its inverse through the
+existing bounded star-convex restriction give bijective actual relative cap
+in every pair of complementary degrees, in ambient dimensions at least two.
+The previous top-degree public signatures are unchanged and are now corollaries
+of the all-degree theorems. Off-top relative cohomology vanishes. The shared
+bounded-set cohomology comparison works in every degree, at any center, in
+any real normed space; it requires no finite dimension, closedness, compactness
+or interior assumption. The generic relative H1 vanishing proof is shared once
+in RelativeCohomologyVanishing.
+
+Source request `1789359960916181261-topology-b87934df` passed in 50.53 seconds
+with 235 guards and 70 signature/axiom pairs. Original imported request
+`1789360430067421037-topology-13dfe70d` passed in 414.29 seconds with 275 guards
+and 80 pairs. Final portable request
+`1789360503966522593-topology_checkpoint-bdf67fa9` passed in Slurm 13846673
+in 488.27 seconds with 653 guards and 322 pairs. All 14 affected leaves and
+root freshly compiled in 6:22.87, maximum RSS 2,023,432 KiB, with zero diagnostics.
+
+All 307 previous pairs are byte-identical and all 139 other previous source
+leaves unchanged. All 57 shared source/original/portable types agree modulo
+only Set.univ, Module.finrank and Set.MapsTo qualification and whitespace;
+axioms are exact. All 80 original/portable pairs agree under the same comparison.
+Strict source and stock declaration linters and standard-only transitive axioms
+pass. Consumers include low H0/H1 vanishing, negative generators, nonzero top
+preimages, the sharp zero-cap distinction, arbitrary centers and closed balls
+of every nonnegative radius including zero. General manifold duality, native
+orientation production and the frozen canonical topology contract remain open.

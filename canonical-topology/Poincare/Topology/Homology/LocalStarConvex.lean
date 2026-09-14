@@ -1,5 +1,7 @@
 import Poincare.Topology.Homotopy.StarConvexComplement
 import Poincare.Topology.Homology.RelativeHomeomorphism
+import Poincare.Topology.Homology.RelativeComparison
+import Poincare.Topology.Homology.CochainHomotopy
 
 noncomputable section
 
@@ -50,6 +52,25 @@ theorem integralBoundedStarConvexLocalHomologyIso_hom (n : ℕ) {K : Set E} {c :
       integralRelativeHomologyMap n (ContinuousMap.id E)
         (show Kᶜ ⊆ ({c}ᶜ : Set E) from fun _ hx h => hx (h.symm ▸ hc)) := rfl
 
+theorem integralRelativeCohomologyMap_boundedStarConvex_bijective
+    (n : ℕ) {K : Set E} {c : E}
+    (hc : c ∈ K) (hs : StarConvex ℝ c K) (hK : Bornology.IsBounded K) :
+    Function.Bijective (integralRelativeCohomologyMap n (ContinuousMap.id E)
+      (compl_subset_compl.mpr (singleton_subset_iff.mpr hc))) := by
+  let hf : MapsTo (ContinuousMap.id E) Kᶜ ({c}ᶜ : Set E) :=
+    compl_subset_compl.mpr (singleton_subset_iff.mpr hc)
+  let e := boundedStarConvexComplementHomotopyEquiv hc hs hK
+  have he : singularPairRestriction (ContinuousMap.id E) hf = e.toFun := by
+    rw [boundedStarConvexComplementHomotopyEquiv_toFun]
+    rfl
+  change Function.Bijective (integralRelativeCohomologyMap n (ContinuousMap.id E) hf)
+  apply integralRelativeCohomologyMap_bijective_of_absolute_and_subspace
+  · intro k
+    rw [integralSingularCohomologyMap_id]
+    exact Function.bijective_id
+  · intro k
+    rw [he]
+    exact integralSingularCohomologyMap_bijective_of_homotopyEquiv e k
 
 end Poincare.Topology
 
