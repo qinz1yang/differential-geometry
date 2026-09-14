@@ -1,4 +1,5 @@
 import DifferentialGeometry.Analysis.Calculus.TimeJet.Commutation
+import Mathlib.Analysis.Normed.Group.Bounded
 
 set_option autoImplicit false
 noncomputable section
@@ -56,4 +57,20 @@ theorem mixed_endpoint_jets_contDiffOn {G : ℝ → E → F} {J : Set ℝ} {V : 
         (fun t => iteratedFDeriv ℝ a (G t) p.2) J p.1) (J ×ˢ V) :=
   time_iteratedDerivWithin_contDiffOn (G := fun t x => iteratedFDeriv ℝ a (G t) x) hJ hV
     (spatial_iteratedFDeriv_contDiffOn hJ hV hG a) b
+
+theorem exists_bound_spatial_iteratedFDeriv_on_compact
+    {ι : Type*} [Finite ι] {G : ι → ℝ → E → F} {J : Set ℝ} {V K : ι → Set E}
+    (hJ : UniqueDiffOn ℝ J) (hV : ∀ i, IsOpen (V i)) (hJc : IsCompact J)
+    (hK : ∀ i, IsCompact (K i))
+    (hKV : ∀ i, K i ⊆ V i)
+    (hG : ∀ i, ContDiffOn ℝ ∞ (Function.uncurry (G i)) (J ×ˢ V i)) (k : ℕ) :
+    ∃ C : ℝ, 0 < C ∧ ∀ i t, t ∈ J → ∀ x ∈ K i, ‖iteratedFDeriv ℝ k (G i t) x‖ ≤ C := by
+  let f := fun i (p : ℝ × E) => iteratedFDeriv ℝ k (G i p.1) p.2
+  have hc (i : ι) : ContinuousOn (f i) (J ×ˢ K i) :=
+    (spatial_iteratedFDeriv_contDiffOn hJ (hV i) (hG i) k).continuousOn.mono (prod_mono_right (hKV i))
+  have hcompact : IsCompact (⋃ i, f i '' (J ×ˢ K i)) :=
+    isCompact_iUnion (fun i => (hJc.prod (hK i)).image_of_continuousOn (hc i))
+  obtain ⟨C, hC, hbound⟩ := hcompact.isBounded.exists_pos_norm_le
+  exact ⟨C, hC, fun i t ht x hx => hbound _ (mem_iUnion.mpr ⟨i, ⟨(t, x), ⟨ht, hx⟩, rfl⟩⟩)⟩
+
 end DifferentialGeometry.Analysis

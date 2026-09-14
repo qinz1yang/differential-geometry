@@ -6927,6 +6927,7 @@ import DifferentialGeometry.Geometry.Metric.ExteriorPowerRiemannian
 import DifferentialGeometry.Geometry.Metric.ExteriorPowerSmooth
 import DifferentialGeometry.Geometry.Metric.ExteriorSubmodule
 import DifferentialGeometry.Geometry.Metric.Family.Basic
+import DifferentialGeometry.Geometry.Metric.Family.ChartCurvature.CompactBounds
 import DifferentialGeometry.Geometry.Metric.Family.ChartCurvature.JointSmoothness
 import DifferentialGeometry.Geometry.Metric.Family.ChartCurvature.ManifoldSmoothness
 import DifferentialGeometry.Geometry.Metric.Family.ChartCurvature.MetricFamilySmoothOn
