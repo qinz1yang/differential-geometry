@@ -5312,6 +5312,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborho
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.HornBarrierGeometry
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.Interfaces
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.InteriorWitnessRestriction
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.JetLocalBoundReduction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.KernelSecondDerivative
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.LocalComparisonAngle
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.LocalPropagation
@@ -6690,6 +6691,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChildParent
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChildSimplicityFrontierReduction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ClosedOrientedStage
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ClosedSlabEndpoints
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ClosedSlabProducer
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ClosedThreeManifoldTopHomologyCriterion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.Cohomology
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CollarChildCoreSeparation
@@ -6751,6 +6753,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.Fundamental
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.FundamentalClassDisconnectedObstruction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.FundamentalClassNoncompactDuality
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.FundamentalClassExistenceReduction
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.FundamentalClassExistenceConnected
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.GeometricCutoff
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.GeometricCutoffFrontier
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.GeometricCutoffGeometryReduction
@@ -6781,6 +6784,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.LowDegreeHu
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.LowDegreeHurewiczThreeSphere
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.MetricEvent
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.NeckRecenteringFields
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.NeckTubeIndexBridge
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.NoncompactVanishingFrontier
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.NoncompactVanishingNucleus
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ObservationTower
@@ -9254,6 +9258,7 @@ import DifferentialGeometry.Topology.ThreeManifold.CoreCapOppositeSides
 import DifferentialGeometry.Topology.ThreeManifold.CutCap
 import DifferentialGeometry.Topology.ThreeManifold.CutCapCappedPresentationRealization
 import DifferentialGeometry.Topology.ThreeManifold.CutCapCutComponentGluingReduction
+import DifferentialGeometry.Topology.ThreeManifold.CutCapCutComponentPieceGluing
 import DifferentialGeometry.Topology.ThreeManifold.CutCapCutComponentRealizationReduction
 import DifferentialGeometry.Topology.ThreeManifold.CutCapCutSphericalGraphSumRealization
 import DifferentialGeometry.Topology.ThreeManifold.CutCapGluing
