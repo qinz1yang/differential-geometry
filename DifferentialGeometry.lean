@@ -9907,3 +9907,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.P
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.TensorDerivatives
 import DifferentialGeometry.Geometry.Metric.Family.ChartCurvature.CompactBounds
 import DifferentialGeometry.Geometry.Metric.Product.ChartBounds
+import DifferentialGeometry.Topology.Homology.ManifoldLocalization
+import DifferentialGeometry.Topology.ThreeManifold.HomologyLocalization
+import DifferentialGeometry.Topology.ThreeManifold.SphereFundamentalClass
