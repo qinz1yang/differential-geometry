@@ -9879,6 +9879,9 @@ import DifferentialGeometry.Analysis.Parabolic.Euclidean.VectorNorm
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Scalar.Bootstrap
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Scalar.IntervalReaction
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.GraphicalCurveShortening
+import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.GraphicalCurveShortening.Coefficients
+import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.GraphicalCurveShortening.Lp
+import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.GraphicalCurveShortening.Sobolev
 import DifferentialGeometry.Geometry.Comparison.Variation.Curve.TangentVariation
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Christoffel.Bounds
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Christoffel.Euclidean
