@@ -205,3 +205,28 @@ private sources,17 unchanged proof bodies and the sole producer-call rename.
 The deletion consumer retains actual survivor support/frontier and count
 decrease. The new leaf is registered in the flat aggregate. This is a fresh
 leaf/imported REPL gate, not a full DifferentialGeometry aggregate build.
+
+
+## Shared region interior for polygon vertex charts
+
+`Schoenflies.interior_closure_inside_of_separating` in `TriangleMeshCrosscut`
+is now public. Its exact body, surrounding scopes, vendor header and existing
+crosscut consumer are unchanged. The native `PolygonVertexCharts` development
+imports this one provider to identify the actual interior of the closed bounded
+polygon region. No second proof body or alternate region object is introduced.
+
+The new chart theorem produces an affine equivalence at any native polygon
+vertex, with the exact incoming/outgoing vertex images and a slope that is zero
+exactly for a straight subdivision. One sign simultaneously identifies the
+actual closed region, interior, frontier and carrier. Consumers check a genuine
+unit-triangle corner, an inserted straight midpoint with unchanged carrier,
+and actual points on both sides in the same produced neighborhood.
+
+Source f31dbe47 passed in26.62s with138 guards and21 readback pairs. Imported
+c9fd3e0b passed in105.49s with142 guards and6 pairs in Slurm13846673. Both changed
+leaves freshly compiled in1:07.27, maximum RSS1712316KiB, with zero diagnostics.
+All five shared source/imported pairs and the original public crosscut partition
+pair match byte-for-byte. Stock declaration linters and standard-only transitive
+axioms pass. The new leaf is registered in the flat aggregate. This is not an
+aggregate DifferentialGeometry build, compact global rounding, or smooth disk
+filling. CROSSCUT_PROVENANCE.json preserves the previous validation record.

@@ -13,7 +13,7 @@ open LeanEval.Topology.ClassificationOfSurfaces.Moise (TriangleMesh)
 
 namespace Schoenflies
 
-private theorem interior_closure_inside_of_separating {C : Set Plane}
+theorem interior_closure_inside_of_separating {C : Set Plane}
     (hC : IsSeparating C) : interior (closure (inside C)) = inside C := by
   have hd₀ : Disjoint (closure (inside C)) (outside C) :=
     disjoint_inside_outside.closure_left hC.isOpen_outside

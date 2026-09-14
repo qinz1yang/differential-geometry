@@ -90,12 +90,35 @@
     }
   ],
   "target": "TriangleMeshCrosscut.lean",
-  "target_sha256": "274fcedb3fab6d079b511d568d40de72cfff0327afcfb3784dcdd78bbe708065",
+  "target_sha256": "a5b3178cd0bec5c550dc49a3a7b1c6c58a06a41992e6a934414e790630793752",
   "selected_upstream_sha256": "1d47ca0fb78b37335531b8009f0471c92eef7ebd40c26a80debd9e00c0c578ba",
   "adaptation_patch_sha256": "26a2f2fe5ac5943872ddc363084098910ba2832e9a4e925b2f6ebbdb4bccc9c0",
   "checked_private_request": "1789235209202169419-schoenflies-6e17e677",
-  "source_change_from_checked": "Five exact proof bodies/scopes retained; only final partition theorem becomes public and attribution path changes.",
+  "source_change_from_checked": "Five exact proof bodies/scopes retained; only final partition theorem becomes public and attribution path changes. The region-interior theorem is now public with its exact body and scopes unchanged.",
   "production_validation": {
+    "status": "Passed fresh changed-module artifacts and imported source/consumer gate; no full DG aggregate claimed",
+    "request_id": "1789356234763981143-schoenflies-c9fd3e0b",
+    "input_sha256": "2f7df001ace3c5a27de649c889f66bd9d70cac5974869155446b1f40db878f52",
+    "result_sha256": "09d53041b572574d10a5a3a7b4dc130a1833bfa7da9bbc4d31cac6f2dd3d385a",
+    "job_id": "13846673",
+    "host": "della-r3c4n2",
+    "elapsed_seconds": 105.49227237701416,
+    "peak_rss_bytes": 2314113024,
+    "fresh_artifacts": [
+      "DifferentialGeometry.External.ClassificationOfSurfaces.TriangleMeshCrosscut",
+      "DifferentialGeometry.Topology.Planar.PolygonVertexCharts"
+    ],
+    "artifact_log_sha256": "b09b5ae13a7b2659f2bbf7936a2a689b389a789c21227223ad3cdf7c8c3b9c71",
+    "source_guards_matched": 142,
+    "signature_axiom_pairs": 6,
+    "declaration_linters": "All imported DifferentialGeometry and current consumer declarations: unusedArguments, simpNF, synTaut, checkType",
+    "transitive_axioms": "Only propext, Classical.choice, Quot.sound",
+    "full_dg_aggregate_build": false,
+    "smooth_disk_filling": false,
+    "comparison": "Five source/imported pairs byte-identical; old public crosscut partition pair byte-identical to original production gate; entire vendor source unchanged except one private-to-public visibility change"
+  },
+  "previous_target_sha256": "274fcedb3fab6d079b511d568d40de72cfff0327afcfb3784dcdd78bbe708065",
+  "previous_production_validation": {
     "status": "Passed fresh new-module artifact compilation and imported consumer gate.",
     "request_id": "1789235455742746297-schoenflies-fb8bd5a2",
     "input_sha256": "7aaaba3821d580d33bb08d2718c4471dc4df302c28ded62affb9c9b4adfe8eb6",
