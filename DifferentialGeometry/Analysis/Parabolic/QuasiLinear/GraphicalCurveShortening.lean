@@ -1,3 +1,7 @@
+import DifferentialGeometry.Analysis.Calculus.TimeJet.PartialDerivatives
+import DifferentialGeometry.Analysis.Parabolic.Euclidean.VectorNorm
+import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Scalar.IntervalReaction
+import Mathlib.Analysis.Calculus.ContDiff.Deriv
 import Mathlib.Analysis.InnerProductSpace.Calculus
 import Mathlib.Analysis.Calculus.Deriv.Add
 import Mathlib.Analysis.Calculus.Deriv.Inv
@@ -7,7 +11,7 @@ import Mathlib.Tactic.LinearCombination
 import Mathlib.Tactic.Positivity
 
 open Filter
-open scoped Topology InnerProductSpace
+open scoped Topology InnerProductSpace ContDiff
 
 namespace DifferentialGeometry.Analysis.Parabolic
 
@@ -91,5 +95,154 @@ theorem hasDerivAt_deriv_graphDiffusionCoefficient {p : ℝ → E} {x : ℝ}
   rw [real_inner_self_eq_norm_sq] at hd
   simp only [Pi.pow_apply] at hd
   convert hd using 1 <;> first | rfl | ring
+
+theorem graph_second_derivative_norm_sq_parabolic_eq {f : ℝ → ℝ → E} {U V : Set ℝ}
+    (hU : IsOpen U) (hV : IsOpen V)
+    (hf : ContDiffOn ℝ ∞ (Function.uncurry f) (U ×ˢ V))
+    (heq : ∀ x ∈ U, ∀ t ∈ V, deriv (fun s => f x s) t =
+      graphDiffusionCoefficient (deriv (fun y => f y t) x) •
+        deriv (deriv (fun y => f y t)) x)
+    {x t : ℝ} (hx : x ∈ U) (ht : t ∈ V) :
+    let p := fun y s => deriv (fun z => f z s) y;
+    let q := fun y s => deriv (fun z => p z s) y;
+    let r := deriv (fun y => q y t) x;
+    let a := graphDiffusionCoefficient (p x t);
+    deriv (fun s => ‖q x s‖ ^ 2) t - a * deriv (deriv (fun y => ‖q y t‖ ^ 2)) x =
+      -2 * a * ‖r‖ ^ 2 - 8 * a ^ 2 * ⟪p x t, q x t⟫_ℝ * ⟪q x t, r⟫_ℝ -
+        4 * a ^ 2 * ‖q x t‖ ^ 2 * ⟪p x t, r⟫_ℝ +
+        16 * a ^ 3 * ⟪p x t, q x t⟫_ℝ ^ 2 * ‖q x t‖ ^ 2 -
+          4 * a ^ 2 * ‖q x t‖ ^ 4 := by
+  let p := fun y s => deriv (fun z => f z s) y
+  let q := fun y s => deriv (fun z => p z s) y
+  let a := fun y => graphDiffusionCoefficient (p y t)
+  have hfat (y : ℝ) (hy : y ∈ U) : ContDiffAt ℝ ∞ (Function.uncurry f) (y, t) :=
+    (hf (y, t) ⟨hy, ht⟩).contDiffAt ((hU.prod hV).mem_nhds ⟨hy, ht⟩)
+  have hpat (y : ℝ) (hy : y ∈ U) : ContDiffAt ℝ ∞ (Function.uncurry p) (y, t) :=
+    contDiffAt_deriv_fst (hfat y hy) (by simp)
+  have hqat (y : ℝ) (hy : y ∈ U) : ContDiffAt ℝ ∞ (Function.uncurry q) (y, t) :=
+    contDiffAt_deriv_fst (hpat y hy) (by simp)
+  have hps (y : ℝ) (hy : y ∈ U) : ContDiffAt ℝ ∞ (fun z => p z t) y :=
+    (hpat y hy).comp y (contDiffAt_id.prodMk contDiffAt_const)
+  have hqs (y : ℝ) (hy : y ∈ U) : ContDiffAt ℝ ∞ (fun z => q z t) y :=
+    (hqat y hy).comp y (contDiffAt_id.prodMk contDiffAt_const)
+  have hpe : ∀ᶠ y in 𝓝 x, DifferentiableAt ℝ (fun z => p z t) y := by
+    filter_upwards [hU.mem_nhds hx] with y hy
+    exact (hps y hy).differentiableAt (by simp)
+  have hqe : ∀ᶠ y in 𝓝 x, DifferentiableAt ℝ (fun z => q z t) y := by
+    filter_upwards [hU.mem_nhds hx] with y hy
+    exact (hqs y hy).differentiableAt (by simp)
+  have hqxx : DifferentiableAt ℝ (deriv (fun y => q y t)) x :=
+    ((hqs x hx).derivWithin (m := ∞) (by simp)).differentiableAt (by simp)
+  have hqt : DifferentiableAt ℝ (fun s => q x s) t :=
+    ((hqat x hx).comp t (contDiffAt_const.prodMk contDiffAt_id)).differentiableAt (by simp)
+  have hacd : ContDiffAt ℝ ∞ a x :=
+    (contDiffAt_const.add ((hps x hx).norm_sq ℝ)).inv (by positivity : 1 + ‖p x t‖ ^ 2 ≠ 0)
+  have hprod := iteratedDerivWithin_smul (n := 2) (Set.mem_univ x) uniqueDiffOn_univ
+    (hacd.of_le (by exact WithTop.coe_le_coe.mpr le_top)).contDiffWithinAt
+    ((hqs x hx).of_le (by exact WithTop.coe_le_coe.mpr le_top)).contDiffWithinAt
+  simp only [iteratedDerivWithin_univ] at hprod
+  norm_num [Finset.sum_range_succ, iteratedDeriv_succ, iteratedDeriv_zero] at hprod
+  have hpeq : (fun y => deriv (fun s => f y s) t) =ᶠ[𝓝 x]
+      (fun y => a y • q y t) := by
+    filter_upwards [hU.mem_nhds hx] with y hy
+    exact heq y hy t ht
+  have hcomm : deriv (fun s => q x s) t = deriv (deriv (fun y => a y • q y t)) x :=
+    (deriv_deriv_deriv_time_comm hU hV hf hx ht).trans hpeq.deriv.deriv_eq
+  have ha' := (hasDerivAt_graphDiffusionCoefficient hpe.self_of_nhds.hasDerivAt).deriv
+  have ha'' := (hasDerivAt_deriv_graphDiffusionCoefficient hpe
+    ((hqs x hx).differentiableAt (by simp))).deriv
+  change deriv (fun s => ‖q x s‖ ^ 2) t - a x *
+    deriv (deriv (fun y => ‖q y t‖ ^ 2)) x = _
+  rw [norm_sq_parabolic_eq hqe hqxx hqt, hcomm]
+  change deriv (deriv (fun y => a y • q y t)) x = _ at hprod
+  rw [hprod]
+  change deriv a x = -2 * a x ^ 2 * ⟪p x t, q x t⟫_ℝ at ha'
+  change deriv (deriv a) x = 8 * a x ^ 3 * ⟪p x t, q x t⟫_ℝ ^ 2 -
+    2 * a x ^ 2 * (‖q x t‖ ^ 2 + ⟪p x t, deriv (fun y => q y t) x⟫_ℝ) at ha''
+  rw [ha', ha'']
+  simp only [inner_sub_right, inner_add_right, real_inner_smul_right, real_inner_self_eq_norm_sq, two_smul]
+  dsimp [a, p, q]
+  ring
+
+theorem graph_second_derivative_norm_sq_parabolic_le {f : ℝ → ℝ → E} {U V : Set ℝ}
+    (hU : IsOpen U) (hV : IsOpen V)
+    (hf : ContDiffOn ℝ ∞ (Function.uncurry f) (U ×ˢ V))
+    (heq : ∀ x ∈ U, ∀ t ∈ V, deriv (fun s => f x s) t =
+      graphDiffusionCoefficient (deriv (fun y => f y t) x) •
+        deriv (deriv (fun y => f y t)) x)
+    {x t : ℝ} (hx : x ∈ U) (ht : t ∈ V)
+    (hp : ‖deriv (fun y => f y t) x‖ ≤ 1 / 4) :
+    let q := fun y s => deriv (deriv (fun z => f z s)) y;
+    deriv (fun s => ‖q x s‖ ^ 2) t -
+      graphDiffusionCoefficient (deriv (fun y => f y t) x) *
+        deriv (deriv (fun y => ‖q y t‖ ^ 2)) x ≤ -(1 / 2 : ℝ) * (‖q x t‖ ^ 2) ^ 2 := by
+  dsimp only
+  rw [graph_second_derivative_norm_sq_parabolic_eq hU hV hf heq hx ht]
+  simpa only [← pow_mul] using
+    graph_second_derivative_reaction_le (deriv (fun y => f y t) x)
+      (deriv (deriv (fun y => f y t)) x)
+      (deriv (deriv (deriv (fun y => f y t))) x) hp
+
+theorem graph_second_derivative_interior_bound_on_closed_time_interval {f : ℝ → ℝ → E} {R T : ℝ}
+    (hR : 0 < R)
+    (hf : ContDiffOn ℝ ∞ (Function.uncurry f) (Set.Ioo (-R) R ×ˢ Set.Ioo 0 T))
+    (hcont : ContinuousOn
+      (fun p : ℝ × ℝ => ‖deriv (deriv (fun y => f y p.2)) p.1‖ ^ 2)
+      (Set.Icc (-R) R ×ˢ Set.Icc 0 T))
+    (heq : ∀ x ∈ Set.Ioo (-R) R, ∀ t ∈ Set.Ioo 0 T,
+      deriv (fun s => f x s) t = graphDiffusionCoefficient (deriv (fun y => f y t) x) •
+        deriv (deriv (fun y => f y t)) x)
+    (hp : ∀ x ∈ Set.Ioo (-R) R, ∀ t ∈ Set.Ioo 0 T,
+      ‖deriv (fun y => f y t) x‖ ≤ 1 / 4) :
+    ∀ t ∈ Set.Ioc 0 T, ∀ x ∈ Set.Icc (-R / 2) (R / 2),
+      ‖deriv (deriv (fun y => f y t)) x‖ ^ 2 ≤ 32 / (9 * t) + 128 / R ^ 2 := by
+  let u := fun x t => ‖deriv (deriv (fun y => f y t)) x‖ ^ 2
+  let a := fun x t => graphDiffusionCoefficient (deriv (fun y => f y t) x)
+  have huat (x : ℝ) (hx : x ∈ Set.Ioo (-R) R) (t : ℝ) (ht : t ∈ Set.Ioo 0 T) :
+      ContDiffAt ℝ ∞ (Function.uncurry u) (x, t) := by
+    have hfat := (hf (x, t) ⟨hx, ht⟩).contDiffAt
+      ((isOpen_Ioo.prod isOpen_Ioo).mem_nhds ⟨hx, ht⟩)
+    exact (contDiffAt_deriv_fst (m := ∞)
+      (contDiffAt_deriv_fst (m := ∞) hfat (by simp)) (by simp)).norm_sq ℝ
+  have hux (x : ℝ) (hx : x ∈ Set.Ioo (-R) R) (t : ℝ) (ht : t ∈ Set.Ioo 0 T) :
+      ContDiffAt ℝ ∞ (fun y => u y t) x :=
+    (huat x hx t ht).comp x (contDiffAt_id.prodMk contDiffAt_const)
+  have hbound := quadratic_reaction_interior_upper_bound_on_closed_time_interval (u := u) (a := a)
+    hR (by norm_num : 0 < (1 / 2 : ℝ)) (by norm_num : 0 ≤ (1 : ℝ)) hcont
+    (fun t ht x hx => ((hux x hx t ht).differentiableAt (by simp)).differentiableWithinAt)
+    (fun t ht x hx => (((hux x hx t ht).derivWithin (m := ∞) (by simp)).differentiableAt
+      (by simp)).differentiableWithinAt)
+    (fun x hx t ht => ((huat x hx t ht).comp t
+      (contDiffAt_const.prodMk contDiffAt_id)).differentiableAt (by simp))
+    (fun x _ t _ => ⟨(graphDiffusionCoefficient_pos _).le, graphDiffusionCoefficient_le_one _⟩)
+    (fun x hx t ht => graph_second_derivative_norm_sq_parabolic_le
+      isOpen_Ioo isOpen_Ioo hf heq hx ht (hp x hx t ht))
+  intro t ht x hx
+  convert hbound t ht x hx using 1
+  field_simp
+  ring
+
+theorem graph_second_derivative_interior_bound {f : ℝ → ℝ → E} {R T : ℝ}
+    (hR : 0 < R)
+    (hf : ContDiffOn ℝ ∞ (Function.uncurry f) (Set.Ioo (-R) R ×ˢ Set.Ioo 0 T))
+    (hcont : ContinuousOn
+      (fun p : ℝ × ℝ => ‖deriv (deriv (fun y => f y p.2)) p.1‖ ^ 2)
+      (Set.Icc (-R) R ×ˢ Set.Ico 0 T))
+    (heq : ∀ x ∈ Set.Ioo (-R) R, ∀ t ∈ Set.Ioo 0 T,
+      deriv (fun s => f x s) t = graphDiffusionCoefficient (deriv (fun y => f y t) x) •
+        deriv (deriv (fun y => f y t)) x)
+    (hp : ∀ x ∈ Set.Ioo (-R) R, ∀ t ∈ Set.Ioo 0 T,
+      ‖deriv (fun y => f y t) x‖ ≤ 1 / 4) :
+    ∀ t ∈ Set.Ioo 0 T, ∀ x ∈ Set.Icc (-R / 2) (R / 2),
+      ‖deriv (deriv (fun y => f y t)) x‖ ^ 2 ≤ 32 / (9 * t) + 128 / R ^ 2 := by
+  intro t ht x hx
+  have htime : Set.Ioo 0 t ⊆ Set.Ioo 0 T :=
+    fun s hs => ⟨hs.1, hs.2.trans ht.2⟩
+  have hbound := graph_second_derivative_interior_bound_on_closed_time_interval
+    hR (hf.mono (fun p hp => ⟨hp.1, htime hp.2⟩))
+    (hcont.mono (fun p hp => ⟨hp.1, hp.2.1, hp.2.2.trans_lt ht.2⟩))
+    (fun y hy s hs => heq y hy s (htime hs))
+    (fun y hy s hs => hp y hy s (htime hs))
+  exact hbound t ⟨ht.1, le_rfl⟩ x hx
 
 end DifferentialGeometry.Analysis.Parabolic
