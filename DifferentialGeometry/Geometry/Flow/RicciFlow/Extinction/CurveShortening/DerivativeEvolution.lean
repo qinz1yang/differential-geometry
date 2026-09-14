@@ -1,6 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Evolution
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.TensorDerivatives
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Algebra
+import DifferentialGeometry.Geometry.Metric.Coordinates.InnerExpansion
 
 noncomputable section
 open Bundle Manifold Set Filter
@@ -269,6 +270,127 @@ theorem inner_Ds_Ds_curvatureVector_unitTangent
     (g t).inner (c.lift x t) (c.Ds g (c.curvatureVector g) x t) (c.curvatureVector g x t) at hh
   linarith
 
+omit [SigmaCompactSpace M] in
+theorem ds_curvature_forcing_pairing (c : CurveMap M) (G : SolutionFamily (I := I) (M := M))
+    {J : Set ℝ} (hc : c.SmoothOn (I := I) J) (hi : c.ImmersedOn (I := I) J)
+    (Z : c.Field (I := I)) (x t : ℝ) (ht : t ∈ J)
+    (hZ : ContMDiff 𝓘(ℝ, ℝ) I.tangent ∞
+      (fun y => (⟨c.lift y t, Z y t⟩ : TangentBundle I M))) :
+    let T := c.unitTangent G.metric
+    let Hc := c.curvatureVector G.metric
+    let V := c.Ds G.metric Hc
+    let S : c.Field (I := I) → ℝ → ℝ → ℝ := fun U y τ =>
+      G.rm04At τ (c.lift y τ) (vec4 (Hc y τ) (T y τ) (T y τ) (U y τ)) -
+      2 * nablaRicci G τ (c.lift y τ) (T y τ) (T y τ) (U y τ) +
+      nablaRicci G τ (c.lift y τ) (U y τ) (T y τ) (T y τ)
+    c.ds G.metric (S Z) x t - S (c.Ds G.metric Z) x t =
+      totalNabla0SFun 4 (G.connection t) (G.rm04 t) (c.lift x t)
+        (Fin.cons (T x t) (vec4 (Hc x t) (T x t) (T x t) (Z x t))) +
+      G.rm04At t (c.lift x t) (vec4 (V x t) (T x t) (T x t) (Z x t)) +
+      G.rm04At t (c.lift x t) (vec4 (Hc x t) (Hc x t) (T x t) (Z x t)) +
+      G.rm04At t (c.lift x t) (vec4 (Hc x t) (T x t) (Hc x t) (Z x t)) -
+      2 * totalNabla0SFun 3 (G.connection t) (covStep (G.metric t) 2 (G.ricci t)) (c.lift x t)
+        (Fin.cons (T x t) (vec3 (T x t) (T x t) (Z x t))) +
+      totalNabla0SFun 3 (G.connection t) (covStep (G.metric t) 2 (G.ricci t)) (c.lift x t)
+        (Fin.cons (T x t) (vec3 (Z x t) (T x t) (T x t))) -
+      2 * nablaRicci G t (c.lift x t) (Hc x t) (T x t) (Z x t) -
+      2 * nablaRicci G t (c.lift x t) (T x t) (Hc x t) (Z x t) +
+      nablaRicci G t (c.lift x t) (Z x t) (Hc x t) (T x t) +
+      nablaRicci G t (c.lift x t) (Z x t) (T x t) (Hc x t) := by
+  let T := c.unitTangent G.metric
+  let Hc := c.curvatureVector G.metric
+  have hγ : ContMDiff 𝓘(ℝ, ℝ) I ∞ (fun y => c.lift y t) :=
+    contMDiffOn_univ.mp (c.space_slice_contMDiffOn J hc t ht)
+  have hT := c.unitTangent_contMDiff G.metric J hc hi t ht
+  have hH := c.curvatureVector_contMDiff G.metric J hc hi t ht
+  have hTr := chartRep_diff _ _ hT x
+  have hHr := chartRep_diff _ _ hH x
+  have hZr := chartRep_diff _ _ hZ x
+  have hR : DifferentiableAt ℝ
+      (fun y => G.rm04At t (c.lift y t) (vec4 (Hc y t) (T y t) (T y t) (Z y t))) x :=
+    (c.contDiffAt_rm04_eval G Hc T T Z x t (hγ x) (hH x) (hT x) (hT x) (hZ x)).differentiableAt (by simp)
+  have hN : DifferentiableAt ℝ
+      (fun y => nablaRicci G t (c.lift y t) (T y t) (T y t) (Z y t)) x :=
+    (c.contDiffAt_nablaRicci_eval G T T Z x t (hγ x) (hT x) (hT x) (hZ x)).differentiableAt (by simp)
+  have hN' : DifferentiableAt ℝ
+      (fun y => nablaRicci G t (c.lift y t) (Z y t) (T y t) (T y t)) x :=
+    (c.contDiffAt_nablaRicci_eval G Z T T x t (hγ x) (hZ x) (hT x) (hT x)).differentiableAt (by simp)
+  have h2N : DifferentiableAt ℝ
+      (fun y => 2 * nablaRicci G t (c.lift y t) (T y t) (T y t) (Z y t)) x := hN.const_mul 2
+  have hRN : DifferentiableAt ℝ
+      (fun y => G.rm04At t (c.lift y t) (vec4 (Hc y t) (T y t) (T y t) (Z y t)) -
+        2 * nablaRicci G t (c.lift y t) (T y t) (T y t) (Z y t)) x := hR.sub h2N
+  have hsplit :
+      c.ds G.metric (fun y τ => G.rm04At τ (c.lift y τ) (vec4 (Hc y τ) (T y τ) (T y τ) (Z y τ)) -
+        2 * nablaRicci G τ (c.lift y τ) (T y τ) (T y τ) (Z y τ) +
+        nablaRicci G τ (c.lift y τ) (Z y τ) (T y τ) (T y τ)) x t =
+      c.ds G.metric (fun y τ => G.rm04At τ (c.lift y τ) (vec4 (Hc y τ) (T y τ) (T y τ) (Z y τ))) x t -
+      2 * c.ds G.metric (fun y τ => nablaRicci G τ (c.lift y τ) (T y τ) (T y τ) (Z y τ)) x t +
+      c.ds G.metric (fun y τ => nablaRicci G τ (c.lift y τ) (Z y τ) (T y τ) (T y τ)) x t := by
+    dsimp only [CurveMap.ds]
+    rw [deriv_fun_add hRN hN', deriv_fun_sub hR h2N, deriv_const_mul 2 hN]
+    ring
+  dsimp only
+  rw [hsplit, c.ds_rm04_eval G Hc T T Z x t ((hγ x).mdifferentiableAt (by simp)) hHr hTr hTr hZr,
+    c.ds_nablaRicci_eval G T T Z x t ((hγ x).mdifferentiableAt (by simp)) hTr hTr hZr,
+    c.ds_nablaRicci_eval G Z T T x t ((hγ x).mdifferentiableAt (by simp)) hZr hTr hTr]
+  change _ = _
+  dsimp only [T, Hc, CurveMap.curvatureVector]
+  ring
+
+omit [SigmaCompactSpace M] in
+theorem ds_q (c : CurveMap M) (G : SolutionFamily (I := I) (M := M))
+    {J : Set ℝ} (hc : c.SmoothOn (I := I) J) (hi : c.ImmersedOn (I := I) J)
+    (x t : ℝ) (ht : t ∈ J) :
+    c.ds G.metric (c.q G) x t =
+      2 * (G.metric t).inner (c.lift x t) (c.Ds G.metric (c.curvatureVector G.metric) x t)
+        (c.curvatureVector G.metric x t) + c.ds G.metric (c.ricciTangent G) x t := by
+  have hT := c.unitTangent_contMDiff G.metric J hc hi t ht
+  have hk := (c.curvatureSq_contDiff G.metric J hc hi t ht).differentiable (by simp) x
+  have hρ := (contDiffWithinAt_univ.mp (c.contDiffWithinAt_ricciTangent_slice (G.metric t) J hc
+    (c.unitTangent G.metric) (c.unitTangent G.metric) x t ht hT hT)).differentiableAt (by simp)
+  change c.ds G.metric (fun y τ => c.curvatureSq G.metric y τ + c.ricciTangent G y τ) x t = _
+  rw [c.ds_add G.metric _ _ x t hk hρ, c.ds_curvatureSq_eq G.metric J hc hi x t ht]
+
+omit [SigmaCompactSpace M] in
+theorem ds_ds_q (c : CurveMap M) (G : SolutionFamily (I := I) (M := M))
+    {J : Set ℝ} (hc : c.SmoothOn (I := I) J) (hi : c.ImmersedOn (I := I) J)
+    (x t : ℝ) (ht : t ∈ J) :
+    c.ds G.metric (c.ds G.metric (c.q G)) x t =
+      2 * (G.metric t).inner (c.lift x t) (c.Ds G.metric (c.Ds G.metric (c.curvatureVector G.metric)) x t)
+        (c.curvatureVector G.metric x t) + 2 * c.normSq G.metric (c.Ds G.metric (c.curvatureVector G.metric)) x t +
+      c.ds G.metric (c.ds G.metric (c.ricciTangent G)) x t := by
+  let T := c.unitTangent G.metric
+  let Hc := c.curvatureVector G.metric
+  let V := c.Ds G.metric Hc
+  have hT := c.unitTangent_contMDiff G.metric J hc hi t ht
+  have hH := c.curvatureVector_contMDiff G.metric J hc hi t ht
+  have hV : ContMDiff 𝓘(ℝ, ℝ) I.tangent ∞ (fun y => (⟨c.lift y t, V y t⟩ : TangentBundle I M)) := by
+    have hs := (c.speed_contDiff G.metric J hc hi t ht).inv (fun y => (c.speed_pos G.metric hi y t ht).ne')
+    exact hs.contMDiff.smul_bundle (fun y =>
+      contMDiffAt_covDerivAlong (G.metric t) (m := ⊤) (n := ⊤) (by simp) (hH y))
+  have hpair := c.differentiableAt_inner_slice G.metric J hc V Hc x t ht hV hH
+  have h2pair : DifferentiableAt ℝ
+      (fun y => 2 * (G.metric t).inner (c.lift y t) (V y t) (Hc y t)) x := hpair.const_mul 2
+  have hρ : ContDiffAt ℝ ∞ (fun y => c.ricciTangent G y t) x :=
+    contDiffWithinAt_univ.mp (c.contDiffWithinAt_ricciTangent_slice (G.metric t) J hc T T x t ht hT hT)
+  have hdρ : DifferentiableAt ℝ (fun y => c.ds G.metric (c.ricciTangent G) y t) x :=
+    (((c.speed_contDiff G.metric J hc hi t ht).contDiffAt.inv (c.speed_pos G.metric hi x t ht).ne').mul
+      (hρ.derivWithin (m := ∞) (by simp))).differentiableAt (by simp)
+  have heq : (fun y => c.ds G.metric (c.q G) y t) =
+      fun y => 2 * (G.metric t).inner (c.lift y t) (V y t) (Hc y t) +
+        c.ds G.metric (c.ricciTangent G) y t := funext (fun y => c.ds_q G hc hi y t ht)
+  have hsplit : c.ds G.metric (c.ds G.metric (c.q G)) x t =
+      2 * c.ds G.metric (fun y τ => (G.metric τ).inner (c.lift y τ) (V y τ) (Hc y τ)) x t +
+      c.ds G.metric (c.ds G.metric (c.ricciTangent G)) x t := by
+    change (c.speed G.metric x t)⁻¹ * deriv (fun y => c.ds G.metric (c.q G) y t) x = _
+    rw [heq, deriv_fun_add h2pair hdρ, deriv_const_mul 2 hpair]
+    dsimp only [CurveMap.ds]
+    ring
+  rw [hsplit, c.ds_inner G.metric J hc V Hc x t ht hV hH]
+  change 2 * (_ + c.normSq G.metric V x t) + _ = _
+  ring
+
 variable {D : RealTimeInterval} {a b s u : ℝ}
 
 theorem curvatureDerivative_evolution
@@ -425,6 +547,242 @@ theorem curvatureDerivative_evolution
   rw [hvv] at hn
   dsimp only
   nlinarith [hcore, hn]
+
+theorem curvatureDerivative_evolution_le_of_tensor_bounds
+    (B : RicciBackground (I := I) (M := M) D a b) (hsu : s < u) (hwindow : Icc s u ⊆ Icc a b)
+    (c : CurveMap M) (hc : c.IsSolutionOn B.family.metric (Icc s u)) (x t : ℝ) (ht : t ∈ Icc s u)
+    (C Λ : ℝ) (hC : B.C ≤ C) (hΛ : 1 ≤ Λ) (hk : c.curvatureSq B.family.metric x t ≤ Λ)
+    (hDR : normSq0S (B.family.metric t) (c.lift x t) 5
+      (totalNabla0SFun 4 (B.family.connection t) (B.family.rm04 t) (c.lift x t)) ≤ C ^ 2)
+    (hDDRic : normSq0S (B.family.metric t) (c.lift x t) 4
+      (totalNabla0SFun 3 (B.family.connection t)
+        (covStep (B.family.metric t) 2 (B.family.ricci t)) (c.lift x t)) ≤ C ^ 2) :
+    let g := B.family.metric
+    let V := c.Ds g (c.curvatureVector g)
+    derivWithin (c.normSq g V x) (Icc s u) t - c.ds g (c.ds g (c.normSq g V)) x t ≤
+      -c.normSq g (c.Ds g V) x t + 64 * (1 + C) * Λ * c.normSq g V x t + 64 * (1 + C) * Λ ^ 2 := by
+  let G := B.family
+  let g := G.metric
+  let p := c.lift x t
+  let T := c.unitTangent g
+  let Hc := c.curvatureVector g
+  let V := c.Ds g Hc
+  let W := c.Ds g V
+  let n : TangentSpace I p → ℝ := fun U => Real.sqrt ((g t).inner p U U)
+  let k := n (Hc x t)
+  let z := n (V x t)
+  let w := n (W x t)
+  have hC0 : 0 ≤ C := by
+    dsimp only [RicciBackground.C] at hC
+    linarith [B.B₀_nonneg, B.B₁_nonneg, B.B₂_nonneg]
+  have hB0 : B.B₀ ≤ C := by
+    dsimp only [RicciBackground.C] at hC
+    linarith [B.B₀_nonneg, B.B₁_nonneg, B.B₂_nonneg]
+  have hB1 : B.B₁ ≤ C := by
+    dsimp only [RicciBackground.C] at hC
+    linarith [B.B₀_nonneg, B.B₁_nonneg, B.B₂_nonneg]
+  have hB2 : B.B₂ ≤ C := by
+    dsimp only [RicciBackground.C] at hC
+    linarith [B.B₀_nonneg, B.B₁_nonneg, B.B₂_nonneg]
+  have hn (U : TangentSpace I p) : 0 ≤ n U := Real.sqrt_nonneg _
+  have hnsq (U : TangentSpace I p) : n U ^ 2 = (g t).inner p U U :=
+    Real.sq_sqrt (DifferentialGeometry.metric_inner_self_nonneg (g t) p U)
+  have hnT : n (T x t) = 1 := by
+    dsimp only [n, p, T]
+    rw [(tangent_curvature_geometry g c (Icc s u) hc.smooth hc.immersed x t ht).1, Real.sqrt_one]
+  have hbound (r : ℕ) (A : Tensor0SSpace r I p) (hA : normSq0S (g t) p r A ≤ C ^ 2)
+      (U : Fin r → TangentSpace I p) : |A U| ≤ C * ∏ i, n (U i) :=
+    (abs_apply_le_norm0S (g t) p r A U).trans
+      (mul_le_mul_of_nonneg_right (Real.sqrt_le_iff.mpr ⟨hC0, hA⟩)
+        (Finset.prod_nonneg (fun i _ => hn (U i))))
+  have hRic (U Z : TangentSpace I p) : |G.ricciAt t p (vec2 U Z)| ≤ C * n U * n Z := by
+    have hh := hbound 2 (G.ricciAt t p)
+      ((B.ricci_bound t (hwindow ht) p).trans (pow_le_pow_left₀ B.B₀_nonneg hB0 2)) (vec2 U Z)
+    simpa [Fin.prod_univ_two, vec2, mul_assoc] using hh
+  have hR (U Z Y X : TangentSpace I p) : |G.rm04At t p (vec4 U Z Y X)| ≤ C * n U * n Z * n Y * n X := by
+    have hh := hbound 4 (G.rm04At t p)
+      ((B.riemann_bound t (hwindow ht) p).trans (pow_le_pow_left₀ B.B₁_nonneg hB1 2)) (vec4 U Z Y X)
+    simpa [Fin.prod_univ_four, vec4, mul_assoc] using hh
+  have hN (U Z Y : TangentSpace I p) : |nablaRicci G t p U Z Y| ≤ C * n U * n Z * n Y := by
+    have hh := hbound 3 (totalNabla0SFun 2 (G.connection t) (G.ricci t) p)
+      ((B.nablaRicci_bound t (hwindow ht) p).trans (pow_le_pow_left₀ B.B₂_nonneg hB2 2)) (vec3 U Z Y)
+    rw [nablaRicci_vec3]
+    simpa [Fin.prod_univ_three, vec3, mul_assoc] using hh
+  have hN2 (U Z Y X : TangentSpace I p) :
+      |totalNabla0SFun 3 (G.connection t) (covStep (g t) 2 (G.ricci t)) p (Fin.cons U (vec3 Z Y X))| ≤
+        C * n U * n Z * n Y * n X := by
+    have hh := hbound 4 _ hDDRic (Fin.cons U (vec3 Z Y X))
+    simpa [Fin.prod_univ_succ, vec3, mul_assoc] using hh
+  have hR1 (U Z Y X A : TangentSpace I p) :
+      |totalNabla0SFun 4 (G.connection t) (G.rm04 t) p (Fin.cons U (vec4 Z Y X A))| ≤
+        C * n U * n Z * n Y * n X * n A := by
+    have hh := hbound 5 _ hDR (Fin.cons U (vec4 Z Y X A))
+    simpa [Fin.prod_univ_succ, vec4, mul_assoc] using hh
+  have hρ : |c.ricciTangent G x t| ≤ C := by
+    change |G.ricciAt t p (vec2 (T x t) (T x t))| ≤ C
+    simpa only [hnT, mul_one] using hRic (T x t) (T x t)
+  have hdρ : |c.ds g (c.ricciTangent G) x t| ≤ C + 2 * C * k := by
+    rw [c.ds_ricciTangent G hc.smooth hc.immersed x t ht]
+    have h1 := hN (T x t) (T x t) (T x t)
+    have h2 := hRic (Hc x t) (T x t)
+    have h3 := hRic (T x t) (Hc x t)
+    simp only [hnT, mul_one] at h1 h2 h3
+    rcases abs_le.mp h1 with ⟨h1l, h1u⟩
+    rcases abs_le.mp h2 with ⟨h2l, h2u⟩
+    rcases abs_le.mp h3 with ⟨h3l, h3u⟩
+    apply abs_le.mpr
+    constructor <;> linarith only [h1l, h1u, h2l, h2u, h3l, h3u]
+  have hddρ : |c.ds g (c.ds g (c.ricciTangent G)) x t| ≤ C + 5 * C * k + 2 * C * z + 2 * C * k ^ 2 := by
+    rw [c.ds_ds_ricciTangent G hc.smooth hc.immersed x t ht]
+    have h1 := hN2 (T x t) (T x t) (T x t) (T x t)
+    have h2 := hN (Hc x t) (T x t) (T x t)
+    have h3 := hN (T x t) (Hc x t) (T x t)
+    have h4 := hN (T x t) (T x t) (Hc x t)
+    have h5 := hRic (V x t) (T x t)
+    have h6 := hRic (T x t) (V x t)
+    have h7 := hRic (Hc x t) (Hc x t)
+    simp only [hnT, mul_one] at h1 h2 h3 h4 h5 h6 h7
+    rcases abs_le.mp h1 with ⟨h1l, h1u⟩
+    rcases abs_le.mp h2 with ⟨h2l, h2u⟩
+    rcases abs_le.mp h3 with ⟨h3l, h3u⟩
+    rcases abs_le.mp h4 with ⟨h4l, h4u⟩
+    rcases abs_le.mp h5 with ⟨h5l, h5u⟩
+    rcases abs_le.mp h6 with ⟨h6l, h6u⟩
+    rcases abs_le.mp h7 with ⟨h7l, h7u⟩
+    apply abs_le.mpr
+    constructor <;> linarith only [h1l, h1u, h2l, h2u, h3l, h3u, h4l, h4u, h5l, h5u, h6l, h6u, h7l, h7u]
+  let S : c.Field (I := I) → ℝ → ℝ → ℝ := fun Z y τ =>
+    G.rm04At τ (c.lift y τ) (vec4 (Hc y τ) (T y τ) (T y τ) (Z y τ)) -
+    2 * nablaRicci G τ (c.lift y τ) (T y τ) (T y τ) (Z y τ) +
+    nablaRicci G τ (c.lift y τ) (Z y τ) (T y τ) (T y τ)
+  have hVs := c.Ds_curvatureVector_slice_contMDiff g B.smooth
+    (fun r hr => B.regular (hwindow hr)) (uniqueDiffOn_Icc hsu) hc.smooth hc.immersed t ht
+  have hDS : |c.ds g (S V) x t - S W x t| ≤
+      7 * C * k * z + C * z ^ 2 + 2 * C * k ^ 2 * z + 3 * C * z := by
+    have heq := c.ds_curvature_forcing_pairing G hc.smooth hc.immersed V x t ht hVs
+    change c.ds g (S V) x t - S W x t = _ at heq
+    rw [heq]
+    have h1 := hR1 (T x t) (Hc x t) (T x t) (T x t) (V x t)
+    have h2 := hR (V x t) (T x t) (T x t) (V x t)
+    have h3 := hR (Hc x t) (Hc x t) (T x t) (V x t)
+    have h4 := hR (Hc x t) (T x t) (Hc x t) (V x t)
+    have h5 := hN2 (T x t) (T x t) (T x t) (V x t)
+    have h6 := hN2 (T x t) (V x t) (T x t) (T x t)
+    have h7 := hN (Hc x t) (T x t) (V x t)
+    have h8 := hN (T x t) (Hc x t) (V x t)
+    have h9 := hN (V x t) (Hc x t) (T x t)
+    have h10 := hN (V x t) (T x t) (Hc x t)
+    simp only [hnT, mul_one] at h1 h2 h3 h4 h5 h6 h7 h8 h9 h10
+    rcases abs_le.mp h1 with ⟨h1l, h1u⟩
+    rcases abs_le.mp h2 with ⟨h2l, h2u⟩
+    rcases abs_le.mp h3 with ⟨h3l, h3u⟩
+    rcases abs_le.mp h4 with ⟨h4l, h4u⟩
+    rcases abs_le.mp h5 with ⟨h5l, h5u⟩
+    rcases abs_le.mp h6 with ⟨h6l, h6u⟩
+    rcases abs_le.mp h7 with ⟨h7l, h7u⟩
+    rcases abs_le.mp h8 with ⟨h8l, h8u⟩
+    rcases abs_le.mp h9 with ⟨h9l, h9u⟩
+    rcases abs_le.mp h10 with ⟨h10l, h10u⟩
+    apply abs_le.mpr
+    constructor <;> linarith only [h1l, h1u, h2l, h2u, h3l, h3u, h4l, h4u, h5l, h5u, h6l, h6u, h7l, h7u, h8l, h8u, h9l, h9u, h10l, h10u]
+  let P := (g t).inner p (V x t) (Hc x t)
+  let Q := (g t).inner p (W x t) (Hc x t)
+  have hk0 : 0 ≤ k := hn _
+  have hz0 : 0 ≤ z := hn _
+  have hΛ0 : 0 ≤ Λ := le_trans zero_le_one hΛ
+  have hk2 : c.curvatureSq g x t = k ^ 2 := (hnsq _).symm
+  have hz2 : c.normSq g V x t = z ^ 2 := (hnsq _).symm
+  have hw2 : c.normSq g W x t = w ^ 2 := (hnsq _).symm
+  have hkΛ : k ^ 2 ≤ Λ := by rw [← hk2]; exact hk
+  have hkΛ' : k ≤ Λ := by nlinarith only [hkΛ, hΛ, sq_nonneg (k - 1)]
+  have hk4 : k ^ 4 ≤ z ^ 2 := by
+    have hh := c.normSq_nonneg g (c.normalCurvatureDerivative g) x t
+    rw [c.normSq_normalCurvatureDerivative g (Icc s u) hc.smooth hc.immersed x t ht, hk2, hz2] at hh
+    nlinarith only [hh]
+  have hP : |P| ≤ z * k := DifferentialGeometry.Geometry.Riemannian.abs_inner_le_sqrt_mul_sqrt (g t) p _ _
+  have hQ : |Q| ≤ w * k := DifferentialGeometry.Geometry.Riemannian.abs_inner_le_sqrt_mul_sqrt (g t) p _ _
+  have hP2 : P ^ 2 ≤ k ^ 2 * z ^ 2 := by
+    have hh := sq_le_sq₀ (abs_nonneg P) (mul_nonneg hz0 hk0) |>.mpr hP
+    rw [sq_abs] at hh
+    nlinarith only [hh]
+  have hcross : -4 * k ^ 2 * Q ≤ w ^ 2 + 4 * k ^ 6 := by
+    have hh := mul_le_mul_of_nonneg_left (abs_le.mp hQ).1 (by positivity : 0 ≤ 4 * k ^ 2)
+    nlinarith only [hh, sq_nonneg (w - 2 * k ^ 3)]
+  have hk6 : k ^ 6 ≤ Λ * z ^ 2 := by
+    calc
+      k ^ 6 = k ^ 2 * k ^ 4 := by ring
+      _ ≤ Λ * z ^ 2 := mul_le_mul hkΛ hk4 (pow_nonneg hk0 4) hΛ0
+  have hkz : k ^ 2 * z ^ 2 ≤ Λ * z ^ 2 := mul_le_mul_of_nonneg_right hkΛ (sq_nonneg z)
+  have heuc : -2 * w ^ 2 - 4 * k ^ 2 * Q + 2 * k ^ 2 * z ^ 2 + 12 * P ^ 2 ≤
+      -w ^ 2 + 18 * Λ * z ^ 2 := by
+    linarith only [hP2, hcross, hk6, hkz]
+  have hconn :
+      G.rm04At t p (vec4 (Hc x t) (T x t) (Hc x t) (V x t)) -
+        nablaRicci G t p (T x t) (Hc x t) (V x t) -
+        nablaRicci G t p (Hc x t) (T x t) (V x t) +
+        nablaRicci G t p (V x t) (T x t) (Hc x t) ≤ C * k ^ 2 * z + 3 * C * k * z := by
+    have h1 := hR (Hc x t) (T x t) (Hc x t) (V x t)
+    have h2 := hN (T x t) (Hc x t) (V x t)
+    have h3 := hN (Hc x t) (T x t) (V x t)
+    have h4 := hN (V x t) (T x t) (Hc x t)
+    simp only [hnT, mul_one] at h1 h2 h3 h4
+    have h1u := (abs_le.mp h1).2
+    have h2l := (abs_le.mp h2).1
+    have h3l := (abs_le.mp h3).1
+    have h4u := (abs_le.mp h4).2
+    linarith only [h1u, h2l, h3l, h4u]
+  have hρ0 := mul_le_mul_of_nonneg_right (abs_le.mp hρ).2 (sq_nonneg z)
+  have hρ1 : c.ds g (c.ricciTangent G) x t * P ≤ (C + 2 * C * k) * (z * k) :=
+    (le_abs_self _).trans ((abs_mul _ _).le.trans
+      (mul_le_mul hdρ hP (abs_nonneg _) (by positivity)))
+  have hρ2 := mul_le_mul_of_nonneg_left (abs_le.mp hddρ).1 (sq_nonneg k)
+  have hSV := (abs_le.mp hDS).2
+  have hRV : -(C * z ^ 2) ≤ G.ricciAt t p (vec2 (V x t) (V x t)) := by
+    have hh := (abs_le.mp (hRic (V x t) (V x t))).1
+    nlinarith only [hh]
+  have hamb : -2 * k ^ 2 * c.ds g (c.ds g (c.ricciTangent G)) x t +
+      6 * c.ds g (c.ricciTangent G) x t * P + 6 * c.ricciTangent G x t * z ^ 2 +
+      2 * c.ds g (S V) x t - 2 * S W x t +
+      2 * G.rm04At t p (vec4 (Hc x t) (T x t) (Hc x t) (V x t)) -
+      2 * nablaRicci G t p (T x t) (Hc x t) (V x t) -
+      2 * nablaRicci G t p (Hc x t) (T x t) (V x t) +
+      2 * nablaRicci G t p (V x t) (T x t) (Hc x t) -
+      2 * G.ricciAt t p (vec2 (V x t) (V x t)) ≤
+      C * (26 * k * z + 22 * k ^ 2 * z + 10 * z ^ 2 + 6 * z + 2 * k ^ 2 + 10 * k ^ 3 + 4 * k ^ 4) := by
+    linarith only [hρ0, hρ1, hρ2, hSV, hconn, hRV]
+  have hΛsq : Λ ≤ Λ ^ 2 := by nlinarith only [hΛ]
+  have hk2Λ : k ^ 2 ≤ Λ ^ 2 := hkΛ.trans hΛsq
+  have hk3Λ : k ^ 3 ≤ Λ ^ 2 := by
+    have hh := mul_le_mul hkΛ hkΛ' hk0 hΛ0
+    nlinarith only [hh]
+  have hk4Λ : k ^ 4 ≤ Λ ^ 2 := by
+    have hh := pow_le_pow_left₀ (sq_nonneg k) hkΛ 2
+    nlinarith only [hh]
+  have hzΛ : z ^ 2 ≤ Λ * z ^ 2 := by nlinarith only [mul_nonneg (sub_nonneg.mpr hΛ) (sq_nonneg z)]
+  have hpoly : 26 * k * z + 22 * k ^ 2 * z + 10 * z ^ 2 + 6 * z + 2 * k ^ 2 + 10 * k ^ 3 + 4 * k ^ 4 ≤
+      37 * Λ * z ^ 2 + 43 * Λ ^ 2 := by
+    nlinarith only [sq_nonneg (k - z), sq_nonneg (k ^ 2 - z), sq_nonneg (z - 1), hk2Λ, hk3Λ, hk4Λ, hzΛ, hΛ.trans hΛsq]
+  have hpolyC := mul_le_mul_of_nonneg_left hpoly hC0
+  have hc1 : 18 + 37 * C ≤ 64 * (1 + C) := by linarith only [hC0]
+  have hc2 : 43 * C ≤ 64 * (1 + C) := by linarith only [hC0]
+  have hc1' := mul_le_mul_of_nonneg_right hc1 (mul_nonneg hΛ0 (sq_nonneg z))
+  have hc2' := mul_le_mul_of_nonneg_right hc2 (sq_nonneg Λ)
+  change derivWithin (c.normSq g V x) (Icc s u) t - c.ds g (c.ds g (c.normSq g V)) x t ≤ _
+  rw [c.curvatureDerivative_evolution B hsu hwindow hc x t ht,
+    c.ds_q G hc.smooth hc.immersed x t ht, c.ds_ds_q G hc.smooth hc.immersed x t ht]
+  change -2 * c.normSq g W x t - 2 * c.curvatureSq g x t *
+      (2 * Q + 2 * c.normSq g V x t + c.ds g (c.ds g (c.ricciTangent G)) x t) +
+      6 * (2 * P + c.ds g (c.ricciTangent G) x t) * P +
+      6 * (c.curvatureSq g x t + c.ricciTangent G x t) * c.normSq g V x t +
+      2 * c.ds g (S V) x t - 2 * S W x t +
+      2 * G.rm04At t p (vec4 (Hc x t) (T x t) (Hc x t) (V x t)) -
+      2 * nablaRicci G t p (T x t) (Hc x t) (V x t) -
+      2 * nablaRicci G t p (Hc x t) (T x t) (V x t) +
+      2 * nablaRicci G t p (V x t) (T x t) (Hc x t) -
+      2 * G.ricciAt t p (vec2 (V x t) (V x t)) ≤
+      -c.normSq g W x t + 64 * (1 + C) * Λ * c.normSq g V x t + 64 * (1 + C) * Λ ^ 2
+  rw [hk2, hz2, hw2]
+  linarith only [heuc, hamb, hpolyC, hc1', hc2']
 
 end CurveMap
 end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening
