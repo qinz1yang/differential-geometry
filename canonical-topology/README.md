@@ -1,11 +1,15 @@
 # Local homology and global classes from coherent local generators
 
 This separate `PoincareLean` project contains a dependency-closed checkpoint of
-155 Poincare modules. It extends the recovered Chapter 35 source at commit
+157 Poincare modules. It extends the recovered Chapter 35 source at commit
 `b45bfa009368c8f5f531e10f4f5280e90079d6ad` and preserves its mathematical objects
 and `Poincare` namespaces. `Poincare.lean` imports every included leaf.
 
 The additions prove:
+
+- unique coherent compact homology families, singleton comparison, off-dimension
+  compact-support cohomology vanishing and actual complementary-degree cap
+  bijections on finite-dimensional real normed spaces, including dimension zero;
 
 - naturality of the actual compact-support cap maps under open embeddings,
   with both representative laws and the absolute-class specialization;
@@ -1381,3 +1385,29 @@ Source `1789419937125041916-topology-d82efff4` passed in 16.86 seconds with 243 
 General integral manifold duality, positive-dimensional outward homology
 normalization, the adjunction sign and the missing frozen contract remain open.
 Neither full theorem suite is complete.
+
+## Compactly supported cohomology of real normed spaces
+
+This 157-module checkpoint tracks 233 curated added public exports. On every
+finite-dimensional real normed space, an actual point-local homology class
+extends to a unique coherent family on all compact sets. The actual map from
+cohomology relative to a point complement into compactly supported cohomology
+is bijective in every degree, and compactly supported cohomology vanishes away
+from the dimension.
+
+For every pair of complementary degrees, the primary theorem constructs a
+coherent family and local generator internally, then supplies a unique
+bijective cap map with its equation on every compact representative. The top
+case is an exact specialization. The supplied-family engines remain available.
+No orientation, compactness, inner-product or positive-dimension assumption is
+required. Seventeen consumers retain actual maps, nonzero real and rank-zero
+classes, augmentation one, shifted points and the zero real (0,1) cap between
+vanishing groups. The two leaves preserve all eight accepted source fragments
+and keep six proof mechanics private.
+
+Source `1789422923755474952-topology-0999b8bd` passed in 26.70 seconds with 505 guards and 57 signature/axiom pairs; all 22 top-parent and 40 complementary-engine pairs are byte-identical. Original `1789424688780611683-topology-695c2602` passed in 55.29 seconds with 1443 guards and 181 pairs; portable `1789424688850841934-topology_checkpoint-c23ff782` passed in 97.67 seconds with 1739 guards and 475 pairs. Both ran in Slurm 13879784. Unchanged-source build `1789424368430989063-topology_checkpoint-415a1c6a` freshly compiled both new leaves and the root in 0:24.22, maximum RSS 1,984,712 KiB, with zero diagnostics. Its failed consumer harness remains failed history; the repaired strict checks above supply acceptance evidence. All 143 preceding original and 443 preceding portable pairs are byte-identical. All 57 source types and 51 complete pairs are byte-identical in the original check, with only six new private axiom heads. All 57 source and 181 shared imported readbacks agree through exact private names, qualification and whitespace, with exact ordered axioms. The harness repair qualifies one private consumer reference and removes only three redundant portable universe commands; mathematical binders and all query bytes remain unchanged. Strict source and stock declaration linters pass, transitive axioms are standard-only, and all 155 preceding leaves retain their exact bytes.
+
+All 155 preceding leaves and public APIs remain unchanged. General integral
+manifold duality still needs the local-to-global argument. Positive-dimensional
+outward homology normalization, the adjunction sign and the missing frozen
+contract remain open. Neither full theorem suite is complete.

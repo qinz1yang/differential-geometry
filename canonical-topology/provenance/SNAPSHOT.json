@@ -1,9 +1,9 @@
 {
-  "scope": "Dependency-closed 155-module checkpoint adding actual compact-support cap naturality under open embeddings, with representative laws and the absolute-class specialization. Earlier APIs and source leaves remain unchanged. General integral manifold duality, positive-dimensional outward homology normalization, adjunction signs and the missing frozen topology suite remain open.",
+  "scope": "Dependency-closed 157-module checkpoint adding unique coherent compact homology families and actual compactly supported cohomology cap bijections in every complementary degree on finite-dimensional real normed spaces, including dimension zero. The primary theorem produces its family and generator internally; singleton comparison and off-dimension vanishing use the existing integral cohomology object. General manifold duality, positive-dimensional outward homology normalization, adjunction signs and the missing frozen topology suite remain open.",
   "baseline_commit": "b45bfa009368c8f5f531e10f4f5280e90079d6ad",
   "baseline_ref": "refs/remotes/origin/codex/chapter35",
   "source_project": "PoincareLean",
-  "source_module_count": 155,
+  "source_module_count": 157,
   "roots": [
     "Poincare.Topology.Homology.RelativeMaps",
     "Poincare.Topology.Homology.RelativeHomeomorphism",
@@ -55,7 +55,9 @@
     "Poincare.Topology.Homology.CompactlySupportedCohomology.Defs",
     "Poincare.Topology.Homology.CompactlySupportedCohomology.Cap",
     "Poincare.Topology.Homology.CompactlySupportedCohomology.OpenEmbedding",
-    "Poincare.Topology.Homology.CompactlySupportedCohomology.CapNaturality"
+    "Poincare.Topology.Homology.CompactlySupportedCohomology.CapNaturality",
+    "Poincare.Topology.Homology.EuclideanCompactHomology",
+    "Poincare.Topology.Homology.CompactlySupportedCohomology.Euclidean"
   ],
   "changed_sources": [
     {
@@ -534,6 +536,20 @@
       "baseline_sha256": null,
       "sha256": "eeda1443308ef692c6f4e8f301efd202151f4ecfd5f22d8b0e3009869d7d3fe6",
       "provenance": "New original compact-support cap naturality under open embeddings, reusing actual compact-support colimits, cap descent and open excision; exact accepted Revision5 source preserved, with representative laws and the absolute-class specialization."
+    },
+    {
+      "module": "Poincare.Topology.Homology.EuclideanCompactHomology",
+      "path": "Poincare/Topology/Homology/EuclideanCompactHomology.lean",
+      "baseline_sha256": null,
+      "sha256": "12bb1b2f0113c1b39650de1b20ed2fd24678a9a9fd73b44e19e558dd97e06b53",
+      "provenance": "New original unique coherent compact relative-homology family from an actual point class in every degree on a finite-dimensional real normed space; exact accepted source fragments and scopes preserved."
+    },
+    {
+      "module": "Poincare.Topology.Homology.CompactlySupportedCohomology.Euclidean",
+      "path": "Poincare/Topology/Homology/CompactlySupportedCohomology/Euclidean.lean",
+      "baseline_sha256": null,
+      "sha256": "1d01e752817b25337f4d01754b869a799ec3d84f6bcd031d22f34cd10ad5c276",
+      "provenance": "New original computation of actual integral compactly supported cohomology on finite-dimensional real normed spaces: singleton comparison, off-dimension vanishing, supplied-family cap engines and internally produced-family cap bijections in every complementary degree, with exact top specialization; accepted source fragments and scopes preserved."
     }
   ],
   "poincare_sources": [
@@ -1493,13 +1509,27 @@
       "baseline_sha256": null,
       "sha256": "eeda1443308ef692c6f4e8f301efd202151f4ecfd5f22d8b0e3009869d7d3fe6",
       "provenance": "New original compact-support cap naturality under open embeddings, reusing actual compact-support colimits, cap descent and open excision; exact accepted Revision5 source preserved, with representative laws and the absolute-class specialization."
+    },
+    {
+      "module": "Poincare.Topology.Homology.EuclideanCompactHomology",
+      "path": "Poincare/Topology/Homology/EuclideanCompactHomology.lean",
+      "baseline_sha256": null,
+      "sha256": "12bb1b2f0113c1b39650de1b20ed2fd24678a9a9fd73b44e19e558dd97e06b53",
+      "provenance": "New original unique coherent compact relative-homology family from an actual point class in every degree on a finite-dimensional real normed space; exact accepted source fragments and scopes preserved."
+    },
+    {
+      "module": "Poincare.Topology.Homology.CompactlySupportedCohomology.Euclidean",
+      "path": "Poincare/Topology/Homology/CompactlySupportedCohomology/Euclidean.lean",
+      "baseline_sha256": null,
+      "sha256": "1d01e752817b25337f4d01754b869a799ec3d84f6bcd031d22f34cd10ad5c276",
+      "provenance": "New original computation of actual integral compactly supported cohomology on finite-dimensional real normed spaces: singleton comparison, off-dimension vanishing, supplied-family cap engines and internally produced-family cap bijections in every complementary degree, with exact top specialization; accepted source fragments and scopes preserved."
     }
   ],
   "aggregate": {
     "path": "Poincare.lean",
     "baseline_sha256": "99c3c8e47c19f60ee50a7e0f377e59138cf4ff33ebd4e26530d3c2b7cd47d452",
-    "sha256": "688a12c87a958bd6a2ceb39129812a466db05063364a51aa8b2215e93462986b",
-    "change": "Flat 155-leaf checkpoint aggregate; recovered project remains separate"
+    "sha256": "cbaa370f532487c670843cba3caebdad2d110f605fe2b2394f15a547706d5169",
+    "change": "Flat 157-leaf checkpoint aggregate; recovered project remains separate"
   },
   "configuration": [
     {
@@ -1865,7 +1895,14 @@
     "Poincare.Topology.integralRelativeCohomologyMap_bijective_of_isOpenEmbedding",
     "Poincare.Topology.sphereOutwardOrientation_chart_isLocallyConstant",
     "Poincare.Topology.exists_integralCompactlySupportedCohomology_cap_natural",
-    "Poincare.Topology.exists_integralCompactlySupportedCohomology_cap_of_absolute_natural"
+    "Poincare.Topology.exists_integralCompactlySupportedCohomology_cap_of_absolute_natural",
+    "Poincare.Topology.exists_unique_compact_homology_family_of_local_class",
+    "Poincare.Topology.integralRelativeToCompactlySupportedCohomology_singleton_bijective",
+    "Poincare.Topology.integralCompactlySupportedCohomology_subsingleton_of_ne_finrank",
+    "Poincare.Topology.exists_unique_integralCompactlySupportedCohomology_cap_bijective_of_local_generator",
+    "Poincare.Topology.exists_unique_integralCompactlySupportedCohomology_cap_bijective_of_local_generator_of_add_eq",
+    "Poincare.Topology.exists_integralCompactlySupportedCohomology_cap_bijective",
+    "Poincare.Topology.exists_integralCompactlySupportedCohomology_top_cap_bijective"
   ],
   "historical_authorities": [
     {
@@ -2003,30 +2040,31 @@
     "full_topology_suite_accepted": false
   },
   "validation": {
-    "status": "passed for the selected 155-module checkpoint; full topology suite incomplete",
+    "status": "passed for the selected 157-module checkpoint; full topology suite incomplete",
     "date": "2026-09-14",
     "slurm_job": "13879784",
     "host": "della-h14n10",
-    "request_id": "1789423068007160847-topology_checkpoint-d240eeba",
-    "input_sha256": "7325f2331617357d37225f63de3cc172fa4a5048d3dfa0d03f0a283f7d2a2f7c",
-    "result_sha256": "d5c230ff66af8e72cecdb1dbfcf520c6d2c4d57ca69d2bc0aca30494f6646215",
-    "artifact_log_sha256": "361e031713c9aba079bcdc085532cc7793a7be8b26e8030990a91313da76f188",
-    "source_config_harness_hash_guards": 1617,
+    "request_id": "1789424688850841934-topology_checkpoint-c23ff782",
+    "input_sha256": "19fe0fea327de875aa85edc362b054bc1a32fda8cd7eb0ddb6d1d32951758501",
+    "result_sha256": "4bf04bb1d38078a7e4b93e93348d3346c74f693c815134ceb4486b1092455da2",
+    "artifact_log_sha256": "68d63013df68683a632198c6651bf1612092851c86f699f22c530b199d591b10",
+    "source_config_harness_hash_guards": 1739,
     "freshly_built_modules": [
-      "Poincare.Topology.Homology.CompactlySupportedCohomology.CapNaturality",
+      "Poincare.Topology.Homology.EuclideanCompactHomology",
+      "Poincare.Topology.Homology.CompactlySupportedCohomology.Euclidean",
       "Poincare"
     ],
     "root_build": "lake --no-cache --iofail build Poincare",
-    "fresh_build_scope": "Fresh CapNaturality leaf and portable root; all 154 preceding leaves retain exact bytes.",
-    "exact_public_exports": 226,
-    "public_and_consumer_signature_axiom_pairs": 443,
+    "fresh_build_scope": "Fresh EuclideanCompactHomology and CompactlySupportedCohomology.Euclidean leaves and portable root; all 155 preceding leaves retain exact bytes.",
+    "exact_public_exports": 233,
+    "public_and_consumer_signature_axiom_pairs": 475,
     "linters": [
       "unusedArguments",
       "simpNF",
       "synTaut",
       "checkType"
     ],
-    "linter_scope": "Complete CapNaturality module plus all current consumers, including private and generated declarations, selected once through the stock module-prefix API",
+    "linter_scope": "Inherited complete naturality gate and complete two new modules plus all model consumers, selected through the stock API with the same four linters",
     "defLemma": "Unavailable in the pinned Mathlib; source declaration-kind checks retained.",
     "allowed_transitive_axioms": [
       "propext",
@@ -2034,51 +2072,27 @@
       "Quot.sound"
     ],
     "unexpected_diagnostics": 0,
-    "elapsed_seconds": 96.31448340415955,
-    "peak_summed_rss_bytes": 3576463360,
+    "elapsed_seconds": 97.67499852180481,
+    "peak_summed_rss_bytes": 3701628928,
     "full_topology_suite_accepted": false,
     "consumer_probes": [
-      "All 136 preceding original and 436 preceding portable readback pairs are byte-identical",
-      "All 39 accepted source types are byte-identical in the original check; all 36 non-new-private pairs are byte-identical",
-      "All 39 source and 143 shared imported readbacks agree through exact private heads, qualification and whitespace; one ordered axiom wrap",
-      "Proper point-to-integers open embedding has nonzero source, target and compact-support classes, actual cap values and the full naturality square"
+      "All 143 preceding original and 443 preceding portable readback pairs are byte-identical",
+      "All 57 accepted source types are byte-identical in the original check; 51 complete pairs are byte-identical and six exact private axiom heads differ",
+      "All 57 source and 181 shared imported readbacks agree through exact private names, qualification and whitespace, with exact ordered axioms and no binder changes",
+      "Seventeen model consumers preserve nonzero real and rank-zero classes, augmentation one, shifted points and the actual zero real (0,1) cap between vanishing groups"
     ],
     "parser_sha256": "d5596498ac375c6e1e72738d49070e3f89a692cda36f2c1397add3a2ade6cbaf",
     "artifact_build_evidence": {
-      "sha256": "361e031713c9aba079bcdc085532cc7793a7be8b26e8030990a91313da76f188",
+      "sha256": "68d63013df68683a632198c6651bf1612092851c86f699f22c530b199d591b10",
       "freshly_built_modules": [
-        "Poincare.Topology.Homology.CompactlySupportedCohomology.CapNaturality",
+        "Poincare.Topology.Homology.EuclideanCompactHomology",
+        "Poincare.Topology.Homology.CompactlySupportedCohomology.Euclidean",
         "Poincare"
       ],
-      "elapsed": "0:16.86",
-      "rss_kib": 1831844,
-      "request_id": "1789423068007160847-topology_checkpoint-d240eeba"
-    },
-    "subsequent_authority_changes": {
-      "sha256": "5c893123c1208e6b18ad090563a8989b24f425b242ebc78ffc1d3ae358f2d919",
-      "reason": "Explicit September 14 user authorization of multiple persistent Kimina workers, Slurm allocations and independent final reviewers; no mathematical or compiler gate changed.",
-      "entries": [
-        {
-          "path": "/scratch/gpfs/KARTHIKN/ayush/differential-geometry-schoenflies/AGENTS.md",
-          "before": "d46824ae53fcf2031fa861af22afcdca0dca3b5994e4115144f80029d92f5c82",
-          "after": "7a68aa63f968c86b42605d75762f58fb73d67dff58794ec0a3334d98a71b36fa"
-        },
-        {
-          "path": "/scratch/gpfs/KARTHIKN/ayush/differential-geometry-schoenflies/differential-geometry-dev/canonical-topology/AGENTS.md",
-          "before": "bbea3864a1ef46d4a4b12818758e212939d869d368f8f8fd1e8fc0cb6600bf6c",
-          "after": "2fe968c1164d1883b3ac8c11ddc397aa723f7b97ee73be640592db53df791abc"
-        },
-        {
-          "path": "/scratch/gpfs/KARTHIKN/ayush/differential-geometry-schoenflies/plan/della_two_projects_prompt.md",
-          "before": "ebaf78cdb6877ca14c39d244451982b3db5d43d2d2d68567f555102ef222bc1f",
-          "after": "155c1e3235a84dfa86285794b5d4ae37cf441f247a155e7b67ad2759b27e0c01"
-        },
-        {
-          "path": "/scratch/gpfs/KARTHIKN/ayush/differential-geometry-schoenflies/plan/plan_smooth_schoenflies.md",
-          "before": "a4fddbf7c201776a55b3a6afecdd895c40a23ac8e7a0f810c1c3c44a2f007927",
-          "after": "a25a0933f2b44f354f958f1eb09d65a3cff2215563ff0fe99ad3535b91d0d76a"
-        }
-      ]
+      "elapsed": "0:24.22",
+      "rss_kib": 1984712,
+      "request_id": "1789424368430989063-topology_checkpoint-415a1c6a",
+      "evidence_scope": "Fresh unchanged-source compilation only; failed consumer harness is not accepted proof evidence"
     }
   },
   "previous_linear_sign_checkpoint_validation": {
@@ -5428,5 +5442,145 @@
         }
       ]
     }
+  },
+  "previous_euclidean_compact_support_validation": {
+    "status": "passed for the selected 155-module checkpoint; full topology suite incomplete",
+    "date": "2026-09-14",
+    "slurm_job": "13879784",
+    "host": "della-h14n10",
+    "request_id": "1789423068007160847-topology_checkpoint-d240eeba",
+    "input_sha256": "7325f2331617357d37225f63de3cc172fa4a5048d3dfa0d03f0a283f7d2a2f7c",
+    "result_sha256": "d5c230ff66af8e72cecdb1dbfcf520c6d2c4d57ca69d2bc0aca30494f6646215",
+    "artifact_log_sha256": "361e031713c9aba079bcdc085532cc7793a7be8b26e8030990a91313da76f188",
+    "source_config_harness_hash_guards": 1617,
+    "freshly_built_modules": [
+      "Poincare.Topology.Homology.CompactlySupportedCohomology.CapNaturality",
+      "Poincare"
+    ],
+    "root_build": "lake --no-cache --iofail build Poincare",
+    "fresh_build_scope": "Fresh CapNaturality leaf and portable root; all 154 preceding leaves retain exact bytes.",
+    "exact_public_exports": 226,
+    "public_and_consumer_signature_axiom_pairs": 443,
+    "linters": [
+      "unusedArguments",
+      "simpNF",
+      "synTaut",
+      "checkType"
+    ],
+    "linter_scope": "Complete CapNaturality module plus all current consumers, including private and generated declarations, selected once through the stock module-prefix API",
+    "defLemma": "Unavailable in the pinned Mathlib; source declaration-kind checks retained.",
+    "allowed_transitive_axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "unexpected_diagnostics": 0,
+    "elapsed_seconds": 96.31448340415955,
+    "peak_summed_rss_bytes": 3576463360,
+    "full_topology_suite_accepted": false,
+    "consumer_probes": [
+      "All 136 preceding original and 436 preceding portable readback pairs are byte-identical",
+      "All 39 accepted source types are byte-identical in the original check; all 36 non-new-private pairs are byte-identical",
+      "All 39 source and 143 shared imported readbacks agree through exact private heads, qualification and whitespace; one ordered axiom wrap",
+      "Proper point-to-integers open embedding has nonzero source, target and compact-support classes, actual cap values and the full naturality square"
+    ],
+    "parser_sha256": "d5596498ac375c6e1e72738d49070e3f89a692cda36f2c1397add3a2ade6cbaf",
+    "artifact_build_evidence": {
+      "sha256": "361e031713c9aba079bcdc085532cc7793a7be8b26e8030990a91313da76f188",
+      "freshly_built_modules": [
+        "Poincare.Topology.Homology.CompactlySupportedCohomology.CapNaturality",
+        "Poincare"
+      ],
+      "elapsed": "0:16.86",
+      "rss_kib": 1831844,
+      "request_id": "1789423068007160847-topology_checkpoint-d240eeba"
+    },
+    "subsequent_authority_changes": {
+      "sha256": "5c893123c1208e6b18ad090563a8989b24f425b242ebc78ffc1d3ae358f2d919",
+      "reason": "Explicit September 14 user authorization of multiple persistent Kimina workers, Slurm allocations and independent final reviewers; no mathematical or compiler gate changed.",
+      "entries": [
+        {
+          "path": "/scratch/gpfs/KARTHIKN/ayush/differential-geometry-schoenflies/AGENTS.md",
+          "before": "d46824ae53fcf2031fa861af22afcdca0dca3b5994e4115144f80029d92f5c82",
+          "after": "7a68aa63f968c86b42605d75762f58fb73d67dff58794ec0a3334d98a71b36fa"
+        },
+        {
+          "path": "/scratch/gpfs/KARTHIKN/ayush/differential-geometry-schoenflies/differential-geometry-dev/canonical-topology/AGENTS.md",
+          "before": "bbea3864a1ef46d4a4b12818758e212939d869d368f8f8fd1e8fc0cb6600bf6c",
+          "after": "2fe968c1164d1883b3ac8c11ddc397aa723f7b97ee73be640592db53df791abc"
+        },
+        {
+          "path": "/scratch/gpfs/KARTHIKN/ayush/differential-geometry-schoenflies/plan/della_two_projects_prompt.md",
+          "before": "ebaf78cdb6877ca14c39d244451982b3db5d43d2d2d68567f555102ef222bc1f",
+          "after": "155c1e3235a84dfa86285794b5d4ae37cf441f247a155e7b67ad2759b27e0c01"
+        },
+        {
+          "path": "/scratch/gpfs/KARTHIKN/ayush/differential-geometry-schoenflies/plan/plan_smooth_schoenflies.md",
+          "before": "a4fddbf7c201776a55b3a6afecdd895c40a23ac8e7a0f810c1c3c44a2f007927",
+          "after": "a25a0933f2b44f354f958f1eb09d65a3cff2215563ff0fe99ad3535b91d0d76a"
+        }
+      ]
+    }
+  },
+  "original_euclidean_compact_support_validation": {
+    "request_id": "1789424688780611683-topology-695c2602",
+    "input_sha256": "3f575629df7772e73aa505d7b09463ad2698911eec3638f5fdabc9b28e8b36eb",
+    "result_sha256": "e4663adef83dc2826e3b6b7b643828acf6b45e1ef9fd86173b7a482a08d08108",
+    "elapsed_seconds": 55.28990602493286,
+    "slurm_job": "13879784",
+    "host": "della-h14n10",
+    "parser_sha256": "d5596498ac375c6e1e72738d49070e3f89a692cda36f2c1397add3a2ade6cbaf",
+    "source_guards": 1443,
+    "signature_axiom_pairs": 181,
+    "fresh_artifacts": {
+      "sha256": "a9238f80bd550dd1a6318636cd31a6255c5b8247b43b42b8027afae03811c34c",
+      "freshly_built_modules": [
+        "Poincare.Topology.Homology.EuclideanCompactHomology",
+        "Poincare.Topology.Homology.CompactlySupportedCohomology.Euclidean"
+      ],
+      "elapsed": "0:17.36",
+      "rss_kib": 1980940,
+      "request_id": "1789424368353266751-topology-87087b04",
+      "evidence_scope": "Fresh unchanged-source compilation only; failed consumer harness is not accepted proof evidence"
+    },
+    "source": {
+      "request_id": "1789422923755474952-topology-0999b8bd",
+      "input_sha256": "f18c2425413d1f288a58f51b5292ec851524535d90610b40d320aa03f1f6135c",
+      "result_sha256": "621b49dbb6da823c79e27c097a9078567f6a65311f89d14557a4c42726260917",
+      "elapsed_seconds": 26.69901156425476,
+      "slurm_job": "13879784",
+      "host": "della-h14n10",
+      "parser_sha256": "d5596498ac375c6e1e72738d49070e3f89a692cda36f2c1397add3a2ade6cbaf",
+      "source_guards": 505,
+      "signature_axiom_pairs": 57
+    },
+    "source_parent_regressions": [
+      {
+        "request_id": "1789422416729856114-topology-c1ef5e2c",
+        "planned_request": "/scratch/gpfs/KARTHIKN/ayush/differential-geometry-schoenflies/.changes/slurm-prepared/local-global-duality-sept14/ModelCompactSupport/CapPrimary/Focused-request.json",
+        "planned_sha256": "05fe8ad5963e23965950efbe29dc9a927559f89254a41fee72807b8c2c9171b7",
+        "result_sha256": "da8b8f44c9ba5acc0031c118f7ae9cdb0a6cb4abb554f6011b1eccc8057193d3",
+        "pair_count": 22,
+        "all_types_byte_identical": true,
+        "all_axiom_texts_byte_identical": true
+      },
+      {
+        "request_id": "1789422437143558519-topology-3b9c0586",
+        "planned_request": "/scratch/gpfs/KARTHIKN/ayush/differential-geometry-schoenflies/.changes/slurm-prepared/model-compact-support-offdegree-sept14/ComplementaryCap/Focused-request.json",
+        "planned_sha256": "24b8ed25bdd2cf771f8b443377752e325b537015d784977f5b5b9feec77797c0",
+        "result_sha256": "f5d128cd88b94477bc0f4a524c823b1c76d7e9528e44dfd522e8f218cbd8412b",
+        "pair_count": 40,
+        "all_types_byte_identical": true,
+        "all_axiom_texts_byte_identical": true
+      }
+    ],
+    "body_preservation_sha256": "6a8c6acc92a357883ef7095f9af5365cd7fe65f87e8f55b5ea440fb1e72792d4",
+    "consumer_preservation_sha256": "d4f701ca53b170b3b021e6226164825fb23d610cab22c7d28931f6e19168d60c",
+    "old_original_pairs_unchanged": 143,
+    "old_portable_pairs_unchanged": 443,
+    "source_shared_readback_count": 57,
+    "original_portable_shared_readback_count": 181,
+    "comparison": "Old imported readbacks byte-identical; all 57 original source types and 51 complete pairs byte-identical; six exact new private axiom heads. Cross-project qualification/whitespace only, exact ordered axiom suffixes; no binder or alpha normalization.",
+    "harness_repair": "One consumer call fully qualified in both harnesses; only three redundant universe u commands removed from appended portable consumer sections. All declarations, type binders, query bytes and gates retained. Original failed harnesses remain failed history."
   }
 }
