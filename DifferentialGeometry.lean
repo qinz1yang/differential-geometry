@@ -6489,6 +6489,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.InitialSphe
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.InitialTerminalRegionFrontier
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.LocalSurgeryNoncollapsing
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.MetricStep
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.MetricStepSatisfiability
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.NeckNormalizationDictionary
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.NoncollapseConservation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.NoncollapseLocalization
