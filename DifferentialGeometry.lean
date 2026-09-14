@@ -5612,6 +5612,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.KLim
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.KLimThreeDimensionalBounded
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.KLimUniformLimit
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.KappaSeedFrontierConsolidation
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.LimitUniqueness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.LocalAncientFlowCompactness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.LocalAncientFlowCompactnessExtensionWitness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.LocalAncientFlowCompactnessReduction
@@ -5861,6 +5862,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Univ
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.UniversalReducedVolume
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.UniversalScalarDifferentialBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.VolumeNaturality
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.WindowCompactnessProducer
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Chart.Defs
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Chart.EulerLagrangeEquation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Chart.FirstVariation
@@ -8203,6 +8205,7 @@ import DifferentialGeometry.Topology.Homology.HurewiczLowDegreeVanishingCriterio
 import DifferentialGeometry.Topology.Homology.HurewiczLowDegrees
 import DifferentialGeometry.Topology.Homology.HurewiczLowDegreesReduction
 import DifferentialGeometry.Topology.Homology.HurewiczLowDegreeTransport
+import DifferentialGeometry.Topology.Homology.HurewiczThreeReduction
 import DifferentialGeometry.Topology.Homology.HurewiczNullhomotopyCriterion
 import DifferentialGeometry.Topology.Homology.HurewiczOneAbelianization
 import DifferentialGeometry.Topology.Homology.HurewiczOneKernel
@@ -8261,6 +8264,7 @@ import DifferentialGeometry.Topology.Homology.PathCones
 import DifferentialGeometry.Topology.Homology.PathEvaluation
 import DifferentialGeometry.Topology.Homology.PoincareDualityThreeFrontier
 import DifferentialGeometry.Topology.Homology.PoincareDualityTwoOnePairing
+import DifferentialGeometry.Topology.Homology.PuncturedLefschetzDuality
 import DifferentialGeometry.Topology.Homology.RadialHomotopy
 import DifferentialGeometry.Topology.Homology.RayComplementCoverEvaluation
 import DifferentialGeometry.Topology.Homology.Reduced
@@ -8292,6 +8296,7 @@ import DifferentialGeometry.Topology.Homology.SimplexBoundary
 import DifferentialGeometry.Topology.Homology.SimplexDegreeChainLevel
 import DifferentialGeometry.Topology.Homology.SimplexEvaluation
 import DifferentialGeometry.Topology.Homology.SimplexMaps
+import DifferentialGeometry.Topology.Homology.SimplexPrismChain
 import DifferentialGeometry.Topology.Homology.SimplexPushFaces
 import DifferentialGeometry.Topology.Homology.SingularChainSubspaceMembership
 import DifferentialGeometry.Topology.Homology.SingularSubdivision
@@ -8742,6 +8747,7 @@ import DifferentialGeometry.Topology.Manifold.Involution.LocalLift
 import DifferentialGeometry.Topology.Manifold.Involution.QuotientManifold
 import DifferentialGeometry.Topology.Manifold.Involution.QuotientProjection
 import DifferentialGeometry.Topology.Manifold.IsotopyOrientation
+import DifferentialGeometry.Topology.Manifold.LensSpaceAction
 import DifferentialGeometry.Topology.Manifold.LieBracketNaturality
 import DifferentialGeometry.Topology.Manifold.LiftedChartLocalDiffeomorph
 import DifferentialGeometry.Topology.Manifold.LinePatch
@@ -8821,6 +8827,7 @@ import DifferentialGeometry.Topology.Manifold.Path.Segment
 import DifferentialGeometry.Topology.Manifold.Paths
 import DifferentialGeometry.Topology.Manifold.PlanarChartGermIsotopy
 import DifferentialGeometry.Topology.Manifold.PlanarFieldDeformation
+import DifferentialGeometry.Topology.Manifold.PrescribedCollarStraightening
 import DifferentialGeometry.Topology.Manifold.PrescribedDifferential
 import DifferentialGeometry.Topology.Manifold.ProductBoundaryMap
 import DifferentialGeometry.Topology.Manifold.ProductChartGraph
