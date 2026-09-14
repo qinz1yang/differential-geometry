@@ -1,9 +1,9 @@
 {
-  "scope": "Dependency-closed 137-module checkpoint including uniquely normalized real-line local cap duality and actual pair-map transport of cap bijectivity; full topology suite incomplete",
+  "scope": "Dependency-closed 138-module checkpoint including actual cohomology degree shift for two contractible open sets, both map equations, and relative-to-absolute comparison in every positive degree; full topology suite incomplete",
   "baseline_commit": "b45bfa009368c8f5f531e10f4f5280e90079d6ad",
   "baseline_ref": "refs/remotes/origin/codex/chapter35",
   "source_project": "PoincareLean",
-  "source_module_count": 137,
+  "source_module_count": 138,
   "roots": [
     "Poincare.Topology.Homology.RelativeMaps",
     "Poincare.Topology.Homology.RelativeHomeomorphism",
@@ -37,7 +37,8 @@
     "Poincare.Topology.Homology.CohomologyVanishing",
     "Poincare.Topology.Homology.RelativeCohomologyVanishing",
     "Poincare.Topology.Homology.RelativeComparison",
-    "Poincare.Topology.Homology.RealLocalDuality"
+    "Poincare.Topology.Homology.RealLocalDuality",
+    "Poincare.Topology.Homology.CohomologyContractibleCover"
   ],
   "changed_sources": [
     {
@@ -76,6 +77,12 @@
       "path": "Poincare/Topology/Homology/CochainHomotopy.lean",
       "baseline_sha256": null,
       "sha256": "9bfca41d38079cb9afd2a3a18116d50b54bb8a6739ad96ec1941da8efe0f5b06"
+    },
+    {
+      "module": "Poincare.Topology.Homology.CohomologyContractibleCover",
+      "path": "Poincare/Topology/Homology/CohomologyContractibleCover.lean",
+      "baseline_sha256": null,
+      "sha256": "2dd71984864c9e7f68ba45cd2fb7e212e71da093a0b180beaf63aaa68f1ca55d"
     },
     {
       "module": "Poincare.Topology.Homology.CohomologyVanishing",
@@ -233,7 +240,7 @@
       "module": "Poincare.Topology.Homology.RelativeCohomologyVanishing",
       "path": "Poincare/Topology/Homology/RelativeCohomologyVanishing.lean",
       "baseline_sha256": null,
-      "sha256": "53f5e22c573919667515d244517b91a4e6b6b10432fdb9302b265261d8d9fb15"
+      "sha256": "35bf9e2ed884d87fb7f132e1048d25106ab8c55a1ebbcd216ade7b88db0c53d5"
     },
     {
       "module": "Poincare.Topology.Homology.RelativeComparison",
@@ -514,6 +521,12 @@
       "path": "Poincare/Topology/Homology/Cochains.lean",
       "baseline_sha256": "863bbc0d4775ff94ab84e7369c6cff617a39303df6554100387129c2ad524147",
       "sha256": "863bbc0d4775ff94ab84e7369c6cff617a39303df6554100387129c2ad524147"
+    },
+    {
+      "module": "Poincare.Topology.Homology.CohomologyContractibleCover",
+      "path": "Poincare/Topology/Homology/CohomologyContractibleCover.lean",
+      "baseline_sha256": null,
+      "sha256": "2dd71984864c9e7f68ba45cd2fb7e212e71da093a0b180beaf63aaa68f1ca55d"
     },
     {
       "module": "Poincare.Topology.Homology.CohomologyVanishing",
@@ -815,7 +828,7 @@
       "module": "Poincare.Topology.Homology.RelativeCohomologyVanishing",
       "path": "Poincare/Topology/Homology/RelativeCohomologyVanishing.lean",
       "baseline_sha256": null,
-      "sha256": "53f5e22c573919667515d244517b91a4e6b6b10432fdb9302b265261d8d9fb15"
+      "sha256": "35bf9e2ed884d87fb7f132e1048d25106ab8c55a1ebbcd216ade7b88db0c53d5"
     },
     {
       "module": "Poincare.Topology.Homology.RelativeComparison",
@@ -1218,8 +1231,8 @@
   "aggregate": {
     "path": "Poincare.lean",
     "baseline_sha256": "99c3c8e47c19f60ee50a7e0f377e59138cf4ff33ebd4e26530d3c2b7cd47d452",
-    "sha256": "959f9f7f3ffbaae61664b057072b76bb1ad460651676c2271167f099fee128fe",
-    "change": "Flat 137-leaf checkpoint aggregate; full recovered aggregate remains separate"
+    "sha256": "f26e522e08bd627c0cd7100fb863f9e2dda31640856b8539930dadf673d3157c",
+    "change": "Flat 138-leaf checkpoint aggregate; full recovered aggregate remains separate"
   },
   "configuration": [
     {
@@ -1494,7 +1507,12 @@
     "Poincare.Topology.integralRelativeHomologyMap_bijective_of_absolute_and_subspace",
     "Poincare.Topology.integralRelativeCohomologyMap_bijective_of_absolute_and_subspace",
     "Poincare.Topology.integralRelativeCohomologyCapToAbsolute_bijective_map",
-    "Poincare.Topology.exists_unique_real_local_cap_bijective"
+    "Poincare.Topology.exists_unique_real_local_cap_bijective",
+    "Poincare.Topology.integralRelativeToAbsoluteCohomology_bijective",
+    "Poincare.Topology.integralRelativeToAbsoluteCohomology_bijective_of_contractibleSpace",
+    "Poincare.Topology.integralCohomologyContractibleCoverEquiv",
+    "Poincare.Topology.integralCohomologyContractibleCoverEquiv_connecting",
+    "Poincare.Topology.integralCohomologyContractibleCoverEquiv_symm_apply"
   ],
   "historical_authorities": [
     {
@@ -1632,26 +1650,24 @@
     "full_topology_suite_accepted": false
   },
   "validation": {
-    "status": "passed for the selected 137-module checkpoint; full topology suite incomplete",
+    "status": "passed for the selected 138-module checkpoint; full topology suite incomplete",
     "date": "2026-09-13",
     "slurm_job": "13846673",
     "host": "della-r3c4n2",
-    "request_id": "1789348676973246883-topology_checkpoint-646e24a8",
-    "input_sha256": "cd04be809bca5d1f3405e5d1e3ae52cb288224c54e6ab6a8df13892e53e205c5",
-    "result_sha256": "11c5d951c6e261c39141d5015829bc9f6250d9c81380eb12763b7ff6831ebc78",
-    "artifact_log_sha256": "1cddc04971ebc889c270ef67ac9bc8bc8461c699816314fa959ab5724dab4965",
-    "source_config_harness_hash_guards": 577,
+    "request_id": "1789350917588866799-topology_checkpoint-94b7a925",
+    "input_sha256": "7ffa68f3e3ded450b7e7d20d09942c4486da4355d55cad3aa8c1b1eab4a0e349",
+    "result_sha256": "9234f0bf6f89e01cffaabdbacb0dfae8f856b667de526df6f5577a20b32bdd95",
+    "artifact_log_sha256": "b9eff83f6863ca3ee5d90ab96c7f88e3c18c8e36f620545859d2dde0a2d472fc",
+    "source_config_harness_hash_guards": 588,
     "freshly_built_modules": [
-      "Poincare.Topology.Homology.RelativeCapToAbsoluteHomology",
-      "Poincare.Topology.Homology.RelativeCapCohomologyConnecting",
-      "Poincare.Topology.Homology.TwoPointCapDuality",
-      "Poincare.Topology.Homology.RealLocalDuality",
+      "Poincare.Topology.Homology.RelativeCohomologyVanishing",
+      "Poincare.Topology.Homology.CohomologyContractibleCover",
       "Poincare"
     ],
     "root_build": "lake --no-cache --iofail build Poincare",
-    "fresh_build_scope": "RealLocalDuality70, RelativeCapToAbsoluteHomology367, two affected cap modules and root freshly compiled with zero diagnostics; other135 preceding leaves unchanged.",
-    "exact_public_exports": 154,
-    "public_and_consumer_signature_axiom_pairs": 270,
+    "fresh_build_scope": "RelativeCohomologyVanishing130, CohomologyContractibleCover64 and root freshly compiled with zero diagnostics in81.04s, RSS1826080KiB. The first consumer harness failed only on a repeated universe declaration; corrected harness94b7a925 uses these exact unchanged source artifacts. Other136 preceding leaves unchanged.",
+    "exact_public_exports": 159,
+    "public_and_consumer_signature_axiom_pairs": 277,
     "linters": [
       "unusedArguments",
       "simpNF",
@@ -1666,16 +1682,17 @@
       "Quot.sound"
     ],
     "unexpected_diagnostics": 0,
-    "elapsed_seconds": 254.02657103538513,
-    "peak_summed_rss_bytes": 3172954112,
+    "elapsed_seconds": 76.62235641479492,
+    "peak_summed_rss_bytes": 3994222592,
     "full_topology_suite_accepted": false,
     "consumer_probes": [
-      "All267 previous signature/axiom pairs reproduced byte-identically",
-      "Public real-line theorem produces unique actual local H1 class with boundary [+1]-[-1] and bijective relative H1-cohomology to absolute H0 cap map",
-      "Consumer forces the produced class nonzero and distinct from its negative; cap against either sign is bijective",
-      "Generic actual pair-map cap transport preserves the exact pushed-forward homology class",
-      "New original/portable types differ only by Set.MapsTo qualification and whitespace; standalone source generic binders grouped X/Y before instances, final module uses inherited X/instance/Y/instance order; all axiom readbacks exact"
-    ]
+      "All270 previous signature/axiom pairs reproduced byte-identically",
+      "Actual cohomology H(n+2) of a two-contractible-open-set cover is equivalent to H(n+1) of its actual intersection; original relative/excision/connecting forward and inverse equations are exposed",
+      "Relative-to-absolute cohomology is bijective in every positive degree for a contractible subspace, including degree1 by actual unit-class surjectivity",
+      "Native sphere-to-orthogonal-sphere degree-shift and degree-one pole-complement comparison consumers use actual sphere geometry",
+      "All12 source/original/portable readbacks differ only by Set.univ qualification and whitespace; all axioms exact"
+    ],
+    "artifact_request_id": "1789350585164929823-topology_checkpoint-868e1ec3"
   },
   "previous_linear_sign_checkpoint_validation": {
     "status": "passed for this 88-module checkpoint; full topology suite incomplete",
@@ -3479,5 +3496,61 @@
     "source_request_id": "1789348336408768804-topology-223216fb",
     "source_elapsed_seconds": 23.66934847831726,
     "source_readback_comparison": "two producer/consumer pairs exact; generic source implicit binder order follows final inherited module scope; Set.MapsTo qualification and whitespace normalized only; axioms exact; all267 previous portable pairs exact"
+  },
+  "previous_real_local_cap_validation": {
+    "status": "passed for the selected 137-module checkpoint; full topology suite incomplete",
+    "date": "2026-09-13",
+    "slurm_job": "13846673",
+    "host": "della-r3c4n2",
+    "request_id": "1789348676973246883-topology_checkpoint-646e24a8",
+    "input_sha256": "cd04be809bca5d1f3405e5d1e3ae52cb288224c54e6ab6a8df13892e53e205c5",
+    "result_sha256": "11c5d951c6e261c39141d5015829bc9f6250d9c81380eb12763b7ff6831ebc78",
+    "artifact_log_sha256": "1cddc04971ebc889c270ef67ac9bc8bc8461c699816314fa959ab5724dab4965",
+    "source_config_harness_hash_guards": 577,
+    "freshly_built_modules": [
+      "Poincare.Topology.Homology.RelativeCapToAbsoluteHomology",
+      "Poincare.Topology.Homology.RelativeCapCohomologyConnecting",
+      "Poincare.Topology.Homology.TwoPointCapDuality",
+      "Poincare.Topology.Homology.RealLocalDuality",
+      "Poincare"
+    ],
+    "root_build": "lake --no-cache --iofail build Poincare",
+    "fresh_build_scope": "RealLocalDuality70, RelativeCapToAbsoluteHomology367, two affected cap modules and root freshly compiled with zero diagnostics; other135 preceding leaves unchanged.",
+    "exact_public_exports": 154,
+    "public_and_consumer_signature_axiom_pairs": 270,
+    "linters": [
+      "unusedArguments",
+      "simpNF",
+      "synTaut",
+      "checkType"
+    ],
+    "linter_scope": "All imported Poincare declarations and current consumers, including private declarations",
+    "defLemma": "Unavailable in the pinned Mathlib; source declaration-kind checks retained.",
+    "allowed_transitive_axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "unexpected_diagnostics": 0,
+    "elapsed_seconds": 254.02657103538513,
+    "peak_summed_rss_bytes": 3172954112,
+    "full_topology_suite_accepted": false,
+    "consumer_probes": [
+      "All267 previous signature/axiom pairs reproduced byte-identically",
+      "Public real-line theorem produces unique actual local H1 class with boundary [+1]-[-1] and bijective relative H1-cohomology to absolute H0 cap map",
+      "Consumer forces the produced class nonzero and distinct from its negative; cap against either sign is bijective",
+      "Generic actual pair-map cap transport preserves the exact pushed-forward homology class",
+      "New original/portable types differ only by Set.MapsTo qualification and whitespace; standalone source generic binders grouped X/Y before instances, final module uses inherited X/instance/Y/instance order; all axiom readbacks exact"
+    ]
+  },
+  "original_cohomology_cover_validation": {
+    "request_id": "1789350579624669079-topology-3b354745",
+    "input_sha256": "719b19a42ae03068c8b81d9232cb78d76adb51de01349a7d2a069561ac9cc17e",
+    "elapsed_seconds": 101.18303751945496,
+    "source_guards": 130,
+    "signature_axiom_pairs": 12,
+    "source_request_id": "1789350441037321506-topology-322a5c49",
+    "source_elapsed_seconds": 23.614983320236206,
+    "source_readback_comparison": "All12 source/original/portable types agree modulo only Set.univ qualification and whitespace; all axiom readbacks exact; all270 previous portable pairs exact"
   }
 }

@@ -77,6 +77,54 @@ theorem integralRelativeCohomology_zero_subsingleton_of_pathConnectedSpace
       (integralRelativeToAbsoluteCohomology 0 A α)).mpr ⟨α, rfl⟩
   exact ⟨fun α β => (hz α).trans (hz β).symm⟩
 
+theorem integralRelativeToAbsoluteCohomology_bijective
+    {X : Type u} [TopologicalSpace X] (n : ℕ) (A : Set X)
+    [Subsingleton (integralSingularCohomology n A)]
+    [Subsingleton (integralSingularCohomology (n + 1) A)] :
+    Function.Bijective (integralRelativeToAbsoluteCohomology (n + 1) A) := by
+  have hi := integralRelativeCohomology_exact_relative n A
+  have hs := integralRelativeCohomology_exact_absolute (n + 1) A
+  have hleft : integralRelativeCohomologyConnecting n A = 0 := by
+    ext α
+    rw [Subsingleton.elim α 0, map_zero]
+    rfl
+  have hright : integralSingularCohomologyMap (n + 1) (singularSubspaceInclusion A) = 0 := by
+    ext α
+    exact Subsingleton.elim _ _
+  rw [hleft, LinearMap.exact_zero_iff_injective] at hi
+  rw [hright, LinearMap.exact_zero_iff_surjective] at hs
+  exact ⟨hi, hs⟩
+
+theorem integralRelativeToAbsoluteCohomology_bijective_of_contractibleSpace
+    {X : Type u} [TopologicalSpace X] (n : ℕ) (A : Set X) [ContractibleSpace A] :
+    Function.Bijective (integralRelativeToAbsoluteCohomology (n + 1) A) := by
+  cases n with
+  | zero =>
+    let _ := integralSingularCohomology_subsingleton_of_contractibleSpace A 1 (by decide)
+    have hi := integralRelativeCohomology_exact_relative 0 A
+    have hs := integralRelativeCohomology_exact_absolute 1 A
+    have hleft : integralRelativeCohomologyConnecting 0 A = 0 := by
+      ext α
+      let z := integralSingularCohomologyZeroEquiv A α
+      have hpre : integralSingularCohomologyMap 0 (singularSubspaceInclusion A)
+          (z • integralSingularCohomologyUnit X) = α := by
+        rw [map_zsmul, integralSingularCohomologyMap_unit,
+          ← integralSingularCohomologyZeroEquiv_symm_apply]
+        exact (integralSingularCohomologyZeroEquiv A).symm_apply_apply α
+      exact (integralRelativeCohomology_exact_subspace 0 A α).mpr ⟨_, hpre⟩
+    have hright : integralSingularCohomologyMap 1 (singularSubspaceInclusion A) = 0 := by
+      ext α
+      exact Subsingleton.elim _ _
+    rw [hleft, LinearMap.exact_zero_iff_injective] at hi
+    rw [hright, LinearMap.exact_zero_iff_surjective] at hs
+    exact ⟨hi, hs⟩
+  | succ n =>
+    let _ := integralSingularCohomology_subsingleton_of_contractibleSpace A (n + 1)
+      (Nat.succ_ne_zero n)
+    let _ := integralSingularCohomology_subsingleton_of_contractibleSpace A (n + 2)
+      (by omega)
+    exact integralRelativeToAbsoluteCohomology_bijective (n + 1) A
+
 end Poincare.Topology
 
 end

@@ -6,26 +6,27 @@ library is `Poincare`; its sources retain the original mathematical namespaces.
 
 The source baseline is the recovered Chapter 35 commit
 `b45bfa009368c8f5f531e10f4f5280e90079d6ad`, supplemented by recovered working-tree
-proofs with separately recorded provenance. This checkpoint includes 137 modules
-and 154 curated tracked added public exports. The latest addition constructs
-unique normalized local H1(R,R\{0};Z) class with boundary [+1]-[-1] and bijective
-actual cap map from relative H¹ to absolute H₀. It reuses two-point cap duality,
-actual sphere-to-puncture comparison, and the original connecting maps.
-The accompanying natural pair-map theorem transports cap bijectivity with
-the actual pushed-forward homology class. The consumer forces the produced
-class nonzero and distinct from its negative, and verifies both cap signs.
+proofs with separately recorded provenance. This checkpoint includes 138 modules
+and 159 curated tracked added public exports. The latest addition proves
+cohomology degree shift for a cover by two contractible open sets, with the
+actual relative/excision/connecting maps and inverse formula exposed.
+Relative-to-absolute cohomology comparison for a contractible subspace includes
+every positive degree; degree one uses the actual unit-class restriction.
+Native sphere and pole-complement consumers check these interfaces.
 
-Final request `1789348676973246883-topology_checkpoint-646e24a8` passed in
-Slurm13846673 in254.03s with577guards270signature/axiom pairs. All267 preceding
-pairs are byte-identical. New original/portable types differ only in
-Set.MapsTo qualification and whitespace. The standalone generic source grouped
-X/Y before instances; the final inherited module scope orders X/instance/Y/instance.
-Both real-line source types and all axiom readbacks are unchanged. Two changed
-leaves, two affected cap modules and root freshly compiled in2:35.63,
-maximum RSS1,885,652KiB, zero diagnostics. All135 other preceding leaves are
-unchanged. Strict source and stock declaration linters and standard-only
-transitive axioms pass. Pins and deferred inputs are unchanged. General
-manifold duality and the native orientation producer remain open.
+Source322a5c49 passed23.61s131guards12pairs; original3b354745 passed101.18s130/12.
+Portable868e1ec3 freshly compiled both changed leaves and root in1:21.04,
+RSS1826080KiB,zero diagnostics. Its consumer harness had a duplicate universe
+declaration; corrected94b7a925 passed76.62s588/277 using exact unchanged source
+artifacts. All270 preceding pairs are byte-identical, and all12 new/affected
+source-original-portable pairs differ only by Set.univ qualification and
+whitespace. All axiom readbacks exact; other136 earlier leaves unchanged.
+Strict source and stock declaration linters and standard-only transitive
+axioms pass. Pins and deferred inputs are unchanged. General manifold duality,
+the native orientation producer and the full frozen contract remain open.
+
+The preceding unique real-line local class, its normalization and actual cap
+bijection, and the generic pair-map cap transport remain unchanged.
 
 The preceding actual relative homology/cohomology comparison theorem and its
 sphere-to-puncture consumer retain their exact statements and bodies.

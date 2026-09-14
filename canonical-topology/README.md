@@ -1,11 +1,16 @@
 # Local homology and global classes from coherent local generators
 
 This separate `PoincareLean` project contains a dependency-closed checkpoint of
-137 Poincare modules. It extends the recovered Chapter 35 source at commit
+138 Poincare modules. It extends the recovered Chapter 35 source at commit
 `b45bfa009368c8f5f531e10f4f5280e90079d6ad` and preserves its mathematical objects
 and `Poincare` namespaces. `Poincare.lean` imports every included leaf.
 
 The additions prove:
+
+- cohomology degree shift for two contractible open sets covering a space,
+  with actual relative, excision and connecting maps in both directions,
+  and relative-to-absolute comparison in every positive degree for a
+  contractible subspace;
 
 - a unique actual local H1 class of the real line normalized by boundary
   [+1] minus [-1], with bijective relative H¹ to absolute H₀ cap map, and
@@ -893,7 +898,7 @@ manifold duality, native orientation and the full canonical suite remain open.
 
 ## Real-line local cap duality
 
-The current checkpoint contains 137 leaves and 154 curated tracked added public
+That checkpoint contained 137 leaves and 154 curated tracked added public
 exports. `exists_unique_real_local_cap_bijective` produces the unique class in
 actual H1(R, R\{0}; Z) whose boundary is [+1] minus [-1] and whose actual cap
 map from relative H¹ to absolute H₀ is bijective. The proof compares the
@@ -926,3 +931,38 @@ diagnostics. The other 135 prior leaf sources are unchanged. Strict source
 and stock declaration linters and standard-only transitive axioms pass.
 This proves a local one-dimensional duality case; general manifold duality,
 native orientation and the full canonical topology suite remain open.
+
+
+## Cohomology of a contractible open cover
+
+The current checkpoint contains 138 leaves and 159 curated tracked added
+public exports. `integralCohomologyContractibleCoverEquiv` identifies H^(n+2)(X)
+with H^(n+1)(A intersect B) for two actual contractible open subspaces covering
+X. Its connecting equation and inverse formula expose the original relative,
+excision and connecting maps. `RelativeCohomologyVanishing` also proves
+bijectivity of the actual relative-to-absolute map when adjacent subspace
+cohomology vanishes, and in every positive degree for a contractible subspace.
+Degree one uses surjectivity of the actual unit-class restriction; it is not
+excluded by an unnecessary lower-degree bound.
+
+Consumers specialize to a sphere covered by its two pole complements. They
+produce the cohomology shift to the actual sphere in the orthogonal hyperplane
+and check degree-one relative-to-absolute comparison at a pole complement.
+No new sphere model, supplied duality map or orientation certificate is used.
+
+Source `1789350441037321506-topology-322a5c49` passed in 23.61 seconds with
+131 guards and 12 pairs. Original imported check
+`1789350579624669079-topology-3b354745` passed in 101.18 seconds with 130
+guards and 12 pairs. Portable module/root compilation in request
+`1789350585164929823-topology_checkpoint-868e1ec3` passed in 1:21.04,
+maximum RSS 1,826,080 KiB, with zero diagnostics. Its consumer harness had a
+duplicate universe declaration; the corrected harness
+`1789350917588866799-topology_checkpoint-94b7a925` passed in 76.62 seconds
+using those unchanged source artifacts, with 588 guards and 277 pairs.
+
+All 270 preceding pairs are byte-identical. All 12 source, original and
+portable pairs agree modulo only Set.univ qualification and whitespace;
+axiom readbacks are exact. The other 136 earlier leaves are unchanged.
+Strict source and stock declaration linters and standard-only transitive
+axiom checks pass. General manifold duality, native orientation and the
+full canonical topology contract remain open.
