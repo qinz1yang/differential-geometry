@@ -39,16 +39,6 @@ def ClosedThreeManifoldFundamentalClassFrontier : Prop :=
   ∀ (M : Type u) [TopologicalSpace M] [ChartedSpace ThreeSpace M]
     [IsManifold ThreeModel ∞ M] (o : TangentOrientationSection M), localClassTransport o
 
-theorem exists_unique_fundamentalClass_of_closedThreeManifoldFrontier
-    (h : ClosedThreeManifoldFundamentalClassFrontier.{u})
-    (M : Type u) [TopologicalSpace M] [ChartedSpace ThreeSpace M]
-    [IsManifold ThreeModel ∞ M] [ConnectedSpace M]
-    (x₀ : M) (o : TangentOrientationSection M) :
-    ∃! z : IntegralHomology M 3, ∀ x : M,
-      absoluteToRelative M ({x}ᶜ) 3 z = localOrientationClass o x :=
-  exists_unique_fundamentalClass_of_puncturedVanishing_of_localClassTransport M x₀ o
-    (h.1 M x₀) (h.2 M o)
-
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 
 open Lean in
@@ -56,8 +46,7 @@ run_cmd do
   let allowed : List Name := [``propext, ``Classical.choice, ``Quot.sound]
   for n in [``DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.PuncturedThreeManifoldTopHomologyVanishing,
       ``DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.exists_unique_fundamentalClass_of_puncturedVanishing_of_localClassTransport,
-      ``DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ClosedThreeManifoldFundamentalClassFrontier,
-      ``DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.exists_unique_fundamentalClass_of_closedThreeManifoldFrontier] do
+      ``DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ClosedThreeManifoldFundamentalClassFrontier] do
     let axs ← Lean.collectAxioms n
     unless axs.all (fun a => allowed.contains a) do
       throwError "unexpected axioms for {n}: {axs}"
