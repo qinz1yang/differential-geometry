@@ -4181,3 +4181,4 @@ import DifferentialGeometry.Topology.Planar.PolygonRounding
 import DifferentialGeometry.Topology.Planar.PolygonIsotopy
 import DifferentialGeometry.Topology.Planar.CornerRounding
 import DifferentialGeometry.Topology.Handle.Extension
+import DifferentialGeometry.Topology.Handle.Isotopy
