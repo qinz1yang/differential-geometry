@@ -78,15 +78,6 @@ theorem sSup_eq_of_const_on_nonempty {s : Set ℝ} (hs : s.Nonempty) {c : ℝ} :
       exact ⟨u, hu, h.symm⟩
   rw [hset, csSup_singleton]
 
-def localStabilityInitialJetHypothesis
-    (L : ℕ → ℝ) (v : ℕ → ℝ) (hv : ∀ i, 0 < v i)
-    (γ : SmoothRiemannianMetric ThreeModel ThreeSpace)
-    (ℓ : (i : ℕ) → SolutionOn (I := ThreeModel) (M := ↥(ModelBall (L i)))
-      (RealTimeInterval.closed (0 : ℝ) (v i) (le_of_lt (hv i)))) : Prop :=
-  ∀ A : Set ThreeSpace, IsCompact A → ∀ p : ℕ,
-    Tendsto (fun i : ℕ => metricDerivNormSupOn (Subtype.val ⁻¹' A) p ((ℓ i).base.metric 0)
-      (γ.restrictOpen (ModelBall (L i))) (γ.restrictOpen (ModelBall (L i)))) atTop (𝓝 0)
-
 def localStabilityTimeZeroJetControl
     (L : ℕ → ℝ) (v : ℕ → ℝ) (hv : ∀ i, 0 < v i)
     (γ : SmoothRiemannianMetric ThreeModel ThreeSpace)
@@ -136,9 +127,24 @@ def localStabilityConclusion
   ∀ A : Set ThreeSpace, IsCompact A → ∀ m : ℕ, 4 ≤ m →
     Tendsto (fun i : ℕ => sSup {r : ℝ | ∃ u ∈ Set.Icc (0 : ℝ) (v i),
       metricDerivNormSupOn (Subtype.val ⁻¹' A) m ((ℓ i).base.metric u)
-        (γ.restrictOpen (ModelBall (L i))) (γ.restrictOpen (ModelBall (L i))) = r})
+      (γ.restrictOpen (ModelBall (L i))) (γ.restrictOpen (ModelBall (L i))) = r})
       atTop (𝓝 0)
 
+
+def IsLocalStabilityVanishingInput : Prop :=
+  ∀ (θ : ℝ), 0 < θ → θ < 1 → ∀ (K : ℝ), 0 < K →
+    ∀ (L : ℕ → ℝ) (_hLpos : ∀ i, 0 < L i) (_hLtop : Tendsto L atTop atTop)
+      (v : ℕ → ℝ) (hv : ∀ i, 0 < v i) (_hvθ : ∀ i, v i ≤ θ)
+      (γ : SmoothRiemannianMetric ThreeModel ThreeSpace)
+      (ℓ : (i : ℕ) → SolutionOn (I := ThreeModel) (M := ↥(ModelBall (L i)))
+        (RealTimeInterval.closed (0 : ℝ) (v i) (le_of_lt (hv i)))),
+      (∀ i, IsSolutionOn (ℓ i)) →
+      (∀ i, ∀ x : ↥(ModelBall (L i)),
+        curvatureNormSq ((ℓ i).base.metric (v i)) x
+          (metricRm04At (I := ThreeModel) (M := ↥(ModelBall (L i)))
+            ((ℓ i).base.metric (v i)) x) ≤ K ^ 2) →
+      localStabilityInitialJetHypothesis L v hv γ ℓ →
+      localStabilityConclusion L v hv γ ℓ
 
 def IsLocalStabilitySlabDerivativeBoundInput : Prop :=
   ∀ (θ : ℝ), 0 < θ → θ < 1 → ∀ (K : ℝ), 0 < K →
@@ -278,9 +284,9 @@ theorem localStabilityConclusion_iff_of_slabDerivativeBound
       rw [localStabilityIntervalSup_eq_max hb hδ A hA m hm i]
       exact lt_of_le_of_lt (max_le h1.le (max_le h2.le h3.le)) (by linarith)
 
-theorem isLocalStabilityInput_iff_windowSlabInput_of_slabDerivativeBoundInput
+theorem isLocalStabilityVanishingInput_iff_windowSlabInput_of_slabDerivativeBoundInput
     (hb : IsLocalStabilitySlabDerivativeBoundInput) {δ : ℝ} (hδ : 0 < δ) :
-    isLocalStabilityInput ↔ IsLocalStabilityWindowSlabInput δ := by
+    IsLocalStabilityVanishingInput ↔ IsLocalStabilityWindowSlabInput δ := by
   constructor
   · intro h θ hθ hθ1 K hK L hLp hLt v hv hvθ γ ℓ h1 h2 h3
     have hc := (localStabilityConclusion_iff_of_slabDerivativeBound
@@ -293,10 +299,10 @@ theorem isLocalStabilityInput_iff_windowSlabInput_of_slabDerivativeBoundInput
       (hb θ hθ hθ1 K hK L hLp hLt v hv hvθ γ ℓ h1 h2 h3) hδ).mpr
       ⟨localStabilityTimeZeroJetControl_of_initialJetHypothesis h3, hw, hs⟩
 
-theorem isLocalStabilityInput_of_windowSlabInput_of_slabDerivativeBoundInput
+theorem isLocalStabilityVanishingInput_of_windowSlabInput_of_slabDerivativeBoundInput
     (hb : IsLocalStabilitySlabDerivativeBoundInput) {δ : ℝ} (hδ : 0 < δ)
-    (h : IsLocalStabilityWindowSlabInput δ) : isLocalStabilityInput :=
-  (isLocalStabilityInput_iff_windowSlabInput_of_slabDerivativeBoundInput hb hδ).mpr h
+    (h : IsLocalStabilityWindowSlabInput δ) : IsLocalStabilityVanishingInput :=
+  (isLocalStabilityVanishingInput_iff_windowSlabInput_of_slabDerivativeBoundInput hb hδ).mpr h
 
 
 def shortEuclideanBallTime (i : ℕ) : ℝ := 1 / ((i : ℝ) + 1 + 1)

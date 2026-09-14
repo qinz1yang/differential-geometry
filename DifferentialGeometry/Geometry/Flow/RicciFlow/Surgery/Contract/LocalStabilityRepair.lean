@@ -32,44 +32,6 @@ open scoped Manifold ContDiff Topology ENNReal
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 
-private theorem modelBall_mono {L L' : ℝ} (h : L' ≤ L) : ModelBall L' ≤ ModelBall L :=
-  Metric.ball_subset_ball h
-
-def localStabilityCauchyConclusion
-    (L : ℕ → ℝ) (v : ℕ → ℝ) (hv : ∀ i, 0 < v i)
-    (γ : SmoothRiemannianMetric ThreeModel ThreeSpace)
-    (ℓ : (i : ℕ) → SolutionOn (I := ThreeModel) (M := ↥(ModelBall (L i)))
-      (RealTimeInterval.closed (0 : ℝ) (v i) (le_of_lt (hv i)))) : Prop :=
-  ∀ A : Set ThreeSpace, IsCompact A → ∀ m : ℕ, 4 ≤ m → ∀ ε : ℝ, 0 < ε →
-    ∃ N : ℕ, ∀ i j : ℕ, N ≤ i → N ≤ j → ∀ r : ℝ, ∀ hr : r ≤ min (L i) (L j),
-      ∀ u ∈ Set.Icc (0 : ℝ) (min (v i) (v j)),
-        metricDerivNormSupOn (I := ThreeModel) (M := ↥(ModelBall r))
-          (Subtype.val ⁻¹' A) m
-          (((ℓ i).base.metric u).restrictOpenOfSubset
-            (modelBall_mono (le_trans hr (min_le_left (L i) (L j)))))
-          (((ℓ j).base.metric u).restrictOpenOfSubset
-            (modelBall_mono (le_trans hr (min_le_right (L i) (L j)))))
-          ((γ.restrictOpen (ModelBall r)))
-        ≤ ε
-
-def localStabilityLimitFlowConclusion
-    (L : ℕ → ℝ) (v : ℕ → ℝ) (hv : ∀ i, 0 < v i)
-    (γ : SmoothRiemannianMetric ThreeModel ThreeSpace)
-    (ℓ : (i : ℕ) → SolutionOn (I := ThreeModel) (M := ↥(ModelBall (L i)))
-      (RealTimeInterval.closed (0 : ℝ) (v i) (le_of_lt (hv i)))) : Prop :=
-  ∃ γLim : ℝ → SmoothRiemannianMetric ThreeModel ThreeSpace,
-    γLim 0 = γ ∧
-      ∀ A : Set ThreeSpace, IsCompact A → ∀ m : ℕ, 4 ≤ m → ∀ ε : ℝ, 0 < ε →
-        ∃ N : ℕ, ∀ i j : ℕ, N ≤ i → N ≤ j → ∀ r : ℝ,
-          ∀ hr : r ≤ min (L i) (L j),
-          ∀ u ∈ Set.Icc (0 : ℝ) (min (v i) (v j)), ∀ a : ℕ, a ≤ m →
-            ∀ x : ↥(ModelBall r), (x : ThreeSpace) ∈ A →
-              metricDerivNorm (I := ThreeModel) (M := ↥(ModelBall r)) a
-                (((ℓ i).base.metric u).restrictOpenOfSubset
-                  (modelBall_mono (le_trans hr (min_le_left (L i) (L j)))))
-                ((γLim u).restrictOpen (ModelBall r))
-                ((γ.restrictOpen (ModelBall r))) x ≤ ε
-
 theorem localStabilityCauchyConclusion_of_limitFlowConclusion
     {L : ℕ → ℝ} {v : ℕ → ℝ} {hv : ∀ i, 0 < v i}
     {γ : SmoothRiemannianMetric ThreeModel ThreeSpace}
@@ -620,20 +582,7 @@ theorem localStabilityCauchyConclusion_of_staticJetLimit
   rw [hsymm] at h2
   linarith
 
-def IsLocalStabilityCauchyInput : Prop :=
-  ∀ (θ : ℝ), 0 < θ → θ < 1 → ∀ (K : ℝ), 0 < K →
-    ∀ (L : ℕ → ℝ) (_hLpos : ∀ i, 0 < L i) (_hLtop : Tendsto L atTop atTop)
-      (v : ℕ → ℝ) (hv : ∀ i, 0 < v i) (_hvθ : ∀ i, v i ≤ θ)
-      (γ : SmoothRiemannianMetric ThreeModel ThreeSpace)
-      (ℓ : (i : ℕ) → SolutionOn (I := ThreeModel) (M := ↥(ModelBall (L i)))
-        (RealTimeInterval.closed (0 : ℝ) (v i) (le_of_lt (hv i)))),
-      (∀ i, IsSolutionOn (ℓ i)) →
-      (∀ i, ∀ x : ↥(ModelBall (L i)),
-        curvatureNormSq ((ℓ i).base.metric (v i)) x
-          (metricRm04At (I := ThreeModel) (M := ↥(ModelBall (L i)))
-            ((ℓ i).base.metric (v i)) x) ≤ K ^ 2) →
-      localStabilityInitialJetHypothesis L v hv γ ℓ →
-      localStabilityCauchyConclusion L v hv γ ℓ
+abbrev IsLocalStabilityCauchyInput : Prop := isLocalStabilityInput
 
 def IsLocalStabilityLimitFlowInput : Prop :=
   ∀ (θ : ℝ), 0 < θ → θ < 1 → ∀ (K : ℝ), 0 < K →
@@ -750,5 +699,12 @@ theorem localStabilityRepair_holds_on_knownWitnesses :
         shortEuclideanBallTime_pos (euclideanMetric (E := ThreeSpace)) shortScaledBallSolution :=
   ⟨constantBall_cauchyConclusion, constantBall_limitFlowConclusion,
     shortScaledBall_cauchyConclusion, shortScaledBall_limitFlowConclusion⟩
+
+theorem not_isLocalStabilityVanishingInput_of_roundSphereShrink :
+    ¬ IsLocalStabilityVanishingInput := by
+  intro h
+  obtain ⟨θ, K, hθ, hθ1, hK, L, hLpos, hLtop, v, hv, hvθ, γ, ℓ, hsol, hcurv, hjet,
+    _hcauchy, _hlimit, hnot⟩ := exists_localStabilityRepair_witness
+  exact hnot (h θ hθ hθ1 K hK L hLpos hLtop v hv hvθ γ ℓ hsol hcurv hjet)
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology

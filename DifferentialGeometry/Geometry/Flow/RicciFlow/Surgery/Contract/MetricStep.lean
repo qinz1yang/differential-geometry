@@ -75,6 +75,53 @@ noncomputable def reducedVolume {M : Type u} [TopologicalSpace M]
     ∂(DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure (I := ThreeModel) (M := M)
       (g (t₀ - τ)))
 
+theorem modelBall_mono {L L' : ℝ} (h : L' ≤ L) : ModelBall L' ≤ ModelBall L :=
+  Metric.ball_subset_ball h
+
+def localStabilityInitialJetHypothesis
+    (L : ℕ → ℝ) (v : ℕ → ℝ) (hv : ∀ i, 0 < v i)
+    (γ : SmoothRiemannianMetric ThreeModel ThreeSpace)
+    (ℓ : (i : ℕ) → SolutionOn (I := ThreeModel) (M := ↥(ModelBall (L i)))
+      (RealTimeInterval.closed (0 : ℝ) (v i) (le_of_lt (hv i)))) : Prop :=
+  ∀ A : Set ThreeSpace, IsCompact A → ∀ p : ℕ,
+    Tendsto (fun i : ℕ => metricDerivNormSupOn (Subtype.val ⁻¹' A) p ((ℓ i).base.metric 0)
+      (γ.restrictOpen (ModelBall (L i))) (γ.restrictOpen (ModelBall (L i)))) atTop (𝓝 0)
+
+def localStabilityCauchyConclusion
+    (L : ℕ → ℝ) (v : ℕ → ℝ) (hv : ∀ i, 0 < v i)
+    (γ : SmoothRiemannianMetric ThreeModel ThreeSpace)
+    (ℓ : (i : ℕ) → SolutionOn (I := ThreeModel) (M := ↥(ModelBall (L i)))
+      (RealTimeInterval.closed (0 : ℝ) (v i) (le_of_lt (hv i)))) : Prop :=
+  ∀ A : Set ThreeSpace, IsCompact A → ∀ m : ℕ, 4 ≤ m → ∀ ε : ℝ, 0 < ε →
+    ∃ N : ℕ, ∀ i j : ℕ, N ≤ i → N ≤ j → ∀ r : ℝ, ∀ hr : r ≤ min (L i) (L j),
+      ∀ u ∈ Set.Icc (0 : ℝ) (min (v i) (v j)),
+        metricDerivNormSupOn (I := ThreeModel) (M := ↥(ModelBall r))
+          (Subtype.val ⁻¹' A) m
+          (((ℓ i).base.metric u).restrictOpenOfSubset
+            (modelBall_mono (le_trans hr (min_le_left (L i) (L j)))))
+          (((ℓ j).base.metric u).restrictOpenOfSubset
+            (modelBall_mono (le_trans hr (min_le_right (L i) (L j)))))
+          ((γ.restrictOpen (ModelBall r)))
+        ≤ ε
+
+def localStabilityLimitFlowConclusion
+    (L : ℕ → ℝ) (v : ℕ → ℝ) (hv : ∀ i, 0 < v i)
+    (γ : SmoothRiemannianMetric ThreeModel ThreeSpace)
+    (ℓ : (i : ℕ) → SolutionOn (I := ThreeModel) (M := ↥(ModelBall (L i)))
+      (RealTimeInterval.closed (0 : ℝ) (v i) (le_of_lt (hv i)))) : Prop :=
+  ∃ γLim : ℝ → SmoothRiemannianMetric ThreeModel ThreeSpace,
+    γLim 0 = γ ∧
+      ∀ A : Set ThreeSpace, IsCompact A → ∀ m : ℕ, 4 ≤ m → ∀ ε : ℝ, 0 < ε →
+        ∃ N : ℕ, ∀ i j : ℕ, N ≤ i → N ≤ j → ∀ r : ℝ,
+          ∀ hr : r ≤ min (L i) (L j),
+          ∀ u ∈ Set.Icc (0 : ℝ) (min (v i) (v j)), ∀ a : ℕ, a ≤ m →
+            ∀ x : ↥(ModelBall r), (x : ThreeSpace) ∈ A →
+              metricDerivNorm (I := ThreeModel) (M := ↥(ModelBall r)) a
+                (((ℓ i).base.metric u).restrictOpenOfSubset
+                  (modelBall_mono (le_trans hr (min_le_left (L i) (L j)))))
+                ((γLim u).restrictOpen (ModelBall r))
+                ((γ.restrictOpen (ModelBall r))) x ≤ ε
+
 def isLocalStabilityInput : Prop :=
   ∀ θ : ℝ, 0 < θ → θ < 1 → ∀ K : ℝ, 0 < K →
     ∀ (L : ℕ → ℝ) (_hLpos : ∀ i, 0 < L i) (_hLtop : Tendsto L atTop atTop)
@@ -87,15 +134,8 @@ def isLocalStabilityInput : Prop :=
         curvatureNormSq ((ℓ i).base.metric (v i)) x
           (DifferentialGeometry.Geometry.Curvature.metricRm04At (I := ThreeModel)
             (M := ↥(ModelBall (L i))) ((ℓ i).base.metric (v i)) x) ≤ K ^ 2) →
-      (∀ A : Set ThreeSpace, IsCompact A → ∀ p : ℕ,
-        Tendsto (fun i => metricDerivNormSupOn (Subtype.val ⁻¹' A) p ((ℓ i).base.metric 0)
-          (γ.restrictOpen (ModelBall (L i))) (γ.restrictOpen (ModelBall (L i))))
-          atTop (𝓝 0)) →
-      ∀ A : Set ThreeSpace, IsCompact A → ∀ m : ℕ, 4 ≤ m →
-        Tendsto (fun i => sSup {r : ℝ | ∃ u ∈ Set.Icc (0 : ℝ) (v i),
-          metricDerivNormSupOn (Subtype.val ⁻¹' A) m ((ℓ i).base.metric u)
-            (γ.restrictOpen (ModelBall (L i))) (γ.restrictOpen (ModelBall (L i))) = r})
-          atTop (𝓝 0)
+      localStabilityInitialJetHypothesis L v hv γ ℓ →
+      localStabilityCauchyConclusion L v hv γ ℓ
 
 structure StandardCapModel where
   solution : SmoothRiemannianMetric ThreeModel ThreeSpace

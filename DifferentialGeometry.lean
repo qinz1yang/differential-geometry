@@ -6580,6 +6580,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.InitialSphe
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.InitialSphericalFrontierNormalization
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.LocalStabilityDecomposition
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.LocalStabilityInputWitness
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.LocalStabilityJetControl
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.LocalStabilityRepair
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.InitialTerminalRegionFrontier
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.LocalSurgeryNoncollapsing
