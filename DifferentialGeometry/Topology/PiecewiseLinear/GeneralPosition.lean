@@ -1,5 +1,6 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.PLHomeomorph
 import DifferentialGeometry.Topology.PiecewiseLinear.Triangulation
+import DifferentialGeometry.Topology.PiecewiseLinear.ManifoldSubdivision
 import Mathlib.Topology.Algebra.AffineSubspace
 import Mathlib.Topology.MetricSpace.Contracting
 
@@ -622,5 +623,202 @@ theorem exists_small_homeomorph_inter_dimension_le [FiniteDimensional ℝ E]
     have hsbound := hK s hs
     have htbound := hL t ht
     omega
+
+theorem isPLBall_zero_iff [FiniteDimensional ℝ E] {P : Set E} :
+    IsPLBall 0 P ↔ ∃ p, P = {p} := by
+  constructor
+  · rintro ⟨f, hf⟩
+    refine ⟨f (fun _ => 1), ?_⟩
+    have himage : f '' stdSimplex ℝ (Fin 1) = P := hf.bijOn.image_eq
+    rw [← himage, stdSimplex_unique ℝ (Fin 1), image_singleton]
+  · rintro ⟨p, rfl⟩
+    classical
+    have : Subsingleton ({p} : Finset E) :=
+      ⟨fun a b => Subtype.ext ((Finset.mem_singleton.mp a.property).trans
+        (Finset.mem_singleton.mp b.property).symm)⟩
+    have h := isPLBall_convexHull_of_affineIndependent ({p} : Finset E)
+      (affineIndependent_of_subsingleton ℝ _) (n := 0) (by simp)
+    simpa only [Finset.coe_singleton, convexHull_singleton] using h
+
+theorem stdSimplexBoundary_one_eq_pair :
+    stdSimplexBoundary 1 = {(![1, 0] : Fin 2 → ℝ), (![0, 1] : Fin 2 → ℝ)} := by
+  have hleft : (![1, 0] : Fin 2 → ℝ) ∈ stdSimplexBoundary 1 := by
+    change (![1, 0] : Fin 2 → ℝ) ∈ stdSimplex ℝ (Fin 2) ∧ ∃ i : Fin 2, (![1, 0] : Fin 2 → ℝ) i = 0
+    refine ⟨⟨fun i => ?_, ?_⟩, 1, by norm_num⟩
+    · fin_cases i <;> norm_num
+    · norm_num [Fin.sum_univ_two]
+  have hright : (![0, 1] : Fin 2 → ℝ) ∈ stdSimplexBoundary 1 := by
+    change (![0, 1] : Fin 2 → ℝ) ∈ stdSimplex ℝ (Fin 2) ∧ ∃ i : Fin 2, (![0, 1] : Fin 2 → ℝ) i = 0
+    refine ⟨⟨fun i => ?_, ?_⟩, 0, by norm_num⟩
+    · fin_cases i <;> norm_num
+    · norm_num [Fin.sum_univ_two]
+  ext x
+  constructor
+  · rintro ⟨⟨_, hsum⟩, i, hi⟩
+    rw [Fin.sum_univ_two] at hsum
+    fin_cases i
+    · change x 0 = 0 at hi
+      apply mem_insert_of_mem
+      apply mem_singleton_iff.mpr
+      funext j
+      fin_cases j
+      · simpa using hi
+      · change x 1 = 1
+        linarith
+    · change x 1 = 0 at hi
+      apply mem_insert_iff.mpr
+      left
+      funext j
+      fin_cases j
+      · change x 0 = 1
+        linarith
+      · simpa using hi
+  · intro hx
+    rcases mem_insert_iff.mp hx with rfl | hx
+    · exact hleft
+    · rw [mem_singleton_iff] at hx
+      exact hx ▸ hright
+
+theorem isPLSphere_zero_iff [FiniteDimensional ℝ E] {P : Set E} :
+    IsPLSphere 0 P ↔ ∃ a b, a ≠ b ∧ P = {a, b} := by
+  constructor
+  · rintro ⟨f, hf⟩
+    have hleft : (![1, 0] : Fin 2 → ℝ) ∈ stdSimplexBoundary 1 := by
+      rw [stdSimplexBoundary_one_eq_pair]
+      exact mem_insert _ _
+    have hright : (![0, 1] : Fin 2 → ℝ) ∈ stdSimplexBoundary 1 := by
+      rw [stdSimplexBoundary_one_eq_pair]
+      exact mem_insert_of_mem _ (mem_singleton _)
+    refine ⟨f ![1, 0], f ![0, 1], ?_, ?_⟩
+    · intro h
+      have hvec := hf.bijOn.injOn hleft hright h
+      have hzero := congrFun hvec 0
+      norm_num at hzero
+    · rw [← hf.bijOn.image_eq, stdSimplexBoundary_one_eq_pair, image_pair]
+  · rintro ⟨a, b, hab, rfl⟩
+    classical
+    have hrange : Set.range (![a, b] : Fin 2 → E) = (({a, b} : Finset E) : Set E) := by
+      ext x
+      simp [or_comm]
+    have hi := (affineIndependent_of_ne ℝ hab).range
+    change AffineIndependent ℝ ((↑) : Set.range (![a, b] : Fin 2 → E) → E) at hi
+    rw [hrange] at hi
+    have h := isPLSphere_biUnion_erase ({a, b} : Finset E) hi (n := 0) (by simp [hab])
+    simpa [hab, hab.symm, Set.pair_comm] using h
+
+open Classical in
+theorem geometricLink_space_eq_coface_vertices_of_card_le (K : Geometry.SimplicialComplex ℝ E)
+    (s : Finset E) (hK : ∀ u ∈ K.faces, s ⊆ u → u.card ≤ s.card + 1) :
+    (SimplicialComplex.geometricLink K s).space = {w | w ∉ s ∧ insert w s ∈ K.faces} := by
+  ext x
+  constructor
+  · intro hx
+    obtain ⟨t, ht, hxt⟩ := (SimplicialComplex.geometricLink K s).mem_space_iff.mp hx
+    obtain ⟨htne, hdis, hunion⟩ := (mem_geometricLink_faces_iff K).mp ht
+    have hcard := hK (s ∪ t) hunion Finset.subset_union_left
+    rw [Finset.card_union_of_disjoint hdis] at hcard
+    have htcard : t.card = 1 := by
+      have hpos := Finset.card_pos.mpr htne
+      omega
+    obtain ⟨w, rfl⟩ := Finset.card_eq_one.mp htcard
+    rw [Finset.coe_singleton, convexHull_singleton] at hxt
+    have hxw : x = w := hxt
+    subst x
+    refine ⟨fun hw => Finset.disjoint_left.mp hdis hw (Finset.mem_singleton_self w), ?_⟩
+    simpa only [Finset.union_singleton] using hunion
+  · rintro ⟨hxs, hface⟩
+    have ht : ({x} : Finset E) ∈ (SimplicialComplex.geometricLink K s).faces := by
+      refine (mem_geometricLink_faces_iff K).mpr ⟨Finset.singleton_nonempty x, ?_, ?_⟩
+      · exact Finset.disjoint_left.mpr fun y hy hyx => hxs (Finset.mem_singleton.mp hyx ▸ hy)
+      · simpa only [Finset.union_singleton] using hface
+    exact (SimplicialComplex.geometricLink K s).convexHull_subset_space ht (by simp)
+
+open Classical in
+theorem geometricLink_space_eq_neighbors_of_card_le (G : Geometry.SimplicialComplex ℝ E)
+    (hG : ∀ s ∈ G.faces, s.card ≤ 2) (v : E) :
+    (SimplicialComplex.geometricLink G {v}).space = {w | w ≠ v ∧ {v, w} ∈ G.faces} := by
+  have hbound : ∀ u ∈ G.faces, ({v} : Finset E) ⊆ u → u.card ≤ ({v} : Finset E).card + 1 := by
+    intro u hu _
+    simpa only [Finset.card_singleton] using hG u hu
+  rw [geometricLink_space_eq_coface_vertices_of_card_le G {v} hbound]
+  ext w
+  change (w ∉ ({v} : Finset E) ∧ insert w {v} ∈ G.faces) ↔ w ≠ v ∧ {v, w} ∈ G.faces
+  simp only [Finset.mem_singleton, Finset.pair_comm]
+
+open Classical in
+theorem isCombinatorialManifoldWithBoundary_one_iff [FiniteDimensional ℝ E]
+    (G : Geometry.SimplicialComplex ℝ E) [Finite G.faces] :
+    IsCombinatorialManifoldWithBoundary 1 G ↔ (∀ s ∈ G.faces, s.card ≤ 2) ∧
+      ∀ v, {v} ∈ G.faces →
+        (∃ a, {w | w ≠ v ∧ {v, w} ∈ G.faces} = {a}) ∨
+        ∃ a b, a ≠ b ∧ {w | w ≠ v ∧ {v, w} ∈ G.faces} = {a, b} := by
+  constructor
+  · intro hG
+    have hcard : ∀ s ∈ G.faces, s.card ≤ 2 := fun s hs => hG.card_le G hs
+    refine ⟨hcard, fun v hv => ?_⟩
+    have hlink : IsPLSphere 0 (SimplicialComplex.geometricLink G {v}).space ∨
+        IsPLBall 0 (SimplicialComplex.geometricLink G {v}).space := hG v hv
+    rw [geometricLink_space_eq_neighbors_of_card_le G hcard v] at hlink
+    exact hlink.symm.imp isPLBall_zero_iff.mp isPLSphere_zero_iff.mp
+  · rintro ⟨hcard, hneighbors⟩ v hv
+    change IsPLSphere 0 (SimplicialComplex.geometricLink G {v}).space ∨
+      IsPLBall 0 (SimplicialComplex.geometricLink G {v}).space
+    rw [geometricLink_space_eq_neighbors_of_card_le G hcard v]
+    exact ((hneighbors v hv).imp isPLBall_zero_iff.mpr isPLSphere_zero_iff.mpr).symm
+
+open Classical in
+theorem exists_weights_zero_of_mem_vectorSpan {s : Finset E} {d : E}
+    (hd : d ∈ vectorSpan ℝ (s : Set E)) :
+    ∃ c : E → ℝ, ∑ v ∈ s, c v = 0 ∧ ∑ v ∈ s, c v • v = d := by
+  have hrange : Set.range ((↑) : s → E) = (s : Set E) := by ext x; simp
+  rw [← hrange] at hd
+  obtain ⟨t, w, hw, hwd⟩ := (mem_vectorSpan_iff_eq_weightedVSub ℝ).mp hd
+  rw [Finset.weightedVSub_eq_linear_combination t hw] at hwd
+  let c : E → ℝ := fun v => if hv : v ∈ s then if (⟨v, hv⟩ : s) ∈ t then w ⟨v, hv⟩ else 0 else 0
+  have hc : ∀ v : s, c v = if v ∈ t then w v else 0 := by
+    intro v
+    simp only [c, dif_pos v.property, Subtype.coe_eta]
+  refine ⟨c, ?_, ?_⟩
+  · rw [← Finset.sum_coe_sort s c]
+    simp only [hc, Finset.sum_ite_mem, Finset.univ_inter]
+    exact hw
+  · rw [← Finset.sum_coe_sort s (fun v => c v • v)]
+    simp only [hc, ite_smul, zero_smul, Finset.sum_ite_mem, Finset.univ_inter]
+    exact hwd.symm
+
+theorem eventually_mem_openSimplex_of_mem_vectorSpan {s : Finset E} {x d : E}
+    (hx : x ∈ openSimplex s) (hd : d ∈ vectorSpan ℝ (s : Set E)) :
+    ∀ᶠ t : ℝ in 𝓝 0, x + t • d ∈ openSimplex s := by
+  classical
+  obtain ⟨α, hαpos, hαsum, hαx⟩ := hx
+  obtain ⟨β, hβsum, hβd⟩ := exists_weights_zero_of_mem_vectorSpan hd
+  have hopen : IsOpen (⋂ v : s, {t : ℝ | 0 < α v + t * β v}) :=
+    isOpen_iInter_of_finite fun _ => isOpen_lt continuous_const (by fun_prop)
+  have hzero : (0 : ℝ) ∈ ⋂ v : s, {t : ℝ | 0 < α v + t * β v} := by
+    apply mem_iInter.mpr
+    intro v
+    simpa using hαpos v v.property
+  apply Filter.mem_of_superset (hopen.mem_nhds hzero)
+  intro t ht
+  refine ⟨fun v => α v + t * β v, fun v hv => mem_iInter.mp ht ⟨v, hv⟩, ?_, ?_⟩
+  · rw [Finset.sum_add_distrib, ← Finset.mul_sum, hαsum, hβsum, mul_zero, add_zero]
+  · simp_rw [add_smul, mul_smul]
+    rw [Finset.sum_add_distrib, ← Finset.smul_sum, hαx, hβd]
+
+open Classical in
+theorem IsCombinatorialManifoldWithBoundary.codimension_one_cofaces [FiniteDimensional ℝ E]
+    {n : ℕ} (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
+    (hK : IsCombinatorialManifoldWithBoundary (n + 1) K) {s : Finset E} (hs : s ∈ K.faces)
+    (hcard : s.card = n + 1) :
+    (∃ a, {w | w ∉ s ∧ insert w s ∈ K.faces} = {a}) ∨
+      ∃ a b, a ≠ b ∧ {w | w ∉ s ∧ insert w s ∈ K.faces} = {a, b} := by
+  have hlink := hK.isPLSphere_or_isPLBall_geometricLink K hs hcard le_rfl
+  rw [Nat.sub_self] at hlink
+  have hbound : ∀ u ∈ K.faces, s ⊆ u → u.card ≤ s.card + 1 := by
+    intro u hu _
+    rw [hcard]
+    exact hK.card_le K hu
+  rw [geometricLink_space_eq_coface_vertices_of_card_le K s hbound] at hlink
+  exact hlink.symm.imp isPLBall_zero_iff.mp isPLSphere_zero_iff.mp
 
 end DifferentialGeometry.Topology.PiecewiseLinear
