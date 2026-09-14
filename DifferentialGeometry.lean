@@ -52,6 +52,7 @@ import DifferentialGeometry.Analysis.Calculus.Derivative.PuncturedBallDerivative
 import DifferentialGeometry.Analysis.Calculus.Derivative.Right
 import DifferentialGeometry.Analysis.Calculus.Derivative.TargetModulus
 import DifferentialGeometry.Analysis.Calculus.Derivative.UpperContact
+import DifferentialGeometry.Analysis.Calculus.Displacement
 import DifferentialGeometry.Analysis.Calculus.DyadicScale
 import DifferentialGeometry.Analysis.Calculus.ExponentialAsymptotics
 import DifferentialGeometry.Analysis.Calculus.Extrema
