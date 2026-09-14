@@ -5370,6 +5370,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborho
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.RoundModelClassification
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.RoundModelCoveringBall
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.RoundSpaceFormWitness
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.SameManifoldSlabWindowLink
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ScalarComparison
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ScalarCutoff
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ScalarLaplacianJet
@@ -6878,6 +6879,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SlabRescali
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SlabSpatialJets
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SlabTensorContinuity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SlabTerminalConvergence
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SmoothCutCapFrameReversing
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SmoothCutCapTransitionInstance
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SphereDiffeomorphismIsotopyConnected
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ConnectedSumChoiceIndependence
@@ -6904,6 +6906,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalCur
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalMetricUnique
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalRegionConvexity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalRegularRegionTail
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ThreeBallChartDictionary
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ThreeFrameOrientation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ThreeManifoldHomologyFrontier
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.VanKampen
@@ -8613,6 +8616,7 @@ import DifferentialGeometry.Topology.Manifold.BallChartScale
 import DifferentialGeometry.Topology.Manifold.BallChartAffine
 import DifferentialGeometry.Topology.Manifold.BallChartModelIsotopy
 import DifferentialGeometry.Topology.Manifold.BallChartStraightening
+import DifferentialGeometry.Topology.Manifold.BallChartStraighteningTube
 import DifferentialGeometry.Topology.Manifold.BallChartTransport
 import DifferentialGeometry.Topology.Manifold.BallDiffeomorphExtension
 import DifferentialGeometry.Topology.Manifold.BicollarComponents
