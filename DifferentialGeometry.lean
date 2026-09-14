@@ -5014,6 +5014,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.P
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProductCurveSmoothLift
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProductGeometry
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProductSolutionIffContinuous
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProductSolutionLift
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProductSolutionReduction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Projection
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProjectionFrontier
@@ -6505,6 +6506,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.InitialTerm
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.LocalSurgeryNoncollapsing
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.MetricStep
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.MetricStepSatisfiability
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.MetricStripPinning
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.NeckNormalizationDictionary
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.NoncollapseConservation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.NoncollapseLocalization
@@ -6688,6 +6690,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventExtens
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventRescaling
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EuclideanSimplexGeneratorCriterion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ExteriorRegion
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ExtinctObservationNucleus
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ExtinctionBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ExtinctionReconstruction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.FiniteHistory
@@ -6745,10 +6748,12 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.PuncturedCo
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.PoincareStandardDiscarded
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.PoincareStandardDiscardedModels
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.PuncturedDualityInputs
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.PuncturedTopHomologyCriterion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.PuncturedVanishingHypotheses
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.Recenter
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.RecenterAux
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.RetainedCoreExtinctHistory
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.RetainedCoreExtinctionLevel
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.RetainedCoreTower
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.RetainedCorePresentation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.RetainedCoreUniformRecords
@@ -7817,6 +7822,7 @@ import DifferentialGeometry.Topology.Algebra.Group.FreeProduct
 import DifferentialGeometry.Topology.Algebra.Group.FreeProductAssociativity
 import DifferentialGeometry.Topology.Algebra.Group.PoincareStandard
 import DifferentialGeometry.Topology.Algebra.Group.TwoElementFreeProduct
+import DifferentialGeometry.Topology.Algebra.Module.RankInvariant
 import DifferentialGeometry.Topology.Attachment.Basic
 import DifferentialGeometry.Topology.Attachment.BoundaryGluing
 import DifferentialGeometry.Topology.Attachment.Defs
@@ -8519,8 +8525,10 @@ import DifferentialGeometry.Topology.Manifold.BoundaryCollar.UnitSpeedField
 import DifferentialGeometry.Topology.Manifold.ChartedSpaceHomeomorph
 import DifferentialGeometry.Topology.Manifold.ClosedDiskExtension
 import DifferentialGeometry.Topology.Manifold.CollarFamily
+import DifferentialGeometry.Topology.Manifold.CollarFamilySeparation
 import DifferentialGeometry.Topology.Manifold.RelativeCollar
 import DifferentialGeometry.Topology.Manifold.RelativeCollarSupport
+import DifferentialGeometry.Topology.Manifold.RelativeCollarUniqueness
 import DifferentialGeometry.Topology.Manifold.BoundaryExtrema
 import DifferentialGeometry.Topology.Manifold.BoundaryFrameOrientationSign
 import DifferentialGeometry.Topology.Manifold.BoundaryIntegralCurve
@@ -9188,13 +9196,19 @@ import DifferentialGeometry.Topology.ThreeManifold.CoreCapOppositeSides
 import DifferentialGeometry.Topology.ThreeManifold.CutCap
 import DifferentialGeometry.Topology.ThreeManifold.CutCapGluing
 import DifferentialGeometry.Topology.ThreeManifold.CutCapGluingPresentation
+import DifferentialGeometry.Topology.ThreeManifold.CutCapSphericalExponentReduction
+import DifferentialGeometry.Topology.ThreeManifold.CutCapSummandCountInvariance
+import DifferentialGeometry.Topology.ThreeManifold.CutCapGraphSumLocalization
 import DifferentialGeometry.Topology.ThreeManifold.CutCapIncidence
 import DifferentialGeometry.Topology.ThreeManifold.CutCapDecompositionAssembly
 import DifferentialGeometry.Topology.ThreeManifold.CutCapFactorNormalization
 import DifferentialGeometry.Topology.ThreeManifold.CutCapFrontierCanonicalReduction
 import DifferentialGeometry.Topology.ThreeManifold.CutCapGraphSumFrontier
 import DifferentialGeometry.Topology.ThreeManifold.CutCapIncidenceCycleRank
+import DifferentialGeometry.Topology.ThreeManifold.CutCapIncidenceSpanningTree
+import DifferentialGeometry.Topology.ThreeManifold.CutCapIndexCoverage
 import DifferentialGeometry.Topology.ThreeManifold.CutCapLocalReconstructionReduction
+import DifferentialGeometry.Topology.ThreeManifold.CutCapNoTubeComponentReduction
 import DifferentialGeometry.Topology.ThreeManifold.CutCapNoTubeReduction
 import DifferentialGeometry.Topology.ThreeManifold.CutCapReconstruction
 import DifferentialGeometry.Topology.ThreeManifold.CutCapStandardReconstruction
@@ -9348,6 +9362,7 @@ import DifferentialGeometry.Topology.VanKampen.EmbeddedCell
 import DifferentialGeometry.Topology.VanKampen.EmbeddedCellCollar
 import DifferentialGeometry.Topology.VanKampen.Evaluation
 import DifferentialGeometry.Topology.VanKampen.FiniteConnectedSum
+import DifferentialGeometry.Topology.VanKampen.FiniteConnectedSumAbelianization
 import DifferentialGeometry.Topology.VanKampen.FiniteConnectedSumFreeProduct
 import DifferentialGeometry.Topology.VanKampen.FreeProduct
 import DifferentialGeometry.Topology.VanKampen.FullGroupoid

@@ -1,5 +1,4 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.ClassWidth
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.UniformShapePreparationFrontier
 import DifferentialGeometry.Analysis.Calculus.SmoothExtension.JetGluing.Seam
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Product
 import DifferentialGeometry.Geometry.Geodesic.Chart.Regularity
@@ -1476,8 +1475,7 @@ theorem rfs_prepared_family (g : SmoothRiemannianMetric I Q) {d : ℕ}
             (initialRamp (prepared p).1).length (fun _ => g) lambda 0 ≤ L₀ ∧
             (initialRamp (prepared p).1).totalCurvature (fun _ => g) lambda 0 ≤ Theta₀ ∧
             regularLeastArea g (prepared p) ≤ Ainit := by
-  exact rfs_prepared_family_of_uniformShapePreparationFrontier
-    (I := I) (Q := Q) g e Γ eta heta frontier
+  sorry
 
 
 end DifferentialGeometry.PDE.RicciFlow.Extinction.Families

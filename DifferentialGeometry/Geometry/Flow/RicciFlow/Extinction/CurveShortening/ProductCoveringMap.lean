@@ -253,6 +253,20 @@ theorem map_velocity_eq [T2Space M] (A : QuotientProductAtlas I M) [I.Boundaryle
     rfl
   rw [hvel, c.cover_time_derivative hc x t ht huniq]
 
+def CoverSmoothLift (A : QuotientProductAtlas I M) [T2Space M] [I.Boundaryless]
+    (c : ProductCurve M) (J : Set ℝ) : Prop :=
+  letI := A.charts
+  letI := A.smoothManifold
+  c.map.SmoothOn (I := I.prod 𝓘(ℝ, ℝ)) J → c.SmoothOn (I := I) J
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] in
+theorem CoverSmoothLift_empty (A : QuotientProductAtlas I M) [T2Space M] [I.Boundaryless]
+    (c : ProductCurve M) : CoverSmoothLift A c ∅ := by
+  let := A.charts
+  let := A.smoothManifold
+  intro _
+  exact ⟨fun p hp => absurd hp.2 (by simp), fun p hp => absurd hp.2 (by simp)⟩
+
 end ProductCurve
 
 end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening

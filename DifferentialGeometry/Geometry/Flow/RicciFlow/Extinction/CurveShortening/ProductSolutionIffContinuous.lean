@@ -29,8 +29,7 @@ theorem product_solution_iff_of_continuousOn_height
     c.IsSolutionOn g lambda J ↔
       c.map.IsSolutionOn (I := I.prod 𝓘(ℝ, ℝ))
         (fun t => quotientProductMetric A (g t) lambda hlambda) J :=
-  c.product_solution_iff_of_frontiers A g lambda hlambda hsu hJ
-    (c.coverSmoothLift_of_continuousOn_height A J hyc) hU
+  c.product_solution_iff_of_frontiers A g lambda hlambda hsu hJ hyc hU
 
 end ProductCurve
 

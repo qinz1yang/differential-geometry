@@ -1,6 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Product
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProductCoveringMap
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProductCoveringDerivative
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProductCurveSmoothLift
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.CoverCovariantDerivative
 import Mathlib.Analysis.Calculus.TangentCone.Real
 
@@ -28,20 +29,6 @@ theorem uniqueMDiffWithinAt_of_mem_Ico_or_Icc {s u t : ℝ} {J : Set ℝ} (hsu :
 
 namespace ProductCurve
 
-def CoverSmoothLift (A : QuotientProductAtlas I M) [T2Space M] [I.Boundaryless]
-    (c : ProductCurve M) (J : Set ℝ) : Prop :=
-  letI := A.charts
-  letI := A.smoothManifold
-  c.map.SmoothOn (I := I.prod 𝓘(ℝ, ℝ)) J → c.SmoothOn (I := I) J
-
-omit [FiniteDimensional ℝ E] [CompleteSpace E] in
-theorem CoverSmoothLift_empty (A : QuotientProductAtlas I M) [T2Space M] [I.Boundaryless]
-    (c : ProductCurve M) : CoverSmoothLift A c ∅ := by
-  let := A.charts
-  let := A.smoothManifold
-  intro _
-  exact ⟨fun p hp => absurd hp.2 (by simp), fun p hp => absurd hp.2 (by simp)⟩
-
 omit [CompleteSpace E] in
 theorem map_isSolutionOn_of_frontiers
     (A : QuotientProductAtlas I M) [T2Space M] [I.Boundaryless]
@@ -63,7 +50,7 @@ theorem isSolutionOn_of_map_isSolutionOn_of_coverSmoothLift
     (A : QuotientProductAtlas I M) [T2Space M] [I.Boundaryless]
     (g : ℝ → SmoothRiemannianMetric I M) (lambda : ℝ) (hlambda : 0 < lambda)
     (c : ProductCurve M) {J : Set ℝ}
-    (hlift : CoverSmoothLift A c J)
+    (hyc : ContinuousOn (fun p : ℝ × ℝ => c.y p.1 p.2) (univ ×ˢ J))
     (hU : (c.unitTangent g lambda).SmoothOn (I := I) J)
     (huniq : ∀ t ∈ J, UniqueMDiffWithinAt 𝓘(ℝ, ℝ) J t)
     (hm : letI := A.charts
@@ -73,7 +60,7 @@ theorem isSolutionOn_of_map_isSolutionOn_of_coverSmoothLift
     c.IsSolutionOn g lambda J := by
   let := A.charts
   let := A.smoothManifold
-  have hc : c.SmoothOn (I := I) J := hlift hm.smooth
+  have hc : c.SmoothOn (I := I) J := (c.coverSmoothLift_of_continuousOn_height A J hyc) hm.smooth
   refine ⟨hc, (c.map_immersedOn_iff A hc).mp hm.immersed, ?_⟩
   intro x t ht
   have h1 : mfderiv (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, ℝ)) (productCoverProjection (M := M))
@@ -121,7 +108,7 @@ theorem product_solution_iff_of_frontiers
     (g : ℝ → SmoothRiemannianMetric I M) (lambda : ℝ) (hlambda : 0 < lambda)
     (c : ProductCurve M) {s u : ℝ} (hsu : s < u) {J : Set ℝ}
     (hJ : J = Ico s u ∨ J = Icc s u)
-    (hlift : CoverSmoothLift A c J)
+    (hyc : ContinuousOn (fun p : ℝ × ℝ => c.y p.1 p.2) (univ ×ˢ J))
     (hU : (c.unitTangent g lambda).SmoothOn (I := I) J) :
     letI := A.charts
     letI := A.smoothManifold
@@ -133,7 +120,8 @@ theorem product_solution_iff_of_frontiers
   have huniq : ∀ t ∈ J, UniqueMDiffWithinAt 𝓘(ℝ, ℝ) J t :=
     fun _ ht => uniqueMDiffWithinAt_of_mem_Ico_or_Icc hsu hJ ht
   exact ⟨c.map_isSolutionOn_of_frontiers A g lambda hlambda hU huniq,
-    c.isSolutionOn_of_map_isSolutionOn_of_coverSmoothLift A g lambda hlambda hlift hU huniq⟩
+    c.isSolutionOn_of_map_isSolutionOn_of_coverSmoothLift A g lambda hlambda
+      hyc hU huniq⟩
 
 end ProductCurve
 
