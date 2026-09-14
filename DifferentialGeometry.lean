@@ -6681,6 +6681,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CubeTetrahe
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.Descendants
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EmbeddedCoreExtinctionTower
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EmptyHistory
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EuclideanLocalClassTransport
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventBridge
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventData
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventExtension
