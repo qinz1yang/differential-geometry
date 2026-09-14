@@ -3799,3 +3799,154 @@ theorem PrePolygon.exists_compatible_native_rounding_families
 end Schoenflies
 
 end
+
+section
+
+open Set Metric
+open scoped ContDiff Manifold Topology
+
+namespace Schoenflies
+
+theorem PrePolygon.exists_local_rounding_isotopy_of_two_edge_free_triangle
+    {m : ℕ} (P : PrePolygon m)
+    (M : LeanEval.Topology.ClassificationOfSurfaces.Moise.TriangleMesh)
+    (hfrontier : frontier M.toPlaneComplex.support = P.carrier)
+    (T : M.Triangle) (k : Fin 3) (hfree : M.IsTwoEdgeFreeTriangle T k) :
+    let b := LeanEval.Topology.ClassificationOfSurfaces.Moise.affineBasisOfTriangle
+      (M.freeTriangleOrder T k) (M.freeTriangleOrder_affineIndependent T k)
+    let R := closure (P.carrier \ (segment ℝ (b 0) (b 2) ∪ segment ℝ (b 1) (b 2)))
+    let N := (interior M.toPlaneComplex.support ∩
+      {p | 0 < b.coord 0 p ∧ 0 < b.coord 1 p}) ∪
+        ((M.eraseTriangle T.1).toPlaneComplex.supportᶜ ∩ {p | 0 < b.coord 2 p})
+    ∃ (v₀ v₁ : Plane) (r₀ r₁ : ℝ) (f₀ f₁ : Plane →ᵃ[ℝ] ℝ)
+      (e₀ e₁ : Plane ≃ᵃ[ℝ] Plane) (ε₀ ε : ℝ) (J W K : Set Plane)
+      (F : Plane → ℝ × ℝ) (H : ℝ → Plane ≃ₘ[ℝ] Plane),
+      let s₀ := b.coord 2 v₀ / f₀ v₀
+      let s₁ := b.coord 2 v₁ / f₁ v₁
+      let U₀ := ball (b 0) r₀ ∩ {p | (1 : ℝ) / 4 < b.coord 0 p - b.coord 1 p}
+      let U₁ := ball (b 1) r₁ ∩ {p | (1 : ℝ) / 4 < b.coord 1 p - b.coord 0 p}
+      let V := {p | ε₀ < f₀ p ∧ ε₀ < f₁ p} ∩ N
+      let D := (M.toPlaneComplex.support \ interior K) ∪ (K ∩ {p | (F p).1 ≤ 0})
+      let E := ((M.eraseTriangle T.1).toPlaneComplex.support \ interior K) ∪
+        (K ∩ {p | (F p).2 ≤ 0})
+      0 < r₀ ∧ 0 < r₁ ∧ Disjoint (ball (b 0) r₀) (ball (b 1) r₁) ∧
+      segment ℝ (b 0) v₀ ⊆ R ∧ segment ℝ (b 1) v₁ ⊆ R ∧
+      f₀ (b 0) = 0 ∧ 0 < f₀ (b 1) ∧ 0 < f₀ (b 2) ∧ f₀ v₀ < 0 ∧
+      f₁ (b 1) = 0 ∧ 0 < f₁ (b 0) ∧ 0 < f₁ (b 2) ∧ f₁ v₁ < 0 ∧
+      (∀ p, (e₀ p) 0 = f₀ p ∧ (e₀ p) 1 = b.coord 2 p) ∧
+      (∀ p, (e₁ p) 0 = f₁ p ∧ (e₁ p) 1 = b.coord 2 p) ∧
+      0 < ε₀ ∧ 0 < ε ∧ ε ≤ ε₀ ∧ IsCompact J ∧
+      M.triangleCarrier T.1 ⊆ interior J ∧ IsOpen W ∧ J ⊆ W ∧
+      W ⊆ U₀ ∪ U₁ ∪ V ∧ ContDiff ℝ ∞ F ∧
+      EqOn F (fun p =>
+        (-(f₀ (b 2) / f₀ (b 1) * (s₀ * (f₀ p - Real.smoothMax ε (f₀ p) 0) +
+          Real.smoothMax ε (f₀ p) 0 / f₀ (b 2) - b.coord 2 p)),
+          -(s₀ * (f₀ p - Real.smoothMax ε (f₀ p) 0) - b.coord 2 p))) (W ∩ U₀) ∧
+      EqOn F (fun p =>
+        (-(f₁ (b 2) / f₁ (b 0) * (s₁ * (f₁ p - Real.smoothMax ε (f₁ p) 0) +
+          Real.smoothMax ε (f₁ p) 0 / f₁ (b 2) - b.coord 2 p)),
+          -(s₁ * (f₁ p - Real.smoothMax ε (f₁ p) 0) - b.coord 2 p))) (W ∩ U₁) ∧
+      EqOn F (fun p => (Real.smoothMax (1 / 4) (-b.coord 0 p) (-b.coord 1 p),
+        b.coord 2 p)) (W ∩ V) ∧
+      (∀ t ∈ Icc (0 : ℝ) 1, ∀ p ∈ W ∩ V,
+        (1 - t) * (F p).1 + t * (F p).2 = 0 → p ∈ M.triangleCarrier T.1) ∧
+      (∀ t ∈ Icc (0 : ℝ) 1, ∀ p ∈ W,
+        fderiv ℝ (fun q => (1 - t) * (F q).1 + t * (F q).2) p ≠ 0) ∧
+      (∀ p ∈ W, p ∉ interior J →
+        (p ∈ M.toPlaneComplex.support ↔ (F p).1 ≤ 0) ∧
+        (p ∈ interior M.toPlaneComplex.support ↔ (F p).1 < 0) ∧
+        (p ∈ frontier M.toPlaneComplex.support ↔ (F p).1 = 0)) ∧
+      (∀ p ∈ W, p ∉ interior J →
+        (p ∈ (M.eraseTriangle T.1).toPlaneComplex.support ↔ (F p).2 ≤ 0) ∧
+        (p ∈ interior (M.eraseTriangle T.1).toPlaneComplex.support ↔ (F p).2 < 0) ∧
+        (p ∈ frontier (M.eraseTriangle T.1).toPlaneComplex.support ↔ (F p).2 = 0)) ∧
+      IsCompact K ∧ J ⊆ interior K ∧ K ⊆ W ∧
+      ContDiff ℝ ∞ (fun z : ℝ × Plane => H z.1 z.2) ∧
+      ContDiff ℝ ∞ (fun z : ℝ × Plane => (H z.1).symm z.2) ∧
+      H 0 = Diffeomorph.refl 𝓘(ℝ, Plane) Plane ∞ ∧
+      (∀ t, EqOn (H t) id Kᶜ ∧ EqOn (H t).symm id Kᶜ ∧
+        (∀ p, H t p ∈ W ↔ p ∈ W) ∧ (∀ p, (H t).symm p ∈ W ↔ p ∈ W)) ∧
+      (∀ p ∈ W, ((F p).1 = 0 ↔ (F (H 1 p)).2 = 0) ∧
+        ((F p).1 < 0 ↔ (F (H 1 p)).2 < 0) ∧ ((F p).1 ≤ 0 ↔ (F (H 1 p)).2 ≤ 0)) ∧
+      (∀ p ∈ W, ((F p).2 = 0 ↔ (F ((H 1).symm p)).1 = 0) ∧
+        ((F p).2 < 0 ↔ (F ((H 1).symm p)).1 < 0) ∧
+        ((F p).2 ≤ 0 ↔ (F ((H 1).symm p)).1 ≤ 0)) ∧
+      IsCompact D ∧ IsCompact E ∧
+      (∀ p ∈ W, (p ∈ D ↔ (F p).1 ≤ 0) ∧
+        (p ∈ interior D ↔ (F p).1 < 0) ∧ (p ∈ frontier D ↔ (F p).1 = 0)) ∧
+      (∀ p ∈ W, (p ∈ E ↔ (F p).2 ≤ 0) ∧
+        (p ∈ interior E ↔ (F p).2 < 0) ∧ (p ∈ frontier E ↔ (F p).2 = 0)) ∧
+      (∀ p ∉ K, (p ∈ D ↔ p ∈ M.toPlaneComplex.support) ∧
+        (p ∈ interior D ↔ p ∈ interior M.toPlaneComplex.support) ∧
+        (p ∈ frontier D ↔ p ∈ frontier M.toPlaneComplex.support)) ∧
+      (∀ p ∉ K, (p ∈ E ↔ p ∈ (M.eraseTriangle T.1).toPlaneComplex.support) ∧
+        (p ∈ interior E ↔ p ∈ interior (M.eraseTriangle T.1).toPlaneComplex.support) ∧
+        (p ∈ frontier E ↔ p ∈ frontier (M.eraseTriangle T.1).toPlaneComplex.support)) ∧
+      (H 1) '' D = E ∧ (H 1) '' interior D = interior E ∧
+      (H 1) '' frontier D = frontier E ∧
+      (H 1).symm '' E = D ∧ (H 1).symm '' interior E = interior D ∧
+      (H 1).symm '' frontier E = frontier D := by
+  dsimp only
+  obtain ⟨v₀, v₁, r₀, r₁, f₀, f₁, e₀, e₁, ε₀, ε, J, W, F,
+      hr₀, hr₁, hdisj, hs₀, hs₁, hf₀, hfb, hfc₀, hfv₀, hf₁, hfa, hfc₁, hfv₁, he₀, he₁,
+      hε₀, hε, hεle, hJ, hTJ, hW, hJW, hcover, hF, heW₀, heW₁, heWV, hzeroC, hreg,
+      hold, herased, hprop⟩ :=
+    P.exists_regular_interpolation_near_two_edge_free_triangle M hfrontier T k hfree
+  obtain ⟨K, H, hK, hJK, hKW, hH, hHi, hH0, hfix, hforward, hinverse⟩ :=
+    Diffeomorph.exists_isotopy_level_and_sublevels_of_proportional_interpolation
+      hF.fst hF.snd hW hJ hJW (fun t ht p hp _ => hreg t ht p (hJW hp)) hprop
+  have hsides (p : Plane) (hp : p ∈ W) (hpJ : p ∉ interior J) :=
+    And.intro (hold p hp hpJ) (herased p hp hpJ)
+  have hreg₀ (p : Plane) (hp : p ∈ W) :
+      fderiv ℝ (fun q => (F q).1) p ≠ 0 := by
+    simpa only [sub_zero, one_mul, zero_mul, add_zero] using
+      hreg 0 ⟨le_rfl, zero_le_one⟩ p hp
+  have hreg₁ (p : Plane) (hp : p ∈ W) :
+      fderiv ℝ (fun q => (F q).2) p ≠ 0 := by
+    simpa only [sub_self, zero_mul, one_mul, zero_add] using
+      hreg 1 ⟨zero_le_one, le_rfl⟩ p hp
+  let D := (M.toPlaneComplex.support \ interior K) ∪ (K ∩ {p | (F p).1 ≤ 0})
+  let E := ((M.eraseTriangle T.1).toPlaneComplex.support \ interior K) ∪
+    (K ∩ {p | (F p).2 ≤ 0})
+  obtain ⟨hD, hDsides, hDraw⟩ := compact_sublevel_replacement_preserving_germ
+    M.toPlaneComplex.isCompact_support hK hW hKW hF.fst.continuous
+    (fun p hp _ => hreg₀ p hp)
+    (fun p hp => (hsides p hp.1 (fun hj => hp.2 (hJK (interior_subset hj)))).1.1)
+  obtain ⟨hE, hEsides, hEraw⟩ := compact_sublevel_replacement_preserving_germ
+    (M.eraseTriangle T.1).toPlaneComplex.isCompact_support hK hW hKW hF.snd.continuous
+    (fun p hp _ => hreg₁ p hp)
+    (fun p hp => (hsides p hp.1 (fun hj => hp.2 (hJK (interior_subset hj)))).2.1)
+  have himage : (H 1) '' D = E := by
+    ext p
+    change p ∈ (H 1).toEquiv '' D ↔ p ∈ E
+    rw [Set.mem_image_equiv]
+    change (H 1).symm p ∈ D ↔ p ∈ E
+    by_cases hp : p ∈ W
+    · exact (hDsides ((H 1).symm p) (((hfix 1).2.2.2 p).mpr hp)).1.trans
+        ((hinverse p hp).2.2.symm.trans (hEsides p hp).1.symm)
+    · have hpK : p ∉ K := fun h => hp (hKW h)
+      rw [(hfix 1).2.1 hpK]
+      have hpT : p ∉ M.triangleCarrier T.1 :=
+        fun h => hpK (interior_subset (hJK (interior_subset (hTJ h))))
+      have hsame : p ∈ M.toPlaneComplex.support ↔
+          p ∈ (M.eraseTriangle T.1).toPlaneComplex.support := by
+        rw [M.support_eq_eraseTriangle_union_triangleCarrier T.2]
+        exact or_iff_left hpT
+      exact (hDraw p hpK).1.trans (hsame.trans (hEraw p hpK).1.symm)
+  have hinverseImage : (H 1).symm '' E = D := by
+    rw [← himage]
+    exact (H 1).toEquiv.symm_image_image D
+  refine ⟨v₀, v₁, r₀, r₁, f₀, f₁, e₀, e₁, ε₀, ε, J, W, K, F, H,
+    hr₀, hr₁, hdisj, hs₀, hs₁, hf₀, hfb, hfc₀, hfv₀, hf₁, hfa, hfc₁, hfv₁, he₀, he₁,
+    hε₀, hε, hεle, hJ, hTJ, hW, hJW, hcover, hF, heW₀, heW₁, heWV, hzeroC, hreg,
+    fun p hp hpJ => (hsides p hp hpJ).1, fun p hp hpJ => (hsides p hp hpJ).2,
+    hK, hJK, hKW, hH, hHi, hH0, hfix, hforward, hinverse,
+    hD, hE, hDsides, hEsides, hDraw, hEraw, himage, ?_, ?_, hinverseImage, ?_, ?_⟩
+  · exact ((H 1).toHomeomorph.image_interior D).trans (congrArg interior himage)
+  · exact ((H 1).toHomeomorph.image_frontier D).trans (congrArg frontier himage)
+  · exact ((H 1).symm.toHomeomorph.image_interior E).trans (congrArg interior hinverseImage)
+  · exact ((H 1).symm.toHomeomorph.image_frontier E).trans (congrArg frontier hinverseImage)
+
+end Schoenflies
+
+end

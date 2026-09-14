@@ -1,3 +1,4 @@
+import DifferentialGeometry.Topology.JordanSeparation
 import DifferentialGeometry.External.Schoenflies.PrePolygonArc
 import DifferentialGeometry.External.Schoenflies.PrePolygonSep
 import DifferentialGeometry.External.ClassificationOfSurfaces.Moise.LineSubdivision
@@ -292,55 +293,6 @@ private theorem isPreconnected_affine_max_sides
     · change g p - f p < 0
       rw [hpg, hpf]
       linarith
-
-private theorem IsSeparating.local_side_sign
-    {C U : Set Plane} (hC : IsSeparating C) (hU : IsOpen U) {a : Plane}
-    (haC : a ∈ C) (haU : a ∈ U) (g : Plane → ℝ)
-    (hzero : ∀ p ∈ U, p ∈ C ↔ g p = 0)
-    (hpos : IsPreconnected (U ∩ {p | 0 < g p}))
-    (hneg : IsPreconnected (U ∩ {p | g p < 0})) :
-    (∀ p ∈ U, p ∈ inside C ↔ 0 < g p) ∨
-      (∀ p ∈ U, p ∈ inside C ↔ g p < 0) := by
-  have hcover : ∀ p ∈ U, g p ≠ 0 → p ∈ inside C ∪ outside C := by
-    intro p hp hne
-    rw [inside_union_outside]
-    exact fun hpC => hne ((hzero p hp).mp hpC)
-  have hsplitpos : U ∩ {p | 0 < g p} ⊆ inside C ∨
-      U ∩ {p | 0 < g p} ⊆ outside C :=
-    hpos.subset_or_subset hC.isOpen_inside hC.isOpen_outside disjoint_inside_outside
-      (fun p hp => hcover p hp.1 hp.2.ne')
-  have hsplitneg : U ∩ {p | g p < 0} ⊆ inside C ∨
-      U ∩ {p | g p < 0} ⊆ outside C :=
-    hneg.subset_or_subset hC.isOpen_inside hC.isOpen_outside disjoint_inside_outside
-      (fun p hp => hcover p hp.1 hp.2.ne)
-  have hi : (U ∩ inside C).Nonempty := by
-    have ha : a ∈ closure (inside C) := (IsRegionOf.inside C).subset_closure hC haC
-    exact (mem_closure_iff.mp ha U hU haU)
-  have ho : (U ∩ outside C).Nonempty := by
-    have ha : a ∈ closure (outside C) := (IsRegionOf.outside C).subset_closure hC haC
-    exact (mem_closure_iff.mp ha U hU haU)
-  have hsign : ∀ p ∈ U, p ∉ C → g p < 0 ∨ 0 < g p := by
-    intro p hp hpC
-    exact lt_or_gt_of_ne (fun he => hpC ((hzero p hp).mpr he))
-  rcases hsplitpos with hpi | hpo <;> rcases hsplitneg with hni | hno
-  · obtain ⟨p, hpU, hpO⟩ := ho
-    rcases hsign p hpU hpO.1 with hn | hp
-    · exact False.elim (Set.disjoint_left.mp disjoint_inside_outside (hni ⟨hpU, hn⟩) hpO)
-    · exact False.elim (Set.disjoint_left.mp disjoint_inside_outside (hpi ⟨hpU, hp⟩) hpO)
-  · refine Or.inl fun p hpU => ⟨?_, fun hp => hpi ⟨hpU, hp⟩⟩
-    intro hpI
-    rcases hsign p hpU hpI.1 with hn | hp
-    · exact False.elim (Set.disjoint_left.mp disjoint_inside_outside hpI (hno ⟨hpU, hn⟩))
-    · exact hp
-  · refine Or.inr fun p hpU => ⟨?_, fun hp => hni ⟨hpU, hp⟩⟩
-    intro hpI
-    rcases hsign p hpU hpI.1 with hn | hp
-    · exact hn
-    · exact False.elim (Set.disjoint_left.mp disjoint_inside_outside hpI (hpo ⟨hpU, hp⟩))
-  · obtain ⟨p, hpU, hpI⟩ := hi
-    rcases hsign p hpU hpI.1 with hn | hp
-    · exact False.elim (Set.disjoint_left.mp disjoint_inside_outside hpI (hno ⟨hpU, hn⟩))
-    · exact False.elim (Set.disjoint_left.mp disjoint_inside_outside hpI (hpo ⟨hpU, hp⟩))
 
 theorem PrePolygon.exists_affine_vertex_graph_sides
     {m : ℕ} (P : PrePolygon m) (i : ZMod (m + 3)) :
