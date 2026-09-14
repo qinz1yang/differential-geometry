@@ -1,4 +1,5 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.PLHomeomorph
+import DifferentialGeometry.Topology.PiecewiseLinear.Triangulation
 import Mathlib.Topology.Algebra.AffineSubspace
 import Mathlib.Topology.MetricSpace.Contracting
 
@@ -479,5 +480,147 @@ theorem exists_small_homeomorph_transverse_faces [FiniteDimensional ℝ E]
     apply htrans s hs t ht
     obtain ⟨y, ⟨x, hx, rfl⟩, hy⟩ := hinter
     refine ⟨h x, ⟨x, hx, (heq (K.convexHull_subset_space hs hx)).symm⟩, hy⟩
+
+open Classical in
+theorem card_add_finrank_le_of_subset_transverse_faces [FiniteDimensional ℝ E]
+    (K L : Geometry.SimplicialComplex ℝ E) {s t u : Finset E} (hs : s ∈ K.faces)
+    (ht : t ∈ L.faces) (hu : AffineIndependent ℝ ((↑) : u → E)) (hune : u.Nonempty)
+    (a : E) (hsub : (u : Set E) ⊆ (fun x => x + a) '' convexHull ℝ (s : Set E) ∩
+      convexHull ℝ (t : Set E))
+    (htrans : vectorSpan ℝ (s : Set E) ⊔ vectorSpan ℝ (t : Set E) = ⊤) :
+    u.card + Module.finrank ℝ E + 1 ≤ s.card + t.card := by
+  have hspan : vectorSpan ℝ (u : Set E) ≤
+      vectorSpan ℝ (s : Set E) ⊓ vectorSpan ℝ (t : Set E) := by
+    rw [vectorSpan_def, Submodule.span_le]
+    intro z hz
+    obtain ⟨x, hx, y, hy, rfl⟩ := Set.mem_vsub.mp hz
+    obtain ⟨⟨x', hx', hxx'⟩, hxt⟩ := hsub hx
+    obtain ⟨⟨y', hy', hyy'⟩, hyt⟩ := hsub hy
+    constructor
+    · have hmem := AffineSubspace.vsub_mem_direction
+        (convexHull_subset_affineSpan _ hx') (convexHull_subset_affineSpan _ hy')
+      rw [direction_affineSpan] at hmem
+      change x - y ∈ vectorSpan ℝ (s : Set E)
+      rw [← hxx', ← hyy']
+      simpa only [vsub_eq_sub, add_sub_add_right_eq_sub] using hmem
+    · change x -ᵥ y ∈ vectorSpan ℝ (t : Set E)
+      simpa only [direction_affineSpan] using AffineSubspace.vsub_mem_direction
+        (convexHull_subset_affineSpan _ hxt) (convexHull_subset_affineSpan _ hyt)
+  have hdim := Submodule.finrank_sup_add_finrank_inf_eq
+    (vectorSpan ℝ (s : Set E)) (vectorSpan ℝ (t : Set E))
+  rw [htrans] at hdim
+  have hdim' : Module.finrank ℝ E +
+      Module.finrank ℝ (vectorSpan ℝ (s : Set E) ⊓ vectorSpan ℝ (t : Set E) : Submodule ℝ E) =
+        Module.finrank ℝ (vectorSpan ℝ (s : Set E)) +
+          Module.finrank ℝ (vectorSpan ℝ (t : Set E)) := by simpa using hdim
+  have hmono := Submodule.finrank_mono hspan
+  obtain ⟨sv, hsv⟩ := K.nonempty_of_mem_faces hs
+  obtain ⟨tv, htv⟩ := L.nonempty_of_mem_faces ht
+  obtain ⟨uv, huv⟩ := hune
+  have : Nonempty s := ⟨⟨sv, hsv⟩⟩
+  have : Nonempty t := ⟨⟨tv, htv⟩⟩
+  have : Nonempty u := ⟨⟨uv, huv⟩⟩
+  have hrange : ∀ v : Finset E, Set.range ((↑) : v → E) = (v : Set E) := by
+    intro v
+    ext x
+    simp
+  have hscard : Module.finrank ℝ (vectorSpan ℝ (s : Set E)) + 1 = s.card := by
+    have h := (K.indep hs).finrank_vectorSpan_add_one
+    change Module.finrank ℝ (vectorSpan ℝ (Set.range ((↑) : s → E))) + 1 = Fintype.card s at h
+    rw [hrange s] at h
+    simpa only [Fintype.card_coe] using h
+  have htcard : Module.finrank ℝ (vectorSpan ℝ (t : Set E)) + 1 = t.card := by
+    have h := (L.indep ht).finrank_vectorSpan_add_one
+    change Module.finrank ℝ (vectorSpan ℝ (Set.range ((↑) : t → E))) + 1 = Fintype.card t at h
+    rw [hrange t] at h
+    simpa only [Fintype.card_coe] using h
+  have hucard : Module.finrank ℝ (vectorSpan ℝ (u : Set E)) + 1 = u.card := by
+    have h := hu.finrank_vectorSpan_add_one
+    change Module.finrank ℝ (vectorSpan ℝ (Set.range ((↑) : u → E))) + 1 = Fintype.card u at h
+    rw [hrange u] at h
+    simpa only [Fintype.card_coe] using h
+  omega
+
+open Classical in
+theorem exists_triangulation_inter_of_transverse_faces [FiniteDimensional ℝ E]
+    (K L : Geometry.SimplicialComplex ℝ E) [Finite K.faces] [Finite L.faces] (a : E)
+    (htrans : ∀ s ∈ K.faces, ∀ t ∈ L.faces,
+      ((fun x => x + a) '' convexHull ℝ (s : Set E) ∩ convexHull ℝ (t : Set E)).Nonempty →
+        vectorSpan ℝ (s : Set E) ⊔ vectorSpan ℝ (t : Set E) = ⊤) :
+    ∃ G : Geometry.SimplicialComplex ℝ E, G.faces.Finite ∧
+      G.space = (fun x => x + a) '' K.space ∩ L.space ∧
+      ∀ u ∈ G.faces, ∃ s ∈ K.faces, ∃ t ∈ L.faces,
+        convexHull ℝ (u : Set E) ⊆
+          (fun x => x + a) '' convexHull ℝ (s : Set E) ∩ convexHull ℝ (t : Set E) ∧
+        u.card + Module.finrank ℝ E + 1 ≤ s.card + t.card := by
+  let C : K.faces × L.faces → Set E := fun p =>
+    (fun x => x + a) '' convexHull ℝ (p.1.val : Set E) ∩ convexHull ℝ (p.2.val : Set E)
+  have hC : ∀ p, IsHPolytope (C p) := by
+    intro p
+    have h := (isHPolytope_convexHull_of_affineIndependent p.1.val (K.indep p.1.property)).image_affineEquiv
+      (AffineEquiv.constVAdd ℝ E a)
+    have heq : (⇑(AffineEquiv.constVAdd ℝ E a) : E → E) = fun x => x + a := by
+      funext x
+      change a + x = x + a
+      exact add_comm _ _
+    rw [heq] at h
+    exact h.inter (isHPolytope_convexHull_of_affineIndependent p.2.val (L.indep p.2.property))
+  obtain ⟨G, hfin, hspace, hcover⟩ := exists_simplicialComplex_of_forall_isHPolytope C hC
+  have hspace' : G.space = (fun x => x + a) '' K.space ∩ L.space := by
+    rw [hspace]
+    ext x
+    constructor
+    · intro hx
+      obtain ⟨p, ⟨y, hy, rfl⟩, hyt⟩ := mem_iUnion.mp hx
+      exact ⟨⟨y, K.convexHull_subset_space p.1.property hy, rfl⟩,
+        L.convexHull_subset_space p.2.property hyt⟩
+    · rintro ⟨⟨y, hy, rfl⟩, hxL⟩
+      obtain ⟨s, hs, hys⟩ := K.mem_space_iff.mp hy
+      obtain ⟨t, ht, hxt⟩ := L.mem_space_iff.mp hxL
+      exact mem_iUnion.mpr ⟨(⟨s, hs⟩, ⟨t, ht⟩), ⟨y, hys, rfl⟩, hxt⟩
+  refine ⟨G, hfin, hspace', fun u hu => ?_⟩
+  have huc : u.centroid ℝ id ∈ openSimplex u := centroid_mem_openSimplex (G.nonempty_of_mem_faces hu)
+  have hucG : u.centroid ℝ id ∈ G.space :=
+    G.convexHull_subset_space hu (openSimplex_subset_convexHull u huc)
+  obtain ⟨p, hp⟩ := mem_iUnion.mp (hspace ▸ hucG)
+  have hpne : (C p).Nonempty := ⟨_, hp⟩
+  rw [hcover p] at hp
+  obtain ⟨v, ⟨hv, hvC⟩, hcv⟩ := mem_iUnion₂.mp hp
+  have huv : u ⊆ v := face_subset_of_mem_openSimplex_of_mem_convexHull G hu hv huc hcv
+  have huC : convexHull ℝ (u : Set E) ⊆ C p :=
+    (convexHull_mono (Finset.coe_subset.mpr huv)).trans hvC
+  refine ⟨p.1.val, p.1.property, p.2.val, p.2.property, huC, ?_⟩
+  exact card_add_finrank_le_of_subset_transverse_faces K L p.1.property p.2.property
+    (G.indep hu) (G.nonempty_of_mem_faces hu) a ((subset_convexHull ℝ _).trans huC)
+    (htrans p.1.val p.1.property p.2.val p.2.property hpne)
+
+open Classical in
+theorem exists_small_homeomorph_inter_dimension_le [FiniteDimensional ℝ E]
+    (K L : Geometry.SimplicialComplex ℝ E) [Finite K.faces] [Finite L.faces] {m n : ℕ}
+    (hK : ∀ s ∈ K.faces, s.card ≤ m + 1) (hL : ∀ t ∈ L.faces, t.card ≤ n + 1)
+    {U : Set E} (hU : IsOpen U) (hKU : K.space ⊆ U) {ε : ℝ} (hε : 0 < ε) :
+    ∃ (h : E → E) (G : Geometry.SimplicialComplex ℝ E), IsPLHomeomorphOn h univ univ ∧
+      (∀ x, dist (h x) x < ε) ∧ EqOn h id Uᶜ ∧ G.faces.Finite ∧
+      G.space = h '' K.space ∩ L.space ∧
+      ∀ u ∈ G.faces, u.card + Module.finrank ℝ E + 1 ≤ m + n + 2 := by
+  obtain ⟨a, h, _, hpl, hclose, hout, heq, htrans⟩ :=
+    exists_small_homeomorph_transverse_faces K L hU hKU hε
+  have htrans' : ∀ s ∈ K.faces, ∀ t ∈ L.faces,
+      ((fun x => x + a) '' convexHull ℝ (s : Set E) ∩ convexHull ℝ (t : Set E)).Nonempty →
+        vectorSpan ℝ (s : Set E) ⊔ vectorSpan ℝ (t : Set E) = ⊤ := by
+    intro s hs t ht hinter
+    obtain ⟨z, ⟨x, hx, rfl⟩, hz⟩ := hinter
+    exact htrans s hs t ht ⟨x + a, ⟨x, hx, heq (K.convexHull_subset_space hs hx)⟩, hz⟩
+  obtain ⟨G, hfin, hspace, hdim⟩ := exists_triangulation_inter_of_transverse_faces K L a htrans'
+  have himage : h '' K.space = (fun x => x + a) '' K.space := by
+    apply image_congr
+    exact heq
+  refine ⟨h, G, hpl, hclose, hout, hfin, ?_, fun u hu => ?_⟩
+  · rw [himage]
+    exact hspace
+  · obtain ⟨s, hs, t, ht, _, hcard⟩ := hdim u hu
+    have hsbound := hK s hs
+    have htbound := hL t ht
+    omega
 
 end DifferentialGeometry.Topology.PiecewiseLinear
