@@ -1,3 +1,7 @@
+import DifferentialGeometry.Topology.Planar.PolygonIsotopy
+import Mathlib.Geometry.Manifold.Diffeomorph
+import DifferentialGeometry.External.ClassificationOfSurfaces.PrePolygonDeletion
+import Mathlib.Topology.MetricSpace.Thickening
 import DifferentialGeometry.Analysis.Calculus.SmoothMax
 import DifferentialGeometry.External.Schoenflies.Plane
 import DifferentialGeometry.External.ClassificationOfSurfaces.Moise.LineSubdivision
@@ -868,6 +872,1403 @@ theorem PrePolygon.exists_relative_compact_rounding
   exact P.regular_frontier_of_partial_replacement hD.isClosed hD'.isClosed
     hL hLW hold hgood U K H (fun i => (hU i).1) (fun i => (hU i).2.1)
     hK hKU hH hreg hlocal hout
+
+end Schoenflies
+
+end
+
+section
+
+namespace Schoenflies
+
+private theorem compact_region_replace_preserving_germ
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {D K W : Set E} {H : E → ℝ} (hD : IsCompact D) (hK : IsCompact K)
+    (hW : IsOpen W) (hKW : K ⊆ W) (hH : Continuous H)
+    (hreg : ∀ p ∈ W, H p = 0 → fderiv ℝ H p ≠ 0)
+    (heq : ∀ p ∈ W \ interior K, p ∈ D ↔ 0 ≤ H p) :
+    let D' := (D \ interior K) ∪ (K ∩ {p | 0 ≤ H p})
+    IsCompact D' ∧
+      (∀ p ∈ W, (p ∈ D' ↔ 0 ≤ H p) ∧
+        (p ∈ interior D' ↔ 0 < H p) ∧ (p ∈ frontier D' ↔ H p = 0)) ∧
+      (∀ p ∉ K, p ∈ D' ↔ p ∈ D) := by
+  obtain ⟨hD', hlocal, hout⟩ := compact_region_replace_on_open hD isOpen_interior hK
+    (isClosed_le continuous_const hH) interior_subset
+    (fun p hp => (heq p ⟨hKW hp.1, hp.2⟩).symm)
+  have hweak : ∀ p ∈ W,
+      p ∈ (D \ interior K) ∪ (K ∩ {p | 0 ≤ H p}) ↔ 0 ≤ H p := by
+    intro p hp
+    by_cases hi : p ∈ interior K
+    · exact hlocal p hi
+    · exact (hout p hi).trans (heq p ⟨hp, hi⟩)
+  have hsides := regular_region_sides_of_local_eq hD'.isClosed hW hH hreg hweak
+  exact ⟨hD', fun p hp => ⟨hweak p hp, hsides p hp⟩,
+    fun p hp => hout p (fun hi => hp (interior_subset hi))⟩
+
+end Schoenflies
+
+end
+
+section
+
+open scoped ContDiff Manifold Topology
+
+namespace Schoenflies
+
+private theorem PrePolygon.native_compact_region_with_prescribed_isotopy
+    {m : ℕ} (P : PrePolygon m)
+    (M : LeanEval.Topology.ClassificationOfSurfaces.Moise.TriangleMesh)
+    (hfrontier : frontier M.toPlaneComplex.support = P.carrier)
+    (T : M.Triangle) (k : Fin 3) (hfree : M.IsOneEdgeFreeTriangle T k) :
+    let b := LeanEval.Topology.ClassificationOfSurfaces.Moise.affineBasisOfTriangle
+      (M.freeTriangleOrder T k) (M.freeTriangleOrder_affineIndependent T k)
+    let R := closure (P.carrier \ segment ℝ (b 0) (b 1))
+    ∃ (v₀ v₁ : Plane) (f₀ f₁ : Plane →ᵃ[ℝ] ℝ) (ε : ℝ)
+      (U₀ U₁ V : Set Plane) (F : Plane → ℝ × ℝ),
+      let s₀ := b.coord 2 v₀ / f₀ v₀
+      let s₁ := b.coord 2 v₁ / f₁ v₁
+      let A₀ := fun p => s₀ * (f₀ p - Real.smoothMax ε (f₀ p) 0) - b.coord 2 p
+      let A₁ := fun p => s₁ * (f₁ p - Real.smoothMax ε (f₁ p) 0) - b.coord 2 p
+      let B₀ := fun p => f₀ (b 2) / f₀ (b 1) *
+        (s₀ * (f₀ p - Real.smoothMax ε (f₀ p) 0) +
+          Real.smoothMax ε (f₀ p) 0 / f₀ (b 2) - b.coord 2 p)
+      let B₁ := fun p => f₁ (b 2) / f₁ (b 0) *
+        (s₁ * (f₁ p - Real.smoothMax ε (f₁ p) 0) +
+          Real.smoothMax ε (f₁ p) 0 / f₁ (b 2) - b.coord 2 p)
+      let H := fun q : ℝ × Plane => (1 - q.1) * (F q.2).1 + q.1 * (F q.2).2
+      0 < ε ∧ ContDiff ℝ ∞ F ∧ IsOpen U₀ ∧ IsOpen U₁ ∧ IsOpen V ∧
+      b 0 ∈ U₀ ∧ b 1 ∈ U₁ ∧ Disjoint U₀ U₁ ∧
+      M.triangleCarrier T.1 ⊆ U₀ ∪ U₁ ∪ V ∧
+      segment ℝ (b 0) v₀ ⊆ R ∧ segment ℝ (b 1) v₁ ⊆ R ∧
+      f₀ (b 0) = 0 ∧ 0 < f₀ (b 1) ∧ 0 < f₀ (b 2) ∧ f₀ v₀ < 0 ∧
+      f₁ (b 1) = 0 ∧ 0 < f₁ (b 0) ∧ 0 < f₁ (b 2) ∧ f₁ v₁ < 0 ∧
+      (∀ p ∈ U₀, (1 : ℝ) / 4 < b.coord 0 p - b.coord 1 p) ∧
+      (∀ p ∈ U₁, (1 : ℝ) / 4 < b.coord 1 p - b.coord 0 p) ∧
+      Set.EqOn F (fun p => (A₀ p, B₀ p)) U₀ ∧
+      Set.EqOn F (fun p => (A₁ p, B₁ p)) U₁ ∧
+      Set.EqOn F (fun p => (-b.coord 2 p,
+        -Real.smoothMax (1 / 4) (-b.coord 0 p) (-b.coord 1 p))) V ∧
+      (∀ p ∈ U₀,
+        (p ∈ M.toPlaneComplex.support ↔
+          (if f₀ p < 0 then b.coord 2 v₀ / f₀ v₀ * f₀ p else 0) ≤ b.coord 2 p) ∧
+        (p ∈ interior M.toPlaneComplex.support ↔
+          (if f₀ p < 0 then b.coord 2 v₀ / f₀ v₀ * f₀ p else 0) < b.coord 2 p) ∧
+        (p ∈ frontier M.toPlaneComplex.support ↔
+          b.coord 2 p = if f₀ p < 0 then b.coord 2 v₀ / f₀ v₀ * f₀ p else 0) ∧
+        (p ∈ (M.eraseTriangle T.1).toPlaneComplex.support ↔
+          (if f₀ p < 0 then b.coord 2 v₀ / f₀ v₀ * f₀ p else f₀ p / f₀ (b 2)) ≤
+            b.coord 2 p) ∧
+        (p ∈ interior (M.eraseTriangle T.1).toPlaneComplex.support ↔
+          (if f₀ p < 0 then b.coord 2 v₀ / f₀ v₀ * f₀ p else f₀ p / f₀ (b 2)) <
+            b.coord 2 p) ∧
+        (p ∈ frontier (M.eraseTriangle T.1).toPlaneComplex.support ↔
+          b.coord 2 p = if f₀ p < 0 then b.coord 2 v₀ / f₀ v₀ * f₀ p else
+            f₀ p / f₀ (b 2))) ∧
+      (∀ p ∈ U₁,
+        (p ∈ M.toPlaneComplex.support ↔
+          (if f₁ p < 0 then b.coord 2 v₁ / f₁ v₁ * f₁ p else 0) ≤ b.coord 2 p) ∧
+        (p ∈ interior M.toPlaneComplex.support ↔
+          (if f₁ p < 0 then b.coord 2 v₁ / f₁ v₁ * f₁ p else 0) < b.coord 2 p) ∧
+        (p ∈ frontier M.toPlaneComplex.support ↔
+          b.coord 2 p = if f₁ p < 0 then b.coord 2 v₁ / f₁ v₁ * f₁ p else 0) ∧
+        (p ∈ (M.eraseTriangle T.1).toPlaneComplex.support ↔
+          (if f₁ p < 0 then b.coord 2 v₁ / f₁ v₁ * f₁ p else f₁ p / f₁ (b 2)) ≤
+            b.coord 2 p) ∧
+        (p ∈ interior (M.eraseTriangle T.1).toPlaneComplex.support ↔
+          (if f₁ p < 0 then b.coord 2 v₁ / f₁ v₁ * f₁ p else f₁ p / f₁ (b 2)) <
+            b.coord 2 p) ∧
+        (p ∈ frontier (M.eraseTriangle T.1).toPlaneComplex.support ↔
+          b.coord 2 p = if f₁ p < 0 then b.coord 2 v₁ / f₁ v₁ * f₁ p else
+            f₁ p / f₁ (b 2))) ∧
+      (∀ p ∈ U₀ ∪ U₁ ∪ V,
+        fderiv ℝ (fun q => (F q).1) p ≠ 0 ∧
+          fderiv ℝ (fun q => (F q).2) p ≠ 0) ∧
+      ContDiff ℝ ∞ H ∧
+      (∀ t p, deriv (fun s => H (s, p)) t = (F p).2 - (F p).1) ∧
+      (∀ p, H (0, p) = (F p).1) ∧
+      (∀ p, H (1, p) = (F p).2) ∧
+      (∀ t ∈ Set.Icc (0 : ℝ) 1, ∀ p ∈ U₀ ∪ U₁ ∪ V,
+        fderiv ℝ (fun q => H (t, q)) p ≠ 0) ∧
+      (∀ t ∈ Set.Icc (0 : ℝ) 1, ∀ p ∈ U₀, f₀ p ≤ -ε → H (t, p) = 0 →
+        (F p).1 = 0 ∧ (F p).2 = 0 ∧ (∀ u : ℝ, H (u, p) = 0) ∧
+          (∀ u : ℝ, deriv (fun s => H (s, p)) u = 0)) ∧
+      (∀ t ∈ Set.Icc (0 : ℝ) 1, ∀ p ∈ U₁, f₁ p ≤ -ε → H (t, p) = 0 →
+        (F p).1 = 0 ∧ (F p).2 = 0 ∧ (∀ u : ℝ, H (u, p) = 0) ∧
+          (∀ u : ℝ, deriv (fun s => H (s, p)) u = 0)) ∧
+      (∀ p ∈ V, ε < f₀ p ∧ ε < f₁ p) ∧
+      (∀ t ∈ Set.Icc (0 : ℝ) 1, ∀ p ∈ V, H (t, p) = 0 →
+        p ∈ M.triangleCarrier T.1) ∧
+      ∃ J : Set Plane, IsCompact J ∧ M.triangleCarrier T.1 ⊆ interior J ∧
+        J ⊆ U₀ ∪ U₁ ∪ V ∧
+        (∀ t ∈ Set.Icc (0 : ℝ) 1, ∀ p ∈ U₀ ∪ U₁ ∪ V,
+          H (t, p) = 0 → deriv (fun u => H (u, p)) t ≠ 0 → p ∈ interior J) ∧
+        (∀ t ∈ Set.Icc (0 : ℝ) 1, ∀ p ∈ U₀,
+          H (t, p) = 0 → -ε ≤ f₀ p → p ∈ interior J) ∧
+        (∀ t ∈ Set.Icc (0 : ℝ) 1, ∀ p ∈ U₁,
+          H (t, p) = 0 → -ε ≤ f₁ p → p ∈ interior J) ∧
+        (∀ t ∈ Set.Icc (0 : ℝ) 1, ∀ p ∈ U₀ ∪ U₁ ∪ V, H (t, p) = 0 → p ∉ J →
+          (p ∈ U₀ ∧ f₀ p < -ε ∧ ∃ N : Set Plane,
+            IsOpen N ∧ p ∈ N ∧ N ⊆ U₀ ∩ {q | f₀ q < -ε} ∧
+              Set.EqOn (fun q => (F q).2) (fun q => f₀ (b 2) / f₀ (b 1) * (F q).1) N) ∨
+          (p ∈ U₁ ∧ f₁ p < -ε ∧ ∃ N : Set Plane,
+            IsOpen N ∧ p ∈ N ∧ N ⊆ U₁ ∩ {q | f₁ q < -ε} ∧
+              Set.EqOn (fun q => (F q).2) (fun q => f₁ (b 2) / f₁ (b 0) * (F q).1) N)) ∧
+        (∀ p ∈ V,
+          (p ∈ M.toPlaneComplex.support ↔ 0 ≤ b.coord 2 p) ∧
+          (p ∈ interior M.toPlaneComplex.support ↔ 0 < b.coord 2 p) ∧
+          (p ∈ frontier M.toPlaneComplex.support ↔ b.coord 2 p = 0)) ∧
+        (∀ p ∈ U₀ ∪ U₁ ∪ V, p ∉ interior J →
+          (p ∈ M.toPlaneComplex.support ↔ (F p).1 ≤ 0) ∧
+          (p ∈ interior M.toPlaneComplex.support ↔ (F p).1 < 0) ∧
+          (p ∈ frontier M.toPlaneComplex.support ↔ (F p).1 = 0)) ∧
+        (∀ p ∈ U₀ ∪ U₁ ∪ V, p ∉ interior J →
+          (p ∈ (M.eraseTriangle T.1).toPlaneComplex.support ↔ (F p).2 ≤ 0) ∧
+          (p ∈ interior (M.eraseTriangle T.1).toPlaneComplex.support ↔ (F p).2 < 0) ∧
+          (p ∈ frontier (M.eraseTriangle T.1).toPlaneComplex.support ↔ (F p).2 = 0)) ∧
+        ∃ (K : Set Plane) (X : ℝ × Plane → Plane) (Ω : Set (ℝ × Plane))
+          (κ : ℝ × Plane → ℝ),
+          IsCompact K ∧ J ⊆ interior K ∧ K ⊆ U₀ ∪ U₁ ∪ V ∧
+          ContDiff ℝ ∞ X ∧ HasCompactSupport X ∧
+          IsOpen Ω ∧ Set.Icc (0 : ℝ) 1 ×ˢ (U₀ ∪ U₁ ∪ V) ⊆ Ω ∧
+          Ω ⊆ Set.univ ×ˢ (U₀ ∪ U₁ ∪ V) ∧ ContDiffOn ℝ ∞ κ Ω ∧
+          (∀ z ∈ Ω,
+            deriv (fun t => H (t, z.2)) z.1 +
+              fderiv ℝ (fun y => H (z.1, y)) z.2 (X z) = κ z * H z) ∧
+          (∀ t x, x ∉ K → X (t, x) = 0) ∧
+          ∃ Φ : ℝ → (Plane ≃ₘ[ℝ] Plane),
+            (∀ (hX : ContDiff ℝ ∞ X) (hsX : HasCompactSupport X) (t : ℝ),
+              Φ t = Diffeomorph.timeDependentFlow X hX hsX 0 t) ∧
+            ContDiff ℝ ∞ (fun q : ℝ × Plane => Φ q.1 q.2) ∧
+            ContDiff ℝ ∞ (fun q : ℝ × Plane => (Φ q.1).symm q.2) ∧
+            Φ 0 = Diffeomorph.refl 𝓘(ℝ, Plane) Plane ∞ ∧
+            (∀ t : ℝ, Set.EqOn (Φ t) id Kᶜ ∧ Set.EqOn (Φ t).symm id Kᶜ) ∧
+            (∀ t : ℝ, (∀ p, Φ t p ∈ U₀ ∪ U₁ ∪ V ↔ p ∈ U₀ ∪ U₁ ∪ V) ∧
+              (∀ p, (Φ t).symm p ∈ U₀ ∪ U₁ ∪ V ↔ p ∈ U₀ ∪ U₁ ∪ V)) ∧
+            (∀ t ∈ Set.Icc (0 : ℝ) 1, ∀ p ∈ U₀ ∪ U₁ ∪ V,
+              ((F p).1 = 0 ↔ H (t, Φ t p) = 0) ∧
+              ((F p).1 < 0 ↔ H (t, Φ t p) < 0) ∧
+              ((F p).1 ≤ 0 ↔ H (t, Φ t p) ≤ 0)) ∧
+            (∀ t ∈ Set.Icc (0 : ℝ) 1, ∀ p ∈ U₀ ∪ U₁ ∪ V,
+              (H (t, p) = 0 ↔ (F ((Φ t).symm p)).1 = 0) ∧
+              (H (t, p) < 0 ↔ (F ((Φ t).symm p)).1 < 0) ∧
+              (H (t, p) ≤ 0 ↔ (F ((Φ t).symm p)).1 ≤ 0)) ∧
+            let D₀ := (M.toPlaneComplex.support \ interior K) ∪
+              (K ∩ {p | (F p).1 ≤ 0})
+            let p := AffineMap.lineMap (b 0) (b 1) ((1 : ℝ) / 2)
+            M.toPlaneComplex.support = closure (inside P.carrier) ∧
+            IsCompact D₀ ∧
+            (∀ q ∈ U₀ ∪ U₁ ∪ V,
+              (q ∈ D₀ ↔ (F q).1 ≤ 0) ∧
+              (q ∈ interior D₀ ↔ (F q).1 < 0) ∧
+              (q ∈ frontier D₀ ↔ (F q).1 = 0)) ∧
+            (∀ q ∉ K, q ∈ D₀ ↔ q ∈ M.toPlaneComplex.support) ∧
+            p ∈ interior K ∧ p ∈ frontier D₀ ∧ (frontier D₀).Nonempty ∧
+            ContDiff ℝ ∞ (fun q => -(F q).1) ∧
+            (∀ q ∈ U₀ ∪ U₁ ∪ V,
+              fderiv ℝ (fun z => -(F z).1) q ≠ 0) ∧
+            ∀ q ∈ frontier D₀ ∩ (U₀ ∪ U₁ ∪ V),
+              ∃ (N : Set Plane) (G : Plane → ℝ),
+                IsOpen N ∧ q ∈ N ∧ K ⊆ N ∧ ContDiff ℝ ∞ G ∧
+                (∀ z ∈ N, fderiv ℝ G z ≠ 0) ∧
+                (∀ z, G z = -(F z).1) ∧
+                ∀ z ∈ N, (z ∈ D₀ ↔ 0 ≤ G z) ∧
+                  (z ∈ interior D₀ ↔ 0 < G z) ∧
+                  (z ∈ frontier D₀ ↔ G z = 0) := by
+  dsimp only
+  let b := LeanEval.Topology.ClassificationOfSurfaces.Moise.affineBasisOfTriangle
+    (M.freeTriangleOrder T k) (M.freeTriangleOrder_affineIndependent T k)
+  let p := AffineMap.lineMap (b 0) (b 1) ((1 : ℝ) / 2)
+  obtain ⟨v₀, v₁, f₀, f₁, ε, U₀, U₁, V, F,
+    hε, hF, hU₀, hU₁, hV, hb₀, hb₁, hdisj, hcover, hs₀, hs₁,
+    hf₀, hfb, hfc₀, hfv₀, hf₁, hfa, hfc₁, hfv₁, hgap₀, hgap₁,
+    he₀, he₁, heV, hgraph₀, hgraph₁, hreg, hH, hderiv, hstart, hend,
+    hregH, hstat₀, hstat₁, hposV, hcentral,
+    J, hJ, htriangleJ, hJW, hactive, hweak₀, hweak₁, hexterior, hraw, hsign, hremoved,
+    K, X, Ω, κ, hK, hJK, hKW, hX, hsX, hΩ, hΩcover, hΩW, hκ, htransport, hXzero,
+    Φ, hΦeq, hΦ, hΦinv, hΦzero, hΦfix, hΦW, hforward, hinverse⟩ :=
+    P.exists_compactly_supported_isotopy_near_one_edge_free_triangle M hfrontier T k hfree
+  let W := U₀ ∪ U₁ ∪ V
+  let D₀ := (M.toPlaneComplex.support \ interior K) ∪ (K ∩ {q | (F q).1 ≤ 0})
+  have hW : IsOpen W := (hU₀.union hU₁).union hV
+  have hregneg (q : Plane) (hq : q ∈ W) :
+      fderiv ℝ (fun z => -(F z).1) q ≠ 0 := by
+    simpa only [fderiv_fun_neg, neg_ne_zero] using (hreg q hq).1
+  obtain ⟨hcompact, hlocal, hout⟩ := compact_region_replace_preserving_germ
+    M.toPlaneComplex.isCompact_support hK hW hKW hF.fst.neg.continuous
+    (fun q hq _ => hregneg q hq) (by
+      intro q hq
+      simpa only [neg_nonneg] using
+        (hsign q hq.1 (fun hqJ => hq.2 (hJK (interior_subset hqJ)))).1)
+  have hD₀ : IsCompact D₀ := by
+    simpa only [D₀, neg_nonneg] using hcompact
+  have hsides (q : Plane) (hq : q ∈ W) :
+      (q ∈ D₀ ↔ (F q).1 ≤ 0) ∧
+      (q ∈ interior D₀ ↔ (F q).1 < 0) ∧
+      (q ∈ frontier D₀ ↔ (F q).1 = 0) := by
+    simpa only [D₀, neg_nonneg, neg_pos, neg_eq_zero] using hlocal q hq
+  have houtside (q : Plane) (hq : q ∉ K) :
+      q ∈ D₀ ↔ q ∈ M.toPlaneComplex.support := by
+    simpa only [D₀, neg_nonneg] using hout q hq
+  have hcoords (i : Fin 3) : b.coord i p =
+      (1 - (1 : ℝ) / 2) * b.coord i (b 0) + (1 / 2) * b.coord i (b 1) := by
+    change b.coord i (AffineMap.lineMap (b 0) (b 1) ((1 : ℝ) / 2)) = _
+    rw [AffineMap.apply_lineMap, AffineMap.lineMap_apply_ring]
+  have hp₀ : b.coord 0 p = 1 / 2 := by norm_num [hcoords, b.coord_apply, Fin.ext_iff]
+  have hp₁ : b.coord 1 p = 1 / 2 := by norm_num [hcoords, b.coord_apply, Fin.ext_iff]
+  have hp₂ : b.coord 2 p = 0 := by norm_num [hcoords, b.coord_apply, Fin.ext_iff]
+  have hpbase : p ∈ segment ℝ (b 0) (b 1) :=
+    lineMap_mem_segment ℝ _ _ (show (1 : ℝ) / 2 ∈ Set.Icc 0 1 from
+      ⟨by norm_num, by norm_num⟩)
+  have hfree' : frontier M.toPlaneComplex.support ∩ M.triangleCarrier T.1 =
+      segment ℝ (b 0) (b 1) := hfree
+  have hpT : p ∈ M.triangleCarrier T.1 := (hfree'.symm ▸ hpbase).2
+  have hpV : p ∈ V := by
+    rcases hcover hpT with (hpU₀ | hpU₁) | hpV
+    · have h := hgap₀ p hpU₀
+      rw [hp₀, hp₁, sub_self] at h
+      norm_num at h
+    · have h := hgap₁ p hpU₁
+      rw [hp₁, hp₀, sub_self] at h
+      norm_num at h
+    · exact hpV
+  have hpzero : (F p).1 = 0 := by
+    have h : (F p).1 = -b.coord 2 p := congrArg Prod.fst (heV hpV)
+    rw [h, hp₂, neg_zero]
+  have hpfront : p ∈ frontier D₀ := (hsides p (Or.inr hpV)).2.2.mpr hpzero
+  have hTsub : M.triangleCarrier T.1 ⊆ M.toPlaneComplex.support := by
+    rw [M.toPlaneComplex_support]
+    exact Set.subset_iUnion_of_subset T.1 (Set.subset_iUnion_of_subset T.2 Set.Subset.rfl)
+  have hsupport : M.toPlaneComplex.support = closure (inside P.carrier) :=
+    eq_closure_inside_of_isCompact_frontier_eq P.isSeparating_carrier
+      M.toPlaneComplex.isCompact_support hfrontier
+      ((M.interior_triangleCarrier_nonempty T).mono (interior_mono hTsub))
+  refine ⟨v₀, v₁, f₀, f₁, ε, U₀, U₁, V, F,
+    hε, hF, hU₀, hU₁, hV, hb₀, hb₁, hdisj, hcover, hs₀, hs₁,
+    hf₀, hfb, hfc₀, hfv₀, hf₁, hfa, hfc₁, hfv₁, hgap₀, hgap₁,
+    he₀, he₁, heV, hgraph₀, hgraph₁, hreg, hH, hderiv, hstart, hend,
+    hregH, hstat₀, hstat₁, hposV, hcentral,
+    J, hJ, htriangleJ, hJW, hactive, hweak₀, hweak₁, hexterior, hraw, hsign, hremoved,
+    K, X, Ω, κ, hK, hJK, hKW, hX, hsX, hΩ, hΩcover, hΩW, hκ, htransport, hXzero,
+    Φ, hΦeq, hΦ, hΦinv, hΦzero, hΦfix, hΦW, hforward, hinverse, hsupport, hD₀, hsides, houtside,
+    hJK (interior_subset (htriangleJ hpT)), hpfront, ⟨p, hpfront⟩,
+    hF.fst.neg, hregneg, ?_⟩
+  intro q hq
+  refine ⟨W, (fun z => -(F z).1), hW, hq.2, hKW, hF.fst.neg, hregneg,
+    fun _ => rfl, ?_⟩
+  intro z hz
+  simpa only [neg_nonneg, neg_pos, neg_eq_zero] using hsides z hz
+
+end Schoenflies
+
+end
+
+section
+
+namespace Schoenflies
+
+private theorem PrePolygon.exists_compact_neighborhood_of_vertices_outside
+    {m : ℕ} (P : PrePolygon m) {K W : Set Plane} (hK : IsClosed K) (hKW : K ⊆ W) :
+    ∃ O : Set Plane, IsOpen O ∧ IsCompact (closure O) ∧ closure O ⊆ Kᶜ ∧
+      ∀ i : ZMod (m + 3), P.vertex i ∉ W → P.vertex i ∈ O := by
+  let I := {i : ZMod (m + 3) // P.vertex i ∉ W}
+  let Q := Set.range (fun i : I => P.vertex i.val)
+  have hQ : IsCompact Q := (Set.finite_range _).isCompact
+  have hQK : Q ⊆ Kᶜ := by
+    rintro _ ⟨i, rfl⟩ hp
+    exact i.property (hKW hp)
+  obtain ⟨ρ, hρ, hρQ⟩ := hQ.exists_cthickening_subset_open hK.isOpen_compl hQK
+  let O := Metric.thickening ρ Q
+  have hclosure : closure O ⊆ Metric.cthickening ρ Q :=
+    Metric.closure_thickening_subset_cthickening ρ Q
+  refine ⟨O, Metric.isOpen_thickening,
+    hQ.cthickening.of_isClosed_subset isClosed_closure hclosure, hclosure.trans hρQ, ?_⟩
+  intro i hi
+  exact Metric.self_subset_thickening hρ Q (Set.mem_range_self (⟨i, hi⟩ : I))
+
+end Schoenflies
+
+end
+
+section
+
+open scoped ContDiff Manifold Topology
+
+namespace Schoenflies
+
+private theorem PrePolygon.native_global_rounding_with_prescribed_isotopy
+    {m : ℕ} (P : PrePolygon m)
+    (M : LeanEval.Topology.ClassificationOfSurfaces.Moise.TriangleMesh)
+    (hfrontier : frontier M.toPlaneComplex.support = P.carrier)
+    (T : M.Triangle) (k : Fin 3) (hfree : M.IsOneEdgeFreeTriangle T k) :
+    let b := LeanEval.Topology.ClassificationOfSurfaces.Moise.affineBasisOfTriangle
+      (M.freeTriangleOrder T k) (M.freeTriangleOrder_affineIndependent T k)
+    let R := closure (P.carrier \ segment ℝ (b 0) (b 1))
+    ∃ (v₀ v₁ : Plane) (f₀ f₁ : Plane →ᵃ[ℝ] ℝ) (ε : ℝ)
+      (U₀ U₁ V : Set Plane) (F : Plane → ℝ × ℝ),
+      let s₀ := b.coord 2 v₀ / f₀ v₀
+      let s₁ := b.coord 2 v₁ / f₁ v₁
+      let A₀ := fun p => s₀ * (f₀ p - Real.smoothMax ε (f₀ p) 0) - b.coord 2 p
+      let A₁ := fun p => s₁ * (f₁ p - Real.smoothMax ε (f₁ p) 0) - b.coord 2 p
+      let B₀ := fun p => f₀ (b 2) / f₀ (b 1) *
+        (s₀ * (f₀ p - Real.smoothMax ε (f₀ p) 0) +
+          Real.smoothMax ε (f₀ p) 0 / f₀ (b 2) - b.coord 2 p)
+      let B₁ := fun p => f₁ (b 2) / f₁ (b 0) *
+        (s₁ * (f₁ p - Real.smoothMax ε (f₁ p) 0) +
+          Real.smoothMax ε (f₁ p) 0 / f₁ (b 2) - b.coord 2 p)
+      let H := fun q : ℝ × Plane => (1 - q.1) * (F q.2).1 + q.1 * (F q.2).2
+      0 < ε ∧ ContDiff ℝ ∞ F ∧ IsOpen U₀ ∧ IsOpen U₁ ∧ IsOpen V ∧
+      b 0 ∈ U₀ ∧ b 1 ∈ U₁ ∧ Disjoint U₀ U₁ ∧
+      M.triangleCarrier T.1 ⊆ U₀ ∪ U₁ ∪ V ∧
+      segment ℝ (b 0) v₀ ⊆ R ∧ segment ℝ (b 1) v₁ ⊆ R ∧
+      f₀ (b 0) = 0 ∧ 0 < f₀ (b 1) ∧ 0 < f₀ (b 2) ∧ f₀ v₀ < 0 ∧
+      f₁ (b 1) = 0 ∧ 0 < f₁ (b 0) ∧ 0 < f₁ (b 2) ∧ f₁ v₁ < 0 ∧
+      (∀ p ∈ U₀, (1 : ℝ) / 4 < b.coord 0 p - b.coord 1 p) ∧
+      (∀ p ∈ U₁, (1 : ℝ) / 4 < b.coord 1 p - b.coord 0 p) ∧
+      Set.EqOn F (fun p => (A₀ p, B₀ p)) U₀ ∧
+      Set.EqOn F (fun p => (A₁ p, B₁ p)) U₁ ∧
+      Set.EqOn F (fun p => (-b.coord 2 p,
+        -Real.smoothMax (1 / 4) (-b.coord 0 p) (-b.coord 1 p))) V ∧
+      (∀ p ∈ U₀,
+        (p ∈ M.toPlaneComplex.support ↔
+          (if f₀ p < 0 then b.coord 2 v₀ / f₀ v₀ * f₀ p else 0) ≤ b.coord 2 p) ∧
+        (p ∈ interior M.toPlaneComplex.support ↔
+          (if f₀ p < 0 then b.coord 2 v₀ / f₀ v₀ * f₀ p else 0) < b.coord 2 p) ∧
+        (p ∈ frontier M.toPlaneComplex.support ↔
+          b.coord 2 p = if f₀ p < 0 then b.coord 2 v₀ / f₀ v₀ * f₀ p else 0) ∧
+        (p ∈ (M.eraseTriangle T.1).toPlaneComplex.support ↔
+          (if f₀ p < 0 then b.coord 2 v₀ / f₀ v₀ * f₀ p else f₀ p / f₀ (b 2)) ≤
+            b.coord 2 p) ∧
+        (p ∈ interior (M.eraseTriangle T.1).toPlaneComplex.support ↔
+          (if f₀ p < 0 then b.coord 2 v₀ / f₀ v₀ * f₀ p else f₀ p / f₀ (b 2)) <
+            b.coord 2 p) ∧
+        (p ∈ frontier (M.eraseTriangle T.1).toPlaneComplex.support ↔
+          b.coord 2 p = if f₀ p < 0 then b.coord 2 v₀ / f₀ v₀ * f₀ p else
+            f₀ p / f₀ (b 2))) ∧
+      (∀ p ∈ U₁,
+        (p ∈ M.toPlaneComplex.support ↔
+          (if f₁ p < 0 then b.coord 2 v₁ / f₁ v₁ * f₁ p else 0) ≤ b.coord 2 p) ∧
+        (p ∈ interior M.toPlaneComplex.support ↔
+          (if f₁ p < 0 then b.coord 2 v₁ / f₁ v₁ * f₁ p else 0) < b.coord 2 p) ∧
+        (p ∈ frontier M.toPlaneComplex.support ↔
+          b.coord 2 p = if f₁ p < 0 then b.coord 2 v₁ / f₁ v₁ * f₁ p else 0) ∧
+        (p ∈ (M.eraseTriangle T.1).toPlaneComplex.support ↔
+          (if f₁ p < 0 then b.coord 2 v₁ / f₁ v₁ * f₁ p else f₁ p / f₁ (b 2)) ≤
+            b.coord 2 p) ∧
+        (p ∈ interior (M.eraseTriangle T.1).toPlaneComplex.support ↔
+          (if f₁ p < 0 then b.coord 2 v₁ / f₁ v₁ * f₁ p else f₁ p / f₁ (b 2)) <
+            b.coord 2 p) ∧
+        (p ∈ frontier (M.eraseTriangle T.1).toPlaneComplex.support ↔
+          b.coord 2 p = if f₁ p < 0 then b.coord 2 v₁ / f₁ v₁ * f₁ p else
+            f₁ p / f₁ (b 2))) ∧
+      (∀ p ∈ U₀ ∪ U₁ ∪ V,
+        fderiv ℝ (fun q => (F q).1) p ≠ 0 ∧
+          fderiv ℝ (fun q => (F q).2) p ≠ 0) ∧
+      ContDiff ℝ ∞ H ∧
+      (∀ t p, deriv (fun s => H (s, p)) t = (F p).2 - (F p).1) ∧
+      (∀ p, H (0, p) = (F p).1) ∧
+      (∀ p, H (1, p) = (F p).2) ∧
+      (∀ t ∈ Set.Icc (0 : ℝ) 1, ∀ p ∈ U₀ ∪ U₁ ∪ V,
+        fderiv ℝ (fun q => H (t, q)) p ≠ 0) ∧
+      (∀ t ∈ Set.Icc (0 : ℝ) 1, ∀ p ∈ U₀, f₀ p ≤ -ε → H (t, p) = 0 →
+        (F p).1 = 0 ∧ (F p).2 = 0 ∧ (∀ u : ℝ, H (u, p) = 0) ∧
+          (∀ u : ℝ, deriv (fun s => H (s, p)) u = 0)) ∧
+      (∀ t ∈ Set.Icc (0 : ℝ) 1, ∀ p ∈ U₁, f₁ p ≤ -ε → H (t, p) = 0 →
+        (F p).1 = 0 ∧ (F p).2 = 0 ∧ (∀ u : ℝ, H (u, p) = 0) ∧
+          (∀ u : ℝ, deriv (fun s => H (s, p)) u = 0)) ∧
+      (∀ p ∈ V, ε < f₀ p ∧ ε < f₁ p) ∧
+      (∀ t ∈ Set.Icc (0 : ℝ) 1, ∀ p ∈ V, H (t, p) = 0 →
+        p ∈ M.triangleCarrier T.1) ∧
+      ∃ J : Set Plane, IsCompact J ∧ M.triangleCarrier T.1 ⊆ interior J ∧
+        J ⊆ U₀ ∪ U₁ ∪ V ∧
+        (∀ t ∈ Set.Icc (0 : ℝ) 1, ∀ p ∈ U₀ ∪ U₁ ∪ V,
+          H (t, p) = 0 → deriv (fun u => H (u, p)) t ≠ 0 → p ∈ interior J) ∧
+        (∀ t ∈ Set.Icc (0 : ℝ) 1, ∀ p ∈ U₀,
+          H (t, p) = 0 → -ε ≤ f₀ p → p ∈ interior J) ∧
+        (∀ t ∈ Set.Icc (0 : ℝ) 1, ∀ p ∈ U₁,
+          H (t, p) = 0 → -ε ≤ f₁ p → p ∈ interior J) ∧
+        (∀ t ∈ Set.Icc (0 : ℝ) 1, ∀ p ∈ U₀ ∪ U₁ ∪ V, H (t, p) = 0 → p ∉ J →
+          (p ∈ U₀ ∧ f₀ p < -ε ∧ ∃ N : Set Plane,
+            IsOpen N ∧ p ∈ N ∧ N ⊆ U₀ ∩ {q | f₀ q < -ε} ∧
+              Set.EqOn (fun q => (F q).2) (fun q => f₀ (b 2) / f₀ (b 1) * (F q).1) N) ∨
+          (p ∈ U₁ ∧ f₁ p < -ε ∧ ∃ N : Set Plane,
+            IsOpen N ∧ p ∈ N ∧ N ⊆ U₁ ∩ {q | f₁ q < -ε} ∧
+              Set.EqOn (fun q => (F q).2) (fun q => f₁ (b 2) / f₁ (b 0) * (F q).1) N)) ∧
+        (∀ p ∈ V,
+          (p ∈ M.toPlaneComplex.support ↔ 0 ≤ b.coord 2 p) ∧
+          (p ∈ interior M.toPlaneComplex.support ↔ 0 < b.coord 2 p) ∧
+          (p ∈ frontier M.toPlaneComplex.support ↔ b.coord 2 p = 0)) ∧
+        (∀ p ∈ U₀ ∪ U₁ ∪ V, p ∉ interior J →
+          (p ∈ M.toPlaneComplex.support ↔ (F p).1 ≤ 0) ∧
+          (p ∈ interior M.toPlaneComplex.support ↔ (F p).1 < 0) ∧
+          (p ∈ frontier M.toPlaneComplex.support ↔ (F p).1 = 0)) ∧
+        (∀ p ∈ U₀ ∪ U₁ ∪ V, p ∉ interior J →
+          (p ∈ (M.eraseTriangle T.1).toPlaneComplex.support ↔ (F p).2 ≤ 0) ∧
+          (p ∈ interior (M.eraseTriangle T.1).toPlaneComplex.support ↔ (F p).2 < 0) ∧
+          (p ∈ frontier (M.eraseTriangle T.1).toPlaneComplex.support ↔ (F p).2 = 0)) ∧
+        ∃ (K : Set Plane) (X : ℝ × Plane → Plane) (Ω : Set (ℝ × Plane))
+          (κ : ℝ × Plane → ℝ),
+          IsCompact K ∧ J ⊆ interior K ∧ K ⊆ U₀ ∪ U₁ ∪ V ∧
+          ContDiff ℝ ∞ X ∧ HasCompactSupport X ∧
+          IsOpen Ω ∧ Set.Icc (0 : ℝ) 1 ×ˢ (U₀ ∪ U₁ ∪ V) ⊆ Ω ∧
+          Ω ⊆ Set.univ ×ˢ (U₀ ∪ U₁ ∪ V) ∧ ContDiffOn ℝ ∞ κ Ω ∧
+          (∀ z ∈ Ω,
+            deriv (fun t => H (t, z.2)) z.1 +
+              fderiv ℝ (fun y => H (z.1, y)) z.2 (X z) = κ z * H z) ∧
+          (∀ t x, x ∉ K → X (t, x) = 0) ∧
+          ∃ Φ : ℝ → (Plane ≃ₘ[ℝ] Plane),
+            (∀ (hX : ContDiff ℝ ∞ X) (hsX : HasCompactSupport X) (t : ℝ),
+              Φ t = Diffeomorph.timeDependentFlow X hX hsX 0 t) ∧
+            ContDiff ℝ ∞ (fun q : ℝ × Plane => Φ q.1 q.2) ∧
+            ContDiff ℝ ∞ (fun q : ℝ × Plane => (Φ q.1).symm q.2) ∧
+            Φ 0 = Diffeomorph.refl 𝓘(ℝ, Plane) Plane ∞ ∧
+            (∀ t : ℝ, Set.EqOn (Φ t) id Kᶜ ∧ Set.EqOn (Φ t).symm id Kᶜ) ∧
+            (∀ t : ℝ, (∀ p, Φ t p ∈ U₀ ∪ U₁ ∪ V ↔ p ∈ U₀ ∪ U₁ ∪ V) ∧
+              (∀ p, (Φ t).symm p ∈ U₀ ∪ U₁ ∪ V ↔ p ∈ U₀ ∪ U₁ ∪ V)) ∧
+            (∀ t ∈ Set.Icc (0 : ℝ) 1, ∀ p ∈ U₀ ∪ U₁ ∪ V,
+              ((F p).1 = 0 ↔ H (t, Φ t p) = 0) ∧
+              ((F p).1 < 0 ↔ H (t, Φ t p) < 0) ∧
+              ((F p).1 ≤ 0 ↔ H (t, Φ t p) ≤ 0)) ∧
+            (∀ t ∈ Set.Icc (0 : ℝ) 1, ∀ p ∈ U₀ ∪ U₁ ∪ V,
+              (H (t, p) = 0 ↔ (F ((Φ t).symm p)).1 = 0) ∧
+              (H (t, p) < 0 ↔ (F ((Φ t).symm p)).1 < 0) ∧
+              (H (t, p) ≤ 0 ↔ (F ((Φ t).symm p)).1 ≤ 0)) ∧
+            let D₀ := (M.toPlaneComplex.support \ interior K) ∪
+              (K ∩ {p | (F p).1 ≤ 0})
+            let p := AffineMap.lineMap (b 0) (b 1) ((1 : ℝ) / 2)
+            M.toPlaneComplex.support = closure (inside P.carrier) ∧
+            IsCompact D₀ ∧
+            (∀ q ∈ U₀ ∪ U₁ ∪ V,
+              (q ∈ D₀ ↔ (F q).1 ≤ 0) ∧
+              (q ∈ interior D₀ ↔ (F q).1 < 0) ∧
+              (q ∈ frontier D₀ ↔ (F q).1 = 0)) ∧
+            (∀ q ∉ K, q ∈ D₀ ↔ q ∈ M.toPlaneComplex.support) ∧
+            p ∈ interior K ∧ p ∈ frontier D₀ ∧ (frontier D₀).Nonempty ∧
+            ContDiff ℝ ∞ (fun q => -(F q).1) ∧
+            (∀ q ∈ U₀ ∪ U₁ ∪ V,
+              fderiv ℝ (fun z => -(F z).1) q ≠ 0) ∧
+            (∀ q ∈ frontier D₀ ∩ (U₀ ∪ U₁ ∪ V),
+              ∃ (N : Set Plane) (G : Plane → ℝ),
+                IsOpen N ∧ q ∈ N ∧ K ⊆ N ∧ ContDiff ℝ ∞ G ∧
+                (∀ z ∈ N, fderiv ℝ G z ≠ 0) ∧
+                (∀ z, G z = -(F z).1) ∧
+                ∀ z ∈ N, (z ∈ D₀ ↔ 0 ≤ G z) ∧
+                  (z ∈ interior D₀ ↔ 0 < G z) ∧
+                  (z ∈ frontier D₀ ↔ G z = 0)) ∧
+            ∃ (O V₁ D₁ : Set Plane),
+              IsOpen O ∧ IsCompact (closure O) ∧ closure O ⊆ Kᶜ ∧
+              (∀ i : ZMod (m + 3), P.vertex i ∉ U₀ ∪ U₁ ∪ V → P.vertex i ∈ O) ∧
+              IsCompact D₁ ∧ IsOpen V₁ ∧ K ⊆ V₁ ∧ V₁ ⊆ U₀ ∪ U₁ ∪ V ∧
+              (∀ q ∈ V₁, (q ∈ D₁ ↔ q ∈ D₀) ∧
+                (q ∈ interior D₁ ↔ q ∈ interior D₀) ∧
+                (q ∈ frontier D₁ ↔ q ∈ frontier D₀)) ∧
+              (∀ q ∉ O, (q ∈ D₁ ↔ q ∈ D₀) ∧
+                (q ∈ interior D₁ ↔ q ∈ interior D₀) ∧
+                (q ∈ frontier D₁ ↔ q ∈ frontier D₀)) ∧
+              (∀ q ∉ K ∪ O, q ∈ D₁ ↔ q ∈ M.toPlaneComplex.support) ∧
+              (∀ q ∈ V₁, (q ∈ D₁ ↔ (F q).1 ≤ 0) ∧
+                (q ∈ interior D₁ ↔ (F q).1 < 0) ∧
+                (q ∈ frontier D₁ ↔ (F q).1 = 0)) ∧
+              p ∈ frontier D₁ ∧ (frontier D₁).Nonempty ∧
+              ∀ q ∈ frontier D₁, ∃ (N : Set Plane) (G : Plane → ℝ),
+                IsOpen N ∧ q ∈ N ∧ ContDiff ℝ ∞ G ∧ fderiv ℝ G q ≠ 0 ∧
+                ∀ z ∈ N, (z ∈ D₁ ↔ 0 ≤ G z) ∧
+                  (z ∈ interior D₁ ↔ 0 < G z) ∧
+                  (z ∈ frontier D₁ ↔ G z = 0) := by
+  dsimp only
+  let b := LeanEval.Topology.ClassificationOfSurfaces.Moise.affineBasisOfTriangle
+    (M.freeTriangleOrder T k) (M.freeTriangleOrder_affineIndependent T k)
+  let p := AffineMap.lineMap (b 0) (b 1) ((1 : ℝ) / 2)
+  obtain ⟨v₀, v₁, f₀, f₁, ε, U₀, U₁, V, F,
+    hε, hF, hU₀, hU₁, hV, hb₀, hb₁, hdisj, hcover, hs₀, hs₁,
+    hf₀, hfb, hfc₀, hfv₀, hf₁, hfa, hfc₁, hfv₁, hgap₀, hgap₁,
+    he₀, he₁, heV, hgraph₀, hgraph₁, hreg, hH, hderiv, hstart, hend,
+    hregH, hstat₀, hstat₁, hposV, hcentral,
+    J, hJ, htriangleJ, hJW, hactive, hweak₀, hweak₁, hexterior, hraw, hsign, hremoved,
+    K, X, Ω, κ, hK, hJK, hKW, hX, hsX, hΩ, hΩcover, hΩW, hκ, htransport, hXzero,
+    Φ, hΦeq, hΦ, hΦinv, hΦzero, hΦfix, hΦW, hforward, hinverse,
+    hsupport, hD₀, hsides, hout, hpK, hpfront, hnonempty, hHneg, hregneg, hgerms⟩ :=
+    P.native_compact_region_with_prescribed_isotopy M hfrontier T k hfree
+  let W := U₀ ∪ U₁ ∪ V
+  let D₀ := (M.toPlaneComplex.support \ interior K) ∪ (K ∩ {q | (F q).1 ≤ 0})
+  have hW : IsOpen W := (hU₀.union hU₁).union hV
+  obtain ⟨O, hO, hOc, hOK, hvO⟩ := P.exists_compact_neighborhood_of_vertices_outside hK.isClosed hKW
+  have hold (q : Plane) (hq : q ∉ K) : q ∈ D₀ ↔ q ∈ closure (inside P.carrier) := by
+    rw [← hsupport]
+    exact hout q hq
+  have hgood (q : Plane) (hq : q ∈ frontier D₀) (hqW : q ∈ W) :
+      ∃ (N : Set Plane) (G : Plane → ℝ), IsOpen N ∧ q ∈ N ∧
+        ContDiff ℝ ∞ G ∧ fderiv ℝ G q ≠ 0 ∧
+        ∀ z ∈ N, (z ∈ D₀ ↔ 0 ≤ G z) ∧
+          (z ∈ interior D₀ ↔ 0 < G z) ∧ (z ∈ frontier D₀ ↔ G z = 0) := by
+    obtain ⟨N, G, hN, hqN, _, hG, hGreg, _, hGside⟩ := hgerms q ⟨hq, hqW⟩
+    exact ⟨N, G, hN, hqN, hG, hGreg q hqN, hGside⟩
+  obtain ⟨D₁, V₁, hD₁, hV₁, hKV₁, hV₁W, heq, houtO, hregular⟩ :=
+    P.exists_relative_compact_rounding hD₀ hK.isClosed hW hKW hO hvO hold hgood
+  have hprescribed (q : Plane) (hq : q ∈ V₁) :
+      (q ∈ D₁ ↔ (F q).1 ≤ 0) ∧
+      (q ∈ interior D₁ ↔ (F q).1 < 0) ∧
+      (q ∈ frontier D₁ ↔ (F q).1 = 0) :=
+    ⟨(heq q hq).1.trans (hsides q (hV₁W hq)).1,
+      (heq q hq).2.1.trans (hsides q (hV₁W hq)).2.1,
+      (heq q hq).2.2.trans (hsides q (hV₁W hq)).2.2⟩
+  have hpD₁ : p ∈ frontier D₁ :=
+    (heq p (hKV₁ (interior_subset hpK))).2.2.mpr hpfront
+  refine ⟨v₀, v₁, f₀, f₁, ε, U₀, U₁, V, F,
+    hε, hF, hU₀, hU₁, hV, hb₀, hb₁, hdisj, hcover, hs₀, hs₁,
+    hf₀, hfb, hfc₀, hfv₀, hf₁, hfa, hfc₁, hfv₁, hgap₀, hgap₁,
+    he₀, he₁, heV, hgraph₀, hgraph₁, hreg, hH, hderiv, hstart, hend,
+    hregH, hstat₀, hstat₁, hposV, hcentral,
+    J, hJ, htriangleJ, hJW, hactive, hweak₀, hweak₁, hexterior, hraw, hsign, hremoved,
+    K, X, Ω, κ, hK, hJK, hKW, hX, hsX, hΩ, hΩcover, hΩW, hκ, htransport, hXzero,
+    Φ, hΦeq, hΦ, hΦinv, hΦzero, hΦfix, hΦW, hforward, hinverse,
+    hsupport, hD₀, hsides, hout, hpK, hpfront, hnonempty, hHneg, hregneg, hgerms,
+    O, V₁, D₁, hO, hOc, hOK, hvO, hD₁, hV₁, hKV₁, hV₁W, heq, houtO, ?_,
+    hprescribed, hpD₁, ⟨p, hpD₁⟩, hregular⟩
+  intro q hq
+  have hqK : q ∉ K := fun h => hq (Or.inl h)
+  have hqO : q ∉ O := fun h => hq (Or.inr h)
+  exact (houtO q hqO).1.trans (hout q hqK)
+
+end Schoenflies
+
+end
+
+section
+
+open Set
+open scoped ContDiff Manifold Topology
+
+namespace Diffeomorph
+
+private theorem fderiv_comp_symm_ne_zero
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    (e : E ≃ₘ[ℝ] E) {G : E → ℝ} (hG : ContDiff ℝ ∞ G)
+    {p : E} (hp : fderiv ℝ G p ≠ 0) : fderiv ℝ (G ∘ e.symm) (e p) ≠ 0 := by
+  intro hz
+  have hc := fderiv_comp p
+    ((hG.comp e.symm.contDiff).differentiable (by simp)).differentiableAt
+    (e.contDiff.differentiable (by simp)).differentiableAt
+  have he : (G ∘ e.symm) ∘ e = G := by
+    funext q
+    simp only [Function.comp_apply, Diffeomorph.symm_apply_apply]
+  rw [he, hz, ContinuousLinearMap.zero_comp] at hc
+  exact hp hc
+
+private theorem regular_frontier_image
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    (e : E ≃ₘ[ℝ] E) {D : Set E}
+    (hD : ∀ p ∈ frontier D, ∃ (N : Set E) (G : E → ℝ),
+      IsOpen N ∧ p ∈ N ∧ ContDiff ℝ ∞ G ∧ fderiv ℝ G p ≠ 0 ∧
+      ∀ q ∈ N, (q ∈ D ↔ 0 ≤ G q) ∧
+        (q ∈ interior D ↔ 0 < G q) ∧ (q ∈ frontier D ↔ G q = 0)) :
+    ∀ p ∈ frontier (e '' D), ∃ (N : Set E) (G : E → ℝ),
+      IsOpen N ∧ p ∈ N ∧ ContDiff ℝ ∞ G ∧ fderiv ℝ G p ≠ 0 ∧
+      ∀ q ∈ N, (q ∈ e '' D ↔ 0 ≤ G q) ∧
+        (q ∈ interior (e '' D) ↔ 0 < G q) ∧
+        (q ∈ frontier (e '' D) ↔ G q = 0) := by
+  have hi : interior (e '' D) = e '' interior D :=
+    (e.toHomeomorph.image_interior D).symm
+  have hf : frontier (e '' D) = e '' frontier D :=
+    (e.toHomeomorph.image_frontier D).symm
+  have hm (A : Set E) (q : E) : q ∈ e '' A ↔ e.symm q ∈ A := by
+    exact Set.mem_image_equiv
+  intro p hp
+  obtain ⟨N, G, hN, hpN, hG, hreg, hsides⟩ := hD (e.symm p) ((hm _ p).mp (hf ▸ hp))
+  refine ⟨e.symm ⁻¹' N, G ∘ e.symm, hN.preimage e.symm.continuous,
+    hpN, hG.comp e.symm.contDiff, ?_, ?_⟩
+  · simpa only [Diffeomorph.apply_symm_apply] using e.fderiv_comp_symm_ne_zero hG hreg
+  · intro q hq
+    rw [hi, hf, hm D q, hm (interior D) q, hm (frontier D) q]
+    exact hsides (e.symm q) hq
+
+end Diffeomorph
+
+end
+
+section
+
+open Set
+
+namespace Homeomorph
+
+private theorem image_region_sides
+    {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
+    (e : X ≃ₜ Y) {D V : Set X} {F : X → ℝ} {G : Y → ℝ}
+    (hD : ∀ p ∈ V, (p ∈ D ↔ F p ≤ 0) ∧
+      (p ∈ interior D ↔ F p < 0) ∧ (p ∈ frontier D ↔ F p = 0))
+    (hF : ∀ p ∈ e '' V, (G p = 0 ↔ F (e.symm p) = 0) ∧
+      (G p < 0 ↔ F (e.symm p) < 0) ∧ (G p ≤ 0 ↔ F (e.symm p) ≤ 0)) :
+    ∀ p ∈ e '' V, (p ∈ e '' D ↔ G p ≤ 0) ∧
+      (p ∈ interior (e '' D) ↔ G p < 0) ∧
+      (p ∈ frontier (e '' D) ↔ G p = 0) := by
+  have hm (A : Set X) (p : Y) : p ∈ e '' A ↔ e.symm p ∈ A :=
+    Set.mem_image_equiv
+  intro p hp
+  have hd := hD (e.symm p) ((hm V p).mp hp)
+  have hf := hF p hp
+  rw [← e.image_interior D, ← e.image_frontier D, hm D p,
+    hm (interior D) p, hm (frontier D) p]
+  exact ⟨hd.1.trans hf.2.2.symm, hd.2.1.trans hf.2.1.symm, hd.2.2.trans hf.1.symm⟩
+
+private theorem image_neighborhood_of_eqOn_compl
+    {X : Type*} [TopologicalSpace X] (e : X ≃ₜ X) {K V : Set X}
+    (hV : IsOpen V) (hKV : K ⊆ V) (he : EqOn e id Kᶜ) :
+    IsOpen (e '' V) ∧ K ⊆ e '' V ∧
+      ∀ (D : Set X) p, p ∉ K →
+        (p ∈ e '' D ↔ p ∈ D) ∧
+        (p ∈ interior (e '' D) ↔ p ∈ interior D) ∧
+        (p ∈ frontier (e '' D) ↔ p ∈ frontier D) := by
+  have hm (A : Set X) (p : X) : p ∈ e '' A ↔ e.symm p ∈ A :=
+    Set.mem_image_equiv
+  refine ⟨e.isOpenMap V hV, ?_, ?_⟩
+  · intro p hp
+    apply (hm V p).mpr
+    apply hKV
+    by_contra hn
+    have hh : e.symm p = p := by
+      simpa only [Homeomorph.apply_symm_apply, id_eq] using (he hn).symm
+    exact hn (hh.symm ▸ hp)
+  · intro D p hp
+    have hh : e.symm p = p := by
+      calc
+        e.symm p = e.symm (e p) := congrArg e.symm (he hp).symm
+        _ = p := e.symm_apply_apply p
+    rw [← e.image_interior D, ← e.image_frontier D, hm D p,
+      hm (interior D) p, hm (frontier D) p, hh]
+    exact ⟨Iff.rfl, Iff.rfl, Iff.rfl⟩
+
+end Homeomorph
+
+end
+
+section
+
+open Set
+
+namespace Homeomorph
+
+private theorem image_region_sides_outside_interior
+    {X : Type*} [TopologicalSpace X] [T2Space X]
+    (e : X ≃ₜ X) {K : Set X} (he : EqOn e id Kᶜ) :
+    ∀ (D : Set X) p, p ∉ interior K →
+      (p ∈ e '' D ↔ p ∈ D) ∧
+      (p ∈ interior (e '' D) ↔ p ∈ interior D) ∧
+      (p ∈ frontier (e '' D) ↔ p ∈ frontier D) := by
+  have hfix : EqOn e id (interior K)ᶜ := by
+    simpa only [closure_compl] using he.closure e.continuous continuous_id
+  exact (e.image_neighborhood_of_eqOn_compl isOpen_univ (subset_univ _) hfix).2.2
+
+private theorem image_eq_local_replacement
+    {X : Type*} [TopologicalSpace X] [T2Space X]
+    (e : X ≃ₜ X) {K D S : Set X} (he : EqOn e id Kᶜ)
+    (hS : ∀ p ∈ K, p ∈ e '' D ↔ p ∈ S) :
+    e '' D = (D \ interior K) ∪ (K ∩ S) := by
+  have hout := e.image_region_sides_outside_interior he
+  ext p
+  constructor
+  · intro hp
+    by_cases hpK : p ∈ K
+    · exact Or.inr ⟨hpK, (hS p hpK).mp hp⟩
+    · have hpI : p ∉ interior K := fun h => hpK (interior_subset h)
+      exact Or.inl ⟨(hout D p hpI).1.mp hp, hpI⟩
+  · rintro (⟨hpD, hpI⟩ | ⟨hpK, hpS⟩)
+    · exact (hout D p hpI).1.mpr hpD
+    · exact (hS p hpK).mpr hpS
+
+end Homeomorph
+
+end
+
+section
+
+open scoped ContDiff Manifold Topology
+
+namespace Schoenflies
+
+private theorem PrePolygon.native_image_rounding_with_prescribed_isotopy
+    {m : ℕ} (P : PrePolygon m)
+    (M : LeanEval.Topology.ClassificationOfSurfaces.Moise.TriangleMesh)
+    (hfrontier : frontier M.toPlaneComplex.support = P.carrier)
+    (T : M.Triangle) (k : Fin 3) (hfree : M.IsOneEdgeFreeTriangle T k) :
+    let b := LeanEval.Topology.ClassificationOfSurfaces.Moise.affineBasisOfTriangle
+      (M.freeTriangleOrder T k) (M.freeTriangleOrder_affineIndependent T k)
+    let R := closure (P.carrier \ segment ℝ (b 0) (b 1))
+    ∃ (v₀ v₁ : Plane) (f₀ f₁ : Plane →ᵃ[ℝ] ℝ) (ε : ℝ)
+      (U₀ U₁ V : Set Plane) (F : Plane → ℝ × ℝ),
+      let s₀ := b.coord 2 v₀ / f₀ v₀
+      let s₁ := b.coord 2 v₁ / f₁ v₁
+      let A₀ := fun p => s₀ * (f₀ p - Real.smoothMax ε (f₀ p) 0) - b.coord 2 p
+      let A₁ := fun p => s₁ * (f₁ p - Real.smoothMax ε (f₁ p) 0) - b.coord 2 p
+      let B₀ := fun p => f₀ (b 2) / f₀ (b 1) *
+        (s₀ * (f₀ p - Real.smoothMax ε (f₀ p) 0) +
+          Real.smoothMax ε (f₀ p) 0 / f₀ (b 2) - b.coord 2 p)
+      let B₁ := fun p => f₁ (b 2) / f₁ (b 0) *
+        (s₁ * (f₁ p - Real.smoothMax ε (f₁ p) 0) +
+          Real.smoothMax ε (f₁ p) 0 / f₁ (b 2) - b.coord 2 p)
+      let H := fun q : ℝ × Plane => (1 - q.1) * (F q.2).1 + q.1 * (F q.2).2
+      0 < ε ∧ ContDiff ℝ ∞ F ∧ IsOpen U₀ ∧ IsOpen U₁ ∧ IsOpen V ∧
+      b 0 ∈ U₀ ∧ b 1 ∈ U₁ ∧ Disjoint U₀ U₁ ∧
+      M.triangleCarrier T.1 ⊆ U₀ ∪ U₁ ∪ V ∧
+      segment ℝ (b 0) v₀ ⊆ R ∧ segment ℝ (b 1) v₁ ⊆ R ∧
+      f₀ (b 0) = 0 ∧ 0 < f₀ (b 1) ∧ 0 < f₀ (b 2) ∧ f₀ v₀ < 0 ∧
+      f₁ (b 1) = 0 ∧ 0 < f₁ (b 0) ∧ 0 < f₁ (b 2) ∧ f₁ v₁ < 0 ∧
+      (∀ p ∈ U₀, (1 : ℝ) / 4 < b.coord 0 p - b.coord 1 p) ∧
+      (∀ p ∈ U₁, (1 : ℝ) / 4 < b.coord 1 p - b.coord 0 p) ∧
+      Set.EqOn F (fun p => (A₀ p, B₀ p)) U₀ ∧
+      Set.EqOn F (fun p => (A₁ p, B₁ p)) U₁ ∧
+      Set.EqOn F (fun p => (-b.coord 2 p,
+        -Real.smoothMax (1 / 4) (-b.coord 0 p) (-b.coord 1 p))) V ∧
+      (∀ p ∈ U₀,
+        (p ∈ M.toPlaneComplex.support ↔
+          (if f₀ p < 0 then b.coord 2 v₀ / f₀ v₀ * f₀ p else 0) ≤ b.coord 2 p) ∧
+        (p ∈ interior M.toPlaneComplex.support ↔
+          (if f₀ p < 0 then b.coord 2 v₀ / f₀ v₀ * f₀ p else 0) < b.coord 2 p) ∧
+        (p ∈ frontier M.toPlaneComplex.support ↔
+          b.coord 2 p = if f₀ p < 0 then b.coord 2 v₀ / f₀ v₀ * f₀ p else 0) ∧
+        (p ∈ (M.eraseTriangle T.1).toPlaneComplex.support ↔
+          (if f₀ p < 0 then b.coord 2 v₀ / f₀ v₀ * f₀ p else f₀ p / f₀ (b 2)) ≤
+            b.coord 2 p) ∧
+        (p ∈ interior (M.eraseTriangle T.1).toPlaneComplex.support ↔
+          (if f₀ p < 0 then b.coord 2 v₀ / f₀ v₀ * f₀ p else f₀ p / f₀ (b 2)) <
+            b.coord 2 p) ∧
+        (p ∈ frontier (M.eraseTriangle T.1).toPlaneComplex.support ↔
+          b.coord 2 p = if f₀ p < 0 then b.coord 2 v₀ / f₀ v₀ * f₀ p else
+            f₀ p / f₀ (b 2))) ∧
+      (∀ p ∈ U₁,
+        (p ∈ M.toPlaneComplex.support ↔
+          (if f₁ p < 0 then b.coord 2 v₁ / f₁ v₁ * f₁ p else 0) ≤ b.coord 2 p) ∧
+        (p ∈ interior M.toPlaneComplex.support ↔
+          (if f₁ p < 0 then b.coord 2 v₁ / f₁ v₁ * f₁ p else 0) < b.coord 2 p) ∧
+        (p ∈ frontier M.toPlaneComplex.support ↔
+          b.coord 2 p = if f₁ p < 0 then b.coord 2 v₁ / f₁ v₁ * f₁ p else 0) ∧
+        (p ∈ (M.eraseTriangle T.1).toPlaneComplex.support ↔
+          (if f₁ p < 0 then b.coord 2 v₁ / f₁ v₁ * f₁ p else f₁ p / f₁ (b 2)) ≤
+            b.coord 2 p) ∧
+        (p ∈ interior (M.eraseTriangle T.1).toPlaneComplex.support ↔
+          (if f₁ p < 0 then b.coord 2 v₁ / f₁ v₁ * f₁ p else f₁ p / f₁ (b 2)) <
+            b.coord 2 p) ∧
+        (p ∈ frontier (M.eraseTriangle T.1).toPlaneComplex.support ↔
+          b.coord 2 p = if f₁ p < 0 then b.coord 2 v₁ / f₁ v₁ * f₁ p else
+            f₁ p / f₁ (b 2))) ∧
+      (∀ p ∈ U₀ ∪ U₁ ∪ V,
+        fderiv ℝ (fun q => (F q).1) p ≠ 0 ∧
+          fderiv ℝ (fun q => (F q).2) p ≠ 0) ∧
+      ContDiff ℝ ∞ H ∧
+      (∀ t p, deriv (fun s => H (s, p)) t = (F p).2 - (F p).1) ∧
+      (∀ p, H (0, p) = (F p).1) ∧
+      (∀ p, H (1, p) = (F p).2) ∧
+      (∀ t ∈ Set.Icc (0 : ℝ) 1, ∀ p ∈ U₀ ∪ U₁ ∪ V,
+        fderiv ℝ (fun q => H (t, q)) p ≠ 0) ∧
+      (∀ t ∈ Set.Icc (0 : ℝ) 1, ∀ p ∈ U₀, f₀ p ≤ -ε → H (t, p) = 0 →
+        (F p).1 = 0 ∧ (F p).2 = 0 ∧ (∀ u : ℝ, H (u, p) = 0) ∧
+          (∀ u : ℝ, deriv (fun s => H (s, p)) u = 0)) ∧
+      (∀ t ∈ Set.Icc (0 : ℝ) 1, ∀ p ∈ U₁, f₁ p ≤ -ε → H (t, p) = 0 →
+        (F p).1 = 0 ∧ (F p).2 = 0 ∧ (∀ u : ℝ, H (u, p) = 0) ∧
+          (∀ u : ℝ, deriv (fun s => H (s, p)) u = 0)) ∧
+      (∀ p ∈ V, ε < f₀ p ∧ ε < f₁ p) ∧
+      (∀ t ∈ Set.Icc (0 : ℝ) 1, ∀ p ∈ V, H (t, p) = 0 →
+        p ∈ M.triangleCarrier T.1) ∧
+      ∃ J : Set Plane, IsCompact J ∧ M.triangleCarrier T.1 ⊆ interior J ∧
+        J ⊆ U₀ ∪ U₁ ∪ V ∧
+        (∀ t ∈ Set.Icc (0 : ℝ) 1, ∀ p ∈ U₀ ∪ U₁ ∪ V,
+          H (t, p) = 0 → deriv (fun u => H (u, p)) t ≠ 0 → p ∈ interior J) ∧
+        (∀ t ∈ Set.Icc (0 : ℝ) 1, ∀ p ∈ U₀,
+          H (t, p) = 0 → -ε ≤ f₀ p → p ∈ interior J) ∧
+        (∀ t ∈ Set.Icc (0 : ℝ) 1, ∀ p ∈ U₁,
+          H (t, p) = 0 → -ε ≤ f₁ p → p ∈ interior J) ∧
+        (∀ t ∈ Set.Icc (0 : ℝ) 1, ∀ p ∈ U₀ ∪ U₁ ∪ V, H (t, p) = 0 → p ∉ J →
+          (p ∈ U₀ ∧ f₀ p < -ε ∧ ∃ N : Set Plane,
+            IsOpen N ∧ p ∈ N ∧ N ⊆ U₀ ∩ {q | f₀ q < -ε} ∧
+              Set.EqOn (fun q => (F q).2) (fun q => f₀ (b 2) / f₀ (b 1) * (F q).1) N) ∨
+          (p ∈ U₁ ∧ f₁ p < -ε ∧ ∃ N : Set Plane,
+            IsOpen N ∧ p ∈ N ∧ N ⊆ U₁ ∩ {q | f₁ q < -ε} ∧
+              Set.EqOn (fun q => (F q).2) (fun q => f₁ (b 2) / f₁ (b 0) * (F q).1) N)) ∧
+        (∀ p ∈ V,
+          (p ∈ M.toPlaneComplex.support ↔ 0 ≤ b.coord 2 p) ∧
+          (p ∈ interior M.toPlaneComplex.support ↔ 0 < b.coord 2 p) ∧
+          (p ∈ frontier M.toPlaneComplex.support ↔ b.coord 2 p = 0)) ∧
+        (∀ p ∈ U₀ ∪ U₁ ∪ V, p ∉ interior J →
+          (p ∈ M.toPlaneComplex.support ↔ (F p).1 ≤ 0) ∧
+          (p ∈ interior M.toPlaneComplex.support ↔ (F p).1 < 0) ∧
+          (p ∈ frontier M.toPlaneComplex.support ↔ (F p).1 = 0)) ∧
+        (∀ p ∈ U₀ ∪ U₁ ∪ V, p ∉ interior J →
+          (p ∈ (M.eraseTriangle T.1).toPlaneComplex.support ↔ (F p).2 ≤ 0) ∧
+          (p ∈ interior (M.eraseTriangle T.1).toPlaneComplex.support ↔ (F p).2 < 0) ∧
+          (p ∈ frontier (M.eraseTriangle T.1).toPlaneComplex.support ↔ (F p).2 = 0)) ∧
+        ∃ (K : Set Plane) (X : ℝ × Plane → Plane) (Ω : Set (ℝ × Plane))
+          (κ : ℝ × Plane → ℝ),
+          IsCompact K ∧ J ⊆ interior K ∧ K ⊆ U₀ ∪ U₁ ∪ V ∧
+          ContDiff ℝ ∞ X ∧ HasCompactSupport X ∧
+          IsOpen Ω ∧ Set.Icc (0 : ℝ) 1 ×ˢ (U₀ ∪ U₁ ∪ V) ⊆ Ω ∧
+          Ω ⊆ Set.univ ×ˢ (U₀ ∪ U₁ ∪ V) ∧ ContDiffOn ℝ ∞ κ Ω ∧
+          (∀ z ∈ Ω,
+            deriv (fun t => H (t, z.2)) z.1 +
+              fderiv ℝ (fun y => H (z.1, y)) z.2 (X z) = κ z * H z) ∧
+          (∀ t x, x ∉ K → X (t, x) = 0) ∧
+          ∃ Φ : ℝ → (Plane ≃ₘ[ℝ] Plane),
+            (∀ (hX : ContDiff ℝ ∞ X) (hsX : HasCompactSupport X) (t : ℝ),
+              Φ t = Diffeomorph.timeDependentFlow X hX hsX 0 t) ∧
+            ContDiff ℝ ∞ (fun q : ℝ × Plane => Φ q.1 q.2) ∧
+            ContDiff ℝ ∞ (fun q : ℝ × Plane => (Φ q.1).symm q.2) ∧
+            Φ 0 = Diffeomorph.refl 𝓘(ℝ, Plane) Plane ∞ ∧
+            (∀ t : ℝ, Set.EqOn (Φ t) id Kᶜ ∧ Set.EqOn (Φ t).symm id Kᶜ) ∧
+            (∀ t : ℝ, (∀ p, Φ t p ∈ U₀ ∪ U₁ ∪ V ↔ p ∈ U₀ ∪ U₁ ∪ V) ∧
+              (∀ p, (Φ t).symm p ∈ U₀ ∪ U₁ ∪ V ↔ p ∈ U₀ ∪ U₁ ∪ V)) ∧
+            (∀ t ∈ Set.Icc (0 : ℝ) 1, ∀ p ∈ U₀ ∪ U₁ ∪ V,
+              ((F p).1 = 0 ↔ H (t, Φ t p) = 0) ∧
+              ((F p).1 < 0 ↔ H (t, Φ t p) < 0) ∧
+              ((F p).1 ≤ 0 ↔ H (t, Φ t p) ≤ 0)) ∧
+            (∀ t ∈ Set.Icc (0 : ℝ) 1, ∀ p ∈ U₀ ∪ U₁ ∪ V,
+              (H (t, p) = 0 ↔ (F ((Φ t).symm p)).1 = 0) ∧
+              (H (t, p) < 0 ↔ (F ((Φ t).symm p)).1 < 0) ∧
+              (H (t, p) ≤ 0 ↔ (F ((Φ t).symm p)).1 ≤ 0)) ∧
+            let D₀ := (M.toPlaneComplex.support \ interior K) ∪
+              (K ∩ {p | (F p).1 ≤ 0})
+            let p := AffineMap.lineMap (b 0) (b 1) ((1 : ℝ) / 2)
+            M.toPlaneComplex.support = closure (inside P.carrier) ∧
+            IsCompact D₀ ∧
+            (∀ q ∈ U₀ ∪ U₁ ∪ V,
+              (q ∈ D₀ ↔ (F q).1 ≤ 0) ∧
+              (q ∈ interior D₀ ↔ (F q).1 < 0) ∧
+              (q ∈ frontier D₀ ↔ (F q).1 = 0)) ∧
+            (∀ q ∉ K, q ∈ D₀ ↔ q ∈ M.toPlaneComplex.support) ∧
+            p ∈ interior K ∧ p ∈ frontier D₀ ∧ (frontier D₀).Nonempty ∧
+            ContDiff ℝ ∞ (fun q => -(F q).1) ∧
+            (∀ q ∈ U₀ ∪ U₁ ∪ V,
+              fderiv ℝ (fun z => -(F z).1) q ≠ 0) ∧
+            (∀ q ∈ frontier D₀ ∩ (U₀ ∪ U₁ ∪ V),
+              ∃ (N : Set Plane) (G : Plane → ℝ),
+                IsOpen N ∧ q ∈ N ∧ K ⊆ N ∧ ContDiff ℝ ∞ G ∧
+                (∀ z ∈ N, fderiv ℝ G z ≠ 0) ∧
+                (∀ z, G z = -(F z).1) ∧
+                ∀ z ∈ N, (z ∈ D₀ ↔ 0 ≤ G z) ∧
+                  (z ∈ interior D₀ ↔ 0 < G z) ∧
+                  (z ∈ frontier D₀ ↔ G z = 0)) ∧
+            ∃ (O V₁ D₁ : Set Plane),
+              IsOpen O ∧ IsCompact (closure O) ∧ closure O ⊆ Kᶜ ∧
+              (∀ i : ZMod (m + 3), P.vertex i ∉ U₀ ∪ U₁ ∪ V → P.vertex i ∈ O) ∧
+              IsCompact D₁ ∧ IsOpen V₁ ∧ K ⊆ V₁ ∧ V₁ ⊆ U₀ ∪ U₁ ∪ V ∧
+              (∀ q ∈ V₁, (q ∈ D₁ ↔ q ∈ D₀) ∧
+                (q ∈ interior D₁ ↔ q ∈ interior D₀) ∧
+                (q ∈ frontier D₁ ↔ q ∈ frontier D₀)) ∧
+              (∀ q ∉ O, (q ∈ D₁ ↔ q ∈ D₀) ∧
+                (q ∈ interior D₁ ↔ q ∈ interior D₀) ∧
+                (q ∈ frontier D₁ ↔ q ∈ frontier D₀)) ∧
+              (∀ q ∉ K ∪ O, q ∈ D₁ ↔ q ∈ M.toPlaneComplex.support) ∧
+              (∀ q ∈ V₁, (q ∈ D₁ ↔ (F q).1 ≤ 0) ∧
+                (q ∈ interior D₁ ↔ (F q).1 < 0) ∧
+                (q ∈ frontier D₁ ↔ (F q).1 = 0)) ∧
+              p ∈ frontier D₁ ∧ (frontier D₁).Nonempty ∧
+              (∀ q ∈ frontier D₁, ∃ (N : Set Plane) (G : Plane → ℝ),
+                IsOpen N ∧ q ∈ N ∧ ContDiff ℝ ∞ G ∧ fderiv ℝ G q ≠ 0 ∧
+                ∀ z ∈ N, (z ∈ D₁ ↔ 0 ≤ G z) ∧
+                  (z ∈ interior D₁ ↔ 0 < G z) ∧
+                  (z ∈ frontier D₁ ↔ G z = 0)) ∧
+              let D₂ := (Φ 1) '' D₁
+              let V₂ := (Φ 1) '' V₁
+              IsCompact D₂ ∧ IsOpen V₂ ∧ K ⊆ V₂ ∧ V₂ ⊆ U₀ ∪ U₁ ∪ V ∧
+              (∀ q ∈ V₂, (q ∈ D₂ ↔ (F q).2 ≤ 0) ∧
+                (q ∈ interior D₂ ↔ (F q).2 < 0) ∧
+                (q ∈ frontier D₂ ↔ (F q).2 = 0)) ∧
+              (∀ q ∉ K, (q ∈ D₂ ↔ q ∈ D₁) ∧
+                (q ∈ interior D₂ ↔ q ∈ interior D₁) ∧
+                (q ∈ frontier D₂ ↔ q ∈ frontier D₁)) ∧
+              (∀ q ∉ K ∪ O, q ∈ D₂ ↔ q ∈ M.toPlaneComplex.support) ∧
+              D₂ = (D₁ \ interior K) ∪ (K ∩ {q | (F q).2 ≤ 0}) ∧
+              (∀ q ∈ V₂, q ∉ interior J →
+                (q ∈ D₂ ↔ q ∈ (M.eraseTriangle T.1).toPlaneComplex.support) ∧
+                (q ∈ interior D₂ ↔
+                  q ∈ interior (M.eraseTriangle T.1).toPlaneComplex.support) ∧
+                (q ∈ frontier D₂ ↔
+                  q ∈ frontier (M.eraseTriangle T.1).toPlaneComplex.support)) ∧
+              Φ 1 p ∈ frontier D₂ ∧ (frontier D₂).Nonempty ∧
+              ∀ q ∈ frontier D₂, ∃ (N : Set Plane) (G : Plane → ℝ),
+                IsOpen N ∧ q ∈ N ∧ ContDiff ℝ ∞ G ∧ fderiv ℝ G q ≠ 0 ∧
+                ∀ z ∈ N, (z ∈ D₂ ↔ 0 ≤ G z) ∧
+                  (z ∈ interior D₂ ↔ 0 < G z) ∧
+                  (z ∈ frontier D₂ ↔ G z = 0) := by
+  dsimp only
+  let b := LeanEval.Topology.ClassificationOfSurfaces.Moise.affineBasisOfTriangle
+    (M.freeTriangleOrder T k) (M.freeTriangleOrder_affineIndependent T k)
+  let p := AffineMap.lineMap (b 0) (b 1) ((1 : ℝ) / 2)
+  obtain ⟨v₀, v₁, f₀, f₁, ε, U₀, U₁, V, F,
+    hε, hF, hU₀, hU₁, hV, hb₀, hb₁, hdisj, hcover, hs₀, hs₁,
+    hf₀, hfb, hfc₀, hfv₀, hf₁, hfa, hfc₁, hfv₁, hgap₀, hgap₁,
+    he₀, he₁, heV, hgraph₀, hgraph₁, hreg, hH, hderiv, hstart, hend,
+    hregH, hstat₀, hstat₁, hposV, hcentral,
+    J, hJ, htriangleJ, hJW, hactive, hweak₀, hweak₁, hexterior, hraw, hsign, hremoved,
+    K, X, Ω, κ, hK, hJK, hKW, hX, hsX, hΩ, hΩcover, hΩW, hκ, htransport, hXzero,
+    Φ, hΦeq, hΦ, hΦinv, hΦzero, hΦfix, hΦW, hforward, hinverse,
+    hsupport, hD₀, hsides, hout, hpK, hpfront, hnonempty, hHneg, hregneg, hgerms,
+    O, V₁, D₁, hO, hOc, hOK, hvO, hD₁, hV₁, hKV₁, hV₁W, heqV₁, houtO, hold,
+    hprescribed, hpD₁, hnonemptyD₁, hregular⟩ :=
+    P.native_global_rounding_with_prescribed_isotopy M hfrontier T k hfree
+  let D₂ := (Φ 1) '' D₁
+  let V₂ := (Φ 1) '' V₁
+  obtain ⟨hV₂, hKV₂, houtside⟩ := (Φ 1).toHomeomorph.image_neighborhood_of_eqOn_compl
+    hV₁ hKV₁ (hΦfix 1).1
+  have hV₂W : V₂ ⊆ U₀ ∪ U₁ ∪ V := by
+    rintro _ ⟨q, hq, rfl⟩
+    exact ((hΦW 1).1 q).mpr (hV₁W hq)
+  have hsign₂ (q : Plane) (hq : q ∈ V₂) :
+      ((F q).2 = 0 ↔ (F ((Φ 1).symm q)).1 = 0) ∧
+      ((F q).2 < 0 ↔ (F ((Φ 1).symm q)).1 < 0) ∧
+      ((F q).2 ≤ 0 ↔ (F ((Φ 1).symm q)).1 ≤ 0) := by
+    have hi := hinverse 1 (show (1 : ℝ) ∈ Set.Icc 0 1 from ⟨by norm_num, le_rfl⟩)
+      q (hV₂W hq)
+    simpa only [sub_self, zero_mul, one_mul, zero_add] using hi
+  have hsides₂ := (Φ 1).toHomeomorph.image_region_sides hprescribed hsign₂
+  have hliteral : D₂ = (D₁ \ interior K) ∪ (K ∩ {q | (F q).2 ≤ 0}) :=
+    (Φ 1).toHomeomorph.image_eq_local_replacement (hΦfix 1).1
+      (fun q hq => (hsides₂ q (hKV₂ hq)).1)
+  have hretained (q : Plane) (hq : q ∈ V₂) (hqJ : q ∉ interior J) :
+      (q ∈ D₂ ↔ q ∈ (M.eraseTriangle T.1).toPlaneComplex.support) ∧
+      (q ∈ interior D₂ ↔ q ∈ interior (M.eraseTriangle T.1).toPlaneComplex.support) ∧
+      (q ∈ frontier D₂ ↔ q ∈ frontier (M.eraseTriangle T.1).toPlaneComplex.support) := by
+    have hraw₂ := hremoved q (hV₂W hq) hqJ
+    exact ⟨(hsides₂ q hq).1.trans hraw₂.1.symm,
+      (hsides₂ q hq).2.1.trans hraw₂.2.1.symm,
+      (hsides₂ q hq).2.2.trans hraw₂.2.2.symm⟩
+  have hfront : frontier D₂ = (Φ 1) '' frontier D₁ :=
+    ((Φ 1).toHomeomorph.image_frontier D₁).symm
+  have hpD₂ : Φ 1 p ∈ frontier D₂ := by
+    rw [hfront]
+    exact ⟨p, hpD₁, rfl⟩
+  refine ⟨v₀, v₁, f₀, f₁, ε, U₀, U₁, V, F,
+    hε, hF, hU₀, hU₁, hV, hb₀, hb₁, hdisj, hcover, hs₀, hs₁,
+    hf₀, hfb, hfc₀, hfv₀, hf₁, hfa, hfc₁, hfv₁, hgap₀, hgap₁,
+    he₀, he₁, heV, hgraph₀, hgraph₁, hreg, hH, hderiv, hstart, hend,
+    hregH, hstat₀, hstat₁, hposV, hcentral,
+    J, hJ, htriangleJ, hJW, hactive, hweak₀, hweak₁, hexterior, hraw, hsign, hremoved,
+    K, X, Ω, κ, hK, hJK, hKW, hX, hsX, hΩ, hΩcover, hΩW, hκ, htransport, hXzero,
+    Φ, hΦeq, hΦ, hΦinv, hΦzero, hΦfix, hΦW, hforward, hinverse,
+    hsupport, hD₀, hsides, hout, hpK, hpfront, hnonempty, hHneg, hregneg, hgerms,
+    O, V₁, D₁, hO, hOc, hOK, hvO, hD₁, hV₁, hKV₁, hV₁W, heqV₁, houtO, hold,
+    hprescribed, hpD₁, hnonemptyD₁, hregular,
+    hD₁.image (Φ 1).continuous, hV₂, hKV₂, hV₂W, hsides₂, houtside D₁, ?_,
+    hliteral, hretained, hpD₂, ⟨Φ 1 p, hpD₂⟩, (Φ 1).regular_frontier_image hregular⟩
+  intro q hq
+  exact (houtside D₁ q (fun h => hq (Or.inl h))).1.trans (hold q hq)
+
+end Schoenflies
+
+end
+
+section
+
+open scoped Topology
+
+namespace Schoenflies
+
+private theorem mesh_erase_triangle_sides_of_not_mem
+    (M : LeanEval.Topology.ClassificationOfSurfaces.Moise.TriangleMesh)
+    (T : M.Triangle) {p : Plane} (hp : p ∉ M.triangleCarrier T.1) :
+    (p ∈ M.toPlaneComplex.support ↔ p ∈ (M.eraseTriangle T.1).toPlaneComplex.support) ∧
+    (p ∈ interior M.toPlaneComplex.support ↔
+      p ∈ interior (M.eraseTriangle T.1).toPlaneComplex.support) ∧
+    (p ∈ frontier M.toPlaneComplex.support ↔
+      p ∈ frontier (M.eraseTriangle T.1).toPlaneComplex.support) := by
+  have hclosed : IsClosed (M.triangleCarrier T.1) :=
+    (T.1.finite_toSet.image M.position).isClosed_convexHull ℝ
+  have hsplit := M.support_eq_eraseTriangle_union_triangleCarrier T.2
+  have heq (q : Plane) (hq : q ∉ M.triangleCarrier T.1) :
+      q ∈ M.toPlaneComplex.support ↔ q ∈ (M.eraseTriangle T.1).toPlaneComplex.support := by
+    rw [hsplit]
+    exact or_iff_left hq
+  have hs : M.toPlaneComplex.support =ᶠ[𝓝 p] (M.eraseTriangle T.1).toPlaneComplex.support := by
+    filter_upwards [hclosed.isOpen_compl.mem_nhds hp] with q hq
+    exact propext (heq q hq)
+  refine ⟨heq p hp, hs.mem_interior_iff, ?_⟩
+  rw [M.toPlaneComplex.isCompact_support.isClosed.frontier_eq,
+    (M.eraseTriangle T.1).toPlaneComplex.isCompact_support.isClosed.frontier_eq]
+  change (p ∈ M.toPlaneComplex.support ∧ p ∉ interior M.toPlaneComplex.support) ↔
+    (p ∈ (M.eraseTriangle T.1).toPlaneComplex.support ∧
+      p ∉ interior (M.eraseTriangle T.1).toPlaneComplex.support)
+  rw [heq p hp, hs.mem_interior_iff]
+
+end Schoenflies
+
+end
+
+section
+
+open scoped ContDiff Topology
+
+namespace Schoenflies
+
+private theorem compact_sublevel_replacement_preserving_germ
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {D K W : Set E} {H : E → ℝ} (hD : IsCompact D) (hK : IsCompact K)
+    (hW : IsOpen W) (hKW : K ⊆ W) (hH : Continuous H)
+    (hreg : ∀ p ∈ W, H p = 0 → fderiv ℝ H p ≠ 0)
+    (heq : ∀ p ∈ W \ interior K, p ∈ D ↔ H p ≤ 0) :
+    let E₀ := (D \ interior K) ∪ (K ∩ {p | H p ≤ 0})
+    IsCompact E₀ ∧
+      (∀ p ∈ W, (p ∈ E₀ ↔ H p ≤ 0) ∧
+        (p ∈ interior E₀ ↔ H p < 0) ∧ (p ∈ frontier E₀ ↔ H p = 0)) ∧
+      (∀ p ∉ K, (p ∈ E₀ ↔ p ∈ D) ∧
+        (p ∈ interior E₀ ↔ p ∈ interior D) ∧
+        (p ∈ frontier E₀ ↔ p ∈ frontier D)) := by
+  have hneg : ∀ p ∈ W, -H p = 0 → fderiv ℝ (fun q => -H q) p ≠ 0 := by
+    intro p hp hz
+    simpa only [fderiv_fun_neg, neg_ne_zero] using hreg p hp (neg_eq_zero.mp hz)
+  obtain ⟨hc, hs, ho⟩ := compact_region_replace_preserving_germ (H := fun p => -H p)
+    hD hK hW hKW hH.neg
+    hneg (fun p hp => by simpa only [neg_nonneg] using heq p hp)
+  have hc' : IsCompact ((D \ interior K) ∪ (K ∩ {p | H p ≤ 0})) := by
+    simpa only [neg_nonneg] using hc
+  refine ⟨hc', ?_, ?_⟩
+  · intro p hp
+    simpa only [neg_nonneg, neg_pos, neg_eq_zero] using hs p hp
+  · exact region_sides_of_open_local_eq hD.isClosed hc'.isClosed hK.isClosed.isOpen_compl
+      (fun p hp => by simpa only [neg_nonneg] using ho p hp)
+
+private theorem matched_erased_region_of_prescribed_germs
+    (M : LeanEval.Topology.ClassificationOfSurfaces.Moise.TriangleMesh)
+    (T : M.Triangle) {J K W O V₂ D₁ D₂ : Set Plane} {F : Plane → ℝ × ℝ}
+    (hK : IsCompact K) (hW : IsOpen W) (hJK : J ⊆ interior K) (hKW : K ⊆ W)
+    (hTK : M.triangleCarrier T.1 ⊆ K) (hF : ContDiff ℝ ∞ F)
+    (hreg : ∀ p ∈ W, (F p).2 = 0 → fderiv ℝ (fun q => (F q).2) p ≠ 0)
+    (hremoved : ∀ p ∈ W, p ∉ interior J →
+      (p ∈ (M.eraseTriangle T.1).toPlaneComplex.support ↔ (F p).2 ≤ 0))
+    (hKV₂ : K ⊆ V₂) (hV₂W : V₂ ⊆ W) (hOK : O ⊆ Kᶜ)
+    (hsides₂ : ∀ p ∈ V₂, (p ∈ D₂ ↔ (F p).2 ≤ 0) ∧
+      (p ∈ interior D₂ ↔ (F p).2 < 0) ∧ (p ∈ frontier D₂ ↔ (F p).2 = 0))
+    (houtside : ∀ p ∉ K, (p ∈ D₂ ↔ p ∈ D₁) ∧
+      (p ∈ interior D₂ ↔ p ∈ interior D₁) ∧
+      (p ∈ frontier D₂ ↔ p ∈ frontier D₁))
+    (houter : ∀ p ∉ O,
+      (p ∈ D₁ ↔ p ∈ (M.toPlaneComplex.support \ interior K) ∪ (K ∩ {q | (F q).1 ≤ 0})) ∧
+      (p ∈ interior D₁ ↔
+        p ∈ interior ((M.toPlaneComplex.support \ interior K) ∪ (K ∩ {q | (F q).1 ≤ 0}))) ∧
+      (p ∈ frontier D₁ ↔
+        p ∈ frontier ((M.toPlaneComplex.support \ interior K) ∪ (K ∩ {q | (F q).1 ≤ 0})))) :
+    let E₀ := ((M.eraseTriangle T.1).toPlaneComplex.support \ interior K) ∪
+      (K ∩ {q | (F q).2 ≤ 0})
+    IsCompact E₀ ∧
+      (∀ p ∈ W, (p ∈ E₀ ↔ (F p).2 ≤ 0) ∧
+        (p ∈ interior E₀ ↔ (F p).2 < 0) ∧
+        (p ∈ frontier E₀ ↔ (F p).2 = 0)) ∧
+      (∀ p ∉ K,
+        (p ∈ E₀ ↔ p ∈ (M.eraseTriangle T.1).toPlaneComplex.support) ∧
+        (p ∈ interior E₀ ↔ p ∈ interior (M.eraseTriangle T.1).toPlaneComplex.support) ∧
+        (p ∈ frontier E₀ ↔ p ∈ frontier (M.eraseTriangle T.1).toPlaneComplex.support)) ∧
+      (∀ p ∈ V₂, (p ∈ D₂ ↔ p ∈ E₀) ∧
+        (p ∈ interior D₂ ↔ p ∈ interior E₀) ∧
+        (p ∈ frontier D₂ ↔ p ∈ frontier E₀)) ∧
+      (∀ p ∉ O, (p ∈ D₂ ↔ p ∈ E₀) ∧
+        (p ∈ interior D₂ ↔ p ∈ interior E₀) ∧
+        (p ∈ frontier D₂ ↔ p ∈ frontier E₀)) ∧
+      D₂ = (E₀ \ O) ∪ (D₁ ∩ O) := by
+  let D₀ := (M.toPlaneComplex.support \ interior K) ∪ (K ∩ {q | (F q).1 ≤ 0})
+  let E₀ := ((M.eraseTriangle T.1).toPlaneComplex.support \ interior K) ∪
+    (K ∩ {q | (F q).2 ≤ 0})
+  have hD₀ : IsCompact D₀ :=
+    (M.toPlaneComplex.isCompact_support.diff isOpen_interior).union
+      (hK.inter_right (isClosed_le hF.fst.continuous continuous_const))
+  have hraw₀ := region_sides_of_open_local_eq M.toPlaneComplex.isCompact_support.isClosed
+    hD₀.isClosed hK.isClosed.isOpen_compl (by
+      intro p hp
+      change p ∉ K at hp
+      have hpI : p ∉ interior K := fun hi => hp (interior_subset hi)
+      simp only [D₀, Set.mem_union, Set.mem_sdiff, Set.mem_inter_iff,
+        hp, hpI, not_false_eq_true, and_true, false_and, or_false])
+  obtain ⟨hE₀, hsignE, hrawE⟩ := compact_sublevel_replacement_preserving_germ
+    (M.eraseTriangle T.1).toPlaneComplex.isCompact_support hK hW hKW hF.snd.continuous
+    hreg (fun p hp => hremoved p hp.1 (fun hj => hp.2 (hJK (interior_subset hj))))
+  have hnear (p : Plane) (hp : p ∈ V₂) :
+      (p ∈ D₂ ↔ p ∈ E₀) ∧ (p ∈ interior D₂ ↔ p ∈ interior E₀) ∧
+        (p ∈ frontier D₂ ↔ p ∈ frontier E₀) := by
+    have hd := hsides₂ p hp
+    have he := hsignE p (hV₂W hp)
+    exact ⟨hd.1.trans he.1.symm, hd.2.1.trans he.2.1.symm, hd.2.2.trans he.2.2.symm⟩
+  have hout (p : Plane) (hp : p ∉ O) :
+      (p ∈ D₂ ↔ p ∈ E₀) ∧ (p ∈ interior D₂ ↔ p ∈ interior E₀) ∧
+        (p ∈ frontier D₂ ↔ p ∈ frontier E₀) := by
+    by_cases hpK : p ∈ K
+    · exact hnear p (hKV₂ hpK)
+    have hd := houtside p hpK
+    have ho := houter p hp
+    have ha := hraw₀ p hpK
+    have hb := mesh_erase_triangle_sides_of_not_mem M T (fun ht => hpK (hTK ht))
+    have he := hrawE p hpK
+    exact ⟨hd.1.trans (ho.1.trans (ha.1.trans (hb.1.trans he.1.symm))),
+      hd.2.1.trans (ho.2.1.trans (ha.2.1.trans (hb.2.1.trans he.2.1.symm))),
+      hd.2.2.trans (ho.2.2.trans (ha.2.2.trans (hb.2.2.trans he.2.2.symm)))⟩
+  refine ⟨hE₀, hsignE, hrawE, hnear, hout, ?_⟩
+  ext p
+  by_cases hpO : p ∈ O
+  · have he := (houtside p (hOK hpO)).1
+    simp only [Set.mem_union, Set.mem_sdiff, Set.mem_inter_iff, hpO,
+      not_true_eq_false, and_false, false_or, and_true]
+    exact he
+  · simp only [Set.mem_union, Set.mem_sdiff, Set.mem_inter_iff, hpO,
+      not_false_eq_true, and_true, and_false, or_false]
+    exact (hout p hpO).1
+
+end Schoenflies
+
+end
+
+section
+
+open scoped ContDiff Manifold Topology
+
+namespace Schoenflies
+
+theorem PrePolygon.exists_prescribed_rounding_isotopy_of_one_edge_free_triangle
+    {m : ℕ} (P : PrePolygon m)
+    (M : LeanEval.Topology.ClassificationOfSurfaces.Moise.TriangleMesh)
+    (hfrontier : frontier M.toPlaneComplex.support = P.carrier)
+    (T : M.Triangle) (k : Fin 3) (hfree : M.IsOneEdgeFreeTriangle T k) :
+    let b := LeanEval.Topology.ClassificationOfSurfaces.Moise.affineBasisOfTriangle
+      (M.freeTriangleOrder T k) (M.freeTriangleOrder_affineIndependent T k)
+    let R := closure (P.carrier \ segment ℝ (b 0) (b 1))
+    ∃ (v₀ v₁ : Plane) (f₀ f₁ : Plane →ᵃ[ℝ] ℝ) (ε : ℝ)
+      (U₀ U₁ V : Set Plane) (F : Plane → ℝ × ℝ),
+      let s₀ := b.coord 2 v₀ / f₀ v₀
+      let s₁ := b.coord 2 v₁ / f₁ v₁
+      let A₀ := fun p => s₀ * (f₀ p - Real.smoothMax ε (f₀ p) 0) - b.coord 2 p
+      let A₁ := fun p => s₁ * (f₁ p - Real.smoothMax ε (f₁ p) 0) - b.coord 2 p
+      let B₀ := fun p => f₀ (b 2) / f₀ (b 1) *
+        (s₀ * (f₀ p - Real.smoothMax ε (f₀ p) 0) +
+          Real.smoothMax ε (f₀ p) 0 / f₀ (b 2) - b.coord 2 p)
+      let B₁ := fun p => f₁ (b 2) / f₁ (b 0) *
+        (s₁ * (f₁ p - Real.smoothMax ε (f₁ p) 0) +
+          Real.smoothMax ε (f₁ p) 0 / f₁ (b 2) - b.coord 2 p)
+      let H := fun q : ℝ × Plane => (1 - q.1) * (F q.2).1 + q.1 * (F q.2).2
+      0 < ε ∧ ContDiff ℝ ∞ F ∧ IsOpen U₀ ∧ IsOpen U₁ ∧ IsOpen V ∧
+      b 0 ∈ U₀ ∧ b 1 ∈ U₁ ∧ Disjoint U₀ U₁ ∧
+      M.triangleCarrier T.1 ⊆ U₀ ∪ U₁ ∪ V ∧
+      segment ℝ (b 0) v₀ ⊆ R ∧ segment ℝ (b 1) v₁ ⊆ R ∧
+      f₀ (b 0) = 0 ∧ 0 < f₀ (b 1) ∧ 0 < f₀ (b 2) ∧ f₀ v₀ < 0 ∧
+      f₁ (b 1) = 0 ∧ 0 < f₁ (b 0) ∧ 0 < f₁ (b 2) ∧ f₁ v₁ < 0 ∧
+      (∀ p ∈ U₀, (1 : ℝ) / 4 < b.coord 0 p - b.coord 1 p) ∧
+      (∀ p ∈ U₁, (1 : ℝ) / 4 < b.coord 1 p - b.coord 0 p) ∧
+      Set.EqOn F (fun p => (A₀ p, B₀ p)) U₀ ∧
+      Set.EqOn F (fun p => (A₁ p, B₁ p)) U₁ ∧
+      Set.EqOn F (fun p => (-b.coord 2 p,
+        -Real.smoothMax (1 / 4) (-b.coord 0 p) (-b.coord 1 p))) V ∧
+      (∀ p ∈ U₀,
+        (p ∈ M.toPlaneComplex.support ↔
+          (if f₀ p < 0 then b.coord 2 v₀ / f₀ v₀ * f₀ p else 0) ≤ b.coord 2 p) ∧
+        (p ∈ interior M.toPlaneComplex.support ↔
+          (if f₀ p < 0 then b.coord 2 v₀ / f₀ v₀ * f₀ p else 0) < b.coord 2 p) ∧
+        (p ∈ frontier M.toPlaneComplex.support ↔
+          b.coord 2 p = if f₀ p < 0 then b.coord 2 v₀ / f₀ v₀ * f₀ p else 0) ∧
+        (p ∈ (M.eraseTriangle T.1).toPlaneComplex.support ↔
+          (if f₀ p < 0 then b.coord 2 v₀ / f₀ v₀ * f₀ p else f₀ p / f₀ (b 2)) ≤
+            b.coord 2 p) ∧
+        (p ∈ interior (M.eraseTriangle T.1).toPlaneComplex.support ↔
+          (if f₀ p < 0 then b.coord 2 v₀ / f₀ v₀ * f₀ p else f₀ p / f₀ (b 2)) <
+            b.coord 2 p) ∧
+        (p ∈ frontier (M.eraseTriangle T.1).toPlaneComplex.support ↔
+          b.coord 2 p = if f₀ p < 0 then b.coord 2 v₀ / f₀ v₀ * f₀ p else
+            f₀ p / f₀ (b 2))) ∧
+      (∀ p ∈ U₁,
+        (p ∈ M.toPlaneComplex.support ↔
+          (if f₁ p < 0 then b.coord 2 v₁ / f₁ v₁ * f₁ p else 0) ≤ b.coord 2 p) ∧
+        (p ∈ interior M.toPlaneComplex.support ↔
+          (if f₁ p < 0 then b.coord 2 v₁ / f₁ v₁ * f₁ p else 0) < b.coord 2 p) ∧
+        (p ∈ frontier M.toPlaneComplex.support ↔
+          b.coord 2 p = if f₁ p < 0 then b.coord 2 v₁ / f₁ v₁ * f₁ p else 0) ∧
+        (p ∈ (M.eraseTriangle T.1).toPlaneComplex.support ↔
+          (if f₁ p < 0 then b.coord 2 v₁ / f₁ v₁ * f₁ p else f₁ p / f₁ (b 2)) ≤
+            b.coord 2 p) ∧
+        (p ∈ interior (M.eraseTriangle T.1).toPlaneComplex.support ↔
+          (if f₁ p < 0 then b.coord 2 v₁ / f₁ v₁ * f₁ p else f₁ p / f₁ (b 2)) <
+            b.coord 2 p) ∧
+        (p ∈ frontier (M.eraseTriangle T.1).toPlaneComplex.support ↔
+          b.coord 2 p = if f₁ p < 0 then b.coord 2 v₁ / f₁ v₁ * f₁ p else
+            f₁ p / f₁ (b 2))) ∧
+      (∀ p ∈ U₀ ∪ U₁ ∪ V,
+        fderiv ℝ (fun q => (F q).1) p ≠ 0 ∧
+          fderiv ℝ (fun q => (F q).2) p ≠ 0) ∧
+      ContDiff ℝ ∞ H ∧
+      (∀ t p, deriv (fun s => H (s, p)) t = (F p).2 - (F p).1) ∧
+      (∀ p, H (0, p) = (F p).1) ∧
+      (∀ p, H (1, p) = (F p).2) ∧
+      (∀ t ∈ Set.Icc (0 : ℝ) 1, ∀ p ∈ U₀ ∪ U₁ ∪ V,
+        fderiv ℝ (fun q => H (t, q)) p ≠ 0) ∧
+      (∀ t ∈ Set.Icc (0 : ℝ) 1, ∀ p ∈ U₀, f₀ p ≤ -ε → H (t, p) = 0 →
+        (F p).1 = 0 ∧ (F p).2 = 0 ∧ (∀ u : ℝ, H (u, p) = 0) ∧
+          (∀ u : ℝ, deriv (fun s => H (s, p)) u = 0)) ∧
+      (∀ t ∈ Set.Icc (0 : ℝ) 1, ∀ p ∈ U₁, f₁ p ≤ -ε → H (t, p) = 0 →
+        (F p).1 = 0 ∧ (F p).2 = 0 ∧ (∀ u : ℝ, H (u, p) = 0) ∧
+          (∀ u : ℝ, deriv (fun s => H (s, p)) u = 0)) ∧
+      (∀ p ∈ V, ε < f₀ p ∧ ε < f₁ p) ∧
+      (∀ t ∈ Set.Icc (0 : ℝ) 1, ∀ p ∈ V, H (t, p) = 0 →
+        p ∈ M.triangleCarrier T.1) ∧
+      ∃ J : Set Plane, IsCompact J ∧ M.triangleCarrier T.1 ⊆ interior J ∧
+        J ⊆ U₀ ∪ U₁ ∪ V ∧
+        (∀ t ∈ Set.Icc (0 : ℝ) 1, ∀ p ∈ U₀ ∪ U₁ ∪ V,
+          H (t, p) = 0 → deriv (fun u => H (u, p)) t ≠ 0 → p ∈ interior J) ∧
+        (∀ t ∈ Set.Icc (0 : ℝ) 1, ∀ p ∈ U₀,
+          H (t, p) = 0 → -ε ≤ f₀ p → p ∈ interior J) ∧
+        (∀ t ∈ Set.Icc (0 : ℝ) 1, ∀ p ∈ U₁,
+          H (t, p) = 0 → -ε ≤ f₁ p → p ∈ interior J) ∧
+        (∀ t ∈ Set.Icc (0 : ℝ) 1, ∀ p ∈ U₀ ∪ U₁ ∪ V, H (t, p) = 0 → p ∉ J →
+          (p ∈ U₀ ∧ f₀ p < -ε ∧ ∃ N : Set Plane,
+            IsOpen N ∧ p ∈ N ∧ N ⊆ U₀ ∩ {q | f₀ q < -ε} ∧
+              Set.EqOn (fun q => (F q).2) (fun q => f₀ (b 2) / f₀ (b 1) * (F q).1) N) ∨
+          (p ∈ U₁ ∧ f₁ p < -ε ∧ ∃ N : Set Plane,
+            IsOpen N ∧ p ∈ N ∧ N ⊆ U₁ ∩ {q | f₁ q < -ε} ∧
+              Set.EqOn (fun q => (F q).2) (fun q => f₁ (b 2) / f₁ (b 0) * (F q).1) N)) ∧
+        (∀ p ∈ V,
+          (p ∈ M.toPlaneComplex.support ↔ 0 ≤ b.coord 2 p) ∧
+          (p ∈ interior M.toPlaneComplex.support ↔ 0 < b.coord 2 p) ∧
+          (p ∈ frontier M.toPlaneComplex.support ↔ b.coord 2 p = 0)) ∧
+        (∀ p ∈ U₀ ∪ U₁ ∪ V, p ∉ interior J →
+          (p ∈ M.toPlaneComplex.support ↔ (F p).1 ≤ 0) ∧
+          (p ∈ interior M.toPlaneComplex.support ↔ (F p).1 < 0) ∧
+          (p ∈ frontier M.toPlaneComplex.support ↔ (F p).1 = 0)) ∧
+        (∀ p ∈ U₀ ∪ U₁ ∪ V, p ∉ interior J →
+          (p ∈ (M.eraseTriangle T.1).toPlaneComplex.support ↔ (F p).2 ≤ 0) ∧
+          (p ∈ interior (M.eraseTriangle T.1).toPlaneComplex.support ↔ (F p).2 < 0) ∧
+          (p ∈ frontier (M.eraseTriangle T.1).toPlaneComplex.support ↔ (F p).2 = 0)) ∧
+        ∃ (K : Set Plane) (X : ℝ × Plane → Plane) (Ω : Set (ℝ × Plane))
+          (κ : ℝ × Plane → ℝ),
+          IsCompact K ∧ J ⊆ interior K ∧ K ⊆ U₀ ∪ U₁ ∪ V ∧
+          ContDiff ℝ ∞ X ∧ HasCompactSupport X ∧
+          IsOpen Ω ∧ Set.Icc (0 : ℝ) 1 ×ˢ (U₀ ∪ U₁ ∪ V) ⊆ Ω ∧
+          Ω ⊆ Set.univ ×ˢ (U₀ ∪ U₁ ∪ V) ∧ ContDiffOn ℝ ∞ κ Ω ∧
+          (∀ z ∈ Ω,
+            deriv (fun t => H (t, z.2)) z.1 +
+              fderiv ℝ (fun y => H (z.1, y)) z.2 (X z) = κ z * H z) ∧
+          (∀ t x, x ∉ K → X (t, x) = 0) ∧
+          ∃ Φ : ℝ → (Plane ≃ₘ[ℝ] Plane),
+            (∀ (hX : ContDiff ℝ ∞ X) (hsX : HasCompactSupport X) (t : ℝ),
+              Φ t = Diffeomorph.timeDependentFlow X hX hsX 0 t) ∧
+            ContDiff ℝ ∞ (fun q : ℝ × Plane => Φ q.1 q.2) ∧
+            ContDiff ℝ ∞ (fun q : ℝ × Plane => (Φ q.1).symm q.2) ∧
+            Φ 0 = Diffeomorph.refl 𝓘(ℝ, Plane) Plane ∞ ∧
+            (∀ t : ℝ, Set.EqOn (Φ t) id Kᶜ ∧ Set.EqOn (Φ t).symm id Kᶜ) ∧
+            (∀ t : ℝ, (∀ p, Φ t p ∈ U₀ ∪ U₁ ∪ V ↔ p ∈ U₀ ∪ U₁ ∪ V) ∧
+              (∀ p, (Φ t).symm p ∈ U₀ ∪ U₁ ∪ V ↔ p ∈ U₀ ∪ U₁ ∪ V)) ∧
+            (∀ t ∈ Set.Icc (0 : ℝ) 1, ∀ p ∈ U₀ ∪ U₁ ∪ V,
+              ((F p).1 = 0 ↔ H (t, Φ t p) = 0) ∧
+              ((F p).1 < 0 ↔ H (t, Φ t p) < 0) ∧
+              ((F p).1 ≤ 0 ↔ H (t, Φ t p) ≤ 0)) ∧
+            (∀ t ∈ Set.Icc (0 : ℝ) 1, ∀ p ∈ U₀ ∪ U₁ ∪ V,
+              (H (t, p) = 0 ↔ (F ((Φ t).symm p)).1 = 0) ∧
+              (H (t, p) < 0 ↔ (F ((Φ t).symm p)).1 < 0) ∧
+              (H (t, p) ≤ 0 ↔ (F ((Φ t).symm p)).1 ≤ 0)) ∧
+            let D₀ := (M.toPlaneComplex.support \ interior K) ∪
+              (K ∩ {p | (F p).1 ≤ 0})
+            let p := AffineMap.lineMap (b 0) (b 1) ((1 : ℝ) / 2)
+            M.toPlaneComplex.support = closure (inside P.carrier) ∧
+            IsCompact D₀ ∧
+            (∀ q ∈ U₀ ∪ U₁ ∪ V,
+              (q ∈ D₀ ↔ (F q).1 ≤ 0) ∧
+              (q ∈ interior D₀ ↔ (F q).1 < 0) ∧
+              (q ∈ frontier D₀ ↔ (F q).1 = 0)) ∧
+            (∀ q ∉ K, q ∈ D₀ ↔ q ∈ M.toPlaneComplex.support) ∧
+            p ∈ interior K ∧ p ∈ frontier D₀ ∧ (frontier D₀).Nonempty ∧
+            ContDiff ℝ ∞ (fun q => -(F q).1) ∧
+            (∀ q ∈ U₀ ∪ U₁ ∪ V,
+              fderiv ℝ (fun z => -(F z).1) q ≠ 0) ∧
+            (∀ q ∈ frontier D₀ ∩ (U₀ ∪ U₁ ∪ V),
+              ∃ (N : Set Plane) (G : Plane → ℝ),
+                IsOpen N ∧ q ∈ N ∧ K ⊆ N ∧ ContDiff ℝ ∞ G ∧
+                (∀ z ∈ N, fderiv ℝ G z ≠ 0) ∧
+                (∀ z, G z = -(F z).1) ∧
+                ∀ z ∈ N, (z ∈ D₀ ↔ 0 ≤ G z) ∧
+                  (z ∈ interior D₀ ↔ 0 < G z) ∧
+                  (z ∈ frontier D₀ ↔ G z = 0)) ∧
+            ∃ (O V₁ D₁ : Set Plane),
+              IsOpen O ∧ IsCompact (closure O) ∧ closure O ⊆ Kᶜ ∧
+              (∀ i : ZMod (m + 3), P.vertex i ∉ U₀ ∪ U₁ ∪ V → P.vertex i ∈ O) ∧
+              IsCompact D₁ ∧ IsOpen V₁ ∧ K ⊆ V₁ ∧ V₁ ⊆ U₀ ∪ U₁ ∪ V ∧
+              (∀ q ∈ V₁, (q ∈ D₁ ↔ q ∈ D₀) ∧
+                (q ∈ interior D₁ ↔ q ∈ interior D₀) ∧
+                (q ∈ frontier D₁ ↔ q ∈ frontier D₀)) ∧
+              (∀ q ∉ O, (q ∈ D₁ ↔ q ∈ D₀) ∧
+                (q ∈ interior D₁ ↔ q ∈ interior D₀) ∧
+                (q ∈ frontier D₁ ↔ q ∈ frontier D₀)) ∧
+              (∀ q ∉ K ∪ O, q ∈ D₁ ↔ q ∈ M.toPlaneComplex.support) ∧
+              (∀ q ∈ V₁, (q ∈ D₁ ↔ (F q).1 ≤ 0) ∧
+                (q ∈ interior D₁ ↔ (F q).1 < 0) ∧
+                (q ∈ frontier D₁ ↔ (F q).1 = 0)) ∧
+              p ∈ frontier D₁ ∧ (frontier D₁).Nonempty ∧
+              (∀ q ∈ frontier D₁, ∃ (N : Set Plane) (G : Plane → ℝ),
+                IsOpen N ∧ q ∈ N ∧ ContDiff ℝ ∞ G ∧ fderiv ℝ G q ≠ 0 ∧
+                ∀ z ∈ N, (z ∈ D₁ ↔ 0 ≤ G z) ∧
+                  (z ∈ interior D₁ ↔ 0 < G z) ∧
+                  (z ∈ frontier D₁ ↔ G z = 0)) ∧
+              let D₂ := (Φ 1) '' D₁
+              let V₂ := (Φ 1) '' V₁
+              IsCompact D₂ ∧ IsOpen V₂ ∧ K ⊆ V₂ ∧ V₂ ⊆ U₀ ∪ U₁ ∪ V ∧
+              (∀ q ∈ V₂, (q ∈ D₂ ↔ (F q).2 ≤ 0) ∧
+                (q ∈ interior D₂ ↔ (F q).2 < 0) ∧
+                (q ∈ frontier D₂ ↔ (F q).2 = 0)) ∧
+              (∀ q ∉ K, (q ∈ D₂ ↔ q ∈ D₁) ∧
+                (q ∈ interior D₂ ↔ q ∈ interior D₁) ∧
+                (q ∈ frontier D₂ ↔ q ∈ frontier D₁)) ∧
+              (∀ q ∉ K ∪ O, q ∈ D₂ ↔ q ∈ M.toPlaneComplex.support) ∧
+              D₂ = (D₁ \ interior K) ∪ (K ∩ {q | (F q).2 ≤ 0}) ∧
+              (∀ q ∈ V₂, q ∉ interior J →
+                (q ∈ D₂ ↔ q ∈ (M.eraseTriangle T.1).toPlaneComplex.support) ∧
+                (q ∈ interior D₂ ↔
+                  q ∈ interior (M.eraseTriangle T.1).toPlaneComplex.support) ∧
+                (q ∈ frontier D₂ ↔
+                  q ∈ frontier (M.eraseTriangle T.1).toPlaneComplex.support)) ∧
+              Φ 1 p ∈ frontier D₂ ∧ (frontier D₂).Nonempty ∧
+              (∀ q ∈ frontier D₂, ∃ (N : Set Plane) (G : Plane → ℝ),
+                IsOpen N ∧ q ∈ N ∧ ContDiff ℝ ∞ G ∧ fderiv ℝ G q ≠ 0 ∧
+                ∀ z ∈ N, (z ∈ D₂ ↔ 0 ≤ G z) ∧
+                  (z ∈ interior D₂ ↔ 0 < G z) ∧
+                  (z ∈ frontier D₂ ↔ G z = 0)) ∧
+              let E₀ := ((M.eraseTriangle T.1).toPlaneComplex.support \ interior K) ∪
+                (K ∩ {q | (F q).2 ≤ 0})
+              IsCompact E₀ ∧
+              (∀ q ∈ U₀ ∪ U₁ ∪ V, (q ∈ E₀ ↔ (F q).2 ≤ 0) ∧
+                (q ∈ interior E₀ ↔ (F q).2 < 0) ∧
+                (q ∈ frontier E₀ ↔ (F q).2 = 0)) ∧
+              (∀ q ∉ K,
+                (q ∈ E₀ ↔ q ∈ (M.eraseTriangle T.1).toPlaneComplex.support) ∧
+                (q ∈ interior E₀ ↔ q ∈ interior (M.eraseTriangle T.1).toPlaneComplex.support) ∧
+                (q ∈ frontier E₀ ↔ q ∈ frontier (M.eraseTriangle T.1).toPlaneComplex.support)) ∧
+              (∀ q ∈ V₂, (q ∈ D₂ ↔ q ∈ E₀) ∧
+                (q ∈ interior D₂ ↔ q ∈ interior E₀) ∧
+                (q ∈ frontier D₂ ↔ q ∈ frontier E₀)) ∧
+              (∀ q ∉ O, (q ∈ D₂ ↔ q ∈ E₀) ∧
+                (q ∈ interior D₂ ↔ q ∈ interior E₀) ∧
+                (q ∈ frontier D₂ ↔ q ∈ frontier E₀)) ∧
+              D₂ = (E₀ \ O) ∪ (D₁ ∩ O) := by
+  dsimp only
+  obtain ⟨v₀, v₁, f₀, f₁, ε, U₀, U₁, V, F,
+    hε, hF, hU₀, hU₁, hV, hb₀, hb₁, hdisj, hcover, hs₀, hs₁,
+    hf₀, hfb, hfc₀, hfv₀, hf₁, hfa, hfc₁, hfv₁, hgap₀, hgap₁,
+    he₀, he₁, heV, hgraph₀, hgraph₁, hreg, hH, hderiv, hstart, hend,
+    hregH, hstat₀, hstat₁, hposV, hcentral,
+    J, hJ, htriangleJ, hJW, hactive, hweak₀, hweak₁, hexterior, hraw, hsign, hremoved,
+    K, X, Ω, κ, hK, hJK, hKW, hX, hsX, hΩ, hΩcover, hΩW, hκ, htransport, hXzero,
+    Φ, hΦeq, hΦ, hΦinv, hΦzero, hΦfix, hΦW, hforward, hinverse,
+    hsupport, hD₀, hsides, hout, hpK, hpfront, hnonempty, hHneg, hregneg, hgerms,
+    O, V₁, D₁, hO, hOc, hOK, hvO, hD₁, hV₁, hKV₁, hV₁W, heqV₁, houtO, hold,
+    hprescribed, hpD₁, hnonemptyD₁, hregular,
+    hD₂, hV₂, hKV₂, hV₂W, hsides₂, houtside, hraw₂, hliteral, hretained,
+    hpD₂, hnonemptyD₂, hregular₂⟩ :=
+    P.native_image_rounding_with_prescribed_isotopy M hfrontier T k hfree
+  obtain ⟨hE₀, hsignE, hrawE, hnearE, houtE, hliteralE⟩ :=
+    matched_erased_region_of_prescribed_germs M T hK ((hU₀.union hU₁).union hV) hJK hKW
+      (fun _ ht => interior_subset (hJK (interior_subset (htriangleJ ht)))) hF
+      (fun q hq _ => (hreg q hq).2) (fun q hq hqJ => (hremoved q hq hqJ).1)
+      hKV₂ hV₂W (fun _ hq => hOK (subset_closure hq)) hsides₂ houtside houtO
+  exact ⟨v₀, v₁, f₀, f₁, ε, U₀, U₁, V, F,
+    hε, hF, hU₀, hU₁, hV, hb₀, hb₁, hdisj, hcover, hs₀, hs₁,
+    hf₀, hfb, hfc₀, hfv₀, hf₁, hfa, hfc₁, hfv₁, hgap₀, hgap₁,
+    he₀, he₁, heV, hgraph₀, hgraph₁, hreg, hH, hderiv, hstart, hend,
+    hregH, hstat₀, hstat₁, hposV, hcentral,
+    J, hJ, htriangleJ, hJW, hactive, hweak₀, hweak₁, hexterior, hraw, hsign, hremoved,
+    K, X, Ω, κ, hK, hJK, hKW, hX, hsX, hΩ, hΩcover, hΩW, hκ, htransport, hXzero,
+    Φ, hΦeq, hΦ, hΦinv, hΦzero, hΦfix, hΦW, hforward, hinverse,
+    hsupport, hD₀, hsides, hout, hpK, hpfront, hnonempty, hHneg, hregneg, hgerms,
+    O, V₁, D₁, hO, hOc, hOK, hvO, hD₁, hV₁, hKV₁, hV₁W, heqV₁, houtO, hold,
+    hprescribed, hpD₁, hnonemptyD₁, hregular,
+    hD₂, hV₂, hKV₂, hV₂W, hsides₂, houtside, hraw₂, hliteral, hretained,
+    hpD₂, hnonemptyD₂, hregular₂,
+    hE₀, hsignE, hrawE, hnearE, houtE, hliteralE⟩
 
 end Schoenflies
 
