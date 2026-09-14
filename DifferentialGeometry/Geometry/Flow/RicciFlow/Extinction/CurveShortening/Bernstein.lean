@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.DerivativeEvolution
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.IntegralBounds
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.WindowGluing
 
 noncomputable section
 open Bundle Manifold Set Filter
@@ -213,6 +214,58 @@ theorem curvatureDerivative_bernstein_bound
   have hfinal := mul_le_mul_of_nonneg_right hcoeff (sq_nonneg Λ)
   change f1 x u ≤ 4 * b ^ 2 * Λ ^ 2
   linarith only [hm, hn, hfinal]
+
+theorem curvatureDerivative_bernstein_bound_of_curvatureSq_le_div
+    (B : RicciBackground (I := I) (M := M) D a b) (hsu : s < u) (hwindow : Icc s u ⊆ Icc a b)
+    (c : CurveMap M) (hc : c.IsSolutionOn B.family.metric (Icc s u))
+    (C K : ℝ) (hC : B.C ≤ C) (hK : 1 ≤ K) (hlen : u - s ≤ 1)
+    (hk : ∀ x t, t ∈ Ioc s u → c.curvatureSq B.family.metric x t ≤ K / (t - s))
+    (hDR : ∀ x t, t ∈ Icc s u → normSq0S (B.family.metric t) (c.lift x t) 5
+      (totalNabla0SFun 4 (B.family.connection t) (B.family.rm04 t) (c.lift x t)) ≤ C ^ 2)
+    (hDDRic : ∀ x t, t ∈ Icc s u → normSq0S (B.family.metric t) (c.lift x t) 4
+      (totalNabla0SFun 3 (B.family.connection t)
+        (covStep (B.family.metric t) 2 (B.family.ricci t)) (c.lift x t)) ≤ C ^ 2) :
+    ∀ x, c.normSq B.family.metric (c.Ds B.family.metric (c.curvatureVector B.family.metric)) x u ≤
+      16 * (1 + 64 * (1 + C)) ^ 2 * (K / (u - s)) ^ 2 := by
+  let τ := u - s
+  let Λ := 2 * K / τ
+  let v := u - 1 / Λ
+  have hτ : 0 < τ := sub_pos.mpr hsu
+  have hK0 : 0 ≤ K := zero_le_one.trans hK
+  have hΛpos : 0 < Λ := by dsimp only [Λ]; positivity
+  have hΛ : 1 ≤ Λ := by
+    apply (le_div_iff₀ hτ).mpr
+    change 1 * (u - s) ≤ 2 * K
+    linarith only [hlen, hK]
+  have hΛτ : Λ * τ = 2 * K := by dsimp only [Λ]; field_simp
+  have hlength : 1 / Λ ≤ τ / 2 := by
+    apply (div_le_iff₀ hΛpos).mpr
+    nlinarith only [hΛτ, hK]
+  have hv : s < v := by
+    dsimp only [v]
+    change 1 / Λ ≤ (u - s) / 2 at hlength
+    linarith only [hlength, hsu]
+  have hvu : v < u := by
+    dsimp only [v]
+    exact sub_lt_self u (one_div_pos.mpr hΛpos)
+  have hI : Icc v u ⊆ Icc s u := Icc_subset_Icc hv.le le_rfl
+  have hc' := hc.mono hI (fun t ht => (uniqueDiffOn_Icc hvu t ht).uniqueMDiffWithinAt)
+  have hbound : ∀ x t, t ∈ Icc v u → c.curvatureSq B.family.metric x t ≤ Λ := by
+    intro x t ht
+    have hts : 0 < t - s := sub_pos.mpr (hv.trans_le ht.1)
+    refine (hk x t ⟨hv.trans_le ht.1, ht.2⟩).trans ?_
+    apply (div_le_div_iff₀ hts hτ).mpr
+    have htime : τ ≤ 2 * (t - s) := by
+      dsimp only [v, τ] at ht hlength ⊢
+      linarith only [ht.1, hlength]
+    nlinarith only [mul_le_mul_of_nonneg_left htime hK0]
+  have hresult := c.curvatureDerivative_bernstein_bound B hvu (hI.trans hwindow) hc' C Λ hC hΛ
+    (by dsimp only [v]; ring) hbound (fun x t ht => hDR x t (hI ht))
+    (fun x t ht => hDDRic x t (hI ht))
+  intro x
+  refine (hresult x).trans_eq ?_
+  dsimp only [Λ, τ]
+  ring
 
 end CurveMap
 end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening
