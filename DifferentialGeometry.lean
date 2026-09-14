@@ -4969,6 +4969,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.O
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ParabolicMappingTheory
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.PhysicalLift
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Product
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProductBackground
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProductCoveringMap
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProductGeometry
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProductSliceSmoothness
