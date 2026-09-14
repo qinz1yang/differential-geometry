@@ -5014,6 +5014,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.S
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.SweptAreaEstimates
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.VelocityExtension
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.VelocityExtensionEuclidean
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.VelocityExtensionManifoldFrontier
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.WindowGluing
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.ActualWidth
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.ActualWidthDeformation
@@ -5078,6 +5079,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.Plateau
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.PlateauClassical
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.PlateauBridge
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.PlateauUpperComparisonAttainment
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.PlateauUpperComparisonDensity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.PlateauMorreyFrontier
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.PlateauUpperComparisonEndpoint
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.PlateauUpperComparisonIntegrability
@@ -6405,6 +6407,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.EndNeckFiel
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.ExtinctionContractReduction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.HornCylinderEscape
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.InitialSphericalFrontier
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.InitialSphericalFrontierNormalization
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.MetricStep
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.NeckNormalizationDictionary
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.NoncollapseConservation
@@ -8996,6 +8999,7 @@ import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.Construction
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.Defs
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.FactorBallChart
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.Finite
+import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.FiniteCongruence
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.FiniteLaws
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.InteriorChart
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.InteriorChartDerivatives
