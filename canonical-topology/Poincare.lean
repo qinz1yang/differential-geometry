@@ -32,6 +32,7 @@ import Poincare.Topology.Homology.ContractibleCoverOne
 import Poincare.Topology.Homology.ContractiblePair
 import Poincare.Topology.Homology.ContractiblePairOne
 import Poincare.Topology.Homology.Cycles
+import Poincare.Topology.Homology.EuclideanLocalCapDuality
 import Poincare.Topology.Homology.EuclideanLocalTop
 import Poincare.Topology.Homology.EuclideanLocalVanishing
 import Poincare.Topology.Homology.ExcisionQuotient
@@ -99,6 +100,7 @@ import Poincare.Topology.Homology.SmallHomology
 import Poincare.Topology.Homology.SmallRelative
 import Poincare.Topology.Homology.SmallSubspaceInclusion
 import Poincare.Topology.Homology.SphereCapDuality
+import Poincare.Topology.Homology.SphereCohomologyVanishing
 import Poincare.Topology.Homology.SphereHomologyOne
 import Poincare.Topology.Homology.SphereHomologyShift
 import Poincare.Topology.Homology.SphereHomologyVanishing

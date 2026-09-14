@@ -6,25 +6,32 @@ library is `Poincare`; its sources retain the original mathematical namespaces.
 
 The source baseline is the recovered Chapter 35 commit
 `b45bfa009368c8f5f531e10f4f5280e90079d6ad`, supplemented by recovered working-tree
-proofs with separately recorded provenance. This checkpoint includes 141 modules
-and 165 curated tracked added public exports. The latest addition proves that
-actual top-degree cap product on every positive-dimensional unit sphere is
-bijective exactly for the two generators of its existing integral top homology.
-It applies to finite-dimensional real inner-product spaces in arbitrary universes.
-The previously computed generator, its negative, zero and twice the generator
-are checked explicitly. The actual sphere-to-puncture cohomology comparison is
-shared once; the uniquely normalized real-line public theorem is preserved.
+proofs with separately recorded provenance. This checkpoint includes 143 modules
+and 169 curated tracked added public exports. Actual cap product with the
+existing positive-dimensional sphere generator is now bijective in every
+complementary degree. Actual sphere cohomology vanishes away from degrees zero
+and the sphere dimension, including zero spheres. The existing Euclidean
+point-complement generator also gives bijective top-degree relative cap, and
+its inverse image under the existing restriction map does so for any bounded
+star-convex set containing zero. Such a set needs neither closedness nor
+compactness nor interior. All these results retain arbitrary universes.
 
-Source27146e50 passed16.30s183guards18pairs; original56aa92fc passed134.36s185/10.
-Portable94f52e51 passed223.61s613/291. The three changed leaves and root freshly
-compiled in2:03.31, RSS2001020KiB, zero diagnostics. All282 preceding pairs are
-byte-identical and all138 other preceding leaves unchanged. All10 shared
-source/original/portable types agree modulo only Set.univ, Module.finrank and
-Set.MapsTo qualification and whitespace; axiom readbacks are exact. Strict
-source and stock declaration linters and standard-only transitive axioms pass.
-Pins and deferred inputs are unchanged. This is top-degree sphere duality;
-general manifold duality, outward orientation normalization, the native
-orientation producer and the full frozen contract remain open.
+The two public source checks e5173b4f and f5ea4a84 passed in 50.03s and 44.77s,
+with 201 guards each and 25/7 type-axiom pairs. Original imported3da4250d passed
+in 159.15s206guards22pairs. Portablef19b28fb passed 238.84s630guards307pairs.
+Three changed leaves and root freshly compiled in 2:15.94, RSS  2011324KiB, zero
+diagnostics. All 291 preceding pairs are byte-identical and all 140 other old
+leaves unchanged. All 22 shared source/original/portable types agree modulo
+only Set.univ, Module.finrank and Set.MapsTo qualification and whitespace;
+axiom readbacks are exact. Strict source and stock declaration linters and
+standard-only transitive axioms pass. Pins and deferred inputs are unchanged.
+
+Consumers check the same generator and its negative, unit-cap normalization,
+the genuine distinction between middle-degree and top-degree zero-class cap,
+nonzero local cohomology preimages, the actual bounded-support restriction,
+and closed-ball classes of both signs including radius zero. These are sphere
+and Euclidean local model results. General manifold duality, outward orientation
+normalization, native orientation production and the frozen contract remain open.
 
 The preceding cohomology cover shift, its actual forward/inverse equations,
 and relative-to-absolute comparison in every positive degree are unchanged.

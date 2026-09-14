@@ -1,11 +1,16 @@
 # Local homology and global classes from coherent local generators
 
 This separate `PoincareLean` project contains a dependency-closed checkpoint of
-141 Poincare modules. It extends the recovered Chapter 35 source at commit
+143 Poincare modules. It extends the recovered Chapter 35 source at commit
 `b45bfa009368c8f5f531e10f4f5280e90079d6ad` and preserves its mathematical objects
 and `Poincare` namespaces. `Poincare.lean` imports every included leaf.
 
 The additions prove:
+
+- actual cap bijections in every complementary degree on positive-dimensional
+  spheres at the existing generator, off-degree sphere cohomology vanishing,
+  and top local cap bijections at the existing Euclidean point and bounded
+  star-convex generators;
 
 - bijectivity of actual top-degree integral cap product on every positive-dimensional
   unit sphere exactly at its two top-homology generators, with the existing
@@ -123,7 +128,7 @@ The additions prove:
 - a unique compact-neighborhood class with the same normalization in every
   chart whose actual tangent trivialization preserves the base-chart orientation.
 
-The fifty-one new/changed modules and their exact baseline/current hashes are listed in
+The 59 new/changed modules and their exact baseline/current hashes are listed in
 [provenance/SNAPSHOT.json](provenance/SNAPSHOT.json). The derivative homotopy
 retains its [upstream attribution and modification record](provenance/README.md).
 
@@ -1042,3 +1047,42 @@ axiom readbacks are exact. Strict source and stock declaration linters and
 standard-only transitive axioms pass. This proves top-degree sphere pairing;
 all-degree general manifold duality, outward normalization, native orientation
 and the full frozen canonical topology contract remain open.
+
+
+## Sphere and Euclidean local cap duality
+
+The checkpoint now has 143 leaves and 169 curated tracked added public exports.
+`SphereCohomologyVanishing` proves actual integral sphere cohomology is zero
+outside degree zero and the sphere dimension, including zero spheres.
+`integralSphereTopHomologyEquiv_cap_bijective_of_add_eq` extends the existing
+sphere generator theorem to all complementary degrees using the actual cap
+product and explicit degree transport. The entire previous 318-line sphere-cap
+source remains unchanged after one added import.
+
+`EuclideanLocalCapDuality` proves actual top relative cap bijectivity against
+`integralEuclideanLocalTopZeroEquiv` inverse1 in dimensions at least two. Its
+bounded star-convex result uses precisely the inverse of the existing actual
+restriction isomorphism. The support contains zero and is bounded and
+star-convex; no closedness, compactness or interior hypothesis is imposed.
+The normalizations and model objects are unchanged; no alternative cap map,
+new generator, axiom, or duality certificate is introduced.
+
+The public source requests `1789358162902509457-topology-e5173b4f` and
+`1789358162685255696-topology-f5ea4a84` passed in 50.03s/44.77s, each with 201
+source guards and 25/7 signature-axiom pairs. The combined imported request
+`1789358382986141753-topology-3da4250d` passed 159.15s206guards22pairs.
+Final portable request `1789358414533480141-topology_checkpoint-f19b28fb`
+passed 238.84s630guards307pairs in Slurm13846673. Three changed leaves and
+the root freshly compiled in 2:15.94, maximum RSS 2011324KiB, zero diagnostics.
+
+All 291 previous type/axiom pairs are byte-identical and all 140 other previous
+leaves unchanged. All 22 source/original/portable types agree modulo only
+Set.univ, Module.finrank and Set.MapsTo qualification and whitespace; axiom
+readbacks are exact. Stock declaration linters cover the imported package and
+consumers. All transitive axioms are standard-only. Probes include negative
+generators, the actual unit, middle-zero cap bijectivity versus top-zero failure,
+nonzero local preimages, actual support restriction and both closed-ball signs
+for every nonnegative radius including zero.
+
+The full canonical topology contract, native orientation producer, outward
+sphere normalization and general manifold duality remain open.

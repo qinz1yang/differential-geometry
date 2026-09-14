@@ -1,3 +1,4 @@
+import Poincare.Topology.Homology.SphereCohomologyVanishing
 import Poincare.Topology.Homology.RadialCohomology
 import Poincare.Topology.Homology.SphereTopHomology
 import Poincare.Topology.Homology.CapContractibleCover
@@ -316,3 +317,45 @@ theorem integralSphereTopHomologyEquiv_cap_bijective
     (Or.inl ((integralSphereTopHomologyEquiv n E hd).apply_symm_apply 1))
 
 end Poincare.Topology
+
+noncomputable section
+
+namespace Poincare.Topology
+
+open CategoryTheory Metric Module
+
+theorem integralSphereTopHomologyEquiv_cap_bijective_of_add_eq
+    (n k m : ℕ) (E : Type u) [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+    [FiniteDimensional ℝ E] (hd : finrank ℝ E = n + 2) (hkm : k + m = n + 1) :
+    Function.Bijective (fun α : integralSingularCohomology k (sphere (0 : E) 1) =>
+      integralSingularCohomologyCapProduct k m α
+        ((eqToHom (congrArg (fun j => integralSingularHomology j (sphere (0 : E) 1)) hkm.symm))
+          ((integralSphereTopHomologyEquiv n E hd).symm 1))) := by
+  by_cases hk : k = 0
+  · subst k
+    have hm : m = n + 1 := by omega
+    subst m
+    let _ := unitSphere_pathConnected_of_finrank (E := E) (by omega)
+    apply (integralSingularCohomologyCapProduct_zero_bijective_iff _ _).mpr
+    rw [← ModuleCat.comp_apply, eqToHom_trans]
+    let e := integralSphereTopHomologyEquiv n E hd
+    change Function.Bijective (fun z : ℤ => z • e.symm 1)
+    have heq : (fun z : ℤ => z • e.symm 1) = e.symm := by
+      funext z
+      apply e.injective
+      rw [map_zsmul, e.apply_symm_apply, e.apply_symm_apply]
+      simp only [zsmul_eq_mul, mul_one, Int.cast_id]
+    rw [heq]
+    exact e.symm.bijective
+  by_cases hm : m = 0
+  · subst m
+    have hk : k = n + 1 := by omega
+    subst k
+    exact integralSphereTopHomologyEquiv_cap_bijective n E hd
+  let _ := integralSphereCohomology_subsingleton (n + 1) k E hd hk (by omega)
+  let _ := integralSphereHomology_subsingleton (n + 1) m E hd hm (by omega)
+  exact ⟨fun _ _ _ => Subsingleton.elim _ _, fun β => ⟨0, Subsingleton.elim _ β⟩⟩
+
+end Poincare.Topology
+
+end

@@ -1,9 +1,9 @@
 {
-  "scope": "Dependency-closed 141-module checkpoint including top-degree integral sphere cap bijectivity exactly at the two generators and the actual radial cohomology comparison; full topology suite incomplete",
+  "scope": "Dependency-closed 143-module checkpoint including all complementary-degree sphere cap bijections, off-degree sphere cohomology vanishing, and actual top local cap bijections for Euclidean point and bounded star-convex pairs; full suite incomplete",
   "baseline_commit": "b45bfa009368c8f5f531e10f4f5280e90079d6ad",
   "baseline_ref": "refs/remotes/origin/codex/chapter35",
   "source_project": "PoincareLean",
-  "source_module_count": 141,
+  "source_module_count": 143,
   "roots": [
     "Poincare.Topology.Homology.RelativeMaps",
     "Poincare.Topology.Homology.RelativeHomeomorphism",
@@ -41,7 +41,9 @@
     "Poincare.Topology.Homology.CohomologyContractibleCover",
     "Poincare.Topology.Homology.CapContractibleCover",
     "Poincare.Topology.Homology.RadialCohomology",
-    "Poincare.Topology.Homology.SphereCapDuality"
+    "Poincare.Topology.Homology.SphereCapDuality",
+    "Poincare.Topology.Homology.SphereCohomologyVanishing",
+    "Poincare.Topology.Homology.EuclideanLocalCapDuality"
   ],
   "changed_sources": [
     {
@@ -116,6 +118,12 @@
       "path": "Poincare/Topology/Homology/ConnectedZeroCohomology.lean",
       "baseline_sha256": null,
       "sha256": "c86374f2cc60c9d676ce159321bb67279f11c33c421d52cb65cbce80723c825a"
+    },
+    {
+      "module": "Poincare.Topology.Homology.EuclideanLocalCapDuality",
+      "path": "Poincare/Topology/Homology/EuclideanLocalCapDuality.lean",
+      "baseline_sha256": null,
+      "sha256": "78e75691f50d7430f5e85113110b7246927a930729f20a659601c7c1c2cf8d87"
     },
     {
       "module": "Poincare.Topology.Homology.EuclideanLocalVanishing",
@@ -303,7 +311,13 @@
       "module": "Poincare.Topology.Homology.SphereCapDuality",
       "path": "Poincare/Topology/Homology/SphereCapDuality.lean",
       "baseline_sha256": null,
-      "sha256": "7e36302dcbf84eb7fe8ca6115b8a3f5b694d91fccbe6e2c4c953e82c975825df"
+      "sha256": "5cb5771d86a3c641ae297ac0726030bbc2b2fa1d16a65246404e0335ec4f8c62"
+    },
+    {
+      "module": "Poincare.Topology.Homology.SphereCohomologyVanishing",
+      "path": "Poincare/Topology/Homology/SphereCohomologyVanishing.lean",
+      "baseline_sha256": null,
+      "sha256": "97ae09ac4cd51da058cda3cc0462dff658dd283059f8f190ccbe0d960337936e"
     },
     {
       "module": "Poincare.Topology.Homology.TriangleFilling",
@@ -608,6 +622,12 @@
       "path": "Poincare/Topology/Homology/Cycles.lean",
       "baseline_sha256": "68248e5d61a9634d1ebe98bf4d7dc074f63afb1ed98055366febe3ef0a1a0339",
       "sha256": "68248e5d61a9634d1ebe98bf4d7dc074f63afb1ed98055366febe3ef0a1a0339"
+    },
+    {
+      "module": "Poincare.Topology.Homology.EuclideanLocalCapDuality",
+      "path": "Poincare/Topology/Homology/EuclideanLocalCapDuality.lean",
+      "baseline_sha256": null,
+      "sha256": "78e75691f50d7430f5e85113110b7246927a930729f20a659601c7c1c2cf8d87"
     },
     {
       "module": "Poincare.Topology.Homology.EuclideanLocalTop",
@@ -1011,7 +1031,13 @@
       "module": "Poincare.Topology.Homology.SphereCapDuality",
       "path": "Poincare/Topology/Homology/SphereCapDuality.lean",
       "baseline_sha256": null,
-      "sha256": "7e36302dcbf84eb7fe8ca6115b8a3f5b694d91fccbe6e2c4c953e82c975825df"
+      "sha256": "5cb5771d86a3c641ae297ac0726030bbc2b2fa1d16a65246404e0335ec4f8c62"
+    },
+    {
+      "module": "Poincare.Topology.Homology.SphereCohomologyVanishing",
+      "path": "Poincare/Topology/Homology/SphereCohomologyVanishing.lean",
+      "baseline_sha256": null,
+      "sha256": "97ae09ac4cd51da058cda3cc0462dff658dd283059f8f190ccbe0d960337936e"
     },
     {
       "module": "Poincare.Topology.Homology.SphereHomologyOne",
@@ -1270,8 +1296,8 @@
   "aggregate": {
     "path": "Poincare.lean",
     "baseline_sha256": "99c3c8e47c19f60ee50a7e0f377e59138cf4ff33ebd4e26530d3c2b7cd47d452",
-    "sha256": "17b820aa9bffc4e75366166c49a35d169bcf864becd4ea88b8f446c3531d7bdb",
-    "change": "Flat 141-leaf checkpoint aggregate; full recovered aggregate remains separate"
+    "sha256": "229e7504c00439c92e0ffae337779bdf879d3fd5f3e8fc20cd4a4240ad9ce654",
+    "change": "Flat 143-leaf checkpoint aggregate; full recovered aggregate remains separate"
   },
   "configuration": [
     {
@@ -1558,7 +1584,11 @@
     "Poincare.Topology.integralZeroAugmentation_cap_bijective_contractibleCover_iff",
     "Poincare.Topology.exists_integralRelativeCohomologyMap_sphere_puncture_bijective",
     "Poincare.Topology.integralSingularCohomologyCapProduct_sphere_bijective_iff",
-    "Poincare.Topology.integralSphereTopHomologyEquiv_cap_bijective"
+    "Poincare.Topology.integralSphereTopHomologyEquiv_cap_bijective",
+    "Poincare.Topology.integralSphereCohomology_subsingleton",
+    "Poincare.Topology.integralSphereTopHomologyEquiv_cap_bijective_of_add_eq",
+    "Poincare.Topology.integralEuclideanLocalTopZeroEquiv_cap_bijective",
+    "Poincare.Topology.integralBoundedStarConvexLocalHomologyIso_cap_bijective"
   ],
   "historical_authorities": [
     {
@@ -1696,25 +1726,25 @@
     "full_topology_suite_accepted": false
   },
   "validation": {
-    "status": "passed for the selected 141-module checkpoint; full topology suite incomplete",
-    "date": "2026-09-13",
+    "status": "passed for the selected 143-module checkpoint; full topology suite incomplete",
+    "date": "2026-09-14",
     "slurm_job": "13846673",
     "host": "della-r3c4n2",
-    "request_id": "1789355243051423740-topology_checkpoint-94f52e51",
-    "input_sha256": "2788b718f7666c53c4eaa479c7644baf239b168bb840920e365ee0c429e1cf6a",
-    "result_sha256": "7a16fb843a62e402bc9514a60f7bee2702af6b6f8b2ec7023f3846fc2c976ce8",
-    "artifact_log_sha256": "0e79b25c69e650e2a8ee87b27941cbbfd4cb97024a873ab8b2fc1737fcd17881",
-    "source_config_harness_hash_guards": 613,
+    "request_id": "1789358414533480141-topology_checkpoint-f19b28fb",
+    "input_sha256": "bf2fdb89535e8ea137fc06f3471d97440e57870d1eb30a794c5be3e7018f5e4f",
+    "result_sha256": "84a87a006d92ed809c7bdc10bf4f1b05c26219011f21f1bb0bab1de01d5d0e01",
+    "artifact_log_sha256": "ae1c5082eb3992df59cbb93c06e847394946e5f50636291d0906eba5a39f0e02",
+    "source_config_harness_hash_guards": 630,
     "freshly_built_modules": [
-      "Poincare.Topology.Homology.RadialCohomology",
-      "Poincare.Topology.Homology.RealLocalDuality",
+      "Poincare.Topology.Homology.SphereCohomologyVanishing",
       "Poincare.Topology.Homology.SphereCapDuality",
+      "Poincare.Topology.Homology.EuclideanLocalCapDuality",
       "Poincare"
     ],
     "root_build": "lake --no-cache --iofail build Poincare",
-    "fresh_build_scope": "RadialCohomology37, RealLocalDuality42, SphereCapDuality318 and root freshly compiled in123.31s, RSS2001020KiB, with zero diagnostics; all138 other preceding leaves unchanged",
-    "exact_public_exports": 165,
-    "public_and_consumer_signature_axiom_pairs": 291,
+    "fresh_build_scope": "SphereCohomologyVanishing100, SphereCapDuality361, EuclideanLocalCapDuality138 and root freshly compiled in2:15.94, RSS2011324KiB, zero diagnostics; all140 other preceding leaves unchanged",
+    "exact_public_exports": 169,
+    "public_and_consumer_signature_axiom_pairs": 307,
     "linters": [
       "unusedArguments",
       "simpNF",
@@ -1729,17 +1759,18 @@
       "Quot.sound"
     ],
     "unexpected_diagnostics": 0,
-    "elapsed_seconds": 223.6061236858368,
-    "peak_summed_rss_bytes": 3206639616,
+    "elapsed_seconds": 238.83689403533936,
+    "peak_summed_rss_bytes": 3249905664,
     "full_topology_suite_accepted": false,
     "consumer_probes": [
-      "All282 previous signature/axiom pairs reproduced byte-identically",
-      "Actual top-degree cap on positive-dimensional spheres is bijective exactly when the existing top homology coordinate is1 or-1",
-      "The existing specified sphere generator and its negative give bijections; zero and twice the generator do not",
-      "The actual Euclidean3 unit sphere has a nonzero H2 class with bijective top cap pairing",
-      "Actual sphere-to-puncture relative cohomology comparison applies to arbitrary real normed spaces and every degree",
-      "The old uniquely normalized real-line local cap signature and proof body are retained except the shared helper call",
-      "All10 source/original/portable readbacks agree modulo only Set.univ / Module.finrank / Set.MapsTo qualification and whitespace; all axioms exact"
+      "All291 previous signature/axiom pairs reproduced byte-identically",
+      "Actual off-degree integral sphere cohomology vanishes, including zero spheres",
+      "Actual complementary-degree cap on positive-dimensional spheres is bijective at the existing generator",
+      "Negative generator is bijective; unit caps to the same class; middle zero cap is bijective and top zero is not",
+      "Actual Euclidean point-complement top cap is bijective at the existing normalized local class",
+      "Bounded star-convex support needs neither closedness, compactness nor interior; its class restricts to the same local generator",
+      "Nonzero local cohomology preimage, negative generator, zero-class failure and both closed-ball cap signs include radius zero",
+      "All22 source/original/portable readbacks agree modulo only Set.univ / Module.finrank / Set.MapsTo qualification and whitespace; all axioms exact"
     ]
   },
   "previous_linear_sign_checkpoint_validation": {
@@ -3708,5 +3739,64 @@
     "source_request_id": "1789354967942228867-topology-27146e50",
     "source_elapsed_seconds": 16.300958395004272,
     "source_readback_comparison": "All10 source/original/portable types agree modulo only Set.univ / Module.finrank / Set.MapsTo qualification and whitespace; all axes exact; all282 preceding portable pairs exact"
+  },
+  "previous_sphere_top_cap_validation": {
+    "status": "passed for the selected 141-module checkpoint; full topology suite incomplete",
+    "date": "2026-09-13",
+    "slurm_job": "13846673",
+    "host": "della-r3c4n2",
+    "request_id": "1789355243051423740-topology_checkpoint-94f52e51",
+    "input_sha256": "2788b718f7666c53c4eaa479c7644baf239b168bb840920e365ee0c429e1cf6a",
+    "result_sha256": "7a16fb843a62e402bc9514a60f7bee2702af6b6f8b2ec7023f3846fc2c976ce8",
+    "artifact_log_sha256": "0e79b25c69e650e2a8ee87b27941cbbfd4cb97024a873ab8b2fc1737fcd17881",
+    "source_config_harness_hash_guards": 613,
+    "freshly_built_modules": [
+      "Poincare.Topology.Homology.RadialCohomology",
+      "Poincare.Topology.Homology.RealLocalDuality",
+      "Poincare.Topology.Homology.SphereCapDuality",
+      "Poincare"
+    ],
+    "root_build": "lake --no-cache --iofail build Poincare",
+    "fresh_build_scope": "RadialCohomology37, RealLocalDuality42, SphereCapDuality318 and root freshly compiled in123.31s, RSS2001020KiB, with zero diagnostics; all138 other preceding leaves unchanged",
+    "exact_public_exports": 165,
+    "public_and_consumer_signature_axiom_pairs": 291,
+    "linters": [
+      "unusedArguments",
+      "simpNF",
+      "synTaut",
+      "checkType"
+    ],
+    "linter_scope": "All imported Poincare declarations and current consumers, including private declarations",
+    "defLemma": "Unavailable in the pinned Mathlib; source declaration-kind checks retained.",
+    "allowed_transitive_axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "unexpected_diagnostics": 0,
+    "elapsed_seconds": 223.6061236858368,
+    "peak_summed_rss_bytes": 3206639616,
+    "full_topology_suite_accepted": false,
+    "consumer_probes": [
+      "All282 previous signature/axiom pairs reproduced byte-identically",
+      "Actual top-degree cap on positive-dimensional spheres is bijective exactly when the existing top homology coordinate is1 or-1",
+      "The existing specified sphere generator and its negative give bijections; zero and twice the generator do not",
+      "The actual Euclidean3 unit sphere has a nonzero H2 class with bijective top cap pairing",
+      "Actual sphere-to-puncture relative cohomology comparison applies to arbitrary real normed spaces and every degree",
+      "The old uniquely normalized real-line local cap signature and proof body are retained except the shared helper call",
+      "All10 source/original/portable readbacks agree modulo only Set.univ / Module.finrank / Set.MapsTo qualification and whitespace; all axioms exact"
+    ]
+  },
+  "original_sphere_and_local_cap_validation": {
+    "request_id": "1789358382986141753-topology-3da4250d",
+    "input_sha256": "c2e185b11cd74ef98cba4b897eff500422899aac97a4b79ad52a83ee06dd03e7",
+    "elapsed_seconds": 159.14737939834595,
+    "source_guards": 206,
+    "signature_axiom_pairs": 22,
+    "source_request_id": "1789358162902509457-topology-e5173b4f",
+    "source_elapsed_seconds": 50.029016733169556,
+    "local_source_request_id": "1789358162685255696-topology-f5ea4a84",
+    "local_source_elapsed_seconds": 44.768280029296875,
+    "source_readback_comparison": "All22 source/original/portable types agree modulo only Set.univ / Module.finrank / Set.MapsTo qualification and whitespace; all axes exact; all291 preceding portable pairs exact"
   }
 }
