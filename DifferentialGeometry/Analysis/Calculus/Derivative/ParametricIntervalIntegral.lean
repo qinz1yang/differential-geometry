@@ -6,6 +6,8 @@ import Mathlib.MeasureTheory.Integral.DominatedConvergence
 import Mathlib.Analysis.Calculus.ParametricIntegral
 import Mathlib.Analysis.Calculus.ContDiff.Basic
 import Mathlib.Analysis.Calculus.ContDiff.Comp
+import Mathlib.Topology.Order.ProjIcc
+import Mathlib.Tactic.Linarith
 
 noncomputable section
 
@@ -467,7 +469,7 @@ theorem continuousWithinAt_paramIntervalIntegral {F : ℝ → ℝ → ℝ} {S : 
   · exact Eventually.of_forall fun ρ _ => (hslice2 ρ).continuousWithinAt hx₀
 
 open Set in
-theorem hasDerivWithinAt_paramIntervalIntegral {F G : ℝ → ℝ → ℝ} {s u : ℝ}
+private theorem hasDerivWithinAt_unitIntervalIntegral {F G : ℝ → ℝ → ℝ} {s u : ℝ}
     (hFc : ContinuousOn (fun p : ℝ × ℝ => F p.1 p.2) ((univ : Set ℝ) ×ˢ Icc s u))
     (hGc : ContinuousOn (fun p : ℝ × ℝ => G p.1 p.2) ((univ : Set ℝ) ×ˢ Icc s u))
     (hderiv : ∀ x t, t ∈ Icc s u → HasDerivWithinAt (fun τ => F x τ) (G x t) (Icc s u) t) :
@@ -552,5 +554,59 @@ theorem hasDerivWithinAt_paramIntervalIntegral {F G : ℝ → ℝ → ℝ} {s u 
   · intro y hy
     linarith [hstep y hy]
   · linarith [hstep t ht]
+
+open Set in
+theorem hasDerivWithinAt_paramIntervalIntegral_on_interval {F G : ℝ → ℝ → ℝ} {s u p q : ℝ}
+    (hpq : p ≤ q)
+    (hFc : ContinuousOn (fun z : ℝ × ℝ => F z.1 z.2) (Icc p q ×ˢ Icc s u))
+    (hGc : ContinuousOn (fun z : ℝ × ℝ => G z.1 z.2) (Icc p q ×ˢ Icc s u))
+    (hderiv : ∀ x ∈ Icc p q, ∀ t ∈ Icc s u,
+      HasDerivWithinAt (fun τ => F x τ) (G x t) (Icc s u) t) :
+    ∀ t ∈ Icc s u, HasDerivWithinAt (fun τ => ∫ x in p..q, F x τ)
+      (∫ x in p..q, G x t) (Icc s u) t := by
+  let ψ := fun x : ℝ => p + (q - p) * (projIcc (0 : ℝ) 1 zero_le_one x : ℝ)
+  have hψ : ∀ x, ψ x ∈ Icc p q := by
+    intro x
+    have hx := (projIcc (0 : ℝ) 1 zero_le_one x).property
+    dsimp only [ψ]
+    constructor <;> nlinarith only [hx.1, hx.2, hpq]
+  have hψcont : Continuous ψ := by unfold ψ; fun_prop
+  have harg : Continuous (fun z : ℝ × ℝ => (ψ z.1, z.2)) :=
+    (hψcont.comp continuous_fst).prodMk continuous_snd
+  have hmaps : MapsTo (fun z : ℝ × ℝ => (ψ z.1, z.2)) (univ ×ˢ Icc s u) (Icc p q ×ˢ Icc s u) :=
+    fun z hz => ⟨hψ z.1, hz.2⟩
+  have h := hasDerivWithinAt_unitIntervalIntegral
+    (F := fun x t => F (ψ x) t) (G := fun x t => G (ψ x) t)
+    (hFc.comp harg.continuousOn hmaps) (hGc.comp harg.continuousOn hmaps)
+    (fun x t ht => hderiv (ψ x) (hψ x) t ht)
+  have hchange (f : ℝ → ℝ) :
+      (q - p) * (∫ x in (0 : ℝ)..1, f (ψ x)) = ∫ x in p..q, f x := by
+    have heq : (∫ x in (0 : ℝ)..1, f (ψ x)) = ∫ x in (0 : ℝ)..1, f (p + (q - p) * x) := by
+      apply intervalIntegral.integral_congr
+      intro x hx
+      have hx' : x ∈ Icc (0 : ℝ) 1 := by simpa using hx
+      simp only [ψ, projIcc_of_mem zero_le_one hx']
+    rw [heq]
+    simpa only [smul_eq_mul, mul_zero, mul_one, add_zero, add_sub_cancel] using
+      intervalIntegral.smul_integral_comp_add_mul (a := (0 : ℝ)) (b := 1) f (q - p) p
+  intro t ht
+  have hd := (h t ht).const_mul (q - p)
+  rw [hchange (fun x => G x t)] at hd
+  have heq : (fun τ => (q - p) * ∫ x in (0 : ℝ)..1, F (ψ x) τ) =
+      (fun τ => ∫ x in p..q, F x τ) := funext (fun τ => hchange (fun x => F x τ))
+  rw [heq] at hd
+  exact hd
+
+open Set in
+theorem hasDerivWithinAt_paramIntervalIntegral {F G : ℝ → ℝ → ℝ} {s u : ℝ}
+    (hFc : ContinuousOn (fun p : ℝ × ℝ => F p.1 p.2) ((univ : Set ℝ) ×ˢ Icc s u))
+    (hGc : ContinuousOn (fun p : ℝ × ℝ => G p.1 p.2) ((univ : Set ℝ) ×ˢ Icc s u))
+    (hderiv : ∀ x t, t ∈ Icc s u → HasDerivWithinAt (fun τ => F x τ) (G x t) (Icc s u) t) :
+    ∀ t ∈ Icc s u, HasDerivWithinAt (fun τ => ∫ x in (0 : ℝ)..1, F x τ)
+      (∫ x in (0 : ℝ)..1, G x t) (Icc s u) t :=
+  hasDerivWithinAt_paramIntervalIntegral_on_interval zero_le_one
+    (hFc.mono (Set.prod_mono (Set.subset_univ _) Subset.rfl))
+    (hGc.mono (Set.prod_mono (Set.subset_univ _) Subset.rfl))
+    (fun x _ t ht => hderiv x t ht)
 
 end DifferentialGeometry.Analysis.Calculus

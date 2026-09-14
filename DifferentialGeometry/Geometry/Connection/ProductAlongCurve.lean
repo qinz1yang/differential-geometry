@@ -44,32 +44,6 @@ private theorem mdifferentiableWithinAt_tangentBundle_prod {γ : ℝ → M} {γ'
     (Set.subset_univ s)
   exact hcomp.congr (fun u _ => rfl) rfl
 
-omit [FiniteDimensional ℝ E] [FiniteDimensional ℝ F] in
-private theorem trivializationAt_continuousLinearMapAt_prod_point
-    (p : M × N) {q : M × N}
-    (hq : q ∈ (trivializationAt (E × F) (TangentSpace (I.prod I')) p).baseSet)
-    (v : TangentSpace (I.prod I') q) :
-    (trivializationAt (E × F) (TangentSpace (I.prod I')) p).continuousLinearMapAt ℝ q v =
-      ((trivializationAt E (TangentSpace I) p.1).continuousLinearMapAt ℝ q.1 v.1,
-       (trivializationAt F (TangentSpace I') p.2).continuousLinearMapAt ℝ q.2 v.2) := by
-  have hq' : q.1 ∈ (trivializationAt E (TangentSpace I) p.1).baseSet ∧
-      q.2 ∈ (trivializationAt F (TangentSpace I') p.2).baseSet := by
-    have h := hq
-    rw [TangentBundle.trivializationAt_baseSet, prodChartedSpace_chartAt,
-      OpenPartialHomeomorph.prod_source] at h
-    exact h
-  have hsym : (trivializationAt (E × F) (TangentSpace (I.prod I')) p).symmL ℝ q
-      ((trivializationAt E (TangentSpace I) p.1).continuousLinearMapAt ℝ q.1 v.1,
-       (trivializationAt F (TangentSpace I') p.2).continuousLinearMapAt ℝ q.2 v.2) = v := by
-    rw [trivializationAt_symmL_prod (I := I) (J := I') p q hq]
-    exact Prod.ext (Trivialization.symmL_continuousLinearMapAt _ hq'.1 v.1)
-      (Trivialization.symmL_continuousLinearMapAt _ hq'.2 v.2)
-  have hkey := Trivialization.continuousLinearMapAt_symmL
-    (R := ℝ) (e := trivializationAt (E × F) (TangentSpace (I.prod I')) p) hq
-    ((trivializationAt E (TangentSpace I) p.1).continuousLinearMapAt ℝ q.1 v.1,
-     (trivializationAt F (TangentSpace I') p.2).continuousLinearMapAt ℝ q.2 v.2)
-  rw [hsym] at hkey
-  exact hkey
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] [FiniteDimensional ℝ F] [IsManifold I' ∞ N] in
 private theorem derivWithin_pair {Y : Type*} [NormedAddCommGroup Y] [NormedSpace ℝ Y]
@@ -165,7 +139,7 @@ theorem derivAlongWithin_prod [T2Space M] [T2Space N]
     filter_upwards [hcont.preimage_mem_nhdsWithin
       ((trivializationAt (E × F) (TangentSpace (I.prod I')) (γ x,
         γ' x)).open_baseSet.mem_nhds hp)] with u hu
-    exact trivializationAt_continuousLinearMapAt_prod_point (I := I) (I' := I')
+    exact DifferentialGeometry.trivializationAt_continuousLinearMapAt_prod_of_mem (I := I) (J := I')
       (γ x, γ' x) hu (Z u, Z' u)
   have hA : derivWithin (fun u => (trivializationAt (E × F) (TangentSpace (I.prod I'))
         (γ x, γ' x)).continuousLinearMapAt ℝ (γ u, γ' u) (Z u, Z' u)) s x =

@@ -78,6 +78,28 @@ def ds (c : CurveMap M) (g : ℝ → SmoothRiemannianMetric I M)
     (f : ℝ → ℝ → ℝ) (x t : ℝ) : ℝ :=
   (c.speed g x t)⁻¹ * deriv (fun y => f y t) x
 
+omit [FiniteDimensional ℝ E] [CompleteSpace E] in
+theorem ds_add (c : CurveMap M) (g : ℝ → SmoothRiemannianMetric I M)
+    (f h : ℝ → ℝ → ℝ) (x t : ℝ)
+    (hf : DifferentiableAt ℝ (fun y => f y t) x) (hh : DifferentiableAt ℝ (fun y => h y t) x) :
+    c.ds g (fun y τ => f y τ + h y τ) x t = c.ds g f x t + c.ds g h x t := by
+  simp only [ds, deriv_fun_add hf hh, mul_add]
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] in
+theorem ds_sub (c : CurveMap M) (g : ℝ → SmoothRiemannianMetric I M)
+    (f h : ℝ → ℝ → ℝ) (x t : ℝ)
+    (hf : DifferentiableAt ℝ (fun y => f y t) x) (hh : DifferentiableAt ℝ (fun y => h y t) x) :
+    c.ds g (fun y τ => f y τ - h y τ) x t = c.ds g f x t - c.ds g h x t := by
+  simp only [ds, deriv_fun_sub hf hh, mul_sub]
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] in
+theorem ds_mul (c : CurveMap M) (g : ℝ → SmoothRiemannianMetric I M)
+    (f h : ℝ → ℝ → ℝ) (x t : ℝ)
+    (hf : DifferentiableAt ℝ (fun y => f y t) x) (hh : DifferentiableAt ℝ (fun y => h y t) x) :
+    c.ds g (fun y τ => f y τ * h y τ) x t = c.ds g f x t * h x t + f x t * c.ds g h x t := by
+  simp only [ds, deriv_fun_mul hf hh]
+  ring
+
 def integral (c : CurveMap M) (g : ℝ → SmoothRiemannianMetric I M)
     (f : ℝ → ℝ → ℝ) (t : ℝ) : ℝ :=
   ∫ x in (0 : ℝ)..1, f x t * c.speed g x t

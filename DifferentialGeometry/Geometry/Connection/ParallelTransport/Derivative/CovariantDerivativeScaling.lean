@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.Derivative.CovariantDerivativeAlong
 import DifferentialGeometry.Geometry.Metric.Scaling
-import DifferentialGeometry.Geometry.Metric.Euclidean
+import DifferentialGeometry.Geometry.Connection.LeviCivita.Christoffel.Euclidean
 
 set_option autoImplicit false
 
@@ -120,24 +120,6 @@ theorem covDerivAlong_scale
 open DifferentialGeometry.Tensor.Coordinates
 
 omit E H I M [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E] [TopologicalSpace H] [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] in
-private theorem euclidean_real_chartGramOnE (x : ℝ) (i j : Fin (Module.finrank ℝ ℝ)) :
-    chartGramOnE (I := 𝓘(ℝ, ℝ)) (DifferentialGeometry.euclideanMetric (E := ℝ)) x i j =
-      fun _ => inner ℝ ((chartModelBasis ℝ) i) ((chartModelBasis ℝ) j) := by
-  funext y
-  rw [chartGramOnE_def, chartGramMatrix_apply, DifferentialGeometry.euclideanMetric_inner]
-  simp only [chartBasisVecFiber, TangentBundle.symmL_model_space]
-  rfl
-
-omit E H I M [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E] [TopologicalSpace H] [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] in
-private theorem euclidean_real_chartChristoffel (x : ℝ) (i j k : Fin (Module.finrank ℝ ℝ)) :
-    chartChristoffel (I := 𝓘(ℝ, ℝ)) (DifferentialGeometry.euclideanMetric (E := ℝ)) x i j k =
-      0 := by
-  funext y
-  rw [chartChristoffel_def]
-  simp_rw [euclidean_real_chartGramOnE]
-  simp [partialDeriv]
-
-omit E H I M [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E] [TopologicalSpace H] [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] in
 private theorem euclidean_real_chartRepAt (η : ℝ → ℝ) (W : ∀ s, TangentSpace 𝓘(ℝ, ℝ) (η s))
     (t : ℝ) :
     chartRepAt (I := 𝓘(ℝ, ℝ)) η W t = fun s => W s := by
@@ -158,7 +140,7 @@ theorem covDerivAlong_scaleEuclideanLine_eq_deriv (c : ℝ) (hc : 0 < c) (η : �
       (deriv (chartCurve (I := 𝓘(ℝ, ℝ)) (η t) η) t) (W t)
       (chartCurve (I := 𝓘(ℝ, ℝ)) (η t) η t) = 0 := by
     rw [chartChristoffelContraction_def]
-    simp_rw [euclidean_real_chartChristoffel]
+    simp_rw [DifferentialGeometry.Geometry.Connection.chartChristoffel_euclideanMetric]
     simp
   rw [hΓ, add_zero, TangentBundle.symmL_model_space]
   rfl
