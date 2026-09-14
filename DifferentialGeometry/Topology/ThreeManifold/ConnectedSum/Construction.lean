@@ -537,13 +537,4 @@ theorem connectedSum_orientation (M : ConnectedClosedOrientedManifold.{u} 3)
     (connectedSum M N).orientation = (smoothConnectedSum M N (orientedBallChart M)
       (orientedBallChart N) boundaryAttachment).orientation := rfl
 
-theorem connectedSum_choice_independent {M : ClosedOrientedManifold.{u} 3}
-    {N : ClosedOrientedManifold.{v} 3} (c c' : OrientedBallChart M)
-    (d d' : OrientedBallChart N) (a a' : BoundaryAttachment)
-    (s : SmoothConnectedSum c d a) (s' : SmoothConnectedSum c' d' a') :
-    Nonempty (ClosedOrientedManifold.OrientedDiffeomorph
-      s.toConnectedClosedOrientedManifold.toClosedOrientedManifold
-      s'.toConnectedClosedOrientedManifold.toClosedOrientedManifold) := by
-  sorry
-
 end DifferentialGeometry.Topology

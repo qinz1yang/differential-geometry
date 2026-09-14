@@ -110,6 +110,32 @@ theorem curveShorteningRegularity_arcTotalCurvature_not_le_of_delta_neg (c : Cur
     ¬ (c.arcTotalCurvature g p q t ≤ delta) :=
   not_le.mpr (lt_of_lt_of_le hdelta (curveShorteningRegularity_arcTotalCurvature_nonneg c g t hpq))
 
+structure CurveShorteningRegularityCurvatureFrontier
+    (B : RicciBackground (I := I) (M := M) D a b) (L₀ Θ₀ : ℝ)
+    (data : CurveShorteningRegularityData) : Prop where
+  product : ∀ (lambda : ℝ), 0 < lambda → lambda ≤ 1 →
+    ∀ c : ProductCurve M, c.IsSolutionOn B.family.metric lambda (Icc a b) →
+      c.length B.family.metric lambda a ≤ L₀ →
+      c.totalCurvature B.family.metric lambda a ≤ Θ₀ →
+      ∀ tstar ∈ Ico a b, ∀ r : ℝ, 0 < r → r ≤ data.radius →
+        r ≤ c.length B.family.metric lambda tstar →
+        (∀ p q : ℝ, p ≤ q → q ≤ p + 1 →
+          c.arcLength B.family.metric lambda p q tstar = r →
+          c.arcTotalCurvature B.family.metric lambda p q tstar ≤ data.delta) →
+        ∀ x t, t ∈ Icc a b → tstar < t → t ≤ tstar + data.delta * r ^ 2 →
+          c.normSq B.family.metric lambda
+            (c.curvatureVector B.family.metric lambda) x t ≤
+              data.coefficient 0 * (t - tstar) ^ (-(1 : ℤ))
+
+theorem curveShorteningRegularityCurvatureFrontier_of_estimate
+    (B : RicciBackground (I := I) (M := M) D a b) (L₀ Θ₀ : ℝ)
+    (data : CurveShorteningRegularityData)
+    (h : CurveShorteningRegularityEstimate B L₀ Θ₀ data) :
+    CurveShorteningRegularityCurvatureFrontier B L₀ Θ₀ data :=
+  ⟨fun lambda hlambda hlambda_one c hc hlen hcurv tstar ht r hr hrR hlenr harc x t htJ hlt hle =>
+    h.product lambda hlambda hlambda_one b B.lt le_rfl (Icc a b) (Or.inr rfl) c hc hlen hcurv
+      tstar ht r hr hrR hlenr harc 0 x t htJ hlt hle⟩
+
 def curveShorteningRegularityData_witness : CurveShorteningRegularityData where
   delta := 1 / 2
   radius := 1

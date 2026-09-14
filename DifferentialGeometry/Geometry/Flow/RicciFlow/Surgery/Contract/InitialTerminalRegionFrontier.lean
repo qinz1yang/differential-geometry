@@ -106,6 +106,32 @@ theorem InitialTerminalRegion.exists_boundary_neck_of_mem_frontier {D : OneStepI
       neck.center = x ∧ δ ≤ ε ∧ ⌊ε⁻¹⌋₊ + 1 ≤ k :=
   R.boundary_neck x hx
 
+theorem InitialTerminalRegion.component_eq_univ_of_region_eq_univ {D : OneStepIncoming.{u}}
+    {ε Λ : ℝ} (R : InitialTerminalRegion D ε Λ) (h : R.region = univ) :
+    R.component = univ := by
+  refine eq_univ_iff_forall.mpr fun c => ?_
+  obtain ⟨x, hx⟩ := ConnectedComponents.surjective_coe c
+  rw [← hx]
+  exact R.region_mem_component x (by rw [h]; exact mem_univ x)
+
+theorem InitialTerminalRegion.component_eq_empty_iff_forall_high {D : OneStepIncoming.{u}}
+    {ε Λ : ℝ} (R : InitialTerminalRegion D ε Λ) :
+    R.component = ∅ ↔ ∀ x : ↥D.slab.terminalRegularOpen,
+      (R.coreRadius ^ 2)⁻¹ < metricScalarAt D.terminal.metric x := by
+  constructor
+  · intro h x
+    by_contra hx
+    have hlow : metricScalarAt D.terminal.metric x ≤ (R.coreRadius ^ 2)⁻¹ := le_of_not_gt hx
+    have hmem : ConnectedComponents.mk x ∈ R.component := R.low_mem_component hlow
+    rw [h] at hmem
+    exact hmem
+  · intro h
+    ext c
+    simp only [Set.mem_empty_iff_false, iff_false]
+    intro hc
+    obtain ⟨x, -, hxl⟩ := (R.component_iff_meets_low c).mp hc
+    exact absurd (h x) (not_lt.mpr hxl)
+
 theorem InitialTerminalRegion.two_le_boundary_index {D : OneStepIncoming.{u}} {ε Λ : ℝ}
     (R : InitialTerminalRegion D ε Λ) {x : ↥D.slab.terminalRegularOpen}
     (hx : x ∈ frontier R.region) :

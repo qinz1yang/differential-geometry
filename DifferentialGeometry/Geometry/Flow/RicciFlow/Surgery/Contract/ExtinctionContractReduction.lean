@@ -21,6 +21,17 @@ theorem incidenceConnected_of_finiteSurgeryHistory
     ((H.cutCapTrace.transition i).cutIncidenceGraph C).Connected :=
   DifferentialGeometry.Topology.FiniteCutCapTrace.cutIncidenceGraph_connected H.cutCapTrace i C
 
+theorem componentConnectedSumDecomposition_iff_localReconstruction
+    (H : DifferentialGeometry.PDE.RicciFlow.Surgery.FiniteSurgeryHistory.{u}) :
+    (∀ i : Fin H.eventCount,
+        (H.cutCapTrace.transition i).componentConnectedSumDecomposition) ↔
+      ∀ i : Fin H.eventCount, (H.cutCapTrace.transition i).localReconstruction :=
+  forall_congr' fun i =>
+    ((H.cutCapTrace.transition i).componentConnectedSumDecomposition_iff_localReconstruction_of_incidenceGraph_connected
+      fun C =>
+        DifferentialGeometry.Topology.FiniteCutCapTrace.cutIncidenceGraph_connected
+          H.cutCapTrace i C).symm
+
 theorem connectedSum_standardThreeSphere_right_orientedDiffeomorph
     (N : DifferentialGeometry.Topology.ConnectedClosedOrientedManifold.{u} 3) :
     Nonempty (DifferentialGeometry.Topology.ClosedOrientedManifold.OrientedDiffeomorph

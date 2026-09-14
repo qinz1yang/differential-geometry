@@ -32,7 +32,8 @@ structure PoincareExtinctionContracts (DiscardedCutOpen : Type u → Prop) where
     Nonempty (DifferentialGeometry.Topology.ClosedOrientedManifold.OrientedDiffeomorph
       (DifferentialGeometry.Topology.connectedSum N
         DifferentialGeometry.Topology.standardThreeSphereLift.{u}).toClosedOrientedManifold
-      N.toClosedOrientedManifold)
+      N.toClosedOrientedManifold) :=
+    fun N => DifferentialGeometry.Topology.nonempty_orientedDiffeomorph_connectedSum_sphere_right_unit N
   congruenceInput : ∀ (L K : List (DifferentialGeometry.Topology.ConnectedClosedOrientedManifold.{u} 3)),
     List.Forall₂ (fun (M N : DifferentialGeometry.Topology.ConnectedClosedOrientedManifold.{u} 3) =>
       Nonempty (DifferentialGeometry.Topology.ClosedOrientedManifold.OrientedDiffeomorph
