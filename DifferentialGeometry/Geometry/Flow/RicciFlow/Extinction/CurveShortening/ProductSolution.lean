@@ -151,4 +151,59 @@ theorem isSolutionOn_map (c : ProductCurve M) (A : QuotientProductAtlas I M)
   rw [c.map_velocity_eq A J hc.smooth x t ht ((hJ t ht).uniqueMDiffWithinAt),
     c.map_curvatureVector_eq A g lambda hlambda hc.smooth hc.immersed x t ht, hc.equation x t ht]
 
+theorem map_iteratedDs_curvatureVector_eq (c : ProductCurve M) (A : QuotientProductAtlas I M)
+    (g : ℝ → SmoothRiemannianMetric I M) (lambda : ℝ) (hlambda : 0 < lambda)
+    {J : Set ℝ} (hc : c.SmoothOn (I := I) J) (hi : c.ImmersedOn (I := I) J)
+    (t : ℝ) (ht : t ∈ J) (m : ℕ) (x : ℝ) :
+    letI := A.charts
+    letI := A.smoothManifold
+    let ghat := fun τ => quotientProductMetric A (g τ) lambda hlambda
+    c.map.iteratedDs ghat m (c.map.curvatureVector ghat) x t =
+      mfderiv (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, ℝ))
+        (productCoverProjection (M := M)) (c.coverLift x t)
+        (c.iteratedDs g lambda m (c.curvatureVector g lambda) x t) := by
+  let _ := A.charts
+  let _ := A.smoothManifold
+  dsimp only
+  induction m generalizing x with
+  | zero => exact c.map_curvatureVector_eq A g lambda hlambda hc hi x t ht
+  | succ m ih =>
+    have hn := c.map_Ds_eq A g lambda hlambda hc t ht
+      (c.iteratedDs g lambda m (c.curvatureVector g lambda))
+      (c.cover_iteratedDs_contMDiff g lambda hlambda hc hi (c.curvatureVector g lambda) t ht
+        (c.cover_curvatureVector_contMDiff g lambda hlambda hc hi t ht) m) x
+    simp only [CurveMap.iteratedDs, ProductCurve.iteratedDs, Function.iterate_succ_apply']
+    simp only [CurveMap.Ds, CurveMap.Dx] at hn ⊢
+    erw [funext ih]
+    exact hn
+
+theorem map_iteratedDs_curvature_normSq (c : ProductCurve M) (A : QuotientProductAtlas I M)
+    (g : ℝ → SmoothRiemannianMetric I M) (lambda : ℝ) (hlambda : 0 < lambda)
+    {J : Set ℝ} (hc : c.SmoothOn (I := I) J) (hi : c.ImmersedOn (I := I) J)
+    (x t : ℝ) (ht : t ∈ J) (m : ℕ) :
+    letI := A.charts
+    letI := A.smoothManifold
+    let ghat := fun τ => quotientProductMetric A (g τ) lambda hlambda
+    c.map.normSq ghat (c.map.iteratedDs ghat m (c.map.curvatureVector ghat)) x t =
+      c.normSq g lambda (c.iteratedDs g lambda m (c.curvatureVector g lambda)) x t := by
+  let _ := A.charts
+  let _ := A.smoothManifold
+  dsimp only
+  let V := c.iteratedDs g lambda m (c.curvatureVector g lambda)
+  have hinner := (localPullMetric_inner (quotientProductMetric A (g t) lambda hlambda)
+    (productCoverProjection (M := M)) (isLocalDiffeomorph_productCoverProjection A)
+    (c.coverLift x t) (V x t) (V x t)).symm
+  rw [quotientProductMetric_localPull A (g t) lambda hlambda] at hinner
+  have hcover := coverProductMetric_inner (g t) lambda hlambda (c.coverLift x t) (V x t) (V x t)
+  dsimp only [CurveMap.normSq, ProductCurve.normSq]
+  rw [c.map_iteratedDs_curvatureVector_eq A g lambda hlambda hc hi t ht m x]
+  have he (v : E × ℝ) :
+      (quotientProductMetric A (g t) lambda hlambda).inner
+        (productCoverProjection (M := M) (c.coverLift x t)) v v =
+      (quotientProductMetric A (g t) lambda hlambda).inner (c.map.lift x t) v v :=
+    congrArg (fun q => (quotientProductMetric A (g t) lambda hlambda).inner q v v)
+      (c.coverProjection_lift x t)
+  exact (he _).symm.trans (hinner.trans hcover)
+
+
 end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening.ProductCurve
