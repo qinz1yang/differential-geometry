@@ -120,4 +120,129 @@ theorem length_and_totalCurvature_le_initial
     (add_nonneg (hΘ a) (hL a)) (Real.exp_pos ((B.C + B.B₀) * (b - a))).le
   constructor <;> linarith [hL t, hΘ t]
 
+theorem weighted_total_curvature_le_of_initial_and_sqrt_cutoff_bound
+    (B : RicciBackground (I := I) (M := M) D a b)
+    (c : ProductCurve M) (lambda : ℝ) (hlambda : 0 < lambda)
+    {J : Set ℝ} (hJ : UniqueDiffOn ℝ J) (hc : c.IsSolutionOn B.family.metric lambda J)
+    (has : a ≤ s) (hsu : s < u) (hub : u ≤ b) (hinterval : Icc a u ⊆ J)
+    {L₀ Θ₀ δ p q t : ℝ}
+    (hL₀ : c.length B.family.metric lambda a ≤ L₀)
+    (hΘ₀ : c.totalCurvature B.family.metric lambda a ≤ Θ₀)
+    (hpq : p ≤ q) (hqp : q ≤ p + 1) (ht : t ∈ Icc s u)
+    (hsmall : c.arcTotalCurvature B.family.metric lambda p q s ≤ δ)
+    {φ φt : ℝ → ℝ → ℝ} {α β : ℝ}
+    (hφc : ContinuousOn (fun z : ℝ × ℝ => φ z.1 z.2) (Icc p q ×ˢ Icc s u))
+    (hφtc : ContinuousOn (fun z : ℝ × ℝ => φt z.1 z.2) (Icc p q ×ˢ Icc s u))
+    (hφt : ∀ x ∈ Icc p q, ∀ τ ∈ Icc s u,
+      HasDerivWithinAt (fun σ => φ x σ) (φt x τ) (Icc s u) τ)
+    (hφxx : ∀ τ ∈ Ioo s t, ∀ x ∈ Icc p q, ContDiffAt ℝ 2 (fun y => φ y τ) x)
+    (hφrange : ∀ τ ∈ Icc s t, ∀ x ∈ Icc p q, φ x τ ∈ Icc 0 1)
+    (hφboundary : ∀ τ ∈ Ioo s t, φ p τ = 0 ∧ φ q τ = 0 ∧
+      deriv (fun y => φ y τ) p = 0 ∧ deriv (fun y => φ y τ) q = 0)
+    (hα : 0 ≤ α) (hβ : 0 ≤ β)
+    (hcut : ∀ τ ∈ Ioo s t, ∀ x ∈ Icc p q,
+      φt x τ + c.ds B.family.metric lambda (c.ds B.family.metric lambda φ) x τ ≤
+        α / Real.sqrt (τ - s) + β) :
+    (∫ x in p..q, φ x t * c.curvature B.family.metric lambda x t * c.speed B.family.metric lambda x t) ≤
+      δ + Real.exp ((B.C + B.B₀) * (b - a)) * (Θ₀ + L₀) *
+        (2 * α * Real.sqrt (t - s) + (β + (B.C + B.B₀)) * (t - s)) +
+      B.C * (Real.exp ((B.C + B.B₀) * (b - a)) * (Θ₀ + L₀)) * (t - s) := by
+  let A : QuotientProductAtlas I M := quotientProductAtlas
+  let _ := A.charts
+  let _ := A.smoothManifold
+  obtain ⟨D', _, _, hB⟩ := exists_quotientProduct_ricciBackground_on_regular A B
+  obtain ⟨Bhat, hf, h0, _, _, hC⟩ := hB lambda hlambda
+  have hm : Bhat.family.metric = fun τ => quotientProductMetric A (B.family.metric τ) lambda hlambda :=
+    congrArg (fun F => F.metric) hf
+  have hsub : Icc s u ⊆ J := (Icc_subset_Icc has le_rfl).trans hinterval
+  have hsol : c.map.IsSolutionOn Bhat.family.metric (Icc s u) := by
+    rw [hm]
+    exact (c.isSolutionOn_map A B.family.metric lambda hlambda hJ hc).mono hsub
+      (fun τ hτ => ((uniqueDiffOn_Icc hsu) τ hτ).uniqueMDiffWithinAt)
+  have hspeed (x τ : ℝ) (hτ : τ ∈ Icc s u) :
+      c.map.speed Bhat.family.metric x τ = c.speed B.family.metric lambda x τ := by
+    rw [hm]
+    exact c.map_speed_eq A B.family.metric lambda hlambda hc.smooth x τ (hsub hτ)
+  have hcurv (x τ : ℝ) (hτ : τ ∈ Icc s u) :
+      c.map.curvature Bhat.family.metric x τ = c.curvature B.family.metric lambda x τ := by
+    dsimp only [CurveMap.curvature, ProductCurve.curvature]
+    rw [hm, c.map_curvatureSq_eq A B.family.metric lambda hlambda hc.smooth hc.immersed x τ (hsub hτ)]
+  have hds (f : ℝ → ℝ → ℝ) (x τ : ℝ) (hτ : τ ∈ Icc s u) :
+      c.map.ds Bhat.family.metric f x τ = c.ds B.family.metric lambda f x τ := by
+    rw [hm]
+    exact c.map_ds_eq A B.family.metric lambda hlambda hc.smooth f x τ (hsub hτ)
+  let Q := Real.exp ((B.C + B.B₀) * (b - a)) * (Θ₀ + L₀)
+  have hglobal (τ : ℝ) (hτ : τ ∈ Icc s u) :
+      c.length B.family.metric lambda τ ≤ Q ∧ c.totalCurvature B.family.metric lambda τ ≤ Q :=
+    c.length_and_totalCurvature_le_initial B lambda hlambda hJ hc (has.trans_lt hsu) hub
+      hinterval hL₀ hΘ₀ τ ⟨has.trans hτ.1, hτ.2⟩
+  have hL : ∀ τ ∈ Icc s t, (∫ x in p..q, c.map.speed Bhat.family.metric x τ) ≤ Q := by
+    intro τ hτ
+    have hτu : τ ∈ Icc s u := ⟨hτ.1, hτ.2.trans ht.2⟩
+    have he : (∫ x in p..q, c.map.speed Bhat.family.metric x τ) =
+        c.arcLength B.family.metric lambda p q τ :=
+      intervalIntegral.integral_congr (fun x _ => hspeed x τ hτu)
+    rw [he]
+    exact (c.arcLength_le_length B.family.metric lambda hlambda hc.smooth hc.immersed p q τ hqp
+      (hsub hτu)).trans (hglobal τ hτu).1
+  have hΘ : ∀ τ ∈ Ioo s t,
+      (∫ x in p..q, c.map.curvature Bhat.family.metric x τ * c.map.speed Bhat.family.metric x τ) ≤ Q := by
+    intro τ hτ
+    have hτu : τ ∈ Icc s u := ⟨hτ.1.le, hτ.2.le.trans ht.2⟩
+    have he : (∫ x in p..q, c.map.curvature Bhat.family.metric x τ * c.map.speed Bhat.family.metric x τ) =
+        c.arcTotalCurvature B.family.metric lambda p q τ := by
+      apply intervalIntegral.integral_congr
+      intro x _
+      exact congrArg₂ (fun v w : ℝ => v * w) (hcurv x τ hτu) (hspeed x τ hτu)
+    rw [he]
+    exact (c.arcTotalCurvature_le_totalCurvature B.family.metric lambda hlambda hc.smooth hc.immersed
+      p q τ hqp (hsub hτu)).trans (hglobal τ hτu).2
+  have hcutmap : ∀ τ ∈ Ioo s t, ∀ x ∈ Icc p q,
+      φt x τ + c.map.ds Bhat.family.metric (c.map.ds Bhat.family.metric φ) x τ ≤
+        α / Real.sqrt (τ - s) + β := by
+    intro τ hτ x hx
+    have hτu : τ ∈ Icc s u := ⟨hτ.1.le, hτ.2.le.trans ht.2⟩
+    rw [hds (c.map.ds Bhat.family.metric φ) x τ hτu]
+    have he : (fun y => c.map.ds Bhat.family.metric φ y τ) =
+        (fun y => c.ds B.family.metric lambda φ y τ) := funext (fun y => hds φ y τ hτu)
+    change φt x τ + (c.speed B.family.metric lambda x τ)⁻¹ *
+      deriv (fun y => c.map.ds Bhat.family.metric φ y τ) x ≤ _
+    rw [he]
+    exact hcut τ hτ x hx
+  have hbound := CurveShortening.weighted_total_curvature_le_of_sqrt_cutoff_bound Bhat hsu
+    (Icc_subset_Icc has hub) c.map hsol hpq ht hφc hφtc hφt hφxx hφrange hφboundary hα hβ hcutmap hL hΘ
+  have hs : s ∈ Icc s u := ⟨le_rfl, hsu.le⟩
+  have hE (τ : ℝ) (hτ : τ ∈ Icc s u) :
+      (∫ x in p..q, φ x τ * c.map.curvature Bhat.family.metric x τ * c.map.speed Bhat.family.metric x τ) =
+        ∫ x in p..q, φ x τ * c.curvature B.family.metric lambda x τ * c.speed B.family.metric lambda x τ := by
+    apply intervalIntegral.integral_congr
+    intro x _
+    exact congrArg₂ (fun v w : ℝ => φ x τ * v * w) (hcurv x τ hτ) (hspeed x τ hτ)
+  have hstart : (∫ x in p..q, φ x s * c.map.curvature Bhat.family.metric x s * c.map.speed Bhat.family.metric x s) ≤ δ := by
+    have hsp := (c.map.speed_contDiff Bhat.family.metric (Icc s u) hsol.smooth hsol.immersed s hs).continuous
+    have hk := (c.map.curvatureSq_contDiff Bhat.family.metric (Icc s u) hsol.smooth hsol.immersed s hs).continuous.sqrt
+    have hφs : ContinuousOn (fun x => φ x s) (Icc p q) := hφc.comp
+      (continuous_id.prodMk continuous_const).continuousOn (fun x hx => ⟨hx, hs⟩)
+    have hweighted : ContinuousOn (fun x => φ x s * c.map.curvature Bhat.family.metric x s *
+        c.map.speed Bhat.family.metric x s) (Icc p q) := (hφs.mul hk.continuousOn).mul hsp.continuousOn
+    have hintegral := intervalIntegral.integral_mono_on (μ := volume) hpq
+      (hweighted.intervalIntegrable_of_Icc hpq)
+      ((show Continuous (fun x => c.map.curvature Bhat.family.metric x s * c.map.speed Bhat.family.metric x s) from
+        hk.mul hsp).intervalIntegrable p q)
+      (fun x hx => by
+        have hφle := (hφrange s ⟨le_rfl, ht.1⟩ x hx).2
+        have hnn : 0 ≤ c.map.curvature Bhat.family.metric x s * c.map.speed Bhat.family.metric x s :=
+          mul_nonneg (Real.sqrt_nonneg _) (c.map.speed_nonneg Bhat.family.metric x s)
+        simpa only [mul_assoc, one_mul] using mul_le_mul_of_nonneg_right hφle hnn)
+    have he : (∫ x in p..q, c.map.curvature Bhat.family.metric x s * c.map.speed Bhat.family.metric x s) =
+        c.arcTotalCurvature B.family.metric lambda p q s := by
+      apply intervalIntegral.integral_congr
+      intro x _
+      exact congrArg₂ (fun v w : ℝ => v * w) (hcurv x s hs) (hspeed x s hs)
+    exact hintegral.trans (he.le.trans hsmall)
+  rw [hE t ht, h0, hC] at hbound
+  dsimp only [Q] at hbound
+  linarith
+
+
 end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening.ProductCurve
