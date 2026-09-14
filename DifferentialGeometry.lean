@@ -7037,6 +7037,7 @@ import DifferentialGeometry.Geometry.Metric.PointwiseInner.SlotPermutation
 import DifferentialGeometry.Geometry.Metric.PolarCoordinates
 import DifferentialGeometry.Geometry.Metric.Polarization
 import DifferentialGeometry.Geometry.Metric.Product
+import DifferentialGeometry.Geometry.Metric.Product.ChartBounds
 import DifferentialGeometry.Geometry.Metric.Product.Completeness
 import DifferentialGeometry.Geometry.Metric.Product.ScalarCurvature
 import DifferentialGeometry.Geometry.Metric.ProductIsometry

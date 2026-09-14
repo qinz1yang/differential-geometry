@@ -158,29 +158,40 @@ theorem chartBasisVecFiber_prod_eq_sum (p z : M × N)
 
 
 omit [FiniteDimensional ℝ E] [FiniteDimensional ℝ E'] in
+theorem trivializationAt_continuousLinearMapAt_prod_of_mem
+    (p : M × N) {q : M × N}
+    (hq : q ∈ (trivializationAt (E × E') (TangentSpace (I.prod J)) p).baseSet)
+    (v : TangentSpace (I.prod J) q) :
+    (trivializationAt (E × E') (TangentSpace (I.prod J)) p).continuousLinearMapAt ℝ q v =
+      ((trivializationAt E (TangentSpace I) p.1).continuousLinearMapAt ℝ q.1 v.1,
+       (trivializationAt E' (TangentSpace J) p.2).continuousLinearMapAt ℝ q.2 v.2) := by
+  have hq' : q.1 ∈ (trivializationAt E (TangentSpace I) p.1).baseSet ∧
+      q.2 ∈ (trivializationAt E' (TangentSpace J) p.2).baseSet := by
+    have h := hq
+    rw [TangentBundle.trivializationAt_baseSet, prodChartedSpace_chartAt,
+      OpenPartialHomeomorph.prod_source] at h
+    exact h
+  have hsym : (trivializationAt (E × E') (TangentSpace (I.prod J)) p).symmL ℝ q
+      ((trivializationAt E (TangentSpace I) p.1).continuousLinearMapAt ℝ q.1 v.1,
+       (trivializationAt E' (TangentSpace J) p.2).continuousLinearMapAt ℝ q.2 v.2) = v := by
+    rw [trivializationAt_symmL_prod (I := I) (J := J) p q hq]
+    exact Prod.ext (Trivialization.symmL_continuousLinearMapAt _ hq'.1 v.1)
+      (Trivialization.symmL_continuousLinearMapAt _ hq'.2 v.2)
+  have hkey := Trivialization.continuousLinearMapAt_symmL
+    (R := ℝ) (e := trivializationAt (E × E') (TangentSpace (I.prod J)) p) hq
+    ((trivializationAt E (TangentSpace I) p.1).continuousLinearMapAt ℝ q.1 v.1,
+     (trivializationAt E' (TangentSpace J) p.2).continuousLinearMapAt ℝ q.2 v.2)
+  rw [hsym] at hkey
+  exact hkey
+
+
+omit [FiniteDimensional ℝ E] [FiniteDimensional ℝ E'] in
 theorem trivializationAt_continuousLinearMapAt_prod_pair (p : M × N) (v : E × E') :
     (trivializationAt (E × E') (TangentSpace (I.prod J)) p).continuousLinearMapAt ℝ p v =
       ((trivializationAt E (TangentSpace I) p.1).continuousLinearMapAt ℝ p.1 v.1,
        (trivializationAt E' (TangentSpace J) p.2).continuousLinearMapAt ℝ p.2 v.2) := by
-  have hp : p ∈ (trivializationAt (E × E') (TangentSpace (I.prod J)) p).baseSet :=
-    FiberBundle.mem_baseSet_trivializationAt (E × E') (TangentSpace (I.prod J)) p
-  have h1 : p.1 ∈ (trivializationAt E (TangentSpace I) p.1).baseSet :=
-    FiberBundle.mem_baseSet_trivializationAt E (TangentSpace I) p.1
-  have h2 : p.2 ∈ (trivializationAt E' (TangentSpace J) p.2).baseSet :=
-    FiberBundle.mem_baseSet_trivializationAt E' (TangentSpace J) p.2
-  have hinj : Function.Injective
-      ((trivializationAt (E × E') (TangentSpace (I.prod J)) p).symmL ℝ p) := by
-    intro a b hab
-    have h := congrArg
-      ((trivializationAt (E × E') (TangentSpace (I.prod J)) p).continuousLinearMapAt ℝ p) hab
-    rwa [Bundle.Trivialization.continuousLinearMapAt_symmL _ hp a,
-      Bundle.Trivialization.continuousLinearMapAt_symmL _ hp b] at h
-  refine hinj ?_
-  rw [Bundle.Trivialization.symmL_continuousLinearMapAt _ hp v,
-    trivializationAt_symmL_prod (I := I) (J := J) p p hp,
-    Bundle.Trivialization.symmL_continuousLinearMapAt _ h1 v.1,
-    Bundle.Trivialization.symmL_continuousLinearMapAt _ h2 v.2]
-  rfl
+  exact trivializationAt_continuousLinearMapAt_prod_of_mem p
+    (FiberBundle.mem_baseSet_trivializationAt (E × E') (TangentSpace (I.prod J)) p) v
 
 omit [FiniteDimensional ℝ E] [FiniteDimensional ℝ E'] in
 theorem trivializationAt_continuousLinearMapAt_prod (p : M × N)
