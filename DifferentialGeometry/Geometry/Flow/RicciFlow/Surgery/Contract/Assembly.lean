@@ -1,6 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.Reconstruction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.Terminal
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.MetricStep
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.ReducedLengthRealization
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Poincare
 
 set_option autoImplicit false
@@ -18,7 +19,7 @@ structure PoincareExtinctionContracts (DiscardedCutOpen : Type u → Prop) where
   geometric : geometricReconstructionBackground.{u}
   terminalStep : ∃ (p : CutoffParameters) (τ ε d : ℝ) (k : ℕ),
     Nonempty (GlobalStepInputs.{u} p τ ε d k DiscardedCutOpen)
-  metricStep : isCommonLocalRealization.{u}
+  metricStep : isCommonLocalRealizationOnAdmissibleStrips.{u}
   incidenceConnectedInput :
     ∀ (H : DifferentialGeometry.PDE.RicciFlow.Surgery.FiniteSurgeryHistory.{u})
     (i : Fin H.eventCount) (C : ConnectedComponents (H.stage i.castSucc).Carrier),

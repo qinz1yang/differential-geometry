@@ -61,7 +61,7 @@ theorem nonempty_poincareExtinctionContracts_iff (DiscardedCutOpen : Type u → 
       relativeCollarUniqueness.{u} ∧ ballEmbeddingIsotopy.{u} ∧
         (∃ (p : CutoffParameters) (τ ε d : ℝ) (k : ℕ),
           Nonempty (GlobalStepInputs.{u} p τ ε d k DiscardedCutOpen)) ∧
-        isCommonLocalRealization.{u} ∧
+        isCommonLocalRealizationOnAdmissibleStrips.{u} ∧
         (∀ (H : DifferentialGeometry.PDE.RicciFlow.Surgery.FiniteSurgeryHistory.{u})
           (i : Fin H.eventCount),
           (H.cutCapTrace.transition i).componentConnectedSumDecomposition) := by

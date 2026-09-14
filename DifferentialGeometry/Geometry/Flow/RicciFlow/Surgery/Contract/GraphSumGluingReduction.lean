@@ -69,7 +69,7 @@ theorem nonempty_poincareExtinctionContracts_iff_graphSumRealization
       relativeCollarUniqueness.{u} ∧ ballEmbeddingIsotopy.{u} ∧
         (∃ (p : CutoffParameters) (τ ε d : ℝ) (k : ℕ),
           Nonempty (GlobalStepInputs.{u} p τ ε d k DiscardedCutOpen)) ∧
-        isCommonLocalRealization.{u} ∧
+        isCommonLocalRealizationOnAdmissibleStrips.{u} ∧
         (∀ (H : DifferentialGeometry.PDE.RicciFlow.Surgery.FiniteSurgeryHistory.{u})
           (i : Fin H.eventCount), (H.cutCapTrace.transition i).graphSumRealization) :=
   (nonempty_poincareExtinctionContracts_iff DiscardedCutOpen).trans
@@ -90,7 +90,7 @@ theorem nonempty_poincareExtinctionContracts_iff_sphericalGraphSumRealization
       relativeCollarUniqueness.{u} ∧ ballEmbeddingIsotopy.{u} ∧
         (∃ (p : CutoffParameters) (τ ε d : ℝ) (k : ℕ),
           Nonempty (GlobalStepInputs.{u} p τ ε d k DiscardedCutOpen)) ∧
-        isCommonLocalRealization.{u} ∧
+        isCommonLocalRealizationOnAdmissibleStrips.{u} ∧
         (∀ (H : DifferentialGeometry.PDE.RicciFlow.Surgery.FiniteSurgeryHistory.{u})
           (i : Fin H.eventCount), (H.cutCapTrace.transition i).sphericalGraphSumRealization S) :=
   (nonempty_poincareExtinctionContracts_iff_graphSumRealization DiscardedCutOpen).trans
@@ -108,7 +108,7 @@ theorem nonempty_poincareExtinctionContracts_of_graphSumRealization
     (hb : ballEmbeddingIsotopy.{u})
     (ht : ∃ (p : CutoffParameters) (τ ε d : ℝ) (k : ℕ),
       Nonempty (GlobalStepInputs.{u} p τ ε d k DiscardedCutOpen))
-    (hm : isCommonLocalRealization.{u})
+    (hm : isCommonLocalRealizationOnAdmissibleStrips.{u})
     (hs : ∀ (H : DifferentialGeometry.PDE.RicciFlow.Surgery.FiniteSurgeryHistory.{u})
       (i : Fin H.eventCount), (H.cutCapTrace.transition i).graphSumRealization) :
     Nonempty (PoincareExtinctionContracts DiscardedCutOpen) :=
@@ -118,6 +118,18 @@ theorem nonempty_poincareExtinctionContracts_of_graphSumRealization
     ht hm (fun H i =>
       (H.cutCapTrace.transition i).componentConnectedSumDecomposition_of_graphSumRealization
         (hs H i))
+
+theorem nonempty_poincareExtinctionContracts_of_graphSumRealization_of_isCommonLocalRealization
+    (DiscardedCutOpen : Type u → Prop) (hr : relativeCollarUniqueness.{u})
+    (hb : ballEmbeddingIsotopy.{u})
+    (ht : ∃ (p : CutoffParameters) (τ ε d : ℝ) (k : ℕ),
+      Nonempty (GlobalStepInputs.{u} p τ ε d k DiscardedCutOpen))
+    (hm : isCommonLocalRealization.{u})
+    (hs : ∀ (H : DifferentialGeometry.PDE.RicciFlow.Surgery.FiniteSurgeryHistory.{u})
+      (i : Fin H.eventCount), (H.cutCapTrace.transition i).graphSumRealization) :
+    Nonempty (PoincareExtinctionContracts DiscardedCutOpen) :=
+  nonempty_poincareExtinctionContracts_of_graphSumRealization DiscardedCutOpen hr hb ht
+    (isCommonLocalRealizationOnAdmissibleStrips_of_isCommonLocalRealization hm) hs
 
 theorem exists_diffeomorph_standardThreeSphere_of_graphSumRealization
     {M : DifferentialGeometry.Topology.ClosedOrientedManifold.{u} 3}

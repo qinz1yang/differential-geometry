@@ -152,12 +152,22 @@ theorem not_isCommonLocalRealization_of_positiveHorizon (H : ObservedHistory.{u}
   fun h => not_isSurgeryVariationalInput_of_positiveHorizon H hpos p
     (isSurgeryVariationalInput_of_isCommonLocalRealization h)
 
-theorem not_nonempty_poincareExtinctionContracts_of_positiveHorizon
+structure UnguardedPoincareExtinctionContracts (DiscardedCutOpen : Type u → Prop)
+    extends PoincareExtinctionContracts DiscardedCutOpen where
+  metricStep_unguarded : isCommonLocalRealization.{u}
+
+theorem nonempty_unguardedPoincareExtinctionContracts_of_isCommonLocalRealization
+    {DiscardedCutOpen : Type u → Prop} (c : PoincareExtinctionContracts DiscardedCutOpen)
+    (hm : isCommonLocalRealization.{u}) :
+    Nonempty (UnguardedPoincareExtinctionContracts DiscardedCutOpen) :=
+  ⟨{ toPoincareExtinctionContracts := c, metricStep_unguarded := hm }⟩
+
+theorem not_nonempty_unguardedPoincareExtinctionContracts_of_positiveHorizon
     (DiscardedCutOpen : Type u → Prop) (H : ObservedHistory.{u}) (hpos : 0 < H.horizon)
     (p : (H.stage 0).Carrier) :
-    ¬ Nonempty (PoincareExtinctionContracts DiscardedCutOpen) := by
+    ¬ Nonempty (UnguardedPoincareExtinctionContracts DiscardedCutOpen) := by
   rintro ⟨c⟩
-  exact not_isCommonLocalRealization_of_positiveHorizon H hpos p c.metricStep
+  exact not_isCommonLocalRealization_of_positiveHorizon H hpos p c.metricStep_unguarded
 
 def HasNonemptyPositiveHorizonHistory : Prop :=
   ∃ H : ObservedHistory.{u}, 0 < H.horizon ∧ Nonempty (H.stage 0).Carrier
@@ -167,16 +177,6 @@ theorem not_isCommonLocalRealization_of_hasNonemptyPositiveHorizonHistory
   obtain ⟨H, hpos, ⟨p⟩⟩ := h
   exact not_isCommonLocalRealization_of_positiveHorizon H hpos p
 
-def IsReducedLengthAttainment {H : ObservedHistory.{u}} (S : VariationalStrip H)
-    (u : ℝ) : Prop :=
-  ∀ x : (H.stage 0).Carrier,
-    IsLeast (range fun y => S.reducedLength u y) (S.reducedLength u x) →
-      (∃ γ : ℝ → (H.stage 0).Carrier,
-        S.admissible γ ∧ γ 0 = S.pole ∧ γ (S.finish - u) = x) →
-      ∃ γ : ℝ → (H.stage 0).Carrier,
-        S.admissible γ ∧ γ 0 = S.pole ∧ γ (S.finish - u) = x ∧
-          reducedAction S.metricAt S.finish (S.finish - u) γ = S.reducedLength u x
-
 theorem isReducedLengthAttainment_emptyVariationalStrip (H : ObservedHistory.{u})
     (hpos : 0 < H.horizon) (p : (H.stage 0).Carrier) (u : ℝ) :
     IsReducedLengthAttainment (emptyVariationalStrip H hpos p) u := by
@@ -184,59 +184,33 @@ theorem isReducedLengthAttainment_emptyVariationalStrip (H : ObservedHistory.{u}
   obtain ⟨γ, hγ, -⟩ := hreach
   simp [emptyVariationalStrip] at hγ
 
-def HasAdmissibleCurve {H : ObservedHistory.{u}} (S : VariationalStrip H) : Prop :=
-  ∃ γ : ℝ → (H.stage 0).Carrier, S.admissible γ
-
 theorem not_hasAdmissibleCurve_emptyVariationalStrip (H : ObservedHistory.{u})
     (hpos : 0 < H.horizon) (p : (H.stage 0).Carrier) :
     ¬ HasAdmissibleCurve (emptyVariationalStrip H hpos p) :=
   not_exists_emptyVariationalStrip_admissible H hpos p
 
-def isReducedLengthRealizationInput : Prop :=
-  ∀ (H : ObservedHistory.{u}) (S : VariationalStrip H), HasAdmissibleCurve S →
-    (∀ u ∈ Ioo S.start S.finish, IsReducedLengthAttainment S u) ∧
-    (∀ u ∈ Ioo S.start S.finish,
-      LowerSemicontinuousOn (fun x => S.reducedLength u x)
-        (univ : Set (H.stage 0).Carrier)) ∧
-    (∀ u ∈ Ioo S.start S.finish, ∃ x : (H.stage 0).Carrier,
-      IsLeast (range fun y => S.reducedLength u y) (S.reducedLength u x) ∧
-        ∃ γ : ℝ → (H.stage 0).Carrier,
-          S.admissible γ ∧ γ 0 = S.pole ∧ γ (S.finish - u) = x) ∧
-    (∀ u ∈ Ioo S.start S.finish, ∀ x : (H.stage 0).Carrier,
-      IsLeast (range fun y => S.reducedLength u y) (S.reducedLength u x) →
-      (∀ γ : ℝ → (H.stage 0).Carrier, S.admissible γ → γ 0 = S.pole →
-        γ (S.finish - u) = x →
-        reducedAction S.metricAt S.finish (S.finish - u) γ = S.reducedLength u x →
-        S.regular γ) →
-      ∀ η : ℝ, 0 < η →
-        ∃ (U : TopologicalSpace.Opens (H.stage 0).Carrier) (hxU : x ∈ U)
-          (F : ℝ → ↥U → ℝ) (hF : ∀ σ : ℝ, ContMDiff ThreeModel 𝓘(ℝ, ℝ) ∞ (F σ)),
-          F u ⟨x, hxU⟩ = S.reducedLength u x ∧
-          (∀ y : ↥U, y ≠ ⟨x, hxU⟩ →
-            F u y < S.reducedLength u (y : (H.stage 0).Carrier)) ∧
-          deriv (fun σ : ℝ => F σ ⟨x, hxU⟩) u +
-            DifferentialGeometry.Geometry.Operator.ΔG (I := ThreeModel) (M := ↥U)
-              ((S.metricAt u).restrictOpen U) (⟨F u, hF u⟩ : C^∞⟮ThreeModel, ↥U; ℝ⟯)
-              ⟨x, hxU⟩ ≤ 6 + η ∧
-          Real.sqrt (DifferentialGeometry.Geometry.Operator.normGradSqFun (I := ThreeModel)
-            (M := ↥U) ((S.metricAt u).restrictOpen U) (F u) ⟨x, hxU⟩) ≤ η) ∧
-    (∀ u ∈ Ioo S.start S.finish,
-      LowerSemicontinuousWithinAt
-        (fun τ : ℝ => sInf (range (fun x => S.reducedLength (S.finish - τ) x)) - 6 * τ)
-        (Ioo S.start S.finish) (S.finish - u))
+theorem lowerSemicontinuousOn_emptyVariationalStrip (H : ObservedHistory.{u})
+    (hpos : 0 < H.horizon) (p : (H.stage 0).Carrier) (u : ℝ) :
+    LowerSemicontinuousOn
+      (fun x => (emptyVariationalStrip H hpos p).reducedLength u x)
+      (univ : Set (H.stage 0).Carrier) := by
+  have hconst : (fun x => (emptyVariationalStrip H hpos p).reducedLength u x) =
+      fun _ : (H.stage 0).Carrier => (0 : ℝ) := by
+    funext x
+    exact emptyVariationalStrip_reducedLength H hpos p u x
+  rw [hconst]
+  exact lowerSemicontinuousOn_const
 
-theorem isReducedLengthRealizationInput_of_isSurgeryVariationalInput
-    (h : isSurgeryVariationalInput.{u}) : isReducedLengthRealizationInput.{u} := by
-  intro H S _
-  obtain ⟨hfirst, hbarrier, hshift⟩ := h H S
-  refine ⟨?_, ?_, ?_, hbarrier, hshift⟩
-  · intro u hu x hle _
-    exact (hfirst u hu).2.2 x hle
-  · intro u hu
-    exact (hfirst u hu).1
-  · intro u hu
-    obtain ⟨x, hx⟩ := (hfirst u hu).2.1
-    obtain ⟨γ, hγ, hγ0, hγτ, -⟩ := (hfirst u hu).2.2 x hx
-    exact ⟨x, hx, γ, hγ, hγ0, hγτ⟩
+theorem isReducedLengthRealization_emptyVariationalStrip_of_hasAdmissibleCurve
+    (H : ObservedHistory.{u}) (hpos : 0 < H.horizon) (p : (H.stage 0).Carrier)
+    (h : HasAdmissibleCurve (emptyVariationalStrip H hpos p)) :
+    IsReducedLengthRealization (emptyVariationalStrip H hpos p) :=
+  absurd h (not_hasAdmissibleCurve_emptyVariationalStrip H hpos p)
+
+theorem not_isReducedLengthRealization_emptyVariationalStrip (H : ObservedHistory.{u})
+    (hpos : 0 < H.horizon) (p : (H.stage 0).Carrier) :
+    ¬ IsReducedLengthRealization (emptyVariationalStrip H hpos p) :=
+  not_isReducedLengthRealization_of_not_hasAdmissibleCurve
+    (not_hasAdmissibleCurve_emptyVariationalStrip H hpos p)
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
