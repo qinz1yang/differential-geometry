@@ -9948,3 +9948,4 @@ import DifferentialGeometry.Topology.ClosedCover
 import DifferentialGeometry.Topology.Connected.ComponentIn
 import DifferentialGeometry.Topology.VanKampen.TwoSidedCollarRestriction
 import DifferentialGeometry.Topology.VanKampen.TwoSidedCollarSimplyConnected
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.CurvatureDerivativeBounds
