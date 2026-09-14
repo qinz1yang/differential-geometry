@@ -19,12 +19,12 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 def curveShorteningParabolicGaugeLocalExistence
     (B : SmoothMetricWindow (I := I) (M := M) D a b) : Prop :=
   ∀ t₀ ∈ Ico a b, ∀ c₀ : SmoothImmersion (I := I) (M := M),
-    ∃ s u τ : ℝ, s < t₀ ∧ t₀ < u ∧ 0 < τ ∧ t₀ + τ < u ∧ t₀ + τ ≤ b ∧
+    ∃ τ : ℝ, 0 < τ ∧ t₀ + τ ≤ b ∧
       ∃ c : CurveMap M,
-        c.SmoothOn (I := I) (Ioo s u) ∧
+        c.SmoothOn (I := I) (Icc t₀ (t₀ + τ)) ∧
         (∀ z, c z t₀ = c₀.map z) ∧
-        (∀ x t, t ∈ Ioo s u →
-          c.velocity (I := I) (Ioo s u) x t =
+        (∀ x t, t ∈ Icc t₀ (t₀ + τ) →
+          c.velocity (I := I) (Icc t₀ (t₀ + τ)) x t =
             (c.speed B.family.metric x t) ^ (-2 : ℤ) • c.Dx B.family.metric c.X x t -
               (deriv (fun y => c.speed B.family.metric y t) x /
                 c.speed B.family.metric x t ^ 3) • c.X x t)
@@ -35,11 +35,7 @@ theorem curveShorteningSmoothSolution_of_parabolicGaugeLocalExistence [I.Boundar
     (h : curveShorteningParabolicGaugeLocalExistence (I := I) (M := M) B) :
     CurveShorteningSmoothSolution (I := I) (M := M) B := by
   intro t₀ ht₀ c₀
-  obtain ⟨s, u, τ, hst, htu, hτ, hτu, hτb, c, hc, hinit, heq⟩ := h t₀ ht₀ c₀
-  have hcT : c.SmoothOn (I := I) (Icc t₀ (t₀ + τ)) := by
-    refine hc.mono ?_
-    rintro ⟨x, t⟩ ⟨-, ht⟩
-    exact ⟨mem_univ x, lt_of_lt_of_le hst ht.1, lt_of_le_of_lt ht.2 hτu⟩
+  obtain ⟨τ, hτ, hτb, c, hcT, hinit, heq⟩ := h t₀ ht₀ c₀
   have hX₀ : ∀ x, c.X (I := I) x t₀ ≠ 0 := by
     intro x
     have hpoint : c.X (I := I) x t₀ =
@@ -61,36 +57,17 @@ theorem curveShorteningSmoothSolution_of_parabolicGaugeLocalExistence [I.Boundar
   have hτ'τ : τ' ≤ τ := by linarith
   have hτ''τ : τ'' < τ := lt_of_lt_of_le hτ''τ' hτ'τ
   have hτ''b : t₀ + τ'' ≤ b := by linarith
-  have hc'' : c.SmoothOn (I := I) (Icc t₀ (t₀ + τ'')) := by
-    refine hc.mono ?_
-    rintro ⟨x, t⟩ ⟨-, ht⟩
-    exact ⟨mem_univ x, lt_of_lt_of_le hst ht.1,
-      lt_of_le_of_lt (le_trans ht.2 (by linarith : t₀ + τ'' ≤ t₀ + τ)) hτu⟩
+  have hc'' : c.SmoothOn (I := I) (Icc t₀ (t₀ + τ'')) :=
+    hcT.mono (Set.prod_mono Subset.rfl (Icc_subset_Icc le_rfl (by linarith)))
   refine ⟨τ'', hτ''pos, hτ''b, c, hc'', hinit, ?_⟩
   intro x t ht
   have htT : t ∈ Icc t₀ (t₀ + τ) := ⟨ht.1, le_trans ht.2 (by linarith : t₀ + τ'' ≤ t₀ + τ)⟩
   have ht' : t ∈ Icc t₀ (t₀ + τ') :=
     ⟨ht.1, le_trans ht.2 (by linarith : t₀ + τ'' ≤ t₀ + τ')⟩
-  have htIoo : t ∈ Ioo s u :=
-    ⟨lt_of_lt_of_le hst ht.1,
-      lt_of_le_of_lt (le_trans ht.2 (by linarith : t₀ + τ'' ≤ t₀ + τ)) hτu⟩
-  have hsub : Icc t₀ (t₀ + τ) ⊆ Ioo s u := fun v hv =>
-    ⟨lt_of_lt_of_le hst hv.1, lt_of_le_of_lt hv.2 hτu⟩
-  have huniq : UniqueMDiffWithinAt 𝓘(ℝ, ℝ) (Icc t₀ (t₀ + τ)) t :=
-    uniqueMDiffWithinAt_iff_uniqueDiffWithinAt.mpr
-      ((uniqueDiffOn_Icc (by linarith : t₀ < t₀ + τ)) t htT)
-  have hdiff : MDifferentiableWithinAt 𝓘(ℝ, ℝ) I
-      (fun r : ℝ => c.lift x r) (Ioo s u) t :=
-    (c.time_slice_contMDiffWithinAt (I := I) (Ioo s u) hc x t htIoo).mdifferentiableWithinAt
-      (by simp)
   have hvel₁ : c.velocity (I := I) (Icc t₀ (t₀ + τ'')) x t =
       c.velocity (I := I) (Icc t₀ (t₀ + τ)) x t :=
     CurveMap.velocity_Icc_of_lt (t₀ := t₀) (σ := τ'') (τ := τ)
       hτ''pos hτ''τ hcT ht
-  have hvel₂ : c.velocity (I := I) (Icc t₀ (t₀ + τ)) x t =
-      c.velocity (I := I) (Ioo s u) x t := by
-    simp only [CurveMap.velocity]
-    rw [mfderivWithin_subset (I := 𝓘(ℝ, ℝ)) (I' := I) hsub huniq hdiff]
   have hc' : c.SmoothOn (I := I) (Icc t₀ (t₀ + τ')) :=
     hcT.mono (Set.prod_mono Subset.rfl (Icc_subset_Icc le_rfl (by linarith)))
   have hpar := parabolic_gauge_velocity (I := I) B.family.metric c hc' himm' x t ht'
@@ -103,10 +80,9 @@ theorem curveShorteningSmoothSolution_of_parabolicGaugeLocalExistence [I.Boundar
   calc
     c.velocity (I := I) (Icc t₀ (t₀ + τ'')) x t =
         c.velocity (I := I) (Icc t₀ (t₀ + τ)) x t := hvel₁
-    _ = c.velocity (I := I) (Ioo s u) x t := hvel₂
     _ = (c.speed B.family.metric x t) ^ (-2 : ℤ) • c.Dx B.family.metric c.X x t -
           (deriv (fun y => c.speed B.family.metric y t) x /
-            c.speed B.family.metric x t ^ 3) • c.X x t := heq x t htIoo
+            c.speed B.family.metric x t ^ 3) • c.X x t := heq x t htT
     _ = c.curvatureVector B.family.metric x t := hgauge
 
 omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
@@ -123,9 +99,8 @@ theorem curveShorteningParabolicGaugeLocalExistence_of_finrank_eq_one [I.Boundar
     (B : SmoothMetricWindow (I := I) (M := M) D a b) :
     curveShorteningParabolicGaugeLocalExistence (I := I) (M := M) B := by
   intro t₀ ht₀ c₀
-  let J : Set ℝ := Ioo (t₀ - 1) (b + 1)
-  refine ⟨t₀ - 1, b + 1, b - t₀, by linarith, by linarith [ht₀.2],
-    sub_pos.mpr ht₀.2, by linarith, by linarith [ht₀.2], staticCurve c₀.map, ?_, ?_, ?_⟩
+  let J : Set ℝ := Icc t₀ (t₀ + (b - t₀))
+  refine ⟨b - t₀, sub_pos.mpr ht₀.2, by linarith, staticCurve c₀.map, ?_, ?_, ?_⟩
   · exact staticCurve_smoothOn c₀.map c₀.smooth J
   · intro z
     rfl
