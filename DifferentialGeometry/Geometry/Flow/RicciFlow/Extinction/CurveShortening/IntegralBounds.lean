@@ -2,6 +2,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.E
 import DifferentialGeometry.Analysis.ODE.Gronwall.Integral
 import DifferentialGeometry.Analysis.Calculus.Derivative.ParametricIntervalIntegral
 import DifferentialGeometry.Analysis.Integration.IntervalGreenIdentity
+import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
 
 noncomputable section
 open Bundle Manifold Set MeasureTheory Filter
@@ -1055,6 +1056,62 @@ theorem weighted_total_curvature_le_of_cutoff_bound
   change ε * (L * (1 + J)) ≤ η at hεsmall
   change _ ≤ _ + Θ * J + _ + η
   nlinarith only [hleft, hright, he, hεsmall]
+
+theorem weighted_total_curvature_le_of_sqrt_cutoff_bound
+    (B : RicciBackground (I := I) (M := M) D a b)
+    (hsu : s < u) (hwindow : Icc s u ⊆ Icc a b)
+    (c : CurveMap M) (hc : c.IsSolutionOn B.family.metric (Icc s u))
+    {p q t L Θ : ℝ} (hpq : p ≤ q) (ht : t ∈ Icc s u)
+    {φ φt : ℝ → ℝ → ℝ} {α β : ℝ}
+    (hφc : ContinuousOn (fun z : ℝ × ℝ => φ z.1 z.2) (Icc p q ×ˢ Icc s u))
+    (hφtc : ContinuousOn (fun z : ℝ × ℝ => φt z.1 z.2) (Icc p q ×ˢ Icc s u))
+    (hφt : ∀ x ∈ Icc p q, ∀ τ ∈ Icc s u,
+      HasDerivWithinAt (fun σ => φ x σ) (φt x τ) (Icc s u) τ)
+    (hφxx : ∀ τ ∈ Ioo s t, ∀ x ∈ Icc p q, ContDiffAt ℝ 2 (fun y => φ y τ) x)
+    (hφrange : ∀ τ ∈ Icc s t, ∀ x ∈ Icc p q, φ x τ ∈ Icc 0 1)
+    (hφboundary : ∀ τ ∈ Ioo s t, φ p τ = 0 ∧ φ q τ = 0 ∧
+      deriv (fun y => φ y τ) p = 0 ∧ deriv (fun y => φ y τ) q = 0)
+    (hα : 0 ≤ α) (hβ : 0 ≤ β)
+    (hcut : ∀ τ ∈ Ioo s t, ∀ x ∈ Icc p q,
+      φt x τ + c.ds B.family.metric (c.ds B.family.metric φ) x τ ≤ α / Real.sqrt (τ - s) + β)
+    (hL : ∀ τ ∈ Icc s t, (∫ x in p..q, c.speed B.family.metric x τ) ≤ L)
+    (hΘ : ∀ τ ∈ Ioo s t,
+      (∫ x in p..q, c.curvature B.family.metric x τ * c.speed B.family.metric x τ) ≤ Θ) :
+    (∫ x in p..q, φ x t * c.curvature B.family.metric x t * c.speed B.family.metric x t) ≤
+      (∫ x in p..q, φ x s * c.curvature B.family.metric x s * c.speed B.family.metric x s) +
+      Θ * (2 * α * Real.sqrt (t - s) + (β + (B.C + B.B₀)) * (t - s)) + B.C * L * (t - s) := by
+  let f := fun τ => (τ - s) ^ (-(1 / 2 : ℝ))
+  have hf : IntervalIntegrable f volume s t := by
+    have h := (intervalIntegral.intervalIntegrable_rpow' (a := 0) (b := t - s)
+      (by norm_num : -1 < -(1 / 2 : ℝ))).comp_sub_right s
+    simpa only [zero_add, sub_add_cancel] using h
+  have hfeq (τ : ℝ) (hτ : s < τ) : α * f τ = α / Real.sqrt (τ - s) := by
+    dsimp only [f]
+    rw [Real.rpow_neg (sub_nonneg.mpr hτ.le), ← Real.sqrt_eq_rpow, div_eq_mul_inv]
+  have hnonneg : ∀ τ ∈ Ioo s t, 0 ≤ α * f τ + β := by
+    intro τ hτ
+    rw [hfeq τ hτ.1]
+    exact add_nonneg (div_nonneg hα (Real.sqrt_nonneg _)) hβ
+  have h := weighted_total_curvature_le_of_cutoff_bound B hsu hwindow c hc hpq ht
+    hφc hφtc hφt hφxx hφrange hφboundary ((hf.const_mul α).add intervalIntegrable_const)
+    hnonneg (fun τ hτ x hx => by rw [hfeq τ hτ.1]; exact hcut τ hτ x hx) hL hΘ
+  have hfi : (∫ τ in s..t, f τ) = 2 * Real.sqrt (t - s) := by
+    rw [show f = (fun τ => (τ - s) ^ (-(1 / 2 : ℝ))) from rfl,
+      intervalIntegral.integral_comp_sub_right (fun x : ℝ => x ^ (-(1 / 2 : ℝ))) s, sub_self,
+      integral_rpow (Or.inl (by norm_num : -1 < -(1 / 2 : ℝ)))]
+    norm_num
+    rw [← Real.sqrt_eq_rpow]
+    ring
+  have hi : (∫ τ in s..t, α * f τ + β + (B.C + B.B₀)) =
+      2 * α * Real.sqrt (t - s) + (β + (B.C + B.B₀)) * (t - s) := by
+    rw [intervalIntegral.integral_add ((hf.const_mul α).add intervalIntegrable_const) intervalIntegrable_const,
+      intervalIntegral.integral_add (hf.const_mul α) intervalIntegrable_const,
+      intervalIntegral.integral_const_mul, hfi,
+      intervalIntegral.integral_const, intervalIntegral.integral_const]
+    simp only [smul_eq_mul]
+    ring
+  exact h.trans_eq (by rw [hi])
+
 
 private theorem derivWithin_length_le (B : RicciBackground (I := I) (M := M) D a b)
     (hsu : s < u) (hwindow : Icc s u ⊆ Icc a b)
