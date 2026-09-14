@@ -350,20 +350,6 @@ def childCoreIntoParent (c : ConnectedComponents Q.Carrier) : C(E.ChildCore c, E
   ⟨fun x => ⟨x.1.1, E.childCore_mem_parent c x⟩,
     (continuous_subtype_val.comp continuous_subtype_val).subtype_mk _⟩
 
-theorem child_simplyConnected (c : ConnectedComponents Q.Carrier)
-    [SimplyConnectedSpace (P.component (E.childParent c)).Carrier] :
-    SimplyConnectedSpace (Q.component c).Carrier := by
-  sorry
-
-include E in
-theorem capped_children_simply_connected
-    (hSC : ∀ p : ConnectedComponents P.Carrier,
-      SimplyConnectedSpace (P.component p).Carrier) :
-    ∀ c : ConnectedComponents Q.Carrier, SimplyConnectedSpace (Q.component c).Carrier := by
-  intro c
-  let := hSC (E.childParent c)
-  exact E.child_simplyConnected c
-
 
 abbrev ChildCapBoundary (c : ConnectedComponents Q.Carrier) :=
   {b : E.trace.tubes.Boundary // ∀ y : Sphere 2,

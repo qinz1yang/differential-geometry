@@ -9937,3 +9937,14 @@ import DifferentialGeometry.Topology.Homology.TriangleBoundary
 import DifferentialGeometry.Topology.Homology.TriangleBoundaryDegree
 import DifferentialGeometry.Topology.Homology.EuclideanSimplexGenerator
 import DifferentialGeometry.Topology.ThreeManifold.LocalOrientationGenerator
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChildCapInterior
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChildCoreNeighborhood
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChildCoreSimplyConnected
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChildSimplyConnected
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TubePuncturedCore
+import DifferentialGeometry.Topology.ClosedBall.OpenAnnulus
+import DifferentialGeometry.Topology.ClosedBall.RadialShell
+import DifferentialGeometry.Topology.ClosedCover
+import DifferentialGeometry.Topology.Connected.ComponentIn
+import DifferentialGeometry.Topology.VanKampen.TwoSidedCollarRestriction
+import DifferentialGeometry.Topology.VanKampen.TwoSidedCollarSimplyConnected
