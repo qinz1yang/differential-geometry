@@ -31,7 +31,7 @@ theorem ancientKappaUniversalKappaGap_of_subcriticalAncientKappaRoundness
   intro kappa F hF
   by_cases hle : universalKappaConstant ≤ kappa
   · exact Or.inr
-      (DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.isAncientKappaSolution_of_kappa_le
+      (CanonicalNeighborhood.isAncientKappaSolution_of_kappa_le
         hF universalKappaConstant_pos hle)
   · exact Or.inl (h kappa hF.kappa_pos (lt_of_not_ge hle) F hF)
 

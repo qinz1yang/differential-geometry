@@ -4981,6 +4981,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.A
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.AreaEvolutionDiniReduction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.AreaEvolutionFrontier
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.AreaEvolutionReduction
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.AreaVariationGluing
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.BackgroundBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Basic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.BoundaryIsotopy
@@ -5166,6 +5167,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.PlateauUppe
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.PlateauUpperComparisonVariation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.PlateauDensityBridge
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.PlateauDensityTransport
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.PlateauDependencyVerdict
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.PlateauFluxComparison
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.PlateauFrontierAudit
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.PlateauFrontierReduction
