@@ -4170,4 +4170,5 @@ import DifferentialGeometry.Analysis.Calculus.SmoothExtension.HalfSpace
 import DifferentialGeometry.Analysis.Calculus.SmoothExtension.Quadrant
 import DifferentialGeometry.Topology.Planar.PolygonGraphCharts
 import DifferentialGeometry.Topology.Planar.PolygonVertexCharts
+import DifferentialGeometry.Topology.Planar.PolygonRounding
 import DifferentialGeometry.Topology.Planar.PolygonIsotopy
