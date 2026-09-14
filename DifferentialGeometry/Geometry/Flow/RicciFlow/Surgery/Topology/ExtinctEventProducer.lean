@@ -222,9 +222,6 @@ private theorem standardNeckCapBoundaryFrame_not_pos
   intro h
   exact standardNeckCapDictionaryFrame_det_not_pos hi hj (hfun ▸ h)
 
-theorem not_nonempty_standardNeckCutCapInputs : ¬ Nonempty StandardNeckCutCapInputs :=
-  not_nonempty_standardNeckCutCapInputs_of_capFrameDeterminant_not_pos
-    fun hi hj => standardNeckCapBoundaryFrame_not_pos hi hj
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 

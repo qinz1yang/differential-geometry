@@ -160,34 +160,4 @@ theorem threeBall_isInteriorPoint_zero : (𝓡∂ 3).IsInteriorPoint (0 : ThreeB
   rw [hy1, norm_zero] at hy2
   exact absurd hy2.symm (by norm_num)
 
-theorem not_standardNeckCutCapInputs_of_capFrameDeterminant_not_pos
-    (hframe : ∀ (hi : Function.Bijective (mfderiv (𝓡∂ 3) ThreeModel
-          (Subtype.val : ThreeBall → ThreeSpace) 0))
-        (hj : Function.Bijective (mfderiv (𝓡∂ 3) ThreeModel
-          (standardNeckCapping.cap (PUnit.unit, false)) 0)),
-      ¬ 0 < sphereOutwardDeterminant 3 (standardNeckCapFun false 0)
-        ((EuclideanSpace.basisFun (Fin 3) ℝ).toBasis.map
-          ((LinearEquiv.ofBijective (mfderiv (𝓡∂ 3) ThreeModel
-              (Subtype.val : ThreeBall → ThreeSpace) 0).toLinearMap hi).symm.trans
-            (LinearEquiv.ofBijective (mfderiv (𝓡∂ 3) ThreeModel
-              (standardNeckCapping.cap (PUnit.unit, false)) 0).toLinearMap hj))))
-    (h : StandardNeckCutCapInputs) : False :=
-  let ⟨hi, hj, heq⟩ := h.cap_positive (PUnit.unit, false) 0 threeBall_isInteriorPoint_zero
-  not_orientation_map_eq_of_sphereOutwardDeterminant_not_pos _
-    (hframe hi hj) heq
-
-theorem not_nonempty_standardNeckCutCapInputs_of_capFrameDeterminant_not_pos
-    (hframe : ∀ (hi : Function.Bijective (mfderiv (𝓡∂ 3) ThreeModel
-          (Subtype.val : ThreeBall → ThreeSpace) 0))
-        (hj : Function.Bijective (mfderiv (𝓡∂ 3) ThreeModel
-          (standardNeckCapping.cap (PUnit.unit, false)) 0)),
-      ¬ 0 < sphereOutwardDeterminant 3 (standardNeckCapFun false 0)
-        ((EuclideanSpace.basisFun (Fin 3) ℝ).toBasis.map
-          ((LinearEquiv.ofBijective (mfderiv (𝓡∂ 3) ThreeModel
-              (Subtype.val : ThreeBall → ThreeSpace) 0).toLinearMap hi).symm.trans
-            (LinearEquiv.ofBijective (mfderiv (𝓡∂ 3) ThreeModel
-              (standardNeckCapping.cap (PUnit.unit, false)) 0).toLinearMap hj)))) :
-    ¬ Nonempty StandardNeckCutCapInputs :=
-  fun ⟨h⟩ => not_standardNeckCutCapInputs_of_capFrameDeterminant_not_pos hframe h
-
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
