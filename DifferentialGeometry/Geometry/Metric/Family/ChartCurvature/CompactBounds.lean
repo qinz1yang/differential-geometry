@@ -1,16 +1,21 @@
 import DifferentialGeometry.Analysis.Calculus.TimeJet.EndpointJets
+import DifferentialGeometry.Geometry.Connection.LeviCivita.Christoffel.Bounds
+import DifferentialGeometry.Geometry.Connection.LeviCivita.Christoffel.Product
 import DifferentialGeometry.Geometry.Metric.Comparison.CompactLowerBound
 import DifferentialGeometry.Geometry.Metric.Product.ChartBounds
 import DifferentialGeometry.Geometry.Metric.Family.ChartCurvature.MetricFamilySmoothOn
 import DifferentialGeometry.Topology.Manifold.FiniteChartBalls
 
 open Set
-open scoped Manifold ContDiff
+open scoped Manifold ContDiff BigOperators
 
 namespace DifferentialGeometry.Geometry.Curvature.MetricFamilySmoothOn
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Geometry.Operator
+open DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Geometry.Riemannian.Geodesic
+open DifferentialGeometry.Tensor.Coordinates
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
   {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
@@ -145,5 +150,64 @@ theorem exists_finite_extChartAt_prod_euclidean_norm_comparison [I.Boundaryless]
   dsimp only at h
   rw [(extChartAt I p).left_inv hq, e.symmL_continuousLinearMapAt he] at h
   exact h
+
+theorem exists_chartChristoffelContraction_bound_on_compact
+    {D : RealTimeInterval} {g : ℝ → SmoothRiemannianMetric I M}
+    (hg : MetricFamilySmoothOn D g) {J : Set ℝ}
+    (hJreg : J ⊆ D.regular) (hJ : UniqueDiffOn ℝ J) (hJc : IsCompact J)
+    {ι : Type*} [Finite ι] (α : ι → M) (K : ι → Set E)
+    (hK : ∀ i, IsCompact (K i)) (hKt : ∀ i, K i ⊆ interior (extChartAt I (α i)).target) :
+    ∃ C : ℝ, 0 < C ∧ ∀ b t, t ∈ J → ∀ x ∈ K b, ∀ u v : E,
+      ‖chartChristoffelContraction (g t) (α b) u v x‖ ≤ C * ‖u‖ * ‖v‖ := by
+  obtain ⟨B, hB, hb⟩ := exists_chartChristoffel_jet_bound_on_compact hg hJreg hJ hJc α K hK hKt 0
+  let C := B * (∑ i, ‖((chartModelBasis E).coord i).toContinuousLinearMap‖) ^ 2 *
+    (∑ k, ‖chartModelBasis E k‖)
+  have hC : 0 ≤ C := by positivity
+  refine ⟨C + 1, by positivity, ?_⟩
+  intro b t ht x hx u v
+  have hb' (i j k) : ‖chartChristoffel (g t) (α b) i j k x‖ ≤ B := by
+    simpa only [norm_iteratedFDeriv_zero] using hb b i j k t ht x hx
+  exact (norm_chartChristoffelContraction_le (g t) (α b) x u v hB.le hb').trans
+    (mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right
+      (by linarith : C ≤ C + 1) (norm_nonneg u)) (norm_nonneg v))
+
+
+theorem exists_finite_extChartAt_prod_euclidean_bounds [I.Boundaryless] [CompactSpace M]
+    [T2Space M] {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDimensional ℝ V]
+    {D : RealTimeInterval} {g : ℝ → SmoothRiemannianMetric I M}
+    (hg : MetricFamilySmoothOn D g) {J : Set ℝ}
+    (hJreg : J ⊆ D.regular) (hJ : UniqueDiffOn ℝ J) (hJc : IsCompact J) :
+    ∃ ρ C B : ℝ, 0 < ρ ∧ 0 < C ∧ 0 < B ∧ ∃ S : Finset M, ∃ K : M → Set E,
+      (∀ p ∈ S, IsCompact (K p) ∧ K p ⊆ (extChartAt I p).target) ∧
+      (∀ q, ∃ p ∈ S, q ∈ (extChartAt I p).source ∧
+        Metric.closedBall (extChartAt I p q) ρ ⊆ K p) ∧
+      (∀ p ∈ S, ∀ t ∈ J, ∀ q ∈ (extChartAt I p).source, extChartAt I p q ∈ K p →
+        ∀ z₀ z : V, ∀ v : TangentSpace (I.prod 𝓘(ℝ, V)) (q, z),
+          Real.sqrt (((g t).prod (euclideanMetric (E := V))).inner (q, z) v v) ≤ C *
+            ‖(trivializationAt (E × V) (TangentSpace (I.prod 𝓘(ℝ, V))) (p, z₀)).continuousLinearMapAt
+              ℝ (q, z) v‖ ∧
+          ‖(trivializationAt (E × V) (TangentSpace (I.prod 𝓘(ℝ, V))) (p, z₀)).continuousLinearMapAt
+              ℝ (q, z) v‖ ≤
+            C * Real.sqrt (((g t).prod (euclideanMetric (E := V))).inner (q, z) v v)) ∧
+      (∀ p ∈ S, ∀ t ∈ J, ∀ q ∈ (extChartAt I p).source, extChartAt I p q ∈ K p →
+        ∀ z₀ z : V, ∀ u v : E × V,
+          ‖chartChristoffelContraction ((g t).prod (euclideanMetric (E := V))) (p, z₀) u v
+            (extChartAt I p q, z)‖ ≤ B * ‖u‖ * ‖v‖) := by
+  obtain ⟨ρ, C, hρ, hC, S, K, hK, hcover, hnorm⟩ :=
+    exists_finite_extChartAt_prod_euclidean_norm_comparison (V := V) hg hJreg hJc
+  have hKt (p : S) : K p ⊆ interior (extChartAt I (p : M)).target := by
+    rw [(isOpen_extChartAt_target (I := I) (p : M)).interior_eq]
+    exact (hK p p.property).2
+  obtain ⟨B, hB, hΓ⟩ := exists_chartChristoffelContraction_bound_on_compact hg hJreg hJ hJc
+    (fun p : S => (p : M)) (fun p => K p) (fun p => (hK p p.property).1) hKt
+  refine ⟨ρ, C, B, hρ, hC, hB, S, K, hK, hcover, hnorm, ?_⟩
+  intro p hp t ht q hq hx z₀ z u v
+  have hgood : q ∈ chartLeviCivitaGoodSet (I := I) p := by
+    rwa [chartLeviCivitaGoodSet_eq_extChartAt_source]
+  rw [chartChristoffelContraction_prod_euclideanMetric (g t) p hgood,
+    Prod.norm_def, norm_zero, max_eq_left (norm_nonneg _)]
+  exact (hΓ ⟨p, hp⟩ t ht (extChartAt I p q) hx u.1 v.1).trans
+    (mul_le_mul (mul_le_mul_of_nonneg_left (norm_fst_le u) hB.le)
+      (norm_fst_le v) (norm_nonneg _) (mul_nonneg hB.le (norm_nonneg u)))
 
 end DifferentialGeometry.Geometry.Curvature.MetricFamilySmoothOn

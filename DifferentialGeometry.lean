@@ -3832,6 +3832,7 @@ import DifferentialGeometry.Geometry.Connection.LeviCivita.Chart.LogDensity
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Chart.Metric
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Chart.Smoothness
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Chart.Torsion
+import DifferentialGeometry.Geometry.Connection.LeviCivita.Christoffel.Bounds
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Christoffel.CorrectionAtBasepoint
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Christoffel.CorrectionContraction
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Christoffel.DifferenceKoszul
