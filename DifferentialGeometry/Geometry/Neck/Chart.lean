@@ -6,6 +6,7 @@ open scoped Manifold ContDiff
 open DifferentialGeometry DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Metric
+open DifferentialGeometry.Geometry.Operator
 
 namespace DifferentialGeometry.Geometry.Neck
 
@@ -47,6 +48,25 @@ def cylindricalChart.metricCloseOn (C : cylindricalChart J (M := M))
       ((roundCylinderMetric (E := EuclideanSpace ℝ (Fin 3)) (n := 2)).restrictOpen C.domain)
       ((roundCylinderMetric (E := EuclideanSpace ℝ (Fin 3)) (n := 2)).restrictOpen C.domain) x ≤ ε
 
+theorem cylindricalChart.exists_least_ricci_field_close_to_gradient [BoundarylessManifold J M]
+    (C : cylindricalChart J (M := M)) (g : SmoothRiemannianMetric J M)
+    {U : Set C.domain} (hU : IsOpen U) (ε : ℝ) (hε : ε < 1 / 200000)
+    (hsmall : C.metricCloseOn g ε U) :
+    ∃ (ν : M → ℝ) (Y : ∀ y : M, TangentSpace J y),
+      ContMDiffOn J 𝓘(ℝ) ∞ C.axial C.target ∧
+      ContMDiffOn J 𝓘(ℝ) ∞ ν (C.region U) ∧
+      ContMDiffOn J J.tangent ∞ (fun y ↦ (⟨y, Y y⟩ : TangentBundle J M)) (C.region U) ∧
+      ∀ y ∈ C.region U, g.inner y (Y y) (Y y) = 1 ∧
+        ricciSharp g y (Y y) = ν y • Y y ∧
+        (∀ z : TangentSpace J y, g.inner y z z = 1 → ν y ≤ ricciTensor g y z z) ∧
+        |ν y| ≤ 5772 * C.scale * ε ∧
+        Module.End.eigenspace (ricciSharp g y).toLinearMap (ν y) = Submodule.span ℝ {Y y} ∧
+        0 < mvfderiv J C.axial y (Y y) ∧ |mvfderiv J C.axial y (Y y) - 1| ≤ 92354 * ε ∧
+        Real.sqrt (g.inner y (Y y - gradFun g C.axial y)
+          (Y y - gradFun g C.axial y)) ≤ 184712 * ε :=
+  DifferentialGeometry.Geometry.Curvature.exists_ambient_least_ricci_field_close_to_gradient_from_neck_chart
+    C.domain C.target g C.chart C.scale C.scale_pos hU ε hε hsmall
+
 theorem cylindricalChart.exists_least_ricci_field [BoundarylessManifold J M]
     (C : cylindricalChart J (M := M)) (g : SmoothRiemannianMetric J M)
     {U : Set C.domain} (hU : IsOpen U) (ε : ℝ) (hε : ε < 1 / 200000)
@@ -60,8 +80,11 @@ theorem cylindricalChart.exists_least_ricci_field [BoundarylessManifold J M]
         (∀ z : TangentSpace J y, g.inner y z z = 1 → ν y ≤ ricciTensor g y z z) ∧
         |ν y| ≤ 5772 * C.scale * ε ∧
         Module.End.eigenspace (ricciSharp g y).toLinearMap (ν y) = Submodule.span ℝ {Y y} ∧
-        0 < mvfderiv J C.axial y (Y y) ∧ |mvfderiv J C.axial y (Y y) - 1| ≤ 92354 * ε :=
-  DifferentialGeometry.Geometry.Curvature.exists_ambient_least_ricci_field_from_neck_chart
-    C.domain C.target g C.chart C.scale C.scale_pos hU ε hε hsmall
+        0 < mvfderiv J C.axial y (Y y) ∧ |mvfderiv J C.axial y (Y y) - 1| ≤ 92354 * ε := by
+  obtain ⟨ν, Y, hu, hν, hY, hprop⟩ := C.exists_least_ricci_field_close_to_gradient g hU ε hε hsmall
+  refine ⟨ν, Y, hu, hν, hY, ?_⟩
+  intro y hy
+  obtain ⟨hn, he, hm, hb, hs, hp, hd, _⟩ := hprop y hy
+  exact ⟨hn, he, hm, hb, hs, hp, hd⟩
 
 end DifferentialGeometry.Geometry.Neck
