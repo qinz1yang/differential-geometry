@@ -210,4 +210,70 @@ theorem exists_finite_extChartAt_prod_euclidean_bounds [I.Boundaryless] [Compact
     (mul_le_mul (mul_le_mul_of_nonneg_left (norm_fst_le u) hB.le)
       (norm_fst_le v) (norm_nonneg _) (mul_nonneg hB.le (norm_nonneg u)))
 
+theorem exists_finite_extChartAt_prod_euclidean_linear_bounds [I.Boundaryless] [CompactSpace M]
+    [T2Space M] {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDimensional ℝ V]
+    {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F] (A : (E × V) ≃L[ℝ] F)
+    {D : RealTimeInterval} {g : ℝ → SmoothRiemannianMetric I M}
+    (hg : MetricFamilySmoothOn D g) {J : Set ℝ}
+    (hJreg : J ⊆ D.regular) (hJ : UniqueDiffOn ℝ J) (hJc : IsCompact J) :
+    ∃ ρ C B : ℝ, 0 < ρ ∧ 0 < C ∧ 0 < B ∧ ∃ S : Finset M, ∃ K : M → Set E,
+      (∀ p ∈ S, IsCompact (K p) ∧ K p ⊆ (extChartAt I p).target) ∧
+      (∀ q, ∃ p ∈ S, q ∈ (extChartAt I p).source ∧
+        Metric.closedBall (extChartAt I p q) ρ ⊆ K p) ∧
+      (∀ p ∈ S, ∀ t ∈ J, ∀ q ∈ (extChartAt I p).source, extChartAt I p q ∈ K p →
+        ∀ z₀ z : V, ∀ v : TangentSpace (I.prod 𝓘(ℝ, V)) (q, z),
+          Real.sqrt (((g t).prod (euclideanMetric (E := V))).inner (q, z) v v) ≤ C *
+            ‖A ((trivializationAt (E × V) (TangentSpace (I.prod 𝓘(ℝ, V))) (p, z₀)).continuousLinearMapAt
+              ℝ (q, z) v)‖ ∧
+          ‖A ((trivializationAt (E × V) (TangentSpace (I.prod 𝓘(ℝ, V))) (p, z₀)).continuousLinearMapAt
+              ℝ (q, z) v)‖ ≤
+            C * Real.sqrt (((g t).prod (euclideanMetric (E := V))).inner (q, z) v v)) ∧
+      (∀ p ∈ S, ∀ t ∈ J, ∀ q ∈ (extChartAt I p).source, extChartAt I p q ∈ K p →
+        ∀ z₀ z : V, ∀ u v : E × V,
+          ‖A (chartChristoffelContraction ((g t).prod (euclideanMetric (E := V))) (p, z₀) u v
+            (extChartAt I p q, z))‖ ≤ B * ‖A u‖ * ‖A v‖) := by
+  obtain ⟨ρ, C, B, hρ, hC, hB, S, K, hK, hcover, hnorm, hΓ⟩ :=
+    exists_finite_extChartAt_prod_euclidean_bounds (V := V) hg hJreg hJ hJc
+  let a := ‖A.toContinuousLinearMap‖
+  let b := ‖A.symm.toContinuousLinearMap‖
+  let d := a + b + 1
+  have ha : 0 ≤ a := by dsimp [a]; positivity
+  have hb : 0 ≤ b := by dsimp [b]; positivity
+  have hd : 0 < d := by dsimp [d]; positivity
+  have had : a ≤ d := by dsimp [d]; linarith
+  have hbd : b ≤ d := by dsimp [d]; linarith
+  have hA (v : E × V) : ‖A v‖ ≤ a * ‖v‖ := A.toContinuousLinearMap.le_opNorm v
+  have hAi (v : E × V) : ‖v‖ ≤ b * ‖A v‖ := by
+    simpa only [ContinuousLinearEquiv.coe_coe, A.symm_apply_apply] using
+      A.symm.toContinuousLinearMap.le_opNorm (A v)
+  refine ⟨ρ, C * d, a * B * b ^ 2 + 1, hρ, mul_pos hC hd, by positivity,
+    S, K, hK, hcover, ?_, ?_⟩
+  · intro p hp t ht q hq hx z₀ z v
+    let w := (trivializationAt (E × V) (TangentSpace (I.prod 𝓘(ℝ, V))) (p, z₀)).continuousLinearMapAt
+      ℝ (q, z) v
+    obtain ⟨hlow, hupp⟩ := hnorm p hp t ht q hq hx z₀ z v
+    constructor
+    · calc
+        _ ≤ C * ‖w‖ := hlow
+        _ ≤ C * (b * ‖A w‖) := mul_le_mul_of_nonneg_left (hAi w) hC.le
+        _ ≤ C * d * ‖A w‖ := by
+          simpa only [mul_assoc] using mul_le_mul_of_nonneg_left
+            (mul_le_mul_of_nonneg_right hbd (norm_nonneg (A w))) hC.le
+    · calc
+        ‖A w‖ ≤ a * ‖w‖ := hA w
+        _ ≤ a * (C * Real.sqrt _) := mul_le_mul_of_nonneg_left hupp ha
+        _ ≤ C * d * Real.sqrt _ := by
+          nlinarith only [mul_le_mul_of_nonneg_right had
+            (mul_nonneg hC.le (Real.sqrt_nonneg (((g t).prod euclideanMetric).inner (q, z) v v)))]
+  · intro p hp t ht q hq hx z₀ z u v
+    have h := mul_le_mul_of_nonneg_left (hΓ p hp t ht q hq hx z₀ z u v) ha
+    have hprod := mul_le_mul (hAi u) (hAi v) (norm_nonneg _) (mul_nonneg hb (norm_nonneg _))
+    have hprod' := mul_le_mul_of_nonneg_left hprod (mul_nonneg ha hB.le)
+    calc
+      _ ≤ a * ‖chartChristoffelContraction ((g t).prod euclideanMetric) (p, z₀) u v
+          (extChartAt I p q, z)‖ := hA _
+      _ ≤ a * (B * ‖u‖ * ‖v‖) := h
+      _ ≤ (a * B * b ^ 2 + 1) * ‖A u‖ * ‖A v‖ := by
+        nlinarith only [hprod', mul_nonneg (norm_nonneg (A u)) (norm_nonneg (A v))]
+
 end DifferentialGeometry.Geometry.Curvature.MetricFamilySmoothOn
