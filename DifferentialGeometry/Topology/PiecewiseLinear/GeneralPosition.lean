@@ -1496,6 +1496,52 @@ theorem isPLHomeomorphOn_affineImage {F : Type*} [NormedAddCommGroup F] [NormedS
     (simplicialMap_eqOn_affine K A.toAffineMap).symm
 
 open Classical in
+theorem exists_small_homeomorph_transverse_affineImage [FiniteDimensional ℝ E]
+    (K L : Geometry.SimplicialComplex ℝ E) [Finite K.faces] [Finite L.faces]
+    {U : Set E} (hU : IsOpen U) (hKU : K.space ⊆ U) {ε : ℝ} (hε : 0 < ε) :
+    ∃ (a : E) (h : E → E), ‖a‖ < ε ∧ IsPLHomeomorphOn h univ univ ∧
+      (∀ x, dist (h x) x < ε) ∧ EqOn h id Uᶜ ∧
+      (affineImage K (AffineEquiv.constVAdd ℝ E a)).space = h '' K.space ∧
+      ∀ s ∈ (affineImage K (AffineEquiv.constVAdd ℝ E a)).faces, ∀ t ∈ L.faces,
+        (convexHull ℝ (s : Set E) ∩ convexHull ℝ (t : Set E)).Nonempty →
+          vectorSpan ℝ (s : Set E) ⊔ vectorSpan ℝ (t : Set E) = ⊤ := by
+  obtain ⟨a, h, ha, hh, hclose, hfix, heq, htrans⟩ :=
+    exists_small_homeomorph_transverse_faces K L hU hKU hε
+  let A := AffineEquiv.constVAdd ℝ E a
+  have hA : (A : E → E) = fun x => x + a := by
+    funext x
+    change a + x = x + a
+    exact add_comm _ _
+  have hKA : (affineImage K A).space = h '' K.space := by
+    rw [affineImage_space, hA]
+    exact image_congr heq.symm
+  refine ⟨a, h, ha, hh, hclose, hfix, hKA, ?_⟩
+  have hspan : ∀ s : Finset E, vectorSpan ℝ ((s.image A : Finset E) : Set E) =
+      vectorSpan ℝ (s : Set E) := by
+    intro s
+    rw [Finset.coe_image]
+    change vectorSpan ℝ (A.toAffineMap '' (s : Set E)) = vectorSpan ℝ (s : Set E)
+    rw [← A.toAffineMap.map_vectorSpan]
+    change Submodule.map (LinearMap.id : E →ₗ[ℝ] E) (vectorSpan ℝ (s : Set E)) =
+      vectorSpan ℝ (s : Set E)
+    exact Submodule.map_id _
+  intro s hs t ht hinter
+  obtain ⟨u, hu, rfl⟩ := (mem_affineImage_faces_iff K A).mp hs
+  rw [hspan]
+  apply htrans u hu t ht
+  have hhull : convexHull ℝ ((u.image A : Finset E) : Set E) =
+      h '' convexHull ℝ (u : Set E) := by
+    rw [Finset.coe_image]
+    change convexHull ℝ (A.toAffineMap '' (u : Set E)) = h '' convexHull ℝ (u : Set E)
+    rw [← A.toAffineMap.image_convexHull]
+    apply image_congr
+    intro x hx
+    change A x = h x
+    rw [hA]
+    exact (heq (K.convexHull_subset_space hu hx)).symm
+  rwa [hhull] at hinter
+
+open Classical in
 theorem exists_small_homeomorph_inter_isCombinatorialManifoldWithBoundary [FiniteDimensional ℝ E]
     (K L : Geometry.SimplicialComplex ℝ E) [Finite K.faces] [Finite L.faces] {m n : ℕ}
     (hK : IsCombinatorialManifoldWithBoundary (m + 1) K)
@@ -1506,49 +1552,15 @@ theorem exists_small_homeomorph_inter_isCombinatorialManifoldWithBoundary [Finit
       IsPLHomeomorphOn h univ univ ∧ (∀ x, dist (h x) x < ε) ∧ EqOn h id Uᶜ ∧
         G.faces.Finite ∧ G.space = h '' K.space ∩ L.space ∧
           IsCombinatorialManifoldWithBoundary 1 G := by
-  obtain ⟨a, h, _, hh, hclose, hfix, heq, htrans⟩ :=
-    exists_small_homeomorph_transverse_faces K L hU hKU hε
+  obtain ⟨a, h, _, hh, hclose, hfix, hKA, htrans⟩ :=
+    exists_small_homeomorph_transverse_affineImage K L hU hKU hε
   let A := AffineEquiv.constVAdd ℝ E a
   let K' := affineImage K A
   have : Finite K'.faces := (affineImage_faces_finite K A).to_subtype
-  have hA : (A : E → E) = fun x => x + a := by
-    funext x
-    change a + x = x + a
-    exact add_comm _ _
-  have hKA : K'.space = h '' K.space := by
-    rw [affineImage_space, hA]
-    exact image_congr heq.symm
   have hK' : IsCombinatorialManifoldWithBoundary (m + 1) K' :=
     hK.of_isPLHomeomorphOn (isPLHomeomorphOn_affineImage K A)
-  have hspan : ∀ s : Finset E, vectorSpan ℝ ((s.image A : Finset E) : Set E) =
-      vectorSpan ℝ (s : Set E) := by
-    intro s
-    rw [Finset.coe_image]
-    change vectorSpan ℝ (A.toAffineMap '' (s : Set E)) = vectorSpan ℝ (s : Set E)
-    rw [← A.toAffineMap.map_vectorSpan]
-    change Submodule.map (LinearMap.id : E →ₗ[ℝ] E) (vectorSpan ℝ (s : Set E)) =
-      vectorSpan ℝ (s : Set E)
-    exact Submodule.map_id _
-  have htrans' : ∀ s ∈ K'.faces, ∀ t ∈ L.faces,
-      (convexHull ℝ (s : Set E) ∩ convexHull ℝ (t : Set E)).Nonempty →
-        vectorSpan ℝ (s : Set E) ⊔ vectorSpan ℝ (t : Set E) = ⊤ := by
-    intro s hs t ht hinter
-    obtain ⟨u, hu, rfl⟩ := (mem_affineImage_faces_iff K A).mp hs
-    rw [hspan]
-    apply htrans u hu t ht
-    have hhull : convexHull ℝ ((u.image A : Finset E) : Set E) =
-        h '' convexHull ℝ (u : Set E) := by
-      rw [Finset.coe_image]
-      change convexHull ℝ (A.toAffineMap '' (u : Set E)) = h '' convexHull ℝ (u : Set E)
-      rw [← A.toAffineMap.image_convexHull]
-      apply image_congr
-      intro x hx
-      change A x = h x
-      rw [hA]
-      exact (heq (K.convexHull_subset_space hu hx)).symm
-    rwa [hhull] at hinter
   obtain ⟨G, hGfin, hGspace, hGman⟩ :=
-    exists_isCombinatorialManifoldWithBoundary_inter_of_transverse_faces K' L hK' hL hdimE htrans'
+    exists_isCombinatorialManifoldWithBoundary_inter_of_transverse_faces K' L hK' hL hdimE htrans
   rw [hKA] at hGspace
   exact ⟨h, G, hh, hclose, hfix, hGfin, hGspace, hGman⟩
 
@@ -2067,5 +2079,216 @@ theorem exists_isPLHomeomorphOn_linearize_codimension_one [FiniteDimensional ℝ
   · obtain ⟨u, h, huT, hu, hh, hhx, hT, hlocal⟩ :=
       exists_isPLHomeomorphOn_linearize_coface_pair K hs hbound hx hab habset T hcompl
     exact ⟨u, h, huT, hu, hh, hhx, hT, Or.inl hlocal⟩
+
+theorem exists_linearMap_eq_one_halfSpace {V : Type*} [AddCommGroup V] [Module ℝ V]
+    (S : Submodule ℝ V) {u : V} (hu : u ∉ S) :
+    ∃ ℓ : V →ₗ[ℝ] ℝ, S ≤ LinearMap.ker ℓ ∧ ℓ u = 1 ∧
+      ∀ x, (∃ z ∈ S, ∃ r : ℝ, 0 ≤ r ∧ x = z + r • u) ↔
+        x ∈ S ⊔ Submodule.span ℝ {u} ∧ 0 ≤ ℓ x := by
+  obtain ⟨ℓ, hℓ, hℓu⟩ := LinearMap.exists_extend_of_notMem (0 : S →ₗ[ℝ] ℝ) hu 1
+  have hker : S ≤ LinearMap.ker ℓ := by
+    intro x hx
+    exact congrArg (fun L : S →ₗ[ℝ] ℝ => L ⟨x, hx⟩) hℓ
+  have heval : ∀ z ∈ S, ∀ r : ℝ, ℓ (z + r • u) = r := by
+    intro z hz r
+    have hz0 : ℓ z = 0 := hker hz
+    rw [map_add, map_smul, hz0, hℓu, smul_eq_mul, mul_one, zero_add]
+  refine ⟨ℓ, hker, hℓu, fun x => ?_⟩
+  constructor
+  · rintro ⟨z, hz, r, hr, rfl⟩
+    refine ⟨Submodule.add_mem _ (Submodule.mem_sup_left hz)
+      (Submodule.mem_sup_right (Submodule.smul_mem _ _ (Submodule.subset_span (Set.mem_singleton u)))), ?_⟩
+    rw [heval z hz r]
+    exact hr
+  · rintro ⟨hx, hpos⟩
+    obtain ⟨z, hz, w, hw, hzw⟩ := Submodule.mem_sup.mp hx
+    obtain ⟨r, rfl⟩ := Submodule.mem_span_singleton.mp hw
+    have hr : 0 ≤ r := by rwa [← hzw, heval z hz r] at hpos
+    exact ⟨z, hz, r, hr, hzw.symm⟩
+
+def HasPLCrossingAt (A B : Set E) (x : E) : Prop :=
+  ∃ (U V : Set E) (h : E → E) (P Q : Submodule ℝ E) (α β : E →ₗ[ℝ] ℝ),
+    IsOpen U ∧ IsOpen V ∧ x ∈ U ∧ IsPLHomeomorphOn h U V ∧ h x = 0 ∧
+      Module.finrank ℝ P = 2 ∧ Module.finrank ℝ Q = 2 ∧
+      Module.finrank ℝ (P ⊓ Q : Submodule ℝ E) = 1 ∧ P ⊔ Q = ⊤ ∧
+      (α = 0 ∨ ∃ u ∈ P ⊓ Q, α u ≠ 0) ∧ (β = 0 ∨ ∃ u ∈ P ⊓ Q, β u ≠ 0) ∧
+      (α = 0 ∨ β = 0) ∧ ∀ᶠ y in 𝓝 x,
+        (y ∈ A ↔ h y ∈ P ∧ 0 ≤ α (h y)) ∧ (y ∈ B ↔ h y ∈ Q ∧ 0 ≤ β (h y))
+
+theorem HasPLCrossingAt.symm {A B : Set E} {x : E} (hAB : HasPLCrossingAt A B x) :
+    HasPLCrossingAt B A x := by
+  obtain ⟨U, V, h, P, Q, α, β, hU, hV, hxU, hh, hhx, hP, hQ, hI, hsup, hα, hβ, hzero, hlocal⟩ := hAB
+  refine ⟨U, V, h, Q, P, β, α, hU, hV, hxU, hh, hhx, hQ, hP, ?_, ?_, ?_, ?_, hzero.symm, ?_⟩
+  · exact (congrArg (fun R : Submodule ℝ E => Module.finrank ℝ R) (inf_comm Q P)).trans hI
+  · simpa only [sup_comm] using hsup
+  · simpa only [inf_comm] using hβ
+  · simpa only [inf_comm] using hα
+  · filter_upwards [hlocal] with y hy
+    exact hy.symm
+
+open Classical in
+theorem hasPLCrossingAt_of_codimension_one [FiniteDimensional ℝ E]
+    (K L : Geometry.SimplicialComplex ℝ E) [Finite K.faces] [Finite L.faces]
+    (hK : IsCombinatorialManifoldWithBoundary 2 K) (hL : IsCombinatorialManifoldWithBoundary 2 L)
+    (hdimE : Module.finrank ℝ E = 3) {s t : Finset E} (hs : s ∈ K.faces) (ht : t ∈ L.faces)
+    (hsc : s.card = 2) (htc : t.card = 3) {x : E} (hxs : x ∈ openSimplex s)
+    (hxt : x ∈ openSimplex t)
+    (hcompl : IsCompl (vectorSpan ℝ (s : Set E)) (vectorSpan ℝ (t : Set E))) :
+    HasPLCrossingAt K.space L.space x := by
+  let S := vectorSpan ℝ (s : Set E)
+  let T := vectorSpan ℝ (t : Set E)
+  have hSdim : Module.finrank ℝ S = 1 := by
+    have h := (K.indep hs).finrank_vectorSpan (show Fintype.card s = 1 + 1 by
+      simpa only [Fintype.card_coe] using hsc)
+    have hrange : Set.range ((↑) : s → E) = (s : Set E) := by ext y; simp
+    change Module.finrank ℝ (vectorSpan ℝ (Set.range ((↑) : s → E))) = 1 at h
+    rwa [hrange] at h
+  have hTdim : Module.finrank ℝ T = 2 := by
+    have h := (L.indep ht).finrank_vectorSpan (show Fintype.card t = 2 + 1 by
+      simpa only [Fintype.card_coe] using htc)
+    have hrange : Set.range ((↑) : t → E) = (t : Set E) := by ext y; simp
+    change Module.finrank ℝ (vectorSpan ℝ (Set.range ((↑) : t → E))) = 2 at h
+    rwa [hrange] at h
+  have htmax : ∀ u ∈ L.faces, t ⊆ u → u.card ≤ t.card := by
+    intro u hu _
+    rw [htc]
+    exact hL.card_le L hu
+  obtain ⟨u, h, huT, hu, hh, hhx, hT, hmodel⟩ :=
+    exists_isPLHomeomorphOn_linearize_codimension_one K hK hs hsc hxs T hcompl
+  have huS : u ∉ S := fun h => hu (Submodule.disjoint_def.mp hcompl.disjoint _ h huT)
+  let P : Submodule ℝ E := S ⊔ Submodule.span ℝ {u}
+  have huP : u ∈ P := Submodule.mem_sup_right (Submodule.subset_span (Set.mem_singleton u))
+  have hspan1 : Module.finrank ℝ (Submodule.span ℝ ({u} : Set E)) = 1 := finrank_span_singleton hu
+  have hI0 : Module.finrank ℝ (S ⊓ Submodule.span ℝ {u} : Submodule ℝ E) = 0 :=
+    Submodule.finrank_eq_zero.mpr (disjoint_iff.mp (Submodule.disjoint_span_singleton_of_notMem huS))
+  have hdim := Submodule.finrank_sup_add_finrank_inf_eq S (Submodule.span ℝ {u})
+  have hPdim : Module.finrank ℝ P = 2 := by
+    change Module.finrank ℝ P + Module.finrank ℝ (S ⊓ Submodule.span ℝ {u} : Submodule ℝ E) =
+      Module.finrank ℝ S + Module.finrank ℝ (Submodule.span ℝ ({u} : Set E)) at hdim
+    omega
+  have hPQT : P ⊔ T = ⊤ := by
+    apply top_unique
+    rw [← hcompl.sup_eq_top]
+    exact sup_le_sup le_sup_left le_rfl
+  have hdimPT := Submodule.finrank_sup_add_finrank_inf_eq P T
+  rw [hPQT] at hdimPT
+  have hIdim : Module.finrank ℝ (P ⊓ T : Submodule ℝ E) = 1 := by
+    have hdim' : Module.finrank ℝ E + Module.finrank ℝ (P ⊓ T : Submodule ℝ E) =
+        Module.finrank ℝ P + Module.finrank ℝ T := by simpa using hdimPT
+    omega
+  have hLmodel : ∀ᶠ y in 𝓝 x, y ∈ L.space ↔ h y ∈ T := by
+    filter_upwards [eventually_mem_space_iff_sub_mem_vectorSpan L ht htmax hxt] with y hy
+    exact hy.trans (hT y)
+  rcases hmodel with hfull | hhalf
+  · refine ⟨univ, univ, h, P, T, 0, 0, isOpen_univ, isOpen_univ, mem_univ x,
+      hh, hhx, hPdim, hTdim, hIdim, hPQT, Or.inl rfl, Or.inl rfl, Or.inl rfl, ?_⟩
+    filter_upwards [hfull, hLmodel] with y hyK hyL
+    constructor
+    · simpa only [LinearMap.zero_apply, le_refl, and_true] using hyK
+    · simpa only [LinearMap.zero_apply, le_refl, and_true] using hyL
+  · obtain ⟨ℓ, _, hℓu, hℓmodel⟩ := exists_linearMap_eq_one_halfSpace S huS
+    have hℓne : ℓ u ≠ 0 := by rw [hℓu]; norm_num
+    refine ⟨univ, univ, h, P, T, ℓ, 0, isOpen_univ, isOpen_univ, mem_univ x,
+      hh, hhx, hPdim, hTdim, hIdim, hPQT, Or.inr ⟨u, ⟨huP, huT⟩, hℓne⟩,
+        Or.inl rfl, Or.inr rfl, ?_⟩
+    filter_upwards [hhalf, hLmodel] with y hyK hyL
+    constructor
+    · exact hyK.trans (hℓmodel (h y))
+    · simpa only [LinearMap.zero_apply, le_refl, and_true] using hyL
+
+open Classical in
+theorem hasPLCrossingAt_of_transverse_faces [FiniteDimensional ℝ E]
+    (K L : Geometry.SimplicialComplex ℝ E) [Finite K.faces] [Finite L.faces]
+    (hK : IsCombinatorialManifoldWithBoundary 2 K) (hL : IsCombinatorialManifoldWithBoundary 2 L)
+    (hdimE : Module.finrank ℝ E = 3)
+    (htrans : ∀ s ∈ K.faces, ∀ t ∈ L.faces,
+      (convexHull ℝ (s : Set E) ∩ convexHull ℝ (t : Set E)).Nonempty →
+        vectorSpan ℝ (s : Set E) ⊔ vectorSpan ℝ (t : Set E) = ⊤)
+    {x : E} (hx : x ∈ K.space ∩ L.space) : HasPLCrossingAt K.space L.space x := by
+  obtain ⟨s, hs, hxs⟩ := exists_face_mem_openSimplex K hx.1
+  obtain ⟨t, ht, hxt⟩ := exists_face_mem_openSimplex L hx.2
+  have hst := htrans s hs t ht ⟨x, openSimplex_subset_convexHull _ hxs,
+    openSimplex_subset_convexHull _ hxt⟩
+  have hfaceRank : ∀ (P : Geometry.SimplicialComplex ℝ E) (u : Finset E), u ∈ P.faces →
+      Module.finrank ℝ (vectorSpan ℝ (u : Set E)) + 1 = u.card := by
+    intro P u hu
+    obtain ⟨v, hv⟩ := P.nonempty_of_mem_faces hu
+    have : Nonempty u := ⟨⟨v, hv⟩⟩
+    have hrange : Set.range ((↑) : u → E) = (u : Set E) := by ext y; simp
+    have h := (P.indep hu).finrank_vectorSpan_add_one
+    change Module.finrank ℝ (vectorSpan ℝ (Set.range ((↑) : u → E))) + 1 = Fintype.card u at h
+    rw [hrange] at h
+    simpa only [Fintype.card_coe] using h
+  have hsRank := hfaceRank K s hs
+  have htRank := hfaceRank L t ht
+  have hdim := Submodule.finrank_sup_add_finrank_inf_eq
+    (vectorSpan ℝ (s : Set E)) (vectorSpan ℝ (t : Set E))
+  rw [hst] at hdim
+  have hdim' : Module.finrank ℝ E +
+      Module.finrank ℝ (vectorSpan ℝ (s : Set E) ⊓ vectorSpan ℝ (t : Set E) : Submodule ℝ E) =
+        Module.finrank ℝ (vectorSpan ℝ (s : Set E)) +
+          Module.finrank ℝ (vectorSpan ℝ (t : Set E)) := by simpa using hdim
+  have hsbound := hK.card_le K hs
+  have htbound := hL.card_le L ht
+  have hcases : (s.card = 2 ∧ t.card = 3) ∨ (s.card = 3 ∧ t.card = 2) ∨
+      (s.card = 3 ∧ t.card = 3) := by omega
+  rcases hcases with ⟨hsc, htc⟩ | ⟨hsc, htc⟩ | ⟨hsc, htc⟩
+  · have hinf : Module.finrank ℝ
+        (vectorSpan ℝ (s : Set E) ⊓ vectorSpan ℝ (t : Set E) : Submodule ℝ E) = 0 := by omega
+    exact hasPLCrossingAt_of_codimension_one K L hK hL hdimE hs ht hsc htc hxs hxt
+      (IsCompl.of_eq (Submodule.finrank_eq_zero.mp hinf) hst)
+  · have hinf : Module.finrank ℝ
+        (vectorSpan ℝ (s : Set E) ⊓ vectorSpan ℝ (t : Set E) : Submodule ℝ E) = 0 := by omega
+    exact (hasPLCrossingAt_of_codimension_one L K hL hK hdimE ht hs htc hsc hxt hxs
+      (IsCompl.of_eq (Submodule.finrank_eq_zero.mp hinf) hst).symm).symm
+  · have hSdim : Module.finrank ℝ (vectorSpan ℝ (s : Set E)) = 2 := by omega
+    have hTdim : Module.finrank ℝ (vectorSpan ℝ (t : Set E)) = 2 := by omega
+    have hIdim : Module.finrank ℝ
+        (vectorSpan ℝ (s : Set E) ⊓ vectorSpan ℝ (t : Set E) : Submodule ℝ E) = 1 := by omega
+    have hsmax : ∀ u ∈ K.faces, s ⊆ u → u.card ≤ s.card := by
+      intro u hu _
+      rw [hsc]
+      exact hK.card_le K hu
+    have htmax : ∀ u ∈ L.faces, t ⊆ u → u.card ≤ t.card := by
+      intro u hu _
+      rw [htc]
+      exact hL.card_le L hu
+    have hh : IsPLHomeomorphOn (fun y : E => y - x) univ univ := by
+      simpa only [sub_eq_add_neg] using isPLHomeomorphOn_add_const (-x)
+    refine ⟨univ, univ, fun y => y - x, vectorSpan ℝ (s : Set E), vectorSpan ℝ (t : Set E),
+      0, 0, isOpen_univ, isOpen_univ, mem_univ x, hh, sub_self x, hSdim, hTdim, hIdim, hst,
+        Or.inl rfl, Or.inl rfl, Or.inl rfl, ?_⟩
+    filter_upwards [eventually_mem_space_iff_sub_mem_vectorSpan K hs hsmax hxs,
+      eventually_mem_space_iff_sub_mem_vectorSpan L ht htmax hxt] with y hyK hyL
+    constructor
+    · simpa only [LinearMap.zero_apply, le_refl, and_true] using hyK
+    · simpa only [LinearMap.zero_apply, le_refl, and_true] using hyL
+
+open Classical in
+theorem exists_small_homeomorph_generalPosition [FiniteDimensional ℝ E]
+    (K L : Geometry.SimplicialComplex ℝ E) [Finite K.faces] [Finite L.faces]
+    (hK : IsCombinatorialManifoldWithBoundary 2 K) (hL : IsCombinatorialManifoldWithBoundary 2 L)
+    (hdimE : Module.finrank ℝ E = 3) {U : Set E} (hU : IsOpen U) (hKU : K.space ⊆ U)
+    {ε : ℝ} (hε : 0 < ε) :
+    ∃ (h : E → E) (G : Geometry.SimplicialComplex ℝ E),
+      IsPLHomeomorphOn h univ univ ∧ (∀ x, dist (h x) x < ε) ∧ EqOn h id Uᶜ ∧
+        G.faces.Finite ∧ G.space = h '' K.space ∩ L.space ∧
+          IsCombinatorialManifoldWithBoundary 1 G ∧
+          ∀ x ∈ h '' K.space ∩ L.space, HasPLCrossingAt (h '' K.space) L.space x := by
+  obtain ⟨a, h, _, hh, hclose, hfix, hKA, htrans⟩ :=
+    exists_small_homeomorph_transverse_affineImage K L hU hKU hε
+  let A := AffineEquiv.constVAdd ℝ E a
+  let K' := affineImage K A
+  have : Finite K'.faces := (affineImage_faces_finite K A).to_subtype
+  have hK' : IsCombinatorialManifoldWithBoundary 2 K' :=
+    hK.of_isPLHomeomorphOn (isPLHomeomorphOn_affineImage K A)
+  obtain ⟨G, hGfin, hGspace, hGman⟩ :=
+    exists_isCombinatorialManifoldWithBoundary_inter_of_transverse_faces K' L hK' hL hdimE htrans
+  rw [hKA] at hGspace
+  refine ⟨h, G, hh, hclose, hfix, hGfin, hGspace, hGman, ?_⟩
+  intro x hx
+  have hx' : x ∈ K'.space ∩ L.space := by rw [hKA]; exact hx
+  have hcross := hasPLCrossingAt_of_transverse_faces K' L hK' hL hdimE htrans hx'
+  rwa [hKA] at hcross
 
 end DifferentialGeometry.Topology.PiecewiseLinear
