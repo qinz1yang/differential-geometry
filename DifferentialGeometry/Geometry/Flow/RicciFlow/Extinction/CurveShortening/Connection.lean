@@ -2458,27 +2458,30 @@ theorem Field.smoothOn_Dx {D : RealTimeInterval}
   exact hcd'.congr_of_eventuallyEq hev (hev.self_of_nhdsWithin hp)
 
 omit [CompleteSpace E] [SigmaCompactSpace M] in
+theorem Field.smoothOn_Ds {D : RealTimeInterval}
+    (g : ℝ → SmoothRiemannianMetric I M)
+    (hG : MetricFamilySmoothOn (I := I) (M := M) D g) {J : Set ℝ} (hJ : J ⊆ D.regular)
+    (hJun : UniqueDiffOn ℝ J)
+    (c : CurveMap M) (hc : c.SmoothOn (I := I) J) (hi : c.ImmersedOn (I := I) J)
+    (V : c.Field (I := I)) (hV : V.SmoothOn (I := I) J) :
+    CurveMap.Field.SmoothOn (I := I) (c.Ds g V) J := by
+  have hinv : ContDiffOn ℝ ∞ (fun p : ℝ × ℝ => (c.speed g p.1 p.2)⁻¹)
+      (univ ×ˢ J) :=
+    (Field.smoothOn_speed g hG hJ c hc hi).inv
+      (fun p hp => (c.speed_pos g hi p.1 p.2 hp.2).ne')
+  change Field.SmoothOn (fun x t => (c.speed g x t)⁻¹ • c.Dx g V x t) J
+  exact Field.smoothOn_const_smul c hc (fun x t => (c.speed g x t)⁻¹) hinv
+    (c.Dx g V) (Field.smoothOn_Dx g hG hJ hJun c hc V hV)
+
+omit [CompleteSpace E] [SigmaCompactSpace M] in
 theorem Field.smoothOn_curvatureVector {D : RealTimeInterval}
     (g : ℝ → SmoothRiemannianMetric I M)
     (hG : MetricFamilySmoothOn (I := I) (M := M) D g) {J : Set ℝ} (hJ : J ⊆ D.regular)
     (hJun : UniqueDiffOn ℝ J)
     (c : CurveMap M) (hc : c.SmoothOn (I := I) J) (hi : c.ImmersedOn (I := I) J) :
-    CurveMap.Field.SmoothOn (I := I) (c.curvatureVector g) J := by
-  have hsp : ContDiffOn ℝ ∞ (fun p : ℝ × ℝ => c.speed g p.1 p.2) ((univ : Set ℝ) ×ˢ J) :=
-    Field.smoothOn_speed g hG hJ c hc hi
-  have hinv : ContDiffOn ℝ ∞ (fun p : ℝ × ℝ => (c.speed g p.1 p.2)⁻¹)
-      ((univ : Set ℝ) ×ˢ J) := by
-    refine hsp.inv ?_
-    intro p hp
-    exact ne_of_gt (c.speed_pos g hi p.1 p.2 hp.2)
-  have hU : CurveMap.Field.SmoothOn (I := I) (c.unitTangent g) J :=
-    Field.smoothOn_unitTangent g hG hJ c hc hi
-  have hDxU : CurveMap.Field.SmoothOn (I := I) (c.Dx g (c.unitTangent g)) J :=
-    Field.smoothOn_Dx g hG hJ hJun c hc (c.unitTangent g) hU
-  have hDs : c.curvatureVector g = fun x t => (c.speed g x t)⁻¹ • c.Dx g (c.unitTangent g) x t := rfl
-  rw [hDs]
-  exact Field.smoothOn_const_smul c hc (fun x t => (c.speed g x t)⁻¹) hinv
-    (c.Dx g (c.unitTangent g)) hDxU
+    CurveMap.Field.SmoothOn (I := I) (c.curvatureVector g) J :=
+  Field.smoothOn_Ds g hG hJ hJun c hc hi (c.unitTangent g)
+    (Field.smoothOn_unitTangent g hG hJ c hc hi)
 
 omit [CompleteSpace E] [SigmaCompactSpace M] in
 theorem Field.smoothOn_curvatureSq {D : RealTimeInterval}
