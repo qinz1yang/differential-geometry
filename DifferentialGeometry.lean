@@ -5787,6 +5787,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Redu
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.ReducedCostDistanceBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.ReducedCostDistanceGrowth
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.ReducedCostDistanceSlope
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.ReducedCostDomainBridges
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.ReducedCostPoleBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.ReducedCostTwoPoint
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.ReducedCostTwoPointCoercivity
@@ -7727,6 +7728,7 @@ import DifferentialGeometry.Geometry.MinimalSurface.Plateau.MinimalDiskAreaDensi
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.MorreyDisk
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.MorreyDiskCriterion
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.MorreyDiskExtension
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.MorreyExistenceReduction
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.NonconstantCoefficient
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.OpenTargetDifferential
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.OpenTargetExtension

@@ -49,7 +49,7 @@ structure CutCapTransitionData (P Q D N : OrientedThreeStage.{u}) where
           (LinearEquiv.ofBijective
             (mfderiv (𝓡∂ 3) ThreeModel (trace.capping.cap b) x).toLinearMap hj))
         ((EuclideanSpace.basisFun (Fin 3) ℝ).toBasis.orientation) =
-          N.orientation.orientation (trace.capping.cap b x)
+          (if b.2 then (1 : ℝˣ) else -1) • N.orientation.orientation (trace.capping.cap b x)
   presentation : N.Carrier ≃ₘ⟮ThreeModel, ThreeModel⟯ (Q.Carrier ⊕ D.Carrier)
   presentation_eq : (presentation : N.Carrier → Q.Carrier ⊕ D.Carrier) = trace.presentation
   presentation_positive : ∀ x : N.Carrier,

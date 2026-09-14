@@ -128,7 +128,8 @@ theorem capClosedCell_positive (X : SmoothCutCapTransition P Q D N)
             (LinearEquiv.ofBijective (mfderiv (𝓡∂ 3) (𝓡 3)
               (X.capClosedCell b) x).toLinearMap hj))
           ((EuclideanSpace.basisFun (Fin 3) ℝ).toBasis.orientation) =
-            N.orientation.orientation (X.capClosedCell b x) :=
+            (if b.2 then (1 : ℝˣ) else -1) •
+              N.orientation.orientation (X.capClosedCell b x) :=
   letI : ChartedSpace (EuclideanHalfSpace 3) ThreeBall := X.ballCharts
   letI : IsManifold (𝓡∂ 3) ∞ ThreeBall := X.ballSmooth
   by

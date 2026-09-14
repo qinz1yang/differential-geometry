@@ -1098,8 +1098,9 @@ structure StandardNeckCutCapInputs where
           (LinearEquiv.ofBijective
             (mfderiv (𝓡∂ 3) ThreeModel (standardNeckCapping.cap b) x).toLinearMap hj))
         ((EuclideanSpace.basisFun (Fin 3) ℝ).toBasis.orientation) =
-          (sphereThreeStage.sum sphereThreeStage).orientation.orientation
-            (standardNeckCapping.cap b x)
+          (if b.2 then (1 : ℝˣ) else -1) •
+            (sphereThreeStage.sum sphereThreeStage).orientation.orientation
+              (standardNeckCapping.cap b x)
   presentation_positive : ∀ x : Sphere 3 ⊕ Sphere 3,
     ∃ hf : Function.Bijective (mfderiv ThreeModel ThreeModel
         (Diffeomorph.refl ThreeModel (Sphere 3 ⊕ Sphere 3) ∞) x),

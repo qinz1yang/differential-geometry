@@ -120,7 +120,7 @@ structure SphericalCapping (M N : ClosedOrientedManifold.{u} 3)
           (Subtype.val : ClosedCell 3 → EuclideanSpace ℝ (Fin 3)) x).toLinearMap hi).symm.trans
           (LinearEquiv.ofBijective (mfderiv (𝓡∂ 3) (𝓡 3) (cap b) x).toLinearMap hj))
         ((EuclideanSpace.basisFun (Fin 3) ℝ).toBasis.orientation) =
-          N.orientation.orientation (cap b x)
+          (if b.2 then (1 : ℝˣ) else -1) • N.orientation.orientation (cap b x)
   boundary_orientation_reversing : ∀ b z (v w : TangentSpace (𝓡 2) z),
     let f : S² → M.Carrier := T.boundarySphere b ∘ attaching b
     let _ : FiniteDimensional ℝ (TangentSpace (𝓡 3) (f z)) :=
