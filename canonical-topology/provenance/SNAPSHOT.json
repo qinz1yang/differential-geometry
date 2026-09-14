@@ -1,5 +1,5 @@
 {
-  "scope": "Dependency-closed 146-module checkpoint with all-rank actual local integral generators and bijective actual top-degree point restriction on compact simply connected C1 manifolds. Outward normalization, general integral duality and frozen suite remain open.",
+  "scope": "Dependency-closed 146-module checkpoint with actual top integral generators on compact simply connected native C1 manifolds, and generator laws at every actual point restriction. Outward normalization, general integral duality and frozen suite remain open.",
   "baseline_commit": "b45bfa009368c8f5f531e10f4f5280e90079d6ad",
   "baseline_ref": "refs/remotes/origin/codex/chapter35",
   "source_project": "PoincareLean",
@@ -198,7 +198,7 @@
       "module": "Poincare.Topology.Homology.ManifoldFundamentalClass",
       "path": "Poincare/Topology/Homology/ManifoldFundamentalClass.lean",
       "baseline_sha256": null,
-      "sha256": "a0c7817c637ca45c9a6be143c89aa244d2ef008541404cf22478fcaa69afb166"
+      "sha256": "5e2a7255f8c7fa71d0a299af64338473e5dce0719efd54a92193734fcb3d2305"
     },
     {
       "module": "Poincare.Topology.Homology.ModuleHomologyConnecting",
@@ -770,7 +770,7 @@
       "module": "Poincare.Topology.Homology.ManifoldFundamentalClass",
       "path": "Poincare/Topology/Homology/ManifoldFundamentalClass.lean",
       "baseline_sha256": null,
-      "sha256": "a0c7817c637ca45c9a6be143c89aa244d2ef008541404cf22478fcaa69afb166"
+      "sha256": "5e2a7255f8c7fa71d0a299af64338473e5dce0719efd54a92193734fcb3d2305"
     },
     {
       "module": "Poincare.Topology.Homology.MeshBoundary",
@@ -1660,7 +1660,8 @@
     "Poincare.Topology.exists_tangent_orientation_locality_of_simplyConnected",
     "Poincare.Topology.exists_integralLocalHomology_generator",
     "Poincare.Topology.integralAbsoluteToRelative_bijective_of_simplyConnected",
-    "Poincare.Topology.exists_unique_absolute_class_of_simplyConnected"
+    "Poincare.Topology.exists_unique_absolute_class_of_simplyConnected",
+    "Poincare.Topology.exists_integralSingularHomology_generator_of_simplyConnected"
   ],
   "historical_authorities": [
     {
@@ -1802,27 +1803,19 @@
     "date": "2026-09-14",
     "slurm_job": "13879784",
     "host": "della-h14n10",
-    "request_id": "1789400759348748258-topology_checkpoint-efa87b9b",
-    "input_sha256": "b20fa172730cd10ba5929890b18fa9a97de25b94590b37bea3c3694c3c7b9321",
-    "result_sha256": "c0a979b45a5db22943af7bc3898f94321524b1bcf1de13af3b2948d4e1cff6d0",
-    "artifact_log_sha256": "f33ddda6eab9b6f1ce353225cd98f157c3f150e283be2c1a6004408c360181b5",
-    "source_config_harness_hash_guards": 1272,
+    "request_id": "1789404939261823565-topology_checkpoint-ffc421f5",
+    "input_sha256": "ae506cb65c33abc5ab724a1892dd73e688bbdc08bf83e7ef5443426f8663ffee",
+    "result_sha256": "52d08d8e2c1b8bd6fd663eb73208b6d6c7872f8acfdb20d8b2f55e612ae9f26e",
+    "artifact_log_sha256": "1b777b8f410c6929841095ac9587c5e302e0f3851e7f0046ad4428688f2cbecb",
+    "source_config_harness_hash_guards": 1284,
     "freshly_built_modules": [
-      "Poincare.Topology.Homology.EuclideanLocalTop",
-      "Poincare.Topology.Homology.EuclideanLocalVanishing",
-      "Poincare.Topology.Homology.CompactVanishing",
-      "Poincare.Topology.Homology.SphereCohomologyVanishing",
-      "Poincare.Topology.Homology.EuclideanLocalCohomologyVanishing",
-      "Poincare.Topology.Homology.ManifoldCompactHomology",
-      "Poincare.Topology.Homology.SphereCapDuality",
-      "Poincare.Topology.Homology.EuclideanLocalCapDuality",
       "Poincare.Topology.Homology.ManifoldFundamentalClass",
       "Poincare"
     ],
     "root_build": "lake --no-cache --iofail build Poincare",
-    "fresh_build_scope": "Nine affected leaves and root freshly compiled in 2:01.42, RSS 2844500KiB, zero diagnostics; all144 other source leaves unchanged",
-    "exact_public_exports": 185,
-    "public_and_consumer_signature_axiom_pairs": 350,
+    "fresh_build_scope": "ManifoldFundamentalClass and root freshly compiled in 0:21.29, RSS 1965752KiB, zero diagnostics; all145 other source leaves unchanged",
+    "exact_public_exports": 186,
+    "public_and_consumer_signature_axiom_pairs": 353,
     "linters": [
       "unusedArguments",
       "simpNF",
@@ -1837,17 +1830,16 @@
       "Quot.sound"
     ],
     "unexpected_diagnostics": 0,
-    "elapsed_seconds": 217.18946933746338,
-    "peak_summed_rss_bytes": 3401900032,
+    "elapsed_seconds": 103.8892650604248,
+    "peak_summed_rss_bytes": 3416932352,
     "full_topology_suite_accepted": false,
     "consumer_probes": [
-      "All344 preceding portable and28 original readback pairs byte-identical",
-      "Actual local generator in all finite-dimensional real normed spaces including ranks0 and1",
-      "Nonzero local generator consumers for Fin0 to real and the real line",
-      "Actual top-degree point restriction bijective for compact simply connected native C1 manifolds",
-      "Every actual prescribed point-relative class has a unique absolute preimage, including rank0",
-      "No model-generator, global-orientation-field, locality or bijection input in new headlines",
-      "All6 common source/original/portable types agree modulo qualification/whitespace; axioms exact"
+      "All350 preceding portable and34 original readback pairs byte-identical",
+      "Actual global top integral generator and every actual point restriction generator",
+      "Rank-zero global and local generators are nonzero and tied by the actual restriction",
+      "One global generator yields a unique integer coefficient for every point-local class",
+      "No model generator, orientation field, global class or bijection input in the new headline",
+      "All3 new source/original/portable types agree modulo qualification/whitespace; axioms exact"
     ]
   },
   "previous_linear_sign_checkpoint_validation": {
@@ -4225,5 +4217,81 @@
     },
     "scope_repair": "One terminator closes the preserved baseline noncomputable section; proof bodies unchanged",
     "comparison": "All6 shared pairs match modulo qualification/whitespace;344 old portable and28 old original exact"
+  },
+  "previous_global_generator_validation": {
+    "status": "passed for the selected 146-module checkpoint; full topology suite incomplete",
+    "date": "2026-09-14",
+    "slurm_job": "13879784",
+    "host": "della-h14n10",
+    "request_id": "1789400759348748258-topology_checkpoint-efa87b9b",
+    "input_sha256": "b20fa172730cd10ba5929890b18fa9a97de25b94590b37bea3c3694c3c7b9321",
+    "result_sha256": "c0a979b45a5db22943af7bc3898f94321524b1bcf1de13af3b2948d4e1cff6d0",
+    "artifact_log_sha256": "f33ddda6eab9b6f1ce353225cd98f157c3f150e283be2c1a6004408c360181b5",
+    "source_config_harness_hash_guards": 1272,
+    "freshly_built_modules": [
+      "Poincare.Topology.Homology.EuclideanLocalTop",
+      "Poincare.Topology.Homology.EuclideanLocalVanishing",
+      "Poincare.Topology.Homology.CompactVanishing",
+      "Poincare.Topology.Homology.SphereCohomologyVanishing",
+      "Poincare.Topology.Homology.EuclideanLocalCohomologyVanishing",
+      "Poincare.Topology.Homology.ManifoldCompactHomology",
+      "Poincare.Topology.Homology.SphereCapDuality",
+      "Poincare.Topology.Homology.EuclideanLocalCapDuality",
+      "Poincare.Topology.Homology.ManifoldFundamentalClass",
+      "Poincare"
+    ],
+    "root_build": "lake --no-cache --iofail build Poincare",
+    "fresh_build_scope": "Nine affected leaves and root freshly compiled in 2:01.42, RSS 2844500KiB, zero diagnostics; all144 other source leaves unchanged",
+    "exact_public_exports": 185,
+    "public_and_consumer_signature_axiom_pairs": 350,
+    "linters": [
+      "unusedArguments",
+      "simpNF",
+      "synTaut",
+      "checkType"
+    ],
+    "linter_scope": "All imported Poincare declarations and current consumers, including private declarations",
+    "defLemma": "Unavailable in the pinned Mathlib; source declaration-kind checks retained.",
+    "allowed_transitive_axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "unexpected_diagnostics": 0,
+    "elapsed_seconds": 217.18946933746338,
+    "peak_summed_rss_bytes": 3401900032,
+    "full_topology_suite_accepted": false,
+    "consumer_probes": [
+      "All344 preceding portable and28 original readback pairs byte-identical",
+      "Actual local generator in all finite-dimensional real normed spaces including ranks0 and1",
+      "Nonzero local generator consumers for Fin0 to real and the real line",
+      "Actual top-degree point restriction bijective for compact simply connected native C1 manifolds",
+      "Every actual prescribed point-relative class has a unique absolute preimage, including rank0",
+      "No model-generator, global-orientation-field, locality or bijection input in new headlines",
+      "All6 common source/original/portable types agree modulo qualification/whitespace; axioms exact"
+    ]
+  },
+  "original_global_generator_validation": {
+    "source_request_id": "1789403516019187371-topology-85d8e937",
+    "source_input_sha256": "37fab5677118d7ecd7d9d327c717905cc600607efdc2a6c8a8ee3ea11751b97a",
+    "source_result_sha256": "338cd39cba3faca8c996f70368c5740f268c9903e69874fa065ace7f6b47c7f2",
+    "source_elapsed_seconds": 30.868955373764038,
+    "source_guards": 1004,
+    "source_signature_axiom_pairs": 38,
+    "request_id": "1789404939194046372-topology-9479252d",
+    "input_sha256": "8c29ad5ce0bad544916a1d7dec400944b14b755f1560f79561509254f52f14f2",
+    "result_sha256": "7e775e1fc2cdfd3cab2cbcbf6564c9eea291c6b76fa78922a38575501b9e490c",
+    "elapsed_seconds": 46.21238374710083,
+    "original_source_guards": 996,
+    "signature_axiom_pairs": 37,
+    "fresh_artifacts": {
+      "sha256": "827d688efd67cd60cef18e240b764d281b17bc620cccb2e79eae34486a2452ee",
+      "freshly_built_modules": [
+        "Poincare.Topology.Homology.ManifoldFundamentalClass"
+      ],
+      "elapsed": "0:15.89",
+      "rss_kib": 1965276
+    },
+    "comparison": "All3 new shared pairs agree;350 preceding portable and34 original pairs byte-identical"
   }
 }

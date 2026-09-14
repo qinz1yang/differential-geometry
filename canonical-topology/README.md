@@ -7,6 +7,11 @@ and `Poincare` namespaces. `Poincare.lean` imports every included leaf.
 
 The additions prove:
 
+- one actual top integral homology generator on a compact simply connected
+  Hausdorff C1 manifold without boundary, with generator laws at every actual
+  point restriction. Each local class has a unique integer coefficient through
+  this same global class, including in rank zero;
+
 - an actual top local integral-homology generator in every finite-dimensional
   real normed space, including ranks zero and one; on a compact simply connected
   Hausdorff C1 manifold without boundary, the actual top-degree restriction at
@@ -172,7 +177,24 @@ On Della all sustained checks belong to the shared Slurm CPU worker. Use the
 existing exact caches offline; local cache paths and any validation-only path
 manifest stay outside the published package files.
 
-The current fundamental-class checkpoint contains 146 modules and 185 curated
+The current fundamental-class checkpoint contains 146 modules and 186 curated
+added public exports. Source request `1789403516019187371-topology-85d8e937`
+passed in 30.87 seconds with 1004 guards and 38 signature/axiom pairs. Original
+imported request `1789404939194046372-topology-9479252d` passed in 46.21 seconds
+with 996 guards and 37 pairs. Portable request
+`1789404939261823565-topology_checkpoint-ffc421f5` passed in Slurm 13879784 in
+103.89 seconds with 1284 guards and 353 pairs. ManifoldFundamentalClass and
+the portable root freshly compiled in 21.29 seconds, maximum RSS 1965752KiB,
+with zero diagnostics. All 350 preceding portable and 34 original readback
+pairs are byte-identical; all 145 other source leaves are unchanged. The three
+new source/original/portable types agree modulo qualification and whitespace,
+with exact axiom readbacks. Strict source and stock declaration linters and
+standard-only transitive axioms pass. Consumers require nonzero global and
+local generators in rank zero and unique integer coefficients at every point
+through the same actual global generator. General integral manifold duality
+and outward sphere normalization remain separate open obligations.
+
+The preceding local-generator checkpoint contains 146 modules and 185 curated
 added public exports. Source request `1789399938999694374-topology-67ea80b6`
 passed in 52.58 seconds with 222 guards and seven signature/axiom pairs.
 Original imported request `1789400696276798218-topology-303a2b3a` passed in

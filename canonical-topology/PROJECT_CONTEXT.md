@@ -7,7 +7,7 @@ Its sources retain the original mathematical objects and namespaces.
 The recovered Chapter 35 baseline is commit
 `b45bfa009368c8f5f531e10f4f5280e90079d6ad`, supplemented by recovered working-tree
 proofs with separately recorded provenance. This checkpoint includes 146 modules
-and 185 curated tracked added public exports.
+and 186 curated tracked added public exports.
 
 Actual top local integral homology now has a generator in every finite-dimensional
 real normed space, including ranks zero and one. On a compact simply connected
@@ -15,6 +15,25 @@ Hausdorff C1 manifold without boundary, the actual top-degree absolute-to-point
 restriction is bijective. Every prescribed local class therefore has a unique
 absolute preimage. These statements construct the model generator and tangent
 orientation internally and require no supplied orientation field or locality.
+
+The manifold now also has one actual top integral homology class generating the
+absolute group, whose restriction generates the local group at every point.
+The new theorem constructs that class internally. Consumers verify nonzero
+global and local classes in rank zero and unique integer coefficients for every
+point-local class through the same global generator.
+
+Source 85d8e937 passed in 30.87s with 1004 guards and 38 pairs. Original imported
+9479252d passed in 46.21s with 996 guards and 37 pairs. Portable ffc421f5 passed
+in Slurm 13879784 in 103.89s with 1284 guards and 353 pairs. The changed
+ManifoldFundamentalClass leaf and portable root freshly compiled in 21.29s,
+maximum RSS 1965752KiB, with zero diagnostics. All 350 preceding portable and
+34 original pairs are byte-identical; all 145 other leaves are unchanged.
+All three new shared source/original/portable types agree modulo qualification
+and whitespace, with exact standard-only axioms. Strict source and stock
+declaration linters pass. Outward normalization and general integral manifold
+duality remain open.
+
+The preceding local-generator and restriction-bijection checkpoint is preserved:
 
 Source 67ea80b6 passed in 52.58s with 222 guards and seven pairs. Original
 imported 303a2b3a passed in 137.86s with 984 guards and 34 pairs. Portable efa87b9b
