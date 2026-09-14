@@ -688,3 +688,187 @@ theorem PrePolygon.exists_compact_rounding
 end Schoenflies
 
 end
+
+section
+
+open Set Metric
+open scoped ContDiff Topology
+
+namespace Schoenflies
+
+private theorem region_sides_of_open_local_eq
+    {X : Type*} [TopologicalSpace X] {D D' V : Set X}
+    (hD : IsClosed D) (hD' : IsClosed D') (hV : IsOpen V)
+    (heq : ∀ p ∈ V, p ∈ D' ↔ p ∈ D) :
+    ∀ p ∈ V, (p ∈ D' ↔ p ∈ D) ∧
+      (p ∈ interior D' ↔ p ∈ interior D) ∧
+      (p ∈ frontier D' ↔ p ∈ frontier D) := by
+  intro p hp
+  have hsame : D' =ᶠ[𝓝 p] D := by
+    filter_upwards [hV.mem_nhds hp] with q hq
+    exact propext (heq q hq)
+  refine ⟨heq p hp, hsame.mem_interior_iff, ?_⟩
+  rw [hD'.frontier_eq, hD.frontier_eq]
+  change (p ∈ D' ∧ p ∉ interior D') ↔ (p ∈ D ∧ p ∉ interior D)
+  rw [heq p hp, hsame.mem_interior_iff]
+
+private theorem PrePolygon.regular_frontier_of_partial_replacement
+    {m : ℕ} (P : PrePolygon m) {D D' L W : Set Plane}
+    (hD : IsClosed D) (hD' : IsClosed D') (hL : IsClosed L) (hLW : L ⊆ W)
+    (hold : ∀ p ∉ L, p ∈ D ↔ p ∈ closure (inside P.carrier))
+    (hgood : ∀ p ∈ frontier D, p ∈ W →
+      ∃ (N : Set Plane) (G : Plane → ℝ), IsOpen N ∧ p ∈ N ∧
+        ContDiff ℝ ∞ G ∧ fderiv ℝ G p ≠ 0 ∧
+        ∀ q ∈ N, (q ∈ D ↔ 0 ≤ G q) ∧
+          (q ∈ interior D ↔ 0 < G q) ∧ (q ∈ frontier D ↔ G q = 0))
+    (U K : {i : ZMod (m + 3) // P.vertex i ∉ W} → Set Plane)
+    (H : {i : ZMod (m + 3) // P.vertex i ∉ W} → Plane → ℝ)
+    (hU : ∀ i, IsOpen (U i)) (hiU : ∀ i, P.vertex i.val ∈ U i)
+    (hK : ∀ i, IsCompact (K i)) (hKU : ∀ i, K i ⊆ U i)
+    (hH : ∀ i, ContDiff ℝ ∞ (H i)) (hreg : ∀ i p, fderiv ℝ (H i) p ≠ 0)
+    (hlocal : ∀ i, ∀ p ∈ U i, p ∈ D' ↔ 0 ≤ H i p)
+    (hout : ∀ p ∉ ⋃ i, K i, p ∈ D' ↔ p ∈ D) :
+    ∀ p ∈ frontier D', ∃ (N : Set Plane) (G : Plane → ℝ),
+      IsOpen N ∧ p ∈ N ∧ ContDiff ℝ ∞ G ∧ fderiv ℝ G p ≠ 0 ∧
+      ∀ q ∈ N, (q ∈ D' ↔ 0 ≤ G q) ∧
+        (q ∈ interior D' ↔ 0 < G q) ∧ (q ∈ frontier D' ↔ G q = 0) := by
+  have hsides (i) := regular_region_sides_of_local_eq hD' (hU i)
+    (hH i).continuous (fun p _ _ => hreg i p) (hlocal i)
+  let A := (⋃ i, K i)ᶜ
+  have hA : IsOpen A := (isCompact_iUnion hK).isClosed.isOpen_compl
+  have heqA := region_sides_of_open_local_eq hD hD' hA hout
+  intro p hp
+  by_cases hpU : p ∈ ⋃ i, U i
+  · obtain ⟨i, hpi⟩ := Set.mem_iUnion.mp hpU
+    exact ⟨U i, H i, hU i, hpi, hH i, hreg i p,
+      fun q hq => ⟨hlocal i q hq, hsides i q hq⟩⟩
+  · have hpA : p ∈ A := by
+      intro hpK
+      obtain ⟨i, hpi⟩ := Set.mem_iUnion.mp hpK
+      exact hpU (Set.mem_iUnion.mpr ⟨i, hKU i hpi⟩)
+    by_cases hpW : p ∈ W
+    · obtain ⟨N, G, hN, hpN, hG, hGreg, hGsides⟩ :=
+        hgood p ((heqA p hpA).2.2.mp hp) hpW
+      refine ⟨N ∩ A, G, hN.inter hA, ⟨hpN, hpA⟩, hG, hGreg, ?_⟩
+      intro q hq
+      exact ⟨(heqA q hq.2).1.trans (hGsides q hq.1).1,
+        (heqA q hq.2).2.1.trans (hGsides q hq.1).2.1,
+        (heqA q hq.2).2.2.trans (hGsides q hq.1).2.2⟩
+    · let B := A ∩ Lᶜ
+      have hB : IsOpen B := hA.inter hL.isOpen_compl
+      have hpB : p ∈ B := ⟨hpA, fun hpL => hpW (hLW hpL)⟩
+      have hweak : ∀ q ∈ B, q ∈ D' ↔ q ∈ closure (inside P.carrier) :=
+        fun q hq => (hout q hq.1).trans (hold q hq.2)
+      have heqB := region_sides_of_open_local_eq isClosed_closure hD' hB hweak
+      have hpfront : p ∈ frontier (closure (inside P.carrier)) :=
+        (heqB p hpB).2.2.mp hp
+      have hpcar : p ∈ P.carrier := by
+        rw [← P.isSeparating_carrier.frontier_inside]
+        exact frontier_closure_subset hpfront
+      have hn : p ∉ Set.range P.vertex := by
+        rintro ⟨i, rfl⟩
+        exact hpU (Set.mem_iUnion.mpr ⟨⟨i, hpW⟩, hiU ⟨i, hpW⟩⟩)
+      obtain ⟨N, G, hN, hpN, hG, hGreg, hGsides⟩ :=
+        P.exists_regular_neighborhood_of_mem_carrier_not_vertex hpcar hn
+      refine ⟨B ∩ N, G, hB.inter hN, ⟨hpB, hpN⟩, hG, hGreg p, ?_⟩
+      intro q hq
+      exact ⟨(heqB q hq.1).1.trans (hGsides q hq.2).1,
+        (heqB q hq.1).2.1.trans (hGsides q hq.2).2.1,
+        (heqB q hq.1).2.2.trans (hGsides q hq.2).2.2⟩
+
+end Schoenflies
+
+end
+
+section
+
+open Set Metric
+open scoped ContDiff Topology
+
+namespace Schoenflies
+
+theorem PrePolygon.exists_relative_compact_rounding
+    {m : ℕ} (P : PrePolygon m) {D L W O : Set Plane}
+    (hD : IsCompact D) (hL : IsClosed L) (hW : IsOpen W) (hLW : L ⊆ W)
+    (hO : IsOpen O) (hvO : ∀ i, P.vertex i ∉ W → P.vertex i ∈ O)
+    (hold : ∀ p ∉ L, p ∈ D ↔ p ∈ closure (inside P.carrier))
+    (hgood : ∀ p ∈ frontier D, p ∈ W →
+      ∃ (N : Set Plane) (G : Plane → ℝ), IsOpen N ∧ p ∈ N ∧
+        ContDiff ℝ ∞ G ∧ fderiv ℝ G p ≠ 0 ∧
+        ∀ q ∈ N, (q ∈ D ↔ 0 ≤ G q) ∧
+          (q ∈ interior D ↔ 0 < G q) ∧ (q ∈ frontier D ↔ G q = 0)) :
+    ∃ (D' V : Set Plane), IsCompact D' ∧ IsOpen V ∧ L ⊆ V ∧ V ⊆ W ∧
+      (∀ p ∈ V, (p ∈ D' ↔ p ∈ D) ∧
+        (p ∈ interior D' ↔ p ∈ interior D) ∧
+        (p ∈ frontier D' ↔ p ∈ frontier D)) ∧
+      (∀ p ∉ O, (p ∈ D' ↔ p ∈ D) ∧
+        (p ∈ interior D' ↔ p ∈ interior D) ∧
+        (p ∈ frontier D' ↔ p ∈ frontier D)) ∧
+      ∀ p ∈ frontier D', ∃ (N : Set Plane) (G : Plane → ℝ),
+        IsOpen N ∧ p ∈ N ∧ ContDiff ℝ ∞ G ∧ fderiv ℝ G p ≠ 0 ∧
+        ∀ q ∈ N, (q ∈ D' ↔ 0 ≤ G q) ∧
+          (q ∈ interior D' ↔ 0 < G q) ∧ (q ∈ frontier D' ↔ G q = 0) := by
+  classical
+  let I := {i : ZMod (m + 3) // P.vertex i ∉ W}
+  choose e A _ d σ hA _ hiA _ hd hσ he0 _ _ _ hside using
+    (fun i : I => P.exists_affine_vertex_graph_sides i.val)
+  have hinj : Function.Injective (fun i : I => P.vertex i.val) :=
+    P.vertex_inj.comp Subtype.val_injective
+  obtain ⟨U, hU, hdisj⟩ := exists_pairwise_disjoint_open_neighborhoods
+    (fun i : I => P.vertex i.val) hinj (fun i => (A i ∩ Lᶜ) ∩ O)
+    (fun i => ((hA i).inter hL.isOpen_compl).inter hO)
+    (fun i => ⟨⟨hiA i, fun hp => i.property (hLW hp)⟩, hvO i.val i.property⟩)
+  have hea (i : I) : e i (P.vertex i.val) = 0 := by
+    rw [he0 i]
+    ext j
+    fin_cases j <;> rfl
+  have hsideD (i : I) : ∀ p ∈ U i,
+      p ∈ D ↔ 0 ≤ σ i * ((e i p) 1 - d i * max ((e i p) 0) 0) := by
+    intro p hp
+    exact (hold p ((hU i).2.2 hp).1.2).trans (hside i p ((hU i).2.2 hp).1.1).1
+  choose ε R hε hεR hround using fun i => exists_compact_corner_replacement hD (hU i).1
+    (e i) (hU i).2.1 (hea i) (hd i) (hσ i) (hsideD i)
+  let N := fun i => e i ⁻¹' ball (0 : Plane) (R i)
+  let K := fun i => e i ⁻¹' closedBall (0 : Plane) (R i)
+  let H := fun i p => σ i * ((e i p) 1 - d i * Real.smoothMax (ε i) ((e i p) 0) 0)
+  have hN (i) : IsOpen (N i) := (hround i).2.1
+  have hK (i) : IsCompact (K i) := (hround i).2.2.1
+  have hKU (i) : K i ⊆ U i := (hround i).2.2.2.1
+  have hNK (i) : N i ⊆ K i := Set.preimage_mono (f := e i)
+    (ball_subset_closedBall (x := (0 : Plane)) (ε := R i))
+  have hH (i) : ContDiff ℝ ∞ (H i) := (hround i).2.2.2.2.2.1
+  have hreg (i) : ∀ p, fderiv ℝ (H i) p ≠ 0 := (hround i).2.2.2.2.2.2.1
+  have heq (i) : ∀ p ∈ U i \ N i, p ∈ {p | 0 ≤ H i p} ↔ p ∈ D := by
+    intro p hp
+    exact (affine_smooth_corner_side_eq_outside_ball (e i) (hε i) (hεR i)
+      (hd i) (hσ i) hp.2).trans (hsideD i p hp.1).symm
+  obtain ⟨hD', hlocal, hout⟩ := finite_disjoint_region_replacement hD hN hK
+    (fun i => isClosed_le continuous_const (hH i).continuous) hNK hKU hdisj heq
+  let D' := (D \ ⋃ i, N i) ∪ ⋃ i, K i ∩ {p | 0 ≤ H i p}
+  let V := W ∩ (⋃ i, K i)ᶜ
+  have hV : IsOpen V := hW.inter (isCompact_iUnion hK).isClosed.isOpen_compl
+  have hLV : L ⊆ V := by
+    intro p hp
+    refine ⟨hLW hp, ?_⟩
+    intro hpK
+    obtain ⟨i, hpi⟩ := Set.mem_iUnion.mp hpK
+    exact ((hU i).2.2 (hKU i hpi)).1.2 hp
+  have heqV : ∀ p ∈ V, p ∈ D' ↔ p ∈ D := fun p hp => hout p hp.2
+  have houtside : ∀ p ∉ O, (p ∈ D' ↔ p ∈ D) ∧
+      (p ∈ interior D' ↔ p ∈ interior D) ∧
+      (p ∈ frontier D' ↔ p ∈ frontier D) := by
+    intro p hp
+    apply region_sides_of_open_local_eq hD.isClosed hD'.isClosed
+      (isCompact_iUnion hK).isClosed.isOpen_compl hout p
+    intro hpK
+    obtain ⟨i, hpi⟩ := Set.mem_iUnion.mp hpK
+    exact hp ((hU i).2.2 (hKU i hpi)).2
+  refine ⟨D', V, hD', hV, hLV, Set.inter_subset_left,
+    region_sides_of_open_local_eq hD.isClosed hD'.isClosed hV heqV, houtside, ?_⟩
+  exact P.regular_frontier_of_partial_replacement hD.isClosed hD'.isClosed
+    hL hLW hold hgood U K H (fun i => (hU i).1) (fun i => (hU i).2.1)
+    hK hKU hH hreg hlocal hout
+
+end Schoenflies
+
+end
