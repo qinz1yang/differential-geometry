@@ -8372,6 +8372,7 @@ import DifferentialGeometry.Topology.Manifold.FiniteInteriorCharts
 import DifferentialGeometry.Topology.Manifold.FinitePointBumps
 import DifferentialGeometry.Topology.Manifold.FlowInjectivity
 import DifferentialGeometry.Topology.Manifold.FunctionExtension
+import DifferentialGeometry.Topology.Manifold.GraphBand
 import DifferentialGeometry.Topology.Manifold.HalfClosedInterval
 import DifferentialGeometry.Topology.Manifold.HalfClosedIntervalInclusion
 import DifferentialGeometry.Topology.Manifold.HalfClosedIntervalSmoothMaps
@@ -8489,6 +8490,7 @@ import DifferentialGeometry.Topology.Manifold.PlanarChartGermIsotopy
 import DifferentialGeometry.Topology.Manifold.PlanarFieldDeformation
 import DifferentialGeometry.Topology.Manifold.PrescribedDifferential
 import DifferentialGeometry.Topology.Manifold.ProductBoundaryMap
+import DifferentialGeometry.Topology.Manifold.ProductChartCollar
 import DifferentialGeometry.Topology.Manifold.ProductChartGraph
 import DifferentialGeometry.Topology.Manifold.ProductChartSection
 import DifferentialGeometry.Topology.Manifold.ProductChartSubmersion
