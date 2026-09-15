@@ -98,13 +98,13 @@ private noncomputable def flatModelMetric :
   contMDiff := (riemannianMetricVectorSpace E).contMDiff.of_le le_top
 
 omit [NeZero (Module.finrank Real E)] in
-theorem metricDerivNorm_le_of_iterCovComp_le
+theorem metricDerivNorm_le_of_iterCovComp_le_of_equiv
     (V : TopologicalSpace.Opens E) [T2Space V]
     (G g : SmoothRiemannianMetric 𝓘(Real, E) V) (a : Nat) (z : V)
-    {B : Real} (hB : 0 ≤ B)
+    {C B : Real} (hC : 1 ≤ C) (hB : 0 ≤ B)
     (hequiv : ∀ v : E,
-      (1 / 2 : Real) * ‖v‖ ^ 2 ≤ g.inner z v v ∧
-        g.inner z v v ≤ 2 * ‖v‖ ^ 2)
+      C⁻¹ * ‖v‖ ^ 2 ≤ g.inner z v v ∧
+        g.inner z v v ≤ C * ‖v‖ ^ 2)
     (hcomp : ∀ slots : Fin (2 + a) → Fin (Module.finrank Real E),
       |iterCovComp (I := 𝓘(Real, E)) (M := V)
           (fun i _ ↦ (stdOrthonormalBasis Real E).toBasis i)
@@ -120,7 +120,7 @@ theorem metricDerivNorm_le_of_iterCovComp_le
             (fun i (_ : V) ↦ (stdOrthonormalBasis Real E).toBasis i))
           a z slots| ≤ B) :
     metricDerivNorm (I := 𝓘(Real, E)) a G g g z ≤
-      Real.sqrt (2 ^ (2 + a)) *
+      Real.sqrt (C ^ (2 + a)) *
         (Real.sqrt
           (Fintype.card
             (Fin (2 + a) → Fin (Module.finrank Real E)) : Real) * B) := by
@@ -150,8 +150,8 @@ theorem metricDerivNorm_le_of_iterCovComp_le
           (fun i j => if i = j then 1 else 0)
     exact h
   have hequiv' : ∀ v : TangentSpace 𝓘(Real, E) z,
-      (2 : Real)⁻¹ * g0.inner z v v ≤ g.inner z v v ∧
-        g.inner z v v ≤ 2 * g0.inner z v v := by
+      C⁻¹ * g0.inner z v v ≤ g.inner z v v ∧
+        g.inner z v v ≤ C * g0.inner z v v := by
     intro v
     change E at v
     have hg0 : g0.inner z v v = ‖v‖ ^ 2 := by
@@ -159,7 +159,7 @@ theorem metricDerivNorm_le_of_iterCovComp_le
       with_unfolding_all
         exact h
     rw [hg0]
-    simpa only [one_div] using hequiv v
+    exact hequiv v
   obtain ⟨b, hbON⟩ :=
     DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis
       (I := 𝓘(Real, E)) g z
@@ -177,7 +177,7 @@ theorem metricDerivNorm_le_of_iterCovComp_le
   rw [metricDerivNorm_eq_iterCov (I := 𝓘(Real, E)) G g g a b hbinv]
   apply Tensor0SBundle.sqrt_normSq0S_le_of_metric_equiv_of_component_bound
     (I := 𝓘(Real, E)) g0 g z (2 + a) e hinv0
-      (C := 2) (B := B) (by norm_num) hequiv' _ hB
+      (C := C) (B := B) hC hequiv' _ hB
   intro slots
   with_unfolding_all
     change
@@ -223,6 +223,39 @@ theorem metricDerivNorm_le_of_iterCovComp_le
               Tensor0SBundle.metricTensorField (I := 𝓘(Real, E)) g) frame)
           a z slots| := congrArg abs ht'.symm
     _ ≤ B := by simpa only [e, frame, hframe] using hcomp slots
+
+
+omit [NeZero (Module.finrank Real E)] in
+theorem metricDerivNorm_le_of_iterCovComp_le
+    (V : TopologicalSpace.Opens E) [T2Space V]
+    (G g : SmoothRiemannianMetric 𝓘(Real, E) V) (a : Nat) (z : V)
+    {B : Real} (hB : 0 ≤ B)
+    (hequiv : ∀ v : E,
+      (1 / 2 : Real) * ‖v‖ ^ 2 ≤ g.inner z v v ∧
+        g.inner z v v ≤ 2 * ‖v‖ ^ 2)
+    (hcomp : ∀ slots : Fin (2 + a) → Fin (Module.finrank Real E),
+      |iterCovComp (I := 𝓘(Real, E)) (M := V)
+          (fun i _ ↦ (stdOrthonormalBasis Real E).toBasis i)
+          (fun y ↦ Tensor.Coordinates.christoffelSymbolInFrame
+            (Geometry.Connection.leviCivitaConnectionOfMetric
+              (I := 𝓘(Real, E)) g)
+            (fun i (_ : V) ↦ (stdOrthonormalBasis Real E).toBasis i)
+            (constantBasis_isLocalFrameOn V
+              (stdOrthonormalBasis Real E).toBasis) y)
+          (frameComp0S (I := 𝓘(Real, E))
+            (Tensor0SBundle.metricTensorField (I := 𝓘(Real, E)) G -
+              Tensor0SBundle.metricTensorField (I := 𝓘(Real, E)) g)
+            (fun i (_ : V) ↦ (stdOrthonormalBasis Real E).toBasis i))
+          a z slots| ≤ B) :
+    metricDerivNorm (I := 𝓘(Real, E)) a G g g z ≤
+      Real.sqrt (2 ^ (2 + a)) *
+        (Real.sqrt
+          (Fintype.card
+            (Fin (2 + a) → Fin (Module.finrank Real E)) : Real) * B) := by
+  apply metricDerivNorm_le_of_iterCovComp_le_of_equiv V G g a z (C := 2)
+    (by norm_num) hB
+  · simpa only [one_div] using hequiv
+  · exact hcomp
 
 omit [NeZero (Module.finrank Real E)] [CompleteSpace E] in
 theorem metric_iterCovComp_mdifferentiableAt

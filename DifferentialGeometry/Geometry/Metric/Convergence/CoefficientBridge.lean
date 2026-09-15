@@ -10,6 +10,8 @@ import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Cont
 import DifferentialGeometry.Geometry.Metric.Convergence.Locality
 import DifferentialGeometry.Geometry.Metric.Pullback.Coefficients
 
+import DifferentialGeometry.Analysis.FiniteDimensional.Coercivity
+
 section
 
 set_option autoImplicit false
@@ -30,9 +32,9 @@ theorem metricDerivNorm_restrictOpen_le_of_coefficient_components
     (hQ : ∀ (z : V) (v w : E), Gv.inner z v w = Q z v w)
     (hB : ∀ (z : V) (v w : E), gTot.inner (z : E) v w = B z v w)
     (hco : ∀ z : E, z ∈ V → IsCoercive (B z))
-    (a : ℕ) (z : V) {bnd : ℝ} (hbnd : 0 ≤ bnd)
+    (a : ℕ) (z : V) {C bnd : ℝ} (hC : 1 ≤ C) (hbnd : 0 ≤ bnd)
     (hequiv : ∀ v : E,
-      (1 / 2 : ℝ) * ‖v‖ ^ 2 ≤ B z v v ∧ B z v v ≤ 2 * ‖v‖ ^ 2)
+      C⁻¹ * ‖v‖ ^ 2 ≤ B z v v ∧ B z v v ≤ C * ‖v‖ ^ 2)
     (hcomp : ∀ slots : Fin (2 + a) → Fin (Module.finrank ℝ E),
       |iterCovComp (I := 𝓘(ℝ, E))
         (fun i _ => (stdOrthonormalBasis ℝ E).toBasis i)
@@ -43,7 +45,7 @@ theorem metricDerivNorm_restrictOpen_le_of_coefficient_components
           ((stdOrthonormalBasis ℝ E).toBasis (s 0))
           ((stdOrthonormalBasis ℝ E).toBasis (s 1))) a z slots| ≤ bnd) :
     metricDerivNorm a Gv (gTot.restrictOpen V) (gTot.restrictOpen V) z ≤
-      Real.sqrt (2 ^ (2 + a)) *
+      Real.sqrt (C ^ (2 + a)) *
         (Real.sqrt (Fintype.card (Fin (2 + a) → Fin (Module.finrank ℝ E)) : ℝ) * bnd) := by
   classical
   let e := (stdOrthonormalBasis ℝ E).toBasis
@@ -56,13 +58,13 @@ theorem metricDerivNorm_restrictOpen_le_of_coefficient_components
   let base := fun w (s : Fin 2 → Fin (Module.finrank ℝ E)) =>
     (Q w - B w) (e (s 0)) (e (s 1))
   have hequivV : ∀ v : E,
-      (1 / 2 : ℝ) * ‖v‖ ^ 2 ≤ gv.inner z v v ∧ gv.inner z v v ≤ 2 * ‖v‖ ^ 2 := by
+      C⁻¹ * ‖v‖ ^ 2 ≤ gv.inner z v v ∧ gv.inner z v v ≤ C * ‖v‖ ^ 2 := by
     intro v
-    change (1 / 2 : ℝ) * ‖v‖ ^ 2 ≤ gTot.inner (z : E) v v ∧
-      gTot.inner (z : E) v v ≤ 2 * ‖v‖ ^ 2
+    change C⁻¹ * ‖v‖ ^ 2 ≤ gTot.inner (z : E) v v ∧
+      gTot.inner (z : E) v v ≤ C * ‖v‖ ^ 2
     rw [hB z v v]
     exact hequiv v
-  apply metricDerivNorm_le_of_iterCovComp_le V Gv gv a z hbnd hequivV
+  apply metricDerivNorm_le_of_iterCovComp_le_of_equiv V Gv gv a z hC hbnd hequivV
   intro slots
   have hchrEq :
       (fun w ↦ Tensor.Coordinates.christoffelSymbolInFrame
@@ -161,6 +163,7 @@ end
 
 end
 
+
 section
 
 set_option autoImplicit false
@@ -182,13 +185,14 @@ theorem metricCInfConvergenceOnCompacts_restrictOpen_of_coefficient_convergence
     (hQcd : ∀ k, ContDiffOn ℝ ∞ (Q k) V) (hBcd : ContDiffOn ℝ ∞ B V)
     (hQ : ∀ (k : ℕ) (z : V) (v w : E), (G k).inner z v w = Q k z v w)
     (hB : ∀ (z : V) (v w : E), g.inner (z : E) v w = B z v w)
+    {C : ℝ} (hC : 1 ≤ C)
     (hbound : ∀ (z : V) (v : E),
-      (1 / 2 : ℝ) * ‖v‖ ^ 2 ≤ B z v v ∧ B z v v ≤ 2 * ‖v‖ ^ 2) :
+      C⁻¹ * ‖v‖ ^ 2 ≤ B z v v ∧ B z v v ≤ C * ‖v‖ ^ 2) :
     MetricCInfConvergenceOnCompacts G (g.restrictOpen V) (g.restrictOpen V) := by
   classical
   have hco : ∀ z : E, z ∈ V → IsCoercive (B z) := by
     intro z hz
-    refine ⟨1 / 2, by norm_num, ?_⟩
+    refine ⟨C⁻¹, inv_pos.mpr (lt_of_lt_of_le zero_lt_one hC), ?_⟩
     intro v
     simpa only [pow_two, mul_assoc] using (hbound ⟨z, hz⟩ v).1
   let e := (stdOrthonormalBasis ℝ E).toBasis
@@ -210,10 +214,10 @@ theorem metricCInfConvergenceOnCompacts_restrictOpen_of_coefficient_convergence
   have hper : ∀ a : Fin (p + 1), ∃ N : ℕ, ∀ k : ℕ, N ≤ k → ∀ z ∈ K,
       metricDerivNorm (a : ℕ) (G k) (g.restrictOpen V) (g.restrictOpen V) z ≤ ε / 2 := by
     intro a
-    let C := Real.sqrt (2 ^ (2 + (a : ℕ))) *
+    let D := Real.sqrt (C ^ (2 + (a : ℕ))) *
       Real.sqrt (Fintype.card (Fin (2 + (a : ℕ)) → Fin (Module.finrank ℝ E)) : ℝ)
-    have hC : 0 ≤ C := mul_nonneg (Real.sqrt_nonneg _) (Real.sqrt_nonneg _)
-    let δ := (ε / 2) / (C + 1)
+    have hD : 0 ≤ D := mul_nonneg (Real.sqrt_nonneg _) (Real.sqrt_nonneg _)
+    let δ := (ε / 2) / (D + 1)
     have hδ : 0 < δ := div_pos (by positivity) (by positivity)
     obtain ⟨N, hN⟩ := htower a (Subtype.val '' K) hLK hLV 0 δ hδ
     refine ⟨N, fun k hk z hz => ?_⟩
@@ -224,17 +228,17 @@ theorem metricCInfConvergenceOnCompacts_restrictOpen_of_coefficient_convergence
       change ‖iterCovComp (I := 𝓘(ℝ, E)) (fun i _ => e i) Gamma (base k) a (z : E) - 0‖ ≤ δ at hraw
       simpa only [sub_zero] using hraw
     have hc := metricDerivNorm_restrictOpen_le_of_coefficient_components V (G k) g (Q k) B
-      (hQcd k) hBcd (hQ k) hB hco a z hδ.le (hbound z) (fun slots => by
+      (hQcd k) hBcd (hQ k) hB hco a z hC hδ.le (hbound z) (fun slots => by
         have hh := (norm_le_pi_norm _ slots).trans hnorm
         exact hh)
     calc
       metricDerivNorm (a : ℕ) (G k) (g.restrictOpen V) (g.restrictOpen V) z ≤
-          Real.sqrt (2 ^ (2 + (a : ℕ))) *
+          Real.sqrt (C ^ (2 + (a : ℕ))) *
             (Real.sqrt (Fintype.card (Fin (2 + (a : ℕ)) → Fin (Module.finrank ℝ E)) : ℝ) * δ) := hc
-      _ = C * δ := by dsimp only [C]; ring
+      _ = D * δ := by dsimp only [D]; ring
       _ ≤ ε / 2 := by
         dsimp only [δ]
-        rw [← mul_div_assoc, div_le_iff₀ (by positivity : 0 < C + 1)]
+        rw [← mul_div_assoc, div_le_iff₀ (by positivity : 0 < D + 1)]
         nlinarith
   choose N hN using hper
   refine ⟨Finset.univ.sup N, fun k hk => ?_⟩
@@ -250,6 +254,7 @@ end DifferentialGeometry.CheegerGromovCompactness
 end
 
 end
+
 
 section
 
@@ -270,18 +275,24 @@ theorem metricCInfConvergenceOnCompacts_of_coefficient_convergence
     (hconv : MapCInfConvergenceOnCompacts (V : Set E) Q B)
     (hQcd : ∀ k, ContDiffOn ℝ ∞ (Q k) V) (hBcd : ContDiffOn ℝ ∞ B V)
     (hQ : ∀ (k : ℕ) (z : V) (v w : E), (G k).inner z v w = Q k z v w)
-    (hB : ∀ (z : V) (v w : E), g.inner z v w = B z v w)
-    (hbound : ∀ (z : V) (v : E),
-      (1 / 2 : ℝ) * ‖v‖ ^ 2 ≤ B z v v ∧ B z v v ≤ 2 * ‖v‖ ^ 2) :
+    (hB : ∀ (z : V) (v w : E), g.inner z v w = B z v w) :
     MetricCInfConvergenceOnCompacts G g g := by
   intro K hK p ε hε
   have hLK : IsCompact (Subtype.val '' K : Set E) := hK.image continuous_subtype_val
   have hLV : (Subtype.val '' K : Set E) ⊆ V := by
     rintro _ ⟨z, _, rfl⟩
     exact z.property
-  obtain ⟨gTot, W, hLW, hWV, hTot, _⟩ :=
+  obtain ⟨C, hC, U, hU, hKU, hUV, _, hbounds⟩ :=
+    hBcd.continuousOn.exists_uniform_bilin_quadratic_bounds_nhds V.isOpen hLK hLV
+      (fun z hz v hv => by
+        rw [← hB ⟨z, hz⟩ v v]
+        exact g.pos ⟨z, hz⟩ v hv)
+  let Uo : TopologicalSpace.Opens E := ⟨U, hU⟩
+  have hUoV : (Uo : Set E) ⊆ V := subset_closure.trans hUV
+  obtain ⟨gTot, W, hLW, hWU, hTot, _⟩ :=
     exists_smooth_metric_agrees_on_neighborhood_of_is_compact
-      (euclideanMetric (E := E)) V g hLK hLV
+      (euclideanMetric (E := E)) Uo (g.restrictOpenOfSubset hUoV) hLK hKU
+  have hWV : (W : Set E) ⊆ V := hWU.trans hUoV
   let _ : SigmaCompactSpace V := isSigmaCompact_iff_sigmaCompactSpace.mp
     (Geometry.isSigmaCompact_of_isOpen 𝓘(ℝ, E) V.isOpen)
   let GW : ℕ → SmoothRiemannianMetric 𝓘(ℝ, E) W :=
@@ -292,7 +303,8 @@ theorem metricCInfConvergenceOnCompacts_of_coefficient_convergence
     exact (hTot z z.property v w).symm
   have hconvW : MetricCInfConvergenceOnCompacts GW
       (gTot.restrictOpen W) (gTot.restrictOpen W) := by
-    apply metricCInfConvergenceOnCompacts_restrictOpen_of_coefficient_convergence W GW gTot Q B
+    apply metricCInfConvergenceOnCompacts_restrictOpen_of_coefficient_convergence
+      W GW gTot Q B (hC := hC)
     · intro L hL hLW p
       exact hconv L hL (hLW.trans hWV) p
     · exact fun k => (hQcd k).mono hWV
@@ -302,7 +314,7 @@ theorem metricCInfConvergenceOnCompacts_of_coefficient_convergence
     · intro z v w
       exact (hTot z z.property v w).trans (hB ⟨z, hWV z.property⟩ v w)
     · intro z v
-      exact hbound ⟨z, hWV z.property⟩ v
+      exact hbounds z (subset_closure (hWU z.property)) v
   let L : Set W := (Subtype.val : W → E) ⁻¹' (Subtype.val '' K)
   have hL : IsCompact L :=
     Topology.IsInducing.subtypeVal.isCompact_preimage' hLK
@@ -334,6 +346,7 @@ end
 
 end
 
+
 section
 
 set_option autoImplicit false
@@ -355,10 +368,7 @@ theorem metricCInfConvergenceOnCompacts_of_pullback_coefficients
     (gInf : SmoothRiemannianMetric 𝓘(ℝ, E) M)
     (hconv : ∀ i, MapCInfConvergenceOnCompacts (U i : Set E)
       (fun k => Geometry.pullbackMetricCoefficients (gSeq k) (jbar i))
-      (Geometry.pullbackMetricCoefficients gInf (jbar i)))
-    (hbound : ∀ i (z : U i) (v : E),
-      (1 / 2 : ℝ) * ‖v‖ ^ 2 ≤ (localPullMetric gInf (j i) (hj i)).inner z v v ∧
-      (localPullMetric gInf (j i) (hj i)).inner z v v ≤ 2 * ‖v‖ ^ 2) :
+      (Geometry.pullbackMetricCoefficients gInf (jbar i))) :
     MetricCInfConvergenceOnCompacts gSeq gInf gInf := by
   let _ : ∀ i, SigmaCompactSpace (U i) := fun i =>
     isSigmaCompact_iff_sigmaCompactSpace.mp
@@ -393,9 +403,6 @@ theorem metricCInfConvergenceOnCompacts_of_pullback_coefficients
     (fun k => Geometry.contDiffOn_pullback_metric_coefficients (gSeq k) (U i).isOpen hjsm)
     (Geometry.contDiffOn_pullback_metric_coefficients gInf (U i).isOpen hjsm)
     (fun k => hcoeff (gSeq k)) (hcoeff gInf)
-  intro z v
-  rw [← hcoeff gInf z v v]
-  exact hbound i z v
 
 end DifferentialGeometry.CheegerGromovCompactness
 
