@@ -356,6 +356,14 @@
   边界/前沿不变性端点并合入 `polyhedralBoundary`，修正剩余旧实例语法后该模块检查 exit=0、零 warning；未运行根构建，
   未登记根聚合。E3.2/E3.3 仍因非紧局部有限表示层缺口搁置，详见 `PHASE3_APPROXIMATION_PLAN.md` 的 F6.3/E.2/E.3/R9。
 
+- 2026-09-15（F 车道，§12.1 的 E.3 条件版检查点）：`Transition361.lean` 明确定义 `Moise352`
+  与 `IsPLHomeomorphInto`。逆映射按像中每点的 `IsPLWithinAt` 表述，避免空源、非空目标时总逆函数不存在；
+  `isPLHomeomorphInto_iff_exists_inverse` 证明源非空时与原单个总逆映射形式等价。
+  `Moise352.exists_approx_of_isOpen` 用 F6.3 对整个开集一次应用 35.2，单独处理空集；
+  `IsPLHomeomorphInto.isOpen_image` 从 E.0 推出开像。聚焦检查 exit=0、零 warning，AuditF115
+  十个声明均仅 `propext`、`Classical.choice`、`Quot.sound`。完整 36.1 陈述在同一审计文件中通过类型检查；
+  像集等式尚待穷竭论证，E.3/E.4 尚未完成，35.2 仍只是显式命题。未运行 lake build，未登记根聚合。
+
 ## 7. 决策与风险
 
 - 不采用 Bing 定理 7 的“保留单形”强形式，只用 Moise §8/§35 的紧致图卡归纳（书中 `chap:two-set-gluing` 的方案）。
