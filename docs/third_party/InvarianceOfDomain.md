@@ -12,7 +12,7 @@ preserved without modification in
 The source files are:
 
 - [`ClassificationOfSurfaces/Topology/InvarianceOfDomain.lean`](https://github.com/mccorvie/classification-of-surfaces/blob/e3c7230fe78d7b056a415d9ecae6f77887046b32/ClassificationOfSurfaces/Topology/InvarianceOfDomain.lean).
-- [`ClassificationOfSurfaces/Moise/Brouwer.lean`](https://github.com/mccorvie/classification-of-surfaces/blob/e3c7230fe78d7b056a415d9ecae6f77887046b32/ClassificationOfSurfaces/Moise/Brouwer.lean), the source of the planned fixed-point ray construction.
+- [`ClassificationOfSurfaces/Moise/Brouwer.lean`](https://github.com/mccorvie/classification-of-surfaces/blob/e3c7230fe78d7b056a415d9ecae6f77887046b32/ClassificationOfSurfaces/Moise/Brouwer.lean), the source of the fixed-point ray construction.
 
 The invariance-of-domain proof was adapted upstream from Kai Lam's
 [Mathlib PR #36770](https://github.com/leanprover-community/mathlib4/pull/36770),
@@ -78,3 +78,35 @@ steps are not certified by the initial conditional adaptation.
 
 The upstream planar `Moise/NoRetraction.lean` is source material for review
 only and is not included in the native adaptation.
+
+### 2026-09-14: Homological no-retraction and Brouwer fixed points
+
+`DifferentialGeometry/Topology/FixedPoint/NoRetraction.lean` is a native
+proof in arbitrary positive finite dimension. In dimension one, a continuous
+map from the contractible ball to the finite discrete sphere is constant,
+contradicting the retraction identity on antipodal points. In higher
+dimensions, the inclusion-induced homology map would have a left inverse
+while the ball has zero positive-degree homology and the sphere's top
+homology is isomorphic to the integers. The proof reuses
+`integralSingularHomology_subsingleton_of_contractible` directly, without
+introducing a reduced-homology conversion.
+
+The upstream `Moise/Brouwer.lean` ray construction is modified and relocated
+to `DifferentialGeometry/Topology/FixedPoint/Brouwer.lean`.
+
+- Replace the planar model by an arbitrary universe-polymorphic real
+  inner-product space in the ray scale, quadratic identity, sphere endpoint,
+  continuity, and boundary identity proofs.
+- Replace the planar no-retraction input by the native homological theorem.
+- Handle dimension zero separately using the subsingleton vector space.
+- Export `exists_fixedPoint_closedBall_of_continuous` and a proved
+  `BrouwerFixedPoint E` instance for every finite-dimensional real
+  inner-product space.
+- Preserve the ray formula and algebraic proof; remove source comments and
+  adapt the local instance syntax to the standard linter.
+
+The no-retraction and fixed-point theorems have no unproved class hypotheses.
+The analytical declarations in `InvarianceOfDomain.lean` retain their
+abstract conditional signatures; importing `FixedPoint/Brouwer.lean`
+supplies their fixed-point instance. Explicit Euclidean and manifold
+endpoint declarations are the next development step.
