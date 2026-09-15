@@ -184,7 +184,7 @@ F1.2 与 F2.3 将共用同一套机制：H-多面体的（暴露）面、相对�
 
 | 编号 | 内容 | 拟定 Lean / 来源 | 消费者 | 状态 | 行数 |
 |---|---|---|---|---|---|
-| P.1 | 平面多边形 Schoenflies（Moise 3.6）与组合形式 5.3 | `External/ClassificationOfSurfaces/Moise/PolygonalSchoenflies.lean` + 原生 `PlanarSchoenflies.lean`；`isPLSphere_one_carrier`、`exists_polygonalCircle_of_isPLSphere_one`、`isPLBall_of_isPLSphere_one` 给每个原生平面 PL 1-球面一个有界 PL 2-球填充，实际 frontier 恰为该球面 | §17, §21.4, §26.7, §27.2 | done（2026-09-14，S0.1/S0.2，`a940dc7e4`、`81b0310b5`）；16 个 vendored 模块均检查 exit=0，13 条原有纯风格警告逐条记录于 `External/ClassificationOfSurfaces/VENDOR.md`；原生桥接零警告，AuditS1/S2 仅标准三公理。3.7 相对形式另列：已证环境同胚在闭区域上双向 PL 并固定给定开集之外，名称明确为 `_on_closedRegion`；全平面 PL 版本仍缺，不以此替代 | 16 个外部模块 + 550 行桥接 |
+| P.1 | 平面多边形 Schoenflies（Moise 3.6）与组合形式 5.3 | `External/ClassificationOfSurfaces/Moise/PolygonalSchoenflies.lean` + 原生 `PlanarSchoenflies.lean`；`isPLSphere_one_carrier`、`exists_polygonalCircle_of_isPLSphere_one`、`isPLBall_of_isPLSphere_one` 给每个原生平面 PL 1-球面一个有界 PL 2-球填充，实际 frontier 恰为该球面 | §17, §21.4, §26.7, §27.2 | done（2026-09-14，S0.1/S0.2，`a940dc7e4`、`81b0310b5`）；16 个 vendored 模块均检查 exit=0，13 条原有纯风格警告逐条记录于 `External/ClassificationOfSurfaces/VENDOR.md`；原生桥接零警告，AuditS1/S2 仅标准三公理。3.7 完整相对形式已由 `72fb0bbd3` 闭合：`exists_isPLHomeomorphOn_straighten` / `_of_isPLSphere_one` 给全平面双向 PL 环境同胚，固定给定开集之外；原 `_on_closedRegion` 签名保留为推论。两个几何自由三角形移动及剥离归纳保留全空间 PL 证据，改编出处逐项记入 VENDOR；AuditS10 十项仅标准三公理 | 16 个外部模块 + 1034 行桥接 |
 | P.2 | 5.4：多面体 2-胞腔边界间 PLH 延拓 | `BallFrontier.lean` 的 `exists_isPLHomeomorphOn_of_frontier`，取 `n = 1` 得平面 PL 2-球；一般形式作用于 ℝ^(n+1) 中的 PL (n+1)-球。消费 S.1 与 F 的 `exists_isPLHomeomorphOn_of_boundaryComplex` | §17.10, §33 L13, §34 | done（2026-09-14，`ff7fc67ca`）；任意给定实际 frontier 上的 PL 同胚延拓到球，并逐点保持边界映射；`IsPLBall.isPLSphere_frontier` 同时给边界球面性。检查 exit=0 零警告，AuditS6 四项仅标准三公理 | 40 行 + PLImage 两个通用辅助引理 |
 | P.3 | 3.3 / 17.2–17.3：2-胞腔分解的两个自由胞腔及相对形式 | vendored `TriangleMesh.exists_two_geometricallyFreeTriangles_of_polygonalDisk` 给三角剖分多边形盘的两个不同几何自由三角形；不能用较弱的 `exists_two_freeTriangles`（仅边的关联次数）代替 | §17.5, §17.9–17.12 | partial（2026-09-14）；上述强三角形版本已纳入第一批并经 AuditS5 审计，仅标准三公理。一般胞腔分解的 17.2、避开给定真盘子复形的 17.3，以及球面边界上支持在星内的删除操作，尚未桥接 | 2k–4k（剩余估计） |
 | P.4 | 10.8：ℝ² 中有限线性图驯顺，支持在给定开集内并按正控制函数逼近恒等 | §10 定理 6–8（框架定理 10.6 + 收缩族） | §17.2（胞腔复形可视为多面体） | new；已检查第二批 `PLApproximation` 的 `pl_approximation_one_skeleton` / `pl_approximation_pure_two_complex` / `pl_approximation_two_manifold`：它们是 Moise 6.2–6.3 的有限复形嵌入逼近，未给 10.8 的环境同胚、支撑和控制函数结论，因此未导入第二批 | 6k–10k |
@@ -201,7 +201,7 @@ F1.2 与 F2.3 将共用同一套机制：H-多面体的（暴露）面、相对�
 | 编号 | 内容 | 拟定 Lean | 消费者 | 状态 | 行数 |
 |---|---|---|---|---|---|
 | S.1 | 17.1：ℝ³ 中闭 3-流形带边 M 的组合边界等于实际 frontier | `FrontierBoundary.lean` 的 `frontier_space_eq_boundaryComplex_space` 对所有正维 ℝ^(n+1) 中的有限组合带边流形成立，ℝ³ 取 `n = 2`；另有流形形式 `frontier_eq_polyhedralBoundary` 与边界点球邻域 | §17.12, §23.8 | done（2026-09-14，`a04d993c4`）；整合 E3 的 `702c1fa19`/`f40a9b3f7` 证明并适配 F 的规范 `BoundaryInvariance`，将流形边界定义独立置于 `PolyhedralBoundary.lean`。检查 exit=0 零警告，AuditS3 六项（含显式 ℝ³ 签名）仅标准三公理；不重复实现 E3 的证明 | 84 + 513 行整合源码 |
-| S.2 | 17.4–17.8 推移性质 | 已落地 `HasPushPropertyAt C D`、`HasPushProperty C`，精确邻域是 `C \ J ⊆ interior N`，其中 `J = f '' stdSimplexBoundary 2` 是盘的内在边界圈；见下方逐条接口 | §23.10, §33 末, §34 | partial（2026-09-14）；17.4 任意四面体面推送已证 `hasPushPropertyAt_convexHull_simplex_face`（`8c4d4fe91`）；17.7 全空间 PL 同胚保持已证 `HasPushProperty.image` / `hasPushProperty_image_iff`（`8a6995d74`）。相对 PL 延拓与锥顶连续路径移动见 `AmbientExtension`/`ConeIsotopy`（`b29c69f17`）。全部检查 exit=0 零警告，AuditS4/S7/S8 仅标准三公理。17.5 任意边界盘的环境整直尚缺，故 17.6 与 17.8 尚未闭合；无占位声明或等价结论假设 | 726 行原生定义与推送链 |
+| S.2 | 17.4–17.8 推移性质 | 已落地 `HasPushPropertyAt C D`、`HasPushProperty C`，精确邻域是 `C \ J ⊆ interior N`，其中 `J = f '' stdSimplexBoundary 2` 是盘的内在边界圈；见下方逐条接口 | §23.10, §33 末, §34 | partial（2026-09-14）；17.4 任意四面体面推送已证 `hasPushPropertyAt_convexHull_simplex_face`（`8c4d4fe91`）；17.7 全空间 PL 同胚保持已证 `HasPushProperty.image` / `hasPushProperty_image_iff`（`8a6995d74`）。相对 PL 延拓与锥顶连续路径移动见 `AmbientExtension`/`ConeIsotopy`（`b29c69f17`）；`e3686847e` 的 `PLHomeomorphGluing` / `ConeAmbientExtension` 给两侧锥的环境延拓，明确携带交集与 frontier 几何条件。全部检查 exit=0 零警告，AuditS4/S7/S8/S11 仅标准三公理。17.5 尚缺四面体边界星的几何条件与相对删除归纳，故 17.6 与 17.8 尚未闭合；无占位声明或等价结论假设 | 951 行原生定义与推送链 |
 | S.3 | 17.9–17.11：凸多面体 3-胞腔、盘与点之 join、沿平面盘拼合的球面单嵌入 | 拟定 `isSimplyEmbedded_frontier_of_convex`、`isSimplyEmbedded_frontier_coneComplex`、`isSimplyEmbedded_union_sdiff_diskInterior`；必须保留凸开邻域外恒同，且删除的是盘的内在内部；逐条见下 | §17.12 | new；依赖 S.2 的 17.6/17.8 与 P.3 的自由胞腔删除，当前 17.4/17.7 不能替代 | 4k–6k |
 | S.4 | **17.12 PL Schoenflies** | 主目标 `isSimplyEmbedded_of_isPLSphere_two` 保留对每个凸开邻域的支持控制；再导出 `exists_isPLBall_of_isPLSphere_two`，给有界 PL 3-球 B 且 frontier B = S。路线为 F5.1 水平族一般位置、Ind S 归纳（L1–L6）、S.3 收尾 | §23.9, §28.1 后半, §30.5, §33 末 | new；S.2 尚未完整闭合 | 8k–12k |
 | S.5 | 23.9–23.11 流形版：`Int \|St v\|` 内多面体 2-球面界定组合 3-胞腔；推移；两 3-胞腔交于 2-胞腔之并是 3-胞腔 | `theorem isPLBall_union_of_inter_isPLBall_two (h₁ : IsPLBall 3 C₁) (h₂ : IsPLBall 3 C₂) (hD : IsPLBall 2 (C₁ ∩ C₂)) (hD₁ : C₁ ∩ C₂ ⊆ frontier C₁) (hD₂ : C₁ ∩ C₂ ⊆ frontier C₂) : IsPLBall 3 (C₁ ∪ C₂)`（在图卡内） | F4.2 的 3D 部分、§23.12, §23.18, §26.2, §32 | new | 2k–3k |
@@ -230,8 +230,14 @@ D 为 PL 2-球及 D 位于 frontier C，`HasPushProperty` 对所有这样的 D �
   `IsOpen W`、`C T ⊆ W`，存在 h 和 `v ∈ T`，满足
   `IsPLHomeomorphOn h univ univ`、`h '' C T = C T`、`h '' D = C (T.erase v)`、`EqOn h id Wᶜ`。
   书中路线是在边界三角剖分中保留一个三角形，依次删除另一个自由三角形，并把每次盘内 PL 移动经
-  内外两侧的锥延拓为保持整个四面体的环境移动。目前缺少这个边界星内的相对环境延拓与删除接口。
-  P.1 的 `_on_closedRegion` 只证明指定盘上的 PL 性；P.3 的两个几何自由三角形也不自动提供该接口。
+  内外两侧的锥延拓为保持整个四面体的环境移动。P.1 的完整全平面相对形式现已闭合。
+  `exists_isPLHomeomorphOn_extension_coneComplex_union` 已证明底面自同胚的两侧锥环境延拓：
+  两锥须恰交于共同底面，且并集 frontier 位于固定边界子复形的两侧锥中；所得同胚保持各侧锥，
+  固定两锥并集之外。这些几何条件没有被假定为对四面体边界星自动成立。
+  仍需：充分细的边界三角剖分使每个待删三角形的星避开某个原始面；为对应三个面的角区域
+  选择内外锥顶，证明交集、frontier 与指定 W 内的支撑控制；用几何自由三角形逐次删除并保留
+  选定三角形，将局部平面移动接到上述环境延拓。F 新增 `HalfSpacePerturbation` 给指定半空间内的
+  小顶点扰动，但未直接给出这些四面体边界星及删除归纳的生产者。
 - **17.6，未证。** 拟定 `hasPushProperty_convexHull_simplex`：T 有四个仿射无关顶点，则
   `HasPushProperty (C T)`。需要 17.5 把任意边界盘整直到一个面，再用 17.4 和已证的 17.7 搬回。
 - **单嵌入，拟定定义，尚未落源码。** `IsSimplyEmbedded S` 表示 `IsPLSphere 2 S`，且对每个
@@ -253,12 +259,13 @@ D 为 PL 2-球及 D 位于 frontier C，`HasPushProperty` 对所有这样的 D �
 - **17.12，拟定。** `IsPLSphere 2 S → IsSimplyEmbedded S` 是保留原书支持控制的主端点；
   有界 PL 球填充是其推论。当前没有该端点的实现或证明声明。
 
-最终同步已纳入 `origin/codex/moise-smoothing` 至 `beed8bde4`。逐砖提交已发布，因此遵守禁止重写
+最终同步已纳入 `origin/codex/moise-smoothing` 至 `b66f6b5b0`（合并节点 `405ef10b6`）。逐砖提交已发布，因此遵守禁止重写
 已发布历史与禁止 force-push 的仓库规则，以普通合并同步 F 更新；未将 S 分支合并到任何其它分支。
 验证仅使用 S 车道 `check-f.ps1` / `audit-f.ps1`，一次一个 Lean 进程；未执行 lake build，未登记根聚合。
-最终联合验证：11 个新增/修改原生模块逐一复查 exit=0、零警告；`AuditS9.lean` 在同一环境中审计
-50 个不同声明（含要求的 ℝ³ frontier 和平面边界延拓签名），全部仅标准三公理，exit=0。
-日志位于本工作树 `.lake/scratch/final-*.log` 与 `.lake/scratch/audit-final-s.log`。
+最终联合验证：13 个 S 车道新增/修改原生模块及 2 个同步的 F 半空间模块逐一复查 exit=0、零警告；
+`AuditS12.lean` 在同一环境中审计 60 个不同声明（含要求的 ℝ³ frontier、平面边界延拓、全平面
+相对整直与两侧锥延拓），全部仅标准三公理，exit=0。日志位于本工作树
+`.lake/scratch/final2-*.log` 与 `.lake/scratch/audit-final2-s.log`。
 
 ### 4.3 车道 C（1）：§23 三角剖分 3-流形
 

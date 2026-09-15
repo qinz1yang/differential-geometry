@@ -342,3 +342,10 @@ All three affected modules pass focused checks with exit 0 and zero warnings.
 `AuditS11.lean` checks the three new declarations together with the full planar
 relative theorem; all four closures contain only the three standard axioms,
 audit exit 0.
+
+Final verification after the F synchronization through `b66f6b5b0`: all 13 native
+S modules and the two synchronized F half-space modules pass the focused checks,
+exit 0 with zero warnings. `AuditS12.lean` imports the complete S chain together
+and checks 60 distinct declarations; every axiom closure contains only the three
+standard axioms, audit exit 0. Logs: `.lake/scratch/final2-*.log` and
+`.lake/scratch/audit-final2-s.log` in the S worktree.

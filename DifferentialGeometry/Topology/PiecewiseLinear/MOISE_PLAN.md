@@ -280,7 +280,9 @@
     按依赖序逐模块检查 exit=0，AuditS1 仅标准三公理。
   - S0.2/P.1：`81b0310b5` 的 `PlanarSchoenflies.lean` 与 `SimplexFrontier.lean` 证明
     原生 PL 1-球面与 `PolygonalCircle` 的双向转换，以及 `isPLBall_of_isPLSphere_one` 的有界 PL 2-球填充。
-    相对整直目前是 `_on_closedRegion`：环境同胚、闭区域内双向 PL、给定开集外恒同；全平面 PL 仍是缺口。
+    `72fb0bbd3` 补齐完整 3.7：`exists_isPLHomeomorphOn_straighten` / `_of_isPLSphere_one` 给全平面
+    双向 PL 的相对整直，固定指定开集外；原 `_on_closedRegion` 签名保留为推论。AuditS10 十项仅标准三公理。
+    自由三角形移动及剥离归纳的出处和修改记录已补入 VENDOR。
     P.3 已有三角剖分多边形盘的两个几何自由三角形，P.5 已有多边形 θ-图区域分解；一般相对胞腔删除、
     任意弧 4.4 和 Problem 4.1 未闭合。第二批只提供 6.2–6.3 的嵌入逼近，未覆盖 P.4 的 10.8，故没有导入。
   - S.1：`a04d993c4` 整合 E3 的 frontier/边界点球邻域证明，适配 F 的规范边界不变性，
@@ -292,10 +294,13 @@
     `AmbientExtension.lean` / `ConeIsotopy.lean` 给相对多面体邻域中的顶点移动及锥顶连续路径移动；
     `8c4d4fe91` 的 `SimplexBoundaryImage.lean` / `SimplexPush.lean` 闭合 17.4 的任意四面体面推送。
     核对并修正计划原先的邻域写法：使用 `C \ J`，不取闭包，J 是盘的内在边界圈而非环境 frontier D。
-    AuditS4/S7/S8 全部仅标准三公理。17.5 的任意边界盘环境整直尚缺，17.6、17.8 依赖它；无占位证明债。
-  - 最终 11 个新增/修改原生模块逐一复查 exit=0、零警告；AuditS9 在同一环境中审计 50 个不同声明，
-    全部仅标准三公理、exit=0。未运行 lake build，未登记根聚合。
-    最终同步 F 至 `beed8bde4` 时使用普通合并保留已发布检查点，未重写历史或 force-push，
+    `e3686847e` 增加固定 frontier 的恒等延拓、交集保持的 PL 拼接及两侧锥环境延拓，
+    三个新声明连同全平面相对定理通过 AuditS11。17.5 尚缺四面体边界星的锥交集、frontier、
+    支撑控制几何条件和保留指定三角形的删除归纳；17.6、17.8 仍依赖它。无占位证明债。
+  - 最终 13 个 S 原生模块和 2 个同步的 F 半空间模块逐一复查 exit=0、零警告；
+    AuditS12 在同一环境中审计 60 个不同声明，全部仅标准三公理、exit=0。
+    日志为 `.lake/scratch/final2-*.log` 和 `audit-final2-s.log`。未运行 lake build，未登记根聚合。
+    最终同步 F 至 `b66f6b5b0` 时使用普通合并保留已发布检查点，未重写历史或 force-push，
     未将 S 分支合并到其它分支；精确消费状态和 §17.4–17.12 拟定陈述见 `PHASE3_APPROXIMATION_PLAN.md` §4.1–4.2。
 
 ## 7. 决策与风险
