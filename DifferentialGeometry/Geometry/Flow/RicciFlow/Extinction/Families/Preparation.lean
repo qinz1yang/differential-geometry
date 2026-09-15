@@ -1124,7 +1124,7 @@ private theorem contDiffAt_map_shortSegment (g : SmoothRiemannianMetric I Q) {d 
   ((e.smooth.contMDiffAt).comp s (h.1.contMDiffAt (isOpen_Ioo.mem_nhds hs))).contDiffAt
 
 omit [CompleteSpace E] hT2 hCompact hConnected hBoundary in
-private theorem contMDiffOn_shortSegment_beta (g : SmoothRiemannianMetric I Q)
+theorem contMDiffOn_shortSegment_beta (g : SmoothRiemannianMetric I Q)
     (P : FlatteningProfile) {p q : Q} (h : IsShortSegment g p q (shortSegment g p q))
     {c e : ℝ} {s : Set ℝ} (hmap : ∀ x ∈ s, c * x + e ∈ Icc (0 : ℝ) 1) :
     ContMDiffOn 𝓘(ℝ, ℝ) I ∞ (fun x : ℝ => shortSegment g p q (P.beta (c * x + e))) s := by
@@ -1221,15 +1221,18 @@ private theorem flatPolygon_eventuallyEq_left_zero (g : SmoothRiemannianMetric I
 
 
 omit [CompleteSpace E] hT2 hCompact hConnected hBoundary in
-theorem iteratedDeriv_map_flatPolygon_eq_zero (g : SmoothRiemannianMetric I Q)
+theorem contDiffAt_map_flatPolygon_and_iteratedDeriv_eq_zero (g : SmoothRiemannianMetric I Q)
     (P : FlatteningProfile) {d : ℕ} (e : SmoothLoopEmbedding (I := I) (Q := Q) d) {N : ℕ}
     (hN : 0 < N) (γ : Surgery.Topology.Circle → Q)
     (hseg : ∀ i : ℤ, 0 ≤ i → i < N → IsShortSegment g (polygonVertex γ N i)
       (polygonVertex γ N (i + 1))
       (shortSegment g (polygonVertex γ N i) (polygonVertex γ N (i + 1))))
-    {i : ℤ} (hi : 0 ≤ i) (hiN : i < N) {m : ℕ} (hm : 0 < m) :
-    iteratedDeriv m (fun x : ℝ => e.map (flatPolygon g P N γ (x : Surgery.Topology.Circle)))
-      ((i : ℝ) / N) = 0 := by
+    {i : ℤ} (hi : 0 ≤ i) (hiN : i < N) :
+    ContDiffAt ℝ ∞ (fun x : ℝ => e.map (flatPolygon g P N γ (x : Surgery.Topology.Circle)))
+      ((i : ℝ) / N) ∧
+    ∀ m : ℕ, 0 < m →
+      iteratedDeriv m (fun x : ℝ => e.map (flatPolygon g P N γ (x : Surgery.Topology.Circle)))
+        ((i : ℝ) / N) = 0 := by
   have hNR : (0 : ℝ) < N := by exact_mod_cast hN
   have hsegR : IsShortSegment g (polygonVertex γ N i) (polygonVertex γ N (i + 1))
       (shortSegment g (polygonVertex γ N i) (polygonVertex γ N (i + 1))) := hseg i hi hiN
@@ -1410,6 +1413,8 @@ theorem iteratedDeriv_map_flatPolygon_eq_zero (g : SmoothRiemannianMetric I Q)
     · have hxR : x ∈ Icc ((i : ℝ) / N) b₁ :=
         ⟨le_of_lt (not_le.mp h), le_trans hx.2 (min_le_left b₁ _)⟩
       rw [hF₁' x hxR, if_neg h]
+  refine ⟨hG.congr_of_eventuallyEq hFG, ?_⟩
+  intro m hm
   rw [Filter.EventuallyEq.iteratedDeriv_eq m hFG]
   rw [← iteratedDerivWithin_eq_iteratedDeriv (uniqueDiffOn_Ici ((i : ℝ) / N))
     (hG.of_le (WithTop.coe_le_coe.mpr le_top : (m : ℕ∞ω) ≤ ∞)) (mem_Ici.mpr le_rfl)]
@@ -1426,56 +1431,16 @@ theorem iteratedDeriv_map_flatPolygon_eq_zero (g : SmoothRiemannianMetric I Q)
   have hpt : ((i : ℝ) + 0) / (N : ℝ) = (i : ℝ) / N := by rw [add_zero]
   rwa [hpt] at h
 
-theorem rfs_flat_polygon_bounds (g : SmoothRiemannianMetric I Q)
-    (P : FlatteningProfile) {d : ℕ} (e : SmoothLoopEmbedding (I := I) (Q := Q) d) :
-    ∃ radius : ℝ, 0 < radius ∧
-      (∀ (N : ℕ), 2 ≤ N → ∀ γ : RegularLoop I Q,
-        (∀ i : Fin N, riemannianEDistOf g (polygonVertex γ N i.val)
-          (polygonVertex γ N (i.val + 1)) < ENNReal.ofReal radius) →
-        ∃ c : RegularLoop I Q,
-          (∀ z, c z = flatPolygon g P N γ z) ∧
-          ContMDiff 𝓘(ℝ, ℝ) I ∞ (loopLift c.toContinuousLoop) ∧
-          (∀ (i : ℤ) (m : ℕ), 0 < m →
-            iteratedDeriv m (e.map ∘ loopLift c.toContinuousLoop) ((i : ℝ) / N) = 0) ∧
-          loopLength g c.toContinuousLoop =
-            ∑ i : Fin N, (riemannianEDistOf g (polygonVertex γ N i.val)
-              (polygonVertex γ N (i.val + 1))).toReal ∧
-          loopLength g c.toContinuousLoop ≤ loopLength g γ.toContinuousLoop ∧
-          ∀ lambda : ℝ, 0 < lambda → lambda ≤ 1 →
-            (initialRamp c).SmoothOn (I := I) univ ∧
-            (initialRamp c).IsRampOn (fun _ => g) lambda univ ∧
-            (initialRamp c).length (fun _ => g) lambda 0 ≤ loopLength g γ.toContinuousLoop + 1 ∧
-            (initialRamp c).totalCurvature (fun _ => g) lambda 0 ≤ (N : ℝ) * Real.pi) ∧
-      (∀ (K : Type*) [TopologicalSpace K] (N : ℕ), 2 ≤ N →
-        ∀ v : K → Surgery.Topology.Circle → Q,
-          (∀ i : Fin N, Continuous (fun k => polygonVertex (v k) N i.val)) →
-          (∀ k (i : Fin N), riemannianEDistOf g (polygonVertex (v k) N i.val)
-            (polygonVertex (v k) N (i.val + 1)) < ENNReal.ofReal radius) →
-          ∀ m : ℕ, Continuous (fun p : K × ℝ =>
-            iteratedDeriv m (fun x : ℝ =>
-              e.map (flatPolygon g P N (v p.1) (x : Surgery.Topology.Circle))) p.2)) := by
-  sorry
-
-theorem rfs_prepared_family (g : SmoothRiemannianMetric I Q) {d : ℕ}
-    (e : SmoothLoopEmbedding (I := I) (Q := Q) d)
-    (Γ : RegularFamily (I := I) (Q := Q) (Sphere 2)) (eta : ℝ) (heta : 0 < eta) :
-    ∃ P : FlatteningProfile, ∃ N : ℕ, 2 ≤ N ∧
-      ∃ prepared : RegularFamily (I := I) (Q := Q) (Sphere 2),
-        (∀ p z, (prepared p).1 z = flatPolygon g P N (Γ p).1 z) ∧
-        HasContinuousSmoothLoopJets e prepared ∧
-        ContinuousMap.Homotopic prepared Γ ∧
-        (∀ p, |regularLeastArea g (prepared p) - regularLeastArea g (Γ p)| < eta) ∧
-        let L₀ := 1 + sSup (Set.range (fun p => loopLength g (Γ p).1.toContinuousLoop))
-        let Theta₀ := (N : ℝ) * Real.pi
-        let Ainit := familyMaximum g Γ + eta
-        0 ≤ L₀ ∧ 0 ≤ Theta₀ ∧ 0 ≤ Ainit ∧
-          ∀ p (lambda : ℝ), 0 < lambda → lambda ≤ 1 →
-            (initialRamp (prepared p).1).SmoothOn (I := I) univ ∧
-            (initialRamp (prepared p).1).IsRampOn (fun _ => g) lambda univ ∧
-            (initialRamp (prepared p).1).length (fun _ => g) lambda 0 ≤ L₀ ∧
-            (initialRamp (prepared p).1).totalCurvature (fun _ => g) lambda 0 ≤ Theta₀ ∧
-            regularLeastArea g (prepared p) ≤ Ainit := by
-  sorry
-
+omit [CompleteSpace E] hT2 hCompact hConnected hBoundary in
+theorem iteratedDeriv_map_flatPolygon_eq_zero (g : SmoothRiemannianMetric I Q)
+    (P : FlatteningProfile) {d : ℕ} (e : SmoothLoopEmbedding (I := I) (Q := Q) d) {N : ℕ}
+    (hN : 0 < N) (γ : Surgery.Topology.Circle → Q)
+    (hseg : ∀ i : ℤ, 0 ≤ i → i < N → IsShortSegment g (polygonVertex γ N i)
+      (polygonVertex γ N (i + 1))
+      (shortSegment g (polygonVertex γ N i) (polygonVertex γ N (i + 1))))
+    {i : ℤ} (hi : 0 ≤ i) (hiN : i < N) {m : ℕ} (hm : 0 < m) :
+    iteratedDeriv m (fun x : ℝ => e.map (flatPolygon g P N γ (x : Surgery.Topology.Circle)))
+      ((i : ℝ) / N) = 0 :=
+  (contDiffAt_map_flatPolygon_and_iteratedDeriv_eq_zero g P e hN γ hseg hi hiN).2 m hm
 
 end DifferentialGeometry.PDE.RicciFlow.Extinction.Families
