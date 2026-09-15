@@ -1564,4 +1564,164 @@ theorem exists_small_simplicialMap_transverse_in_halfSpace [FiniteDimensional �
     have h := htrans s (hfaces s hs) t (hfaces t ht) hdisj hinter
     simpa only [hiff] using h
 
+theorem halfSpace_eq_of_linearMap_pos {V : Type*} [AddCommGroup V] [Module ℝ V]
+    (S : Submodule ℝ V) (ℓ : V →ₗ[ℝ] ℝ) (hS : S ≤ LinearMap.ker ℓ) {u : V} (hu : 0 < ℓ u) (x : V) :
+    (∃ z ∈ S, ∃ r : ℝ, 0 ≤ r ∧ x = z + r • u) ↔
+      x ∈ S ⊔ Submodule.span ℝ {u} ∧ 0 ≤ ℓ x := by
+  have heval : ∀ z ∈ S, ∀ r : ℝ, ℓ (z + r • u) = r * ℓ u := by
+    intro z hz r
+    have hz0 : ℓ z = 0 := hS hz
+    rw [map_add, map_smul, hz0, smul_eq_mul, zero_add]
+  constructor
+  · rintro ⟨z, hz, r, hr, rfl⟩
+    refine ⟨Submodule.add_mem _ (Submodule.mem_sup_left hz)
+      (Submodule.mem_sup_right (Submodule.smul_mem _ _ (Submodule.subset_span (Set.mem_singleton u)))), ?_⟩
+    rw [heval z hz r]
+    exact mul_nonneg hr hu.le
+  · rintro ⟨hx, hpos⟩
+    obtain ⟨z, hz, w, hw, hzw⟩ := Submodule.mem_sup.mp hx
+    obtain ⟨r, rfl⟩ := Submodule.mem_span_singleton.mp hw
+    have hr : 0 ≤ r := by
+      rw [← hzw, heval z hz r] at hpos
+      nlinarith
+    exact ⟨z, hz, r, hr, hzw.symm⟩
+
+theorem exists_common_inward_vector_of_sup_eq_ker {V : Type*} [AddCommGroup V] [Module ℝ V]
+    (S T : Submodule ℝ V) (ℓ : V →ₗ[ℝ] ℝ) (hST : S ⊔ T = LinearMap.ker ℓ)
+    {u v : V} (hu : 0 < ℓ u) (hv : 0 < ℓ v) :
+    ∃ w ∈ (S ⊔ Submodule.span ℝ {u}) ⊓ (T ⊔ Submodule.span ℝ {v}), ℓ w = 1 := by
+  let a := (ℓ u)⁻¹ • u
+  let b := (ℓ v)⁻¹ • v
+  have ha : ℓ a = 1 := by dsimp [a]; rw [map_smul, smul_eq_mul, inv_mul_cancel₀ hu.ne']
+  have hb : ℓ b = 1 := by dsimp [b]; rw [map_smul, smul_eq_mul, inv_mul_cancel₀ hv.ne']
+  have hab : a - b ∈ S ⊔ T := by
+    rw [hST]
+    change ℓ (a - b) = 0
+    rw [map_sub, ha, hb, sub_self]
+  obtain ⟨s, hs, t, ht, hst⟩ := Submodule.mem_sup.mp hab
+  have hs0 : ℓ s = 0 := (le_sup_left.trans hST.le) hs
+  have heq : a - s = b + t := by
+    have haeq : a = s + t + b := sub_eq_iff_eq_add.mp hst.symm
+    rw [haeq]
+    abel
+  refine ⟨a - s, ⟨?_, ?_⟩, ?_⟩
+  · exact Submodule.sub_mem _
+      (Submodule.mem_sup_right (Submodule.smul_mem _ _ (Submodule.subset_span (Set.mem_singleton u))))
+      (Submodule.mem_sup_left hs)
+  · rw [heq]
+    exact Submodule.add_mem _
+      (Submodule.mem_sup_right (Submodule.smul_mem _ _ (Submodule.subset_span (Set.mem_singleton v))))
+      (Submodule.mem_sup_left ht)
+  · rw [map_sub, ha, hs0, sub_zero]
+
+def HasPLBoundaryCrossingAt (M A B : Set E) (x : E) : Prop :=
+  ∃ (U V : Set E) (h : E → E) (P Q : Submodule ℝ E) (ℓ : E →ₗ[ℝ] ℝ),
+    IsOpen U ∧ IsOpen V ∧ x ∈ U ∧ IsPLHomeomorphOn h U V ∧ h x = 0 ∧
+      Module.finrank ℝ P = 2 ∧ Module.finrank ℝ Q = 2 ∧
+        Module.finrank ℝ (P ⊓ Q : Submodule ℝ E) = 1 ∧ P ⊔ Q = ⊤ ∧
+          (∃ u ∈ P ⊓ Q, ℓ u = 1) ∧ ∀ᶠ y in 𝓝 x,
+            (y ∈ M ↔ 0 ≤ ℓ (h y)) ∧ (y ∈ A ↔ h y ∈ P ∧ 0 ≤ ℓ (h y)) ∧
+              (y ∈ B ↔ h y ∈ Q ∧ 0 ≤ ℓ (h y))
+
+theorem hasPLBoundaryCrossingAt_of_halfSpace_cones [FiniteDimensional ℝ E]
+    (hdim : Module.finrank ℝ E = 3) (S T : Submodule ℝ E)
+    (hSdim : Module.finrank ℝ S = 1) (hTdim : Module.finrank ℝ T = 1)
+    (ℓ : E →ₗ[ℝ] ℝ) (hST : S ⊔ T = LinearMap.ker ℓ) {u v x : E}
+    (hu : 0 < ℓ u) (hv : 0 < ℓ v) (hx : ℓ x = 0) {A B : Set E}
+    (hA : ∀ᶠ y in 𝓝 x, y ∈ A ↔ ∃ z ∈ S, ∃ r : ℝ, 0 ≤ r ∧ y - x = z + r • u)
+    (hB : ∀ᶠ y in 𝓝 x, y ∈ B ↔ ∃ z ∈ T, ∃ r : ℝ, 0 ≤ r ∧ y - x = z + r • v) :
+    HasPLBoundaryCrossingAt {y : E | 0 ≤ ℓ y} A B x := by
+  let P := S ⊔ Submodule.span ℝ {u}
+  let Q := T ⊔ Submodule.span ℝ {v}
+  have hSker : S ≤ LinearMap.ker ℓ := le_sup_left.trans hST.le
+  have hTker : T ≤ LinearMap.ker ℓ := le_sup_right.trans hST.le
+  have hdimPlane : ∀ R : Submodule ℝ E, ∀ w : E, Module.finrank ℝ R = 1 →
+      R ≤ LinearMap.ker ℓ → 0 < ℓ w → Module.finrank ℝ (R ⊔ Submodule.span ℝ {w} : Submodule ℝ E) = 2 := by
+    intro R w hRdim hRker hw
+    have hwR : w ∉ R := fun h => hw.ne' (hRker h)
+    have hw0 : w ≠ 0 := fun h => hwR (h.symm ▸ R.zero_mem)
+    have hspan : Module.finrank ℝ (Submodule.span ℝ ({w} : Set E)) = 1 := finrank_span_singleton hw0
+    have hinf : Module.finrank ℝ (R ⊓ Submodule.span ℝ {w} : Submodule ℝ E) = 0 :=
+      Submodule.finrank_eq_zero.mpr (disjoint_iff.mp (Submodule.disjoint_span_singleton_of_notMem hwR))
+    have h := Submodule.finrank_sup_add_finrank_inf_eq R (Submodule.span ℝ {w})
+    omega
+  have hPdim : Module.finrank ℝ P = 2 := hdimPlane S u hSdim hSker hu
+  have hQdim : Module.finrank ℝ Q = 2 := hdimPlane T v hTdim hTker hv
+  have hSP : S ≤ P := le_sup_left
+  have hTQ : T ≤ Q := le_sup_left
+  have hkerPQ : LinearMap.ker ℓ ≤ P ⊔ Q := by
+    rw [← hST]
+    exact sup_le (hSP.trans le_sup_left) (hTQ.trans le_sup_right)
+  have huP : u ∈ P := Submodule.mem_sup_right (Submodule.subset_span (Set.mem_singleton u))
+  have hPQ : P ⊔ Q = ⊤ := by
+    apply top_unique
+    intro z _
+    have hzker : z - (ℓ z / ℓ u) • u ∈ LinearMap.ker ℓ := by
+      change ℓ (z - (ℓ z / ℓ u) • u) = 0
+      rw [map_sub, map_smul, smul_eq_mul, div_mul_cancel₀ _ hu.ne', sub_self]
+    have h := Submodule.add_mem (P ⊔ Q) (hkerPQ hzker)
+      ((P ⊔ Q).smul_mem (ℓ z / ℓ u) (Submodule.mem_sup_left huP))
+    simpa only [sub_add_cancel] using h
+  have hIdim : Module.finrank ℝ (P ⊓ Q : Submodule ℝ E) = 1 := by
+    have h := Submodule.finrank_sup_add_finrank_inf_eq P Q
+    rw [hPQ, finrank_top] at h
+    omega
+  have hh : IsPLHomeomorphOn (fun y : E => y - x) univ univ := by
+    simpa only [sub_eq_add_neg] using isPLHomeomorphOn_add_const (-x)
+  refine ⟨univ, univ, fun y => y - x, P, Q, ℓ, isOpen_univ, isOpen_univ, mem_univ x,
+    hh, sub_self x, hPdim, hQdim, hIdim, hPQ, exists_common_inward_vector_of_sup_eq_ker S T ℓ hST hu hv, ?_⟩
+  filter_upwards [hA, hB] with y hyA hyB
+  refine ⟨?_, hyA.trans (halfSpace_eq_of_linearMap_pos S ℓ hSker hu (y - x)),
+    hyB.trans (halfSpace_eq_of_linearMap_pos T ℓ hTker hv (y - x))⟩
+  rw [map_sub, hx, sub_zero]
+
+open Classical in
+theorem eventually_mem_space_iff_mem_unique_coface_cone [FiniteDimensional ℝ E]
+    (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces] {s : Finset E} (hs : s ∈ K.faces)
+    (hbound : ∀ u ∈ K.faces, s ⊆ u → u.card ≤ s.card + 1) {a x : E}
+    (hcoface : {w | w ∉ s ∧ insert w s ∈ K.faces} = {a}) (hx : x ∈ openSimplex s) :
+    ∀ᶠ y in 𝓝 x, y ∈ K.space ↔ ∃ z ∈ vectorSpan ℝ (s : Set E),
+      ∃ r : ℝ, 0 ≤ r ∧ y - x = z + r • (a - x) := by
+  have ha : a ∉ s ∧ insert a s ∈ K.faces := by
+    change a ∈ {w | w ∉ s ∧ insert w s ∈ K.faces}
+    rw [hcoface]
+    exact rfl
+  filter_upwards [eventually_mem_space_iff_mem_codimension_one_cone K hs hbound ⟨a, ha⟩ hx] with y hy
+  constructor
+  · intro hyK
+    obtain ⟨w, hw, hws, hcone⟩ := hy.mp hyK
+    have hwa : w = a := by
+      have hmem : w ∈ {v | v ∉ s ∧ insert v s ∈ K.faces} := ⟨hw, hws⟩
+      rwa [hcoface] at hmem
+    exact hwa ▸ hcone
+  · exact fun hcone => hy.mpr ⟨a, ha.1, ha.2, hcone⟩
+
+open Classical in
+theorem hasPLBoundaryCrossingAt_of_unique_cofaces [FiniteDimensional ℝ E]
+    (K L : Geometry.SimplicialComplex ℝ E) [Finite K.faces] [Finite L.faces]
+    (hdim : Module.finrank ℝ E = 3) {s t : Finset E} (hs : s ∈ K.faces) (ht : t ∈ L.faces)
+    (hscard : s.card = 2) (htcard : t.card = 2)
+    (hKbound : ∀ u ∈ K.faces, s ⊆ u → u.card ≤ s.card + 1)
+    (hLbound : ∀ u ∈ L.faces, t ⊆ u → u.card ≤ t.card + 1) {a b x : E}
+    (hKa : {w | w ∉ s ∧ insert w s ∈ K.faces} = {a})
+    (hLb : {w | w ∉ t ∧ insert w t ∈ L.faces} = {b})
+    (ℓ : E →ₗ[ℝ] ℝ) (hST : vectorSpan ℝ (s : Set E) ⊔ vectorSpan ℝ (t : Set E) = LinearMap.ker ℓ)
+    (ha : 0 < ℓ a) (hb : 0 < ℓ b) (hx : ℓ x = 0)
+    (hxs : x ∈ openSimplex s) (hxt : x ∈ openSimplex t) :
+    HasPLBoundaryCrossingAt {y : E | 0 ≤ ℓ y} K.space L.space x := by
+  have hrank : ∀ (P : Geometry.SimplicialComplex ℝ E) (u : Finset E), u ∈ P.faces → u.card = 2 →
+      Module.finrank ℝ (vectorSpan ℝ (u : Set E)) = 1 := by
+    intro P u hu hcard
+    have h := (P.indep hu).finrank_vectorSpan (show Fintype.card u = 1 + 1 by
+      simpa only [Fintype.card_coe] using hcard)
+    have hrange : Set.range ((↑) : u → E) = (u : Set E) := by ext y; simp
+    change Module.finrank ℝ (vectorSpan ℝ (Set.range ((↑) : u → E))) = 1 at h
+    rwa [hrange] at h
+  have hau : 0 < ℓ (a - x) := by rwa [map_sub, hx, sub_zero]
+  have hbv : 0 < ℓ (b - x) := by rwa [map_sub, hx, sub_zero]
+  exact hasPLBoundaryCrossingAt_of_halfSpace_cones hdim (vectorSpan ℝ (s : Set E))
+    (vectorSpan ℝ (t : Set E)) (hrank K s hs hscard) (hrank L t ht htcard) ℓ hST hau hbv hx
+      (eventually_mem_space_iff_mem_unique_coface_cone K hs hKbound hKa hxs)
+      (eventually_mem_space_iff_mem_unique_coface_cone L ht hLbound hLb hxt)
+
 end DifferentialGeometry.Topology.PiecewiseLinear
