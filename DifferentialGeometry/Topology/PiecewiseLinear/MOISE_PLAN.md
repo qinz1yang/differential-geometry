@@ -303,6 +303,30 @@
     最终同步 F 至 `b66f6b5b0` 时使用普通合并保留已发布检查点，未重写历史或 force-push，
     未将 S 分支合并到其它分支；精确消费状态和 §17.4–17.12 拟定陈述见 `PHASE3_APPROXIMATION_PLAN.md` §4.1–4.2。
 
+- 2026-09-15（S 车道继续，工作树与分支保持不变）：
+  - 平面链：`4fffc8f99` 将保留指定三角形接入删除归纳；`91172ea49` 证明 PL 球/球面非空、
+    有限剖分的纯维性及同维欧氏 PL 球的内部稠密性，并由此识别任意原生平面 PL 圆盘为多边形闭区域。
+    `exists_isPLHomeomorphOn_remove_geometricallyFree_triangle` 给整盘的精确删除像和剩余盘球性。
+    `80fceca30` 的 `exists_isPLHomeomorphOn_straighten_to_face` 接受任意原生剖分及任意指定三角形。
+  - 17.5 的几何准备：`21401b31b` / `01974cece` 实际构造顶点星的两侧锥并证明交集、frontier 和支撑；
+    `afc350cbe` 产生与 D 兼容且闭星足够细的边界剖分，以及星到对面的单纯坐标。
+    `aebd603dd` 的 `SimplexAffine` / `SimplexCornerChart` 给真正二维欧氏坐标、实际边界和开星对应；
+    环境延拓保持整个四面体，逐点固定对面与给定邻域外，并给任意边界子集的精确图像公式。
+  - `80fceca30` 的 `SimplexDisk`：对整个 D 位于一个原始顶点开星内的情形，
+    `exists_isPLHomeomorphOn_straighten_to_face_in_simplex_vertex_star` 将 D 整直到任意指定剖分三角形，
+    保持四面体并固定对面及邻域外；任意 PL 圆盘的推论自行产生该三角形。
+    `8fa61de34` 的 `StarSubdivision` 证明闭星覆盖控制在任意后续细分下保持。
+  - 真实剩余义务：跨星圆盘的局部自由三角形删除须控制接缝并证明整个圆盘的删除像，再作保留三角形归纳。
+    星内交集未必是盘，上游的整盘删除不能直接用于它。完整 17.5、17.6、17.8 及 S.2 仍为 partial；
+    P.3 的一般 17.2/17.3、P.4 的 10.8、P.5 的任意弧版本仍未闭合，第二批仍不触发。
+  - 验证：每层原生检查 exit=0、零警告；AuditS13–S21 的端点仅标准三公理。
+    `9c9002426` 纳入 F 至 `8c1ce1d4f` 时复查 39 个修改/相关模块、AuditS18 审计 127 项；
+    最后抓取并合入 F 至 `d0902b2cd`，保留 S 已完成的 P.1/P.2，整合 F 的横截弧剖分、边界和降阶输入。
+    最后复查 12 个模块均 exit=0、零警告；AuditS22 去重审计 198 个声明，仅标准三公理、exit=0；
+    日志为 `final3-*.log` 与 `audit-final3-s.log`。
+    所有同步均为 S 上的普通合并，未改其它车道源码或重写已发布历史；未运行 lake build，未登记根聚合。
+    逐层出处、调整和验证记录位于 `External/ClassificationOfSurfaces/VENDOR.md`，本轮未修改 vendor Lean 源码。
+
 ## 7. 决策与风险
 
 - 不采用 Bing 定理 7 的“保留单形”强形式，只用 Moise §8/§35 的紧致图卡归纳（书中 `chap:two-set-gluing` 的方案）。

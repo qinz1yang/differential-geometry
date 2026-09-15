@@ -3,6 +3,9 @@ import DifferentialGeometry.Topology.PiecewiseLinear.StarComplex
 import DifferentialGeometry.Topology.PiecewiseLinear.LinkEuclidean
 import DifferentialGeometry.Topology.PiecewiseLinear.Mesh
 import DifferentialGeometry.Topology.PiecewiseLinear.CombinatorialZero
+import DifferentialGeometry.Topology.PiecewiseLinear.PLBallSphere
+import DifferentialGeometry.Topology.PiecewiseLinear.BallSphereLink
+import Mathlib.Topology.Baire.Lemmas
 
 open Set Topology Metric
 open scoped Manifold
@@ -17,6 +20,75 @@ theorem card_le_finrank_succ_of_mem_faces [FiniteDimensional ℝ E]
   have h := (K.indep hs).card_le_finrank_succ
   rw [Fintype.card_coe] at h
   exact h.trans (Nat.add_le_add_right (Submodule.finrank_le _) 1)
+
+theorem exists_face_card_two_of_isPLSphere_one [FiniteDimensional ℝ E]
+    (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces] (hK : IsPLSphere 1 K.space) :
+    ∃ s ∈ K.faces, s.card = 2 := by
+  classical
+  obtain ⟨x, hx⟩ := IsPLSphere.nonempty hK
+  obtain ⟨s, hs, -⟩ := K.mem_space_iff.mp hx
+  obtain ⟨v, hv⟩ := K.nonempty_of_mem_faces hs
+  have hvK : {v} ∈ K.faces :=
+    K.down_closed hs (Finset.singleton_subset_iff.mpr hv) (Finset.singleton_nonempty v)
+  obtain ⟨y, hy⟩ := IsPLSphere.nonempty (isPLSphere_geometricLink_of_isPLSphere K hK hvK)
+  obtain ⟨t, ht, -⟩ := (SimplicialComplex.geometricLink K {v}).mem_space_iff.mp hy
+  have ht' := (SimplicialComplex.mem_geometricLink_singleton K v t).mp ht
+  obtain ⟨w, hw⟩ := ht'.1
+  have hvw : v ≠ w := fun h => ht'.2.1 (h.symm ▸ hw)
+  refine ⟨{v, w}, K.down_closed ht'.2.2
+    (Finset.insert_subset_insert _ (Finset.singleton_subset_iff.mpr hw))
+    (Finset.insert_nonempty _ _), ?_⟩
+  simp [hvw]
+
+theorem closure_subset_biUnion_convexHull_faces_card_eq_finrank_succ [FiniteDimensional ℝ E]
+    (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces] {U : Set E}
+    (hU : IsOpen U) (hUK : U ⊆ K.space) :
+    closure U ⊆ ⋃ s ∈ {s ∈ K.faces | s.card = Module.finrank ℝ E + 1},
+      convexHull ℝ (s : Set E) := by
+  let D : Set E := ⋂ s : K.faces, (frontier (convexHull ℝ (s.1 : Set E)))ᶜ
+  have hD : Dense D := by
+    apply dense_iInter_of_isOpen (fun _ => isClosed_frontier.isOpen_compl)
+    intro s x
+    rw [closure_compl, interior_frontier (s.1.finite_toSet.isCompact_convexHull ℝ).isClosed]
+    simp
+  have hclosed : IsClosed (⋃ s ∈ {s ∈ K.faces | s.card = Module.finrank ℝ E + 1},
+      convexHull ℝ (s : Set E)) :=
+    ((Set.toFinite K.faces).subset (Set.sep_subset _ _)).isClosed_biUnion
+      fun s _ => (s.finite_toSet.isCompact_convexHull ℝ).isClosed
+  have hsub : U ∩ D ⊆ ⋃ s ∈ {s ∈ K.faces | s.card = Module.finrank ℝ E + 1},
+      convexHull ℝ (s : Set E) := by
+    rintro x ⟨hxU, hxD⟩
+    obtain ⟨s, hs, hxs⟩ := K.mem_space_iff.mp (hUK hxU)
+    have hxnot : x ∉ frontier (convexHull ℝ (s : Set E)) := mem_iInter.mp hxD ⟨s, hs⟩
+    have hxint : x ∈ interior (convexHull ℝ (s : Set E)) := by
+      by_contra hnot
+      exact hxnot ⟨subset_closure hxs, hnot⟩
+    have hspan : affineSpan ℝ (s : Set E) = ⊤ :=
+      interior_convexHull_nonempty_iff_affineSpan_eq_top.mp ⟨x, hxint⟩
+    have hrange : Set.range ((↑) : s → E) = (s : Set E) := by ext y; simp
+    have hcard := (K.indep hs).affineSpan_eq_top_iff_card_eq_finrank_add_one
+    rw [hrange, Fintype.card_coe] at hcard
+    exact mem_iUnion₂.mpr ⟨s, ⟨hs, hcard.mp hspan⟩, hxs⟩
+  exact closure_minimal ((hD.open_subset_closure_inter hU).trans
+    (closure_minimal hsub hclosed)) hclosed
+
+theorem exists_face_card_eq_finrank_succ_of_mem_closure [FiniteDimensional ℝ E]
+    (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces] {U : Set E}
+    (hU : IsOpen U) (hUK : U ⊆ K.space) {x : E} (hx : x ∈ closure U) :
+    ∃ s ∈ K.faces, s.card = Module.finrank ℝ E + 1 ∧ x ∈ convexHull ℝ (s : Set E) := by
+  obtain ⟨s, ⟨hs, hcard⟩, hxs⟩ := mem_iUnion₂.mp
+    (closure_subset_biUnion_convexHull_faces_card_eq_finrank_succ K hU hUK hx)
+  exact ⟨s, hs, hcard, hxs⟩
+
+theorem exists_face_superset_card_eq_finrank_succ [FiniteDimensional ℝ E]
+    (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces] {U : Set E}
+    (hU : IsOpen U) (hK : K.space = closure U) {s : Finset E} (hs : s ∈ K.faces) :
+    ∃ t ∈ K.faces, s ⊆ t ∧ t.card = Module.finrank ℝ E + 1 := by
+  have hx : s.centroid ℝ id ∈ openSimplex s := centroid_mem_openSimplex (K.nonempty_of_mem_faces hs)
+  have hxK := K.convexHull_subset_space hs (openSimplex_subset_convexHull s hx)
+  obtain ⟨t, ht, hcard, hxt⟩ := exists_face_card_eq_finrank_succ_of_mem_closure K hU
+    (hK.symm ▸ subset_closure) (hK ▸ hxK)
+  exact ⟨t, ht, face_subset_of_mem_openSimplex_of_mem_convexHull K hs ht hx hxt, hcard⟩
 
 theorem mem_closedStar_self (K : Geometry.SimplicialComplex ℝ E) {v : E} (hv : {v} ∈ K.faces) :
     v ∈ closedStar K v :=

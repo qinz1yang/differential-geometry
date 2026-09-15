@@ -1,4 +1,5 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.ManifoldInvariance
+import DifferentialGeometry.Topology.PiecewiseLinear.LinkEuclidean
 
 open Set
 
@@ -52,6 +53,27 @@ theorem isPLBall_geometricLink_iff_mem_boundaryComplex_of_isSubdivision [FiniteD
     · intro hx
       have hbound := ((hK.mem_boundaryComplex_faces_iff K).mp (hxB.mp hx)).2.1
       omega
+
+open Classical in
+theorem boundaryComplex_space_subset_frontier_of_finrank [FiniteDimensional ℝ E] {n : ℕ}
+    [hdec : DecidableEq E]
+    (hn : Module.finrank ℝ E = n + 1) (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
+    (hK : IsCombinatorialManifoldWithBoundary (n + 1) K) :
+    (boundaryComplex (n + 1) K).space ⊆ frontier K.space := by
+  have hdec' : hdec = fun a b => Classical.propDecidable (a = b) := Subsingleton.elim _ _
+  subst hdec
+  intro x hx
+  refine ⟨subset_closure (boundaryComplex_space_subset (n + 1) K hx), ?_⟩
+  intro hxint
+  obtain ⟨R, hR, hRfin, hxR⟩ := exists_isSubdivision_singleton_mem K
+    (boundaryComplex_space_subset (n + 1) K hx)
+  have : Finite R.faces := hRfin.to_subtype
+  have hball := (isPLBall_geometricLink_iff_mem_boundaryComplex_of_isSubdivision
+    K R hK hR hxR).mpr hx
+  have hnhds : R.space ∈ nhds x := by
+    rw [hR.space_eq]
+    exact mem_interior_iff_mem_nhds.mp hxint
+  exact hball.not_isPLSphere (isPLSphere_geometricLink_of_mem_nhds hn R hxR hnhds)
 
 open Classical in
 theorem boundaryComplex_space_of_isSubdivision [FiniteDimensional ℝ E] {n : ℕ}

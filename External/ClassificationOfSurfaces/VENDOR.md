@@ -602,3 +602,25 @@ audits the three new declarations, the adapted-mesh producer, and both
 vertex-star disk-straightening endpoints; all six closures contain only
 the standard three axioms and the audit exits 0. This settles refinement
 stability, not the relative spherical free-triangle deletion operation.
+
+## Final integration with crosscut triangulations
+
+The final synchronization incorporates F through `d0902b2cd` by an ordinary
+merge on the S branch. It adds the native crosscut restriction and boundary
+formulas, strict triangle-count decrease, incident triangle existence, and
+supporting results in `Combinatorial`, `Subcomplex`, `BoundaryInvariance`,
+and `PlanarJordan/Regions`. The new copy of `IsPLSphere.nonempty` in F's
+`PLBallSphere` is removed in favor of the earlier canonical declaration in
+`Polyhedron`; the public name and statement are unchanged. No vendor Lean
+source is modified. S's completed P.1 and P.2 endpoints remain recorded as
+complete; the independent F proof route is documented separately.
+
+Twelve changed or affected native modules pass the final focused checks
+with exit 0 and zero warnings. `AuditS22.lean` audits 198 distinct declarations
+in the integrated environment, including explicit three-dimensional frontier
+and planar boundary-extension specializations, the planar and local spherical
+disk chain, and the native F crosscut inputs. Every transitive closure contains
+only `propext`, `Classical.choice`, and `Quot.sound`; the audit exits 0.
+Final logs are `.lake/scratch/final3-*.log` and
+`.lake/scratch/audit-final3-s.log`. The plans retain the full 17.5, 17.6,
+and 17.8 goals as open, and describe the local-deletion gap explicitly.

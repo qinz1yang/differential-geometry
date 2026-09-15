@@ -40,7 +40,31 @@ theorem restrict_space_of_eq_biUnion
     (restrict K Q).space = Q :=
   h.symm
 
+theorem restrict_restrict (R : Set E) : restrict (restrict K Q) R = restrict K (Q ∩ R) := by
+  ext s
+  change ((s ∈ K.faces ∧ convexHull ℝ (s : Set E) ⊆ Q) ∧
+    convexHull ℝ (s : Set E) ⊆ R) ↔ s ∈ K.faces ∧ convexHull ℝ (s : Set E) ⊆ Q ∩ R
+  rw [subset_inter_iff]
+  tauto
+
 variable {K Q}
+
+theorem restrict_space_mono {R : Set E} (hQR : Q ⊆ R) :
+    (restrict K Q).space ⊆ (restrict K R).space := by
+  intro x hx
+  obtain ⟨s, hs, hxs⟩ := (restrict K Q).mem_space_iff.mp hx
+  exact (restrict K R).convexHull_subset_space ⟨hs.1, hs.2.trans hQR⟩ hxs
+
+theorem restrict_convexHull_space {s : Finset E} (hs : s ∈ K.faces) :
+    (restrict K (convexHull ℝ (s : Set E))).space = convexHull ℝ (s : Set E) :=
+  Subset.antisymm (restrict_space_subset _ _)
+    ((restrict K _).convexHull_subset_space ⟨hs, subset_rfl⟩)
+
+theorem restrict_union_space {P : Set E} (hP : (restrict K P).space = P)
+    (hQ : (restrict K Q).space = Q) : (restrict K (P ∪ Q)).space = P ∪ Q := by
+  refine Subset.antisymm (restrict_space_subset _ _) (union_subset ?_ ?_)
+  · exact hP.symm.subset.trans (restrict_space_mono subset_union_left)
+  · exact hQ.symm.subset.trans (restrict_space_mono subset_union_right)
 
 theorem restrict_isSubdivision (L : Geometry.SimplicialComplex ℝ E)
     (hL : ∀ t ∈ L.faces, convexHull ℝ (t : Set E) =

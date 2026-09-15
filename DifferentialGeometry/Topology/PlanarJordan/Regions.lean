@@ -1,11 +1,62 @@
 import DifferentialGeometry.External.Schoenflies.JordanClosed
 import DifferentialGeometry.External.Schoenflies.PolyArcRealize
+import DifferentialGeometry.External.Schoenflies.FaceCyclesProof
 import Mathlib.Analysis.InnerProductSpace.PiL2
 
 noncomputable section
 open Set Topology
 
 namespace DifferentialGeometry.Topology.PlanarJordan
+
+theorem eq_or_eq_of_isArcBetween_subset_isCutPair {J A B C : Set Schoenflies.Plane}
+    {p q : Schoenflies.Plane} (hcut : Schoenflies.IsCutPair J p q B C)
+    (hA : Schoenflies.IsArcBetween A p q) (hAJ : A ⊆ J) : A = B ∨ A = C := by
+  have hsub : A \ {p, q} ⊆ Bᶜ ∪ Cᶜ := by
+    intro z hz
+    by_cases hzB : z ∈ B
+    · exact Or.inr fun hzC => hz.2 (hcut.inter_eq.subset ⟨hzB, hzC⟩)
+    · exact Or.inl hzB
+  have hnone : ¬ ((A \ {p, q}) ∩ (Bᶜ ∩ Cᶜ)).Nonempty := by
+    rintro ⟨z, hz, hzB, hzC⟩
+    exact (hcut.union_eq.symm.subset (hAJ hz.1)).elim hzB hzC
+  have hends : ∀ D : Set Schoenflies.Plane, p ∈ D → q ∈ D →
+      A \ {p, q} ⊆ D → A ⊆ D := by
+    intro D hpD hqD hD z hz
+    by_cases hzp : z ∈ ({p, q} : Set Schoenflies.Plane)
+    · rcases hzp with rfl | rfl
+      · exact hpD
+      · exact hqD
+    · exact hD ⟨hz, hzp⟩
+  by_cases hmeet : ((A \ {p, q}) ∩ Bᶜ).Nonempty
+  · refine Or.inr (hcut.snd.eq_of_subset hA
+      (hends C hcut.snd.left_mem hcut.snd.right_mem fun z hz => ?_))
+    by_contra hzC
+    exact hnone (hA.isPreconnected_diff _ _ hcut.fst.isArc.isClosed.isOpen_compl
+      hcut.snd.isArc.isClosed.isOpen_compl hsub hmeet ⟨z, hz, hzC⟩)
+  · refine Or.inl (hcut.fst.eq_of_subset hA
+      (hends B hcut.fst.left_mem hcut.fst.right_mem fun z hz => ?_))
+    by_contra hzB
+    exact hmeet ⟨z, hz, hzB⟩
+
+theorem eq_of_isJordanCurve_of_subset {C J : Set Schoenflies.Plane}
+    (hC : Schoenflies.IsJordanCurve C) (hJ : Schoenflies.IsJordanCurve J) (hCJ : C ⊆ J) : C = J := by
+  obtain ⟨γ, hγ, hγC⟩ := hC
+  have hp : γ 0 ∈ C := hγC.subset ⟨0, Schoenflies.zero_mem_I, rfl⟩
+  have hq : γ (1 / 2) ∈ C := hγC.subset ⟨1 / 2, by norm_num, rfl⟩
+  have hpq : γ 0 ≠ γ (1 / 2) := by
+    intro h
+    have heq := hγ.injOn (by norm_num) (by norm_num) h
+    norm_num at heq
+  obtain ⟨A, B, hcut⟩ := Schoenflies.exists_isCutPair ⟨γ, hγ, hγC⟩ hp hq hpq
+  obtain ⟨A', B', hcut'⟩ := Schoenflies.exists_isCutPair hJ (hCJ hp) (hCJ hq) hpq
+  rcases eq_or_eq_of_isArcBetween_subset_isCutPair hcut' hcut.fst
+    (hcut.fst_subset.trans hCJ) with hA | hA <;>
+    rcases eq_or_eq_of_isArcBetween_subset_isCutPair hcut' hcut.snd
+      (hcut.snd_subset.trans hCJ) with hB | hB
+  · exact (hcut.ne (hA.trans hB.symm)).elim
+  · rw [← hcut.union_eq, hA, hB, hcut'.union_eq]
+  · rw [← hcut.union_eq, hA, hB, union_comm, hcut'.union_eq]
+  · exact (hcut.ne (hA.trans hB.symm)).elim
 
 theorem frontier_closure_inside {J : Set Schoenflies.Plane} (hJ : Schoenflies.IsJordanCurve J) :
     frontier (closure (Schoenflies.inside J)) = J := by
