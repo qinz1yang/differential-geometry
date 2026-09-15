@@ -364,6 +364,14 @@
   十个声明均仅 `propext`、`Classical.choice`、`Quot.sound`。完整 36.1 陈述在同一审计文件中通过类型检查；
   像集等式尚待穷竭论证，E.3/E.4 尚未完成，35.2 仍只是显式命题。未运行 lake build，未登记根聚合。
 
+- 2026-09-15（F 车道，砖 15）：`Transition361.lean` 闭合 `exists_plh_approx_of_isOpen`，条件仅为
+  显式 `Moise352 3`；一般正维版本为 `Moise352.exists_approx_image_eq_of_isOpen`。F6.3 塔提供紧致穷竭，
+  局部有限的阶段前沿与连通分支分别给连续正误差控制；对整个 U 一次应用 35.2 后，紧致路径被穷竭捕获，
+  前沿分离推出像集相等。此论证不需要增加阶段连通假设。`IsPLHomeomorphInto.image_polyhedralBoundary`
+  从 M.3 和不变域给精确边界像等式；更一般的紧集前沿等式先在拓扑层证明。
+  该模块聚焦检查 exit=0、零 warning；AuditF116 审计十五个声明，全部仅标准三公理。
+  36.1 已完成条件版；35.2 仍未证，端点砖 16 随后接入。未运行 lake build，未登记根聚合。
+
 ## 7. 决策与风险
 
 - 不采用 Bing 定理 7 的“保留单形”强形式，只用 Moise §8/§35 的紧致图卡归纳（书中 `chap:two-set-gluing` 的方案）。
