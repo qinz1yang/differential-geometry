@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.P
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProductGeometry
 import DifferentialGeometry.Topology.Covering.AddCircleLift
 import DifferentialGeometry.Topology.Manifold.AddCircle
-import DifferentialGeometry.Topology.Manifold.InverseFunctionTheorem.Basic
+import DifferentialGeometry.Topology.Manifold.AddCircle.LocalLift
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Koszul.Formula
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Naturality.SlotPermutation
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Regularity.TotalNabla0S
@@ -19,87 +19,6 @@ open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Tensor0SBundle
 
 namespace DifferentialGeometry.Topology
-
-private theorem isInvertible_of_injective_realLine (f : ℝ →L[ℝ] ℝ)
-    (hf : Function.Injective f) : f.IsInvertible := by
-  have hf1 : f 1 ≠ 0 := by
-    intro h
-    refine one_ne_zero (hf ?_)
-    rw [h, map_zero]
-  refine ContinuousLinearMap.IsInvertible.of_inverse
-    (g := (f 1)⁻¹ • ContinuousLinearMap.id ℝ ℝ) ?_ ?_
-  · refine ContinuousLinearMap.ext fun x => ?_
-    have hx : ∀ y : ℝ, f y = y * f 1 := fun y => by
-      simpa [smul_eq_mul] using f.map_smul y (1 : ℝ)
-    have hgy : ∀ y : ℝ, ((f 1)⁻¹ • ContinuousLinearMap.id ℝ ℝ) y = (f 1)⁻¹ * y :=
-      fun y => rfl
-    rw [ContinuousLinearMap.comp_apply, hgy, hx ((f 1)⁻¹ * x),
-      ContinuousLinearMap.id_apply]
-    field_simp
-  · refine ContinuousLinearMap.ext fun x => ?_
-    have hx : ∀ y : ℝ, f y = y * f 1 := fun y => by
-      simpa [smul_eq_mul] using f.map_smul y (1 : ℝ)
-    have hgy : ∀ y : ℝ, ((f 1)⁻¹ • ContinuousLinearMap.id ℝ ℝ) y = (f 1)⁻¹ * y :=
-      fun y => rfl
-    rw [ContinuousLinearMap.comp_apply, hx x, hgy, ContinuousLinearMap.id_apply]
-    field_simp
-
-private theorem isLocalDiffeomorphAt_addCircle_coe (t : ℝ) :
-    IsLocalDiffeomorphAt 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) ∞
-      (fun s : ℝ => (s : AddCircle (1 : ℝ))) t := by
-  have hinv : ∀ y ∈ (univ : Set ℝ),
-      (fderiv ℝ
-        (writtenInExtChartAt 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) y
-          (fun s : ℝ => (s : AddCircle (1 : ℝ))))
-        (extChartAt 𝓘(ℝ, ℝ) y y)).IsInvertible := by
-    intro y _
-    have hmd : MDifferentiableAt 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ)
-        (fun s : ℝ => (s : AddCircle (1 : ℝ))) y :=
-      AddCircle.contMDiff_coe.mdifferentiableAt (by decide : (∞ : ℕ∞ω) ≠ 0)
-    have hderiv : fderiv ℝ
-          (writtenInExtChartAt 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) y
-            (fun s : ℝ => (s : AddCircle (1 : ℝ))))
-          (extChartAt 𝓘(ℝ, ℝ) y y) =
-        mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) (fun s : ℝ => (s : AddCircle (1 : ℝ))) y := by
-      rw [hmd.mfderiv, ModelWithCorners.Boundaryless.range_eq_univ, fderivWithin_univ]
-    rw [hderiv]
-    exact isInvertible_of_injective_realLine _
-      (AddCircle.bijective_mfderiv_coe y).1
-  obtain ⟨Φ, htΦ, -, hEq⟩ :=
-    DifferentialGeometry.Coordinates.exists_partialDiffeomorph_of_contMDiffOn_infty
-      (I := 𝓘(ℝ, ℝ)) (J := 𝓘(ℝ, ℝ)) (M := ℝ) (N := AddCircle (1 : ℝ))
-      (x := t) isOpen_univ (mem_univ t) AddCircle.contMDiff_coe.contMDiffOn hinv
-  exact ⟨Φ, htΦ, hEq⟩
-
-theorem exists_contDiffWithinAt_addCircle_lift {E : Type*} [NormedAddCommGroup E]
-    [NormedSpace ℝ E] {U : Set E} {q : E} {f : E → AddCircle (1 : ℝ)}
-    (hf : ContMDiffWithinAt 𝓘(ℝ, E) 𝓘(ℝ, ℝ) ∞ f U q) :
-    ∃ φ : E → ℝ, ContDiffWithinAt ℝ ∞ φ U q ∧
-      (fun p => (φ p : AddCircle (1 : ℝ))) =ᶠ[𝓝[U] q] f := by
-  obtain ⟨r₀, hr₀⟩ : ∃ r : ℝ, (r : AddCircle (1 : ℝ)) = f q :=
-    ⟨_, AddCircle.coe_equivIco (p := (1 : ℝ)) (a := (0 : ℝ))⟩
-  obtain ⟨Φ, hqΦ, hΦ⟩ := isLocalDiffeomorphAt_addCircle_coe r₀
-  have hΦq : Φ r₀ = f q := (hΦ hqΦ).symm.trans hr₀
-  have hfq : f q ∈ Φ.target := by
-    rw [← hΦq]
-    exact Φ.toPartialEquiv.map_source hqΦ
-  refine ⟨fun p => (Φ.symm : AddCircle (1 : ℝ) → ℝ) (f p), ?_, ?_⟩
-  · have hsymm : ContMDiffAt 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) ∞
-        (Φ.symm : AddCircle (1 : ℝ) → ℝ) (f q) :=
-      Φ.symm.contMDiffOn_toFun.contMDiffAt (Φ.open_target.mem_nhds hfq)
-    have hcomp : ContMDiffWithinAt 𝓘(ℝ, E) 𝓘(ℝ, ℝ) ∞
-        ((Φ.symm : AddCircle (1 : ℝ) → ℝ) ∘ f) U q :=
-      hsymm.contMDiffWithinAt.comp q hf (fun _ _ => mem_univ _)
-    exact contMDiffWithinAt_iff_contDiffWithinAt.mp hcomp
-  · filter_upwards
-      [(hf.continuousWithinAt).preimage_mem_nhdsWithin (Φ.open_target.mem_nhds hfq)]
-      with p hfp
-    have h1 : Φ ((Φ.symm : AddCircle (1 : ℝ) → ℝ) (f p)) = f p :=
-      Φ.toPartialEquiv.right_inv' hfp
-    have h2 : (((Φ.symm : AddCircle (1 : ℝ) → ℝ) (f p)) : AddCircle (1 : ℝ)) =
-        Φ ((Φ.symm : AddCircle (1 : ℝ) → ℝ) (f p)) :=
-      hΦ (Φ.toPartialEquiv.map_target hfp)
-    exact h2.trans h1
 
 theorem contMDiffWithinAt_of_exists_addCircle_lift {E : Type*} [NormedAddCommGroup E]
     [NormedSpace ℝ E] {U : Set E} {q : E} {f : E → AddCircle (1 : ℝ)} (hq : q ∈ U)

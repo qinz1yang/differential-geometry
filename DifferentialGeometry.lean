@@ -10051,3 +10051,15 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Scalar.AddCirc
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Scalar.AddCircleLaplacian
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Duhamel.AddCircle
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.PullbackMetric
+import DifferentialGeometry.Topology.Manifold.AddCircle.Descent
+import DifferentialGeometry.Topology.Manifold.AddCircle.VectorField
+import DifferentialGeometry.Topology.Manifold.AddCircle.PeriodicExtension
+import DifferentialGeometry.Topology.Manifold.Diffeomorph.InverseFamily
+import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.DiffeomorphismFamily.CenteredInterval
+import DifferentialGeometry.Topology.Maps.LocallyInjective
+import DifferentialGeometry.Topology.Manifold.AddCircle.LocalLift
+import DifferentialGeometry.Topology.Manifold.MFDeriv.TimeComposition
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Reparametrization
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.GaugeNormalization
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ParabolicGaugeLocalExistence
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Periodicity

@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Periodicity
 import DifferentialGeometry.Geometry.Curvature.DiskCurvatureInequality
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.DiskVariationBoundary
 
@@ -12,31 +13,6 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimension
   [CompleteSpace E]
   {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
   {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-
-omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I ∞ M] in
-private theorem slice_mdifferentiableAt_of_smoothOn (c : CurveMap M) (J : Set ℝ)
-    (hc : c.SmoothOn (I := I) J) (t : ℝ) (ht : t ∈ J) (y : ℝ) :
-    MDifferentiableAt 𝓘(ℝ, ℝ) I (fun z => c.lift z t) y :=
-  ((contMDiffOn_univ.mp (CurveMap.space_slice_contMDiffOn c J hc t ht)).mdifferentiableAt
-    (by norm_num)).mdifferentiableWithinAt
-
-omit [CompleteSpace E] in
-theorem CurveMap.curvatureVector_add_period [I.Boundaryless]
-    (g : ℝ → SmoothRiemannianMetric I M) (c : CurveMap M) (J : Set ℝ)
-    (hc : c.SmoothOn (I := I) J) (hi : c.ImmersedOn (I := I) J)
-    (t : ℝ) (ht : t ∈ J) (x : ℝ) :
-    c.curvatureVector g (x + 1) t = c.curvatureVector g x t := by
-  have hγ : ∀ y, MDifferentiableAt 𝓘(ℝ, ℝ) I (fun z => c.lift z t) y :=
-    fun y => slice_mdifferentiableAt_of_smoothOn c J hc t ht y
-  have hs : c.speed g (x + 1) t = c.speed g x t := c.speed_add_period g t x (hγ (x + 1))
-  have hD : c.Dx g (c.unitTangent g) (x + 1) t = c.Dx g (c.unitTangent g) x t :=
-    c.Dx_add_period g t x (c.unitTangent g)
-      (fun y => c.unitTangent_add_period g t y (hγ (y + 1)))
-      (c.unitTangent_contMDiff g J hc hi t ht) (hγ (x + 1))
-  change (c.speed g (x + 1) t)⁻¹ • c.Dx g (c.unitTangent g) (x + 1) t =
-    (c.speed g x t)⁻¹ • c.Dx g (c.unitTangent g) x t
-  rw [hs, hD]
-  rfl
 
 variable {Q : Type*} [TopologicalSpace Q] [ChartedSpace E Q] [IsManifold 𝓘(ℝ, E) ∞ Q]
 
