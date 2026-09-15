@@ -1,3 +1,4 @@
+import DifferentialGeometry.Topology.UniformConvergence
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.ChartFamily
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CenterMap.Convergence.InverseVelocity
 
@@ -177,34 +178,25 @@ theorem configuration_pairs_tail
     (hlim : Set.MapsTo (fun q : E × E => (q.2, q.1)) K V) :
     ∀ᶠ m in atTop, ∀ q ∈ K, ∀ gamma : ι,
       (q.2, points m q.1 gamma) ∈ V := by
-  have hKfst : IsCompact ((fun q : E × E => q.1) '' K) :=
-    hK.image_of_continuousOn continuous_fst.continuousOn
-  have hKfstS : (fun q : E × E => q.1) '' K ⊆ S := by
-    rintro z ⟨q, hq, rfl⟩
-    exact hfst hq
-  have hKflip : IsCompact ((fun q : E × E => (q.2, q.1)) '' K) :=
-    hK.image_of_continuousOn
-      (continuous_snd.prodMk continuous_fst).continuousOn
-  have hKflipV : (fun q : E × E => (q.2, q.1)) '' K ⊆ V :=
-    Set.image_subset_iff.mpr hlim
-  obtain ⟨delta, hdelta, hthick⟩ :=
-    hKflip.exists_thickening_subset_open hV hKflipV
   have htu := tendstoUniformlyOn_of_cPConvergence
-    (hpts ((fun q : E × E => q.1) '' K) hKfst hKfstS 0)
-  rw [Metric.tendstoUniformlyOn_iff] at htu
-  filter_upwards [htu delta hdelta] with m hm
-  intro q hq gamma
-  apply hthick
-  rw [Metric.mem_thickening_iff]
-  refine ⟨(q.2, q.1), ⟨q, hq, rfl⟩, ?_⟩
-  have hcoord :
-      dist (points m q.1 gamma) q.1 ≤
-        dist (points m q.1) (fun _ : ι => q.1) := by
-    exact dist_le_pi_dist (points m q.1) (fun _ : ι => q.1) gamma
-  have hall : dist (points m q.1) (fun _ : ι => q.1) < delta := by
-    simpa only [dist_comm] using hm q.1 ⟨q, hq, rfl⟩
-  simpa only [Prod.dist_eq, dist_self, max_eq_right dist_nonneg] using
-    (lt_of_le_of_lt hcoord hall)
+    (hpts (Prod.fst '' K) (hK.image_of_continuousOn continuous_fst.continuousOn)
+      (image_subset_iff.mpr hfst) 0)
+  have htail : ∀ gamma : ι, ∀ᶠ m in atTop,
+      MapsTo (fun q : E × E => (q.2, points m q.1 gamma)) K V := by
+    intro gamma
+    have hpair : TendstoUniformlyOn (fun m (q : E × E) => (q.2, points m q.1 gamma))
+        (fun q => (q.2, q.1)) atTop K := by
+      rw [Metric.tendstoUniformlyOn_iff] at htu ⊢
+      intro eps heps
+      filter_upwards [htu eps heps] with m hm q hq
+      have hc := dist_le_pi_dist (points m q.1) (fun _ : ι => q.1) gamma
+      have hb := hm q.1 (mem_image_of_mem Prod.fst hq)
+      simpa only [Prod.dist_eq, dist_self, max_eq_right dist_nonneg, dist_comm] using
+        hc.trans_lt (by simpa only [dist_comm] using hb)
+    exact hpair.eventually_mapsTo_of_isCompact hK
+      (continuous_snd.prodMk continuous_fst).continuousOn hV hlim
+  filter_upwards [Filter.eventually_all.mpr htail] with m hm q hq gamma
+  exact hm gamma hq
 
 omit [FiniteDimensional Real E] [CompleteSpace E]
     [NeZero (Module.finrank Real E)] in
