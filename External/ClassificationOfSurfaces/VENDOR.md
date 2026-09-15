@@ -223,8 +223,8 @@ linter suppressions, or resource options were added. License, upstream README, a
 upstream architecture copies are byte-identical to the supplied originals.
 
 The upstream ambient relative theorem certifies PL behavior on the closed polygonal
-region. Its public statement does not certify PL behavior on the whole plane; the
-stronger relative endpoint on the entire plane remains separate work.
+region. Its public statement does not certify PL behavior on the whole plane.
+The stronger relative endpoint is proved by the native adaptation described below.
 
 ## Native planar PL bridge
 
@@ -258,11 +258,27 @@ recorded here and in `LICENSE`.
 - `isPLBall_of_isPLSphere_one` proves the full P.1 consumer statement, with a
   bounded PL 2-ball filling every native planar PL 1-sphere. Both conversions
   between polygon carriers and native PL 1-spheres are proved.
-- The relative straightening theorems explicitly end in `_on_closedRegion`.
-  They certify an ambient homeomorphism, PL behavior in both directions on the
-  closed region, and identity outside the prescribed open set. Global PL behavior
-  on the entire plane remains unproved and is not implied by the vendor theorem's
-  published certificate.
+- `exists_isPLHomeomorphOn_straighten` and
+  `exists_isPLHomeomorphOn_straighten_of_isPLSphere_one` certify PL behavior in both
+  directions on the entire plane and identity outside the prescribed open set.
+  The earlier `_on_closedRegion` signatures are preserved as corollaries.
+- The two native free-triangle removal proofs adapt upstream
+  `PolygonalSchoenflies.lean`, lines 2514–2712 and 2716–2900, respectively:
+  `PolygonalCircle.TriangleMesh.exists_supported_polygonalDisk_move_of_oneEdgeFree`
+  and `PolygonalCircle.TriangleMesh.exists_supported_polygonalDisk_move_of_twoEdgeFree`.
+  The geometric arguments and supported thin-kite witnesses are unchanged.
+  The final `FinitePLHomeomorphOn` certificate on the mesh support is strengthened
+  to native `IsPLHomeomorphOn` on the entire plane, using the finite-PL certificate
+  on the kite patch and its identity behavior on the complement. Names and
+  namespace are native; comments are omitted under the owner's native source rule.
+- The native global straightening induction adapts upstream
+  `PolygonalSchoenflies.lean`, lines 2928–2997. It composes the stronger ambient
+  certificates directly instead of using `PLAmbientShellingIn`, which retains
+  only PL behavior on the disk. The same geometric-ear induction, polygonal disks,
+  triangle target, and support condition are preserved.
+- The two `univ_of_eqOn_compl` lemmas in native `AmbientExtension.lean` use the
+  project's relative PL extension API and continuity to glue a map that is PL
+  on a finite polyhedron and the identity off it. They do not copy upstream code.
 
 The second vendor batch has not been imported: its approximation headlines are
 finite-complex embedding approximations (Moise 6.2–6.3), and do not by themselves
@@ -299,3 +315,10 @@ The final combined `AuditS9.lean` imports the planar bridge, boundary/frontier
 modules, and the tetrahedral push chain in one environment. Its 50 distinct
 declarations all have only the three standard foundational axioms; audit exit 0.
 All 11 changed native modules pass their final focused checks with zero warnings.
+
+After closing the full planar relative theorem, the updated `AmbientExtension`
+and `PlanarSchoenflies` checks both exit 0 with zero warnings. `AuditS10.lean`
+checks the seven new declarations, both compatible closed-region corollaries,
+and the tetrahedral-face push in a single environment: all ten closures contain
+only `propext`, `Classical.choice`, and `Quot.sound`, audit exit 0. No vendor Lean
+source changes or second-batch imports are needed for this strengthening.

@@ -132,6 +132,44 @@ theorem IsPiecewiseAffineOn.exists_lipschitz_extension_of_eq_zero [FiniteDimensi
   simpa only [hspace'] using
     exists_piecewiseAffine_lipschitz_extension_of_eq_zero_on_faces K' f hfaces hN hzero'
 
+theorem IsPiecewiseAffineOn.univ_of_eqOn_compl [FiniteDimensional ℝ E]
+    {f : E → E} {P : Set E} (hf : IsPiecewiseAffineOn f P) (hP : IsPolyhedron P)
+    (hcont : Continuous f) (hfix : EqOn f id Pᶜ) : IsPiecewiseAffineOn f univ := by
+  have hneg : IsPiecewiseAffineOn (fun x : E => -x) P :=
+    (isPiecewiseAffineOn_of_affine (-AffineMap.id ℝ E) isOpen_univ).mono_of_isPolyhedron
+      hP (subset_univ _)
+  have hsub : IsPiecewiseAffineOn (fun x => f x - x) P := by
+    simpa only [sub_eq_add_neg] using hf.add hneg
+  have hzero : EqOn (fun x => f x - x) (fun _ => 0) (P \ interior P) := by
+    intro x hx
+    have hxcl : x ∈ closure Pᶜ := by rw [closure_compl]; exact hx.2
+    change f x - x = 0
+    rw [hfix.closure hcont continuous_id hxcl, id_eq, sub_self]
+  obtain ⟨g, _, hg, _, hgf, hgzero, _⟩ :=
+    hsub.exists_lipschitz_extension_of_eq_zero hP hP hzero
+  apply ((isPiecewiseAffineOn_id isOpen_univ).add hg).congr
+  intro x _
+  change f x = x + g x
+  by_cases hx : x ∈ P
+  · rw [hgf hx]
+    change f x = x + (f x - x)
+    simp only [sub_eq_add_neg, add_left_comm x, add_neg_cancel, add_zero]
+  · rw [hgzero hx, add_zero]
+    exact hfix hx
+
+theorem IsPLHomeomorphOn.univ_of_eqOn_compl [FiniteDimensional ℝ E]
+    {h : E ≃ₜ E} {P : Set E} (hh : IsPLHomeomorphOn h P P)
+    (hP : IsPolyhedron P) (hfix : EqOn h id Pᶜ) : IsPLHomeomorphOn h univ univ := by
+  have hfix' : EqOn h.symm id Pᶜ := by
+    intro x hx
+    exact h.symm_apply_eq.mpr (hfix hx).symm
+  have hinv := hh.homeomorph_symm.isPiecewiseAffineOn.univ_of_eqOn_compl
+    hP h.continuous_symm hfix'
+  have hbij : BijOn h univ univ := h.bijective.bijOn_univ
+  refine ⟨hbij, hh.isPiecewiseAffineOn.univ_of_eqOn_compl hP h.continuous hfix, ?_⟩
+  exact hinv.congr fun x hx =>
+    h.injective ((hbij.invOn_invFunOn.2 hx).trans (h.apply_symm_apply x).symm)
+
 open Classical in
 theorem exists_piecewiseAffine_lipschitz_vertex_function_of_openStar [FiniteDimensional ℝ E]
     (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces] (p : E)

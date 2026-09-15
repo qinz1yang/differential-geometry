@@ -1,9 +1,11 @@
 import External.ClassificationOfSurfaces.Moise.PolygonalSchoenflies
 import DifferentialGeometry.Topology.PiecewiseLinear.SimplexFrontier
 import DifferentialGeometry.Topology.PiecewiseLinear.PLImage
+import DifferentialGeometry.Topology.PiecewiseLinear.AmbientExtension
 
 open Set
 open LeanEval.Topology.ClassificationOfSurfaces.Moise
+open LeanEval.Topology.ClassificationOfSurfaces.Moise.PolygonalCircle
 
 namespace DifferentialGeometry.Topology.PiecewiseLinear
 
@@ -460,15 +462,497 @@ theorem isPLBall_of_isPLSphere_one {S : Set Plane} (hS : IsPLSphere 1 S) :
   exact ⟨J.closedRegion, isPLBall_two_closedRegion J, J.frontier_closedRegion,
     J.isCompact_closedRegion.isBounded⟩
 
+theorem isPLHomeomorphOn_transportedThinKiteHomeomorph
+    (e : Plane ≃ᵃ[ℝ] Plane) (δ : ℝ) (hδ : 0 < δ) :
+    IsPLHomeomorphOn (transportedThinKiteHomeomorph e δ hδ) univ univ := by
+  let F := transportedThinKiteHomeomorphFinitePL e δ hδ
+  have hP : IsPolyhedron (transportedThinKitePatch e δ) := by
+    rw [← F.support_eq]
+    exact isPolyhedron_support F.complex
+  have hpl := isPLHomeomorphOn_of_finitePLHomeomorphOn F
+  rw [transportedThinKiteHomeomorph_image] at hpl
+  exact hpl.univ_of_eqOn_compl hP (transportedThinKiteHomeomorph_eqOn_compl e δ hδ)
+
+theorem exists_isPLHomeomorphOn_remove_oneEdgeFree_triangle
+    (M : TriangleMesh) (J : PolygonalCircle)
+    (hsupport : M.toPlaneComplex.support = J.closedRegion)
+    (T : M.Triangle) (k : Fin 3) (hfree : M.IsOneEdgeFreeTriangle T k)
+    (hmore : 1 < M.triangles.card)
+    (U : Set Plane) (hU : IsOpen U) (hTU : M.triangleCarrier T.1 ⊆ U) :
+    ∃ g : Plane ≃ₜ Plane, ∃ J' : PolygonalCircle,
+      IsPLHomeomorphOn g univ univ ∧
+      Set.EqOn g id Uᶜ ∧
+        g '' frontier M.toPlaneComplex.support =
+          frontier (M.eraseTriangle T.1).toPlaneComplex.support ∧
+        (M.eraseTriangle T.1).toPlaneComplex.support = J'.closedRegion := by
+  classical
+  let E := M.freeTriangleAffineEquiv T k
+  have h0 : E (planePoint (-1) 0) = M.freeTriangleOrder T k 0 := by
+    simpa [E, kiteTrianglePosition] using M.freeTriangleAffineEquiv_apply_vertex T k 0
+  have h1 : E (planePoint 1 0) = M.freeTriangleOrder T k 1 := by
+    simpa [E, kiteTrianglePosition] using M.freeTriangleAffineEquiv_apply_vertex T k 1
+  have h2 : E (planePoint 0 1) = M.freeTriangleOrder T k 2 := by
+    simpa [E, kiteTrianglePosition] using M.freeTriangleAffineEquiv_apply_vertex T k 2
+  have hbaseImage : E '' segment ℝ (planePoint (-1) 0) (planePoint 1 0) =
+      segment ℝ (M.freeTriangleOrder T k 0) (M.freeTriangleOrder T k 1) := by
+    change affineEquivHomeomorph E ''
+      segment ℝ (planePoint (-1) 0) (planePoint 1 0) = _
+    simpa only [h0, h1] using affineEquivHomeomorph_image_segment E
+      (planePoint (-1) 0) (planePoint 1 0)
+  have htriangleImage : E '' convexHull ℝ (Set.range kiteTrianglePosition) =
+      M.triangleCarrier T.1 := M.freeTriangleAffineEquiv_image_triangle T k
+  have hedgeNormalize : ∀ i : ZMod J.n,
+      affineEquivHomeomorph E.symm '' J.edgeSegment i =
+        segment ℝ (E.symm (J.vertex i)) (E.symm (J.vertex (i + 1))) := by
+    intro i
+    exact affineEquivHomeomorph_image_segment E.symm _ _
+  let L := J.mapHomeomorph (affineEquivHomeomorph E.symm) hedgeNormalize
+  have hLcarrier : L.carrier = E.symm '' J.carrier := by
+    exact J.mapHomeomorph_carrier (affineEquivHomeomorph E.symm) hedgeNormalize
+  have hbaseTriangle : segment ℝ (planePoint (-1) 0) (planePoint 1 0) ⊆
+      convexHull ℝ (Set.range kiteTrianglePosition) := by
+    apply (convex_convexHull ℝ (Set.range kiteTrianglePosition)).segment_subset
+    · apply subset_convexHull
+      exact ⟨0, by simp [kiteTrianglePosition]⟩
+    · apply subset_convexHull
+      exact ⟨1, by simp [kiteTrianglePosition]⟩
+  have htraceL : L.carrier ∩ convexHull ℝ (Set.range kiteTrianglePosition) =
+      segment ℝ (planePoint (-1) 0) (planePoint 1 0) := by
+    apply Set.Subset.antisymm
+    · rintro p ⟨hpL, hpTriangle⟩
+      rw [hLcarrier] at hpL
+      obtain ⟨q, hqJ, hqp⟩ := hpL
+      have hq : q = E p := by
+        apply E.symm.injective
+        simpa using hqp
+      have hpFrontier : E p ∈ frontier M.toPlaneComplex.support := by
+        rw [hsupport, J.frontier_closedRegion]
+        simpa [hq] using hqJ
+      have hpWorldTriangle : E p ∈ M.triangleCarrier T.1 := by
+        rw [← htriangleImage]
+        exact ⟨p, hpTriangle, rfl⟩
+      have hpWorldBase : E p ∈
+          segment ℝ (M.freeTriangleOrder T k 0) (M.freeTriangleOrder T k 1) := by
+        rw [← hfree]
+        exact ⟨hpFrontier, hpWorldTriangle⟩
+      rw [← hbaseImage] at hpWorldBase
+      obtain ⟨r, hr, hrp⟩ := hpWorldBase
+      exact E.injective hrp ▸ hr
+    · intro p hpBase
+      have hpWorldBase : E p ∈
+          segment ℝ (M.freeTriangleOrder T k 0) (M.freeTriangleOrder T k 1) := by
+        rw [← hbaseImage]
+        exact ⟨p, hpBase, rfl⟩
+      have hpFrontier : E p ∈ frontier M.toPlaneComplex.support := by
+        exact (hfree.symm ▸ hpWorldBase).1
+      have hpJ : E p ∈ J.carrier := by
+        rwa [hsupport, J.frontier_closedRegion] at hpFrontier
+      constructor
+      · rw [hLcarrier]
+        exact ⟨E p, hpJ, by simp⟩
+      · exact hbaseTriangle hpBase
+  let F : Finset Plane :=
+    {planePoint (-1) 0, planePoint 0 0, planePoint 1 0}
+  have hF : ∀ p ∈ F, p ∈ L.carrier := by
+    intro p hp
+    have hpBase : p ∈ segment ℝ (planePoint (-1) 0) (planePoint 1 0) := by
+      simp only [F, Finset.mem_insert, Finset.mem_singleton] at hp
+      rcases hp with rfl | rfl | rfl
+      · exact left_mem_segment ℝ _ _
+      · rw [baseSegment_eq_spokes]
+        exact Or.inl (right_mem_segment ℝ _ _)
+      · exact right_mem_segment ℝ _ _
+    have : p ∈ L.carrier ∩ convexHull ℝ (Set.range kiteTrianglePosition) := by
+      rw [htraceL]
+      exact hpBase
+    exact this.1
+  obtain ⟨K, hKcarrier, hKF⟩ := L.exists_refinement_vertices F hF
+  have hleft : K.IsVertexPoint (planePoint (-1) 0) := hKF _ (by simp [F])
+  have hcenter : K.IsVertexPoint (planePoint 0 0) := hKF _ (by simp [F])
+  have hright : K.IsVertexPoint (planePoint 1 0) := hKF _ (by simp [F])
+  have htraceK : K.carrier ∩ convexHull ℝ (Set.range kiteTrianglePosition) =
+      segment ℝ (planePoint (-1) 0) (planePoint 1 0) := by
+    rw [hKcarrier, htraceL]
+  have hbaseK : segment ℝ (planePoint (-1) 0) (planePoint 1 0) ⊆ K.carrier := by
+    intro p hp
+    rw [hKcarrier]
+    have : p ∈ L.carrier ∩ convexHull ℝ (Set.range kiteTrianglePosition) := by
+      rw [htraceL]
+      exact hp
+    exact this.1
+  obtain ⟨δ, hδ, hfixU, hfixBoundary, hmove⟩ :=
+    M.exists_supported_triangle_push_fixing_boundaryCarrier T k hfree U hU hTU
+  let thin := thinKiteAmbientHomeomorph δ hδ
+  let g := transportedThinKiteHomeomorph E δ hδ
+  have g_apply (p : Plane) : g p = E (thin (E.symm p)) := rfl
+  have hfixK : Set.EqOn thin id
+      (K.carrier \ convexHull ℝ (Set.range kiteTrianglePosition)) := by
+    intro p hp
+    have hpL : p ∈ L.carrier := hKcarrier ▸ hp.1
+    rw [hLcarrier] at hpL
+    obtain ⟨q, hqJ, hqp⟩ := hpL
+    have hq : q = E p := by
+      apply E.symm.injective
+      simpa using hqp
+    have hpJ : E p ∈ J.carrier := hq ▸ hqJ
+    have hpBoundary : E p ∈ M.boundaryCarrier := by
+      rw [M.boundaryCarrier_eq_frontier_of_polygonalDisk J hsupport,
+        hsupport, J.frontier_closedRegion]
+      exact hpJ
+    have hpNotTriangle : E p ∉ M.triangleCarrier T.1 := by
+      intro hpTriangle
+      rw [← htriangleImage] at hpTriangle
+      obtain ⟨r, hr, hrp⟩ := hpTriangle
+      apply hp.2
+      have : r = p := E.injective hrp
+      simpa [this] using hr
+    have hg := hfixBoundary ⟨hpBoundary, hpNotTriangle⟩
+    change thin p = p
+    have hge : E (thin p) = E p := by
+      change g (E p) = E p at hg
+      rw [g_apply, E.symm_apply_apply] at hg
+      exact hg
+    exact E.injective hge
+  obtain ⟨H, hHcarrier⟩ := K.exists_thinKite_image δ hδ hbaseK
+    hleft hcenter hright htraceK hfixK
+  have hedgeWorld : ∀ i : ZMod H.n,
+      affineEquivHomeomorph E '' H.edgeSegment i =
+        segment ℝ (E (H.vertex i)) (E (H.vertex (i + 1))) := by
+    intro i
+    exact affineEquivHomeomorph_image_segment E _ _
+  let J' := H.mapHomeomorph (affineEquivHomeomorph E) hedgeWorld
+  have hJ'carrier : J'.carrier = g '' J.carrier := by
+    dsimp [J']
+    rw [H.mapHomeomorph_carrier (affineEquivHomeomorph E) hedgeWorld,
+      hHcarrier, hKcarrier, hLcarrier]
+    ext p
+    simp only [Set.mem_image]
+    constructor
+    · rintro ⟨q, ⟨r, ⟨s, hs, hsr⟩, hrq⟩, hqp⟩
+      refine ⟨s, hs, ?_⟩
+      calc
+        g s = E (thin (E.symm s)) := g_apply s
+        _ = E (thin r) := congrArg (fun z => E (thin z)) hsr
+        _ = E q := congrArg E hrq
+        _ = p := hqp
+    · rintro ⟨s, hs, hsp⟩
+      refine ⟨thin (E.symm s), ⟨E.symm s, ⟨s, hs, rfl⟩, rfl⟩, ?_⟩
+      change E (thin (E.symm s)) = p
+      exact (g_apply s).symm.trans hsp
+  have hfrontier : g '' frontier M.toPlaneComplex.support =
+      frontier (M.eraseTriangle T.1).toPlaneComplex.support :=
+    M.image_frontier_eq_eraseTriangle_frontier_of_oneEdgeFree T k hfree g
+      (by
+        intro p hp
+        exact hfixBoundary ⟨(by
+          rw [M.boundaryCarrier_eq_frontier_of_polygonalDisk J hsupport]
+          exact hp.1), hp.2⟩)
+      hmove
+  have hnewFrontier : frontier (M.eraseTriangle T.1).toPlaneComplex.support =
+      J'.carrier := by
+    calc
+      frontier (M.eraseTriangle T.1).toPlaneComplex.support =
+          g '' frontier M.toPlaneComplex.support := hfrontier.symm
+      _ = g '' J.carrier := by rw [hsupport, J.frontier_closedRegion]
+      _ = J'.carrier := hJ'carrier.symm
+  have hinterior : (interior (M.eraseTriangle T.1).toPlaneComplex.support).Nonempty := by
+    have hcard := M.card_eraseTriangle_triangles T.2
+    have hpos : 0 < (M.eraseTriangle T.1).triangles.card := by omega
+    obtain ⟨t, ht⟩ := Finset.card_pos.mp hpos
+    let R : (M.eraseTriangle T.1).Triangle := ⟨t, ht⟩
+    obtain ⟨p, hp⟩ := (M.eraseTriangle T.1).interior_triangleCarrier_nonempty R
+    refine ⟨p, interior_mono ?_ hp⟩
+    rw [(M.eraseTriangle T.1).toPlaneComplex_support]
+    intro q hq
+    exact Set.mem_iUnion.mpr ⟨t, Set.mem_iUnion.mpr ⟨ht, hq⟩⟩
+  have hremaining : (M.eraseTriangle T.1).toPlaneComplex.support = J'.closedRegion :=
+    J'.eq_closedRegion_of_isCompact_frontier_eq
+      (M.eraseTriangle T.1).toPlaneComplex.isCompact_support hnewFrontier hinterior
+  exact ⟨g, J',
+    isPLHomeomorphOn_transportedThinKiteHomeomorph E δ hδ,
+    hfixU, hfrontier, hremaining⟩
+
+theorem exists_isPLHomeomorphOn_remove_twoEdgeFree_triangle
+    (M : TriangleMesh) (J : PolygonalCircle)
+    (hsupport : M.toPlaneComplex.support = J.closedRegion)
+    (T : M.Triangle) (k : Fin 3) (hfree : M.IsTwoEdgeFreeTriangle T k)
+    (U : Set Plane) (hU : IsOpen U) (hTU : M.triangleCarrier T.1 ⊆ U) :
+    ∃ g : Plane ≃ₜ Plane, ∃ J' : PolygonalCircle,
+      IsPLHomeomorphOn g univ univ ∧
+      Set.EqOn g id Uᶜ ∧
+        g '' frontier M.toPlaneComplex.support =
+          frontier (M.eraseTriangle T.1).toPlaneComplex.support ∧
+        (M.eraseTriangle T.1).toPlaneComplex.support = J'.closedRegion := by
+  classical
+  obtain ⟨J', hremaining, hregionInter⟩ :=
+    M.exists_polygonalDisk_eraseTriangle_of_twoEdgeFree J hsupport T k hfree
+  let E := M.freeTriangleAffineEquiv T k
+  have h0 : E (planePoint (-1) 0) = M.freeTriangleOrder T k 0 := by
+    simpa [E, kiteTrianglePosition] using M.freeTriangleAffineEquiv_apply_vertex T k 0
+  have h1 : E (planePoint 1 0) = M.freeTriangleOrder T k 1 := by
+    simpa [E, kiteTrianglePosition] using M.freeTriangleAffineEquiv_apply_vertex T k 1
+  have h2 : E (planePoint 0 1) = M.freeTriangleOrder T k 2 := by
+    simpa [E, kiteTrianglePosition] using M.freeTriangleAffineEquiv_apply_vertex T k 2
+  have hbaseImage : E '' segment ℝ (planePoint (-1) 0) (planePoint 1 0) =
+      segment ℝ (M.freeTriangleOrder T k 0) (M.freeTriangleOrder T k 1) := by
+    change affineEquivHomeomorph E ''
+      segment ℝ (planePoint (-1) 0) (planePoint 1 0) = _
+    simpa only [h0, h1] using affineEquivHomeomorph_image_segment E
+      (planePoint (-1) 0) (planePoint 1 0)
+  have htriangleImage : E '' convexHull ℝ (Set.range kiteTrianglePosition) =
+      M.triangleCarrier T.1 := M.freeTriangleAffineEquiv_image_triangle T k
+  have htraceWorld : J'.carrier ∩ M.triangleCarrier T.1 =
+      segment ℝ (M.freeTriangleOrder T k 0) (M.freeTriangleOrder T k 1) := by
+    apply Set.Subset.antisymm
+    · rintro p ⟨hpCarrier, hpTriangle⟩
+      rw [← hregionInter]
+      constructor
+      · rw [J'.closedRegion_eq_union]
+        exact Or.inr hpCarrier
+      · exact hpTriangle
+    · intro p hpBase
+      have hpData : p ∈ J'.closedRegion ∩ M.triangleCarrier T.1 := by
+        rw [hregionInter]
+        exact hpBase
+      have hpFrontier : p ∈ frontier (M.eraseTriangle T.1).toPlaneComplex.support := by
+        rw [M.frontier_eraseTriangle_support T]
+        exact Or.inr ⟨hremaining ▸ hpData.1, hpData.2⟩
+      rw [hremaining, J'.frontier_closedRegion] at hpFrontier
+      exact ⟨hpFrontier, hpData.2⟩
+  have hedgeNormalize : ∀ i : ZMod J'.n,
+      affineEquivHomeomorph E.symm '' J'.edgeSegment i =
+        segment ℝ (E.symm (J'.vertex i)) (E.symm (J'.vertex (i + 1))) := by
+    intro i
+    exact affineEquivHomeomorph_image_segment E.symm _ _
+  let L := J'.mapHomeomorph (affineEquivHomeomorph E.symm) hedgeNormalize
+  have hLcarrier : L.carrier = E.symm '' J'.carrier :=
+    J'.mapHomeomorph_carrier (affineEquivHomeomorph E.symm) hedgeNormalize
+  have htraceL : L.carrier ∩ convexHull ℝ (Set.range kiteTrianglePosition) =
+      segment ℝ (planePoint (-1) 0) (planePoint 1 0) := by
+    apply Set.Subset.antisymm
+    · rintro p ⟨hpL, hpTriangle⟩
+      rw [hLcarrier] at hpL
+      obtain ⟨q, hq, hqp⟩ := hpL
+      have hqE : q = E p := by
+        apply E.symm.injective
+        simpa using hqp
+      have hpWorld : E p ∈ J'.carrier ∩ M.triangleCarrier T.1 := by
+        constructor
+        · simpa [hqE] using hq
+        · rw [← htriangleImage]
+          exact ⟨p, hpTriangle, rfl⟩
+      have hpBase := htraceWorld ▸ hpWorld
+      rw [← hbaseImage] at hpBase
+      obtain ⟨r, hr, hrp⟩ := hpBase
+      exact E.injective hrp ▸ hr
+    · intro p hpBase
+      have hpWorldBase : E p ∈
+          segment ℝ (M.freeTriangleOrder T k 0) (M.freeTriangleOrder T k 1) := by
+        rw [← hbaseImage]
+        exact ⟨p, hpBase, rfl⟩
+      have hpWorld := htraceWorld.symm ▸ hpWorldBase
+      constructor
+      · rw [hLcarrier]
+        exact ⟨E p, hpWorld.1, by simp⟩
+      · rw [← htriangleImage] at hpWorld
+        obtain ⟨r, hr, hrp⟩ := hpWorld.2
+        exact E.injective hrp ▸ hr
+  let F : Finset Plane :=
+    {planePoint (-1) 0, planePoint 0 0, planePoint 1 0}
+  have hF : ∀ p ∈ F, p ∈ L.carrier := by
+    intro p hp
+    have hpBase : p ∈ segment ℝ (planePoint (-1) 0) (planePoint 1 0) := by
+      simp only [F, Finset.mem_insert, Finset.mem_singleton] at hp
+      rcases hp with rfl | rfl | rfl
+      · exact left_mem_segment ℝ _ _
+      · rw [baseSegment_eq_spokes]
+        exact Or.inl (right_mem_segment ℝ _ _)
+      · exact right_mem_segment ℝ _ _
+    have : p ∈ L.carrier ∩ convexHull ℝ (Set.range kiteTrianglePosition) := by
+      rw [htraceL]
+      exact hpBase
+    exact this.1
+  obtain ⟨K, hKcarrier, hKF⟩ := L.exists_refinement_vertices F hF
+  have hleft : K.IsVertexPoint (planePoint (-1) 0) := hKF _ (by simp [F])
+  have hcenter : K.IsVertexPoint (planePoint 0 0) := hKF _ (by simp [F])
+  have hright : K.IsVertexPoint (planePoint 1 0) := hKF _ (by simp [F])
+  have htraceK : K.carrier ∩ convexHull ℝ (Set.range kiteTrianglePosition) =
+      segment ℝ (planePoint (-1) 0) (planePoint 1 0) := by
+    rw [hKcarrier, htraceL]
+  let W := E ⁻¹' U
+  have hW : IsOpen W := hU.preimage E.toAffineMap.continuous_of_finiteDimensional
+  have htriangleW : convexHull ℝ (Set.range kiteTrianglePosition) ⊆ W := by
+    intro p hp
+    exact hTU (htriangleImage ▸ ⟨p, hp, rfl⟩)
+  obtain ⟨δ, hδ, hpatchW, hfixK⟩ :=
+    K.exists_thinKite_fixing_outside_triangle hleft hcenter hright htraceK
+      W hW htriangleW
+  let thin := thinKiteAmbientHomeomorph δ hδ
+  let push := transportedThinKiteHomeomorph E δ hδ
+  have push_apply (p : Plane) : push p = E (thin (E.symm p)) := rfl
+  have hfixU : Set.EqOn push id Uᶜ := by
+    intro p hp
+    apply transportedThinKiteHomeomorph_eqOn_compl E δ hδ
+    intro hpPatch
+    obtain ⟨q, hq, rfl⟩ := hpPatch
+    exact hp (hpatchW hq)
+  have hfixWorld : Set.EqOn push id
+      (J'.carrier \ M.triangleCarrier T.1) := by
+    intro p hp
+    have hpK : E.symm p ∈ K.carrier := by
+      rw [hKcarrier, hLcarrier]
+      exact ⟨p, hp.1, rfl⟩
+    have hpNotTriangle : E.symm p ∉
+        convexHull ℝ (Set.range kiteTrianglePosition) := by
+      intro hpTriangle
+      apply hp.2
+      rw [← htriangleImage]
+      exact ⟨E.symm p, hpTriangle, by simp⟩
+    have hpFix := hfixK ⟨hpK, hpNotTriangle⟩
+    change push p = p
+    rw [push_apply, hpFix]
+    simp
+  have hnewFrontier : frontier (M.eraseTriangle T.1).toPlaneComplex.support =
+      (frontier M.toPlaneComplex.support \ M.triangleCarrier T.1) ∪
+        segment ℝ (M.freeTriangleOrder T k 0) (M.freeTriangleOrder T k 1) := by
+    rw [M.frontier_eraseTriangle_support T, hremaining, hregionInter]
+  have hfixOutside : Set.EqOn push id
+      (frontier M.toPlaneComplex.support \ M.triangleCarrier T.1) := by
+    intro p hp
+    apply hfixWorld
+    constructor
+    · have hpNew : p ∈ frontier (M.eraseTriangle T.1).toPlaneComplex.support := by
+        rw [hnewFrontier]
+        exact Or.inl hp
+      rwa [hremaining, J'.frontier_closedRegion] at hpNew
+    · exact hp.2
+  have hmove : push '' segment ℝ (M.freeTriangleOrder T k 0)
+        (M.freeTriangleOrder T k 1) =
+      segment ℝ (M.freeTriangleOrder T k 0) (M.freeTriangleOrder T k 2) ∪
+        segment ℝ (M.freeTriangleOrder T k 1) (M.freeTriangleOrder T k 2) :=
+    by simpa only [push, h0, h1, h2] using
+      transportedThinKiteHomeomorph_image_baseSegment E δ hδ
+  have hpush : push '' frontier (M.eraseTriangle T.1).toPlaneComplex.support =
+      frontier M.toPlaneComplex.support := by
+    rw [hnewFrontier, Set.image_union, hmove]
+    conv_rhs =>
+      rw [M.frontier_eq_outside_triangle_union_apex_of_twoEdgeFree T k hfree]
+    congr 1
+    apply Set.Subset.antisymm
+    · rintro p ⟨q, hq, rfl⟩
+      rw [hfixOutside hq]
+      exact hq
+    · intro p hp
+      exact ⟨p, hp, hfixOutside hp⟩
+  let pull := push.symm
+  have hpullFix : Set.EqOn pull id Uᶜ := by
+    intro p hp
+    have hpp : push p = p := hfixU hp
+    exact push.symm_apply_eq.mpr hpp.symm
+  have hpull : pull '' frontier M.toPlaneComplex.support =
+      frontier (M.eraseTriangle T.1).toPlaneComplex.support := by
+    rw [← hpush, Set.image_image]
+    simp [pull]
+  exact ⟨pull, J',
+    (isPLHomeomorphOn_transportedThinKiteHomeomorph E δ hδ).homeomorph_symm,
+    hpullFix, hpull, hremaining⟩
+
+theorem exists_isPLHomeomorphOn_straighten (J : PolygonalCircle)
+    {U : Set Plane} (hU : IsOpen U) (hregion : J.closedRegion ⊆ U) :
+    ∃ (h : Plane ≃ₜ Plane) (C : Set Plane), IsTriangle C ∧
+      IsPLHomeomorphOn h univ univ ∧ h '' J.closedRegion = C ∧
+      h '' J.carrier = frontier C ∧ EqOn h id Uᶜ := by
+  have shelling (M : TriangleMesh) (K : PolygonalCircle)
+      (hsupport : M.toPlaneComplex.support = K.closedRegion)
+      (hsubset : M.toPlaneComplex.support ⊆ U) :
+      ∃ (h : Plane ≃ₜ Plane) (C : Set Plane), IsTriangle C ∧
+        IsPLHomeomorphOn h univ univ ∧ h '' M.toPlaneComplex.support = C ∧
+        EqOn h id Uᶜ := by
+    induction hcardM : M.triangles.card using Nat.strong_induction_on generalizing M K with
+    | h n ih =>
+      have htriangles : M.triangles.Nonempty := by
+        by_contra hempty
+        have hempty' : M.triangles = ∅ := Finset.not_nonempty_iff_eq_empty.mp hempty
+        have hsupportEmpty : M.toPlaneComplex.support = ∅ := by
+          rw [M.toPlaneComplex_support, hempty']
+          simp
+        have hvertexClosed : K.vertex 0 ∈ K.closedRegion := by
+          rw [K.closedRegion_eq_union]
+          exact Or.inr (K.vertex_mem_carrier 0)
+        rw [← hsupport, hsupportEmpty] at hvertexClosed
+        exact hvertexClosed
+      have hpos : 0 < M.triangles.card := Finset.card_pos.mpr htriangles
+      by_cases hcard : M.triangles.card = 1
+      · refine ⟨Homeomorph.refl Plane, M.toPlaneComplex.support,
+          M.isTriangle_support_of_card_triangles_eq_one hcard, ?_, image_id _, fun _ _ => rfl⟩
+        refine ⟨bijOn_id univ, isPiecewiseAffineOn_id isOpen_univ, ?_⟩
+        exact (isPiecewiseAffineOn_id isOpen_univ).congr fun _ hx =>
+          (bijOn_id univ).invOn_invFunOn.1 hx
+      · have hmore : 1 < M.triangles.card := by omega
+        obtain ⟨T, -, -, hTfree, -⟩ :=
+          M.exists_two_geometricallyFreeTriangles_of_polygonalDisk K hsupport hmore
+        have hTU : M.triangleCarrier T.1 ⊆ U := by
+          intro p hp
+          apply hsubset
+          rw [M.toPlaneComplex_support]
+          exact mem_iUnion_of_mem T.1 (mem_iUnion_of_mem T.2 hp)
+        have hcardErase := M.card_eraseTriangle_triangles T.2
+        have hlt : (M.eraseTriangle T.1).triangles.card < M.triangles.card := by omega
+        have hsubsetErase : (M.eraseTriangle T.1).toPlaneComplex.support ⊆ U :=
+          (M.eraseTriangle_support_subset T.1).trans hsubset
+        have hmove : ∃ (g : Plane ≃ₜ Plane) (K' : PolygonalCircle),
+            IsPLHomeomorphOn g univ univ ∧ EqOn g id Uᶜ ∧
+            g '' frontier M.toPlaneComplex.support =
+              frontier (M.eraseTriangle T.1).toPlaneComplex.support ∧
+            (M.eraseTriangle T.1).toPlaneComplex.support = K'.closedRegion := by
+          obtain ⟨k, hTone | hTtwo⟩ := hTfree
+          · exact exists_isPLHomeomorphOn_remove_oneEdgeFree_triangle
+              M K hsupport T k hTone hmore U hU hTU
+          · exact exists_isPLHomeomorphOn_remove_twoEdgeFree_triangle
+              M K hsupport T k hTtwo U hU hTU
+        obtain ⟨g, K', hg, hfix, hfrontier, hsupport'⟩ := hmove
+        have himage :=
+          PolygonalCircle.TriangleMesh.image_support_eq_of_polygonalDisk_frontier
+            M K' htriangles g (M.eraseTriangle T.1) hfrontier hsupport'
+        obtain ⟨H, C, hC, hH, himageH, hfixH⟩ :=
+          ih (M.eraseTriangle T.1).triangles.card (by simpa [hcardM] using hlt)
+            (M.eraseTriangle T.1) K' hsupport' hsubsetErase rfl
+        refine ⟨g.trans H, C, hC, hg.trans hH, ?_, ?_⟩
+        · change (fun x => H (g x)) '' M.toPlaneComplex.support = C
+          rw [← image_image H g, himage]
+          exact himageH
+        · intro x hx
+          change H (g x) = x
+          rw [hfix hx, id_eq]
+          exact hfixH hx
+  obtain ⟨h, C, hC, hpl, himage, hfix⟩ := shelling J.closedRegionMesh J
+    J.closedRegionMesh_support (J.closedRegionMesh_support.trans_le hregion)
+  rw [J.closedRegionMesh_support] at himage
+  refine ⟨h, C, hC, hpl, himage, ?_, hfix⟩
+  rw [← J.frontier_closedRegion, h.image_frontier, himage]
+
+theorem exists_isPLHomeomorphOn_straighten_of_isPLSphere_one
+    {S : Set Plane} (hS : IsPLSphere 1 S) :
+    ∃ D : Set Plane, IsPLBall 2 D ∧ frontier D = S ∧ Bornology.IsBounded D ∧
+      ∀ U : Set Plane, IsOpen U → D ⊆ U →
+        ∃ (h : Plane ≃ₜ Plane) (C : Set Plane), IsTriangle C ∧
+          IsPLHomeomorphOn h univ univ ∧ h '' D = C ∧
+          h '' S = frontier C ∧ EqOn h id Uᶜ := by
+  obtain ⟨J, rfl⟩ := exists_polygonalCircle_of_isPLSphere_one hS
+  refine ⟨J.closedRegion, isPLBall_two_closedRegion J, J.frontier_closedRegion,
+    J.isCompact_closedRegion.isBounded, ?_⟩
+  intro U hU hJU
+  exact exists_isPLHomeomorphOn_straighten J hU hJU
+
 theorem exists_isPLHomeomorphOn_straighten_on_closedRegion (J : PolygonalCircle)
     {U : Set Plane} (hU : IsOpen U) (hregion : J.closedRegion ⊆ U) :
     ∃ (h : Plane ≃ₜ Plane) (C : Set Plane), IsTriangle C ∧
       IsPLHomeomorphOn h J.closedRegion C ∧ h '' J.carrier = frontier C ∧ EqOn h id Uᶜ := by
-  obtain ⟨h, F, ⟨C, hC, hboundary, himage⟩, hfix⟩ :=
-    J.polygonal_schoenflies_rel U hU hregion
+  obtain ⟨h, C, hC, hpl, himage, hboundary, hfix⟩ :=
+    exists_isPLHomeomorphOn_straighten J hU hregion
   refine ⟨h, C, hC, ?_, hboundary, hfix⟩
-  have hF := isPLHomeomorphOn_of_finitePLHomeomorphOn F
-  rwa [J.closedRegionMesh_support, himage] at hF
+  have hrestriction := hpl.restrict (isPLBall_two_closedRegion J).isPolyhedron (subset_univ _)
+  rwa [himage] at hrestriction
 
 theorem exists_isPLHomeomorphOn_straighten_of_isPLSphere_one_on_closedRegion
     {S : Set Plane} (hS : IsPLSphere 1 S) :
