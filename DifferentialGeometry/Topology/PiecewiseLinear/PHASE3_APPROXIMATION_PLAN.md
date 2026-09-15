@@ -89,11 +89,19 @@ Phase 1 刻意用 H-多面体 + 图册回避了细分理论；Phase 3 无法回�
 - **D5 一般位置只做本链用到的三种。** (a) 两张多面体曲面（或曲面与 2-胞腔）经任意小 PLH 后横截相交于有限条
   多边形与折线（§26.4、§30–§34 的"cross one another"）；(b) PL 奇异 2-胞腔的正规形式（§25 L2：奇点为不交多边形与折线，
   仅"crossing"）；(c) 多边形相对水平平面族的一般位置（§17.12）。不做一般的 PL 一般位置定理。
-- **D6 不变域定理外部移植。** mccorvie/classification-of-surfaces@e3c7230 的
-  `ClassificationOfSurfaces/Topology/InvarianceOfDomain.lean`（813 行，Lean 4.32.0，Apache-2.0）给出维数无关的
-  `invariance_of_domain_open_map (f : E → E) (U) (hU : IsOpen U) (hf : ContinuousOn f U) (hinj : InjOn f U) : IsOpen (f '' U)`
-  （解析证明：Stone–Weierstrass 光滑逼近 + Jacobian 测度论证）。单文件移植到 `Topology/InvarianceOfDomain.lean`，
-  去注释、按本库 linter 修整；用于 23.8（`Bd = Fr`）与 36.1 的过渡。
+- **D6 不变域定理原生移植与 Brouwer 条件消去（E.0 已完成）。**
+  mccorvie/classification-of-surfaces@e3c7230 的
+  `ClassificationOfSurfaces/Topology/InvarianceOfDomain.lean`（Apache-2.0）原本显式假设
+  `BrouwerFixedPoint E`；其 Stone–Weierstrass 逼近与 Jacobian 测度论证原生移植于
+  `Topology/InvarianceOfDomain.lean`。`Topology/FixedPoint/NoRetraction.lean` 用本树球面顶维同调与
+  可缩空间正维同调消失证明任意正维数无收缩；`Topology/FixedPoint/Brouwer.lean` 将上游射线构造推广到
+  任意有限维实内积空间，并单独处理零维，给出已证的 Brouwer 实例。
+  `Topology/InvarianceOfDomainManifold.lean` 导出无未证类参数的
+  `invariance_of_domain_isOpen_image`、`isOpen_image_of_continuousOn_injOn`、
+  `isOpenMap_of_continuous_injective`，以及实 `ModelWithCorners` 的开像、嵌入、内点与边界图卡接口。
+  全部最终端点通过 `AuditE0`，仅含标准三公理；出处、原版权声明、修改记录与完整许可证在
+  `docs/third_party/InvarianceOfDomain.md` 及同目录 `classification-of-surfaces-LICENSE`。
+  供 S.1、M.3 与 E.3/E.4 消费；这些消费者自身的剩余义务不由 E.0 的完成替代。
 
 ## 2. 章节依赖（只列 36.1 实际消费的边）
 
@@ -324,7 +332,7 @@ F1.2 与 F2.3 将共用同一套机制：H-多面体的（暴露）面、相对�
 
 | 编号 | 内容 | 拟定 Lean | 消费者 | 状态 | 行数 |
 |---|---|---|---|---|---|
-| E.0 | D6 不变域移植 | `theorem invariance_of_domain_open_map` 及流形版 `isOpen_range_of_isOpen_of_continuous_injective` | M.3, E.4 | ext | 1k |
+| E.0 | D6 不变域原生移植；同调无收缩与任意维 Brouwer 消去外部条件 | `invariance_of_domain_isOpen_image`、`isOpen_image_of_continuousOn_injOn`、`isOpenMap_of_continuous_injective`；实 `ModelWithCorners` 的四个 `_real` 接口 | S.1, M.3, E.3/E.4 | done（2026-09-14；`Topology/InvarianceOfDomain.lean`、`FixedPoint/NoRetraction.lean`、`FixedPoint/Brouwer.lean`、`InvarianceOfDomainManifold.lean`；聚焦检查均 exit=0、零警告；AuditE01/E02/E03/E0 仅允许的标准公理，七个最终接口无未证类参数；出处见 `docs/third_party/InvarianceOfDomain.md`） | 1019 行 Lean |
 | E.1 | **35.1**：PL 3-流形 `M₁` 中 1 维多面体 `K`（可非紧、闭于 `U`）、`U ⊇ K` 开、`h : U → M₂` 同胚（到像）、`φ` 连续正 ⟹ 正则邻域 `N` 与 PLH `f : N ↔ X ⊆ M₂`，`X ∈ 𝓝ˢ (h '' K)`，φ-逼近。证明：`ε(A) = inf φ\|A`、对偶胞腔改造（Figure 35.1）、逐胞腔用 A.6（在图卡内）、条件 (2)–(8)、L1–L3（D.3、极小性条件）、拼接 | `theorem exists_regularNeighborhood_plh_approx_manifold ...`（流形层，F6.1/F6.2 的局部有限性） | E.2 | new | 6k–10k |
 | E.2 | **35.2**：`K` 为 `M₁` 中（局部有限）多面体 3-流形带边、`h : K → M₂`、`φ` ⟹ PLH `f : K → M₂` φ-逼近。证明 = A.1–A.6 在流形层的重复，以 E.1 代替 G.6，逐单形处理 | `theorem exists_plh_approx_of_polyhedralManifold ...` | E.3 | new | 4k–6k |
 | E.3 | 36.1 的过渡（Moise 8.4 的三维版）：连通分支归约、穷竭 `N_i ⊆ Int N_{i+1}`（F6.2）、`φ'` 的 (a)–(d)、E.0 得 `h(U)` 与 `Int N'_i` 开、M.3 得 `f(Bd N_{i+1}) = Fr f(N_{i+1})`、连通性得 `N'_i ⊆ f(N_{i+1})` | `theorem exists_plh_approx_of_isOpen (U : Opens M₁) (h : U → M₂) ... : ∃ f, IsPLOn 3 3 f U ∧ f '' U = h '' U ∧ ∀ x ∈ U, dist (f x) (h x) < φ x` | E.4 | new（F6.2 的非紧穷竭生产者已闭合：消费 `exists_exhaustion_of_isOpen`，位于 `ExhaustionGeneral.lean`，AuditF26 仅标准三公理；其余 E.3 义务仍未实现） | 3k–5k |
