@@ -5805,6 +5805,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Roun
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.RoundBackwardPinching
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.RoundBackwardSpaceForm
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.RoundFlowMixedJets
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.ScalarProfile
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.RoundMetricPinching
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.RoundPinchingTransport
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.RoundSphereShrinkFlow
