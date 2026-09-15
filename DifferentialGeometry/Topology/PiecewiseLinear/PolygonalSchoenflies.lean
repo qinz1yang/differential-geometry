@@ -435,6 +435,22 @@ theorem exists_isPLHomeomorphOn_of_isArcBetween {A B : Set (EuclideanSpace ℝ (
   · change η (Function.invFunOn γ (Icc 0 1) q) = s
     rw [← hγ1, hγ.bijOn.invOn_invFunOn.1 (by norm_num), hη1]
 
+theorem isPLBall_union_of_isArcBetween {A B : Set (EuclideanSpace ℝ (Fin 2))}
+    (hA : IsPLBall 1 A) (hB : IsPLBall 1 B) {p r q : EuclideanSpace ℝ (Fin 2)}
+    (hApr : Schoenflies.IsArcBetween A p r) (hBrq : Schoenflies.IsArcBetween B r q)
+    (hmeet : ∀ z ∈ A, z ∈ B → z = r) : IsPLBall 1 (A ∪ B) := by
+  obtain ⟨γ, hγ, -, hγ1⟩ := exists_isPLHomeomorphOn_Icc_of_isArcBetween hA hApr
+  obtain ⟨η, hη, hη0, -⟩ := exists_isPLHomeomorphOn_Icc_of_isArcBetween hB hBrq
+  have hmid : γ 1 = η 0 := hγ1.trans hη0.symm
+  have hinj := Schoenflies.injOn_concatenate hγ.bijOn.injOn hη.bijOn.injOn hmid (by
+    intro z hz hz'
+    rw [hγ.image_eq] at hz
+    rw [hη.image_eq] at hz'
+    exact (hmeet z hz hz').trans hγ1.symm)
+  have hball := isPLBall_image_Icc_of_isPiecewiseAffineOn (by norm_num : (0 : ℝ) < 1)
+    (isPiecewiseAffineOn_concatenate hγ.isPiecewiseAffineOn hη.isPiecewiseAffineOn hmid) hinj
+  rwa [Schoenflies.image_concatenate hmid, hγ.image_eq, hη.image_eq] at hball
+
 theorem exists_isCutPair_isPLBall_of_isPLSphere_one {J : Set (EuclideanSpace ℝ (Fin 2))}
     (hJ : IsPLSphere 1 J) {p q : EuclideanSpace ℝ (Fin 2)} (hp : p ∈ J) (hq : q ∈ J)
     (hpq : p ≠ q) :
@@ -732,15 +748,14 @@ theorem isPLSphere_one_union_of_isCrosscut {J P A B : Set (EuclideanSpace ℝ (F
   exact isPLSphere_one_of_isCutPair ⟨hcut.fst, h.arc, rfl, hmeet⟩
     (isPLBall_of_isArc_subset_isPLSphere hJ hcut.fst.isArc hcut.fst_subset) hP
 
-theorem isCrosscut_segment_of_mem_faces
+theorem segment_sdiff_pair_subset_inside_of_mem_faces
     (K : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2)))
     {J : Set (EuclideanSpace ℝ (Fin 2))} (hJ : Schoenflies.IsJordanCurve J)
     (hK : K.space = closure (Schoenflies.inside J)) (hJK : (restrict K J).space = J)
-    {p q : EuclideanSpace ℝ (Fin 2)} (hpq : p ≠ q) (hp : p ∈ J) (hq : q ∈ J)
+    {p q : EuclideanSpace ℝ (Fin 2)} (hpq : p ≠ q)
     (hpqK : {p, q} ∈ K.faces) (hpqJ : {p, q} ∉ (restrict K J).faces) :
-    Schoenflies.IsCrosscut J (segment ℝ p q) p q := by
+    segment ℝ p q \ {p, q} ⊆ Schoenflies.inside J := by
   classical
-  refine ⟨hJ, Schoenflies.isArcBetween_segment hpq, Schoenflies.isPolygonal_segment p q, hp, hq, ?_⟩
   rintro x ⟨hx, hxpq⟩
   have hxconv : x ∈ convexHull ℝ (({p, q} : Finset (EuclideanSpace ℝ (Fin 2))) : Set _) := by
     simpa only [Finset.coe_pair, convexHull_pair] using hx
@@ -761,6 +776,16 @@ theorem isCrosscut_segment_of_mem_faces
   rw [(Schoenflies.IsRegionOf.inside J).closure_eq (Schoenflies.jordan_curve_theorem hJ)] at hxcl
   exact hxcl.resolve_right hxnot
 
+theorem isCrosscut_segment_of_mem_faces
+    (K : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2)))
+    {J : Set (EuclideanSpace ℝ (Fin 2))} (hJ : Schoenflies.IsJordanCurve J)
+    (hK : K.space = closure (Schoenflies.inside J)) (hJK : (restrict K J).space = J)
+    {p q : EuclideanSpace ℝ (Fin 2)} (hpq : p ≠ q) (hp : p ∈ J) (hq : q ∈ J)
+    (hpqK : {p, q} ∈ K.faces) (hpqJ : {p, q} ∉ (restrict K J).faces) :
+    Schoenflies.IsCrosscut J (segment ℝ p q) p q :=
+  ⟨hJ, Schoenflies.isArcBetween_segment hpq, Schoenflies.isPolygonal_segment p q, hp, hq,
+    segment_sdiff_pair_subset_inside_of_mem_faces K hJ hK hJK hpq hpqK hpqJ⟩
+
 theorem exists_triangle_with_boundary_edge
     (K : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2))) [Finite K.faces]
     {J : Set (EuclideanSpace ℝ (Fin 2))} (hJ : IsPLSphere 1 J)
@@ -771,6 +796,170 @@ theorem exists_triangle_with_boundary_edge
   have hsep := Schoenflies.jordan_curve_theorem (isJordanCurve_of_isPLSphere_one hJ)
   obtain ⟨t, ht, hst, htcard⟩ := exists_face_superset_card_eq_finrank_succ K hsep.isOpen_inside hK hs.1
   exact ⟨s, hs, hcard, t, ht, hst, by simpa using htcard⟩
+
+theorem space_eq_convexHull_of_simplexBoundary_eq
+    (K : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2)))
+    {J : Set (EuclideanSpace ℝ (Fin 2))} (hJ : Schoenflies.IsJordanCurve J)
+    (hK : K.space = closure (Schoenflies.inside J)) {T : Finset (EuclideanSpace ℝ (Fin 2))}
+    (hT : T ∈ K.faces) (hcard : T.card = 3)
+    (hboundary : (simplexBoundary T (K.indep hT)).space = J) :
+    K.space = convexHull ℝ (T : Set (EuclideanSpace ℝ (Fin 2))) := by
+  let C := convexHull ℝ (T : Set (EuclideanSpace ℝ (Fin 2)))
+  have hclosed : IsClosed C := (T.finite_toSet.isCompact_convexHull ℝ).isClosed
+  have hbody : C ⊆ K.space := K.convexHull_subset_space hT
+  have hfr : frontier C = J :=
+    (frontier_convexHull_eq_simplexBoundary (K.indep hT) (by simpa using hcard)).trans hboundary
+  have hpint : T.centroid ℝ id ∈ interior C := by
+    rw [interior_convexHull_eq_openSimplex (K.indep hT) (by simpa using hcard)]
+    exact centroid_mem_openSimplex (K.nonempty_of_mem_faces hT)
+  have hsep := Schoenflies.jordan_curve_theorem hJ
+  have hpinside : T.centroid ℝ id ∈ Schoenflies.inside J := by
+    have hpcl := hK ▸ hbody (interior_subset hpint)
+    rw [(Schoenflies.IsRegionOf.inside J).closure_eq hsep] at hpcl
+    exact hpcl.resolve_right fun hpJ => (hfr.symm.subset hpJ).2 hpint
+  have hcover : Schoenflies.inside J ⊆ interior C ∪ Cᶜ := by
+    intro x hx
+    by_cases hxint : x ∈ interior C
+    · exact Or.inl hxint
+    · exact Or.inr fun hxC => Schoenflies.inside_subset_compl hx
+        (hfr.subset ⟨subset_closure hxC, hxint⟩)
+  have hsplit := IsPreconnected.subset_or_subset isOpen_interior hclosed.isOpen_compl
+    (Set.disjoint_left.mpr fun _ hx hx' => hx' (interior_subset hx)) hcover
+    hsep.isConnected_inside.isPreconnected
+  refine Subset.antisymm ?_ hbody
+  rw [hK]
+  exact closure_minimal ((hsplit.resolve_right fun h => h hpinside
+    (interior_subset hpint)).trans interior_subset) hclosed
+
+theorem isPLBall_or_exists_isCrosscut_of_triangulation
+    (K : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2))) [Finite K.faces]
+    {J : Set (EuclideanSpace ℝ (Fin 2))} (hJ : IsPLSphere 1 J)
+    (hK : K.space = closure (Schoenflies.inside J)) (hJK : (restrict K J).space = J) :
+    IsPLBall 2 K.space ∨ ∃ (P : Set (EuclideanSpace ℝ (Fin 2))) (p q : EuclideanSpace ℝ (Fin 2)),
+      Schoenflies.IsCrosscut J P p q ∧ IsPLBall 1 P ∧ {p} ∈ K.faces ∧ {q} ∈ K.faces ∧
+        (restrict K P).space = P := by
+  classical
+  have hJordan := isJordanCurve_of_isPLSphere_one hJ
+  obtain ⟨s, hs, hscard, T, hT, hsT, hcard⟩ := exists_triangle_with_boundary_edge K hJ hK hJK
+  obtain ⟨p, q, hpq, rfl⟩ := Finset.card_eq_two.mp hscard
+  have hdiffcard : (T \ {p, q}).card = 1 := by
+    rw [Finset.card_sdiff_of_subset hsT, hcard]
+    simp [hpq]
+  obtain ⟨r, hr⟩ := Finset.card_eq_one.mp hdiffcard
+  have hrmem : r ∈ T \ {p, q} := by rw [hr]; simp
+  have hrT := (Finset.mem_sdiff.mp hrmem).1
+  have hrnot := (Finset.mem_sdiff.mp hrmem).2
+  have hrp : r ≠ p := fun h => hrnot (by simp [h])
+  have hrq : r ≠ q := fun h => hrnot (by simp [h])
+  have hTeq : T = insert r {p, q} := by
+    calc T = (T \ {p, q}) ∪ {p, q} := (Finset.sdiff_union_of_subset hsT).symm
+      _ = insert r {p, q} := by rw [hr, Finset.singleton_union]
+  have hpJ : p ∈ J := hs.2 (subset_convexHull ℝ _ (by simp))
+  have hqJ : q ∈ J := hs.2 (subset_convexHull ℝ _ (by simp))
+  have hpK : {p} ∈ K.faces := K.down_closed hs.1 (by simp) (Finset.singleton_nonempty p)
+  have hqK : {q} ∈ K.faces := K.down_closed hs.1 (by simp) (Finset.singleton_nonempty q)
+  have hrK : {r} ∈ K.faces :=
+    K.down_closed hT (Finset.singleton_subset_iff.mpr hrT) (Finset.singleton_nonempty r)
+  have hprK : {p, r} ∈ K.faces := K.down_closed hT (by
+    rw [hTeq]
+    intro z hz
+    simp only [Finset.mem_insert, Finset.mem_singleton] at *
+    tauto) (Finset.insert_nonempty p {r})
+  have hrqK : {r, q} ∈ K.faces := K.down_closed hT (by
+    rw [hTeq]
+    intro z hz
+    simp only [Finset.mem_insert, Finset.mem_singleton] at *
+    tauto) (Finset.insert_nonempty r {q})
+  have hprspace : (restrict K (segment ℝ p r)).space = segment ℝ p r := by
+    simpa only [Finset.coe_pair, convexHull_pair] using restrict_convexHull_space hprK
+  have hrqspace : (restrict K (segment ℝ r q)).space = segment ℝ r q := by
+    simpa only [Finset.coe_pair, convexHull_pair] using restrict_convexHull_space hrqK
+  by_cases hrJ : r ∈ J
+  · by_cases hprJ : {p, r} ∈ (restrict K J).faces
+    · by_cases hrqJ : {r, q} ∈ (restrict K J).faces
+      · apply Or.inl
+        have hS : IsPLSphere 1 (simplexBoundary T (K.indep hT)).space := by
+          rw [simplexBoundary_space _ _ (by omega)]
+          exact isPLSphere_biUnion_erase T (K.indep hT) hcard
+        have hSJ : (simplexBoundary T (K.indep hT)).space ⊆ J := by
+          rw [simplexBoundary_space _ _ (by omega)]
+          rintro x hx
+          obtain ⟨v, hv, hxv⟩ := mem_iUnion₂.mp hx
+          rw [hTeq] at hv
+          rcases Finset.mem_insert.mp hv with hvr | hv
+          · subst v
+            have herase : T.erase r = {p, q} := by simp [hTeq, hrp, hrq]
+            rw [herase] at hxv
+            exact hs.2 hxv
+          · rcases Finset.mem_insert.mp hv with hvp | hvq
+            · subst v
+              have herase : T.erase p = {r, q} := by
+                rw [hTeq]
+                ext z
+                simp only [Finset.mem_erase, Finset.mem_insert, Finset.mem_singleton]
+                aesop
+              rw [herase] at hxv
+              exact hrqJ.2 hxv
+            · have hvq' : v = q := Finset.mem_singleton.mp hvq
+              subst v
+              have herase : T.erase q = {p, r} := by
+                rw [hTeq]
+                ext z
+                simp only [Finset.mem_erase, Finset.mem_insert, Finset.mem_singleton]
+                aesop
+              rw [herase] at hxv
+              exact hprJ.2 hxv
+        have hboundary := PlanarJordan.eq_of_isJordanCurve_of_subset
+          (isJordanCurve_of_isPLSphere_one hS) hJordan hSJ
+        rw [space_eq_convexHull_of_simplexBoundary_eq K hJordan hK hT hcard hboundary]
+        exact isPLBall_convexHull_of_affineIndependent T (K.indep hT) hcard
+      · exact Or.inr ⟨segment ℝ r q, r, q,
+          isCrosscut_segment_of_mem_faces K hJordan hK hJK hrq hrJ hqJ hrqK hrqJ,
+          isPLBall_segment hrq, hrK, hqK, hrqspace⟩
+    · exact Or.inr ⟨segment ℝ p r, p, r,
+        isCrosscut_segment_of_mem_faces K hJordan hK hJK hrp.symm hpJ hrJ hprK hprJ,
+        isPLBall_segment hrp.symm, hpK, hrK, hprspace⟩
+  · have hprJ : {p, r} ∉ (restrict K J).faces := fun h =>
+      hrJ (h.2 (subset_convexHull ℝ _ (by simp)))
+    have hrqJ : {r, q} ∉ (restrict K J).faces := fun h =>
+      hrJ (h.2 (subset_convexHull ℝ _ (by simp)))
+    have hprIn := segment_sdiff_pair_subset_inside_of_mem_faces K hJordan hK hJK hrp.symm hprK hprJ
+    have hrqIn := segment_sdiff_pair_subset_inside_of_mem_faces K hJordan hK hJK hrq hrqK hrqJ
+    have hrIn : r ∈ Schoenflies.inside J := by
+      have hrcl := hK ▸ K.subset_space hrK (Finset.mem_singleton_self r)
+      rw [(Schoenflies.IsRegionOf.inside J).closure_eq (Schoenflies.jordan_curve_theorem hJordan)] at hrcl
+      exact hrcl.resolve_right hrJ
+    have hpairinter : ({p, r} ∩ {r, q} : Finset (EuclideanSpace ℝ (Fin 2))) = {r} := by
+      ext z
+      simp only [Finset.mem_inter, Finset.mem_insert, Finset.mem_singleton]
+      aesop
+    have hinter : segment ℝ p r ∩ segment ℝ r q = {r} := by
+      have h := K.convexHull_inter_convexHull hprK hrqK
+      rw [← Finset.coe_inter, hpairinter, Finset.coe_singleton, convexHull_singleton] at h
+      simpa only [Finset.coe_pair, convexHull_pair] using h
+    have hmeet : ∀ z ∈ segment ℝ p r, z ∈ segment ℝ r q → z = r :=
+      fun z hz hz' => hinter.subset ⟨hz, hz'⟩
+    have harc := (Schoenflies.isArcBetween_segment hrp.symm).concatenate
+      (Schoenflies.isArcBetween_segment hrq) hmeet
+    refine Or.inr ⟨segment ℝ p r ∪ segment ℝ r q, p, q, ?_,
+      isPLBall_union_of_isArcBetween (isPLBall_segment hrp.symm) (isPLBall_segment hrq)
+        (Schoenflies.isArcBetween_segment hrp.symm) (Schoenflies.isArcBetween_segment hrq) hmeet,
+      hpK, hqK, restrict_union_space hprspace hrqspace⟩
+    refine ⟨hJordan, harc, (Schoenflies.isPolygonal_segment p r).union
+      (Schoenflies.isPolygonal_segment r q)
+      ⟨r, right_mem_segment ℝ p r, left_mem_segment ℝ r q⟩, hpJ, hqJ, ?_⟩
+    rintro x ⟨hxP, hxends⟩
+    by_cases hxr : x = r
+    · exact hxr.symm ▸ hrIn
+    rcases hxP with hxpr | hxrq
+    · refine hprIn ⟨hxpr, ?_⟩
+      rintro (hxp | hxr')
+      · exact hxends (Or.inl hxp)
+      · exact hxr hxr'
+    · refine hrqIn ⟨hxrq, ?_⟩
+      rintro (hxr' | hxq)
+      · exact hxr hxr'
+      · exact hxends (Or.inr hxq)
 
 theorem restrict_arc_space_of_isCutPair
     (K : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2)))
@@ -992,6 +1181,69 @@ theorem exists_triangulation_closure_inside_of_isPLSphere_one
     hsep.frontier_inside.symm.subset.trans (frontier_subset_closure.trans hL.symm.subset)
   obtain ⟨K, hK, hKfin, hJK⟩ := exists_isSubdivision_restrict_space L hJ.isPolyhedron hJL
   exact ⟨K, hKfin, hK.space_eq.trans hL, hJK⟩
+
+theorem isPLBall_space_of_triangulation_closure_inside
+    (K : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2))) [Finite K.faces]
+    {J : Set (EuclideanSpace ℝ (Fin 2))} (hJ : IsPLSphere 1 J)
+    (hK : K.space = closure (Schoenflies.inside J)) (hJK : (restrict K J).space = J) :
+    IsPLBall 2 K.space := by
+  have H : ∀ N : ℕ, ∀ L : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2)),
+      Finite L.faces → {s ∈ L.faces | s.card = 3}.ncard = N →
+      ∀ C : Set (EuclideanSpace ℝ (Fin 2)), IsPLSphere 1 C →
+        L.space = closure (Schoenflies.inside C) → (restrict L C).space = C → IsPLBall 2 L.space := by
+    intro N
+    induction N using Nat.strong_induction_on with
+    | h N ih =>
+      intro L hLfin hcount C hC hLC hCL
+      have : Finite L.faces := hLfin
+      rcases isPLBall_or_exists_isCrosscut_of_triangulation L hC hLC hCL with
+        hball | ⟨P, p, q, hcross, hP, hp, hq, hPL⟩
+      · exact hball
+      have hpq : p ≠ q := by
+        obtain ⟨γ, -, hi, -, hγ0, hγ1⟩ := hcross.arc
+        intro hpq
+        exact zero_ne_one (hi Schoenflies.zero_mem_I Schoenflies.one_mem_I
+          (hγ0.trans (hpq.trans hγ1.symm)))
+      obtain ⟨A, B, hcut⟩ := Schoenflies.exists_isCutPair hcross.curve
+        hcross.left_mem hcross.right_mem hpq
+      let L₁ := restrict L (closure (Schoenflies.inside (A ∪ P)))
+      let L₂ := restrict L (closure (Schoenflies.inside (B ∪ P)))
+      have : Finite L₁.faces := (restrict_faces_finite L _).to_subtype
+      have : Finite L₂.faces := (restrict_faces_finite L _).to_subtype
+      have hbarrier : (restrict L (C ∪ P)).space = C ∪ P := restrict_union_space hCL hPL
+      have hL₁ : L₁.space = closure (Schoenflies.inside (A ∪ P)) :=
+        restrict_closure_inside_space_of_isCrosscut L hLC hbarrier hcross hcut
+      have hL₂ : L₂.space = closure (Schoenflies.inside (B ∪ P)) :=
+        restrict_closure_inside_space_of_isCrosscut L hLC hbarrier hcross hcut.symm
+      have hlt₁ : {s ∈ L₁.faces | s.card = 3}.ncard < N := by
+        rw [← hcount]
+        exact ncard_faces_card_restrict_closure_inside_lt_of_isCrosscut L hLC hcross hcut
+      have hlt₂ : {s ∈ L₂.faces | s.card = 3}.ncard < N := by
+        rw [← hcount]
+        exact ncard_faces_card_restrict_closure_inside_lt_of_isCrosscut L hLC hcross hcut.symm
+      have hball₁ := ih _ hlt₁ L₁ inferInstance rfl (A ∪ P)
+        (isPLSphere_one_union_of_isCrosscut hC hP hcross hcut) hL₁
+        (restrict_closure_inside_boundary_space_of_isCrosscut L hCL hPL hp hq hcross hcut)
+      have hball₂ := ih _ hlt₂ L₂ inferInstance rfl (B ∪ P)
+        (isPLSphere_one_union_of_isCrosscut hC hP hcross hcut.symm) hL₂
+        (restrict_closure_inside_boundary_space_of_isCrosscut L hCL hPL hp hq hcross hcut.symm)
+      exact hLC.symm ▸ isPLBall_closure_inside_of_isCrosscut hC hP hcross hcut
+        (hL₁ ▸ hball₁) (hL₂ ▸ hball₂)
+  exact H _ K inferInstance rfl J hJ hK hJK
+
+theorem isPLBall_closure_inside_of_isPLSphere_one {J : Set (EuclideanSpace ℝ (Fin 2))}
+    (hJ : IsPLSphere 1 J) : IsPLBall 2 (closure (Schoenflies.inside J)) := by
+  obtain ⟨K, hKfin, hK, hJK⟩ := exists_triangulation_closure_inside_of_isPLSphere_one hJ
+  have : Finite K.faces := hKfin.to_subtype
+  exact hK ▸ isPLBall_space_of_triangulation_closure_inside K hJ hK hJK
+
+theorem isPLBall_of_isPLSphere_one {J : Set (EuclideanSpace ℝ (Fin 2))}
+    (hJ : IsPLSphere 1 J) :
+    ∃ D : Set (EuclideanSpace ℝ (Fin 2)), IsPLBall 2 D ∧ frontier D = J ∧ Bornology.IsBounded D := by
+  refine ⟨closure (Schoenflies.inside J), isPLBall_closure_inside_of_isPLSphere_one hJ,
+    frontier_closure_inside_of_isPLSphere_one hJ, ?_⟩
+  exact (Schoenflies.jordan_curve_theorem (isJordanCurve_of_isPLSphere_one hJ)).isBounded_inside
+    |>.isCompact_closure.isBounded
 
 theorem exists_polyhedral_region_of_isPLSphere_one {J : Set (EuclideanSpace ℝ (Fin 2))}
     (hJ : IsPLSphere 1 J) :

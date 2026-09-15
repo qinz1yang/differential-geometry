@@ -635,6 +635,40 @@ theorem exists_small_simplicialMap_self_transverse_of_fiber_encard_le_two
 def doublePointSet {X Y : Type*} (f : X → Y) (P : Set X) : Set Y :=
   {y | ∃ x ∈ P, ∃ z ∈ P, x ≠ z ∧ f x = y ∧ f z = y}
 
+theorem isCompact_doublePointSet_of_isLocallyInjective
+    {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y] [T2Space Y]
+    {P : Set X} (hP : IsCompact P) {f : X → Y} (hf : ContinuousOn f P)
+    (hloc : IsLocallyInjective (P.domRestrict f)) : IsCompact (doublePointSet f P) := by
+  have : CompactSpace P := isCompact_iff_compactSpace.mp hP
+  have hcont : Continuous (P.domRestrict f) := continuousOn_iff_continuous_domRestrict.mp hf
+  let R : Set (P × P) := {p | f p.1 = f p.2 ∧ p.1 ≠ p.2}
+  have hR : IsClosed R := by
+    apply isOpen_compl_iff.mp
+    rw [isOpen_iff_mem_nhds]
+    rintro ⟨x, z⟩ hxz
+    by_cases hfxz : f x = f z
+    · have heq : x = z := by
+        by_contra hne
+        exact hxz ⟨hfxz, hne⟩
+      subst z
+      obtain ⟨U, hU, hxU, hinj⟩ := hloc x
+      apply Filter.mem_of_superset ((hU.prod hU).mem_nhds ⟨hxU, hxU⟩)
+      intro p hp hbad
+      exact hbad.2 (hinj hp.1 hp.2 hbad.1)
+    · apply Filter.mem_of_superset
+        ((isClosed_eq (hcont.comp continuous_fst) (hcont.comp continuous_snd)).isOpen_compl.mem_nhds hfxz)
+      intro p hp hbad
+      exact hp hbad.1
+  have himage : (fun p : P × P => f p.1) '' R = doublePointSet f P := by
+    ext y
+    constructor
+    · rintro ⟨⟨a, b⟩, ⟨hab, hne⟩, hfy⟩
+      exact ⟨a, a.property, b, b.property, fun h => hne (Subtype.ext h), hfy, hab.symm.trans hfy⟩
+    · rintro ⟨a, ha, b, hb, hab, hfa, hfb⟩
+      refine ⟨(⟨a, ha⟩, ⟨b, hb⟩), ⟨hfa.trans hfb.symm, ?_⟩, hfa⟩
+      exact fun h => hab (congrArg Subtype.val h)
+  exact himage ▸ hR.isCompact.image (hcont.comp continuous_fst)
+
 open Classical in
 omit [NormedAddCommGroup F] [NormedSpace ℝ F] in
 theorem disjoint_faces_of_eq_of_injOn_starComplex (K : Geometry.SimplicialComplex ℝ E)

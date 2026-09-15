@@ -1,4 +1,5 @@
 import External.ClassificationOfSurfaces.Moise.PolygonalSchoenflies
+import DifferentialGeometry.Topology.PiecewiseLinear.PolygonalSchoenflies
 import DifferentialGeometry.Topology.PiecewiseLinear.SimplexFrontier
 import DifferentialGeometry.Topology.PiecewiseLinear.BallFrontier
 import DifferentialGeometry.Topology.PiecewiseLinear.PLImage
@@ -483,12 +484,6 @@ theorem isPLBall_two_iff_exists_polygonalCircle {D : Set Plane} :
   refine ⟨exists_polygonalCircle_of_isPLBall_two, ?_⟩
   rintro ⟨J, rfl⟩
   exact isPLBall_two_closedRegion J
-
-theorem isPLBall_of_isPLSphere_one {S : Set Plane} (hS : IsPLSphere 1 S) :
-    ∃ D : Set Plane, IsPLBall 2 D ∧ frontier D = S ∧ Bornology.IsBounded D := by
-  obtain ⟨J, rfl⟩ := exists_polygonalCircle_of_isPLSphere_one hS
-  exact ⟨J.closedRegion, isPLBall_two_closedRegion J, J.frontier_closedRegion,
-    J.isCompact_closedRegion.isBounded⟩
 
 theorem isPLHomeomorphOn_transportedThinKiteHomeomorph
     (e : Plane ≃ᵃ[ℝ] Plane) (δ : ℝ) (hδ : 0 < δ) :
