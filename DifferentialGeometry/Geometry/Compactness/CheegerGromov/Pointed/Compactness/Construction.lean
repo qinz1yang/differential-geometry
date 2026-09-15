@@ -922,6 +922,19 @@ structure ConnectedCanonicalMetricCompactness
     letI : TopologicalSpace canonical.compactness.limit.M :=
       canonical.compactness.limit.topology
     ConnectedSpace canonical.compactness.limit.M
+  source_precompact :
+    letI : TopologicalSpace canonical.compactness.limit.M :=
+      canonical.compactness.limit.topology
+    ∀ n, IsCompact (closure (canonical.compactness.maps.source n))
+  source_connected :
+    letI : TopologicalSpace canonical.compactness.limit.M :=
+      canonical.compactness.limit.topology
+    ∀ n, IsConnected (canonical.compactness.maps.source n)
+  source_closure_subset :
+    letI : TopologicalSpace canonical.compactness.limit.M :=
+      canonical.compactness.limit.topology
+    ∀ n, closure (canonical.compactness.maps.source n) ⊆
+      canonical.compactness.maps.source (n + 1)
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
@@ -1207,11 +1220,58 @@ noncomputable def connectedCanonicalMetricCompactnessOfConvergentChain
         simpa only [mc] using hbounds.1
       covariant_derivatives_bounded := by
         simpa only [mc] using hbounds.2 }
-  refine ⟨C, ?_⟩
+  have hsource : ∀ n, IsCompact (closure (Set.range (S.toSeqSystem.incl n))) ∧
+      closure (Set.range (S.toSeqSystem.incl n)) ⊆
+        Set.range (S.toSeqSystem.incl (n + 1)) := by
+    intro n
+    obtain ⟨K, hK, hmap⟩ := tail_ball_system_step_range_compact
+      (I := I) b Ψ hbase g (by
+        intro j x v
+        with_unfolding_all exact
+          (DifferentialGeometry.Geometry.Riemannian.tensor0SBundle_enorm_eq_riemannianBundle_enorm
+            (I := I) (g j) x v)) j₀ hj₀ D₀ n
+    have hcompactImage : IsCompact
+        (S.toSeqSystem.incl (n + 1) '' K) :=
+      hK.image (S.toSeqSystem.continuous_incl (n + 1))
+    have hclosedImage : IsClosed (S.toSeqSystem.incl (n + 1) '' K) :=
+      hcompactImage.isClosed
+    have hsource : Set.range (S.toSeqSystem.incl n) ⊆
+        S.toSeqSystem.incl (n + 1) '' K := by
+      rintro z ⟨x, rfl⟩
+      rw [← S.toSeqSystem.incl_comp (Nat.le_succ n) x]
+      exact ⟨S.toSeqSystem.map (Nat.le_succ n) x,
+        hmap ⟨x, rfl⟩, rfl⟩
+    have hclosure : closure (Set.range (S.toSeqSystem.incl n)) ⊆
+        S.toSeqSystem.incl (n + 1) '' K :=
+      closure_minimal hsource hclosedImage
+    have hcompact : IsCompact (closure (Set.range (S.toSeqSystem.incl n))) :=
+      hcompactImage.of_isClosed_subset isClosed_closure hclosure
+    have hnext : closure (Set.range (S.toSeqSystem.incl n)) ⊆
+        Set.range (S.toSeqSystem.incl (n + 1)) := by
+      intro z hz
+      obtain ⟨y, _hyK, rfl⟩ := hclosure hz
+      exact ⟨y, rfl⟩
+    exact ⟨hcompact, hnext⟩
   let : ∀ n, PreconnectedSpace (tailBallOpen b j₀ n) := fun n =>
     tail_ball_preconnected (I := I) b j₀ n
-  change ConnectedSpace S.toSeqSystem.Lim
-  infer_instance
+  refine
+    { canonical := C
+      connected := ?_
+      source_precompact := ?_
+      source_connected := ?_
+      source_closure_subset := ?_ }
+  · change ConnectedSpace S.toSeqSystem.Lim
+    infer_instance
+  · intro n
+    change IsCompact (closure (Set.range (S.toSeqSystem.incl n)))
+    exact (hsource n).1
+  · intro n
+    change IsConnected (Set.range (S.toSeqSystem.incl n))
+    exact ⟨Set.range_nonempty _, isPreconnected_range (S.toSeqSystem.continuous_incl n)⟩
+  · intro n
+    change closure (Set.range (S.toSeqSystem.incl n)) ⊆
+      Set.range (S.toSeqSystem.incl (n + 1))
+    exact (hsource n).2
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
@@ -1290,6 +1350,40 @@ theorem canonical_metric_compactness_connected
   with_unfolding_all exact
     (connectedCanonicalMetricCompactness (I := I) P B).connected
 
+omit [NeZero (Module.finrank ℝ E)] in
+theorem canonical_metric_compactness_source_precompact
+    {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
+    (P : ∀ k, ProperMetricOn (I := I) (X.obj k))
+    (B : HasPairwiseApproximateIsometries (X := X) P) :
+    let C := canonicalMetricCompactness (I := I) P B
+    letI : TopologicalSpace C.compactness.limit.M := C.compactness.limit.topology
+    ∀ n, IsCompact (closure (C.compactness.maps.source n)) := by
+  with_unfolding_all exact
+    (connectedCanonicalMetricCompactness (I := I) P B).source_precompact
+
+omit [NeZero (Module.finrank ℝ E)] in
+theorem canonical_metric_compactness_source_connected
+    {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
+    (P : ∀ k, ProperMetricOn (I := I) (X.obj k))
+    (B : HasPairwiseApproximateIsometries (X := X) P) :
+    let C := canonicalMetricCompactness (I := I) P B
+    letI : TopologicalSpace C.compactness.limit.M := C.compactness.limit.topology
+    ∀ n, IsConnected (C.compactness.maps.source n) := by
+  with_unfolding_all exact
+    (connectedCanonicalMetricCompactness (I := I) P B).source_connected
+
+omit [NeZero (Module.finrank ℝ E)] in
+theorem canonical_metric_compactness_source_closure_subset
+    {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
+    (P : ∀ k, ProperMetricOn (I := I) (X.obj k))
+    (B : HasPairwiseApproximateIsometries (X := X) P) :
+    let C := canonicalMetricCompactness (I := I) P B
+    letI : TopologicalSpace C.compactness.limit.M := C.compactness.limit.topology
+    ∀ n, closure (C.compactness.maps.source n) ⊆
+      C.compactness.maps.source (n + 1) := by
+  with_unfolding_all exact
+    (connectedCanonicalMetricCompactness (I := I) P B).source_closure_subset
+
 noncomputable def metricCompactnessOfPairwiseApproximateIsometries
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (P : ∀ k, ProperMetricOn (I := I) (X.obj k))
@@ -1323,10 +1417,21 @@ theorem exists_connectedCanonicalMetricCompactness_of_hasSubsequencePairwiseAppr
     canonicalMetricCompactness (I := I) Pσ hpair'
   have hconnσ := canonical_metric_compactness_connected (I := I) Pσ hpair'
   let C : CanonicalMetricCompactness (I := I) X := Cσ.ofSubsequence σ hσ
-  refine ⟨{ canonical := C, connected := ?_ }⟩
-  have hlim : C.compactness.limit = Cσ.compactness.limit := rfl
-  rw [hlim]
-  exact hconnσ
+  refine ⟨
+    { canonical := C
+      connected := ?_
+      source_precompact := ?_
+      source_connected := ?_
+      source_closure_subset := ?_ }⟩
+  · have hlim : C.compactness.limit = Cσ.compactness.limit := rfl
+    rw [hlim]
+    exact hconnσ
+  · with_unfolding_all exact
+      canonical_metric_compactness_source_precompact (I := I) Pσ hpair'
+  · with_unfolding_all exact
+      canonical_metric_compactness_source_connected (I := I) Pσ hpair'
+  · with_unfolding_all exact
+      canonical_metric_compactness_source_closure_subset (I := I) Pσ hpair'
 
 end CheegerGromovCompactness
 end DifferentialGeometry

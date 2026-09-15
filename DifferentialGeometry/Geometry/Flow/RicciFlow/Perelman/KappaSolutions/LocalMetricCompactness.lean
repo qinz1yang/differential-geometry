@@ -1,3 +1,5 @@
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Compactness.LocalCurvatureInjectivity
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.LocalInjectivityRadiusDecay
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Compactness.Construction
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Bounds.InjectivityRadius
 
@@ -10,7 +12,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 open Bundle Filter
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.CheegerGromovCompactness
-open scoped Manifold ContDiff _root_.Topology
+open scoped _root_.Manifold ContDiff _root_.Topology
 
 universe u uE uH
 
@@ -46,7 +48,24 @@ theorem exists_local_pointed_metric_compactness
         D.referenceMetric = D.limitMetric) ∧
       (let _ : TopologicalSpace P.limit.M := P.limit.topology
        ConnectedSpace P.limit.M) := by
-  sorry
+  apply exists_canonical_metric_compact_limit_of_local_curvature_injectivity
+    X hcomplete hconnected
+  · intro R hR p
+    obtain ⟨C, hC, hc⟩ := hjets R hR p
+    exact ⟨C, hC, hc⟩
+  · intro r hr
+    obtain ⟨η, hη, hbound⟩ :=
+      exists_uniform_injectivity_radius_on_ball_of_local_jets
+        X hcomplete hconnected hinj hjets r hr
+    refine ⟨η, hη, ?_⟩
+    filter_upwards [hbound] with i hi
+    let : TopologicalSpace (X.obj i).M := (X.obj i).topology
+    let : ChartedSpace H (X.obj i).M := (X.obj i).charted
+    let : IsManifold I ∞ (X.obj i).M := (X.obj i).smooth
+    let : EMetricSpace (X.obj i).M := (X.obj i).emetricSpace (I := I)
+    intro x hx
+    apply hi x
+    rwa [PointedRiemannianManifold.riemannianEDistOf_eq_edist (I := I) (X.obj i)] at hx
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 
