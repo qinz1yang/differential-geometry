@@ -964,3 +964,31 @@ four new declarations, exits 0, and reports only `propext`,
 `Classical.choice`, and `Quot.sound`. Logs are
 `.lake/scratch/check-polyhedral-separation.log` and
 `.lake/scratch/audit-polyhedral-separation.log`.
+
+## Protected push moves and complementary disks on PL two-spheres
+
+Four native modules add inputs to the Moise 17.9-17.11 arguments.
+`RelativePush.lean` uses the relative polyhedral neighborhood to realize
+a push while fixing a protected polyhedron, under the explicit
+intersection and density conditions used by the book. It also gives the
+exact image of the union of the moving disk and protected set.
+`PLHomeomorphTopology.lean` transports closures of subsets of compact
+PL homeomorphism domains. `SimplexFacetComplement.lean` identifies the
+closure of a simplex boundary minus one facet and its intersection with
+that facet. `SphericalDiskComplement.lean` uses the verified 17.5 to
+identify an arbitrary PL two-sphere with a tetrahedral boundary while
+sending a prescribed disk to a facet. It proves that the complementary
+closure is a PL two-ball and that the two disks intersect in exactly
+the intrinsic boundary from any disk parametrization.
+
+These are native arguments and consequences of earlier native results;
+no vendor Lean source was changed. They do not yet prove 17.9, 17.10,
+or 17.11, and do not assert the general cell-decomposition version of P.3.
+Each of the four focused module checks exits 0 with zero warnings.
+`AuditS41.lean` checks all seven new declarations, exits 0, and reports
+only `propext`, `Classical.choice`, and `Quot.sound`. Logs are
+`.lake/scratch/check-relative-push.log`,
+`.lake/scratch/check-pl-homeomorph-topology.log`,
+`.lake/scratch/check-simplex-facet-complement.log`,
+`.lake/scratch/check-spherical-disk-complement.log`, and
+`.lake/scratch/audit-spherical-disk-complement.log`.
