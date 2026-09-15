@@ -985,3 +985,244 @@ E.3/E.4 条件版成立，计划行与 `MOISE_PLAN.md` §6 的记录准确。整
 - 砖 20 `SingularNormalForm.lean`：有限覆盖归纳（第 1、4、5 条），端点写进计划行 F5.2 并冻结签名。
 每砖照 §2 配方；不得增加结论型假设；若第 3 条的"通用位置下 `p` 处至多一张曲面折叠"或第 4 条的搬运在现有定义下
 不能闭合，汇报确切缺口。估计 5k–9k 行。
+
+## 16. 2026-09-15：球图卡路线的检查点
+
+### 16.1 砖 18：折叠 crossing
+
+`FoldCrossing.lean` 提供两个不依赖复形的端点：
+
+- `exists_isPLHomeomorphOn_straighten_fold`：给定互补子空间 S、T 及 u、v 不在 S 中，若对所有 c > 0 有
+  v − c u 不在 S 中，则构造全空间 PL 同胚，固定 S、保持 T，并把沿 S 的两个闭半平面之并送到一个线性子空间。
+  此定理不限制维数。证明把两方向沿 S 投到 T，调用已有剪切拉直构造；正逆映射的 PL 性由已有构造实际提供。
+- `hasPLCrossingAt_of_fold`：S 一维、T 二维时，若 A 在 x 的芽恰为上述两半平面之并，B 的芽恰为 x + T，
+  则 `HasPLCrossingAt A B x`。互补性表示折线横穿平片，不重合商方向表示折叠张的两侧不重叠；
+  没有假设所求 crossing 或预先存在所求拉直同胚。交换两张可直接使用已有 `HasPLCrossingAt.symm`。
+
+验证：`check-f.ps1` 聚焦检查 exit=0、零 warning（10.1 秒）；`AuditF119.lean` 检查两个公开声明的完整类型与
+公理闭包，均仅 `propext`、`Classical.choice`、`Quot.sound`。未重检旧模块、未运行 lake build、未登记根聚合。
+F5.2 仍为 partial。下一项为砖 19，须从固定顶点与可动顶点的相对通用位置实际推出适用本引理的局部分类。
+下一个审计文件为 `.lake/scratch/AuditF120.lean`。
+
+### 16.2 砖 19：固定折边阻止 §15.1(3) 的分类，按约定报告后暂停
+
+砖 18 已提交并推送（`82852d2fb`）。`RelativeNormalForm.lean` 当前只有下面四个已验证的支撑声明，
+不是砖 19 的正规形式端点；砖 19、砖 20 和 F5.2 均未标完成。
+
+- `simplicialMap_eqOn_convexHull_of_eqOn_vertices`：固定一张源面的顶点就固定该面的整个实际单纯延拓。
+- `doublePointSet_simplicialMap_subset_of_eqOn_subcomplex`：固定子复形顶点时，其已有双点集包含于扰动后全源的双点集。
+- `mem_doublePointSet_simplicialMap_of_fixed_faces`：两个固定面的不同原像若原来有相同的像，则此实际双点仍保留。
+- `exists_small_relative_vertexMap_with_coincident_edges`：给定两组各自仿射独立的四点，共有第 0、1 点，
+  对任意 ε > 0 实际调用 `exists_small_affineIndependent_subsets_relative`，得到任意小扰动，固定这四个端点标签，
+  保持两条边重合，两组四点仍分别仿射独立，并保留该生产者的全部相对通用位置条件。
+  初始两组四点可以不同；没有假设 crossing 或任何所求正规形式。
+
+**不能推出的确切步骤。** 令固定标签集为 B，源中两条不交边 e、e′ 的端点全部属于 B，而它们的邻接三角形有
+可动的对顶点。若原来 f(e) = f(e′)，任何固定 B 的顶点位移都保留这条共同像边。相对通用位置还使每张片的
+四点组仿射独立，所以两张片各自的两个邻接三角形不共面；共同边内部的双点处两张均折叠。
+这正是上述最后一个声明提供的点族，再由前三个声明传给实际单纯延拓。四个固定端点标签的像有重复，
+因此它们不满足相对生产者的“固定部分仿射独立”前提；“两条折线相交是可避免的余维 2 事件”在此固定参数族中失效。
+即使只要求两条固定边相交而不重合，固定顶点也不能消除原交点。
+
+具体坐标模型：在 ℝ³ 中取 p₋ = (0,−1,0)、p₊ = (0,1,0)，第一张片的两个对顶点为 (1,0,1)、(−1,0,1)，
+第二张为 (1,0,2)、(−1,0,2)；每张片由公共边 p₋p₊ 与各自两个对顶点组成的两三角形构成。
+原点附近两张分别为 z = |x|、z = 2|x|。只固定两份 p₋、p₊ 的标签时，共同折边始终保留。
+两组四点均仿射独立，故上面的相对生产者适用；在垂直共同边的截面中，两张片的四条射线按 A、B、B、A 排列，
+充分小的对顶点位移保留此严格次序，不能得到横交的交替次序。这个坐标图及射线次序的非 crossing 判断是数学说明，
+未另行形式化为 `¬ HasPLCrossingAt`；Lean 已验证的是实际固定面双点保留和满足完整相对通用位置条件的双折点族存在性。
+
+**§15.1(4) 的关联缺口。** 若“可动单形”包括带可动顶点的混合三角形，上述构型直接落在第 3 条所要求处理的情形中。
+若改按双点的最小载体边把它归到“固定/固定”，也只能推出该边上的值不变，不能推出附近曲面芽不变：
+邻接三角形的可动对顶点仍在改变这两个芽。`HasPLCrossingAt.congr` 需要邻域中的集合成员关系相同，
+`HasPLCrossingAt.image_openPartialHomeomorph` 需要同一个环境图卡变换；单纯的固定边逐点相等不能提供二者。
+闭星全含于 Bᵢ 的可动顶点规则没有排除混合三角形的固定边；Bᵢ′ 的网格条件只保证核心内全可动，
+没有自动控制 Bᵢ 内与先前保护区域相交的过渡部分。
+
+这不否定整个 F5.2 的存在定理；需要修订的是一步相对引理和保持不变量。下一设计必须实际处理固定折边的双折构型，
+或安排原像上的恒同邻域和缓冲层，使这些点的曲面芽整体不变，并证明覆盖、误差和边界条件仍成立。
+不能把“固定边原来横交”或“扰动后该处仍横交”直接添加为未生产的假设，也不能以忽略固定边双点来弱化端点。
+按用户及 §15.2 的停点规则在此报告数学缺口，不进入砖 20，不改 crossing 定义，不冻结尚未证明的全局签名。
+
+验证：`RelativeNormalForm` 聚焦检查 exit=0、零 warning（9.6 秒）；更新后的 `AuditF120.lean` 审计本文件四项和
+砖 18 两项，共六项全部仅 `propext`、`Classical.choice`、`Quot.sound`。两文件均零注释、无 sorry 或预算覆盖；
+未运行 lake build、未登记根聚合。计划 F5.2 的状态及 §8 R11 已同步。下一个审计文件为 `.lake/scratch/AuditF121.lean`。
+
+## 17. 2026-09-15：砖 18/19 已复核；F5.2 搁置并记录方向；新里程碑 = S.4（Moise 17.12）
+
+### 17.0 复核
+
+`FoldCrossing`、`RelativeNormalForm` 由本方独立重编 exit=0、零 warning；AuditF120 六项只含标准三公理。
+§16.2 的障碍成立：§15.1 第 3 条所述"任意固定顶点集下混合双点皆 crossing"不成立，反例即重合固定折边。
+
+### 17.1 F5.2 搁置（不是放弃）
+
+可行方向只记录不展开：取 F6.2 的紧致片 `K_T`，把有限个星图卡各自的仿射细分与 `K_T` 取公共细分 `K*`，
+使所有图卡变换在 `K*` 的单形上仿射，折痕集 `Ξ` = `K*` 的 2-骨架固定已知；通用位置改为"相对于 `Ξ` 的分层通用位置"
+（半空间理论从一个约束平面推广到有限平面族，顶点限制在所在层内通用）；折叠引理推广到两张沿同一平面内两条不同折线折叠
+的曲面；归纳不变量 = 已处理区域上 crossing 且 `Ξ`-分层通用。在该不变量下 §16.2 的重合固定折边不会出现在已处理区域。
+估计 6k–12k 行。消费者 L.3 还在等 C.4/C.5，所以先做下面的 S.4。L.3 要消费的端点形状仍是 §12.2 第 4 条。
+
+### 17.2 新里程碑：S.4 = Moise 17.12（PL Schoenflies），从 S 车道改派到本车道
+
+理由：S.5（23.9–23.11）是 E3 的 B.3/L.2 与本车道 F4.3 的前置，S 单线程做 S.3 → S.4 → S.5 太慢；17.12 的证明主体是
+水平平面族的一般位置与 `Ind S` 归纳，正是 F5.1 的机器（`exists_generalPosition_height_fibers`）。S 车道同时做
+S.3（17.9–17.11）和 P.3 的一般 17.2。书页 122–125（PDF 132–135）。
+
+先 `git fetch origin && git merge --no-ff origin/codex/moise-integration`（`bc4b635eb`，含 S.2 的 `IsSimplyEmbedded`、
+`HasPushProperty`、17.5–17.8 端点）。全部用 S 的词汇，不另造。
+
+端点（签名冻结后写进计划行 S.4）：
+```lean
+theorem isSimplyEmbedded_of_isPLSphere_two (I : SchoenfliesInput) {S : Set (EuclideanSpace ℝ (Fin 3))}
+    (hS : IsPLSphere 2 S) : IsSimplyEmbedded S
+theorem exists_isPLBall_of_isPLSphere_two (I : SchoenfliesInput) {S : Set (EuclideanSpace ℝ (Fin 3))}
+    (hS : IsPLSphere 2 S) : ∃ B, IsPLBall 3 B ∧ frontier B = S ∧ Bornology.IsBounded B
+```
+`SchoenfliesInput` 是显式接口结构（不是 sorry），字段恰为 17.12 的证明实际使用而 S 车道尚未交付的书中定理，预计：
+17.9（凸多面体 3-胞腔的边界单嵌入）、17.10（2-胞腔与点的 join 的边界单嵌入）、17.11（两个单嵌入球面沿平面 2-胞腔
+拼合仍单嵌入）、17.2 的一般胞腔分解形式（Lemma 6 用）。每个字段由你写成 S 词汇的精确 Lean 命题，写进计划行
+S.3 / P.3 的"拟定 Lean"列并标"F 的 S.4 接口，S 车道证明"；S 交付后去掉字段。证明中若还需要别的书中定理，同样加字段并登记，不绕过。
+
+里程碑与检查点：
+- M1：`SchoenfliesInput` 与两个端点的陈述通过检查；`Ind S` 的定义与 Lemma 1（`n = 0` 归约：凸化、轴旋转、指标计算）闭合。汇报。
+- M2：Lemma 2–3（顶底层单点、中间层多边形）与 Lemma 4–6（各 `Bd M_i` 单嵌入）。汇报。
+- M3：用 17.11 拼装出两个端点；审计；计划行 S.4 改为 done（条件于 `SchoenfliesInput`）。
+其余按 §2 配方；具体路线自定。
+
+## 18. 2026-09-15：S.4 接口与水平指标基础检查点（M1 尚未闭合）
+
+已合并 `origin/codex/moise-integration` 的 `bc4b635eb`，合并提交 `ee824b3a7`，计划文件无冲突。
+F5.2 按 §17.1 搁置，本节没有推进它。
+
+### 18.1 已检查源码
+
+- `SchoenfliesInput.lean`：四个字段分别为 17.9、17.10、17.11、一般 17.2；没有加入 Lemma 1 或端点结论字段。
+  `IsPLDiskDecomposition` 用共同有限三角剖分、PL 2-盘胞腔、覆盖、交集的边界条件和点/弧条件表达一般胞腔分解。
+  `IsFreeDiskCell` 使用 `boundaryComplex` 的内在边界；17.11 使用参数化边界像，未使用环境 `interior D`。
+  `.exists_free_disk_cell_ne` 从两个自由胞腔选出不同于指定胞腔的一个，未宣称一般 17.3 已证。
+  S.3/P.3 计划行已登记为“F 的 S.4 接口，S 车道证明”。仍无此接口的实例。
+- `HeightIndex.lean`：`levelPolygons` 枚举整层的 PL 圆周；`heightSingularPoints` 排除 crossing 点和孤立层点。
+  `heightSingularPoints_subset_vertices` / `finite_heightSingularPoints` 复用 F5.1 的非顶点 crossing。
+  `levelPolygons_image` / `encard_levelPolygons_image` 给保高度的环境 PL 同胚下的精确集合与基数搬运。
+  `exists_extreme_height_fibers` 对任何非空有限复形及顶点上单射的线性高度给全空间高度界和顶底层单点。
+  `heightIndex` 定义为奇异点上的扩展自然数和；下一层已证明一般位置下有限，尚待与原书奇异层分解指标的对应。
+  扩展自然数定义避免无限族被 `Set.ncard` 默认为零。`natCast_toNat_heightIndex` 给有限情形的无损自然数还原。
+
+- `HeightChange.lean`：`heightSingularPoints_image`、`heightIndex_image` 给全局保高度环境 PL 同胚下的精确搬运；不要求搬运后的剖分仍在一般位置。
+- `ManifoldSubspace.lean`：`eventually_mem_space_iff_sub_mem_submodule` 用区域不变性证明同维组合流形局部包含于仿射子空间时，两者的芽相等。
+- `FiniteGraphCircles.lean`：`restrict_space_eq_of_isPLSphere_one` 证明有限线性图中每个 PL 圆周是原图子复形；
+  `finite_isPLSphere_one_subsets`、`finite_levelPolygons` 给有限性；`heightIndex_lt_top` 与 `natCast_toNat_heightIndex` 闭合指标有限性。
+  后三模块均 exit=0、零 warning；AuditF122 十二项均仅标准三公理。
+
+### 18.2 验证与未完成部分
+
+两模块聚焦检查 exit=0、零 warning；`AuditF121.lean` 二十六项均只含 `propext`、`Classical.choice`、`Quot.sound`。
+审计同时对 §17.2 两个最终命题作类型检查；源码中没有相应的占位定理，类型检查不等于证明。
+M1 仍需：一般位置层的有限多边形分解、顶点处非奇异层的 crossing 判据、与原书指标对应、
+保持支持控制的平面凸化和三维保高度延拓、轴旋转后两片的严格降指标。M2 的中间层多边形性和 slab 删除、
+M3 的端点拼装均未完成。本层之后的审计记录见 §18.3。
+
+### 18.3 保高度延拓与双锥邻域（M1 支撑层，未完成 Lemma 1）
+
+- `ConeAmbientExtension.lean` 增加 `exists_isPLHomeomorphOn_extension_coneComplex_union_radial`，
+  保留两个锥顶及两侧所有径向线的精确公式。原 `exists_isPLHomeomorphOn_extension_coneComplex_union`
+  签名不变，由此强版推出；未改公共定义语义。
+- `ConeNeighborhood.lean`：中心投影的代数与连续性；相对底面内部给单锥内部与双锥接合处内部；
+  `frontier_coneComplex_union_subset_of_mem_nhdsWithin` 实际证明三维边界包含于边缘的两侧锥。
+  `isConeBase_of_subset_fiber` 和 `coneComplex_space_inter_of_subset_fiber` 从上下高度条件构造锥及其精确交。
+- `HeightExtension.lean` 端点 `exists_isPLHomeomorphOn_extension_preserving_height`：给定有限水平底面复形 L、
+  边缘子复形 B，L 中不在 B 的每一点都有底面内的相对邻域；若底面 PL 自同胚固定 B，则对任意包含 L 的凸开集 W，
+  构造全空间 PL 延拓，固定 W 的补集，逐点保持高度，且对所有集合保持 `heightIndex`。
+  证明在 W 内实际选择上下锥顶并验证边界；没有把三维延拓、边界包含或高度指标结论作为额外假设。
+  这里的底面相对邻域条件还须在后续平面凸化的具体底盘上实例化。
+
+三模块聚焦检查均 exit=0、零 warning；原直接消费者 `SimplexCornerExtension.lean` 兼容检查 exit=0、零 warning。
+`AuditF123.lean` 审计十八项（包含保留的旧接口），全部仅标准三公理。检查用时分别为 13.1、10.6、11.3、10.8 秒。
+M1 仍未验收：未完成带指定临界点的平面凸化、整层多边形分解及小幅转轴后的严格降指标；
+M2/M3 与两个最终端点仍未完成。下一层结果见 §18.4。
+
+### 18.4 水平盘的保高度凸化（未控制指定临界点，M1 仍进行中）
+
+- `HeightExtension.lean` 的强版 `exists_isPLHomeomorphOn_extension_preserving_height_of_eqOn_compl`
+  只要求底面自同胚固定 `L.space \ W`，允许外层底盘超出 W。径向公式证明：锥点若在 W 外，其底面点也在 W 外，
+  因而被固定。上一层“整个底盘位于 W”版保留签名，由强版推出。
+- `FiberCoordinates.lean` 的 `exists_affine_coordinates_of_linear_fiber` 在任意有限维空间中构造非零线性形式
+  水平层的欧氏仿射坐标与线性左逆；`image_openSimplex_affineMap` 给精确开单形像。
+- `LevelConvexification.lean` 的 `exists_isPLHomeomorphOn_convex_image_of_subset_fiber`：对任意三维有限维实范数空间、
+  非零线性形式 ℓ、同一水平层内的 PL 2-盘 D，以及包含 D 的凸开集 W，构造全空间 PL 同胚 h，固定 W 外部，
+  逐点保持 ℓ，令 `h '' D` 凸，并对每个集合保持 `heightIndex`。实际使用 S 的平面整直定理，构造大三角形底盘、
+  固定边界与平面坐标共轭，再调用保高度延拓；已在具体底盘上消去上一层的相对邻域条件。
+
+三模块最终检查分别为 11.0、10.2、13.6 秒，均 exit=0、零 warning。
+`AuditF124.lean` 八项（含保留旧接口）全部仅标准三公理；最外层凸化端点只假定维数、非零高度、PL 盘、水平层及凸开邻域。
+本结果没有控制指定临界点 P：若 P 位于 D 的边界，尚未保证 h(P) 是凸像盘的暴露点。因此仍缺
+“去掉 h(P) 后凸盘严格位于经过 h(P) 的某直线一侧”的增强，以及球面沿层圆周切盘、轴旋转与严格降指标。
+整层多边形分解及与原书奇异指标的对应也仍未闭合；M1/M2/M3 均未验收。下一审计文件 `AuditF125.lean`。
+
+### 18.5 带指定点的保高度凸化（M1 的凸化部分闭合）
+
+- `Homogeneity.lean`：单形内点间固定边界的 PL 自同胚、固定区间/弧端点的移动；
+  `exists_isPLHomeomorphOn_simplex_vertex_star_map_eq` 在任意满维单形的同一开顶点星内移动两点，保持整个单形，固定给定开邻域外部。
+  `exists_isPLHomeomorphOn_simplex_boundary_mem_vertices` 将任意边界点送到某个顶点。
+- `PointedConvexification.lean`：`exists_linearMap_lt_on_convexHull_sdiff_singleton` 实际构造暴露单形顶点的非零线性形式；
+  `exists_isPLHomeomorphOn_convex_image_strict_separation` 对平面 PL 2-盘 D 和任意不在其内部的指定点 p，构造支持在指定开邻域内的环境 PL 同胚，
+  使像盘凸，且除去 h(p) 后严格位于过 h(p) 的直线一侧。p 在盘外的情形用严格分离，在边界的情形用顶点星移动。
+- `LevelConvexification.lean` 的新强版 `exists_isPLHomeomorphOn_convex_image_strict_separation_of_subset_fiber`：
+  三维空间、非零高度 ℓ、同一水平层内的 PL 2-盘 D，指定点 p 在该层且 `D ∉ 𝓝[{x | ℓ x = r}] p`；
+  对包含 D 的任意凸开 W，构造全空间 PL 同胚 h 和非零线性形式 m，使 h 固定 W 外部、逐点保持 ℓ、像盘凸，
+  并满足 `∀ x ∈ h '' D \ {h p}, m (h p) < m x`，同时对每个集合保持 `heightIndex`。
+  外层底盘实际包含 D 与 p，因此对指定点的搬运有精确公式。旧的无指定点端点保留签名，并由强版推出。
+
+三个模块最终聚焦检查分别为 10.1、12.5、12.8 秒，均 exit=0、零 warning。
+`AuditF125.lean` 九项均仅标准三公理，并检查了强版的完整参数；没有修改或增加 `SchoenfliesInput` 字段。
+M1 的凸化与指定点控制已经闭合；仍缺球面沿水平圆周切成 PL 盘、一般位置层的多边形分解与指标对应、
+小幅转轴后每片的严格降指标。M1 尚未验收；M2/M3 和两个最终端点均未完成。下一审计文件 `AuditF126.lean`。
+
+### 18.6 严格半空间条件下恢复一般位置（M1 旋转的几何输入）
+
+`HeightPerturbation.lean` 的 `exists_continuousLinearMap_injOn_preserving_strict_order_and_halfSpace_of_isPolyhedron`：
+给定任意有限维实范数空间、有限集合 A/B、非零连续线性高度 ℓ、同层有限多面体 D，以及严格分离 `D \ {p}` 与 p 的线性形式 m，
+对任意 ε > 0 构造高度 f，使算子距离 `dist f ℓ < ε`，f 非零且在 A 上单射，保持 B 上原有的一切严格高度次序，
+并对所有 `x ∈ D \ {p}` 保证 `f p < f x`。证明先沿 m 小幅改变 ℓ，再在保持有限严格不等式的开邻域内调用 F5.1 的一般位置选择。
+用有限三角剖分的顶点凸包控制整个 D，不要求 D 是单形或凸集；对相反高度应用本定理给另一侧的倾斜。
+`linearMap_lt_on_convexHull_sdiff_singleton` 不要求仿射独立；`eventually_preserves_strict_order` 不要求有限维。
+
+聚焦检查 exit=0、零 warning、12.5 秒；`AuditF126.lean` 四项均仅标准三公理。
+本结果只控制高度函数与侧别，没有宣称新旧奇异点的包含关系或多边形数不增；这些才是严格降指标尚待证明的几何部分。
+球面 PL 切盘仍需实现：Moise 10.2 原陈述只给拓扑 2-盘，现有平面 P.1 不能直接作为球面 PL 切盘证明。
+尚未增加接口字段。M1/M2/M3 均未验收，下一审计文件 `AuditF127.lean`。
+
+### 18.7 正则水平层的有限不交多边形分解
+
+- `SimplicialComplex/EdgeGraph.lean`：任意几何复形的边图、有限顶点集、图邻点与几何邻点的精确对应及基数相等。
+  边图仅使用复形定义所需的代数结构，没有增加实数、拓扑或有限维假设。
+- `PolygonalCycles.lean`：`exists_polygonalCircle_of_isCycle` 将边图中的单环构造成实际 `PolygonalCircle`，
+  显式验证相邻边交点与非相邻边不交；顶点像恰为图环顶点，每条图环边包含于所得多边形。
+  `exists_polygonalCircle_decomposition` 对有限平面一维闭组合流形，以图连通分量索引多边形，证明全空间覆盖与两两不交。
+  `exists_finite_isPLSphere_decomposition` 给有限 PL 圆周族的内在表述，允许空流形。
+- `LevelPolygons.lean`：`exists_finite_isPLSphere_decomposition_of_subset_fiber` 用仿射平面坐标与 PL 流形不变性搬运到三维空间中的平面。
+  `exists_finite_isPLSphere_decomposition_fiber` 对任意有限三维空间中的二维闭组合流形、非零线性高度以及不经过任何剖分顶点的层，
+  构造有限个两两不交的 PL 圆周，其并集恰为该水平截面；不需要高度在所有顶点上单射。
+
+三个模块最终聚焦检查分别为 7.4、12.0、12.7 秒，均 exit=0、零 warning。
+`AuditF127.lean` 十三项均仅标准三公理，核对了水平层端点的完整签名。
+本层只闭合不经过顶点的正则水平层分解；含顶点层的一点分叉分解、与 `levelPolygons` 的精确对应、
+球面 PL 切盘及严格降指标仍未完成。没有增加 `SchoenfliesInput` 字段，M1/M2/M3 均未验收。下一审计文件 `AuditF128.lean`。
+
+### 18.8 正则层的规范圆周族与计数判据
+
+- `CurveInclusion.lean`：有限一维闭组合流形的子流形具有相同邻点，任何与子流形相交的原单形都属于子流形，
+  从而子流形在原流形中既开又闭。`eq_of_subset_of_isPLSphere_one` 据此证明同一有限维实范数空间中两个 PL 圆周若有包含关系即相等。
+  `IsPLSphere.isConnected_one` 单独去除了目标空间的有限维假设。
+- `Connected/FinitePartition.lean`：任意拓扑空间中，非空连通集若包含于有限个两两不交闭集的并，则恰包含于其中唯一一个成员。
+- `CirclePartition.lean`：`setOf_isPLSphere_one_subset_sUnion_eq` 证明有限不交 PL 圆周族之并中的全部 PL 圆周恰为原族；
+  并集是 PL 圆周当且仅当连通，也当且仅当该族的 `encard = 1`。
+- `LevelPolygons.lean` 增加 `levelPolygons_eq_of_finite_disjoint_cover` 及不经过剖分顶点的层的规范族 API：
+  `finite_levelPolygons_of_ne_vertex_heights`、`pairwiseDisjoint_levelPolygons_of_ne_vertex_heights`、
+  `sUnion_levelPolygons_of_ne_vertex_heights`；`isPLSphere_one_fiber_iff_isConnected` 与
+  `isPLSphere_one_fiber_iff_encard_levelPolygons_eq_one` 将正则层球性与连通性、原指标使用的计数精确对接。
+
+四模块最终聚焦检查分别为 11.9、7.1、12.2、12.2 秒，均 exit=0、零 warning；
+`AuditF128.lean` 十九项（含保留的两个分解端点）均仅标准三公理。
+正则层的分解和规范计数已经闭合，含顶点层的一点分叉分解、奇异层指标对应、球面 PL 切盘与 Lemma 1 严格下降尚未闭合。
+未增加 `SchoenfliesInput` 字段；M1/M2/M3 均未验收。下一审计文件 `AuditF129.lean`。
