@@ -369,3 +369,26 @@ The focused `PlanarSchoenflies` check exits 0 with zero warnings. `AuditS13.lean
 audits the prescribed-triangle endpoint and both ambient straightening
 headlines; all three closures contain only the standard foundational axioms,
 and the audit exits 0.
+
+
+## Two-sided cones at simplex vertices
+
+The new native `ConeHalfSpace` and `SimplexCorner` modules do not copy additional
+vendor source. They use affine supporting functions to construct the interior
+and exterior cone apices described in Moise 17.5. The construction works for
+any affine-independent simplex with at least two vertices, in a finite-dimensional
+real normed space. The apices can be arbitrarily close to the chosen vertex;
+both cones lie in any prescribed open neighborhood of the simplex. Their
+intersection is exactly the vertex star, the interior cone lies in the simplex,
+and the exterior cone meets the simplex exactly in that star. The vertex star
+is identified with `simplexAvoiding T hT {T.erase a}`; its intersection with the
+opposite facet is the boundary of that facet. The interior cone together with
+the remaining simplex fills the original simplex.
+
+These results discharge the existence, support, and intersection inputs for
+the proposed two-cone extension. The frontier inclusion in
+`exists_isPLHomeomorphOn_extension_coneComplex_union` and the application of
+local moves to a triangulated disk in the tetrahedral boundary remain to be
+proved; this checkpoint does not close Moise 17.5. Both new modules pass the
+focused check with exit 0 and zero warnings. `AuditS14.lean` checks all eleven
+new declarations, with exit 0 and only the three standard foundational axioms.
