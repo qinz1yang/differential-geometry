@@ -95,3 +95,43 @@ L.5（25.2 第一形式，需 H.2 的可定向）。
 - 每砖：聚焦检查 exit=0 零 warning，命名空间感知的 `#print axioms` 审计，提交并推送；计划行状态列写明定理名与提交哈希。
 - 新定义（环的共轭类、正规系统、领）的签名一旦被下游引用即冻结，改动必须回写计划 §4 表。
 - 检查点：L.1 做完（含形变收缩的取舍）先汇报再做 B.3。
+
+## 4. 2026-09-15 追加：L.1 已复核；B.3 与 L.2 的推离步骤依赖 S.5，改序
+
+### 4.0 复核
+
+`DerivedNeighborhoodRetraction`、`LoopTheorem.SingularCell` 由本方独立重编：exit=0、零 warning；本方按命名空间生成的
+105 项 `#print axioms` 审计全部只含标准三公理。`SingularTwoCell`、`NormalSystem`（条件 (1)–(4)：`K₁` 为相对导出邻域、
+`|D| ∩ Bd M₁ = |L|`、`B₁` 为边界中碰 `|L|` 的单形之并、`N₁` 正规且 `L(B₁) ∩ N₁ = ∅`）与复杂度定义与书页 187–188 一致。
+你报告的 `AuditL1.lean` 不在 `D:\differential-geometry-moise-e3\.lake\scratch`；以后审计文件留在本工作树的 `.lake\scratch`。
+
+### 4.1 依赖更正（本文件 §2 对 B.3、L.2 的估计有误）
+
+- Moise 26.2 的证明（书页 192）第一步"多面体 3-胞腔 `C₁ ⊆ M³` 与 PLH `ρ₁ : d₁ × [0,1] ↔ C₁`，`C₁ ∩ B = d₁`"以及每个
+  归纳步的 `C_{i+1}` 都来自 §23 的 23.9–23.11（书页 169：`N(v)`、`N'(σ)` 由 17.12 经 23.9 是组合 3-胞腔）。
+  这是计划行 S.5，属 S 车道，S 车道现在还在 S.2。**B.3 阻塞于 S.5**；S.5 到位后按书的归纳做。
+- L.2 第 3 步"把 `Int Δ_i` 稍微推离 `B`"同样需要 `Δ_i` 在 `M` 中的 3-胞腔邻域（23.10 型），也阻塞于 S.5。
+- 不要用正则邻域唯一性（Rourke–Sanderson 第 3 章）或曲面分类另起炉灶绕过：那是与 S 车道重复的第二条基础路线。
+- 把计划行 B.3 改为 "blocked on S.5（23.9–23.11）"，L.2 改为 "partial：推离步骤等 S.5"。
+
+### 4.2 现在做（顺序）
+
+1. `SphereSchoenflies.lean`（L.2 第 1 步，独立可做）：PL 2-球面 `B` 中的多边形 `J` 在 `B` 中界定两个 PL 2-胞腔。
+   路线：`B` PL 同胚于 3-单形的边界；细分后去掉一个与 `J` 不交的开 2-单形，剩下的 PL 2-球 PL 同胚到平面多边形区域，
+   用 P.1 `isPLBall_of_isPLSphere_one`（`PolygonalSchoenflies.lean:1240`）后搬回；另一侧用 `B` 减去第一侧。
+2. `LoopTheorem/BoundaryGeneration.lean`（L.2 第 2 步）：`B'` 为 `B` 减去有限个不交 PL 2-胞腔的内部（边界多边形 `p_i`），
+   则 `p̄_i` 正规生成 `π(B', P₀)`。路线：`B` 单连通（`sphereTwoSimplyConnectedSpace` 沿 PL 同胚搬运）与贴 2-胞腔的
+   van Kampen（`DifferentialGeometry/Topology/VanKampen/`）。若树里的 van Kampen 形式不合，先汇报确切缺口。
+3. `LoopTheorem/SphereCase.lean`：Lemma 1 的条件版。显式假设（不是 sorry）
+   `hpush : ∀ Δ, IsPLBall 2 Δ → Δ ⊆ Bd M → ∃ D₁ : SingularTwoCell M, D₁.IsNonsingular ∧ range (Bd D₁) = frontier Δ ∧ range D₁ ∩ Bd M = frontier Δ`
+   （精确形式由你定，写进计划行 L.2），结论为 Lemma 1 全部条款。S.5 之后由 B.3 的子复形版本给出 `hpush`。
+4. C.4/C.5 桥接（H.2/H.5 到达前可做）：ℤ₂ 单纯 1-上循环 ↔ `Hom(H₁(K;ℤ), ℤ₂)`，指标 2 子群 ↔ `π₁ ↠ ℤ₂`
+   （`Topology/Homology/*`、C.1 的 `card_fiber_eq_index`、C.2 的 `SimplicialBoolCocycle`/`IsCoboundary`），
+   使 C.4/C.5 在 H 汇报后只剩接线。
+5. L.4 的骨架：Lemma 3 的复杂度归纳，条件于 Lemma 1、Lemma 2 与两个二重覆盖存在定理（24.7、24.8）的显式陈述。
+   其中"提升的正规系统复杂度更小"：24.1 提升（C.1 `exists_unique_lift_of_isPLBall`）、C.3 `exists_lift_simplicialComplex`
+   给 `K̃₁`，`relDerived` 给 `M₂`；复杂度不增，若相等则 `g||D̃|` 为同胚、`(g||D̃|)*` 满、与 `g*` 指标 2 矛盾
+   （C.1 `injective_fundamentalGroup_map`、`card_fiber_eq_index`）。这是 L.4 里不依赖 F5.2 的全部内容。
+6. 有余力再做 B.1（26.1 两侧性，书页 191）。
+
+L.3（Cases 1–4）等 F 车道的 F5.2；B.3 与 L.2 的推离等 S.5。每砖检查点同 §3；第 1–3 项做完先汇报。
