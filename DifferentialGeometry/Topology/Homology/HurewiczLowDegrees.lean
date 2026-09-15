@@ -1,5 +1,4 @@
-import DifferentialGeometry.Topology.Homology.SphereHurewicz
-import DifferentialGeometry.Topology.Homology.SphereGenerator
+import DifferentialGeometry.Topology.Homology.HurewiczTwo
 
 
 
@@ -28,8 +27,8 @@ theorem hurewicz_two_isomorphism (x : X)
     (hc : IsSphereHomologyGenerator 1 c) :
     Function.Bijective (sphereHurewicz 1 x c) ∧
       ∀ a b : HomotopyGroup (Fin 2) X x,
-        sphereHurewicz 1 x c (a * b) = sphereHurewicz 1 x c a + sphereHurewicz 1 x c b := by
-  sorry
+        sphereHurewicz 1 x c (a * b) = sphereHurewicz 1 x c a + sphereHurewicz 1 x c b :=
+  ⟨bijective_sphereHurewicz_two x c hc, sphereHurewicz_two_mul x c⟩
 
 
 

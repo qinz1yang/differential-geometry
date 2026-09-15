@@ -1,6 +1,7 @@
 import DifferentialGeometry.Topology.Homology.SphereHurewicz
 import DifferentialGeometry.Topology.Homology.SphereGenerator
 import DifferentialGeometry.Topology.Homology.HurewiczFrontier
+import DifferentialGeometry.Topology.Homology.HurewiczLowDegrees
 import DifferentialGeometry.Topology.Homotopy.CubeSphereProjection
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HurewiczCube
 

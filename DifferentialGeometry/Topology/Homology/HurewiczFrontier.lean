@@ -1,4 +1,5 @@
-import DifferentialGeometry.Topology.Homology.HurewiczLowDegrees
+import DifferentialGeometry.Topology.Homology.SphereHurewicz
+import DifferentialGeometry.Topology.Homology.SphereGenerator
 import DifferentialGeometry.Topology.Homology.Homotopy
 import DifferentialGeometry.Topology.Homology.PathCones
 
