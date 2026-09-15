@@ -1420,4 +1420,148 @@ theorem exists_small_vertexMap_transverse_in_halfSpace [FiniteDimensional ℝ F]
     apply hgood u hu hcard
     omega
 
+theorem linearMap_simplicialMap {G : Type*} [NormedAddCommGroup G] [NormedSpace ℝ G]
+    (K : Geometry.SimplicialComplex ℝ E) (φ : E → F) (A : F →ₗ[ℝ] G) (x : E) :
+    A (simplicialMap K φ x) = simplicialMap K (A ∘ φ) x := by
+  simp only [simplicialMap, map_sum, map_smul, Function.comp_apply]
+
+theorem simplicialMap_nonneg_of_nonneg_vertices (K : Geometry.SimplicialComplex ℝ E) (φ : E → ℝ)
+    (hφ : ∀ v ∈ K.vertices, 0 ≤ φ v) {x : E} (hx : x ∈ K.space) : 0 ≤ simplicialMap K φ x := by
+  classical
+  obtain ⟨s, hs, hxs⟩ := K.mem_space_iff.mp hx
+  rw [simplicialMap_eq_of_mem K φ hs hxs]
+  apply Finset.sum_nonneg
+  intro v hv
+  exact mul_nonneg (weights_nonneg hxs hv)
+    (hφ v (K.down_closed hs (Finset.singleton_subset_iff.mpr hv) (Finset.singleton_nonempty v)))
+
+open Classical in
+theorem simplicialMap_eq_zero_iff_of_mem_openSimplex (K : Geometry.SimplicialComplex ℝ E)
+    (φ : E → ℝ) {s : Finset E} (hs : s ∈ K.faces) (hφ : ∀ v ∈ s, 0 ≤ φ v)
+    {x : E} (hx : x ∈ openSimplex s) : simplicialMap K φ x = 0 ↔ ∀ v ∈ s, φ v = 0 := by
+  have hxs := openSimplex_subset_convexHull s hx
+  have hpos := (mem_openSimplex_self_iff (K.indep hs) hxs).mp hx
+  rw [simplicialMap_eq_of_mem K φ hs hxs]
+  simp only [smul_eq_mul]
+  rw [Finset.sum_eq_zero_iff_of_nonneg (fun v hv => mul_nonneg (hpos v hv).le (hφ v hv))]
+  constructor
+  · intro h v hv
+    exact (mul_eq_zero.mp (h v hv)).resolve_left (hpos v hv).ne'
+  · intro h v hv
+    rw [h v hv, mul_zero]
+
+theorem simplicialMap_eq_zero_iff_of_eq_zero_on_vertices (K : Geometry.SimplicialComplex ℝ E)
+    (φ ψ : E → ℝ) (hφ : ∀ v ∈ K.vertices, 0 ≤ φ v) (hψ : ∀ v ∈ K.vertices, 0 ≤ ψ v)
+    (heq : ∀ v ∈ K.vertices, φ v = 0 ↔ ψ v = 0) {x : E} (hx : x ∈ K.space) :
+    simplicialMap K φ x = 0 ↔ simplicialMap K ψ x = 0 := by
+  classical
+  obtain ⟨s, hs, hxs⟩ := exists_face_mem_openSimplex K hx
+  have hvert : ∀ v ∈ s, v ∈ K.vertices := fun v hv =>
+    K.down_closed hs (Finset.singleton_subset_iff.mpr hv) (Finset.singleton_nonempty v)
+  rw [simplicialMap_eq_zero_iff_of_mem_openSimplex K φ hs (fun v hv => hφ v (hvert v hv)) hxs,
+    simplicialMap_eq_zero_iff_of_mem_openSimplex K ψ hs (fun v hv => hψ v (hvert v hv)) hxs]
+  exact forall₂_congr fun v hv => heq v (hvert v hv)
+
+open Classical in
+theorem exists_small_simplicialMap_transverse_in_halfSpace [FiniteDimensional ℝ E]
+    [FiniteDimensional ℝ F] (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
+    (hK : IsCombinatorialManifoldWithBoundary 2 K) (hdim : Module.finrank ℝ F = 3)
+    (ℓ : F →ₗ[ℝ] ℝ) (hℓ : ℓ ≠ 0) (f : E → F) (hf : IsPiecewiseAffineOn f K.space)
+    (hloc : IsLocallyInjective (K.space.domRestrict f))
+    (hcard : ∀ y : F, (K.space ∩ f ⁻¹' {y}).encard ≤ 2)
+    (hnonneg : ∀ x ∈ K.space, 0 ≤ ℓ (f x))
+    (hboundary : ∀ x ∈ K.space, ℓ (f x) = 0 ↔ x ∈ (boundaryComplex 2 K).space)
+    {ε : ℝ} (hε : 0 < ε) :
+    ∃ (R : Geometry.SimplicialComplex ℝ E) (φ : E → F), IsSubdivision R K ∧ R.faces.Finite ∧
+      IsPiecewiseAffineOn (simplicialMap R φ) K.space ∧
+        (∀ x ∈ K.space, dist (simplicialMap R φ x) (f x) < ε) ∧
+          (∀ v ∈ R.vertices, IsPLHomeomorphOn (simplicialMap R φ) (starComplex R v).space
+            (simplicialMap R φ '' (starComplex R v).space)) ∧
+              IsLocallyInjective (K.space.domRestrict (simplicialMap R φ)) ∧
+                (∀ y : F, (K.space ∩ (simplicialMap R φ) ⁻¹' {y}).encard ≤ 2) ∧
+                  (∀ x ∈ K.space, 0 ≤ ℓ (simplicialMap R φ x)) ∧
+                    (∀ x ∈ K.space, ℓ (simplicialMap R φ x) = 0 ↔ x ∈ (boundaryComplex 2 K).space) ∧
+                      (∀ s ∈ R.faces, AffineIndependent ℝ (fun v : s => φ (v : E))) ∧
+                        ∀ s ∈ R.faces, ∀ t ∈ R.faces, Disjoint s t →
+                          (convexHull ℝ (s.image φ : Set F) ∩ convexHull ℝ (t.image φ : Set F)).Nonempty →
+                            vectorSpan ℝ (s.image φ : Set F) ⊔ vectorSpan ℝ (t.image φ : Set F) =
+                              if ((s ∪ t : Finset E) : Set E) ⊆ (boundaryComplex 2 K).space
+                                then LinearMap.ker ℓ else ⊤ := by
+  obtain ⟨R, δ, hR, hfinite, heq, hδ, hstable⟩ :=
+    exists_isSubdivision_stable_fiber_encard_le_two K f hf hloc hcard
+  have : Finite R.faces := hfinite.to_subtype
+  have hRman : IsCombinatorialManifoldWithBoundary 2 R := hK.of_isSubdivision hR
+  have hvertices : R.vertices.Finite :=
+    Set.Finite.preimage Finset.singleton_injective.injOn (Set.toFinite R.faces)
+  let V := hvertices.toFinset
+  let B := V.filter (fun v => ℓ (f v) = 0)
+  have hBV : B ⊆ V := Finset.filter_subset _ _
+  have hVK : ∀ v ∈ V, v ∈ K.space := by
+    intro v hv
+    rw [← hR.space_eq]
+    exact R.subset_space (hvertices.mem_toFinset.mp hv) (Finset.mem_singleton_self v)
+  have hfaces : ∀ s ∈ R.faces, s ⊆ V := by
+    intro s hs v hv
+    apply hvertices.mem_toFinset.mpr
+    exact R.down_closed hs (Finset.singleton_subset_iff.mpr hv) (Finset.singleton_nonempty v)
+  have hB : ∀ v ∈ B, ℓ (f v) = 0 := fun _ hv => (Finset.mem_filter.mp hv).2
+  have hV : ∀ v ∈ V \ B, 0 < ℓ (f v) := by
+    intro v hv
+    obtain ⟨hvV, hvB⟩ := Finset.mem_sdiff.mp hv
+    have hne : ℓ (f v) ≠ 0 := fun h => hvB (Finset.mem_filter.mpr ⟨hvV, h⟩)
+    exact lt_of_le_of_ne (hnonneg v (hVK v hvV)) hne.symm
+  obtain ⟨φ, _, hclose, hzero, hpos, hgood, htrans⟩ :=
+    exists_small_vertexMap_transverse_in_halfSpace V B hBV ℓ hℓ f hB hV (lt_min hδ hε)
+  have hφnonneg : ∀ v ∈ R.vertices, 0 ≤ ℓ (φ v) := by
+    intro v hv
+    by_cases hvB : v ∈ B
+    · rw [hzero v hvB]
+    · exact (hpos v (Finset.mem_sdiff.mpr ⟨hvertices.mem_toFinset.mpr hv, hvB⟩)).le
+  have hfnonneg : ∀ v ∈ R.vertices, 0 ≤ ℓ (f v) :=
+    fun v hv => hnonneg v (hVK v (hvertices.mem_toFinset.mpr hv))
+  have hzeroiff : ∀ v ∈ R.vertices, ℓ (φ v) = 0 ↔ ℓ (f v) = 0 := by
+    intro v hv
+    by_cases hvB : v ∈ B
+    · simp only [hzero v hvB, hB v hvB]
+    · have hφne := (hpos v (Finset.mem_sdiff.mpr ⟨hvertices.mem_toFinset.mpr hv, hvB⟩)).ne'
+      have hfne : ℓ (f v) ≠ 0 := fun h => hvB (Finset.mem_filter.mpr ⟨hvertices.mem_toFinset.mpr hv, h⟩)
+      simp only [hφne, hfne]
+  obtain ⟨hstar, hlocal, hfiber⟩ := hstable φ
+    (fun v _ => (hclose v).trans_le (min_le_left δ ε))
+  have hkerbound : 2 ≤ Module.finrank ℝ (LinearMap.ker ℓ) := by
+    have h := LinearMap.finrank_range_add_finrank_ker ℓ
+    have hle := Submodule.finrank_le (LinearMap.range ℓ)
+    rw [Module.finrank_self] at hle
+    omega
+  refine ⟨R, φ, hR, hfinite, ?_, ?_, hstar, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · simpa only [hR.space_eq] using isPiecewiseAffineOn_simplicialMap R φ
+  · intro x hx
+    rw [← heq hx]
+    exact dist_simplicialMap_lt_of_dist_vertices_lt R
+      (fun v _ => (hclose v).trans_le (min_le_right δ ε)) (hR.space_eq.symm ▸ hx)
+  · rwa [hR.space_eq] at hlocal
+  · rwa [hR.space_eq] at hfiber
+  · intro x hx
+    rw [linearMap_simplicialMap]
+    exact simplicialMap_nonneg_of_nonneg_vertices R (ℓ ∘ φ) hφnonneg (hR.space_eq.symm ▸ hx)
+  · intro x hx
+    have h := simplicialMap_eq_zero_iff_of_eq_zero_on_vertices R (ℓ ∘ φ) (ℓ ∘ f)
+      hφnonneg hfnonneg hzeroiff (hR.space_eq.symm ▸ hx)
+    rw [← linearMap_simplicialMap R φ ℓ x, ← linearMap_simplicialMap R f ℓ x, heq hx] at h
+    exact h.trans (hboundary x hx)
+  · intro s hs
+    have hc := hRman.card_le R hs
+    have hbc := Finset.card_le_card (Finset.inter_subset_left (s₁ := s) (s₂ := B))
+    exact hgood s (hfaces s hs) (by omega) (by omega)
+  · intro s hs t ht hdisj hinter
+    have hiff : s ∪ t ⊆ B ↔ ((s ∪ t : Finset E) : Set E) ⊆ (boundaryComplex 2 K).space := by
+      constructor
+      · intro h v hv
+        exact (hboundary v (hVK v (hBV (h hv)))).mp (hB v (h hv))
+      · intro h v hv
+        have hvV := (Finset.union_subset (hfaces s hs) (hfaces t ht)) hv
+        exact Finset.mem_filter.mpr ⟨hvV, (hboundary v (hVK v hvV)).mpr (h hv)⟩
+    have h := htrans s (hfaces s hs) t (hfaces t ht) hdisj hinter
+    simpa only [hiff] using h
+
 end DifferentialGeometry.Topology.PiecewiseLinear
