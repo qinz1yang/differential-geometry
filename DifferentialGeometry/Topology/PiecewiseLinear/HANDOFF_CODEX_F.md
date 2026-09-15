@@ -1226,3 +1226,18 @@ M1 的凸化与指定点控制已经闭合；仍缺球面沿水平圆周切成 P
 `AuditF128.lean` 十九项（含保留的两个分解端点）均仅标准三公理。
 正则层的分解和规范计数已经闭合，含顶点层的一点分叉分解、奇异层指标对应、球面 PL 切盘与 Lemma 1 严格下降尚未闭合。
 未增加 `SchoenfliesInput` 字段；M1/M2/M3 均未验收。下一审计文件 `AuditF129.lean`。
+
+### 18.9 含顶点层的圆周覆盖
+
+- `Combinatorics/EvenDegree.lean`：有限图中除一个指定顶点外均为偶度，则该顶点亦为偶度；全偶度图没有桥，
+  每条边都落在一个单环上。特别地，除一个指定顶点外均为二度时，仍得到逐边的单环覆盖。
+- `PlanarCycleRealization.lean`：`exists_isPLSphere_one_of_isCycle_of_subset_fiber` 将三维空间水平层中有限复形的图环
+  搬运到仿射平面，构造实际 PL 圆周，并包含该图环的每条几何边。
+- `SingularLevelPolygons.lean`：`exists_isPLSphere_one_of_mem_space_of_degree_eq_two_except` 对平面内除一点外均为二度的有限线性图，
+  证明每个其他点均包含于图内的某个 PL 圆周。`fiber_eq_singleton_union_sUnion_levelPolygons` 将 F5.1 的精确层剖分代入，
+  证明有限闭二维组合流形的顶点水平层恰为该顶点与全部层内 PL 圆周的并；没有添加层分解假设。
+
+三个模块最终聚焦检查分别为 7.9、11.7、12.3 秒，均 exit=0、零 warning。
+`AuditF129.lean` 八项均仅标准三公理，已核对水平层覆盖端点的完整签名。
+本层尚未证明不同圆周只能相交于该顶点，也尚未将顶点 crossing 与局部二度完全对应。
+球面 PL 切盘和 Lemma 1 严格降指标仍未闭合；M1/M2/M3 均未验收，`SchoenfliesInput` 未增加字段。下一审计文件 `AuditF130.lean`。
