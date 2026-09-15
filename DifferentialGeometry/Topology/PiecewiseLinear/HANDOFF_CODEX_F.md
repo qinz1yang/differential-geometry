@@ -985,3 +985,21 @@ E.3/E.4 条件版成立，计划行与 `MOISE_PLAN.md` §6 的记录准确。整
 - 砖 20 `SingularNormalForm.lean`：有限覆盖归纳（第 1、4、5 条），端点写进计划行 F5.2 并冻结签名。
 每砖照 §2 配方；不得增加结论型假设；若第 3 条的"通用位置下 `p` 处至多一张曲面折叠"或第 4 条的搬运在现有定义下
 不能闭合，汇报确切缺口。估计 5k–9k 行。
+
+## 16. 2026-09-15：球图卡路线的检查点
+
+### 16.1 砖 18：折叠 crossing
+
+`FoldCrossing.lean` 提供两个不依赖复形的端点：
+
+- `exists_isPLHomeomorphOn_straighten_fold`：给定互补子空间 S、T 及 u、v 不在 S 中，若对所有 c > 0 有
+  v − c u 不在 S 中，则构造全空间 PL 同胚，固定 S、保持 T，并把沿 S 的两个闭半平面之并送到一个线性子空间。
+  此定理不限制维数。证明把两方向沿 S 投到 T，调用已有剪切拉直构造；正逆映射的 PL 性由已有构造实际提供。
+- `hasPLCrossingAt_of_fold`：S 一维、T 二维时，若 A 在 x 的芽恰为上述两半平面之并，B 的芽恰为 x + T，
+  则 `HasPLCrossingAt A B x`。互补性表示折线横穿平片，不重合商方向表示折叠张的两侧不重叠；
+  没有假设所求 crossing 或预先存在所求拉直同胚。交换两张可直接使用已有 `HasPLCrossingAt.symm`。
+
+验证：`check-f.ps1` 聚焦检查 exit=0、零 warning（10.1 秒）；`AuditF119.lean` 检查两个公开声明的完整类型与
+公理闭包，均仅 `propext`、`Classical.choice`、`Quot.sound`。未重检旧模块、未运行 lake build、未登记根聚合。
+F5.2 仍为 partial。下一项为砖 19，须从固定顶点与可动顶点的相对通用位置实际推出适用本引理的局部分类。
+下一个审计文件为 `.lake/scratch/AuditF120.lean`。
