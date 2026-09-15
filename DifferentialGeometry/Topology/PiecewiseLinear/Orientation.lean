@@ -7583,4 +7583,93 @@ theorem coherentOrientation_eq_or_eq_neg
     intro s hs hscard
     exact (htop ⟨s, hs, hscard⟩).elim
 
+open Classical in
+theorem faceCofaces_simplexComplex
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    (T : Finset E) (hT : AffineIndependent ℝ ((↑) : T → E))
+    (hne : T.Nonempty) {s : Finset E} (hs : s ⊆ T) :
+    letI := (simplexComplex_faces_finite T hT).to_subtype
+    faceCofaces (simplexComplex T hT) s T.card = {T} := by
+  let _ := (simplexComplex_faces_finite T hT).to_subtype
+  ext t
+  rw [mem_faceCofaces, Finset.mem_singleton]
+  constructor
+  · rintro ⟨ht, hcard, _⟩
+    exact Finset.eq_of_subset_of_card_le ht.2 hcard.ge
+  · rintro rfl
+    exact ⟨⟨hne, subset_rfl⟩, rfl, hs⟩
+
+open Classical in
+noncomputable def CoherentOrientation.simplex
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    (r : LinearOrder E) (T : Finset E) (hT : AffineIndependent ℝ ((↑) : T → E))
+    {n : ℕ} (hcard : T.card = n + 1) :
+    letI := (simplexComplex_faces_finite T hT).to_subtype
+    CoherentOrientation n (simplexComplex T hT) := by
+  letI := (simplexComplex_faces_finite T hT).to_subtype
+  refine {
+    vertexOrder := r
+    sign := fun _ => 1
+    sign_top := fun _ _ _ => Or.inl rfl
+    coherent := ?_ }
+  intro s hs _ hnotone
+  have hne : T.Nonempty := Finset.card_pos.mp (by omega)
+  have hcofaces := faceCofaces_simplexComplex T hT hne hs.2
+  rw [hcard] at hcofaces
+  exact (hnotone (by rw [hcofaces, Finset.card_singleton])).elim
+
+open Classical in
+theorem isOrientable_simplexComplex
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    (T : Finset E) (hT : AffineIndependent ℝ ((↑) : T → E))
+    {n : ℕ} (hcard : T.card = n + 1) :
+    letI := (simplexComplex_faces_finite T hT).to_subtype
+    IsOrientable n (simplexComplex T hT) := by
+  exact ⟨CoherentOrientation.simplex (linearOrderOfSTO WellOrderingRel) T hT hcard⟩
+
+open Classical in
+noncomputable def CoherentOrientation.simplexBoundary
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    (r : LinearOrder E) (T : Finset E) (hT : AffineIndependent ℝ ((↑) : T → E))
+    {n : ℕ} (hcard : T.card = n + 2) :
+    letI := (simplexBoundary_faces_finite T hT).to_subtype
+    CoherentOrientation n (PiecewiseLinear.simplexBoundary T hT) := by
+  letI := (simplexComplex_faces_finite T hT).to_subtype
+  letI := (simplexBoundary_faces_finite T hT).to_subtype
+  refine {
+    vertexOrder := r
+    sign := simplexBoundaryCoefficient r T
+    sign_top := ?_
+    coherent := ?_ }
+  · intro s hs hscard
+    exact simplexBoundaryCoefficient_eq_one_or_neg_one r hs.1 (by omega)
+  · intro s _ _ _
+    have hfaces :
+        SimplicialComplex.facesOfCard
+          (PiecewiseLinear.simplexBoundary T hT).toPreAbstractSimplicialComplex (n + 1) =
+        SimplicialComplex.facesOfCard
+          (simplexComplex T hT).toPreAbstractSimplicialComplex (n + 1) := by
+      ext t
+      rw [SimplicialComplex.mem_facesOfCard, SimplicialComplex.mem_facesOfCard]
+      constructor
+      · rintro ⟨ht, htcard⟩
+        exact ⟨⟨ht.2.1, ht.1⟩, htcard⟩
+      · rintro ⟨ht, htcard⟩
+        refine ⟨⟨ht.2, ht.1, ?_⟩, htcard⟩
+        intro heq
+        have := congrArg Finset.card heq
+        omega
+    rw [orientedBoundary, hfaces]
+    exact sum_simplexBoundaryCoefficient_comp_eq_zero r (simplexComplex T hT)
+      ⟨Finset.card_pos.mp (by omega), subset_rfl⟩ hcard
+
+open Classical in
+theorem isOrientable_simplexBoundary
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    (T : Finset E) (hT : AffineIndependent ℝ ((↑) : T → E))
+    {n : ℕ} (hcard : T.card = n + 2) :
+    letI := (simplexBoundary_faces_finite T hT).to_subtype
+    IsOrientable n (simplexBoundary T hT) := by
+  exact ⟨CoherentOrientation.simplexBoundary (linearOrderOfSTO WellOrderingRel) T hT hcard⟩
+
 end DifferentialGeometry.Topology.PiecewiseLinear
