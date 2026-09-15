@@ -129,6 +129,7 @@ import DifferentialGeometry.Analysis.Calculus.Potential
 import DifferentialGeometry.Analysis.Calculus.RatioMonotonicity
 import DifferentialGeometry.Analysis.Calculus.RegularSplice
 import DifferentialGeometry.Analysis.Calculus.RegularValue
+import DifferentialGeometry.Analysis.Calculus.Rescaling
 import DifferentialGeometry.Analysis.Calculus.Retraction.Approximation
 import DifferentialGeometry.Analysis.Calculus.Retraction.Ball
 import DifferentialGeometry.Analysis.Calculus.Retraction.FiniteCover
@@ -8153,6 +8154,7 @@ import DifferentialGeometry.Topology.Diffeomorph.Perturbation
 import DifferentialGeometry.Topology.Diffeomorph.Product
 import DifferentialGeometry.Topology.Diffeomorph.Radial
 import DifferentialGeometry.Topology.Diffeomorph.Restriction
+import DifferentialGeometry.Topology.Diffeomorph.SphereIsotopy
 import DifferentialGeometry.Topology.Diffeomorph.TimeDependentFlow
 import DifferentialGeometry.Topology.Diffeomorph.Translation
 import DifferentialGeometry.Topology.DirectLimit.Basic
@@ -8259,15 +8261,19 @@ import DifferentialGeometry.Topology.GroupAction.Hom
 import DifferentialGeometry.Topology.GroupAction.Module
 import DifferentialGeometry.Topology.Handle.Attachment.Basic
 import DifferentialGeometry.Topology.Handle.Attachment.Comparison
+import DifferentialGeometry.Topology.Handle.BallIsotopy
 import DifferentialGeometry.Topology.Handle.Basic
 import DifferentialGeometry.Topology.Handle.Boundary
 import DifferentialGeometry.Topology.Handle.Collar
 import DifferentialGeometry.Topology.Handle.Defs
 import DifferentialGeometry.Topology.Handle.Duality
 import DifferentialGeometry.Topology.Handle.Embedding
+import DifferentialGeometry.Topology.Handle.Extension
 import DifferentialGeometry.Topology.Handle.Gluing
+import DifferentialGeometry.Topology.Handle.Isotopy
 import DifferentialGeometry.Topology.Handle.Manifold
 import DifferentialGeometry.Topology.Handle.Pair
+import DifferentialGeometry.Topology.Handle.Rescaling
 import DifferentialGeometry.Topology.Handle.Retraction
 import DifferentialGeometry.Topology.Handle.SimplyConnected
 import DifferentialGeometry.Topology.Handle.SimplyConnectedInterface
