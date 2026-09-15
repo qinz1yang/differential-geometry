@@ -10040,3 +10040,14 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Parametric.Loc
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Parametric.AffineComposition
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Parametric.TimeComposition
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Nemytskii.TimeInterval
+import DifferentialGeometry.Topology.Manifold.AddCircle.ParameterDerivative
+import DifferentialGeometry.Geometry.Metric.AddCircle
+import DifferentialGeometry.Geometry.Connection.MetricCompatibility.DimensionOne
+import DifferentialGeometry.Geometry.Connection.LeviCivita.AddCircle
+import DifferentialGeometry.Geometry.Operator.Laplacian.AddCircle
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ScalarEvaluation
+import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Embedding.SmoothInclusion
+import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Scalar.AddCircleDerivative
+import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Scalar.AddCircleLaplacian
+import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Duhamel.AddCircle
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.PullbackMetric
