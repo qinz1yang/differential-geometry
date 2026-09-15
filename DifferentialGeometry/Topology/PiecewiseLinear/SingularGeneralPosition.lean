@@ -401,28 +401,35 @@ theorem exists_isSubdivision_stable_fiber_encard_le_two
       (fun v hv => (hφ v hv).trans_le (min_le_right η ε)) hx
 
 open Classical in
-theorem exists_small_affineIndependent_subsets [FiniteDimensional ℝ F] {ι : Type*}
-    (V : Finset ι) (φ₀ : ι → F) {ε : ℝ} (hε : 0 < ε) :
-    ∃ φ : ι → F, EqOn φ φ₀ (V : Set ι)ᶜ ∧ (∀ v, dist (φ v) (φ₀ v) < ε) ∧
-      ∀ s : Finset ι, s ⊆ V → s.card ≤ Module.finrank ℝ F + 1 →
-        AffineIndependent ℝ (fun v : s => φ (v : ι)) := by
+theorem exists_small_affineIndependent_subsets_relative [FiniteDimensional ℝ F] {ι : Type*}
+    (V B : Finset ι) (hVB : Disjoint V B) (φ₀ : ι → F) {ε : ℝ} (hε : 0 < ε) :
+    ∃ φ : ι → F, EqOn φ φ₀ (V : Set ι)ᶜ ∧ EqOn φ φ₀ (B : Set ι) ∧
+      (∀ v, dist (φ v) (φ₀ v) < ε) ∧
+      ∀ s : Finset ι, s ⊆ V ∪ B → s.card ≤ Module.finrank ℝ F + 1 →
+        AffineIndependent ℝ (fun v : (s ∩ B : Finset ι) => φ₀ (v : ι)) →
+          AffineIndependent ℝ (fun v : s => φ (v : ι)) := by
   induction V using Finset.induction_on with
   | empty =>
-    refine ⟨φ₀, fun _ _ => rfl, fun _ => by simpa only [dist_self] using hε, ?_⟩
-    intro s hs _
-    have hs0 : s = ∅ := Finset.subset_empty.mp hs
-    subst s
-    exact affineIndependent_of_subsingleton ℝ _
+    refine ⟨φ₀, fun _ _ => rfl, fun _ _ => rfl, fun _ => by simpa only [dist_self] using hε, ?_⟩
+    intro s hs _ hind
+    have hsB : s ⊆ B := by simpa only [Finset.empty_union] using hs
+    let e : s ↪ (s ∩ B : Finset ι) :=
+      ⟨fun w => ⟨w, Finset.mem_inter.mpr ⟨w.property, hsB w.property⟩⟩,
+        fun _ _ h => Subtype.ext (congrArg (fun z : (s ∩ B : Finset ι) => (z : ι)) h)⟩
+    exact hind.comp_embedding e
   | @insert v V hv ih =>
-    obtain ⟨φ, hfix, hclose, hgood⟩ := ih
-    let I := {s : Finset ι // s ⊆ V ∧ s.card ≤ Module.finrank ℝ F}
-    have : Finite I := ((V.powerset.finite_toSet).subset
+    have hvB : v ∉ B := fun hvB => Finset.disjoint_left.mp hVB (Finset.mem_insert_self v V) hvB
+    have hVB' : Disjoint V B := hVB.mono_left (Finset.subset_insert v V)
+    obtain ⟨φ, hfix, hfixB, hclose, hgood⟩ := ih hVB'
+    let I := {s : Finset ι // s ⊆ V ∪ B ∧ s.card ≤ Module.finrank ℝ F ∧
+      AffineIndependent ℝ (fun w : (s ∩ B : Finset ι) => φ₀ (w : ι))}
+    have : Finite I := (((V ∪ B).powerset.finite_toSet).subset
       (fun s hs => Finset.mem_powerset.mpr hs.1)).to_subtype
     let A : I → AffineSubspace ℝ F := fun s => affineSpan ℝ (s.val.image φ : Set F)
     have hA : ∀ s, A s ≠ ⊤ := by
       intro s htop
       have hs := ((affineIndependent_image_iff s.val φ).mp
-        (hgood s.val s.property.1 (Nat.le_succ_of_le s.property.2))).2
+        (hgood s.val s.property.1 (Nat.le_succ_of_le s.property.2.1) s.property.2.2)).2
       have hrange : range ((↑) : ↥(s.val.image φ : Set F) → F) = (s.val.image φ : Set F) := by
         ext y
         simp
@@ -430,52 +437,89 @@ theorem exists_small_affineIndependent_subsets [FiniteDimensional ℝ F] {ι : T
         rwa [hrange]
       have hc := hs.affineSpan_eq_top_iff_card_eq_finrank_add_one.mp htop'
       rw [Fintype.card_coe] at hc
-      have hle := (Finset.card_image_le (s := s.val) (f := φ)).trans s.property.2
+      have hle := (Finset.card_image_le (s := s.val) (f := φ)).trans s.property.2.1
       omega
     obtain ⟨p, hp, hpA⟩ := exists_mem_ball_notMem_affineSubspaces A hA (x := φ₀ v) hε
     let ψ := Function.update φ v p
     have hsame : ∀ w ≠ v, ψ w = φ w := fun w hw => Function.update_of_ne hw p φ
     have hψv : ψ v = p := Function.update_self v p φ
-    refine ⟨ψ, ?_, ?_, ?_⟩
+    refine ⟨ψ, ?_, ?_, ?_, ?_⟩
     · intro w hw
       have hwv : w ≠ v := fun heq => hw (heq ▸ Finset.mem_insert_self v V)
       exact (hsame w hwv).trans (hfix (fun hwV => hw (Finset.mem_insert_of_mem hwV)))
+    · intro w hw
+      exact (hsame w (ne_of_mem_of_not_mem hw hvB)).trans (hfixB hw)
     · intro w
       by_cases hwv : w = v
       · rw [hwv, hψv]
         exact hp
       · rw [hsame w hwv]
         exact hclose w
-    · intro s hs hcard
+    · intro s hs hcard hfixed
       by_cases hvs : v ∈ s
-      · have hsub : s.erase v ⊆ V := by
+      · have hsub : s.erase v ⊆ V ∪ B := by
           intro w hw
-          exact (Finset.mem_insert.mp (hs (Finset.mem_of_mem_erase hw))).resolve_left
-            (Finset.ne_of_mem_erase hw)
+          rcases Finset.mem_union.mp (hs (Finset.mem_of_mem_erase hw)) with hwV | hwB
+          · exact Finset.mem_union_left B ((Finset.mem_insert.mp hwV).resolve_left (Finset.ne_of_mem_erase hw))
+          · exact Finset.mem_union_right V hwB
         have herase : (s.erase v).card ≤ Module.finrank ℝ F := by
           have h := Finset.card_erase_of_mem hvs
           omega
+        have hfixed' : AffineIndependent ℝ (fun w : (s.erase v ∩ B : Finset ι) => φ₀ (w : ι)) := by
+          let e : (s.erase v ∩ B : Finset ι) ↪ (s ∩ B : Finset ι) :=
+            ⟨fun w => ⟨w, Finset.mem_inter.mpr
+              ⟨Finset.mem_of_mem_erase (Finset.mem_inter.mp w.property).1, (Finset.mem_inter.mp w.property).2⟩⟩,
+              fun _ _ h => Subtype.ext (congrArg (fun z : (s ∩ B : Finset ι) => (z : ι)) h)⟩
+          exact hfixed.comp_embedding e
         have h := affineIndependent_update_insert (φ := φ) (Finset.notMem_erase v s)
-          (hgood (s.erase v) hsub (Nat.le_succ_of_le herase)) (hpA ⟨s.erase v, hsub, herase⟩)
+          (hgood (s.erase v) hsub (Nat.le_succ_of_le herase) hfixed')
+          (hpA ⟨s.erase v, hsub, herase, hfixed'⟩)
         rwa [Finset.insert_erase hvs] at h
-      · have hsub : s ⊆ V := fun w hw =>
-          (Finset.mem_insert.mp (hs hw)).resolve_left (ne_of_mem_of_not_mem hw hvs)
+      · have hsub : s ⊆ V ∪ B := by
+          intro w hw
+          rcases Finset.mem_union.mp (hs hw) with hwV | hwB
+          · exact Finset.mem_union_left B ((Finset.mem_insert.mp hwV).resolve_left (ne_of_mem_of_not_mem hw hvs))
+          · exact Finset.mem_union_right V hwB
         have heq : (fun w : s => ψ (w : ι)) = (fun w : s => φ (w : ι)) :=
           funext fun w => hsame w (ne_of_mem_of_not_mem w.property hvs)
         rw [heq]
-        exact hgood s hsub hcard
+        exact hgood s hsub hcard hfixed
 
 open Classical in
-theorem vectorSpan_sup_eq_top_of_affineIndependent_subsets [FiniteDimensional ℝ F] {ι : Type*}
-    (V : Finset ι) (φ : ι → F)
+theorem exists_small_affineIndependent_subsets [FiniteDimensional ℝ F] {ι : Type*}
+    (V : Finset ι) (φ₀ : ι → F) {ε : ℝ} (hε : 0 < ε) :
+    ∃ φ : ι → F, EqOn φ φ₀ (V : Set ι)ᶜ ∧ (∀ v, dist (φ v) (φ₀ v) < ε) ∧
+      ∀ s : Finset ι, s ⊆ V → s.card ≤ Module.finrank ℝ F + 1 →
+        AffineIndependent ℝ (fun v : s => φ (v : ι)) := by
+  obtain ⟨φ, hfix, _, hclose, hgood⟩ :=
+    exists_small_affineIndependent_subsets_relative V ∅ (Finset.disjoint_empty_right V) φ₀ hε
+  refine ⟨φ, hfix, hclose, ?_⟩
+  intro s hs hcard
+  apply hgood s (by simpa only [Finset.union_empty] using hs) hcard
+  have : IsEmpty (s ∩ ∅ : Finset ι) :=
+    ⟨fun v => Finset.notMem_empty (v : ι) (Finset.mem_inter.mp v.property).2⟩
+  exact affineIndependent_of_subsingleton ℝ _
+
+open Classical in
+theorem vectorSpan_sup_eq_top_of_affineIndependent_subsets_relative [FiniteDimensional ℝ F] {ι : Type*}
+    (V B : Finset ι) (φ : ι → F)
     (hφ : ∀ u : Finset ι, u ⊆ V → u.card ≤ Module.finrank ℝ F + 1 →
-      AffineIndependent ℝ (fun v : u => φ (v : ι)))
-    {s t : Finset ι} (hs : s ⊆ V) (ht : t ⊆ V) (hst : Disjoint s t)
+      (u ∩ B).card ≤ Module.finrank ℝ F → AffineIndependent ℝ (fun v : u => φ (v : ι)))
+    {s t : Finset ι} (hs : s ⊆ V) (ht : t ⊆ V) (hst : Disjoint s t) (hnotB : ¬s ∪ t ⊆ B)
     (hinter : (convexHull ℝ (s.image φ : Set F) ∩ convexHull ℝ (t.image φ : Set F)).Nonempty) :
     vectorSpan ℝ (s.image φ : Set F) ⊔ vectorSpan ℝ (t.image φ : Set F) = ⊤ := by
   have hsub : s ∪ t ⊆ V := Finset.union_subset hs ht
+  obtain ⟨v, hv, hvB⟩ := Finset.not_subset.mp hnotB
+  have hBbound : ∀ u : Finset ι, v ∈ u → u.card ≤ Module.finrank ℝ F + 1 →
+      (u ∩ B).card ≤ Module.finrank ℝ F := by
+    intro u hvu hcard
+    have hle := Finset.card_le_card (show u ∩ B ⊆ u.erase v from fun w hw =>
+      Finset.mem_erase.mpr ⟨ne_of_mem_of_not_mem (Finset.mem_inter.mp hw).2 hvB,
+        (Finset.mem_inter.mp hw).1⟩)
+    have herase := Finset.card_erase_of_mem hvu
+    omega
   by_cases hcard : (s ∪ t).card ≤ Module.finrank ℝ F + 1
-  · have hAI := (affineIndependent_image_iff (s ∪ t) φ).mp (hφ _ hsub hcard)
+  · have hAI := (affineIndependent_image_iff (s ∪ t) φ).mp (hφ _ hsub hcard (hBbound _ hv hcard))
     have hdisj : Disjoint (s.image φ) (t.image φ) := by
       rw [Finset.disjoint_left]
       intro y hys hyt
@@ -490,20 +534,28 @@ theorem vectorSpan_sup_eq_top_of_affineIndependent_subsets [FiniteDimensional �
     rw [← Finset.coe_inter, Finset.disjoint_iff_inter_eq_empty.mp hdisj, Finset.coe_empty,
       convexHull_empty] at hmem
     exact False.elim hmem
-  · obtain ⟨u, hu, hucard⟩ := Finset.exists_subset_card_eq
-      (show Module.finrank ℝ F + 1 ≤ (s ∪ t).card by omega)
-    have huAI := hφ u (hu.trans hsub) hucard.le
-    have huSpan : affineSpan ℝ (u.image φ : Set F) = ⊤ := by
-      have hrange : range (fun v : u => φ (v : ι)) = (u.image φ : Set F) := by ext y; simp
+  · have herase := Finset.card_erase_of_mem hv
+    obtain ⟨u, hu, hucard⟩ := Finset.exists_subset_card_eq
+      (show Module.finrank ℝ F ≤ ((s ∪ t).erase v).card by omega)
+    have hvu : v ∉ u := fun h => Finset.notMem_erase v (s ∪ t) (hu h)
+    have hins : insert v u ⊆ s ∪ t := Finset.insert_subset_iff.mpr
+      ⟨hv, hu.trans (Finset.erase_subset v (s ∪ t))⟩
+    have hinscard : (insert v u).card = Module.finrank ℝ F + 1 := by
+      rw [Finset.card_insert_of_notMem hvu, hucard]
+    have huAI := hφ (insert v u) (hins.trans hsub) hinscard.le
+      (hBbound _ (Finset.mem_insert_self v u) hinscard.le)
+    have huSpan : affineSpan ℝ ((insert v u).image φ : Set F) = ⊤ := by
+      have hrange : range (fun w : (insert v u : Finset ι) => φ (w : ι)) =
+          ((insert v u).image φ : Set F) := by ext y; simp [eq_comm]
       rw [← hrange, huAI.affineSpan_eq_top_iff_card_eq_finrank_add_one, Fintype.card_coe]
-      exact hucard
+      exact hinscard
     have hspan : affineSpan ℝ ((s.image φ : Set F) ∪ (t.image φ : Set F)) = ⊤ := by
       apply top_unique
       rw [← huSpan]
       apply affineSpan_mono ℝ
       intro y hy
       obtain ⟨a, ha, rfl⟩ := Finset.mem_image.mp hy
-      rcases Finset.mem_union.mp (hu ha) with has | hat
+      rcases Finset.mem_union.mp (hins ha) with has | hat
       · exact Or.inl (Finset.mem_image_of_mem φ has)
       · exact Or.inr (Finset.mem_image_of_mem φ hat)
     obtain ⟨y, hys, hyt⟩ := hinter
@@ -513,6 +565,21 @@ theorem vectorSpan_sup_eq_top_of_affineIndependent_subsets [FiniteDimensional �
       direction_affineSpan, direction_affineSpan, vsub_self, Submodule.span_singleton_eq_bot.mpr rfl,
       sup_bot_eq, AffineSubspace.direction_top] at hdir
     exact hdir
+
+open Classical in
+theorem vectorSpan_sup_eq_top_of_affineIndependent_subsets [FiniteDimensional ℝ F] {ι : Type*}
+    (V : Finset ι) (φ : ι → F)
+    (hφ : ∀ u : Finset ι, u ⊆ V → u.card ≤ Module.finrank ℝ F + 1 →
+      AffineIndependent ℝ (fun v : u => φ (v : ι)))
+    {s t : Finset ι} (hs : s ⊆ V) (ht : t ⊆ V) (hst : Disjoint s t)
+    (hinter : (convexHull ℝ (s.image φ : Set F) ∩ convexHull ℝ (t.image φ : Set F)).Nonempty) :
+    vectorSpan ℝ (s.image φ : Set F) ⊔ vectorSpan ℝ (t.image φ : Set F) = ⊤ := by
+  apply vectorSpan_sup_eq_top_of_affineIndependent_subsets_relative V ∅ φ
+    (fun u hu hc _ => hφ u hu hc) hs ht hst _ hinter
+  intro h
+  have hs0 : s = ∅ := Finset.subset_empty.mp (Finset.subset_union_left.trans h)
+  obtain ⟨y, hy, _⟩ := hinter
+  simp only [hs0, Finset.image_empty, Finset.coe_empty, convexHull_empty, Set.mem_empty_iff_false] at hy
 
 open Classical in
 theorem exists_small_simplicialMap_self_transverse_of_fiber_encard_le_two
@@ -1141,5 +1208,360 @@ theorem exists_small_simplicialMap_doublePointSet_manifold [FiniteDimensional �
       hdim φ hind hinj hfiberR htrans
   rw [hR.space_eq] at hGspace hcross
   exact ⟨R, φ, G, hR, hfinite, hpl, hclose, hstar, hlocal, hfiber, hGfinite, hGspace, hGman, hcross⟩
+
+open Classical in
+theorem injOn_simplicialMap_of_dim_of_transverse_faces [FiniteDimensional ℝ F]
+    (K S : Geometry.SimplicialComplex ℝ E) (hSK : S.faces ⊆ K.faces) (φ : E → F)
+    (hdim : ∀ s ∈ S.faces, 2 * s.card ≤ Module.finrank ℝ F + 1)
+    (hind : ∀ s ∈ K.faces, AffineIndependent ℝ (fun v : s => φ (v : E)))
+    (hinj : ∀ v ∈ K.vertices, InjOn (simplicialMap K φ) (starComplex K v).space)
+    (htrans : ∀ s ∈ K.faces, ∀ t ∈ K.faces, Disjoint s t →
+      (convexHull ℝ (s.image φ : Set F) ∩ convexHull ℝ (t.image φ : Set F)).Nonempty →
+        vectorSpan ℝ (s.image φ : Set F) ⊔ vectorSpan ℝ (t.image φ : Set F) = ⊤) :
+    InjOn (simplicialMap K φ) S.space := by
+  have hrank : ∀ u ∈ K.faces, Module.finrank ℝ (vectorSpan ℝ (u.image φ : Set F)) + 1 = u.card := by
+    intro u hu
+    obtain ⟨v, hv⟩ := K.nonempty_of_mem_faces hu
+    have : Nonempty u := ⟨⟨v, hv⟩⟩
+    have hrange : Set.range (fun v : u => φ v) = (u.image φ : Set F) := by ext q; simp
+    have h := (hind u hu).finrank_vectorSpan_add_one
+    change Module.finrank ℝ (vectorSpan ℝ (Set.range (fun v : u => φ v))) + 1 = Fintype.card u at h
+    rw [hrange] at h
+    simpa only [Fintype.card_coe] using h
+  intro a ha b hb heq
+  by_contra hab
+  obtain ⟨s, hs, has⟩ := S.mem_space_iff.mp ha
+  obtain ⟨t, ht, hbt⟩ := S.mem_space_iff.mp hb
+  have hdisj := disjoint_faces_of_eq_of_injOn_starComplex K _ hinj (hSK hs) (hSK ht) has hbt hab heq
+  have hinter : (convexHull ℝ (s.image φ : Set F) ∩ convexHull ℝ (t.image φ : Set F)).Nonempty :=
+    ⟨simplicialMap K φ a, simplicialMap_mem_convexHull_image K φ (hSK hs) has,
+      heq.symm ▸ simplicialMap_mem_convexHull_image K φ (hSK ht) hbt⟩
+  have hsup := htrans s (hSK hs) t (hSK ht) hdisj hinter
+  have hsdim := hrank s (hSK hs)
+  have htdim := hrank t (hSK ht)
+  have hsbound := hdim s hs
+  have htbound := hdim t ht
+  have hdim' := Submodule.finrank_sup_add_finrank_inf_eq
+    (vectorSpan ℝ (s.image φ : Set F)) (vectorSpan ℝ (t.image φ : Set F))
+  rw [hsup] at hdim'
+  have hsum : Module.finrank ℝ F +
+      Module.finrank ℝ (vectorSpan ℝ (s.image φ : Set F) ⊓ vectorSpan ℝ (t.image φ : Set F) : Submodule ℝ F) =
+        Module.finrank ℝ (vectorSpan ℝ (s.image φ : Set F)) +
+          Module.finrank ℝ (vectorSpan ℝ (t.image φ : Set F)) := by simpa using hdim'
+  omega
+
+open Classical in
+theorem injOn_boundaryComplex_of_transverse_faces [FiniteDimensional ℝ E] [FiniteDimensional ℝ F]
+    (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
+    (hK : IsCombinatorialManifoldWithBoundary 2 K) (hdim : 3 ≤ Module.finrank ℝ F) (φ : E → F)
+    (hind : ∀ s ∈ K.faces, AffineIndependent ℝ (fun v : s => φ (v : E)))
+    (hinj : ∀ v ∈ K.vertices, InjOn (simplicialMap K φ) (starComplex K v).space)
+    (htrans : ∀ s ∈ K.faces, ∀ t ∈ K.faces, Disjoint s t →
+      (convexHull ℝ (s.image φ : Set F) ∩ convexHull ℝ (t.image φ : Set F)).Nonempty →
+        vectorSpan ℝ (s.image φ : Set F) ⊔ vectorSpan ℝ (t.image φ : Set F) = ⊤) :
+    InjOn (simplicialMap K φ) (boundaryComplex 2 K).space := by
+  apply injOn_simplicialMap_of_dim_of_transverse_faces K (boundaryComplex 2 K)
+    (boundaryComplex_faces_subset 2 K) φ _ hind hinj htrans
+  intro s hs
+  have hbound := ((hK.mem_boundaryComplex_faces_iff K).mp hs).2.1
+  omega
+
+open Classical in
+theorem exists_small_affineIndependent_subsets_in_submodule [FiniteDimensional ℝ F] {ι : Type*}
+    (V B : Finset ι) (hBV : B ⊆ V) (H : Submodule ℝ F) (φ₀ : ι → F)
+    (hB : ∀ v ∈ B, φ₀ v ∈ H) {ε : ℝ} (hε : 0 < ε) :
+    ∃ φ : ι → F, EqOn φ φ₀ (V : Set ι)ᶜ ∧ (∀ v, dist (φ v) (φ₀ v) < ε) ∧
+      (∀ v ∈ B, φ v ∈ H) ∧ ∀ s : Finset ι, s ⊆ V → s.card ≤ Module.finrank ℝ F + 1 →
+        (s ∩ B).card ≤ Module.finrank ℝ H + 1 → AffineIndependent ℝ (fun v : s => φ (v : ι)) := by
+  let b₀ : ι → H := fun v => if hv : v ∈ B then ⟨φ₀ v, hB v hv⟩ else 0
+  obtain ⟨b, _, hbclose, hbgood⟩ := exists_small_affineIndependent_subsets B b₀ (half_pos hε)
+  let ψ₀ : ι → F := fun v => if v ∈ B then (b v : F) else φ₀ v
+  have hψB : ∀ v ∈ B, ψ₀ v = (b v : F) := fun v hv => if_pos hv
+  have hψclose : ∀ v, dist (ψ₀ v) (φ₀ v) < ε / 2 := by
+    intro v
+    by_cases hv : v ∈ B
+    · rw [hψB v hv]
+      have heq : (b₀ v : F) = φ₀ v := by simp only [b₀, dif_pos hv]
+      rw [← heq]
+      exact hbclose v
+    · change dist (if v ∈ B then (b v : F) else φ₀ v) (φ₀ v) < ε / 2
+      simpa only [if_neg hv, dist_self] using half_pos hε
+  have hdisj : Disjoint (V \ B) B := Finset.disjoint_left.mpr
+    (fun _ hv hBv => (Finset.mem_sdiff.mp hv).2 hBv)
+  obtain ⟨φ, hfix, hfixB, hclose, hgood⟩ :=
+    exists_small_affineIndependent_subsets_relative (V \ B) B hdisj ψ₀ (half_pos hε)
+  refine ⟨φ, ?_, ?_, ?_, ?_⟩
+  · intro v hv
+    have hvB : v ∉ B := fun h => hv (hBV h)
+    exact (hfix (fun h => hv (Finset.mem_sdiff.mp h).1)).trans (if_neg hvB)
+  · intro v
+    calc dist (φ v) (φ₀ v) ≤ dist (φ v) (ψ₀ v) + dist (ψ₀ v) (φ₀ v) := dist_triangle _ _ _
+      _ < ε / 2 + ε / 2 := add_lt_add (hclose v) (hψclose v)
+      _ = ε := add_halves ε
+  · intro v hv
+    rw [hfixB hv, hψB v hv]
+    exact (b v).property
+  · intro s hs hcard hBcard
+    apply hgood s (by simpa only [Finset.sdiff_union_of_subset hBV] using hs) hcard
+    have hind := (hbgood (s ∩ B) Finset.inter_subset_right hBcard).map'
+      H.subtype.toAffineMap Subtype.val_injective
+    have heq : (fun w : (s ∩ B : Finset ι) => ψ₀ (w : ι)) =
+        H.subtype.toAffineMap ∘ (fun w : (s ∩ B : Finset ι) => b (w : ι)) := by
+      funext w
+      exact hψB w (Finset.mem_inter.mp w.property).2
+    rw [heq]
+    exact hind
+
+open Classical in
+theorem exists_small_affineIndependent_subsets_in_halfSpace [FiniteDimensional ℝ F] {ι : Type*}
+    (V B : Finset ι) (hBV : B ⊆ V) (ℓ : F →ₗ[ℝ] ℝ) (φ₀ : ι → F)
+    (hB : ∀ v ∈ B, ℓ (φ₀ v) = 0) (hV : ∀ v ∈ V \ B, 0 < ℓ (φ₀ v)) {ε : ℝ} (hε : 0 < ε) :
+    ∃ φ : ι → F, EqOn φ φ₀ (V : Set ι)ᶜ ∧ (∀ v, dist (φ v) (φ₀ v) < ε) ∧
+      (∀ v ∈ B, ℓ (φ v) = 0) ∧ (∀ v ∈ V \ B, 0 < ℓ (φ v)) ∧
+        ∀ s : Finset ι, s ⊆ V → s.card ≤ Module.finrank ℝ F + 1 →
+          (s ∩ B).card ≤ Module.finrank ℝ (LinearMap.ker ℓ) + 1 →
+            AffineIndependent ℝ (fun v : s => φ (v : ι)) := by
+  let C := φ₀ '' ((V \ B : Finset ι) : Set ι)
+  have hC : IsCompact C := ((V \ B).finite_toSet.image φ₀).isCompact
+  have hopen : IsOpen {y : F | 0 < ℓ y} :=
+    isOpen_lt continuous_const ℓ.continuous_of_finiteDimensional
+  have hsub : C ⊆ {y : F | 0 < ℓ y} := by
+    rintro y ⟨v, hv, rfl⟩
+    exact hV v hv
+  obtain ⟨δ, hδ, hthick⟩ := hC.exists_cthickening_subset_open hopen hsub
+  obtain ⟨φ, hfix, hclose, hker, hgood⟩ := exists_small_affineIndependent_subsets_in_submodule V B hBV
+    (LinearMap.ker ℓ) φ₀ (fun v hv => hB v hv) (lt_min hε hδ)
+  refine ⟨φ, hfix, fun v => (hclose v).trans_le (min_le_left ε δ), hker, ?_, hgood⟩
+  intro v hv
+  exact hthick (mem_cthickening_of_dist_le (φ v) (φ₀ v) δ C ⟨v, hv, rfl⟩
+    ((hclose v).trans_le (min_le_right ε δ)).le)
+
+open Classical in
+theorem vectorSpan_sup_eq_submodule_of_affineIndependent_subsets {ι : Type*}
+    (B : Finset ι) (H : Submodule ℝ F) [FiniteDimensional ℝ H] (φ : ι → F)
+    (hB : ∀ v ∈ B, φ v ∈ H)
+    (hφ : ∀ u : Finset ι, u ⊆ B → u.card ≤ Module.finrank ℝ H + 1 →
+      AffineIndependent ℝ (fun v : u => φ (v : ι)))
+    {s t : Finset ι} (hs : s ⊆ B) (ht : t ⊆ B) (hst : Disjoint s t)
+    (hinter : (convexHull ℝ (s.image φ : Set F) ∩ convexHull ℝ (t.image φ : Set F)).Nonempty) :
+    vectorSpan ℝ (s.image φ : Set F) ⊔ vectorSpan ℝ (t.image φ : Set F) = H := by
+  let : DecidableEq H := Classical.typeDecidableEq H
+  let ψ : ι → H := fun v => if hv : v ∈ B then ⟨φ v, hB v hv⟩ else 0
+  have hψ : ∀ v ∈ B, (ψ v : F) = φ v := fun v hv => by simp only [ψ, dif_pos hv]
+  have hgood : ∀ u : Finset ι, u ⊆ B → u.card ≤ Module.finrank ℝ H + 1 →
+      AffineIndependent ℝ (fun v : u => ψ (v : ι)) := by
+    intro u hu hcard
+    apply AffineIndependent.of_comp H.subtype.toAffineMap
+    have heq : H.subtype.toAffineMap ∘ (fun v : u => ψ (v : ι)) = (fun v : u => φ (v : ι)) :=
+      funext fun v => hψ v (hu v.property)
+    rw [heq]
+    exact hφ u hu hcard
+  have himage : ∀ u : Finset ι, u ⊆ B →
+      H.subtype.toAffineMap '' (u.image ψ : Set H) = (u.image φ : Set F) := by
+    intro u hu
+    simp only [Finset.coe_image, Set.image_image]
+    exact image_congr fun v hv => hψ v (hu hv)
+  have hinterH : (convexHull ℝ (s.image ψ : Set H) ∩ convexHull ℝ (t.image ψ : Set H)).Nonempty := by
+    obtain ⟨y, hys, hyt⟩ := hinter
+    rw [← himage s hs, ← H.subtype.toAffineMap.image_convexHull] at hys
+    rw [← himage t ht, ← H.subtype.toAffineMap.image_convexHull] at hyt
+    obtain ⟨a, ha, hay⟩ := hys
+    obtain ⟨b, hb, hby⟩ := hyt
+    have hab : a = b := Subtype.ext (hay.trans hby.symm)
+    exact ⟨a, ha, hab.symm ▸ hb⟩
+  have htrans := vectorSpan_sup_eq_top_of_affineIndependent_subsets B ψ hgood hs ht hst hinterH
+  have hmap := congrArg (Submodule.map H.subtype) htrans
+  rw [Submodule.map_sup, Submodule.map_subtype_top] at hmap
+  have hspan : ∀ u : Finset ι, u ⊆ B →
+      Submodule.map H.subtype (vectorSpan ℝ (u.image ψ : Set H)) = vectorSpan ℝ (u.image φ : Set F) := by
+    intro u hu
+    change Submodule.map H.subtype.toAffineMap.linear (vectorSpan ℝ (u.image ψ : Set H)) = _
+    rw [H.subtype.toAffineMap.map_vectorSpan, himage u hu]
+  simp only [Finset.coe_image] at hmap hspan ⊢
+  rwa [hspan s hs, hspan t ht] at hmap
+
+open Classical in
+theorem exists_small_vertexMap_transverse_in_halfSpace [FiniteDimensional ℝ F] {ι : Type*}
+    (V B : Finset ι) (hBV : B ⊆ V) (ℓ : F →ₗ[ℝ] ℝ) (hℓ : ℓ ≠ 0) (φ₀ : ι → F)
+    (hB : ∀ v ∈ B, ℓ (φ₀ v) = 0) (hV : ∀ v ∈ V \ B, 0 < ℓ (φ₀ v)) {ε : ℝ} (hε : 0 < ε) :
+    ∃ φ : ι → F, EqOn φ φ₀ (V : Set ι)ᶜ ∧ (∀ v, dist (φ v) (φ₀ v) < ε) ∧
+      (∀ v ∈ B, ℓ (φ v) = 0) ∧ (∀ v ∈ V \ B, 0 < ℓ (φ v)) ∧
+        (∀ s : Finset ι, s ⊆ V → s.card ≤ Module.finrank ℝ F + 1 →
+          (s ∩ B).card ≤ Module.finrank ℝ (LinearMap.ker ℓ) + 1 →
+            AffineIndependent ℝ (fun v : s => φ (v : ι))) ∧
+          ∀ s : Finset ι, s ⊆ V → ∀ t : Finset ι, t ⊆ V → Disjoint s t →
+            (convexHull ℝ (s.image φ : Set F) ∩ convexHull ℝ (t.image φ : Set F)).Nonempty →
+              vectorSpan ℝ (s.image φ : Set F) ⊔ vectorSpan ℝ (t.image φ : Set F) =
+                if s ∪ t ⊆ B then LinearMap.ker ℓ else ⊤ := by
+  obtain ⟨v, hv⟩ := DFunLike.ne_iff.mp hℓ
+  rw [LinearMap.zero_apply] at hv
+  have hrange : LinearMap.range ℓ = ⊤ := LinearMap.range_eq_top.mpr fun c =>
+    ⟨(c / ℓ v) • v, by rw [map_smul, smul_eq_mul, div_mul_cancel₀ _ hv]⟩
+  have hkerRank : Module.finrank ℝ (LinearMap.ker ℓ) + 1 = Module.finrank ℝ F := by
+    have h := LinearMap.finrank_range_add_finrank_ker ℓ
+    rw [hrange, finrank_top, Module.finrank_self] at h
+    omega
+  obtain ⟨φ, hfix, hclose, hzero, hpos, hgood⟩ :=
+    exists_small_affineIndependent_subsets_in_halfSpace V B hBV ℓ φ₀ hB hV hε
+  have hboundary : ∀ u : Finset ι, u ⊆ B → u.card ≤ Module.finrank ℝ (LinearMap.ker ℓ) + 1 →
+      AffineIndependent ℝ (fun v : u => φ (v : ι)) := by
+    intro u hu hcard
+    apply hgood u (hu.trans hBV) (by omega)
+    rwa [Finset.inter_eq_left.mpr hu]
+  refine ⟨φ, hfix, hclose, hzero, hpos, hgood, ?_⟩
+  intro s hs t ht hdisj hinter
+  by_cases hsubB : s ∪ t ⊆ B
+  · rw [if_pos hsubB]
+    exact vectorSpan_sup_eq_submodule_of_affineIndependent_subsets B (LinearMap.ker ℓ) φ hzero hboundary
+      (Finset.subset_union_left.trans hsubB) (Finset.subset_union_right.trans hsubB) hdisj hinter
+  · rw [if_neg hsubB]
+    apply vectorSpan_sup_eq_top_of_affineIndependent_subsets_relative V B φ _ hs ht hdisj hsubB hinter
+    intro u hu hcard hBcard
+    apply hgood u hu hcard
+    omega
+
+theorem linearMap_simplicialMap {G : Type*} [NormedAddCommGroup G] [NormedSpace ℝ G]
+    (K : Geometry.SimplicialComplex ℝ E) (φ : E → F) (A : F →ₗ[ℝ] G) (x : E) :
+    A (simplicialMap K φ x) = simplicialMap K (A ∘ φ) x := by
+  simp only [simplicialMap, map_sum, map_smul, Function.comp_apply]
+
+theorem simplicialMap_nonneg_of_nonneg_vertices (K : Geometry.SimplicialComplex ℝ E) (φ : E → ℝ)
+    (hφ : ∀ v ∈ K.vertices, 0 ≤ φ v) {x : E} (hx : x ∈ K.space) : 0 ≤ simplicialMap K φ x := by
+  classical
+  obtain ⟨s, hs, hxs⟩ := K.mem_space_iff.mp hx
+  rw [simplicialMap_eq_of_mem K φ hs hxs]
+  apply Finset.sum_nonneg
+  intro v hv
+  exact mul_nonneg (weights_nonneg hxs hv)
+    (hφ v (K.down_closed hs (Finset.singleton_subset_iff.mpr hv) (Finset.singleton_nonempty v)))
+
+open Classical in
+theorem simplicialMap_eq_zero_iff_of_mem_openSimplex (K : Geometry.SimplicialComplex ℝ E)
+    (φ : E → ℝ) {s : Finset E} (hs : s ∈ K.faces) (hφ : ∀ v ∈ s, 0 ≤ φ v)
+    {x : E} (hx : x ∈ openSimplex s) : simplicialMap K φ x = 0 ↔ ∀ v ∈ s, φ v = 0 := by
+  have hxs := openSimplex_subset_convexHull s hx
+  have hpos := (mem_openSimplex_self_iff (K.indep hs) hxs).mp hx
+  rw [simplicialMap_eq_of_mem K φ hs hxs]
+  simp only [smul_eq_mul]
+  rw [Finset.sum_eq_zero_iff_of_nonneg (fun v hv => mul_nonneg (hpos v hv).le (hφ v hv))]
+  constructor
+  · intro h v hv
+    exact (mul_eq_zero.mp (h v hv)).resolve_left (hpos v hv).ne'
+  · intro h v hv
+    rw [h v hv, mul_zero]
+
+theorem simplicialMap_eq_zero_iff_of_eq_zero_on_vertices (K : Geometry.SimplicialComplex ℝ E)
+    (φ ψ : E → ℝ) (hφ : ∀ v ∈ K.vertices, 0 ≤ φ v) (hψ : ∀ v ∈ K.vertices, 0 ≤ ψ v)
+    (heq : ∀ v ∈ K.vertices, φ v = 0 ↔ ψ v = 0) {x : E} (hx : x ∈ K.space) :
+    simplicialMap K φ x = 0 ↔ simplicialMap K ψ x = 0 := by
+  classical
+  obtain ⟨s, hs, hxs⟩ := exists_face_mem_openSimplex K hx
+  have hvert : ∀ v ∈ s, v ∈ K.vertices := fun v hv =>
+    K.down_closed hs (Finset.singleton_subset_iff.mpr hv) (Finset.singleton_nonempty v)
+  rw [simplicialMap_eq_zero_iff_of_mem_openSimplex K φ hs (fun v hv => hφ v (hvert v hv)) hxs,
+    simplicialMap_eq_zero_iff_of_mem_openSimplex K ψ hs (fun v hv => hψ v (hvert v hv)) hxs]
+  exact forall₂_congr fun v hv => heq v (hvert v hv)
+
+open Classical in
+theorem exists_small_simplicialMap_transverse_in_halfSpace [FiniteDimensional ℝ E]
+    [FiniteDimensional ℝ F] (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
+    (hK : IsCombinatorialManifoldWithBoundary 2 K) (hdim : Module.finrank ℝ F = 3)
+    (ℓ : F →ₗ[ℝ] ℝ) (hℓ : ℓ ≠ 0) (f : E → F) (hf : IsPiecewiseAffineOn f K.space)
+    (hloc : IsLocallyInjective (K.space.domRestrict f))
+    (hcard : ∀ y : F, (K.space ∩ f ⁻¹' {y}).encard ≤ 2)
+    (hnonneg : ∀ x ∈ K.space, 0 ≤ ℓ (f x))
+    (hboundary : ∀ x ∈ K.space, ℓ (f x) = 0 ↔ x ∈ (boundaryComplex 2 K).space)
+    {ε : ℝ} (hε : 0 < ε) :
+    ∃ (R : Geometry.SimplicialComplex ℝ E) (φ : E → F), IsSubdivision R K ∧ R.faces.Finite ∧
+      IsPiecewiseAffineOn (simplicialMap R φ) K.space ∧
+        (∀ x ∈ K.space, dist (simplicialMap R φ x) (f x) < ε) ∧
+          (∀ v ∈ R.vertices, IsPLHomeomorphOn (simplicialMap R φ) (starComplex R v).space
+            (simplicialMap R φ '' (starComplex R v).space)) ∧
+              IsLocallyInjective (K.space.domRestrict (simplicialMap R φ)) ∧
+                (∀ y : F, (K.space ∩ (simplicialMap R φ) ⁻¹' {y}).encard ≤ 2) ∧
+                  (∀ x ∈ K.space, 0 ≤ ℓ (simplicialMap R φ x)) ∧
+                    (∀ x ∈ K.space, ℓ (simplicialMap R φ x) = 0 ↔ x ∈ (boundaryComplex 2 K).space) ∧
+                      (∀ s ∈ R.faces, AffineIndependent ℝ (fun v : s => φ (v : E))) ∧
+                        ∀ s ∈ R.faces, ∀ t ∈ R.faces, Disjoint s t →
+                          (convexHull ℝ (s.image φ : Set F) ∩ convexHull ℝ (t.image φ : Set F)).Nonempty →
+                            vectorSpan ℝ (s.image φ : Set F) ⊔ vectorSpan ℝ (t.image φ : Set F) =
+                              if ((s ∪ t : Finset E) : Set E) ⊆ (boundaryComplex 2 K).space
+                                then LinearMap.ker ℓ else ⊤ := by
+  obtain ⟨R, δ, hR, hfinite, heq, hδ, hstable⟩ :=
+    exists_isSubdivision_stable_fiber_encard_le_two K f hf hloc hcard
+  have : Finite R.faces := hfinite.to_subtype
+  have hRman : IsCombinatorialManifoldWithBoundary 2 R := hK.of_isSubdivision hR
+  have hvertices : R.vertices.Finite :=
+    Set.Finite.preimage Finset.singleton_injective.injOn (Set.toFinite R.faces)
+  let V := hvertices.toFinset
+  let B := V.filter (fun v => ℓ (f v) = 0)
+  have hBV : B ⊆ V := Finset.filter_subset _ _
+  have hVK : ∀ v ∈ V, v ∈ K.space := by
+    intro v hv
+    rw [← hR.space_eq]
+    exact R.subset_space (hvertices.mem_toFinset.mp hv) (Finset.mem_singleton_self v)
+  have hfaces : ∀ s ∈ R.faces, s ⊆ V := by
+    intro s hs v hv
+    apply hvertices.mem_toFinset.mpr
+    exact R.down_closed hs (Finset.singleton_subset_iff.mpr hv) (Finset.singleton_nonempty v)
+  have hB : ∀ v ∈ B, ℓ (f v) = 0 := fun _ hv => (Finset.mem_filter.mp hv).2
+  have hV : ∀ v ∈ V \ B, 0 < ℓ (f v) := by
+    intro v hv
+    obtain ⟨hvV, hvB⟩ := Finset.mem_sdiff.mp hv
+    have hne : ℓ (f v) ≠ 0 := fun h => hvB (Finset.mem_filter.mpr ⟨hvV, h⟩)
+    exact lt_of_le_of_ne (hnonneg v (hVK v hvV)) hne.symm
+  obtain ⟨φ, _, hclose, hzero, hpos, hgood, htrans⟩ :=
+    exists_small_vertexMap_transverse_in_halfSpace V B hBV ℓ hℓ f hB hV (lt_min hδ hε)
+  have hφnonneg : ∀ v ∈ R.vertices, 0 ≤ ℓ (φ v) := by
+    intro v hv
+    by_cases hvB : v ∈ B
+    · rw [hzero v hvB]
+    · exact (hpos v (Finset.mem_sdiff.mpr ⟨hvertices.mem_toFinset.mpr hv, hvB⟩)).le
+  have hfnonneg : ∀ v ∈ R.vertices, 0 ≤ ℓ (f v) :=
+    fun v hv => hnonneg v (hVK v (hvertices.mem_toFinset.mpr hv))
+  have hzeroiff : ∀ v ∈ R.vertices, ℓ (φ v) = 0 ↔ ℓ (f v) = 0 := by
+    intro v hv
+    by_cases hvB : v ∈ B
+    · simp only [hzero v hvB, hB v hvB]
+    · have hφne := (hpos v (Finset.mem_sdiff.mpr ⟨hvertices.mem_toFinset.mpr hv, hvB⟩)).ne'
+      have hfne : ℓ (f v) ≠ 0 := fun h => hvB (Finset.mem_filter.mpr ⟨hvertices.mem_toFinset.mpr hv, h⟩)
+      simp only [hφne, hfne]
+  obtain ⟨hstar, hlocal, hfiber⟩ := hstable φ
+    (fun v _ => (hclose v).trans_le (min_le_left δ ε))
+  have hkerbound : 2 ≤ Module.finrank ℝ (LinearMap.ker ℓ) := by
+    have h := LinearMap.finrank_range_add_finrank_ker ℓ
+    have hle := Submodule.finrank_le (LinearMap.range ℓ)
+    rw [Module.finrank_self] at hle
+    omega
+  refine ⟨R, φ, hR, hfinite, ?_, ?_, hstar, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · simpa only [hR.space_eq] using isPiecewiseAffineOn_simplicialMap R φ
+  · intro x hx
+    rw [← heq hx]
+    exact dist_simplicialMap_lt_of_dist_vertices_lt R
+      (fun v _ => (hclose v).trans_le (min_le_right δ ε)) (hR.space_eq.symm ▸ hx)
+  · rwa [hR.space_eq] at hlocal
+  · rwa [hR.space_eq] at hfiber
+  · intro x hx
+    rw [linearMap_simplicialMap]
+    exact simplicialMap_nonneg_of_nonneg_vertices R (ℓ ∘ φ) hφnonneg (hR.space_eq.symm ▸ hx)
+  · intro x hx
+    have h := simplicialMap_eq_zero_iff_of_eq_zero_on_vertices R (ℓ ∘ φ) (ℓ ∘ f)
+      hφnonneg hfnonneg hzeroiff (hR.space_eq.symm ▸ hx)
+    rw [← linearMap_simplicialMap R φ ℓ x, ← linearMap_simplicialMap R f ℓ x, heq hx] at h
+    exact h.trans (hboundary x hx)
+  · intro s hs
+    have hc := hRman.card_le R hs
+    have hbc := Finset.card_le_card (Finset.inter_subset_left (s₁ := s) (s₂ := B))
+    exact hgood s (hfaces s hs) (by omega) (by omega)
+  · intro s hs t ht hdisj hinter
+    have hiff : s ∪ t ⊆ B ↔ ((s ∪ t : Finset E) : Set E) ⊆ (boundaryComplex 2 K).space := by
+      constructor
+      · intro h v hv
+        exact (hboundary v (hVK v (hBV (h hv)))).mp (hB v (h hv))
+      · intro h v hv
+        have hvV := (Finset.union_subset (hfaces s hs) (hfaces t ht)) hv
+        exact Finset.mem_filter.mpr ⟨hvV, (hboundary v (hVK v hvV)).mpr (h hv)⟩
+    have h := htrans s (hfaces s hs) t (hfaces t ht) hdisj hinter
+    simpa only [hiff] using h
 
 end DifferentialGeometry.Topology.PiecewiseLinear
