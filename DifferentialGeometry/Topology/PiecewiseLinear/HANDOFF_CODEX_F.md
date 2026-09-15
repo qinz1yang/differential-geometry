@@ -1208,3 +1208,21 @@ M1 的凸化与指定点控制已经闭合；仍缺球面沿水平圆周切成 P
 `AuditF127.lean` 十三项均仅标准三公理，核对了水平层端点的完整签名。
 本层只闭合不经过顶点的正则水平层分解；含顶点层的一点分叉分解、与 `levelPolygons` 的精确对应、
 球面 PL 切盘及严格降指标仍未完成。没有增加 `SchoenfliesInput` 字段，M1/M2/M3 均未验收。下一审计文件 `AuditF128.lean`。
+
+### 18.8 正则层的规范圆周族与计数判据
+
+- `CurveInclusion.lean`：有限一维闭组合流形的子流形具有相同邻点，任何与子流形相交的原单形都属于子流形，
+  从而子流形在原流形中既开又闭。`eq_of_subset_of_isPLSphere_one` 据此证明同一有限维实范数空间中两个 PL 圆周若有包含关系即相等。
+  `IsPLSphere.isConnected_one` 单独去除了目标空间的有限维假设。
+- `Connected/FinitePartition.lean`：任意拓扑空间中，非空连通集若包含于有限个两两不交闭集的并，则恰包含于其中唯一一个成员。
+- `CirclePartition.lean`：`setOf_isPLSphere_one_subset_sUnion_eq` 证明有限不交 PL 圆周族之并中的全部 PL 圆周恰为原族；
+  并集是 PL 圆周当且仅当连通，也当且仅当该族的 `encard = 1`。
+- `LevelPolygons.lean` 增加 `levelPolygons_eq_of_finite_disjoint_cover` 及不经过剖分顶点的层的规范族 API：
+  `finite_levelPolygons_of_ne_vertex_heights`、`pairwiseDisjoint_levelPolygons_of_ne_vertex_heights`、
+  `sUnion_levelPolygons_of_ne_vertex_heights`；`isPLSphere_one_fiber_iff_isConnected` 与
+  `isPLSphere_one_fiber_iff_encard_levelPolygons_eq_one` 将正则层球性与连通性、原指标使用的计数精确对接。
+
+四模块最终聚焦检查分别为 11.9、7.1、12.2、12.2 秒，均 exit=0、零 warning；
+`AuditF128.lean` 十九项（含保留的两个分解端点）均仅标准三公理。
+正则层的分解和规范计数已经闭合，含顶点层的一点分叉分解、奇异层指标对应、球面 PL 切盘与 Lemma 1 严格下降尚未闭合。
+未增加 `SchoenfliesInput` 字段；M1/M2/M3 均未验收。下一审计文件 `AuditF129.lean`。

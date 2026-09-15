@@ -1,3 +1,4 @@
+import DifferentialGeometry.Topology.PiecewiseLinear.CirclePartition
 import DifferentialGeometry.Topology.PiecewiseLinear.FiberCoordinates
 import DifferentialGeometry.Topology.PiecewiseLinear.PolygonalCycles
 
@@ -62,4 +63,60 @@ theorem exists_finite_isPLSphere_decomposition_fiber
       (r := r) (hGspace.trans_le inter_subset_right)
   exact ⟨C, hCfin, hCsphere, hCdisjoint, hGspace.symm.trans hCspace⟩
 
+theorem levelPolygons_eq_of_finite_disjoint_cover {S : Set E} (ℓ : E → ℝ) (r : ℝ)
+    {C : Set (Set E)} (hC : C.Finite) (hCsphere : ∀ T ∈ C, IsPLSphere 1 T)
+    (hdisjoint : C.PairwiseDisjoint id) (hcover : S ∩ {x | ℓ x = r} = ⋃₀ C) :
+    levelPolygons S ℓ r = C := by
+  rw [levelPolygons, hcover]
+  exact setOf_isPLSphere_one_subset_sUnion_eq hC hCsphere hdisjoint
+
+theorem finite_levelPolygons_of_ne_vertex_heights
+    (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
+    (hK : IsCombinatorialManifold 2 K) (hdimE : Module.finrank ℝ E = 3)
+    (ℓ : E →ₗ[ℝ] ℝ) (hℓ : ℓ ≠ 0) {r : ℝ} (hr : ∀ v ∈ K.vertices, ℓ v ≠ r) :
+    (levelPolygons K.space ℓ r).Finite := by
+  obtain ⟨C, hC, hCsphere, hdisjoint, hcover⟩ :=
+    exists_finite_isPLSphere_decomposition_fiber K hK hdimE ℓ hℓ hr
+  rw [levelPolygons_eq_of_finite_disjoint_cover ℓ r hC hCsphere hdisjoint hcover]
+  exact hC
+
+theorem pairwiseDisjoint_levelPolygons_of_ne_vertex_heights
+    (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
+    (hK : IsCombinatorialManifold 2 K) (hdimE : Module.finrank ℝ E = 3)
+    (ℓ : E →ₗ[ℝ] ℝ) (hℓ : ℓ ≠ 0) {r : ℝ} (hr : ∀ v ∈ K.vertices, ℓ v ≠ r) :
+    (levelPolygons K.space ℓ r).PairwiseDisjoint id := by
+  obtain ⟨C, hC, hCsphere, hdisjoint, hcover⟩ :=
+    exists_finite_isPLSphere_decomposition_fiber K hK hdimE ℓ hℓ hr
+  rw [levelPolygons_eq_of_finite_disjoint_cover ℓ r hC hCsphere hdisjoint hcover]
+  exact hdisjoint
+
+theorem sUnion_levelPolygons_of_ne_vertex_heights
+    (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
+    (hK : IsCombinatorialManifold 2 K) (hdimE : Module.finrank ℝ E = 3)
+    (ℓ : E →ₗ[ℝ] ℝ) (hℓ : ℓ ≠ 0) {r : ℝ} (hr : ∀ v ∈ K.vertices, ℓ v ≠ r) :
+    ⋃₀ levelPolygons K.space ℓ r = K.space ∩ {x | ℓ x = r} := by
+  obtain ⟨C, hC, hCsphere, hdisjoint, hcover⟩ :=
+    exists_finite_isPLSphere_decomposition_fiber K hK hdimE ℓ hℓ hr
+  rw [levelPolygons_eq_of_finite_disjoint_cover ℓ r hC hCsphere hdisjoint hcover]
+  exact hcover.symm
+
+theorem isPLSphere_one_fiber_iff_isConnected
+    (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
+    (hK : IsCombinatorialManifold 2 K) (hdimE : Module.finrank ℝ E = 3)
+    (ℓ : E →ₗ[ℝ] ℝ) (hℓ : ℓ ≠ 0) {r : ℝ} (hr : ∀ v ∈ K.vertices, ℓ v ≠ r) :
+    IsPLSphere 1 (K.space ∩ {x | ℓ x = r}) ↔ IsConnected (K.space ∩ {x | ℓ x = r}) := by
+  obtain ⟨C, hC, hCsphere, hdisjoint, hcover⟩ :=
+    exists_finite_isPLSphere_decomposition_fiber K hK hdimE ℓ hℓ hr
+  rw [hcover]
+  exact isPLSphere_one_sUnion_iff_isConnected hC hCsphere hdisjoint
+
+theorem isPLSphere_one_fiber_iff_encard_levelPolygons_eq_one
+    (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
+    (hK : IsCombinatorialManifold 2 K) (hdimE : Module.finrank ℝ E = 3)
+    (ℓ : E →ₗ[ℝ] ℝ) (hℓ : ℓ ≠ 0) {r : ℝ} (hr : ∀ v ∈ K.vertices, ℓ v ≠ r) :
+    IsPLSphere 1 (K.space ∩ {x | ℓ x = r}) ↔ (levelPolygons K.space ℓ r).encard = 1 := by
+  obtain ⟨C, hC, hCsphere, hdisjoint, hcover⟩ :=
+    exists_finite_isPLSphere_decomposition_fiber K hK hdimE ℓ hℓ hr
+  rw [levelPolygons_eq_of_finite_disjoint_cover ℓ r hC hCsphere hdisjoint hcover, hcover]
+  exact isPLSphere_one_sUnion_iff_encard_eq_one hC hCsphere hdisjoint
 end DifferentialGeometry.Topology.PiecewiseLinear
