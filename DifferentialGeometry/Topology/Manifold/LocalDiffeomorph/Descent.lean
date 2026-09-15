@@ -1,4 +1,4 @@
-import Mathlib.Geometry.Manifold.LocalDiffeomorph
+import DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.Coordinates
 
 set_option autoImplicit false
 
@@ -7,7 +7,7 @@ noncomputable section
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 
 open Set Filter
-open scoped Topology Manifold ContDiff
+open scoped _root_.Topology Manifold ContDiff
 
 variable {E₁ E₂ E₃ : Type*}
   [NormedAddCommGroup E₁] [NormedSpace ℝ E₁]
@@ -27,17 +27,7 @@ theorem contMDiff_of_comp_surjective_localDiffeomorph
     (hf : ContMDiff I₁ I₃ ∞ (f ∘ q)) : ContMDiff I₂ I₃ ∞ f := by
   intro y
   obtain ⟨x, rfl⟩ := hsurj y
-  have hlocal := hq x
-  have hinverse : hlocal.localInverse (q x) = x :=
-    hlocal.localInverse_left_inv hlocal.localInverse_mem_target
-  have hf' : ContMDiffAt I₁ I₃ ∞ (f ∘ q) (hlocal.localInverse (q x)) := by
-    rw [hinverse]
-    exact hf.contMDiffAt
-  apply (hf'.comp (q x) hlocal.localInverse_contMDiffAt).congr_of_eventuallyEq
-  filter_upwards [hlocal.localInverse.open_source.mem_nhds
-    hlocal.localInverse_mem_source] with z hz
-  change f z = f (q (hlocal.localInverse z))
-  rw [hlocal.localInverse_right_inv hz]
+  exact (hq x).contMDiffAt_of_comp hf.contMDiffAt
 
 theorem exists_diffeomorph_of_homeomorph_comp_localDiffeomorph
     (q : M₁ → M₂) (hq : IsLocalDiffeomorph I₁ I₂ ∞ q)
