@@ -1262,3 +1262,29 @@ All four changed modules pass focused checks with exit 0 and no warnings.
 `.lake/scratch/check-chart-polyhedron.log`,
 `.lake/scratch/check-chart-ball-frontier.log`, and
 `.lake/scratch/audit-chart-push-inputs.log`.
+
+## Manifold disk pushes (Moise 23.10, conditional on 17.12)
+
+`PushManifold.lean` proves the chart and vertex-open-star statements
+of printed page 169, Theorem 10. For two polyhedral disks covering a
+three-ball's frontier and meeting in both intrinsic boundaries, it
+produces a homeomorphism of the entire manifold which is PL in both
+directions, maps the first disk onto the second, and fixes the complement
+of the original polyhedral neighborhood. The hypothesis remains exactly
+`C \ (D1 inter D2)` contained in `interior N`; the supplied neighborhood
+need not be contained in the chart.
+
+`PolyhedralBallBoundary.lean` identifies the existing choice-independent
+`polyhedralBoundary` through simplex parametrizations, transports it
+into charts, and proves density of a ball minus its intrinsic boundary.
+These supporting results hold in every positive dimension. The main
+push endpoints explicitly assume `forall S, IsPLSphere 2 S ->
+IsSimplyEmbedded S`, as authorized while F supplies 17.12. No vendored
+Lean source changed.
+
+Both new modules pass focused checks with exit 0 and zero warnings.
+`AuditS54.lean` checks six declarations and the full open-star statement,
+exits 0, and reports only `propext`, `Classical.choice`, and `Quot.sound`.
+Logs: `.lake/scratch/check-polyhedral-ball-boundary.log`,
+`.lake/scratch/check-push-manifold.log`, and
+`.lake/scratch/audit-push-manifold.log`. Theorem 23.11 remains pending.
