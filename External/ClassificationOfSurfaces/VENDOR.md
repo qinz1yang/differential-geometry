@@ -1200,3 +1200,41 @@ full 17.11 signature, exits 0, and reports only `propext`,
 `.lake/scratch/check-planar-disk-containment.log`,
 `.lake/scratch/check-planar-disk-gluing.log`, and
 `.lake/scratch/audit-planar-disk-gluing.log`.
+
+## Manifold filling in a vertex open star (Moise 23.9, conditional on 17.12)
+
+`SchoenfliesManifold.lean` proves the manifold chart and combinatorial
+vertex-open-star forms of printed page 169, Theorem 9. A polyhedral
+two-sphere in a convex-target PL chart bounds a polyhedral three-ball
+inside the same chart, with its actual frontier equal to the given
+sphere. The vertex-chart corollary constructs the existing native
+PL atlas on a finite combinatorial three-manifold and returns the
+ball inside the specified open star.
+
+Both endpoints explicitly take the exact 17.12 statement
+`forall S, IsPLSphere 2 S -> IsSimplyEmbedded S` as an argument, as
+authorized for S.5 while F owns its proof. No new axiom or class is
+introduced. Their axiom audits certify these conditional theorems;
+they do not certify an unconditional Schoenflies theorem.
+
+`ChartPiece.lean` generalizes chart transition restrictions to all
+polyhedra; the original polytope signatures remain wrappers.
+`ChartComplexPiece.lean` realizes a finite complex through a chart
+and transports PL balls and spheres. `ChartBallFrontier.lean` proves
+the exact frontier transport. `StdChart.lean` proves convexity of
+the standard vertex chart target. `SimplyEmbedded.lean` adds a
+filling with push property contained in a prescribed convex open
+neighborhood. No vendor Lean source changed.
+
+All six changed modules pass focused checks with exit 0 and zero
+warnings. `AuditS52.lean` checks twelve declarations (including the
+two preserved chart interfaces), prints the open-star endpoint
+signature, exits 0, and reports only `propext`, `Classical.choice`,
+and `Quot.sound`. Logs: `.lake/scratch/check-simply-embedded.log`,
+`.lake/scratch/check-chart-piece.log`,
+`.lake/scratch/check-chart-complex-piece.log`,
+`.lake/scratch/check-chart-ball-frontier.log`,
+`.lake/scratch/check-std-chart.log`,
+`.lake/scratch/check-schoenflies-manifold.log`, and
+`.lake/scratch/audit-schoenflies-manifold.log`. Theorem 23.10 and
+Theorem 23.11 remain pending at this checkpoint.

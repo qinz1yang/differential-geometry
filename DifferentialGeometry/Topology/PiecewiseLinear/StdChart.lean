@@ -84,6 +84,22 @@ theorem stdLift_stdProj {x : Fin (n + 2) → ℝ} (hx : ∑ i, x i = 1) :
 def stdTarget : Set (EuclideanSpace ℝ (Fin (n + 1))) :=
   {y | (∀ i, 0 < WithLp.ofLp y i) ∧ ∑ i, WithLp.ofLp y i < 1}
 
+theorem convex_stdTarget : Convex ℝ (stdTarget n) := by
+  intro x hx y hy a b ha hb hab
+  change (∀ i, 0 < WithLp.ofLp x i) ∧ ∑ i, WithLp.ofLp x i < 1 at hx
+  change (∀ i, 0 < WithLp.ofLp y i) ∧ ∑ i, WithLp.ofLp y i < 1 at hy
+  change (∀ i, 0 < WithLp.ofLp (a • x + b • y) i) ∧ ∑ i, WithLp.ofLp (a • x + b • y) i < 1
+  simp only [WithLp.ofLp_add, WithLp.ofLp_smul, Pi.add_apply, Pi.smul_apply, smul_eq_mul]
+  rcases ha.eq_or_lt with rfl | ha'
+  · have hb' : b = 1 := by simpa using hab
+    simpa only [hb', zero_mul, one_mul, zero_add] using hy
+  · refine ⟨fun i => add_pos_of_pos_of_nonneg (mul_pos ha' (hx.1 i)) (mul_nonneg hb (hy.1 i).le), ?_⟩
+    rw [Finset.sum_add_distrib, ← Finset.mul_sum, ← Finset.mul_sum]
+    calc
+      a * ∑ i, WithLp.ofLp x i + b * ∑ i, WithLp.ofLp y i < a * 1 + b * 1 :=
+        add_lt_add_of_lt_of_le (mul_lt_mul_of_pos_left hx.2 ha') (mul_le_mul_of_nonneg_left hy.2.le hb)
+      _ = 1 := by simpa only [mul_one] using hab
+
 theorem isOpen_stdTarget : IsOpen (stdTarget n) := by
   have h : stdTarget n = WithLp.ofLp ⁻¹'
       ((⋂ i, {v : Fin (n + 1) → ℝ | 0 < v i}) ∩ {v : Fin (n + 1) → ℝ | ∑ i, v i < 1}) := by
