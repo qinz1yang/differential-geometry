@@ -802,4 +802,226 @@ theorem IsCombinatorialManifoldWithBoundary.isPLBall_faceStarComplex [FiniteDime
   · exact (isConeBase_starAvoiding K hs hx).isPLBall_of_isPLSphere (hsphere.of_isPLHomeomorphOn hf)
   · exact (isConeBase_starAvoiding K hs hx).isPLBall_of_isPLBall (hball.of_isPLHomeomorphOn hf)
 
+theorem fiber_eq_pair_of_encard_le_two {X Y : Type*} (f : X → Y) (P : Set X)
+    {a b : X} {y : Y} (ha : a ∈ P) (hb : b ∈ P) (hab : a ≠ b) (hfa : f a = y) (hfb : f b = y)
+    (hcard : (P ∩ f ⁻¹' {y}).encard ≤ 2) : P ∩ f ⁻¹' {y} = {a, b} := by
+  classical
+  apply Subset.antisymm
+  · intro x hx
+    by_cases hxa : x = a
+    · exact Or.inl hxa
+    by_cases hxb : x = b
+    · exact Or.inr hxb
+    have hsub : ({x, a, b} : Set X) ⊆ P ∩ f ⁻¹' {y} := by
+      intro z hz
+      rcases hz with rfl | rfl | rfl
+      · exact hx
+      · exact ⟨ha, hfa⟩
+      · exact ⟨hb, hfb⟩
+    have h := (encard_mono hsub).trans hcard
+    rw [encard_insert_of_notMem (by simp [hxa, hxb]), encard_pair hab] at h
+    norm_num at h
+  · rintro x (rfl | rfl)
+    · exact ⟨ha, hfa⟩
+    · exact ⟨hb, hfb⟩
+
+theorem eventually_preimage_subset_of_isOpen_of_fiber_subset
+    {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y] [T2Space Y]
+    (f : X → Y) {P U : Set X} (hP : IsCompact P) (hf : ContinuousOn f P)
+    (hU : IsOpen U) {y : Y} (hsub : P ∩ f ⁻¹' {y} ⊆ U) :
+    ∀ᶠ z in 𝓝 y, P ∩ f ⁻¹' {z} ⊆ U := by
+  have hC : IsCompact (P ∩ Uᶜ) := hP.inter_right hU.isClosed_compl
+  have hclosed : IsClosed (f '' (P ∩ Uᶜ)) := (hC.image_of_continuousOn (hf.mono inter_subset_left)).isClosed
+  have hy : y ∉ f '' (P ∩ Uᶜ) := by
+    rintro ⟨x, hx, hxy⟩
+    exact hx.2 (hsub ⟨hx.1, hxy⟩)
+  filter_upwards [hclosed.isOpen_compl.mem_nhds hy] with z hz
+  intro x hx
+  by_contra hxU
+  exact hz ⟨x, ⟨hx.1, hxU⟩, hx.2⟩
+
+theorem eventually_preimage_subset_union_of_fiber_eq_pair
+    {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y] [T2Space Y]
+    (f : X → Y) {P A B : Set X} (hP : IsCompact P) (hf : ContinuousOn f P)
+    {a b : X} {y : Y} (hfiber : P ∩ f ⁻¹' {y} = {a, b})
+    (hA : A ∈ 𝓝[P] a) (hB : B ∈ 𝓝[P] b) :
+    ∀ᶠ z in 𝓝 y, P ∩ f ⁻¹' {z} ⊆ A ∪ B := by
+  obtain ⟨U, hU, haU, hUA⟩ := mem_nhdsWithin.mp hA
+  obtain ⟨V, hV, hbV, hVB⟩ := mem_nhdsWithin.mp hB
+  have hsub : P ∩ f ⁻¹' {y} ⊆ U ∪ V := by
+    rw [hfiber]
+    rintro x (rfl | rfl)
+    · exact Or.inl haU
+    · exact Or.inr hbV
+  filter_upwards [eventually_preimage_subset_of_isOpen_of_fiber_subset f hP hf (hU.union hV) hsub]
+    with z hz
+  intro x hx
+  rcases hz hx with hxU | hxV
+  · exact Or.inl (hUA ⟨hxU, hx.1⟩)
+  · exact Or.inr (hVB ⟨hxV, hx.1⟩)
+
+theorem mem_doublePointSet_iff_mem_image_inter_of_injOn
+    {X Y : Type*} (f : X → Y) {P A B : Set X} (hAP : A ⊆ P) (hBP : B ⊆ P)
+    (hAB : Disjoint A B) (hA : InjOn f A) (hB : InjOn f B) {y : Y}
+    (hcover : P ∩ f ⁻¹' {y} ⊆ A ∪ B) :
+    y ∈ doublePointSet f P ↔ y ∈ f '' A ∩ f '' B := by
+  constructor
+  · rintro ⟨a, ha, b, hb, hab, hfa, hfb⟩
+    rcases hcover ⟨ha, hfa⟩ with haA | haB
+    · rcases hcover ⟨hb, hfb⟩ with hbA | hbB
+      · exact False.elim (hab (hA haA hbA (hfa.trans hfb.symm)))
+      · exact ⟨⟨a, haA, hfa⟩, ⟨b, hbB, hfb⟩⟩
+    · rcases hcover ⟨hb, hfb⟩ with hbA | hbB
+      · exact ⟨⟨b, hbA, hfb⟩, ⟨a, haB, hfa⟩⟩
+      · exact False.elim (hab (hB haB hbB (hfa.trans hfb.symm)))
+  · rintro ⟨⟨a, ha, hfa⟩, ⟨b, hb, hfb⟩⟩
+    exact ⟨a, hAP ha, b, hBP hb, fun heq => Set.disjoint_left.mp hAB ha (heq ▸ hb), hfa, hfb⟩
+
+open Classical in
+theorem faceStarComplex_faces_subset_starComplex (K : Geometry.SimplicialComplex ℝ E)
+    {s : Finset E} {v : E} (hv : v ∈ s) : (faceStarComplex K s).faces ⊆ (starComplex K v).faces := by
+  intro t ht
+  refine ⟨ht.1, K.down_closed ht.2 ?_ (Finset.insert_nonempty v t)⟩
+  exact Finset.insert_subset_iff.mpr ⟨Finset.mem_union_right _ hv, Finset.subset_union_left⟩
+
+open Classical in
+omit [NormedAddCommGroup F] [NormedSpace ℝ F] in
+theorem disjoint_faceStarComplex_faces_of_eq_of_injOn_starComplex (K : Geometry.SimplicialComplex ℝ E)
+    (f : E → F) (hinj : ∀ v ∈ K.vertices, InjOn f (starComplex K v).space)
+    {s t : Finset E} {x y : E} (hxs : x ∈ convexHull ℝ (s : Set E))
+    (hyt : y ∈ convexHull ℝ (t : Set E)) (hxy : x ≠ y) (hfxy : f x = f y) :
+    ∀ u ∈ (faceStarComplex K s).faces, ∀ v ∈ (faceStarComplex K t).faces, Disjoint u v := by
+  intro u hu v hv
+  have hxus := convexHull_mono (Finset.coe_subset.mpr (Finset.subset_union_right (s₁ := u))) hxs
+  have hyvt := convexHull_mono (Finset.coe_subset.mpr (Finset.subset_union_right (s₁ := v))) hyt
+  exact (disjoint_faces_of_eq_of_injOn_starComplex K f hinj hu.2 hv.2 hxus hyvt hxy hfxy).mono
+    Finset.subset_union_left Finset.subset_union_left
+
+open Classical in
+theorem disjoint_spaces_of_disjoint_faces (K A B : Geometry.SimplicialComplex ℝ E)
+    (hA : A.faces ⊆ K.faces) (hB : B.faces ⊆ K.faces)
+    (hdisj : ∀ s ∈ A.faces, ∀ t ∈ B.faces, Disjoint s t) : Disjoint A.space B.space := by
+  rw [Set.disjoint_left]
+  intro x hxA hxB
+  obtain ⟨s, hs, hxs⟩ := A.mem_space_iff.mp hxA
+  obtain ⟨t, ht, hxt⟩ := B.mem_space_iff.mp hxB
+  have hmem := K.inter_subset_convexHull (hA hs) (hB ht) ⟨hxs, hxt⟩
+  rw [← Finset.coe_inter, Finset.disjoint_iff_inter_eq_empty.mp (hdisj s hs t ht),
+    Finset.coe_empty, convexHull_empty] at hmem
+  exact hmem
+
+open Classical in
+theorem exists_simplicialImage_of_faces_subset [FiniteDimensional ℝ E] [FiniteDimensional ℝ F]
+    (K S : Geometry.SimplicialComplex ℝ E) [Finite S.faces] (hSK : S.faces ⊆ K.faces) (φ : E → F)
+    (hind : ∀ s ∈ S.faces, AffineIndependent ℝ (fun v : s => φ (v : E)))
+    (hinj : InjOn (simplicialMap K φ) S.space) :
+    ∃ M : Geometry.SimplicialComplex ℝ F, M.faces.Finite ∧ M.space = simplicialMap K φ '' S.space ∧
+      IsPLHomeomorphOn (simplicialMap K φ) S.space M.space ∧
+        ∀ t ∈ M.faces, ∃ s ∈ S.faces, t = s.image φ := by
+  have heq := simplicialMap_eqOn_of_faces_subset K S hSK φ
+  have hinjS : InjOn (simplicialMap S φ) S.space := by
+    intro x hx y hy hxy
+    apply hinj hx hy
+    rw [heq hx, heq hy]
+    exact hxy
+  have hindS : ∀ s ∈ S.faces, AffineIndependent ℝ ((↑) : ↥(s.image φ : Set F) → F) :=
+    fun s hs => ((affineIndependent_image_iff s φ).mp (hind s hs)).2
+  refine ⟨simplicialImage S φ hindS hinjS, simplicialImage_faces_finite S φ hindS hinjS, ?_,
+    (isPLHomeomorphOn_simplicialImage S φ hindS hinjS).congr heq, fun t ht => ht⟩
+  rw [simplicialImage_space]
+  exact heq.symm.image_eq
+
+def HasPLDoubleCrossingAt (f : E → F) (P : Set E) (y : F) : Prop :=
+  ∃ (a b : E) (A B : Set E), a ∈ A ∧ b ∈ B ∧ f a = y ∧ f b = y ∧
+    A ⊆ P ∧ B ⊆ P ∧ Disjoint A B ∧ A ∈ 𝓝[P] a ∧ B ∈ 𝓝[P] b ∧
+      IsPLHomeomorphOn f A (f '' A) ∧ IsPLHomeomorphOn f B (f '' B) ∧
+        HasPLCrossingAt (f '' A) (f '' B) y ∧ ∀ᶠ z in 𝓝 y, P ∩ f ⁻¹' {z} ⊆ A ∪ B
+
+open Classical in
+theorem hasPLDoubleCrossingAt_and_exists_local_intersection [FiniteDimensional ℝ E]
+    [FiniteDimensional ℝ F] (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
+    (hK : IsCombinatorialManifoldWithBoundary 2 K) (hdim : Module.finrank ℝ F = 3) (φ : E → F)
+    (hind : ∀ s ∈ K.faces, AffineIndependent ℝ (fun v : s => φ (v : E)))
+    (hinj : ∀ v ∈ K.vertices, InjOn (simplicialMap K φ) (starComplex K v).space)
+    (hcard : ∀ y : F, (K.space ∩ (simplicialMap K φ) ⁻¹' {y}).encard ≤ 2)
+    (htrans : ∀ s ∈ K.faces, ∀ t ∈ K.faces, Disjoint s t →
+      (convexHull ℝ (s.image φ : Set F) ∩ convexHull ℝ (t.image φ : Set F)).Nonempty →
+        vectorSpan ℝ (s.image φ : Set F) ⊔ vectorSpan ℝ (t.image φ : Set F) = ⊤)
+    {y : F} (hy : y ∈ doublePointSet (simplicialMap K φ) K.space) :
+    HasPLDoubleCrossingAt (simplicialMap K φ) K.space y ∧
+      ∃ H : Geometry.SimplicialComplex ℝ F, H.faces.Finite ∧
+        IsCombinatorialManifoldWithBoundary 1 H ∧ y ∈ H.space ∧
+          ∀ᶠ z in 𝓝 y, z ∈ doublePointSet (simplicialMap K φ) K.space ↔ z ∈ H.space := by
+  let f := simplicialMap K φ
+  obtain ⟨a, ha, b, hb, hab, hfa, hfb⟩ := hy
+  obtain ⟨s, hs, has⟩ := exists_face_mem_openSimplex K ha
+  obtain ⟨t, ht, hbt⟩ := exists_face_mem_openSimplex K hb
+  let S := faceStarComplex K s
+  let T := faceStarComplex K t
+  have hSK : S.faces ⊆ K.faces := faceStarComplex_faces_subset K s
+  have hTK : T.faces ⊆ K.faces := faceStarComplex_faces_subset K t
+  have : Finite S.faces := (faceStarComplex_faces_finite K s).to_subtype
+  have : Finite T.faces := (faceStarComplex_faces_finite K t).to_subtype
+  have hdisj : ∀ u ∈ S.faces, ∀ v ∈ T.faces, Disjoint u v :=
+    disjoint_faceStarComplex_faces_of_eq_of_injOn_starComplex K f hinj
+      (openSimplex_subset_convexHull s has) (openSimplex_subset_convexHull t hbt) hab (hfa.trans hfb.symm)
+  have hST : Disjoint S.space T.space := disjoint_spaces_of_disjoint_faces K S T hSK hTK hdisj
+  have hinjS : InjOn f S.space := by
+    obtain ⟨v, hv⟩ := K.nonempty_of_mem_faces hs
+    have hvK := K.down_closed hs (Finset.singleton_subset_iff.mpr hv) (Finset.singleton_nonempty v)
+    exact (hinj v hvK).mono (space_mono_of_faces_subset (faceStarComplex_faces_subset_starComplex K hv))
+  have hinjT : InjOn f T.space := by
+    obtain ⟨v, hv⟩ := K.nonempty_of_mem_faces ht
+    have hvK := K.down_closed ht (Finset.singleton_subset_iff.mpr hv) (Finset.singleton_nonempty v)
+    exact (hinj v hvK).mono (space_mono_of_faces_subset (faceStarComplex_faces_subset_starComplex K hv))
+  obtain ⟨M, hMfinite, hMspace, hMPL, hMfaces⟩ :=
+    exists_simplicialImage_of_faces_subset K S hSK φ (fun u hu => hind u (hSK hu)) hinjS
+  obtain ⟨N, hNfinite, hNspace, hNPL, hNfaces⟩ :=
+    exists_simplicialImage_of_faces_subset K T hTK φ (fun u hu => hind u (hTK hu)) hinjT
+  have : Finite M.faces := hMfinite.to_subtype
+  have : Finite N.faces := hNfinite.to_subtype
+  have hMman : IsCombinatorialManifoldWithBoundary 2 M :=
+    ((hK.isPLBall_faceStarComplex K hs).isCombinatorialManifoldWithBoundary).of_isPLHomeomorphOn hMPL
+  have hNman : IsCombinatorialManifoldWithBoundary 2 N :=
+    ((hK.isPLBall_faceStarComplex K ht).isCombinatorialManifoldWithBoundary).of_isPLHomeomorphOn hNPL
+  have htransMN : ∀ u ∈ M.faces, ∀ v ∈ N.faces,
+      (convexHull ℝ (u : Set F) ∩ convexHull ℝ (v : Set F)).Nonempty →
+        vectorSpan ℝ (u : Set F) ⊔ vectorSpan ℝ (v : Set F) = ⊤ := by
+    intro u hu v hv hinter
+    obtain ⟨u', hu', rfl⟩ := hMfaces u hu
+    obtain ⟨v', hv', rfl⟩ := hNfaces v hv
+    exact htrans u' (hSK hu') v' (hTK hv') (hdisj u' hu' v' hv') hinter
+  have haS : a ∈ S.space := S.convexHull_subset_space
+    ⟨hs, by rwa [Finset.union_self]⟩ (openSimplex_subset_convexHull s has)
+  have hbT : b ∈ T.space := T.convexHull_subset_space
+    ⟨ht, by rwa [Finset.union_self]⟩ (openSimplex_subset_convexHull t hbt)
+  have hyMN : y ∈ M.space ∩ N.space := by
+    rw [hMspace, hNspace]
+    exact ⟨⟨a, haS, hfa⟩, ⟨b, hbT, hfb⟩⟩
+  have hSneigh : S.space ∈ 𝓝[K.space] a := by
+    rw [faceStarComplex_space K hs has]
+    exact closedStar_mem_nhdsWithin K a
+  have hTneigh : T.space ∈ 𝓝[K.space] b := by
+    rw [faceStarComplex_space K ht hbt]
+    exact closedStar_mem_nhdsWithin K b
+  have hfiber : K.space ∩ f ⁻¹' {y} = {a, b} :=
+    fiber_eq_pair_of_encard_le_two f K.space ha hb hab hfa hfb (hcard y)
+  have hcover : ∀ᶠ z in 𝓝 y, K.space ∩ f ⁻¹' {z} ⊆ S.space ∪ T.space :=
+    eventually_preimage_subset_union_of_fiber_eq_pair f (isPolyhedron_space K).isCompact
+      (isPiecewiseAffineOn_simplicialMap K φ).continuousOn hfiber hSneigh hTneigh
+  have hcross : HasPLCrossingAt (f '' S.space) (f '' T.space) y := by
+    have h := hasPLCrossingAt_of_transverse_faces M N hMman hNman hdim htransMN hyMN
+    rwa [hMspace, hNspace] at h
+  refine ⟨⟨a, b, S.space, T.space, haS, hbT, hfa, hfb, space_mono_of_faces_subset hSK,
+    space_mono_of_faces_subset hTK, hST, hSneigh, hTneigh, ?_, ?_, hcross, hcover⟩, ?_⟩
+  · rwa [hMspace] at hMPL
+  · rwa [hNspace] at hNPL
+  · obtain ⟨H, hHfinite, hHspace, hHman⟩ :=
+      exists_isCombinatorialManifoldWithBoundary_inter_of_transverse_faces M N hMman hNman hdim htransMN
+    refine ⟨H, hHfinite, hHman, hHspace.symm ▸ hyMN, ?_⟩
+    filter_upwards [hcover] with z hz
+    rw [hHspace, hMspace, hNspace]
+    exact mem_doublePointSet_iff_mem_image_inter_of_injOn f (space_mono_of_faces_subset hSK)
+      (space_mono_of_faces_subset hTK) hST hinjS hinjT hz
+
 end DifferentialGeometry.Topology.PiecewiseLinear
