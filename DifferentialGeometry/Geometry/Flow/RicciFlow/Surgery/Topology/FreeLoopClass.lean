@@ -1624,6 +1624,11 @@ theorem freeLoopAdjunction_bijective (x : X) [Subsingleton (HomotopyGroup (Fin 2
   rw [h]
   exact (DifferentialGeometry.Topology.piThreeFreeLoopPiTwoMulEquiv x).bijective
 
+def freeLoopAdjunctionEquiv (x : X) [Subsingleton (HomotopyGroup (Fin 2) X x)] :
+    HomotopyGroup (Fin 3) X x ≃*
+      HomotopyGroup (Fin 2) (ContinuousFreeLoop X) (constantLoops x) :=
+  MulEquiv.ofBijective (freeLoopAdjunctionHom x) (freeLoopAdjunction_bijective x)
+
 theorem freeLoopAdjunction_natural {Y : Type u} [TopologicalSpace Y]
     (f : C(X, Y)) (a : HomotopyGroup (Fin 3) X x) :
     basedHomotopyMap (loopPostcompose f) (constantLoops x) (freeLoopAdjunction x a) =
@@ -1650,21 +1655,17 @@ variable {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
 
 include hT2 hCompact hConnected hSimplyConnected
 
-theorem rfs_free_loop_class (o : TangentOrientationSection M) (q : M) :
+omit hConnected in
+theorem rfs_free_loop_class (q : M) :
     PathConnectedSpace (ContinuousFreeLoop M) ∧ SimplyConnectedSpace (ContinuousFreeLoop M) ∧
     Function.Bijective (freeLoopAdjunction q) ∧
     Function.Bijective (forgetBasedSphere (constantLoops q)) := by
-  have htwo : Subsingleton (HomotopyGroup (Fin 2) M q) := (rfs_homotopy_groups o q).1
+  have htwo : Subsingleton (HomotopyGroup (Fin 2) M q) := (rfs_homotopy_groups q).1
   have hpc : PathConnectedSpace (ContinuousFreeLoop M) :=
     DifferentialGeometry.Topology.freeLoop_pathConnected_of_simplyConnected
   have hsc : SimplyConnectedSpace (ContinuousFreeLoop M) :=
     DifferentialGeometry.Topology.freeLoop_simplyConnected_of_piTwo q
   exact ⟨hpc, hsc, freeLoopAdjunction_bijective q, forgetBasedSphere_bijective (constantLoops q)⟩
-
-def freeLoopAdjunctionEquiv (o : TangentOrientationSection M) (q : M) :
-    HomotopyGroup (Fin 3) M q ≃*
-      HomotopyGroup (Fin 2) (ContinuousFreeLoop M) (constantLoops q) :=
-  MulEquiv.ofBijective (freeLoopAdjunctionHom q) (rfs_free_loop_class o q).2.2.1
 
 def positiveBasedLoopClass (o : TangentOrientationSection M) (q : M) :
     HomotopyGroup (Fin 2) (ContinuousFreeLoop M) (constantLoops q) :=
@@ -1679,8 +1680,8 @@ theorem positiveFreeLoopClass_eq (o : TangentOrientationSection M) (q : M) :
   have hpc : PathConnectedSpace M := inferInstance
   let q₀ : M := Classical.choice (inferInstance : Nonempty M)
   let p : Path q₀ q := PathConnectedSpace.somePath q₀ q
-  have h2q : Subsingleton (HomotopyGroup (Fin 2) M q) := (rfs_homotopy_groups o q).1
-  have h2q₀ : Subsingleton (HomotopyGroup (Fin 2) M q₀) := (rfs_homotopy_groups o q₀).1
+  have h2q : Subsingleton (HomotopyGroup (Fin 2) M q) := (rfs_homotopy_groups q).1
+  have h2q₀ : Subsingleton (HomotopyGroup (Fin 2) M q₀) := (rfs_homotopy_groups q₀).1
   have hbase : positiveFreeLoopClass o =
       forgetBasedSphere (constantLoops q₀) (positiveBasedLoopClass o q₀) := rfl
   rw [hbase]
@@ -1705,9 +1706,9 @@ theorem positiveFreeLoopClass_nontrivial (o : TangentOrientationSection M) (q : 
       (ContinuousMap.const (Sphere 2) (constantLoops q)) := by
   intro h
   rw [positiveFreeLoopClass_eq o q, ← forgetBasedSphere_one (constantLoops q)] at h
-  have hb := (rfs_free_loop_class o q).2.2.2.injective h
+  have hb := (rfs_free_loop_class q).2.2.2.injective h
   have ha : positiveHomotopyClass o q = 1 := by
-    apply (rfs_free_loop_class o q).2.2.1.injective
+    apply (rfs_free_loop_class q).2.2.1.injective
     exact hb.trans (freeLoopAdjunctionHom q).map_one.symm
   have h10 : (1 : ℤ) = 0 := (positiveHomotopyClass_infiniteOrder o q)
     (by simpa only [zpow_one, zpow_zero] using ha)

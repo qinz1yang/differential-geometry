@@ -17,11 +17,12 @@ variable {N : Type u} [TopologicalSpace N] [ChartedSpace ThreeSpace N]
   [IsManifold ThreeModel ∞ N] [T2Space N] [CompactSpace N]
   [ConnectedSpace N] [SimplyConnectedSpace N]
 
+omit [ConnectedSpace M] [ConnectedSpace N] in
 private theorem positiveHomotopyClass_eq_of_integralHomologyMap (oM : TangentOrientationSection M)
     (oN : TangentOrientationSection N) (f : C(M, N)) (p : M)
     (hf : integralHomologyMap 3 f (fundamentalClass oM) = fundamentalClass oN) :
     basedHomotopyMap f p (positiveHomotopyClass oM p) = positiveHomotopyClass oN (f p) := by
-  apply (rfs_homotopy_groups oN (f p)).2.injective
+  apply (rfs_homotopy_groups (f p)).2.injective
   rw [hurewiczThree_natural, positiveHomotopyClass_hurewicz, hf,
     positiveHomotopyClass_hurewicz]
 

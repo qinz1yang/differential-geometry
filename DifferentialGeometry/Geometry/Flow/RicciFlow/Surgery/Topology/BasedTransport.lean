@@ -267,10 +267,11 @@ variable {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
     [IsManifold ThreeModel ∞ M] [T2Space M] [CompactSpace M]
     [ConnectedSpace M] [SimplyConnectedSpace M]
 
+omit [ConnectedSpace M] in
 theorem positiveHomotopyClass_pathTransport (o : TangentOrientationSection M)
     {q q' : M} (p : Path q q') :
     pathTransport p (positiveHomotopyClass o q) = positiveHomotopyClass o q' := by
-  apply (rfs_homotopy_groups o q').2.injective
+  apply (rfs_homotopy_groups q').2.injective
   rw [hurewiczThree_pathTransport, positiveHomotopyClass_hurewicz,
     positiveHomotopyClass_hurewicz]
 
@@ -278,6 +279,7 @@ variable {N : Type u} [TopologicalSpace N] [ChartedSpace ThreeSpace N]
     [IsManifold ThreeModel ∞ N] [T2Space N] [CompactSpace N]
     [ConnectedSpace N] [SimplyConnectedSpace N]
 
+omit [ConnectedSpace M] in
 theorem positiveHomotopyClass_degree_one_to_basepoint (oM : TangentOrientationSection M)
     (oN : TangentOrientationSection N) (f : C(M, N)) (hf : orientedDegree oM oN f = 1)
     (p : M) (q : N) (path : Path (f p) q) :

@@ -8417,10 +8417,12 @@ import DifferentialGeometry.Topology.Homology.LowDegreeHurewiczNonvacuity
 import DifferentialGeometry.Topology.Homology.LowDegreeHurewiczNormalization
 import DifferentialGeometry.Topology.Homology.Manifold
 import DifferentialGeometry.Topology.Homology.ManifoldBoundary
+import DifferentialGeometry.Topology.Homology.ManifoldCapDuality
 import DifferentialGeometry.Topology.Homology.ManifoldDoubleEuler
 import DifferentialGeometry.Topology.Homology.ManifoldEulerParity
 import DifferentialGeometry.Topology.Homology.ManifoldFundamentalCap
 import DifferentialGeometry.Topology.Homology.ManifoldHomologyGenerator
+import DifferentialGeometry.Topology.Homology.ManifoldHomologyVanishing
 import DifferentialGeometry.Topology.Homology.ManifoldLocalCapDuality
 import DifferentialGeometry.Topology.Homology.MeshBoundary
 import DifferentialGeometry.Topology.Homology.MeshIteration
@@ -8577,6 +8579,7 @@ import DifferentialGeometry.Topology.Homotopy.FundamentalLoop
 import DifferentialGeometry.Topology.Homotopy.Homeomorph
 import DifferentialGeometry.Topology.Homotopy.Interval
 import DifferentialGeometry.Topology.Homotopy.LoopTopology
+import DifferentialGeometry.Topology.Homotopy.ManifoldVanishing
 import DifferentialGeometry.Topology.Homotopy.Map
 import DifferentialGeometry.Topology.Homotopy.NonzeroPerturbation
 import DifferentialGeometry.Topology.Homotopy.OpenCollapse

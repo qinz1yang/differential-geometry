@@ -91,7 +91,7 @@ theorem incoming_component_integrated_width_of_rampFamilyDeformation (G : P.Inco
     have hess : IsEssentialFamilyClass
         (positiveFreeContractibleClass (P.component c).orientation) :=
       isEssentialFamilyClass_of_pi2_zero
-        (fun q => (rfs_homotopy_groups (P.component c).orientation q).1)
+        (fun q => (rfs_homotopy_groups q).1)
         (positiveFreeContractibleClass (P.component c).orientation)
         (fun q => positiveFreeContractibleClass_nontrivial (P.component c).orientation q)
     have h := (rfs_integrated_class_width_of_rampFamilyDeformation B
