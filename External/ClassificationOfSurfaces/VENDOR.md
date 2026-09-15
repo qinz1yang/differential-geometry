@@ -844,3 +844,27 @@ standard foundational axioms. Logs are
 `.lake/scratch/check-planar-relative-subcomplex.log`, and
 `.lake/scratch/audit-planar-relative-subcomplex.log`. The full 17.5 ambient
 extension and finite induction, and the 17.6/17.8 consumers, remain open.
+
+## Local boundary data and deletion in a planar chart
+
+`FaceStarTrace` transports a disk's free-triangle boundary trace through
+its planar simplicial model. It proves the corresponding intrinsic
+boundary trace for the chosen face star and proves that this face star
+is larger than the triangle. `AffineImageTransport` exposes the
+simplicial isomorphism induced by a map that is affine on every face and
+injective on the support, without subdividing the source mesh.
+
+`PlanarChartDeletion` combines these transport APIs with relative
+subcomplex deletion. It gives a globally PL plane homeomorphism with
+prescribed support and the exact erased image of the entire chart
+complex. The chart complex need not itself be a disk. These are native
+adaptations of the existing free-face construction; vendor sources are
+unchanged.
+
+All three modules pass focused checks with exit 0 and zero warnings.
+`AuditS36.lean` checks the three new endpoints, exits 0, and reports only
+the standard three axioms. Logs are `.lake/scratch/check-face-star-trace.log`,
+`.lake/scratch/check-affine-image-transport.log`,
+`.lake/scratch/check-planar-chart-deletion.log`, and
+`.lake/scratch/audit-planar-chart-deletion.log`. The ambient assembly and
+retained-triangle induction for 17.5 are still pending.
