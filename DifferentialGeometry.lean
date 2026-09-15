@@ -8147,6 +8147,7 @@ import DifferentialGeometry.Topology.Diffeomorph.BoundaryFlow
 import DifferentialGeometry.Topology.Diffeomorph.Collar
 import DifferentialGeometry.Topology.Diffeomorph.Extension
 import DifferentialGeometry.Topology.Diffeomorph.CompactIsotopy
+import DifferentialGeometry.Topology.Diffeomorph.CompactIsotopyComposition
 import DifferentialGeometry.Topology.Diffeomorph.Fiberwise
 import DifferentialGeometry.Topology.Diffeomorph.Flow
 import DifferentialGeometry.Topology.Diffeomorph.Graph
