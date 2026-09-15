@@ -43,7 +43,8 @@ theorem PLPieceIn.isPolyhedron_inter_preimage_chart [FiniteDimensional ℝ E] [T
   exact isPolyhedron_inter_preimage_of_isCompact (T.isPiecewiseAffineOn_chart e he) hC hcomp
 
 open Classical in
-theorem PLPieceIn.exists_glue_chart_with_regularNeighborhood [FiniteDimensional ℝ E] [T2Space X]
+theorem PLPieceIn.exists_glue_chart_with_regularNeighborhood [FiniteDimensional ℝ E] [DecidableEq E]
+    [T2Space X]
     [HasGroupoid X (plGroupoid n)] {Y : Set X} (T : PLPieceIn E n X Y)
     (e : OpenPartialHomeomorph X (EuclideanSpace ℝ (Fin n)))
     (he : e ∈ atlas (EuclideanSpace ℝ (Fin n)) X) {C : Set (EuclideanSpace ℝ (Fin n))}
