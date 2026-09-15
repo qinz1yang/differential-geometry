@@ -10332,3 +10332,7 @@ import DifferentialGeometry.Geometry.Measure.Area.Convergence
 import DifferentialGeometry.Geometry.Connection.ConnectionForm.Curvature
 import DifferentialGeometry.Geometry.Submanifold.Gauss
 import DifferentialGeometry.Geometry.Submanifold.SecondFundamentalForm.OpenImmersion
+import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Solution.Inclusion
+import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Scalar.AddCircleFiniteRegularity
+import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Solution.InitialTrace
+import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Solution.FiniteRealization
