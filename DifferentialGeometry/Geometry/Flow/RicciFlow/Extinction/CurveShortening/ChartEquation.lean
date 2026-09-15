@@ -550,3 +550,160 @@ end CurveMap
 end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening
 
 end
+
+noncomputable section
+open Bundle Manifold Set Filter
+open scoped Manifold ContDiff Topology
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Geometry.Riemannian.AlongCurve
+open DifferentialGeometry.Geometry.Riemannian.Geodesic
+open DifferentialGeometry.Geometry.Riemannian.MFDerivAlongCurve
+open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
+
+namespace DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+
+def curveShorteningChartDiffusionCoefficient
+    (g : ℝ → SmoothRiemannianMetric I M) (β : M) (q : ℝ × E × E) : ℝ :=
+  (chartGramBilin (g q.1) β ((extChartAt I β).symm q.2.1) q.2.2 q.2.2)⁻¹
+
+def curveShorteningParametricChartReaction
+    (g : ℝ → SmoothRiemannianMetric I M) (β : M) (q : ℝ × E × E) : E :=
+  curveShorteningChartDiffusionCoefficient g β q •
+    chartChristoffelContraction (g q.1) β q.2.2 q.2.2 q.2.1
+
+def curveShorteningParametricChartRhs
+    (g : ℝ → SmoothRiemannianMetric I M) (β : M) (q : ℝ × E × E × E) : E :=
+  curveShorteningChartDiffusionCoefficient g β (q.1, q.2.1, q.2.2.1) • q.2.2.2 +
+    curveShorteningParametricChartReaction g β (q.1, q.2.1, q.2.2.1)
+
+def curveShorteningChartFirstJetDomain (D : RealTimeInterval)
+    (g : ℝ → SmoothRiemannianMetric I M) (β : M) : Set (ℝ × E × E) :=
+  {q | q.1 ∈ D.regular ∧ q.2.1 ∈ interior (extChartAt I β).target ∧
+    0 < chartGramBilin (g q.1) β ((extChartAt I β).symm q.2.1) q.2.2 q.2.2}
+
+private theorem contDiffAt_chartSpeedSq
+    {D : RealTimeInterval} {g : ℝ → SmoothRiemannianMetric I M}
+    (hg : MetricFamilySmoothOn D g) (β : M) {q : ℝ × E × E}
+    (ht : q.1 ∈ D.regular) (hz : q.2.1 ∈ interior (extChartAt I β).target) :
+    ContDiffAt ℝ ∞ (fun q : ℝ × E × E =>
+      chartGramBilin (g q.1) β ((extChartAt I β).symm q.2.1) q.2.2 q.2.2) q := by
+  have hG := (contDiffAt_chartGramBilin hg β ht hz).comp q
+    (contDiffAt_fst.prodMk (contDiffAt_fst.comp _ contDiffAt_snd))
+  have hp : ContDiffAt ℝ ∞ (fun q : ℝ × E × E => q.2.2) q :=
+    contDiffAt_snd.comp _ contDiffAt_snd
+  exact (hG.clm_apply hp).clm_apply hp
+
+theorem isOpen_curveShorteningChartFirstJetDomain
+    {D : RealTimeInterval} {g : ℝ → SmoothRiemannianMetric I M}
+    (hg : MetricFamilySmoothOn D g) (β : M) :
+    IsOpen (curveShorteningChartFirstJetDomain D g β) := by
+  apply isOpen_iff_mem_nhds.mpr
+  intro q hq
+  have ht := (D.regular_isOpen.preimage continuous_fst).mem_nhds hq.1
+  have hz := (isOpen_interior.preimage (continuous_fst.comp continuous_snd)).mem_nhds hq.2.1
+  have hp := (contDiffAt_chartSpeedSq hg β hq.1 hq.2.1).continuousAt.preimage_mem_nhds
+    (isOpen_Ioi.mem_nhds hq.2.2)
+  exact Filter.mem_of_superset (Filter.inter_mem ht (Filter.inter_mem hz hp)) (fun _ h => h)
+
+theorem contDiffOn_curveShorteningChartDiffusionCoefficient
+    {D : RealTimeInterval} {g : ℝ → SmoothRiemannianMetric I M}
+    (hg : MetricFamilySmoothOn D g) (β : M) :
+    ContDiffOn ℝ ∞ (curveShorteningChartDiffusionCoefficient g β)
+      (curveShorteningChartFirstJetDomain D g β) := by
+  intro q hq
+  exact ((contDiffAt_chartSpeedSq hg β hq.1 hq.2.1).inv (ne_of_gt hq.2.2)).contDiffWithinAt
+
+theorem contDiffOn_curveShorteningParametricChartReaction
+    {D : RealTimeInterval} {g : ℝ → SmoothRiemannianMetric I M}
+    (hg : MetricFamilySmoothOn D g) (β : M) :
+    ContDiffOn ℝ ∞ (curveShorteningParametricChartReaction g β)
+      (curveShorteningChartFirstJetDomain D g β) := by
+  intro q hq
+  have hΓ := (contDiffAt_chartChristoffelContraction hg β
+    (q := (q.1, q.2.1, q.2.2, q.2.2)) hq.1 hq.2.1).comp q
+      (contDiffAt_fst.prodMk ((contDiffAt_fst.comp _ contDiffAt_snd).prodMk
+        ((contDiffAt_snd.comp _ contDiffAt_snd).prodMk
+          (contDiffAt_snd.comp _ contDiffAt_snd))))
+  exact ((contDiffOn_curveShorteningChartDiffusionCoefficient hg β) q hq).smul
+    hΓ.contDiffWithinAt
+
+theorem curveShorteningChartDiffusionCoefficient_pos
+    {D : RealTimeInterval} (g : ℝ → SmoothRiemannianMetric I M) (β : M)
+    {q : ℝ × E × E} (hq : q ∈ curveShorteningChartFirstJetDomain D g β) :
+    0 < curveShorteningChartDiffusionCoefficient g β q := inv_pos.mpr hq.2.2
+
+theorem curveShorteningParametricChartRhs_acceleration_sub
+    (g : ℝ → SmoothRiemannianMetric I M) (β : M) (t : ℝ) (z p r s : E) :
+    curveShorteningParametricChartRhs g β (t, z, p, r) -
+      curveShorteningParametricChartRhs g β (t, z, p, s) =
+      curveShorteningChartDiffusionCoefficient g β (t, z, p) • (r - s) := by
+  simp only [curveShorteningParametricChartRhs, smul_sub]
+  abel
+
+theorem curveShorteningParametricChartRhs_sub_principal
+    (g : ℝ → SmoothRiemannianMetric I M) (β : M) (t : ℝ) (z p r : E) (a : ℝ) :
+    curveShorteningParametricChartRhs g β (t, z, p, r) - a • r =
+      (curveShorteningChartDiffusionCoefficient g β (t, z, p) - a) • r +
+        curveShorteningParametricChartReaction g β (t, z, p) := by
+  simp only [curveShorteningParametricChartRhs, sub_smul]
+  abel
+
+namespace CurveMap
+
+variable [I.Boundaryless]
+
+theorem chartDiffusionCoefficient_eq_speed_inv_sq
+    (g : ℝ → SmoothRiemannianMetric I M) (c : CurveMap M) (β : M) (x t : ℝ)
+    (hc : MDifferentiableAt 𝓘(ℝ, ℝ) I (fun y => c.lift y t) x)
+    (hchart : c.lift x t ∈ (extChartAt I β).source) :
+    curveShorteningChartDiffusionCoefficient g β
+      (t, extChartAt I β (c.lift x t), deriv (fun y => extChartAt I β (c.lift y t)) x) =
+      c.speed g x t ^ (-2 : ℤ) := by
+  have hgood : c.lift x t ∈ chartLeviCivitaGoodSet (I := I) β :=
+    (mem_chartLeviCivitaGoodSet_iff_mem_extChartAt_source (I := I) β (c.lift x t)).mpr hchart
+  have hp := chartCoord_mfderiv_along_curve_eq_fderiv_of_mdifferentiableAt hc β
+    (chartLeviCivitaGoodSet_mem_chartAt_source (I := I) hgood)
+  have hb := chartLeviCivitaGoodSet_mem_baseSet (I := I) hgood
+  unfold curveShorteningChartDiffusionCoefficient
+  dsimp only [curveShorteningChartDiffusionCoefficient]
+  rw [(extChartAt I β).left_inv hchart]
+  change (chartGramBilin (g t) β (c.lift x t)
+    (deriv (fun y => extChartAt I β (c.lift y t)) x)
+    (deriv (fun y => extChartAt I β (c.lift y t)) x))⁻¹ = _
+  have hp' : (trivToE I β (c.lift x t) (c.X x t)) =
+      deriv (fun y => extChartAt I β (c.lift y t)) x := by
+    change (Trivialization.continuousLinearMapAt ℝ (trivializationAt E (TangentSpace I) β) (c.lift x t))
+      (mfderiv 𝓘(ℝ, ℝ) I (fun y => c.lift y t) x (1 : ℝ)) = _
+    rw [hp, fderiv_apply_one_eq_deriv]
+    rfl
+  rw [← hp', chartGramBilin_trivToE (g t) β (c.lift x t) hb]
+  rw [zpow_neg, zpow_ofNat]
+  congr 1
+  exact (Real.sq_sqrt (metric_inner_self_nonneg (g t) (c.lift x t) (c.X x t))).symm
+
+
+variable [T2Space M]
+
+theorem trivToE_parametric_acceleration_eq_chart
+    (g : ℝ → SmoothRiemannianMetric I M) (c : CurveMap M) (β : M) (x t : ℝ)
+    (hc : ContMDiffAt 𝓘(ℝ, ℝ) I 2 (fun y => c.lift y t) x)
+    (hchart : c.lift x t ∈ (extChartAt I β).source) :
+    trivToE I β (c.lift x t) (c.speed g x t ^ (-2 : ℤ) • c.Dx g c.X x t) =
+      curveShorteningParametricChartRhs g β
+        (t, extChartAt I β (c.lift x t), deriv (fun y => extChartAt I β (c.lift y t)) x,
+          deriv (deriv (fun y => extChartAt I β (c.lift y t))) x) := by
+  rw [map_smul, trivToE_Dx_X_eq_chart g c β x t hc hchart]
+  rw [← chartDiffusionCoefficient_eq_speed_inv_sq g c β x t
+    (hc.mdifferentiableAt (by norm_num)) hchart]
+  simp only [curveShorteningParametricChartRhs, curveShorteningParametricChartReaction, smul_add]
+
+end CurveMap
+
+end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening
+
+end
