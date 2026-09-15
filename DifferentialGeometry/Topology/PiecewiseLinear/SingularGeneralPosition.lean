@@ -1024,4 +1024,122 @@ theorem hasPLDoubleCrossingAt_and_exists_local_intersection [FiniteDimensional �
     exact mem_doublePointSet_iff_mem_image_inter_of_injOn f (space_mono_of_faces_subset hSK)
       (space_mono_of_faces_subset hTK) hST hinjS hinjT hz
 
+open Classical in
+theorem exists_isPLHomeomorphOn_geometricLink_of_eventually_eq_of_card_le_two
+    [FiniteDimensional ℝ E] (G H : Geometry.SimplicialComplex ℝ E) [Finite G.faces] [Finite H.faces]
+    (hcard : ∀ s ∈ G.faces, s.card ≤ 2) {x : E} (hxG : {x} ∈ G.faces) (hxH : {x} ∈ H.faces)
+    (heq : ∀ᶠ y in 𝓝 x, y ∈ G.space ↔ y ∈ H.space) :
+    ∃ f : E → E, IsPLHomeomorphOn f (SimplicialComplex.geometricLink G {x}).space
+      (SimplicialComplex.geometricLink H {x}).space := by
+  have hray : ∀ q : E, Filter.Tendsto (fun r : ℝ => x + r • (q - x)) (𝓝 0) (𝓝 x) := by
+    intro q
+    have hcont : Continuous (fun r : ℝ => x + r • (q - x)) := by fun_prop
+    simpa only [zero_smul, add_zero] using hcont.tendsto 0
+  refine exists_isPLHomeomorphOn_of_radial x (SimplicialComplex.geometricLink H {x})
+    (SimplicialComplex.geometricLink G {x}) (isRadiallyInjective_geometricLink H)
+    (isConeBase_geometricLink G) ?_ ?_
+  · intro σ hσ
+    obtain ⟨hσne, hxσ, hins⟩ := (SimplicialComplex.mem_geometricLink_singleton G x σ).mp hσ
+    have hbound := hcard (insert x σ) hins
+    rw [Finset.card_insert_of_notMem hxσ] at hbound
+    have hpos := hσne.card_pos
+    obtain ⟨q, rfl⟩ := Finset.card_eq_one.mp (show σ.card = 1 by omega)
+    have hq : q ∈ (SimplicialComplex.geometricLink G {x}).space :=
+      (SimplicialComplex.geometricLink G {x}).convexHull_subset_space hσ (by simp)
+    have hqx : q ≠ x := ne_of_mem_of_not_mem hq (notMem_geometricLink_space G)
+    have hHray : ∀ᶠ r : ℝ in 𝓝 0, 0 < r → x + r • (q - x) ∈ H.space := by
+      filter_upwards [(hray q).eventually heq, eventually_lt_nhds (show (0 : ℝ) < 1 by norm_num)]
+        with r hr hr1
+      exact fun hr0 => hr.mp (mem_convexHull_insert_of_mem_geometricLink_space G hq hr0.le hr1.le)
+    obtain ⟨c, hc, hclink⟩ := exists_ray_mem_geometricLink_space_of_eventually H hxH
+      (sub_ne_zero.mpr hqx) hHray
+    obtain ⟨τ, hτ, hcτ⟩ := (SimplicialComplex.geometricLink H {x}).mem_space_iff.mp hclink
+    refine ⟨τ, hτ, ?_⟩
+    intro w hw
+    rw [Finset.mem_singleton] at hw
+    subst w
+    exact ⟨c, hc, hcτ⟩
+  · intro q hq
+    have hqx : q ≠ x := ne_of_mem_of_not_mem hq (notMem_geometricLink_space H)
+    apply exists_ray_mem_geometricLink_space_of_eventually G hxG (sub_ne_zero.mpr hqx)
+    filter_upwards [(hray q).eventually heq, eventually_lt_nhds (show (0 : ℝ) < 1 by norm_num)]
+      with r hr hr1
+    exact fun hr0 => hr.mpr (mem_convexHull_insert_of_mem_geometricLink_space H hq hr0.le hr1.le)
+
+open Classical in
+theorem isCombinatorialManifoldWithBoundary_one_of_locally_eq [FiniteDimensional ℝ E]
+    (G : Geometry.SimplicialComplex ℝ E) [Finite G.faces] (hcard : ∀ s ∈ G.faces, s.card ≤ 2)
+    (hlocal : ∀ x ∈ G.space, ∃ H : Geometry.SimplicialComplex ℝ E, H.faces.Finite ∧
+      IsCombinatorialManifoldWithBoundary 1 H ∧ x ∈ H.space ∧
+        ∀ᶠ y in 𝓝 x, y ∈ G.space ↔ y ∈ H.space) :
+    IsCombinatorialManifoldWithBoundary 1 G := by
+  intro x hx
+  have hxG : x ∈ G.space := G.convexHull_subset_space hx (by simp)
+  obtain ⟨H, hfinite, hHman, hxH, heq⟩ := hlocal x hxG
+  have : Finite H.faces := hfinite.to_subtype
+  obtain ⟨R, hR, hRfinite, hxR⟩ := exists_isSubdivision_singleton_mem H hxH
+  have : Finite R.faces := hRfinite.to_subtype
+  have heqR : ∀ᶠ y in 𝓝 x, y ∈ G.space ↔ y ∈ R.space := by
+    simpa only [hR.space_eq] using heq
+  obtain ⟨f, hf⟩ := exists_isPLHomeomorphOn_geometricLink_of_eventually_eq_of_card_le_two G R hcard hx hxR heqR
+  rcases (hHman.of_isSubdivision hR) x hxR with hsphere | hball
+  · exact Or.inl (hsphere.of_isPLHomeomorphOn hf.symm)
+  · exact Or.inr (hball.of_isPLHomeomorphOn hf.symm)
+
+open Classical in
+theorem exists_isCombinatorialManifoldWithBoundary_doublePointSet_of_transverse_faces
+    [FiniteDimensional ℝ E] [FiniteDimensional ℝ F]
+    (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
+    (hK : IsCombinatorialManifoldWithBoundary 2 K) (hdim : Module.finrank ℝ F = 3) (φ : E → F)
+    (hind : ∀ s ∈ K.faces, AffineIndependent ℝ (fun v : s => φ (v : E)))
+    (hinj : ∀ v ∈ K.vertices, InjOn (simplicialMap K φ) (starComplex K v).space)
+    (hcard : ∀ y : F, (K.space ∩ (simplicialMap K φ) ⁻¹' {y}).encard ≤ 2)
+    (htrans : ∀ s ∈ K.faces, ∀ t ∈ K.faces, Disjoint s t →
+      (convexHull ℝ (s.image φ : Set F) ∩ convexHull ℝ (t.image φ : Set F)).Nonempty →
+        vectorSpan ℝ (s.image φ : Set F) ⊔ vectorSpan ℝ (t.image φ : Set F) = ⊤) :
+    ∃ G : Geometry.SimplicialComplex ℝ F, G.faces.Finite ∧
+      G.space = doublePointSet (simplicialMap K φ) K.space ∧
+        IsCombinatorialManifoldWithBoundary 1 G ∧
+          ∀ y ∈ G.space, HasPLDoubleCrossingAt (simplicialMap K φ) K.space y := by
+  obtain ⟨G, hfinite, hspace, hGcard, _⟩ := exists_triangulation_doublePointSet_card_le_two K φ
+    (fun s hs => hK.card_le K hs) hdim hind hinj htrans
+  have : Finite G.faces := hfinite.to_subtype
+  have hlocal := fun (y : F) (hy : y ∈ doublePointSet (simplicialMap K φ) K.space) =>
+    hasPLDoubleCrossingAt_and_exists_local_intersection K hK hdim φ hind hinj hcard htrans hy
+  refine ⟨G, hfinite, hspace, isCombinatorialManifoldWithBoundary_one_of_locally_eq G hGcard ?_, ?_⟩
+  · intro y hy
+    obtain ⟨H, hHfinite, hHman, hyH, heq⟩ := (hlocal y (hspace ▸ hy)).2
+    exact ⟨H, hHfinite, hHman, hyH, by simpa only [hspace] using heq⟩
+  · exact fun y hy => (hlocal y (hspace ▸ hy)).1
+
+open Classical in
+theorem exists_small_simplicialMap_doublePointSet_manifold [FiniteDimensional ℝ E]
+    [FiniteDimensional ℝ F] (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
+    (hK : IsCombinatorialManifoldWithBoundary 2 K) (hdim : Module.finrank ℝ F = 3)
+    (f : E → F) (hf : IsPiecewiseAffineOn f K.space)
+    (hloc : IsLocallyInjective (K.space.domRestrict f))
+    (hcard : ∀ y : F, (K.space ∩ f ⁻¹' {y}).encard ≤ 2) {ε : ℝ} (hε : 0 < ε) :
+    ∃ (R : Geometry.SimplicialComplex ℝ E) (φ : E → F) (G : Geometry.SimplicialComplex ℝ F),
+      IsSubdivision R K ∧ R.faces.Finite ∧ IsPiecewiseAffineOn (simplicialMap R φ) K.space ∧
+        (∀ x ∈ K.space, dist (simplicialMap R φ x) (f x) < ε) ∧
+          (∀ v ∈ R.vertices, IsPLHomeomorphOn (simplicialMap R φ) (starComplex R v).space
+            (simplicialMap R φ '' (starComplex R v).space)) ∧
+              IsLocallyInjective (K.space.domRestrict (simplicialMap R φ)) ∧
+                (∀ y : F, (K.space ∩ (simplicialMap R φ) ⁻¹' {y}).encard ≤ 2) ∧
+                  G.faces.Finite ∧ G.space = doublePointSet (simplicialMap R φ) K.space ∧
+                    IsCombinatorialManifoldWithBoundary 1 G ∧
+                      ∀ y ∈ G.space, HasPLDoubleCrossingAt (simplicialMap R φ) K.space y := by
+  obtain ⟨R, φ, hR, hfinite, hpl, hclose, hstar, hlocal, hfiber, hind, htrans⟩ :=
+    exists_small_simplicialMap_self_transverse_of_fiber_encard_le_two K hK hdim f hf hloc hcard hε
+  have : Finite R.faces := hfinite.to_subtype
+  have hinj : ∀ v ∈ R.vertices, InjOn (simplicialMap R φ) (starComplex R v).space :=
+    fun v hv => (hstar v hv).bijOn.injOn
+  have hfiberR : ∀ y : F, (R.space ∩ (simplicialMap R φ) ⁻¹' {y}).encard ≤ 2 := by
+    simpa only [hR.space_eq] using hfiber
+  obtain ⟨G, hGfinite, hGspace, hGman, hcross⟩ :=
+    exists_isCombinatorialManifoldWithBoundary_doublePointSet_of_transverse_faces R (hK.of_isSubdivision hR)
+      hdim φ hind hinj hfiberR htrans
+  rw [hR.space_eq] at hGspace hcross
+  exact ⟨R, φ, G, hR, hfinite, hpl, hclose, hstar, hlocal, hfiber, hGfinite, hGspace, hGman, hcross⟩
+
 end DifferentialGeometry.Topology.PiecewiseLinear
