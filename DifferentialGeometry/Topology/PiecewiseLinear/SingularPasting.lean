@@ -32,7 +32,7 @@ theorem notMem_geometricFaceCostar_of_mem_openSimplex (K : Geometry.SimplicialCo
   exact ht.2 (face_subset_of_mem_openSimplex_of_mem_convexHull K hs ht.1 hx hxt)
 
 open Classical in
-theorem exists_isPLBall_patches_at_doublePoint_of_continuousOn [FiniteDimensional ℝ E]
+theorem exists_isPLBall_patches_at_doublePoint_within [FiniteDimensional ℝ E]
     {X : Type*} [TopologicalSpace X] [T2Space X] [RegularSpace X]
     {n : ℕ} (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
     (hK : IsCombinatorialManifoldWithBoundary (n + 1) K) (f : E → X)
@@ -44,12 +44,28 @@ theorem exists_isPLBall_patches_at_doublePoint_of_continuousOn [FiniteDimensiona
       B ⊆ Q ∧ Disjoint P B ∧ InjOn f P ∧ InjOn f B ∧
       IsOpen U ∧ y ∈ U ∧ closure U ⊆ V ∧
       (∀ x ∈ P ∩ Q, f x ∉ closure U) ∧ InjOn f (Q ∩ f ⁻¹' U) ∧
-      ∀ z ∈ closure U, K.space ∩ f ⁻¹' {z} ⊆ P ∪ B := by
-  obtain ⟨R, hR, hRfinite, hinj⟩ := exists_isSubdivision_injOn_starComplex K f hloc
+      (∀ z ∈ closure U, K.space ∩ f ⁻¹' {z} ⊆ P ∪ B) ∧ MapsTo f (P ∪ B) V := by
+  obtain ⟨a, ha, b, hb, hab, hfa, hfb⟩ := hy
+  have hVa : f ⁻¹' V ∈ 𝓝[K.space] a :=
+    (hf a ha).preimage_mem_nhdsWithin (by rw [hfa]; exact hV)
+  have hVb : f ⁻¹' V ∈ 𝓝[K.space] b :=
+    (hf b hb).preimage_mem_nhdsWithin (by rw [hfb]; exact hV)
+  obtain ⟨εa, hεa, hsmallA⟩ := Metric.mem_nhdsWithin_iff.mp hVa
+  obtain ⟨εb, hεb, hsmallB⟩ := Metric.mem_nhdsWithin_iff.mp hVb
+  obtain ⟨R₀, hR₀, hR₀finite, _, hdiam⟩ := exists_isSubdivision_diam_lt K
+    (fun s hs => card_le_finrank_succ_of_mem_faces K hs) (lt_min hεa hεb)
+  have : Finite R₀.faces := hR₀finite.to_subtype
+  have hloc₀ : IsLocallyInjective (R₀.space.domRestrict f) := by rwa [hR₀.space_eq]
+  obtain ⟨R, hRR₀, hRfinite, hinj⟩ := exists_isSubdivision_injOn_starComplex R₀ f hloc₀
+  have hR : IsSubdivision R K := hRR₀.trans hR₀
+  have hstarSmall : ∀ c, closedStar R c ⊆ Metric.ball c (min εa εb) := by
+    intro c x hx
+    obtain ⟨s, ⟨hs, hcs⟩, hxs⟩ := mem_iUnion₂.mp (closedStar_subset_of_isSubdivision hRR₀ c hx)
+    exact (Metric.dist_le_diam_of_mem (s.finite_toSet.isCompact_convexHull ℝ).isBounded hxs hcs).trans_lt
+      (hdiam s hs)
   have : Finite R.faces := hRfinite.to_subtype
   have hKR := hK.of_isSubdivision hR
   have hfR : ContinuousOn f R.space := by rwa [hR.space_eq]
-  obtain ⟨a, ha, b, hb, hab, hfa, hfb⟩ := hy
   have haR : a ∈ R.space := hR.space_eq ▸ ha
   have hbR : b ∈ R.space := hR.space_eq ▸ hb
   obtain ⟨s, hs, has⟩ := exists_face_mem_openSimplex R haR
@@ -120,10 +136,34 @@ theorem exists_isPLBall_patches_at_doublePoint_of_continuousOn [FiniteDimensiona
     · exact hxT
   refine ⟨S.space, C.space, T.space, U, hcoverSC.trans hR.space_eq,
     hKR.isPLBall_faceStarComplex R hs, isPolyhedron_space C, hKR.isPLBall_faceStarComplex R ht,
-    hTC, hdisj, hinjS, hinjT, hU, hyU, fun z hz => (hUsub hz).1.1, hseam, hinjT.mono hrest, ?_⟩
-  intro z hz
-  rw [← hR.space_eq]
-  exact (hUsub hz).2
+    hTC, hdisj, hinjS, hinjT, hU, hyU, fun z hz => (hUsub hz).1.1, hseam, hinjT.mono hrest, ?_, ?_⟩
+  · intro z hz
+    rw [← hR.space_eq]
+    exact (hUsub hz).2
+  · intro x hx
+    rcases hx with hxS | hxT
+    · have hxStar : x ∈ closedStar R a := by rwa [← faceStarComplex_space R hs has]
+      exact hsmallA ⟨Metric.ball_subset_ball (min_le_left _ _) (hstarSmall a hxStar), hR.space_eq ▸ hSsub hxS⟩
+    · have hxStar : x ∈ closedStar R b := by rwa [← faceStarComplex_space R ht hbt]
+      exact hsmallB ⟨Metric.ball_subset_ball (min_le_right _ _) (hstarSmall b hxStar), hR.space_eq ▸ hTsub hxT⟩
+
+open Classical in
+theorem exists_isPLBall_patches_at_doublePoint_of_continuousOn [FiniteDimensional ℝ E]
+    {X : Type*} [TopologicalSpace X] [T2Space X] [RegularSpace X]
+    {n : ℕ} (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
+    (hK : IsCombinatorialManifoldWithBoundary (n + 1) K) (f : E → X)
+    (hf : ContinuousOn f K.space) (hloc : IsLocallyInjective (K.space.domRestrict f))
+    (hcard : ∀ y, (K.space ∩ f ⁻¹' {y}).encard ≤ 2)
+    {y : X} (hy : y ∈ doublePointSet f K.space) {V : Set X} (hV : V ∈ 𝓝 y) :
+    ∃ P Q B : Set E, ∃ U : Set X,
+      P ∪ Q = K.space ∧ IsPLBall (n + 1) P ∧ IsPolyhedron Q ∧ IsPLBall (n + 1) B ∧
+      B ⊆ Q ∧ Disjoint P B ∧ InjOn f P ∧ InjOn f B ∧
+      IsOpen U ∧ y ∈ U ∧ closure U ⊆ V ∧
+      (∀ x ∈ P ∩ Q, f x ∉ closure U) ∧ InjOn f (Q ∩ f ⁻¹' U) ∧
+      ∀ z ∈ closure U, K.space ∩ f ⁻¹' {z} ⊆ P ∪ B := by
+  obtain ⟨P, Q, B, U, hPQ, hP, hQ, hB, hBQ, hdisj, hinjP, hinjB, hU, hyU, hUV, hseam,
+    hinjQ, hcover, _⟩ := exists_isPLBall_patches_at_doublePoint_within K hK f hf hloc hcard hy hV
+  exact ⟨P, Q, B, U, hPQ, hP, hQ, hB, hBQ, hdisj, hinjP, hinjB, hU, hyU, hUV, hseam, hinjQ, hcover⟩
 
 open Classical in
 theorem exists_isPLBall_patches_at_doublePoint [FiniteDimensional ℝ E]
