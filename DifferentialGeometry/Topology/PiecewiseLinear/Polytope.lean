@@ -1,4 +1,5 @@
 import Mathlib.Analysis.Normed.Module.FiniteDimension
+import Mathlib.Analysis.Convex.Basic
 
 open Set Topology
 
@@ -18,6 +19,16 @@ variable {C D : Set E}
 theorem isCompact (hC : IsHPolytope C) : IsCompact C := hC.1
 
 theorem isClosed (hC : IsHPolytope C) : IsClosed C := hC.1.isClosed
+
+theorem convex (hC : IsHPolytope C) : Convex ℝ C := by
+  obtain ⟨_, ι, _, l, c, rfl⟩ := hC
+  intro x hx y hy a b ha hb hab i
+  rw [map_add, map_smul, map_smul]
+  change a * l i x + b * l i y ≤ c i
+  calc
+    a * l i x + b * l i y ≤ a * c i + b * c i :=
+      add_le_add (mul_le_mul_of_nonneg_left (hx i) ha) (mul_le_mul_of_nonneg_left (hy i) hb)
+    _ = c i := by rw [← add_mul, hab, one_mul]
 
 theorem univ_of_subsingleton [Subsingleton E] : IsHPolytope (univ : Set E) :=
   ⟨isCompact_univ, Empty, inferInstance, fun i => i.elim, fun i => i.elim, by

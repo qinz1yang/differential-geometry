@@ -1379,3 +1379,28 @@ The module passes its focused check with exit 0 and zero warnings.
 `AuditS58.lean` audits all six declarations: exit 0, only the three
 standard axioms. Logs: `.lake/scratch/check-disk-decomposition.log` and
 `.lake/scratch/audit-disk-decomposition.log`.
+
+## Planar crosscuts and boundary cells for general disk decompositions
+
+`PlanarJordan/ArcGap.lean` extracts a subarc whose interior avoids a closed
+set between its two endpoint contacts. `PlanarJordan/CompactRegion.lean`
+identifies the bounded Jordan region of a compact planar set with its
+interior. `PolygonalArc.lean` bridges native polyhedra to the vendored
+polygonal-arc API; `Polytope.lean` supplies convexity of H-polytopes.
+
+`DiskCrosscut.lean` obtains a PL crosscut from a cell boundary with two
+outer-boundary contacts, and splits a PL disk along a crosscut into two
+PL disks. Any contained PL disk whose interior avoids the crosscut lies
+on one side. `PlanarDiskDecomposition.lean` identifies the intrinsic
+boundary traces in F's interface with planar frontier intersections,
+proves disjointness of cell interiors, and obtains two distinct cells
+with nontrivial outer-boundary trace. These are foundations for Moise
+17.2; they do not yet prove that the two cells are free. No vendored
+Lean source changed.
+
+All six changed modules pass focused checks with exit 0 and zero
+warnings. `AuditS59.lean` audits 22 declarations: exit 0, only `propext`,
+`Classical.choice`, and `Quot.sound`. Logs are in `.lake/scratch/`:
+`check-polytope.log`, `check-polygonal-arc.log`, `check-arc-gap.log`,
+`check-compact-region.log`, `check-disk-crosscut.log`,
+`check-planar-disk-decomposition.log`, and `audit-disk-crosscut.log`.
