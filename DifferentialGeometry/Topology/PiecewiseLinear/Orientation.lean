@@ -3,6 +3,8 @@ import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryInvariance
 import DifferentialGeometry.Topology.PiecewiseLinear.GeneralPosition
 import DifferentialGeometry.Topology.PiecewiseLinear.StellarSphere
 import DifferentialGeometry.Topology.SimplicialComplex.Incidence
+import DifferentialGeometry.Topology.SphereSeparation.PermutationDeletion
+import Mathlib.Data.Fin.SuccPredOrder
 import Mathlib.Data.Prod.Lex
 import Mathlib.Data.Sum.Order
 
@@ -3152,6 +3154,8 @@ theorem IsOrientable.of_le
   rw [← orientedBoundary_eq_of_faceCofaces_eq o.vertexOrder K L o.sign t hcofaces.symm]
   exact o.coherent t htK htcard hKnotone
 
+section
+
 variable {E F G : Type*}
   [NormedAddCommGroup E] [NormedSpace ℝ E]
   [NormedAddCommGroup F] [NormedSpace ℝ F]
@@ -5745,5 +5749,1722 @@ theorem isOrientable_iff_forall_simplicialComponent
           simp only [sign, dif_pos hsK]
           rw [hsign]
         _ = 0 := hzero
+
+end
+
+noncomputable def permutedFacePrefix
+    (r : LinearOrder E) (T : Finset E) {N : ℕ} (hT : T.card = N + 1)
+    (σ : Equiv.Perm (Fin (N + 1))) (k : Fin (N + 1)) : Finset E := by
+  let _ := r
+  exact (Finset.Iic k).image
+    (fun i => ((Finset.orderIsoOfFin T hT) (σ i)).1)
+
+noncomputable def permutedFaceFlag
+    (r : LinearOrder E) (T : Finset E) {N : ℕ} (hT : T.card = N + 1)
+    (σ : Equiv.Perm (Fin (N + 1))) : Finset (Finset E) :=
+  Finset.univ.image (permutedFacePrefix r T hT σ)
+
+open Classical in
+theorem permutedFacePrefix_card
+    (r : LinearOrder E) (T : Finset E) {N : ℕ} (hT : T.card = N + 1)
+    (σ : Equiv.Perm (Fin (N + 1))) (k : Fin (N + 1)) :
+    (permutedFacePrefix r T hT σ k).card = k + 1 := by
+  let _ := r
+  unfold permutedFacePrefix
+  rw [Finset.card_image_of_injective]
+  · exact Fin.card_Iic k
+  · exact Subtype.val_injective.comp
+      ((Finset.orderIsoOfFin T hT).injective.comp σ.injective)
+
+open Classical in
+theorem permutedFacePrefix_nonempty
+    (r : LinearOrder E) (T : Finset E) {N : ℕ} (hT : T.card = N + 1)
+    (σ : Equiv.Perm (Fin (N + 1))) (k : Fin (N + 1)) :
+    (permutedFacePrefix r T hT σ k).Nonempty := by
+  rw [Finset.nonempty_iff_ne_empty]
+  intro h
+  have hc := permutedFacePrefix_card r T hT σ k
+  rw [h, Finset.card_empty] at hc
+  omega
+
+open Classical in
+theorem permutedFacePrefix_subset
+    (r : LinearOrder E) (T : Finset E) {N : ℕ} (hT : T.card = N + 1)
+    (σ : Equiv.Perm (Fin (N + 1))) (k : Fin (N + 1)) :
+    permutedFacePrefix r T hT σ k ⊆ T := by
+  let _ := r
+  intro x hx
+  obtain ⟨i, -, rfl⟩ := Finset.mem_image.mp hx
+  exact ((Finset.orderIsoOfFin T hT) (σ i)).2
+
+open Classical in
+theorem permutedFacePrefix_mono
+    (r : LinearOrder E) (T : Finset E) {N : ℕ} (hT : T.card = N + 1)
+    (σ : Equiv.Perm (Fin (N + 1))) :
+    Monotone (permutedFacePrefix r T hT σ) := by
+  let _ := r
+  intro i j hij x hx
+  obtain ⟨a, ha, rfl⟩ := Finset.mem_image.mp hx
+  apply Finset.mem_image.mpr
+  exact ⟨a, Finset.mem_Iic.mpr ((Finset.mem_Iic.mp ha).trans hij), rfl⟩
+
+open Classical in
+theorem permutedFaceFlag_card
+    (r : LinearOrder E) (T : Finset E) {N : ℕ} (hT : T.card = N + 1)
+    (σ : Equiv.Perm (Fin (N + 1))) :
+    (permutedFaceFlag r T hT σ).card = N + 1 := by
+  unfold permutedFaceFlag
+  rw [Finset.card_image_of_injOn]
+  · simp
+  · intro i hi j hj heq
+    have hc := congrArg Finset.card heq
+    rw [permutedFacePrefix_card, permutedFacePrefix_card] at hc
+    exact Fin.ext (by omega)
+
+open Classical in
+theorem permutedFacePrefix_injective
+    (r : LinearOrder E) (T : Finset E) {N : ℕ} (hT : T.card = N + 1)
+    (σ : Equiv.Perm (Fin (N + 1))) :
+    Function.Injective (permutedFacePrefix r T hT σ) := by
+  intro i j hij
+  have hc := congrArg Finset.card hij
+  rw [permutedFacePrefix_card, permutedFacePrefix_card] at hc
+  exact Fin.ext (by omega)
+
+open Classical in
+theorem permutedFaceFlag_nonempty
+    (r : LinearOrder E) (T : Finset E) {N : ℕ} (hT : T.card = N + 1)
+    (σ : Equiv.Perm (Fin (N + 1))) :
+    (permutedFaceFlag r T hT σ).Nonempty := by
+  refine ⟨permutedFacePrefix r T hT σ 0, ?_⟩
+  exact Finset.mem_image.mpr ⟨0, Finset.mem_univ _, rfl⟩
+
+open Classical in
+theorem permutedFaceFlag_isFlag
+    [AddCommGroup E] [Module ℝ E]
+    (K : Geometry.SimplicialComplex ℝ E) (r : LinearOrder E)
+    {T : Finset E} (hTK : T ∈ K.faces) {N : ℕ} (hT : T.card = N + 1)
+    (σ : Equiv.Perm (Fin (N + 1))) :
+    IsFlag K (permutedFaceFlag r T hT σ) := by
+  constructor
+  · intro s hs
+    obtain ⟨k, -, rfl⟩ := Finset.mem_image.mp hs
+    exact K.down_closed hTK (permutedFacePrefix_subset r T hT σ k)
+      (permutedFacePrefix_nonempty r T hT σ k)
+  · intro s hs t ht
+    obtain ⟨i, -, rfl⟩ := Finset.mem_image.mp hs
+    obtain ⟨j, -, rfl⟩ := Finset.mem_image.mp ht
+    rcases le_total i j with hij | hji
+    · exact Or.inl (permutedFacePrefix_mono r T hT σ hij)
+    · exact Or.inr (permutedFacePrefix_mono r T hT σ hji)
+
+def adjacentPermutedFaceSwap {n : ℕ}
+    (σ : Equiv.Perm (Fin (n + 2))) (i : Fin (n + 1)) :
+    Equiv.Perm (Fin (n + 2)) :=
+  σ * Equiv.swap i.castSucc i.succ
+
+@[simp]
+theorem adjacentPermutedFaceSwap_apply {n : ℕ}
+    (σ : Equiv.Perm (Fin (n + 2))) (i : Fin (n + 1))
+    (j : Fin (n + 2)) :
+    adjacentPermutedFaceSwap σ i j = σ (Equiv.swap i.castSucc i.succ j) := by
+  rfl
+
+theorem adjacentFaceSwap_le_iff_of_ne {n : ℕ}
+    (i : Fin (n + 1)) (k a : Fin (n + 2)) (hk : k ≠ i.castSucc) :
+    Equiv.swap i.castSucc i.succ a ≤ k ↔ a ≤ k := by
+  rw [Equiv.swap_apply_def]
+  split_ifs with ha hia
+  · subst a
+    constructor
+    · exact fun h => (Fin.castSucc_le_succ i).trans h
+    · intro h
+      simpa only [Fin.orderSucc_castSucc] using
+        Order.succ_le_of_lt (lt_of_le_of_ne h hk.symm)
+  · subst a
+    constructor
+    · intro h
+      simpa only [Fin.orderSucc_castSucc] using
+        Order.succ_le_of_lt (lt_of_le_of_ne h hk.symm)
+    · exact fun h => (Fin.castSucc_le_succ i).trans h
+  · rfl
+
+open Classical in
+theorem permutedFacePrefix_adjacentPermutedFaceSwap_of_ne
+    (r : LinearOrder E) (T : Finset E) {n : ℕ} (hT : T.card = n + 2)
+    (σ : Equiv.Perm (Fin (n + 2))) (i : Fin (n + 1))
+    (k : Fin (n + 2)) (hk : k ≠ i.castSucc) :
+    permutedFacePrefix r T hT (adjacentPermutedFaceSwap σ i) k =
+      permutedFacePrefix r T hT σ k := by
+  let _ := r
+  have hswap :
+      (Finset.Iic k).image (Equiv.swap i.castSucc i.succ) = Finset.Iic k := by
+    ext a
+    simp only [Finset.mem_image, Finset.mem_Iic]
+    constructor
+    · rintro ⟨b, hb, rfl⟩
+      exact (adjacentFaceSwap_le_iff_of_ne i k b hk).2 hb
+    · intro ha
+      refine ⟨Equiv.swap i.castSucc i.succ a, ?_, ?_⟩
+      · exact (adjacentFaceSwap_le_iff_of_ne i k _ hk).2 ha
+      · simp
+  unfold permutedFacePrefix
+  let f : Fin (n + 2) → E :=
+    fun j => ((Finset.orderIsoOfFin T hT) (σ j)).1
+  change (Finset.Iic k).image
+      (f ∘ Equiv.swap i.castSucc i.succ) = (Finset.Iic k).image f
+  rw [← Finset.image_image, hswap]
+
+open Classical in
+theorem permutedFacePrefix_adjacentPermutedFaceSwap_succAbove
+    (r : LinearOrder E) (T : Finset E) {n : ℕ} (hT : T.card = n + 2)
+    (σ : Equiv.Perm (Fin (n + 2))) (i j : Fin (n + 1)) :
+    permutedFacePrefix r T hT (adjacentPermutedFaceSwap σ i)
+        (i.castSucc.succAbove j) =
+      permutedFacePrefix r T hT σ (i.castSucc.succAbove j) := by
+  apply permutedFacePrefix_adjacentPermutedFaceSwap_of_ne
+  exact Fin.succAbove_ne _ _
+
+open Classical in
+theorem permutedFaceFlag_eq_insert_prefix_image_succAbove
+    (r : LinearOrder E) (T : Finset E) {n : ℕ} (hT : T.card = n + 2)
+    (σ : Equiv.Perm (Fin (n + 2))) (i : Fin (n + 1)) :
+    permutedFaceFlag r T hT σ =
+      insert (permutedFacePrefix r T hT σ i.castSucc)
+        (Finset.univ.image (fun j : Fin (n + 1) =>
+          permutedFacePrefix r T hT σ (i.castSucc.succAbove j))) := by
+  unfold permutedFaceFlag
+  let f := permutedFacePrefix r T hT σ
+  calc
+    Finset.univ.image f =
+        (insert i.castSucc (Finset.univ.image i.castSucc.succAbove)).image f := by
+      rw [Fin.image_succAbove_univ]
+      simp
+    _ = insert (f i.castSucc)
+        ((Finset.univ.image i.castSucc.succAbove).image f) := by
+      rw [Finset.image_insert]
+    _ = insert (f i.castSucc)
+        (Finset.univ.image (fun j => f (i.castSucc.succAbove j))) := by
+      rw [Finset.image_image]
+      rfl
+
+open Classical in
+theorem permutedFaceFlag_adjacent_decomposition
+    (r : LinearOrder E) (T : Finset E) {n : ℕ} (hT : T.card = n + 2)
+    (σ : Equiv.Perm (Fin (n + 2))) (i : Fin (n + 1)) :
+    let d := Finset.univ.image (fun j : Fin (n + 1) =>
+      permutedFacePrefix r T hT σ (i.castSucc.succAbove j))
+    permutedFaceFlag r T hT σ =
+        insert (permutedFacePrefix r T hT σ i.castSucc) d ∧
+      permutedFaceFlag r T hT (adjacentPermutedFaceSwap σ i) =
+        insert (permutedFacePrefix r T hT (adjacentPermutedFaceSwap σ i)
+          i.castSucc) d := by
+  dsimp only
+  constructor
+  · exact permutedFaceFlag_eq_insert_prefix_image_succAbove r T hT σ i
+  · rw [permutedFaceFlag_eq_insert_prefix_image_succAbove]
+    congr 1
+    apply Finset.image_congr
+    intro j hj
+    exact permutedFacePrefix_adjacentPermutedFaceSwap_succAbove r T hT σ i j
+
+noncomputable def adjacentFaceCommonFlag
+    (r : LinearOrder E) (T : Finset E) {n : ℕ} (hT : T.card = n + 2)
+    (σ : Equiv.Perm (Fin (n + 2))) (i : Fin (n + 1)) :
+    Finset (Finset E) :=
+  Finset.univ.image (fun j : Fin (n + 1) =>
+    permutedFacePrefix r T hT σ (i.castSucc.succAbove j))
+
+open Classical in
+theorem permutedFacePrefix_not_mem_adjacentFaceCommonFlag
+    (r : LinearOrder E) (T : Finset E) {n : ℕ} (hT : T.card = n + 2)
+    (σ : Equiv.Perm (Fin (n + 2))) (i : Fin (n + 1)) :
+    permutedFacePrefix r T hT σ i.castSucc ∉
+      adjacentFaceCommonFlag r T hT σ i := by
+  rintro hm
+  obtain ⟨j, -, hj⟩ := Finset.mem_image.mp hm
+  have heq := permutedFacePrefix_injective r T hT σ hj.symm
+  exact Fin.succAbove_ne i.castSucc j heq.symm
+
+open Classical in
+theorem adjacentPermutedFacePrefix_not_mem_adjacentFaceCommonFlag
+    (r : LinearOrder E) (T : Finset E) {n : ℕ} (hT : T.card = n + 2)
+    (σ : Equiv.Perm (Fin (n + 2))) (i : Fin (n + 1)) :
+    permutedFacePrefix r T hT (adjacentPermutedFaceSwap σ i) i.castSucc ∉
+      adjacentFaceCommonFlag r T hT σ i := by
+  rintro hp
+  obtain ⟨j, -, hj⟩ := Finset.mem_image.mp hp
+  have hsame := permutedFacePrefix_adjacentPermutedFaceSwap_succAbove
+    r T hT σ i j
+  have heq := permutedFacePrefix_injective r T hT
+    (adjacentPermutedFaceSwap σ i) (hj.symm.trans hsame.symm)
+  exact Fin.succAbove_ne i.castSucc j heq.symm
+
+open Classical in
+theorem adjacentFaceCommonFlag_card
+    (r : LinearOrder E) (T : Finset E) {n : ℕ} (hT : T.card = n + 2)
+    (σ : Equiv.Perm (Fin (n + 2))) (i : Fin (n + 1)) :
+    (adjacentFaceCommonFlag r T hT σ i).card = n + 1 := by
+  unfold adjacentFaceCommonFlag
+  rw [Finset.card_image_of_injOn]
+  · simp
+  · intro j hj k hk hjk
+    apply Fin.succAbove_right_injective
+    exact permutedFacePrefix_injective r T hT σ hjk
+
+open Classical in
+theorem adjacentFacePrefixes_ne
+    (r : LinearOrder E) (T : Finset E) {n : ℕ} (hT : T.card = n + 2)
+    (σ : Equiv.Perm (Fin (n + 2))) (i : Fin (n + 1)) :
+    permutedFacePrefix r T hT σ i.castSucc ≠
+      permutedFacePrefix r T hT (adjacentPermutedFaceSwap σ i) i.castSucc := by
+  intro h
+  let _ := r
+  let e := Finset.orderIsoOfFin T hT
+  let f : Fin (n + 2) → E := fun j => (e (σ j)).1
+  have hf : Function.Injective f :=
+    Subtype.val_injective.comp (e.injective.comp σ.injective)
+  have hleft : (Finset.Iic i.castSucc).image f =
+      permutedFacePrefix r T hT σ i.castSucc := rfl
+  have hright :
+      ((Finset.Iic i.castSucc).image (Equiv.swap i.castSucc i.succ)).image f =
+        permutedFacePrefix r T hT (adjacentPermutedFaceSwap σ i) i.castSucc := by
+    rw [Finset.image_image]
+    rfl
+  have hsource : Finset.Iic i.castSucc =
+      (Finset.Iic i.castSucc).image (Equiv.swap i.castSucc i.succ) := by
+    apply Finset.image_injective hf
+    exact hleft.trans (h.trans hright.symm)
+  have hi : i.castSucc ∈
+      (Finset.Iic i.castSucc).image (Equiv.swap i.castSucc i.succ) :=
+    (Finset.ext_iff.mp hsource i.castSucc).mp (Finset.mem_Iic.mpr le_rfl)
+  obtain ⟨j, hj, hji⟩ := Finset.mem_image.mp hi
+  have hjval : j = i.succ := by
+    have hs := congrArg (Equiv.swap i.castSucc i.succ) hji
+    simpa using hs
+  rw [Finset.mem_Iic, hjval] at hj
+  exact (not_le_of_gt i.castSucc_lt_succ) hj
+
+open Classical in
+noncomputable def permutedBarycentricFace
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    (r : LinearOrder E) (T : Finset E) {N : ℕ} (hT : T.card = N + 1)
+    (σ : Equiv.Perm (Fin (N + 1))) : Finset E :=
+  (permutedFaceFlag r T hT σ).image (fun s => s.centroid ℝ id)
+
+open Classical in
+theorem permutedBarycentricFace_mem
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    (K : Geometry.SimplicialComplex ℝ E) (r : LinearOrder E)
+    {T : Finset E} (hTK : T ∈ K.faces) {N : ℕ} (hT : T.card = N + 1)
+    (σ : Equiv.Perm (Fin (N + 1))) :
+    permutedBarycentricFace r T hT σ ∈ (barycentricSubdivision K).faces := by
+  exact ⟨permutedFaceFlag r T hT σ,
+    permutedFaceFlag_isFlag K r hTK hT σ,
+    permutedFaceFlag_nonempty r T hT σ, rfl⟩
+
+open Classical in
+theorem permutedBarycentricFace_card
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    (K : Geometry.SimplicialComplex ℝ E) (r : LinearOrder E)
+    {T : Finset E} (hTK : T ∈ K.faces) {N : ℕ} (hT : T.card = N + 1)
+    (σ : Equiv.Perm (Fin (N + 1))) :
+    (permutedBarycentricFace r T hT σ).card = N + 1 := by
+  unfold permutedBarycentricFace
+  rw [Finset.card_image_of_injOn]
+  · exact permutedFaceFlag_card r T hT σ
+  · exact (injOn_faces_of_mem_openSimplex K
+      (centroid_mem_openSimplex_of_mem_faces K)).mono
+        (permutedFaceFlag_isFlag K r hTK hT σ).coe_subset_faces
+
+open Classical in
+noncomputable def barycentricFlagNormalizedSign
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    (r : LinearOrder E)
+    {n : ℕ} {K : Geometry.SimplicialComplex ℝ E}
+    [Finite K.faces] [Finite (barycentricSubdivision K).faces]
+    (o : CoherentOrientation (n + 1) (barycentricSubdivision K))
+    {T : Finset E} (hT : T.card = n + 2)
+    (σ : Equiv.Perm (Fin (n + 2))) : ℤ :=
+  o.sign (permutedBarycentricFace r T hT σ) *
+    (Equiv.Perm.sign σ : ℤ)
+
+noncomputable def orderChangePermutation
+    (r₁ r₂ : LinearOrder E) (s : Finset E) : Equiv.Perm (Fin s.card) := by
+  let e₁ : Fin s.card ≃ s := by
+    let _ := r₁
+    exact (Finset.orderIsoOfFin s rfl).toEquiv
+  let e₂ : Fin s.card ≃ s := by
+    let _ := r₂
+    exact (Finset.orderIsoOfFin s rfl).toEquiv
+  exact e₁.trans e₂.symm
+
+noncomputable def orderChangeSign
+    (r₁ r₂ : LinearOrder E) (s : Finset E) : ℤ :=
+  (Equiv.Perm.sign (orderChangePermutation r₁ r₂ s) : ℤ)
+
+open Classical in
+theorem orderIsoOfFin_symm_eq_incidenceIndex
+    (r : LinearOrder E) (s : Finset E) {v : E} (hv : v ∈ s) :
+    (((Finset.orderIsoOfFin s rfl).symm ⟨v, hv⟩ : Fin s.card) : ℕ) =
+      incidenceIndex r s v := by
+  let _ := r
+  let e := Finset.orderIsoOfFin s rfl
+  let p : Fin s.card := e.symm ⟨v, hv⟩
+  have hfilter : s.filter (fun w => w < v) =
+      (Finset.Iio p).image (fun i => (e i).1) := by
+    ext w
+    simp only [Finset.mem_filter, Finset.mem_image, Finset.mem_Iio]
+    constructor
+    · rintro ⟨hw, hwv⟩
+      let i : Fin s.card := e.symm ⟨w, hw⟩
+      refine ⟨i, ?_, ?_⟩
+      · apply (e.lt_iff_lt).mp
+        change (e i).1 < (e p).1
+        simpa [i, p] using hwv
+      · simp [i]
+    · rintro ⟨i, hip, rfl⟩
+      refine ⟨(e i).2, ?_⟩
+      have hlt : e i < e p := e.strictMono hip
+      change (e i).1 < (e p).1 at hlt
+      simpa [p] using hlt
+  change _ = (s.filter fun w => w < v).card
+  rw [hfilter, Finset.card_image_of_injective]
+  · exact (Fin.card_Iio p).symm
+  · exact Subtype.val_injective.comp e.injective
+
+private noncomputable def orderChangePermutationOfCard
+    (r₁ r₂ : LinearOrder E) (s : Finset E) {N : ℕ} (h : s.card = N) :
+    Equiv.Perm (Fin N) := by
+  let e₁ : Fin N ≃ s := by
+    let _ := r₁
+    exact (Finset.orderIsoOfFin s h).toEquiv
+  let e₂ : Fin N ≃ s := by
+    let _ := r₂
+    exact (Finset.orderIsoOfFin s h).toEquiv
+  exact e₁.trans e₂.symm
+
+private noncomputable def orderChangeSignOfCard
+    (r₁ r₂ : LinearOrder E) (s : Finset E) {N : ℕ} (h : s.card = N) : ℤ :=
+  (Equiv.Perm.sign (orderChangePermutationOfCard r₁ r₂ s h) : ℤ)
+
+open Classical in
+private theorem orderChangeSignOfCard_eq
+    (r₁ r₂ : LinearOrder E) (s : Finset E) {N : ℕ} (h : s.card = N) :
+    orderChangeSignOfCard r₁ r₂ s h = orderChangeSign r₁ r₂ s := by
+  subst N
+  rfl
+
+open Classical in
+private theorem orderEmbOfFin_erase_apply
+    (r : LinearOrder E) (s : Finset E) {n : ℕ} (hs : s.card = n + 1)
+    {v : E} (hv : v ∈ s)
+    (ht : (@Finset.erase E (Classical.decEq E) s v).card = n) (i : Fin n) :
+    let p := (Finset.orderIsoOfFin s hs).symm ⟨v, hv⟩
+    Finset.orderEmbOfFin (@Finset.erase E (Classical.decEq E) s v) ht i =
+      Finset.orderEmbOfFin s hs
+        (Fin.cycleIcc p (Fin.last n) i.castSucc) := by
+  let _ := r
+  let e := Finset.orderEmbOfFin s hs
+  let p := (Finset.orderIsoOfFin s hs).symm ⟨v, hv⟩
+  have hp : p ≤ Fin.last n := Fin.le_last p
+  have hcycle (j : Fin n) :
+      Fin.cycleIcc p (Fin.last n) j.castSucc = p.succAbove j := by
+    simpa [Function.comp_apply] using congrFun
+      (Fin.cycleIcc_comp_succAbove p (Fin.last n) hp) j
+  have hmem (j : Fin n) :
+      e (p.succAbove j) ∈ @Finset.erase E (Classical.decEq E) s v := by
+    apply (@Finset.mem_erase E (Classical.decEq E) (e (p.succAbove j)) v s).mpr
+    refine ⟨?_, Finset.orderEmbOfFin_mem s hs _⟩
+    intro heq
+    have hpval : e p = v := by
+      change ((Finset.orderIsoOfFin s hs) p).1 = v
+      simp [p]
+    have := e.injective (heq.trans hpval.symm)
+    exact Fin.succAbove_ne p j this
+  have heq : (fun j : Fin n => e (p.succAbove j)) =
+      Finset.orderEmbOfFin (@Finset.erase E (Classical.decEq E) s v) ht := by
+    apply Finset.orderEmbOfFin_unique ht hmem
+    exact e.strictMono.comp (Fin.strictMono_succAbove p)
+  change Finset.orderEmbOfFin (@Finset.erase E (Classical.decEq E) s v) ht i =
+    e (Fin.cycleIcc p (Fin.last n) i.castSucc)
+  rw [hcycle]
+  exact congrFun heq i |>.symm
+
+
+private noncomputable def orderPositionOfCard
+    (r : LinearOrder E) (s : Finset E) {N : ℕ} (h : s.card = N)
+    (v : E) (hv : v ∈ s) : Fin N := by
+  let _ := r
+  exact (Finset.orderIsoOfFin s h).symm ⟨v, hv⟩
+
+open Classical in
+private theorem orderChangePermutationOfCard_apply_orderPosition
+    (r₁ r₂ : LinearOrder E) (s : Finset E) {N : ℕ} (h : s.card = N)
+    (v : E) (hv : v ∈ s) :
+    orderChangePermutationOfCard r₁ r₂ s h
+        (orderPositionOfCard r₁ s h v hv) =
+      orderPositionOfCard r₂ s h v hv := by
+  unfold orderChangePermutationOfCard orderPositionOfCard
+  simp
+
+private noncomputable def normalizedOrderChangePermutation
+    (r₁ r₂ : LinearOrder E) (s : Finset E) {n : ℕ} (h : s.card = n + 1)
+    (v : E) (hv : v ∈ s) : Equiv.Perm (Fin (n + 1)) :=
+  let p₁ := orderPositionOfCard r₁ s h v hv
+  let p₂ := orderPositionOfCard r₂ s h v hv
+  ((Fin.cycleIcc p₁ (Fin.last n)).trans
+    (orderChangePermutationOfCard r₁ r₂ s h)).trans
+      (Fin.cycleIcc p₂ (Fin.last n)).symm
+
+open Classical in
+private theorem normalizedOrderChangePermutation_last
+    (r₁ r₂ : LinearOrder E) (s : Finset E) {n : ℕ} (h : s.card = n + 1)
+    (v : E) (hv : v ∈ s) :
+    normalizedOrderChangePermutation r₁ r₂ s h v hv (Fin.last n) =
+      Fin.last n := by
+  unfold normalizedOrderChangePermutation
+  simp only [Equiv.trans_apply]
+  rw [Fin.cycleIcc_of_last (Fin.le_last _),
+    orderChangePermutationOfCard_apply_orderPosition]
+  apply (Fin.cycleIcc (orderPositionOfCard r₂ s h v hv) (Fin.last n)).injective
+  rw [Equiv.apply_symm_apply, Fin.cycleIcc_of_last (Fin.le_last _)]
+
+private noncomputable def orderValueOfCard
+    (r : LinearOrder E) (s : Finset E) {N : ℕ} (h : s.card = N)
+    (i : Fin N) : E := by
+  let _ := r
+  exact Finset.orderEmbOfFin s h i
+
+open Classical in
+private theorem orderValueOfCard_orderChangePermutation
+    (r₁ r₂ : LinearOrder E) (s : Finset E) {N : ℕ} (h : s.card = N)
+    (i : Fin N) :
+    orderValueOfCard r₂ s h (orderChangePermutationOfCard r₁ r₂ s h i) =
+      orderValueOfCard r₁ s h i := by
+  let e₁ : Fin N ≃ s := by
+    let _ := r₁
+    exact (Finset.orderIsoOfFin s h).toEquiv
+  let e₂ : Fin N ≃ s := by
+    let _ := r₂
+    exact (Finset.orderIsoOfFin s h).toEquiv
+  unfold orderValueOfCard orderChangePermutationOfCard
+  change (e₂ (e₂.symm (e₁ i))).1 = (e₁ i).1
+  rw [Equiv.apply_symm_apply]
+
+open Classical in
+private theorem orderValueOfCard_erase_apply
+    (r : LinearOrder E) (s : Finset E) {n : ℕ} (hs : s.card = n + 1)
+    {v : E} (hv : v ∈ s)
+    (ht : (@Finset.erase E (Classical.decEq E) s v).card = n) (i : Fin n) :
+    orderValueOfCard r (@Finset.erase E (Classical.decEq E) s v) ht i =
+      orderValueOfCard r s hs
+        (Fin.cycleIcc (orderPositionOfCard r s hs v hv) (Fin.last n) i.castSucc) := by
+  let _ := r
+  exact orderEmbOfFin_erase_apply r s hs hv ht i
+
+open Classical in
+private theorem normalizedOrderChangePermutation_apply_castSucc
+    (r₁ r₂ : LinearOrder E) (s : Finset E) {n : ℕ} (hs : s.card = n + 1)
+    (v : E) (hv : v ∈ s)
+    (ht : (@Finset.erase E (Classical.decEq E) s v).card = n) (i : Fin n) :
+    normalizedOrderChangePermutation r₁ r₂ s hs v hv i.castSucc =
+      (orderChangePermutationOfCard r₁ r₂
+        (@Finset.erase E (Classical.decEq E) s v) ht i).castSucc := by
+  let p₁ := orderPositionOfCard r₁ s hs v hv
+  let p₂ := orderPositionOfCard r₂ s hs v hv
+  let q₁ := Fin.cycleIcc p₁ (Fin.last n)
+  let q₂ := Fin.cycleIcc p₂ (Fin.last n)
+  let σ := orderChangePermutationOfCard r₁ r₂ s hs
+  let t := @Finset.erase E (Classical.decEq E) s v
+  let τ := orderChangePermutationOfCard r₁ r₂ t ht
+  have hq₁ (j : Fin n) : q₁ j.castSucc = p₁.succAbove j := by
+    simpa [q₁, Function.comp_apply] using congrFun
+      (Fin.cycleIcc_comp_succAbove p₁ (Fin.last n) (Fin.le_last _)) j
+  have hq₂ (j : Fin n) : q₂ j.castSucc = p₂.succAbove j := by
+    simpa [q₂, Function.comp_apply] using congrFun
+      (Fin.cycleIcc_comp_succAbove p₂ (Fin.last n) (Fin.le_last _)) j
+  change q₂.symm (σ (q₁ i.castSucc)) = (τ i).castSucc
+  apply q₂.injective
+  rw [Equiv.apply_symm_apply, hq₂]
+  apply (show Function.Injective (orderValueOfCard r₂ s hs) by
+    unfold orderValueOfCard
+    let _ := r₂
+    exact (Finset.orderEmbOfFin s hs).injective)
+  calc
+    orderValueOfCard r₂ s hs (σ (q₁ i.castSucc)) =
+        orderValueOfCard r₁ s hs (q₁ i.castSucc) :=
+      orderValueOfCard_orderChangePermutation r₁ r₂ s hs _
+    _ = orderValueOfCard r₁ t ht i := by
+      simpa [t, p₁, q₁] using
+        (orderValueOfCard_erase_apply r₁ s hs hv ht i).symm
+    _ = orderValueOfCard r₂ t ht (τ i) := by
+      exact (orderValueOfCard_orderChangePermutation r₁ r₂ t ht i).symm
+    _ = orderValueOfCard r₂ s hs (p₂.succAbove (τ i)) := by
+      calc
+        orderValueOfCard r₂ t ht (τ i) =
+            orderValueOfCard r₂ s hs (q₂ (τ i).castSucc) := by
+          simpa [t, p₂, q₂] using
+            orderValueOfCard_erase_apply r₂ s hs hv ht (τ i)
+        _ = _ := by rw [hq₂]
+
+open Classical in
+private theorem eraseLastPermutation_normalizedOrderChangePermutation
+    (r₁ r₂ : LinearOrder E) (s : Finset E) {n : ℕ} (hs : s.card = n + 1)
+    (v : E) (hv : v ∈ s)
+    (ht : (@Finset.erase E (Classical.decEq E) s v).card = n) :
+    SphereSeparation.eraseLastPermutation
+        (normalizedOrderChangePermutation r₁ r₂ s hs v hv) =
+      orderChangePermutationOfCard r₁ r₂
+        (@Finset.erase E (Classical.decEq E) s v) ht := by
+  apply Equiv.ext
+  intro i
+  have h := SphereSeparation.succAbove_eraseLastPermutation
+    (normalizedOrderChangePermutation r₁ r₂ s hs v hv) i
+  rw [normalizedOrderChangePermutation_last] at h
+  simp only [Fin.succAbove_last_apply] at h
+  rw [normalizedOrderChangePermutation_apply_castSucc r₁ r₂ s hs v hv ht i] at h
+  exact Fin.castSucc_injective _ h
+
+private theorem negOne_pow_tsub_mul_negOne_pow_tsub
+    {n a b : ℕ} (ha : a ≤ n) (hb : b ≤ n) :
+    (-1 : ℤˣ) ^ (n - a) * (-1 : ℤˣ) ^ (n - b) =
+      (-1 : ℤˣ) ^ (a + b) := by
+  let A : ℤˣ := (-1 : ℤˣ) ^ (n - a) * (-1 : ℤˣ) ^ (n - b)
+  let C : ℤˣ := (-1 : ℤˣ) ^ (a + b)
+  have hsum : (n - a) + (n - b) + (a + b) = 2 * n := by omega
+  have hAC : A * C = 1 := by
+    dsimp only [A, C]
+    rw [← pow_add, ← pow_add, hsum]
+    rw [pow_mul]
+    norm_num
+  have hCC : C * C = 1 := by
+    dsimp only [C]
+    rw [← pow_add, ← two_mul, pow_mul]
+    norm_num
+  calc
+    A = A * 1 := (mul_one A).symm
+    _ = A * (C * C) := by rw [hCC]
+    _ = (A * C) * C := by ac_rfl
+    _ = 1 * C := by rw [hAC]
+    _ = C := one_mul C
+
+open Classical in
+private theorem orderPositionOfCard_eq_incidenceIndex
+    (r : LinearOrder E) (s : Finset E) {N : ℕ} (h : s.card = N)
+    (v : E) (hv : v ∈ s) :
+    (orderPositionOfCard r s h v hv : ℕ) = incidenceIndex r s v := by
+  subst N
+  exact orderIsoOfFin_symm_eq_incidenceIndex r s hv
+
+open Classical in
+private theorem sign_orderChangePermutationOfCard_erase
+    (r₁ r₂ : LinearOrder E) (s : Finset E) {n : ℕ} (hs : s.card = n + 1)
+    (v : E) (hv : v ∈ s)
+    (ht : (@Finset.erase E (Classical.decEq E) s v).card = n) :
+    Equiv.Perm.sign (orderChangePermutationOfCard r₁ r₂ s hs) =
+      Equiv.Perm.sign (orderChangePermutationOfCard r₁ r₂
+          (@Finset.erase E (Classical.decEq E) s v) ht) *
+        (-1 : ℤˣ) ^ (incidenceIndex r₁ s v + incidenceIndex r₂ s v) := by
+  let p₁ := orderPositionOfCard r₁ s hs v hv
+  let p₂ := orderPositionOfCard r₂ s hs v hv
+  let q₁ := Fin.cycleIcc p₁ (Fin.last n)
+  let q₂ := Fin.cycleIcc p₂ (Fin.last n)
+  let σ := orderChangePermutationOfCard r₁ r₂ s hs
+  let τ := orderChangePermutationOfCard r₁ r₂
+    (@Finset.erase E (Classical.decEq E) s v) ht
+  let ρ := normalizedOrderChangePermutation r₁ r₂ s hs v hv
+  have hρτ : Equiv.Perm.sign ρ = Equiv.Perm.sign τ := by
+    rw [SphereSeparation.sign_eq_sign_eraseLastPermutation_mul]
+    rw [eraseLastPermutation_normalizedOrderChangePermutation r₁ r₂ s hs v hv ht]
+    rw [normalizedOrderChangePermutation_last r₁ r₂ s hs v hv]
+    simp only [Fin.val_last, tsub_self, pow_zero, mul_one]
+    congr
+  have hρ : Equiv.Perm.sign ρ =
+      Equiv.Perm.sign q₂ * Equiv.Perm.sign σ * Equiv.Perm.sign q₁ := by
+    dsimp only [ρ, normalizedOrderChangePermutation, p₁, p₂, q₁, q₂, σ]
+    rw [Equiv.Perm.sign_trans, Equiv.Perm.sign_trans, Equiv.Perm.sign_symm]
+    exact (mul_assoc _ _ _).symm
+  have hq₁ : Equiv.Perm.sign q₁ =
+      (-1 : ℤˣ) ^ (n - (p₁ : ℕ)) := by
+    exact Fin.sign_cycleIcc_of_le (Fin.le_last p₁)
+  have hq₂ : Equiv.Perm.sign q₂ =
+      (-1 : ℤˣ) ^ (n - (p₂ : ℕ)) := by
+    exact Fin.sign_cycleIcc_of_le (Fin.le_last p₂)
+  let C : ℤˣ := (-1 : ℤˣ) ^ ((p₁ : ℕ) + (p₂ : ℕ))
+  have hfactor : Equiv.Perm.sign q₁ * Equiv.Perm.sign q₂ = C := by
+    rw [hq₁, hq₂]
+    exact negOne_pow_tsub_mul_negOne_pow_tsub
+      (Fin.le_last p₁) (Fin.le_last p₂)
+  have hC : C * C = 1 := by
+    dsimp only [C]
+    rw [← pow_add, ← two_mul, pow_mul]
+    norm_num
+  have hτ : Equiv.Perm.sign τ = C * Equiv.Perm.sign σ := by
+    calc
+      Equiv.Perm.sign τ = Equiv.Perm.sign ρ := hρτ.symm
+      _ = Equiv.Perm.sign q₂ * Equiv.Perm.sign σ * Equiv.Perm.sign q₁ := hρ
+      _ = (Equiv.Perm.sign q₁ * Equiv.Perm.sign q₂) *
+          Equiv.Perm.sign σ := by ac_rfl
+      _ = C * Equiv.Perm.sign σ := by rw [hfactor]
+  change Equiv.Perm.sign σ = Equiv.Perm.sign τ * _
+  have hp₁ : (p₁ : ℕ) = incidenceIndex r₁ s v :=
+    orderPositionOfCard_eq_incidenceIndex r₁ s hs v hv
+  have hp₂ : (p₂ : ℕ) = incidenceIndex r₂ s v :=
+    orderPositionOfCard_eq_incidenceIndex r₂ s hs v hv
+  rw [← hp₁, ← hp₂]
+  change Equiv.Perm.sign σ = Equiv.Perm.sign τ * C
+  calc
+    Equiv.Perm.sign σ = 1 * Equiv.Perm.sign σ := (one_mul _).symm
+    _ = (C * C) * Equiv.Perm.sign σ := by rw [hC]
+    _ = C * (C * Equiv.Perm.sign σ) := by ac_rfl
+    _ = C * Equiv.Perm.sign τ := by rw [hτ]
+    _ = Equiv.Perm.sign τ * C := mul_comm _ _
+
+theorem incidenceSign_mul_self
+    (r : LinearOrder E) (s : Finset E) (v : E) :
+    incidenceSign r s v * incidenceSign r s v = 1 := by
+  unfold incidenceSign
+  rw [← pow_add, ← two_mul, pow_mul]
+  norm_num
+
+open Classical in
+private theorem orderChangeSignOfCard_erase
+    (r₁ r₂ : LinearOrder E) (s : Finset E) {n : ℕ} (hs : s.card = n + 1)
+    (v : E) (hv : v ∈ s)
+    (ht : (@Finset.erase E (Classical.decEq E) s v).card = n) :
+    orderChangeSignOfCard r₁ r₂ s hs =
+      orderChangeSignOfCard r₁ r₂
+          (@Finset.erase E (Classical.decEq E) s v) ht *
+        incidenceSign r₁ s v * incidenceSign r₂ s v := by
+  have h := congrArg (fun z : ℤˣ => (z : ℤ))
+    (sign_orderChangePermutationOfCard_erase r₁ r₂ s hs v hv ht)
+  simpa only [orderChangeSignOfCard, Units.val_mul, Units.val_pow_eq_pow_val,
+    Units.val_neg, Units.val_one, pow_add, incidenceSign, mul_assoc] using h
+
+open Classical in
+theorem orderChangeSign_mul_simplexBoundaryCoefficient
+    (r₁ r₂ : LinearOrder E) {s t : Finset E}
+    (hts : t ⊆ s) (hcard : t.card + 1 = s.card) :
+    orderChangeSign r₁ r₂ s * simplexBoundaryCoefficient r₂ s t =
+      orderChangeSign r₁ r₂ t * simplexBoundaryCoefficient r₁ s t := by
+  obtain ⟨v, hvt, hsv⟩ := Finset.exists_eq_insert_iff.mpr ⟨hts, hcard⟩
+  have hv : v ∈ s := hsv ▸ Finset.mem_insert_self v t
+  have erase_eq (d : DecidableEq E) : @Finset.erase E d s v = t := by
+    rw [← hsv]
+    ext w
+    simp only [Finset.mem_erase, Finset.mem_insert]
+    constructor
+    · rintro ⟨hwv, hwv' | hwt⟩
+      · exact False.elim (hwv hwv')
+      · exact hwt
+    · intro hwt
+      exact ⟨fun hwv => hvt (hwv ▸ hwt), Or.inr hwt⟩
+  have herase : @Finset.erase E (Classical.decEq E) s v = t := erase_eq _
+  have hs : s.card = t.card + 1 := hcard.symm
+  have ht : (@Finset.erase E (Classical.decEq E) s v).card = t.card := by
+    rw [herase]
+  have hsign := orderChangeSignOfCard_erase r₁ r₂ s hs v hv ht
+  rw [orderChangeSignOfCard_eq, orderChangeSignOfCard_eq, herase] at hsign
+  have hcoefficient₁ : simplexBoundaryCoefficient r₁ s t = incidenceSign r₁ s v := by
+    calc
+      simplexBoundaryCoefficient r₁ s t =
+          simplexBoundaryCoefficient r₁ s (@Finset.erase E r₁.toDecidableEq s v) := by
+        rw [erase_eq r₁.toDecidableEq]
+      _ = incidenceSign r₁ s v := simplexBoundaryCoefficient_erase r₁ hv
+  have hcoefficient₂ : simplexBoundaryCoefficient r₂ s t = incidenceSign r₂ s v := by
+    calc
+      simplexBoundaryCoefficient r₂ s t =
+          simplexBoundaryCoefficient r₂ s (@Finset.erase E r₂.toDecidableEq s v) := by
+        rw [erase_eq r₂.toDecidableEq]
+      _ = incidenceSign r₂ s v := simplexBoundaryCoefficient_erase r₂ hv
+  rw [hcoefficient₁, hcoefficient₂, hsign]
+  calc
+    (orderChangeSign r₁ r₂ t * incidenceSign r₁ s v *
+          incidenceSign r₂ s v) * incidenceSign r₂ s v =
+        orderChangeSign r₁ r₂ t * incidenceSign r₁ s v *
+          (incidenceSign r₂ s v * incidenceSign r₂ s v) := by ring
+    _ = orderChangeSign r₁ r₂ t * incidenceSign r₁ s v := by
+      rw [incidenceSign_mul_self, mul_one]
+
+theorem orderChangeSign_eq_one_or_neg_one
+    (r₁ r₂ : LinearOrder E) (s : Finset E) :
+    orderChangeSign r₁ r₂ s = 1 ∨ orderChangeSign r₁ r₂ s = -1 := by
+  rcases Int.units_eq_one_or (Equiv.Perm.sign (orderChangePermutation r₁ r₂ s)) with h | h
+  · left
+    unfold orderChangeSign
+    rw [h]
+    rfl
+  · right
+    unfold orderChangeSign
+    rw [h]
+    rfl
+
+open Classical in
+noncomputable def CoherentOrientation.changeVertexOrder
+    [AddCommGroup E] [Module ℝ E]
+    {n : ℕ} {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces]
+    (o : CoherentOrientation n K) (r : LinearOrder E) :
+    CoherentOrientation n K where
+  vertexOrder := r
+  sign := fun s => o.sign s * orderChangeSign o.vertexOrder r s
+  sign_top := by
+    intro s hs hscard
+    rcases o.sign_top s hs hscard with hs | hs <;>
+      rcases orderChangeSign_eq_one_or_neg_one o.vertexOrder r s with hc | hc <;>
+        simp [hs, hc]
+  coherent := by
+    intro t ht htcard hnotone
+    rw [orientedBoundary_eq_sum_faceCofaces]
+    have hold := o.coherent t ht htcard hnotone
+    rw [orientedBoundary_eq_sum_faceCofaces] at hold
+    calc
+      (∑ s ∈ faceCofaces K t (n + 1),
+          (o.sign s * orderChangeSign o.vertexOrder r s) *
+            simplexBoundaryCoefficient r s t) =
+          ∑ s ∈ faceCofaces K t (n + 1),
+            orderChangeSign o.vertexOrder r t *
+              (o.sign s * simplexBoundaryCoefficient o.vertexOrder s t) := by
+        apply Finset.sum_congr rfl
+        intro s hs
+        obtain ⟨hsK, hscard, hts⟩ := (mem_faceCofaces K).mp hs
+        rw [mul_assoc, orderChangeSign_mul_simplexBoundaryCoefficient
+          o.vertexOrder r hts (by omega)]
+        ring
+      _ = orderChangeSign o.vertexOrder r t *
+          (∑ s ∈ faceCofaces K t (n + 1),
+            o.sign s * simplexBoundaryCoefficient o.vertexOrder s t) := by
+        rw [Finset.mul_sum]
+      _ = 0 := by rw [hold, mul_zero]
+
+open Classical in
+@[instance_reducible]
+noncomputable def barycentricOrientationVertexOrder
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    (K : Geometry.SimplicialComplex ℝ E) (r : LinearOrder E) : LinearOrder E := by
+  let _ := r
+  exact LinearOrder.lift' (relativeOrientationVertexKey K ⊥)
+    (relativeOrientationVertexKey_injective K ⊥)
+
+open Classical in
+theorem barycentricOrientationVertexOrder_centroid_lt_centroid
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    (K : Geometry.SimplicialComplex ℝ E) (r : LinearOrder E)
+    {s t : Finset E} (hsK : s ∈ K.faces) (htK : t ∈ K.faces)
+    (hst : t.card < s.card) :
+    let _ := barycentricOrientationVertexOrder K r
+    s.centroid ℝ id < t.centroid ℝ id := by
+  let _ : LinearOrder E := r
+  have hsbot : s ∉ (⊥ : Geometry.SimplicialComplex ℝ E).faces := by
+    change s ∉ (∅ : Set (Finset E))
+    intro h
+    exact h
+  have htbot : t ∉ (⊥ : Geometry.SimplicialComplex ℝ E).faces := by
+    change t ∉ (∅ : Set (Finset E))
+    intro h
+    exact h
+  change relativeOrientationVertexKey K ⊥ (s.centroid ℝ id) <
+    relativeOrientationVertexKey K ⊥ (t.centroid ℝ id)
+  rw [relativeOrientationVertexKey, relativeOrientationVertexKey,
+    relativeVertexRank_centroid K ⊥ hsK hsbot,
+    relativeVertexRank_centroid K ⊥ htK htbot]
+  change toLex (Sum.inl (toLex (OrderDual.toDual s.card, s.centroid ℝ id))) <
+    toLex (Sum.inl (toLex (OrderDual.toDual t.card, t.centroid ℝ id)))
+  rw [Sum.Lex.inl_lt_inl_iff, Prod.Lex.toLex_lt_toLex]
+  exact Or.inl hst
+
+open Classical in
+theorem barycentricOrientationIncidenceIndex_centroid
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    (K : Geometry.SimplicialComplex ℝ E) (r : LinearOrder E)
+    {m : Finset E} {d : Finset (Finset E)}
+    (h : IsFlag K (insert m d)) (hm : m ∉ d) :
+    incidenceIndex (barycentricOrientationVertexOrder K r)
+      ((insert m d).image (fun s => s.centroid ℝ id)) (m.centroid ℝ id) =
+      (d.filter fun s => m.card < s.card).card := by
+  have hmFlag : m ∈ insert m d := Finset.mem_insert_self m d
+  have hmK : m ∈ K.faces := h.coe_subset_faces (Finset.mem_coe.mpr hmFlag)
+  have hfilter :
+      ((insert m d).image (fun s => s.centroid ℝ id)).filter
+          (fun x => @LT.lt E (barycentricOrientationVertexOrder K r).toLT
+            x (m.centroid ℝ id)) =
+        (d.filter fun s => m.card < s.card).image (fun s => s.centroid ℝ id) := by
+    ext x
+    constructor
+    · intro hx
+      obtain ⟨hxmem, hxlt⟩ := Finset.mem_filter.mp hx
+      obtain ⟨s, hs, rfl⟩ := Finset.mem_image.mp hxmem
+      rcases Finset.mem_insert.mp hs with hsm | hsd
+      · subst s
+        let _ : LinearOrder E := barycentricOrientationVertexOrder K r
+        exact False.elim (lt_irrefl _ hxlt)
+      · have hsK : s ∈ K.faces := h.coe_subset_faces
+          (Finset.mem_coe.mpr (Finset.mem_insert_of_mem hsd))
+        have hcard : m.card < s.card := by
+          by_contra hnot
+          have hle : s.card ≤ m.card := Nat.le_of_not_gt hnot
+          have hne : s.card ≠ m.card := by
+            intro heq
+            rcases h.subset_or_subset
+              (Finset.mem_coe.mpr (Finset.mem_insert_of_mem hsd))
+              (Finset.mem_coe.mpr hmFlag) with hsm | hms
+            · exact hm ((Finset.eq_of_subset_of_card_le hsm heq.ge).symm ▸ hsd)
+            · exact hm (Finset.eq_of_subset_of_card_le hms heq.le ▸ hsd)
+          have hslt : s.card < m.card := lt_of_le_of_ne hle hne
+          have hreverse := barycentricOrientationVertexOrder_centroid_lt_centroid
+            K r hmK hsK hslt
+          let _ : LinearOrder E := barycentricOrientationVertexOrder K r
+          exact (not_lt_of_ge hxlt.le)
+            hreverse
+        exact Finset.mem_image.mpr ⟨s, Finset.mem_filter.mpr ⟨hsd, hcard⟩, rfl⟩
+    · intro hx
+      obtain ⟨s, hs, rfl⟩ := Finset.mem_image.mp hx
+      obtain ⟨hsd, hcard⟩ := Finset.mem_filter.mp hs
+      have hsK : s ∈ K.faces := h.coe_subset_faces
+        (Finset.mem_coe.mpr (Finset.mem_insert_of_mem hsd))
+      exact Finset.mem_filter.mpr ⟨
+        Finset.mem_image_of_mem _ (Finset.mem_insert_of_mem hsd),
+        barycentricOrientationVertexOrder_centroid_lt_centroid
+          K r hsK hmK hcard⟩
+  unfold incidenceIndex
+  change (((insert m d).image (fun s => s.centroid ℝ id)).filter
+    (fun x => @LT.lt E (barycentricOrientationVertexOrder K r).toLT
+      x (m.centroid ℝ id))).card = _
+  calc
+    _ = ((d.filter fun s => m.card < s.card).image
+        (fun s => s.centroid ℝ id)).card := congrArg Finset.card hfilter
+    _ = (d.filter fun s => m.card < s.card).card :=
+      Finset.card_image_of_injOn
+        ((injOn_faces_of_mem_openSimplex K
+          (centroid_mem_openSimplex_of_mem_faces K)).mono
+            (fun s hs => h.coe_subset_faces
+              (Finset.mem_coe.mpr (Finset.mem_insert_of_mem
+                (Finset.mem_filter.mp (Finset.mem_coe.mp hs)).1))))
+
+noncomputable def adjacentBarycentricCommonFace
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    (r : LinearOrder E) (T : Finset E) {n : ℕ} (hT : T.card = n + 2)
+    (σ : Equiv.Perm (Fin (n + 2))) (i : Fin (n + 1)) : Finset E :=
+  (adjacentFaceCommonFlag r T hT σ i).image (fun s => s.centroid ℝ id)
+
+open Classical in
+theorem adjacentFaceCommonFlag_subset_permutedFaceFlag
+    (r : LinearOrder E) (T : Finset E) {n : ℕ} (hT : T.card = n + 2)
+    (σ : Equiv.Perm (Fin (n + 2))) (i : Fin (n + 1)) :
+    adjacentFaceCommonFlag r T hT σ i ⊆ permutedFaceFlag r T hT σ := by
+  intro s hs
+  rw [(permutedFaceFlag_adjacent_decomposition r T hT σ i).1]
+  exact Finset.mem_insert_of_mem hs
+
+open Classical in
+theorem adjacentBarycentricCommonFace_card
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    (K : Geometry.SimplicialComplex ℝ E) (r : LinearOrder E)
+    {T : Finset E} (hTK : T ∈ K.faces) {n : ℕ} (hT : T.card = n + 2)
+    (σ : Equiv.Perm (Fin (n + 2))) (i : Fin (n + 1)) :
+    (adjacentBarycentricCommonFace r T hT σ i).card = n + 1 := by
+  unfold adjacentBarycentricCommonFace
+  rw [Finset.card_image_of_injOn]
+  · exact adjacentFaceCommonFlag_card r T hT σ i
+  · exact (injOn_faces_of_mem_openSimplex K
+      (centroid_mem_openSimplex_of_mem_faces K)).mono (fun s hs =>
+        (permutedFaceFlag_isFlag K r hTK hT σ).coe_subset_faces
+          (Finset.mem_coe.mpr
+            (adjacentFaceCommonFlag_subset_permutedFaceFlag r T hT σ i
+              (Finset.mem_coe.mp hs))))
+
+open Classical in
+theorem adjacentBarycentricCommonFace_mem
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    (K : Geometry.SimplicialComplex ℝ E) (r : LinearOrder E)
+    {T : Finset E} (hTK : T ∈ K.faces) {n : ℕ} (hT : T.card = n + 2)
+    (σ : Equiv.Perm (Fin (n + 2))) (i : Fin (n + 1)) :
+    adjacentBarycentricCommonFace r T hT σ i ∈
+      (barycentricSubdivision K).faces := by
+  apply (barycentricSubdivision K).down_closed
+    (permutedBarycentricFace_mem K r hTK hT σ)
+  · exact Finset.image_mono (fun s => s.centroid ℝ id)
+      (adjacentFaceCommonFlag_subset_permutedFaceFlag r T hT σ i)
+  · rw [Finset.nonempty_iff_ne_empty]
+    intro hzero
+    have hcard := adjacentBarycentricCommonFace_card K r hTK hT σ i
+    rw [hzero, Finset.card_empty] at hcard
+    omega
+
+open Classical in
+theorem permutedBarycentricFace_adjacent_decomposition
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    (r : LinearOrder E) (T : Finset E) {n : ℕ} (hT : T.card = n + 2)
+    (σ : Equiv.Perm (Fin (n + 2))) (i : Fin (n + 1)) :
+    let D := adjacentBarycentricCommonFace r T hT σ i
+    permutedBarycentricFace r T hT σ =
+        insert ((permutedFacePrefix r T hT σ i.castSucc).centroid ℝ id) D ∧
+      permutedBarycentricFace r T hT (adjacentPermutedFaceSwap σ i) =
+        insert ((permutedFacePrefix r T hT (adjacentPermutedFaceSwap σ i)
+          i.castSucc).centroid ℝ id) D := by
+  obtain ⟨h₁, h₂⟩ := permutedFaceFlag_adjacent_decomposition r T hT σ i
+  constructor
+  · unfold permutedBarycentricFace adjacentBarycentricCommonFace adjacentFaceCommonFlag
+    rw [h₁, Finset.image_insert]
+  · unfold permutedBarycentricFace adjacentBarycentricCommonFace adjacentFaceCommonFlag
+    rw [h₂, Finset.image_insert]
+
+open Classical in
+theorem permutedFacePrefix_centroid_not_mem_adjacentBarycentricCommonFace
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    (K : Geometry.SimplicialComplex ℝ E) (r : LinearOrder E)
+    {T : Finset E} (hTK : T ∈ K.faces) {n : ℕ} (hT : T.card = n + 2)
+    (σ : Equiv.Perm (Fin (n + 2))) (i : Fin (n + 1)) :
+    (permutedFacePrefix r T hT σ i.castSucc).centroid ℝ id ∉
+      adjacentBarycentricCommonFace r T hT σ i := by
+  intro hm
+  obtain ⟨s, hs, heq⟩ := Finset.mem_image.mp hm
+  have hflag := permutedFaceFlag_isFlag K r hTK hT σ
+  have hpMem : permutedFacePrefix r T hT σ i.castSucc ∈
+      permutedFaceFlag r T hT σ :=
+    Finset.mem_image.mpr ⟨i.castSucc, Finset.mem_univ _, rfl⟩
+  have hsMem := adjacentFaceCommonFlag_subset_permutedFaceFlag r T hT σ i hs
+  have hpK := hflag.coe_subset_faces (Finset.mem_coe.mpr hpMem)
+  have hsK := hflag.coe_subset_faces (Finset.mem_coe.mpr hsMem)
+  have hps := injOn_faces_of_mem_openSimplex K
+    (centroid_mem_openSimplex_of_mem_faces K) hpK hsK heq.symm
+  exact permutedFacePrefix_not_mem_adjacentFaceCommonFlag r T hT σ i (hps ▸ hs)
+
+open Classical in
+theorem adjacentPermutedFacePrefix_centroid_not_mem_adjacentBarycentricCommonFace
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    (K : Geometry.SimplicialComplex ℝ E) (r : LinearOrder E)
+    {T : Finset E} (hTK : T ∈ K.faces) {n : ℕ} (hT : T.card = n + 2)
+    (σ : Equiv.Perm (Fin (n + 2))) (i : Fin (n + 1)) :
+    (permutedFacePrefix r T hT (adjacentPermutedFaceSwap σ i) i.castSucc).centroid ℝ id ∉
+      adjacentBarycentricCommonFace r T hT σ i := by
+  intro hm
+  obtain ⟨s, hs, heq⟩ := Finset.mem_image.mp hm
+  have hflag := permutedFaceFlag_isFlag K r hTK hT (adjacentPermutedFaceSwap σ i)
+  have hpMem : permutedFacePrefix r T hT (adjacentPermutedFaceSwap σ i) i.castSucc ∈
+      permutedFaceFlag r T hT (adjacentPermutedFaceSwap σ i) :=
+    Finset.mem_image.mpr ⟨i.castSucc, Finset.mem_univ _, rfl⟩
+  have hsMem : s ∈ permutedFaceFlag r T hT (adjacentPermutedFaceSwap σ i) := by
+    rw [(permutedFaceFlag_adjacent_decomposition r T hT σ i).2]
+    exact Finset.mem_insert_of_mem hs
+  have hpK := hflag.coe_subset_faces (Finset.mem_coe.mpr hpMem)
+  have hsK := hflag.coe_subset_faces (Finset.mem_coe.mpr hsMem)
+  have hps := injOn_faces_of_mem_openSimplex K
+    (centroid_mem_openSimplex_of_mem_faces K) hpK hsK heq.symm
+  exact adjacentPermutedFacePrefix_not_mem_adjacentFaceCommonFlag
+    r T hT σ i (hps ▸ hs)
+
+open Classical in
+theorem permutedBarycentricFace_ne_adjacentPermutedFaceSwap
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    (K : Geometry.SimplicialComplex ℝ E) (r : LinearOrder E)
+    {T : Finset E} (hTK : T ∈ K.faces) {n : ℕ} (hT : T.card = n + 2)
+    (σ : Equiv.Perm (Fin (n + 2))) (i : Fin (n + 1)) :
+    permutedBarycentricFace r T hT σ ≠
+      permutedBarycentricFace r T hT (adjacentPermutedFaceSwap σ i) := by
+  intro heq
+  let A := permutedFacePrefix r T hT σ i.castSucc
+  let B := permutedFacePrefix r T hT (adjacentPermutedFaceSwap σ i) i.castSucc
+  let D := adjacentBarycentricCommonFace r T hT σ i
+  have hdecomp := permutedBarycentricFace_adjacent_decomposition r T hT σ i
+  have hA : A.centroid ℝ id ∈ insert (A.centroid ℝ id) D := Finset.mem_insert_self _ _
+  rw [← hdecomp.1, heq, hdecomp.2] at hA
+  rcases Finset.mem_insert.mp hA with hAB | hAD
+  · have hflag := permutedFaceFlag_isFlag K r hTK hT σ
+    have hflag' := permutedFaceFlag_isFlag K r hTK hT (adjacentPermutedFaceSwap σ i)
+    have hAK : A ∈ K.faces := hflag.coe_subset_faces (Finset.mem_coe.mpr
+      (Finset.mem_image.mpr ⟨i.castSucc, Finset.mem_univ _, rfl⟩))
+    have hBK : B ∈ K.faces := hflag'.coe_subset_faces (Finset.mem_coe.mpr
+      (Finset.mem_image.mpr ⟨i.castSucc, Finset.mem_univ _, rfl⟩))
+    have hAB' := injOn_faces_of_mem_openSimplex K
+      (centroid_mem_openSimplex_of_mem_faces K) hAK hBK hAB
+    exact adjacentFacePrefixes_ne r T hT σ i hAB'
+  · exact permutedFacePrefix_centroid_not_mem_adjacentBarycentricCommonFace
+      K r hTK hT σ i hAD
+
+open Classical in
+theorem simplexBoundaryCoefficient_permutedBarycentricFace_adjacent
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    (K : Geometry.SimplicialComplex ℝ E) (r : LinearOrder E)
+    {T : Finset E} (hTK : T ∈ K.faces) {n : ℕ} (hT : T.card = n + 2)
+    (σ : Equiv.Perm (Fin (n + 2))) (i : Fin (n + 1)) :
+    simplexBoundaryCoefficient (barycentricOrientationVertexOrder K r)
+        (permutedBarycentricFace r T hT σ)
+        (adjacentBarycentricCommonFace r T hT σ i) =
+      simplexBoundaryCoefficient (barycentricOrientationVertexOrder K r)
+        (permutedBarycentricFace r T hT (adjacentPermutedFaceSwap σ i))
+        (adjacentBarycentricCommonFace r T hT σ i) := by
+  let A := permutedFacePrefix r T hT σ i.castSucc
+  let B := permutedFacePrefix r T hT (adjacentPermutedFaceSwap σ i) i.castSucc
+  let d := adjacentFaceCommonFlag r T hT σ i
+  let D := adjacentBarycentricCommonFace r T hT σ i
+  have hdecomp := permutedBarycentricFace_adjacent_decomposition r T hT σ i
+  have hAnot : A.centroid ℝ id ∉ D :=
+    permutedFacePrefix_centroid_not_mem_adjacentBarycentricCommonFace
+      K r hTK hT σ i
+  have hBnot : B.centroid ℝ id ∉ D :=
+    adjacentPermutedFacePrefix_centroid_not_mem_adjacentBarycentricCommonFace
+      K r hTK hT σ i
+  have hflagEqA : permutedFaceFlag r T hT σ = insert A d := by
+    simpa only [A, d, adjacentFaceCommonFlag] using
+      (permutedFaceFlag_adjacent_decomposition r T hT σ i).1
+  have hflagEqB : permutedFaceFlag r T hT (adjacentPermutedFaceSwap σ i) =
+      insert B d := by
+    simpa only [B, d, adjacentFaceCommonFlag] using
+      (permutedFaceFlag_adjacent_decomposition r T hT σ i).2
+  have hflagA : IsFlag K (insert A d) := by
+    rw [← hflagEqA]
+    exact permutedFaceFlag_isFlag K r hTK hT σ
+  have hflagB : IsFlag K (insert B d) := by
+    rw [← hflagEqB]
+    exact permutedFaceFlag_isFlag K r hTK hT (adjacentPermutedFaceSwap σ i)
+  have hAnotd : A ∉ d := permutedFacePrefix_not_mem_adjacentFaceCommonFlag r T hT σ i
+  have hBnotd : B ∉ d :=
+    adjacentPermutedFacePrefix_not_mem_adjacentFaceCommonFlag r T hT σ i
+  have hindexA := barycentricOrientationIncidenceIndex_centroid K r hflagA hAnotd
+  have hindexB := barycentricOrientationIncidenceIndex_centroid K r hflagB hBnotd
+  have himageA : (insert A d).image (fun s => s.centroid ℝ id) =
+      insert (A.centroid ℝ id) D := by
+    rw [Finset.image_insert]
+    rfl
+  have himageB : (insert B d).image (fun s => s.centroid ℝ id) =
+      insert (B.centroid ℝ id) D := by
+    rw [Finset.image_insert]
+    rfl
+  rw [himageA] at hindexA
+  rw [himageB] at hindexB
+  have hABcard : A.card = B.card := by
+    rw [permutedFacePrefix_card r T hT σ i.castSucc,
+      permutedFacePrefix_card r T hT (adjacentPermutedFaceSwap σ i) i.castSucc]
+  have hfilter : (d.filter fun s => A.card < s.card).card =
+      (d.filter fun s => B.card < s.card).card := by rw [hABcard]
+  rw [hdecomp.1, hdecomp.2]
+  change simplexBoundaryCoefficient (barycentricOrientationVertexOrder K r)
+      (insert (A.centroid ℝ id) D) D =
+    simplexBoundaryCoefficient (barycentricOrientationVertexOrder K r)
+      (insert (B.centroid ℝ id) D) D
+  have hcoefficientA := simplexBoundaryCoefficient_insert
+    (barycentricOrientationVertexOrder K r) hAnot
+  have hcoefficientB := simplexBoundaryCoefficient_insert
+    (barycentricOrientationVertexOrder K r) hBnot
+  have hdec : (barycentricOrientationVertexOrder K r).toDecidableEq =
+      r.toDecidableEq := Subsingleton.elim _ _
+  rw [hdec] at hcoefficientA hcoefficientB
+  rw [hcoefficientA, hcoefficientB]
+  unfold incidenceSign
+  rw [hindexA, hindexB, hfilter]
+
+open Classical in
+theorem barycentricFlagNormalizedSign_adjacent
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    (r : LinearOrder E)
+    {n : ℕ} {K : Geometry.SimplicialComplex ℝ E}
+    [Finite K.faces] [Finite (barycentricSubdivision K).faces]
+    (o : CoherentOrientation (n + 1) (barycentricSubdivision K))
+    (hK : IsCombinatorialManifoldWithBoundary (n + 1) K)
+    {T : Finset E} (hTK : T ∈ K.faces)
+    (hT : T.card = n + 2) (σ : Equiv.Perm (Fin (n + 2)))
+    (i : Fin (n + 1)) :
+    barycentricFlagNormalizedSign r
+        (o.changeVertexOrder (barycentricOrientationVertexOrder K r)) hT σ =
+      barycentricFlagNormalizedSign r
+        (o.changeVertexOrder (barycentricOrientationVertexOrder K r)) hT
+          (adjacentPermutedFaceSwap σ i) := by
+  let F := permutedBarycentricFace r T hT σ
+  let G := permutedBarycentricFace r T hT (adjacentPermutedFaceSwap σ i)
+  let D := adjacentBarycentricCommonFace r T hT σ i
+  let oB := o.changeVertexOrder (barycentricOrientationVertexOrder K r)
+  have hF : F ∈ (barycentricSubdivision K).faces :=
+    permutedBarycentricFace_mem K r hTK hT σ
+  have hG : G ∈ (barycentricSubdivision K).faces :=
+    permutedBarycentricFace_mem K r hTK hT (adjacentPermutedFaceSwap σ i)
+  have hD : D ∈ (barycentricSubdivision K).faces :=
+    adjacentBarycentricCommonFace_mem K r hTK hT σ i
+  have hFcard : F.card = n + 2 := permutedBarycentricFace_card K r hTK hT σ
+  have hGcard : G.card = n + 2 :=
+    permutedBarycentricFace_card K r hTK hT (adjacentPermutedFaceSwap σ i)
+  have hDcard : D.card = n + 1 := adjacentBarycentricCommonFace_card K r hTK hT σ i
+  have hdecomp := permutedBarycentricFace_adjacent_decomposition r T hT σ i
+  have hDF : D ⊆ F := by
+    change D ⊆ permutedBarycentricFace r T hT σ
+    rw [hdecomp.1]
+    exact Finset.subset_insert _ _
+  have hDG : D ⊆ G := by
+    change D ⊆ permutedBarycentricFace r T hT (adjacentPermutedFaceSwap σ i)
+    rw [hdecomp.2]
+    exact Finset.subset_insert _ _
+  have hFco : F ∈ faceCofaces (barycentricSubdivision K) D (n + 2) :=
+    (mem_faceCofaces (barycentricSubdivision K)).mpr ⟨hF, hFcard, hDF⟩
+  have hGco : G ∈ faceCofaces (barycentricSubdivision K) D (n + 2) :=
+    (mem_faceCofaces (barycentricSubdivision K)).mpr ⟨hG, hGcard, hDG⟩
+  have hFG : F ≠ G :=
+    permutedBarycentricFace_ne_adjacentPermutedFaceSwap K r hTK hT σ i
+  have hnotone : (faceCofaces (barycentricSubdivision K) D (n + 2)).card ≠ 1 := by
+    intro hone
+    obtain ⟨Q, hQ⟩ := Finset.card_eq_one.mp hone
+    have hFQ : F = Q := by simpa [hQ] using hFco
+    have hGQ : G = Q := by simpa [hQ] using hGco
+    exact hFG (hFQ.trans hGQ.symm)
+  have hBary :
+      @barycentricSubdivision E _ _ (Classical.decEq E) K =
+        @barycentricSubdivision E _ _ r.toDecidableEq K :=
+    congrArg (fun d : DecidableEq E => @barycentricSubdivision E _ _ d K)
+      (Subsingleton.elim _ _)
+  have hR : IsCombinatorialManifoldWithBoundary (n + 1) (barycentricSubdivision K) :=
+    by
+      have hR' := hK.barycentricSubdivision
+      rw [hBary] at hR'
+      exact hR'
+  have htwo : (faceCofaces (barycentricSubdivision K) D (n + 2)).card = 2 :=
+    (hR.card_faceCofaces_eq_one_or_two (barycentricSubdivision K) hD hDcard).resolve_left hnotone
+  have hpairSub : ({F, G} : Finset (Finset E)) ⊆
+      faceCofaces (barycentricSubdivision K) D (n + 2) := by
+    simp only [Finset.insert_subset_iff, Finset.singleton_subset_iff]
+    exact ⟨hFco, hGco⟩
+  have hcofaces : faceCofaces (barycentricSubdivision K) D (n + 2) = {F, G} := by
+    apply (Finset.eq_of_subset_of_card_le hpairSub ?_).symm
+    rw [htwo]
+    simp [hFG]
+  have hnotone' :
+      (faceCofaces (barycentricSubdivision K) D ((n + 1) + 1)).card ≠ 1 := by
+    simpa only [Nat.add_assoc, Nat.reduceAdd] using hnotone
+  have hzero := oB.coherent D hD hDcard hnotone'
+  rw [orientedBoundary_eq_sum_faceCofaces,
+    show (n + 1) + 1 = n + 2 by omega, hcofaces] at hzero
+  simp only [Finset.sum_insert, Finset.sum_singleton, Finset.mem_singleton,
+    hFG, not_false_eq_true] at hzero
+  have hcoefficient : simplexBoundaryCoefficient oB.vertexOrder F D =
+      simplexBoundaryCoefficient oB.vertexOrder G D := by
+    exact simplexBoundaryCoefficient_permutedBarycentricFace_adjacent
+      K r hTK hT σ i
+  have hcoefficientNe : simplexBoundaryCoefficient oB.vertexOrder F D ≠ 0 := by
+    rcases simplexBoundaryCoefficient_eq_one_or_neg_one oB.vertexOrder hDF (by omega) with h | h
+    · rw [h]
+      norm_num
+    · rw [h]
+      norm_num
+  have hproduct :
+      (oB.sign F + oB.sign G) * simplexBoundaryCoefficient oB.vertexOrder F D = 0 := by
+    rw [← hcoefficient] at hzero
+    rw [add_mul]
+    exact hzero
+  have hsum : oB.sign F + oB.sign G = 0 :=
+    (mul_eq_zero.mp hproduct).resolve_right hcoefficientNe
+  have hsign : oB.sign G = -oB.sign F := by omega
+  have hswap : i.castSucc ≠ i.succ := ne_of_lt i.castSucc_lt_succ
+  have hpermUnits : Equiv.Perm.sign (adjacentPermutedFaceSwap σ i) =
+      -Equiv.Perm.sign σ := by
+    unfold adjacentPermutedFaceSwap
+    rw [Equiv.Perm.sign_mul, Equiv.Perm.sign_swap hswap]
+    simp
+  have hperm := congrArg (fun u : ℤˣ => (u : ℤ)) hpermUnits
+  have hpermInt : (Equiv.Perm.sign (adjacentPermutedFaceSwap σ i) : ℤ) =
+      -(Equiv.Perm.sign σ : ℤ) := by
+    simpa only [Units.val_neg] using hperm
+  unfold barycentricFlagNormalizedSign
+  change oB.sign F * (Equiv.Perm.sign σ : ℤ) =
+    oB.sign G * (Equiv.Perm.sign (adjacentPermutedFaceSwap σ i) : ℤ)
+  rw [hsign, hpermInt]
+  ring
+
+open Classical in
+theorem barycentricFlagNormalizedSign_eq
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    (r : LinearOrder E)
+    {n : ℕ} {K : Geometry.SimplicialComplex ℝ E}
+    [Finite K.faces] [Finite (barycentricSubdivision K).faces]
+    (o : CoherentOrientation (n + 1) (barycentricSubdivision K))
+    (hK : IsCombinatorialManifoldWithBoundary (n + 1) K)
+    {T : Finset E} (hTK : T ∈ K.faces) (hT : T.card = n + 2)
+    (σ τ : Equiv.Perm (Fin (n + 2))) :
+    barycentricFlagNormalizedSign r
+        (o.changeVertexOrder (barycentricOrientationVertexOrder K r)) hT σ =
+      barycentricFlagNormalizedSign r
+        (o.changeVertexOrder (barycentricOrientationVertexOrder K r)) hT τ := by
+  let oB := o.changeVertexOrder (barycentricOrientationVertexOrder K r)
+  let value : Equiv.Perm (Fin (n + 2)) → ℤ :=
+    fun ρ => barycentricFlagNormalizedSign r oB hT ρ
+  let P : Equiv.Perm (Fin (n + 2)) → Prop :=
+    fun q => ∀ ρ, value (ρ * q) = value ρ
+  have hgenerator : ∀ q ∈ Set.range
+      (fun i : Fin (n + 1) => Equiv.swap i.castSucc i.succ), P q := by
+    intro q hq
+    obtain ⟨i, rfl⟩ := hq
+    intro ρ
+    change barycentricFlagNormalizedSign r oB hT
+        (adjacentPermutedFaceSwap ρ i) =
+      barycentricFlagNormalizedSign r oB hT ρ
+    exact (barycentricFlagNormalizedSign_adjacent r o hK hTK hT ρ i).symm
+  have hone : P 1 := by
+    intro ρ
+    rw [mul_one]
+  have hmul : ∀ a b, P a → P b → P (a * b) := by
+    intro a b ha hb ρ
+    rw [← mul_assoc, hb (ρ * a), ha ρ]
+  have hclosure : Submonoid.closure (Set.range
+      (fun i : Fin (n + 1) => Equiv.swap i.castSucc i.succ)) = ⊤ := by
+    simpa only [Nat.add_assoc, Nat.reduceAdd] using
+      Equiv.Perm.mclosure_swap_castSucc_succ (n + 1)
+  have hall (q : Equiv.Perm (Fin (n + 2))) : value q = value 1 := by
+    have hq : q ∈ Submonoid.closure (Set.range
+        (fun i : Fin (n + 1) => Equiv.swap i.castSucc i.succ)) := by
+      rw [hclosure]
+      exact Submonoid.mem_top q
+    have hP : P q := Submonoid.closure_induction hgenerator hone
+      (fun x y _ _ hx hy => hmul x y hx hy) hq
+    simpa only [one_mul] using hP 1
+  exact (hall σ).trans (hall τ).symm
+
+open Classical in
+theorem permutedFacePrefix_cycleIcc_orderPosition_castSucc
+    (r : LinearOrder E) (s t : Finset E) {n : ℕ}
+    (hs : s.card = n + 2) {v : E} (hv : v ∈ s)
+    (herase : @Finset.erase E (Classical.decEq E) s v = t)
+    (ht : t.card = n + 1) (k : Fin (n + 1)) :
+    permutedFacePrefix r s hs
+        (Fin.cycleIcc (orderPositionOfCard r s hs v hv) (Fin.last (n + 1)))
+        k.castSucc =
+      permutedFacePrefix r t ht 1 k := by
+  subst t
+  let q := Fin.cycleIcc (orderPositionOfCard r s hs v hv) (Fin.last (n + 1))
+  have hvalue (j : Fin (n + 1)) :
+      orderValueOfCard r s hs (q j.castSucc) =
+        orderValueOfCard r (@Finset.erase E (Classical.decEq E) s v) ht j := by
+    exact (orderValueOfCard_erase_apply r s hs hv ht j).symm
+  unfold permutedFacePrefix
+  simp only [Equiv.Perm.one_apply]
+  change (Finset.Iic k.castSucc).image (fun i => orderValueOfCard r s hs (q i)) =
+    (Finset.Iic k).image (fun i =>
+      orderValueOfCard r (@Finset.erase E (Classical.decEq E) s v) ht i)
+  rw [← Fin.finsetImage_castSucc_Iic k, Finset.image_image]
+  apply Finset.image_congr
+  intro j hj
+  exact hvalue j
+
+open Classical in
+theorem permutedFacePrefix_last_eq
+    (r : LinearOrder E) (s : Finset E) {N : ℕ} (hs : s.card = N + 1)
+    (σ : Equiv.Perm (Fin (N + 1))) :
+    permutedFacePrefix r s hs σ (Fin.last N) = s := by
+  apply Finset.eq_of_subset_of_card_le
+  · exact permutedFacePrefix_subset r s hs σ (Fin.last N)
+  · rw [permutedFacePrefix_card, hs]
+    simp
+
+open Classical in
+theorem permutedFaceFlag_cycleIcc_orderPosition
+    (r : LinearOrder E) (s t : Finset E) {n : ℕ}
+    (hs : s.card = n + 2) {v : E} (hv : v ∈ s)
+    (herase : @Finset.erase E (Classical.decEq E) s v = t)
+    (ht : t.card = n + 1) :
+    let q := Fin.cycleIcc (orderPositionOfCard r s hs v hv) (Fin.last (n + 1))
+    permutedFaceFlag r s hs q = insert s (permutedFaceFlag r t ht 1) := by
+  intro q
+  unfold permutedFaceFlag
+  let f := permutedFacePrefix r s hs q
+  calc
+    Finset.univ.image f =
+        (insert (Fin.last (n + 1))
+          (Finset.univ.image (Fin.last (n + 1)).succAbove)).image f := by
+      rw [Fin.image_succAbove_univ]
+      simp
+    _ = insert (f (Fin.last (n + 1)))
+        (Finset.univ.image (fun k : Fin (n + 1) => f k.castSucc)) := by
+      rw [Finset.image_insert, Finset.image_image]
+      congr 2
+      funext k
+      simp only [Function.comp_apply, Fin.succAbove_last_apply]
+    _ = insert s (Finset.univ.image
+        (permutedFacePrefix r t ht (1 : Equiv.Perm (Fin (n + 1))))) := by
+      rw [show f (Fin.last (n + 1)) = s by
+        exact permutedFacePrefix_last_eq r s hs q]
+      congr 1
+      apply Finset.image_congr
+      intro k hk
+      exact permutedFacePrefix_cycleIcc_orderPosition_castSucc
+        r s t hs hv herase ht k
+
+open Classical in
+theorem permutedBarycentricFace_cycleIcc_orderPosition
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    (r : LinearOrder E) (s t : Finset E) {n : ℕ}
+    (hs : s.card = n + 2) {v : E} (hv : v ∈ s)
+    (herase : @Finset.erase E (Classical.decEq E) s v = t)
+    (ht : t.card = n + 1) :
+    let q := Fin.cycleIcc (orderPositionOfCard r s hs v hv) (Fin.last (n + 1))
+    permutedBarycentricFace r s hs q =
+      insert (s.centroid ℝ id) (permutedBarycentricFace r t ht 1) := by
+  intro q
+  unfold permutedBarycentricFace
+  rw [permutedFaceFlag_cycleIcc_orderPosition r s t hs hv herase ht,
+    Finset.image_insert]
+
+open Classical in
+theorem simplexBoundaryCoefficient_permutedBarycentricFace_cycleIcc_eq_one
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    (K : Geometry.SimplicialComplex ℝ E) (r : LinearOrder E)
+    {s t : Finset E} {n : ℕ} (hsK : s ∈ K.faces) (htK : t ∈ K.faces)
+    (hs : s.card = n + 2) {v : E} (hv : v ∈ s)
+    (herase : @Finset.erase E (Classical.decEq E) s v = t)
+    (ht : t.card = n + 1) :
+    let q := Fin.cycleIcc (orderPositionOfCard r s hs v hv) (Fin.last (n + 1))
+    simplexBoundaryCoefficient (barycentricOrientationVertexOrder K r)
+        (permutedBarycentricFace r s hs q)
+        (permutedBarycentricFace r t ht 1) = 1 := by
+  intro q
+  let d := permutedFaceFlag r t ht (1 : Equiv.Perm (Fin (n + 1)))
+  let D := permutedBarycentricFace r t ht (1 : Equiv.Perm (Fin (n + 1)))
+  have hface : permutedBarycentricFace r s hs q = insert (s.centroid ℝ id) D :=
+    permutedBarycentricFace_cycleIcc_orderPosition r s t hs hv herase ht
+  have hDcard : D.card = n + 1 := permutedBarycentricFace_card K r htK ht 1
+  have hfaceCard : (permutedBarycentricFace r s hs q).card = n + 2 :=
+    permutedBarycentricFace_card K r hsK hs q
+  have hcentroidNot : s.centroid ℝ id ∉ D := by
+    intro hmem
+    rw [hface, Finset.card_insert_of_mem hmem, hDcard] at hfaceCard
+    omega
+  have hflag : IsFlag K (insert s d) := by
+    have hflag' := permutedFaceFlag_isFlag K r hsK hs q
+    rw [permutedFaceFlag_cycleIcc_orderPosition r s t hs hv herase ht] at hflag'
+    exact hflag'
+  have hsnot : s ∉ d := by
+    intro hsd
+    exact hcentroidNot (Finset.mem_image_of_mem (fun u => u.centroid ℝ id) hsd)
+  have hindex := barycentricOrientationIncidenceIndex_centroid K r hflag hsnot
+  have himage : (insert s d).image (fun u => u.centroid ℝ id) =
+      insert (s.centroid ℝ id) D := by
+    rw [Finset.image_insert]
+    rfl
+  rw [himage] at hindex
+  have hfilter : (d.filter fun u => s.card < u.card) = ∅ := by
+    ext u
+    constructor
+    · intro hu
+      exfalso
+      have hu' := Finset.mem_filter.mp hu
+      have huFlag := hu'.1
+      have huCard := hu'.2
+      change u ∈ permutedFaceFlag r t ht 1 at huFlag
+      obtain ⟨k, -, huk⟩ := Finset.mem_image.mp huFlag
+      have hcardle := Finset.card_le_card
+        (permutedFacePrefix_subset r t ht 1 k)
+      rw [huk] at hcardle
+      exact (not_lt_of_ge (hcardle.trans (by omega))) huCard
+    · simp
+  have hcoefficient := simplexBoundaryCoefficient_insert
+    (barycentricOrientationVertexOrder K r) hcentroidNot
+  change simplexBoundaryCoefficient (barycentricOrientationVertexOrder K r)
+      (permutedBarycentricFace r s hs q) D = 1
+  rw [hface]
+  have hdec : (barycentricOrientationVertexOrder K r).toDecidableEq =
+      r.toDecidableEq := Subsingleton.elim _ _
+  have hinsert :
+      @insert E (Finset E)
+          (@Finset.instInsert E (barycentricOrientationVertexOrder K r).toDecidableEq)
+          (s.centroid ℝ id) D =
+        @insert E (Finset E) (@Finset.instInsert E r.toDecidableEq)
+          (s.centroid ℝ id) D :=
+    congrArg (fun d : DecidableEq E =>
+      @insert E (Finset E) (@Finset.instInsert E d) (s.centroid ℝ id) D) hdec
+  rw [← hinsert] at hindex
+  rw [← hinsert]
+  rw [hcoefficient]
+  unfold incidenceSign
+  rw [hindex, hfilter]
+  simp
+
+open Classical in
+theorem sign_cycleIcc_orderPosition_mul_simplexBoundaryCoefficient
+    (r : LinearOrder E) {s t : Finset E} {n : ℕ}
+    (hs : s.card = n + 2) {v : E} (hv : v ∈ s)
+    (herase : @Finset.erase E (Classical.decEq E) s v = t) :
+    let q := Fin.cycleIcc (orderPositionOfCard r s hs v hv) (Fin.last (n + 1))
+    (Equiv.Perm.sign q : ℤ) * simplexBoundaryCoefficient r s t =
+      (-1 : ℤ) ^ (n + 1) := by
+  intro q
+  let p := orderPositionOfCard r s hs v hv
+  have hp : (p : ℕ) = incidenceIndex r s v :=
+    orderPositionOfCard_eq_incidenceIndex r s hs v hv
+  have hpLe : (p : ℕ) ≤ n + 1 := Fin.le_last p
+  have hqUnits : Equiv.Perm.sign q = (-1 : ℤˣ) ^ (n + 1 - (p : ℕ)) := by
+    exact Fin.sign_cycleIcc_of_le (Fin.le_last p)
+  have hq := congrArg (fun z : ℤˣ => (z : ℤ)) hqUnits
+  have hqInt : (Equiv.Perm.sign q : ℤ) =
+      (-1 : ℤ) ^ (n + 1 - (p : ℕ)) := by
+    simpa only [Units.val_pow_eq_pow_val, Units.val_neg, Units.val_one] using hq
+  have hdec : r.toDecidableEq = Classical.decEq E := Subsingleton.elim _ _
+  have heraseR : @Finset.erase E r.toDecidableEq s v = t := by
+    rw [hdec]
+    exact herase
+  have hcoefficient : simplexBoundaryCoefficient r s t = incidenceSign r s v := by
+    rw [← heraseR]
+    exact simplexBoundaryCoefficient_erase r hv
+  rw [hqInt, hcoefficient]
+  unfold incidenceSign
+  rw [← hp, ← pow_add, Nat.sub_add_cancel hpLe]
+
+open Classical in
+theorem CoherentOrientation.sign_add_eq_zero_of_faceCofaces_eq_pair
+    [AddCommGroup E] [Module ℝ E]
+    {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces] {n : ℕ}
+    (o : CoherentOrientation (n + 1) K) {t s p : Finset E}
+    (htK : t ∈ K.faces) (ht : t.card = n + 1) (hsp : s ≠ p)
+    (htwo : (faceCofaces K t (n + 2)).card = 2)
+    (hsCoface : s ∈ faceCofaces K t (n + 2))
+    (hpCoface : p ∈ faceCofaces K t (n + 2))
+    (hsCoefficient : simplexBoundaryCoefficient o.vertexOrder s t = 1)
+    (hpCoefficient : simplexBoundaryCoefficient o.vertexOrder p t = 1) :
+    o.sign s + o.sign p = 0 := by
+  have hpairSub : ({s, p} : Finset (Finset E)) ⊆ faceCofaces K t (n + 2) := by
+    simp only [Finset.insert_subset_iff, Finset.singleton_subset_iff]
+    exact ⟨hsCoface, hpCoface⟩
+  have hcofaces : faceCofaces K t (n + 2) = {s, p} := by
+    apply (Finset.eq_of_subset_of_card_le hpairSub ?_).symm
+    rw [htwo]
+    simp [hsp]
+  have hnotone : (faceCofaces K t ((n + 1) + 1)).card ≠ 1 := by
+    rw [show (n + 1) + 1 = n + 2 by omega, hcofaces]
+    simp [hsp]
+  have hzero := o.coherent t htK ht hnotone
+  rw [orientedBoundary_eq_sum_faceCofaces,
+    show (n + 1) + 1 = n + 2 by omega, hcofaces] at hzero
+  simp only [Finset.sum_insert, Finset.sum_singleton, Finset.mem_singleton,
+    hsp, not_false_eq_true] at hzero
+  rw [hsCoefficient, hpCoefficient, mul_one, mul_one] at hzero
+  exact hzero
+
+open Classical in
+theorem barycentricFlagNormalizedSign_pair_cancel
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    (r : LinearOrder E)
+    {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces]
+    [Finite (PiecewiseLinear.barycentricSubdivision K).faces] {n : ℕ}
+    (o : CoherentOrientation (n + 1) (PiecewiseLinear.barycentricSubdivision K))
+    (hK : IsCombinatorialManifoldWithBoundary (n + 1) K)
+    {t s p : Finset E} (htK : t ∈ K.faces) (hsK : s ∈ K.faces)
+    (hpK : p ∈ K.faces) (ht : t.card = n + 1)
+    (hs : s.card = n + 2) (hp : p.card = n + 2)
+    (hts : t ⊆ s) (htp : t ⊆ p) (hsp : s ≠ p) :
+    barycentricFlagNormalizedSign r
+        (o.changeVertexOrder (barycentricOrientationVertexOrder K r)) hs 1 *
+          simplexBoundaryCoefficient r s t +
+      barycentricFlagNormalizedSign r
+        (o.changeVertexOrder (barycentricOrientationVertexOrder K r)) hp 1 *
+          simplexBoundaryCoefficient r p t = 0 := by
+  obtain ⟨v, hvt, hsv⟩ := Finset.exists_eq_insert_iff.mpr ⟨hts, by omega⟩
+  obtain ⟨w, hwt, hpw⟩ := Finset.exists_eq_insert_iff.mpr ⟨htp, by omega⟩
+  have hv : v ∈ s := hsv ▸ Finset.mem_insert_self v t
+  have hw : w ∈ p := hpw ▸ Finset.mem_insert_self w t
+  have hserase : @Finset.erase E (Classical.decEq E) s v = t := by
+    rw [← hsv]
+    ext x
+    simp only [Finset.mem_erase, Finset.mem_insert]
+    constructor
+    · rintro ⟨hxv, hxv' | hxt⟩
+      · exact False.elim (hxv hxv')
+      · exact hxt
+    · intro hxt
+      exact ⟨fun hxv => hvt (hxv ▸ hxt), Or.inr hxt⟩
+  have hperase : @Finset.erase E (Classical.decEq E) p w = t := by
+    rw [← hpw]
+    ext x
+    simp only [Finset.mem_erase, Finset.mem_insert]
+    constructor
+    · rintro ⟨hxw, hxw' | hxt⟩
+      · exact False.elim (hxw hxw')
+      · exact hxt
+    · intro hxt
+      exact ⟨fun hxw => hwt (hxw ▸ hxt), Or.inr hxt⟩
+  let qS := Fin.cycleIcc (orderPositionOfCard r s hs v hv) (Fin.last (n + 1))
+  let qP := Fin.cycleIcc (orderPositionOfCard r p hp w hw) (Fin.last (n + 1))
+  let D := permutedBarycentricFace r t ht (1 : Equiv.Perm (Fin (n + 1)))
+  let FS := permutedBarycentricFace r s hs qS
+  let FP := permutedBarycentricFace r p hp qP
+  let oB := o.changeVertexOrder (barycentricOrientationVertexOrder K r)
+  have hfaceS : FS = insert (s.centroid ℝ id) D :=
+    permutedBarycentricFace_cycleIcc_orderPosition r s t hs hv hserase ht
+  have hfaceP : FP = insert (p.centroid ℝ id) D :=
+    permutedBarycentricFace_cycleIcc_orderPosition r p t hp hw hperase ht
+  have hDmem : D ∈ (barycentricSubdivision K).faces :=
+    permutedBarycentricFace_mem K r htK ht 1
+  have hFSmem : FS ∈ (barycentricSubdivision K).faces :=
+    permutedBarycentricFace_mem K r hsK hs qS
+  have hFPmem : FP ∈ (barycentricSubdivision K).faces :=
+    permutedBarycentricFace_mem K r hpK hp qP
+  have hDcard : D.card = n + 1 := permutedBarycentricFace_card K r htK ht 1
+  have hFScard : FS.card = n + 2 := permutedBarycentricFace_card K r hsK hs qS
+  have hFPcard : FP.card = n + 2 := permutedBarycentricFace_card K r hpK hp qP
+  have hsCentroidNot : s.centroid ℝ id ∉ D := by
+    intro hmem
+    rw [hfaceS, Finset.card_insert_of_mem hmem, hDcard] at hFScard
+    omega
+  have hpCentroidNot : p.centroid ℝ id ∉ D := by
+    intro hmem
+    rw [hfaceP, Finset.card_insert_of_mem hmem, hDcard] at hFPcard
+    omega
+  have hcentroidNe : s.centroid ℝ id ≠ p.centroid ℝ id := by
+    intro heq
+    exact hsp (injOn_faces_of_mem_openSimplex K
+      (centroid_mem_openSimplex_of_mem_faces K) hsK hpK heq)
+  have hFSFP : FS ≠ FP := by
+    intro heq
+    have hmem : s.centroid ℝ id ∈ FS := by
+      rw [hfaceS]
+      exact Finset.mem_insert_self _ _
+    rw [heq, hfaceP] at hmem
+    rcases Finset.mem_insert.mp hmem with hcentroid | hD
+    · exact hcentroidNe hcentroid
+    · exact hsCentroidNot hD
+  have hDFS : D ⊆ FS := by
+    rw [hfaceS]
+    exact Finset.subset_insert _ _
+  have hDFP : D ⊆ FP := by
+    rw [hfaceP]
+    exact Finset.subset_insert _ _
+  have hFSco : FS ∈ faceCofaces (barycentricSubdivision K) D (n + 2) :=
+    (mem_faceCofaces (barycentricSubdivision K)).mpr ⟨hFSmem, hFScard, hDFS⟩
+  have hFPco : FP ∈ faceCofaces (barycentricSubdivision K) D (n + 2) :=
+    (mem_faceCofaces (barycentricSubdivision K)).mpr ⟨hFPmem, hFPcard, hDFP⟩
+  have hnotone : (faceCofaces (barycentricSubdivision K) D (n + 2)).card ≠ 1 := by
+    intro hone
+    obtain ⟨Q, hQ⟩ := Finset.card_eq_one.mp hone
+    have hFSQ : FS = Q := by simpa [hQ] using hFSco
+    have hFPQ : FP = Q := by simpa [hQ] using hFPco
+    exact hFSFP (hFSQ.trans hFPQ.symm)
+  have hBary :
+      @barycentricSubdivision E _ _ (Classical.decEq E) K =
+        @barycentricSubdivision E _ _ r.toDecidableEq K :=
+    congrArg (fun d : DecidableEq E => @barycentricSubdivision E _ _ d K)
+      (Subsingleton.elim _ _)
+  have hR : IsCombinatorialManifoldWithBoundary (n + 1) (barycentricSubdivision K) := by
+    have hR' := hK.barycentricSubdivision
+    rw [hBary] at hR'
+    exact hR'
+  have htwo : (faceCofaces (barycentricSubdivision K) D (n + 2)).card = 2 :=
+    (hR.card_faceCofaces_eq_one_or_two (barycentricSubdivision K) hDmem hDcard).resolve_left
+      hnotone
+  have hcoefficientS : simplexBoundaryCoefficient oB.vertexOrder FS D = 1 := by
+    exact simplexBoundaryCoefficient_permutedBarycentricFace_cycleIcc_eq_one
+      K r hsK htK hs hv hserase ht
+  have hcoefficientP : simplexBoundaryCoefficient oB.vertexOrder FP D = 1 := by
+    exact simplexBoundaryCoefficient_permutedBarycentricFace_cycleIcc_eq_one
+      K r hpK htK hp hw hperase ht
+  have hsignSum : oB.sign FS + oB.sign FP = 0 :=
+    oB.sign_add_eq_zero_of_faceCofaces_eq_pair hDmem hDcard hFSFP htwo
+      hFSco hFPco hcoefficientS hcoefficientP
+  have hnormalizedS := barycentricFlagNormalizedSign_eq r o hK hsK hs 1 qS
+  have hnormalizedP := barycentricFlagNormalizedSign_eq r o hK hpK hp 1 qP
+  have hqS := sign_cycleIcc_orderPosition_mul_simplexBoundaryCoefficient
+    r hs hv hserase
+  have hqP := sign_cycleIcc_orderPosition_mul_simplexBoundaryCoefficient
+    r hp hw hperase
+  change barycentricFlagNormalizedSign r oB hs 1 * simplexBoundaryCoefficient r s t +
+      barycentricFlagNormalizedSign r oB hp 1 * simplexBoundaryCoefficient r p t = 0
+  rw [hnormalizedS, hnormalizedP]
+  unfold barycentricFlagNormalizedSign
+  change (oB.sign FS * (Equiv.Perm.sign qS : ℤ)) *
+        simplexBoundaryCoefficient r s t +
+      (oB.sign FP * (Equiv.Perm.sign qP : ℤ)) *
+        simplexBoundaryCoefficient r p t = 0
+  calc
+    _ = oB.sign FS * ((Equiv.Perm.sign qS : ℤ) *
+          simplexBoundaryCoefficient r s t) +
+        oB.sign FP * ((Equiv.Perm.sign qP : ℤ) *
+          simplexBoundaryCoefficient r p t) := by ring
+    _ = oB.sign FS * ((-1 : ℤ) ^ (n + 1)) +
+        oB.sign FP * ((-1 : ℤ) ^ (n + 1)) := by rw [hqS, hqP]
+    _ = (oB.sign FS + oB.sign FP) * ((-1 : ℤ) ^ (n + 1)) := by ring
+    _ = 0 := by rw [hsignSum, zero_mul]
+
+open Classical in
+noncomputable def barycentricRecoveredOrientationSign
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    (r : LinearOrder E)
+    {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces]
+    [Finite (barycentricSubdivision K).faces] {n : ℕ}
+    (o : CoherentOrientation (n + 1) (barycentricSubdivision K))
+    (s : Finset E) : ℤ :=
+  if hs : s.card = n + 2 then
+    barycentricFlagNormalizedSign r
+      (o.changeVertexOrder (barycentricOrientationVertexOrder K r)) hs 1
+  else 0
+
+open Classical in
+noncomputable def CoherentOrientation.ofBarycentricSubdivision
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    (r : LinearOrder E)
+    {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces]
+    [Finite (PiecewiseLinear.barycentricSubdivision K).faces] {n : ℕ}
+    (o : CoherentOrientation (n + 1) (PiecewiseLinear.barycentricSubdivision K))
+    (hK : IsCombinatorialManifoldWithBoundary (n + 1) K) :
+    CoherentOrientation (n + 1) K where
+  vertexOrder := r
+  sign := barycentricRecoveredOrientationSign r o
+  sign_top := by
+    intro s hsK hscard
+    rw [barycentricRecoveredOrientationSign, dif_pos hscard]
+    let oB := o.changeVertexOrder (barycentricOrientationVertexOrder K r)
+    have hface := permutedBarycentricFace_mem K r hsK hscard
+      (1 : Equiv.Perm (Fin (n + 2)))
+    have hfaceCard := permutedBarycentricFace_card K r hsK hscard
+      (1 : Equiv.Perm (Fin (n + 2)))
+    have hsign := oB.sign_top
+      (permutedBarycentricFace r s hscard 1) hface hfaceCard
+    simpa only [barycentricFlagNormalizedSign, Equiv.Perm.sign_one,
+      Units.val_one, mul_one] using hsign
+  coherent := by
+    intro t htK htcard hnotone
+    have htwo : (faceCofaces K t (n + 2)).card = 2 :=
+      (hK.card_faceCofaces_eq_one_or_two K htK htcard).resolve_left hnotone
+    obtain ⟨s, p, hsp, hcofaces⟩ := Finset.card_eq_two.mp htwo
+    have hsco : s ∈ faceCofaces K t (n + 2) := by
+      rw [hcofaces]
+      exact Finset.mem_insert_self s {p}
+    have hpco : p ∈ faceCofaces K t (n + 2) := by
+      rw [hcofaces]
+      exact Finset.mem_insert_of_mem (Finset.mem_singleton_self p)
+    obtain ⟨hsK, hscard, hts⟩ := (mem_faceCofaces K).mp hsco
+    obtain ⟨hpK, hpcard, htp⟩ := (mem_faceCofaces K).mp hpco
+    have hcancel := barycentricFlagNormalizedSign_pair_cancel r o hK
+      htK hsK hpK htcard hscard hpcard hts htp hsp
+    rw [orientedBoundary_eq_sum_faceCofaces, hcofaces]
+    simp only [Finset.sum_insert, Finset.sum_singleton, Finset.mem_singleton,
+      hsp, not_false_eq_true]
+    rw [barycentricRecoveredOrientationSign, dif_pos hscard,
+      barycentricRecoveredOrientationSign, dif_pos hpcard]
+    exact hcancel
+
+open Classical in
+theorem IsOrientable.of_barycentricSubdivision
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces] {n : ℕ}
+    (hK : IsCombinatorialManifoldWithBoundary (n + 1) K)
+    (h : IsOrientable (n + 1) (PiecewiseLinear.barycentricSubdivision K)) :
+    IsOrientable (n + 1) K := by
+  obtain ⟨o⟩ := h
+  let r := o.vertexOrder
+  let R₀ := @PiecewiseLinear.barycentricSubdivision E _ _ (Classical.decEq E) K
+  let R₁ := @PiecewiseLinear.barycentricSubdivision E _ _ r.toDecidableEq K
+  have hR : R₀ = R₁ :=
+    congrArg (fun d : DecidableEq E =>
+      @PiecewiseLinear.barycentricSubdivision E _ _ d K) (Subsingleton.elim _ _)
+  have hpack₀ : ∃ f : Finite R₀.faces,
+      Nonempty (@CoherentOrientation E _ _ (n + 1) R₀ f) := by
+    exact ⟨inferInstance, ⟨o⟩⟩
+  have hpack₁ : ∃ f : Finite R₁.faces,
+      Nonempty (@CoherentOrientation E _ _ (n + 1) R₁ f) := by
+    rw [← hR]
+    exact hpack₀
+  obtain ⟨fR, ⟨oR⟩⟩ := hpack₁
+  let _ := fR
+  exact ⟨CoherentOrientation.ofBarycentricSubdivision r oR hK⟩
+
+open Classical in
+theorem isOrientable_barycentricSubdivision_iff
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces] {n : ℕ}
+    (hK : IsCombinatorialManifoldWithBoundary (n + 1) K) :
+    IsOrientable (n + 1) (barycentricSubdivision K) ↔ IsOrientable (n + 1) K :=
+  ⟨IsOrientable.of_barycentricSubdivision hK, fun h => h.barycentricSubdivision hK⟩
 
 end DifferentialGeometry.Topology.PiecewiseLinear
