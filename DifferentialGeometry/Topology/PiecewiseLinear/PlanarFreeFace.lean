@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.PlanarSchoenflies
+import DifferentialGeometry.Topology.PiecewiseLinear.PlanarRelativeDeletion
 import DifferentialGeometry.Topology.PiecewiseLinear.TriangleDeletion
 
 open Set
@@ -229,7 +229,7 @@ theorem exists_isPLHomeomorphOn_eraseTriangleComplex_of_frontier_inter
     by rwa [hsupport, herase] at himage, herase ▸ hball⟩
 
 open Classical in
-theorem exists_isPLBall_eraseTriangleComplex_of_isPLBall_two
+theorem exists_isPLBall_eraseTriangleComplex_with_intersections
     (K : Geometry.SimplicialComplex ℝ Plane) [Finite K.faces]
     (hK : IsPLBall 2 K.space) {t₀ : Finset Plane} (ht₀ : t₀ ∈ K.faces)
     (ht₀card : t₀.card = 3) (hne : K.space ≠ convexHull ℝ (t₀ : Set Plane)) :
@@ -237,6 +237,8 @@ theorem exists_isPLBall_eraseTriangleComplex_of_isPLBall_two
       s ∈ K.faces ∧ s ⊆ t ∧ (s.card = 1 ∨ s.card = 2) ∧
       frontier K.space ∩ convexHull ℝ (t : Set Plane) =
         ⋃ v ∈ s, convexHull ℝ ((t.erase v : Finset Plane) : Set Plane) ∧
+      (∀ u ∈ K.faces, u.card = 3 → ¬s ⊆ u →
+        (u ∩ t).card ≤ 1 ∧ (s.card = 2 → u ∩ t ⊆ s)) ∧
       IsPLBall 2 (eraseTriangleComplex K t).space ∧
       ∀ U : Set Plane, IsOpen U → convexHull ℝ (t : Set Plane) ⊆ U →
         ∃ g : Plane ≃ₜ Plane, IsPLHomeomorphOn g univ univ ∧ EqOn g id Uᶜ ∧
@@ -324,6 +326,27 @@ theorem exists_isPLBall_eraseTriangleComplex_of_isPLBall_two
   have hball : IsPLBall 2 (eraseTriangleComplex K t).space := by
     obtain ⟨g, hg, -, -, himage⟩ := hremove univ isOpen_univ (subset_univ _)
     exact himage ▸ hK.of_isPLHomeomorphOn (hg.restrict hK.isPolyhedron (subset_univ _))
+  have hother (u : Finset Plane) (hu : u ∈ K.faces) (hucard : u.card = 3) :
+      ∃ R : M.Triangle, R.1.map e = u := by
+    let r' := u.subtype (fun v => v ∈ K.vertices)
+    have hr' : r'.map e = u := Finset.subtype_map_of_mem fun v hv =>
+      K.down_closed hu (Finset.singleton_subset_iff.mpr hv) (Finset.singleton_nonempty v)
+    have hr'simplex : r' ∈ (planeComplexOfSimplicialComplex K).simplexes := by
+      change r' ∈ Finset.univ.filter (fun r => r.map e ∈ K.faces)
+      exact Finset.mem_filter.mpr ⟨Finset.mem_univ _, hr'.symm ▸ hu⟩
+    have hr'card : r'.card = 3 := by rw [← Finset.card_map e, hr', hucard]
+    exact ⟨⟨r', mem_planeComplex_cells' _ hr'simplex hr'card⟩, hr'⟩
+  let eM : M.Vertex ↪ Plane := ⟨M.position, M.position_injective⟩
+  have hintercard (R : M.Triangle) :
+      ((R.1.map e) ∩ t).card = (R.1 ∩ T.1).card := by
+    change ((R.1.map eM) ∩ (T.1.map eM)).card = _
+    rw [← Finset.map_inter, Finset.card_map]
+  have hbaseImage : (M.freeTriangleBaseEdge T hTfree.choose).map e = {q 0, q 1} := by
+    let b : Finset M.Vertex := M.freeTriangleBaseEdge T hTfree.choose
+    change b.map eM = {q 0, q 1}
+    apply Finset.coe_injective
+    rw [Finset.coe_map, Finset.coe_pair]
+    exact M.image_freeTriangleBaseEdge T hTfree.choose
   rcases hTfree.choose_spec with hone | htwo
   · let s : Finset Plane := {q 2}
     have hsSub : s ⊆ t := by
@@ -335,10 +358,27 @@ theorem exists_isPLBall_eraseTriangleComplex_of_isPLBall_two
     have hsK : s ∈ K.faces :=
       K.down_closed htK hsSub (Finset.singleton_nonempty (q 2))
     refine ⟨t, s, htK, htcard, htt₀, hsK, hsSub, Or.inl (Finset.card_singleton _),
-      ?_, hball, hremove⟩
-    rw [← hsupport, ← hcarrier]
-    rw [hone]
-    simpa only [s, htq] using iUnion_convexHull_erase_singleton_triangle q hq |>.symm
+      ?_, ?_, hball, hremove⟩
+    · rw [← hsupport, ← hcarrier, hone]
+      simpa only [s, htq] using iUnion_convexHull_erase_singleton_triangle q hq |>.symm
+    · intro u hu hucard hsu
+      obtain ⟨R, hRu⟩ := hother u hu hucard
+      have hapex : M.orderedVertex T hTfree.choose ∉ R.1 := by
+        intro hv
+        apply hsu
+        apply Finset.singleton_subset_iff.mpr
+        have hq2 : q 2 = M.position (M.orderedVertex T hTfree.choose) := by
+          simp only [q, TriangleMesh.freeTriangleOrder, Equiv.swap_apply_left]
+        rw [hq2, ← hRu]
+        exact Finset.mem_map.mpr ⟨M.orderedVertex T hTfree.choose, hv, rfl⟩
+      have hi := TriangleMesh.inter_subset_freeTriangleBaseEdge_of_oneEdgeFree
+        M T hTfree.choose hone R.2 hapex
+      refine ⟨?_, ?_⟩
+      · rw [← hRu, hintercard]
+        exact hi.2
+      · intro hscard
+        have hsone : s.card = 1 := Finset.card_singleton _
+        omega
   · let s : Finset Plane := {q 0, q 1}
     have hsSub : s ⊆ t := by
       rw [htq]
@@ -350,10 +390,45 @@ theorem exists_isPLBall_eraseTriangleComplex_of_isPLBall_two
     have hsne : s.Nonempty := ⟨q 0, Finset.mem_insert_self _ _⟩
     have hsK : s ∈ K.faces := K.down_closed htK hsSub hsne
     refine ⟨t, s, htK, htcard, htt₀, hsK, hsSub,
-      Or.inr (Finset.card_pair (hq.ne (by decide))), ?_, hball, hremove⟩
-    rw [← hsupport, ← hcarrier]
-    rw [htwo]
-    simpa only [s, htq] using iUnion_convexHull_erase_pair_triangle q hq |>.symm
+      Or.inr (Finset.card_pair (hq.ne (by decide))), ?_, ?_, hball, hremove⟩
+    · rw [← hsupport, ← hcarrier, htwo]
+      simpa only [s, htq] using iUnion_convexHull_erase_pair_triangle q hq |>.symm
+    · intro u hu hucard hsu
+      obtain ⟨R, hRu⟩ := hother u hu hucard
+      have hbase : ¬M.freeTriangleBaseEdge T hTfree.choose ⊆ R.1 := by
+        intro hbase
+        apply hsu
+        change {q 0, q 1} ⊆ u
+        rw [← hbaseImage, ← hRu]
+        exact Finset.map_subset_map.mpr hbase
+      have hi := TriangleMesh.inter_subset_freeTriangleBaseEdge_of_twoEdgeFree
+        M (hsupport.symm ▸ hK) T hTfree.choose htwo R.2 hbase
+      refine ⟨?_, fun _ => ?_⟩
+      · rw [← hRu, hintercard]
+        exact hi.2
+      · change u ∩ t ⊆ {q 0, q 1}
+        rw [← hRu, ← hbaseImage]
+        change R.1.map eM ∩ T.1.map eM ⊆ (M.freeTriangleBaseEdge T hTfree.choose).map eM
+        rw [← Finset.map_inter]
+        exact Finset.map_subset_map.mpr hi.1
+
+open Classical in
+theorem exists_isPLBall_eraseTriangleComplex_of_isPLBall_two
+    (K : Geometry.SimplicialComplex ℝ Plane) [Finite K.faces]
+    (hK : IsPLBall 2 K.space) {t₀ : Finset Plane} (ht₀ : t₀ ∈ K.faces)
+    (ht₀card : t₀.card = 3) (hne : K.space ≠ convexHull ℝ (t₀ : Set Plane)) :
+    ∃ t s : Finset Plane, t ∈ K.faces ∧ t.card = 3 ∧ t ≠ t₀ ∧
+      s ∈ K.faces ∧ s ⊆ t ∧ (s.card = 1 ∨ s.card = 2) ∧
+      frontier K.space ∩ convexHull ℝ (t : Set Plane) =
+        ⋃ v ∈ s, convexHull ℝ ((t.erase v : Finset Plane) : Set Plane) ∧
+      IsPLBall 2 (eraseTriangleComplex K t).space ∧
+      ∀ U : Set Plane, IsOpen U → convexHull ℝ (t : Set Plane) ⊆ U →
+        ∃ g : Plane ≃ₜ Plane, IsPLHomeomorphOn g univ univ ∧ EqOn g id Uᶜ ∧
+          EqOn g id (frontier K.space \ convexHull ℝ (t : Set Plane)) ∧
+          g '' K.space = (eraseTriangleComplex K t).space := by
+  obtain ⟨t, s, ht, htc, htt, hs, hst, hsc, htrace, -, hball, hremove⟩ :=
+    exists_isPLBall_eraseTriangleComplex_with_intersections K hK ht₀ ht₀card hne
+  exact ⟨t, s, ht, htc, htt, hs, hst, hsc, htrace, hball, hremove⟩
 
 open Classical in
 theorem exists_faceStar_center_of_isPLBall_two

@@ -79,6 +79,64 @@ theorem image_support_eq_eraseTriangle_of_restrictTriangles
     exact houtside u huData.1 huData.2
   rw [hsupport, image_union, hlocal, hL, herase]
 
+private theorem card_inter_le_one_of_subset_edge (M : TriangleMesh)
+    (u t e : Finset M.Vertex) (he : e.card = 2) (hsub : u ∩ t ⊆ e) (hnot : ¬e ⊆ u) :
+    (u ∩ t).card ≤ 1 := by
+  by_contra h
+  have heq : u ∩ t = e := Finset.eq_of_subset_of_card_le hsub (by rw [he]; omega)
+  apply hnot
+  rw [← heq]
+  exact Finset.inter_subset_left
+
+theorem inter_subset_freeTriangleBaseEdge_of_oneEdgeFree
+    (M : TriangleMesh) (T : M.Triangle) (k : Fin 3)
+    (hfree : M.IsOneEdgeFreeTriangle T k) {u : Finset M.Vertex} (hu : u ∈ M.triangles)
+    (hapex : M.orderedVertex T k ∉ u) :
+    u ∩ T.1 ⊆ M.freeTriangleBaseEdge T k ∧ (u ∩ T.1).card ≤ 1 := by
+  have hsub : u ∩ T.1 ⊆ M.freeTriangleBaseEdge T k := by
+    intro v hv
+    have hvT : v ∈ Set.range (M.orderedVertex T) := by
+      rw [M.range_orderedVertex T]
+      exact (Finset.mem_inter.mp hv).2
+    obtain ⟨i, rfl⟩ := hvT
+    apply Finset.mem_image.mpr
+    refine ⟨i, Finset.mem_erase.mpr ⟨?_, Finset.mem_univ _⟩, rfl⟩
+    intro hik
+    exact hapex (hik ▸ (Finset.mem_inter.mp hv).1)
+  have hnot : ¬M.freeTriangleBaseEdge T k ⊆ u := by
+    intro hbase
+    have hboundary := M.isBoundaryEdge_freeTriangleBaseEdge_of_oneEdgeFree T k hfree
+    have huInc : u ∈ M.incidentTriangles (M.freeTriangleBaseEdge T k) :=
+      M.mem_incidentTriangles_iff.mpr ⟨hu, hbase⟩
+    have hTInc : T.1 ∈ M.incidentTriangles (M.freeTriangleBaseEdge T k) :=
+      M.mem_incidentTriangles_iff.mpr ⟨T.2, M.freeTriangleBaseEdge_subset T k⟩
+    have huT : u = T.1 := Finset.card_le_one.mp hboundary.2.le u huInc T.1 hTInc
+    exact hapex (huT ▸ M.orderedVertex_mem T k)
+  exact ⟨hsub, card_inter_le_one_of_subset_edge M u T.1 (M.freeTriangleBaseEdge T k)
+    (M.freeTriangleBaseEdge_card T k) hsub hnot⟩
+
+theorem inter_subset_freeTriangleBaseEdge_of_twoEdgeFree
+    (M : TriangleMesh) (hM : IsPLBall 2 M.toPlaneComplex.support)
+    (T : M.Triangle) (k : Fin 3) (hfree : M.IsTwoEdgeFreeTriangle T k)
+    {u : Finset M.Vertex} (hu : u ∈ M.triangles) (hbase : ¬M.freeTriangleBaseEdge T k ⊆ u) :
+    u ∩ T.1 ⊆ M.freeTriangleBaseEdge T k ∧ (u ∩ T.1).card ≤ 1 := by
+  have huT : u ≠ T.1 := fun h => hbase (h ▸ M.freeTriangleBaseEdge_subset T k)
+  obtain ⟨J, hJ⟩ := exists_polygonalCircle_of_isPLBall_two hM
+  obtain ⟨J', hregion, hinter⟩ :=
+    M.exists_polygonalDisk_eraseTriangle_of_twoEdgeFree J hJ.symm T k hfree
+  have hsub : u ∩ T.1 ⊆ M.freeTriangleBaseEdge T k := by
+    intro v hv
+    obtain ⟨hvu, hvT⟩ := Finset.mem_inter.mp hv
+    apply M.vertex_mem_edge_of_position_mem_edgeCarrier T.2 hvT
+      (M.freeTriangleBaseEdge_mem_edges T k)
+    rw [M.freeTriangleBaseEdge_carrier T k, ← hinter, ← hregion]
+    refine ⟨?_, subset_convexHull ℝ _ ⟨v, hvT, rfl⟩⟩
+    rw [(M.eraseTriangle T.1).toPlaneComplex_support]
+    exact mem_iUnion₂.mpr ⟨u, Finset.mem_erase.mpr ⟨huT, hu⟩,
+      subset_convexHull ℝ _ ⟨v, hvu, rfl⟩⟩
+  exact ⟨hsub, card_inter_le_one_of_subset_edge M u T.1 (M.freeTriangleBaseEdge T k)
+    (M.freeTriangleBaseEdge_card T k) hsub hbase⟩
+
 theorem exists_isPLHomeomorphOn_eraseTriangle_restrictTriangles
     (M : TriangleMesh) (p : Finset M.Vertex → Prop) [DecidablePred p]
     (T : (M.restrictTriangles p).Triangle) (k : Fin 3)

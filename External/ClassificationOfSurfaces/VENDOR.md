@@ -746,3 +746,38 @@ four new public declarations with only `propext`, `Classical.choice`,
 and `Quot.sound`, and exits 0. Logs are
 `.lake/scratch/check-planar-relative-deletion.log` and
 `.lake/scratch/audit-planar-relative-deletion.log`.
+
+## Free-triangle intersection conditions and simplicial transport
+
+`PlanarRelativeDeletion` now derives the protected-intersection conditions
+for both free-triangle cases. The one-edge proof uses upstream
+`isBoundaryEdge_freeTriangleBaseEdge_of_oneEdgeFree` and incidence-one
+uniqueness. The two-edge proof uses
+`exists_polygonalDisk_eraseTriangle_of_twoEdgeFree`, including its exact
+intersection of the remaining disk with the deleted triangle, and
+`vertex_mem_edge_of_position_mem_edgeCarrier`. No local claim that a
+chart intersection is a disk is introduced.
+
+The native `PlanarFreeFace` primary theorem
+`exists_isPLBall_eraseTriangleComplex_with_intersections` chooses a free
+triangle different from the retained triangle and supplies intersection
+bounds for every maximal triangle outside the chosen face star. The old
+public signature is retained as a corollary. The native
+`FaceStarTransport` module proves that simplicial isomorphisms preserve
+face inclusion, intersections, intersection cardinalities, and face
+stars. No vendor Lean source changes are made.
+
+`PlanarRelativeDeletion`, `PlanarFreeFace`, `FaceStarTransport`, and the
+`FaceStarDeletion` consumer pass focused checks with exit 0 and zero
+warnings. `AuditS32.lean` checks 15 distinct declarations, including all
+new endpoints and the existing deletion consumers, and exits 0. Every
+closure contains only the standard three axioms. Logs are
+`.lake/scratch/check-planar-free-face-intersections.log`,
+`.lake/scratch/check-face-star-transport.log`,
+`.lake/scratch/check-face-star-deletion-intersections.log`, and
+`.lake/scratch/audit-planar-free-face-transport.log`.
+
+The remaining 17.5 work is to assemble these data on the fixed spherical
+triangulation, preserve the whole disk under each chart extension, and
+perform the retained-triangle induction and final move to an original
+facet. The full 17.5, 17.6, and 17.8 endpoints remain open.
