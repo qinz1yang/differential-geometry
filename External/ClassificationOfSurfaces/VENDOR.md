@@ -919,3 +919,30 @@ only the standard three axioms. Logs are
 `.lake/scratch/check-simplex-disk-straightening.log` and
 `.lake/scratch/audit-simplex-disk-straightening.log`. The 17.6 and 17.8
 consumers are the next layer.
+
+## Tetrahedral push property and simply embedded spheres
+
+The native `TetrahedronPush.hasPushProperty_convexHull_simplex` closes
+Moise 17.6 by straightening an arbitrary boundary disk with 17.5,
+applying the established simplex-face push theorem 17.4, and transporting
+back using the established ambient invariance 17.7. The original push
+neighborhood condition `C \ J ⊆ interior N` is unchanged.
+
+`SimplyEmbedded.IsSimplyEmbedded` retains the PL sphere condition and
+the requirement for every convex open neighborhood, with an ambient
+PL straightening fixed outside that neighborhood.
+`exists_hasPushProperty_of_isSimplyEmbedded` closes 17.8: it produces a
+bounded PL three-ball with the given frontier and the push property.
+Neither endpoint contains an unproved producer assumption. Vendor Lean
+sources are unchanged.
+
+Both modules pass focused checks with exit 0 and zero warnings.
+`AuditS39.lean` checks all ten public definitions and endpoints in the
+17.4-17.8 suite, including the final 17.5, 17.6, and 17.8 signatures and
+the full single-embedding definition. It exits 0; all axiom closures are
+exactly `propext`, `Classical.choice`, and `Quot.sound`. Logs are
+`.lake/scratch/check-tetrahedron-push.log`,
+`.lake/scratch/check-simply-embedded.log`, and
+`.lake/scratch/audit-s2-push-property.log`. S.2 is complete. The 17.9-17.12
+developments and the general cell-decomposition versions of P.3 remain
+separate pending work.
