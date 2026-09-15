@@ -224,4 +224,51 @@ upstream architecture copies are byte-identical to the supplied originals.
 
 The upstream ambient relative theorem certifies PL behavior on the closed polygonal
 region. Its public statement does not certify PL behavior on the whole plane; the
-native consumer bridge and that stronger relative endpoint remain separate work.
+stronger relative endpoint on the entire plane remains separate work.
+
+## Native planar PL bridge
+
+`DifferentialGeometry/Topology/PiecewiseLinear/PlanarSchoenflies.lean` adapts the
+pinned upstream mathematics to the native `IsPiecewiseAffineOn`,
+`IsPLHomeomorphOn`, `IsPLSphere`, and `IsPLBall` predicates. The native file follows
+the owner's zero-comment source rule; attribution and the Apache-2.0 license are
+recorded here and in `LICENSE`.
+
+- The two directions between finite planar PL certificates use a new conversion
+  from native finite geometric simplicial complexes to `PlaneComplex`. The
+  conversion preserves the exact support and simplex carriers.
+- The private refinement and edge-containment proofs and
+  `exists_polygonalCircle_image_of_isPLOnSet` adapt four proofs from upstream
+  `ClassificationOfSurfaces/Moise/PLApproximation.lean`, lines 400–597:
+  `PolygonalCircle.exists_refinement_containing_complex_vertices`,
+  `PlaneComplex.exists_face_containing_polygon_edge`,
+  `PolygonalCircle.exists_mapEmbedding_of_affineOn_complex`, and
+  `PolygonalCircle.exists_image_of_isPLOnSet_embedding`.
+  They are moved into the native namespace, given native names and local classical
+  scopes, and the active-complex carrier rewrite is made explicit for Lean 4.33.
+  Their hypotheses and mathematical proofs are unchanged. These proofs use only
+  the first batch of vendor modules; `PLApproximation` itself is not imported.
+- `polygonalCircleOfAffineIndependentTriple` generalizes the triangular example
+  in upstream `ClassificationOfSurfaces/Moise/Anchors.lean`, lines 65–102,
+  from the fixed standard vertices to any affinely independent triple.
+- Native simplex-frontier and sphere-boundary lemmas in `SimplexFrontier.lean`
+  identify the full-dimensional convex-hull frontier with its proper faces using
+  barycentric coordinates. They use the native PL simplex-boundary API and
+  Mathlib affine-basis results.
+- `isPLBall_of_isPLSphere_one` proves the full P.1 consumer statement, with a
+  bounded PL 2-ball filling every native planar PL 1-sphere. Both conversions
+  between polygon carriers and native PL 1-spheres are proved.
+- The relative straightening theorems explicitly end in `_on_closedRegion`.
+  They certify an ambient homeomorphism, PL behavior in both directions on the
+  closed region, and identity outside the prescribed open set. Global PL behavior
+  on the entire plane remains unproved and is not implied by the vendor theorem's
+  published certificate.
+
+The second vendor batch has not been imported: its approximation headlines are
+finite-complex embedding approximations (Moise 6.2–6.3), and do not by themselves
+supply the ambient, supported, control-function conclusion of P.4 (10.8).
+
+`SimplexFrontier` and `PlanarSchoenflies` both pass the lane's standard-linter
+focused check with exit 0 and zero warnings. `AuditS2.lean` audits 14 bridge and
+headline declarations; every closure contains only `propext`, `Classical.choice`,
+and `Quot.sound`, and the audit exits 0.
