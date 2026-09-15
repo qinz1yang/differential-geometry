@@ -15,7 +15,7 @@ open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Tensor0SBundle
 open CanonicalNeighborhood
-open scoped Manifold ContDiff ENNReal
+open scoped _root_.Manifold ContDiff ENNReal _root_.Topology
 
 universe u uE uH
 
