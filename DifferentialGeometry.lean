@@ -10269,6 +10269,7 @@ import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegulari
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ParabolicReconstruction
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.H1.Affine
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Scalar.Constant
+import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Scalar.WeakLaplacian
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Scalar.ContinuousMultiplier
 import DifferentialGeometry.Geometry.Operator.Laplacian.AddCircleScaling
 import DifferentialGeometry.Analysis.Sobolev.Tools.Mollification.Holder
