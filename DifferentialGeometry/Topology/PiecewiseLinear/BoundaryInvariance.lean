@@ -160,8 +160,8 @@ private theorem PLPieceIn.image_boundaryComplex_eq {n : ℕ} {X : Type u}
     T₁.map '' (@boundaryComplex _ _ _ (Classical.decEq _) (m + 1) T₁.complex).space =
       T₂.map '' (@boundaryComplex _ _ _ (Classical.decEq _) (m + 1) T₂.complex).space := by
   classical
-  haveI : Finite T₁.complex.faces := T₁.finite_faces.to_subtype
-  haveI : Finite T₂.complex.faces := T₂.finite_faces.to_subtype
+  have : Finite T₁.complex.faces := T₁.finite_faces.to_subtype
+  have : Finite T₂.complex.faces := T₂.finite_faces.to_subtype
   have htrans := T₁.isPLHomeomorphOn_transition T₂
   have hT₂ : IsCombinatorialManifoldWithBoundary (m + 1) T₂.complex :=
     hT₁.of_isPLHomeomorphOn htrans
@@ -215,3 +215,4 @@ theorem polyhedralBoundary_eq_of_piece {n : ℕ} {X : Type u} [TopologicalSpace 
 
 
 end DifferentialGeometry.Topology.PiecewiseLinear
+
