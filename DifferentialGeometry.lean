@@ -10370,3 +10370,7 @@ import DifferentialGeometry.Geometry.Metric.RicciSoliton.PerelmanBracket
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.Potential.DensityInverse
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjugateHeat.HamiltonJacobi
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjugateHeat.RicciSoliton
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProductSliceRegularity
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProductLengthEvolution
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.RampProductLengthEvolution
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.RampAngleWindows
