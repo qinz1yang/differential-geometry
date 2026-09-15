@@ -250,6 +250,58 @@
     `AtlasOn.hasGroupoid/restrict`、`exists_isHPolytope_subset_mem_nhds` 均只依赖 `propext`、`Classical.choice`、`Quot.sound`。
     条件性完全由签名中的 `PLApproximation`/`PLSmoothing` 假设表达，树中没有新增 `sorry`/`axiom`。
 
+- 2026-09-14（车道 E.0，不变域，工作树 `D:/differential-geometry-moise-e0`，分支 `codex/moise-e0`）：
+  四砖已闭合：`Topology/InvarianceOfDomain.lean`（上游解析证明与图卡接口，保留抽象条件签名）；
+  `Topology/FixedPoint/NoRetraction.lean`（任意正有限维无收缩，一维连通性，高维球面顶维同调）；
+  `Topology/FixedPoint/Brouwer.lean`（任意有限维闭单位球不动点定理及已证实例，含零维）；
+  `Topology/InvarianceOfDomainManifold.lean`（七个无未证类参数的最终接口）。
+  主端点为 `invariance_of_domain_isOpen_image`、`isOpen_image_of_continuousOn_injOn`、
+  `isOpenMap_of_continuous_injective`；另有
+  `isOpen_range_of_isOpen_of_continuous_injective_real`、`isOpen_range_of_isOpen_of_isEmbedding_real`、
+  `isInteriorPoint_iff_any_chart_real`、`isBoundaryPoint_iff_any_chart_real`。
+  模型空间 `E : Type*`、流形宇宙独立，且审计文件显式检查了 `EuclideanSpace ℝ (Fin n)` 的要求形式。
+  每砖仅经交接脚本 `check-f.ps1` 串行检查（均 exit=0、零错误零警告），
+  `AuditE01`/`AuditE02`/`AuditE03`/`AuditE0`（本车道 `.lake/scratch`）审计只含允许的标准公理；
+  七个最终接口、无收缩定理、不动点定理及其实例均只含 `propext`、`Classical.choice`、`Quot.sound`。
+  检查点 `8a113f636`、`87d67526b`、`5025cc6f0`、`7723c30c3` 已逐砖推送。
+  与交接路线的实现差异：直接复用 `integralSingularHomology_subsingleton_of_contractible`，省去约化同调桥；
+  流形证明用一个源图卡与已有模型到流形开像定理；追加四个显式无条件的实模型接口。
+  原生移植来源为 mccorvie/classification-of-surfaces@e3c7230，原版权/作者声明、Apache-2.0 全文和修改记录
+  保存在 `docs/third_party/`。无新增证明债、注释、诊断命令或资源选项。
+  最终同步已抓取并纳入 F 分支 `6b67ac39f`；为同时保留逐砖发布历史与禁止 force-push 的约束，采用
+  `5770071c3` 将 F 更新合入 E.0。普通 rebase 会重写已发布的四个检查点，其本地结果未发布，已恢复到
+  内容相同且保留双方历史的合并节点。未修改 F 工作树或分支，未合并 E.0 到 F，未运行 `lake build`，
+  未登记根聚合；E.0 数学端点完成，S.1、M.3、E.3/E.4 自身义务继续由各自车道承担。
+
+- 2026-09-15（Phase 3 车道 C：Moise §24 C.1–C.3，工作树 `D:\differential-geometry-moise-e3`，分支 `codex/moise-e3`）：
+  `CoveringLift.lean` 闭合 24.1–24.4：PL 球的单连通与局部道路连通、覆盖唯一提升、基本群映射单射、闭路提升判据、
+  单值作用的稳定子/像子群识别、连通覆盖的纤维基数等于像子群指标；九个端点检查 exit=0、零 warning，AuditC1
+  仅 `propext`、`Classical.choice`、`Quot.sound`，源码提交 `2df0546f5`。`DoubleCoverComplex.lean` 从有限复形上的
+  `SimplicialBoolCocycle` 构造 `BoolCocycle` 二重覆盖，证明纤维基数为 2，并以连续截面双向识别上边界，得到
+  `connectedSpace_iff : ConnectedSpace TotalSpace ↔ ¬ IsCoboundary`；二十三个端点检查 exit=0、零 warning，AuditC2
+  仅标准三公理，源码提交 `364fbe752`。`CoveringTriangulation.lean` 对任意有限纤维覆盖逐基单形作唯一提升，以纤维顶点
+  的标准基实现有限复形，粘合出 `coveringSpaceHomeomorph`；投影逐单形等于仿射映射并满射到一个基单形，顶点 link 的
+  `coveringVertexLink_isGlueIso` 给出任意维 `IsCombinatorialManifoldWithBoundary` 保持，最终端点为
+  `exists_lift_simplicialComplex`。十六个端点检查 exit=0、零 warning，AuditC3 仅标准三公理，源码提交 `f7e70bc61`；
+  直接逐单形提升比 Moise 24.6 的均匀覆盖细分路线更强，未弱化结论。
+  D4 首次复用审计逐条记录如下，全部只依赖标准三公理：AuditC1Reuse 的
+  `IsPLHomeomorphOn.homeomorph`、`Convex.contractibleSpace`、`Convex.locallyPathConnectedSpace`、
+  `ContinuousMap.HomotopyEquiv.simplyConnectedSpace`、`IsCoveringMap.existsUnique_continuousMap_lifts`、
+  `IsCoveringMap.continuous`、`IsCoveringMap.injective_path_homotopic_map`、`FundamentalGroup.map`、
+  `FundamentalGroup.map_apply`、`IsCoveringMap.fundamentalGroupMulAction`、`IsCoveringMap.monodromy`、
+  `IsCoveringMap.liftPathQuotient`、`IsCoveringMap.map_liftPathQuotient`、`IsCoveringMap.monodromy_eq_of_map_eq`、
+  `IsCoveringMap.liftPath`、`IsCoveringMap.liftPath_zero`、`IsCoveringMap.liftPath_lifts`、
+  `MulAction.index_stabilizer_of_transitive`；AuditC2Reuse 的 `BoolCocycle.isCoveringMap_proj`、
+  `BoolCocycle.toFiberBundleCore`、`BoolCocycle.sectionCoord`、`BoolCocycle.sectionCoord_change`、
+  `BoolCocycle.isLocallyConstant_sectionCoord`、`Covering.exists_section_of_not_connected_double_cover`、
+  `Covering.not_connected_of_double_cover_section`、`FiberBundle.isClosedMap_projection_of_finite`、
+  `Bundle.Trivialization.preimageSingletonHomeomorph`、`FiberBundle.continuousAt_totalSpace`、
+  `FiberBundle.mem_trivializationAt_proj_source`；AuditC3Reuse 的 `IsCoveringMap.exists_unique_lift_of_isPLBall`、
+  `PiecewiseLinear.IsCoveringMap.exists_unique_lift_of_face`、`Covering.t2Space_of_isCoveringMap`。整条 C.1–C.3 链未 import、
+  未传递经过含 `sorry` 的 `Topology/Homology/HurewiczLowDegrees.lean`。同步时保留上游 `BoundaryInvariance.lean` 的五个
+  边界/前沿不变性端点并合入 `polyhedralBoundary`，修正剩余旧实例语法后该模块检查 exit=0、零 warning；未运行根构建，
+  未登记根聚合。E3.2/E3.3 仍因非紧局部有限表示层缺口搁置，详见 `PHASE3_APPROXIMATION_PLAN.md` 的 F6.3/E.2/E.3/R9。
+
 ## 7. 决策与风险
 
 - 不采用 Bing 定理 7 的“保留单形”强形式，只用 Moise §8/§35 的紧致图卡归纳（书中 `chap:two-set-gluing` 的方案）。
