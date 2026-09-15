@@ -1167,3 +1167,36 @@ straightening signature, exits 0, and reports only `propext`,
 `.lake/scratch/check-compact-frontier.log`,
 `.lake/scratch/check-disk-gluing.log`, and
 `.lake/scratch/audit-disk-gluing.log`.
+
+## Full supported gluing along a planar disk (Moise 17.11)
+
+`PlanarDiskGluing.isSimplyEmbedded_union_sdiff_diskInterior` proves
+the complete statement on printed pages 121-122. Two simply embedded
+PL two-spheres meet in a PL disk contained in a two-dimensional
+affine subspace. Their union with the intrinsic interior of that disk
+removed is simply embedded. The conclusion quantifies over every
+convex open neighborhood of the resulting sphere and fixes its
+complement pointwise. The removed set uses the disk parametrization
+and its intrinsic boundary circle, not ambient interior in R3.
+
+`AffineSubspaceTransport.lean` constructs affine PL coordinates and
+an affine inverse on the polyhedron. `BallFrontier.lean` identifies
+the image of the standard boundary with the actual frontier in the
+matching dimension. `PlanarDiskContainment.lean` proves, in all
+dimensions, that a flat PL ball lies in any convex open set containing
+its intrinsic boundary. This supplies the remaining support control
+for the two-case argument already checked in `DiskGluing.lean`.
+No vendor Lean source changed. The theorem expresses planarity by an
+affine subspace whose direction has finrank two. The new F interface
+rows have not yet appeared in the integration branch at this point;
+any representation adapter will be checked against those rows.
+
+All four changed modules pass focused checks with exit 0 and zero
+warnings. `AuditS50.lean` checks all four new declarations and the
+full 17.11 signature, exits 0, and reports only `propext`,
+`Classical.choice`, and `Quot.sound`. Logs:
+`.lake/scratch/check-affine-subspace-transport.log`,
+`.lake/scratch/check-ball-frontier.log`,
+`.lake/scratch/check-planar-disk-containment.log`,
+`.lake/scratch/check-planar-disk-gluing.log`, and
+`.lake/scratch/audit-planar-disk-gluing.log`.
