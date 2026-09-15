@@ -1,4 +1,5 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.GeneralPosition
+import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryInvariance
 import DifferentialGeometry.Topology.PiecewiseLinear.StarComplex
 import DifferentialGeometry.Topology.PiecewiseLinear.OpenStar
 import DifferentialGeometry.Topology.PiecewiseLinear.Combinatorial
@@ -2268,10 +2269,7 @@ theorem boundaryComplex_space_of_isPLHomeomorphOn_of_isPLBall [FiniteDimensional
     (L : Geometry.SimplicialComplex ℝ F) [Finite K.faces] [Finite L.faces]
     (hK : IsPLBall (n + 1) K.space) {f : E → F} (hf : IsPLHomeomorphOn f K.space L.space) :
     (boundaryComplex (n + 1) L).space = f '' (boundaryComplex (n + 1) K).space := by
-  obtain ⟨g, hg⟩ := hK
-  rw [boundaryComplex_space_of_isPLHomeomorphOn_stdSimplex L (hg.trans hf),
-    boundaryComplex_space_of_isPLHomeomorphOn_stdSimplex K hg, Set.image_image]
-  rfl
+  exact boundaryComplex_space_of_isPLHomeomorphOn K L hK.isCombinatorialManifoldWithBoundary hf
 
 open Classical in
 theorem IsPLHomeomorphOn.mem_boundaryComplex_image [FiniteDimensional ℝ E] [FiniteDimensional ℝ F]
@@ -2972,6 +2970,7 @@ theorem singleton_mem_faces_of_eventually_nonneg_ray (G : Geometry.SimplicialCom
     simp only [mem_ball, dist_zero_right, Real.norm_eq_abs, abs_of_pos hhalf]
     linarith
   exact hball hmem hhalf
+
 open Classical in
 theorem mem_boundaryComplex_one_space_iff [FiniteDimensional ℝ E]
     (G : Geometry.SimplicialComplex ℝ E) (hcard : ∀ s ∈ G.faces, s.card ≤ 2) {x : E} :
@@ -3032,7 +3031,7 @@ theorem boundaryComplex_one_space_eq_inter_of_rays_and_degrees [FiniteDimensiona
 open Classical in
 theorem exists_small_simplicialMap_doublePointSet_with_boundary_in_halfSpace [FiniteDimensional ℝ E]
     [FiniteDimensional ℝ F] (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
-    (hK : IsPLBall 2 K.space) (hdim : Module.finrank ℝ F = 3) (ℓ : F →ₗ[ℝ] ℝ) (hℓ : ℓ ≠ 0)
+    (hK : IsCombinatorialManifoldWithBoundary 2 K) (hdim : Module.finrank ℝ F = 3) (ℓ : F →ₗ[ℝ] ℝ) (hℓ : ℓ ≠ 0)
     (f : E → F) (hf : IsPiecewiseAffineOn f K.space) (hloc : IsLocallyInjective (K.space.domRestrict f))
     (hcard : ∀ y : F, (K.space ∩ f ⁻¹' {y}).encard ≤ 2)
     (hnonneg : ∀ x ∈ K.space, 0 ≤ ℓ (f x))
@@ -3060,15 +3059,12 @@ theorem exists_small_simplicialMap_doublePointSet_with_boundary_in_halfSpace [Fi
     exists_small_simplicialMap_in_halfSpace_of_subcomplex K (boundaryComplex 2 K)
       (boundaryComplex_faces_subset 2 K) ℓ hℓ f hf hloc hcard hnonneg hboundary (half_pos hε)
   obtain ⟨R, φ, hR, hfinite, hpl, hclose, hstar, hlocal, hfiber, hRnonneg, hRboundary, hind, htrans⟩ :=
-    exists_small_simplicialMap_transverse_in_halfSpace K hK.isCombinatorialManifoldWithBoundary hdim
+    exists_small_simplicialMap_transverse_in_halfSpace K hK hdim
       ℓ hℓ (simplicialMap S ψ) hg hglocal hgfiber hgnonneg hgboundary (half_pos hε)
   have : Finite R.faces := hfinite.to_subtype
-  have hRman : IsCombinatorialManifoldWithBoundary 2 R := hK.isCombinatorialManifoldWithBoundary.of_isSubdivision hR
-  have hboundarySpace : (boundaryComplex 2 R).space = (boundaryComplex 2 K).space := by
-    obtain ⟨g, hg⟩ := hK
-    have hgR : IsPLHomeomorphOn g (stdSimplex ℝ (Fin 3)) R.space := by rwa [hR.space_eq]
-    rw [boundaryComplex_space_of_isPLHomeomorphOn_stdSimplex R hgR,
-      boundaryComplex_space_of_isPLHomeomorphOn_stdSimplex K hg]
+  have hRman : IsCombinatorialManifoldWithBoundary 2 R := hK.of_isSubdivision hR
+  have hboundarySpace : (boundaryComplex 2 R).space = (boundaryComplex 2 K).space :=
+    boundaryComplex_space_of_isSubdivision K R hK hR
   have hVK : ∀ v ∈ R.vertices, v ∈ K.space := by
     intro v hv
     rw [← hR.space_eq]
@@ -3178,7 +3174,7 @@ theorem exists_small_simplicialMap_doublePointSet_normal_form_in_halfSpace_of_ma
                                 ∀ y, {y} ∈ G.faces → ℓ y ≠ 0 →
                                   ∃ a b, a ≠ b ∧ {z | z ≠ y ∧ {y, z} ∈ G.faces} = {a, b} := by
   obtain ⟨R, φ, G, hR, hfinite, hpl, hclose, hstar, hlocal, hfiber, hnonneg', hboundary', hGfinite, hGspace, hGman, hcross, hdegree, hdegreeInterior, _⟩ :=
-    exists_small_simplicialMap_doublePointSet_with_boundary_in_halfSpace K hK hdim ℓ hℓ
+    exists_small_simplicialMap_doublePointSet_with_boundary_in_halfSpace K hK.isCombinatorialManifoldWithBoundary hdim ℓ hℓ
       f hf hloc hcard hnonneg hboundary hε
   exact ⟨R, φ, G, hR, hfinite, hpl, hclose, hstar, hlocal, hfiber, hnonneg', hboundary', hGfinite, hGspace, hGman, hcross, hdegree, hdegreeInterior⟩
 
@@ -3311,7 +3307,7 @@ theorem exists_small_simplicialMap_doublePointSet_normal_form_in_halfSpace_in_bo
   obtain ⟨δ, hδ, hthick⟩ := hC.exists_cthickening_subset_open isOpen_interior hCU
   obtain ⟨R, φ, G, hR, hfinite, hpl, hclose, hstar, hlocal, hfiber, hnonneg', hboundary', hGfinite, hGspace, hGman, hcross, hdegree, hdegreeInterior, hGboundary⟩ :=
     exists_small_simplicialMap_doublePointSet_with_boundary_in_halfSpace
-      K hK hdim ℓ hℓ f hf hloc hcard hnonneg hboundary (lt_min hε hδ)
+      K hK.isCombinatorialManifoldWithBoundary hdim ℓ hℓ f hf hloc hcard hnonneg hboundary (lt_min hε hδ)
   have hmapB : MapsTo (simplicialMap R φ) (boundaryComplex 2 K).space B := by
     intro x hx
     have hxK := boundaryComplex_space_subset 2 K hx
@@ -3325,4 +3321,40 @@ theorem exists_small_simplicialMap_doublePointSet_normal_form_in_halfSpace_in_bo
   obtain ⟨x, hx, z, _, _, hxy, _⟩ := hGspace ▸ hy
   have hxB : x ∈ (boundaryComplex 2 K).space := (hboundary' x hx).mp (by rwa [hxy])
   exact hxy ▸ hmapB hxB
+
+open Classical in
+theorem doublePointSet_comp_of_injOn {X Y Z : Type*} (f : X → Y) (g : Y → Z) (P : Set X)
+    (hg : InjOn g (f '' P)) : doublePointSet (g ∘ f) P = g '' doublePointSet f P := by
+  ext z
+  constructor
+  · rintro ⟨a, ha, b, hb, hab, haz, hbz⟩
+    refine ⟨f a, ⟨a, ha, b, hb, hab, rfl, ?_⟩, haz⟩
+    exact hg ⟨b, hb, rfl⟩ ⟨a, ha, rfl⟩ (hbz.trans haz.symm)
+  · rintro ⟨y, ⟨a, ha, b, hb, hab, hay, hby⟩, rfl⟩
+    exact ⟨a, ha, b, hb, hab, congrArg g hay, congrArg g hby⟩
+
+open Classical in
+theorem exists_triangulation_doublePointSet_comp_of_isPLHomeomorphOn {X V : Type*}
+    [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimensional ℝ F] [FiniteDimensional ℝ V]
+    (K : Geometry.SimplicialComplex ℝ F) [Finite K.faces]
+    (hK : IsCombinatorialManifoldWithBoundary 1 K) (f : X → F) (P : Set X)
+    (hspace : K.space = doublePointSet f P) {A : Set F} {B : Set V} {g : F → V}
+    (hg : IsPLHomeomorphOn g A B) (hf : MapsTo f P A) :
+    ∃ L : Geometry.SimplicialComplex ℝ V, L.faces.Finite ∧
+      L.space = doublePointSet (g ∘ f) P ∧ IsCombinatorialManifoldWithBoundary 1 L ∧
+        (boundaryComplex 1 L).space = g '' (boundaryComplex 1 K).space ∧
+          IsPLHomeomorphOn g K.space L.space := by
+  have hKA : K.space ⊆ A := by
+    intro y hy
+    obtain ⟨x, hx, z, _, _, hxy, _⟩ := hspace ▸ hy
+    exact hxy ▸ hf hx
+  have hrestrict := hg.restrict (isPolyhedron_space K) hKA
+  obtain ⟨L, hLfinite, hLspace, hLPL⟩ :=
+    exists_isPLHomeomorphOn_image K hrestrict.isPiecewiseAffineOn hrestrict.bijOn.injOn
+  have : Finite L.faces := hLfinite.to_subtype
+  refine ⟨L, hLfinite, ?_, hK.of_isPLHomeomorphOn hLPL,
+    boundaryComplex_space_of_isPLHomeomorphOn K L hK hLPL, hLPL⟩
+  rw [doublePointSet_comp_of_injOn f g P (hg.bijOn.injOn.mono (image_subset_iff.mpr hf)), ← hspace]
+  exact hLspace
+
 end DifferentialGeometry.Topology.PiecewiseLinear
