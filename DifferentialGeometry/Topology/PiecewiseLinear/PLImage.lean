@@ -89,6 +89,11 @@ theorem IsPLHomeomorphOn.congr {f g : E → F} {P : Set E} {Q : Set F} (h : IsPL
   have h4 : f (Function.invFunOn f P y) = y := h.bijOn.invOn_invFunOn.2 hy
   exact h.bijOn.injOn h1 h3 (by rw [← hfg h1, h2, h4])
 
+theorem IsPLHomeomorphOn.homeomorph_symm {e : E ≃ₜ F} {P : Set E} {Q : Set F}
+    (h : IsPLHomeomorphOn e P Q) : IsPLHomeomorphOn e.symm Q P := by
+  refine h.symm.congr fun y hy => ?_
+  exact e.injective ((e.apply_symm_apply y).trans (h.bijOn.invOn_invFunOn.2 hy).symm)
+
 variable [FiniteDimensional ℝ E] [FiniteDimensional ℝ F]
 
 theorem exists_isPLHomeomorphOn_image (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
@@ -137,6 +142,12 @@ theorem IsPolyhedron.image_of_isPiecewiseAffineOn {P : Set E} (hP : IsPolyhedron
   rw [← hL]
   have := hfinL.to_subtype
   exact isPolyhedron_space L
+
+theorem IsPLBall.isPolyhedron {n : ℕ} {P : Set E} (hP : IsPLBall n P) : IsPolyhedron P := by
+  obtain ⟨f, hf⟩ := hP
+  rw [← hf.image_eq]
+  exact (isHPolytope_stdSimplex _).isPolyhedron.image_of_isPiecewiseAffineOn
+    hf.isPiecewiseAffineOn hf.bijOn.injOn
 
 theorem IsPLHomeomorphOn.restrict {f : E → F} {P : Set E} {Q : Set F} (h : IsPLHomeomorphOn f P Q)
     {P₀ : Set E} (hP₀ : IsPolyhedron P₀) (hsub : P₀ ⊆ P) : IsPLHomeomorphOn f P₀ (f '' P₀) := by
