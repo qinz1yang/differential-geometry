@@ -1724,4 +1724,61 @@ theorem hasPLBoundaryCrossingAt_of_unique_cofaces [FiniteDimensional ℝ E]
       (eventually_mem_space_iff_mem_unique_coface_cone K hs hKbound hKa hxs)
       (eventually_mem_space_iff_mem_unique_coface_cone L ht hLbound hLb hxt)
 
+open Classical in
+theorem neighbors_singleton_of_eventually_nonneg_ray (G : Geometry.SimplicialComplex ℝ E)
+    [Finite G.faces] (hcard : ∀ s ∈ G.faces, s.card ≤ 2) {x d : E} (hx : {x} ∈ G.faces) (hd : d ≠ 0)
+    (hlocal : ∀ᶠ y in 𝓝 x, y ∈ G.space ↔ ∃ t : ℝ, 0 ≤ t ∧ y = x + t • d) :
+    ∃ a, {y | y ≠ x ∧ {x, y} ∈ G.faces} = {a} := by
+  have hray : ∀ z : E, Filter.Tendsto (fun r : ℝ => x + r • z) (𝓝 0) (𝓝 x) := by
+    intro z
+    have hcont : Continuous (fun r : ℝ => x + r • z) := by fun_prop
+    simpa only [zero_smul, add_zero] using hcont.tendsto 0
+  have hdG : ∀ᶠ r : ℝ in 𝓝 0, 0 < r → x + r • d ∈ G.space := by
+    filter_upwards [(hray d).eventually hlocal] with r hr
+    exact fun hr0 => hr.mpr ⟨r, hr0.le, rfl⟩
+  obtain ⟨c, hc, hax, haedge⟩ := exists_neighbor_on_ray_of_eventually G hcard hx hd hdG
+  let a := x + c • d
+  have haL : a ∈ (SimplicialComplex.geometricLink G {x}).space := by
+    rw [geometricLink_space_eq_neighbors_of_card_le G hcard x]
+    exact ⟨hax, haedge⟩
+  refine ⟨a, ?_⟩
+  ext q
+  change (q ≠ x ∧ {x, q} ∈ G.faces) ↔ q = a
+  constructor
+  · rintro ⟨hqx, hqedge⟩
+    have hqL : q ∈ (SimplicialComplex.geometricLink G {x}).space := by
+      rw [geometricLink_space_eq_neighbors_of_card_le G hcard x]
+      exact ⟨hqx, hqedge⟩
+    obtain ⟨δ, hδ, hball⟩ := Metric.mem_nhds_iff.mp ((hray (q - x)).eventually hlocal)
+    let r := min δ 1 / 2
+    have hr : 0 < r := half_pos (lt_min hδ zero_lt_one)
+    have hrδ : r < δ := by
+      have h := min_le_left δ 1
+      dsimp [r]
+      linarith
+    have hr1 : r ≤ 1 := by
+      have h := min_le_right δ 1
+      dsimp [r]
+      linarith
+    have hrball : r ∈ ball (0 : ℝ) δ := by
+      simpa only [mem_ball, dist_zero_right, Real.norm_eq_abs, abs_of_pos hr] using hrδ
+    obtain ⟨t, ht, hpoint⟩ := (hball hrball).mp
+      (mem_convexHull_insert_of_mem_geometricLink_space G hqL hr.le hr1)
+    have hscalar : r • (q - x) = t • d := add_left_cancel hpoint
+    have htne : t ≠ 0 := by
+      intro hzero
+      rw [hzero, zero_smul] at hscalar
+      exact hqx (sub_eq_zero.mp ((smul_eq_zero.mp hscalar).resolve_left hr.ne'))
+    have htpos : 0 < t := lt_of_le_of_ne ht htne.symm
+    have hq : q - x = (t / r) • d := by
+      calc q - x = r⁻¹ • (r • (q - x)) := by rw [smul_smul, inv_mul_cancel₀ hr.ne', one_smul]
+        _ = r⁻¹ • (t • d) := by rw [hscalar]
+        _ = (t / r) • d := by rw [smul_smul]; congr 1; ring
+    apply isRadiallyInjective_geometricLink G a haL q hqL ((t / r) / c)
+      (div_pos (div_pos htpos hr) hc)
+    change q = x + ((t / r) / c) • (x + c • d - x)
+    rw [add_sub_cancel_left, smul_smul, div_mul_cancel₀ _ hc.ne', ← hq, add_sub_cancel]
+  · rintro rfl
+    exact ⟨hax, haedge⟩
+
 end DifferentialGeometry.Topology.PiecewiseLinear
