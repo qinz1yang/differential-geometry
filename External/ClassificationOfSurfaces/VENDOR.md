@@ -1311,3 +1311,31 @@ standard axioms, exit 0. Logs: `.lake/scratch/check-schoenflies-input.log`,
 `.lake/scratch/check-planar-disk-gluing.log`, and
 `.lake/scratch/audit-schoenflies-fields.log`. The general 17.2 field remains
 unproved; no `SchoenfliesInput` instance is claimed.
+
+## Gluing PL three-balls along a boundary disk (Moise 23.11, Euclidean form)
+
+`BallGluing.lean` proves the exact planned Euclidean endpoint
+`isPLBall_union_of_inter_isPLBall_two`. Its common-ambient complex form
+`isPLBall_union_of_boundary_disk` permits any finite-dimensional real
+normed ambient space. Both require a genuine PL two-ball intersection
+contained in both intrinsic boundaries.
+
+`SphericalDiskExtension.lean` extends a prescribed PL map of disks in
+PL two-spheres to the whole spheres and then to PL three-balls.
+`BoundaryExtension.lean` adds the parametrized-boundary version in every
+positive dimension. `SimplexBallPair.lean` constructs two PL three-balls
+whose union is a tetrahedron and whose intersection is a common boundary
+disk. The gluing proof maps each given ball to this model while agreeing
+on the intersection. It uses the already proved two-dimensional
+Schoenflies and boundary-extension APIs; it does not assume 17.12.
+This is a native implementation of the gluing result; no vendored Lean
+source changed. The general manifold transport remains the next step.
+
+All four changed modules pass focused checks with exit 0 and zero
+warnings. `AuditS56.lean` checks seven declarations, prints the exact
+Euclidean endpoint, and exits 0 with only the three standard axioms.
+Logs: `.lake/scratch/check-boundary-extension.log`,
+`.lake/scratch/check-spherical-disk-extension.log`,
+`.lake/scratch/check-simplex-ball-pair.log`,
+`.lake/scratch/check-ball-gluing.log`, and
+`.lake/scratch/audit-ball-gluing.log`.

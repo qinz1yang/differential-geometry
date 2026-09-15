@@ -1,5 +1,6 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryOfBall
 import DifferentialGeometry.Topology.PiecewiseLinear.StdSimplexCone
+import DifferentialGeometry.Topology.PiecewiseLinear.SimplexBoundaryImage
 
 open Set
 
@@ -40,5 +41,34 @@ theorem exists_isPLHomeomorphOn_of_boundaryComplex [FiniteDimensional ℝ E] [Fi
   change f₂ (H (Function.invFunOn f₁ (stdSimplex ℝ (Fin (n + 2))) (f₁ z))) = g (f₁ z)
   rw [hf₁.bijOn.invOn_invFunOn.1 (hBsub hz), hHb hz]
   exact hf₂B.bijOn.invOn_invFunOn.2 (hg.bijOn.mapsTo (hf₁B.bijOn.mapsTo hz))
+
+theorem exists_isPLHomeomorphOn_of_stdSimplexBoundary
+    [FiniteDimensional ℝ E] [FiniteDimensional ℝ F] {n : ℕ} {P : Set E} {Q : Set F}
+    {fP : (Fin (n + 2) → ℝ) → E} {fQ : (Fin (n + 2) → ℝ) → F}
+    (hfP : IsPLHomeomorphOn fP (stdSimplex ℝ (Fin (n + 2))) P)
+    (hfQ : IsPLHomeomorphOn fQ (stdSimplex ℝ (Fin (n + 2))) Q) {g : E → F}
+    (hg : IsPLHomeomorphOn g (fP '' stdSimplexBoundary (n + 1))
+      (fQ '' stdSimplexBoundary (n + 1))) :
+    ∃ G : E → F, IsPLHomeomorphOn G P Q ∧ EqOn G g (fP '' stdSimplexBoundary (n + 1)) := by
+  classical
+  let _ : DecidableEq E := Classical.decEq _
+  let _ : DecidableEq F := Classical.decEq _
+  have hP : IsPLBall (n + 1) P := ⟨fP, hfP⟩
+  have hQ : IsPLBall (n + 1) Q := ⟨fQ, hfQ⟩
+  obtain ⟨K, hfinK, hKspace⟩ := hP.isPolyhedron.exists_simplicialComplex
+  obtain ⟨L, hfinL, hLspace⟩ := hQ.isPolyhedron.exists_simplicialComplex
+  let _ : Finite K.faces := hfinK.to_subtype
+  let _ : Finite L.faces := hfinL.to_subtype
+  have hfK : IsPLHomeomorphOn fP (stdSimplex ℝ (Fin (n + 2))) K.space := hKspace.symm ▸ hfP
+  have hfL : IsPLHomeomorphOn fQ (stdSimplex ℝ (Fin (n + 2))) L.space := hLspace.symm ▸ hfQ
+  have hBK := boundaryComplex_space_of_isPLHomeomorphOn_stdSimplex K hfK
+  have hBL := boundaryComplex_space_of_isPLHomeomorphOn_stdSimplex L hfL
+  rw [simplexBoundary_stdVertices_space] at hBK hBL
+  have hg' : IsPLHomeomorphOn g (boundaryComplex (n + 1) K).space
+      (boundaryComplex (n + 1) L).space := by rw [hBK, hBL]; exact hg
+  obtain ⟨G, hG, hGg⟩ := exists_isPLHomeomorphOn_of_boundaryComplex K L ⟨fP, hfK⟩ ⟨fQ, hfL⟩ hg'
+  rw [hKspace, hLspace] at hG
+  rw [hBK] at hGg
+  exact ⟨G, hG, hGg⟩
 
 end DifferentialGeometry.Topology.PiecewiseLinear
