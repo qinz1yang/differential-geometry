@@ -78,6 +78,43 @@ theorem IsPolyhedralBall.isPreconnected_interior {P : Set X}
       (hf.isPiecewiseAffineOn.continuousOn.mono openSimplex_stdVertices_subset_stdSimplex)
       fun x hx => hf.bijOn.mapsTo (openSimplex_stdVertices_subset_stdSimplex hx))
 
+open Classical in
+theorem PLPieceIn.frontier_eq_image_boundaryComplex
+    {P : Set X} (T : PLPieceIn E (n + 1) X P)
+    (hT : IsCombinatorialManifoldWithBoundary (n + 1) T.complex) :
+    frontier P = T.map '' (boundaryComplex (n + 1) T.complex).space := by
+  classical
+  let _ : Finite T.complex.faces := T.finite_faces.to_subtype
+  have hclosed : IsClosed P := T.isCompact.isClosed
+  rw [hclosed.frontier_eq]
+  ext y
+  constructor
+  · rintro ⟨hyP, hyint⟩
+    obtain ⟨x, hx, rfl⟩ := T.bijOn.surjOn hyP
+    refine ⟨x, ?_, rfl⟩
+    by_contra hxB
+    exact hyint ((T.mem_interior_iff_not_mem_boundaryComplex_space hT hx).mpr hxB)
+  · rintro ⟨x, hxB, rfl⟩
+    have hx := boundaryComplex_space_subset (n + 1) T.complex hxB
+    refine ⟨T.bijOn.mapsTo hx, ?_⟩
+    intro hxint
+    exact (T.mem_interior_iff_not_mem_boundaryComplex_space hT hx).mp hxint hxB
+
+open Classical in
+theorem PLPieceIn.frontier_eq_image_frontier_of_isPLHomeomorphOn
+    {P : Set X} (T : PLPieceIn E (n + 1) X P)
+    (hT : IsCombinatorialManifoldWithBoundary (n + 1) T.complex)
+    (K : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin (n + 1)))) [Finite K.faces]
+    (hK : IsCombinatorialManifoldWithBoundary (n + 1) K)
+    {f : (EuclideanSpace ℝ (Fin (n + 1))) → E}
+    (hf : IsPLHomeomorphOn f K.space T.complex.space) :
+    frontier P = (T.map ∘ f) '' frontier K.space := by
+  let _ : Finite T.complex.faces := T.finite_faces.to_subtype
+  rw [T.frontier_eq_image_boundaryComplex hT,
+    boundaryComplex_space_of_isPLHomeomorphOn K T.complex hK hf,
+    ← frontier_space_eq_boundaryComplex_space hK, image_image]
+  rfl
+
 theorem IsPolyhedralBall.eq_of_frontier_eq_of_interior_inter_nonempty
     {P Q : Set X} (hP : IsPolyhedralBall (n := n + 1) (n + 1) P)
     (hQ : IsPolyhedralBall (n := n + 1) (n + 1) Q)
