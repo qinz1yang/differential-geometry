@@ -805,3 +805,22 @@ contains only the standard three axioms. Logs are
 `.lake/scratch/check-free-face-transport.log`, and
 `.lake/scratch/audit-boundary-free-face-transport.log`. The full ambient
 extension and finite deletion induction for 17.5 remain to be assembled.
+
+## A fixed compatible planar model for an embedded disk
+
+The native `PlanarDiskSubdivision` module starts with a PL disk inside a
+finite ambient complex. It produces a finite ambient subdivision, keeps
+the disk as a subcomplex, constructs a simplicial isomorphism from that
+subcomplex to a planar PL disk, and retains the closed-star containment
+in original vertex stars. Relative derived subdivision extends the disk
+subdivision to the ambient complex. Thus no further refinement is needed
+to obtain the planar model during the deletion induction. The reference
+plane triangle uses the vendored standard triangle and its affine
+independence; all subdivision and extension steps are native.
+
+The focused check exits 0 with zero warnings. `AuditS34.lean` checks
+`exists_isSubdivision_subcomplex_isGlueIso_planar`, exits 0, and reports
+only the standard three axioms. Logs are
+`.lake/scratch/check-planar-disk-subdivision.log` and
+`.lake/scratch/audit-planar-disk-subdivision.log`. This is initial data
+for 17.5, not the ambient deletion induction itself.
