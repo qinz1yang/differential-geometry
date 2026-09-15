@@ -484,14 +484,16 @@ theorem gluedMap_of_notMem {z : E × F × ℝ} (hz : z ∉ (glued₁ K₁ A₁ �
 
 variable {K₁ A₁ ψ g₁ g₂}
 
-theorem PLPieceIn.glue_of_full [FiniteDimensional ℝ E] [FiniteDimensional ℝ F] [T2Space X]
+theorem PLPieceIn.exists_glue_of_full [FiniteDimensional ℝ E] [FiniteDimensional ℝ F] [T2Space X]
     {Y₁ Y₂ : Set X} (T₁ : PLPieceIn E n X Y₁) (T₂ : PLPieceIn F n X Y₂)
     {A₂ : Geometry.SimplicialComplex ℝ F} {ψ' : F → E} (h : IsGlueIso A₁ A₂ ψ ψ')
     (hA₁ : A₁.faces ⊆ T₁.complex.faces) (hA₂ : A₂.faces ⊆ T₂.complex.faces)
     (hfull₁ : ∀ s ∈ T₁.complex.faces, (∀ v ∈ s, {v} ∈ A₁.faces) → s ∈ A₁.faces)
     (hcompat : ∀ x ∈ A₁.space, T₂.map (simplicialMap A₁ ψ x) = T₁.map x)
     (hoverlap : Y₁ ∩ Y₂ = T₁.map '' A₁.space) :
-    Nonempty (PLPieceIn (E × F × ℝ) n X (Y₁ ∪ Y₂)) := by
+    ∃ T : PLPieceIn (E × F × ℝ) n X (Y₁ ∪ Y₂),
+      T.complex = gluedComplex T₁.complex T₂.complex h hA₂ hfull₁ ∧
+        T.map = gluedMap T₁.complex A₁ ψ T₁.map T₂.map := by
   have hfin₁ := T₁.finite_faces.to_subtype
   have hfin₂ := T₂.finite_faces.to_subtype
   have hfinL₁ := (glued₁_faces_finite T₁.complex A₁ ψ).to_subtype
@@ -759,7 +761,18 @@ theorem PLPieceIn.glue_of_full [FiniteDimensional ℝ E] [FiniteDimensional ℝ 
       · exact hw
   exact ⟨⟨gluedComplex T₁.complex T₂.complex h hA₂ hfull₁,
     gluedComplex_faces_finite T₁.complex T₂.complex h hA₂ hfull₁,
-    gluedMap T₁.complex A₁ ψ T₁.map T₂.map, hbij, hcont, hchart, hsymm⟩⟩
+    gluedMap T₁.complex A₁ ψ T₁.map T₂.map, hbij, hcont, hchart, hsymm⟩, rfl, rfl⟩
+
+theorem PLPieceIn.glue_of_full [FiniteDimensional ℝ E] [FiniteDimensional ℝ F] [T2Space X]
+    {Y₁ Y₂ : Set X} (T₁ : PLPieceIn E n X Y₁) (T₂ : PLPieceIn F n X Y₂)
+    {A₂ : Geometry.SimplicialComplex ℝ F} {ψ' : F → E} (h : IsGlueIso A₁ A₂ ψ ψ')
+    (hA₁ : A₁.faces ⊆ T₁.complex.faces) (hA₂ : A₂.faces ⊆ T₂.complex.faces)
+    (hfull₁ : ∀ s ∈ T₁.complex.faces, (∀ v ∈ s, {v} ∈ A₁.faces) → s ∈ A₁.faces)
+    (hcompat : ∀ x ∈ A₁.space, T₂.map (simplicialMap A₁ ψ x) = T₁.map x)
+    (hoverlap : Y₁ ∩ Y₂ = T₁.map '' A₁.space) :
+    Nonempty (PLPieceIn (E × F × ℝ) n X (Y₁ ∪ Y₂)) := by
+  obtain ⟨T, -, -⟩ := T₁.exists_glue_of_full T₂ h hA₁ hA₂ hfull₁ hcompat hoverlap
+  exact ⟨T⟩
 
 end GlueMap
 
