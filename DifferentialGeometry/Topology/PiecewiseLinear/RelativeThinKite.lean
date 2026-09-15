@@ -88,7 +88,7 @@ theorem TriangleMesh.exists_eventually_transportedThinKitePatch_inter_edge_subse
     exact M.mem_faces_iff.mpr
       ⟨by simp, u, hu, by simpa using heuData.1⟩
   have hTFace : T.1 ∈ M.toPlaneComplex.simplexes :=
-    M.toPlaneComplex.mem_simplexes_of_mem_cells T.2
+    M.toPlaneComplex.mem_simplexes_of_mem_cells (M.toPlaneComplex_cells.symm ▸ T.2)
   have hface := M.toPlaneComplex.face_inter ({v, w} : Finset M.Vertex) heFace T.1 hTFace
   change convexHull ℝ (M.position '' (({v, w} : Finset M.Vertex) : Set M.Vertex)) ∩
       M.triangleCarrier T.1 = convexHull ℝ

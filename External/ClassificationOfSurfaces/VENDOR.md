@@ -688,3 +688,37 @@ standard three axioms and exits 0. Logs are
 Transport to spherical charts, compatibility with the rest of the original
 disk, and the final retained-triangle induction remain required for 17.5.
 The statements of 17.5, 17.6, and 17.8 are unchanged and remain open.
+
+## Protected edge families in relative triangle deletion
+
+The resumed S branch starts from `5d7a83446`, including the interleaved
+face-star work in `e21341229` and the unverified relative thin-kite handoff.
+The native `RelativeThinKite` development adapts the finite edge-avoidance
+and thickness arguments from upstream `Moise/FreeTriangleMove.lean` and
+`Moise/PolygonalSchoenflies.lean`, using `Moise/ThinKiteMove.lean` for the
+geometric segment estimate. The upstream files and their Apache-2.0
+attribution remain preserved in this vendor tree; no vendor Lean source
+is modified.
+
+The new relative lemmas choose a single sufficiently small positive
+thickness for a finite family, fix its union pointwise, retain the old
+frontier control, and stay in the requested open neighborhood.
+`PlanarSchoenflies` threads that family through both deletion cases and
+the combined endpoint, retaining the previous signatures as corollaries.
+The remaining source error in the handoff is repaired by converting
+triangle membership through `TriangleMesh.toPlaneComplex_cells` before
+using `PlaneComplex.mem_simplexes_of_mem_cells`.
+
+After reading the current branch sources, `RelativeThinKite`,
+`PlanarSchoenflies`, `FaceStarBoundary`, `PlanarFreeFace`, and
+`FaceStarDeletion` are rebuilt in dependency order with the prescribed
+checker. Every final check exits 0 with zero warnings. `AuditS29.lean`
+checks 23 distinct declarations, including every public declaration in
+the three face-star modules and the new protected-family endpoints.
+All closures contain only `propext`, `Classical.choice`, and `Quot.sound`.
+The audit exits 0; logs are `.lake/scratch/resume-*.log` and
+`.lake/scratch/audit-resume-s29.log`.
+
+The protected-family condition is still an explicit geometric input at
+this layer. Its production for retained spherical triangles and the full
+17.5 induction remain open; 17.6 and 17.8 remain unchanged.
