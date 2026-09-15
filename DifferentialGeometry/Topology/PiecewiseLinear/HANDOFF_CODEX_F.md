@@ -874,3 +874,18 @@ E.3 取 `U = univ`、`h` 为同胚（`Topology.IsEmbedding` 由 `Homeomorph.isEm
    奇点集的组合边界 = 奇点集 ∩ `Bd M`。这是 L.3 要消费的全部；写进计划行 F5.2 与 §4 接口表后签名冻结。
 不得增加结论型假设；若第 2 步 (ii) 的折叠引理或第 1 步的载体约束扰动出现本车道无法闭合的缺口，先汇报确切缺口再决定。
 估计 4k–8k 行。检查点：第 1 步（搬运 + 载体约束扰动的存在性）做完先汇报。
+
+## 13. 2026-09-15：砖 15/16 条件版完成
+
+- `Transition361.lean` 的两个定义与第一子引理已按 §12.1 检查点汇报、提交并推送（`9fb803198`）。
+  `IsPLHomeomorphInto` 最终采用逐点逆映射的 `IsPLWithinAt` 形式；原因是空源、非空目标不存在总逆函数。
+  `isPLHomeomorphInto_iff_exists_inverse` 证明源非空时与草稿单个总逆映射形式等价。E.2 行已记录完整定义。
+- 砖 15 的 `exists_plh_approx_of_isOpen` 已完成并推送（`a5e0d27a1`）；一般正维版本为
+  `Moise352.exists_approx_image_eq_of_isOpen`。F6.3 塔给紧致穷竭，局部有限前沿的连续正距离控制与连通分支控制
+  合成误差函数；整个 U 只应用一次 35.2。紧致路径捕获与前沿分离给像集相等，不假设穷竭阶段连通。
+  `IsPLHomeomorphInto.image_polyhedralBoundary` 由 M.3 与不变域证明精确边界像公式；拓扑层前沿搬运不需要先三角剖分像。
+- 砖 16 的 `Endgame.lean` 已证明 `plApproximationManifold_three_of_moise352`：
+  `Moise352.{u} 3 → PLApproximationManifold.{u} 3`。由全空间上的 36.1 得连续双射，经不变域组装同胚。
+- 两模块分别聚焦检查 exit=0、零 warning。AuditF115 为十项检查点，AuditF116 为十五项砖 15 接口，
+  AuditF117 为包含最终端点的十六项；全部仅标准三公理。E.3/E.4 已记为条件版 done，35.2 本身仍未证。
+  未运行 lake build、未登记根聚合。下一项为 §12.2 的 F5.2；下一个审计文件 `AuditF118.lean`。

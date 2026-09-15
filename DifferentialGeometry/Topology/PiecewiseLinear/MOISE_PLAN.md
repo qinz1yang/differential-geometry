@@ -372,6 +372,13 @@
   该模块聚焦检查 exit=0、零 warning；AuditF116 审计十五个声明，全部仅标准三公理。
   36.1 已完成条件版；35.2 仍未证，端点砖 16 随后接入。未运行 lake build，未登记根聚合。
 
+- 2026-09-15（F 车道，砖 16）：`Endgame.lean` 的 `plApproximationManifold_three_of_moise352`
+  证明 `Moise352.{u} 3 → PLApproximationManifold.{u} 3`。在 U = univ 使用 36.1，像集相等给满射，
+  不变域给开映射，由连续双射组装同胚；保留原端点的任意连续正误差与两侧 PL 流形实例。
+  `Endgame` 聚焦检查 exit=0、零 warning；AuditF117 连同砖 15 接口共十六项，全部仅
+  `propext`、`Classical.choice`、`Quot.sound`。E.3/E.4 均为条件版 done，35.2 本身没有被证明。
+  下一项按 §12.2 处理 F5.2 的整体片与载体约束扰动。未运行 lake build，未登记根聚合。
+
 ## 7. 决策与风险
 
 - 不采用 Bing 定理 7 的“保留单形”强形式，只用 Moise §8/§35 的紧致图卡归纳（书中 `chap:two-set-gluing` 的方案）。
