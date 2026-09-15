@@ -1,5 +1,6 @@
 import External.ClassificationOfSurfaces.Moise.PolygonalSchoenflies
 import DifferentialGeometry.Topology.PiecewiseLinear.SimplexFrontier
+import DifferentialGeometry.Topology.PiecewiseLinear.BallFrontier
 import DifferentialGeometry.Topology.PiecewiseLinear.PLImage
 import DifferentialGeometry.Topology.PiecewiseLinear.AmbientExtension
 
@@ -91,26 +92,41 @@ theorem planeComplexOfSimplicialComplex_support
     obtain ⟨s, hs, hxs⟩ := K.mem_space_iff.mp hx
     have hv (v : Plane) (hvs : v ∈ s) : v ∈ K.vertices :=
       K.down_closed hs (by simpa using hvs) (Finset.singleton_nonempty v)
-    let t : Finset K.vertices := s.attach.map
-      ⟨fun v => ⟨v.1, hv v.1 v.2⟩, by
-        intro v w h
-        apply Subtype.ext
-        exact congrArg (fun z : K.vertices => (z : Plane)) h⟩
-    have ht : t.map e = s := by
-      ext v
-      constructor
-      · intro hv'
-        obtain ⟨u, hu, huv⟩ := Finset.mem_map.mp hv'
-        obtain ⟨w, _, hwu⟩ := Finset.mem_map.mp hu
-        subst u
-        exact huv ▸ w.property
-      · intro hvs
-        refine Finset.mem_map.mpr ⟨⟨v, hv v hvs⟩, ?_, rfl⟩
-        exact Finset.mem_map.mpr ⟨⟨v, hvs⟩, Finset.mem_attach _ _, rfl⟩
+    let t : Finset K.vertices := s.subtype (fun v => v ∈ K.vertices)
+    have ht : t.map e = s := Finset.subtype_map_of_mem hv
     apply Set.mem_iUnion₂.mpr
     refine ⟨t, (hmem t).mpr (ht.symm ▸ hs), ?_⟩
     rw [hcarrier, ht]
     exact hxs
+
+theorem planeComplexOfSimplicialComplex_isPure2
+    (K : Geometry.SimplicialComplex ℝ Plane) [Finite K.faces] (hK : IsPLBall 2 K.space) :
+    (planeComplexOfSimplicialComplex K).IsPure2 := by
+  classical
+  have hvertices : K.vertices.Finite :=
+    Set.Finite.preimage Finset.singleton_injective.injOn (Set.toFinite K.faces)
+  let _ : Fintype K.vertices := hvertices.fintype
+  let e : K.vertices ↪ Plane := ⟨Subtype.val, Subtype.val_injective⟩
+  intro s hs
+  have hsK : s.map e ∈ K.faces := (Finset.mem_filter.mp hs).2
+  obtain ⟨t, ht, hst, hcard⟩ := exists_face_superset_card_eq_of_isPLBall K hK hsK
+  let u : Finset K.vertices := t.subtype (fun v => v ∈ K.vertices)
+  have hu : u.map e = t := Finset.subtype_map_of_mem fun v hv =>
+    K.down_closed ht (Finset.singleton_subset_iff.mpr hv) (Finset.singleton_nonempty v)
+  refine ⟨u, ?_, ?_, ?_⟩
+  · change u ∈ Finset.univ.filter (fun r => r.map e ∈ K.faces)
+    exact Finset.mem_filter.mpr ⟨Finset.mem_univ _, hu.symm ▸ ht⟩
+  · have hsu : s.map e ⊆ u.map e := by rwa [hu]
+    exact Finset.map_subset_map.mp hsu
+  · change u.card = 3
+    rw [← Finset.card_map e, hu, hcard]
+
+theorem planeComplexOfSimplicialComplex_toTriangleMesh_support
+    (K : Geometry.SimplicialComplex ℝ Plane) [Finite K.faces] (hK : IsPLBall 2 K.space) :
+    (planeComplexOfSimplicialComplex K).toTriangleMesh.toPlaneComplex.support = K.space := by
+  rw [(planeComplexOfSimplicialComplex K).toTriangleMesh_support
+    (planeComplexOfSimplicialComplex_isPure2 K hK),
+    planeComplexOfSimplicialComplex_support]
 
 theorem isHPolytope_cellCarrier (K : PlaneComplex) {s : Finset K.Vertex}
     (hs : s ∈ K.simplexes) : IsHPolytope (K.cellCarrier s) := by
@@ -455,6 +471,18 @@ theorem exists_polygonalCircle_of_isPLSphere_one {S : Set Plane} (hS : IsPLSpher
     (isPLOnSet_of_isPiecewiseAffineOn (isPolyhedron_carrier J) h.isPiecewiseAffineOn)
     h.bijOn.injOn
   exact ⟨J', hJ'.trans h.image_eq⟩
+
+theorem exists_polygonalCircle_of_isPLBall_two {D : Set Plane} (hD : IsPLBall 2 D) :
+    ∃ J : PolygonalCircle, J.closedRegion = D := by
+  obtain ⟨J, hJ⟩ := exists_polygonalCircle_of_isPLSphere_one hD.isPLSphere_frontier
+  exact ⟨J, (J.eq_closedRegion_of_isCompact_frontier_eq hD.isPolyhedron.isCompact
+    hJ.symm hD.interior_nonempty).symm⟩
+
+theorem isPLBall_two_iff_exists_polygonalCircle {D : Set Plane} :
+    IsPLBall 2 D ↔ ∃ J : PolygonalCircle, J.closedRegion = D := by
+  refine ⟨exists_polygonalCircle_of_isPLBall_two, ?_⟩
+  rintro ⟨J, rfl⟩
+  exact isPLBall_two_closedRegion J
 
 theorem isPLBall_of_isPLSphere_one {S : Set Plane} (hS : IsPLSphere 1 S) :
     ∃ D : Set Plane, IsPLBall 2 D ∧ frontier D = S ∧ Bornology.IsBounded D := by
@@ -857,6 +885,30 @@ theorem exists_isPLHomeomorphOn_remove_twoEdgeFree_triangle
     (isPLHomeomorphOn_transportedThinKiteHomeomorph E δ hδ).homeomorph_symm,
     hpullFix, hpull, hremaining⟩
 
+theorem exists_isPLHomeomorphOn_remove_geometricallyFree_triangle
+    (M : TriangleMesh) (hM : IsPLBall 2 M.toPlaneComplex.support)
+    (T : M.Triangle) (hfree : M.IsGeometricallyFreeTriangle T)
+    (hmore : 1 < M.triangles.card) {U : Set Plane} (hU : IsOpen U)
+    (hTU : M.triangleCarrier T.1 ⊆ U) :
+    ∃ g : Plane ≃ₜ Plane, IsPLHomeomorphOn g univ univ ∧ EqOn g id Uᶜ ∧
+      g '' M.toPlaneComplex.support = (M.eraseTriangle T.1).toPlaneComplex.support ∧
+      IsPLBall 2 (M.eraseTriangle T.1).toPlaneComplex.support := by
+  obtain ⟨J, hJ⟩ := exists_polygonalCircle_of_isPLBall_two hM
+  obtain ⟨g, J', hg, hfix, hfront, hsupport⟩ :
+      ∃ (g : Plane ≃ₜ Plane) (J' : PolygonalCircle),
+        IsPLHomeomorphOn g univ univ ∧ EqOn g id Uᶜ ∧
+        g '' frontier M.toPlaneComplex.support =
+          frontier (M.eraseTriangle T.1).toPlaneComplex.support ∧
+        (M.eraseTriangle T.1).toPlaneComplex.support = J'.closedRegion := by
+    obtain ⟨k, h | h⟩ := hfree
+    · exact exists_isPLHomeomorphOn_remove_oneEdgeFree_triangle M J hJ.symm T k h hmore U hU hTU
+    · exact exists_isPLHomeomorphOn_remove_twoEdgeFree_triangle M J hJ.symm T k h U hU hTU
+  have himage := PolygonalCircle.TriangleMesh.image_support_eq_of_polygonalDisk_frontier
+    M J' ⟨T.1, T.property⟩ g (M.eraseTriangle T.1) hfront hsupport
+  refine ⟨g, hg, hfix, himage, ?_⟩
+  rw [hsupport]
+  exact isPLBall_two_closedRegion J'
+
 theorem exists_isPLHomeomorphOn_straighten_to_triangle (M : TriangleMesh) (K : PolygonalCircle)
     (hsupport : M.toPlaneComplex.support = K.closedRegion)
     {U : Set Plane} (hU : IsOpen U) (hsubset : M.toPlaneComplex.support ⊆ U)
@@ -899,20 +951,13 @@ theorem exists_isPLHomeomorphOn_straighten_to_triangle (M : TriangleMesh) (K : P
       have hlt : (M.eraseTriangle T.1).triangles.card < M.triangles.card := by omega
       have hsubsetErase : (M.eraseTriangle T.1).toPlaneComplex.support ⊆ U :=
         (M.eraseTriangle_support_subset T.1).trans hsubset
-      have hmove : ∃ (g : Plane ≃ₜ Plane) (K' : PolygonalCircle),
-          IsPLHomeomorphOn g univ univ ∧ EqOn g id Uᶜ ∧
-          g '' frontier M.toPlaneComplex.support =
-            frontier (M.eraseTriangle T.1).toPlaneComplex.support ∧
-          (M.eraseTriangle T.1).toPlaneComplex.support = K'.closedRegion := by
-        obtain ⟨k, hTone | hTtwo⟩ := hTfree
-        · exact exists_isPLHomeomorphOn_remove_oneEdgeFree_triangle
-            M K hsupport T k hTone hmore U hU hTU
-        · exact exists_isPLHomeomorphOn_remove_twoEdgeFree_triangle
-            M K hsupport T k hTtwo U hU hTU
-      obtain ⟨g, K', hg, hfix, hfrontier, hsupport'⟩ := hmove
-      have himage :=
-        PolygonalCircle.TriangleMesh.image_support_eq_of_polygonalDisk_frontier
-          M K' htriangles g (M.eraseTriangle T.1) hfrontier hsupport'
+      have hM : IsPLBall 2 M.toPlaneComplex.support := by
+        rw [hsupport]
+        exact isPLBall_two_closedRegion K
+      obtain ⟨g, hg, hfix, himage, herase⟩ :=
+        exists_isPLHomeomorphOn_remove_geometricallyFree_triangle M hM T hTfree hmore hU hTU
+      obtain ⟨K', hK'⟩ := exists_polygonalCircle_of_isPLBall_two herase
+      have hsupport' := hK'.symm
       obtain ⟨H, hH, himageH, hfixH⟩ :=
         ih (M.eraseTriangle T.1).triangles.card (by simpa [hcardM] using hlt)
           (M.eraseTriangle T.1) K' hsupport' hsubsetErase T₀' rfl
@@ -924,6 +969,14 @@ theorem exists_isPLHomeomorphOn_straighten_to_triangle (M : TriangleMesh) (K : P
         change H (g x) = x
         rw [hfix hx, id_eq]
         exact hfixH hx
+
+theorem exists_isPLHomeomorphOn_straighten_to_triangle_of_isPLBall
+    (M : TriangleMesh) (hM : IsPLBall 2 M.toPlaneComplex.support)
+    {U : Set Plane} (hU : IsOpen U) (hsubset : M.toPlaneComplex.support ⊆ U) (T₀ : M.Triangle) :
+    ∃ h : Plane ≃ₜ Plane, IsPLHomeomorphOn h univ univ ∧
+      h '' M.toPlaneComplex.support = M.triangleCarrier T₀.1 ∧ EqOn h id Uᶜ := by
+  obtain ⟨J, hJ⟩ := exists_polygonalCircle_of_isPLBall_two hM
+  exact exists_isPLHomeomorphOn_straighten_to_triangle M J hJ.symm hU hsubset T₀
 
 theorem exists_isPLHomeomorphOn_straighten (J : PolygonalCircle)
     {U : Set Plane} (hU : IsOpen U) (hregion : J.closedRegion ⊆ U) :
@@ -985,5 +1038,13 @@ theorem exists_isPLHomeomorphOn_straighten_of_isPLSphere_one_on_closedRegion
     J.isCompact_closedRegion.isBounded, ?_⟩
   intro U hU hJU
   exact exists_isPLHomeomorphOn_straighten_on_closedRegion J hU hJU
+
+theorem exists_isPLHomeomorphOn_straighten_of_isPLBall_two {D : Set Plane}
+    (hD : IsPLBall 2 D) {U : Set Plane} (hU : IsOpen U) (hDU : D ⊆ U) :
+    ∃ (h : Plane ≃ₜ Plane) (C : Set Plane), IsTriangle C ∧
+      IsPLHomeomorphOn h univ univ ∧ h '' D = C ∧
+      h '' frontier D = frontier C ∧ EqOn h id Uᶜ := by
+  obtain ⟨J, rfl⟩ := exists_polygonalCircle_of_isPLBall_two hD
+  simpa only [J.frontier_closedRegion] using exists_isPLHomeomorphOn_straighten J hU hDU
 
 end DifferentialGeometry.Topology.PiecewiseLinear

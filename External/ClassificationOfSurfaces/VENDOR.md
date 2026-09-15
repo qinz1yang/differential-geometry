@@ -460,3 +460,40 @@ boundary: transfer the local planar deletion through a vertex-star chart,
 prove its effect on the whole disk, and iterate while retaining the prescribed
 triangle. Neither the adapted triangulation nor the chart conjugation alone
 closes the disk-to-facet theorem 17.5 or its consumers 17.6 and 17.8.
+
+## Native disk recognition and pure-dimensional meshes
+
+Native PL balls and spheres are now proved nonempty, and `LinkDimension`
+proves that every face of a finite triangulation of an n-dimensional PL ball
+or sphere is contained in a face with n + 1 vertices. The proof inducts on
+vertex links; it does not assume purity or a special triangulation. This
+supplies `IsPure2` for `planeComplexOfSimplicialComplex` when the native space
+is a PL two-ball, so its upstream triangle mesh has exactly the native support.
+The existing support proof now uses `Finset.subtype_map_of_mem` for the vertex
+lift instead of repeating a manual subtype construction.
+
+The existing interior-image lemma in `FrontierBoundary` is promoted without
+changing its statement or proof. `BallFrontier` uses it to prove nonempty
+interior and `closure (interior P) = P` for full-dimensional positive-dimensional
+PL balls in Euclidean space. `PlanarSchoenflies` then recognizes every given
+planar `IsPLBall 2 D` as `J.closedRegion` for some polygonal circle J. The
+converse is included, giving an exact equivalence for the native predicate.
+
+`exists_isPLHomeomorphOn_remove_geometricallyFree_triangle` now accepts the
+native PL-ball hypothesis on an upstream mesh. It produces a global PL
+homeomorphism supported in any prescribed open neighborhood of the free
+triangle, gives the image of the whole disk as the erased mesh, and proves
+that the erased support remains a native PL ball. The retained-triangle
+induction uses this kernel, and new corollaries accept a native PL ball both
+for prescribed-mesh-triangle straightening and for unrestricted straightening.
+No vendor Lean source is modified; the polygonal recognition and free-triangle
+facts are used from the existing vendored closure.
+
+All five affected modules pass focused checks with exit 0 and zero warnings.
+`AuditS17.lean` audits twenty-one declarations, including these producers,
+the existing S.1 endpoints, 17.4, and the vertex-star extension. Every closure
+contains only `propext`, `Classical.choice`, and `Quot.sound`; the audit exits 0.
+The planar kernel still has to be transported to a local disk in the
+triangulated tetrahedral boundary with control of the rest of that boundary.
+The whole spherical-disk image statement and its induction remain open;
+17.5, 17.6, and 17.8 are not claimed complete.

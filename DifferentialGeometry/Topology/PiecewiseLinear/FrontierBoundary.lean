@@ -37,7 +37,7 @@ private theorem stdProj_mem_stdClosedTarget (n : ℕ) {x : Fin (n + 2) → ℝ}
     rw [Fin.sum_univ_castSucc] at hsum
     linarith [hx.1 (Fin.last (n + 1))]
 
-private theorem mem_interior_image_of_isPLHomeomorphOn_stdSimplex
+theorem mem_interior_image_of_isPLHomeomorphOn_stdSimplex
     {n : ℕ} {f : (Fin (n + 2) → ℝ) → EuclideanSpace ℝ (Fin (n + 1))}
     {P : Set (EuclideanSpace ℝ (Fin (n + 1)))}
     (hf : IsPLHomeomorphOn f (stdSimplex ℝ (Fin (n + 2))) P)
