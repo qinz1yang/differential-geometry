@@ -1177,3 +1177,17 @@ M2/M3 与两个最终端点仍未完成。下一层结果见 §18.4。
 `AuditF125.lean` 九项均仅标准三公理，并检查了强版的完整参数；没有修改或增加 `SchoenfliesInput` 字段。
 M1 的凸化与指定点控制已经闭合；仍缺球面沿水平圆周切成 PL 盘、一般位置层的多边形分解与指标对应、
 小幅转轴后每片的严格降指标。M1 尚未验收；M2/M3 和两个最终端点均未完成。下一审计文件 `AuditF126.lean`。
+
+### 18.6 严格半空间条件下恢复一般位置（M1 旋转的几何输入）
+
+`HeightPerturbation.lean` 的 `exists_continuousLinearMap_injOn_preserving_strict_order_and_halfSpace_of_isPolyhedron`：
+给定任意有限维实范数空间、有限集合 A/B、非零连续线性高度 ℓ、同层有限多面体 D，以及严格分离 `D \ {p}` 与 p 的线性形式 m，
+对任意 ε > 0 构造高度 f，使算子距离 `dist f ℓ < ε`，f 非零且在 A 上单射，保持 B 上原有的一切严格高度次序，
+并对所有 `x ∈ D \ {p}` 保证 `f p < f x`。证明先沿 m 小幅改变 ℓ，再在保持有限严格不等式的开邻域内调用 F5.1 的一般位置选择。
+用有限三角剖分的顶点凸包控制整个 D，不要求 D 是单形或凸集；对相反高度应用本定理给另一侧的倾斜。
+`linearMap_lt_on_convexHull_sdiff_singleton` 不要求仿射独立；`eventually_preserves_strict_order` 不要求有限维。
+
+聚焦检查 exit=0、零 warning、12.5 秒；`AuditF126.lean` 四项均仅标准三公理。
+本结果只控制高度函数与侧别，没有宣称新旧奇异点的包含关系或多边形数不增；这些才是严格降指标尚待证明的几何部分。
+球面 PL 切盘仍需实现：Moise 10.2 原陈述只给拓扑 2-盘，现有平面 P.1 不能直接作为球面 PL 切盘证明。
+尚未增加接口字段。M1/M2/M3 均未验收，下一审计文件 `AuditF127.lean`。
