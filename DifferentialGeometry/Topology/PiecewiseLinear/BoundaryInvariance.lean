@@ -1,6 +1,7 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.ManifoldInvariance
 import DifferentialGeometry.Topology.PiecewiseLinear.LinkEuclidean
 import DifferentialGeometry.Topology.PiecewiseLinear.PolyhedralManifold
+import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryOfBall
 
 open Set
 
@@ -215,4 +216,3 @@ theorem polyhedralBoundary_eq_of_piece {n : ℕ} {X : Type u} [TopologicalSpace 
 
 
 end DifferentialGeometry.Topology.PiecewiseLinear
-

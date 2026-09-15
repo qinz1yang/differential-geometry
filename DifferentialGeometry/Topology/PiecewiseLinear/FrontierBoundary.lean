@@ -210,7 +210,7 @@ private theorem frontier_space_subset_boundaryComplex_space {n : ℕ}
     rwa [hK'.space_eq] at hxi'
   · have hxB' :=
       (mem_boundaryComplex_space_iff_isPLBall_geometricLink_of_singleton K' hman hx').mpr hball
-    exact (mem_boundaryComplex_space_iff_of_isPLHomeomorphOn K K' hK hid hx.1).mpr hxB'
+    exact (mem_boundaryComplex_space_iff_of_isPLHomeomorphOn K K' hK hid hx.1).mp hxB'
 
 open Classical in
 private theorem exists_isSubdivision_singleton_mem_boundaryComplex_space {n : ℕ}
@@ -229,7 +229,7 @@ private theorem exists_isSubdivision_singleton_mem_boundaryComplex_space {n : �
   refine ⟨K', hK', hfin', hx', ?_⟩
   let _ : Finite K'.faces := hfin'.to_subtype
   have hid := hK'.isPLHomeomorphOn_id
-  exact (mem_boundaryComplex_space_iff_of_isPLHomeomorphOn K K' hK hid hxK).mp hxB
+  exact (mem_boundaryComplex_space_iff_of_isPLHomeomorphOn K K' hK hid hxK).mpr hxB
 
 open Classical in
 private theorem not_mem_interior_space_of_mem_boundaryComplex_space {n : ℕ}
@@ -302,8 +302,8 @@ private theorem mem_interior_map_iff_not_mem_boundaryComplex_space_of_piece
   have hboundary :
       x ∈ (@boundaryComplex _ _ _ (Classical.decEq _) (n + 1) T.complex).space ↔
         x ∈ (@boundaryComplex _ _ _ (Classical.decEq _) (n + 1) K₂).space := by
-    simpa using mem_boundaryComplex_space_iff_of_isPLHomeomorphOn T.complex K₂ hT
-      hsub.isPLHomeomorphOn_id hx
+    simpa using (mem_boundaryComplex_space_iff_of_isPLHomeomorphOn T.complex K₂ hT
+      hsub.isPLHomeomorphOn_id hx).symm
   obtain ⟨e, he, hstarx⟩ := hstar x hx₂
   constructor
   · intro hxint hxB
@@ -449,13 +449,13 @@ private theorem boundaryComplex_space_eq_of_isSubdivision [FiniteDimensional ℝ
       (@boundaryComplex _ _ _ (Classical.decEq _) (n + 1) K').mem_space_iff.mp hxB
     have hxK : x ∈ K.space := h.space_eq ▸ K'.convexHull_subset_space hs.1 hxs
     exact (mem_boundaryComplex_space_iff_of_isPLHomeomorphOn K K' hK
-      h.isPLHomeomorphOn_id hxK).mpr hxB
+      h.isPLHomeomorphOn_id hxK).mp hxB
   · intro hxB
     obtain ⟨s, hs, hxs⟩ :=
       (@boundaryComplex _ _ _ (Classical.decEq _) (n + 1) K).mem_space_iff.mp hxB
     have hxK : x ∈ K.space := K.convexHull_subset_space hs.1 hxs
     exact (mem_boundaryComplex_space_iff_of_isPLHomeomorphOn K K' hK
-      h.isPLHomeomorphOn_id hxK).mp hxB
+      h.isPLHomeomorphOn_id hxK).mpr hxB
 
 open Classical in
 theorem exists_isPLBall_closedStar_inter_boundary [FiniteDimensional ℝ E] {n : ℕ}
@@ -473,7 +473,7 @@ theorem exists_isPLBall_closedStar_inter_boundary [FiniteDimensional ℝ E] {n :
   let _ : Finite K₀.faces := hfin₀.to_subtype
   have hxB₀ : x ∈ (@boundaryComplex _ _ _ (Classical.decEq _) (n + 1) K₀).space :=
     (mem_boundaryComplex_space_iff_of_isPLHomeomorphOn K K₀ hK
-      hK₀.isPLHomeomorphOn_id hxK).mp hxB
+      hK₀.isPLHomeomorphOn_id hxK).mpr hxB
   have hman₀ : IsCombinatorialManifoldWithBoundary (n + 1) K₀ := hK.of_isSubdivision hK₀
   let B := @boundaryComplex _ _ _ (Classical.decEq _) (n + 1) K₀
   have hBfin : B.faces.Finite := boundaryComplex_faces_finite (n + 1) K₀
