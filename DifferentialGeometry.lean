@@ -9811,6 +9811,7 @@ import DifferentialGeometry.Topology.Embedding.ParametricGraph
 import DifferentialGeometry.Topology.Embedding.ParametricVelocity
 import DifferentialGeometry.Topology.Embedding.Radial
 import DifferentialGeometry.Topology.Embedding.Retraction
+import DifferentialGeometry.Topology.Embedding.LocalSeparation
 import DifferentialGeometry.Topology.Embedding.SliceChart
 import DifferentialGeometry.Topology.Embedding.SmoothParametricGraph
 import DifferentialGeometry.Topology.Embedding.Stability
@@ -9854,6 +9855,7 @@ import DifferentialGeometry.Topology.Homotopy.StarConvexComplement
 import DifferentialGeometry.Topology.Manifold.IntervalExtension
 import DifferentialGeometry.Topology.Manifold.TangentOrientation
 import DifferentialGeometry.Topology.Morse.Generic
+import DifferentialGeometry.Topology.Planar.CornerRounding
 import DifferentialGeometry.Topology.Planar.PolygonGraphCharts
 import DifferentialGeometry.Topology.Planar.PolygonIsotopy
 import DifferentialGeometry.Topology.Planar.PolygonRounding

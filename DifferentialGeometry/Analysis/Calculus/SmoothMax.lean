@@ -118,5 +118,15 @@ theorem convexOn {ε : ℝ} (hε : 0 < ε) :
   dsimp [smoothMax]
   ring
 
+theorem mul_left (a ε x y : ℝ) :
+    smoothMax (a * ε) (a * x) (a * y) = a * smoothMax ε x y := by
+  unfold smoothMax
+  rw [← mul_sub, smoothAbs.mul_left]
+  ring
+
+theorem div (ε x y a : ℝ) :
+    smoothMax (ε / a) (x / a) (y / a) = smoothMax ε x y / a := by
+  simpa only [div_eq_mul_inv, mul_comm] using smoothMax.mul_left a⁻¹ ε x y
+
 end smoothMax
 end Real

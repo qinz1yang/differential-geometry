@@ -230,6 +230,23 @@ theorem sub_abs_mem_Icc {ε : ℝ} (hε : 0 < ε) (x : ℝ) :
     have h := abs_le.mp hb
     constructor <;> linarith [abs_nonneg x]
 
+theorem mul_left (a ε x : ℝ) : smoothAbs (a * ε) (a * x) = a * smoothAbs ε x := by
+  by_cases ha : a = 0
+  · subst a
+    simp [smoothAbs]
+  have harg (t : ℝ) : (a * ε - a * t) / (2 * (a * ε)) = (ε - t) / (2 * ε) := by
+    rw [← mul_sub, show 2 * (a * ε) = a * (2 * ε) by ring,
+      mul_div_mul_left _ _ ha]
+  have hi := intervalIntegral.smul_integral_comp_mul_left
+    (a := x) (b := ε) (fun t : ℝ => smoothTransition ((a * ε - t) / (2 * (a * ε)))) a
+  simp only [harg, smul_eq_mul] at hi
+  unfold smoothAbs
+  rw [← hi]
+  ring
+
+theorem div (ε x a : ℝ) : smoothAbs (ε / a) (x / a) = smoothAbs ε x / a := by
+  simpa only [div_eq_mul_inv, mul_comm] using smoothAbs.mul_left a⁻¹ ε x
+
 end smoothAbs
 
 end Real

@@ -94,10 +94,74 @@ theorem timeDependentFlow_symm_level_and_sublevels_iff_of_proportional_transport
       (F (b, x) < r ↔ F (a, (timeDependentFlow V hV hs a b).symm x) < r) ∧
       (F (b, x) ≤ r ↔ F (a, (timeDependentFlow V hV hs a b).symm x) ≤ r) := by
   have hx' := (timeDependentFlow_symm_mem_iff_of_eq_zero V hV hs hz a b x).mpr hx
-  obtain ⟨he, hl, hw⟩ := timeDependentFlow_level_and_sublevels_iff_of_proportional_transport V hV hs hz
+  obtain ⟨he, hl, hw⟩ := timeDependentFlow_level_and_sublevels_iff_of_proportional_transport
+    V hV hs hz
     hab hΩ hcover hF hκ htransport hx'
   simpa only [Diffeomorph.apply_symm_apply] using
     (And.intro he.symm (And.intro hl.symm hw.symm))
+
+theorem exists_isotopy_level_and_sublevels_of_proportional_interpolation
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    {A B : E → ℝ} (hA : ContDiff ℝ ∞ A) (hB : ContDiff ℝ ∞ B)
+    {W J : Set E} (hW : IsOpen W) (hJ : IsCompact J) (hJW : J ⊆ W)
+    (hregular : ∀ t ∈ Icc (0 : ℝ) 1, ∀ x ∈ J,
+      (1 - t) * A x + t * B x = 0 →
+        fderiv ℝ (fun y => (1 - t) * A y + t * B y) x ≠ 0)
+    (hprop : ∀ t ∈ Icc (0 : ℝ) 1, ∀ x ∈ W,
+      (1 - t) * A x + t * B x = 0 → x ∉ J →
+        ∃ r : ℝ, 0 < r ∧ ∃ N : Set E, IsOpen N ∧ x ∈ N ∧ N ⊆ W ∧
+          EqOn B (fun y => r * A y) N) :
+    ∃ (K : Set E) (H : ℝ → E ≃ₘ[ℝ] E),
+      IsCompact K ∧ J ⊆ interior K ∧ K ⊆ W ∧
+      ContDiff ℝ ∞ (fun z : ℝ × E => H z.1 z.2) ∧
+      ContDiff ℝ ∞ (fun z : ℝ × E => (H z.1).symm z.2) ∧
+      H 0 = Diffeomorph.refl 𝓘(ℝ, E) E ∞ ∧
+      (∀ t, EqOn (H t) id Kᶜ ∧ EqOn (H t).symm id Kᶜ ∧
+        (∀ x, H t x ∈ W ↔ x ∈ W) ∧ (∀ x, (H t).symm x ∈ W ↔ x ∈ W)) ∧
+      (∀ x ∈ W, (A x = 0 ↔ B (H 1 x) = 0) ∧
+        (A x < 0 ↔ B (H 1 x) < 0) ∧ (A x ≤ 0 ↔ B (H 1 x) ≤ 0)) ∧
+      ∀ x ∈ W, (B x = 0 ↔ A ((H 1).symm x) = 0) ∧
+        (B x < 0 ↔ A ((H 1).symm x) < 0) ∧ (B x ≤ 0 ↔ A ((H 1).symm x) ≤ 0) := by
+  obtain ⟨K, V, Ω, κ, hK, hJK, hKW, hV, hs, hΩ, hcover, _, hκ, ht, hz⟩ :=
+    DifferentialGeometry.Analysis.exists_contDiff_compactly_supported_proportional_vector_field
+      hA hB hW hJ hJW hregular hprop
+  let H := fun t => timeDependentFlow V hV hs 0 t
+  let F : ℝ × E → ℝ := fun z => (1 - z.1) * A z.2 + z.1 * B z.2
+  have hF : ContDiff ℝ ∞ F :=
+    ((contDiff_const.sub contDiff_fst).mul (hA.comp contDiff_snd)).add
+      (contDiff_fst.mul (hB.comp contDiff_snd))
+  have hzero (t : ℝ) (x : E) (hx : x ∉ W) : V (t, x) = 0 :=
+    hz t x (fun h => hx (hKW h))
+  have htransport (z : ℝ × E) (hzΩ : z ∈ Ω) :
+      deriv (fun u => F (u, z.2)) z.1 +
+        fderiv ℝ (fun y => F (z.1, y)) z.2 (V z) = κ z * (F z - 0) := by
+    simpa only [F, sub_zero] using ht z hzΩ
+  refine ⟨K, H, hK, hJK, hKW,
+    (contDiff_timeDependentFlow V hV hs).comp
+      (contDiff_const.prodMk (contDiff_fst.prodMk contDiff_snd)),
+    (contDiff_timeDependentFlow_symm V hV hs).comp
+      (contDiff_const.prodMk (contDiff_fst.prodMk contDiff_snd)),
+    timeDependentFlow_refl V hV hs 0, ?_, ?_, ?_⟩
+  · intro t
+    refine ⟨?_, ?_, timeDependentFlow_mem_iff_of_eq_zero V hV hs hzero 0 t,
+      timeDependentFlow_symm_mem_iff_of_eq_zero V hV hs hzero 0 t⟩
+    · exact fun x hx => timeDependentFlow_apply_eq_self_of_forall_eq_zero V hV hs
+        (fun u => hz u x hx) 0 t
+    · intro x hx
+      change (timeDependentFlow V hV hs 0 t).symm x = x
+      rw [timeDependentFlow_symm]
+      exact timeDependentFlow_apply_eq_self_of_forall_eq_zero V hV hs
+        (fun u => hz u x hx) t 0
+  · intro x hx
+    have h := timeDependentFlow_level_and_sublevels_iff_of_proportional_transport V hV hs
+      hzero (a := 0) (b := 1) (r := 0) (by norm_num) hΩ hcover
+      (hF.differentiable (by simp)).differentiableOn hκ.continuousOn htransport hx
+    simpa only [F, H, sub_zero, sub_self, zero_mul, one_mul, add_zero, zero_add] using h
+  · intro x hx
+    have h := timeDependentFlow_symm_level_and_sublevels_iff_of_proportional_transport
+      V hV hs hzero (a := 0) (b := 1) (r := 0) (by norm_num) hΩ hcover
+      (hF.differentiable (by simp)).differentiableOn hκ.continuousOn htransport hx
+    simpa only [F, H, sub_zero, sub_self, zero_mul, one_mul, add_zero, zero_add] using h
 
 theorem exists_diffeomorph_level_and_sublevels_of_proportional_interpolation
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
@@ -118,39 +182,10 @@ theorem exists_diffeomorph_level_and_sublevels_of_proportional_interpolation
         (A x < 0 ↔ B (e x) < 0) ∧ (A x ≤ 0 ↔ B (e x) ≤ 0)) ∧
       ∀ x ∈ W, (B x = 0 ↔ A (e.symm x) = 0) ∧
         (B x < 0 ↔ A (e.symm x) < 0) ∧ (B x ≤ 0 ↔ A (e.symm x) ≤ 0) := by
-  obtain ⟨K, V, Ω, κ, hK, hJK, hKW, hV, hs, hΩ, hcover, _, hκ, ht, hz⟩ :=
-    DifferentialGeometry.Analysis.exists_contDiff_compactly_supported_proportional_vector_field
+  obtain ⟨K, H, hK, hJK, hKW, _, _, _, hs, hf, hb⟩ :=
+    exists_isotopy_level_and_sublevels_of_proportional_interpolation
       hA hB hW hJ hJW hregular hprop
-  let e := timeDependentFlow V hV hs 0 1
-  let F : ℝ × E → ℝ := fun z => (1 - z.1) * A z.2 + z.1 * B z.2
-  have hF : ContDiff ℝ ∞ F :=
-    ((contDiff_const.sub contDiff_fst).mul (hA.comp contDiff_snd)).add
-      (contDiff_fst.mul (hB.comp contDiff_snd))
-  have hzero (t : ℝ) (x : E) (hx : x ∉ W) : V (t, x) = 0 :=
-    hz t x (fun h => hx (hKW h))
-  have htransport (z : ℝ × E) (hzΩ : z ∈ Ω) :
-      deriv (fun u => F (u, z.2)) z.1 +
-        fderiv ℝ (fun y => F (z.1, y)) z.2 (V z) = κ z * (F z - 0) := by
-    simpa only [F, sub_zero] using ht z hzΩ
-  refine ⟨K, e, hK, hJK, hKW, ?_, ?_,
-    timeDependentFlow_mem_iff_of_eq_zero V hV hs hzero 0 1,
-    timeDependentFlow_symm_mem_iff_of_eq_zero V hV hs hzero 0 1, ?_, ?_⟩
-  · exact fun x hx => timeDependentFlow_apply_eq_self_of_forall_eq_zero V hV hs
-      (fun u => hz u x hx) 0 1
-  · intro x hx
-    change (timeDependentFlow V hV hs 0 1).symm x = x
-    rw [timeDependentFlow_symm]
-    exact timeDependentFlow_apply_eq_self_of_forall_eq_zero V hV hs
-      (fun u => hz u x hx) 1 0
-  · intro x hx
-    have h := timeDependentFlow_level_and_sublevels_iff_of_proportional_transport
-      V hV hs hzero (a := 0) (b := 1) (r := 0) (by norm_num) hΩ hcover
-      (hF.differentiable (by simp)).differentiableOn hκ.continuousOn htransport hx
-    simpa only [F, e, sub_zero, sub_self, zero_mul, one_mul, add_zero, zero_add] using h
-  · intro x hx
-    have h := timeDependentFlow_symm_level_and_sublevels_iff_of_proportional_transport
-      V hV hs hzero (a := 0) (b := 1) (r := 0) (by norm_num) hΩ hcover
-      (hF.differentiable (by simp)).differentiableOn hκ.continuousOn htransport hx
-    simpa only [F, e, sub_zero, sub_self, zero_mul, one_mul, add_zero, zero_add] using h
+  exact ⟨K, H 1, hK, hJK, hKW, (hs 1).1, (hs 1).2.1,
+    (hs 1).2.2.1, (hs 1).2.2.2, hf, hb⟩
 
 end Diffeomorph

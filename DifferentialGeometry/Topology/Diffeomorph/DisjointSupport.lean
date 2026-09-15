@@ -1,8 +1,34 @@
 import Mathlib.Geometry.Manifold.Diffeomorph
 import Mathlib.GroupTheory.Perm.Support
 import Mathlib.Topology.Compactness.Compact
+import Mathlib.Topology.Homeomorph.Lemmas
 
 open scoped ContDiff Manifold
+
+namespace Equiv
+
+open _root_.Set in
+private theorem image_eq_of_local_transport
+    {X ι : Type*} (g : X ≃ X) (e : ι → X ≃ X) {D₀ D₁ : Set X} (W : ι → Set X)
+    (hfix : EqOn g id (⋃ i, W i)ᶜ) (heq : ∀ i, EqOn g (e i) (W i))
+    (hlocal : ∀ i, ∀ p ∈ W i, e i p ∈ D₁ ↔ p ∈ D₀)
+    (hout : ∀ p ∉ ⋃ i, W i, p ∈ D₀ ↔ p ∈ D₁) : g '' D₀ = D₁ := by
+  have hmem (p : X) : g p ∈ D₁ ↔ p ∈ D₀ := by
+    by_cases hp : p ∈ ⋃ i, W i
+    · obtain ⟨i, hpi⟩ := mem_iUnion.mp hp
+      rw [heq i hpi]
+      exact hlocal i p hpi
+    · rw [hfix hp, id_eq]
+      exact (hout p hp).symm
+  ext p
+  constructor
+  · rintro ⟨q, hq, rfl⟩
+    exact (hmem q).mpr hq
+  · intro hp
+    refine ⟨g.symm p, (hmem (g.symm p)).mp ?_, g.apply_symm_apply p⟩
+    simpa only [g.apply_symm_apply] using hp
+
+end Equiv
 
 namespace Diffeomorph
 
@@ -149,5 +175,38 @@ theorem exists_isotopy_of_finite_disjoint_compact_support
   intro x hx
   have h := congrArg (Φ t).symm (hfixC t hx)
   simpa only [Diffeomorph.symm_apply_apply, id_eq] using h.symm
+
+open _root_.Set in
+theorem exists_isotopy_image_of_finite_local_transport
+    {ι E : Type*} [Finite ι] [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {D₀ D₁ : Set E} (C W : ι → Set E) (H : ι → ℝ → E ≃ₘ[ℝ] E)
+    (hC : ∀ i, IsCompact (C i)) (hCW : ∀ i, C i ⊆ W i)
+    (hH : ∀ i, ContDiff ℝ ∞ (fun z : ℝ × E => H i z.1 z.2))
+    (hi : ∀ i, ContDiff ℝ ∞ (fun z : ℝ × E => (H i z.1).symm z.2))
+    (hzero : ∀ i, H i 0 = Diffeomorph.refl 𝓘(ℝ, E) E ∞)
+    (hdisj : Pairwise fun i j => Disjoint (W i) (W j))
+    (hfix : ∀ i t, EqOn (H i t) id (C i)ᶜ)
+    (hlocal : ∀ i, ∀ p ∈ W i, H i 1 p ∈ D₁ ↔ p ∈ D₀)
+    (hout : ∀ p ∉ ⋃ i, W i, p ∈ D₀ ↔ p ∈ D₁) :
+    ∃ Φ : ℝ → E ≃ₘ[ℝ] E,
+      ContDiff ℝ ∞ (fun z : ℝ × E => Φ z.1 z.2) ∧
+      ContDiff ℝ ∞ (fun z : ℝ × E => (Φ z.1).symm z.2) ∧
+      Φ 0 = Diffeomorph.refl 𝓘(ℝ, E) E ∞ ∧ IsCompact (⋃ i, C i) ∧
+      (∀ t, EqOn (Φ t) id (⋃ i, C i)ᶜ ∧ EqOn (Φ t).symm id (⋃ i, C i)ᶜ) ∧
+      (∀ i t, EqOn (Φ t) (H i t) (W i) ∧ EqOn (Φ t).symm (H i t).symm (W i)) ∧
+      Φ 1 '' D₀ = D₁ ∧ Φ 1 '' interior D₀ = interior D₁ ∧
+      Φ 1 '' frontier D₀ = frontier D₁ := by
+  obtain ⟨Φ, hΦ, hΦi, hΦzero, hcompact, hΦfix, hΦeq⟩ :=
+    exists_isotopy_of_finite_disjoint_compact_support C W H
+      hC hCW hH hi hzero hdisj hfix
+  have hCW' : (⋃ i, C i) ⊆ ⋃ i, W i := iUnion_mono hCW
+  have himage : Φ 1 '' D₀ = D₁ :=
+    Equiv.image_eq_of_local_transport (Φ 1).toEquiv
+      (fun i => (H i 1).toEquiv) W
+      ((hΦfix 1).1.mono (compl_subset_compl.mpr hCW'))
+      (fun i => (hΦeq i 1).1) hlocal hout
+  exact ⟨Φ, hΦ, hΦi, hΦzero, hcompact, hΦfix, hΦeq, himage,
+    ((Φ 1).toHomeomorph.image_interior D₀).trans (congrArg interior himage),
+    ((Φ 1).toHomeomorph.image_frontier D₀).trans (congrArg frontier himage)⟩
 
 end Diffeomorph
