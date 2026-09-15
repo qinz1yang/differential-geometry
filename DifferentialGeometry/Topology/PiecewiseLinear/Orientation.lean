@@ -801,30 +801,6 @@ theorem IsGlueIso.injOn_right_face
     _ = v := h.right s hs v (Finset.mem_coe.mp hv)
 
 open Classical in
-theorem IsGlueIso.image_image_right
-    [NormedAddCommGroup E] [NormedSpace ℝ E]
-    {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
-    {K : Geometry.SimplicialComplex ℝ E} {L : Geometry.SimplicialComplex ℝ F}
-    {φ : E → F} {ψ : F → E} (h : IsGlueIso K L φ ψ)
-    {s : Finset F} (hs : s ∈ L.faces) : (s.image ψ).image φ = s := by
-  rw [Finset.image_image]
-  calc
-    s.image (φ ∘ ψ) = s.image id := by
-      apply Finset.image_congr
-      intro y hy
-      exact h.right s hs y hy
-    _ = s := Finset.image_id
-
-open Classical in
-theorem IsGlueIso.image_image_left
-    [NormedAddCommGroup E] [NormedSpace ℝ E]
-    {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
-    {K : Geometry.SimplicialComplex ℝ E} {L : Geometry.SimplicialComplex ℝ F}
-    {φ : E → F} {ψ : F → E} (h : IsGlueIso K L φ ψ)
-    {s : Finset E} (hs : s ∈ K.faces) : (s.image φ).image ψ = s :=
-  h.symm.image_image_right hs
-
-open Classical in
 theorem IsGlueIso.image_faceCofaces_right
     [NormedAddCommGroup E] [NormedSpace ℝ E]
     {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]

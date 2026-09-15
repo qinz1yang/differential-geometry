@@ -12,8 +12,8 @@ variable {n : ℕ} {X : Type u} [TopologicalSpace X]
   [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
 
 omit [FiniteDimensional ℝ F] in
-theorem PLPieceIn.isPiecewiseAffineOn_transition {Y : Set X} (T₁ : PLPieceIn E n X Y)
-    (T₂ : PLPieceIn F n X Y) :
+theorem PLPieceIn.isPiecewiseAffineOn_transition_of_subset {Y₁ Y₂ : Set X} (T₁ : PLPieceIn E n X Y₁)
+    (T₂ : PLPieceIn F n X Y₂) (hY : Y₁ ⊆ Y₂) :
     IsPiecewiseAffineOn (Function.invFunOn T₂.map T₂.complex.space ∘ T₁.map)
       T₁.complex.space := by
   intro x hx
@@ -23,17 +23,17 @@ theorem PLPieceIn.isPiecewiseAffineOn_transition {Y : Set X} (T₁ : PLPieceIn E
   have h₁ := T₁.isPiecewiseAffineOn_chart e he x ⟨hx, hxe⟩
   have h₂ := T₂.isPiecewiseAffineOn_chart_symm e he (e (T₁.map x))
     ⟨e.map_source hxe, by
-      change e.symm (e (T₁.map x)) ∈ Y
+      change e.symm (e (T₁.map x)) ∈ Y₂
       rw [e.left_inv hxe]
-      exact T₁.bijOn.mapsTo hx⟩
+      exact hY (T₁.bijOn.mapsTo hx)⟩
   have h := h₂.comp (f := e ∘ T₁.map) (x := x) h₁
   have hsub : T₁.complex.space ∩ T₁.map ⁻¹' e.source ⊆
-      (e ∘ T₁.map) ⁻¹' (e.target ∩ e.symm ⁻¹' Y) := by
+      (e ∘ T₁.map) ⁻¹' (e.target ∩ e.symm ⁻¹' Y₂) := by
     intro z hz
     refine ⟨e.map_source hz.2, ?_⟩
-    change e.symm (e (T₁.map z)) ∈ Y
+    change e.symm (e (T₁.map z)) ∈ Y₂
     rw [e.left_inv hz.2]
-    exact T₁.bijOn.mapsTo hz.1
+    exact hY (T₁.bijOn.mapsTo hz.1)
   rw [inter_eq_left.mpr hsub] at h
   have hlocal : IsPiecewiseAffineWithinAt
       (Function.invFunOn T₂.map T₂.complex.space ∘ T₁.map)
@@ -47,6 +47,39 @@ theorem PLPieceIn.isPiecewiseAffineOn_transition {Y : Set X} (T₁ : PLPieceIn E
     ⟨hxe, hx⟩)).1
   rw [hset] at hlocal
   exact hlocal.of_inter_of_mem_nhds (hO.mem_nhds hxO)
+
+omit [FiniteDimensional ℝ F] in
+theorem PLPieceIn.isPiecewiseAffineOn_transition {Y : Set X} (T₁ : PLPieceIn E n X Y)
+    (T₂ : PLPieceIn F n X Y) :
+    IsPiecewiseAffineOn (Function.invFunOn T₂.map T₂.complex.space ∘ T₁.map)
+      T₁.complex.space := T₁.isPiecewiseAffineOn_transition_of_subset T₂ Subset.rfl
+
+theorem PLPieceIn.isPLHomeomorphOn_transition_of_subset {Y₁ Y₂ : Set X}
+    (T₁ : PLPieceIn E n X Y₁) (T₂ : PLPieceIn F n X Y₂) (hY : Y₁ ⊆ Y₂) :
+    IsPLHomeomorphOn (Function.invFunOn T₂.map T₂.complex.space ∘ T₁.map)
+      T₁.complex.space (T₂.complex.space ∩ T₂.map ⁻¹' Y₁) := by
+  let g := Function.invFunOn T₂.map T₂.complex.space ∘ T₁.map
+  have hgK : MapsTo g T₁.complex.space T₂.complex.space := fun _ hx =>
+    T₂.bijOn.surjOn.mapsTo_invFunOn (hY (T₁.bijOn.mapsTo hx))
+  have hcancel : ∀ x ∈ T₁.complex.space, T₂.map (g x) = T₁.map x := fun _ hx =>
+    T₂.bijOn.invOn_invFunOn.2 (hY (T₁.bijOn.mapsTo hx))
+  have hbij : BijOn g T₁.complex.space (T₂.complex.space ∩ T₂.map ⁻¹' Y₁) := by
+    refine ⟨?_, ?_, ?_⟩
+    · intro x hx
+      refine ⟨hgK hx, ?_⟩
+      change T₂.map (g x) ∈ Y₁
+      rw [hcancel x hx]
+      exact T₁.bijOn.mapsTo hx
+    · intro x hx y hy hxy
+      apply T₁.bijOn.injOn hx hy
+      exact (hcancel x hx).symm.trans ((congrArg T₂.map hxy).trans (hcancel y hy))
+    · intro y hy
+      obtain ⟨x, hx, hxy⟩ := T₁.bijOn.surjOn hy.2
+      refine ⟨x, hx, ?_⟩
+      change Function.invFunOn T₂.map T₂.complex.space (T₁.map x) = y
+      rw [hxy, T₂.bijOn.invOn_invFunOn.1 hy.1]
+  exact isPLHomeomorphOn_of_isPiecewiseAffineOn_of_bijOn T₁.isPolyhedron_space
+    (T₁.isPiecewiseAffineOn_transition_of_subset T₂ hY) hbij
 
 theorem PLPieceIn.isPLHomeomorphOn_transition {Y : Set X} (T₁ : PLPieceIn E n X Y)
     (T₂ : PLPieceIn F n X Y) :

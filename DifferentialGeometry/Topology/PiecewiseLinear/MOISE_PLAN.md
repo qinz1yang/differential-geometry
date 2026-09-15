@@ -401,6 +401,21 @@
   `faces_subset_relativeDerivedNeighborhood`、`relativeDerivedNeighborhood_faces_finite`，均仅标准三公理；未经过
   `Topology/Homology/HurewiczLowDegrees.lean`。源码提交 `d81e1897c`；L.1 无未闭合书中步骤，未运行根构建，未登记根聚合。
 
+- 2026-09-15（S 车道 S.3 / P.3 一般 17.2 / S.5 当前交付，数学提交 `08ee37003`）：
+  `ConvexStraightening`、`ConeStraightening`、`PlanarDiskGluing` 无条件证明 17.9–17.11，
+  保留每个凸开邻域外恒同及盘的内在内部；线性层形式精确匹配 F 的冻结接口。
+  `FreeDiskCell` 对任意有限维实赋范空间的共同有限三角剖分证明一般盘分解的两个不同自由胞腔，
+  并给避开一个指定胞腔的推论；17.3 的指定真盘子复形版本仍未证。
+  `SchoenfliesFoundations.lean` 的 `schoenflies_input` 填满原样保留的
+  `SchoenfliesInput` 四字段，无未证输入。S.4 由 F 车道实现。
+  `SchoenfliesManifold`（23.9）与 `PushManifold`（23.10）按授权显式接受完整 17.12 的陈述，
+  给顶点开星内填充与保持精确相对邻域的推移；该参数仍待 F 的生产者交付后解除。
+  `BallGluing` / `BallGluingManifold`（23.11）已无条件完成，包含两球位于不同顶点星的有限组合流形形式。
+  最终 9 个端点模块检查 exit=0、零警告；AuditS61 精确核对 F 接口，AuditS62 的 16 个声明仅标准三公理。
+  源码散列与日志见 `.lake/scratch/S3-P3-S5-VERIFICATION.json`；各层来源与差异见
+  `External/ClassificationOfSurfaces/VENDOR.md`。没有修改 vendored Lean、没有 lake build 或根聚合登记。
+  最后文档提交前已 fetch 并 merge `origin/codex/moise-integration`，保留所有已发布检查点。
+
 ## 7. 决策与风险
 
 - 不采用 Bing 定理 7 的“保留单形”强形式，只用 Moise §8/§35 的紧致图卡归纳（书中 `chap:two-set-gluing` 的方案）。
