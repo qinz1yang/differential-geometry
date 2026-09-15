@@ -683,7 +683,7 @@ structure LocallyFinitePieceTower (n : ℕ) (X : Type u) [TopologicalSpace X]
     [ChartedSpace (EuclideanSpace ℝ (Fin n)) X] (U : Set X) where
   N : ℕ → Set X
   piece : ∀ i, PLPiece n X (N i)
-  subset_interior : ∀ i, N i ⊆ interior (N (i + 1))
+  subset_nhdsWithin : ∀ i, ∀ x ∈ N i, N (i + 1) ∈ 𝓝[U] x      -- 相对 U 的内部；U 开时即 interior，紧致单阶段塔（N i := K = U）时平凡成立
   iUnion_eq : ⋃ i, N i = U
   core : ∀ i, Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin (piece i).ambientDim))
   core_le : ∀ i, (core i).faces ⊆ (piece i).piece.complex.faces
@@ -731,3 +731,17 @@ theorem exists_locallyFinitePieceTower_of_isOpen {U : Set X} (hU : IsOpen U) :
 ### 10.2 之后
 
 F 车道到此完成（F4.3 球性等 S.5）。若 F6.3 做完仍有余力，先汇报，不要自行进入其它车道的行。
+
+### 10.3 2026-09-15 范围确认（回答 F 车道的询问）
+
+- §10 的改派**有效**，取代 §9.7 的旧顺序：砖 11 取消；P.1 已完成；下一砖是 F6.3（§10.1）。
+- §10.1 的塔结构已修正：`subset_interior` 改为相对 `U` 的邻域条件 `subset_nhdsWithin`（感谢指出：常值紧致塔特例不能要求
+  紧致带边片是开集）。存在定理里 `U` 开，二者一致。
+- F5.2 暂停于当前状态，计划行 F5.2 记为 partial 并写明确切缺口：欧氏端点与一般 PL 流形的双点局部正规化、误差无关的固定邻域、
+  双点集紧致已证；未证的是多图卡拼接时保持既有区域的 `HasPLDoubleCrossingAt`（相对扰动接口不控制固定子复形的边缘，
+  任意小平移可产生切触）。消费者是 §25 L.3（C 车道后期），届时再决定路线；一个备选设计记入计划行：奇异 2-胞腔的像紧致，
+  用 F6.2 的 `exists_isPolyhedralManifoldWithBoundary_neighborhood` 取一个含像的紧致多面体流形 `N` 及其片 `T`，把问题整体搬到
+  `T` 的复形空间上做（不再逐图卡拼接）；代价是欧氏端点需要把"目标是 3 维欧氏空间"推广为"目标是高维欧氏空间中的 3 维多面体流形"。
+- 恢复写共享库的原版 `check-f.ps1` 后**不需要**重检旧模块：整合分支 `origin/codex/moise-integration`（已含本车道 651f6153e 与
+  C、S、H、E.0 的全部成果）在整合时已把这些模块的 olean 刷进共享库。请在下一个检查点执行
+  `git fetch origin && git merge --no-ff origin/codex/moise-integration`（计划文件冲突两边都保留），然后继续 F6.3。
