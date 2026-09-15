@@ -263,6 +263,14 @@ theorem hurewiczThree_pathTransport (p : Path x y) (a : HomotopyGroup (Fin 3) X 
     rw [pathTransport_pathTransportClass, pathTransportClass_transport 2 p c]
     exact hurewiczCubeClass_transport p c
 
+theorem hurewiczThree_pathTransport_natural {Y : Type u} [TopologicalSpace Y]
+    (f : C(X, Y)) (p : Path x y)
+    (c : HomotopyGroup (Fin 3) X x) :
+    hurewiczThree (f y)
+        (pathTransport (p.map f.continuous) (basedHomotopyMap f x c)) =
+      integralHomologyMap 3 f (hurewiczThree x c) := by
+  rw [pathTransport_natural f p c, hurewiczThree_natural f, hurewiczThree_pathTransport]
+
 variable {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
     [IsManifold ThreeModel ∞ M] [T2Space M] [CompactSpace M]
     [ConnectedSpace M] [SimplyConnectedSpace M]
