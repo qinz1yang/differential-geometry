@@ -868,3 +868,28 @@ the standard three axioms. Logs are `.lake/scratch/check-face-star-trace.log`,
 `.lake/scratch/check-planar-chart-deletion.log`, and
 `.lake/scratch/audit-planar-chart-deletion.log`. The ambient assembly and
 retained-triangle induction for 17.5 are still pending.
+
+## Ambient deletion on a tetrahedral boundary
+
+The native `GeneratedSubcomplex` and `TriangleSubcomplex` APIs isolate the
+triangles contained in a chart and express the entire support, before
+and after deletion, as a union with the fixed part in the opposite face.
+The face star and its intrinsic boundary data survive this restriction.
+
+`SimplexDiskDeletion.exists_isPLHomeomorphOn_eraseTriangleComplex_on_simplexBoundary`
+now assembles one ambient deletion. It uses the native tetrahedral vertex
+chart, the adapted planar protected-family deletion, and the previously
+checked cone extension. The ambient PL homeomorphism preserves the solid
+tetrahedron, maps the whole disk to its erased complex, and fixes the
+complement of the prescribed neighborhood. No disk assumption is made on
+the intersection with the vertex chart. Vendor Lean sources are unchanged.
+
+All three modules pass focused checks with exit 0 and zero warnings.
+`AuditS37.lean` checks all 16 new public declarations, exits 0, and reports
+only standard foundational axioms. Logs are
+`.lake/scratch/check-generated-subcomplex.log`,
+`.lake/scratch/check-triangle-subcomplex.log`,
+`.lake/scratch/check-simplex-disk-deletion.log`, and
+`.lake/scratch/audit-simplex-disk-deletion.log`. The full 17.5 endpoint
+still requires the finite retained-triangle induction and the final
+comparison with an original facet; 17.6 and 17.8 remain open.
