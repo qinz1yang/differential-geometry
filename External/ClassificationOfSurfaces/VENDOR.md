@@ -1050,3 +1050,31 @@ Logs: `.lake/scratch/check-invariance-domain-normed.log`,
 `.lake/scratch/check-spherical-disk-complement.log`,
 `.lake/scratch/audit-pl-homeomorph-topology.log`, and
 `.lake/scratch/audit-cone-boundary.log`.
+
+## Deleting a free tetrahedron from a triangulated PL three-ball
+
+Four native modules supply the single deletion step used by Moise
+17.9-17.10 (printed page 121). `BoundaryFacets.lean` characterizes a
+boundary facet by its unique coface and generates a PL ball boundary
+from its facets. `SubcomplexComplement.lean` computes closures of
+subcomplex differences. `BoundaryDeletion.lean` proves the exact
+change of the intrinsic boundary after deleting one top-dimensional
+simplex, in every dimension, when the remaining complex is a PL ball.
+
+`TetrahedronDeletion.lean` realizes the corresponding frontier change
+by an ambient PL homeomorphism fixed outside any prescribed open
+neighborhood of the deleted tetrahedron. Its free-face hypothesis is
+that the intersection of that tetrahedron with the original frontier
+is a PL two-ball. The proof derives the protected complementary disk
+and its density condition, then applies the verified tetrahedral push
+property. This closes a deletion step, not the full finite induction
+for 17.9 or 17.10. Vendor Lean sources remain unchanged.
+
+All four focused checks exit 0 with zero warnings. `AuditS46.lean`
+checks all seven declarations, exits 0, and reports only `propext`,
+`Classical.choice`, and `Quot.sound`. Logs:
+`.lake/scratch/check-boundary-facets.log`,
+`.lake/scratch/check-subcomplex-complement.log`,
+`.lake/scratch/check-boundary-deletion.log`,
+`.lake/scratch/check-tetrahedron-deletion.log`, and
+`.lake/scratch/audit-tetrahedron-deletion.log`.
