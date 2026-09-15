@@ -1241,3 +1241,22 @@ M1 的凸化与指定点控制已经闭合；仍缺球面沿水平圆周切成 P
 `AuditF129.lean` 八项均仅标准三公理，已核对水平层覆盖端点的完整签名。
 本层尚未证明不同圆周只能相交于该顶点，也尚未将顶点 crossing 与局部二度完全对应。
 球面 PL 切盘和 Lemma 1 严格降指标仍未闭合；M1/M2/M3 均未验收，`SchoenfliesInput` 未增加字段。下一审计文件 `AuditF130.lean`。
+
+### 18.10 临界层中圆周的交集与孤立点
+
+- `Connected/Loop.lean`：`isConnected_image_Icc_sdiff_singleton` 对稠密条件完备线序区间上的连续单闭曲线，
+  证明像集去掉任意一点后仍连通；目标只需拓扑空间，不要求 Hausdorff，参数不限制为实数。
+- `CurveInclusion.lean` 将邻点相等和面包含的主引理推广为只要求指定顶点在大复形中恰有两个邻点，
+  原一维闭组合流形接口保留签名并由此推出。
+- `CircleIntersection.lean`：PL 圆周去掉一点后连通且没有孤立点；除指定点外均为二度的有限线性图中，
+  圆周在去掉该点的图中既开又闭。因此两个圆周若在其他点相交，必相等。
+- `SingularLevelPolygons.lean`：`inter_subset_singleton_levelPolygons_of_ne` 与
+  `pairwiseDisjoint_sdiff_singleton_levelPolygons` 证明顶点层中不同圆周只能在该顶点相交。
+  `singleton_mem_nhdsWithin_fiber_iff_notMem_sUnion_levelPolygons` 精确刻画孤立顶点，
+  `mem_sUnion_levelPolygons_of_mem_heightSingularPoints` 保证每个指标中的奇异点位于层圆周上。
+
+四模块最终聚焦检查分别为 6.5、11.5、12.1、12.5 秒，均 exit=0、零 warning。
+`AuditF130.lean` 十四项（含保留的两个旧接口）均仅标准三公理。
+临界层的有限圆周覆盖、交点唯一性、孤立点与规范圆周族的对应现已闭合；尚未证明局部二度与顶点 crossing 等价。
+球面 PL 切盘、轴旋转后的逐点指标比较及 Lemma 1 严格下降仍未闭合，M1/M2/M3 均未验收。
+`SchoenfliesInput` 未增加字段；下一审计文件 `AuditF131.lean`。

@@ -1,5 +1,6 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.FiniteGraphCircles
 import DifferentialGeometry.Topology.PiecewiseLinear.PlanarSchoenflies
+import DifferentialGeometry.Topology.SimplicialComplex.EdgeGraph
 
 open Set Topology
 
@@ -8,19 +9,52 @@ namespace DifferentialGeometry.Topology.PiecewiseLinear
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
 
 open Classical in
+theorem neighbors_eq_of_le_of_neighborSet_ncard_eq_two
+    (H G : Geometry.SimplicialComplex ℝ E) [Finite G.faces] (hHG : H ≤ G)
+    (hH : IsCombinatorialManifold 1 H) {v : E} (hv : v ∈ H.vertices)
+    (hdegree : {w | w ≠ v ∧ {v, w} ∈ G.faces}.ncard = 2) :
+    {w | w ≠ v ∧ {v, w} ∈ H.faces} = {w | w ≠ v ∧ {v, w} ∈ G.faces} := by
+  let _ : Finite H.faces := ((Set.toFinite G.faces).subset hHG).to_subtype
+  obtain ⟨a, b, hab, hpair⟩ := (isCombinatorialManifold_one_iff H).mp hH |>.2 v hv
+  refine Set.eq_of_subset_of_ncard_le (fun w hw => ⟨hw.1, hHG hw.2⟩) ?_ ?_
+  · rw [hpair, Set.ncard_pair hab, hdegree]
+  · exact ((SimplicialComplex.finite_vertices G).subset (fun w hw =>
+      G.down_closed hw.2 (by simp) (Finset.singleton_nonempty w)))
+
+open Classical in
+theorem face_mem_of_vertex_mem_of_le_of_neighborSet_ncard_eq_two
+    (H G : Geometry.SimplicialComplex ℝ E) [Finite G.faces] (hHG : H ≤ G)
+    (hH : IsCombinatorialManifold 1 H) (hcard : ∀ s ∈ G.faces, s.card ≤ 2)
+    {s : Finset E} (hs : s ∈ G.faces) {v : E} (hvs : v ∈ s) (hv : v ∈ H.vertices)
+    (hdegree : {w | w ≠ v ∧ {v, w} ∈ G.faces}.ncard = 2) : s ∈ H.faces := by
+  by_cases hcard₁ : s.card = 1
+  · obtain ⟨w, rfl⟩ := Finset.card_eq_one.mp hcard₁
+    exact Finset.mem_singleton.mp hvs ▸ hv
+  · have hcard₂ : s.card = 2 := by
+      have := Finset.card_pos.mpr (G.nonempty_of_mem_faces hs)
+      have := hcard s hs
+      omega
+    obtain ⟨a, b, hab, rfl⟩ := Finset.card_eq_two.mp hcard₂
+    have hn := neighbors_eq_of_le_of_neighborSet_ncard_eq_two H G hHG hH hv hdegree
+    rcases Finset.mem_insert.mp hvs with rfl | hvb
+    · have hb : b ∈ {w | w ≠ v ∧ {v, w} ∈ H.faces} := hn.symm ▸ And.intro hab.symm hs
+      exact hb.2
+    · have hvb' : v = b := Finset.mem_singleton.mp hvb
+      subst v
+      have ha : a ∈ {w | w ≠ b ∧ {b, w} ∈ H.faces} := by
+        rw [hn]
+        exact ⟨hab, by simpa only [Finset.pair_comm] using hs⟩
+      simpa only [Finset.pair_comm] using ha.2
+
+open Classical in
 theorem neighbors_eq_of_le_isCombinatorialManifold_one
     (H K : Geometry.SimplicialComplex ℝ E) [Finite K.faces] (hHK : H ≤ K)
     (hH : IsCombinatorialManifold 1 H) (hK : IsCombinatorialManifold 1 K)
     {v : E} (hv : v ∈ H.vertices) :
     {w | w ≠ v ∧ {v, w} ∈ H.faces} = {w | w ≠ v ∧ {v, w} ∈ K.faces} := by
-  let _ : Finite H.faces := ((Set.toFinite K.faces).subset hHK).to_subtype
-  obtain ⟨a, b, hab, hHpair⟩ := (isCombinatorialManifold_one_iff H).mp hH |>.2 v hv
-  obtain ⟨c, d, hcd, hKpair⟩ := (isCombinatorialManifold_one_iff K).mp hK |>.2 v (hHK hv)
-  refine Set.eq_of_subset_of_ncard_le ?_ ?_ ?_
-  · exact fun w hw => ⟨hw.1, hHK hw.2⟩
-  · rw [hHpair, hKpair, Set.ncard_pair hab, Set.ncard_pair hcd]
-  · rw [hKpair]
-    exact Set.toFinite _
+  obtain ⟨a, b, hab, hpair⟩ := (isCombinatorialManifold_one_iff K).mp hK |>.2 v (hHK hv)
+  apply neighbors_eq_of_le_of_neighborSet_ncard_eq_two H K hHK hH hv
+  rw [hpair, Set.ncard_pair hab]
 
 open Classical in
 theorem face_mem_of_vertex_mem_of_le_isCombinatorialManifold_one
@@ -28,28 +62,10 @@ theorem face_mem_of_vertex_mem_of_le_isCombinatorialManifold_one
     (hH : IsCombinatorialManifold 1 H) (hK : IsCombinatorialManifold 1 K)
     {s : Finset E} (hs : s ∈ K.faces) {v : E} (hvs : v ∈ s) (hv : v ∈ H.vertices) :
     s ∈ H.faces := by
-  have hcard : s.card ≤ 2 := hK.card_le K hs
-  by_cases hcard₁ : s.card = 1
-  · obtain ⟨w, rfl⟩ := Finset.card_eq_one.mp hcard₁
-    have hvw : v = w := Finset.mem_singleton.mp hvs
-    exact hvw ▸ hv
-  · have hcard₂ : s.card = 2 := by
-      have := Finset.card_pos.mpr (K.nonempty_of_mem_faces hs)
-      omega
-    obtain ⟨a, b, hab, rfl⟩ := Finset.card_eq_two.mp hcard₂
-    have hneighbors := neighbors_eq_of_le_isCombinatorialManifold_one H K hHK hH hK hv
-    rcases Finset.mem_insert.mp hvs with hva | h
-    · subst v
-      have hb : b ∈ {w | w ≠ a ∧ {a, w} ∈ H.faces} := by
-        rw [hneighbors]
-        exact ⟨hab.symm, hs⟩
-      exact hb.2
-    · have hvb : v = b := Finset.mem_singleton.mp h
-      subst v
-      have ha : a ∈ {w | w ≠ b ∧ {b, w} ∈ H.faces} := by
-        rw [hneighbors]
-        exact ⟨hab, by simpa only [Finset.pair_comm] using hs⟩
-      simpa only [Finset.pair_comm] using ha.2
+  obtain ⟨a, b, hab, hpair⟩ := (isCombinatorialManifold_one_iff K).mp hK |>.2 v (hHK hv)
+  apply face_mem_of_vertex_mem_of_le_of_neighborSet_ncard_eq_two H K hHK hH
+    (fun t ht => hK.card_le K ht) hs hvs hv
+  rw [hpair, Set.ncard_pair hab]
 
 open Classical in
 theorem face_mem_of_inter_space_nonempty_of_le_isCombinatorialManifold_one

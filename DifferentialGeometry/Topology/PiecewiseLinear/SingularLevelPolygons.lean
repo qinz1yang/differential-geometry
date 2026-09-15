@@ -1,8 +1,8 @@
 import DifferentialGeometry.Topology.Combinatorics.EvenDegree
-import DifferentialGeometry.Topology.PiecewiseLinear.FiniteGraphCircles
+import DifferentialGeometry.Topology.PiecewiseLinear.CircleIntersection
 import DifferentialGeometry.Topology.PiecewiseLinear.PlanarCycleRealization
 
-open Set
+open Set Topology
 
 namespace DifferentialGeometry.Topology.PiecewiseLinear
 
@@ -100,5 +100,69 @@ theorem fiber_eq_singleton_union_sUnion_levelPolygons
     · exact ⟨K.vertices_subset_space hp, rfl⟩
     · obtain ⟨J, hJ, hxJ⟩ := mem_sUnion.mp hx
       exact hJ.2 hxJ
+
+open Classical in
+theorem inter_subset_singleton_levelPolygons_of_ne
+    (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
+    (hK : IsCombinatorialManifold 2 K) (hdimE : Module.finrank ℝ E = 3)
+    (ℓ : E →ₗ[ℝ] ℝ) (hℓ : ℓ ≠ 0) (hinj : InjOn ℓ K.vertices)
+    {p : E} (hp : p ∈ K.vertices) {J T : Set E}
+    (hJ : J ∈ levelPolygons K.space ℓ (ℓ p)) (hT : T ∈ levelPolygons K.space ℓ (ℓ p))
+    (hJT : J ≠ T) : J ∩ T ⊆ {p} := by
+  obtain ⟨G, hGfin, hGspace, hcard, hneighbors⟩ :=
+    exists_triangulation_fiber_of_isCombinatorialManifold K hK hdimE ℓ hℓ hinj (ℓ p)
+  let _ : Finite G.faces := hGfin.to_subtype
+  have hdegree : ∀ v ∈ G.vertices, v ≠ p → {w | w ≠ v ∧ {v, w} ∈ G.faces}.ncard = 2 := by
+    intro v hv hvp
+    have hvlevel : ℓ v = ℓ p := (hGspace ▸ G.vertices_subset_space hv).2
+    have hvK : v ∉ K.vertices := fun hv => hvp (hinj hv hp hvlevel)
+    obtain ⟨a, b, hab, hpair⟩ := hneighbors v hv hvK
+    rw [hpair, Set.ncard_pair hab]
+  intro x hx
+  by_contra hxp
+  exact hJT (eq_of_isPLSphere_one_of_mem_inter_of_degree_eq_two_except G hcard p hdegree
+    hJ.1 hT.1 (hJ.2.trans_eq hGspace.symm) (hT.2.trans_eq hGspace.symm) hx.1 hx.2 hxp)
+
+theorem pairwiseDisjoint_sdiff_singleton_levelPolygons
+    (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
+    (hK : IsCombinatorialManifold 2 K) (hdimE : Module.finrank ℝ E = 3)
+    (ℓ : E →ₗ[ℝ] ℝ) (hℓ : ℓ ≠ 0) (hinj : InjOn ℓ K.vertices)
+    {p : E} (hp : p ∈ K.vertices) :
+    (levelPolygons K.space ℓ (ℓ p)).PairwiseDisjoint (fun J => J \ {p}) := by
+  intro J hJ T hT hJT
+  apply Set.disjoint_left.mpr
+  rintro x ⟨hxJ, hxp⟩ ⟨hxT, -⟩
+  exact hxp (inter_subset_singleton_levelPolygons_of_ne K hK hdimE ℓ hℓ hinj hp hJ hT hJT ⟨hxJ, hxT⟩)
+
+theorem singleton_mem_nhdsWithin_fiber_iff_notMem_sUnion_levelPolygons
+    (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
+    (hK : IsCombinatorialManifold 2 K) (hdimE : Module.finrank ℝ E = 3)
+    (ℓ : E →ₗ[ℝ] ℝ) (hℓ : ℓ ≠ 0) (hinj : InjOn ℓ K.vertices)
+    {p : E} (hp : p ∈ K.vertices) :
+    {p} ∈ 𝓝[K.space ∩ {x | ℓ x = ℓ p}] p ↔ p ∉ ⋃₀ levelPolygons K.space ℓ (ℓ p) := by
+  constructor
+  · intro hisolated hpC
+    obtain ⟨J, hJ, hpJ⟩ := mem_sUnion.mp hpC
+    exact hJ.1.not_singleton_mem_nhdsWithin_one hpJ (nhdsWithin_mono p hJ.2 hisolated)
+  · intro hpC
+    have hclosed : IsClosed (⋃₀ levelPolygons K.space ℓ (ℓ p)) := by
+      rw [sUnion_eq_biUnion]
+      exact (finite_levelPolygons K (fun s hs => hK.card_le K hs) hdimE ℓ hℓ hinj (ℓ p)).isClosed_biUnion
+        (fun J hJ => hJ.1.isPolyhedron.isClosed)
+    apply mem_nhdsWithin_iff_exists_mem_nhds_inter.mpr
+    refine ⟨(⋃₀ levelPolygons K.space ℓ (ℓ p))ᶜ, hclosed.isOpen_compl.mem_nhds hpC, ?_⟩
+    rintro x ⟨hxC, hx⟩
+    rw [fiber_eq_singleton_union_sUnion_levelPolygons K hK hdimE ℓ hℓ hinj hp] at hx
+    exact hx.resolve_right hxC
+
+theorem mem_sUnion_levelPolygons_of_mem_heightSingularPoints
+    (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
+    (hK : IsCombinatorialManifold 2 K) (hdimE : Module.finrank ℝ E = 3)
+    (ℓ : E →ₗ[ℝ] ℝ) (hℓ : ℓ ≠ 0) (hinj : InjOn ℓ K.vertices)
+    {p : E} (hp : p ∈ heightSingularPoints K.space ℓ) :
+    p ∈ ⋃₀ levelPolygons K.space ℓ (ℓ p) := by
+  have hpv := heightSingularPoints_subset_vertices K hK.isCombinatorialManifoldWithBoundary hdimE ℓ hℓ hinj hp
+  by_contra hpC
+  exact hp.2.2 ((singleton_mem_nhdsWithin_fiber_iff_notMem_sUnion_levelPolygons K hK hdimE ℓ hℓ hinj hpv).mpr hpC)
 
 end DifferentialGeometry.Topology.PiecewiseLinear
