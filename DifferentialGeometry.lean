@@ -10028,3 +10028,15 @@ import DifferentialGeometry.Geometry.Metric.Family.DerivativeBounds
 import DifferentialGeometry.Topology.Manifold.EndpointRegularity
 import DifferentialGeometry.Topology.Manifold.LeftInverse
 import DifferentialGeometry.Topology.Manifold.SpatialJets
+import DifferentialGeometry.Analysis.Integration.L2.SmoothSections.ScalarComposition
+import DifferentialGeometry.Analysis.Integration.L2.SmoothSections.ScalarNorm
+import DifferentialGeometry.Analysis.Integration.L2.SmoothSections.ScalarMultiplication
+import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Parametric.ScalarComposition
+import DifferentialGeometry.Topology.MetricSpace.DenseExtension
+import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Embedding.Product
+import DifferentialGeometry.Topology.ContinuousMap.CompactRange
+import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Embedding.ScalarContinuous
+import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Parametric.LocalComposition
+import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Parametric.AffineComposition
+import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Parametric.TimeComposition
+import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Nemytskii.TimeInterval
