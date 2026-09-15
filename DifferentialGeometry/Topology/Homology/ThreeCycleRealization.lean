@@ -88,12 +88,12 @@ theorem integralSingularThreeCycleProjection_val (z : (integralSingularChains X)
   have hz : (integralSingularChains X).d 3 2 z.val = 0 := z.property
   rw [hz, map_zero, sub_zero]
 
-private def integralSingularConeThreeFaces (σ : integralSingularSimplex 3 X) :
+def integralSingularConeThreeFaces (σ : integralSingularSimplex 3 X) :
     Fin 5 → integralSingularSimplex 3 X :=
   Fin.cons σ fun i => integralSingularConeTetrahedron x
     ((TopCat.toSSet.obj (TopCat.of X)).δ i σ)
 
-private theorem integralSingularConeThreeFaces_compatible (σ : integralSingularSimplex 3 X)
+theorem integralSingularConeThreeFaces_compatible (σ : integralSingularSimplex 3 X)
     (i : Fin 5) (j : Fin 4) :
     (TopCat.toSSet.obj (TopCat.of X)).δ j (integralSingularConeThreeFaces x σ i) =
       (TopCat.toSSet.obj (TopCat.of X)).δ (j.predAbove i)

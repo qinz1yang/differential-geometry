@@ -1,3 +1,4 @@
+import DifferentialGeometry.Topology.Homology.HurewiczLowDegrees
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.LowDegreeHurewiczCubeBridge
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HomotopyGroupsAssembly
 import DifferentialGeometry.Topology.Homology.HurewiczLowDegreeCriterion
@@ -105,5 +106,34 @@ theorem homotopyTwo_subsingleton_sphereThree_of_hurewiczTwoSphereNullhomotopic
   homotopyTwo_subsingleton_of_hurewiczTwoSphereNullhomotopic_of_noncompactPoincareDuality
     hnull (Classical.choice (inferInstance : Nonempty SphereThree)) q
     (noncompactPoincareDualityTwoOne_sphereThree_compl_singleton _)
+
+end DifferentialGeometry.Topology
+
+namespace DifferentialGeometry.Topology
+
+open CategoryTheory CategoryTheory.Limits ContinuousMap Metric
+open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
+variable {X : Type u} [TopologicalSpace X]
+variable {Y : Type u} [TopologicalSpace Y]
+variable {M : Type u} [TopologicalSpace M] [SimplyConnectedSpace M]
+
+theorem sphereHurewiczTwoCanonical_of_hurewicz_two_isomorphism :
+    SphereHurewiczTwoCanonical M :=
+  (sphereHurewicz_two_isomorphism_iff_canonical_generator (X := M)).mp
+    (fun x c hc => hurewicz_two_isomorphism x c hc)
+
+theorem sphereHurewiczThreeCanonical_of_hurewicz_three_isomorphism :
+    SphereHurewiczThreeCanonical M :=
+  (sphereHurewicz_three_isomorphism_iff_canonical_generator (X := M)).mp
+    (fun x hπ₂ c hc => hurewicz_three_isomorphism x hπ₂ c hc)
+
+theorem rfs_homotopy_groups_of_subsingleton_homology_two (q : M)
+    (hH₂ : Subsingleton (integralSingularHomology 2 M))
+    (hgen : IsSphereHomologyGenerator.{u} 2 cubeSphereFundamentalClass) :
+    Subsingleton (HomotopyGroup (Fin 2) M q) ∧ Function.Bijective (hurewiczThree q) :=
+  rfs_homotopy_groups_of_sphereHurewiczCanonical q hH₂ hgen
+    sphereHurewiczTwoCanonical_of_hurewicz_two_isomorphism
+    sphereHurewiczThreeCanonical_of_hurewicz_three_isomorphism
 
 end DifferentialGeometry.Topology

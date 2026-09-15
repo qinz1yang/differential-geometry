@@ -1,3 +1,5 @@
+import DifferentialGeometry.Topology.Homology.SimplexBoundaryLocalClass
+import DifferentialGeometry.Topology.Homology.SpherePunctureHomology
 import DifferentialGeometry.Topology.Homology.SimplexBoundaryChain
 import DifferentialGeometry.Topology.Homology.EuclideanSimplexGenerator
 import DifferentialGeometry.Topology.Homology.HurewiczOnePathLoopBridge
@@ -105,5 +107,66 @@ theorem isSphereHomologyGenerator_simplexBoundarySphereClass :
     IsSphereHomologyGenerator 1 (simplexBoundarySphereClass.{u} 1) :=
   (isSphereHomologyGenerator_iff_exists_functional 1 _).mpr
     ⟨simplexBoundarySphereDegree, simplexBoundarySphereDegree_simplexBoundarySphereClass⟩
+
+end DifferentialGeometry.Topology
+
+end
+
+noncomputable section
+
+open CategoryTheory Set
+
+universe u
+
+namespace DifferentialGeometry.Topology
+
+private def simplexBoundarySphereHomeomorph (n : ℕ) :
+    ULift.{u} (Simplex.boundary (Fin (n + 3))) ≃ₜ liftedHomotopySphere.{u} n :=
+  Homeomorph.ulift.trans
+    ((Simplex.stdSimplexNormedBoundarySphereHomeomorph
+      (EuclideanSpace.equiv (Fin (n + 2)) ℝ).symm).trans Homeomorph.ulift.symm)
+
+private theorem integralSingularHomologyMap_simplexBoundarySphereMap (n : ℕ) :
+    integralSingularHomologyMap (n + 1) (simplexBoundarySphereMap.{u} n)
+      (integralHomologyClass n (simplexBoundaryChain n) (simplexBoundaryChain_boundary n)) =
+      simplexBoundarySphereClass n := by
+  rw [simplexBoundarySphereClass, ← integralHomologyClass_eq_integralSingularCycleClass,
+    integralSingularHomologyMap_integralHomologyClass]
+  rfl
+
+theorem isSphereHomologyGenerator_simplexBoundarySphereClass_three :
+    IsSphereHomologyGenerator 2 (simplexBoundarySphereClass.{u} 2) := by
+  let e := simplexBoundarySphereHomeomorph.{u} 2
+  let p := simplexBoundaryFace.{u} 2 0 stdSimplex.barycenter
+  let L := integralLocalHomologyHomeomorphIso 3 e p
+  let g := integralAbsoluteToRelative 3 ({e p}ᶜ : Set (liftedHomotopySphere.{u} 2))
+  let c := integralAbsoluteToRelative 3 ({p}ᶜ : Set (ULift.{u} (Simplex.boundary (Fin 5))))
+    (integralHomologyClass 2 (simplexBoundaryChain 2) (simplexBoundaryChain_boundary 2))
+  have hc : Function.Bijective (fun z : ℤ => z • c) := by
+    dsimp only [c, p]
+    rw [integralAbsoluteToRelative_simplexBoundaryChain_face_zero]
+    exact simplexBoundaryFace_zero_localClass_generator
+  have hg : Function.Bijective g :=
+    integralAbsoluteToRelative_liftedSphere_puncture_bijective 2 1 (e p)
+  have heq : L.hom.hom c = g (simplexBoundarySphereClass 2) := by
+    have hnat := LinearMap.congr_fun (integralAbsoluteToRelative_natural 3
+      (⟨e, e.continuous⟩ : C(ULift.{u} (Simplex.boundary (Fin 5)), liftedHomotopySphere.{u} 2))
+      (show MapsTo e ({p}ᶜ : Set (ULift.{u} (Simplex.boundary (Fin 5))))
+        ({e p}ᶜ : Set (liftedHomotopySphere.{u} 2)) from fun _ hx => e.injective.ne hx))
+      (integralHomologyClass 2 (simplexBoundaryChain 2) (simplexBoundaryChain_boundary 2))
+    change g (integralSingularHomologyMap 3 (simplexBoundarySphereMap 2)
+      (integralHomologyClass 2 (simplexBoundaryChain 2) (simplexBoundaryChain_boundary 2))) =
+      L.hom.hom c at hnat
+    rw [integralSingularHomologyMap_simplexBoundarySphereMap] at hnat
+    exact hnat.symm
+  apply (isSphereHomologyGenerator_iff_forall_exists_zsmul 2
+    (simplexBoundarySphereClass 2)).mpr
+  intro y
+  obtain ⟨a, ha⟩ := L.toLinearEquiv.surjective (g y)
+  obtain ⟨k, hk⟩ := hc.2 a
+  change k • c = a at hk
+  refine ⟨k, hg.1 ?_⟩
+  rw [map_zsmul, ← heq, ← map_zsmul, hk]
+  exact ha.symm
 
 end DifferentialGeometry.Topology

@@ -1,4 +1,5 @@
 import DifferentialGeometry.Topology.Homology.HurewiczTwo
+import DifferentialGeometry.Topology.Homology.HurewiczThree
 
 
 
@@ -40,7 +41,8 @@ theorem hurewicz_three_isomorphism (x : X)
     Function.Bijective (sphereHurewicz 2 x c) ∧
       ∀ a b : HomotopyGroup (Fin 3) X x,
         sphereHurewicz 2 x c (a * b) = sphereHurewicz 2 x c a + sphereHurewicz 2 x c b := by
-  sorry
+  let _ := hπ₂
+  exact ⟨bijective_sphereHurewicz_three x c hc, sphereHurewicz_three_mul x c⟩
 
 theorem bijective_sphereHurewicz_iff_bijective_freeSphereHomologyImage (n : ℕ) (x : X)
     (c : integralSingularHomology (n + 1) (liftedHomotopySphere.{u} n)) :

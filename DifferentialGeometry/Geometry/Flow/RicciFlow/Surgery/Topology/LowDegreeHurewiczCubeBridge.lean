@@ -1,7 +1,6 @@
 import DifferentialGeometry.Topology.Homology.SphereHurewicz
 import DifferentialGeometry.Topology.Homology.SphereGenerator
 import DifferentialGeometry.Topology.Homology.HurewiczFrontier
-import DifferentialGeometry.Topology.Homology.HurewiczLowDegrees
 import DifferentialGeometry.Topology.Homotopy.CubeSphereProjection
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HurewiczCube
 
@@ -200,16 +199,6 @@ theorem isSphereHomologyGenerator_cubeSphereFundamentalClass_iff_coordinate :
 
 variable {M : Type u} [TopologicalSpace M] [SimplyConnectedSpace M]
 
-theorem sphereHurewiczTwoCanonical_of_hurewicz_two_isomorphism :
-    SphereHurewiczTwoCanonical M :=
-  (sphereHurewicz_two_isomorphism_iff_canonical_generator (X := M)).mp
-    (fun x c hc => hurewicz_two_isomorphism x c hc)
-
-theorem sphereHurewiczThreeCanonical_of_hurewicz_three_isomorphism :
-    SphereHurewiczThreeCanonical M :=
-  (sphereHurewicz_three_isomorphism_iff_canonical_generator (X := M)).mp
-    (fun x hπ₂ c hc => hurewicz_three_isomorphism x hπ₂ c hc)
-
 theorem homotopyTwo_subsingleton_of_sphereHurewiczTwoCanonical
     (h : SphereHurewiczTwoCanonical M)
     (hH₂ : Subsingleton (integralSingularHomology 2 M)) (x : M) :
@@ -234,13 +223,5 @@ theorem rfs_homotopy_groups_of_sphereHurewiczCanonical (q : M)
     hurewiczThree_bijective_of_sphereHurewiczThreeCanonical q
       (homotopyTwo_subsingleton_of_sphereHurewiczTwoCanonical hcanonTwo hH₂ q)
       hgen hcanonThree⟩
-
-theorem rfs_homotopy_groups_of_subsingleton_homology_two (q : M)
-    (hH₂ : Subsingleton (integralSingularHomology 2 M))
-    (hgen : IsSphereHomologyGenerator.{u} 2 cubeSphereFundamentalClass) :
-    Subsingleton (HomotopyGroup (Fin 2) M q) ∧ Function.Bijective (hurewiczThree q) :=
-  rfs_homotopy_groups_of_sphereHurewiczCanonical q hH₂ hgen
-    sphereHurewiczTwoCanonical_of_hurewicz_two_isomorphism
-    sphereHurewiczThreeCanonical_of_hurewicz_three_isomorphism
 
 end DifferentialGeometry.Topology
