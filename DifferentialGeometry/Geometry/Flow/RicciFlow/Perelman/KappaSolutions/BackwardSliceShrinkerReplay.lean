@@ -33,12 +33,16 @@ def backwardSliceLimitRigidity (tau : ℕ → ℝ) (htau : ∀ i, 0 < tau i)
     (q : ℕ → F.M) : Prop :=
   ∀ (phi : ℕ → ℕ) (L : PointedRiemannianManifold.{u, uE, uH} (I := I)),
     StrictMono phi →
-    PointedRiemannianConvergenceMaps (I := I) (backwardSliceSequence F tau htau q) L phi →
+    ∀ (Phi : PointedRiemannianConvergenceMaps (I := I)
+      (backwardSliceSequence F tau htau q) L phi)
+      (C : MetricConvergenceData (I := I) Phi),
+    (∀ k, C.domain k = CanonicalMetricCompactness.canonicalSourceData (I := I) Phi k) →
     MetricComplete (I := I) L →
     (let _ : TopologicalSpace L.M := L.topology
      let _ : ChartedSpace H L.M := L.charted
      let _ : IsManifold I ∞ L.M := L.smooth
      let _ : T2Space L.M := L.t2
+     ConnectedSpace L.M →
      (∃ x : L.M, metricScalarAt (I := I) L.metric x ≠ 0) ∧
      ∃ f : C^∞⟮I, L.M; ℝ⟯, gradientRicciSoliton (I := I) L.metric f 1)
 
@@ -71,7 +75,7 @@ theorem exists_backward_slice_asymptotic_shrinker_of_compactness_rigidity
   obtain ⟨q, hcompact, hrigid⟩ := h
   obtain ⟨L, phi, hphi, Phi, C, hdomain, hreference, hcomplete, hconnected⟩ :=
     exists_backward_slice_pointed_limit F hF tau htau q hcompact
-  obtain ⟨hnonflat, hsoliton⟩ := hrigid phi L hphi Phi hcomplete
+  obtain ⟨hnonflat, hsoliton⟩ := hrigid phi L hphi Phi C hdomain hcomplete hconnected
   exact ⟨q, L, phi, hphi, Phi, C, hdomain, hreference, hcomplete,
     hconnected, hnonflat, hsoliton⟩
 
@@ -82,8 +86,8 @@ theorem backwardSliceShrinkerFrontier_of_asymptoticShrinkerInput
     (h : Blowdown.BackwardSliceAsymptoticShrinkerInput (G := F) hF tau htau) :
     backwardSliceShrinkerFrontier F hF tau htau := by
   obtain ⟨q, p, hmono, hcompact, hrigid⟩ := h
-  refine ⟨q, hcompact, fun phi L hphi Phi hcomplete => ?_⟩
-  exact (hrigid hmono L ⟨phi, Phi, hphi⟩ hcomplete).2
+  refine ⟨q, hcompact, fun phi L hphi Phi C hdomain hcomplete hconnected => ?_⟩
+  exact hrigid hmono L ⟨phi, Phi, C, hphi, hdomain⟩ hcomplete hconnected
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 

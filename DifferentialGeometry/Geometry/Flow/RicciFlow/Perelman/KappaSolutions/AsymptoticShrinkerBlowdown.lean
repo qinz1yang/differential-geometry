@@ -46,14 +46,17 @@ def backwardSliceLimitGradientShrinker
     (tau : ℕ → ℝ) (htau : ∀ i, 0 < tau i) (q : ℕ → F.M) (p : F.M) : Prop :=
   AntitoneOn (intrinsicReducedVolume F.S 0 p) (Ioi 0) →
     ∀ L : PointedRiemannianManifold.{u, uE, uH} (I := I),
-      (∃ (phi : ℕ → ℕ) (_ : PointedRiemannianConvergenceMaps (I := I)
-          (backwardSliceSequence F tau htau q) L phi), StrictMono phi) →
+      (∃ (phi : ℕ → ℕ) (Phi : PointedRiemannianConvergenceMaps (I := I)
+          (backwardSliceSequence F tau htau q) L phi)
+          (C : MetricConvergenceData (I := I) Phi),
+        StrictMono phi ∧
+        (∀ k, C.domain k = CanonicalMetricCompactness.canonicalSourceData (I := I) Phi k)) →
       MetricComplete (I := I) L →
       (let _ : TopologicalSpace L.M := L.topology
        let _ : ChartedSpace H L.M := L.charted
        let _ : IsManifold I ∞ L.M := L.smooth
        let _ : T2Space L.M := L.t2
-       ConnectedSpace L.M ∧
+       ConnectedSpace L.M →
        (∃ x : L.M, metricScalarAt (I := I) L.metric x ≠ 0) ∧
        ∃ f : C^∞⟮I, L.M; ℝ⟯, gradientRicciSoliton (I := I) L.metric f 1)
 
@@ -117,7 +120,7 @@ theorem exists_backward_slice_asymptotic_shrinker_of_blowdownInput
   obtain ⟨L, phi, hphi, Phi, C, hdomain, hreference, hcomplete, hconnected⟩ :=
     exists_backward_slice_pointed_limit F hF tau htau q hcompact
   exact ⟨L, phi, hphi, Phi, C, hdomain, hreference, hcomplete,
-    hlimit hmono L ⟨phi, Phi, hphi⟩ hcomplete⟩
+    hconnected, hlimit hmono L ⟨phi, Phi, C, hphi, hdomain⟩ hcomplete hconnected⟩
 
 end BackwardSliceBlowdown
 

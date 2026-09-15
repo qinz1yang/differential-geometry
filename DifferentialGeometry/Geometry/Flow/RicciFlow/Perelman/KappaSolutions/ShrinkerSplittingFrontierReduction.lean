@@ -184,14 +184,17 @@ def SamePoleRescaledSliceLimit {kappa : ℝ}
     backwardSliceApproximateMetricCompactness (I := I) F hF tau htau q ∧
     ∀ (phi : ℕ → ℕ) (L : PointedRiemannianManifold.{u, uE, uH} (I := I)),
       StrictMono phi →
-      PointedRiemannianConvergenceMaps (I := I) (backwardSliceSequence F tau htau q) L phi →
+      ∀ (Phi : PointedRiemannianConvergenceMaps (I := I)
+        (backwardSliceSequence F tau htau q) L phi)
+        (C : MetricConvergenceData (I := I) Phi),
+      (∀ k, C.domain k = CanonicalMetricCompactness.canonicalSourceData (I := I) Phi k) →
       MetricComplete (I := I) L →
       (let _ : TopologicalSpace L.M := L.topology
        let _ : ChartedSpace H L.M := L.charted
        let _ : IsManifold I ∞ L.M := L.smooth
        let _ : T2Space L.M := L.t2
        let _ : SigmaCompactSpace L.M := L.sigmaCompact
-       ConnectedSpace L.M ∧
+       ConnectedSpace L.M →
        (∃ x : L.M, metricScalarAt (I := I) L.metric x ≠ 0) ∧
        (∀ x : L.M, ∀ (n : ℕ) (c : Fin n → ℝ) (v w : Fin n → TangentSpace I x),
          0 ≤ ∑ i, ∑ j, c i * c j * metricRm04StandardAt L.metric x (v i) (w i) (w j) (v j)) ∧
@@ -228,10 +231,10 @@ theorem exists_samePole_normalized_asymptotic_shrinker_of_samePoleRescaledSliceL
            Tendsto (fun i => intrinsicReducedVolume F.S 0 p (tau (phi i)))
              atTop (𝓝 (normalizedShrinkerMass L.metric f))) := by
   obtain ⟨q, hcost, hcompact, hlimit⟩ := h
-  obtain ⟨L, phi, hphi, Phi, C, hdomain, _hreference, hcomplete, _hconnected⟩ :=
+  obtain ⟨L, phi, hphi, Phi, C, hdomain, _hreference, hcomplete, hconnected⟩ :=
     exists_backward_slice_pointed_limit (I := I) F hF tau htau q hcompact
   exact ⟨q, L, phi, hphi, hcost, Phi, C, hdomain, hcomplete,
-    hlimit phi L hphi Phi hcomplete⟩
+    hconnected, hlimit phi L hphi Phi C hdomain hcomplete hconnected⟩
 
 end SamePole
 
