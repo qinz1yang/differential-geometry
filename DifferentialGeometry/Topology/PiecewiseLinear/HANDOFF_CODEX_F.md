@@ -1120,4 +1120,23 @@ F5.2 按 §17.1 搁置，本节没有推进它。
 审计同时对 §17.2 两个最终命题作类型检查；源码中没有相应的占位定理，类型检查不等于证明。
 M1 仍需：一般位置层的有限多边形分解、顶点处非奇异层的 crossing 判据、与原书指标对应、
 保持支持控制的平面凸化和三维保高度延拓、轴旋转后两片的严格降指标。M2 的中间层多边形性和 slab 删除、
-M3 的端点拼装均未完成。下一个审计文件 `AuditF123.lean`。
+M3 的端点拼装均未完成。本层之后的审计记录见 §18.3。
+
+### 18.3 保高度延拓与双锥邻域（M1 支撑层，未完成 Lemma 1）
+
+- `ConeAmbientExtension.lean` 增加 `exists_isPLHomeomorphOn_extension_coneComplex_union_radial`，
+  保留两个锥顶及两侧所有径向线的精确公式。原 `exists_isPLHomeomorphOn_extension_coneComplex_union`
+  签名不变，由此强版推出；未改公共定义语义。
+- `ConeNeighborhood.lean`：中心投影的代数与连续性；相对底面内部给单锥内部与双锥接合处内部；
+  `frontier_coneComplex_union_subset_of_mem_nhdsWithin` 实际证明三维边界包含于边缘的两侧锥。
+  `isConeBase_of_subset_fiber` 和 `coneComplex_space_inter_of_subset_fiber` 从上下高度条件构造锥及其精确交。
+- `HeightExtension.lean` 端点 `exists_isPLHomeomorphOn_extension_preserving_height`：给定有限水平底面复形 L、
+  边缘子复形 B，L 中不在 B 的每一点都有底面内的相对邻域；若底面 PL 自同胚固定 B，则对任意包含 L 的凸开集 W，
+  构造全空间 PL 延拓，固定 W 的补集，逐点保持高度，且对所有集合保持 `heightIndex`。
+  证明在 W 内实际选择上下锥顶并验证边界；没有把三维延拓、边界包含或高度指标结论作为额外假设。
+  这里的底面相对邻域条件还须在后续平面凸化的具体底盘上实例化。
+
+三模块聚焦检查均 exit=0、零 warning；原直接消费者 `SimplexCornerExtension.lean` 兼容检查 exit=0、零 warning。
+`AuditF123.lean` 审计十八项（包含保留的旧接口），全部仅标准三公理。检查用时分别为 13.1、10.6、11.3、10.8 秒。
+M1 仍未验收：未完成带指定临界点的平面凸化、整层多边形分解及小幅转轴后的严格降指标；
+M2/M3 与两个最终端点仍未完成。下一审计文件 `AuditF124.lean`。
