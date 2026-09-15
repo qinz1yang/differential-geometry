@@ -8,6 +8,16 @@ namespace DifferentialGeometry.Topology.PiecewiseLinear
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 
+theorem regularNeighborhoodIn_space_subset_of_isSubdivision
+    {K R : Geometry.SimplicialComplex ℝ E} (hR : IsSubdivision R K) (A : Set E) :
+    (regularNeighborhoodIn R A).space ⊆ (regularNeighborhoodIn K A).space := by
+  intro x hx
+  obtain ⟨s, ⟨_, t, ht, hst, y, hyt, hyA⟩, hxs⟩ := (regularNeighborhoodIn R A).mem_space_iff.mp hx
+  obtain ⟨u, hu, htu⟩ := hR.exists_face_subset ht
+  exact (regularNeighborhoodIn K A).convexHull_subset_space
+    ⟨hu, u, hu, Finset.Subset.refl u, y, htu hyt, hyA⟩
+      (htu (convexHull_mono (Finset.coe_subset.mpr hst) hxs))
+
 theorem exists_isSubdivision_extension_of_disjoint
     {K A B : Geometry.SimplicialComplex ℝ E} [Finite K.faces]
     (hA : A.faces ⊆ K.faces) (hB : B.faces ⊆ K.faces) (hAB : Disjoint A.space B.space)
