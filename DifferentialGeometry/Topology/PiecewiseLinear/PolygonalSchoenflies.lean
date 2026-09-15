@@ -554,6 +554,150 @@ theorem exists_isPLHomeomorphOn_eqOn_arc_of_boundaryComplex
   obtain ⟨G, hG, hGf⟩ := exists_isPLHomeomorphOn_of_boundaryComplex (n := 1) K L hK hL hf
   exact ⟨G, hG, (hGf.mono hAK).trans hfg⟩
 
+open Classical in
+theorem exists_isPLBall_pair_with_segment_inter :
+    ∃ K L : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2)),
+      K.faces.Finite ∧ L.faces.Finite ∧ IsPLBall 2 K.space ∧ IsPLBall 2 L.space ∧
+        IsPLBall 2 (K.space ∪ L.space) ∧
+        ∃ p q : EuclideanSpace ℝ (Fin 2), p ≠ q ∧ K.space ∩ L.space = segment ℝ p q ∧
+          segment ℝ p q ⊆ (boundaryComplex 2 K).space ∧
+          segment ℝ p q ⊆ (boundaryComplex 2 L).space := by
+  obtain ⟨T, hT, hcard, -, -, -⟩ := exists_affineIndependent_openSimplex_subset
+    (E := EuclideanSpace ℝ (Fin 2)) (n := 1) (by simp) 0 (U := univ) Filter.univ_mem
+  obtain ⟨a, ha⟩ := Finset.card_pos.mp (show 0 < T.card by omega)
+  have hecard : (T.erase a).card = 2 := by rw [Finset.card_erase_of_mem ha, hcard]
+  obtain ⟨b, c, hbc, he⟩ := Finset.card_eq_two.mp hecard
+  have hb : b ∈ T.erase a := by rw [he]; simp
+  have hc : c ∈ T.erase a := by rw [he]; simp
+  have hba : b ≠ a := (Finset.mem_erase.mp hb).1
+  have hca : c ≠ a := (Finset.mem_erase.mp hc).1
+  have hbT : b ∈ T := Finset.mem_of_mem_erase hb
+  have hcT : c ∈ T := Finset.mem_of_mem_erase hc
+  have hTeq : T = {a, b, c} := by rw [← Finset.insert_erase ha, he]
+  have hTb : T.erase b = {a, c} := by
+    rw [hTeq]
+    ext x
+    simp only [Finset.mem_erase, Finset.mem_insert, Finset.mem_singleton]
+    aesop
+  have hTc : T.erase c = {a, b} := by
+    rw [hTeq]
+    ext x
+    simp only [Finset.mem_erase, Finset.mem_insert, Finset.mem_singleton]
+    aesop
+  let p := (T.erase a).centroid ℝ id
+  have hp : p ∈ openSimplex (T.erase a) := centroid_mem_openSimplex ⟨b, hb⟩
+  have hpb : p ∉ T.erase b := notMem_erase_of_mem_openSimplex_erase hT hp hb
+  have hpc : p ∉ T.erase c := notMem_erase_of_mem_openSimplex_erase hT hp hc
+  have hpa : p ≠ a := fun h => hpb (h.symm ▸ Finset.mem_erase.mpr ⟨hba.symm, ha⟩)
+  have hB : AffineIndependent ℝ
+      ((↑) : (insert p (T.erase b) : Finset _) → EuclideanSpace ℝ (Fin 2)) :=
+    affineIndependent_insert_erase_far hT hp hb
+  have hC : AffineIndependent ℝ
+      ((↑) : (insert p (T.erase c) : Finset _) → EuclideanSpace ℝ (Fin 2)) :=
+    affineIndependent_insert_erase_far hT hp hc
+  have hBcard : (insert p (T.erase b)).card = 3 := by
+    rw [Finset.card_insert_of_notMem hpb, Finset.card_erase_of_mem hbT, hcard]
+  have hCcard : (insert p (T.erase c)).card = 3 := by
+    rw [Finset.card_insert_of_notMem hpc, Finset.card_erase_of_mem hcT, hcard]
+  let K := simplexComplex (insert p (T.erase b)) hB
+  let L := simplexComplex (insert p (T.erase c)) hC
+  have hK : K.space = convexHull ℝ ((insert p (T.erase b) : Finset _) : Set (EuclideanSpace ℝ (Fin 2))) :=
+    simplexComplex_space _ hB (Finset.insert_nonempty _ _)
+  have hL : L.space = convexHull ℝ ((insert p (T.erase c) : Finset _) : Set (EuclideanSpace ℝ (Fin 2))) :=
+    simplexComplex_space _ hC (Finset.insert_nonempty _ _)
+  have hKball : IsPLBall 2 K.space := by
+    rw [hK]
+    exact isPLBall_convexHull_of_affineIndependent _ hB hBcard
+  have hLball : IsPLBall 2 L.space := by
+    rw [hL]
+    exact isPLBall_convexHull_of_affineIndependent _ hC hCcard
+  have hpT : p ∈ convexHull ℝ (T : Set (EuclideanSpace ℝ (Fin 2))) :=
+    mem_convexHull_of_mem_openSimplex_erase hp
+  have hsub : ∀ v, convexHull ℝ ((insert p (T.erase v) : Finset _) : Set (EuclideanSpace ℝ (Fin 2))) ⊆
+      convexHull ℝ (T : Set (EuclideanSpace ℝ (Fin 2))) := by
+    intro v
+    refine convexHull_min ?_ (convex_convexHull ℝ _)
+    rintro x hx
+    rcases Finset.mem_insert.mp hx with rfl | hx
+    · exact hpT
+    · exact subset_convexHull ℝ _ (Finset.mem_of_mem_erase hx)
+  have hunion : K.space ∪ L.space = convexHull ℝ (T : Set (EuclideanSpace ℝ (Fin 2))) := by
+    rw [hK, hL]
+    refine Subset.antisymm (union_subset (hsub b) (hsub c)) fun x hx => ?_
+    obtain ⟨v, hv, hxv⟩ := exists_mem_convexHull_insert_erase_far hT ha hp hx
+    rw [he, Finset.mem_insert, Finset.mem_singleton] at hv
+    rcases hv with rfl | rfl
+    · exact Or.inl hxv
+    · exact Or.inr hxv
+  have hcone := isConeBase_far hT ha hp (by omega)
+  have hface : ∀ v ∈ T.erase a,
+      T.erase v ∈ (starComplex (simplexBoundary T hT) a).faces := by
+    intro v hv
+    have hvT := Finset.mem_of_mem_erase hv
+    have hav : a ∈ T.erase v := Finset.mem_erase.mpr ⟨(Finset.mem_erase.mp hv).1.symm, ha⟩
+    have hf : T.erase v ∈ (simplexBoundary T hT).faces :=
+      ⟨Finset.erase_subset _ _, ⟨a, hav⟩, fun h => Finset.notMem_erase v T (h.symm ▸ hvT)⟩
+    exact ⟨hf, by rwa [Finset.insert_eq_of_mem hav]⟩
+  have hBface : insert p (T.erase b) ∈ (coneComplex hcone).faces :=
+    Or.inr (Or.inr ⟨T.erase b, hface b hb, rfl⟩)
+  have hCface : insert p (T.erase c) ∈ (coneComplex hcone).faces :=
+    Or.inr (Or.inr ⟨T.erase c, hface c hc, rfl⟩)
+  have hmeet : (insert p (T.erase b)) ∩ (insert p (T.erase c)) = {p, a} := by
+    rw [hTb, hTc]
+    ext x
+    simp only [Finset.mem_inter, Finset.mem_insert, Finset.mem_singleton]
+    aesop
+  have hinter : K.space ∩ L.space = segment ℝ p a := by
+    rw [hK, hL, (coneComplex hcone).convexHull_inter_convexHull hBface hCface,
+      ← Finset.coe_inter, hmeet, Finset.coe_pair, convexHull_pair]
+  have hedge : ∀ (S : Finset (EuclideanSpace ℝ (Fin 2)))
+      (hS : AffineIndependent ℝ ((↑) : S → EuclideanSpace ℝ (Fin 2))), S.card = 3 →
+      {p, a} ⊆ S → segment ℝ p a ⊆ (boundaryComplex 2 (simplexComplex S hS)).space := by
+    intro S hS hScard hpaS
+    rw [boundaryComplex_simplexComplex (n := 1) hS hScard, ← convexHull_pair]
+    have hne : ({p, a} : Finset _) ≠ S := by
+      intro h
+      have hsize : ({p, a} : Finset _).card = 2 := by simp [hpa]
+      rw [h, hScard] at hsize
+      omega
+    simpa only [Finset.coe_pair] using (simplexBoundary S hS).convexHull_subset_space
+      ⟨hpaS, Finset.insert_nonempty _ _, hne⟩
+  refine ⟨K, L, simplexComplex_faces_finite _ hB, simplexComplex_faces_finite _ hC,
+    hKball, hLball, ?_, p, a, hpa, hinter, ?_, ?_⟩
+  · rw [hunion]
+    exact isPLBall_convexHull_of_affineIndependent _ hT hcard
+  · exact hedge _ hB hBcard (by rw [hTb]; exact Finset.insert_subset_insert _ (by simp))
+  · exact hedge _ hC hCcard (by rw [hTc]; exact Finset.insert_subset_insert _ (by simp))
+
+open Classical in
+theorem isPLBall_union_of_boundary_arc
+    (K L : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2)))
+    [Finite K.faces] [Finite L.faces] (hK : IsPLBall 2 K.space) (hL : IsPLBall 2 L.space)
+    (hArc : Schoenflies.IsArc (K.space ∩ L.space))
+    (hAK : K.space ∩ L.space ⊆ (boundaryComplex 2 K).space)
+    (hAL : K.space ∩ L.space ⊆ (boundaryComplex 2 L).space) :
+    IsPLBall 2 (K.space ∪ L.space) := by
+  obtain ⟨a, b, hArc⟩ := hArc.exists_isArcBetween
+  obtain ⟨P, Q, hPfin, hQfin, hP, hQ, hPQ, p, q, hpq, hinter, hBP, hBQ⟩ :=
+    exists_isPLBall_pair_with_segment_inter
+  have : Finite P.faces := hPfin.to_subtype
+  have : Finite Q.faces := hQfin.to_subtype
+  have hboundary : IsPLSphere 1 (boundaryComplex 2 K).space :=
+    isPLSphere_boundaryComplex_space_of_isPLBall (n := 1) K hK
+  have hball : IsPLBall 1 (K.space ∩ L.space) :=
+    isPLBall_of_isArc_subset_isPLSphere hboundary hArc.isArc hAK
+  obtain ⟨g, hg, -, -⟩ := exists_isPLHomeomorphOn_of_isArcBetween hball
+    (isPLBall_segment hpq) hArc (Schoenflies.isArcBetween_segment hpq)
+  obtain ⟨f₁, hf₁, hf₁g⟩ :=
+    exists_isPLHomeomorphOn_eqOn_arc_of_boundaryComplex K P hK hP hArc hAK hg hBP
+  obtain ⟨f₂, hf₂, hf₂g⟩ :=
+    exists_isPLHomeomorphOn_eqOn_arc_of_boundaryComplex L Q hL hQ hArc hAL hg hBQ
+  have hfg : EqOn f₁ f₂ (K.space ∩ L.space) := hf₁g.trans hf₂g.symm
+  have himage : f₁ '' (K.space ∩ L.space) = P.space ∩ Q.space :=
+    hf₁g.image_eq.trans (hg.image_eq.trans hinter.symm)
+  have h := hf₁.piecewise hf₂ hK.isPolyhedron hL.isPolyhedron hfg himage
+  exact hPQ.of_isPLHomeomorphOn h.symm
+
 theorem exists_polyhedral_region_of_isPLSphere_one {J : Set (EuclideanSpace ℝ (Fin 2))}
     (hJ : IsPLSphere 1 J) :
     ∃ U : Set (EuclideanSpace ℝ (Fin 2)), IsOpen U ∧ IsConnected U ∧ Bornology.IsBounded U ∧

@@ -13,6 +13,30 @@ section Ball
 
 variable [DecidableEq E]
 
+theorem boundaryComplex_simplexComplex {n : ℕ} {T : Finset E}
+    (hT : AffineIndependent ℝ ((↑) : T → E)) (hcard : T.card = n + 2) :
+    boundaryComplex (n + 1) (simplexComplex T hT) = simplexBoundary T hT := by
+  ext s
+  rw [mem_boundaryComplex_faces_iff, mem_simplexBoundary_faces_iff]
+  constructor
+  · rintro ⟨hs, t, ht, hst, htn, -⟩
+    refine ⟨hs.2, hs.1, fun hsT => ?_⟩
+    have hle := Finset.card_le_card hst
+    rw [hsT, hcard] at hle
+    omega
+  · rintro ⟨hsT, hs, hsne⟩
+    have hslt : s.card < T.card := Finset.card_lt_card (Finset.ssubset_iff_subset_ne.mpr ⟨hsT, hsne⟩)
+    have hsn : s.card ≤ n + 1 := by omega
+    have hrestcard : (T \ s).card = n + 1 - s.card + 1 := by
+      rw [Finset.card_sdiff_of_subset hsT, hcard]
+      omega
+    have hrest : (T \ s).Nonempty := Finset.card_pos.mp (by omega)
+    refine ⟨⟨hs, hsT⟩, s, ⟨hs, hsT⟩, subset_rfl, hsn, ?_⟩
+    rw [geometricLink_simplexComplex hT hsT,
+      simplexComplex_space _ (affineIndependent_of_subset hT Finset.sdiff_subset) hrest]
+    exact isPLBall_convexHull_of_affineIndependent _
+      (affineIndependent_of_subset hT Finset.sdiff_subset) hrestcard
+
 theorem simplexBoundary_stdVertices_space_subset (n : ℕ) :
     (simplexBoundary (stdVertices n) (stdVertices_affineIndependent n)).space ⊆
       stdSimplex ℝ (Fin (n + 2)) := by
