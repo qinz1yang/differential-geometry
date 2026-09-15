@@ -178,13 +178,15 @@ theorem exists_isPLBall_postcomp_neighborhood_at_doublePoint [FiniteDimensional 
   · rw [hgQ hx, dist_self]
     exact dist_nonneg
 open Classical in
-theorem exists_isPLBall_postcomp_neighborhood_at_doublePoint_in_manifold
+theorem exists_isPLBall_postcomp_neighborhood_at_doublePoint_preserving_injOn
     {d n m : ℕ} {X : Type*} [TopologicalSpace X] [T2Space X] [RegularSpace X]
     [ChartedSpace (EuclideanSpace ℝ (Fin m)) X]
     (K : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin d))) [Finite K.faces]
     (hK : IsCombinatorialManifoldWithBoundary (n + 1) K) (f : EuclideanSpace ℝ (Fin d) → X)
     (hf : IsPLOn d m f K.space) (hloc : IsLocallyInjective (K.space.domRestrict f))
     (hcard : ∀ y, (K.space ∩ f ⁻¹' {y}).encard ≤ 2)
+    {ι : Type*} [Finite ι] (C : ι → Set (EuclideanSpace ℝ (Fin d)))
+    (hC : ∀ i, IsCompact (C i)) (hCK : ∀ i, C i ⊆ K.space) (hCin : ∀ i, InjOn f (C i))
     {y : X} (hy : y ∈ doublePointSet f K.space) {V : Set X} (hV : V ∈ 𝓝 y) :
     ∃ P : Set (EuclideanSpace ℝ (Fin d)), ∃ U : Set X, IsPLBall (n + 1) P ∧ P ⊆ K.space ∧
       IsOpen U ∧ y ∈ U ∧ closure U ⊆ V ∧
@@ -192,15 +194,31 @@ theorem exists_isPLBall_postcomp_neighborhood_at_doublePoint_in_manifold
         ∃ g : EuclideanSpace ℝ (Fin d) → X, IsPLOn d m g K.space ∧
           IsLocallyInjective (K.space.domRestrict g) ∧
           (∀ z, (K.space ∩ g ⁻¹' {z}).encard ≤ 2) ∧
-          EqOn g (h ∘ f) P ∧ EqOn g f Pᶜ ∧ ∀ z ∉ U, g ⁻¹' {z} = f ⁻¹' {z} := by
+          EqOn g (h ∘ f) P ∧ EqOn g f Pᶜ ∧ (∀ z ∉ U, g ⁻¹' {z} = f ⁻¹' {z}) ∧
+          ∀ i, InjOn g (C i) ∧ (EqOn g (h ∘ f) (C i) ∨ EqOn g f (C i)) := by
   have hcont : ContinuousOn f K.space := fun x hx => (hf x hx).continuousWithinAt
-  obtain ⟨P, Q, B, U, hPQ, hP, hQ, _, _, _, hinjP, _, hU, hyU, hUV, hseam, hinjQ, _⟩ :=
+  obtain ⟨P, Q, B, U₀, hPQ, hP, hQ, _, _, _, hinjP, _, hU₀, hyU₀, hU₀V, hseam₀, hinjQ₀, _⟩ :=
     exists_isPLBall_patches_at_doublePoint_of_continuousOn K hK f hcont hloc hcard hy hV
   have hPpoly : IsPolyhedron P := by
     obtain ⟨k, hk⟩ := hP
     rw [← hk.image_eq]
     exact (isHPolytope_stdSimplex _).isPolyhedron.image_of_isPiecewiseAffineOn hk.isPiecewiseAffineOn hk.bijOn.injOn
-  refine ⟨P, U, hP, hPQ ▸ subset_union_left, hU, hyU, hUV, fun h hh hhinj hfix => ?_⟩
+  have hcontPQ : ContinuousOn f (P ∪ Q) := by rwa [hPQ]
+  have hyseam : y ∉ f '' (P ∩ Q) := by
+    rintro ⟨x, hx, hxy⟩
+    apply hseam₀ x hx
+    rw [hxy]
+    exact subset_closure hyU₀
+  obtain ⟨U, hU, hyU, hUU₀, hfamily⟩ := exists_isOpen_piecewise_postcomp_eqOn_of_finite
+    hcontPQ hPpoly.isClosed hQ.isClosed C hC (fun i => by rw [hPQ]; exact hCK i) hCin
+    hyseam (hU₀.mem_nhds hyU₀)
+  have hseam : ∀ x ∈ P ∩ Q, f x ∉ closure U :=
+    fun x hx hfx => hseam₀ x hx (closure_mono hUU₀ hfx)
+  have hinjQ : InjOn f (Q ∩ f ⁻¹' U) := by
+    have hsub : Q ∩ f ⁻¹' U ⊆ Q ∩ f ⁻¹' U₀ := fun _ hx => ⟨hx.1, hUU₀ hx.2⟩
+    exact hinjQ₀.mono hsub
+  refine ⟨P, U, hP, hPQ ▸ subset_union_left, hU, hyU, (closure_mono hUU₀).trans hU₀V,
+    fun h hh hhinj hfix => ?_⟩
   let g := P.piecewise (h ∘ f) f
   have hsevent : ∀ x ∈ P ∩ Q, ∀ᶠ z in 𝓝 (f x), h z = z := by
     intro x hx
@@ -212,7 +230,6 @@ theorem exists_isPLBall_postcomp_neighborhood_at_doublePoint_in_manifold
     exact hfPQ.piecewise_postcomp_of_isClosed hh hPpoly.isClosed hQ.isClosed hsevent
   have hgloc : IsLocallyInjective (K.space.domRestrict g) := by
     have hlocPQ : IsLocallyInjective ((P ∪ Q).domRestrict f) := by rwa [hPQ]
-    have hcontPQ : ContinuousOn f (P ∪ Q) := by rwa [hPQ]
     rw [← hPQ]
     exact IsLocallyInjective.piecewise_postcomp_of_isClosed hlocPQ hcontPQ
       hPpoly.isClosed hQ.isClosed hhinj hsevent
@@ -232,7 +249,41 @@ theorem exists_isPLBall_postcomp_neighborhood_at_doublePoint_in_manifold
         rwa [hfa]
       · change f b ∈ U
         rwa [hfb]
-  exact ⟨g, hg, hgloc, hgcard, fun x hx => piecewise_eq_of_mem P (h ∘ f) f hx,
+  refine ⟨g, hg, hgloc, hgcard, fun x hx => piecewise_eq_of_mem P (h ∘ f) f hx,
     fun x hx => piecewise_eq_of_notMem P (h ∘ f) f hx,
-    fun z hz => piecewise_postcomp_preimage_singleton_of_eqOn_compl P f hhinj hfix hz⟩
+    fun z hz => piecewise_postcomp_preimage_singleton_of_eqOn_compl P f hhinj hfix hz, fun i => ?_⟩
+  have heq : EqOn g (h ∘ f) (C i) ∨ EqOn g f (C i) := hfamily h hfix i
+  refine ⟨?_, heq⟩
+  intro a ha b hb hab
+  rcases heq with hcomp | hid
+  · apply hCin i ha hb
+    apply hhinj
+    change (h ∘ f) a = (h ∘ f) b
+    rw [← hcomp ha, ← hcomp hb]
+    exact hab
+  · apply hCin i ha hb
+    rw [← hid ha, ← hid hb]
+    exact hab
+open Classical in
+theorem exists_isPLBall_postcomp_neighborhood_at_doublePoint_in_manifold
+    {d n m : ℕ} {X : Type*} [TopologicalSpace X] [T2Space X] [RegularSpace X]
+    [ChartedSpace (EuclideanSpace ℝ (Fin m)) X]
+    (K : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin d))) [Finite K.faces]
+    (hK : IsCombinatorialManifoldWithBoundary (n + 1) K) (f : EuclideanSpace ℝ (Fin d) → X)
+    (hf : IsPLOn d m f K.space) (hloc : IsLocallyInjective (K.space.domRestrict f))
+    (hcard : ∀ y, (K.space ∩ f ⁻¹' {y}).encard ≤ 2)
+    {y : X} (hy : y ∈ doublePointSet f K.space) {V : Set X} (hV : V ∈ 𝓝 y) :
+    ∃ P : Set (EuclideanSpace ℝ (Fin d)), ∃ U : Set X, IsPLBall (n + 1) P ∧ P ⊆ K.space ∧
+      IsOpen U ∧ y ∈ U ∧ closure U ⊆ V ∧
+      ∀ h : X → X, IsPL m m h → Function.Injective h → EqOn h id Uᶜ →
+        ∃ g : EuclideanSpace ℝ (Fin d) → X, IsPLOn d m g K.space ∧
+          IsLocallyInjective (K.space.domRestrict g) ∧
+          (∀ z, (K.space ∩ g ⁻¹' {z}).encard ≤ 2) ∧
+          EqOn g (h ∘ f) P ∧ EqOn g f Pᶜ ∧ ∀ z ∉ U, g ⁻¹' {z} = f ⁻¹' {z} := by
+  obtain ⟨P, U, hP, hPK, hU, hyU, hUV, hmodify⟩ :=
+    exists_isPLBall_postcomp_neighborhood_at_doublePoint_preserving_injOn K hK f hf hloc hcard
+      (fun i : Empty => nomatch i) (fun i => nomatch i) (fun i => nomatch i) (fun i => nomatch i) hy hV
+  refine ⟨P, U, hP, hPK, hU, hyU, hUV, fun h hh hhinj hfix => ?_⟩
+  obtain ⟨g, hg, hgloc, hgcard, hgP, hgQ, hgfiber, _⟩ := hmodify h hh hhinj hfix
+  exact ⟨g, hg, hgloc, hgcard, hgP, hgQ, hgfiber⟩
 end DifferentialGeometry.Topology.PiecewiseLinear

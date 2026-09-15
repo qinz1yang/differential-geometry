@@ -96,4 +96,65 @@ theorem IsLocallyInjective.piecewise_postcomp_of_isClosed
     rwa [piecewise_eq_of_notMem P (h ∘ f) f hy.2,
       piecewise_eq_of_notMem P (h ∘ f) f hz.2] at hyz
 
+open Classical in
+theorem exists_isOpen_piecewise_postcomp_eqOn_of_finite
+    [TopologicalSpace X] [TopologicalSpace Y] [T2Space Y]
+    {f : X → Y} {P Q : Set X} (hf : ContinuousOn f (P ∪ Q)) (hP : IsClosed P) (hQ : IsClosed Q)
+    {ι : Type*} [Finite ι] (C : ι → Set X) (hC : ∀ i, IsCompact (C i))
+    (hCS : ∀ i, C i ⊆ P ∪ Q) (hinj : ∀ i, InjOn f (C i))
+    {y : Y} (hy : y ∉ f '' (P ∩ Q)) {V : Set Y} (hV : V ∈ 𝓝 y) :
+    ∃ U : Set Y, IsOpen U ∧ y ∈ U ∧ U ⊆ V ∧
+      ∀ h : Y → Y, EqOn h id Uᶜ → ∀ i,
+        EqOn (P.piecewise (h ∘ f) f) (h ∘ f) (C i) ∨ EqOn (P.piecewise (h ∘ f) f) f (C i) := by
+  let A := fun i => f '' (C i ∩ P)
+  let B := fun i => f '' (C i ∩ Q)
+  have hAclosed : ∀ i, IsClosed (A i) := fun i =>
+    (((hC i).inter_right hP).image_of_continuousOn (hf.mono (inter_subset_left.trans (hCS i)))).isClosed
+  have hBclosed : ∀ i, IsClosed (B i) := fun i =>
+    (((hC i).inter_right hQ).image_of_continuousOn (hf.mono (inter_subset_left.trans (hCS i)))).isClosed
+  let W := fun i => if y ∈ A i then (B i)ᶜ else (A i)ᶜ
+  have hW : ∀ i, IsOpen (W i) := by
+    intro i
+    dsimp only [W]
+    split_ifs
+    · exact (hBclosed i).isOpen_compl
+    · exact (hAclosed i).isOpen_compl
+  have hyW : ∀ i, y ∈ W i := by
+    intro i
+    dsimp only [W]
+    split_ifs with hyA
+    · obtain ⟨a, ha, hfa⟩ := hyA
+      rintro ⟨b, hb, hfb⟩
+      have hab : a = b := hinj i ha.1 hb.1 (hfa.trans hfb.symm)
+      exact hy ⟨a, ⟨ha.2, by rw [hab]; exact hb.2⟩, hfa⟩
+    · exact hyA
+  let U := interior V ∩ ⋂ i, W i
+  have hU : IsOpen U := isOpen_interior.inter (isOpen_iInter_of_finite hW)
+  have hUW : ∀ i, U ⊆ W i := fun i => inter_subset_right.trans (iInter_subset W i)
+  refine ⟨U, hU, ⟨mem_interior_iff_mem_nhds.mpr hV, mem_iInter.mpr hyW⟩,
+    inter_subset_left.trans interior_subset, fun h hfix i => ?_⟩
+  by_cases hyA : y ∈ A i
+  · refine Or.inl ?_
+    intro x hx
+    by_cases hxP : x ∈ P
+    · exact piecewise_eq_of_mem P (h ∘ f) f hxP
+    · have hxQ : x ∈ Q := (hCS i hx).resolve_left hxP
+      have hfxU : f x ∉ U := by
+        intro hfx
+        have hnot := hUW i hfx
+        rw [show W i = (B i)ᶜ from if_pos hyA] at hnot
+        exact hnot ⟨x, ⟨hx, hxQ⟩, rfl⟩
+      rw [piecewise_eq_of_notMem P (h ∘ f) f hxP]
+      exact (hfix hfxU).symm
+  · refine Or.inr ?_
+    intro x hx
+    by_cases hxP : x ∈ P
+    · have hfxU : f x ∉ U := by
+        intro hfx
+        have hnot := hUW i hfx
+        rw [show W i = (A i)ᶜ from if_neg hyA] at hnot
+        exact hnot ⟨x, ⟨hx, hxP⟩, rfl⟩
+      rw [piecewise_eq_of_mem P (h ∘ f) f hxP]
+      exact hfix hfxU
+    · exact piecewise_eq_of_notMem P (h ∘ f) f hxP
 end DifferentialGeometry.Topology
