@@ -3,6 +3,8 @@ import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryInvariance
 import DifferentialGeometry.Topology.PiecewiseLinear.GeneralPosition
 import DifferentialGeometry.Topology.PiecewiseLinear.StellarSphere
 import DifferentialGeometry.Topology.SimplicialComplex.Incidence
+import Mathlib.Data.Prod.Lex
+import Mathlib.Data.Sum.Order
 
 open Set
 
@@ -119,6 +121,97 @@ theorem simplexBoundaryCoefficient_erase (r : LinearOrder E) {s : Finset E} {v :
     rw [if_neg]
     exact fun he => hwv ((Finset.erase_inj s hw).mp he)
   · exact fun h => False.elim (h hv)
+
+open Classical in
+theorem simplexBoundaryCoefficient_insert (r : LinearOrder E) {t : Finset E} {v : E}
+    (hv : v ∉ t) :
+    simplexBoundaryCoefficient r (insert v t) t = incidenceSign r (insert v t) v := by
+  have hmem : v ∈ insert v t := Finset.mem_insert_self v t
+  have herase : @Finset.erase E r.toDecidableEq (insert v t) v = t := by
+    ext w
+    simp [hv]
+  calc
+    simplexBoundaryCoefficient r (insert v t) t =
+        simplexBoundaryCoefficient r (insert v t)
+          (@Finset.erase E r.toDecidableEq (insert v t) v) := by rw [herase]
+    _ = incidenceSign r (insert v t) v := simplexBoundaryCoefficient_erase r hmem
+
+open Classical in
+theorem simplexBoundaryCoefficient_pair_cancel
+    (r : LinearOrder E) {a m p b : Finset E}
+    (ham : a ⊆ m) (hamcard : a.card + 1 = m.card)
+    (hmb : m ⊆ b) (hmbcard : m.card + 1 = b.card)
+    (hap : a ⊆ p) (hapcard : a.card + 1 = p.card)
+    (hpb : p ⊆ b) (hmp : m ≠ p) :
+    simplexBoundaryCoefficient r b m * simplexBoundaryCoefficient r m a +
+      simplexBoundaryCoefficient r b p * simplexBoundaryCoefficient r p a = 0 := by
+  obtain ⟨x, hxa, hma⟩ := Finset.exists_eq_insert_iff.mpr ⟨ham, hamcard⟩
+  obtain ⟨y, hym, hbm⟩ := Finset.exists_eq_insert_iff.mpr ⟨hmb, hmbcard⟩
+  obtain ⟨z, hza, hpz⟩ := Finset.exists_eq_insert_iff.mpr ⟨hap, hapcard⟩
+  have hxy : x ≠ y := by
+    intro hxy
+    apply hym
+    rw [← hxy, ← hma]
+    exact Finset.mem_insert_self x a
+  have hzy : z = y := by
+    have hzb : z ∈ b := hpb (hpz ▸ Finset.mem_insert_self z a)
+    rw [← hbm, ← hma, Finset.mem_insert, Finset.mem_insert] at hzb
+    rcases hzb with hzy | hzx | hza'
+    · exact hzy
+    · exact False.elim (hmp (by rw [← hma, ← hpz, hzx]))
+    · exact False.elim (hza hza')
+  have hpa : p = insert y a := by rw [← hpz, hzy]
+  have hxb : x ∈ b := by
+    rw [← hbm, ← hma]
+    exact Finset.mem_insert_of_mem (Finset.mem_insert_self x a)
+  have hyb : y ∈ b := hbm ▸ Finset.mem_insert_self y m
+  have hby : @Finset.erase E r.toDecidableEq b y = m := by
+    rw [← hbm]
+    have hdec : r.toDecidableEq = Classical.decEq E := Subsingleton.elim _ _
+    rw [hdec]
+    ext w
+    simp [hym]
+  have hbx : @Finset.erase E r.toDecidableEq b x = p := by
+    have hbp : b = insert x p := by
+      rw [← hbm, ← hma, hpa, Finset.insert_comm y x]
+    rw [hbp]
+    have hxp : x ∉ p := by
+      rw [hpa]
+      simp [hxy, hxa]
+    have hdec : r.toDecidableEq = Classical.decEq E := Subsingleton.elim _ _
+    rw [hdec]
+    ext w
+    simp [hxp]
+  have hbmCoefficient : simplexBoundaryCoefficient r b m = incidenceSign r b y := by
+    rw [← hby]
+    exact simplexBoundaryCoefficient_erase r hyb
+  have hbpCoefficient : simplexBoundaryCoefficient r b p = incidenceSign r b x := by
+    rw [← hbx]
+    exact simplexBoundaryCoefficient_erase r hxb
+  have hmaCoefficient : simplexBoundaryCoefficient r m a = incidenceSign r m x := by
+    have hxm : x ∈ m := hma ▸ Finset.mem_insert_self x a
+    have hmx : @Finset.erase E r.toDecidableEq m x = a := by
+      rw [← hma]
+      have hdec : r.toDecidableEq = Classical.decEq E := Subsingleton.elim _ _
+      rw [hdec]
+      ext w
+      simp [hxa]
+    rw [← hmx]
+    exact simplexBoundaryCoefficient_erase r hxm
+  have hpaCoefficient : simplexBoundaryCoefficient r p a = incidenceSign r p y := by
+    have hyp : y ∈ p := hpa ▸ Finset.mem_insert_self y a
+    have hpy : @Finset.erase E r.toDecidableEq p y = a := by
+      rw [hpa]
+      have hdec : r.toDecidableEq = Classical.decEq E := Subsingleton.elim _ _
+      rw [hdec]
+      ext w
+      simp [hzy ▸ hza]
+    rw [← hpy]
+    exact simplexBoundaryCoefficient_erase r hyp
+  have hsign := incidenceSign_pair r hyb hxb hxy.symm
+  rw [hby, hbx] at hsign
+  rw [hbmCoefficient, hmaCoefficient, hbpCoefficient, hpaCoefficient, hsign]
+  ring
 
 theorem sum_simplexBoundaryCoefficient_comp_eq_zero
     [AddCommGroup E] [Module ℝ E] (r : LinearOrder E)
@@ -318,6 +411,483 @@ def IsOrientable
     (n : ℕ) (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces] : Prop :=
   Nonempty (CoherentOrientation n K)
 
+def finiteOrderRank {X : Type*} (r : LinearOrder X) (V : Finset X) (x : X) : ℕ :=
+  let _ := r
+  (V.filter fun y => y < x).card
+
+theorem finiteOrderRank_mono {X : Type*} (r : LinearOrder X) (V : Finset X)
+    {x y : X} (hxy : @LT.lt X r.toLT x y) :
+    finiteOrderRank r V x ≤ finiteOrderRank r V y := by
+  let _ := r
+  unfold finiteOrderRank
+  apply Finset.card_le_card
+  intro z hz
+  rw [Finset.mem_filter] at hz ⊢
+  exact ⟨hz.1, lt_trans hz.2 hxy⟩
+
+theorem finiteOrderRank_lt_of_mem {X : Type*} (r : LinearOrder X) (V : Finset X)
+    {x y : X} (hx : x ∈ V) (hxy : @LT.lt X r.toLT x y) :
+    finiteOrderRank r V x < finiteOrderRank r V y := by
+  let _ := r
+  unfold finiteOrderRank
+  apply Finset.card_lt_card
+  apply Finset.ssubset_iff_subset_ne.mpr
+  refine ⟨?_, ?_⟩
+  · intro z hz
+    rw [Finset.mem_filter] at hz ⊢
+    exact ⟨hz.1, lt_trans hz.2 hxy⟩
+  · intro heq
+    have hxRight : x ∈ V.filter (fun z => z < y) := Finset.mem_filter.mpr ⟨hx, hxy⟩
+    rw [← heq, Finset.mem_filter] at hxRight
+    exact (lt_irrefl x hxRight.2).elim
+
+theorem finiteOrderRank_eq_of_lt_iff {X : Type*}
+    (r₁ r₂ : LinearOrder X) (V : Finset X) (x : X)
+    (h : ∀ y ∈ V, @LT.lt X r₁.toLT y x ↔ @LT.lt X r₂.toLT y x) :
+    finiteOrderRank r₁ V x = finiteOrderRank r₂ V x := by
+  unfold finiteOrderRank
+  apply congrArg Finset.card
+  ext y
+  simp only [Finset.mem_filter]
+  exact and_congr_right fun hy => h y hy
+
+open Classical in
+noncomputable def orderAmalgamCode {X : Type*}
+    (r₁ r₂ : LinearOrder X) (V₁ V₂ A : Finset X) (x : X) :
+    ℕ ×ₗ (ℕ ×ₗ ℕ) :=
+  if x ∈ A then
+      toLex (finiteOrderRank r₁ A x, toLex (2, 0))
+    else if x ∈ V₁ then
+      toLex (finiteOrderRank r₁ A x, toLex (0, finiteOrderRank r₁ V₁ x))
+    else if x ∈ V₂ then
+      toLex (finiteOrderRank r₂ A x, toLex (1, finiteOrderRank r₂ V₂ x))
+    else
+      toLex (0, toLex (3, 0))
+
+open Classical in
+structure OrderAmalgamTie (X : Type*) where
+  val : X
+
+open Classical in
+noncomputable instance {X : Type*} : LinearOrder (OrderAmalgamTie X) :=
+  linearOrderOfSTO WellOrderingRel
+
+open Classical in
+noncomputable def orderAmalgamKey {X : Type*}
+    (r₁ r₂ : LinearOrder X) (V₁ V₂ A : Finset X) (x : X) :
+    (ℕ ×ₗ (ℕ ×ₗ ℕ)) ×ₗ OrderAmalgamTie X :=
+  toLex (orderAmalgamCode r₁ r₂ V₁ V₂ A x, ⟨x⟩)
+
+open Classical in
+theorem orderAmalgamKey_injective {X : Type*}
+    (r₁ r₂ : LinearOrder X) (V₁ V₂ A : Finset X) :
+    Function.Injective (orderAmalgamKey r₁ r₂ V₁ V₂ A) := by
+  intro x y hxy
+  have hlast := congrArg
+    (fun z : (ℕ ×ₗ (ℕ ×ₗ ℕ)) ×ₗ OrderAmalgamTie X => z.2.val) hxy
+  exact hlast
+
+open Classical in
+@[instance_reducible]
+noncomputable def orderAmalgam {X : Type*}
+    (r₁ r₂ : LinearOrder X) (V₁ V₂ A : Finset X) : LinearOrder X :=
+  LinearOrder.lift' (orderAmalgamKey r₁ r₂ V₁ V₂ A)
+    (orderAmalgamKey_injective r₁ r₂ V₁ V₂ A)
+
+open Classical in
+theorem orderAmalgamCode_lt_of_mem_left {X : Type*}
+    (r₁ r₂ : LinearOrder X) {V₁ V₂ A : Finset X} {x y : X}
+    (hxV : x ∈ V₁) (hyV : y ∈ V₁) (hxy : @LT.lt X r₁.toLT x y) :
+    orderAmalgamCode r₁ r₂ V₁ V₂ A x < orderAmalgamCode r₁ r₂ V₁ V₂ A y := by
+  by_cases hxA : x ∈ A <;> by_cases hyA : y ∈ A
+  · rw [orderAmalgamCode, if_pos hxA, orderAmalgamCode, if_pos hyA,
+      Prod.Lex.toLex_lt_toLex]
+    exact Or.inl (finiteOrderRank_lt_of_mem r₁ A hxA hxy)
+  · rw [orderAmalgamCode, if_pos hxA, orderAmalgamCode, if_neg hyA, if_pos hyV,
+      Prod.Lex.toLex_lt_toLex]
+    exact Or.inl (finiteOrderRank_lt_of_mem r₁ A hxA hxy)
+  · have hmono := finiteOrderRank_mono r₁ A hxy
+    rw [orderAmalgamCode, if_neg hxA, if_pos hxV, orderAmalgamCode, if_pos hyA,
+      Prod.Lex.toLex_lt_toLex]
+    rcases hmono.lt_or_eq with hlt | heq
+    · exact Or.inl hlt
+    · refine Or.inr ⟨heq, ?_⟩
+      rw [Prod.Lex.toLex_lt_toLex]
+      exact Or.inl (by omega)
+  · have hmono := finiteOrderRank_mono r₁ A hxy
+    rw [orderAmalgamCode, if_neg hxA, if_pos hxV, orderAmalgamCode, if_neg hyA,
+      if_pos hyV, Prod.Lex.toLex_lt_toLex]
+    rcases hmono.lt_or_eq with hlt | heq
+    · exact Or.inl hlt
+    · refine Or.inr ⟨heq, ?_⟩
+      rw [Prod.Lex.toLex_lt_toLex]
+      refine Or.inr ⟨rfl, ?_⟩
+      exact finiteOrderRank_lt_of_mem r₁ V₁ hxV hxy
+
+open Classical in
+theorem orderAmalgamCode_lt_of_mem_right {X : Type*}
+    (r₁ r₂ : LinearOrder X) {V₁ V₂ A : Finset X} {x y : X}
+    (hinter : V₁ ∩ V₂ ⊆ A)
+    (hagree : ∀ a ∈ A, ∀ b ∈ A,
+      (@LT.lt X r₁.toLT a b ↔ @LT.lt X r₂.toLT a b))
+    (hxV : x ∈ V₂) (hyV : y ∈ V₂) (hxy : @LT.lt X r₂.toLT x y) :
+    orderAmalgamCode r₁ r₂ V₁ V₂ A x < orderAmalgamCode r₁ r₂ V₁ V₂ A y := by
+  have hArank (z : X) (hz : z ∈ A) :
+      finiteOrderRank r₁ A z = finiteOrderRank r₂ A z :=
+    finiteOrderRank_eq_of_lt_iff r₁ r₂ A z (fun a ha => hagree a ha z hz)
+  by_cases hxA : x ∈ A <;> by_cases hyA : y ∈ A
+  · have hxy₁ : @LT.lt X r₁.toLT x y := (hagree x hxA y hyA).mpr hxy
+    rw [orderAmalgamCode, if_pos hxA, orderAmalgamCode, if_pos hyA,
+      Prod.Lex.toLex_lt_toLex]
+    exact Or.inl (finiteOrderRank_lt_of_mem r₁ A hxA hxy₁)
+  · have hyNotV₁ : y ∉ V₁ := by
+      intro hyV₁
+      exact hyA (hinter (Finset.mem_inter.mpr ⟨hyV₁, hyV⟩))
+    have hlt := finiteOrderRank_lt_of_mem r₂ A hxA hxy
+    rw [orderAmalgamCode, if_pos hxA, orderAmalgamCode, if_neg hyA,
+      if_neg hyNotV₁, if_pos hyV, Prod.Lex.toLex_lt_toLex, hArank x hxA]
+    exact Or.inl hlt
+  · have hxNotV₁ : x ∉ V₁ := by
+      intro hxV₁
+      exact hxA (hinter (Finset.mem_inter.mpr ⟨hxV₁, hxV⟩))
+    have hmono := finiteOrderRank_mono r₂ A hxy
+    rw [orderAmalgamCode, if_neg hxA, if_neg hxNotV₁, if_pos hxV,
+      orderAmalgamCode, if_pos hyA, Prod.Lex.toLex_lt_toLex, hArank y hyA]
+    rcases hmono.lt_or_eq with hlt | heq
+    · exact Or.inl hlt
+    · refine Or.inr ⟨heq, ?_⟩
+      rw [Prod.Lex.toLex_lt_toLex]
+      exact Or.inl (by omega)
+  · have hxNotV₁ : x ∉ V₁ := by
+      intro hxV₁
+      exact hxA (hinter (Finset.mem_inter.mpr ⟨hxV₁, hxV⟩))
+    have hyNotV₁ : y ∉ V₁ := by
+      intro hyV₁
+      exact hyA (hinter (Finset.mem_inter.mpr ⟨hyV₁, hyV⟩))
+    have hmono := finiteOrderRank_mono r₂ A hxy
+    rw [orderAmalgamCode, if_neg hxA, if_neg hxNotV₁, if_pos hxV,
+      orderAmalgamCode, if_neg hyA, if_neg hyNotV₁, if_pos hyV,
+      Prod.Lex.toLex_lt_toLex]
+    rcases hmono.lt_or_eq with hlt | heq
+    · exact Or.inl hlt
+    · refine Or.inr ⟨heq, ?_⟩
+      rw [Prod.Lex.toLex_lt_toLex]
+      refine Or.inr ⟨rfl, ?_⟩
+      exact finiteOrderRank_lt_of_mem r₂ V₂ hxV hxy
+
+open Classical in
+theorem orderAmalgamKey_lt_of_code_lt {X : Type*}
+    (r₁ r₂ : LinearOrder X) (V₁ V₂ A : Finset X) {x y : X}
+    (h : orderAmalgamCode r₁ r₂ V₁ V₂ A x <
+      orderAmalgamCode r₁ r₂ V₁ V₂ A y) :
+    orderAmalgamKey r₁ r₂ V₁ V₂ A x < orderAmalgamKey r₁ r₂ V₁ V₂ A y := by
+  change toLex (orderAmalgamCode r₁ r₂ V₁ V₂ A x, (⟨x⟩ : OrderAmalgamTie X)) <
+    toLex (orderAmalgamCode r₁ r₂ V₁ V₂ A y, (⟨y⟩ : OrderAmalgamTie X))
+  rw [Prod.Lex.toLex_lt_toLex]
+  exact Or.inl h
+
+open Classical in
+theorem orderAmalgam_lt_iff_left {X : Type*}
+    (r₁ r₂ : LinearOrder X) {V₁ V₂ A : Finset X} {x y : X}
+    (hxV : x ∈ V₁) (hyV : y ∈ V₁) :
+    let _ := orderAmalgam r₁ r₂ V₁ V₂ A
+    x < y ↔ @LT.lt X r₁.toLT x y := by
+  change orderAmalgamKey r₁ r₂ V₁ V₂ A x < orderAmalgamKey r₁ r₂ V₁ V₂ A y ↔ _
+  constructor
+  · intro hkey
+    let _ := r₁
+    rcases lt_trichotomy x y with hxy | hxy | hyx
+    · exact hxy
+    · subst y
+      exact False.elim (lt_irrefl _ hkey)
+    · have hreverse := orderAmalgamKey_lt_of_code_lt r₁ r₂ V₁ V₂ A
+        (orderAmalgamCode_lt_of_mem_left r₁ r₂ hyV hxV hyx)
+      exact False.elim (asymm hkey hreverse)
+  · intro hxy
+    exact orderAmalgamKey_lt_of_code_lt r₁ r₂ V₁ V₂ A
+      (orderAmalgamCode_lt_of_mem_left r₁ r₂ hxV hyV hxy)
+
+open Classical in
+theorem orderAmalgam_lt_iff_right {X : Type*}
+    (r₁ r₂ : LinearOrder X) {V₁ V₂ A : Finset X}
+    (hinter : V₁ ∩ V₂ ⊆ A)
+    (hagree : ∀ a ∈ A, ∀ b ∈ A,
+      (@LT.lt X r₁.toLT a b ↔ @LT.lt X r₂.toLT a b))
+    {x y : X} (hxV : x ∈ V₂) (hyV : y ∈ V₂) :
+    let _ := orderAmalgam r₁ r₂ V₁ V₂ A
+    x < y ↔ @LT.lt X r₂.toLT x y := by
+  change orderAmalgamKey r₁ r₂ V₁ V₂ A x < orderAmalgamKey r₁ r₂ V₁ V₂ A y ↔ _
+  constructor
+  · intro hkey
+    let _ := r₂
+    rcases lt_trichotomy x y with hxy | hxy | hyx
+    · exact hxy
+    · subst y
+      exact False.elim (lt_irrefl _ hkey)
+    · have hreverse := orderAmalgamKey_lt_of_code_lt r₁ r₂ V₁ V₂ A
+        (orderAmalgamCode_lt_of_mem_right r₁ r₂ hinter hagree hyV hxV hyx)
+      exact False.elim (asymm hkey hreverse)
+  · intro hxy
+    exact orderAmalgamKey_lt_of_code_lt r₁ r₂ V₁ V₂ A
+      (orderAmalgamCode_lt_of_mem_right r₁ r₂ hinter hagree hxV hyV hxy)
+
+open Classical in
+noncomputable def orientationVertexKey
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
+    (L : Geometry.SimplicialComplex ℝ F) (ψ : F → E) (y : F) : E ⊕ₗ F :=
+  if {y} ∈ L.faces then toLex (Sum.inl (ψ y)) else toLex (Sum.inr y)
+
+open Classical in
+theorem orientationVertexKey_injective
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
+    {K : Geometry.SimplicialComplex ℝ E} {L : Geometry.SimplicialComplex ℝ F}
+    {φ : E → F} {ψ : F → E} (h : IsGlueIso K L φ ψ) :
+    Function.Injective (orientationVertexKey L ψ) := by
+  intro y z hyz
+  by_cases hy : {y} ∈ L.faces <;> by_cases hz : {z} ∈ L.faces
+  · have hψ : ψ y = ψ z := by
+      simpa [orientationVertexKey, hy, hz] using hyz
+    calc
+      y = φ (ψ y) := (h.right {y} hy y (Finset.mem_singleton_self y)).symm
+      _ = φ (ψ z) := by rw [hψ]
+      _ = z := h.right {z} hz z (Finset.mem_singleton_self z)
+  · simp [orientationVertexKey, hy, hz] at hyz
+  · simp [orientationVertexKey, hy, hz] at hyz
+  · simpa [orientationVertexKey, hy, hz] using hyz
+
+open Classical in
+@[instance_reducible]
+noncomputable def CoherentOrientation.mapVertexOrder
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
+    {n : ℕ} {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces]
+    {L : Geometry.SimplicialComplex ℝ F} {φ : E → F} {ψ : F → E}
+    (o : CoherentOrientation n K) (h : IsGlueIso K L φ ψ) : LinearOrder F := by
+  let _ : LinearOrder E := o.vertexOrder
+  let _ : LinearOrder F := linearOrderOfSTO WellOrderingRel
+  exact LinearOrder.lift' (orientationVertexKey L ψ) (orientationVertexKey_injective h)
+
+open Classical in
+theorem CoherentOrientation.mapVertexOrder_lt_iff
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
+    {n : ℕ} {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces]
+    {L : Geometry.SimplicialComplex ℝ F} {φ : E → F} {ψ : F → E}
+    (o : CoherentOrientation n K) (h : IsGlueIso K L φ ψ)
+    {y z : F} (hy : {y} ∈ L.faces) (hz : {z} ∈ L.faces) :
+    let _ := o.mapVertexOrder h
+    y < z ↔ let _ := o.vertexOrder; ψ y < ψ z := by
+  let _ : LinearOrder E := o.vertexOrder
+  let _ : LinearOrder F := linearOrderOfSTO WellOrderingRel
+  change orientationVertexKey L ψ y < orientationVertexKey L ψ z ↔ ψ y < ψ z
+  simp [orientationVertexKey, hy, hz]
+
+open Classical in
+theorem CoherentOrientation.incidenceIndex_mapVertexOrder
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
+    {n : ℕ} {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces]
+    {L : Geometry.SimplicialComplex ℝ F} {φ : E → F} {ψ : F → E}
+    (o : CoherentOrientation n K) (h : IsGlueIso K L φ ψ)
+    {s : Finset F} (hs : s ∈ L.faces) {y : F} (hy : y ∈ s) :
+    incidenceIndex (o.mapVertexOrder h) s y =
+      incidenceIndex o.vertexOrder (s.image ψ) (ψ y) := by
+  have hvertex (w : F) (hw : w ∈ s) : {w} ∈ L.faces :=
+    L.down_closed hs (Finset.singleton_subset_iff.mpr hw) (Finset.singleton_nonempty w)
+  have hinj : Set.InjOn ψ (s : Set F) := by
+    intro u hu v hv huv
+    calc
+      u = φ (ψ u) := (h.right s hs u (Finset.mem_coe.mp hu)).symm
+      _ = φ (ψ v) := by rw [huv]
+      _ = v := h.right s hs v (Finset.mem_coe.mp hv)
+  have hfilter :
+      (s.filter fun w => @LT.lt F (o.mapVertexOrder h).toLT w y).image ψ =
+        (s.image ψ).filter fun z => @LT.lt E o.vertexOrder.toLT z (ψ y) := by
+    ext z
+    constructor
+    · intro hz
+      obtain ⟨w, hw, rfl⟩ := Finset.mem_image.mp hz
+      have hw' := Finset.mem_filter.mp hw
+      apply Finset.mem_filter.mpr
+      refine ⟨Finset.mem_image_of_mem ψ hw'.1, ?_⟩
+      exact (o.mapVertexOrder_lt_iff h (hvertex w hw'.1) (hvertex y hy)).mp hw'.2
+    · intro hz
+      have hz' := Finset.mem_filter.mp hz
+      obtain ⟨w, hw, rfl⟩ := Finset.mem_image.mp hz'.1
+      apply Finset.mem_image.mpr
+      refine ⟨w, Finset.mem_filter.mpr ⟨hw, ?_⟩, rfl⟩
+      exact (o.mapVertexOrder_lt_iff h (hvertex w hw) (hvertex y hy)).mpr hz'.2
+  change (s.filter fun w => @LT.lt F (o.mapVertexOrder h).toLT w y).card =
+    ((s.image ψ).filter fun z => @LT.lt E o.vertexOrder.toLT z (ψ y)).card
+  calc
+    _ = ((s.filter fun w => @LT.lt F (o.mapVertexOrder h).toLT w y).image ψ).card :=
+      (Finset.card_image_of_injOn (hinj.mono fun w hw =>
+        Finset.mem_coe.mpr (Finset.mem_filter.mp (Finset.mem_coe.mp hw)).1)).symm
+    _ = _ := congrArg Finset.card hfilter
+
+open Classical in
+theorem CoherentOrientation.incidenceSign_mapVertexOrder
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
+    {n : ℕ} {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces]
+    {L : Geometry.SimplicialComplex ℝ F} {φ : E → F} {ψ : F → E}
+    (o : CoherentOrientation n K) (h : IsGlueIso K L φ ψ)
+    {s : Finset F} (hs : s ∈ L.faces) {y : F} (hy : y ∈ s) :
+    incidenceSign (o.mapVertexOrder h) s y =
+      incidenceSign o.vertexOrder (s.image ψ) (ψ y) := by
+  rw [incidenceSign, incidenceSign, o.incidenceIndex_mapVertexOrder h hs hy]
+
+open Classical in
+theorem IsGlueIso.injOn_right_face
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
+    {K : Geometry.SimplicialComplex ℝ E} {L : Geometry.SimplicialComplex ℝ F}
+    {φ : E → F} {ψ : F → E} (h : IsGlueIso K L φ ψ)
+    {s : Finset F} (hs : s ∈ L.faces) : Set.InjOn ψ (s : Set F) := by
+  intro u hu v hv huv
+  calc
+    u = φ (ψ u) := (h.right s hs u (Finset.mem_coe.mp hu)).symm
+    _ = φ (ψ v) := by rw [huv]
+    _ = v := h.right s hs v (Finset.mem_coe.mp hv)
+
+open Classical in
+theorem IsGlueIso.image_image_right
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
+    {K : Geometry.SimplicialComplex ℝ E} {L : Geometry.SimplicialComplex ℝ F}
+    {φ : E → F} {ψ : F → E} (h : IsGlueIso K L φ ψ)
+    {s : Finset F} (hs : s ∈ L.faces) : (s.image ψ).image φ = s := by
+  rw [Finset.image_image]
+  calc
+    s.image (φ ∘ ψ) = s.image id := by
+      apply Finset.image_congr
+      intro y hy
+      exact h.right s hs y hy
+    _ = s := Finset.image_id
+
+open Classical in
+theorem IsGlueIso.image_image_left
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
+    {K : Geometry.SimplicialComplex ℝ E} {L : Geometry.SimplicialComplex ℝ F}
+    {φ : E → F} {ψ : F → E} (h : IsGlueIso K L φ ψ)
+    {s : Finset E} (hs : s ∈ K.faces) : (s.image φ).image ψ = s :=
+  h.symm.image_image_right hs
+
+open Classical in
+theorem IsGlueIso.image_faceCofaces_right
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
+    {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces]
+    {L : Geometry.SimplicialComplex ℝ F} [Finite L.faces]
+    {φ : E → F} {ψ : F → E} (h : IsGlueIso K L φ ψ)
+    {t : Finset F} (ht : t ∈ L.faces) (k : ℕ) :
+    (faceCofaces L t k).image (fun s => s.image ψ) =
+      faceCofaces K (t.image ψ) k := by
+  ext q
+  constructor
+  · intro hq
+    obtain ⟨s, hs, rfl⟩ := Finset.mem_image.mp hq
+    obtain ⟨hsL, hscard, hts⟩ := (mem_faceCofaces L).mp hs
+    apply (mem_faceCofaces K).mpr
+    refine ⟨h.image₂ s hsL, ?_, Finset.image_mono ψ hts⟩
+    rw [Finset.card_image_of_injOn (h.injOn_right_face hsL), hscard]
+  · intro hq
+    obtain ⟨hqK, hqcard, htq⟩ := (mem_faceCofaces K).mp hq
+    let s := q.image φ
+    have hsL : s ∈ L.faces := h.image₁ q hqK
+    have hst : t ⊆ s := by
+      intro y hy
+      apply Finset.mem_image.mpr
+      refine ⟨ψ y, htq (Finset.mem_image_of_mem ψ hy), ?_⟩
+      exact h.right t ht y hy
+    have hscard : s.card = k := by
+      rw [Finset.card_image_of_injOn (h.symm.injOn_right_face hqK), hqcard]
+    apply Finset.mem_image.mpr
+    refine ⟨s, (mem_faceCofaces L).mpr ⟨hsL, hscard, hst⟩, ?_⟩
+    exact h.image_image_left hqK
+
+open Classical in
+theorem IsGlueIso.card_faceCofaces_right
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
+    {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces]
+    {L : Geometry.SimplicialComplex ℝ F} [Finite L.faces]
+    {φ : E → F} {ψ : F → E} (h : IsGlueIso K L φ ψ)
+    {t : Finset F} (ht : t ∈ L.faces) (k : ℕ) :
+    (faceCofaces L t k).card = (faceCofaces K (t.image ψ) k).card := by
+  have hinj : Set.InjOn (fun s : Finset F => s.image ψ) (faceCofaces L t k : Set (Finset F)) := by
+    intro s hs u hu hsu
+    have hsL := ((mem_faceCofaces L).mp (Finset.mem_coe.mp hs)).1
+    have huL := ((mem_faceCofaces L).mp (Finset.mem_coe.mp hu)).1
+    calc
+      s = (s.image ψ).image φ := (h.image_image_right hsL).symm
+      _ = (u.image ψ).image φ := congrArg (fun q => q.image φ) hsu
+      _ = u := h.image_image_right huL
+  calc
+    (faceCofaces L t k).card =
+        ((faceCofaces L t k).image fun s => s.image ψ).card :=
+      (Finset.card_image_of_injOn hinj).symm
+    _ = (faceCofaces K (t.image ψ) k).card := by
+      rw [h.image_faceCofaces_right ht k]
+
+open Classical in
+theorem image_erase_of_injOn
+    {A B : Type*} {f : A → B} {s : Finset A} {a : A}
+    (hf : Set.InjOn f (s : Set A)) (ha : a ∈ s) :
+    (s.erase a).image f = (s.image f).erase (f a) := by
+  apply Finset.Subset.antisymm
+  · intro z hz
+    obtain ⟨w, hw, rfl⟩ := Finset.mem_image.mp hz
+    have hw' := Finset.mem_erase.mp hw
+    exact Finset.mem_erase.mpr
+      ⟨fun heq => hw'.1 (hf (Finset.mem_coe.mpr hw'.2) (Finset.mem_coe.mpr ha) heq),
+        Finset.mem_image_of_mem f hw'.2⟩
+  · exact Finset.erase_image_subset_image_erase f s a
+
+open Classical in
+theorem CoherentOrientation.simplexBoundaryCoefficient_mapVertexOrder
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
+    {n : ℕ} {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces]
+    {L : Geometry.SimplicialComplex ℝ F} {φ : E → F} {ψ : F → E}
+    (o : CoherentOrientation n K) (h : IsGlueIso K L φ ψ)
+    {s t : Finset F} (hs : s ∈ L.faces) (hts : t ⊆ s)
+    (hcard : t.card + 1 = s.card) :
+    simplexBoundaryCoefficient (o.mapVertexOrder h) s t =
+      simplexBoundaryCoefficient o.vertexOrder (s.image ψ) (t.image ψ) := by
+  obtain ⟨y, hyt, hys⟩ := Finset.exists_eq_insert_iff.mpr ⟨hts, hcard⟩
+  have hysmem : y ∈ s := hys ▸ Finset.mem_insert_self y t
+  have herase : s.erase y = t := by
+    rw [← hys, Finset.erase_insert hyt]
+  let tF := @Finset.erase F (o.mapVertexOrder h).toDecidableEq s y
+  let tE := @Finset.erase E o.vertexOrder.toDecidableEq (s.image ψ) (ψ y)
+  have htF : tF = t := by
+    calc
+      tF = s.erase y := by ext z; simp [tF]
+      _ = t := herase
+  have htE : tE = t.image ψ := by
+    calc
+      tE = (s.image ψ).erase (ψ y) := by ext z; simp [tE]
+      _ = (s.erase y).image ψ :=
+        (image_erase_of_injOn (h.injOn_right_face hs) hysmem).symm
+      _ = t.image ψ := by rw [herase]
+  calc
+    simplexBoundaryCoefficient (o.mapVertexOrder h) s t =
+        simplexBoundaryCoefficient (o.mapVertexOrder h) s tF := by rw [htF]
+    _ =
+        incidenceSign (o.mapVertexOrder h) s y :=
+      simplexBoundaryCoefficient_erase (o.mapVertexOrder h) hysmem
+    _ = incidenceSign o.vertexOrder (s.image ψ) (ψ y) :=
+      o.incidenceSign_mapVertexOrder h hs hysmem
+    _ = simplexBoundaryCoefficient o.vertexOrder (s.image ψ)
+        tE :=
+      (simplexBoundaryCoefficient_erase o.vertexOrder
+        (Finset.mem_image_of_mem ψ hysmem)).symm
+    _ = simplexBoundaryCoefficient o.vertexOrder (s.image ψ) (t.image ψ) := by rw [htE]
+
 open Classical in
 noncomputable instance finite_boundaryComplex_faces
     [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -387,6 +957,2039 @@ theorem orientedBoundary_eq_sum_faceCofaces
       ((SimplicialComplex.mem_facesOfCard K.toPreAbstractSimplicialComplex).mp hs).2, ?_⟩
     rw [← herase]
     exact Finset.erase_subset v s
+
+theorem incidenceIndex_eq_of_lt_iff
+    (r₁ r₂ : LinearOrder E) (s : Finset E) (v : E)
+    (h : ∀ w ∈ s, @LT.lt E r₁.toLT w v ↔ @LT.lt E r₂.toLT w v) :
+    incidenceIndex r₁ s v = incidenceIndex r₂ s v := by
+  unfold incidenceIndex
+  apply congrArg Finset.card
+  ext w
+  simp only [Finset.mem_filter]
+  exact and_congr_right fun hw => h w hw
+
+open Classical in
+theorem simplexBoundaryCoefficient_eq_of_lt_iff
+    (r₁ r₂ : LinearOrder E) {s t : Finset E}
+    (hts : t ⊆ s) (hcard : t.card + 1 = s.card)
+    (h : ∀ v ∈ s, ∀ w ∈ s,
+      (@LT.lt E r₁.toLT v w ↔ @LT.lt E r₂.toLT v w)) :
+    simplexBoundaryCoefficient r₁ s t = simplexBoundaryCoefficient r₂ s t := by
+  obtain ⟨v, hvt, hsv⟩ := Finset.exists_eq_insert_iff.mpr ⟨hts, hcard⟩
+  have hv : v ∈ s := hsv ▸ Finset.mem_insert_self v t
+  have erase_eq (d : DecidableEq E) : @Finset.erase E d s v = t := by
+    rw [← hsv]
+    ext w
+    simp only [Finset.mem_erase, Finset.mem_insert]
+    constructor
+    · rintro ⟨hwv, hwv' | hwt⟩
+      · exact False.elim (hwv hwv')
+      · exact hwt
+    · intro hwt
+      exact ⟨fun hwv => hvt (hwv ▸ hwt), Or.inr hwt⟩
+  have herase₁ : @Finset.erase E r₁.toDecidableEq s v = t := erase_eq _
+  have herase₂ : @Finset.erase E r₂.toDecidableEq s v = t := erase_eq _
+  have hindex : incidenceIndex r₁ s v = incidenceIndex r₂ s v :=
+    incidenceIndex_eq_of_lt_iff r₁ r₂ s v (fun w hw => h w hw v hv)
+  calc
+    simplexBoundaryCoefficient r₁ s t =
+        simplexBoundaryCoefficient r₁ s (@Finset.erase E r₁.toDecidableEq s v) := by
+      rw [herase₁]
+    _ = incidenceSign r₁ s v := simplexBoundaryCoefficient_erase r₁ hv
+    _ = incidenceSign r₂ s v := by rw [incidenceSign, incidenceSign, hindex]
+    _ = simplexBoundaryCoefficient r₂ s (@Finset.erase E r₂.toDecidableEq s v) :=
+      (simplexBoundaryCoefficient_erase r₂ hv).symm
+    _ = simplexBoundaryCoefficient r₂ s t := by rw [herase₂]
+
+open Classical in
+noncomputable def CoherentOrientation.withVertexOrder
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {n : ℕ} {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces]
+    (o : CoherentOrientation n K) (r : LinearOrder E)
+    (h : ∀ v w, {v} ∈ K.faces → {w} ∈ K.faces →
+      (@LT.lt E r.toLT v w ↔ @LT.lt E o.vertexOrder.toLT v w)) :
+    CoherentOrientation n K where
+  vertexOrder := r
+  sign := o.sign
+  sign_top := o.sign_top
+  coherent := by
+    intro t ht htcard hnotone
+    rw [orientedBoundary_eq_sum_faceCofaces]
+    have hold := o.coherent t ht htcard hnotone
+    rw [orientedBoundary_eq_sum_faceCofaces] at hold
+    calc
+      (∑ s ∈ faceCofaces K t (n + 1),
+          o.sign s * simplexBoundaryCoefficient r s t) =
+          ∑ s ∈ faceCofaces K t (n + 1),
+            o.sign s * simplexBoundaryCoefficient o.vertexOrder s t := by
+        apply Finset.sum_congr rfl
+        intro s hs
+        obtain ⟨hsK, hscard, hts⟩ := (mem_faceCofaces K).mp hs
+        congr 1
+        apply simplexBoundaryCoefficient_eq_of_lt_iff r o.vertexOrder hts
+          (by omega)
+        intro v hv w hw
+        apply h v w
+        · exact K.down_closed hsK (Finset.singleton_subset_iff.mpr hv)
+            (Finset.singleton_nonempty v)
+        · exact K.down_closed hsK (Finset.singleton_subset_iff.mpr hw)
+            (Finset.singleton_nonempty w)
+      _ = 0 := hold
+
+open Classical in
+noncomputable def CoherentOrientation.neg
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {n : ℕ} {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces]
+    (o : CoherentOrientation n K) : CoherentOrientation n K where
+  vertexOrder := o.vertexOrder
+  sign := fun s => -o.sign s
+  sign_top := by
+    intro s hs hscard
+    rcases o.sign_top s hs hscard with hsone | hsneg
+    · right
+      rw [hsone]
+    · left
+      rw [hsneg]
+      norm_num
+  coherent := by
+    intro t ht htcard hnotone
+    rw [orientedBoundary_eq_sum_faceCofaces]
+    calc
+      (∑ s ∈ faceCofaces K t (n + 1),
+          -o.sign s * simplexBoundaryCoefficient o.vertexOrder s t) =
+          -(∑ s ∈ faceCofaces K t (n + 1),
+            o.sign s * simplexBoundaryCoefficient o.vertexOrder s t) := by
+        simp_rw [neg_mul]
+        rw [Finset.sum_neg_distrib]
+      _ = 0 := by
+        rw [← orientedBoundary_eq_sum_faceCofaces,
+          o.coherent t ht htcard hnotone, neg_zero]
+
+open Classical in
+theorem CoherentOrientation.orientedBoundary_mapVertexOrder
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
+    {n : ℕ} {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces]
+    {L : Geometry.SimplicialComplex ℝ F} [Finite L.faces]
+    {φ : E → F} {ψ : F → E}
+    (o : CoherentOrientation n K) (h : IsGlueIso K L φ ψ)
+    {t : Finset F} (ht : t ∈ L.faces) (htcard : t.card = n) :
+    orientedBoundary (o.mapVertexOrder h) L n (fun s => o.sign (s.image ψ)) t =
+      orientedBoundary o.vertexOrder K n o.sign (t.image ψ) := by
+  rw [orientedBoundary_eq_sum_faceCofaces, orientedBoundary_eq_sum_faceCofaces,
+    ← h.image_faceCofaces_right ht (n + 1)]
+  have hinj : Set.InjOn (fun s : Finset F => s.image ψ)
+      (faceCofaces L t (n + 1) : Set (Finset F)) := by
+    intro s hs u hu hsu
+    have hsL := ((mem_faceCofaces L).mp (Finset.mem_coe.mp hs)).1
+    have huL := ((mem_faceCofaces L).mp (Finset.mem_coe.mp hu)).1
+    calc
+      s = (s.image ψ).image φ := (h.image_image_right hsL).symm
+      _ = (u.image ψ).image φ := congrArg (fun q => q.image φ) hsu
+      _ = u := h.image_image_right huL
+  rw [Finset.sum_image hinj]
+  apply Finset.sum_congr rfl
+  intro s hs
+  obtain ⟨hsL, hscard, hts⟩ := (mem_faceCofaces L).mp hs
+  rw [o.simplexBoundaryCoefficient_mapVertexOrder h hsL hts (by omega)]
+
+open Classical in
+noncomputable def CoherentOrientation.map
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
+    {n : ℕ} {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces]
+    {L : Geometry.SimplicialComplex ℝ F} [Finite L.faces]
+    {φ : E → F} {ψ : F → E}
+    (o : CoherentOrientation n K) (h : IsGlueIso K L φ ψ) :
+    CoherentOrientation n L where
+  vertexOrder := o.mapVertexOrder h
+  sign := fun s => o.sign (s.image ψ)
+  sign_top := by
+    intro s hs hscard
+    apply o.sign_top (s.image ψ) (h.image₂ s hs)
+    rw [Finset.card_image_of_injOn (h.injOn_right_face hs), hscard]
+  coherent := by
+    intro t ht htcard hne
+    rw [o.orientedBoundary_mapVertexOrder h ht htcard]
+    apply o.coherent (t.image ψ) (h.image₂ t ht)
+    · rw [Finset.card_image_of_injOn (h.injOn_right_face ht), htcard]
+    · intro hone
+      apply hne
+      rw [h.card_faceCofaces_right ht (n + 1), hone]
+
+open Classical in
+theorem IsOrientable.of_isGlueIso
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
+    {n : ℕ} {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces]
+    {L : Geometry.SimplicialComplex ℝ F} [Finite L.faces]
+    {φ : E → F} {ψ : F → E} (h : IsGlueIso K L φ ψ)
+    (ho : IsOrientable n K) : IsOrientable n L := by
+  obtain ⟨o⟩ := ho
+  exact ⟨o.map h⟩
+
+open Classical in
+theorem isOrientable_iff_of_isGlueIso
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
+    {n : ℕ} {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces]
+    {L : Geometry.SimplicialComplex ℝ F} [Finite L.faces]
+    {φ : E → F} {ψ : F → E} (h : IsGlueIso K L φ ψ) :
+    IsOrientable n K ↔ IsOrientable n L :=
+  ⟨IsOrientable.of_isGlueIso h, IsOrientable.of_isGlueIso h.symm⟩
+
+open Classical in
+noncomputable def relativeVertexRank
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    (K L : Geometry.SimplicialComplex ℝ E) (x : E) : Option ℕ :=
+  if h : ∃ s ∈ K.faces, s ∉ L.faces ∧ s.centroid ℝ id = x then
+    some h.choose.card
+  else none
+
+open Classical in
+theorem relativeVertexRank_centroid
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    (K L : Geometry.SimplicialComplex ℝ E) {s : Finset E}
+    (hsK : s ∈ K.faces) (hsL : s ∉ L.faces) :
+    relativeVertexRank K L (s.centroid ℝ id) = some s.card := by
+  rw [relativeVertexRank, dif_pos ⟨s, hsK, hsL, rfl⟩]
+  congr 2
+  apply injOn_faces_of_mem_openSimplex K (centroid_mem_openSimplex_of_mem_faces K)
+    (show Classical.choose (show ∃ t ∈ K.faces,
+      t ∉ L.faces ∧ t.centroid ℝ id = s.centroid ℝ id from ⟨s, hsK, hsL, rfl⟩) ∈ K.faces from
+      (Classical.choose_spec (show ∃ t ∈ K.faces,
+        t ∉ L.faces ∧ t.centroid ℝ id = s.centroid ℝ id from ⟨s, hsK, hsL, rfl⟩)).1)
+    hsK
+  exact (Classical.choose_spec (show ∃ t ∈ K.faces,
+    t ∉ L.faces ∧ t.centroid ℝ id = s.centroid ℝ id from ⟨s, hsK, hsL, rfl⟩)).2.2
+
+open Classical in
+theorem relativeVertexRank_eq_none_of_mem_space
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {K L : Geometry.SimplicialComplex ℝ E} (hLK : L.faces ⊆ K.faces)
+    {x : E} (hx : x ∈ L.space) : relativeVertexRank K L x = none := by
+  rw [relativeVertexRank, dif_neg]
+  rintro ⟨s, hsK, hsL, hsx⟩
+  exact c_notMem_space hLK (centroid_mem_openSimplex_of_mem_faces K) hsK hsL (hsx ▸ hx)
+
+open Classical in
+noncomputable def relativeOrientationVertexKey
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    (K L : Geometry.SimplicialComplex ℝ E) (x : E) :
+    ((OrderDual ℕ ×ₗ E) ⊕ₗ E) :=
+  match relativeVertexRank K L x with
+  | some k => toLex (Sum.inl (toLex (OrderDual.toDual k, x)))
+  | none => toLex (Sum.inr x)
+
+open Classical in
+theorem relativeOrientationVertexKey_injective
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    (K L : Geometry.SimplicialComplex ℝ E) :
+    Function.Injective (relativeOrientationVertexKey K L) := by
+  intro x y hxy
+  unfold relativeOrientationVertexKey at hxy
+  split at hxy <;> split at hxy <;> simp_all
+
+open Classical in
+@[instance_reducible]
+noncomputable def CoherentOrientation.relativeVertexOrder
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {n : ℕ} {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces]
+    (o : CoherentOrientation n K) (L : Geometry.SimplicialComplex ℝ E) : LinearOrder E := by
+  let _ : LinearOrder E := o.vertexOrder
+  exact LinearOrder.lift' (relativeOrientationVertexKey K L)
+    (relativeOrientationVertexKey_injective K L)
+
+open Classical in
+theorem CoherentOrientation.relativeVertexOrder_centroid_lt_centroid
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {n : ℕ} {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces]
+    (o : CoherentOrientation n K) (L : Geometry.SimplicialComplex ℝ E)
+    {s t : Finset E} (hsK : s ∈ K.faces) (hsL : s ∉ L.faces)
+    (htK : t ∈ K.faces) (htL : t ∉ L.faces) (hst : t.card < s.card) :
+    let _ := o.relativeVertexOrder L
+    s.centroid ℝ id < t.centroid ℝ id := by
+  let _ : LinearOrder E := o.vertexOrder
+  change relativeOrientationVertexKey K L (s.centroid ℝ id) <
+    relativeOrientationVertexKey K L (t.centroid ℝ id)
+  rw [relativeOrientationVertexKey, relativeOrientationVertexKey,
+    relativeVertexRank_centroid K L hsK hsL, relativeVertexRank_centroid K L htK htL]
+  change toLex (Sum.inl (toLex (OrderDual.toDual s.card, s.centroid ℝ id))) <
+    toLex (Sum.inl (toLex (OrderDual.toDual t.card, t.centroid ℝ id)))
+  rw [Sum.Lex.inl_lt_inl_iff, Prod.Lex.toLex_lt_toLex]
+  exact Or.inl hst
+
+open Classical in
+theorem CoherentOrientation.relativeVertexOrder_centroid_lt_boundary
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {n : ℕ} {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces]
+    (o : CoherentOrientation n K) {L : Geometry.SimplicialComplex ℝ E}
+    (hLK : L.faces ⊆ K.faces) {s : Finset E} (hsK : s ∈ K.faces)
+    (hsL : s ∉ L.faces) {v : E} (hv : {v} ∈ L.faces) :
+    let _ := o.relativeVertexOrder L
+    s.centroid ℝ id < v := by
+  let _ : LinearOrder E := o.vertexOrder
+  have hvspace : v ∈ L.space := L.convexHull_subset_space hv
+    (subset_convexHull ℝ _ (by simp))
+  change relativeOrientationVertexKey K L (s.centroid ℝ id) <
+    relativeOrientationVertexKey K L v
+  rw [relativeOrientationVertexKey, relativeOrientationVertexKey,
+    relativeVertexRank_centroid K L hsK hsL,
+    relativeVertexRank_eq_none_of_mem_space hLK hvspace]
+  simp
+
+open Classical in
+theorem CoherentOrientation.relativeVertexOrder_boundary_lt_iff
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {n : ℕ} {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces]
+    (o : CoherentOrientation n K) {L : Geometry.SimplicialComplex ℝ E}
+    (hLK : L.faces ⊆ K.faces) {v w : E} (hv : {v} ∈ L.faces)
+    (hw : {w} ∈ L.faces) :
+    let _ := o.relativeVertexOrder L
+    v < w ↔ let _ := o.vertexOrder; v < w := by
+  let _ : LinearOrder E := o.vertexOrder
+  have hvspace : v ∈ L.space := L.convexHull_subset_space hv
+    (subset_convexHull ℝ _ (by simp))
+  have hwspace : w ∈ L.space := L.convexHull_subset_space hw
+    (subset_convexHull ℝ _ (by simp))
+  change relativeOrientationVertexKey K L v < relativeOrientationVertexKey K L w ↔ v < w
+  rw [relativeOrientationVertexKey, relativeOrientationVertexKey,
+    relativeVertexRank_eq_none_of_mem_space hLK hvspace,
+    relativeVertexRank_eq_none_of_mem_space hLK hwspace]
+  simp
+
+open Classical in
+theorem CoherentOrientation.relativeIncidenceIndex_centroid
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {n : ℕ} {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces]
+    (o : CoherentOrientation n K) {L : Geometry.SimplicialComplex ℝ E}
+    (hLK : L.faces ⊆ K.faces) {τ m : Finset E} {d : Finset (Finset E)}
+    (h : IsRelFace K L L τ (insert m d)) (hm : m ∉ d) :
+    incidenceIndex (o.relativeVertexOrder L)
+      (τ ∪ (insert m d).image (fun s => s.centroid ℝ id)) (m.centroid ℝ id) =
+      (d.filter fun s => m.card < s.card).card := by
+  let _ : LinearOrder E := o.relativeVertexOrder L
+  let _ : DecidableEq E := Classical.decEq E
+  have hmFlag : m ∈ insert m d := Finset.mem_insert_self m d
+  have hmK : m ∈ K.faces := h.subset_faces m hmFlag
+  have hmL : m ∉ L.faces := h.notMem m hmFlag
+  have hfilter :
+      (τ ∪ (insert m d).image (fun s => s.centroid ℝ id)).filter
+          (fun x => x < m.centroid ℝ id) =
+        (d.filter fun s => m.card < s.card).image (fun s => s.centroid ℝ id) := by
+    ext x
+    constructor
+    · intro hx
+      obtain ⟨hxmem, hxlt⟩ := Finset.mem_filter.mp hx
+      rcases Finset.mem_union.mp hxmem with hxτ | hxc
+      · have hτL : τ ∈ L.faces := by
+          rcases h.base with hzero | hmem
+          · exact False.elim (Finset.notMem_empty x (hzero ▸ hxτ))
+          · exact hmem
+        have hxL : {x} ∈ L.faces :=
+          L.down_closed hτL (Finset.singleton_subset_iff.mpr hxτ) (Finset.singleton_nonempty x)
+        exact False.elim (not_lt_of_ge
+          (o.relativeVertexOrder_centroid_lt_boundary hLK hmK hmL hxL).le hxlt)
+      · obtain ⟨s, hs, hsx⟩ := Finset.mem_image.mp hxc
+        subst x
+        rcases Finset.mem_insert.mp hs with hsm | hsd
+        · subst s
+          exact False.elim (lt_irrefl _ hxlt)
+        · have hsK : s ∈ K.faces := h.subset_faces s (Finset.mem_insert_of_mem hsd)
+          have hsL : s ∉ L.faces := h.notMem s (Finset.mem_insert_of_mem hsd)
+          have hcard : m.card < s.card := by
+            by_contra hnot
+            have hle : s.card ≤ m.card := Nat.le_of_not_gt hnot
+            have hne : s.card ≠ m.card := by
+              intro heq
+              rcases h.flag.subset_or_subset (Finset.mem_insert_of_mem hsd) hmFlag with hsm | hms
+              · exact hm ((Finset.eq_of_subset_of_card_le hsm heq.ge).symm ▸ hsd)
+              · exact hm (Finset.eq_of_subset_of_card_le hms heq.le ▸ hsd)
+            have hslt : s.card < m.card := lt_of_le_of_ne hle hne
+            exact (not_lt_of_ge hxlt.le)
+              (o.relativeVertexOrder_centroid_lt_centroid L hmK hmL hsK hsL hslt)
+          exact Finset.mem_image.mpr ⟨s, Finset.mem_filter.mpr ⟨hsd, hcard⟩, rfl⟩
+    · intro hx
+      obtain ⟨s, hs, rfl⟩ := Finset.mem_image.mp hx
+      obtain ⟨hsd, hcard⟩ := Finset.mem_filter.mp hs
+      have hsK : s ∈ K.faces := h.subset_faces s (Finset.mem_insert_of_mem hsd)
+      have hsL : s ∉ L.faces := h.notMem s (Finset.mem_insert_of_mem hsd)
+      exact Finset.mem_filter.mpr ⟨Finset.mem_union_right _
+        (Finset.mem_image_of_mem _ (Finset.mem_insert_of_mem hsd)),
+        o.relativeVertexOrder_centroid_lt_centroid L hsK hsL hmK hmL hcard⟩
+  unfold incidenceIndex
+  dsimp only
+  calc
+    _ = ((d.filter fun s => m.card < s.card).image
+        (fun s => s.centroid ℝ id)).card := congrArg Finset.card hfilter
+    _ = (d.filter fun s => m.card < s.card).card :=
+      Finset.card_image_of_injOn
+        ((injOn_faces_of_mem_openSimplex K
+          (centroid_mem_openSimplex_of_mem_faces K)).mono
+            (fun s hs => h.subset_faces s
+              (Finset.mem_insert_of_mem
+                (Finset.mem_filter.mp (Finset.mem_coe.mp hs)).1)))
+
+open Classical in
+theorem CoherentOrientation.relativeIncidenceIndex_boundary
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {n : ℕ} {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces]
+    (o : CoherentOrientation n K) {L : Geometry.SimplicialComplex ℝ E}
+    (hLK : L.faces ⊆ K.faces) {τ : Finset E} {d : Finset (Finset E)} {v : E}
+    (h : IsRelFace K L L (insert v τ) d) :
+    incidenceIndex (o.relativeVertexOrder L)
+      (insert v τ ∪ d.image (fun s => s.centroid ℝ id)) v =
+      d.card + incidenceIndex o.vertexOrder (insert v τ) v := by
+  let _ : LinearOrder E := o.relativeVertexOrder L
+  let _ : DecidableEq E := Classical.decEq E
+  have hbaseL : insert v τ ∈ L.faces := by
+    rcases h.base with hzero | hmem
+    · have hvEmpty : v ∈ (∅ : Finset E) := hzero ▸ Finset.mem_insert_self v τ
+      exact False.elim (Finset.notMem_empty v hvEmpty)
+    · exact hmem
+  have hvL : {v} ∈ L.faces :=
+    L.down_closed hbaseL (Finset.singleton_subset_iff.mpr (Finset.mem_insert_self v τ))
+      (Finset.singleton_nonempty v)
+  have hfilter :
+      (insert v τ ∪ d.image (fun s => s.centroid ℝ id)).filter (fun x => x < v) =
+        (insert v τ).filter (fun x => let _ := o.vertexOrder; x < v) ∪
+          d.image (fun s => s.centroid ℝ id) := by
+    ext x
+    constructor
+    · intro hx
+      obtain ⟨hxmem, hxlt⟩ := Finset.mem_filter.mp hx
+      rcases Finset.mem_union.mp hxmem with hxbase | hxc
+      · have hxL : {x} ∈ L.faces :=
+          L.down_closed hbaseL (Finset.singleton_subset_iff.mpr hxbase)
+            (Finset.singleton_nonempty x)
+        exact Finset.mem_union_left _ (Finset.mem_filter.mpr ⟨hxbase,
+          (o.relativeVertexOrder_boundary_lt_iff hLK hxL hvL).mp hxlt⟩)
+      · exact Finset.mem_union_right _ hxc
+    · intro hx
+      rcases Finset.mem_union.mp hx with hxbase | hxc
+      · obtain ⟨hxmem, hxlt⟩ := Finset.mem_filter.mp hxbase
+        have hxL : {x} ∈ L.faces :=
+          L.down_closed hbaseL (Finset.singleton_subset_iff.mpr hxmem)
+            (Finset.singleton_nonempty x)
+        exact Finset.mem_filter.mpr ⟨Finset.mem_union_left _ hxmem,
+          (o.relativeVertexOrder_boundary_lt_iff hLK hxL hvL).mpr hxlt⟩
+      · obtain ⟨s, hs, rfl⟩ := Finset.mem_image.mp hxc
+        have hsK : s ∈ K.faces := h.subset_faces s hs
+        have hsL : s ∉ L.faces := h.notMem s hs
+        exact Finset.mem_filter.mpr ⟨Finset.mem_union_right _
+          (Finset.mem_image_of_mem _ hs),
+          o.relativeVertexOrder_centroid_lt_boundary hLK hsK hsL hvL⟩
+  change ((insert v τ ∪ d.image (fun s => s.centroid ℝ id)).filter
+      (fun x => @LT.lt E (o.relativeVertexOrder L).toLT x v)).card =
+    d.card + incidenceIndex o.vertexOrder (insert v τ) v
+  have hinj := (injOn_faces_of_mem_openSimplex K
+    (centroid_mem_openSimplex_of_mem_faces K)).mono h.flag.coe_subset_faces
+  have hdisjoint := (h.disjoint (c := fun s => s.centroid ℝ id) hLK
+    (IsSubdivision.refl L) (centroid_mem_openSimplex_of_mem_faces K)).mono_left
+      (Finset.filter_subset (fun x : E => let _ := o.vertexOrder; x < v) (insert v τ))
+  calc
+    _ = ((insert v τ).filter (fun x => let _ := o.vertexOrder; x < v) ∪
+        d.image (fun s => s.centroid ℝ id)).card := congrArg Finset.card hfilter
+    _ = ((insert v τ).filter (fun x => let _ := o.vertexOrder; x < v)).card +
+        (d.image (fun s => s.centroid ℝ id)).card :=
+      Finset.card_union_of_disjoint hdisjoint
+    _ = d.card + ((insert v τ).filter
+        (fun x => let _ := o.vertexOrder; x < v)).card := by
+      rw [Finset.card_image_of_injOn hinj, add_comm]
+    _ = d.card + incidenceIndex o.vertexOrder (insert v τ) v := by
+      unfold incidenceIndex
+      dsimp only
+      apply congrArg (fun k : ℕ => d.card + k)
+      apply congrArg Finset.card
+      ext x
+      simp only [Finset.mem_filter]
+
+open Classical in
+theorem CoherentOrientation.simplexBoundaryCoefficient_relative_centroid
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {n : ℕ} {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces]
+    (o : CoherentOrientation n K) {L : Geometry.SimplicialComplex ℝ E}
+    (hLK : L.faces ⊆ K.faces) {τ m : Finset E} {d : Finset (Finset E)}
+    (h : IsRelFace K L L τ (insert m d)) (hm : m ∉ d) :
+    simplexBoundaryCoefficient (o.relativeVertexOrder L)
+        (τ ∪ (insert m d).image (fun s => s.centroid ℝ id))
+        (τ ∪ d.image (fun s => s.centroid ℝ id)) =
+      (-1 : ℤ) ^ (d.filter fun s => m.card < s.card).card := by
+  let r := o.relativeVertexOrder L
+  let _ : DecidableEq E := Classical.decEq E
+  have hmFlag : m ∈ insert m d := Finset.mem_insert_self m d
+  have hmK : m ∈ K.faces := h.subset_faces m hmFlag
+  have hdisjoint := h.disjoint (c := fun s => s.centroid ℝ id) hLK
+    (IsSubdivision.refl L) (centroid_mem_openSimplex_of_mem_faces K)
+  have hcentroidNotMem : m.centroid ℝ id ∉
+      τ ∪ d.image (fun s => s.centroid ℝ id) := by
+    intro hmem
+    rcases Finset.mem_union.mp hmem with hbase | himage
+    · exact (Finset.disjoint_left.mp hdisjoint hbase
+        (Finset.mem_image_of_mem _ hmFlag))
+    · obtain ⟨s, hs, heq⟩ := Finset.mem_image.mp himage
+      have hsK : s ∈ K.faces := h.subset_faces s (Finset.mem_insert_of_mem hs)
+      have hsm : s = m := (injOn_faces_of_mem_openSimplex K
+        (centroid_mem_openSimplex_of_mem_faces K)) hsK hmK heq
+      exact hm (hsm ▸ hs)
+  have htop : τ ∪ (insert m d).image (fun s => s.centroid ℝ id) =
+      insert (m.centroid ℝ id) (τ ∪ d.image (fun s => s.centroid ℝ id)) := by
+    ext x
+    simp [Finset.image_insert]
+  have hcentroidMem : m.centroid ℝ id ∈
+      τ ∪ (insert m d).image (fun s => s.centroid ℝ id) :=
+    Finset.mem_union_right _ (Finset.mem_image_of_mem _ hmFlag)
+  have herase : @Finset.erase E r.toDecidableEq
+      (τ ∪ (insert m d).image (fun s => s.centroid ℝ id)) (m.centroid ℝ id) =
+        τ ∪ d.image (fun s => s.centroid ℝ id) := by
+    rw [htop]
+    have hdec : r.toDecidableEq = (inferInstance : DecidableEq E) := Subsingleton.elim _ _
+    rw [hdec]
+    exact Finset.erase_insert hcentroidNotMem
+  calc
+    simplexBoundaryCoefficient r
+        (τ ∪ (insert m d).image (fun s => s.centroid ℝ id))
+        (τ ∪ d.image (fun s => s.centroid ℝ id)) =
+      simplexBoundaryCoefficient r
+        (τ ∪ (insert m d).image (fun s => s.centroid ℝ id))
+        (@Finset.erase E r.toDecidableEq
+          (τ ∪ (insert m d).image (fun s => s.centroid ℝ id))
+          (m.centroid ℝ id)) := by rw [herase]
+    _ = incidenceSign r
+        (τ ∪ (insert m d).image (fun s => s.centroid ℝ id))
+        (m.centroid ℝ id) := simplexBoundaryCoefficient_erase r hcentroidMem
+    _ = (-1 : ℤ) ^ (d.filter fun s => m.card < s.card).card := by
+      rw [incidenceSign, o.relativeIncidenceIndex_centroid hLK h hm]
+
+open Classical in
+theorem CoherentOrientation.simplexBoundaryCoefficient_relative_boundary
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {n : ℕ} {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces]
+    (o : CoherentOrientation n K) {L : Geometry.SimplicialComplex ℝ E}
+    (hLK : L.faces ⊆ K.faces) {τ : Finset E} {d : Finset (Finset E)} {v : E}
+    (h : IsRelFace K L L (insert v τ) d) (hv : v ∉ τ) :
+    simplexBoundaryCoefficient (o.relativeVertexOrder L)
+        (insert v τ ∪ d.image (fun s => s.centroid ℝ id))
+        (τ ∪ d.image (fun s => s.centroid ℝ id)) =
+      (-1 : ℤ) ^ d.card * simplexBoundaryCoefficient o.vertexOrder (insert v τ) τ := by
+  let r := o.relativeVertexOrder L
+  let _ : DecidableEq E := Classical.decEq E
+  have hdisjoint := h.disjoint (c := fun s => s.centroid ℝ id) hLK
+    (IsSubdivision.refl L) (centroid_mem_openSimplex_of_mem_faces K)
+  have hvNotMem : v ∉ τ ∪ d.image (fun s => s.centroid ℝ id) := by
+    intro hmem
+    rcases Finset.mem_union.mp hmem with hτ | himage
+    · exact hv hτ
+    · exact Finset.disjoint_left.mp hdisjoint (Finset.mem_insert_self v τ) himage
+  have htop : insert v τ ∪ d.image (fun s => s.centroid ℝ id) =
+      insert v (τ ∪ d.image (fun s => s.centroid ℝ id)) := by
+    ext x
+    simp
+  have hvMem : v ∈ insert v τ ∪ d.image (fun s => s.centroid ℝ id) :=
+    Finset.mem_union_left _ (Finset.mem_insert_self v τ)
+  have herase : @Finset.erase E r.toDecidableEq
+      (insert v τ ∪ d.image (fun s => s.centroid ℝ id)) v =
+        τ ∪ d.image (fun s => s.centroid ℝ id) := by
+    rw [htop]
+    have hdec : r.toDecidableEq = (inferInstance : DecidableEq E) := Subsingleton.elim _ _
+    rw [hdec]
+    exact Finset.erase_insert hvNotMem
+  calc
+    simplexBoundaryCoefficient r
+        (insert v τ ∪ d.image (fun s => s.centroid ℝ id))
+        (τ ∪ d.image (fun s => s.centroid ℝ id)) =
+      simplexBoundaryCoefficient r
+        (insert v τ ∪ d.image (fun s => s.centroid ℝ id))
+        (@Finset.erase E r.toDecidableEq
+          (insert v τ ∪ d.image (fun s => s.centroid ℝ id)) v) := by rw [herase]
+    _ = incidenceSign r (insert v τ ∪ d.image (fun s => s.centroid ℝ id)) v :=
+      simplexBoundaryCoefficient_erase r hvMem
+    _ = (-1 : ℤ) ^ (d.card + incidenceIndex o.vertexOrder (insert v τ) v) := by
+      rw [incidenceSign, o.relativeIncidenceIndex_boundary hLK h]
+    _ = (-1 : ℤ) ^ d.card * incidenceSign o.vertexOrder (insert v τ) v := by
+      rw [pow_add]
+      rfl
+    _ = (-1 : ℤ) ^ d.card * simplexBoundaryCoefficient o.vertexOrder (insert v τ) τ := by
+      have hdec : o.vertexOrder.toDecidableEq = (inferInstance : DecidableEq E) :=
+        Subsingleton.elim _ _
+      have hcoefficient := simplexBoundaryCoefficient_insert o.vertexOrder hv
+      rw [hdec] at hcoefficient
+      exact congrArg (fun z : ℤ => (-1 : ℤ) ^ d.card * z) hcoefficient.symm
+
+open Classical in
+theorem IsRelFace.base_subset_of_mem
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {K L : Geometry.SimplicialComplex ℝ E} (hLK : L.faces ⊆ K.faces)
+    {τ : Finset E} {d : Finset (Finset E)}
+    (h : IsRelFace K L L τ d) {s : Finset E} (hs : s ∈ d) : τ ⊆ s := by
+  rcases τ.eq_empty_or_nonempty with hτ | hτ
+  · rw [hτ]
+    exact Finset.empty_subset s
+  · have hτL : τ ∈ L.faces := h.base.resolve_left (fun he => by
+      subst τ
+      exact Finset.not_nonempty_empty hτ)
+    exact face_subset_of_mem_openSimplex_of_mem_convexHull K (hLK hτL)
+      (h.subset_faces s hs) (centroid_mem_openSimplex hτ)
+      (h.convexHull_subset_of_mem hs
+        (openSimplex_subset_convexHull τ (centroid_mem_openSimplex hτ)))
+
+open Classical in
+theorem IsRelFace.base_not_mem_flag
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {K L : Geometry.SimplicialComplex ℝ E}
+    {τ : Finset E} {d : Finset (Finset E)}
+    (h : IsRelFace K L L τ d) : τ ∉ d := by
+  intro hτd
+  rcases h.base with hτ | hτ
+  · have hne := K.nonempty_of_mem_faces (h.subset_faces τ hτd)
+    exact hne.ne_empty hτ
+  · exact h.notMem τ hτd hτ
+
+open Classical in
+theorem IsRelFace.card_union_image
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {K L L' : Geometry.SimplicialComplex ℝ E} (hLK : L.faces ⊆ K.faces)
+    (hL' : IsSubdivision L' L) (c : Finset E → E)
+    (hc : ∀ s ∈ K.faces, c s ∈ openSimplex s)
+    {τ : Finset E} {d : Finset (Finset E)}
+    (h : IsRelFace K L L' τ d) :
+    (τ ∪ d.image c).card = τ.card + d.card := by
+  rw [Finset.card_union_of_disjoint (h.disjoint hLK hL' hc),
+    Finset.card_image_of_injOn (h.flag.injOn K hc)]
+
+open Classical in
+theorem IsRelFace.card_flag_le_sub_card_base
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {K L : Geometry.SimplicialComplex ℝ E} (hLK : L.faces ⊆ K.faces)
+    {τ : Finset E} {d : Finset (Finset E)}
+    (h : IsRelFace K L L τ d) {u : Finset E} (hu : u ∈ d)
+    (htop : ∀ s ∈ d, s ⊆ u) : d.card ≤ u.card - τ.card := by
+  have hτu := h.base_subset_of_mem hLK hu
+  have hmaps : Set.MapsTo Finset.card (d : Set (Finset E))
+      ((Finset.Icc (τ.card + 1) u.card : Finset ℕ) : Set ℕ) := by
+    intro s hs
+    rw [Finset.coe_Icc, mem_Icc]
+    have hτs := h.base_subset_of_mem hLK (Finset.mem_coe.mp hs)
+    have hne : τ ≠ s := fun he => h.base_not_mem_flag (he ▸ Finset.mem_coe.mp hs)
+    exact ⟨by
+      have := Finset.card_lt_card (Finset.ssubset_iff_subset_ne.mpr ⟨hτs, hne⟩)
+      omega,
+      Finset.card_le_card (htop s (Finset.mem_coe.mp hs))⟩
+  have hinj : Set.InjOn Finset.card (d : Set (Finset E)) := by
+    intro s hs t ht hcard
+    rcases h.flag.subset_or_subset (Finset.mem_coe.mp hs) (Finset.mem_coe.mp ht) with hst | hts
+    · exact Finset.eq_of_subset_of_card_le hst hcard.ge
+    · exact (Finset.eq_of_subset_of_card_le hts hcard.le).symm
+  have hcard := Finset.card_le_card_of_injOn Finset.card hmaps hinj
+  simpa using hcard
+
+open Classical in
+theorem IsRelFace.flag_nonempty_of_top_card
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {K L : Geometry.SimplicialComplex ℝ E}
+    {N : ℕ} (hLcard : ∀ s ∈ L.faces, s.card ≤ N)
+    {τ : Finset E} {d : Finset (Finset E)}
+    (h : IsRelFace K L L τ d)
+    (hcard : (τ ∪ d.image fun s => s.centroid ℝ id).card = N + 1) :
+    d.Nonempty := by
+  by_contra hdne
+  rw [Finset.not_nonempty_iff_eq_empty] at hdne
+  have hτcard : τ.card = N + 1 := by
+    simpa [hdne] using hcard
+  rcases h.base with hτ | hτ
+  · rw [hτ, Finset.card_empty] at hτcard
+    omega
+  · have := hLcard τ hτ
+    omega
+
+open Classical in
+theorem IsRelFace.top_card_eq_of_top_face
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {K L : Geometry.SimplicialComplex ℝ E} (hLK : L.faces ⊆ K.faces)
+    {N : ℕ} (hKcard : ∀ s ∈ K.faces, s.card ≤ N + 1)
+    {τ : Finset E} {d : Finset (Finset E)}
+    (h : IsRelFace K L L τ d)
+    (hcard : (τ ∪ d.image fun s => s.centroid ℝ id).card = N + 1)
+    {u : Finset E} (hu : u ∈ d) (htop : ∀ s ∈ d, s ⊆ u) :
+    u.card = N + 1 := by
+  have hsum := h.card_union_image hLK (IsSubdivision.refl L)
+    (fun s => s.centroid ℝ id) (centroid_mem_openSimplex_of_mem_faces K)
+  rw [hcard] at hsum
+  have hτu := h.base_subset_of_mem hLK hu
+  have hτcard : τ.card ≤ u.card := Finset.card_le_card hτu
+  have hdcard := h.card_flag_le_sub_card_base hLK hu htop
+  have hucard := hKcard u (h.subset_faces u hu)
+  omega
+
+open Classical in
+theorem IsRelFace.existsUnique_card_of_top_face
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {K L : Geometry.SimplicialComplex ℝ E} (hLK : L.faces ⊆ K.faces)
+    {N : ℕ} (hKcard : ∀ s ∈ K.faces, s.card ≤ N + 1)
+    (hLcard : ∀ s ∈ L.faces, s.card ≤ N)
+    {τ : Finset E} {d : Finset (Finset E)}
+    (h : IsRelFace K L L τ d)
+    (hcard : (τ ∪ d.image fun s => s.centroid ℝ id).card = N + 1)
+    {k : ℕ} (hτk : τ.card < k) (hkN : k ≤ N + 1) :
+    ∃! s, s ∈ d ∧ s.card = k := by
+  have hdne := h.flag_nonempty_of_top_card hLcard hcard
+  obtain ⟨u, hu, htop⟩ := h.flag.exists_top hdne
+  have hucard := h.top_card_eq_of_top_face hLK hKcard hcard hu htop
+  have hsum := h.card_union_image hLK (IsSubdivision.refl L)
+    (fun s => s.centroid ℝ id) (centroid_mem_openSimplex_of_mem_faces K)
+  rw [hcard] at hsum
+  have hτu := h.base_subset_of_mem hLK hu
+  have hmaps : Set.MapsTo Finset.card (d : Set (Finset E))
+      ((Finset.Icc (τ.card + 1) (N + 1) : Finset ℕ) : Set ℕ) := by
+    intro s hs
+    rw [Finset.coe_Icc, mem_Icc]
+    have hτs := h.base_subset_of_mem hLK (Finset.mem_coe.mp hs)
+    have hne : τ ≠ s := fun he => h.base_not_mem_flag (he ▸ Finset.mem_coe.mp hs)
+    exact ⟨by
+      have := Finset.card_lt_card (Finset.ssubset_iff_subset_ne.mpr ⟨hτs, hne⟩)
+      omega,
+      by simpa [hucard] using Finset.card_le_card (htop s (Finset.mem_coe.mp hs))⟩
+  have hinj : Set.InjOn Finset.card (d : Set (Finset E)) := by
+    intro s hs t ht heq
+    rcases h.flag.subset_or_subset (Finset.mem_coe.mp hs) (Finset.mem_coe.mp ht) with hst | hts
+    · exact Finset.eq_of_subset_of_card_le hst heq.ge
+    · exact (Finset.eq_of_subset_of_card_le hts heq.le).symm
+  have himage : d.image Finset.card = Finset.Icc (τ.card + 1) (N + 1) := by
+    apply Finset.eq_of_subset_of_card_le
+    · intro j hj
+      obtain ⟨s, hs, rfl⟩ := Finset.mem_image.mp hj
+      exact Finset.mem_coe.mp (hmaps (Finset.mem_coe.mpr hs))
+    · rw [Finset.card_image_of_injOn hinj]
+      have hτN : τ.card ≤ N + 1 := hsum ▸ Nat.le_add_right τ.card d.card
+      simp only [Nat.card_Icc]
+      omega
+  have hk : k ∈ d.image Finset.card := by
+    rw [himage, Finset.mem_Icc]
+    omega
+  obtain ⟨s, hs, hsk⟩ := Finset.mem_image.mp hk
+  refine ⟨s, ⟨hs, hsk⟩, ?_⟩
+  intro t ht
+  apply hinj (Finset.mem_coe.mpr ht.1) (Finset.mem_coe.mpr hs)
+  exact ht.2.trans hsk.symm
+
+noncomputable def relativeFlagBoundaryProduct
+    (r : LinearOrder E) (τ : Finset E) (d : Finset (Finset E)) : ℤ :=
+  ∏ s ∈ d, ∏ t ∈ (insert τ d).filter (fun t => t.card + 1 = s.card),
+    simplexBoundaryCoefficient r s t
+
+noncomputable def relativeLowerBoundaryProduct
+    (r : LinearOrder E) (τ : Finset E) (d : Finset (Finset E)) (m : Finset E) : ℤ :=
+  ∏ t ∈ insert τ d,
+    if t.card + 1 = m.card then simplexBoundaryCoefficient r m t else 1
+
+noncomputable def relativeUpperBoundaryProduct
+    (r : LinearOrder E) (d : Finset (Finset E)) (m : Finset E) : ℤ :=
+  ∏ s ∈ d,
+    if m.card + 1 = s.card then simplexBoundaryCoefficient r s m else 1
+
+open Classical in
+theorem relativeFlagBoundaryProduct_insert
+    (r : LinearOrder E) (τ : Finset E) (d : Finset (Finset E)) (m : Finset E)
+    (hm : m ∉ d) (hmτ : m ≠ τ) :
+    relativeFlagBoundaryProduct r τ (insert m d) =
+      relativeFlagBoundaryProduct r τ d * relativeLowerBoundaryProduct r τ d m *
+        relativeUpperBoundaryProduct r d m := by
+  unfold relativeFlagBoundaryProduct relativeLowerBoundaryProduct relativeUpperBoundaryProduct
+  simp_rw [Finset.prod_filter]
+  rw [Finset.prod_insert hm]
+  rw [Finset.insert_comm τ m d]
+  have hmold : m ∉ insert τ d := by simp [hm, hmτ]
+  have hnew :
+      (∏ t ∈ insert m (insert τ d),
+        if t.card + 1 = m.card then simplexBoundaryCoefficient r m t else 1) =
+        ∏ t ∈ insert τ d,
+          if t.card + 1 = m.card then simplexBoundaryCoefficient r m t else 1 := by
+    rw [Finset.prod_insert hmold]
+    simp
+  rw [hnew]
+  have hinner (s : Finset E) :
+      (∏ t ∈ insert m (insert τ d),
+        if t.card + 1 = s.card then simplexBoundaryCoefficient r s t else 1) =
+        (if m.card + 1 = s.card then simplexBoundaryCoefficient r s m else 1) *
+          ∏ t ∈ insert τ d,
+            if t.card + 1 = s.card then simplexBoundaryCoefficient r s t else 1 := by
+    rw [Finset.prod_insert hmold]
+  simp_rw [hinner]
+  rw [Finset.prod_mul_distrib]
+  ring
+
+open Classical in
+theorem relativeLowerBoundaryProduct_eq_of_unique
+    (r : LinearOrder E) (τ : Finset E) (d : Finset (Finset E))
+    {m a : Finset E} (ha : a ∈ insert τ d) (hacard : a.card + 1 = m.card)
+    (hunique : ∀ t ∈ insert τ d, t.card + 1 = m.card → t = a) :
+    relativeLowerBoundaryProduct r τ d m = simplexBoundaryCoefficient r m a := by
+  unfold relativeLowerBoundaryProduct
+  rw [Finset.prod_eq_single a]
+  · rw [if_pos hacard]
+  · intro t ht hta
+    by_cases htcard : t.card + 1 = m.card
+    · exact False.elim (hta (hunique t ht htcard))
+    · rw [if_neg htcard]
+  · exact fun hnot => False.elim (hnot ha)
+
+open Classical in
+theorem relativeUpperBoundaryProduct_eq_of_unique
+    (r : LinearOrder E) (d : Finset (Finset E))
+    {m b : Finset E} (hb : b ∈ d) (hbcard : m.card + 1 = b.card)
+    (hunique : ∀ s ∈ d, m.card + 1 = s.card → s = b) :
+    relativeUpperBoundaryProduct r d m = simplexBoundaryCoefficient r b m := by
+  unfold relativeUpperBoundaryProduct
+  rw [Finset.prod_eq_single b]
+  · rw [if_pos hbcard]
+  · intro s hs hsb
+    by_cases hscard : m.card + 1 = s.card
+    · exact False.elim (hsb (hunique s hs hscard))
+    · rw [if_neg hscard]
+  · exact fun hnot => False.elim (hnot hb)
+
+open Classical in
+theorem relativeUpperBoundaryProduct_eq_one
+    (r : LinearOrder E) (d : Finset (Finset E)) (m : Finset E)
+    (hcard : ∀ s ∈ d, s.card ≤ m.card) :
+    relativeUpperBoundaryProduct r d m = 1 := by
+  unfold relativeUpperBoundaryProduct
+  apply Finset.prod_eq_one
+  intro s hs
+  rw [if_neg]
+  have := hcard s hs
+  omega
+
+open Classical in
+theorem IsRelFace.relativeFlagBoundaryProduct_insert_base
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {K L : Geometry.SimplicialComplex ℝ E} (hLK : L.faces ⊆ K.faces)
+    {m τ : Finset E} {d : Finset (Finset E)}
+    (h : IsRelFace K L L m d) (r : LinearOrder E)
+    (hcard : τ.card + 1 = m.card) :
+    relativeFlagBoundaryProduct r τ (insert m d) =
+      relativeFlagBoundaryProduct r m d * simplexBoundaryCoefficient r m τ := by
+  have hm : m ∉ d := h.base_not_mem_flag
+  have hpred : (insert τ (insert m d)).filter (fun s => s.card + 1 = m.card) = {τ} := by
+    ext s
+    constructor
+    · intro hs
+      obtain ⟨hs, hscard⟩ := Finset.mem_filter.mp hs
+      rcases Finset.mem_insert.mp hs with hsτ | hs
+      · exact Finset.mem_singleton.mpr hsτ
+      · rcases Finset.mem_insert.mp hs with hsm | hsd
+        · subst s
+          omega
+        · have hle := Finset.card_le_card (h.base_subset_of_mem hLK hsd)
+          omega
+    · intro hs
+      rw [Finset.mem_singleton] at hs
+      subst s
+      exact Finset.mem_filter.mpr ⟨Finset.mem_insert_self τ _, hcard⟩
+  have hfilters (s : Finset E) (hs : s ∈ d) :
+      (insert τ (insert m d)).filter (fun t => t.card + 1 = s.card) =
+        (insert m d).filter (fun t => t.card + 1 = s.card) := by
+    have hms := h.base_subset_of_mem hLK hs
+    have hne : m ≠ s := fun heq => hm (heq ▸ hs)
+    have hlt := Finset.card_lt_card (Finset.ssubset_iff_subset_ne.mpr ⟨hms, hne⟩)
+    ext t
+    simp only [Finset.mem_filter, Finset.mem_insert]
+    constructor
+    · rintro ⟨ht | ht, htcard⟩
+      · subst t
+        omega
+      · exact ⟨ht, htcard⟩
+    · exact fun ht => ⟨Or.inr ht.1, ht.2⟩
+  have hprod :
+      (∏ s ∈ d, ∏ t ∈ (insert τ (insert m d)).filter
+          (fun t => t.card + 1 = s.card), simplexBoundaryCoefficient r s t) =
+        ∏ s ∈ d, ∏ t ∈ (insert m d).filter
+          (fun t => t.card + 1 = s.card), simplexBoundaryCoefficient r s t := by
+    apply Finset.prod_congr rfl
+    intro s hs
+    rw [hfilters s hs]
+  unfold relativeFlagBoundaryProduct
+  rw [Finset.prod_insert hm, hpred, Finset.prod_singleton]
+  rw [hprod]
+  ring
+
+noncomputable def relativeTopCoefficient
+    (r : LinearOrder E) (N : ℕ) (c : Finset E → ℤ)
+    (τ : Finset E) (d : Finset (Finset E)) : ℤ :=
+  (∏ s ∈ d.filter (fun s => s.card = N + 1), c s) *
+    relativeFlagBoundaryProduct r τ d
+
+open Classical in
+theorem IsRelFace.relativeTopCoefficient_insert_base
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {K L : Geometry.SimplicialComplex ℝ E} (hLK : L.faces ⊆ K.faces)
+    {N : ℕ} {m τ : Finset E} {d : Finset (Finset E)}
+    (h : IsRelFace K L L m d) (r : LinearOrder E) (c : Finset E → ℤ)
+    (hcard : τ.card + 1 = m.card) (hmN : m.card ≤ N) :
+    relativeTopCoefficient r N c τ (insert m d) =
+      relativeTopCoefficient r N c m d * simplexBoundaryCoefficient r m τ := by
+  have hm : m ∉ d := h.base_not_mem_flag
+  have hfilter : (insert m d).filter (fun s => s.card = N + 1) =
+      d.filter (fun s => s.card = N + 1) := by
+    ext s
+    simp only [Finset.mem_filter, Finset.mem_insert]
+    constructor
+    · rintro ⟨hsm | hsd, hscard⟩
+      · subst s
+        omega
+      · exact ⟨hsd, hscard⟩
+    · exact fun hs => ⟨Or.inr hs.1, hs.2⟩
+  unfold relativeTopCoefficient
+  rw [hfilter, h.relativeFlagBoundaryProduct_insert_base hLK r hcard]
+  ring
+
+open Classical in
+theorem relativeTopCoefficient_insert_middle
+    (r : LinearOrder E) (N : ℕ) (c : Finset E → ℤ)
+    (τ : Finset E) (d : Finset (Finset E)) {m a b : Finset E}
+    (hm : m ∉ d) (hmτ : m ≠ τ) (hmN : m.card ≤ N)
+    (ha : a ∈ insert τ d) (hacard : a.card + 1 = m.card)
+    (haunique : ∀ t ∈ insert τ d, t.card + 1 = m.card → t = a)
+    (hb : b ∈ d) (hbcard : m.card + 1 = b.card)
+    (hbunique : ∀ s ∈ d, m.card + 1 = s.card → s = b) :
+    relativeTopCoefficient r N c τ (insert m d) =
+      relativeTopCoefficient r N c τ d *
+        simplexBoundaryCoefficient r b m * simplexBoundaryCoefficient r m a := by
+  have hfilter : (insert m d).filter (fun s => s.card = N + 1) =
+      d.filter (fun s => s.card = N + 1) := by
+    ext s
+    simp only [Finset.mem_filter, Finset.mem_insert]
+    constructor
+    · rintro ⟨hsm | hsd, hscard⟩
+      · subst s
+        omega
+      · exact ⟨hsd, hscard⟩
+    · exact fun hs => ⟨Or.inr hs.1, hs.2⟩
+  unfold relativeTopCoefficient
+  rw [hfilter, relativeFlagBoundaryProduct_insert r τ d m hm hmτ,
+    relativeLowerBoundaryProduct_eq_of_unique r τ d ha hacard haunique,
+    relativeUpperBoundaryProduct_eq_of_unique r d hb hbcard hbunique]
+  ring
+
+open Classical in
+theorem relativeTopCoefficient_insert_top
+    (r : LinearOrder E) (N : ℕ) (c : Finset E → ℤ)
+    (τ : Finset E) (d : Finset (Finset E)) {m u : Finset E}
+    (hm : m ∉ d) (hmτ : m ≠ τ) (hmcard : m.card = N + 1)
+    (hdcard : ∀ s ∈ d, s.card ≤ N)
+    (hu : u ∈ insert τ d) (hucard : u.card = N)
+    (huunique : ∀ t ∈ insert τ d, t.card = N → t = u) :
+    relativeTopCoefficient r N c τ (insert m d) =
+      relativeTopCoefficient r N c τ d * c m * simplexBoundaryCoefficient r m u := by
+  have hfilterD : d.filter (fun s => s.card = N + 1) = ∅ := by
+    apply Finset.filter_eq_empty_iff.mpr
+    intro s hs
+    have := hdcard s hs
+    omega
+  have hfilterInsert : (insert m d).filter (fun s => s.card = N + 1) = {m} := by
+    ext s
+    simp only [Finset.mem_filter, Finset.mem_insert, Finset.mem_singleton]
+    constructor
+    · rintro ⟨hsm | hsd, hscard⟩
+      · exact hsm
+      · have := hdcard s hsd
+        omega
+    · intro hsm
+      subst s
+      exact ⟨Or.inl rfl, hmcard⟩
+  have hlower := relativeLowerBoundaryProduct_eq_of_unique r τ d (m := m) (a := u) hu
+    (by omega) (fun t ht htcard => huunique t ht (by omega))
+  have hupper := relativeUpperBoundaryProduct_eq_one r d m (fun s hs => by
+    have := hdcard s hs
+    omega)
+  unfold relativeTopCoefficient
+  rw [hfilterInsert, hfilterD, Finset.prod_singleton, Finset.prod_empty,
+    relativeFlagBoundaryProduct_insert r τ d m hm hmτ, hlower, hupper]
+  ring
+
+theorem simplexBoundaryCoefficient_eq_one_or_neg_one
+    (r : LinearOrder E) {s t : Finset E} (hts : t ⊆ s)
+    (hcard : t.card + 1 = s.card) :
+    simplexBoundaryCoefficient r s t = 1 ∨ simplexBoundaryCoefficient r s t = -1 := by
+  obtain ⟨v, hvt, hvs⟩ := Finset.exists_eq_insert_iff.mpr ⟨hts, hcard⟩
+  have hv : v ∈ s := hvs ▸ Finset.mem_insert_self v t
+  have herase : @Finset.erase E r.toDecidableEq s v = t := by
+    rw [← hvs, Finset.erase_insert hvt]
+  rw [← herase, simplexBoundaryCoefficient_erase r hv, incidenceSign]
+  exact neg_one_pow_eq_or ℤ (incidenceIndex r s v)
+
+open Classical in
+theorem finset_prod_eq_one_or_neg_one
+    {A : Type*} (s : Finset A) (f : A → ℤ)
+    (hf : ∀ a ∈ s, f a = 1 ∨ f a = -1) :
+    (∏ a ∈ s, f a) = 1 ∨ (∏ a ∈ s, f a) = -1 := by
+  induction s using Finset.induction_on with
+  | empty => simp
+  | @insert a s ha ih =>
+      rw [Finset.prod_insert ha]
+      rcases hf a (Finset.mem_insert_self a s) with ha1 | ha1 <;>
+        rcases ih (fun b hb => hf b (Finset.mem_insert_of_mem hb)) with hs1 | hs1 <;>
+          simp [ha1, hs1]
+
+open Classical in
+theorem IsRelFace.relativeFlagBoundaryProduct_eq_one_or_neg_one
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {K L : Geometry.SimplicialComplex ℝ E} (hLK : L.faces ⊆ K.faces)
+    {τ : Finset E} {d : Finset (Finset E)}
+    (h : IsRelFace K L L τ d) (r : LinearOrder E) :
+    relativeFlagBoundaryProduct r τ d = 1 ∨ relativeFlagBoundaryProduct r τ d = -1 := by
+  unfold relativeFlagBoundaryProduct
+  apply finset_prod_eq_one_or_neg_one
+  intro s hs
+  apply finset_prod_eq_one_or_neg_one
+  intro t ht
+  have ht' := Finset.mem_filter.mp ht
+  have hts : t ⊆ s := by
+    rcases Finset.mem_insert.mp ht'.1 with hts | htd
+    · rw [hts]
+      exact h.base_subset_of_mem hLK hs
+    · rcases h.flag.subset_or_subset htd hs with hts | hst
+      · exact hts
+      · have hcardle := Finset.card_le_card hst
+        omega
+  exact simplexBoundaryCoefficient_eq_one_or_neg_one r hts ht'.2
+
+open Classical in
+theorem IsRelFace.relativeTopCoefficient_eq_one_or_neg_one
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {K L : Geometry.SimplicialComplex ℝ E} (hLK : L.faces ⊆ K.faces)
+    {N : ℕ} (hKcard : ∀ s ∈ K.faces, s.card ≤ N + 1)
+    (hLcard : ∀ s ∈ L.faces, s.card ≤ N)
+    {τ : Finset E} {d : Finset (Finset E)}
+    (h : IsRelFace K L L τ d)
+    (hcard : (τ ∪ d.image fun s => s.centroid ℝ id).card = N + 1)
+    (r : LinearOrder E) {c : Finset E → ℤ}
+    (hc : ∀ s ∈ K.faces, s.card = N + 1 → c s = 1 ∨ c s = -1) :
+    relativeTopCoefficient r N c τ d = 1 ∨ relativeTopCoefficient r N c τ d = -1 := by
+  have hdne := h.flag_nonempty_of_top_card hLcard hcard
+  obtain ⟨u, hu, htop⟩ := h.flag.exists_top hdne
+  have hucard := h.top_card_eq_of_top_face hLK hKcard hcard hu htop
+  have hfilter : d.filter (fun s => s.card = N + 1) = {u} := by
+    ext s
+    rw [Finset.mem_filter, Finset.mem_singleton]
+    constructor
+    · intro hs
+      apply Finset.eq_of_subset_of_card_le (htop s hs.1)
+      rw [hs.2, hucard]
+    · rintro rfl
+      exact ⟨hu, hucard⟩
+  unfold relativeTopCoefficient
+  rw [hfilter, Finset.prod_singleton]
+  rcases hc u (h.subset_faces u hu) hucard with hu1 | hu1 <;>
+    rcases h.relativeFlagBoundaryProduct_eq_one_or_neg_one hLK r with hd1 | hd1 <;>
+      simp [hu1, hd1]
+
+open Classical in
+theorem IsRelFace.eq_of_union_image_eq
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {K L L' : Geometry.SimplicialComplex ℝ E} (hLK : L.faces ⊆ K.faces)
+    (hL' : IsSubdivision L' L) (c : Finset E → E)
+    (hc : ∀ s ∈ K.faces, c s ∈ openSimplex s)
+    {τ τ' : Finset E} {d d' : Finset (Finset E)}
+    (h : IsRelFace K L L' τ d) (h' : IsRelFace K L L' τ' d')
+    (heq : τ ∪ d.image c = τ' ∪ d'.image c) : τ = τ' ∧ d = d' := by
+  have hne : (τ ∪ d.image c).Nonempty := by
+    rcases h.nonempty with hτ | hd
+    · exact hτ.mono Finset.subset_union_left
+    · obtain ⟨s, hs⟩ := hd
+      exact ⟨c s, Finset.mem_union_right _ (Finset.mem_image_of_mem c hs)⟩
+  have hx := centroid_mem_openSimplex hne
+  have hx' : (τ ∪ d.image c).centroid ℝ id ∈ openSimplex (τ' ∪ d'.image c) := by
+    rw [← heq]
+    exact hx
+  exact h.eq_of_mem_openSimplex hLK hL' hc h' hx hx'
+
+open Classical in
+noncomputable instance finite_relDerived_faces_instance
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    (K L L' : Geometry.SimplicialComplex ℝ E) [Finite K.faces] [Finite L'.faces]
+    (hLK : L.faces ⊆ K.faces) (hL' : IsSubdivision L' L)
+    (c : Finset E → E) (hc : ∀ s ∈ K.faces, c s ∈ openSimplex s) :
+    Finite (relDerived hLK hL' hc).faces :=
+  (relDerived_faces_finite hLK hL' hc).to_subtype
+
+open Classical in
+theorem IsRelFace.injOn_card_insert
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {K L : Geometry.SimplicialComplex ℝ E} (hLK : L.faces ⊆ K.faces)
+    {τ : Finset E} {d : Finset (Finset E)}
+    (h : IsRelFace K L L τ d) :
+    Set.InjOn Finset.card ((insert τ d : Finset (Finset E)) : Set (Finset E)) := by
+  intro s hs t ht hcard
+  rcases Finset.mem_insert.mp (Finset.mem_coe.mp hs) with hsτ | hsd
+  · rcases Finset.mem_insert.mp (Finset.mem_coe.mp ht) with htτ | htd
+    · exact hsτ.trans htτ.symm
+    · subst s
+      exact Finset.eq_of_subset_of_card_le (h.base_subset_of_mem hLK htd) hcard.ge
+  · rcases Finset.mem_insert.mp (Finset.mem_coe.mp ht) with htτ | htd
+    · subst t
+      exact (Finset.eq_of_subset_of_card_le (h.base_subset_of_mem hLK hsd) hcard.le).symm
+    · rcases h.flag.subset_or_subset hsd htd with hst | hts
+      · exact Finset.eq_of_subset_of_card_le hst hcard.ge
+      · exact (Finset.eq_of_subset_of_card_le hts hcard.le).symm
+
+open Classical in
+theorem IsRelFace.data_subset_of_union_image_subset
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {K L L' : Geometry.SimplicialComplex ℝ E} (hLK : L.faces ⊆ K.faces)
+    (hL' : IsSubdivision L' L) (c : Finset E → E)
+    (hc : ∀ s ∈ K.faces, c s ∈ openSimplex s)
+    {τ τ' : Finset E} {d d' : Finset (Finset E)}
+    (h : IsRelFace K L L' τ d) (h' : IsRelFace K L L' τ' d')
+    (hsub : τ ∪ d.image c ⊆ τ' ∪ d'.image c) : τ ⊆ τ' ∧ d ⊆ d' := by
+  have hne : (τ ∪ d.image c).Nonempty := by
+    rcases h.nonempty with hτ | hd
+    · exact hτ.mono Finset.subset_union_left
+    · obtain ⟨s, hs⟩ := hd
+      exact ⟨c s, Finset.mem_union_right _ (Finset.mem_image_of_mem c hs)⟩
+  obtain ⟨τ₀, d₀, h₀, hτ₀, hd₀, heq⟩ := h'.exists_sub hsub hne
+  have hdata := h.eq_of_union_image_eq hLK hL' c hc h₀ heq
+  rw [hdata.1, hdata.2]
+  exact ⟨hτ₀, hd₀⟩
+
+open Classical in
+theorem relativeData_eq_or_eq_insert
+    {τ τ' : Finset E} {d d' : Finset (Finset E)} {N : ℕ}
+    (hτ : τ ⊆ τ') (hd : d ⊆ d')
+    (hcard : τ.card + d.card = N)
+    (hcard' : τ'.card + d'.card = N + 1) :
+    (τ' = τ ∧ ∃ m ∉ d, d' = insert m d) ∨
+      (d' = d ∧ ∃ v ∉ τ, τ' = insert v τ) := by
+  by_cases hτeq : τ' = τ
+  · left
+    refine ⟨hτeq, ?_⟩
+    have hdcard : d.card + 1 = d'.card := by
+      rw [hτeq] at hcard'
+      omega
+    obtain ⟨m, hm, heq⟩ := Finset.exists_eq_insert_iff.mpr ⟨hd, hdcard⟩
+    exact ⟨m, hm, heq.symm⟩
+  · right
+    have hτlt : τ.card < τ'.card :=
+      Finset.card_lt_card (Finset.ssubset_iff_subset_ne.mpr ⟨hτ, fun he => hτeq he.symm⟩)
+    have hdcard : d'.card = d.card := by
+      have := Finset.card_le_card hd
+      omega
+    have hdeq : d' = d := (Finset.eq_of_subset_of_card_le hd hdcard.le).symm
+    refine ⟨hdeq, ?_⟩
+    have hτcard : τ.card + 1 = τ'.card := by
+      rw [hdeq] at hcard'
+      omega
+    obtain ⟨v, hv, heq⟩ := Finset.exists_eq_insert_iff.mpr ⟨hτ, hτcard⟩
+    exact ⟨v, hv, heq.symm⟩
+
+open Classical in
+theorem IsRelFace.existsUnique_missing_card
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {K L : Geometry.SimplicialComplex ℝ E} (hLK : L.faces ⊆ K.faces)
+    {N : ℕ} (hKcard : ∀ s ∈ K.faces, s.card ≤ N + 1)
+    {τ : Finset E} {d : Finset (Finset E)}
+    (h : IsRelFace K L L τ d)
+    (hcard : (τ ∪ d.image fun s => s.centroid ℝ id).card = N) :
+    ∃! j, j ∈ Finset.Icc τ.card (N + 1) ∧
+      j ∉ (insert τ d).image Finset.card := by
+  have hsum := h.card_union_image hLK (IsSubdivision.refl L)
+    (fun s => s.centroid ℝ id) (centroid_mem_openSimplex_of_mem_faces K)
+  rw [hcard] at hsum
+  have hτN : τ.card ≤ N := by omega
+  have hmaps : (insert τ d).image Finset.card ⊆ Finset.Icc τ.card (N + 1) := by
+    intro k hk
+    obtain ⟨s, hs, rfl⟩ := Finset.mem_image.mp hk
+    rw [Finset.mem_Icc]
+    rcases Finset.mem_insert.mp hs with rfl | hs
+    · exact ⟨le_rfl, by omega⟩
+    · exact ⟨Finset.card_le_card (h.base_subset_of_mem hLK hs),
+        hKcard s (h.subset_faces s hs)⟩
+  have himageCard : ((insert τ d).image Finset.card).card = d.card + 1 := by
+    rw [Finset.card_image_of_injOn (h.injOn_card_insert hLK),
+      Finset.card_insert_of_notMem h.base_not_mem_flag]
+  have hmissingCard :
+      (Finset.Icc τ.card (N + 1) \ (insert τ d).image Finset.card).card = 1 := by
+    rw [Finset.card_sdiff_of_subset hmaps, himageCard]
+    simp only [Nat.card_Icc]
+    omega
+  obtain ⟨j, hj⟩ := Finset.card_eq_one.mp hmissingCard
+  refine ⟨j, ?_, ?_⟩
+  · have hjmem : j ∈ Finset.Icc τ.card (N + 1) \
+        (insert τ d).image Finset.card := by
+      rw [hj]
+      exact Finset.mem_singleton_self j
+    exact Finset.mem_sdiff.mp hjmem
+  · intro k hk
+    have hkmem : k ∈ Finset.Icc τ.card (N + 1) \
+        (insert τ d).image Finset.card := Finset.mem_sdiff.mpr hk
+    rw [hj, Finset.mem_singleton] at hkmem
+    exact hkmem
+
+open Classical in
+theorem IsRelFace.existsUnique_card_insert_of_ne_missing
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {K L : Geometry.SimplicialComplex ℝ E} (hLK : L.faces ⊆ K.faces)
+    {τ : Finset E} {d : Finset (Finset E)}
+    (h : IsRelFace K L L τ d) {N j k : ℕ}
+    (hjunique : ∀ l, l ∈ Finset.Icc τ.card (N + 1) ∧
+      l ∉ (insert τ d).image Finset.card → l = j)
+    (hk : k ∈ Finset.Icc τ.card (N + 1)) (hkj : k ≠ j) :
+    ∃! s, s ∈ insert τ d ∧ s.card = k := by
+  have hkimage : k ∈ (insert τ d).image Finset.card := by
+    by_contra hnot
+    exact hkj (hjunique k ⟨hk, hnot⟩)
+  obtain ⟨s, hs, hscard⟩ := Finset.mem_image.mp hkimage
+  refine ⟨s, ⟨hs, hscard⟩, ?_⟩
+  intro t ht
+  apply h.injOn_card_insert hLK (Finset.mem_coe.mpr ht.1)
+    (Finset.mem_coe.mpr hs)
+  exact ht.2.trans hscard.symm
+
+open Classical in
+theorem IsRelFace.card_filter_gt_missing
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {K L : Geometry.SimplicialComplex ℝ E} (hLK : L.faces ⊆ K.faces)
+    {N : ℕ} (hKcard : ∀ s ∈ K.faces, s.card ≤ N + 1)
+    {τ : Finset E} {d : Finset (Finset E)}
+    (h : IsRelFace K L L τ d)
+    {j : ℕ} (hj : j ∈ Finset.Icc τ.card (N + 1) ∧
+      j ∉ (insert τ d).image Finset.card)
+    (hjunique : ∀ k, k ∈ Finset.Icc τ.card (N + 1) ∧
+      k ∉ (insert τ d).image Finset.card → k = j) :
+    (d.filter fun s => j < s.card).card = N + 1 - j := by
+  have himage : (d.filter fun s => j < s.card).image Finset.card =
+      Finset.Icc (j + 1) (N + 1) := by
+    ext k
+    constructor
+    · intro hk
+      obtain ⟨s, hs, rfl⟩ := Finset.mem_image.mp hk
+      obtain ⟨hsd, hjs⟩ := Finset.mem_filter.mp hs
+      rw [Finset.mem_Icc]
+      exact ⟨by omega, hKcard s (h.subset_faces s hsd)⟩
+    · intro hk
+      have hkIcc := Finset.mem_Icc.mp hk
+      have hkGlobal : k ∈ Finset.Icc τ.card (N + 1) := by
+        rw [Finset.mem_Icc]
+        exact ⟨(Finset.mem_Icc.mp hj.1).1.trans (by omega), hkIcc.2⟩
+      have hkj : k ≠ j := by omega
+      obtain ⟨s, ⟨hs, hscard⟩, -⟩ := h.existsUnique_card_insert_of_ne_missing hLK
+        hjunique hkGlobal hkj
+      have hsd : s ∈ d := by
+        rcases Finset.mem_insert.mp hs with hsτ | hsd
+        · have hτj := (Finset.mem_Icc.mp hj.1).1
+          rw [hsτ] at hscard
+          omega
+        · exact hsd
+      exact Finset.mem_image.mpr ⟨s, Finset.mem_filter.mpr ⟨hsd, by omega⟩, hscard⟩
+  have hinj : Set.InjOn Finset.card
+      (((d.filter fun s => j < s.card) : Finset (Finset E)) : Set (Finset E)) :=
+    (h.injOn_card_insert hLK).mono (fun s hs =>
+      Finset.mem_coe.mpr (Finset.mem_insert_of_mem
+        (Finset.mem_filter.mp (Finset.mem_coe.mp hs)).1))
+  calc
+    (d.filter fun s => j < s.card).card =
+        ((d.filter fun s => j < s.card).image Finset.card).card :=
+      (Finset.card_image_of_injOn hinj).symm
+    _ = (Finset.Icc (j + 1) (N + 1)).card := congrArg Finset.card himage
+    _ = N + 1 - j := by
+      simp only [Nat.card_Icc]
+      omega
+
+open Classical in
+noncomputable def relativeFaceBase
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    (K L : Geometry.SimplicialComplex ℝ E) (hLK : L.faces ⊆ K.faces)
+    (f : Finset E) : Finset E :=
+  if hf : f ∈ (relDerived hLK (IsSubdivision.refl L)
+      (centroid_mem_openSimplex_of_mem_faces K)).faces then hf.choose else ∅
+
+open Classical in
+noncomputable def relativeFaceFlag
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    (K L : Geometry.SimplicialComplex ℝ E) (hLK : L.faces ⊆ K.faces)
+    (f : Finset E) : Finset (Finset E) :=
+  if hf : f ∈ (relDerived hLK (IsSubdivision.refl L)
+      (centroid_mem_openSimplex_of_mem_faces K)).faces then hf.choose_spec.choose else ∅
+
+open Classical in
+theorem relativeFaceData_spec
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    (K L : Geometry.SimplicialComplex ℝ E) (hLK : L.faces ⊆ K.faces)
+    {f : Finset E}
+    (hf : f ∈ (relDerived hLK (IsSubdivision.refl L)
+      (centroid_mem_openSimplex_of_mem_faces K)).faces) :
+    IsRelFace K L L (relativeFaceBase K L hLK f) (relativeFaceFlag K L hLK f) ∧
+      f = relativeFaceBase K L hLK f ∪
+        (relativeFaceFlag K L hLK f).image (fun s => s.centroid ℝ id) := by
+  rw [relativeFaceBase, relativeFaceFlag, dif_pos hf, dif_pos hf]
+  exact hf.choose_spec.choose_spec
+
+open Classical in
+theorem relativeFaceBase_eq_of_isRelFace
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    (K L : Geometry.SimplicialComplex ℝ E) (hLK : L.faces ⊆ K.faces)
+    {f τ : Finset E} {d : Finset (Finset E)} (h : IsRelFace K L L τ d)
+    (hf : f = τ ∪ d.image fun s => s.centroid ℝ id) :
+    relativeFaceBase K L hLK f = τ := by
+  have hmem : f ∈ (relDerived hLK (IsSubdivision.refl L)
+      (centroid_mem_openSimplex_of_mem_faces K)).faces := ⟨τ, d, h, hf⟩
+  obtain ⟨hchosen, hchosenEq⟩ := relativeFaceData_spec K L hLK hmem
+  exact (hchosen.eq_of_union_image_eq hLK (IsSubdivision.refl L)
+    (fun s => s.centroid ℝ id) (centroid_mem_openSimplex_of_mem_faces K) h
+    (hchosenEq.symm.trans hf)).1
+
+open Classical in
+theorem relativeFaceFlag_eq_of_isRelFace
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    (K L : Geometry.SimplicialComplex ℝ E) (hLK : L.faces ⊆ K.faces)
+    {f τ : Finset E} {d : Finset (Finset E)} (h : IsRelFace K L L τ d)
+    (hf : f = τ ∪ d.image fun s => s.centroid ℝ id) :
+    relativeFaceFlag K L hLK f = d := by
+  have hmem : f ∈ (relDerived hLK (IsSubdivision.refl L)
+      (centroid_mem_openSimplex_of_mem_faces K)).faces := ⟨τ, d, h, hf⟩
+  obtain ⟨hchosen, hchosenEq⟩ := relativeFaceData_spec K L hLK hmem
+  exact (hchosen.eq_of_union_image_eq hLK (IsSubdivision.refl L)
+    (fun s => s.centroid ℝ id) (centroid_mem_openSimplex_of_mem_faces K) h
+    (hchosenEq.symm.trans hf)).2
+
+open Classical in
+noncomputable def relativeCofaceCarrier
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    (K L : Geometry.SimplicialComplex ℝ E) (hLK : L.faces ⊆ K.faces)
+    (f g : Finset E) : Finset E :=
+  if h : (relativeFaceFlag K L hLK g \ relativeFaceFlag K L hLK f).Nonempty then
+    h.choose
+  else
+    relativeFaceBase K L hLK g
+
+open Classical in
+theorem relativeCofaceCarrier_eq_of_flag_insert
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    (K L : Geometry.SimplicialComplex ℝ E) (hLK : L.faces ⊆ K.faces)
+    {f g : Finset E} {d : Finset (Finset E)} {m : Finset E}
+    (hfd : relativeFaceFlag K L hLK f = d)
+    (hgd : relativeFaceFlag K L hLK g = insert m d) (hm : m ∉ d) :
+    relativeCofaceCarrier K L hLK f g = m := by
+  unfold relativeCofaceCarrier
+  rw [hfd, hgd]
+  have hdiff : insert m d \ d = {m} := by
+    ext s
+    simp [hm]
+  rw [hdiff]
+  by_cases hne : ({m} : Finset (Finset E)).Nonempty
+  · rw [dif_pos hne]
+    exact Finset.mem_singleton.mp hne.choose_spec
+  · exact False.elim (hne (Finset.singleton_nonempty m))
+
+open Classical in
+theorem relativeCofaceCarrier_eq_of_base_insert
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    (K L : Geometry.SimplicialComplex ℝ E) (hLK : L.faces ⊆ K.faces)
+    {f g : Finset E} {d : Finset (Finset E)} {τ : Finset E} {v : E}
+    (hfd : relativeFaceFlag K L hLK f = d)
+    (hgd : relativeFaceFlag K L hLK g = d)
+    (hgτ : relativeFaceBase K L hLK g = insert v τ) :
+    relativeCofaceCarrier K L hLK f g = insert v τ := by
+  simp [relativeCofaceCarrier, hfd, hgd, hgτ]
+
+open Classical in
+theorem relativeCofaceData
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {K L : Geometry.SimplicialComplex ℝ E} (hLK : L.faces ⊆ K.faces)
+    {N : ℕ} {f g : Finset E}
+    (hf : f ∈ (relDerived hLK (IsSubdivision.refl L)
+      (centroid_mem_openSimplex_of_mem_faces K)).faces)
+    (hg : g ∈ (relDerived hLK (IsSubdivision.refl L)
+      (centroid_mem_openSimplex_of_mem_faces K)).faces)
+    (hfg : f ⊆ g) (hfcard : f.card = N) (hgcard : g.card = N + 1) :
+    (relativeFaceBase K L hLK g = relativeFaceBase K L hLK f ∧
+        ∃ m ∉ relativeFaceFlag K L hLK f,
+          relativeFaceFlag K L hLK g = insert m (relativeFaceFlag K L hLK f) ∧
+          relativeCofaceCarrier K L hLK f g = m) ∨
+      (relativeFaceFlag K L hLK g = relativeFaceFlag K L hLK f ∧
+        ∃ v ∉ relativeFaceBase K L hLK f,
+          relativeFaceBase K L hLK g = insert v (relativeFaceBase K L hLK f) ∧
+          relativeCofaceCarrier K L hLK f g =
+            insert v (relativeFaceBase K L hLK f)) := by
+  obtain ⟨hfrel, hfeq⟩ := relativeFaceData_spec K L hLK hf
+  obtain ⟨hgrel, hgeq⟩ := relativeFaceData_spec K L hLK hg
+  have hsub := hfrel.data_subset_of_union_image_subset hLK (IsSubdivision.refl L)
+    (fun s => s.centroid ℝ id) (centroid_mem_openSimplex_of_mem_faces K) hgrel
+    (hfeq ▸ hgeq ▸ hfg)
+  have hfdata : (relativeFaceBase K L hLK f).card +
+      (relativeFaceFlag K L hLK f).card = N := by
+    rw [← hfrel.card_union_image hLK (IsSubdivision.refl L)
+      (fun s => s.centroid ℝ id) (centroid_mem_openSimplex_of_mem_faces K),
+      ← hfeq]
+    exact hfcard
+  have hgdata : (relativeFaceBase K L hLK g).card +
+      (relativeFaceFlag K L hLK g).card = N + 1 := by
+    rw [← hgrel.card_union_image hLK (IsSubdivision.refl L)
+      (fun s => s.centroid ℝ id) (centroid_mem_openSimplex_of_mem_faces K),
+      ← hgeq]
+    exact hgcard
+  rcases relativeData_eq_or_eq_insert hsub.1 hsub.2 hfdata hgdata with hflag | hbase
+  · left
+    refine ⟨hflag.1, ?_⟩
+    obtain ⟨m, hm, hgm⟩ := hflag.2
+    exact ⟨m, hm, hgm,
+      relativeCofaceCarrier_eq_of_flag_insert K L hLK rfl hgm hm⟩
+  · right
+    refine ⟨hbase.1, ?_⟩
+    obtain ⟨v, hv, hgv⟩ := hbase.2
+    exact ⟨v, hv, hgv,
+      relativeCofaceCarrier_eq_of_base_insert K L hLK rfl hbase.1 hgv⟩
+
+open Classical in
+theorem relativeCofaceCarrier_mem_faces_and_missing
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {K L : Geometry.SimplicialComplex ℝ E} (hLK : L.faces ⊆ K.faces)
+    {N : ℕ} (hKcard : ∀ s ∈ K.faces, s.card ≤ N + 1)
+    {f g : Finset E}
+    (hf : f ∈ (relDerived hLK (IsSubdivision.refl L)
+      (centroid_mem_openSimplex_of_mem_faces K)).faces)
+    (hg : g ∈ (relDerived hLK (IsSubdivision.refl L)
+      (centroid_mem_openSimplex_of_mem_faces K)).faces)
+    (hfg : f ⊆ g) (hfcard : f.card = N) (hgcard : g.card = N + 1) :
+    relativeCofaceCarrier K L hLK f g ∈ K.faces ∧
+      (relativeCofaceCarrier K L hLK f g).card ∈
+        Finset.Icc (relativeFaceBase K L hLK f).card (N + 1) ∧
+      (relativeCofaceCarrier K L hLK f g).card ∉
+        (insert (relativeFaceBase K L hLK f) (relativeFaceFlag K L hLK f)).image
+          Finset.card := by
+  obtain ⟨hfrel, -⟩ := relativeFaceData_spec K L hLK hf
+  obtain ⟨hgrel, -⟩ := relativeFaceData_spec K L hLK hg
+  rcases relativeCofaceData hLK hf hg hfg hfcard hgcard with hflag | hbase
+  · obtain ⟨hbaseEq, m, hm, hflagEq, hcarrier⟩ := hflag
+    rw [hcarrier]
+    have hmTop : m ∈ relativeFaceFlag K L hLK g := by
+      rw [hflagEq]
+      exact Finset.mem_insert_self m _
+    have hmK : m ∈ K.faces := hgrel.subset_faces m hmTop
+    refine ⟨hmK, ?_, ?_⟩
+    · rw [Finset.mem_Icc]
+      exact ⟨Finset.card_le_card (hbaseEq ▸ hgrel.base_subset_of_mem hLK hmTop),
+        hKcard m hmK⟩
+    · intro hmImage
+      obtain ⟨s, hs, hscard⟩ := Finset.mem_image.mp hmImage
+      have hmOld : m ∉ insert (relativeFaceBase K L hLK f)
+          (relativeFaceFlag K L hLK f) := by
+        intro hmOld
+        rcases Finset.mem_insert.mp hmOld with hmBase | hmFlag
+        · apply hgrel.base_not_mem_flag
+          rw [hbaseEq, ← hmBase]
+          exact hmTop
+        · exact hm hmFlag
+      have hsTop : s ∈ insert (relativeFaceBase K L hLK g)
+          (relativeFaceFlag K L hLK g) := by
+        rcases Finset.mem_insert.mp hs with hsBase | hsFlag
+        · rw [Finset.mem_insert, hbaseEq]
+          exact Or.inl hsBase
+        · rw [Finset.mem_insert, hflagEq]
+          exact Or.inr (Finset.mem_insert_of_mem hsFlag)
+      have hmTop' : m ∈ insert (relativeFaceBase K L hLK g)
+          (relativeFaceFlag K L hLK g) := Finset.mem_insert_of_mem hmTop
+      exact hmOld (hgrel.injOn_card_insert hLK (Finset.mem_coe.mpr hmTop')
+        (Finset.mem_coe.mpr hsTop) hscard.symm ▸ hs)
+  · obtain ⟨hflagEq, v, hv, hbaseEq, hcarrier⟩ := hbase
+    rw [hcarrier]
+    have hbaseNonempty : (insert v (relativeFaceBase K L hLK f)).Nonempty :=
+      ⟨v, Finset.mem_insert_self v _⟩
+    have hbaseK : insert v (relativeFaceBase K L hLK f) ∈ K.faces := by
+      rcases hgrel.base with hzero | hmem
+      · exact False.elim (hbaseNonempty.ne_empty (hbaseEq ▸ hzero))
+      · exact hLK (hbaseEq ▸ hmem)
+    refine ⟨hbaseK, ?_, ?_⟩
+    · rw [Finset.mem_Icc]
+      exact ⟨Finset.card_le_card (Finset.subset_insert v _), hKcard _ hbaseK⟩
+    · intro hImage
+      obtain ⟨s, hs, hscard⟩ := Finset.mem_image.mp hImage
+      rcases Finset.mem_insert.mp hs with hsBase | hsFlag
+      · subst s
+        rw [Finset.card_insert_of_notMem hv] at hscard
+        omega
+      · have hsTop : s ∈ insert (relativeFaceBase K L hLK g)
+            (relativeFaceFlag K L hLK g) := by
+          rw [Finset.mem_insert, hflagEq]
+          exact Or.inr hsFlag
+        have hbaseTop : relativeFaceBase K L hLK g ∈
+            insert (relativeFaceBase K L hLK g) (relativeFaceFlag K L hLK g) :=
+          Finset.mem_insert_self _ _
+        have heq := hgrel.injOn_card_insert hLK (Finset.mem_coe.mpr hsTop)
+          (Finset.mem_coe.mpr hbaseTop) (by rw [hbaseEq]; exact hscard)
+        exact hgrel.base_not_mem_flag (heq ▸ (hflagEq ▸ hsFlag))
+
+open Classical in
+theorem relativeCofaceCarrier_injOn
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {K L : Geometry.SimplicialComplex ℝ E} (hLK : L.faces ⊆ K.faces)
+    {N : ℕ} {f : Finset E}
+    (hf : f ∈ (relDerived hLK (IsSubdivision.refl L)
+      (centroid_mem_openSimplex_of_mem_faces K)).faces)
+    (hfcard : f.card = N) :
+    Set.InjOn (relativeCofaceCarrier K L hLK f)
+      {g | g ∈ (relDerived hLK (IsSubdivision.refl L)
+          (centroid_mem_openSimplex_of_mem_faces K)).faces ∧
+        g.card = N + 1 ∧ f ⊆ g} := by
+  intro g hg q hq hcarrier
+  obtain ⟨hgrel, hgeq⟩ := relativeFaceData_spec K L hLK hg.1
+  obtain ⟨hqrel, hqeq⟩ := relativeFaceData_spec K L hLK hq.1
+  rcases relativeCofaceData hLK hf hg.1 hg.2.2 hfcard hg.2.1 with hgflag | hgbase <;>
+    rcases relativeCofaceData hLK hf hq.1 hq.2.2 hfcard hq.2.1 with hqflag | hqbase
+  · obtain ⟨hgτ, m, -, hgm, hgcarrier⟩ := hgflag
+    obtain ⟨hqτ, p, -, hqp, hqcarrier⟩ := hqflag
+    have hmp : m = p := hgcarrier.symm.trans (hcarrier.trans hqcarrier)
+    rw [hgeq, hqeq, hgτ, hqτ, hgm, hqp, hmp]
+  · obtain ⟨-, m, -, hgm, hgcarrier⟩ := hgflag
+    obtain ⟨hqd, v, -, hqτ, hqcarrier⟩ := hqbase
+    have hmL : m ∈ L.faces := by
+      have hbaseNonempty : (insert v (relativeFaceBase K L hLK f)).Nonempty :=
+        ⟨v, Finset.mem_insert_self v _⟩
+      rcases hqrel.base with hzero | hmem
+      · exact False.elim (hbaseNonempty.ne_empty (hqτ ▸ hzero))
+      · rw [← hgcarrier, hcarrier, hqcarrier, ← hqτ]
+        exact hmem
+    exact False.elim (hgrel.notMem m (hgm ▸ Finset.mem_insert_self m _) hmL)
+  · obtain ⟨hgd, v, -, hgτ, hgcarrier⟩ := hgbase
+    obtain ⟨-, m, -, hqm, hqcarrier⟩ := hqflag
+    have hmL : m ∈ L.faces := by
+      have hbaseNonempty : (insert v (relativeFaceBase K L hLK f)).Nonempty :=
+        ⟨v, Finset.mem_insert_self v _⟩
+      rcases hgrel.base with hzero | hmem
+      · exact False.elim (hbaseNonempty.ne_empty (hgτ ▸ hzero))
+      · rw [← hqcarrier, ← hcarrier, hgcarrier, ← hgτ]
+        exact hmem
+    exact False.elim (hqrel.notMem m (hqm ▸ Finset.mem_insert_self m _) hmL)
+  · obtain ⟨hgd, v, -, hgτ, hgcarrier⟩ := hgbase
+    obtain ⟨hqd, w, -, hqτ, hqcarrier⟩ := hqbase
+    have hbaseEq : insert v (relativeFaceBase K L hLK f) =
+        insert w (relativeFaceBase K L hLK f) :=
+      hgcarrier.symm.trans (hcarrier.trans hqcarrier)
+    rw [hgeq, hqeq, hgd, hqd, hgτ, hqτ, hbaseEq]
+
+open Classical in
+theorem relativeCofaceCarrier_comparable
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {K L : Geometry.SimplicialComplex ℝ E} (hLK : L.faces ⊆ K.faces)
+    {N : ℕ} {f g : Finset E}
+    (hf : f ∈ (relDerived hLK (IsSubdivision.refl L)
+      (centroid_mem_openSimplex_of_mem_faces K)).faces)
+    (hg : g ∈ (relDerived hLK (IsSubdivision.refl L)
+      (centroid_mem_openSimplex_of_mem_faces K)).faces)
+    (hfg : f ⊆ g) (hfcard : f.card = N) (hgcard : g.card = N + 1)
+    {u : Finset E}
+    (hu : u ∈ insert (relativeFaceBase K L hLK f) (relativeFaceFlag K L hLK f)) :
+    u ⊆ relativeCofaceCarrier K L hLK f g ∨
+      relativeCofaceCarrier K L hLK f g ⊆ u := by
+  obtain ⟨hgrel, -⟩ := relativeFaceData_spec K L hLK hg
+  rcases relativeCofaceData hLK hf hg hfg hfcard hgcard with hflag | hbase
+  · obtain ⟨hbaseEq, m, -, hflagEq, hcarrierEq⟩ := hflag
+    rw [hcarrierEq]
+    rcases Finset.mem_insert.mp hu with huBase | huFlag
+    · left
+      exact huBase ▸ hbaseEq ▸ hgrel.base_subset_of_mem hLK
+        (hflagEq ▸ Finset.mem_insert_self m _)
+    · exact hgrel.flag.subset_or_subset
+        (hflagEq ▸ Finset.mem_insert_of_mem huFlag)
+        (hflagEq ▸ Finset.mem_insert_self m _)
+  · obtain ⟨hflagEq, v, -, hbaseEq, hcarrierEq⟩ := hbase
+    rw [hcarrierEq]
+    rcases Finset.mem_insert.mp hu with huBase | huFlag
+    · left
+      rw [huBase]
+      exact Finset.subset_insert v _
+    · right
+      exact hbaseEq ▸ hgrel.base_subset_of_mem hLK (hflagEq ▸ huFlag)
+
+noncomputable def relativeOrientationSign
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {N : ℕ} {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces]
+    (o : CoherentOrientation N K) (L : Geometry.SimplicialComplex ℝ E)
+    (hLK : L.faces ⊆ K.faces) (f : Finset E) : ℤ :=
+  relativeTopCoefficient o.vertexOrder N o.sign
+    (relativeFaceBase K L hLK f) (relativeFaceFlag K L hLK f)
+
+open Classical in
+theorem relativeOrientationSign_eq_one_or_neg_one
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {N : ℕ} {K L : Geometry.SimplicialComplex ℝ E} [Finite K.faces]
+    (o : CoherentOrientation N K) (hLK : L.faces ⊆ K.faces)
+    (hKcard : ∀ s ∈ K.faces, s.card ≤ N + 1)
+    (hLcard : ∀ s ∈ L.faces, s.card ≤ N)
+    {f : Finset E}
+    (hf : f ∈ (relDerived hLK (IsSubdivision.refl L)
+      (centroid_mem_openSimplex_of_mem_faces K)).faces)
+    (hfcard : f.card = N + 1) :
+    relativeOrientationSign o L hLK f = 1 ∨
+      relativeOrientationSign o L hLK f = -1 := by
+  obtain ⟨hrel, hfeq⟩ := relativeFaceData_spec K L hLK hf
+  unfold relativeOrientationSign
+  apply hrel.relativeTopCoefficient_eq_one_or_neg_one hLK hKcard hLcard
+  · rw [← hfeq]
+    exact hfcard
+  · exact o.sign_top
+
+open Classical in
+theorem relativeOrientationCofaceTerm
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {N : ℕ} {K L : Geometry.SimplicialComplex ℝ E} [Finite K.faces]
+    (o : CoherentOrientation N K) (hLK : L.faces ⊆ K.faces)
+    (hKcard : ∀ s ∈ K.faces, s.card ≤ N + 1)
+    (hLcard : ∀ s ∈ L.faces, s.card ≤ N)
+    {f g : Finset E}
+    (hf : f ∈ (relDerived hLK (IsSubdivision.refl L)
+      (centroid_mem_openSimplex_of_mem_faces K)).faces)
+    (hg : g ∈ (relDerived hLK (IsSubdivision.refl L)
+      (centroid_mem_openSimplex_of_mem_faces K)).faces)
+    (hfg : f ⊆ g) (hfcard : f.card = N) (hgcard : g.card = N + 1)
+    {j : ℕ} (hj : j ∈ Finset.Icc (relativeFaceBase K L hLK f).card (N + 1) ∧
+      j ∉ (insert (relativeFaceBase K L hLK f)
+        (relativeFaceFlag K L hLK f)).image Finset.card)
+    (hjunique : ∀ k, k ∈ Finset.Icc (relativeFaceBase K L hLK f).card (N + 1) ∧
+      k ∉ (insert (relativeFaceBase K L hLK f)
+        (relativeFaceFlag K L hLK f)).image Finset.card → k = j) :
+    relativeOrientationSign o L hLK g *
+        simplexBoundaryCoefficient (o.relativeVertexOrder L) g f =
+      (-1 : ℤ) ^ (N + 1 - j) *
+        relativeTopCoefficient o.vertexOrder N o.sign
+          (relativeFaceBase K L hLK f)
+          (insert (relativeCofaceCarrier K L hLK f g)
+            (relativeFaceFlag K L hLK f)) := by
+  obtain ⟨hfrel, hfeq⟩ := relativeFaceData_spec K L hLK hf
+  obtain ⟨hgrel, hgeq⟩ := relativeFaceData_spec K L hLK hg
+  have hcarrier := relativeCofaceCarrier_mem_faces_and_missing hLK hKcard
+    hf hg hfg hfcard hgcard
+  have hcarrierCard : (relativeCofaceCarrier K L hLK f g).card = j :=
+    hjunique _ ⟨hcarrier.2.1, hcarrier.2.2⟩
+  rcases relativeCofaceData hLK hf hg hfg hfcard hgcard with hflag | hbase
+  · obtain ⟨hbaseEq, m, hm, hflagEq, hcarrierEq⟩ := hflag
+    have hgrel' : IsRelFace K L L (relativeFaceBase K L hLK f)
+        (insert m (relativeFaceFlag K L hLK f)) := by
+      rwa [hbaseEq, hflagEq] at hgrel
+    have hmj : m.card = j := by
+      calc
+        m.card = (relativeCofaceCarrier K L hLK f g).card :=
+          congrArg Finset.card hcarrierEq.symm
+        _ = j := hcarrierCard
+    have hfilterCard :
+        ((relativeFaceFlag K L hLK f).filter fun s => m.card < s.card).card =
+          N + 1 - j := by
+      simpa only [hmj] using hfrel.card_filter_gt_missing hLK hKcard hj hjunique
+    have hcoefficient :
+        simplexBoundaryCoefficient (o.relativeVertexOrder L) g f =
+          (-1 : ℤ) ^ ((relativeFaceFlag K L hLK f).filter
+            fun s => m.card < s.card).card := by
+      calc
+        simplexBoundaryCoefficient (o.relativeVertexOrder L) g f =
+            simplexBoundaryCoefficient (o.relativeVertexOrder L)
+              (relativeFaceBase K L hLK f ∪
+                (insert m (relativeFaceFlag K L hLK f)).image
+                  (fun s => s.centroid ℝ id)) f := by
+          rw [hgeq, hbaseEq, hflagEq]
+        _ = simplexBoundaryCoefficient (o.relativeVertexOrder L)
+              (relativeFaceBase K L hLK f ∪
+                (insert m (relativeFaceFlag K L hLK f)).image
+                  (fun s => s.centroid ℝ id))
+              (relativeFaceBase K L hLK f ∪
+                (relativeFaceFlag K L hLK f).image (fun s => s.centroid ℝ id)) :=
+          congrArg _ hfeq
+        _ = _ := o.simplexBoundaryCoefficient_relative_centroid hLK hgrel' hm
+    unfold relativeOrientationSign
+    rw [hbaseEq, hflagEq, hcarrierEq, hcoefficient, hfilterCard]
+    ring
+  · obtain ⟨hflagEq, v, hv, hbaseEq, hcarrierEq⟩ := hbase
+    let τ := relativeFaceBase K L hLK f
+    let d := relativeFaceFlag K L hLK f
+    let m := insert v τ
+    have hgrel' : IsRelFace K L L m d := by
+      simpa only [m, τ, d, hbaseEq, hflagEq] using hgrel
+    have hmL : m ∈ L.faces := by
+      rcases hgrel'.base with hzero | hmem
+      · have hvEmpty : v ∈ (∅ : Finset E) := hzero ▸ Finset.mem_insert_self v τ
+        exact False.elim (Finset.notMem_empty v hvEmpty)
+      · exact hmem
+    have hmN : m.card ≤ N := hLcard m hmL
+    have hmcard : τ.card + 1 = m.card := by
+      dsimp only [m, τ]
+      exact (Finset.card_insert_of_notMem hv).symm
+    have hfdata : τ.card + d.card = N := by
+      have hcard := hfrel.card_union_image hLK (IsSubdivision.refl L)
+        (fun s => s.centroid ℝ id) (centroid_mem_openSimplex_of_mem_faces K)
+      rw [← hfeq, hfcard] at hcard
+      exact hcard.symm
+    have hmj : m.card = j := by
+      simpa only [m, hcarrierEq] using hcarrierCard
+    have hdcard : d.card = N + 1 - j := by omega
+    have htop := hgrel'.relativeTopCoefficient_insert_base hLK o.vertexOrder o.sign
+      hmcard hmN
+    have hcoefficient :
+        simplexBoundaryCoefficient (o.relativeVertexOrder L) g f =
+          (-1 : ℤ) ^ d.card * simplexBoundaryCoefficient o.vertexOrder m τ := by
+      rw [hgeq, hfeq, hbaseEq, hflagEq]
+      exact o.simplexBoundaryCoefficient_relative_boundary hLK hgrel' hv
+    unfold relativeOrientationSign
+    simp only [τ, d, m] at hgrel' hmcard hfdata hmj hdcard htop hcoefficient ⊢
+    have hdec : @Finset.decidableEq E o.vertexOrder.toDecidableEq =
+        @Finset.decidableEq E (Classical.decEq E) := Subsingleton.elim _ _
+    rw [hdec] at htop
+    rw [hbaseEq, hflagEq, hcarrierEq, hcoefficient, hdcard]
+    calc
+      _ = (-1 : ℤ) ^ (N + 1 - j) *
+          (relativeTopCoefficient o.vertexOrder N o.sign
+              (insert v (relativeFaceBase K L hLK f))
+              (relativeFaceFlag K L hLK f) *
+            simplexBoundaryCoefficient o.vertexOrder
+              (insert v (relativeFaceBase K L hLK f))
+              (relativeFaceBase K L hLK f)) := by ring
+      _ = _ := by
+        simpa only using congrArg (fun z : ℤ => (-1 : ℤ) ^ (N + 1 - j) * z) htop.symm
+
+open Classical in
+theorem relativeTopCoefficient_coface_pair_cancel
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    {n : ℕ} {K L : Geometry.SimplicialComplex ℝ E} [Finite K.faces]
+    (o : CoherentOrientation (n + 1) K)
+    (hK : IsCombinatorialManifoldWithBoundary (n + 1) K)
+    (hLK : L.faces ⊆ K.faces) {f g q : Finset E}
+    (hf : f ∈ (relDerived hLK (IsSubdivision.refl L)
+      (centroid_mem_openSimplex_of_mem_faces K)).faces)
+    (hg : g ∈ (relDerived hLK (IsSubdivision.refl L)
+      (centroid_mem_openSimplex_of_mem_faces K)).faces)
+    (hq : q ∈ (relDerived hLK (IsSubdivision.refl L)
+      (centroid_mem_openSimplex_of_mem_faces K)).faces)
+    (hfg : f ⊆ g) (hfq : f ⊆ q)
+    (hfcard : f.card = n + 1)
+    (hgcard : g.card = n + 2) (hqcard : q.card = n + 2)
+    (hgq : g ≠ q) :
+    relativeTopCoefficient o.vertexOrder (n + 1) o.sign
+        (relativeFaceBase K L hLK f)
+        (insert (relativeCofaceCarrier K L hLK f g)
+          (relativeFaceFlag K L hLK f)) +
+      relativeTopCoefficient o.vertexOrder (n + 1) o.sign
+        (relativeFaceBase K L hLK f)
+        (insert (relativeCofaceCarrier K L hLK f q)
+          (relativeFaceFlag K L hLK f)) = 0 := by
+  let τ := relativeFaceBase K L hLK f
+  let d := relativeFaceFlag K L hLK f
+  let m := relativeCofaceCarrier K L hLK f g
+  let p := relativeCofaceCarrier K L hLK f q
+  have hKcard : ∀ s ∈ K.faces, s.card ≤ (n + 1) + 1 := fun s hs => hK.card_le K hs
+  obtain ⟨hfrel, hfeq⟩ := relativeFaceData_spec K L hLK hf
+  have hfrel' : IsRelFace K L L τ d := by
+    simpa only [τ, d] using hfrel
+  have hfeq' : f = τ ∪ d.image (fun s => s.centroid ℝ id) := by
+    simpa only [τ, d] using hfeq
+  have hfaceDataCard : (τ ∪ d.image fun s => s.centroid ℝ id).card = n + 1 := by
+    rw [← hfeq']
+    exact hfcard
+  obtain ⟨j, hj, hjunique⟩ :=
+    hfrel'.existsUnique_missing_card hLK hKcard hfaceDataCard
+  have hmData := relativeCofaceCarrier_mem_faces_and_missing hLK hKcard
+    hf hg hfg hfcard hgcard
+  have hpData := relativeCofaceCarrier_mem_faces_and_missing hLK hKcard
+    hf hq hfq hfcard hqcard
+  have hmK : m ∈ K.faces := by simpa only [m] using hmData.1
+  have hpK : p ∈ K.faces := by simpa only [p] using hpData.1
+  have hmIcc : m.card ∈ Finset.Icc τ.card (n + 2) := by
+    simpa only [m, τ] using hmData.2.1
+  have hpIcc : p.card ∈ Finset.Icc τ.card (n + 2) := by
+    simpa only [p, τ] using hpData.2.1
+  have hmMissing : m.card ∉ (insert τ d).image Finset.card := by
+    simpa only [m, τ, d] using hmData.2.2
+  have hpMissing : p.card ∉ (insert τ d).image Finset.card := by
+    simpa only [p, τ, d] using hpData.2.2
+  have hmcard : m.card = j := hjunique m.card ⟨hmIcc, hmMissing⟩
+  have hpcard : p.card = j := hjunique p.card ⟨hpIcc, hpMissing⟩
+  have hmp : m ≠ p := by
+    intro hmp
+    apply hgq
+    apply relativeCofaceCarrier_injOn hLK hf hfcard
+    · exact ⟨hg, hgcard, hfg⟩
+    · exact ⟨hq, hqcard, hfq⟩
+    · simpa only [m, p] using hmp
+  have hmNotD : m ∉ d := by
+    intro hmd
+    apply hmMissing
+    exact Finset.mem_image.mpr ⟨m, Finset.mem_insert_of_mem hmd, rfl⟩
+  have hpNotD : p ∉ d := by
+    intro hpd
+    apply hpMissing
+    exact Finset.mem_image.mpr ⟨p, Finset.mem_insert_of_mem hpd, rfl⟩
+  have hmNeτ : m ≠ τ := by
+    intro hmτ
+    apply hmMissing
+    exact Finset.mem_image.mpr ⟨m, Finset.mem_insert.mpr (Or.inl hmτ), rfl⟩
+  have hpNeτ : p ≠ τ := by
+    intro hpτ
+    apply hpMissing
+    exact Finset.mem_image.mpr ⟨p, Finset.mem_insert.mpr (Or.inl hpτ), rfl⟩
+  change relativeTopCoefficient o.vertexOrder (n + 1) o.sign τ (insert m d) +
+      relativeTopCoefficient o.vertexOrder (n + 1) o.sign τ (insert p d) = 0
+  by_cases hjTop : j = n + 2
+  · have hτcard : τ.card ≤ n + 1 := by
+      have hsub : τ ⊆ τ ∪ d.image (fun s => s.centroid ℝ id) := Finset.subset_union_left
+      have := Finset.card_le_card hsub
+      rw [hfaceDataCard] at this
+      exact this
+    have hkIcc : n + 1 ∈ Finset.Icc τ.card (n + 2) := by
+      rw [Finset.mem_Icc]
+      exact ⟨hτcard, by omega⟩
+    have hnotTop : n + 1 ≠ j := by omega
+    obtain ⟨u, hu, huunique⟩ :=
+      hfrel'.existsUnique_card_insert_of_ne_missing hLK hjunique hkIcc hnotTop
+    have hucard : u.card = n + 1 := hu.2
+    have huK : u ∈ K.faces := by
+      rcases Finset.mem_insert.mp hu.1 with huτ | hud
+      · subst u
+        rcases hfrel'.base with hτzero | hτL
+        · rw [hτzero, Finset.card_empty] at hucard
+          omega
+        · exact hLK hτL
+      · exact hfrel'.subset_faces u hud
+    have hmcardTop : m.card = n + 2 := hmcard.trans hjTop
+    have hpcardTop : p.card = n + 2 := hpcard.trans hjTop
+    have hum : u ⊆ m := by
+      have hcomp := relativeCofaceCarrier_comparable hLK hf hg hfg hfcard hgcard hu.1
+      have hcomp' : u ⊆ m ∨ m ⊆ u := by simpa only [m] using hcomp
+      rcases hcomp' with hum | hmu
+      · exact hum
+      · have := Finset.card_le_card hmu
+        omega
+    have hup : u ⊆ p := by
+      have hcomp := relativeCofaceCarrier_comparable hLK hf hq hfq hfcard hqcard hu.1
+      have hcomp' : u ⊆ p ∨ p ⊆ u := by simpa only [p] using hcomp
+      rcases hcomp' with hup | hpu
+      · exact hup
+      · have := Finset.card_le_card hpu
+        omega
+    have hmco : m ∈ faceCofaces K u (n + 2) :=
+      (mem_faceCofaces K).mpr ⟨hmK, hmcardTop, hum⟩
+    have hpco : p ∈ faceCofaces K u (n + 2) :=
+      (mem_faceCofaces K).mpr ⟨hpK, hpcardTop, hup⟩
+    have hnotone : (faceCofaces K u (n + 2)).card ≠ 1 := by
+      intro hone
+      obtain ⟨z, hz⟩ := Finset.card_eq_one.mp hone
+      have hmz : m = z := by simpa [hz] using hmco
+      have hpz : p = z := by simpa [hz] using hpco
+      exact hmp (hmz.trans hpz.symm)
+    have htwo : (faceCofaces K u (n + 2)).card = 2 :=
+      (hK.card_faceCofaces_eq_one_or_two K huK hucard).resolve_left hnotone
+    have hpairSub : ({m, p} : Finset (Finset E)) ⊆ faceCofaces K u (n + 2) := by
+      simp only [Finset.insert_subset_iff, Finset.singleton_subset_iff]
+      exact ⟨hmco, hpco⟩
+    have hcofaces : faceCofaces K u (n + 2) = {m, p} := by
+      apply (Finset.eq_of_subset_of_card_le hpairSub ?_).symm
+      rw [htwo]
+      simp [hmp]
+    have horiginal := o.coherent u huK hucard hnotone
+    rw [orientedBoundary_eq_sum_faceCofaces, hcofaces] at horiginal
+    simp only [Finset.sum_insert, Finset.sum_singleton, Finset.mem_singleton, hmp,
+      not_false_eq_true] at horiginal
+    have hdcard : ∀ s ∈ d, s.card ≤ n + 1 := by
+      intro s hs
+      have hsK := hfrel'.subset_faces s hs
+      have hsle := hKcard s hsK
+      have hsne : s.card ≠ n + 2 := by
+        intro hscard
+        apply hj.2
+        rw [hjTop, ← hscard]
+        exact Finset.mem_image.mpr ⟨s, Finset.mem_insert_of_mem hs, rfl⟩
+      omega
+    have hdec : @Finset.decidableEq E o.vertexOrder.toDecidableEq =
+        @Finset.decidableEq E (Classical.decEq E) := Subsingleton.elim _ _
+    have huOrder : u ∈ @insert (Finset E) (Finset (Finset E))
+        (@Finset.instInsert (Finset E) (@Finset.decidableEq E o.vertexOrder.toDecidableEq))
+        τ d := by
+      rw [hdec]
+      exact hu.1
+    have huUniqueOrder : ∀ t ∈ @insert (Finset E) (Finset (Finset E))
+        (@Finset.instInsert (Finset E) (@Finset.decidableEq E o.vertexOrder.toDecidableEq))
+        τ d,
+        t.card = n + 1 → t = u := by
+      intro t ht htcard
+      rw [hdec] at ht
+      exact huunique t ⟨ht, htcard⟩
+    have hmTop := relativeTopCoefficient_insert_top o.vertexOrder (n + 1) o.sign τ d
+      hmNotD hmNeτ hmcardTop hdcard huOrder hucard huUniqueOrder
+    have hpTop := relativeTopCoefficient_insert_top o.vertexOrder (n + 1) o.sign τ d
+      hpNotD hpNeτ hpcardTop hdcard huOrder hucard huUniqueOrder
+    rw [hdec] at hmTop hpTop
+    rw [hmTop, hpTop]
+    calc
+      _ = relativeTopCoefficient o.vertexOrder (n + 1) o.sign τ d *
+          (o.sign m * simplexBoundaryCoefficient o.vertexOrder m u +
+            o.sign p * simplexBoundaryCoefficient o.vertexOrder p u) := by ring
+      _ = 0 := by rw [horiginal, mul_zero]
+  · have hjLe : j ≤ n + 1 := by
+      have := (Finset.mem_Icc.mp hj.1).2
+      omega
+    have hτj : τ.card < j := by
+      have hτle := (Finset.mem_Icc.mp hj.1).1
+      have hτne : τ.card ≠ j := by
+        intro hτeq
+        apply hj.2
+        rw [← hτeq]
+        exact Finset.mem_image.mpr ⟨τ, Finset.mem_insert_self τ d, rfl⟩
+      omega
+    have haIcc : j - 1 ∈ Finset.Icc τ.card (n + 2) := by
+      rw [Finset.mem_Icc]
+      exact ⟨by omega, by omega⟩
+    have hbIcc : j + 1 ∈ Finset.Icc τ.card (n + 2) := by
+      rw [Finset.mem_Icc]
+      exact ⟨by omega, by omega⟩
+    have haj : j - 1 ≠ j := by omega
+    have hbj : j + 1 ≠ j := by omega
+    obtain ⟨a, ha, haunique⟩ :=
+      hfrel'.existsUnique_card_insert_of_ne_missing hLK hjunique haIcc haj
+    obtain ⟨b, hb, hbunique⟩ :=
+      hfrel'.existsUnique_card_insert_of_ne_missing hLK hjunique hbIcc hbj
+    have hacard : a.card + 1 = m.card := by omega
+    have hapcard : a.card + 1 = p.card := by omega
+    have hmbcard : m.card + 1 = b.card := by omega
+    have hbD : b ∈ d := by
+      rcases Finset.mem_insert.mp hb.1 with hbτ | hbd
+      · have := hb.2
+        rw [hbτ] at this
+        omega
+      · exact hbd
+    have ham : a ⊆ m := by
+      have hcomp := relativeCofaceCarrier_comparable hLK hf hg hfg hfcard hgcard ha.1
+      have hcomp' : a ⊆ m ∨ m ⊆ a := by simpa only [m] using hcomp
+      rcases hcomp' with ham | hma
+      · exact ham
+      · have := Finset.card_le_card hma
+        omega
+    have hap : a ⊆ p := by
+      have hcomp := relativeCofaceCarrier_comparable hLK hf hq hfq hfcard hqcard ha.1
+      have hcomp' : a ⊆ p ∨ p ⊆ a := by simpa only [p] using hcomp
+      rcases hcomp' with hap | hpa
+      · exact hap
+      · have := Finset.card_le_card hpa
+        omega
+    have hmb : m ⊆ b := by
+      have hcomp := relativeCofaceCarrier_comparable hLK hf hg hfg hfcard hgcard hb.1
+      have hcomp' : b ⊆ m ∨ m ⊆ b := by simpa only [m] using hcomp
+      rcases hcomp' with hbm | hmb
+      · have := Finset.card_le_card hbm
+        exact False.elim (by omega)
+      · exact hmb
+    have hpb : p ⊆ b := by
+      have hcomp := relativeCofaceCarrier_comparable hLK hf hq hfq hfcard hqcard hb.1
+      have hcomp' : b ⊆ p ∨ p ⊆ b := by simpa only [p] using hcomp
+      rcases hcomp' with hbp | hpb
+      · have := Finset.card_le_card hbp
+        exact False.elim (by omega)
+      · exact hpb
+    have haUnique' : ∀ t ∈ insert τ d, t.card + 1 = m.card → t = a := by
+      intro t ht htcard
+      apply haunique t
+      exact ⟨ht, by omega⟩
+    have hbUnique' : ∀ s ∈ d, m.card + 1 = s.card → s = b := by
+      intro s hs hscard
+      apply hbunique s
+      exact ⟨Finset.mem_insert_of_mem hs, by omega⟩
+    have hpHaUnique : ∀ t ∈ insert τ d, t.card + 1 = p.card → t = a := by
+      intro t ht htcard
+      apply haunique t
+      exact ⟨ht, by omega⟩
+    have hpHbUnique : ∀ s ∈ d, p.card + 1 = s.card → s = b := by
+      intro s hs hscard
+      apply hbunique s
+      exact ⟨Finset.mem_insert_of_mem hs, by omega⟩
+    have hmLe : m.card ≤ n + 1 := by omega
+    have hpLe : p.card ≤ n + 1 := by omega
+    have hdec : @Finset.decidableEq E o.vertexOrder.toDecidableEq =
+        @Finset.decidableEq E (Classical.decEq E) := Subsingleton.elim _ _
+    have haOrder : a ∈ @insert (Finset E) (Finset (Finset E))
+        (@Finset.instInsert (Finset E) (@Finset.decidableEq E o.vertexOrder.toDecidableEq))
+        τ d := by
+      rw [hdec]
+      exact ha.1
+    have haUniqueOrder : ∀ t ∈ @insert (Finset E) (Finset (Finset E))
+        (@Finset.instInsert (Finset E) (@Finset.decidableEq E o.vertexOrder.toDecidableEq))
+        τ d,
+        t.card + 1 = m.card → t = a := by
+      intro t ht htcard
+      rw [hdec] at ht
+      exact haUnique' t ht htcard
+    have hpHaUniqueOrder : ∀ t ∈ @insert (Finset E) (Finset (Finset E))
+        (@Finset.instInsert (Finset E) (@Finset.decidableEq E o.vertexOrder.toDecidableEq))
+        τ d,
+        t.card + 1 = p.card → t = a := by
+      intro t ht htcard
+      rw [hdec] at ht
+      exact hpHaUnique t ht htcard
+    have hmMiddle := relativeTopCoefficient_insert_middle o.vertexOrder (n + 1) o.sign τ d
+      hmNotD hmNeτ hmLe haOrder hacard haUniqueOrder hbD hmbcard hbUnique'
+    have hpMiddle := relativeTopCoefficient_insert_middle o.vertexOrder (n + 1) o.sign τ d
+      hpNotD hpNeτ hpLe haOrder hapcard hpHaUniqueOrder hbD (by omega) hpHbUnique
+    rw [hdec] at hmMiddle hpMiddle
+    have hcancel := simplexBoundaryCoefficient_pair_cancel o.vertexOrder
+      ham hacard hmb hmbcard hap hapcard hpb hmp
+    rw [hmMiddle, hpMiddle]
+    calc
+      _ = relativeTopCoefficient o.vertexOrder (n + 1) o.sign τ d *
+          (simplexBoundaryCoefficient o.vertexOrder b m *
+              simplexBoundaryCoefficient o.vertexOrder m a +
+            simplexBoundaryCoefficient o.vertexOrder b p *
+              simplexBoundaryCoefficient o.vertexOrder p a) := by ring
+      _ = 0 := by rw [hcancel, mul_zero]
+
+open Classical in
+noncomputable def CoherentOrientation.relativeSubdivision
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    {n : ℕ} {K L : Geometry.SimplicialComplex ℝ E}
+    [Finite K.faces] [Finite L.faces]
+    (o : CoherentOrientation (n + 1) K)
+    (hK : IsCombinatorialManifoldWithBoundary (n + 1) K)
+    (hLK : L.faces ⊆ K.faces)
+    (hLcard : ∀ s ∈ L.faces, s.card ≤ n + 1) :
+    CoherentOrientation (n + 1)
+      (relDerived hLK (IsSubdivision.refl L)
+        (centroid_mem_openSimplex_of_mem_faces K)) where
+  vertexOrder := o.relativeVertexOrder L
+  sign := relativeOrientationSign o L hLK
+  sign_top := by
+    intro s hs hscard
+    exact relativeOrientationSign_eq_one_or_neg_one o hLK
+      (fun t ht => hK.card_le K ht) hLcard hs hscard
+  coherent := by
+    intro f hf hfcard hnotone
+    let R := relDerived hLK (IsSubdivision.refl L)
+      (centroid_mem_openSimplex_of_mem_faces K)
+    have hR : IsCombinatorialManifoldWithBoundary (n + 1) R :=
+      hK.of_isSubdivision (relDerived_isSubdivision hLK (IsSubdivision.refl L)
+        (centroid_mem_openSimplex_of_mem_faces K))
+    have htwo : (faceCofaces R f (n + 2)).card = 2 :=
+      (hR.card_faceCofaces_eq_one_or_two R hf hfcard).resolve_left hnotone
+    obtain ⟨g, q, hgq, hcofaces⟩ := Finset.card_eq_two.mp htwo
+    have hgco : g ∈ faceCofaces R f (n + 2) := by
+      rw [hcofaces]
+      exact Finset.mem_insert_self g {q}
+    have hqco : q ∈ faceCofaces R f (n + 2) := by
+      rw [hcofaces]
+      exact Finset.mem_insert_of_mem (Finset.mem_singleton_self q)
+    obtain ⟨hg, hgcard, hfg⟩ := (mem_faceCofaces R).mp hgco
+    obtain ⟨hq, hqcard, hfq⟩ := (mem_faceCofaces R).mp hqco
+    obtain ⟨hfrel, hfeq⟩ := relativeFaceData_spec K L hLK hf
+    have hfaceDataCard :
+        ((relativeFaceBase K L hLK f) ∪
+          (relativeFaceFlag K L hLK f).image (fun s => s.centroid ℝ id)).card =
+            n + 1 := by
+      rw [← hfeq]
+      exact hfcard
+    obtain ⟨j, hj, hjunique⟩ := hfrel.existsUnique_missing_card hLK
+      (fun t ht => hK.card_le K ht) hfaceDataCard
+    have hgTerm := relativeOrientationCofaceTerm o hLK
+      (fun t ht => hK.card_le K ht) hLcard hf hg hfg hfcard hgcard hj hjunique
+    have hqTerm := relativeOrientationCofaceTerm o hLK
+      (fun t ht => hK.card_le K ht) hLcard hf hq hfq hfcard hqcard hj hjunique
+    have hcancel := relativeTopCoefficient_coface_pair_cancel o hK hLK
+      hf hg hq hfg hfq hfcard hgcard hqcard hgq
+    rw [orientedBoundary_eq_sum_faceCofaces, hcofaces]
+    simp only [Finset.sum_insert, Finset.sum_singleton, Finset.mem_singleton, hgq,
+      not_false_eq_true]
+    rw [hgTerm, hqTerm, ← mul_add, hcancel, mul_zero]
 
 theorem orientedBoundary_eq_of_faceCofaces_eq
     [AddCommGroup E] [Module ℝ E]
@@ -937,6 +3540,22 @@ theorem boundaryRelSubdivision_faces_finite
     (IsSubdivision.refl (boundaryComplex n K))
     (centroid_mem_openSimplex_of_mem_faces K)
 
+open Classical in
+noncomputable instance finite_boundaryRelSubdivision_faces
+    (n : ℕ) (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces] :
+    Finite (boundaryRelSubdivision n K).faces :=
+  (boundaryRelSubdivision_faces_finite n K).to_subtype
+
+open Classical in
+noncomputable def CoherentOrientation.boundaryRelSubdivision
+    [FiniteDimensional ℝ E]
+    (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
+    {n : ℕ} (hK : IsCombinatorialManifoldWithBoundary (n + 1) K)
+    (o : CoherentOrientation (n + 1) K) :
+    CoherentOrientation (n + 1) (boundaryRelSubdivision (n + 1) K) := by
+  exact o.relativeSubdivision hK (boundaryComplex_faces_subset (n + 1) K)
+    (fun s hs => ((hK.mem_boundaryComplex_faces_iff K).mp hs).2.1)
+
 theorem simplicialMap_id_eq_of_mem
     (K : Geometry.SimplicialComplex ℝ E) {x : E} (hx : x ∈ K.space) :
     simplicialMap K id x = x := by
@@ -1295,6 +3914,147 @@ theorem boundaryComplex_boundaryRelSubdivision
   · exact boundaryComplex_faces_subset (n + 1) R
   · exact boundaryComplex_faces_subset_boundaryRelSubdivision (n + 1) K
   · exact boundaryComplex_space_of_isSubdivision K R hK hR
+
+open Classical in
+theorem CoherentOrientation.orientedBoundary_boundaryRelSubdivision_eq
+    [FiniteDimensional ℝ E] (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
+    {n : ℕ} (hK : IsCombinatorialManifoldWithBoundary (n + 2) K)
+    (o : CoherentOrientation (n + 2) K) {t : Finset E}
+    (htB : t ∈ (boundaryComplex (n + 2) K).faces) (htcard : t.card = n + 2) :
+    orientedBoundary (o.boundaryRelSubdivision K hK).vertexOrder
+        (DifferentialGeometry.Topology.PiecewiseLinear.boundaryRelSubdivision (n + 2) K)
+        (n + 2)
+        (o.boundaryRelSubdivision K hK).sign t =
+      orientedBoundary o.vertexOrder K (n + 2) o.sign t := by
+  let B := boundaryComplex (n + 2) K
+  let R := DifferentialGeometry.Topology.PiecewiseLinear.boundaryRelSubdivision (n + 2) K
+  have hBK : B.faces ⊆ K.faces := boundaryComplex_faces_subset (n + 2) K
+  have htR : t ∈ R.faces := boundaryComplex_faces_subset_boundaryRelSubdivision
+    (n + 2) K htB
+  have hR : IsCombinatorialManifoldWithBoundary (n + 2) R :=
+    hK.of_isSubdivision (boundaryRelSubdivision_isSubdivision (n + 2) K)
+  have htBR : t ∈ (boundaryComplex (n + 2) R).faces := by
+    rw [boundaryComplex_boundaryRelSubdivision K hK]
+    exact htB
+  have hRone : (faceCofaces R t (n + 3)).card = 1 :=
+    (hR.mem_boundaryComplex_iff_card_cofaces_eq_one R htR htcard).mp htBR
+  have hKone : (faceCofaces K t (n + 3)).card = 1 :=
+    (hK.mem_boundaryComplex_iff_card_cofaces_eq_one K (hBK htB) htcard).mp htB
+  obtain ⟨g, hgcofaces⟩ := Finset.card_eq_one.mp hRone
+  obtain ⟨q, hqcofaces⟩ := Finset.card_eq_one.mp hKone
+  have hgco : g ∈ faceCofaces R t (n + 3) := by
+    rw [hgcofaces]
+    exact Finset.mem_singleton_self g
+  have hqco : q ∈ faceCofaces K t (n + 3) := by
+    rw [hqcofaces]
+    exact Finset.mem_singleton_self q
+  obtain ⟨hgR, hgcard, htg⟩ := (mem_faceCofaces R).mp hgco
+  have htRel : IsRelFace K B B t ∅ := by
+    refine ⟨Or.inr htB, ⟨?_, ?_⟩, ?_, ?_, Or.inl ?_⟩
+    · intro s hs
+      exact False.elim (Finset.notMem_empty s hs)
+    · intro s hs
+      exact False.elim (Finset.notMem_empty s hs)
+    · intro s hs
+      exact False.elim (Finset.notMem_empty s hs)
+    · intro s hs
+      exact False.elim (Finset.notMem_empty s hs)
+    · exact (boundaryComplex (n + 2) K).nonempty_of_mem_faces htB
+  have htEq : t = t ∪ (∅ : Finset (Finset E)).image (fun s => s.centroid ℝ id) := by
+    simp
+  have hbase : relativeFaceBase K B hBK t = t :=
+    relativeFaceBase_eq_of_isRelFace K B hBK htRel htEq
+  have hflag : relativeFaceFlag K B hBK t = ∅ :=
+    relativeFaceFlag_eq_of_isRelFace K B hBK htRel htEq
+  have hj : n + 3 ∈ Finset.Icc (relativeFaceBase K B hBK t).card (n + 3) ∧
+      n + 3 ∉ (insert (relativeFaceBase K B hBK t)
+        (relativeFaceFlag K B hBK t)).image Finset.card := by
+    constructor
+    · rw [Finset.mem_Icc, hbase, htcard]
+      omega
+    · rw [hbase, hflag]
+      simp [htcard]
+  have hjunique : ∀ k, k ∈ Finset.Icc (relativeFaceBase K B hBK t).card (n + 3) ∧
+      k ∉ (insert (relativeFaceBase K B hBK t)
+        (relativeFaceFlag K B hBK t)).image Finset.card → k = n + 3 := by
+    intro k hk
+    rw [hbase, hflag] at hk
+    simp only [Finset.insert_empty, Finset.image_singleton, Finset.mem_Icc,
+      Finset.mem_singleton] at hk
+    omega
+  have hKcard : ∀ s ∈ K.faces, s.card ≤ (n + 2) + 1 :=
+    fun s hs => hK.card_le K hs
+  have hBcard : ∀ s ∈ B.faces, s.card ≤ n + 2 :=
+    fun s hs => ((hK.mem_boundaryComplex_faces_iff K).mp hs).2.1
+  have hterm := relativeOrientationCofaceTerm o hBK hKcard hBcard
+    htR hgR htg htcard hgcard hj hjunique
+  let m := relativeCofaceCarrier K B hBK t g
+  have hmData := relativeCofaceCarrier_mem_faces_and_missing hBK hKcard
+    htR hgR htg htcard hgcard
+  have hmK : m ∈ K.faces := by simpa only [m] using hmData.1
+  have hmcard : m.card = n + 3 := by
+    apply hjunique m.card
+    simpa only [m] using hmData.2
+  have htm : t ⊆ m := by
+    rcases relativeCofaceCarrier_comparable hBK htR hgR htg htcard hgcard
+        (show t ∈ insert (relativeFaceBase K B hBK t)
+          (relativeFaceFlag K B hBK t) by rw [hbase, hflag]; simp) with htm | hmt
+    · simpa only [m] using htm
+    · have hle : m.card ≤ t.card := by
+        simpa only [m] using Finset.card_le_card hmt
+      exact False.elim (by omega)
+  have hmco : m ∈ faceCofaces K t (n + 3) :=
+    (mem_faceCofaces K).mpr ⟨hmK, hmcard, htm⟩
+  have hmq : m = q := by
+    rw [hqcofaces, Finset.mem_singleton] at hmco
+    exact hmco
+  have hmNotEmpty : m ∉ (∅ : Finset (Finset E)) := Finset.notMem_empty m
+  have hmNeT : m ≠ t := by
+    intro hmt
+    rw [hmt, htcard] at hmcard
+    omega
+  have hdec : @Finset.decidableEq E o.vertexOrder.toDecidableEq =
+      @Finset.decidableEq E (Classical.decEq E) := Subsingleton.elim _ _
+  have htOrder : t ∈ @insert (Finset E) (Finset (Finset E))
+      (@Finset.instInsert (Finset E) (@Finset.decidableEq E o.vertexOrder.toDecidableEq))
+      t ∅ := by
+    rw [hdec]
+    exact Finset.mem_insert_self t ∅
+  have htUniqueOrder : ∀ u ∈ @insert (Finset E) (Finset (Finset E))
+      (@Finset.instInsert (Finset E) (@Finset.decidableEq E o.vertexOrder.toDecidableEq))
+      t ∅, u.card = n + 2 → u = t := by
+    intro u hu _
+    rw [hdec] at hu
+    simpa using hu
+  have htop := relativeTopCoefficient_insert_top o.vertexOrder (n + 2) o.sign t ∅
+    hmNotEmpty hmNeT hmcard (fun s hs => False.elim (Finset.notMem_empty s hs))
+    htOrder htcard htUniqueOrder
+  rw [hdec] at htop
+  have hempty : relativeTopCoefficient o.vertexOrder (n + 2) o.sign t ∅ = 1 := by
+    simp [relativeTopCoefficient, relativeFlagBoundaryProduct]
+  rw [hempty, one_mul] at htop
+  have hterm' :
+      (o.boundaryRelSubdivision K hK).sign g *
+          simplexBoundaryCoefficient (o.boundaryRelSubdivision K hK).vertexOrder g t =
+        o.sign m * simplexBoundaryCoefficient o.vertexOrder m t := by
+    change relativeOrientationSign o B hBK g *
+        simplexBoundaryCoefficient (o.relativeVertexOrder B) g t = _
+    calc
+      _ = (-1 : ℤ) ^ ((n + 2) + 1 - (n + 3)) *
+          relativeTopCoefficient o.vertexOrder (n + 2) o.sign
+            (relativeFaceBase K B hBK t)
+            (insert (relativeCofaceCarrier K B hBK t g)
+              (relativeFaceFlag K B hBK t)) := hterm
+      _ = relativeTopCoefficient o.vertexOrder (n + 2) o.sign t (insert m ∅) := by
+        simp only [hbase, hflag, m]
+        norm_num
+      _ = o.sign m * simplexBoundaryCoefficient o.vertexOrder m t := htop
+  rw [orientedBoundary_eq_of_cofaces_eq_singleton
+      (o.boundaryRelSubdivision K hK).vertexOrder R
+      (o.boundaryRelSubdivision K hK).sign hgcofaces,
+    orientedBoundary_eq_of_cofaces_eq_singleton o.vertexOrder K o.sign hqcofaces,
+    ← hmq]
+  exact hterm'
 
 open Classical in
 theorem isGlueIso_glued₁_id
