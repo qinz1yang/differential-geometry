@@ -29,7 +29,15 @@ Bennett 的 `origin/Moise`）。本文件记录本方对其中关键声明的独
   `Topology/Manifold/{CoveringAtlas, CoveringStructomorph}`（连同它们引用的 `Tensor/LinearAlgebra/Finsupp/FiniteFibers`、
   `Topology/Manifold/GroupoidPullback` 若非基线），**不取** `Topology/Manifold/PiecewiseAffine.lean`（与 `plGroupoid` 竞争的
   第二套 PL 层级）与他对根聚合 `DifferentialGeometry.lean` 的改动。择取后在整合分支上逐模块聚焦检查与审计。
-  消费者：C.5（`H₁ ↠ ℤ₂`）、H.5（`b₁ > 0`）、H 的 ℚ 系数。待用户批准。
+  消费者：C.5（`H₁ ↠ ℤ₂`）、H.5（`b₁ > 0`）、H 的 ℚ 系数。
+  **已执行（2026-09-15，用户批准「只取同调/covering」）**：整合分支提交 `9379160dd`（作者 Bennett Chow）择取了十个新文件
+  `Tensor/LinearAlgebra/Finsupp/FiniteFibers`、`Topology/Covering/LiftEnumeration`、`Topology/Homology/{ChangeOfRings,
+  Coefficients, CoveringTransfer, CoveringTransferExact, CoveringTransferNaturality, CoveringTransferSequence,
+  Reduced/MayerVietorisCoefficients, Reduced/PointClasses}`（共 1289 行，只依赖基线的 `Covering/Lifting`、
+  `Homology/Algebra/Augment`、`Homology/Reduced`、`Homology/Reduced/MayerVietorisNaturality`）。未取他对基线
+  `Topology/Manifold/CoveringAtlas.lean` 的重构（删除 `coveringChart`、`coveringChartedSpace` 等，会破坏消费者）及依赖它的
+  `CoveringStructomorph`、`GroupoidPullback`。十个模块逐个聚焦检查 exit 0，`AuditClaudeBennett.lean` 的 69 项声明只含标准三公理。
+  各车道下次合并整合分支即可 `import`。
 - H.4：维持不整体 vendor 上游 classification-of-surfaces（只有拓扑存在性，无 χ/H₁/π₁ 与标准形互异）。
 
 ## 3. 不可用
