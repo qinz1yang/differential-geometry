@@ -722,3 +722,27 @@ The audit exits 0; logs are `.lake/scratch/resume-*.log` and
 The protected-family condition is still an explicit geometric input at
 this layer. Its production for retained spherical triangles and the full
 17.5 induction remain open; 17.6 and 17.8 remain unchanged.
+
+## Local deletion inside a planar ambient mesh
+
+The native `PlanarRelativeDeletion.lean` module combines the previously
+verified protected-family moves with upstream
+`PolygonalCircle.eq_closedRegion_of_isCompact_frontier_eq` and
+`TriangleMesh.exists_edge_of_mem_frontier_triangle`. A planar PL disk is
+preserved by any ambient homeomorphism preserving its frontier. Fixing
+the finite edge family therefore preserves every protected triangle as
+a set. Splitting a mesh into a restricted disk and the retained triangles
+then gives the exact image of the entire mesh after one deletion.
+
+The ambient mesh is not assumed to be a disk. The local disk, free-edge
+trace, and explicit intersection conditions for the retained triangles
+are the inputs at this interface. Producing these conditions in the
+spherical charts and the retained-triangle induction are still needed
+for 17.5; 17.6 and 17.8 remain open. This is native assembly of the
+vendor's planar results, with no vendor Lean source changes.
+
+The focused check exits 0 with zero warnings. `AuditS30.lean` checks all
+four new public declarations with only `propext`, `Classical.choice`,
+and `Quot.sound`, and exits 0. Logs are
+`.lake/scratch/check-planar-relative-deletion.log` and
+`.lake/scratch/audit-planar-relative-deletion.log`.
