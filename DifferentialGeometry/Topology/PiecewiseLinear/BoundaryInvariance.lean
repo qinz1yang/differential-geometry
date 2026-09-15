@@ -64,13 +64,13 @@ theorem mem_boundaryComplex_space_iff_of_isPLHomeomorphOn [FiniteDimensional ℝ
       f x ∈ (boundaryComplex (n + 1) L).space := by
   classical
   obtain ⟨K₀, hK₀, hK₀fin, hx₀⟩ := exists_isSubdivision_singleton_mem K hx
-  letI : Finite K₀.faces := hK₀fin.to_subtype
+  let _ : Finite K₀.faces := hK₀fin.to_subtype
   have hf₀ : IsPLHomeomorphOn f K₀.space L.space := by
     rwa [hK₀.space_eq]
   obtain ⟨K₁, L₁, f', hK₁, hK₁fin, hL₁, hL₁fin, hiso, -⟩ :=
     exists_isGlueIso_of_isPLHomeomorphOn K₀ L hf₀
-  letI : Finite K₁.faces := hK₁fin.to_subtype
-  letI : Finite L₁.faces := hL₁fin.to_subtype
+  let _ : Finite K₁.faces := hK₁fin.to_subtype
+  let _ : Finite L₁.faces := hL₁fin.to_subtype
   have hx₁ : {x} ∈ K₁.faces := hK₁.singleton_mem hx₀
   have hfx₁ : {f x} ∈ L₁.faces := hiso.singleton_mem hx₁
   have hL : IsCombinatorialManifoldWithBoundary (n + 1) L := hK.of_isPLHomeomorphOn hf
@@ -100,8 +100,8 @@ private theorem PLPieceIn.image_boundaryComplex_eq {n : ℕ} {X : Type u}
     T₁.map '' (@boundaryComplex _ _ _ (Classical.decEq _) (m + 1) T₁.complex).space =
       T₂.map '' (@boundaryComplex _ _ _ (Classical.decEq _) (m + 1) T₂.complex).space := by
   classical
-  haveI : Finite T₁.complex.faces := T₁.finite_faces.to_subtype
-  haveI : Finite T₂.complex.faces := T₂.finite_faces.to_subtype
+  have : Finite T₁.complex.faces := T₁.finite_faces.to_subtype
+  have : Finite T₂.complex.faces := T₂.finite_faces.to_subtype
   have htrans := T₁.isPLHomeomorphOn_transition T₂
   have hT₂ : IsCombinatorialManifoldWithBoundary (m + 1) T₂.complex :=
     hT₁.of_isPLHomeomorphOn htrans
