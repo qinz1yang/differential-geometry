@@ -893,3 +893,29 @@ only standard foundational axioms. Logs are
 `.lake/scratch/audit-simplex-disk-deletion.log`. The full 17.5 endpoint
 still requires the finite retained-triangle induction and the final
 comparison with an original facet; 17.6 and 17.8 remain open.
+
+## Full ambient disk straightening on a tetrahedron
+
+`SimplexDiskStraightening` closes Moise 17.5. The free-face producer avoids
+one specified mesh triangle. Recursion on the finite number of triangles
+composes the ambient deletions on a fixed compatible subdivision and a
+fixed planar simplicial model. The recursion terminates by the strict
+triangle-count decrease. Finally, the original disk and an original
+facet are each sent to the same retained mesh triangle, and one map is
+composed with the inverse of the other.
+
+The public endpoint
+`exists_isPLHomeomorphOn_straighten_disk_in_tetrahedron` starts only with
+four affinely independent points in Euclidean three-space, an arbitrary
+PL two-ball in their convex hull's frontier, and an open neighborhood of
+the solid tetrahedron. It produces a global PL homeomorphism preserving
+the tetrahedron, sending the disk to an original facet, and fixing the
+neighborhood's complement. No mesh, planar model, or conditional
+Brouwer class remains in this endpoint. Vendor Lean sources are unchanged.
+
+The focused check exits 0 with zero warnings. `AuditS38.lean` checks all
+four new endpoints and the full public signature, exits 0, and reports
+only the standard three axioms. Logs are
+`.lake/scratch/check-simplex-disk-straightening.log` and
+`.lake/scratch/audit-simplex-disk-straightening.log`. The 17.6 and 17.8
+consumers are the next layer.
