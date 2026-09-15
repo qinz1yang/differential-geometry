@@ -1,4 +1,5 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.Manifold
+import DifferentialGeometry.Topology.PiecewiseLinear.PLHomeomorph
 
 open Set Topology
 open scoped Manifold
@@ -83,5 +84,39 @@ theorem IsPLOn.piecewise_postcomp_of_isClosed {f : M → N} {h : N → N} {A B :
       (hf x hx) _ hx
     filter_upwards [mem_nhdsWithin_of_mem_nhds (hA.isOpen_compl.mem_nhds hxA)] with z hz
     exact piecewise_eq_of_notMem A (h ∘ f) f hz
+
+theorem IsPLWithinAt.mono_of_isPolyhedron {f : EuclideanSpace ℝ (Fin n) → N}
+    {s t : Set (EuclideanSpace ℝ (Fin n))} {x : EuclideanSpace ℝ (Fin n)}
+    (hf : IsPLWithinAt n m f s x) (ht : IsPolyhedron t) (hts : t ⊆ s) : IsPLWithinAt n m f t x := by
+  refine ⟨hf.continuousWithinAt.mono hts, ?_⟩
+  have hcoord := hf.prop
+  change IsPiecewiseAffineWithinAt ((chartAt (EuclideanSpace ℝ (Fin m)) (f x)) ∘ f) s x at hcoord
+  exact hcoord.mono_of_isPolyhedron ht hts
+
+theorem IsPLOn.mono_of_isPolyhedron {f : EuclideanSpace ℝ (Fin n) → N}
+    {s t : Set (EuclideanSpace ℝ (Fin n))} (hf : IsPLOn n m f s)
+    (ht : IsPolyhedron t) (hts : t ⊆ s) : IsPLOn n m f t :=
+  fun x hx => IsPLWithinAt.mono_of_isPolyhedron (hf x (hts hx)) ht hts
+
+theorem isPLOn_iff_isPiecewiseAffineOn_comp_chart [HasGroupoid N (plGroupoid m)]
+    {f : EuclideanSpace ℝ (Fin n) → N} {s : Set (EuclideanSpace ℝ (Fin n))}
+    (e : OpenPartialHomeomorph N (EuclideanSpace ℝ (Fin m)))
+    (he : e ∈ (plGroupoid m).maximalAtlas N) (hmap : MapsTo f s e.source) :
+    IsPLOn n m f s ↔ IsPiecewiseAffineOn (e ∘ f) s := by
+  constructor
+  · intro hf x hx
+    have hc := (isPLWithinAt_iff_of_mem_maximalAtlas
+      (StructureGroupoid.chart_mem_maximalAtlas (plGroupoid n) x) (mem_chart_source _ x)
+      he (hmap hx)).mp (hf x hx)
+    exact hc.2
+  · intro hf
+    have hcont : ContinuousOn f s :=
+      (e.continuousOn_symm.comp hf.continuousOn (fun x hx => e.map_source (hmap hx))).congr
+        (fun x hx => (e.left_inv (hmap hx)).symm)
+    intro x hx
+    apply (isPLWithinAt_iff_of_mem_maximalAtlas
+      (StructureGroupoid.chart_mem_maximalAtlas (plGroupoid n) x) (mem_chart_source _ x)
+      he (hmap hx)).mpr
+    exact ⟨hcont x hx, hf x hx⟩
 
 end DifferentialGeometry.Topology.PiecewiseLinear

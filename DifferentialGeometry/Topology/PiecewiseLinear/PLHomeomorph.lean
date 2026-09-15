@@ -19,11 +19,10 @@ theorem isPiecewiseAffineOn_of_forall_isHPolytope {ι : Type*} [Finite ι] (C : 
   rw [e.symm.surjective.iUnion_comp C]
   exact self_mem_nhdsWithin
 
-theorem IsPiecewiseAffineOn.mono_of_isPolyhedron {f : E → F} {u v : Set E}
-    (hf : IsPiecewiseAffineOn f u) (hv : IsPolyhedron v) (hvu : v ⊆ u) :
-    IsPiecewiseAffineOn f v := by
-  intro x hx
-  obtain ⟨ι, hι, C, A, hC, hCx⟩ := hf x (hvu hx)
+theorem IsPiecewiseAffineWithinAt.mono_of_isPolyhedron {f : E → F} {u v : Set E} {x : E}
+    (hf : IsPiecewiseAffineWithinAt f u x) (hv : IsPolyhedron v) (hvu : v ⊆ u) :
+    IsPiecewiseAffineWithinAt f v x := by
+  obtain ⟨ι, hι, C, A, hC, hCx⟩ := hf
   obtain ⟨κ, hκ, D, hD, rfl⟩ := hv
   have := hι
   have := hκ
@@ -36,6 +35,10 @@ theorem IsPiecewiseAffineOn.mono_of_isPolyhedron {f : E → F} {u v : Set E}
     exact ⟨fun ⟨i, j, hi, hj⟩ => ⟨⟨i, hi⟩, ⟨j, hj⟩⟩, fun ⟨⟨i, hi⟩, ⟨j, hj⟩⟩ => ⟨i, j, hi, hj⟩⟩
   rw [hU]
   exact Filter.inter_mem (nhdsWithin_mono x hvu hCx) self_mem_nhdsWithin
+
+theorem IsPiecewiseAffineOn.mono_of_isPolyhedron {f : E → F} {u v : Set E}
+    (hf : IsPiecewiseAffineOn f u) (hv : IsPolyhedron v) (hvu : v ⊆ u) :
+    IsPiecewiseAffineOn f v := fun x hx => (hf x (hvu hx)).mono_of_isPolyhedron hv hvu
 
 namespace IsPLHomeomorphOn
 
