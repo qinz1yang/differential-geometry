@@ -1,6 +1,8 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.Subcomplex
 import DifferentialGeometry.Topology.PiecewiseLinear.LinkDimension
+import DifferentialGeometry.Topology.PiecewiseLinear.PLPath
 import DifferentialGeometry.External.Schoenflies.JordanClosed
+import DifferentialGeometry.External.Schoenflies.FaceCyclesProof
 
 open Set Topology
 
@@ -151,19 +153,259 @@ theorem injOn_stdTriangleLoop : InjOn stdTriangleLoop (Ico 0 1) := by
     dsimp at h0 h1 h2 <;>
     linarith [hs.1, hs.2, ht.1, ht.2]
 
-theorem isJordanCurve_of_isPLSphere_one {J : Set (EuclideanSpace ℝ (Fin 2))}
-    (hJ : IsPLSphere 1 J) : Schoenflies.IsJordanCurve J := by
+theorem isPiecewiseAffineOn_stdTriangleLoop : IsPiecewiseAffineOn stdTriangleLoop (Icc 0 1) := by
+  have h₁ : IsPiecewiseAffineOn stdTriangleLoop (Icc 0 (1 / 3)) := by
+    refine (isPiecewiseAffineOn_of_affine_of_isHPolytope
+      (AffineMap.lineMap (![1, 0, 0] : Fin 3 → ℝ) ![-2, 3, 0]) isHPolytope_Icc).congr ?_
+    intro t ht
+    rw [stdTriangleLoop, if_pos ht.2, AffineMap.lineMap_apply_module]
+    funext i; fin_cases i <;> dsimp <;> ring
+  have h₂ : IsPiecewiseAffineOn stdTriangleLoop (Icc (1 / 3) (2 / 3)) := by
+    refine (isPiecewiseAffineOn_of_affine_of_isHPolytope
+      (AffineMap.lineMap (![0, 2, -1] : Fin 3 → ℝ) ![0, -1, 2]) isHPolytope_Icc).congr ?_
+    intro t ht
+    rw [stdTriangleLoop, AffineMap.lineMap_apply_module]
+    split_ifs with ha hb <;> funext i <;> fin_cases i <;> dsimp <;> linarith [ht.1, ht.2]
+  have h₃ : IsPiecewiseAffineOn stdTriangleLoop (Icc (2 / 3) 1) := by
+    refine (isPiecewiseAffineOn_of_affine_of_isHPolytope
+      (AffineMap.lineMap (![-2, 0, 3] : Fin 3 → ℝ) ![1, 0, 0]) isHPolytope_Icc).congr ?_
+    intro t ht
+    rw [stdTriangleLoop, AffineMap.lineMap_apply_module]
+    split_ifs with ha hb <;> funext i <;> fin_cases i <;> dsimp <;> linarith [ht.1, ht.2]
+  have h₁₂ := h₁.union_of_isClosed h₂ isClosed_Icc isClosed_Icc
+  rw [Icc_union_Icc_eq_Icc (by norm_num) (by norm_num)] at h₁₂
+  have h := h₁₂.union_of_isClosed h₃ isClosed_Icc isClosed_Icc
+  rwa [Icc_union_Icc_eq_Icc (by norm_num) (by norm_num)] at h
+
+theorem exists_piecewiseAffine_loop_of_isPLSphere_one {J : Set (EuclideanSpace ℝ (Fin 2))}
+    (hJ : IsPLSphere 1 J) :
+    ∃ γ : ℝ → EuclideanSpace ℝ (Fin 2), Schoenflies.IsLoop γ ∧
+      IsPiecewiseAffineOn γ (Icc 0 1) ∧ γ '' Icc 0 1 = J := by
   obtain ⟨f, hf⟩ := hJ
   have hmap : MapsTo stdTriangleLoop (Icc 0 1) (stdSimplexBoundary 2) :=
     fun t ht => stdTriangleLoop_image.subset ⟨t, ht, rfl⟩
   refine ⟨f ∘ stdTriangleLoop, ⟨hf.isPiecewiseAffineOn.continuousOn.comp
-    continuous_stdTriangleLoop.continuousOn hmap, ?_, ?_⟩, ?_⟩
+    continuous_stdTriangleLoop.continuousOn hmap, ?_, ?_⟩, ?_, ?_⟩
   · norm_num [stdTriangleLoop]
   · intro s hs t ht hst
     exact injOn_stdTriangleLoop hs ht
       (hf.bijOn.injOn (hmap ⟨hs.1, hs.2.le⟩) (hmap ⟨ht.1, ht.2.le⟩) hst)
+  · have h := hf.isPiecewiseAffineOn.comp isPiecewiseAffineOn_stdTriangleLoop
+    have hsub : Icc (0 : ℝ) 1 ⊆ stdTriangleLoop ⁻¹' stdSimplexBoundary (1 + 1) := hmap
+    rwa [inter_eq_left.mpr hsub] at h
   · change (fun t : ℝ => f (stdTriangleLoop t)) '' Icc 0 1 = J
     rw [← image_image f stdTriangleLoop (Icc (0 : ℝ) 1), stdTriangleLoop_image, hf.image_eq]
+
+theorem isJordanCurve_of_isPLSphere_one {J : Set (EuclideanSpace ℝ (Fin 2))}
+    (hJ : IsPLSphere 1 J) : Schoenflies.IsJordanCurve J := by
+  obtain ⟨γ, hγ, -, hγJ⟩ := exists_piecewiseAffine_loop_of_isPLSphere_one hJ
+  exact ⟨γ, hγ, hγJ⟩
+
+theorem isPLBall_segment [FiniteDimensional ℝ E] {a b : E} (hab : a ≠ b) :
+    IsPLBall 1 (segment ℝ a b) := by
+  classical
+  have hi : AffineIndependent ℝ ((↑) : ({a, b} : Finset E) → E) := by
+    change AffineIndependent ℝ ((↑) : (({a, b} : Finset E) : Set E) → E)
+    rw [Finset.coe_pair]
+    have h := (affineIndependent_of_ne ℝ hab).range
+    rw [Matrix.range_cons_cons_empty] at h
+    exact h
+  have h := isPLBall_convexHull_of_affineIndependent ({a, b} : Finset E) hi
+    (n := 1) (by simp [hab])
+  simpa only [Finset.coe_pair, convexHull_pair] using h
+
+theorem isPLBall_Icc {a b : ℝ} (hab : a < b) : IsPLBall 1 (Icc a b) := by
+  simpa only [segment_eq_Icc hab.le] using isPLBall_segment hab.ne
+
+theorem isPLBall_image_Icc_of_isPiecewiseAffineOn [FiniteDimensional ℝ E] {γ : ℝ → E}
+    {a b : ℝ} (hab : a < b) (hγ : IsPiecewiseAffineOn γ (Icc a b)) (hi : InjOn γ (Icc a b)) :
+    IsPLBall 1 (γ '' Icc a b) := by
+  obtain ⟨K, hKfin, hK⟩ := (isHPolytope_Icc (a := a) (b := b)).isPolyhedron.exists_simplicialComplex
+  have : Finite K.faces := hKfin.to_subtype
+  obtain ⟨L, -, hL, hf⟩ := exists_isPLHomeomorphOn_image K (hK.symm ▸ hγ) (hK.symm ▸ hi)
+  rw [hK] at hL hf
+  rw [← hL]
+  exact (isPLBall_Icc hab).of_isPLHomeomorphOn hf
+
+theorem isPiecewiseAffineOn_subarc {γ : ℝ → EuclideanSpace ℝ (Fin 2)}
+    (hγ : IsPiecewiseAffineOn γ (Icc 0 1)) {a b : ℝ} (ha : a ∈ Icc 0 1) (hb : b ∈ Icc 0 1) :
+    IsPiecewiseAffineOn (Schoenflies.subarc γ a b) (Icc 0 1) := by
+  have hA : IsPiecewiseAffineOn (Schoenflies.reparam a b) (Icc 0 1) := by
+    refine (isPiecewiseAffineOn_of_affine_of_isHPolytope (AffineMap.lineMap a b)
+      isHPolytope_Icc).congr fun t _ => ?_
+    simp only [Schoenflies.reparam, AffineMap.lineMap_apply_module, smul_eq_mul]
+    ring
+  have hsub : Icc (0 : ℝ) 1 ⊆ Schoenflies.reparam a b ⁻¹' Icc 0 1 :=
+    fun t ht => Schoenflies.uIcc_subset_I ha hb (Schoenflies.mapsTo_reparam ht)
+  have h := hγ.comp hA
+  rw [inter_eq_left.mpr hsub] at h
+  exact h
+
+theorem isPiecewiseAffineOn_concatenate {γ η : ℝ → EuclideanSpace ℝ (Fin 2)}
+    (hγ : IsPiecewiseAffineOn γ (Icc 0 1)) (hη : IsPiecewiseAffineOn η (Icc 0 1))
+    (hmid : γ 1 = η 0) : IsPiecewiseAffineOn (Schoenflies.concatenate γ η) (Icc 0 1) := by
+  have h₁ : IsPiecewiseAffineOn (Schoenflies.concatenate γ η) (Icc 0 (1 / 2)) := by
+    let A : ℝ →ᵃ[ℝ] ℝ := AffineMap.lineMap 0 2
+    have hA : ∀ t, A t = 2 * t := by
+      intro t
+      simp [A, AffineMap.lineMap_apply_module, mul_comm]
+    have hsub : Icc (0 : ℝ) (1 / 2) ⊆ A ⁻¹' Icc 0 1 := by
+      intro t ht
+      rw [mem_preimage, hA]
+      exact ⟨by linarith [ht.1], by linarith [ht.2]⟩
+    have h := hγ.comp (isPiecewiseAffineOn_of_affine_of_isHPolytope A
+      (isHPolytope_Icc (a := 0) (b := 1 / 2)))
+    rw [inter_eq_left.mpr hsub] at h
+    refine h.congr fun t ht => ?_
+    rw [Function.comp_apply, hA, Schoenflies.concatenate_of_le ht.2]
+  have h₂ : IsPiecewiseAffineOn (Schoenflies.concatenate γ η) (Icc (1 / 2) 1) := by
+    let A : ℝ →ᵃ[ℝ] ℝ := AffineMap.lineMap (-1) 1
+    have hA : ∀ t, A t = 2 * t - 1 := by
+      intro t
+      simp only [A, AffineMap.lineMap_apply_module, smul_eq_mul]
+      ring
+    have hsub : Icc (1 / 2 : ℝ) 1 ⊆ A ⁻¹' Icc 0 1 := by
+      intro t ht
+      rw [mem_preimage, hA]
+      exact ⟨by linarith [ht.1], by linarith [ht.2]⟩
+    have h := hη.comp (isPiecewiseAffineOn_of_affine_of_isHPolytope A
+      (isHPolytope_Icc (a := 1 / 2) (b := 1)))
+    rw [inter_eq_left.mpr hsub] at h
+    refine h.congr fun t ht => ?_
+    rw [Function.comp_apply, hA, Schoenflies.concatenate_upperHalf hmid ht]
+  have h := h₁.union_of_isClosed h₂ isClosed_Icc isClosed_Icc
+  rwa [Icc_union_Icc_eq_Icc (by norm_num) (by norm_num)] at h
+
+theorem isPLBall_outside_subarcs {γ : ℝ → EuclideanSpace ℝ (Fin 2)}
+    (hγ : Schoenflies.IsLoop γ) (hPL : IsPiecewiseAffineOn γ (Icc 0 1))
+    {s t : ℝ} (hs : s ∈ Icc 0 1) (ht : t ∈ Icc 0 1) (ht1 : t < 1) (hst : s < t) :
+    IsPLBall 1 (γ '' Icc 0 s ∪ γ '' Icc t 1) := by
+  have ht0 : 0 < t := lt_of_le_of_lt hs.1 hst
+  have hs1 : s ≠ 1 := (hst.trans ht1).ne
+  have hback : IsPLBall 1 (γ '' Icc t 1) :=
+    isPLBall_image_Icc_of_isPiecewiseAffineOn ht1
+      (hPL.mono_of_isPolyhedron isHPolytope_Icc.isPolyhedron (Icc_subset_Icc ht.1 le_rfl))
+      (hγ.injective_on_back ht ht0)
+  rcases hs.1.eq_or_lt with hs0 | hs0
+  · have hfront : γ '' Icc 0 s = {γ 1} := by
+      rw [← hs0, Icc_self, image_singleton, hγ.closes]
+    have hone : γ 1 ∈ γ '' Icc t 1 := ⟨1, ⟨ht.2, le_rfl⟩, rfl⟩
+    simpa only [hfront, singleton_union, insert_eq_of_mem hone] using hback
+  · let f := Schoenflies.subarc γ t 1
+    let g := Schoenflies.subarc γ 0 s
+    have hf : InjOn f (Icc 0 1) := by
+      apply Schoenflies.injOn_subarc _ ht1.ne
+      simpa only [uIcc_of_le ht.2] using hγ.injective_on_back ht ht0
+    have hg : InjOn g (Icc 0 1) := by
+      apply Schoenflies.injOn_subarc _ hs0.ne
+      simpa only [uIcc_of_le hs.1] using hγ.injective_on_front hs hs1
+    have hmid : f 1 = g 0 := by simpa [f, g] using hγ.closes.symm
+    have hfimage : f '' Icc 0 1 = γ '' Icc t 1 := by
+      simpa only [f, uIcc_of_le ht.2] using Schoenflies.subarc_image (f := γ) (a := t) (b := 1)
+    have hgimage : g '' Icc 0 1 = γ '' Icc 0 s := by
+      simpa only [g, uIcc_of_le hs.1] using Schoenflies.subarc_image (f := γ) (a := 0) (b := s)
+    have hmeet : ∀ z ∈ f '' Icc 0 1, z ∈ g '' Icc 0 1 → z = f 1 := by
+      rw [hfimage, hgimage]
+      intro z hz hz'
+      simpa [f] using hγ.back_meet_front hs ht hs1 hst hz hz'
+    have h := isPLBall_image_Icc_of_isPiecewiseAffineOn (by norm_num : (0 : ℝ) < 1)
+      (isPiecewiseAffineOn_concatenate (isPiecewiseAffineOn_subarc hPL ht ⟨zero_le_one, le_rfl⟩)
+        (isPiecewiseAffineOn_subarc hPL ⟨le_rfl, zero_le_one⟩ hs) hmid)
+      (Schoenflies.injOn_concatenate hf hg hmid hmeet)
+    rw [Schoenflies.image_concatenate hmid, hfimage, hgimage, union_comm] at h
+    exact h
+
+theorem exists_isCutPair_isPLBall_of_isPLSphere_one {J : Set (EuclideanSpace ℝ (Fin 2))}
+    (hJ : IsPLSphere 1 J) {p q : EuclideanSpace ℝ (Fin 2)} (hp : p ∈ J) (hq : q ∈ J)
+    (hpq : p ≠ q) :
+    ∃ A B, Schoenflies.IsCutPair J p q A B ∧ IsPLBall 1 A ∧ IsPLBall 1 B := by
+  obtain ⟨γ, hγ, hPL, hγJ⟩ := exists_piecewiseAffine_loop_of_isPLSphere_one hJ
+  rw [← hγJ] at hp hq ⊢
+  obtain ⟨s, hs, hs1, rfl⟩ := hγ.parameter_before_finish hp
+  obtain ⟨t, ht, ht1, rfl⟩ := hγ.parameter_before_finish hq
+  have hstne : s ≠ t := fun h => hpq (congrArg γ h)
+  have hsplit : ∀ {s t : ℝ}, s ∈ Icc 0 1 → t ∈ Icc 0 1 → t < 1 → s < t →
+      ∃ A B, Schoenflies.IsCutPair (γ '' Icc 0 1) (γ s) (γ t) A B ∧
+        IsPLBall 1 A ∧ IsPLBall 1 B := by
+    intro a b ha hb hb1 hab
+    refine ⟨γ '' Icc a b, γ '' Icc 0 a ∪ γ '' Icc b 1, ⟨?_, ?_, ?_, ?_⟩, ?_, ?_⟩
+    · exact hγ.middle_IsArcBetween ha hb hb1.ne hab
+    · exact (hγ.outside_IsArcBetween ha hb (hab.trans hb1).ne hb1.ne hab).reverse
+    · exact Schoenflies.IsLoop.pieces_cover ha hb
+    · exact hγ.pieces_meet_at_ends ha hb (hab.trans hb1).ne hb1.ne hab
+    · exact isPLBall_image_Icc_of_isPiecewiseAffineOn hab
+        (hPL.mono_of_isPolyhedron isHPolytope_Icc.isPolyhedron (Icc_subset_Icc ha.1 hb.2))
+        (hγ.injective_on_middle ha hb hb1.ne)
+    · exact isPLBall_outside_subarcs hγ hPL ha hb hb1 hab
+  rcases hstne.lt_or_gt with hst | hts
+  · exact hsplit hs ht (lt_of_le_of_ne ht.2 ht1) hst
+  · obtain ⟨A, B, hcut, hA, hB⟩ := hsplit ht hs (lt_of_le_of_ne hs.2 hs1) hts
+    refine ⟨A, B, ⟨hcut.fst.reverse, hcut.snd.reverse, hcut.union_eq, ?_⟩, hA, hB⟩
+    rw [hcut.inter_eq, pair_comm]
+
+theorem exists_isCutPair_of_isArcBetween_subset_isPLSphere
+    {J A : Set (EuclideanSpace ℝ (Fin 2))} (hJ : IsPLSphere 1 J)
+    {p q : EuclideanSpace ℝ (Fin 2)} (hA : Schoenflies.IsArcBetween A p q) (hAJ : A ⊆ J) :
+    ∃ B, Schoenflies.IsCutPair J p q A B ∧ IsPLBall 1 A ∧ IsPLBall 1 B := by
+  have hpq : p ≠ q := by
+    intro hpq
+    obtain ⟨f, -, hi, -, hf0, hf1⟩ := hA
+    exact zero_ne_one (hi Schoenflies.zero_mem_I Schoenflies.one_mem_I
+      (hf0.trans (hpq.trans hf1.symm)))
+  obtain ⟨B, C, hcut, hB, hC⟩ := exists_isCutPair_isPLBall_of_isPLSphere_one hJ
+    (hAJ hA.left_mem) (hAJ hA.right_mem) hpq
+  have hsub : A \ {p, q} ⊆ Bᶜ ∪ Cᶜ := by
+    intro z hz
+    by_cases hzB : z ∈ B
+    · refine Or.inr fun hzC => hz.2 ?_
+      exact hcut.inter_eq.subset ⟨hzB, hzC⟩
+    · exact Or.inl hzB
+  have hnone : ¬ ((A \ {p, q}) ∩ (Bᶜ ∩ Cᶜ)).Nonempty := by
+    rintro ⟨z, hz, hzB, hzC⟩
+    exact ((hcut.union_eq.symm.subset (hAJ hz.1))).elim hzB hzC
+  have hends : ∀ D : Set (EuclideanSpace ℝ (Fin 2)), p ∈ D → q ∈ D →
+      A \ {p, q} ⊆ D → A ⊆ D := by
+    intro D hpD hqD hD z hz
+    by_cases hzp : z ∈ ({p, q} : Set (EuclideanSpace ℝ (Fin 2)))
+    · rcases hzp with rfl | rfl
+      · exact hpD
+      · exact hqD
+    · exact hD ⟨hz, hzp⟩
+  have hsplit : A ⊆ B ∨ A ⊆ C := by
+    by_cases hmeet : ((A \ {p, q}) ∩ Bᶜ).Nonempty
+    · refine Or.inr (hends C hcut.snd.left_mem hcut.snd.right_mem fun z hz => ?_)
+      by_contra hzC
+      exact hnone (hA.isPreconnected_diff _ _ hB.isPolyhedron.isClosed.isOpen_compl
+        hC.isPolyhedron.isClosed.isOpen_compl hsub hmeet ⟨z, hz, hzC⟩)
+    · refine Or.inl (hends B hcut.fst.left_mem hcut.fst.right_mem fun z hz => ?_)
+      by_contra hzB
+      exact hmeet ⟨z, hz, hzB⟩
+  rcases hsplit with hAB | hAC
+  · have hABeq : A = B := hcut.fst.eq_of_subset hA hAB
+    exact ⟨C, hABeq.symm ▸ hcut, hABeq.symm ▸ hB, hC⟩
+  · have hACeq : A = C := hcut.snd.eq_of_subset hA hAC
+    exact ⟨B, hACeq.symm ▸ hcut.symm, hACeq.symm ▸ hC, hB⟩
+
+theorem isPLBall_of_isArc_subset_isPLSphere {J A : Set (EuclideanSpace ℝ (Fin 2))}
+    (hJ : IsPLSphere 1 J) (hA : Schoenflies.IsArc A) (hAJ : A ⊆ J) : IsPLBall 1 A := by
+  obtain ⟨p, q, hpq⟩ := hA.exists_isArcBetween
+  obtain ⟨-, -, hball, -⟩ := exists_isCutPair_of_isArcBetween_subset_isPLSphere hJ hpq hAJ
+  exact hball
+
+theorem isPLBall_compl_openArc_of_isPLSphere_one {J A : Set (EuclideanSpace ℝ (Fin 2))}
+    (hJ : IsPLSphere 1 J) {p q : EuclideanSpace ℝ (Fin 2)}
+    (hA : Schoenflies.IsArcBetween A p q) (hAJ : A ⊆ J) :
+    IsPLBall 1 (J \ (A \ {p, q})) := by
+  obtain ⟨B, hcut, -, hB⟩ := exists_isCutPair_of_isArcBetween_subset_isPLSphere hJ hA hAJ
+  have heq : J \ (A \ {p, q}) = B := by
+    rw [← hcut.union_eq]
+    ext x
+    have hx : (x ∈ A ∧ x ∈ B) ↔ x ∈ ({p, q} : Set (EuclideanSpace ℝ (Fin 2))) := by
+      change x ∈ A ∩ B ↔ _
+      rw [hcut.inter_eq]
+    simp only [mem_sdiff, mem_union]
+    tauto
+  rwa [heq]
 
 theorem exists_polyhedral_region_of_isPLSphere_one {J : Set (EuclideanSpace ℝ (Fin 2))}
     (hJ : IsPLSphere 1 J) :

@@ -10,14 +10,14 @@ namespace DifferentialGeometry.Topology.PiecewiseLinear
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 
-theorem isHPolytope_Icc : IsHPolytope (Icc (0 : ℝ) 1) := by
-  refine ⟨isCompact_Icc, Fin 2, inferInstance, ![LinearMap.id, -LinearMap.id], ![1, 0], ?_⟩
+theorem isHPolytope_Icc {a b : ℝ} : IsHPolytope (Icc a b) := by
+  refine ⟨isCompact_Icc, Fin 2, inferInstance, ![LinearMap.id, -LinearMap.id], ![b, -a], ?_⟩
   ext t
   constructor
   · rintro ⟨h0, h1⟩ i
     fin_cases i
     · simpa using h1
-    · simpa using h0
+    · simpa using neg_le_neg h0
   · intro h
     have h1 := h 0
     have h0 := h 1
