@@ -10098,3 +10098,9 @@ import DifferentialGeometry.Topology.Simplex.TetrahedronOneSkeletonGluing
 import DifferentialGeometry.Topology.Simplex.TriangleContraction
 import DifferentialGeometry.Topology.Simplex.TriangleSphere
 import DifferentialGeometry.Topology.Simplex.VertexContraction
+import DifferentialGeometry.Geometry.Metric.Retraction
+import DifferentialGeometry.Geometry.Submanifold.SecondFundamentalForm.Composition
+import DifferentialGeometry.Geometry.Submanifold.SecondFundamentalForm.Product
+import DifferentialGeometry.Geometry.Submanifold.SecondFundamentalForm.Retraction
+import DifferentialGeometry.Geometry.Metric.Family.Retraction
+import DifferentialGeometry.Geometry.Metric.Construction.OpenExtension

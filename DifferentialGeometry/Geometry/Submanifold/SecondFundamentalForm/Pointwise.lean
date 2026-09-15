@@ -423,7 +423,9 @@ omit [NeZero (Module.finrank ℝ EN)] [NeZero (Module.finrank ℝ E)] in
 private theorem gaussDefectModelValue_pair_sum
     {gN : SmoothRiemannianMetric IN N}
     {gM : SmoothRiemannianMetric I M} {iota : N → M}
-    (h : IsRiemannianIsometricImmersion gN gM iota) (x : N) (u v w : EN) :
+    (hiota : ContMDiff IN I ∞ iota)
+    (hmetric : ∀ (x : N) (u v : TangentSpace IN x),
+      gM.inner (iota x) (mfderiv IN I iota x u) (mfderiv IN I iota x v) = gN.inner x u v) (x : N) (u v w : EN) :
     chartMetricBilin gM (iota x) (extChartAt I (iota x) (iota x))
         (gaussDefectModelValue gN gM iota x u v)
         (tangentLinearMapToModel (mfderiv IN I iota x) w) +
@@ -437,7 +439,7 @@ private theorem gaussDefectModelValue_pair_sum
   have hc : HasDerivAt c u 0 := by
     simpa only [c, id_eq, one_smul] using ((hasDerivAt_id (0 : ℝ)).smul_const u).const_add z
   have hF : ContDiffAt ℝ 2 F z := by
-    have hf := (contMDiffAt_iff.mp (h.contMDiff.contMDiffAt (x := x))).2
+    have hf := (contMDiffAt_iff.mp (hiota.contMDiffAt (x := x))).2
     rw [ModelWithCorners.Boundaryless.range_eq_univ, contDiffWithinAt_univ] at hf
     exact hf.of_le (by decide : (2 : WithTop ℕ∞) ≤ ∞)
   have hdF : DifferentiableAt ℝ (fderiv ℝ F) z :=
@@ -465,7 +467,7 @@ private theorem gaussDefectModelValue_pair_sum
       (fun s => chartMetricBilin gM (iota x) (F (c s))
         (fderiv ℝ F (c s) v) (fderiv ℝ F (c s) w))
       (fun s => chartMetricBilin gN x (c s) v w) := by
-    have hevent := h.chartMetricBilin_pullback_eventually x
+    have hevent := chartMetricBilin_pullback_eventually_of_inner_map hiota hmetric x
     have hcTendsto : Filter.Tendsto c (nhds 0) (nhds z) := hc0 ▸ hc.continuousAt
     filter_upwards [hcTendsto.eventually hevent] with s hs
     exact hs v w
@@ -474,11 +476,11 @@ private theorem gaussDefectModelValue_pair_sum
   have hpull (a b : EN) :
       chartMetricBilin gM (iota x) (extChartAt I (iota x) (iota x))
         (fderiv ℝ F z a) (fderiv ℝ F z b) = chartMetricBilin gN x z a b := by
-    have hself := (h.chartMetricBilin_pullback_eventually x).self_of_nhds a b
+    have hself := (chartMetricBilin_pullback_eventually_of_inner_map hiota hmetric x).self_of_nhds a b
     simpa only [← hFz] using hself
   simp only [gaussDefectModelValue]
   simp_rw [tangentLinearMapToModel_mfderiv_eq_fderiv_writtenInExtChartAt
-    (h.contMDiff.mdifferentiableAt (by simp))]
+    (hiota.mdifferentiableAt (by simp))]
   rw [← hFz]
   change chartMetricBilin gM (iota x) (F z)
       (fderiv ℝ (fderiv ℝ F) z u v +
@@ -496,7 +498,9 @@ omit [NeZero (Module.finrank ℝ EN)] [NeZero (Module.finrank ℝ E)] in
 private theorem secondFundamentalFormAmbientAt_pair_sum
     {gN : SmoothRiemannianMetric IN N}
     {gM : SmoothRiemannianMetric I M} {iota : N → M}
-    (h : IsRiemannianIsometricImmersion gN gM iota) (x : N)
+    (hiota : ContMDiff IN I ∞ iota)
+    (hmetric : ∀ (x : N) (u v : TangentSpace IN x),
+      gM.inner (iota x) (mfderiv IN I iota x u) (mfderiv IN I iota x v) = gN.inner x u v) (x : N)
     (u v w : TangentSpace IN x) :
     gM.inner (iota x) (secondFundamentalFormAmbientAt gN gM iota x u v)
         (mfderiv IN I iota x w) +
@@ -511,12 +515,31 @@ private theorem secondFundamentalFormAmbientAt_pair_sum
     exact chartMetricBilin_trivToE gM (iota x) (iota x) (mem_chart_source H (iota x)) a b
   rw [gM.symm (iota x) (secondFundamentalFormAmbientAt gN gM iota x u w),
     ← hinner, ← hinner]
-  have hm := gaussDefectModelValue_pair_sum h x
+  have hm := gaussDefectModelValue_pair_sum hiota hmetric x
     (tangentSpaceModelContinuousLinearEquiv (I := IN) x u)
     (tangentSpaceModelContinuousLinearEquiv (I := IN) x v)
     (tangentSpaceModelContinuousLinearEquiv (I := IN) x w)
   simpa only [secondFundamentalFormAmbientAt_apply, ContinuousLinearEquiv.apply_symm_apply,
     tangentLinearMapToModel_apply, ContinuousLinearEquiv.symm_apply_apply] using hm
+
+omit [NeZero (Module.finrank ℝ EN)] [NeZero (Module.finrank ℝ E)] in
+theorem secondFundamentalFormAmbientAt_inner_mfderiv_eq_zero_of_inner_map
+    {gN : SmoothRiemannianMetric IN N}
+    {gM : SmoothRiemannianMetric I M} {iota : N → M}
+    (hiota : ContMDiff IN I ∞ iota)
+    (hmetric : ∀ (x : N) (u v : TangentSpace IN x),
+      gM.inner (iota x) (mfderiv IN I iota x u) (mfderiv IN I iota x v) = gN.inner x u v) (x : N)
+    (u v w : TangentSpace IN x) :
+    gM.inner (iota x) (secondFundamentalFormAmbientAt gN gM iota x u v)
+      (mfderiv IN I iota x w) = 0 := by
+  have hsymm := secondFundamentalFormAmbientAt_symmetric gN gM
+    (hiota.contMDiffAt (x := x) |>.of_le (by decide : (2 : WithTop ℕ∞) ≤ ∞))
+  have h1 := secondFundamentalFormAmbientAt_pair_sum hiota hmetric x u v w
+  have h2 := secondFundamentalFormAmbientAt_pair_sum hiota hmetric x v u w
+  have h3 := secondFundamentalFormAmbientAt_pair_sum hiota hmetric x w u v
+  rw [hsymm v u] at h2
+  rw [hsymm w u, hsymm w v] at h3
+  linarith only [h1, h2, h3]
 
 namespace IsRiemannianIsometricImmersion
 
@@ -527,15 +550,8 @@ theorem secondFundamentalFormAmbientAt_inner_mfderiv_eq_zero
     (h : IsRiemannianIsometricImmersion gN gM iota) (x : N)
     (u v w : TangentSpace IN x) :
     gM.inner (iota x) (secondFundamentalFormAmbientAt gN gM iota x u v)
-      (mfderiv IN I iota x w) = 0 := by
-  have hsymm := secondFundamentalFormAmbientAt_symmetric gN gM
-    (h.contMDiff.contMDiffAt (x := x) |>.of_le (by decide : (2 : WithTop ℕ∞) ≤ ∞))
-  have h1 := secondFundamentalFormAmbientAt_pair_sum h x u v w
-  have h2 := secondFundamentalFormAmbientAt_pair_sum h x v u w
-  have h3 := secondFundamentalFormAmbientAt_pair_sum h x w u v
-  rw [hsymm v u] at h2
-  rw [hsymm w u, hsymm w v] at h3
-  linarith only [h1, h2, h3]
+      (mfderiv IN I iota x w) = 0 :=
+  secondFundamentalFormAmbientAt_inner_mfderiv_eq_zero_of_inner_map h.contMDiff h.inner_map x u v w
 
 omit [NeZero (Module.finrank ℝ EN)] [NeZero (Module.finrank ℝ E)] in
 theorem secondFundamentalFormAmbientAt_mem_normalSpaceAt
