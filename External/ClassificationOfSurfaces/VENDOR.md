@@ -658,3 +658,33 @@ and zero warnings. `AuditS27.lean` checks 11 distinct declarations with only
 This closes the native planar deletion bridge. The local spherical deletion
 and the retained-triangle induction needed for full Moise 17.5 are still
 open; 17.6 and 17.8 are not claimed complete.
+
+## Deletion from the face star of a free triangle
+
+`PlanarFreeFace` now derives the upstream geometric free-triangle condition
+from the native frontier trace: one or two facets opposite the vertices of
+a face-star center. The triangle count argument is factored out and reused.
+`FaceStarBoundary` proves that the open simplex of the center lies in the
+interior of the disk. Three unused assumptions are removed from its earlier
+support and trace lemmas, and every in-tree consumer is updated.
+
+The new native `FaceStarDeletion` module applies the deletion to the face
+star itself. It proves the face star is a PL disk, that the triangle has
+the same frontier trace there, and that the star has more than one triangle.
+The last point follows from the center being interior to the star but on
+the triangle frontier. Thus no unproved local-disk or nondegeneracy input
+is added. The result is a global planar PL homeomorphism with exact local
+erased-disk image, fixed outside the prescribed neighborhood and on the
+rest of the star frontier. No vendor Lean source is modified.
+
+All three changed native modules pass focused checks with exit 0 and zero
+warnings. `AuditS28.lean` checks nine distinct declarations with only the
+standard three axioms and exits 0. Logs are
+`.lake/scratch/check-planar-frontier-trace.log`,
+`.lake/scratch/check-face-star-boundary.log`,
+`.lake/scratch/check-face-star-deletion.log`, and
+`.lake/scratch/audit-face-star-deletion.log`.
+
+Transport to spherical charts, compatibility with the rest of the original
+disk, and the final retained-triangle induction remain required for 17.5.
+The statements of 17.5, 17.6, and 17.8 are unchanged and remain open.
