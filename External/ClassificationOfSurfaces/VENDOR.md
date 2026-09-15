@@ -946,3 +946,21 @@ exactly `propext`, `Classical.choice`, and `Quot.sound`. Logs are
 `.lake/scratch/audit-s2-push-property.log`. S.2 is complete. The 17.9-17.12
 developments and the general cell-decomposition versions of P.3 remain
 separate pending work.
+
+## Relative polyhedral neighborhoods for three-dimensional push moves
+
+The native `PolyhedralSeparation.lean` adds finite piecewise affine
+nonnegative defining functions for polyhedra, polyhedral sublevels, and
+`exists_isPolyhedron_neighborhood_sdiff`. For polyhedra C and A and an
+open set U containing C, this constructs a polyhedron N with
+`C \ A ⊆ interior N`, `N ⊆ U`, and `N ∩ A = C ∩ A`.
+This supplies the controlled closed neighborhoods used in Moise 17.9
+and 17.11 (printed pages 121-122). The construction is native and uses
+finite maxima and minima of affine functions; no vendor source changes
+were made. It is a neighborhood input, not completion of those theorems.
+
+The focused check exits 0 with zero warnings. `AuditS40.lean` checks all
+four new declarations, exits 0, and reports only `propext`,
+`Classical.choice`, and `Quot.sound`. Logs are
+`.lake/scratch/check-polyhedral-separation.log` and
+`.lake/scratch/audit-polyhedral-separation.log`.
