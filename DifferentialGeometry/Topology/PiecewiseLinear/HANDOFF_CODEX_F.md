@@ -1139,4 +1139,22 @@ M3 的端点拼装均未完成。本层之后的审计记录见 §18.3。
 三模块聚焦检查均 exit=0、零 warning；原直接消费者 `SimplexCornerExtension.lean` 兼容检查 exit=0、零 warning。
 `AuditF123.lean` 审计十八项（包含保留的旧接口），全部仅标准三公理。检查用时分别为 13.1、10.6、11.3、10.8 秒。
 M1 仍未验收：未完成带指定临界点的平面凸化、整层多边形分解及小幅转轴后的严格降指标；
-M2/M3 与两个最终端点仍未完成。下一审计文件 `AuditF124.lean`。
+M2/M3 与两个最终端点仍未完成。下一层结果见 §18.4。
+
+### 18.4 水平盘的保高度凸化（未控制指定临界点，M1 仍进行中）
+
+- `HeightExtension.lean` 的强版 `exists_isPLHomeomorphOn_extension_preserving_height_of_eqOn_compl`
+  只要求底面自同胚固定 `L.space \ W`，允许外层底盘超出 W。径向公式证明：锥点若在 W 外，其底面点也在 W 外，
+  因而被固定。上一层“整个底盘位于 W”版保留签名，由强版推出。
+- `FiberCoordinates.lean` 的 `exists_affine_coordinates_of_linear_fiber` 在任意有限维空间中构造非零线性形式
+  水平层的欧氏仿射坐标与线性左逆；`image_openSimplex_affineMap` 给精确开单形像。
+- `LevelConvexification.lean` 的 `exists_isPLHomeomorphOn_convex_image_of_subset_fiber`：对任意三维有限维实范数空间、
+  非零线性形式 ℓ、同一水平层内的 PL 2-盘 D，以及包含 D 的凸开集 W，构造全空间 PL 同胚 h，固定 W 外部，
+  逐点保持 ℓ，令 `h '' D` 凸，并对每个集合保持 `heightIndex`。实际使用 S 的平面整直定理，构造大三角形底盘、
+  固定边界与平面坐标共轭，再调用保高度延拓；已在具体底盘上消去上一层的相对邻域条件。
+
+三模块最终检查分别为 11.0、10.2、13.6 秒，均 exit=0、零 warning。
+`AuditF124.lean` 八项（含保留旧接口）全部仅标准三公理；最外层凸化端点只假定维数、非零高度、PL 盘、水平层及凸开邻域。
+本结果没有控制指定临界点 P：若 P 位于 D 的边界，尚未保证 h(P) 是凸像盘的暴露点。因此仍缺
+“去掉 h(P) 后凸盘严格位于经过 h(P) 的某直线一侧”的增强，以及球面沿层圆周切盘、轴旋转与严格降指标。
+整层多边形分解及与原书奇异指标的对应也仍未闭合；M1/M2/M3 均未验收。下一审计文件 `AuditF125.lean`。

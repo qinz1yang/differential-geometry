@@ -87,6 +87,57 @@ theorem exists_lt_gt_linearMap_of_isOpen (ℓ : E →ₗ[ℝ] ℝ) (hℓ : ℓ �
     linarith
 
 open Classical in
+theorem exists_isPLHomeomorphOn_extension_preserving_height_of_eqOn_compl
+    (ℓ : E →ₗ[ℝ] ℝ) (hℓ : ℓ ≠ 0) {r : ℝ}
+    {L B : Geometry.SimplicialComplex ℝ E} [Finite L.faces]
+    (hB : B.faces ⊆ L.faces) (hL : L.space ⊆ {x | ℓ x = r})
+    (hbase : ∀ z ∈ L.space, z ∉ B.space → L.space ∈ 𝓝[{x | ℓ x = r}] z)
+    {f : E → E} (hf : IsPLHomeomorphOn f L.space L.space) (hfix : EqOn f id B.space)
+    {W : Set E} (hW : Convex ℝ W) (hWopen : IsOpen W) (hfW : EqOn f id (L.space \ W)) :
+    ∃ h : E ≃ₜ E, IsPLHomeomorphOn h univ univ ∧ EqOn h f L.space ∧ EqOn h id Wᶜ ∧
+      (∀ x, ℓ (h x) = ℓ x) ∧ (∀ S : Set E, heightIndex (h '' S) ℓ = heightIndex S ℓ) := by
+  rcases (L.space ∩ W).eq_empty_or_nonempty with hempty | ⟨z, hz, hzW⟩
+  · have hid : IsPLHomeomorphOn (Homeomorph.refl E) univ univ := by
+      refine ⟨bijOn_id univ, isPiecewiseAffineOn_id isOpen_univ, ?_⟩
+      exact (isPiecewiseAffineOn_id isOpen_univ).congr fun _ hx =>
+        (bijOn_id univ).invOn_invFunOn.1 hx
+    refine ⟨Homeomorph.refl E, hid, ?_, fun _ _ => rfl, fun _ => rfl,
+      fun _ => heightIndex_image _ hid (fun _ => rfl)⟩
+    intro x hx
+    exact (hfW ⟨hx, fun hxW => (show x ∈ (∅ : Set E) from hempty ▸ ⟨hx, hxW⟩).elim⟩).symm
+  · obtain ⟨p, hpW, q, hqW, hp, hq⟩ := exists_lt_gt_linearMap_of_isOpen ℓ hℓ hWopen hzW
+    have hzheight : ℓ z = r := hL hz
+    rw [hzheight] at hp hq
+    let hpL := isConeBase_of_subset_fiber ℓ L hL hp.ne
+    let hqL := isConeBase_of_subset_fiber ℓ L hL hq.ne'
+    obtain ⟨h, hh, hhf, -, -, hhfix, hhp, hhq, hPrad, hQrad⟩ :=
+      exists_isPLHomeomorphOn_extension_coneComplex_union_radial hB hpL hqL
+        (coneComplex_space_inter_of_subset_fiber ℓ hL hpL hqL hp hq)
+        (frontier_coneComplex_union_subset_of_mem_nhdsWithin ℓ hB hL hpL hqL hp hq hbase) hf hfix
+    have hcone {a : E} (haL : IsConeBase a L) (haW : a ∈ W) (ha : h a = a)
+        (hrad : ∀ y ∈ L.space, ∀ s : ℝ, 0 ≤ s → s ≤ 1 →
+          h (a + s • (y - a)) = a + s • (f y - a)) {x : E} (hx : x ∈ (coneComplex haL).space) :
+        ℓ (h x) = ℓ x ∧ (x ∉ W → h x = x) := by
+      rcases (mem_coneComplex_space_iff haL).mp hx with rfl | ⟨y, hy, s, hs, hs', rfl⟩
+      · exact ⟨congrArg ℓ ha, fun hnot => (hnot haW).elim⟩
+      · rw [hrad y hy s hs.le hs']
+        have hfy : ℓ (f y) = ℓ y := (hL (hf.bijOn.mapsTo hy)).trans (hL hy).symm
+        refine ⟨by simp only [map_add, map_sub, map_smul, hfy], ?_⟩
+        intro hxW
+        have hyW : y ∉ W := by
+          intro hyW
+          apply hxW
+          simpa only [AffineMap.lineMap_apply_module', add_comm] using
+            hW.lineMap_mem haW hyW ⟨hs.le, hs'⟩
+        rw [hfW ⟨hy, hyW⟩, id_eq]
+    have hproperties : ∀ x, ℓ (h x) = ℓ x ∧ (x ∉ W → h x = x) := by
+      intro x
+      by_cases hx : x ∈ (coneComplex hpL).space ∪ (coneComplex hqL).space
+      · exact hx.elim (hcone hpL hpW hhp hPrad) (hcone hqL hqW hhq hQrad)
+      · exact ⟨congrArg ℓ (hhfix hx), fun _ => hhfix hx⟩
+    exact ⟨h, hh, hhf, fun x hx => (hproperties x).2 hx, fun x => (hproperties x).1,
+      fun _ => heightIndex_image h hh (fun x => (hproperties x).1)⟩
+open Classical in
 theorem exists_isPLHomeomorphOn_extension_preserving_height
     (ℓ : E →ₗ[ℝ] ℝ) (hℓ : ℓ ≠ 0) {r : ℝ}
     {L B : Geometry.SimplicialComplex ℝ E} [Finite L.faces]
@@ -96,30 +147,6 @@ theorem exists_isPLHomeomorphOn_extension_preserving_height
     {W : Set E} (hW : Convex ℝ W) (hWopen : IsOpen W) (hLW : L.space ⊆ W) :
     ∃ h : E ≃ₜ E, IsPLHomeomorphOn h univ univ ∧ EqOn h f L.space ∧ EqOn h id Wᶜ ∧
       (∀ x, ℓ (h x) = ℓ x) ∧ (∀ S : Set E, heightIndex (h '' S) ℓ = heightIndex S ℓ) := by
-  rcases L.space.eq_empty_or_nonempty with hempty | ⟨z, hz⟩
-  · have hid : IsPLHomeomorphOn (Homeomorph.refl E) univ univ := by
-      refine ⟨bijOn_id univ, isPiecewiseAffineOn_id isOpen_univ, ?_⟩
-      exact (isPiecewiseAffineOn_id isOpen_univ).congr fun _ hx =>
-        (bijOn_id univ).invOn_invFunOn.1 hx
-    exact ⟨Homeomorph.refl E, hid, fun x hx => (hempty ▸ hx).elim,
-      fun _ _ => rfl, fun _ => rfl, fun _ => heightIndex_image _ hid (fun _ => rfl)⟩
-  · obtain ⟨p, hpW, q, hqW, hp, hq⟩ := exists_lt_gt_linearMap_of_isOpen ℓ hℓ hWopen (hLW hz)
-    have hzheight : ℓ z = r := hL hz
-    rw [hzheight] at hp hq
-    let hpL := isConeBase_of_subset_fiber ℓ L hL hp.ne
-    let hqL := isConeBase_of_subset_fiber ℓ L hL hq.ne'
-    obtain ⟨h, hh, hhf, hhfix, hhℓ, hhInd⟩ :=
-      exists_isPLHomeomorphOn_extension_coneComplex_union_of_subset_fiber hB hpL hqL
-        (coneComplex_space_inter_of_subset_fiber ℓ hL hpL hqL hp hq)
-        (frontier_coneComplex_union_subset_of_mem_nhdsWithin ℓ hB hL hpL hqL hp hq hbase)
-        hf hfix ℓ hL
-    have hcone {a : E} (haL : IsConeBase a L) (haW : a ∈ W) : (coneComplex haL).space ⊆ W := by
-      intro x hx
-      rcases (mem_coneComplex_space_iff haL).mp hx with rfl | ⟨y, hy, s, hs, hs', rfl⟩
-      · exact haW
-      · simpa only [AffineMap.lineMap_apply_module', add_comm] using
-          hW.lineMap_mem haW (hLW hy) ⟨hs.le, hs'⟩
-    refine ⟨h, hh, hhf, ?_, hhℓ, hhInd⟩
-    intro x hx
-    exact hhfix (fun hxCone => hx (hxCone.elim (fun hy => hcone hpL hpW hy) (fun hy => hcone hqL hqW hy)))
+  exact exists_isPLHomeomorphOn_extension_preserving_height_of_eqOn_compl ℓ hℓ hB hL hbase
+    hf hfix hW hWopen (fun _ hx => (hx.2 (hLW hx.1)).elim)
 end DifferentialGeometry.Topology.PiecewiseLinear
