@@ -35,20 +35,19 @@ theorem IsCompact.exists_isPolyhedron_superset [FiniteDimensional ℝ E] {C : Se
   obtain ⟨y, hy, hxy⟩ := mem_iUnion₂.mp (hs hx)
   exact interior_mono (subset_iUnion (fun z : s => P z) ⟨y, hy⟩) hxy
 
-theorem convexHull_subset_closure_of_mem_openSimplex_of_frontier_subcomplex
+theorem convexHull_subset_closure_of_mem_openSimplex_of_frontier_subset_subcomplex
     (K L : Geometry.SimplicialComplex ℝ E) (hLK : L.faces ⊆ K.faces) {U : Set E}
-    (hU : IsOpen U) (hL : L.space = frontier U) {s : Finset E} (hs : s ∈ K.faces)
+    (hU : IsOpen U) (hL : frontier U ⊆ L.space) (hUL : Disjoint U L.space)
+    {s : Finset E} (hs : s ∈ K.faces)
     {x : E} (hxs : x ∈ openSimplex s) (hxU : x ∈ U) :
     convexHull ℝ (s : Set E) ⊆ closure U := by
   have havoid : Disjoint (openSimplex s) (frontier U) := by
     refine Set.disjoint_left.mpr fun z hzs hzU => ?_
-    rw [← hL] at hzU
-    obtain ⟨t, ht, hzt⟩ := L.mem_space_iff.mp hzU
+    obtain ⟨t, ht, hzt⟩ := L.mem_space_iff.mp (hL hzU)
     have hst := face_subset_of_mem_openSimplex_of_mem_convexHull K hs (hLK ht) hzs hzt
     have hxL := L.convexHull_subset_space ht
       (convexHull_mono (Finset.coe_subset.mpr hst) (openSimplex_subset_convexHull s hxs))
-    rw [hL, hU.frontier_eq] at hxL
-    exact hxL.2 hxU
+    exact Set.disjoint_left.mp hUL hxU hxL
   have hcover : openSimplex s ⊆ U ∪ (closure U)ᶜ := by
     intro z hz
     by_cases hzU : z ∈ U
@@ -63,9 +62,22 @@ theorem convexHull_subset_closure_of_mem_openSimplex_of_frontier_subcomplex
   exact (convexHull_subset_closure_openSimplex (K.nonempty_of_mem_faces hs)).trans
     (closure_mono hopen)
 
-theorem restrict_closure_space_of_frontier_subcomplex [FiniteDimensional ℝ E]
+theorem convexHull_subset_closure_of_mem_openSimplex_of_frontier_subcomplex
+    (K L : Geometry.SimplicialComplex ℝ E) (hLK : L.faces ⊆ K.faces) {U : Set E}
+    (hU : IsOpen U) (hL : L.space = frontier U) {s : Finset E} (hs : s ∈ K.faces)
+    {x : E} (hxs : x ∈ openSimplex s) (hxU : x ∈ U) :
+    convexHull ℝ (s : Set E) ⊆ closure U := by
+  have hUL : Disjoint U L.space := by
+    refine Set.disjoint_left.mpr fun z hz hzL => ?_
+    rw [hL, hU.frontier_eq] at hzL
+    exact hzL.2 hz
+  exact convexHull_subset_closure_of_mem_openSimplex_of_frontier_subset_subcomplex K L hLK hU
+    hL.symm.subset hUL hs hxs hxU
+
+theorem restrict_closure_space_of_frontier_subset_subcomplex [FiniteDimensional ℝ E]
     (K L : Geometry.SimplicialComplex ℝ E) [Finite K.faces] (hLK : L.faces ⊆ K.faces)
-    {U : Set E} (hU : IsOpen U) (hUK : U ⊆ K.space) (hL : L.space = frontier U) :
+    {U : Set E} (hU : IsOpen U) (hUK : U ⊆ K.space) (hL : frontier U ⊆ L.space)
+    (hUL : Disjoint U L.space) :
     (restrict K (closure U)).space = closure U := by
   have : Finite (restrict K (closure U)).faces := (restrict_faces_finite K (closure U)).to_subtype
   apply Subset.antisymm (restrict_space_subset K (closure U))
@@ -73,8 +85,19 @@ theorem restrict_closure_space_of_frontier_subcomplex [FiniteDimensional ℝ E]
   intro x hx
   obtain ⟨s, hs, hxs⟩ := exists_face_mem_openSimplex K (hUK hx)
   exact (restrict K (closure U)).convexHull_subset_space
-    ⟨hs, convexHull_subset_closure_of_mem_openSimplex_of_frontier_subcomplex K L hLK hU hL hs hxs hx⟩
+    ⟨hs, convexHull_subset_closure_of_mem_openSimplex_of_frontier_subset_subcomplex
+      K L hLK hU hL hUL hs hxs hx⟩
     (openSimplex_subset_convexHull s hxs)
+
+theorem restrict_closure_space_of_frontier_subcomplex [FiniteDimensional ℝ E]
+    (K L : Geometry.SimplicialComplex ℝ E) [Finite K.faces] (hLK : L.faces ⊆ K.faces)
+    {U : Set E} (hU : IsOpen U) (hUK : U ⊆ K.space) (hL : L.space = frontier U) :
+    (restrict K (closure U)).space = closure U := by
+  have hUL : Disjoint U L.space := by
+    refine Set.disjoint_left.mpr fun z hz hzL => ?_
+    rw [hL, hU.frontier_eq] at hzL
+    exact hzL.2 hz
+  exact restrict_closure_space_of_frontier_subset_subcomplex K L hLK hU hUK hL.symm.subset hUL
 
 theorem isPolyhedron_closure_of_isPolyhedron_frontier [FiniteDimensional ℝ E] {U : Set E}
     (hU : IsOpen U) (hUb : Bornology.IsBounded U) (hfr : IsPolyhedron (frontier U)) :
@@ -703,6 +726,59 @@ theorem isPLSphere_one_union_of_isCrosscut {J P A B : Set (EuclideanSpace ℝ (F
     exact pair_subset ⟨hcut.fst.left_mem, h.arc.left_mem⟩ ⟨hcut.fst.right_mem, h.arc.right_mem⟩
   exact isPLSphere_one_of_isCutPair ⟨hcut.fst, h.arc, rfl, hmeet⟩
     (isPLBall_of_isArc_subset_isPLSphere hJ hcut.fst.isArc hcut.fst_subset) hP
+
+theorem restrict_closure_inside_space_of_isCrosscut
+    (K : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2))) [Finite K.faces]
+    {J P A B : Set (EuclideanSpace ℝ (Fin 2))}
+    (hK : K.space = closure (Schoenflies.inside J))
+    (hbarrier : (restrict K (J ∪ P)).space = J ∪ P)
+    {p q : EuclideanSpace ℝ (Fin 2)} (h : Schoenflies.IsCrosscut J P p q)
+    (hcut : Schoenflies.IsCutPair J p q A B) :
+    (restrict K (closure (Schoenflies.inside (A ∪ P)))).space =
+      closure (Schoenflies.inside (A ∪ P)) := by
+  have hj : ∀ S, Schoenflies.IsJordanCurve S → Schoenflies.IsSeparating S :=
+    fun _ => Schoenflies.jordan_curve_theorem
+  have hsub : Schoenflies.inside (A ∪ P) ⊆ K.space := by
+    rw [hK]
+    exact fun x hx => subset_closure (h.side_subset hj hcut hx).1
+  have hfrontier : frontier (Schoenflies.inside (A ∪ P)) ⊆ (restrict K (J ∪ P)).space := by
+    rw [h.frontier_side hj hcut, hbarrier]
+    exact union_subset_union_left P hcut.fst_subset
+  have hdisj : Disjoint (Schoenflies.inside (A ∪ P)) (restrict K (J ∪ P)).space := by
+    rw [hbarrier]
+    refine Set.disjoint_left.mpr fun x hx hy => ?_
+    have hx' := h.side_subset hj hcut hx
+    rcases hy with hy | hy
+    · exact Schoenflies.inside_subset_compl hx'.1 hy
+    · exact hx'.2 hy
+  exact restrict_closure_space_of_frontier_subset_subcomplex K (restrict K (J ∪ P))
+    (restrict_faces_subset K _) (h.isOpen_side hj hcut) hsub hfrontier hdisj
+
+theorem restrict_closure_inside_union_of_isCrosscut
+    (K : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2))) [Finite K.faces]
+    {J P A B : Set (EuclideanSpace ℝ (Fin 2))}
+    (hK : K.space = closure (Schoenflies.inside J))
+    (hbarrier : (restrict K (J ∪ P)).space = J ∪ P)
+    {p q : EuclideanSpace ℝ (Fin 2)} (h : Schoenflies.IsCrosscut J P p q)
+    (hcut : Schoenflies.IsCutPair J p q A B) :
+    (restrict K (closure (Schoenflies.inside (A ∪ P)))).space ∪
+      (restrict K (closure (Schoenflies.inside (B ∪ P)))).space = K.space := by
+  rw [restrict_closure_inside_space_of_isCrosscut K hK hbarrier h hcut,
+    restrict_closure_inside_space_of_isCrosscut K hK hbarrier h hcut.symm,
+    PlanarJordan.closure_inside_union_of_isCrosscut h hcut, hK]
+
+theorem restrict_closure_inside_inter_of_isCrosscut
+    (K : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2))) [Finite K.faces]
+    {J P A B : Set (EuclideanSpace ℝ (Fin 2))}
+    (hK : K.space = closure (Schoenflies.inside J))
+    (hbarrier : (restrict K (J ∪ P)).space = J ∪ P)
+    {p q : EuclideanSpace ℝ (Fin 2)} (h : Schoenflies.IsCrosscut J P p q)
+    (hcut : Schoenflies.IsCutPair J p q A B) :
+    (restrict K (closure (Schoenflies.inside (A ∪ P)))).space ∩
+      (restrict K (closure (Schoenflies.inside (B ∪ P)))).space = P := by
+  rw [restrict_closure_inside_space_of_isCrosscut K hK hbarrier h hcut,
+    restrict_closure_inside_space_of_isCrosscut K hK hbarrier h hcut.symm,
+    PlanarJordan.closure_inside_inter_of_isCrosscut h hcut]
 
 open Classical in
 theorem isPLBall_union_of_boundary_arc
