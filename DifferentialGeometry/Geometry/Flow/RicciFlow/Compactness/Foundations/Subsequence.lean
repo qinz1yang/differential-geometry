@@ -11,7 +11,7 @@ universe u uE uH
 namespace DifferentialGeometry
 namespace CheegerGromovCompactness
 
-open scoped Manifold ContDiff
+open scoped _root_.Manifold ContDiff _root_.Topology
 
 variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace Real E]
 variable [FiniteDimensional Real E] [CompleteSpace E]
