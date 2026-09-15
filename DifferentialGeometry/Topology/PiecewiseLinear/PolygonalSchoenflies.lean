@@ -1,6 +1,7 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.Subcomplex
 import DifferentialGeometry.Topology.PiecewiseLinear.LinkDimension
 import DifferentialGeometry.Topology.PiecewiseLinear.PLPath
+import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryExtension
 import DifferentialGeometry.External.Schoenflies.JordanClosed
 import DifferentialGeometry.External.Schoenflies.FaceCyclesProof
 
@@ -503,6 +504,55 @@ theorem exists_isPLHomeomorphOn_of_isCutPair
     · exact A.piecewise_eq_of_notMem f g hxA
   exact ⟨_, h, hf.congr hleft, hg.congr hright,
     (hleft hcut.fst.left_mem).trans hfp, (hleft hcut.fst.right_mem).trans hfq⟩
+
+open Classical in
+theorem exists_isPLHomeomorphOn_eqOn_arc_of_isPLSphere_one
+    {J J' A A' : Set (EuclideanSpace ℝ (Fin 2))} (hJ : IsPLSphere 1 J) (hJ' : IsPLSphere 1 J')
+    {p q : EuclideanSpace ℝ (Fin 2)} (hA : Schoenflies.IsArcBetween A p q) (hAJ : A ⊆ J)
+    {g : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 2)}
+    (hg : IsPLHomeomorphOn g A A') (hA'J' : A' ⊆ J') :
+    ∃ G : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 2),
+      IsPLHomeomorphOn G J J' ∧ EqOn G g A := by
+  obtain ⟨B, hcut, hAball, hBball⟩ :=
+    exists_isCutPair_of_isArcBetween_subset_isPLSphere hJ hA hAJ
+  obtain ⟨γ, hγ, hγ0, hγ1⟩ := exists_isPLHomeomorphOn_Icc_of_isArcBetween hAball hA
+  have hγg := hγ.trans hg
+  have hA' : Schoenflies.IsArcBetween A' (g p) (g q) :=
+    ⟨g ∘ γ, hγg.isPiecewiseAffineOn.continuousOn, hγg.bijOn.injOn, hγg.image_eq,
+      congrArg g hγ0, congrArg g hγ1⟩
+  obtain ⟨B', hcut', -, hB'ball⟩ :=
+    exists_isCutPair_of_isArcBetween_subset_isPLSphere hJ' hA' hA'J'
+  obtain ⟨f, hf, hfp, hfq⟩ :=
+    exists_isPLHomeomorphOn_of_isArcBetween hBball hB'ball hcut.snd hcut'.snd
+  have hgf : EqOn g f (A ∩ B) := by
+    rw [hcut.inter_eq]
+    rintro x (rfl | rfl)
+    · exact hfp.symm
+    · exact hfq.symm
+  have hmeet : g '' (A ∩ B) = A' ∩ B' := by
+    rw [hcut.inter_eq, hcut'.inter_eq, image_pair]
+  have h := hg.piecewise hf hAball.isPolyhedron hBball.isPolyhedron hgf hmeet
+  rw [hcut.union_eq, hcut'.union_eq] at h
+  exact ⟨_, h, A.piecewise_eqOn g f⟩
+
+open Classical in
+theorem exists_isPLHomeomorphOn_eqOn_arc_of_boundaryComplex
+    (K L : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2)))
+    [Finite K.faces] [Finite L.faces] (hK : IsPLBall 2 K.space) (hL : IsPLBall 2 L.space)
+    {A B : Set (EuclideanSpace ℝ (Fin 2))} {p q : EuclideanSpace ℝ (Fin 2)}
+    (hA : Schoenflies.IsArcBetween A p q) (hAK : A ⊆ (boundaryComplex 2 K).space)
+    {g : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 2)}
+    (hg : IsPLHomeomorphOn g A B) (hBL : B ⊆ (boundaryComplex 2 L).space) :
+    ∃ G : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 2),
+      IsPLHomeomorphOn G K.space L.space ∧ EqOn G g A := by
+  have hKboundary : IsPLSphere 1 (boundaryComplex 2 K).space :=
+    isPLSphere_boundaryComplex_space_of_isPLBall (n := 1) K hK
+  have hLboundary : IsPLSphere 1 (boundaryComplex 2 L).space :=
+    isPLSphere_boundaryComplex_space_of_isPLBall (n := 1) L hL
+  obtain ⟨f, hf, hfg⟩ := exists_isPLHomeomorphOn_eqOn_arc_of_isPLSphere_one
+    hKboundary hLboundary hA hAK hg hBL
+  obtain ⟨G, hG, hGf⟩ := exists_isPLHomeomorphOn_of_boundaryComplex (n := 1) K L hK hL hf
+  exact ⟨G, hG, (hGf.mono hAK).trans hfg⟩
 
 theorem exists_polyhedral_region_of_isPLSphere_one {J : Set (EuclideanSpace ℝ (Fin 2))}
     (hJ : IsPLSphere 1 J) :
