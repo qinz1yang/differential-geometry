@@ -563,4 +563,149 @@ theorem exists_small_simplicialMap_self_transverse_of_fiber_encard_le_two
     exact vectorSpan_sup_eq_top_of_affineIndependent_subsets V φ hgeneral
       (hfaces s hs) (hfaces t ht) hdisj hinter
 
+def doublePointSet {X Y : Type*} (f : X → Y) (P : Set X) : Set Y :=
+  {y | ∃ x ∈ P, ∃ z ∈ P, x ≠ z ∧ f x = y ∧ f z = y}
+
+open Classical in
+omit [NormedAddCommGroup F] [NormedSpace ℝ F] in
+theorem disjoint_faces_of_eq_of_injOn_starComplex (K : Geometry.SimplicialComplex ℝ E)
+    (f : E → F) (hinj : ∀ v ∈ K.vertices, InjOn f (starComplex K v).space)
+    {s t : Finset E} (hs : s ∈ K.faces) (ht : t ∈ K.faces) {x y : E}
+    (hxs : x ∈ convexHull ℝ (s : Set E)) (hyt : y ∈ convexHull ℝ (t : Set E))
+    (hxy : x ≠ y) (hfxy : f x = f y) : Disjoint s t := by
+  rw [Finset.disjoint_left]
+  intro v hvs hvt
+  have hv := K.down_closed hs (Finset.singleton_subset_iff.mpr hvs) (Finset.singleton_nonempty v)
+  apply hxy
+  apply hinj v hv
+  · apply (starComplex K v).convexHull_subset_space _ hxs
+    exact ⟨hs, by rwa [Finset.insert_eq_of_mem hvs]⟩
+  · apply (starComplex K v).convexHull_subset_space _ hyt
+    exact ⟨ht, by rwa [Finset.insert_eq_of_mem hvt]⟩
+  · exact hfxy
+
+open Classical in
+theorem doublePointSet_simplicialMap_eq_iUnion (K : Geometry.SimplicialComplex ℝ E) (φ : E → F)
+    (hind : ∀ s ∈ K.faces, AffineIndependent ℝ (fun v : s => φ (v : E)))
+    (hinj : ∀ v ∈ K.vertices, InjOn (simplicialMap K φ) (starComplex K v).space) :
+    doublePointSet (simplicialMap K φ) K.space =
+      ⋃ p : {p : K.faces × K.faces // Disjoint p.1.val p.2.val},
+        convexHull ℝ (p.val.1.val.image φ : Set F) ∩ convexHull ℝ (p.val.2.val.image φ : Set F) := by
+  ext y
+  constructor
+  · rintro ⟨x, hx, z, hz, hxz, hxy, hzy⟩
+    obtain ⟨s, hs, hxs⟩ := K.mem_space_iff.mp hx
+    obtain ⟨t, ht, hzt⟩ := K.mem_space_iff.mp hz
+    have hdisj := disjoint_faces_of_eq_of_injOn_starComplex K _ hinj hs ht hxs hzt hxz
+      (hxy.trans hzy.symm)
+    apply mem_iUnion.mpr
+    refine ⟨⟨(⟨s, hs⟩, ⟨t, ht⟩), hdisj⟩, ?_, ?_⟩
+    · exact hxy ▸ simplicialMap_mem_convexHull_image K φ hs hxs
+    · exact hzy ▸ simplicialMap_mem_convexHull_image K φ ht hzt
+  · intro hy
+    obtain ⟨p, hys, hyt⟩ := mem_iUnion.mp hy
+    rw [← image_convexHull_simplicialMap K φ p.val.1.property
+      ((affineIndependent_image_iff _ φ).mp (hind _ p.val.1.property)).1] at hys
+    rw [← image_convexHull_simplicialMap K φ p.val.2.property
+      ((affineIndependent_image_iff _ φ).mp (hind _ p.val.2.property)).1] at hyt
+    obtain ⟨x, hxs, hxy⟩ := hys
+    obtain ⟨z, hzt, hzy⟩ := hyt
+    refine ⟨x, K.convexHull_subset_space p.val.1.property hxs,
+      z, K.convexHull_subset_space p.val.2.property hzt, ?_, hxy, hzy⟩
+    intro heq
+    have hmem := K.inter_subset_convexHull p.val.1.property p.val.2.property ⟨hxs, heq ▸ hzt⟩
+    rw [← Finset.coe_inter, Finset.disjoint_iff_inter_eq_empty.mp p.property, Finset.coe_empty,
+      convexHull_empty] at hmem
+    exact hmem
+
+open Classical in
+theorem exists_triangulation_doublePointSet [FiniteDimensional ℝ F]
+    (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces] (φ : E → F)
+    (hind : ∀ s ∈ K.faces, AffineIndependent ℝ (fun v : s => φ (v : E)))
+    (hinj : ∀ v ∈ K.vertices, InjOn (simplicialMap K φ) (starComplex K v).space) :
+    ∃ G : Geometry.SimplicialComplex ℝ F, G.faces.Finite ∧
+      G.space = doublePointSet (simplicialMap K φ) K.space ∧
+        ∀ u ∈ G.faces, ∃ s ∈ K.faces, ∃ t ∈ K.faces, Disjoint s t ∧
+          convexHull ℝ (u : Set F) ⊆
+            convexHull ℝ (s.image φ : Set F) ∩ convexHull ℝ (t.image φ : Set F) := by
+  let I := {p : K.faces × K.faces // Disjoint p.1.val p.2.val}
+  let C : I → Set F := fun p =>
+    convexHull ℝ (p.val.1.val.image φ : Set F) ∩ convexHull ℝ (p.val.2.val.image φ : Set F)
+  have hC : ∀ p, IsHPolytope (C p) := by
+    intro p
+    exact (isHPolytope_convexHull_of_affineIndependent _
+      ((affineIndependent_image_iff _ φ).mp (hind _ p.val.1.property)).2).inter
+      (isHPolytope_convexHull_of_affineIndependent _
+        ((affineIndependent_image_iff _ φ).mp (hind _ p.val.2.property)).2)
+  obtain ⟨G, hfinite, hspace, hcover⟩ := exists_simplicialComplex_of_forall_isHPolytope C hC
+  refine ⟨G, hfinite, hspace.trans (doublePointSet_simplicialMap_eq_iUnion K φ hind hinj).symm,
+    fun u hu => ?_⟩
+  have huc : u.centroid ℝ id ∈ openSimplex u := centroid_mem_openSimplex (G.nonempty_of_mem_faces hu)
+  have hucG : u.centroid ℝ id ∈ G.space := G.convexHull_subset_space hu (openSimplex_subset_convexHull _ huc)
+  obtain ⟨p, hp⟩ := mem_iUnion.mp (hspace ▸ hucG)
+  rw [hcover p] at hp
+  obtain ⟨w, ⟨hw, hwC⟩, hcw⟩ := mem_iUnion₂.mp hp
+  have huw : u ⊆ w := face_subset_of_mem_openSimplex_of_mem_convexHull G hu hw huc hcw
+  exact ⟨p.val.1.val, p.val.1.property, p.val.2.val, p.val.2.property, p.property,
+    (convexHull_mono (Finset.coe_subset.mpr huw)).trans hwC⟩
+
+open Classical in
+theorem exists_triangulation_doublePointSet_of_transverse_faces [FiniteDimensional ℝ F]
+    (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces] (φ : E → F)
+    (hind : ∀ s ∈ K.faces, AffineIndependent ℝ (fun v : s => φ (v : E)))
+    (hinj : ∀ v ∈ K.vertices, InjOn (simplicialMap K φ) (starComplex K v).space)
+    (htrans : ∀ s ∈ K.faces, ∀ t ∈ K.faces, Disjoint s t →
+      (convexHull ℝ (s.image φ : Set F) ∩ convexHull ℝ (t.image φ : Set F)).Nonempty →
+        vectorSpan ℝ (s.image φ : Set F) ⊔ vectorSpan ℝ (t.image φ : Set F) = ⊤) :
+    ∃ G : Geometry.SimplicialComplex ℝ F, G.faces.Finite ∧
+      G.space = doublePointSet (simplicialMap K φ) K.space ∧
+        ∀ u ∈ G.faces, ∃ s ∈ K.faces, ∃ t ∈ K.faces, Disjoint s t ∧
+          convexHull ℝ (u : Set F) ⊆
+            convexHull ℝ (s.image φ : Set F) ∩ convexHull ℝ (t.image φ : Set F) ∧
+              u.card + Module.finrank ℝ F + 1 ≤ s.card + t.card := by
+  obtain ⟨G, hfinite, hspace, hcarrier⟩ := exists_triangulation_doublePointSet K φ hind hinj
+  refine ⟨G, hfinite, hspace, fun u hu => ?_⟩
+  obtain ⟨s, hs, t, ht, hdisj, hsub⟩ := hcarrier u hu
+  have hsAI := (affineIndependent_image_iff s φ).mp (hind s hs)
+  have htAI := (affineIndependent_image_iff t φ).mp (hind t ht)
+  let S := simplexComplex (s.image φ) hsAI.2
+  let T := simplexComplex (t.image φ) htAI.2
+  have hsS : s.image φ ∈ S.faces := ⟨(K.nonempty_of_mem_faces hs).image φ, Finset.Subset.refl _⟩
+  have htT : t.image φ ∈ T.faces := ⟨(K.nonempty_of_mem_faces ht).image φ, Finset.Subset.refl _⟩
+  obtain ⟨y, hy⟩ := G.nonempty_of_mem_faces hu
+  have hinter := hsub (subset_convexHull ℝ _ hy)
+  have hsub' : (u : Set F) ⊆ (fun x : F => x + 0) '' convexHull ℝ (s.image φ : Set F) ∩
+      convexHull ℝ (t.image φ : Set F) := by
+    simpa only [add_zero, Set.image_id'] using (subset_convexHull ℝ (u : Set F)).trans hsub
+  have hbound := card_add_finrank_le_of_subset_transverse_faces S T hsS htT (G.indep hu)
+    (G.nonempty_of_mem_faces hu) 0 hsub' (htrans s hs t ht hdisj ⟨y, hinter⟩)
+  rw [Finset.card_image_of_injOn hsAI.1, Finset.card_image_of_injOn htAI.1] at hbound
+  exact ⟨s, hs, t, ht, hdisj, hsub, hbound⟩
+
+open Classical in
+theorem exists_triangulation_doublePointSet_card_le_two [FiniteDimensional ℝ F]
+    (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces] (φ : E → F)
+    (hcard : ∀ s ∈ K.faces, s.card ≤ 3) (hdim : Module.finrank ℝ F = 3)
+    (hind : ∀ s ∈ K.faces, AffineIndependent ℝ (fun v : s => φ (v : E)))
+    (hinj : ∀ v ∈ K.vertices, InjOn (simplicialMap K φ) (starComplex K v).space)
+    (htrans : ∀ s ∈ K.faces, ∀ t ∈ K.faces, Disjoint s t →
+      (convexHull ℝ (s.image φ : Set F) ∩ convexHull ℝ (t.image φ : Set F)).Nonempty →
+        vectorSpan ℝ (s.image φ : Set F) ⊔ vectorSpan ℝ (t.image φ : Set F) = ⊤) :
+    ∃ G : Geometry.SimplicialComplex ℝ F, G.faces.Finite ∧
+      G.space = doublePointSet (simplicialMap K φ) K.space ∧ (∀ u ∈ G.faces, u.card ≤ 2) ∧
+        ∀ u ∈ G.faces, ∃ s ∈ K.faces, ∃ t ∈ K.faces, Disjoint s t ∧
+          convexHull ℝ (u : Set F) ⊆
+            convexHull ℝ (s.image φ : Set F) ∩ convexHull ℝ (t.image φ : Set F) := by
+  obtain ⟨G, hfinite, hspace, hcarrier⟩ :=
+    exists_triangulation_doublePointSet_of_transverse_faces K φ hind hinj htrans
+  refine ⟨G, hfinite, hspace, ?_, ?_⟩
+  · intro u hu
+    obtain ⟨s, hs, t, ht, _, _, hbound⟩ := hcarrier u hu
+    have hsbound := hcard s hs
+    have htbound := hcard t ht
+    omega
+  · intro u hu
+    obtain ⟨s, hs, t, ht, hdisj, hsub, _⟩ := hcarrier u hu
+    exact ⟨s, hs, t, ht, hdisj, hsub⟩
+
 end DifferentialGeometry.Topology.PiecewiseLinear
