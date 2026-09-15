@@ -624,3 +624,325 @@ only `propext`, `Classical.choice`, and `Quot.sound`; the audit exits 0.
 Final logs are `.lake/scratch/final3-*.log` and
 `.lake/scratch/audit-final3-s.log`. The plans retain the full 17.5, 17.6,
 and 17.8 goals as open, and describe the local-deletion gap explicitly.
+
+## Relative planar deletion and native erased complexes
+
+The S checkpoint merges `origin/codex/moise-integration` through `74117a65b`
+without conflicts in merge `bbf60272f`. Four incoming covering and Euler
+modules pass the prescribed focused checks with exit 0 and zero warnings.
+`AuditS26.lean` checks 31 distinct integrated endpoints with only the standard
+three axioms. No vendor Lean source is modified by the merge.
+
+`PlanarSchoenflies` strengthens both free-triangle deletion cases and their
+combined endpoint to record that the original frontier outside the removed
+triangle is fixed pointwise. The original public signatures remain as
+corollaries. These properties follow from the existing thin-kite construction
+and its inverse; they are not new hypotheses.
+
+`PlanarFreeFace` identifies the support of the upstream erased triangle mesh
+with native `eraseTriangleComplex`. It chooses a triangle distinct from a
+prescribed retained triangle, a face-star center of cardinality one or two,
+and proves that deletion leaves a PL disk. For every open neighborhood of
+the chosen triangle it also produces a global PL homeomorphism with the
+exact erased-disk image, fixed outside that neighborhood and on the rest
+of the original frontier. The older face-star-center statement is preserved
+as a corollary. Three redundant native tactics are removed for zero warnings.
+
+Both changed native modules pass the prescribed focused checks with exit 0
+and zero warnings. `AuditS27.lean` checks 11 distinct declarations with only
+`propext`, `Classical.choice`, and `Quot.sound`, and exits 0. Logs are
+`.lake/scratch/check-planar-relative-deletion.log`,
+`.lake/scratch/check-native-planar-deletion.log`, and
+`.lake/scratch/audit-planar-relative-deletion.log`.
+
+This closes the native planar deletion bridge. The local spherical deletion
+and the retained-triangle induction needed for full Moise 17.5 are still
+open; 17.6 and 17.8 are not claimed complete.
+
+## Deletion from the face star of a free triangle
+
+`PlanarFreeFace` now derives the upstream geometric free-triangle condition
+from the native frontier trace: one or two facets opposite the vertices of
+a face-star center. The triangle count argument is factored out and reused.
+`FaceStarBoundary` proves that the open simplex of the center lies in the
+interior of the disk. Three unused assumptions are removed from its earlier
+support and trace lemmas, and every in-tree consumer is updated.
+
+The new native `FaceStarDeletion` module applies the deletion to the face
+star itself. It proves the face star is a PL disk, that the triangle has
+the same frontier trace there, and that the star has more than one triangle.
+The last point follows from the center being interior to the star but on
+the triangle frontier. Thus no unproved local-disk or nondegeneracy input
+is added. The result is a global planar PL homeomorphism with exact local
+erased-disk image, fixed outside the prescribed neighborhood and on the
+rest of the star frontier. No vendor Lean source is modified.
+
+All three changed native modules pass focused checks with exit 0 and zero
+warnings. `AuditS28.lean` checks nine distinct declarations with only the
+standard three axioms and exits 0. Logs are
+`.lake/scratch/check-planar-frontier-trace.log`,
+`.lake/scratch/check-face-star-boundary.log`,
+`.lake/scratch/check-face-star-deletion.log`, and
+`.lake/scratch/audit-face-star-deletion.log`.
+
+Transport to spherical charts, compatibility with the rest of the original
+disk, and the final retained-triangle induction remain required for 17.5.
+The statements of 17.5, 17.6, and 17.8 are unchanged and remain open.
+
+## Protected edge families in relative triangle deletion
+
+The resumed S branch starts from `5d7a83446`, including the interleaved
+face-star work in `e21341229` and the unverified relative thin-kite handoff.
+The native `RelativeThinKite` development adapts the finite edge-avoidance
+and thickness arguments from upstream `Moise/FreeTriangleMove.lean` and
+`Moise/PolygonalSchoenflies.lean`, using `Moise/ThinKiteMove.lean` for the
+geometric segment estimate. The upstream files and their Apache-2.0
+attribution remain preserved in this vendor tree; no vendor Lean source
+is modified.
+
+The new relative lemmas choose a single sufficiently small positive
+thickness for a finite family, fix its union pointwise, retain the old
+frontier control, and stay in the requested open neighborhood.
+`PlanarSchoenflies` threads that family through both deletion cases and
+the combined endpoint, retaining the previous signatures as corollaries.
+The remaining source error in the handoff is repaired by converting
+triangle membership through `TriangleMesh.toPlaneComplex_cells` before
+using `PlaneComplex.mem_simplexes_of_mem_cells`.
+
+After reading the current branch sources, `RelativeThinKite`,
+`PlanarSchoenflies`, `FaceStarBoundary`, `PlanarFreeFace`, and
+`FaceStarDeletion` are rebuilt in dependency order with the prescribed
+checker. Every final check exits 0 with zero warnings. `AuditS29.lean`
+checks 23 distinct declarations, including every public declaration in
+the three face-star modules and the new protected-family endpoints.
+All closures contain only `propext`, `Classical.choice`, and `Quot.sound`.
+The audit exits 0; logs are `.lake/scratch/resume-*.log` and
+`.lake/scratch/audit-resume-s29.log`.
+
+The protected-family condition is still an explicit geometric input at
+this layer. Its production for retained spherical triangles and the full
+17.5 induction remain open; 17.6 and 17.8 remain unchanged.
+
+## Local deletion inside a planar ambient mesh
+
+The native `PlanarRelativeDeletion.lean` module combines the previously
+verified protected-family moves with upstream
+`PolygonalCircle.eq_closedRegion_of_isCompact_frontier_eq` and
+`TriangleMesh.exists_edge_of_mem_frontier_triangle`. A planar PL disk is
+preserved by any ambient homeomorphism preserving its frontier. Fixing
+the finite edge family therefore preserves every protected triangle as
+a set. Splitting a mesh into a restricted disk and the retained triangles
+then gives the exact image of the entire mesh after one deletion.
+
+The ambient mesh is not assumed to be a disk. The local disk, free-edge
+trace, and explicit intersection conditions for the retained triangles
+are the inputs at this interface. Producing these conditions in the
+spherical charts and the retained-triangle induction are still needed
+for 17.5; 17.6 and 17.8 remain open. This is native assembly of the
+vendor's planar results, with no vendor Lean source changes.
+
+The focused check exits 0 with zero warnings. `AuditS30.lean` checks all
+four new public declarations with only `propext`, `Classical.choice`,
+and `Quot.sound`, and exits 0. Logs are
+`.lake/scratch/check-planar-relative-deletion.log` and
+`.lake/scratch/audit-planar-relative-deletion.log`.
+
+## Free-triangle intersection conditions and simplicial transport
+
+`PlanarRelativeDeletion` now derives the protected-intersection conditions
+for both free-triangle cases. The one-edge proof uses upstream
+`isBoundaryEdge_freeTriangleBaseEdge_of_oneEdgeFree` and incidence-one
+uniqueness. The two-edge proof uses
+`exists_polygonalDisk_eraseTriangle_of_twoEdgeFree`, including its exact
+intersection of the remaining disk with the deleted triangle, and
+`vertex_mem_edge_of_position_mem_edgeCarrier`. No local claim that a
+chart intersection is a disk is introduced.
+
+The native `PlanarFreeFace` primary theorem
+`exists_isPLBall_eraseTriangleComplex_with_intersections` chooses a free
+triangle different from the retained triangle and supplies intersection
+bounds for every maximal triangle outside the chosen face star. The old
+public signature is retained as a corollary. The native
+`FaceStarTransport` module proves that simplicial isomorphisms preserve
+face inclusion, intersections, intersection cardinalities, and face
+stars. No vendor Lean source changes are made.
+
+`PlanarRelativeDeletion`, `PlanarFreeFace`, `FaceStarTransport`, and the
+`FaceStarDeletion` consumer pass focused checks with exit 0 and zero
+warnings. `AuditS32.lean` checks 15 distinct declarations, including all
+new endpoints and the existing deletion consumers, and exits 0. Every
+closure contains only the standard three axioms. Logs are
+`.lake/scratch/check-planar-free-face-intersections.log`,
+`.lake/scratch/check-face-star-transport.log`,
+`.lake/scratch/check-face-star-deletion-intersections.log`, and
+`.lake/scratch/audit-planar-free-face-transport.log`.
+
+The remaining 17.5 work is to assemble these data on the fixed spherical
+triangulation, preserve the whole disk under each chart extension, and
+perform the retained-triangle induction and final move to an original
+facet. The full 17.5, 17.6, and 17.8 endpoints remain open.
+
+## Intrinsic boundary traces and free faces beyond the plane
+
+The native `FaceStarTransport` API now includes erasure and convex-hull
+images. Its intersection proof uses Mathlib's
+`Finset.image_inter_of_injOn`. `BoundaryTraceTransport` combines these
+with native boundary invariance to transport the exact intersection of
+an intrinsic manifold boundary with a simplex.
+
+`FreeFaceTransport.exists_isPLBall_eraseTriangleComplex_of_isGlueIso_planar`
+transfers the planar free-face producer to any finite-dimensional ambient
+space with a finite disk mesh simplicially isomorphic to a planar disk.
+It retains the specified triangle, transports the intrinsic boundary
+trace and all protected intersection bounds, and proves the erased mesh
+is a PL disk. All these conclusions are produced from the planar result;
+none is added as an input. Vendor Lean sources remain unchanged.
+
+The three modules pass focused checks with exit 0 and zero warnings.
+`AuditS33.lean` checks nine distinct public declarations, exits 0, and
+contains only the standard three axioms. Logs are
+`.lake/scratch/check-boundary-trace-transport.log`,
+`.lake/scratch/check-free-face-transport.log`, and
+`.lake/scratch/audit-boundary-free-face-transport.log`. The full ambient
+extension and finite deletion induction for 17.5 remain to be assembled.
+
+## A fixed compatible planar model for an embedded disk
+
+The native `PlanarDiskSubdivision` module starts with a PL disk inside a
+finite ambient complex. It produces a finite ambient subdivision, keeps
+the disk as a subcomplex, constructs a simplicial isomorphism from that
+subcomplex to a planar PL disk, and retains the closed-star containment
+in original vertex stars. Relative derived subdivision extends the disk
+subdivision to the ambient complex. Thus no further refinement is needed
+to obtain the planar model during the deletion induction. The reference
+plane triangle uses the vendored standard triangle and its affine
+independence; all subdivision and extension steps are native.
+
+The focused check exits 0 with zero warnings. `AuditS34.lean` checks
+`exists_isSubdivision_subcomplex_isGlueIso_planar`, exits 0, and reports
+only the standard three axioms. Logs are
+`.lake/scratch/check-planar-disk-subdivision.log` and
+`.lake/scratch/audit-planar-disk-subdivision.log`. This is initial data
+for 17.5, not the ambient deletion induction itself.
+
+## Relative deletion for native planar subcomplexes
+
+The native `PlanarSubcomplex` module realizes a pure two-dimensional
+subcomplex with the parent complex's vertex type and ordering. Its support,
+restriction, and triangle-erasure identities retain those shared vertices.
+`PlanarRelativeSubcomplex` applies the previously adapted protected-family
+thin-kite construction to a PL subdisk of an arbitrary pure planar complex.
+It proves the exact image of both the whole complex and the local disk
+after erasing the chosen free triangle. The whole complex is not assumed
+to be a disk. Its outside triangles satisfy explicit incidence conditions,
+as supplied by the native free-face producer. No vendor Lean file changes.
+
+Both new modules pass focused checks with exit 0 and zero warnings.
+`AuditS35.lean` checks all seven public declarations and reports only
+standard foundational axioms. Logs are
+`.lake/scratch/check-planar-subcomplex.log`,
+`.lake/scratch/check-planar-relative-subcomplex.log`, and
+`.lake/scratch/audit-planar-relative-subcomplex.log`. The full 17.5 ambient
+extension and finite induction, and the 17.6/17.8 consumers, remain open.
+
+## Local boundary data and deletion in a planar chart
+
+`FaceStarTrace` transports a disk's free-triangle boundary trace through
+its planar simplicial model. It proves the corresponding intrinsic
+boundary trace for the chosen face star and proves that this face star
+is larger than the triangle. `AffineImageTransport` exposes the
+simplicial isomorphism induced by a map that is affine on every face and
+injective on the support, without subdividing the source mesh.
+
+`PlanarChartDeletion` combines these transport APIs with relative
+subcomplex deletion. It gives a globally PL plane homeomorphism with
+prescribed support and the exact erased image of the entire chart
+complex. The chart complex need not itself be a disk. These are native
+adaptations of the existing free-face construction; vendor sources are
+unchanged.
+
+All three modules pass focused checks with exit 0 and zero warnings.
+`AuditS36.lean` checks the three new endpoints, exits 0, and reports only
+the standard three axioms. Logs are `.lake/scratch/check-face-star-trace.log`,
+`.lake/scratch/check-affine-image-transport.log`,
+`.lake/scratch/check-planar-chart-deletion.log`, and
+`.lake/scratch/audit-planar-chart-deletion.log`. The ambient assembly and
+retained-triangle induction for 17.5 are still pending.
+
+## Ambient deletion on a tetrahedral boundary
+
+The native `GeneratedSubcomplex` and `TriangleSubcomplex` APIs isolate the
+triangles contained in a chart and express the entire support, before
+and after deletion, as a union with the fixed part in the opposite face.
+The face star and its intrinsic boundary data survive this restriction.
+
+`SimplexDiskDeletion.exists_isPLHomeomorphOn_eraseTriangleComplex_on_simplexBoundary`
+now assembles one ambient deletion. It uses the native tetrahedral vertex
+chart, the adapted planar protected-family deletion, and the previously
+checked cone extension. The ambient PL homeomorphism preserves the solid
+tetrahedron, maps the whole disk to its erased complex, and fixes the
+complement of the prescribed neighborhood. No disk assumption is made on
+the intersection with the vertex chart. Vendor Lean sources are unchanged.
+
+All three modules pass focused checks with exit 0 and zero warnings.
+`AuditS37.lean` checks all 16 new public declarations, exits 0, and reports
+only standard foundational axioms. Logs are
+`.lake/scratch/check-generated-subcomplex.log`,
+`.lake/scratch/check-triangle-subcomplex.log`,
+`.lake/scratch/check-simplex-disk-deletion.log`, and
+`.lake/scratch/audit-simplex-disk-deletion.log`. The full 17.5 endpoint
+still requires the finite retained-triangle induction and the final
+comparison with an original facet; 17.6 and 17.8 remain open.
+
+## Full ambient disk straightening on a tetrahedron
+
+`SimplexDiskStraightening` closes Moise 17.5. The free-face producer avoids
+one specified mesh triangle. Recursion on the finite number of triangles
+composes the ambient deletions on a fixed compatible subdivision and a
+fixed planar simplicial model. The recursion terminates by the strict
+triangle-count decrease. Finally, the original disk and an original
+facet are each sent to the same retained mesh triangle, and one map is
+composed with the inverse of the other.
+
+The public endpoint
+`exists_isPLHomeomorphOn_straighten_disk_in_tetrahedron` starts only with
+four affinely independent points in Euclidean three-space, an arbitrary
+PL two-ball in their convex hull's frontier, and an open neighborhood of
+the solid tetrahedron. It produces a global PL homeomorphism preserving
+the tetrahedron, sending the disk to an original facet, and fixing the
+neighborhood's complement. No mesh, planar model, or conditional
+Brouwer class remains in this endpoint. Vendor Lean sources are unchanged.
+
+The focused check exits 0 with zero warnings. `AuditS38.lean` checks all
+four new endpoints and the full public signature, exits 0, and reports
+only the standard three axioms. Logs are
+`.lake/scratch/check-simplex-disk-straightening.log` and
+`.lake/scratch/audit-simplex-disk-straightening.log`. The 17.6 and 17.8
+consumers are the next layer.
+
+## Tetrahedral push property and simply embedded spheres
+
+The native `TetrahedronPush.hasPushProperty_convexHull_simplex` closes
+Moise 17.6 by straightening an arbitrary boundary disk with 17.5,
+applying the established simplex-face push theorem 17.4, and transporting
+back using the established ambient invariance 17.7. The original push
+neighborhood condition `C \ J ⊆ interior N` is unchanged.
+
+`SimplyEmbedded.IsSimplyEmbedded` retains the PL sphere condition and
+the requirement for every convex open neighborhood, with an ambient
+PL straightening fixed outside that neighborhood.
+`exists_hasPushProperty_of_isSimplyEmbedded` closes 17.8: it produces a
+bounded PL three-ball with the given frontier and the push property.
+Neither endpoint contains an unproved producer assumption. Vendor Lean
+sources are unchanged.
+
+Both modules pass focused checks with exit 0 and zero warnings.
+`AuditS39.lean` checks all ten public definitions and endpoints in the
+17.4-17.8 suite, including the final 17.5, 17.6, and 17.8 signatures and
+the full single-embedding definition. It exits 0; all axiom closures are
+exactly `propext`, `Classical.choice`, and `Quot.sound`. Logs are
+`.lake/scratch/check-tetrahedron-push.log`,
+`.lake/scratch/check-simply-embedded.log`, and
+`.lake/scratch/audit-s2-push-property.log`. S.2 is complete. The 17.9-17.12
+developments and the general cell-decomposition versions of P.3 remain
+separate pending work.

@@ -264,7 +264,7 @@ theorem frontier_space_eq_boundaryComplex_space {n : ℕ}
     (boundaryComplex_space_subset_frontier_space hK)
 
 open Classical in
-private theorem mem_interior_map_iff_not_mem_boundaryComplex_space_of_piece
+theorem PLPieceIn.mem_interior_iff_not_mem_boundaryComplex_space
     {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
     {n : ℕ} {X : Type u} [TopologicalSpace X]
     [ChartedSpace (EuclideanSpace ℝ (Fin (n + 1))) X] [T2Space X] {P : Set X}
@@ -358,14 +358,14 @@ theorem frontier_eq_polyhedralBoundary {n : ℕ} {X : Type u} [TopologicalSpace 
     refine ⟨x, ?_, rfl⟩
     by_contra hxnotB
     exact hyint
-      ((mem_interior_map_iff_not_mem_boundaryComplex_space_of_piece T.piece hT hx).mpr hxnotB)
+      ((T.piece.mem_interior_iff_not_mem_boundaryComplex_space hT hx).mpr hxnotB)
   · rintro ⟨x, hxB, rfl⟩
     obtain ⟨s, hs, hxs⟩ :=
       (@boundaryComplex _ _ _ (Classical.decEq _) (n + 1) T.piece.complex).mem_space_iff.mp hxB
     have hx : x ∈ T.piece.complex.space := T.piece.complex.convexHull_subset_space hs.1 hxs
     refine ⟨T.piece.bijOn.mapsTo hx, ?_⟩
     intro hxint
-    exact (mem_interior_map_iff_not_mem_boundaryComplex_space_of_piece T.piece hT hx).mp hxint hxB
+    exact (T.piece.mem_interior_iff_not_mem_boundaryComplex_space hT hx).mp hxint hxB
 
 open Classical in
 private theorem closedStar_barycentricSubdivision_inter_space_eq
