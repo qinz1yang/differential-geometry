@@ -1,5 +1,6 @@
 import Mathlib.Analysis.LocallyConvex.Separation
 import Mathlib.Analysis.Normed.Module.FiniteDimension
+import Mathlib.Analysis.Normed.Module.Convex
 import Mathlib.Topology.Connected.Clopen
 
 open Set Topology Metric
@@ -36,6 +37,24 @@ theorem IsCompact.subset_of_frontier_subset_convex_open {C W : Set E}
     have hmul := mul_pos (half_pos hδ) hpos
     linarith
   exact (not_lt_of_ge (hmax hx)) (hf y (hCW hybd))
+
+theorem IsCompact.subset_of_frontier_subset_convex_closed {C W : Set E}
+    (hC : IsCompact C) (hW : Convex ℝ W) (hWc : IsClosed W) (hCW : frontier C ⊆ W) : C ⊆ W := by
+  rw [← hWc.closure_eq, Metric.closure_eq_iInter_thickening]
+  exact subset_iInter₂ fun δ hδ => IsCompact.subset_of_frontier_subset_convex_open hC
+    (hW.thickening δ) Metric.isOpen_thickening (hCW.trans (Metric.self_subset_thickening hδ W))
+
+theorem IsCompact.subset_of_frontier_subset_of_convex_image
+    {X : Type*} [TopologicalSpace X] {C W : Set X} (hC : IsCompact C)
+    (h : X ≃ₜ E) (hW : Convex ℝ (h '' W)) (hWc : IsClosed W) (hCW : frontier C ⊆ W) : C ⊆ W := by
+  have hfront : frontier (h '' C) ⊆ h '' W := by
+    rw [← h.image_frontier]
+    exact image_mono hCW
+  have hsub := IsCompact.subset_of_frontier_subset_convex_closed (hC.image h.continuous)
+    hW (h.isClosedMap _ hWc) hfront
+  intro x hx
+  obtain ⟨y, hy, hyx⟩ := hsub (mem_image_of_mem h hx)
+  exact h.injective hyx ▸ hy
 
 omit [Nontrivial E] in
 theorem IsCompact.exists_mem_frontier_add_smul {C : Set E} (hC : IsCompact C)

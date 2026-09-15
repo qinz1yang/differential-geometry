@@ -1139,3 +1139,31 @@ full 17.9 signature, exits 0, and reports only `propext`,
 `.lake/scratch/check-cone-intersection.log`,
 `.lake/scratch/check-convex-straightening.log`, and
 `.lake/scratch/audit-convex-straightening.log`.
+
+## Complementary disk topology and supported gluing (Moise 17.11 inputs)
+
+`BallInterior.lean` proves that the image of the standard open simplex
+is the intrinsic interior of a PL ball, with connectedness and dense
+closure. `SphericalDiskComplement.lean` adds the complementary-disk
+involution, both boundary-circle identifications, and connectedness
+of a sphere with a disk removed. `CompactFrontier.lean` adds the
+compact-region containment principle for closed convex targets and
+for targets made convex by a homeomorphism.
+
+`DiskGluing.lean` implements both cases on printed pages 121-122. It
+pushes one complementary disk while fixing the other, and straightens
+the resulting sphere with support in any convex open neighborhood
+containing the original two spheres. This intermediate statement
+does not yet replace that neighborhood condition by containment of
+only the glued sphere; the planar-disk containment argument is still
+required for the full 17.11 endpoint. No vendor Lean source changed.
+
+All four changed modules pass focused checks with exit 0 and zero
+warnings. `AuditS49.lean` checks all eleven new declarations and the
+straightening signature, exits 0, and reports only `propext`,
+`Classical.choice`, and `Quot.sound`. Logs:
+`.lake/scratch/check-ball-interior.log`,
+`.lake/scratch/check-spherical-disk-complement.log`,
+`.lake/scratch/check-compact-frontier.log`,
+`.lake/scratch/check-disk-gluing.log`, and
+`.lake/scratch/audit-disk-gluing.log`.

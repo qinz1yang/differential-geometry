@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.PLHomeomorphTopology
+import DifferentialGeometry.Topology.PiecewiseLinear.BallInterior
 import DifferentialGeometry.Topology.PiecewiseLinear.TetrahedronPush
 import DifferentialGeometry.Topology.PiecewiseLinear.SimplexFacetComplement
 
@@ -122,5 +122,64 @@ theorem IsPLSphere.inter_closure_sdiff_eq_image_stdSimplexBoundary {S D : Set E}
   · intro x hx
     obtain ⟨y, hy, hyx⟩ := himage.symm ▸ (show f x ∈ f '' (q '' stdSimplexBoundary 2) from ⟨x, hx, rfl⟩)
     exact (hf.bijOn.injOn (hDS hy.1) (hJsub hx) hyx) ▸ hy
+
+theorem IsPLSphere.closure_sdiff_eq_sdiff_image_stdSimplexBoundary {S D : Set E}
+    (hS : IsPLSphere 2 S) {q : (Fin 3 → ℝ) → E}
+    (hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D) (hDS : D ⊆ S) :
+    closure (S \ D) = S \ (D \ q '' stdSimplexBoundary 2) := by
+  have hJ := hS.inter_closure_sdiff_eq_image_stdSimplexBoundary hq hDS
+  have hAS : closure (S \ D) ⊆ S := closure_minimal sdiff_subset hS.isPolyhedron.isClosed
+  ext x
+  constructor
+  · intro hx
+    exact ⟨hAS hx, fun h => h.2 (hJ ▸ ⟨h.1, hx⟩)⟩
+  · rintro ⟨hxS, hx⟩
+    by_cases hxD : x ∈ D
+    · have hxJ : x ∈ q '' stdSimplexBoundary 2 := not_not.mp (fun h => hx ⟨hxD, h⟩)
+      exact (hJ.symm ▸ hxJ).2
+    · exact subset_closure ⟨hxS, hxD⟩
+
+theorem IsPLSphere.closure_sdiff_closure_sdiff_eq {S D : Set E}
+    (hS : IsPLSphere 2 S) (hD : IsPLBall 2 D) (hDS : D ⊆ S) :
+    closure (S \ closure (S \ D)) = D := by
+  obtain ⟨q, hq⟩ := hD
+  have hJ := hS.inter_closure_sdiff_eq_image_stdSimplexBoundary hq hDS
+  have heq : S \ closure (S \ D) = D \ q '' stdSimplexBoundary 2 := by
+    rw [← hJ]
+    ext x
+    constructor
+    · rintro ⟨hxS, hxA⟩
+      have hxD : x ∈ D := by
+        by_contra h
+        exact hxA (subset_closure ⟨hxS, h⟩)
+      exact ⟨hxD, fun h => hxA h.2⟩
+    · rintro ⟨hxD, hxJ⟩
+      exact ⟨hDS hxD, fun h => hxJ ⟨hxD, h⟩⟩
+  rw [heq, hq.closure_sdiff_image_stdSimplexBoundary]
+
+theorem IsPLSphere.image_stdSimplexBoundary_complement {S D : Set E}
+    (hS : IsPLSphere 2 S) (hD : IsPLBall 2 D) (hDS : D ⊆ S)
+    {q : (Fin 3 → ℝ) → E} (hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) (closure (S \ D))) :
+    q '' stdSimplexBoundary 2 = closure (S \ D) ∩ D := by
+  have hA : closure (S \ D) ⊆ S := closure_minimal sdiff_subset hS.isPolyhedron.isClosed
+  have h := hS.inter_closure_sdiff_eq_image_stdSimplexBoundary hq hA
+  rw [hS.closure_sdiff_closure_sdiff_eq hD hDS] at h
+  exact h.symm
+
+theorem IsPLSphere.isConnected_sdiff_of_isPLBall_two {S D : Set E}
+    (hS : IsPLSphere 2 S) (hD : IsPLBall 2 D) (hDS : D ⊆ S) : IsConnected (S \ D) := by
+  obtain ⟨q, hq⟩ := hS.isPLBall_closure_sdiff hD hDS
+  have hJ := hS.image_stdSimplexBoundary_complement hD hDS hq
+  have hA : closure (S \ D) ⊆ S := closure_minimal sdiff_subset hS.isPolyhedron.isClosed
+  have heq : closure (S \ D) \ q '' stdSimplexBoundary 2 = S \ D := by
+    rw [hJ]
+    ext x
+    constructor
+    · rintro ⟨hxA, hxJ⟩
+      exact ⟨hA hxA, fun h => hxJ ⟨hxA, h⟩⟩
+    · rintro ⟨hxS, hxD⟩
+      exact ⟨subset_closure ⟨hxS, hxD⟩, fun h => hxD h.2⟩
+  rw [← heq]
+  exact hq.isConnected_sdiff_image_stdSimplexBoundary
 
 end DifferentialGeometry.Topology.PiecewiseLinear
