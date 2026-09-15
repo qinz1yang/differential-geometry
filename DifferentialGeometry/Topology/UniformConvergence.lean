@@ -4,10 +4,79 @@ import Mathlib.Topology.ContinuousMap.Basic
 import Mathlib.Topology.UniformSpace.Compact
 import Mathlib.Topology.UniformSpace.UniformConvergence
 import Mathlib.Topology.UniformSpace.UniformConvergenceTopology
+import Mathlib.Topology.MetricSpace.Pseudo.Constructions
+import Mathlib.Topology.UniformSpace.Pi
 
 set_option autoImplicit false
 
 open Filter Set
+
+namespace TendstoUniformlyOn
+
+variable {A E N : Type*} [UniformSpace E]
+  {K : Set A} {X : N → A → E} {v : A → E} {l : Filter N}
+
+theorem eventually_mapsTo_of_isCompact_image
+    (hX : TendstoUniformlyOn X v l K) (hK : IsCompact (v '' K))
+    {U : Set E} (hU : IsOpen U) (hv : MapsTo v K U) :
+    ∀ᶠ n in l, MapsTo (X n) K U := by
+  obtain ⟨V, hV, _, hball⟩ := lebesgue_number_of_compact_open
+    hK hU (mapsTo_iff_image_subset.mp hv)
+  filter_upwards [hX V hV] with n hn z hz
+  exact hball (v z) (mem_image_of_mem v hz) (hn z hz)
+
+theorem eventually_mapsTo_of_isCompact [TopologicalSpace A]
+    (hX : TendstoUniformlyOn X v l K) (hK : IsCompact K)
+    (hv : ContinuousOn v K) {U : Set E} (hU : IsOpen U) (hmap : MapsTo v K U) :
+    ∀ᶠ n in l, MapsTo (X n) K U :=
+  hX.eventually_mapsTo_of_isCompact_image (hK.image_of_continuousOn hv) hU hmap
+
+theorem eventually_forall_mapsTo_of_isCompact_image
+    {J : Type*} [Finite J] {xi : N → A → J → E} {f : A → J → E}
+    (hxi : TendstoUniformlyOn xi f l K)
+    (hK : ∀ j, IsCompact ((fun z => f z j) '' K))
+    {U : J → Set E} (hU : ∀ j, IsOpen (U j))
+    (hf : ∀ j, MapsTo (fun z => f z j) K (U j)) :
+    ∀ᶠ n in l, ∀ j, MapsTo (fun z => xi n z j) K (U j) := by
+  apply Filter.eventually_all.mpr
+  intro j
+  have hj : TendstoUniformlyOn (fun n z => xi n z j) (fun z => f z j) l K :=
+    (Pi.uniformContinuous_proj (fun _ : J => E) j).comp_tendstoUniformlyOn hxi
+  exact hj.eventually_mapsTo_of_isCompact_image (hK j) (hU j) (hf j)
+
+end TendstoUniformlyOn
+
+namespace TendstoUniformlyOn
+
+variable {A E N J : Type*} [PseudoMetricSpace E] [Finite J]
+  {K : Set A} {X : N → A → E} {v : A → E}
+  {xi : N → A → J → E} {l : Filter N}
+
+theorem eventually_forall_pair_mem_ball_of_isCompact_image
+    (hX : TendstoUniformlyOn X v l K)
+    (hxi : TendstoUniformlyOn xi (fun z _ => v z) l K)
+    (hK : IsCompact (v '' K)) {a : E} {eps : ℝ}
+    (hv : MapsTo v K (Metric.ball a eps)) :
+    ∀ᶠ n in l, ∀ z ∈ K, ∀ j,
+      (X n z, xi n z j) ∈ Metric.ball (a, a) eps := by
+  have hXmem := hX.eventually_mapsTo_of_isCompact_image hK Metric.isOpen_ball hv
+  have hximem := hxi.eventually_forall_mapsTo_of_isCompact_image
+    (fun _ => hK) (fun _ => Metric.isOpen_ball) (fun _ => hv)
+  filter_upwards [hXmem, hximem] with n hn hxn z hz j
+  rw [← ball_prod_same]
+  exact ⟨hn hz, hxn j hz⟩
+
+theorem eventually_forall_pair_mem_ball_of_isCompact [TopologicalSpace A]
+    (hX : TendstoUniformlyOn X v l K)
+    (hxi : TendstoUniformlyOn xi (fun z _ => v z) l K)
+    (hK : IsCompact K) (hvc : ContinuousOn v K) {a : E} {eps : ℝ}
+    (hv : MapsTo v K (Metric.ball a eps)) :
+    ∀ᶠ n in l, ∀ z ∈ K, ∀ j,
+      (X n z, xi n z j) ∈ Metric.ball (a, a) eps :=
+  hX.eventually_forall_pair_mem_ball_of_isCompact_image hxi
+    (hK.image_of_continuousOn hvc) hv
+
+end TendstoUniformlyOn
 
 namespace DifferentialGeometry
 
@@ -16,13 +85,8 @@ theorem eventually_mapsTo_of_tendstoUniformly
     {A : Set X} {f : X → Y} {U : Set Y} {F : ι → X → Y} {p : Filter ι}
     (hconv : TendstoUniformly F f p) (hA : IsCompact A)
     (hf : ContinuousOn f A) (hU : IsOpen U) (hmap : MapsTo f A U) :
-    ∀ᶠ n in p, MapsTo (F n) A U := by
-  obtain ⟨V, hV, _hVopen, hball⟩ :=
-    lebesgue_number_of_compact_open
-      (hA.image_of_continuousOn hf) hU (mapsTo_iff_image_subset.mp hmap)
-  filter_upwards [hconv V hV] with n hn
-  intro x hx
-  exact hball (f x) (mem_image_of_mem f hx) (hn x)
+    ∀ᶠ n in p, MapsTo (F n) A U :=
+  hconv.tendstoUniformlyOn.eventually_mapsTo_of_isCompact hA hf hU hmap
 
 end DifferentialGeometry
 
@@ -71,3 +135,20 @@ theorem Topology.IsClosedEmbedding.exists_continuousMap_of_tendstoUniformly
   exact hlim.tendsto_at x
 
 end
+
+theorem TendstoUniformlyOn.comp_of_eventually_mapsTo
+    {α β γ ι : Type*} [UniformSpace β] [UniformSpace γ]
+    {l : Filter ι} {K : Set α} {L : Set β}
+    {A : ι → β → γ} {Ainf : β → γ} {B : ι → α → β} {Binf : α → β}
+    (hA : TendstoUniformlyOn A Ainf l L)
+    (hAinf : UniformContinuousOn Ainf L)
+    (hB : TendstoUniformlyOn B Binf l K)
+    (hmap : ∀ᶠ k in l, MapsTo (B k) K L)
+    (hmapInf : MapsTo Binf K L) :
+    TendstoUniformlyOn (fun k x => A k (B k x)) (fun x => Ainf (Binf x)) l K := by
+  rw [tendstoUniformlyOn_iff_tendstoUniformly_comp_coe] at hB ⊢
+  apply hA.comp_tendstoUniformly hAinf hB
+  · filter_upwards [hmap] with k hk x
+    exact hk x.property
+  · intro x
+    exact hmapInf x.property
