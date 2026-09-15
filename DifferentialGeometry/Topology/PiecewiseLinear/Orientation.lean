@@ -434,6 +434,19 @@ def IsOrientable
   Nonempty (CoherentOrientation n K)
 
 open Classical in
+theorem isOrientable_zero
+    [AddCommGroup E] [Module ℝ E]
+    (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces] : IsOrientable 0 K := by
+  refine ⟨{
+    vertexOrder := linearOrderOfSTO WellOrderingRel
+    sign := fun _ => 1
+    sign_top := fun _ _ _ => Or.inl rfl
+    coherent := ?_
+  }⟩
+  intro t ht hcard _
+  exact ((K.nonempty_of_mem_faces ht).ne_empty (Finset.card_eq_zero.mp hcard)).elim
+
+open Classical in
 noncomputable def complexVertexFinset
     [AddCommGroup E] [Module ℝ E]
     (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces] : Finset E :=
@@ -7463,8 +7476,11 @@ open Classical in
 theorem isOrientable_barycentricSubdivision_iff
     [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
     {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces] {n : ℕ}
-    (hK : IsCombinatorialManifoldWithBoundary (n + 1) K) :
-    IsOrientable (n + 1) (barycentricSubdivision K) ↔ IsOrientable (n + 1) K :=
-  ⟨IsOrientable.of_barycentricSubdivision hK, fun h => h.barycentricSubdivision hK⟩
+    (hK : IsCombinatorialManifoldWithBoundary n K) :
+    IsOrientable n (barycentricSubdivision K) ↔ IsOrientable n K := by
+  cases n with
+  | zero => exact iff_of_true (isOrientable_zero _) (isOrientable_zero _)
+  | succ n =>
+    exact ⟨IsOrientable.of_barycentricSubdivision hK, fun h => h.barycentricSubdivision hK⟩
 
 end DifferentialGeometry.Topology.PiecewiseLinear
