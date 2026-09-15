@@ -1,3 +1,7 @@
+import DifferentialGeometry.Analysis.Parabolic.Euclidean.InvariantSubmanifold
+import DifferentialGeometry.Geometry.Metric.Family.Retraction
+import DifferentialGeometry.Analysis.Parabolic.Euclidean.PeriodicPersistence
+import DifferentialGeometry.Analysis.Calculus.TimeJet.SpatialDerivatives
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ChartEquation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ParabolicGaugeLocalExistence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.WindowGluing
@@ -334,3 +338,190 @@ theorem curveShorteningParabolicGaugeLocalExistence_of_classical_retraction_equa
 end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening
 
 end
+
+noncomputable section
+
+open Set Manifold
+open scoped Manifold ContDiff
+
+namespace DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening
+
+open DifferentialGeometry.Geometry
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Riemannian
+open DifferentialGeometry.Analysis.Parabolic
+
+variable {E F H M : Type*}
+  [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+  [NormedAddCommGroup F] [InnerProductSpace ℝ F] [FiniteDimensional ℝ F]
+  [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+  [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
+
+private theorem periodic_mem_range_of_retraction_equation
+    (g : ℝ → SmoothRiemannianMetric I M) {D : RealTimeInterval}
+    (hg : MetricFamilySmoothOn D g)
+    {e : M → F} (he : ContMDiff I 𝓘(ℝ, F) ∞ e)
+    {r : F → M} {O : TopologicalSpace.Opens F}
+    (hr : ContMDiffOn 𝓘(ℝ, F) I ∞ r O)
+    (hEO : range e ⊆ O) (hleft : ∀ p, r (e p) = p) (β : O)
+    {u : ℝ → ℝ → F} {T : ℝ} (hT : 0 < T)
+    (hper : ∀ x t, u (x + 1) t = u x t)
+    (hcont : ContinuousOn (Function.uncurry u) (Icc 0 1 ×ˢ Icc 0 T))
+    (hinit : ∀ x, u x 0 ∈ range e)
+    (hx : ∀ x t, t ∈ Ioo 0 T → ContDiffAt ℝ 2 (fun y => u y t) x)
+    (hDu : ContinuousOn (fun p : ℝ × ℝ => deriv (fun y => u y p.2) p.1)
+      (Icc 0 1 ×ˢ Icc 0 T))
+    (hjet : ∀ x t, t ∈ Icc 0 T →
+      (t, u x t, deriv (fun y => u y t) x) ∈
+        curveShorteningChartFirstJetDomain D (fun t => retractionMetric (g t) he hr) β)
+    (hprojected : ∀ x t, t ∈ Icc 0 T →
+      (t, e (r (u x t)), fderiv ℝ (fun y => e (r y)) (u x t)
+        (deriv (fun y => u y t) x)) ∈
+        curveShorteningChartFirstJetDomain D (fun t => retractionMetric (g t) he hr) β)
+    (hpde : ∀ x t, t ∈ Ioo 0 T → HasDerivAt (u x)
+      (curveShorteningParametricChartRhs (fun t => retractionMetric (g t) he hr) β
+        (t, u x t, deriv (fun y => u y t) x,
+          deriv (deriv (fun y => u y t)) x)) t) :
+    ∀ x t, t ∈ Icc 0 T → u x t ∈ range e := by
+  let G := fun t => retractionMetric (g t) he hr
+  let j : M → O := fun p => ⟨e p, hEO (mem_range_self p)⟩
+  let U := curveShorteningChartFirstJetDomain D G β
+  let a := curveShorteningChartDiffusionCoefficient G β
+  have hG : MetricFamilySmoothOn D G := metricFamilySmoothOn_retractionMetric g hg he hr
+  have hj : ContMDiff I 𝓘(ℝ, F) ∞ j := (ContMDiff.subtypeVal_comp_iff O j).mp he
+  have hgeo : ∀ t ∈ D.regular, hasVanishingSecondFundamentalFormAlongCurves (g t) (G t) j :=
+    fun t _ => hasVanishingSecondFundamentalFormAlongCurves_retractionMetric (g t) he hr hEO hleft
+  have hU : IsOpen U := isOpen_curveShorteningChartFirstJetDomain hG β
+  have ha : ContDiffOn ℝ 1 a U :=
+    (contDiffOn_curveShorteningChartDiffusionCoefficient hG β).of_le (by norm_num)
+  have hUJO : U ⊆ D.regular ×ˢ (O : Set F) ×ˢ univ := by
+    intro q hq
+    refine ⟨hq.1, ?_, mem_univ _⟩
+    simpa only [DifferentialGeometry.extChartAt_opens_target, O.isOpen.interior_eq] using hq.2.1
+  let K := (fun p : ℝ × ℝ => (p.2, u p.1 p.2, deriv (fun y => u y p.2) p.1)) ''
+    (univ ×ˢ Icc 0 T)
+  have hK : IsCompact K := isCompact_image_firstJet_of_periodic hper hcont hDu
+  have hKU : K ⊆ U := by
+    rintro q ⟨⟨x, t⟩, hxt, rfl⟩
+    exact hjet x t hxt.2
+  obtain ⟨δ, hδ, hδa⟩ := hK.exists_forall_le' (ha.continuousOn.mono hKU)
+    (fun q hq => curveShorteningChartDiffusionCoefficient_pos G β (hKU hq))
+  apply periodic_mem_range_of_christoffel_parabolic_equation_on_open_set_of_continuous_deriv
+    g G β hG hj hgeo (fun p => hleft p) hU Subset.rfl O.isOpen Subset.rfl
+    (hr.of_le (by decide : (3 : ℕ∞ω) ≤ ∞)) ha hUJO hT hδ hper hcont hinit hx (fun x t ht => (hpde x t ht).differentiableAt) hDu hjet hprojected
+  · intro x t ht'
+    exact hδa _ ⟨(x, t), ⟨mem_univ _, ht'⟩, rfl⟩
+  · intro x t ht'
+    rw [(hpde x t ht').deriv]
+    change a _ • _ + a _ • _ - a _ • _ = a _ • _
+    abel
+
+private theorem exists_pos_periodic_mem_range_of_retraction_equation
+    (g : ℝ → SmoothRiemannianMetric I M) {D : RealTimeInterval}
+    (hg : MetricFamilySmoothOn D g)
+    {e : M → F} (he : ContMDiff I 𝓘(ℝ, F) ∞ e)
+    {r : F → M} {O : TopologicalSpace.Opens F}
+    (hr : ContMDiffOn 𝓘(ℝ, F) I ∞ r O)
+    (hEO : range e ⊆ O) (hleft : ∀ p, r (e p) = p) (β : O)
+    {u : ℝ → ℝ → F} {T : ℝ} (hT : 0 < T)
+    (hper : ∀ x t, u (x + 1) t = u x t)
+    (hcont : ContinuousOn (Function.uncurry u) (Icc 0 1 ×ˢ Icc 0 T))
+    (hinit : ∀ x, u x 0 ∈ range e)
+    (hx : ∀ x t, t ∈ Icc 0 T → ContDiffAt ℝ 2 (fun y => u y t) x)
+    (hDu : ContinuousOn (fun p : ℝ × ℝ => deriv (fun y => u y p.2) p.1)
+      (Icc 0 1 ×ˢ Icc 0 T))
+    (hjet : ∀ x,
+      (0, u x 0, deriv (fun y => u y 0) x) ∈
+        curveShorteningChartFirstJetDomain D (fun t => retractionMetric (g t) he hr) β)
+    (hpde : ∀ x t, t ∈ Icc 0 T → HasDerivWithinAt (u x)
+      (curveShorteningParametricChartRhs (fun t => retractionMetric (g t) he hr) β
+        (t, u x t, deriv (fun y => u y t) x,
+          deriv (deriv (fun y => u y t)) x)) (Icc 0 T) t) :
+    ∃ ε : ℝ, 0 < ε ∧ ε ≤ T ∧ ∀ x t, t ∈ Icc 0 ε → u x t ∈ range e := by
+  let G := fun t => retractionMetric (g t) he hr
+  let U := curveShorteningChartFirstJetDomain D G β
+  have hG : MetricFamilySmoothOn D G := metricFamilySmoothOn_retractionMetric g hg he hr
+  have hU : IsOpen U := isOpen_curveShorteningChartFirstJetDomain hG β
+  have hP : ContDiffOn ℝ 1 (fun y => e (r y)) O :=
+    (he.comp_contMDiffOn hr).contDiffOn.of_le (by norm_num)
+  have hUV : ∀ q ∈ U, q.2.1 ∈ (O : Set F) := by
+    intro q hq
+    simpa only [DifferentialGeometry.extChartAt_opens_target, O.isOpen.interior_eq] using hq.2.1
+  have hfix : ∀ x, e (r (u x 0)) = u x 0 := by
+    intro x
+    obtain ⟨p, hp⟩ := hinit x
+    rw [← hp, hleft]
+  obtain ⟨ε, hε, hεT, hK, hKsub⟩ := exists_isCompact_firstJet_image_subset_of_initial_curve_fixed
+    hT hper hcont hDu hU O.isOpen hP hUV
+    (fun x _ => hjet x) hfix
+    (fun x _ => (hx x 0 ⟨le_rfl, hT.le⟩).differentiableAt (by norm_num))
+  simp only [sub_zero, zero_add] at hεT hK hKsub
+  have hsub : Icc (0 : ℝ) ε ⊆ Icc 0 T := Icc_subset_Icc le_rfl hεT
+  refine ⟨ε, hε, hεT, ?_⟩
+  apply periodic_mem_range_of_retraction_equation g hg he hr hEO hleft β hε hper
+    (hcont.mono (prod_mono Subset.rfl hsub)) hinit
+    (fun x t ht => hx x t (hsub ⟨ht.1.le, ht.2.le⟩))
+    (hDu.mono (prod_mono Subset.rfl hsub))
+    (fun x t ht => (hKsub ⟨(x, t), ⟨mem_univ _, ht⟩, rfl⟩).1)
+  · intro x t ht
+    exact (hKsub ⟨(x, t), ⟨mem_univ _, ht⟩, rfl⟩).2
+  · intro x t ht
+    have htT : t ∈ Ioo (0 : ℝ) T := ⟨ht.1, ht.2.trans_le hεT⟩
+    exact (hpde x t ⟨htT.1.le, htT.2.le⟩).hasDerivAt (Icc_mem_nhds htT.1 htT.2)
+
+theorem CurveMap.exists_parabolic_curve_on_short_interval_of_classical_retraction_equation
+    (g : ℝ → SmoothRiemannianMetric I M) {D : RealTimeInterval}
+    (hg : MetricFamilySmoothOn D g)
+    {e : M → F} (he : ContMDiff I 𝓘(ℝ, F) ∞ e)
+    {r : F → M} {O : TopologicalSpace.Opens F}
+    (hr : ContMDiffOn 𝓘(ℝ, F) I ∞ r O)
+    (hEO : range e ⊆ O) (hleft : ∀ p, r (e p) = p) (β : O)
+    (u : CurveMap F) {T : ℝ} (hT : 0 < T)
+    (hu : u.SmoothOn (I := 𝓘(ℝ, F)) (Icc 0 T))
+    (hinit : ∀ z, u z 0 ∈ range e)
+    (hjet : ∀ x,
+      (0, u.lift x 0, deriv (fun y => u.lift y 0) x) ∈
+        curveShorteningChartFirstJetDomain D (fun t => retractionMetric (g t) he hr) β)
+    (hpde : ∀ x t, t ∈ Icc 0 T → HasDerivWithinAt (u.lift x)
+      (curveShorteningParametricChartRhs (fun t => retractionMetric (g t) he hr) β
+        (t, u.lift x t, deriv (fun y => u.lift y t) x,
+          deriv (deriv (fun y => u.lift y t)) x)) (Icc 0 T) t) :
+    ∃ ε : ℝ, 0 < ε ∧ ε ≤ T ∧ ∃ c : CurveMap M,
+      c.SmoothOn (I := I) (Icc 0 ε) ∧
+      (∀ z t, t ∈ Icc 0 ε → e (c z t) = u z t) ∧
+      ∀ x t, t ∈ Icc 0 ε → c.velocity (I := I) (Icc 0 ε) x t =
+        c.speed g x t ^ (-2 : ℤ) • c.Dx g c.X x t := by
+  have hsmooth : ContDiffOn ℝ ∞ (Function.uncurry u.lift) (univ ×ˢ Icc 0 T) :=
+    hu.contDiffOn
+  have hcont : ContinuousOn (Function.uncurry u.lift) (Icc 0 1 ×ˢ Icc 0 T) :=
+    hsmooth.continuousOn.mono (prod_mono (subset_univ _) Subset.rfl)
+  have hx : ∀ x t, t ∈ Icc 0 T → ContDiffAt ℝ 2 (fun y => u.lift y t) x := by
+    intro x t ht
+    have hs : ContDiff ℝ ∞ (fun y => u.lift y t) := contDiffOn_univ.mp
+      (hsmooth.comp (contDiff_id.prodMk contDiff_const).contDiffOn
+        (fun _ hy => ⟨hy, ht⟩))
+    exact hs.contDiffAt.of_le (by decide)
+  have hDu : ContinuousOn (fun p : ℝ × ℝ => deriv (fun y => u.lift y p.2) p.1)
+      (Icc 0 1 ×ˢ Icc 0 T) :=
+    (DifferentialGeometry.Analysis.contDiffOn_deriv_fst isOpen_univ
+      (uniqueDiffOn_Icc hT) hsmooth).continuousOn.mono
+        (prod_mono (subset_univ _) Subset.rfl)
+  have hper : ∀ x t, u.lift (x + 1) t = u.lift x t := by
+    intro x t
+    simp only [CurveMap.lift, AddCircle.coe_add_period]
+  obtain ⟨ε, hε, hεT, hrange⟩ := exists_pos_periodic_mem_range_of_retraction_equation
+    g hg he hr hEO hleft β hT hper hcont
+    (fun x => hinit (x : AddCircle (1 : ℝ))) hx hDu hjet hpde
+  have hsub : Icc (0 : ℝ) ε ⊆ Icc 0 T := Icc_subset_Icc le_rfl hεT
+  have hur : u.SmoothOn (I := 𝓘(ℝ, F)) (Icc 0 ε) :=
+    hu.mono (prod_mono Subset.rfl hsub)
+  refine ⟨ε, hε, hεT, ?_⟩
+  apply CurveMap.exists_parabolic_curve_of_classical_retraction_equation
+    g he hr hEO hleft β u hur (uniqueDiffOn_Icc hε)
+  · intro z t ht
+    induction z using QuotientAddGroup.induction_on with
+    | H x => exact hrange x t ht
+  · intro x t ht
+    exact (hpde x t (hsub ht)).mono hsub
+
+end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening

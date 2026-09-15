@@ -8082,6 +8082,7 @@ import DifferentialGeometry.Topology.Compactness.OpensProductChartBand
 import DifferentialGeometry.Topology.Compactness.ProductChartBand
 import DifferentialGeometry.Topology.Compactness.ProductChartThickening
 import DifferentialGeometry.Topology.Compactness.Strip
+import DifferentialGeometry.Topology.Compactness.TimeInterval
 import DifferentialGeometry.Topology.Compactness.UniformBounds
 import DifferentialGeometry.Topology.Compactness.UniformInjectivity
 import DifferentialGeometry.Topology.Connected.BallComplement
@@ -10214,6 +10215,7 @@ import DifferentialGeometry.Analysis.Parabolic.Euclidean.Uniqueness
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.RetractionResidual
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.InvariantImage
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.PeriodicJet
+import DifferentialGeometry.Analysis.Parabolic.Euclidean.PeriodicPersistence
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.InvariantSubmanifold
 import DifferentialGeometry.Topology.Simplex.TetrahedronJoinQuotient
 import DifferentialGeometry.Topology.Homotopy.SquareFilling
