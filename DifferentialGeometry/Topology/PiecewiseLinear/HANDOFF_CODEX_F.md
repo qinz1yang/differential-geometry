@@ -770,3 +770,107 @@ F 车道到此完成（F4.3 球性等 S.5）。若 F6.3 做完仍有余力，先
 
 计划 F6.2/F6.3 已记为 done；E.2/E.3 已改为「F6.3 done，待 E 车道」，`Moise352` 的源域谓词已对齐到
 `IsLocallyFinitePolyhedralManifoldWithBoundary`；R9 的表示层阻塞已解除。35.2/36.1 的逼近证明仍未由本车道实现。
+
+## 12. 2026-09-15 追加：F6.3 已独立复核；改派 E.3/E.4（条件版），之后闭合 F5.2
+
+### 12.0 复核结果（本方独立执行）
+
+- 重编 `LocallyFinitePieceTowerExistence`：exit=0、零 warning；独立重跑 `AuditF114`：83 项全部只含
+  `propext`、`Classical.choice`、`Quot.sound`。非 vendored 源码禁用模式扫描干净。共享库含本车道全部 137 个
+  PiecewiseLinear 模块的 olean，无缺失。
+- 整合分支 `codex/moise-integration` 已快进到 `4593e7746`（= 本车道 HEAD）。其它车道从这里取用 F6.3。
+- `.lake\scratch\f-lib` 可删可留，不要再改脚本。
+
+### 12.1 砖 15/16：E.3 与 E.4 的条件版（`Transition361.lean`、`Endgame.lean`）
+
+改派理由：塔表示是本车道的，36.1 的证明就是"对整个 `U` 用一次 35.2，再用塔的各阶段 `N i` 证 `f(U) = h(U)`"。
+原 E3 线程转去 §24 后半与 §25（有自己的交接文档），不再做 E.3/E.4。
+
+先读（顺序不能变）：
+1. `HANDOFF_CODEX_E3.md` 砖 E3.2/E3.3（原设计与路线）；计划行 E.2、E.3、E.4。
+2. Moise §35–§36（书页 247–255 = PDF 257–265）与 8.2–8.4（书页 58–64 = PDF 68–74）。36.1 说"过渡与 8.4 从 6.4 完全一样"。
+3. `InvarianceOfDomainManifold.lean`（E.0：`isOpen_image_of_continuousOn_injOn`、`isOpenMap_of_continuous_injective`、
+   `isInteriorPoint_iff_any_chart_real`）、`FrontierBoundary.lean`（M.1–M.3：`frontier_eq_polyhedralBoundary` 等）、
+   `PolyhedralBoundary.lean`、`BoundaryInvariance.lean`（`polyhedralBoundary_eq_of_piece`）。
+4. `Manifold.lean` 第 55–58 行（`IsPLOn`、`IsPL`）与第 149 行（端点 `PLApproximationManifold`）。
+
+砖 15 `DifferentialGeometry/Topology/PiecewiseLinear/Transition361.lean`：
+
+1. 到像的双向 PL 同胚接口（计划行 E.2 要求 E 车道明确定义）：
+   ```lean
+   def IsPLHomeomorphInto (n : ℕ) (f : M₁ → M₂) (K : Set M₁) : Prop :=
+     IsPLOn n n f K ∧ Set.InjOn f K ∧ ∃ g : M₂ → M₁, IsPLOn n n g (f '' K) ∧ Set.LeftInvOn g f K
+   ```
+   若 `IsPLOn` 对非开集 `f '' K` 的语义不合适，改成逐点 `IsPLWithinAt` 形式，并把最终定义写进计划行 E.2。
+2. 35.2 的显式命题（只陈述，不证；把 E3.2 草稿的源域谓词换成 F6.3 的）：
+   ```lean
+   def Moise352 (n : ℕ) : Prop :=
+     ∀ {M₁ M₂ : Type u} [TopologicalSpace M₁] [T2Space M₁] [SecondCountableTopology M₁]
+       [MetricSpace M₂] [SecondCountableTopology M₂]
+       [ChartedSpace (EuclideanSpace ℝ (Fin n)) M₁] [ChartedSpace (EuclideanSpace ℝ (Fin n)) M₂]
+       [HasGroupoid M₁ (plGroupoid n)] [HasGroupoid M₂ (plGroupoid n)]
+       {K : Set M₁} (hK : IsLocallyFinitePolyhedralManifoldWithBoundary (n := n) n K)
+       {h : M₁ → M₂} (hh : Topology.IsEmbedding (K.restrict h))
+       (φ : M₁ → ℝ) (hφ : ContinuousOn φ K) (hpos : ∀ x ∈ K, 0 < φ x),
+       ∃ f : M₁ → M₂, IsPLHomeomorphInto n f K ∧ ∀ x ∈ K, dist (f x) (h x) < φ x
+   ```
+   结论只有 φ-逼近的到像 PLH，没有关于 `f '' K` 的附加条款（计划行 E.2 的决定）。`K` 不要求闭或紧。
+3. 36.1 的过渡（E.3）：
+   ```lean
+   theorem exists_plh_approx_of_isOpen (h352 : Moise352.{u} 3) {M₁ M₂ : Type u} [...同上...]
+       {U : Set M₁} (hU : IsOpen U) {h : M₁ → M₂} (hh : Topology.IsEmbedding (U.restrict h))
+       (φ : M₁ → ℝ) (hφ : ContinuousOn φ U) (hpos : ∀ x ∈ U, 0 < φ x) :
+       ∃ f : M₁ → M₂, IsPLHomeomorphInto 3 f U ∧ f '' U = h '' U ∧ ∀ x ∈ U, dist (f x) (h x) < φ x
+   ```
+   E3.2 草稿里的 `hopen : IsOpen (h '' U)` 不要作为假设：由 E.0 的 `isOpen_image_of_continuousOn_injOn` 推出。
+   路线：`isLocallyFinitePolyhedralManifoldWithBoundary_of_isOpen hU` 给 `h352` 的源域假设，**对整个 `U` 用一次** `h352`
+   得到 `f`；`f '' U = h '' U` 按书用穷竭：塔 `T := exists_locallyFinitePieceTower_of_isOpen hU` 的 `T.N i`
+   是紧致多面体带边流形、`T.subset_interior hU`、`T.iUnion_eq`（或 `exists_exhaustion_of_isOpen`，二者皆可），
+   `φ'` 按 8.4 的 (a)–(d) 取（`φ' ≤ φ`，在 `Bd N (i+1)` 上小于 `h '' (Bd N (i+1))` 与 `h '' (N i)` 的距离等），
+   `f '' (Bd N (i+1)) = Fr (f '' (N (i+1)))` 由 M.3 + `polyhedralBoundary_eq_of_piece`（`f` 在 `N (i+1)` 上是到像的 PLH，
+   像是多面体带边流形），`h '' U` 开由 E.0，连通性论证得 `h '' (N i) ⊆ f '' (N (i+1))`，并集给等式。
+   书中某一步若本树无工具，报告确切缺口，不要绕过、不要把缺口做成假设。
+   空 `U`、空 `M₁` 的情形单独处理（塔存在定理要求 `[Nonempty X]`）。
+
+砖 16 `DifferentialGeometry/Topology/PiecewiseLinear/Endgame.lean`：
+```lean
+theorem plApproximationManifold_three_of_moise352 (h352 : Moise352.{u} 3) : PLApproximationManifold.{u} 3
+```
+E.3 取 `U = univ`、`h` 为同胚（`Topology.IsEmbedding` 由 `Homeomorph.isEmbedding`）；`f` 连续单射且 `f '' univ = univ`，
+用 E.0 的 `isOpenMap_of_continuous_injective` 得开映射，组装 `M₁ ≃ₜ M₂`；`IsPL 3 3 f` 由 `IsPLOn 3 3 f univ`。
+审计：`#print axioms plApproximationManifold_three_of_moise352` 只含标准三公理（`Moise352` 是显式假设，不是公理）。
+
+检查点：砖 15 的两个定义与 E.3 的陈述通过聚焦检查、第一个子引理证完后先汇报，再继续。完成后：计划行 E.3、E.4 改为
+"done（条件于 `Moise352 3`，2026-09-15）"并写明定理名；E.2 的"拟定 Lean"列改为最终陈述；`MOISE_PLAN.md` §6 加一条验证记录。
+文件名、命名空间与 §2 配方不变；下一个审计文件 `AuditF115.lean`。
+
+### 12.2 砖 17：F5.2 闭合（§10.3 备选设计的具体化；做完 12.1 再开始）
+
+消费者是 §25 L.3（Moise 书页 184 Lemma 2 前言）：`D : Δ → M` PL、局部同胚、至多 2 对 1；任意小扰动后
+奇点集是有限个互不相交的多边形（在 `Int M`）与折线（恰在端点处碰 `Bd M`，端点落在给定的 `B'`）之并，处处 crossing。
+本车道已闭合单张边界图卡内的完整正规形式；多图卡归纳的缺口（先前保护区域的 crossing 在新扰动下不保持）不再攻，改走下面的整体路线。
+
+1. 整体搬运。像 `D '' Δ` 紧致：`exists_isPolyhedralManifoldWithBoundary_neighborhood`（`ExhaustionGeneral.lean:234`）
+   给紧致多面体带边流形 `P ⊇ D '' Δ` 及片 `T : PLPiece`，`K_T ⊆ ℝ^d` 有限带边组合 3-流形。令 `D_T := T.map⁻¹ ∘ D : Δ → |K_T|`，
+   细分 `Δ` 使 `D_T` 对 `K_T` 单纯（本车道的单纯化与细分搬运词汇）。之后所有扰动都在 `ℝ^d` 里对 `Δ'` 的顶点像做，
+   **每个顶点像限制在其载体单形 `carr(v) ∈ K_T` 的相对内部**（约束 = `carr(v)` 的仿射包；这是半空间版本"边界顶点留在零平面"
+   的推广：`exists_small_affineIndependent_subsets_in_submodule`、`exists_small_vertexMap_transverse_in_halfSpace` 的
+   核平面约束改为载体仿射子空间约束）。这样每个源单形的像仍在原来那个 `K_T` 单形里，映射保持进 `|K_T|`。
+2. 双点的三种位置。(i) 在某四面体 `σ` 内部：两片像都在 `aff σ ≅ ℝ³`，现有欧氏 crossing 理论原样适用；
+   (ii) 在内部 2-面 `τ = σ₁ ∩ σ₂` 的相对内部：两片各沿一条"接缝"（映入 `τ` 的源边的像）折叠，两条接缝在 `τ` 内横截相交于双点，
+   两片在 `σ₁` 内、在 `σ₂` 内分别横截；需要一条**折叠 crossing 引理**：在 `σ₁ ∪ σ₂` 的逐单形仿射图卡（双锥）中，
+   两张各由两个仿射片沿同一平面折叠的曲面，若在两个闭半空间内分别横截、接缝在折叠平面内横截相交，则满足 `HasPLCrossingAt`
+   （显式构造：两个在折叠平面上一致的线性映射拼成的 PL 同胚，把两张折叠曲面同时拉直为标准的两平面模型；
+   平面上的映射由 `ℓ₁ ↦ y` 轴、`ℓ₂ ↦ z` 轴决定，各半空间再用 `e_x` 的像解两个线性方程并取 `x` 分量为正）；
+   (iii) 1-骨架与 `K_T` 的顶点：一维奇点集通用地避开（余维数计数），须作为通用性条件的一部分证明，不能假设。
+   边界：映到 `Bd M` 的顶点约束在 `Bd K_T` 的面上，边界四面体内用已有的半空间理论（`HasPLBoundaryCrossingAt`、
+   `..._in_boundary_neighborhood` 的 `B'` 控制）；`Bd K_T` 的 2-面只属于一个四面体，折叠情形只出现在内部 2-面；
+   奇点集与 `Bd M` 的交是孤立点且通用地避开 `Bd K_T` 的边。
+3. 目标是 `|K_T| ⊆ ℝ^d` 时的 crossing 概念：用 `|K_T|` 的 PL 图卡（双点所在单形之星是 PL 球）把 `HasPLCrossingAt`
+   搬进去（`HasPLCrossingAt.image_openPartialHomeomorph` 一类的搬运引理已有），再沿 `T.map` 搬回 `M`；
+   最终对抽象 `M` 的陈述用现有 `..._in_chart` 的图卡形式，crossing 的语义不变。
+4. 端点（抽象度量 PL 3-流形带边 `M`，源为任意有限带边组合 2-流形，不只圆盘）：任意小 PL 扰动，保持 PL 性、局部单射、
+   纤维 ≤ 2、源边界映入 `Bd M` 且像留在指定 `B'`，精确奇点集是有限带边一维组合流形、每点 `HasPLDoubleCrossingAt`（图卡版），
+   奇点集的组合边界 = 奇点集 ∩ `Bd M`。这是 L.3 要消费的全部；写进计划行 F5.2 与 §4 接口表后签名冻结。
+不得增加结论型假设；若第 2 步 (ii) 的折叠引理或第 1 步的载体约束扰动出现本车道无法闭合的缺口，先汇报确切缺口再决定。
+估计 4k–8k 行。检查点：第 1 步（搬运 + 载体约束扰动的存在性）做完先汇报。
