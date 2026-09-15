@@ -10348,3 +10348,11 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.FlatPoly
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.FlatPolygonArea
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.FlatPolygonHomotopy
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.PreparedFamily
+
+import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Scalar.AddCircleComposition
+import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Parametric.AddCircleLocalComposition
+import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Scalar.AddCircleFirstJet
+import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Parametric.AddCircleTimeComposition
+import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Jet.Bounds.LaplacianNorm
+import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Scalar.AddCircleLaplacianNorm
+import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Scalar.ProductDifference
