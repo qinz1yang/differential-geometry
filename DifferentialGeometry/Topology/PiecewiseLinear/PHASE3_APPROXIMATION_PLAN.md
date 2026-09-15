@@ -176,7 +176,7 @@ F1.2 与 F2.3 将共用同一套机制：H-多面体的（暴露）面、相对�
 
 | 编号 | 内容 | 拟定 Lean / 来源 | 消费者 | 状态 | 行数 |
 |---|---|---|---|---|---|
-| P.1 | 平面多边形 Schoenflies（Moise 3.6）与组合形式 5.3（多边形界定组合 2-胞腔） | 由 vendored `External/Schoenflies/`（拓扑平面版）导出多边形版，或直接按 Moise §3 组合证明；输出 `theorem isPLBall_of_isPLSphere_one {J : Set ℝ²} (hJ : IsPLSphere 1 J) : ∃ D, IsPLBall 2 D ∧ frontier D = J` | §17, §21.4, §26.7, §27.2 | new/ext | 5k–10k |
+| P.1 | 平面多边形 Schoenflies（Moise 3.6）与组合形式 5.3（多边形界定组合 2-胞腔） | 由 vendored `External/Schoenflies/`（拓扑平面版）导出多边形版，或直接按 Moise §3 组合证明；输出 `theorem isPLBall_of_isPLSphere_one {J : Set ℝ²} (hJ : IsPLSphere 1 J) : ∃ D, IsPLBall 2 D ∧ frontier D = J` | §17, §21.4, §26.7, §27.2 | partial（2026-09-15）：`PolygonalSchoenflies.lean` 的 `exists_polyhedral_region_of_isPLSphere_one` 已由 PL 1-球面构造有界连通开区域，前沿等于原曲线，并给出闭包的有限三角剖分且原曲线是子复形；同时证明一般的 `isPolyhedron_closure_of_isPolyhedron_frontier`，`PLBallSphere.lean` 补 `IsPLSphere.isPolyhedron`。只消费 Jordan 分离，不消费拓扑 Schoenflies。两模块聚焦检查 exit=0、零 warning；`AuditF94.lean` 审计 22 项均仅标准三公理（包含所用 Jordan 端点）；源码提交 `99a798b7e` 已推送。仍待：自由三角形归纳与 PL 2-球性，尚未闭合 P.1。 | 5k–10k |
 | P.2 | 5.4：多面体 2-胞腔边界间 PLH 延拓 | F3.4 的 `n = 2` 实例（锥延拓）加 5.3 | §17.10, §33 L13, §34 | new | 1k |
 | P.3 | 3.3 / 17.2–17.3：2-胞腔的胞腔分解至少有两个自由 2-胞腔；不在给定真子复形中的自由胞腔 | 组合陈述（用 P.1 的分离性质） | §17.9–17.12 | new | 2k–4k |
 | P.4 | 10.8：ℝ² 中有限线性图驯顺（给定开集 `U ⊇ M`、`φ ≫ 0`，存在同胚 `h : ℝ² ≃ₜ ℝ²`，`h(M)` 多面体，`U` 外恒同，`U` 上 φ-逼近恒同） | §10 定理 6–8（框架定理 10.6 + 收缩族） | §17.2（胞腔复形可视为多面体） | new | 6k–10k |
