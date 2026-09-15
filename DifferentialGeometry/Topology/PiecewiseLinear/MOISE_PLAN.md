@@ -273,6 +273,31 @@
   内容相同且保留双方历史的合并节点。未修改 F 工作树或分支，未合并 E.0 到 F，未运行 `lake build`，
   未登记根聚合；E.0 数学端点完成，S.1、M.3、E.3/E.4 自身义务继续由各自车道承担。
 
+- 2026-09-14（S 车道前半，`D:/differential-geometry-moise-s`，`codex/moise-s`）：
+  - S0.1：`a940dc7e4` vendoring `ClassificationOfSurfaces` 的 16 个平面 PL 模块，来源固定为
+    `e3c7230fe78d7b056a415d9ecae6f77887046b32`，Apache-2.0；保留注释、版权头、命名空间和原始文档。
+    每处 import/API 漂移与 13 条获准保留的原始纯风格警告均记录于 `External/ClassificationOfSurfaces/VENDOR.md`。
+    按依赖序逐模块检查 exit=0，AuditS1 仅标准三公理。
+  - S0.2/P.1：`81b0310b5` 的 `PlanarSchoenflies.lean` 与 `SimplexFrontier.lean` 证明
+    原生 PL 1-球面与 `PolygonalCircle` 的双向转换，以及 `isPLBall_of_isPLSphere_one` 的有界 PL 2-球填充。
+    相对整直目前是 `_on_closedRegion`：环境同胚、闭区域内双向 PL、给定开集外恒同；全平面 PL 仍是缺口。
+    P.3 已有三角剖分多边形盘的两个几何自由三角形，P.5 已有多边形 θ-图区域分解；一般相对胞腔删除、
+    任意弧 4.4 和 Problem 4.1 未闭合。第二批只提供 6.2–6.3 的嵌入逼近，未覆盖 P.4 的 10.8，故没有导入。
+  - S.1：`a04d993c4` 整合 E3 的 frontier/边界点球邻域证明，适配 F 的规范边界不变性，
+    `PolyhedralBoundary.lean` 与 `FrontierBoundary.lean` 提供所有正维欧氏形式和流形形式。
+    AuditS3 含显式 ℝ³ 签名，六项均仅标准三公理；没有把重用 E3 的代码报告为独立新证明。
+  - P.2：`ff7fc67ca` 的 `BallFrontier.lean` 证明实际 frontier 上的 PL 球边界延拓，
+    `n = 1` 给平面 2-球形式，并证明 PL 球 frontier 的球面性；AuditS6 四项仅标准三公理。
+  - S.2 **partial**：`8a6995d74` 的 `PushProperty.lean` 证明 17.7；`b29c69f17` 的
+    `AmbientExtension.lean` / `ConeIsotopy.lean` 给相对多面体邻域中的顶点移动及锥顶连续路径移动；
+    `8c4d4fe91` 的 `SimplexBoundaryImage.lean` / `SimplexPush.lean` 闭合 17.4 的任意四面体面推送。
+    核对并修正计划原先的邻域写法：使用 `C \ J`，不取闭包，J 是盘的内在边界圈而非环境 frontier D。
+    AuditS4/S7/S8 全部仅标准三公理。17.5 的任意边界盘环境整直尚缺，17.6、17.8 依赖它；无占位证明债。
+  - 最终 11 个新增/修改原生模块逐一复查 exit=0、零警告；AuditS9 在同一环境中审计 50 个不同声明，
+    全部仅标准三公理、exit=0。未运行 lake build，未登记根聚合。
+    最终同步 F 至 `beed8bde4` 时使用普通合并保留已发布检查点，未重写历史或 force-push，
+    未将 S 分支合并到其它分支；精确消费状态和 §17.4–17.12 拟定陈述见 `PHASE3_APPROXIMATION_PLAN.md` §4.1–4.2。
+
 ## 7. 决策与风险
 
 - 不采用 Bing 定理 7 的“保留单形”强形式，只用 Moise §8/§35 的紧致图卡归纳（书中 `chap:two-set-gluing` 的方案）。

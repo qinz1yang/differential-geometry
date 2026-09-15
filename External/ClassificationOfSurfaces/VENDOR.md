@@ -272,3 +272,30 @@ supply the ambient, supported, control-function conclusion of P.4 (10.8).
 focused check with exit 0 and zero warnings. `AuditS2.lean` audits 14 bridge and
 headline declarations; every closure contains only `propext`, `Classical.choice`,
 and `Quot.sound`, and the audit exits 0.
+
+## Additional consumer audit and second-batch gate
+
+`AuditS5.lean` audits the stronger geometric-ear theorem
+`TriangleMesh.exists_two_geometricallyFreeTriangles_of_polygonalDisk` and the three
+`PolygonalTheta` declarations `disjoint_interior13_interior23`,
+`closedRegion13_inter_closedRegion23`, and `closedRegion_eq_union`. All four
+closures contain only `propext`, `Classical.choice`, and `Quot.sound`; audit exit 0.
+The geometric-ear theorem certifies the triangulated polygonal-disk case of P.3,
+not the general cell-decomposition or relative-subdisk forms of Moise 17.2–17.3.
+The theta results certify polygonal separation, not arbitrary-arc Theorem 4.4 or
+Problem 4.1. No second-batch module is imported: its finite-complex embedding
+approximation and polygon-family subdivision statements do not close P.4 or the
+remaining P.5 obligations. This audit changes no vendor Lean source.
+
+The later native `BallFrontier`, `PushProperty`, `AmbientExtension`, `ConeIsotopy`,
+`SimplexBoundaryImage`, and `SimplexPush` developments use the project's native
+PL and simplicial APIs. They do not copy additional upstream Lean proofs.
+Their source is not subject to the vendor style exception. In particular, the
+Moise 17.4 tetrahedral-face push uses relative PL extension and cone-apex motion;
+it neither assumes global PL behavior of the upstream relative Schoenflies map
+nor imports the second batch. Moise 17.5, 17.6, and 17.8 remain open in this lane.
+
+The final combined `AuditS9.lean` imports the planar bridge, boundary/frontier
+modules, and the tetrahedral push chain in one environment. Its 50 distinct
+declarations all have only the three standard foundational axioms; audit exit 0.
+All 11 changed native modules pass their final focused checks with zero warnings.
