@@ -10356,3 +10356,17 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Parametric.Add
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Jet.Bounds.LaplacianNorm
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Scalar.AddCircleLaplacianNorm
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Scalar.ProductDifference
+
+import DifferentialGeometry.Geometry.Connection.LeviCivita.Variation.Trace
+import DifferentialGeometry.Geometry.Operator.MetricTraceTimeDerivative
+import DifferentialGeometry.Geometry.Operator.Hessian.TimeDerivative
+import DifferentialGeometry.Geometry.Operator.Laplacian.TimeDerivative
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.Variation.Laplacian
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjugateHeat.Product
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Algebra.MetricShift
+import DifferentialGeometry.Geometry.Curvature.Bochner.Scalar.TensorFormula
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjugateHeat.PerelmanV
+import DifferentialGeometry.Geometry.Metric.RicciSoliton.PerelmanBracket
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.Potential.DensityInverse
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjugateHeat.HamiltonJacobi
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjugateHeat.RicciSoliton
