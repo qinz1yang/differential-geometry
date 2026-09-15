@@ -4736,4 +4736,149 @@ theorem IsPiecewiseAffineOn.exists_lipschitzWith_of_eq_zero_off [FiniteDimension
     exact ⟨Sum.inr ⟨⟨y, hyt⟩, i⟩, (hD y i).2.2 hxi⟩
   · exact ⟨Sum.inl (), hzero hx⟩
 
+theorem exists_isPolyhedron_neighborhood [FiniteDimensional ℝ E] {C U : Set E}
+    (hC : IsCompact C) (hU : IsOpen U) (hCU : C ⊆ U) :
+    ∃ P : Set E, IsPolyhedron P ∧ C ⊆ interior P ∧ P ⊆ U := by
+  classical
+  choose P hP hPU hPx using fun x : C => exists_isHPolytope_subset_mem_nhds (hU.mem_nhds (hCU x.property))
+  have hcover : C ⊆ ⋃ x : C, interior (P x) := by
+    intro x hx
+    exact mem_iUnion.mpr ⟨⟨x, hx⟩, mem_interior_iff_mem_nhds.mpr (hPx ⟨x, hx⟩)⟩
+  obtain ⟨t, ht⟩ := hC.elim_finite_subcover (fun x : C => interior (P x))
+    (fun _ => isOpen_interior) hcover
+  let Q : Set E := ⋃ x : t, P x
+  refine ⟨Q, IsPolyhedron.iUnion (fun x : t => (hP x).isPolyhedron), ?_, ?_⟩
+  · intro x hx
+    obtain ⟨y, hyt, hxy⟩ := mem_iUnion₂.mp (ht hx)
+    exact interior_mono (subset_iUnion (fun y : t => P y) ⟨y, hyt⟩) hxy
+  · exact iUnion_subset fun x => hPU x
+
+theorem convexHull_subset_of_mem_interior_subcomplex (K B : Geometry.SimplicialComplex ℝ E)
+    (hBK : B.faces ⊆ K.faces) {s : Finset E} (hs : s ∈ K.faces) {x : E}
+    (hx : x ∈ convexHull ℝ (s : Set E)) (hxB : x ∈ interior B.space) :
+    convexHull ℝ (s : Set E) ⊆ B.space := by
+  have hxcl : x ∈ closure (openSimplex s) :=
+    convexHull_subset_closure_openSimplex (K.nonempty_of_mem_faces hs) hx
+  obtain ⟨y, hyB, hys⟩ := mem_closure_iff.mp hxcl (interior B.space) isOpen_interior hxB
+  obtain ⟨t, ht, hyt⟩ := B.mem_space_iff.mp (interior_subset hyB)
+  have hst := face_subset_of_mem_openSimplex_of_mem_convexHull K hs (hBK ht) hys hyt
+  exact (convexHull_mono (Finset.coe_subset.mpr hst)).trans (B.convexHull_subset_space ht)
+
+open Classical in
+theorem exists_piecewiseAffine_lipschitz_extension_of_affineOn_faces [FiniteDimensional ℝ E]
+    {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
+    (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces] (f : E → F)
+    (hf : ∀ s ∈ K.faces, ∃ A : E →ᵃ[ℝ] F, EqOn f A (convexHull ℝ (s : Set E)))
+    {U : Set E} (hU : IsOpen U) (hKU : K.space ⊆ U) :
+    ∃ (g : E → F) (k : NNReal), IsPiecewiseAffineOn g univ ∧ LipschitzWith k g ∧
+      EqOn g f K.space ∧ EqOn g (fun _ => 0) Uᶜ ∧
+      ∀ x, g x ∈ convexHull ℝ (insert 0 (f '' K.space)) := by
+  obtain ⟨C, hC, hKC, hCU⟩ := exists_isPolyhedron_neighborhood (isPolyhedron_space K).isCompact hU hKU
+  obtain ⟨r, hr⟩ := hC.isCompact.isBounded.subset_ball (0 : E)
+  obtain ⟨T, hT, hTcard, hTP⟩ := exists_affineIndependent_openSimplex_superset
+    (Module.finrank ℝ E) rfl (isBounded_ball (x := (0 : E)) (r := r))
+  let P := simplexComplex T hT
+  have : Finite P.faces := (simplexComplex_faces_finite T hT).to_subtype
+  have hPspace : P.space = convexHull ℝ (T : Set E) :=
+    simplexComplex_space T hT (Finset.card_pos.mp (by omega))
+  have hCP : C ⊆ interior P.space := by
+    apply hr.trans
+    apply interior_maximal _ isOpen_ball
+    rw [hPspace]
+    exact hTP.trans (openSimplex_subset_convexHull T)
+  have hKP : K.space ⊆ P.space := (hKC.trans interior_subset).trans (hCP.trans interior_subset)
+  let Q : K.faces ⊕ Unit → Set E := Sum.elim
+    (fun s => convexHull ℝ ((s : Finset E) : Set E)) (fun _ => C)
+  have hQ : ∀ i, IsPolyhedron (Q i) := by
+    rintro (s | _)
+    · exact isPolyhedron_convexHull_of_affineIndependent _ (K.indep s.property)
+    · exact hC
+  have hQP : ∀ i, Q i ⊆ P.space := by
+    rintro (s | _)
+    · exact (K.convexHull_subset_space s.property).trans hKP
+    · exact hCP.trans interior_subset
+  obtain ⟨R, hR, hRfinite, hcover⟩ := exists_isSubdivision_subcomplexes P Q hQ hQP
+  have : Finite R.faces := hRfinite.to_subtype
+  have hRC : (restrict R C).space = C := restrict_space_of_eq_biUnion R C (hcover (Sum.inr ()))
+  let ψ : E → F := fun v => if v ∈ K.space then f v else 0
+  let g := simplicialMap R ψ
+  have hfix : EqOn g f K.space := by
+    intro x hx
+    obtain ⟨s, hs, hxs⟩ := K.mem_space_iff.mp hx
+    have hscover := hcover (Sum.inl ⟨s, hs⟩)
+    change convexHull ℝ (s : Set E) = _ at hscover
+    rw [hscover] at hxs
+    obtain ⟨t, ⟨ht, hts⟩, hxt⟩ := mem_iUnion₂.mp hxs
+    obtain ⟨A, hA⟩ := hf s hs
+    rw [show g x = ∑ v ∈ t, weights t x v • ψ v from simplicialMap_eq_of_mem R ψ ht hxt]
+    calc ∑ v ∈ t, weights t x v • ψ v = ∑ v ∈ t, weights t x v • A v := by
+          apply Finset.sum_congr rfl
+          intro v hv
+          have hvs := hts (subset_convexHull ℝ _ hv)
+          rw [show ψ v = f v from if_pos (K.convexHull_subset_space hs hvs), hA hvs]
+      _ = A (∑ v ∈ t, weights t x v • v) := (affineMap_apply_sum_smul A (sum_weights hxt)).symm
+      _ = f x := by rw [sum_weights_smul hxt, ← hA (hts hxt)]
+  have hzeroC : EqOn g (fun _ => 0) Cᶜ := by
+    intro x hxC
+    by_cases hxR : x ∈ R.space
+    · obtain ⟨s, hs, hxs⟩ := R.mem_space_iff.mp hxR
+      have hvs : ∀ v ∈ s, v ∉ K.space := by
+        intro v hv hvK
+        have hvC : v ∈ interior (restrict R C).space := by rw [hRC]; exact hKC hvK
+        have hsub := convexHull_subset_of_mem_interior_subcomplex R (restrict R C)
+          (restrict_faces_subset R C) hs (subset_convexHull ℝ _ hv) hvC
+        apply hxC
+        rw [← hRC]
+        exact hsub hxs
+      rw [show g x = ∑ v ∈ s, weights s x v • ψ v from simplicialMap_eq_of_mem R ψ hs hxs]
+      exact Finset.sum_eq_zero fun v hv => by rw [show ψ v = 0 from if_neg (hvs v hv), smul_zero]
+    · simp only [g, simplicialMap, carrierFace, dif_neg hxR, Finset.sum_empty]
+  have hgP : IsPiecewiseAffineOn g (interior P.space) :=
+    (isPiecewiseAffineOn_simplicialMap R ψ).mono isOpen_interior
+      (by rw [hR.space_eq]; exact interior_subset)
+  have hgC : IsPiecewiseAffineOn g Cᶜ :=
+    (isPiecewiseAffineOn_of_affine (AffineMap.const ℝ E (0 : F)) hC.isCompact.isClosed.isOpen_compl).congr hzeroC
+  have hg : IsPiecewiseAffineOn g univ := by
+    intro x _
+    by_cases hxP : x ∈ interior P.space
+    · have h : IsPiecewiseAffineWithinAt g (univ ∩ interior P.space) x := by
+        simpa only [univ_inter] using hgP x hxP
+      exact h.of_inter_of_mem_nhds (isOpen_interior.mem_nhds hxP)
+    · have hxC : x ∈ Cᶜ := fun hx => hxP (hCP hx)
+      have h : IsPiecewiseAffineWithinAt g (univ ∩ Cᶜ) x := by
+        simpa only [univ_inter] using hgC x hxC
+      exact h.of_inter_of_mem_nhds (hC.isCompact.isClosed.isOpen_compl.mem_nhds hxC)
+  obtain ⟨k, hk⟩ := hg.exists_lipschitzWith_of_eq_zero_off hC.isCompact hzeroC
+  refine ⟨g, k, hg, hk, hfix, hzeroC.mono (compl_subset_compl.mpr hCU), fun x => ?_⟩
+  have hmem : ∀ v, ψ v ∈ convexHull ℝ (insert 0 (f '' K.space)) := by
+    intro v
+    apply subset_convexHull ℝ _
+    by_cases hv : v ∈ K.space
+    · rw [show ψ v = f v from if_pos hv]
+      exact Or.inr ⟨v, hv, rfl⟩
+    · rw [show ψ v = 0 from if_neg hv]
+      exact mem_insert 0 _
+  by_cases hxR : x ∈ R.space
+  · obtain ⟨s, hs, hxs⟩ := R.mem_space_iff.mp hxR
+    rw [show g x = ∑ v ∈ s, weights s x v • ψ v from simplicialMap_eq_of_mem R ψ hs hxs]
+    exact (convex_convexHull ℝ _).sum_mem (fun v hv => weights_nonneg hxs hv) (sum_weights hxs)
+      (fun v _ => hmem v)
+  · simp only [g, simplicialMap, carrierFace, dif_neg hxR, Finset.sum_empty]
+    exact subset_convexHull ℝ _ (mem_insert 0 _)
+
+theorem IsPiecewiseAffineOn.exists_lipschitz_extension [FiniteDimensional ℝ E]
+    {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F] {f : E → F} {P U : Set E}
+    (hf : IsPiecewiseAffineOn f P) (hP : IsPolyhedron P) (hU : IsOpen U) (hPU : P ⊆ U) :
+    ∃ (g : E → F) (k : NNReal), IsPiecewiseAffineOn g univ ∧ LipschitzWith k g ∧
+      EqOn g f P ∧ EqOn g (fun _ => 0) Uᶜ ∧ ∀ x, g x ∈ convexHull ℝ (insert 0 (f '' P)) := by
+  obtain ⟨K, hfinite, hspace⟩ := hP.exists_simplicialComplex
+  have : Finite K.faces := hfinite.to_subtype
+  have hfK : IsPiecewiseAffineOn f K.space := by rwa [hspace]
+  obtain ⟨K', hK', hfinite', hfaces⟩ := hfK.exists_isSubdivision_affineOn_faces K
+  have : Finite K'.faces := hfinite'.to_subtype
+  have hspace' : K'.space = P := hK'.space_eq.trans hspace
+  have hKU : K'.space ⊆ U := hspace' ▸ hPU
+  simpa only [hspace'] using
+    exists_piecewiseAffine_lipschitz_extension_of_affineOn_faces K' f hfaces hU hKU
+
 end DifferentialGeometry.Topology.PiecewiseLinear
