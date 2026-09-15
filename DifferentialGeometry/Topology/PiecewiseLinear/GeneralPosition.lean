@@ -4881,4 +4881,234 @@ theorem IsPiecewiseAffineOn.exists_lipschitz_extension [FiniteDimensional ℝ E]
   simpa only [hspace'] using
     exists_piecewiseAffine_lipschitz_extension_of_affineOn_faces K' f hfaces hU hKU
 
+theorem IsPiecewiseAffineOn.sum [FiniteDimensional ℝ E]
+    {F ι : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F] (t : Finset ι) {U : Set E}
+    (hU : IsOpen U) {f : ι → E → F} (hf : ∀ i ∈ t, IsPiecewiseAffineOn (f i) U) :
+    IsPiecewiseAffineOn (fun x => ∑ i ∈ t, f i x) U := by
+  classical
+  induction t using Finset.induction_on with
+  | empty =>
+    simpa only [Finset.sum_empty] using
+      (isPiecewiseAffineOn_of_affine (AffineMap.const ℝ E (0 : F)) hU).congr
+        (g := fun _ => (0 : F)) (fun _ _ => rfl)
+  | @insert i t hi ih =>
+    have ht := ih (fun j hj => hf j (Finset.mem_insert_of_mem hj))
+    simpa only [Finset.sum_insert hi] using (hf i (Finset.mem_insert_self i t)).add ht
+
+open Classical in
+theorem sum_vertex_functions_smul_eq_simplicialMap {F : Type*}
+    [NormedAddCommGroup F] [NormedSpace ℝ F] (K : Geometry.SimplicialComplex ℝ E)
+    (V : Finset E) (hV : K.vertices ⊆ (V : Set E)) (b : E → E → ℝ)
+    (hb : ∀ v ∈ V, EqOn (b v) (simplicialMap K (fun w => if w = v then 1 else 0)) K.space)
+    (φ : E → F) {x : E} (hx : x ∈ K.space) :
+    ∑ v ∈ V, b v x • φ v = simplicialMap K φ x := by
+  obtain ⟨s, hs, hxs⟩ := K.mem_space_iff.mp hx
+  have hsV : s ⊆ V := by
+    intro v hv
+    exact hV (K.down_closed hs (Finset.singleton_subset_iff.mpr hv) (Finset.singleton_nonempty v))
+  rw [simplicialMap_eq_of_mem K φ hs hxs]
+  calc ∑ v ∈ V, b v x • φ v =
+        ∑ v ∈ V, (∑ w ∈ s, weights s x w • (if w = v then (1 : ℝ) else 0)) • φ v := by
+          apply Finset.sum_congr rfl
+          intro v hv
+          rw [hb v hv hx, simplicialMap_eq_of_mem K _ hs hxs]
+    _ = ∑ w ∈ s, weights s x w • φ w := by
+      simp_rw [Finset.sum_smul, smul_eq_mul, mul_ite, mul_one, mul_zero, ite_smul, zero_smul]
+      rw [Finset.sum_comm]
+      apply Finset.sum_congr rfl
+      intro w hw
+      simp [hsV hw]
+
+open Classical in
+theorem exists_piecewiseAffine_lipschitz_vertex_function [FiniteDimensional ℝ E]
+    (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces] (v : E)
+    {U : Set E} (hU : IsOpen U) (hKU : K.space ⊆ U) :
+    ∃ (b : E → ℝ) (k : NNReal), IsPiecewiseAffineOn b univ ∧ LipschitzWith k b ∧
+      EqOn b (simplicialMap K (fun w => if w = v then 1 else 0)) K.space ∧
+      EqOn b (fun _ => 0) Uᶜ ∧ ∀ x, 0 ≤ b x ∧ b x ≤ 1 := by
+  let f := simplicialMap K (fun w => if w = v then (1 : ℝ) else 0)
+  obtain ⟨b, k, hb, hk, hfix, hzero, hrange⟩ :=
+    (isPiecewiseAffineOn_simplicialMap K (fun w => if w = v then (1 : ℝ) else 0)).exists_lipschitz_extension
+      (isPolyhedron_space K) hU hKU
+  have hf : ∀ x ∈ K.space, f x ∈ Icc (0 : ℝ) 1 := by
+    intro x hx
+    obtain ⟨s, hs, hxs⟩ := K.mem_space_iff.mp hx
+    rw [show f x = ∑ w ∈ s, weights s x w • (if w = v then (1 : ℝ) else 0) from
+      simplicialMap_eq_of_mem K _ hs hxs]
+    apply (convex_Icc (𝕜 := ℝ) (0 : ℝ) 1).sum_mem (fun w hw => weights_nonneg hxs hw) (sum_weights hxs)
+    intro w _
+    split_ifs <;> norm_num
+  refine ⟨b, k, hb, hk, hfix, hzero, fun x => ?_⟩
+  change b x ∈ Icc (0 : ℝ) 1
+  apply convexHull_min _ (convex_Icc (𝕜 := ℝ) (0 : ℝ) 1) (hrange x)
+  rintro y (rfl | ⟨z, hz, rfl⟩)
+  · exact ⟨le_rfl, zero_le_one⟩
+  · exact hf z hz
+
+open Classical in
+theorem exists_isPLHomeomorphOn_extension_of_small_vertex_perturbation [FiniteDimensional ℝ E]
+    (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces] {U : Set E}
+    (hU : IsOpen U) (hKU : K.space ⊆ U) {ε : ℝ} (hε : 0 < ε) :
+    ∃ δ : ℝ, 0 < δ ∧ ∀ φ : E → E, (∀ v ∈ K.vertices, dist (φ v) v < δ) →
+      ∃ h : E → E, IsPLHomeomorphOn h univ univ ∧ (∀ x, dist (h x) x < ε) ∧
+        EqOn h id Uᶜ ∧ EqOn h (simplicialMap K φ) K.space := by
+  choose b k hb hk hfix hzero hbound using fun v : E =>
+    exists_piecewiseAffine_lipschitz_vertex_function K v hU hKU
+  have hvertices : K.vertices.Finite :=
+    Set.Finite.preimage Finset.singleton_injective.injOn (Set.toFinite K.faces)
+  let V := hvertices.toFinset
+  have hV : K.vertices ⊆ (V : Set E) := fun _ hv => hvertices.mem_toFinset.mpr hv
+  have hV' : ∀ v ∈ V, v ∈ K.vertices := fun _ hv => hvertices.mem_toFinset.mp hv
+  let C : ℝ := ∑ v ∈ V, (k v : ℝ)
+  have hC : 0 ≤ C := Finset.sum_nonneg fun v _ => (k v).property
+  let δ : ℝ := min (ε / ((V.card : ℝ) + 1)) (1 / (2 * (C + 1)))
+  have hδ : 0 < δ := lt_min (div_pos hε (by positivity)) (by positivity)
+  have hδN : (V.card : ℝ) * δ < ε := by
+    have h := (le_div_iff₀ (show 0 < (V.card : ℝ) + 1 by positivity)).mp (min_le_left
+      (ε / ((V.card : ℝ) + 1)) (1 / (2 * (C + 1))))
+    change δ * ((V.card : ℝ) + 1) ≤ ε at h
+    nlinarith
+  have hδC : C * δ < 1 := by
+    have h := (le_div_iff₀ (show 0 < 2 * (C + 1) by positivity)).mp (min_le_right
+      (ε / ((V.card : ℝ) + 1)) (1 / (2 * (C + 1))))
+    change δ * (2 * (C + 1)) ≤ 1 at h
+    nlinarith
+  refine ⟨δ, hδ, fun φ hφ => ?_⟩
+  let d : E → E := fun x => ∑ v ∈ V, b v x • (φ v - v)
+  let kd : NNReal := ⟨C * δ, mul_nonneg hC hδ.le⟩
+  have hnorm : ∀ v ∈ V, ‖φ v - v‖ ≤ δ := by
+    intro v hv
+    simpa only [dist_eq_norm] using (hφ v (hV' v hv)).le
+  have hd : IsPiecewiseAffineOn d univ := by
+    apply IsPiecewiseAffineOn.sum V isOpen_univ
+    intro v _
+    exact ((hb v).affine_comp (LinearMap.toSpanSingleton ℝ E (φ v - v)).toAffineMap).congr
+      (fun _ _ => rfl)
+  have hdlip : LipschitzWith kd d := by
+    apply LipschitzWith.of_dist_le_mul
+    intro x y
+    change dist (∑ v ∈ V, b v x • (φ v - v)) (∑ v ∈ V, b v y • (φ v - v)) ≤ _
+    rw [dist_eq_norm, ← Finset.sum_sub_distrib]
+    calc ‖∑ v ∈ V, (b v x • (φ v - v) - b v y • (φ v - v))‖ ≤
+          ∑ v ∈ V, ‖b v x • (φ v - v) - b v y • (φ v - v)‖ := norm_sum_le _ _
+      _ ≤ ∑ v ∈ V, (k v : ℝ) * δ * dist x y := by
+        apply Finset.sum_le_sum
+        intro v hv
+        rw [← sub_smul, norm_smul, Real.norm_eq_abs, ← Real.dist_eq]
+        calc dist (b v x) (b v y) * ‖φ v - v‖ ≤ ((k v : ℝ) * dist x y) * δ :=
+            mul_le_mul ((hk v).dist_le_mul x y) (hnorm v hv) (norm_nonneg _)
+              (mul_nonneg (k v).property dist_nonneg)
+          _ = (k v : ℝ) * δ * dist x y := by ring
+      _ = kd * dist x y := by rw [← Finset.sum_mul, ← Finset.sum_mul]; rfl
+  have hdnorm : ∀ x, ‖d x‖ < ε := by
+    intro x
+    apply lt_of_le_of_lt _ hδN
+    calc ‖d x‖ ≤ ∑ v ∈ V, ‖b v x • (φ v - v)‖ := norm_sum_le _ _
+      _ ≤ ∑ _v ∈ V, δ := by
+        apply Finset.sum_le_sum
+        intro v hv
+        rw [norm_smul, Real.norm_eq_abs, abs_of_nonneg (hbound v x).1]
+        calc b v x * ‖φ v - v‖ ≤ 1 * δ :=
+            mul_le_mul (hbound v x).2 (hnorm v hv) (norm_nonneg _) zero_le_one
+          _ = δ := one_mul _
+      _ = (V.card : ℝ) * δ := by rw [Finset.sum_const, nsmul_eq_mul]
+  refine ⟨fun x => x + d x, isPLHomeomorphOn_id_add_of_lipschitz hd hdlip hδC, ?_, ?_, ?_⟩
+  · intro x
+    simpa only [dist_eq_norm, add_sub_cancel_left] using hdnorm x
+  · intro x hx
+    have hd0 : d x = 0 := Finset.sum_eq_zero fun v _ => by rw [hzero v hx, zero_smul]
+    change x + d x = x
+    rw [hd0, add_zero]
+  · intro x hx
+    have hdmap : d x = simplicialMap K (fun v => φ v - v) x :=
+      sum_vertex_functions_smul_eq_simplicialMap K V hV b (fun v _ => hfix v) _ hx
+    obtain ⟨s, hs, hxs⟩ := K.mem_space_iff.mp hx
+    have hsub : simplicialMap K (fun v => φ v - v) x = simplicialMap K φ x - x := by
+      rw [simplicialMap_eq_of_mem K _ hs hxs, simplicialMap_eq_of_mem K φ hs hxs]
+      simp_rw [smul_sub]
+      rw [Finset.sum_sub_distrib, sum_weights_smul hxs]
+    change x + d x = simplicialMap K φ x
+    rw [hdmap, hsub]
+    abel
+
+open Classical in
+theorem exists_small_homeomorph_generalPosition_relative [FiniteDimensional ℝ E]
+    (K B L : Geometry.SimplicialComplex ℝ E) [Finite K.faces] [Finite L.faces]
+    (hBK : B.faces ⊆ K.faces) (hK : IsCombinatorialManifoldWithBoundary 2 K)
+    (hL : IsCombinatorialManifoldWithBoundary 2 L) (hdimE : Module.finrank ℝ E = 3)
+    (hB : ∀ s ∈ B.faces, ∀ t ∈ L.faces,
+      (convexHull ℝ (s : Set E) ∩ convexHull ℝ (t : Set E)).Nonempty →
+        vectorSpan ℝ (s : Set E) ⊔ vectorSpan ℝ (t : Set E) = ⊤)
+    {U : Set E} (hU : IsOpen U) (hKU : K.space ⊆ U) {ε : ℝ} (hε : 0 < ε) :
+    ∃ (h : E → E) (G : Geometry.SimplicialComplex ℝ E),
+      IsPLHomeomorphOn h univ univ ∧ (∀ x, dist (h x) x < ε) ∧ EqOn h id Uᶜ ∧ EqOn h id B.space ∧
+        G.faces.Finite ∧ G.space = h '' K.space ∩ L.space ∧
+          IsCombinatorialManifoldWithBoundary 1 G ∧
+          ∀ x ∈ h '' K.space ∩ L.space, HasPLCrossingAt (h '' K.space) L.space x := by
+  have : Finite B.faces := ((Set.toFinite K.faces).subset hBK).to_subtype
+  let hc := centroid_mem_openSimplex_of_mem_faces K
+  let R := relDerived hBK (IsSubdivision.refl B) hc
+  have hR : IsSubdivision R K := relDerived_isSubdivision hBK (IsSubdivision.refl B) hc
+  have : Finite R.faces := (relDerived_faces_finite hBK (IsSubdivision.refl B) hc).to_subtype
+  have hBR : B.faces ⊆ R.faces := faces_subset_relDerived hBK (IsSubdivision.refl B) hc
+  have hRman : IsCombinatorialManifoldWithBoundary 2 R := hK.of_isSubdivision hR
+  have hRU : R.space ⊆ U := by rwa [hR.space_eq]
+  obtain ⟨δ, hδ, hext⟩ := exists_isPLHomeomorphOn_extension_of_small_vertex_perturbation R hU hRU hε
+  have hcard : ∀ s ∈ R.faces, s.card ≤ Module.finrank ℝ E + 1 := by
+    intro s hs
+    have h := hRman.card_le R hs
+    omega
+  have hfixed : ∀ s ∈ R.faces, (s : Set E) ⊆ B.vertices →
+      AffineIndependent ℝ (fun v : s => id (v : E)) ∧
+        ∀ t ∈ L.faces, (convexHull ℝ (s.image id : Set E) ∩ convexHull ℝ (t : Set E)).Nonempty →
+          vectorSpan ℝ (s.image id : Set E) ⊔ vectorSpan ℝ (t : Set E) = ⊤ := by
+    intro s hs hsub
+    have hsB := mem_faces_of_mem_relDerived_of_forall_singleton_mem hBK (IsSubdivision.refl B)
+      hc hs (fun v hv => hsub hv)
+    refine ⟨R.indep hs, ?_⟩
+    simpa only [Finset.image_id] using hB s hsB
+  obtain ⟨φ, hφfix, hφclose, hgood⟩ :=
+    exists_small_vertexMap_transverse_relative R L hcard id B.vertices hfixed hδ
+  obtain ⟨h, hh, hclose, hzero, hagree⟩ := hext φ (fun v _ => hφclose v)
+  have hinj : InjOn (simplicialMap R φ) R.space := by
+    intro x hx y hy hxy
+    apply hh.bijOn.injOn (mem_univ x) (mem_univ y)
+    rw [hagree hx, hagree hy]
+    exact hxy
+  have hind : ∀ s ∈ R.faces, AffineIndependent ℝ ((↑) : ↥(s.image φ : Set E) → E) := by
+    intro s hs
+    exact ((affineIndependent_image_iff s φ).mp (hgood s hs).1).2
+  let M := simplicialImage R φ hind hinj
+  have : Finite M.faces := (simplicialImage_faces_finite R φ hind hinj).to_subtype
+  have hMman : IsCombinatorialManifoldWithBoundary 2 M :=
+    hRman.of_isPLHomeomorphOn (isPLHomeomorphOn_simplicialImage R φ hind hinj)
+  have hMspace : M.space = h '' K.space := by
+    rw [simplicialImage_space]
+    have himage : simplicialMap R φ '' R.space = h '' R.space := image_congr hagree.symm
+    rw [himage, hR.space_eq]
+  have htrans : ∀ s ∈ M.faces, ∀ t ∈ L.faces,
+      (convexHull ℝ (s : Set E) ∩ convexHull ℝ (t : Set E)).Nonempty →
+        vectorSpan ℝ (s : Set E) ⊔ vectorSpan ℝ (t : Set E) = ⊤ := by
+    rintro _ ⟨s, hs, rfl⟩ t ht hinter
+    exact (hgood s hs).2 t ht hinter
+  obtain ⟨G, hGfinite, hGspace, hGman⟩ :=
+    exists_isCombinatorialManifoldWithBoundary_inter_of_transverse_faces M L hMman hL hdimE htrans
+  rw [hMspace] at hGspace
+  refine ⟨h, G, hh, hclose, hzero, ?_, hGfinite, hGspace, hGman, ?_⟩
+  · intro x hx
+    obtain ⟨s, hs, hxs⟩ := B.mem_space_iff.mp hx
+    have hxR : x ∈ R.space := R.convexHull_subset_space (hBR hs) hxs
+    change h x = x
+    rw [hagree hxR, simplicialMap_eq_of_mem R φ (hBR hs) hxs]
+    calc ∑ v ∈ s, weights s x v • φ v = ∑ v ∈ s, weights s x v • v := by
+          apply Finset.sum_congr rfl
+          intro v hv
+          rw [hφfix (B.down_closed hs (Finset.singleton_subset_iff.mpr hv) (Finset.singleton_nonempty v))]
+          rfl
+      _ = x := sum_weights_smul hxs
+  · intro x hx
+    have hxM : x ∈ M.space ∩ L.space := by rwa [hMspace]
+    have hcross := hasPLCrossingAt_of_transverse_faces M L hMman hL hdimE htrans hxM
+    rwa [hMspace] at hcross
+
 end DifferentialGeometry.Topology.PiecewiseLinear
