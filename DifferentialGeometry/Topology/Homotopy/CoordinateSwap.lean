@@ -118,29 +118,93 @@ private theorem squareSwapParam_one (v : Fin 2 → unitInterval) :
     simp [squareSwapRaw, squareSwapDenom]
 
 
+private def cubeSwapParam {N : Type*} [DecidableEq N] (i j : N) :
+    C(unitInterval × (N → unitInterval), N → unitInterval) where
+  toFun p k := if k = i then squareSwapParam (p.1, ![p.2 i, p.2 j]) 0
+    else if k = j then squareSwapParam (p.1, ![p.2 i, p.2 j]) 1 else p.2 k
+  continuous_toFun := by
+    apply continuous_pi
+    intro k
+    split_ifs <;> fun_prop
+
+private theorem cubeSwapParam_boundary {N : Type*} [DecidableEq N] (i j : N) (hij : i ≠ j)
+    (r : unitInterval) (v : N → unitInterval) (hv : v ∈ Cube.boundary N) :
+    cubeSwapParam i j (r,v) ∈ Cube.boundary N := by
+  obtain ⟨k,hk⟩ := hv
+  by_cases hki : k = i
+  · subst k
+    have hb : (![v i,v j] : Fin 2 → unitInterval) ∈ Cube.boundary (Fin 2) := ⟨0, by simpa using hk⟩
+    obtain ⟨a,ha⟩ := squareSwapParam_boundary r ![v i,v j] hb
+    fin_cases a
+    · exact ⟨i, by simpa [cubeSwapParam] using ha⟩
+    · exact ⟨j, by simpa [cubeSwapParam, hij.symm] using ha⟩
+  · by_cases hkj : k = j
+    · subst k
+      have hb : (![v i,v j] : Fin 2 → unitInterval) ∈ Cube.boundary (Fin 2) := ⟨1, by simpa using hk⟩
+      obtain ⟨a,ha⟩ := squareSwapParam_boundary r ![v i,v j] hb
+      fin_cases a
+      · exact ⟨i, by simpa [cubeSwapParam] using ha⟩
+      · exact ⟨j, by simpa [cubeSwapParam, hij.symm] using ha⟩
+    · exact ⟨k, by simpa [cubeSwapParam, hki, hkj] using hk⟩
+
+private theorem cubeSwapParam_zero {N : Type*} [DecidableEq N] (i j : N) (hij : i ≠ j)
+    (v : N → unitInterval) : cubeSwapParam i j (0,v) = fun k => v ((Equiv.swap i j) k) := by
+  funext k
+  by_cases hki : k = i
+  · subst k
+    simp [cubeSwapParam, squareSwapParam_zero]
+  · by_cases hkj : k = j
+    · subst k
+      simp [cubeSwapParam, squareSwapParam_zero, hij.symm]
+    · simp [cubeSwapParam, hki, hkj, Equiv.swap_apply_of_ne_of_ne hki hkj]
+
+private theorem cubeSwapParam_one {N : Type*} [DecidableEq N] (i j : N) (hij : i ≠ j)
+    (v : N → unitInterval) :
+    cubeSwapParam i j (1,v) = fun k => if k = i then unitInterval.symm (v i) else v k := by
+  funext k
+  by_cases hki : k = i
+  · subst k
+    simp [cubeSwapParam, squareSwapParam_one]
+  · by_cases hkj : k = j
+    · subst k
+      simp [cubeSwapParam, squareSwapParam_one, hij.symm]
+    · simp [cubeSwapParam, hki, hkj]
+
+def genLoopSwapHomotopyRelOfNe {N X : Type*} [DecidableEq N] [TopologicalSpace X] {x : X}
+    (i j : N) (hij : i ≠ j) (p : GenLoop N X x) :
+    (GenLoop.congr x (Equiv.swap i j) p).val.HomotopyRel
+      (GenLoop.symmAt i p).val (Cube.boundary N) where
+  toContinuousMap := p.val.comp (cubeSwapParam i j)
+  map_zero_left v := by
+    change p (cubeSwapParam i j (0,v)) = _
+    rw [cubeSwapParam_zero i j hij]
+    rfl
+  map_one_left v := by
+    change p (cubeSwapParam i j (1,v)) = _
+    rw [cubeSwapParam_one i j hij]
+    rfl
+  prop' r v hv := by
+    change p (cubeSwapParam i j (r,v)) = _
+    rw [GenLoop.boundary p _ (cubeSwapParam_boundary i j hij r v hv)]
+    exact (GenLoop.boundary (GenLoop.congr x (Equiv.swap i j) p) v hv).symm
+
+theorem homotopyGroup_swap_eq_inv_of_ne {N X : Type*} [DecidableEq N] [TopologicalSpace X]
+    {x : X} (i j : N) (hij : i ≠ j) (p : GenLoop N X x) [Nonempty N] :
+    (⟦GenLoop.congr x (Equiv.swap i j) p⟧ : HomotopyGroup N X x) =
+      ((⟦p⟧)⁻¹ : HomotopyGroup N X x) := by
+  rw [HomotopyGroup.inv_spec (i := i)]
+  exact Quotient.sound ⟨genLoopSwapHomotopyRelOfNe i j hij p⟩
+
 def genLoopSwapHomotopyRel {X : Type*} [TopologicalSpace X] {x : X}
     (p : GenLoop (Fin 2) X x) :
     (GenLoop.congr x (Equiv.swap (0 : Fin 2) 1) p).val.HomotopyRel
-      (GenLoop.symmAt 0 p).val (Cube.boundary (Fin 2)) where
-  toContinuousMap := p.val.comp squareSwapParam
-  map_zero_left v := by
-    change p (squareSwapParam (0, v)) = _
-    rw [squareSwapParam_zero]
-    rfl
-  map_one_left v := by
-    change p (squareSwapParam (1, v)) = _
-    rw [squareSwapParam_one]
-    rfl
-  prop' r v hv := by
-    change p (squareSwapParam (r, v)) = _
-    rw [GenLoop.boundary p _ (squareSwapParam_boundary r v hv)]
-    exact (GenLoop.boundary (GenLoop.congr x (Equiv.swap (0 : Fin 2) 1) p) v hv).symm
+      (GenLoop.symmAt 0 p).val (Cube.boundary (Fin 2)) :=
+  genLoopSwapHomotopyRelOfNe 0 1 (by decide) p
 
 theorem homotopyGroup_swap_eq_inv {X : Type*} [TopologicalSpace X] {x : X}
     (p : GenLoop (Fin 2) X x) :
     (⟦GenLoop.congr x (Equiv.swap (0 : Fin 2) 1) p⟧ : HomotopyGroup (Fin 2) X x) =
-      ((⟦p⟧)⁻¹ : HomotopyGroup (Fin 2) X x) := by
-  rw [HomotopyGroup.inv_spec (i := (0 : Fin 2))]
-  exact Quotient.sound ⟨genLoopSwapHomotopyRel p⟩
+      ((⟦p⟧)⁻¹ : HomotopyGroup (Fin 2) X x) :=
+  homotopyGroup_swap_eq_inv_of_ne 0 1 (by decide) p
 
 end DifferentialGeometry.Topology
