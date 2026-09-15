@@ -851,6 +851,29 @@ theorem IsCombinatorialManifoldWithBoundary.codimension_one_cofaces [FiniteDimen
   exact hlink.symm.imp isPLBall_zero_iff.mp isPLSphere_zero_iff.mp
 
 open Classical in
+theorem IsCombinatorialManifoldWithBoundary.codimension_one_cofaces_of_notMem_boundary [FiniteDimensional ℝ E]
+    {n : ℕ} (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
+    (hK : IsCombinatorialManifoldWithBoundary (n + 1) K) {s : Finset E} (hs : s ∈ K.faces)
+    (hcard : s.card = n + 1) (hsB : s ∉ (boundaryComplex (n + 1) K).faces) :
+    ∃ a b, a ≠ b ∧ {w | w ∉ s ∧ insert w s ∈ K.faces} = {a, b} := by
+  have hlink := hK.isPLSphere_or_isPLBall_geometricLink K hs hcard le_rfl
+  rw [Nat.sub_self] at hlink
+  have hsphere : IsPLSphere 0 (SimplicialComplex.geometricLink K s).space := by
+    rcases hlink with h | h
+    · exact h
+    · apply False.elim
+      apply hsB
+      apply (hK.mem_boundaryComplex_faces_iff K).mpr
+      refine ⟨hs, hcard.le, ?_⟩
+      simpa only [hcard, Nat.sub_self] using h
+  have hbound : ∀ u ∈ K.faces, s ⊆ u → u.card ≤ s.card + 1 := by
+    intro u hu _
+    rw [hcard]
+    exact hK.card_le K hu
+  rw [geometricLink_space_eq_coface_vertices_of_card_le K s hbound] at hsphere
+  exact isPLSphere_zero_iff.mp hsphere
+
+open Classical in
 theorem eventually_mem_openSimplex_insert_of_mem_vectorSpan {s : Finset E} {x d w : E}
     (hx : x ∈ openSimplex s) (hd : d ∈ vectorSpan ℝ (s : Set E)) (hw : w ∉ s) :
     ∀ᶠ t : ℝ in 𝓝 0, 0 < t → x + t • (w - x + d) ∈ openSimplex (insert w s) := by
@@ -1459,6 +1482,97 @@ theorem neighbors_singleton_or_pair_of_transverse_face [FiniteDimensional ℝ E]
       rw [htc]
       exact hL.card_le L hu
     exact Or.inr (neighbors_eq_pair_of_finrank_inter_eq_one K L G hcard hspace hcarrier
+      hs ht hsmax htmax hxs hxt hxG hinf)
+
+open Classical in
+theorem neighbors_eq_pair_of_transverse_face [FiniteDimensional ℝ E]
+    (K L G : Geometry.SimplicialComplex ℝ E) [Finite K.faces] [Finite L.faces] [Finite G.faces]
+    {m n : ℕ} (hK : IsCombinatorialManifoldWithBoundary (m + 1) K)
+    (hL : IsCombinatorialManifoldWithBoundary (n + 1) L)
+    (hdimE : Module.finrank ℝ E = m + n + 1) (hcard : ∀ u ∈ G.faces, u.card ≤ 2)
+    (hspace : G.space = K.space ∩ L.space)
+    (hcarrier : ∀ u ∈ G.faces, ∃ v ∈ K.faces, ∃ z ∈ L.faces,
+      convexHull ℝ (u : Set E) ⊆ convexHull ℝ (v : Set E) ∩ convexHull ℝ (z : Set E))
+    {s t : Finset E} (hs : s ∈ K.faces) (ht : t ∈ L.faces) {x : E}
+    (hxs : x ∈ openSimplex s) (hxt : x ∈ openSimplex t) (hxG : {x} ∈ G.faces)
+    (hst : vectorSpan ℝ (s : Set E) ⊔ vectorSpan ℝ (t : Set E) = ⊤)
+    (hxK : x ∉ (boundaryComplex (m + 1) K).space) (hxL : x ∉ (boundaryComplex (n + 1) L).space) :
+    ∃ a b, a ≠ b ∧ {y | y ≠ x ∧ {x, y} ∈ G.faces} = {a, b} := by
+  have hfaceRank : ∀ (P : Geometry.SimplicialComplex ℝ E) (u : Finset E), u ∈ P.faces →
+      Module.finrank ℝ (vectorSpan ℝ (u : Set E)) + 1 = u.card := by
+    intro P u hu
+    obtain ⟨v, hv⟩ := P.nonempty_of_mem_faces hu
+    have : Nonempty u := ⟨⟨v, hv⟩⟩
+    have hrange : Set.range ((↑) : u → E) = (u : Set E) := by ext q; simp
+    have h := (P.indep hu).finrank_vectorSpan_add_one
+    change Module.finrank ℝ (vectorSpan ℝ (Set.range ((↑) : u → E))) + 1 = Fintype.card u at h
+    rw [hrange] at h
+    simpa only [Fintype.card_coe] using h
+  have hsRank := hfaceRank K s hs
+  have htRank := hfaceRank L t ht
+  have hdim := Submodule.finrank_sup_add_finrank_inf_eq
+    (vectorSpan ℝ (s : Set E)) (vectorSpan ℝ (t : Set E))
+  rw [hst] at hdim
+  have hdim' : Module.finrank ℝ E +
+      Module.finrank ℝ (vectorSpan ℝ (s : Set E) ⊓ vectorSpan ℝ (t : Set E) : Submodule ℝ E) =
+        Module.finrank ℝ (vectorSpan ℝ (s : Set E)) +
+          Module.finrank ℝ (vectorSpan ℝ (t : Set E)) := by simpa using hdim
+  have hsbound := hK.card_le K hs
+  have htbound := hL.card_le L ht
+  have hcases : (s.card = m + 1 ∧ t.card = n + 2) ∨
+      (s.card = m + 2 ∧ t.card = n + 1) ∨ (s.card = m + 2 ∧ t.card = n + 2) := by omega
+  rcases hcases with ⟨hsc, htc⟩ | ⟨hsc, htc⟩ | ⟨hsc, htc⟩
+  · have hinf : Module.finrank ℝ
+        (vectorSpan ℝ (s : Set E) ⊓ vectorSpan ℝ (t : Set E) : Submodule ℝ E) = 0 := by omega
+    have hcompl : IsCompl (vectorSpan ℝ (s : Set E)) (vectorSpan ℝ (t : Set E)) :=
+      IsCompl.of_eq (Submodule.finrank_eq_zero.mp hinf) hst
+    have htmax : ∀ u ∈ L.faces, t ⊆ u → u.card ≤ t.card := by
+      intro u hu _
+      rw [htc]
+      exact hL.card_le L hu
+    have hsB : s ∉ (boundaryComplex (m + 1) K).faces := fun h =>
+      hxK ((boundaryComplex (m + 1) K).convexHull_subset_space h (openSimplex_subset_convexHull s hxs))
+    obtain ⟨a, b, hab, hcofaces⟩ := hK.codimension_one_cofaces_of_notMem_boundary K hs hsc hsB
+    have hsmax : ∀ u ∈ K.faces, s ⊆ u → u.card ≤ s.card + 1 := by
+      intro u hu _
+      rw [hsc]
+      exact hK.card_le K hu
+    exact neighbors_eq_pair_of_transverse_cofaces K L G hcard hspace hcarrier hs ht hsmax htmax
+      hxs hxt hxG hcompl hab hcofaces
+  · have hinf : Module.finrank ℝ
+        (vectorSpan ℝ (s : Set E) ⊓ vectorSpan ℝ (t : Set E) : Submodule ℝ E) = 0 := by omega
+    have hcompl : IsCompl (vectorSpan ℝ (s : Set E)) (vectorSpan ℝ (t : Set E)) :=
+      IsCompl.of_eq (Submodule.finrank_eq_zero.mp hinf) hst
+    have hsmax : ∀ u ∈ K.faces, s ⊆ u → u.card ≤ s.card := by
+      intro u hu _
+      rw [hsc]
+      exact hK.card_le K hu
+    have hspace' : G.space = L.space ∩ K.space := hspace.trans (Set.inter_comm _ _)
+    have hcarrier' : ∀ u ∈ G.faces, ∃ v ∈ L.faces, ∃ z ∈ K.faces,
+        convexHull ℝ (u : Set E) ⊆ convexHull ℝ (v : Set E) ∩ convexHull ℝ (z : Set E) := by
+      intro u hu
+      obtain ⟨v, hv, z, hz, hsub⟩ := hcarrier u hu
+      exact ⟨z, hz, v, hv, fun q hq => (hsub hq).symm⟩
+    have htB : t ∉ (boundaryComplex (n + 1) L).faces := fun h =>
+      hxL ((boundaryComplex (n + 1) L).convexHull_subset_space h (openSimplex_subset_convexHull t hxt))
+    obtain ⟨a, b, hab, hcofaces⟩ := hL.codimension_one_cofaces_of_notMem_boundary L ht htc htB
+    have htmax : ∀ u ∈ L.faces, t ⊆ u → u.card ≤ t.card + 1 := by
+      intro u hu _
+      rw [htc]
+      exact hL.card_le L hu
+    exact neighbors_eq_pair_of_transverse_cofaces L K G hcard hspace' hcarrier' ht hs htmax hsmax
+      hxt hxs hxG hcompl.symm hab hcofaces
+  · have hinf : Module.finrank ℝ
+        (vectorSpan ℝ (s : Set E) ⊓ vectorSpan ℝ (t : Set E) : Submodule ℝ E) = 1 := by omega
+    have hsmax : ∀ u ∈ K.faces, s ⊆ u → u.card ≤ s.card := by
+      intro u hu _
+      rw [hsc]
+      exact hK.card_le K hu
+    have htmax : ∀ u ∈ L.faces, t ⊆ u → u.card ≤ t.card := by
+      intro u hu _
+      rw [htc]
+      exact hL.card_le L hu
+    exact (neighbors_eq_pair_of_finrank_inter_eq_one K L G hcard hspace hcarrier
       hs ht hsmax htmax hxs hxt hxG hinf)
 
 open Classical in
@@ -2688,14 +2802,9 @@ theorem IsCombinatorialManifold.codimension_one_cofaces [FiniteDimensional ℝ E
     (hK : IsCombinatorialManifold (n + 1) K) {s : Finset E} (hs : s ∈ K.faces)
     (hcard : s.card = n + 1) :
     ∃ a b, a ≠ b ∧ {w | w ∉ s ∧ insert w s ∈ K.faces} = {a, b} := by
-  have hlink := hK.isPLSphere_geometricLink K hs hcard le_rfl
-  rw [Nat.sub_self] at hlink
-  have hbound : ∀ u ∈ K.faces, s ⊆ u → u.card ≤ s.card + 1 := by
-    intro u hu _
-    rw [hcard]
-    exact hK.card_le K hu
-  rw [geometricLink_space_eq_coface_vertices_of_card_le K s hbound] at hlink
-  exact isPLSphere_zero_iff.mp hlink
+  apply hK.isCombinatorialManifoldWithBoundary.codimension_one_cofaces_of_notMem_boundary K hs hcard
+  rw [hK.boundaryComplex_faces_eq_empty K]
+  exact Set.notMem_empty s
 
 open Classical in
 theorem neighbors_eq_pair_of_transverse_codimension_one [FiniteDimensional ℝ E]
