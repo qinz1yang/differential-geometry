@@ -268,6 +268,175 @@ noncomputable def attachedTwoCellOverlapPoint
   exact Classical.choice inferInstance
 
 open Classical in
+theorem attachedCellOverlapTwoGeneratorCircle_surjective
+    {Y : Type u} [TopologicalSpace Y] {X D : Set Y}
+    (e : ClosedCell 2 ≃ₜ D)
+    (hboundary : ∀ d : ClosedCell 2, (e d : Y) ∈ X ↔
+      ‖(d : EuclideanSpace ℝ (Fin 2))‖ = 1)
+    (x : ↑(attachedCellOuter (X := X) e ∩ attachedCellInner X D)) :
+    Function.Surjective (fun θ : loopCircle =>
+      attachedCellOverlapTwoHomotopyEquivCircle e hboundary
+        ((fundamentalGroupBasedCircleRepresentative
+          (attachedCellOverlapTwoFundamentalGroupGenerator e hboundary x)).1 θ)) := by
+  let h := attachedCellOverlapTwoHomotopyEquivCircle e hboundary
+  let g := attachedCellOverlapTwoFundamentalGroupGenerator e hboundary x
+  let γ := fundamentalGroupBasedCircleRepresentative g
+  let F := fundamentalGroupMulEquivOfHomotopyEquiv h x (h x) rfl
+  let q := attachedCellOverlapTwoFundamentalGroupEquivInt e hboundary x
+  have hqg : q g = Multiplicative.ofAdd (1 : ℤ) := q.apply_symm_apply _
+  have hg_ne : g ≠ 1 := by
+    intro hg
+    rw [hg, map_one] at hqg
+    have hz : (0 : ℤ) = 1 := congrArg
+      (fun z : Multiplicative ℤ => Multiplicative.toAdd z) hqg
+    norm_num at hz
+  by_contra hsurj
+  rw [Function.Surjective] at hsurj
+  simp only [not_forall] at hsurj
+  obtain ⟨y, hy⟩ := hsurj
+  simp only [not_exists] at hy
+  have hxy : h x ≠ y := by
+    intro hxy
+    apply hy 0
+    change h (γ.1 0) = y
+    rw [γ.property, hxy]
+  let U : Set Circle := {y}ᶜ
+  let _ : SimplyConnectedSpace U := by
+    exact simplyConnectedSpace_sphere_compl_point (y : ℂ) (Circle.norm_coe y)
+  let γU : basedCircleLoop (⟨h x, hxy⟩ : U) := {
+    val := {
+      toFun θ := ⟨h (γ.1 θ), hy θ⟩
+      continuous_toFun := Continuous.subtype_mk
+        (h.continuous.comp γ.1.continuous) _
+    }
+    property := by
+      apply Subtype.ext
+      exact congrArg h γ.property
+  }
+  let j : C(U, Circle) := ⟨Subtype.val, continuous_subtype_val⟩
+  have hγU : basedCircleFundamentalGroupClass γU = 1 := Subsingleton.elim _ _
+  have hmaps : F (basedCircleFundamentalGroupClass γ) =
+      FundamentalGroup.map j (⟨h x, hxy⟩ : U)
+        (basedCircleFundamentalGroupClass γU) := by
+    change (↑F : FundamentalGroup _ x →* FundamentalGroup Circle (h x))
+        (basedCircleFundamentalGroupClass γ) = _
+    rw [show (↑F : FundamentalGroup _ x →* FundamentalGroup Circle (h x)) =
+        FundamentalGroup.mapOfEq h.toFun rfl from
+      fundamentalGroupMulEquivOfHomotopyEquiv_toMonoidHom h x (h x) rfl]
+    rw [FundamentalGroup.mapOfEq_apply]
+    change Path.Homotopic.Quotient.map
+        (Path.Homotopic.Quotient.mk (circleToPath γ)) h.toFun =
+      Path.Homotopic.Quotient.map
+        (Path.Homotopic.Quotient.mk (circleToPath γU)) j
+    rw [← Path.Homotopic.Quotient.mk_map,
+      ← Path.Homotopic.Quotient.mk_map]
+    congr 1
+  have hF : F (basedCircleFundamentalGroupClass γ) = 1 := by
+    rw [hmaps, hγU, map_one]
+  apply hg_ne
+  have hγ : basedCircleFundamentalGroupClass γ = g :=
+    fundamentalGroupBasedCircleRepresentative_mk g
+  rw [hγ] at hF
+  exact F.injective (hF.trans (map_one F).symm)
+
+theorem attachedCellOuterRadialExpansion_one_overlap
+    {Y : Type u} [TopologicalSpace Y] {X D : Set Y}
+    (e : ClosedCell 2 ≃ₜ D)
+    (hboundary : ∀ d : ClosedCell 2, (e d : Y) ∈ X ↔
+      ‖(d : EuclideanSpace ℝ (Fin 2))‖ = 1)
+    (z : ↑(attachedCellOuter (X := X) e ∩ attachedCellInner X D)) :
+    ((attachedCellOuterRadialExpansion (X := X) e
+      (1, VanKampen.interToLeft
+        (attachedCellOuter (X := X) e) (attachedCellInner X D) z)).1 : Y) =
+      e (cellBoundaryInclusion 2
+        (cellBoundaryTwoHomeomorphCircle.symm
+          (attachedCellOverlapTwoHomotopyEquivCircle e hboundary z))) := by
+  let y := VanKampen.interToLeft
+    (attachedCellOuter (X := X) e) (attachedCellInner X D) z
+  have hyD : (y.1 : Y) ∈ D := z.1.2.resolve_left z.2.2
+  have hcoord :
+      ((e.symm ⟨y.1, hyD⟩ : ClosedCell 2) : EuclideanSpace ℝ (Fin 2)) =
+        ((attachedCellInnerHomeomorphCellInterior e hboundary
+          (⟨z.1, z.2.2⟩ : attachedCellInner X D) : CellInterior 2) :
+            EuclideanSpace ℝ (Fin 2)) := by
+    rfl
+  rw [attachedCellOuterRadialExpansion_of_mem_disk e hboundary 1 y hyD]
+  rw [attachedCellOuterDisk_parametrization]
+  apply congrArg Subtype.val
+  apply congrArg e
+  apply Subtype.ext
+  rw [show (attachedCellOuterDiskHomeomorphPuncturedClosedCell e)
+      (attachedCellOuterDiskRadialExpansion (X := X) e (1, ⟨y, hyD⟩)) =
+        puncturedClosedCellRadialExpansion 2 1
+          (attachedCellOuterDiskHomeomorphPuncturedClosedCell e ⟨y, hyD⟩) from
+    (attachedCellOuterDiskHomeomorphPuncturedClosedCell e).apply_symm_apply _]
+  rw [show attachedCellOverlapTwoHomotopyEquivCircle e hboundary z =
+      cellBoundaryTwoHomeomorphCircle
+        (Homotopy.boundaryNormalize
+          ((attachedCellOverlapHomeomorphPuncturedCellInterior e hboundary z).1 :
+            EuclideanSpace ℝ (Fin 2))
+          (attachedCellOverlapHomeomorphPuncturedCellInterior e hboundary z).2) from rfl]
+  rw [cellBoundaryTwoHomeomorphCircle.symm_apply_apply]
+  simp [puncturedClosedCellRadialExpansion, puncturedClosedCellRadialScale,
+    Homotopy.boundaryNormalize, attachedCellOuterDiskHomeomorphPuncturedClosedCell,
+    attachedCellOverlapHomeomorphPuncturedCellInterior, cellBoundaryInclusion, y, hcoord]
+
+theorem attachedTwoCellBoundaryLoop_apply
+    {Y : Type u} [TopologicalSpace Y] {X D : Set Y}
+    (e : ClosedCell 2 ≃ₜ D) (hX : IsClosed X) (hD : IsClosed D)
+    (hboundary : ∀ d : ClosedCell 2, (e d : Y) ∈ X ↔
+      ‖(d : EuclideanSpace ℝ (Fin 2))‖ = 1)
+    (x₀ : AttachedCellUnion X D)
+    (hx₀ : x₀ ∈ attachedCellOuter (X := X) e ∩ attachedCellInner X D)
+    (θ : loopCircle) :
+    ((attachedTwoCellBoundaryLoop e hX hD hboundary x₀ hx₀ θ : X) : Y) =
+      e (cellBoundaryInclusion 2
+        (cellBoundaryTwoHomeomorphCircle.symm
+          (attachedCellOverlapTwoHomotopyEquivCircle e hboundary
+            ((fundamentalGroupBasedCircleRepresentative
+              (attachedCellOverlapTwoFundamentalGroupGenerator e hboundary
+                (VanKampen.overlapBasepoint
+                  (attachedCellOuter (X := X) e) (attachedCellInner X D) x₀ hx₀))).1 θ)))) := by
+  change ((attachedCellOuterRadialExpansion (X := X) e
+    (1, (attachedTwoCellGeometricGeneratorLoop e hboundary x₀ hx₀).1 θ)).1 : Y) = _
+  exact attachedCellOuterRadialExpansion_one_overlap e hboundary _
+
+open Classical in
+theorem attachedTwoCellBoundaryLoop_range_eq_inter
+    {Y : Type u} [TopologicalSpace Y] {X D : Set Y}
+    (e : ClosedCell 2 ≃ₜ D) (hX : IsClosed X) (hD : IsClosed D)
+    (hboundary : ∀ d : ClosedCell 2, (e d : Y) ∈ X ↔
+      ‖(d : EuclideanSpace ℝ (Fin 2))‖ = 1)
+    (x₀ : AttachedCellUnion X D)
+    (hx₀ : x₀ ∈ attachedCellOuter (X := X) e ∩ attachedCellInner X D) :
+    Set.range (fun θ =>
+      ((attachedTwoCellBoundaryLoop e hX hD hboundary x₀ hx₀ θ : X) : Y)) =
+        X ∩ D := by
+  apply Set.Subset.antisymm
+  · rintro y ⟨θ, rfl⟩
+    exact ⟨(attachedTwoCellBoundaryLoop e hX hD hboundary x₀ hx₀ θ).2,
+      attachedTwoCellBoundaryLoop_mem_attached_cell
+        e hX hD hboundary x₀ hx₀ θ⟩
+  · intro y hy
+    let d : ClosedCell 2 := e.symm ⟨y, hy.2⟩
+    have hedy : (e d : Y) = y := congrArg Subtype.val (e.apply_symm_apply ⟨y, hy.2⟩)
+    have hd : ‖(d : EuclideanSpace ℝ (Fin 2))‖ = 1 :=
+      (hboundary d).1 (hedy.symm ▸ hy.1)
+    let b : CellBoundary 2 := ⟨d, hd⟩
+    let z := VanKampen.overlapBasepoint
+      (attachedCellOuter (X := X) e) (attachedCellInner X D) x₀ hx₀
+    obtain ⟨θ, hθ⟩ :=
+      attachedCellOverlapTwoGeneratorCircle_surjective e hboundary z
+        (cellBoundaryTwoHomeomorphCircle b)
+    refine ⟨θ, ?_⟩
+    change ((attachedTwoCellBoundaryLoop e hX hD hboundary x₀ hx₀ θ : X) : Y) = y
+    rw [attachedTwoCellBoundaryLoop_apply]
+    dsimp [z] at hθ
+    rw [hθ, cellBoundaryTwoHomeomorphCircle.symm_apply_apply]
+    change (e d : Y) = y
+    exact hedy
+
+open Classical in
 noncomputable def attachedTwoCellFundamentalGroupHom
     {Y : Type u} [TopologicalSpace Y] {X D : Set Y}
     (e : ClosedCell 2 ≃ₜ D)
@@ -887,6 +1056,40 @@ noncomputable def diskBoundaryLoopInRemovedSphere [FiniteDimensional ℝ E]
   }
 
 open Classical in
+theorem diskBoundaryLoopInRemovedSphere_range [FiniteDimensional ℝ E]
+    {k : ℕ} {B : Set E} {D : Fin k → Set E}
+    (q : Fin k → (Fin 3 → ℝ) → E)
+    (hB : IsPLSphere 2 B)
+    (hq : ∀ i, IsPLHomeomorphOn (q i) (stdSimplex ℝ (Fin 3)) (D i))
+    (hDB : ∀ i, D i ⊆ B)
+    (hdisj : Pairwise (Function.onFun Disjoint D))
+    {i : Fin k} {l : List (Fin k)} (hil : i ∉ l) :
+    Set.range (fun θ =>
+      ((diskBoundaryLoopInRemovedSphere q hB hq hDB hdisj hil θ :
+        sphereWithDiskInteriorsRemoved B D) : E)) =
+      q i '' stdSimplexBoundary 2 := by
+  let X := diskAttachmentStage B D l
+  let e := diskClosedCellHomeomorph q hq i
+  let hX : IsClosed X := isClosed_diskAttachmentStage hB q hq l
+  let hD : IsClosed (D i) :=
+    (show IsPLBall 2 (D i) from ⟨q i, hq i⟩).isPolyhedron.isClosed
+  let hboundary : ∀ d : ClosedCell 2, (e d : E) ∈ X ↔
+      ‖(d : EuclideanSpace ℝ (Fin 2))‖ = 1 :=
+    diskClosedCellHomeomorph_mem_stage_iff q hB hq hDB hdisj hil
+  let x := attachedTwoCellOverlapPoint e hboundary
+  calc
+    Set.range (fun θ =>
+        ((diskBoundaryLoopInRemovedSphere q hB hq hDB hdisj hil θ :
+          sphereWithDiskInteriorsRemoved B D) : E)) =
+        Set.range (fun θ =>
+          ((attachedTwoCellBoundaryLoop e hX hD hboundary x.1 x.2 θ : X) : E)) := rfl
+    _ = X ∩ D i :=
+      attachedTwoCellBoundaryLoop_range_eq_inter e hX hD hboundary x.1 x.2
+    _ = D i ∩ X := inter_comm X (D i)
+    _ = q i '' stdSimplexBoundary 2 :=
+      disk_inter_diskAttachmentStage q hB hq hDB hdisj hil
+
+open Classical in
 theorem diskBoundaryLoopInRemovedSphere_postcompose [FiniteDimensional ℝ E]
     {k : ℕ} {B : Set E} {D : Fin k → Set E}
     (q : Fin k → (Fin 3 → ℝ) → E)
@@ -984,6 +1187,31 @@ noncomputable def diskBoundaryLoopForList [FiniteDimensional ℝ E]
           simpa [hia] using hi)
 
 open Classical in
+theorem diskBoundaryLoopForList_range [FiniteDimensional ℝ E]
+    {k : ℕ} {B : Set E} {D : Fin k → Set E}
+    (q : Fin k → (Fin 3 → ℝ) → E)
+    (hB : IsPLSphere 2 B)
+    (hq : ∀ i, IsPLHomeomorphOn (q i) (stdSimplex ℝ (Fin 3)) (D i))
+    (hDB : ∀ i, D i ⊆ B)
+    (hdisj : Pairwise (Function.onFun Disjoint D))
+    (l : List (Fin k)) (hl : l.Nodup) (i : Fin k) (hi : i ∈ l) :
+    Set.range (fun θ =>
+      ((diskBoundaryLoopForList q hB hq hDB hdisj l hl i hi θ :
+        sphereWithDiskInteriorsRemoved B D) : E)) =
+      q i '' stdSimplexBoundary 2 := by
+  induction l with
+  | nil => exact (List.not_mem_nil hi).elim
+  | cons a l ih =>
+      by_cases hia : i = a
+      · subst i
+        simpa [diskBoundaryLoopForList] using
+          diskBoundaryLoopInRemovedSphere_range q hB hq hDB hdisj
+            (List.nodup_cons.mp hl).1
+      · have hi' : i ∈ l := by simpa [hia] using hi
+        simpa [diskBoundaryLoopForList, hia] using
+          ih (List.nodup_cons.mp hl).2 hi'
+
+open Classical in
 noncomputable def sphereBoundaryLoop [FiniteDimensional ℝ E]
     {k : ℕ} {B : Set E} {D : Fin k → Set E}
     (q : Fin k → (Fin 3 → ℝ) → E)
@@ -994,6 +1222,22 @@ noncomputable def sphereBoundaryLoop [FiniteDimensional ℝ E]
     (i : Fin k) : freeLoop (sphereWithDiskInteriorsRemoved B D) :=
   diskBoundaryLoopForList q hB hq hDB hdisj (List.finRange k)
     (List.nodup_finRange k) i (List.mem_finRange i)
+
+open Classical in
+theorem sphereBoundaryLoop_range [FiniteDimensional ℝ E]
+    {k : ℕ} {B : Set E} {D : Fin k → Set E}
+    (q : Fin k → (Fin 3 → ℝ) → E)
+    (hB : IsPLSphere 2 B)
+    (hq : ∀ i, IsPLHomeomorphOn (q i) (stdSimplex ℝ (Fin 3)) (D i))
+    (hDB : ∀ i, D i ⊆ B)
+    (hdisj : Pairwise (Function.onFun Disjoint D))
+    (i : Fin k) :
+    Set.range (fun θ =>
+      ((sphereBoundaryLoop q hB hq hDB hdisj i θ :
+        sphereWithDiskInteriorsRemoved B D) : E)) =
+      q i '' stdSimplexBoundary 2 := by
+  exact diskBoundaryLoopForList_range q hB hq hDB hdisj
+    (List.finRange k) (List.nodup_finRange k) i (List.mem_finRange i)
 
 open Classical in
 theorem surjective_and_ker_le_fundamentalGroupMap_diskAttachmentMapForList
