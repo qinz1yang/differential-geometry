@@ -1111,3 +1111,31 @@ full 17.10 signature, exits 0, and reports only `propext`,
 `.lake/scratch/check-planar-disk-subdivision.log`,
 `.lake/scratch/check-cone-straightening.log`, and
 `.lake/scratch/audit-cone-straightening.log`.
+
+## Supported ambient straightening of convex PL three-balls (Moise 17.9)
+
+The native `ConvexStraightening.lean` proves
+`isSimplyEmbedded_frontier_of_convex` from convexity and PL three-ball
+structure. Polyhedrality follows from the latter and is not a separate
+hypothesis. The conclusion retains the ambient PL homeomorphism fixed
+outside every prescribed convex open neighborhood of the frontier.
+
+Following printed page 121, the proof cones a boundary triangulation
+from an interior point and deletes one tetrahedron. The remaining
+base is a PL disk, so the verified 17.10 straightening applies.
+`SphericalTriangleDeletion.lean` identifies the remaining complex
+with the closure of the complement of a triangle and proves its disk
+structure. `ConeIntersection.lean` adds the exact intersection of the
+base with a cone simplex. Only frontier images are needed for the
+stated endpoint; no unproved claim about images of filled regions is
+used. Vendor Lean sources remain unchanged. The 17.11 and general
+cell-decomposition 17.2 endpoints are still pending.
+
+All three changed modules pass focused checks with exit 0 and zero
+warnings. `AuditS48.lean` checks all four new declarations and the
+full 17.9 signature, exits 0, and reports only `propext`,
+`Classical.choice`, and `Quot.sound`. Logs:
+`.lake/scratch/check-spherical-triangle-deletion.log`,
+`.lake/scratch/check-cone-intersection.log`,
+`.lake/scratch/check-convex-straightening.log`, and
+`.lake/scratch/audit-convex-straightening.log`.
