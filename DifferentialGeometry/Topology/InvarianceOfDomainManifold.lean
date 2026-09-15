@@ -11,6 +11,31 @@ theorem invariance_of_domain_isOpen_image {E : Type*}
     (hinj : Set.InjOn f U) : IsOpen (f '' U) :=
   invariance_of_domain_open_map f U hU hf hinj
 
+theorem invariance_of_domain_isOpen_image_of_finrank_eq {E F : Type*}
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
+    (hdim : Module.finrank ℝ E = Module.finrank ℝ F)
+    {U : Set E} (hU : IsOpen U) {f : E → F} (hf : ContinuousOn f U)
+    (hinj : Set.InjOn f U) : IsOpen (f '' U) := by
+  let H := EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
+  let e : E ≃L[ℝ] H := ContinuousLinearEquiv.ofFinrankEq (by simp [H])
+  let d : F ≃L[ℝ] H := ContinuousLinearEquiv.ofFinrankEq (by simpa [H] using hdim.symm)
+  let V := e.symm ⁻¹' U
+  let g : H → H := d ∘ f ∘ e.symm
+  have hV : IsOpen V := hU.preimage e.symm.continuous
+  have hg : ContinuousOn g V := d.continuous.comp_continuousOn
+    (hf.comp e.symm.continuous.continuousOn (fun _ hx => hx))
+  have hinjg : InjOn g V := by
+    intro x hx y hy hxy
+    exact e.symm.injective (hinj hx hy (d.injective hxy))
+  have hopen := invariance_of_domain_isOpen_image hV hg hinjg
+  have himage : g '' V = d '' (f '' U) := by
+    change (d ∘ f ∘ e.symm) '' (e.symm ⁻¹' U) = _
+    rw [image_comp, image_comp, e.symm.surjective.image_preimage]
+  rw [himage] at hopen
+  have hpre := hopen.preimage d.continuous
+  simpa only [d.injective.preimage_image] using hpre
+
 theorem isOpen_image_of_continuousOn_injOn {E : Type*}
     [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
     {M₁ M₂ : Type*} [TopologicalSpace M₁] [ChartedSpace E M₁]

@@ -1023,3 +1023,30 @@ all three new declarations, exits 0, and reports only `propext`,
 `.lake/scratch/check-compact-frontier.log`,
 `.lake/scratch/check-convex-cone.log`, and
 `.lake/scratch/audit-convex-cone.log`.
+
+## Boundaries of cones over PL balls
+
+The native `ConeBoundary.lean` identifies the frontier of a cone over
+an (n+1)-dimensional PL ball in an (n+2)-dimensional real normed space
+as the union of the base and the cone over its intrinsic boundary.
+It transports the cone to a simplex, computes its facets, and uses
+boundary invariance. The companion `PLHomeomorphTopology.lean` results
+transport interiors and closed-domain frontiers between equal-dimensional
+real normed spaces. `InvarianceOfDomainManifold.lean` adds the required
+normed-space form of invariance of domain by continuous linear transport
+to Euclidean space. Existing signatures are unchanged.
+
+These native inputs support the deletion argument of Moise 17.10
+(printed page 121). No vendor Lean sources were modified, and the
+ambient straightening conclusion of 17.10 remains pending.
+The three changed modules and the complementary-disk consumer pass
+focused checks with exit 0 and zero warnings. `AuditS44.lean` checks
+five declarations (including the prior closure transport), and
+`AuditS45.lean` checks the two cone-boundary declarations. Both exit 0;
+all seven axiom closures contain only the standard three axioms.
+Logs: `.lake/scratch/check-invariance-domain-normed.log`,
+`.lake/scratch/check-pl-homeomorph-topology.log`,
+`.lake/scratch/check-cone-boundary.log`,
+`.lake/scratch/check-spherical-disk-complement.log`,
+`.lake/scratch/audit-pl-homeomorph-topology.log`, and
+`.lake/scratch/audit-cone-boundary.log`.
