@@ -1463,3 +1463,20 @@ and audits the two endpoints plus `schoenflies_input`: exit 0 and only
 `.lake/scratch/check-free-disk-cell.log`,
 `.lake/scratch/check-schoenflies-foundations.log`, and
 `.lake/scratch/audit-schoenflies-foundations.log`.
+
+## Final S.3, general 17.2, and S.5 verification
+
+At mathematical commit `08ee37003`, all nine headline modules pass
+focused checks with exit 0 and zero warnings. `AuditS62.lean` audits 16
+public endpoints across S.3, general 17.2, the complete four-field input,
+and S.5: only `propext`, `Classical.choice`, and `Quot.sound`, exit 0.
+The 23.9 and 23.10 statements retain the explicitly authorized full
+17.12 hypothesis; 23.11 and all four `SchoenfliesInput` producers are
+unconditional. The stronger proper-subdisk avoidance form of 17.3 is
+still outside the completed results.
+
+`.lake/scratch/S3-P3-S5-VERIFICATION.json` records source hashes and log
+paths; `.lake/scratch/audit-s3-p3-s5-final.log` contains the final audit.
+No vendored Lean source changed in this continuation. The final
+checkpoint fetched and merged `origin/codex/moise-integration` before
+updating the plan and handoff documents.

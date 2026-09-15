@@ -187,7 +187,7 @@ F1.2 与 F2.3 将共用同一套机制：H-多面体的（暴露）面、相对�
 |---|---|---|---|---|---|
 | P.1 | 平面多边形 Schoenflies（Moise 3.6）与组合形式 5.3 | F 原生规范链 `PolygonalSchoenflies.lean` 的 `isPLBall_of_isPLSphere_one`、`exists_polyhedral_region_of_isPLSphere_one`；S vendored 链 `External/ClassificationOfSurfaces/Moise/PolygonalSchoenflies.lean` 与原生桥接 `PlanarSchoenflies.lean` 保留 3.7 相对整直 | §17, §21.4, §26.7, §27.2 | done（两条证明：F 原生为规范陈述，S vendored 提供 3.7）；F 的 `8b87ef710` / `a036bf104` 由 Jordan 分离和横截弧三角剖分归纳证明有界内区域闭包为 PL 2-球，AuditF104 仅标准三公理。S0.1/S0.2 的 16 个 vendored 模块与桥接给 `exists_isPLHomeomorphOn_straighten` / `_of_isPLSphere_one`：全平面双向 PL 环境同胚固定指定开集之外；修改记录见 `External/ClassificationOfSurfaces/VENDOR.md`，AuditS1/S2/S10 仅标准三公理。后续不再重复证明 P.1，只按需桥接两条链 | 16 个外部模块 + 原生规范链与 1084 行相对桥接 |
 | P.2 | 5.4：多面体 2-胞腔边界间 PLH 延拓 | `BallFrontier.lean` 的 `exists_isPLHomeomorphOn_of_frontier`，取 `n = 1` 得平面 PL 2-球；一般形式作用于 ℝ^(n+1) 中的 PL (n+1)-球。消费 S.1 与 F 的 `exists_isPLHomeomorphOn_of_boundaryComplex` | §17.10, §33 L13, §34 | done（2026-09-14，`ff7fc67ca`）；任意给定实际 frontier 上的 PL 同胚延拓到球，并逐点保持边界映射；`IsPLBall.isPLSphere_frontier` 同时给边界球面性。检查 exit=0 零警告，AuditS6 四项仅标准三公理；`91172ea49` 的 `IsPLBall.interior_nonempty` / `closure_interior` 证明所有正维同维欧氏 PL 球内部非空、内部闭包等于原球，供平面盘识别使用 | BallFrontier 及 PLImage 公共 API |
-| P.3 | 3.3 / 17.2–17.3：2-胞腔分解的两个自由胞腔及相对形式 | vendored `TriangleMesh.exists_two_geometricallyFreeTriangles_of_polygonalDisk` 给两个不同几何自由三角形；原生桥接给全空间 PL 删除及保留指定三角形的归纳 | §17.5, §17.9–17.12 | partial（2026-09-15）；`4fffc8f99` 给保留指定网格三角形的平面整直，`91172ea49` 的 `exists_isPLHomeomorphOn_remove_geometricallyFree_triangle` 对至少两个三角形的原生平面 PL 2-球，在给定开邻域内删除几何自由三角形，产生整盘的精确像与剩余盘球性；`80fceca30` 桥接到任意原生有限三角剖分。AuditS13/S17/S20 仅标准三公理。一般胞腔分解的 17.2、避开给定真盘子复形的 17.3 仍未证。球面网格的相对局部删除及保留指定三角形的归纳已由 `9701b821a` / `2fe7240ef` 闭合，供完整 17.5 使用；局部坐标中的整网格只要求纯二维，未假定星内交集为圆盘。AuditS37/S38/S39 仅标准三公理 | 2k–4k（剩余估计） |
+| P.3 | 3.3 / 17.2–17.3：2-胞腔分解的两个自由胞腔及相对形式 | vendored `TriangleMesh.exists_two_geometricallyFreeTriangles_of_polygonalDisk` 给两个不同几何自由三角形；原生桥接给全空间 PL 删除及保留指定三角形的归纳；F 的精确字段为 `SchoenfliesInput.exists_two_free_disk_cells`：对共同有限三角剖分上的 `IsPLDiskDecomposition K cells`、`1 < cells.card`，给两个不同的 `C,D ∈ cells`，均满足 `IsFreeDiskCell K`，允许任意 PL 圆盘胞腔 | §17.5, §17.9–17.12 | partial（2026-09-15）；`4fffc8f99` 给保留指定网格三角形的平面整直，`91172ea49` 的 `exists_isPLHomeomorphOn_remove_geometricallyFree_triangle` 对至少两个三角形的原生平面 PL 2-球，在给定开邻域内删除几何自由三角形，产生整盘的精确像与剩余盘球性；`80fceca30` 桥接到任意原生有限三角剖分。AuditS13/S17/S20 仅标准三公理。一般胞腔分解的 **17.2 已证**（`08ee37003`）：`FreeDiskCell.lean` 的 `IsPLDiskDecomposition.exists_two_free_disk_cells` 对任意有限维实赋范空间成立，`exists_free_disk_cell_ne` 可避开一个指定胞腔。经平面化、横切弧分割、不自由胞腔两侧的严格子族归纳与自由性传递闭合；AuditS61/S62 仅标准三公理。避开给定真盘子复形的 **17.3 仍未证**，不能把避开一个胞腔的推论当作该结果。球面网格的相对局部删除及保留指定三角形的归纳已由 `9701b821a` / `2fe7240ef` 闭合，供完整 17.5 使用；局部坐标中的整网格只要求纯二维，未假定星内交集为圆盘。AuditS37/S38/S39 仅标准三公理 | 17.3 余项 |
 | P.4 | 10.8：ℝ² 中有限线性图驯顺，支持在给定开集内并按正控制函数逼近恒等 | §10 定理 6–8（框架定理 10.6 + 收缩族） | §17.2（胞腔复形可视为多面体） | new；已检查第二批 `PLApproximation` 的 `pl_approximation_one_skeleton` / `pl_approximation_pure_two_complex` / `pl_approximation_two_manifold`：它们是 Moise 6.2–6.3 的有限复形嵌入逼近，未给 10.8 的环境同胚、支撑和控制函数结论，因此未导入第二批 | 6k–10k |
 | P.5 | 2.7–2.8 θ-图、4.4 盘中两弧不分离、Problem 4.1 | 第一批 `PolygonalTheta.disjoint_interior13_interior23`、`closedRegion13_inter_closedRegion23`、`closedRegion_eq_union` 给多边形 θ-图的区域分解、交集与内部不交 | §26.7, §27.2, §30.1 | partial（2026-09-14）；以上三项 AuditS5 仅标准三公理。任意弧版本 4.4 与 Problem 4.1 未闭合；第二批 `PolygonalFamilyPolyhedron` 的有限多边形族兼容细分也未提供这两个结论，故 S0.3 未触发 | 2k–4k（剩余估计） |
 | H.1 | 有限复形的单纯 ℤ-链、边界、`H₁`、`H₂`、`H₃`，`p¹`（秩），`χ` 与 Euler–Poincaré | D3；本库 `EulerCharacteristic.lean` 的 `faceEulerChar` 复用 | §21–23, §24.8, §28, §31–§34 | new | 8k–12k |
@@ -211,9 +211,9 @@ F 车道同步补充的原生平面输入（至 `d0902b2cd`）：`PolygonalSchoe
 |---|---|---|---|---|---|
 | S.1 | 17.1：ℝ³ 中闭 3-流形带边 M 的组合边界等于实际 frontier | `FrontierBoundary.lean` 的 `frontier_space_eq_boundaryComplex_space` 对所有正维 ℝ^(n+1) 中的有限组合带边流形成立，ℝ³ 取 `n = 2`；另有流形形式 `frontier_eq_polyhedralBoundary` 与边界点球邻域 | §17.12, §23.8 | done（2026-09-14，`a04d993c4`）；整合 E3 的 `702c1fa19`/`f40a9b3f7` 证明并适配 F 的规范 `BoundaryInvariance`，将流形边界定义独立置于 `PolyhedralBoundary.lean`。检查 exit=0 零警告，AuditS3 六项（含显式 ℝ³ 签名）仅标准三公理；不重复实现 E3 的证明 | 84 + 513 行整合源码 |
 | S.2 | 17.4–17.8 推移性质 | `HasPushPropertyAt C D`、`HasPushProperty C` 保留精确邻域条件 `C \ J ⊆ interior N`；17.5 `exists_isPLHomeomorphOn_straighten_disk_in_tetrahedron`，17.6 `hasPushProperty_convexHull_simplex`，17.8 `exists_hasPushProperty_of_isSimplyEmbedded` | §23.10, §33 末, §34 | done（2026-09-15）；17.4 面推送与 17.7 环境 PL 不变性保留。`9701b821a` 从局部受保护边族的平面删除构造保持整个四面体的环境删除；`2fe7240ef` 在固定兼容剖分上按三角形数归纳，先保留指定小三角形，再比较原盘与原始面，闭合任意边界盘的完整 17.5。`16ade009b` 闭合 17.6、17.8，单嵌入定义保留每个凸开邻域的量词。21 个受影响或指定复核模块的最终聚焦检查均 exit=0、零警告；AuditS38 四端点、AuditS39 的 17.4–17.8 十项均仅标准三公理。无占位证明债、Brouwer 类或等价结论假设 | 分模块端点与验证记录列于下方 |
-| S.3 | 17.9–17.11：凸多面体 3-胞腔、盘与点之 join、沿平面盘拼合的球面单嵌入 | 拟定 `isSimplyEmbedded_frontier_of_convex`、`isSimplyEmbedded_frontier_coneComplex`、`isSimplyEmbedded_union_sdiff_diskInterior`；必须保留凸开邻域外恒同，且删除的是盘的内在内部；逐条见下 | §17.12 | new；S.2 的 17.6/17.8 已可用；本行仍需凸多面体、join 与沿盘拼合的单嵌入证明，并按需补 P.3 的一般胞腔分解形式 | 4k–6k |
-| S.4 | **17.12 PL Schoenflies** | 主目标 `isSimplyEmbedded_of_isPLSphere_two` 保留对每个凸开邻域的支持控制；再导出 `exists_isPLBall_of_isPLSphere_two`，给有界 PL 3-球 B 且 frontier B = S。路线为 F5.1 水平族一般位置、Ind S 归纳（L1–L6）、S.3 收尾 | §23.9, §28.1 后半, §30.5, §33 末 | new；S.2 已闭合，仍待 S.3 及水平截面复杂度归纳；当前未证明任意 PL 2-球面的单嵌入 | 8k–12k |
-| S.5 | 23.9–23.11 流形版：`Int \|St v\|` 内多面体 2-球面界定组合 3-胞腔；推移；两 3-胞腔交于 2-胞腔之并是 3-胞腔 | `theorem isPLBall_union_of_inter_isPLBall_two (h₁ : IsPLBall 3 C₁) (h₂ : IsPLBall 3 C₂) (hD : IsPLBall 2 (C₁ ∩ C₂)) (hD₁ : C₁ ∩ C₂ ⊆ frontier C₁) (hD₂ : C₁ ∩ C₂ ⊆ frontier C₂) : IsPLBall 3 (C₁ ∪ C₂)`（在图卡内） | F4.2 的 3D 部分、§23.12, §23.18, §26.2, §32 | new | 2k–3k |
+| S.3 | 17.9–17.11：凸多面体 3-胞腔、盘与点之 join、沿平面盘拼合的球面单嵌入 | F 的冻结接口 `SchoenfliesInput.lean`：`.isSimplyEmbedded_frontier_of_convex`、`.isSimplyEmbedded_frontier_coneComplex`、`.isSimplyEmbedded_union_sdiff_diskInterior`；17.11 的盘位于非零线性形式的同一层，删除 `D \ (f '' stdSimplexBoundary 2)`；精确参数与量词以源码字段为准 | §17.12 | **done**（2026-09-15）；`ConvexStraightening.lean`（`97995c328`）、`ConeStraightening.lean`（`26d321906`）、`PlanarDiskGluing.lean`（`f1d104761`，线性层形式 `caa641003`）给三个无条件生产者，均保留每个凸开邻域外恒同。结合一般 17.2，`SchoenfliesFoundations.lean` 的 `schoenflies_input : SchoenfliesInput` 已由 `08ee37003` 证明；四字段签名未修改，无未证输入。聚焦检查 exit=0、零警告；AuditS55/S61/S62 仅标准三公理 | 模块与验证见下方 |
+| S.4 | **17.12 PL Schoenflies** | F 车道负责；主目标 `isSimplyEmbedded_of_isPLSphere_two` 保留对每个凸开邻域的支持控制；再导出 `exists_isPLBall_of_isPLSphere_two`，给有界 PL 3-球 B 且 frontier B = S。路线为 F5.1 水平族一般位置、Ind S 归纳（L1–L6）、S.3 收尾 | §23.9, §28.1 后半, §30.5, §33 末 | 由 F 车道继续水平截面复杂度归纳；S 车道已交付完整 `schoenflies_input`，无需再把 S.3 或一般 17.2 当作未证输入。本分支尚未导入 17.12 的证明，S.5 的 23.9/23.10 仍显式以其完整陈述为假设 | 8k–12k |
+| S.5 | 23.9–23.11 流形版：顶点开星内球面填充、相对推移、沿边界盘拼合 3-胞腔 | `SchoenfliesManifold.lean`：`exists_isPolyhedralBall_of_isPolyhedralSphere_in_openStar`；`PushManifold.lean`：`exists_isPL_homeomorph_push_between_disks_in_openStar`；`BallGluingManifold.lean`：`isPolyhedralBall_union_of_inter_isPolyhedralBall_two`，并保留图卡、PL piece 与欧氏形式 | E3 的 §26.2、§25 Lemma 1；F4.3；F4.2 的 3D 部分；§23.12、§23.18、§32 | **23.9/23.10 按授权条件形式完成，23.11 无条件完成**（2026-09-15）。23.9（`434c3970b`）和 23.10（`30f9f6f6e`）仅以完整 `∀ S, IsPLSphere 2 S → IsSimplyEmbedded S` 为待交付输入；填充保留原开星，推移保留 `C \ (D₁ ∩ D₂) ⊆ interior N`、双向 PL、盘的精确像及 N 外恒同。23.11 的欧氏形式（`a5f38dd84`）及任意有限组合 3-流形形式（`8e9d6309a`）无 17.12 假设，允许两球位于不同顶点星。聚焦检查 exit=0、零警告；AuditS52/S54/S56/S57/S62 仅标准三公理。F 交付 17.12 后解除前两条的显式假设 | 实现与审计见下方 |
 | S.6 | 30.5：嵌套拓扑 3-胞腔 `C₁ ⊆ Int C₂`、`Cl(C₂ − C₁)` 球壳 ⟹ 中间有多面体 3-胞腔 | 用 30.4（车道 I）+ S.4；放在 I 完成 30.4 后收尾 | §34 L3 | new | 1k |
 | S.7 | §33 末尾引用的 3-胞腔延拓（书中编号疑为笔误，§18 是 Antoine 集）：`Bd C_v ↔ Bd C''_v` 的 PLH 延拓到 3-胞腔 | S.4 + F3.4 | §33, §34 (5)–(7), §35 | new | 0.5k |
 
@@ -285,16 +285,38 @@ S.2 验证记录：`.lake/scratch/S2-VERIFICATION.json` 保存源码提交 `16ad
 接收 C 线程交错编辑后的 FaceStarBoundary/FaceStarDeletion/PlanarFreeFace 复核见 AuditS29；
 本轮未改 vendored Lean 源码，原生适配与各层差异见 `External/ClassificationOfSurfaces/VENDOR.md`。
 
-- **17.9，拟定。** `Convex ℝ C`、`IsPolyhedron C`、`IsPLBall 3 C` 推出
-  `IsSimplyEmbedded (frontier C)`；由边界三角剖分向内部一点取锥，逐个删除自由 3-单形。
-- **17.10，拟定。** 有限 L、`IsPLBall 2 L.space`、`hL : IsConeBase p L`，令
-  `C := (coneComplex hL).space`，证明 `IsSimplyEmbedded (frontier C)`。
-  锥球性已有原生生产者；所缺是带支撑控制的环境整直。
-- **17.11，拟定。** `IsSimplyEmbedded S₁`、`IsSimplyEmbedded S₂`，交集 D 是某仿射平面中的
-  PL 2-球。给 D 的 PL 参数化 f，令 `J := f '' stdSimplexBoundary 2`，目标为
-  `IsSimplyEmbedded ((S₁ ∪ S₂) \ (D \ J))`。这里删除 D 的内在内部，不能写成环境 `interior D`。
-- **17.12，拟定。** `IsPLSphere 2 S → IsSimplyEmbedded S` 是保留原书支持控制的主端点；
-  有界 PL 球填充是其推论。当前没有该端点的实现或证明声明。
+- **17.9，已证（`97995c328`）。** `ConvexStraightening.lean` 的
+  `isSimplyEmbedded_frontier_of_convex`：`Convex ℝ C`、`IsPLBall 3 C` 推出
+  `IsSimplyEmbedded (frontier C)`，多面体性由球性导出。证明经凸边界锥表示、受支持的自由四面体删除及 17.10。
+- **17.10，已证（`26d321906`）。** `ConeStraightening.lean` 的
+  `isSimplyEmbedded_frontier_coneComplex` 对有限 `L`、`IsPLBall 2 L.space`、`IsConeBase p L`
+  给锥边界的单嵌入；不要求原底盘已经位于平面。
+- **17.11，已证（`f1d104761`、`caa641003`）。** `PlanarDiskGluing.lean` 的
+  `isSimplyEmbedded_union_sdiff_diskInterior` 给仿射平面形式，
+  `isSimplyEmbedded_union_sdiff_diskInterior_of_subset_fiber` 匹配 F 的非零线性层字段。
+  给参数化 `f`、`J := f '' stdSimplexBoundary 2`，结论是
+  `IsSimplyEmbedded ((S₁ ∪ S₂) \ (D \ J))`。删除盘的内在内部；完整凸开邻域支持量词保留。
+- **17.2，一般胞腔分解已证（`08ee37003`）。** `FreeDiskCell.lean` 的
+  `IsPLDiskDecomposition.exists_two_free_disk_cells` 允许任意有限维实赋范空间、共同有限三角剖分及任意 PL
+  圆盘胞腔。`DiskDecomposition` 平面化与子族限制、`DiskCrosscut`、`PlanarDiskSplit`、
+  `PlanarDiskDecomposition` 的自由性传递组成严格子族归纳。避开一个指定胞腔的推论也已证；17.3 的真盘子复形版本仍未证。
+- **给 F 的完整输入（`08ee37003`）。** `SchoenfliesFoundations.lean` 的
+  `schoenflies_input : SchoenfliesInput` 包含上述四个已证字段。接口与 F 的 `44806ee61` 原文件相同。
+  AuditS61 检查完整结构及精确三维第四字段，公理只有标准三项。
+- **17.12，由 F 车道负责。** 本分支未实现或声明该定理已证；F 可将已证 `schoenflies_input` 代入其条件接口。
+- **23.9/23.10，条件形式已证。** `SchoenfliesManifold.lean` 与 `PushManifold.lean` 显式接受
+  `∀ S : Set (EuclideanSpace ℝ (Fin 3)), IsPLSphere 2 S → IsSimplyEmbedded S`。
+  前者在原顶点开星内填充；后者在给定多面体邻域内推移两张互补边界盘，保持邻域外恒同，且不要求整个邻域包含于图卡。
+- **23.11，无条件已证。** `BallGluing.lean` 给共同有限维环境及欧氏三维形式；
+  `BallGluingManifold.lean` 给任意有限组合三维流形形式，球不必处于同一顶点星。
+  交集必须是位于两球 frontier 内的 PL 二维球，结论为并集的 PL 三维球性。
+
+S.3/P.3/S.5 最终核验（2026-09-15，数学提交 `08ee37003`）：9 个端点模块检查均 exit=0、零警告；
+AuditS62 的 16 项传递公理闭包均仅 `propext`、`Classical.choice`、`Quot.sound`。
+`.lake/scratch/S3-P3-S5-VERIFICATION.json` 记录源码散列与日志路径；
+`.lake/scratch/audit-s3-p3-s5-final.log` 保存最终审计。此前逐层验证与数学差异详见
+`External/ClassificationOfSurfaces/VENDOR.md`。本轮没有修改 vendored Lean 文件。
+最终文档检查点已 fetch 并 merge `origin/codex/moise-integration`；未改写已发布历史。
 
 2026-09-15 同步已抓取并纳入 F 至 `d0902b2cd`；`9c9002426` 先纳入 `8c1ce1d4f`。
 逐砖提交已经发布，因此按禁止重写已发布历史、禁止 force-push 的规则使用普通合并；未将 S 合入任何其它分支。
