@@ -1,5 +1,6 @@
 import DifferentialGeometry.Topology.InvarianceOfDomainManifold
-import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryInvariance
+import DifferentialGeometry.Topology.PiecewiseLinear.PolyhedralBoundary
+import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryOfBall
 import DifferentialGeometry.Topology.PiecewiseLinear.DualCells
 import DifferentialGeometry.Topology.PiecewiseLinear.ExhaustionGeneral
 import DifferentialGeometry.Topology.PiecewiseLinear.VertexChart
@@ -36,7 +37,7 @@ private theorem stdProj_mem_stdClosedTarget (n : ℕ) {x : Fin (n + 2) → ℝ}
     rw [Fin.sum_univ_castSucc] at hsum
     linarith [hx.1 (Fin.last (n + 1))]
 
-private theorem mem_interior_image_of_isPLHomeomorphOn_stdSimplex
+theorem mem_interior_image_of_isPLHomeomorphOn_stdSimplex
     {n : ℕ} {f : (Fin (n + 2) → ℝ) → EuclideanSpace ℝ (Fin (n + 1))}
     {P : Set (EuclideanSpace ℝ (Fin (n + 1)))}
     (hf : IsPLHomeomorphOn f (stdSimplex ℝ (Fin (n + 2))) P)
@@ -138,20 +139,8 @@ private theorem mem_boundaryComplex_space_iff_isPLBall_geometricLink_of_singleto
     {x : E} (hx : {x} ∈ K.faces) :
     x ∈ (boundaryComplex (n + 1) K).space ↔
       IsPLBall n (SimplicialComplex.geometricLink K {x}).space := by
-  constructor
-  · intro hxB
-    obtain ⟨s, hs, hxs⟩ := (boundaryComplex (n + 1) K).mem_space_iff.mp hxB
-    have hxs' : x ∈ s :=
-      mem_of_mem_convexHull_of_singleton_mem K hx
-        (boundaryComplex_faces_subset (n + 1) K hs) hxs
-    have hsingle : {x} ∈ (boundaryComplex (n + 1) K).faces :=
-      (boundaryComplex (n + 1) K).down_closed hs
-        (Finset.singleton_subset_iff.mpr hxs') (Finset.singleton_nonempty x)
-    simpa using ((hK.mem_boundaryComplex_faces_iff K).mp hsingle).2.2
-  · intro hball
-    exact (boundaryComplex (n + 1) K).convexHull_subset_space
-      ((hK.mem_boundaryComplex_faces_iff K).mpr ⟨hx, by simp, by simpa using hball⟩)
-      (subset_convexHull ℝ _ (by simp))
+  exact (isPLBall_geometricLink_iff_mem_boundaryComplex_of_isSubdivision K K hK
+    (IsSubdivision.refl K) hx).symm
 
 open Classical in
 private theorem not_mem_interior_space_of_isPLBall_geometricLink
@@ -302,8 +291,8 @@ private theorem mem_interior_map_iff_not_mem_boundaryComplex_space_of_piece
   have hboundary :
       x ∈ (@boundaryComplex _ _ _ (Classical.decEq _) (n + 1) T.complex).space ↔
         x ∈ (@boundaryComplex _ _ _ (Classical.decEq _) (n + 1) K₂).space := by
-    simpa using (mem_boundaryComplex_space_iff_of_isPLHomeomorphOn T.complex K₂ hT
-      hsub.isPLHomeomorphOn_id hx).symm
+    simpa using mem_boundaryComplex_space_iff_of_isPLHomeomorphOn T.complex K₂ hT
+      hsub.isPLHomeomorphOn_id hx |>.symm
   obtain ⟨e, he, hstarx⟩ := hstar x hx₂
   constructor
   · intro hxint hxB
@@ -441,21 +430,7 @@ private theorem boundaryComplex_space_eq_of_isSubdivision [FiniteDimensional ℝ
     (hK : IsCombinatorialManifoldWithBoundary (n + 1) K) (h : IsSubdivision K' K) :
     (@boundaryComplex _ _ _ (Classical.decEq _) (n + 1) K').space =
       (@boundaryComplex _ _ _ (Classical.decEq _) (n + 1) K).space := by
-  classical
-  ext x
-  constructor
-  · intro hxB
-    obtain ⟨s, hs, hxs⟩ :=
-      (@boundaryComplex _ _ _ (Classical.decEq _) (n + 1) K').mem_space_iff.mp hxB
-    have hxK : x ∈ K.space := h.space_eq ▸ K'.convexHull_subset_space hs.1 hxs
-    exact (mem_boundaryComplex_space_iff_of_isPLHomeomorphOn K K' hK
-      h.isPLHomeomorphOn_id hxK).mp hxB
-  · intro hxB
-    obtain ⟨s, hs, hxs⟩ :=
-      (@boundaryComplex _ _ _ (Classical.decEq _) (n + 1) K).mem_space_iff.mp hxB
-    have hxK : x ∈ K.space := K.convexHull_subset_space hs.1 hxs
-    exact (mem_boundaryComplex_space_iff_of_isPLHomeomorphOn K K' hK
-      h.isPLHomeomorphOn_id hxK).mpr hxB
+  exact boundaryComplex_space_of_isSubdivision K K' hK h
 
 open Classical in
 theorem exists_isPLBall_closedStar_inter_boundary [FiniteDimensional ℝ E] {n : ℕ}

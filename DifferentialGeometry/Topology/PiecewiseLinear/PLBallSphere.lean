@@ -33,11 +33,6 @@ theorem IsPLSphere.isPolyhedron [FiniteDimensional ℝ E] {n : ℕ} {P : Set E}
   exact IsPolyhedron.image_of_isPiecewiseAffineOn (isPolyhedron_space _)
     h.isPiecewiseAffineOn h.bijOn.injOn
 
-theorem IsPLSphere.nonempty {n : ℕ} {P : Set E} (hP : IsPLSphere n P) : P.Nonempty := by
-  obtain ⟨f, hf⟩ := hP
-  refine ⟨f (Pi.single 0 1), hf.bijOn.mapsTo ⟨single_mem_stdSimplex ℝ (0 : Fin (n + 2)), 1, ?_⟩⟩
-  simp
-
 theorem eulerChar_stdSimplex (n : ℕ) :
     Homology.eulerChar ℚ (TopCat.of (stdSimplex ℝ (Fin (n + 1)))) = 1 := by
   have : ContractibleSpace (stdSimplex ℝ (Fin (n + 1))) :=
