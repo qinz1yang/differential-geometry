@@ -68,7 +68,7 @@ assumption. Its invariance-of-domain results are conditional at this stage;
 a standard-axiom audit alone does not discharge a class hypothesis appearing
 in a theorem's statement.
 
-The subsequent planned development uses this library's integral singular
+The subsequent development described below uses this library's integral singular
 homology of spheres and contractible spaces to prove the no-retraction
 theorem in every positive finite dimension. It then generalizes the
 upstream `Moise/Brouwer.lean` ray construction from the plane to arbitrary
@@ -109,4 +109,38 @@ The no-retraction and fixed-point theorems have no unproved class hypotheses.
 The analytical declarations in `InvarianceOfDomain.lean` retain their
 abstract conditional signatures; importing `FixedPoint/Brouwer.lean`
 supplies their fixed-point instance. Explicit Euclidean and manifold
-endpoint declarations are the next development step.
+endpoint declarations are provided by the following development.
+
+### 2026-09-14: Unconditional model-space and manifold endpoints
+
+`DifferentialGeometry/Topology/InvarianceOfDomainManifold.lean` imports the
+proved Brouwer instance and exports seven theorems whose statements have
+neither `BrouwerFixedPoint` nor `HasInvarianceOfDomain` hypotheses:
+
+- `invariance_of_domain_isOpen_image`.
+- `isOpen_image_of_continuousOn_injOn`.
+- `isOpenMap_of_continuous_injective`.
+- `isOpen_range_of_isOpen_of_continuous_injective_real`.
+- `isOpen_range_of_isOpen_of_isEmbedding_real`.
+- `isInteriorPoint_iff_any_chart_real`.
+- `isBoundaryPoint_iff_any_chart_real`.
+
+The first three hold for arbitrary finite-dimensional real inner-product
+models, including Euclidean space in dimension zero. The charted manifolds
+may inhabit independent universes. The last four specialize the upstream
+`ModelWithCorners` interfaces over the reals using the proved instance.
+
+The manifold open-image proof uses one source chart and the existing
+model-to-manifold range theorem. On the open coordinate set
+`c.target ∩ c.symm ⁻¹' U`, the map `f ∘ c.symm` is continuous and injective;
+its open range is a neighborhood of the image point contained in `f '' U`.
+This reuses the upstream extended-target-chart argument rather than
+repeating it in a second chart construction.
+
+Focused checks for all four native modules pass with exit code zero and no
+warnings under the configured Mathlib standard linter set. `AuditE01`,
+`AuditE02`, `AuditE03`, and `AuditE0` in the lane's `.lake/scratch` directory
+record statement and transitive axiom checks. All seven final endpoints,
+the no-retraction and Brouwer theorems, and the Brouwer instance depend only
+on `propext`, `Classical.choice`, and `Quot.sound`. The final audit also
+checks the requested `EuclideanSpace ℝ (Fin n)` consumer signatures.
