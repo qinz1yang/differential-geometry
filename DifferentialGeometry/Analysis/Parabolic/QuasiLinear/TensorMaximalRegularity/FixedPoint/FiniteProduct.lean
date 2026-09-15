@@ -86,4 +86,105 @@ theorem exists_vector_fixed_forcing_of_tame
     rw [maximalRegularityVectorFieldL_eq_duhamel hT F] at hforce
     exact hforce
 
+theorem time_partial_tame_vector
+    (g₀ : SmoothRiemannianMetric I M) (r s : ℕ) (a : ℝ)
+    {R τ : ℝ} (hR : 0 < R) (hτ : 0 < τ)
+    (Nfun : ℝ → {u : PiLp 2 (fun _ : ι => TensorHs (I := I) (M := M) g₀ r s (a + 2)) |
+      ‖ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion
+        (I := I) (M := M) (g := g₀) (r := r) (s := s)
+          (show a + 1 ≤ a + 2 by linarith)) u‖ ≤ R} →
+      PiLp 2 (fun _ : ι => TensorHs (I := I) (M := M) g₀ r s a))
+    (hNmeas : TimeNemyMeas
+      (show (0 : PiLp 2 (fun _ : ι => TensorHs (I := I) (M := M) g₀ r s (a + 2))) ∈
+        {u | ‖ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion
+          (I := I) (M := M) (g := g₀) (r := r) (s := s)
+            (show a + 1 ≤ a + 2 by linarith)) u‖ ≤ R} by
+          simpa only [Set.mem_ofPred_eq, map_zero, norm_zero] using hR.le) Nfun τ)
+    (A B C : ℝ≥0) (D : ℝ) (hD : 0 ≤ D)
+    (hzero : ∀ t ∈ Icc (0 : ℝ) τ,
+      ‖Nfun t ⟨0, by simpa only [Set.mem_ofPred_eq, map_zero, norm_zero] using hR.le⟩‖ ≤ D)
+    (hsmallA : (A : ℝ) * R ≤ 1 / 16)
+    (hsmallC : (C : ℝ) * R ≤ 1 / 16)
+    (hsingle : ∀ t ∈ Icc (0 : ℝ) τ,
+      ∀ u u',
+      ‖Nfun t u - Nfun t u'‖ ≤
+        (A : ℝ) * R * ‖(u : PiLp 2 (fun _ : ι => TensorHs (I := I) (M := M) g₀ r s (a + 2))) - (u' : _)‖ +
+        (B : ℝ) * ‖ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion
+          (I := I) (M := M) (g := g₀) (r := r) (s := s)
+            (show a + 1 ≤ a + 2 by linarith)) ((u : _) - (u' : _))‖ +
+        (C : ℝ) * (‖(u : PiLp 2 (fun _ : ι => TensorHs (I := I) (M := M) g₀ r s (a + 2)))‖ + ‖(u' : PiLp 2 (fun _ : ι => TensorHs (I := I) (M := M) g₀ r s (a + 2)))‖) *
+          ‖ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion
+            (I := I) (M := M) (g := g₀) (r := r) (s := s)
+              (show a + 1 ≤ a + 2 by linarith)) ((u : _) - (u' : _))‖) :
+    ∃ T₀ : ℝ,
+      T₀ = min τ (min 1 (min (1 / (64 * ((B : ℝ) + 1) ^ 2))
+        ((((R / 4) / (2 * (D + 1))) ^ 2)))) ∧
+      0 < T₀ ∧ ∀ {T : ℝ} (hT : 0 < T), T ≤ T₀ →
+      ∃ (u : timeH1 (PiLp 2 (fun _ : ι => TensorHs (I := I) (M := M) g₀ r s a)) T)
+        (gforce : timeL2 (PiLp 2 (fun _ : ι => TensorHs (I := I) (M := M) g₀ r s a)) T),
+        let field := maximalRegularityDuhamelVectorField hT
+          (0 : PiLp 2 (fun _ : ι => TensorHs (I := I) (M := M) g₀ r s (a + 2))) gforce
+        u = maximalRegularityDuhamelVectorMap hT
+            (0 : PiLp 2 (fun _ : ι => TensorHs (I := I) (M := M) g₀ r s (a + 2))) gforce ∧
+          (∀ᵐ t ∂(timeMeasure T),
+            field t ∈ {v : PiLp 2 (fun _ : ι => TensorHs (I := I) (M := M) g₀ r s (a + 2)) |
+              ‖ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion
+                (I := I) (M := M) (g := g₀) (r := r) (s := s)
+                (show a + 1 ≤ a + 2 by linarith)) v‖ ≤ R}) ∧
+          gforce =ᵐ[timeMeasure T]
+            (fun t => Nfun t (aeSetLift
+              (show (0 : PiLp 2 (fun _ : ι => TensorHs (I := I) (M := M) g₀ r s (a + 2))) ∈
+                {v | ‖ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion
+                  (I := I) (M := M) (g := g₀) (r := r) (s := s)
+                    (show a + 1 ≤ a + 2 by linarith)) v‖ ≤ R} by
+                  simpa only [Set.mem_ofPred_eq, map_zero, norm_zero] using hR.le) field t)) ∧
+          u.toFunL2 =
+            (ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion
+              (I := I) (M := M) (g := g₀) (r := r) (s := s)
+                (show a ≤ a + 2 by linarith))).compLpL 2 (timeMeasure T) field ∧
+          timeH1.trace0 _ T u = 0 ∧
+          timeH1.timeDeriv _ T u =
+            (ContinuousLinearMap.piLpMap 2 (fun _ : ι =>
+              tensorScaleLaplacian (I := I) (M := M) (g := g₀) (r := r) (s := s) a)).compLpL
+                2 (timeMeasure T) field + gforce ∧
+          ‖gforce‖ ≤ R / 4 := by
+  set T₀ : ℝ := min τ (min 1 (min (1 / (64 * ((B : ℝ) + 1) ^ 2))
+    (((R / 4) / (2 * (D + 1))) ^ 2))) with hT₀def
+  have hD1 : 0 < D + 1 := by linarith
+  have hT₀ : 0 < T₀ := by
+    rw [hT₀def]
+    refine lt_min hτ (lt_min one_pos (lt_min (by positivity) ?_))
+    positivity
+  refine ⟨T₀, hT₀def, hT₀, ?_⟩
+  intro T hT hTT₀
+  have hTτ : T ≤ τ := le_trans hTT₀ (hT₀def ▸ min_le_left _ _)
+  have hTbase : T ≤ min 1 (min (1 / (64 * ((B : ℝ) + 1) ^ 2))
+      (((R / 4) / (2 * (D + 1))) ^ 2)) :=
+    le_trans hTT₀ (hT₀def ▸ min_le_right _ _)
+  have hT1 : T ≤ 1 := le_trans hTbase (min_le_left _ _)
+  have hTlo : T ≤ 1 / (64 * ((B : ℝ) + 1) ^ 2) :=
+    le_trans hTbase (le_trans (min_le_right _ _) (min_le_left _ _))
+  have hTstay : T ≤ ((R / 4) / (2 * (D + 1))) ^ 2 :=
+    le_trans hTbase (le_trans (min_le_right _ _) (min_le_right _ _))
+  obtain ⟨hPR, hκ, hstay⟩ := tame_forcing_contraction_bounds hR.le hT1
+    A B C hD hTlo hTstay hsmallA hsmallC
+  have htime : ∀ᵐ t ∂(timeMeasure T), t ∈ Icc (0 : ℝ) τ := by
+    filter_upwards [ae_restrict_mem measurableSet_Icc] with t ht
+    exact ⟨ht.1, ht.2.trans hTτ⟩
+  obtain ⟨F, hF, hstate, hforce⟩ := exists_vector_fixed_forcing_of_tame hT hR.le
+    (show 0 ≤ R / 4 by positivity) Nfun A B C D hD hPR
+    (by filter_upwards [htime] with t ht; exact hzero t ht)
+    (by filter_upwards [htime] with t ht; exact hsingle t ht)
+    (fun {T'} hTT f hf => hNmeas (hTT.trans hTτ) f hf) (by linarith) hstay
+  refine ⟨maximalRegularityDuhamelVectorMap hT
+      (0 : PiLp 2 (fun _ : ι => TensorHs (I := I) (M := M) g₀ r s (a + 2))) F,
+    F, rfl, hstate, hforce, ?_, ?_, ?_, hF⟩
+  · exact (maximalRegularityDuhamelVectorField_toFunL2 hT
+      (DifferentialGeometry.Analysis.Spectral.tensorResolventL2_isCompactOperator
+        (I := I) (M := M) g₀ r s) _ F).symm
+  · rw [maximalRegularityDuhamelVectorMap_trace0, map_zero]
+  · exact maximalRegularityDuhamelVectorMap_timeDeriv_eq hT
+      (DifferentialGeometry.Analysis.Spectral.tensorResolventL2_isCompactOperator
+        (I := I) (M := M) g₀ r s) _ F
+
 end DifferentialGeometry.Analysis.Parabolic.QuasiLinear

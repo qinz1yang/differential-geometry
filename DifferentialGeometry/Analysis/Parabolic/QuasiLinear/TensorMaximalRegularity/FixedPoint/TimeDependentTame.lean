@@ -131,65 +131,19 @@ private theorem time_partial_tame_at
     change ‖J (maximalRegularitySolutionFieldL (a : ℝ) hT.le F t)‖ ≤ _
     rw [maximalRegularitySolutionFieldL_eq_duhamel hT F]
     exact he ▸ ht
-  have hsqrt : Real.sqrt (1 + T) ≤ 2 := by
-    rw [← Real.sqrt_sq (show (0 : ℝ) ≤ 2 by norm_num)]
-    exact Real.sqrt_le_sqrt (by nlinarith)
   let ρ := R / 4
   let κ := (A : ℝ) * R * (1 + T) + (B : ℝ) * Real.sqrt T * Real.sqrt (1 + T) +
     2 * (C : ℝ) * ρ * Real.sqrt (1 + T) * (1 + T)
-  have hκle : κ ≤ 1 / 2 := by
-    have ha : (A : ℝ) * R * (1 + T) ≤ 1 / 8 := by
-      nlinarith [mul_le_mul_of_nonneg_left (show 1 + T ≤ 2 by linarith)
-        (mul_nonneg A.coe_nonneg hR.le)]
-    have hst : Real.sqrt T ≤ 1 / (8 * ((B : ℝ) + 1)) := by
-      rw [show 1 / (8 * ((B : ℝ) + 1)) = Real.sqrt ((1 / (8 * ((B : ℝ) + 1))) ^ 2) from
-        (Real.sqrt_sq (by positivity)).symm]
-      apply Real.sqrt_le_sqrt
-      convert hTlo using 1
-      rw [div_pow, one_pow, mul_pow]
-      norm_num
-    have hb : (B : ℝ) * Real.sqrt T * Real.sqrt (1 + T) ≤ 1 / 4 := by
-      have hb' : (B : ℝ) * (2 * Real.sqrt T) ≤ 1 / 4 := by
-        calc
-          _ ≤ (B : ℝ) * (2 * (1 / (8 * ((B : ℝ) + 1)))) := by gcongr
-          _ ≤ 1 / 4 := by
-            have hfrac : (B : ℝ) / ((B : ℝ) + 1) ≤ 1 := by rw [div_le_one (by positivity)]; linarith [B.coe_nonneg]
-            have he : (B : ℝ) * (2 * (1 / (8 * ((B : ℝ) + 1)))) =
-              ((B : ℝ) / ((B : ℝ) + 1)) * (1 / 4) := by field_simp; ring
-            rw [he]; nlinarith
-      nlinarith [mul_le_mul_of_nonneg_left hsqrt
-        (mul_nonneg B.coe_nonneg (Real.sqrt_nonneg T))]
-    have hc : 2 * (C : ℝ) * ρ * Real.sqrt (1 + T) * (1 + T) ≤ 1 / 8 := by
-      calc
-        _ ≤ 2 * (C : ℝ) * ρ * 2 * 2 := by
-          dsimp only [ρ]
-          gcongr
-          linarith
-        _ = 2 * ((C : ℝ) * R) := by dsimp only [ρ]; ring
-        _ ≤ 1 / 8 := by linarith
-    dsimp only [κ]
-    linarith
-  have hstay : Real.sqrt T * D ≤ (1 - κ) * ρ := by
-    have hst : Real.sqrt T ≤ ρ / (2 * (D + 1)) := by
-      rw [show ρ / (2 * (D + 1)) = Real.sqrt ((ρ / (2 * (D + 1))) ^ 2) from
-        (Real.sqrt_sq (by dsimp only [ρ]; positivity)).symm]
-      exact Real.sqrt_le_sqrt hTstay
-    have hD1 : 0 < D + 1 := by linarith
-    calc
-      _ ≤ (ρ / (2 * (D + 1))) * D := mul_le_mul_of_nonneg_right hst hD
-      _ ≤ (ρ / (2 * (D + 1))) * (D + 1) := by
-        apply mul_le_mul_of_nonneg_left (by linarith)
-        dsimp only [ρ]
-        positivity
-      _ = ρ / 2 := by field_simp
-      _ ≤ (1 - κ) * ρ := by dsimp only [ρ]; nlinarith [hR]
+  obtain ⟨hPR, hκle, hstay⟩ := tame_forcing_contraction_bounds hR.le hT1
+    A B C hD hTlo hTstay hsmallA hsmallC
+  change κ ≤ 1 / 2 at hκle
   have htime : ∀ᵐ t ∂(timeMeasure T), t ∈ Icc (0 : ℝ) τ := by
     filter_upwards [ae_restrict_mem measurableSet_Icc] with t ht
     exact ⟨ht.1, ht.2.trans hTτ⟩
   obtain ⟨F, hF, hstate, hforce⟩ := exists_fixed_forcing_of_tame hR.le
     (show 0 ≤ ρ by dsimp only [ρ]; positivity) (show 0 ≤ 1 + T by linarith)
     (Real.sqrt_nonneg (1 + T)) J L hL hpoint
-    (show Real.sqrt (1 + T) * ρ ≤ R by dsimp only [ρ]; nlinarith [hR])
+    hPR
     Nfun A B C D hD
     (by filter_upwards [htime] with t ht; exact hzero t ht)
     (by filter_upwards [htime] with t ht; exact hsingle t ht)

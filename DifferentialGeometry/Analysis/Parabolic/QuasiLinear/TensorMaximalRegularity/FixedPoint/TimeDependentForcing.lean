@@ -8,6 +8,79 @@ open scoped ENNReal NNReal
 namespace DifferentialGeometry.Analysis.Parabolic.QuasiLinear
 open DifferentialGeometry.Analysis.Parabolic.TimeSobolev
 
+theorem tame_forcing_contraction_bounds {R T D : ℝ}
+    (hR : 0 ≤ R) (hT1 : T ≤ 1) (A B C : ℝ≥0) (hD : 0 ≤ D)
+    (hTlo : T ≤ 1 / (64 * ((B : ℝ) + 1) ^ 2))
+    (hTstay : T ≤ ((R / 4) / (2 * (D + 1))) ^ 2)
+    (hsmallA : (A : ℝ) * R ≤ 1 / 16)
+    (hsmallC : (C : ℝ) * R ≤ 1 / 16) :
+    let κ := (A : ℝ) * R * (1 + T) + (B : ℝ) * Real.sqrt T * Real.sqrt (1 + T) +
+      2 * (C : ℝ) * (R / 4) * Real.sqrt (1 + T) * (1 + T)
+    Real.sqrt (1 + T) * (R / 4) ≤ R ∧ κ ≤ 1 / 2 ∧
+      Real.sqrt T * D ≤ (1 - κ) * (R / 4) := by
+  let ρ := R / 4
+  let κ := (A : ℝ) * R * (1 + T) + (B : ℝ) * Real.sqrt T * Real.sqrt (1 + T) +
+    2 * (C : ℝ) * ρ * Real.sqrt (1 + T) * (1 + T)
+  have hsqrt : Real.sqrt (1 + T) ≤ 2 := by
+    rw [← Real.sqrt_sq (show (0 : ℝ) ≤ 2 by norm_num)]
+    exact Real.sqrt_le_sqrt (by nlinarith)
+  have hκle : κ ≤ 1 / 2 := by
+    have ha : (A : ℝ) * R * (1 + T) ≤ 1 / 8 := by
+      nlinarith [mul_le_mul_of_nonneg_left (show 1 + T ≤ 2 by linarith)
+        (mul_nonneg A.coe_nonneg hR)]
+    have hst : Real.sqrt T ≤ 1 / (8 * ((B : ℝ) + 1)) := by
+      rw [show 1 / (8 * ((B : ℝ) + 1)) = Real.sqrt ((1 / (8 * ((B : ℝ) + 1))) ^ 2) from
+        (Real.sqrt_sq (by positivity)).symm]
+      apply Real.sqrt_le_sqrt
+      convert hTlo using 1
+      rw [div_pow, one_pow, mul_pow]
+      norm_num
+    have hb : (B : ℝ) * Real.sqrt T * Real.sqrt (1 + T) ≤ 1 / 4 := by
+      have hb' : (B : ℝ) * (2 * Real.sqrt T) ≤ 1 / 4 := by
+        calc
+          _ ≤ (B : ℝ) * (2 * (1 / (8 * ((B : ℝ) + 1)))) := by gcongr
+          _ ≤ 1 / 4 := by
+            have hfrac : (B : ℝ) / ((B : ℝ) + 1) ≤ 1 := by
+              rw [div_le_one (by positivity)]
+              linarith [B.coe_nonneg]
+            have he : (B : ℝ) * (2 * (1 / (8 * ((B : ℝ) + 1)))) =
+                ((B : ℝ) / ((B : ℝ) + 1)) * (1 / 4) := by field_simp; ring
+            rw [he]
+            nlinarith
+      nlinarith [mul_le_mul_of_nonneg_left hsqrt
+        (mul_nonneg B.coe_nonneg (Real.sqrt_nonneg T))]
+    have hc : 2 * (C : ℝ) * ρ * Real.sqrt (1 + T) * (1 + T) ≤ 1 / 8 := by
+      calc
+        _ ≤ 2 * (C : ℝ) * ρ * Real.sqrt (1 + T) * 2 := by
+          apply mul_le_mul_of_nonneg_left (by linarith)
+          dsimp only [ρ]
+          positivity
+        _ ≤ 2 * (C : ℝ) * ρ * 2 * 2 := by
+          apply mul_le_mul_of_nonneg_right _ (by norm_num)
+          apply mul_le_mul_of_nonneg_left hsqrt
+          dsimp only [ρ]
+          positivity
+        _ = 2 * ((C : ℝ) * R) := by dsimp only [ρ]; ring
+        _ ≤ 1 / 8 := by linarith
+    dsimp only [κ]
+    linarith
+  refine ⟨?_, hκle, ?_⟩
+  · nlinarith [mul_le_mul_of_nonneg_right hsqrt (show 0 ≤ R / 4 by positivity)]
+  · have hst : Real.sqrt T ≤ ρ / (2 * (D + 1)) := by
+      rw [show ρ / (2 * (D + 1)) = Real.sqrt ((ρ / (2 * (D + 1))) ^ 2) from
+        (Real.sqrt_sq (by dsimp only [ρ]; positivity)).symm]
+      exact Real.sqrt_le_sqrt hTstay
+    have hD1 : 0 < D + 1 := by linarith
+    calc
+      _ ≤ (ρ / (2 * (D + 1))) * D := mul_le_mul_of_nonneg_right hst hD
+      _ ≤ (ρ / (2 * (D + 1))) * (D + 1) := by
+        apply mul_le_mul_of_nonneg_left (by linarith)
+        dsimp only [ρ]
+        positivity
+      _ = ρ / 2 := by field_simp
+      _ ≤ (1 - κ) * ρ := by dsimp only [ρ]; nlinarith
+
+
 variable {X Y Z : Type*}
   [NormedAddCommGroup X] [NormedSpace ℝ X]
   [NormedAddCommGroup Y] [NormedSpace ℝ Y] [CompleteSpace Y]
