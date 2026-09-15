@@ -781,3 +781,27 @@ The remaining 17.5 work is to assemble these data on the fixed spherical
 triangulation, preserve the whole disk under each chart extension, and
 perform the retained-triangle induction and final move to an original
 facet. The full 17.5, 17.6, and 17.8 endpoints remain open.
+
+## Intrinsic boundary traces and free faces beyond the plane
+
+The native `FaceStarTransport` API now includes erasure and convex-hull
+images. Its intersection proof uses Mathlib's
+`Finset.image_inter_of_injOn`. `BoundaryTraceTransport` combines these
+with native boundary invariance to transport the exact intersection of
+an intrinsic manifold boundary with a simplex.
+
+`FreeFaceTransport.exists_isPLBall_eraseTriangleComplex_of_isGlueIso_planar`
+transfers the planar free-face producer to any finite-dimensional ambient
+space with a finite disk mesh simplicially isomorphic to a planar disk.
+It retains the specified triangle, transports the intrinsic boundary
+trace and all protected intersection bounds, and proves the erased mesh
+is a PL disk. All these conclusions are produced from the planar result;
+none is added as an input. Vendor Lean sources remain unchanged.
+
+The three modules pass focused checks with exit 0 and zero warnings.
+`AuditS33.lean` checks nine distinct public declarations, exits 0, and
+contains only the standard three axioms. Logs are
+`.lake/scratch/check-boundary-trace-transport.log`,
+`.lake/scratch/check-free-face-transport.log`, and
+`.lake/scratch/audit-boundary-free-face-transport.log`. The full ambient
+extension and finite deletion induction for 17.5 remain to be assembled.

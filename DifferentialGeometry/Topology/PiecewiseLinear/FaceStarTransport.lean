@@ -23,20 +23,12 @@ theorem IsGlueIso.image_subset_image_left_iff (h : IsGlueIso K L φ ψ)
 theorem IsGlueIso.image_inter_left (h : IsGlueIso K L φ ψ)
     {s t : Finset E} (hs : s ∈ K.faces) (ht : t ∈ K.faces) :
     (s ∩ t).image φ = s.image φ ∩ t.image φ := by
-  ext z
-  constructor
-  · intro hz
-    obtain ⟨v, hv, rfl⟩ := Finset.mem_image.mp hz
-    obtain ⟨hvs, hvt⟩ := Finset.mem_inter.mp hv
-    exact Finset.mem_inter.mpr
-      ⟨Finset.mem_image.mpr ⟨v, hvs, rfl⟩, Finset.mem_image.mpr ⟨v, hvt, rfl⟩⟩
-  · intro hz
-    obtain ⟨hzs, hzt⟩ := Finset.mem_inter.mp hz
-    obtain ⟨v, hvs, hvz⟩ := Finset.mem_image.mp hzs
-    obtain ⟨w, hwt, hwz⟩ := Finset.mem_image.mp hzt
-    have hvw : v = w := by
-      rw [← h.left s hs v hvs, ← h.left t ht w hwt, hvz, hwz]
-    exact Finset.mem_image.mpr ⟨v, Finset.mem_inter.mpr ⟨hvs, hvw ▸ hwt⟩, hvz⟩
+  have hinv : LeftInvOn ψ φ ((s : Set E) ∪ t) := by
+    intro x hx
+    rcases hx with hx | hx
+    · exact h.left s hs x hx
+    · exact h.left t ht x hx
+  exact Finset.image_inter_of_injOn s t hinv.injOn
 
 theorem IsGlueIso.card_inter_image_left (h : IsGlueIso K L φ ψ)
     {s t : Finset E} (hs : s ∈ K.faces) (ht : t ∈ K.faces) :
@@ -47,6 +39,27 @@ theorem IsGlueIso.card_inter_image_left (h : IsGlueIso K L φ ψ)
   have hxs : x ∈ s := (Finset.mem_inter.mp hx).1
   have hys : y ∈ s := (Finset.mem_inter.mp hy).1
   rw [← h.left s hs x hxs, ← h.left s hs y hys, hxy]
+
+theorem IsGlueIso.image_erase_left (h : IsGlueIso K L φ ψ)
+    {s : Finset E} (hs : s ∈ K.faces) {v : E} (hv : v ∈ s) :
+    (s.erase v).image φ = (s.image φ).erase (φ v) := by
+  apply Finset.Subset.antisymm
+  · intro z hz
+    obtain ⟨w, hw, rfl⟩ := Finset.mem_image.mp hz
+    obtain ⟨hwv, hws⟩ := Finset.mem_erase.mp hw
+    refine Finset.mem_erase.mpr ⟨?_, Finset.mem_image.mpr ⟨w, hws, rfl⟩⟩
+    intro hφ
+    apply hwv
+    rw [← h.left s hs w hws, ← h.left s hs v hv, hφ]
+  · exact Finset.erase_image_subset_image_erase φ s v
+
+theorem IsGlueIso.image_convexHull (h : IsGlueIso K L φ ψ)
+    {s : Finset E} (hs : s ∈ K.faces) :
+    simplicialMap K φ '' convexHull ℝ (s : Set E) =
+      convexHull ℝ ((s.image φ : Finset F) : Set F) := by
+  apply image_convexHull_simplicialMap K φ hs
+  intro x hx y hy hxy
+  rw [← h.left s hs x hx, ← h.left s hs y hy, hxy]
 
 open Classical in
 theorem IsGlueIso.faceStarComplex (h : IsGlueIso K L φ ψ)
