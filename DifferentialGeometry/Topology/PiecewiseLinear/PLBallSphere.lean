@@ -1,4 +1,5 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.StdSimplexCone
+import DifferentialGeometry.Topology.PiecewiseLinear.PLImage
 import DifferentialGeometry.Topology.SimplicialComplex.GeometricEulerCharacteristic
 import DifferentialGeometry.Topology.SimplicialComplex.Simplex
 
@@ -20,6 +21,17 @@ noncomputable def IsPLHomeomorphOn.homeomorph [FiniteDimensional ℝ E] [FiniteD
   continuous_invFun :=
     (continuousOn_iff_continuous_domRestrict.mp
       h.isPiecewiseAffineOn_invFunOn.continuousOn).subtype_mk _
+
+theorem IsPLSphere.isPolyhedron [FiniteDimensional ℝ E] {n : ℕ} {P : Set E}
+    (hP : IsPLSphere n P) : IsPolyhedron P := by
+  obtain ⟨f, hf⟩ := hP
+  obtain ⟨g, hg⟩ := isPLSphere_simplexBoundary_std n
+  have : Finite (simplexBoundary (stdVertices n) (stdVertices_affineIndependent n)).faces :=
+    (simplexBoundary_faces_finite _ _).to_subtype
+  have h := hg.symm.trans hf
+  rw [← h.image_eq]
+  exact IsPolyhedron.image_of_isPiecewiseAffineOn (isPolyhedron_space _)
+    h.isPiecewiseAffineOn h.bijOn.injOn
 
 theorem eulerChar_stdSimplex (n : ℕ) :
     Homology.eulerChar ℚ (TopCat.of (stdSimplex ℝ (Fin (n + 1)))) = 1 := by
