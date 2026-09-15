@@ -1433,3 +1433,33 @@ axioms. Logs are `.lake/scratch/check-connected-dense.log`,
 `check-disk-crosscut.log`, `check-disk-decomposition.log`,
 `check-planar-disk-union.log`, `check-planar-disk-split.log`,
 `check-planar-disk-decomposition.log`, and `audit-free-disk-transfer.log`.
+
+## General two-free-cell theorem and the complete Schoenflies input
+
+`FreeDiskCell.lean` proves Moise 17.2 for F's unchanged
+`IsPLDiskDecomposition` interface, allowing arbitrary PL disk cells in a
+common finite triangulation. The public theorem
+`IsPLDiskDecomposition.exists_two_free_disk_cells` works in every
+finite-dimensional real normed space. Its corollary
+`exists_free_disk_cell_ne` avoids any one prescribed cell. The proof
+reduces to the plane, splits at a nonfree boundary cell, and inducts on
+strictly smaller cell subfamilies. Free-cell transfer then returns two
+distinct free cells of the original decomposition. This does not claim
+the still stronger 17.3 statement about avoiding a prescribed proper disk
+subcomplex.
+
+`SchoenfliesFoundations.lean` proves `schoenflies_input : SchoenfliesInput`
+from the actual 17.9, 17.10, 17.11, and 17.2 producers. All four field
+signatures from F's interface are preserved exactly, including the full
+support quantifier for simple embedding. It is a proved structure value,
+with no unresolved proposition or class assumption. S.4 remains owned by
+F. No vendored source changed.
+
+Both modules pass focused checks with exit 0 and zero warnings.
+`AuditS61.lean` checks the exact three-dimensional fourth-field statement,
+type-checks the complete structure, prints both general free-cell types,
+and audits the two endpoints plus `schoenflies_input`: exit 0 and only
+`propext`, `Classical.choice`, and `Quot.sound`. Logs:
+`.lake/scratch/check-free-disk-cell.log`,
+`.lake/scratch/check-schoenflies-foundations.log`, and
+`.lake/scratch/audit-schoenflies-foundations.log`.
