@@ -10397,3 +10397,8 @@ import DifferentialGeometry.Analysis.Calculus.MapConvergence.Configuration
 import DifferentialGeometry.Analysis.Calculus.MapConvergence.Image
 import DifferentialGeometry.Analysis.Calculus.MapConvergence.LocalInvertibility
 import DifferentialGeometry.Analysis.Calculus.MapConvergence.Locality
+import DifferentialGeometry.Analysis.Calculus.MapConvergence.MovingCoordinates
+import DifferentialGeometry.Analysis.Calculus.MapConvergence.MovingInputs
+import DifferentialGeometry.Bundle.TangentOpenRestriction
+import DifferentialGeometry.Geometry.Connection.TensorNabla.Naturality.OpenRestriction
+import DifferentialGeometry.Geometry.Exponential.DiagonalExponential.FiberComparison
