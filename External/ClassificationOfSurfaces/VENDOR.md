@@ -497,3 +497,21 @@ The planar kernel still has to be transported to a local disk in the
 triangulated tetrahedral boundary with control of the rest of that boundary.
 The whole spherical-disk image statement and its induction remain open;
 17.5, 17.6, and 17.8 are not claimed complete.
+
+## Native integration with planar arc gluing
+
+The S branch incorporates F through `8c1ce1d4f` by an ordinary merge, preserving
+published history. Native duplicate declarations are consolidated:
+`IsPLBall.isPolyhedron` remains once in `PLImage`; `geometricLink_simplexComplex`
+uses the canonical declaration in `SimplexLink` with its face inferred;
+`boundaryComplex_simplexComplex` uses the canonical declaration in
+`BoundaryOfBall`, carrying the ambient `DecidableEq` instance. The two copies
+in `SimplexBoundaryImage` are removed; its boundary-image consumer retains its
+statement and passes the focused check. No vendor Lean source is modified.
+
+The synchronization retains S's completed P.1 and P.2 results and records F's
+additional native arc matching, crosscut, and disk gluing inputs separately.
+All 39 selected changed or affected native modules pass the prescribed focused
+checks with exit 0 and zero warnings. `AuditS18.lean` reviews 127 declarations
+across the integrated S proof chain and the new F interfaces. Each transitive
+closure contains only the three standard foundational axioms; the audit exits 0.

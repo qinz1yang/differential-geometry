@@ -1,10 +1,85 @@
 import DifferentialGeometry.External.Schoenflies.JordanClosed
+import DifferentialGeometry.External.Schoenflies.PolyArcRealize
 import Mathlib.Analysis.InnerProductSpace.PiL2
 
 noncomputable section
 open Set Topology
 
 namespace DifferentialGeometry.Topology.PlanarJordan
+
+theorem frontier_closure_inside {J : Set Schoenflies.Plane} (hJ : Schoenflies.IsJordanCurve J) :
+    frontier (closure (Schoenflies.inside J)) = J := by
+  have hsep := Schoenflies.jordan_curve_theorem hJ
+  refine Subset.antisymm (frontier_closure_subset.trans hsep.frontier_inside.subset) ?_
+  intro x hx
+  have hxIn : x ∈ closure (Schoenflies.inside J) :=
+    frontier_subset_closure (hsep.frontier_inside.symm.subset hx)
+  have hxOut : x ∈ closure (Schoenflies.outside J) :=
+    frontier_subset_closure (hsep.frontier_outside.symm.subset hx)
+  have hdisj : Disjoint (closure (Schoenflies.inside J)) (Schoenflies.outside J) :=
+    Schoenflies.disjoint_inside_outside.closure_left hsep.isOpen_outside
+  have hout : Schoenflies.outside J ⊆ (closure (Schoenflies.inside J))ᶜ :=
+    fun y hy hy' => Set.disjoint_left.mp hdisj hy' hy
+  have hxNot := closure_mono hout hxOut
+  rw [closure_compl] at hxNot
+  rw [frontier, closure_closure]
+  exact ⟨hxIn, hxNot⟩
+
+theorem closure_inside_union_of_isCrosscut {J P A B : Set Schoenflies.Plane}
+    {p q : Schoenflies.Plane} (h : Schoenflies.IsCrosscut J P p q)
+    (hcut : Schoenflies.IsCutPair J p q A B) :
+    closure (Schoenflies.inside (A ∪ P)) ∪ closure (Schoenflies.inside (B ∪ P)) =
+      closure (Schoenflies.inside J) := by
+  have hj : ∀ S, Schoenflies.IsJordanCurve S → Schoenflies.IsSeparating S :=
+    fun _ => Schoenflies.jordan_curve_theorem
+  have hP : P ⊆ Schoenflies.inside J ∪ J := by
+    intro x hx
+    by_cases hxpq : x ∈ ({p, q} : Set Schoenflies.Plane)
+    · rcases hxpq with rfl | rfl
+      · exact Or.inr h.left_mem
+      · exact Or.inr h.right_mem
+    · exact Or.inl (h.sdiff_subset ⟨hx, hxpq⟩)
+  rw [h.closure_side hj hcut, h.closure_side hj hcut.symm,
+    (Schoenflies.IsRegionOf.inside J).closure_eq (hj J h.curve)]
+  calc
+    _ = (Schoenflies.inside (A ∪ P) ∪ Schoenflies.inside (B ∪ P)) ∪ ((A ∪ B) ∪ P) := by
+      ext x
+      simp only [mem_union]
+      tauto
+    _ = (Schoenflies.inside J \ P) ∪ (J ∪ P) := by
+      rw [← h.inside_diff_eq hj hcut h.hasArcCollars, hcut.union_eq]
+    _ = Schoenflies.inside J ∪ J := by
+      ext x
+      have hp : x ∈ P → x ∈ Schoenflies.inside J ∨ x ∈ J := fun hx => hP hx
+      simp only [mem_union, mem_sdiff]
+      tauto
+
+theorem closure_inside_inter_of_isCrosscut {J P A B : Set Schoenflies.Plane}
+    {p q : Schoenflies.Plane} (h : Schoenflies.IsCrosscut J P p q)
+    (hcut : Schoenflies.IsCutPair J p q A B) :
+    closure (Schoenflies.inside (A ∪ P)) ∩ closure (Schoenflies.inside (B ∪ P)) = P := by
+  have hj : ∀ S, Schoenflies.IsJordanCurve S → Schoenflies.IsSeparating S :=
+    fun _ => Schoenflies.jordan_curve_theorem
+  rw [h.closure_side hj hcut, h.closure_side hj hcut.symm]
+  refine Subset.antisymm ?_ fun x hx => ⟨Or.inr (Or.inr hx), Or.inr (Or.inr hx)⟩
+  rintro x ⟨hx | hx, hy | hy⟩
+  · exact False.elim (Set.disjoint_left.mp (h.disjoint_sides hj hcut) hx hy)
+  · have hx' := h.side_subset hj hcut hx
+    rcases hy with hy | hy
+    · exact False.elim (Schoenflies.inside_subset_compl hx'.1 (hcut.snd_subset hy))
+    · exact hy
+  · have hy' := h.side_subset hj hcut.symm hy
+    rcases hx with hx | hx
+    · exact False.elim (Schoenflies.inside_subset_compl hy'.1 (hcut.fst_subset hx))
+    · exact hx
+  · rcases hx with hx | hx
+    · rcases hy with hy | hy
+      · have hxpq := hcut.inter_eq.subset ⟨hx, hy⟩
+        rcases hxpq with rfl | rfl
+        · exact h.arc.left_mem
+        · exact h.arc.right_mem
+      · exact hy
+    · exact hx
 
 theorem exists_regions_of_simple_closed_curve
     {γ : ℝ → ℂ} (hγ : ContinuousOn γ (Icc 0 1)) (hclose : γ 0 = γ 1)

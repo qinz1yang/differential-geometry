@@ -10,6 +10,7 @@ variable {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 
 open Classical in
 theorem exists_isPLHomeomorphOn_of_boundaryComplex [FiniteDimensional ℝ E] [FiniteDimensional ℝ F]
+    [DecidableEq E] [DecidableEq F]
     {n : ℕ} (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
     (L : Geometry.SimplicialComplex ℝ F) [Finite L.faces]
     (hK : IsPLBall (n + 1) K.space) (hL : IsPLBall (n + 1) L.space) {g : E → F}

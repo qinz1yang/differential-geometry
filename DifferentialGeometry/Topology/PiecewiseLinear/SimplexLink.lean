@@ -6,8 +6,26 @@ open Set
 
 namespace DifferentialGeometry.Topology.PiecewiseLinear
 
-variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
-  [DecidableEq E] {T : Finset E} (hT : AffineIndependent ℝ ((↑) : T → E))
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+
+theorem geometricLink_simplexComplex [DecidableEq E] {T t : Finset E}
+    (hT : AffineIndependent ℝ ((↑) : T → E)) (ht : t ⊆ T) :
+    SimplicialComplex.geometricLink (simplexComplex T hT) t =
+      simplexComplex (T \ t) (affineIndependent_of_subset hT Finset.sdiff_subset) := by
+  ext s
+  change (s.Nonempty ∧ Disjoint t s ∧ (t ∪ s).Nonempty ∧ t ∪ s ⊆ T) ↔
+    s.Nonempty ∧ s ⊆ T \ t
+  constructor
+  · rintro ⟨hs, hts, -, hsub⟩
+    refine ⟨hs, fun x hx => Finset.mem_sdiff.mpr ⟨hsub (Finset.mem_union_right _ hx), ?_⟩⟩
+    exact fun hxt => Finset.disjoint_left.mp hts hxt hx
+  · rintro ⟨hs, hsub⟩
+    refine ⟨hs, Finset.disjoint_left.mpr (fun x hxt hxs =>
+      (Finset.mem_sdiff.mp (hsub hxs)).2 hxt), hs.mono Finset.subset_union_right, ?_⟩
+    exact Finset.union_subset ht (hsub.trans Finset.sdiff_subset)
+
+variable [FiniteDimensional ℝ E] [DecidableEq E] {T : Finset E}
+  (hT : AffineIndependent ℝ ((↑) : T → E))
   {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces]
 
 include hT

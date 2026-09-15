@@ -58,47 +58,6 @@ theorem simplexBoundary_stdVertices_space (n : ℕ) :
       (Finset.mem_image_of_mem _ (Finset.mem_univ i)) (by rwa [convexHull_stdVertices])).mpr
     rwa [weights_stdVertices hx i]
 
-theorem geometricLink_simplexComplex [DecidableEq E] {T : Finset E}
-    (hT : AffineIndependent ℝ ((↑) : T → E)) (s : Finset E) (hs : s ⊆ T) :
-    SimplicialComplex.geometricLink (simplexComplex T hT) s =
-      simplexComplex (T \ s) (affineIndependent_of_subset hT Finset.sdiff_subset) := by
-  ext u
-  rw [mem_geometricLink_faces_iff, mem_simplexComplex_faces_iff, mem_simplexComplex_faces_iff]
-  constructor
-  · rintro ⟨hu, hsu, -, hsub⟩
-    refine ⟨hu, fun v hv => Finset.mem_sdiff.mpr ⟨hsub (Finset.mem_union_right s hv), ?_⟩⟩
-    exact fun hvs => (Finset.disjoint_left.mp hsu) hvs hv
-  · rintro ⟨hu, hus⟩
-    exact ⟨hu, Finset.disjoint_left.mpr (fun v hvs hvu => (Finset.mem_sdiff.mp (hus hvu)).2 hvs),
-      hu.mono Finset.subset_union_right, Finset.union_subset hs (hus.trans Finset.sdiff_subset)⟩
-
-open Classical in
-theorem boundaryComplex_simplexComplex [FiniteDimensional ℝ E] {T : Finset E}
-    (hT : AffineIndependent ℝ ((↑) : T → E)) {n : ℕ} (hcard : T.card = n + 2) :
-    boundaryComplex (n + 1) (simplexComplex T hT) = simplexBoundary T hT := by
-  ext s
-  rw [mem_boundaryComplex_faces_iff, mem_simplexBoundary_faces_iff]
-  constructor
-  · rintro ⟨⟨hne, hsT⟩, t, ⟨-, htT⟩, hst, htcard, -⟩
-    refine ⟨hsT, hne, fun heq => ?_⟩
-    have hle := Finset.card_le_card hst
-    rw [heq, hcard] at hle
-    omega
-  · rintro ⟨hsT, hsne, hsTne⟩
-    obtain ⟨v, hv, hvs⟩ := Finset.exists_of_ssubset (Finset.ssubset_iff_subset_ne.mpr ⟨hsT, hsTne⟩)
-    have hfacetcard : (T.erase v).card = n + 1 := by
-      rw [Finset.card_erase_of_mem hv, hcard]
-      omega
-    refine ⟨⟨hsne, hsT⟩, T.erase v,
-      ⟨Finset.card_pos.mp (by omega), Finset.erase_subset v T⟩,
-      Finset.subset_erase.mpr ⟨hsT, hvs⟩, hfacetcard.le, ?_⟩
-    rw [hfacetcard, Nat.sub_self, geometricLink_simplexComplex hT _ (Finset.erase_subset v T)]
-    have heq : T \ T.erase v = {v} := Finset.sdiff_erase_self hv
-    have hne : (T \ T.erase v).Nonempty := by rw [heq]; exact Finset.singleton_nonempty v
-    rw [simplexComplex_space _ _ hne]
-    exact isPLBall_convexHull_of_affineIndependent _
-      (affineIndependent_of_subset hT Finset.sdiff_subset) (by rw [heq]; rfl)
-
 open Classical in
 theorem image_stdSimplexBoundary_of_isPLHomeomorphOn_convexHull [FiniteDimensional ℝ E]
     {T : Finset E} (hT : AffineIndependent ℝ ((↑) : T → E)) {n : ℕ}
