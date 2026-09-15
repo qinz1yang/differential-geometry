@@ -305,7 +305,7 @@ remaining P.5 obligations. This audit changes no vendor Lean source.
 
 The later native `BallFrontier`, `PushProperty`, `AmbientExtension`, `ConeIsotopy`,
 `SimplexBoundaryImage`, and `SimplexPush` developments use the project's native
-PL and simplicial APIs. They do not copy additional upstream Lean proofs.
+PL and simplicial APIs. Their initial proofs do not copy additional upstream Lean proofs.
 Their source is not subject to the vendor style exception. In particular, the
 Moise 17.4 tetrahedral-face push uses relative PL extension and cone-apex motion;
 it neither assumes global PL behavior of the upstream relative Schoenflies map
@@ -322,3 +322,23 @@ checks the seven new declarations, both compatible closed-region corollaries,
 and the tetrahedral-face push in a single environment: all ten closures contain
 only `propext`, `Classical.choice`, and `Quot.sound`, audit exit 0. No vendor Lean
 source changes or second-batch imports are needed for this strengthening.
+
+## Native extension over two cones
+
+`AmbientExtension.IsPLHomeomorphOn.exists_extension_of_eqOn_frontier` generalizes
+the identity-pasting construction in upstream `AmbientHomeomorph.lean`, lines
+133–197. The new theorem applies to finite polyhedra in arbitrary finite-dimensional
+real normed spaces and starts with a native PL self-map. It uses the native
+setwise inverse and proves the global PL certificate via `univ_of_eqOn_compl`;
+it does not introduce a planar subtype-homeomorphism definition or copy the
+upstream declaration. The frontier-fixing assumption is retained explicitly.
+
+The new `PLHomeomorphGluing` and `ConeAmbientExtension` proofs are native.
+They glue two PL self-maps that agree on and preserve their intersection, then
+extend the cone maps by identity. The cone theorem requires the geometric
+intersection and frontier conditions explicitly. It does not establish those
+conditions for every tetrahedral boundary star, and does not claim Moise 17.5.
+All three affected modules pass focused checks with exit 0 and zero warnings.
+`AuditS11.lean` checks the three new declarations together with the full planar
+relative theorem; all four closures contain only the three standard axioms,
+audit exit 0.

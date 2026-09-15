@@ -170,6 +170,49 @@ theorem IsPLHomeomorphOn.univ_of_eqOn_compl [FiniteDimensional ℝ E]
   exact hinv.congr fun x hx =>
     h.injective ((hbij.invOn_invFunOn.2 hx).trans (h.apply_symm_apply x).symm)
 
+theorem IsPLHomeomorphOn.exists_extension_of_eqOn_frontier [FiniteDimensional ℝ E]
+    {f : E → E} {P : Set E} (hf : IsPLHomeomorphOn f P P) (hP : IsPolyhedron P)
+    (hfix : EqOn f id (frontier P)) :
+    ∃ h : E ≃ₜ E, IsPLHomeomorphOn h univ univ ∧ EqOn h f P ∧ EqOn h id Pᶜ := by
+  classical
+  let f' := Function.invFunOn f P
+  have hmaps' : MapsTo f' P P := hf.bijOn.surjOn.mapsTo_invFunOn
+  have hinv : InvOn f' f P P := hf.bijOn.invOn_invFunOn
+  have hfix' : EqOn f' id (frontier P) := by
+    intro x hx
+    have hxP := hP.isCompact.isClosed.frontier_subset hx
+    have hfx : f x = x := hfix hx
+    exact (congrArg f' hfx).symm.trans (hinv.1 hxP)
+  let g := P.piecewise f id
+  let g' := P.piecewise f' id
+  have hgf : Function.LeftInverse g' g := by
+    intro x
+    by_cases hx : x ∈ P
+    · simp only [g, g', piecewise_eq_of_mem P f id hx,
+        piecewise_eq_of_mem P f' id (hf.bijOn.mapsTo hx), hinv.1 hx]
+    · simp only [g, g', piecewise_eq_of_notMem P f id hx, id_eq,
+        piecewise_eq_of_notMem P f' id hx]
+  have hfg : Function.RightInverse g' g := by
+    intro x
+    by_cases hx : x ∈ P
+    · simp only [g, g', piecewise_eq_of_mem P f' id hx,
+        piecewise_eq_of_mem P f id (hmaps' hx), hinv.2 hx]
+    · simp only [g, g', piecewise_eq_of_notMem P f' id hx, id_eq,
+        piecewise_eq_of_notMem P f id hx]
+  have hcontinuous {k : E → E} (hk : ContinuousOn k P) (hboundary : EqOn k id (frontier P)) :
+      Continuous (P.piecewise k id) :=
+    continuous_piecewise hboundary (by simpa only [hP.isCompact.isClosed.closure_eq] using hk)
+      continuous_id.continuousOn
+  let h : E ≃ₜ E :=
+    { toEquiv := Equiv.mk g g' hgf hfg
+      continuous_toFun := hcontinuous hf.isPiecewiseAffineOn.continuousOn hfix
+      continuous_invFun := hcontinuous hf.isPiecewiseAffineOn_invFunOn.continuousOn hfix' }
+  have hPfix : EqOn h f P := fun x hx => by change g x = f x; exact piecewise_eq_of_mem P f id hx
+  have hcomplement : EqOn h id Pᶜ := fun x hx => by
+    change g x = x
+    exact piecewise_eq_of_notMem P f id hx
+  exact ⟨h, (hf.congr hPfix).univ_of_eqOn_compl hP hcomplement, hPfix, hcomplement⟩
+
 open Classical in
 theorem exists_piecewiseAffine_lipschitz_vertex_function_of_openStar [FiniteDimensional ℝ E]
     (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces] (p : E)
