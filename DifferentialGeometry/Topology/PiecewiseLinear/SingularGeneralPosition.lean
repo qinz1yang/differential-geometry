@@ -2797,13 +2797,152 @@ theorem exists_isCombinatorialManifoldWithBoundary_doublePointSet_in_halfSpace [
   exact ⟨G, hfinite, hspace, hman⟩
 
 open Classical in
-theorem exists_small_simplicialMap_doublePointSet_normal_form_in_halfSpace [FiniteDimensional ℝ E]
+theorem simplicialMap_indicator_compl_subcomplex_eq_zero_iff
+    (K L : Geometry.SimplicialComplex ℝ E) (hLK : L.faces ⊆ K.faces) {x : E} (hx : x ∈ K.space) :
+    simplicialMap (barycentricSubdivision K) (fun v => if v ∈ L.space then (0 : ℝ) else 1) x = 0 ↔
+      x ∈ L.space := by
+  let S := barycentricSubdivision K
+  let c : Finset E → E := fun s => s.centroid ℝ id
+  have hc : ∀ s ∈ K.faces, c s ∈ openSimplex s := centroid_mem_openSimplex_of_mem_faces K
+  have hxS : x ∈ S.space := (barycentricSubdivision_isSubdivision K).space_eq.symm ▸ hx
+  obtain ⟨s, hs, hxs⟩ := exists_face_mem_openSimplex S hxS
+  obtain ⟨d, hd, hdne, rfl⟩ := (mem_derived_faces_iff K hc).mp hs
+  obtain ⟨u, hu, htop⟩ := hd.exists_top hdne
+  have hxu : x ∈ openSimplex u := mem_openSimplex_top K hc hd hu htop hxs
+  rw [simplicialMap_eq_zero_iff_of_mem_openSimplex S _ hs (fun v _ => by split_ifs <;> norm_num) hxs]
+  constructor
+  · intro hzero
+    have hcu : c u ∈ L.space := by
+      have h := hzero (c u) (Finset.mem_image_of_mem c hu)
+      simpa only [ite_eq_left_iff, one_ne_zero, imp_false, not_not] using h
+    have huL : u ∈ L.faces := by
+      by_contra hnot
+      exact notMem_space_of_notMem_faces hLK (hd.mem_faces hu) hnot (hc u (hd.mem_faces hu)) hcu
+    exact L.convexHull_subset_space huL (openSimplex_subset_convexHull u hxu)
+  · intro hxL v hv
+    obtain ⟨t, ht, rfl⟩ := Finset.mem_image.mp hv
+    have huL : u ∈ L.faces := by
+      by_contra hnot
+      exact notMem_space_of_notMem_faces hLK (hd.mem_faces hu) hnot hxu hxL
+    have htL : t ∈ L.faces := L.down_closed huL (htop t ht) (K.nonempty_of_mem_faces (hd.mem_faces ht))
+    rw [if_pos (L.convexHull_subset_space htL (openSimplex_subset_convexHull t (hc t (hd.mem_faces ht))))]
+open Classical in
+theorem exists_small_simplicialMap_in_halfSpace_of_subcomplex [FiniteDimensional ℝ E]
+    [FiniteDimensional ℝ F] (K L : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
+    (hLK : L.faces ⊆ K.faces) (ℓ : F →ₗ[ℝ] ℝ) (hℓ : ℓ ≠ 0) (f : E → F)
+    (hf : IsPiecewiseAffineOn f K.space) (hloc : IsLocallyInjective (K.space.domRestrict f))
+    (hcard : ∀ y : F, (K.space ∩ f ⁻¹' {y}).encard ≤ 2)
+    (hnonneg : ∀ x ∈ K.space, 0 ≤ ℓ (f x)) (hzero : ∀ x ∈ L.space, ℓ (f x) = 0)
+    {ε : ℝ} (hε : 0 < ε) :
+    ∃ (R : Geometry.SimplicialComplex ℝ E) (φ : E → F), IsSubdivision R K ∧ R.faces.Finite ∧
+      IsPiecewiseAffineOn (simplicialMap R φ) K.space ∧
+        (∀ x ∈ K.space, dist (simplicialMap R φ x) (f x) < ε) ∧
+          (∀ v ∈ R.vertices, IsPLHomeomorphOn (simplicialMap R φ) (starComplex R v).space
+            (simplicialMap R φ '' (starComplex R v).space)) ∧
+              IsLocallyInjective (K.space.domRestrict (simplicialMap R φ)) ∧
+                (∀ y : F, (K.space ∩ (simplicialMap R φ) ⁻¹' {y}).encard ≤ 2) ∧
+                  (∀ x ∈ K.space, 0 ≤ ℓ (simplicialMap R φ x)) ∧
+                    (∀ x ∈ K.space, ℓ (simplicialMap R φ x) = 0 ↔ x ∈ L.space) ∧
+                      EqOn (simplicialMap R φ) f L.space := by
+  let S := barycentricSubdivision K
+  have hS : IsSubdivision S K := barycentricSubdivision_isSubdivision K
+  have : Finite S.faces := inferInstanceAs (Finite (barycentricSubdivision K).faces)
+  have hfS : IsPiecewiseAffineOn f S.space := by rwa [hS.space_eq]
+  have hlocS : IsLocallyInjective (S.space.domRestrict f) := by rwa [hS.space_eq]
+  have hcardS : ∀ y : F, (S.space ∩ f ⁻¹' {y}).encard ≤ 2 := by rwa [hS.space_eq]
+  obtain ⟨R, δ, hRS, hfinite, heq, hδ, hstable⟩ :=
+    exists_isSubdivision_stable_fiber_encard_le_two S f hfS hlocS hcardS
+  have : Finite R.faces := hfinite.to_subtype
+  have hR : IsSubdivision R K := hRS.trans hS
+  have hVK : ∀ v ∈ R.vertices, v ∈ K.space := fun v hv =>
+    hR.space_eq ▸ R.subset_space hv (Finset.mem_singleton_self v)
+  let q : E → ℝ := simplicialMap S (fun v => if v ∈ L.space then 0 else 1)
+  have hqzero : ∀ x ∈ K.space, q x = 0 ↔ x ∈ L.space :=
+    fun _ hx => simplicialMap_indicator_compl_subcomplex_eq_zero_iff K L hLK hx
+  have hqnonneg : ∀ x ∈ K.space, 0 ≤ q x := by
+    intro x hx
+    exact simplicialMap_nonneg_of_nonneg_vertices S _ (fun v _ => by split_ifs <;> norm_num)
+      (hS.space_eq.symm ▸ hx)
+  have hqR : EqOn (simplicialMap R q) q R.space := by
+    apply simplicialMap_eq_of_forall_affineOn
+    intro s hs
+    obtain ⟨t, ht, hst⟩ := hRS.exists_face_subset hs
+    obtain ⟨A, hA⟩ := exists_affineMap_eqOn_simplicialMap S (fun v => if v ∈ L.space then (0 : ℝ) else 1) ht
+    exact ⟨A, hA.mono hst⟩
+  obtain ⟨u, hu⟩ := DFunLike.ne_iff.mp hℓ
+  rw [LinearMap.zero_apply] at hu
+  let w : F := (ℓ u)⁻¹ • u
+  have hw : ℓ w = 1 := by
+    dsimp [w]
+    rw [map_smul, smul_eq_mul, inv_mul_cancel₀ hu]
+  let η := min δ ε
+  have hη : 0 < η := lt_min hδ hε
+  let a : ℝ := η / (‖w‖ + 1)
+  have ha : 0 < a := div_pos hη (by positivity)
+  have habound : a * ‖w‖ < η := by
+    have hmul : a * (‖w‖ + 1) = η := div_mul_cancel₀ _ (by positivity)
+    nlinarith
+  let φ : E → F := fun v => if v ∈ L.space then f v else f v + a • w
+  have hcloseVertex : ∀ v, dist (φ v) (f v) < η := by
+    intro v
+    by_cases hv : v ∈ L.space
+    · simpa only [φ, if_pos hv, dist_self] using hη
+    · simpa only [φ, if_neg hv, dist_eq_norm, add_sub_cancel_left, norm_smul,
+        Real.norm_eq_abs, abs_of_pos ha] using habound
+  have hφnonneg : ∀ v ∈ R.vertices, 0 ≤ ℓ (φ v) := by
+    intro v hv
+    by_cases hvL : v ∈ L.space
+    · simp only [φ, if_pos hvL, hzero v hvL, le_refl]
+    · simp only [φ, if_neg hvL, map_add, map_smul, smul_eq_mul, hw, mul_one]
+      exact add_nonneg (hnonneg v (hVK v hv)) ha.le
+  have hφzero : ∀ v ∈ R.vertices, ℓ (φ v) = 0 ↔ q v = 0 := by
+    intro v hv
+    rw [hqzero v (hVK v hv)]
+    by_cases hvL : v ∈ L.space
+    · simp only [φ, if_pos hvL, hzero v hvL, hvL]
+    · have hpos : 0 < ℓ (f v) + a := add_pos_of_nonneg_of_pos (hnonneg v (hVK v hv)) ha
+      simp only [φ, if_neg hvL, map_add, map_smul, smul_eq_mul, hw, mul_one, hpos.ne', hvL]
+  obtain ⟨hstar, hlocal, hfiber⟩ := hstable φ (fun v _ => (hcloseVertex v).trans_le (min_le_left δ ε))
+  refine ⟨R, φ, hR, hfinite, ?_, ?_, hstar, ?_, ?_, ?_, ?_, ?_⟩
+  · simpa only [hR.space_eq] using isPiecewiseAffineOn_simplicialMap R φ
+  · intro x hx
+    rw [← heq (hS.space_eq.symm ▸ hx)]
+    exact dist_simplicialMap_lt_of_dist_vertices_lt R
+      (fun v _ => (hcloseVertex v).trans_le (min_le_right δ ε)) (hR.space_eq.symm ▸ hx)
+  · rwa [hR.space_eq] at hlocal
+  · simpa only [hR.space_eq] using hfiber
+  · intro x hx
+    rw [linearMap_simplicialMap]
+    exact simplicialMap_nonneg_of_nonneg_vertices R (ℓ ∘ φ) hφnonneg (hR.space_eq.symm ▸ hx)
+  · intro x hx
+    have hxR : x ∈ R.space := hR.space_eq.symm ▸ hx
+    rw [linearMap_simplicialMap, simplicialMap_eq_zero_iff_of_eq_zero_on_vertices R (ℓ ∘ φ) q
+      hφnonneg (fun v hv => hqnonneg v (hVK v hv)) hφzero hxR, hqR hxR]
+    exact hqzero x hx
+  · intro x hxL
+    have hxK : x ∈ K.space := space_mono_of_faces_subset hLK hxL
+    have hxR : x ∈ R.space := hR.space_eq.symm ▸ hxK
+    obtain ⟨s, hs, hxs⟩ := exists_face_mem_openSimplex R hxR
+    have hqs : ∀ v ∈ s, q v = 0 :=
+      (simplicialMap_eq_zero_iff_of_mem_openSimplex R q hs
+        (fun v hv => hqnonneg v (hVK v (R.down_closed hs (Finset.singleton_subset_iff.mpr hv)
+          (Finset.singleton_nonempty v)))) hxs).mp ((hqR hxR).trans ((hqzero x hxK).mpr hxL))
+    rw [← heq (hS.space_eq.symm ▸ hxK), simplicialMap_eq_of_mem R φ hs (openSimplex_subset_convexHull s hxs),
+      simplicialMap_eq_of_mem R f hs (openSimplex_subset_convexHull s hxs)]
+    apply Finset.sum_congr rfl
+    intro v hv
+    have hvL := (hqzero v (hVK v (R.down_closed hs (Finset.singleton_subset_iff.mpr hv)
+      (Finset.singleton_nonempty v)))).mp (hqs v hv)
+    rw [show φ v = f v by simp only [φ, if_pos hvL]]
+
+open Classical in
+theorem exists_small_simplicialMap_doublePointSet_normal_form_in_halfSpace_of_maps_boundary [FiniteDimensional ℝ E]
     [FiniteDimensional ℝ F] (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
     (hK : IsPLBall 2 K.space) (hdim : Module.finrank ℝ F = 3) (ℓ : F →ₗ[ℝ] ℝ) (hℓ : ℓ ≠ 0)
     (f : E → F) (hf : IsPiecewiseAffineOn f K.space) (hloc : IsLocallyInjective (K.space.domRestrict f))
     (hcard : ∀ y : F, (K.space ∩ f ⁻¹' {y}).encard ≤ 2)
     (hnonneg : ∀ x ∈ K.space, 0 ≤ ℓ (f x))
-    (hboundary : ∀ x ∈ K.space, ℓ (f x) = 0 ↔ x ∈ (boundaryComplex 2 K).space)
+    (hboundary : ∀ x ∈ (boundaryComplex 2 K).space, ℓ (f x) = 0)
     {ε : ℝ} (hε : 0 < ε) :
     ∃ (R : Geometry.SimplicialComplex ℝ E) (φ : E → F) (G : Geometry.SimplicialComplex ℝ F),
       IsSubdivision R K ∧ R.faces.Finite ∧ IsPiecewiseAffineOn (simplicialMap R φ) K.space ∧
@@ -2822,9 +2961,12 @@ theorem exists_small_simplicialMap_doublePointSet_normal_form_in_halfSpace [Fini
                               (∀ y, {y} ∈ G.faces → ℓ y = 0 → ∃ a, {z | z ≠ y ∧ {y, z} ∈ G.faces} = {a}) ∧
                                 ∀ y, {y} ∈ G.faces → ℓ y ≠ 0 →
                                   ∃ a b, a ≠ b ∧ {z | z ≠ y ∧ {y, z} ∈ G.faces} = {a, b} := by
+  obtain ⟨S, ψ, _, _, hg, hgclose, _, hglocal, hgfiber, hgnonneg, hgboundary, _⟩ :=
+    exists_small_simplicialMap_in_halfSpace_of_subcomplex K (boundaryComplex 2 K)
+      (boundaryComplex_faces_subset 2 K) ℓ hℓ f hf hloc hcard hnonneg hboundary (half_pos hε)
   obtain ⟨R, φ, hR, hfinite, hpl, hclose, hstar, hlocal, hfiber, hRnonneg, hRboundary, hind, htrans⟩ :=
     exists_small_simplicialMap_transverse_in_halfSpace K hK.isCombinatorialManifoldWithBoundary hdim
-      ℓ hℓ f hf hloc hcard hnonneg hboundary hε
+      ℓ hℓ (simplicialMap S ψ) hg hglocal hgfiber hgnonneg hgboundary (half_pos hε)
   have : Finite R.faces := hfinite.to_subtype
   have hRman : IsCombinatorialManifoldWithBoundary 2 R := hK.isCombinatorialManifoldWithBoundary.of_isSubdivision hR
   have hboundarySpace : (boundaryComplex 2 R).space = (boundaryComplex 2 K).space := by
@@ -2883,13 +3025,49 @@ theorem exists_small_simplicialMap_doublePointSet_normal_form_in_halfSpace [Fini
   obtain ⟨G, hGfinite, hGspace, hGman, hcross, hdegree, hdegreeInterior⟩ := exists_isCombinatorialManifoldWithBoundary_doublePointSet_with_degrees_in_halfSpace
     R hRman hdim φ ℓ hind hinj hfiberR hφnonneg hboundaryFaces htrans'
   rw [hR.space_eq] at hGspace hcross
-  refine ⟨R, φ, G, hR, hfinite, hpl, hclose, hstar, hlocal, hfiber, hRnonneg, hRboundary, hGfinite, hGspace, hGman, hcross, hdegree, ?_⟩
+  have hclose' : ∀ x ∈ K.space, dist (simplicialMap R φ x) (f x) < ε := by
+    intro x hx
+    calc
+      dist (simplicialMap R φ x) (f x) ≤
+          dist (simplicialMap R φ x) (simplicialMap S ψ x) + dist (simplicialMap S ψ x) (f x) := dist_triangle _ _ _
+      _ < ε / 2 + ε / 2 := add_lt_add (hclose x hx) (hgclose x hx)
+      _ = ε := add_halves ε
+  refine ⟨R, φ, G, hR, hfinite, hpl, hclose', hstar, hlocal, hfiber, hRnonneg, hRboundary, hGfinite, hGspace, hGman, hcross, hdegree, ?_⟩
   intro y hy hy0
   apply hdegreeInterior y hy
   rintro ⟨x, hxBoundary, hxy⟩
   have hxK : x ∈ K.space := hR.space_eq ▸ boundaryComplex_space_subset 2 R hxBoundary
   have hx0 : ℓ (simplicialMap R φ x) = 0 := (hRboundary x hxK).mpr (hboundarySpace ▸ hxBoundary)
   exact hy0 (hxy ▸ hx0)
+
+open Classical in
+theorem exists_small_simplicialMap_doublePointSet_normal_form_in_halfSpace [FiniteDimensional ℝ E]
+    [FiniteDimensional ℝ F] (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
+    (hK : IsPLBall 2 K.space) (hdim : Module.finrank ℝ F = 3) (ℓ : F →ₗ[ℝ] ℝ) (hℓ : ℓ ≠ 0)
+    (f : E → F) (hf : IsPiecewiseAffineOn f K.space) (hloc : IsLocallyInjective (K.space.domRestrict f))
+    (hcard : ∀ y : F, (K.space ∩ f ⁻¹' {y}).encard ≤ 2)
+    (hnonneg : ∀ x ∈ K.space, 0 ≤ ℓ (f x))
+    (hboundary : ∀ x ∈ K.space, ℓ (f x) = 0 ↔ x ∈ (boundaryComplex 2 K).space)
+    {ε : ℝ} (hε : 0 < ε) :
+    ∃ (R : Geometry.SimplicialComplex ℝ E) (φ : E → F) (G : Geometry.SimplicialComplex ℝ F),
+      IsSubdivision R K ∧ R.faces.Finite ∧ IsPiecewiseAffineOn (simplicialMap R φ) K.space ∧
+        (∀ x ∈ K.space, dist (simplicialMap R φ x) (f x) < ε) ∧
+          (∀ v ∈ R.vertices, IsPLHomeomorphOn (simplicialMap R φ) (starComplex R v).space
+            (simplicialMap R φ '' (starComplex R v).space)) ∧
+              IsLocallyInjective (K.space.domRestrict (simplicialMap R φ)) ∧
+                (∀ y : F, (K.space ∩ (simplicialMap R φ) ⁻¹' {y}).encard ≤ 2) ∧
+                  (∀ x ∈ K.space, 0 ≤ ℓ (simplicialMap R φ x)) ∧
+                    (∀ x ∈ K.space, ℓ (simplicialMap R φ x) = 0 ↔ x ∈ (boundaryComplex 2 K).space) ∧
+                      G.faces.Finite ∧ G.space = doublePointSet (simplicialMap R φ) K.space ∧
+                        IsCombinatorialManifoldWithBoundary 1 G ∧
+                          (∀ y ∈ G.space,
+                            (ℓ y = 0 ∧ HasPLBoundaryDoubleCrossingAt (simplicialMap R φ) K.space {z : F | 0 ≤ ℓ z} y) ∨
+                            (0 < ℓ y ∧ HasPLDoubleCrossingAt (simplicialMap R φ) K.space y)) ∧
+                              (∀ y, {y} ∈ G.faces → ℓ y = 0 → ∃ a, {z | z ≠ y ∧ {y, z} ∈ G.faces} = {a}) ∧
+                                ∀ y, {y} ∈ G.faces → ℓ y ≠ 0 →
+                                  ∃ a b, a ≠ b ∧ {z | z ≠ y ∧ {y, z} ∈ G.faces} = {a, b} := by
+  exact exists_small_simplicialMap_doublePointSet_normal_form_in_halfSpace_of_maps_boundary K hK hdim ℓ hℓ
+    f hf hloc hcard hnonneg (fun x hx => (hboundary x (boundaryComplex_space_subset 2 K hx)).mpr hx) hε
 
 open Classical in
 theorem exists_small_simplicialMap_doublePointSet_with_crossings_in_halfSpace [FiniteDimensional ℝ E]
