@@ -3,6 +3,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.LinkDimension
 import DifferentialGeometry.Topology.PiecewiseLinear.PLPath
 import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryExtension
 import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryInvariance
+import DifferentialGeometry.Topology.PiecewiseLinear.PLHomeomorphTopology
 import DifferentialGeometry.Topology.PiecewiseLinear.Combinatorial
 import DifferentialGeometry.Topology.PlanarJordan.Regions
 import DifferentialGeometry.External.Schoenflies.FaceCyclesProof
@@ -278,6 +279,11 @@ theorem exists_isPLHomeomorphOn_Icc_of_isPLBall_one [FiniteDimensional ℝ E] {A
   obtain ⟨f, hf⟩ := isPLBall_Icc (by norm_num : (0 : ℝ) < 1)
   obtain ⟨g, hg⟩ := hA
   exact ⟨_, hf.symm.trans hg⟩
+
+theorem IsPLBall.isArc {A : Set (EuclideanSpace ℝ (Fin 2))}
+    (hA : IsPLBall 1 A) : Schoenflies.IsArc A := by
+  obtain ⟨f, hf⟩ := exists_isPLHomeomorphOn_Icc_of_isPLBall_one hA
+  exact ⟨f, hf.isPiecewiseAffineOn.continuousOn, hf.bijOn.injOn, hf.image_eq⟩
 
 theorem isPLBall_image_Icc_of_isPiecewiseAffineOn [FiniteDimensional ℝ E] {γ : ℝ → E}
     {a b : ℝ} (hab : a < b) (hγ : IsPiecewiseAffineOn γ (Icc a b)) (hi : InjOn γ (Icc a b)) :
@@ -609,13 +615,14 @@ theorem exists_isPLHomeomorphOn_eqOn_arc_of_boundaryComplex
   exact ⟨G, hG, (hGf.mono hAK).trans hfg⟩
 
 open Classical in
-theorem exists_isPLBall_pair_with_segment_inter :
+theorem exists_isPLBall_pair_with_segment_inter_and_finite_frontier_inter :
     ∃ K L : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2)),
       K.faces.Finite ∧ L.faces.Finite ∧ IsPLBall 2 K.space ∧ IsPLBall 2 L.space ∧
         IsPLBall 2 (K.space ∪ L.space) ∧
         ∃ p q : EuclideanSpace ℝ (Fin 2), p ≠ q ∧ K.space ∩ L.space = segment ℝ p q ∧
           segment ℝ p q ⊆ (boundaryComplex 2 K).space ∧
-          segment ℝ p q ⊆ (boundaryComplex 2 L).space := by
+          segment ℝ p q ⊆ (boundaryComplex 2 L).space ∧
+          (frontier (K.space ∪ L.space) ∩ (K.space ∩ L.space)).Finite := by
   obtain ⟨T, hT, hcard, -, -, -⟩ := exists_affineIndependent_openSimplex_subset
     (E := EuclideanSpace ℝ (Fin 2)) (n := 1) (by simp) 0 (U := univ) Filter.univ_mem
   obtain ⟨a, ha⟩ := Finset.card_pos.mp (show 0 < T.card by omega)
@@ -717,11 +724,37 @@ theorem exists_isPLBall_pair_with_segment_inter :
     simpa only [Finset.coe_pair] using (simplexBoundary S hS).convexHull_subset_space
       ⟨hpaS, Finset.insert_nonempty _ _, hne⟩
   refine ⟨K, L, simplexComplex_faces_finite _ hB, simplexComplex_faces_finite _ hC,
-    hKball, hLball, ?_, p, a, hpa, hinter, ?_, ?_⟩
+    hKball, hLball, ?_, p, a, hpa, hinter, ?_, ?_, ?_⟩
   · rw [hunion]
     exact isPLBall_convexHull_of_affineIndependent _ hT hcard
   · exact hedge _ hB hBcard (by rw [hTb]; exact Finset.insert_subset_insert _ (by simp))
   · exact hedge _ hC hCcard (by rw [hTc]; exact Finset.insert_subset_insert _ (by simp))
+  · rw [hunion, hinter]
+    apply (Set.toFinite ({p, a} : Set (EuclideanSpace ℝ (Fin 2)))).subset
+    rintro x ⟨hxF, hxseg⟩
+    by_contra hxends
+    have hxp : p ≠ x := fun heq => hxends (Or.inl heq.symm)
+    have hxa : a ≠ x := fun heq => hxends (Or.inr heq.symm)
+    apply hxF.2
+    rw [interior_convexHull_eq_openSimplex hT (by simpa using hcard)]
+    exact openSegment_subset_openSimplex_of_mem_openSimplex_erase hT ha (by
+        convert hp using 1
+        congr 1
+        ext v
+        simp)
+      (mem_openSegment_of_ne_left_right hxp hxa hxseg)
+
+open Classical in
+theorem exists_isPLBall_pair_with_segment_inter :
+    ∃ K L : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2)),
+      K.faces.Finite ∧ L.faces.Finite ∧ IsPLBall 2 K.space ∧ IsPLBall 2 L.space ∧
+        IsPLBall 2 (K.space ∪ L.space) ∧
+        ∃ p q : EuclideanSpace ℝ (Fin 2), p ≠ q ∧ K.space ∩ L.space = segment ℝ p q ∧
+          segment ℝ p q ⊆ (boundaryComplex 2 K).space ∧
+          segment ℝ p q ⊆ (boundaryComplex 2 L).space := by
+  obtain ⟨K, L, hKfin, hLfin, hK, hL, hKL, p, q, hpq, hi, hbK, hbL, _⟩ :=
+    exists_isPLBall_pair_with_segment_inter_and_finite_frontier_inter
+  exact ⟨K, L, hKfin, hLfin, hK, hL, hKL, p, q, hpq, hi, hbK, hbL⟩
 
 theorem isPLSphere_one_of_isCutPair {J A B : Set (EuclideanSpace ℝ (Fin 2))}
     {p q : EuclideanSpace ℝ (Fin 2)} (hcut : Schoenflies.IsCutPair J p q A B)
@@ -1100,16 +1133,17 @@ theorem ncard_faces_card_restrict_closure_inside_lt_of_isCrosscut
     (h.side_nonempty hj hcut.symm) hUK hdisj
 
 open Classical in
-theorem isPLBall_union_of_boundary_arc
+theorem isPLBall_union_and_finite_frontier_inter_of_boundary_arc
     (K L : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2)))
     [Finite K.faces] [Finite L.faces] (hK : IsPLBall 2 K.space) (hL : IsPLBall 2 L.space)
     (hArc : Schoenflies.IsArc (K.space ∩ L.space))
     (hAK : K.space ∩ L.space ⊆ (boundaryComplex 2 K).space)
     (hAL : K.space ∩ L.space ⊆ (boundaryComplex 2 L).space) :
-    IsPLBall 2 (K.space ∪ L.space) := by
+    IsPLBall 2 (K.space ∪ L.space) ∧
+      (frontier (K.space ∪ L.space) ∩ (K.space ∩ L.space)).Finite := by
   obtain ⟨a, b, hArc⟩ := hArc.exists_isArcBetween
-  obtain ⟨P, Q, hPfin, hQfin, hP, hQ, hPQ, p, q, hpq, hinter, hBP, hBQ⟩ :=
-    exists_isPLBall_pair_with_segment_inter
+  obtain ⟨P, Q, hPfin, hQfin, hP, hQ, hPQ, p, q, hpq, hinter, hBP, hBQ, hfinite⟩ :=
+    exists_isPLBall_pair_with_segment_inter_and_finite_frontier_inter
   have : Finite P.faces := hPfin.to_subtype
   have : Finite Q.faces := hQfin.to_subtype
   have hboundary : IsPLSphere 1 (boundaryComplex 2 K).space :=
@@ -1126,7 +1160,27 @@ theorem isPLBall_union_of_boundary_arc
   have himage : f₁ '' (K.space ∩ L.space) = P.space ∩ Q.space :=
     hf₁g.image_eq.trans (hg.image_eq.trans hinter.symm)
   have h := hf₁.piecewise hf₂ hK.isPolyhedron hL.isPolyhedron hfg himage
-  exact hPQ.of_isPLHomeomorphOn h.symm
+  refine ⟨hPQ.of_isPLHomeomorphOn h.symm, ?_⟩
+  have hbd := h.image_frontier rfl
+    (hK.isPolyhedron.isClosed.union hL.isPolyhedron.isClosed) hPQ.isPolyhedron.isClosed
+  have hmap : K.space.piecewise f₁ f₂ '' (K.space ∩ L.space) = P.space ∩ Q.space := by
+    rw [← himage]
+    exact Set.image_congr fun x hx => Set.piecewise_eq_of_mem K.space f₁ f₂ hx.1
+  apply Set.Finite.of_finite_image (f := K.space.piecewise f₁ f₂)
+  · apply hfinite.subset
+    rintro y ⟨x, hx, rfl⟩
+    exact ⟨hbd.subset (mem_image_of_mem _ hx.1), hmap.subset (mem_image_of_mem _ hx.2)⟩
+  · exact h.bijOn.injOn.mono (inter_subset_right.trans (inter_subset_left.trans subset_union_left))
+
+open Classical in
+theorem isPLBall_union_of_boundary_arc
+    (K L : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2)))
+    [Finite K.faces] [Finite L.faces] (hK : IsPLBall 2 K.space) (hL : IsPLBall 2 L.space)
+    (hArc : Schoenflies.IsArc (K.space ∩ L.space))
+    (hAK : K.space ∩ L.space ⊆ (boundaryComplex 2 K).space)
+    (hAL : K.space ∩ L.space ⊆ (boundaryComplex 2 L).space) :
+    IsPLBall 2 (K.space ∪ L.space) :=
+  (isPLBall_union_and_finite_frontier_inter_of_boundary_arc K L hK hL hArc hAK hAL).1
 
 theorem isPolyhedron_closure_inside_of_isPLSphere_one {J : Set (EuclideanSpace ℝ (Fin 2))}
     (hJ : IsPLSphere 1 J) : IsPolyhedron (closure (Schoenflies.inside J)) := by

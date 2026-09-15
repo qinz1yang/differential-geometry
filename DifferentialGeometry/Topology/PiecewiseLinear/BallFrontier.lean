@@ -1,5 +1,6 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.FrontierBoundary
 import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryExtension
+import DifferentialGeometry.Topology.PiecewiseLinear.SimplexBoundaryImage
 
 open Set
 
@@ -15,6 +16,21 @@ theorem IsPLBall.isPLSphere_frontier {n : ℕ}
   rw [frontier_space_eq_boundaryComplex_space (n := n) (K := K)
     (IsPLBall.isCombinatorialManifoldWithBoundary (n := n) (K := K) hP)]
   exact isPLSphere_boundaryComplex_space_of_isPLBall (n := n) K hP
+
+theorem IsPLHomeomorphOn.image_stdSimplexBoundary_eq_frontier {n : ℕ}
+    {P : Set (EuclideanSpace ℝ (Fin (n + 1)))}
+    {f : (Fin (n + 2) → ℝ) → EuclideanSpace ℝ (Fin (n + 1))}
+    (hf : IsPLHomeomorphOn f (stdSimplex ℝ (Fin (n + 2))) P) :
+    f '' stdSimplexBoundary (n + 1) = frontier P := by
+  classical
+  let _ : DecidableEq (EuclideanSpace ℝ (Fin (n + 1))) := Classical.decEq _
+  have hP : IsPLBall (n + 1) P := ⟨f, hf⟩
+  obtain ⟨K, hfin, hKspace⟩ := hP.isPolyhedron.exists_simplicialComplex
+  let _ : Finite K.faces := hfin.to_subtype
+  have hK : IsPLBall (n + 1) K.space := hKspace.symm ▸ hP
+  rw [← hKspace, frontier_space_eq_boundaryComplex_space hK.isCombinatorialManifoldWithBoundary,
+    boundaryComplex_space_of_isPLHomeomorphOn_stdSimplex K (hKspace.symm ▸ hf),
+    simplexBoundary_stdVertices_space]
 
 theorem IsPLBall.interior_nonempty {n : ℕ}
     {P : Set (EuclideanSpace ℝ (Fin (n + 1)))} (hP : IsPLBall (n + 1) P) :
