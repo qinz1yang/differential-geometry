@@ -708,4 +708,98 @@ theorem exists_triangulation_doublePointSet_card_le_two [FiniteDimensional ℝ F
     obtain ⟨s, hs, t, ht, hdisj, hsub, _⟩ := hcarrier u hu
     exact ⟨s, hs, t, ht, hdisj, hsub⟩
 
+open Classical in
+def faceStarComplex (K : Geometry.SimplicialComplex ℝ E) (s : Finset E) :
+    Geometry.SimplicialComplex ℝ E where
+  faces := {t | t ∈ K.faces ∧ t ∪ s ∈ K.faces}
+  isRelLowerSet_faces := by
+    rintro t ⟨ht, hts⟩
+    refine ⟨K.nonempty_of_mem_faces ht, fun u hut hu => ⟨K.down_closed ht hut hu, ?_⟩⟩
+    exact K.down_closed hts (Finset.union_subset_union_left hut) (hu.mono Finset.subset_union_left)
+  indep ht := K.indep ht.1
+  inter_subset_convexHull ht hu := K.inter_subset_convexHull ht.1 hu.1
+
+theorem faceStarComplex_faces_subset (K : Geometry.SimplicialComplex ℝ E) (s : Finset E) :
+    (faceStarComplex K s).faces ⊆ K.faces := fun _ ht => ht.1
+
+theorem faceStarComplex_faces_finite (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces] (s : Finset E) :
+    (faceStarComplex K s).faces.Finite := (Set.toFinite K.faces).subset (faceStarComplex_faces_subset K s)
+
+open Classical in
+theorem faceStarComplex_space (K : Geometry.SimplicialComplex ℝ E) {s : Finset E} (hs : s ∈ K.faces)
+    {x : E} (hx : x ∈ openSimplex s) : (faceStarComplex K s).space = closedStar K x := by
+  ext y
+  constructor
+  · intro hy
+    obtain ⟨t, ⟨ht, hts⟩, hyt⟩ := (faceStarComplex K s).mem_space_iff.mp hy
+    refine mem_iUnion₂.mpr ⟨t ∪ s, ⟨hts, ?_⟩, ?_⟩
+    · exact convexHull_mono (Finset.coe_subset.mpr Finset.subset_union_right)
+        (openSimplex_subset_convexHull s hx)
+    · exact convexHull_mono (Finset.coe_subset.mpr Finset.subset_union_left) hyt
+  · intro hy
+    obtain ⟨t, ⟨ht, hxt⟩, hyt⟩ := mem_iUnion₂.mp hy
+    have hst := face_subset_of_mem_openSimplex_of_mem_convexHull K hs ht hx hxt
+    exact (faceStarComplex K s).convexHull_subset_space
+      ⟨ht, by rwa [Finset.union_eq_left.mpr hst]⟩ hyt
+
+open Classical in
+theorem coneComplex_starAvoiding_space (K : Geometry.SimplicialComplex ℝ E)
+    {s : Finset E} (hs : s ∈ K.faces) {x : E} (hx : x ∈ openSimplex s) :
+    (coneComplex (isConeBase_starAvoiding K hs hx)).space = closedStar K x := by
+  let hcone := isConeBase_starAvoiding K hs hx
+  have hxx : x ∈ closedStar K x := mem_iUnion₂.mpr
+    ⟨s, ⟨hs, openSimplex_subset_convexHull s hx⟩, openSimplex_subset_convexHull s hx⟩
+  ext y
+  constructor
+  · intro hy
+    rcases (mem_coneComplex_space_iff hcone).mp hy with rfl | ⟨z, hz, r, hr, hr1, rfl⟩
+    · exact hxx
+    · obtain ⟨t, ⟨ht, hts, _⟩, hzt⟩ := (starAvoiding K s).mem_space_iff.mp hz
+      have hxu : x ∈ convexHull ℝ ((t ∪ s : Finset E) : Set E) :=
+        convexHull_mono (Finset.coe_subset.mpr Finset.subset_union_right) (openSimplex_subset_convexHull s hx)
+      have hzu : z ∈ convexHull ℝ ((t ∪ s : Finset E) : Set E) :=
+        convexHull_mono (Finset.coe_subset.mpr Finset.subset_union_left) hzt
+      refine mem_iUnion₂.mpr ⟨t ∪ s, ⟨hts, hxu⟩, ?_⟩
+      rw [add_smul_sub_eq_combo]
+      exact (convex_convexHull ℝ _) hxu hzu (by linarith) hr.le (by ring)
+  · intro hy
+    by_cases hyx : y = x
+    · rw [hyx]
+      exact apex_mem_coneComplex_space hcone
+    obtain ⟨t, ⟨ht, hxt⟩, hyt⟩ := mem_iUnion₂.mp hy
+    have hst := face_subset_of_mem_openSimplex_of_mem_convexHull K hs ht hx hxt
+    obtain ⟨w, hws, hyw⟩ := exists_mem_convexHull_insert_erase_of_mem_openSimplex (K.indep ht) hst hx hyt
+    have hne : (t.erase w).Nonempty := by
+      by_contra h
+      rw [Finset.not_nonempty_iff_eq_empty.mp h, Finset.insert_empty, Finset.coe_singleton,
+        convexHull_singleton] at hyw
+      exact hyx hyw
+    have hunion : t.erase w ∪ s = t := by
+      apply Finset.Subset.antisymm (Finset.union_subset (Finset.erase_subset _ _) hst)
+      intro z hz
+      by_cases hzw : z = w
+      · exact Finset.mem_union_right _ (hzw ▸ hws)
+      · exact Finset.mem_union_left _ (Finset.mem_erase.mpr ⟨hzw, hz⟩)
+    have hbase : t.erase w ∈ (starAvoiding K s).faces :=
+      ⟨K.down_closed ht (Finset.erase_subset _ _) hne, by rwa [hunion],
+        fun h => Finset.notMem_erase w t (h hws)⟩
+    exact (coneComplex hcone).convexHull_subset_space (Or.inr (Or.inr ⟨t.erase w, hbase, rfl⟩)) hyw
+
+open Classical in
+theorem IsCombinatorialManifoldWithBoundary.isPLBall_faceStarComplex [FiniteDimensional ℝ E]
+    {n : ℕ} (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
+    (hK : IsCombinatorialManifoldWithBoundary (n + 1) K) {s : Finset E} (hs : s ∈ K.faces) :
+    IsPLBall (n + 1) (faceStarComplex K s).space := by
+  let x := s.centroid ℝ id
+  have hx : x ∈ openSimplex s := centroid_mem_openSimplex (K.nonempty_of_mem_faces hs)
+  have hxK : x ∈ K.space := K.convexHull_subset_space hs (openSimplex_subset_convexHull s hx)
+  obtain ⟨R, hR, hfinite, hxR⟩ := exists_isSubdivision_singleton_mem K hxK
+  have : Finite R.faces := hfinite.to_subtype
+  have : Finite (starAvoiding K s).faces := (starAvoiding_faces_finite K s).to_subtype
+  obtain ⟨f, hf⟩ := exists_isPLHomeomorphOn_geometricLink_starAvoiding K hs hx hR hxR
+  rw [faceStarComplex_space K hs hx, ← coneComplex_starAvoiding_space K hs hx]
+  rcases (hK.of_isSubdivision hR) x hxR with hsphere | hball
+  · exact (isConeBase_starAvoiding K hs hx).isPLBall_of_isPLSphere (hsphere.of_isPLHomeomorphOn hf)
+  · exact (isConeBase_starAvoiding K hs hx).isPLBall_of_isPLBall (hball.of_isPLHomeomorphOn hf)
+
 end DifferentialGeometry.Topology.PiecewiseLinear
