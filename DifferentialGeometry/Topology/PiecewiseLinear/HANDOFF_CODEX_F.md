@@ -1158,3 +1158,22 @@ M2/M3 与两个最终端点仍未完成。下一层结果见 §18.4。
 本结果没有控制指定临界点 P：若 P 位于 D 的边界，尚未保证 h(P) 是凸像盘的暴露点。因此仍缺
 “去掉 h(P) 后凸盘严格位于经过 h(P) 的某直线一侧”的增强，以及球面沿层圆周切盘、轴旋转与严格降指标。
 整层多边形分解及与原书奇异指标的对应也仍未闭合；M1/M2/M3 均未验收。下一审计文件 `AuditF125.lean`。
+
+### 18.5 带指定点的保高度凸化（M1 的凸化部分闭合）
+
+- `Homogeneity.lean`：单形内点间固定边界的 PL 自同胚、固定区间/弧端点的移动；
+  `exists_isPLHomeomorphOn_simplex_vertex_star_map_eq` 在任意满维单形的同一开顶点星内移动两点，保持整个单形，固定给定开邻域外部。
+  `exists_isPLHomeomorphOn_simplex_boundary_mem_vertices` 将任意边界点送到某个顶点。
+- `PointedConvexification.lean`：`exists_linearMap_lt_on_convexHull_sdiff_singleton` 实际构造暴露单形顶点的非零线性形式；
+  `exists_isPLHomeomorphOn_convex_image_strict_separation` 对平面 PL 2-盘 D 和任意不在其内部的指定点 p，构造支持在指定开邻域内的环境 PL 同胚，
+  使像盘凸，且除去 h(p) 后严格位于过 h(p) 的直线一侧。p 在盘外的情形用严格分离，在边界的情形用顶点星移动。
+- `LevelConvexification.lean` 的新强版 `exists_isPLHomeomorphOn_convex_image_strict_separation_of_subset_fiber`：
+  三维空间、非零高度 ℓ、同一水平层内的 PL 2-盘 D，指定点 p 在该层且 `D ∉ 𝓝[{x | ℓ x = r}] p`；
+  对包含 D 的任意凸开 W，构造全空间 PL 同胚 h 和非零线性形式 m，使 h 固定 W 外部、逐点保持 ℓ、像盘凸，
+  并满足 `∀ x ∈ h '' D \ {h p}, m (h p) < m x`，同时对每个集合保持 `heightIndex`。
+  外层底盘实际包含 D 与 p，因此对指定点的搬运有精确公式。旧的无指定点端点保留签名，并由强版推出。
+
+三个模块最终聚焦检查分别为 10.1、12.5、12.8 秒，均 exit=0、零 warning。
+`AuditF125.lean` 九项均仅标准三公理，并检查了强版的完整参数；没有修改或增加 `SchoenfliesInput` 字段。
+M1 的凸化与指定点控制已经闭合；仍缺球面沿水平圆周切成 PL 盘、一般位置层的多边形分解与指标对应、
+小幅转轴后每片的严格降指标。M1 尚未验收；M2/M3 和两个最终端点均未完成。下一审计文件 `AuditF126.lean`。

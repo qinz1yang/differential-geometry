@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.FiberCoordinates
 import DifferentialGeometry.Topology.PiecewiseLinear.HeightExtension
-import DifferentialGeometry.Topology.PiecewiseLinear.PlanarSchoenflies
+import DifferentialGeometry.Topology.PiecewiseLinear.PointedConvexification
 
 open Set Topology
 
@@ -8,18 +8,25 @@ namespace DifferentialGeometry.Topology.PiecewiseLinear
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
 
-theorem exists_isPLHomeomorphOn_convex_image_of_subset_fiber
+theorem exists_isPLHomeomorphOn_convex_image_strict_separation_of_subset_fiber
     (hdimE : Module.finrank ℝ E = 3) (ℓ : E →ₗ[ℝ] ℝ) (hℓ : ℓ ≠ 0)
     {D : Set E} (hD : IsPLBall 2 D) {r : ℝ} (hDr : D ⊆ {x | ℓ x = r})
+    {p : E} (hpr : ℓ p = r) (hp : D ∉ 𝓝[{x | ℓ x = r}] p)
     {W : Set E} (hW : Convex ℝ W) (hWopen : IsOpen W) (hDW : D ⊆ W) :
-    ∃ h : E ≃ₜ E, IsPLHomeomorphOn h univ univ ∧ EqOn h id Wᶜ ∧
+    ∃ (h : E ≃ₜ E) (m : E →ₗ[ℝ] ℝ), IsPLHomeomorphOn h univ univ ∧ EqOn h id Wᶜ ∧
       (∀ x, ℓ (h x) = ℓ x) ∧ Convex ℝ (h '' D) ∧
+      m ≠ 0 ∧ (∀ x ∈ h '' D \ {h p}, m (h p) < m x) ∧
       (∀ S : Set E, heightIndex (h '' S) ℓ = heightIndex S ℓ) := by
   classical
   obtain ⟨e, π, hleft, hfixed, -⟩ := exists_affine_coordinates_of_linear_fiber hdimE ℓ hℓ r
-  obtain ⟨T, hT, hTcard, hDT, hTr, hTspan⟩ :=
+  obtain ⟨T, hT, hTcard, hDpT, hTr, hTspan⟩ :=
     exists_affineIndependent_openSimplex_superset_of_subset_fiber hdimE ℓ hℓ
-      hD.isPolyhedron.isCompact.isBounded hDr
+      (hD.isPolyhedron.isCompact.insert p).isBounded (by
+        rintro x (rfl | hx)
+        · exact hpr
+        · exact hDr hx)
+  have hDT : D ⊆ openSimplex T := fun x hx => hDpT (mem_insert_of_mem p hx)
+  have hpT : p ∈ openSimplex T := hDpT (mem_insert p D)
   let P : Set E := convexHull ℝ (T : Set E)
   let Q : Finset (EuclideanSpace ℝ (Fin 2)) := T.image π
   let C₀ : Set (EuclideanSpace ℝ (Fin 2)) := convexHull ℝ (Q : Set _)
@@ -67,8 +74,18 @@ theorem exists_isPLHomeomorphOn_convex_image_of_subset_fiber
     · change e (π x) ∈ W
       rw [(hfixed x).mpr (hDr hx)]
       exact hDW hx
-  obtain ⟨g, C, hC, hg, hgD, -, hgfix⟩ :=
-    exists_isPLHomeomorphOn_straighten_of_isPLBall_two hDπ hU hDU
+  have hπp : π p ∉ interior (π '' D) := by
+    intro hπp
+    apply hp
+    have hcont : Filter.Tendsto π (𝓝[{x | ℓ x = r}] p) (𝓝 (π p)) :=
+      π.continuous_of_finiteDimensional.continuousAt.tendsto.mono_left nhdsWithin_le_nhds
+    filter_upwards [hcont (mem_interior_iff_mem_nhds.mp hπp), self_mem_nhdsWithin] with y hy hyr
+    obtain ⟨x, hx, hxy⟩ := hy
+    have heq := congrArg e hxy
+    rw [(hfixed x).mpr (hDr hx), (hfixed y).mpr hyr] at heq
+    exact heq ▸ hx
+  obtain ⟨g, C, m, hg, hgfix, hgD, hC, hm, hsep⟩ :=
+    exists_isPLHomeomorphOn_convex_image_strict_separation hDπ hπp hU hDU
   have hgfixC : EqOn g id C₀ᶜ := hgfix.mono
     (compl_subset_compl.mpr (inter_subset_left.trans interior_subset))
   have hgCbij : BijOn g C₀ C₀ := by
@@ -130,12 +147,48 @@ theorem exists_isPLHomeomorphOn_convex_image_of_subset_fiber
   obtain ⟨h, hh, hhf, hhfix, hhℓ, hhInd⟩ :=
     exists_isPLHomeomorphOn_extension_preserving_height_of_eqOn_compl ℓ hℓ hB
       (hLspace.trans_le hTr) hbase hfL hfix hW hWopen hfW
-  refine ⟨h, hh, hhfix, hhℓ, ?_, hhInd⟩
   have himage : h '' D = e '' C := by
     rw [(hhf.mono (hDP.trans_eq hLspace.symm)).image_eq]
     change (e ∘ g ∘ π) '' D = e '' C
     rw [image_comp, image_comp, hgD]
-  rw [himage]
-  exact hC.convex.affine_image e
+  have hhp : h p = e (g (π p)) := hhf (hLspace.symm ▸ openSimplex_subset_convexHull T hpT)
+  have hmπ : m.comp π ≠ 0 := by
+    intro hzero
+    apply hm
+    ext y
+    have h := congrArg (fun l : E →ₗ[ℝ] ℝ => l (e y)) hzero
+    simpa only [LinearMap.comp_apply, hleft y, LinearMap.zero_apply] using h
+  refine ⟨h, m.comp π, hh, hhfix, hhℓ, ?_, hmπ, ?_, hhInd⟩
+  · rw [himage]
+    exact hC.affine_image e
+  · rintro x ⟨hx, hxp⟩
+    rw [himage] at hx
+    obtain ⟨y, hy, rfl⟩ := hx
+    have hyp : y ≠ g (π p) := by
+      intro heq
+      apply hxp
+      change e y = h p
+      rw [heq, hhp]
+    change m (π (h p)) < m (π (e y))
+    rw [hhp, hleft, hleft]
+    exact hsep y ⟨hy, hyp⟩
+
+theorem exists_isPLHomeomorphOn_convex_image_of_subset_fiber
+    (hdimE : Module.finrank ℝ E = 3) (ℓ : E →ₗ[ℝ] ℝ) (hℓ : ℓ ≠ 0)
+    {D : Set E} (hD : IsPLBall 2 D) {r : ℝ} (hDr : D ⊆ {x | ℓ x = r})
+    {W : Set E} (hW : Convex ℝ W) (hWopen : IsOpen W) (hDW : D ⊆ W) :
+    ∃ h : E ≃ₜ E, IsPLHomeomorphOn h univ univ ∧ EqOn h id Wᶜ ∧
+      (∀ x, ℓ (h x) = ℓ x) ∧ Convex ℝ (h '' D) ∧
+      (∀ S : Set E, heightIndex (h '' S) ℓ = heightIndex S ℓ) := by
+  obtain ⟨e, π, hleft, -, he⟩ := exists_affine_coordinates_of_linear_fiber hdimE ℓ hℓ r
+  have hcompact := hD.isPolyhedron.isCompact.image π.continuous_of_finiteDimensional
+  obtain ⟨z, hz⟩ := (Set.ne_univ_iff_exists_notMem _).mp hcompact.ne_univ
+  have hpD : e z ∉ D := fun hx => hz ⟨e z, hx, hleft z⟩
+  have hp : D ∉ 𝓝[{x | ℓ x = r}] (e z) :=
+    fun h => hpD (mem_of_mem_nhdsWithin (he z) h)
+  obtain ⟨h, -, hh, hfix, hheight, hconvex, -, -, hindex⟩ :=
+    exists_isPLHomeomorphOn_convex_image_strict_separation_of_subset_fiber hdimE ℓ hℓ hD hDr
+      (he z) hp hW hWopen hDW
+  exact ⟨h, hh, hfix, hheight, hconvex, hindex⟩
 
 end DifferentialGeometry.Topology.PiecewiseLinear
