@@ -31,8 +31,37 @@ theorem integralSingularConeZero_simplex (a : X) (σ : integralSingularSimplex 0
 
 def integralSingularConeTriangle (a : X) (σ : integralSingularSimplex 1 X) :
     integralSingularSimplex 2 X :=
-  (exists_integralPathTriangle_boundary (PathConnectedSpace.somePath a _)
+  (exists_integralPathTriangle (PathConnectedSpace.somePath a _)
     (integralSimplexPath σ) (PathConnectedSpace.somePath a _)).choose
+
+
+theorem integralSingularConeTriangle_face (a : X) (σ : integralSingularSimplex 1 X)
+    (i : Fin 3) :
+    (TopCat.toSSet.obj (TopCat.of X)).δ i (integralSingularConeTriangle a σ) =
+      ![integralPathSimplex (integralSimplexPath σ),
+        integralPathSimplex (PathConnectedSpace.somePath a
+          (TopCat.toSSetObj₀Equiv ((TopCat.toSSet.obj (TopCat.of X)).δ 0 σ))),
+        integralPathSimplex (PathConnectedSpace.somePath a
+          (TopCat.toSSetObj₀Equiv ((TopCat.toSSet.obj (TopCat.of X)).δ 1 σ)))] i :=
+  (exists_integralPathTriangle (PathConnectedSpace.somePath a _)
+    (integralSimplexPath σ) (PathConnectedSpace.somePath a _)).choose_spec i
+
+@[simp] theorem integralSingularConeTriangle_face_zero (a : X) (σ : integralSingularSimplex 1 X) :
+    (TopCat.toSSet.obj (TopCat.of X)).δ 0 (integralSingularConeTriangle a σ) = σ := by
+  rw [integralSingularConeTriangle_face]
+  exact integralPathSimplex_simplexPath σ
+
+@[simp] theorem integralSingularConeTriangle_face_one (a : X) (σ : integralSingularSimplex 1 X) :
+    (TopCat.toSSet.obj (TopCat.of X)).δ 1 (integralSingularConeTriangle a σ) =
+      integralPathSimplex (PathConnectedSpace.somePath a
+        (TopCat.toSSetObj₀Equiv ((TopCat.toSSet.obj (TopCat.of X)).δ 0 σ))) := by
+  exact integralSingularConeTriangle_face a σ 1
+
+@[simp] theorem integralSingularConeTriangle_face_two (a : X) (σ : integralSingularSimplex 1 X) :
+    (TopCat.toSSet.obj (TopCat.of X)).δ 2 (integralSingularConeTriangle a σ) =
+      integralPathSimplex (PathConnectedSpace.somePath a
+        (TopCat.toSSetObj₀Equiv ((TopCat.toSSet.obj (TopCat.of X)).δ 1 σ))) := by
+  exact integralSingularConeTriangle_face a σ 2
 
 
 theorem integralSingularConeTriangle_boundary (a : X) (σ : integralSingularSimplex 1 X) :
@@ -42,10 +71,14 @@ theorem integralSingularConeTriangle_boundary (a : X) (σ : integralSingularSimp
           ((TopCat.toSSet.obj (TopCat.of X)).δ 0 σ)) +
         integralSingularConeZero a (integralSimplexChain 0
           ((TopCat.toSSet.obj (TopCat.of X)).δ 1 σ)) := by
-  have h := (exists_integralPathTriangle_boundary (PathConnectedSpace.somePath a _)
-    (integralSimplexPath σ) (PathConnectedSpace.somePath a _)).choose_spec
-  simpa only [integralSingularConeTriangle, integralPathChain_simplexPath σ,
-    integralSingularConeZero_simplex] using h
+  rw [integralSimplexChain_boundary_two, integralSingularConeTriangle_face a σ 0,
+    integralSingularConeTriangle_face a σ 1, integralSingularConeTriangle_face a σ 2]
+  change integralPathChain (integralSimplexPath σ) -
+      integralPathChain (PathConnectedSpace.somePath a _) +
+      integralPathChain (PathConnectedSpace.somePath a _) = _
+  rw [integralPathChain_simplexPath, integralSingularConeZero_simplex,
+    integralSingularConeZero_simplex]
+
 
 
 def integralSingularConeOne (a : X) :
