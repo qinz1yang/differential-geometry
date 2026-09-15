@@ -585,3 +585,20 @@ substantive. A general disk on the tetrahedral boundary can meet several
 stars, and its intersection with a star need not be a disk. The relative
 local deletion operation and the global retained-triangle induction remain
 open; this result does not close Moise 17.5, 17.6, or 17.8.
+
+## Closed-star control under further subdivision
+
+`StarSubdivision` proves that the closed star of a point in a face lies
+in the union of the closed stars of that face's vertices. Combined with
+the existing subdivision containment from `LinkRadial`, this shows that
+any further subdivision preserves a cover controlling those unions of
+closed stars. No finiteness, open-cover, or finite-dimensional hypothesis
+is needed for the inheritance theorem. In particular, affine common
+refinements preserve the open-star control already produced for the
+spherical disk mesh. No vendor Lean source is modified.
+
+The focused module check exits 0 with zero warnings. `AuditS21.lean`
+audits the three new declarations, the adapted-mesh producer, and both
+vertex-star disk-straightening endpoints; all six closures contain only
+the standard three axioms and the audit exits 0. This settles refinement
+stability, not the relative spherical free-triangle deletion operation.
