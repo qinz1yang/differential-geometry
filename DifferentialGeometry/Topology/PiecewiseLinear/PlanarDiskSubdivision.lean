@@ -60,4 +60,25 @@ theorem exists_isSubdivision_subcomplex_isGlueIso_planar
   obtain ⟨v, hv⟩ := hR.closedStars_subset_cover hcover₀ s hs
   exact ⟨v, v.property, hv⟩
 
+theorem exists_isSubdivision_isGlueIso_planar [DecidableEq Plane]
+    (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces] (hK : IsPLBall 2 K.space) :
+    ∃ (A : Geometry.SimplicialComplex ℝ E) (L : Geometry.SimplicialComplex ℝ Plane)
+      (φ : E → Plane) (ψ : Plane → E), IsSubdivision A K ∧ A.faces.Finite ∧
+        L.faces.Finite ∧ IsPLBall 2 L.space ∧ IsGlueIso A L φ ψ := by
+  classical
+  let Q : Set Plane := convexHull ℝ (range standardTrianglePosition)
+  have hQ : IsPLBall 2 Q := isPLBall_two_of_isTriangle
+    ⟨standardTrianglePosition, standardTrianglePosition_affineIndependent, rfl⟩
+  obtain ⟨C, hCfin, hCspace⟩ := hQ.isPolyhedron.exists_simplicialComplex
+  have : Finite C.faces := hCfin.to_subtype
+  obtain ⟨f, hf⟩ := hK
+  obtain ⟨g, hg⟩ := hQ
+  have hφ : IsPLHomeomorphOn (g ∘ Function.invFunOn f (stdSimplex ℝ (Fin 3))) K.space C.space := by
+    rw [hCspace]
+    exact hf.symm.trans hg
+  obtain ⟨A, L, ψ, hA, hAfin, hL, hLfin, hiso, -⟩ := exists_isGlueIso_of_isPLHomeomorphOn K C hφ
+  refine ⟨A, L, _, ψ, hA, hAfin, hLfin, ?_, hiso⟩
+  rw [hL.space_eq, hCspace]
+  exact ⟨g, hg⟩
+
 end DifferentialGeometry.Topology.PiecewiseLinear

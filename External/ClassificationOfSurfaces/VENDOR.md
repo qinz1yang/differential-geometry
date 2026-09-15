@@ -1078,3 +1078,36 @@ checks all seven declarations, exits 0, and reports only `propext`,
 `.lake/scratch/check-boundary-deletion.log`,
 `.lake/scratch/check-tetrahedron-deletion.log`, and
 `.lake/scratch/audit-tetrahedron-deletion.log`.
+
+## Supported ambient straightening of cones over PL two-balls (Moise 17.10)
+
+The native `ConeStraightening.isSimplyEmbedded_frontier_coneComplex`
+proves Moise 17.10 (printed page 121) for any finite simplicial complex
+whose space is a PL two-ball and any `IsConeBase` apex. The conclusion
+is the full `IsSimplyEmbedded` predicate, including an ambient PL
+homeomorphism fixed outside every prescribed convex open neighborhood
+of the boundary. It has no unproved topological producer assumption.
+
+`ConeFreeFace.lean` computes the boundary trace of a cone simplex and
+proves that coning a free base face produces the required PL disk.
+`ConeDeletion.lean` combines the face-deletion relation with the
+previous ambient tetrahedron deletion. `ConeStraightening.lean` keeps
+one base triangle and recurses on the strictly decreasing number of
+triangles, using the same open neighborhood throughout. A general PL
+two-ball is first subdivided into a complex with a planar simplicial
+isomorphism; `PlanarDiskSubdivision.lean` adds that direct interface.
+`Cone.lean` adds uniqueness of positive radial representations.
+Vendor Lean sources are unchanged. The proof follows the book's
+finite deletion argument and supplies the explicit boundary and
+support bookkeeping. The 17.9 and 17.11 endpoints and the general
+cell-decomposition version of 17.2 remain pending.
+
+All five changed modules pass focused checks with exit 0 and zero
+warnings. `AuditS47.lean` checks all eight new declarations and the
+full 17.10 signature, exits 0, and reports only `propext`,
+`Classical.choice`, and `Quot.sound`. Logs:
+`.lake/scratch/check-cone.log`, `.lake/scratch/check-cone-free-face.log`,
+`.lake/scratch/check-cone-deletion.log`,
+`.lake/scratch/check-planar-disk-subdivision.log`,
+`.lake/scratch/check-cone-straightening.log`, and
+`.lake/scratch/audit-cone-straightening.log`.
