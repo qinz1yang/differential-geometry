@@ -392,3 +392,36 @@ local moves to a triangulated disk in the tetrahedral boundary remain to be
 proved; this checkpoint does not close Moise 17.5. Both new modules pass the
 focused check with exit 0 and zero warnings. `AuditS14.lean` checks all eleven
 new declarations, with exit 0 and only the three standard foundational axioms.
+
+
+## Ambient extension of a simplex vertex star
+
+The native `ConeIntersection`, `SimplexCornerFrontier`, and
+`SimplexCornerExtension` modules complete the geometric input for extending a
+PL self-map of a simplex vertex star. The apex construction in `SimplexCorner`
+now also certifies the outer simplex and that the original vertex lies in its
+open simplex. The two existing existential signatures are strengthened with
+these two conclusions, and their in-tree consumer is updated.
+
+The frontier argument decomposes the outer simplex into the original simplex
+and the exterior cone, and the original simplex into the interior cone and
+an inner simplex. Cone intersection formulas identify the common side faces;
+the frontier of the union lies in the cones over the boundary of the opposite
+facet. Applying the earlier two-cone extension therefore introduces no
+unproved geometric hypotheses. The endpoint
+`exists_isPLHomeomorphOn_extension_simplex_vertex_star` extends every PL
+self-map of the vertex star that fixes that boundary, preserves the original
+simplex, and fixes the complement of any prescribed open neighborhood of it.
+The argument applies in every positive dimension when the simplex spans its
+ambient finite-dimensional real normed space.
+
+These are native proofs; no vendor Lean source is changed. The geometric
+paragraph of Moise 17.5 is now implemented. The remaining theorem needs local
+free-triangle deletion on an adapted triangulation of a disk in the tetrahedral
+boundary, followed by the retained-triangle induction. The new endpoint alone
+does not identify every such disk with a tetrahedral facet, and does not close
+17.5, 17.6, or 17.8. All four affected modules pass focused checks with exit 0
+and zero warnings. `AuditS15.lean` audits eighteen declarations including the
+new geometric chain, the planar prescribed-triangle theorem, and the existing
+17.4/17.7 endpoints; every closure contains only the three standard axioms,
+audit exit 0.

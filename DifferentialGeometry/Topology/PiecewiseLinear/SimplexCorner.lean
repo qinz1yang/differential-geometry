@@ -71,6 +71,8 @@ theorem exists_isConeBase_simplexAvoiding_near_vertex [FiniteDimensional ℝ E] 
     {a : E} (ha : a ∈ T) {ε : ℝ} (hε : 0 < ε) :
     ∃ p q : E, dist p a < ε ∧ dist q a < ε ∧ p ∈ openSimplex T ∧
       q ∉ convexHull ℝ (T : Set E) ∧
+      AffineIndependent ℝ ((↑) : ↥(insert q (T.erase a) : Finset E) → E) ∧
+      a ∈ openSimplex (insert q (T.erase a)) ∧
       ∃ (hp : IsConeBase p (simplexAvoiding T hT {T.erase a}))
         (hq : IsConeBase q (simplexAvoiding T hT {T.erase a})),
         (coneComplex hp).space ∩ (coneComplex hq).space = (simplexAvoiding T hT {T.erase a}).space ∧
@@ -142,6 +144,72 @@ theorem exists_isConeBase_simplexAvoiding_near_vertex [FiniteDimensional ℝ E] 
   have hqT : q ∉ convexHull ℝ (T : Set E) := by
     obtain ⟨i⟩ := ‹Nonempty (T.erase a)›
     exact fun hq => not_lt_of_ge (hnonneg q hq i) (hqA i)
+  obtain ⟨A₀, hA₀⟩ := exists_affineMap_eqOn hT (fun v => if v = a then (1 : ℝ) else 0)
+  have hA₀a : A₀ a = 1 := by simpa using hA₀ a ha
+  have hA₀c : A₀ c = weights T c a := by
+    calc A₀ c = A₀ (∑ v ∈ T, weights T c v • v) := congrArg A₀ (sum_weights_smul hcT).symm
+      _ = ∑ v ∈ T, weights T c v • A₀ v := affineMap_apply_sum_smul _ (sum_weights hcT)
+      _ = ∑ v ∈ T, weights T c v • (if v = a then (1 : ℝ) else 0) :=
+        Finset.sum_congr rfl fun v hv => by rw [hA₀ v hv]
+      _ = weights T c a := by simp [ha]
+  have hwa : weights T c a ≤ 1 := by
+    rw [← sum_weights hcT]
+    exact Finset.single_le_sum (fun v hv => weights_nonneg hcT hv) ha
+  let β := A₀ q
+  have hβ : β = 1 + t - t * weights T c a := by
+    dsimp [β, q]
+    rw [affineMap_apply_add_smul_sub, hA₀a, hA₀c]
+    ring
+  have hβpos : 0 < β := by rw [hβ]; nlinarith
+  have hqF : q ∉ T.erase a := fun hqmem => hqT
+    (subset_convexHull ℝ _ (Finset.mem_of_mem_erase hqmem))
+  have hqind : AffineIndependent ℝ ((↑) : ↥(insert q (T.erase a) : Finset E) → E) := by
+    apply (affineIndependent_insert_iff hqF
+      (affineIndependent_of_subset hT (Finset.erase_subset a T))).mpr
+    rintro ⟨w, hw, hwq⟩
+    have hzero : A₀ q = 0 := by
+      rw [← hwq, affineMap_apply_sum_smul _ hw]
+      apply Finset.sum_eq_zero
+      intro v hv
+      rw [hA₀ v (Finset.mem_of_mem_erase hv), if_neg (Finset.ne_of_mem_erase hv), smul_zero]
+    exact hβpos.ne' hzero
+  have hsumF : ∑ v ∈ T.erase a, weights T c v = 1 - weights T c a := by
+    have h := Finset.add_sum_erase T (weights T c) ha
+    rw [sum_weights hcT] at h
+    linarith
+  have hsmulF : ∑ v ∈ T.erase a, weights T c v • v = c - weights T c a • a := by
+    rw [eq_sub_iff_add_eq, add_comm, Finset.add_sum_erase T (fun v => weights T c v • v) ha, sum_weights_smul hcT]
+  have haopen : a ∈ openSimplex (insert q (T.erase a)) := by
+    let w : E → ℝ := fun v => if v = q then β⁻¹ else t / β * weights T c v
+    have hwq : w q = β⁻¹ := if_pos rfl
+    have hwF : ∀ v ∈ T.erase a, w v = t / β * weights T c v :=
+      fun v hv => if_neg (ne_of_mem_of_not_mem hv hqF)
+    refine ⟨w, ?_, ?_, ?_⟩
+    · intro v hv
+      rcases Finset.mem_insert.mp hv with hv | hv
+      · rw [hv, hwq]
+        exact inv_pos.mpr hβpos
+      · rw [hwF v hv]
+        exact mul_pos (div_pos ht hβpos)
+          ((mem_openSimplex_self_iff hT hcT).mp hc v (Finset.mem_of_mem_erase hv))
+    · rw [Finset.sum_insert hqF, hwq, Finset.sum_congr rfl hwF, ← Finset.mul_sum, hsumF]
+      field_simp
+      nlinarith [hβ]
+    · rw [Finset.sum_insert hqF, hwq,
+        Finset.sum_congr rfl (fun v hv => by rw [hwF v hv])]
+      simp_rw [mul_smul]
+      rw [← Finset.smul_sum, hsmulF]
+      calc β⁻¹ • q + (t / β) • (c - weights T c a • a)
+          = β⁻¹ • (q + t • (c - weights T c a • a)) := by
+            rw [div_eq_inv_mul, mul_smul]
+            exact (smul_add _ _ _).symm
+        _ = β⁻¹ • (β • a) := by
+          congr 1
+          dsimp [q]
+          rw [hβ]
+          simp only [smul_sub, sub_smul, add_smul, one_smul, neg_smul, mul_smul]
+          abel
+        _ = a := by rw [smul_smul, inv_mul_cancel₀ hβpos.ne', one_smul]
   let L := simplexAvoiding T hT {T.erase a}
   have hLC : L.space ⊆ convexHull ℝ (T : Set E) := simplexAvoiding_space_subset T hT _
   have hface : ∀ s ∈ L.faces, ∃ i : T.erase a, ∀ v ∈ s, A i v = 0 := by
@@ -157,7 +225,7 @@ theorem exists_isConeBase_simplexAvoiding_near_vertex [FiniteDimensional ℝ E] 
     obtain ⟨v, hv, hv0⟩ := exists_weights_eq_zero_of_mem_simplexAvoiding_space hT
       (Finset.mem_singleton_self (T.erase a)) (Finset.erase_subset a T) hx
     exact ⟨⟨v, hv⟩, (hcoord x (hLC hx) ⟨v, hv⟩).trans hv0⟩
-  refine ⟨p, q, hpdist, hqdist, hpopen, hqT, hp, hq,
+  refine ⟨p, q, hpdist, hqdist, hpopen, hqT, hqind, haopen, hp, hq,
     coneComplex_space_inter_of_affine_halfSpaces A (fun x hx => hnonneg x (hLC hx))
       hzero hp hq (fun i => (hpA i).le) hqA, ?_,
     coneComplex_space_inter_eq_of_affine_halfSpaces A hLC hnonneg hzero hq hqA⟩
@@ -172,6 +240,8 @@ theorem exists_isConeBase_simplexAvoiding_in_neighborhood [FiniteDimensional ℝ
     (T : Finset E) (hT : AffineIndependent ℝ ((↑) : T → E)) (hcard : 2 ≤ T.card)
     {a : E} (ha : a ∈ T) {U : Set E} (hU : IsOpen U) (hTU : convexHull ℝ (T : Set E) ⊆ U) :
     ∃ p q : E, p ∈ openSimplex T ∧ q ∉ convexHull ℝ (T : Set E) ∧
+      AffineIndependent ℝ ((↑) : ↥(insert q (T.erase a) : Finset E) → E) ∧
+      a ∈ openSimplex (insert q (T.erase a)) ∧
       ∃ (hp : IsConeBase p (simplexAvoiding T hT {T.erase a}))
         (hq : IsConeBase q (simplexAvoiding T hT {T.erase a})),
         (coneComplex hp).space ∩ (coneComplex hq).space = (simplexAvoiding T hT {T.erase a}).space ∧
@@ -180,9 +250,9 @@ theorem exists_isConeBase_simplexAvoiding_in_neighborhood [FiniteDimensional ℝ
           (simplexAvoiding T hT {T.erase a}).space ∧
         (coneComplex hp).space ∪ (coneComplex hq).space ⊆ U := by
   obtain ⟨ε, hε, hεU⟩ := (T.finite_toSet.isCompact_convexHull ℝ).exists_thickening_subset_open hU hTU
-  obtain ⟨p, q, -, hqdist, hpopen, hqT, hp, hq, hinter, hpT, hqinter⟩ :=
+  obtain ⟨p, q, -, hqdist, hpopen, hqT, hqind, haopen, hp, hq, hinter, hpT, hqinter⟩ :=
     exists_isConeBase_simplexAvoiding_near_vertex T hT hcard ha hε
-  refine ⟨p, q, hpopen, hqT, hp, hq, hinter, hpT, hqinter, union_subset (hpT.trans hTU) ?_⟩
+  refine ⟨p, q, hpopen, hqT, hqind, haopen, hp, hq, hinter, hpT, hqinter, union_subset (hpT.trans hTU) ?_⟩
   have hqε : q ∈ Metric.thickening ε (convexHull ℝ (T : Set E)) :=
     Metric.mem_thickening_iff.mpr ⟨a, subset_convexHull ℝ _ ha, hqdist⟩
   intro x hx
