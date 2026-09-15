@@ -10324,3 +10324,9 @@ import DifferentialGeometry.Topology.Homology.CompactlySupportedCohomology.Eucli
 import DifferentialGeometry.Topology.Manifold.ChartBasis
 import DifferentialGeometry.Topology.Homology.CompactlySupportedCohomology.Manifold
 import DifferentialGeometry.Topology.Manifold.Small
+import DifferentialGeometry.Analysis.Calculus.LipschitzConvolution
+import DifferentialGeometry.Analysis.Integration.BallBoundary
+import DifferentialGeometry.Analysis.Calculus.DiskTraceApproximation
+import DifferentialGeometry.Bundle.TangentMap
+import DifferentialGeometry.Geometry.Measure.Area.PullbackDensity
+import DifferentialGeometry.Geometry.Measure.Area.Convergence

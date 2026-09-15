@@ -1,4 +1,5 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.LeastArea
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.AreaTransport
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.SmoothDensity
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.Derivative.CovariantDerivativeAlong
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.ImmersionTraceLift
 
@@ -571,7 +572,58 @@ theorem smooth_exact_disk_density (g : SmoothRiemannianMetric I Q)
     ∃ w : ℕ → SmoothDisk (I := I) (Q := Q),
       (∀ j θ, (w j).map (diskBoundary θ) = γ θ) ∧
       Filter.Tendsto (fun j => diskArea g (w j).map) Filter.atTop (𝓝 (diskArea g v.1.map)) := by
-  sorry
+  classical
+  let c : Geometry.Topology.StandardModelCopy I Q E :=
+    Geometry.Topology.standardModelCopy (I := I) (M := Q)
+      (e := ContinuousLinearEquiv.refl ℝ E)
+  let _ : CompactSpace c.Q := c.equiv.toHomeomorph.compactSpace
+  let g' : SmoothRiemannianMetric 𝓘(ℝ, E) c.Q :=
+    Diffeomorph.pullbackMetricCross g c.equiv.symm
+  let fc : C(Q, c.Q) := ⟨c.equiv, c.equiv.continuous⟩
+  let γ' : Surgery.Topology.ContinuousFreeLoop c.Q := fc.comp γ.toContinuousLoop
+  let v' : C(Disk, c.Q) := fc.comp v.1.map
+  have hγ' : ContMDiff 𝓘(ℝ, ℝ) 𝓘(ℝ, E) ∞
+      (fun t : ℝ => γ' (t : Surgery.Topology.Circle)) :=
+    c.equiv.contMDiff.comp hγ
+  have hv' : v' ∈ Geometry.spanningDiskCompetitors g' γ' := by
+    apply (mem_spanningDiskCompetitors_iff g' γ' v').mpr
+    refine ⟨fun θ => ?_, ?_⟩
+    · exact congrArg c.equiv (v.2 θ)
+    · obtain ⟨L, hL⟩ := v.1.isLipschitz
+      refine ⟨L, fun z w => ?_⟩
+      rw [Geometry.Metric.edistOf_pullbackMetricCross]
+      simpa only [v', fc, ContinuousMap.coe_mk, ContinuousMap.comp_apply,
+        Diffeomorph.symm_apply_apply] using hL z w
+  obtain ⟨vj, Uj, hdata, htend⟩ :=
+    Geometry.exists_smooth_spanning_disks_smooth_extension_tendsto_area g' hγ' hv'
+  let w : ℕ → SmoothDisk (I := I) (Q := Q) := fun j =>
+    { map := ⟨fun z => c.equiv.symm (vj j z), c.equiv.symm.continuous.comp (vj j).continuous⟩
+      smooth z := by
+        obtain ⟨heq, N, hN, hDN, hUN⟩ := (hdata j).1
+        refine ⟨{
+          map := fun y => c.equiv.symm (Uj j y)
+          domain := N
+          isOpen_domain := hN
+          mem_domain := hDN z.property
+          smooth := c.equiv.symm.contMDiff.comp_contMDiffOn hUN
+          agrees := ?_ }⟩
+        intro y hy
+        exact (congrArg c.equiv.symm (heq ⟨y, hy.2⟩)).trans
+          (diskExtension_coe (fun z : Disk => c.equiv.symm (vj j z)) ⟨y, hy.2⟩).symm }
+  have harea (u : C(Disk, c.Q)) :
+      diskArea g (fun z => c.equiv.symm (u z)) = Geometry.riemannianDiskArea g' u := by
+    rw [← diskArea_pullbackDiffeo g c.equiv.symm u, diskArea_eq_riemannianDiskArea]
+  have hlim : Geometry.riemannianDiskArea g' v' = diskArea g v.1.map := by
+    rw [← harea]
+    congr 1
+  refine ⟨w, ?_, ?_⟩
+  · intro j θ
+    change c.equiv.symm (vj j (diskBoundary θ)) = γ θ
+    rw [(diskTrace_eq_iff (vj j) γ').mp (hdata j).2 θ]
+    exact c.equiv.symm_apply_apply (γ θ)
+  · have hw j : diskArea g (w j).map = Geometry.riemannianDiskArea g' (vj j) :=
+      harea (vj j)
+    simpa only [hw, hlim] using htend
 
 
 def IsSignedWeaklyMonotoneTrace (u : Disk → Q) (γ : Surgery.Topology.ContinuousFreeLoop Q) : Prop :=
