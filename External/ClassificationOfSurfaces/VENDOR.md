@@ -624,3 +624,37 @@ only `propext`, `Classical.choice`, and `Quot.sound`; the audit exits 0.
 Final logs are `.lake/scratch/final3-*.log` and
 `.lake/scratch/audit-final3-s.log`. The plans retain the full 17.5, 17.6,
 and 17.8 goals as open, and describe the local-deletion gap explicitly.
+
+## Relative planar deletion and native erased complexes
+
+The S checkpoint merges `origin/codex/moise-integration` through `74117a65b`
+without conflicts in merge `bbf60272f`. Four incoming covering and Euler
+modules pass the prescribed focused checks with exit 0 and zero warnings.
+`AuditS26.lean` checks 31 distinct integrated endpoints with only the standard
+three axioms. No vendor Lean source is modified by the merge.
+
+`PlanarSchoenflies` strengthens both free-triangle deletion cases and their
+combined endpoint to record that the original frontier outside the removed
+triangle is fixed pointwise. The original public signatures remain as
+corollaries. These properties follow from the existing thin-kite construction
+and its inverse; they are not new hypotheses.
+
+`PlanarFreeFace` identifies the support of the upstream erased triangle mesh
+with native `eraseTriangleComplex`. It chooses a triangle distinct from a
+prescribed retained triangle, a face-star center of cardinality one or two,
+and proves that deletion leaves a PL disk. For every open neighborhood of
+the chosen triangle it also produces a global PL homeomorphism with the
+exact erased-disk image, fixed outside that neighborhood and on the rest
+of the original frontier. The older face-star-center statement is preserved
+as a corollary. Three redundant native tactics are removed for zero warnings.
+
+Both changed native modules pass the prescribed focused checks with exit 0
+and zero warnings. `AuditS27.lean` checks 11 distinct declarations with only
+`propext`, `Classical.choice`, and `Quot.sound`, and exits 0. Logs are
+`.lake/scratch/check-planar-relative-deletion.log`,
+`.lake/scratch/check-native-planar-deletion.log`, and
+`.lake/scratch/audit-planar-relative-deletion.log`.
+
+This closes the native planar deletion bridge. The local spherical deletion
+and the retained-triangle induction needed for full Moise 17.5 are still
+open; 17.6 and 17.8 are not claimed complete.
