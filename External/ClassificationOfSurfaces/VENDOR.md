@@ -515,3 +515,35 @@ All 39 selected changed or affected native modules pass the prescribed focused
 checks with exit 0 and zero warnings. `AuditS18.lean` reviews 127 declarations
 across the integrated S proof chain and the new F interfaces. Each transitive
 closure contains only the three standard foundational axioms; the audit exits 0.
+
+## Euclidean vertex-star coordinates and boundary support
+
+`SimplexAffine` constructs an affine PL homeomorphism between finite simplices
+with a prescribed vertex bijection, including simplices in different ambient
+spaces. `SimplexBoundaryImage` transports their boundaries through an arbitrary
+PL homeomorphism. `SimplexBoundary` identifies the open simplex with the closed
+simplex minus its boundary, including empty and zero-dimensional cases.
+
+`SimplexCorner` identifies the boundary as the vertex star union the opposite
+facet, and identifies the open star by deleting the facet boundary from the
+closed star. `SimplexCornerChart` now produces Euclidean coordinates of the
+correct dimension, affine on every original star face. These coordinates send
+the star boundary to the actual frontier and the open star onto the actual
+interior of a Euclidean simplex; the two-dimensional instance is a planar chart.
+
+The ambient extension in `SimplexCornerExtension` is strengthened to fix the
+entire opposite facet pointwise; the existing public endpoint is retained as
+a corollary. Chart conjugation in `SimplexCornerChart` permits a different target
+ambient space and includes the exact image formula for every subset D of the
+simplex boundary: the star part is transformed by the conjugate, and D outside
+the star remains pointwise fixed. The inner and outer cones are still produced
+from the simplex and the prescribed open neighborhood, not supplied as hypotheses.
+
+These are native constructions using the already documented Moise 17.5 route;
+no vendor Lean source is modified. All six changed native modules pass focused
+checks with exit 0 and zero warnings. `AuditS19.lean` audits eighteen declarations,
+including the new coordinate and extension chain and existing P.1, S.1, and 17.4
+consumers; all closures use only the standard three axioms and the audit exits 0.
+This settles coordinate and support transport, but not the local deletion theorem
+for the spherical mesh or its retained-triangle induction. The full 17.5, 17.6,
+and 17.8 endpoints remain open.

@@ -58,6 +58,24 @@ theorem simplexBoundary_faces_finite (T : Finset E) (hT : AffineIndependent ℝ 
   (Set.toFinite (T.powerset : Set (Finset E))).subset fun _ hτ =>
     Finset.mem_coe.mpr (Finset.mem_powerset.mpr hτ.1)
 
+theorem openSimplex_eq_sdiff_simplexBoundary (T : Finset E)
+    (hT : AffineIndependent ℝ ((↑) : T → E)) :
+    openSimplex T = convexHull ℝ (T : Set E) \ (simplexBoundary T hT).space := by
+  ext x
+  constructor
+  · intro hx
+    refine ⟨openSimplex_subset_convexHull T hx, ?_⟩
+    intro hxB
+    obtain ⟨s, hs, hxs⟩ := (simplexBoundary T hT).mem_space_iff.mp hxB
+    exact hs.2.2 (Finset.Subset.antisymm hs.1
+      (subset_of_mem_openSimplex_of_mem_convexHull hT subset_rfl hs.1 hx hxs))
+  · rintro ⟨hx, hxB⟩
+    obtain ⟨s, hsT, hsne, hxs⟩ := exists_openSimplex_of_mem_convexHull hx
+    by_cases hs : s = T
+    · rwa [hs] at hxs
+    · exact (hxB ((simplexBoundary T hT).convexHull_subset_space ⟨hsT, hsne, hs⟩
+        (openSimplex_subset_convexHull s hxs))).elim
+
 section Boundary
 
 variable [DecidableEq E]

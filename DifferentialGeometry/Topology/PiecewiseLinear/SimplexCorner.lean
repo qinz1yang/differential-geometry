@@ -1,5 +1,6 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.ConeHalfSpace
 import DifferentialGeometry.Topology.PiecewiseLinear.SimplexAvoiding
+import DifferentialGeometry.Topology.PiecewiseLinear.OpenStar
 import Mathlib.Analysis.Normed.Module.Convex
 
 open Set
@@ -64,6 +65,49 @@ theorem simplexAvoiding_space_inter_convexHull_erase [DecidableEq E]
     refine ⟨space_mono_of_faces_subset (simplexBoundary_erase_faces_subset_simplexAvoiding T hT a) hx, ?_⟩
     exact simplexComplex_space_subset _ _
       (space_mono_of_faces_subset (simplexBoundary_faces_subset_simplexComplex _ _) hx)
+
+theorem simplexBoundary_space_eq_starComplex_union_opposite_face [DecidableEq E]
+    (T : Finset E) (hT : AffineIndependent ℝ ((↑) : T → E)) (hcard : 2 ≤ T.card)
+    {a : E} (ha : a ∈ T) :
+    (simplexBoundary T hT).space = (starComplex (simplexBoundary T hT) a).space ∪
+      convexHull ℝ ((T.erase a : Finset E) : Set E) := by
+  apply Subset.antisymm
+  · intro x hx
+    obtain ⟨s, hs, hxs⟩ := (simplexBoundary T hT).mem_space_iff.mp hx
+    by_cases has : a ∈ s
+    · exact Or.inl ((starComplex (simplexBoundary T hT) a).convexHull_subset_space
+        ⟨hs, by rwa [Finset.insert_eq_of_mem has]⟩ hxs)
+    · exact Or.inr (convexHull_mono
+        (Finset.coe_subset.mpr (Finset.subset_erase.mpr ⟨hs.1, has⟩)) hxs)
+  · apply union_subset (space_mono_of_faces_subset (starComplex_faces_subset _ _))
+    exact (simplexBoundary T hT).convexHull_subset_space
+      (erase_mem_simplexBoundary_faces hT hcard ha)
+
+theorem avoidingUnion_simplexBoundary_eq_convexHull_erase [DecidableEq E]
+    (T : Finset E) (hT : AffineIndependent ℝ ((↑) : T → E)) (hcard : 2 ≤ T.card)
+    {a : E} (ha : a ∈ T) :
+    avoidingUnion (simplexBoundary T hT) a = convexHull ℝ ((T.erase a : Finset E) : Set E) := by
+  apply Subset.antisymm
+  · intro x hx
+    obtain ⟨s, ⟨hs, has⟩, hxs⟩ := mem_iUnion₂.mp hx
+    exact convexHull_mono (Finset.coe_subset.mpr (Finset.subset_erase.mpr ⟨hs.1, has⟩)) hxs
+  · intro x hx
+    exact mem_iUnion₂.mpr ⟨T.erase a,
+      ⟨erase_mem_simplexBoundary_faces hT hcard ha, Finset.notMem_erase a T⟩, hx⟩
+
+theorem openStar_simplexBoundary_eq_sdiff_boundary [DecidableEq E]
+    (T : Finset E) (hT : AffineIndependent ℝ ((↑) : T → E)) (hcard : 2 ≤ T.card)
+    {a : E} (ha : a ∈ T) :
+    openStar (simplexBoundary T hT) a = (starComplex (simplexBoundary T hT) a).space \
+      (simplexBoundary (T.erase a)
+        (affineIndependent_of_subset hT (Finset.erase_subset a T))).space := by
+  have hinter := simplexAvoiding_space_inter_convexHull_erase T hT a
+  rw [simplexAvoiding_erase_eq_starComplex T hT ha] at hinter
+  rw [openStar, avoidingUnion_simplexBoundary_eq_convexHull_erase T hT hcard ha,
+    simplexBoundary_space_eq_starComplex_union_opposite_face T hT hcard ha, ← hinter]
+  ext x
+  simp only [mem_sdiff, mem_union, mem_inter_iff]
+  tauto
 
 open Classical in
 theorem exists_isConeBase_simplexAvoiding_near_vertex [FiniteDimensional ℝ E] [DecidableEq E]

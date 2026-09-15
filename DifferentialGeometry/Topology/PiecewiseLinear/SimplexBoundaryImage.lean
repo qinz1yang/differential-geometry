@@ -73,4 +73,17 @@ theorem image_stdSimplexBoundary_of_isPLHomeomorphOn_convexHull [FiniteDimension
   rw [boundaryComplex_simplexComplex hT hcard, simplexBoundary_stdVertices_space] at h
   exact h.symm
 
+theorem image_simplexBoundary_of_isPLHomeomorphOn {F : Type*}
+    [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ E] [FiniteDimensional ℝ F]
+    {S : Finset E} {T : Finset F} (hS : AffineIndependent ℝ ((↑) : S → E))
+    (hT : AffineIndependent ℝ ((↑) : T → F)) {n : ℕ}
+    (hScard : S.card = n + 2) (hTcard : T.card = n + 2) {f : E → F}
+    (hf : IsPLHomeomorphOn f (convexHull ℝ (S : Set E)) (convexHull ℝ (T : Set F))) :
+    f '' (simplexBoundary S hS).space = (simplexBoundary T hT).space := by
+  obtain ⟨g, hg⟩ := isPLBall_convexHull_of_affineIndependent S hS hScard
+  have hsource := image_stdSimplexBoundary_of_isPLHomeomorphOn_convexHull hS hScard hg
+  have htarget := image_stdSimplexBoundary_of_isPLHomeomorphOn_convexHull hT hTcard (hg.trans hf)
+  rw [← hsource, image_image]
+  exact htarget
+
 end DifferentialGeometry.Topology.PiecewiseLinear
