@@ -3700,4 +3700,248 @@ theorem exists_small_simplicialMap_preimage_graph_relative [FiniteDimensional �
     obtain ⟨s, hs, t, ht, hsub, _⟩ := hcarrier u hu
     exact ⟨s, hs, t, ht, hsub⟩
 
+open Classical in
+theorem image_openSimplex_simplicialMap {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
+    (K : Geometry.SimplicialComplex ℝ E) (φ : E → F) {s : Finset E} (hs : s ∈ K.faces)
+    (hφ : InjOn φ (s : Set E)) :
+    simplicialMap K φ '' openSimplex s = openSimplex (s.image φ) := by
+  apply Subset.antisymm
+  · rintro _ ⟨x, hx, rfl⟩
+    have hxs := openSimplex_subset_convexHull s hx
+    apply (mem_openSimplex_image_iff hφ).mpr
+    exact ⟨weights s x, (mem_openSimplex_self_iff (K.indep hs) hxs).mp hx,
+      sum_weights hxs, (simplicialMap_eq_of_mem K φ hs hxs).symm⟩
+  · intro y hy
+    obtain ⟨w, hwpos, hwsum, hwy⟩ := (mem_openSimplex_image_iff hφ).mp hy
+    let x := ∑ v ∈ s, w v • v
+    have hx : x ∈ openSimplex s := ⟨w, hwpos, hwsum, rfl⟩
+    have hxs := openSimplex_subset_convexHull s hx
+    refine ⟨x, hx, ?_⟩
+    rw [simplicialMap_eq_of_mem K φ hs hxs, ← hwy]
+    exact Finset.sum_congr rfl fun v hv => by
+      rw [weights_eq (K.indep hs) hxs hwsum rfl v hv]
+
+open Classical in
+theorem exists_affineMap_leftInverse_simplicialMap {F : Type*}
+    [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
+    (K : Geometry.SimplicialComplex ℝ E) (φ : E → F) {s : Finset E} (hs : s ∈ K.faces)
+    (hφ : AffineIndependent ℝ (fun v : s => φ v)) :
+    ∃ B : F →ᵃ[ℝ] E, ∀ x ∈ convexHull ℝ (s : Set E), B (simplicialMap K φ x) = x := by
+  have hφdata := (affineIndependent_image_iff s φ).mp hφ
+  obtain ⟨B, hB⟩ := exists_affineMap_eqOn hφdata.2 (Function.invFunOn φ (s : Set E))
+  have hBφ : ∀ v ∈ s, B (φ v) = v := by
+    intro v hv
+    rw [hB (φ v) (Finset.mem_image_of_mem φ hv)]
+    exact hφdata.1.leftInvOn_invFunOn hv
+  refine ⟨B, fun x hx => ?_⟩
+  rw [simplicialMap_eq_of_mem K φ hs hx, affineMap_apply_sum_smul_comp B φ (sum_weights hx)]
+  calc ∑ v ∈ s, weights s x v • B (φ v) = ∑ v ∈ s, weights s x v • v :=
+      Finset.sum_congr rfl fun v hv => by rw [hBφ v hv]
+    _ = x := sum_weights_smul hx
+
+open Classical in
+theorem exists_ray_preimage_openSimplex {F : Type*}
+    [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
+    (K : Geometry.SimplicialComplex ℝ E) (φ : E → F) {s : Finset E} (hs : s ∈ K.faces)
+    (hφ : AffineIndependent ℝ (fun v : s => φ v)) {x : E}
+    (hx : x ∈ convexHull ℝ (s : Set E)) {d : F} (hd : d ≠ 0)
+    (hray : ∀ᶠ r : ℝ in 𝓝 0, 0 < r → simplicialMap K φ x + r • d ∈ openSimplex (s.image φ)) :
+    ∃ e : E, e ≠ 0 ∧ ∀ᶠ r : ℝ in 𝓝 0, 0 < r →
+      x + r • e ∈ openSimplex s ∧ simplicialMap K φ (x + r • e) = simplicialMap K φ x + r • d := by
+  obtain ⟨B, hB⟩ := exists_affineMap_leftInverse_simplicialMap K φ hs hφ
+  have hBmap : ∀ r : ℝ, B (simplicialMap K φ x + r • d) = x + r • B.linear d := by
+    intro r
+    rw [add_comm (simplicialMap K φ x)]
+    change B ((r • d) +ᵥ simplicialMap K φ x) = x + r • B.linear d
+    rw [B.map_vadd, B.linear.map_smul, hB x hx]
+    exact add_comm _ _
+  have hresult : ∀ᶠ r : ℝ in 𝓝 0, 0 < r →
+      x + r • B.linear d ∈ openSimplex s ∧
+        simplicialMap K φ (x + r • B.linear d) = simplicialMap K φ x + r • d := by
+    filter_upwards [hray] with r hr hpos
+    have hy := hr hpos
+    rw [← image_openSimplex_simplicialMap K φ hs ((affineIndependent_image_iff s φ).mp hφ).1] at hy
+    obtain ⟨z, hz, hfz⟩ := hy
+    have hz' : z = x + r • B.linear d := by
+      rw [← hB z (openSimplex_subset_convexHull s hz), hfz, hBmap]
+    rw [← hz']
+    exact ⟨hz, hfz⟩
+  refine ⟨B.linear d, ?_, hresult⟩
+  intro he
+  obtain ⟨ε, hε, hball⟩ := Metric.mem_nhds_iff.mp hresult
+  have hr : ε / 2 ∈ ball (0 : ℝ) ε := by
+    rw [mem_ball, dist_zero_right, Real.norm_eq_abs, abs_of_pos (half_pos hε)]
+    linarith
+  have h := (hball hr (half_pos hε)).2
+  rw [he, smul_zero, add_zero] at h
+  have hzero := congrArg (fun z => z - simplicialMap K φ x) h
+  simp only [sub_self, add_sub_cancel_left] at hzero
+  exact (smul_ne_zero (half_pos hε).ne' hd) hzero.symm
+
+open Classical in
+theorem existsUnique_neighbor_mem_preimage_transverse_coface {F : Type*}
+    [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
+    (K : Geometry.SimplicialComplex ℝ E) (L : Geometry.SimplicialComplex ℝ F)
+    (G : Geometry.SimplicialComplex ℝ E) [Finite G.faces] (φ : E → F)
+    (hcard : ∀ u ∈ G.faces, u.card ≤ 2)
+    (hspace : G.space = K.space ∩ simplicialMap K φ ⁻¹' L.space)
+    (hcarrier : ∀ u ∈ G.faces, ∃ v ∈ K.faces, ∃ z ∈ L.faces,
+      convexHull ℝ (u : Set E) ⊆ convexHull ℝ (v : Set E) ∩
+        simplicialMap K φ ⁻¹' convexHull ℝ (z : Set F))
+    {s : Finset E} {t : Finset F} (hs : s ∈ K.faces) (ht : t ∈ L.faces)
+    (hsbound : ∀ u ∈ K.faces, s ⊆ u → u.card ≤ s.card + 1)
+    (htmax : ∀ u ∈ L.faces, t ⊆ u → u.card ≤ t.card) {x w : E}
+    (hx : x ∈ openSimplex s) (hxt : simplicialMap K φ x ∈ openSimplex t) (hxG : {x} ∈ G.faces)
+    (hw : w ∉ s) (hws : insert w s ∈ K.faces)
+    (hφ : AffineIndependent ℝ (fun v : (insert w s : Finset E) => φ v))
+    (htrans : IsCompl (vectorSpan ℝ (s.image φ : Set F)) (vectorSpan ℝ (t : Set F))) :
+    ∃! y, y ≠ x ∧ {x, y} ∈ G.faces ∧ y ∈ convexHull ℝ ((insert w s : Finset E) : Set E) := by
+  have hφdata := (affineIndependent_image_iff (insert w s) φ).mp hφ
+  have hφs : InjOn φ (s : Set E) := hφdata.1.mono (fun _ hv => Finset.mem_insert_of_mem hv)
+  have hφw : φ w ∉ s.image φ := by
+    rintro h
+    obtain ⟨v, hv, heq⟩ := Finset.mem_image.mp h
+    have hvw := hφdata.1 (Finset.mem_insert_of_mem hv) (Finset.mem_insert_self w s) heq
+    exact hw (hvw ▸ hv)
+  have hφind : AffineIndependent ℝ ((↑) : ↥(insert (φ w) (s.image φ) : Finset F) → F) := by
+    rw [← Finset.image_insert]
+    exact hφdata.2
+  have hwspan := notMem_affineSpan_of_affineIndependent_insert hφw hφind
+  have hxφ : simplicialMap K φ x ∈ openSimplex (s.image φ) := by
+    rw [← image_openSimplex_simplicialMap K φ hs hφs]
+    exact ⟨x, hx, rfl⟩
+  have hxt0 : simplicialMap K φ x + 0 ∈ openSimplex t := by simpa only [add_zero] using hxt
+  obtain ⟨d, hd, hray⟩ := exists_ray_into_transverse_face hxφ hxt0 hwspan htrans.sup_eq_top
+  have hxws : x ∈ convexHull ℝ ((insert w s : Finset E) : Set E) :=
+    convexHull_mono (fun _ hv => Finset.mem_insert_of_mem hv) (openSimplex_subset_convexHull s hx)
+  obtain ⟨e, he, hraye⟩ := exists_ray_preimage_openSimplex K φ hws hφ hxws hd (by
+    filter_upwards [hray] with r hr hpos
+    simpa only [Finset.image_insert] using (hr hpos).1)
+  have hcoface : ∀ u ∈ K.faces, insert w s ⊆ u → u.card ≤ (insert w s).card := by
+    intro u hu hsub
+    rw [Finset.card_insert_of_notMem hw]
+    exact hsbound u hu ((Finset.subset_insert w s).trans hsub)
+  have hrayG : ∀ᶠ r : ℝ in 𝓝 0, 0 < r →
+      x + r • e ∈ G.space ∧ x + r • e ∈ openSimplex (insert w s) := by
+    filter_upwards [hray, hraye] with r hr hre hpos
+    refine ⟨?_, (hre hpos).1⟩
+    rw [hspace]
+    refine ⟨K.convexHull_subset_space hws (openSimplex_subset_convexHull _ (hre hpos).1), ?_⟩
+    change simplicialMap K φ (x + r • e) ∈ L.space
+    rw [(hre hpos).2]
+    apply L.convexHull_subset_space ht
+    apply openSimplex_subset_convexHull t
+    simpa only [add_zero] using (hr hpos).2
+  have hcarrierK : ∀ u ∈ G.faces, ∃ v ∈ K.faces,
+      convexHull ℝ (u : Set E) ⊆ convexHull ℝ (v : Set E) := by
+    intro u hu
+    obtain ⟨v, hv, z, _, hsub⟩ := hcarrier u hu
+    exact ⟨v, hv, fun q hq => (hsub hq).1⟩
+  obtain ⟨y, hyx, hyface, hyws⟩ := exists_neighbor_mem_convexHull_of_eventually K G hcard
+    hcarrierK hws hcoface hxG he hrayG
+  have hdir : ∀ q, {x, q} ∈ G.faces →
+      simplicialMap K φ q - simplicialMap K φ x ∈ vectorSpan ℝ (t : Set F) := by
+    intro q hq
+    obtain ⟨u, _, v, hv, hsub⟩ := hcarrier _ hq
+    have hxv : simplicialMap K φ x ∈ convexHull ℝ (v : Set F) :=
+      (hsub (subset_convexHull ℝ _ (by simp))).2
+    have htv := face_subset_of_mem_openSimplex_of_mem_convexHull L ht hv hxt hxv
+    have hvt : v = t := (Finset.eq_of_subset_of_card_le htv (htmax v hv htv)).symm
+    have hqv : simplicialMap K φ q ∈ convexHull ℝ (v : Set F) :=
+      (hsub (subset_convexHull ℝ _ (by simp))).2
+    rw [hvt] at hqv
+    simpa only [direction_affineSpan, vsub_eq_sub] using AffineSubspace.vsub_mem_direction
+      (convexHull_subset_affineSpan _ hqv)
+      (convexHull_subset_affineSpan _ (openSimplex_subset_convexHull _ hxt))
+  obtain ⟨B, hB⟩ := exists_affineMap_leftInverse_simplicialMap K φ hws hφ
+  have hBdir : ∀ q ∈ convexHull ℝ ((insert w s : Finset E) : Set E),
+      B.linear (simplicialMap K φ q - simplicialMap K φ x) = q - x := by
+    intro q hq
+    change B.linear (simplicialMap K φ q -ᵥ simplicialMap K φ x) = q - x
+    rw [B.linearMap_vsub, hB q hq, hB x hxws, vsub_eq_sub]
+  have hinj := injOn_simplicialMap_convexHull K φ hws hφ
+  have hmem : ∀ q ∈ convexHull ℝ ((insert w s : Finset E) : Set E),
+      simplicialMap K φ q ∈ convexHull ℝ ((insert (φ w) (s.image φ) : Finset F) : Set F) := by
+    intro q hq
+    rw [← Finset.image_insert]
+    exact simplicialMap_mem_convexHull_image K φ hws hq
+  refine ⟨y, ⟨hyx, hyface, hyws⟩, ?_⟩
+  rintro z ⟨hzx, hzface, hzws⟩
+  obtain ⟨c, hc, hcy⟩ := exists_pos_smul_sub_eq_of_mem_transverse_cone
+    (openSimplex_subset_convexHull _ hxφ) (hmem z hzws) (hmem y hyws)
+    (fun h => hzx (hinj hzws hxws h)) (fun h => hyx (hinj hyws hxws h))
+    (vectorSpan ℝ (t : Set F)) (hdir z hzface) (hdir y hyface) htrans.disjoint
+  have heq := congrArg B.linear hcy
+  rw [map_smul, hBdir z hzws, hBdir y hyws] at heq
+  have hylink : y ∈ (SimplicialComplex.geometricLink G {x}).space := by
+    rw [geometricLink_space_eq_neighbors_of_card_le G hcard x]
+    exact ⟨hyx, hyface⟩
+  have hzlink : z ∈ (SimplicialComplex.geometricLink G {x}).space := by
+    rw [geometricLink_space_eq_neighbors_of_card_le G hcard x]
+    exact ⟨hzx, hzface⟩
+  apply isRadiallyInjective_geometricLink G y hylink z hzlink c hc
+  calc z = x + (z - x) := by abel
+    _ = x + c • (y - x) := by rw [heq]
+
+open Classical in
+theorem existsUnique_preimage_transverse_coface_of_neighbor {F : Type*}
+    [NormedAddCommGroup F] [NormedSpace ℝ F]
+    (K : Geometry.SimplicialComplex ℝ E) (L : Geometry.SimplicialComplex ℝ F)
+    (G : Geometry.SimplicialComplex ℝ E) (φ : E → F)
+    (hcarrier : ∀ u ∈ G.faces, ∃ v ∈ K.faces, ∃ z ∈ L.faces,
+      convexHull ℝ (u : Set E) ⊆ convexHull ℝ (v : Set E) ∩
+        simplicialMap K φ ⁻¹' convexHull ℝ (z : Set F))
+    {s : Finset E} {t : Finset F} (hs : s ∈ K.faces) (ht : t ∈ L.faces)
+    (hsbound : ∀ u ∈ K.faces, s ⊆ u → u.card ≤ s.card + 1)
+    (htmax : ∀ u ∈ L.faces, t ⊆ u → u.card ≤ t.card)
+    (hφ : AffineIndependent ℝ (fun v : s => φ v)) {x y : E}
+    (hx : x ∈ openSimplex s) (hxt : simplicialMap K φ x ∈ openSimplex t)
+    (hyx : y ≠ x) (hyface : {x, y} ∈ G.faces)
+    (htrans : Disjoint (vectorSpan ℝ (s.image φ : Set F)) (vectorSpan ℝ (t : Set F))) :
+    ∃! w, w ∉ s ∧ insert w s ∈ K.faces ∧
+      y ∈ convexHull ℝ ((insert w s : Finset E) : Set E) := by
+  obtain ⟨u, hu, v, hv, hsub⟩ := hcarrier _ hyface
+  have hxuv := hsub (subset_convexHull ℝ _ (show x ∈ (({x, y} : Finset E) : Set E) by simp))
+  have hyuv := hsub (subset_convexHull ℝ _ (show y ∈ (({x, y} : Finset E) : Set E) by simp))
+  have htv := face_subset_of_mem_openSimplex_of_mem_convexHull L ht hv hxt hxuv.2
+  have hvt : v = t := (Finset.eq_of_subset_of_card_le htv (htmax v hv htv)).symm
+  have hyt : simplicialMap K φ y ∈ convexHull ℝ (t : Set F) := hvt ▸ hyuv.2
+  have hyV : simplicialMap K φ y - simplicialMap K φ x ∈ vectorSpan ℝ (t : Set F) := by
+    simpa only [direction_affineSpan, vsub_eq_sub] using AffineSubspace.vsub_mem_direction
+      (convexHull_subset_affineSpan _ hyt)
+      (convexHull_subset_affineSpan _ (openSimplex_subset_convexHull _ hxt))
+  have hynot : y ∉ convexHull ℝ (s : Set E) := by
+    intro hys
+    have hxs := openSimplex_subset_convexHull s hx
+    have hyS : simplicialMap K φ y - simplicialMap K φ x ∈ vectorSpan ℝ (s.image φ : Set F) := by
+      simpa only [direction_affineSpan, vsub_eq_sub] using AffineSubspace.vsub_mem_direction
+        (convexHull_subset_affineSpan _ (simplicialMap_mem_convexHull_image K φ hs hys))
+        (convexHull_subset_affineSpan _ (simplicialMap_mem_convexHull_image K φ hs hxs))
+    exact hyx (injOn_simplicialMap_convexHull K φ hs hφ hys hxs
+      (sub_eq_zero.mp (Submodule.disjoint_def.mp htrans _ hyS hyV)))
+  have hsu := face_subset_of_mem_openSimplex_of_mem_convexHull K hs hu hx hxuv.1
+  have hlt : s.card < u.card := Finset.card_lt_card
+    (Finset.ssubset_iff_subset_ne.mpr ⟨hsu, fun h => hynot (h.symm ▸ hyuv.1)⟩)
+  have hbound := hsbound u hu hsu
+  have hcard : s.card + 1 = u.card := by omega
+  obtain ⟨w, hw, hwu⟩ := Finset.exists_eq_insert_iff.mpr ⟨hsu, hcard⟩
+  have hws : insert w s ∈ K.faces := hwu.symm ▸ hu
+  have hyw : y ∈ convexHull ℝ ((insert w s : Finset E) : Set E) := hwu.symm ▸ hyuv.1
+  refine ⟨w, ⟨hw, hws, hyw⟩, ?_⟩
+  rintro z ⟨_, hzs, hyz⟩
+  by_contra hzw
+  have hinter : (insert z s ∩ insert w s : Finset E) = s := by
+    ext q
+    simp only [Finset.mem_inter, Finset.mem_insert]
+    constructor
+    · rintro ⟨rfl | hqs, hqw | hqs⟩
+      · exact (hzw hqw).elim
+      · exact hqs
+      · exact hqs
+      · exact hqs
+    · exact fun hqs => ⟨Or.inr hqs, Or.inr hqs⟩
+  have hys := K.inter_subset_convexHull hzs hws ⟨hyz, hyw⟩
+  rw [← Finset.coe_inter, hinter] at hys
+  exact hynot hys
+
 end DifferentialGeometry.Topology.PiecewiseLinear
