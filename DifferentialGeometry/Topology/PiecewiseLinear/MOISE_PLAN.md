@@ -379,6 +379,14 @@
   `propext`、`Classical.choice`、`Quot.sound`。E.3/E.4 均为条件版 done，35.2 本身没有被证明。
   下一项按 §12.2 处理 F5.2 的整体片与载体约束扰动。未运行 lake build，未登记根聚合。
 
+- 2026-09-15（F 车道，F5.2 的 §12.2 路线审查）：`CarrierPerturbation.lean` 证明最小载体约束的刚性。
+  顶点的 `carrierFace` 是单点；当原顶点映到目标顶点，任何仍在原载体仿射包内的顶点像都等于原值，
+  `simplicialMap_eqOn_of_mem_affineSpan_carrierFace` 给整个单纯映射相等，双点集也精确不变。
+  `not_disjoint_doublePointSet_vertices_of_mem_affineSpan_carrierFace` 证明既有顶点双点不能移离目标顶点集。
+  六个声明聚焦检查 exit=0、零 warning；AuditF118 连同砖 15/16 共二十二项全部仅标准三公理。
+  此结果是 §12.2 固定最小载体路线的障碍证明，不是 F5.2 正规形式的存在证明。按交接约定在数学缺口处汇报，
+  F5.2 保持 partial，等待允许跨出低维载体且保持目标片内兼容性的设计；详见交接 §14 和风险 R10。
+
 ## 7. 决策与风险
 
 - 不采用 Bing 定理 7 的“保留单形”强形式，只用 Moise §8/§35 的紧致图卡归纳（书中 `chap:two-set-gluing` 的方案）。
