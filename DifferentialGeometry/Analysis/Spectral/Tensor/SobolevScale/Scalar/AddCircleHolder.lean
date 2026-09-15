@@ -134,4 +134,21 @@ theorem exists_scalarH1ToContinuous_coe_sub_le
   rw [← hS i]
   exact hcore' (S i) x y hx hy
 
+theorem exists_scalarH1PiToContinuous_coe_sub_le {ι : Type*} [Fintype ι]
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ (u : PiLp 2 (fun _ : ι => TensorHs g 0 0 1)) (x y : ℝ),
+      x ∈ Icc (0 : ℝ) 1 → y ∈ Icc (0 : ℝ) 1 →
+      ‖scalarH1PiToContinuous g u (x : AddCircle (1 : ℝ)) -
+        scalarH1PiToContinuous g u (y : AddCircle (1 : ℝ))‖ ≤
+        C * ‖u‖ * Real.sqrt |x - y| := by
+  obtain ⟨C, hC, hscalar⟩ := exists_scalarH1ToContinuous_coe_sub_le g
+  refine ⟨C, hC, ?_⟩
+  intro u x y hx hy
+  apply (pi_norm_le_iff_of_nonneg (by positivity)).mpr
+  intro i
+  change |scalarH1ToContinuous g (u i) (x : AddCircle (1 : ℝ)) -
+    scalarH1ToContinuous g (u i) (y : AddCircle (1 : ℝ))| ≤ _
+  exact (hscalar (u i) x y hx hy).trans (mul_le_mul_of_nonneg_right
+    (mul_le_mul_of_nonneg_left (PiLp.norm_apply_le u i) hC) (Real.sqrt_nonneg _))
+
 end AddCircle

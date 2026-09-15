@@ -231,3 +231,49 @@ theorem hasDerivAt_deriv_scalarH1PiToContinuous {ι : Type*} [Fintype ι]
   exact hasDerivAt_deriv_scalarH1ToContinuous g (u i) x
 
 end AddCircle
+
+
+noncomputable section
+open scoped Manifold ContDiff
+
+namespace AddCircle
+
+open DifferentialGeometry
+open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
+open DifferentialGeometry.Analysis.Spectral
+
+private local instance : NeZero (Module.finrank ℝ ℝ) := ⟨by simp⟩
+
+variable {ι : Type*} [Fintype ι]
+
+theorem deriv_deriv_scalarH1PiToContinuous
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ)))
+    (v : PiLp 2 (fun _ : ι => TensorHs g 0 0 (((1 : ℕ) : ℝ) + 2))) (x : ℝ) :
+    deriv (deriv (fun y : ℝ => scalarH1PiToContinuous g
+      (ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion
+        (g := g) (r := 0) (s := 0) (by norm_num : (1 : ℝ) ≤ ((1 : ℕ) : ℝ) + 2)) v)
+      (y : AddCircle (1 : ℝ)))) x =
+      scalarH1PiToContinuous g
+        (ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion
+          (g := g) (r := 0) (s := 0) (by norm_num : (1 : ℝ) ≤ ((1 : ℕ) : ℝ)))
+          (parameterSecondDerivativeHsPi g 1 v))
+        (x : AddCircle (1 : ℝ)) := by
+  let V := ContinuousLinearMap.piLpMap 2 (fun _ : ι =>
+    tensorHsInclusion (g := g) (r := 0) (s := 0)
+      (by norm_num : ((2 : ℕ) : ℝ) + 1 ≤ ((1 : ℕ) : ℝ) + 2)) v
+  have h := (hasDerivAt_deriv_scalarH1PiToContinuous g V x).deriv
+  have hlo : ContinuousLinearMap.piLpMap 2 (fun _ : ι =>
+      tensorHsInclusion (g := g) (r := 0) (s := 0)
+        (by norm_num : (1 : ℝ) ≤ ((2 : ℕ) : ℝ) + 1)) V =
+      ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion
+        (g := g) (r := 0) (s := 0) (by norm_num : (1 : ℝ) ≤ ((1 : ℕ) : ℝ) + 2)) v := by
+    apply PiLp.ext
+    intro i
+    exact (tensorHsInclusion_trans_apply (by norm_num) (by norm_num) (v i)).symm
+  rw [hlo] at h
+  convert h using 1
+  congr 2
+
+end AddCircle
+
+end
