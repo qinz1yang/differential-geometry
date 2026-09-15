@@ -745,3 +745,28 @@ F 车道到此完成（F4.3 球性等 S.5）。若 F6.3 做完仍有余力，先
 - 恢复写共享库的原版 `check-f.ps1` 后**不需要**重检旧模块：整合分支 `origin/codex/moise-integration`（已含本车道 651f6153e 与
   C、S、H、E.0 的全部成果）在整合时已把这些模块的 olean 刷进共享库。请在下一个检查点执行
   `git fetch origin && git merge --no-ff origin/codex/moise-integration`（计划文件冲突两边都保留），然后继续 F6.3。
+
+## 11. 2026-09-15 收尾：F6.3 完成
+
+§10.3 确认的 F 车道范围已闭环。F6.3 的全部源文件与计划更新已在 `codex/moise-smoothing` 提交并推送；
+不继续进入 E、S、P 车道。F4.3 的顶点胞腔球性仍等 S.5；F5.2 保持 partial 并暂停，确切缺口及备选设计见计划行与 §10.3。
+
+最终端点：
+
+- `LocallyFinitePieceTowerExistence.lean`：`exists_locallyFinitePieceTower_of_isOpen`、
+  `isLocallyFinitePolyhedralManifoldWithBoundary_of_isOpen`（`bfd458cdc`）。任意 T2、第二可数、非空 PL 正维流形的开集
+  有有限带边流形片组成的相容塔，上一阶段落入下一内核；内核以实际单纯映射同构嵌入，映射一致，并集恰为开集。
+- `RelativeExhaustion.lean`：`PLPiece.exists_manifold_neighborhood_with_core` 将保留内核的有限图卡扩张和相对流形
+  邻域抽取接成递推步骤；局部性依赖 `RelativeGluing.lean`、`ChartGlue.lean`、`PieceTransport.lean`。
+- `RelativePieceNeighborhood.lean`：`PLPieceIn.exists_manifold_neighborhood_preserving_subcomplex`（`d14f605dd`）
+  保留固定内核的原单形，覆盖指定紧集，并使新内核的闭星像位于新流形片内部。`RelativeMesh.lean` 控制固定闭星外的网格。
+- `LocallyFinitePieceTower.lean`：塔定义、常值紧致特例、紧致捕获和内核映射拼接；
+  `RelativeDerivedNeighborhood.lean`：F4.2-rel、支撑等式与保留原单形的 API。
+
+验证：各次修改均用 §2 脚本逐模块单进程检查，exit=0、零 warning。最终两个修改模块为
+`RelativeExhaustion` 与 `LocallyFinitePieceTowerExistence`；AuditF114 共 83 项，全部仅含
+`propext`、`Classical.choice`、`Quot.sound`，包含最终存在端点及全部 F6.3 检查点接口。
+下一个审计文件是 `.lake/scratch/AuditF115.lean`。未运行 `lake build`，未登记根聚合。
+
+计划 F6.2/F6.3 已记为 done；E.2/E.3 已改为「F6.3 done，待 E 车道」，`Moise352` 的源域谓词已对齐到
+`IsLocallyFinitePolyhedralManifoldWithBoundary`；R9 的表示层阻塞已解除。35.2/36.1 的逼近证明仍未由本车道实现。
