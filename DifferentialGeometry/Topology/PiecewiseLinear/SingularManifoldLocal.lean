@@ -78,7 +78,7 @@ theorem exists_small_isPL_homeomorph_generalPosition_in_chart
     exact hGcross z (hGspace ▸ hz)
 
 open Classical in
-theorem exists_small_isPLOn_doublePointSet_crossing_neighborhood_in_chart
+theorem exists_isOpen_forall_exists_small_isPLOn_crossing_in_chart
     {d : ℕ} {X : Type*} [MetricSpace X] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) X]
     [HasGroupoid X (plGroupoid 3)]
     (K : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin d))) [Finite K.faces]
@@ -88,16 +88,17 @@ theorem exists_small_isPLOn_doublePointSet_crossing_neighborhood_in_chart
     (e : OpenPartialHomeomorph X (EuclideanSpace ℝ (Fin 3)))
     (he : e ∈ (plGroupoid 3).maximalAtlas X)
     {y : X} (hy : y ∈ doublePointSet f K.space) (hye : y ∈ e.source)
-    {V : Set X} (hV : V ∈ 𝓝 y) {ε : ℝ} (hε : 0 < ε) :
-    ∃ (g : EuclideanSpace ℝ (Fin d) → X) (W : Set X)
-      (G : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3))),
-      IsPLOn d 3 g K.space ∧ (∀ x, dist (g x) (f x) < ε) ∧
-        IsLocallyInjective (K.space.domRestrict g) ∧ (∀ z, (K.space ∩ g ⁻¹' {z}).encard ≤ 2) ∧
-        (∀ z ∉ V, g ⁻¹' {z} = f ⁻¹' {z}) ∧ IsOpen W ∧ y ∈ W ∧ closure W ⊆ V ∧ W ⊆ e.source ∧
-        G.faces.Finite ∧ IsCombinatorialManifoldWithBoundary 1 G ∧
-        (∀ z ∈ W, z ∈ doublePointSet g K.space ↔ e z ∈ G.space) ∧
-          ∀ z ∈ W ∩ doublePointSet g K.space,
-            HasPLDoubleCrossingAt (e ∘ g) (K.space ∩ g ⁻¹' e.source) (e z) := by
+    {V : Set X} (hV : V ∈ 𝓝 y) :
+    ∃ W : Set X, IsOpen W ∧ y ∈ W ∧ closure W ⊆ V ∧ W ⊆ e.source ∧
+      ∀ ε : ℝ, 0 < ε → ∃ (g : EuclideanSpace ℝ (Fin d) → X)
+        (G : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3))),
+        IsPLOn d 3 g K.space ∧ (∀ x, dist (g x) (f x) < ε) ∧
+          IsLocallyInjective (K.space.domRestrict g) ∧ (∀ z, (K.space ∩ g ⁻¹' {z}).encard ≤ 2) ∧
+          (∀ z ∉ V, g ⁻¹' {z} = f ⁻¹' {z}) ∧
+          G.faces.Finite ∧ IsCombinatorialManifoldWithBoundary 1 G ∧
+          (∀ z ∈ W, z ∈ doublePointSet g K.space ↔ e z ∈ G.space) ∧
+            ∀ z ∈ W ∩ doublePointSet g K.space,
+              HasPLDoubleCrossingAt (e ∘ g) (K.space ∩ g ⁻¹' e.source) (e z) := by
   have hfc : ContinuousOn f K.space := fun x hx => (hf x hx).continuousWithinAt
   obtain ⟨a, ha, b, hb, hab, hfa, hfb⟩ := hy
   obtain ⟨P, Q, B₀, U, hPQ, hP, hQ, _, hB₀Q, hPB₀, hinjP, _, hU, hyU, hUV, hseam, hinjQ,
@@ -132,8 +133,20 @@ theorem exists_small_isPLOn_doublePointSet_crossing_neighborhood_in_chart
     rintro z ⟨x, hx, rfl⟩
     exact ⟨f x, ⟨hAe hx, hmapsU (Or.inl hx)⟩, rfl⟩
   obtain ⟨η, hη, hηU⟩ := Metric.mem_nhds_iff.mp (hU₁.mem_nhds hyU₁)
+  let W := Metric.ball y (η / 2)
+  have hW : IsOpen W := isOpen_ball
+  have hyW : y ∈ W := mem_ball_self (half_pos hη)
+  have hclWU₁ : closure W ⊆ U₁ := by
+    intro z hz
+    exact hηU ((mem_closedBall.mp (closure_ball_subset_closedBall hz)).trans_lt (half_lt_self hη))
+  have hWU₁ : W ⊆ U₁ := subset_closure.trans hclWU₁
+  have hWe : W ⊆ e.source := fun z hz =>
+    (hUV (subset_closure (hU₁U (subset_closure (hWU₁ hz))))).2
+  refine ⟨W, hW, hyW, ?_, hWe, fun ε hε => ?_⟩
+  · exact fun z hz => (hUV (subset_closure (hU₁U (subset_closure (hclWU₁ hz))))).1
   obtain ⟨h, G, hh, hclose, hfix, hmap, hcoord, hGfinite, hGspace, hGman, hcross⟩ :=
-    exists_small_isPL_homeomorph_generalPosition_in_chart e he M N hMman hNman hU hMU (lt_min hε hη)
+    exists_small_isPL_homeomorph_generalPosition_in_chart e he M N hMman hNman hU hMU
+      (lt_min hε (half_pos hη))
   have hfPQ : IsPLOn d 3 f (P ∪ Q) := by rwa [hPQ]
   have hlocPQ : IsLocallyInjective ((P ∪ Q).domRestrict f) := by rwa [hPQ]
   have hcardPQ : ∀ z, ((P ∪ Q) ∩ f ⁻¹' {z}).encard ≤ 2 := by rwa [hPQ]
@@ -159,13 +172,14 @@ theorem exists_small_isPLOn_doublePointSet_crossing_neighborhood_in_chart
     apply hfB.congr
     intro x hx
     exact congrArg e (hgQ (hBQ hx))
-  let W := U₁ ∩ h.symm ⁻¹' U₁
-  have hW : IsOpen W := hU₁.inter (hU₁.preimage h.symm.continuous)
-  have hyj : h.symm y ∈ U₁ := by
+  have hpre : ∀ z ∈ W, h.symm z ∈ U₁ := by
+    intro z hz
     apply hηU
-    rw [Metric.mem_ball, dist_comm]
-    simpa only [h.apply_symm_apply] using (hclose (h.symm y)).trans_le (min_le_right _ _)
-  have hWe : W ⊆ e.source := fun z hz => (hUV (subset_closure (hU₁U (subset_closure hz.1)))).2
+    have hsmall : dist (h.symm z) z < η / 2 := by
+      simpa only [h.apply_symm_apply, dist_comm] using
+        (hclose (h.symm z)).trans_le (min_le_right _ _)
+    have hdist := (dist_triangle (h.symm z) z y).trans_lt (add_lt_add hsmall hz)
+    rwa [add_halves] at hdist
   have hcover : ∀ z ∈ W, K.space ∩ g ⁻¹' {z} ⊆ A ∪ B := by
     intro z hz x hx
     by_cases hxP : x ∈ P
@@ -173,12 +187,12 @@ theorem exists_small_isPLOn_doublePointSet_crossing_neighborhood_in_chart
         apply h.injective
         rw [h.apply_symm_apply]
         exact (hgP hxP).symm.trans hx.2
-      have hxAB := hinner (h.symm z) (subset_closure (show h.symm z ∈ U₁ from hz.2)) ⟨hx.1, hfx⟩
+      have hxAB := hinner (h.symm z) (subset_closure (hpre z hz)) ⟨hx.1, hfx⟩
       rcases hxAB with hxA | hxB
       · exact Or.inl hxA
       · exact False.elim (Set.disjoint_left.mp hPB₀ hxP (hBB₀ hxB))
     · have hfx : f x = z := (hgOffP hxP).symm.trans hx.2
-      exact Or.inr ((hinner z (subset_closure hz.1) ⟨hx.1, hfx⟩).resolve_left
+      exact Or.inr ((hinner z (subset_closure (hWU₁ hz)) ⟨hx.1, hfx⟩).resolve_left
         (fun hxA => hxP (hAP hxA)))
   let S := K.space ∩ g ⁻¹' e.source
   have hAS : A ⊆ S := fun x hx => ⟨hAK hx, hgAe hx⟩
@@ -203,8 +217,7 @@ theorem exists_small_isPLOn_doublePointSet_crossing_neighborhood_in_chart
     apply mem_doublePointSet_iff_mem_image_inter_of_injOn (e ∘ g) hAS hBS hAB
       hgA.bijOn.injOn hgB.bijOn.injOn
     exact hcovercoord (e z) (e.map_source (hWe hz)) (by rwa [e.left_inv (hWe hz)])
-  refine ⟨g, W, G, hg, ?_, hgloc, hgcard, ?_, hW, ⟨hyU₁, hyj⟩, ?_, hWe,
-    hGfinite, hGman, hGdouble, ?_⟩
+  refine ⟨g, G, hg, ?_, hgloc, hgcard, ?_, hGfinite, hGman, hGdouble, ?_⟩
   · intro x
     by_cases hxP : x ∈ P
     · rw [hgP hxP]
@@ -213,8 +226,6 @@ theorem exists_small_isPLOn_doublePointSet_crossing_neighborhood_in_chart
       exact hε
   · intro z hz
     exact hgfiber z (fun hzU => hz (hUV (subset_closure hzU)).1)
-  · intro z hz
-    exact (hUV (subset_closure (hU₁U ((closure_mono inter_subset_left) hz)))).1
   · intro z hz
     have hgcont : ContinuousOn (e ∘ g) S := e.continuousOn.comp
       (fun x hx => (hg x hx.1).continuousWithinAt.mono inter_subset_left) (fun _ hx => hx.2)
@@ -230,5 +241,31 @@ theorem exists_small_isPLOn_doublePointSet_crossing_neighborhood_in_chart
     filter_upwards [hsym.preimage_mem_nhds hWneigh,
       e.open_target.mem_nhds (e.map_source (hWe hz.1))] with w hw hwt
     exact hcovercoord w hwt hw
+
+theorem exists_small_isPLOn_doublePointSet_crossing_neighborhood_in_chart
+    {d : ℕ} {X : Type*} [MetricSpace X] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) X]
+    [HasGroupoid X (plGroupoid 3)]
+    (K : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin d))) [Finite K.faces]
+    (hK : IsCombinatorialManifoldWithBoundary 2 K) (f : EuclideanSpace ℝ (Fin d) → X)
+    (hf : IsPLOn d 3 f K.space) (hloc : IsLocallyInjective (K.space.domRestrict f))
+    (hcard : ∀ z, (K.space ∩ f ⁻¹' {z}).encard ≤ 2)
+    (e : OpenPartialHomeomorph X (EuclideanSpace ℝ (Fin 3)))
+    (he : e ∈ (plGroupoid 3).maximalAtlas X)
+    {y : X} (hy : y ∈ doublePointSet f K.space) (hye : y ∈ e.source)
+    {V : Set X} (hV : V ∈ 𝓝 y) {ε : ℝ} (hε : 0 < ε) :
+    ∃ (g : EuclideanSpace ℝ (Fin d) → X) (W : Set X)
+      (G : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3))),
+      IsPLOn d 3 g K.space ∧ (∀ x, dist (g x) (f x) < ε) ∧
+        IsLocallyInjective (K.space.domRestrict g) ∧ (∀ z, (K.space ∩ g ⁻¹' {z}).encard ≤ 2) ∧
+        (∀ z ∉ V, g ⁻¹' {z} = f ⁻¹' {z}) ∧ IsOpen W ∧ y ∈ W ∧ closure W ⊆ V ∧ W ⊆ e.source ∧
+        G.faces.Finite ∧ IsCombinatorialManifoldWithBoundary 1 G ∧
+        (∀ z ∈ W, z ∈ doublePointSet g K.space ↔ e z ∈ G.space) ∧
+          ∀ z ∈ W ∩ doublePointSet g K.space,
+            HasPLDoubleCrossingAt (e ∘ g) (K.space ∩ g ⁻¹' e.source) (e z) := by
+  obtain ⟨W, hW, hyW, hWV, hWe, hsmall⟩ :=
+    exists_isOpen_forall_exists_small_isPLOn_crossing_in_chart K hK f hf hloc hcard e he hy hye hV
+  obtain ⟨g, G, hg, hclose, hgloc, hgcard, hfiber, hGfinite, hGman, hGspace, hcross⟩ := hsmall ε hε
+  exact ⟨g, W, G, hg, hclose, hgloc, hgcard, hfiber, hW, hyW, hWV, hWe,
+    hGfinite, hGman, hGspace, hcross⟩
 
 end DifferentialGeometry.Topology.PiecewiseLinear
