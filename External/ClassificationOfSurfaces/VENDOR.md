@@ -425,3 +425,38 @@ and zero warnings. `AuditS15.lean` audits eighteen declarations including the
 new geometric chain, the planar prescribed-triangle theorem, and the existing
 17.4/17.7 endpoints; every closure contains only the three standard axioms,
 audit exit 0.
+
+## Vertex-star coordinates and adapted subdivisions
+
+The native `SimplexCornerChart` module identifies a simplex vertex star with
+its opposite facet by the simplicial map that sends the distinguished vertex
+to the facet centroid and fixes all remaining vertices. This map is affine on
+each original face, is a PL homeomorphism, and fixes the facet boundary.
+Conjugating a boundary-fixing PL self-map of the facet through these coordinates
+now produces an ambient PL homeomorphism preserving the full simplex and
+fixing the complement of its prescribed open neighborhood.
+
+`Mesh` now supplies subdivisions whose entire union of vertex closed stars
+for each face lies in one member of a relative open cover. This lemma works
+in arbitrary real normed spaces. `Subcomplex` preserves any finite family of
+polyhedra while making that subdivision, and `StarSubdivision` specializes
+the cover to the original vertex open stars. Applied to the tetrahedral
+boundary and the given disk, it supplies the adapted triangulation needed in
+Moise 17.5. The earlier chart-cover theorem in `Combinatorial` now uses the
+general lemma and no longer requires its source space to be finite-dimensional.
+
+No vendor Lean source is modified. Five affected modules and both existing
+consumers of the generalized chart-cover theorem pass focused checks with
+exit 0 and zero warnings. One consumer check initially encountered shared
+artifacts from the E3 branch, which places `polyhedralBoundary` in a different
+module. Regenerating `BoundaryInvariance` and `PolyhedralBoundary` from the S
+sources with the prescribed checker restored a consistent import environment;
+both regeneration checks also exit 0. `AuditS16.lean` checks twelve declarations,
+including the new chain and the planar prescribed-triangle endpoint, with only
+the three standard foundational axioms and exit 0.
+
+The remaining gap is the free-triangle operation for a disk in the spherical
+boundary: transfer the local planar deletion through a vertex-star chart,
+prove its effect on the whole disk, and iterate while retaining the prescribed
+triangle. Neither the adapted triangulation nor the chart conjugation alone
+closes the disk-to-facet theorem 17.5 or its consumers 17.6 and 17.8.
