@@ -1,5 +1,6 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.ExhaustionGeneral
 import DifferentialGeometry.Topology.PiecewiseLinear.PieceTransport
+import DifferentialGeometry.Topology.PiecewiseLinear.RelativePieceNeighborhood
 
 open Set Topology
 open scoped Manifold
@@ -141,5 +142,37 @@ theorem PLPiece.exists_neighborhood_preserving_subcomplex {Y : Set X} (T : PLPie
       exact interior_mono (fun y hy => Or.inr (mem_iUnion₂.mpr ⟨i, hi, hy⟩)) hxi
   · refine union_subset hYU (iUnion₂_subset fun i _ => ?_)
     exact (hPU i).trans sdiff_subset
+
+open Classical in
+theorem PLPiece.exists_manifold_neighborhood_with_core {m : ℕ} {X : Type u}
+    [TopologicalSpace X] [ChartedSpace (EuclideanSpace ℝ (Fin (m + 1))) X]
+    [T2Space X] [HasGroupoid X (plGroupoid (m + 1))] {Y : Set X} (T : PLPiece (m + 1) X Y)
+    (B : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin T.ambientDim)))
+    (hB : B.faces ⊆ T.piece.complex.faces)
+    (hBY : T.piece.map '' (regularNeighborhoodIn T.piece.complex B.space).space ⊆ interior Y)
+    {C U : Set X} (hC : IsCompact C) (hU : IsOpen U) (hYU : Y ⊆ U) (hCU : C ⊆ U) :
+    ∃ P : Set X, ∃ T' : PLPiece (m + 1) X P,
+      ∃ L A : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin T'.ambientDim)),
+        ∃ φ : EuclideanSpace ℝ (Fin T.ambientDim) → EuclideanSpace ℝ (Fin T'.ambientDim),
+          ∃ φ' : EuclideanSpace ℝ (Fin T'.ambientDim) → EuclideanSpace ℝ (Fin T.ambientDim),
+            IsCombinatorialManifoldWithBoundary (m + 1) T'.piece.complex ∧ P ⊆ U ∧
+              L.faces ⊆ T'.piece.complex.faces ∧ Y ∪ C ⊆ T'.piece.map '' L.space ∧
+                Y ∪ C ⊆ interior P ∧
+                  T'.piece.map '' (regularNeighborhoodIn T'.piece.complex L.space).space ⊆
+                    interior P ∧ A.faces ⊆ L.faces ∧ IsGlueIso B A φ φ' ∧
+                      ∀ x ∈ B.space, T'.piece.map (simplicialMap B φ x) = T.piece.map x := by
+  obtain ⟨Q, TQ, A, φ, φ', hYQ, hQU, hA, hiso, hmap, hreg⟩ :=
+    T.exists_neighborhood_preserving_subcomplex B hB hBY hC hU hYU hCU
+  have hAQ : TQ.piece.map '' (regularNeighborhoodIn TQ.piece.complex A.space).space ⊆
+      interior Q := hreg.trans (hBY.trans (interior_subset.trans (fun _ hy => hYQ (Or.inl hy))))
+  obtain ⟨P, TP, L, hman, hL, hAL, hcover, hYP, hPQ, hTP, hdeep⟩ :=
+    TQ.piece.exists_manifold_neighborhood_preserving_subcomplex A hA hAQ
+      (T.piece.isCompact.union hC) hYQ
+  refine ⟨P, ⟨TQ.ambientDim, TP⟩, L, A, φ, φ', hman,
+    hPQ.trans (interior_subset.trans hQU), hL, hcover, hYP, hdeep, hAL, hiso, ?_⟩
+  intro x hx
+  change TP.map (simplicialMap B φ x) = T.piece.map x
+  rw [hTP]
+  exact hmap x hx
 
 end DifferentialGeometry.Topology.PiecewiseLinear
