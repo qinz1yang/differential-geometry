@@ -18,13 +18,15 @@ theorem regularNeighborhoodIn_space_subset_of_isSubdivision
     ⟨hu, u, hu, Finset.Subset.refl u, y, htu hyt, hyA⟩
       (htu (convexHull_mono (Finset.coe_subset.mpr hst) hxs))
 
-theorem exists_isSubdivision_extension_of_disjoint
+theorem exists_isSubdivision_extension_of_disjoint_with_face_control
     {K A B : Geometry.SimplicialComplex ℝ E} [Finite K.faces]
     (hA : A.faces ⊆ K.faces) (hB : B.faces ⊆ K.faces) (hAB : Disjoint A.space B.space)
     {B' : Geometry.SimplicialComplex ℝ E} [Finite B'.faces] (hB' : IsSubdivision B' B) :
     ∃ R : Geometry.SimplicialComplex ℝ E, IsSubdivision R K ∧ R.faces.Finite ∧
       A.faces ⊆ R.faces ∧ B'.faces ⊆ R.faces ∧
-        ∀ s ∈ R.faces, (∀ v ∈ s, {v} ∈ B'.faces) → s ∈ B'.faces := by
+        (∀ s ∈ R.faces, (∀ v ∈ s, {v} ∈ B'.faces) → s ∈ B'.faces) ∧
+          ∀ s ∈ R.faces, s ∈ B'.faces ∨ ∃ t ∈ K.faces, t ∉ B.faces ∧
+            convexHull ℝ (s : Set E) ⊆ convexHull ℝ (t : Set E) := by
   classical
   let H := unionComplex A B (fun _ hs _ ht => K.inter_subset_convexHull (hA hs) (hB ht))
   have hAB' : Disjoint A.space B'.space := hB'.space_eq.symm ▸ hAB
@@ -49,15 +51,45 @@ theorem exists_isSubdivision_extension_of_disjoint
   let R := relDerived hHK hH' (centroid_mem_openSimplex_of_mem_faces K)
   have hHR : H'.faces ⊆ R.faces := faces_subset_relDerived _ _ _
   refine ⟨R, relDerived_isSubdivision _ _ _, relDerived_faces_finite _ _ _,
-    fun _ hs => hHR (Or.inl hs), fun _ hs => hHR (Or.inr hs), ?_⟩
-  intro s hs hv
-  have hsH := mem_faces_of_mem_relDerived_of_forall_singleton_mem hHK hH'
-    (centroid_mem_openSimplex_of_mem_faces K) hs (fun v hvs => Or.inr (hv v hvs))
-  rcases hsH with hsA | hsB
-  · obtain ⟨v, hvs⟩ := A.nonempty_of_mem_faces hsA
-    exact (Set.disjoint_left.mp hAB' (A.convexHull_subset_space hsA (subset_convexHull ℝ _ hvs))
-      (B'.convexHull_subset_space (hv v hvs) (subset_convexHull ℝ _ (by simp)))).elim
-  · exact hsB
+    fun _ hs => hHR (Or.inl hs), fun _ hs => hHR (Or.inr hs), ?_, ?_⟩
+  · intro s hs hv
+    have hsH := mem_faces_of_mem_relDerived_of_forall_singleton_mem hHK hH'
+      (centroid_mem_openSimplex_of_mem_faces K) hs (fun v hvs => Or.inr (hv v hvs))
+    rcases hsH with hsA | hsB
+    · obtain ⟨v, hvs⟩ := A.nonempty_of_mem_faces hsA
+      exact (Set.disjoint_left.mp hAB' (A.convexHull_subset_space hsA (subset_convexHull ℝ _ hvs))
+        (B'.convexHull_subset_space (hv v hvs) (subset_convexHull ℝ _ (by simp)))).elim
+    · exact hsB
+  · rintro s ⟨τ, d, h, rfl⟩
+    rcases d.eq_empty_or_nonempty with hd | hd
+    · subst hd
+      rw [Finset.image_empty, Finset.union_empty]
+      rcases h.base with hτ | hτ
+      · have hne := h.nonempty.resolve_right Finset.not_nonempty_empty
+        simp [hτ] at hne
+      · rcases hτ with hτA | hτB
+        · right
+          refine ⟨τ, hA hτA, ?_, Subset.refl _⟩
+          intro hτB
+          obtain ⟨v, hv⟩ := A.nonempty_of_mem_faces hτA
+          exact Set.disjoint_left.mp hAB (A.convexHull_subset_space hτA (subset_convexHull ℝ _ hv))
+            (B.convexHull_subset_space hτB (subset_convexHull ℝ _ hv))
+        · exact Or.inl hτB
+    · obtain ⟨t, ht, htop⟩ := h.flag.exists_top hd
+      exact Or.inr ⟨t, h.flag.mem_faces ht, fun htB => h.notMem t ht (Or.inr htB),
+        convexHull_min (h.points_subset (centroid_mem_openSimplex_of_mem_faces K) ht htop)
+          (convex_convexHull ℝ _)⟩
+
+theorem exists_isSubdivision_extension_of_disjoint
+    {K A B : Geometry.SimplicialComplex ℝ E} [Finite K.faces]
+    (hA : A.faces ⊆ K.faces) (hB : B.faces ⊆ K.faces) (hAB : Disjoint A.space B.space)
+    {B' : Geometry.SimplicialComplex ℝ E} [Finite B'.faces] (hB' : IsSubdivision B' B) :
+    ∃ R : Geometry.SimplicialComplex ℝ E, IsSubdivision R K ∧ R.faces.Finite ∧
+      A.faces ⊆ R.faces ∧ B'.faces ⊆ R.faces ∧
+        ∀ s ∈ R.faces, (∀ v ∈ s, {v} ∈ B'.faces) → s ∈ B'.faces := by
+  obtain ⟨R, hR, hfin, hAR, hB'R, hfull, -⟩ :=
+    exists_isSubdivision_extension_of_disjoint_with_face_control hA hB hAB hB'
+  exact ⟨R, hR, hfin, hAR, hB'R, hfull⟩
 
 theorem subset_restrict_compl_space_of_disjoint_regularNeighborhoodIn
     (K A : Geometry.SimplicialComplex ℝ E) {Q : Set E} (hQK : Q ⊆ K.space)
