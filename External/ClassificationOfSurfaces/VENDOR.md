@@ -349,3 +349,23 @@ exit 0 with zero warnings. `AuditS12.lean` imports the complete S chain together
 and checks 60 distinct declarations; every axiom closure contains only the three
 standard axioms, audit exit 0. Logs: `.lake/scratch/final2-*.log` and
 `.lake/scratch/audit-final2-s.log` in the S worktree.
+
+
+## Prescribed terminal triangle
+
+The native `PlanarSchoenflies.exists_isPLHomeomorphOn_straighten_to_triangle`
+strengthens the existing supported shelling: the terminal triangle is any
+specified triangle of the initial disk triangulation. At each nontrivial step,
+`TriangleMesh.exists_two_geometricallyFreeTriangles_of_polygonalDisk`
+(upstream `PolygonalSchoenflies.lean`, lines 2322 onward) supplies two distinct
+geometrically free triangles, so one can be deleted without deleting the
+specified triangle. The original native straightening theorem is now a
+corollary, with its public signature unchanged. This strengthens the
+triangulated-disk input for Moise 17.5; it does not assert the full relative
+subdisk form of 17.3 or the tetrahedral conclusion of 17.5. No vendor Lean
+source is modified.
+
+The focused `PlanarSchoenflies` check exits 0 with zero warnings. `AuditS13.lean`
+audits the prescribed-triangle endpoint and both ambient straightening
+headlines; all three closures contain only the standard foundational axioms,
+and the audit exits 0.
