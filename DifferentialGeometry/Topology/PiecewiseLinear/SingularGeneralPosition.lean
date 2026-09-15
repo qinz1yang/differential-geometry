@@ -1,5 +1,6 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.GeneralPosition
 import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryInvariance
+import DifferentialGeometry.Topology.PiecewiseLinear.PLHomeomorphOpen
 import DifferentialGeometry.Topology.PiecewiseLinear.StarComplex
 import DifferentialGeometry.Topology.PiecewiseLinear.OpenStar
 import DifferentialGeometry.Topology.PiecewiseLinear.Combinatorial
@@ -3356,5 +3357,123 @@ theorem exists_triangulation_doublePointSet_comp_of_isPLHomeomorphOn {X V : Type
     boundaryComplex_space_of_isPLHomeomorphOn K L hK hLPL, hLPL⟩
   rw [doublePointSet_comp_of_injOn f g P (hg.bijOn.injOn.mono (image_subset_iff.mpr hf)), ← hspace]
   exact hLspace
+
+open Classical in
+theorem HasPLCrossingAt.image_openPartialHomeomorph [FiniteDimensional ℝ E]
+    {A B : Set E} {x : E} (hAB : HasPLCrossingAt A B x) (e : OpenPartialHomeomorph E E)
+    (he : IsPiecewiseAffineOn e e.source) (hx : x ∈ e.source) :
+    HasPLCrossingAt (e '' (e.source ∩ A)) (e '' (e.source ∩ B)) (e x) := by
+  obtain ⟨U, V, h, P, Q, α, β, hU, hV, hxU, hh, hhx, hP, hQ, hI, hsup, hα, hβ, hzero, hlocal⟩ := hAB
+  let c := hh.toOpenPartialHomeomorph hU hV
+  let d := e.symm.trans c
+  have hdPL : IsPiecewiseAffineOn d d.source := hh.isPiecewiseAffineOn.comp he.symm
+  have hxd : e x ∈ d.source := ⟨e.map_source hx, by change e.symm (e x) ∈ U; rwa [e.left_inv hx]⟩
+  have hdx : d (e x) = 0 := by
+    change h (e.symm (e x)) = 0
+    rwa [e.left_inv hx]
+  have htend : Filter.Tendsto e.symm (𝓝 (e x)) (𝓝 x) := by
+    simpa only [ContinuousAt, e.left_inv hx] using he.symm.continuousAt e.open_target (e.map_source hx)
+  refine ⟨d.source, d.target, d, P, Q, α, β, d.open_source, d.open_target, hxd,
+    isPLHomeomorphOn_openPartialHomeomorph d hdPL, hdx, hP, hQ, hI, hsup, hα, hβ, hzero, ?_⟩
+  filter_upwards [htend.eventually hlocal, e.open_target.mem_nhds (e.map_source hx)] with y hy hyTarget
+  simp only [e.image_source_inter_eq', mem_inter_iff, mem_preimage, hyTarget, true_and]
+  exact hy
+
+open Classical in
+theorem HasPLBoundaryCrossingAt.image_openPartialHomeomorph [FiniteDimensional ℝ E]
+    {M A B : Set E} {x : E} (hAB : HasPLBoundaryCrossingAt M A B x) (e : OpenPartialHomeomorph E E)
+    (he : IsPiecewiseAffineOn e e.source) (hx : x ∈ e.source) :
+    HasPLBoundaryCrossingAt (e '' (e.source ∩ M)) (e '' (e.source ∩ A)) (e '' (e.source ∩ B)) (e x) := by
+  obtain ⟨U, V, h, P, Q, ℓ, hU, hV, hxU, hh, hhx, hP, hQ, hI, hsup, hinward, hlocal⟩ := hAB
+  let c := hh.toOpenPartialHomeomorph hU hV
+  let d := e.symm.trans c
+  have hdPL : IsPiecewiseAffineOn d d.source := hh.isPiecewiseAffineOn.comp he.symm
+  have hxd : e x ∈ d.source := ⟨e.map_source hx, by change e.symm (e x) ∈ U; rwa [e.left_inv hx]⟩
+  have hdx : d (e x) = 0 := by
+    change h (e.symm (e x)) = 0
+    rwa [e.left_inv hx]
+  have htend : Filter.Tendsto e.symm (𝓝 (e x)) (𝓝 x) := by
+    simpa only [ContinuousAt, e.left_inv hx] using he.symm.continuousAt e.open_target (e.map_source hx)
+  refine ⟨d.source, d.target, d, P, Q, ℓ, d.open_source, d.open_target, hxd,
+    isPLHomeomorphOn_openPartialHomeomorph d hdPL, hdx, hP, hQ, hI, hsup, hinward, ?_⟩
+  filter_upwards [htend.eventually hlocal, e.open_target.mem_nhds (e.map_source hx)] with y hy hyTarget
+  simp only [e.image_source_inter_eq', mem_inter_iff, mem_preimage, hyTarget, true_and]
+  exact hy
+
+open Classical in
+theorem HasPLDoubleCrossingAt.postcomp_openPartialHomeomorph [FiniteDimensional ℝ E]
+    [FiniteDimensional ℝ F] {f : E → F} {P : Set E} {y : F} (hD : HasPLDoubleCrossingAt f P y)
+    (e : OpenPartialHomeomorph F F) (he : IsPiecewiseAffineOn e e.source) (hf : MapsTo f P e.source) :
+    HasPLDoubleCrossingAt (e ∘ f) P (e y) := by
+  obtain ⟨a, b, A, B, ha, hb, hfa, hfb, hAP, hBP, hdis, hA, hB, hfA, hfB, hcross, hcover⟩ := hD
+  have himageA : f '' A ⊆ e.source := by
+    rintro z ⟨x, hx, rfl⟩
+    exact hf (hAP hx)
+  have himageB : f '' B ⊆ e.source := by
+    rintro z ⟨x, hx, rfl⟩
+    exact hf (hBP hx)
+  have hye : y ∈ e.source := hfa ▸ hf (hAP ha)
+  have hcross' := hcross.image_openPartialHomeomorph e he hye
+  rw [inter_eq_right.mpr himageA, inter_eq_right.mpr himageB] at hcross'
+  have htend : Filter.Tendsto e.symm (𝓝 (e y)) (𝓝 y) := by
+    simpa only [ContinuousAt, e.left_inv hye] using he.symm.continuousAt e.open_target (e.map_source hye)
+  refine ⟨a, b, A, B, ha, hb, congrArg e hfa, congrArg e hfb, hAP, hBP, hdis, hA, hB, ?_, ?_, ?_, ?_⟩
+  · simpa only [image_image, Function.comp_def] using hfA.postcomp_openPartialHomeomorph e he himageA
+  · simpa only [image_image, Function.comp_def] using hfB.postcomp_openPartialHomeomorph e he himageB
+  · simpa only [image_image, Function.comp_def] using hcross'
+  · filter_upwards [htend.eventually hcover, e.open_target.mem_nhds (e.map_source hye)] with z hz hzT
+    rintro x ⟨hxP, hxz⟩
+    apply hz
+    refine ⟨hxP, ?_⟩
+    change f x = e.symm z
+    have heq : e (f x) = z := hxz
+    exact e.injOn (hf hxP) (e.map_target hzT) (heq.trans (e.right_inv hzT).symm)
+
+open Classical in
+theorem HasPLBoundaryDoubleCrossingAt.postcomp_openPartialHomeomorph [FiniteDimensional ℝ E]
+    [FiniteDimensional ℝ F] {f : E → F} {P : Set E} {M : Set F} {y : F}
+    (hD : HasPLBoundaryDoubleCrossingAt f P M y) (e : OpenPartialHomeomorph F F)
+    (he : IsPiecewiseAffineOn e e.source) (hf : MapsTo f P e.source) :
+    HasPLBoundaryDoubleCrossingAt (e ∘ f) P (e '' (e.source ∩ M)) (e y) := by
+  obtain ⟨a, b, A, B, ha, hb, hfa, hfb, hAP, hBP, hdis, hA, hB, hfA, hfB, hcross, hcover⟩ := hD
+  have himageA : f '' A ⊆ e.source := by
+    rintro z ⟨x, hx, rfl⟩
+    exact hf (hAP hx)
+  have himageB : f '' B ⊆ e.source := by
+    rintro z ⟨x, hx, rfl⟩
+    exact hf (hBP hx)
+  have hye : y ∈ e.source := hfa ▸ hf (hAP ha)
+  have hcross' := hcross.image_openPartialHomeomorph e he hye
+  rw [inter_eq_right.mpr himageA, inter_eq_right.mpr himageB] at hcross'
+  have htend : Filter.Tendsto e.symm (𝓝 (e y)) (𝓝 y) := by
+    simpa only [ContinuousAt, e.left_inv hye] using he.symm.continuousAt e.open_target (e.map_source hye)
+  refine ⟨a, b, A, B, ha, hb, congrArg e hfa, congrArg e hfb, hAP, hBP, hdis, hA, hB, ?_, ?_, ?_, ?_⟩
+  · simpa only [image_image, Function.comp_def] using hfA.postcomp_openPartialHomeomorph e he himageA
+  · simpa only [image_image, Function.comp_def] using hfB.postcomp_openPartialHomeomorph e he himageB
+  · simpa only [image_image, Function.comp_def] using hcross'
+  · filter_upwards [htend.eventually hcover, e.open_target.mem_nhds (e.map_source hye)] with z hz hzT
+    rintro x ⟨hxP, hxz⟩
+    apply hz
+    refine ⟨hxP, ?_⟩
+    change f x = e.symm z
+    have heq : e (f x) = z := hxz
+    exact e.injOn (hf hxP) (e.map_target hzT) (heq.trans (e.right_inv hzT).symm)
+
+theorem HasPLBoundaryCrossingAt.congr {M A B M' A' B' : Set E} {x : E}
+    (hAB : HasPLBoundaryCrossingAt M A B x) (hM : ∀ᶠ y in 𝓝 x, y ∈ M ↔ y ∈ M')
+    (hA : ∀ᶠ y in 𝓝 x, y ∈ A ↔ y ∈ A') (hB : ∀ᶠ y in 𝓝 x, y ∈ B ↔ y ∈ B') :
+    HasPLBoundaryCrossingAt M' A' B' x := by
+  obtain ⟨U, V, h, P, Q, ℓ, hU, hV, hxU, hh, hhx, hP, hQ, hI, hsup, hinward, hlocal⟩ := hAB
+  refine ⟨U, V, h, P, Q, ℓ, hU, hV, hxU, hh, hhx, hP, hQ, hI, hsup, hinward, ?_⟩
+  filter_upwards [hlocal, hM, hA, hB] with y hy hyM hyA hyB
+  exact ⟨hyM.symm.trans hy.1, hyA.symm.trans hy.2.1, hyB.symm.trans hy.2.2⟩
+
+theorem HasPLBoundaryDoubleCrossingAt.congr_target {f : E → F} {P : Set E} {M M' : Set F} {y : F}
+    (hD : HasPLBoundaryDoubleCrossingAt f P M y) (hM : ∀ᶠ z in 𝓝 y, z ∈ M ↔ z ∈ M') :
+    HasPLBoundaryDoubleCrossingAt f P M' y := by
+  obtain ⟨a, b, A, B, ha, hb, hfa, hfb, hAP, hBP, hdis, hA, hB, hfA, hfB, hcross, hcover⟩ := hD
+  refine ⟨a, b, A, B, ha, hb, hfa, hfb, hAP, hBP, hdis, hA, hB, hfA, hfB, ?_, hcover⟩
+  exact hcross.congr hM (Filter.Eventually.of_forall fun _ => Iff.rfl)
+    (Filter.Eventually.of_forall fun _ => Iff.rfl)
 
 end DifferentialGeometry.Topology.PiecewiseLinear
