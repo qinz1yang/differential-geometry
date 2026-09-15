@@ -521,7 +521,7 @@ private theorem sliceMDiff (c : CurveMap M) (hc : c.SmoothOn (I := I) (Icc s u))
   (contMDiffOn_univ.mp (c.space_slice_contMDiffOn (Icc s u) hc v hv)).mdifferentiableAt
     (by norm_num)
 
-omit [SigmaCompactSpace M] in
+omit [SigmaCompactSpace M] hBoundary in
 private theorem curvatureSq_add_period (B : RicciBackground (I := I) (M := M) D a b)
     (_hwindow : Icc s u ⊆ Icc a b) (c : CurveMap M)
     (hc : c.IsSolutionOn B.family.metric (Icc s u)) (v : ℝ) (hv : v ∈ Icc s u) (x : ℝ) :
@@ -548,7 +548,7 @@ private theorem curvatureSq_add_period (B : RicciBackground (I := I) (M := M) D 
       (c.curvatureVector B.family.metric x v) (c.curvatureVector B.family.metric x v)
   rw [hH, hl]
 
-omit [SigmaCompactSpace M] in
+omit hBoundary [SigmaCompactSpace M] in
 private theorem regularizedCurvature_add_period (B : RicciBackground (I := I) (M := M) D a b)
     (hwindow : Icc s u ⊆ Icc a b) (c : CurveMap M)
     (hc : c.IsSolutionOn B.family.metric (Icc s u)) (ε : ℝ) (v : ℝ) (hv : v ∈ Icc s u)

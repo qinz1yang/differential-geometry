@@ -20,6 +20,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 
 variable [FiniteDimensional ℝ E] [IsManifold I ∞ M] [I.Boundaryless]
 
+omit [I.Boundaryless] in
 theorem IsGeometricSolutionOn.tangent_periodic {g : ℝ → SmoothRiemannianMetric I M}
     {c : CurveMap M} {J : Set ℝ} {α : ℝ → ℝ → ℝ}
     (hc : c.IsGeometricSolutionOn g J α) {t : ℝ} (ht : t ∈ J) :
@@ -37,6 +38,7 @@ theorem IsGeometricSolutionOn.tangent_periodic {g : ℝ → SmoothRiemannianMetr
     c.curvatureVector g x t + α (x + 1) t • c.unitTangent g x t at h
   exact (add_left_cancel h).symm
 
+omit [I.Boundaryless] in
 theorem IsGeometricSolutionOn.neg_tangent_div_speed_periodic
     {g : ℝ → SmoothRiemannianMetric I M} {c : CurveMap M} {J : Set ℝ}
     {α : ℝ → ℝ → ℝ} (hc : c.IsGeometricSolutionOn g J α) {t : ℝ} (ht : t ∈ J) :
@@ -64,6 +66,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   {I : ModelWithCorners ℝ E H} [I.Boundaryless]
   {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 
+omit [I.Boundaryless] in
 theorem CurveMap.IsGeometricSolutionOn.exists_reparametrization_isSolutionOn
     {D : RealTimeInterval} {g : ℝ → SmoothRiemannianMetric I M}
     (hG : MetricFamilySmoothOn (I := I) (M := M) D g)
@@ -126,6 +129,7 @@ theorem CurveMap.IsGeometricSolutionOn.exists_reparametrization_isSolutionOn
   rw [hgval] at ho
   exact AddCircle.hasDerivWithinAt_of_local_lift ht (uniqueDiffOn_Icc hab t ht) hls htime ho
 
+omit [I.Boundaryless] in
 theorem geometric_solution_gauge_normalization
     {D : RealTimeInterval} {a b : ℝ}
     (B : SmoothMetricWindow (I := I) (M := M) D a b) :

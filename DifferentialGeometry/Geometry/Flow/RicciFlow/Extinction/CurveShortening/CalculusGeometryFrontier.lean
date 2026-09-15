@@ -81,20 +81,14 @@ def hasAmbientGaussEquation {m : ℕ} (U : TopologicalSpace.Opens (EuclideanSpac
       g.inner (F x) (secondFundamentalFormAmbientAt h g (fun y : U => F y) x X Z)
         (secondFundamentalFormAmbientAt h g (fun y : U => F y) x Y W)
 
-def immersionSecondFundamental_eq_secondFundamentalFormAmbientAt {m : ℕ}
-    (U : TopologicalSpace.Opens (EuclideanSpace ℝ (Fin m)))
-    (F : EuclideanSpace ℝ (Fin m) → M) (g : SmoothRiemannianMetric I M)
-    (h : SmoothRiemannianMetric 𝓘(ℝ, EuclideanSpace ℝ (Fin m)) U) : Prop :=
-  ∀ (x : U) (X Y : EuclideanSpace ℝ (Fin m)),
-    immersionSecondFundamental U F g h x X Y =
-      secondFundamentalFormAmbientAt h g (fun y : U => F y) x X Y
-
 theorem local_immersion_gauss_of_hasAmbientGaussEquation
     {m : ℕ} (U : TopologicalSpace.Opens (EuclideanSpace ℝ (Fin m)))
     (F : EuclideanSpace ℝ (Fin m) → M) (g : SmoothRiemannianMetric I M)
     (h : SmoothRiemannianMetric 𝓘(ℝ, EuclideanSpace ℝ (Fin m)) U)
     (hgauss : hasAmbientGaussEquation U F g h)
-    (hdef : immersionSecondFundamental_eq_secondFundamentalFormAmbientAt U F g h)
+    (hdef : ∀ (x : U) (X Y : EuclideanSpace ℝ (Fin m)),
+      immersionSecondFundamental U F g h x X Y =
+        secondFundamentalFormAmbientAt h g (fun y : U => F y) x X Y)
     (x : U) (X Y Z W : EuclideanSpace ℝ (Fin m)) :
     metricRm04StandardAt h x X Y Z W =
       metricRm04StandardAt g (F x)
@@ -119,7 +113,9 @@ theorem local_immersion_gauss_of_hasGaussEquation
     (h : SmoothRiemannianMetric 𝓘(ℝ, EuclideanSpace ℝ (Fin m)) U)
     (himmersion : IsRiemannianIsometricImmersion h g (fun y : U => F y))
     (hgauss : himmersion.hasGaussEquation)
-    (hdef : immersionSecondFundamental_eq_secondFundamentalFormAmbientAt U F g h)
+    (hdef : ∀ (x : U) (X Y : EuclideanSpace ℝ (Fin m)),
+      immersionSecondFundamental U F g h x X Y =
+        secondFundamentalFormAmbientAt h g (fun y : U => F y) x X Y)
     (x : U) (X Y Z W : EuclideanSpace ℝ (Fin m)) :
     metricRm04StandardAt h x X Y Z W =
       metricRm04StandardAt g (F x)

@@ -4996,7 +4996,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.C
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ConformalAreaDensity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Connection
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Continuation
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ContinuationCalculusReduction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ContinuationFrontier
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ContinuationReduction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ContractibleLoopPerturbation
@@ -10330,3 +10329,6 @@ import DifferentialGeometry.Analysis.Calculus.DiskTraceApproximation
 import DifferentialGeometry.Bundle.TangentMap
 import DifferentialGeometry.Geometry.Measure.Area.PullbackDensity
 import DifferentialGeometry.Geometry.Measure.Area.Convergence
+import DifferentialGeometry.Geometry.Connection.ConnectionForm.Curvature
+import DifferentialGeometry.Geometry.Submanifold.Gauss
+import DifferentialGeometry.Geometry.Submanifold.SecondFundamentalForm.OpenImmersion

@@ -1,3 +1,5 @@
+import DifferentialGeometry.Geometry.Submanifold.Gauss
+import DifferentialGeometry.Geometry.Submanifold.SecondFundamentalForm.OpenImmersion
 import DifferentialGeometry.Analysis.Calculus.Sard
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.Derivative.CovariantDerivativeAlong
 import DifferentialGeometry.Geometry.Curvature.Metric.Defs
@@ -76,7 +78,7 @@ private theorem surjective_of_comp_continuousLinearEquiv {E₁ E₂ G : Type*}
   exact Function.Surjective.of_comp (f := ⇑(fderiv ℝ f x)) (g := ⇑e) h
 
 private theorem volume_image_not_surjective_fderiv_eq_zero {E : Type*} [NormedAddCommGroup E]
-    [NormedSpace ℝ E] [FiniteDimensional ℝ E] [CompleteSpace E]
+    [NormedSpace ℝ E] [FiniteDimensional ℝ E]
     (n : ℕ) {F : E → EuclideanSpace ℝ (Fin n)} {U : Set E} (hU : IsOpen U)
     (hF : ContDiffOn ℝ ∞ F U) :
     volume (F '' {x | x ∈ U ∧ ¬Function.Surjective (fderiv ℝ F x)}) = 0 := by
@@ -107,24 +109,10 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 
-def immersionSecondFundamental {m : ℕ} (U : TopologicalSpace.Opens (EuclideanSpace ℝ (Fin m)))
-    (F : EuclideanSpace ℝ (Fin m) → M)
-    (g : SmoothRiemannianMetric I M)
-    (h : SmoothRiemannianMetric 𝓘(ℝ, EuclideanSpace ℝ (Fin m)) U)
-    (x : U) (X Y : EuclideanSpace ℝ (Fin m)) : TangentSpace I (F x) := by
-  have a : TangentSpace I (F x) := by
-    simpa only [zero_smul, add_zero] using
-      covDerivAlong g (fun t : ℝ => F ((x : EuclideanSpace ℝ (Fin m)) + t • X))
-        (fun t => mfderiv 𝓘(ℝ, EuclideanSpace ℝ (Fin m)) I F
-          ((x : EuclideanSpace ℝ (Fin m)) + t • X) Y) 0
-  exact a - mfderiv 𝓘(ℝ, EuclideanSpace ℝ (Fin m)) I F x
-    ((metricCov h) (fun _ : U => Y) x X)
-
 theorem local_immersion_gauss [I.Boundaryless] [T2Space M]
     {m : ℕ} (U : TopologicalSpace.Opens (EuclideanSpace ℝ (Fin m)))
     (F : EuclideanSpace ℝ (Fin m) → M)
     (hF : ContMDiffOn 𝓘(ℝ, EuclideanSpace ℝ (Fin m)) I ∞ F U)
-    (himm : ∀ x ∈ U, Function.Injective (mfderiv 𝓘(ℝ, EuclideanSpace ℝ (Fin m)) I F x))
     (g : SmoothRiemannianMetric I M)
     (h : SmoothRiemannianMetric 𝓘(ℝ, EuclideanSpace ℝ (Fin m)) U)
     (hinduced : ∀ (x : U) (X Y : EuclideanSpace ℝ (Fin m)),
@@ -142,7 +130,21 @@ theorem local_immersion_gauss [I.Boundaryless] [T2Space M]
         (immersionSecondFundamental U F g h x Y Z) -
       g.inner (F x) (immersionSecondFundamental U F g h x X Z)
         (immersionSecondFundamental U F g h x Y W) := by
-  sorry
+  have hrestriction : ContMDiff 𝓘(ℝ, EuclideanSpace ℝ (Fin m)) I ∞ (fun y : U => F y) :=
+    fun y => (hF.contMDiffAt (U.2.mem_nhds y.2)).comp y
+      (contMDiff_subtype_val (I := 𝓘(ℝ, EuclideanSpace ℝ (Fin m))) (U := U)).contMDiffAt
+  have hm : ∀ (y : U) (u v : EuclideanSpace ℝ (Fin m)),
+      g.inner (F y) (mfderiv 𝓘(ℝ, EuclideanSpace ℝ (Fin m)) I (fun z : U => F z) y u)
+        (mfderiv 𝓘(ℝ, EuclideanSpace ℝ (Fin m)) I (fun z : U => F z) y v) = h.inner y u v := by
+    intro y u v
+    rw [DifferentialGeometry.mfderiv_restrict_open F U y]
+    exact (hinduced y u v).symm
+  have hg := DifferentialGeometry.Geometry.gauss_equation_of_inner_map hrestriction hm x X Y Z W
+  rw [DifferentialGeometry.mfderiv_restrict_open F U x] at hg
+  have hII := immersionSecondFundamental_eq_secondFundamentalFormAmbientAt_of_contMDiffOn U F hF g h
+  rw [hII x X W, hII x Y Z, hII x X Z, hII x Y W]
+  exact hg
+
 
 private theorem surjective_mfderiv_congr_point
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -236,12 +238,12 @@ private theorem not_surjective_fderiv_chartRep
 
 theorem smooth_manifold_critical_values_null_in_chart
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-    [FiniteDimensional ℝ E] [CompleteSpace E]
+    [FiniteDimensional ℝ E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
     [SecondCountableTopology M]
     {n : ℕ} {H' : Type*} [TopologicalSpace H']
-    {J : ModelWithCorners ℝ (EuclideanSpace ℝ (Fin n)) H'} [J.Boundaryless]
+    {J : ModelWithCorners ℝ (EuclideanSpace ℝ (Fin n)) H'}
     {N : Type*} [TopologicalSpace N] [ChartedSpace H' N] [IsManifold J ∞ N]
     (F : M → N) (S : Set M) (hS : IsOpen S) (hF : ContMDiffOn I J ∞ F S)
     (q : N) :
@@ -586,7 +588,7 @@ theorem unitTangent_add_period (g : ℝ → SmoothRiemannianMetric I M) (c : Cur
   rfl
 
 omit [CompleteSpace E] in
-theorem Dx_add_period [I.Boundaryless] (g : ℝ → SmoothRiemannianMetric I M)
+theorem Dx_add_period (g : ℝ → SmoothRiemannianMetric I M)
     (c : CurveMap M) (t x : ℝ) (V : c.Field (I := I))
     (hVper : Function.Periodic (fun y => V y t) 1)
     (hVsmooth : ContMDiff 𝓘(ℝ, ℝ) I.tangent ∞
@@ -616,7 +618,7 @@ private theorem slice_mdifferentiableAt (c : CurveMap M) (J : Set ℝ) (hc : c.S
   (slice_space_smooth c J hc t ht).mdifferentiableAt (by norm_num)
 
 omit [CompleteSpace E] in
-private theorem curvatureSq_add_period [I.Boundaryless] (g : ℝ → SmoothRiemannianMetric I M)
+private theorem curvatureSq_add_period (g : ℝ → SmoothRiemannianMetric I M)
     (c : CurveMap M) (J : Set ℝ) (hc : c.SmoothOn (I := I) J) (hi : c.ImmersedOn (I := I) J)
     (t : ℝ) (ht : t ∈ J) (x : ℝ) :
     c.curvatureSq g (x + 1) t = c.curvatureSq g x t := by
@@ -639,7 +641,7 @@ private theorem curvatureSq_add_period [I.Boundaryless] (g : ℝ → SmoothRiema
   rw [hH, hl]
 
 omit [CompleteSpace E] in
-theorem curvatureSq_speed_periodic [I.Boundaryless] (g : ℝ → SmoothRiemannianMetric I M)
+theorem curvatureSq_speed_periodic (g : ℝ → SmoothRiemannianMetric I M)
     (c : CurveMap M) (J : Set ℝ) (hc : c.SmoothOn (I := I) J) (hi : c.ImmersedOn (I := I) J)
     (t : ℝ) (ht : t ∈ J) :
     Function.Periodic (fun x => c.curvatureSq g x t * c.speed g x t) 1 :=

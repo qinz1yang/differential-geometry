@@ -21,6 +21,7 @@ theorem velocity_add_period (c : CurveMap M) (J : Set ℝ) (t x : ℝ) :
 
 variable [FiniteDimensional ℝ E] [IsManifold I ∞ M] [I.Boundaryless]
 
+omit [I.Boundaryless] in
 theorem curvatureVector_add_period (g : ℝ → SmoothRiemannianMetric I M)
     (c : CurveMap M) (J : Set ℝ) (hc : c.SmoothOn (I := I) J)
     (hi : c.ImmersedOn (I := I) J) (t : ℝ) (ht : t ∈ J) (x : ℝ) :
