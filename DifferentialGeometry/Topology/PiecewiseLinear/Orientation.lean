@@ -4,6 +4,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.GeneralPosition
 import DifferentialGeometry.Topology.PiecewiseLinear.StellarSphere
 import DifferentialGeometry.Topology.SimplicialComplex.Incidence
 import DifferentialGeometry.Topology.SphereSeparation.PermutationDeletion
+import Mathlib.Combinatorics.SimpleGraph.Connectivity.Connected
 import Mathlib.Data.Fin.SuccPredOrder
 import Mathlib.Data.Prod.Lex
 import Mathlib.Data.Sum.Order
@@ -7193,6 +7194,23 @@ theorem sign_cycleIcc_orderPosition_mul_simplexBoundaryCoefficient
   rw [← hp, ← pow_add, Nat.sub_add_cancel hpLe]
 
 open Classical in
+theorem CoherentOrientation.pair_cancel_of_faceCofaces_eq
+    [AddCommGroup E] [Module ℝ E]
+    {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces] {n : ℕ}
+    (o : CoherentOrientation n K) {t s p : Finset E}
+    (htK : t ∈ K.faces) (ht : t.card = n) (hsp : s ≠ p)
+    (hpair : faceCofaces K t (n + 1) = {s, p}) :
+    o.sign s * simplexBoundaryCoefficient o.vertexOrder s t +
+      o.sign p * simplexBoundaryCoefficient o.vertexOrder p t = 0 := by
+  have hnotone : (faceCofaces K t (n + 1)).card ≠ 1 := by
+    rw [hpair]
+    simp [hsp]
+  have hzero := o.coherent t htK ht hnotone
+  rw [orientedBoundary_eq_sum_faceCofaces, hpair] at hzero
+  simpa only [Finset.sum_insert, Finset.sum_singleton, Finset.mem_singleton,
+    hsp, not_false_eq_true] using hzero
+
+open Classical in
 theorem CoherentOrientation.sign_add_eq_zero_of_faceCofaces_eq_pair
     [AddCommGroup E] [Module ℝ E]
     {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces] {n : ℕ}
@@ -7211,14 +7229,7 @@ theorem CoherentOrientation.sign_add_eq_zero_of_faceCofaces_eq_pair
     apply (Finset.eq_of_subset_of_card_le hpairSub ?_).symm
     rw [htwo]
     simp [hsp]
-  have hnotone : (faceCofaces K t ((n + 1) + 1)).card ≠ 1 := by
-    rw [show (n + 1) + 1 = n + 2 by omega, hcofaces]
-    simp [hsp]
-  have hzero := o.coherent t htK ht hnotone
-  rw [orientedBoundary_eq_sum_faceCofaces,
-    show (n + 1) + 1 = n + 2 by omega, hcofaces] at hzero
-  simp only [Finset.sum_insert, Finset.sum_singleton, Finset.mem_singleton,
-    hsp, not_false_eq_true] at hzero
+  have hzero := o.pair_cancel_of_faceCofaces_eq htK ht hsp hcofaces
   rw [hsCoefficient, hpCoefficient, mul_one, mul_one] at hzero
   exact hzero
 
@@ -7458,5 +7469,118 @@ theorem isOrientable_barycentricSubdivision_iff
   | zero => exact iff_of_true (isOrientable_zero _) (isOrientable_zero _)
   | succ n =>
     exact ⟨IsOrientable.of_barycentricSubdivision hK, fun h => h.barycentricSubdivision hK⟩
+
+def dualGraph [AddCommGroup E] [Module ℝ E]
+    (n : ℕ) (K : Geometry.SimplicialComplex ℝ E) :
+    SimpleGraph {s : Finset E // s ∈ K.faces ∧ s.card = n + 1} where
+  Adj s t := s ≠ t ∧ ∃ f ∈ K.faces, f.card = n ∧ f ⊆ s.1 ∧ f ⊆ t.1
+  symm := ⟨by
+    rintro s t ⟨hne, f, hf, hcard, hfs, hft⟩
+    exact ⟨hne.symm, f, hf, hcard, hft, hfs⟩⟩
+  loopless := ⟨by
+    intro s h
+    exact h.1 rfl⟩
+
+open Classical in
+theorem CoherentOrientation.sign_mul_sign_eq_of_dualGraph_adj
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces] {n : ℕ}
+    (hK : IsCombinatorialManifoldWithBoundary n K)
+    (o o' : CoherentOrientation n K) (horder : o'.vertexOrder = o.vertexOrder)
+    {s t : {s : Finset E // s ∈ K.faces ∧ s.card = n + 1}}
+    (hadj : (dualGraph n K).Adj s t) :
+    o.sign s.1 * o'.sign s.1 = o.sign t.1 * o'.sign t.1 := by
+  obtain ⟨hne, f, hf, hcard, hfs, hft⟩ := hadj
+  have hst : s.1 ≠ t.1 := fun h => hne (Subtype.ext h)
+  cases n with
+  | zero =>
+    exact ((K.nonempty_of_mem_faces hf).ne_empty (Finset.card_eq_zero.mp hcard)).elim
+  | succ n =>
+    have hsco : s.1 ∈ faceCofaces K f (n + 2) :=
+      (mem_faceCofaces K).mpr ⟨s.2.1, s.2.2, hfs⟩
+    have htco : t.1 ∈ faceCofaces K f (n + 2) :=
+      (mem_faceCofaces K).mpr ⟨t.2.1, t.2.2, hft⟩
+    have hsub : ({s.1, t.1} : Finset (Finset E)) ⊆ faceCofaces K f (n + 2) := by
+      simp only [Finset.insert_subset_iff, Finset.singleton_subset_iff]
+      exact ⟨hsco, htco⟩
+    have hcardge : 2 ≤ (faceCofaces K f (n + 2)).card := by
+      simpa only [Finset.card_pair hst] using Finset.card_le_card hsub
+    have htwo : (faceCofaces K f (n + 2)).card = 2 :=
+      (hK.card_faceCofaces_eq_one_or_two K hf hcard).resolve_left (by omega)
+    have hpair : faceCofaces K f (n + 2) = {s.1, t.1} := by
+      apply (Finset.eq_of_subset_of_card_le hsub ?_).symm
+      rw [htwo, Finset.card_pair hst]
+    have hcancel := o.pair_cancel_of_faceCofaces_eq hf hcard hst hpair
+    have hcancel' := o'.pair_cancel_of_faceCofaces_eq hf hcard hst hpair
+    rw [horder] at hcancel'
+    have hcs : simplexBoundaryCoefficient o.vertexOrder s.1 f *
+        simplexBoundaryCoefficient o.vertexOrder s.1 f = 1 := by
+      rcases simplexBoundaryCoefficient_eq_one_or_neg_one o.vertexOrder hfs
+        (by rw [hcard, s.2.2]) with h | h <;> rw [h] <;> norm_num
+    have hct : simplexBoundaryCoefficient o.vertexOrder t.1 f *
+        simplexBoundaryCoefficient o.vertexOrder t.1 f = 1 := by
+      rcases simplexBoundaryCoefficient_eq_one_or_neg_one o.vertexOrder hft
+        (by rw [hcard, t.2.2]) with h | h <;> rw [h] <;> norm_num
+    calc
+      o.sign s.1 * o'.sign s.1 =
+          (o.sign s.1 * simplexBoundaryCoefficient o.vertexOrder s.1 f) *
+            (o'.sign s.1 * simplexBoundaryCoefficient o.vertexOrder s.1 f) := by
+        rw [mul_mul_mul_comm, hcs, mul_one]
+      _ = (o.sign t.1 * simplexBoundaryCoefficient o.vertexOrder t.1 f) *
+            (o'.sign t.1 * simplexBoundaryCoefficient o.vertexOrder t.1 f) := by
+        rw [eq_neg_of_add_eq_zero_left hcancel, eq_neg_of_add_eq_zero_left hcancel', neg_mul_neg]
+      _ = o.sign t.1 * o'.sign t.1 := by rw [mul_mul_mul_comm, hct, mul_one]
+
+open Classical in
+theorem CoherentOrientation.sign_mul_sign_eq_of_dualGraph_reachable
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces] {n : ℕ}
+    (hK : IsCombinatorialManifoldWithBoundary n K)
+    (o o' : CoherentOrientation n K) (horder : o'.vertexOrder = o.vertexOrder)
+    {s t : {s : Finset E // s ∈ K.faces ∧ s.card = n + 1}}
+    (hreach : (dualGraph n K).Reachable s t) :
+    o.sign s.1 * o'.sign s.1 = o.sign t.1 * o'.sign t.1 := by
+  obtain ⟨w⟩ := hreach
+  induction w with
+  | nil => rfl
+  | cons h _ ih =>
+    exact (o.sign_mul_sign_eq_of_dualGraph_adj hK o' horder h).trans ih
+
+open Classical in
+theorem coherentOrientation_eq_or_eq_neg
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces] {n : ℕ}
+    (hK : IsCombinatorialManifoldWithBoundary n K) (hconn : (dualGraph n K).Preconnected)
+    (o o' : CoherentOrientation n K) :
+    (∀ s ∈ K.faces, s.card = n + 1 →
+      o.sign s = (o'.changeVertexOrder o.vertexOrder).sign s) ∨
+    (∀ s ∈ K.faces, s.card = n + 1 →
+      o.sign s = -(o'.changeVertexOrder o.vertexOrder).sign s) := by
+  by_cases htop : ∃ s ∈ K.faces, s.card = n + 1
+  · obtain ⟨s₀, hs₀, hs₀card⟩ := htop
+    let q := o'.changeVertexOrder o.vertexOrder
+    have hformula : ∀ s ∈ K.faces, s.card = n + 1 →
+        o.sign s = (o.sign s₀ * q.sign s₀) * q.sign s := by
+      intro s hs hscard
+      have hratio := o.sign_mul_sign_eq_of_dualGraph_reachable hK q rfl
+        (hconn ⟨s₀, hs₀, hs₀card⟩ ⟨s, hs, hscard⟩)
+      have hsq : q.sign s * q.sign s = 1 := by
+        rcases q.sign_top s hs hscard with h | h <;> rw [h] <;> norm_num
+      calc
+        o.sign s = (o.sign s * q.sign s) * q.sign s := by rw [mul_assoc, hsq, mul_one]
+        _ = (o.sign s₀ * q.sign s₀) * q.sign s := by rw [← hratio]
+    have hprod : o.sign s₀ * q.sign s₀ = 1 ∨ o.sign s₀ * q.sign s₀ = -1 := by
+      rcases o.sign_top s₀ hs₀ hs₀card with h | h <;>
+        rcases q.sign_top s₀ hs₀ hs₀card with h' | h' <;> simp only [h, h'] <;> norm_num
+    rcases hprod with hprod | hprod
+    · left
+      intro s hs hscard
+      simpa only [hprod, one_mul] using hformula s hs hscard
+    · right
+      intro s hs hscard
+      simpa only [hprod, neg_one_mul] using hformula s hs hscard
+  · left
+    intro s hs hscard
+    exact (htop ⟨s, hs, hscard⟩).elim
 
 end DifferentialGeometry.Topology.PiecewiseLinear
