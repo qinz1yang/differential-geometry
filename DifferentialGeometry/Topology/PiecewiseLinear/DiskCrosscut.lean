@@ -50,13 +50,14 @@ theorem exists_isCrosscut_subset_frontier_of_isPLBall_two
     exact (mem_interior_iff_notMem_frontier hxD).mpr (hQoff hx)
   exact hbad.elim (hgap A hcut.fst hcut.fst_subset) (hgap B hcut.snd hcut.snd_subset)
 
-theorem exists_isPLBall_pair_of_isCrosscut
+theorem exists_isPLBall_pair_with_boundary_arcs_of_isCrosscut
     {D A : Set (EuclideanSpace ℝ (Fin 2))} (hD : IsPLBall 2 D) (hA : IsPLBall 1 A)
     {p q : EuclideanSpace ℝ (Fin 2)} (h : Schoenflies.IsCrosscut (frontier D) A p q) :
     ∃ U V : Set (EuclideanSpace ℝ (Fin 2)),
       IsPLBall 2 U ∧ IsPLBall 2 V ∧ U ∪ V = D ∧ U ∩ V = A ∧
       frontier U ⊆ frontier D ∪ A ∧ frontier V ⊆ frontier D ∪ A ∧
       A ⊆ frontier U ∧ A ⊆ frontier V ∧
+      IsPLBall 1 (U ∩ frontier D) ∧ IsPLBall 1 (V ∩ frontier D) ∧
       ∀ C : Set (EuclideanSpace ℝ (Fin 2)), IsPLBall 2 C → C ⊆ D →
         Disjoint (interior C) A → C ⊆ U ∨ C ⊆ V := by
   have hpq : p ≠ q := by
@@ -64,7 +65,7 @@ theorem exists_isPLBall_pair_of_isCrosscut
     intro hpq
     exact zero_ne_one (hi Schoenflies.zero_mem_I Schoenflies.one_mem_I
       (hf0.trans (hpq.trans hf1.symm)))
-  obtain ⟨B, C, hcut, _, _⟩ := exists_isCutPair_isPLBall_of_isPLSphere_one
+  obtain ⟨B, C, hcut, hB, hC⟩ := exists_isCutPair_isPLBall_of_isPLSphere_one
     hD.isPLSphere_frontier h.left_mem h.right_mem hpq
   have hBU := isPLSphere_one_union_of_isCrosscut hD.isPLSphere_frontier hA h hcut
   have hCV := isPLSphere_one_union_of_isCrosscut hD.isPLSphere_frontier hA h hcut.symm
@@ -75,7 +76,7 @@ theorem exists_isPLBall_pair_of_isCrosscut
   have hUF : frontier U = B ∪ A := frontier_closure_inside_of_isPLSphere_one hBU
   have hVF : frontier V = C ∪ A := frontier_closure_inside_of_isPLSphere_one hCV
   refine ⟨U, V, hU, hV, ?_, PlanarJordan.closure_inside_inter_of_isCrosscut h hcut,
-    ?_, ?_, ?_, ?_, ?_⟩
+    ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
   · rw [show U ∪ V = closure (Schoenflies.inside (frontier D)) from
       PlanarJordan.closure_inside_union_of_isCrosscut h hcut, ← hD.interior_eq_inside_frontier]
     exact hD.closure_interior
@@ -87,6 +88,12 @@ theorem exists_isPLBall_pair_of_isCrosscut
     exact subset_union_right
   · rw [hVF]
     exact subset_union_right
+  · change IsPLBall 1 (closure (Schoenflies.inside (B ∪ A)) ∩ frontier D)
+    rw [h.closure_side_inter (fun _ => Schoenflies.jordan_curve_theorem) hcut]
+    exact hB
+  · change IsPLBall 1 (closure (Schoenflies.inside (C ∪ A)) ∩ frontier D)
+    rw [h.closure_side_inter (fun _ => Schoenflies.jordan_curve_theorem) hcut.symm]
+    exact hC
   · intro E hE hED hEA
     have hjordan : ∀ S : Set Schoenflies.Plane, Schoenflies.IsJordanCurve S →
         Schoenflies.IsSeparating S := fun _ => Schoenflies.jordan_curve_theorem
@@ -100,5 +107,18 @@ theorem exists_isPLBall_pair_of_isCrosscut
     have hclose (P : Set (EuclideanSpace ℝ (Fin 2))) (hEP : interior E ⊆ P) :
         E ⊆ closure P := hE.closure_interior.symm.subset.trans (closure_mono hEP)
     exact hsplit.imp (hclose _) (hclose _)
+
+theorem exists_isPLBall_pair_of_isCrosscut
+    {D A : Set (EuclideanSpace ℝ (Fin 2))} (hD : IsPLBall 2 D) (hA : IsPLBall 1 A)
+    {p q : EuclideanSpace ℝ (Fin 2)} (h : Schoenflies.IsCrosscut (frontier D) A p q) :
+    ∃ U V : Set (EuclideanSpace ℝ (Fin 2)),
+      IsPLBall 2 U ∧ IsPLBall 2 V ∧ U ∪ V = D ∧ U ∩ V = A ∧
+      frontier U ⊆ frontier D ∪ A ∧ frontier V ⊆ frontier D ∪ A ∧
+      A ⊆ frontier U ∧ A ⊆ frontier V ∧
+      ∀ C : Set (EuclideanSpace ℝ (Fin 2)), IsPLBall 2 C → C ⊆ D →
+        Disjoint (interior C) A → C ⊆ U ∨ C ⊆ V := by
+  obtain ⟨U, V, hU, hV, hu, hi, hfU, hfV, hAU, hAV, _, _, hside⟩ :=
+    exists_isPLBall_pair_with_boundary_arcs_of_isCrosscut hD hA h
+  exact ⟨U, V, hU, hV, hu, hi, hfU, hfV, hAU, hAV, hside⟩
 
 end DifferentialGeometry.Topology.PiecewiseLinear

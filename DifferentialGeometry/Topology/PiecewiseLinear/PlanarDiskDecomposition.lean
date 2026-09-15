@@ -1,5 +1,6 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.DiskDecomposition
 import DifferentialGeometry.Topology.PiecewiseLinear.DiskCrosscut
+import DifferentialGeometry.Topology.PiecewiseLinear.PlanarDiskUnion
 
 open Set
 
@@ -127,5 +128,47 @@ theorem IsPLDiskDecomposition.exists_two_cells_with_nontrivial_frontier_inter
   obtain ⟨C, hC, _, htrC⟩ := h.exists_cell_ne_with_nontrivial_frontier_inter hmore hC₀
   obtain ⟨D, hD, hDC, htrD⟩ := h.exists_cell_ne_with_nontrivial_frontier_inter hmore hC
   exact ⟨C, hC, D, hD, hDC.symm, htrC, htrD⟩
+
+theorem IsPLDiskDecomposition.finite_frontier_inter_cells_of_subset
+    (h : IsPLDiskDecomposition K cells) {C D U : Set (EuclideanSpace ℝ (Fin 2))}
+    (hC : C ∈ cells) (hD : D ∈ cells) (hne : C ≠ D) (hCU : C ⊆ U) (hDU : D ⊆ U) :
+    (frontier U ∩ (C ∩ D)).Finite := by
+  by_cases hI : (C ∩ D).Nonempty
+  · rcases h.inter_isPLBall C hC D hD hne hI with hpoint | harc
+    · obtain ⟨p, hp⟩ := isPLBall_zero_iff.mp hpoint
+      exact (hp.symm ▸ Set.toFinite ({p} : Set (EuclideanSpace ℝ (Fin 2)))).subset inter_subset_right
+    · have hIC : C ∩ D ⊆ frontier C := by
+        rw [← h.boundary_cell_eq_frontier hC]
+        exact h.inter_subset_boundary C hC D hD hne
+      have hID : C ∩ D ⊆ frontier D := by
+        rw [← h.boundary_cell_eq_frontier hD, inter_comm]
+        exact h.inter_subset_boundary D hD C hC hne.symm
+      have hfinite := (isPLBall_union_and_finite_frontier_inter
+        (h.cell_isPLBall C hC) (h.cell_isPLBall D hD) harc hIC hID).2
+      apply hfinite.subset
+      rintro x ⟨hxU, hxI⟩
+      exact ⟨⟨subset_closure (Or.inl hxI.1), fun hxint =>
+        hxU.2 (interior_mono (union_subset hCU hDU) hxint)⟩, hxI⟩
+  · have hempty : C ∩ D = ∅ := Set.not_nonempty_iff_eq_empty.mp hI
+    rw [hempty, inter_empty]
+    exact Set.finite_empty
+
+theorem IsPLDiskDecomposition.isFreeDiskCell_of_frontier_subset_union
+    (h : IsPLDiskDecomposition K cells) {C D U : Set (EuclideanSpace ℝ (Fin 2))}
+    (hC : C ∈ cells) (hD : D ∈ cells) (hne : C ≠ D)
+    (hCU : C ⊆ U) (hDU : D ⊆ U) (hUK : U ⊆ K.space)
+    (hfront : frontier U ⊆ frontier K.space ∪ C) (hfree : IsPLBall 1 (frontier U ∩ D)) :
+    IsFreeDiskCell K D := by
+  have hfinite := h.finite_frontier_inter_cells_of_subset hC hD hne hCU hDU
+  have houter : frontier U ∩ D ⊆ frontier K.space := by
+    apply (hfree.subset_closure_sdiff_finite hfinite).trans
+    apply closure_minimal _ isClosed_frontier
+    rintro x ⟨hx, hxnot⟩
+    exact (hfront hx.1).resolve_right fun hxC => hxnot ⟨hx.1, hxC, hx.2⟩
+  have heq : frontier K.space ∩ D = frontier U ∩ D := by
+    refine Subset.antisymm (fun x hx => ⟨?_, hx.2⟩) (fun x hx => ⟨houter hx, hx.2⟩)
+    exact ⟨subset_closure (hDU hx.2), fun hxint => hx.1.2 (interior_mono hUK hxint)⟩
+  apply (h.isFreeDiskCell_iff_isPLBall_frontier_inter hD).mpr
+  rwa [heq]
 
 end DifferentialGeometry.Topology.PiecewiseLinear

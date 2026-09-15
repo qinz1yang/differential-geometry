@@ -1404,3 +1404,32 @@ warnings. `AuditS59.lean` audits 22 declarations: exit 0, only `propext`,
 `check-polytope.log`, `check-polygonal-arc.log`, `check-arc-gap.log`,
 `check-compact-region.log`, `check-disk-crosscut.log`,
 `check-planar-disk-decomposition.log`, and `audit-disk-crosscut.log`.
+
+## Free-cell transfer and splitting at a nonfree boundary cell
+
+`PlanarDiskUnion.lean` proves that two planar PL disks meeting along a
+common boundary arc form a PL disk and that the common arc has finite
+intersection with the frontier of the union. The existing model and
+gluing proofs in `PolygonalSchoenflies.lean` now retain this frontier
+information; their earlier public signatures remain available. The
+supporting simplex lemma is in `SimplexBoundary.lean`, and finite-point
+removal density is proved for preperfect and nontrivial preconnected
+sets in `Topology/Connected/Dense.lean`.
+
+`DiskCrosscut.lean` additionally identifies each side's outer-boundary
+trace as a PL arc. `PlanarDiskSplit.lean` uses this to split at a nonfree
+boundary cell into two proper PL subdisks whose intersection is that
+cell. `DiskDecomposition.lean` restricts the decomposition to any cell
+subfamily whose union is a PL disk. `PlanarDiskDecomposition.lean` proves
+that a free cell distinct from the shared cell stays free in the original
+disk. These are the geometric induction steps of Moise 17.2; the finite
+cell-count induction remains to be assembled. No vendored source changed.
+
+All eight changed modules pass focused checks with exit 0 and zero
+warnings. `AuditS60.lean` audits 16 declarations, including the preserved
+model, gluing, and crosscut endpoints: exit 0 and only the three standard
+axioms. Logs are `.lake/scratch/check-connected-dense.log`,
+`check-simplex-boundary.log`, `check-polygonal-schoenflies.log`,
+`check-disk-crosscut.log`, `check-disk-decomposition.log`,
+`check-planar-disk-union.log`, `check-planar-disk-split.log`,
+`check-planar-disk-decomposition.log`, and `audit-free-disk-transfer.log`.

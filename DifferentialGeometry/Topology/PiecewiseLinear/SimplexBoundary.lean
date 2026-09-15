@@ -76,6 +76,27 @@ theorem openSimplex_eq_sdiff_simplexBoundary (T : Finset E)
     · exact (hxB ((simplexBoundary T hT).convexHull_subset_space ⟨hsT, hsne, hs⟩
         (openSimplex_subset_convexHull s hxs))).elim
 
+open Classical in
+theorem openSegment_subset_openSimplex_of_mem_openSimplex_erase {T : Finset E}
+    (hT : AffineIndependent ℝ ((↑) : T → E)) {a p : E} (ha : a ∈ T)
+    (hp : p ∈ openSimplex (T.erase a)) : openSegment ℝ p a ⊆ openSimplex T := by
+  have hpT : p ∈ convexHull ℝ (T : Set E) :=
+    convexHull_mono (Finset.coe_subset.mpr (Finset.erase_subset a T))
+      (openSimplex_subset_convexHull _ hp)
+  have haT : a ∈ convexHull ℝ (T : Set E) := subset_convexHull ℝ _ ha
+  have hpw := (mem_openSimplex_iff_weights_pos hT (Finset.erase_subset a T) hpT).mp hp
+  have haw := (mem_openSimplex_iff_weights_pos hT (Finset.singleton_subset_iff.mpr ha) haT).mp
+    (mem_openSimplex_singleton a)
+  rintro x ⟨α, β, hα, hβ, hab, rfl⟩
+  apply (mem_openSimplex_self_iff hT ((convex_convexHull ℝ _) hpT haT hα.le hβ.le hab)).mpr
+  intro v hv
+  rw [weights_combo hT hpT haT hα.le hβ.le hab v hv]
+  by_cases hva : v = a
+  · exact add_pos_of_nonneg_of_pos (mul_nonneg hα.le (weights_nonneg hpT hv))
+      (mul_pos hβ ((haw v hv).mpr (Finset.mem_singleton.mpr hva)))
+  · exact add_pos_of_pos_of_nonneg (mul_pos hα ((hpw v hv).mpr (Finset.mem_erase.mpr ⟨hva, hv⟩)))
+      (mul_nonneg hβ.le (weights_nonneg haT hv))
+
 section Boundary
 
 theorem interior_convexHull_eq_openSimplex [FiniteDimensional ℝ E] {T : Finset E}

@@ -9,6 +9,39 @@ variable {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [NormedAddCommGroup F] [NormedSpace ℝ F]
   [FiniteDimensional ℝ E] [FiniteDimensional ℝ F]
 
+omit [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
+  [FiniteDimensional ℝ E] in
+open Classical in
+theorem IsPLDiskDecomposition.restrict_cells
+    {K : Geometry.SimplicialComplex ℝ E} {cells subcells : Finset (Set E)}
+    (h : IsPLDiskDecomposition K cells) (hsub : subcells ⊆ cells) {U : Set E}
+    (hU : U = ⋃ C ∈ subcells, C) (hball : IsPLBall 2 U) :
+    IsPLDiskDecomposition (PiecewiseLinear.restrict K U) subcells := by
+  let _ : Finite K.faces := h.finite_faces.to_subtype
+  have hCU (C : Set E) (hC : C ∈ subcells) : C ⊆ U := by
+    rw [hU]
+    exact subset_iUnion_of_subset C (subset_iUnion_of_subset hC Subset.rfl)
+  have hspace : (PiecewiseLinear.restrict K U).space = U := by
+    refine Subset.antisymm (restrict_space_subset K U) ?_
+    intro x hx
+    rw [hU] at hx
+    obtain ⟨C, hC, hxC⟩ := mem_iUnion₂.mp hx
+    have hxR : x ∈ (PiecewiseLinear.restrict K C).space := (h.cell_space C (hsub hC)).symm ▸ hxC
+    exact restrict_space_mono (hCU C hC) hxR
+  have hrestrict (C : Set E) (hC : C ∈ subcells) :
+      PiecewiseLinear.restrict (PiecewiseLinear.restrict K U) C = PiecewiseLinear.restrict K C := by
+    rw [restrict_restrict, inter_eq_right.mpr (hCU C hC)]
+  refine ⟨restrict_faces_finite K U, hspace.symm ▸ hball,
+    fun C hC => h.cell_isPLBall C (hsub hC), ?_, hspace.trans hU, ?_, ?_⟩
+  · intro C hC
+    rw [hrestrict C hC]
+    exact h.cell_space C (hsub hC)
+  · intro C hC D hD hne
+    rw [hrestrict C hC]
+    exact h.inter_subset_boundary C (hsub hC) D (hsub hD) hne
+  · intro C hC D hD hne hnonempty
+    exact h.inter_isPLBall C (hsub hC) D (hsub hD) hne hnonempty
+
 omit [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F] in
 open Classical in
 theorem IsPLDiskDecomposition.of_isSubdivision
