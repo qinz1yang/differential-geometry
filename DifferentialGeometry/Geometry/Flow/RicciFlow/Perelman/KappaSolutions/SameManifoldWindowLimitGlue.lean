@@ -15,7 +15,7 @@ namespace DifferentialGeometry
 namespace CheegerGromovCompactness
 
 open Filter
-open scoped Manifold ContDiff
+open scoped _root_.Manifold ContDiff _root_.Topology
 
 theorem PointedCGHMaps.pointedlyIdentified_of_map_eq
     {E : Type uE} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -63,7 +63,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 open Filter
 open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Geometry.Curvature
-open scoped Manifold ContDiff
+open scoped _root_.Manifold ContDiff _root_.Topology
 
 variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace Real E]
 variable [FiniteDimensional Real E] [CompleteSpace E]
@@ -260,7 +260,7 @@ open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology (ThreeModel ThreeSpace)
 open DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
   (MetricComparisonOn)
-open scoped Manifold ContDiff
+open scoped _root_.Manifold ContDiff _root_.Topology
 
 attribute [local instance] PointedFlowData.topology PointedFlowData.charted
   PointedFlowData.smooth PointedFlowData.t2 PointedFlowData.sigmaCompact
