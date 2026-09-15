@@ -1191,3 +1191,20 @@ M1 的凸化与指定点控制已经闭合；仍缺球面沿水平圆周切成 P
 本结果只控制高度函数与侧别，没有宣称新旧奇异点的包含关系或多边形数不增；这些才是严格降指标尚待证明的几何部分。
 球面 PL 切盘仍需实现：Moise 10.2 原陈述只给拓扑 2-盘，现有平面 P.1 不能直接作为球面 PL 切盘证明。
 尚未增加接口字段。M1/M2/M3 均未验收，下一审计文件 `AuditF127.lean`。
+
+### 18.7 正则水平层的有限不交多边形分解
+
+- `SimplicialComplex/EdgeGraph.lean`：任意几何复形的边图、有限顶点集、图邻点与几何邻点的精确对应及基数相等。
+  边图仅使用复形定义所需的代数结构，没有增加实数、拓扑或有限维假设。
+- `PolygonalCycles.lean`：`exists_polygonalCircle_of_isCycle` 将边图中的单环构造成实际 `PolygonalCircle`，
+  显式验证相邻边交点与非相邻边不交；顶点像恰为图环顶点，每条图环边包含于所得多边形。
+  `exists_polygonalCircle_decomposition` 对有限平面一维闭组合流形，以图连通分量索引多边形，证明全空间覆盖与两两不交。
+  `exists_finite_isPLSphere_decomposition` 给有限 PL 圆周族的内在表述，允许空流形。
+- `LevelPolygons.lean`：`exists_finite_isPLSphere_decomposition_of_subset_fiber` 用仿射平面坐标与 PL 流形不变性搬运到三维空间中的平面。
+  `exists_finite_isPLSphere_decomposition_fiber` 对任意有限三维空间中的二维闭组合流形、非零线性高度以及不经过任何剖分顶点的层，
+  构造有限个两两不交的 PL 圆周，其并集恰为该水平截面；不需要高度在所有顶点上单射。
+
+三个模块最终聚焦检查分别为 7.4、12.0、12.7 秒，均 exit=0、零 warning。
+`AuditF127.lean` 十三项均仅标准三公理，核对了水平层端点的完整签名。
+本层只闭合不经过顶点的正则水平层分解；含顶点层的一点分叉分解、与 `levelPolygons` 的精确对应、
+球面 PL 切盘及严格降指标仍未完成。没有增加 `SchoenfliesInput` 字段，M1/M2/M3 均未验收。下一审计文件 `AuditF128.lean`。
