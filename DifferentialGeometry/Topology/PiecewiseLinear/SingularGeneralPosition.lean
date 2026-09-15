@@ -3459,4 +3459,21 @@ theorem HasPLBoundaryDoubleCrossingAt.postcomp_openPartialHomeomorph [FiniteDime
     have heq : e (f x) = z := hxz
     exact e.injOn (hf hxP) (e.map_target hzT) (heq.trans (e.right_inv hzT).symm)
 
+theorem HasPLBoundaryCrossingAt.congr {M A B M' A' B' : Set E} {x : E}
+    (hAB : HasPLBoundaryCrossingAt M A B x) (hM : ∀ᶠ y in 𝓝 x, y ∈ M ↔ y ∈ M')
+    (hA : ∀ᶠ y in 𝓝 x, y ∈ A ↔ y ∈ A') (hB : ∀ᶠ y in 𝓝 x, y ∈ B ↔ y ∈ B') :
+    HasPLBoundaryCrossingAt M' A' B' x := by
+  obtain ⟨U, V, h, P, Q, ℓ, hU, hV, hxU, hh, hhx, hP, hQ, hI, hsup, hinward, hlocal⟩ := hAB
+  refine ⟨U, V, h, P, Q, ℓ, hU, hV, hxU, hh, hhx, hP, hQ, hI, hsup, hinward, ?_⟩
+  filter_upwards [hlocal, hM, hA, hB] with y hy hyM hyA hyB
+  exact ⟨hyM.symm.trans hy.1, hyA.symm.trans hy.2.1, hyB.symm.trans hy.2.2⟩
+
+theorem HasPLBoundaryDoubleCrossingAt.congr_target {f : E → F} {P : Set E} {M M' : Set F} {y : F}
+    (hD : HasPLBoundaryDoubleCrossingAt f P M y) (hM : ∀ᶠ z in 𝓝 y, z ∈ M ↔ z ∈ M') :
+    HasPLBoundaryDoubleCrossingAt f P M' y := by
+  obtain ⟨a, b, A, B, ha, hb, hfa, hfb, hAP, hBP, hdis, hA, hB, hfA, hfB, hcross, hcover⟩ := hD
+  refine ⟨a, b, A, B, ha, hb, hfa, hfb, hAP, hBP, hdis, hA, hB, hfA, hfB, ?_, hcover⟩
+  exact hcross.congr hM (Filter.Eventually.of_forall fun _ => Iff.rfl)
+    (Filter.Eventually.of_forall fun _ => Iff.rfl)
+
 end DifferentialGeometry.Topology.PiecewiseLinear
