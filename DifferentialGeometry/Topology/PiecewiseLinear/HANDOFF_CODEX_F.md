@@ -1260,6 +1260,7 @@ M1 的凸化与指定点控制已经闭合；仍缺球面沿水平圆周切成 P
 临界层的有限圆周覆盖、交点唯一性、孤立点与规范圆周族的对应现已闭合；尚未证明局部二度与顶点 crossing 等价。
 球面 PL 切盘、轴旋转后的逐点指标比较及 Lemma 1 严格下降仍未闭合，M1/M2/M3 均未验收。
 `SchoenfliesInput` 未增加字段；下一审计文件 `AuditF131.lean`。
+
 ### 18.11 球面沿 PL 圆周切成两个 PL 盘
 
 - `ConvexFrontier.lean`：任意实范数空间中的紧集，若其 frontier 包含于非空开凸集，则整个紧集也包含于该开凸集。
@@ -1279,3 +1280,20 @@ M1 的凸化与指定点控制已经闭合；仍缺球面沿水平圆周切成 P
 本层没有扩充 `SchoenfliesInput`，没有使用 Moise 10.2 的拓扑盘陈述代替 PL 盘。
 球面 PL 切盘已经闭合；下一步为封帽球性、局部二度与 crossing 的对应及转轴后的逐点指标比较。
 Lemma 1 严格下降仍未闭合，M1/M2/M3 均未验收。下一审计文件 `AuditF132.lean`。
+
+### 18.12 换盘与封帽球性
+
+- `PLHomeomorph.lean` 增加任意有限多面体上恒等映射的 PL 接口，不需要有限维假设。
+- `PLHomeomorphGluing.lean` 的新主定理 `exists_isPLHomeomorphOn_union` 允许源、目标位于不同有限维空间，
+  两片的目标可以不同；要求重叠处相容并覆盖恰当的目标交集。旧接口签名保留，改为新主定理的特例。
+- `BallReplacement.lean`：参数化盘的标准边界像是 PL 球面；两个盘的参数边界间任意 PL 同胚均可延拓至盘；
+  `exists_isPLHomeomorphOn_replace_ball` 将一个盘换成具有同一边界的新盘，并逐点固定保留部分。
+- `SphereCut.lean`：`exists_isPLSphere_pair_of_spanning_disk` 从 PL 2-球面 S 及参数化 PL 2-盘 D、
+  `S ∩ D = g '' stdSimplexBoundary 2` 构造球面切开的两盘及两封帽 PL 2-球面；
+  证明两封帽球面交集恰为 D，且从其并中删去 `D \ (g '' stdSimplexBoundary 2)` 后恰恢复 S。
+
+四模块最终聚焦检查分别为 12.0、8.1、8.9、10.6 秒，均 exit=0、零 warning。
+`AuditF132.lean` 七项（含旧拼接接口）仅标准三公理，已核对封帽端点完整签名。
+没有增加 `SchoenfliesInput` 字段；封帽球性不作为输入假设。
+仍缺奇异层的内最圆周选择、局部二度与 crossing 的对应、转轴后的逐点指标比较及 Lemma 1 严格下降。
+M1/M2/M3 均未验收。下一审计文件 `AuditF133.lean`。
