@@ -1088,3 +1088,30 @@ S.3 / P.3 的"拟定 Lean"列并标"F 的 S.4 接口，S 车道证明"；S 交�
 - M2：Lemma 2–3（顶底层单点、中间层多边形）与 Lemma 4–6（各 `Bd M_i` 单嵌入）。汇报。
 - M3：用 17.11 拼装出两个端点；审计；计划行 S.4 改为 done（条件于 `SchoenfliesInput`）。
 其余按 §2 配方；具体路线自定。
+
+## 18. 2026-09-15：S.4 接口与水平指标基础检查点（M1 尚未闭合）
+
+已合并 `origin/codex/moise-integration` 的 `bc4b635eb`，合并提交 `ee824b3a7`，计划文件无冲突。
+F5.2 按 §17.1 搁置，本节没有推进它。
+
+### 18.1 已检查源码
+
+- `SchoenfliesInput.lean`：四个字段分别为 17.9、17.10、17.11、一般 17.2；没有加入 Lemma 1 或端点结论字段。
+  `IsPLDiskDecomposition` 用共同有限三角剖分、PL 2-盘胞腔、覆盖、交集的边界条件和点/弧条件表达一般胞腔分解。
+  `IsFreeDiskCell` 使用 `boundaryComplex` 的内在边界；17.11 使用参数化边界像，未使用环境 `interior D`。
+  `.exists_free_disk_cell_ne` 从两个自由胞腔选出不同于指定胞腔的一个，未宣称一般 17.3 已证。
+  S.3/P.3 计划行已登记为“F 的 S.4 接口，S 车道证明”。仍无此接口的实例。
+- `HeightIndex.lean`：`levelPolygons` 枚举整层的 PL 圆周；`heightSingularPoints` 排除 crossing 点和孤立层点。
+  `heightSingularPoints_subset_vertices` / `finite_heightSingularPoints` 复用 F5.1 的非顶点 crossing。
+  `levelPolygons_image` / `encard_levelPolygons_image` 给保高度的环境 PL 同胚下的精确集合与基数搬运。
+  `exists_extreme_height_fibers` 对任何非空有限复形及顶点上单射的线性高度给全空间高度界和顶底层单点。
+  `heightIndex` 暂定义为奇异点上的扩展自然数和，尚未证明其有限，也尚未证明与原书的多边形分解指标一致。
+  使用扩展自然数是为避免无限族被 `Set.ncard` 默认为零；不能把此定义视为有限归纳已经就绪。
+
+### 18.2 验证与未完成部分
+
+两模块聚焦检查 exit=0、零 warning；`AuditF121.lean` 二十六项均只含 `propext`、`Classical.choice`、`Quot.sound`。
+审计同时对 §17.2 两个最终命题作类型检查；源码中没有相应的占位定理，类型检查不等于证明。
+M1 仍需：一般位置层的有限多边形分解、顶点处非奇异层的 crossing 判据、指标有限性与原书指标对应、
+保持支持控制的平面凸化和三维保高度延拓、轴旋转后两片的严格降指标。M2 的中间层多边形性和 slab 删除、
+M3 的端点拼装均未完成。下一个审计文件 `AuditF122.lean`。
