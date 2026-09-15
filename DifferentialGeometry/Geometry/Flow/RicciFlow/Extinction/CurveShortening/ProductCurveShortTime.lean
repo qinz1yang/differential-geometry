@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.TerminalEndpoint
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ContinuationFrontier
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProductSolutionCorrespondence
 
@@ -111,7 +112,7 @@ theorem map_curvature_eq (c : ProductCurve M) (A : QuotientProductAtlas I M) [T2
 
 omit [CompleteSpace E] in
 theorem localExistence_of_quotientCurveLocalExistence (A : QuotientProductAtlas I M)
-    [SigmaCompactSpace M] [T2Space M] [CompactSpace M] [Nonempty M] [I.Boundaryless]
+    [T2Space M] [I.Boundaryless]
     (B : SmoothMetricWindow (I := I) (M := M) D a b) (lambda : ℝ) (hlambda : 0 < lambda) :
     letI := A.charts
     letI := A.smoothManifold
@@ -146,7 +147,7 @@ theorem localExistence_of_quotientCurveLocalExistence (A : QuotientProductAtlas 
     fun z => (hĉmap z t₀ ⟨le_rfl, by linarith⟩).trans (hinit z)⟩
 
 theorem terminalClosure_of_quotient (A : QuotientProductAtlas I M)
-    [SigmaCompactSpace M] [T2Space M] [CompactSpace M] [Nonempty M] [I.Boundaryless]
+    [T2Space M] [CompactSpace M] [I.Boundaryless]
     (B : RicciBackground (I := I) (M := M) D a b) (lambda : ℝ) (hlambda : 0 < lambda) :
     letI := A.charts
     letI := A.smoothManifold
@@ -154,12 +155,11 @@ theorem terminalClosure_of_quotient (A : QuotientProductAtlas I M)
         (M := M × Surgery.Topology.Circle) D a b),
       Bhat.family.metric =
         (fun t => quotientProductMetric A (B.family.metric t) lambda hlambda) →
-      curveShorteningTerminalClosure (I := I.prod 𝓘(ℝ, ℝ))
-        (M := M × Surgery.Topology.Circle) Bhat →
       TerminalClosure B lambda := by
   let := A.charts
   let := A.smoothManifold
-  intro Bhat hBhat H T haT hTb c K hK hc hcurv
+  intro Bhat hBhat T haT hTb c K hK hc hcurv
+  have H := curveShorteningTerminalClosure_of_ricciBackground Bhat
   have hU : (c.unitTangent B.family.metric lambda).SmoothOn (I := I) (Ico a T) :=
     c.field_smoothOn_unitTangent (I := I) B.family.metric lambda hlambda hc.smooth hc.immersed
   have hmap : c.map.IsSolutionOn (I := I.prod 𝓘(ℝ, ℝ))
@@ -181,7 +181,7 @@ theorem terminalClosure_of_quotient (A : QuotientProductAtlas I M)
     (hĉmap z t ⟨ht.1, ht.2.le⟩).trans (hagr z t ht)⟩
 
 theorem extension_of_quotient (A : QuotientProductAtlas I M)
-    [SigmaCompactSpace M] [T2Space M] [CompactSpace M] [Nonempty M] [I.Boundaryless]
+    [T2Space M] [I.Boundaryless]
     (B : RicciBackground (I := I) (M := M) D a b) (lambda : ℝ) (hlambda : 0 < lambda) :
     letI := A.charts
     letI := A.smoothManifold
@@ -217,7 +217,7 @@ theorem extension_of_quotient (A : QuotientProductAtlas I M)
     (hêmap z t ⟨ht.1, by linarith [ht.2, hτ]⟩).trans (hagr z t ht)⟩
 
 theorem continuation_of_quotient (A : QuotientProductAtlas I M)
-    [SigmaCompactSpace M] [T2Space M] [CompactSpace M] [Nonempty M] [I.Boundaryless]
+    [T2Space M] [CompactSpace M] [I.Boundaryless]
     (B : RicciBackground (I := I) (M := M) D a b) (lambda : ℝ) (hlambda : 0 < lambda) :
     letI := A.charts
     letI := A.smoothManifold
@@ -235,7 +235,7 @@ theorem continuation_of_quotient (A : QuotientProductAtlas I M)
     (I := I.prod 𝓘(ℝ, ℝ)) (M := M × Surgery.Topology.Circle) Bhat).mp H
   exact (continuation_iff_terminalClosure_and_extension
       (I := I) (M := M) B lambda).mpr
-    ⟨terminalClosure_of_quotient (I := I) (M := M) A B lambda hlambda Bhat hBhat hsplit.1,
+    ⟨terminalClosure_of_quotient (I := I) (M := M) A B lambda hlambda Bhat hBhat,
       extension_of_quotient (I := I) (M := M) A B lambda hlambda Bhat hBhat hsplit.2⟩
 
 end ProductCurve

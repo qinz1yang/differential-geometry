@@ -1,3 +1,5 @@
+import Mathlib.Topology.UniformSpace.UniformConvergence
+import Mathlib.Topology.Order.LeftRightNhds
 import Mathlib.Analysis.Calculus.ContDiff.Comp
 import Mathlib.Analysis.Calculus.ContDiff.Operations
 import Mathlib.Analysis.Calculus.MeanValue
@@ -50,3 +52,41 @@ theorem eventually_lipschitzWith_sub_slice
     exact zero_le
 
 end ContDiff
+
+set_option autoImplicit false
+noncomputable section
+open Filter
+
+theorem exists_tendstoUniformly_nhdsLT_of_hasDerivAt_nnnorm_le
+    {X F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F] [CompleteSpace F]
+    {a b : ℝ} (hab : a < b) (Y : ℝ → X → F) (D : ℝ → X → F) (C : ℝ≥0)
+    (hderiv : ∀ t, t ∈ Set.Ioo a b → ∀ x, HasDerivAt (fun s : ℝ => Y s x) (D t x) t)
+    (hbound : ∀ t, t ∈ Set.Ioo a b → ∀ x, ‖D t x‖₊ ≤ C) :
+    ∃ YT : X → F, TendstoUniformly Y YT (𝓝[<] b) := by
+  have hL : ∀ x, LipschitzOnWith C (fun s : ℝ => Y s x) (Set.Ioo a b) := by
+    intro x
+    apply Convex.lipschitzOnWith_of_nnnorm_hasDerivWithin_le (convex_Ioo a b)
+    · intro t ht
+      exact (hderiv t ht x).hasDerivWithinAt
+    · intro t ht
+      exact hbound t ht x
+  have hC : UniformCauchySeqOn Y (𝓝[<] b) (Set.univ : Set X) := by
+    intro V hV
+    obtain ⟨eps, heps, hsub⟩ := Metric.mem_uniformity_dist.mp hV
+    have htime : Tendsto (fun t : ℝ => t) (𝓝[<] b) (𝓝 b) := nhdsWithin_le_nhds
+    have ht : Tendsto (fun p : ℝ × ℝ => (C : ℝ) * dist p.1 p.2)
+        ((𝓝[<] b) ×ˢ (𝓝[<] b)) (𝓝 0) := by
+      simpa only [dist_self, mul_zero, Function.comp_def] using
+        (tendsto_const_nhds.mul
+          ((htime.comp tendsto_fst).dist (htime.comp tendsto_snd)))
+    have hnear : ∀ᶠ t in 𝓝[<] b, t ∈ Set.Ioo a b := Ioo_mem_nhdsLT hab
+    filter_upwards [ht.eventually (gt_mem_nhds heps), hnear.prod_mk hnear] with p hp hmem
+    intro x hx
+    exact hsub ((hL x).dist_le_mul p.1 hmem.1 p.2 hmem.2 |>.trans_lt hp)
+  classical
+  have hpoint : ∀ x, ∃ y, Tendsto (fun t : ℝ => Y t x) (𝓝[<] b) (𝓝 y) :=
+    fun x => cauchy_map_iff_exists_tendsto.mp (hC.cauchy_map (Set.mem_univ x))
+  choose YT hYT using hpoint
+  exact ⟨YT, tendstoUniformlyOn_univ.mp (hC.tendstoUniformlyOn_of_tendsto (fun x _ => hYT x))⟩
+
+end

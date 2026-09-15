@@ -1,3 +1,5 @@
+import Mathlib.Topology.Order.LeftRightNhds
+import Mathlib.Topology.Constructions.SumProd
 import Mathlib.Topology.Order.Basic
 
 open Set Filter
@@ -55,3 +57,33 @@ theorem Set.OrdConnected.exists_Icc_mem_subset_of_mem_nhdsWithin
   · rw [← Icc_inter_Icc]
     intro x hx
     exact ⟨hab hx.1, hVU ⟨hcV hx.2, hab hx.1⟩⟩
+
+theorem ContinuousWithinAt.exists_mapsTo_Icc_prod_nhds {α M N : Type*}
+    [LinearOrder α] [DenselyOrdered α] [TopologicalSpace α] [OrderTopology α]
+    [TopologicalSpace M] [TopologicalSpace N]
+    {G : α × M → N} {s T : α} (hst : s < T) {x : M} {U : Set N}
+    (hG : ContinuousWithinAt G (Icc s T ×ˢ (univ : Set M)) (T, x))
+    (hU : U ∈ 𝓝 (G (T, x))) :
+    ∃ s' : α, s ≤ s' ∧ s' < T ∧ ∃ V : Set M, IsOpen V ∧ x ∈ V ∧
+      MapsTo G (Icc s' T ×ˢ V) U := by
+  have hpre := hG.preimage_mem_nhdsWithin hU
+  rcases mem_nhdsWithin_prod_iff.mp hpre with ⟨A, hA, B, hB, hAB⟩
+  rw [nhdsWithin_Icc_eq_nhdsLE hst] at hA
+  rw [nhdsWithin_univ] at hB
+  rcases (mem_nhdsLE_iff_exists_mem_Ico_Ioc_subset hst).mp hA with ⟨l, hl, hlA⟩
+  rcases exists_between hl.2 with ⟨s', hls', hs'T⟩
+  rcases mem_nhds_iff.mp hB with ⟨V, hVB, hVopen, hxV⟩
+  refine ⟨s', le_trans hl.1 hls'.le, hs'T, V, hVopen, hxV, ?_⟩
+  rintro p ⟨⟨ht1, ht2⟩, hxV'⟩
+  exact hAB ⟨hlA ⟨lt_of_lt_of_le hls' ht1, ht2⟩, hVB hxV'⟩
+
+theorem ContinuousOn.exists_mapsTo_Icc_prod_nhds {α M N : Type*}
+    [LinearOrder α] [DenselyOrdered α] [TopologicalSpace α] [OrderTopology α]
+    [TopologicalSpace M] [TopologicalSpace N]
+    {G : α × M → N} {s T : α} (hst : s < T) {x : M}
+    {U : Set N} (hU : IsOpen U) (hxU : G (T, x) ∈ U)
+    (hG : ContinuousOn G (Icc s T ×ˢ (univ : Set M))) :
+    ∃ s' : α, s ≤ s' ∧ s' < T ∧ ∃ V : Set M, IsOpen V ∧ x ∈ V ∧
+      MapsTo G (Icc s' T ×ˢ V) U := by
+  exact (hG (T, x) ⟨⟨hst.le, le_rfl⟩, mem_univ _⟩).exists_mapsTo_Icc_prod_nhds
+    hst (hU.mem_nhds hxU)

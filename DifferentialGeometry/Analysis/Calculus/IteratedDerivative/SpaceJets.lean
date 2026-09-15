@@ -587,3 +587,35 @@ end MemLpIteratedSpatialFDeriv
 
 end Analysis
 end DifferentialGeometry
+
+noncomputable section
+open Set
+open scoped ContDiff
+namespace DifferentialGeometry.Analysis
+
+variable {E A B : Type*}
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [NormedAddCommGroup A] [NormedSpace ℝ A]
+    [NormedAddCommGroup B] [NormedSpace ℝ B]
+
+theorem contDiffOn_and_continuousOn_spatial_iteratedFDeriv_comp
+    {G : ℝ → E → A} {R : A → B} {J : Set ℝ} {V : Set E} {Ω : Set A}
+    (hV : IsOpen V) (hΩ : IsOpen Ω)
+    (hmap : Set.MapsTo (Function.uncurry G) (J ×ˢ V) Ω)
+    (hR : ContDiffOn ℝ ∞ R Ω)
+    (hGs : ∀ t ∈ J, ContDiffOn ℝ ∞ (G t) V)
+    (hjets : ∀ r : ℕ, ContinuousOn
+      (fun p : ℝ × E => iteratedFDeriv ℝ r (G p.1) p.2) (J ×ˢ V)) :
+    (∀ t ∈ J, ContDiffOn ℝ ∞ (fun x => R (G t x)) V) ∧
+      ∀ r : ℕ, ContinuousOn
+        (fun p : ℝ × E => iteratedFDeriv ℝ r (fun x => R (G p.1 x)) p.2) (J ×ˢ V) := by
+  have hbase : SpaceJetDiff 0 G J V := fun r => contDiffOn_zero.mpr (hjets r)
+  have hcomp : SpaceJetDiff 0 (fun t x => R (G t x)) J V :=
+    spaceJet_comp_Icc hV hΩ hmap hR hGs hbase
+  refine ⟨?_, fun r => (hcomp r).continuousOn⟩
+  intro t ht
+  exact hR.comp (hGs t ht) (fun x hx => hmap (x := (t, x)) ⟨ht, hx⟩)
+
+end DifferentialGeometry.Analysis
+
+end
