@@ -824,3 +824,23 @@ only the standard three axioms. Logs are
 `.lake/scratch/check-planar-disk-subdivision.log` and
 `.lake/scratch/audit-planar-disk-subdivision.log`. This is initial data
 for 17.5, not the ambient deletion induction itself.
+
+## Relative deletion for native planar subcomplexes
+
+The native `PlanarSubcomplex` module realizes a pure two-dimensional
+subcomplex with the parent complex's vertex type and ordering. Its support,
+restriction, and triangle-erasure identities retain those shared vertices.
+`PlanarRelativeSubcomplex` applies the previously adapted protected-family
+thin-kite construction to a PL subdisk of an arbitrary pure planar complex.
+It proves the exact image of both the whole complex and the local disk
+after erasing the chosen free triangle. The whole complex is not assumed
+to be a disk. Its outside triangles satisfy explicit incidence conditions,
+as supplied by the native free-face producer. No vendor Lean file changes.
+
+Both new modules pass focused checks with exit 0 and zero warnings.
+`AuditS35.lean` checks all seven public declarations and reports only
+standard foundational axioms. Logs are
+`.lake/scratch/check-planar-subcomplex.log`,
+`.lake/scratch/check-planar-relative-subcomplex.log`, and
+`.lake/scratch/audit-planar-relative-subcomplex.log`. The full 17.5 ambient
+extension and finite induction, and the 17.6/17.8 consumers, remain open.
