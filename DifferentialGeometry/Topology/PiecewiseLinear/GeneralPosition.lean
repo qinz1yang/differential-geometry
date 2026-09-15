@@ -2,6 +2,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.PLHomeomorph
 import DifferentialGeometry.Topology.PiecewiseLinear.Triangulation
 import DifferentialGeometry.Topology.PiecewiseLinear.ManifoldInvariance
 import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryOfBall
+import DifferentialGeometry.Analysis.Calculus.Interpolation.LipschitzSelection
 import Mathlib.Topology.Algebra.AffineSubspace
 import Mathlib.Topology.MetricSpace.Contracting
 
@@ -4712,5 +4713,27 @@ theorem exists_small_simplicialMap_preimage_manifold_of_isPLBall [FiniteDimensio
       boundaryComplex_space_of_isPLHomeomorphOn_stdSimplex K hf]
   rw [hboundary] at hdeg
   exact ⟨K', φ, G, hK', hfinite, hB', hpl, hclose, hfix, hgood, hGfinite, hGspace, hGman, hdeg⟩
+
+theorem IsPiecewiseAffineOn.exists_lipschitzWith_of_eq_zero_off [FiniteDimensional ℝ E]
+    {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F] {f : E → F}
+    (hf : IsPiecewiseAffineOn f univ) {C : Set E} (hC : IsCompact C)
+    (hzero : EqOn f (fun _ => 0) Cᶜ) : ∃ k : NNReal, LipschitzWith k f := by
+  classical
+  choose ι hι D A hD hnhds using fun x => hf x (mem_univ x)
+  have hneigh : ∀ x ∈ C, (⋃ i, D x i) ∈ 𝓝 x := by
+    intro x _
+    simpa only [nhdsWithin_univ] using hnhds x
+  obtain ⟨t, _, hcover⟩ := hC.elim_nhds_subcover (fun x => ⋃ i, D x i) hneigh
+  have : ∀ x : t, Finite (ι x) := fun x => hι x
+  let models : Unit ⊕ (Σ x : t, ι x) → E →ᵃ[ℝ] F :=
+    Sum.elim (fun _ => AffineMap.const ℝ E 0) (fun p => A p.1 p.2)
+  apply DifferentialGeometry.Analysis.exists_lipschitzWith_of_continuous_finite_affine_selection
+    models (continuousOn_univ.mp hf.continuousOn)
+  intro x
+  by_cases hx : x ∈ C
+  · obtain ⟨y, hyt, hxy⟩ := mem_iUnion₂.mp (hcover hx)
+    obtain ⟨i, hxi⟩ := mem_iUnion.mp hxy
+    exact ⟨Sum.inr ⟨⟨y, hyt⟩, i⟩, (hD y i).2.2 hxi⟩
+  · exact ⟨Sum.inl (), hzero hx⟩
 
 end DifferentialGeometry.Topology.PiecewiseLinear
