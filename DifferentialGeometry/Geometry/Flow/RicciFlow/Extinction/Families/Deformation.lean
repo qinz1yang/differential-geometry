@@ -88,10 +88,8 @@ theorem rfs_uniform_ramp_alternative_of_window_data
     (L₀ Theta₀ Ainit : ℝ) (hL₀ : 0 ≤ L₀) (hTheta₀ : 0 ≤ Theta₀)
     (Abar Cup eta threshold : ℝ) (hAbar : 0 ≤ Abar) (hCup : 0 ≤ Cup)
     (hthreshold : 0 < threshold) (heta : 0 < eta)
-    (ell l epsilon : ℝ) (hlpos : 0 < l)
-    (delta r₀ : ℝ) (hdelta : 0 < delta) (hr₀ : 0 < r₀)
-    (r d : ℝ) (hr : r = min r₀ (min (l / 2) (delta ^ 2 / threshold)))
-    (hd : d = delta * r ^ 2)
+    (ell l epsilon : ℝ)
+    (d : ℝ) (hdpos : 0 < d)
     (lambda₀ : ℝ) (ThetaBar : ℝ) (hThetaBar : 0 ≤ ThetaBar)
     (hlength : ∀ (lambda : ℝ), 0 < lambda → lambda ≤ lambda₀ → ∀ c : ProductCurve Q,
       c.IsSolutionOn B.family.metric lambda (Icc a b) →
@@ -169,10 +167,6 @@ theorem rfs_uniform_ramp_alternative_of_window_data
   · exact Or.inl hshort
   right
   have hleb : ell ≤ loopLength (B.family.metric b) (γ b) := le_of_not_gt hshort
-  have hrpos : 0 < r := by
-    rw [hr]
-    exact lt_min hr₀ (lt_min (by linarith) (div_pos (pow_pos hdelta 2) hthreshold))
-  have hdpos : 0 < d := by rw [hd]; exact mul_pos hdelta (pow_pos hrpos 2)
   have hlenall : ∀ t ∈ Icc a b, l ≤ c.length B.family.metric lambda t :=
     hlength lambda hlambda hlambda_one c hsol hramp hdeg hlen0 hcurv0
       γ (fun z => hγ b ⟨B.lt.le, le_rfl⟩ z) hleb
@@ -585,10 +579,8 @@ theorem rfs_uniform_ramp_alternative_of_product_bounds
           (∀ s ∈ Icc a b, ∀ t ∈ Icc s b,
             loopFamilyLeastArea B.family.metric γ t - loopFamilyLeastArea B.family.metric γ s ≤
               rampRate B.B₀ B.C L Theta Ainit a b * (t - s)))
-    (delta r₀ : ℝ) (hdelta : 0 < delta) (hr₀ : 0 < r₀)
     (eta threshold : ℝ) (heta : 0 < eta) (hthreshold : 0 < threshold)
-    (r d : ℝ) (hr : r = min r₀ (min (Real.exp (-(B.B₀ * (b - a))) * ell / 2)
-      (delta ^ 2 / threshold))) (hd : d = delta * r ^ 2)
+    (d : ℝ) (hdpos : 0 < d)
     (lambda₀ : ℝ) (hl₀ : 0 < lambda₀) (hl₀_one : lambda₀ ≤ 1)
     (hwindows : ∀ (lambda : ℝ), 0 < lambda → lambda ≤ lambda₀ → ∀ c : ProductCurve Q,
       c.IsSolutionOn B.family.metric lambda (Icc a b) →
@@ -694,7 +686,7 @@ theorem rfs_uniform_ramp_alternative_of_product_bounds
   exact rfs_uniform_ramp_alternative_of_window_data B L₀ Theta₀ Ainit hL₀ hTheta₀
     (rampArea B.B₀ B.C L₀ Theta₀ Ainit a b) (rampRate B.B₀ B.C L₀ Theta₀ Ainit a b)
     eta threshold hAbar hCup hthreshold heta ell (Real.exp (-(B.B₀ * (b - a))) * ell) epsilon
-    (mul_pos (Real.exp_pos _) hell) delta r₀ hdelta hr₀ r d hr hd lambda₀
+    d hdpos lambda₀
     (rampCurv B.B₀ B.C L₀ Theta₀ a b) hThetaBar
     hlength hwindows hcontinuous hDini herror
     lambda hlambda hlambda_one c hsol hramp hdeg γ hγ hctr hlen0 hcurv0 hAinit0
@@ -742,7 +734,8 @@ theorem rfs_uniform_ramp_alternative_of_frontier
     (ell epsilon : ℝ) (hell : 0 < ell) (hepsilon : 0 < epsilon)
     (hproduct : RampProductBounds B) (harea : RampAreaBounds B Ainit)
     (hwindow : ∀ eta : ℝ, 0 < eta → eta < 1 → ∀ threshold : ℝ, 1 ≤ threshold →
-      ∀ d : ℝ, 0 < d → RampWindowInput B L₀ Theta₀ Ainit ell eta threshold d) :
+      ∀ epsilon : ℝ, 0 < epsilon → ∃ d : ℝ, 0 < d ∧ d < epsilon ∧
+        RampWindowInput B L₀ Theta₀ Ainit ell eta threshold d) :
     ∃ lambda₀ : ℝ, 0 < lambda₀ ∧ lambda₀ ≤ 1 ∧
       ∀ lambda : ℝ, 0 < lambda → lambda ≤ lambda₀ → ∀ c : ProductCurve Q,
         c.IsSolutionOn B.family.metric lambda (Icc a b) →
@@ -833,47 +826,6 @@ theorem rfs_uniform_ramp_alternative_of_frontier
     have h1 := mul_le_mul_of_nonneg_right hthreshold_le hepsilon.le
     rw [div_mul_cancel₀ _ (ne_of_gt hepsilon)] at h1
     nlinarith only [h1]
-  set delta : ℝ := min 1 (epsilon / (3 * K)) with hdelta
-  have hdelta_pos : 0 < delta := by
-    rw [hdelta]
-    exact lt_min one_pos (div_pos hepsilon h3Kpos)
-  have hdelta_one : delta ≤ 1 := by rw [hdelta]; exact min_le_left _ _
-  have hdelta_le : delta ≤ epsilon / (3 * K) := by rw [hdelta]; exact min_le_right _ _
-  set r₀ : ℝ := E * ell / 2 with hr₀
-  have hr₀_pos : 0 < r₀ := by
-    rw [hr₀]
-    exact div_pos (mul_pos hEpos hell) (by norm_num)
-  set r : ℝ := min r₀ (min (Real.exp (-(B.B₀ * (b - a))) * ell / 2)
-    (delta ^ 2 / threshold)) with hr
-  have hr_pos : 0 < r := by
-    rw [hr]
-    refine lt_min hr₀_pos (lt_min ?_ (div_pos (pow_pos hdelta_pos 2) hthreshold_pos))
-    exact div_pos (mul_pos (Real.exp_pos _) hell) (by norm_num)
-  have hr_le : r ≤ delta ^ 2 / threshold := by
-    rw [hr]
-    exact le_trans (min_le_right _ _) (min_le_right _ _)
-  set d : ℝ := delta * r ^ 2 with hd
-  have hd_pos : 0 < d := by rw [hd]; exact mul_pos hdelta_pos (pow_pos hr_pos 2)
-  have hd_le : d ≤ epsilon / (3 * K) := by
-    rw [hd]
-    have h1 : r ^ 2 ≤ (delta ^ 2 / threshold) ^ 2 := pow_le_pow_left₀ hr_pos.le hr_le 2
-    have h2 : delta * r ^ 2 ≤ delta * (delta ^ 2 / threshold) ^ 2 :=
-      mul_le_mul_of_nonneg_left h1 hdelta_pos.le
-    have h3 : delta * (delta ^ 2 / threshold) ^ 2 = delta ^ 5 / threshold ^ 2 := by
-      rw [div_pow]
-      ring
-    have h6 : delta ^ 5 ≤ 1 := pow_le_one₀ hdelta_pos.le hdelta_one
-    have h4 : delta ^ 5 / threshold ^ 2 ≤ delta ^ 5 := by
-      rw [div_le_iff₀ (pow_pos hthreshold_pos 2)]
-      have h5 : 1 ≤ threshold ^ 2 := by nlinarith only [hthreshold_one]
-      have h7 : 0 < delta ^ 5 := pow_pos hdelta_pos 5
-      nlinarith only [h6, h5, h7]
-    have h5 : delta ^ 5 ≤ delta := by
-      calc delta ^ 5 = delta ^ 4 * delta := by ring
-        _ ≤ 1 * delta :=
-            mul_le_mul_of_nonneg_right (pow_le_one₀ hdelta_pos.le hdelta_one) hdelta_pos.le
-        _ = delta := one_mul _
-    linarith only [h2, h3, h4, h5, hdelta_le]
   have hterm1 : T2 * (eta ^ 2 / Real.sqrt (1 - eta ^ 2) * Θbar * (b - a)) ≤ epsilon / 3 := by
     have hA0 : 0 ≤ eta ^ 2 / Real.sqrt (1 - eta ^ 2) :=
       div_nonneg (sq_nonneg _) (Real.sqrt_nonneg _)
@@ -900,10 +852,14 @@ theorem rfs_uniform_ramp_alternative_of_frontier
     have h3 := mul_le_mul_of_nonneg_left hEL hKpos.le
     have h4 : K * (epsilon / (3 * K)) = epsilon / 3 := by field_simp
     linarith only [h2, h3, h4]
+  obtain ⟨d, hdpos, hdsmall, lambda₀, hl₀, hl₀_one, hwindows, hDini⟩ :=
+    hwindow eta heta_pos heta_one threshold hthreshold_one
+      (epsilon / (3 * K)) (div_pos hepsilon h3Kpos)
+  have hd_le : d ≤ epsilon / (3 * K) := hdsmall.le
   have hterm3 : T2 * (S * d) ≤ epsilon / 3 := by
     have h1 : T2 * (S * d) = T2 * S * d := by ring
     rw [h1]
-    have h2 : T2 * S * d ≤ K * d := mul_le_mul_of_nonneg_right hT2S hd_pos.le
+    have h2 : T2 * S * d ≤ K * d := mul_le_mul_of_nonneg_right hT2S hdpos.le
     have h3 := mul_le_mul_of_nonneg_left hd_le hKpos.le
     have h4 : K * (epsilon / (3 * K)) = epsilon / 3 := by field_simp
     linarith only [h2, h3, h4]
@@ -916,11 +872,9 @@ theorem rfs_uniform_ramp_alternative_of_frontier
           rampArea B.B₀ B.C L₀ Theta₀ Ainit a b + 2 * Real.pi) *
           (d + Real.exp (B.B₀ * (b - a)) * L₀ / threshold)) ≤ epsilon := by
     simpa only [hT2, hE, hΘbar, hAbar, hCup, hS] using hkey
-  obtain ⟨lambda₀, hl₀, hl₀_one, hwindows, hDini⟩ :=
-    hwindow eta heta_pos heta_one threshold hthreshold_one d hd_pos
   refine rfs_uniform_ramp_alternative_of_product_bounds B L₀ Theta₀ Ainit hL₀ hTheta₀ hAinit
-    ell epsilon hell hepsilon ?_ (rfs_ramp_projected_length B) ?_ delta r₀ hdelta_pos hr₀_pos eta
-    threshold heta_pos hthreshold_pos r d hr hd lambda₀ hl₀ hl₀_one hwindows hDini herror
+    ell epsilon hell hepsilon ?_ (rfs_ramp_projected_length B) ?_ eta
+    threshold heta_pos hthreshold_pos d hdpos lambda₀ hl₀ hl₀_one hwindows hDini herror
   · intro L Theta hL hT lambda hlambda hlambda_one c hsol hlen hcurv t ht
     simpa only [rampLen, rampCurv, mul_comm] using
       hproduct L Theta hL hT lambda hlambda hlambda_one c hsol hlen hcurv t ht

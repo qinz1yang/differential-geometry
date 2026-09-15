@@ -74,7 +74,7 @@ theorem rfs_uniform_ramp_alternative_of_ramp_producers
       c.IsSolutionOn B.family.metric lambda (Icc a b) →
       c.projection.ImmersedOn (I := I) (Icc a b))
     (hwindow : ∀ eta : ℝ, 0 < eta → eta < 1 → ∀ threshold : ℝ, 1 ≤ threshold →
-      ∀ d : ℝ, 0 < d →
+      ∀ epsilon : ℝ, 0 < epsilon → ∃ d : ℝ, 0 < d ∧ d < epsilon ∧
         RampWindowInput (I := I) (Q := Q) (D := D) (a := a) (b := b) B
           L₀ Theta₀ Ainit ell eta threshold d) :
     ∃ lambda₀ : ℝ, 0 < lambda₀ ∧ lambda₀ ≤ 1 ∧

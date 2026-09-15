@@ -106,7 +106,7 @@ def UniformRampAlternativeInput (B : RicciBackground (I := I) (M := Q) D a b)
   RampProductBounds (I := I) (Q := Q) (D := D) (a := a) (b := b) B ∧
     RampAreaBounds (I := I) (Q := Q) (D := D) (a := a) (b := b) B Ainit ∧
     ∀ eta : ℝ, 0 < eta → eta < 1 → ∀ threshold : ℝ, 1 ≤ threshold →
-      ∀ d : ℝ, 0 < d →
+      ∀ epsilon : ℝ, 0 < epsilon → ∃ d : ℝ, 0 < d ∧ d < epsilon ∧
         RampWindowInput (I := I) (Q := Q) (D := D) (a := a) (b := b) B
           L₀ Theta₀ Ainit ell eta threshold d
 

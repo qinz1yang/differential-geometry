@@ -30,7 +30,7 @@ theorem rfs_rampAlternativeData_of_frontier
       RampAreaBounds (I := I) (Q := Q) (D := D) (a := a) (b := b) B A)
     (hwindow : ∀ (L Theta A : ℝ), 0 ≤ L → 0 ≤ Theta → 0 ≤ A →
       ∀ eta : ℝ, 0 < eta → eta < 1 → ∀ threshold : ℝ, 1 ≤ threshold →
-      ∀ d : ℝ, 0 < d →
+      ∀ epsilon : ℝ, 0 < epsilon → ∃ d : ℝ, 0 < d ∧ d < epsilon ∧
         RampWindowInput (I := I) (Q := Q) (D := D) (a := a) (b := b) B L Theta A ell eta
           threshold d) :
     RampAlternativeData (I := I) (Q := Q) (D := D) (a := a) (b := b) B ell epsilon := by
