@@ -4,6 +4,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.SimplexFrontier
 import DifferentialGeometry.Topology.PiecewiseLinear.BallFrontier
 import DifferentialGeometry.Topology.PiecewiseLinear.PLImage
 import DifferentialGeometry.Topology.PiecewiseLinear.AmbientExtension
+import DifferentialGeometry.Topology.PiecewiseLinear.RelativeThinKite
 
 open Set
 open LeanEval.Topology.ClassificationOfSurfaces.Moise
@@ -496,16 +497,21 @@ theorem isPLHomeomorphOn_transportedThinKiteHomeomorph
   rw [transportedThinKiteHomeomorph_image] at hpl
   exact hpl.univ_of_eqOn_compl hP (transportedThinKiteHomeomorph_eqOn_compl e δ hδ)
 
-theorem exists_isPLHomeomorphOn_remove_oneEdgeFree_triangle_fixing_frontier
+theorem exists_isPLHomeomorphOn_remove_oneEdgeFree_triangle_fixing_frontier_and_family
     (M : TriangleMesh) (J : PolygonalCircle)
     (hsupport : M.toPlaneComplex.support = J.closedRegion)
     (T : M.Triangle) (k : Fin 3) (hfree : M.IsOneEdgeFreeTriangle T k)
     (hmore : 1 < M.triangles.card)
+    {ι : Type*} [Finite ι] (A : ι → Set Plane)
+    (hA : ∀ i, ∃ ε : ℝ, 0 < ε ∧ ∀ δ : ℝ, 0 < δ → δ < ε →
+      transportedThinKitePatch (M.freeTriangleAffineEquiv T k) δ ∩ A i ⊆
+        {M.freeTriangleOrder T k 0, M.freeTriangleOrder T k 1})
     (U : Set Plane) (hU : IsOpen U) (hTU : M.triangleCarrier T.1 ⊆ U) :
     ∃ g : Plane ≃ₜ Plane, ∃ J' : PolygonalCircle,
       IsPLHomeomorphOn g univ univ ∧
       Set.EqOn g id Uᶜ ∧
         EqOn g id (frontier M.toPlaneComplex.support \ M.triangleCarrier T.1) ∧
+        EqOn g id (⋃ i, A i) ∧
         g '' frontier M.toPlaneComplex.support =
           frontier (M.eraseTriangle T.1).toPlaneComplex.support ∧
         (M.eraseTriangle T.1).toPlaneComplex.support = J'.closedRegion := by
@@ -604,8 +610,9 @@ theorem exists_isPLHomeomorphOn_remove_oneEdgeFree_triangle_fixing_frontier
       rw [htraceL]
       exact hp
     exact this.1
-  obtain ⟨δ, hδ, hfixU, hfixBoundary, hmove⟩ :=
-    M.exists_supported_triangle_push_fixing_boundaryCarrier T k hfree U hU hTU
+  obtain ⟨δ, hδ, hfixU, hfixBoundary, hfixFamily, hmove⟩ :=
+    DifferentialGeometry.Topology.PiecewiseLinear.TriangleMesh.exists_supported_triangle_push_fixing_boundaryCarrier_and_family
+      M T k hfree A hA U hU hTU
   let thin := thinKiteAmbientHomeomorph δ hδ
   let g := transportedThinKiteHomeomorph E δ hδ
   have g_apply (p : Plane) : g p = E (thin (E.symm p)) := rfl
@@ -696,7 +703,26 @@ theorem exists_isPLHomeomorphOn_remove_oneEdgeFree_triangle_fixing_frontier
     isPLHomeomorphOn_transportedThinKiteHomeomorph E δ hδ,
     hfixU, (fun x hx => hfixBoundary ⟨(by
       rw [M.boundaryCarrier_eq_frontier_of_polygonalDisk J hsupport]
-      exact hx.1), hx.2⟩), hfrontier, hremaining⟩
+      exact hx.1), hx.2⟩), hfixFamily, hfrontier, hremaining⟩
+
+theorem exists_isPLHomeomorphOn_remove_oneEdgeFree_triangle_fixing_frontier
+    (M : TriangleMesh) (J : PolygonalCircle)
+    (hsupport : M.toPlaneComplex.support = J.closedRegion)
+    (T : M.Triangle) (k : Fin 3) (hfree : M.IsOneEdgeFreeTriangle T k)
+    (hmore : 1 < M.triangles.card)
+    (U : Set Plane) (hU : IsOpen U) (hTU : M.triangleCarrier T.1 ⊆ U) :
+    ∃ g : Plane ≃ₜ Plane, ∃ J' : PolygonalCircle,
+      IsPLHomeomorphOn g univ univ ∧
+      Set.EqOn g id Uᶜ ∧
+        EqOn g id (frontier M.toPlaneComplex.support \ M.triangleCarrier T.1) ∧
+        g '' frontier M.toPlaneComplex.support =
+          frontier (M.eraseTriangle T.1).toPlaneComplex.support ∧
+        (M.eraseTriangle T.1).toPlaneComplex.support = J'.closedRegion := by
+  obtain ⟨g, J', hg, hfix, hboundary, -, hfrontier, hremaining⟩ :=
+    exists_isPLHomeomorphOn_remove_oneEdgeFree_triangle_fixing_frontier_and_family
+      M J hsupport T k hfree hmore (fun i : Empty => isEmptyElim i)
+        (fun i => isEmptyElim i) U hU hTU
+  exact ⟨g, J', hg, hfix, hboundary, hfrontier, hremaining⟩
 
 theorem exists_isPLHomeomorphOn_remove_oneEdgeFree_triangle
     (M : TriangleMesh) (J : PolygonalCircle)
@@ -714,15 +740,20 @@ theorem exists_isPLHomeomorphOn_remove_oneEdgeFree_triangle
     exists_isPLHomeomorphOn_remove_oneEdgeFree_triangle_fixing_frontier M J hsupport T k hfree hmore U hU hTU
   exact ⟨g, J', hg, hU', hfront, hremaining⟩
 
-theorem exists_isPLHomeomorphOn_remove_twoEdgeFree_triangle_fixing_frontier
+theorem exists_isPLHomeomorphOn_remove_twoEdgeFree_triangle_fixing_frontier_and_family
     (M : TriangleMesh) (J : PolygonalCircle)
     (hsupport : M.toPlaneComplex.support = J.closedRegion)
     (T : M.Triangle) (k : Fin 3) (hfree : M.IsTwoEdgeFreeTriangle T k)
+    {ι : Type*} [Finite ι] (A : ι → Set Plane)
+    (hA : ∀ i, ∃ ε : ℝ, 0 < ε ∧ ∀ δ : ℝ, 0 < δ → δ < ε →
+      transportedThinKitePatch (M.freeTriangleAffineEquiv T k) δ ∩ A i ⊆
+        {M.freeTriangleOrder T k 0, M.freeTriangleOrder T k 1})
     (U : Set Plane) (hU : IsOpen U) (hTU : M.triangleCarrier T.1 ⊆ U) :
     ∃ g : Plane ≃ₜ Plane, ∃ J' : PolygonalCircle,
       IsPLHomeomorphOn g univ univ ∧
       Set.EqOn g id Uᶜ ∧
         EqOn g id (frontier M.toPlaneComplex.support \ M.triangleCarrier T.1) ∧
+        EqOn g id (⋃ i, A i) ∧
         g '' frontier M.toPlaneComplex.support =
           frontier (M.eraseTriangle T.1).toPlaneComplex.support ∧
         (M.eraseTriangle T.1).toPlaneComplex.support = J'.closedRegion := by
@@ -827,9 +858,20 @@ theorem exists_isPLHomeomorphOn_remove_twoEdgeFree_triangle_fixing_frontier
   have htriangleW : convexHull ℝ (Set.range kiteTrianglePosition) ⊆ W := by
     intro p hp
     exact hTU (htriangleImage ▸ ⟨p, hp, rfl⟩)
-  obtain ⟨δ, hδ, hpatchW, hfixK⟩ :=
-    K.exists_thinKite_fixing_outside_triangle hleft hcenter hright htraceK
-      W hW htriangleW
+  let A' : ι → Set Plane := fun i => E ⁻¹' A i
+  have hA' : ∀ i, ∃ ε : ℝ, 0 < ε ∧ ∀ δ : ℝ, 0 < δ → δ < ε →
+      thinKitePatch δ ∩ A' i ⊆ {planePoint (-1) 0, planePoint 1 0} := by
+    intro i
+    obtain ⟨ε, hε, hi⟩ := hA i
+    refine ⟨ε, hε, fun δ hδ hδε p hp => ?_⟩
+    have hpWorld := hi δ hδ hδε
+      ⟨show E p ∈ transportedThinKitePatch E δ from ⟨p, hp.1, rfl⟩, hp.2⟩
+    rcases hpWorld with hpWorld | hpWorld
+    · exact Or.inl (E.injective (hpWorld.trans h0.symm))
+    · exact Or.inr (E.injective (hpWorld.trans h1.symm))
+  obtain ⟨δ, hδ, hpatchW, hfixK, hfixA⟩ :=
+    DifferentialGeometry.Topology.PiecewiseLinear.PolygonalCircle.exists_thinKite_fixing_outside_triangle_and_family
+      K hleft hcenter hright htraceK A' hA' W hW htriangleW
   let thin := thinKiteAmbientHomeomorph δ hδ
   let push := transportedThinKiteHomeomorph E δ hδ
   have push_apply (p : Plane) : push p = E (thin (E.symm p)) := rfl
@@ -852,6 +894,18 @@ theorem exists_isPLHomeomorphOn_remove_twoEdgeFree_triangle_fixing_frontier
       rw [← htriangleImage]
       exact ⟨E.symm p, hpTriangle, by simp⟩
     have hpFix := hfixK ⟨hpK, hpNotTriangle⟩
+    change push p = p
+    rw [push_apply, hpFix]
+    simp
+  have hfixWorldFamily : Set.EqOn push id (⋃ i, A i) := by
+    intro p hp
+    obtain ⟨i, hpi⟩ := Set.mem_iUnion.mp hp
+    have hpA' : E.symm p ∈ ⋃ i, A' i := by
+      apply Set.mem_iUnion.mpr
+      refine ⟨i, ?_⟩
+      change E (E.symm p) ∈ A i
+      simpa using hpi
+    have hpFix := hfixA hpA'
     change push p = p
     rw [push_apply, hpFix]
     simp
@@ -892,6 +946,9 @@ theorem exists_isPLHomeomorphOn_remove_twoEdgeFree_triangle_fixing_frontier
     intro p hp
     have hpp : push p = p := hfixU hp
     exact push.symm_apply_eq.mpr hpp.symm
+  have hpullFamily : Set.EqOn pull id (⋃ i, A i) := by
+    intro p hp
+    exact push.symm_apply_eq.mpr (hfixWorldFamily hp).symm
   have hpull : pull '' frontier M.toPlaneComplex.support =
       frontier (M.eraseTriangle T.1).toPlaneComplex.support := by
     rw [← hpush, Set.image_image]
@@ -899,7 +956,25 @@ theorem exists_isPLHomeomorphOn_remove_twoEdgeFree_triangle_fixing_frontier
   exact ⟨pull, J',
     (isPLHomeomorphOn_transportedThinKiteHomeomorph E δ hδ).homeomorph_symm,
     hpullFix, (fun x hx => push.symm_apply_eq.mpr (hfixOutside hx).symm),
-    hpull, hremaining⟩
+    hpullFamily, hpull, hremaining⟩
+
+theorem exists_isPLHomeomorphOn_remove_twoEdgeFree_triangle_fixing_frontier
+    (M : TriangleMesh) (J : PolygonalCircle)
+    (hsupport : M.toPlaneComplex.support = J.closedRegion)
+    (T : M.Triangle) (k : Fin 3) (hfree : M.IsTwoEdgeFreeTriangle T k)
+    (U : Set Plane) (hU : IsOpen U) (hTU : M.triangleCarrier T.1 ⊆ U) :
+    ∃ g : Plane ≃ₜ Plane, ∃ J' : PolygonalCircle,
+      IsPLHomeomorphOn g univ univ ∧
+      Set.EqOn g id Uᶜ ∧
+        EqOn g id (frontier M.toPlaneComplex.support \ M.triangleCarrier T.1) ∧
+        g '' frontier M.toPlaneComplex.support =
+          frontier (M.eraseTriangle T.1).toPlaneComplex.support ∧
+        (M.eraseTriangle T.1).toPlaneComplex.support = J'.closedRegion := by
+  obtain ⟨g, J', hg, hfix, hboundary, -, hfrontier, hremaining⟩ :=
+    exists_isPLHomeomorphOn_remove_twoEdgeFree_triangle_fixing_frontier_and_family
+      M J hsupport T k hfree (fun i : Empty => isEmptyElim i)
+        (fun i => isEmptyElim i) U hU hTU
+  exact ⟨g, J', hg, hfix, hboundary, hfrontier, hremaining⟩
 
 theorem exists_isPLHomeomorphOn_remove_twoEdgeFree_triangle
     (M : TriangleMesh) (J : PolygonalCircle)
@@ -916,6 +991,41 @@ theorem exists_isPLHomeomorphOn_remove_twoEdgeFree_triangle
     exists_isPLHomeomorphOn_remove_twoEdgeFree_triangle_fixing_frontier M J hsupport T k hfree U hU hTU
   exact ⟨g, J', hg, hU', hfront, hremaining⟩
 
+theorem exists_isPLHomeomorphOn_remove_geometricallyFree_triangle_fixing_frontier_and_family
+    (M : TriangleMesh) (hM : IsPLBall 2 M.toPlaneComplex.support)
+    (T : M.Triangle) (hfree : M.IsGeometricallyFreeTriangle T)
+    (hmore : 1 < M.triangles.card) {U : Set Plane} (hU : IsOpen U)
+    (hTU : M.triangleCarrier T.1 ⊆ U)
+    {ι : Type*} [Finite ι] (A : ι → Set Plane)
+    (hA : ∀ k, (M.IsOneEdgeFreeTriangle T k ∨ M.IsTwoEdgeFreeTriangle T k) →
+      ∀ i, ∃ ε : ℝ, 0 < ε ∧ ∀ δ : ℝ, 0 < δ → δ < ε →
+        transportedThinKitePatch (M.freeTriangleAffineEquiv T k) δ ∩ A i ⊆
+          {M.freeTriangleOrder T k 0, M.freeTriangleOrder T k 1}) :
+    ∃ g : Plane ≃ₜ Plane, IsPLHomeomorphOn g univ univ ∧ EqOn g id Uᶜ ∧
+      EqOn g id (frontier M.toPlaneComplex.support \ M.triangleCarrier T.1) ∧
+      EqOn g id (⋃ i, A i) ∧
+      g '' M.toPlaneComplex.support = (M.eraseTriangle T.1).toPlaneComplex.support ∧
+      IsPLBall 2 (M.eraseTriangle T.1).toPlaneComplex.support := by
+  obtain ⟨J, hJ⟩ := exists_polygonalCircle_of_isPLBall_two hM
+  obtain ⟨g, J', hg, hfix, hboundary, hfamily, hfront, hsupport⟩ :
+      ∃ (g : Plane ≃ₜ Plane) (J' : PolygonalCircle),
+        IsPLHomeomorphOn g univ univ ∧ EqOn g id Uᶜ ∧
+        EqOn g id (frontier M.toPlaneComplex.support \ M.triangleCarrier T.1) ∧
+        EqOn g id (⋃ i, A i) ∧
+        g '' frontier M.toPlaneComplex.support =
+          frontier (M.eraseTriangle T.1).toPlaneComplex.support ∧
+        (M.eraseTriangle T.1).toPlaneComplex.support = J'.closedRegion := by
+    obtain ⟨k, h | h⟩ := hfree
+    · exact exists_isPLHomeomorphOn_remove_oneEdgeFree_triangle_fixing_frontier_and_family
+        M J hJ.symm T k h hmore A (hA k (Or.inl h)) U hU hTU
+    · exact exists_isPLHomeomorphOn_remove_twoEdgeFree_triangle_fixing_frontier_and_family
+        M J hJ.symm T k h A (hA k (Or.inr h)) U hU hTU
+  have himage := PolygonalCircle.TriangleMesh.image_support_eq_of_polygonalDisk_frontier
+    M J' ⟨T.1, T.property⟩ g (M.eraseTriangle T.1) hfront hsupport
+  refine ⟨g, hg, hfix, hboundary, hfamily, himage, ?_⟩
+  rw [hsupport]
+  exact isPLBall_two_closedRegion J'
+
 theorem exists_isPLHomeomorphOn_remove_geometricallyFree_triangle_fixing_frontier
     (M : TriangleMesh) (hM : IsPLBall 2 M.toPlaneComplex.support)
     (T : M.Triangle) (hfree : M.IsGeometricallyFreeTriangle T)
@@ -925,22 +1035,11 @@ theorem exists_isPLHomeomorphOn_remove_geometricallyFree_triangle_fixing_frontie
       EqOn g id (frontier M.toPlaneComplex.support \ M.triangleCarrier T.1) ∧
       g '' M.toPlaneComplex.support = (M.eraseTriangle T.1).toPlaneComplex.support ∧
       IsPLBall 2 (M.eraseTriangle T.1).toPlaneComplex.support := by
-  obtain ⟨J, hJ⟩ := exists_polygonalCircle_of_isPLBall_two hM
-  obtain ⟨g, J', hg, hfix, hboundary, hfront, hsupport⟩ :
-      ∃ (g : Plane ≃ₜ Plane) (J' : PolygonalCircle),
-        IsPLHomeomorphOn g univ univ ∧ EqOn g id Uᶜ ∧
-        EqOn g id (frontier M.toPlaneComplex.support \ M.triangleCarrier T.1) ∧
-        g '' frontier M.toPlaneComplex.support =
-          frontier (M.eraseTriangle T.1).toPlaneComplex.support ∧
-        (M.eraseTriangle T.1).toPlaneComplex.support = J'.closedRegion := by
-    obtain ⟨k, h | h⟩ := hfree
-    · exact exists_isPLHomeomorphOn_remove_oneEdgeFree_triangle_fixing_frontier M J hJ.symm T k h hmore U hU hTU
-    · exact exists_isPLHomeomorphOn_remove_twoEdgeFree_triangle_fixing_frontier M J hJ.symm T k h U hU hTU
-  have himage := PolygonalCircle.TriangleMesh.image_support_eq_of_polygonalDisk_frontier
-    M J' ⟨T.1, T.property⟩ g (M.eraseTriangle T.1) hfront hsupport
-  refine ⟨g, hg, hfix, hboundary, himage, ?_⟩
-  rw [hsupport]
-  exact isPLBall_two_closedRegion J'
+  obtain ⟨g, hg, hfix, hboundary, -, himage, hball⟩ :=
+    exists_isPLHomeomorphOn_remove_geometricallyFree_triangle_fixing_frontier_and_family
+      M hM T hfree hmore hU hTU (fun i : Empty => isEmptyElim i)
+        (fun _ _ i => isEmptyElim i)
+  exact ⟨g, hg, hfix, hboundary, himage, hball⟩
 
 theorem exists_isPLHomeomorphOn_remove_geometricallyFree_triangle
     (M : TriangleMesh) (hM : IsPLBall 2 M.toPlaneComplex.support)
