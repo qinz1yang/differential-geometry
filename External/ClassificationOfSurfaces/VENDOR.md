@@ -1339,3 +1339,28 @@ Logs: `.lake/scratch/check-boundary-extension.log`,
 `.lake/scratch/check-simplex-ball-pair.log`,
 `.lake/scratch/check-ball-gluing.log`, and
 `.lake/scratch/audit-ball-gluing.log`.
+
+## Gluing polyhedral three-balls in a triangulated manifold (Moise 23.11)
+
+`BallGluingManifold.lean` transports the checked boundary-disk gluing
+theorem through an existing PL piece. Its finite combinatorial
+three-manifold endpoint allows the two balls to lie in different vertex
+stars. In fact, the PL ball hypotheses suffice without any star
+restriction or 17.12 assumption. The intersection is a polyhedral
+two-ball contained in both topological frontiers.
+
+`PieceTransition.lean` generalizes transitions to nested pieces while
+preserving both original signatures. `PieceInclusion.lean` represents a
+polyhedral sub-ball in any containing piece, restricts a piece to a
+polyhedron, and transports native PL balls back into the manifold.
+These supporting results retain arbitrary dimensions and finite-dimensional
+real normed ambient spaces. No vendored Lean source changed.
+
+All three changed modules pass focused checks with exit 0 and zero
+warnings. `AuditS57.lean` audits eleven declarations, including the two
+preserved transition endpoints, and prints the triangulated-manifold
+statement: exit 0, only `propext`, `Classical.choice`, and `Quot.sound`.
+Logs: `.lake/scratch/check-piece-transition.log`,
+`.lake/scratch/check-piece-inclusion.log`,
+`.lake/scratch/check-ball-gluing-manifold.log`, and
+`.lake/scratch/audit-ball-gluing-manifold.log`.
