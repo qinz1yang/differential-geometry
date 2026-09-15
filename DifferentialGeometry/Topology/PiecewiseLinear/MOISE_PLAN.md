@@ -387,6 +387,20 @@
   此结果是 §12.2 固定最小载体路线的障碍证明，不是 F5.2 正规形式的存在证明。按交接约定在数学缺口处汇报，
   F5.2 保持 partial，等待允许跨出低维载体且保持目标片内兼容性的设计；详见交接 §14 和风险 R10。
 
+- 2026-09-15（C 车道，L.1 定义层）：工作树 `D:\differential-geometry-moise-e3`、分支 `codex/moise-e3` 的
+  `DerivedNeighborhoodRetraction.lean` 以导出细分的重心坐标质量、矩与投影显式构造子复形导出邻域到子复形的强形变收缩，
+  `derivedNeighborhoodFundamentalGroupInclusionEquiv_apply` 识别所得基本群同构为实际包含映射的 `FundamentalGroup.map`。
+  `LoopTheorem/SingularCell.lean` 定义 `SingularTwoCell`、自由环的 `FreeLoop.conjugacyClass`、顶点碰撞复杂度与
+  `NormalSystem`；`K₁` 为保留像单形的相对导出邻域且载体等于标准导出邻域，`B₁` 为边界中环复形的导出邻域；
+  `NormalSystem.complexity_eq_zero_iff_isNonsingular`、`NormalSystem.loopConjugacyClass_eq_of_connector` 与
+  `NormalSystem.loopConjugacyClass_disjoint_normal` 分别闭合复杂度零、连接道路无关性与正规子群不交条件。
+  两个模块的聚焦检查均 exit=0、零 warning；AuditL1 对 51 项端点及复用声明审计 exit=0，全部公理闭包均包含于
+  `propext`、`Classical.choice`、`Quot.sound`。本砖首次复用并逐条审计的拓扑/相对导出声明为
+  `exists_basedCircle_free_homotopic`、`basedCircleHomotopyTrack_commutes`、
+  `fundamentalGroupChangeBasepoint_connector`、`fundamentalGroupMulEquivOfHomotopyEquiv`、
+  `faces_subset_relativeDerivedNeighborhood`、`relativeDerivedNeighborhood_faces_finite`，均仅标准三公理；未经过
+  `Topology/Homology/HurewiczLowDegrees.lean`。源码提交 `d81e1897c`；L.1 无未闭合书中步骤，未运行根构建，未登记根聚合。
+
 ## 7. 决策与风险
 
 - 不采用 Bing 定理 7 的“保留单形”强形式，只用 Moise §8/§35 的紧致图卡归纳（书中 `chap:two-set-gluing` 的方案）。

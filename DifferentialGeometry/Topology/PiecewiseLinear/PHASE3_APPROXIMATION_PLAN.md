@@ -195,7 +195,7 @@ F1.2 与 F2.3 将共用同一套机制：H-多面体的（暴露）面、相对�
 | H.3 | §21：开胞腔复形的 χ 与运算 α–δ 不变；21.6 `χ(J) = 0`；21.7 2-胞腔 `χ = 1`；21.8 加法；21.10–21.11 分裂与张成 | 组合陈述于多面体曲面 | §22, §23.18–19, §28.20, §30.4, §33 L7 | new | 4k–6k |
 | H.4 | §22：22.5 `χ = 2 − (2h + m)`、22.6–22.7 `p¹` 与 `χ`、22.8–22.10 分类（可定向 + χ 决定同胚型）、22.11 单连通 ⟹ 2-球面、Problems 22.11–22.12 | 只对**多面体**紧致曲面陈述；22.9 用于 §33 L11–L12；22.11 用于 §30.6、§32；备选：移植 classification-of-surfaces 的 `classification_of_surfaces`（拓扑版，142k 行依赖，**不推荐**整体移植） | §26.8, §28.6, §30.4, §30.6, §32, §33 | new | 10k–18k |
 | H.5 | 23.18–23.19：`h(B) = p¹(N)`（`dim L ≤ 1`）、`p¹(K) ≥ h(Bd \|K\|)`（可定向带边） | 用 23.11–23.16、H.3、H.4 | §24.8 | new | 4k–6k |
-| H.6 | 28.11：`K = K₁ ∪ K₂`，`Zⁿ` 在 `K₁` 上、在 `K` 上零调 ⟹ `K₁` 上同调于 `K₁ ∩ K₂` 上的循环 | 单纯链的直接计算 | §31.4, §34 L4 | new | 1k |
+| H.6 | 28.11：`K = K₁ ∪ K₂`，`Zⁿ` 在 `K₁` 上、在 `K` 上零调 ⟹ `K₁` 上同调于 `K₁ ∩ K₂` 上的循环 | 单纯链的直接计算 | §31.4, §34 L4 | partial（2026-09-15；L.1 提供可复用拓扑输入）：`DerivedNeighborhoodRetraction.lean` 的 `derivedNeighborhoodStrongDeformationRetract`、`derivedNeighborhoodFundamentalGroupInclusionEquiv` 已闭合；28.11 的单纯链结论仍未证 | 1k（链结论剩余估计） |
 
 F 车道同步补充的原生平面输入（至 `d0902b2cd`）：`PolygonalSchoenflies.lean`（与 S 的 vendored 桥接文件
 `PlanarSchoenflies.lean` 不同）已提供 Jordan 区域的有限三角剖分与边界子复形、指定端点的 PL 弧匹配、
@@ -315,7 +315,7 @@ D 为 PL 2-球及 D 位于 frontier C，`HasPushProperty` 对所有这样的 D �
 
 | 编号 | 内容 | 拟定 Lean | 消费者 | 状态 | 行数 |
 |---|---|---|---|---|---|
-| L.1 | 奇异 2-胞腔、`L(X)` 共轭类、正规系统 `[M₁, K₁, D, K(Δ), B₁, N₁]` 与复杂度 | 定义层 | L.2–L.4 | new | 2k–3k |
+| L.1 | 奇异 2-胞腔、`L(X)` 共轭类、正规系统 `[M₁, K₁, D, K(Δ), B₁, N₁]` 与复杂度 | `SingularTwoCell`、`FreeLoop.conjugacyClass`、`NormalSystem`、`NormalSystem.complexity_eq_zero_iff_isNonsingular`；`DerivedNeighborhoodRetraction.lean` 给 `derivedNeighborhoodStrongDeformationRetract` 与实际包含映射诱导的 `derivedNeighborhoodFundamentalGroupInclusionEquiv` | L.2–L.4 | done（2026-09-15，`d81e1897c`）：`K₁` 取保留像单形的相对导出邻域，其载体与标准导出邻域相等；`B₁` 为边界中环复形的导出邻域；环共轭类不依赖连接道路，正规子群给共轭类包含/不交二择一，复杂度为顶点碰撞对数且零当且仅当全单纯映射单射。两个模块检查 exit=0、零 warning；AuditL1 审计 51 项端点与复用声明，均仅标准三公理；L.1 无未闭合书中步骤 | 1118 行 |
 | L.2 | 25 L1：`B` 2-球面时（`B'` 为 `\|L\|` 的正则邻域是 `k`-环带，π 自由）直接得非奇异 `D₁` | 用 P.1 变体（球面上多边形界定 2-胞腔）、F4.2 | L.4 | new | 2k–3k |
 | L.3 | 25 L2：局部同胚、至多 2 对 1 的 `D` 的四种情形（Case 1–4，切开与复杂度归纳） | F5.2 正规形式 + 柱形图（Figure 25.2）+ 基本群字计算（Figures 25.3–25.6） | L.4 | new | 8k–14k |
 | L.4 | 25 L3 / **25.1**：对每个正规系统存在非奇异 `D'`（二重覆盖降复杂度：C.3–C.5，`g*` 指标 2 不满） | `theorem loop_theorem_stallings (hK : IsCombinatorialManifoldWithBoundary 3 K) (B : boundary component) (N : Subgroup (FundamentalGroup B.space P₀)) [N.Normal] (D : PL singular 2-cell with Bd D ⊆ B.space) (hD : loopClass (Bd D) ∉ N) : ∃ Δ ⊆ K.space, IsPLBall 2 Δ ∧ Δ ∩ (boundaryComplex K).space = frontier Δ ∧ frontier Δ ⊆ B.space ∧ loopClass (frontier Δ) ∉ N` | L.5 | new | 8k–12k |
