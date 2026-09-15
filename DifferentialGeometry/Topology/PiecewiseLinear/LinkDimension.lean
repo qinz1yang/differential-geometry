@@ -118,6 +118,59 @@ theorem card_le_of_isPLSphere [FiniteDimensional ℝ E] {m : ℕ}
     {s : Finset E} (hs : s ∈ K.faces) : s.card ≤ m + 1 :=
   card_le_of_isPLBall_or_isPLSphere K (Or.inr hK) hs
 
+theorem exists_face_superset_card_eq_of_isPLBall_or_isPLSphere [FiniteDimensional ℝ E]
+    {n : ℕ} (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
+    (hK : IsPLBall n K.space ∨ IsPLSphere n K.space) {s : Finset E} (hs : s ∈ K.faces) :
+    ∃ t ∈ K.faces, s ⊆ t ∧ t.card = n + 1 := by
+  classical
+  induction n generalizing K s with
+  | zero =>
+      refine ⟨s, hs, Finset.Subset.refl _, ?_⟩
+      have hle := card_le_of_isPLBall_or_isPLSphere K hK hs
+      have hpos := Finset.card_pos.mpr (K.nonempty_of_mem_faces hs)
+      omega
+  | succ n ih =>
+      obtain ⟨v, hv⟩ := K.nonempty_of_mem_faces hs
+      have hvK : {v} ∈ K.faces :=
+        K.down_closed hs (Finset.singleton_subset_iff.mpr hv) (Finset.singleton_nonempty v)
+      let L := SimplicialComplex.geometricLink K {v}
+      have hL : IsPLBall n L.space ∨ IsPLSphere n L.space := by
+        rcases hK with hball | hsphere
+        · exact (isPLSphere_or_isPLBall_geometricLink_of_isPLBall K hball hvK).symm
+        · exact Or.inr (isPLSphere_geometricLink_of_isPLSphere K hsphere hvK)
+      obtain ⟨t, ht, hst, hcard⟩ : ∃ t ∈ L.faces, s.erase v ⊆ t ∧ t.card = n + 1 := by
+        by_cases hne : (s.erase v).Nonempty
+        · have hsL : s.erase v ∈ L.faces := by
+            apply (SimplicialComplex.mem_geometricLink_singleton K v (s.erase v)).mpr
+            refine ⟨hne, Finset.notMem_erase v s, ?_⟩
+            rwa [Finset.insert_erase hv]
+          exact ih L hL hsL
+        · obtain ⟨x, hx⟩ := hL.elim IsPLBall.nonempty IsPLSphere.nonempty
+          obtain ⟨r, hr, -⟩ := L.mem_space_iff.mp hx
+          obtain ⟨t, ht, -, hcard⟩ := ih L hL hr
+          refine ⟨t, ht, ?_, hcard⟩
+          rw [Finset.not_nonempty_iff_eq_empty.mp hne]
+          exact Finset.empty_subset t
+      have htL := (SimplicialComplex.mem_geometricLink_singleton K v t).mp ht
+      refine ⟨insert v t, htL.2.2, ?_, ?_⟩
+      · intro w hw
+        by_cases hwv : w = v
+        · exact Finset.mem_insert.mpr (Or.inl hwv)
+        · exact Finset.mem_insert_of_mem (hst (Finset.mem_erase.mpr ⟨hwv, hw⟩))
+      · rw [Finset.card_insert_of_notMem htL.2.1, hcard]
+
+theorem exists_face_superset_card_eq_of_isPLBall [FiniteDimensional ℝ E]
+    {n : ℕ} (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
+    (hK : IsPLBall n K.space) {s : Finset E} (hs : s ∈ K.faces) :
+    ∃ t ∈ K.faces, s ⊆ t ∧ t.card = n + 1 :=
+  exists_face_superset_card_eq_of_isPLBall_or_isPLSphere K (Or.inl hK) hs
+
+theorem exists_face_superset_card_eq_of_isPLSphere [FiniteDimensional ℝ E]
+    {n : ℕ} (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
+    (hK : IsPLSphere n K.space) {s : Finset E} (hs : s ∈ K.faces) :
+    ∃ t ∈ K.faces, s ⊆ t ∧ t.card = n + 1 :=
+  exists_face_superset_card_eq_of_isPLBall_or_isPLSphere K (Or.inr hK) hs
+
 theorem convexHull_subset_closure_openSimplex {s : Finset E} (hs : s.Nonempty) :
     convexHull ℝ (s : Set E) ⊆ closure (openSimplex s) := by
   intro x hx

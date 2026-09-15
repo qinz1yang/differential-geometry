@@ -18,3 +18,6 @@ rev = "v4.33.1"
 
 [[lean_lib]]
 name = "DifferentialGeometry"
+
+[[lean_lib]]
+name = "External"

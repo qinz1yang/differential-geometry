@@ -250,6 +250,112 @@
     `AtlasOn.hasGroupoid/restrict`、`exists_isHPolytope_subset_mem_nhds` 均只依赖 `propext`、`Classical.choice`、`Quot.sound`。
     条件性完全由签名中的 `PLApproximation`/`PLSmoothing` 假设表达，树中没有新增 `sorry`/`axiom`。
 
+- 2026-09-14（车道 E.0，不变域，工作树 `D:/differential-geometry-moise-e0`，分支 `codex/moise-e0`）：
+  四砖已闭合：`Topology/InvarianceOfDomain.lean`（上游解析证明与图卡接口，保留抽象条件签名）；
+  `Topology/FixedPoint/NoRetraction.lean`（任意正有限维无收缩，一维连通性，高维球面顶维同调）；
+  `Topology/FixedPoint/Brouwer.lean`（任意有限维闭单位球不动点定理及已证实例，含零维）；
+  `Topology/InvarianceOfDomainManifold.lean`（七个无未证类参数的最终接口）。
+  主端点为 `invariance_of_domain_isOpen_image`、`isOpen_image_of_continuousOn_injOn`、
+  `isOpenMap_of_continuous_injective`；另有
+  `isOpen_range_of_isOpen_of_continuous_injective_real`、`isOpen_range_of_isOpen_of_isEmbedding_real`、
+  `isInteriorPoint_iff_any_chart_real`、`isBoundaryPoint_iff_any_chart_real`。
+  模型空间 `E : Type*`、流形宇宙独立，且审计文件显式检查了 `EuclideanSpace ℝ (Fin n)` 的要求形式。
+  每砖仅经交接脚本 `check-f.ps1` 串行检查（均 exit=0、零错误零警告），
+  `AuditE01`/`AuditE02`/`AuditE03`/`AuditE0`（本车道 `.lake/scratch`）审计只含允许的标准公理；
+  七个最终接口、无收缩定理、不动点定理及其实例均只含 `propext`、`Classical.choice`、`Quot.sound`。
+  检查点 `8a113f636`、`87d67526b`、`5025cc6f0`、`7723c30c3` 已逐砖推送。
+  与交接路线的实现差异：直接复用 `integralSingularHomology_subsingleton_of_contractible`，省去约化同调桥；
+  流形证明用一个源图卡与已有模型到流形开像定理；追加四个显式无条件的实模型接口。
+  原生移植来源为 mccorvie/classification-of-surfaces@e3c7230，原版权/作者声明、Apache-2.0 全文和修改记录
+  保存在 `docs/third_party/`。无新增证明债、注释、诊断命令或资源选项。
+  最终同步已抓取并纳入 F 分支 `6b67ac39f`；为同时保留逐砖发布历史与禁止 force-push 的约束，采用
+  `5770071c3` 将 F 更新合入 E.0。普通 rebase 会重写已发布的四个检查点，其本地结果未发布，已恢复到
+  内容相同且保留双方历史的合并节点。未修改 F 工作树或分支，未合并 E.0 到 F，未运行 `lake build`，
+  未登记根聚合；E.0 数学端点完成，S.1、M.3、E.3/E.4 自身义务继续由各自车道承担。
+
+- 2026-09-14（S 车道前半，`D:/differential-geometry-moise-s`，`codex/moise-s`）：
+  - S0.1：`a940dc7e4` vendoring `ClassificationOfSurfaces` 的 16 个平面 PL 模块，来源固定为
+    `e3c7230fe78d7b056a415d9ecae6f77887046b32`，Apache-2.0；保留注释、版权头、命名空间和原始文档。
+    每处 import/API 漂移与 13 条获准保留的原始纯风格警告均记录于 `External/ClassificationOfSurfaces/VENDOR.md`。
+    按依赖序逐模块检查 exit=0，AuditS1 仅标准三公理。
+  - S0.2/P.1：`81b0310b5` 的 `PlanarSchoenflies.lean` 与 `SimplexFrontier.lean` 证明
+    原生 PL 1-球面与 `PolygonalCircle` 的双向转换，以及 `isPLBall_of_isPLSphere_one` 的有界 PL 2-球填充。
+    `72fb0bbd3` 补齐完整 3.7：`exists_isPLHomeomorphOn_straighten` / `_of_isPLSphere_one` 给全平面
+    双向 PL 的相对整直，固定指定开集外；原 `_on_closedRegion` 签名保留为推论。AuditS10 十项仅标准三公理。
+    自由三角形移动及剥离归纳的出处和修改记录已补入 VENDOR。
+    P.3 已有三角剖分多边形盘的两个几何自由三角形，P.5 已有多边形 θ-图区域分解；一般相对胞腔删除、
+    任意弧 4.4 和 Problem 4.1 未闭合。第二批只提供 6.2–6.3 的嵌入逼近，未覆盖 P.4 的 10.8，故没有导入。
+  - S.1：`a04d993c4` 整合 E3 的 frontier/边界点球邻域证明，适配 F 的规范边界不变性，
+    `PolyhedralBoundary.lean` 与 `FrontierBoundary.lean` 提供所有正维欧氏形式和流形形式。
+    AuditS3 含显式 ℝ³ 签名，六项均仅标准三公理；没有把重用 E3 的代码报告为独立新证明。
+  - P.2：`ff7fc67ca` 的 `BallFrontier.lean` 证明实际 frontier 上的 PL 球边界延拓，
+    `n = 1` 给平面 2-球形式，并证明 PL 球 frontier 的球面性；AuditS6 四项仅标准三公理。
+  - S.2 **partial**：`8a6995d74` 的 `PushProperty.lean` 证明 17.7；`b29c69f17` 的
+    `AmbientExtension.lean` / `ConeIsotopy.lean` 给相对多面体邻域中的顶点移动及锥顶连续路径移动；
+    `8c4d4fe91` 的 `SimplexBoundaryImage.lean` / `SimplexPush.lean` 闭合 17.4 的任意四面体面推送。
+    核对并修正计划原先的邻域写法：使用 `C \ J`，不取闭包，J 是盘的内在边界圈而非环境 frontier D。
+    `e3686847e` 增加固定 frontier 的恒等延拓、交集保持的 PL 拼接及两侧锥环境延拓，
+    三个新声明连同全平面相对定理通过 AuditS11。17.5 尚缺四面体边界星的锥交集、frontier、
+    支撑控制几何条件和保留指定三角形的删除归纳；17.6、17.8 仍依赖它。无占位证明债。
+  - 最终 13 个 S 原生模块和 2 个同步的 F 半空间模块逐一复查 exit=0、零警告；
+    AuditS12 在同一环境中审计 60 个不同声明，全部仅标准三公理、exit=0。
+    日志为 `.lake/scratch/final2-*.log` 和 `audit-final2-s.log`。未运行 lake build，未登记根聚合。
+    最终同步 F 至 `b66f6b5b0` 时使用普通合并保留已发布检查点，未重写历史或 force-push，
+    未将 S 分支合并到其它分支；精确消费状态和 §17.4–17.12 拟定陈述见 `PHASE3_APPROXIMATION_PLAN.md` §4.1–4.2。
+
+- 2026-09-15（S 车道继续，工作树与分支保持不变）：
+  - 平面链：`4fffc8f99` 将保留指定三角形接入删除归纳；`91172ea49` 证明 PL 球/球面非空、
+    有限剖分的纯维性及同维欧氏 PL 球的内部稠密性，并由此识别任意原生平面 PL 圆盘为多边形闭区域。
+    `exists_isPLHomeomorphOn_remove_geometricallyFree_triangle` 给整盘的精确删除像和剩余盘球性。
+    `80fceca30` 的 `exists_isPLHomeomorphOn_straighten_to_face` 接受任意原生剖分及任意指定三角形。
+  - 17.5 的几何准备：`21401b31b` / `01974cece` 实际构造顶点星的两侧锥并证明交集、frontier 和支撑；
+    `afc350cbe` 产生与 D 兼容且闭星足够细的边界剖分，以及星到对面的单纯坐标。
+    `aebd603dd` 的 `SimplexAffine` / `SimplexCornerChart` 给真正二维欧氏坐标、实际边界和开星对应；
+    环境延拓保持整个四面体，逐点固定对面与给定邻域外，并给任意边界子集的精确图像公式。
+  - `80fceca30` 的 `SimplexDisk`：对整个 D 位于一个原始顶点开星内的情形，
+    `exists_isPLHomeomorphOn_straighten_to_face_in_simplex_vertex_star` 将 D 整直到任意指定剖分三角形，
+    保持四面体并固定对面及邻域外；任意 PL 圆盘的推论自行产生该三角形。
+    `8fa61de34` 的 `StarSubdivision` 证明闭星覆盖控制在任意后续细分下保持。
+  - 真实剩余义务：跨星圆盘的局部自由三角形删除须控制接缝并证明整个圆盘的删除像，再作保留三角形归纳。
+    星内交集未必是盘，上游的整盘删除不能直接用于它。完整 17.5、17.6、17.8 及 S.2 仍为 partial；
+    P.3 的一般 17.2/17.3、P.4 的 10.8、P.5 的任意弧版本仍未闭合，第二批仍不触发。
+  - 验证：每层原生检查 exit=0、零警告；AuditS13–S21 的端点仅标准三公理。
+    `9c9002426` 纳入 F 至 `8c1ce1d4f` 时复查 39 个修改/相关模块、AuditS18 审计 127 项；
+    最后抓取并合入 F 至 `d0902b2cd`，保留 S 已完成的 P.1/P.2，整合 F 的横截弧剖分、边界和降阶输入。
+    最后复查 12 个模块均 exit=0、零警告；AuditS22 去重审计 198 个声明，仅标准三公理、exit=0；
+    日志为 `final3-*.log` 与 `audit-final3-s.log`。
+    所有同步均为 S 上的普通合并，未改其它车道源码或重写已发布历史；未运行 lake build，未登记根聚合。
+    逐层出处、调整和验证记录位于 `External/ClassificationOfSurfaces/VENDOR.md`，本轮未修改 vendor Lean 源码。
+
+- 2026-09-15（Phase 3 车道 C：Moise §24 C.1–C.3，工作树 `D:\differential-geometry-moise-e3`，分支 `codex/moise-e3`）：
+  `CoveringLift.lean` 闭合 24.1–24.4：PL 球的单连通与局部道路连通、覆盖唯一提升、基本群映射单射、闭路提升判据、
+  单值作用的稳定子/像子群识别、连通覆盖的纤维基数等于像子群指标；九个端点检查 exit=0、零 warning，AuditC1
+  仅 `propext`、`Classical.choice`、`Quot.sound`，源码提交 `2df0546f5`。`DoubleCoverComplex.lean` 从有限复形上的
+  `SimplicialBoolCocycle` 构造 `BoolCocycle` 二重覆盖，证明纤维基数为 2，并以连续截面双向识别上边界，得到
+  `connectedSpace_iff : ConnectedSpace TotalSpace ↔ ¬ IsCoboundary`；二十三个端点检查 exit=0、零 warning，AuditC2
+  仅标准三公理，源码提交 `364fbe752`。`CoveringTriangulation.lean` 对任意有限纤维覆盖逐基单形作唯一提升，以纤维顶点
+  的标准基实现有限复形，粘合出 `coveringSpaceHomeomorph`；投影逐单形等于仿射映射并满射到一个基单形，顶点 link 的
+  `coveringVertexLink_isGlueIso` 给出任意维 `IsCombinatorialManifoldWithBoundary` 保持，最终端点为
+  `exists_lift_simplicialComplex`。十六个端点检查 exit=0、零 warning，AuditC3 仅标准三公理，源码提交 `f7e70bc61`；
+  直接逐单形提升比 Moise 24.6 的均匀覆盖细分路线更强，未弱化结论。
+  D4 首次复用审计逐条记录如下，全部只依赖标准三公理：AuditC1Reuse 的
+  `IsPLHomeomorphOn.homeomorph`、`Convex.contractibleSpace`、`Convex.locallyPathConnectedSpace`、
+  `ContinuousMap.HomotopyEquiv.simplyConnectedSpace`、`IsCoveringMap.existsUnique_continuousMap_lifts`、
+  `IsCoveringMap.continuous`、`IsCoveringMap.injective_path_homotopic_map`、`FundamentalGroup.map`、
+  `FundamentalGroup.map_apply`、`IsCoveringMap.fundamentalGroupMulAction`、`IsCoveringMap.monodromy`、
+  `IsCoveringMap.liftPathQuotient`、`IsCoveringMap.map_liftPathQuotient`、`IsCoveringMap.monodromy_eq_of_map_eq`、
+  `IsCoveringMap.liftPath`、`IsCoveringMap.liftPath_zero`、`IsCoveringMap.liftPath_lifts`、
+  `MulAction.index_stabilizer_of_transitive`；AuditC2Reuse 的 `BoolCocycle.isCoveringMap_proj`、
+  `BoolCocycle.toFiberBundleCore`、`BoolCocycle.sectionCoord`、`BoolCocycle.sectionCoord_change`、
+  `BoolCocycle.isLocallyConstant_sectionCoord`、`Covering.exists_section_of_not_connected_double_cover`、
+  `Covering.not_connected_of_double_cover_section`、`FiberBundle.isClosedMap_projection_of_finite`、
+  `Bundle.Trivialization.preimageSingletonHomeomorph`、`FiberBundle.continuousAt_totalSpace`、
+  `FiberBundle.mem_trivializationAt_proj_source`；AuditC3Reuse 的 `IsCoveringMap.exists_unique_lift_of_isPLBall`、
+  `PiecewiseLinear.IsCoveringMap.exists_unique_lift_of_face`、`Covering.t2Space_of_isCoveringMap`。整条 C.1–C.3 链未 import、
+  未传递经过含 `sorry` 的 `Topology/Homology/HurewiczLowDegrees.lean`。同步时保留上游 `BoundaryInvariance.lean` 的五个
+  边界/前沿不变性端点并合入 `polyhedralBoundary`，修正剩余旧实例语法后该模块检查 exit=0、零 warning；未运行根构建，
+  未登记根聚合。E3.2/E3.3 仍因非紧局部有限表示层缺口搁置，详见 `PHASE3_APPROXIMATION_PLAN.md` 的 F6.3/E.2/E.3/R9。
+
 ## 7. 决策与风险
 
 - 不采用 Bing 定理 7 的“保留单形”强形式，只用 Moise §8/§35 的紧致图卡归纳（书中 `chap:two-set-gluing` 的方案）。

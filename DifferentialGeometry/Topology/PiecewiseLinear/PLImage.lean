@@ -89,7 +89,53 @@ theorem IsPLHomeomorphOn.congr {f g : E → F} {P : Set E} {Q : Set F} (h : IsPL
   have h4 : f (Function.invFunOn f P y) = y := h.bijOn.invOn_invFunOn.2 hy
   exact h.bijOn.injOn h1 h3 (by rw [← hfg h1, h2, h4])
 
+theorem IsPLHomeomorphOn.homeomorph_symm {e : E ≃ₜ F} {P : Set E} {Q : Set F}
+    (h : IsPLHomeomorphOn e P Q) : IsPLHomeomorphOn e.symm Q P := by
+  refine h.symm.congr fun y hy => ?_
+  exact e.injective ((e.apply_symm_apply y).trans (h.bijOn.invOn_invFunOn.2 hy).symm)
+
+theorem simplicialMap_eq_of_forall_affineOn (K : Geometry.SimplicialComplex ℝ E) (f : E → F)
+    (hf : ∀ s ∈ K.faces, ∃ A : E →ᵃ[ℝ] F, EqOn f A (convexHull ℝ (s : Set E))) :
+    EqOn (simplicialMap K f) f K.space := by
+  intro x hx
+  obtain ⟨s, hs, hxs⟩ := K.mem_space_iff.mp hx
+  obtain ⟨A, hA⟩ := hf s hs
+  rw [simplicialMap_eq_of_mem K f hs hxs, hA hxs]
+  calc ∑ v ∈ s, weights s x v • f v = ∑ v ∈ s, weights s x v • A v :=
+        Finset.sum_congr rfl fun v hv => by
+          rw [hA (subset_convexHull ℝ _ (Finset.mem_coe.mpr hv))]
+    _ = A (∑ v ∈ s, weights s x v • v) := (affineMap_apply_sum_smul A (sum_weights hxs)).symm
+    _ = A x := by rw [sum_weights_smul hxs]
+
 variable [FiniteDimensional ℝ E] [FiniteDimensional ℝ F]
+
+theorem exists_simplicialComplex_image_of_affineOn_faces [DecidableEq F]
+    (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces] {f : E → F}
+    (hAff : ∀ s ∈ K.faces, ∃ A : E →ᵃ[ℝ] F, EqOn f A (convexHull ℝ (s : Set E)))
+    (hinj : InjOn f K.space) :
+    ∃ L : Geometry.SimplicialComplex ℝ F, L.faces.Finite ∧ L.space = f '' K.space ∧
+      (∀ t : Finset F, t ∈ L.faces ↔ ∃ s ∈ K.faces, t = s.image f) ∧
+      IsPLHomeomorphOn f K.space L.space := by
+  classical
+  have hsm := simplicialMap_eq_of_forall_affineOn K f hAff
+  choose A hA using hAff
+  have hind : ∀ σ ∈ K.faces, AffineIndependent ℝ ((↑) : {u // u ∈ σ.image f} → F) := by
+    intro σ hσ
+    have himg : σ.image f = σ.image (A σ hσ) :=
+      Finset.image_congr fun v hv => hA σ hσ (subset_convexHull ℝ _ hv)
+    rw [himg]
+    refine affineIndependent_image_of_injOn_convexHull (A σ hσ) (K.indep hσ) ?_
+    intro x hx y hy hxy
+    exact hinj (K.convexHull_subset_space hσ hx) (K.convexHull_subset_space hσ hy)
+      (by rw [hA σ hσ hx, hA σ hσ hy, hxy])
+  have hinj' : InjOn (simplicialMap K f) K.space := by
+    intro x hx y hy hxy
+    rw [hsm hx, hsm hy] at hxy
+    exact hinj hx hy hxy
+  refine ⟨simplicialImage K f hind hinj', simplicialImage_faces_finite K f hind hinj', ?_,
+    fun _ => Iff.rfl, ?_⟩
+  · rw [simplicialImage_space, hsm.image_eq]
+  · exact (isPLHomeomorphOn_simplicialImage K f hind hinj').congr fun x hx => (hsm hx).symm
 
 theorem exists_isPLHomeomorphOn_image (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
     {f : E → F} (hf : IsPiecewiseAffineOn f K.space) (hinj : InjOn f K.space) :
@@ -99,34 +145,9 @@ theorem exists_isPLHomeomorphOn_image (K : Geometry.SimplicialComplex ℝ E) [Fi
   obtain ⟨K', hK', hfin', hAff⟩ := hf.exists_isSubdivision_affineOn_faces K
   have : Finite K'.faces := hfin'.to_subtype
   have hspace : K'.space = K.space := hK'.space_eq
-  choose A hA using hAff
-  have hsm : EqOn (simplicialMap K' f) f K'.space := by
-    intro x hx
-    obtain ⟨σ, hσ, hxσ⟩ := K'.mem_space_iff.mp hx
-    rw [simplicialMap_eq_of_mem K' f hσ hxσ, hA _ hσ hxσ]
-    conv_rhs => rw [← sum_weights_smul hxσ]
-    rw [affineMap_apply_sum_smul (A _ hσ) (sum_weights hxσ)]
-    exact Finset.sum_congr rfl fun v hv =>
-      by rw [hA _ hσ (subset_convexHull ℝ _ (Finset.mem_coe.mpr hv))]
-  have hind : ∀ σ ∈ K'.faces, AffineIndependent ℝ ((↑) : {u // u ∈ σ.image f} → F) := by
-    intro σ hσ
-    have himg : σ.image f = σ.image (A σ hσ) :=
-      Finset.image_congr fun v hv => hA σ hσ (subset_convexHull ℝ _ hv)
-    rw [himg]
-    refine affineIndependent_image_of_injOn_convexHull (A σ hσ) (K'.indep hσ) ?_
-    intro x hx y hy hxy
-    have hxK : x ∈ K.space := hspace ▸ K'.convexHull_subset_space hσ hx
-    have hyK : y ∈ K.space := hspace ▸ K'.convexHull_subset_space hσ hy
-    exact hinj hxK hyK (by rw [hA σ hσ hx, hA σ hσ hy, hxy])
-  have hinj' : InjOn (simplicialMap K' f) K'.space := by
-    intro x hx y hy hxy
-    rw [hsm hx, hsm hy] at hxy
-    exact hinj (hspace ▸ hx) (hspace ▸ hy) hxy
-  refine ⟨simplicialImage K' f hind hinj', simplicialImage_faces_finite K' f hind hinj', ?_, ?_⟩
-  · rw [simplicialImage_space, hsm.image_eq, hspace]
-  · have h := isPLHomeomorphOn_simplicialImage K' f hind hinj'
-    rw [hspace] at h
-    exact h.congr fun x hx => (hsm (hspace ▸ hx)).symm
+  obtain ⟨L, hfinL, hL, -, hpl⟩ := exists_simplicialComplex_image_of_affineOn_faces K' hAff
+    (hspace.symm ▸ hinj)
+  exact ⟨L, hfinL, by simpa only [hspace] using hL, by simpa only [hspace] using hpl⟩
 
 theorem IsPolyhedron.image_of_isPiecewiseAffineOn {P : Set E} (hP : IsPolyhedron P) {f : E → F}
     (hf : IsPiecewiseAffineOn f P) (hinj : InjOn f P) : IsPolyhedron (f '' P) := by
@@ -137,6 +158,12 @@ theorem IsPolyhedron.image_of_isPiecewiseAffineOn {P : Set E} (hP : IsPolyhedron
   rw [← hL]
   have := hfinL.to_subtype
   exact isPolyhedron_space L
+
+theorem IsPLBall.isPolyhedron {n : ℕ} {P : Set E} (hP : IsPLBall n P) : IsPolyhedron P := by
+  obtain ⟨f, hf⟩ := hP
+  rw [← hf.image_eq]
+  exact (isHPolytope_stdSimplex _).isPolyhedron.image_of_isPiecewiseAffineOn
+    hf.isPiecewiseAffineOn hf.bijOn.injOn
 
 theorem IsPLHomeomorphOn.restrict {f : E → F} {P : Set E} {Q : Set F} (h : IsPLHomeomorphOn f P Q)
     {P₀ : Set E} (hP₀ : IsPolyhedron P₀) (hsub : P₀ ⊆ P) : IsPLHomeomorphOn f P₀ (f '' P₀) := by
@@ -169,12 +196,6 @@ theorem IsPLHomeomorphOn.isPolyhedron_preimage {f : E → F} {P : Set E} {Q : Se
   rw [heq]
   exact hR.image_of_isPiecewiseAffineOn
     (hsymm.isPiecewiseAffineOn.mono_of_isPolyhedron hR hRQ) (hsymm.bijOn.injOn.mono hRQ)
-
-theorem IsPLBall.isPolyhedron {n : ℕ} {P : Set E} (hP : IsPLBall n P) : IsPolyhedron P := by
-  obtain ⟨f, hf⟩ := hP
-  rw [← hf.image_eq]
-  exact (isHPolytope_stdSimplex _).isPolyhedron.image_of_isPiecewiseAffineOn
-    hf.isPiecewiseAffineOn hf.bijOn.injOn
 
 theorem isPLHomeomorphOn_of_isPiecewiseAffineOn_of_bijOn {f : E → F} {P : Set E}
     {Q : Set F} (hP : IsPolyhedron P) (hf : IsPiecewiseAffineOn f P) (hbij : BijOn f P Q) :
