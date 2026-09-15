@@ -10160,3 +10160,9 @@ import DifferentialGeometry.Geometry.Metric.Convergence.Locality
 import DifferentialGeometry.Geometry.Metric.Convergence.CoefficientBridge
 import DifferentialGeometry.Geometry.Metric.Pullback.CoefficientConvergence
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric.SourceConvergence
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.H1.Agmon
+import DifferentialGeometry.Analysis.Integration.Measure.AddCircle
+import DifferentialGeometry.Analysis.Integration.L2.SmoothSections.ScalarFiniteProduct
+import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Scalar.AddCircleAgmon
+import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Scalar.AddCircleHolder
+import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Solution.HolderRegularity
