@@ -1276,6 +1276,54 @@ theorem neighbors_singleton_or_pair_of_transverse_codimension_one [FiniteDimensi
       hs ht hsbound htmax hx hxt hxG htrans hab habset)
 
 open Classical in
+theorem neighbors_eq_pair_of_direction (G : Geometry.SimplicialComplex ℝ E) [Finite G.faces]
+    (hcard : ∀ u ∈ G.faces, u.card ≤ 2) {x d : E} (hx : {x} ∈ G.faces) (hd : d ≠ 0)
+    (hpos : ∀ᶠ r : ℝ in 𝓝 0, 0 < r → x + r • d ∈ G.space)
+    (hneg : ∀ᶠ r : ℝ in 𝓝 0, 0 < r → x + r • (-d) ∈ G.space)
+    (hdir : ∀ q, {x, q} ∈ G.faces → ∃ c : ℝ, c • d = q - x) :
+    ∃ a b, a ≠ b ∧ {y | y ≠ x ∧ {x, y} ∈ G.faces} = {a, b} := by
+  obtain ⟨a, ha, hyx, hyface⟩ := exists_neighbor_on_ray_of_eventually G hcard hx hd hpos
+  obtain ⟨b, hb, hzx, hzface⟩ := exists_neighbor_on_ray_of_eventually G hcard hx (neg_ne_zero.mpr hd) hneg
+  let y := x + a • d
+  let z := x + b • (-d)
+  have hyz : y ≠ z := by
+    intro heq
+    have hsmul : a • d = b • (-d) := add_left_cancel heq
+    rw [smul_neg] at hsmul
+    have hzero : (a + b) • d = 0 := by rw [add_smul, hsmul, neg_add_cancel]
+    have hab := (smul_eq_zero.mp hzero).resolve_right hd
+    linarith
+  have hlink : ∀ q, q ≠ x → {x, q} ∈ G.faces →
+      q ∈ (SimplicialComplex.geometricLink G {x}).space := by
+    intro q hqx hqface
+    rw [geometricLink_space_eq_neighbors_of_card_le G hcard x]
+    exact ⟨hqx, hqface⟩
+  refine ⟨y, z, hyz, ?_⟩
+  ext q
+  change (q ≠ x ∧ {x, q} ∈ G.faces) ↔ q = y ∨ q = z
+  constructor
+  · rintro ⟨hqx, hqface⟩
+    obtain ⟨c, hc⟩ := hdir q hqface
+    have hcne : c ≠ 0 := by
+      intro hc0
+      rw [hc0, zero_smul] at hc
+      exact hqx (sub_eq_zero.mp hc.symm)
+    rcases lt_or_gt_of_ne hcne with hcneg | hcpos
+    · right
+      apply isRadiallyInjective_geometricLink G z (hlink z hzx hzface) q (hlink q hqx hqface)
+        (-c / b) (div_pos (neg_pos.mpr hcneg) hb)
+      change q = x + (-c / b) • (x + b • (-d) - x)
+      rw [add_sub_cancel_left, smul_smul, div_mul_cancel₀ _ hb.ne', neg_smul_neg, hc, add_sub_cancel]
+    · left
+      apply isRadiallyInjective_geometricLink G y (hlink y hyx hyface) q (hlink q hqx hqface)
+        (c / a) (div_pos hcpos ha)
+      change q = x + (c / a) • (x + a • d - x)
+      rw [add_sub_cancel_left, smul_smul, div_mul_cancel₀ _ ha.ne', hc, add_sub_cancel]
+  · rintro (rfl | rfl)
+    · exact ⟨hyx, hyface⟩
+    · exact ⟨hzx, hzface⟩
+
+open Classical in
 theorem neighbors_eq_pair_of_finrank_inter_eq_one (K L G : Geometry.SimplicialComplex ℝ E)
     [Finite G.faces] (hcard : ∀ u ∈ G.faces, u.card ≤ 2)
     (hspace : G.space = K.space ∩ L.space)
@@ -1306,18 +1354,6 @@ theorem neighbors_eq_pair_of_finrank_inter_eq_one (K L G : Geometry.SimplicialCo
     rw [hspace]
     exact ⟨K.convexHull_subset_space hs (openSimplex_subset_convexHull _ hrs),
       L.convexHull_subset_space ht (openSimplex_subset_convexHull _ hrt)⟩
-  obtain ⟨a, ha, hyx, hyface⟩ := exists_neighbor_on_ray_of_eventually G hcard hxG hd (hray d hdV)
-  obtain ⟨b, hb, hzx, hzface⟩ := exists_neighbor_on_ray_of_eventually G hcard hxG
-    (neg_ne_zero.mpr hd) (hray (-d) (V.neg_mem hdV))
-  let y := x + a • d
-  let z := x + b • (-d)
-  have hyz : y ≠ z := by
-    intro heq
-    have hsmul : a • d = b • (-d) := add_left_cancel heq
-    rw [smul_neg] at hsmul
-    have hzero : (a + b) • d = 0 := by rw [add_smul, hsmul, neg_add_cancel]
-    have hab := (smul_eq_zero.mp hzero).resolve_right hd
-    linarith
   have hdir : ∀ q, {x, q} ∈ G.faces → q - x ∈ V := by
     intro q hq
     obtain ⟨u, hu, v, hv, hsub⟩ := hcarrier _ hq
@@ -1337,35 +1373,8 @@ theorem neighbors_eq_pair_of_finrank_inter_eq_one (K L G : Geometry.SimplicialCo
       simpa only [direction_affineSpan, vsub_eq_sub] using AffineSubspace.vsub_mem_direction
         (convexHull_subset_affineSpan _ hquv.2)
         (convexHull_subset_affineSpan _ (openSimplex_subset_convexHull _ hxt))
-  have hlink : ∀ q, q ≠ x → {x, q} ∈ G.faces →
-      q ∈ (SimplicialComplex.geometricLink G {x}).space := by
-    intro q hqx hqface
-    rw [geometricLink_space_eq_neighbors_of_card_le G hcard x]
-    exact ⟨hqx, hqface⟩
-  refine ⟨y, z, hyz, ?_⟩
-  ext q
-  change (q ≠ x ∧ {x, q} ∈ G.faces) ↔ q = y ∨ q = z
-  constructor
-  · rintro ⟨hqx, hqface⟩
-    obtain ⟨c, hc⟩ := hmultiple (q - x) (hdir q hqface)
-    have hcne : c ≠ 0 := by
-      intro hc0
-      rw [hc0, zero_smul] at hc
-      exact hqx (sub_eq_zero.mp hc.symm)
-    rcases lt_or_gt_of_ne hcne with hcneg | hcpos
-    · right
-      apply isRadiallyInjective_geometricLink G z (hlink z hzx hzface) q (hlink q hqx hqface)
-        (-c / b) (div_pos (neg_pos.mpr hcneg) hb)
-      change q = x + (-c / b) • (x + b • (-d) - x)
-      rw [add_sub_cancel_left, smul_smul, div_mul_cancel₀ _ hb.ne', neg_smul_neg, hc, add_sub_cancel]
-    · left
-      apply isRadiallyInjective_geometricLink G y (hlink y hyx hyface) q (hlink q hqx hqface)
-        (c / a) (div_pos hcpos ha)
-      change q = x + (c / a) • (x + a • d - x)
-      rw [add_sub_cancel_left, smul_smul, div_mul_cancel₀ _ ha.ne', hc, add_sub_cancel]
-  · rintro (rfl | rfl)
-    · exact ⟨hyx, hyface⟩
-    · exact ⟨hzx, hzface⟩
+  exact neighbors_eq_pair_of_direction G hcard hxG hd (hray d hdV)
+    (hray (-d) (V.neg_mem hdV)) (fun q hq => hmultiple (q - x) (hdir q hq))
 
 open Classical in
 theorem isCombinatorialManifoldWithBoundary_inter_of_transverse_faces [FiniteDimensional ℝ E]
@@ -4103,5 +4112,148 @@ theorem neighbors_singleton_of_preimage_transverse_boundary_face [FiniteDimensio
   have himage := hf.image_eq
   rw [ha, Set.image_singleton] at himage
   exact ⟨f a, himage.symm⟩
+
+open Classical in
+theorem preimage_openSimplex_of_affine_leftInverse {F : Type*}
+    [NormedAddCommGroup F] [NormedSpace ℝ F]
+    (K : Geometry.SimplicialComplex ℝ E) (φ : E → F) {s : Finset E} (hs : s ∈ K.faces)
+    (hφ : InjOn φ (s : Set E)) (B : F →ᵃ[ℝ] E)
+    (hB : ∀ x ∈ convexHull ℝ (s : Set E), B (simplicialMap K φ x) = x)
+    {y : F} (hy : y ∈ openSimplex (s.image φ)) :
+    B y ∈ openSimplex s ∧ simplicialMap K φ (B y) = y := by
+  rw [← image_openSimplex_simplicialMap K φ hs hφ] at hy
+  obtain ⟨x, hx, rfl⟩ := hy
+  rw [hB x (openSimplex_subset_convexHull s hx)]
+  exact ⟨hx, rfl⟩
+
+open Classical in
+theorem neighbors_eq_pair_of_preimage_finrank_inter_eq_one {F : Type*}
+    [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
+    (K : Geometry.SimplicialComplex ℝ E) (L : Geometry.SimplicialComplex ℝ F)
+    (G : Geometry.SimplicialComplex ℝ E) [Finite G.faces] (φ : E → F)
+    (hcard : ∀ u ∈ G.faces, u.card ≤ 2)
+    (hspace : G.space = K.space ∩ simplicialMap K φ ⁻¹' L.space)
+    (hcarrier : ∀ u ∈ G.faces, ∃ v ∈ K.faces, ∃ z ∈ L.faces,
+      convexHull ℝ (u : Set E) ⊆ convexHull ℝ (v : Set E) ∩
+        simplicialMap K φ ⁻¹' convexHull ℝ (z : Set F))
+    {s : Finset E} {t : Finset F} (hs : s ∈ K.faces) (ht : t ∈ L.faces)
+    (hsmax : ∀ u ∈ K.faces, s ⊆ u → u.card ≤ s.card)
+    (htmax : ∀ u ∈ L.faces, t ⊆ u → u.card ≤ t.card)
+    (hφ : AffineIndependent ℝ (fun v : s => φ v)) {x : E}
+    (hx : x ∈ openSimplex s) (hxt : simplicialMap K φ x ∈ openSimplex t) (hxG : {x} ∈ G.faces)
+    (hdim : Module.finrank ℝ
+      (vectorSpan ℝ (s.image φ : Set F) ⊓ vectorSpan ℝ (t : Set F) : Submodule ℝ F) = 1) :
+    ∃ a b, a ≠ b ∧ {y | y ≠ x ∧ {x, y} ∈ G.faces} = {a, b} := by
+  let V : Submodule ℝ F := vectorSpan ℝ (s.image φ : Set F) ⊓ vectorSpan ℝ (t : Set F)
+  obtain ⟨b⟩ := (finrank_eq_one_iff (K := ℝ) (V := V) (Fin 1)).mp hdim
+  let d : F := b 0
+  have hdV : d ∈ V := (b 0).property
+  have hd : d ≠ 0 := fun h => b.ne_zero 0 (Subtype.ext h)
+  obtain ⟨B, hB⟩ := exists_affineMap_leftInverse_simplicialMap K φ hs hφ
+  let e := B.linear d
+  have hxφ : simplicialMap K φ x ∈ openSimplex (s.image φ) := by
+    rw [← image_openSimplex_simplicialMap K φ hs ((affineIndependent_image_iff s φ).mp hφ).1]
+    exact ⟨x, hx, rfl⟩
+  have hBmap : ∀ r : ℝ, B (simplicialMap K φ x + r • d) = x + r • e := by
+    intro r
+    rw [add_comm (simplicialMap K φ x)]
+    change B ((r • d) +ᵥ simplicialMap K φ x) = x + r • e
+    rw [B.map_vadd, B.linear.map_smul, hB x (openSimplex_subset_convexHull s hx)]
+    exact add_comm _ _
+  have hmodel : ∀ᶠ r : ℝ in 𝓝 0, x + r • e ∈ G.space ∧
+      simplicialMap K φ (x + r • e) = simplicialMap K φ x + r • d := by
+    filter_upwards [eventually_mem_openSimplex_of_mem_vectorSpan hxφ hdV.1,
+      eventually_mem_openSimplex_of_mem_vectorSpan hxt hdV.2] with r hrs hrt
+    have hp := preimage_openSimplex_of_affine_leftInverse K φ hs
+      ((affineIndependent_image_iff s φ).mp hφ).1 B hB hrs
+    rw [hBmap] at hp
+    refine ⟨?_, hp.2⟩
+    rw [hspace]
+    refine ⟨K.convexHull_subset_space hs (openSimplex_subset_convexHull s hp.1), ?_⟩
+    change simplicialMap K φ (x + r • e) ∈ L.space
+    rw [hp.2]
+    exact L.convexHull_subset_space ht (openSimplex_subset_convexHull t hrt)
+  have he : e ≠ 0 := by
+    intro he0
+    obtain ⟨ε, hε, hball⟩ := Metric.mem_nhds_iff.mp hmodel
+    have hr : ε / 2 ∈ ball (0 : ℝ) ε := by
+      rw [mem_ball, dist_zero_right, Real.norm_eq_abs, abs_of_pos (half_pos hε)]
+      linarith
+    have h := (hball hr).2
+    rw [he0, smul_zero, add_zero] at h
+    have hzero := congrArg (fun z => z - simplicialMap K φ x) h
+    simp only [sub_self, add_sub_cancel_left] at hzero
+    exact (smul_ne_zero (half_pos hε).ne' hd) hzero.symm
+  apply neighbors_eq_pair_of_direction G hcard hxG he
+  · filter_upwards [hmodel] with r hr _
+    exact hr.1
+  · have hn : Filter.Tendsto (fun r : ℝ => -r) (𝓝 0) (𝓝 0) := by
+      simpa only [neg_zero] using continuous_neg.tendsto (0 : ℝ)
+    filter_upwards [hn.eventually hmodel] with r hr _
+    simpa only [neg_smul, smul_neg] using hr.1
+  · intro q hq
+    obtain ⟨u, hu, v, hv, hsub⟩ := hcarrier _ hq
+    have hxuv := hsub (subset_convexHull ℝ _ (show x ∈ (({x, q} : Finset E) : Set E) by simp))
+    have hquv := hsub (subset_convexHull ℝ _ (show q ∈ (({x, q} : Finset E) : Set E) by simp))
+    have hsu := face_subset_of_mem_openSimplex_of_mem_convexHull K hs hu hx hxuv.1
+    have htv := face_subset_of_mem_openSimplex_of_mem_convexHull L ht hv hxt hxuv.2
+    have hus : u = s := (Finset.eq_of_subset_of_card_le hsu (hsmax u hu hsu)).symm
+    have hvt : v = t := (Finset.eq_of_subset_of_card_le htv (htmax v hv htv)).symm
+    rw [hus, hvt] at hquv
+    have hdir : simplicialMap K φ q - simplicialMap K φ x ∈ V := by
+      constructor
+      · change simplicialMap K φ q - simplicialMap K φ x ∈ vectorSpan ℝ (s.image φ : Set F)
+        simpa only [direction_affineSpan, vsub_eq_sub] using AffineSubspace.vsub_mem_direction
+          (convexHull_subset_affineSpan _ (simplicialMap_mem_convexHull_image K φ hs hquv.1))
+          (convexHull_subset_affineSpan _ (openSimplex_subset_convexHull _ hxφ))
+      · change simplicialMap K φ q - simplicialMap K φ x ∈ vectorSpan ℝ (t : Set F)
+        simpa only [direction_affineSpan, vsub_eq_sub] using AffineSubspace.vsub_mem_direction
+          (convexHull_subset_affineSpan _ hquv.2)
+          (convexHull_subset_affineSpan _ (openSimplex_subset_convexHull _ hxt))
+    obtain ⟨c, hc⟩ := (finrank_eq_one_iff_of_nonzero' (b 0) (b.ne_zero 0)).mp hdim
+      ⟨simplicialMap K φ q - simplicialMap K φ x, hdir⟩
+    have hc' : c • d = simplicialMap K φ q - simplicialMap K φ x := congrArg Subtype.val hc
+    have h := congrArg B.linear hc'
+    rw [map_smul] at h
+    change c • e = B.linear (simplicialMap K φ q -ᵥ simplicialMap K φ x) at h
+    rw [B.linearMap_vsub, hB q hquv.1, hB x (openSimplex_subset_convexHull s hx), vsub_eq_sub] at h
+    exact ⟨c, h⟩
+
+open Classical in
+theorem exists_neighbor_mem_preimage_convexHull_of_eventually {F : Type*}
+    [NormedAddCommGroup F] [NormedSpace ℝ F]
+    (L : Geometry.SimplicialComplex ℝ F) (G : Geometry.SimplicialComplex ℝ E) [Finite G.faces]
+    (f : E → F) (hcard : ∀ u ∈ G.faces, u.card ≤ 2)
+    (hcarrier : ∀ u ∈ G.faces, ∃ t ∈ L.faces,
+      MapsTo f (convexHull ℝ (u : Set E)) (convexHull ℝ (t : Set F)))
+    {s : Finset F} (hs : s ∈ L.faces)
+    (hmax : ∀ u ∈ L.faces, s ⊆ u → u.card ≤ s.card) {x d : E}
+    (hx : {x} ∈ G.faces) (hd : d ≠ 0)
+    (hray : ∀ᶠ r : ℝ in 𝓝 0, 0 < r →
+      x + r • d ∈ G.space ∧ f (x + r • d) ∈ openSimplex s) :
+    ∃ y, y ≠ x ∧ {x, y} ∈ G.faces ∧ f y ∈ convexHull ℝ (s : Set F) := by
+  have hrayG : ∀ᶠ r : ℝ in 𝓝 0, 0 < r → x + r • d ∈ G.space := by
+    filter_upwards [hray] with r hr
+    exact fun hpos => (hr hpos).1
+  obtain ⟨c, hc, hyx, hyface⟩ := exists_neighbor_on_ray_of_eventually G hcard hx hd hrayG
+  obtain ⟨u, hu, hsub⟩ := hcarrier _ hyface
+  obtain ⟨ε, hε, hball⟩ := Metric.mem_nhds_iff.mp hray
+  let r : ℝ := min (ε / 2) (c / 2)
+  have hr : 0 < r := lt_min (by positivity) (by positivity)
+  have hrε : r < ε := lt_of_le_of_lt (min_le_left _ _) (by linarith)
+  have hrc : r ≤ c := le_trans (min_le_right _ _) (by linarith)
+  have hmem : r ∈ ball (0 : ℝ) ε := by
+    simpa only [mem_ball, dist_zero_right, Real.norm_eq_abs, abs_of_pos hr] using hrε
+  have hqs : f (x + r • d) ∈ openSimplex s := (hball hmem hr).2
+  have hqedge : x + r • d ∈ convexHull ℝ (({x, x + c • d} : Finset E) : Set E) := by
+    rw [Finset.coe_pair, convexHull_pair, segment_eq_image]
+    refine ⟨r / c, ⟨div_nonneg hr.le hc.le, (div_le_one hc).mpr hrc⟩, ?_⟩
+    change (1 - r / c) • x + (r / c) • (x + c • d) = x + r • d
+    rw [← add_smul_sub_eq_combo, add_sub_cancel_left, smul_smul, div_mul_cancel₀ _ hc.ne']
+  have hsu := face_subset_of_mem_openSimplex_of_mem_convexHull L hs hu hqs (hsub hqedge)
+  have hueq : u = s := (Finset.eq_of_subset_of_card_le hsu (hmax u hu hsu)).symm
+  refine ⟨x + c • d, hyx, hyface, ?_⟩
+  rw [← hueq]
+  exact hsub (subset_convexHull ℝ _ (by simp))
 
 end DifferentialGeometry.Topology.PiecewiseLinear
