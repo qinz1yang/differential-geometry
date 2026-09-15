@@ -27,4 +27,19 @@ theorem frontier_chart_symm_image_of_isPLBall
   rw [← frontier_space_eq_boundaryComplex_space hK.isCombinatorialManifoldWithBoundary, hKspace] at h
   exact h
 
+theorem IsPolyhedralBall.image_frontier_chart
+    {C : Set X} (hC : IsPolyhedralBall (n := n + 1) (n + 1) C)
+    (e : OpenPartialHomeomorph X (EuclideanSpace ℝ (Fin (n + 1))))
+    (he : e ∈ atlas (EuclideanSpace ℝ (Fin (n + 1))) X) (hCe : C ⊆ e.source) :
+    e '' frontier C = frontier (e '' C) := by
+  have hCt : e '' C ⊆ e.target := by
+    rintro _ ⟨x, hx, rfl⟩
+    exact e.map_source (hCe hx)
+  have hball := hC.isPLBall_chart_image e he hCe
+  have hfront := frontier_chart_symm_image_of_isPLBall e he hball hCt
+  have hback : e.symm '' (e '' C) = C := e.symm_image_image_of_subset_source hCe
+  rw [hback] at hfront
+  rw [hfront]
+  exact e.image_symm_image_of_subset_target (hball.isPolyhedron.isClosed.frontier_subset.trans hCt)
+
 end DifferentialGeometry.Topology.PiecewiseLinear

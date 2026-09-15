@@ -1238,3 +1238,27 @@ and `Quot.sound`. Logs: `.lake/scratch/check-simply-embedded.log`,
 `.lake/scratch/check-schoenflies-manifold.log`, and
 `.lake/scratch/audit-schoenflies-manifold.log`. Theorem 23.10 and
 Theorem 23.11 remain pending at this checkpoint.
+
+## Compact regions and chart support for manifold pushes
+
+`Analysis/Convex/CompactFrontier.lean` now identifies a compact set
+with nonempty interior from equality of its frontier with the frontier
+of a closed convex set. `SimplyEmbedded.lean` uses this to give the push
+property to a specified PL three-ball whose frontier is simply embedded.
+
+`ChartPolyhedron.lean` extends the existing chart restriction API from
+convex polytopes to arbitrary finite polyhedra. Its neighborhood theorem
+localizes a polyhedral neighborhood to a compact subset of a chart while
+preserving the exact condition `C \ J` contained in its interior.
+`ChartBallFrontier.lean` also transports the frontier of a manifold ball
+into chart coordinates. These are native supporting results for Moise
+23.10; no vendored Lean source changed.
+
+All four changed modules pass focused checks with exit 0 and no warnings.
+`AuditS53.lean` checks six declarations with only `propext`,
+`Classical.choice`, and `Quot.sound`, exit 0. Logs are
+`.lake/scratch/check-compact-frontier.log`,
+`.lake/scratch/check-simply-embedded.log`,
+`.lake/scratch/check-chart-polyhedron.log`,
+`.lake/scratch/check-chart-ball-frontier.log`, and
+`.lake/scratch/audit-chart-push-inputs.log`.

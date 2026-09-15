@@ -44,6 +44,32 @@ theorem IsCompact.subset_of_frontier_subset_convex_closed {C W : Set E}
   exact subset_iInter₂ fun δ hδ => IsCompact.subset_of_frontier_subset_convex_open hC
     (hW.thickening δ) Metric.isOpen_thickening (hCW.trans (Metric.self_subset_thickening hδ W))
 
+theorem IsCompact.eq_of_frontier_eq_convex_closed {C W : Set E}
+    (hC : IsCompact C) (hCi : (interior C).Nonempty)
+    (hW : Convex ℝ W) (hWc : IsClosed W) (hfront : frontier C = frontier W) : C = W := by
+  have hCW : C ⊆ W := IsCompact.subset_of_frontier_subset_convex_closed hC hW hWc
+    (hfront ▸ hWc.frontier_subset)
+  have hCWint := interior_mono hCW
+  have hWi : (interior W).Nonempty := hCi.mono hCWint
+  have hcover : interior W ⊆ interior C ∪ Cᶜ := by
+    intro x hx
+    by_cases hxC : x ∈ C
+    · apply Or.inl
+      by_contra hxint
+      have hxfront : x ∈ frontier C := ⟨subset_closure hxC, hxint⟩
+      exact (hfront ▸ hxfront).2 hx
+    · exact Or.inr hxC
+  have hWCint : interior W ⊆ interior C :=
+    hW.interior.isPreconnected.subset_left_of_subset_union isOpen_interior
+      hC.isClosed.isOpen_compl
+      (disjoint_left.mpr (fun _ hx hxC => hxC (interior_subset hx))) hcover
+      (hCi.mono fun _ hx => ⟨hCWint hx, hx⟩)
+  apply Subset.antisymm hCW
+  have hcl := hW.closure_interior_eq_closure_of_nonempty_interior hWi
+  rw [hWc.closure_eq] at hcl
+  rw [← hcl]
+  exact closure_minimal (hWCint.trans interior_subset) hC.isClosed
+
 theorem IsCompact.subset_of_frontier_subset_of_convex_image
     {X : Type*} [TopologicalSpace X] {C W : Set X} (hC : IsCompact C)
     (h : X ≃ₜ E) (hW : Convex ℝ (h '' W)) (hWc : IsClosed W) (hCW : frontier C ⊆ W) : C ⊆ W := by
