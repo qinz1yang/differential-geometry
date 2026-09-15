@@ -157,4 +157,13 @@ theorem exists_isOpen_piecewise_postcomp_eqOn_of_finite
       rw [piecewise_eq_of_mem P (h ∘ f) f hxP]
       exact hfix hfxU
     · exact piecewise_eq_of_notMem P (h ∘ f) f hxP
+theorem mem_nhdsWithin_of_eventually_preimage_subset_union
+    [TopologicalSpace X] [TopologicalSpace Y] {f : X → Y} {P A B : Set X} {a : X}
+    (hf : ContinuousWithinAt f P a) (ha : a ∈ A) (hB : IsClosed B) (hAB : Disjoint A B)
+    (hcover : ∀ᶠ z in 𝓝 (f a), P ∩ f ⁻¹' {z} ⊆ A ∪ B) : A ∈ 𝓝[P] a := by
+  have haB : a ∉ B := fun haB => Set.disjoint_left.mp hAB ha haB
+  filter_upwards [hf.eventually hcover, self_mem_nhdsWithin,
+    mem_nhdsWithin_of_mem_nhds (hB.isOpen_compl.mem_nhds haB)] with x hx hxP hxB
+  exact (hx ⟨hxP, rfl⟩).resolve_right hxB
+
 end DifferentialGeometry.Topology

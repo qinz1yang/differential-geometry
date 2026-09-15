@@ -170,4 +170,10 @@ theorem IsPLHomeomorphOn.isPolyhedron_preimage {f : E → F} {P : Set E} {Q : Se
   exact hR.image_of_isPiecewiseAffineOn
     (hsymm.isPiecewiseAffineOn.mono_of_isPolyhedron hR hRQ) (hsymm.bijOn.injOn.mono hRQ)
 
+theorem IsPLBall.isPolyhedron {n : ℕ} {P : Set E} (hP : IsPLBall n P) : IsPolyhedron P := by
+  obtain ⟨f, hf⟩ := hP
+  rw [← hf.image_eq]
+  exact (isHPolytope_stdSimplex _).isPolyhedron.image_of_isPiecewiseAffineOn
+    hf.isPiecewiseAffineOn hf.bijOn.injOn
+
 end DifferentialGeometry.Topology.PiecewiseLinear
