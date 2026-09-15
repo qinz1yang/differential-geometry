@@ -656,3 +656,117 @@ theorem exists_isPLHomeomorphOn_of_boundaryComplex [FiniteDimensional ℝ E] [Fi
 
 砖 6 收尾 → 砖 7 → 砖 8（F6.2 done）→ 砖 9（F3.4 done）→ 砖 10（P.1）→ 砖 12（F5.1）→ 砖 13（F5.2）
 → 砖 11（S.5-lite 或 (X)）→ F4.3 done。E.0 随时可并行。每砖闭环与记录规则同 §0、§7。
+
+## 10. 2026-09-15 追加：砖 10 之后的安排（读完再动手）
+
+### 10.0 先停下的两件事
+
+- **砖 11（S.5-lite）取消**：S.5 及 §17 全部由 S 车道（`codex/moise-s`）负责，不要在本车道做任何 S.* 或 P.* 的项。
+  F4.3 的顶点胞腔球性继续等 S 车道的 S.5。
+- **P.1 重复**：S 车道已用 vendored 外部仓库 + 原生桥接把 P.1 和 3.7 相对形式做完（`External/ClassificationOfSurfaces/…`、
+  `PlanarSchoenflies` 桥接）。本车道原生的 `PolygonalSchoenflies.lean`（`isPLBall_of_isPLSphere_one`、`exists_polyhedral_region_of_isPLSphere_one`
+  等）保留为 P.1 的规范陈述；在计划行 P.1 的状态列注明"两条证明：F 车道原生（规范）；S 车道 vendored 给出 3.7 相对形式"。
+  不要动 `External/`。
+- 你的 `check-f.ps1` 已改为把 olean 写进私有目录 `.lake\scratch\f-lib`。其它三条车道（S、C、H）从共享库
+  `E:\differential-geometry-dev\.lake\build\lib\lean` 读本车道模块的 olean，所以你 05:08 之后的新模块它们看不到。
+  请恢复交接原版脚本（写共享库；模块名与其它车道不重叠，无冲突）；若改脚本是因为遇到了具体问题，在汇报里写明。
+
+### 10.1 砖 14：F6.3 局部有限三角剖分塔（表示层，E.1/E.2/E.3 的前置；先设计后实现，中途有一次检查点）
+
+背景：Moise 35.2 的 `K` 与 36.1 的 `U` 是**局部有限、可非紧**的多面体流形；36.1 的整体 PLH `f` 来自把 35.2 用于整个 `U`
+（`U` 由 8.2 的局部有限三角剖分成为多面体），紧致穷竭只用于最后证 `f(U) = h(U)`。本车道的 `IsPolyhedralManifoldWithBoundary`
+是有限片、必紧致，E3 车道因此把 E.2/E.3 标为 blocked on F6.3（见其在 `codex/moise-e3` 上的计划行 E.2、E.3、F6.3、§8 R9）。
+Moise 第 8 章定理 3 的证明模式给出了不需要"单一无限复形"的表示：有限片的**上升塔**，每一阶段的"内核"在后续阶段不再重分。
+
+```lean
+structure LocallyFinitePieceTower (n : ℕ) (X : Type u) [TopologicalSpace X]
+    [ChartedSpace (EuclideanSpace ℝ (Fin n)) X] (U : Set X) where
+  N : ℕ → Set X
+  piece : ∀ i, PLPiece n X (N i)
+  subset_nhdsWithin : ∀ i, ∀ x ∈ N i, N (i + 1) ∈ 𝓝[U] x      -- 相对 U 的内部；U 开时即 interior，紧致单阶段塔（N i := K = U）时平凡成立
+  iUnion_eq : ⋃ i, N i = U
+  core : ∀ i, Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin (piece i).ambientDim))
+  core_le : ∀ i, (core i).faces ⊆ (piece i).piece.complex.faces
+  subset_core : ∀ i, N i ⊆ (piece (i + 1)).piece.map '' (core (i + 1)).space
+  embed : ∀ i, EuclideanSpace ℝ (Fin (piece i).ambientDim) → EuclideanSpace ℝ (Fin (piece (i + 1)).ambientDim)
+  embed_inv : ∀ i, EuclideanSpace ℝ (Fin (piece (i + 1)).ambientDim) → EuclideanSpace ℝ (Fin (piece i).ambientDim)
+  embed_isGlueIso : ∀ i, IsGlueIso (core i) (restrict-to-image …) (embed i) (embed_inv i)   -- core i 同构地嵌入 piece (i+1) 的复形，且像 ⊆ core (i+1)
+  embed_image_le_core : ∀ i, (image of core i under embed i).faces ⊆ (core (i + 1)).faces
+  map_embed : ∀ i, ∀ x ∈ (core i).space, (piece (i + 1)).piece.map (simplicialMap (core i) (embed i) x) = (piece i).piece.map x
+```
+（把 `restrict-to-image` 写成显式子复形：`simplicialImage`/`IsGlueIso` 的既有词汇；字段可按需要调整，但语义不变：
+阶段 `i` 的内核单形在阶段 `i+1` 中原样出现且映射一致；每个 `N i` 落在下一阶段内核的像里；并集是 `U`。）
+
+```lean
+def IsLocallyFinitePolyhedralManifoldWithBoundary (m : ℕ) (U : Set X) : Prop :=
+  ∃ T : LocallyFinitePieceTower n X U, ∀ i, IsCombinatorialManifoldWithBoundary m (T.piece i).piece.complex
+-- 紧致特例：单阶段塔（N i := P，piece i := 同一片，core i := 全复形，embed := id）
+theorem IsPolyhedralManifoldWithBoundary.isLocallyFinite … : IsLocallyFinitePolyhedralManifoldWithBoundary (n := n) m P
+-- 基本 API
+theorem LocallyFinitePieceTower.exists_core_of_isCompact (T) {C : Set X} (hC : IsCompact C) (hCU : C ⊆ U) : ∃ i, C ⊆ (T.piece i).piece.map '' (T.core i).space
+theorem LocallyFinitePieceTower.core_space_eventually … -- 内核像单调
+-- 阶段一致的映射族给出 U 上的映射：f : U → Y 由 f_i : N i → Y 拼成，若 f_{i+1} ∘ embed = f_i 于 core i
+```
+存在定理（8.2 的塔版本；`X` 为 T2、第二可数、非空 PL `(m+1)`-流形，`U` 开）：
+```lean
+theorem exists_locallyFinitePieceTower_of_isOpen {U : Set X} (hU : IsOpen U) :
+    ∃ T : LocallyFinitePieceTower (m + 1) X U, ∀ i, IsCombinatorialManifoldWithBoundary (m + 1) (T.piece i).piece.complex
+```
+构造（Moise 第 8 章定理 3 的模式）：
+1. 相对导出邻域（F4.2-rel）：`derivedNeighborhood` 的变体，给定子复形 `K₀ ≤ L ≤ K` 且 `|K₀|` 与 `L` 的边界（在 `K` 中）不相交，
+   在**相对** `K₀` 的二次导出细分（`RelativeDerived.lean` 的 `relDerived`，固定 `K₀`）中取 `L` 的导出邻域；结论：它是带边组合流形
+   （证明沿用 `DerivedNeighborhoodManifold.lean`：`K₀` 深处顶点的 link 就是 `K` 中的 link，其余顶点与原证明一样），且 `K₀` 的单形
+   原样保留在其中。
+2. 图卡拼接的局部性：`ChartGlue.lean` 的 `exists_glue_chart` 把一个图卡多胞形粘到片上；证明一个附加引理：粘接后，片中闭星与多胞形
+   原像不相交的子复形 `K₀` 在新片中原样（`IsGlueIso` 嵌入、映射一致）出现（依据 `Gluing.lean` 用相对导出细分只重分重叠区域）。
+3. 递推：阶段 `i` 有 `T_i`（`N i`），`core i` := `T_i` 中闭星不碰 `∂T_i` 的单形；取 `Q :=` 用 2 把有限个小图卡方体（覆盖
+   `N i ∪ C (i+1)` 且避开 `|core i|`，`C k` 为 `U` 的紧致穷竭）粘到 `T_i` 得到的片；用 1 在 `Q` 中取内核子复形 `L`（`ExhaustionGeneral.lean`
+   的内核条件）相对 `core i` 的导出邻域，得 `T_{i+1}`、`N (i+1)`；`subset_core` 由网格控制（`N i` 与 `∂N (i+1)` 有正距离）。
+4. 组装 `⋃ N i = U` 与 `IsCombinatorialManifoldWithBoundary`。
+检查点：先做 `LocallyFinitePieceTower`、紧致特例、基本 API 与 F4.2-rel（1），聚焦检查 + 审计后**先汇报再继续** 2–4；
+若 2 的局部性在现有 `Gluing.lean` 里不成立，报告并提出替代（例如把方体先细分到与 `core i` 的闭星不交）。
+完成后：计划行 F6.3 改为 done（写明结构名与存在定理名），E.2/E.3 行的 "blocked on F6.3" 改为 "F6.3 done，待 E 车道"，
+并把 C 车道计划行 E.2 里的条件命题 `Moise352` 中的谓词名对齐到这里的 `IsLocallyFinitePolyhedralManifoldWithBoundary`。
+
+### 10.2 之后
+
+F 车道到此完成（F4.3 球性等 S.5）。若 F6.3 做完仍有余力，先汇报，不要自行进入其它车道的行。
+
+### 10.3 2026-09-15 范围确认（回答 F 车道的询问）
+
+- §10 的改派**有效**，取代 §9.7 的旧顺序：砖 11 取消；P.1 已完成；下一砖是 F6.3（§10.1）。
+- §10.1 的塔结构已修正：`subset_interior` 改为相对 `U` 的邻域条件 `subset_nhdsWithin`（感谢指出：常值紧致塔特例不能要求
+  紧致带边片是开集）。存在定理里 `U` 开，二者一致。
+- F5.2 暂停于当前状态，计划行 F5.2 记为 partial 并写明确切缺口：欧氏端点与一般 PL 流形的双点局部正规化、误差无关的固定邻域、
+  双点集紧致已证；未证的是多图卡拼接时保持既有区域的 `HasPLDoubleCrossingAt`（相对扰动接口不控制固定子复形的边缘，
+  任意小平移可产生切触）。消费者是 §25 L.3（C 车道后期），届时再决定路线；一个备选设计记入计划行：奇异 2-胞腔的像紧致，
+  用 F6.2 的 `exists_isPolyhedralManifoldWithBoundary_neighborhood` 取一个含像的紧致多面体流形 `N` 及其片 `T`，把问题整体搬到
+  `T` 的复形空间上做（不再逐图卡拼接）；代价是欧氏端点需要把"目标是 3 维欧氏空间"推广为"目标是高维欧氏空间中的 3 维多面体流形"。
+- 恢复写共享库的原版 `check-f.ps1` 后**不需要**重检旧模块：整合分支 `origin/codex/moise-integration`（已含本车道 651f6153e 与
+  C、S、H、E.0 的全部成果）在整合时已把这些模块的 olean 刷进共享库。请在下一个检查点执行
+  `git fetch origin && git merge --no-ff origin/codex/moise-integration`（计划文件冲突两边都保留），然后继续 F6.3。
+
+## 11. 2026-09-15 收尾：F6.3 完成
+
+§10.3 确认的 F 车道范围已闭环。F6.3 的全部源文件与计划更新已在 `codex/moise-smoothing` 提交并推送；
+不继续进入 E、S、P 车道。F4.3 的顶点胞腔球性仍等 S.5；F5.2 保持 partial 并暂停，确切缺口及备选设计见计划行与 §10.3。
+
+最终端点：
+
+- `LocallyFinitePieceTowerExistence.lean`：`exists_locallyFinitePieceTower_of_isOpen`、
+  `isLocallyFinitePolyhedralManifoldWithBoundary_of_isOpen`（`bfd458cdc`）。任意 T2、第二可数、非空 PL 正维流形的开集
+  有有限带边流形片组成的相容塔，上一阶段落入下一内核；内核以实际单纯映射同构嵌入，映射一致，并集恰为开集。
+- `RelativeExhaustion.lean`：`PLPiece.exists_manifold_neighborhood_with_core` 将保留内核的有限图卡扩张和相对流形
+  邻域抽取接成递推步骤；局部性依赖 `RelativeGluing.lean`、`ChartGlue.lean`、`PieceTransport.lean`。
+- `RelativePieceNeighborhood.lean`：`PLPieceIn.exists_manifold_neighborhood_preserving_subcomplex`（`d14f605dd`）
+  保留固定内核的原单形，覆盖指定紧集，并使新内核的闭星像位于新流形片内部。`RelativeMesh.lean` 控制固定闭星外的网格。
+- `LocallyFinitePieceTower.lean`：塔定义、常值紧致特例、紧致捕获和内核映射拼接；
+  `RelativeDerivedNeighborhood.lean`：F4.2-rel、支撑等式与保留原单形的 API。
+
+验证：各次修改均用 §2 脚本逐模块单进程检查，exit=0、零 warning。最终两个修改模块为
+`RelativeExhaustion` 与 `LocallyFinitePieceTowerExistence`；AuditF114 共 83 项，全部仅含
+`propext`、`Classical.choice`、`Quot.sound`，包含最终存在端点及全部 F6.3 检查点接口。
+下一个审计文件是 `.lake/scratch/AuditF115.lean`。未运行 `lake build`，未登记根聚合。
+
+计划 F6.2/F6.3 已记为 done；E.2/E.3 已改为「F6.3 done，待 E 车道」，`Moise352` 的源域谓词已对齐到
+`IsLocallyFinitePolyhedralManifoldWithBoundary`；R9 的表示层阻塞已解除。35.2/36.1 的逼近证明仍未由本车道实现。

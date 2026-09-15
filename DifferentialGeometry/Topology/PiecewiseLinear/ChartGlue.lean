@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.SubdivisionTransport
+import DifferentialGeometry.Topology.PiecewiseLinear.RelativeGluing
 import DifferentialGeometry.Topology.PiecewiseLinear.ChartPiece
 
 open Set Topology
@@ -42,18 +42,33 @@ theorem PLPieceIn.isPolyhedron_inter_preimage_chart [FiniteDimensional ℝ E] [T
   rw [← heq] at hcomp ⊢
   exact isPolyhedron_inter_preimage_of_isCompact (T.isPiecewiseAffineOn_chart e he) hC hcomp
 
-theorem PLPieceIn.exists_glue_chart [FiniteDimensional ℝ E] [T2Space X]
+open Classical in
+theorem PLPieceIn.exists_glue_chart_with_regularNeighborhood [FiniteDimensional ℝ E] [DecidableEq E]
+    [T2Space X]
     [HasGroupoid X (plGroupoid n)] {Y : Set X} (T : PLPieceIn E n X Y)
     (e : OpenPartialHomeomorph X (EuclideanSpace ℝ (Fin n)))
     (he : e ∈ atlas (EuclideanSpace ℝ (Fin n)) X) {C : Set (EuclideanSpace ℝ (Fin n))}
-    (hC : IsHPolytope C) (hCe : C ⊆ e.target) :
-    Nonempty (PLPieceIn (E × EuclideanSpace ℝ (Fin n) × ℝ) n X (Y ∪ e.symm '' C)) := by
-  classical
+    (hC : IsHPolytope C) (hCe : C ⊆ e.target)
+    (B : Geometry.SimplicialComplex ℝ E) (hB : B.faces ⊆ T.complex.faces)
+    (hdis : Disjoint (regularNeighborhoodIn T.complex B.space).space
+      (T.complex.space ∩ T.map ⁻¹' (e.symm '' C))) :
+    ∃ T' : PLPieceIn (E × EuclideanSpace ℝ (Fin n) × ℝ) n X (Y ∪ e.symm '' C),
+      ∃ B' : Geometry.SimplicialComplex ℝ (E × EuclideanSpace ℝ (Fin n) × ℝ),
+        ∃ φ : E → E × EuclideanSpace ℝ (Fin n) × ℝ,
+          ∃ φ' : E × EuclideanSpace ℝ (Fin n) × ℝ → E,
+            B'.faces ⊆ T'.complex.faces ∧ IsGlueIso B B' φ φ' ∧
+              (∀ x ∈ B.space, T'.map (simplicialMap B φ x) = T.map x) ∧
+                T'.map '' (regularNeighborhoodIn T'.complex B'.space).space ⊆
+                  T.map '' (regularNeighborhoodIn T.complex B.space).space := by
   have hfinK := T.finite_faces.to_subtype
   have himg : e.symm '' C = e.source ∩ e ⁻¹' C := e.symm_image_eq_source_inter_preimage hCe
   have hApoly := T.isPolyhedron_inter_preimage_chart e he hC hCe
-  obtain ⟨K₁, hK₁, hfin₁, hA₁space⟩ :=
-    exists_isSubdivision_restrict_space T.complex hApoly inter_subset_left
+  obtain ⟨K₁, hK₁, hfin₁, hBK₁, hA₁space⟩ :=
+    exists_isSubdivision_restrict_space_preserving_subcomplex T.complex B hB hApoly
+      inter_subset_left hdis
+  have hBQ : Disjoint B.space (T.complex.space ∩ T.map ⁻¹' (e.symm '' C)) :=
+    hdis.mono_left fun x hx => mem_of_mem_nhdsWithin (space_mono_of_faces_subset hB hx)
+      (regularNeighborhoodIn_mem_nhdsWithin T.complex B.space hx)
   have hfinK₁ := hfin₁.to_subtype
   have hfinA₁ :=
     (restrict_faces_finite K₁ (T.complex.space ∩ T.map ⁻¹' (e.symm '' C))).to_subtype
@@ -68,13 +83,10 @@ theorem PLPieceIn.exists_glue_chart [FiniteDimensional ℝ E] [T2Space X]
   have hfinA₂' := hfinA₂.to_subtype
   have hA₂space : A₂.space = T.complex.space ∩ T.map ⁻¹' (e.symm '' C) :=
     hA₂.space_eq.trans hA₁space
-  have hc₁ := centroid_mem_openSimplex_of_mem_faces K₁
-  have hK₂ : IsSubdivision (relDerived (restrict_faces_subset K₁ _) hA₂ hc₁) K₁ :=
-    relDerived_isSubdivision _ _ _
-  have hA₂K₂ : A₂.faces ⊆ (relDerived (restrict_faces_subset K₁ _) hA₂ hc₁).faces :=
-    faces_subset_relDerived _ _ _
-  have hfinK₂ : (relDerived (restrict_faces_subset K₁ _) hA₂ hc₁).faces.Finite :=
-    relDerived_faces_finite _ _ _
+  have hBA₁ : Disjoint B.space
+      (restrict K₁ (T.complex.space ∩ T.map ⁻¹' (e.symm '' C))).space := hA₁space.symm ▸ hBQ
+  obtain ⟨K₂, hK₂, hfinK₂, hBK₂, hA₂K₂, -⟩ :=
+    exists_isSubdivision_extension_of_disjoint hBK₁ (restrict_faces_subset K₁ _) hBA₁ hA₂
   have hfinK₂' := hfinK₂.to_subtype
   have hinjA : InjOn (e ∘ T.map) A₂.space := by
     rw [hA₂space]
@@ -115,12 +127,9 @@ theorem PLPieceIn.exists_glue_chart [FiniteDimensional ℝ E] [T2Space X]
     (restrict_faces_finite Kc₁ (simplicialImage A₂ (e ∘ T.map) hindB hinjB).space).to_subtype
   obtain ⟨A₃, hA₃, hfinA₃, hiso⟩ := hφ'.exists_isSubdivision _ hB₂
   have hfinA₃' := hfinA₃.to_subtype
-  have hc₂ := centroid_mem_openSimplex_of_mem_faces (relDerived (restrict_faces_subset K₁ _) hA₂ hc₁)
-  have hK₃ : IsSubdivision (relDerived hA₂K₂ hA₃ hc₂)
-      (relDerived (restrict_faces_subset K₁ _) hA₂ hc₁) :=
-    relDerived_isSubdivision _ _ _
-  have hA₃K₃ : A₃.faces ⊆ (relDerived hA₂K₂ hA₃ hc₂).faces := faces_subset_relDerived _ _ _
-  have hfinK₃ : (relDerived hA₂K₂ hA₃ hc₂).faces.Finite := relDerived_faces_finite _ _ _
+  have hBA₂ : Disjoint B.space A₂.space := hA₂space.symm ▸ hBQ
+  obtain ⟨K₃, hK₃, hfinK₃, hBK₃, hA₃K₃, -⟩ :=
+    exists_isSubdivision_extension_of_disjoint hBK₂ hA₂K₂ hBA₂ hA₃
   have hcompat : ∀ x ∈ A₃.space,
       ((chartPiece e he hC hCe).subdivide Kc₁ hKc₁ hfinc₁).map
         (simplicialMap A₃ (simplicialMap A₂ (e ∘ T.map)) x) =
@@ -142,8 +151,49 @@ theorem PLPieceIn.exists_glue_chart [FiniteDimensional ℝ E] [T2Space X]
       (T.subdivide _ (hK₃.trans (hK₂.trans hK₁)) hfinK₃).map '' A₃.space := by
     change Y ∩ e.symm '' C = T.map '' A₃.space
     rw [hA₃.space_eq, hA₂space, T.image_inter_preimage]
-  exact (T.subdivide _ (hK₃.trans (hK₂.trans hK₁)) hfinK₃).glue
+  obtain ⟨T', B', φ, φ', hB', hiso', hmap, hneigh⟩ :=
+    (T.subdivide K₃ (hK₃.trans (hK₂.trans hK₁)) hfinK₃).exists_glue_with_regularNeighborhood
     ((chartPiece e he hC hCe).subdivide Kc₁ hKc₁ hfinc₁) hiso hA₃K₃
-    (restrict_faces_subset Kc₁ _) hcompat hoverlap
+    (restrict_faces_subset Kc₁ _) hcompat hoverlap B hBK₃ (hA₃.space_eq.symm ▸ hBA₂)
+  exact ⟨T', B', φ, φ', hB', hiso', hmap, hneigh.trans
+    (image_mono (regularNeighborhoodIn_space_subset_of_isSubdivision (hK₃.trans (hK₂.trans hK₁)) B.space))⟩
+
+open Classical in
+theorem PLPieceIn.exists_glue_chart_preserving_subcomplex [FiniteDimensional ℝ E] [T2Space X]
+    [HasGroupoid X (plGroupoid n)] {Y : Set X} (T : PLPieceIn E n X Y)
+    (e : OpenPartialHomeomorph X (EuclideanSpace ℝ (Fin n)))
+    (he : e ∈ atlas (EuclideanSpace ℝ (Fin n)) X) {C : Set (EuclideanSpace ℝ (Fin n))}
+    (hC : IsHPolytope C) (hCe : C ⊆ e.target)
+    (B : Geometry.SimplicialComplex ℝ E) (hB : B.faces ⊆ T.complex.faces)
+    (hdis : Disjoint (regularNeighborhoodIn T.complex B.space).space
+      (T.complex.space ∩ T.map ⁻¹' (e.symm '' C))) :
+    ∃ T' : PLPieceIn (E × EuclideanSpace ℝ (Fin n) × ℝ) n X (Y ∪ e.symm '' C),
+      ∃ B' : Geometry.SimplicialComplex ℝ (E × EuclideanSpace ℝ (Fin n) × ℝ),
+        ∃ φ : E → E × EuclideanSpace ℝ (Fin n) × ℝ,
+          ∃ φ' : E × EuclideanSpace ℝ (Fin n) × ℝ → E,
+            B'.faces ⊆ T'.complex.faces ∧ IsGlueIso B B' φ φ' ∧
+              ∀ x ∈ B.space, T'.map (simplicialMap B φ x) = T.map x := by
+  obtain ⟨T', B', φ, φ', hB', hiso, hmap, -⟩ :=
+    T.exists_glue_chart_with_regularNeighborhood e he hC hCe B hB hdis
+  exact ⟨T', B', φ, φ', hB', hiso, hmap⟩
+
+theorem PLPieceIn.exists_glue_chart [FiniteDimensional ℝ E] [T2Space X]
+    [HasGroupoid X (plGroupoid n)] {Y : Set X} (T : PLPieceIn E n X Y)
+    (e : OpenPartialHomeomorph X (EuclideanSpace ℝ (Fin n)))
+    (he : e ∈ atlas (EuclideanSpace ℝ (Fin n)) X) {C : Set (EuclideanSpace ℝ (Fin n))}
+    (hC : IsHPolytope C) (hCe : C ⊆ e.target) :
+    Nonempty (PLPieceIn (E × EuclideanSpace ℝ (Fin n) × ℝ) n X (Y ∪ e.symm '' C)) := by
+  classical
+  have hdis : Disjoint (regularNeighborhoodIn T.complex
+      (⊥ : Geometry.SimplicialComplex ℝ E).space).space
+      (T.complex.space ∩ T.map ⁻¹' (e.symm '' C)) := by
+    rw [Set.disjoint_left]
+    intro x hx _
+    obtain ⟨s, ⟨_, t, _, _, y, _, hy⟩, _⟩ :=
+      (regularNeighborhoodIn T.complex (⊥ : Geometry.SimplicialComplex ℝ E).space).mem_space_iff.mp hx
+    simp only [space_bot, Set.mem_empty_iff_false] at hy
+  obtain ⟨T', -⟩ := T.exists_glue_chart_preserving_subcomplex e he hC hCe ⊥
+    (fun _ hs => hs.elim) hdis
+  exact ⟨T'⟩
 
 end DifferentialGeometry.Topology.PiecewiseLinear

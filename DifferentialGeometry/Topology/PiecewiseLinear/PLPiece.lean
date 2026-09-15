@@ -260,21 +260,31 @@ theorem PLPieceIn.isPolyhedron_space [FiniteDimensional ℝ E] {Y : Set X}
   have := T.finite_faces.to_subtype
   exact PiecewiseLinear.isPolyhedron_space T.complex
 
-theorem PLPieceIn.transport [FiniteDimensional ℝ E] [FiniteDimensional ℝ F] {Y : Set X}
-    (T : PLPieceIn E n X Y) (L : E ≃ₗ[ℝ] F) : Nonempty (PLPieceIn F n X Y) := by
+theorem PLPieceIn.exists_transport [FiniteDimensional ℝ E] [FiniteDimensional ℝ F]
+    [DecidableEq F] {Y : Set X} (T : PLPieceIn E n X Y) (L : E ≃ₗ[ℝ] F) :
+    ∃ T' : PLPieceIn F n X Y, T'.complex.faces = simplicialImageFaces T.complex L ∧
+      ∀ x ∈ T.complex.space, T'.map (L x) = T.map x := by
   classical
   have := T.finite_faces.to_subtype
-  have hLpl : IsPiecewiseAffineOn (⇑L) T.complex.space :=
-    ((isPiecewiseAffineOn_of_affine (L : E →ₗ[ℝ] F).toAffineMap isOpen_univ).mono_of_isPolyhedron
-      T.isPolyhedron_space (subset_univ _)).congr fun _ _ => rfl
-  obtain ⟨K', hfin', hspace', hpl⟩ :=
-    exists_isPLHomeomorphOn_image T.complex hLpl (L.injective.injOn)
+  have hind : ∀ s ∈ T.complex.faces,
+      AffineIndependent ℝ ((↑) : {u // u ∈ s.image L} → F) := fun _ hs =>
+    affineIndependent_image_of_injOn_convexHull (L : E →ₗ[ℝ] F).toAffineMap (T.complex.indep hs)
+      L.injective.injOn
+  have hmap : EqOn (simplicialMap T.complex L) L T.complex.space :=
+    simplicialMap_eq_of_forall_affineOn T.complex L fun _ _ =>
+      ⟨(L : E →ₗ[ℝ] F).toAffineMap, fun _ _ => rfl⟩
+  have hinj : InjOn (simplicialMap T.complex L) T.complex.space := fun x hx y hy hxy =>
+    L.injective ((hmap hx).symm.trans (hxy.trans (hmap hy)))
+  let K' := simplicialImage T.complex L hind hinj
+  have hfin' : K'.faces.Finite := simplicialImage_faces_finite T.complex L hind hinj
+  have hpl : IsPLHomeomorphOn L T.complex.space K'.space :=
+    (isPLHomeomorphOn_simplicialImage T.complex L hind hinj).congr hmap.symm
   set Linv := Function.invFunOn (⇑L) T.complex.space with hLinv
   have hinvpl : IsPiecewiseAffineOn Linv K'.space := hpl.symm.isPiecewiseAffineOn
   have hinvbij : BijOn Linv K'.space T.complex.space := hpl.symm.bijOn
   have hinv_mem : ∀ z ∈ K'.space, Linv z ∈ T.complex.space := fun z hz => hinvbij.mapsTo hz
   refine ⟨⟨K', hfin', T.map ∘ Linv, T.bijOn.comp hinvbij,
-    T.continuousOn.comp hinvpl.continuousOn hinvbij.mapsTo, fun e he => ?_, fun e he => ?_⟩⟩
+    T.continuousOn.comp hinvpl.continuousOn hinvbij.mapsTo, fun e he => ?_, fun e he => ?_⟩, rfl, ?_⟩
   · have h := (T.isPiecewiseAffineOn_chart e he).comp hinvpl
     have heq : K'.space ∩ Linv ⁻¹' (T.complex.space ∩ T.map ⁻¹' e.source) =
         K'.space ∩ (T.map ∘ Linv) ⁻¹' e.source := by
@@ -309,6 +319,14 @@ theorem PLPieceIn.transport [FiniteDimensional ℝ E] [FiniteDimensional ℝ F] 
     change Function.invFunOn (T.map ∘ Linv) K'.space (e.symm y) =
       L (Function.invFunOn T.map T.complex.space (e.symm y))
     rw [← h5, h6]
+  · intro x hx
+    exact congrArg T.map (hpl.bijOn.invOn_invFunOn.1 hx)
+
+theorem PLPieceIn.transport [FiniteDimensional ℝ E] [FiniteDimensional ℝ F] {Y : Set X}
+    (T : PLPieceIn E n X Y) (L : E ≃ₗ[ℝ] F) : Nonempty (PLPieceIn F n X Y) := by
+  classical
+  obtain ⟨T', -, -⟩ := T.exists_transport L
+  exact ⟨T'⟩
 
 theorem PLPieceIn.exists_pLPiece [FiniteDimensional ℝ E] {Y : Set X} (T : PLPieceIn E n X Y) :
     Nonempty (PLPiece n X Y) := by

@@ -1,4 +1,6 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.Derived
+import DifferentialGeometry.Topology.PiecewiseLinear.Star
+import DifferentialGeometry.Topology.SimplicialComplex.GeometricCompactness
 import Mathlib.Analysis.Normed.Module.Convex
 
 open Set Metric
@@ -203,5 +205,40 @@ theorem exists_isSubdivision_diam_lt (K : Geometry.SimplicialComplex ℝ E)
         diam_le_of_mem_iteratedBarycentricSubdivision_faces K hK hM m s hs
     _ ≤ ((N : ℝ) / (N + 1)) ^ m * (M + 1) := by gcongr; linarith
     _ < ε := (lt_div_iff₀ hM₁).mp hm
+
+theorem exists_isSubdivision_closedStars_subset_cover (K : Geometry.SimplicialComplex ℝ E)
+    [Finite K.faces] {ι : Type*} (U : ι → Set E)
+    (hU : ∀ i, IsOpen (((↑) : K.space → E) ⁻¹' U i)) (hcover : K.space ⊆ ⋃ i, U i) :
+    ∃ R : Geometry.SimplicialComplex ℝ E, IsSubdivision R K ∧ R.faces.Finite ∧
+      ∀ s ∈ R.faces, ∃ i, (⋃ v ∈ s, closedStar R v) ⊆ U i := by
+  classical
+  have hcover' : (univ : Set K.space) ⊆ ⋃ i, ((↑) : K.space → E) ⁻¹' U i := by
+    intro x _
+    obtain ⟨i, hi⟩ := mem_iUnion.mp (hcover x.property)
+    exact mem_iUnion.mpr ⟨i, hi⟩
+  obtain ⟨δ, hδ, hleb⟩ := lebesgue_number_lemma_of_metric isCompact_univ hU hcover'
+  obtain ⟨N, hN⟩ := ((Set.toFinite K.faces).image (fun s : Finset E => s.card)).bddAbove
+  have hcard : ∀ s ∈ K.faces, s.card ≤ N + 1 :=
+    fun s hs => (hN (mem_image_of_mem _ hs)).trans (Nat.le_succ N)
+  obtain ⟨R, hR, hfinite, -, hdiam⟩ := exists_isSubdivision_diam_lt K hcard (half_pos hδ)
+  refine ⟨R, hR, hfinite, fun s hs => ?_⟩
+  obtain ⟨v₀, hv₀⟩ := R.nonempty_of_mem_faces hs
+  have hv₀s : v₀ ∈ convexHull ℝ (s : Set E) := subset_convexHull ℝ _ hv₀
+  have hv₀K : v₀ ∈ K.space := hR.space_eq ▸ R.convexHull_subset_space hs hv₀s
+  obtain ⟨i, hi⟩ := hleb ⟨v₀, hv₀K⟩ (mem_univ _)
+  refine ⟨i, fun y hy => ?_⟩
+  obtain ⟨v, hv, hyv⟩ := mem_iUnion₂.mp hy
+  obtain ⟨t, ⟨ht, hvt⟩, hyt⟩ := mem_iUnion₂.mp hyv
+  have hyK : y ∈ K.space := hR.space_eq ▸ R.convexHull_subset_space ht hyt
+  have hys : dist y v < δ / 2 :=
+    (dist_le_diam_of_mem (t.finite_toSet.isCompact_convexHull ℝ).isBounded hyt hvt).trans_lt
+      (hdiam t ht)
+  have hvs : dist v v₀ < δ / 2 :=
+    (dist_le_diam_of_mem (s.finite_toSet.isCompact_convexHull ℝ).isBounded
+      (subset_convexHull ℝ _ hv) hv₀s).trans_lt (hdiam s hs)
+  have hyball : (⟨y, hyK⟩ : K.space) ∈ ball ⟨v₀, hv₀K⟩ δ := by
+    change dist y v₀ < δ
+    exact (dist_triangle y v v₀).trans_lt (by linarith)
+  exact hi hyball
 
 end DifferentialGeometry.Topology.PiecewiseLinear

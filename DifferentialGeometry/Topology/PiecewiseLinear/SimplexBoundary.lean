@@ -58,7 +58,80 @@ theorem simplexBoundary_faces_finite (T : Finset E) (hT : AffineIndependent ℝ 
   (Set.toFinite (T.powerset : Set (Finset E))).subset fun _ hτ =>
     Finset.mem_coe.mpr (Finset.mem_powerset.mpr hτ.1)
 
+theorem openSimplex_eq_sdiff_simplexBoundary (T : Finset E)
+    (hT : AffineIndependent ℝ ((↑) : T → E)) :
+    openSimplex T = convexHull ℝ (T : Set E) \ (simplexBoundary T hT).space := by
+  ext x
+  constructor
+  · intro hx
+    refine ⟨openSimplex_subset_convexHull T hx, ?_⟩
+    intro hxB
+    obtain ⟨s, hs, hxs⟩ := (simplexBoundary T hT).mem_space_iff.mp hxB
+    exact hs.2.2 (Finset.Subset.antisymm hs.1
+      (subset_of_mem_openSimplex_of_mem_convexHull hT subset_rfl hs.1 hx hxs))
+  · rintro ⟨hx, hxB⟩
+    obtain ⟨s, hsT, hsne, hxs⟩ := exists_openSimplex_of_mem_convexHull hx
+    by_cases hs : s = T
+    · rwa [hs] at hxs
+    · exact (hxB ((simplexBoundary T hT).convexHull_subset_space ⟨hsT, hsne, hs⟩
+        (openSimplex_subset_convexHull s hxs))).elim
+
 section Boundary
+
+theorem interior_convexHull_eq_openSimplex [FiniteDimensional ℝ E] {T : Finset E}
+    (hT : AffineIndependent ℝ ((↑) : T → E)) (hcard : T.card = Module.finrank ℝ E + 1) :
+    interior (convexHull ℝ (T : Set E)) = openSimplex T := by
+  classical
+  have htop : affineSpan ℝ (Set.range ((↑) : T → E)) = ⊤ :=
+    hT.affineSpan_eq_top_iff_card_eq_finrank_add_one.mpr (by simpa using hcard)
+  let b : AffineBasis T ℝ E := ⟨((↑) : T → E), hT, htop⟩
+  have hrange : Set.range b = (T : Set E) := by
+    change Set.range ((↑) : T → E) = (T : Set E)
+    ext x
+    simp
+  have hcoord (x : E) (hx : x ∈ convexHull ℝ (T : Set E)) (v : T) :
+      b.coord v x = weights T x v := by
+    have hw : (∑ u : T, weights T x u) = 1 := by
+      rw [Finset.sum_coe_sort]
+      exact sum_weights hx
+    have hsum : Finset.univ.affineCombination ℝ b (fun u : T => weights T x u) = x := by
+      rw [Finset.affineCombination_eq_linear_combination _ _ _ hw]
+      change (∑ u : T, weights T x u • (u : E)) = x
+      rw [Finset.sum_coe_sort T (fun u => weights T x u • u)]
+      exact sum_weights_smul hx
+    exact (congrArg (b.coord v) hsum).symm.trans
+      (b.coord_apply_combination_of_mem (Finset.mem_univ v) hw)
+  ext x
+  constructor
+  · intro hx
+    have hxconv := interior_subset hx
+    apply (mem_openSimplex_self_iff hT hxconv).mpr
+    rw [← hrange, b.interior_convexHull] at hx
+    intro v hv
+    rw [← hcoord x hxconv ⟨v, hv⟩]
+    exact hx ⟨v, hv⟩
+  · intro hx
+    have hxconv := openSimplex_subset_convexHull T hx
+    rw [← hrange, b.interior_convexHull]
+    intro v
+    rw [hcoord x hxconv v]
+    exact (mem_openSimplex_self_iff hT hxconv).mp hx v v.2
+
+theorem frontier_convexHull_eq_simplexBoundary [FiniteDimensional ℝ E] {T : Finset E}
+    (hT : AffineIndependent ℝ ((↑) : T → E)) (hcard : T.card = Module.finrank ℝ E + 1) :
+    frontier (convexHull ℝ (T : Set E)) = (simplexBoundary T hT).space := by
+  rw [frontier, (T.finite_toSet.isCompact_convexHull ℝ).isClosed.closure_eq,
+    interior_convexHull_eq_openSimplex hT hcard]
+  refine Subset.antisymm ?_ ?_
+  · rintro x ⟨hx, hxnot⟩
+    obtain ⟨s, hsT, hsne, hxs⟩ := exists_openSimplex_of_mem_convexHull hx
+    exact (simplexBoundary T hT).convexHull_subset_space
+      ⟨hsT, hsne, fun hs => hxnot (hs ▸ hxs)⟩ (openSimplex_subset_convexHull s hxs)
+  · intro x hx
+    obtain ⟨s, hs, hxs⟩ := (simplexBoundary T hT).mem_space_iff.mp hx
+    refine ⟨convexHull_mono (Finset.coe_subset.mpr hs.1) hxs, fun hxopen => ?_⟩
+    exact hs.2.2 (Finset.Subset.antisymm hs.1
+      (subset_of_mem_openSimplex_of_mem_convexHull hT (Finset.Subset.refl T) hs.1 hxopen hxs))
 
 variable [DecidableEq E]
 

@@ -44,6 +44,15 @@ def IsPLBall (n : ℕ) (P : Set E) : Prop :=
 def IsPLSphere (n : ℕ) (P : Set E) : Prop :=
   ∃ f : (Fin (n + 2) → ℝ) → E, IsPLHomeomorphOn f (stdSimplexBoundary (n + 1)) P
 
+theorem IsPLBall.nonempty {n : ℕ} {P : Set E} (hP : IsPLBall n P) : P.Nonempty := by
+  obtain ⟨f, hf⟩ := hP
+  exact ⟨f (Pi.single (0 : Fin (n + 1)) 1), hf.1.mapsTo (single_mem_stdSimplex ℝ _)⟩
+
+theorem IsPLSphere.nonempty {n : ℕ} {P : Set E} (hP : IsPLSphere n P) : P.Nonempty := by
+  obtain ⟨f, hf⟩ := hP
+  refine ⟨f (Pi.single (0 : Fin (n + 2)) 1), hf.1.mapsTo ⟨single_mem_stdSimplex ℝ _, 1, ?_⟩⟩
+  simp
+
 theorem isPLBall_stdSimplex (n : ℕ) : IsPLBall n (stdSimplex ℝ (Fin (n + 1))) :=
   ⟨id, isPLHomeomorphOn_id_of_isHPolytope (isHPolytope_stdSimplex _)⟩
 
