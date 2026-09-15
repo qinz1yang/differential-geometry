@@ -1046,3 +1046,45 @@ F5.2 仍为 partial。下一项为砖 19，须从固定顶点与可动顶点的�
 验证：`RelativeNormalForm` 聚焦检查 exit=0、零 warning（9.6 秒）；更新后的 `AuditF120.lean` 审计本文件四项和
 砖 18 两项，共六项全部仅 `propext`、`Classical.choice`、`Quot.sound`。两文件均零注释、无 sorry 或预算覆盖；
 未运行 lake build、未登记根聚合。计划 F5.2 的状态及 §8 R11 已同步。下一个审计文件为 `.lake/scratch/AuditF121.lean`。
+
+## 17. 2026-09-15：砖 18/19 已复核；F5.2 搁置并记录方向；新里程碑 = S.4（Moise 17.12）
+
+### 17.0 复核
+
+`FoldCrossing`、`RelativeNormalForm` 由本方独立重编 exit=0、零 warning；AuditF120 六项只含标准三公理。
+§16.2 的障碍成立：§15.1 第 3 条所述"任意固定顶点集下混合双点皆 crossing"不成立，反例即重合固定折边。
+
+### 17.1 F5.2 搁置（不是放弃）
+
+可行方向只记录不展开：取 F6.2 的紧致片 `K_T`，把有限个星图卡各自的仿射细分与 `K_T` 取公共细分 `K*`，
+使所有图卡变换在 `K*` 的单形上仿射，折痕集 `Ξ` = `K*` 的 2-骨架固定已知；通用位置改为"相对于 `Ξ` 的分层通用位置"
+（半空间理论从一个约束平面推广到有限平面族，顶点限制在所在层内通用）；折叠引理推广到两张沿同一平面内两条不同折线折叠
+的曲面；归纳不变量 = 已处理区域上 crossing 且 `Ξ`-分层通用。在该不变量下 §16.2 的重合固定折边不会出现在已处理区域。
+估计 6k–12k 行。消费者 L.3 还在等 C.4/C.5，所以先做下面的 S.4。L.3 要消费的端点形状仍是 §12.2 第 4 条。
+
+### 17.2 新里程碑：S.4 = Moise 17.12（PL Schoenflies），从 S 车道改派到本车道
+
+理由：S.5（23.9–23.11）是 E3 的 B.3/L.2 与本车道 F4.3 的前置，S 单线程做 S.3 → S.4 → S.5 太慢；17.12 的证明主体是
+水平平面族的一般位置与 `Ind S` 归纳，正是 F5.1 的机器（`exists_generalPosition_height_fibers`）。S 车道同时做
+S.3（17.9–17.11）和 P.3 的一般 17.2。书页 122–125（PDF 132–135）。
+
+先 `git fetch origin && git merge --no-ff origin/codex/moise-integration`（`bc4b635eb`，含 S.2 的 `IsSimplyEmbedded`、
+`HasPushProperty`、17.5–17.8 端点）。全部用 S 的词汇，不另造。
+
+端点（签名冻结后写进计划行 S.4）：
+```lean
+theorem isSimplyEmbedded_of_isPLSphere_two (I : SchoenfliesInput) {S : Set (EuclideanSpace ℝ (Fin 3))}
+    (hS : IsPLSphere 2 S) : IsSimplyEmbedded S
+theorem exists_isPLBall_of_isPLSphere_two (I : SchoenfliesInput) {S : Set (EuclideanSpace ℝ (Fin 3))}
+    (hS : IsPLSphere 2 S) : ∃ B, IsPLBall 3 B ∧ frontier B = S ∧ Bornology.IsBounded B
+```
+`SchoenfliesInput` 是显式接口结构（不是 sorry），字段恰为 17.12 的证明实际使用而 S 车道尚未交付的书中定理，预计：
+17.9（凸多面体 3-胞腔的边界单嵌入）、17.10（2-胞腔与点的 join 的边界单嵌入）、17.11（两个单嵌入球面沿平面 2-胞腔
+拼合仍单嵌入）、17.2 的一般胞腔分解形式（Lemma 6 用）。每个字段由你写成 S 词汇的精确 Lean 命题，写进计划行
+S.3 / P.3 的"拟定 Lean"列并标"F 的 S.4 接口，S 车道证明"；S 交付后去掉字段。证明中若还需要别的书中定理，同样加字段并登记，不绕过。
+
+里程碑与检查点：
+- M1：`SchoenfliesInput` 与两个端点的陈述通过检查；`Ind S` 的定义与 Lemma 1（`n = 0` 归约：凸化、轴旋转、指标计算）闭合。汇报。
+- M2：Lemma 2–3（顶底层单点、中间层多边形）与 Lemma 4–6（各 `Bd M_i` 单嵌入）。汇报。
+- M3：用 17.11 拼装出两个端点；审计；计划行 S.4 改为 done（条件于 `SchoenfliesInput`）。
+其余按 §2 配方；具体路线自定。
