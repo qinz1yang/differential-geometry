@@ -396,6 +396,26 @@ theorem IsCombinatorialManifoldWithBoundary.card_faceCofaces_eq_one_or_two
     rw [show n + 2 = s.card + 1 by omega, hcofaces]
     simp [hinsert]
 
+open Classical in
+theorem IsCombinatorialManifold.card_faceCofaces_eq_two
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
+    {n : ℕ} (hK : IsCombinatorialManifold (n + 1) K)
+    {s : Finset E} (hs : s ∈ K.faces) (hscard : s.card = n + 1) :
+    (faceCofaces K s (n + 2)).card = 2 := by
+  obtain ⟨a, b, hab, habset⟩ := hK.codimension_one_cofaces K hs hscard
+  have haV : a ∈ {w | w ∉ s ∧ insert w s ∈ K.faces} := by
+    rw [habset]
+    simp
+  have hinsert : insert a s ≠ insert b s := by
+    intro heq
+    apply hab
+    have hamem : a ∈ insert b s := heq ▸ Finset.mem_insert_self a s
+    exact (Finset.mem_insert.mp hamem).resolve_right haV.1
+  have hcofaces := cofaces_eq_pair_of_cofaceVertices_eq_pair K habset
+  rw [show n + 2 = s.card + 1 by omega, hcofaces]
+  simp [hinsert]
+
 structure CoherentOrientation
     [AddCommGroup E] [Module ℝ E]
     (n : ℕ) (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces] where
@@ -410,6 +430,19 @@ def IsOrientable
     [AddCommGroup E] [Module ℝ E]
     (n : ℕ) (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces] : Prop :=
   Nonempty (CoherentOrientation n K)
+
+open Classical in
+noncomputable def complexVertexFinset
+    [AddCommGroup E] [Module ℝ E]
+    (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces] : Finset E :=
+  ((Set.toFinite K.faces).preimage Finset.singleton_injective.injOn).toFinset
+
+open Classical in
+theorem mem_complexVertexFinset
+    [AddCommGroup E] [Module ℝ E]
+    (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces] (x : E) :
+    x ∈ complexVertexFinset K ↔ {x} ∈ K.faces := by
+  exact ((Set.toFinite K.faces).preimage Finset.singleton_injective.injOn).mem_toFinset
 
 def finiteOrderRank {X : Type*} (r : LinearOrder X) (V : Finset X) (x : X) : ℕ :=
   let _ := r
@@ -3547,6 +3580,15 @@ noncomputable instance finite_boundaryRelSubdivision_faces
   (boundaryRelSubdivision_faces_finite n K).to_subtype
 
 open Classical in
+noncomputable instance finite_double_faces
+    (n : ℕ) (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces] :
+    Finite (double n K).faces := by
+  exact (gluedComplex_faces_finite (boundaryRelSubdivision n K) K
+    (isGlueIso_id (boundaryComplex n K))
+    (boundaryComplex_faces_subset n K)
+    (boundaryComplex_full_boundaryRelSubdivision n K)).to_subtype
+
+open Classical in
 noncomputable def CoherentOrientation.boundaryRelSubdivision
     [FiniteDimensional ℝ E]
     (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
@@ -4543,6 +4585,440 @@ theorem glueEmbed₂_not_mem_glued₁_of_not_mem
   have hzero : glueHeight E E (glueEmbed₂ A id v) = 0 := le_antisymm hle hge
   exact hvA ((glueHeight_glueEmbed₂_eq_zero_iff (E := E) A id v).mp hzero)
 
+private theorem isGlueIso_redecide
+    {X Y : Type*} [NormedAddCommGroup X] [NormedSpace ℝ X]
+    [NormedAddCommGroup Y] [NormedSpace ℝ Y]
+    {K : Geometry.SimplicialComplex ℝ X} {L : Geometry.SimplicialComplex ℝ Y}
+    {φ : X → Y} {ψ : Y → X} {dX : DecidableEq X} {dY : DecidableEq Y}
+    (h : @IsGlueIso X Y _ _ _ _ K L φ ψ dX dY)
+    (dX' : DecidableEq X) (dY' : DecidableEq Y) :
+    @IsGlueIso X Y _ _ _ _ K L φ ψ dX' dY' := by
+  have hX : dX = dX' := Subsingleton.elim _ _
+  have hY : dY = dY' := Subsingleton.elim _ _
+  subst dX'
+  subst dY'
+  exact h
+
+open Classical in
+noncomputable def CoherentOrientation.mapGlued₁
+    (K A : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
+    [Finite (DifferentialGeometry.Topology.PiecewiseLinear.glued₁ K A id).faces]
+    {n : ℕ} (o : CoherentOrientation n K) :
+    CoherentOrientation n
+      (DifferentialGeometry.Topology.PiecewiseLinear.glued₁ K A id) := by
+  let h := isGlueIso_redecide (isGlueIso_glued₁_id K A)
+    (Classical.decEq E) (Classical.decEq (E × E × ℝ))
+  exact o.map h
+
+open Classical in
+noncomputable def CoherentOrientation.mapGlued₂
+    (K A : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
+    [Finite (DifferentialGeometry.Topology.PiecewiseLinear.glued₂ K A id).faces]
+    {n : ℕ} (o : CoherentOrientation n K) :
+    CoherentOrientation n
+      (DifferentialGeometry.Topology.PiecewiseLinear.glued₂ K A id) := by
+  let h := isGlueIso_redecide (isGlueIso_glued₂_id K A)
+    (Classical.decEq E) (Classical.decEq (E × E × ℝ))
+  exact o.map h
+
+open Classical in
+theorem CoherentOrientation.mapGlued₁_vertexOrder_lt_iff
+    (K A : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
+    [Finite (DifferentialGeometry.Topology.PiecewiseLinear.glued₁ K A id).faces]
+    {n : ℕ} (o : CoherentOrientation n K) {z w : E × E × ℝ}
+    (hz : {z} ∈ (DifferentialGeometry.Topology.PiecewiseLinear.glued₁ K A id).faces)
+    (hw : {w} ∈ (DifferentialGeometry.Topology.PiecewiseLinear.glued₁ K A id).faces) :
+    @LT.lt (E × E × ℝ) (o.mapGlued₁ K A).vertexOrder.toLT z w ↔
+      @LT.lt E o.vertexOrder.toLT (glueFst E E z) (glueFst E E w) := by
+  let h := isGlueIso_redecide (isGlueIso_glued₁_id K A)
+    (Classical.decEq E) (Classical.decEq (E × E × ℝ))
+  change @LT.lt (E × E × ℝ)
+      (o.mapVertexOrder h).toLT z w ↔ _
+  exact o.mapVertexOrder_lt_iff h hz hw
+
+open Classical in
+theorem CoherentOrientation.mapGlued₂_vertexOrder_lt_iff
+    (K A : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
+    [Finite (DifferentialGeometry.Topology.PiecewiseLinear.glued₂ K A id).faces]
+    {n : ℕ} (o : CoherentOrientation n K) {z w : E × E × ℝ}
+    (hz : {z} ∈ (DifferentialGeometry.Topology.PiecewiseLinear.glued₂ K A id).faces)
+    (hw : {w} ∈ (DifferentialGeometry.Topology.PiecewiseLinear.glued₂ K A id).faces) :
+    @LT.lt (E × E × ℝ) (o.mapGlued₂ K A).vertexOrder.toLT z w ↔
+      @LT.lt E o.vertexOrder.toLT (glueSnd E E z) (glueSnd E E w) := by
+  let h := isGlueIso_redecide (isGlueIso_glued₂_id K A)
+    (Classical.decEq E) (Classical.decEq (E × E × ℝ))
+  change @LT.lt (E × E × ℝ)
+      (o.mapVertexOrder h).toLT z w ↔ _
+  exact o.mapVertexOrder_lt_iff h hz hw
+
+open Classical in
+theorem CoherentOrientation.orientedBoundary_mapGlued₁
+    (K A : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
+    [Finite (DifferentialGeometry.Topology.PiecewiseLinear.glued₁ K A id).faces]
+    {n : ℕ} (o : CoherentOrientation n K) {t : Finset (E × E × ℝ)}
+    (ht : t ∈ (DifferentialGeometry.Topology.PiecewiseLinear.glued₁ K A id).faces)
+    (htcard : t.card = n) :
+    orientedBoundary (o.mapGlued₁ K A).vertexOrder
+        (DifferentialGeometry.Topology.PiecewiseLinear.glued₁ K A id) n
+        (o.mapGlued₁ K A).sign t =
+      orientedBoundary o.vertexOrder K n o.sign (t.image (glueFst E E)) := by
+  let h := isGlueIso_redecide (isGlueIso_glued₁_id K A)
+    (Classical.decEq E) (Classical.decEq (E × E × ℝ))
+  change orientedBoundary (o.mapVertexOrder h)
+      (DifferentialGeometry.Topology.PiecewiseLinear.glued₁ K A id) n
+      (fun s => o.sign (s.image (glueFst E E))) t = _
+  exact o.orientedBoundary_mapVertexOrder h ht htcard
+
+open Classical in
+theorem CoherentOrientation.orientedBoundary_mapGlued₂
+    (K A : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
+    [Finite (DifferentialGeometry.Topology.PiecewiseLinear.glued₂ K A id).faces]
+    {n : ℕ} (o : CoherentOrientation n K) {t : Finset (E × E × ℝ)}
+    (ht : t ∈ (DifferentialGeometry.Topology.PiecewiseLinear.glued₂ K A id).faces)
+    (htcard : t.card = n) :
+    orientedBoundary (o.mapGlued₂ K A).vertexOrder
+        (DifferentialGeometry.Topology.PiecewiseLinear.glued₂ K A id) n
+        (o.mapGlued₂ K A).sign t =
+      orientedBoundary o.vertexOrder K n o.sign (t.image (glueSnd E E)) := by
+  let h := isGlueIso_redecide (isGlueIso_glued₂_id K A)
+    (Classical.decEq E) (Classical.decEq (E × E × ℝ))
+  change orientedBoundary (o.mapVertexOrder h)
+      (DifferentialGeometry.Topology.PiecewiseLinear.glued₂ K A id) n
+      (fun s => o.sign (s.image (glueSnd E E))) t = _
+  exact o.orientedBoundary_mapVertexOrder h ht htcard
+
+open Classical in
+private theorem exists_common_glued_face
+    (K₁ K₂ A : Geometry.SimplicialComplex ℝ E)
+    (hfull : ∀ s ∈ K₁.faces, (∀ v ∈ s, {v} ∈ A.faces) → s ∈ A.faces)
+    {t : Finset (E × E × ℝ)}
+    (ht₁ : t ∈ (glued₁ K₁ A id).faces) (ht₂ : t ∈ (glued₂ K₂ A id).faces)
+    (htne : t.Nonempty) :
+    ∃ q ∈ A.faces,
+      t = q.image (glueEmbed₁ A id) ∧ t = q.image (glueEmbed₂ A id) := by
+  have hzero : ∀ z ∈ t, glueHeight E E z = 0 := by
+    intro z hz
+    exact le_antisymm
+      (glueHeight_nonpos_of_mem_glued₂_face K₂ A id ht₂ z hz)
+      (glueHeight_nonneg_of_mem_glued₁_face K₁ A id ht₁ z hz)
+  have hfilter : t.filter (fun z => glueHeight E E z = 0) = t :=
+    Finset.filter_eq_self.mpr hzero
+  obtain ⟨q, hqA, hq⟩ := exists_face_filter_glued₁ K₁ hfull ht₁ (by
+    rw [hfilter]
+    exact htne)
+  have htq₁ : t = q.image (glueEmbed₁ A id) := hfilter.symm.trans hq
+  have htq₂ : t = q.image (glueEmbed₂ A id) := by
+    rw [htq₁]
+    simpa only [Finset.image_id] using
+      image_glueEmbed₁_eq (isGlueIso_id A) hqA
+  exact ⟨q, hqA, htq₁, htq₂⟩
+
+private theorem faceCofaces_eq_empty_of_not_mem
+    (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
+    {t : Finset E} (ht : t ∉ K.faces) (htne : t.Nonempty) (n : ℕ) :
+    faceCofaces K t n = ∅ := by
+  classical
+  ext s
+  constructor
+  · intro hs
+    obtain ⟨hsK, _, hts⟩ := (mem_faceCofaces K).mp hs
+    exact False.elim (ht (K.down_closed hsK hts htne))
+  · intro hs
+    exact False.elim (Finset.notMem_empty s hs)
+
+private theorem faceCofaces_eq_left_of_faces_eq_union_of_not_mem
+    (D K L : Geometry.SimplicialComplex ℝ E)
+    [Finite D.faces] [Finite K.faces] [Finite L.faces]
+    (hfaces : D.faces = K.faces ∪ L.faces) {t : Finset E}
+    (htL : t ∉ L.faces) (htne : t.Nonempty) (n : ℕ) :
+    faceCofaces D t n = faceCofaces K t n := by
+  classical
+  ext s
+  rw [mem_faceCofaces, mem_faceCofaces]
+  constructor
+  · rintro ⟨hsD, hscard, hts⟩
+    rw [hfaces] at hsD
+    rcases hsD with hsK | hsL
+    · exact ⟨hsK, hscard, hts⟩
+    · exact False.elim (htL (L.down_closed hsL hts htne))
+  · rintro ⟨hsK, hscard, hts⟩
+    refine ⟨?_, hscard, hts⟩
+    rw [hfaces]
+    exact Or.inl hsK
+
+private theorem faceCofaces_eq_right_of_faces_eq_union_of_not_mem
+    (D K L : Geometry.SimplicialComplex ℝ E)
+    [Finite D.faces] [Finite K.faces] [Finite L.faces]
+    (hfaces : D.faces = K.faces ∪ L.faces) {t : Finset E}
+    (htK : t ∉ K.faces) (htne : t.Nonempty) (n : ℕ) :
+    faceCofaces D t n = faceCofaces L t n := by
+  classical
+  ext s
+  rw [mem_faceCofaces, mem_faceCofaces]
+  constructor
+  · rintro ⟨hsD, hscard, hts⟩
+    rw [hfaces] at hsD
+    rcases hsD with hsK | hsL
+    · exact False.elim (htK (K.down_closed hsK hts htne))
+    · exact ⟨hsL, hscard, hts⟩
+  · rintro ⟨hsL, hscard, hts⟩
+    refine ⟨?_, hscard, hts⟩
+    rw [hfaces]
+    exact Or.inr hsL
+
+open Classical in
+private noncomputable def orientationUnionSign
+    (K : Geometry.SimplicialComplex ℝ E) (c₁ c₂ : Finset E → ℤ)
+    (s : Finset E) : ℤ :=
+  if s ∈ K.faces then c₁ s else -c₂ s
+
+open Classical in
+private theorem orientedBoundary_orientationUnionSign
+    (D K L : Geometry.SimplicialComplex ℝ E)
+    [Finite D.faces] [Finite K.faces] [Finite L.faces]
+    (hfaces : D.faces = K.faces ∪ L.faces) (r : LinearOrder E)
+    {n : ℕ} (c₁ c₂ : Finset E → ℤ)
+    (htop : ∀ s ∈ K.faces, s ∈ L.faces → s.card = n + 1 → False)
+    (t : Finset E) :
+    orientedBoundary r D n (orientationUnionSign K c₁ c₂) t =
+      orientedBoundary r K n c₁ t - orientedBoundary r L n c₂ t := by
+  let _ : DecidableEq (Finset E) := Classical.decEq (Finset E)
+  let F₁ := SimplicialComplex.facesOfCard K.toPreAbstractSimplicialComplex (n + 1)
+  let F₂ := SimplicialComplex.facesOfCard L.toPreAbstractSimplicialComplex (n + 1)
+  let U := F₁ ∪ F₂
+  have hfacesCard :
+      SimplicialComplex.facesOfCard D.toPreAbstractSimplicialComplex (n + 1) = U := by
+    ext s
+    simp only [SimplicialComplex.mem_facesOfCard]
+    change (s ∈ D.faces ∧ s.card = n + 1) ↔ s ∈ U
+    rw [hfaces]
+    simp only [U, Finset.mem_union, SimplicialComplex.mem_facesOfCard, F₁, F₂]
+    change (s ∈ K.faces ∪ L.faces ∧ s.card = n + 1) ↔
+      (s ∈ K.faces ∧ s.card = n + 1) ∨ (s ∈ L.faces ∧ s.card = n + 1)
+    rw [Set.mem_union]
+    tauto
+  have hdisjoint : Disjoint F₁ F₂ := by
+    apply Finset.disjoint_left.mpr
+    intro s hs₁ hs₂
+    obtain ⟨hsK, hscard⟩ :=
+      (SimplicialComplex.mem_facesOfCard K.toPreAbstractSimplicialComplex).mp hs₁
+    have hsL :=
+      (SimplicialComplex.mem_facesOfCard L.toPreAbstractSimplicialComplex).mp hs₂
+    exact htop s hsK hsL.1 hscard
+  unfold orientedBoundary
+  rw [hfacesCard]
+  have hsum :
+      (∑ s ∈ U, orientationUnionSign K c₁ c₂ s *
+        simplexBoundaryCoefficient r s t) =
+      (∑ s ∈ F₁, orientationUnionSign K c₁ c₂ s *
+        simplexBoundaryCoefficient r s t) +
+      ∑ s ∈ F₂, orientationUnionSign K c₁ c₂ s *
+        simplexBoundaryCoefficient r s t :=
+    show (∑ s ∈ F₁ ∪ F₂, orientationUnionSign K c₁ c₂ s *
+      simplexBoundaryCoefficient r s t) = _ from Finset.sum_union hdisjoint
+  rw [hsum]
+  have hleft :
+      (∑ s ∈ F₁, orientationUnionSign K c₁ c₂ s *
+        simplexBoundaryCoefficient r s t) =
+      ∑ s ∈ F₁, c₁ s * simplexBoundaryCoefficient r s t := by
+    apply Finset.sum_congr rfl
+    intro s hs
+    have hsK :=
+      (SimplicialComplex.mem_facesOfCard K.toPreAbstractSimplicialComplex).mp hs
+    have hsK' : s ∈ K.faces := hsK.1
+    rw [orientationUnionSign, if_pos hsK']
+  have hright :
+      (∑ s ∈ F₂, orientationUnionSign K c₁ c₂ s *
+        simplexBoundaryCoefficient r s t) =
+      -(∑ s ∈ F₂, c₂ s * simplexBoundaryCoefficient r s t) := by
+    calc
+      _ = ∑ s ∈ F₂, -(c₂ s * simplexBoundaryCoefficient r s t) := by
+        apply Finset.sum_congr rfl
+        intro s hs
+        have hsL :=
+          (SimplicialComplex.mem_facesOfCard L.toPreAbstractSimplicialComplex).mp hs
+        have hsK : s ∉ K.faces := by
+          intro hsK
+          exact htop s hsK hsL.1 hsL.2
+        rw [orientationUnionSign, if_neg hsK, neg_mul]
+      _ = _ := by rw [Finset.sum_neg_distrib]
+  rw [hleft, hright]
+  rfl
+
+open Classical in
+private theorem orientedBoundary_eq_of_orders_agree_on_vertices
+    (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
+    (r₁ r₂ : LinearOrder E) {n : ℕ} (c : Finset E → ℤ)
+    {t : Finset E} (htcard : t.card = n)
+    (horder : ∀ v w, {v} ∈ K.faces → {w} ∈ K.faces →
+      (@LT.lt E r₁.toLT v w ↔ @LT.lt E r₂.toLT v w)) :
+    orientedBoundary r₁ K n c t = orientedBoundary r₂ K n c t := by
+  rw [orientedBoundary_eq_sum_faceCofaces, orientedBoundary_eq_sum_faceCofaces]
+  apply Finset.sum_congr rfl
+  intro s hs
+  obtain ⟨hsK, hscard, hts⟩ := (mem_faceCofaces K).mp hs
+  congr 1
+  apply simplexBoundaryCoefficient_eq_of_lt_iff r₁ r₂ hts (by omega)
+  intro v hv w hw
+  apply horder v w
+  · exact K.down_closed hsK (Finset.singleton_subset_iff.mpr hv)
+      (Finset.singleton_nonempty v)
+  · exact K.down_closed hsK (Finset.singleton_subset_iff.mpr hw)
+      (Finset.singleton_nonempty w)
+
+open Classical in
+private theorem not_common_top_face_double_sides
+    [FiniteDimensional ℝ E] (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
+    {n : ℕ} (hK : IsCombinatorialManifoldWithBoundary (n + 2) K)
+    {s : Finset (E × E × ℝ)}
+    (hs₁ : s ∈ (glued₁
+      (DifferentialGeometry.Topology.PiecewiseLinear.boundaryRelSubdivision (n + 2) K)
+      (boundaryComplex (n + 2) K) id).faces)
+    (hs₂ : s ∈ (glued₂ K (boundaryComplex (n + 2) K) id).faces)
+    (hscard : s.card = n + 3) : False := by
+  let R := DifferentialGeometry.Topology.PiecewiseLinear.boundaryRelSubdivision (n + 2) K
+  let B := boundaryComplex (n + 2) K
+  have hsne : s.Nonempty := Finset.card_pos.mp (by omega)
+  obtain ⟨q, hqB, hsq, _⟩ := exists_common_glued_face R K B
+    (boundaryComplex_full_boundaryRelSubdivision (n + 2) K) hs₁ hs₂ hsne
+  have hqcard : q.card ≤ n + 2 :=
+    ((hK.mem_boundaryComplex_faces_iff K).mp hqB).2.1
+  rw [hsq, Finset.card_image_of_injective q (glueEmbed₁_injective B id)] at hscard
+  omega
+
+open Classical in
+private theorem mapped_orientedBoundaries_eq_on_double_overlap
+    [FiniteDimensional ℝ E] (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
+    {n : ℕ} (hK : IsCombinatorialManifoldWithBoundary (n + 2) K)
+    (o : CoherentOrientation (n + 2) K) {t : Finset (E × E × ℝ)}
+    [Finite (glued₁
+      (DifferentialGeometry.Topology.PiecewiseLinear.boundaryRelSubdivision (n + 2) K)
+      (boundaryComplex (n + 2) K) id).faces]
+    [Finite (glued₂ K (boundaryComplex (n + 2) K) id).faces]
+    (ht₁ : t ∈ (glued₁
+      (DifferentialGeometry.Topology.PiecewiseLinear.boundaryRelSubdivision (n + 2) K)
+      (boundaryComplex (n + 2) K) id).faces)
+    (ht₂ : t ∈ (glued₂ K (boundaryComplex (n + 2) K) id).faces)
+    (htcard : t.card = n + 2) :
+    orientedBoundary
+        ((o.boundaryRelSubdivision K hK).mapGlued₁
+          (DifferentialGeometry.Topology.PiecewiseLinear.boundaryRelSubdivision (n + 2) K)
+          (boundaryComplex (n + 2) K)).vertexOrder
+        (glued₁
+          (DifferentialGeometry.Topology.PiecewiseLinear.boundaryRelSubdivision (n + 2) K)
+          (boundaryComplex (n + 2) K) id)
+        (n + 2)
+        ((o.boundaryRelSubdivision K hK).mapGlued₁
+          (DifferentialGeometry.Topology.PiecewiseLinear.boundaryRelSubdivision (n + 2) K)
+          (boundaryComplex (n + 2) K)).sign t =
+      orientedBoundary (o.mapGlued₂ K (boundaryComplex (n + 2) K)).vertexOrder
+        (glued₂ K (boundaryComplex (n + 2) K) id) (n + 2)
+        (o.mapGlued₂ K (boundaryComplex (n + 2) K)).sign t := by
+  let R := DifferentialGeometry.Topology.PiecewiseLinear.boundaryRelSubdivision (n + 2) K
+  let B := boundaryComplex (n + 2) K
+  let oR := o.boundaryRelSubdivision K hK
+  have htne : t.Nonempty := Finset.card_pos.mp (by omega)
+  obtain ⟨q, hqB, htq₁, htq₂⟩ := exists_common_glued_face R K B
+    (boundaryComplex_full_boundaryRelSubdivision (n + 2) K) ht₁ ht₂ htne
+  have hqcard : q.card = n + 2 := by
+    rw [htq₁, Finset.card_image_of_injective q (glueEmbed₁_injective B id)] at htcard
+    exact htcard
+  have hproj₁ : t.image (glueFst E E) = q := by
+    rw [htq₁, Finset.image_image]
+    have hcomp : (fun v : E => glueFst E E (glueEmbed₁ B id v)) = id := by
+      funext v
+      rfl
+    rw [show (⇑(glueFst E E) ∘ glueEmbed₁ B id) = id from hcomp,
+      Finset.image_id]
+  have hproj₂ : t.image (glueSnd E E) = q := by
+    rw [htq₂, Finset.image_image]
+    have hcomp : (fun v : E => glueSnd E E (glueEmbed₂ B id v)) = id := by
+      funext v
+      rfl
+    rw [show (⇑(glueSnd E E) ∘ glueEmbed₂ B id) = id from hcomp,
+      Finset.image_id]
+  rw [oR.orientedBoundary_mapGlued₁ R B ht₁ htcard,
+    o.orientedBoundary_mapGlued₂ K B ht₂ htcard, hproj₁, hproj₂]
+  exact o.orientedBoundary_boundaryRelSubdivision_eq K hK hqB hqcard
+
+open Classical in
+theorem CoherentOrientation.map_orders_agree_on_double_overlap
+    [FiniteDimensional ℝ E] (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
+    {n : ℕ} (hK : IsCombinatorialManifoldWithBoundary (n + 2) K)
+    (o : CoherentOrientation (n + 2) K) {z w : E × E × ℝ}
+    [Finite (glued₁
+      (DifferentialGeometry.Topology.PiecewiseLinear.boundaryRelSubdivision (n + 2) K)
+      (boundaryComplex (n + 2) K) id).faces]
+    [Finite (glued₂ K (boundaryComplex (n + 2) K) id).faces]
+    (hz₁ : {z} ∈ (glued₁
+      (DifferentialGeometry.Topology.PiecewiseLinear.boundaryRelSubdivision (n + 2) K)
+      (boundaryComplex (n + 2) K) id).faces)
+    (hz₂ : {z} ∈ (glued₂ K (boundaryComplex (n + 2) K) id).faces)
+    (hw₁ : {w} ∈ (glued₁
+      (DifferentialGeometry.Topology.PiecewiseLinear.boundaryRelSubdivision (n + 2) K)
+      (boundaryComplex (n + 2) K) id).faces)
+    (hw₂ : {w} ∈ (glued₂ K (boundaryComplex (n + 2) K) id).faces) :
+    @LT.lt (E × E × ℝ)
+        ((o.boundaryRelSubdivision K hK).mapGlued₁
+            (DifferentialGeometry.Topology.PiecewiseLinear.boundaryRelSubdivision (n + 2) K)
+            (boundaryComplex (n + 2) K)).vertexOrder.toLT z w ↔
+      @LT.lt (E × E × ℝ)
+        (o.mapGlued₂ K (boundaryComplex (n + 2) K)).vertexOrder.toLT z w := by
+  let B := boundaryComplex (n + 2) K
+  let R := DifferentialGeometry.Topology.PiecewiseLinear.boundaryRelSubdivision (n + 2) K
+  let oR := o.boundaryRelSubdivision K hK
+  obtain ⟨v, hvR, hz⟩ := exists_eq_glueEmbed₁_of_singleton_mem R B hz₁
+  obtain ⟨u, huR, hw⟩ := exists_eq_glueEmbed₁_of_singleton_mem R B hw₁
+  subst z
+  subst w
+  have hvB : {v} ∈ B.faces := by
+    by_contra hvB
+    exact glueEmbed₁_not_mem_glued₂_of_not_mem K B hvB hz₂
+  have huB : {u} ∈ B.faces := by
+    by_contra huB
+    exact glueEmbed₁_not_mem_glued₂_of_not_mem K B huB hw₂
+  have hvEq : glueEmbed₁ B id v = glueEmbed₂ B id v := by
+    simp only [glueEmbed₁, glueEmbed₂, if_pos hvB, id_eq]
+  have huEq : glueEmbed₁ B id u = glueEmbed₂ B id u := by
+    simp only [glueEmbed₁, glueEmbed₂, if_pos huB, id_eq]
+  have hleft :
+      @LT.lt (E × E × ℝ)
+          (oR.mapGlued₁ R B).vertexOrder.toLT
+          (glueEmbed₁ B id v) (glueEmbed₁ B id u) ↔
+        @LT.lt E oR.vertexOrder.toLT v u := by
+    simpa only [glueFst_glueEmbed₁] using
+      oR.mapGlued₁_vertexOrder_lt_iff R B hz₁ hw₁
+  have hrelative : @LT.lt E oR.vertexOrder.toLT v u ↔
+      @LT.lt E o.vertexOrder.toLT v u := by
+    change (let _ := o.relativeVertexOrder B; v < u) ↔
+      @LT.lt E o.vertexOrder.toLT v u
+    exact o.relativeVertexOrder_boundary_lt_iff
+      (boundaryComplex_faces_subset (n + 2) K) hvB huB
+  have hright :
+      @LT.lt (E × E × ℝ)
+          (o.mapGlued₂ K B).vertexOrder.toLT
+          (glueEmbed₂ B id v) (glueEmbed₂ B id u) ↔
+        @LT.lt E o.vertexOrder.toLT v u := by
+    have h := o.mapGlued₂_vertexOrder_lt_iff K B
+      (hvEq ▸ hz₂) (huEq ▸ hw₂)
+    rw [glueSnd_glueEmbed₂ (E := E) B id v,
+      glueSnd_glueEmbed₂ (E := E) B id u] at h
+    exact h
+  have hright' :
+      @LT.lt (E × E × ℝ)
+          (o.mapGlued₂ K B).vertexOrder.toLT
+          (glueEmbed₁ B id v) (glueEmbed₁ B id u) ↔
+        @LT.lt E o.vertexOrder.toLT v u := by
+    rw [hvEq, huEq]
+    exact hright
+  change @LT.lt (E × E × ℝ)
+      (oR.mapGlued₁ R B).vertexOrder.toLT
+      (glueEmbed₁ B id v) (glueEmbed₁ B id u) ↔
+    @LT.lt (E × E × ℝ)
+      (o.mapGlued₂ K B).vertexOrder.toLT
+      (glueEmbed₁ B id v) (glueEmbed₁ B id u)
+  exact hleft.trans (hrelative.trans hright'.symm)
+
 open Classical in
 theorem IsCombinatorialManifoldWithBoundary.isPLSphere_geometricLink_of_not_mem_boundary
     [FiniteDimensional ℝ E] (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
@@ -4694,5 +5170,172 @@ theorem isCombinatorialManifold_double_succ_succ
           geometricLink_gluedComplex_eq_right_of_not_mem R K B hBKfaces hfull hvnotG₁
       rw [hlinkeq]
       exact hsphereG₂
+
+open Classical in
+theorem IsOrientable.double
+    [FiniteDimensional ℝ E] (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
+    {n : ℕ} (hK : IsCombinatorialManifoldWithBoundary (n + 2) K)
+    (h : IsOrientable (n + 2) K) : IsOrientable (n + 2) (double (n + 2) K) := by
+  classical
+  obtain ⟨o⟩ := h
+  let R := boundaryRelSubdivision (n + 2) K
+  let B := boundaryComplex (n + 2) K
+  let G₁ := glued₁ R B id
+  let G₂ := glued₂ K B id
+  let D := DifferentialGeometry.Topology.PiecewiseLinear.double (n + 2) K
+  let hRfinite : Finite R.faces := (boundaryRelSubdivision_faces_finite (n + 2) K).to_subtype
+  let hG₁finite : Finite G₁.faces := (glued₁_faces_finite R B id).to_subtype
+  let hG₂finite : Finite G₂.faces := (glued₂_faces_finite K B id).to_subtype
+  let hDfinite : Finite D.faces := inferInstance
+  let oR := o.boundaryRelSubdivision K hK
+  let oG₁ := oR.mapGlued₁ R B
+  let oG₂ := o.mapGlued₂ K B
+  let V₁ := complexVertexFinset G₁
+  let V₂ := complexVertexFinset G₂
+  let A := @Inter.inter (Finset (E × E × ℝ))
+    (@Finset.instInter (E × E × ℝ)
+      (fun z w => oG₂.vertexOrder.toDecidableEq z w)) V₁ V₂
+  have hagree : ∀ z ∈ A, ∀ w ∈ A,
+      (@LT.lt (E × E × ℝ) oG₁.vertexOrder.toLT z w ↔
+        @LT.lt (E × E × ℝ) oG₂.vertexOrder.toLT z w) := by
+    intro z hz w hw
+    have hzV : z ∈ V₁ ∧ z ∈ V₂ := by
+      change z ∈ @Inter.inter (Finset (E × E × ℝ))
+        (@Finset.instInter (E × E × ℝ)
+          (fun a b => oG₂.vertexOrder.toDecidableEq a b)) V₁ V₂ at hz
+      exact (@Finset.mem_inter (E × E × ℝ)
+        (fun a b => oG₂.vertexOrder.toDecidableEq a b)
+        z V₁ V₂).mp hz
+    have hwV : w ∈ V₁ ∧ w ∈ V₂ := by
+      change w ∈ @Inter.inter (Finset (E × E × ℝ))
+        (@Finset.instInter (E × E × ℝ)
+          (fun a b => oG₂.vertexOrder.toDecidableEq a b)) V₁ V₂ at hw
+      exact (@Finset.mem_inter (E × E × ℝ)
+        (fun a b => oG₂.vertexOrder.toDecidableEq a b)
+        w V₁ V₂).mp hw
+    have hz₁ : {z} ∈ G₁.faces := (mem_complexVertexFinset G₁ z).mp hzV.1
+    have hz₂ : {z} ∈ G₂.faces := (mem_complexVertexFinset G₂ z).mp hzV.2
+    have hw₁ : {w} ∈ G₁.faces := (mem_complexVertexFinset G₁ w).mp hwV.1
+    have hw₂ : {w} ∈ G₂.faces := (mem_complexVertexFinset G₂ w).mp hwV.2
+    exact o.map_orders_agree_on_double_overlap K hK hz₁ hz₂ hw₁ hw₂
+  let r := orderAmalgam oG₁.vertexOrder oG₂.vertexOrder V₁ V₂ A
+  have horder₁ : ∀ z w, {z} ∈ G₁.faces → {w} ∈ G₁.faces →
+      (@LT.lt (E × E × ℝ) r.toLT z w ↔
+        @LT.lt (E × E × ℝ) oG₁.vertexOrder.toLT z w) := by
+    intro z w hz hw
+    have hzV : z ∈ V₁ := (mem_complexVertexFinset G₁ z).mpr hz
+    have hwV : w ∈ V₁ := (mem_complexVertexFinset G₁ w).mpr hw
+    change @LT.lt (E × E × ℝ)
+        (orderAmalgam oG₁.vertexOrder oG₂.vertexOrder V₁ V₂ A).toLT z w ↔ _
+    exact orderAmalgam_lt_iff_left (V₁ := V₁) (V₂ := V₂) (A := A)
+      oG₁.vertexOrder oG₂.vertexOrder hzV hwV
+  have horder₂ : ∀ z w, {z} ∈ G₂.faces → {w} ∈ G₂.faces →
+      (@LT.lt (E × E × ℝ) r.toLT z w ↔
+        @LT.lt (E × E × ℝ) oG₂.vertexOrder.toLT z w) := by
+    intro z w hz hw
+    have hzV : z ∈ V₂ := (mem_complexVertexFinset G₂ z).mpr hz
+    have hwV : w ∈ V₂ := (mem_complexVertexFinset G₂ w).mpr hw
+    change @LT.lt (E × E × ℝ)
+        (orderAmalgam oG₁.vertexOrder oG₂.vertexOrder V₁ V₂ A).toLT z w ↔ _
+    exact orderAmalgam_lt_iff_right (V₁ := V₁) (V₂ := V₂) (A := A)
+      oG₁.vertexOrder oG₂.vertexOrder (by
+        intro x hx
+        change x ∈ @Inter.inter (Finset (E × E × ℝ))
+          (@Finset.instInter (E × E × ℝ)
+            (fun a b => oG₂.vertexOrder.toDecidableEq a b)) V₁ V₂
+        exact hx) hagree hzV hwV
+  let o₁ := oG₁.withVertexOrder r horder₁
+  let o₂ := oG₂.withVertexOrder r horder₂
+  have hDfaces : D.faces = G₁.faces ∪ G₂.faces := rfl
+  have htop : ∀ s ∈ G₁.faces, s ∈ G₂.faces → s.card = (n + 2) + 1 → False := by
+    intro s hs₁ hs₂ hscard
+    exact not_common_top_face_double_sides K hK hs₁ hs₂ (by omega)
+  have hD : IsCombinatorialManifold (n + 2) D := by
+    simpa only [D] using isCombinatorialManifold_double_succ_succ K hK
+  change Nonempty (CoherentOrientation (n + 2) D)
+  refine ⟨{
+    vertexOrder := r
+    sign := orientationUnionSign G₁ o₁.sign o₂.sign
+    sign_top := ?_
+    coherent := ?_ }⟩
+  · intro s hsD hscard
+    have hsSides : s ∈ G₁.faces ∨ s ∈ G₂.faces := by
+      rw [hDfaces] at hsD
+      exact hsD
+    by_cases hs₁ : s ∈ G₁.faces
+    · rw [orientationUnionSign, if_pos hs₁]
+      exact o₁.sign_top s hs₁ hscard
+    · have hs₂ : s ∈ G₂.faces := hsSides.resolve_left hs₁
+      rw [orientationUnionSign, if_neg hs₁]
+      rcases o₂.sign_top s hs₂ hscard with hsone | hsneg
+      · right
+        rw [hsone]
+      · left
+        rw [hsneg]
+        norm_num
+  · intro t htD htcard _
+    have htne : t.Nonempty := Finset.card_pos.mp (by omega)
+    have htSides : t ∈ G₁.faces ∨ t ∈ G₂.faces := by
+      rw [hDfaces] at htD
+      exact htD
+    have hDtwo : (faceCofaces D t (n + 3)).card = 2 := by
+      have htwo := hD.card_faceCofaces_eq_two D htD htcard
+      simpa only [Nat.add_assoc, Nat.reduceAdd] using htwo
+    rw [orientedBoundary_orientationUnionSign D G₁ G₂ hDfaces r o₁.sign o₂.sign
+      htop t]
+    by_cases ht₁ : t ∈ G₁.faces
+    · by_cases ht₂ : t ∈ G₂.faces
+      · have hleft : orientedBoundary r G₁ (n + 2) o₁.sign t =
+            orientedBoundary oG₁.vertexOrder G₁ (n + 2) oG₁.sign t := by
+          change orientedBoundary r G₁ (n + 2) oG₁.sign t = _
+          exact orientedBoundary_eq_of_orders_agree_on_vertices G₁ r oG₁.vertexOrder
+            oG₁.sign htcard horder₁
+        have hright : orientedBoundary r G₂ (n + 2) o₂.sign t =
+            orientedBoundary oG₂.vertexOrder G₂ (n + 2) oG₂.sign t := by
+          change orientedBoundary r G₂ (n + 2) oG₂.sign t = _
+          exact orientedBoundary_eq_of_orders_agree_on_vertices G₂ r oG₂.vertexOrder
+            oG₂.sign htcard horder₂
+        have hseam := mapped_orientedBoundaries_eq_on_double_overlap K hK o
+          ht₁ ht₂ htcard
+        rw [hleft, hright, hseam, sub_self]
+      · have hco : faceCofaces D t (n + 3) = faceCofaces G₁ t (n + 3) :=
+          faceCofaces_eq_left_of_faces_eq_union_of_not_mem D G₁ G₂ hDfaces
+            ht₂ htne (n + 3)
+        have hG₁two : (faceCofaces G₁ t (n + 3)).card = 2 := by
+          rw [← hco]
+          exact hDtwo
+        have hG₁notone :
+            (faceCofaces G₁ t ((n + 2) + 1)).card ≠ 1 := by
+          have htwo : (faceCofaces G₁ t ((n + 2) + 1)).card = 2 := by
+            simpa only [Nat.add_assoc, Nat.reduceAdd] using hG₁two
+          omega
+        have hco₂ : faceCofaces G₂ t ((n + 2) + 1) = ∅ :=
+          faceCofaces_eq_empty_of_not_mem G₂ ht₂ htne ((n + 2) + 1)
+        have hleft : orientedBoundary r G₁ (n + 2) o₁.sign t = 0 :=
+          o₁.coherent t ht₁ htcard hG₁notone
+        have hright : orientedBoundary r G₂ (n + 2) o₂.sign t = 0 := by
+          rw [orientedBoundary_eq_sum_faceCofaces, hco₂]
+          simp
+        rw [hleft, hright, sub_zero]
+    · have ht₂ : t ∈ G₂.faces := htSides.resolve_left ht₁
+      have hco : faceCofaces D t (n + 3) = faceCofaces G₂ t (n + 3) :=
+        faceCofaces_eq_right_of_faces_eq_union_of_not_mem D G₁ G₂ hDfaces
+          ht₁ htne (n + 3)
+      have hG₂two : (faceCofaces G₂ t (n + 3)).card = 2 := by
+        rw [← hco]
+        exact hDtwo
+      have hG₂notone :
+          (faceCofaces G₂ t ((n + 2) + 1)).card ≠ 1 := by
+        have htwo : (faceCofaces G₂ t ((n + 2) + 1)).card = 2 := by
+          simpa only [Nat.add_assoc, Nat.reduceAdd] using hG₂two
+        omega
+      have hco₁ : faceCofaces G₁ t ((n + 2) + 1) = ∅ :=
+        faceCofaces_eq_empty_of_not_mem G₁ ht₁ htne ((n + 2) + 1)
+      have hleft : orientedBoundary r G₁ (n + 2) o₁.sign t = 0 := by
+        rw [orientedBoundary_eq_sum_faceCofaces, hco₁]
+        simp
+      have hright : orientedBoundary r G₂ (n + 2) o₂.sign t = 0 :=
+        o₂.coherent t ht₂ htcard hG₂notone
+      rw [hleft, hright, sub_self]
 
 end DifferentialGeometry.Topology.PiecewiseLinear
