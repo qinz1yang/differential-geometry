@@ -1260,3 +1260,22 @@ M1 的凸化与指定点控制已经闭合；仍缺球面沿水平圆周切成 P
 临界层的有限圆周覆盖、交点唯一性、孤立点与规范圆周族的对应现已闭合；尚未证明局部二度与顶点 crossing 等价。
 球面 PL 切盘、轴旋转后的逐点指标比较及 Lemma 1 严格下降仍未闭合，M1/M2/M3 均未验收。
 `SchoenfliesInput` 未增加字段；下一审计文件 `AuditF131.lean`。
+### 18.11 球面沿 PL 圆周切成两个 PL 盘
+
+- `ConvexFrontier.lean`：任意实范数空间中的紧集，若其 frontier 包含于非空开凸集，则整个紧集也包含于该开凸集。
+  证明用严格分离与线性函数在紧集上的最大值，不增加有限维假设。
+- `ClosedStarNeighborhood.lean`：任意有限闭组合流形的每个点，在任意指定环境邻域内有一个 PL 盘邻域；
+  先把该点细分为顶点，再用两开集覆盖控制其闭星。
+- `BallFrontier.lean` 新增 `IsPLHomeomorphOn.image_stdSimplexBoundary`，精确给出全维 PL 盘参数化的边界像。
+- `SphereDisk.lean`：先在四面体边界上取避开圆周的小盘，用 S.2 的 17.5 将小盘整直到原始面，
+  使圆周落入剩余顶点星的平面图；用 P.1 填盘及开凸集包含引理拉回第一片，再用一次 17.5 构造互补片。
+  `exists_disk_decomposition_of_isPLSphere_one_subset_two` 对任意有限维实范数空间中的
+  `IsPLSphere 2 S`、`IsPLSphere 1 J` 与 `J ⊆ S` 给出两个参数化 PL 2-盘，
+  并集恰为 S、交集恰为 J，且两盘的标准单形边界像均恰为 J。
+  另有任意维单形顶点星的参数化及其精确边界像。
+
+四模块最终聚焦检查分别为 9.2、9.4、12.1、12.1 秒，均 exit=0、零 warning。
+`AuditF131.lean` 九项（含原 `IsPLBall.isPLSphere_frontier`）仅标准三公理，已核对一般切盘端点完整签名。
+本层没有扩充 `SchoenfliesInput`，没有使用 Moise 10.2 的拓扑盘陈述代替 PL 盘。
+球面 PL 切盘已经闭合；下一步为封帽球性、局部二度与 crossing 的对应及转轴后的逐点指标比较。
+Lemma 1 严格下降仍未闭合，M1/M2/M3 均未验收。下一审计文件 `AuditF132.lean`。
