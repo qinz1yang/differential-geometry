@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.Manifold
-import DifferentialGeometry.Topology.PiecewiseLinear.PLHomeomorph
+import DifferentialGeometry.Topology.PiecewiseLinear.PLImage
 
 open Set Topology
 open scoped Manifold
@@ -118,5 +118,28 @@ theorem isPLOn_iff_isPiecewiseAffineOn_comp_chart [HasGroupoid N (plGroupoid m)]
       (StructureGroupoid.chart_mem_maximalAtlas (plGroupoid n) x) (mem_chart_source _ x)
       he (hmap hx)).mpr
     exact ⟨hcont x hx, hf x hx⟩
+
+theorem IsPLOn.exists_isPLHomeomorphOn_chart_image [HasGroupoid N (plGroupoid m)]
+    {f : EuclideanSpace ℝ (Fin n) → N} {s : Set (EuclideanSpace ℝ (Fin n))}
+    (hf : IsPLOn n m f s) (hs : IsPolyhedron s) (hinj : InjOn f s)
+    (e : OpenPartialHomeomorph N (EuclideanSpace ℝ (Fin m)))
+    (he : e ∈ (plGroupoid m).maximalAtlas N) (hmap : MapsTo f s e.source) :
+    ∃ L : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin m)),
+      L.faces.Finite ∧ L.space = (e ∘ f) '' s ∧ IsPLHomeomorphOn (e ∘ f) s L.space ∧
+        L.space ⊆ e.target := by
+  obtain ⟨K, hKfinite, hKs⟩ := hs.exists_simplicialComplex
+  have : Finite K.faces := hKfinite.to_subtype
+  have hcoord : IsPiecewiseAffineOn (e ∘ f) K.space := by
+    rw [hKs]
+    exact (isPLOn_iff_isPiecewiseAffineOn_comp_chart e he hmap).mp hf
+  have hinjcoord : InjOn (e ∘ f) K.space := by
+    rw [hKs]
+    exact e.injOn.comp hinj hmap
+  obtain ⟨L, hLfinite, hLspace, hL⟩ := exists_isPLHomeomorphOn_image K hcoord hinjcoord
+  rw [hKs] at hLspace hL
+  refine ⟨L, hLfinite, hLspace, hL, ?_⟩
+  rw [hLspace]
+  rintro z ⟨x, hx, rfl⟩
+  exact e.map_source (hmap hx)
 
 end DifferentialGeometry.Topology.PiecewiseLinear

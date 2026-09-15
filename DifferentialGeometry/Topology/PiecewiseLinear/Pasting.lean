@@ -1,4 +1,5 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.PLPiece
+import DifferentialGeometry.Topology.PiecewiseLinear.PLMap
 import DifferentialGeometry.Topology.Pasting
 
 open Set Topology
@@ -93,5 +94,55 @@ theorem exists_piecewiseAffineOn_postcomp_on_polyhedron_of_locallyInjective
       exact hcommon ⟨x, ⟨hxP, hx⟩, rfl⟩
     · exact piecewise_eq_of_notMem P (h ∘ f) f hxP
   · exact fun y hy => piecewise_postcomp_preimage_singleton_of_eqOn_compl P f hhinj hfix hy
+
+open Classical in
+theorem exists_isPLOn_postcomp_on_polyhedron_of_locallyInjective
+    {n m : ℕ} {X : Type*} [TopologicalSpace X] [ChartedSpace (EuclideanSpace ℝ (Fin m)) X]
+    {f : EuclideanSpace ℝ (Fin n) → X} {P Q : Set (EuclideanSpace ℝ (Fin n))}
+    (hf : IsPLOn n m f (P ∪ Q)) (hP : IsPolyhedron P) (hQ : IsPolyhedron Q)
+    (hloc : IsLocallyInjective ((P ∪ Q).domRestrict f))
+    (hcard : ∀ y, ((P ∪ Q) ∩ f ⁻¹' {y}).encard ≤ 2) (hinjP : InjOn f P)
+    {h : X → X} (hh : IsPL m m h) (hhinj : Function.Injective h) {U : Set X}
+    (hfix : EqOn h id Uᶜ) (hseam : ∀ x ∈ P ∩ Q, f x ∉ closure U)
+    (hinjQ : InjOn f (Q ∩ f ⁻¹' U)) :
+    ∃ g : EuclideanSpace ℝ (Fin n) → X, IsPLOn n m g (P ∪ Q) ∧
+      IsLocallyInjective ((P ∪ Q).domRestrict g) ∧
+      (∀ y, ((P ∪ Q) ∩ g ⁻¹' {y}).encard ≤ 2) ∧
+      EqOn g (h ∘ f) P ∧ EqOn g f Q ∧ EqOn g f Pᶜ ∧
+      ∀ y ∉ U, g ⁻¹' {y} = f ⁻¹' {y} := by
+  let g := P.piecewise (h ∘ f) f
+  have hcont : ContinuousOn f (P ∪ Q) := fun x hx => (hf x hx).continuousWithinAt
+  have hsevent : ∀ x ∈ P ∩ Q, ∀ᶠ z in 𝓝 (f x), h z = z := by
+    intro x hx
+    filter_upwards [isClosed_closure.isOpen_compl.mem_nhds (hseam x hx)] with z hz
+    exact hfix (fun hzU => hz (subset_closure hzU))
+  have hg : IsPLOn n m g (P ∪ Q) :=
+    IsPLOn.piecewise_postcomp_of_isClosed hf hh hP.isClosed hQ.isClosed hsevent
+  have hgloc : IsLocallyInjective ((P ∪ Q).domRestrict g) :=
+    IsLocallyInjective.piecewise_postcomp_of_isClosed hloc hcont hP.isClosed hQ.isClosed hhinj hsevent
+  have hgcard : ∀ y, ((P ∪ Q) ∩ g ⁻¹' {y}).encard ≤ 2 := by
+    apply encard_fiber_piecewise_postcomp_le f (P ∪ Q) P hhinj hfix
+      (hinjP.mono inter_subset_right) (n := 1)
+    · simpa only [one_add_one_eq_two] using hcard
+    · intro y hy
+      apply encard_le_one_iff_subsingleton.mpr
+      intro a ha b hb
+      have haQ : a ∈ Q := ha.1.1.resolve_left ha.1.2
+      have hbQ : b ∈ Q := hb.1.1.resolve_left hb.1.2
+      have hfa : f a = y := ha.2
+      have hfb : f b = y := hb.2
+      apply hinjQ ⟨haQ, ?_⟩ ⟨hbQ, ?_⟩ (hfa.trans hfb.symm)
+      · change f a ∈ U
+        rwa [hfa]
+      · change f b ∈ U
+        rwa [hfb]
+  refine ⟨g, hg, hgloc, hgcard, fun x hx => piecewise_eq_of_mem P (h ∘ f) f hx,
+    ?_, fun x hx => piecewise_eq_of_notMem P (h ∘ f) f hx,
+    fun y hy => piecewise_postcomp_preimage_singleton_of_eqOn_compl P f hhinj hfix hy⟩
+  intro x hx
+  by_cases hxP : x ∈ P
+  · rw [show g x = h (f x) from piecewise_eq_of_mem P (h ∘ f) f hxP]
+    exact hfix (fun hfx => hseam x ⟨hxP, hx⟩ (subset_closure hfx))
+  · exact piecewise_eq_of_notMem P (h ∘ f) f hxP
 
 end DifferentialGeometry.Topology.PiecewiseLinear

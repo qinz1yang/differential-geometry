@@ -285,40 +285,24 @@ theorem exists_isPLBall_postcomp_neighborhood_at_doublePoint_preserving_injOn
     exact hinjQ₀.mono hsub
   refine ⟨P, U, hP, hPQ ▸ subset_union_left, hU, hyU, (closure_mono hUU₀).trans hU₀V,
     fun h hh hhinj hfix => ?_⟩
-  let g := P.piecewise (h ∘ f) f
-  have hsevent : ∀ x ∈ P ∩ Q, ∀ᶠ z in 𝓝 (f x), h z = z := by
-    intro x hx
-    filter_upwards [isClosed_closure.isOpen_compl.mem_nhds (hseam x hx)] with z hz
-    exact hfix (fun hzU => hz (subset_closure hzU))
   have hfPQ : IsPLOn d m f (P ∪ Q) := by rwa [hPQ]
-  have hg : IsPLOn d m g K.space := by
-    rw [← hPQ]
-    exact hfPQ.piecewise_postcomp_of_isClosed hh hPpoly.isClosed hQ.isClosed hsevent
-  have hgloc : IsLocallyInjective (K.space.domRestrict g) := by
-    have hlocPQ : IsLocallyInjective ((P ∪ Q).domRestrict f) := by rwa [hPQ]
-    rw [← hPQ]
-    exact IsLocallyInjective.piecewise_postcomp_of_isClosed hlocPQ hcontPQ
-      hPpoly.isClosed hQ.isClosed hhinj hsevent
-  have hgcard : ∀ z, (K.space ∩ g ⁻¹' {z}).encard ≤ 2 := by
-    apply encard_fiber_piecewise_postcomp_le f K.space P hhinj hfix
-      (hinjP.mono inter_subset_right) (n := 1)
-    · simpa only [one_add_one_eq_two] using hcard
-    · intro z hz
-      apply encard_le_one_iff_subsingleton.mpr
-      intro a ha b hb
-      have haS : a ∈ P ∪ Q := hPQ ▸ ha.1.1
-      have hbS : b ∈ P ∪ Q := hPQ ▸ hb.1.1
-      have hfa : f a = z := ha.2
-      have hfb : f b = z := hb.2
-      apply hinjQ ⟨haS.resolve_left ha.1.2, ?_⟩ ⟨hbS.resolve_left hb.1.2, ?_⟩ (hfa.trans hfb.symm)
-      · change f a ∈ U
-        rwa [hfa]
-      · change f b ∈ U
-        rwa [hfb]
-  refine ⟨g, hg, hgloc, hgcard, fun x hx => piecewise_eq_of_mem P (h ∘ f) f hx,
-    fun x hx => piecewise_eq_of_notMem P (h ∘ f) f hx,
-    fun z hz => piecewise_postcomp_preimage_singleton_of_eqOn_compl P f hhinj hfix hz, fun i => ?_⟩
-  have heq : EqOn g (h ∘ f) (C i) ∨ EqOn g f (C i) := hfamily h hfix i
+  have hlocPQ : IsLocallyInjective ((P ∪ Q).domRestrict f) := by rwa [hPQ]
+  have hcardPQ : ∀ z, ((P ∪ Q) ∩ f ⁻¹' {z}).encard ≤ 2 := by rwa [hPQ]
+  obtain ⟨g, hg, hgloc, hgcard, hgP, _, hgOffP, hgfiber⟩ :=
+    exists_isPLOn_postcomp_on_polyhedron_of_locallyInjective hfPQ hPpoly hQ
+      hlocPQ hcardPQ hinjP hh hhinj hfix hseam hinjQ
+  rw [hPQ] at hg hgloc hgcard
+  have hgform : g = P.piecewise (h ∘ f) f := by
+    funext x
+    by_cases hx : x ∈ P
+    · rw [piecewise_eq_of_mem P (h ∘ f) f hx]
+      exact hgP hx
+    · rw [piecewise_eq_of_notMem P (h ∘ f) f hx]
+      exact hgOffP hx
+  refine ⟨g, hg, hgloc, hgcard, hgP, hgOffP, hgfiber, fun i => ?_⟩
+  have heq : EqOn g (h ∘ f) (C i) ∨ EqOn g f (C i) := by
+    rw [hgform]
+    exact hfamily h hfix i
   refine ⟨?_, heq⟩
   intro a ha b hb hab
   rcases heq with hcomp | hid
