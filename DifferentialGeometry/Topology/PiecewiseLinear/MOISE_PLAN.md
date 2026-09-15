@@ -356,6 +356,51 @@
   边界/前沿不变性端点并合入 `polyhedralBoundary`，修正剩余旧实例语法后该模块检查 exit=0、零 warning；未运行根构建，
   未登记根聚合。E3.2/E3.3 仍因非紧局部有限表示层缺口搁置，详见 `PHASE3_APPROXIMATION_PLAN.md` 的 F6.3/E.2/E.3/R9。
 
+- 2026-09-15（F 车道，§12.1 的 E.3 条件版检查点）：`Transition361.lean` 明确定义 `Moise352`
+  与 `IsPLHomeomorphInto`。逆映射按像中每点的 `IsPLWithinAt` 表述，避免空源、非空目标时总逆函数不存在；
+  `isPLHomeomorphInto_iff_exists_inverse` 证明源非空时与原单个总逆映射形式等价。
+  `Moise352.exists_approx_of_isOpen` 用 F6.3 对整个开集一次应用 35.2，单独处理空集；
+  `IsPLHomeomorphInto.isOpen_image` 从 E.0 推出开像。聚焦检查 exit=0、零 warning，AuditF115
+  十个声明均仅 `propext`、`Classical.choice`、`Quot.sound`。完整 36.1 陈述在同一审计文件中通过类型检查；
+  像集等式尚待穷竭论证，E.3/E.4 尚未完成，35.2 仍只是显式命题。未运行 lake build，未登记根聚合。
+
+- 2026-09-15（F 车道，砖 15）：`Transition361.lean` 闭合 `exists_plh_approx_of_isOpen`，条件仅为
+  显式 `Moise352 3`；一般正维版本为 `Moise352.exists_approx_image_eq_of_isOpen`。F6.3 塔提供紧致穷竭，
+  局部有限的阶段前沿与连通分支分别给连续正误差控制；对整个 U 一次应用 35.2 后，紧致路径被穷竭捕获，
+  前沿分离推出像集相等。此论证不需要增加阶段连通假设。`IsPLHomeomorphInto.image_polyhedralBoundary`
+  从 M.3 和不变域给精确边界像等式；更一般的紧集前沿等式先在拓扑层证明。
+  该模块聚焦检查 exit=0、零 warning；AuditF116 审计十五个声明，全部仅标准三公理。
+  36.1 已完成条件版；35.2 仍未证，端点砖 16 随后接入。未运行 lake build，未登记根聚合。
+
+- 2026-09-15（F 车道，砖 16）：`Endgame.lean` 的 `plApproximationManifold_three_of_moise352`
+  证明 `Moise352.{u} 3 → PLApproximationManifold.{u} 3`。在 U = univ 使用 36.1，像集相等给满射，
+  不变域给开映射，由连续双射组装同胚；保留原端点的任意连续正误差与两侧 PL 流形实例。
+  `Endgame` 聚焦检查 exit=0、零 warning；AuditF117 连同砖 15 接口共十六项，全部仅
+  `propext`、`Classical.choice`、`Quot.sound`。E.3/E.4 均为条件版 done，35.2 本身没有被证明。
+  下一项按 §12.2 处理 F5.2 的整体片与载体约束扰动。未运行 lake build，未登记根聚合。
+
+- 2026-09-15（F 车道，F5.2 的 §12.2 路线审查）：`CarrierPerturbation.lean` 证明最小载体约束的刚性。
+  顶点的 `carrierFace` 是单点；当原顶点映到目标顶点，任何仍在原载体仿射包内的顶点像都等于原值，
+  `simplicialMap_eqOn_of_mem_affineSpan_carrierFace` 给整个单纯映射相等，双点集也精确不变。
+  `not_disjoint_doublePointSet_vertices_of_mem_affineSpan_carrierFace` 证明既有顶点双点不能移离目标顶点集。
+  六个声明聚焦检查 exit=0、零 warning；AuditF118 连同砖 15/16 共二十二项全部仅标准三公理。
+  此结果是 §12.2 固定最小载体路线的障碍证明，不是 F5.2 正规形式的存在证明。按交接约定在数学缺口处汇报，
+  F5.2 保持 partial，等待允许跨出低维载体且保持目标片内兼容性的设计；详见交接 §14 和风险 R10。
+
+- 2026-09-15（C 车道，L.1 定义层）：工作树 `D:\differential-geometry-moise-e3`、分支 `codex/moise-e3` 的
+  `DerivedNeighborhoodRetraction.lean` 以导出细分的重心坐标质量、矩与投影显式构造子复形导出邻域到子复形的强形变收缩，
+  `derivedNeighborhoodFundamentalGroupInclusionEquiv_apply` 识别所得基本群同构为实际包含映射的 `FundamentalGroup.map`。
+  `LoopTheorem/SingularCell.lean` 定义 `SingularTwoCell`、自由环的 `FreeLoop.conjugacyClass`、顶点碰撞复杂度与
+  `NormalSystem`；`K₁` 为保留像单形的相对导出邻域且载体等于标准导出邻域，`B₁` 为边界中环复形的导出邻域；
+  `NormalSystem.complexity_eq_zero_iff_isNonsingular`、`NormalSystem.loopConjugacyClass_eq_of_connector` 与
+  `NormalSystem.loopConjugacyClass_disjoint_normal` 分别闭合复杂度零、连接道路无关性与正规子群不交条件。
+  两个模块的聚焦检查均 exit=0、零 warning；AuditL1 对 51 项端点及复用声明审计 exit=0，全部公理闭包均包含于
+  `propext`、`Classical.choice`、`Quot.sound`。本砖首次复用并逐条审计的拓扑/相对导出声明为
+  `exists_basedCircle_free_homotopic`、`basedCircleHomotopyTrack_commutes`、
+  `fundamentalGroupChangeBasepoint_connector`、`fundamentalGroupMulEquivOfHomotopyEquiv`、
+  `faces_subset_relativeDerivedNeighborhood`、`relativeDerivedNeighborhood_faces_finite`，均仅标准三公理；未经过
+  `Topology/Homology/HurewiczLowDegrees.lean`。源码提交 `d81e1897c`；L.1 无未闭合书中步骤，未运行根构建，未登记根聚合。
+
 ## 7. 决策与风险
 
 - 不采用 Bing 定理 7 的“保留单形”强形式，只用 Moise §8/§35 的紧致图卡归纳（书中 `chap:two-set-gluing` 的方案）。

@@ -1,4 +1,5 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.Gluing
+import DifferentialGeometry.Topology.PiecewiseLinear.RegularNeighborhood
 import DifferentialGeometry.Topology.PiecewiseLinear.Subcomplex
 
 open Set
@@ -81,6 +82,106 @@ theorem IsGlueIso.image_right (h : IsGlueIso A B φ φ') :
 
 theorem IsGlueIso.injOn_right (h : IsGlueIso A B φ φ') : InjOn (simplicialMap B φ') B.space :=
   h.bijOn_right.injOn
+
+theorem IsGlueIso.trans {G : Type*} [NormedAddCommGroup G] [NormedSpace ℝ G] [DecidableEq G]
+    {C : Geometry.SimplicialComplex ℝ G} {ψ : F → G} {ψ' : G → F}
+    (h : IsGlueIso A B φ φ') (h' : IsGlueIso B C ψ ψ') :
+    IsGlueIso A C (ψ ∘ φ) (φ' ∘ ψ') := by
+  refine ⟨?_, ?_, ?_, ?_⟩
+  · intro s hs
+    rw [← Finset.image_image]
+    exact h'.image₁ _ (h.image₁ s hs)
+  · intro s hs
+    rw [← Finset.image_image]
+    exact h.image₂ _ (h'.image₂ s hs)
+  · intro s hs v hv
+    simp only [Function.comp_apply]
+    rw [h'.left _ (h.image₁ s hs) (φ v) (Finset.mem_image_of_mem φ hv), h.left s hs v hv]
+  · intro s hs v hv
+    simp only [Function.comp_apply]
+    rw [h.right _ (h'.image₂ s hs) (ψ' v) (Finset.mem_image_of_mem ψ' hv), h'.right s hs v hv]
+
+theorem IsGlueIso.simplicialMap_comp {G : Type*} [NormedAddCommGroup G] [NormedSpace ℝ G]
+    (h : IsGlueIso A B φ φ') (ψ : F → G) {x : E} (hx : x ∈ A.space) :
+    simplicialMap B ψ (simplicialMap A φ x) = simplicialMap A (ψ ∘ φ) x := by
+  obtain ⟨s, hs, hxs⟩ := A.mem_space_iff.mp hx
+  have hinj : ∀ v ∈ s, ∀ w ∈ s, φ v = φ w → v = w := by
+    intro v hv w hw hvw
+    rw [← h.left s hs v hv, ← h.left s hs w hw, hvw]
+  let μ : F → ℝ := weights s x ∘ φ'
+  have hμ (v : E) (hv : v ∈ s) : μ (φ v) = weights s x v :=
+    congrArg (weights s x) (h.left s hs v hv)
+  have hsum : ∑ v ∈ s.image φ, μ v = 1 := by
+    rw [Finset.sum_image hinj]
+    exact (Finset.sum_congr rfl fun v hv => hμ v hv).trans (sum_weights hxs)
+  have hvec : ∑ v ∈ s.image φ, μ v • v = simplicialMap A φ x := by
+    rw [Finset.sum_image hinj, simplicialMap_eq_of_mem A φ hs hxs]
+    exact Finset.sum_congr rfl fun v hv => by rw [hμ v hv]
+  have hmem := simplicialMap_mem_convexHull_image A φ hs hxs
+  rw [simplicialMap_eq_of_mem B ψ (h.image₁ s hs) hmem,
+    simplicialMap_eq_of_mem A (ψ ∘ φ) hs hxs, Finset.sum_image hinj]
+  exact Finset.sum_congr rfl fun v hv => by
+    rw [weights_eq (B.indep (h.image₁ s hs)) hmem hsum hvec _ (Finset.mem_image_of_mem φ hv), hμ v hv]
+    rfl
+
+theorem IsGlueIso.faces_eq_simplicialImageFaces (h : IsGlueIso A B φ φ') :
+    B.faces = simplicialImageFaces A φ := by
+  ext t
+  constructor
+  · intro ht
+    refine ⟨t.image φ', h.image₂ t ht, ?_⟩
+    rw [Finset.image_image]
+    have heq : t.image (φ ∘ φ') = t.image id :=
+      Finset.image_congr fun v hv => h.right t ht v hv
+    rw [heq, Finset.image_id]
+  · rintro ⟨s, hs, rfl⟩
+    exact h.image₁ s hs
+
+theorem IsGlueIso.exists_subcomplex (h : IsGlueIso A B φ φ')
+    (C : Geometry.SimplicialComplex ℝ E) (hC : C.faces ⊆ A.faces) :
+    ∃ D : Geometry.SimplicialComplex ℝ F, D.faces ⊆ B.faces ∧ IsGlueIso C D φ φ' := by
+  have hCB : simplicialImageFaces C φ ⊆ B.faces := by
+    rintro t ⟨s, hs, rfl⟩
+    exact h.image₁ s (hC hs)
+  let D : Geometry.SimplicialComplex ℝ F :=
+    { faces := simplicialImageFaces C φ
+      isRelLowerSet_faces := simplicialImageFaces_isRelLowerSet C φ
+      indep := fun hs => B.indep (hCB hs)
+      inter_subset_convexHull := fun hs ht => B.inter_subset_convexHull (hCB hs) (hCB ht) }
+  refine ⟨D, hCB, fun s hs => ⟨s, hs, rfl⟩, ?_,
+    fun s hs v hv => h.left s (hC hs) v hv, fun s hs v hv => h.right s (hCB hs) v hv⟩
+  rintro t ⟨s, hs, rfl⟩
+  rw [Finset.image_image]
+  have heq : s.image (φ' ∘ φ) = s.image id :=
+    Finset.image_congr fun v hv => h.left s (hC hs) v hv
+  rwa [heq, Finset.image_id]
+
+theorem IsGlueIso.image_regularNeighborhoodIn (h : IsGlueIso A B φ φ') {C : Set E}
+    (hCA : C ⊆ A.space) :
+    simplicialMap A φ '' (regularNeighborhoodIn A C).space =
+      (regularNeighborhoodIn B (simplicialMap A φ '' C)).space := by
+  apply Subset.antisymm
+  · rintro z ⟨x, hx, rfl⟩
+    obtain ⟨s, ⟨_, t, ht, hst, y, hyt, hyC⟩, hxs⟩ := (regularNeighborhoodIn A C).mem_space_iff.mp hx
+    have hxt := convexHull_mono (Finset.coe_subset.mpr hst) hxs
+    exact (regularNeighborhoodIn B (simplicialMap A φ '' C)).convexHull_subset_space
+      ⟨h.image₁ t ht, t.image φ, h.image₁ t ht, Finset.Subset.refl _,
+        simplicialMap A φ y, simplicialMap_mem_convexHull_image A φ ht hyt, y, hyC, rfl⟩
+      (simplicialMap_mem_convexHull_image A φ ht hxt)
+  · intro z hz
+    obtain ⟨s, ⟨_, t, ht, hst, y, hyt, hyC⟩, hzs⟩ :=
+      (regularNeighborhoodIn B (simplicialMap A φ '' C)).mem_space_iff.mp hz
+    have hzt := convexHull_mono (Finset.coe_subset.mpr hst) hzs
+    obtain ⟨u, hu, rfl⟩ := h.faces_eq_simplicialImageFaces.subset ht
+    have himage := image_convexHull_simplicialMap A φ hu
+      (injOn_of_injOn_simplicialMap A φ h.bijOn_left.injOn hu)
+    obtain ⟨x, hxu, hfx⟩ := himage.symm.subset hzt
+    obtain ⟨w, hwu, hfw⟩ := himage.symm.subset hyt
+    obtain ⟨a, ha, hfa⟩ := hyC
+    have haw : a = w := h.bijOn_left.injOn (hCA ha) (A.convexHull_subset_space hu hwu)
+      (hfa.trans hfw.symm)
+    exact ⟨x, (regularNeighborhoodIn A C).convexHull_subset_space
+      ⟨hu, u, hu, Finset.Subset.refl u, w, hwu, haw ▸ ha⟩ hxu, hfx⟩
 
 theorem IsGlueIso.exists_isSubdivision [FiniteDimensional ℝ F] (h : IsGlueIso A B φ φ')
     (B₂ : Geometry.SimplicialComplex ℝ F) (hB₂ : IsSubdivision B₂ B) [Finite B₂.faces] :
