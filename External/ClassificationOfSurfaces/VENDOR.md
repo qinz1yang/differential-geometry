@@ -1288,3 +1288,26 @@ exits 0, and reports only `propext`, `Classical.choice`, and `Quot.sound`.
 Logs: `.lake/scratch/check-polyhedral-ball-boundary.log`,
 `.lake/scratch/check-push-manifold.log`, and
 `.lake/scratch/audit-push-manifold.log`. Theorem 23.11 remains pending.
+
+## Exact Schoenflies input signatures
+
+`SchoenfliesInput.lean` is brought in unchanged from F's first-party
+commit `44806ee61` on `origin/codex/moise-smoothing`; its Git blob is
+`b0130fd228f2242155aa2a6cd63c5b30e009cf90`. The integration branch had
+not yet included this interface at the checkpoint. The S branch preserves
+its definitions and four field signatures exactly.
+
+`PlanarDiskGluing.lean` adds
+`isSimplyEmbedded_union_sdiff_diskInterior_of_subset_fiber`, expressing
+the planar disk as a level set of a nonzero linear functional. Its proof
+uses the two-dimensional affine fiber and the previously checked 17.11
+endpoint. The complete support quantifier is preserved.
+
+Both modules pass focused checks with exit 0 and zero warnings.
+`AuditS55.lean` verifies the exact types of the three S.3 interface fields
+by assigning the actual producers, and audits these producers plus the
+three elementary decomposition lemmas: six declarations, only the three
+standard axioms, exit 0. Logs: `.lake/scratch/check-schoenflies-input.log`,
+`.lake/scratch/check-planar-disk-gluing.log`, and
+`.lake/scratch/audit-schoenflies-fields.log`. The general 17.2 field remains
+unproved; no `SchoenfliesInput` instance is claimed.

@@ -38,4 +38,27 @@ theorem isSimplyEmbedded_union_sdiff_diskInterior
     · exact hSW ⟨hx, fun h => hxD h.1⟩
   exact exists_isPLHomeomorphOn_straighten_union_sdiff_diskInterior hS₁ hS₂ hq hD hW hWo hSW'
 
+theorem isSimplyEmbedded_union_sdiff_diskInterior_of_subset_fiber
+    {S₁ S₂ D : Set (EuclideanSpace ℝ (Fin 3))}
+    (hS₁ : IsSimplyEmbedded S₁) (hS₂ : IsSimplyEmbedded S₂)
+    {q : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)}
+    (hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D)
+    (ℓ : EuclideanSpace ℝ (Fin 3) →ₗ[ℝ] ℝ) (hℓ : ℓ ≠ 0) {r : ℝ}
+    (hDr : D ⊆ {x | ℓ x = r}) (hD : S₁ ∩ S₂ = D) :
+    IsSimplyEmbedded ((S₁ ∪ S₂) \ (D \ q '' stdSimplexBoundary 2)) := by
+  have hball : IsPLBall 2 D := ⟨q, hq⟩
+  obtain ⟨x, hx⟩ := hball.nonempty
+  let s := AffineSubspace.mk' x (LinearMap.ker ℓ)
+  have hdim : Module.finrank ℝ s.direction = 2 := by
+    rw [AffineSubspace.direction_mk']
+    have h := Module.Dual.finrank_ker_add_one_of_ne_zero hℓ
+    have hE : Module.finrank ℝ (EuclideanSpace ℝ (Fin 3)) = 3 := by simp
+    omega
+  apply isSimplyEmbedded_union_sdiff_diskInterior hS₁ hS₂ hq hD s hdim
+  intro y hy
+  change y ∈ AffineSubspace.mk' x (LinearMap.ker ℓ)
+  rw [AffineSubspace.mem_mk']
+  change ℓ (y - x) = 0
+  rw [map_sub, hDr hy, hDr hx, sub_self]
+
 end DifferentialGeometry.Topology.PiecewiseLinear
