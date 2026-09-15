@@ -176,4 +176,13 @@ theorem IsPLBall.isPolyhedron {n : ℕ} {P : Set E} (hP : IsPLBall n P) : IsPoly
   exact (isHPolytope_stdSimplex _).isPolyhedron.image_of_isPiecewiseAffineOn
     hf.isPiecewiseAffineOn hf.bijOn.injOn
 
+theorem isPLHomeomorphOn_of_isPiecewiseAffineOn_of_bijOn {f : E → F} {P : Set E}
+    {Q : Set F} (hP : IsPolyhedron P) (hf : IsPiecewiseAffineOn f P) (hbij : BijOn f P Q) :
+    IsPLHomeomorphOn f P Q := by
+  obtain ⟨K, hKfin, hK⟩ := hP.exists_simplicialComplex
+  have : Finite K.faces := hKfin.to_subtype
+  obtain ⟨L, -, hL, h⟩ := exists_isPLHomeomorphOn_image K (hK.symm ▸ hf)
+    (hK.symm ▸ hbij.injOn)
+  rwa [hL, hK, hbij.image_eq] at h
+
 end DifferentialGeometry.Topology.PiecewiseLinear

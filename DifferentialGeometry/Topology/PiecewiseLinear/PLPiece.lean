@@ -57,6 +57,44 @@ theorem IsPiecewiseAffineOn.union_of_isClosed [FiniteDimensional ℝ E] {f : E �
     · exact absurd hy hys
     · exact hy
 
+theorem IsPLHomeomorphOn.union [FiniteDimensional ℝ E] [FiniteDimensional ℝ F]
+    {f : E → F} {P Q : Set E} {R S : Set F}
+    (hf : IsPLHomeomorphOn f P R) (hg : IsPLHomeomorphOn f Q S)
+    (hP : IsPolyhedron P) (hQ : IsPolyhedron Q) (hmeet : f '' (P ∩ Q) = R ∩ S) :
+    IsPLHomeomorphOn f (P ∪ Q) (R ∪ S) := by
+  have hcross : ∀ x ∈ P, ∀ y ∈ Q, f x = f y → x = y := by
+    intro x hx y hy hxy
+    have hfy : f y ∈ R ∩ S := ⟨hxy ▸ hf.bijOn.mapsTo hx, hg.bijOn.mapsTo hy⟩
+    obtain ⟨z, hz, hfz⟩ := hmeet.symm.subset hfy
+    exact (hf.bijOn.injOn hx hz.1 (hxy.trans hfz.symm)).trans
+      (hg.bijOn.injOn hz.2 hy hfz)
+  have hinj : InjOn f (P ∪ Q) := by
+    intro x hx y hy hxy
+    rcases hx with hx | hx <;> rcases hy with hy | hy
+    · exact hf.bijOn.injOn hx hy hxy
+    · exact hcross x hx y hy hxy
+    · exact (hcross y hy x hx hxy.symm).symm
+    · exact hg.bijOn.injOn hx hy hxy
+  exact isPLHomeomorphOn_of_isPiecewiseAffineOn_of_bijOn (hP.union hQ)
+    (hf.isPiecewiseAffineOn.union_of_isClosed hg.isPiecewiseAffineOn hP.isClosed hQ.isClosed)
+    (hf.bijOn.union hg.bijOn hinj)
+
+open Classical in
+theorem IsPLHomeomorphOn.piecewise [FiniteDimensional ℝ E] [FiniteDimensional ℝ F]
+    {f g : E → F} {P Q : Set E} {R S : Set F}
+    (hf : IsPLHomeomorphOn f P R) (hg : IsPLHomeomorphOn g Q S)
+    (hP : IsPolyhedron P) (hQ : IsPolyhedron Q) (hfg : EqOn f g (P ∩ Q))
+    (hmeet : f '' (P ∩ Q) = R ∩ S) :
+    IsPLHomeomorphOn (P.piecewise f g) (P ∪ Q) (R ∪ S) := by
+  have hleft : EqOn (P.piecewise f g) f P := P.piecewise_eqOn f g
+  have hright : EqOn (P.piecewise f g) g Q := by
+    intro x hx
+    by_cases hxP : x ∈ P
+    · rw [P.piecewise_eq_of_mem f g hxP, hfg ⟨hxP, hx⟩]
+    · exact P.piecewise_eq_of_notMem f g hxP
+  exact (hf.congr hleft).union (hg.congr hright) hP hQ
+    (((hleft.mono inter_subset_left).image_eq).trans hmeet)
+
 theorem IsPiecewiseAffineWithinAt.inter_preimage_of_isHPolytope [FiniteDimensional ℝ E]
     {f : E → F} {s : Set E} {x : E} (hf : IsPiecewiseAffineWithinAt f s x) {C : Set F}
     (hC : IsHPolytope C) : IsPiecewiseAffineWithinAt f (s ∩ f ⁻¹' C) x := by

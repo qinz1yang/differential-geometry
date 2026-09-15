@@ -217,6 +217,12 @@ theorem isPLBall_segment [FiniteDimensional ℝ E] {a b : E} (hab : a ≠ b) :
 theorem isPLBall_Icc {a b : ℝ} (hab : a < b) : IsPLBall 1 (Icc a b) := by
   simpa only [segment_eq_Icc hab.le] using isPLBall_segment hab.ne
 
+theorem exists_isPLHomeomorphOn_Icc_of_isPLBall_one [FiniteDimensional ℝ E] {A : Set E}
+    (hA : IsPLBall 1 A) : ∃ γ : ℝ → E, IsPLHomeomorphOn γ (Icc 0 1) A := by
+  obtain ⟨f, hf⟩ := isPLBall_Icc (by norm_num : (0 : ℝ) < 1)
+  obtain ⟨g, hg⟩ := hA
+  exact ⟨_, hf.symm.trans hg⟩
+
 theorem isPLBall_image_Icc_of_isPiecewiseAffineOn [FiniteDimensional ℝ E] {γ : ℝ → E}
     {a b : ℝ} (hab : a < b) (hγ : IsPiecewiseAffineOn γ (Icc a b)) (hi : InjOn γ (Icc a b)) :
     IsPLBall 1 (γ '' Icc a b) := by
@@ -315,6 +321,64 @@ theorem isPLBall_outside_subarcs {γ : ℝ → EuclideanSpace ℝ (Fin 2)}
     rw [Schoenflies.image_concatenate hmid, hfimage, hgimage, union_comm] at h
     exact h
 
+theorem exists_isPLHomeomorphOn_Icc_of_isArcBetween {A : Set (EuclideanSpace ℝ (Fin 2))}
+    (hPL : IsPLBall 1 A) {p q : EuclideanSpace ℝ (Fin 2)}
+    (hA : Schoenflies.IsArcBetween A p q) :
+    ∃ γ : ℝ → EuclideanSpace ℝ (Fin 2), IsPLHomeomorphOn γ (Icc 0 1) A ∧ γ 0 = p ∧ γ 1 = q := by
+  have hpq : p ≠ q := by
+    intro hpq
+    obtain ⟨f, -, hi, -, hf0, hf1⟩ := hA
+    exact zero_ne_one (hi Schoenflies.zero_mem_I Schoenflies.one_mem_I
+      (hf0.trans (hpq.trans hf1.symm)))
+  obtain ⟨γ, hγ⟩ := exists_isPLHomeomorphOn_Icc_of_isPLBall_one hPL
+  obtain ⟨s, hs, hγs⟩ := hγ.bijOn.surjOn hA.left_mem
+  obtain ⟨t, ht, hγt⟩ := hγ.bijOn.surjOn hA.right_mem
+  have hst : s ≠ t := fun h => hpq (hγs.symm.trans ((congrArg γ h).trans hγt))
+  have hsubarc := Schoenflies.isArcBetween_subarc_of_injOn_I
+    hγ.isPiecewiseAffineOn.continuousOn hγ.bijOn.injOn hs ht hst
+  rw [hγs, hγt] at hsubarc
+  have hsub : uIcc s t ⊆ Icc 0 1 := Schoenflies.uIcc_subset_I hs ht
+  have himage : γ '' uIcc s t = A :=
+    hA.eq_of_subset hsubarc ((image_mono hsub).trans hγ.image_eq.subset)
+  have hcover : Icc (0 : ℝ) 1 ⊆ uIcc s t := by
+    intro u hu
+    obtain ⟨v, hv, hγv⟩ := himage.symm.subset (hγ.bijOn.mapsTo hu)
+    exact (hγ.bijOn.injOn (hsub hv) hu hγv) ▸ hv
+  have h0 := hcover (show (0 : ℝ) ∈ Icc 0 1 by norm_num)
+  have h1 := hcover (show (1 : ℝ) ∈ Icc 0 1 by norm_num)
+  rcases hst.lt_or_gt with hst | hts
+  · rw [uIcc_of_le hst.le] at h0 h1
+    have hs0 : s = 0 := le_antisymm h0.1 hs.1
+    have ht1 : t = 1 := le_antisymm ht.2 h1.2
+    exact ⟨γ, hγ, hs0 ▸ hγs, ht1 ▸ hγt⟩
+  · rw [uIcc_of_ge hts.le] at h0 h1
+    have ht0 : t = 0 := le_antisymm h0.1 ht.1
+    have hs1 : s = 1 := le_antisymm hs.2 h1.2
+    have hrevPL := isPiecewiseAffineOn_subarc hγ.isPiecewiseAffineOn
+      (show (1 : ℝ) ∈ Icc 0 1 by norm_num) (show (0 : ℝ) ∈ Icc 0 1 by norm_num)
+    have hrevInj : InjOn (Schoenflies.subarc γ 1 0) (Icc 0 1) :=
+      Schoenflies.injOn_subarc (by simpa using hγ.bijOn.injOn) one_ne_zero
+    have hrevImage : Schoenflies.subarc γ 1 0 '' Icc 0 1 = A := by
+      rw [Schoenflies.subarc_image, uIcc_of_ge zero_le_one, hγ.image_eq]
+    refine ⟨Schoenflies.subarc γ 1 0,
+      isPLHomeomorphOn_of_isPiecewiseAffineOn_of_bijOn isHPolytope_Icc.isPolyhedron
+        hrevPL (hrevImage ▸ hrevInj.bijOn_image), ?_, ?_⟩
+    · simpa using hs1 ▸ hγs
+    · simpa using ht0 ▸ hγt
+
+theorem exists_isPLHomeomorphOn_of_isArcBetween {A B : Set (EuclideanSpace ℝ (Fin 2))}
+    (hA : IsPLBall 1 A) (hB : IsPLBall 1 B) {p q r s : EuclideanSpace ℝ (Fin 2)}
+    (hApq : Schoenflies.IsArcBetween A p q) (hBrs : Schoenflies.IsArcBetween B r s) :
+    ∃ f : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 2),
+      IsPLHomeomorphOn f A B ∧ f p = r ∧ f q = s := by
+  obtain ⟨γ, hγ, hγ0, hγ1⟩ := exists_isPLHomeomorphOn_Icc_of_isArcBetween hA hApq
+  obtain ⟨η, hη, hη0, hη1⟩ := exists_isPLHomeomorphOn_Icc_of_isArcBetween hB hBrs
+  refine ⟨_, hγ.symm.trans hη, ?_, ?_⟩
+  · change η (Function.invFunOn γ (Icc 0 1) p) = r
+    rw [← hγ0, hγ.bijOn.invOn_invFunOn.1 (by norm_num), hη0]
+  · change η (Function.invFunOn γ (Icc 0 1) q) = s
+    rw [← hγ1, hγ.bijOn.invOn_invFunOn.1 (by norm_num), hη1]
+
 theorem exists_isCutPair_isPLBall_of_isPLSphere_one {J : Set (EuclideanSpace ℝ (Fin 2))}
     (hJ : IsPLSphere 1 J) {p q : EuclideanSpace ℝ (Fin 2)} (hp : p ∈ J) (hq : q ∈ J)
     (hpq : p ≠ q) :
@@ -406,6 +470,39 @@ theorem isPLBall_compl_openArc_of_isPLSphere_one {J A : Set (EuclideanSpace ℝ 
     simp only [mem_sdiff, mem_union]
     tauto
   rwa [heq]
+
+open Classical in
+theorem exists_isPLHomeomorphOn_of_isCutPair
+    {J J' A B A' B' : Set (EuclideanSpace ℝ (Fin 2))}
+    (hJ : IsPLSphere 1 J) (hJ' : IsPLSphere 1 J')
+    {p q p' q' : EuclideanSpace ℝ (Fin 2)}
+    (hcut : Schoenflies.IsCutPair J p q A B) (hcut' : Schoenflies.IsCutPair J' p' q' A' B') :
+    ∃ f : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 2),
+      IsPLHomeomorphOn f J J' ∧ IsPLHomeomorphOn f A A' ∧ IsPLHomeomorphOn f B B' ∧
+        f p = p' ∧ f q = q' := by
+  have hA := isPLBall_of_isArc_subset_isPLSphere hJ hcut.fst.isArc hcut.fst_subset
+  have hB := isPLBall_of_isArc_subset_isPLSphere hJ hcut.snd.isArc hcut.snd_subset
+  have hA' := isPLBall_of_isArc_subset_isPLSphere hJ' hcut'.fst.isArc hcut'.fst_subset
+  have hB' := isPLBall_of_isArc_subset_isPLSphere hJ' hcut'.snd.isArc hcut'.snd_subset
+  obtain ⟨f, hf, hfp, hfq⟩ := exists_isPLHomeomorphOn_of_isArcBetween hA hA' hcut.fst hcut'.fst
+  obtain ⟨g, hg, hgp, hgq⟩ := exists_isPLHomeomorphOn_of_isArcBetween hB hB' hcut.snd hcut'.snd
+  have hfg : EqOn f g (A ∩ B) := by
+    rw [hcut.inter_eq]
+    rintro x (rfl | rfl)
+    · exact hfp.trans hgp.symm
+    · exact hfq.trans hgq.symm
+  have hmeet : f '' (A ∩ B) = A' ∩ B' := by
+    rw [hcut.inter_eq, hcut'.inter_eq, image_pair, hfp, hfq]
+  have h := hf.piecewise hg hA.isPolyhedron hB.isPolyhedron hfg hmeet
+  rw [hcut.union_eq, hcut'.union_eq] at h
+  have hleft : EqOn (A.piecewise f g) f A := A.piecewise_eqOn f g
+  have hright : EqOn (A.piecewise f g) g B := by
+    intro x hx
+    by_cases hxA : x ∈ A
+    · rw [A.piecewise_eq_of_mem f g hxA, hfg ⟨hxA, hx⟩]
+    · exact A.piecewise_eq_of_notMem f g hxA
+  exact ⟨_, h, hf.congr hleft, hg.congr hright,
+    (hleft hcut.fst.left_mem).trans hfp, (hleft hcut.fst.right_mem).trans hfq⟩
 
 theorem exists_polyhedral_region_of_isPLSphere_one {J : Set (EuclideanSpace ℝ (Fin 2))}
     (hJ : IsPLSphere 1 J) :
