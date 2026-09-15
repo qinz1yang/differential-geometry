@@ -1164,4 +1164,775 @@ theorem isPLSphere_double_of_isPLBall
     hSball.isCombinatorialManifoldWithBoundary hfS
   exact (isPLSphere_double_simplexComplex_std n).of_isPLHomeomorphOn hg
 
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+
+open Classical in
+theorem isPLSphere_gluedComplex_of_isPLBall
+    [FiniteDimensional ℝ E]
+    (K₁ K₂ A : Geometry.SimplicialComplex ℝ E)
+    [Finite K₁.faces] [Finite K₂.faces] [Finite A.faces]
+    {n : ℕ} (hK₁ : IsPLBall (n + 1) K₁.space)
+    (hK₂ : IsPLBall (n + 1) K₂.space)
+    (hA₁ : A = boundaryComplex (n + 1) K₁)
+    (hA₂ : A = boundaryComplex (n + 1) K₂)
+    (hfull : ∀ s ∈ K₁.faces, (∀ v ∈ s, {v} ∈ A.faces) → s ∈ A.faces) :
+    IsPLSphere (n + 1) (gluedComplex K₁ K₂ (isGlueIso_id A)
+      (by rw [hA₂]; exact boundaryComplex_faces_subset (n + 1) K₂) hfull).space := by
+  classical
+  have hAK₁ : A.faces ⊆ K₁.faces := by
+    rw [hA₁]
+    exact boundaryComplex_faces_subset (n + 1) K₁
+  have hAK₂ : A.faces ⊆ K₂.faces := by
+    rw [hA₂]
+    exact boundaryComplex_faces_subset (n + 1) K₂
+  have hidA : IsPLHomeomorphOn id A.space A.space :=
+    (isGlueIso_id A).isPLHomeomorphOn.congr
+      (fun x hx => (simplicialMap_id_eq_of_mem A hx).symm)
+  have hboundary : IsPLHomeomorphOn id
+      (boundaryComplex (n + 1) K₁).space
+      (boundaryComplex (n + 1) K₂).space := by
+    rw [← hA₁, ← hA₂]
+    exact hidA
+  obtain ⟨G, hG, hGA⟩ :=
+    exists_isPLHomeomorphOn_of_boundaryComplex K₁ K₂ hK₁ hK₂ hboundary
+  let R₂ := boundaryRelSubdivision (n + 1) K₂
+  let hR₂finite : Finite R₂.faces :=
+    (boundaryRelSubdivision_faces_finite (n + 1) K₂).to_subtype
+  have hR₂sub : IsSubdivision R₂ K₂ := boundaryRelSubdivision_isSubdivision (n + 1) K₂
+  let ι₁ := simplicialMap R₂ (glueEmbed₁ A id)
+  let ι₂ := simplicialMap K₂ (glueEmbed₂ A id)
+  let g₁ := ι₁ ∘ G
+  let g₂ := ι₂
+  let Y₁ := (glued₁ R₂ A id).space
+  let Y₂ := (glued₂ K₂ A id).space
+  have hemb₁ := isPLHomeomorphOn_embedComplex R₂ (glueEmbed₁ A id)
+    (glueFst E E) (fun _ _ _ _ => rfl)
+  have hemb₂ := isPLHomeomorphOn_embedComplex K₂ (glueEmbed₂ A id)
+    (glueSnd E E) (fun _ _ _ _ => rfl)
+  have hGR₂ : IsPLHomeomorphOn G K₁.space R₂.space := by
+    rw [hR₂sub.space_eq]
+    exact hG
+  have hg₁ : IsPLHomeomorphOn g₁ K₁.space Y₁ := hGR₂.trans hemb₁
+  have hg₂ : IsPLHomeomorphOn g₂ K₂.space Y₂ := hemb₂
+  have hcompat : ∀ x ∈ A.space, g₂ (simplicialMap A id x) = g₁ x := by
+    intro x hx
+    rw [simplicialMap_id_eq_of_mem A hx]
+    have hGx : G x = x := hGA (hA₁ ▸ hx)
+    change ι₂ x = ι₁ (G x)
+    rw [hGx]
+    exact (simplicialMap_glueEmbed_id_eq R₂ K₂ A
+      (by rw [hA₂]; exact boundaryComplex_faces_subset_boundaryRelSubdivision (n + 1) K₂)
+      hAK₂ hx).symm
+  have hoverlap : Y₁ ∩ Y₂ = g₁ '' A.space := by
+    have hAR₂ : A.faces ⊆ R₂.faces := by
+      rw [hA₂]
+      exact boundaryComplex_faces_subset_boundaryRelSubdivision (n + 1) K₂
+    calc
+      Y₁ ∩ Y₂ = ι₁ '' A.space :=
+        glued₁_space_inter_glued₂_space R₂ K₂ (isGlueIso_id A) hAR₂ hAK₂
+          (by
+            rw [hA₂]
+            exact boundaryComplex_full_boundaryRelSubdivision (n + 1) K₂)
+      _ = ι₁ '' (G '' A.space) := by
+        congr 1
+        ext y
+        constructor
+        · intro hy
+          exact ⟨y, hy, by simpa using hGA (hA₁ ▸ hy)⟩
+        · rintro ⟨x, hx, rfl⟩
+          rwa [hGA (hA₁ ▸ hx)]
+      _ = g₁ '' A.space := by rw [Set.image_image]; rfl
+  have hmap := isPLHomeomorphOn_gluedMap_of_full K₁ K₂ A A id id
+    (isGlueIso_id A) hAK₁ hAK₂ hfull g₁ g₂ Y₁ Y₂ hg₁ hg₂ hcompat hoverlap
+  rw [← gluedComplex_space R₂ K₂ (isGlueIso_id A) hAK₂ (by
+    rw [hA₂]
+    exact boundaryComplex_full_boundaryRelSubdivision (n + 1) K₂)] at hmap
+  have hdouble : IsPLHomeomorphOn (gluedMap K₁ A id g₁ g₂)
+      (gluedComplex K₁ K₂ (isGlueIso_id A) hAK₂ hfull).space
+      (double (n + 1) K₂).space := by
+    simpa only [double, R₂, hA₂] using hmap
+  exact (isPLSphere_double_of_isPLBall K₂ hK₂).of_isPLHomeomorphOn hdouble.symm
+
+theorem eq_of_faces_subset_of_space_eq
+    (K L R : Geometry.SimplicialComplex ℝ E)
+    (hKR : K.faces ⊆ R.faces) (hLR : L.faces ⊆ R.faces)
+    (hspace : K.space = L.space) : K = L := by
+  apply Geometry.SimplicialComplex.ext
+  ext s
+  constructor
+  · intro hsK
+    have hsR := hKR hsK
+    have hx := centroid_mem_openSimplex_of_mem_faces R s hsR
+    have hxL : s.centroid ℝ id ∈ L.space := by
+      rw [← hspace]
+      exact K.convexHull_subset_space hsK (openSimplex_subset_convexHull s hx)
+    obtain ⟨t, htL, hxt⟩ := L.mem_space_iff.mp hxL
+    have hst := face_subset_of_mem_openSimplex_of_mem_convexHull R hsR (hLR htL) hx hxt
+    exact L.down_closed htL hst (K.nonempty_of_mem_faces hsK)
+  · intro hsL
+    have hsR := hLR hsL
+    have hx := centroid_mem_openSimplex_of_mem_faces R s hsR
+    have hxK : s.centroid ℝ id ∈ K.space := by
+      rw [hspace]
+      exact L.convexHull_subset_space hsL (openSimplex_subset_convexHull s hx)
+    obtain ⟨t, htK, hxt⟩ := K.mem_space_iff.mp hxK
+    have hst := face_subset_of_mem_openSimplex_of_mem_convexHull R hsR (hKR htK) hx hxt
+    exact K.down_closed htK hst (L.nonempty_of_mem_faces hsL)
+
+open Classical in
+theorem boundaryComplex_boundaryRelSubdivision
+    [FiniteDimensional ℝ E] (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
+    {n : ℕ} (hK : IsCombinatorialManifoldWithBoundary (n + 1) K) :
+    boundaryComplex (n + 1) (boundaryRelSubdivision (n + 1) K) =
+      boundaryComplex (n + 1) K := by
+  classical
+  let R := boundaryRelSubdivision (n + 1) K
+  let hRfinite : Finite R.faces :=
+    (boundaryRelSubdivision_faces_finite (n + 1) K).to_subtype
+  have hR : IsSubdivision R K := boundaryRelSubdivision_isSubdivision (n + 1) K
+  apply eq_of_faces_subset_of_space_eq
+    (boundaryComplex (n + 1) R) (boundaryComplex (n + 1) K) R
+  · exact boundaryComplex_faces_subset (n + 1) R
+  · exact boundaryComplex_faces_subset_boundaryRelSubdivision (n + 1) K
+  · exact boundaryComplex_space_of_isSubdivision K R hK hR
+
+open Classical in
+theorem isGlueIso_glued₁_id
+    (K A : Geometry.SimplicialComplex ℝ E) :
+    IsGlueIso K (glued₁ K A id) (glueEmbed₁ A id) (glueFst E E) := by
+  classical
+  refine ⟨?_, ?_, ?_, ?_⟩
+  · intro s hs
+    exact (mem_glued₁_faces_iff K A id).mpr ⟨s, hs, rfl⟩
+  · intro t ht
+    obtain ⟨s, hs, rfl⟩ := (mem_glued₁_faces_iff K A id).mp ht
+    rw [Finset.image_image]
+    have hcomp : (fun v : E => glueFst E E (glueEmbed₁ A id v)) = id := by
+      funext v
+      rfl
+    rw [show (⇑(glueFst E E) ∘ glueEmbed₁ A id) = id from hcomp,
+      Finset.image_id]
+    exact hs
+  · intro s hs v hv
+    rfl
+  · intro t ht z hz
+    obtain ⟨s, hs, hst⟩ := (mem_glued₁_faces_iff K A id).mp ht
+    obtain ⟨v, hv, hvz⟩ := Finset.mem_image.mp (hst ▸ hz)
+    rw [← hvz]
+    rfl
+
+open Classical in
+theorem isGlueIso_glued₂_id
+    (K A : Geometry.SimplicialComplex ℝ E) :
+    IsGlueIso K (glued₂ K A id) (glueEmbed₂ A id) (glueSnd E E) := by
+  classical
+  refine ⟨?_, ?_, ?_, ?_⟩
+  · intro s hs
+    exact (mem_glued₂_faces_iff K A id).mpr ⟨s, hs, rfl⟩
+  · intro t ht
+    obtain ⟨s, hs, rfl⟩ := (mem_glued₂_faces_iff K A id).mp ht
+    rw [Finset.image_image]
+    have hcomp : (fun v : E => glueSnd E E (glueEmbed₂ A id v)) = id := by
+      funext v
+      rfl
+    rw [show (⇑(glueSnd E E) ∘ glueEmbed₂ A id) = id from hcomp,
+      Finset.image_id]
+    exact hs
+  · intro s hs v hv
+    rfl
+  · intro t ht z hz
+    obtain ⟨s, hs, hst⟩ := (mem_glued₂_faces_iff K A id).mp ht
+    obtain ⟨v, hv, hvz⟩ := Finset.mem_image.mp (hst ▸ hz)
+    rw [← hvz]
+    rfl
+
+open Classical in
+theorem geometricLink_gluedComplex_space
+    (K₁ K₂ A : Geometry.SimplicialComplex ℝ E)
+    (hA₂ : A.faces ⊆ K₂.faces)
+    (hfull : ∀ s ∈ K₁.faces, (∀ v ∈ s, {v} ∈ A.faces) → s ∈ A.faces)
+    (z : E × E × ℝ) :
+    (SimplicialComplex.geometricLink
+      (gluedComplex K₁ K₂ (isGlueIso_id A) hA₂ hfull) {z}).space =
+      (SimplicialComplex.geometricLink (glued₁ K₁ A id) {z}).space ∪
+        (SimplicialComplex.geometricLink (glued₂ K₂ A id) {z}).space := by
+  ext x
+  constructor
+  · intro hx
+    obtain ⟨t, ht, hxt⟩ := (SimplicialComplex.geometricLink
+      (gluedComplex K₁ K₂ (isGlueIso_id A) hA₂ hfull) {z}).mem_space_iff.mp hx
+    rw [SimplicialComplex.mem_geometricLink_singleton,
+      mem_gluedComplex_faces_iff] at ht
+    rcases ht.2.2 with ht₁ | ht₂
+    · apply Or.inl
+      apply (SimplicialComplex.geometricLink
+        (glued₁ K₁ A id) {z}).mem_space_iff.mpr
+      refine ⟨t, ?_, hxt⟩
+      rw [SimplicialComplex.mem_geometricLink_singleton]
+      exact ⟨ht.1, ht.2.1, ht₁⟩
+    · apply Or.inr
+      apply (SimplicialComplex.geometricLink
+        (glued₂ K₂ A id) {z}).mem_space_iff.mpr
+      refine ⟨t, ?_, hxt⟩
+      rw [SimplicialComplex.mem_geometricLink_singleton]
+      exact ⟨ht.1, ht.2.1, ht₂⟩
+  · rintro (hx | hx)
+    · obtain ⟨t, ht, hxt⟩ := (SimplicialComplex.geometricLink
+        (glued₁ K₁ A id) {z}).mem_space_iff.mp hx
+      apply (SimplicialComplex.geometricLink
+        (gluedComplex K₁ K₂ (isGlueIso_id A) hA₂ hfull) {z}).mem_space_iff.mpr
+      rw [SimplicialComplex.mem_geometricLink_singleton] at ht
+      refine ⟨t, ?_, hxt⟩
+      rw [SimplicialComplex.mem_geometricLink_singleton,
+        mem_gluedComplex_faces_iff]
+      exact ⟨ht.1, ht.2.1, Or.inl ht.2.2⟩
+    · obtain ⟨t, ht, hxt⟩ := (SimplicialComplex.geometricLink
+        (glued₂ K₂ A id) {z}).mem_space_iff.mp hx
+      apply (SimplicialComplex.geometricLink
+        (gluedComplex K₁ K₂ (isGlueIso_id A) hA₂ hfull) {z}).mem_space_iff.mpr
+      rw [SimplicialComplex.mem_geometricLink_singleton] at ht
+      refine ⟨t, ?_, hxt⟩
+      rw [SimplicialComplex.mem_geometricLink_singleton,
+        mem_gluedComplex_faces_iff]
+      exact ⟨ht.1, ht.2.1, Or.inr ht.2.2⟩
+
+open Classical in
+theorem geometricLink_gluedComplex_eq_left_of_not_mem
+    (K₁ K₂ A : Geometry.SimplicialComplex ℝ E)
+    (hA₂ : A.faces ⊆ K₂.faces)
+    (hfull : ∀ s ∈ K₁.faces, (∀ v ∈ s, {v} ∈ A.faces) → s ∈ A.faces)
+    {z : E × E × ℝ} (hz : {z} ∉ (glued₂ K₂ A id).faces) :
+    SimplicialComplex.geometricLink
+      (gluedComplex K₁ K₂ (isGlueIso_id A) hA₂ hfull) {z} =
+      SimplicialComplex.geometricLink (glued₁ K₁ A id) {z} := by
+  apply Geometry.SimplicialComplex.ext
+  ext t
+  simp only [SimplicialComplex.mem_geometricLink_singleton]
+  constructor
+  · rintro ⟨htne, hzt, ht⟩
+    rcases ht with ht | ht
+    · exact ⟨htne, hzt, ht⟩
+    · exact False.elim (hz ((glued₂ K₂ A id).down_closed ht
+        (Finset.singleton_subset_iff.mpr (Finset.mem_insert_self z t))
+        (Finset.singleton_nonempty z)))
+  · rintro ⟨htne, hzt, ht⟩
+    exact ⟨htne, hzt, Or.inl ht⟩
+
+open Classical in
+theorem geometricLink_gluedComplex_eq_right_of_not_mem
+    (K₁ K₂ A : Geometry.SimplicialComplex ℝ E)
+    (hA₂ : A.faces ⊆ K₂.faces)
+    (hfull : ∀ s ∈ K₁.faces, (∀ v ∈ s, {v} ∈ A.faces) → s ∈ A.faces)
+    {z : E × E × ℝ} (hz : {z} ∉ (glued₁ K₁ A id).faces) :
+    SimplicialComplex.geometricLink
+      (gluedComplex K₁ K₂ (isGlueIso_id A) hA₂ hfull) {z} =
+      SimplicialComplex.geometricLink (glued₂ K₂ A id) {z} := by
+  apply Geometry.SimplicialComplex.ext
+  ext t
+  simp only [SimplicialComplex.mem_geometricLink_singleton]
+  constructor
+  · rintro ⟨htne, hzt, ht⟩
+    rcases ht with ht | ht
+    · exact False.elim (hz ((glued₁ K₁ A id).down_closed ht
+        (Finset.singleton_subset_iff.mpr (Finset.mem_insert_self z t))
+        (Finset.singleton_nonempty z)))
+    · exact ⟨htne, hzt, ht⟩
+  · rintro ⟨htne, hzt, ht⟩
+    exact ⟨htne, hzt, Or.inr ht⟩
+
+open Classical in
+theorem fullSubcomplex_space_inter_geometricLink
+    (K A : Geometry.SimplicialComplex ℝ E)
+    (hAK : A.faces ⊆ K.faces)
+    (hfull : ∀ s ∈ K.faces, (∀ w ∈ s, {w} ∈ A.faces) → s ∈ A.faces)
+    {v : E} (hvA : {v} ∈ A.faces) :
+    A.space ∩ (SimplicialComplex.geometricLink K {v}).space =
+      (SimplicialComplex.geometricLink A {v}).space := by
+  ext x
+  constructor
+  · rintro ⟨hxA, hxL⟩
+    obtain ⟨s, hsA, hxs⟩ := A.mem_space_iff.mp hxA
+    obtain ⟨t, htL, hxt⟩ :=
+      (SimplicialComplex.geometricLink K {v}).mem_space_iff.mp hxL
+    have htK : t ∈ K.faces := SimplicialComplex.geometricLink_le K {v} htL
+    have hxst : x ∈ convexHull ℝ (((s ∩ t : Finset E) : Set E)) := by
+      rw [Finset.coe_inter]
+      exact K.inter_subset_convexHull (hAK hsA) htK ⟨hxs, hxt⟩
+    have hune : (s ∩ t).Nonempty := nonempty_of_mem_convexHull hxst
+    have huA : s ∩ t ∈ A.faces :=
+      A.down_closed hsA Finset.inter_subset_left hune
+    have huL : s ∩ t ∈ (SimplicialComplex.geometricLink K {v}).faces :=
+      (SimplicialComplex.geometricLink K {v}).down_closed htL
+        Finset.inter_subset_right hune
+    rw [SimplicialComplex.mem_geometricLink_singleton] at huL
+    have hinsA : insert v (s ∩ t) ∈ A.faces := by
+      apply hfull (insert v (s ∩ t)) huL.2.2
+      intro w hw
+      rcases Finset.mem_insert.mp hw with rfl | hw
+      · exact hvA
+      · exact A.down_closed hsA (Finset.singleton_subset_iff.mpr
+          (Finset.mem_inter.mp hw).1) (Finset.singleton_nonempty w)
+    apply (SimplicialComplex.geometricLink A {v}).mem_space_iff.mpr
+    refine ⟨s ∩ t, ?_, hxst⟩
+    rw [SimplicialComplex.mem_geometricLink_singleton]
+    exact ⟨hune, huL.2.1, hinsA⟩
+  · intro hx
+    obtain ⟨t, ht, hxt⟩ :=
+      (SimplicialComplex.geometricLink A {v}).mem_space_iff.mp hx
+    rw [SimplicialComplex.mem_geometricLink_singleton] at ht
+    refine ⟨A.convexHull_subset_space
+      (SimplicialComplex.geometricLink_le A {v} (by
+        rw [SimplicialComplex.mem_geometricLink_singleton]
+        exact ht)) hxt, ?_⟩
+    apply (SimplicialComplex.geometricLink K {v}).mem_space_iff.mpr
+    refine ⟨t, ?_, hxt⟩
+    rw [SimplicialComplex.mem_geometricLink_singleton]
+    exact ⟨ht.1, ht.2.1, hAK ht.2.2⟩
+
+open Classical in
+theorem geometricLink_glued₁_space_inter_glued₂_space
+    [FiniteDimensional ℝ E]
+    (K₁ K₂ A : Geometry.SimplicialComplex ℝ E)
+    [Finite K₁.faces] [Finite K₂.faces]
+    (hA₁ : A.faces ⊆ K₁.faces) (hA₂ : A.faces ⊆ K₂.faces)
+    (hfull : ∀ s ∈ K₁.faces, (∀ w ∈ s, {w} ∈ A.faces) → s ∈ A.faces)
+    {v : E} (hvA : {v} ∈ A.faces) :
+    (SimplicialComplex.geometricLink (glued₁ K₁ A id)
+        {glueEmbed₁ A id v}).space ∩
+      (SimplicialComplex.geometricLink (glued₂ K₂ A id)
+        {glueEmbed₁ A id v}).space =
+      simplicialMap (SimplicialComplex.geometricLink K₁ {v})
+          (glueEmbed₁ A id) ''
+        (SimplicialComplex.geometricLink A {v}).space := by
+  classical
+  let L₁ := SimplicialComplex.geometricLink K₁ {v}
+  let L₂ := SimplicialComplex.geometricLink K₂ {v}
+  let LA := SimplicialComplex.geometricLink A {v}
+  let G₁ := glued₁ K₁ A id
+  let G₂ := glued₂ K₂ A id
+  let ι₁ := glueEmbed₁ A id
+  let ι₂ := glueEmbed₂ A id
+  have hvK₁ : {v} ∈ K₁.faces := hA₁ hvA
+  have hvK₂ : {v} ∈ K₂.faces := hA₂ hvA
+  have hz : ι₂ v = ι₁ v := by
+    simp only [ι₁, ι₂, glueEmbed₁, glueEmbed₂, if_pos hvA, id_eq]
+  have hLA₁ : LA.faces ⊆ L₁.faces := by
+    intro s hs
+    change s ∈ (SimplicialComplex.geometricLink A {v}).faces at hs
+    change s ∈ (SimplicialComplex.geometricLink K₁ {v}).faces
+    rw [SimplicialComplex.mem_geometricLink_singleton] at hs ⊢
+    exact ⟨hs.1, hs.2.1, hA₁ hs.2.2⟩
+  have hLA₂ : LA.faces ⊆ L₂.faces := by
+    intro s hs
+    change s ∈ (SimplicialComplex.geometricLink A {v}).faces at hs
+    change s ∈ (SimplicialComplex.geometricLink K₂ {v}).faces
+    rw [SimplicialComplex.mem_geometricLink_singleton] at hs ⊢
+    exact ⟨hs.1, hs.2.1, hA₂ hs.2.2⟩
+  let hAfinite : Finite A.faces := ((Set.toFinite K₁.faces).subset hA₁).to_subtype
+  let hG₁finite : Finite G₁.faces := (glued₁_faces_finite K₁ A id).to_subtype
+  let hG₂finite : Finite G₂.faces := (glued₂_faces_finite K₂ A id).to_subtype
+  let hL₁finite : Finite L₁.faces :=
+    ((Set.toFinite K₁.faces).subset (SimplicialComplex.geometricLink_le K₁ {v})).to_subtype
+  let hL₂finite : Finite L₂.faces :=
+    ((Set.toFinite K₂.faces).subset (SimplicialComplex.geometricLink_le K₂ {v})).to_subtype
+  let hGL₁finite : Finite
+      (SimplicialComplex.geometricLink G₁ {ι₁ v}).faces :=
+    ((Set.toFinite G₁.faces).subset
+      (SimplicialComplex.geometricLink_le G₁ {ι₁ v})).to_subtype
+  let hGL₂finite : Finite
+      (SimplicialComplex.geometricLink G₂ {ι₂ v}).faces :=
+    ((Set.toFinite G₂.faces).subset
+      (SimplicialComplex.geometricLink_le G₂ {ι₂ v})).to_subtype
+  have hlink₁ := (isGlueIso_glued₁_id K₁ A).geometricLink hvK₁
+  have hlink₂ := (isGlueIso_glued₂_id K₂ A).geometricLink hvK₂
+  ext x
+  constructor
+  · rintro hx
+    have hxG₁ : x ∈ G₁.space :=
+      space_mono_of_faces_subset
+        (SimplicialComplex.geometricLink_le G₁ {ι₁ v}) hx.1
+    have hxG₂ : x ∈ G₂.space := by
+      apply space_mono_of_faces_subset
+        (SimplicialComplex.geometricLink_le G₂ {ι₂ v})
+      simpa only [hz] using hx.2
+    have hxinter : x ∈ G₁.space ∩ G₂.space := ⟨hxG₁, hxG₂⟩
+    change x ∈ (glued₁ K₁ A id).space ∩ (glued₂ K₂ A id).space at hxinter
+    rw [
+      glued₁_space_inter_glued₂_space K₁ K₂ (isGlueIso_id A) hA₁ hA₂ hfull]
+      at hxinter
+    obtain ⟨y, hyA, hyx⟩ := hxinter
+    have hyK₁ : y ∈ K₁.space := space_mono_of_faces_subset hA₁ hyA
+    obtain ⟨y', hy'L₁, hy'x⟩ := hlink₁.isPLHomeomorphOn.bijOn.surjOn hx.1
+    have hy'K₁ : y' ∈ K₁.space :=
+      space_mono_of_faces_subset (SimplicialComplex.geometricLink_le K₁ {v}) hy'L₁
+    have hyy' : y = y' := by
+      apply (isPLHomeomorphOn_embedComplex K₁ ι₁ (glueFst E E)
+        (fun _ _ _ _ => rfl)).bijOn.injOn hyK₁ hy'K₁
+      rw [hyx, simplicialMap_eqOn_of_faces_subset K₁ L₁
+        (SimplicialComplex.geometricLink_le K₁ {v}) ι₁ hy'L₁, hy'x]
+    have hyL₁ : y ∈ L₁.space := hyy' ▸ hy'L₁
+    have hyLA : y ∈ LA.space := by
+      rw [← fullSubcomplex_space_inter_geometricLink K₁ A hA₁ hfull hvA]
+      exact ⟨hyA, hyL₁⟩
+    refine ⟨y, hyLA, ?_⟩
+    rw [← hyx]
+    exact (simplicialMap_eqOn_of_faces_subset K₁ L₁
+      (SimplicialComplex.geometricLink_le K₁ {v}) ι₁ hyL₁).symm
+  · rintro ⟨y, hyLA, rfl⟩
+    have hyA : y ∈ A.space :=
+      space_mono_of_faces_subset (SimplicialComplex.geometricLink_le A {v}) hyLA
+    have hyL₁ : y ∈ L₁.space := space_mono_of_faces_subset hLA₁ hyLA
+    have hyL₂ : y ∈ L₂.space := space_mono_of_faces_subset hLA₂ hyLA
+    constructor
+    · exact hlink₁.isPLHomeomorphOn.bijOn.mapsTo hyL₁
+    · rw [← simplicialMap_eqOn_of_faces_subset K₁ L₁
+          (SimplicialComplex.geometricLink_le K₁ {v}) ι₁ hyL₁,
+        simplicialMap_glueEmbed_id_eq K₁ K₂ A hA₁ hA₂ hyA,
+        simplicialMap_eqOn_of_faces_subset K₂ L₂
+          (SimplicialComplex.geometricLink_le K₂ {v}) ι₂ hyL₂]
+      change simplicialMap L₂ ι₂ y ∈
+        (SimplicialComplex.geometricLink G₂ {ι₁ v}).space
+      rw [← hz]
+      exact hlink₂.isPLHomeomorphOn.bijOn.mapsTo hyL₂
+
+open Classical in
+theorem geometricLink_full_of_full
+    (K A : Geometry.SimplicialComplex ℝ E)
+    (hfull : ∀ s ∈ K.faces, (∀ w ∈ s, {w} ∈ A.faces) → s ∈ A.faces)
+    {v : E} (hvA : {v} ∈ A.faces) :
+    ∀ s ∈ (SimplicialComplex.geometricLink K {v}).faces,
+      (∀ w ∈ s, {w} ∈ (SimplicialComplex.geometricLink A {v}).faces) →
+        s ∈ (SimplicialComplex.geometricLink A {v}).faces := by
+  classical
+  intro s hs hvertices
+  rw [SimplicialComplex.mem_geometricLink_singleton] at hs ⊢
+  refine ⟨hs.1, hs.2.1, hfull (insert v s) hs.2.2 ?_⟩
+  intro w hw
+  rcases Finset.mem_insert.mp hw with rfl | hw
+  · exact hvA
+  · exact SimplicialComplex.geometricLink_le A {v} (hvertices w hw)
+
+open Classical in
+theorem simplicialMap_geometricLink_glueEmbed_id_eq
+    (K₁ K₂ A : Geometry.SimplicialComplex ℝ E)
+    (hA₁ : A.faces ⊆ K₁.faces) (hA₂ : A.faces ⊆ K₂.faces)
+    {v : E} {x : E} (hx : x ∈ (SimplicialComplex.geometricLink A {v}).space) :
+    simplicialMap (SimplicialComplex.geometricLink K₁ {v}) (glueEmbed₁ A id) x =
+      simplicialMap (SimplicialComplex.geometricLink K₂ {v}) (glueEmbed₂ A id) x := by
+  classical
+  have hxA : x ∈ A.space :=
+    space_mono_of_faces_subset (SimplicialComplex.geometricLink_le A {v}) hx
+  have hLA₁ : (SimplicialComplex.geometricLink A {v}).faces ⊆
+      (SimplicialComplex.geometricLink K₁ {v}).faces := by
+    intro s hs
+    rw [SimplicialComplex.mem_geometricLink_singleton] at hs ⊢
+    exact ⟨hs.1, hs.2.1, hA₁ hs.2.2⟩
+  have hLA₂ : (SimplicialComplex.geometricLink A {v}).faces ⊆
+      (SimplicialComplex.geometricLink K₂ {v}).faces := by
+    intro s hs
+    rw [SimplicialComplex.mem_geometricLink_singleton] at hs ⊢
+    exact ⟨hs.1, hs.2.1, hA₂ hs.2.2⟩
+  have hxL₁ : x ∈ (SimplicialComplex.geometricLink K₁ {v}).space :=
+    space_mono_of_faces_subset hLA₁ hx
+  have hxL₂ : x ∈ (SimplicialComplex.geometricLink K₂ {v}).space :=
+    space_mono_of_faces_subset hLA₂ hx
+  rw [← simplicialMap_eqOn_of_faces_subset K₁
+      (SimplicialComplex.geometricLink K₁ {v})
+      (SimplicialComplex.geometricLink_le K₁ {v}) (glueEmbed₁ A id) hxL₁,
+    simplicialMap_glueEmbed_id_eq K₁ K₂ A hA₁ hA₂ hxA,
+    simplicialMap_eqOn_of_faces_subset K₂
+      (SimplicialComplex.geometricLink K₂ {v})
+      (SimplicialComplex.geometricLink_le K₂ {v}) (glueEmbed₂ A id) hxL₂]
+
+open Classical in
+theorem isPLSphere_geometricLink_gluedComplex_of_isPLBall
+    [FiniteDimensional ℝ E]
+    (K₁ K₂ A : Geometry.SimplicialComplex ℝ E)
+    [Finite K₁.faces] [Finite K₂.faces]
+    (hA₁ : A.faces ⊆ K₁.faces) (hA₂ : A.faces ⊆ K₂.faces)
+    (hfull : ∀ s ∈ K₁.faces, (∀ w ∈ s, {w} ∈ A.faces) → s ∈ A.faces)
+    {v : E} (hvA : {v} ∈ A.faces) {n : ℕ}
+    (hK₁ : IsPLBall (n + 1) (SimplicialComplex.geometricLink K₁ {v}).space)
+    (hK₂ : IsPLBall (n + 1) (SimplicialComplex.geometricLink K₂ {v}).space)
+    (hboundary₁ : SimplicialComplex.geometricLink A {v} =
+      boundaryComplex (n + 1) (SimplicialComplex.geometricLink K₁ {v}))
+    (hboundary₂ : SimplicialComplex.geometricLink A {v} =
+      boundaryComplex (n + 1) (SimplicialComplex.geometricLink K₂ {v})) :
+    IsPLSphere (n + 1)
+      (SimplicialComplex.geometricLink
+        (gluedComplex K₁ K₂ (isGlueIso_id A) hA₂ hfull)
+        {glueEmbed₁ A id v}).space := by
+  classical
+  let L₁ := SimplicialComplex.geometricLink K₁ {v}
+  let L₂ := SimplicialComplex.geometricLink K₂ {v}
+  let LA := SimplicialComplex.geometricLink A {v}
+  let G₁ := glued₁ K₁ A id
+  let G₂ := glued₂ K₂ A id
+  let z := glueEmbed₁ A id v
+  let g₁ := simplicialMap L₁ (glueEmbed₁ A id)
+  let g₂ := simplicialMap L₂ (glueEmbed₂ A id)
+  let Y₁ := (SimplicialComplex.geometricLink G₁ {z}).space
+  let Y₂ := (SimplicialComplex.geometricLink G₂ {z}).space
+  have hvK₁ : {v} ∈ K₁.faces := hA₁ hvA
+  have hvK₂ : {v} ∈ K₂.faces := hA₂ hvA
+  have hz : glueEmbed₂ A id v = z := by
+    simp only [z, glueEmbed₁, glueEmbed₂, if_pos hvA, id_eq]
+  have hLA₁ : LA.faces ⊆ L₁.faces := by
+    intro s hs
+    change s ∈ (SimplicialComplex.geometricLink A {v}).faces at hs
+    change s ∈ (SimplicialComplex.geometricLink K₁ {v}).faces
+    rw [SimplicialComplex.mem_geometricLink_singleton] at hs ⊢
+    exact ⟨hs.1, hs.2.1, hA₁ hs.2.2⟩
+  have hLA₂ : LA.faces ⊆ L₂.faces := by
+    intro s hs
+    change s ∈ (SimplicialComplex.geometricLink A {v}).faces at hs
+    change s ∈ (SimplicialComplex.geometricLink K₂ {v}).faces
+    rw [SimplicialComplex.mem_geometricLink_singleton] at hs ⊢
+    exact ⟨hs.1, hs.2.1, hA₂ hs.2.2⟩
+  have hfullL₁ : ∀ s ∈ L₁.faces, (∀ w ∈ s, {w} ∈ LA.faces) → s ∈ LA.faces :=
+    geometricLink_full_of_full K₁ A hfull hvA
+  let hAfinite : Finite A.faces := ((Set.toFinite K₁.faces).subset hA₁).to_subtype
+  let hL₁finite : Finite L₁.faces :=
+    ((Set.toFinite K₁.faces).subset (SimplicialComplex.geometricLink_le K₁ {v})).to_subtype
+  let hL₂finite : Finite L₂.faces :=
+    ((Set.toFinite K₂.faces).subset (SimplicialComplex.geometricLink_le K₂ {v})).to_subtype
+  let hLAfinite : Finite LA.faces :=
+    ((Set.toFinite A.faces).subset (SimplicialComplex.geometricLink_le A {v})).to_subtype
+  let hG₁finite : Finite G₁.faces := (glued₁_faces_finite K₁ A id).to_subtype
+  let hG₂finite : Finite G₂.faces := (glued₂_faces_finite K₂ A id).to_subtype
+  let hY₁finite : Finite (SimplicialComplex.geometricLink G₁ {z}).faces :=
+    ((Set.toFinite G₁.faces).subset
+      (SimplicialComplex.geometricLink_le G₁ {z})).to_subtype
+  let hY₂finite : Finite
+      (SimplicialComplex.geometricLink G₂ {glueEmbed₂ A id v}).faces :=
+    ((Set.toFinite G₂.faces).subset
+      (SimplicialComplex.geometricLink_le G₂ {glueEmbed₂ A id v})).to_subtype
+  have hsphere : IsPLSphere (n + 1)
+      (gluedComplex L₁ L₂ (isGlueIso_id LA) hLA₂ hfullL₁).space :=
+    isPLSphere_gluedComplex_of_isPLBall L₁ L₂ LA hK₁ hK₂ hboundary₁ hboundary₂ hfullL₁
+  have hlink₁ := (isGlueIso_glued₁_id K₁ A).geometricLink hvK₁
+  have hlink₂ := (isGlueIso_glued₂_id K₂ A).geometricLink hvK₂
+  have hg₁ : IsPLHomeomorphOn g₁ L₁.space Y₁ := hlink₁.isPLHomeomorphOn
+  have hg₂ : IsPLHomeomorphOn g₂ L₂.space Y₂ := by
+    simpa only [g₂, L₂, G₂, Y₂, hz] using hlink₂.isPLHomeomorphOn
+  have hcompat : ∀ x ∈ LA.space, g₂ (simplicialMap LA id x) = g₁ x := by
+    intro x hx
+    rw [simplicialMap_id_eq_of_mem LA hx]
+    exact (simplicialMap_geometricLink_glueEmbed_id_eq K₁ K₂ A hA₁ hA₂ hx).symm
+  have hoverlap : Y₁ ∩ Y₂ = g₁ '' LA.space := by
+    exact geometricLink_glued₁_space_inter_glued₂_space K₁ K₂ A hA₁ hA₂ hfull hvA
+  have hmap := isPLHomeomorphOn_gluedMap_of_full L₁ L₂ LA LA id id
+    (isGlueIso_id LA) hLA₁ hLA₂ hfullL₁ g₁ g₂ Y₁ Y₂ hg₁ hg₂ hcompat hoverlap
+  have hmap' : IsPLHomeomorphOn (gluedMap L₁ LA id g₁ g₂)
+      (gluedComplex L₁ L₂ (isGlueIso_id LA) hLA₂ hfullL₁).space
+      (SimplicialComplex.geometricLink
+        (gluedComplex K₁ K₂ (isGlueIso_id A) hA₂ hfull) {z}).space := by
+    rw [geometricLink_gluedComplex_space K₁ K₂ A hA₂ hfull z]
+    exact hmap
+  exact hsphere.of_isPLHomeomorphOn hmap'
+
+open Classical in
+theorem exists_eq_glueEmbed₁_of_singleton_mem
+    (K A : Geometry.SimplicialComplex ℝ E) {z : E × E × ℝ}
+    (hz : {z} ∈ (glued₁ K A id).faces) :
+    ∃ v, {v} ∈ K.faces ∧ z = glueEmbed₁ A id v := by
+  classical
+  obtain ⟨s, hs, hzs⟩ := (mem_glued₁_faces_iff K A id).mp hz
+  have hzimage : z ∈ s.image (glueEmbed₁ A id) := by
+    rw [← hzs]
+    exact Finset.mem_singleton_self z
+  obtain ⟨v, hvs, hvz⟩ := Finset.mem_image.mp hzimage
+  exact ⟨v, K.down_closed hs (Finset.singleton_subset_iff.mpr hvs)
+    (Finset.singleton_nonempty v), hvz.symm⟩
+
+open Classical in
+theorem exists_eq_glueEmbed₂_of_singleton_mem
+    (K A : Geometry.SimplicialComplex ℝ E) {z : E × E × ℝ}
+    (hz : {z} ∈ (glued₂ K A id).faces) :
+    ∃ v, {v} ∈ K.faces ∧ z = glueEmbed₂ A id v := by
+  classical
+  obtain ⟨s, hs, hzs⟩ := (mem_glued₂_faces_iff K A id).mp hz
+  have hzimage : z ∈ s.image (glueEmbed₂ A id) := by
+    rw [← hzs]
+    exact Finset.mem_singleton_self z
+  obtain ⟨v, hvs, hvz⟩ := Finset.mem_image.mp hzimage
+  exact ⟨v, K.down_closed hs (Finset.singleton_subset_iff.mpr hvs)
+    (Finset.singleton_nonempty v), hvz.symm⟩
+
+open Classical in
+theorem glueEmbed₁_not_mem_glued₂_of_not_mem
+    (K₂ A : Geometry.SimplicialComplex ℝ E) {v : E}
+    (hvA : {v} ∉ A.faces) : {glueEmbed₁ A id v} ∉ (glued₂ K₂ A id).faces := by
+  classical
+  intro hv
+  have hle := glueHeight_nonpos_of_mem_glued₂_face K₂ A id hv
+    (glueEmbed₁ A id v) (Finset.mem_singleton_self _)
+  have hge := glueHeight_glueEmbed₁_nonneg (F := E) A id v
+  have hzero : glueHeight E E (glueEmbed₁ A id v) = 0 := le_antisymm hle hge
+  exact hvA ((glueHeight_glueEmbed₁_eq_zero_iff (F := E) A id v).mp hzero)
+
+open Classical in
+theorem glueEmbed₂_not_mem_glued₁_of_not_mem
+    (K₁ A : Geometry.SimplicialComplex ℝ E) {v : E}
+    (hvA : {v} ∉ A.faces) : {glueEmbed₂ A id v} ∉ (glued₁ K₁ A id).faces := by
+  classical
+  intro hv
+  have hge := glueHeight_nonneg_of_mem_glued₁_face K₁ A id hv
+    (glueEmbed₂ A id v) (Finset.mem_singleton_self _)
+  have hle := glueHeight_glueEmbed₂_nonpos (E := E) A id v
+  have hzero : glueHeight E E (glueEmbed₂ A id v) = 0 := le_antisymm hle hge
+  exact hvA ((glueHeight_glueEmbed₂_eq_zero_iff (E := E) A id v).mp hzero)
+
+open Classical in
+theorem IsCombinatorialManifoldWithBoundary.isPLSphere_geometricLink_of_not_mem_boundary
+    [FiniteDimensional ℝ E] (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
+    {n : ℕ} (hK : IsCombinatorialManifoldWithBoundary (n + 1) K)
+    {v : E} (hvK : {v} ∈ K.faces) (hvB : {v} ∉ (boundaryComplex (n + 1) K).faces) :
+    IsPLSphere n (SimplicialComplex.geometricLink K {v}).space := by
+  classical
+  rcases hK v hvK with hsphere | hball
+  · exact hsphere
+  · exfalso
+    apply hvB
+    apply (hK.mem_boundaryComplex_faces_iff K).mpr
+    refine ⟨hvK, by simp, ?_⟩
+    simpa using hball
+
+open Classical in
+theorem isCombinatorialManifold_double_succ_succ
+    [FiniteDimensional ℝ E] (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
+    {n : ℕ} (hK : IsCombinatorialManifoldWithBoundary (n + 2) K) :
+    IsCombinatorialManifold (n + 2) (double (n + 2) K) := by
+  classical
+  let _ : DecidableEq E := Classical.decEq E
+  let _ : DecidableEq ℝ := Classical.decEq ℝ
+  let _ : DecidableEq (E × E × ℝ) := inferInstance
+  have hdec : Classical.decEq (E × E × ℝ) =
+      (inferInstance : DecidableEq (E × E × ℝ)) := Subsingleton.elim _ _
+  let R := boundaryRelSubdivision (n + 2) K
+  let B := boundaryComplex (n + 2) K
+  let G₁ := glued₁ R B id
+  let G₂ := glued₂ K B id
+  let D := gluedComplex R K (isGlueIso_id B)
+    (boundaryComplex_faces_subset (n + 2) K)
+    (boundaryComplex_full_boundaryRelSubdivision (n + 2) K)
+  let hRfinite : Finite R.faces :=
+    (boundaryRelSubdivision_faces_finite (n + 2) K).to_subtype
+  let hBfinite : Finite B.faces := (boundaryComplex_faces_finite (n + 2) K).to_subtype
+  let hG₁finite : Finite G₁.faces := (glued₁_faces_finite R B id).to_subtype
+  let hG₂finite : Finite G₂.faces := (glued₂_faces_finite K B id).to_subtype
+  have hRsub : IsSubdivision R K := boundaryRelSubdivision_isSubdivision (n + 2) K
+  have hR : IsCombinatorialManifoldWithBoundary (n + 2) R := hK.of_isSubdivision hRsub
+  have hBR : boundaryComplex (n + 2) R = B :=
+    boundaryComplex_boundaryRelSubdivision K hK
+  have hBRfaces : B.faces ⊆ R.faces :=
+    boundaryComplex_faces_subset_boundaryRelSubdivision (n + 2) K
+  have hBKfaces : B.faces ⊆ K.faces := boundaryComplex_faces_subset (n + 2) K
+  have hfull : ∀ s ∈ R.faces, (∀ w ∈ s, {w} ∈ B.faces) → s ∈ B.faces :=
+    boundaryComplex_full_boundaryRelSubdivision (n + 2) K
+  change IsCombinatorialManifold (Nat.succ (n + 1)) D
+  simp only [IsCombinatorialManifold]
+  change ∀ z, {z} ∈ D.faces → IsPLSphere (n + 1)
+    ((@SimplicialComplex.geometricLink ℝ (E × E × ℝ) _ _ _ _
+      (Classical.decEq (E × E × ℝ)) D {z}).space)
+  rw [hdec]
+  intro z hzD
+  change {z} ∈ (gluedComplex R K (isGlueIso_id B) hBKfaces hfull).faces at hzD
+  rw [mem_gluedComplex_faces_iff] at hzD
+  rcases hzD with hz₁ | hz₂
+  · obtain ⟨v, hvR, rfl⟩ := exists_eq_glueEmbed₁_of_singleton_mem R B hz₁
+    by_cases hvB : {v} ∈ B.faces
+    · have hvBR : {v} ∈ (boundaryComplex (n + 2) R).faces := by
+        rw [hBR]
+        exact hvB
+      have hballR : IsPLBall (n + 1)
+          (SimplicialComplex.geometricLink R {v}).space := by
+        have hball := ((hR.mem_boundaryComplex_faces_iff R).mp hvBR).2.2
+        simpa using hball
+      have hballK : IsPLBall (n + 1)
+          (SimplicialComplex.geometricLink K {v}).space := by
+        have hball := ((hK.mem_boundaryComplex_faces_iff K).mp hvB).2.2
+        simpa using hball
+      have hboundaryR : SimplicialComplex.geometricLink B {v} =
+          boundaryComplex (n + 1) (SimplicialComplex.geometricLink R {v}) := by
+        rw [← hBR]
+        simpa only [Nat.add_assoc, Nat.reduceAdd] using
+          geometricLink_boundaryComplex (n + 1) R v
+      have hboundaryK : SimplicialComplex.geometricLink B {v} =
+          boundaryComplex (n + 1) (SimplicialComplex.geometricLink K {v}) := by
+        simpa only [B, Nat.add_assoc, Nat.reduceAdd] using
+          geometricLink_boundaryComplex (n + 1) K v
+      have hsphere := isPLSphere_geometricLink_gluedComplex_of_isPLBall R K B
+        hBRfaces hBKfaces hfull hvB hballR hballK hboundaryR hboundaryK
+      simpa only [D] using hsphere
+    · have hvnotBR : {v} ∉ (boundaryComplex (n + 2) R).faces := by
+        rwa [hBR]
+      have hsphereR := hR.isPLSphere_geometricLink_of_not_mem_boundary R hvR hvnotBR
+      let hLRfinite : Finite (SimplicialComplex.geometricLink R {v}).faces :=
+        ((Set.toFinite R.faces).subset
+          (SimplicialComplex.geometricLink_le R {v})).to_subtype
+      let hLG₁finite : Finite
+          (SimplicialComplex.geometricLink G₁ {glueEmbed₁ B id v}).faces :=
+        ((Set.toFinite G₁.faces).subset
+          (SimplicialComplex.geometricLink_le G₁ {glueEmbed₁ B id v})).to_subtype
+      have hsphereG₁ : IsPLSphere (n + 1)
+          (SimplicialComplex.geometricLink G₁ {glueEmbed₁ B id v}).space :=
+        hsphereR.of_isPLHomeomorphOn
+          ((isGlueIso_glued₁_id R B).geometricLink hvR).isPLHomeomorphOn
+      have hvnotG₂ : {glueEmbed₁ B id v} ∉ G₂.faces :=
+        glueEmbed₁_not_mem_glued₂_of_not_mem K B hvB
+      have hlinkeq : SimplicialComplex.geometricLink D {glueEmbed₁ B id v} =
+          SimplicialComplex.geometricLink G₁ {glueEmbed₁ B id v} := by
+        simpa only [D, G₁] using
+          geometricLink_gluedComplex_eq_left_of_not_mem R K B hBKfaces hfull hvnotG₂
+      rw [hlinkeq]
+      exact hsphereG₁
+  · obtain ⟨v, hvK, rfl⟩ := exists_eq_glueEmbed₂_of_singleton_mem K B hz₂
+    by_cases hvB : {v} ∈ B.faces
+    · have hvBR : {v} ∈ (boundaryComplex (n + 2) R).faces := by
+        rw [hBR]
+        exact hvB
+      have hballR : IsPLBall (n + 1)
+          (SimplicialComplex.geometricLink R {v}).space := by
+        have hball := ((hR.mem_boundaryComplex_faces_iff R).mp hvBR).2.2
+        simpa using hball
+      have hballK : IsPLBall (n + 1)
+          (SimplicialComplex.geometricLink K {v}).space := by
+        have hball := ((hK.mem_boundaryComplex_faces_iff K).mp hvB).2.2
+        simpa using hball
+      have hboundaryR : SimplicialComplex.geometricLink B {v} =
+          boundaryComplex (n + 1) (SimplicialComplex.geometricLink R {v}) := by
+        rw [← hBR]
+        simpa only [Nat.add_assoc, Nat.reduceAdd] using
+          geometricLink_boundaryComplex (n + 1) R v
+      have hboundaryK : SimplicialComplex.geometricLink B {v} =
+          boundaryComplex (n + 1) (SimplicialComplex.geometricLink K {v}) := by
+        simpa only [B, Nat.add_assoc, Nat.reduceAdd] using
+          geometricLink_boundaryComplex (n + 1) K v
+      have hsphere := isPLSphere_geometricLink_gluedComplex_of_isPLBall R K B
+        hBRfaces hBKfaces hfull hvB hballR hballK hboundaryR hboundaryK
+      have hz : glueEmbed₂ B id v = glueEmbed₁ B id v := by
+        simp only [glueEmbed₁, glueEmbed₂, if_pos hvB, id_eq]
+      simpa only [D, hz] using hsphere
+    · have hsphereK := hK.isPLSphere_geometricLink_of_not_mem_boundary K hvK hvB
+      let hLKfinite : Finite (SimplicialComplex.geometricLink K {v}).faces :=
+        ((Set.toFinite K.faces).subset
+          (SimplicialComplex.geometricLink_le K {v})).to_subtype
+      let hLG₂finite : Finite
+          (SimplicialComplex.geometricLink G₂ {glueEmbed₂ B id v}).faces :=
+        ((Set.toFinite G₂.faces).subset
+          (SimplicialComplex.geometricLink_le G₂ {glueEmbed₂ B id v})).to_subtype
+      have hsphereG₂ : IsPLSphere (n + 1)
+          (SimplicialComplex.geometricLink G₂ {glueEmbed₂ B id v}).space :=
+        hsphereK.of_isPLHomeomorphOn
+          ((isGlueIso_glued₂_id K B).geometricLink hvK).isPLHomeomorphOn
+      have hvnotG₁ : {glueEmbed₂ B id v} ∉ G₁.faces :=
+        glueEmbed₂_not_mem_glued₁_of_not_mem R B hvB
+      have hlinkeq : SimplicialComplex.geometricLink D {glueEmbed₂ B id v} =
+          SimplicialComplex.geometricLink G₂ {glueEmbed₂ B id v} := by
+        simpa only [D, G₂] using
+          geometricLink_gluedComplex_eq_right_of_not_mem R K B hBKfaces hfull hvnotG₁
+      rw [hlinkeq]
+      exact hsphereG₂
+
 end DifferentialGeometry.Topology.PiecewiseLinear
