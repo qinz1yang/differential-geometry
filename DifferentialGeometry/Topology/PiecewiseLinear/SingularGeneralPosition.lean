@@ -1142,4 +1142,61 @@ theorem exists_small_simplicialMap_doublePointSet_manifold [FiniteDimensional �
   rw [hR.space_eq] at hGspace hcross
   exact ⟨R, φ, G, hR, hfinite, hpl, hclose, hstar, hlocal, hfiber, hGfinite, hGspace, hGman, hcross⟩
 
+open Classical in
+theorem injOn_simplicialMap_of_dim_of_transverse_faces [FiniteDimensional ℝ F]
+    (K S : Geometry.SimplicialComplex ℝ E) (hSK : S.faces ⊆ K.faces) (φ : E → F)
+    (hdim : ∀ s ∈ S.faces, 2 * s.card ≤ Module.finrank ℝ F + 1)
+    (hind : ∀ s ∈ K.faces, AffineIndependent ℝ (fun v : s => φ (v : E)))
+    (hinj : ∀ v ∈ K.vertices, InjOn (simplicialMap K φ) (starComplex K v).space)
+    (htrans : ∀ s ∈ K.faces, ∀ t ∈ K.faces, Disjoint s t →
+      (convexHull ℝ (s.image φ : Set F) ∩ convexHull ℝ (t.image φ : Set F)).Nonempty →
+        vectorSpan ℝ (s.image φ : Set F) ⊔ vectorSpan ℝ (t.image φ : Set F) = ⊤) :
+    InjOn (simplicialMap K φ) S.space := by
+  have hrank : ∀ u ∈ K.faces, Module.finrank ℝ (vectorSpan ℝ (u.image φ : Set F)) + 1 = u.card := by
+    intro u hu
+    obtain ⟨v, hv⟩ := K.nonempty_of_mem_faces hu
+    have : Nonempty u := ⟨⟨v, hv⟩⟩
+    have hrange : Set.range (fun v : u => φ v) = (u.image φ : Set F) := by ext q; simp
+    have h := (hind u hu).finrank_vectorSpan_add_one
+    change Module.finrank ℝ (vectorSpan ℝ (Set.range (fun v : u => φ v))) + 1 = Fintype.card u at h
+    rw [hrange] at h
+    simpa only [Fintype.card_coe] using h
+  intro a ha b hb heq
+  by_contra hab
+  obtain ⟨s, hs, has⟩ := S.mem_space_iff.mp ha
+  obtain ⟨t, ht, hbt⟩ := S.mem_space_iff.mp hb
+  have hdisj := disjoint_faces_of_eq_of_injOn_starComplex K _ hinj (hSK hs) (hSK ht) has hbt hab heq
+  have hinter : (convexHull ℝ (s.image φ : Set F) ∩ convexHull ℝ (t.image φ : Set F)).Nonempty :=
+    ⟨simplicialMap K φ a, simplicialMap_mem_convexHull_image K φ (hSK hs) has,
+      heq.symm ▸ simplicialMap_mem_convexHull_image K φ (hSK ht) hbt⟩
+  have hsup := htrans s (hSK hs) t (hSK ht) hdisj hinter
+  have hsdim := hrank s (hSK hs)
+  have htdim := hrank t (hSK ht)
+  have hsbound := hdim s hs
+  have htbound := hdim t ht
+  have hdim' := Submodule.finrank_sup_add_finrank_inf_eq
+    (vectorSpan ℝ (s.image φ : Set F)) (vectorSpan ℝ (t.image φ : Set F))
+  rw [hsup] at hdim'
+  have hsum : Module.finrank ℝ F +
+      Module.finrank ℝ (vectorSpan ℝ (s.image φ : Set F) ⊓ vectorSpan ℝ (t.image φ : Set F) : Submodule ℝ F) =
+        Module.finrank ℝ (vectorSpan ℝ (s.image φ : Set F)) +
+          Module.finrank ℝ (vectorSpan ℝ (t.image φ : Set F)) := by simpa using hdim'
+  omega
+
+open Classical in
+theorem injOn_boundaryComplex_of_transverse_faces [FiniteDimensional ℝ E] [FiniteDimensional ℝ F]
+    (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
+    (hK : IsCombinatorialManifoldWithBoundary 2 K) (hdim : 3 ≤ Module.finrank ℝ F) (φ : E → F)
+    (hind : ∀ s ∈ K.faces, AffineIndependent ℝ (fun v : s => φ (v : E)))
+    (hinj : ∀ v ∈ K.vertices, InjOn (simplicialMap K φ) (starComplex K v).space)
+    (htrans : ∀ s ∈ K.faces, ∀ t ∈ K.faces, Disjoint s t →
+      (convexHull ℝ (s.image φ : Set F) ∩ convexHull ℝ (t.image φ : Set F)).Nonempty →
+        vectorSpan ℝ (s.image φ : Set F) ⊔ vectorSpan ℝ (t.image φ : Set F) = ⊤) :
+    InjOn (simplicialMap K φ) (boundaryComplex 2 K).space := by
+  apply injOn_simplicialMap_of_dim_of_transverse_faces K (boundaryComplex 2 K)
+    (boundaryComplex_faces_subset 2 K) φ _ hind hinj htrans
+  intro s hs
+  have hbound := ((hK.mem_boundaryComplex_faces_iff K).mp hs).2.1
+  omega
+
 end DifferentialGeometry.Topology.PiecewiseLinear
