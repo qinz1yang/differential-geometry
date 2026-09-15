@@ -1,8 +1,6 @@
 import DifferentialGeometry.Topology.Homology.RadialHomotopy
 import Mathlib.Geometry.Manifold.Instances.Sphere
 
-
-
 noncomputable section
 
 open ContinuousMap Set Metric
@@ -12,32 +10,11 @@ universe u
 
 namespace DifferentialGeometry.Topology
 
-variable {E : Type u} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+variable {E : Type u} [NormedAddCommGroup E]
 
+section
 
-
-def spherePunctureHomeomorph (v : sphere (0 : E) 1) :
-    ({v}ᶜ : Set (sphere (0 : E) 1)) ≃ₜ (ℝ ∙ (v : E))ᗮ :=
-  (stereographic (norm_eq_of_mem_sphere v)).toHomeomorphSourceTarget.trans
-    (Homeomorph.Set.univ _)
-
-
-theorem spherePunctureHomeomorph_apply (v : sphere (0 : E) 1)
-    (x : ({v}ᶜ : Set (sphere (0 : E) 1))) :
-    spherePunctureHomeomorph v x = stereographic (norm_eq_of_mem_sphere v) x.val := rfl
-
-
-theorem spherePuncture_contractible (v : sphere (0 : E) 1) :
-    ContractibleSpace ({v}ᶜ : Set (sphere (0 : E) 1)) :=
-  (spherePunctureHomeomorph v).contractibleSpace
-
-
-theorem integralSingularHomology_subsingleton_of_punctured_sphere (n : ℕ) (hn : n ≠ 0)
-    (v : sphere (0 : E) 1) :
-    Subsingleton (integralSingularHomology n ({v}ᶜ : Set (sphere (0 : E) 1))) := by
-  let := spherePuncture_contractible v
-  exact integralSingularHomology_subsingleton_of_contractible n hn _
-
+variable [NormedSpace ℝ E]
 
 theorem unitSphere_ne_antipode (v : sphere (0 : E) 1) : v ≠ -v := by
   intro h
@@ -50,6 +27,28 @@ theorem unitSphere_ne_antipode (v : sphere (0 : E) 1) : v ≠ -v := by
   rw [hv, norm_zero] at hn
   norm_num at hn
 
+end
+
+variable [InnerProductSpace ℝ E]
+
+def spherePunctureHomeomorph (v : sphere (0 : E) 1) :
+    ({v}ᶜ : Set (sphere (0 : E) 1)) ≃ₜ (ℝ ∙ (v : E))ᗮ :=
+  (stereographic (norm_eq_of_mem_sphere v)).toHomeomorphSourceTarget.trans
+    (Homeomorph.Set.univ _)
+
+theorem spherePunctureHomeomorph_apply (v : sphere (0 : E) 1)
+    (x : ({v}ᶜ : Set (sphere (0 : E) 1))) :
+    spherePunctureHomeomorph v x = stereographic (norm_eq_of_mem_sphere v) x.val := rfl
+
+theorem spherePuncture_contractible (v : sphere (0 : E) 1) :
+    ContractibleSpace ({v}ᶜ : Set (sphere (0 : E) 1)) :=
+  (spherePunctureHomeomorph v).contractibleSpace
+
+theorem integralSingularHomology_subsingleton_of_punctured_sphere (n : ℕ) (hn : n ≠ 0)
+    (v : sphere (0 : E) 1) :
+    Subsingleton (integralSingularHomology n ({v}ᶜ : Set (sphere (0 : E) 1))) := by
+  let := spherePuncture_contractible v
+  exact integralSingularHomology_subsingleton_of_contractible n hn _
 
 theorem spherePunctures_cover (v : sphere (0 : E) 1) :
     ({v}ᶜ : Set (sphere (0 : E) 1)) ∪ {-v}ᶜ = univ := by
@@ -58,8 +57,6 @@ theorem spherePunctures_cover (v : sphere (0 : E) 1) :
   by_cases h : x = v
   · exact Or.inr (h ▸ unitSphere_ne_antipode v)
   · exact Or.inl h
-
-
 
 def sphereDoublePunctureHomeomorph (v : sphere (0 : E) 1) :
     {x : ({-v}ᶜ : Set (sphere (0 : E) 1)) | x.val ≠ v} ≃ₜ

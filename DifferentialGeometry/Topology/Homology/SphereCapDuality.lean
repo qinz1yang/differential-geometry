@@ -1,9 +1,9 @@
+import DifferentialGeometry.Topology.Algebra.Module.Pairing
 import DifferentialGeometry.Topology.Homology.SphereCohomologyVanishing
-import DifferentialGeometry.Topology.Homology.RadialCohomology
 import DifferentialGeometry.Topology.Homology.SphereTopHomology
 import DifferentialGeometry.Topology.Homology.CapContractibleCover
 import DifferentialGeometry.Topology.Homology.ContractiblePairOne
-import DifferentialGeometry.Topology.Homology.TwoPointCapDuality
+import DifferentialGeometry.Topology.Homology.OneDimensionalLocalCapDuality
 import Mathlib.Algebra.Group.Int.Units
 import Mathlib.Topology.Homeomorph.Lemmas
 
@@ -15,38 +15,9 @@ namespace DifferentialGeometry.Topology
 
 open Set Metric
 
-private theorem exists_local_cap_bijective_of_finrank_one
-    (E : Type u) [NormedAddCommGroup E] [InnerProductSpace ℝ E]
-    [FiniteDimensional ℝ E] (hd : Module.finrank ℝ E = 1) :
-    ∃ c : integralRelativeHomology 1 ({0}ᶜ : Set E),
-      Function.Bijective (fun α : integralRelativeCohomology 1 ({0}ᶜ : Set E) =>
-        integralRelativeCohomologyCapToAbsolute ({0}ᶜ : Set E) 1 0 α c) := by
-  let v := unitSpherePointOfFinrankPos (E := E) (by omega)
-  have hS : sphere (0 : E) 1 = ({-(v : E), (v : E)} : Set E) := by
-    ext x
-    constructor
-    · intro hx
-      rcases oneDimUnitSphere_eq_or_antipode hd v ⟨x, hx⟩ with h | h
-      · exact mem_insert_of_mem _ (mem_singleton_iff.mpr (congrArg Subtype.val h))
-      · exact mem_insert_iff.mpr (Or.inl (congrArg Subtype.val h))
-    · intro hx
-      rcases mem_insert_iff.mp hx with h | h
-      · rw [h, mem_sphere_zero_iff_norm, norm_neg]
-        exact norm_eq_of_mem_sphere v
-      · rw [mem_singleton_iff.mp h]
-        exact v.property
-  have hcomparison := exists_integralRelativeCohomologyMap_sphere_puncture_bijective E 1
-  rw [hS] at hcomparison
-  obtain ⟨h, hcoh⟩ := hcomparison
-  obtain ⟨c, ⟨_, hcap⟩, _⟩ := exists_unique_relative_pair_cap_bijective
-    (-(v : E)) (v : E) (fun h => unitSphere_ne_antipode v (Subtype.ext h.symm))
-  refine ⟨integralRelativeHomologyMap 1 (ContinuousMap.id E) h c, ?_⟩
-  exact integralRelativeCohomologyCapToAbsolute_bijective_map 1 0 (ContinuousMap.id E) h
-    (by rw [integralSingularHomologyMap_id]; exact Function.bijective_id) hcoh c hcap
-
 private theorem exists_local_cap_bijective_of_homeomorph_finrank_one
-    {E : Type u} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
-    [FiniteDimensional ℝ E] (hd : Module.finrank ℝ E = 1)
+    {E : Type u} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    (hd : Module.finrank ℝ E = 1)
     {Y : Type u} [TopologicalSpace Y] (e : E ≃ₜ Y) :
     ∃ c : integralRelativeHomology 1 ({e 0}ᶜ : Set Y),
       Function.Bijective (fun α : integralRelativeCohomology 1 ({e 0}ᶜ : Set Y) =>
@@ -64,7 +35,7 @@ private theorem exists_local_cap_bijective_of_homeomorph_finrank_one
       exact integralSingularCohomologyMap_bijective_of_homotopyEquiv e.toHomotopyEquiv n
     · intro n
       exact integralSingularCohomologyMap_bijective_of_homotopyEquiv h.toHomotopyEquiv n
-  obtain ⟨c, hc⟩ := exists_local_cap_bijective_of_finrank_one E hd
+  obtain ⟨c, hc⟩ := exists_integralLocalHomology_cap_bijective_of_finrank_one E hd
   refine ⟨integralRelativeHomologyMap 1 f hf c, ?_⟩
   exact integralRelativeCohomologyCapToAbsolute_bijective_map 1 0 f hf
     (integralSingularHomologyZeroMapEquiv f).bijective hcoh c hc
@@ -217,29 +188,6 @@ noncomputable section
 
 namespace DifferentialGeometry.Topology
 
-private theorem additive_pairing_bijective_at_generator
-    {A : Type v} {C : Type w} [AddCommGroup C] (B : A → C →+ ℤ)
-    (e : C ≃+ ℤ) (c : C) (hc : Function.Bijective (fun α => B α c)) :
-    Function.Bijective (fun α => B α (e.symm 1)) := by
-  have hec : c = e c • e.symm 1 := by
-    apply e.injective
-    rw [map_zsmul, e.apply_symm_apply]
-    simp only [zsmul_eq_mul, mul_one, Int.cast_id]
-  have hpair (α : A) : B α c = e c * B α (e.symm 1) := by
-    conv_lhs => rw [hec]
-    rw [map_zsmul]
-    rfl
-  obtain ⟨α, hα⟩ := hc.surjective 1
-  have hu : IsUnit (e c) := IsUnit.of_mul_eq_one (B α (e.symm 1))
-    ((hpair α).symm.trans hα)
-  have hm := IsUnit.isUnit_iff_mulLeft_bijective.mp hu
-  apply (Function.Bijective.of_comp_iff' hm (fun β => B β (e.symm 1))).mp
-  have hfun : (e c * ·) ∘ (fun β => B β (e.symm 1)) = (fun β => B β c) := by
-    funext β
-    exact (hpair β).symm
-  rw [hfun]
-  exact hc
-
 private theorem cap_bijective_at_sphere_generator
     (n : ℕ) (E : Type u) [NormedAddCommGroup E] [InnerProductSpace ℝ E]
     [FiniteDimensional ℝ E] (hd : Module.finrank ℝ E = n + 2) :
@@ -262,23 +210,6 @@ end
 noncomputable section
 
 namespace DifferentialGeometry.Topology
-
-private theorem additive_pairing_bijective_iff_isUnit
-    {A : Type v} {C : Type w} [AddCommGroup C] (B : A → C →+ ℤ)
-    (e : C ≃+ ℤ) (h : Function.Bijective (fun α => B α (e.symm 1))) (c : C) :
-    Function.Bijective (fun α => B α c) ↔ IsUnit (e c) := by
-  have hec : c = e c • e.symm 1 := by
-    apply e.injective
-    rw [map_zsmul, e.apply_symm_apply]
-    simp only [zsmul_eq_mul, mul_one, Int.cast_id]
-  have hfun : (fun α => B α c) = (e c * ·) ∘ (fun α => B α (e.symm 1)) := by
-    funext α
-    conv_lhs => rw [hec]
-    rw [map_zsmul]
-    rfl
-  rw [hfun]
-  exact (Function.Bijective.of_comp_iff (e c * ·) h).trans
-    IsUnit.isUnit_iff_mulLeft_bijective.symm
 
 theorem integralSingularCohomologyCapProduct_sphere_bijective_iff
     (n : ℕ) (E : Type u) [NormedAddCommGroup E] [InnerProductSpace ℝ E]

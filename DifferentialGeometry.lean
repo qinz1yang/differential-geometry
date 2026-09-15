@@ -8045,6 +8045,7 @@ import DifferentialGeometry.Topology.Algebra.Group.FreeProductAssociativity
 import DifferentialGeometry.Topology.Algebra.Group.PoincareStandard
 import DifferentialGeometry.Topology.Algebra.Group.TwoElementFreeProduct
 import DifferentialGeometry.Topology.Algebra.Module.InfiniteCyclicCriterion
+import DifferentialGeometry.Topology.Algebra.Module.Pairing
 import DifferentialGeometry.Topology.Algebra.Module.RankInvariant
 import DifferentialGeometry.Topology.Attachment.Basic
 import DifferentialGeometry.Topology.Attachment.BoundaryGluing
@@ -8323,6 +8324,11 @@ import DifferentialGeometry.Topology.Homology.Cochains
 import DifferentialGeometry.Topology.Homology.CohomologyHomeomorphInvariance
 import DifferentialGeometry.Topology.Homology.CollapseQuotientComparison
 import DifferentialGeometry.Topology.Homology.CompactSupportCohomologyPuncture
+import DifferentialGeometry.Topology.Homology.CompactlySupportedCohomology.Cap
+import DifferentialGeometry.Topology.Homology.CompactlySupportedCohomology.CapNaturality
+import DifferentialGeometry.Topology.Homology.CompactlySupportedCohomology.Defs
+import DifferentialGeometry.Topology.Homology.CompactlySupportedCohomology.Euclidean
+import DifferentialGeometry.Topology.Homology.CompactlySupportedCohomology.OpenEmbedding
 import DifferentialGeometry.Topology.Homology.ConnectedZeroHomology
 import DifferentialGeometry.Topology.Homology.ContractibleCoverChainEvaluation
 import DifferentialGeometry.Topology.Homology.ContractibleCoverOne
@@ -8337,6 +8343,7 @@ import DifferentialGeometry.Topology.Homology.CycleLinearEquiv
 import DifferentialGeometry.Topology.Homology.Cycles
 import DifferentialGeometry.Topology.Homology.DoubleEuler
 import DifferentialGeometry.Topology.Homology.DoubleEulerZeroDimensional
+import DifferentialGeometry.Topology.Homology.EuclideanCompactHomology
 import DifferentialGeometry.Topology.Homology.EuclideanLocalTop
 import DifferentialGeometry.Topology.Homology.EuclideanLocalVanishing
 import DifferentialGeometry.Topology.Homology.EuclideanSimplexGeneratorComputation
@@ -8402,6 +8409,7 @@ import DifferentialGeometry.Topology.Homology.LocalCharts
 import DifferentialGeometry.Topology.Homology.LocalDerivativeComparison
 import DifferentialGeometry.Topology.Homology.LocalHomology
 import DifferentialGeometry.Topology.Homology.LocalLinearMaps
+import DifferentialGeometry.Topology.Homology.LocalZeroNaturality
 import DifferentialGeometry.Topology.Homology.LocalizationTransport
 import DifferentialGeometry.Topology.Homology.LowDegreeCollapseDegree
 import DifferentialGeometry.Topology.Homology.LowDegreeHurewiczNonvacuity
@@ -8410,6 +8418,9 @@ import DifferentialGeometry.Topology.Homology.Manifold
 import DifferentialGeometry.Topology.Homology.ManifoldBoundary
 import DifferentialGeometry.Topology.Homology.ManifoldDoubleEuler
 import DifferentialGeometry.Topology.Homology.ManifoldEulerParity
+import DifferentialGeometry.Topology.Homology.ManifoldFundamentalCap
+import DifferentialGeometry.Topology.Homology.ManifoldHomologyGenerator
+import DifferentialGeometry.Topology.Homology.ManifoldLocalCapDuality
 import DifferentialGeometry.Topology.Homology.MeshBoundary
 import DifferentialGeometry.Topology.Homology.MeshIteration
 import DifferentialGeometry.Topology.Homology.ModuleHomologyClasses
@@ -8417,6 +8428,8 @@ import DifferentialGeometry.Topology.Homology.ModuleHomologyCriterion
 import DifferentialGeometry.Topology.Homology.ModuleHomologyMaps
 import DifferentialGeometry.Topology.Homology.NoncompactPoincareDualityFrontier
 import DifferentialGeometry.Topology.Homology.NoncompactTopHomologyVanishing
+import DifferentialGeometry.Topology.Homology.NormedLocalCapDuality
+import DifferentialGeometry.Topology.Homology.OneDimensionalLocalCapDuality
 import DifferentialGeometry.Topology.Homology.OneDimensionalSphere
 import DifferentialGeometry.Topology.Homology.OpenCover
 import DifferentialGeometry.Topology.Homology.OpenCoverSphereLinking
@@ -8452,6 +8465,7 @@ import DifferentialGeometry.Topology.Homology.RelativeHomeomorphism
 import DifferentialGeometry.Topology.Homology.RelativeMaps
 import DifferentialGeometry.Topology.Homology.RelativeReducedCollapse
 import DifferentialGeometry.Topology.Homology.RelativeZero
+import DifferentialGeometry.Topology.Homology.RelativeZeroNaturality
 import DifferentialGeometry.Topology.Homology.SecondHomologyVanishingClosedThreeManifold
 import DifferentialGeometry.Topology.Homology.SimplexBasis
 import DifferentialGeometry.Topology.Homology.SimplexBoundaryFilling
@@ -9085,6 +9099,8 @@ import DifferentialGeometry.Topology.Manifold.SphereLinearIsometry
 import DifferentialGeometry.Topology.Manifold.SphereOrientation
 import DifferentialGeometry.Topology.Manifold.SphereOrientationIsotopy
 import DifferentialGeometry.Topology.Manifold.SphereOutwardFrameDictionary
+import DifferentialGeometry.Topology.Manifold.SphereOutwardOrientation
+import DifferentialGeometry.Topology.Manifold.SphereOutwardOrientationComparison
 import DifferentialGeometry.Topology.Manifold.SpherePlanarChart
 import DifferentialGeometry.Topology.Manifold.SpherePointIsotopy
 import DifferentialGeometry.Topology.Manifold.SphereRadialChart
@@ -9985,5 +10001,6 @@ import DifferentialGeometry.Analysis.Estimates.UniformScaling
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChildComparison
 import DifferentialGeometry.Topology.Homology.LocalGerm
 import DifferentialGeometry.Topology.Homology.SingletonFiber
+import DifferentialGeometry.Topology.Homology.ZeroSphereOrientation
 import DifferentialGeometry.Topology.ThreeManifold.LocalOrientationNaturality
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CollapseFundamentalClass

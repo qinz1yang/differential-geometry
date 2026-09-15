@@ -1,8 +1,6 @@
 import DifferentialGeometry.Topology.Homology.SpherePuncture
 import Mathlib.Analysis.InnerProductSpace.Projection.FiniteDimensional
 
-
-
 noncomputable section
 
 open Set Metric Module
@@ -11,13 +9,11 @@ universe u
 
 namespace DifferentialGeometry.Topology
 
-variable {E : Type u} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
-  [FiniteDimensional ℝ E]
-
-
+variable {E : Type u} [NormedAddCommGroup E] [NormedSpace ℝ E]
 
 theorem oneDimUnitSphere_eq_or_antipode (hd : finrank ℝ E = 1)
     (v x : sphere (0 : E) 1) : x = v ∨ x = -v := by
+  let : FiniteDimensional ℝ E := Module.finite_of_finrank_eq_succ hd
   have hv : (v : E) ≠ 0 := by
     intro h
     have hn := norm_eq_of_mem_sphere v
@@ -38,7 +34,6 @@ theorem oneDimUnitSphere_eq_or_antipode (hd : finrank ℝ E = 1)
     apply Subtype.ext
     simpa [h] using hr.symm
 
-
 def oneDimUnitSphereEquivBool (hd : finrank ℝ E = 1) (v : sphere (0 : E) 1) :
     sphere (0 : E) 1 ≃ Bool := (Equiv.ofBijective (fun b : Bool => if b then -v else v) (by
   constructor
@@ -48,7 +43,6 @@ def oneDimUnitSphereEquivBool (hd : finrank ℝ E = 1) (v : sphere (0 : E) 1) :
     rcases oneDimUnitSphere_eq_or_antipode hd v x with h | h
     · exact ⟨false, h.symm⟩
     · exact ⟨true, h.symm⟩)).symm
-
 
 theorem oneDimUnitSphere_finite (hd : finrank ℝ E = 1) (v : sphere (0 : E) 1) :
     Finite (sphere (0 : E) 1) := Finite.of_equiv Bool (oneDimUnitSphereEquivBool hd v).symm
