@@ -1883,4 +1883,164 @@ theorem neighbors_singleton_of_unique_cofaces [FiniteDimensional ℝ E]
   apply neighbors_singleton_of_eventually_nonneg_ray G hGcard hxG hw0
   rwa [hspace]
 
+open Classical in
+theorem linearMap_eq_zero_iff_of_mem_openSimplex (K : Geometry.SimplicialComplex ℝ E)
+    (ℓ : E →ₗ[ℝ] ℝ) {s : Finset E} (hs : s ∈ K.faces) (hℓ : ∀ v ∈ s, 0 ≤ ℓ v)
+    {x : E} (hx : x ∈ openSimplex s) : ℓ x = 0 ↔ ∀ v ∈ s, ℓ v = 0 := by
+  have heq := simplicialMap_eqOn_affine K ℓ.toAffineMap
+    (K.convexHull_subset_space hs (openSimplex_subset_convexHull s hx))
+  exact heq ▸ simplicialMap_eq_zero_iff_of_mem_openSimplex K ℓ hs hℓ hx
+
+open Classical in
+theorem IsCombinatorialManifoldWithBoundary.exists_unique_coface_in_halfSpace [FiniteDimensional ℝ E]
+    {n : ℕ} (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
+    (hK : IsCombinatorialManifoldWithBoundary (n + 1) K) (ℓ : E →ₗ[ℝ] ℝ)
+    (hnonneg : ∀ v ∈ K.vertices, 0 ≤ ℓ v)
+    (hboundary : ∀ s ∈ K.faces, (∀ v ∈ s, ℓ v = 0) → s ∈ (boundaryComplex (n + 1) K).faces)
+    {s : Finset E} (hs : s ∈ K.faces) (hscard : s.card = n + 1) (hszero : ∀ v ∈ s, ℓ v = 0) :
+    ∃ a, 0 < ℓ a ∧ {w | w ∉ s ∧ insert w s ∈ K.faces} = {a} := by
+  have hbound : ∀ u ∈ K.faces, s ⊆ u → u.card ≤ s.card + 1 := by
+    intro u hu _
+    rw [hscard]
+    exact hK.card_le K hu
+  have hlink := ((hK.mem_boundaryComplex_faces_iff K).mp (hboundary s hs hszero)).2.2
+  rw [hscard, Nat.sub_self, geometricLink_space_eq_coface_vertices_of_card_le K s hbound] at hlink
+  obtain ⟨a, ha⟩ := isPLBall_zero_iff.mp hlink
+  have hamem : a ∉ s ∧ insert a s ∈ K.faces := by
+    change a ∈ {w | w ∉ s ∧ insert w s ∈ K.faces}
+    rw [ha]
+    exact rfl
+  have ha0 : 0 ≤ ℓ a := hnonneg a (K.down_closed hamem.2 (by simp) (Finset.singleton_nonempty a))
+  have hane : ℓ a ≠ 0 := by
+    intro hzero
+    have hB := hboundary (insert a s) hamem.2 (by simpa only [Finset.mem_insert, forall_eq_or_imp] using And.intro hzero hszero)
+    have hcard := ((hK.mem_boundaryComplex_faces_iff K).mp hB).2.1
+    rw [Finset.card_insert_of_notMem hamem.1, hscard] at hcard
+    omega
+  exact ⟨a, lt_of_le_of_ne ha0 hane.symm, ha⟩
+
+open Classical in
+theorem neighbors_of_inter_in_halfSpace [FiniteDimensional ℝ E]
+    (K L G : Geometry.SimplicialComplex ℝ E) [Finite K.faces] [Finite L.faces] [Finite G.faces]
+    (hK : IsCombinatorialManifoldWithBoundary 2 K) (hL : IsCombinatorialManifoldWithBoundary 2 L)
+    (hdim : Module.finrank ℝ E = 3) (ℓ : E →ₗ[ℝ] ℝ)
+    (hKnonneg : ∀ v ∈ K.vertices, 0 ≤ ℓ v) (hLnonneg : ∀ v ∈ L.vertices, 0 ≤ ℓ v)
+    (hKboundary : ∀ s ∈ K.faces, (∀ v ∈ s, ℓ v = 0) → s ∈ (boundaryComplex 2 K).faces)
+    (hLboundary : ∀ t ∈ L.faces, (∀ v ∈ t, ℓ v = 0) → t ∈ (boundaryComplex 2 L).faces)
+    (hcard : ∀ u ∈ G.faces, u.card ≤ 2) (hspace : G.space = K.space ∩ L.space)
+    (hcarrier : ∀ u ∈ G.faces, ∃ s ∈ K.faces, ∃ t ∈ L.faces,
+      convexHull ℝ (u : Set E) ⊆ convexHull ℝ (s : Set E) ∩ convexHull ℝ (t : Set E))
+    (htrans : ∀ s ∈ K.faces, ∀ t ∈ L.faces,
+      (convexHull ℝ (s : Set E) ∩ convexHull ℝ (t : Set E)).Nonempty →
+        vectorSpan ℝ (s : Set E) ⊔ vectorSpan ℝ (t : Set E) =
+          if ∀ v ∈ s ∪ t, ℓ v = 0 then LinearMap.ker ℓ else ⊤)
+    {x : E} (hxG : {x} ∈ G.faces) :
+    (ℓ x = 0 ∧ ∃ a, {y | y ≠ x ∧ {x, y} ∈ G.faces} = {a}) ∨
+      (ℓ x ≠ 0 ∧ ((∃ a, {y | y ≠ x ∧ {x, y} ∈ G.faces} = {a}) ∨
+        ∃ a b, a ≠ b ∧ {y | y ≠ x ∧ {x, y} ∈ G.faces} = {a, b})) := by
+  have hxspace : x ∈ G.space := G.subset_space hxG (Finset.mem_singleton_self _)
+  rw [hspace] at hxspace
+  obtain ⟨s, hs, hxs⟩ := exists_face_mem_openSimplex K hxspace.1
+  obtain ⟨t, ht, hxt⟩ := exists_face_mem_openSimplex L hxspace.2
+  have hsiff := linearMap_eq_zero_iff_of_mem_openSimplex K ℓ hs (fun v hv =>
+    hKnonneg v (K.down_closed hs (Finset.singleton_subset_iff.mpr hv) (Finset.singleton_nonempty v))) hxs
+  have htiff := linearMap_eq_zero_iff_of_mem_openSimplex L ℓ ht (fun v hv =>
+    hLnonneg v (L.down_closed ht (Finset.singleton_subset_iff.mpr hv) (Finset.singleton_nonempty v))) hxt
+  have hzero : (∀ v ∈ s ∪ t, ℓ v = 0) ↔ ℓ x = 0 := by
+    constructor
+    · intro h
+      exact hsiff.mpr fun v hv => h v (Finset.mem_union_left t hv)
+    · intro h v hv
+      rcases Finset.mem_union.mp hv with hv | hv
+      · exact hsiff.mp h v hv
+      · exact htiff.mp h v hv
+  have hst := htrans s hs t ht ⟨x, openSimplex_subset_convexHull s hxs,
+    openSimplex_subset_convexHull t hxt⟩
+  by_cases hx0 : ℓ x = 0
+  · rw [if_pos (hzero.mpr hx0)] at hst
+    have hsbound := ((hK.mem_boundaryComplex_faces_iff K).mp (hKboundary s hs (hsiff.mp hx0))).2.1
+    have htbound := ((hL.mem_boundaryComplex_faces_iff L).mp (hLboundary t ht (htiff.mp hx0))).2.1
+    have hker : 2 ≤ Module.finrank ℝ (LinearMap.ker ℓ) := by
+      have h := LinearMap.finrank_range_add_finrank_ker ℓ
+      have hrange : Module.finrank ℝ (LinearMap.range ℓ) ≤ 1 := by
+        simpa using Submodule.finrank_le (LinearMap.range ℓ)
+      omega
+    have hsub : (({x} : Finset E) : Set E) ⊆ (fun y : E => y + 0) '' convexHull ℝ (s : Set E) ∩
+        convexHull ℝ (t : Set E) := by
+      simpa only [add_zero, Set.image_id', Finset.coe_singleton, Set.singleton_subset_iff, Set.mem_inter_iff] using
+        And.intro (openSimplex_subset_convexHull s hxs) (openSimplex_subset_convexHull t hxt)
+    have hbound := card_add_finrank_sup_le_of_subset_faces K L hs ht (G.indep hxG)
+      (Finset.singleton_nonempty x) 0 hsub
+    rw [hst, Finset.card_singleton] at hbound
+    have hsc : s.card = 2 := by omega
+    have htc : t.card = 2 := by omega
+    obtain ⟨a, ha, hKa⟩ := hK.exists_unique_coface_in_halfSpace K ℓ hKnonneg hKboundary hs hsc (hsiff.mp hx0)
+    obtain ⟨b, hb, hLb⟩ := hL.exists_unique_coface_in_halfSpace L ℓ hLnonneg hLboundary ht htc (htiff.mp hx0)
+    refine Or.inl ⟨hx0, neighbors_singleton_of_unique_cofaces K L G hdim hcard hspace hs ht hsc htc
+      (fun u hu _ => ?_) (fun u hu _ => ?_) hKa hLb ℓ hst ha hb hx0 hxs hxt hxG⟩
+    · rw [hsc]
+      exact hK.card_le K hu
+    · rw [htc]
+      exact hL.card_le L hu
+  · rw [if_neg (fun h => hx0 (hzero.mp h))] at hst
+    exact Or.inr ⟨hx0, neighbors_singleton_or_pair_of_transverse_face K L G hK hL hdim hcard
+      hspace hcarrier hs ht hxs hxt hxG hst⟩
+
+open Classical in
+theorem exists_isCombinatorialManifoldWithBoundary_inter_in_halfSpace [FiniteDimensional ℝ E]
+    (K L : Geometry.SimplicialComplex ℝ E) [Finite K.faces] [Finite L.faces]
+    (hK : IsCombinatorialManifoldWithBoundary 2 K) (hL : IsCombinatorialManifoldWithBoundary 2 L)
+    (hdim : Module.finrank ℝ E = 3) (ℓ : E →ₗ[ℝ] ℝ)
+    (hKnonneg : ∀ v ∈ K.vertices, 0 ≤ ℓ v) (hLnonneg : ∀ v ∈ L.vertices, 0 ≤ ℓ v)
+    (hKboundary : ∀ s ∈ K.faces, (∀ v ∈ s, ℓ v = 0) → s ∈ (boundaryComplex 2 K).faces)
+    (hLboundary : ∀ t ∈ L.faces, (∀ v ∈ t, ℓ v = 0) → t ∈ (boundaryComplex 2 L).faces)
+    (htrans : ∀ s ∈ K.faces, ∀ t ∈ L.faces,
+      (convexHull ℝ (s : Set E) ∩ convexHull ℝ (t : Set E)).Nonempty →
+        vectorSpan ℝ (s : Set E) ⊔ vectorSpan ℝ (t : Set E) =
+          if ∀ v ∈ s ∪ t, ℓ v = 0 then LinearMap.ker ℓ else ⊤) :
+    ∃ G : Geometry.SimplicialComplex ℝ E, G.faces.Finite ∧ G.space = K.space ∩ L.space ∧
+      IsCombinatorialManifoldWithBoundary 1 G ∧ ∀ x, {x} ∈ G.faces → ℓ x = 0 →
+        ∃ a, {y | y ≠ x ∧ {x, y} ∈ G.faces} = {a} := by
+  obtain ⟨G, hGfin, hspace, hcarrier⟩ := exists_triangulation_inter K L
+  have : Finite G.faces := hGfin.to_subtype
+  have hker : 2 ≤ Module.finrank ℝ (LinearMap.ker ℓ) := by
+    have h := LinearMap.finrank_range_add_finrank_ker ℓ
+    have hrange : Module.finrank ℝ (LinearMap.range ℓ) ≤ 1 := by
+      simpa using Submodule.finrank_le (LinearMap.range ℓ)
+    omega
+  have hcard : ∀ u ∈ G.faces, u.card ≤ 2 := by
+    intro u hu
+    obtain ⟨s, hs, t, ht, hsub⟩ := hcarrier u hu
+    obtain ⟨p, hp⟩ := G.nonempty_of_mem_faces hu
+    have hst := htrans s hs t ht ⟨p, hsub (subset_convexHull ℝ _ hp)⟩
+    have hsub' : (u : Set E) ⊆ (fun y : E => y + 0) '' convexHull ℝ (s : Set E) ∩
+        convexHull ℝ (t : Set E) := by
+      simpa only [add_zero, Set.image_id'] using (subset_convexHull ℝ (u : Set E)).trans hsub
+    have hbound := card_add_finrank_sup_le_of_subset_faces K L hs ht (G.indep hu)
+      (G.nonempty_of_mem_faces hu) 0 hsub'
+    by_cases hzero : ∀ v ∈ s ∪ t, ℓ v = 0
+    · rw [if_pos hzero] at hst
+      rw [hst] at hbound
+      have hsbound := ((hK.mem_boundaryComplex_faces_iff K).mp
+        (hKboundary s hs (fun v hv => hzero v (Finset.mem_union_left t hv)))).2.1
+      have htbound := ((hL.mem_boundaryComplex_faces_iff L).mp
+        (hLboundary t ht (fun v hv => hzero v (Finset.mem_union_right s hv)))).2.1
+      omega
+    · rw [if_neg hzero] at hst
+      rw [hst, finrank_top, hdim] at hbound
+      have hsbound := hK.card_le K hs
+      have htbound := hL.card_le L ht
+      omega
+  have hdegrees := fun x hx => neighbors_of_inter_in_halfSpace K L G hK hL hdim ℓ hKnonneg
+    hLnonneg hKboundary hLboundary hcard hspace hcarrier htrans (x := x) hx
+  refine ⟨G, hGfin, hspace, (isCombinatorialManifoldWithBoundary_one_iff G).mpr ⟨hcard, ?_⟩, ?_⟩
+  · intro x hx
+    rcases hdegrees x hx with ⟨_, hsingle⟩ | ⟨_, hdegree⟩
+    · exact Or.inl hsingle
+    · exact hdegree
+  · intro x hx hx0
+    rcases hdegrees x hx with ⟨_, hsingle⟩ | ⟨hne, _⟩
+    · exact hsingle
+    · exact (hne hx0).elim
+
 end DifferentialGeometry.Topology.PiecewiseLinear
