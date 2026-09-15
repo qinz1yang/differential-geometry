@@ -131,6 +131,103 @@ theorem planeComplexOfSimplicialComplex_eraseTriangle_support
     refine mem_iUnion₂.mpr ⟨r, Finset.mem_erase.mpr ⟨hrne, hrmem⟩, ?_⟩
     exact (hcarrier r).symm ▸ (show x ∈ convexHull ℝ ((r.map e : Finset Plane) : Set Plane) from hr.symm ▸ hxu)
 
+theorem one_lt_triangles_card_of_support_ne_triangleCarrier (M : TriangleMesh)
+    (T : M.Triangle) (hne : M.toPlaneComplex.support ≠ M.triangleCarrier T.1) :
+    1 < M.triangles.card := by
+  have hnonempty : M.triangles.Nonempty := ⟨T.1, T.2⟩
+  have hpos : 0 < M.triangles.card := Finset.card_pos.mpr hnonempty
+  by_contra h
+  have hcard : M.triangles.card = 1 := by omega
+  have hsingleton : M.triangles = {T.1} :=
+    (Finset.card_eq_one.mp hcard).elim fun t ht => by
+      have hT : T.1 = t := Finset.mem_singleton.mp (ht ▸ T.2)
+      rwa [← hT] at ht
+  apply hne
+  simp only [M.toPlaneComplex_support, hsingleton, Finset.mem_singleton,
+    iUnion_iUnion_eq_left]
+  rfl
+
+open Classical in
+theorem exists_isPLHomeomorphOn_eraseTriangleComplex_of_frontier_inter
+    (K : Geometry.SimplicialComplex ℝ Plane) [Finite K.faces]
+    (hK : IsPLBall 2 K.space) {t s : Finset Plane} (ht : t ∈ K.faces)
+    (htcard : t.card = 3) (hst : s ⊆ t) (hscard : s.card = 1 ∨ s.card = 2)
+    (htrace : frontier K.space ∩ convexHull ℝ (t : Set Plane) =
+      ⋃ v ∈ s, convexHull ℝ ((t.erase v : Finset Plane) : Set Plane))
+    (hne : K.space ≠ convexHull ℝ (t : Set Plane))
+    {U : Set Plane} (hU : IsOpen U) (htU : convexHull ℝ (t : Set Plane) ⊆ U) :
+    ∃ g : Plane ≃ₜ Plane, IsPLHomeomorphOn g univ univ ∧ EqOn g id Uᶜ ∧
+      EqOn g id (frontier K.space \ convexHull ℝ (t : Set Plane)) ∧
+      g '' K.space = (eraseTriangleComplex K t).space ∧
+      IsPLBall 2 (eraseTriangleComplex K t).space := by
+  have hvertices : K.vertices.Finite :=
+    Set.Finite.preimage Finset.singleton_injective.injOn (Set.toFinite K.faces)
+  let _ : Fintype K.vertices := hvertices.fintype
+  let e : K.vertices ↪ Plane := ⟨Subtype.val, Subtype.val_injective⟩
+  let r := t.subtype (fun v => v ∈ K.vertices)
+  have hr : r.map e = t := Finset.subtype_map_of_mem fun v hv =>
+    K.down_closed ht (Finset.singleton_subset_iff.mpr hv) (Finset.singleton_nonempty v)
+  have hrmem : r ∈ (planeComplexOfSimplicialComplex K).simplexes := by
+    change r ∈ Finset.univ.filter (fun u => u.map e ∈ K.faces)
+    exact Finset.mem_filter.mpr ⟨Finset.mem_univ _, hr.symm ▸ ht⟩
+  have hrcard : r.card = 3 := by rw [← Finset.card_map e, hr, htcard]
+  let M := (planeComplexOfSimplicialComplex K).toTriangleMesh
+  let T : M.Triangle := ⟨r, mem_planeComplex_cells' _ hrmem hrcard⟩
+  have hsupport : M.toPlaneComplex.support = K.space :=
+    planeComplexOfSimplicialComplex_toTriangleMesh_support K hK
+  have hposition : M.position '' (T.1 : Set M.Vertex) = (t : Set Plane) := by
+    change ((fun x : K.vertices => (x : Plane)) '' (r : Set K.vertices)) = (t : Set Plane)
+    rw [← hr, Finset.coe_map]
+    rfl
+  have hcarrier : M.triangleCarrier T.1 = convexHull ℝ (t : Set Plane) :=
+    congrArg (convexHull ℝ) hposition
+  have hmore : 1 < M.triangles.card :=
+    one_lt_triangles_card_of_support_ne_triangleCarrier M T (by rwa [hsupport, hcarrier])
+  obtain ⟨p, hp, hs⟩ : ∃ p ∈ t, s = {p} ∨ s = t.erase p := by
+    rcases hscard with hscard | hscard
+    · obtain ⟨p, rfl⟩ := Finset.card_eq_one.mp hscard
+      exact ⟨p, hst (Finset.mem_singleton_self p), Or.inl rfl⟩
+    · obtain ⟨p, hpt, hps⟩ := Finset.exists_mem_notMem_of_card_lt_card (by omega : s.card < t.card)
+      refine ⟨p, hpt, Or.inr (Finset.eq_of_subset_of_card_le ?_ ?_)⟩
+      · exact fun v hv => Finset.mem_erase.mpr ⟨fun hvp => hps (hvp ▸ hv), hst hv⟩
+      · rw [Finset.card_erase_of_mem hpt, htcard, hscard]
+  obtain ⟨k, hk⟩ : ∃ k : Fin 3, M.position (M.orderedVertex T k) = p := by
+    have hp' : p ∈ M.position '' (T.1 : Set M.Vertex) := hposition.symm ▸ hp
+    rwa [← M.range_orderedVertex T, ← range_comp] at hp'
+  let q := M.freeTriangleOrder T k
+  have hq : Function.Injective q := (M.freeTriangleOrder_affineIndependent T k).injective
+  have hq2 : q 2 = p := by simpa [q, TriangleMesh.freeTriangleOrder] using hk
+  have htq : t = Finset.univ.image q := by
+    apply Finset.coe_injective
+    calc
+      (t : Set Plane) = M.position '' (T.1 : Set M.Vertex) := hposition.symm
+      _ = Set.range q := (M.range_freeTriangleOrder T k).symm
+      _ = (Finset.univ.image q : Finset Plane) := by ext x; simp
+  have hfree : M.IsGeometricallyFreeTriangle T := by
+    refine ⟨k, ?_⟩
+    rcases hs with hs | hs
+    · left
+      change frontier M.toPlaneComplex.support ∩ M.triangleCarrier T.1 = _
+      rw [hsupport, hcarrier, htrace, hs, ← hq2, htq]
+      exact iUnion_convexHull_erase_singleton_triangle q hq
+    · right
+      have hs' : s = {q 0, q 1} := by
+        rw [hs, ← hq2, htq, ← Finset.image_erase hq]
+        rw [show (Finset.univ : Finset (Fin 3)).erase 2 = {0, 1} by decide]
+        simp
+      change frontier M.toPlaneComplex.support ∩ M.triangleCarrier T.1 = _
+      rw [hsupport, hcarrier, htrace, hs', htq]
+      exact iUnion_convexHull_erase_pair_triangle q hq
+  have herase : (M.eraseTriangle T.1).toPlaneComplex.support =
+      (eraseTriangleComplex K t).space := by
+    have h := planeComplexOfSimplicialComplex_eraseTriangle_support K r
+    exact h.trans (congrArg (fun u => (eraseTriangleComplex K u).space) hr)
+  obtain ⟨g, hg, hfix, hboundary, himage, hball⟩ :=
+    exists_isPLHomeomorphOn_remove_geometricallyFree_triangle_fixing_frontier
+      M (hsupport.symm ▸ hK) T hfree hmore hU (hcarrier.trans_le htU)
+  exact ⟨g, hg, hfix, by rwa [hsupport, hcarrier] at hboundary,
+    by rwa [hsupport, herase] at himage, herase ▸ hball⟩
+
 open Classical in
 theorem exists_isPLBall_eraseTriangleComplex_of_isPLBall_two
     (K : Geometry.SimplicialComplex ℝ Plane) [Finite K.faces]
@@ -160,23 +257,11 @@ theorem exists_isPLBall_eraseTriangleComplex_of_isPLBall_two
   let T₀ : M.Triangle := ⟨t₀', mem_planeComplex_cells' _ ht₀mem ht₀card'⟩
   have hsupport : M.toPlaneComplex.support = K.space :=
     planeComplexOfSimplicialComplex_toTriangleMesh_support K hK
-  have hmore : 1 < M.triangles.card := by
-    have hnonempty : M.triangles.Nonempty := ⟨T₀.1, T₀.2⟩
-    have hpos : 0 < M.triangles.card := Finset.card_pos.mpr hnonempty
-    by_contra h
-    have hcard : M.triangles.card = 1 := by omega
-    have hsingleton : M.triangles = {T₀.1} :=
-      (Finset.card_eq_one.mp hcard).elim fun t ht => by
-        have hT₀ : T₀.1 = t := Finset.mem_singleton.mp (ht ▸ T₀.2)
-        rwa [← hT₀] at ht
-    have hsupport₀ : M.toPlaneComplex.support = M.triangleCarrier T₀.1 := by
-      simp only [M.toPlaneComplex_support, hsingleton, Finset.mem_singleton,
-        iUnion_iUnion_eq_left]
-      rfl
-    have hcarrier₀ : M.triangleCarrier T₀.1 = convexHull ℝ (t₀ : Set Plane) := by
-      change (planeComplexOfSimplicialComplex K).cellCarrier t₀' = _
-      rw [planeComplexOfSimplicialComplex_cellCarrier, ht₀map]
-    exact hne (hsupport.symm.trans (hsupport₀.trans hcarrier₀))
+  have hcarrier₀ : M.triangleCarrier T₀.1 = convexHull ℝ (t₀ : Set Plane) := by
+    change (planeComplexOfSimplicialComplex K).cellCarrier t₀' = _
+    rw [planeComplexOfSimplicialComplex_cellCarrier, ht₀map]
+  have hmore : 1 < M.triangles.card :=
+    one_lt_triangles_card_of_support_ne_triangleCarrier M T₀ (by rwa [hsupport, hcarrier₀])
   obtain ⟨J, hJ⟩ := exists_polygonalCircle_of_isPLBall_two (hsupport.symm ▸ hK)
   obtain ⟨T₁, T₂, hT₁T₂, hT₁free, hT₂free⟩ :=
     M.exists_two_geometricallyFreeTriangles_of_polygonalDisk J hJ.symm hmore
