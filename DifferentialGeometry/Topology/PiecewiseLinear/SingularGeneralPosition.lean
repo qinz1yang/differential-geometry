@@ -1781,4 +1781,106 @@ theorem neighbors_singleton_of_eventually_nonneg_ray (G : Geometry.SimplicialCom
   · rintro rfl
     exact ⟨hax, haedge⟩
 
+theorem exists_nonneg_ray_eq_inter_halfSpace_cones {V : Type*} [AddCommGroup V] [Module ℝ V]
+    (S T : Submodule ℝ V) (ℓ : V →ₗ[ℝ] ℝ) (hST : S ⊔ T = LinearMap.ker ℓ)
+    (hdis : Disjoint S T) {u v : V} (hu : 0 < ℓ u) (hv : 0 < ℓ v) :
+    ∃ w : V, ℓ w = 1 ∧ ∀ z : V,
+      ((∃ s ∈ S, ∃ r : ℝ, 0 ≤ r ∧ z = s + r • u) ∧
+        ∃ t ∈ T, ∃ r : ℝ, 0 ≤ r ∧ z = t + r • v) ↔
+          ∃ r : ℝ, 0 ≤ r ∧ z = r • w := by
+  let P := S ⊔ Submodule.span ℝ {u}
+  let Q := T ⊔ Submodule.span ℝ {v}
+  have hSker : S ≤ LinearMap.ker ℓ := le_sup_left.trans hST.le
+  have hTker : T ≤ LinearMap.ker ℓ := le_sup_right.trans hST.le
+  have hmem : ∀ R : Submodule ℝ V, R ≤ LinearMap.ker ℓ → ∀ a : V, ℓ a ≠ 0 →
+      ∀ z ∈ R ⊔ Submodule.span ℝ {a}, ℓ z = 0 → z ∈ R := by
+    intro R hR a ha z hz hz0
+    obtain ⟨s, hs, q, hq, hsq⟩ := Submodule.mem_sup.mp hz
+    obtain ⟨r, rfl⟩ := Submodule.mem_span_singleton.mp hq
+    have hs0 : ℓ s = 0 := hR hs
+    have hr : r = 0 := by
+      rw [← hsq, map_add, map_smul, hs0, zero_add, smul_eq_mul] at hz0
+      exact (mul_eq_zero.mp hz0).resolve_right ha
+    simpa only [← hsq, hr, zero_smul, add_zero] using hs
+  obtain ⟨w, hw, hw1⟩ := exists_common_inward_vector_of_sup_eq_ker S T ℓ hST hu hv
+  refine ⟨w, hw1, fun z => ?_⟩
+  rw [halfSpace_eq_of_linearMap_pos S ℓ hSker hu,
+    halfSpace_eq_of_linearMap_pos T ℓ hTker hv]
+  constructor
+  · rintro ⟨⟨hzP, hz0⟩, hzQ, _⟩
+    have hzero : ℓ (z - ℓ z • w) = 0 := by
+      rw [map_sub, map_smul, hw1, smul_eq_mul, mul_one, sub_self]
+    have hzS : z - ℓ z • w ∈ S := hmem S hSker u hu.ne' _
+      (P.sub_mem hzP (P.smul_mem _ hw.1)) hzero
+    have hzT : z - ℓ z • w ∈ T := hmem T hTker v hv.ne' _
+      (Q.sub_mem hzQ (Q.smul_mem _ hw.2)) hzero
+    exact ⟨ℓ z, hz0, sub_eq_zero.mp (Submodule.disjoint_def.mp hdis _ hzS hzT)⟩
+  · rintro ⟨r, hr, rfl⟩
+    have hnonneg : 0 ≤ ℓ (r • w) := by rwa [map_smul, hw1, smul_eq_mul, mul_one]
+    exact ⟨⟨P.smul_mem r hw.1, hnonneg⟩, Q.smul_mem r hw.2, hnonneg⟩
+
+theorem eventually_mem_inter_iff_nonneg_ray_of_halfSpace_cones [FiniteDimensional ℝ E]
+    (hdim : Module.finrank ℝ E = 3) (S T : Submodule ℝ E)
+    (hSdim : Module.finrank ℝ S = 1) (hTdim : Module.finrank ℝ T = 1)
+    (ℓ : E →ₗ[ℝ] ℝ) (hST : S ⊔ T = LinearMap.ker ℓ) {u v x : E}
+    (hu : 0 < ℓ u) (hv : 0 < ℓ v) {A B : Set E}
+    (hA : ∀ᶠ y in 𝓝 x, y ∈ A ↔ ∃ z ∈ S, ∃ r : ℝ, 0 ≤ r ∧ y - x = z + r • u)
+    (hB : ∀ᶠ y in 𝓝 x, y ∈ B ↔ ∃ z ∈ T, ∃ r : ℝ, 0 ≤ r ∧ y - x = z + r • v) :
+    ∃ w : E, ℓ w = 1 ∧ ∀ᶠ y in 𝓝 x,
+      y ∈ A ∩ B ↔ ∃ r : ℝ, 0 ≤ r ∧ y = x + r • w := by
+  have hrange : LinearMap.range ℓ = ⊤ := LinearMap.range_eq_top.mpr fun c =>
+    ⟨(c / ℓ u) • u, by rw [map_smul, smul_eq_mul, div_mul_cancel₀ _ hu.ne']⟩
+  have hker : Module.finrank ℝ (LinearMap.ker ℓ) = 2 := by
+    have h := LinearMap.finrank_range_add_finrank_ker ℓ
+    rw [hrange, finrank_top, Module.finrank_self] at h
+    omega
+  have hdis : Disjoint S T := by
+    apply disjoint_iff.mpr
+    apply Submodule.finrank_eq_zero.mp
+    have h := Submodule.finrank_sup_add_finrank_inf_eq S T
+    rw [hST, hker, hSdim, hTdim] at h
+    omega
+  obtain ⟨w, hw, heq⟩ := exists_nonneg_ray_eq_inter_halfSpace_cones S T ℓ hST hdis hu hv
+  refine ⟨w, hw, ?_⟩
+  filter_upwards [hA, hB] with y hyA hyB
+  rw [Set.mem_inter_iff, hyA, hyB, heq]
+  simp only [sub_eq_iff_eq_add, add_comm]
+
+open Classical in
+theorem neighbors_singleton_of_unique_cofaces [FiniteDimensional ℝ E]
+    (K L G : Geometry.SimplicialComplex ℝ E) [Finite K.faces] [Finite L.faces] [Finite G.faces]
+    (hdim : Module.finrank ℝ E = 3) (hGcard : ∀ u ∈ G.faces, u.card ≤ 2)
+    (hspace : G.space = K.space ∩ L.space)
+    {s t : Finset E} (hs : s ∈ K.faces) (ht : t ∈ L.faces)
+    (hscard : s.card = 2) (htcard : t.card = 2)
+    (hKbound : ∀ u ∈ K.faces, s ⊆ u → u.card ≤ s.card + 1)
+    (hLbound : ∀ u ∈ L.faces, t ⊆ u → u.card ≤ t.card + 1) {a b x : E}
+    (hKa : {w | w ∉ s ∧ insert w s ∈ K.faces} = {a})
+    (hLb : {w | w ∉ t ∧ insert w t ∈ L.faces} = {b})
+    (ℓ : E →ₗ[ℝ] ℝ) (hST : vectorSpan ℝ (s : Set E) ⊔ vectorSpan ℝ (t : Set E) = LinearMap.ker ℓ)
+    (ha : 0 < ℓ a) (hb : 0 < ℓ b) (hx : ℓ x = 0)
+    (hxs : x ∈ openSimplex s) (hxt : x ∈ openSimplex t) (hxG : {x} ∈ G.faces) :
+    ∃ c, {y | y ≠ x ∧ {x, y} ∈ G.faces} = {c} := by
+  have hrank : ∀ (P : Geometry.SimplicialComplex ℝ E) (u : Finset E), u ∈ P.faces → u.card = 2 →
+      Module.finrank ℝ (vectorSpan ℝ (u : Set E)) = 1 := by
+    intro P u hu hcard
+    have h := (P.indep hu).finrank_vectorSpan (show Fintype.card u = 1 + 1 by
+      simpa only [Fintype.card_coe] using hcard)
+    have hrange : Set.range ((↑) : u → E) = (u : Set E) := by ext y; simp
+    change Module.finrank ℝ (vectorSpan ℝ (Set.range ((↑) : u → E))) = 1 at h
+    rwa [hrange] at h
+  have hau : 0 < ℓ (a - x) := by rwa [map_sub, hx, sub_zero]
+  have hbv : 0 < ℓ (b - x) := by rwa [map_sub, hx, sub_zero]
+  obtain ⟨w, hw, hlocal⟩ := eventually_mem_inter_iff_nonneg_ray_of_halfSpace_cones hdim
+    (vectorSpan ℝ (s : Set E)) (vectorSpan ℝ (t : Set E)) (hrank K s hs hscard)
+    (hrank L t ht htcard) ℓ hST hau hbv
+    (eventually_mem_space_iff_mem_unique_coface_cone K hs hKbound hKa hxs)
+    (eventually_mem_space_iff_mem_unique_coface_cone L ht hLbound hLb hxt)
+  have hw0 : w ≠ 0 := by
+    intro hzero
+    rw [hzero, map_zero] at hw
+    exact zero_ne_one hw
+  apply neighbors_singleton_of_eventually_nonneg_ray G hGcard hxG hw0
+  rwa [hspace]
+
 end DifferentialGeometry.Topology.PiecewiseLinear
