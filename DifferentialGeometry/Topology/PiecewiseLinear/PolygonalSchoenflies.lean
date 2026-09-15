@@ -2,7 +2,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.Subcomplex
 import DifferentialGeometry.Topology.PiecewiseLinear.LinkDimension
 import DifferentialGeometry.Topology.PiecewiseLinear.PLPath
 import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryExtension
-import DifferentialGeometry.External.Schoenflies.JordanClosed
+import DifferentialGeometry.Topology.PlanarJordan.Regions
 import DifferentialGeometry.External.Schoenflies.FaceCyclesProof
 
 open Set Topology
@@ -473,18 +473,14 @@ theorem isPLBall_compl_openArc_of_isPLSphere_one {J A : Set (EuclideanSpace ℝ 
   rwa [heq]
 
 open Classical in
-theorem exists_isPLHomeomorphOn_of_isCutPair
+theorem exists_isPLHomeomorphOn_of_isCutPair_of_isPLBall
     {J J' A B A' B' : Set (EuclideanSpace ℝ (Fin 2))}
-    (hJ : IsPLSphere 1 J) (hJ' : IsPLSphere 1 J')
+    (hA : IsPLBall 1 A) (hB : IsPLBall 1 B) (hA' : IsPLBall 1 A') (hB' : IsPLBall 1 B')
     {p q p' q' : EuclideanSpace ℝ (Fin 2)}
     (hcut : Schoenflies.IsCutPair J p q A B) (hcut' : Schoenflies.IsCutPair J' p' q' A' B') :
     ∃ f : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 2),
       IsPLHomeomorphOn f J J' ∧ IsPLHomeomorphOn f A A' ∧ IsPLHomeomorphOn f B B' ∧
         f p = p' ∧ f q = q' := by
-  have hA := isPLBall_of_isArc_subset_isPLSphere hJ hcut.fst.isArc hcut.fst_subset
-  have hB := isPLBall_of_isArc_subset_isPLSphere hJ hcut.snd.isArc hcut.snd_subset
-  have hA' := isPLBall_of_isArc_subset_isPLSphere hJ' hcut'.fst.isArc hcut'.fst_subset
-  have hB' := isPLBall_of_isArc_subset_isPLSphere hJ' hcut'.snd.isArc hcut'.snd_subset
   obtain ⟨f, hf, hfp, hfq⟩ := exists_isPLHomeomorphOn_of_isArcBetween hA hA' hcut.fst hcut'.fst
   obtain ⟨g, hg, hgp, hgq⟩ := exists_isPLHomeomorphOn_of_isArcBetween hB hB' hcut.snd hcut'.snd
   have hfg : EqOn f g (A ∩ B) := by
@@ -504,6 +500,20 @@ theorem exists_isPLHomeomorphOn_of_isCutPair
     · exact A.piecewise_eq_of_notMem f g hxA
   exact ⟨_, h, hf.congr hleft, hg.congr hright,
     (hleft hcut.fst.left_mem).trans hfp, (hleft hcut.fst.right_mem).trans hfq⟩
+
+theorem exists_isPLHomeomorphOn_of_isCutPair
+    {J J' A B A' B' : Set (EuclideanSpace ℝ (Fin 2))}
+    (hJ : IsPLSphere 1 J) (hJ' : IsPLSphere 1 J')
+    {p q p' q' : EuclideanSpace ℝ (Fin 2)}
+    (hcut : Schoenflies.IsCutPair J p q A B) (hcut' : Schoenflies.IsCutPair J' p' q' A' B') :
+    ∃ f : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 2),
+      IsPLHomeomorphOn f J J' ∧ IsPLHomeomorphOn f A A' ∧ IsPLHomeomorphOn f B B' ∧
+        f p = p' ∧ f q = q' :=
+  exists_isPLHomeomorphOn_of_isCutPair_of_isPLBall
+    (isPLBall_of_isArc_subset_isPLSphere hJ hcut.fst.isArc hcut.fst_subset)
+    (isPLBall_of_isArc_subset_isPLSphere hJ hcut.snd.isArc hcut.snd_subset)
+    (isPLBall_of_isArc_subset_isPLSphere hJ' hcut'.fst.isArc hcut'.fst_subset)
+    (isPLBall_of_isArc_subset_isPLSphere hJ' hcut'.snd.isArc hcut'.snd_subset) hcut hcut'
 
 open Classical in
 theorem exists_isPLHomeomorphOn_eqOn_arc_of_isPLSphere_one
@@ -669,6 +679,31 @@ theorem exists_isPLBall_pair_with_segment_inter :
   · exact hedge _ hB hBcard (by rw [hTb]; exact Finset.insert_subset_insert _ (by simp))
   · exact hedge _ hC hCcard (by rw [hTc]; exact Finset.insert_subset_insert _ (by simp))
 
+theorem isPLSphere_one_of_isCutPair {J A B : Set (EuclideanSpace ℝ (Fin 2))}
+    {p q : EuclideanSpace ℝ (Fin 2)} (hcut : Schoenflies.IsCutPair J p q A B)
+    (hA : IsPLBall 1 A) (hB : IsPLBall 1 B) : IsPLSphere 1 J := by
+  classical
+  obtain ⟨K, -, hKfin, -, hK, -, -, r, s, hrs, -, hsub, -⟩ :=
+    exists_isPLBall_pair_with_segment_inter
+  have : Finite K.faces := hKfin.to_subtype
+  have hboundary : IsPLSphere 1 (boundaryComplex 2 K).space :=
+    isPLSphere_boundaryComplex_space_of_isPLBall (n := 1) K hK
+  obtain ⟨C, D, hcut', hC, hD⟩ := exists_isCutPair_isPLBall_of_isPLSphere_one hboundary
+    (hsub (left_mem_segment ℝ r s)) (hsub (right_mem_segment ℝ r s)) hrs
+  obtain ⟨f, hf, -, -, -, -⟩ :=
+    exists_isPLHomeomorphOn_of_isCutPair_of_isPLBall hA hB hC hD hcut hcut'
+  exact hboundary.of_isPLHomeomorphOn hf.symm
+
+theorem isPLSphere_one_union_of_isCrosscut {J P A B : Set (EuclideanSpace ℝ (Fin 2))}
+    (hJ : IsPLSphere 1 J) (hP : IsPLBall 1 P) {p q : EuclideanSpace ℝ (Fin 2)}
+    (h : Schoenflies.IsCrosscut J P p q) (hcut : Schoenflies.IsCutPair J p q A B) :
+    IsPLSphere 1 (A ∪ P) := by
+  have hmeet : A ∩ P = {p, q} := by
+    refine Subset.antisymm (fun x hx => h.inter_eq.subset ⟨hx.2, hcut.fst_subset hx.1⟩) ?_
+    exact pair_subset ⟨hcut.fst.left_mem, h.arc.left_mem⟩ ⟨hcut.fst.right_mem, h.arc.right_mem⟩
+  exact isPLSphere_one_of_isCutPair ⟨hcut.fst, h.arc, rfl, hmeet⟩
+    (isPLBall_of_isArc_subset_isPLSphere hJ hcut.fst.isArc hcut.fst_subset) hP
+
 open Classical in
 theorem isPLBall_union_of_boundary_arc
     (K L : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2)))
@@ -698,6 +733,16 @@ theorem isPLBall_union_of_boundary_arc
   have h := hf₁.piecewise hf₂ hK.isPolyhedron hL.isPolyhedron hfg himage
   exact hPQ.of_isPLHomeomorphOn h.symm
 
+theorem isPolyhedron_closure_inside_of_isPLSphere_one {J : Set (EuclideanSpace ℝ (Fin 2))}
+    (hJ : IsPLSphere 1 J) : IsPolyhedron (closure (Schoenflies.inside J)) := by
+  have hsep := Schoenflies.jordan_curve_theorem (isJordanCurve_of_isPLSphere_one hJ)
+  exact isPolyhedron_closure_of_isPolyhedron_frontier hsep.isOpen_inside hsep.isBounded_inside
+    (hsep.frontier_inside.symm ▸ hJ.isPolyhedron)
+
+theorem frontier_closure_inside_of_isPLSphere_one {J : Set (EuclideanSpace ℝ (Fin 2))}
+    (hJ : IsPLSphere 1 J) : frontier (closure (Schoenflies.inside J)) = J :=
+  PlanarJordan.frontier_closure_inside (isJordanCurve_of_isPLSphere_one hJ)
+
 theorem exists_polyhedral_region_of_isPLSphere_one {J : Set (EuclideanSpace ℝ (Fin 2))}
     (hJ : IsPLSphere 1 J) :
     ∃ U : Set (EuclideanSpace ℝ (Fin 2)), IsOpen U ∧ IsConnected U ∧ Bornology.IsBounded U ∧
@@ -705,9 +750,7 @@ theorem exists_polyhedral_region_of_isPLSphere_one {J : Set (EuclideanSpace ℝ 
       ∃ K : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2)),
         K.faces.Finite ∧ K.space = closure U ∧ (restrict K J).space = J := by
   have hsep := Schoenflies.jordan_curve_theorem (isJordanCurve_of_isPLSphere_one hJ)
-  have hpoly : IsPolyhedron (closure (Schoenflies.inside J)) :=
-    isPolyhedron_closure_of_isPolyhedron_frontier hsep.isOpen_inside hsep.isBounded_inside
-      (hsep.frontier_inside.symm ▸ hJ.isPolyhedron)
+  have hpoly := isPolyhedron_closure_inside_of_isPLSphere_one hJ
   obtain ⟨L, hLfin, hL⟩ := hpoly.exists_simplicialComplex
   have : Finite L.faces := hLfin.to_subtype
   have hJL : J ⊆ L.space := by
