@@ -315,6 +315,17 @@ theorem IsGlueIso.singleton_mem (h : IsGlueIso A₁ A₂ ψ ψ') {v : E} (hv : {
   have := h.image₁ _ hv
   rwa [Finset.image_singleton] at this
 
+theorem IsGlueIso.image_image_left (h : IsGlueIso A₁ A₂ ψ ψ') {s : Finset E}
+    (hs : s ∈ A₁.faces) : (s.image ψ).image ψ' = s := by
+  rw [Finset.image_image]
+  calc
+    s.image (ψ' ∘ ψ) = s.image id := Finset.image_congr fun v hv => h.left s hs v hv
+    _ = s := Finset.image_id
+
+theorem IsGlueIso.image_image_right (h : IsGlueIso A₁ A₂ ψ ψ') {t : Finset F}
+    (ht : t ∈ A₂.faces) : (t.image ψ').image ψ = t :=
+  h.symm.image_image_left ht
+
 theorem image_glueEmbed₁_eq (h : IsGlueIso A₁ A₂ ψ ψ') {s : Finset E} (hs : s ∈ A₁.faces) :
     s.image (glueEmbed₁ A₁ ψ) = (s.image ψ).image (glueEmbed₂ A₂ ψ') := by
   rw [Finset.image_image]

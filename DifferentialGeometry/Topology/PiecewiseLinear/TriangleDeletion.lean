@@ -95,17 +95,6 @@ variable [DecidableEq E] [DecidableEq F]
   {A : Geometry.SimplicialComplex ℝ E} {B : Geometry.SimplicialComplex ℝ F}
   {φ : E → F} {φ' : F → E}
 
-theorem IsGlueIso.image_image_left (h : IsGlueIso A B φ φ')
-    {s : Finset E} (hs : s ∈ A.faces) : (s.image φ).image φ' = s := by
-  rw [Finset.image_image]
-  calc
-    s.image (φ' ∘ φ) = s.image id := Finset.image_congr fun v hv => h.left s hs v hv
-    _ = s := Finset.image_id
-
-theorem IsGlueIso.image_image_right (h : IsGlueIso A B φ φ')
-    {t : Finset F} (ht : t ∈ B.faces) : (t.image φ').image φ = t :=
-  h.symm.image_image_left ht
-
 theorem IsGlueIso.card_image_left (h : IsGlueIso A B φ φ')
     {s : Finset E} (hs : s ∈ A.faces) : (s.image φ).card = s.card := by
   apply Finset.card_image_of_injOn
