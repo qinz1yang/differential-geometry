@@ -52,6 +52,13 @@ theorem restrict_space_of_eq_biUnion
     (restrict K Q).space = Q :=
   h.symm
 
+theorem restrict_restrict (R : Set E) : restrict (restrict K Q) R = restrict K (Q ∩ R) := by
+  ext s
+  change ((s ∈ K.faces ∧ convexHull ℝ (s : Set E) ⊆ Q) ∧
+    convexHull ℝ (s : Set E) ⊆ R) ↔ s ∈ K.faces ∧ convexHull ℝ (s : Set E) ⊆ Q ∩ R
+  rw [subset_inter_iff]
+  tauto
+
 variable {K Q}
 
 theorem restrict_space_mono {R : Set E} (hQR : Q ⊆ R) :

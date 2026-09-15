@@ -3,6 +3,8 @@ import DifferentialGeometry.Topology.PiecewiseLinear.StarComplex
 import DifferentialGeometry.Topology.PiecewiseLinear.LinkEuclidean
 import DifferentialGeometry.Topology.PiecewiseLinear.Mesh
 import DifferentialGeometry.Topology.PiecewiseLinear.CombinatorialZero
+import DifferentialGeometry.Topology.PiecewiseLinear.PLBallSphere
+import DifferentialGeometry.Topology.PiecewiseLinear.BallSphereLink
 import Mathlib.Topology.Baire.Lemmas
 
 open Set Topology Metric
@@ -18,6 +20,25 @@ theorem card_le_finrank_succ_of_mem_faces [FiniteDimensional ℝ E]
   have h := (K.indep hs).card_le_finrank_succ
   rw [Fintype.card_coe] at h
   exact h.trans (Nat.add_le_add_right (Submodule.finrank_le _) 1)
+
+theorem exists_face_card_two_of_isPLSphere_one [FiniteDimensional ℝ E]
+    (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces] (hK : IsPLSphere 1 K.space) :
+    ∃ s ∈ K.faces, s.card = 2 := by
+  classical
+  obtain ⟨x, hx⟩ := IsPLSphere.nonempty hK
+  obtain ⟨s, hs, -⟩ := K.mem_space_iff.mp hx
+  obtain ⟨v, hv⟩ := K.nonempty_of_mem_faces hs
+  have hvK : {v} ∈ K.faces :=
+    K.down_closed hs (Finset.singleton_subset_iff.mpr hv) (Finset.singleton_nonempty v)
+  obtain ⟨y, hy⟩ := IsPLSphere.nonempty (isPLSphere_geometricLink_of_isPLSphere K hK hvK)
+  obtain ⟨t, ht, -⟩ := (SimplicialComplex.geometricLink K {v}).mem_space_iff.mp hy
+  have ht' := (SimplicialComplex.mem_geometricLink_singleton K v t).mp ht
+  obtain ⟨w, hw⟩ := ht'.1
+  have hvw : v ≠ w := fun h => ht'.2.1 (h.symm ▸ hw)
+  refine ⟨{v, w}, K.down_closed ht'.2.2
+    (Finset.insert_subset_insert _ (Finset.singleton_subset_iff.mpr hw))
+    (Finset.insert_nonempty _ _), ?_⟩
+  simp [hvw]
 
 theorem closure_subset_biUnion_convexHull_faces_card_eq_finrank_succ [FiniteDimensional ℝ E]
     (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces] {U : Set E}
