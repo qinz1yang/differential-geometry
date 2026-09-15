@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChildSimplyConnected
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.OrientationDegree
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.CanonicalClass
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.Comparison
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChildComparison
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.Ancestry
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.History
 import Mathlib.Topology.Instances.ENNReal.Lemmas

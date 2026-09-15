@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChildSimplyConnected
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.AncestryCore
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.Comparison
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChildComparison
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.FreeLoopClass
 
 

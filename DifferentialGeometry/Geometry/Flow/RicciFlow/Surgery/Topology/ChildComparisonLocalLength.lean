@@ -29,24 +29,7 @@ theorem riemannianCurveLength_comp_le_of_mapsTo
     (γ : ℝ → M) (a b : ℝ) (hγ : MapsTo γ (Icc a b) U) :
     riemannianCurveLength h (fun t => f (γ t)) a b ≤
       ENNReal.ofReal ell * riemannianCurveLength g γ a b := by
-  unfold riemannianCurveLength
-  rw [ENNReal.mul_iSup]
-  refine iSup_le fun p => ?_
-  calc ∑ i ∈ Finset.range p.1,
-        riemannianEDistOf h (f (γ (p.2.1 (i + 1)))) (f (γ (p.2.1 i)))
-      ≤ ∑ i ∈ Finset.range p.1, ENNReal.ofReal ell *
-          riemannianEDistOf g (γ (p.2.1 (i + 1))) (γ (p.2.1 i)) :=
-        Finset.sum_le_sum fun i _ =>
-          hf _ (hγ (p.2.2.2 (i + 1))) _ (hγ (p.2.2.2 i))
-    _ = ENNReal.ofReal ell * ∑ i ∈ Finset.range p.1,
-          riemannianEDistOf g (γ (p.2.1 (i + 1))) (γ (p.2.1 i)) :=
-        (Finset.mul_sum ..).symm
-    _ ≤ ⨆ q : ℕ × {u : ℕ → ℝ // Monotone u ∧ ∀ i, u i ∈ Icc a b},
-          ENNReal.ofReal ell * ∑ i ∈ Finset.range q.1,
-            riemannianEDistOf g (γ (q.2.1 (i + 1))) (γ (q.2.1 i)) :=
-        le_iSup (f := fun q : ℕ × {u : ℕ → ℝ // Monotone u ∧ ∀ i, u i ∈ Icc a b} =>
-          ENNReal.ofReal ell * ∑ i ∈ Finset.range q.1,
-            riemannianEDistOf g (γ (q.2.1 (i + 1))) (γ (q.2.1 i))) p
+  exact DifferentialGeometry.Geometry.riemannianCurveVariation_comp_le_of_mapsTo g h f U hf γ a b hγ
 
 theorem curveLengthComparison_scaleMetric
     (g : SmoothRiemannianMetric I M) {ell : ℝ} (hell : 1 ≤ ell) (γ : ℝ → M) (a b : ℝ) :

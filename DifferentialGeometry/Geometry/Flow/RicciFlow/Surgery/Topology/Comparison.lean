@@ -34,14 +34,7 @@ theorem riemannianCurveLength_eq_zero_of_apply_eq_const
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M) {a b : ℝ} {q : M}
     (h : ∀ t ∈ Icc a b, γ t = q) : riemannianCurveLength g γ a b = 0 := by
-  unfold riemannianCurveLength
-  refine le_antisymm (iSup_le fun p => ?_) bot_le
-  have hsum : (∑ i ∈ Finset.range p.1,
-      riemannianEDistOf g (γ (p.2.1 (i + 1))) (γ (p.2.1 i))) = 0 :=
-    Finset.sum_eq_zero fun i _ => by
-      rw [h _ (p.2.2.2 (i + 1)), h _ (p.2.2.2 i)]
-      exact riemannianEDistOf_self g q
-  rw [hsum]
+  exact DifferentialGeometry.Geometry.riemannianCurveVariation_eq_zero_of_apply_eq_const g γ h
 
 theorem rfs_exterior_branches (P : OrientedThreeStage.{u}) [ConnectedSpace P.Carrier]
     [SimplyConnectedSpace P.Carrier] (C : SmoothSphericalRegion P) :
@@ -1039,17 +1032,6 @@ theorem rfs_collapse_degree_of_lipschitz_and_degree
     Function.Surjective K.rfs_whole_parent_map := by
   obtain ⟨h1, h2, h3, h4⟩ := K.rfs_collapse_degree_of_local_inputs hlip K.rfs_collapse_cover
   exact ⟨h1, h2, h3, hclass, h4⟩
-theorem rfs_collapse_degree [SimplyConnectedSpace (G.Parent c).Carrier] :
-    K.LocalTerminalLengthControl K.rfs_whole_parent_map ∧
-    (∀ x ∉ K.support.region, ∃ U ∈ 𝓝 x, ∀ y ∈ U,
-      K.rfs_whole_parent_map y = K.rfs_whole_parent_map x) ∧
-    (∀ x : G.transition.ChildCore c,
-      K.rfs_whole_parent_map (G.transition.childCoreIntoParent c x) =
-        G.transition.childCoreInclusion c x) ∧
-    integralHomologyMap 3 K.rfs_whole_parent_map (fundamentalClass (G.Parent c).orientation) =
-      fundamentalClass (G.Child c).orientation ∧
-    Function.Surjective K.rfs_whole_parent_map := by
-  sorry
 
 end ComparisonSupport
 
@@ -1139,23 +1121,6 @@ theorem rfs_child_comparison_of_local_length_comparison
       ((Kc c).rfs_whole_parent_map) (NNReal.mk (ell s) hL) hlocCoe hfin
     rwa [ENNReal.ofReal_eq_coe_nnreal hL]
 
-theorem rfs_child_comparison
-    (hSC : ∀ p : ConnectedComponents (H.stage i.castSucc).Carrier,
-      SimplyConnectedSpace ((H.stage i.castSucc).component p).Carrier) :
-    ∃ f : (c : ConnectedComponents (H.stage i.succ).Carrier) →
-      C((G.Parent c).Carrier, (G.Child c).Carrier),
-    (∀ c, ∃ K : G.ComparisonSupport c, f c = K.rfs_whole_parent_map) ∧
-    (∀ c, integralHomologyMap 3 (f c) (fundamentalClass (G.Parent c).orientation) =
-      fundamentalClass (G.Child c).orientation) ∧
-    ∃ s₀ ∈ Ico (H.time i.castSucc) (H.time i.succ), ∃ ell : ℝ → ℝ,
-      (∀ s ∈ Ioo s₀ (H.time i.succ), 1 ≤ ell s) ∧
-      Filter.Tendsto ell (𝓝[<] (H.time i.succ)) (𝓝 1) ∧
-      ∀ c, ∀ s ∈ Ioo s₀ (H.time i.succ), ∀ x y : (G.Parent c).Carrier,
-        riemannianEDistOf ((H.stage i.succ).componentMetric (H.event i).outputMetric c)
-          (f c x) (f c y) ≤ ENNReal.ofReal (ell s) *
-            riemannianEDistOf ((H.stage i.castSucc).componentMetric
-              ((H.event i).incoming.flow.base.metric s) (G.transition.childParent c)) x y := by
-  sorry
 
 theorem rfs_child_comparison_maps_of_inputs
     (Kc : (c : ConnectedComponents (H.stage i.succ).Carrier) → G.ComparisonSupport c) :
