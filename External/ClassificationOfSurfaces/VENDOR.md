@@ -1004,3 +1004,22 @@ assumption and no vendor source edits. The focused check exits 0 with
 zero warnings; `AuditS42.lean` exits 0 and reports only the three standard
 axioms. Logs: `.lake/scratch/check-compact-frontier.log` and
 `.lake/scratch/audit-compact-frontier.log`.
+
+## Cones from interior points of convex polyhedra
+
+The native `ConvexCone.lean` proves that a simplicial complex contained
+in the frontier of a closed convex set is a cone base for any interior
+point. Supporting affine functions at face centroids vanish on the
+whole face. It also identifies the cone over the full frontier with
+the original compact convex set. The supporting ray lemma in
+`Analysis/Convex/CompactFrontier.lean` holds for arbitrary compact sets
+and uses a maximum on a line, without a finite-dimensional assumption.
+These are inputs to Moise 17.9 (printed page 121), not yet its ambient
+PL straightening conclusion. Vendor Lean sources are unchanged.
+
+Both focused checks exit 0 with zero warnings. `AuditS43.lean` checks
+all three new declarations, exits 0, and reports only `propext`,
+`Classical.choice`, and `Quot.sound`. Logs:
+`.lake/scratch/check-compact-frontier.log`,
+`.lake/scratch/check-convex-cone.log`, and
+`.lake/scratch/audit-convex-cone.log`.

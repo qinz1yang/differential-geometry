@@ -37,4 +37,25 @@ theorem IsCompact.subset_of_frontier_subset_convex_open {C W : Set E}
     linarith
   exact (not_lt_of_ge (hmax hx)) (hf y (hCW hybd))
 
+omit [Nontrivial E] in
+theorem IsCompact.exists_mem_frontier_add_smul {C : Set E} (hC : IsCompact C)
+    {p x : E} (hx : x ∈ C) (hxp : x ≠ p) :
+    ∃ r : ℝ, 1 ≤ r ∧ p + r • (x - p) ∈ frontier C := by
+  let f : ℝ → E := fun r => p + r • (x - p)
+  have hf : IsClosedEmbedding f :=
+    (Homeomorph.addLeft p).isClosedEmbedding.comp (isClosedEmbedding_smul_left (sub_ne_zero.mpr hxp))
+  have hpre : IsCompact (f ⁻¹' C) := hf.isCompact_preimage hC
+  have h1 : (1 : ℝ) ∈ f ⁻¹' C := by simpa only [mem_preimage, f, one_smul, add_sub_cancel] using hx
+  obtain ⟨r, hr, hmax⟩ := hpre.exists_isMaxOn ⟨1, h1⟩ continuous_id.continuousOn
+  refine ⟨r, hmax h1, subset_closure hr, ?_⟩
+  intro hri
+  have hnear : f ⁻¹' C ∈ 𝓝 r :=
+    hf.continuous.continuousAt.preimage_mem_nhds (mem_interior_iff_mem_nhds.mp hri)
+  obtain ⟨δ, hδ, hball⟩ := Metric.mem_nhds_iff.mp hnear
+  have hr' : r + δ / 2 ∈ f ⁻¹' C := hball (by
+    rw [mem_ball, Real.dist_eq, add_sub_cancel_left, abs_of_pos (half_pos hδ)]
+    linarith)
+  have hle : r + δ / 2 ≤ r := hmax hr'
+  linarith
+
 end DifferentialGeometry.Analysis
