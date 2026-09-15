@@ -1105,13 +1105,19 @@ F5.2 按 §17.1 搁置，本节没有推进它。
   `heightSingularPoints_subset_vertices` / `finite_heightSingularPoints` 复用 F5.1 的非顶点 crossing。
   `levelPolygons_image` / `encard_levelPolygons_image` 给保高度的环境 PL 同胚下的精确集合与基数搬运。
   `exists_extreme_height_fibers` 对任何非空有限复形及顶点上单射的线性高度给全空间高度界和顶底层单点。
-  `heightIndex` 暂定义为奇异点上的扩展自然数和，尚未证明其有限，也尚未证明与原书的多边形分解指标一致。
-  使用扩展自然数是为避免无限族被 `Set.ncard` 默认为零；不能把此定义视为有限归纳已经就绪。
+  `heightIndex` 定义为奇异点上的扩展自然数和；下一层已证明一般位置下有限，尚待与原书奇异层分解指标的对应。
+  扩展自然数定义避免无限族被 `Set.ncard` 默认为零。`natCast_toNat_heightIndex` 给有限情形的无损自然数还原。
+
+- `HeightChange.lean`：`heightSingularPoints_image`、`heightIndex_image` 给全局保高度环境 PL 同胚下的精确搬运；不要求搬运后的剖分仍在一般位置。
+- `ManifoldSubspace.lean`：`eventually_mem_space_iff_sub_mem_submodule` 用区域不变性证明同维组合流形局部包含于仿射子空间时，两者的芽相等。
+- `FiniteGraphCircles.lean`：`restrict_space_eq_of_isPLSphere_one` 证明有限线性图中每个 PL 圆周是原图子复形；
+  `finite_isPLSphere_one_subsets`、`finite_levelPolygons` 给有限性；`heightIndex_lt_top` 与 `natCast_toNat_heightIndex` 闭合指标有限性。
+  后三模块均 exit=0、零 warning；AuditF122 十二项均仅标准三公理。
 
 ### 18.2 验证与未完成部分
 
 两模块聚焦检查 exit=0、零 warning；`AuditF121.lean` 二十六项均只含 `propext`、`Classical.choice`、`Quot.sound`。
 审计同时对 §17.2 两个最终命题作类型检查；源码中没有相应的占位定理，类型检查不等于证明。
-M1 仍需：一般位置层的有限多边形分解、顶点处非奇异层的 crossing 判据、指标有限性与原书指标对应、
+M1 仍需：一般位置层的有限多边形分解、顶点处非奇异层的 crossing 判据、与原书指标对应、
 保持支持控制的平面凸化和三维保高度延拓、轴旋转后两片的严格降指标。M2 的中间层多边形性和 slab 删除、
-M3 的端点拼装均未完成。下一个审计文件 `AuditF122.lean`。
+M3 的端点拼装均未完成。下一个审计文件 `AuditF123.lean`。
