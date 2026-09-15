@@ -992,3 +992,15 @@ only `propext`, `Classical.choice`, and `Quot.sound`. Logs are
 `.lake/scratch/check-simplex-facet-complement.log`,
 `.lake/scratch/check-spherical-disk-complement.log`, and
 `.lake/scratch/audit-spherical-disk-complement.log`.
+
+## Convex open neighborhoods of compact frontiers
+
+The native `Analysis/Convex/CompactFrontier.lean` proves that an open
+convex set containing the frontier of a compact set contains the whole
+compact set, in any nontrivial real normed space. This justifies the
+support containment used in Moise 17.9 and 17.11. It uses Hahn-Banach
+separation and an extremum argument, with no finite-dimensional
+assumption and no vendor source edits. The focused check exits 0 with
+zero warnings; `AuditS42.lean` exits 0 and reports only the three standard
+axioms. Logs: `.lake/scratch/check-compact-frontier.log` and
+`.lake/scratch/audit-compact-frontier.log`.
