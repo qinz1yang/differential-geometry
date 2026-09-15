@@ -5338,4 +5338,412 @@ theorem IsOrientable.double
         o₂.coherent t ht₂ htcard hG₂notone
       rw [hleft, hright, sub_self]
 
+open Classical in
+theorem relDerived_bot_eq_barycentricSubdivision
+    (K : Geometry.SimplicialComplex ℝ E) :
+    relDerived (show (⊥ : Geometry.SimplicialComplex ℝ E).faces ⊆ K.faces by
+          rw [Geometry.SimplicialComplex.faces_bot]
+          exact Set.empty_subset K.faces)
+        (IsSubdivision.refl (⊥ : Geometry.SimplicialComplex ℝ E))
+        (centroid_mem_openSimplex_of_mem_faces K) =
+      barycentricSubdivision K := by
+  apply Geometry.SimplicialComplex.ext
+  ext f
+  constructor
+  · rintro ⟨τ, d, h, rfl⟩
+    have hτ : τ = ∅ := by
+      rcases h.base with hτ | hτ
+      · exact hτ
+      · rw [Geometry.SimplicialComplex.faces_bot] at hτ
+        exact False.elim (Set.notMem_empty τ hτ)
+    have hd : d.Nonempty := by
+      rcases h.nonempty with hτne | hd
+      · exact False.elim (hτne.ne_empty hτ)
+      · exact hd
+    rw [hτ, Finset.empty_union]
+    exact ⟨d, h.flag, hd, rfl⟩
+  · rintro ⟨d, hd, hdne, rfl⟩
+    refine ⟨∅, d, ?_, by simp⟩
+    exact {
+      base := Or.inl rfl
+      flag := hd
+      notMem := by
+        intro s hs
+        rw [Geometry.SimplicialComplex.faces_bot]
+        exact Set.notMem_empty s
+      subset := by simp
+      nonempty := Or.inr hdne }
+
+open Classical in
+noncomputable def CoherentOrientation.barycentricSubdivision
+    [FiniteDimensional ℝ E]
+    {n : ℕ} {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces]
+    (o : CoherentOrientation (n + 1) K)
+    (hK : IsCombinatorialManifoldWithBoundary (n + 1) K) :
+    CoherentOrientation (n + 1) (PiecewiseLinear.barycentricSubdivision K) := by
+  let L : Geometry.SimplicialComplex ℝ E := ⊥
+  let hLK : L.faces ⊆ K.faces := by
+    intro s hs
+    change s ∈ (⊥ : Geometry.SimplicialComplex ℝ E).faces at hs
+    rw [Geometry.SimplicialComplex.faces_bot] at hs
+    exact False.elim (Set.notMem_empty s hs)
+  let hLcard : ∀ s ∈ L.faces, s.card ≤ n + 1 := by
+    intro s hs
+    change s ∈ (⊥ : Geometry.SimplicialComplex ℝ E).faces at hs
+    rw [Geometry.SimplicialComplex.faces_bot] at hs
+    exact False.elim (Set.notMem_empty s hs)
+  let hLfinite : Finite L.faces := by
+    change Finite (↥(⊥ : Geometry.SimplicialComplex ℝ E).faces)
+    rw [Geometry.SimplicialComplex.faces_bot]
+    exact Set.finite_empty.to_subtype
+  let _ : Finite L.faces := hLfinite
+  let R := relDerived hLK (IsSubdivision.refl L)
+    (centroid_mem_openSimplex_of_mem_faces K)
+  let oR := o.relativeSubdivision hK hLK hLcard
+  have hR : R = PiecewiseLinear.barycentricSubdivision K := by
+    change relDerived hLK (IsSubdivision.refl L)
+        (centroid_mem_openSimplex_of_mem_faces K) =
+          PiecewiseLinear.barycentricSubdivision K
+    have hLK' : hLK = (show (⊥ : Geometry.SimplicialComplex ℝ E).faces ⊆ K.faces by
+        rw [Geometry.SimplicialComplex.faces_bot]
+        exact Set.empty_subset K.faces) := Subsingleton.elim _ _
+    rw [hLK']
+    exact relDerived_bot_eq_barycentricSubdivision K
+  have hR' : relDerived hLK (IsSubdivision.refl L)
+      (centroid_mem_openSimplex_of_mem_faces K) =
+        PiecewiseLinear.barycentricSubdivision K := hR
+  refine {
+    vertexOrder := oR.vertexOrder
+    sign := oR.sign
+    sign_top := ?_
+    coherent := ?_ }
+  · intro s hs hscard
+    apply oR.sign_top s
+    · rw [hR']
+      exact hs
+    · exact hscard
+  · intro t ht htcard hne
+    have htR : t ∈ R.faces := by
+      rw [hR]
+      exact ht
+    have hneR :
+        (faceCofaces (relDerived hLK (IsSubdivision.refl L)
+          (centroid_mem_openSimplex_of_mem_faces K)) t ((n + 1) + 1)).card ≠ 1 := by
+      simpa only [hR'] using hne
+    have hzero := oR.coherent t htR htcard hneR
+    simpa only [hR'] using hzero
+
+open Classical in
+theorem IsOrientable.barycentricSubdivision
+    [FiniteDimensional ℝ E]
+    {n : ℕ} {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces]
+    (h : IsOrientable (n + 1) K)
+    (hK : IsCombinatorialManifoldWithBoundary (n + 1) K) :
+    IsOrientable (n + 1) (PiecewiseLinear.barycentricSubdivision K) := by
+  obtain ⟨o⟩ := h
+  exact ⟨o.barycentricSubdivision hK⟩
+
+abbrev SimplicialVertex
+    (K : Geometry.SimplicialComplex ℝ E) :=
+  {v : E // {v} ∈ K.faces}
+
+open Classical in
+def simplicialVertexAdjacent
+    (K : Geometry.SimplicialComplex ℝ E)
+    (v w : SimplicialVertex K) : Prop :=
+  ({v.1, w.1} : Finset E) ∈ K.faces
+
+abbrev SimplicialComponent
+    (K : Geometry.SimplicialComplex ℝ E) :=
+  Quot (simplicialVertexAdjacent K)
+
+def simplicialComponentOfVertex
+    (K : Geometry.SimplicialComplex ℝ E)
+    (v : SimplicialVertex K) : SimplicialComponent K :=
+  Quot.mk _ v
+
+open Classical in
+def simplicialComponent
+    (K : Geometry.SimplicialComplex ℝ E)
+    (c : SimplicialComponent K) : Geometry.SimplicialComplex ℝ E where
+  faces := {s | ∃ (hs : s ∈ K.faces) (v : E) (hv : v ∈ s),
+    simplicialComponentOfVertex K
+      ⟨v, K.down_closed hs (Finset.singleton_subset_iff.mpr hv)
+        (Finset.singleton_nonempty v)⟩ = c}
+  isRelLowerSet_faces := by
+    rintro s ⟨hsK, v, hv, hvc⟩
+    refine ⟨K.nonempty_of_mem_faces hsK, ?_⟩
+    intro t hts htne
+    obtain ⟨w, hwt⟩ := htne
+    have htne' : t.Nonempty := ⟨w, hwt⟩
+    let htK := K.down_closed hsK hts htne'
+    refine ⟨htK, w, hwt, ?_⟩
+    have hwv : simplicialComponentOfVertex K
+        ⟨w, K.down_closed htK (Finset.singleton_subset_iff.mpr hwt)
+          (Finset.singleton_nonempty w)⟩ =
+      simplicialComponentOfVertex K
+        ⟨v, K.down_closed hsK (Finset.singleton_subset_iff.mpr hv)
+          (Finset.singleton_nonempty v)⟩ := by
+      apply Quot.sound
+      exact K.down_closed hsK
+        (Finset.insert_subset_iff.mpr
+          ⟨hts hwt, Finset.singleton_subset_iff.mpr hv⟩)
+        ⟨w, Finset.mem_insert_self w {v}⟩
+    exact hwv.trans hvc
+  indep := by
+    rintro s ⟨hsK, -⟩
+    exact K.indep hsK
+  inter_subset_convexHull := by
+    rintro s t ⟨hsK, -⟩ ⟨htK, -⟩
+    exact K.inter_subset_convexHull hsK htK
+
+theorem mem_simplicialComponent_faces
+    (K : Geometry.SimplicialComplex ℝ E) (c : SimplicialComponent K)
+    {s : Finset E} :
+    s ∈ (simplicialComponent K c).faces ↔
+      ∃ (hs : s ∈ K.faces) (v : E) (hv : v ∈ s),
+        simplicialComponentOfVertex K
+          ⟨v, K.down_closed hs (Finset.singleton_subset_iff.mpr hv)
+            (Finset.singleton_nonempty v)⟩ = c :=
+  Iff.rfl
+
+theorem simplicialComponent_faces_subset
+    (K : Geometry.SimplicialComplex ℝ E) (c : SimplicialComponent K) :
+    (simplicialComponent K c).faces ⊆ K.faces :=
+  fun _ hs => hs.choose
+
+open Classical in
+theorem simplicialComponentOfVertex_eq_of_mem_face
+    (K : Geometry.SimplicialComplex ℝ E) {s : Finset E} (hs : s ∈ K.faces)
+    {v w : E} (hv : v ∈ s) (hw : w ∈ s) :
+    simplicialComponentOfVertex K
+        ⟨v, K.down_closed hs (Finset.singleton_subset_iff.mpr hv)
+          (Finset.singleton_nonempty v)⟩ =
+      simplicialComponentOfVertex K
+        ⟨w, K.down_closed hs (Finset.singleton_subset_iff.mpr hw)
+          (Finset.singleton_nonempty w)⟩ := by
+  apply Quot.sound
+  exact K.down_closed hs
+    (Finset.insert_subset_iff.mpr ⟨hv, Finset.singleton_subset_iff.mpr hw⟩)
+    ⟨v, Finset.mem_insert_self v {w}⟩
+
+open Classical in
+theorem exists_unique_simplicialComponent_of_mem_faces
+    (K : Geometry.SimplicialComplex ℝ E) {s : Finset E} (hs : s ∈ K.faces) :
+    ∃! c : SimplicialComponent K, s ∈ (simplicialComponent K c).faces := by
+  obtain ⟨v, hv⟩ := K.nonempty_of_mem_faces hs
+  let hvK : {v} ∈ K.faces := K.down_closed hs
+    (Finset.singleton_subset_iff.mpr hv) (Finset.singleton_nonempty v)
+  let c := simplicialComponentOfVertex K ⟨v, hvK⟩
+  refine ⟨c, ⟨hs, v, hv, rfl⟩, ?_⟩
+  · intro d hsd
+    obtain ⟨hsK, w, hw, hwc⟩ := hsd
+    exact hwc.symm.trans (simplicialComponentOfVertex_eq_of_mem_face K hs hw hv)
+
+open Classical in
+noncomputable def simplicialComponentOfFace
+    (K : Geometry.SimplicialComplex ℝ E) {s : Finset E} (hs : s ∈ K.faces) :
+    SimplicialComponent K :=
+  Classical.choose (exists_unique_simplicialComponent_of_mem_faces K hs)
+
+open Classical in
+theorem mem_simplicialComponentOfFace
+    (K : Geometry.SimplicialComplex ℝ E) {s : Finset E} (hs : s ∈ K.faces) :
+    s ∈ (simplicialComponent K (simplicialComponentOfFace K hs)).faces :=
+  (Classical.choose_spec (exists_unique_simplicialComponent_of_mem_faces K hs)).1
+
+open Classical in
+theorem simplicialComponentOfFace_eq_of_mem
+    (K : Geometry.SimplicialComplex ℝ E) (c : SimplicialComponent K)
+    {s : Finset E} (hs : s ∈ K.faces)
+    (hsc : s ∈ (simplicialComponent K c).faces) :
+    simplicialComponentOfFace K hs = c :=
+  ((Classical.choose_spec (exists_unique_simplicialComponent_of_mem_faces K hs)).2 c hsc).symm
+
+noncomputable instance
+    (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
+    (c : SimplicialComponent K) : Finite (simplicialComponent K c).faces :=
+  ((Set.toFinite K.faces).subset (simplicialComponent_faces_subset K c)).to_subtype
+
+open Classical in
+theorem faceCofaces_simplicialComponent
+    (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
+    (c : SimplicialComponent K) {t : Finset E}
+    (ht : t ∈ (simplicialComponent K c).faces) (m : ℕ) :
+    faceCofaces (simplicialComponent K c) t m = faceCofaces K t m := by
+  ext s
+  simp only [mem_faceCofaces]
+  constructor
+  · rintro ⟨hs, hscard, hts⟩
+    exact ⟨simplicialComponent_faces_subset K c hs, hscard, hts⟩
+  · rintro ⟨hsK, hscard, hts⟩
+    obtain ⟨htK, v, hvt, hvc⟩ := ht
+    refine ⟨⟨hsK, v, hts hvt, ?_⟩, hscard, hts⟩
+    exact hvc
+
+open Classical in
+noncomputable def CoherentOrientation.simplicialComponent
+    {n : ℕ} {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces]
+    (o : CoherentOrientation n K) (c : SimplicialComponent K) :
+    CoherentOrientation n (simplicialComponent K c) where
+  vertexOrder := o.vertexOrder
+  sign := o.sign
+  sign_top := by
+    intro s hs hscard
+    exact o.sign_top s (simplicialComponent_faces_subset K c hs) hscard
+  coherent := by
+    intro t ht htcard hne
+    have hcofaces := faceCofaces_simplicialComponent K c ht (n + 1)
+    have hneK : (faceCofaces K t (n + 1)).card ≠ 1 := by
+      rwa [hcofaces] at hne
+    have hzero := o.coherent t (simplicialComponent_faces_subset K c ht) htcard hneK
+    rw [orientedBoundary_eq_sum_faceCofaces] at hzero
+    rw [orientedBoundary_eq_sum_faceCofaces]
+    rw [hcofaces]
+    exact hzero
+
+open Classical in
+theorem IsOrientable.simplicialComponent
+    {n : ℕ} {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces]
+    (h : IsOrientable n K) (c : SimplicialComponent K) :
+    IsOrientable n (simplicialComponent K c) := by
+  obtain ⟨o⟩ := h
+  exact ⟨o.simplicialComponent c⟩
+
+open Classical in
+theorem isOrientable_iff_forall_simplicialComponent
+    {n : ℕ} (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces] :
+    IsOrientable n K ↔
+      ∀ c : SimplicialComponent K, IsOrientable n (simplicialComponent K c) := by
+  constructor
+  · intro h c
+    exact h.simplicialComponent c
+  · intro h
+    let componentOrder : LinearOrder (SimplicialComponent K) :=
+      linearOrderOfSTO WellOrderingRel
+    let _ := componentOrder
+    let chosen : ∀ c : SimplicialComponent K,
+        CoherentOrientation n (simplicialComponent K c) :=
+      fun c => Classical.choice (h c)
+    let Key :=
+      (SimplicialComponent K ×ₗ (ℕ ×ₗ OrderAmalgamTie E)) ⊕ₗ OrderAmalgamTie E
+    let key : E → Key := fun x =>
+      if hx : {x} ∈ K.faces then
+        toLex (Sum.inl (toLex
+          (simplicialComponentOfVertex K ⟨x, hx⟩,
+            toLex (finiteOrderRank
+              (chosen (simplicialComponentOfVertex K ⟨x, hx⟩)).vertexOrder
+              (complexVertexFinset K) x, ⟨x⟩))))
+      else toLex (Sum.inr ⟨x⟩)
+    let untie : Key → E := fun z =>
+      match ofLex z with
+      | Sum.inl p => (ofLex (ofLex p).2).2.val
+      | Sum.inr x => x.val
+    have untie_key (x : E) : untie (key x) = x := by
+      simp only [key]
+      split <;> rfl
+    have key_injective : Function.Injective key := by
+      intro x y hxy
+      calc
+        x = untie (key x) := (untie_key x).symm
+        _ = untie (key y) := congrArg untie hxy
+        _ = y := untie_key y
+    let r : LinearOrder E := LinearOrder.lift' key key_injective
+    have key_lt_of_component_lt (c : SimplicialComponent K) {x y : E}
+        (hxK : {x} ∈ K.faces) (hyK : {y} ∈ K.faces)
+        (hxc : simplicialComponentOfVertex K ⟨x, hxK⟩ = c)
+        (hyc : simplicialComponentOfVertex K ⟨y, hyK⟩ = c)
+        (hxy : @LT.lt E (chosen c).vertexOrder.toLT x y) :
+        key x < key y := by
+      have hxV : x ∈ complexVertexFinset K := (mem_complexVertexFinset K x).mpr hxK
+      have hrank := finiteOrderRank_lt_of_mem (chosen c).vertexOrder
+        (complexVertexFinset K) hxV hxy
+      dsimp only [key]
+      rw [dif_pos hxK, dif_pos hyK]
+      apply Sum.Lex.inl
+      apply Prod.Lex.toLex_lt_toLex.mpr
+      refine Or.inr ⟨hxc.trans hyc.symm, ?_⟩
+      apply Prod.Lex.toLex_lt_toLex.mpr
+      have hxorder :
+          (chosen (simplicialComponentOfVertex K ⟨x, hxK⟩)).vertexOrder =
+            (chosen c).vertexOrder :=
+        congrArg (fun d => (chosen d).vertexOrder) hxc
+      have hyorder :
+          (chosen (simplicialComponentOfVertex K ⟨y, hyK⟩)).vertexOrder =
+            (chosen c).vertexOrder :=
+        congrArg (fun d => (chosen d).vertexOrder) hyc
+      exact Or.inl (by rw [hxorder, hyorder]; exact hrank)
+    have horder (c : SimplicialComponent K) (x y : E)
+        (hx : {x} ∈ (simplicialComponent K c).faces)
+        (hy : {y} ∈ (simplicialComponent K c).faces) :
+        (@LT.lt E r.toLT x y ↔ @LT.lt E (chosen c).vertexOrder.toLT x y) := by
+      have hxK : {x} ∈ K.faces := simplicialComponent_faces_subset K c hx
+      have hyK : {y} ∈ K.faces := simplicialComponent_faces_subset K c hy
+      rcases hx with ⟨hxK', vx, hvx, hvxc⟩
+      rcases hy with ⟨hyK', vy, hvy, hvyc⟩
+      have hxc : simplicialComponentOfVertex K ⟨x, hxK⟩ = c := by
+        have hvxeq : vx = x := Finset.mem_singleton.mp hvx
+        subst vx
+        exact hvxc
+      have hyc : simplicialComponentOfVertex K ⟨y, hyK⟩ = c := by
+        have hvyeq : vy = y := Finset.mem_singleton.mp hvy
+        subst vy
+        exact hvyc
+      change key x < key y ↔ _
+      constructor
+      · intro hkey
+        let _ := (chosen c).vertexOrder
+        rcases lt_trichotomy x y with hxy | hxy | hyx
+        · exact hxy
+        · subst y
+          exact False.elim (lt_irrefl _ hkey)
+        · have hreverse := key_lt_of_component_lt c hyK hxK hyc hxc hyx
+          exact False.elim (asymm hkey hreverse)
+      · exact key_lt_of_component_lt c hxK hyK hxc hyc
+    let oriented : ∀ c : SimplicialComponent K,
+        CoherentOrientation n (simplicialComponent K c) :=
+      fun c => (chosen c).withVertexOrder r (horder c)
+    let sign : Finset E → ℤ := fun s =>
+      if hs : s ∈ K.faces then
+        (oriented (simplicialComponentOfFace K hs)).sign s
+      else 0
+    refine ⟨{
+      vertexOrder := r
+      sign := sign
+      sign_top := ?_
+      coherent := ?_ }⟩
+    · intro s hs hscard
+      simp only [sign, dif_pos hs]
+      exact (oriented (simplicialComponentOfFace K hs)).sign_top s
+        (mem_simplicialComponentOfFace K hs) hscard
+    · intro t ht htcard hne
+      let c := simplicialComponentOfFace K ht
+      have htC : t ∈ (simplicialComponent K c).faces :=
+        mem_simplicialComponentOfFace K ht
+      have hcofaces := faceCofaces_simplicialComponent K c htC (n + 1)
+      have hneC : (faceCofaces (simplicialComponent K c) t (n + 1)).card ≠ 1 := by
+        rwa [hcofaces]
+      have hzero := (oriented c).coherent t htC htcard hneC
+      rw [orientedBoundary_eq_sum_faceCofaces] at hzero ⊢
+      rw [hcofaces] at hzero
+      calc
+        (∑ s ∈ faceCofaces K t (n + 1),
+            sign s * simplexBoundaryCoefficient r s t) =
+            ∑ s ∈ faceCofaces K t (n + 1),
+              (oriented c).sign s * simplexBoundaryCoefficient r s t := by
+          apply Finset.sum_congr rfl
+          intro s hsco
+          obtain ⟨hsK, -, -⟩ := (mem_faceCofaces K).mp hsco
+          have hscoC : s ∈ faceCofaces (simplicialComponent K c) t (n + 1) := by
+            rw [hcofaces]
+            exact hsco
+          have hsC := (mem_faceCofaces (simplicialComponent K c)).mp hscoC |>.1
+          have hc := simplicialComponentOfFace_eq_of_mem K c hsK hsC
+          have hsign : (oriented (simplicialComponentOfFace K hsK)).sign s =
+              (oriented c).sign s :=
+            congrArg (fun d => (oriented d).sign s) hc
+          simp only [sign, dif_pos hsK]
+          rw [hsign]
+        _ = 0 := hzero
+
 end DifferentialGeometry.Topology.PiecewiseLinear
