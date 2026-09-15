@@ -9,19 +9,6 @@ namespace DifferentialGeometry.Topology.PiecewiseLinear
 variable {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [NormedAddCommGroup F] [NormedSpace ℝ F]
 
-theorem simplicialMap_eq_of_forall_affineOn (K : Geometry.SimplicialComplex ℝ E) (f : E → F)
-    (hf : ∀ s ∈ K.faces, ∃ A : E →ᵃ[ℝ] F, EqOn f A (convexHull ℝ (s : Set E))) :
-    EqOn (simplicialMap K f) f K.space := by
-  intro x hx
-  obtain ⟨s, hs, hxs⟩ := K.mem_space_iff.mp hx
-  obtain ⟨A, hA⟩ := hf s hs
-  rw [simplicialMap_eq_of_mem K f hs hxs, hA hxs]
-  calc ∑ v ∈ s, weights s x v • f v = ∑ v ∈ s, weights s x v • A v :=
-        Finset.sum_congr rfl fun v hv => by
-          rw [hA (subset_convexHull ℝ _ (Finset.mem_coe.mpr hv))]
-    _ = A (∑ v ∈ s, weights s x v • v) := (affineMap_apply_sum_smul A (sum_weights hxs)).symm
-    _ = A x := by rw [sum_weights_smul hxs]
-
 section Restrict
 
 variable (K : Geometry.SimplicialComplex ℝ E) (Q : Set E)

@@ -109,6 +109,27 @@ theorem openStar_simplexBoundary_eq_sdiff_boundary [DecidableEq E]
   simp only [mem_sdiff, mem_union, mem_inter_iff]
   tauto
 
+theorem exists_simplex_vertex_star_face_convexHull_subset [DecidableEq E]
+    (T : Finset E) (hT : AffineIndependent ℝ ((↑) : T → E)) (a : E)
+    {s : Finset E} (hs : s.Nonempty)
+    (hsub : convexHull ℝ (s : Set E) ⊆ openStar (simplexBoundary T hT) a) :
+    ∃ t ∈ (starComplex (simplexBoundary T hT) a).faces,
+      convexHull ℝ (s : Set E) ⊆ convexHull ℝ (t : Set E) := by
+  have hcent : s.centroid ℝ id ∈ openSimplex s := centroid_mem_openSimplex hs
+  have hx := hsub (openSimplex_subset_convexHull s hcent)
+  obtain ⟨t, ht, hxt⟩ := (simplexBoundary T hT).mem_space_iff.mp hx.1
+  have hat : a ∈ t := by
+    by_contra hat
+    exact hx.2 (mem_iUnion₂.mpr ⟨t, ⟨ht, hat⟩, hxt⟩)
+  have hBC : (simplexBoundary T hT).space ⊆ convexHull ℝ (T : Set E) :=
+    (space_mono_of_faces_subset (simplexBoundary_faces_subset_simplexComplex T hT)).trans
+      (simplexComplex_space_subset T hT)
+  have hsT : (s : Set E) ⊆ convexHull ℝ (T : Set E) :=
+    fun x hx => hBC (hsub (subset_convexHull ℝ _ hx)).1
+  refine ⟨t, ⟨ht, by rwa [Finset.insert_eq_of_mem hat]⟩, ?_⟩
+  exact convexHull_min (subset_convexHull_of_mem_openSimplex hT ht.1 hsT hcent hxt)
+    (convex_convexHull ℝ _)
+
 open Classical in
 theorem exists_isConeBase_simplexAvoiding_near_vertex [FiniteDimensional ℝ E] [DecidableEq E]
     (T : Finset E) (hT : AffineIndependent ℝ ((↑) : T → E)) (hcard : 2 ≤ T.card)

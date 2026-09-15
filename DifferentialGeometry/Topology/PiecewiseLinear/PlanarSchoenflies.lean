@@ -978,6 +978,40 @@ theorem exists_isPLHomeomorphOn_straighten_to_triangle_of_isPLBall
   obtain ⟨J, hJ⟩ := exists_polygonalCircle_of_isPLBall_two hM
   exact exists_isPLHomeomorphOn_straighten_to_triangle M J hJ.symm hU hsubset T₀
 
+private theorem mem_planeComplex_cells (K : PlaneComplex) {s : Finset K.Vertex}
+    (hs : s ∈ K.simplexes) (hcard : s.card = 3) : s ∈ K.cells :=
+  Finset.mem_filter.mpr ⟨hs, hcard⟩
+
+theorem exists_isPLHomeomorphOn_straighten_to_face
+    (K : Geometry.SimplicialComplex ℝ Plane) [Finite K.faces] (hK : IsPLBall 2 K.space)
+    {s : Finset Plane} (hs : s ∈ K.faces) (hcard : s.card = 3)
+    {U : Set Plane} (hU : IsOpen U) (hKU : K.space ⊆ U) :
+    ∃ h : Plane ≃ₜ Plane, IsPLHomeomorphOn h univ univ ∧
+      h '' K.space = convexHull ℝ (s : Set Plane) ∧ EqOn h id Uᶜ := by
+  classical
+  have hvertices : K.vertices.Finite :=
+    Set.Finite.preimage Finset.singleton_injective.injOn (Set.toFinite K.faces)
+  let _ : Fintype K.vertices := hvertices.fintype
+  let e : K.vertices ↪ Plane := ⟨Subtype.val, Subtype.val_injective⟩
+  let t := s.subtype (fun v => v ∈ K.vertices)
+  have ht : t.map e = s := Finset.subtype_map_of_mem fun v hv =>
+    K.down_closed hs (Finset.singleton_subset_iff.mpr hv) (Finset.singleton_nonempty v)
+  have htmem : t ∈ (planeComplexOfSimplicialComplex K).simplexes := by
+    change t ∈ Finset.univ.filter (fun r => r.map e ∈ K.faces)
+    exact Finset.mem_filter.mpr ⟨Finset.mem_univ _, ht.symm ▸ hs⟩
+  have htcard : t.card = 3 := by rw [← Finset.card_map e, ht, hcard]
+  let M := (planeComplexOfSimplicialComplex K).toTriangleMesh
+  let T₀ : M.Triangle := ⟨t, mem_planeComplex_cells _ htmem htcard⟩
+  have hsupport : M.toPlaneComplex.support = K.space :=
+    planeComplexOfSimplicialComplex_toTriangleMesh_support K hK
+  have hM : IsPLBall 2 M.toPlaneComplex.support := hsupport.symm ▸ hK
+  obtain ⟨h, hpl, himage, hfix⟩ := exists_isPLHomeomorphOn_straighten_to_triangle_of_isPLBall
+    M hM hU (hsupport.trans_le hKU) T₀
+  have hcarrier : M.triangleCarrier T₀.1 = convexHull ℝ (s : Set Plane) := by
+    change convexHull ℝ (e '' (t : Set K.vertices)) = _
+    rw [← Finset.coe_map e, ht]
+  exact ⟨h, hpl, by simpa only [hsupport, hcarrier] using himage, hfix⟩
+
 theorem exists_isPLHomeomorphOn_straighten (J : PolygonalCircle)
     {U : Set Plane} (hU : IsOpen U) (hregion : J.closedRegion ⊆ U) :
     ∃ (h : Plane ≃ₜ Plane) (C : Set Plane), IsTriangle C ∧

@@ -547,3 +547,41 @@ consumers; all closures use only the standard three axioms and the audit exits 0
 This settles coordinate and support transport, but not the local deletion theorem
 for the spherical mesh or its retained-triangle induction. The full 17.5, 17.6,
 and 17.8 endpoints remain open.
+
+## Disks inside simplex vertex stars
+
+`PLImage` now constructs the image complex of a map affine on every face
+without further subdivision, with an exact correspondence of faces. The
+existing general image theorem uses this construction after choosing its
+affine subdivision. `simplicialMap_eq_of_forall_affineOn` is moved unchanged
+from `Subcomplex` to its prerequisite `PLImage`, preserving its public name
+and avoiding a duplicate proof. Both existing image consumers are checked.
+
+`SimplexCorner` proves that a straight simplex contained in an original
+vertex open star lies in one original star face. This follows from its
+centroid and barycentric support, and requires neither affine independence
+of the smaller simplex nor finite-dimensionality of the ambient space.
+Consequently the existing star coordinates are affine on every face of
+any finite triangulation whose whole space lies in that open star.
+
+`PlanarSchoenflies` bridges the prescribed-triangle result to an arbitrary
+native finite triangulation of a planar PL two-ball. `SimplexDisk` transports
+this construction through the Euclidean vertex-star coordinates and the
+supported ambient extension. It straightens a disk lying in one vertex
+open star to any specified triangle of its triangulation, preserves the
+whole simplex, and fixes both the opposite facet and the complement of the
+prescribed open neighborhood. A second endpoint produces such a triangle
+from an arbitrary native PL disk. No geometric extension is assumed.
+
+No vendor Lean source is modified. All five changed native modules and the
+`IsomorphicSubdivision` and `GeneralPosition` consumers pass the prescribed
+focused checks with exit 0 and zero warnings. The shared boundary artifacts
+again required regeneration from the S sources; both regeneration checks
+exit 0. `AuditS20.lean` audits fourteen declarations with only `propext`,
+`Classical.choice`, and `Quot.sound`, and exits 0.
+
+The hypothesis that the whole disk lies in one original open star is
+substantive. A general disk on the tetrahedral boundary can meet several
+stars, and its intersection with a star need not be a disk. The relative
+local deletion operation and the global retained-triangle induction remain
+open; this result does not close Moise 17.5, 17.6, or 17.8.
