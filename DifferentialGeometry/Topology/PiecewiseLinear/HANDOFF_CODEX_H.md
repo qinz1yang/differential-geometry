@@ -214,3 +214,57 @@ H.1 → H.2 → H.6 → H.4a → H.5 →（H.4b 待决定）。每砖闭环 = �
 - `rw` 关闭目标后再 `rfl` 报 "No goals"；`rcases … with rfl` 会消去固定变量；`▸` 高阶合一易选错实例；`open Classical` 下 `not_imp` 用 `Classical.not_imp`。
 - `theorem IsCombinatorialManifoldWithBoundary.foo` 内裸名解析到同命名空间定理，写 `PiecewiseLinear.secondDerived K`。
 - Git Bash 无 `grep -P`，用 `sed`。
+
+## 7. 2026-09-15 追加：H.2 上循环设计更正；先做线性细分不变性（H.2a），再做上循环（H.2b）
+
+### 7.0 复核
+
+`Orientation.lean` 由本方独立重编 exit=0（32 秒）；`AuditH2BarycentricInverse` 146 项只含标准三公理。
+`isOrientable_iff_of_isGlueIso`、`isOrientable_barycentricSubdivision_iff`、`isOrientable_iff_forall_simplicialComponent` 可作为下面的输入。
+
+### 7.1 更正（砖 H.2 原文"非顶维边取 0"作废，你的判断成立）
+
+正确构造：`bK` 的每个顶点 `σ̂`（`σ ∈ K`，任意维）配一个**局部定向** = 闭星 `st(σ, K)`（含 `σ` 的全部顶维单形）的一个相容定向；
+边 `{ρ̂, σ̂}`（`ρ ⊂ σ`）的值 = 两个局部定向在任一含 `σ` 的顶维单形上的比较（`st(σ) ⊆ st(ρ)`，`st(σ)` 对偶连通 ⇒ 与选择无关）；
+三角形恒等式由同一顶维单形上的传递性；上边界 ⇔ 局部定向可全局翻转成相容 ⇔ `IsOrientable`。
+前置正是你指出的缺口：每个闭星可定向且对偶连通。`σ` 顶维、余维 1、余维 2 时初等（两个单形；绕边的扇）；
+`σ` 为顶点时 `st(v) = v * lk(v)`，`lk(v)` 是 PL 球面/球（组合流形定义），其组合可定向性需要 **PL 不变性**：
+已有同构不变性与重心细分不变性，缺任意线性细分。别走奇异同调局部定向那条路（需要单纯–奇异比较定理，本库没有）。
+
+### 7.2 里程碑 H.2a：线性细分不变性 ⇒ PL 不变性 ⇒ 球、球面、闭星可定向
+
+接口（签名冻结后写进计划行 H.2）：
+```lean
+theorem isOrientable_iff_of_isSubdivision (h : IsSubdivision K' K) : IsOrientable n K' ↔ IsOrientable n K
+theorem isOrientable_iff_of_isPLHomeomorphOn (hf : IsPLHomeomorphOn f K.space L.space) : IsOrientable n K ↔ IsOrientable n L
+theorem isOrientable_of_isPLBall (h : IsPLBall n K.space) : IsOrientable n K
+theorem isOrientable_of_isPLSphere (h : IsPLSphere n K.space) : IsOrientable (n + 1) K   -- 维数按 IsPLSphere 的约定对齐
+theorem coherentOrientation_eq_or_eq_neg (hconn : 顶维单形沿余维一面对偶连通) (o o' : CoherentOrientation n K) : o = o' ∨ o = o'.neg  -- 或以 sign 相等表述
+theorem isOrientable_closedStar (hK : IsCombinatorialManifoldWithBoundary n K) (hσ : σ ∈ K.faces) : IsOrientable n (closedStar K σ)
+```
+架构：`IsSubdivision K' K`（F 的 `Subdivision.lean`：`K'` 的每个单形落在 `K` 的某个单形内、载体相等）。细分单形 `s ⊆ τ` 的定向用
+**仿射定向符号**（`s` 的顶点向量组相对于 `τ` 的顶点向量组在 `τ` 方向空间上的行列式符号；在你的 `LinearOrder`/`sign` 词汇里就是
+用行列式符号定义 `sign s`）。正向：`K` 的相容定向诱导 `K'` 的相容定向——同一 `τ` 内相邻两单形按同一仿射定向自动相容（线性代数：
+公共面两侧的两个单形诱导相反的面定向）；落在 `K` 的公共面 `τ ∩ τ'` 里的 `K'`-面用 `τ, τ'` 的相容性。反向：`K'` 的相容定向在每个 `τ`
+内部对偶连通（`τ` 的细分是球，去掉余维 2 骨架仍连通）⇒ 常号 ⇒ 诱导 `K` 的定向。PL 不变性：`exists_isGlueIso_of_isPLHomeomorphOn`
+（`IsomorphicSubdivision.lean`）给两侧细分与粘接同构，接 `isOrientable_iff_of_isGlueIso`。球/球面：标准单形及其边界显式可定向。
+闭星：`lk(σ)` 是 PL 球/球面 ⇒ 可定向；`σ * lk(σ)` 的相容定向 ⇔ `lk(σ)` 的相容定向（join）；对偶连通由 link 连通（维数 ≥ 1）。
+
+### 7.3 里程碑 H.2b：定向上循环（C.4 消费）
+
+接口：
+```lean
+def orientationCocycle (hK : IsCombinatorialManifoldWithBoundary n K) (o : ∀ σ ∈ K.faces, CoherentOrientation n (closedStar K σ)) :
+    SimplicialBoolCocycle (barycentricSubdivision K)
+theorem orientationCocycle_isCoboundary_iff : (orientationCocycle hK o).IsCoboundary ↔ IsOrientable n K
+theorem exists_orientationCocycle_of_not_isOrientable : ¬ IsOrientable n K →
+    ∃ ε : SimplicialBoolCocycle (barycentricSubdivision K), ¬ ε.IsCoboundary
+```
+`SimplicialBoolCocycle`、`IsCoboundary` 是 C.2 的（`DoubleCoverComplex.lean`，整合分支）。局部定向族 `o` 由 7.2 存在；
+上循环值与 `o` 的选择只差上边界，所以第三条对任意 `o` 成立。
+
+### 7.4 之后
+
+H.6、H.4a、H.5 顺序不变。整合分支现已含 Bennett 的 `Topology/Homology/{Coefficients, ChangeOfRings, CoveringTransfer*,
+Reduced/MayerVietorisCoefficients, Reduced/PointClasses}`（`REUSE_AUDIT.md` §2），H.5 的 ℤ₂/ℚ 系数与二重覆盖 transfer 可直接用；
+下一个检查点先合并 `origin/codex/moise-integration`。检查点：H.2a 的细分不变性做完汇报，再做 H.2b。
