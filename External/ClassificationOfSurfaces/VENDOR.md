@@ -1364,3 +1364,18 @@ Logs: `.lake/scratch/check-piece-transition.log`,
 `.lake/scratch/check-piece-inclusion.log`,
 `.lake/scratch/check-ball-gluing-manifold.log`, and
 `.lake/scratch/audit-ball-gluing-manifold.log`.
+
+## Transport of the general disk-decomposition interface
+
+`DiskDecomposition.lean` proves that F's exact `IsPLDiskDecomposition`
+and `IsFreeDiskCell` definitions are preserved by subdivision and PL
+coordinate changes. Every finite-dimensional decomposition has a planar
+image with the same number of cells, and each original cell is free if
+and only if its image is free. This implements the initial planar
+reduction in Moise 17.2 without changing the interface. The two-free-cell
+existence theorem itself remains unproved. No vendored source changed.
+
+The module passes its focused check with exit 0 and zero warnings.
+`AuditS58.lean` audits all six declarations: exit 0, only the three
+standard axioms. Logs: `.lake/scratch/check-disk-decomposition.log` and
+`.lake/scratch/audit-disk-decomposition.log`.
