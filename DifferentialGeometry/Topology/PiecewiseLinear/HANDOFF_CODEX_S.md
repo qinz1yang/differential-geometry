@@ -2196,3 +2196,34 @@ With no Lean process running, `fresh.py` reports 18 changed modules fresh, no st
 or missing artifacts, and no forbidden patterns. This removes later edge reentry
 from the vertex-square interface. P.4 still needs arbitrary degree-one endpoints
 and the compatible edge-disk frames and final graph assembly; it is not complete.
+
+### Arbitrarily small PL disk neighborhoods of planar arcs, 2026-09-16
+
+`PlanarJordan/ArcDiskNeighborhood.lean` constructs a polygonal Jordan curve J for
+any planar arc A and any set neighborhood U of A, with A contained in inside J
+and closure (inside J) contained in U. The construction refines a chain of small
+square boundaries along the arc, uses the proved outer-chain theorem to control
+all points outside the prescribed thickening, and obtains J as the boundary cycle
+of the unbounded face of the finite two-connected graph.
+
+`PiecewiseLinear/PolygonalJordan.lean` bridges the cyclic polygon presentations
+and proves that every polygonal Jordan curve is a native PL one-sphere.
+`PiecewiseLinear/PlanarArcNeighborhood.lean` consequently produces an actual PL
+two-ball D with A contained in interior D and D contained in U. Its finite-family
+version produces pairwise disjoint such disks for pairwise disjoint arcs, each
+inside its independently prescribed neighborhood.
+
+All three focused checks return exit 0 with zero warnings.
+`AuditS124ArcNeighborhood.lean` / `.log` audit the four public declarations;
+exit 0, only the standard three axioms. The native adaptation of the upstream
+square-chain proof is recorded in `docs/third_party/PlanarArcNeighborhood.md`;
+no vendored source was modified.
+
+Moise printed pages 76-77 clarify the remaining degree-one producer: first apply
+the no-endpoint construction to the locally finite graph obtained by deleting
+the endpoints, then trace a complementary arc alongside the resulting locally
+polygonal open edge with shrinking support toward its endpoint. The present
+finite fan and disk results do not yet implement this infinite construction.
+The edge-frame obligation also still includes the exact two boundary crossings
+of the entire truncated edge; merely containing a compact arc is insufficient.
+P.4 remains partial with these obligations explicit.
