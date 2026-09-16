@@ -519,3 +519,24 @@ ambient manifold with the same boundary image and no other intersection with the
 Both hold in arbitrary finite-dimensional real normed spaces, without a Schoenflies assumption.
 The containing three-ball is still supplied as input until S-M2 closes Problem 26.1.
 The singular-cell type issue above remains separate; this is not yet the exact bundled I2 endpoint.
+
+### S-M2: done, Problem 26.1 in arbitrary finite-dimensional ambient spaces
+
+`FreeTriangleNeighborhood.lean` proves
+`IsCombinatorialManifoldWithBoundary.isPLBall_derivedNeighborhood_of_free_triangle`.
+It identifies the exact old subfaces met by each new piece, proves the attaching two-disks,
+and treats both free-triangle boundary traces. For one free edge, it adds the triangle and
+edge pieces; for two free edges, it adds the triangle, both edges, and the new vertex.
+`DiskDerivedNeighborhood.lean` uses strong induction on the number of triangles while retaining
+a distinguished triangle. The base case is the full seven-piece simplex neighborhood.
+A compatible ambient subdivision then gives
+`IsCombinatorialManifoldWithBoundary.exists_isPLBall_containing_boundary_disk`:
+for any PL two-disk D in the intrinsic boundary of finite combinatorial three-manifold K,
+there is a PL three-ball C with D contained in C and C contained in K.space.
+No containing-ball, shelling, Schoenflies, or Euclidean-chart hypothesis remains in this endpoint.
+`SubcomplexBallGluing.lean` also supplies finite pairwise-disjoint ball attachments.
+All three modules have focused-check exit 0 and zero warnings. `AuditS73Disk.lean` /
+`AuditS73Disk.log` checks five public declarations; only the three standard axioms occur.
+The previously retained source has now been reviewed, completed, checked, and audited.
+Logs are `check-subcomplex-ball-gluing-finite.log`, `check-free-triangle-neighborhood.log`,
+and `check-disk-derived-neighborhood.log` under `.lake/scratch`.

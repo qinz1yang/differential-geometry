@@ -122,4 +122,38 @@ theorem IsCombinatorialManifoldWithBoundary.isPLBall_union_of_inter_isPLBall_two
   rw [← hA, ← hB] at hI ⊢
   exact isPLBall_union_of_subcomplexes_inter_isPLBall_two R A B (hK.of_isSubdivision hR)
     hC hD (restrict_faces_subset R C) (restrict_faces_subset R D) hI
+
+theorem IsCombinatorialManifoldWithBoundary.isPLBall_union_iUnion_of_pairwiseDisjoint
+    {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces]
+    (hK : IsCombinatorialManifoldWithBoundary 3 K) {ι : Type*} {C : Set E}
+    (hC : IsPLBall 3 C) (hCK : C ⊆ K.space)
+    (d : Finset ι) (A : ι → Set E) (hA : ∀ i ∈ d, IsPLBall 3 (A i))
+    (hAK : ∀ i ∈ d, A i ⊆ K.space) (hI : ∀ i ∈ d, IsPLBall 2 (C ∩ A i))
+    (hdis : ∀ i ∈ d, ∀ j ∈ d, i ≠ j → Disjoint (A i) (A j)) :
+    IsPLBall 3 (C ∪ ⋃ i ∈ d, A i) := by
+  classical
+  induction d using Finset.induction_on with
+  | empty => simpa using hC
+  | @insert i d hi ih =>
+    have hA' : ∀ j ∈ d, IsPLBall 3 (A j) := fun j hj => hA j (Finset.mem_insert_of_mem hj)
+    have hAK' : ∀ j ∈ d, A j ⊆ K.space := fun j hj => hAK j (Finset.mem_insert_of_mem hj)
+    have hI' : ∀ j ∈ d, IsPLBall 2 (C ∩ A j) := fun j hj => hI j (Finset.mem_insert_of_mem hj)
+    have hdis' : ∀ j ∈ d, ∀ k ∈ d, j ≠ k → Disjoint (A j) (A k) :=
+      fun j hj k hk hjk => hdis j (Finset.mem_insert_of_mem hj) k (Finset.mem_insert_of_mem hk) hjk
+    have hprev := ih hA' hAK' hI' hdis'
+    have hprevK : (C ∪ ⋃ j ∈ d, A j) ⊆ K.space :=
+      union_subset hCK (iUnion₂_subset hAK')
+    have hinter : (C ∪ ⋃ j ∈ d, A j) ∩ A i = C ∩ A i := by
+      apply Subset.antisymm
+      · rintro x ⟨hx | hx, hxi⟩
+        · exact ⟨hx, hxi⟩
+        · obtain ⟨j, hj, hxj⟩ := mem_iUnion₂.mp hx
+          exact ((hdis j (Finset.mem_insert_of_mem hj) i (Finset.mem_insert_self _ _)
+            (ne_of_mem_of_not_mem hj hi)).le_bot ⟨hxj, hxi⟩).elim
+      · rintro x ⟨hx, hxi⟩
+        exact ⟨Or.inl hx, hxi⟩
+    have h := hK.isPLBall_union_of_inter_isPLBall_two hprev
+      (hA i (Finset.mem_insert_self _ _)) hprevK (hAK i (Finset.mem_insert_self _ _))
+      (hinter.symm ▸ hI i (Finset.mem_insert_self _ _))
+    simpa only [Finset.set_biUnion_insert, union_assoc, union_left_comm, union_comm] using h
 end DifferentialGeometry.Topology.PiecewiseLinear

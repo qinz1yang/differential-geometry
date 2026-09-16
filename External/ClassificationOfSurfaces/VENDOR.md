@@ -1684,3 +1684,19 @@ The module check exits 0 with zero warnings. `AuditS69.lean` checks both
 public declarations, with only `propext`, `Classical.choice`, and
 `Quot.sound`. Logs: `.lake/scratch/check-simplex-derived-neighborhood.log`
 and `audit-simplex-derived-neighborhood.log`.
+
+## Boundary disk regular neighborhoods and Problem 26.1
+
+The native `FreeTriangleFaces`, `SubcomplexBallGluing`, `FreeTriangleNeighborhood`, and
+`DiskDerivedNeighborhood` developments complete the boundary-disk induction described in
+Moise, printed page 169, and Problem 26.1. The free-triangle producer is the existing planar
+17.2/17.3 chain transported by a simplicial isomorphism. The native proof classifies deleted
+faces by containment of the complementary face, attaches the corresponding derived-neighborhood
+pieces using 23.11, and inducts on the number of triangles. An ambient subdivision makes any
+boundary PL disk a suitable subcomplex. The result holds in arbitrary finite-dimensional real
+normed spaces, with intrinsic boundary complexes, and uses no Schoenflies hypothesis.
+This is original native Lean source built on the existing vendored planar theorems; no vendored
+Lean file was changed. `AuditS70`, `AuditS71General`, and `AuditS73Disk` record the supporting
+layers and the final five public endpoints; all have only the standard three axioms.
+The whole boundary collar product and the boundary-compatible singular-cell type are separate
+remaining obligations and are not asserted by this result.
