@@ -191,4 +191,30 @@ theorem exists_tetrahedron_extension_of_triangleGenLoop_relation
     change K (stdSimplex.map (3 : Fin 4).succAbove (Simplex.triangleJoinReverse (s,t))) = g 3 _
     rw [← Simplex.tetrahedronJoin_last_zero, hk, h3]
 
+theorem exists_tetrahedron_extension_iff_triangleGenLoop_relation
+    (g : Fin 4 → C(stdSimplex ℝ (Fin 3), X))
+    (hg : ∀ i, ∀ p ∈ Simplex.boundary (Fin 3), g i p = x) :
+    (∃ F : C(stdSimplex ℝ (Fin 4), X),
+      ∀ (i : Fin 4) (p : stdSimplex ℝ (Fin 3)),
+        F (stdSimplex.map i.succAbove p) = g i p) ↔
+      (let q : Fin 4 → HomotopyGroup (Fin 2) X x := fun i =>
+        ⟦Simplex.triangleGenLoop (g i) x (hg i)⟧;
+        q 0 * q 2 = q 1 * q 3) := by
+  constructor
+  · rintro ⟨F, hF⟩
+    have hskel : ∀ p : Simplex.tetrahedronOneSkeleton, F p.val = x := by
+      intro p
+      obtain ⟨i, q, hq⟩ := Simplex.exists_faceBoundaryIntoTetrahedronOneSkeleton_eq p
+      have hmap : stdSimplex.map i.succAbove q.val = p.val := congrArg Subtype.val hq
+      rw [← hmap, hF]
+      exact hg i q.val q.property
+    have hrel := triangleGenLoop_tetrahedron_face_relation F hskel
+    have hgi (i : Fin 4) :
+        g i = F.comp ⟨stdSimplex.map i.succAbove, stdSimplex.continuous_map i.succAbove⟩ := by
+      ext p
+      exact (hF i p).symm
+    simpa only [hgi] using hrel
+  · intro h
+    exact exists_tetrahedron_extension_of_triangleGenLoop_relation g hg h
+
 end DifferentialGeometry.Topology
