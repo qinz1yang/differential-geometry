@@ -264,6 +264,37 @@ theorem frontier_space_eq_boundaryComplex_space {n : ℕ}
     (boundaryComplex_space_subset_frontier_space hK)
 
 open Classical in
+theorem frontier_space_eq_boundaryComplex_space_of_finrank [FiniteDimensional ℝ E]
+    [d : DecidableEq E] {n : ℕ}
+    (hn : Module.finrank ℝ E = n + 1) (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
+    (hK : IsCombinatorialManifoldWithBoundary (n + 1) K) :
+    frontier K.space = (boundaryComplex (n + 1) K).space := by
+  have hd : d = fun x y => Classical.propDecidable (x = y) := Subsingleton.elim _ _
+  subst d
+  let _ : DecidableEq (EuclideanSpace ℝ (Fin (n + 1))) := Classical.decEq _
+  let e : E ≃ₗ[ℝ] EuclideanSpace ℝ (Fin (n + 1)) :=
+    LinearEquiv.ofFinrankEq _ _ (by simpa using hn)
+  have he : IsPiecewiseAffineOn e K.space :=
+    (isPiecewiseAffineOn_of_affine e.toLinearMap.toAffineMap isOpen_univ).mono_of_isPolyhedron
+      (isPolyhedron_space K) (subset_univ _)
+  obtain ⟨L, hLfin, hLspace⟩ :=
+    ((isPolyhedron_space K).image_of_isPiecewiseAffineOn he e.injective.injOn).exists_simplicialComplex
+  let _ : Finite L.faces := hLfin.to_subtype
+  have hf : IsPLHomeomorphOn e K.space L.space := by
+    rw [hLspace]
+    exact isPLHomeomorphOn_of_isPiecewiseAffineOn_of_bijOn (isPolyhedron_space K) he
+      e.injective.injOn.bijOn_image
+  apply e.injective.image_injective
+  calc
+    e '' frontier K.space = frontier (e '' K.space) :=
+      e.toContinuousLinearEquiv.toHomeomorph.image_frontier K.space
+    _ = frontier L.space := congrArg frontier hLspace.symm
+    _ = (boundaryComplex (n + 1) L).space :=
+      frontier_space_eq_boundaryComplex_space (hK.of_isPLHomeomorphOn hf)
+    _ = e '' (boundaryComplex (n + 1) K).space :=
+      boundaryComplex_space_of_isPLHomeomorphOn K L hK hf
+
+open Classical in
 theorem PLPieceIn.mem_interior_iff_not_mem_boundaryComplex_space
     {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
     {n : ℕ} {X : Type u} [TopologicalSpace X]

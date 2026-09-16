@@ -784,3 +784,38 @@ all with only the standard three axioms; the nine distinct Lean modules changed 
 two checkpoints passed their focused checks with zero warnings. The final bookkeeping commit
 changes only this handoff and the B.3 plan row. No whole-boundary collar or bundled I2 delivery
 is asserted.
+
+### S-M4 continuation: prism attachment disks and prescribed side coordinates
+
+`FrontierBoundary.lean` now identifies the topological frontier with the intrinsic boundary
+in any finite-dimensional ambient space of the manifold's dimension.
+`Prism.lean` exposes the existing coordinate triangle model and proves `isPLBall_unit_square`
+and `isPLBall_two_prod`: two PL arcs have a PL disk as their product.
+`PrismBoundary.lean` proves `boundaryComplex_space_prism`, identifying the complete boundary
+of a disk prism with its two ends and its side wall, for arbitrary ambient spaces and finite
+triangulations of the prism.
+
+`PrismDisk.lean` proves that the bottom together with the whole side wall is a PL disk, and
+that the same holds for any finite family of pairwise disjoint boundary-arc strips. The whole
+wall result handles the final closed-boundary case, where the attaching set can be the entire
+boundary circle; no proper-arc assumption is silently imposed on that case.
+`CollarGluing.lean` constructs the PL map on a new bottom disk together with old collar side
+strips. Its public relative extension theorems
+`exists_isPLHomeomorphOn_prism_eqOn_collar_sides_of_boundary_arcs` and
+`exists_isPLHomeomorphOn_prism_eqOn_collar_sides_of_boundary` extend this map across a new
+three-ball while preserving both the prescribed bottom and every previously fixed side
+coordinate. The input three-ball must have the modified attaching disk on its boundary.
+These are relative extension results, not an assertion of the whole-boundary collar.
+
+The five changed Lean modules have focused-check exit 0 with zero warnings. Logs are
+`check-frontier-boundary-finrank.log`, `check-prism-products.log`, `check-prism-boundary.log`,
+`check-prism-disk.log`, and `check-collar-gluing.log` under `.lake/scratch`.
+`AuditS82PrismGluing.lean` / `.log` contain thirteen entries, all with only `propext`,
+`Classical.choice`, and `Quot.sound`. No Schoenflies parameter or new unproved mathematical
+input is used in the new geometric producers. No vendored source was changed.
+
+Full 26.2 still requires the boundary cell ordering and complementary-boundary invariant to
+produce each modified attaching disk in the actual complement, then the compatible union of
+old and new product maps and the whole-boundary neighborhood property. The exact I2 target-type
+issue and the recorded P.4 obligations remain unchanged. The source checkpoint hash is recorded
+in the following checkpoint entry.

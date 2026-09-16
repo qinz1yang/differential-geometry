@@ -1,6 +1,7 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.BallGluing
 import DifferentialGeometry.Topology.PiecewiseLinear.Product
 import DifferentialGeometry.Topology.PiecewiseLinear.PLPath
+import DifferentialGeometry.Topology.PiecewiseLinear.DiskUnion
 
 open Set
 
@@ -210,7 +211,7 @@ theorem isPLBall_triangle_prism :
         · exact Or.inr ⟨h0, h1, hsum2, h2one⟩
   exact hcover ▸ hball
 
-private theorem isPLBall_coordinate_triangle :
+theorem isPLBall_coordinate_triangle :
     IsPLBall 2 {x : Fin 2 → ℝ | 0 ≤ x 0 ∧ 0 ≤ x 1 ∧ x 0 + x 1 ≤ 1} := by
   let f : (Fin 3 → ℝ) →ₗ[ℝ] (Fin 2 → ℝ) :=
     { toFun := fun v => ![v 1, v 2]
@@ -283,4 +284,114 @@ theorem isPLBall_three_prod
   obtain ⟨p, hp⟩ := hP
   obtain ⟨q, hq⟩ := hQ
   exact hmodel.of_isPLHomeomorphOn ((ht.symm.trans hp).prodMap (hu.symm.trans hq))
+private theorem isPLBall_scaled_triangle {c : ℝ} (hc : 0 < c) :
+    IsPLBall 2 {x : ℝ × ℝ | 0 ≤ x.1 ∧ 0 ≤ x.2 ∧ x.1 + x.2 ≤ c} := by
+  let f : (Fin 3 → ℝ) →ₗ[ℝ] (ℝ × ℝ) :=
+    { toFun := fun v => (c * v 1, c * v 2)
+      map_add' := by intro v w; ext <;> dsimp <;> ring
+      map_smul' := by intro a v; ext <;> dsimp <;> ring }
+  let g := fun x : ℝ × ℝ => ![1 - x.1 / c - x.2 / c, x.1 / c, x.2 / c]
+  apply isPLBall_of_linear_coordinates (n := 2) f g
+  · intro v hv
+    have hsum : v 0 + v 1 + v 2 = 1 := by simpa [Fin.sum_univ_three] using hv.2
+    exact ⟨mul_nonneg hc.le (hv.1 1), mul_nonneg hc.le (hv.1 2), by
+      dsimp [f]
+      nlinarith [hv.1 0]⟩
+  · intro x hx
+    refine ⟨?_, ?_⟩
+    · intro i
+      fin_cases i
+      · change 0 ≤ 1 - x.1 / c - x.2 / c
+        have hsum : x.1 / c + x.2 / c ≤ 1 := by
+          rw [← add_div, div_le_one hc]
+          exact hx.2.2
+        linarith
+      · exact div_nonneg hx.1 hc.le
+      · exact div_nonneg hx.2.1 hc.le
+    · simp [g, Fin.sum_univ_three]
+      ring
+  · intro v hv
+    have hsum : v 0 + v 1 + v 2 = 1 := by simpa [Fin.sum_univ_three] using hv.2
+    ext i
+    fin_cases i <;> simp [g, f, hc.ne']
+    linarith
+  · intro x _
+    ext <;> dsimp [g, f] <;> field_simp
+
+private theorem isPLBall_upper_square_triangle :
+    IsPLBall 2 {x : ℝ × ℝ | x.1 ≤ 1 ∧ x.2 ≤ 1 ∧ 1 ≤ x.1 + x.2} := by
+  let f : (Fin 3 → ℝ) →ₗ[ℝ] (ℝ × ℝ) :=
+    { toFun := fun v => (v 1 + v 2, v 0 + v 2)
+      map_add' := by intro v w; ext <;> dsimp <;> ring
+      map_smul' := by intro a v; ext <;> dsimp <;> ring }
+  let g := fun x : ℝ × ℝ => ![1 - x.1, 1 - x.2, x.1 + x.2 - 1]
+  apply isPLBall_of_linear_coordinates (n := 2) f g
+  · intro v hv
+    have hsum : v 0 + v 1 + v 2 = 1 := by simpa [Fin.sum_univ_three] using hv.2
+    change v 1 + v 2 ≤ 1 ∧ v 0 + v 2 ≤ 1 ∧ 1 ≤ (v 1 + v 2) + (v 0 + v 2)
+    exact ⟨by linarith [hv.1 0], by linarith [hv.1 1], by linarith [hv.1 2]⟩
+  · intro x hx
+    refine ⟨?_, ?_⟩
+    · intro i
+      fin_cases i <;> simp [g] <;> rcases hx with ⟨h0, h1, hsum⟩ <;> linarith
+    · simp [g, Fin.sum_univ_three]
+      ring
+  · intro v hv
+    have hsum : v 0 + v 1 + v 2 = 1 := by simpa [Fin.sum_univ_three] using hv.2
+    ext i
+    fin_cases i <;> simp [g, f] <;> linarith
+  · intro x _
+    ext <;> simp [g, f]
+
+theorem isPLBall_unit_square : IsPLBall 2 (Icc (0 : ℝ) 1 ×ˢ Icc (0 : ℝ) 1) := by
+  let C : Set (ℝ × ℝ) := {x | 0 ≤ x.1 ∧ 0 ≤ x.2 ∧ x.1 + x.2 ≤ 1}
+  let D : Set (ℝ × ℝ) := {x | x.1 ≤ 1 ∧ x.2 ≤ 1 ∧ 1 ≤ x.1 + x.2}
+  let B : Set (ℝ × ℝ) := {x | 0 ≤ x.1 ∧ 0 ≤ x.2 ∧ x.1 + x.2 ≤ 2}
+  have hC : IsPLBall 2 C := isPLBall_scaled_triangle (by norm_num)
+  have hD : IsPLBall 2 D := isPLBall_upper_square_triangle
+  have hB : IsPLBall 2 B := isPLBall_scaled_triangle (by norm_num)
+  have hCB : C ⊆ B := by rintro x ⟨hx, hy, hxy⟩; exact ⟨hx, hy, by linarith⟩
+  have hDB : D ⊆ B := by rintro x ⟨hx, hy, hxy⟩; exact ⟨by linarith, by linarith, by linarith⟩
+  let f : ℝ →ᵃ[ℝ] (ℝ × ℝ) :=
+    (AffineMap.id ℝ ℝ).prod (AffineMap.const ℝ ℝ 1 - AffineMap.id ℝ ℝ)
+  have hI := isPLBall_Icc (by norm_num : (0 : ℝ) < 1)
+  have hf : IsPLHomeomorphOn f (Icc (0 : ℝ) 1) (C ∩ D) := by
+    apply isPLHomeomorphOn_of_isPiecewiseAffineOn_of_bijOn hI.isPolyhedron
+      ((isPiecewiseAffineOn_of_affine f isOpen_univ).mono_of_isPolyhedron
+        hI.isPolyhedron (subset_univ _))
+    refine ⟨?_, ?_, ?_⟩
+    · intro x hx
+      change (0 ≤ x ∧ 0 ≤ 1 - x ∧ x + (1 - x) ≤ 1) ∧
+        x ≤ 1 ∧ 1 - x ≤ 1 ∧ 1 ≤ x + (1 - x)
+      exact ⟨⟨hx.1, by linarith [hx.2], by linarith⟩,
+        hx.2, by linarith [hx.1], by linarith⟩
+    · intro x _ y _ heq
+      exact congrArg Prod.fst heq
+    · rintro x ⟨hxC, hxD⟩
+      refine ⟨x.1, ⟨hxC.1, hxD.1⟩, Prod.ext rfl ?_⟩
+      change 1 - x.1 = x.2
+      linarith [hxC.2.2, hxD.2.2]
+  have h := isPLBall_union_of_inter_isPLBall_one_in_ball hB hC hD hCB hDB
+    (hI.of_isPLHomeomorphOn hf)
+  have hunion : C ∪ D = Icc (0 : ℝ) 1 ×ˢ Icc (0 : ℝ) 1 := by
+    ext x
+    constructor
+    · rintro (⟨hx, hy, hxy⟩ | ⟨hx, hy, hxy⟩)
+      · exact ⟨⟨hx, by linarith⟩, hy, by linarith⟩
+      · exact ⟨⟨by linarith, hx⟩, by linarith, hy⟩
+    · rintro ⟨⟨hx0, hx1⟩, hy0, hy1⟩
+      rcases le_total (x.1 + x.2) 1 with hxy | hxy
+      · exact Or.inl ⟨hx0, hy0, hxy⟩
+      · exact Or.inr ⟨hx1, hy1, hxy⟩
+  exact hunion ▸ h
+
+theorem isPLBall_two_prod
+    {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
+    {P : Set E} {Q : Set F} (hP : IsPLBall 1 P) (hQ : IsPLBall 1 Q) :
+    IsPLBall 2 (P ×ˢ Q) := by
+  obtain ⟨f, hf⟩ := exists_isPLHomeomorphOn_Icc_of_isPLBall_one hP
+  obtain ⟨g, hg⟩ := exists_isPLHomeomorphOn_Icc_of_isPLBall_one hQ
+  exact isPLBall_unit_square.of_isPLHomeomorphOn (hf.prodMap hg)
+
 end DifferentialGeometry.Topology.PiecewiseLinear
