@@ -1901,3 +1901,13 @@ Moise 17.12 的两个相反转轴现已分别构造，且每张封帽球面的�
 `TwoFoldCrossing.lean` 已提交并推送为 `10fd6827e`。`exists_common_direction_of_eq_apply` 在两条一维折线方向张成的共同折叠平面两侧，显式解出两张半片平面的共同横向方向。`exists_isPLHomeomorphOn_straighten_two_folds` 将正、负方向分别归一到高度 1 和 −1，再用固定整个折叠平面的分片线性剪切把负方向送到正方向；同一个全局 PL 同胚因而同时把两张折叠曲面拉直为 `S ⊔ span {w}` 与 `T ⊔ span {w}`。
 
 主端点 `hasPLCrossingAt_of_two_folds` 证明三维空间中，若两个一维折线方向共同张成折叠平面的高度核，且每张曲面的两个半片分别严格位于该平面两侧，则两张局部折叠曲面在交点满足 `HasPLCrossingAt`。一维条件、三维维数和核的张成等式已经排除两条折线重合；四个严格高度符号给出各半片的横截性，没有另加 crossing 假设。聚焦检查 exit=0（12.2 秒）、零 warning；`AuditF205.lean` 七项均只依赖标准三公理。F-M3 done；下一里程碑 F-M4 写 `ArrangementGeneralPosition.lean`，下一审计文件 `AuditF206.lean`。
+
+### 19.59 F-M4：有限仿射平面族的分层相对通用位置
+
+`ArrangementGeneralPosition.lean` 已提交并推送为 `f1efe8e04`。`arrangementDirection` 与 `arrangementLayer` 把一点所在层定义为所有经过该点的安排超平面的方向交与相应仿射平移；`openCell_mem_nhdsWithin_arrangementLayer` 证明原符号胞腔是该层中的相对邻域。`exists_mem_openCell_notMem_affineSubspaces` 在任意小相对球中同时避开有限个不包含整层的坏仿射子空间，`exists_small_update_affineIndependent_in_arrangement` 给出单顶点插入。
+
+有限同步生产者 `exists_small_affineIndependent_constraints_in_arrangement` 接受固定顶点集、有序可动顶点表和有限约束族。每次插入只要求该约束中已确定点数不超过当前层维数；`arrangementLayer_not_le_affineSpan_of_affineIndependent` 从这个计数实际推出坏仿射包在当前层中为真子空间。所得映射固定全部非可动顶点、任意小、并让每个可动顶点留在原开胞腔的相对内部，同时使全部指定约束仿射无关。
+
+主端点 `exists_small_vertexMap_transverse_in_arrangement` 再以 `arrangementEnvelope` 表示一组顶点各层的最小共同仿射包。只要约束族覆盖每对待比较面之并内、基数不超过包络维数加一的子集，相交的不交面扰动后满足方向空间之和精确等于该安排包络的方向。单平面边界情形的核平面/全空间二分由此成为包络方向的特例；固定部分只输入自身的仿射无关性，没有输入最终横截结论。
+
+聚焦检查 exit=0（12.2 秒）、零 warning；`AuditF206.lean` 十九项全部仅依赖 `propext`、`Classical.choice`、`Quot.sound`。F-M4 done，无剩余缺口；下一里程碑 F-M5 重写 `RelativeNormalForm.lean`，下一审计文件 `AuditF207.lean`。
