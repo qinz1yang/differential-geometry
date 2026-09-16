@@ -2025,3 +2025,13 @@ F-M1 仍为 partial。单个旧三角形的全部纤维及逐边对应已闭合�
 `HeightRegularity.lean` 的 `one_lt_encard_levelPolygons_of_mem_heightSingularPoints` 证明每个高度奇异点所在层至少有两个 PL 圆周：若至多一个，已有临界层覆盖与奇异点属于圆周并的定理迫使整层为一条圆周，违反前述局部判据。`heightIndex_eq_zero_iff_heightSingularPoints_eq_empty` 随后由有限非负指标和闭合零指标与无奇异点的精确等价。这排除了定义中出现贡献为零的实际奇异点，并未将局部正规性加作假设。
 
 聚焦检查：`HeightLevelLink` exit=0（11.4 秒）、`HeightRegularity` exit=0（11.6 秒），均零 warning。`AuditF221.lean` 六项全部仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步从 crossing 的实际局部模型控制水平图的分支，并证明零指标下中间水平层连通；Lemma 4–6 的薄片及 I1 仍在其后，M2/M3 尚未完成。下一审计文件 `AuditF222.lean`。
+
+### 19.73 S.4 M2：crossing 的实际分支上界与两侧链环连通性
+
+`RadialEmbedding.lean` 证明径向单射点族若各初始径向线段可连续单射映入实直线，则点族至多有两个元素。证明用介值性排除同号的两条不同径向分支，再将方向注入二元类型；无需有限性假设。`CrossingFiber.lean` 从真实 `HasPLCrossingAt` 图卡投影到一维交子空间，实际构造交集的连续实坐标单射，因此任何包含于该交集芽的复形链环至多二点。孤立水平点的链环水平截面则由小径向线段直接证明为空。
+
+`HeightLevelLink.lean` 将既有适配细分构造提取为 `exists_isPLHomeomorphOn_geometricLink_fiber`：实际给出水平纤维剖分，并将其顶点链环 PL 同胚到原链环的水平截面；原圆周纤维端点签名保留。`CrossingFiber.encard_geometricLink_fiber_le_two_of_notMem_heightSingularPoints`（实际全名不含文件前缀）由 crossing/孤立分类证明每个非奇异顶点的该截面至多二点。
+
+`LinkHeightConnected.lean` 使用 PL 圆周的二点截弧参数化，证明避开链环顶点且至多二点的水平截面，其严格上下两部分各自连通（允许空集）。`isPreconnected_geometricLink_halfSpaces_of_heightIndex_eq_zero` 直接从零指标、原顶点一般位置和球面性生产每个顶点的这两项连通性；没有假设分支上界或两侧连通性。
+
+聚焦检查：`RadialEmbedding` exit=0（9.9 秒）、`HeightLevelLink` exit=0（11.3 秒）、`CrossingFiber` exit=0（11.3 秒）、依赖模块 `HeightRegularity` exit=0（10.4 秒）、`LinkHeightConnected` exit=0（10.6 秒），全部零 warning。`AuditF222.lean` 十四项仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步将连续严格半空间截面的连通性送到低顶点子复形，再按有限顶点高度排序排除下层分量的合并，从而证明中间层连通。M2/M3、薄片边界及 I1 尚未完成；下一审计文件 `AuditF223.lean`。

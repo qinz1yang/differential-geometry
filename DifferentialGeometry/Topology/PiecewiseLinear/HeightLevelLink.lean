@@ -25,12 +25,14 @@ theorem restrict_space_affine_eq_of_halfSpace_faces
       (openSimplex_subset_convexHull s hxs)
     exact convexHull_min hverts ((convex_singleton r).affine_preimage a)
 
-theorem encard_geometricLink_fiber_of_isPLSphere_one
+theorem exists_isPLHomeomorphOn_geometricLink_fiber
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
     [DecidableEq E] (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
-    {p : E} (hp : {p} ∈ K.faces) (ℓ : E →ₗ[ℝ] ℝ)
-    (hfiber : IsPLSphere 1 (K.space ∩ {x | ℓ x = ℓ p})) :
-    ((SimplicialComplex.geometricLink K {p}).space ∩ {x | ℓ x = ℓ p}).encard = 2 := by
+    {p : E} (hp : {p} ∈ K.faces) (ℓ : E →ₗ[ℝ] ℝ) :
+    ∃ (F : Geometry.SimplicialComplex ℝ E) (f : E → E), F.faces.Finite ∧
+      F.space = K.space ∩ {x | ℓ x = ℓ p} ∧ {p} ∈ F.faces ∧
+      IsPLHomeomorphOn f (SimplicialComplex.geometricLink F {p}).space
+        ((SimplicialComplex.geometricLink K {p}).space ∩ {x | ℓ x = ℓ p}) := by
   classical
   obtain ⟨R, hRfin, -, hRK, -, hsideR⟩ :=
     exists_triangulation_union_with_halfSpace_faces K (isPolyhedron_space K) ℓ.toAffineMap (ℓ p)
@@ -43,18 +45,16 @@ theorem encard_geometricLink_fiber_of_isPLSphere_one
     fun s hs => hsideR s (restrict_faces_subset R K.space hs)
   let Q : Set E := {x | ℓ x = ℓ p}
   let F := restrict L Q
-  let _ : Finite F.faces := (restrict_faces_finite L Q).to_subtype
+  have hFfin : F.faces.Finite := restrict_faces_finite L Q
+  let _ : Finite F.faces := hFfin.to_subtype
   have hFspace : F.space = K.space ∩ Q := by
     have heq : F.space = L.space ∩ Q :=
       restrict_space_affine_eq_of_halfSpace_faces L ℓ.toAffineMap (ℓ p) hside
     exact heq.trans (congrArg (fun A : Set E => A ∩ Q) hRK.space_eq)
-  have hF : IsPLSphere 1 F.space := hFspace.symm ▸ hfiber
   have hpF : {p} ∈ F.faces := by
     refine ⟨hRK.singleton_mem hp, ?_⟩
     simp only [Finset.coe_singleton, convexHull_singleton, singleton_subset_iff]
     rfl
-  have hlink : IsPLSphere 0 (SimplicialComplex.geometricLink F {p}).space :=
-    isPLSphere_geometricLink_of_isPLSphere F hF hpF
   have hlinkspace : (SimplicialComplex.geometricLink F {p}).space =
       (SimplicialComplex.geometricLink L {p}).space ∩ Q := by
     change (SimplicialComplex.geometricLink (restrict L Q) {p}).space = _
@@ -62,13 +62,29 @@ theorem encard_geometricLink_fiber_of_isPLSphere_one
     rw [geometricLink_restrict_convex L hQ (show p ∈ Q from rfl)]
     exact restrict_space_affine_eq_of_halfSpace_faces _ ℓ.toAffineMap (ℓ p)
       (fun s hs => hside s (geometricLink_faces_subset L {p} hs))
-  obtain ⟨a, b, hab, hpair⟩ := isPLSphere_zero_iff.mp hlink
-  have hcard : ((SimplicialComplex.geometricLink L {p}).space ∩ Q).encard = 2 := by
-    rw [← hlinkspace, hpair, encard_pair hab]
   obtain ⟨f, hf, hflevel, -, -⟩ :=
     exists_isPLHomeomorphOn_geometricLink_of_isSubdivision_preserving_height_sign hRK hp ℓ hside
-  rw [← hflevel, (hf.bijOn.injOn.mono inter_subset_left).encard_image]
-  exact hcard
+  have hpoly : IsPolyhedron ((SimplicialComplex.geometricLink L {p}).space ∩ Q) :=
+    hlinkspace ▸ isPolyhedron_space (SimplicialComplex.geometricLink F {p})
+  have hrestriction := hf.restrict hpoly inter_subset_left
+  have himage : f '' ((SimplicialComplex.geometricLink L {p}).space ∩ Q) =
+      (SimplicialComplex.geometricLink K {p}).space ∩ {x | ℓ x = ℓ p} := hflevel
+  rw [himage, ← hlinkspace] at hrestriction
+  exact ⟨F, f, hFfin, hFspace, hpF, hrestriction⟩
+
+theorem encard_geometricLink_fiber_of_isPLSphere_one
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    [DecidableEq E] (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
+    {p : E} (hp : {p} ∈ K.faces) (ℓ : E →ₗ[ℝ] ℝ)
+    (hfiber : IsPLSphere 1 (K.space ∩ {x | ℓ x = ℓ p})) :
+    ((SimplicialComplex.geometricLink K {p}).space ∩ {x | ℓ x = ℓ p}).encard = 2 := by
+  obtain ⟨F, f, hFfin, hFspace, hpF, hf⟩ := exists_isPLHomeomorphOn_geometricLink_fiber K hp ℓ
+  let _ : Finite F.faces := hFfin.to_subtype
+  have hF : IsPLSphere 1 F.space := hFspace.symm ▸ hfiber
+  have hlink : IsPLSphere 0 (SimplicialComplex.geometricLink F {p}).space :=
+    isPLSphere_geometricLink_of_isPLSphere F hF hpF
+  obtain ⟨a, b, hab, hpair⟩ := isPLSphere_zero_iff.mp (hlink.of_isPLHomeomorphOn hf)
+  rw [hpair, encard_pair hab]
 
 theorem notMem_heightSingularPoints_of_isPLSphere_one_fiber
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
