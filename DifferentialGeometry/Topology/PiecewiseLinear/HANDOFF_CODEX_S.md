@@ -1255,3 +1255,33 @@ vendored source was modified.
 to these connected neighborhoods and discharge the disconnected-complement input of
 the global two-component theorem. Component closures still need their manifold structure
 before the two existing collars can be glued into the bicollar.
+
+### S-M5 continuation: two-sidedness produces the two complementary components
+
+The connected-neighborhood checkpoint is committed and pushed as `6f9b12768`; the
+following fetch and merge found integration still up to date at `8fb887bb9`.
+
+`TwoSidedNeighborhood.lean` proves
+`IsCombinatorialManifoldWithBoundary.exists_connected_neighborhood_sdiff_not_isPreconnected`
+in every positive dimension. For a compact connected two-sided set, it produces an
+arbitrarily small connected finite combinatorial manifold neighborhood with disconnected
+complement. Two-sidedness is taken in the subtype `K.space`, so the result applies to
+arbitrary finite-dimensional normed ambient spaces without assuming ambient dimension three.
+
+The surface endpoint
+`IsCombinatorialManifoldWithBoundary.exists_neighborhood_connectedComponentIn_pair_sdiff_of_twoSided`
+constructs such a neighborhood for an interior connected closed combinatorial surface.
+The surface stays in its intrinsic interior. The complement has precisely two actual
+connected components; their closures cover the neighborhood and intersect exactly in
+the surface. The disconnected-complement input of the earlier component theorem is now
+proved from two-sidedness, rather than supplied as an additional assumption.
+
+The focused check has exit 0 and zero warnings (`check-two-sided-neighborhood.log`).
+`AuditS96TwoSidedNeighborhood.lean` / `.log` contain two entries, each using only
+`propext`, `Classical.choice`, and `Quot.sound`. No vendored or other-lane source changed.
+The source commit hash will be recorded at the following checkpoint.
+
+26.3 remains partial: the two component closures must still be realized as finite
+combinatorial manifolds with the surface as a boundary component, after which the two
+existing collars can be glued. No unproved local-flatness or closure-manifold hypothesis
+has been added to the public endpoint.
