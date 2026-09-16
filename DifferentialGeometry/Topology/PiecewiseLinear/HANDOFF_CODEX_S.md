@@ -2468,3 +2468,17 @@ warnings. AuditS135ContractingArcFamily checks seven endpoints, including the
 preserved finite graph and sequence endpoints; exit 0, only the standard three
 axioms. These results supply the infinite edge stage; assembling the successive
 parameter intervals and constructing the degree-one auxiliary arc remain.
+
+## Diameters of shrinking interval images (2026-09-16)
+
+`Topology/MetricSpace/Diameter.lean` proves `Metric.tendsto_diam_smallSets` for
+pseudometric spaces: the diameter tends to zero along the filter of sets
+shrinking to a point. `ContinuousWithinAt.tendsto_diam_image_Icc` applies this to
+continuous images of intervals whose endpoints converge to the same point,
+with the intervals eventually in the domain of continuity. The parameter space
+is any linearly ordered space with its order topology; the convergence filter
+is arbitrary. No injectivity or compactness is assumed.
+
+The focused check exits 0 with zero warnings. AuditS136Diameter checks both
+endpoints, exit 0, only the standard three axioms. This provides the quantitative
+shrinking estimate needed for the intervals approaching a deleted arc endpoint.
