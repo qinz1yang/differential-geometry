@@ -188,15 +188,13 @@ private theorem strictMono_affine_add_of_lipschitz {u : ℝ → ℝ} {a : ℝ} {
   dsimp only
   nlinarith
 
-theorem exists_isPLHomeomorphOn_snd_triangle_fiber_of_lipschitz
-    {b : ℝ × ℝ → ℝ} {r a c d : ℝ} {k : NNReal}
-    (hb : IsPiecewiseAffineOn b {z | 0 ≤ z.1 ∧ 0 ≤ z.2 ∧ z.1 + z.2 ≤ 1})
+theorem strictMonoOn_triangle_slices_of_lipschitz_sub_affine
+    {b : ℝ × ℝ → ℝ} {a c d : ℝ} {k : NNReal}
     (hLip : LipschitzWith k (fun z => b z - (a * z.1 + c * z.2 + d)))
-    (hc : (k : ℝ) < c) (hac : (k : ℝ) < a - c)
-    (h₀ : b (0, 0) < r) (h₁ : r < b (1, 0)) :
-    ∃ t ∈ Ioc (0 : ℝ) 1,
-      IsPLHomeomorphOn Prod.snd
-        {z | (0 ≤ z.1 ∧ 0 ≤ z.2 ∧ z.1 + z.2 ≤ 1) ∧ b z = r} (Icc 0 t) := by
+    (hc : (k : ℝ) < c) (hac : (k : ℝ) < a - c) :
+    (∀ y ∈ Icc (0 : ℝ) 1, StrictMonoOn (fun x => b (x, y)) (Icc 0 (1 - y))) ∧
+      StrictMonoOn (fun y => b (0, y)) (Icc (0 : ℝ) 1) ∧
+      StrictAntiOn (fun y => b (1 - y, y)) (Icc (0 : ℝ) 1) := by
   let u : ℝ × ℝ → ℝ := fun z => b z - (a * z.1 + c * z.2 + d)
   have hu : LipschitzWith k u := hLip
   have ha : (k : ℝ) < a := by linarith [k.coe_nonneg]
@@ -243,6 +241,18 @@ theorem exists_isPLHomeomorphOn_snd_triangle_fiber_of_lipschitz
     rw [heq] at hm
     intro y hy y' hy' hyy
     exact neg_lt_neg_iff.mp (hm hyy)
+  exact ⟨hh, hl, hr⟩
+
+theorem exists_isPLHomeomorphOn_snd_triangle_fiber_of_lipschitz
+    {b : ℝ × ℝ → ℝ} {r a c d : ℝ} {k : NNReal}
+    (hb : IsPiecewiseAffineOn b {z | 0 ≤ z.1 ∧ 0 ≤ z.2 ∧ z.1 + z.2 ≤ 1})
+    (hLip : LipschitzWith k (fun z => b z - (a * z.1 + c * z.2 + d)))
+    (hc : (k : ℝ) < c) (hac : (k : ℝ) < a - c)
+    (h₀ : b (0, 0) < r) (h₁ : r < b (1, 0)) :
+    ∃ t ∈ Ioc (0 : ℝ) 1,
+      IsPLHomeomorphOn Prod.snd
+        {z | (0 ≤ z.1 ∧ 0 ≤ z.2 ∧ z.1 + z.2 ≤ 1) ∧ b z = r} (Icc 0 t) := by
+  obtain ⟨hh, hl, hr⟩ := strictMonoOn_triangle_slices_of_lipschitz_sub_affine hLip hc hac
   exact exists_isPLHomeomorphOn_snd_triangle_fiber hb hh hl hr h₀ h₁
 
 theorem isPLBall_triangle_fiber_of_lipschitz {b : ℝ × ℝ → ℝ} {r a c d : ℝ} {k : NNReal}

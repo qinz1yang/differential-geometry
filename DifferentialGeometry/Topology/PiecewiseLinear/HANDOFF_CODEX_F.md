@@ -1957,3 +1957,13 @@ F-M1 仍为 partial。下一步把凸化映射在紧致旧三角形上的 PL Lip
 `TriangleFiberEquivalence.lean` 的 `exists_isPLHomeomorphOn_triangle_fibers_preserving_edges` 以两个纤维的区间参数和正比例缩放构造 PL 同胚。只要两个目标高度相对中间角点的大小/相等情形一致，所得对应逐点保持三条旧边的成员关系，包含经过上角的情形；边兼容不是输入。该结论是随后沿旧三角形公共边拼接的局部数据。
 
 聚焦检查：`TriangleFiberBoundary` exit=0（11.7 秒），`TriangleFiberEquivalence` exit=0（11.7 秒），均零 warning；`AuditF213.lean` 七项全都仅依赖 `propext`、`Classical.choice`、`Quot.sound`。F-M1 仍为 partial。下一步从 §19.63 的 Lipschitz 误差生产三方向单调性和顶点符号稳定性，实际得到每个小转轴的逐边保持对应；再进行有限复形拼接和保留盘侧芽分析。§19.56 的相对层圆周删除、S.4 M2/M3 与 I1 尚未交付。下一审计文件 `AuditF214.lean`。
+
+### 19.65 F-M1：小转轴实际生产逐边保持的全部三角形纤维对应
+
+`TriangleFiber.lean` 将既有定量证明抽出为 `strictMonoOn_triangle_slices_of_lipschitz_sub_affine`，旧端点签名保持。`HeightTriangleStability.lean` 的 `eventually_strictMonoOn_triangle_height` 通过 PL Lipschitz 延拓实际生产小转轴后高度的三个单调方向，旧区间参数化和像截面弧性端点现在直接消费该结果。
+
+新端点 `eventually_exists_isPLHomeomorphOn_triangle_fiber_preserving_edges` 对任意指定点高度同时处理全部情形：介于底角值之间时，用有限顶点严格次序稳定性确定退出边，再构造逐边保持的 PL 同胚；最低/最高值层用同高角点等于指定点这一真实唯一性条件固定相应单点；高度范围外两纤维均为空。因此结论从实际小高度邻域生产新旧层对应，不要求调用者输入单调性、边对应或层圆周计数，也不需要排除经过旧顶点的临界层。
+
+聚焦检查：`TriangleFiber` exit=0（15 秒），`HeightTriangleStability` exit=0（12.9 秒），均零 warning；`AuditF214.lean` 八项全部只依赖 `propext`、`Classical.choice`、`Quot.sound`。在本工作树没有 Lean 进程时运行 `fresh.py`，5 个改动模块的 olean 均新鲜、禁用模式 0；脚本同时提示系统另有一个 Lean 进程，故最终验收依上述聚焦检查与审计。
+
+F-M1 仍为 partial。单个旧三角形的全部纤维及逐边对应已闭合；下一步把有限原面族的局部映射按公共边唯一交点拼成整体 PL 对应，并从保留盘的相反半空间芽证明指定 `J` 的相对删除。§19.56 的全局单射、严格降指标、S.4 M2/M3 与 I1 尚未交付。下一审计文件 `AuditF215.lean`。

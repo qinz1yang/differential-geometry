@@ -1,6 +1,7 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.GeneralPosition
 import DifferentialGeometry.Topology.PiecewiseLinear.Product
-import DifferentialGeometry.Topology.PiecewiseLinear.TriangleFiber
+import DifferentialGeometry.Topology.PiecewiseLinear.TriangleFiberEquivalence
+import DifferentialGeometry.Topology.PiecewiseLinear.HeightPerturbation
 
 open Set Topology
 
@@ -24,18 +25,20 @@ private theorem isHPolytope_coordinate_triangle :
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 
-theorem eventually_exists_isPLHomeomorphOn_triangle_fiber_of_affine_height
+theorem eventually_strictMonoOn_triangle_height
     {G : ℝ × ℝ → E}
     (hG : IsPiecewiseAffineOn G {z | 0 ≤ z.1 ∧ 0 ≤ z.2 ∧ z.1 + z.2 ≤ 1})
     (ℓ : E →L[ℝ] ℝ) {a c d : ℝ} (hc : 0 < c) (hac : c < a)
     (hheight : ∀ z, 0 ≤ z.1 → 0 ≤ z.2 → z.1 + z.2 ≤ 1 →
       ℓ (G z) = a * z.1 + c * z.2 + d) :
-    ∀ᶠ f : E →L[ℝ] ℝ in 𝓝 ℓ, ∀ r, f (G (0, 0)) < r → r < f (G (1, 0)) →
-      ∃ t ∈ Ioc (0 : ℝ) 1, IsPLHomeomorphOn Prod.snd
-        {z | (0 ≤ z.1 ∧ 0 ≤ z.2 ∧ z.1 + z.2 ≤ 1) ∧ f (G z) = r} (Icc 0 t) := by
+    ∀ᶠ f : E →L[ℝ] ℝ in 𝓝 ℓ,
+      (∀ y ∈ Icc (0 : ℝ) 1,
+        StrictMonoOn (fun x => f (G (x, y))) (Icc 0 (1 - y))) ∧
+      StrictMonoOn (fun y => f (G (0, y))) (Icc (0 : ℝ) 1) ∧
+      StrictAntiOn (fun y => f (G (1 - y, y))) (Icc (0 : ℝ) 1) := by
   let T : Set (ℝ × ℝ) := {z | 0 ≤ z.1 ∧ 0 ≤ z.2 ∧ z.1 + z.2 ≤ 1}
   have hT : IsPolyhedron T := isHPolytope_coordinate_triangle.isPolyhedron
-  obtain ⟨G', k, hG', hLip, hEq, -, -⟩ :=
+  obtain ⟨G', k, -, hLip, hEq, -, -⟩ :=
     hG.exists_lipschitz_extension hT isOpen_univ (subset_univ _)
   obtain ⟨δ, hδ, hkδ⟩ := exists_pos_mul_lt
     (a := min c (a - c)) (lt_min hc (sub_pos.mpr hac)) (k : ℝ)
@@ -46,38 +49,53 @@ theorem eventually_exists_isPLHomeomorphOn_triangle_fiber_of_affine_height
       ‖f - ℓ‖ * (k : ℝ) ≤ δ * (k : ℝ) := mul_le_mul_of_nonneg_right hfδ.le k.coe_nonneg
       _ = (k : ℝ) * δ := mul_comm _ _
       _ < min c (a - c) := hkδ
-  let A : (ℝ × ℝ) →ᵃ[ℝ] ℝ :=
-    (a • LinearMap.fst ℝ ℝ ℝ + c • LinearMap.snd ℝ ℝ ℝ).toAffineMap +
-      AffineMap.const ℝ (ℝ × ℝ) d
-  have hA : ∀ z, A z = a * z.1 + c * z.2 + d := fun _ => rfl
-  let b : ℝ × ℝ → ℝ := fun z => A z + (f - ℓ) (G' z)
-  have hb : IsPiecewiseAffineOn b T :=
-    ((isPiecewiseAffineOn_of_affine A isOpen_univ).add
-      (hG'.affine_comp (f - ℓ).toLinearMap.toAffineMap)).mono_of_isPolyhedron hT (subset_univ _)
+  let b : ℝ × ℝ → ℝ := fun z => a * z.1 + c * z.2 + d + (f - ℓ) (G' z)
   have hbEq : EqOn b (fun z => f (G z)) T := by
     rintro z ⟨hx, hy, hxy⟩
     dsimp only [b]
-    rw [hA, hEq ⟨hx, hy, hxy⟩, sub_apply, hheight z hx hy hxy]
+    rw [hEq ⟨hx, hy, hxy⟩, sub_apply, hheight z hx hy hxy]
     ring
   have hbLip : LipschitzWith (‖f - ℓ‖₊ * k)
       (fun z => b z - (a * z.1 + c * z.2 + d)) := by
     have heq : (fun z => b z - (a * z.1 + c * z.2 + d)) = (f - ℓ) ∘ G' := by
       funext z
       dsimp only [b, Function.comp_apply]
-      rw [hA]
       ring
     rw [heq]
     exact (f - ℓ).lipschitz.comp hLip
-  intro r h₀ h₁
-  obtain ⟨t, ht, hbij⟩ := exists_isPLHomeomorphOn_snd_triangle_fiber_of_lipschitz hb hbLip
+  obtain ⟨hh, hl, hr⟩ := strictMonoOn_triangle_slices_of_lipschitz_sub_affine hbLip
     (show ((‖f - ℓ‖₊ * k : NNReal) : ℝ) < c from lt_of_lt_of_le hsmall (min_le_left _ _))
     (show ((‖f - ℓ‖₊ * k : NNReal) : ℝ) < a - c from lt_of_lt_of_le hsmall (min_le_right _ _))
-    (by rwa [hbEq (show (0, 0) ∈ T from ⟨le_rfl, le_rfl, by norm_num⟩)])
-    (by rwa [hbEq (show (1, 0) ∈ T from ⟨by norm_num, le_rfl, by norm_num⟩)])
-  refine ⟨t, ht, ?_⟩
-  convert hbij using 1
-  ext z
-  exact and_congr_right fun hz => by rw [hbEq hz]
+  refine ⟨?_, ?_, ?_⟩
+  · intro y hy x hx x' hx' hxx
+    have hbx := hbEq (show (x, y) ∈ T from ⟨hx.1, hy.1, by linarith [hx.2]⟩)
+    have hbx' := hbEq (show (x', y) ∈ T from ⟨hx'.1, hy.1, by linarith [hx'.2]⟩)
+    rw [← hbx, ← hbx']
+    exact hh y hy hx hx' hxx
+  · intro y hy y' hy' hyy
+    have hby := hbEq (show (0, y) ∈ T from ⟨le_rfl, hy.1, by simpa using hy.2⟩)
+    have hby' := hbEq (show (0, y') ∈ T from ⟨le_rfl, hy'.1, by simpa using hy'.2⟩)
+    rw [← hby, ← hby']
+    exact hl hy hy' hyy
+  · intro y hy y' hy' hyy
+    have hby := hbEq (show (1 - y, y) ∈ T from ⟨by linarith [hy.2], hy.1, by linarith⟩)
+    have hby' := hbEq (show (1 - y', y') ∈ T from ⟨by linarith [hy'.2], hy'.1, by linarith⟩)
+    rw [← hby, ← hby']
+    exact hr hy hy' hyy
+
+theorem eventually_exists_isPLHomeomorphOn_triangle_fiber_of_affine_height
+    {G : ℝ × ℝ → E}
+    (hG : IsPiecewiseAffineOn G {z | 0 ≤ z.1 ∧ 0 ≤ z.2 ∧ z.1 + z.2 ≤ 1})
+    (ℓ : E →L[ℝ] ℝ) {a c d : ℝ} (hc : 0 < c) (hac : c < a)
+    (hheight : ∀ z, 0 ≤ z.1 → 0 ≤ z.2 → z.1 + z.2 ≤ 1 →
+      ℓ (G z) = a * z.1 + c * z.2 + d) :
+    ∀ᶠ f : E →L[ℝ] ℝ in 𝓝 ℓ, ∀ r, f (G (0, 0)) < r → r < f (G (1, 0)) →
+      ∃ t ∈ Ioc (0 : ℝ) 1, IsPLHomeomorphOn Prod.snd
+        {z | (0 ≤ z.1 ∧ 0 ≤ z.2 ∧ z.1 + z.2 ≤ 1) ∧ f (G z) = r} (Icc 0 t) := by
+  filter_upwards [eventually_strictMonoOn_triangle_height hG ℓ hc hac hheight] with f hf
+  intro r h₀ h₁
+  exact exists_isPLHomeomorphOn_snd_triangle_fiber
+    (hG.affine_comp f.toLinearMap.toAffineMap) hf.1 hf.2.1 hf.2.2 h₀ h₁
 
 theorem eventually_isPLBall_image_triangle_fiber_of_affine_height [FiniteDimensional ℝ E]
     {G : ℝ × ℝ → E}
@@ -142,5 +160,73 @@ theorem eventually_isPLBall_affine_triangle_image_fiber [FiniteDimensional ℝ E
     (H.injective.comp hA).injOn ℓ hc hac
     (fun z _ _ _ => (hheight (A z)).trans (hℓA z))
   simpa only [Function.comp_apply, image_image] using hresult
+
+theorem eventually_exists_isPLHomeomorphOn_triangle_fiber_preserving_edges
+    {G : ℝ × ℝ → E}
+    (hG : IsPiecewiseAffineOn G {z | 0 ≤ z.1 ∧ 0 ≤ z.2 ∧ z.1 + z.2 ≤ 1})
+    (ℓ : E →L[ℝ] ℝ) {a c d : ℝ} (hc : 0 < c) (hac : c < a)
+    (hheight : ∀ z, 0 ≤ z.1 → 0 ≤ z.2 → z.1 + z.2 ≤ 1 →
+      ℓ (G z) = a * z.1 + c * z.2 + d) {p : E}
+    (hunique : ∀ z ∈ ({(0, 0), (0, 1), (1, 0)} : Set (ℝ × ℝ)),
+      ℓ (G z) = ℓ p → G z = p) :
+    ∀ᶠ f : E →L[ℝ] ℝ in 𝓝 ℓ, ∃ g : ℝ × ℝ → ℝ × ℝ, IsPLHomeomorphOn g
+      {z | (0 ≤ z.1 ∧ 0 ≤ z.2 ∧ z.1 + z.2 ≤ 1) ∧ f (G z) = f p}
+      {z | (0 ≤ z.1 ∧ 0 ≤ z.2 ∧ z.1 + z.2 ≤ 1) ∧ ℓ (G z) = ℓ p} ∧
+      ∀ z, (0 ≤ z.1 ∧ 0 ≤ z.2 ∧ z.1 + z.2 ≤ 1) → f (G z) = f p →
+        ((g z).1 = 0 ↔ z.1 = 0) ∧ ((g z).2 = 0 ↔ z.2 = 0) ∧
+        ((g z).1 + (g z).2 = 1 ↔ z.1 + z.2 = 1) := by
+  have hmono := eventually_strictMonoOn_triangle_height hG ℓ hc hac hheight
+  obtain ⟨hℓh, hℓl, hℓr⟩ := hmono.self_of_nhds
+  let V : Set E := {G (0, 0), G (0, 1), G (1, 0), p}
+  have hV : V.Finite := by simp [V]
+  filter_upwards [hmono, eventually_preserves_strict_order hV ℓ] with f hf horder
+  by_cases hlo : ℓ (G (0, 0)) < ℓ p
+  · by_cases hhi : ℓ p < ℓ (G (1, 0))
+    · have hflo : f (G (0, 0)) < f p := horder _ (by simp [V]) _ (by simp [V]) hlo
+      have hfhi : f p < f (G (1, 0)) := horder _ (by simp [V]) _ (by simp [V]) hhi
+      have hcompare : (f p ≤ f (G (0, 1)) ↔ ℓ p ≤ ℓ (G (0, 1))) ∧
+          (f (G (0, 1)) ≤ f p ↔ ℓ (G (0, 1)) ≤ ℓ p) := by
+        rcases lt_trichotomy (ℓ (G (0, 1))) (ℓ p) with hlt | heq | hgt
+        · have hflt := horder _ (show G (0, 1) ∈ V by simp [V]) _ (show p ∈ V by simp [V]) hlt
+          exact ⟨iff_of_false (not_le.mpr hflt) (not_le.mpr hlt), iff_of_true hflt.le hlt.le⟩
+        · have hpoint := hunique (0, 1) (by simp) heq
+          simp [hpoint]
+        · have hfgt := horder _ (show p ∈ V by simp [V]) _ (show G (0, 1) ∈ V by simp [V]) hgt
+          exact ⟨iff_of_true hfgt.le hgt.le, iff_of_false (not_le.mpr hfgt) (not_le.mpr hgt)⟩
+      exact exists_isPLHomeomorphOn_triangle_fibers_preserving_edges
+        (hG.affine_comp f.toLinearMap.toAffineMap) (hG.affine_comp ℓ.toLinearMap.toAffineMap)
+        hf.1 hf.2.1 hf.2.2 hℓh hℓl hℓr hflo hfhi hlo hhi hcompare.1 hcompare.2
+    · rcases lt_or_eq_of_le (le_of_not_gt hhi) with hmax | heq
+      · have hfmax := horder _ (show G (1, 0) ∈ V by simp [V]) _ (show p ∈ V by simp [V]) hmax
+        have hnew := triangle_fiber_eq_empty_of_notMem_Icc (b := fun z => f (G z)) (r := f p) hf.1 hf.2.1 hf.2.2
+          (fun h => (not_le.mpr hfmax) h.2)
+        have hold := triangle_fiber_eq_empty_of_notMem_Icc (b := fun z => ℓ (G z)) (r := ℓ p) hℓh hℓl hℓr
+          (fun h => (not_le.mpr hmax) h.2)
+        refine ⟨id, ?_, fun _ _ _ => ⟨Iff.rfl, Iff.rfl, Iff.rfl⟩⟩
+        rw [hnew, hold]
+        exact IsPolyhedron.empty.isPLHomeomorphOn_id
+      · have hpoint := hunique (1, 0) (by simp) heq
+        have hnew := triangle_fiber_max_eq_singleton_of_monotone (b := fun z => f (G z)) hf.1 hf.2.1 hf.2.2
+        have hold := triangle_fiber_max_eq_singleton_of_monotone (b := fun z => ℓ (G z)) hℓh hℓl hℓr
+        rw [hpoint] at hnew hold
+        refine ⟨id, ?_, fun _ _ _ => ⟨Iff.rfl, Iff.rfl, Iff.rfl⟩⟩
+        rw [hnew, hold]
+        exact (isHPolytope_singleton (1, 0)).isPolyhedron.isPLHomeomorphOn_id
+  · rcases lt_or_eq_of_le (le_of_not_gt hlo) with hmin | heq
+    · have hfmin := horder _ (show p ∈ V by simp [V]) _ (show G (0, 0) ∈ V by simp [V]) hmin
+      have hnew := triangle_fiber_eq_empty_of_notMem_Icc (b := fun z => f (G z)) (r := f p) hf.1 hf.2.1 hf.2.2
+        (fun h => (not_le.mpr hfmin) h.1)
+      have hold := triangle_fiber_eq_empty_of_notMem_Icc (b := fun z => ℓ (G z)) (r := ℓ p) hℓh hℓl hℓr
+        (fun h => (not_le.mpr hmin) h.1)
+      refine ⟨id, ?_, fun _ _ _ => ⟨Iff.rfl, Iff.rfl, Iff.rfl⟩⟩
+      rw [hnew, hold]
+      exact IsPolyhedron.empty.isPLHomeomorphOn_id
+    · have hpoint := hunique (0, 0) (by simp) heq.symm
+      have hnew := triangle_fiber_min_eq_singleton_of_monotone (b := fun z => f (G z)) hf.1 hf.2.1 hf.2.2
+      have hold := triangle_fiber_min_eq_singleton_of_monotone (b := fun z => ℓ (G z)) hℓh hℓl hℓr
+      rw [hpoint] at hnew hold
+      refine ⟨id, ?_, fun _ _ _ => ⟨Iff.rfl, Iff.rfl, Iff.rfl⟩⟩
+      rw [hnew, hold]
+      exact (isHPolytope_singleton (0, 0)).isPolyhedron.isPLHomeomorphOn_id
 
 end DifferentialGeometry.Topology.PiecewiseLinear
