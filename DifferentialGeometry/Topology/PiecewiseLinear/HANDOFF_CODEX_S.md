@@ -1653,3 +1653,41 @@ The focused check has exit 0 and zero warnings (`check-planar-crosscut.log`).
 The source hash will be recorded at the next checkpoint. The next step extends
 a prescribed crosscut homeomorphism over both closed sides, glues them, and extends
 by the identity outside the disk. P.4 is still partial.
+
+### S-M6 continuation: supported crosscut extension with displacement control
+
+The general crosscut theorem is committed and pushed as `d9f27c4b4`; the following
+integration merge was already up to date.
+
+`PlanarJordan/CrosscutExtension.lean` proves
+`exists_homeomorph_closed_disk_extending_crosscut`: any endpoint-preserving
+homeomorphism between two embedded crosscuts of the same Jordan disk extends over
+the closed disk and fixes its boundary pointwise. Neither crosscut needs to be
+polygonal. Each labelled side receives the checked relative Jordan extension; the
+two maps agree on the whole crosscut and their target sides meet exactly in its image,
+so compact gluing gives a bijective continuous map with continuous inverse.
+
+`exists_homeomorph_extending_crosscut` extends that disk map by the identity to
+the plane. It agrees with the prescribed map on the original arc, fixes every point
+outside the disk interior (including its boundary), and bounds displacement by the
+closed disk diameter. `exists_homeomorph_image_crosscut_dist_lt` chooses the arc
+homeomorphism and gives strict pointwise control for any positive function when
+the disk diameter is smaller than that function throughout the disk.
+
+`Homeomorph/CompactGluing.lean` contains the reusable compact-cover gluing theorem
+for Hausdorff spaces. `ArcExtension.lean` now consumes it; its public statements
+are unchanged and the repeated gluing proof is removed.
+
+The three changed source modules and the Crosscut consumer have focused-check exit 0
+and zero warnings (`check-homeomorph-compact-gluing.log`,
+`check-planar-arc-extension.log`, `check-planar-crosscut.log`,
+`check-crosscut-extension.log`). `AuditS108SupportedCrosscut.lean` / `.log`
+contain eleven entries covering the new endpoints and the affected arc/crosscut
+chain, all with only `propext`, `Classical.choice`, and `Quot.sound`.
+No vendored or other-lane source changed. The source hash will be recorded in the
+final publication entry.
+
+P.4 remains partial. Its relative map inside a chosen Jordan frame is now proved;
+the remaining geometric producers are compatible vertex sectors and sufficiently
+small frames around the finite graph, with appropriate polygonal target arcs.
+I2's exact target-type issue is unchanged.
