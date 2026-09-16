@@ -2482,3 +2482,24 @@ is arbitrary. No injectivity or compactness is assumed.
 The focused check exits 0 with zero warnings. AuditS136Diameter checks both
 endpoints, exit 0, only the standard three axioms. This provides the quantitative
 shrinking estimate needed for the intervals approaching a deleted arc endpoint.
+
+## Straightening every interval in an endpoint sequence (2026-09-16)
+
+`PlanarJordan/ArcSubdivisionStraightening.lean` proves
+`exists_homeomorph_polygonal_intervals_of_strictAnti`. For an arbitrary planar
+arc, a strictly decreasing sequence of interior parameters converging to zero,
+and an open neighborhood of the whole arc, one ambient homeomorphism makes
+every interval between consecutive parameters polygonal. It fixes every
+selected point, both original endpoints, and every point outside the prescribed
+open set.
+
+The proof first constructs polygonal germs at the selected points. It extends
+the inverse parameter continuously to the plane, uses inverse images of the
+disjoint open parameter intervals to separate the edge supports, and bounds them
+by shrinking balls using the diameter convergence theorem. The infinite-family
+straightening then applies to neighborhoods actually constructed in the proof.
+
+The focused check exits 0 with zero warnings. AuditS137ArcSubdivision checks the
+new endpoint; exit 0, only the standard three axioms. The auxiliary arc
+approaching the original endpoint and full positive-function control remain
+open; this is the infinite interval stage, not the degree-one endpoint theorem.
