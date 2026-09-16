@@ -288,4 +288,61 @@ theorem curvatureEscapeRealization_of_boundedAtDistance
   obtain ⟨e, he, hb⟩ := h
   exact ⟨e, he, fun eps hp hle X hf => absurd (hb eps hp hle X) hf⟩
 
+
+theorem FiniteControlledRadius.eventually_escape_window
+    {eps kappa sigma : ℝ} {Phi : ℝ → ℝ}
+    {X : NormalizedSequence.{u} eps kappa sigma Phi}
+    (h : FiniteControlledRadius X) {eta C : ℝ} (heta : 0 < eta) :
+    ∀ᶠ i in Filter.atTop,
+      |metricDistance ((X.term i).S.base.metric 0) (X.term i).basepoint (h.points i) - h.radius| < eta ∧
+        C < (X.term i).S.scalar 0 (h.points i) := by
+  have hdist : ∀ᶠ i in Filter.atTop,
+      |metricDistance ((X.term i).S.base.metric 0) (X.term i).basepoint (h.points i) - h.radius| < eta := by
+    simpa only [Real.dist_eq] using (Metric.tendsto_nhds.mp h.distance_limit) eta heta
+  have hcurv : ∀ᶠ i in Filter.atTop,
+      C < (X.term i).S.scalar 0 (h.points i) :=
+    h.curvature_limit.eventually_gt_atTop C
+  exact hdist.and hcurv
+
+theorem FiniteControlledRadius.exists_source_index_after
+    {eps kappa sigma : ℝ} {Phi : ℝ → ℝ}
+    {X : NormalizedSequence.{u} eps kappa sigma Phi}
+    (h : FiniteControlledRadius X) {eta C : ℝ} (heta : 0 < eta) :
+    ∃ N : ℕ, ∀ i : ℕ, N ≤ i →
+      |metricDistance ((X.term i).S.base.metric 0) (X.term i).basepoint (h.points i) - h.radius| < eta ∧
+        C < (X.term i).S.scalar 0 (h.points i) := by
+  exact Filter.eventually_atTop.mp (h.eventually_escape_window heta)
+
+
+theorem FiniteControlledRadius.exists_strictMono_source_escape
+    {eps kappa sigma : ℝ} {Phi : ℝ → ℝ}
+    {X : NormalizedSequence.{u} eps kappa sigma Phi}
+    (h : FiniteControlledRadius X) :
+    ∃ I : ℕ → ℕ, StrictMono I ∧ ∀ k : ℕ,
+      |metricDistance ((X.term (I k)).S.base.metric 0) (X.term (I k)).basepoint (h.points (I k)) - h.radius| <
+          1 / ((k : ℝ) + 1) ∧
+        (k : ℝ) < (X.term (I k)).S.scalar 0 (h.points (I k)) := by
+  let N : ℕ → ℕ := fun k => Classical.choose
+    (h.exists_source_index_after (eta := 1 / ((k : ℝ) + 1)) (C := (k : ℝ)) (by positivity))
+  have hN : ∀ k i, N k ≤ i →
+      |metricDistance ((X.term i).S.base.metric 0) (X.term i).basepoint (h.points i) - h.radius| <
+          1 / ((k : ℝ) + 1) ∧
+        (k : ℝ) < (X.term i).S.scalar 0 (h.points i) := by
+    intro k i hi
+    exact Classical.choose_spec
+      (h.exists_source_index_after (eta := 1 / ((k : ℝ) + 1)) (C := (k : ℝ)) (by positivity)) i hi
+  let I : ℕ → ℕ := fun k => Nat.rec (N 0) (fun k prev => max (N (k + 1)) (prev + 1)) k
+  have hstep : ∀ k, I k < I (k + 1) := by
+    intro k
+    exact Nat.lt_of_lt_of_le (Nat.lt_succ_self (I k)) (Nat.le_max_right (N (k + 1)) (I k + 1))
+  refine ⟨I, strictMono_nat_of_lt_succ hstep, ?_⟩
+  intro k
+  have hI : N k ≤ I k := by
+    induction k with
+    | zero => exact le_rfl
+    | succ k ih =>
+      exact le_max_left _ _
+  exact hN k (I k) hI
+
+
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
