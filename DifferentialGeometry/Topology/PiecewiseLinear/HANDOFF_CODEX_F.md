@@ -2053,3 +2053,11 @@ F-M1 仍为 partial。单个旧三角形的全部纤维及逐边对应已闭合�
 `SimplicialComplex/PuncturedConnected.lean` 从既有流形图卡定理证明维数至少二的连通有限组合流形去掉一点仍连通。`HeightFiberCircle.lean` 的 `exists_levelPolygon_of_between_heights` 因而在经过唯一顶点的层也实际生产一个层圆周；非顶点层使用已有圆周分解。`fiber_eq_levelPolygon_of_heightIndex_eq_zero` 再由球面上的两盘分解、严格两侧连通性及上述闭包公式，证明该圆周等于整个层。最终端点 `isPLSphere_one_fiber_of_heightIndex_eq_zero` 对所有严格位于最高与最低高度之间的 r 成立，没有避开顶点的附加条件。
 
 聚焦检查：`CompactIntersection` exit=0（7.4 秒）、`HeightFiberClosure` exit=0（11 秒）、`PuncturedConnected` exit=0（8.8 秒）、`HeightFiberCircle` exit=0（11.1 秒），均零 warning。`AuditF224.lean` 十项仅依赖 `propext`、`Classical.choice`、`Quot.sound`。Lemma 3 已闭合；下一步提取水平两侧盘及有界填充的层结构，进入 Lemma 4–6 的薄片边界单嵌入。S.4 M2/M3、夜间 F-M1 整体及 I1 尚未完成；下一审计文件 `AuditF225.lean`。
+
+### 19.76 S.4 M2：中间水平圆周两侧的精确曲面盘
+
+`Connected/LevelSet.lean` 对任意具闭序拓扑的线序值连续函数证明：连通的严格子水平集（或上水平集）恰是删去该水平纤维后包含其任一点的连通分支，不需要欧氏、紧致或流形假设。`SphericalComponents.lean` 新 API 从球面切圆周的两分支分解中实际选择任意指定分支闭包的 PL 盘参数化，并保留精确的参数边界像。
+
+`HeightHalfDisk.lean` 的 `exists_isPLHomeomorphOn_halfSpaces_of_heightIndex_eq_zero` 结合 §19.74–19.75 的连通性、闭包公式和整层圆周性，实际生产闭上、下半空间截面的两个 PL 盘参数化，两者参数边界均恰为整个水平纤维。`isPLBall_halfSpaces_of_heightIndex_eq_zero` 给出球性 API。仍覆盖顶点高度；没有引入结论型假设，也没有扩充 `SchoenfliesInput`。
+
+聚焦检查：`LevelSet` exit=0（6.3 秒）、`SphericalComponents` exit=0（10.5 秒）、`HeightHalfDisk` exit=0（10.8 秒），均零 warning。`AuditF225.lean` 五项仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步构造水平平面张成盘与封帽/薄片，继续 Lemma 4–6；S.4 M2/M3、夜间 F-M1 整体及 I1 尚未完成。下一审计文件 `AuditF226.lean`。
