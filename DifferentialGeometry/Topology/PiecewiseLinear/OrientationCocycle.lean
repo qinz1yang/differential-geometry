@@ -20,12 +20,12 @@ theorem faceStarComplex_antitone (K : Geometry.SimplicialComplex ℝ E)
 variable {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces] {n : ℕ}
 
 open Classical in
-private noncomputable def localOrientationSign (r : LinearOrder E)
+noncomputable def localOrientationSign (r : LinearOrder E)
     (o : ∀ s ∈ K.faces, CoherentOrientation n (faceStarComplex K s)) (s t : Finset E) : ℤ :=
   if hs : s ∈ K.faces then ((o s hs).changeVertexOrder r).sign t else 0
 
 open Classical in
-private theorem localOrientationSign_eq_one_or_neg_one (r : LinearOrder E)
+theorem localOrientationSign_eq_one_or_neg_one (r : LinearOrder E)
     (o : ∀ s ∈ K.faces, CoherentOrientation n (faceStarComplex K s))
     {s t : Finset E} (hs : s ∈ K.faces) (ht : t ∈ K.faces)
     (hst : s ⊆ t) (htcard : t.card = n + 1) :
@@ -150,6 +150,105 @@ noncomputable def orientationCocycle
       (localOrientationSign_eq_one_or_neg_one r o hcK hS (hsub c hc) hScard)
 
 open Classical in
+noncomputable def localSubdivisionOrientationSign
+    (o : ∀ s ∈ K.faces, CoherentOrientation n (faceStarComplex K s))
+    (a : E) (q : Finset E) : ℤ :=
+  let r : LinearOrder E := linearOrderOfSTO WellOrderingRel
+  let _ : DecidableEq E := Classical.decEq E
+  if hq : q.card = n + 1 then
+    let S := carrierFace K (q.centroid ℝ id)
+    if hS : S.card = n + 1 then
+      affineSimplexOrientationSign r hq hS * localOrientationSign r o (carrierFace K a) S
+    else 0
+  else 0
+
+open Classical in
+theorem localSubdivisionOrientationSign_eq_one_or_neg_one
+    (hK : IsCombinatorialManifoldWithBoundary n K)
+    (o : ∀ s ∈ K.faces, CoherentOrientation n (faceStarComplex K s))
+    {a : E} {q : Finset E} (hq : q ∈ (barycentricSubdivision K).faces)
+    (ha : a ∈ q) (hqcard : q.card = n + 1) :
+    localSubdivisionOrientationSign o a q = 1 ∨
+      localSubdivisionOrientationSign o a q = -1 := by
+  let r : LinearOrder E := linearOrderOfSTO WellOrderingRel
+  let _ : DecidableEq E := Classical.decEq E
+  let S := carrierFace K (q.centroid ℝ id)
+  have hspec := subdivision_carrierFace_spec (barycentricSubdivision_isSubdivision K) hq
+  have hbound : ∀ t ∈ K.faces, t.card ≤ n + 1 := by
+    cases n with
+    | zero => exact fun _ ht => hK.card_le_one ht
+    | succ n => exact fun _ ht => hK.card_le K ht
+  have hScard : S.card = n + 1 :=
+    subdivision_carrierFace_card (barycentricSubdivision_isSubdivision K) hbound hq hqcard
+  have haK := carrierFace_mem_of_mem_barycentricSubdivision hq ha
+  have haSpace : a ∈ K.space := by
+    rw [← (barycentricSubdivision_isSubdivision K).space_eq]
+    exact (barycentricSubdivision K).subset_space hq ha
+  have haS : carrierFace K a ⊆ S :=
+    carrierFace_subset haSpace hspec.1 (hspec.2 (subset_convexHull ℝ _ ha))
+  have haff := affineSimplexOrientationSign_eq_one_or_neg_one r hqcard hScard
+    ((barycentricSubdivision K).indep hq) hspec.2
+  have hlocal := localOrientationSign_eq_one_or_neg_one r o haK hspec.1 haS hScard
+  rw [localSubdivisionOrientationSign, dif_pos hqcard, dif_pos hScard]
+  change affineSimplexOrientationSign r hqcard hScard *
+      localOrientationSign r o (carrierFace K a) S = 1 ∨
+    affineSimplexOrientationSign r hqcard hScard *
+      localOrientationSign r o (carrierFace K a) S = -1
+  rcases haff with haff | haff <;> rcases hlocal with hlocal | hlocal
+  all_goals rw [haff, hlocal]
+  all_goals norm_num
+
+open Classical in
+theorem orientationCocycle_parity_eq_localSubdivisionOrientationSign
+    (hK : IsCombinatorialManifoldWithBoundary n K)
+    (o : ∀ s ∈ K.faces, CoherentOrientation n (faceStarComplex K s))
+    {a b : E} {q : Finset E} (hq : q ∈ (barycentricSubdivision K).faces)
+    (ha : a ∈ q) (hb : b ∈ q) (hqcard : q.card = n + 1) :
+    (orientationCocycle hK o).parity a b =
+      decide (localSubdivisionOrientationSign o a q *
+        localSubdivisionOrientationSign o b q = -1) := by
+  let r : LinearOrder E := linearOrderOfSTO WellOrderingRel
+  let _ : DecidableEq E := Classical.decEq E
+  let S := carrierFace K (q.centroid ℝ id)
+  have hspec := subdivision_carrierFace_spec (barycentricSubdivision_isSubdivision K) hq
+  have hbound : ∀ t ∈ K.faces, t.card ≤ n + 1 := by
+    cases n with
+    | zero => exact fun _ ht => hK.card_le_one ht
+    | succ n => exact fun _ ht => hK.card_le K ht
+  have hScard : S.card = n + 1 :=
+    subdivision_carrierFace_card (barycentricSubdivision_isSubdivision K) hbound hq hqcard
+  have haK := carrierFace_mem_of_mem_barycentricSubdivision hq ha
+  have hbK := carrierFace_mem_of_mem_barycentricSubdivision hq hb
+  have haSpace : a ∈ K.space := by
+    rw [← (barycentricSubdivision_isSubdivision K).space_eq]
+    exact (barycentricSubdivision K).subset_space hq ha
+  have hbSpace : b ∈ K.space := by
+    rw [← (barycentricSubdivision_isSubdivision K).space_eq]
+    exact (barycentricSubdivision K).subset_space hq hb
+  have haS : carrierFace K a ⊆ S :=
+    carrierFace_subset haSpace hspec.1 (hspec.2 (subset_convexHull ℝ _ ha))
+  have hbS : carrierFace K b ⊆ S :=
+    carrierFace_subset hbSpace hspec.1 (hspec.2 (subset_convexHull ℝ _ hb))
+  have haff := affineSimplexOrientationSign_eq_one_or_neg_one r hqcard hScard
+    ((barycentricSubdivision K).indep hq) hspec.2
+  have hlocalA := localOrientationSign_eq_one_or_neg_one r o haK hspec.1 haS hScard
+  have hlocalB := localOrientationSign_eq_one_or_neg_one r o hbK hspec.1 hbS hScard
+  change localOrientationParity hK r o (carrierFace K a) (carrierFace K b) = _
+  rw [localOrientationParity_eq hK r o haK hbK hspec.1 hScard haS hbS]
+  rw [localSubdivisionOrientationSign, dif_pos hqcard, dif_pos hScard,
+    localSubdivisionOrientationSign, dif_pos hqcard, dif_pos hScard]
+  change decide (localOrientationSign r o (carrierFace K a) S *
+      localOrientationSign r o (carrierFace K b) S = -1) =
+    decide ((affineSimplexOrientationSign r hqcard hScard *
+      localOrientationSign r o (carrierFace K a) S) *
+      (affineSimplexOrientationSign r hqcard hScard *
+        localOrientationSign r o (carrierFace K b) S) = -1)
+  rcases haff with haff | haff <;> rcases hlocalA with hlocalA | hlocalA <;>
+    rcases hlocalB with hlocalB | hlocalB
+  all_goals rw [haff, hlocalA, hlocalB]
+  all_goals decide
+
+open Classical in
 private theorem orientationCocycle_isCoboundary_of_isOrientable
     (hK : IsCombinatorialManifoldWithBoundary n K)
     (o : ∀ s ∈ K.faces, CoherentOrientation n (faceStarComplex K s))
@@ -199,6 +298,80 @@ private theorem sign_flip_eq_of_parity {a b : ℤ}
     (h : decide (a * b = -1) = Bool.xor d e) :
     (if d then -1 else 1) * a = (if e then -1 else 1) * b := by
   rcases ha with rfl | rfl <;> rcases hb with rfl | rfl <;> cases d <;> cases e <;> norm_num at *
+
+open Classical in
+theorem localSubdivisionOrientationSign_flip_of_orientationCocycle
+    (hK : IsCombinatorialManifoldWithBoundary n K)
+    (o : ∀ s ∈ K.faces, CoherentOrientation n (faceStarComplex K s))
+    {a b : E} {q : Finset E} (hq : q ∈ (barycentricSubdivision K).faces)
+    (ha : a ∈ q) (hb : b ∈ q) (hqcard : q.card = n + 1)
+    (d e : Bool)
+    (hparity : (orientationCocycle hK o).parity a b = Bool.xor d e) :
+    (if d then -1 else 1) * localSubdivisionOrientationSign o a q =
+      (if e then -1 else 1) * localSubdivisionOrientationSign o b q := by
+  apply sign_flip_eq_of_parity
+    (localSubdivisionOrientationSign_eq_one_or_neg_one hK o hq ha hqcard)
+    (localSubdivisionOrientationSign_eq_one_or_neg_one hK o hq hb hqcard)
+  rw [← orientationCocycle_parity_eq_localSubdivisionOrientationSign hK o hq ha hb hqcard]
+  exact hparity
+
+open Classical in
+theorem localSubdivisionOrientationSign_pair_cancel
+    (hK : IsCombinatorialManifoldWithBoundary (n + 1) K)
+    (o : ∀ s ∈ K.faces, CoherentOrientation (n + 1) (faceStarComplex K s))
+    {a : E} {f q p : Finset E}
+    (hf : f ∈ (barycentricSubdivision K).faces)
+    (hq : q ∈ (barycentricSubdivision K).faces)
+    (hp : p ∈ (barycentricSubdivision K).faces)
+    (ha : a ∈ f) (hfq : f ⊆ q) (hfp : f ⊆ p) (hqp : q ≠ p)
+    (hfcard : f.card = n + 1) (hqcard : q.card = n + 2)
+    (hpcard : p.card = n + 2) :
+    localSubdivisionOrientationSign o a q *
+        simplexBoundaryCoefficient (linearOrderOfSTO WellOrderingRel) q f +
+      localSubdivisionOrientationSign o a p *
+        simplexBoundaryCoefficient (linearOrderOfSTO WellOrderingRel) p f = 0 := by
+  let r : LinearOrder E := linearOrderOfSTO WellOrderingRel
+  let _ : DecidableEq E := Classical.decEq E
+  let s := carrierFace K a
+  let S := carrierFace K (q.centroid ℝ id)
+  let T := carrierFace K (p.centroid ℝ id)
+  have hqspec := subdivision_carrierFace_spec (barycentricSubdivision_isSubdivision K) hq
+  have hpspec := subdivision_carrierFace_spec (barycentricSubdivision_isSubdivision K) hp
+  have hbound : ∀ u ∈ K.faces, u.card ≤ n + 2 := by
+    intro u hu
+    simpa [Nat.add_assoc] using hK.card_le K hu
+  have hScard : S.card = n + 2 :=
+    subdivision_carrierFace_card (barycentricSubdivision_isSubdivision K) hbound hq hqcard
+  have hTcard : T.card = n + 2 :=
+    subdivision_carrierFace_card (barycentricSubdivision_isSubdivision K) hbound hp hpcard
+  have hqtop : q.card = (n + 1) + 1 := by omega
+  have hptop : p.card = (n + 1) + 1 := by omega
+  have hStop : S.card = (n + 1) + 1 := by omega
+  have hTtop : T.card = (n + 1) + 1 := by omega
+  have hStop' : (carrierFace K (q.centroid ℝ id)).card = (n + 1) + 1 := by
+    simpa only [S] using hStop
+  have hTtop' : (carrierFace K (p.centroid ℝ id)).card = (n + 1) + 1 := by
+    simpa only [T] using hTtop
+  have hs : s ∈ K.faces := carrierFace_mem_of_mem_barycentricSubdivision hf ha
+  have hs' : carrierFace K a ∈ K.faces := by simpa only [s] using hs
+  have haSpace : a ∈ K.space := by
+    rw [← (barycentricSubdivision_isSubdivision K).space_eq]
+    exact (barycentricSubdivision K).subset_space hf ha
+  have hsS : s ⊆ S := carrierFace_subset haSpace hqspec.1
+    (hqspec.2 (subset_convexHull ℝ (q : Set E) (hfq ha)))
+  have hsT : s ⊆ T := carrierFace_subset haSpace hpspec.1
+    (hpspec.2 (subset_convexHull ℝ (p : Set E) (hfp ha)))
+  have hSlocal : S ∈ (faceStarComplex K s).faces :=
+    mem_faceStarComplex_faces_of_subset K hqspec.1 hsS
+  have hTlocal : T ∈ (faceStarComplex K s).faces :=
+    mem_faceStarComplex_faces_of_subset K hpspec.1 hsT
+  let olocal := (o s hs).changeVertexOrder r
+  have hcancel := olocal.affine_coface_pair_cancel (hK.faceStar hs)
+    (barycentricSubdivision K) hq hp hqp hfq hfp hfcard hqcard hpcard
+    hSlocal hTlocal hScard hTcard hqspec.2 hpspec.2
+  simpa only [r, s, S, T, olocal, CoherentOrientation.changeVertexOrder,
+    localSubdivisionOrientationSign, dif_pos hqtop, dif_pos hStop',
+    dif_pos hptop, dif_pos hTtop', localOrientationSign, dif_pos hs'] using hcancel
 
 open Classical in
 private theorem isOrientable_of_orientationCocycle_isCoboundary

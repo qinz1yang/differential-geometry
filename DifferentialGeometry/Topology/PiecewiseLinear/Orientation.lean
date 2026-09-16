@@ -8063,7 +8063,7 @@ theorem affineSimplexOrientationSign_mul_simplexBoundaryCoefficient
       rw [show (SignType.sign C.det : ℤ) = _ from sign_det_permute_columns qU A]
     _ = affineSimplexOrientationSign r hf hg * simplexBoundaryCoefficient r u g := by rw [hsignC]
 
-private theorem subdivision_carrierFace_spec
+theorem subdivision_carrierFace_spec
     [NormedAddCommGroup E] [NormedSpace ℝ E]
     {K K' : Geometry.SimplicialComplex ℝ E} (h : IsSubdivision K' K)
     {s : Finset E} (hs : s ∈ K'.faces) :
@@ -8076,7 +8076,7 @@ private theorem subdivision_carrierFace_spec
   exact ⟨carrierFace_mem hxK,
     h.convexHull_subset_of_mem_openSimplex (carrierFace_mem hxK) hs hx (mem_convexHull_carrierFace hxK)⟩
 
-private theorem subdivision_carrierFace_card
+theorem subdivision_carrierFace_card
     [NormedAddCommGroup E] [NormedSpace ℝ E]
     {K K' : Geometry.SimplicialComplex ℝ E} (h : IsSubdivision K' K)
     {N : ℕ} (hcard : ∀ t ∈ K.faces, t.card ≤ N)
@@ -8152,7 +8152,7 @@ private theorem coface_intersection_of_convexHull_subset
   exact ⟨K.down_closed hS Finset.inter_subset_left (Finset.card_pos.mp (by omega)), hcard, hsub⟩
 
 open Classical in
-private theorem affine_coface_pair_cancel
+theorem CoherentOrientation.affine_coface_pair_cancel
     [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
     {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces] {n : ℕ}
     (hK : IsCombinatorialManifoldWithBoundary (n + 1) K) (o : CoherentOrientation (n + 1) K)
@@ -8245,7 +8245,7 @@ noncomputable def CoherentOrientation.subdivision
     rw [orientedBoundary_eq_sum_faceCofaces, hcofaces]
     simp only [Finset.sum_insert, Finset.sum_singleton, Finset.mem_singleton, hst, not_false_eq_true]
     rw [subdivisionOrientationSign_eq o hscard hScard, subdivisionOrientationSign_eq o htcard hTcard]
-    exact affine_coface_pair_cancel hK o K' hs ht hst hfs hft hfcard hscard htcard
+    exact o.affine_coface_pair_cancel hK K' hs ht hst hfs hft hfcard hscard htcard
       hS hT hScard hTcard hsS htT
 
 open Classical in
