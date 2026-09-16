@@ -57,4 +57,23 @@ theorem mem_subcomplexGeneratedBy_faces_of_card
   · intro hs
     exact ⟨s, hs, Finset.Subset.rfl, K.nonempty_of_mem_faces hs.1⟩
 
+theorem subcomplexGeneratedBy_compl_compl (K A : Geometry.SimplicialComplex ℝ E) {n : ℕ}
+    (hAK : A.faces ⊆ K.faces) (hK : ∀ t ∈ K.faces, t.card ≤ n)
+    (hA : ∀ s ∈ A.faces, ∃ t ∈ A.faces, s ⊆ t ∧ t.card = n) :
+    subcomplexGeneratedBy K (subcomplexGeneratedBy K A.facesᶜ).facesᶜ = A := by
+  classical
+  ext s
+  constructor
+  · rintro ⟨t, ⟨htK, htR⟩, hst, hs⟩
+    have htA : t ∈ A.faces := by
+      by_contra ht
+      exact htR ⟨t, ⟨htK, ht⟩, Finset.Subset.rfl, K.nonempty_of_mem_faces htK⟩
+    exact A.down_closed htA hst hs
+  · intro hs
+    obtain ⟨t, ht, hst, htcard⟩ := hA s hs
+    refine ⟨t, ⟨hAK ht, ?_⟩, hst, A.nonempty_of_mem_faces hs⟩
+    rintro ⟨u, ⟨huK, huA⟩, htu, _⟩
+    have heq : t = u := Finset.eq_of_subset_of_card_le htu (by rw [htcard]; exact hK u huK)
+    exact huA (heq ▸ ht)
+
 end DifferentialGeometry.Topology.PiecewiseLinear

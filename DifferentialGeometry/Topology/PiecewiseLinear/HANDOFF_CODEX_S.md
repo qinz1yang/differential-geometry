@@ -23,7 +23,7 @@ P.1–P.5 与 §4.2 的 S.1 尽快成为"已证生产者"，后续责任划分�
   不把模块登记进根聚合 `DifferentialGeometry.lean`。
 - 主机 Lean 进程配额 4 个，三条车道各 1 个：你**同时只跑 1 个** lean 进程。
 - 验证只用 `D:\differential-geometry-moise-s\.lake\scratch\tools\` 的 `check-f.ps1`/`audit-f.ps1`
-  （`$root` 已指向本工作树；olean 写进共享库 `E:\differential-geometry-dev\.lake\build\lib\lean`，
+  （`$root` 已指向本工作树；olean 写进本车道隔离产物目录 `E:\differential-geometry-dev\.lake\scratch\s-verified-20260916`，
   模块名 = 路径去 `.lean`、`/` 换 `.`，对 vendored 文件即 `External.ClassificationOfSurfaces.Moise.X`）。
 - 原生文件（桥接、S.1 起）遵守 `AGENTS.md`：零注释零 docstring；无 `sorry`/`axiom`/`nolint`/`maxHeartbeats`/
   `set_option`；Mathlib 标准 linter 集零警告；提交信息用英文描述数学结果。
@@ -364,3 +364,1657 @@ Refreshing `BallFrontier` with the prescribed S script immediately before
 checking `BoundaryPush` resolved the mismatch. Do not copy the other
 lane's source or rename a consumer to an unmerged declaration merely to
 match a shared artifact.
+
+## 12. Regular-neighborhood piece checkpoint (2026-09-15)
+
+Integration dependencies were obtained only by the requested merges:
+`0b06c672f` merged b9a2cb2ca; after the mathematical checkpoints,
+`f43dacc60` merged integration 8fb887bb9, adding `NIGHT_PLAN.md` only.
+No other lane's checkout, branch, or source file was used for transfer.
+
+### Completed: checkpoint 1)-2), or S-M1
+
+- `249311c83`, `DerivedNeighborhoodCells.lean` and `BallFrontier.lean`:
+  `derivedNeighborhoodCell` is the centroid closed star in the second
+  derived subdivision. `derivedNeighborhoodCell_space` proves its exact
+  equality with `closure (N(s) \ N(boundary s))`;
+  `derivedNeighborhoodCell_singleton` identifies N(v).
+  `isPLBall_derivedNeighborhoodCell` proves ballness for finite
+  combinatorial manifolds with boundary in all indicated dimensions.
+  `isPLBall_derivedNeighborhoodCell_inter_of_nonempty` proves the
+  codimension-one ball intersection for distinct pieces, and
+  `derivedNeighborhoodCell_inter_subset_frontier` puts the intersection
+  in each frontier in the matching Euclidean dimension. The pieces
+  cover the existing derived neighborhood and stay in K.space.
+- Both focused checks exit 0, zero warnings. AuditS67 checks all 26
+  new declarations, with only the three standard axioms.
+
+This proof uses the existing PL link equivalence and cone theorems for
+sphere links and ball links. No Schoenflies assumption is needed for
+this layer; the regular-neighborhood definition has not changed.
+
+### Partial: disk shelling, or S-M2
+
+- `57a3f6a4e`, `DerivedNeighborhoodAttachments.lean`, `DiskUnion.lean`,
+  and `BoundaryDerivedNeighborhood.lean`: intersections indexed by a
+  face flag are the corresponding dual cell; a central piece and
+  incomparable incident pieces glue to a 3-ball. Boundary-piece bases
+  are PL 2-disks, all other intersections lie in the base, and triple
+  face-flag intersections are PL arcs. The grouped attaching-disk
+  theorem `isPLBall_derivedNeighborhoodCell_inter_union` handles a
+  boundary piece meeting one central piece and incomparable arms.
+  All three focused checks exit 0, zero warnings. AuditS68 has 14
+  declarations, each with only the three standard axioms.
+- `ee2a8a29d`, `SimplexDerivedNeighborhood.lean`:
+  `IsCombinatorialManifoldWithBoundary.isPLBall_derivedNeighborhood_simplex`
+  proves that the complete derived neighborhood of any boundary simplex
+  of a finite combinatorial 3-manifold in Euclidean 3-space is a PL
+  3-ball. The triangle case explicitly glues its triangle piece, three
+  edge pieces, and three vertex pieces. The vertex and edge cases are
+  included. The focused check exits 0, zero warnings; AuditS69 has two
+  public declarations, each with only the three standard axioms.
+
+These give the simplex base case and local grouped attachments. They
+do not yet give the full disk induction. The precise next obligation
+is to use `exists_isPLBall_eraseTriangleComplex_of_isGlueIso_planar`
+(or the general 17.2 interface) to classify which proper faces of a
+free triangle survive in the erased disk. The new triangle piece meets
+old pieces along the subdivided attaching arc; each newly added edge
+or vertex must then have its intersection with the whole accumulated
+union identified with one of the checked grouped disks. Pairwise disk
+intersections alone do not justify that induction.
+
+Only after this step may Problem 26.1 and general hpush be marked done.
+`exists_isPLBall_inter_frontier_eq_of_subset` and
+`exists_nonsingular_two_cell_in_boundary_ball` remain the checked
+Euclidean consumers. NIGHT_PLAN I2 additionally requires the intrinsic
+version in K.space for general finite-dimensional E; the Euclidean
+simplex endpoint does not by itself satisfy that interface. The full
+26.2 product collar and neighborhood control remain open. No new
+unproved hypothesis or axiom was added to any endpoint.
+
+### Verification artifacts
+
+Six changed/new mathematical modules have final focused-check exit 0
+and zero warnings. AuditS67-S69 contain 42 declarations in total.
+The logs and audit files are in this worktree's `.lake/scratch`:
+
+- `check-ball-frontier.log`, `check-derived-neighborhood-cells.log`,
+  `AuditS67.lean`, `audit-derived-neighborhood-cells.log`.
+- `check-derived-neighborhood-attachments.log`, `check-disk-union.log`,
+  `check-boundary-derived-neighborhood.log`, `AuditS68.lean`,
+  `audit-derived-neighborhood-attachments.log`.
+- `check-simplex-derived-neighborhood.log`, `AuditS69.lean`,
+  `audit-simplex-derived-neighborhood.log`.
+
+`External/ClassificationOfSurfaces/VENDOR.md` records the native proof
+route, exact scope, and logs. No vendored Lean file or root aggregate
+was modified. No lake build was run. The Euclidean simplex module uses
+a local classical decidable-equality instance so that the fixed
+Euclidean type and generic boundary-complex APIs use the same instance.
+
+## 13. NIGHT_PLAN progress, 2026-09-15 evening
+
+Integration was fetched and checked at `8fb887bb9`; the initial merge was already up to date.
+The following checkpoints are pushed to `origin/codex/moise-s`.
+
+### S-M1: done, now intrinsic in arbitrary finite-dimensional ambient spaces
+
+`2375fc812` generalizes `IsCombinatorialManifoldWithBoundary.isPLBall_union_derivedNeighborhoodCells`,
+`isPLBall_union_derivedNeighborhoodCells_of_card`, and `isPLBall_derivedNeighborhood_simplex`
+from Euclidean three-space to arbitrary finite-dimensional real normed spaces.
+`derivedNeighborhoodCell_inter_subset_boundaryComplex` places the intersection of distinct pieces
+in their intrinsic combinatorial boundaries in all covered dimensions. Together with the
+previous pair-intersection theorem, this gives both boundary incidences in the general ambient setting.
+All three affected modules have focused-check exit 0 and zero warnings.
+`AuditS71General.lean` / `AuditS71General.log`: five declarations, only the three standard axioms.
+The source proof has no Schoenflies assumption.
+
+### S-M2: partial; free-triangle face classification and intrinsic ball gluing checked
+
+`32a3b37e8` adds `FreeTriangleFaces.lean` and `SubcomplexBallGluing.lean`.
+The exact deletion formula is
+`mem_eraseTriangleComplex_iff_of_free_triangle`: the remaining faces are precisely the old
+faces that do not contain `t \ s`, where `s` is the boundary-trace parameter of the free triangle.
+`IsCombinatorialManifoldWithBoundary.isPLBall_union_of_inter_isPLBall_two` proves that two
+PL three-balls contained in the same finite combinatorial three-manifold with boundary,
+whose intersection is a PL two-ball, have PL three-ball union. The proof first derives
+intrinsic boundary incidence from the at-most-two codimension-one cofaces, then applies 23.11.
+This theorem also holds in arbitrary finite-dimensional ambient spaces.
+Both modules have focused-check exit 0 and zero warnings.
+`AuditS70.lean` / `AuditS70.log`: six declarations, only the three standard axioms.
+The remaining S-M2 obligation is the attachment disk for a whole existing disk neighborhood,
+followed by the decreasing-triangle-count induction. Problem 26.1 is not yet marked delivered here.
+
+### I2 signature issue found by source inspection
+
+`LoopTheorem/SingularCell.lean` defines `SingularTwoCell M` with
+`[ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]`.
+`VertexChart.lean` defines `combinatorialChartedSpace K hK` only for
+`hK : IsCombinatorialManifold (n + 1) K`, without boundary.
+Consequently NIGHT_PLAN's proposed application to `K.space` with only
+`IsCombinatorialManifoldWithBoundary 3 K` does not currently elaborate.
+A boundary-compatible singular-cell/chart interface is needed from its owner; adding a
+Euclidean charted-space assumption on a manifold with nonempty boundary would not repair the
+mathematical interface. No such hypothesis has been added, and I2 is not marked delivered.
+The intrinsic PL disk and boundary-ball geometry can be developed independently of that type.
+
+### Concurrent write observed
+
+During this session, the previously absent, untracked `FreeTriangleNeighborhood.lean` appeared
+and continued changing; a separate Lean process was checking that file from this S worktree.
+The user confirmed that another thread had intervened by mistake and that the interference is now corrected. This session is reviewing the retained source and will check and audit it before accepting it.
+Only the explicitly listed files above were included in the checkpoints. Subsequent checks first
+inspect active S-worktree Lean processes and defer when another one is running.
+
+### S-M3: intrinsic geometry checked; containing-ball and singular-cell obligations remain
+
+`SphereBallInclusion.lean`, `BoundaryMonotonicity.lean`, `BoundaryBallTransport.lean`, and
+`BoundaryDiskPush.lean` have focused-check exit 0 and zero warnings.
+`AuditS72Intrinsic.lean` / `AuditS72Intrinsic.log`: seven declarations, only the three standard axioms.
+`exists_isPLBall_inter_boundaryComplex_eq_of_subset` shapes a given containing ball so that its
+intersection with the ambient intrinsic boundary is exactly the prescribed disk.
+`exists_isPLHomeomorphOn_disk_in_boundary_ball` constructs a parametrized PL disk inside the
+ambient manifold with the same boundary image and no other intersection with the ambient boundary.
+Both hold in arbitrary finite-dimensional real normed spaces, without a Schoenflies assumption.
+The containing three-ball is still supplied as input until S-M2 closes Problem 26.1.
+The singular-cell type issue above remains separate; this is not yet the exact bundled I2 endpoint.
+
+### S-M2: done, Problem 26.1 in arbitrary finite-dimensional ambient spaces
+
+`FreeTriangleNeighborhood.lean` proves
+`IsCombinatorialManifoldWithBoundary.isPLBall_derivedNeighborhood_of_free_triangle`.
+It identifies the exact old subfaces met by each new piece, proves the attaching two-disks,
+and treats both free-triangle boundary traces. For one free edge, it adds the triangle and
+edge pieces; for two free edges, it adds the triangle, both edges, and the new vertex.
+`DiskDerivedNeighborhood.lean` uses strong induction on the number of triangles while retaining
+a distinguished triangle. The base case is the full seven-piece simplex neighborhood.
+A compatible ambient subdivision then gives
+`IsCombinatorialManifoldWithBoundary.exists_isPLBall_containing_boundary_disk`:
+for any PL two-disk D in the intrinsic boundary of finite combinatorial three-manifold K,
+there is a PL three-ball C with D contained in C and C contained in K.space.
+No containing-ball, shelling, Schoenflies, or Euclidean-chart hypothesis remains in this endpoint.
+`SubcomplexBallGluing.lean` also supplies finite pairwise-disjoint ball attachments.
+All three modules have focused-check exit 0 and zero warnings. `AuditS73Disk.lean` /
+`AuditS73Disk.log` checks five public declarations; only the three standard axioms occur.
+The previously retained source has now been reviewed, completed, checked, and audited.
+Logs are `check-subcomplex-ball-gluing-finite.log`, `check-free-triangle-neighborhood.log`,
+and `check-disk-derived-neighborhood.log` under `.lake/scratch`.
+
+### S-M2 publication and S-M3 geometric delivery
+
+S-M2 is committed and pushed as `d12dd514a`. The following fetch/merge found integration
+already up to date. `BoundaryDiskPush.lean` now exports
+`IsCombinatorialManifoldWithBoundary.exists_isPLBall_inter_boundaryComplex_eq` and
+`IsCombinatorialManifoldWithBoundary.exists_isPLHomeomorphOn_push_boundary_disk`.
+Neither takes a containing-ball hypothesis: it is constructed by Problem 26.1.
+`LoopTheorem/CombinatorialBoundaryPush.lean` proves
+`exists_nonsingular_two_cell_in_combinatorial_manifold`, the Euclidean three-space singular-cell
+endpoint with image inside K.space, prescribed boundary image, and no extra frontier contact.
+Both modules have focused-check exit 0 and zero warnings. `AuditS74Push.lean` /
+`AuditS74Push.log` audits these three endpoints with only the standard three axioms.
+No Schoenflies assumption is needed. The general-ambient parametrized PL disk producer is complete.
+S-M3 remains partial only at the exact `SingularTwoCell K.space` interface: the current type needs
+a boundary-compatible target chart API from its owner. The phrase "I2 已交付" is deliberately not
+used as a completion label while that obligation remains. S-M4 proceeds with the checked intrinsic
+boundary-ball endpoint; it does not need the singular-cell type adaptation.
+
+### S-M4: local boundary-disk product collar checked
+
+S-M3's geometric producers are committed and pushed as `bd74dd7ca`; the next integration
+merge was already up to date. The exact general-ambient singular-cell type issue remains as above.
+`Product.lean` proves polyhedral products and products of PL homeomorphisms.
+`Prism.lean` triangulates a triangular prism into three tetrahedra and proves
+`isPLBall_three_prod`: a PL two-ball times a PL one-ball is a PL three-ball.
+`PrismBoundary.lean` proves that the bottom of a disk prism lies in its intrinsic boundary.
+The general boundary-incidence theorem added to `SubcomplexBallGluing.lean` supplies this step
+in arbitrary finite-dimensional ambient spaces, without ambient frontier assumptions.
+`DiskCollar.lean` exports
+`IsCombinatorialManifoldWithBoundary.exists_collar_of_boundary_disk`:
+for a boundary PL disk D, there are C contained in K.space and a PL homeomorphism
+from D times [0,1] onto C which fixes (x,0), with C intersected with the intrinsic boundary
+equal to D and every positive-height point lying off that boundary.
+The proof uses Problem 26.1, the prism model, and the existing boundary-disk PL extension.
+It needs no containing-ball or Schoenflies hypothesis.
+All five affected modules have focused-check exit 0 and zero warnings.
+`AuditS75Collar.lean` / `AuditS75Collar.log` audits thirteen public declarations with only
+`propext`, `Classical.choice`, and `Quot.sound`. Check logs are `check-pl-product.log`,
+`check-prism.log`, `check-subcomplex-ball-gluing-boundary.log`, `check-prism-boundary.log`,
+and `check-disk-collar.log` under `.lake/scratch`.
+This completes the requested subcomplex disk collar. The full 26.2 obligation is still the
+compatible product on the entire compact boundary and the neighborhood property of its image.
+A local disk collar alone is not claimed to be a neighborhood at the disk's boundary edges.
+
+### S-M4 publication and whole-boundary collar frontier
+
+The checked local product collar layer is pushed as `5f97aca9d` (thirteen audited declarations).
+The integration merge was already up to date. Full 26.2 is partial. The exact remaining
+induction invariant is a finite combinatorial triangulation of the closure of K.space minus
+the accumulated collar image, together with the modified next disk in its intrinsic boundary.
+One must prove that this closure is a manifold with boundary and extend the next product
+map while preserving every previously fixed side face. The present 23.11 ball-union theorem
+and independent disk collars do not establish either assertion. The final whole-boundary
+image must also be shown to be a neighborhood. No compatibility or complement-manifold
+assumption has been added to an endpoint. Under NIGHT_PLAN section 0.4, S-M5 proceeds.
+
+### S-M5: 26.1 in PL charted ambient spaces checked; 26.3 remains open
+
+`Connected/TwoSided.lean` defines `IsTwoSided` by separation of sufficiently small connected
+neighborhoods of every connected component, as on Moise printed page 191.
+For a regular closed set, an isolated boundary component separates each such neighborhood
+into its nonempty interior and exterior parts. `Connected/FiniteCover.lean` proves that a finite
+closed preconnected cover isolates its connected components.
+`PolyhedralManifoldTopology.lean` proves `IsPolyhedralBall.closure_interior` and
+`IsPolyhedralManifoldWithBoundary.closure_interior`, derives boundary-component isolation
+from the finite simplicial cover, and exports
+`IsPolyhedralManifoldWithBoundary.isTwoSided_of_union_boundary_components`.
+This holds for full-dimensional polyhedral manifolds in an arbitrary Hausdorff PL charted
+ambient space, in all positive dimensions. No regular-closed, local-connectedness, or
+Schoenflies hypothesis remains in the PL endpoint. The ambient has Euclidean open charts;
+applying it inside the interior of a general K with boundary still needs that interior chart
+interface. This is recorded separately from the already valid PL ambient theorem.
+All three modules have focused-check exit 0 and zero warnings. `AuditS76TwoSided.lean` /
+`AuditS76TwoSided.log` audits eleven declarations with only the standard three axioms.
+Check logs: `check-two-sided.log`, `check-finite-connected-cover.log`, and
+`check-polyhedral-manifold-topology.log`.
+For 26.3, the exact additional obligation is that a sufficiently small regular neighborhood
+of a two-sided PL surface has exactly two complementary components, whose closures are
+combinatorial three-manifolds with that surface as a boundary component. This is not a
+consequence of disconnectedness alone; after it is proved, both sides still need full 26.2.
+No bicollar endpoint is claimed. S-M6 proceeds under NIGHT_PLAN section 0.4.
+
+### S-M6: relative free disk cell theorem checked
+
+The S-M5 separation layer is committed and pushed as `ddf717a4b`; the next integration merge
+was already up to date. `RelativeFreeDiskCell.lean` proves
+`IsPLDiskDecomposition.exists_free_disk_cell_not_subset`, Moise 17.3 (printed page 118):
+if a proper PL disk D is the union of a subfamily of the cells of a finite PL disk decomposition,
+there is a free cell not contained in D. The statement holds in arbitrary finite-dimensional
+real normed spaces. It does not replace the protected disk by a single protected cell.
+The planar proof first finds an outside cell with nontrivial outer-boundary trace, splits at
+that cell if necessary, and applies general 17.2 to the side opposite D. Planarization transports
+the conclusion back to the original ambient space. `FreeDiskCell.lean` promotes and generalizes
+its finite-union restriction identity for this reuse; its existing public endpoints are unchanged.
+Both focused checks exit 0 with zero warnings. `AuditS77RelativeDisk.lean` /
+`AuditS77RelativeDisk.log` audits four declarations with only the standard three axioms.
+A missing declaration in the shared `DiskCrosscut.olean` was resolved by a focused refresh of
+that module from this branch, also exit 0 with zero warnings. No source workaround was needed.
+Logs: `check-free-disk-cell-relative.log`, `check-disk-crosscut-refresh.log`, and
+`check-relative-free-disk-cell.log`. No Schoenflies assumption is used.
+P.4 remains separate: polygonal graph redrawing alone does not produce a supported ambient
+homeomorphism. Compatible sector extensions around vertices and edges, with the prescribed
+neighborhood and pointwise displacement control, are the remaining geometric construction.
+
+### S-M4 local refinement: prescribed relative neighborhoods
+
+The relative 17.3 theorem is committed and pushed as `f0383a381`; the next integration merge
+was already up to date. `BoundaryDiskNeighborhood.lean` strengthens Problem 26.1, the precise
+boundary-ball theorem, the local disk collar, and the parametrized disk push-off: each output
+can be chosen inside any prescribed member of the relative neighborhood filter of D in K.space.
+The four endpoints are `exists_isPLBall_inter_boundaryComplex_eq_subset`,
+`exists_isPLBall_containing_boundary_disk_subset`, `exists_collar_of_boundary_disk_subset`, and
+`exists_isPLHomeomorphOn_push_boundary_disk_subset`, in the
+`IsCombinatorialManifoldWithBoundary` namespace. All hold in arbitrary finite-dimensional
+real normed spaces and need no Schoenflies or containing-ball assumption.
+The proof first uses the existing controlled subdivision neighborhood, then intrinsic boundary
+monotonicity transfers the smaller manifold's exact boundary incidence back to K.
+This closes the arbitrary-neighborhood requirement for the boundary-disk part of B.2.
+The focused check `check-boundary-disk-neighborhood.log` exits 0 with zero warnings.
+`AuditS78BoundaryNeighborhood.lean` / `.log` audits the four endpoints using only the standard
+three axioms. Full 26.2 still needs compatible collar gluing and the complement-manifold
+induction invariant recorded above; neither is introduced as an extra assumption here.
+
+### S-M6 P.4 input audit and milestone handoff
+
+The controlled boundary-disk neighborhood layer is committed and pushed as `41b78491e`.
+The final fetch and merge again found `origin/codex/moise-integration` already up to date.
+`AuditS79P4Inputs.lean` / `.log` checks
+`Schoenflies.jordan_schoenflies_homeomorph`, `Schoenflies.jordan_schoenflies_of_homeomorph`,
+and `Graph.polygonal_redrawing`: three declarations, exit 0, only the standard three axioms.
+The first two extend a homeomorphism of one Jordan curve; the third gives a polygonal drawing.
+None supplies the supported, quantitatively controlled ambient graph homeomorphism of P.4.
+The remaining argument must establish the disjoint covering sectors inside each vertex disk,
+extend compatibly over those sectors while fixing the outer circle, straighten the trimmed
+edge arcs inside disjoint edge frames, and derive the pointwise control from their diameters.
+The second-batch approximation statements were also inspected and do not fill this gap;
+no second-batch source or duplicate Jordan extension wrapper was introduced.
+
+| Milestone | Status and proved layer | Checkpoint and audit | Exact remaining obligation |
+|---|---|---|---|
+| S-M1 | done: regular-neighborhood pieces, attaching disks, general ambient spaces | `2375fc812`; AuditS67--S69: 42; AuditS71General: 5 | None for the requested piece/intersection layer |
+| S-M2 | done: complete boundary-disk derived neighborhood and Problem 26.1 | `d12dd514a`; AuditS70: 6; AuditS73Disk: 5 | None for the containing-ball theorem |
+| S-M3 | done: I2 已交付（double 环境） | `LoopTheorem/DoubleBoundaryPush.lean`; AuditS114DoubleBoundaryPush: 7 | NIGHT_PLAN 6.1 target is `(double 3 K).space` with its constructed combinatorial charted space; direct E3 hpush signature checked; no additional unproved hypothesis |
+| S-M4 | done: whole-boundary collar with the relative-neighborhood property for finite combinatorial three-manifolds in arbitrary finite-dimensional real normed spaces | `691c7329d`, `e9feba0c2`, `f778f73ff`; AuditS88--S90: 12; earlier layers and audits below | None for the finite-complex endpoint in NIGHT_PLAN; abstract PL charted ambient transport is not asserted |
+| S-M5 | done: 26.1 in finite combinatorial carriers and general PL charted ambient spaces; arbitrarily small PL bicollars without connectedness assumptions | `ddf717a4b`; finite bicollar `3a55ac834`; general manifold bicollar `52d70d778`; relative topology `7746cff68`; AuditS101--S104: 18 | No remaining 26.1/26.3 obligation in these stated settings; I2 is now delivered in the double environment (S-M3) |
+| S-M6 | partial: general relative 17.3 done; simultaneous supported vertex-fan straightening, polygonal target production, and simultaneous crosscut straightening in disjoint PL disks proved | `VertexStraightening`, `InteriorAccess`, `PolygonalCrosscut`; AuditS115: 7 new declarations | Handle degree-one endpoints and construct arbitrarily small compatible PL disk frames from the original graph; initial subarcs do not control later reentry |
+
+All listed completed layers have focused-check exit 0 with zero warnings and transitive axiom
+closures contained in `propext`, `Classical.choice`, and `Quot.sound`. No newly proved layer
+requires Schoenflies. The previously delivered 23.9/23.10 consumers retain their authorized
+explicit Schoenflies parameter until I1 arrives through integration.
+The final plan-only checkpoint updates both preserved P.3 rows and the S-owned P.4/B.1--B.4
+statuses. It does not mark the exact bundled I2 delivered, claim a whole-boundary collar,
+claim a bicollar, modify another lane's source, or register modules in the root aggregate.
+
+### S-M4 continuation: the complement-manifold invariant is proved
+
+`PlanarDiskComplement.lean` proves that deleting a subdisk attached along a boundary arc
+leaves a PL disk after closure, both in the plane and in arbitrary finite-dimensional ambient
+spaces with intrinsic boundary. The full-boundary inclusion case forces equality of the disks.
+`SubcomplexComplementLink.lean` identifies the links of the actual complementary subcomplex
+with closures of differences of links, and identifies the boundary trace links.
+`ManifoldComplement.lean` proves `IsCombinatorialManifoldWithBoundary.complement`:
+for finite combinatorial three-manifolds A contained as a subcomplex of K, if their boundary
+trace is a combinatorial two-manifold with boundary, the closure of K.space minus A.space
+is a combinatorial three-manifold with boundary. This hypothesis concerns the boundary trace,
+not the desired complement. The PL boundary-disk corollary discharges it automatically.
+`exists_isCombinatorialManifoldWithBoundary_closure_sdiff` constructs a finite triangulation
+of the exact closure after deleting any PL three-ball whose intersection with Bd K is a PL disk.
+The proof separates sphere and ball links; the ball case uses the new planar complement theorem.
+No Schoenflies assumption or complement-manifold assumption is introduced.
+
+`DiskCollarComplement.lean` exports
+`exists_collar_of_boundary_disk_subset_with_complement`: the already controlled local disk
+collar now comes with this finite combinatorial triangulation of its actual closed complement.
+The private disk-inclusion proof in `RelativeFreeDiskCell.lean` now reuses the canonical result;
+its 17.3 statement is unchanged. All five affected modules have focused-check exit 0 and zero
+warnings. `AuditS80Complement.lean` / `.log` audits sixteen new or affected declarations,
+all with only `propext`, `Classical.choice`, and `Quot.sound`.
+Logs: `check-planar-disk-complement.log`, `check-subcomplex-complement-link.log`,
+`check-manifold-complement.log`, `check-disk-collar-complement.log`, and
+`check-relative-free-disk-cell-complement.log` under `.lake/scratch`.
+This discharges the complement-manifold part of the previously recorded 26.2 invariant.
+The next obligations are the exact new boundary and modified next disk, product maps agreeing
+on the previously fixed side faces, and the whole-boundary neighborhood property.
+
+### S-M4 continuation: exact complementary boundary and boundary replacement
+
+The preceding complement-manifold layer is committed and pushed as `51e4d8f21`.
+`ManifoldFaces.lean` proves extension of every face to a top-dimensional face in a finite
+combinatorial manifold, including dimension zero. `BoundaryComplement.lean` computes the
+codimension-one cofaces in the actual complementary subcomplex. It proves, in every positive
+dimension and for arbitrary finite triangulations of the same spaces,
+
+`Bd R = closure (Bd K - A.space) union closure (Bd A - Bd K)`,
+
+where `R.space = closure (K.space - A.space)` and the three complexes are manifolds with
+boundary of the same dimension. In dimension three the previous complement theorem produces
+R and its manifold proof from a boundary-attached PL ball, so this is not a new assumed
+complement-manifold obligation.
+
+`ManifoldSubcomplexBoundary.lean` proves that a submanifold meets the closure of its complement
+only on its intrinsic boundary. In a manifold without boundary the intersection is exactly
+that boundary. The parameterized disk version identifies the intersection with the image of
+the standard simplex boundary. These results hold in all positive dimensions; the zero-sphere
+link case uses equality of two-point subsets, not an additional dimension restriction.
+
+`BoundaryBallReplacement.lean` constructs
+`IsCombinatorialManifoldWithBoundary.exists_isPLHomeomorphOn_boundary_complement`:
+for a PL three-ball A in K meeting Bd K in a PL disk, it produces the actual finite manifold
+complement R and a PL homeomorphism Bd K to Bd R that fixes the closure of Bd K minus A.
+The proof replaces the attaching disk by the complementary disk in Bd A using P.2.
+`DiskCollarComplement.lean` exports
+`exists_collar_of_boundary_disk_subset_with_boundary_complement`, including the controlled
+local disk collar, the same closed complement R, and this boundary homeomorphism, fixed on
+the closure of Bd K minus the attaching disk. The homeomorphism transports subsequent boundary
+disks to the new boundary. None of these results requires Schoenflies.
+
+All five modules have focused-check exit 0 with zero warnings. `AuditS81BoundaryReplacement.lean`
+and `.log` audit thirteen new or affected declarations, all with only `propext`,
+`Classical.choice`, and `Quot.sound`. Logs under `.lake/scratch` are
+`check-manifold-faces.log`, `check-boundary-complement.log`,
+`check-manifold-subcomplex-boundary.log`, `check-boundary-ball-replacement.log`, and
+`check-disk-collar-complement-boundary.log`.
+
+The remaining 26.2 obligation is compatible product-coordinate gluing over the successive
+boundary disks, followed by the whole-boundary neighborhood property. The boundary replacement
+map and the local collar parametrization are both proved, but their independent existence
+does not yet identify them on the side faces needed for that gluing. Full 26.2 remains partial.
+The exact bundled I2 target-type issue and the recorded P.4 extension/control obligations
+are unchanged. The source checkpoint hash is recorded with the final plan update below.
+
+### S-M4 verified checkpoint and final plan update
+
+The complement-manifold theorem is committed and pushed as `51e4d8f21`; the exact boundary
+and PL boundary replacement layer is committed and pushed as `7f062e84c`.
+The post-checkpoint fetch and merge found `origin/codex/moise-integration` already up to date
+at `8fb887bb9`. The B.3 plan row now records both proved invariants and the actual remaining
+product-gluing and neighborhood obligations. AuditS80/S81 contain 29 audit entries in total,
+all with only the standard three axioms; the nine distinct Lean modules changed across these
+two checkpoints passed their focused checks with zero warnings. The final bookkeeping commit
+changes only this handoff and the B.3 plan row. No whole-boundary collar or bundled I2 delivery
+is asserted.
+
+### S-M4 continuation: prism attachment disks and prescribed side coordinates
+
+`FrontierBoundary.lean` now identifies the topological frontier with the intrinsic boundary
+in any finite-dimensional ambient space of the manifold's dimension.
+`Prism.lean` exposes the existing coordinate triangle model and proves `isPLBall_unit_square`
+and `isPLBall_two_prod`: two PL arcs have a PL disk as their product.
+`PrismBoundary.lean` proves `boundaryComplex_space_prism`, identifying the complete boundary
+of a disk prism with its two ends and its side wall, for arbitrary ambient spaces and finite
+triangulations of the prism.
+
+`PrismDisk.lean` proves that the bottom together with the whole side wall is a PL disk, and
+that the same holds for any finite family of pairwise disjoint boundary-arc strips. The whole
+wall result handles the final closed-boundary case, where the attaching set can be the entire
+boundary circle; no proper-arc assumption is silently imposed on that case.
+`CollarGluing.lean` constructs the PL map on a new bottom disk together with old collar side
+strips. Its public relative extension theorems
+`exists_isPLHomeomorphOn_prism_eqOn_collar_sides_of_boundary_arcs` and
+`exists_isPLHomeomorphOn_prism_eqOn_collar_sides_of_boundary` extend this map across a new
+three-ball while preserving both the prescribed bottom and every previously fixed side
+coordinate. The input three-ball must have the modified attaching disk on its boundary.
+These are relative extension results, not an assertion of the whole-boundary collar.
+
+The five changed Lean modules have focused-check exit 0 with zero warnings. Logs are
+`check-frontier-boundary-finrank.log`, `check-prism-products.log`, `check-prism-boundary.log`,
+`check-prism-disk.log`, and `check-collar-gluing.log` under `.lake/scratch`.
+`AuditS82PrismGluing.lean` / `.log` contain thirteen entries, all with only `propext`,
+`Classical.choice`, and `Quot.sound`. No Schoenflies parameter or new unproved mathematical
+input is used in the new geometric producers. No vendored source was changed.
+
+Full 26.2 still requires the boundary cell ordering and complementary-boundary invariant to
+produce each modified attaching disk in the actual complement, then the compatible union of
+old and new product maps and the whole-boundary neighborhood property. The exact I2 target-type
+issue and the recorded P.4 obligations remain unchanged. The source checkpoint hash is recorded
+in the following checkpoint entry.
+
+### S-M4 checkpoint: compatible collar enlargement
+
+The prism and prescribed-side-coordinate layer is committed and pushed as `bc9b5bbcb`.
+Its post-checkpoint integration merge was already up to date at `8fb887bb9`.
+
+`CollarGluing.lean` now exposes the common relative extension core
+`exists_isPLHomeomorphOn_prism_eqOn_collar_sides_of_isPLBall`; the boundary-arc and whole-circle
+corollaries discharge its attaching-disk hypothesis with the proved prism disk constructions.
+`CollarExtension.lean` proves `exists_collar_extension_of_boundary_arcs` and
+`exists_collar_extension_of_boundary`. Given the current collar and its complementary-boundary
+conditions, these theorems use Problem 26.1 to produce the new three-ball in any prescribed
+relative neighborhood. They prove its intersection with the old collar is exactly the existing
+side strip, glue the two product maps, preserve the entire old collar map, fix the enlarged
+bottom, and prove that positive height avoids the original boundary. They also construct a
+finite combinatorial three-manifold triangulation of the exact closed complement of the new
+ball inside the current complement.
+
+The public enlargement statements keep the inductive geometry explicit: the modified disk
+lies on the current complementary boundary, and the intersections of that complement with
+the old collar and the original boundary lie on its boundary. They do not assume the new ball,
+the enlarged collar map, or the new complement manifold. Establishing and preserving these
+geometric conditions through a finite boundary cell ordering is still required for full 26.2.
+The whole-boundary neighborhood property is also still pending.
+
+Focused checks for `CollarGluing.lean` and `CollarExtension.lean` exit 0 with zero warnings;
+logs are `check-collar-gluing-extension.log` and `check-collar-extension.log`.
+`AuditS83CollarExtension.lean` / `.log` audit five new or affected public declarations, all with
+only `propext`, `Classical.choice`, and `Quot.sound`. The source checkpoint hash is recorded
+with the next status update. No vendored source, other-lane source, or root aggregate changed.
+
+### S-M4 continuation: the complementary-boundary conditions are preserved
+
+The actual collar enlargement is committed and pushed as `7ec642daf`.
+`GeneratedSubcomplex.lean` proves `subcomplexGeneratedBy_compl_compl` under the natural
+cardinality bound and purity hypotheses. `SubcomplexComplement.lean` identifies the resulting
+double closed difference with the original pure subcomplex.
+`ManifoldSubcomplexBoundary.lean` transports this to arbitrary finite triangulations:
+`IsCombinatorialManifoldWithBoundary.closure_sdiff_closure_sdiff_eq` holds in every dimension,
+including zero. In positive dimensions, `inter_closure_sdiff_subset_boundaryComplex` and
+`inter_space_complement_subset_boundaryComplex` put the common interface on the intrinsic
+boundary of either manifold, including the actual complementary manifold.
+
+`CollarExtension.lean` consumes these results and strengthens both public enlargement
+endpoints. In addition to the already proved product map and exact complement R', they return
+`(W union C) inter R'.space subset Bd R'` and `B inter R'.space subset Bd R'`.
+Thus these two input boundary conditions are now preserved by the step itself. The unchanged
+attaching-disk condition for each subsequent boundary cell still has to be proved from the
+cell decomposition; it is not hidden in a new structure or claimed as discharged.
+
+All four affected modules have focused-check exit 0 and zero warnings. Logs are
+`check-generated-subcomplex-involution.log`, `check-subcomplex-complement-involution.log`,
+`check-manifold-subcomplex-complement.log`, and `check-collar-extension-invariants.log`.
+`AuditS84ComplementInvariants.lean` / `.log` audit seven new or affected declarations, all with
+only the standard three axioms. No other lane's source or vendored source was modified.
+The source hash is recorded in the final plan checkpoint below.
+
+Next mathematical obligations for 26.2: construct a finite boundary cell ordering whose next
+cell meets the previous union in finitely many disjoint boundary arcs or its whole boundary;
+prove that each future disk together with the current vertical strips lies on the actual
+complementary boundary; finish the finite induction and prove that the final image is a
+neighborhood of the entire original boundary. The step already preserves old coordinates,
+positive-height boundary avoidance, the complement's manifold property, and both interface
+boundary conditions. Full 26.2 remains partial, and the exact I2 target-type issue is unchanged.
+
+### S-M4 verified source checkpoints and plan update, 2026-09-16
+
+The three source checkpoints are committed and pushed: `bc9b5bbcb` (prism attachment disks
+and prescribed side coordinates), `7ec642daf` (actual compatible collar enlargement), and
+`66d39dbdd` (preservation of the complementary-boundary conditions). All nine distinct Lean
+modules changed across them have focused-check exit 0 and zero warnings. AuditS82/S83/S84
+contain 25 entries in total, including repeated affected endpoints; every entry has only
+`propext`, `Classical.choice`, and `Quot.sound`.
+
+Each source checkpoint was followed by fetch and merge of the integration branch, still
+already up to date at `8fb887bb9`. The final bookkeeping commit changes only this handoff and
+the B.3 plan row. Full 26.2 remains partial for the precise obligations above; exact bundled
+I2 is not marked delivered, and the P.4 obligations remain unchanged.
+
+### S-M4 continuation: density and persistence on complementary boundaries
+
+`BallDensity.lean` proves `IsPLBall.closure_sdiff_eq_of_isPLBall`,
+`IsPLBall.closure_sdiff_iUnion_eq`, and
+`IsPLBall.closure_sdiff_eq_of_inter_subset_iUnion`: deleting a finite union of
+strictly lower-dimensional PL balls from a positive-dimensional PL ball leaves a dense subset.
+`BoundaryDiskPersistence.lean` combines this with the exact complementary-boundary formula.
+Its two public endpoints preserve disks from either the old boundary or the newly exposed
+ball boundary when the removed intersection has such a finite lower-dimensional cover.
+These results are in arbitrary finite-dimensional real normed ambient spaces.
+
+Both modules have focused-check exit 0, zero warnings; logs are
+`check-ball-density.log` and `check-boundary-disk-persistence.log`.
+`AuditS85BoundaryDiskPersistence.lean` / `.log` contain five entries, all with only
+`propext`, `Classical.choice`, and `Quot.sound`. No new assumptions on Schoenflies,
+no vendored source changes, and no other-lane source changes are involved.
+The source commit hash is recorded at the next checkpoint.
+
+Full 26.2 remains partial. Next: produce the lower-dimensional intersection covers for
+actual old collar patches and newly added vertical strips, then construct the finite
+boundary cell ordering and finish the induction and whole-boundary neighborhood property.
+The exact bundled I2 target-type issue is unchanged.
+
+### S-M4 continuation: later collar disks remain on the new complementary boundary
+
+The density checkpoint is committed and pushed as `ee372da29`; its integration merge was
+already up to date. `BallDensity.lean` now also proves finite-point deletion density for
+arbitrary positive-dimensional PL balls and transports the dense positive-height product
+through a PL homeomorphism. The previous planar finite-point result in
+`PlanarDiskUnion.lean` is a compatibility corollary of the general theorem.
+
+`CollarBoundary.lean` proves `image_prism_side_subset_boundaryComplex`,
+`image_strip_subset_boundaryComplex_complement`, and
+`image_prism_side_subset_boundaryComplex_complement`. The first identifies actual prism sides
+on the ball boundary. The other two preserve old and new strips using their finite base
+intersections and the exact complementary-boundary formula. The combined endpoint
+`collar_disk_subset_boundaryComplex_complement` preserves a later disk together with its
+enlarged side strips. It handles both a shared PL arc and a disjoint new disk. Its hypotheses
+are the previous collar geometry, a finite arc cover of the previous base intersection,
+and finiteness of the triple intersection; these are still to be produced by the boundary
+cell decomposition. The new complementary-boundary inclusion is proved, not assumed.
+
+Both public endpoints in `CollarExtension.lean` now return the new prism parametrization,
+the precise trace of the new ball on the old complementary boundary in those coordinates,
+and the exact intersections with the original boundary and previous collar. These are
+properties of the same ball and map constructed by the existing extension proof.
+
+Focused checks for the four changed source modules and the directly affected `DiskUnion`
+module have exit 0 and zero warnings. Logs are `check-ball-density-finite.log`,
+`check-planar-disk-union-density.log`, `check-collar-boundary-persistence.log`,
+`check-collar-extension-trace.log`, and `check-disk-union-density.log`.
+`AuditS86CollarBoundary.lean` / `.log` audit nine new or affected public declarations;
+every entry has only `propext`, `Classical.choice`, and `Quot.sound`.
+No vendored or other-lane source changed. The source hash is recorded at the next checkpoint.
+
+Full 26.2 remains partial: construct the finite dual boundary-cell decomposition and its
+intersection data, discharge the attachment-arc or whole-boundary alternative, assemble the
+finite collar induction, and prove the final neighborhood property. The exact bundled I2
+target-type issue and P.4 obligations remain unchanged.
+
+### S-M4 continuation: dual-cell coverage and intersection producers
+
+The collar-boundary persistence layer is committed and pushed as `142653991`; its integration
+merge was already up to date. `DualCellDecomposition.lean` now reuses the existing
+`dualCell_space_inter_eq_dualCell` and proves that nonempty intersections force the union
+face, nonfaces give disjoint dual cells, and maximal-dimensional dual cells reduce to their
+barycenters. The vertex dual cells cover the full carrier. Adjacent vertex dual cells in an
+(n+2)-manifold meet in an (n+1)-ball lying on each cell boundary.
+
+For a two-dimensional manifold, three distinct vertex dual cells have finite intersection.
+`IsCombinatorialManifoldWithBoundary.finite_inter_dualCell_singleton_iUnion` produces the
+finite intersection with any already processed finite cell family.
+`IsCombinatorialManifoldWithBoundary.exists_boundary_arcs_cover_inter_dualCell_iUnion`
+produces an explicit finite family of shared boundary arcs covering the new cell's
+intersection with that processed union. It does not assert that these arcs are pairwise
+disjoint: adjacent arcs can share endpoints. Together these are the actual finite-intersection
+and arc-cover inputs needed by `collar_disk_subset_boundaryComplex_complement`.
+
+The new module has focused-check exit 0 and zero warnings (`check-dual-cell-decomposition.log`).
+`AuditS87DualCellDecomposition.lean` / `.log` audit all ten public theorems, each with only
+`propext`, `Classical.choice`, and `Quot.sound`. The existing other-lane `DualCells.lean` was
+only imported and was not modified. The source hash is recorded in the final bookkeeping entry.
+
+Remaining for full 26.2: turn the shared boundary-arc cover into pairwise disjoint arc
+components or the whole boundary circle, connect these producers to the finite collar
+induction, and prove the final image is a neighborhood of the entire original boundary.
+The exact bundled I2 target-type issue and the other recorded milestones remain unchanged.
+
+### S-M4 verified checkpoints and remaining global obligations, 2026-09-16
+
+The three source checkpoints are committed and pushed: `ee372da29` (density and complementary
+boundary persistence), `142653991` (actual future collar-disk persistence and precise extension
+traces), and `fe71026b6` (dual-cell coverage and intersection producers). All six changed Lean
+modules and the directly affected `DiskUnion` module have focused-check exit 0 and zero
+warnings. AuditS85/S86/S87 contain 24 entries, all with only the standard three axioms.
+
+Every source checkpoint was followed by fetch and merge of the integration branch, still
+already up to date at `8fb887bb9`. This final bookkeeping change updates the S-M4 table and
+B.3 plan row to the exact current proof frontier. No new consultation is required for the
+next step: classify the finite boundary-arc cover into disjoint arc components or the whole
+circle. Full 26.2 is still partial; exact bundled I2 is not marked delivered.
+
+### S-M4 continuation: arbitrary finite boundary-arc covers
+
+`Topology/Connected/FiniteComponents.lean` proves `exists_finite_isConnected_partition`:
+a finite union of compact connected sets has a finite partition into compact connected
+components, each containing an original member. No separation axiom is required.
+`ArcSubset.lean` proves that a closed proper subset of a PL circle lies in a PL arc,
+and that a compact connected nontrivial subset of a PL arc is again a PL arc.
+`ArcDecomposition.lean` combines these facts in
+`IsPLSphere.eq_or_exists_disjoint_arc_cover`: a finite union of boundary arcs is the
+whole circle or a finite union of pairwise disjoint PL arcs. `IsPLBall.nontrivial`
+is exposed in `BallDensity.lean` and reused by the existing density theorem.
+
+`isPLBall_prism_bottom_union_strips` and the boundary-arc endpoints in `CollarGluing.lean`
+and `CollarExtension.lean` now accept arbitrary finite boundary-arc covers; their former
+pairwise-disjointness hypotheses are removed. In particular the actual shared arcs from
+`DualCellDecomposition.lean`, which may meet at endpoints, supply their input directly.
+
+All seven changed Lean modules have focused-check exit 0 and zero warnings. Logs are
+`check-arc-subset.log`, `check-finite-connected-components.log`,
+`check-ball-density-nontrivial.log`, `check-arc-decomposition.log`, and
+`check-PrismDisk-arc-cover.log`, `check-CollarGluing-arc-cover.log`,
+`check-CollarExtension-arc-cover.log`. `AuditS88ArcDecomposition.lean` / `.log`
+contain nine new or affected public endpoints, all with only `propext`,
+`Classical.choice`, and `Quot.sound`. The source hash is recorded at the next checkpoint.
+No vendored or other-lane source changed.
+
+Full 26.2 remains partial: assemble the finite collar induction using these actual dual-cell
+inputs, then prove that the final image is a neighborhood of the entire original boundary.
+The exact bundled I2 target-type issue and the other milestone obligations are unchanged.
+
+### S-M4 continuation: finite surface-collar induction
+
+The arc-cover layer is committed and pushed as `691c7329d`; the integration merge was
+already up to date. `SurfaceCollar.lean` now proves
+`IsCombinatorialManifoldWithBoundary.exists_isPLHomeomorphOn_surface_prod_Icc`.
+For any finite combinatorial surface with boundary embedded in the intrinsic boundary
+of a finite combinatorial three-manifold, it constructs a PL embedding of the surface
+times any nondegenerate compact interval. The bottom is fixed, positive heights lie off
+the original boundary, and the image lies in the original manifold. It also returns a
+finite combinatorial three-manifold triangulating the actual closed complement, with
+the old-image and original-boundary intersection conditions preserved.
+
+The proof performs finite induction over the actual vertex dual cells. It consumes the
+shared-arc and finite triple-intersection producers, the generalized collar extension,
+and the later-disk persistence theorem. No cell ordering, extension map, complement
+manifold, or persistence conclusion is added as a hypothesis. The statement permits a
+proper boundary subsurface; the whole boundary is a specialization.
+
+Focused check: `check-surface-collar.log`, exit 0, zero warnings.
+`AuditS89SurfaceCollar.lean` / `.log` audit the public endpoint; its closure contains only
+`propext`, `Classical.choice`, and `Quot.sound`. No vendored or other-lane source changed.
+The source hash is recorded at the next checkpoint.
+
+Full 26.2 still requires the image-neighborhood property. The next proof restricts the
+product embedding to a disk neighborhood in the boundary and uses the exact boundary of
+its three-ball complement to exclude the base point from that complement. The bundled
+I2 target-type issue and other milestone obligations are unchanged.
+
+### S-M4 completed: whole-boundary collar and its neighborhood property
+
+The finite product-embedding construction is committed and pushed as `e9feba0c2`;
+its integration merge was already up to date. `CollarNeighborhood.lean` proves
+`IsPLHomeomorphOn.mem_nhdsSetWithin_boundaryComplex`: a PL product embedding of the
+whole intrinsic boundary, with its bottom fixed and its image in the manifold, has an
+image which is a relative neighborhood of that boundary. At each boundary point, the
+proof chooses a disk neighborhood, restricts the product to its three-ball prism, and
+uses the exact complementary-boundary formula. The original boundary remainder and
+the exposed top and side faces both avoid the chosen point, so the closed complement
+does not contain it. The neighborhood assertion is proved, not included in the input.
+
+`IsCombinatorialManifoldWithBoundary.exists_collar` is the resulting Moise 26.2 endpoint
+for a finite combinatorial three-manifold with boundary in any finite-dimensional real
+normed ambient space. It produces a polyhedral W contained in K.space, a PL homeomorphism
+from the entire intrinsic boundary times [0,1] onto W, the relative-neighborhood property,
+the bottom identity, the exact boundary intersection, and positive-height boundary
+avoidance. No containing-ball, collar, compatibility, Schoenflies, or chart assumption is
+required beyond the finite combinatorial manifold hypotheses. This completes the S-M4
+finite-complex interface in NIGHT_PLAN. Transport to an arbitrary abstract PL charted
+ambient manifold is a separate interface and is not asserted by this endpoint.
+
+Focused check: `check-collar-neighborhood.log`, exit 0, zero warnings.
+`AuditS90CollarNeighborhood.lean` / `.log` contain both new public declarations; each
+has only `propext`, `Classical.choice`, and `Quot.sound`. No vendored or other-lane
+source changed. The source hash is recorded in the final bookkeeping entry.
+
+The next S-M5 obligation is 26.3: identify the two components adjacent to a two-sided
+surface and prove their closures are combinatorial manifolds, then apply the collar
+endpoint. The bundled I2 target-type issue remains unchanged; I2 is not marked delivered.
+
+### S-M4 final publication checkpoint, 2026-09-16
+
+The three new source checkpoints are committed and pushed: `691c7329d` (arbitrary finite
+boundary-arc covers), `e9feba0c2` (finite surface-collar induction), and `f778f73ff`
+(whole-boundary neighborhood property and `exists_collar`). All nine changed Lean modules
+have focused-check exit 0 and zero warnings. AuditS88/S89/S90 contain twelve entries, all
+with only the standard three axioms. Each source checkpoint was followed by fetch and merge
+of the integration branch, still already up to date at `8fb887bb9`.
+
+This bookkeeping commit updates the S-M4 and S-M5 table entries and plan rows B.3/B.4 to the
+verified scope. S-M4's finite-complex collar endpoint is complete. S-M3's exact bundled I2
+signature still requires the target-type owner's boundary-compatible interface; the geometric
+push producer is already proved. S-M5's next mathematical task is the actual two-component
+and manifold-closure construction for 26.3. The P.4 obligations remain unchanged.
+
+### S-M5 continuation: the two components in a spherical link
+
+`Connected/ClosedCover.lean` proves `connectedComponentIn_sdiff_inter_eq_sdiff`:
+for two closed sets, a connected side of their union minus their intersection is the
+corresponding full connected component. `SphericalComponents.lean` applies this to the
+existing universe-polymorphic `exists_disk_decomposition_of_isPLSphere_one_subset_two`.
+Its endpoint `IsPLSphere.exists_connectedComponentIn_pair_sdiff` proves that a PL circle
+in a PL two-sphere has exactly two complementary connected components. Their closures
+are parametrized PL disks, their common boundary is the given circle, and the closures
+cover the sphere. This is the actual two-side producer needed in the vertex links of an
+embedded surface; a mere non-connectedness assumption is not being substituted for it.
+
+Both modules have focused-check exit 0, zero warnings (`check-connected-closed-cover.log`,
+`check-spherical-components.log`). `AuditS91SphericalComponents.lean` / `.log` audit the
+two new declarations and the reused disk-decomposition producer; all three contain only
+`propext`, `Classical.choice`, and `Quot.sound`. No vendored or other-lane source changed.
+The source hash is recorded at the next checkpoint.
+
+26.3 remains partial. Next: transport these components through the radial cone model,
+then identify the global components in a sufficiently small regular neighborhood and
+prove that their closures have the required manifold boundaries before applying 26.2.
+
+### S-M5 continuation: coned circles separate coned spheres into two balls
+
+The spherical-link checkpoint is committed and pushed as `da8b336d9`.
+`ConeComplement.lean` identifies the difference of two cones with the radial image of
+`(K.space \ L.space) × (0, 1]`, proves connectedness, and computes its closure when the
+base difference is dense. These results do not require finite-dimensional ambient space.
+`ConeComponents.lean` proves `IsConeBase.exists_connectedComponentIn_pair_sdiff`:
+when a PL circle is a subcomplex of a PL two-sphere, coning both from the same admissible
+apex produces exactly two complementary connected components, each with PL three-ball
+closure. The closures cover the ambient cone and meet exactly in the cone on the circle.
+The proof uses an actual common subdivision of the two disk closures and radial uniqueness.
+
+Both modules have focused-check exit 0, zero warnings (`check-cone-complement.log`,
+`check-cone-components.log`). `AuditS92ConeComponents.lean` / `.log` contain five entries,
+all using only `propext`, `Classical.choice`, and `Quot.sound`. No external assumptions,
+vendored changes, or other-lane source edits were introduced.
+
+26.3 still needs the global side and manifold-closure construction. For the local surface
+trace, an arbitrary subcomplex need not intersect an ambient closed star in its own closed
+star. The existing barycentric-star intersection lemma in `FrontierBoundary.lean` supplies
+the correct trace after subdivision; the next step reuses it instead of assuming fullness.
+
+### S-M5 continuation: arbitrarily small neighborhoods of embedded surfaces
+
+The cone-component checkpoint is committed and pushed as `7e6e37d0f`.
+`StarIntersection.lean` promotes the existing barycentric closed-star intersection proof
+from `FrontierBoundary.lean` without changing its hypotheses or proof. The old consumer
+imports that module; no duplicate proof remains. `StarComponents.lean` then identifies
+the two actual components of the subdivided ambient closed star minus the surface.
+
+`SurfaceNeighborhood.lean` proves
+`IsCombinatorialManifoldWithBoundary.exists_isPLBall_neighborhood_pair_sdiff`.
+For any point of a finite closed combinatorial surface lying in the interior of a finite
+combinatorial three-manifold, every prescribed relative neighborhood contains a PL three-ball
+neighborhood C. Its trace on the surface is a PL two-disk. The complement in C has exactly
+two connected components with PL three-ball closures; the closures cover C and their
+intersection is precisely the surface trace. Surface and ambient triangulations need only
+have carrier inclusion; compatibility is produced by a common subdivision. No global
+separation or two-sidedness assumption is used for this local result.
+
+All four changed modules have focused-check exit 0 and zero warnings
+(`check-star-intersection.log`, `check-frontier-boundary-star.log`,
+`check-star-components.log`, `check-surface-neighborhood.log`).
+`AuditS93SurfaceNeighborhood.lean` / `.log` contain six entries: the three new public
+results, the two old boundary-ball consumers, and the existing whole-boundary collar.
+All contain only `propext`, `Classical.choice`, and `Quot.sound`.
+
+26.3 remains partial: the small local two-side models must still be globalized over each
+connected two-sided surface component; the resulting closures must be identified as
+combinatorial manifolds before applying and gluing the already proved collars.
+
+### S-M5 continuation: global component count and closure propagation
+
+The local surface-neighborhood checkpoint is committed and pushed as `68ed572a9`.
+`Connected/LocalSeparation.lean` proves that a complementary component touching a connected
+locally separating set has that whole set in its closure. There are at most two such
+adjacent components. In a connected locally connected ambient set, every complementary
+component of a nonempty closed subset touches that subset. Combining these facts proves
+that a disconnected complement has exactly two components, whose closures cover the closed
+ambient set and meet exactly in the separating set. None of these global conclusions is
+assumed in the proof.
+
+`PolyhedronLocalConnectedness.lean` supplies local connectedness for finite simplicial
+carriers, using small intersections of closed stars with metric balls. The simplicial
+result does not need a finite-dimensional ambient space. Its polyhedral corollary uses
+the existing triangulation theorem.
+
+`SurfaceComponents.lean` consumes the actual local PL neighborhood producer. Its endpoint
+`IsCombinatorialManifoldWithBoundary.exists_connectedComponentIn_pair_sdiff_of_separating_surface`
+proves the two-component conclusion and exact closure union/intersection for a connected
+closed surface in the interior of a connected finite combinatorial three-manifold, when
+the complement is disconnected. The local decomposition and local connectedness assumptions
+are discharged. The separate propagation and adjacent-component endpoints remain available.
+
+All three modules have focused-check exit 0 and zero warnings (`check-local-separation.log`,
+`check-polyhedron-local-connectedness.log`, `check-surface-components.log`).
+`AuditS94SurfaceComponents.lean` / `.log` contain twelve entries, all using only
+`propext`, `Classical.choice`, and `Quot.sound`.
+
+26.3 remains partial. The next step must choose a sufficiently small connected regular
+neighborhood using `IsTwoSided`, thereby producing the disconnected-complement hypothesis
+of the checked global count theorem. The remaining geometric obligation is that both
+component closures are combinatorial manifolds with the surface as a boundary component;
+only then can the existing collars be applied and glued. This entry does not label the
+bicollar theorem complete or introduce a new unproved interface assumption.
+
+### S-M5 publication checkpoint, 2026-09-16
+
+All three source checkpoints are committed and pushed: `7e6e37d0f` (coned-circle
+components), `68ed572a9` (arbitrarily small local surface neighborhoods), and `6294e3dd3`
+(global components and closure formulas). The nine changed Lean modules have focused-check
+exit 0 and zero warnings. AuditS92/S93/S94 contain 23 entries, all with only the standard
+three axioms. Each checkpoint was followed by fetch and merge of the integration branch,
+still already up to date at `8fb887bb9`. This final bookkeeping commit updates only the
+S-M5 summary and B.4 plan row to that verified scope. The overall S-M5/26.3 status remains
+partial, with the exact remaining obligations recorded above.
+
+### S-M5 continuation: connected manifold neighborhoods and local boundary invariance
+
+`ComponentComplex.lean` realizes every connected component of a simplicial carrier as
+its restriction subcomplex. The vertex links are unchanged; both combinatorial manifolds
+and combinatorial manifolds with boundary are preserved. These results do not require
+finite-dimensional ambient space or finitely many faces.
+
+`SubcomplexNeighborhood.lean` proves equality of vertex links when a subcomplex is a
+relative neighborhood at the vertex, reusing `mem_faces_of_mem_nhdsWithin_space`.
+Its boundary endpoint compares arbitrary finite triangulations: at a point where one
+combinatorial manifold is a relative neighborhood inside another, intrinsic boundary
+membership is equivalent. A common subdivision is produced in the proof.
+
+`ConnectedNeighborhood.lean` proves
+`IsCombinatorialManifoldWithBoundary.exists_connected_neighborhood`: a compact connected
+set in a finite combinatorial manifold with boundary has arbitrarily small connected
+finite combinatorial manifold neighborhoods. The proof takes the connected component
+containing the set in the existing small manifold neighborhood, and uses local
+connectedness to retain the neighborhood property. The result works in every positive
+dimension and arbitrary finite-dimensional real normed ambient space.
+
+All three focused checks have exit 0 and zero warnings (`check-component-complex.log`,
+`check-subcomplex-neighborhood.log`, `check-connected-neighborhood.log`).
+`AuditS95ConnectedNeighborhood.lean` / `.log` audit seven new declarations and the reused
+face-neighborhood lemma: all eight have only `propext`, `Classical.choice`, and `Quot.sound`.
+The source commit hash will be recorded at the following checkpoint. No other-lane or
+vendored source was modified.
+
+26.3 remains partial. Next: apply two-sidedness in the subtype of the ambient manifold
+to these connected neighborhoods and discharge the disconnected-complement input of
+the global two-component theorem. Component closures still need their manifold structure
+before the two existing collars can be glued into the bicollar.
+
+### S-M5 continuation: two-sidedness produces the two complementary components
+
+The connected-neighborhood checkpoint is committed and pushed as `6f9b12768`; the
+following fetch and merge found integration still up to date at `8fb887bb9`.
+
+`TwoSidedNeighborhood.lean` proves
+`IsCombinatorialManifoldWithBoundary.exists_connected_neighborhood_sdiff_not_isPreconnected`
+in every positive dimension. For a compact connected two-sided set, it produces an
+arbitrarily small connected finite combinatorial manifold neighborhood with disconnected
+complement. Two-sidedness is taken in the subtype `K.space`, so the result applies to
+arbitrary finite-dimensional normed ambient spaces without assuming ambient dimension three.
+
+The surface endpoint
+`IsCombinatorialManifoldWithBoundary.exists_neighborhood_connectedComponentIn_pair_sdiff_of_twoSided`
+constructs such a neighborhood for an interior connected closed combinatorial surface.
+The surface stays in its intrinsic interior. The complement has precisely two actual
+connected components; their closures cover the neighborhood and intersect exactly in
+the surface. The disconnected-complement input of the earlier component theorem is now
+proved from two-sidedness, rather than supplied as an additional assumption.
+
+The focused check has exit 0 and zero warnings (`check-two-sided-neighborhood.log`).
+`AuditS96TwoSidedNeighborhood.lean` / `.log` contain two entries, each using only
+`propext`, `Classical.choice`, and `Quot.sound`. No vendored or other-lane source changed.
+The source commit hash will be recorded at the following checkpoint.
+
+26.3 remains partial: the two component closures must still be realized as finite
+combinatorial manifolds with the surface as a boundary component, after which the two
+existing collars can be glued. No unproved local-flatness or closure-manifold hypothesis
+has been added to the public endpoint.
+
+### S-M5 continuation: triangulating side closures and detecting manifold neighborhoods
+
+The two-sided-neighborhood checkpoint is committed and pushed as `b7ba85f73`; integration
+remained up to date after the required fetch and merge.
+
+`ComplementComponents.lean` proves that the closure of any complementary connected
+component of a subcomplex is precisely the carrier of its restriction subcomplex. A
+common subdivision gives the polyhedral-closure result when only carrier inclusion of
+two finite complexes is known. The proof propagates a component across the relative
+interior of each simplex, then takes closures; it does not assume polyhedral components.
+
+`ManifoldNeighborhood.lean` transfers vertex-link sphere/ball structure from a contained
+relative manifold neighborhood to the ambient complex. It consequently proves
+`isCombinatorialManifoldWithBoundary_of_isPLBall_neighborhoods`: actual PL ball
+neighborhoods at all points imply combinatorial manifold structure for any finite
+triangulation, in every positive dimension.
+
+Both focused checks have exit 0 and zero warnings (`check-complement-components.log`,
+`check-manifold-neighborhood.log`). `AuditS97ComponentTriangulation.lean` / `.log` contain
+five entries, all with only `propext`, `Classical.choice`, and `Quot.sound`.
+The source commit hash will be recorded at the following checkpoint. No other-lane or
+vendored source was modified.
+
+26.3 remains partial: identify the actual local side-ball closures as neighborhoods in
+each global component closure, apply the checked manifold criterion, identify the
+surface boundary component, and glue its two collars.
+
+### S-M5 continuation: the two side closures are manifolds with their exact boundaries
+
+The component-triangulation checkpoint is committed and pushed as `92a27c0fb`; the
+required integration merge was already up to date.
+
+`Connected/ComponentNeighborhood.lean` proves that one of the two local component
+closures is a relative neighborhood in a specified global component closure. The proof
+uses points from both global components near the surface, so it does not silently identify
+local components that could reconnect globally.
+
+`ClosedStarNeighborhood.lean` generalizes the existing ball-neighborhood producer to
+combinatorial manifolds with boundary and prescribed relative neighborhoods. The original
+boundaryless theorem keeps its signature and becomes a corollary.
+
+`SurfaceComponentClosure.lean` proves that every finite triangulation of either side
+closure is a combinatorial three-manifold with boundary. Its boundary is exactly the
+surface together with the part inherited from the ambient neighborhood boundary:
+`Bd A = L.space ∪ (A.space ∩ Bd N)`. Away from the surface, local boundary membership
+is inherited from N; at the surface, the actual two local PL three-balls meet in a PL
+two-disk, placing the surface in the boundary of the appropriate side.
+
+`TwoSidedNeighborhood.lean` now includes
+`IsCombinatorialManifoldWithBoundary.exists_neighborhood_manifold_pair_of_twoSided`.
+It produces an arbitrarily small connected manifold neighborhood N and connected finite
+combinatorial manifolds A and B, with `A.space ∪ B.space = N.space`,
+`A.space ∩ B.space = L.space`, both exact boundary formulas, and the relative-neighborhood
+property along the whole surface. The only geometric input is the original two-sided
+interior surface; neither side-manifold structure nor separation is an assumed interface.
+
+All four changed modules have focused-check exit 0 and zero warnings
+(`check-component-neighborhood.log`, `check-closed-star-neighborhood-boundary.log`,
+`check-surface-component-closure.log`, `check-two-sided-neighborhood-manifolds.log`).
+`AuditS98SurfaceComponentClosure.lean` / `.log` contain eight entries, all with only
+`propext`, `Classical.choice`, and `Quot.sound`. The source commit hash will be recorded
+at the following checkpoint. No other-lane or vendored source changed.
+
+26.3 remains partial. The side-manifold construction and exact boundaries are now proved.
+Next: restrict the existing boundary collars to this surface component, preserve their
+relative-neighborhood property, and glue the two products along the middle surface.
+The disconnected-surface case will then require combining the finitely many components.
+
+### S-M5 continuation: arbitrarily small bicollars of connected two-sided surfaces
+
+The side-closure checkpoint is committed and pushed as `927573c40`; the following
+integration merge was already up to date.
+
+`CollarRestriction.lean` restricts the proved whole-boundary collar to a polyhedral
+boundary subset whose boundary complement is closed. It retains the relative-neighborhood
+property, the identity bottom, the exact boundary trace, and interior positive levels.
+Compactness of the image of the complementary part supplies the separating neighborhood.
+
+`BicollarGluing.lean` reflects one collar parameter and glues the two PL maps along their
+common bottom. It gives the product with `[-1,1]`, the identity middle surface, and negative
+and positive levels in the respective sides away from that surface.
+
+`Bicollar.lean` proves
+`IsCombinatorialManifoldWithBoundary.exists_bicollar_of_isConnected`.
+For a connected finite closed combinatorial surface in the interior of a finite
+combinatorial three-manifold with boundary, two-sidedness in `K.space` produces, in every
+prescribed relative neighborhood U, a polyhedral W and a PL homeomorphism
+`L.space × [-1,1] -> W`. The image W is a relative neighborhood of the whole surface,
+lies inside `K.space` away from its intrinsic boundary, lies in U, and the map is the
+identity on the middle surface. No Schoenflies parameter or unproved interface is present.
+
+All three focused checks have exit 0 and zero warnings (`check-collar-restriction.log`,
+`check-bicollar-gluing.log`, `check-bicollar.log`). `AuditS99BicollarConnected.lean` / `.log`
+contain three entries, all with only `propext`, `Classical.choice`, and `Quot.sound`.
+The source commit hash will be recorded in the final bookkeeping entry. No other-lane or
+vendored source was modified.
+
+The connected finite-complex case of 26.3 is now proved. The general 26.3 row remains
+partial: combine the finitely many surface components in pairwise disjoint neighborhoods,
+then transport from finite-complex carriers to the requested general PL manifold setting.
+The prior 26.1 interior-chart transport and P.4 obligations are unchanged.
+
+### S-M5 connected bicollar publication checkpoint, 2026-09-16
+
+The five mathematical checkpoints are committed and pushed: `6f9b12768` (small connected
+manifold neighborhoods), `b7ba85f73` (two-sidedness and actual complementary components),
+`92a27c0fb` (closure triangulations and local manifold criteria), `927573c40` (side manifolds
+and exact boundary formulas), and `33e5a92d7` (arbitrarily small connected PL bicollars).
+The twelve changed Lean modules have focused-check exit 0 and zero warnings.
+AuditS95/S96/S97/S98/S99 contain 8/2/5/8/3 entries, respectively: 26 entries, all with
+only `propext`, `Classical.choice`, and `Quot.sound`. Each source checkpoint was followed
+by fetch and merge of the integration branch, still up to date at `8fb887bb9`.
+
+This final bookkeeping commit updates only the S-M5 summary and B.4 plan row to the
+verified scope. The overall 26.3 status remains partial; the connected finite-complex
+case is proved, while the finite-component assembly and general manifold transport remain.
+There is no new consultation blocker. The next mathematical step is the finite-component
+assembly, using local connectedness and compactness for finiteness, pairwise disjoint
+neighborhoods for the component bicollars, and finite PL gluing.
+
+### S-M5 continuation: finite component decomposition and disjoint PL gluing
+
+`ComponentComplex.lean` now defines `connectedComponentComplex K c`, indexed canonically
+by `ConnectedComponents K.space`, and proves its carrier formula, finite face set,
+connectedness, pairwise disjointness, and exact union. Both manifold predicates are
+preserved. A finite polyhedral carrier has finitely many components, using compactness
+and the already proved local connectedness.
+
+`DisjointGluing.lean` proves `exists_isPLHomeomorphOn_iUnion_of_pairwise_disjoint` for a
+finite family of PL homeomorphisms with pairwise disjoint source and target sets. The
+global map agrees with every original map on its domain. `Connected/TwoSided.lean`
+adds `IsTwoSided.preimage_connectedComponentIn`, so restricting an already two-sided
+preimage to any target connected component preserves two-sidedness.
+
+All three focused checks have exit 0 and zero warnings (`check-component-complex-finite.log`,
+`check-disjoint-gluing.log`, `check-two-sided-components.log`).
+`AuditS100FiniteComponents.lean` / `.log` contain twelve entries, each with only
+`propext`, `Classical.choice`, and `Quot.sound`. No other-lane or vendored source changed.
+The source commit hash will be recorded at the next checkpoint.
+
+The next step assembles the existing connected bicollars in pairwise disjoint
+neighborhoods of these finitely many components, removing the connectedness assumption
+from the finite-complex bicollar endpoint. General PL charted ambient transport remains.
+
+### S-M5 continuation: bicollars without a connectedness assumption
+
+The finite-component decomposition and disjoint-gluing checkpoint is committed and
+pushed as `7adcc0194`; the following integration merge was already up to date.
+
+`Bicollar.lean` now proves
+`IsCombinatorialManifoldWithBoundary.exists_bicollar` for any finite closed
+combinatorial surface in the interior of a finite combinatorial three-manifold with
+boundary. Two-sidedness in the carrier is the only separation assumption. The surface
+can have multiple components or be empty. In every prescribed relative neighborhood U,
+the theorem produces a polyhedral relative neighborhood W contained in U and away from
+the manifold boundary, with a PL homeomorphism from the surface times `[-1,1]` that is
+the identity on the middle surface. No Schoenflies parameter or unproved interface is
+present. The proof separates the finitely many components by disjoint neighborhoods,
+applies the connected endpoint, and glues the resulting PL maps.
+
+The focused check has exit 0 and zero warnings (`check-bicollar-finite-components.log`).
+`AuditS101Bicollar.lean` / `.log` contain two entries, both with only `propext`,
+`Classical.choice`, and `Quot.sound`. No other-lane or vendored source changed.
+The source commit hash will be recorded at the next checkpoint.
+
+The finite-complex case of 26.3 is now proved. Transport to the general PL charted
+manifold setting remains; the prior 26.1 interior-chart transport and P.4 obligations
+are unchanged. I2's exact target-type compatibility issue is unchanged.
+
+### S-M5 continuation: two-sidedness and PL piece parametrizations
+
+The general finite-complex bicollar checkpoint is committed and pushed as `3a55ac834`;
+the following integration merge was already up to date.
+
+`Connected/TwoSided.lean` adds `IsTwoSided.preimage_of_isInducing`: two-sidedness pulls
+back along a map inducing the domain topology whenever its range is a neighborhood
+of the surface. Injectivity is unnecessary. Connected components pull back exactly,
+and neighborhood images remain neighborhoods under the stated local range condition.
+
+`PieceParametrization.lean` proves `PLPieceIn.isClosedEmbedding` for the restriction of
+a finite-dimensional PL piece map to its carrier in a Hausdorff target. It defines
+`PLPieceIn.precomp` to change a piece's parametrization by a PL homeomorphism, preserving
+both directions of the chartwise PL condition. The new parameter ambient is finite
+dimensional; the existing piece ambient need not be. Carrier and map formulas are explicit.
+
+Both focused checks have exit 0 and zero warnings (`check-two-sided-transport.log`,
+`check-piece-parametrization.log`). `AuditS102PieceTransport.lean` / `.log` contain five
+entries, all with only `propext`, `Classical.choice`, and `Quot.sound`. No other-lane or
+vendored source changed. The source commit hash will be recorded at the next checkpoint.
+
+Next, choose a finite manifold neighborhood of the compact polyhedral surface, pull it
+back into that piece, apply the finite-complex bicollar, and reparametrize its image piece.
+General PL manifold 26.3 is not yet marked complete.
+
+### S-M5 continuation: bicollars in general PL manifolds
+
+The PL transport checkpoint is committed and pushed as `2c0c1c2a4`; the following
+integration merge was already up to date.
+
+`BicollarManifold.lean` proves `PLPieceIn.exists_bicollar_of_subset_interior` inside a
+finite manifold piece, `PLPieceIn.exists_bicollar` in every prescribed neighborhood of
+a two-sided finite polyhedral surface in a Hausdorff PL three-manifold, and the concrete
+homeomorphism endpoints `PLPieceIn.exists_bicollar_homeomorph` and
+`IsPolyhedralManifold.exists_bicollar`. The ambient manifold need not be compact or
+second countable; the surface need not be connected. A finite surface piece already
+supplies its compactness. The bicollar map is the identity at parameter zero, and its
+image is a neighborhood of the entire surface contained in the prescribed U.
+
+The PL certificate is explicit: the image has a `PLPieceIn (E x R) 3 X W` whose carrier
+is exactly the chosen surface carrier times `[-1,1]`, and the delivered homeomorphism
+`S x [-1,1] -> W` agrees with that piece map in the given surface parametrization.
+Both the forward and inverse chartwise PL conditions are fields of this piece. The
+proof obtains a finite manifold neighborhood, transports two-sidedness to its carrier,
+applies the finite-complex bicollar, and changes its parametrization back.
+`PieceParametrization.lean` adds the carrier homeomorphism and its evaluation formula.
+
+Both final focused checks have exit 0 and zero warnings
+(`check-piece-parametrization-homeomorph.log`, `check-bicollar-manifold.log`).
+`AuditS103BicollarManifold.lean` / `.log` contain six entries, all with only `propext`,
+`Classical.choice`, and `Quot.sound`. The endpoints have no Schoenflies or unproved
+interface parameter. No other-lane or vendored source changed.
+The source commit hash will be recorded at the next checkpoint.
+
+The two requested settings for 26.3 are now proved: finite combinatorial manifolds with
+boundary, and general Hausdorff PL charted three-manifolds. The prior 26.1 interior
+transport for arbitrary K and the supported ambient graph extension in P.4 remain.
+I2's exact target-type compatibility issue is unchanged.
+
+### S-M5 completion: relative topology and two-sidedness in manifolds with boundary
+
+The general PL-manifold bicollar checkpoint is committed and pushed as `52d70d778`;
+the following integration merge was already up to date.
+
+`ManifoldRelativeTopology.lean` closes the remaining 26.1 transport obligation directly
+in the subtype topology of a finite combinatorial manifold K. For a finite manifold A
+of the same dimension contained in K, it proves `closure_interior_preimage` from the
+previous double-complement closure formula. If A avoids the intrinsic boundary of K,
+`inter_closure_sdiff_eq_boundaryComplex_of_disjoint_boundary` and
+`frontier_preimage_space_eq_preimage_boundaryComplex` identify its relative frontier
+with its intrinsic boundary. Neighborhood invariance of intrinsic boundary membership
+supplies the previously missing reverse containment.
+
+`IsCombinatorialManifoldWithBoundary.isTwoSided_boundaryComplex` and
+`.isTwoSided_of_union_boundary_components` then prove the full boundary and any union
+of its connected components are two-sided in K.space. These results hold in every
+positive dimension and arbitrary finite-dimensional real normed ambient spaces.
+Local connectedness of the boundary is proved via its finite complex and transported
+to the subtype. No additional regular-closed, local-connectedness, chart, or separation
+hypothesis is required. Constructing an interior charted-space instance is unnecessary
+for this endpoint, so the earlier 26.1 interior-chart transport gap is removed.
+
+The focused check has exit 0 and zero warnings (`check-manifold-relative-topology.log`).
+`AuditS104RelativeTwoSided.lean` / `.log` contain five entries, all with only `propext`,
+`Classical.choice`, and `Quot.sound`. No Schoenflies or unproved interface parameter is
+present. No other-lane or vendored source changed. The source commit hash will be
+recorded in the final bookkeeping entry.
+
+S-M5's 26.1 and 26.3 endpoints are now proved in the finite-complex and general PL
+charted settings described above. P.4's controlled supported graph extension remains;
+I2's exact target-type compatibility issue is unchanged.
+
+### S-M6 continuation: supported homeomorphism extension and finite gluing
+
+The relative-topology and 26.1 checkpoint is committed and pushed as `7746cff68`;
+the following integration merge was already up to date.
+
+`Topology/Homeomorph/ClosedExtension.lean` defines `Homeomorph.extendById`: a
+self-homeomorphism of a closed subset that fixes its frontier extends to the ambient
+space by the identity. It agrees with the given map on the closed set, preserves that
+set, and fixes the complement of its interior. No separation or metric hypothesis is
+needed for this construction. In a pseudometric space its displacement is bounded by
+the diameter of the closed set, and `dist_extendById_lt` gives pointwise positive-function
+control from a sufficiently small diameter.
+
+`Topology/Homeomorph/DisjointGluing.lean` proves
+`Homeomorph.exists_gluing_of_pairwise_disjoint`: finitely many ambient homeomorphisms
+supported in pairwise disjoint sets glue to a single homeomorphism agreeing with each
+map on its set and fixing the complement of their union. `exists_gluing_dist_lt`
+preserves the individual pointwise displacement bound without summing errors.
+
+Both focused checks have exit 0 and zero warnings (`check-homeomorph-closed-extension.log`,
+`check-homeomorph-disjoint-gluing.log`). `AuditS105SupportedHomeomorphs.lean` / `.log`
+contain nine entries, all with only `propext`, `Classical.choice`, and `Quot.sound`.
+No other-lane or vendored source changed. The source commit hash will be recorded in
+the final bookkeeping entry.
+
+These are supported-extension and control tools for P.4, not a proof of finite graph
+tameness. The actual compatible sector homeomorphisms inside vertex disks and relative
+straightening inside the edge frames still have to be constructed from the planar
+Jordan/Schoenflies inputs. P.4 remains partial, and I2's target-type issue is unchanged.
+
+### S-M5 completion and S-M6 publication checkpoint, 2026-09-16
+
+The source checkpoints are committed and pushed as `7adcc0194` (finite component
+complexes and disjoint PL gluing), `3a55ac834` (finite bicollars without connectedness),
+`2c0c1c2a4` (two-sidedness and PL piece transport), `52d70d778` (general PL-manifold
+bicollars), `7746cff68` (relative boundary topology and 26.1), and `6d1df9349`
+(supported homeomorphism extension and finite gluing). The nine distinct Lean modules
+changed across these checkpoints have focused-check exit 0 and zero warnings.
+AuditS100--S105 contain 12/2/5/6/5/9 entries, respectively: 39 entries, all with only
+`propext`, `Classical.choice`, and `Quot.sound`.
+
+Every source checkpoint was followed by fetch and merge of the integration branch.
+The final source checkpoint is clean and synchronized with origin/codex/moise-s;
+origin/codex/moise-integration remains merged at `8fb887bb9`. This bookkeeping commit
+updates the S-M5/S-M6 summary and plan rows B.1, B.4, and P.4 to the verified scope,
+and removes the now-discharged B.4 prerequisites from B.2's remaining-work sentence.
+
+S-M5 is complete in the stated finite-complex and general Hausdorff PL charted settings.
+S-M6 remains partial: 17.3 is proved, while P.4 still requires the actual compatible
+vertex-sector and edge-frame constructions. The supported extension and control tools
+do not themselves imply graph tameness. I2's exact target-type issue is unchanged.
+There is no new consultation blocker; the next step is relative straightening of arcs
+inside a disk while fixing its boundary.
+
+### S-M6 continuation: compatible boundary-arc extensions
+
+The S-M5 completion and S-M6 bookkeeping is committed and pushed as `a7ccc3533`;
+the following integration merge was already up to date.
+
+`PlanarJordan/Transport.lean` proves `isArcBetween_image`,
+`isJordanCurve_image`, and `image_inside` for ambient plane homeomorphisms.
+The inside-image formula holds for every subset of the plane; bounded components
+remain bounded because their closures are compact.
+
+`PlanarJordan/ArcExtension.lean` proves `exists_homeomorph_extending_two_arcs`:
+two arcs forming a Jordan curve, equipped with endpoint-compatible homeomorphisms
+to a second such pair, admit one ambient extension realizing both prescribed maps.
+The compact glued boundary map is a homeomorphism, and the proved relative
+Jordan--Schoenflies theorem extends it. `exists_homeomorph_image_two_arcs` supplies
+the maps by matching arc parameters. `exists_homeomorph_image_arc_polygonal`
+simultaneously makes both arcs polygonal using the two halves of the model square.
+No polygonality of either original arc is assumed.
+
+Both focused checks have exit 0 and zero warnings (`check-planar-jordan-transport.log`,
+`check-planar-arc-extension.log`). `AuditS106PlanarArcExtension.lean` / `.log`
+contain six entries, all with only `propext`, `Classical.choice`, and `Quot.sound`.
+No vendored or other-lane source changed. The source hash will be recorded at the
+next checkpoint. The next step transports the proved polygonal crosscut theorem
+to arbitrary embedded crosscuts, then constructs the boundary-fixed disk map.
+P.4 remains partial; I2's target-type issue is unchanged.
+
+### S-M6 continuation: crosscuts without a polygonality assumption
+
+The compatible-arc extension layer is committed and pushed as `7e1951a69`; the
+following integration merge was already up to date.
+
+`PlanarJordan/Crosscut.lean` proves `crosscut_regions` for an arbitrary embedded
+arc in a Jordan disk with its distinct endpoints on the boundary. The two labelled
+sides are the interiors of the curves formed with the two boundary arcs; they are
+disjoint, cover the disk minus the crosscut, and their closures meet the outer
+boundary in the respective boundary arcs. `closed_crosscut_regions` proves that
+the two closed sides cover the original closed disk and intersect exactly in the
+crosscut. `arc_inter_curve_eq_pair` and `isJordanCurve_cut_arc_union` expose the
+intersection and Jordan-curve facts used in the construction.
+
+The proof first makes the crosscut polygonal by extending its compatible boundary
+arc maps, applies the existing checked polygonal theorem, and transports its
+regions and closures back. The public statements do not assume polygonality,
+collars, local flatness, or an unproved separation theorem.
+
+The focused check has exit 0 and zero warnings (`check-planar-crosscut.log`).
+`AuditS107Crosscut.lean` / `.log` contain four entries, all with only `propext`,
+`Classical.choice`, and `Quot.sound`. No vendored or other-lane source changed.
+The source hash will be recorded at the next checkpoint. The next step extends
+a prescribed crosscut homeomorphism over both closed sides, glues them, and extends
+by the identity outside the disk. P.4 is still partial.
+
+### S-M6 continuation: supported crosscut extension with displacement control
+
+The general crosscut theorem is committed and pushed as `d9f27c4b4`; the following
+integration merge was already up to date.
+
+`PlanarJordan/CrosscutExtension.lean` proves
+`exists_homeomorph_closed_disk_extending_crosscut`: any endpoint-preserving
+homeomorphism between two embedded crosscuts of the same Jordan disk extends over
+the closed disk and fixes its boundary pointwise. Neither crosscut needs to be
+polygonal. Each labelled side receives the checked relative Jordan extension; the
+two maps agree on the whole crosscut and their target sides meet exactly in its image,
+so compact gluing gives a bijective continuous map with continuous inverse.
+
+`exists_homeomorph_extending_crosscut` extends that disk map by the identity to
+the plane. It agrees with the prescribed map on the original arc, fixes every point
+outside the disk interior (including its boundary), and bounds displacement by the
+closed disk diameter. `exists_homeomorph_image_crosscut_dist_lt` chooses the arc
+homeomorphism and gives strict pointwise control for any positive function when
+the disk diameter is smaller than that function throughout the disk.
+
+`Homeomorph/CompactGluing.lean` contains the reusable compact-cover gluing theorem
+for Hausdorff spaces. `ArcExtension.lean` now consumes it; its public statements
+are unchanged and the repeated gluing proof is removed.
+
+The three changed source modules and the Crosscut consumer have focused-check exit 0
+and zero warnings (`check-homeomorph-compact-gluing.log`,
+`check-planar-arc-extension.log`, `check-planar-crosscut.log`,
+`check-crosscut-extension.log`). `AuditS108SupportedCrosscut.lean` / `.log`
+contain eleven entries covering the new endpoints and the affected arc/crosscut
+chain, all with only `propext`, `Classical.choice`, and `Quot.sound`.
+No vendored or other-lane source changed. The source hash will be recorded in the
+final publication entry.
+
+P.4 remains partial. Its relative map inside a chosen Jordan frame is now proved;
+the remaining geometric producers are compatible vertex sectors and sufficiently
+small frames around the finite graph, with appropriate polygonal target arcs.
+I2's exact target-type issue is unchanged.
+
+### S-M6 crosscut publication checkpoint, 2026-09-16
+
+The source checkpoints are committed and pushed as `7e1951a69` (compatible arc
+extensions and planar transport), `d9f27c4b4` (arbitrary crosscut separation), and
+`4ddbf78f4` (supported crosscut extension and compact gluing). All five Lean
+modules have final focused-check exit 0 and zero warnings. AuditS106/S107/S108
+contain 6/4/11 entries, respectively: 21 entries, all with only `propext`,
+`Classical.choice`, and `Quot.sound`. S108 also rechecks the arc and crosscut
+chain after factoring out compact gluing; these counts are audit entries,
+not counts of distinct declarations.
+
+The working branch is synchronized with origin/codex/moise-s. Fetch and merge
+after each source checkpoint found origin/codex/moise-integration already merged
+at `8fb887bb9`. This final bookkeeping commit updates only the S-M6 summary
+and P.4 plan row to distinguish the proved relative map inside a given Jordan
+frame from the still-missing finite-graph frame and vertex-sector producers.
+S-M5 remains complete in its stated settings. There is no new consultation
+blocker; the active continuation is the geometric construction required by P.4.
+
+### S-M6 continuation: vertex arcs and crosscut-side selection
+
+The supported-crosscut publication checkpoint is committed and pushed as `d97cab7af`;
+the next integration merge was already up to date.
+
+`PlanarJordan/VertexArcs.lean` proves `exists_initial_arc_to_frontier`: an embedded
+arc leaving an open set has an initial subarc whose far endpoint is on the frontier
+and whose remaining points stay in the open set. `Graph.IsDrawing.exists_vertex_arcs`
+constructs these subarcs for every edge incident with a vertex. They meet pairwise
+exactly at that vertex and have distinct frontier endpoints. It requires only an
+open neighborhood whose closure contains no other graph vertex, with no finiteness
+assumption on the graph. `exists_vertex_arcs_in_square` produces such a square
+inside any specified neighborhood for a finite drawing and also avoids all
+nonincident edges. The rest of an edge is allowed to return to the square later.
+
+`Crosscut.lean` adds `subset_crosscut_side_of_mem_closure` and
+`arc_diff_subset_crosscut_side`: a connected set in the complement of the crosscut
+lies on the side identified by its limiting boundary point. This supplies the
+geometric side-selection step for further vertex-fan cuts.
+
+VertexArcs, Crosscut, and the affected CrosscutExtension consumer have focused-check
+exit 0 and zero warnings (`check-planar-vertex-arcs.log`, `check-planar-crosscut.log`,
+`check-crosscut-extension.log`). `AuditS109VertexArcs.lean` / `.log` contain eight
+entries, all with only `propext`, `Classical.choice`, and `Quot.sound`. No vendored
+or other-lane source changed. The source hash will be recorded at the next checkpoint.
+P.4 remains partial: simultaneous straightening of the whole finite vertex fan and
+the small edge frames still have to be constructed. I2's target-type issue is unchanged.
+
+### S-M6 continuation: supported simultaneous straightening of two vertex arcs
+
+The initial-arc and side-selection layer is committed and pushed as `3302febfc`;
+the following integration merge was already up to date.
+
+`PlanarJordan/VertexFan.lean` proves `exists_homeomorph_extending_two_vertex_arcs`:
+two arcs from a common interior vertex to the boundary of one Jordan disk can be
+mapped simultaneously to a second such pair, with their prescribed compatible arc
+maps, by an ambient homeomorphism fixing the disk exterior and boundary. The union
+map preserves the marked common vertex; merely choosing an arbitrary homeomorphism
+of the combined crosscut would not ensure this. Compact gluing constructs that map,
+and the checked supported-crosscut theorem extends it. Displacement is bounded by
+the closed disk diameter.
+
+`exists_homeomorph_image_two_vertex_arcs` chooses the arc maps.
+`exists_homeomorph_image_two_vertex_arcs_radial` supplies the actual straight radial
+targets in a square and fixes the common center. The finite-graph producer
+`Graph.IsDrawing.exists_homeomorph_radial_vertex_arc_pair` constructs the square and
+the two initial subarcs inside any specified neighborhood of a vertex. The square
+avoids all nonincident edges, and the ambient map fixes everything outside its open
+interior and moves points by at most its diameter.
+
+The VertexFan focused check has exit 0 and zero warnings (`check-planar-vertex-fan.log`).
+`AuditS110VertexFan.lean` / `.log` contain four entries, all with only `propext`,
+`Classical.choice`, and `Quot.sound`. No vendored or other-lane source changed.
+The source hash will be recorded at the next checkpoint. P.4 remains partial:
+the rest of a finite vertex fan still needs simultaneous straightening by recursive
+crosscut-side gluing; degree-one endpoints and the edge frames remain outstanding.
+No general graph-tameness endpoint is claimed. I2's target-type issue is unchanged.
+
+### S-M6 continuation: simultaneous extension of a finite boundary fan
+
+The two-arc straightening layer is committed and pushed as `47062f7d4`; the following
+integration merge was already up to date.
+
+`PlanarJordan/BoundaryArc.lean` proves
+`exists_isCutPair_inter_closed_eq_singleton`. From a point of a Jordan curve outside
+a closed set meeting the curve, it constructs a cut pair whose first boundary arc
+meets the closed set only at its far endpoint. The proof takes the first parameter
+meeting the closed set and constructs the complementary arc from the remaining tail.
+The result applies to arbitrary closed sets, not only finite endpoint sets.
+
+`PlanarJordan/BoundaryFan.lean` proves `exists_homeomorph_image_boundary_fan` for any
+finite family of embedded crosscuts sharing a common point on a Jordan boundary,
+with distinct arcs meeting only at that point. Two such families with the same
+boundary endpoints admit a simultaneous ambient matching fixing the disk exterior
+and boundary. The proof selects the first remaining boundary endpoint, matches that
+crosscut, and invokes induction in the remaining Jordan disk. The side-selection
+lemma places every remaining arc in that disk; the induction fixes the matched arc.
+No cyclic-order, sector-decomposition, or unproved extension hypothesis is added.
+
+Both focused checks have exit 0 and zero warnings (`check-planar-boundary-arc.log`,
+`check-planar-boundary-fan.log`). `AuditS111BoundaryFan.lean` / `.log` contain two
+entries, both with only `propext`, `Classical.choice`, and `Quot.sound`.
+No vendored or other-lane source changed. The source hash will be recorded at the
+next checkpoint. The next step applies the boundary-fan theorem to the two sides
+of the first matched pair at an interior vertex. P.4 is still partial; degree-one
+endpoints and edge frames remain beyond that step. I2's target-type issue is unchanged.
+
+### S-M6 continuation: supported straightening of a finite interior vertex fan
+
+The finite boundary-fan layer is committed and pushed as `1b6245266`; the following
+integration merge was already up to date.
+
+`PlanarJordan/VertexFan.lean` now proves
+`exists_homeomorph_image_vertex_fan_of_nontrivial`: two finite embedded fans with at
+least two branches, a common interior vertex, and matching boundary endpoints admit
+one ambient matching fixing the vertex and the disk exterior. After matching two
+branches, their union is a crosscut. The remaining branches fall into its two labelled
+sides according to their boundary endpoints. The finite boundary-fan theorem extends
+each side, and disjointness from the other closed side makes their composition preserve
+every branch already matched.
+
+`exists_homeomorph_radial_vertex_fan` supplies the actual radial target segments in
+a square, fixes its center and exterior, and bounds all displacement by its diameter.
+`Graph.IsDrawing.exists_homeomorph_radial_vertex_fan` produces the square, every
+incident initial subarc, and the simultaneous ambient straightening inside any given
+neighborhood of a vertex with at least two incident edges. Nonincident edges are avoided.
+This is a local geometric producer for the complete finite fan at that vertex. The
+published two-arc radial statements retain their signatures and are now corollaries
+of the finite-family statements.
+
+The final VertexFan focused check has exit 0 and zero warnings (`check-planar-vertex-fan.log`).
+`AuditS112FiniteVertexFan.lean` / `.log` contain eight entries covering all seven
+VertexFan endpoints and the boundary-fan input, all with only `propext`,
+`Classical.choice`, and `Quot.sound`. No vendored or other-lane source changed.
+The source hash will be recorded in the final publication entry.
+
+P.4 remains partial. The local vertex construction is proved for at least two
+incident edges; degree-one endpoints still need a separate argument. The next
+geometric work is small edge frames and polygonal crosscuts, followed by the
+assembly over disjoint vertex and edge supports with the prescribed global control.
+No new consultation blocker was found. I2's target-type issue is unchanged.
+
+### S-M6 finite vertex-fan publication checkpoint, 2026-09-16
+
+The source checkpoints are committed and pushed on `codex/moise-s`:
+
+- `3302febfc`: initial vertex arcs and crosscut-side selection.
+- `47062f7d4`: supported simultaneous straightening of two incident arcs.
+- `1b6245266`: closed boundary-set selection and finite boundary-fan extension.
+- `5889f3772`: finite interior vertex-fan matching and the local finite-graph producer.
+
+The five changed Lean modules (VertexArcs, Crosscut, VertexFan, BoundaryArc, and
+BoundaryFan) and the CrosscutExtension consumer all have final focused-check exit 0
+with zero warnings. AuditS109, S110, S111, and S112 contain respectively 8, 4, 2, and
+8 entries: 22 audit records, including deliberate rechecks of the two-arc corollaries
+after refactoring. Every entry contains only `propext`, `Classical.choice`, and
+`Quot.sound`. Logs and audit probes remain under `.lake/scratch` and are not committed.
+
+After the last source push, `git fetch origin` and the requested integration merge
+reported already up to date at `8fb887bb9`; the worktree and `origin/codex/moise-s`
+were synchronized at `5889f3772`. This final documentation checkpoint updates only
+the S-M6 summary and P.4 plan row to the verified scope.
+
+P.4 remains partial: local simultaneous straightening is proved for all initial
+subarcs at a vertex with at least two incident edges. Degree-one endpoints, small
+edge frames, polygonal target crosscuts, and the global assembly with prescribed
+support and positive control remain. Initial subarcs are used explicitly; later
+parts of an incident edge may return to the chosen square. I2's target-type issue
+is unchanged, and no new consultation blocker was found.
+
+### Integration repair and fresh verification, 2026-09-16
+
+NIGHT_PLAN section 6.2 is implemented against integration commit `314c2178f`.
+The merge preserves both lanes' mathematics and the combined P.3/P.4 plan evidence.
+
+- `BoundaryDerivedNeighborhood` now selects the root-level ball-intersection theorem
+  by its fully qualified name, avoiding the newer namespaced theorem's shadowing.
+- S's neighborhood module is now `SubcomplexNhdsWithin`; its three importers use
+  that name. H's `SubcomplexNeighborhood` is retained unchanged.
+- S's more general centroid lemma is named
+  `pair_centroid_mem_barycentricSubdivision_of_subset_or_subset`. H's original
+  declaration is retained unchanged and both are imported in the collision audit.
+- `ManifoldFaces` imports H's canonical with-boundary face-extension theorem from
+  `ManifoldConnectivity`. The duplicate is removed; the boundaryless wrapper keeps
+  its existing public signature. With-boundary call sites use the canonical signature.
+
+The earlier checks of BoundaryDerivedNeighborhood and its fourteen downstream
+modules did not validate the current sources against fresh dependencies. Those
+claims are superseded by this complete recheck. The manifest contains all 86 S
+modules changed since `8fb887bb9`, with the renamed module substituted, plus H's
+ManifoldConnectivity and SubcomplexNeighborhood: 88/88 focused checks exit 0,
+zero warnings. The unchanged H DerivedCarrier module also has a fresh exit-0,
+zero-warning check. `AuditS113IntegrationRepair.lean` imports these modules and
+checks 307 public declarations, including both formerly colliding H declarations;
+exit 0 and only `propext`, `Classical.choice`, and `Quot.sound`.
+
+A second cache hazard was observed during verification: another check replaced the
+shared FrontierBoundary artifact after S had checked it, removing an S declaration
+from the artifact seen by PrismBoundary. S now writes artifacts to
+`E:\differential-geometry-dev\.lake\scratch\s-verified-20260916`. Both authorized
+local scripts use this directory first. Dependencies refer to existing artifacts
+for source modules already obtained through integration; no other-lane source was
+copied. Before compilation, check-f removes the target olean, ilean, private and
+server artifacts with deletion failure treated as fatal. Each successful check
+requires its new olean to exist. Source fingerprints for all 86 S modules, all 88
+new target artifacts, and 484 unchanged dependency artifacts were verified after
+the full run. The isolated PrismBoundary check passed without a source change.
+
+Evidence remains in `.lake/scratch`: `s-night-recheck.txt`,
+`s-snapshot-recheck-results.tsv`, per-module logs, artifact fingerprints,
+`check-repair-derived-carrier.log`, and `AuditS113IntegrationRepair.log`.
+The initial audit omitted the DerivedCarrier import; the corrected complete audit
+above is the delivery record. I2 in the double environment is the next milestone.
+
+### S-M3: I2 已交付（double 环境）, 2026-09-16
+
+The integration-repair checkpoint is committed and pushed as `30102ea5d`.
+A subsequent fetch and merge of integration reported already up to date.
+The earlier I2 target-type blocker is resolved by NIGHT_PLAN section 6.1; this
+entry supersedes that blocker in the historical notes above.
+
+Three native modules provide five new public theorems:
+
+- `PieceMap.lean`: `PLPieceIn.isPLOn_comp` turns a piecewise affine map into a
+  PL piece into a chartwise PL map, in arbitrary source and target dimensions.
+- `LoopTheorem/PolyhedralCell.lean`:
+  `PLPieceIn.exists_nonsingular_two_cell_of_isPLBall` realizes a parametrized disk
+  inside a PL piece as a nonsingular singular two-cell, with exact carrier and
+  boundary-image equalities. The closed combinatorial-manifold specialization is
+  `exists_nonsingular_two_cell_of_isPLBall_in_combinatorial_manifold`.
+- `LoopTheorem/DoubleBoundaryPush.lean`:
+  `exists_nonsingular_two_cell_of_boundary_disk` takes a finite combinatorial
+  3-manifold with boundary in any finite-dimensional real normed space, and a
+  parametrized disk in its boundary complex. It constructs a nonsingular
+  `SingularTwoCell (double 3 K).space` in the second copy of K. Its boundary image
+  and its intersection with that copy's boundary both equal the embedded original
+  disk boundary. `exists_nonsingular_two_cell_of_disk_in_double_boundary` accepts
+  the disk directly in that ambient boundary image and supplies E3's hpush.
+
+Precisely, the copy map is
+`simplicialMap K (glueEmbed₂ (boundaryComplex 3 K) id)`, the affine extension of the
+vertex embedding. The environment chart is
+`combinatorialChartedSpace (double 3 K) (isCombinatorialManifold_double_succ_succ K hK)`.
+The ambient inclusion used for the singular cell is `Subtype.val`. No charted-space
+assumption on the original manifold with boundary is introduced. The construction
+uses the checked intrinsic boundary-disk push and H's checked double; these endpoints
+need no additional Schoenflies or other unproved hypothesis.
+
+All three modules have focused-check exit 0 and zero warnings, against the isolated
+S artifact directory. `AuditS114DoubleBoundaryPush.lean` / `.log` check all five new
+public declarations and the two principal producers: seven entries, only `propext`,
+`Classical.choice`, and `Quot.sound`. The same audit contains a silent example with
+E3 SphereCase's exact hpush quantifiers and four conclusions, supplied directly by
+the second endpoint; it elaborates successfully. No E3 source or vendored source
+was changed. P.4 remains the next milestone, followed by S.6 as in NIGHT_PLAN 6.2.
+
+### S-M6: controlled simultaneous planar straightening, 2026-09-16
+
+I2's double-environment producer is committed and pushed as `b926417f6`.
+The subsequent integration fetch and merge reported already up to date.
+
+`PlanarJordan/VertexStraightening.lean` proves
+`Graph.IsDrawing.exists_homeomorph_radial_vertex_fans`. Given a selected finite set
+of vertices of a finite planar drawing, each with at least two incident edges, an
+open neighborhood of those vertices, and a continuous positive error function, it
+constructs pairwise disjoint closed vertex squares and one ambient homeomorphism
+straightening every selected incident initial subarc to its radial segment. The
+homeomorphism fixes every graph vertex and the prescribed neighborhood's exterior,
+and its displacement is strictly less than the error function at every point.
+The proof selects squares inside both the prescribed neighborhood and regions on
+which the error function has a quantitative lower bound, then uses disjoint gluing.
+
+`PiecewiseLinear/InteriorAccess.lean` proves line-segment accessibility from the
+interior at every point of a full-dimensional finite combinatorial manifold with
+boundary, in every positive Euclidean dimension. A top-dimensional simplex through
+the point supplies the segment. The PL-ball specialization gives polygonal interior
+access at every point of a planar PL disk, and `IsPLBall.exists_isCrosscut` constructs
+a polygonal crosscut between any two distinct boundary points. No accessibility or
+preselected polygonal target is assumed.
+
+`PlanarJordan/PolygonalCrosscut.lean` proves
+`exists_homeomorph_polygonal_crosscut`: an arbitrary topological crosscut of a planar
+PL disk becomes polygonal under an ambient homeomorphism fixing the disk exterior
+and boundary, with displacement bounded by the disk diameter. Its finite-family
+version `exists_homeomorph_polygonal_crosscuts` straightens crosscuts in pairwise
+disjoint PL disks simultaneously, fixes the complement of their interior union,
+and satisfies a positive pointwise error bound when the given disk diameters do.
+This result consumes disk frames; it does not construct them from arbitrary arcs.
+
+All three modules have focused-check exit 0 and zero warnings. The final
+`AuditS115PlanarStraightening.lean` / `.log` contain all seven new public declarations;
+exit 0 and only `propext`, `Classical.choice`, and `Quot.sound`. No vendored source or
+other-lane source changed, and the root aggregate remains untouched.
+
+P.4 is still partial. The remaining geometric producers are the treatment of
+arbitrary degree-one endpoints and arbitrarily small compatible PL disk frames
+around the original edge pieces. A disk neighborhood containing an arc is not yet
+a frame in which that arc is a crosscut: the precise boundary intersections and
+later reentries must be controlled. Neither Jordan/Schoenflies extension alone nor
+the vendored polygonal redrawing theorem supplies these ambient relative data.
+The current results do not assume these missing producers under new proposition
+names and do not claim the full Moise 10.8 endpoint.
+
+### S.6 dependency check, 2026-09-16
+
+The merged integration source at `314c2178f` contains no IsSphericalShell producer
+or `exists_isPLSphere_separating_of_sphericalShell` declaration. The plan's I.4 row
+still marks Moise 30.4 as new and S.6 explicitly depends on that result. Under the
+instruction allowing only an explicit hSchoenflies, no additional 30.4 hypothesis
+has been introduced and no completed 30.5 endpoint is claimed. The outstanding
+external input is a PL 2-sphere in the shell interior separating its two boundary
+components, as specified in I.4. Obtain future I-lane source only by integration merge.
+
+### Publication checkpoint, 2026-09-16
+
+- `30102ea5d`: integration merge and collision repairs; all 88 manifest modules and
+  the additional DerivedCarrier check pass, with the 307-entry S113 audit.
+- `b926417f6`: I2 in the double environment; three modules and the seven-entry S114
+  audit pass, including the silent direct E3 hpush signature check.
+- `8560f9a30`: simultaneous vertex and polygonal crosscut straightening; three modules
+  and the final seven-entry S115 audit pass.
+
+All source checkpoints are pushed to origin/codex/moise-s. The final integration
+fetch and requested merge still report `314c2178f` and already up to date. This
+plan-only publication update changes the S-owned P.4, B.2 and S.6 status cells to
+match the verified endpoints and explicit remaining obligations. E3's L.2 consumer
+row is left to that lane; its hpush producer is now available from DoubleBoundaryPush.

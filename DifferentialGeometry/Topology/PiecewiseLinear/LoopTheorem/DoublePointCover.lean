@@ -251,6 +251,78 @@ theorem doublePointSheetsAt_of_hasPLDoubleCrossingAt_chart
   exact ⟨a, b, A, B, ha, hb, hfay, hfby, hAP', hBP', hAB,
     hAnhds', hBnhds', hAemb, hBemb, hcover'⟩
 
+theorem doublePointSheetsAt_of_hasPLBoundaryDoubleCrossingAt_chart
+    {E F M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [NormedAddCommGroup F] [NormedSpace ℝ F]
+    [FiniteDimensional ℝ E] [FiniteDimensional ℝ F]
+    [TopologicalSpace M] {f : E → M} {P : Set E} {y : M}
+    (hf : ContinuousOn f P) (e : OpenPartialHomeomorph M F) (hy : y ∈ e.source)
+    {N : Set F}
+    (hcross : HasPLBoundaryDoubleCrossingAt (e ∘ f)
+      (P ∩ f ⁻¹' e.source) N (e y)) :
+    HasDoublePointSheetsAt f P y := by
+  obtain ⟨a, b, A, B, ha, hb, hfa, hfb, hAP, hBP, hAB, hAnhds, hBnhds,
+    hApl, hBpl, -, hcover⟩ := hcross
+  have hfaSource : f a ∈ e.source := (hAP ha).2
+  have hfbSource : f b ∈ e.source := (hBP hb).2
+  have hfay : f a = y := by
+    apply e.injOn hfaSource hy
+    exact hfa
+  have hfby : f b = y := by
+    apply e.injOn hfbSource hy
+    exact hfb
+  have hAP' : A ⊆ P := fun _ hx ↦ (hAP hx).1
+  have hBP' : B ⊆ P := fun _ hx ↦ (hBP hx).1
+  have hPnhdsA : P ∩ f ⁻¹' e.source ∈ nhdsWithin a P := by
+    apply Filter.inter_mem self_mem_nhdsWithin
+    exact (hf a (hAP' ha)).preimage_mem_nhdsWithin
+      (e.open_source.mem_nhds hfaSource)
+  have hPnhdsB : P ∩ f ⁻¹' e.source ∈ nhdsWithin b P := by
+    apply Filter.inter_mem self_mem_nhdsWithin
+    exact (hf b (hBP' hb)).preimage_mem_nhdsWithin
+      (e.open_source.mem_nhds hfbSource)
+  have hAnhds' : A ∈ nhdsWithin a P :=
+    mem_nhdsWithin_of_mem_nhdsWithin_of_mem_nhdsWithin hAnhds hPnhdsA
+  have hBnhds' : B ∈ nhdsWithin b P :=
+    mem_nhdsWithin_of_mem_nhdsWithin_of_mem_nhdsWithin hBnhds hPnhdsB
+  have hemb : IsEmbedding (fun z : e.source ↦ e z) := by
+    change IsEmbedding (((↑) : e.target → F) ∘ e.toHomeomorphSourceTarget)
+    exact IsEmbedding.subtypeVal.comp e.toHomeomorphSourceTarget.isEmbedding
+  have hAmap : MapsTo f A e.source := fun _ hx ↦ (hAP hx).2
+  have hBmap : MapsTo f B e.source := fun _ hx ↦ (hBP hx).2
+  have hAcomp : IsEmbedding (A.domRestrict (e ∘ f)) := by
+    change IsEmbedding (((↑) : ((e ∘ f) '' A) → F) ∘ hApl.homeomorph)
+    exact IsEmbedding.subtypeVal.comp hApl.homeomorph.isEmbedding
+  have hBcomp : IsEmbedding (B.domRestrict (e ∘ f)) := by
+    change IsEmbedding (((↑) : ((e ∘ f) '' B) → F) ∘ hBpl.homeomorph)
+    exact IsEmbedding.subtypeVal.comp hBpl.homeomorph.isEmbedding
+  have hAtoSource : IsEmbedding hAmap.restrict := by
+    apply hemb.of_comp_iff.mp
+    change IsEmbedding (A.domRestrict (e ∘ f))
+    exact hAcomp
+  have hBtoSource : IsEmbedding hBmap.restrict := by
+    apply hemb.of_comp_iff.mp
+    change IsEmbedding (B.domRestrict (e ∘ f))
+    exact hBcomp
+  have hAemb : IsEmbedding (A.domRestrict f) := by
+    change IsEmbedding (((↑) : e.source → M) ∘ hAmap.restrict)
+    exact IsEmbedding.subtypeVal.comp hAtoSource
+  have hBemb : IsEmbedding (B.domRestrict f) := by
+    change IsEmbedding (((↑) : e.source → M) ∘ hBmap.restrict)
+    exact IsEmbedding.subtypeVal.comp hBtoSource
+  have hcover' : ∀ᶠ z in nhds y, P ∩ f ⁻¹' {z} ⊆ A ∪ B := by
+    filter_upwards [e.open_source.mem_nhds hy, (e.continuousAt hy) hcover]
+      with z hzSource hzcover
+    intro x hx
+    have hfx : f x = z := hx.2
+    apply hzcover
+    constructor
+    · exact ⟨hx.1, by change f x ∈ e.source; rw [hfx]; exact hzSource⟩
+    · change e (f x) = e z
+      rw [hfx]
+  exact ⟨a, b, A, B, ha, hb, hfay, hfby, hAP', hBP', hAB,
+    hAnhds', hBnhds', hAemb, hBemb, hcover'⟩
+
 namespace NormalSingularCellData
 
 variable {M : Type u} [TopologicalSpace M]
@@ -263,7 +335,10 @@ theorem doublePointProjection_isLocalHomeomorph
   apply isLocalHomeomorph_doublePointProjection
   intro y hy
   obtain ⟨e, _, hye, hcross⟩ := hD.crossing y hy
-  exact doublePointSheetsAt_of_hasPLDoubleCrossingAt_chart D.continuousOn e hye hcross
+  rcases hcross with ⟨-, N, hcross⟩ | ⟨-, hcross⟩
+  · exact doublePointSheetsAt_of_hasPLBoundaryDoubleCrossingAt_chart
+      D.continuousOn e hye hcross
+  · exact doublePointSheetsAt_of_hasPLDoubleCrossingAt_chart D.continuousOn e hye hcross
 
 theorem doublePointPreimage_isCompact [T2Space M]
     (hD : NormalSingularCellData D BdM B) :
