@@ -589,3 +589,35 @@ theorem eq_top_of_boundaryLoops_mem_normal
   `.lake/scratch/AuditE3M2.lean` 共 47 项，全部只含 `propext`、`Classical.choice`、`Quot.sound`。
 - 本次对接没有消除 §25 末尾记录的两个剩余义务：需要从手术盘重建 I3 并严格降低复杂度，以及把边界补弧表示接到书中道路字。
   它只消除了此前 I3 已交付却仍重复显式要求边界交叉的接口偏差。
+
+## 27. 2026-09-16 E3-M2 端到端复核：Lemma 2 的精确表示缺口
+
+状态：blocked（不是 Lean 搜索缺口；现有公开数据不足以陈述并证明只条件于 I3 的 Lemma 2，未增加结论型假设，也未弱化端点）。
+
+- 已闭合部分保持 §24–§26 的状态：两盘沿边界弧贴合后的 frontier 精确表示、触边分支的三盘链、Case 3/4 的外侧盘手术、
+  端点保向/反向二分，以及 F 的原生 `IsNormalSingularCell` 接线均已通过检查。当前
+  `NormalSingularCellData.exists_boundary_surgery_cell_of_boundaryBranch` 给出实际新胞腔 `G`、其像包含关系和边界载体等式，
+  不是把书中手术结论作为假设。
+- 第一处不可跳过的缺口在 L.1 的 `NormalSystem` 表示。它仅有
+  `boundaryLoop_range : range boundaryLoop = loopComplex.space` 和
+  `loop_space : loopComplex.space = singularMap '' frontier sourceComplex.space`，没有记录 `boundaryLoop` 与
+  `singularMap` 在源盘 frontier 上的参数化相等或自由同伦等价。像集相同不决定环的共轭类：即使载体是一个圆，绕行一次与绕行两次
+  也有相同像集；对 Case 3/4 的自交边界图，不同遍历更直接给出不同群字。因此不能从现有字段合法推出书页 186–187 的
+  `L₁ = συ⁻¹`、`L₂ = σφυτ` 或 `L₁ = συ`、`L₂ = στ⁻¹υφ⁻¹`，也不能把 §25 已证的群论引理接到几何手术。
+  所需的最小生产者是一个不改变结论的边界相容性接口，例如给出从 `loopCircle` 到源 frontier 的参数化并证明复合
+  `singularMap` 后与 `boundaryLoop` 相等，或直接证明两者自由同伦；它必须由正规系统的构造产生，不能从载体相等推出。
+- 第二处缺口是 I3 对割贴的稳定性。I3 给原胞腔的局部单射、二重纤维、奇点图三角剖分和每个双点的正规交叉，
+  但没有生产者证明沿一个完整触边分支把两张外侧盘重贴后，`G` 仍满足 `IsNormalSingularCell`。具体还缺：
+  新双点集等于旧双点集中删去所选分支后的相应部分、该集合的有限一维带边组合三角剖分、其余交叉图卡的搬运，
+  以及由此得到 `boundaryBranchCount` 严格下降。只凭 `G '' G.domain ⊆ D '' D.domain` 不能推出这些结论。
+- Case 1/2 另缺书页 184–185 使用的两个全局生产者：盘内多边形圆的 PL 环带/柱形图及沿该环带重定义后 I3 保持；
+  最内圆所界内盘的替换、推离及替换后 I3 保持。当前树没有“PL 圆在 PL 盘内有环带正则邻域”的端点。
+  I2 的 double 环境生产者也尚未进入整合分支，所以 Case 2 的推离仍只能等 S 的
+  `exists_nonsingular_two_cell_of_boundary_disk`；本车道没有复制或直接合并 S 的文件。
+- L.4 当前 `DoubleCoverReduction` 只记录覆盖投影、二重纤维和复杂度严格下降，没有记录提升正规系统的奇异盘经投影分解为原盘、
+  边界环/正规子群的映射相容性，或把 `NonsingularCell T` 投影成满足 Lemma 2 假设的奇异胞腔。因此
+  `exists_nonsingular_cell_of_stallings_induction` 中名为 `lemmaTwo` 的显式参数仍是“从提升系统回推”的完整接口，不能由尚未存在的
+  `LoopTheorem/LemmaTwo.lean` 端点自动消去。要真正接线，`DoubleCoverReduction` 的生产者必须同时交付上述因子分解与边界相容数据。
+- I5 仍未交付，故 C.5 按 NIGHT_PLAN §6.1 保持等待；没有用 Bennett `Coefficients.lean` 的链绕过缺失的 `χ_face`/球面识别生产者。
+- 复核 `LoopTheorem/CutAndPaste.lean` 使用 `check-f.ps1 -Threads 1`，exit=0、零 warning；
+  `.lake/scratch/AuditE3M2.lean` 共 47 项，`audit-f.ps1` exit=0，全部只含 `propext`、`Classical.choice`、`Quot.sound`。
