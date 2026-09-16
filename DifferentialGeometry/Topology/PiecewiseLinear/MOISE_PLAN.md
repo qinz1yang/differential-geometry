@@ -478,6 +478,27 @@
   此处实际构造了正重心质量开邻域，并证明交子复形的邻域等于邻域之交。
   H-M2 的同调正合性与自然性搬运仍待完成，没有将几何层记作 28.11 已证明。
 
+- 2026-09-15（H-M2，子复形 Mayer–Vietoris 与 28.11 闭合）：
+  几何层提交 `11826f868`；随后 `MayerVietorisSubcomplex.lean` 的
+  `exists_mem_inter_of_map_eq_zero` 对有限复形的两子复形覆盖、任意次数、任意环和系数模成立，
+  特别包含整系数 28.11。交子复形的开邻域与两个开邻域之交相等，三个包含都诱导同调同构，
+  原来的子复形包含与开邻域包含的自然性方块严格交换；未引入闭覆盖 MV 的假设或单纯链复形。
+  `bettiNumber_union_le` 证明任意域系数下
+  `b_(n+1)(K) ≤ b_(n+1)(L) + b_(n+1)(M) + b_n(L∩M)`；
+  `bettiOne_union_le` 为有理一阶特例，保留 `b_0(L∩M)` 项，不假设交集连通。
+  通用数学归位于 `Homology/Algebra/PushoutHomology.lean`、`Homology/HomotopyEquivalence.lean`、
+  `Homology/BettiNumber.lean`、`Homology/SmallChains/{Exactness,BettiBound}.lean`。
+  七个相关模块最终各次聚焦检查均 exit=0、零 warning；同调搬运模块最后检查 10.5 秒。
+  `.lake/scratch/AuditNightHM2*.lean` 保留 83 项去重后的逐项审计，包括新增 39 项声明及 44 项复用/预审计声明。
+  `AuditNightHM2ExactReuse` 首次逐项审计 `pushoutShortComplex`、`pushoutShortExact`、
+  `subspaceInclusion`、`twoSetFamily`、`firstSubspaceToSmall`、`secondSubspaceToSmall`、
+  两个 `SubspaceToSmall_ι`、`subspaceSmallChainSquare`、`smallChainMap`、`smallChainHomologyIso_hom`；
+  `AuditNightHM2BoundReuse` 逐项审计 `finrank_eq_range_add_range`、`homologyBiprodIso`、
+  `finiteHomologyType_biprod`、`finiteHomologyType_twoSetSmall`、
+  `finiteHomologyType_iff_of_homotopyEquiv`、`finiteHomologyType_geometricSpace`。
+  全部闭包只含标准三公理或更少；无 `sorryAx`，不经过 `HurewiczLowDegrees`，未登记根聚合。
+  闭曲面顶维同调与 I5 仍属于后续 H-M3/H-M4，不由本次 MV 工具自动推出。
+
 ## 7. 决策与风险
 
 - 不采用 Bing 定理 7 的“保留单形”强形式，只用 Moise §8/§35 的紧致图卡归纳（书中 `chap:two-set-gluing` 的方案）。

@@ -7,6 +7,10 @@ namespace DifferentialGeometry.Topology.PiecewiseLinear
 
 variable {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E]
 
+def subcomplexInclusion {K L : Geometry.SimplicialComplex ℝ E} (hL : L.faces ⊆ K.faces) :
+    C(L.space, K.space) :=
+  ⟨Set.inclusion (space_mono_of_faces_subset hL), continuous_inclusion _⟩
+
 theorem subcomplexBarycentricMass_eq_one
     {K L : Geometry.SimplicialComplex ℝ E} [Finite K.faces]
     (hL : L.faces ⊆ K.faces) {x : E} (hx : x ∈ L.space) :
@@ -312,5 +316,36 @@ theorem subcomplexOpenNeighborhood_union
   rcases hcover he with heL | heM
   · exact Or.inl (mem_subcomplexOpenNeighborhood hL x (L.convexHull_subset_space heL hxe))
   · exact Or.inr (mem_subcomplexOpenNeighborhood hM x (M.convexHull_subset_space heM hxe))
+
+noncomputable def subcomplexOpenNeighborhoodInterInclusion
+    {K L M : Geometry.SimplicialComplex ℝ E} [Finite K.faces]
+    (hL : L.faces ⊆ K.faces) (hM : M.faces ⊆ K.faces) :
+    C((intersectionComplex L M).space,
+      (subcomplexOpenNeighborhood K L ∩ subcomplexOpenNeighborhood K M : Set K.space)) where
+  toFun x := ⟨⟨x, space_mono_of_faces_subset
+    (L := intersectionComplex L M) (fun _ hs => hL hs.1) x.2⟩,
+    mem_subcomplexOpenNeighborhood hL _ (space_mono_of_faces_subset
+      (K := L) (L := intersectionComplex L M) (fun _ hs => hs.1) x.2),
+    mem_subcomplexOpenNeighborhood hM _ (space_mono_of_faces_subset
+      (K := M) (L := intersectionComplex L M) (fun _ hs => hs.2) x.2)⟩
+  continuous_toFun := (continuous_subtype_val.subtype_mk _).subtype_mk _
+
+noncomputable def subcomplexOpenNeighborhoodInterHomotopyEquiv
+    [FiniteDimensional ℝ E] {K L M : Geometry.SimplicialComplex ℝ E} [Finite K.faces]
+    (hL : L.faces ⊆ K.faces) (hM : M.faces ⊆ K.faces) :
+    ContinuousMap.HomotopyEquiv
+      (subcomplexOpenNeighborhood K L ∩ subcomplexOpenNeighborhood K M : Set K.space)
+      (intersectionComplex L M).space :=
+  (Homeomorph.setCongr (subcomplexOpenNeighborhood_inter hL hM).symm).toHomotopyEquiv.trans
+    (subcomplexOpenNeighborhoodHomotopyEquiv
+      (K := K) (L := intersectionComplex L M) (fun _ hs => hL hs.1))
+
+theorem subcomplexOpenNeighborhoodInterHomotopyEquiv_invFun
+    [FiniteDimensional ℝ E] {K L M : Geometry.SimplicialComplex ℝ E} [Finite K.faces]
+    (hL : L.faces ⊆ K.faces) (hM : M.faces ⊆ K.faces) :
+    (subcomplexOpenNeighborhoodInterHomotopyEquiv hL hM).invFun =
+      subcomplexOpenNeighborhoodInterInclusion hL hM := by
+  ext x
+  rfl
 
 end DifferentialGeometry.Topology.PiecewiseLinear
