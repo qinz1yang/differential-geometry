@@ -3940,6 +3940,7 @@ import DifferentialGeometry.Geometry.Connection.MetricTrace.CovariantTwoTensor
 import DifferentialGeometry.Geometry.Connection.MetricTrace.Higher
 import DifferentialGeometry.Geometry.Connection.MetricTrace.LineSplit
 import DifferentialGeometry.Geometry.Connection.MetricTrace.NormBound
+import DifferentialGeometry.Geometry.Connection.MetricTrace.Relowering
 import DifferentialGeometry.Geometry.Connection.MixedDerivativeBounds
 import DifferentialGeometry.Geometry.Connection.ModelNorm
 import DifferentialGeometry.Geometry.Connection.NormalSection
@@ -4078,6 +4079,7 @@ import DifferentialGeometry.Geometry.Connection.TensorNabla.Tensor0S.Algebra.Slo
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Tensor0S.Basic
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Tensor0S.ConnectionDifference
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Tensor0S.PartialEvaluation
+import DifferentialGeometry.Geometry.Connection.TensorNabla.Tensor0S.ReloweringDivergence
 import DifferentialGeometry.Geometry.Connection.TensorNabla.TensorRS.Basic
 import DifferentialGeometry.Geometry.Connection.TensorNabla.TotalHessian
 import DifferentialGeometry.Geometry.Connection.TensorNabla.TotalPullback
@@ -4142,6 +4144,7 @@ import DifferentialGeometry.Geometry.Curvature.Bochner.Tensor.Weitzenbock
 import DifferentialGeometry.Geometry.Curvature.Bochner.WeitzenbockIdentity
 import DifferentialGeometry.Geometry.Curvature.Bounds.Pullback
 import DifferentialGeometry.Geometry.Curvature.Bounds.QuadraticForm
+import DifferentialGeometry.Geometry.Curvature.Bounds.ReloweringFlux
 import DifferentialGeometry.Geometry.Curvature.Bounds.RicciOperatorNorm
 import DifferentialGeometry.Geometry.Curvature.Bounds.RicciUpper
 import DifferentialGeometry.Geometry.Curvature.Bounds.RiemannTensorOperator
@@ -7039,6 +7042,8 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Energy.Dr
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Energy.Inequality
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Energy.IntegrationByParts
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Energy.QuadraticTerms
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Energy.ReloweringDivergence
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Energy.ReloweringFlux
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Energy.Remainder
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Energy.SpeedBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Energy.Vanishing
@@ -7660,7 +7665,9 @@ import DifferentialGeometry.Geometry.Metric.TensorInner.Tangent.ContinuousRieman
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tangent.MetricData
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tangent.NormDiamond
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tangent.Riemannian
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Algebra.MetricDifference
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Algebra.Product
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Algebra.ReloweringDifferenceNorm
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Bundle.InnerProduct
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Bundle.Riemannian
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Bundle.SectionRegularity
