@@ -74,6 +74,31 @@ theorem IsPLBall.closure_interior {n : ℕ}
     (Finset.card_pos.mp (lt_of_lt_of_le (by decide : 0 < 2) (two_le_card_stdVertices n)))
   rwa [convexHull_stdVertices]
 
+theorem IsPLBall.interior_eq_empty_of_lt_finrank
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    {n : ℕ} {P : Set E} (hP : IsPLBall n P) (hn : n < Module.finrank ℝ E) : interior P = ∅ := by
+  obtain ⟨K, hKfin, hKP⟩ := hP.isPolyhedron.exists_simplicialComplex
+  let _ : Finite K.faces := hKfin.to_subtype
+  have hK : IsPLBall n K.space := hKP.symm ▸ hP
+  rw [← hKP, Set.eq_empty_iff_forall_notMem]
+  intro x hx
+  obtain ⟨s, hs, hcard, -⟩ := exists_face_card_eq_finrank_succ_of_mem_closure K
+    isOpen_interior interior_subset (subset_closure hx)
+  have hle := card_le_of_isPLBall K hK hs
+  omega
+
+theorem IsPLBall.inter_subset_frontier_of_isPLBall {n m : ℕ}
+    {P Q : Set (EuclideanSpace ℝ (Fin (n + 1)))} (hQ : IsPLBall (n + 1) Q)
+    (hI : IsPLBall m (P ∩ Q)) (hm : m < n + 1) : P ∩ Q ⊆ frontier P := by
+  have hempty : interior (P ∩ Q) = ∅ :=
+    hI.interior_eq_empty_of_lt_finrank (by simpa using hm)
+  have hdis : interior P ∩ interior Q = ∅ := by rwa [interior_inter] at hempty
+  intro x hx
+  refine ⟨subset_closure hx.1, fun hxint => ?_⟩
+  have hxcl : x ∈ closure (interior P ∩ interior Q) :=
+    isOpen_interior.inter_closure ⟨hxint, hQ.closure_interior.symm ▸ hx.2⟩
+  simp only [hdis, closure_empty, mem_empty_iff_false] at hxcl
+
 theorem exists_isPLHomeomorphOn_of_frontier {n : ℕ}
     {P Q : Set (EuclideanSpace ℝ (Fin (n + 1)))}
     (hP : IsPLBall (n + 1) P) (hQ : IsPLBall (n + 1) Q)

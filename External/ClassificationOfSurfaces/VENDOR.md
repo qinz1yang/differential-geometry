@@ -1593,3 +1593,38 @@ exit 0 and only `propext`, `Classical.choice`, and `Quot.sound`. Logs:
 `.lake/scratch/check-polyhedron-complement.log`,
 `check-relative-polyhedron-extension.log`, `check-boundary-disk-extension.log`,
 and `audit-polyhedron-boundary-extension.log`.
+
+## Moise regular-neighborhood pieces and their intersections
+
+`DerivedNeighborhoodCells.lean` defines the piece indexed by a face s as
+its centroid's closed star in the second derived subdivision. The exact
+identity `derivedNeighborhoodCell_space` identifies it with
+`closure (N(s) \ N(boundary s))`; `derivedNeighborhoodCell_singleton`
+identifies vertex pieces with N(v). This is the construction on Moise,
+printed page 169, extended to finite combinatorial manifolds with boundary.
+The pieces cover the existing `derivedNeighborhood` and lie in K.space.
+No regular-neighborhood definition or vendored Lean source was changed.
+
+The ball proof uses the existing upper-link equivalence and cone
+construction for both sphere links and ball links. Thus the pieces are
+PL balls without a Schoenflies assumption. Distinct intersecting pieces
+come from comparable faces and meet in the dual cell of the edge joining
+their centroids in the first subdivision. In dimension three this is a
+PL 2-ball. `BallFrontier.lean` supplies the general empty-interior lemma
+for lower-dimensional PL balls and the resulting boundary inclusion.
+The intersection lies in the frontier of each of the two pieces.
+
+Both modules pass the prescribed focused checks, exit 0 and zero
+warnings. `AuditS67.lean` checks all 26 new declarations; every axiom
+closure contains only `propext`, `Classical.choice`, and `Quot.sound`.
+Logs: `.lake/scratch/check-ball-frontier.log`,
+`check-derived-neighborhood-cells.log`, and
+`audit-derived-neighborhood-cells.log`.
+
+This closes the individual-piece and pairwise-intersection checkpoint.
+It does not yet prove that the union over an arbitrary boundary disk is
+a 3-ball: the grouped attachments in the disk shelling still require
+proof that their intersections with the accumulated union are disks.
+Problem 26.1, general hpush, and the product collar remain open at this
+checkpoint. Other lanes' dependencies were obtained by merging
+`origin/codex/moise-integration` at b9a2cb2ca (merge 0b06c672f).
