@@ -4222,6 +4222,7 @@ import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.ConnectionDiffe
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.ConnectionDifference.RicciTelescope
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.CurvatureNullity
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Defs
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Derivatives.LocalPullback
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Derivatives.Norm
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Derivatives.ParsevalTrace
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Derivatives.Pointwise
@@ -4628,6 +4629,8 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Connectio
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Connection.SecondDerivative
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.CovariantDerivative.Estimate
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.CovariantDerivative.Tail
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Curvature.LocalWindow
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Curvature.MovingShi
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Curvature.TowerBridge
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Ricci.Components
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Ricci.Intrinsic
@@ -4667,7 +4670,9 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.GramConve
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.KineticConvergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.MetricExtension
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.MetricLowerBound
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Open.BumpFamilyChange
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Open.Completeness
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Open.HalfLinePrecompactness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Open.HalfLineWindow
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Open.HalfLineConvergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Open.Convergence
@@ -7337,6 +7342,7 @@ import DifferentialGeometry.Geometry.Metric.Convergence.Time.Lipschitz
 import DifferentialGeometry.Geometry.Metric.Convergence.Window.AllOrders
 import DifferentialGeometry.Geometry.Metric.Convergence.Window.AllPoints
 import DifferentialGeometry.Geometry.Metric.Convergence.Window.Bounds
+import DifferentialGeometry.Geometry.Metric.Convergence.Window.EventualBounds
 import DifferentialGeometry.Geometry.Metric.ConvexProjection
 import DifferentialGeometry.Geometry.Metric.ConvexSourceLipschitz
 import DifferentialGeometry.Geometry.Metric.Coordinates.ChartGram
