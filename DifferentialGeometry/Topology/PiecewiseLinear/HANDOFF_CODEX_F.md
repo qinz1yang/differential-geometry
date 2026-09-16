@@ -1711,3 +1711,9 @@ F-M2–F-M6 尚未开始；按用户指定顺序推进，只有出现 §1 接口
 `CoveredHeightSubdivision.lean` 已提交并推送为 `e0878ee1c`。主端点 `exists_triangulation_union_with_face_cover_and_halfSpace_faces` 加强高度半空间适配的共同三角剖分：除原有载体并集、原复形上的细分、第二多面体的精确限制空间和逐面高度侧别外，显式返回每个新面属于两个限制子复形之一。证明在共同 H-多胞形细分的重心所在载体中识别整个新单形；该载体从构造上来自原复形的某面或第二多面体的某个 H-多胞形，因此面覆盖是构造结论，不是附加假设。
 
 模块聚焦检查 exit=0（11.9 秒）、零 warning；`AuditF175.lean` 主端点仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步在三角帽切割的每个保留盘上应用该端点，识别接缝边内部顶点的边界复形面、两条边界链环方向与相反半空间集合芽，再由两片单点截面和面覆盖推出完整链环 `encard ≤ 2`。F-M1 仍为 partial，严格降指标、Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF176.lean`。
+
+### 19.28 F-M1：接缝二维面内部点的保留链环稳定性
+
+`BoundaryFacetLink.lean` 已提交并推送为 `e207e05dc`。主端点 `eventually_geometricLink_section_subsingleton_of_boundary_openSimplex_two` 将前述几层组装为一个可直接实例化的边界判据：PL 二球盘的边界复形若包含某二元素面凸包，接缝顶点位于该面的开单形中，且盘在该点具有旧高度单侧集合芽、边界复形恰为旧等高集合芽，则所有充分小且在该顶点链环上一般位置的新高度，其保留盘链环截面至多一点。证明从边界复形的一维组合流形性构造相反链环方向，再调用 `BoundaryLinkGerm`；没有把方向或截面上界加入输入。
+
+模块聚焦检查 exit=0（11.3 秒）、零 warning；`AuditF176.lean` 主端点仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步从 `HeightSides`、保高度同胚及共同细分的边界空间等式验证该端点的两个集合芽，并与三角帽侧的 `TriangleEdgeLink` 经 `LinkUnionSection` 合并。F-M1 仍为 partial，严格降指标、Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF177.lean`。
