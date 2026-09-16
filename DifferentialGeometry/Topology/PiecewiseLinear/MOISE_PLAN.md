@@ -540,6 +540,31 @@
   关键复用逐项包括重心细分与 carrier、覆盖边提升与面数据、开星局部平凡化、覆盖基顶点的面上单射、
   `CoherentOrientation.changeVertexOrder`、单形边界系数及组合流形余面计数。H-M5 无未闭合端点；
   H-M3/H-M4 的顶维基本类、23.19 与非球面识别缺口保持不变。
+- 2026-09-15（C/L 车道，L.2 接口修正与组合曲面层）：`SphereCase.lean` 的
+  `exists_nonsingular_two_cell_of_sphere_boundary` 在 `724267986` 增加实际多面体 3-流形 `M`、
+  `B ⊆ polyhedralBoundary 3 M hM`，并在 `hpush` 与结论中都要求 `D₁ '' D₁.domain ⊆ M`；检查 exit=0、
+  零 warning，AuditSphereCase 十二项仅标准三公理。`SurfaceNeighborhood.lean`（`cc4e2a06e`）证明导出邻域是带边组合
+  2-流形，其边界为有限个两两不交 PL 1-球面，并逐分支取得两个互补 PL 2-球；检查 exit=0、零 warning，
+  AuditSurfaceNeighborhood 十二项仅标准三公理。未闭合的是有限 Jordan 边界域的一侧一致性与精确删盘等式，以及任意补盘的
+  全局推入；整合后的 `BoundaryPush.lean` 当前只覆盖局部小边界盘。
+
+- 2026-09-15（C.5 桥接，`f1349f5c2`）：`Topology/Algebra/Group/IndexTwo.lean` 构造指标 2 子群的
+  `indexTwoHom : G →* Multiplicative (ZMod 2)`，证明满射、核等于原子群，并给出存在指标 2 子群与存在满射到 ℤ₂ 的等价。
+  聚焦检查 exit=0、零 warning；AuditIndexTwo 审计 6 个新端点及首次复用的
+  `Subgroup.mul_mem_iff_of_index_two`、`Subgroup.index_eq_two_iff_exists_notMem_and`、`Subgroup.index_ker`、
+  `MonoidHom.range_eq_top`、`Subgroup.card_top`、`Nat.card_congr`、`Nat.card_zmod`，全部只含标准三公理。
+  Bennett 的 `Coefficients`/`CoveringTransfer*` 不含几何单纯链复形、一维 Hurewicz 或次数一 UCT；因此
+  `SimplicialBoolCocycle/IsCoboundary ≃ Hom(H₁(K;ℤ),ℤ₂)` 尚未闭合，且未 import 含 `sorry` 的
+  `Topology/Homology/HurewiczLowDegrees.lean`。
+
+- 2026-09-15（L.4 条件性骨架，`130e6f402`）：`LoopTheorem/StallingsInduction.lean` 定义
+  `NormalSystem.NonsingularCell`、实际二重覆盖及严格降复杂度数据 `DoubleCoverReduction`；
+  `simplicialComplexity_lt_of_factorization_of_separated` 由顶点映射因子分解和一个被分开的碰撞对证明严格下降，
+  `exists_nonsingular_cell_of_stallings_induction` 按边界球面性和可定向性分支，对复杂度作强归纳并显式消费 Lemma 1、
+  Lemma 2、24.7 与 24.8。合并最新整合分支后重查 exit=0、零 warning；AuditStallingsInduction 审计 6 个新声明及
+  `mem_vertexCollisionPairs`、`Finset.card_lt_card`、`Finset.ssubset_iff_subset_ne`、`connectedComponentIn`、
+  `IsOrientable`、`IsCoveringMap`、`Nat.strong_induction_on`，仅标准三公理。条件性缺口是由 C.4/C.5 与 C.1/C.3
+  构造该降阶数据，并完成复杂度相等时限制同胚、基本群满射与指标 2 的矛盾；没有把这些生产者报告为已证。
 
 ## 7. 决策与风险
 

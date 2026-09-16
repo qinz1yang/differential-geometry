@@ -39,4 +39,46 @@ theorem IsPiecewiseAffineOn.exists_isSubdivision_affineOn_faces
   refine ⟨A x i, fun y hy => (hCA x hxK i).2.2 ?_⟩
   exact hs'Q (convexHull_mono (Finset.coe_subset.mpr hss') hy)
 
+open Classical in
+theorem exists_isSubdivision_affineOn_faces_finset
+    {ι : Type*} (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
+    (I : Finset ι) (f : ι → E → F)
+    (hf : ∀ i ∈ I, IsPiecewiseAffineOn (f i) K.space) :
+    ∃ K' : Geometry.SimplicialComplex ℝ E, IsSubdivision K' K ∧ K'.faces.Finite ∧
+      ∀ i ∈ I, ∀ s ∈ K'.faces,
+        ∃ A : E →ᵃ[ℝ] F, EqOn (f i) A (convexHull ℝ (s : Set E)) := by
+  induction I using Finset.induction_on with
+  | empty =>
+      refine ⟨K, IsSubdivision.refl K, Set.toFinite K.faces, ?_⟩
+      simp
+  | @insert i I hi ih =>
+      have hfI : ∀ j ∈ I, IsPiecewiseAffineOn (f j) K.space :=
+        fun j hj => hf j (Finset.mem_insert_of_mem hj)
+      obtain ⟨K₁, hK₁, hfin₁, hface₁⟩ := ih hfI
+      let _ : Finite K₁.faces := hfin₁.to_subtype
+      have hfi : IsPiecewiseAffineOn (f i) K₁.space := by
+        rw [hK₁.space_eq]
+        exact hf i (Finset.mem_insert_self i I)
+      obtain ⟨K₂, hK₂, hfin₂, hface₂⟩ :=
+        hfi.exists_isSubdivision_affineOn_faces K₁
+      refine ⟨K₂, hK₂.trans hK₁, hfin₂, ?_⟩
+      intro j hj s hs
+      rcases Finset.mem_insert.mp hj with rfl | hj
+      · exact hface₂ s hs
+      · obtain ⟨t, ht, hst⟩ := hK₂.exists_face_subset hs
+        obtain ⟨A, hA⟩ := hface₁ j hj t ht
+        exact ⟨A, hA.mono hst⟩
+
+open Classical in
+theorem exists_isSubdivision_affineOn_faces_finite
+    {ι : Type*} [Finite ι] (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
+    (f : ι → E → F) (hf : ∀ i, IsPiecewiseAffineOn (f i) K.space) :
+    ∃ K' : Geometry.SimplicialComplex ℝ E, IsSubdivision K' K ∧ K'.faces.Finite ∧
+      ∀ i, ∀ s ∈ K'.faces,
+        ∃ A : E →ᵃ[ℝ] F, EqOn (f i) A (convexHull ℝ (s : Set E)) := by
+  let _ := Fintype.ofFinite ι
+  obtain ⟨K', hK', hfin, hface⟩ :=
+    exists_isSubdivision_affineOn_faces_finset K Finset.univ f (fun i _ => hf i)
+  exact ⟨K', hK', hfin, fun i => hface i (Finset.mem_univ i)⟩
+
 end DifferentialGeometry.Topology.PiecewiseLinear

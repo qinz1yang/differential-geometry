@@ -61,6 +61,71 @@ noncomputable def planeComplexOfSimplicialComplex
         rw [Finset.coe_inter]
         exact h }
 
+open Classical in
+noncomputable def simplicialComplexOfPlaneComplex
+    (K : PlaneComplex) : Geometry.SimplicialComplex ℝ Plane where
+  faces := {s | ∃ t ∈ K.simplexes, s = t.image K.position}
+  isRelLowerSet_faces := by
+    rintro s ⟨t, ht, rfl⟩
+    refine ⟨(K.nonempty_of_mem t ht).image K.position, ?_⟩
+    intro u hu hune
+    let v := t.filter fun x => K.position x ∈ u
+    have hvimage : v.image K.position = u := by
+      ext x
+      constructor
+      · intro hx
+        obtain ⟨y, hy, hyx⟩ := Finset.mem_image.mp hx
+        exact hyx ▸ (Finset.mem_filter.mp hy).2
+      · intro hx
+        have hxt : x ∈ t.image K.position := hu hx
+        obtain ⟨y, hyt, hyx⟩ := Finset.mem_image.mp hxt
+        exact Finset.mem_image.mpr ⟨y, Finset.mem_filter.mpr ⟨hyt, hyx ▸ hx⟩, hyx⟩
+    have hvne : v.Nonempty := by
+      obtain ⟨x, hx⟩ := hune
+      rw [← hvimage] at hx
+      obtain ⟨y, hy, -⟩ := Finset.mem_image.mp hx
+      exact ⟨y, hy⟩
+    exact ⟨v, K.down_closed t ht v (Finset.filter_subset _ _) hvne, hvimage.symm⟩
+  indep := by
+    rintro s ⟨t, ht, rfl⟩
+    refine affineIndependent_finset_coe (K.affineIndependent t ht) ?_
+    intro x hx
+    obtain ⟨v, hv, hvx⟩ := Finset.mem_image.mp hx
+    exact ⟨⟨v, hv⟩, hvx⟩
+  inter_subset_convexHull := by
+    rintro s t ⟨u, hu, rfl⟩ ⟨v, hv, rfl⟩
+    have h := K.face_inter u hu v hv
+    rw [← Finset.coe_inter, ← Finset.image_inter u v K.position_injective]
+    simpa only [Finset.coe_image] using h.le
+
+theorem mem_simplicialComplexOfPlaneComplex_faces_iff
+    (K : PlaneComplex) {s : Finset Plane} :
+    s ∈ (simplicialComplexOfPlaneComplex K).faces ↔
+      ∃ t ∈ K.simplexes, s = t.image K.position :=
+  Iff.rfl
+
+theorem simplicialComplexOfPlaneComplex_faces_finite (K : PlaneComplex) :
+    (simplicialComplexOfPlaneComplex K).faces.Finite := by
+  change {s | ∃ t ∈ K.simplexes, s = t.image K.position}.Finite
+  apply (K.simplexes.finite_toSet.image (fun t => t.image K.position)).subset
+  rintro s ⟨t, ht, rfl⟩
+  exact ⟨t, ht, rfl⟩
+
+theorem simplicialComplexOfPlaneComplex_space (K : PlaneComplex) :
+    (simplicialComplexOfPlaneComplex K).space = K.support := by
+  ext x
+  constructor
+  · intro hx
+    obtain ⟨s, hs, hxs⟩ := (simplicialComplexOfPlaneComplex K).mem_space_iff.mp hx
+    obtain ⟨t, ht, rfl⟩ := hs
+    apply Set.mem_iUnion₂.mpr
+    exact ⟨t, ht, by simpa only [PlaneComplex.cellCarrier, Finset.coe_image] using hxs⟩
+  · intro hx
+    obtain ⟨t, ht, hxt⟩ := Set.mem_iUnion₂.mp hx
+    apply (simplicialComplexOfPlaneComplex K).mem_space_iff.mpr
+    refine ⟨t.image K.position, ⟨t, ht, rfl⟩, ?_⟩
+    simpa only [PlaneComplex.cellCarrier, Finset.coe_image] using hxt
+
 theorem planeComplexOfSimplicialComplex_cellCarrier
     (K : Geometry.SimplicialComplex ℝ Plane) [Finite K.faces] (s : Finset K.vertices) :
     (planeComplexOfSimplicialComplex K).cellCarrier s =

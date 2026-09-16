@@ -1,4 +1,5 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.PolyhedronIn
+import DifferentialGeometry.Topology.PiecewiseLinear.Manifold
 
 open Set Topology
 
@@ -10,6 +11,60 @@ variable {n : ℕ} {X : Type u} [TopologicalSpace X]
   [ChartedSpace (EuclideanSpace ℝ (Fin n)) X]
   {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
   [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
+
+omit [FiniteDimensional ℝ E] in
+theorem PLPieceIn.isPiecewiseAffineOn_invFunOn_comp {Y : Set X} (T : PLPieceIn E n X Y)
+    {m : ℕ} {f : EuclideanSpace ℝ (Fin m) → X}
+    {S : Set (EuclideanSpace ℝ (Fin m))} (hf : IsPLOn m n f S) :
+    IsPiecewiseAffineOn (Function.invFunOn T.map T.complex.space ∘ f) (S ∩ f ⁻¹' Y) := by
+  intro x hx
+  let e := chartAt (EuclideanSpace ℝ (Fin n)) (f x)
+  have he : e ∈ atlas (EuclideanSpace ℝ (Fin n)) X := chart_mem_atlas _ _
+  have hxe : f x ∈ e.source := mem_chart_source _ _
+  have h₁ := (hf x hx.1).prop
+  change IsPiecewiseAffineWithinAt (e ∘ f) S x at h₁
+  have h₂ := T.isPiecewiseAffineOn_chart_symm e he (e (f x))
+    ⟨e.map_source hxe, by
+      change e.symm (e (f x)) ∈ Y
+      rw [e.left_inv hxe]
+      exact hx.2⟩
+  have hcomp := h₂.comp (f := e ∘ f) (x := x) h₁
+  have hfcont : ContinuousOn f S := fun z hz => (hf z hz).continuousWithinAt
+  obtain ⟨O, hO, hpre⟩ := continuousOn_iff'.mp hfcont e.source e.open_source
+  have hxO : x ∈ O := (hpre ▸ (show x ∈ f ⁻¹' e.source ∩ S from ⟨hxe, hx.1⟩)).1
+  have hlocal := hcomp.inter_of_mem_nhds (hO.mem_nhds hxO)
+  have hdomain :
+      (S ∩ (e ∘ f) ⁻¹' (e.target ∩ e.symm ⁻¹' Y)) ∩ O = (S ∩ f ⁻¹' Y) ∩ O := by
+    ext z
+    constructor
+    · rintro ⟨⟨hzS, hztarget, hzY⟩, hzO⟩
+      have hzsource : f z ∈ e.source := by
+        have hz : z ∈ f ⁻¹' e.source ∩ S := by
+          rw [hpre]
+          exact ⟨hzO, hzS⟩
+        exact hz.1
+      refine ⟨⟨hzS, ?_⟩, hzO⟩
+      change e.symm (e (f z)) ∈ Y at hzY
+      change f z ∈ Y
+      simpa only [e.left_inv hzsource] using hzY
+    · rintro ⟨⟨hzS, hzY⟩, hzO⟩
+      have hzsource : f z ∈ e.source := by
+        have hz : z ∈ f ⁻¹' e.source ∩ S := by
+          rw [hpre]
+          exact ⟨hzO, hzS⟩
+        exact hz.1
+      refine ⟨⟨hzS, e.map_source hzsource, ?_⟩, hzO⟩
+      change f z ∈ Y at hzY
+      change e.symm (e (f z)) ∈ Y
+      simpa only [e.left_inv hzsource] using hzY
+  rw [hdomain] at hlocal
+  apply (hlocal.congr fun z hz => ?_).of_inter_of_mem_nhds (hO.mem_nhds hxO)
+  have hzsource : f z ∈ e.source := by
+    have hz' : z ∈ f ⁻¹' e.source ∩ S := by
+      rw [hpre]
+      exact ⟨hz.2, hz.1.1⟩
+    exact hz'.1
+  simp only [Function.comp_apply, e.left_inv hzsource]
 
 omit [FiniteDimensional ℝ F] in
 theorem PLPieceIn.isPiecewiseAffineOn_transition_of_subset {Y₁ Y₂ : Set X} (T₁ : PLPieceIn E n X Y₁)
