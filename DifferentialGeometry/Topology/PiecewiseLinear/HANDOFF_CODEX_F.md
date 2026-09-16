@@ -1981,3 +1981,11 @@ F-M1 仍为 partial。单个旧三角形的全部纤维及逐边对应已闭合�
 `TriangleCoordinates.lean` 定义按最低、中间、最高角点排列的仿射三角形坐标及三个重心系数，证明坐标像恰为三个顶点的凸包，并由仿射无关性证明坐标映射单射。`triangleAffineMap_mem_convexHull_image_iff` 把属于任意顶点子集凸包精确刻画为其余重心系数为零；`triangleAffineMap_mem_convexHull_image_iff_of_preserving_edges` 因而从三条边的成员关系保持推出每个子面的成员关系保持。全部证明只用实模的代数结构，没有加入范数或有限维假设。
 
 聚焦检查 exit=0（10.6 秒）、零 warning；`AuditF216.lean` 十个定义和公开定理全部仅依赖 `propext`、`Classical.choice`、`Quot.sound`。F-M1 仍为 partial。下一步按原高度排列各旧三角形顶点，把 §19.65 的局部对应搬到实际面并统一有限个小高度邻域，再证明保留盘的相对层圆周删除。§19.56、S.4 M2/M3 与 I1 尚未交付。下一审计文件 `AuditF217.lean`。
+
+### 19.68 F-M1：保高度 PL 变换后的整体层纤维稳定性
+
+`HeightFaceStability.lean` 从旧高度在三顶点上的单射性实际构造有序仿射坐标，调用 §19.65 的小转轴生产者，再经 §19.67 的重心系数判据搬回原面。`eventually_exists_isPLHomeomorphOn_face_fiber_preserving_subfaces` 对该面的每个子面同时保持成员关系，包含临界层、单点和空层。
+
+`HeightComplexStability.lean` 的 `eventually_exists_isPLHomeomorphOn_height_fiber_preserving_faces` 在有限纯二维复形上统一全部三角形的小高度邻域，由复形的精确面交把逐子面保持升级为任意其他原面的成员关系保持，然后实际拼出整个新旧层的 PL 同胚。源层是 `K.space ∩ {x | f (H x) = f (H p)}`，目标是原直线复形的 `K.space ∩ {x | ℓ x = ℓ p}`；`H` 只要求全域 PL 且保持旧高度，不要求它在旧面上仿射。带边组合二维流形版本直接从已经证明的纯维性得到该生产者，没有把纤维对应作为假设。
+
+聚焦检查：`HeightTriangleStability` exit=0（12.7 秒）、`HeightFaceStability` exit=0（12.9 秒）、`HeightComplexStability` exit=0（12.5 秒），均零 warning。前一模块仅公开现有标准三角域多面体引理供复用；`AuditF217.lean` 四个端点全部仅依赖 `propext`、`Classical.choice`、`Quot.sound`。F-M1 仍为 partial；§19.56 的首个剩余义务现为保留盘相对性：从沿 `J` 的半空间芽及转轴将 `J \ {p}` 推至同侧，证明整体对应把保留盘新层的圆周送到旧保留盘圆周且避开 `J`。不能把本整体纤维稳定性误报为相对删除或 I1。下一审计文件 `AuditF218.lean`。

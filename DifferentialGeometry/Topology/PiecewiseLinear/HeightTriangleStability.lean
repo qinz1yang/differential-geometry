@@ -7,7 +7,7 @@ open Set Topology
 
 namespace DifferentialGeometry.Topology.PiecewiseLinear
 
-private theorem isHPolytope_coordinate_triangle :
+theorem isHPolytope_coordinate_triangle :
     IsHPolytope {z : ℝ × ℝ | 0 ≤ z.1 ∧ 0 ≤ z.2 ∧ z.1 + z.2 ≤ 1} := by
   have hbox := (isHPolytope_Icc (a := (0 : ℝ)) (b := 1)).prod
     (isHPolytope_Icc (a := (0 : ℝ)) (b := 1))
