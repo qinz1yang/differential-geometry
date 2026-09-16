@@ -10,6 +10,7 @@ import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegulari
 import Mathlib.MeasureTheory.Measure.OpenPos
 import DifferentialGeometry.Analysis.FunctionalAnalysis.ContinuousLinearMap.ClosedBall
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Scalar.AddCircleLaplacian
+import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Scalar.AddCircleDerivativeLift
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Scalar.Multiplication
 import Mathlib.Tactic.Module
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Nemytskii.TimeInterval
@@ -4792,6 +4793,64 @@ private theorem ambient_sobolev_solution_exists_with_parameterDerivative_lift :
     ambient_parameterDerivative_forcing_lift_of_small_state c₀ g ht he hr hEU hleft β hG
   exact ambient_sobolev_solution_exists_with_parameterDerivative_lift_of_radius
     c₀ g ht he hr hEU hleft β hG hδ hlift
+
+private def ambientSobolevFourthOrderLift
+    (g₀ : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ)))
+    {T : ℝ} (hT : 0 < T) (gforce : timeL2 (CircleHsPi g₀ (Fin n) ((1 : ℕ) : ℝ)) T) : Prop :=
+  ∃ field₄ : timeL2 (CircleHsPi g₀ (Fin n) (((2 : ℕ) : ℝ) + 2)) T,
+    (ContinuousLinearMap.piLpMap 2 (fun _ : Fin n =>
+      tensorHsInclusion (g := g₀) (r := 0) (s := 0)
+        (by norm_num : ((1 : ℕ) : ℝ) + 2 ≤ ((2 : ℕ) : ℝ) + 2))).compLpL
+          2 (timeMeasure T) field₄ =
+      maximalRegularityDuhamelVectorField (g := g₀) (r := 0) (s := 0)
+        (a := ((1 : ℕ) : ℝ)) hT 0 gforce
+
+private theorem ambient_fourth_order_lift_of_parameterDerivative_lift
+    (g₀ : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ)))
+    {T : ℝ} (hT : 0 < T) (gforce : timeL2 (CircleHsPi g₀ (Fin n) ((1 : ℕ) : ℝ)) T)
+    (hlift : parameterDerivativeForcingFieldLift g₀ hT gforce) :
+    ambientSobolevFourthOrderLift g₀ hT gforce := by
+  rcases hlift with ⟨FH, _, hfield⟩
+  let U := maximalRegularityDuhamelVectorField (g := g₀) (r := 0) (s := 0)
+    (a := ((1 : ℕ) : ℝ)) hT 0 gforce
+  let V := heatDuhamelVectorField (g := g₀) (r := 0) (s := 0)
+    (a := ((1 : ℕ) : ℝ)) hT 0 FH
+  let Dh : CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 2) →L[ℝ]
+      CircleHsPi g₀ (Fin n) (((0 : ℕ) : ℝ) + 2) := parameterDerivativeHighField g₀
+  let J₂ := ContinuousLinearMap.piLpMap 2 (fun _ : Fin n =>
+    tensorHsInclusion (g := g₀) (r := 0) (s := 0)
+      (by norm_num : ((0 : ℕ) : ℝ) + 2 ≤ ((1 : ℕ) : ℝ) + 2))
+  change Dh.compLpL 2 (timeMeasure T) U = J₂.compLpL 2 (timeMeasure T) V at hfield
+  apply AddCircle.exists_timeL2_tensorHsInclusion_eq_of_parameterDerivative_lift
+    g₀ 1 (σ := ((0 : ℕ) : ℝ) + 2) (by norm_num) U V
+  filter_upwards [Dh.coeFn_compLpL U, J₂.coeFn_compLpL V] with t hDh hJ
+  intro i
+  have ht : Dh (U t) = J₂ (V t) := by
+    rw [← hDh, ← hJ]
+    exact congrArg (fun z : timeL2 (CircleHsPi g₀ (Fin n) (((0 : ℕ) : ℝ) + 2)) T => z t) hfield
+  have hi := congrArg (fun z => z i) ht
+  simpa only [Dh, J₂, ContinuousLinearMap.comp_apply,
+    ContinuousLinearMap.piLpMap_apply, AddCircle.parameterDerivativeHsPi_apply] using hi
+
+private def ambientSobolevSolutionWithFourthOrderLift : Prop :=
+  let C := ambientCoefficients c₀ g ht he hr hEU hleft β hG
+  let g₀ := c₀.pullbackMetric (g 0)
+  ∃ ρ : ℝ, 0 < ρ ∧ ρ ≤ C.radius ∧ ρ ≤ 1 ∧
+    ∃ (T : ℝ) (hT : 0 < T), T ≤ ρ ∧
+      ∃ (u : timeH1 (CircleHsPi g₀ (Fin n) ((1 : ℕ) : ℝ)) T)
+        (gforce : timeL2 (CircleHsPi g₀ (Fin n) ((1 : ℕ) : ℝ)) T),
+        ambientSobolevSolutionFacts c₀ g ht he hr hEU hleft β hG ρ hT u gforce ∧
+          parameterDerivativeForcingFieldLift g₀ hT gforce ∧
+          ambientSobolevFourthOrderLift g₀ hT gforce
+
+private theorem ambient_sobolev_solution_exists_with_fourth_order_lift :
+    ambientSobolevSolutionWithFourthOrderLift c₀ g ht he hr hEU hleft β hG := by
+  obtain ⟨ρ, hρ, hρC, hρ1, T, hT, hTρ, u, gforce, hfacts, hlift⟩ :=
+    ambient_sobolev_solution_exists_with_parameterDerivative_lift
+      c₀ g ht he hr hEU hleft β hG
+  exact ⟨ρ, hρ, hρC, hρ1, T, hT, hTρ, u, gforce, hfacts, hlift,
+    ambient_fourth_order_lift_of_parameterDerivative_lift
+      (c₀.pullbackMetric (g 0)) hT gforce hlift⟩
 
 end
 
