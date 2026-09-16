@@ -2174,3 +2174,25 @@ running, `fresh.py` reports all sixteen changed modules fresh, zero stale or
 missing artifacts, and zero forbidden-pattern hits. B.6 is complete; B.2 was
 completed at the preceding disk-neighborhood milestone. The remaining active work
 is P.4's endpoint and small-disk producers.
+
+### Exact small vertex neighborhoods after simultaneous straightening, 2026-09-16
+
+`PlanarJordan/ArcNeighborhood.lean` proves that a nondegenerate initial subarc is
+a relative neighborhood of the endpoint in the entire arc.
+`PlanarJordan/VertexNeighborhood.lean` uses this to shrink each radial fan to an
+actual square with exact full-edge intersections. The endpoint
+`Graph.IsDrawing.exists_homeomorph_radial_vertex_neighborhoods` constructs, for any
+finite selection of vertices with at least two incident edges, pairwise disjoint
+small squares and an ambient homeomorphism. Each transformed incident edge meets
+its square in exactly one radial segment, all nonincident transformed edges avoid
+the square, the only graph vertex in the square is its center, and the radial
+boundary endpoints are distinct. The homeomorphism fixes every graph vertex and
+the complement of the specified open set and obeys the continuous positive
+pointwise error bound.
+
+Both module checks return exit 0 with zero warnings. `AuditS123VertexNeighborhood`
+audits all three new public declarations; exit 0, only the standard three axioms.
+With no Lean process running, `fresh.py` reports 18 changed modules fresh, no stale
+or missing artifacts, and no forbidden patterns. This removes later edge reentry
+from the vertex-square interface. P.4 still needs arbitrary degree-one endpoints
+and the compatible edge-disk frames and final graph assembly; it is not complete.
