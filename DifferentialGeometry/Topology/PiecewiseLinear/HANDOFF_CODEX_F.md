@@ -1633,3 +1633,9 @@ F-M2–F-M6 尚未开始；按用户指定顺序推进，只有出现 §1 接口
 `CircleHeightSection.lean` 已提交并推送为 `dcd32cdd3`。`exists_lt_and_gt_of_mem_height_section_of_avoids_vertices` 证明连续线性高度若避开有限复形的全部顶点，则经过载体的任一点高度层在该点所在开单形两侧都有严格高低点。`isPLSphere_one_height_section_ne_singleton` 再用 PL 圆周删去一点仍连通和中值定理排除单点截面。`height_section_eq_empty_or_pair_of_encard_le_two` 因而把“截面至多两点”提升为精确的空集或两个不同点二分。
 
 模块聚焦检查 exit=0（11.2 秒）、零 warning；`AuditF162.lean` 三项均仅依赖 `propext`、`Classical.choice`、`Quot.sound`。帽边顶点一旦取得链环截面 `encard ≤ 2`，空分支由上一层给孤立，两点分支自动含正负两侧并可送入 `VertexCrossing`。下一步证明凸三角帽替换后的链环截面至多两点。F-M1 仍为 partial，Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF163.lean`。
+
+### 19.15 F-M1：顶点 crossing 判据搬运到任意高度层
+
+`VertexCrossingLevel.lean` 已提交并推送为 `7e92e2044`。`isGlueIso_affineImage`、`affineImage_faces_subset` 与 `geometricLink_affineImage_space` 给出有限复形沿仿射等价的面、子复形和顶点链环精确搬运。主端点 `hasPLCrossingAt_fiber_of_geometricLink_section_at` 将原点零高度版判据推广到任意顶点高度：把环境复形、曲面复形和链环整体平移到原点，逐面半空间、PL 圆周、二点截面及正负两侧全部随平移验证，再由全局 PL 平移把 crossing 搬回原高度层。
+
+模块聚焦检查 exit=0（16.1 秒）、零 warning；`AuditF163.lean` 四项均仅依赖 `propext`、`Classical.choice`、`Quot.sound`。因此三角帽边界顶点的两点链环截面可直接产生该顶点自身高度层的 crossing，无需额外假设顶点高度为零。下一步证明凸三角帽替换后的链环截面至多两点并闭合帽边分类。F-M1 仍为 partial，Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF164.lean`。
