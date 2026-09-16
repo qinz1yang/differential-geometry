@@ -1699,3 +1699,9 @@ F-M2–F-M6 尚未开始；按用户指定顺序推进，只有出现 §1 接口
 `BoundaryFacetDirections.lean` 已提交并推送为 `b214ed095`。`exists_geometricLink_pair_openSegment_of_opposite_rays` 从一维组合流形载体沿某非零方向的正、负两条局部射线，构造几何链环中的两个不同单点面，并以显式正凸组合证明基点位于两方向的开线段中。`exists_geometricLink_pair_openSegment_of_openSimplex_two` 将其用于二元素面的开单形内部点：面方向空间同时包含某方向及其负方向，开单形在这些方向上局部稳定，故不必先证明整个接缝具有局部直线集合芽。
 
 模块聚焦检查 exit=0（12.6 秒）、零 warning；`AuditF173.lean` 两个端点均仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步把接缝适配剖分中的实际二元素面送入该端点，并用 `BoundaryLinkGerm` 得到保留盘链环的稳定单点截面；随后证明帽侧与保留侧链环覆盖完整链环并合并为 `encard ≤ 2`。F-M1 仍为 partial，严格降指标、Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF174.lean`。
+
+### 19.26 F-M1：两片覆盖把链环单点截面合并为至多二点
+
+`LinkUnionSection.lean` 已提交并推送为 `b066c360d`。`geometricLink_space_subset_union_of_faces_cover` 证明：若完整复形的每个面属于两个片复形之一，则顶点的完整几何链环空间包含于两片链环空间之并；证明直接对链环面连同顶点的并面应用面覆盖，不需要满子复形假设。`geometricLink_section_encard_le_two_of_faces_cover` 再把两片各自的等高链环截面 subsingleton 合并为完整截面的 `encard ≤ 2`，经 `encard_mono` 与 `encard_union_le` 得到精确上界。
+
+模块聚焦检查 exit=0（11.6 秒）、零 warning；`AuditF174.lean` 两个端点均仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步加强共同三角剖分存在性，使其显式返回每个新面位于原保留盘或凸帽之一；这将提供本层所需的面覆盖，并允许分别接入 `BoundaryLinkGerm` 与 `TriangleEdgeLink`。F-M1 仍为 partial，严格降指标、Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF175.lean`。
