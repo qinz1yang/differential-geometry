@@ -1353,3 +1353,37 @@ at the following checkpoint. No other-lane or vendored source changed.
 Next: restrict the existing boundary collars to this surface component, preserve their
 relative-neighborhood property, and glue the two products along the middle surface.
 The disconnected-surface case will then require combining the finitely many components.
+
+### S-M5 continuation: arbitrarily small bicollars of connected two-sided surfaces
+
+The side-closure checkpoint is committed and pushed as `927573c40`; the following
+integration merge was already up to date.
+
+`CollarRestriction.lean` restricts the proved whole-boundary collar to a polyhedral
+boundary subset whose boundary complement is closed. It retains the relative-neighborhood
+property, the identity bottom, the exact boundary trace, and interior positive levels.
+Compactness of the image of the complementary part supplies the separating neighborhood.
+
+`BicollarGluing.lean` reflects one collar parameter and glues the two PL maps along their
+common bottom. It gives the product with `[-1,1]`, the identity middle surface, and negative
+and positive levels in the respective sides away from that surface.
+
+`Bicollar.lean` proves
+`IsCombinatorialManifoldWithBoundary.exists_bicollar_of_isConnected`.
+For a connected finite closed combinatorial surface in the interior of a finite
+combinatorial three-manifold with boundary, two-sidedness in `K.space` produces, in every
+prescribed relative neighborhood U, a polyhedral W and a PL homeomorphism
+`L.space × [-1,1] -> W`. The image W is a relative neighborhood of the whole surface,
+lies inside `K.space` away from its intrinsic boundary, lies in U, and the map is the
+identity on the middle surface. No Schoenflies parameter or unproved interface is present.
+
+All three focused checks have exit 0 and zero warnings (`check-collar-restriction.log`,
+`check-bicollar-gluing.log`, `check-bicollar.log`). `AuditS99BicollarConnected.lean` / `.log`
+contain three entries, all with only `propext`, `Classical.choice`, and `Quot.sound`.
+The source commit hash will be recorded in the final bookkeeping entry. No other-lane or
+vendored source was modified.
+
+The connected finite-complex case of 26.3 is now proved. The general 26.3 row remains
+partial: combine the finitely many surface components in pairwise disjoint neighborhoods,
+then transport from finite-complex carriers to the requested general PL manifold setting.
+The prior 26.1 interior-chart transport and P.4 obligations are unchanged.
