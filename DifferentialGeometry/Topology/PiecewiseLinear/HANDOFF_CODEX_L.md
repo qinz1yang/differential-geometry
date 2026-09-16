@@ -329,3 +329,18 @@ theorem eq_top_of_boundaryLoops_mem_normal
   还需证明二重覆盖原像的连通分支带有与 `D.domain` 相容的有限 PL 三角剖分，从拓扑同胚升级为多边形圆或折线。
   若 Case 1–4 需要全局分解，还须显式证明各 `branchCarrier` 两两不交并覆盖整个 `doublePointSet`。
   环带正则邻域、盘替换、切开重建与 I3 边界半空间桥接仍未闭合，也没有被弱化为假设。
+
+## 13. 2026-09-15 E3-M2 追加：奇点集的分支分割
+
+状态：done（E3-M2 的全局分支分解层已闭合，整体 L.3 仍为 partial）。数学提交 `defee201d`。
+
+- `space_eq_iUnion_branchComplex` 与 `pairwise_disjoint_branchComplex_space` 证明所有图分支子复形的空间两两不交，且并集恰为
+  `singularSet.complex.space`。证明直接使用每个面至多两个顶点和边图连通分支，不加入分类假设。
+- `iUnion_branchCarrier` 与 `pairwise_disjoint_branchCarrier` 将该分割经 PL 片的全局单射搬到目标，得到
+  `doublePointSet D D.domain` 恰为所有 `branchCarrier` 的两两不交并。
+  `iUnion_branchSet` 与 `pairwise_disjoint_branchSet` 给出同一结论的内在子类型形式。
+- `BranchCarrier` 聚焦检查 exit=0、零 warning；更新后的 `.lake/scratch/AuditBranchCarrier.lean` 共 36 项，
+  全部只含 `propext`、`Classical.choice`、`Quot.sound`。本层未首次复用新的 covering/Van Kampen 声明。
+- 确切未闭合项因此缩减为两条表示桥：有限连通一维组合流形的 PL 球/球面分类，以及二重覆盖原像连通分支的有限 PL 三角剖分。
+  前者把闭分支升级为多边形圆、触边分支升级为折线；后者把 §11 的拓扑覆盖分类升级为盘内的多边形原像。
+  Case 1–4 的环带、替换与切开重建，以及 I3 边界半空间桥接仍未闭合，也没有被弱化为假设。
