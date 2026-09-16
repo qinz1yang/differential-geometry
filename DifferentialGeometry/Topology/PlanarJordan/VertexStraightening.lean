@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.PlanarJordan.VertexFan
+import DifferentialGeometry.Topology.PlanarJordan.EndpointStraightening
 import DifferentialGeometry.Topology.Homeomorph.DisjointGluing
 
 open Set Topology
@@ -11,7 +11,7 @@ open scoped Graph
 theorem IsDrawing.exists_homeomorph_radial_vertex_fans
     {β : Type*} {G : Graph Plane β} {drawing : β → ℝ → Plane} [G.Finite]
     (h : IsDrawing G drawing) (s : Finset Plane)
-    (hs : ∀ v ∈ s, (G.incidenceSet v).Nontrivial)
+    (hs : ∀ v ∈ s, (G.incidenceSet v).Nonempty)
     {U : Set Plane} (hU : IsOpen U) (hsU : (s : Set Plane) ⊆ U)
     {ε : Plane → ℝ} (hε : Continuous ε) (hεpos : ∀ x, 0 < ε x) :
     ∃ (r : {v // v ∈ s} → ℝ)
@@ -30,7 +30,7 @@ theorem IsDrawing.exists_homeomorph_radial_vertex_fans
   classical
   let I := {v // v ∈ s}
   have hv (v : I) : v.1 ∈ V(G) := by
-    obtain ⟨a, ha, _, _, _⟩ := hs v.1 v.2
+    obtain ⟨a, ha⟩ := hs v.1 v.2
     exact ha.vertex_mem
   obtain ⟨R, hR, hvertices, _, hdis⟩ := h.exists_vertexSquares
   let N (v : I) : Set Plane := U ∩ (Plane.openSquare v.1 R ∩
@@ -46,7 +46,7 @@ theorem IsDrawing.exists_homeomorph_radial_vertex_fans
         linarith [hεpos v.1])
     exact Filter.inter_mem (hU.mem_nhds (hsU v.2)) (Filter.inter_mem hsquare
       (Filter.inter_mem (Metric.ball_mem_nhds _ (div_pos (hεpos v.1) (by norm_num))) hcontrol))
-  have hlocal (v : I) := h.exists_homeomorph_radial_vertex_fan (hs v.1 v.2) (hN v)
+  have hlocal (v : I) := h.exists_homeomorph_radial_vertex_fan_of_nonempty (hs v.1 v.2) (hN v)
   choose r hr hsub hedge A p f hA hf hfv hfix hdist using hlocal
   let C (v : I) := Plane.closedSquare v.1 (r v)
   have hCR (v : I) : C v ⊆ Plane.closedSquare v.1 R := fun x hx =>
