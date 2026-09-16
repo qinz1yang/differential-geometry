@@ -1,7 +1,7 @@
 # S 车道交接：移植 Moise §2–§10 平面 PL 链（vendored）并桥接到本车道词汇
 
 交接日期 2026-09-14。本文件是接手者的唯一入口。目标是让 `PHASE3_APPROXIMATION_PLAN.md` §4.1 的
-P.1–P.5 与 §4.2 的 S.1 尽快成为"已证生产者"，后续责任划分与最新交付见 §10。
+P.1–P.5 与 §4.2 的 S.1 尽快成为"已证生产者"，后续责任划分与最新交付见 §11。
 
 ## 0. 任务
 
@@ -11,7 +11,7 @@ P.1–P.5 与 §4.2 的 S.1 尽快成为"已证生产者"，后续责任划分�
 2. 写**原生**桥接模块（零注释），把上游结论翻译成本车道词汇（`IsPLSphere 1`、`IsPLBall 2`、
    `IsPLHomeomorphOn`、`IsTriangle`…），闭合计划行 P.1（3.6/5.3）、3.7 相对形式、P.2（5.4）、
    以及 P.3/P.4/P.5 中上游已覆盖的部分；把对照写进计划行。
-3. S.1、S.2 已闭合；当前交付 S.3 与 P.3 的一般 17.2。**S.4（17.12）由 F 车道负责**；S.5 的 23.9/23.10 先以完整 17.12 为显式假设，F 交付后解除；23.11 已无条件完成。见 §10。
+3. S.1–S.3、P.3 的一般 17.2 与 S.5 已交付；**S.4（17.12）由 F 车道负责**。当前先交付一般 `hpush`，再做 §26.2，均只允许完整 `hSchoenflies` 为未交付的定理输入。局部构造的已证范围及整盘归纳缺口见 §11。
 
 ## 1. 环境与硬规则
 
@@ -259,3 +259,108 @@ F 交付 17.12 后，使用已证 `schoenflies_input` 实例化其接口，再�
 
 一般 17.2 已闭合；17.3 的“避开指定真盘子复形”仍未证。不要把 `.exists_free_disk_cell_ne`
 避开一个胞腔的推论当作 17.3。P.4/P.5 的既有余项仍保留，优先级低于解除 S.5 的 17.12 输入。
+
+## 11. Boundary push-offs and the collar: current partial checkpoint
+
+The current assignment is the general `hpush` producer for the sphere
+case of the Loop theorem, followed by Theorem 26.2. Both global endpoints
+may use only the explicit full `hSchoenflies` assumption specified by the
+owner. S.4 remains owned by F. The later 17.3 and P.4/P.5 work follows the
+collar. Other lanes' files must be acquired only by merging
+`origin/codex/moise-integration`; copying, cherry-picking, and direct lane
+merges are prohibited.
+
+This continuation merged `fb4d53931` in `4511df016`, then integrated
+`2b6c8a4a8` in `5967f629c`. No other lane branch was merged.
+
+### Verified mathematics
+
+- `fc3846d10`: `ConvexCone.lean` proves cone containment and exact frontier
+  intersection. `FrontierBoundary.lean` exposes `C ⊆ K.space` through
+  `exists_isPLBall_subset_inter_boundary`, preserving the earlier API.
+- `BoundaryBall.lean`: `exists_isPLBall_subset_inter_frontier` cuts an
+  arbitrary prescribed boundary disk out of a PL ball. The general
+  finite-dimensional result returns a smaller PL ball with exactly the
+  required frontier intersection. `exists_isPLBall_inter_frontier_eq_of_subset`
+  applies this inside an ambient set M once a PL ball C contained in M
+  and containing the disk is supplied.
+- `LoopTheorem/BoundaryPush.lean`: the complement disk in the frontier of
+  a boundary ball becomes a nonsingular `SingularTwoCell`, with its image
+  in M and its exact boundary and boundary-intersection images. The
+  theorem `exists_nonsingular_two_cell_in_boundary_ball` consumes an
+  actual PL ball C contained in M and containing the disk. The ball-host
+  case and a neighborhood version at each boundary point are proved.
+- `565acc75c`: `BoundarySubdivision.lean` proves simultaneous ambient
+  refinement subordinate to boundary-ball neighborhoods, then supplies
+  an exact boundary ball for every face star of the boundary disk
+  subcomplex. These are local balls; compatibility of their intersections
+  is not asserted.
+- `64da311fb`: `SphericalDiskExtension.lean` extends a disk
+  self-homeomorphism fixed on its parameter boundary to its containing
+  sphere and ball, fixing the closed complement disk. The union version
+  extends by the identity across a polyhedron meeting only that fixed
+  complement.
+- `01d5fb185`: `SubcomplexComplement.lean` proves
+  `IsPolyhedron.closure_sdiff`. `AmbientExtension.lean` extends a PL
+  self-homeomorphism of C to M by the identity on `closure (M \ C)`:
+  its hypotheses are `C ⊆ M`, an open U with `U ∩ M ⊆ C`, and fixing
+  `frontier C \ U`. `BoundaryDiskExtension.lean` applies this to boundary
+  disks. Its `exists_isPLHomeomorphOn_extension_boundary_patch` consumes
+  precisely the ball and neighborhood conditions of the local
+  construction, and derives the disk-rim compatibility itself.
+
+All nine changed/new modules passed the prescribed focused checks,
+with exit 0 and zero warnings. AuditS63 has 12 declarations, AuditS64
+has two, AuditS65 has five, and AuditS66 has four. All 23 axiom closures
+contain only `propext`, `Classical.choice`, and `Quot.sound`. The local
+results need no Schoenflies hypothesis.
+`External/ClassificationOfSurfaces/VENDOR.md` records scope and logs;
+no vendored Lean source was changed. The new modules were not registered
+in the root aggregate and no `lake build` was run. After `01d5fb185`,
+`git fetch origin` and the requested integration merge reported
+`Already up to date`.
+
+### Exact remaining mathematical obligation
+
+For a finite combinatorial 3-manifold with boundary K and a PL disk
+`D ⊆ frontier K.space`, first prove the existence of a PL 3-ball C with
+`C ⊆ K.space` and `D ⊆ C`. This is Problem 26.1, printed page 195.
+`exists_isPLBall_inter_frontier_eq_of_subset` then gives the exact
+boundary intersection, and `exists_nonsingular_two_cell_in_boundary_ball`
+gives the requested push-off with image in K.space.
+
+The local face-star balls from `BoundarySubdivision` do not yet solve
+this obligation: their mutual intersections are uncontrolled. A finite
+cover alone cannot be fed to 23.11. The new boundary-patch extensions
+supply individual relative maps on M, with compatibility across the
+actual complement proved. What remains is to construct the finite
+sequence of disk moves (or compatible ball attachments) for the entire
+disk using 23.9/23.10 and 23.11. The local extension theorem does not
+supply that sequence. Do not add it as a new hypothesis to the
+advertised global theorem or label general `hpush` complete. Full
+Theorem 26.2, arbitrary neighborhood control, and the product collar
+have not been proved in this continuation.
+
+### Reproducible checks
+
+- `.lake/scratch/check-convexcone-boundary.log`
+- `.lake/scratch/check-frontierboundary-boundary.log`
+- `.lake/scratch/check-boundaryball-boundary.log`
+- `.lake/scratch/check-looptheorem-boundarypush-boundary.log`
+- `.lake/scratch/check-boundary-subdivision.log`
+- `.lake/scratch/AuditS63.lean` and `audit-boundary-push-local.log`
+- `.lake/scratch/AuditS64.lean` and `audit-boundary-subdivision.log`
+- `.lake/scratch/check-relative-disk-extension.log` and `AuditS65.lean`
+- `.lake/scratch/audit-relative-disk-extension.log`
+- `.lake/scratch/check-polyhedron-complement.log`
+- `.lake/scratch/check-relative-polyhedron-extension.log`
+- `.lake/scratch/check-boundary-disk-extension.log`
+- `.lake/scratch/AuditS66.lean` and `audit-polyhedron-boundary-extension.log`
+
+The shared `BallFrontier.olean` was observed to contain the differently
+named `IsPLHomeomorphOn.image_stdSimplexBoundary`, whereas the current
+integration source exports `image_stdSimplexBoundary_eq_frontier`.
+Refreshing `BallFrontier` with the prescribed S script immediately before
+checking `BoundaryPush` resolved the mismatch. Do not copy the other
+lane's source or rename a consumer to an unmerged declaration merely to
+match a shared artifact.
