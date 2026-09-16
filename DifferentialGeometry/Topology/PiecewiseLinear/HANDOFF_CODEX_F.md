@@ -1729,3 +1729,9 @@ F-M2–F-M6 尚未开始；按用户指定顺序推进，只有出现 §1 接口
 `ParametricTriangleHeightCut.lean` 已提交并推送为 `5bfd5954a`。主端点 `exists_parameterized_triangle_cut_of_singular_height` 把上一层的两张盘参数化贯穿指定点三角凸化：返回原球面的两盘分拆及共同参数边界、水平张成盘、两张封帽球面、保高度且固定支集外和其他原顶点的环境 PL 同胚、三元素仿射独立三角形载体、指定点的严格线性分离，以及临界层圆周计数和所有集合的高度指标不变性。该端点不再提前选择任意三角剖分，后续可用显式参数边界构造适配共同细分。
 
 模块聚焦检查 exit=0（12.4 秒）、零 warning；`AuditF178.lean` 主端点仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步对 `H '' A` 与 `H '' B` 分别建立有限三角剖分，再与 `H '' D` 做显式面覆盖共同细分；沿保高度同胚运输 `HeightSides` 的相反单侧集合芽，闭合接缝边内部顶点的 `encard ≤ 2`。F-M1 仍为 partial，严格降指标、Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF179.lean`。
+
+### 19.31 F-M1：共享参数边界的两盘共同细分
+
+`ParameterizedDiskUnion.lean` 已提交并推送为 `dbd2d65c8`。主端点 `exists_triangulation_parameterized_disk_union` 从两张共享同一标准单形边界像的参数化 PL 二球盘构造其并集的有限共同三角剖分。结论同时给出两限制子复形的精确空间与 PL 球性、两侧组合边界复形空间都精确等于共享接缝、完整复形的逐面二片覆盖，以及相对于任意仿射高度层的逐面半空间适配。组合边界等式由参数化端点直接证明，不作额外输入。
+
+模块聚焦检查 exit=0（14.1 秒）、零 warning；`AuditF179.lean` 主端点仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步把保高度同胚后的保留盘参数化与三角帽参数化送入该端点，并证明接缝边相对内部顶点的保留侧和帽侧链环截面各至多一点，从而经逐面覆盖得到完整链环 `encard ≤ 2`。F-M1 仍为 partial，严格降指标、Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF180.lean`。
