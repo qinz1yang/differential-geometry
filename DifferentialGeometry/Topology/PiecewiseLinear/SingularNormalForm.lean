@@ -130,16 +130,20 @@ theorem exists_isSubdivision_affineOn_subcomplexes_finite
   exact ⟨K', hK', hfin, fun i => hface i (Finset.mem_univ i)⟩
 
 open Classical in
-theorem PLPieceIn.exists_isSubdivision_affineOn_chart_faces
+theorem PLPieceIn.exists_isSubdivision_affineOn_chart_stars
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
     {n : ℕ} {X : Type u} [TopologicalSpace X]
     [ChartedSpace (EuclideanSpace ℝ (Fin n)) X] {P : Set X} (T : PLPieceIn E n X P) :
-    ∃ K' : Geometry.SimplicialComplex ℝ E, IsSubdivision K' T.complex ∧ K'.faces.Finite ∧
-      ∀ s ∈ K'.faces,
-        ∃ e ∈ atlas (EuclideanSpace ℝ (Fin n)) X,
-          convexHull ℝ (s : Set E) ⊆ T.map ⁻¹' e.source ∧
-            ∃ A : E →ᵃ[ℝ] EuclideanSpace ℝ (Fin n),
-              EqOn (e ∘ T.map) A (convexHull ℝ (s : Set E)) := by
+    ∃ K₀ : Geometry.SimplicialComplex ℝ E, IsSubdivision K₀ T.complex ∧ K₀.faces.Finite ∧
+      ∃ K' : Geometry.SimplicialComplex ℝ E, IsSubdivision K' K₀ ∧ K'.faces.Finite ∧
+        ∀ v, {v} ∈ K₀.faces →
+          ∃ e ∈ atlas (EuclideanSpace ℝ (Fin n)) X,
+            closedStar K₀ v ⊆ T.map ⁻¹' e.source ∧
+              (PiecewiseLinear.restrict K' (starComplex K₀ v).space).space =
+                  (starComplex K₀ v).space ∧
+                ∀ s ∈ (PiecewiseLinear.restrict K' (starComplex K₀ v).space).faces,
+                  ∃ A : E →ᵃ[ℝ] EuclideanSpace ℝ (Fin n),
+                    EqOn (e ∘ T.map) A (convexHull ℝ (s : Set E)) := by
   let _ : Finite T.complex.faces := T.finite_faces.to_subtype
   obtain ⟨K₀, hK₀, hfin₀, hcharts⟩ :=
     exists_isSubdivision_closedStar_subset (n := n) (X := X) T.complex T.continuousOn
@@ -167,23 +171,40 @@ theorem PLPieceIn.exists_isSubdivision_affineOn_chart_faces
   obtain ⟨K', hK', hfin', hlocal⟩ :=
     exists_isSubdivision_affineOn_subcomplexes_finite K₀ (fun v : V => starComplex K₀ v)
       hLfin hLK (fun v => e v ∘ T.map) hpiece
+  refine ⟨K₀, hK₀, hfin₀, K', hK', hfin', ?_⟩
+  intro v hv
+  let w : V := ⟨v, hv⟩
+  exact ⟨e w, he w, hstar w, (hlocal w).1, (hlocal w).2⟩
+
+open Classical in
+theorem PLPieceIn.exists_isSubdivision_affineOn_chart_faces
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    {n : ℕ} {X : Type u} [TopologicalSpace X]
+    [ChartedSpace (EuclideanSpace ℝ (Fin n)) X] {P : Set X} (T : PLPieceIn E n X P) :
+    ∃ K' : Geometry.SimplicialComplex ℝ E, IsSubdivision K' T.complex ∧ K'.faces.Finite ∧
+      ∀ s ∈ K'.faces,
+        ∃ e ∈ atlas (EuclideanSpace ℝ (Fin n)) X,
+          convexHull ℝ (s : Set E) ⊆ T.map ⁻¹' e.source ∧
+            ∃ A : E →ᵃ[ℝ] EuclideanSpace ℝ (Fin n),
+              EqOn (e ∘ T.map) A (convexHull ℝ (s : Set E)) := by
+  obtain ⟨K₀, hK₀, _, K', hK', hfin', hstars⟩ :=
+    T.exists_isSubdivision_affineOn_chart_stars
   refine ⟨K', hK'.trans hK₀, hfin', ?_⟩
   intro s hs
   obtain ⟨t, ht, hst⟩ := hK'.exists_face_subset hs
   obtain ⟨v, hv⟩ := K₀.nonempty_of_mem_faces ht
   have hvK₀ : {v} ∈ K₀.faces :=
     K₀.down_closed ht (Finset.singleton_subset_iff.mpr hv) (Finset.singleton_nonempty v)
-  let w : V := ⟨v, hvK₀⟩
+  obtain ⟨e, he, hstar, _, hlocal⟩ := hstars v hvK₀
   have htstar : convexHull ℝ (t : Set E) ⊆ closedStar K₀ v := by
     intro x hx
     exact mem_biUnion (s := {r ∈ K₀.faces | v ∈ convexHull ℝ (r : Set E)})
       (t := fun r => convexHull ℝ (r : Set E))
       ⟨ht, subset_convexHull ℝ (t : Set E) hv⟩ hx
   have hsstar : convexHull ℝ (s : Set E) ⊆ closedStar K₀ v := hst.trans htstar
-  refine ⟨e w, he w, hsstar.trans (hstar w), ?_⟩
-  apply (hlocal w).2 s
+  refine ⟨e, he, hsstar.trans hstar, ?_⟩
+  apply hlocal s
   refine ⟨hs, ?_⟩
-  change convexHull ℝ (s : Set E) ⊆ (starComplex K₀ v).space
   rw [starComplex_space K₀ v hvK₀]
   exact hsstar
 
