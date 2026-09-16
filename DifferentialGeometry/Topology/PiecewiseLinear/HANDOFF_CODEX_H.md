@@ -374,3 +374,40 @@ Reduced/MayerVietorisCoefficients, Reduced/PointClasses}`（`REUSE_AUDIT.md` §2
   `git diff --check` 与新增禁用项扫描通过。
 - H-M5 无未闭合端点。H-M3 的全局顶维基本类/定向比较，以及 H-M4/I5 的 23.19 Betti 不等式与
   `b₁=0 → IsPLSphere 2` 识别仍是原有真实缺口，本里程碑没有弱化或包装这些义务。
+
+### H.4b — done，`faceEulerChar = 2` 的闭组合曲面是 PL 2-球面
+
+- 数学提交：`465433505`；支撑层提交：`c322bee57`、`7cbe0839f`。新模块
+  `SurfaceSphereRecognition.lean`，最终端点为
+  `IsCombinatorialManifold.isPLSphere_two_of_faceEulerChar_eq_two`。
+- 对连通有限闭组合 2-流形取 1-骨架生成树 `T`；Euler 计数使未选边的对偶图
+  `dualCotreeGraph K T` 也是树。原面按“顶点/树边”与“三角形/非树边”分区，各自的导出邻域胞腔并
+  分别由 `isPLBall_primalTreeCellComplex` 和 `isPLBall_dualCotreeCellComplex` 识别为 PL 2-球。
+- 两侧共同面通过两个不同导出胞腔的 PL 1-球交扩张到共同边，因此没有共同顶维面。
+  `subcomplexGeneratedBy_compl_eq_of_faces_cover_of_pure_inter` 将两侧互相识别为闭曲面中的闭补复形，
+  现有的子流形边界定理给出交集恰是两个球的公共边界；经 `boundaryRelSubdivision`
+  使边界满后，`isPLSphere_gluedComplex_of_isPLBall` 完成粘合球面识别。
+- `SurfaceSphereRecognition` 聚焦检查 exit=0，11.0 秒，零 warning；
+  `.lake/scratch/AuditHSurfaceSphereRecognition.lean` 对 22 个新定理及 11 个关键复用声明逐项审计，
+  exit=0，全部只依赖 `propext`、`Classical.choice`、`Quot.sound`。
+- H.4b 无未闭合项。下一里程碑按 `NIGHT_PLAN.md` §6.1 用 `faceEulerChar` 路线交付 I5；
+  H-M3 的顶维基本类继续后推。
+
+### I5 / H-M4 — done，非球面边界分支迫使一阶 Betti 数为正
+
+- 数学提交：`1d7ffe266`。新模块 `BoundaryHomology.lean`；`HandleCount.lean` 的跨车道端点为
+  `bettiOne_pos_of_boundary_component_not_sphere`，签名保持 `IsCombinatorialManifoldWithBoundary 3 K`、
+  `IsOrientable 3 K`、`IsConnected K.space`、指定边界连通分支及该分支非 `IsPLSphere 2`。
+- 证明使用现有有序单纯集合的 normalized chain complex 作内部坐标，不新增同调表示层；最终结论仍是本库奇异
+  `Homology.bettiOne`。每个非基准边界分支的相干定向 2-循环与所有 3-单形边界组成一个到 2-循环空间的单射，
+  给出 `card(other boundary components) ≤ b₂(K)`。同一余维一面传播论证证明带非空边界的连通可定向
+  3-流形顶微分单射，因而奇异 `b₃(K)=0`。
+- `faceEulerChar` 按连通分支分解；H.4b 与每个闭连通组合曲面的 `χ≤2` 将指定非球面分支改进为严格上界
+  `χ(∂K)<2·card(π₀∂K)`。结合 `χ(∂K)=2χ(K)`、`χ(K)=1-b₁+b₂` 和上述秩界，若 `b₁=0`
+  即得矛盾，闭合 I5；没有等待 H-M3 的闭曲面全局顶维基本类。
+- 聚焦检查均 exit=0、零 warning：`OrderedChainCoordinates` 13.1 秒、`BoundaryHomology` 25.3 秒、
+  `HandleCount` 11.9 秒；`fresh.py` 报 7 个相对整合分支改动模块全部 olean 新鲜、零禁用项。
+  `.lake/scratch/AuditHI5.lean` 逐项审计 47 个新增声明与 23 个关键复用声明，exit=0，全部仅含
+  `propext`、`Classical.choice`、`Quot.sound`。
+- I5 无未闭合项。H-M3 的闭曲面基本类、可定向/不可定向闭曲面完整 `b₂` 公式仍按计划后推；本里程碑只证明
+  I5 所需的带非空边界三维顶同调消失，不冒充 H-M3 完成。
