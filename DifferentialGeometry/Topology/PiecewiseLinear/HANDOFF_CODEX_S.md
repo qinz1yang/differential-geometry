@@ -686,7 +686,7 @@ no second-batch source or duplicate Jordan extension wrapper was introduced.
 | S-M3 | done: I2 已交付（double 环境） | `LoopTheorem/DoubleBoundaryPush.lean`; AuditS114DoubleBoundaryPush: 7 | NIGHT_PLAN 6.1 target is `(double 3 K).space` with its constructed combinatorial charted space; direct E3 hpush signature checked; no additional unproved hypothesis |
 | S-M4 | done: whole-boundary collar with the relative-neighborhood property for finite combinatorial three-manifolds in arbitrary finite-dimensional real normed spaces | `691c7329d`, `e9feba0c2`, `f778f73ff`; AuditS88--S90: 12; earlier layers and audits below | None for the finite-complex endpoint in NIGHT_PLAN; abstract PL charted ambient transport is not asserted |
 | S-M5 | done: 26.1 in finite combinatorial carriers and general PL charted ambient spaces; arbitrarily small PL bicollars without connectedness assumptions | `ddf717a4b`; finite bicollar `3a55ac834`; general manifold bicollar `52d70d778`; relative topology `7746cff68`; AuditS101--S104: 18 | No remaining 26.1/26.3 obligation in these stated settings; I2 is now delivered in the double environment (S-M3) |
-| S-M6 | partial: general relative 17.3 done; supported crosscut extension and simultaneous local straightening of finite vertex fans with at least two branches proved | `f0383a381`; `4ddbf78f4`; `3302febfc`; `47062f7d4`; `1b6245266`; `5889f3772`; AuditS109--S112: 22 entries | Handle degree-one endpoints, construct small edge frames and polygonal target crosscuts, and assemble the finite graph maps with the prescribed support and control |
+| S-M6 | partial: general relative 17.3 done; simultaneous supported vertex-fan straightening, polygonal target production, and simultaneous crosscut straightening in disjoint PL disks proved | `VertexStraightening`, `InteriorAccess`, `PolygonalCrosscut`; AuditS115: 7 new declarations | Handle degree-one endpoints and construct arbitrarily small compatible PL disk frames from the original graph; initial subarcs do not control later reentry |
 
 All listed completed layers have focused-check exit 0 with zero warnings and transitive axiom
 closures contained in `propext`, `Classical.choice`, and `Quot.sound`. No newly proved layer
@@ -1946,3 +1946,60 @@ public declarations and the two principal producers: seven entries, only `propex
 E3 SphereCase's exact hpush quantifiers and four conclusions, supplied directly by
 the second endpoint; it elaborates successfully. No E3 source or vendored source
 was changed. P.4 remains the next milestone, followed by S.6 as in NIGHT_PLAN 6.2.
+
+### S-M6: controlled simultaneous planar straightening, 2026-09-16
+
+I2's double-environment producer is committed and pushed as `b926417f6`.
+The subsequent integration fetch and merge reported already up to date.
+
+`PlanarJordan/VertexStraightening.lean` proves
+`Graph.IsDrawing.exists_homeomorph_radial_vertex_fans`. Given a selected finite set
+of vertices of a finite planar drawing, each with at least two incident edges, an
+open neighborhood of those vertices, and a continuous positive error function, it
+constructs pairwise disjoint closed vertex squares and one ambient homeomorphism
+straightening every selected incident initial subarc to its radial segment. The
+homeomorphism fixes every graph vertex and the prescribed neighborhood's exterior,
+and its displacement is strictly less than the error function at every point.
+The proof selects squares inside both the prescribed neighborhood and regions on
+which the error function has a quantitative lower bound, then uses disjoint gluing.
+
+`PiecewiseLinear/InteriorAccess.lean` proves line-segment accessibility from the
+interior at every point of a full-dimensional finite combinatorial manifold with
+boundary, in every positive Euclidean dimension. A top-dimensional simplex through
+the point supplies the segment. The PL-ball specialization gives polygonal interior
+access at every point of a planar PL disk, and `IsPLBall.exists_isCrosscut` constructs
+a polygonal crosscut between any two distinct boundary points. No accessibility or
+preselected polygonal target is assumed.
+
+`PlanarJordan/PolygonalCrosscut.lean` proves
+`exists_homeomorph_polygonal_crosscut`: an arbitrary topological crosscut of a planar
+PL disk becomes polygonal under an ambient homeomorphism fixing the disk exterior
+and boundary, with displacement bounded by the disk diameter. Its finite-family
+version `exists_homeomorph_polygonal_crosscuts` straightens crosscuts in pairwise
+disjoint PL disks simultaneously, fixes the complement of their interior union,
+and satisfies a positive pointwise error bound when the given disk diameters do.
+This result consumes disk frames; it does not construct them from arbitrary arcs.
+
+All three modules have focused-check exit 0 and zero warnings. The final
+`AuditS115PlanarStraightening.lean` / `.log` contain all seven new public declarations;
+exit 0 and only `propext`, `Classical.choice`, and `Quot.sound`. No vendored source or
+other-lane source changed, and the root aggregate remains untouched.
+
+P.4 is still partial. The remaining geometric producers are the treatment of
+arbitrary degree-one endpoints and arbitrarily small compatible PL disk frames
+around the original edge pieces. A disk neighborhood containing an arc is not yet
+a frame in which that arc is a crosscut: the precise boundary intersections and
+later reentries must be controlled. Neither Jordan/Schoenflies extension alone nor
+the vendored polygonal redrawing theorem supplies these ambient relative data.
+The current results do not assume these missing producers under new proposition
+names and do not claim the full Moise 10.8 endpoint.
+
+### S.6 dependency check, 2026-09-16
+
+The merged integration source at `314c2178f` contains no IsSphericalShell producer
+or `exists_isPLSphere_separating_of_sphericalShell` declaration. The plan's I.4 row
+still marks Moise 30.4 as new and S.6 explicitly depends on that result. Under the
+instruction allowing only an explicit hSchoenflies, no additional 30.4 hypothesis
+has been introduced and no completed 30.5 endpoint is claimed. The outstanding
+external input is a PL 2-sphere in the shell interior separating its two boundary
+components, as specified in I.4. Obtain future I-lane source only by integration merge.
