@@ -1645,3 +1645,9 @@ F-M2–F-M6 尚未开始；按用户指定顺序推进，只有出现 §1 接口
 `VertexSectionRegularity.lean` 已提交并推送为 `a984b8c98`。主端点 `notMem_heightSingularPoints_of_geometricLink_section_encard_le_two` 将前三层闭合成统一判据：若顶点链环是 PL 圆周、当前高度避开链环顶点且零截面 `encard ≤ 2`，则该顶点不属于高度奇点集。空截面由 `VertexIsolation` 给出局部孤立；非空截面由 `CircleHeightSection` 排除单点并产生两个不同点，同时从实际截面点导出高低两侧，再由 `VertexCrossingLevel` 得到当前任意高度层的 crossing。结论没有加入 crossing 或孤立作为假设。
 
 模块聚焦检查 exit=0（11.3 秒）、零 warning；`AuditF164.lean` 主端点仅依赖 `propext`、`Classical.choice`、`Quot.sound`。三角帽边界分类现已归约为实际几何命题：帽与保留盘组成的顶点链环，其新高度零截面至多两点。下一步证明该上界并接入奇异点嵌入与严格指标下降。F-M1 仍为 partial，Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF165.lean`。
+
+### 19.17 F-M1：凸三角帽顶点的链环等高截面至多一点
+
+`ConvexCapLink.lean` 已提交并推送为 `0afbfdf0c`。`finrank_vectorSpan_inf_ker_eq_one_of_affineIndependent_card_three` 证明三元素仿射独立集的二维方向空间与在三顶点上单射的高度核恰交成一维。主端点 `geometricLink_section_subsingleton_of_simplex_vertex` 再用暴露指定凸顶点的线性函数排除该一维交线上的反向射线，并由几何链环的径向单射性推出：载体等于该三角形凸包的任意复形，在三角形顶点处的链环与该顶点等高层的交至多一点。
+
+模块聚焦检查 exit=0（11.8 秒）、零 warning；`AuditF165.lean` 两个端点均仅依赖 `propext`、`Classical.choice`、`Quot.sound`。这已经覆盖封帽三角形的三个真实角点；帽边细分产生的直边内部顶点仍需结合保留盘一侧的链环弧证明至多二点。随后接入 `VertexSectionRegularity`，构造新旧奇异点嵌入并证明严格降指标。F-M1 仍为 partial，Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF166.lean`。
