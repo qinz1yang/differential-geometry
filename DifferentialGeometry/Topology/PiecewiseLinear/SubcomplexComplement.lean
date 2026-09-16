@@ -1,6 +1,7 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.GeneratedSubcomplex
 import DifferentialGeometry.Topology.PiecewiseLinear.LinkDimension
 import DifferentialGeometry.Topology.PiecewiseLinear.RelativeDerived
+import DifferentialGeometry.Topology.PiecewiseLinear.Subcomplex
 
 open Set
 
@@ -52,5 +53,25 @@ theorem closure_space_sdiff_convexHull_eq_subcomplexGeneratedBy
     intro y hy
     exact ⟨A.convexHull_subset_space hu.1 (openSimplex_subset_convexHull u hy),
       fun hyt => hu.2 (face_subset_of_mem_openSimplex_of_mem_convexHull K (hA hu.1) ht hy hyt)⟩
+
+theorem IsPolyhedron.closure_sdiff {P Q : Set E} (hP : IsPolyhedron P)
+    (hQ : IsPolyhedron Q) : IsPolyhedron (closure (P \ Q)) := by
+  classical
+  obtain ⟨K, hKfin, hK⟩ := hP.exists_simplicialComplex
+  let _ : Finite K.faces := hKfin.to_subtype
+  obtain ⟨R, hR, hRfin, hRQ⟩ := exists_isSubdivision_restrict_space K (hP.inter hQ)
+    (inter_subset_left.trans hK.ge)
+  let _ : Finite R.faces := hRfin.to_subtype
+  have hRspace : R.space = P := hR.space_eq.trans hK
+  have hdiff : R.space \ (restrict R (P ∩ Q)).space = P \ Q := by
+    rw [hRspace, hRQ]
+    ext x
+    simp only [mem_sdiff, mem_inter_iff]
+    tauto
+  rw [← hdiff, closure_space_sdiff_space_eq_subcomplexGeneratedBy R R
+    (restrict R (P ∩ Q)) subset_rfl (restrict_faces_subset R _)]
+  let _ : Finite (subcomplexGeneratedBy R (restrict R (P ∩ Q)).facesᶜ).faces :=
+    (subcomplexGeneratedBy_faces_finite R _).to_subtype
+  exact isPolyhedron_space _
 
 end DifferentialGeometry.Topology.PiecewiseLinear

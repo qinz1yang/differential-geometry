@@ -1,5 +1,6 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.GeneralPosition
 import DifferentialGeometry.Topology.PiecewiseLinear.OpenStar
+import DifferentialGeometry.Topology.PiecewiseLinear.SubcomplexComplement
 
 open Set Topology Metric
 
@@ -212,6 +213,44 @@ theorem IsPLHomeomorphOn.exists_extension_of_eqOn_frontier [FiniteDimensional �
     change g x = x
     exact piecewise_eq_of_notMem P f id hx
   exact ⟨h, (hf.congr hPfix).univ_of_eqOn_compl hP hcomplement, hPfix, hcomplement⟩
+
+theorem IsPLHomeomorphOn.exists_extension_on_polyhedron [FiniteDimensional ℝ E]
+    {f : E → E} {C M U : Set E} (hf : IsPLHomeomorphOn f C C)
+    (hC : IsPolyhedron C) (hM : IsPolyhedron M) (hCM : C ⊆ M)
+    (hU : IsOpen U) (hUC : U ∩ M ⊆ C) (hfix : EqOn f id (frontier C \ U)) :
+    ∃ G : E → E, IsPLHomeomorphOn G M M ∧ EqOn G f C ∧
+      EqOn G id (closure (M \ C)) := by
+  classical
+  let Q := closure (M \ C)
+  have hQ : IsPolyhedron Q := hM.closure_sdiff hC
+  have hQM : Q ⊆ M := closure_minimal sdiff_subset hM.isClosed
+  have hQU : Q ⊆ Uᶜ := by
+    apply closure_minimal ?_ hU.isClosed_compl
+    rintro x ⟨hxM, hxC⟩ hxU
+    exact hxC (hUC ⟨hxU, hxM⟩)
+  have hfront : C ∩ Q ⊆ frontier C := by
+    rintro x ⟨hxC, hxQ⟩
+    rw [frontier_eq_closure_inter_closure]
+    exact ⟨subset_closure hxC, closure_mono (fun _ hx => hx.2) hxQ⟩
+  have hfixQ : EqOn f id (C ∩ Q) := fun _ hx => hfix ⟨hfront hx, hQU hx.2⟩
+  have hQId : IsPLHomeomorphOn (id : E → E) Q Q :=
+    isPLHomeomorphOn_of_isPiecewiseAffineOn_of_bijOn hQ
+      ((isPiecewiseAffineOn_id isOpen_univ).mono_of_isPolyhedron hQ (subset_univ Q))
+      (bijOn_id Q)
+  have hcover : C ∪ Q = M := by
+    apply Subset.antisymm (union_subset hCM hQM)
+    intro x hx
+    by_cases hxC : x ∈ C
+    · exact Or.inl hxC
+    · exact Or.inr (subset_closure ⟨hx, hxC⟩)
+  have hG := hf.piecewise hQId hC hQ hfixQ (hfixQ.image_eq.trans (image_id _))
+  rw [hcover] at hG
+  refine ⟨C.piecewise f id, hG, C.piecewise_eqOn f id, ?_⟩
+  intro x hx
+  by_cases hxC : x ∈ C
+  · rw [C.piecewise_eq_of_mem f id hxC]
+    exact hfixQ ⟨hxC, hx⟩
+  · exact C.piecewise_eq_of_notMem f id hxC
 
 open Classical in
 theorem exists_piecewiseAffine_lipschitz_vertex_function_of_openStar [FiniteDimensional ℝ E]

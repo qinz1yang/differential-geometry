@@ -1566,3 +1566,30 @@ preserved extension interfaces, all with only `propext`,
 `Classical.choice`, and `Quot.sound`. Logs are
 `.lake/scratch/check-relative-disk-extension.log` and
 `.lake/scratch/audit-relative-disk-extension.log`.
+
+## Extension across the complement of a boundary neighborhood
+
+`SubcomplexComplement.lean` proves that the closure of the difference
+of two polyhedra is a polyhedron by a simultaneous triangulation.
+`AmbientExtension.lean` uses this actual complement to extend a PL
+self-homeomorphism of C to M, where C is a subpolyhedron of M. An open
+set U satisfies U intersect M contained in C; the map fixes frontier C
+outside U. The resulting extension fixes the closure of M minus C.
+
+`BoundaryDiskExtension.lean` applies the relative sphere and ball
+extensions to a parameterized boundary disk. Its boundary-patch form
+uses precisely the existing local-neighborhood conditions: C is a PL
+3-ball in M, C intersect frontier M is a PL 2-ball, and U intersect M
+is contained in C. A self-homeomorphism of this boundary patch fixed
+outside U extends to M. Fixing its intrinsic boundary is derived from
+these hypotheses, not added as another input.
+
+These native lemmas provide local relative maps for the finite disk
+argument; they do not supply the finite sequence of compatible moves
+for a whole boundary disk. General `hpush` and Theorem 26.2 are still
+unproved. No vendored Lean source changed. The three modules check with
+exit 0 and zero warnings. `AuditS66.lean` audits all four declarations:
+exit 0 and only `propext`, `Classical.choice`, and `Quot.sound`. Logs:
+`.lake/scratch/check-polyhedron-complement.log`,
+`check-relative-polyhedron-extension.log`, `check-boundary-disk-extension.log`,
+and `audit-polyhedron-boundary-extension.log`.
