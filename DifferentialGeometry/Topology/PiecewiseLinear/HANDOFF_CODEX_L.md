@@ -218,3 +218,22 @@ theorem eq_top_of_boundaryLoops_mem_normal
 - 下一处义务是 Case 1/2 的盘内环带正则邻域、在环带上替换 `D` 后仍为正规奇异胞腔，以及 Case 2 的内盘替换与 I2 推离；
   Case 3/4 还需要沿两条原像折线实际切开 PL 2-球并构造两个较低复杂度的 `SingularTwoCell`。现有树只有上面的正规子群字计算，
   没有这些几何构造，因此未建立 `LoopTheorem/LemmaTwo.lean` 的 Lemma 2 端点，也未把几何降复杂度伪装成显式假设。
+
+## 8. 2026-09-15 夜间 E3-M3：Lemma 3 条件性骨架
+
+状态：done（条件性骨架）。数学提交 `93b3ac9cd`。
+
+- 计划指定的 `LoopTheorem/LemmaThree.lean` 现在承载 Lemma 3 开发；旧模块
+  `LoopTheorem/StallingsInduction.lean` 只导入它，因而既保留已有消费者的模块路径，又不复制声明。
+- `vertexCollisionPairs_subset_of_factorization` 与 `simplicialComplexity_le_of_factorization` 证明提升后的顶点碰撞对包含于原碰撞对，
+  所以复杂度不增；`eq_vertexMap_of_eq_simplicialComplexity_of_factorization` 与
+  `injOn_vertexMap_iff_of_eq_simplicialComplexity_of_factorization` 精确刻画相等情形：原图中相撞的任意两个源顶点在提升中仍相撞，
+  且原、提升顶点映射的单射性等价。严格分开一个原碰撞对时，已有
+  `simplicialComplexity_lt_of_factorization_of_separated` 给出严格降阶。
+- `exists_nonsingular_cell_of_stallings_induction` 保持四个显式接口：球面边界的 Lemma 1、从提升回推的 Lemma 2、不可定向情形
+  24.7 的二重覆盖、可定向且边界分支非球面情形 24.8 的二重覆盖；随后对复杂度作强归纳。没有引入结论型假设或新增公理。
+- `LemmaThree` 与兼容模块聚焦检查均 exit=0、零 warning；`.lake/scratch/AuditE3M3.lean` 的 10 项审计全部只含
+  `propext`、`Classical.choice`、`Quot.sound`。
+- 条件骨架之外尚缺实际 `DoubleCoverReduction` 生产者：要把 C.1/C.3 的提升复形、`relDerived` 正规邻域与提升后的正规系统接好；
+  在复杂度相等分支，还须把上述顶点碰撞等价提升为覆盖投影在 `|D̃|` 上的 PL 同胚，再证明其基本群映射满，与
+  C.1 的 `card_fiber_eq_index = 2` 矛盾。24.7/24.8 的覆盖本身则等 E3-M4 的 C.4/C.5 接线。
