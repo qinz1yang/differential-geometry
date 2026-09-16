@@ -849,3 +849,37 @@ logs are `check-collar-gluing-extension.log` and `check-collar-extension.log`.
 `AuditS83CollarExtension.lean` / `.log` audit five new or affected public declarations, all with
 only `propext`, `Classical.choice`, and `Quot.sound`. The source checkpoint hash is recorded
 with the next status update. No vendored source, other-lane source, or root aggregate changed.
+
+### S-M4 continuation: the complementary-boundary conditions are preserved
+
+The actual collar enlargement is committed and pushed as `7ec642daf`.
+`GeneratedSubcomplex.lean` proves `subcomplexGeneratedBy_compl_compl` under the natural
+cardinality bound and purity hypotheses. `SubcomplexComplement.lean` identifies the resulting
+double closed difference with the original pure subcomplex.
+`ManifoldSubcomplexBoundary.lean` transports this to arbitrary finite triangulations:
+`IsCombinatorialManifoldWithBoundary.closure_sdiff_closure_sdiff_eq` holds in every dimension,
+including zero. In positive dimensions, `inter_closure_sdiff_subset_boundaryComplex` and
+`inter_space_complement_subset_boundaryComplex` put the common interface on the intrinsic
+boundary of either manifold, including the actual complementary manifold.
+
+`CollarExtension.lean` consumes these results and strengthens both public enlargement
+endpoints. In addition to the already proved product map and exact complement R', they return
+`(W union C) inter R'.space subset Bd R'` and `B inter R'.space subset Bd R'`.
+Thus these two input boundary conditions are now preserved by the step itself. The unchanged
+attaching-disk condition for each subsequent boundary cell still has to be proved from the
+cell decomposition; it is not hidden in a new structure or claimed as discharged.
+
+All four affected modules have focused-check exit 0 and zero warnings. Logs are
+`check-generated-subcomplex-involution.log`, `check-subcomplex-complement-involution.log`,
+`check-manifold-subcomplex-complement.log`, and `check-collar-extension-invariants.log`.
+`AuditS84ComplementInvariants.lean` / `.log` audit seven new or affected declarations, all with
+only the standard three axioms. No other lane's source or vendored source was modified.
+The source hash is recorded in the final plan checkpoint below.
+
+Next mathematical obligations for 26.2: construct a finite boundary cell ordering whose next
+cell meets the previous union in finitely many disjoint boundary arcs or its whole boundary;
+prove that each future disk together with the current vertical strips lies on the actual
+complementary boundary; finish the finite induction and prove that the final image is a
+neighborhood of the entire original boundary. The step already preserves old coordinates,
+positive-height boundary avoidance, the complement's manifold property, and both interface
+boundary conditions. Full 26.2 remains partial, and the exact I2 target-type issue is unchanged.

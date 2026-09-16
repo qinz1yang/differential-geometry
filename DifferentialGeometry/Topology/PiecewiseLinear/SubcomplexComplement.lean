@@ -74,4 +74,14 @@ theorem IsPolyhedron.closure_sdiff {P Q : Set E} (hP : IsPolyhedron P)
     (subcomplexGeneratedBy_faces_finite R _).to_subtype
   exact isPolyhedron_space _
 
+theorem closure_space_sdiff_closure_sdiff_space_eq
+    (K A : Geometry.SimplicialComplex ℝ E) [Finite K.faces] {n : ℕ}
+    (hAK : A.faces ⊆ K.faces) (hK : ∀ t ∈ K.faces, t.card ≤ n)
+    (hA : ∀ s ∈ A.faces, ∃ t ∈ A.faces, s ⊆ t ∧ t.card = n) :
+    closure (K.space \ closure (K.space \ A.space)) = A.space := by
+  rw [closure_space_sdiff_space_eq_subcomplexGeneratedBy K K A Subset.rfl hAK,
+    closure_space_sdiff_space_eq_subcomplexGeneratedBy K K (subcomplexGeneratedBy K A.facesᶜ)
+      Subset.rfl (subcomplexGeneratedBy_faces_subset K A.facesᶜ),
+    subcomplexGeneratedBy_compl_compl K A hAK hK hA]
+
 end DifferentialGeometry.Topology.PiecewiseLinear

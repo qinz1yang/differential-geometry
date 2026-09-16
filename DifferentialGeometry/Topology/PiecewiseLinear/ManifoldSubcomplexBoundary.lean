@@ -122,4 +122,60 @@ theorem IsCombinatorialManifold.inter_closure_sdiff_eq_image_stdSimplexBoundary 
     simplexBoundary_stdVertices_space] at heq
   exact heq
 
+open Classical in
+theorem IsCombinatorialManifoldWithBoundary.closure_sdiff_closure_sdiff_eq {n : ℕ}
+    (K A : Geometry.SimplicialComplex ℝ E) [Finite K.faces] [Finite A.faces]
+    (hK : IsCombinatorialManifoldWithBoundary n K)
+    (hA : IsCombinatorialManifoldWithBoundary n A) (hAK : A.space ⊆ K.space) :
+    closure (K.space \ closure (K.space \ A.space)) = A.space := by
+  classical
+  obtain ⟨T, hT, hTfin, hTA⟩ := exists_isSubdivision_restrict_isSubdivision K A hAK
+  let _ : Finite T.faces := hTfin.to_subtype
+  let B := restrict T A.space
+  let _ : Finite B.faces := (restrict_faces_finite T A.space).to_subtype
+  have hTman := hK.of_isSubdivision hT
+  have hBman : IsCombinatorialManifoldWithBoundary n B := hA.of_isSubdivision hTA
+  have hbound : ∀ t ∈ T.faces, t.card ≤ n + 1 := by
+    intro t ht
+    obtain ⟨u, -, htu, hucard⟩ := hTman.exists_face_superset_card_eq T ht
+    exact (Finset.card_le_card htu).trans_eq hucard
+  have h := closure_space_sdiff_closure_sdiff_space_eq T B (restrict_faces_subset T A.space)
+    hbound (fun _ hs => hBman.exists_face_superset_card_eq B hs)
+  rw [show B.space = (restrict T A.space).space from rfl, hTA.space_eq, hT.space_eq] at h
+  exact h
+
+open Classical in
+theorem inter_closure_sdiff_subset_boundaryComplex {n : ℕ}
+    (K A : Geometry.SimplicialComplex ℝ E) [Finite K.faces] [Finite A.faces]
+    (hK : IsCombinatorialManifoldWithBoundary (n + 1) K)
+    (hA : IsCombinatorialManifoldWithBoundary (n + 1) A) (hAK : A.space ⊆ K.space) :
+    A.space ∩ closure (K.space \ A.space) ⊆ (boundaryComplex (n + 1) A).space := by
+  classical
+  obtain ⟨T, hT, hTfin, hTA⟩ := exists_isSubdivision_restrict_isSubdivision K A hAK
+  let _ : Finite T.faces := hTfin.to_subtype
+  let B := restrict T A.space
+  let _ : Finite B.faces := (restrict_faces_finite T A.space).to_subtype
+  have h := inter_closure_sdiff_space_subset_boundaryComplex T B (hK.of_isSubdivision hT)
+    (hA.of_isSubdivision hTA) (restrict_faces_subset T A.space)
+  rw [boundaryComplex_space_of_isSubdivision A B hA hTA,
+    show B.space = (restrict T A.space).space from rfl, hTA.space_eq, hT.space_eq] at h
+  exact h
+
+open Classical in
+theorem inter_space_complement_subset_boundaryComplex {n : ℕ}
+    (K A R : Geometry.SimplicialComplex ℝ E) [Finite K.faces] [Finite A.faces] [Finite R.faces]
+    (hK : IsCombinatorialManifoldWithBoundary (n + 1) K)
+    (hA : IsCombinatorialManifoldWithBoundary (n + 1) A) (hAK : A.space ⊆ K.space)
+    (hR : IsCombinatorialManifoldWithBoundary (n + 1) R)
+    (hRspace : R.space = closure (K.space \ A.space)) :
+    A.space ∩ R.space ⊆ (boundaryComplex (n + 1) R).space := by
+  have hRK : R.space ⊆ K.space := by
+    rw [hRspace]
+    exact closure_minimal sdiff_subset (isPolyhedron_space K).isClosed
+  have hdouble : closure (K.space \ R.space) = A.space := by
+    rw [hRspace]
+    exact hK.closure_sdiff_closure_sdiff_eq K A hA hAK
+  have h := inter_closure_sdiff_subset_boundaryComplex K R hK hR hRK
+  rwa [hdouble, inter_comm] at h
+
 end DifferentialGeometry.Topology.PiecewiseLinear

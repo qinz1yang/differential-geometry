@@ -1,6 +1,7 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.CollarGluing
 import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryDiskNeighborhood
 import DifferentialGeometry.Topology.PiecewiseLinear.ManifoldComplement
+import DifferentialGeometry.Topology.PiecewiseLinear.ManifoldSubcomplexBoundary
 
 open Set Topology
 
@@ -29,7 +30,9 @@ private theorem exists_collar_extension_of_isPLBall_bottom_union_sides
       (W ∪ C) ∩ B = P ∪ K.space ∧
       MapsTo σ ((P ∪ K.space) ×ˢ Ioc a b) ((W ∪ C) \ B) ∧
       R'.faces.Finite ∧ IsCombinatorialManifoldWithBoundary 3 R' ∧
-      R'.space = closure (R.space \ C) := by
+      R'.space = closure (R.space \ C) ∧
+      (W ∪ C) ∩ R'.space ⊆ (boundaryComplex 3 R').space ∧
+      B ∩ R'.space ⊆ (boundaryComplex 3 R').space := by
   obtain ⟨g, hg, -, -⟩ := exists_isPLHomeomorphOn_bottom_union_collar_sides
     hP hK.isPolyhedron hKB hab hρ hbottom hWB
   have hmodified := hpatch.of_isPLHomeomorphOn hg
@@ -97,8 +100,22 @@ private theorem exists_collar_extension_of_isPLBall_bottom_union_sides
     hLmeet.symm ▸ hmodified
   obtain ⟨R', hR'fin, hR', hR'space⟩ :=
     hR.exists_isCombinatorialManifoldWithBoundary_closure_sdiff hL hLR hLdisk
+  let _ : Finite R'.faces := hR'fin.to_subtype
+  have hR'sub : R'.space ⊆ R.space := by
+    rw [hR'space]
+    exact closure_minimal sdiff_subset (isPolyhedron_space R).isClosed
+  have hboundary := inter_boundaryComplex_space_subset_of_subset R R' hR hR' hR'sub
+  have hLR' := inter_space_complement_subset_boundaryComplex R L R' hR
+    hL.isCombinatorialManifoldWithBoundary hLR hR' hR'space
+  have hWR' : (W ∪ L.space) ∩ R'.space ⊆ (boundaryComplex 3 R').space := by
+    rintro x ⟨hxW | hxL, hxR'⟩
+    · exact hboundary ⟨hxR', hWR ⟨hxW, hR'sub hxR'⟩⟩
+    · exact hLR' ⟨hxL, hxR'⟩
+  have hBR' : B ∩ R'.space ⊆ (boundaryComplex 3 R').space := by
+    rintro x ⟨hxB, hxR'⟩
+    exact hboundary ⟨hxR', hBR ⟨hxB, hR'sub hxR'⟩⟩
   exact ⟨L.space, σ, R', hL, hLR, hLU, hσ, hσρ, hbase, htrace, hpositive,
-    hR'fin, hR', hR'space⟩
+    hR'fin, hR', hR'space, hWR', hBR'⟩
 
 open Classical in
 theorem exists_collar_extension_of_boundary_arcs {ι : Type*}
@@ -123,7 +140,9 @@ theorem exists_collar_extension_of_boundary_arcs {ι : Type*}
       (W ∪ C) ∩ B = P ∪ K.space ∧
       MapsTo σ ((P ∪ K.space) ×ˢ Ioc a b) ((W ∪ C) \ B) ∧
       R'.faces.Finite ∧ IsCombinatorialManifoldWithBoundary 3 R' ∧
-      R'.space = closure (R.space \ C) := by
+      R'.space = closure (R.space \ C) ∧
+      (W ∪ C) ∩ R'.space ⊆ (boundaryComplex 3 R').space ∧
+      B ∩ R'.space ⊆ (boundaryComplex 3 R').space := by
   have hmeet : K.space ∩ P ⊆ (boundaryComplex 2 K).space := by
     rw [← hcover]
     exact iUnion₂_subset hAB
@@ -152,7 +171,9 @@ theorem exists_collar_extension_of_boundary
       (W ∪ C) ∩ B = P ∪ K.space ∧
       MapsTo σ ((P ∪ K.space) ×ˢ Ioc a b) ((W ∪ C) \ B) ∧
       R'.faces.Finite ∧ IsCombinatorialManifoldWithBoundary 3 R' ∧
-      R'.space = closure (R.space \ C) := by
+      R'.space = closure (R.space \ C) ∧
+      (W ∪ C) ∩ R'.space ⊆ (boundaryComplex 3 R').space ∧
+      B ∩ R'.space ⊆ (boundaryComplex 3 R').space := by
   have hpatch : IsPLBall 2 (K.space ×ˢ {a} ∪ (K.space ∩ P) ×ˢ Icc a b) := by
     rw [hmeet]
     exact isPLBall_prism_bottom_union_side K hK hab
