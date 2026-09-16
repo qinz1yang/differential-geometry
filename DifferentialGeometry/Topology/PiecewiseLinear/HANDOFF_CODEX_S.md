@@ -683,9 +683,9 @@ no second-batch source or duplicate Jordan extension wrapper was introduced.
 |---|---|---|---|
 | S-M1 | done: regular-neighborhood pieces, attaching disks, general ambient spaces | `2375fc812`; AuditS67--S69: 42; AuditS71General: 5 | None for the requested piece/intersection layer |
 | S-M2 | done: complete boundary-disk derived neighborhood and Problem 26.1 | `d12dd514a`; AuditS70: 6; AuditS73Disk: 5 | None for the containing-ball theorem |
-| S-M3 | partial: general parametrized PL push-off and Euclidean singular cell | `bd74dd7ca`; AuditS72Intrinsic: 7; AuditS74Push: 3 | `SingularTwoCell K.space` needs a boundary-compatible target type; its current Euclidean open-chart requirement is not available from a manifold-with-boundary hypothesis |
+| S-M3 | done: I2 已交付（double 环境） | `LoopTheorem/DoubleBoundaryPush.lean`; AuditS114DoubleBoundaryPush: 7 | NIGHT_PLAN 6.1 target is `(double 3 K).space` with its constructed combinatorial charted space; direct E3 hpush signature checked; no additional unproved hypothesis |
 | S-M4 | done: whole-boundary collar with the relative-neighborhood property for finite combinatorial three-manifolds in arbitrary finite-dimensional real normed spaces | `691c7329d`, `e9feba0c2`, `f778f73ff`; AuditS88--S90: 12; earlier layers and audits below | None for the finite-complex endpoint in NIGHT_PLAN; abstract PL charted ambient transport is not asserted |
-| S-M5 | done: 26.1 in finite combinatorial carriers and general PL charted ambient spaces; arbitrarily small PL bicollars without connectedness assumptions | `ddf717a4b`; finite bicollar `3a55ac834`; general manifold bicollar `52d70d778`; relative topology `7746cff68`; AuditS101--S104: 18 | No remaining 26.1/26.3 obligation in these stated settings; the separate I2 target-type issue remains in S-M3 |
+| S-M5 | done: 26.1 in finite combinatorial carriers and general PL charted ambient spaces; arbitrarily small PL bicollars without connectedness assumptions | `ddf717a4b`; finite bicollar `3a55ac834`; general manifold bicollar `52d70d778`; relative topology `7746cff68`; AuditS101--S104: 18 | No remaining 26.1/26.3 obligation in these stated settings; I2 is now delivered in the double environment (S-M3) |
 | S-M6 | partial: general relative 17.3 done; supported crosscut extension and simultaneous local straightening of finite vertex fans with at least two branches proved | `f0383a381`; `4ddbf78f4`; `3302febfc`; `47062f7d4`; `1b6245266`; `5889f3772`; AuditS109--S112: 22 entries | Handle degree-one endpoints, construct small edge frames and polygonal target crosscuts, and assemble the finite graph maps with the prescribed support and control |
 
 All listed completed layers have focused-check exit 0 with zero warnings and transitive axiom
@@ -1904,3 +1904,45 @@ Evidence remains in `.lake/scratch`: `s-night-recheck.txt`,
 `check-repair-derived-carrier.log`, and `AuditS113IntegrationRepair.log`.
 The initial audit omitted the DerivedCarrier import; the corrected complete audit
 above is the delivery record. I2 in the double environment is the next milestone.
+
+### S-M3: I2 已交付（double 环境）, 2026-09-16
+
+The integration-repair checkpoint is committed and pushed as `30102ea5d`.
+A subsequent fetch and merge of integration reported already up to date.
+The earlier I2 target-type blocker is resolved by NIGHT_PLAN section 6.1; this
+entry supersedes that blocker in the historical notes above.
+
+Three native modules provide five new public theorems:
+
+- `PieceMap.lean`: `PLPieceIn.isPLOn_comp` turns a piecewise affine map into a
+  PL piece into a chartwise PL map, in arbitrary source and target dimensions.
+- `LoopTheorem/PolyhedralCell.lean`:
+  `PLPieceIn.exists_nonsingular_two_cell_of_isPLBall` realizes a parametrized disk
+  inside a PL piece as a nonsingular singular two-cell, with exact carrier and
+  boundary-image equalities. The closed combinatorial-manifold specialization is
+  `exists_nonsingular_two_cell_of_isPLBall_in_combinatorial_manifold`.
+- `LoopTheorem/DoubleBoundaryPush.lean`:
+  `exists_nonsingular_two_cell_of_boundary_disk` takes a finite combinatorial
+  3-manifold with boundary in any finite-dimensional real normed space, and a
+  parametrized disk in its boundary complex. It constructs a nonsingular
+  `SingularTwoCell (double 3 K).space` in the second copy of K. Its boundary image
+  and its intersection with that copy's boundary both equal the embedded original
+  disk boundary. `exists_nonsingular_two_cell_of_disk_in_double_boundary` accepts
+  the disk directly in that ambient boundary image and supplies E3's hpush.
+
+Precisely, the copy map is
+`simplicialMap K (glueEmbed₂ (boundaryComplex 3 K) id)`, the affine extension of the
+vertex embedding. The environment chart is
+`combinatorialChartedSpace (double 3 K) (isCombinatorialManifold_double_succ_succ K hK)`.
+The ambient inclusion used for the singular cell is `Subtype.val`. No charted-space
+assumption on the original manifold with boundary is introduced. The construction
+uses the checked intrinsic boundary-disk push and H's checked double; these endpoints
+need no additional Schoenflies or other unproved hypothesis.
+
+All three modules have focused-check exit 0 and zero warnings, against the isolated
+S artifact directory. `AuditS114DoubleBoundaryPush.lean` / `.log` check all five new
+public declarations and the two principal producers: seven entries, only `propext`,
+`Classical.choice`, and `Quot.sound`. The same audit contains a silent example with
+E3 SphereCase's exact hpush quantifiers and four conclusions, supplied directly by
+the second endpoint; it elaborates successfully. No E3 source or vendored source
+was changed. P.4 remains the next milestone, followed by S.6 as in NIGHT_PLAN 6.2.
