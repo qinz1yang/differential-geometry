@@ -2503,3 +2503,21 @@ The focused check exits 0 with zero warnings. AuditS137ArcSubdivision checks the
 new endpoint; exit 0, only the standard three axioms. The auxiliary arc
 approaching the original endpoint and full positive-function control remain
 open; this is the infinite interval stage, not the degree-one endpoint theorem.
+
+## Polygonal compact subarcs after deleting one endpoint (2026-09-16)
+
+`ArcSubdivisionStraightening.lean` now also proves
+`exists_homeomorph_polygonal_subarcs_away_from_endpoint`. For any interior
+parameter `r` of an arbitrary planar arc, one ambient homeomorphism makes every
+compact subarc with parameters `0 < a < b <= r` polygonal. It fixes both original
+endpoints, the point at `r`, and the complement of any prescribed open
+neighborhood of the whole arc. The geometric sequence used for the construction
+is produced internally; the caller need not supply a sequence or polygonal
+germs. Finite unions of consecutive intervals and subarc uniqueness turn the
+previous interval endpoint into this statement.
+
+The changed module checks with exit 0 and zero warnings. AuditS138DeletedEndpoint
+checks both public declarations after the edit; exit 0, only the standard three
+axioms. This closes the deleted-endpoint straightening stage of Moise 10.8. The
+auxiliary arc converging to that endpoint while avoiding the original arc is
+still a separate geometric obligation.

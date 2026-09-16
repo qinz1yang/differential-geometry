@@ -193,4 +193,70 @@ theorem exists_homeomorph_polygonal_intervals_of_strictAnti
     change e₁ (e₀ x) = x
     rw [he₀outside hx]
     exact he₁outside hx
+private theorem isPolygonal_subarc_of_polygonal_intervals
+    {f : ℝ → Plane} (hf : ContinuousOn f unitInterval) (hi : InjOn f unitInterval)
+    {t : ℕ → ℝ} (ht : ∀ n, t n ∈ Ioo (0 : ℝ) 1) (hanti : StrictAnti t)
+    (htlim : Tendsto t atTop (𝓝 0))
+    (hpoly : ∀ n, IsPolygonal (f '' Icc (t (n + 1)) (t n)))
+    {a b : ℝ} (ha : 0 < a) (hab : a < b) (hb : b ≤ t 0) :
+    IsPolygonal (f '' Icc a b) := by
+  have htI (n : ℕ) : t n ∈ unitInterval := ⟨(ht n).1.le, (ht n).2.le⟩
+  have hfinite (n : ℕ) : IsPolygonal (f '' Icc (t (n + 1)) (t 0)) := by
+    induction n with
+    | zero => exact hpoly 0
+    | succ n hn =>
+      have hlt := hanti (Nat.lt_succ_self (n + 1))
+      have hle := hanti.antitone (Nat.zero_le (n + 1))
+      rw [← Icc_union_Icc_eq_Icc hlt.le hle, image_union]
+      exact (hpoly (n + 1)).union hn ⟨f (t (n + 1)),
+        mem_image_of_mem f ⟨hlt.le, le_rfl⟩, mem_image_of_mem f ⟨le_rfl, hle⟩⟩
+  obtain ⟨n, hn⟩ := (htlim.eventually (Iio_mem_nhds ha)).exists
+  have hna : t (n + 1) < a := (hanti (Nat.lt_succ_self n)).trans hn
+  have haI : a ∈ unitInterval := ⟨ha.le, hab.le.trans (hb.trans (htI 0).2)⟩
+  have hbI : b ∈ unitInterval := ⟨ha.le.trans hab.le, hb.trans (htI 0).2⟩
+  have hsmall : IsArcBetween (f '' Icc a b) (f a) (f b) := by
+    simpa only [uIcc_of_le hab.le] using isArcBetween_subarc_of_injOn_I hf hi haI hbI hab.ne
+  have hlt := hanti (Nat.succ_pos n)
+  have hbig : IsArcBetween (f '' Icc (t (n + 1)) (t 0)) (f (t (n + 1))) (f (t 0)) := by
+    simpa only [uIcc_of_le hlt.le] using
+      isArcBetween_subarc_of_injOn_I hf hi (htI (n + 1)) (htI 0) hlt.ne
+  exact hsmall.isPolygonal_of_subset_arc hbig (hfinite n) (image_mono (Icc_subset_Icc hna.le hb))
+
+theorem exists_homeomorph_polygonal_subarcs_away_from_endpoint
+    {f : ℝ → Plane} (hf : ContinuousOn f unitInterval) (hi : InjOn f unitInterval)
+    {r : ℝ} (hr : r ∈ Ioo (0 : ℝ) 1) {U : Set Plane} (hU : IsOpen U)
+    (hAU : f '' unitInterval ⊆ U) :
+    ∃ e : Plane ≃ₜ Plane,
+      (∀ a b : ℝ, 0 < a → a < b → b ≤ r → IsPolygonal (e '' (f '' Icc a b))) ∧
+      e (f 0) = f 0 ∧ e (f 1) = f 1 ∧ e (f r) = f r ∧ EqOn e id Uᶜ := by
+  let t (n : ℕ) := r * (1 / 2 : ℝ) ^ n
+  have hpos (n : ℕ) : 0 < t n := mul_pos hr.1 (pow_pos (by norm_num) n)
+  have ht (n : ℕ) : t n ∈ Ioo (0 : ℝ) 1 := by
+    refine ⟨hpos n, ?_⟩
+    calc
+      t n ≤ r * 1 := mul_le_mul_of_nonneg_left (pow_le_one₀ (by norm_num) (by norm_num)) hr.1.le
+      _ = r := mul_one _
+      _ < 1 := hr.2
+  have hanti : StrictAnti t := by
+    apply strictAnti_nat_of_succ_lt
+    intro n
+    have hp := hpos n
+    dsimp [t] at hp ⊢
+    rw [pow_succ]
+    nlinarith
+  have htlim : Tendsto t atTop (𝓝 0) := by
+    have hp : Tendsto (fun n : ℕ => (1 / 2 : ℝ) ^ n) atTop (𝓝 0) :=
+      tendsto_pow_atTop_nhds_zero_of_lt_one (by norm_num) (by norm_num)
+    simpa only [t, mul_zero] using hp.const_mul r
+  obtain ⟨e, he, he0, he1, hefix⟩ :=
+    exists_homeomorph_polygonal_intervals_of_strictAnti hf hi ht hanti htlim hU hAU
+  refine ⟨e, ?_, he0, he1, ?_, hefix⟩
+  · intro a b ha hab hb
+    have hpoly (n : ℕ) : IsPolygonal ((e ∘ f) '' Icc (t (n + 1)) (t n)) := by
+      simpa only [image_image, Function.comp_def] using (he n).1
+    have hresult := isPolygonal_subarc_of_polygonal_intervals (e.continuous.comp_continuousOn hf)
+      (fun x hx y hy hxy => hi hx hy (e.injective hxy)) ht hanti htlim hpoly ha hab
+      (by simpa only [t, pow_zero, mul_one] using hb)
+    simpa only [image_image, Function.comp_def] using hresult
+  · simpa only [t, pow_zero, mul_one] using (he 0).2
 end DifferentialGeometry.Topology.PlanarJordan
