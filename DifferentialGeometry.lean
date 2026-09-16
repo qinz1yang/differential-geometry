@@ -4701,6 +4701,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Solution.
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Solution.TimeRegularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Solution.WindowPrecompactness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.TracefreeRicciPullback
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Shi.CurvatureDerivativeBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Shi.Estimate
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Shi.Local
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Shi.Pullback
@@ -4886,6 +4887,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Connection.Curvatu
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Connection.CurvatureDerivative.TimeDerivative
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Connection.DifferenceTimeDerivative
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Connection.EndpointConvergence
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Connection.EndpointParallelism
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Connection.Evolution
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Connection.Intrinsic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Connection.MetricCovariantDerivative
@@ -5374,6 +5376,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborho
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.HighCurvatureDerivativeEstimate
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.HighCurvatureDerivativeFrontier
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.HighCurvatureFlowBridge
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.HighCurvatureMovingShi
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.HighCurvatureSingularityModel
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.HighCurvatureModelExistenceClean
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.HighCurvatureModelFrontier
@@ -7253,6 +7256,7 @@ import DifferentialGeometry.Geometry.Metric.Convergence.Compactness.Components
 import DifferentialGeometry.Geometry.Metric.Convergence.Compactness.Diagonal
 import DifferentialGeometry.Geometry.Metric.Convergence.Compactness.Precompactness
 import DifferentialGeometry.Geometry.Metric.Convergence.Coordinates.ConnectionComparison
+import DifferentialGeometry.Geometry.Metric.Convergence.Coordinates.ConnectionEvaluation
 import DifferentialGeometry.Geometry.Metric.Convergence.Coordinates.ConnectionLimits
 import DifferentialGeometry.Geometry.Metric.Convergence.Coordinates.Control
 import DifferentialGeometry.Geometry.Metric.Convergence.Coordinates.GoodFrame
