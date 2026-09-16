@@ -259,7 +259,8 @@ theorem exists_finite_pointed_source_partialDiffeomorphs_of_local_curvature_inje
           (hclass : ∀ i j, ∀ᶠ k in atTop,
             (near i j = true → edist (c i k) (c j k) < ENNReal.ofReal (ρ / 4)) ∧
             (near i j = false → ENNReal.ofReal (ρ / 4) ≤ edist (c i k) (c j k)))
-          (J : {a : ULift.{uE} (Fin (N + 1)) × ULift.{uE} (Fin (N + 1)) // near a.1 a.2 = true} → E → E)
+          (J : {a : ULift.{uE} (Fin (N + 1)) × ULift.{uE} (Fin (N + 1)) //
+            near a.1 a.2 = true} → E → E)
           (hcont : ∀ a, ContinuousOn (J a) (Metric.ball (0 : E) (ρ / 2)))
           (hconv : ∀ a, MapCInfConvergenceOnCompacts (Metric.ball (0 : E) (ρ / 2))
             (fun k => ((charts a.1.1 k).toNormalBallChart
@@ -315,17 +316,20 @@ theorem exists_finite_pointed_source_partialDiffeomorphs_of_local_curvature_inje
                 (∀ k, ContMDiffOn (modelWithCornersSelf ℝ E) I ∞ (F k) W) ∧
                 (∀ᶠ k in atTop, F k p = (X.obj (phi k)).basepoint) ∧
                 (∀ i, MapCInfConvergenceOnCompacts
-                  (Subtype.val '' ((fun z : U => D.toGlueData.ι i z) ⁻¹' (W : Set D.toGlueData.glued)))
+                  (Subtype.val '' ((fun z : U => D.toGlueData.ι i z) ⁻¹'
+                    (W : Set D.toGlueData.glued)))
                   (fun k z => @dite E (z ∈ U) (Classical.propDecidable _)
                     (fun hz => (charts i k).hom.symm (F k (D.toGlueData.ι i ⟨z, hz⟩)))
                     (fun _ => 0)) id) ∧
                 (∀ i (L : Set E), IsCompact L →
-                  L ⊆ Subtype.val '' ((fun z : U => D.toGlueData.ι i z) ⁻¹' (W : Set D.toGlueData.glued)) →
+                  L ⊆ Subtype.val '' ((fun z : U => D.toGlueData.ι i z) ⁻¹'
+                    (W : Set D.toGlueData.glued)) →
                   ∀ᶠ k in atTop, ∀ (z : E) (hz : z ∈ U), z ∈ L →
                     F k (D.toGlueData.ι i ⟨z, hz⟩) ∈ (charts i k).hom.target) ∧
                 ∀ᶠ k in atTop, ∃ Φ : PartialDiffeomorph (modelWithCornersSelf ℝ E) I
                     D.toGlueData.glued (X.obj (phi k)).M ∞,
-                  closure (V : Set D.toGlueData.glued) ⊆ Φ.source ∧ Φ.source ⊆ W ∧ EqOn Φ (F k) Φ.source ∧
+                  closure (V : Set D.toGlueData.glued) ⊆ Φ.source ∧ Φ.source ⊆ W ∧
+                  EqOn Φ (F k) Φ.source ∧
                   Φ p = (X.obj (phi k)).basepoint ∧
                   (∀ y : (X.obj (phi k)).M,
                     riemannianEDistOf (I := I) (X.obj (phi k)).metric
@@ -355,10 +359,13 @@ theorem exists_finite_pointed_source_partialDiffeomorphs_of_local_curvature_inje
   let near' := fun i j : ULift.{uE} (Fin (N + 1)) => near i.down j.down
   let hclass := fun i j : ULift.{uE} (Fin (N + 1)) =>
     Eventually.of_forall (f := atTop) fun k => hnear k i.down j.down
-  let J := fun a : {a : ULift.{uE} (Fin (N + 1)) × ULift.{uE} (Fin (N + 1)) // near' a.1 a.2 = true} =>
+  let J := fun a : {a : ULift.{uE} (Fin (N + 1)) × ULift.{uE} (Fin (N + 1)) //
+      near' a.1 a.2 = true} =>
     Jinf ⟨(a.1.1.down, a.1.2.down), a.2⟩
-  let hcont := fun (a : {a : ULift.{uE} (Fin (N + 1)) × ULift.{uE} (Fin (N + 1)) // near' a.1 a.2 = true}) => (htrans ⟨(a.1.1.down, a.1.2.down), a.2⟩).1.continuousOn
-  let hconv := fun (a : {a : ULift.{uE} (Fin (N + 1)) × ULift.{uE} (Fin (N + 1)) // near' a.1 a.2 = true}) => (htrans ⟨(a.1.1.down, a.1.2.down), a.2⟩).2.2.1
+  let hcont := fun (a : {a : ULift.{uE} (Fin (N + 1)) × ULift.{uE} (Fin (N + 1)) //
+      near' a.1 a.2 = true}) => (htrans ⟨(a.1.1.down, a.1.2.down), a.2⟩).1.continuousOn
+  let hconv := fun (a : {a : ULift.{uE} (Fin (N + 1)) × ULift.{uE} (Fin (N + 1)) //
+      near' a.1 a.2 = true}) => (htrans ⟨(a.1.1.down, a.1.2.down), a.2⟩).2.2.1
   refine ⟨ρ, hρ, hρR, N, phi, hphi, cc, charts', (fun i => gInf i.down), near', hclass,
     J, hcont, hconv, hbase, (fun i => hc i.down), ?_, (fun i => hell i.down),
     (fun i => hmetric i.down),
@@ -369,11 +376,14 @@ theorem exists_finite_pointed_source_partialDiffeomorphs_of_local_curvature_inje
     exact ⟨ULift.up i, hi⟩
   dsimp only
   have hK := IntrinsicBallChart.isCompact_transitionGlueCompactCore
-    (fun k => (X.obj (phi k)).metric) (fun k => hEnorm (phi k)) cc hρ charts' near' hclass J hcont hconv
+    (fun k => (X.obj (phi k)).metric) (fun k => hEnorm (phi k))
+    cc hρ charts' near' hclass J hcont hconv
   have hpK := (IntrinsicBallChart.transitionGlueCore_subset_compactCore
-    (fun k => (X.obj (phi k)).metric) (fun k => hEnorm (phi k)) cc hρ charts' near' hclass J hcont hconv)
+    (fun k => (X.obj (phi k)).metric) (fun k => hEnorm (phi k))
+    cc hρ charts' near' hclass J hcont hconv)
       (IntrinsicBallChart.zero_mem_transitionGlueCore
-        (fun k => (X.obj (phi k)).metric) (fun k => hEnorm (phi k)) cc hρ charts' near' hclass J hcont hconv
+        (fun k => (X.obj (phi k)).metric) (fun k => hEnorm (phi k))
+        cc hρ charts' near' hclass J hcont hconv
         (ULift.up 0))
   obtain ⟨C, hman, hchart, V, W, hV, hW, hKV, hVW, F, hFsmooth, hFbase, hFconv, hFtarget, hPhi⟩ :=
     IntrinsicBallChart.exists_source_partialDiffeomorphs_on_precompact_neighborhood
@@ -389,7 +399,8 @@ theorem exists_finite_pointed_source_partialDiffeomorphs_of_local_curvature_inje
       (fun i => (hmetric i.down).2.1) (fun i => hell i.down) (ULift.up 0)
       _ hK hpK
   let D := IntrinsicBallChart.bufferedTransitionGlueData
-    (fun k => (X.obj (phi k)).metric) (fun k => hEnorm (phi k)) cc hρ charts' near' hclass J hcont hconv
+    (fun k => (X.obj (phi k)).metric) (fun k => hEnorm (phi k))
+    cc hρ charts' near' hclass J hcont hconv
   obtain ⟨gQ, hgQ⟩ := IntrinsicBallChart.exists_smoothMetric_bufferedTransitionGlueData
     (fun k => (X.obj (phi k)).metric) (fun k => hEnorm (phi k))
     cc hρ charts' near' hclass J hcont hconv (fun i => gInf i.down)
@@ -406,7 +417,8 @@ theorem exists_finite_pointed_source_partialDiffeomorphs_of_local_curvature_inje
     intro q hq
     exact hVW (subset_closure hq)
   have hcapture := IntrinsicBallChart.eventually_chart_core_subset_image
-    (fun k => (X.obj (phi k)).metric) (fun k => hEnorm (phi k)) cc hρ charts' near' hclass J hcont hconv
+    (fun k => (X.obj (phi k)).metric) (fun k => hEnorm (phi k))
+    cc hρ charts' near' hclass J hcont hconv
     C (fun i => (hchart i).contMDiff) V hKV F
     (Eventually.of_forall fun k => (hFsmooth k).mono hVsubsetW)
     (fun i L hL hLV p => hFconv i L hL
@@ -414,7 +426,8 @@ theorem exists_finite_pointed_source_partialDiffeomorphs_of_local_curvature_inje
     (fun i L hL hLV => hFtarget i L hL
       (hLV.trans (image_mono (preimage_mono hVsubsetW))))
   have hupper := IntrinsicBallChart.eventually_mapsTo_eball_on_compact
-    (fun k => (X.obj (phi k)).metric) (fun k => hEnorm (phi k)) cc hρ charts' near' hclass J hcont hconv
+    (fun k => (X.obj (phi k)).metric) (fun k => hEnorm (phi k))
+    cc hρ charts' near' hclass J hcont hconv
     (fun k => (X.obj (phi k)).basepoint) hr
     (fun i => Eventually.of_forall fun k => hc i.down k)
     W (closure (V : Set D.toGlueData.glued)) hV hVW F hFtarget
