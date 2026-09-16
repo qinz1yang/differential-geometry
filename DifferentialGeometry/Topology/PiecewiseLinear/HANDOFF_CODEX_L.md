@@ -660,3 +660,18 @@ theorem eq_top_of_boundaryLoops_mem_normal
 - 下一精确义务是从原胞腔的局部单射得到贴合胞腔的局部单射：贴缝处需用有限个其它分支的闭性取避开它们的目标邻域，
   再用两片的局部单射与贴缝唯一性排除交叉重合。随后需证明新双点集是旧一维带边组合流形的若干完整连通分支之并，
   以限制子复形重建 `doublePointSet_triangulated`，并在剩余分支上搬运 crossing。
+
+## 30. 2026-09-16 E3-M2 追加：割贴胞腔的局部单射
+
+状态：partial（局部单射已闭合；剩余完整分支、奇点图三角剖分与 crossing 搬运待闭合）。
+
+- `NormalSingularCellData.exists_boundary_surgery_cell_of_boundaryBranch` 现在额外交付
+  `∀ x ∈ G.domain, ∃ W ∈ 𝓝[G.domain] x, InjOn G W`。缝外在 `P \ Q` 或 `Q \ P` 内沿 PL 同胚搬运旧胞腔的局部单射；
+  缝上先取所有非所选分支载体的有限并，利用每条分支紧致而得到闭集，并在目标中避开该闭集。
+- 缝上若出现跨侧同像，首尾盘在旧源盘中不交，故给出旧胞腔的真实双点。避开所有其它分支迫使该双点落在所选分支；
+  两个原像随即都落在被贴合的缝上，再由分支坐标片上的单射与首侧 PL 同胚推出源点相等。因此没有把局部单射作为新假设。
+- `CutAndPaste` 用 `check-f.ps1 -Threads 1` 检查 exit=0、零 warning；刷新共享缓存中的 `SingularCell` 后再次检查仍 exit=0。
+  `.lake/scratch/AuditE3M2.lean` 的 50 项用 `audit-f.ps1` 审计 exit=0，全部只含
+  `propext`、`Classical.choice`、`Quot.sound`。
+- 下一精确义务是证明 `doublePointSet G G.domain` 在每条旧 `branchCarrier` 中为开闭子集，从而是若干完整分支之并；
+  再以这些分支的子复形重建 `doublePointSet_triangulated`，并把旧正规 crossing 图限制到未删除分支。

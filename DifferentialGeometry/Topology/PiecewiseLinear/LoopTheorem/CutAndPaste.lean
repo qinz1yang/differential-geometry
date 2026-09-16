@@ -3,7 +3,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CellGluing
 import DifferentialGeometry.External.Schoenflies.BoundaryContinuity2
 import Mathlib.Tactic.Group
 
-open Set
+open Set Topology
 
 namespace DifferentialGeometry.Topology.PiecewiseLinear
 
@@ -417,6 +417,7 @@ theorem exists_boundary_surgery_cell_of_boundaryBranch
       G '' G.domain ⊆ D '' D.domain ∧
       Set.range G.boundary = D '' (U ∪ V) ∧
       Set.range G.boundary ⊆ B ∧ G '' G.domain ∩ BdM ⊆ B ∧
+      (∀ x ∈ G.domain, ∃ W ∈ 𝓝[G.domain] x, Set.InjOn G W) ∧
       (∀ y, (G.domain ∩ G ⁻¹' {y}).encard ≤ 2) ∧
       doublePointSet G G.domain ⊆ doublePointSet D D.domain ∧
       Disjoint (doublePointSet G G.domain) (hD.singularSet.branchCarrier c) := by
@@ -648,6 +649,179 @@ theorem exists_boundary_surgery_cell_of_boundaryBranch
       _ = y := hxy
       _ = G z := hzy.symm
       _ = D (f₁ z) := (hG₁ hzseam.1).trans (congrFun hfun₁ (f₁ z))
+  let _ : Finite hD.singularSet.complex.faces :=
+    hD.singularSet.finite_faces.to_subtype
+  let _ : Finite hD.singularSet.complex.vertices :=
+    (SimplicialComplex.finite_vertices hD.singularSet.complex).to_subtype
+  let _ : Finite hD.singularSet.Branch := inferInstance
+  let otherBranches : Set M :=
+    ⋃ d : {d : hD.singularSet.Branch // d ≠ c},
+      hD.singularSet.branchCarrier d.1
+  have hotherCompact : IsCompact otherBranches :=
+    isCompact_iUnion fun d => hD.singularSet.branchCarrier_isCompact d.1
+  have hselectedOther : Disjoint (hD.singularSet.branchCarrier c) otherBranches := by
+    apply Set.disjoint_left.mpr
+    intro y hyc hyo
+    obtain ⟨d, hyd⟩ := mem_iUnion.mp hyo
+    exact Set.disjoint_left.mp
+      (hD.singularSet.pairwise_disjoint_branchCarrier d.2.symm) hyc hyd
+  have hselected_of_double_not_other {y : M}
+      (hy : y ∈ doublePointSet D D.domain) (hyo : y ∉ otherBranches) :
+      y ∈ hD.singularSet.branchCarrier c := by
+    have hyunion : y ∈ ⋃ d : hD.singularSet.Branch,
+        hD.singularSet.branchCarrier d := by
+      rw [hD.singularSet.iUnion_branchCarrier]
+      exact hy
+    obtain ⟨d, hyd⟩ := mem_iUnion.mp hyunion
+    by_cases hdc : d = c
+    · simpa only [hdc] using hyd
+    · exact (hyo (mem_iUnion.mpr ⟨⟨d, hdc⟩, hyd⟩)).elim
+  have hcross_inj : ∀ {u v}, u ∈ P → v ∈ Q →
+      G u ∉ otherBranches → G u = G v → u = v := by
+    intro u v huP hvQ huother huv
+    have hfu : f₁ u ∈ D₁.domain := hf₁.bijOn.mapsTo huP
+    have hfv : f₃ v ∈ D₃.domain := hf₃.bijOn.mapsTo hvQ
+    have hDuv : D (f₁ u) = D (f₃ v) := by
+      calc
+        D (f₁ u) = D₁ (f₁ u) := congrFun hfun₁ (f₁ u) |>.symm
+        _ = G u := (hG₁ huP).symm
+        _ = G v := huv
+        _ = D₃ (f₃ v) := hG₃ hvQ
+        _ = D (f₃ v) := congrFun hfun₃ (f₃ v)
+    have hfuv : f₁ u ≠ f₃ v := by
+      intro h
+      exact Set.disjoint_left.mp hdisjoint₁₃ hfu (h ▸ hfv)
+    have hyold : G u ∈ doublePointSet D D.domain := by
+      refine ⟨f₁ u, hD₁sub hfu, f₃ v, hD₃sub hfv, hfuv, ?_, ?_⟩
+      · exact (congrFun hfun₁ (f₁ u)).symm.trans (hG₁ huP).symm
+      · exact ((congrFun hfun₃ (f₃ v)).symm.trans (hG₃ hvQ).symm).trans huv.symm
+    have hyselected := hselected_of_double_not_other hyold huother
+    have huDomain : u ∈ G.domain := hGdomain.symm.subset (Or.inl huP)
+    have hvDomain : v ∈ G.domain := hGdomain.symm.subset (Or.inr hvQ)
+    have hupre : pullback u ∈ hD.branchPreimage c := by
+      refine ⟨hpullback_mem huDomain, ?_⟩
+      change D (pullback u) ∈ hD.singularSet.branchCarrier c
+      rw [hpullback_apply u huDomain]
+      exact hyselected
+    have hvpre : pullback v ∈ hD.branchPreimage c := by
+      refine ⟨hpullback_mem hvDomain, ?_⟩
+      change D (pullback v) ∈ hD.singularSet.branchCarrier c
+      rw [hpullback_apply v hvDomain, ← huv]
+      exact hyselected
+    rw [hcover] at hupre hvpre
+    obtain ⟨huseam, huA⟩ := hpullback_branch huDomain hupre
+    obtain ⟨hvseam, hvA⟩ := hpullback_branch hvDomain hvpre
+    apply hf₁.bijOn.injOn huseam.1 hvseam.1
+    apply hDinjA huA hvA
+    calc
+      D (f₁ u) = G u := (congrFun hfun₁ (f₁ u)).symm.trans (hG₁ huP).symm
+      _ = G v := huv
+      _ = D (f₁ v) := (hG₁ hvseam.1).trans (congrFun hfun₁ (f₁ v))
+  have hlocallyInjective :
+      ∀ x ∈ G.domain, ∃ W ∈ 𝓝[G.domain] x, Set.InjOn G W := by
+    intro x hx
+    have hxunion : x ∈ P ∪ Q := hGdomain.subset hx
+    by_cases hxP : x ∈ P
+    · by_cases hxQ : x ∈ Q
+      · have hfxA : f₁ x ∈ A := by
+          rw [← hf₁seam]
+          exact ⟨x, ⟨hxP, hxQ⟩, rfl⟩
+        have hGselected : G x ∈ hD.singularSet.branchCarrier c := by
+          have hpre := hAsub hfxA
+          rw [hG₁ hxP, hfun₁]
+          exact hpre.2
+        have hGother : G x ∉ otherBranches :=
+          Set.disjoint_left.mp hselectedOther hGselected
+        obtain ⟨U₁, hU₁, hinj₁⟩ := hD.locallyInjective (f₁ x)
+          (hD₁sub (hf₁.bijOn.mapsTo hxP))
+        obtain ⟨U₃, hU₃, hinj₃⟩ := hD.locallyInjective (f₃ x)
+          (hD₃sub (hf₃.bijOn.mapsTo hxQ))
+        let W₁ := P ∩ f₁ ⁻¹' U₁ ∩ G ⁻¹' otherBranchesᶜ
+        let W₃ := Q ∩ f₃ ⁻¹' U₃ ∩ G ⁻¹' otherBranchesᶜ
+        have hf₁U₁ : f₁ ⁻¹' U₁ ∈ 𝓝[P] x :=
+          (hf₁.2.1.continuousOn x hxP).tendsto_nhdsWithin
+            (fun z hz => hD₁sub (hf₁.bijOn.mapsTo hz)) hU₁
+        have hf₃U₃ : f₃ ⁻¹' U₃ ∈ 𝓝[Q] x :=
+          (hf₃.2.1.continuousOn x hxQ).tendsto_nhdsWithin
+            (fun z hz => hD₃sub (hf₃.bijOn.mapsTo hz)) hU₃
+        have hGcompl : G ⁻¹' otherBranchesᶜ ∈ 𝓝[G.domain] x :=
+          (G.continuousOn x hx).preimage_mem_nhdsWithin
+            (hotherCompact.isClosed.isOpen_compl.mem_nhds hGother)
+        have hGcomplP : G ⁻¹' otherBranchesᶜ ∈ 𝓝[P] x :=
+          nhdsWithin_mono x (fun z hz => hGdomain.symm.subset (Or.inl hz)) hGcompl
+        have hGcomplQ : G ⁻¹' otherBranchesᶜ ∈ 𝓝[Q] x :=
+          nhdsWithin_mono x (fun z hz => hGdomain.symm.subset (Or.inr hz)) hGcompl
+        have hW₁ : W₁ ∈ 𝓝[P] x := by
+          exact Filter.inter_mem (Filter.inter_mem self_mem_nhdsWithin hf₁U₁) hGcomplP
+        have hW₃ : W₃ ∈ 𝓝[Q] x := by
+          exact Filter.inter_mem (Filter.inter_mem self_mem_nhdsWithin hf₃U₃) hGcomplQ
+        refine ⟨W₁ ∪ W₃, ?_, ?_⟩
+        · rw [hGdomain, nhdsWithin_union]
+          exact ⟨Filter.mem_of_superset hW₁ subset_union_left,
+            Filter.mem_of_superset hW₃ subset_union_right⟩
+        · intro u hu v hv huv
+          rcases hu with hu | hu <;> rcases hv with hv | hv
+          · apply hf₁.bijOn.injOn hu.1.1 hv.1.1
+            apply hinj₁ hu.1.2 hv.1.2
+            calc
+              D (f₁ u) = G u := (congrFun hfun₁ (f₁ u)).symm.trans (hG₁ hu.1.1).symm
+              _ = G v := huv
+              _ = D (f₁ v) := (hG₁ hv.1.1).trans (congrFun hfun₁ (f₁ v))
+          · exact hcross_inj hu.1.1 hv.1.1 hu.2 huv
+          · exact (hcross_inj hv.1.1 hu.1.1 hv.2 huv.symm).symm
+          · apply hf₃.bijOn.injOn hu.1.1 hv.1.1
+            apply hinj₃ hu.1.2 hv.1.2
+            calc
+              D (f₃ u) = G u := (congrFun hfun₃ (f₃ u)).symm.trans (hG₃ hu.1.1).symm
+              _ = G v := huv
+              _ = D (f₃ v) := (hG₃ hv.1.1).trans (congrFun hfun₃ (f₃ v))
+      · obtain ⟨U, hU, hinj⟩ := hD.locallyInjective (f₁ x)
+          (hD₁sub (hf₁.bijOn.mapsTo hxP))
+        let W := P ∩ f₁ ⁻¹' U ∩ Qᶜ
+        have hfU : f₁ ⁻¹' U ∈ 𝓝[P] x :=
+          (hf₁.2.1.continuousOn x hxP).tendsto_nhdsWithin
+            (fun z hz => hD₁sub (hf₁.bijOn.mapsTo hz)) hU
+        have hWₚ : W ∈ 𝓝[P] x := by
+          exact Filter.inter_mem (Filter.inter_mem self_mem_nhdsWithin hfU)
+            (mem_nhdsWithin_of_mem_nhds
+              (hQ.isPolyhedron.isClosed.isOpen_compl.mem_nhds hxQ))
+        have hemptyQ : (∅ : Set (EuclideanSpace ℝ (Fin 2))) ∈ 𝓝[Q] x := by
+          apply mem_nhdsWithin_iff_exists_mem_nhds_inter.mpr
+          exact ⟨Qᶜ, hQ.isPolyhedron.isClosed.isOpen_compl.mem_nhds hxQ, by simp⟩
+        refine ⟨W, ?_, ?_⟩
+        · rw [hGdomain, nhdsWithin_union]
+          exact ⟨hWₚ, Filter.mem_of_superset hemptyQ (empty_subset W)⟩
+        · intro u hu v hv huv
+          apply hf₁.bijOn.injOn hu.1.1 hv.1.1
+          apply hinj hu.1.2 hv.1.2
+          calc
+            D (f₁ u) = G u := (congrFun hfun₁ (f₁ u)).symm.trans (hG₁ hu.1.1).symm
+            _ = G v := huv
+            _ = D (f₁ v) := (hG₁ hv.1.1).trans (congrFun hfun₁ (f₁ v))
+    · have hxQ : x ∈ Q := hxunion.resolve_left hxP
+      obtain ⟨U, hU, hinj⟩ := hD.locallyInjective (f₃ x)
+        (hD₃sub (hf₃.bijOn.mapsTo hxQ))
+      let W := Q ∩ f₃ ⁻¹' U ∩ Pᶜ
+      have hfU : f₃ ⁻¹' U ∈ 𝓝[Q] x :=
+        (hf₃.2.1.continuousOn x hxQ).tendsto_nhdsWithin
+          (fun z hz => hD₃sub (hf₃.bijOn.mapsTo hz)) hU
+      have hWQ : W ∈ 𝓝[Q] x := by
+        exact Filter.inter_mem (Filter.inter_mem self_mem_nhdsWithin hfU)
+          (mem_nhdsWithin_of_mem_nhds
+            (hP.isPolyhedron.isClosed.isOpen_compl.mem_nhds hxP))
+      have hemptyP : (∅ : Set (EuclideanSpace ℝ (Fin 2))) ∈ 𝓝[P] x := by
+        apply mem_nhdsWithin_iff_exists_mem_nhds_inter.mpr
+        exact ⟨Pᶜ, hP.isPolyhedron.isClosed.isOpen_compl.mem_nhds hxP, by simp⟩
+      refine ⟨W, ?_, ?_⟩
+      · rw [hGdomain, nhdsWithin_union]
+        exact ⟨Filter.mem_of_superset hemptyP (empty_subset W), hWQ⟩
+      · intro u hu v hv huv
+        apply hf₃.bijOn.injOn hu.1.1 hv.1.1
+        apply hinj hu.1.2 hv.1.2
+        calc
+          D (f₃ u) = G u := (congrFun hfun₃ (f₃ u)).symm.trans (hG₃ hu.1.1).symm
+          _ = G v := huv
+          _ = D (f₃ v) := (hG₃ hv.1.1).trans (congrFun hfun₃ (f₃ v))
   have hrange : Set.range G.boundary =
       D '' ((D₁.domain ∩ frontier D.domain) ∪
         (D₃.domain ∩ frontier D.domain)) := by
@@ -674,7 +848,7 @@ theorem exists_boundary_surgery_cell_of_boundaryBranch
     D₃.domain ∩ frontier D.domain, p, q, r, s, g, G,
     hA, hC, hAC, hcover, htrace₁, htrace₃,
     hdisjoint₁₃.mono inter_subset_left inter_subset_left, hg, horientation,
-    hGimage, hrange, hrangeB, hinterB, hfiber, hdouble, hremove⟩
+    hGimage, hrange, hrangeB, hinterB, hlocallyInjective, hfiber, hdouble, hremove⟩
 
 end NormalSingularCellData
 
