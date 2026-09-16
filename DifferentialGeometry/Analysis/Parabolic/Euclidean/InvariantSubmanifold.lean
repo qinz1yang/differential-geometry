@@ -337,3 +337,91 @@ theorem periodic_mem_range_of_christoffel_parabolic_equation_of_continuous_deriv
   · exact heq
 
 end DifferentialGeometry.Analysis.Parabolic
+
+noncomputable section
+open Set
+open scoped ContDiff Manifold NNReal
+
+namespace DifferentialGeometry.Analysis.Parabolic
+
+open DifferentialGeometry.Geometry
+open DifferentialGeometry.Geometry.Riemannian.Geodesic
+open DifferentialGeometry.Geometry.Curvature
+
+variable {E F H M : Type*}
+  [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+  [NormedAddCommGroup F] [InnerProductSpace ℝ F] [FiniteDimensional ℝ F]
+  [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+  [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+
+theorem periodic_mem_range_of_scaled_christoffel_equation
+    (g : ℝ → SmoothRiemannianMetric I M) {O : TopologicalSpace.Opens F}
+    (G : ℝ → SmoothRiemannianMetric 𝓘(ℝ, F) O) (α : O)
+    {D : RealTimeInterval} (hG : MetricFamilySmoothOn D G)
+    {e : M → O} (he : ContMDiff I 𝓘(ℝ, F) ∞ e)
+    {J : Set ℝ} (hgeo : ∀ t ∈ J, hasVanishingSecondFundamentalFormAlongCurves (g t) (G t) e)
+    {r : F → M} (hleft : ∀ x, r (e x) = x)
+    {V : Set F} (hJ : IsOpen J) (hJD : J ⊆ D.regular) (hV : IsOpen V) (hVO : V ⊆ O)
+    (hr : ContMDiffOn 𝓘(ℝ, F) I 3 r V) (heV : range (fun x => (e x : F)) ⊆ V)
+    {u : ℝ → ℝ → F} {a : ℝ → ℝ → ℝ} {s v δ : ℝ} (A : ℝ≥0)
+    (hsv : s < v) (hδ : 0 < δ)
+    (hper : ∀ x t, u (x + 1) t = u x t)
+    (hcont : ContinuousOn (Function.uncurry u) (Icc 0 1 ×ˢ Icc s v))
+    (hinit : ∀ x, u x s ∈ range (fun y => (e y : F)))
+    (hx : ∀ x t, t ∈ Ioo s v → ContDiffAt ℝ 2 (fun y => u y t) x)
+    (ht : ∀ x t, t ∈ Ioo s v → DifferentiableAt ℝ (fun τ => u x τ) t)
+    (hDu : ContinuousOn (fun p : ℝ × ℝ => deriv (fun y => u y p.2) p.1)
+      (Icc 0 1 ×ˢ Icc s v))
+    (hwindow : Icc s v ⊆ J) (himage : ∀ x t, t ∈ Icc s v → u x t ∈ V)
+    (hell : ∀ x t, t ∈ Ioo s v → δ ≤ a x t)
+    (hbound : ∀ x t, t ∈ Ioo s v → a x t ≤ A)
+    (heq : ∀ x t, t ∈ Ioo s v →
+      deriv (fun τ => u x τ) t = a x t •
+        (deriv (deriv (fun y => u y t)) x +
+          chartChristoffelContraction (G t) α (deriv (fun y => u y t) x)
+            (deriv (fun y => u y t) x) (u x t))) :
+    ∀ x t, t ∈ Icc s v → u x t ∈ range (fun y => (e y : F)) := by
+  let P := fun y => (e (r y) : F)
+  let K : Set (ℝ × F × F) :=
+    (fun p : ℝ × ℝ => (p.2, u p.1 p.2, deriv (fun y => u y p.2) p.1)) ''
+      (univ ×ˢ Icc s v)
+  have hK : IsCompact K := isCompact_image_firstJet_of_periodic hper hcont hDu
+  have hKU : K ⊆ J ×ˢ V ×ˢ univ := by
+    rintro q ⟨⟨x, t⟩, hxt, rfl⟩
+    exact ⟨hwindow hxt.2, himage x t hxt.2, mem_univ _⟩
+  obtain ⟨L, hL⟩ := exists_retractionParabolicResidual_christoffel_bound_of_metricFamilySmoothOn
+    g G α hG he hgeo hleft hJ hJD hV hVO hK hKU hr
+    (a := fun _ => (1 : ℝ)) contDiffOn_const heV
+  have hP : ContDiffOn ℝ 3 P V :=
+    (((contMDiff_subtype_val.comp he).of_le (by decide : (3 : ℕ∞ω) ≤ ∞)).comp_contMDiffOn hr).contDiffOn
+  have hfix := periodic_comp_eq_of_parabolic_residual_bound
+    (P := P) (a := a) (L := (A : ℝ) * L) hsv hδ hper hcont
+    (hP.continuousOn.mono (by
+      rintro _ ⟨⟨x, t⟩, hxt, rfl⟩
+      exact himage x t hxt.2))
+    (fun x => by obtain ⟨y, hy⟩ := hinit x; change (e (r (u x s)) : F) = _; rw [← hy, hleft])
+    hx ht (fun x t ht' => (hP.contDiffAt
+      (hV.mem_nhds (himage x t ⟨ht'.1.le, ht'.2.le⟩))).of_le (by norm_num)) hell (by
+      intro x t ht'
+      let p := deriv (fun y => u y t) x
+      let Γ := chartChristoffelContraction (G t) α p p (u x t)
+      have hres := hL (t, u x t, p) ⟨(x, t), ⟨mem_univ _, ht'.1.le, ht'.2.le⟩, rfl⟩
+      simp only [retractionParabolicResidual, one_smul] at hres
+      change ‖Γ - fderiv ℝ P (u x t) Γ +
+        fderiv ℝ (fderiv ℝ P) (u x t) p p‖ ≤
+          (L : ℝ) * (‖u x t - P (u x t)‖ + ‖p - fderiv ℝ P (u x t) p‖) at hres
+      rw [heq x t ht', smul_add, add_sub_cancel_left, map_smul]
+      rw [← smul_sub, ← smul_add, norm_smul, Real.norm_eq_abs,
+        abs_of_nonneg (hδ.le.trans (hell x t ht'))]
+      calc
+        _ ≤ (A : ℝ) * ‖Γ - fderiv ℝ P (u x t) Γ +
+            fderiv ℝ (fderiv ℝ P) (u x t) p p‖ :=
+          mul_le_mul_of_nonneg_right (hbound x t ht') (norm_nonneg _)
+        _ ≤ (A : ℝ) * ((L : ℝ) *
+            (‖u x t - P (u x t)‖ + ‖p - fderiv ℝ P (u x t) p‖)) :=
+          mul_le_mul_of_nonneg_left hres A.coe_nonneg
+        _ = _ := by rw [mul_assoc])
+  intro x t ht'
+  exact ⟨r (u x t), hfix x t ht'⟩
+
+end DifferentialGeometry.Analysis.Parabolic
