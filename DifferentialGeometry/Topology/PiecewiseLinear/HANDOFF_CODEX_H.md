@@ -332,3 +332,26 @@ Reduced/MayerVietorisCoefficients, Reduced/PointClasses}`（`REUSE_AUDIT.md` §2
   不能把它当作本库现成的局部到全局基本类比较。
 - 按夜间 §0.4 记录这一真实数学缺口后转 H-M4 的独立边界 χ 计算；未弱化 H.4a 的冻结端点，
   未引入结论型假设、`sorry` 或未审计的 Hurewicz 链。
+
+### H-M4 — partial，23.18′ 的 Euler 与导出邻域层已交付，I5 阻塞
+
+- 数学提交：`09bc51619`。新模块 `BoundaryEuler.lean`、`DerivedNeighborhoodHomology.lean`、
+  `HandleCount.lean`。
+- `eulerChar_boundaryComplex_eq_two_mul` 对任意有限组合带边 3-流形证明
+  `χ(boundaryComplex 3 K) = 2χ(K)`；结论实际不需可定向或连通假设。
+  `eulerChar_geometricLink_of_isCombinatorialManifoldWithBoundary` 同时导出所有面 link 的球/球 Euler 值。
+- `derivedNeighborhoodHomotopyEquiv`、`bettiNumber_derivedNeighborhood_eq`、
+  `bettiOne_derivedNeighborhood_eq`、`eulerChar_derivedNeighborhood_eq` 证明导出邻域保持全部域系数 Betti 数和 χ。
+  `IsOrientable.derivedNeighborhood` 由二次重心细分的可定向性及子流形限制给出；
+  `eulerChar_boundary_derivedNeighborhood_eq_two_mul` 和 `bettiOne_derivedNeighborhood_graph` 是 23.18 的直接消费层。
+- 三个模块聚焦检查均 exit=0、零 warning：`BoundaryEuler` 12.6 秒、
+  `DerivedNeighborhoodHomology` 10.1 秒、`HandleCount` 11.0 秒。
+  `.lake/scratch/AuditNightHM4{Reuse,Final}.lean` 保留 32 项去重审计（10 项新、22 项复用/预审计），
+  全部仅 `propext`、`Classical.choice`、`Quot.sound`。
+- I5 的确切未闭合义务有三项：首先 H-M3 尚缺闭曲面顶维基本类，因而还没有
+  `χ(B)=2-b₁(B)`；其次一般带边 3-流形仍缺 23.19 的核心不等式
+  `b₁(boundaryComplex 3 K) ≤ 2*b₁(K)`（或等价的 half-lives/half-dies 生产者）；最后从
+  `¬ IsPLSphere 2 B.space` 推出 `0 < b₁(B.space)` 需要 H.4b 的闭可定向曲面识别
+  `b₁=0 → IsPLSphere 2`。这些都不是 NIGHT_PLAN §1 已给的跨车道接口，不能包装成结论型假设。
+- 因而未声明 `bettiOne_pos_of_boundary_component_not_sphere`，也未用 `χ(B)≠2` 替换冻结的非球面假设。
+  按 §0.4 转 H-M5 的二重覆盖定向引理。

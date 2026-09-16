@@ -513,6 +513,18 @@
   五个改动模块均检查 exit=0、零 warning；`BettiPolyhedra` 11.2 秒，MV 消费者 12.1 秒。
   全局 H₂ 的局部检测与跨边符号比较未证明，未声称 H.4a 完成；具体义务和原路线修正在 HANDOFF §8。
 
+- 2026-09-15（H-M4 边界 Euler 与导出邻域层，数学提交 `09bc51619`）：
+  `BoundaryEuler.eulerChar_boundaryComplex_eq_two_mul` 对任意有限组合带边 3-流形证明 `χ(∂K)=2χ(K)`；
+  `DerivedNeighborhoodHomology` 给导出邻域到原子复形的显式同伦等价，并证明全部 Betti 数与 χ 不变；
+  `HandleCount` 给可定向性的导出邻域传递、`χ(∂N(L))=2χ(L)` 与图邻域的 `b₁=1-χ(L)`。
+  三模块聚焦检查 exit=0、零 warning；`.lake/scratch/AuditNightHM4{Reuse,Final}.lean`
+  逐项审计 32 项去重声明（10 新、22 复用/预审计），全部仅标准三公理。
+  首次复用逐项包括 `faceEulerChar_eq_two_mul_of_link_counts`、几何 link/边界面判据、
+  `StrongDeformationRetract.toHomotopyEquiv`、`Homology.eulerChar_eq_of_homotopyEquiv`、
+  组合流形的 `secondDerived`/`derivedNeighborhood`、`IsOrientable.of_le` 与 `.barycentricSubdivision`。
+  I5 未闭合：还需 H-M3 的闭曲面顶维同调、一般 3-流形的 23.19 Betti 不等式，以及 H.4b 的
+  `b₁=0 → PL 2-sphere` 识别；未将非球面假设弱化成 `χ≠2`。
+
 ## 7. 决策与风险
 
 - 不采用 Bing 定理 7 的“保留单形”强形式，只用 Moise §8/§35 的紧致图卡归纳（书中 `chap:two-set-gluing` 的方案）。
