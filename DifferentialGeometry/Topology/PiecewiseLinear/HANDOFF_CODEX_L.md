@@ -727,3 +727,25 @@ theorem eq_top_of_boundaryLoops_mem_normal
 - `NormalSingularCellData.exists_boundary_surgery_cell_of_boundaryBranch` 现在还交付四个缝端分别落在 `A,C` 及 `EqOn D (D ∘ g) A`。`simplicialComplexity_lt_of_surgery_pullback_of_seam` 由端点定向二分自动选择被新拉回遗漏的旧碰撞对 `(p,r)` 或 `(p,s)`；调用者仍需提供适配的原/新有限源三角剖分、顶点搬运和三个缝端是旧顶点。
 - `SingularCell` 与 `CutAndPaste` 聚焦检查均 exit=0、零 warning。`fresh.py` 对相对整合提交 `4401dd9d1` 的两个改动 Lean 模块报告 fresh=2、forbidden=0、stale=0、missing=0。更新后的 `.lake/scratch/AuditE3M2.lean` 共 62 项，审计 exit=0，全部只含 `propext`、`Classical.choice`、`Quot.sound`。检查和审计前均先确认全局没有 `lean.exe`；检测到其它工作树进程时以 17 退出并等待，没有终止进程。
 - 本层没有宣称 Case 3/4 或 Lemma 2 已完成。仍缺从 `NormalSystem.boundaryParam`、I3 的两条实际分支原像和贴合后的 frontier 表示构造上述 `σ,τ,υ,φ`，并证明手术胞腔的边界参数恰为相应 `pathToCircle`；还缺构造第二张交叉贴合胞腔 `L₂`，以及从适配源三角剖分把缝端选为顶点。Case 1/2 的环带模型、内盘替换与 I2 推离也仍未闭合。
+
+## 34. 2026-09-16 E3-M2 追加：Case 2 的全局最内奇异圆盘
+
+状态：partial（全体奇异分支中的最内圆与内盘隔离已闭合；内盘上的单射坐标、I2 替换及替换后正规性仍待闭合）。数学提交
+`faa031702`。
+
+- `BranchPreimage.lean` 证明所有分支原像两两不交，其并集恰为
+  `doublePointPreimage D D.domain`；非触边分支的原像位于源盘内部，并可有限分解为一或两个两两不交的 PL 圆。
+- 对所有非触边分支的全部圆分量同时应用 `exists_innermost_isPLBall`，得到 `J = frontier Q`，其中
+  `Q ⊆ interior D.domain`，且所有非触边分支原像与 `Q` 的交恰为 `J`。被选分支的原像同时保留书中 Case 1/2 的精确二分：
+  它等于单个 `J`，或等于 `J ∪ T`，其中 `T` 是与 `J` 不交的另一个 PL 圆。
+- `BoundaryBranchCrosscut.lean` 证明若源盘横切弧避开 `frontier Q`，则整条横切弧避开 `Q`：横切弧连通，端点在外盘边界上，而
+  `Q` 完全位于外盘内部。每个触边分支的原像是两条这样的横切弧，且不同分支原像两两不交；故最终端点
+  `exists_innermost_isPLBall_doublePointPreimage_decomposition_of_exists_not_boundaryBranch`
+  将上述交式加强为
+  `doublePointPreimage D D.domain ∩ Q = J`，没有把“最内”作为假设。
+- `BranchPreimage` 与 `BoundaryBranchCrosscut` 聚焦检查均 exit=0、零 warning；更新后的
+  `.lake/scratch/AuditE3M2.lean` 共 72 项，`audit-f.ps1` exit=0，全部只含
+  `propext`、`Classical.choice`、`Quot.sound`。本层没有首次复用新的 covering/Van Kampen 声明。
+- 下一精确义务是为非触边分支的一圆/两圆分解保留 `branchCoordinate` 在每个圆分量上的 PL 同胚，从而由
+  `doublePointPreimage D D.domain ∩ Q = J` 推出 `D` 在 `Q` 内除边界配对外单射，并构造 Case 2 的内盘替换后调用已交付的 I2。
+  Case 1 仍缺盘内圆的 PL 环带及 Figure 25.2 柱形图显式模型；Lemma 2 端点尚未宣称完成。
