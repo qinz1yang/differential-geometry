@@ -2388,3 +2388,32 @@ endpoint, and the graph endpoint; exit 0, only the standard three axioms.
 This endpoint supplies support control. It does not yet claim the full arbitrary
 positive-function displacement bound of Moise 10.7, which requires subdividing
 long edges before the same assembly, or the degree-one extension in 10.8.
+
+## Contracting neighborhoods at discrete arc points (2026-09-16)
+
+`Topology/DiscreteNeighborhoods.lean` proves
+`Metric.exists_pairwise_disjoint_closedBall_of_isDiscrete` in pseudometric
+spaces: an injectively indexed discrete set admits pairwise disjoint positive
+closed-ball neighborhoods inside arbitrary prescribed neighborhoods, with each
+radius below its prescribed positive bound. No finiteness or closedness of the
+discrete set is assumed.
+
+`PlanarJordan/LocalArcStraightening.lean` first constructs supported two-sided
+polygonal subarcs at any interior point of an arbitrary arc. It then proves
+`exists_homeomorph_polygonal_subarcs_of_isDiscrete`: for any discrete family of
+interior points and positive bounds tending to zero along the cofinite filter,
+it constructs pairwise disjoint shrinking square supports and one ambient
+homeomorphism straightening both sides at every point. The whole selected
+parameter interval lies in its support, all selected centers are fixed, the
+complement of the open supports is fixed, and displacement on each square is
+bounded by that square's diameter. The supports are produced, not assumed.
+
+Both focused checks exit 0 with zero warnings. AuditS133DiscreteArcs checks all
+three public endpoints, exit 0, only the standard three axioms. AuditS132 was the
+first local-endpoint audit; S133 supersedes it after the interval-containment
+conclusion and discrete-family endpoint were added.
+
+This is the vertex stage of the deleted-endpoint construction in Moise 10.8.
+It still needs straightening between successive selected points and the
+auxiliary arc approaching the deleted endpoint; this is not yet a degree-one
+endpoint theorem.
