@@ -1651,3 +1651,9 @@ F-M2–F-M6 尚未开始；按用户指定顺序推进，只有出现 §1 接口
 `ConvexCapLink.lean` 已提交并推送为 `0afbfdf0c`。`finrank_vectorSpan_inf_ker_eq_one_of_affineIndependent_card_three` 证明三元素仿射独立集的二维方向空间与在三顶点上单射的高度核恰交成一维。主端点 `geometricLink_section_subsingleton_of_simplex_vertex` 再用暴露指定凸顶点的线性函数排除该一维交线上的反向射线，并由几何链环的径向单射性推出：载体等于该三角形凸包的任意复形，在三角形顶点处的链环与该顶点等高层的交至多一点。
 
 模块聚焦检查 exit=0（11.8 秒）、零 warning；`AuditF165.lean` 两个端点均仅依赖 `propext`、`Classical.choice`、`Quot.sound`。这已经覆盖封帽三角形的三个真实角点；帽边细分产生的直边内部顶点仍需结合保留盘一侧的链环弧证明至多二点。随后接入 `VertexSectionRegularity`，构造新旧奇异点嵌入并证明严格降指标。F-M1 仍为 partial，Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF166.lean`。
+
+### 19.18 F-M1：支撑面与横向纤维控制凸帽链环
+
+`ConvexBoundaryLink.lean` 已提交并推送为 `99b1121b8`。主端点 `geometricLink_section_subsingleton_of_supporting_fiber` 处理三角形凸包中任意支撑边界点：若线性支撑函数在整个三角形上于该点取最小值，且新高度纤维与支撑面的等值集只在该点相交，则复形几何链环与新高度层的交至多一点。证明用三角形方向平面与高度核的一维交、支撑函数排除反向比例，以及几何链环径向单射性；支撑条件真实约束凸帽，不包含目标结论。
+
+模块聚焦检查 exit=0（11.8 秒）、零 warning；`AuditF166.lean` 主端点仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步从三角形仿射独立性为每条边构造支撑线性函数，并由高度在该边两端取值不同推出支撑面纤维唯一；这将覆盖帽边细分顶点的帽侧链环。保留盘侧的符号弧仍需随后拼接。F-M1 仍为 partial，Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF167.lean`。
