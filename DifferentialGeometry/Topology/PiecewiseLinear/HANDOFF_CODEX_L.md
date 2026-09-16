@@ -512,3 +512,112 @@ theorem eq_top_of_boundaryLoops_mem_normal
 - 下一精确义务是将首、尾盘沿 `g` 调用边界弧贴合端点，再证贴合盘的剩余边界正是书页 186/187 的
   `συ⁻¹` 或 `συ`。当前贴合端点保留两侧参数化与公共缝，但还没有“两盘沿边界 1-球贴合后，新盘 frontier 等于两侧补弧之并”的精确集合恒等式；
   这一表示引理是识别 `L₁` 的当前精确缺口，未用假设绕过。
+
+## 23. 2026-09-16 E3-M1 追加：I2 的 double 3 环境对接
+
+状态：done（消费者已固定到 NIGHT_PLAN §6.1 的 double 环境；I2 生产者未到，仍为同形显式输入）。
+
+- `SphereCase.lean` 新增 `exists_nonsingular_two_cell_of_sphere_boundary_double`：输入有限带边组合 3-流形 `K`，
+  把奇异 2-胞腔的环境精确取为 `X := (double 3 K).space`，并在声明内安装
+  `combinatorialChartedSpace (double 3 K) (isCombinatorialManifold_double_succ_succ K hK)`。
+- 结论与一般化端点通过 `glueSnd E E : E × E × ℝ → E` 对接：胞腔本身在无边 double 中，而像、边界环与
+  `boundaryComplex 3 K` 的交仍在原 `K` 的环境中表述，因此不需将基本群数据运输到嵌入副本。
+- I2 当前显式输入的输出已是 `SingularTwoCell (double 3 K).space`，并要求经 `glueSnd` 的胞腔像在 `K.space` 内、
+  边界像及与 `boundaryComplex 3 K` 的交都精确为给定盘参数的边界像。S 交付 I2 后只需用其
+  `glueEmbed₂` 像版本经 `glueSnd_glueEmbed₂` 消去这一显式输入。
+- `SphereCase` 聚焦检查 exit=0、零 warning；更新后的 `.lake/scratch/AuditSphereCase.lean` 共 14 项，
+  全部只含 `propext`、`Classical.choice`、`Quot.sound`。
+
+## 24. 2026-09-16 E3-M2 追加：边界弧贴合的 frontier 表示
+
+状态：done（NIGHT_PLAN §6.2 的“frontier = 两侧补弧之并”已闭合）。
+
+- `CellGluing.lean` 新增 `exists_complementary_frontier_arcs_of_isPLBall_union`：对平面中两张 PL 2-球 `C,D`，若
+  `C ∩ D` 是同时位于两侧 frontier 的 PL 1-球，则给出共同端点 `p,q` 及两条 PL 补弧 `A,B`，两侧都构成
+  `Schoenflies.IsCutPair`，并有精确恒等式 `frontier (C ∪ D) = A ∪ B`。
+- 证明先用闭盘的 `interior_union_left` 排除补弧非端点落入并盘内部，再用 PL 1-球删去有限端点后稠密及
+  frontier 闭性补回两端。两补弧之并与并盘 frontier 都是 Jordan 圆，
+  `PlanarJordan.eq_of_isJordanCurve_of_subset` 将包含关系升级为集合相等。
+- `SingularTwoCell.exists_glue_of_isPLHomeomorphOn_boundary_arc` 的输出已加强：除原有两侧盘、参数化、公共缝及映射公式外，
+  直接返回两条补弧的 `IsCutPair`、PL 1-球性和新胞腔的 frontier 等式。
+- 因整合后共享目录缺少新导入链的中间产物，按规则仅用 `check-f.ps1` 顺次刷新
+  `FrontierBoundary`、`BallFrontier`、`PlanarDiskUnion`，未运行 `lake build`。`CellGluing` 最终聚焦检查 exit=0、零 warning；
+  `.lake/scratch/AuditE3M2.lean` 共 39 项，全部只含 `propext`、`Classical.choice`、`Quot.sound`。
+- 下一步是把三盘链的首尾盘沿分支双层同胚实际贴合，并用本端点返回的补弧识别书页 186/187 的
+  `L₁ = συ⁻¹` 或 `L₁ = συ`。
+
+## 25. 2026-09-16 E3-M2 追加：触边分支的外侧盘手术
+
+状态：partial（Case 3/4 的几何贴合及端点定向二分已闭合；正规性重建、严格复杂度下降与边界环字仍未闭合）。数学提交
+`c05d49b83`。
+
+- `BoundaryBranchCrosscut.lean` 的
+  `exists_two_isCrosscuts_branchPreimage_of_boundaryBranch_with_coordinate` 同时保留两条源 crosscut 的端点、双层 PL 同胚
+  `g : A → C` 与 `EqOn D (D ∘ g) A`，使三盘分解与贴合使用同一组规范见证。
+- `CellGluing.lean` 的 `IsPLHomeomorphOn.maps_arc_endpoints` 证明 PL 弧同胚的端点只有保向或反向两种配对；
+  `exists_complementary_frontier_arcs_of_isPLBall_union_between` 固定公共缝的给定端点，并把这组端点传入两侧 `IsCutPair`；
+  `SingularTwoCell.exists_glue_of_isPLHomeomorphOn_boundary_arc` 进一步精确记录公共缝在两侧参数化下的像和四个端点值。
+- `CutAndPaste.lean` 加强三盘链端点，使首尾盘的原边界迹都是 PL 1-球，并各自与奇异 crosscut 构成完整 `IsCutPair`。
+  新端点 `NormalSingularCellData.exists_boundary_surgery_cell_of_boundaryBranch` 实际沿双层同胚贴合首尾盘，构造
+  `G : SingularTwoCell M`，证明 `G '' G.domain ⊆ D '' D.domain`、
+  `range G.boundary = D '' (U ∪ V)`、`range G.boundary ⊆ B` 及 `G '' G.domain ∩ BdM ⊆ B`，同时交付
+  `(g p = r ∧ g q = s) ∨ (g p = s ∧ g q = r)`，正好区分书中的 Case 4 与 Case 3。
+- `BoundaryBranchCrosscut`、`CellGluing`、`CutAndPaste` 依次聚焦检查 exit=0、零 warning；
+  `.lake/scratch/AuditE3M2.lean` 共 43 项审计，全部只含 `propext`、`Classical.choice`、`Quot.sound`。
+  本层没有首次复用新的 covering/Van Kampen 声明。
+- 确切未闭合项有两层。第一，现有无基点环 API 尚未把任意 `SingularTwoCell.boundary` 参数化与上述补弧集合恒等式自动转换为
+  `L₁ = συ⁻¹`、`L₂ = σφυτ` 或 `L₁ = συ`、`L₂ = στ⁻¹υφ⁻¹` 的道路等式；群字引理因此尚未接到新盘。
+  第二，当前 I3 数据没有“沿一个完整触边分支重贴后仍有相容的正规三角剖分”生产者，故还不能为 `G` 重建
+  `IsNormalSingularCell`，也不能证明所有新双点来自除 `c` 外的旧分支，从而严格降低复杂度。这两项均未被改成结论型假设；
+  Case 1/2 的环带重定义、内盘替换与 I2 推离亦仍待完成。
+
+## 26. 2026-09-16 E3-M2 追加：F 的 I3 原生接口对接
+
+状态：done（触边分支构造已直接消费 `IsNormalSingularCell` 的正规交叉数据，不再带同形的显式 boundary-crossing 假设）。
+数学提交 `67068fb77`。
+
+- `NormalCell.lean` 将 `NormalSingularCellData.crossing` 校正为 I3 的
+  `HasPLNormalDoubleCrossingAt`，并新增 `IsNormalSingularCell.exists_normalSingularCellData`，直接从 F 的
+  `doublePointSet_triangulated` 见证构造本车道带显式奇点集三角剖分的数据。
+- `DoublePointCover.lean` 新增 `doublePointSheetsAt_of_hasPLBoundaryDoubleCrossingAt_chart`；边界半空间双交叉与内部双交叉现在都给出
+  `doublePointProjection` 的局部双层，从而原有覆盖空间链保持有效。
+- `BoundaryCrossing.lean` 的 `NormalSingularCellData.exists_boundary_crossing_chart` 从 I3 的析取和
+  `y ∈ BdM` 自动排除内部分支。`BoundaryBranchCrosscut.lean` 与 `CutAndPaste.lean` 因而删除了贯穿多个端点的显式
+  `hboundaryCrossing` 参数；Case 3/4 的 crosscut、三盘链与外侧盘手术现在只条件于 I3 本身。
+- 按依赖顺序重检 `NormalCell`、`BranchCarrier`、`DoublePointCover`、`BranchPreimage`、`BranchBoundary`、
+  `BoundaryCrossing`、`BoundaryBranchCrosscut`、`CutAndPaste`，全部 exit=0、零 warning；
+  `.lake/scratch/AuditE3M2.lean` 共 47 项，全部只含 `propext`、`Classical.choice`、`Quot.sound`。
+- 本次对接没有消除 §25 末尾记录的两个剩余义务：需要从手术盘重建 I3 并严格降低复杂度，以及把边界补弧表示接到书中道路字。
+  它只消除了此前 I3 已交付却仍重复显式要求边界交叉的接口偏差。
+
+## 27. 2026-09-16 E3-M2 端到端复核：Lemma 2 的精确表示缺口
+
+状态：blocked（不是 Lean 搜索缺口；现有公开数据不足以陈述并证明只条件于 I3 的 Lemma 2，未增加结论型假设，也未弱化端点）。
+
+- 已闭合部分保持 §24–§26 的状态：两盘沿边界弧贴合后的 frontier 精确表示、触边分支的三盘链、Case 3/4 的外侧盘手术、
+  端点保向/反向二分，以及 F 的原生 `IsNormalSingularCell` 接线均已通过检查。当前
+  `NormalSingularCellData.exists_boundary_surgery_cell_of_boundaryBranch` 给出实际新胞腔 `G`、其像包含关系和边界载体等式，
+  不是把书中手术结论作为假设。
+- 第一处不可跳过的缺口在 L.1 的 `NormalSystem` 表示。它仅有
+  `boundaryLoop_range : range boundaryLoop = loopComplex.space` 和
+  `loop_space : loopComplex.space = singularMap '' frontier sourceComplex.space`，没有记录 `boundaryLoop` 与
+  `singularMap` 在源盘 frontier 上的参数化相等或自由同伦等价。像集相同不决定环的共轭类：即使载体是一个圆，绕行一次与绕行两次
+  也有相同像集；对 Case 3/4 的自交边界图，不同遍历更直接给出不同群字。因此不能从现有字段合法推出书页 186–187 的
+  `L₁ = συ⁻¹`、`L₂ = σφυτ` 或 `L₁ = συ`、`L₂ = στ⁻¹υφ⁻¹`，也不能把 §25 已证的群论引理接到几何手术。
+  所需的最小生产者是一个不改变结论的边界相容性接口，例如给出从 `loopCircle` 到源 frontier 的参数化并证明复合
+  `singularMap` 后与 `boundaryLoop` 相等，或直接证明两者自由同伦；它必须由正规系统的构造产生，不能从载体相等推出。
+- 第二处缺口是 I3 对割贴的稳定性。I3 给原胞腔的局部单射、二重纤维、奇点图三角剖分和每个双点的正规交叉，
+  但没有生产者证明沿一个完整触边分支把两张外侧盘重贴后，`G` 仍满足 `IsNormalSingularCell`。具体还缺：
+  新双点集等于旧双点集中删去所选分支后的相应部分、该集合的有限一维带边组合三角剖分、其余交叉图卡的搬运，
+  以及由此得到 `boundaryBranchCount` 严格下降。只凭 `G '' G.domain ⊆ D '' D.domain` 不能推出这些结论。
+- Case 1/2 另缺书页 184–185 使用的两个全局生产者：盘内多边形圆的 PL 环带/柱形图及沿该环带重定义后 I3 保持；
+  最内圆所界内盘的替换、推离及替换后 I3 保持。当前树没有“PL 圆在 PL 盘内有环带正则邻域”的端点。
+  I2 的 double 环境生产者也尚未进入整合分支，所以 Case 2 的推离仍只能等 S 的
+  `exists_nonsingular_two_cell_of_boundary_disk`；本车道没有复制或直接合并 S 的文件。
+- L.4 当前 `DoubleCoverReduction` 只记录覆盖投影、二重纤维和复杂度严格下降，没有记录提升正规系统的奇异盘经投影分解为原盘、
+  边界环/正规子群的映射相容性，或把 `NonsingularCell T` 投影成满足 Lemma 2 假设的奇异胞腔。因此
+  `exists_nonsingular_cell_of_stallings_induction` 中名为 `lemmaTwo` 的显式参数仍是“从提升系统回推”的完整接口，不能由尚未存在的
+  `LoopTheorem/LemmaTwo.lean` 端点自动消去。要真正接线，`DoubleCoverReduction` 的生产者必须同时交付上述因子分解与边界相容数据。
+- I5 仍未交付，故 C.5 按 NIGHT_PLAN §6.1 保持等待；没有用 Bennett `Coefficients.lean` 的链绕过缺失的 `χ_face`/球面识别生产者。
+- 复核 `LoopTheorem/CutAndPaste.lean` 使用 `check-f.ps1 -Threads 1`，exit=0、零 warning；
+  `.lake/scratch/AuditE3M2.lean` 共 47 项，`audit-f.ps1` exit=0，全部只含 `propext`、`Classical.choice`、`Quot.sound`。
