@@ -663,3 +663,35 @@ The focused check `check-boundary-disk-neighborhood.log` exits 0 with zero warni
 `AuditS78BoundaryNeighborhood.lean` / `.log` audits the four endpoints using only the standard
 three axioms. Full 26.2 still needs compatible collar gluing and the complement-manifold
 induction invariant recorded above; neither is introduced as an extra assumption here.
+
+### S-M6 P.4 input audit and milestone handoff
+
+The controlled boundary-disk neighborhood layer is committed and pushed as `41b78491e`.
+The final fetch and merge again found `origin/codex/moise-integration` already up to date.
+`AuditS79P4Inputs.lean` / `.log` checks
+`Schoenflies.jordan_schoenflies_homeomorph`, `Schoenflies.jordan_schoenflies_of_homeomorph`,
+and `Graph.polygonal_redrawing`: three declarations, exit 0, only the standard three axioms.
+The first two extend a homeomorphism of one Jordan curve; the third gives a polygonal drawing.
+None supplies the supported, quantitatively controlled ambient graph homeomorphism of P.4.
+The remaining argument must establish the disjoint covering sectors inside each vertex disk,
+extend compatibly over those sectors while fixing the outer circle, straighten the trimmed
+edge arcs inside disjoint edge frames, and derive the pointwise control from their diameters.
+The second-batch approximation statements were also inspected and do not fill this gap;
+no second-batch source or duplicate Jordan extension wrapper was introduced.
+
+| Milestone | Status and proved layer | Checkpoint and audit | Exact remaining obligation |
+|---|---|---|---|
+| S-M1 | done: regular-neighborhood pieces, attaching disks, general ambient spaces | `2375fc812`; AuditS67--S69: 42; AuditS71General: 5 | None for the requested piece/intersection layer |
+| S-M2 | done: complete boundary-disk derived neighborhood and Problem 26.1 | `d12dd514a`; AuditS70: 6; AuditS73Disk: 5 | None for the containing-ball theorem |
+| S-M3 | partial: general parametrized PL push-off and Euclidean singular cell | `bd74dd7ca`; AuditS72Intrinsic: 7; AuditS74Push: 3 | `SingularTwoCell K.space` needs a boundary-compatible target type; its current Euclidean open-chart requirement is not available from a manifold-with-boundary hypothesis |
+| S-M4 | partial: disk product collars, including arbitrary relative-neighborhood control | `5f97aca9d`, `41b78491e`; AuditS75Collar: 13; AuditS78BoundaryNeighborhood: 4 | Complement-manifold induction invariant, compatible side-face product gluing, whole-boundary neighborhood property |
+| S-M5 | partial: 26.1 in Hausdorff PL charted ambient spaces | `ddf717a4b`; AuditS76TwoSided: 11 | Interior chart transport for arbitrary K; for 26.3, exactly two sides with manifold closures, then full 26.2 |
+| S-M6 | partial: general relative 17.3 done; P.4 inputs checked | `f0383a381`; AuditS77RelativeDisk: 4; AuditS79P4Inputs: 3 | Supported ambient graph extension with control, as detailed above |
+
+All listed completed layers have focused-check exit 0 with zero warnings and transitive axiom
+closures contained in `propext`, `Classical.choice`, and `Quot.sound`. No newly proved layer
+requires Schoenflies. The previously delivered 23.9/23.10 consumers retain their authorized
+explicit Schoenflies parameter until I1 arrives through integration.
+The final plan-only checkpoint updates both preserved P.3 rows and the S-owned P.4/B.1--B.4
+statuses. It does not mark the exact bundled I2 delivered, claim a whole-boundary collar,
+claim a bicollar, modify another lane's source, or register modules in the root aggregate.
