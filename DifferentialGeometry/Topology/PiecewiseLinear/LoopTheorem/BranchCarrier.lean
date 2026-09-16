@@ -214,6 +214,60 @@ theorem branchComplex_space_subset_piece
     (T.branchComplex c).space ⊆ T.piece.piece.complex.space :=
   space_mono_of_faces_subset ((T.branchComplex_faces_subset c).trans T.faces_subset)
 
+open Classical in
+theorem space_eq_iUnion_branchComplex
+    (T : NormalSingularSetTriangulation D BdM) :
+    T.complex.space = ⋃ c : T.Branch, (T.branchComplex c).space := by
+  apply Subset.antisymm
+  · intro x hx
+    obtain ⟨s, hs, hxs⟩ := T.complex.mem_space_iff.mp hx
+    obtain ⟨u, hus⟩ := T.complex.nonempty_of_mem_faces hs
+    have hu : u ∈ T.complex.vertices :=
+      T.complex.down_closed hs (Finset.singleton_subset_iff.mpr hus)
+        (Finset.singleton_nonempty u)
+    let c : T.Branch :=
+      (SimplicialComplex.edgeGraph T.complex).connectedComponentMk ⟨u, hu⟩
+    apply mem_iUnion.mpr
+    refine ⟨c, (T.branchComplex c).convexHull_subset_space ⟨hs, ?_⟩ hxs⟩
+    intro w hws
+    have hw : w ∈ T.complex.vertices :=
+      T.complex.down_closed hs (Finset.singleton_subset_iff.mpr hws)
+        (Finset.singleton_nonempty w)
+    have hwc : (⟨w, hw⟩ : T.complex.vertices) ∈ c.supp := by
+      by_cases hwu : w = u
+      · subst w
+        exact SimpleGraph.ConnectedComponent.connectedComponentMk_mem
+      · apply c.mem_supp_of_adj_mem_supp
+          SimpleGraph.ConnectedComponent.connectedComponentMk_mem
+        refine ⟨fun h => hwu (congrArg Subtype.val h).symm, ?_⟩
+        apply T.complex.down_closed hs
+        · intro z hz
+          simp only [Finset.mem_insert, Finset.mem_singleton] at hz
+          exact hz.elim (fun h => h ▸ hus) (fun h => h ▸ hws)
+        · simp
+    exact ⟨⟨w, hw⟩, hwc, rfl⟩
+  · apply iUnion_subset
+    intro c
+    exact T.branchComplex_space_subset c
+
+open Classical in
+theorem pairwise_disjoint_branchComplex_space
+    (T : NormalSingularSetTriangulation D BdM) :
+    Pairwise fun c d : T.Branch => Disjoint (T.branchComplex c).space (T.branchComplex d).space := by
+  intro c d hcd
+  apply Set.disjoint_left.mpr
+  intro x hxc hxd
+  obtain ⟨s, hs, hxs⟩ := (T.branchComplex c).mem_space_iff.mp hxc
+  obtain ⟨t, ht, hxt⟩ := (T.branchComplex d).mem_space_iff.mp hxd
+  have hxst : x ∈ convexHull ℝ (s : Set _) ∩ convexHull ℝ (t : Set _) := ⟨hxs, hxt⟩
+  have hxinter := T.complex.inter_subset_convexHull hs.1 ht.1 hxst
+  obtain ⟨w, hws, hwt⟩ := convexHull_nonempty_iff.mp ⟨x, hxinter⟩
+  obtain ⟨v, hvc, hvw⟩ := hs.2 hws
+  obtain ⟨z, hzd, hzw⟩ := ht.2 hwt
+  have hvz : v = z := Subtype.ext (hvw.trans hzw.symm)
+  subst z
+  exact hcd (SimpleGraph.ConnectedComponent.eq_of_common_vertex hvc hzd)
+
 theorem branchCarrier_subset_doublePointSet
     (T : NormalSingularSetTriangulation D BdM) (c : T.Branch) :
     T.branchCarrier c ⊆ doublePointSet D D.domain := by
@@ -226,9 +280,56 @@ theorem branchCarrier_isConnected
   (T.branchComplex_space_isConnected c).image T.piece.piece.map
     (T.piece.piece.continuousOn.mono (T.branchComplex_space_subset_piece c))
 
+theorem iUnion_branchCarrier
+    (T : NormalSingularSetTriangulation D BdM) :
+    ⋃ c : T.Branch, T.branchCarrier c = doublePointSet D D.domain := by
+  apply Subset.antisymm
+  · apply iUnion_subset
+    intro c
+    exact T.branchCarrier_subset_doublePointSet c
+  · intro y hy
+    have hyimage : y ∈ T.piece.piece.map '' T.complex.space := by
+      rw [T.map_space]
+      exact hy
+    obtain ⟨x, hx, rfl⟩ := hyimage
+    rw [T.space_eq_iUnion_branchComplex] at hx
+    obtain ⟨c, hxc⟩ := mem_iUnion.mp hx
+    exact mem_iUnion.mpr ⟨c, ⟨x, hxc, rfl⟩⟩
+
+theorem pairwise_disjoint_branchCarrier
+    (T : NormalSingularSetTriangulation D BdM) :
+    Pairwise fun c d : T.Branch => Disjoint (T.branchCarrier c) (T.branchCarrier d) := by
+  intro c d hcd
+  apply Set.disjoint_left.mpr
+  rintro y ⟨x, hxc, rfl⟩ ⟨z, hzd, hzx⟩
+  have hxz : x = z := T.piece.piece.bijOn.injOn
+    (T.branchComplex_space_subset_piece c hxc)
+    (T.branchComplex_space_subset_piece d hzd) hzx.symm
+  subst z
+  exact Set.disjoint_left.mp (T.pairwise_disjoint_branchComplex_space hcd) hxc hzd
+
 def branchSet (T : NormalSingularSetTriangulation D BdM) (c : T.Branch) :
     Set (doublePointSet D D.domain) :=
   ((↑) : doublePointSet D D.domain → M) ⁻¹' T.branchCarrier c
+
+theorem iUnion_branchSet
+    (T : NormalSingularSetTriangulation D BdM) :
+    ⋃ c : T.Branch, T.branchSet c = univ := by
+  apply eq_univ_iff_forall.mpr
+  intro y
+  have hy : (y : M) ∈ ⋃ c : T.Branch, T.branchCarrier c := by
+    rw [T.iUnion_branchCarrier]
+    exact y.2
+  obtain ⟨c, hyc⟩ := mem_iUnion.mp hy
+  exact mem_iUnion.mpr ⟨c, hyc⟩
+
+theorem pairwise_disjoint_branchSet
+    (T : NormalSingularSetTriangulation D BdM) :
+    Pairwise fun c d : T.Branch => Disjoint (T.branchSet c) (T.branchSet d) := by
+  intro c d hcd
+  apply Set.disjoint_left.mpr
+  intro y hyc hyd
+  exact Set.disjoint_left.mp (T.pairwise_disjoint_branchCarrier hcd) hyc hyd
 
 theorem image_branchSet
     (T : NormalSingularSetTriangulation D BdM) (c : T.Branch) :
