@@ -1589,3 +1589,10 @@ F-M2–F-M6 尚未开始；按用户指定顺序推进，只有出现 §1 接口
 `HasPLCrossingAt.of_closedStar_pair` 将保持子复形闭星和第二集合截面的 PL 星映射用于完整子复形的 crossing。顶点处的集合芽与闭星相等由前一模块实际证明，目标 crossing 作为运输定理的原有几何性质保留，后续标准平面生产者将证明它。
 
 聚焦检查 exit=0（11.2 秒）、零 warning；`AuditF155.lean` 三项仅标准三公理。下一步生产实际标准平面星并闭合二点链环截面的 crossing 判据。F-M1 仍 partial，严格降指标及 I1 未交付。下一审计文件 `AuditF156.lean`。
+
+### 19.8 F-M1：二点链环截面的顶点 crossing 判据
+
+`VertexCrossing.lean` 已提交并推送为 `ebf03f889`。主端点 `hasPLCrossingAt_fiber_of_geometricLink_section` 从三维有限环境复形、二维子复形顶点的 PL 圆链环、逐面适配高度、链环零截面恰为两个不同点及正负两侧非空，推出该子复形与零高度面的 `HasPLCrossingAt`。
+证明在同一环境中实际构造过原点的平面三角形与三维单纯形邻域，插入原点并作适配横截高度的共同细分；目标曲面链环的 PL 圆周、二点零截面和两侧非空均由构造推出。随后用已证链环配对、径向闭星延拓和邻域运输，把标准平面与横截面的 crossing 搬回源顶点。没有增加目标 crossing、局部图卡或结论型假设。
+
+聚焦检查 exit=0（12.9 秒）、零 warning；`AuditF156.lean` 主端点仅依赖 `propext`、`Classical.choice`、`Quot.sound`，完整签名已核对。F-M1 仍为 partial：下一步从一般位置高度的顶点局部数据推出链环零截面恰含两点且两侧非空，再接入凸封帽边缘分类；选定点整层圆周数严格下降、Lemma 1、Lemma 2–6 和 I1 仍未交付。下一审计文件 `AuditF157.lean`。
