@@ -6,10 +6,10 @@ open Set
 namespace DifferentialGeometry.Topology.PiecewiseLinear
 
 open Classical in
-private theorem eq_biUnion_filter_of_union_inter
-    {K : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2))}
-    {cells : Finset (Set (EuclideanSpace ℝ (Fin 2)))}
-    (h : IsPLDiskDecomposition K cells) {C U V : Set (EuclideanSpace ℝ (Fin 2))}
+theorem IsPLDiskDecomposition.eq_biUnion_filter_of_union_inter
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {K : Geometry.SimplicialComplex ℝ E} {cells : Finset (Set E)}
+    (h : IsPLDiskDecomposition K cells) {C U V : Set E}
     (hC : C ∈ cells) (hunion : U ∪ V = K.space) (hinter : U ∩ V = C)
     (hside : ∀ E ∈ cells, E ⊆ U ∨ E ⊆ V) :
     U = ⋃ E ∈ cells.filter (fun E => E ⊆ U), E := by
@@ -58,8 +58,8 @@ private theorem exists_two_free_disk_cells_planar
             (h.disjoint_interior_cell hE hC hEC)
       let cellsU := cells.filter (fun E => E ⊆ U)
       let cellsV := cells.filter (fun E => E ⊆ V)
-      have hcoverU : U = ⋃ E ∈ cellsU, E := eq_biUnion_filter_of_union_inter h hC hunion hinter hside
-      have hcoverV : V = ⋃ E ∈ cellsV, E := eq_biUnion_filter_of_union_inter h hC
+      have hcoverU : U = ⋃ E ∈ cellsU, E := h.eq_biUnion_filter_of_union_inter hC hunion hinter hside
+      have hcoverV : V = ⋃ E ∈ cellsV, E := h.eq_biUnion_filter_of_union_inter hC
         ((union_comm V U).trans hunion) ((inter_comm V U).trans hinter) (fun E hE => (hside E hE).symm)
       have hsubU : cellsU ⊆ cells := Finset.filter_subset _ _
       have hsubV : cellsV ⊆ cells := Finset.filter_subset _ _

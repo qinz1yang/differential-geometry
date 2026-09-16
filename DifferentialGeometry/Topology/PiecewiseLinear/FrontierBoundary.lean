@@ -1,7 +1,7 @@
 import DifferentialGeometry.Topology.InvarianceOfDomainManifold
 import DifferentialGeometry.Topology.PiecewiseLinear.PolyhedralBoundary
 import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryOfBall
-import DifferentialGeometry.Topology.PiecewiseLinear.DualCells
+import DifferentialGeometry.Topology.PiecewiseLinear.StarIntersection
 import DifferentialGeometry.Topology.PiecewiseLinear.ExhaustionGeneral
 import DifferentialGeometry.Topology.PiecewiseLinear.VertexChart
 import DifferentialGeometry.Topology.Simplex.BallCoordinates
@@ -264,6 +264,37 @@ theorem frontier_space_eq_boundaryComplex_space {n : ℕ}
     (boundaryComplex_space_subset_frontier_space hK)
 
 open Classical in
+theorem frontier_space_eq_boundaryComplex_space_of_finrank [FiniteDimensional ℝ E]
+    [d : DecidableEq E] {n : ℕ}
+    (hn : Module.finrank ℝ E = n + 1) (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
+    (hK : IsCombinatorialManifoldWithBoundary (n + 1) K) :
+    frontier K.space = (boundaryComplex (n + 1) K).space := by
+  have hd : d = fun x y => Classical.propDecidable (x = y) := Subsingleton.elim _ _
+  subst d
+  let _ : DecidableEq (EuclideanSpace ℝ (Fin (n + 1))) := Classical.decEq _
+  let e : E ≃ₗ[ℝ] EuclideanSpace ℝ (Fin (n + 1)) :=
+    LinearEquiv.ofFinrankEq _ _ (by simpa using hn)
+  have he : IsPiecewiseAffineOn e K.space :=
+    (isPiecewiseAffineOn_of_affine e.toLinearMap.toAffineMap isOpen_univ).mono_of_isPolyhedron
+      (isPolyhedron_space K) (subset_univ _)
+  obtain ⟨L, hLfin, hLspace⟩ :=
+    ((isPolyhedron_space K).image_of_isPiecewiseAffineOn he e.injective.injOn).exists_simplicialComplex
+  let _ : Finite L.faces := hLfin.to_subtype
+  have hf : IsPLHomeomorphOn e K.space L.space := by
+    rw [hLspace]
+    exact isPLHomeomorphOn_of_isPiecewiseAffineOn_of_bijOn (isPolyhedron_space K) he
+      e.injective.injOn.bijOn_image
+  apply e.injective.image_injective
+  calc
+    e '' frontier K.space = frontier (e '' K.space) :=
+      e.toContinuousLinearEquiv.toHomeomorph.image_frontier K.space
+    _ = frontier L.space := congrArg frontier hLspace.symm
+    _ = (boundaryComplex (n + 1) L).space :=
+      frontier_space_eq_boundaryComplex_space (hK.of_isPLHomeomorphOn hf)
+    _ = e '' (boundaryComplex (n + 1) K).space :=
+      boundaryComplex_space_of_isPLHomeomorphOn K L hK hf
+
+open Classical in
 theorem PLPieceIn.mem_interior_iff_not_mem_boundaryComplex_space
     {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
     {n : ℕ} {X : Type u} [TopologicalSpace X]
@@ -366,63 +397,6 @@ theorem frontier_eq_polyhedralBoundary {n : ℕ} {X : Type u} [TopologicalSpace 
     refine ⟨T.piece.bijOn.mapsTo hx, ?_⟩
     intro hxint
     exact (T.piece.mem_interior_iff_not_mem_boundaryComplex_space hT hx).mp hxint hxB
-
-open Classical in
-private theorem closedStar_barycentricSubdivision_inter_space_eq
-    {K L : Geometry.SimplicialComplex ℝ E} (hL : L.faces ⊆ K.faces)
-    {x : E} (hxL : {x} ∈ L.faces) :
-    closedStar (barycentricSubdivision K) x ∩ L.space =
-      closedStar (barycentricSubdivision L) x := by
-  classical
-  have hLK : (barycentricSubdivision L).faces ⊆ (barycentricSubdivision K).faces :=
-    barycentricSubdivision_faces_subset hL
-  have hxK : {x} ∈ K.faces := hL hxL
-  have hxKb : {x} ∈ (barycentricSubdivision K).faces :=
-    (barycentricSubdivision_isSubdivision K).singleton_mem hxK
-  apply Subset.antisymm
-  · rintro y ⟨hyK, hyL⟩
-    obtain ⟨u, ⟨hu, hxu⟩, hyu⟩ := mem_iUnion₂.mp hyK
-    have hxu' : x ∈ u :=
-      mem_of_mem_convexHull_of_singleton_mem (barycentricSubdivision K) hxKb hu hxu
-    have hyLb : y ∈ (barycentricSubdivision L).space := by
-      rw [(barycentricSubdivision_isSubdivision L).space_eq]
-      exact hyL
-    obtain ⟨v, hv, hyv⟩ := (barycentricSubdivision L).mem_space_iff.mp hyLb
-    have hyuv : y ∈ convexHull ℝ (((u ∩ v : Finset E) : Set E)) :=
-      by simpa only [Finset.coe_inter] using
-        (barycentricSubdivision K).inter_subset_convexHull hu (hLK hv) ⟨hyu, hyv⟩
-    have huvne : (u ∩ v).Nonempty := nonempty_of_mem_convexHull hyuv
-    have huvL : u ∩ v ∈ (barycentricSubdivision L).faces :=
-      (barycentricSubdivision L).down_closed hv Finset.inter_subset_right huvne
-    obtain ⟨D, hD, hDne, huvD⟩ := huvL
-    have hxs : ∀ s ∈ D, {x} ⊆ s := by
-      intro s hs
-      have hcsuv : s.centroid ℝ id ∈ u ∩ v := by
-        rw [huvD]
-        exact Finset.mem_image_of_mem _ hs
-      have hcomp := subset_or_subset_of_centroid_mem_face K hxK (hL (hD.mem_faces hs)) hu
-        (by simpa only [Finset.centroid_singleton, id_eq] using hxu')
-        (Finset.mem_inter.mp hcsuv).1
-      rcases hcomp with h | h
-      · exact h
-      · rcases Finset.subset_singleton_iff.mp h with hempty | heq
-        · exact ((L.nonempty_of_mem_faces (hD.mem_faces hs)).ne_empty hempty).elim
-        · rw [heq]
-    have hins : insert x (u ∩ v) ∈ (barycentricSubdivision L).faces := by
-      have hflag := hD.insert_of_subset hxL hxs
-      have hface : (insert {x} D).image (fun s => s.centroid ℝ id) ∈
-          (barycentricSubdivision L).faces :=
-        ⟨insert {x} D, hflag, Finset.insert_nonempty _ _, rfl⟩
-      simpa only [Finset.image_insert, Finset.centroid_singleton, id_eq, ← huvD] using hface
-    exact mem_iUnion₂.mpr ⟨insert x (u ∩ v),
-      ⟨hins, subset_convexHull ℝ _ (Finset.mem_insert_self _ _)⟩,
-      convexHull_mono (Finset.coe_subset.mpr (Finset.subset_insert _ _)) hyuv⟩
-  · intro y hy
-    refine ⟨?_, ?_⟩
-    · obtain ⟨u, ⟨hu, hxu⟩, hyu⟩ := mem_iUnion₂.mp hy
-      exact mem_iUnion₂.mpr ⟨u, ⟨hLK hu, hxu⟩, hyu⟩
-    · rw [← (barycentricSubdivision_isSubdivision L).space_eq]
-      exact closedStar_subset_space (barycentricSubdivision L) x hy
 
 open Classical in
 private theorem boundaryComplex_space_eq_of_isSubdivision [FiniteDimensional ℝ E]

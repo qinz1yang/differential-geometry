@@ -1593,3 +1593,192 @@ exit 0 and only `propext`, `Classical.choice`, and `Quot.sound`. Logs:
 `.lake/scratch/check-polyhedron-complement.log`,
 `check-relative-polyhedron-extension.log`, `check-boundary-disk-extension.log`,
 and `audit-polyhedron-boundary-extension.log`.
+
+## Moise regular-neighborhood pieces and their intersections
+
+`DerivedNeighborhoodCells.lean` defines the piece indexed by a face s as
+its centroid's closed star in the second derived subdivision. The exact
+identity `derivedNeighborhoodCell_space` identifies it with
+`closure (N(s) \ N(boundary s))`; `derivedNeighborhoodCell_singleton`
+identifies vertex pieces with N(v). This is the construction on Moise,
+printed page 169, extended to finite combinatorial manifolds with boundary.
+The pieces cover the existing `derivedNeighborhood` and lie in K.space.
+No regular-neighborhood definition or vendored Lean source was changed.
+
+The ball proof uses the existing upper-link equivalence and cone
+construction for both sphere links and ball links. Thus the pieces are
+PL balls without a Schoenflies assumption. Distinct intersecting pieces
+come from comparable faces and meet in the dual cell of the edge joining
+their centroids in the first subdivision. In dimension three this is a
+PL 2-ball. `BallFrontier.lean` supplies the general empty-interior lemma
+for lower-dimensional PL balls and the resulting boundary inclusion.
+The intersection lies in the frontier of each of the two pieces.
+
+Both modules pass the prescribed focused checks, exit 0 and zero
+warnings. `AuditS67.lean` checks all 26 new declarations; every axiom
+closure contains only `propext`, `Classical.choice`, and `Quot.sound`.
+Logs: `.lake/scratch/check-ball-frontier.log`,
+`check-derived-neighborhood-cells.log`, and
+`audit-derived-neighborhood-cells.log`.
+
+This closes the individual-piece and pairwise-intersection checkpoint.
+It does not yet prove that the union over an arbitrary boundary disk is
+a 3-ball: the grouped attachments in the disk shelling still require
+proof that their intersections with the accumulated union are disks.
+Problem 26.1, general hpush, and the product collar remain open at this
+checkpoint. Other lanes' dependencies were obtained by merging
+`origin/codex/moise-integration` at b9a2cb2ca (merge 0b06c672f).
+
+## Finite grouped attachments for boundary neighborhoods
+
+`DerivedNeighborhoodAttachments.lean` identifies every intersection
+indexed by a nonempty face flag with a dual cell. The combinatorial
+manifold link theorem gives its dimension and PL-ball type. It also
+proves that one piece together with any finite incomparable family of
+incident pieces is a 3-ball, by the already proved 23.11 gluing theorem.
+The uniform face-cardinality version applies to a triangle piece and
+any chosen family of its edge pieces. The original subcomplex lies in
+the union of all its pieces.
+
+`DiskUnion.lean` proves disk gluing inside a common PL disk, including
+finitely many pairwise disjoint arms meeting a central disk in arcs.
+`BoundaryDerivedNeighborhood.lean` proves that the upper-link base of
+a boundary piece is a PL disk, that its intersections with other pieces
+lie in this base, and that a three-face flag gives a PL arc intersection.
+These facts supply the grouped attaching disk when a boundary piece
+meets a central piece and incomparable incident arms. No additional
+unproved geometric hypothesis is used and no vendored source changed.
+
+The three modules pass focused checks with exit 0 and zero warnings.
+`AuditS68.lean` audits all 14 declarations; only `propext`,
+`Classical.choice`, and `Quot.sound` occur. Logs are
+`.lake/scratch/check-derived-neighborhood-attachments.log`,
+`check-disk-union.log`, `check-boundary-derived-neighborhood.log`, and
+`audit-derived-neighborhood-attachments.log`.
+
+This is checked input to the triangle shelling, not its completion.
+The full union over a boundary disk, general hpush, and Theorem 26.2
+still require the shelling and collar inductions.
+
+## Derived neighborhoods of boundary simplices
+
+`SimplexDerivedNeighborhood.lean` proves
+`IsCombinatorialManifoldWithBoundary.isPLBall_derivedNeighborhood_simplex`:
+for every face s of the boundary of a finite combinatorial 3-manifold,
+the existing `derivedNeighborhood K (simplexComplex s ...)` is a PL
+3-ball. A face-cardinality argument separates vertices, edges, and
+triangles. The triangle proof starts with its central piece and three
+edge pieces, then attaches its three vertex pieces. Each attachment
+uses the grouped disk proved in `BoundaryDerivedNeighborhood` and
+23.11. The decomposition identity retains all seven pieces; it does
+not substitute a smaller closed star for the neighborhood.
+
+This provides the simplex base case for the disk shelling in Problem
+26.1. The deletion step for a general triangulated disk is still open:
+it must identify the retained/new faces of a free triangle and prove
+the intersection with the accumulated neighborhood at each addition.
+General hpush and the product collar are not claimed. No Schoenflies
+assumption or vendored source change was needed in this layer.
+
+The module check exits 0 with zero warnings. `AuditS69.lean` checks both
+public declarations, with only `propext`, `Classical.choice`, and
+`Quot.sound`. Logs: `.lake/scratch/check-simplex-derived-neighborhood.log`
+and `audit-simplex-derived-neighborhood.log`.
+
+## Boundary disk regular neighborhoods and Problem 26.1
+
+The native `FreeTriangleFaces`, `SubcomplexBallGluing`, `FreeTriangleNeighborhood`, and
+`DiskDerivedNeighborhood` developments complete the boundary-disk induction described in
+Moise, printed page 169, and Problem 26.1. The free-triangle producer is the existing planar
+17.2/17.3 chain transported by a simplicial isomorphism. The native proof classifies deleted
+faces by containment of the complementary face, attaches the corresponding derived-neighborhood
+pieces using 23.11, and inducts on the number of triangles. An ambient subdivision makes any
+boundary PL disk a suitable subcomplex. The result holds in arbitrary finite-dimensional real
+normed spaces, with intrinsic boundary complexes, and uses no Schoenflies hypothesis.
+This is original native Lean source built on the existing vendored planar theorems; no vendored
+Lean file was changed. `AuditS70`, `AuditS71General`, and `AuditS73Disk` record the supporting
+layers and the final five public endpoints; all have only the standard three axioms.
+The whole boundary collar product and the boundary-compatible singular-cell type are separate
+remaining obligations and are not asserted by this result.
+
+## Intrinsic boundary ball and disk push-off
+
+The native `SphereBallInclusion`, `BoundaryMonotonicity`, `BoundaryBallTransport`, and
+`BoundaryDiskPush` modules transport the checked boundary-ball construction to arbitrary finite-
+dimensional ambient spaces. Sphere-versus-ball noncontainment gives intrinsic boundary
+monotonicity. Problem 26.1 supplies the containing ball; the complementary disk in its boundary
+sphere gives the push-off. `LoopTheorem/CombinatorialBoundaryPush` packages the Euclidean case
+in the existing singular-cell type. No vendored Lean source changed. `AuditS72Intrinsic` audits
+seven supporting endpoints and `AuditS74Push` audits the three unconditional producers.
+All focused checks exit 0 with zero warnings, and only the standard three axioms occur.
+The general-ambient singular-cell target chart adaptation is not claimed by these endpoints.
+
+## Boundary disk product collars
+
+The native `Product`, `Prism`, `PrismBoundary`, and `DiskCollar` modules give the local disk
+collar used in Moise 26.2. The prism proof explicitly glues three tetrahedra along their
+triangular faces using 23.11. Intrinsic boundary incidence and the existing boundary-disk
+PL extension then identify its bottom with a prescribed boundary disk in the containing
+three-ball from Problem 26.1. Positive height misses the ambient boundary by injectivity.
+This original native development changes no vendored Lean source. Five focused checks exit 0
+with zero warnings; `AuditS75Collar` checks thirteen declarations, all with only the standard
+three axioms. Compatibility of different disk collars and the whole-boundary neighborhood
+are separate remaining obligations.
+
+## Boundary components separate small neighborhoods
+
+The original native `Connected/TwoSided`, `Connected/FiniteCover`, and
+`PiecewiseLinear/PolyhedralManifoldTopology` proofs implement the separation argument of
+Moise 26.1, printed page 191. They retain the definition using each connected component and
+sufficiently small connected neighborhoods. Interior density is proved from PL ball charts;
+finite simplex images isolate boundary components. No vendored Lean source changed.
+Three focused checks exit 0 with zero warnings. `AuditS76TwoSided` audits eleven declarations,
+all using only the standard three axioms. The full collar and bicollar constructions of 26.2
+and 26.3 are not asserted here.
+
+## Relative free cells in a disk decomposition
+
+The native `RelativeFreeDiskCell.lean` proves Moise 17.3, printed page 118, for a specified
+proper disk which is a union of cells. It uses a finite boundary-trace argument, the existing
+planar split and general 17.2, then transports the result to arbitrary finite-dimensional
+ambient spaces. `FreeDiskCell.lean` exposes its generalized union-restriction identity.
+This is original native Lean source; no vendored Lean file changed. The two focused checks
+exit 0 with zero warnings, and `AuditS77RelativeDisk` audits four declarations with only
+`propext`, `Classical.choice`, and `Quot.sound`. The supported ambient polygonalization
+of P.4 is not claimed by this result.
+
+## Controlled neighborhoods of boundary disks
+
+The native `BoundaryDiskNeighborhood.lean` supplies the arbitrary relative-neighborhood
+control in Problems 26.1--26.3 for a disk in the boundary: the containing ball, exact boundary
+ball, local disk collar, and push-off disk all fit inside the prescribed neighborhood.
+The argument combines the existing controlled subdivision neighborhood with intrinsic
+boundary monotonicity and the proved Problem 26.1 construction. No vendored source changed.
+The focused check exits 0 with zero warnings. `AuditS78BoundaryNeighborhood` checks four
+endpoints, all with only the standard three axioms. The whole-boundary collar and the
+two-sided interior-surface neighborhood remain separate obligations.
+
+## Manifold complements for the collar induction
+
+The original native `PlanarDiskComplement`, `SubcomplexComplementLink`, `ManifoldComplement`,
+and `DiskCollarComplement` developments supply the closed-complement manifold invariant in
+the Moise 26.2 induction. A crosscut identifies the planar disk complement; exact simplicial
+link identities reduce the three-dimensional local cases to disk and sphere complements.
+The boundary-disk collar is then packaged with a finite triangulation of its actual complement.
+`RelativeFreeDiskCell` reuses the promoted planar inclusion theorem without changing 17.3.
+No vendored source changed. Five focused checks exit 0 with zero warnings;
+`AuditS80Complement` audits sixteen new or affected declarations with only the standard three
+axioms. Compatible product gluing and the full boundary collar remain to be proved.
+
+## Complementary boundaries and disk replacement
+
+The original native `ManifoldFaces`, `BoundaryComplement`, `ManifoldSubcomplexBoundary`, and
+`BoundaryBallReplacement` developments supply the boundary step of the Moise 26.2 induction.
+Top-dimensional coface counts give the exact intrinsic boundary of the closed complement;
+link invariance and the two-point zero-sphere case identify the attaching circle. The existing
+P.2 extension theorem then replaces the attaching disk by the complementary disk in the
+boundary sphere while fixing the rest of the old boundary. `DiskCollarComplement` exposes
+this boundary transport together with the controlled disk collar and its actual complement.
+No vendored Lean source changed. Five focused checks exit 0 with zero warnings;
+`AuditS81BoundaryReplacement` audits thirteen declarations with only the standard three axioms.
+The side-face product compatibility and whole-boundary collar conclusion remain unproved.
