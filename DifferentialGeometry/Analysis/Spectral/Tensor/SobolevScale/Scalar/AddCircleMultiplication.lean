@@ -1,0 +1,99 @@
+import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Scalar.AddCircleDerivative
+import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Scalar.H0MultiplicationInclusion
+
+noncomputable section
+open scoped Manifold ContDiff
+namespace AddCircle
+open DifferentialGeometry
+open DifferentialGeometry.Tensor0SBundle
+open DifferentialGeometry.Integral.L2
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
+open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
+
+private local instance : NeZero (Module.finrank ℝ ℝ) := ⟨by simp⟩
+
+private theorem scalar0_comp
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ)))
+    (S T : SmoothCcTensor g 0 0) (x : AddCircle (1 : ℝ)) :
+    TensorRSField.scalar0 (ccOperatorFieldComp g 0 0 0 S T).toSection x =
+      TensorRSField.scalar0 S.toSection x * TensorRSField.scalar0 T.toSection x := by
+  let f : C^∞⟮𝓘(ℝ, ℝ), AddCircle (1 : ℝ); ℝ⟯ :=
+    ⟨TensorRSField.scalar0 S.toSection, TensorRSField.scalar0_smooth S.toSection⟩
+  have hS : scalarCc g f = S := SmoothCcTensor.ext_scalar0 (scalar0_scalarCc g f)
+  rw [← hS, operatorFieldComposition_zero_eq_operatorFieldApply, app_scalarCc,
+    scalar0_smul_cc, scalar0_scalarCc]
+
+theorem parameterDerivativeCcTensor_ccOperatorFieldComp
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ)))
+    (S T : SmoothCcTensor g 0 0) :
+    parameterDerivativeCcTensor g (ccOperatorFieldComp g 0 0 0 S T) =
+      ccOperatorFieldComp g 0 0 0 S (parameterDerivativeCcTensor g T) +
+        ccOperatorFieldComp g 0 0 0 T (parameterDerivativeCcTensor g S) := by
+  apply SmoothCcTensor.ext_scalar0
+  funext z
+  obtain ⟨x, rfl⟩ := QuotientAddGroup.mk_surjective z
+  simp only [scalar0_parameterDerivativeCcTensor_coe, SmoothCcTensor.toSection_add,
+    TensorRSField.scalar0_add, Pi.add_apply, scalar0_comp]
+  have hS : DifferentiableAt ℝ
+      (fun t : ℝ => TensorRSField.scalar0 S.toSection (t : AddCircle (1 : ℝ))) x := by
+    exact ((((TensorRSField.scalar0_smooth S.toSection).comp contMDiff_coe).contDiff).differentiable
+        (by simp) x)
+  have hT : DifferentiableAt ℝ
+      (fun t : ℝ => TensorRSField.scalar0 T.toSection (t : AddCircle (1 : ℝ))) x := by
+    exact ((((TensorRSField.scalar0_smooth T.toSection).comp contMDiff_coe).contDiff).differentiable
+        (by simp) x)
+  rw [deriv_fun_mul hS hT]
+  ring
+
+theorem parameterDerivativeHs_scalarHsMul
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ)))
+    (u v : TensorHs g 0 0 ((1 : ℕ) : ℝ)) :
+    let D := (tensorHsInclusion (g := g) (r := 0) (s := 0)
+      (by norm_num : (0 : ℝ) ≤ ((0 : ℕ) : ℝ))).comp
+        ((parameterDerivativeHs g 0).comp (tensorHsInclusion (g := g) (r := 0) (s := 0)
+          (by norm_num : ((0 : ℕ) : ℝ) + 1 ≤ ((1 : ℕ) : ℝ))))
+    let C := (scalarH1ToContinuous g).comp (tensorHsInclusion (g := g) (r := 0) (s := 0)
+      (by norm_num : (1 : ℝ) ≤ ((1 : ℕ) : ℝ)))
+    D (scalarHsMul g 1 (by norm_num) u v) =
+      scalarH0ContinuousMul g (C u) (D v) + scalarH0ContinuousMul g (C v) (D u) := by
+  intro D C
+  let m := scalarHsMul g 1 (by norm_num)
+  have hD (S : SmoothCcTensor g 0 0) :
+      D (ccTensorToHs g 0 ((1 : ℕ) : ℝ) S) =
+        ccTensorToHs g 0 0 (parameterDerivativeCcTensor g S) := by
+    simp only [D, ContinuousLinearMap.comp_apply, tensorHsInclusion_ccTensorToHs,
+      parameterDerivativeHs_apply_ccTensorToHs]
+  have hC (S : SmoothCcTensor g 0 0) :
+      C (ccTensorToHs g 0 ((1 : ℕ) : ℝ) S) =
+        scalarH1ToContinuous g (ccTensorToHs g 0 1 S) := by
+    simp only [C, ContinuousLinearMap.comp_apply, tensorHsInclusion_ccTensorToHs]
+  have hmul0 (S T : SmoothCcTensor g 0 0) :
+      scalarH0ContinuousMul g (scalarH1ToContinuous g (ccTensorToHs g 0 1 S))
+        (ccTensorToHs g 0 0 T) = ccTensorToHs g 0 0 (ccOperatorFieldComp g 0 0 0 S T) := by
+    have h := tensorHsInclusion_scalarHsMul_zero g
+      (ccTensorToHs g 0 ((1 : ℕ) : ℝ) S) (ccTensorToHs g 0 ((1 : ℕ) : ℝ) T)
+    dsimp only at h
+    simp only [scalarHsMul_apply_ccTensorToHs, ContinuousLinearMap.comp_apply,
+      tensorHsInclusion_ccTensorToHs] at h
+    exact h.symm
+  change D (m u v) = _
+  refine (ccToHsLin_dense g 0 (by norm_num : (0 : ℝ) ≤ ((1 : ℕ) : ℝ))).induction_on u ?_ ?_
+  · apply isClosed_eq
+    · exact D.continuous.comp (m.continuous.clm_apply continuous_const)
+    · exact (((scalarH0ContinuousMul g).continuous.comp C.continuous).clm_apply
+        continuous_const).add ((scalarH0ContinuousMul g (C v)).continuous.comp D.continuous)
+  intro S
+  refine (ccToHsLin_dense g 0 (by norm_num : (0 : ℝ) ≤ ((1 : ℕ) : ℝ))).induction_on v ?_ ?_
+  · apply isClosed_eq
+    · exact D.continuous.comp (m (ccToHsLin g 0 ((1 : ℕ) : ℝ) S)).continuous
+    · exact ((scalarH0ContinuousMul g (C (ccToHsLin g 0 ((1 : ℕ) : ℝ) S))).continuous.comp
+        D.continuous).add (((scalarH0ContinuousMul g).continuous.comp C.continuous).clm_apply
+          continuous_const)
+  intro T
+  simp only [ccToHsLin_apply, m, scalarHsMul_apply_ccTensorToHs, hD, hC,
+    hmul0, parameterDerivativeCcTensor_ccOperatorFieldComp,
+    ccTensorToHs_add]
+
+end AddCircle
