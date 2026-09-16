@@ -553,6 +553,18 @@
   `boundaryComplex_full_boundaryRelSubdivision`、`isPLSphere_gluedComplex_of_isPLBall`、
   `isPLHomeomorphOn_gluedMap_of_full`、`exists_face_superset_card_eq_of_isPLBall`、
   `IsCombinatorialManifold.secondDerived`、`secondDerived_isSubdivision`、`exists_primalTree_dualCotree`。
+- 2026-09-16（H-M4 / I5，数学提交 `1d7ffe266`）：`BoundaryHomology.lean` 在现有
+  `orderedSimplicialSet` normalized chain complex 中构造边界分支定向循环与顶单形边界的联合单射，证明
+  `card(other boundary components) ≤ b₂(K)`，并证明连通可定向带非空边界组合 3-流形的奇异 `b₃=0`。
+  `faceEulerChar` 的连通分支求和、H.4b 的 `χ=2 → IsPLSphere 2`、`χ(∂K)=2χ(K)` 与 Euler–Betti 展开
+  随后给出 `HandleCount.bettiOne_pos_of_boundary_component_not_sphere`，交付 I5；H-M3 的闭曲面全局基本类仍后推。
+  三个目标模块聚焦检查 exit=0、零 warning；`fresh.py` 报相对整合分支 7 个改动模块 olean 全部新鲜且零禁用项。
+  `.lake/scratch/AuditHI5.lean` 逐项审计 47 个新增声明与 23 个关键复用声明，均只含标准三公理。
+  本里程碑首次复用单独审计 `orderedNormalizedChainEquiv`、`orderedNormalizedBoundary`、
+  `SSet.finiteDimensional_normalizedChainComplex_X`、`ShortComplex.homologyMapIso`、`isoOfQuasiIsoAt`、
+  `LinearMap.finrank_le_finrank_of_injective`、`LinearMap.finrank_range_le`、`LinearMap.ker_eq_bot`、
+  `Nat.card_le_card_of_surjective` 与 `Finite.card_option`；并复核 realization/奇异同调桥、分量复形、曲面 Euler 上界、
+  H.4b 球面识别、边界定向及边界 Euler 端点的公理闭包。
 - 2026-09-15（C/L 车道，L.2 接口修正与组合曲面层）：`SphereCase.lean` 的
   `exists_nonsingular_two_cell_of_sphere_boundary` 在 `724267986` 增加实际多面体 3-流形 `M`、
   `B ⊆ polyhedralBoundary 3 M hM`，并在 `hpush` 与结论中都要求 `D₁ '' D₁.domain ⊆ M`；检查 exit=0、

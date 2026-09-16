@@ -392,3 +392,22 @@ Reduced/MayerVietorisCoefficients, Reduced/PointClasses}`（`REUSE_AUDIT.md` §2
   exit=0，全部只依赖 `propext`、`Classical.choice`、`Quot.sound`。
 - H.4b 无未闭合项。下一里程碑按 `NIGHT_PLAN.md` §6.1 用 `faceEulerChar` 路线交付 I5；
   H-M3 的顶维基本类继续后推。
+
+### I5 / H-M4 — done，非球面边界分支迫使一阶 Betti 数为正
+
+- 数学提交：`1d7ffe266`。新模块 `BoundaryHomology.lean`；`HandleCount.lean` 的跨车道端点为
+  `bettiOne_pos_of_boundary_component_not_sphere`，签名保持 `IsCombinatorialManifoldWithBoundary 3 K`、
+  `IsOrientable 3 K`、`IsConnected K.space`、指定边界连通分支及该分支非 `IsPLSphere 2`。
+- 证明使用现有有序单纯集合的 normalized chain complex 作内部坐标，不新增同调表示层；最终结论仍是本库奇异
+  `Homology.bettiOne`。每个非基准边界分支的相干定向 2-循环与所有 3-单形边界组成一个到 2-循环空间的单射，
+  给出 `card(other boundary components) ≤ b₂(K)`。同一余维一面传播论证证明带非空边界的连通可定向
+  3-流形顶微分单射，因而奇异 `b₃(K)=0`。
+- `faceEulerChar` 按连通分支分解；H.4b 与每个闭连通组合曲面的 `χ≤2` 将指定非球面分支改进为严格上界
+  `χ(∂K)<2·card(π₀∂K)`。结合 `χ(∂K)=2χ(K)`、`χ(K)=1-b₁+b₂` 和上述秩界，若 `b₁=0`
+  即得矛盾，闭合 I5；没有等待 H-M3 的闭曲面全局顶维基本类。
+- 聚焦检查均 exit=0、零 warning：`OrderedChainCoordinates` 13.1 秒、`BoundaryHomology` 25.3 秒、
+  `HandleCount` 11.9 秒；`fresh.py` 报 7 个相对整合分支改动模块全部 olean 新鲜、零禁用项。
+  `.lake/scratch/AuditHI5.lean` 逐项审计 47 个新增声明与 23 个关键复用声明，exit=0，全部仅含
+  `propext`、`Classical.choice`、`Quot.sound`。
+- I5 无未闭合项。H-M3 的闭曲面基本类、可定向/不可定向闭曲面完整 `b₂` 公式仍按计划后推；本里程碑只证明
+  I5 所需的带非空边界三维顶同调消失，不冒充 H-M3 完成。
