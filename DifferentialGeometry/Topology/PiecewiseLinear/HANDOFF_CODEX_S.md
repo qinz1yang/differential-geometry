@@ -2343,3 +2343,23 @@ endpoints of the updated module, exit 0, only the standard three axioms.
 The small edge-disk producer is now present for the previously constructed
 polygonal vertex germs. Degree-one germs and the final controlled graph
 assembly remain to be constructed.
+
+## Simultaneous edge disks and straightening (2026-09-16)
+
+`PlanarJordan/ArcFamilyStraightening.lean` proves
+`exists_homeomorph_polygonal_arc_family_of_polygonal_ends` for any finite family
+of parametrized arcs meeting only at their endpoints. From polygonal initial
+and terminal subarcs and arbitrary neighborhoods of their middle subarcs, it
+constructs pairwise disjoint PL disks, each avoiding every other whole arc and
+its own endpoints. One ambient homeomorphism makes every whole arc polygonal,
+fixes the complement of the union of disk interiors, and moves points in each
+disk by at most that disk's diameter. Shared graph vertices are allowed.
+
+The disks are produced using separation of the compact middle arcs and the
+closed union of all other arcs. They are not additional hypotheses. The finite
+gluing theorem then agrees with each individual straightening on its entire
+arc, since every other support avoids that arc.
+
+Focused check exit 0, zero warnings. AuditS130ArcFamily checks the public
+endpoint, exit 0, only the standard three axioms. This closes the simultaneous
+small-disk construction for finite edge families with polygonal endpoint germs.
