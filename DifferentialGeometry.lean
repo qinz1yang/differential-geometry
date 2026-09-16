@@ -7778,6 +7778,7 @@ import DifferentialGeometry.Geometry.MinimalSurface.Plateau.DiskReflectionCovari
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.DiskReflectionDifferential
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.DiskSmoothLipschitz
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.DiskTensionSmoothness
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.DomainVariation
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.ExactAttainment
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Existence
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.ExistenceReduction
