@@ -985,8 +985,10 @@ import DifferentialGeometry.Analysis.ODE.PhaseFlow.EndpointInverse
 import DifferentialGeometry.Analysis.ODE.PhaseFlow.Existence
 import DifferentialGeometry.Analysis.ODE.PhaseFlow.Perturbation
 import DifferentialGeometry.Analysis.ODE.PhaseFlow.Smallness
+import DifferentialGeometry.Analysis.ODE.QuadraticRadialCurve
 import DifferentialGeometry.Analysis.ODE.Regularity.CInfinityConvergence
 import DifferentialGeometry.Analysis.ODE.Regularity.SecondOrderBootstrap
+import DifferentialGeometry.Analysis.ODE.SaddleBandCurve
 import DifferentialGeometry.Analysis.ODE.ScalarODEComparison
 import DifferentialGeometry.Analysis.ODE.Stability.Tube
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Bijective.ChartCoverBijective
@@ -8878,6 +8880,7 @@ import DifferentialGeometry.Topology.Manifold.CollarChartIsotopy
 import DifferentialGeometry.Topology.Manifold.CollarFamily
 import DifferentialGeometry.Topology.Manifold.CollarFamilySeparation
 import DifferentialGeometry.Topology.Manifold.NormalChartOrientation
+import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.LeftInverse
 import DifferentialGeometry.Topology.Manifold.RelativeCollar
 import DifferentialGeometry.Topology.Manifold.RelativeCollarAssembly
 import DifferentialGeometry.Topology.Manifold.RelativeCollarStraightening
@@ -9271,6 +9274,7 @@ import DifferentialGeometry.Topology.Morse.Naturality
 import DifferentialGeometry.Topology.Morse.NormalForm.Euclidean
 import DifferentialGeometry.Topology.Morse.NormalForm.Local
 import DifferentialGeometry.Topology.Morse.NormalForm.Manifold
+import DifferentialGeometry.Topology.Morse.NormalForm.Saddle
 import DifferentialGeometry.Topology.Morse.Perturbation
 import DifferentialGeometry.Topology.Morse.RegularLevel.CriticalSeparation
 import DifferentialGeometry.Topology.Morse.RegularLevel.Flow
