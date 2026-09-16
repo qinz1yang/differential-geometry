@@ -303,3 +303,29 @@ theorem eq_top_of_boundaryLoops_mem_normal
   并证明上述限制覆盖的连通分支在 `D.domain` 中是多边形或折线，而不只是拓扑同胚副本。本树尚缺有限一维分支的 PL 载体与
   覆盖原像三角剖分桥接。此后 Case 1/2 的环带正则邻域与盘替换、Case 3/4 的切开重建，以及最终 I3 边界半空间析取到
   `HasDoublePointSheetsAt` 的桥接仍未闭合，也没有被弱化为假设。
+
+## 12. 2026-09-15 E3-M2 追加：图分支的连通子复形载体
+
+状态：done（E3-M2 的分支载体层已闭合，整体 L.3 仍为 partial）。数学提交 `7dd606e0e`。
+
+- 新模块 `Topology/SimplicialComplex/ConnectedSpace.lean` 证明
+  `isConnected_space_of_edgeGraph_connected`：单纯复形的边图连通时，其几何实现连通。证明把实现写成所有顶点闭星的并，
+  用边图道路把闭星的非空相交关系连接起来。
+- 新模块 `LoopTheorem/BranchCarrier.lean` 对每个
+  `NormalSingularSetTriangulation.Branch` 构造 `branchComplex`。其顶点与该图分支的支集等价，边图同构于
+  `ConnectedComponent.toSimpleGraph`；因此 `branchComplex_space_isConnected`，且其空间是有限多面体。
+  `branchComplex_isManifoldWithBoundary` 证明每个分支子复形是带边组合 1-流形；
+  `branchComplex_isManifold` 进一步证明闭分支是无边界组合 1-流形。
+- `branchCarrier` 是该子复形经 PL 片参数化映入目标后的像；`branchCarrier_subset_doublePointSet` 与
+  `branchCarrier_isConnected` 证明它确实是奇点集中的连通分支载体。`branchSet` 将其内在地写成
+  `doublePointSet D D.domain` 的子集并证明连通。
+- `NormalSingularCellData.doublePointProjection_branch_connected_or_two_components` 现直接接受实际图分支 `c`，并把其原像分类为
+  一个连通二重覆盖，或两个各自同胚到 `branchSet c` 的连通分支；不再要求消费者自行提供抽象连通子集 `J`。
+- `ConnectedSpace`、`BranchCarrier`、`DoublePointCover` 三模块聚焦检查均 exit=0、零 warning；
+  `.lake/scratch/AuditBranchCarrier.lean` 的 30 项与更新后 `.lake/scratch/AuditDoublePointCover.lean` 的 16 项审计
+  全部只含 `propext`、`Classical.choice`、`Quot.sound`。本层没有首次复用新的 covering/Van Kampen 声明；覆盖分类继续走
+  §11 已逐条审计的 D4 链。
+- 确切未闭合项：尚需有限一维组合流形分类桥接，证明闭分支的 `branchComplex.space` 是 PL 1-球面、触边分支的是 PL 1-球；
+  还需证明二重覆盖原像的连通分支带有与 `D.domain` 相容的有限 PL 三角剖分，从拓扑同胚升级为多边形圆或折线。
+  若 Case 1–4 需要全局分解，还须显式证明各 `branchCarrier` 两两不交并覆盖整个 `doublePointSet`。
+  环带正则邻域、盘替换、切开重建与 I3 边界半空间桥接仍未闭合，也没有被弱化为假设。
