@@ -41,10 +41,10 @@ theorem eventually_exists_mem_openSimplex_eq_height
   eventually_exists_eq_height_of_mem_ray_nhds ℓ hlevel hℓd
     (eventually_mem_openSimplex_of_mem_vectorSpan hx hd) hε
 
-theorem eventually_exists_mem_carrierFace_eq_height
-    (K : Geometry.SimplicialComplex ℝ E) (ℓ : E →L[ℝ] ℝ) (hinj : InjOn ℓ K.vertices)
-    {p x : E} (hp : p ∈ K.vertices) (hx : x ∈ K.space) (hlevel : ℓ x = ℓ p)
-    {ε : ℝ} (hε : 0 < ε) :
+theorem eventually_exists_mem_carrierFace_eq_height_of_unique_vertex_in_fiber
+    (K : Geometry.SimplicialComplex ℝ E) (ℓ : E →L[ℝ] ℝ) {p x : E}
+    (hunique : ∀ v ∈ K.vertices, ℓ v = ℓ p → v = p)
+    (hx : x ∈ K.space) (hlevel : ℓ x = ℓ p) {ε : ℝ} (hε : 0 < ε) :
     ∀ᶠ f : E →L[ℝ] ℝ in 𝓝 ℓ,
       ∃ y ∈ openSimplex (carrierFace K x), f y = f p ∧ dist y x < ε ∧ (x ∈ K.vertices → y = x) := by
   classical
@@ -52,24 +52,39 @@ theorem eventually_exists_mem_carrierFace_eq_height
   · subst x
     exact Filter.Eventually.of_forall fun _ =>
       ⟨p, mem_openSimplex_carrierFace hx, rfl, by simpa only [dist_self] using hε, fun _ => rfl⟩
-  have hxv : x ∉ K.vertices := fun hxv => hxp (hinj hxv hp hlevel)
+  have hxv : x ∉ K.vertices := fun hxv => hxp (hunique x hxv hlevel)
   have hs := carrierFace_mem hx
   have hxs := mem_openSimplex_carrierFace hx
-  obtain ⟨a, ha, b, hb, hab⟩ := Finset.one_lt_card.mp
-    (one_lt_card_of_mem_openSimplex_of_notMem_vertices K hs hxs hxv)
   have hvert : ∀ v ∈ carrierFace K x, v ∈ K.vertices := fun v hv =>
     K.down_closed hs (Finset.singleton_subset_iff.mpr hv) (Finset.singleton_nonempty v)
-  have hd : ℓ (a - b) ≠ 0 := by
-    rw [map_sub]
-    exact sub_ne_zero.mpr (fun h => hab (hinj (hvert a ha) (hvert b hb) h))
-  filter_upwards [eventually_exists_mem_openSimplex_eq_height ℓ hxs
-    (vsub_mem_vectorSpan ℝ ha hb) hlevel hd hε] with f hf
+  have hex : ∃ v ∈ carrierFace K x, ℓ v ≠ ℓ p := by
+    by_contra! hz
+    have hsub : (carrierFace K x : Set E) ⊆ {p} := fun v hv => hunique v (hvert v hv) (hz v hv)
+    exact hxp (convexHull_min hsub (convex_singleton p) (openSimplex_subset_convexHull _ hxs))
+  obtain ⟨v, hv, hvl⟩ := hex
+  have hd : v - x ∈ vectorSpan ℝ (carrierFace K x : Set E) := by
+    simpa only [direction_affineSpan, vsub_eq_sub] using
+      AffineSubspace.vsub_mem_direction (subset_affineSpan ℝ _ hv)
+        (convexHull_subset_affineSpan _ (openSimplex_subset_convexHull _ hxs))
+  have hℓd : ℓ (v - x) ≠ 0 := by
+    rw [map_sub, hlevel]
+    exact sub_ne_zero.mpr hvl
+  filter_upwards [eventually_exists_mem_openSimplex_eq_height ℓ hxs hd hlevel hℓd hε] with f hf
   obtain ⟨y, hy, hfy, hyclose⟩ := hf
   exact ⟨y, hy, hfy, hyclose, fun h => (hxv h).elim⟩
 
-theorem eventually_exists_vertexMap_eq_height_on_fiber
+theorem eventually_exists_mem_carrierFace_eq_height
+    (K : Geometry.SimplicialComplex ℝ E) (ℓ : E →L[ℝ] ℝ) (hinj : InjOn ℓ K.vertices)
+    {p x : E} (hp : p ∈ K.vertices) (hx : x ∈ K.space) (hlevel : ℓ x = ℓ p)
+    {ε : ℝ} (hε : 0 < ε) :
+    ∀ᶠ f : E →L[ℝ] ℝ in 𝓝 ℓ,
+      ∃ y ∈ openSimplex (carrierFace K x), f y = f p ∧ dist y x < ε ∧ (x ∈ K.vertices → y = x) :=
+  eventually_exists_mem_carrierFace_eq_height_of_unique_vertex_in_fiber K ℓ
+    (fun _ hv h => hinj hv hp h) hx hlevel hε
+
+theorem eventually_exists_vertexMap_eq_height_on_fiber_of_unique_vertex_in_fiber
     (K : Geometry.SimplicialComplex ℝ E) (ℓ : E →L[ℝ] ℝ) (hℓ : ℓ ≠ 0)
-    (hinj : InjOn ℓ K.vertices) {p : E} (hp : p ∈ K.vertices)
+    {p : E} (hunique : ∀ v ∈ K.vertices, ℓ v = ℓ p → v = p)
     {A : Set E} (hA : A.Finite) {ε : ℝ} (hε : 0 < ε) :
     ∀ᶠ f : E →L[ℝ] ℝ in 𝓝 ℓ, ∃ φ : E → E,
       EqOn φ id Aᶜ ∧ EqOn φ id K.vertices ∧ EqOn φ id {x | ℓ x ≠ ℓ p} ∧
@@ -89,7 +104,7 @@ theorem eventually_exists_vertexMap_eq_height_on_fiber
     intro v
     by_cases hvlevel : ℓ v = ℓ p
     · by_cases hvK : v ∈ K.space
-      · filter_upwards [eventually_exists_mem_carrierFace_eq_height K ℓ hinj hp hvK hvlevel hε] with f hf
+      · filter_upwards [eventually_exists_mem_carrierFace_eq_height_of_unique_vertex_in_fiber K ℓ hunique hvK hvlevel hε] with f hf
         obtain ⟨y, hy, hfy, hyclose, hyfix⟩ := hf
         exact ⟨y, hyclose, fun _ => hfy, fun _ => hy,
           fun h => hyfix (h.resolve_left (not_not.mpr hvlevel))⟩
@@ -122,10 +137,22 @@ theorem eventually_exists_vertexMap_eq_height_on_fiber
     · exact (hφ v hv).2.2.2 (Or.inl hvlevel)
     · exact hfix v hv
 
-theorem eventually_exists_isPLHomeomorphOn_move_fiber_vertices [FiniteDimensional ℝ E]
+theorem eventually_exists_vertexMap_eq_height_on_fiber
+    (K : Geometry.SimplicialComplex ℝ E) (ℓ : E →L[ℝ] ℝ) (hℓ : ℓ ≠ 0)
+    (hinj : InjOn ℓ K.vertices) {p : E} (hp : p ∈ K.vertices)
+    {A : Set E} (hA : A.Finite) {ε : ℝ} (hε : 0 < ε) :
+    ∀ᶠ f : E →L[ℝ] ℝ in 𝓝 ℓ, ∃ φ : E → E,
+      EqOn φ id Aᶜ ∧ EqOn φ id K.vertices ∧ EqOn φ id {x | ℓ x ≠ ℓ p} ∧
+      (∀ v ∈ A, dist (φ v) v < ε) ∧
+      (∀ v ∈ A, ℓ v = ℓ p → f (φ v) = f p) ∧
+      ∀ v ∈ A ∩ K.space, φ v ∈ openSimplex (carrierFace K v) :=
+  eventually_exists_vertexMap_eq_height_on_fiber_of_unique_vertex_in_fiber K ℓ hℓ
+    (fun _ hv h => hinj hv hp h) hA hε
+
+theorem eventually_exists_isPLHomeomorphOn_move_fiber_vertices_of_unique_vertex_in_fiber [FiniteDimensional ℝ E]
     (K R : Geometry.SimplicialComplex ℝ E) [Finite R.faces]
-    (ℓ : E →L[ℝ] ℝ) (hℓ : ℓ ≠ 0) (hinj : InjOn ℓ K.vertices)
-    {p : E} (hp : p ∈ K.vertices) {U : Set E} (hU : IsOpen U) (hRU : R.space ⊆ U)
+    (ℓ : E →L[ℝ] ℝ) (hℓ : ℓ ≠ 0)
+    {p : E} (hunique : ∀ v ∈ K.vertices, ℓ v = ℓ p → v = p) {U : Set E} (hU : IsOpen U) (hRU : R.space ⊆ U)
     {ε : ℝ} (hε : 0 < ε) :
     ∀ᶠ f : E →L[ℝ] ℝ in 𝓝 ℓ, ∃ h : E → E,
       IsPLHomeomorphOn h univ univ ∧ (∀ x, dist (h x) x < ε) ∧ EqOn h id Uᶜ ∧
@@ -136,7 +163,7 @@ theorem eventually_exists_isPLHomeomorphOn_move_fiber_vertices [FiniteDimensiona
   obtain ⟨δ, hδ, hext⟩ := exists_isPLHomeomorphOn_extension_of_small_vertex_perturbation R hU hRU hε
   have hRfin : R.vertices.Finite :=
     Set.Finite.preimage Finset.singleton_injective.injOn (Set.toFinite R.faces)
-  filter_upwards [eventually_exists_vertexMap_eq_height_on_fiber K ℓ hℓ hinj hp hRfin hδ] with f hf
+  filter_upwards [eventually_exists_vertexMap_eq_height_on_fiber_of_unique_vertex_in_fiber K ℓ hℓ hunique hRfin hδ] with f hf
   obtain ⟨φ, -, hfixK, hfixLevel, hclose, hlevel, hcarrier⟩ := hf
   obtain ⟨h, hh, hhclose, hhfix, hhφ⟩ := hext φ hclose
   have hvertices : EqOn h φ R.vertices := by
@@ -156,5 +183,19 @@ theorem eventually_exists_isPLHomeomorphOn_move_fiber_vertices [FiniteDimensiona
   · intro s hs
     obtain ⟨a, ha⟩ := exists_affineMap_eqOn_simplicialMap R φ hs
     exact ⟨a, (hhφ.mono (R.convexHull_subset_space hs)).trans ha⟩
+
+theorem eventually_exists_isPLHomeomorphOn_move_fiber_vertices [FiniteDimensional ℝ E]
+    (K R : Geometry.SimplicialComplex ℝ E) [Finite R.faces]
+    (ℓ : E →L[ℝ] ℝ) (hℓ : ℓ ≠ 0) (hinj : InjOn ℓ K.vertices)
+    {p : E} (hp : p ∈ K.vertices) {U : Set E} (hU : IsOpen U) (hRU : R.space ⊆ U)
+    {ε : ℝ} (hε : 0 < ε) :
+    ∀ᶠ f : E →L[ℝ] ℝ in 𝓝 ℓ, ∃ h : E → E,
+      IsPLHomeomorphOn h univ univ ∧ (∀ x, dist (h x) x < ε) ∧ EqOn h id Uᶜ ∧
+      EqOn h id (R.vertices ∩ K.vertices) ∧ EqOn h id (R.vertices ∩ {x | ℓ x ≠ ℓ p}) ∧
+      (∀ v ∈ R.vertices, ℓ v = ℓ p → f (h v) = f p) ∧
+      (∀ v ∈ R.vertices ∩ K.space, h v ∈ openSimplex (carrierFace K v)) ∧
+      ∀ s ∈ R.faces, ∃ a : E →ᵃ[ℝ] E, EqOn h a (convexHull ℝ (s : Set E)) :=
+  eventually_exists_isPLHomeomorphOn_move_fiber_vertices_of_unique_vertex_in_fiber K R ℓ hℓ
+    (fun _ hv h => hinj hv hp h) hU hRU hε
 
 end DifferentialGeometry.Topology.PiecewiseLinear

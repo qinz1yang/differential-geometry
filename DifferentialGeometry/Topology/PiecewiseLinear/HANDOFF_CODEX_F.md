@@ -1394,3 +1394,19 @@ M1/M2/M3 均未验收；下一审计文件 `AuditF135.lean`。
 这是旧高度在原剖分顶点上单射时的稳定定理。水平封帽后多个顶点位于同一旧层，不能直接使用本定理；
 仍需处理该退化层、凸化引入的剖分和封帽后的严格降指标。没有扩充 `SchoenfliesInput`，M1/M2/M3 均未验收。
 下一审计文件 `AuditF139.lean`。
+
+### 18.19 允许其他高度层退化的临界层稳定
+
+- `HeightProjection.lean` 增加三个 `of_unique_vertex_in_fiber` 强版。它们只要求当前层的原顶点至多为 p：
+  `∀ v ∈ K.vertices, ℓ v = ℓ p → v = p`，不要求不同高度层的所有顶点一般位置。
+  若 x ≠ p 在当前层，则其载体必有一个不同高度的顶点 v；方向 v - x 属于载体方向空间且高度非零，给出所需投影。
+- `HeightStability.lean` 将强版推广到保持球面、整层像集相等和原顶点处平面芽对应的环境 PL 同胚。
+  `HeightRotation.lean` 的点态强版及 `eventually_heightSingularPoints_inter_eq_and_levelPolygons_encard_eq`
+  给出任意满足上述单层唯一性的一族原顶点上，奇异性与整层圆周数同时保持。
+- 所有旧的顶点单射接口保留完整签名，证明改为新强版的推论；既有全局 `eventually_heightIndex_eq` 不变。
+
+三个改动模块最终聚焦检查分别为 10.9、12.1、11.2 秒，均 exit=0、零 warning。
+`AuditF139.lean` 二十二项（含全部保留接口）仅标准三公理，强版端点签名已核对。
+没有增加 `SchoenfliesInput` 字段。本层允许其他层退化，但不涵盖选定层的多顶点水平封帽；
+还需证明封帽边缘的 crossing/孤立分类、凸化后的剖分控制及严格降指标。M1/M2/M3 均未验收。
+下一审计文件 `AuditF140.lean`。
