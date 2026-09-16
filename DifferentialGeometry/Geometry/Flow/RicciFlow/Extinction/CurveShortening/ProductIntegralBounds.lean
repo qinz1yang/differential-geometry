@@ -1,6 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProductBackground
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.CurvatureConcentration
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProductSolution
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProductSliceRegularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.IntegralBounds
 import DifferentialGeometry.Analysis.Integration.Periodic
 
@@ -337,5 +338,41 @@ theorem exists_uniform_curvature_concentration [CompactSpace M]
     hsol C K hC' hK hlen (fun x t ht => by rw [hsq x t ⟨ht.1.le, ht.2⟩]; exact hk x t ht)
     hDR hDDRic hpq (by rwa [hlenEq]) (by rwa [hsq p u ⟨hsu.le, le_rfl⟩])
   exact ⟨v, hv, (hlenEq p v).symm.trans heq, (htcEq p v).symm ▸ htc⟩
+
+
+theorem projection_sweptDensity_le_totalCurvature
+    (c : ProductCurve M) (g : ℝ → SmoothRiemannianMetric I M)
+    (lambda : ℝ) (hlambda : 0 < lambda) {J : Set ℝ}
+    (hc : c.IsSolutionOn g lambda J) (t : ℝ) (ht : t ∈ J) :
+    c.projection.sweptDensity g J t ≤ c.totalCurvature g lambda t := by
+  have hpoint : ∀ x, Real.sqrt (c.projection.normSq g
+        (c.projection.velocity (I := I) J) x t) *
+          c.projection.speed g x t ≤ c.curvature g lambda x t * c.speed g lambda x t := by
+    intro x
+    have hvel : c.projection.velocity (I := I) J x t =
+        (c.curvatureVector g lambda x t).1 := by
+      rw [← hc.equation x t ht]
+      rfl
+    have hnorm : c.projection.normSq g (c.projection.velocity (I := I) J) x t =
+        (g t).inner (c.projection.lift x t)
+          (c.curvatureVector g lambda x t).1 (c.curvatureVector g lambda x t).1 := by
+      simp only [CurveMap.normSq, hvel]
+    have hle : c.projection.normSq g (c.projection.velocity (I := I) J) x t ≤
+        c.curvatureSq g lambda x t := by
+      rw [hnorm, ProductCurve.curvatureSq, ProductCurve.normSq, ProductCurve.inner]
+      nlinarith [sq_nonneg (lambda * (c.curvatureVector g lambda x t).2)]
+    exact mul_le_mul (Real.sqrt_le_sqrt hle) (c.projection_speed_le g lambda x t)
+      (c.projection.speed_nonneg g x t) (c.curvature_nonneg g lambda x t)
+  have hr := c.sliceRegularity_of_immersedOn g lambda hlambda hc.smooth hc.immersed t ht
+  have hint : IntegrableOn (fun x => c.curvature g lambda x t * c.speed g lambda x t)
+      (Ioc (0 : ℝ) 1) volume :=
+    ((hr.curvatureSq_continuous.sqrt.mul hr.speed_continuous).intervalIntegrable 0 1).1
+  have hnn : 0 ≤ᵐ[volume.restrict (Ioc (0 : ℝ) 1)]
+      (fun x => Real.sqrt (c.projection.normSq g (c.projection.velocity (I := I) J) x t) *
+        c.projection.speed g x t) :=
+    ae_of_all _ (fun x => mul_nonneg (Real.sqrt_nonneg _) (c.projection.speed_nonneg g x t))
+  have hle := MeasureTheory.integral_mono_of_nonneg hnn hint (ae_of_all _ hpoint)
+  simpa only [CurveMap.sweptDensity, CurveMap.integral, ProductCurve.totalCurvature,
+    ProductCurve.integral, intervalIntegral.integral_of_le zero_le_one] using hle
 
 end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening.ProductCurve
