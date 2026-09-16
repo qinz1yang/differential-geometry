@@ -119,6 +119,24 @@ theorem curvatureOperatorPositiveAt_iff_sectional (g : SmoothRiemannianMetric I 
     simpa only [metricAlgebraicCurvatureTensorAt_coe, metricRm04StandardAt] using
       h a b (hgram.symm ▸ hnorm)
 
+
+theorem curvatureOperatorPositiveAt_of_leastCurvatureOperatorEigenvalueAt_pos
+    (g : SmoothRiemannianMetric I M) (x : M)
+    (hdim : Module.finrank ℝ E = 3)
+    (hleast : 0 < leastCurvatureOperatorEigenvalueAt g x
+      (metricAlgebraicCurvatureTensorAt g x)) :
+    CurvatureOperatorPositiveAt g x := by
+  obtain ⟨basis, horth⟩ := exists_orthonormalBasisAt g x hdim
+  have hbound : curvatureOperatorLowerBoundAt g x
+      (metricAlgebraicCurvatureTensorAt g x)
+      (-leastCurvatureOperatorEigenvalueAt g x
+        (metricAlgebraicCurvatureTensorAt g x)) :=
+    (curvatureOperatorLowerBoundAt_iff_neg_leastCurvatureOperatorEigenvalueAt_le
+      basis horth).mpr le_rfl
+  intro n c v w hnorm
+  have hquad := hbound n c v w
+  exact lt_of_lt_of_le (mul_pos hleast hnorm) (by linarith [hquad])
+
 end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 
 end
