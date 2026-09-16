@@ -11,7 +11,7 @@ theorem exists_nonsingular_two_cell_of_disk_in_double_boundary_eqOn
     (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
     (hK : IsCombinatorialManifoldWithBoundary 3 K) :
     letI := combinatorialChartedSpace (double 3 K) (isCombinatorialManifold_double_succ_succ K hK)
-    let ι := simplicialMap K (glueEmbed₂ (boundaryComplex 3 K) id)
+    let ι := simplicialMap K (glueEmbed₂ (PiecewiseLinear.boundaryComplex 3 K) id)
     ∀ {R : Set (EuclideanSpace ℝ (Fin 2))} {D : Set (E × E × ℝ)}
         {r : EuclideanSpace ℝ (Fin 2) → E × E × ℝ},
       IsPLBall 2 R → IsPLHomeomorphOn r R D →
@@ -129,5 +129,129 @@ theorem exists_nonsingular_two_cell_of_disk_in_double_boundary_eqOn
   · exact (hAeq.mono hfrontR).trans hHboundary
   · rw [hAimage]
     exact hQ'inter
+
+namespace NormalSystem
+
+open Classical in
+theorem exists_singular_two_cell_in_double (S : NormalSystem E) :
+    let K := S.manifoldComplex
+    letI : Finite K.faces := S.manifoldComplex_faces_finite.to_subtype
+    letI := combinatorialChartedSpace (double 3 K)
+      (isCombinatorialManifold_double_succ_succ K S.isManifold)
+    let ι := simplicialMap K (glueEmbed₂ (PiecewiseLinear.boundaryComplex 3 K) id)
+    ∃ D : SingularTwoCell (double 3 K).space,
+      D.domain = S.sourceComplex.space ∧
+      EqOn (fun x => (D x : E × E × ℝ)) (ι ∘ S.singularMap)
+        S.sourceComplex.space ∧
+      Subtype.val '' (D '' D.domain) = ι '' S.imageComplex.space ∧
+      Set.range (fun x => (D.boundary x : E × E × ℝ)) =
+        ι '' S.loopComplex.space ∧
+      Subtype.val '' (D '' D.domain) ∩ ι '' (PiecewiseLinear.boundaryComplex 3 K).space =
+        ι '' S.loopComplex.space ∧
+      (∀ θ, (D (S.boundaryParam θ) : E × E × ℝ) = ι (S.boundaryLoop θ)) ∧
+      (D.IsNonsingular ↔ S.IsNonsingular) := by
+  classical
+  let K := S.manifoldComplex
+  let _ : Finite K.faces := S.manifoldComplex_faces_finite.to_subtype
+  let L := double 3 K
+  have hL : IsCombinatorialManifold 3 L :=
+    isCombinatorialManifold_double_succ_succ K S.isManifold
+  let _ := combinatorialChartedSpace L hL
+  let B := PiecewiseLinear.boundaryComplex 3 K
+  let ι : E → E × E × ℝ := simplicialMap K (glueEmbed₂ B id)
+  dsimp only
+  have hι : IsPLHomeomorphOn ι K.space (glued₂ K B id).space :=
+    isPLHomeomorphOn_embedComplex K (glueEmbed₂ B id) (glueSnd E E) (fun _ _ _ _ => rfl)
+  have hcopy : ι '' K.space ⊆ L.space := by
+    rw [hι.image_eq]
+    change (glued₂ K B id).space ⊆ (double 3 K).space
+    rw [double, gluedComplex_space]
+    exact subset_union_right
+  let F := ι ∘ S.singularMap
+  let _ : Finite S.sourceComplex.faces := S.finite_source.to_subtype
+  have hFcopy : MapsTo F S.sourceComplex.space L.space := by
+    intro x hx
+    exact hcopy ⟨S.singularMap x, S.singularMap_mapsTo_manifoldComplex hx, rfl⟩
+  have hSmap : IsPiecewiseAffineOn S.singularMap S.sourceComplex.space := by
+    exact isPiecewiseAffineOn_simplicialMap S.sourceComplex S.vertexMap
+  have hF : IsPiecewiseAffineOn F S.sourceComplex.space := by
+    have hcomp := (isPiecewiseAffineOn_simplicialMap K (glueEmbed₂ B id)).comp hSmap
+    have hpre : S.sourceComplex.space ∩ S.singularMap ⁻¹' K.space =
+        S.sourceComplex.space := inter_eq_left.mpr S.singularMap_mapsTo_manifoldComplex
+    rw [hpre] at hcomp
+    exact hcomp
+  obtain ⟨x, hx⟩ := S.source_isPLBall.nonempty
+  let T := combinatorialPLPieceIn L hL ⟨F x, hFcopy hx⟩
+  have hval (y : E × E × ℝ) (hy : y ∈ L.space) : (T.map y : E × E × ℝ) = y := by
+    simp only [T, combinatorialPLPieceIn, dif_pos hy]
+  let D : SingularTwoCell L.space :=
+    { domain := S.sourceComplex.space
+      isPLBall_domain := S.source_isPLBall
+      toFun := T.map ∘ F
+      isPLOn := T.isPLOn_comp hF hFcopy }
+  have hDeq : EqOn (fun z => (D z : E × E × ℝ)) F S.sourceComplex.space := by
+    intro z hz
+    exact hval (F z) (hFcopy hz)
+  have hDimage : Subtype.val '' (D '' D.domain) = ι '' S.imageComplex.space := by
+    rw [← image_comp]
+    change (fun z => (D z : E × E × ℝ)) '' S.sourceComplex.space = _
+    calc
+      (fun z => (D z : E × E × ℝ)) '' S.sourceComplex.space =
+          F '' S.sourceComplex.space := hDeq.image_eq
+      _ = ι '' (S.singularMap '' S.sourceComplex.space) := image_comp ι S.singularMap _
+      _ = ι '' S.imageComplex.space := by
+        have himage := S.image_space
+        change S.imageComplex.space = S.singularMap '' S.sourceComplex.space at himage
+        rw [← himage]
+  have hfrontier : frontier S.sourceComplex.space ⊆ S.sourceComplex.space :=
+    S.source_isPLBall.isPolyhedron.isClosed.frontier_subset
+  have hDboundary : Set.range (fun z => (D.boundary z : E × E × ℝ)) =
+      ι '' S.loopComplex.space := by
+    change Set.range ((fun z => (D z : E × E × ℝ)) ∘
+      (Subtype.val : frontier S.sourceComplex.space → EuclideanSpace ℝ (Fin 2))) = _
+    rw [range_comp, Subtype.range_coe]
+    calc
+      (fun z => (D z : E × E × ℝ)) '' frontier S.sourceComplex.space =
+          F '' frontier S.sourceComplex.space := (hDeq.mono hfrontier).image_eq
+      _ = ι '' (S.singularMap '' frontier S.sourceComplex.space) :=
+        image_comp ι S.singularMap _
+      _ = ι '' S.loopComplex.space := by
+        have hloop := S.loop_space
+        change S.loopComplex.space =
+          S.singularMap '' frontier S.sourceComplex.space at hloop
+        rw [← hloop]
+  have hboundary : S.imageComplex.space ∩ B.space = S.loopComplex.space := by
+    exact S.image_inter_boundary
+  have hDinter : Subtype.val '' (D '' D.domain) ∩ ι '' B.space =
+      ι '' S.loopComplex.space := by
+    rw [hDimage]
+    calc
+      ι '' S.imageComplex.space ∩ ι '' B.space =
+          ι '' (S.imageComplex.space ∩ B.space) :=
+        (hι.bijOn.injOn.image_inter S.image_space_subset_manifoldComplex
+          (boundaryComplex_space_subset 3 K)).symm
+      _ = ι '' S.loopComplex.space := by rw [hboundary]
+  have hparam : ∀ θ, (D (S.boundaryParam θ) : E × E × ℝ) =
+      ι (S.boundaryLoop θ) := by
+    intro θ
+    calc
+      (D (S.boundaryParam θ) : E × E × ℝ) = F (S.boundaryParam θ) :=
+        hDeq (hfrontier (S.boundaryParam θ).property)
+      _ = ι (S.singularMap (S.boundaryParam θ)) := rfl
+      _ = ι (S.boundaryLoop θ) := congrArg ι (S.boundaryLoop_eq θ).symm
+  have hnonsingular : D.IsNonsingular ↔ S.IsNonsingular := by
+    constructor
+    · intro hD x hx y hy hxy
+      apply hD hx hy
+      apply Subtype.ext
+      exact (hDeq hx).trans ((congrArg ι hxy).trans (hDeq hy).symm)
+    · intro hS x hx y hy hxy
+      apply hS hx hy
+      apply hι.bijOn.injOn (S.singularMap_mapsTo_manifoldComplex hx)
+        (S.singularMap_mapsTo_manifoldComplex hy)
+      exact (hDeq hx).symm.trans ((congrArg Subtype.val hxy).trans (hDeq hy))
+  exact ⟨D, rfl, hDeq, hDimage, hDboundary, hDinter, hparam, hnonsingular⟩
+
+end NormalSystem
 
 end DifferentialGeometry.Topology.PiecewiseLinear
