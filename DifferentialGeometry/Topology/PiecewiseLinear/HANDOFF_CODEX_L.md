@@ -512,3 +512,18 @@ theorem eq_top_of_boundaryLoops_mem_normal
 - 下一精确义务是将首、尾盘沿 `g` 调用边界弧贴合端点，再证贴合盘的剩余边界正是书页 186/187 的
   `συ⁻¹` 或 `συ`。当前贴合端点保留两侧参数化与公共缝，但还没有“两盘沿边界 1-球贴合后，新盘 frontier 等于两侧补弧之并”的精确集合恒等式；
   这一表示引理是识别 `L₁` 的当前精确缺口，未用假设绕过。
+
+## 23. 2026-09-16 E3-M1 追加：I2 的 double 3 环境对接
+
+状态：done（消费者已固定到 NIGHT_PLAN §6.1 的 double 环境；I2 生产者未到，仍为同形显式输入）。
+
+- `SphereCase.lean` 新增 `exists_nonsingular_two_cell_of_sphere_boundary_double`：输入有限带边组合 3-流形 `K`，
+  把奇异 2-胞腔的环境精确取为 `X := (double 3 K).space`，并在声明内安装
+  `combinatorialChartedSpace (double 3 K) (isCombinatorialManifold_double_succ_succ K hK)`。
+- 结论与一般化端点通过 `glueSnd E E : E × E × ℝ → E` 对接：胞腔本身在无边 double 中，而像、边界环与
+  `boundaryComplex 3 K` 的交仍在原 `K` 的环境中表述，因此不需将基本群数据运输到嵌入副本。
+- I2 当前显式输入的输出已是 `SingularTwoCell (double 3 K).space`，并要求经 `glueSnd` 的胞腔像在 `K.space` 内、
+  边界像及与 `boundaryComplex 3 K` 的交都精确为给定盘参数的边界像。S 交付 I2 后只需用其
+  `glueEmbed₂` 像版本经 `glueSnd_glueEmbed₂` 消去这一显式输入。
+- `SphereCase` 聚焦检查 exit=0、零 warning；更新后的 `.lake/scratch/AuditSphereCase.lean` 共 14 项，
+  全部只含 `propext`、`Classical.choice`、`Quot.sound`。
