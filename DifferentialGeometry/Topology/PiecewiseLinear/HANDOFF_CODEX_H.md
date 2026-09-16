@@ -292,3 +292,19 @@ Reduced/MayerVietorisCoefficients, Reduced/PointClasses}`（`REUSE_AUDIT.md` §2
   的 27 项审计（19 项新声明、8 项复用）及 `AuditNightHM2Reuse.lean` 的 19 项复用预审计；全部仅三公理。
 - 此为 H-M2 中间检查点，数学提交哈希见下一段登记。未闭合：小链短正合列的元素级 28.11、
   从开邻域包含同伦等价向子复形搬运的自然性、Betti 数不等式；尚未声明 H-M2 done。
+
+### H-M2 — done，28.11 与子复形 Betti 上界已交付
+
+- 数学提交：`11826f868`（兼容开邻域与强形变收缩）、`c9fff0308`（小链 MV 正合性、子复形搬运与 Betti 上界）。
+- `MayerVietorisSubcomplex.lean` 的 `exists_mem_inter_of_map_eq_zero`：有限复形 `K` 的两个子复形覆盖，
+  任意次数、任意环及系数模；因此直接包括整系数 28.11。三个包含诱导同调同构，相关包含方块严格交换。
+- `bettiNumber_union_le`：`b_(n+1)(K) ≤ b_(n+1)(L) + b_(n+1)(M) + b_n(L∩M)`，任意域系数。
+  `bettiOne_union_le` 是有理一阶特例，明确保留交集的 `b_0` 项；未声称任意非连通交集时可删去此项。
+  `Homology.bettiOne X` 定义为 `finrank ℚ H₁(X;ℚ)`。
+- 可复用代数/同调层在 `Homology/Algebra/PushoutHomology.lean`、`Homology/HomotopyEquivalence.lean`、
+  `Homology/BettiNumber.lean`、`Homology/SmallChains/{Exactness,BettiBound}.lean`，无新单纯链复形。
+- 七个模块检查均 exit=0、零 warning，最后 `MayerVietorisSubcomplex` 10.5 秒；`git diff --check` 通过。
+  `.lake/scratch/AuditNightHM2*.lean` 保留 83 项去重后的命名空间完整审计（39 项新声明、44 项复用/预审计），
+  全部只有 `propext`、`Classical.choice`、`Quot.sound` 或更少；复用记录已写 `MOISE_PLAN.md` §6。
+- 确切缺口：28.11、相对开邻域 SDR、上述各阶 Betti 上界无；未导出整条命名的子复形长正合列或更尖锐的连通交集估计。
+  H-M3 的全局顶维基本类/定向判据、H-M4 的 I5 不是本里程碑结论。下一项 H-M3。
