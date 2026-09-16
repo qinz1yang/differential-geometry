@@ -1,6 +1,8 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.TwoSidedNeighborhood
 import DifferentialGeometry.Topology.PiecewiseLinear.CollarRestriction
 import DifferentialGeometry.Topology.PiecewiseLinear.BicollarGluing
+import DifferentialGeometry.Topology.PiecewiseLinear.DisjointGluing
+import Mathlib.Order.Filter.Finite
 
 open Set Topology
 
@@ -92,4 +94,74 @@ theorem IsCombinatorialManifoldWithBoundary.exists_bicollar_of_isConnected
     union_subset (hW₀A.trans (hAN.trans hNU)) (hW₁B.trans (hBN'.trans hNU)),
     hWnhds, hρ, hbottom⟩
 
+open Classical in
+theorem IsCombinatorialManifoldWithBoundary.exists_bicollar
+    {K L : Geometry.SimplicialComplex ℝ E} [Finite K.faces] [Finite L.faces]
+    (hK : IsCombinatorialManifoldWithBoundary 3 K) (hL : IsCombinatorialManifold 2 L)
+    (hLK : L.space ⊆ K.space) (hBd : Disjoint L.space (boundaryComplex 3 K).space)
+    (htwo : Topology.IsTwoSided (((↑) : K.space → E) ⁻¹' L.space))
+    {U : Set E} (hU : U ∈ 𝓝ˢ[K.space] L.space) :
+    ∃ (W : Set E) (ρ : E × ℝ → E), IsPolyhedron W ∧
+      W ⊆ K.space \ (boundaryComplex 3 K).space ∧ W ⊆ U ∧
+      W ∈ 𝓝ˢ[K.space] L.space ∧ IsPLHomeomorphOn ρ (L.space ×ˢ Icc (-1 : ℝ) 1) W ∧
+      ∀ x ∈ L.space, ρ (x, 0) = x := by
+  classical
+  let I := ConnectedComponents L.space
+  let R : I → Geometry.SimplicialComplex ℝ E := fun i => PiecewiseLinear.connectedComponentComplex L i
+  let _ : Finite I := finite_connectedComponents_space L
+  let _ (i : I) : Finite (R i).faces := (connectedComponentComplex_faces_finite L i).to_subtype
+  have hcover : (⋃ i, (R i).space) = L.space := iUnion_connectedComponentComplex_space L
+  have hsub (i : I) : (R i).space ⊆ L.space := (subset_iUnion (fun j => (R j).space) i).trans hcover.subset
+  have hdis : Pairwise fun i j => Disjoint (R i).space (R j).space :=
+    pairwise_disjoint_connectedComponentComplex_space L
+  have htwoR (i : I) : Topology.IsTwoSided (((↑) : K.space → E) ⁻¹' (R i).space) := by
+    obtain ⟨p, rfl⟩ := ConnectedComponents.surjective_coe i
+    simpa only [R, PiecewiseLinear.connectedComponentComplex_mk, restrict_connectedComponentIn_space]
+      using htwo.preimage_connectedComponentIn continuous_subtype_val (p : E)
+  have hfilters : Pairwise fun i j : I => Disjoint (𝓝ˢ (R i).space) (𝓝ˢ (R j).space) :=
+    fun i j hij => disjoint_nhdsSet_nhdsSet (isPolyhedron_space (R i)).isClosed
+      (isPolyhedron_space (R j)).isClosed (hdis hij)
+  obtain ⟨V, hV, hVdis⟩ := hfilters.exists_mem_filter_of_disjoint
+  have hlocal (i : I) : ∃ (W : Set E) (ρ : E × ℝ → E), IsPolyhedron W ∧
+      W ⊆ K.space \ (boundaryComplex 3 K).space ∧ W ⊆ U ∩ V i ∧
+      W ∈ 𝓝ˢ[K.space] (R i).space ∧
+      IsPLHomeomorphOn ρ ((R i).space ×ˢ Icc (-1 : ℝ) 1) W ∧
+      ∀ x ∈ (R i).space, ρ (x, 0) = x := by
+    have hVi : V i ∈ 𝓝ˢ[K.space] (R i).space := Filter.mem_inf_of_left (hV i)
+    exact hK.exists_bicollar_of_isConnected (hL.connectedComponentComplex i) ((hsub i).trans hLK)
+      (hBd.mono_left (hsub i)) (isConnected_connectedComponentComplex_space L i) (htwoR i)
+      (Filter.inter_mem (nhdsSetWithin_mono_left (hsub i) hU) hVi)
+  choose W ρ hW hWint hWsub hWnhds hρ hcenter using hlocal
+  have hPdis : Pairwise fun i j => Disjoint ((R i).space ×ˢ Icc (-1 : ℝ) 1)
+      ((R j).space ×ˢ Icc (-1 : ℝ) 1) := by
+    intro i j hij
+    exact disjoint_left.mpr fun _ hx hy => disjoint_left.mp (hdis hij) hx.1 hy.1
+  have hWdis : Pairwise fun i j => Disjoint (W i) (W j) := fun i j hij =>
+    (hVdis hij).mono ((hWsub i).trans inter_subset_right) ((hWsub j).trans inter_subset_right)
+  obtain ⟨σ, hσ, hσeq⟩ := exists_isPLHomeomorphOn_iUnion_of_pairwise_disjoint
+    (fun i => (isPolyhedron_space (R i)).prod isHPolytope_Icc.isPolyhedron) hρ hPdis hWdis
+  have hprod : (⋃ i, (R i).space ×ˢ Icc (-1 : ℝ) 1) = L.space ×ˢ Icc (-1 : ℝ) 1 := by
+    ext z
+    constructor
+    · intro hz
+      obtain ⟨i, hi⟩ := mem_iUnion.mp hz
+      exact ⟨hsub i hi.1, hi.2⟩
+    · intro hz
+      obtain ⟨i, hi⟩ := mem_iUnion.mp (hcover.symm.subset hz.1)
+      exact mem_iUnion.mpr ⟨i, hi, hz.2⟩
+  rw [hprod] at hσ
+  have hnhds : (⋃ i, W i) ∈ 𝓝ˢ[K.space] L.space := by
+    choose O hO hRO hOW using fun i => mem_nhdsSetWithin.mp (hWnhds i)
+    refine mem_nhdsSetWithin.mpr ⟨⋃ i, O i, isOpen_iUnion hO, ?_, ?_⟩
+    · intro x hx
+      obtain ⟨i, hi⟩ := mem_iUnion.mp (hcover.symm.subset hx)
+      exact mem_iUnion.mpr ⟨i, hRO i hi⟩
+    · rintro x ⟨hxO, hxK⟩
+      obtain ⟨i, hi⟩ := mem_iUnion.mp hxO
+      exact mem_iUnion.mpr ⟨i, hOW i ⟨hi, hxK⟩⟩
+  refine ⟨⋃ i, W i, σ, IsPolyhedron.iUnion hW, iUnion_subset hWint,
+    iUnion_subset (fun i => (hWsub i).trans inter_subset_left), hnhds, hσ, ?_⟩
+  intro x hx
+  obtain ⟨i, hi⟩ := mem_iUnion.mp (hcover.symm.subset hx)
+  exact (hσeq i ⟨hi, by norm_num, by norm_num⟩).trans (hcenter i x hi)
 end DifferentialGeometry.Topology.PiecewiseLinear

@@ -1429,3 +1429,28 @@ The source commit hash will be recorded at the next checkpoint.
 The next step assembles the existing connected bicollars in pairwise disjoint
 neighborhoods of these finitely many components, removing the connectedness assumption
 from the finite-complex bicollar endpoint. General PL charted ambient transport remains.
+
+### S-M5 continuation: bicollars without a connectedness assumption
+
+The finite-component decomposition and disjoint-gluing checkpoint is committed and
+pushed as `7adcc0194`; the following integration merge was already up to date.
+
+`Bicollar.lean` now proves
+`IsCombinatorialManifoldWithBoundary.exists_bicollar` for any finite closed
+combinatorial surface in the interior of a finite combinatorial three-manifold with
+boundary. Two-sidedness in the carrier is the only separation assumption. The surface
+can have multiple components or be empty. In every prescribed relative neighborhood U,
+the theorem produces a polyhedral relative neighborhood W contained in U and away from
+the manifold boundary, with a PL homeomorphism from the surface times `[-1,1]` that is
+the identity on the middle surface. No Schoenflies parameter or unproved interface is
+present. The proof separates the finitely many components by disjoint neighborhoods,
+applies the connected endpoint, and glues the resulting PL maps.
+
+The focused check has exit 0 and zero warnings (`check-bicollar-finite-components.log`).
+`AuditS101Bicollar.lean` / `.log` contain two entries, both with only `propext`,
+`Classical.choice`, and `Quot.sound`. No other-lane or vendored source changed.
+The source commit hash will be recorded at the next checkpoint.
+
+The finite-complex case of 26.3 is now proved. Transport to the general PL charted
+manifold setting remains; the prior 26.1 interior-chart transport and P.4 obligations
+are unchanged. I2's exact target-type compatibility issue is unchanged.
