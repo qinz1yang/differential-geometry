@@ -76,12 +76,7 @@ theorem exists_isCrosscut_of_isPLBall_subset_branchPreimage
     {A : Set (EuclideanSpace ℝ (Fin 2))} (hA : IsPLBall 1 A)
     (hAsub : A ⊆ hD.branchPreimage c)
     (hcoordinate : IsPLHomeomorphOn (hD.branchCoordinate c) A
-      (hD.singularSet.branchComplex c).space)
-    (hboundaryCrossing : ∀ y ∈ doublePointSet D D.domain ∩ BdM,
-      ∃ e ∈ atlas (EuclideanSpace ℝ (Fin 3)) M, y ∈ e.source ∧
-        ∃ N : Set (EuclideanSpace ℝ (Fin 3)),
-          HasPLBoundaryDoubleCrossingAt (e ∘ D)
-            (D.domain ∩ D ⁻¹' e.source) N (e y)) :
+      (hD.singularSet.branchComplex c).space) :
     ∃ p q : EuclideanSpace ℝ (Fin 2),
       Schoenflies.IsCrosscut (frontier D.domain) A p q := by
   let L := hD.singularSet.branchComplex c
@@ -126,7 +121,7 @@ theorem exists_isCrosscut_of_isPLBall_subset_branchPreimage
       (hD.branchPreimage_subset_doublePointPreimage c htpre).2
     have hDboundary : D (γ t) ∈ BdM := (hboundary t ht).mpr hend
     obtain ⟨e, -, hySource, N, hcrossing⟩ :=
-      hboundaryCrossing (D (γ t)) ⟨hdouble, hDboundary⟩
+      hD.exists_boundary_crossing_chart ⟨hdouble, hDboundary⟩
     exact hD.fiber_subset_frontier_of_boundary_crossing hySource hcrossing
       ⟨htpre.1, rfl⟩
   refine ⟨γ 0, γ 1,
@@ -137,12 +132,7 @@ theorem exists_isCrosscut_of_isPLBall_subset_branchPreimage
 open Classical in
 theorem exists_two_isCrosscuts_branchPreimage_of_boundaryBranch_with_coordinate
     [T2Space M] (hD : NormalSingularCellData D BdM B)
-    {c : hD.singularSet.Branch} (hc : hD.singularSet.IsBoundaryBranch c)
-    (hboundaryCrossing : ∀ y ∈ doublePointSet D D.domain ∩ BdM,
-      ∃ e ∈ atlas (EuclideanSpace ℝ (Fin 3)) M, y ∈ e.source ∧
-        ∃ N : Set (EuclideanSpace ℝ (Fin 3)),
-          HasPLBoundaryDoubleCrossingAt (e ∘ D)
-            (D.domain ∩ D ⁻¹' e.source) N (e y)) :
+    {c : hD.singularSet.Branch} (hc : hD.singularSet.IsBoundaryBranch c) :
     ∃ A C : Set (EuclideanSpace ℝ (Fin 2)),
       IsPLBall 1 A ∧ IsPLBall 1 C ∧ Disjoint A C ∧
         hD.branchPreimage c = A ∪ C ∧
@@ -164,10 +154,8 @@ theorem exists_two_isCrosscuts_branchPreimage_of_boundaryBranch_with_coordinate
     exact subset_union_right
   obtain ⟨p, q, hAcrosscut⟩ :=
     hD.exists_isCrosscut_of_isPLBall_subset_branchPreimage c hA hAsub hAcoordinate
-      hboundaryCrossing
   obtain ⟨r, s, hCcrosscut⟩ :=
     hD.exists_isCrosscut_of_isPLBall_subset_branchPreimage c hC hCsub hCcoordinate
-      hboundaryCrossing
   obtain ⟨g, hg, hcompat⟩ :=
     hD.exists_isPLHomeomorphOn_eqOn_of_branchCoordinate c hAsub hCsub
       hAcoordinate hCcoordinate
@@ -177,12 +165,7 @@ theorem exists_two_isCrosscuts_branchPreimage_of_boundaryBranch_with_coordinate
 open Classical in
 theorem exists_two_isCrosscuts_branchPreimage_of_boundaryBranch
     [T2Space M] (hD : NormalSingularCellData D BdM B)
-    {c : hD.singularSet.Branch} (hc : hD.singularSet.IsBoundaryBranch c)
-    (hboundaryCrossing : ∀ y ∈ doublePointSet D D.domain ∩ BdM,
-      ∃ e ∈ atlas (EuclideanSpace ℝ (Fin 3)) M, y ∈ e.source ∧
-        ∃ N : Set (EuclideanSpace ℝ (Fin 3)),
-          HasPLBoundaryDoubleCrossingAt (e ∘ D)
-            (D.domain ∩ D ⁻¹' e.source) N (e y)) :
+    {c : hD.singularSet.Branch} (hc : hD.singularSet.IsBoundaryBranch c) :
     ∃ A C : Set (EuclideanSpace ℝ (Fin 2)),
       IsPLBall 1 A ∧ IsPLBall 1 C ∧ Disjoint A C ∧
         hD.branchPreimage c = A ∪ C ∧
@@ -190,7 +173,7 @@ theorem exists_two_isCrosscuts_branchPreimage_of_boundaryBranch
         ∃ r s, Schoenflies.IsCrosscut (frontier D.domain) C r s := by
   obtain ⟨A, C, hA, hC, hdisjoint, hcover, -, -, -, hAcrosscut, hCcrosscut⟩ :=
     hD.exists_two_isCrosscuts_branchPreimage_of_boundaryBranch_with_coordinate
-      hc hboundaryCrossing
+      hc
   exact ⟨A, C, hA, hC, hdisjoint, hcover, hAcrosscut, hCcrosscut⟩
 
 end NormalSingularCellData

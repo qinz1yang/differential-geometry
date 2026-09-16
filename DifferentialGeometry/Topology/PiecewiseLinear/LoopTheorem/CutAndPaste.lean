@@ -358,12 +358,7 @@ theorem exists_three_cells_of_boundaryBranch
     [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] [T2Space M]
     {D : SingularTwoCell M} {BdM B : Set M}
     (hD : NormalSingularCellData D BdM B)
-    {c : hD.singularSet.Branch} (hc : hD.singularSet.IsBoundaryBranch c)
-    (hboundaryCrossing : ∀ y ∈ doublePointSet D D.domain ∩ BdM,
-      ∃ e ∈ atlas (EuclideanSpace ℝ (Fin 3)) M, y ∈ e.source ∧
-        ∃ N : Set (EuclideanSpace ℝ (Fin 3)),
-          HasPLBoundaryDoubleCrossingAt (e ∘ D)
-            (D.domain ∩ D ⁻¹' e.source) N (e y)) :
+    {c : hD.singularSet.Branch} (hc : hD.singularSet.IsBoundaryBranch c) :
     ∃ A C : Set (EuclideanSpace ℝ (Fin 2)),
       IsPLBall 1 A ∧ IsPLBall 1 C ∧ Disjoint A C ∧
       hD.branchPreimage c = A ∪ C ∧
@@ -387,7 +382,7 @@ theorem exists_three_cells_of_boundaryBranch
   obtain ⟨A, C, hA, hC, hdisjoint, hcover, -, -, ⟨g, hg, hcompat⟩,
     ⟨p, q, hcutA⟩, r, s, hcutC⟩ :=
     hD.exists_two_isCrosscuts_branchPreimage_of_boundaryBranch_with_coordinate
-      hc hboundaryCrossing
+      hc
   obtain ⟨D₁, D₂, D₃, hunion, hinter₁, hinter₂,
     hA₁, hA₂, hC₂, hC₃, hdisjoint₁₃,
     hfun₁, hfun₂, hfun₃, htrace₁, htrace₃, hcut₁, hcut₃⟩ :=
@@ -404,12 +399,7 @@ theorem exists_boundary_surgery_cell_of_boundaryBranch
     [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] [T2Space M]
     {D : SingularTwoCell M} {BdM B : Set M}
     (hD : NormalSingularCellData D BdM B)
-    {c : hD.singularSet.Branch} (hc : hD.singularSet.IsBoundaryBranch c)
-    (hboundaryCrossing : ∀ y ∈ doublePointSet D D.domain ∩ BdM,
-      ∃ e ∈ atlas (EuclideanSpace ℝ (Fin 3)) M, y ∈ e.source ∧
-        ∃ N : Set (EuclideanSpace ℝ (Fin 3)),
-          HasPLBoundaryDoubleCrossingAt (e ∘ D)
-            (D.domain ∩ D ⁻¹' e.source) N (e y)) :
+    {c : hD.singularSet.Branch} (hc : hD.singularSet.IsBoundaryBranch c) :
     ∃ A C U V : Set (EuclideanSpace ℝ (Fin 2)),
     ∃ p q r s : EuclideanSpace ℝ (Fin 2),
     ∃ g : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 2),
@@ -425,7 +415,7 @@ theorem exists_boundary_surgery_cell_of_boundaryBranch
   obtain ⟨A, C, hA, hC, hAC, hcover, p, q, r, s, g, hg, hcompat,
     D₁, D₂, D₃, hdomains, -, -, hA₁, -, -, hC₃, hdisjoint₁₃,
     hfun₁, -, hfun₃, htrace₁, htrace₃, hcut₁, hcut₃⟩ :=
-    hD.exists_three_cells_of_boundaryBranch hc hboundaryCrossing
+    hD.exists_three_cells_of_boundaryBranch hc
   have hcompat₁₃ : EqOn D₁ (D₃ ∘ g) A := by
     intro x hx
     change D₁.toFun x = D₃.toFun (g x)

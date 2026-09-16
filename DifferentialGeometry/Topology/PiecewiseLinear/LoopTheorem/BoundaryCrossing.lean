@@ -220,6 +220,20 @@ theorem fiber_subset_frontier_of_boundary_crossing
   hcrossing.fiber_subset_frontier_of_comp_openPartialHomeomorph
     D.continuousOn hy (hD.fiber_le_two y)
 
+open Classical in
+theorem exists_boundary_crossing_chart
+    (hD : NormalSingularCellData D BdM B) {y : X}
+    (hy : y ∈ doublePointSet D D.domain ∩ BdM) :
+    ∃ e ∈ atlas (EuclideanSpace ℝ (Fin 3)) X, y ∈ e.source ∧
+      ∃ N : Set (EuclideanSpace ℝ (Fin 3)),
+        HasPLBoundaryDoubleCrossingAt (e ∘ D)
+          (D.domain ∩ D ⁻¹' e.source) N (e y) := by
+  obtain ⟨e, he, hye, hcross⟩ := hD.crossing y hy.1
+  refine ⟨e, he, hye, ?_⟩
+  rcases hcross with ⟨-, N, hcross⟩ | ⟨hnot, -⟩
+  · exact ⟨N, hcross⟩
+  · exact (hnot ⟨y, ⟨hye, hy.2⟩, rfl⟩).elim
+
 end NormalSingularCellData
 
 end DifferentialGeometry.Topology.PiecewiseLinear
