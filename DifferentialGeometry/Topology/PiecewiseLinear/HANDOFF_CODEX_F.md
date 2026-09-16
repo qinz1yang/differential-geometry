@@ -1771,3 +1771,9 @@ F-M2–F-M6 尚未开始；按用户指定顺序推进，只有出现 §1 接口
 `TriangleBoundaryVertices.lean` 已提交并推送为 `ef0695ed4`。`boundaryComplex_space_eq_simplexBoundary_of_space_eq_convexHull` 用相同凸三角载体上的恒等 PL 同胚与组合边界不变性，证明任意有限复形实现的凸三角盘之组合边界恰为规范单形边界。`singleton_mem_boundaryComplex_of_mem_triangle_vertex` 进一步证明三个原始极端点在任意该类剖分中仍是组合边界顶点：若其载体面不含该点，严格支撑泛函会在该点的凸组合上产生矛盾。`segment_subset_boundaryComplex_of_space_eq_convexHull` 给出任意两原始角点间整条边属于组合边界。`exists_geometricLink_boundary_pair_of_isPLBall` 最后从 PL 二球盘和一个组合边界顶点自动构造边界链环的两个不同单点面，并证明它们穷尽边界链环空间；没有把端点存在性加入输入。
 
 模块聚焦检查 exit=0（12.1 秒）、零 warning；`AuditF185.lean` 五个端点均仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步沿最低角点到另外两个角点的实际三角边取得保留链环中的低端方向：最低角点用双端边计数并证明帽侧截面为空，其余角点用一个低端方向证明保留侧截面至多一点；再与帽侧单点截面合并并排除三个角点的奇异性。F-M1 仍为 partial，严格降指标、Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF186.lean`。
+
+### 19.38 F-M1：三角帽真实角点的稳定非奇异性
+
+`TriangleCornerRegularity.lean` 已提交并推送为 `4b3c685a1`。`height_section_subsingleton_of_boundary_vertices_of_one_low` 证明有限一维组合带边流形中，只要一个顶点严格位于目标高度以下、另一组合边界顶点避开该高度且其余顶点全在低侧，整个高度截面至多一点。`singleton_mem_boundaryComplex_of_common_triangle_boundary` 从两盘组合边界空间相等和其中一盘载体为仿射独立三角形推出原始角点也是另一盘的组合边界顶点。主端点 `eventually_notMem_heightSingularPoints_of_triangle_vertex` 随后对保留盘与三角帽逐面覆盖的 PL 二球面处理三角形真实角点：由保留盘边界链环的两个端点、局部半空间与边界等高集合芽控制保留侧；所选三角形最低点等于该角点时帽侧截面为空，否则最低点方向给出保留侧的严格低端而帽侧截面至多一点。两种情形都把完整链环截面压到 `encard ≤ 2`，再由顶点截面正规性排除新奇异点。
+
+模块聚焦检查 exit=0（13.1 秒）、零 warning；`AuditF186.lean` 三个端点均仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步在 `exists_parameterized_triangle_cut_of_singular_height` 返回的两张保留盘与三角帽上分别构造共同细分，统一选择充分小的一般位置高度，并把接缝内部点与真实角点的排除结论拼装成帽内除指定旧奇异点像外无新奇异点；随后构造新旧奇异点嵌入并证明 `heightIndex` 严格下降。F-M1 仍为 partial，Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF187.lean`。
