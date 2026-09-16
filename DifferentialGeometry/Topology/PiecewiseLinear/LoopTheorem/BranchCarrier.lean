@@ -205,6 +205,20 @@ theorem branchComplex_isPLSphere
     (T.branchComplex_isManifold hc) (T.edgeGraph_branchComplex_connected c)
 
 open Classical in
+theorem branchComplex_isPLBall
+    (T : NormalSingularSetTriangulation D BdM) {c : T.Branch}
+    (hc : T.IsBoundaryBranch c) :
+    IsPLBall 1 (T.branchComplex c).space := by
+  let _ : Finite (T.branchComplex c).faces := (T.branchComplex_faces_finite c).to_subtype
+  apply isPLBall_one_of_edgeGraph_connected_of_exists_degree_one (T.branchComplex c)
+    (T.branchComplex_isManifoldWithBoundary c) (T.edgeGraph_branchComplex_connected c)
+  obtain ⟨v, hvc, hdegree⟩ := T.exists_degree_one_vertex_of_isBoundaryBranch hc
+  let w : c.supp := ⟨v, hvc⟩
+  refine ⟨T.branchVertex c w, ?_⟩
+  rw [T.branchEdgeGraph_neighborSet_ncard c w]
+  exact hdegree
+
+open Classical in
 theorem branchComplex_space_isPolyhedron
     (T : NormalSingularSetTriangulation D BdM) (c : T.Branch) :
     IsPolyhedron (T.branchComplex c).space := by
