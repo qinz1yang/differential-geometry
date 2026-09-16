@@ -1548,3 +1548,10 @@ F-M2–F-M6 尚未开始；按用户指定顺序推进，只有出现 §1 接口
 `exists_isPLHomeomorphOn_Icc_inter_of_fiber_pair` 仅从圆周上的连续实值函数、恰含两点的指定层及两侧非空，产生上下闭半空间截弧的参数化；证明由穿孔弧连通性确定侧别。
 
 聚焦检查 exit=0（10.6 秒）、零 warning；`AuditF149.lean` 五项仅标准三公理，并核对高度截弧端点完整签名。F-M1 仍为 partial：下一步将两弧与相对盘截弧延拓接成顶点链环图卡，随后完成封帽边缘 crossing、严格降指标及 Lemma 2–6。I1 尚未交付；下一审计文件 `AuditF150.lean`。
+
+### 19.2 F-M1：沿共同边界拼合的两盘及两条截弧的相对 PL 等价
+
+`CirclePair.lean` 已提交并推送为 `b5df0cbf6`。`exists_isPLHomeomorphOn_pair_of_isPLSphere_one` 在任意两个有限维实范数空间中的 PL 圆周之间对齐任意两个不同指定点；`exists_isPLHomeomorphOn_map_crosscut_eqOn_boundary` 保持整个给定边界映射并对齐盘中正规截弧；`exists_isPLHomeomorphOn_disk_pair_eqOn_boundary` 将两侧延拓沿共同边界拼合。
+主端点 `exists_isPLHomeomorphOn_disk_pair_map_crosscuts` 从两盘实际参数化、恰为共同边界的交集，以及两侧具有共同端点的正规截弧出发，构造同时映射两盘、公共边界、两截弧和两指定端点的 PL 同胚。边界映射在证明中构造，不是额外假设。源、目标环境可不同。
+
+最终聚焦检查 exit=0（10.0 秒）、零 warning；`AuditF150.lean` 四项仅标准三公理，已核对主端点完整签名。下一步从实际星的链环和高度半空间生产此定理的两盘、截弧输入，再锥延拓得到 crossing 图卡。F-M1 仍为 partial，严格降指标及 Lemma 2–6、I1 尚未交付。下一审计文件 `AuditF151.lean`。
