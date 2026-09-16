@@ -416,6 +416,156 @@
   `External/ClassificationOfSurfaces/VENDOR.md`。没有修改 vendored Lean、没有 lake build 或根聚合登记。
   最后文档提交前已 fetch 并 merge `origin/codex/moise-integration`，保留所有已发布检查点。
 
+- 2026-09-15（H 车道 H.2a，任意线性细分与 PL 定向不变性）：
+  已通过整合分支取得 F 的 `PLBallSphere.lean` 连通性 API；本次合并的远端端点为 `b9a2cb2ca`，
+  H 的合并提交为 `4be28804d`，没有复制、cherry-pick 或直接合并其它车道。
+  `AffineOrientation.lean`、`ManifoldConnectivity.lean`、`Orientation.lean` 串行聚焦检查均 exit=0、零警告
+  （分别 12.9、10.9、30.8 秒），使用原始 `check-f.ps1` 写入共享库，每次启动前核对主机进程配额。
+  正向细分以仿射坐标矩阵行列式的符号传递顶维定向，反向用每个旧顶维单形内的对偶图连通性证明局部比较符号恒定；
+  对偶图连通性经顶点 link 的维数归纳取得。由此闭合
+  `isOrientable_iff_of_isSubdivision`、`isOrientable_iff_of_isPLHomeomorphOn`、
+  `isOrientable_of_isPLBall`、`isOrientable_of_isPLSphere`、`isOrientable_faceStarComplex`、
+  `exists_unique_coherentOrientation_comparison_faceStarComplex`，包含零维。
+  细分和 PL 不变性保留源复形的组合流形假设；球面接口维数为 `IsPLSphere n → IsOrientable n`。
+  “恰两个定向”指统一顶点序后的所有顶维符号相同或互为负号，不是原始 `CoherentOrientation` 结构仅有两个元素。
+  `AuditH2aIntegrated` 对 53 项核心声明逐项审计 exit=0；`AuditH2aIntegratedReuse` 对下列 22 项复用声明逐项审计
+  exit=0，所有闭包均为 `propext`、`Classical.choice`、`Quot.sound`：
+  本库 `Topology.SimplicialComplex.mem_geometricLink_singleton`、`finite_geometricLink_faces`；
+  PL 层的 `exists_face_superset_card_eq_of_isPLBall_or_isPLSphere`、`exists_face_superset_card_eq_of_isPLBall`、
+  `IsPLBall.nonempty`、`IsPLSphere.nonempty`、`IsPLBall.isCombinatorialManifoldWithBoundary`、
+  `IsPLSphere.isCombinatorialManifold`、`IsCombinatorialManifoldWithBoundary.card_le_one`、
+  `IsPLBall.isConnected`、`IsPLSphere.isConnected`、`isConnected_stdSimplexBoundary`、
+  `faceStarComplex`、`faceStarComplex_faces_finite`、`IsCombinatorialManifoldWithBoundary.isPLBall_faceStarComplex`、
+  `restrict`、`restrict_faces_finite`、`restrict_space_of_eq_biUnion`、`IsSubdivision.convexHull_eq_biUnion`、
+  `exists_isGlueIso_of_isPLHomeomorphOn`、`IsCombinatorialManifoldWithBoundary.of_isPLHomeomorphOn`；
+  Mathlib 的 `AffineIndependent.card_le_card_of_subset_affineSpan`。
+  未经过 `Homology/HurewiczLowDegrees.lean`，未运行根构建，未登记根聚合。
+  H.2a 无未闭合端点；H.2b 的定向上循环仍待按交接 §7.3 构造，H.6/H.4a/H.5 不在本次闭合范围。
+
+- 2026-09-15（H 车道 H.2b，闭星局部定向上循环）：
+  `DerivedCarrier.lean` 给重心细分顶点与原面载体的对应及旗标公共上面；
+  `Orientation.lean` 的 `CoherentOrientation.restrict` / `IsOrientable.of_le` 推广到包含零维的任意 `n`；
+  `OrientationCocycle.lean` 先统一局部顶点序，再在公共顶维单形上比较每个非空面闭星的相干定向。
+  比较符号的选择无关性由公共闭星的对偶连通性证明，三角形恒等式在同一顶维单形上验证；
+  没有使用旧“非顶维边取 0”的构造。构造层提交 `85cd6e095`。
+  `orientationCocycle_isCoboundary_iff` 双向证明上边界当且仅当全局可定向：
+  正向由上边界的顶点符号翻转局部定向并验证所有余维一面的边界抵消，反向限制全局定向并取局部比较符号。
+  `exists_orientationCocycle_of_not_isOrientable` 从 H.2a 的闭星可定向性选局部族，给 C.4 所需的非上边界上循环。
+  三个端点对任意 `n`、有限维实赋范环境、有限复形成立，没有连通性、正维或公开 `DecidableEq` 假设。
+  三个目标模块均聚焦检查 exit=0、零警告；`AuditH2bReuse` exit=0，逐项核对 12 项核心声明与 12 项复用声明，
+  公理闭包全为 `propext`、`Classical.choice`、`Quot.sound`，并检查三个端点的完整签名。
+  核心审计为 `CoherentOrientation.restrict`、`IsOrientable.of_le`、`carrierFace_centroid`、
+  `carrierFace_mem_of_mem_barycentricSubdivision`、`centroid_carrierFace_of_mem_barycentricSubdivision`、
+  `exists_face_superset_carrierFaces_of_mem_barycentricSubdivision`、`pair_centroid_mem_barycentricSubdivision`、
+  `faceStarComplex_antitone`、`faceCofaces_faceStarComplex_self`、`orientationCocycle`、
+  `orientationCocycle_isCoboundary_iff`、`exists_orientationCocycle_of_not_isOrientable`。
+  复用审计为 `SimplicialBoolCocycle`、`SimplicialBoolCocycle.IsCoboundary`、`carrierFace`、`carrierFace_mem`、
+  `mem_openSimplex_carrierFace`、`face_eq_of_mem_openSimplex`、`centroid_mem_openSimplex`、
+  `centroid_mem_openSimplex_of_mem_faces`、`IsFlag.subset_or_subset`、`IsFlag.exists_top`、
+  `mem_faceStarComplex_faces_of_subset`、`faceStarComplex_faces_subset`，均来自整合后已有 PL 源码。
+  H.2b 要求的三个端点均闭合；C.4 的二重覆盖流形及其可定向性没有在本次代做。
+  未经过 `Homology/HurewiczLowDegrees.lean`，未运行根构建，未登记根聚合；H.6/H.4a/H.5 顺序和目标不变。
+
+- 2026-09-15（H-M2 开邻域几何层中间检查点）：`SubcomplexNeighborhood.lean` 聚焦检查 exit=0、零警告。
+  19 项新声明、8 项复用声明在 `AuditNightHM2Neighborhood.lean` 逐项审计，均仅标准三公理。
+  `AuditNightHM2Reuse.lean` 另外逐项预审计了 PL 的质量、投影、同伦、质量与矩的过滤和公式、
+  投影的凸包归属与权重公式、投影固定子复形、质量与矩连续性、细分过滤面、
+  `derivedNeighborhoodStrongDeformationRetract`、细分顶点的重心表示，共 14 项；
+  原生 Homology 的 `subspaceSmallShortExact`、`smallChainHomologyIso`、
+  `augmentedSubspaceSmallShortExact`、`augmentedSmallChainHomologyIso`、
+  `reducedMayerVietorisConnectingMap_coefficient_naturality` 共 5 项，均仅标准三公理。
+  两个审计文件保留在 H 工作树 `.lake/scratch`。闭导出邻域的已有形变收缩不能直接充当开覆盖；
+  此处实际构造了正重心质量开邻域，并证明交子复形的邻域等于邻域之交。
+  H-M2 的同调正合性与自然性搬运仍待完成，没有将几何层记作 28.11 已证明。
+
+- 2026-09-15（H-M2，子复形 Mayer–Vietoris 与 28.11 闭合）：
+  几何层提交 `11826f868`；随后 `MayerVietorisSubcomplex.lean` 的
+  `exists_mem_inter_of_map_eq_zero` 对有限复形的两子复形覆盖、任意次数、任意环和系数模成立，
+  特别包含整系数 28.11。交子复形的开邻域与两个开邻域之交相等，三个包含都诱导同调同构，
+  原来的子复形包含与开邻域包含的自然性方块严格交换；未引入闭覆盖 MV 的假设或单纯链复形。
+  `bettiNumber_union_le` 证明任意域系数下
+  `b_(n+1)(K) ≤ b_(n+1)(L) + b_(n+1)(M) + b_n(L∩M)`；
+  `bettiOne_union_le` 为有理一阶特例，保留 `b_0(L∩M)` 项，不假设交集连通。
+  通用数学归位于 `Homology/Algebra/PushoutHomology.lean`、`Homology/HomotopyEquivalence.lean`、
+  `Homology/BettiNumber.lean`、`Homology/SmallChains/{Exactness,BettiBound}.lean`。
+  七个相关模块最终各次聚焦检查均 exit=0、零 warning；同调搬运模块最后检查 10.5 秒。
+  `.lake/scratch/AuditNightHM2*.lean` 保留 83 项去重后的逐项审计，包括新增 39 项声明及 44 项复用/预审计声明。
+  `AuditNightHM2ExactReuse` 首次逐项审计 `pushoutShortComplex`、`pushoutShortExact`、
+  `subspaceInclusion`、`twoSetFamily`、`firstSubspaceToSmall`、`secondSubspaceToSmall`、
+  两个 `SubspaceToSmall_ι`、`subspaceSmallChainSquare`、`smallChainMap`、`smallChainHomologyIso_hom`；
+  `AuditNightHM2BoundReuse` 逐项审计 `finrank_eq_range_add_range`、`homologyBiprodIso`、
+  `finiteHomologyType_biprod`、`finiteHomologyType_twoSetSmall`、
+  `finiteHomologyType_iff_of_homotopyEquiv`、`finiteHomologyType_geometricSpace`。
+  全部闭包只含标准三公理或更少；无 `sorryAx`，不经过 `HurewiczLowDegrees`，未登记根聚合。
+  闭曲面顶维同调与 I5 仍属于后续 H-M3/H-M4，不由本次 MV 工具自动推出。
+
+- 2026-09-15（H-M3 低阶同调层，数学提交 `163a27733`）：
+  `GeometricHomology` 复用既有有限 simplicial-set realization 的奇异同调桥，证明任意环/系数模的维数以上消失；
+  `GeometricConnectivity` 给有限几何复形的局部路径连通与连通到路径连通；
+  `BettiPolyhedra` 给低阶 χ 展开、连通图的 `b_1=1-χ` 与 PL 多边形 `b_1=1`。
+  `.lake/scratch/AuditNightHM3*.lean` 逐项审计 26 项去重声明（11 新、2 既有复核、13 复用/预审计），仅标准三公理。
+  首次复用单独审计：`orderedSimplicialSet`、`orderedSimplicialSet_hasDimensionLT`、
+  `geometricRealizationHomeomorphism`、`geometricInclusion`、`DifferentialGeometry.SSet.realizationHomologyIso`、
+  `SSet.isZero_homology_of_hasDimensionLT`、`Homology.eulerChar_eq_sum`；另预审计
+  `localEuclideanSphereHomologyIso`、`euclideanLocalGenerator_ne_zero`、`euclideanBallLocalGenerator_ne_zero`。
+  三条 PL 复用复核为 `IsPLSphere.isCombinatorialManifold`、`IsCombinatorialManifold.card_le`、`IsPLSphere.isConnected`。
+  `subcomplexInclusion` 现直接复用原生 `geometricInclusion`，重查 MV 消费者 exit=0。
+  五个改动模块均检查 exit=0、零 warning；`BettiPolyhedra` 11.2 秒，MV 消费者 12.1 秒。
+  全局 H₂ 的局部检测与跨边符号比较未证明，未声称 H.4a 完成；具体义务和原路线修正在 HANDOFF §8。
+
+- 2026-09-15（H-M4 边界 Euler 与导出邻域层，数学提交 `09bc51619`）：
+  `BoundaryEuler.eulerChar_boundaryComplex_eq_two_mul` 对任意有限组合带边 3-流形证明 `χ(∂K)=2χ(K)`；
+  `DerivedNeighborhoodHomology` 给导出邻域到原子复形的显式同伦等价，并证明全部 Betti 数与 χ 不变；
+  `HandleCount` 给可定向性的导出邻域传递、`χ(∂N(L))=2χ(L)` 与图邻域的 `b₁=1-χ(L)`。
+  三模块聚焦检查 exit=0、零 warning；`.lake/scratch/AuditNightHM4{Reuse,Final}.lean`
+  逐项审计 32 项去重声明（10 新、22 复用/预审计），全部仅标准三公理。
+  首次复用逐项包括 `faceEulerChar_eq_two_mul_of_link_counts`、几何 link/边界面判据、
+  `StrongDeformationRetract.toHomotopyEquiv`、`Homology.eulerChar_eq_of_homotopyEquiv`、
+  组合流形的 `secondDerived`/`derivedNeighborhood`、`IsOrientable.of_le` 与 `.barycentricSubdivision`。
+  I5 未闭合：还需 H-M3 的闭曲面顶维同调、一般 3-流形的 23.19 Betti 不等式，以及 H.4b 的
+  `b₁=0 → PL 2-sphere` 识别；未将非球面假设弱化成 `χ≠2`。
+
+- 2026-09-15（H-M5 定向上循环的二重覆盖复形，数学提交 `c6830cc26`、`4e81f6e2d`）：
+  第一提交证明有限覆盖复形保持组合流形结构，并以链接的 `IsGlueIso` 传递相干定向；第二提交证明
+  `SimplicialBoolCocycle.coveringNeighbor_side`，即提升边两端 sheet 的 XOR 等于基边 `parity`，再把
+  `orientationCocycle` 的局部细分定向符号乘以 sheet 符号，构造全局
+  `orientationCocycleCoveringOrientation`。最终端点
+  `isOrientable_coveringComplex_orientationCocycle` 对任意维有限组合带边流形给出该二重覆盖复形的可定向性。
+  `Orientation`、`OrientationCocycle`、`CoveringOrientation` 最终聚焦检查均 exit=0、零 warning，分别为
+  32.2、29.3、14.9 秒；`.lake/scratch/AuditNightHM5OrientationCover.lean` 逐项审计 37 项
+  （13 项新增/提升端点、24 项复用），全部仅标准三公理。新增/提升端点包括
+  `subdivision_carrierFace_spec`、`subdivision_carrierFace_card`、
+  `CoherentOrientation.affine_coface_pair_cancel`、两个 `localOrientationSign` 接口、四个局部细分定向符号接口、
+  `SimplicialBoolCocycle.coveringNeighbor_side`、`orientationCocycleCoveringOrientation` 与最终可定向性端点；
+  关键复用逐项包括重心细分与 carrier、覆盖边提升与面数据、开星局部平凡化、覆盖基顶点的面上单射、
+  `CoherentOrientation.changeVertexOrder`、单形边界系数及组合流形余面计数。H-M5 无未闭合端点；
+  H-M3/H-M4 的顶维基本类、23.19 与非球面识别缺口保持不变。
+- 2026-09-15（C/L 车道，L.2 接口修正与组合曲面层）：`SphereCase.lean` 的
+  `exists_nonsingular_two_cell_of_sphere_boundary` 在 `724267986` 增加实际多面体 3-流形 `M`、
+  `B ⊆ polyhedralBoundary 3 M hM`，并在 `hpush` 与结论中都要求 `D₁ '' D₁.domain ⊆ M`；检查 exit=0、
+  零 warning，AuditSphereCase 十二项仅标准三公理。`SurfaceNeighborhood.lean`（`cc4e2a06e`）证明导出邻域是带边组合
+  2-流形，其边界为有限个两两不交 PL 1-球面，并逐分支取得两个互补 PL 2-球；检查 exit=0、零 warning，
+  AuditSurfaceNeighborhood 十二项仅标准三公理。未闭合的是有限 Jordan 边界域的一侧一致性与精确删盘等式，以及任意补盘的
+  全局推入；整合后的 `BoundaryPush.lean` 当前只覆盖局部小边界盘。
+
+- 2026-09-15（C.5 桥接，`f1349f5c2`）：`Topology/Algebra/Group/IndexTwo.lean` 构造指标 2 子群的
+  `indexTwoHom : G →* Multiplicative (ZMod 2)`，证明满射、核等于原子群，并给出存在指标 2 子群与存在满射到 ℤ₂ 的等价。
+  聚焦检查 exit=0、零 warning；AuditIndexTwo 审计 6 个新端点及首次复用的
+  `Subgroup.mul_mem_iff_of_index_two`、`Subgroup.index_eq_two_iff_exists_notMem_and`、`Subgroup.index_ker`、
+  `MonoidHom.range_eq_top`、`Subgroup.card_top`、`Nat.card_congr`、`Nat.card_zmod`，全部只含标准三公理。
+  Bennett 的 `Coefficients`/`CoveringTransfer*` 不含几何单纯链复形、一维 Hurewicz 或次数一 UCT；因此
+  `SimplicialBoolCocycle/IsCoboundary ≃ Hom(H₁(K;ℤ),ℤ₂)` 尚未闭合，且未 import 含 `sorry` 的
+  `Topology/Homology/HurewiczLowDegrees.lean`。
+
+- 2026-09-15（L.4 条件性骨架，`130e6f402`）：`LoopTheorem/StallingsInduction.lean` 定义
+  `NormalSystem.NonsingularCell`、实际二重覆盖及严格降复杂度数据 `DoubleCoverReduction`；
+  `simplicialComplexity_lt_of_factorization_of_separated` 由顶点映射因子分解和一个被分开的碰撞对证明严格下降，
+  `exists_nonsingular_cell_of_stallings_induction` 按边界球面性和可定向性分支，对复杂度作强归纳并显式消费 Lemma 1、
+  Lemma 2、24.7 与 24.8。合并最新整合分支后重查 exit=0、零 warning；AuditStallingsInduction 审计 6 个新声明及
+  `mem_vertexCollisionPairs`、`Finset.card_lt_card`、`Finset.ssubset_iff_subset_ne`、`connectedComponentIn`、
+  `IsOrientable`、`IsCoveringMap`、`Nat.strong_induction_on`，仅标准三公理。条件性缺口是由 C.4/C.5 与 C.1/C.3
+  构造该降阶数据，并完成复杂度相等时限制同胚、基本群满射与指标 2 的矛盾；没有把这些生产者报告为已证。
+
 ## 7. 决策与风险
 
 - 不采用 Bing 定理 7 的“保留单形”强形式，只用 Moise §8/§35 的紧致图卡归纳（书中 `chap:two-set-gluing` 的方案）。
