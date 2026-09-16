@@ -1370,6 +1370,7 @@ import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Scalar.Strong
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Scalar.TerminalCubicBarrier
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Scalar.TravelingBallComparison
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Scalar.Weak
+import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Scalar.AffineBarrier
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.SystemRank
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.SystemSource
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Tensor.Barrier.Basic
