@@ -78,9 +78,10 @@ Phase 1 刻意用 H-多面体 + 图册回避了细分理论；Phase 3 无法回�
 - **D2 不引入带边 PL 流形的图卡范畴。** 带边对象只作为多面体层的有限复形 `IsCombinatorialManifoldWithBoundary 3 K`
   出现（在 ℝᴺ 中，或作为 PL 流形内的 `PolyhedronIn`）。§25 需要的 2-重覆盖用 24.6 + 7.1 实现成有限复形，
   不需要抽象带边流形。
-- **D3 同调层用有限复形的单纯 ℤ-链。** 可定向性（23.14 的 3-链定义）、`p¹`（H₁ 的秩）、`χ`（顶点−边+面）、
-  28.11 型引理全部在单纯链上陈述与证明；需要拓扑不变性的地方按 Moise 原路（21.4–21.5 经细分不变性与 2D 结果）处理，
-  或在车道 H 决定改用本库奇异同调（`Topology/Homology/*`）加比较定理。这是 Phase 3 最大的开放设计点（§8 R3）。
+- **D3′ 同调层用本库奇异同调，不引入单纯链复形（已定）。** `χ` 用已有的 `faceEulerChar = eulerChar` 桥，
+  不另做 §21 的开胞腔复形及运算 α–δ；`p¹ := finrank ℚ H₁(·; ℚ)`，C.5 所需的 ℤ₂ 信息直接用 ℤ₂ 系数陈述。
+  可定向性采用 23.14 的顶维相干定向，纯组合地证明线性细分及 PL 不变性，不依赖单纯–奇异比较定理。
+  柄数取 `h(B) := p¹(B) / 2`，由 22.6–22.7 保证；闭曲面的顶维同调从局部同调基本类取得，28.11 走子复形开邻域与小链 Mayer–Vietoris。
 - **D4 基本群与覆盖用 Mathlib/本库。** `FundamentalGroup`、`Path`、`IsCoveringMap`、`IsCoveringMap.liftPath`、
   `monodromy`（Mathlib `Topology/Homotopy/Lifting.lean`）；本库 `Topology/Covering/*`（`BoolCocycle`、`DoubleCoverComponents`、
   `DeckGroup`、`SimplyConnectedCover`）与 `Topology/VanKampen/*`（`FreeProduct`、`SimplyConnectedUnion`）是复用候选，
@@ -192,7 +193,7 @@ F1.2 与 F2.3 将共用同一套机制：H-多面体的（暴露）面、相对�
 | P.4 | 10.8：ℝ² 中有限线性图驯顺，支持在给定开集内并按正控制函数逼近恒等 | §10 定理 6–8（框架定理 10.6 + 收缩族） | §17.2（胞腔复形可视为多面体） | new；已检查第二批 `PLApproximation` 的 `pl_approximation_one_skeleton` / `pl_approximation_pure_two_complex` / `pl_approximation_two_manifold`：它们是 Moise 6.2–6.3 的有限复形嵌入逼近，未给 10.8 的环境同胚、支撑和控制函数结论，因此未导入第二批 | 6k–10k |
 | P.5 | 2.7–2.8 θ-图、4.4 盘中两弧不分离、Problem 4.1 | 第一批 `PolygonalTheta.disjoint_interior13_interior23`、`closedRegion13_inter_closedRegion23`、`closedRegion_eq_union` 给多边形 θ-图的区域分解、交集与内部不交 | §26.7, §27.2, §30.1 | partial（2026-09-14）；以上三项 AuditS5 仅标准三公理。任意弧版本 4.4 与 Problem 4.1 未闭合；第二批 `PolygonalFamilyPolyhedron` 的有限多边形族兼容细分也未提供这两个结论，故 S0.3 未触发 | 2k–4k（剩余估计） |
 | H.1 | 有限复形的单纯 ℤ-链、边界、`H₁`、`H₂`、`H₃`，`p¹`（秩），`χ` 与 Euler–Poincaré | D3；本库 `EulerCharacteristic.lean` 的 `faceEulerChar` 复用 | §21–23, §24.8, §28, §31–§34 | new | 8k–12k |
-| H.2 | 可定向性（23.14 的 3-链定义；带边 `∂C³` 是 `∂K` 上的 2-循环）、23.15–23.17 | `def IsOrientable (K)`；子复形与二重覆盖的可定向性 | §24.7–24.8, §24.11, §26.8, §33 L11 | new | 3k–5k |
+| H.2 | 顶维相干定向、边界定向、子流形与倍化；H.2a 线性细分及 PL 不变性；H.2b 定向上循环 | `CoherentOrientation n K`、`IsOrientable n K`；`isOrientable_iff_of_isSubdivision`、`isOrientable_iff_of_isPLHomeomorphOn` 保留源复形的 `IsCombinatorialManifoldWithBoundary n K`，有限复形；PL 版本的环境有限维。`isOrientable_of_isPLBall` / `isOrientable_of_isPLSphere` 的定向维数均为 `n`；闭星接口为 `isOrientable_faceStarComplex` / `exists_unique_coherentOrientation_comparison_faceStarComplex`。`OrientationCocycle.lean` 提供 `orientationCocycle hK o`、`orientationCocycle_isCoboundary_iff`、`exists_orientationCocycle_of_not_isOrientable`，任意 `n`、有限维环境、有限复形，无公开 `[DecidableEq E]` | §24.7–24.8, §24.11, §26.8, §33 L11 | H.2a/H.2b done（2026-09-15）；已有定向基础、边界、子流形、倍化；H.2a `87b44df51` 闭合任意线性细分双向不变性、PL 不变性、PL 球/球面可定向及闭星恰两个相容顶维定向（先统一顶点序，不声称原始结构恰两元素），53 项核心及 22 项复用声明仅标准三公理。H.2b 按交接 §7.3 比较每个非空面闭星的局部定向，证明上边界当且仅当可定向，给 C.4 非上边界上循环；构造层提交 `85cd6e095`。所有目标模块检查 exit=0、零警告；H.2b 的 12 项核心及 12 项复用声明仅标准三公理，登记见 `MOISE_PLAN.md` §6。旧“非顶维边取 0”构造未使用 | H.2a/H.2b 无未闭合端点；C.4 的覆盖可定向性仍属 C 车道 |
 | H.3 | §21：开胞腔复形的 χ 与运算 α–δ 不变；21.6 `χ(J) = 0`；21.7 2-胞腔 `χ = 1`；21.8 加法；21.10–21.11 分裂与张成 | 组合陈述于多面体曲面 | §22, §23.18–19, §28.20, §30.4, §33 L7 | new | 4k–6k |
 | H.4 | §22：22.5 `χ = 2 − (2h + m)`、22.6–22.7 `p¹` 与 `χ`、22.8–22.10 分类（可定向 + χ 决定同胚型）、22.11 单连通 ⟹ 2-球面、Problems 22.11–22.12 | 只对**多面体**紧致曲面陈述；22.9 用于 §33 L11–L12；22.11 用于 §30.6、§32；备选：移植 classification-of-surfaces 的 `classification_of_surfaces`（拓扑版，142k 行依赖，**不推荐**整体移植） | §26.8, §28.6, §30.4, §30.6, §32, §33 | new | 10k–18k |
 | H.5 | 23.18–23.19：`h(B) = p¹(N)`（`dim L ≤ 1`）、`p¹(K) ≥ h(Bd \|K\|)`（可定向带边） | 用 23.11–23.16、H.3、H.4 | §24.8 | new | 4k–6k |
@@ -349,7 +350,7 @@ AuditS62 的 16 项传递公理闭包均仅 `propext`、`Classical.choice`、`Qu
 | C.1 | 24.1–24.4：提升、诱导同态单射、`k`-重覆盖与指标 | `IsPLBall.simplyConnectedSpace`、`.locallyPathConnectedSpace`；`IsCoveringMap.exists_unique_lift_of_isPLBall`、`.injective_fundamentalGroup_map`、`.fundamentalGroup_stabilizer_eq_range`、`.monodromy_eq_iff_mem_range`、`.liftPath_one_eq_iff_mem_range`、`.fundamentalGroupMulAction_isPretransitive`、`.card_fiber_eq_index` | §25 | done（2026-09-15，`CoveringLift.lean`）：24.1–24.4 的九个桥接端点全部闭合；检查 exit=0、零 warning，AuditC1 九端点及 AuditC1Reuse 十八条 D4 复用声明均仅标准三公理，未经过 `HurewiczLowDegrees.lean`；源码提交 `2df0546f5`。 | 1k（桥接） |
 | C.2 | 24.5（`k = 2`）：有限复形上的 ℤ₂ 1-上循环构造二重覆盖 | `SimplicialBoolCocycle K`、`IsCoboundary`、`toBoolCocycle`、`isCoveringMap`、`card_fiber = 2`、`connectedSpace_iff : ConnectedSpace TotalSpace ↔ ¬ IsCoboundary` | C.4, C.5 | done（2026-09-15，`DoubleCoverComplex.lean`）：开星上循环产生本库 `BoolCocycle` 二重覆盖；构造无不动点换层映射及两方向截面判据，连通当且仅当非上边界。检查 exit=0、零 warning，AuditC2 二十三端点及 AuditC2Reuse 十一条 D4 复用声明均仅标准三公理，未经过 `HurewiczLowDegrees.lean`；源码提交 `364fbe752`。 | 3k–5k |
 | C.3 | 24.6：三角剖分提升到有限覆盖，且组合流形性保持 | `theorem exists_lift_simplicialComplex [FiniteDimensional ℝ E] (K) [Finite K.faces] {p : X' → K.space} (hp : IsCoveringMap p) (hfin : ∀ x, (p ⁻¹' {x}).Finite) : ∃ N (K' : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin N))) (e : K'.space ≃ₜ X'), K'.faces.Finite ∧ (∀ q (hq : q ∈ K'.faces), ∃ t ∈ K.faces, ∃ A, (∀ x (hx : x ∈ convexHull ℝ (q : Set _)), ((p (e ⟨x, K'.convexHull_subset_space hq hx⟩) : K.space) : E) = A x) ∧ A '' convexHull ℝ (q : Set _) = convexHull ℝ (t : Set E)) ∧ ∀ n, IsCombinatorialManifoldWithBoundary n K → IsCombinatorialManifoldWithBoundary n K'` | §25 L3 | done（2026-09-15，`CoveringTriangulation.lean`）：以基复形顶点的纤维为有限顶点集，每个基单形从指定纤维点唯一提升；重叠由提升唯一性粘合。标准基实现给出有限 `coveringComplex`，逐面映射粘为 `coveringSpaceHomeomorph`；顶点 link 的 `coveringVertexLink_isGlueIso` 搬运任意维带边组合流形性。此直接逐单形路线不需要先细分至均匀覆盖闭星。检查 exit=0、零 warning，AuditC3 十六端点及 AuditC3Reuse 三条 D4 复用声明均仅标准三公理，未经过 `HurewiczLowDegrees.lean`；源码提交 `f7e70bc61`。 | 4k–6k |
-| C.4 | 24.7：不可定向连通带边多面体 3-流形有二重覆盖（且覆盖可定向，Problem 24.11） | 定向上循环 + C.2 | §25 L3 | new | 2k–3k |
+| C.4 | 24.7：不可定向连通带边多面体 3-流形有二重覆盖（且覆盖可定向，Problem 24.11） | H.2b 的 `OrientationCocycle.lean`：`exists_orientationCocycle_of_not_isOrientable hK h` 给 `barycentricSubdivision K` 上的 `SimplicialBoolCocycle` 且非上边界；接 C.2 | §25 L3 | new；H.2b 输入已闭合并审计，二重覆盖流形的构造与可定向性仍待 C.4 消费者证明，不能由输入完成推断 C.4 已完成 | 2k–3k |
 | C.5 | 24.8：紧致连通可定向带边、某边界分支非 2-球面 ⟹ 二重覆盖 | H.5 的 `p¹ > 0` ⟹ `H₁ → ℤ₂` 满 ⟹ C.2 | §25 L3 | new | 2k–3k |
 | C.6 | 24.9–24.10 CST 与柱形图、CST 两两组合等价 | `def IsCST (S : Set M)`（有限个 3-胞腔循环相邻交于 2-胞腔）；`exists_cylindricalDiagram` | §28, §30.7, §31 | new | 3k–5k |
 | C.7 | 24.11–24.12：可定向 3-流形中多边形的正则邻域是 CST；可缩多边形的正则邻域是 CST（任意 `M`） | 用 F4.2、H.2、C.4 的定向传递（24.12 只需 28.19 的特例：`J = Bd Δ`，Problem 28.4 指出可直接证） | §28.19, §31, §34 L1 | new | 3k–5k |
@@ -505,8 +506,9 @@ AuditS62 的 16 项传递公理闭包均仅 `propext`、`Classical.choice`、`Qu
 - **R1 规模。** 200k–330k 行是当前最诚实的估计（§3）；若资源只允许单车道，应先做 F、S、E.0，它们对 Phase 2（T1/T2）也有用。
 - **R2 一般位置。** D5 的三种一般位置是全链最容易被低估的部分；Moise 到处以"slight perturbation"带过。建议车道 F 先用
   §26.6 的证明（最简单的曲面对情形）做样板，确定表示后再推广。
-- **R3 同调层。** D3 若用单纯链，需要 `p¹` 与 `χ` 在细分与 PL 同胚下不变（组合证明可行但长）；若用本库奇异同调，需要
-  有限复形的单纯–奇异比较定理（本库 `Homology/Subdivision*` 有部分素材）。车道 H 开工前必须二选一并记录。
+- **R3 同调层（已定）。** 采用 D3′ 的本库奇异同调、现成 χ 桥及纯组合定向，不引入单纯链复形，也不以缺失的
+  单纯–奇异比较定理为前置。H.2a 已证明相干定向的细分及 PL 不变性；H.6 的子复形 Mayer–Vietoris 与 H.4a 的闭曲面
+  顶维基本类仍须证明，不能把奇异同调的选择当作这两处已闭合。
 - **R4 2D 分类。** §22 只对多面体曲面陈述可减少一半工作量；22.9（可定向 + χ ⟹ 同胚型）在 §33 L11–L12 的使用可能可以改成
   `p¹` 计数直接给出"盘或带孔盘"，若成立可跳过 22.8–22.10；实现时验证。
 - **R5 非紧性。** E.1/E.2 需要 §33/§34 的构造在局部有限复形上进行（每步只影响有限个单形）；这是 Moise 一句"virtually a repetition"

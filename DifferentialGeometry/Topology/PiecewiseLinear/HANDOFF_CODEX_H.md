@@ -268,3 +268,109 @@ theorem exists_orientationCocycle_of_not_isOrientable : ¬ IsOrientable n K →
 H.6、H.4a、H.5 顺序不变。整合分支现已含 Bennett 的 `Topology/Homology/{Coefficients, ChangeOfRings, CoveringTransfer*,
 Reduced/MayerVietorisCoefficients, Reduced/PointClasses}`（`REUSE_AUDIT.md` §2），H.5 的 ℤ₂/ℚ 系数与二重覆盖 transfer 可直接用；
 下一个检查点先合并 `origin/codex/moise-integration`。检查点：H.2a 的细分不变性做完汇报，再做 H.2b。
+
+## 8. 夜间里程碑（2026-09-15 → 09-16）
+
+### H-M1 — done，I4 已交付
+
+- 数学提交：`85cd6e095`（局部定向上循环构造）、`fe39d3cca`（上边界等价与非平凡性）；H.2a 已由 `87b44df51` 交付。
+- 整合基线：已合并包含 `8fb887bb9` 的整合分支，H 合并提交 `050f9246e`。
+- 文件：`OrientationCocycle.lean`，辅助 `DerivedCarrier.lean`；`Orientation.lean` 的限制接口现包含零维。
+- I4 三端点：`orientationCocycle`、`orientationCocycle_isCoboundary_iff`、`exists_orientationCocycle_of_not_isOrientable`。
+  局部族是每个非空面的 `faceStarComplex` 的相干定向；任意维数、有限复形、有限维实赋范环境，无公开 `DecidableEq`。
+- 夜间复核：`check-f.ps1` 检查 `OrientationCocycle` exit=0、零 warning（56.6 秒）；
+  `.lake/scratch/AuditNightHM1.lean` 保留 24 项命名空间完整的 `#print axioms`，审计 exit=0，12 项核心与 12 项复用声明仅三公理。
+- 确切缺口：I4 无；C.4 覆盖流形的可定向性不是本里程碑端点，余力在 H-M5 做。下一项 H-M2。
+
+### H-M2 — partial，开邻域几何层已闭合
+
+- 新模块 `SubcomplexNeighborhood.lean`：正重心质量定义相对开邻域；
+  `subcomplexOpenNeighborhoodStrongDeformationRetract` 给强形变收缩，
+  `subcomplexOpenNeighborhoodHomotopyEquiv` 的逆映射是原来的子复形包含；
+  `subcomplexOpenNeighborhood_inter` 与 `subcomplexOpenNeighborhood_union` 给交集兼容与开覆盖。
+- 聚焦检查 exit=0、零 warning（10.4 秒）。保留 `.lake/scratch/AuditNightHM2Neighborhood.lean`
+  的 27 项审计（19 项新声明、8 项复用）及 `AuditNightHM2Reuse.lean` 的 19 项复用预审计；全部仅三公理。
+- 此为 H-M2 中间检查点，数学提交哈希见下一段登记。未闭合：小链短正合列的元素级 28.11、
+  从开邻域包含同伦等价向子复形搬运的自然性、Betti 数不等式；尚未声明 H-M2 done。
+
+### H-M2 — done，28.11 与子复形 Betti 上界已交付
+
+- 数学提交：`11826f868`（兼容开邻域与强形变收缩）、`c9fff0308`（小链 MV 正合性、子复形搬运与 Betti 上界）。
+- `MayerVietorisSubcomplex.lean` 的 `exists_mem_inter_of_map_eq_zero`：有限复形 `K` 的两个子复形覆盖，
+  任意次数、任意环及系数模；因此直接包括整系数 28.11。三个包含诱导同调同构，相关包含方块严格交换。
+- `bettiNumber_union_le`：`b_(n+1)(K) ≤ b_(n+1)(L) + b_(n+1)(M) + b_n(L∩M)`，任意域系数。
+  `bettiOne_union_le` 是有理一阶特例，明确保留交集的 `b_0` 项；未声称任意非连通交集时可删去此项。
+  `Homology.bettiOne X` 定义为 `finrank ℚ H₁(X;ℚ)`。
+- 可复用代数/同调层在 `Homology/Algebra/PushoutHomology.lean`、`Homology/HomotopyEquivalence.lean`、
+  `Homology/BettiNumber.lean`、`Homology/SmallChains/{Exactness,BettiBound}.lean`，无新单纯链复形。
+- 七个模块检查均 exit=0、零 warning，最后 `MayerVietorisSubcomplex` 10.5 秒；`git diff --check` 通过。
+  `.lake/scratch/AuditNightHM2*.lean` 保留 83 项去重后的命名空间完整审计（39 项新声明、44 项复用/预审计），
+  全部只有 `propext`、`Classical.choice`、`Quot.sound` 或更少；复用记录已写 `MOISE_PLAN.md` §6。
+- 确切缺口：28.11、相对开邻域 SDR、上述各阶 Betti 上界无；未导出整条命名的子复形长正合列或更尖锐的连通交集估计。
+  H-M3 的全局顶维基本类/定向判据、H-M4 的 I5 不是本里程碑结论。下一项 H-M3。
+
+### H-M3 — partial，低阶同调层已交付，顶维定向比较未闭合
+
+- 数学提交：`163a27733`。新模块 `SimplicialComplex/GeometricHomology.lean`、
+  `SimplicialComplex/GeometricConnectivity.lean`、`PiecewiseLinear/BettiPolyhedra.lean`；
+  `Homology/BettiNumber.lean` 增加路径连通空间的零阶 Betti 数。
+- `isZero_singularHomology_geometricSpace_of_card_le` 对任意环与系数模证明维数以上的奇异同调消失。
+  复用已有有限 simplicial-set realization 到奇异同调的同构（也是 χ 桥的基础），未新建单纯链复形。
+  有限几何复形局部路径连通；连通即路径连通，因此 `bettiNumber_zero_of_isConnected` 给 `b_0=1`。
+- `eulerChar_eq_sum_bettiNumber`、`eulerChar_eq_one_sub_bettiOne_add_bettiTwo`、
+  `bettiOne_graph`、`bettiOne_polygon` 已闭合。多边形结论是有理 `b_1=1`，不是已交付整系数指定生成元。
+  `SubcomplexNeighborhood.subcomplexInclusion` 改为复用原生 `geometricInclusion`，签名不变。
+- 五个修改/新增模块检查 exit=0、零 warning；更新后 `MayerVietorisSubcomplex` 再检查 exit=0（12.1 秒）。
+  `BettiPolyhedra` 最后检查 11.2 秒。`.lake/scratch/AuditNightHM3*.lean` 保留 26 项去重审计：
+  11 项新声明、2 项既有端点复核、13 项复用/预审计，全部仅标准三公理；复用已登记 `MOISE_PLAN.md` §6。
+- 确切缺口：相干定向的仿射奇异基本类具有指定局部生成元像；跨公共边的局部生成元符号比较；
+  全局顶维类到局部同调的检测/单射定理。已有 `Local/FiniteSet` 只分解相对群
+  `H_2(K,K\Z)`，并不证明 `H_2(K)` 到该群单射。缺这些生产者，不能导出定向/非定向的 `b_2=1/0`。
+  有理一阶 Betti 数偶性还需交叉配对或曲面归约，尚未闭合。
+- §4 路线修正：一般不能说“去掉一个二维开面后剩余是一维复形”；应另证删去所有顶面内点后的
+  骨架形变收缩，或沿对偶树作逐面消去。已核对 Moise 原书 22.6–22.7：原证明使用盘加条带归约，
+  不能把它当作本库现成的局部到全局基本类比较。
+- 按夜间 §0.4 记录这一真实数学缺口后转 H-M4 的独立边界 χ 计算；未弱化 H.4a 的冻结端点，
+  未引入结论型假设、`sorry` 或未审计的 Hurewicz 链。
+
+### H-M4 — partial，23.18′ 的 Euler 与导出邻域层已交付，I5 阻塞
+
+- 数学提交：`09bc51619`。新模块 `BoundaryEuler.lean`、`DerivedNeighborhoodHomology.lean`、
+  `HandleCount.lean`。
+- `eulerChar_boundaryComplex_eq_two_mul` 对任意有限组合带边 3-流形证明
+  `χ(boundaryComplex 3 K) = 2χ(K)`；结论实际不需可定向或连通假设。
+  `eulerChar_geometricLink_of_isCombinatorialManifoldWithBoundary` 同时导出所有面 link 的球/球 Euler 值。
+- `derivedNeighborhoodHomotopyEquiv`、`bettiNumber_derivedNeighborhood_eq`、
+  `bettiOne_derivedNeighborhood_eq`、`eulerChar_derivedNeighborhood_eq` 证明导出邻域保持全部域系数 Betti 数和 χ。
+  `IsOrientable.derivedNeighborhood` 由二次重心细分的可定向性及子流形限制给出；
+  `eulerChar_boundary_derivedNeighborhood_eq_two_mul` 和 `bettiOne_derivedNeighborhood_graph` 是 23.18 的直接消费层。
+- 三个模块聚焦检查均 exit=0、零 warning：`BoundaryEuler` 12.6 秒、
+  `DerivedNeighborhoodHomology` 10.1 秒、`HandleCount` 11.0 秒。
+  `.lake/scratch/AuditNightHM4{Reuse,Final}.lean` 保留 32 项去重审计（10 项新、22 项复用/预审计），
+  全部仅 `propext`、`Classical.choice`、`Quot.sound`。
+- I5 的确切未闭合义务有三项：首先 H-M3 尚缺闭曲面顶维基本类，因而还没有
+  `χ(B)=2-b₁(B)`；其次一般带边 3-流形仍缺 23.19 的核心不等式
+  `b₁(boundaryComplex 3 K) ≤ 2*b₁(K)`（或等价的 half-lives/half-dies 生产者）；最后从
+  `¬ IsPLSphere 2 B.space` 推出 `0 < b₁(B.space)` 需要 H.4b 的闭可定向曲面识别
+  `b₁=0 → IsPLSphere 2`。这些都不是 NIGHT_PLAN §1 已给的跨车道接口，不能包装成结论型假设。
+- 因而未声明 `bettiOne_pos_of_boundary_component_not_sphere`，也未用 `χ(B)≠2` 替换冻结的非球面假设。
+  按 §0.4 转 H-M5 的二重覆盖定向引理。
+
+### H-M5 — done，定向上循环的二重覆盖复形整体可定向
+
+- 数学提交：`c6830cc26`（覆盖复形的流形与局部定向层）、`4e81f6e2d`（sheet 奇偶公式与全局相干定向）。
+  模块为 `CoveringOrientation.lean`，并在 `Orientation.lean`、`OrientationCocycle.lean` 导出证明所需的仿射余面相消与
+  局部细分定向符号接口。
+- `SimplicialBoolCocycle.coveringNeighbor_side` 证明一条提升边两端的 sheet 坐标之 XOR 正是基边上的 `parity`；
+  `orientationCocycle_parity_eq_localSubdivisionOrientationSign` 与
+  `localSubdivisionOrientationSign_pair_cancel` 把该奇偶公式变成公共余维一面上的边界符号相消。
+- `orientationCocycleCoveringOrientation` 显式构造
+  `coveringComplex (barycentricSubdivision K) (orientationCocycle hK o).toBoolCocycle.toFiberBundleCore.proj`
+  的相干定向；`isOrientable_coveringComplex_orientationCocycle` 给最终可定向性端点。结论对任意维数的有限组合带边流形成立，
+  无公开 `DecidableEq`，零维由 `isOrientable_zero` 单独闭合。
+- 最终聚焦检查均 exit=0、零 warning：`Orientation` 32.2 秒、`OrientationCocycle` 29.3 秒、
+  `CoveringOrientation` 14.9 秒。`.lake/scratch/AuditNightHM5OrientationCover.lean` 审计 37 项
+  （13 项新增/提升端点、24 项关键复用），全部只有 `propext`、`Classical.choice`、`Quot.sound`；
+  `git diff --check` 与新增禁用项扫描通过。
+- H-M5 无未闭合端点。H-M3 的全局顶维基本类/定向比较，以及 H-M4/I5 的 23.19 Betti 不等式与
+  `b₁=0 → IsPLSphere 2` 识别仍是原有真实缺口，本里程碑没有弱化或包装这些义务。
