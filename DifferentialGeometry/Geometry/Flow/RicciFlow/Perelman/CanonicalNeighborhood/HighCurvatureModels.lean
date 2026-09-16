@@ -21,7 +21,7 @@ open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.CheegerGromovC
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions (SphereAntipodalQuotient)
-open scoped Manifold ContDiff ENNReal
+open scoped _root_.DifferentialGeometry.Manifold ContDiff ENNReal
 
 universe u
 
@@ -824,7 +824,6 @@ theorem metricScalar_le_one_of_canonical_metric_convergence
   exact le_of_tendsto_of_tendsto hlim tendsto_const_nhds hev
 
 theorem maximal_point_singularity_model_of_slab_compactness
-    [CompactSpace M] [ConnectedSpace M] [T2Space (TangentBundle I3 M)]
     {T : ℝ} (hT : 0 < T)
     (S : SolutionOn (I := I3) (M := M) (RealTimeInterval.closedOpen 0 T hT))
     (hS : IsSolutionOn S) (o : TangentOrientationSection M)
@@ -832,6 +831,8 @@ theorem maximal_point_singularity_model_of_slab_compactness
       ∀ (x : ℕ → M) (t : ℕ → ℝ) (htpos : ∀ i, 0 < t i)
         (htmem0 : ∀ i, t i ∈ Set.Ico (0 : ℝ) T)
         (hpos : ∀ i, 0 < S.scalar (t i) (x i)),
+      (∀ i, theta ≤ t i) →
+      Filter.Tendsto (fun i => S.scalar (t i) (x i)) Filter.atTop Filter.atTop →
       ∃ (L : PointedFlowData.{u, 0, 0} (I := I3) ancientTimeInterval) (phi : ℕ → ℕ)
         (F : PointedRiemannianConvergenceMaps (I := I3)
           ((highCurvatureFlowSequence hT S hS x t htmem0 htpos hpos).atTime 0)
@@ -874,7 +875,7 @@ theorem maximal_point_singularity_model_of_slab_compactness
   have htmem0 : ∀ i, t i ∈ Set.Ico (0 : ℝ) T :=
     fun i => ⟨le_trans htheta.le (htthe i), (htmem i).2⟩
   obtain ⟨L, phi, F, hphi, hanc, hnorm, hconvT, hcmp, hcap, ori, hor⟩ :=
-    hmain theta htheta x t htpos htmem0 hpos
+    hmain theta htheta x t htpos htmem0 hpos htthe hscalar
   have hsource : ∀ (k : ℕ) (s : ℝ), s ∈ Set.Icc (-(t k * S.scalar (t k) (x k))) 0 →
       ∀ y : ((highCurvatureFlowSequence hT S hS x t htmem0 htpos hpos).term k).M,
         ((highCurvatureFlowSequence hT S hS x t htmem0 htpos hpos).term k).S.scalar s y ≤ 1 := by

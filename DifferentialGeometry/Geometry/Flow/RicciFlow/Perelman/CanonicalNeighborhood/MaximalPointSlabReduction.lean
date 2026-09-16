@@ -136,6 +136,8 @@ def MaximalPointSlabCompactnessAtPastMaximum {T : ℝ} (hT : 0 < T)
     ∀ (x : ℕ → M) (t : ℕ → ℝ) (htpos : ∀ i, 0 < t i)
       (htmem0 : ∀ i, t i ∈ Set.Ico (0 : ℝ) T)
       (hpos : ∀ i, 0 < S.scalar (t i) (x i)),
+      (∀ i, theta ≤ t i) →
+      Filter.Tendsto (fun i => S.scalar (t i) (x i)) Filter.atTop Filter.atTop →
       (∀ i s, s ∈ Set.Icc 0 (t i) → ∀ y : M,
         S.scalar s y ≤ S.scalar (t i) (x i)) →
       ∃ (L : PointedFlowData.{u, 0, 0} (I := I3) ancientTimeInterval) (phi : ℕ → ℕ)
@@ -175,11 +177,11 @@ theorem maximalPointSlabCompactnessAtPastMaximum_of_maximalPointSlabCompactness 
     (h : MaximalPointSlabCompactness.{u} hT S hS o) :
     MaximalPointSlabCompactnessAtPastMaximum.{u} hT S hS o := by
   obtain ⟨kappa, hkpos, hmain⟩ := h
-  refine ⟨kappa, hkpos, fun theta htheta x t htpos htmem0 hpos _hmax => ?_⟩
-  exact hmain theta htheta x t htpos htmem0 hpos
+  refine ⟨kappa, hkpos, fun theta htheta x t htpos htmem0 hpos htlower hscalar _hmax => ?_⟩
+  exact hmain theta htheta x t htpos htmem0 hpos htlower hscalar
 
 theorem maximal_point_singularity_model_of_atPastMaximum
-    [CompactSpace M] [ConnectedSpace M] [T2Space (TangentBundle I3 M)] {T : ℝ} (hT : 0 < T)
+    {T : ℝ} (hT : 0 < T)
     (S : SolutionOn (I := I3) (M := M) (RealTimeInterval.closedOpen 0 T hT))
     (hS : IsSolutionOn S) (o : TangentOrientationSection M)
     (h : MaximalPointSlabCompactnessAtPastMaximum.{u} hT S hS o) :
@@ -203,7 +205,8 @@ theorem maximal_point_singularity_model_of_atPastMaximum
   have hmaxN : ∀ i s, s ∈ Set.Icc 0 (t (i + N)) → ∀ y : M,
       S.scalar s y ≤ S.scalar (t (i + N)) (x (i + N)) := fun i => hmax (i + N)
   obtain ⟨L, phi, F, hphi, hanc, hbase, hconvT, hcmp, hcap, ori, hor⟩ :=
-    hmain theta htheta (fun i => x (i + N)) (fun i => t (i + N)) htposN htmem0N hposN hmaxN
+    hmain theta htheta (fun i => x (i + N)) (fun i => t (i + N)) htposN htmem0N hposN
+      (fun i => (htmem (i + N)).1) hscalarN hmaxN
   have hsource := highCurvatureFlowSequence_scalar_le_one_of_pastMaximum hT S hS
     (fun i => x (i + N)) (fun i => t (i + N)) htmem0N htposN hposN hmaxN
   have hlim : PointedFlowScalarBounded (I := I3) L 1 := by

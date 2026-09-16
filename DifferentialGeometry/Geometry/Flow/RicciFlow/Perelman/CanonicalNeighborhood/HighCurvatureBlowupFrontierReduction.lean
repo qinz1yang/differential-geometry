@@ -13,7 +13,7 @@ open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.CheegerGromovC
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions (SphereAntipodalQuotient)
-open scoped Manifold ContDiff ENNReal
+open scoped _root_.DifferentialGeometry.Manifold ContDiff ENNReal
 
 universe u
 
@@ -103,6 +103,8 @@ def MaximalPointSlabCompactnessWithoutBaseNormalization {T : ℝ} (hT : 0 < T)
     ∀ (x : ℕ → M) (t : ℕ → ℝ) (htpos : ∀ i, 0 < t i)
       (htmem0 : ∀ i, t i ∈ Set.Ico (0 : ℝ) T)
       (hpos : ∀ i, 0 < S.scalar (t i) (x i)),
+      (∀ i, theta ≤ t i) →
+      Filter.Tendsto (fun i => S.scalar (t i) (x i)) Filter.atTop Filter.atTop →
       ∃ (L : PointedFlowData.{u, 0, 0} (I := I3) ancientTimeInterval) (phi : ℕ → ℕ)
         (F : PointedRiemannianConvergenceMaps (I := I3)
           ((highCurvatureFlowSequence hT S hS x t htmem0 htpos hpos).atTime 0)
@@ -138,9 +140,9 @@ theorem maximalPointSlabCompactness_of_withoutBaseNormalization {T : ℝ} (hT : 
     (h : MaximalPointSlabCompactnessWithoutBaseNormalization.{u} hT S hS o) :
     MaximalPointSlabCompactness.{u} hT S hS o := by
   obtain ⟨kappa, hkpos, hmain⟩ := h
-  refine ⟨kappa, hkpos, fun theta htheta x t htpos htmem0 hpos => ?_⟩
+  refine ⟨kappa, hkpos, fun theta htheta x t htpos htmem0 hpos htlower hscalar => ?_⟩
   obtain ⟨L, phi, F, hphi, hanc, hconvT, hcmp, hcap, ori, hor⟩ :=
-    hmain theta htheta x t htpos htmem0 hpos
+    hmain theta htheta x t htpos htmem0 hpos htlower hscalar
   obtain ⟨F0, hF0⟩ := hconvT 0 le_rfl
   exact ⟨L, phi, F, hphi, hanc,
     pointedFlowScalarAtBase_of_metricConvergence_at_zero hT S hS x t htmem0 htpos hpos L phi F0 hF0,

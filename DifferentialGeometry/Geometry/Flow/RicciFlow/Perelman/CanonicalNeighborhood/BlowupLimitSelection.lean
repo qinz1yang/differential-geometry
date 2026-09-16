@@ -10,7 +10,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.Fini
 
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
-open scoped Manifold ContDiff ENNReal
+open scoped _root_.DifferentialGeometry.Manifold ContDiff ENNReal
 
 universe u
 
@@ -51,6 +51,8 @@ def BlowupLimitSelection {T : ℝ} (hT : 0 < T)
     ∀ (x : ℕ → M) (t : ℕ → ℝ) (htpos : ∀ i, 0 < t i)
       (htmem0 : ∀ i, t i ∈ Set.Ico (0 : ℝ) T)
       (hpos : ∀ i, 0 < S.scalar (t i) (x i)),
+      (∀ i, theta ≤ t i) →
+      Filter.Tendsto (fun i => S.scalar (t i) (x i)) Filter.atTop Filter.atTop →
       ∃ (L : PointedFlowData.{u, 0, 0} (I := I3) ancientTimeInterval) (phi : ℕ → ℕ)
         (F : PointedRiemannianConvergenceMaps (I := I3)
           ((highCurvatureFlowSequence hT S hS x t htmem0 htpos hpos).atTime 0)
@@ -127,9 +129,9 @@ theorem maximalPointSlabCompactness_of_blowupLimitSelection {T : ℝ} (hT : 0 < 
     (hS : IsSolutionOn S) (o : TangentOrientationSection M) {kappa : ℝ} (hkappa : 0 < kappa)
     (h : BlowupLimitSelection hT S hS o kappa) :
     MaximalPointSlabCompactness hT S hS o := by
-  refine ⟨kappa, hkappa, fun theta htheta x t htpos htmem0 hpos => ?_⟩
+  refine ⟨kappa, hkappa, fun theta htheta x t htpos htmem0 hpos htlower hdiverge => ?_⟩
   obtain ⟨L, phi, F, hphi, hconn, hcomplete, hnonneg, hscalar, hnoncoll, hconvT, hcmp,
-    hcap, ori, hori⟩ := h theta htheta x t htpos htmem0 hpos
+    hcap, ori, hori⟩ := h theta htheta x t htpos htmem0 hpos htlower hdiverge
   obtain ⟨Ft, hFt⟩ := hconvT 0 le_rfl
   have hbase : PointedFlowScalarAtBase (I := I3) L 1 :=
     pointedFlowScalarAtBase_one_of_canonicalMetricSourceConverges hT S hS x t htmem0 htpos
@@ -157,9 +159,9 @@ theorem exists_blowupLimitSelection_of_maximalPointSlabCompactness {T : ℝ} (hT
     (h : MaximalPointSlabCompactness hT S hS o) :
     ∃ kappa : ℝ, 0 < kappa ∧ BlowupLimitSelection hT S hS o kappa := by
   obtain ⟨kappa', hkpos', hmain⟩ := h
-  exact ⟨kappa', hkpos', fun theta htheta x t htpos htmem0 hpos => by
+  exact ⟨kappa', hkpos', fun theta htheta x t htpos htmem0 hpos htlower hdiverge => by
     obtain ⟨L, phi, F, hphi, hanc, hbase, hconvT, hcmp, hcap, ori, hori⟩ :=
-      hmain theta htheta x t htpos htmem0 hpos
+      hmain theta htheta x t htpos htmem0 hpos htlower hdiverge
     exact ⟨L, phi, F, hphi, hanc.connected, hanc.complete, hanc.nonnegativeCurvatureOperator,
       hanc.globalScalarBound, hanc.noncollapsed, hconvT, hcmp, hcap, ori, hori⟩⟩
 
@@ -175,7 +177,7 @@ theorem maximalPointSlabCompactness_iff_exists_blowupLimitSelection {T : ℝ} (h
     exact maximalPointSlabCompactness_of_blowupLimitSelection hT S hS o hkappa h
 
 theorem maximal_point_singularity_model_of_blowupLimitSelection
-    [CompactSpace M] [ConnectedSpace M] [T2Space (TangentBundle I3 M)] {T : ℝ} (hT : 0 < T)
+    {T : ℝ} (hT : 0 < T)
     (S : SolutionOn (I := I3) (M := M) (RealTimeInterval.closedOpen 0 T hT))
     (hS : IsSolutionOn S) (o : TangentOrientationSection M) {kappa : ℝ} (hkappa : 0 < kappa)
     (h : BlowupLimitSelection hT S hS o kappa) :

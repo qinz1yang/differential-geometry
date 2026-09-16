@@ -13,7 +13,7 @@ open scoped Topology
 
 namespace DifferentialGeometry.CheegerGromovCompactness
 
-open scoped Manifold ContDiff ENNReal
+open scoped _root_.DifferentialGeometry.Manifold ContDiff ENNReal
 
 universe u uE uH
 
@@ -68,7 +68,7 @@ universe u uE uH
 
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology DifferentialGeometry.Tensor0SBundle
-open scoped Manifold ContDiff ENNReal
+open scoped _root_.DifferentialGeometry.Manifold ContDiff ENNReal
 
 attribute [local instance] PointedFlowData.topology PointedFlowData.charted
   PointedFlowData.smooth PointedFlowData.t2 PointedFlowData.sigmaCompact
@@ -223,6 +223,8 @@ def MaximalPointSlabLimitSelection {T : ℝ} (hT : 0 < T)
     ∀ (x : ℕ → M) (t : ℕ → ℝ) (htpos : ∀ i, 0 < t i)
       (htmem0 : ∀ i, t i ∈ Set.Ico (0 : ℝ) T)
       (hpos : ∀ i, 0 < S.scalar (t i) (x i)),
+      (∀ i, theta ≤ t i) →
+      Filter.Tendsto (fun i => S.scalar (t i) (x i)) Filter.atTop Filter.atTop →
       (∀ i s, s ∈ Set.Icc 0 (t i) → ∀ y : M,
         S.scalar s y ≤ S.scalar (t i) (x i)) →
       ∃ (L : PointedFlowData.{u, 0, 0} (I := I3) ancientTimeInterval) (phi : ℕ → ℕ)
@@ -256,9 +258,9 @@ theorem maximalPointSlabLimitSelection_of_maximalPointSlabCompactnessAtPastMaxim
     (h : MaximalPointSlabCompactnessAtPastMaximum.{u} hT S hS o) :
     ∃ kappa : ℝ, 0 < kappa ∧ MaximalPointSlabLimitSelection.{u} hT S hS o kappa := by
   obtain ⟨kappa, hkpos, hmain⟩ := h
-  refine ⟨kappa, hkpos, fun theta htheta x t htpos htmem0 hpos hmax => ?_⟩
+  refine ⟨kappa, hkpos, fun theta htheta x t htpos htmem0 hpos htlower hscalar hmax => ?_⟩
   obtain ⟨L, phi, F, hphi, hanc, _hbase, hconvT, hcmp, _hcap, ori, hor⟩ :=
-    hmain theta htheta x t htpos htmem0 hpos hmax
+    hmain theta htheta x t htpos htmem0 hpos htlower hscalar hmax
   exact ⟨L, phi, F, hphi, hanc, hconvT, hcmp, ori, hor⟩
 
 theorem maximalPointSlabCompactnessAtPastMaximum_of_maximalPointSlabLimitSelection {T : ℝ}
@@ -267,9 +269,9 @@ theorem maximalPointSlabCompactnessAtPastMaximum_of_maximalPointSlabLimitSelecti
     (hS : IsSolutionOn S) (o : TangentOrientationSection M) {kappa : ℝ} (hkappa : 0 < kappa)
     (h : MaximalPointSlabLimitSelection.{u} hT S hS o kappa) :
     MaximalPointSlabCompactnessAtPastMaximum.{u} hT S hS o := by
-  refine ⟨kappa, hkappa, fun theta htheta x t htpos htmem0 hpos hmax => ?_⟩
+  refine ⟨kappa, hkappa, fun theta htheta x t htpos htmem0 hpos htlower hscalar hmax => ?_⟩
   obtain ⟨L, phi, F, hphi, hanc, hconvT, hcmp, ori, hor⟩ :=
-    h theta htheta x t htpos htmem0 hpos hmax
+    h theta htheta x t htpos htmem0 hpos htlower hscalar hmax
   obtain ⟨F0, hF0⟩ := hconvT 0 le_rfl
   have hbase : PointedFlowScalarAtBase (I := I3) L 1 :=
     pointedFlowScalarAtBase_of_metricConvergence_at_zero hT S hS x t htmem0 htpos hpos L phi F0 hF0
@@ -299,7 +301,7 @@ theorem maximalPointSlabLimitSelection_of_forall_scalar_eq_zero {T : ℝ} (hT : 
     (hS : IsSolutionOn S) (o : TangentOrientationSection M) {kappa : ℝ}
     (hscalar : ∀ (t : ℝ) (x : M), S.scalar t x = 0) :
     MaximalPointSlabLimitSelection.{u} hT S hS o kappa := by
-  intro theta htheta x t htpos htmem0 hpos hmax
+  intro theta htheta x t htpos htmem0 hpos
   exact absurd (hpos 0) (by rw [hscalar (t 0) (x 0)]; exact lt_irrefl 0)
 
 theorem maximalPointSlabCompactnessAtPastMaximum_of_forall_scalar_eq_zero {T : ℝ}

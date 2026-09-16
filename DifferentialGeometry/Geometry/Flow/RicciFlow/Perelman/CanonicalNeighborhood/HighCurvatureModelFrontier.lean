@@ -12,7 +12,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.Fini
 
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology DifferentialGeometry.Tensor0SBundle
-open scoped Manifold ContDiff ENNReal
+open scoped _root_.DifferentialGeometry.Manifold ContDiff ENNReal
 
 universe u
 
@@ -39,6 +39,8 @@ def MaximalPointSlabCompactness {T : ℝ} (hT : 0 < T)
     ∀ (x : ℕ → M) (t : ℕ → ℝ) (htpos : ∀ i, 0 < t i)
       (htmem0 : ∀ i, t i ∈ Set.Ico (0 : ℝ) T)
       (hpos : ∀ i, 0 < S.scalar (t i) (x i)),
+      (∀ i, theta ≤ t i) →
+      Filter.Tendsto (fun i => S.scalar (t i) (x i)) Filter.atTop Filter.atTop →
       ∃ (L : PointedFlowData.{u, 0, 0} (I := I3) ancientTimeInterval) (phi : ℕ → ℕ)
         (F : PointedRiemannianConvergenceMaps (I := I3)
           ((highCurvatureFlowSequence hT S hS x t htmem0 htpos hpos).atTime 0)
@@ -70,7 +72,7 @@ def MaximalPointSlabCompactness {T : ℝ} (hT : 0 < T)
             PreservesTangentOrientationAt ori o (F.partialDiffeomorph i) y hf)
 
 theorem maximal_point_singularity_model_of_maximalPointSlabCompactness
-    [CompactSpace M] [ConnectedSpace M] [T2Space (TangentBundle I3 M)] {T : ℝ} (hT : 0 < T)
+    {T : ℝ} (hT : 0 < T)
     (S : SolutionOn (I := I3) (M := M) (RealTimeInterval.closedOpen 0 T hT))
     (hS : IsSolutionOn S) (o : TangentOrientationSection M)
     (h : MaximalPointSlabCompactness.{u} hT S hS o) :
@@ -161,6 +163,7 @@ theorem arbitrary_high_curvature_blowup_of_maximalPointSlabCompactness
   obtain ⟨L, phi, F, hphi, hanc, hnorm, _hconvT, hcmp, hcap, ori, hor⟩ :=
     hmain (T / 2) hT2 (fun i => x (i + N)) (fun i => t (i + N)) htposN
       (fun i => htmem (i + N)) hposN
+      (fun i => (hN1 (i + N) (le_trans hN1le (Nat.le_add_left N i))).le) hscalarN
   let L' : BlowupLimit S o kappa (fun i => x (i + N)) (fun i => t (i + N)) :=
     blowupLimit_of_slab_compactness hT hT2 S hS o (fun i => x (i + N)) (fun i => t (i + N))
       htposN (fun i => htmem (i + N))

@@ -10,7 +10,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 
 open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood
-open scoped Manifold ContDiff
+open scoped _root_.DifferentialGeometry.Manifold ContDiff
 
 universe u uE uH
 
@@ -82,7 +82,7 @@ open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 open DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
   (ancientKappa_scalar_pos ancientKappa_scalarLowerBarrier_lt
     ancientKappa_scalarBase_lowerBarrier_lt)
-open scoped Manifold ContDiff ENNReal
+open scoped _root_.DifferentialGeometry.Manifold ContDiff ENNReal
 
 attribute [local instance] PointedFlowData.topology PointedFlowData.charted
   PointedFlowData.smooth PointedFlowData.t2 PointedFlowData.sigmaCompact
@@ -103,6 +103,8 @@ theorem scalarLowerBarrier_strict_of_maximalPointSlabLimitSelection
     (x : Nat → M) (t : Nat → Real) (htpos : ∀ i, 0 < t i)
     (htmem0 : ∀ i, t i ∈ Set.Ico (0 : Real) T)
     (hpos : ∀ i, 0 < S.scalar (t i) (x i))
+    (htlower : ∀ i, theta ≤ t i)
+    (hscalar : Filter.Tendsto (fun i => S.scalar (t i) (x i)) Filter.atTop Filter.atTop)
     (hmax : ∀ i s, s ∈ Set.Icc 0 (t i) → ∀ y : M,
       S.scalar s y ≤ S.scalar (t i) (x i))
     {c : Real} (hc : 0 < c) :
@@ -116,7 +118,7 @@ theorem scalarLowerBarrier_strict_of_maximalPointSlabLimitSelection
       -3 / (2 * c) < L.S.scalar 0 L.basepoint := by
   have hdim : Module.finrank Real ThreeSpace = 3 := by simp [ThreeSpace]
   obtain ⟨L, phi, _, hphi, hanc, hconvT, _, _, _⟩ :=
-    h theta htheta x t htpos htmem0 hpos hmax
+    h theta htheta x t htpos htmem0 hpos htlower hscalar hmax
   obtain ⟨F0, hF0⟩ := hconvT 0 le_rfl
   have hbase : PointedFlowScalarAtBase (I := I3) L 1 :=
     pointedFlowScalarAtBase_of_metricConvergence_at_zero hT S hS x t htmem0 htpos hpos L phi F0 hF0
