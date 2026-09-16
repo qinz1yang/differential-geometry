@@ -2017,3 +2017,11 @@ F-M1 仍为 partial。单个旧三角形的全部纤维及逐边对应已闭合�
 这里的零指标情形是 Lemma 1 要归约到的明确子问题，尚未作为新的 `SchoenfliesInput` 字段，也不是最终 17.12 端点。主定理实际完成从零指标子类到任意球面的归纳论证；S.4 的旧 M1 至此闭合。聚焦检查 exit=0（11.9 秒）、零 warning；`AuditF220.lean` 主端点仅依赖 `propext`、`Classical.choice`、`Quot.sound`。
 
 下一步进入 M2：先证明零指标时不存在高度奇异点，再证明中间水平截面为一条 PL 圆周及相邻层薄片边界单嵌入。M2/M3 与 I1 尚未交付，S.4 和夜间 F-M1 整体仍为 partial；下一审计文件 `AuditF221.lean`。
+
+### 19.72 S.4 M2：零指标恰为无高度奇异点
+
+`HeightLevelLink.lean` 先证明半空间适配复形的水平限制确实覆盖整个水平纤维，再由水平 PL 圆周的顶点链环为零维球，结合保高度符号的径向细分对应，证明原链环水平截面恰有两个点。`notMem_heightSingularPoints_of_isPLSphere_one_fiber` 因而由已经核验的 crossing 判据排除该层上的候选奇异点。
+
+`HeightRegularity.lean` 的 `one_lt_encard_levelPolygons_of_mem_heightSingularPoints` 证明每个高度奇异点所在层至少有两个 PL 圆周：若至多一个，已有临界层覆盖与奇异点属于圆周并的定理迫使整层为一条圆周，违反前述局部判据。`heightIndex_eq_zero_iff_heightSingularPoints_eq_empty` 随后由有限非负指标和闭合零指标与无奇异点的精确等价。这排除了定义中出现贡献为零的实际奇异点，并未将局部正规性加作假设。
+
+聚焦检查：`HeightLevelLink` exit=0（11.4 秒）、`HeightRegularity` exit=0（11.6 秒），均零 warning。`AuditF221.lean` 六项全部仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步从 crossing 的实际局部模型控制水平图的分支，并证明零指标下中间水平层连通；Lemma 4–6 的薄片及 I1 仍在其后，M2/M3 尚未完成。下一审计文件 `AuditF222.lean`。
