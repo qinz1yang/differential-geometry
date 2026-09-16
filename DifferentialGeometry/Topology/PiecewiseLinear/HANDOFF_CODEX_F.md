@@ -1582,3 +1582,10 @@ F-M2–F-M6 尚未开始；按用户指定顺序推进，只有出现 §1 接口
 `exists_pair_geometricLink_fiber_of_eventually_plane` 对二维平面局部模型和横截的线性高度，同时生产链环二点零截面与正负两侧非空。使用一维核及正负射线生产交点，不把二点截面或两侧非空作为新增输入。
 
 聚焦检查 exit=0（11.9 秒）、零 warning；`AuditF154.lean` 四项仅标准三公理，核对主端点完整签名。下一步构造实际平面目标的共同剖分并提取开邻域 PL 图卡。F-M1 仍 partial；还需 crossing 主判据、封帽边缘分类、严格降指标及 Lemma 2–6，I1 尚未交付。下一审计文件 `AuditF155.lean`。
+
+### 19.7 F-M1：从邻域 PL 映射搬回 crossing
+
+`CrossingNeighborhood.lean` 已提交并推送为 `50b6c8d5c`。`HasPLCrossingAt.of_openPartialHomeomorph` 通过 PL 开图卡和两集合的芽搬回 crossing；`HasPLCrossingAt.of_isPLHomeomorphOn_mem_nhds` 从定义在任意实际邻域上的 PL 同胚及两截面精确像集出发，取内部、证明逆映射并搬回 crossing。
+`HasPLCrossingAt.of_closedStar_pair` 将保持子复形闭星和第二集合截面的 PL 星映射用于完整子复形的 crossing。顶点处的集合芽与闭星相等由前一模块实际证明，目标 crossing 作为运输定理的原有几何性质保留，后续标准平面生产者将证明它。
+
+聚焦检查 exit=0（11.2 秒）、零 warning；`AuditF155.lean` 三项仅标准三公理。下一步生产实际标准平面星并闭合二点链环截面的 crossing 判据。F-M1 仍 partial，严格降指标及 I1 未交付。下一审计文件 `AuditF156.lean`。
