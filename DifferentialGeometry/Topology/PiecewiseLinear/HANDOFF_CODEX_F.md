@@ -2061,3 +2061,11 @@ F-M1 仍为 partial。单个旧三角形的全部纤维及逐边对应已闭合�
 `HeightHalfDisk.lean` 的 `exists_isPLHomeomorphOn_halfSpaces_of_heightIndex_eq_zero` 结合 §19.74–19.75 的连通性、闭包公式和整层圆周性，实际生产闭上、下半空间截面的两个 PL 盘参数化，两者参数边界均恰为整个水平纤维。`isPLBall_halfSpaces_of_heightIndex_eq_zero` 给出球性 API。仍覆盖顶点高度；没有引入结论型假设，也没有扩充 `SchoenfliesInput`。
 
 聚焦检查：`LevelSet` exit=0（6.3 秒）、`SphericalComponents` exit=0（10.5 秒）、`HeightHalfDisk` exit=0（10.8 秒），均零 warning。`AuditF225.lean` 五项仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步构造水平平面张成盘与封帽/薄片，继续 Lemma 4–6；S.4 M2/M3、夜间 F-M1 整体及 I1 尚未完成。下一审计文件 `AuditF226.lean`。
+
+### 19.77 S.4 M2：水平张成盘及上下封帽球面的精确拼接
+
+`PlanarSpanningDisk.lean` 的 `IsPLSphere.exists_isPLHomeomorphOn_disk_of_subset_fiber` 将任意三维实范数空间中的平面 PL 圆周送入实际二维仿射坐标，使用已经证明的平面 Schoenflies 生产张成 PL 盘并搬回；盘位于原水平面，且位于包含该圆周的任意指定凸开邻域。参数边界像严格等于原圆周。
+
+`HeightCaps.lean` 的 `exists_isPLSphere_pair_of_heightIndex_eq_zero` 使用 §19.76 的两侧曲面盘，实际生产共同平面盘 D，并证明下、上半球各与 D 的并都是 PL 二维球面、两封帽球面的交恰为 D、删去公共盘参数内部后恰好恢复原球面。没有把封帽球性或拼接等式作为输入。此处只交付 PL 球性；封帽边界的单嵌入性仍需后续锥形首尾薄片及中间薄片论证。
+
+聚焦检查：`PlanarSpanningDisk` exit=0（10.1 秒）、`HeightCaps` exit=0（10.8 秒），均零 warning。`AuditF226.lean` 两项仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步证明最低/最高顶点附近的截半球确实是水平圆周的几何锥，以 17.10 处理首尾薄片；S.4 M2/M3、夜间 F-M1 整体及 I1 尚未完成。下一审计文件 `AuditF227.lean`。
