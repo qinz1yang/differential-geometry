@@ -685,7 +685,7 @@ no second-batch source or duplicate Jordan extension wrapper was introduced.
 | S-M2 | done: complete boundary-disk derived neighborhood and Problem 26.1 | `d12dd514a`; AuditS70: 6; AuditS73Disk: 5 | None for the containing-ball theorem |
 | S-M3 | partial: general parametrized PL push-off and Euclidean singular cell | `bd74dd7ca`; AuditS72Intrinsic: 7; AuditS74Push: 3 | `SingularTwoCell K.space` needs a boundary-compatible target type; its current Euclidean open-chart requirement is not available from a manifold-with-boundary hypothesis |
 | S-M4 | done: whole-boundary collar with the relative-neighborhood property for finite combinatorial three-manifolds in arbitrary finite-dimensional real normed spaces | `691c7329d`, `e9feba0c2`, `f778f73ff`; AuditS88--S90: 12; earlier layers and audits below | None for the finite-complex endpoint in NIGHT_PLAN; abstract PL charted ambient transport is not asserted |
-| S-M5 | partial: 26.1 in PL charted ambient spaces; arbitrarily small local surface separation and global two-component count for separating surfaces | `ddf717a4b`; collar `f778f73ff`; `7e6e37d0f`, `68ed572a9`, `6294e3dd3`; AuditS92--S94: 23 | Interior chart transport for arbitrary K; choose a small connected regular neighborhood using IsTwoSided, prove both complementary closures are combinatorial manifolds, then apply and glue the proved collars |
+| S-M5 | partial: 26.1 in PL charted ambient spaces; arbitrarily small PL bicollars of connected two-sided finite combinatorial surfaces proved | `ddf717a4b`; collar `f778f73ff`; side manifolds `927573c40`; connected bicollar `33e5a92d7`; AuditS95--S99: 26 | Combine finitely many surface components; transport the finite-complex bicollar to general PL charted ambient spaces; finish the prior 26.1 interior-chart transport for arbitrary K |
 | S-M6 | partial: general relative 17.3 done; P.4 inputs checked | `f0383a381`; AuditS77RelativeDisk: 4; AuditS79P4Inputs: 3 | Supported ambient graph extension with control, as detailed above |
 
 All listed completed layers have focused-check exit 0 with zero warnings and transitive axiom
@@ -1387,3 +1387,21 @@ The connected finite-complex case of 26.3 is now proved. The general 26.3 row re
 partial: combine the finitely many surface components in pairwise disjoint neighborhoods,
 then transport from finite-complex carriers to the requested general PL manifold setting.
 The prior 26.1 interior-chart transport and P.4 obligations are unchanged.
+
+### S-M5 connected bicollar publication checkpoint, 2026-09-16
+
+The five mathematical checkpoints are committed and pushed: `6f9b12768` (small connected
+manifold neighborhoods), `b7ba85f73` (two-sidedness and actual complementary components),
+`92a27c0fb` (closure triangulations and local manifold criteria), `927573c40` (side manifolds
+and exact boundary formulas), and `33e5a92d7` (arbitrarily small connected PL bicollars).
+The twelve changed Lean modules have focused-check exit 0 and zero warnings.
+AuditS95/S96/S97/S98/S99 contain 8/2/5/8/3 entries, respectively: 26 entries, all with
+only `propext`, `Classical.choice`, and `Quot.sound`. Each source checkpoint was followed
+by fetch and merge of the integration branch, still up to date at `8fb887bb9`.
+
+This final bookkeeping commit updates only the S-M5 summary and B.4 plan row to the
+verified scope. The overall 26.3 status remains partial; the connected finite-complex
+case is proved, while the finite-component assembly and general manifold transport remain.
+There is no new consultation blocker. The next mathematical step is the finite-component
+assembly, using local connectedness and compactness for finiteness, pairwise disjoint
+neighborhoods for the component bicollars, and finite PL gluing.
