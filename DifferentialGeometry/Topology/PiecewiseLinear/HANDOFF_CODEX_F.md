@@ -2101,3 +2101,11 @@ F-M1 仍为 partial。单个旧三角形的全部纤维及逐边对应已闭合�
 `ConvexPolytope.lean` 的 `isPLSphere_frontier_and_isPLBall_of_convex` 对任意有限维实范数空间，假设紧凸集有非空内部且边界为多面体，以内部点为顶点将边界剖分作锥；锥空间恰为原凸集，其顶点链环由欧氏邻域定理是 PL 球面，链环又恰为原边界剖分。由此同时生产边界 PL 球面和整体 PL 球。`IsHPolytope.isPLSphere_frontier` 与 `IsHPolytope.isPLBall` 应用于紧凸多胞体；后者维数为环境 finrank，并包含零维情形。证明没有使用三维 Schoenflies，也没有假设胞体已是 PL 球。
 
 聚焦检查：`PolytopeBoundary` exit=0（11.9 秒）、`ConvexPolytope` exit=0（9.6 秒），均零 warning。`AuditF230.lean` 四项均仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步将球性生产者应用到水平截面和薄片胞腔，再完成自由胞腔的球面相交盘与删除归纳；S.4 M2/M3、夜间 F-M1 整体及 I1 尚未完成。下一审计文件 `AuditF231.lean`。
+
+### 19.82 S.4 M2：水平截面和薄片胞腔的非退化球性生产者
+
+`Topology/ConvexLevelSet.lean` 的 `exists_mem_interior_fiber_of_convex` 对任意实范数空间中的凸集、非空内部及连续实值函数，从集合上严格位于 r 两侧的两个点，实际生产内部的 r 层点。证明用凸集内部稠密性及介值性；不要求有限维、紧致或函数仿射。
+
+`PolytopeSection.lean` 先证明紧凸多胞体在有限维定义域的单射仿射映射下的原像仍为紧凸多胞体。`IsHPolytope.isPLBall_inter_fiber` 通过真实仿射纤维坐标和 §19.81 的球性定理，生产横截于内部的余维一 PL 球；`isPLBall_inter_slab` 生产实际穿过内部的闭薄片 PL 球。随后以顶点/点的高度不等式生产内部条件，得到 `isPLBall_convexHull_inter_fiber` 和 `isPLBall_convexHull_inter_slab`。在三维环境中，前者覆盖四面体的三角形与四边形截面，后者覆盖截断四面体；不把截面/胞腔球性藏入假设。
+
+聚焦检查：`ConvexLevelSet` exit=0（7.9 秒）、`PolytopeSection` exit=0（13.9 秒），均零 warning。`AuditF231.lean` 八项仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步保留所有原面上的截面控制并构造有限胞腔分解，再生产自由胞腔与薄片球面的相交盘。S.4 M2/M3、夜间 F-M1 整体及 I1 尚未完成。下一审计文件 `AuditF232.lean`。
