@@ -1226,3 +1226,171 @@ M1 的凸化与指定点控制已经闭合；仍缺球面沿水平圆周切成 P
 `AuditF128.lean` 十九项（含保留的两个分解端点）均仅标准三公理。
 正则层的分解和规范计数已经闭合，含顶点层的一点分叉分解、奇异层指标对应、球面 PL 切盘与 Lemma 1 严格下降尚未闭合。
 未增加 `SchoenfliesInput` 字段；M1/M2/M3 均未验收。下一审计文件 `AuditF129.lean`。
+
+### 18.9 含顶点层的圆周覆盖
+
+- `Combinatorics/EvenDegree.lean`：有限图中除一个指定顶点外均为偶度，则该顶点亦为偶度；全偶度图没有桥，
+  每条边都落在一个单环上。特别地，除一个指定顶点外均为二度时，仍得到逐边的单环覆盖。
+- `PlanarCycleRealization.lean`：`exists_isPLSphere_one_of_isCycle_of_subset_fiber` 将三维空间水平层中有限复形的图环
+  搬运到仿射平面，构造实际 PL 圆周，并包含该图环的每条几何边。
+- `SingularLevelPolygons.lean`：`exists_isPLSphere_one_of_mem_space_of_degree_eq_two_except` 对平面内除一点外均为二度的有限线性图，
+  证明每个其他点均包含于图内的某个 PL 圆周。`fiber_eq_singleton_union_sUnion_levelPolygons` 将 F5.1 的精确层剖分代入，
+  证明有限闭二维组合流形的顶点水平层恰为该顶点与全部层内 PL 圆周的并；没有添加层分解假设。
+
+三个模块最终聚焦检查分别为 7.9、11.7、12.3 秒，均 exit=0、零 warning。
+`AuditF129.lean` 八项均仅标准三公理，已核对水平层覆盖端点的完整签名。
+本层尚未证明不同圆周只能相交于该顶点，也尚未将顶点 crossing 与局部二度完全对应。
+球面 PL 切盘和 Lemma 1 严格降指标仍未闭合；M1/M2/M3 均未验收，`SchoenfliesInput` 未增加字段。下一审计文件 `AuditF130.lean`。
+
+### 18.10 临界层中圆周的交集与孤立点
+
+- `Connected/Loop.lean`：`isConnected_image_Icc_sdiff_singleton` 对稠密条件完备线序区间上的连续单闭曲线，
+  证明像集去掉任意一点后仍连通；目标只需拓扑空间，不要求 Hausdorff，参数不限制为实数。
+- `CurveInclusion.lean` 将邻点相等和面包含的主引理推广为只要求指定顶点在大复形中恰有两个邻点，
+  原一维闭组合流形接口保留签名并由此推出。
+- `CircleIntersection.lean`：PL 圆周去掉一点后连通且没有孤立点；除指定点外均为二度的有限线性图中，
+  圆周在去掉该点的图中既开又闭。因此两个圆周若在其他点相交，必相等。
+- `SingularLevelPolygons.lean`：`inter_subset_singleton_levelPolygons_of_ne` 与
+  `pairwiseDisjoint_sdiff_singleton_levelPolygons` 证明顶点层中不同圆周只能在该顶点相交。
+  `singleton_mem_nhdsWithin_fiber_iff_notMem_sUnion_levelPolygons` 精确刻画孤立顶点，
+  `mem_sUnion_levelPolygons_of_mem_heightSingularPoints` 保证每个指标中的奇异点位于层圆周上。
+
+四模块最终聚焦检查分别为 6.5、11.5、12.1、12.5 秒，均 exit=0、零 warning。
+`AuditF130.lean` 十四项（含保留的两个旧接口）均仅标准三公理。
+临界层的有限圆周覆盖、交点唯一性、孤立点与规范圆周族的对应现已闭合；尚未证明局部二度与顶点 crossing 等价。
+球面 PL 切盘、轴旋转后的逐点指标比较及 Lemma 1 严格下降仍未闭合，M1/M2/M3 均未验收。
+`SchoenfliesInput` 未增加字段；下一审计文件 `AuditF131.lean`。
+
+### 18.11 球面沿 PL 圆周切成两个 PL 盘
+
+- `ConvexFrontier.lean`：任意实范数空间中的紧集，若其 frontier 包含于非空开凸集，则整个紧集也包含于该开凸集。
+  证明用严格分离与线性函数在紧集上的最大值，不增加有限维假设。
+- `ClosedStarNeighborhood.lean`：任意有限闭组合流形的每个点，在任意指定环境邻域内有一个 PL 盘邻域；
+  先把该点细分为顶点，再用两开集覆盖控制其闭星。
+- `BallFrontier.lean` 新增 `IsPLHomeomorphOn.image_stdSimplexBoundary`，精确给出全维 PL 盘参数化的边界像。
+- `SphereDisk.lean`：先在四面体边界上取避开圆周的小盘，用 S.2 的 17.5 将小盘整直到原始面，
+  使圆周落入剩余顶点星的平面图；用 P.1 填盘及开凸集包含引理拉回第一片，再用一次 17.5 构造互补片。
+  `exists_disk_decomposition_of_isPLSphere_one_subset_two` 对任意有限维实范数空间中的
+  `IsPLSphere 2 S`、`IsPLSphere 1 J` 与 `J ⊆ S` 给出两个参数化 PL 2-盘，
+  并集恰为 S、交集恰为 J，且两盘的标准单形边界像均恰为 J。
+  另有任意维单形顶点星的参数化及其精确边界像。
+
+四模块最终聚焦检查分别为 9.2、9.4、12.1、12.1 秒，均 exit=0、零 warning。
+`AuditF131.lean` 九项（含原 `IsPLBall.isPLSphere_frontier`）仅标准三公理，已核对一般切盘端点完整签名。
+本层没有扩充 `SchoenfliesInput`，没有使用 Moise 10.2 的拓扑盘陈述代替 PL 盘。
+球面 PL 切盘已经闭合；下一步为封帽球性、局部二度与 crossing 的对应及转轴后的逐点指标比较。
+Lemma 1 严格下降仍未闭合，M1/M2/M3 均未验收。下一审计文件 `AuditF132.lean`。
+
+### 18.12 换盘与封帽球性
+
+- `PLHomeomorph.lean` 增加任意有限多面体上恒等映射的 PL 接口，不需要有限维假设。
+- `PLHomeomorphGluing.lean` 的新主定理 `exists_isPLHomeomorphOn_union` 允许源、目标位于不同有限维空间，
+  两片的目标可以不同；要求重叠处相容并覆盖恰当的目标交集。旧接口签名保留，改为新主定理的特例。
+- `BallReplacement.lean`：参数化盘的标准边界像是 PL 球面；两个盘的参数边界间任意 PL 同胚均可延拓至盘；
+  `exists_isPLHomeomorphOn_replace_ball` 将一个盘换成具有同一边界的新盘，并逐点固定保留部分。
+- `SphereCut.lean`：`exists_isPLSphere_pair_of_spanning_disk` 从 PL 2-球面 S 及参数化 PL 2-盘 D、
+  `S ∩ D = g '' stdSimplexBoundary 2` 构造球面切开的两盘及两封帽 PL 2-球面；
+  证明两封帽球面交集恰为 D，且从其并中删去 `D \ (g '' stdSimplexBoundary 2)` 后恰恢复 S。
+
+四模块最终聚焦检查分别为 12.0、8.1、8.9、10.6 秒，均 exit=0、零 warning。
+`AuditF132.lean` 七项（含旧拼接接口）仅标准三公理，已核对封帽端点完整签名。
+没有增加 `SchoenfliesInput` 字段；封帽球性不作为输入假设。
+仍缺奇异层的内最圆周选择、局部二度与 crossing 的对应、转轴后的逐点指标比较及 Lemma 1 严格下降。
+M1/M2/M3 均未验收。下一审计文件 `AuditF133.lean`。
+
+### 18.13 最内水平圆周与张成盘
+
+- `PlanarJordan/Innermost.lean` 将最内 Jordan 圆周定理推广到不同圆周的交集仅能包含指定一点；
+  去掉该点后的连通性及稠密性保证最小内域不包含其他圆周。原两两不交接口保持签名。
+- `InnermostLevel.lean` 的 `exists_innermost_isPLBall` 给有限平面 PL 圆周族中的一条圆周及填充盘，
+  整族与盘的交集恰为所选圆周。`exists_spanning_disk_of_mem_heightSingularPoints` 对三维空间中的有限闭二维组合流形、
+  顶点上单射的非零高度及其奇异点，构造实际参数化水平 PL 2-盘；盘与流形交集恰为参数边界，
+  位于指定的包含流形的凸开邻域内，且奇异点不在盘的平面相对内部。
+
+两个模块最终聚焦检查分别为 9.6、12.4 秒，均 exit=0、零 warning。
+检查时发现共享 `BallFrontier.olean` 缺少本车道已提交的边界像引理，按原脚本刷新后 exit=0（13.1 秒）。
+`AuditF133.lean` 七项仅标准三公理，已核对张成盘端点完整签名。
+没有增加 `SchoenfliesInput` 字段；奇异层最内圆周及张成盘已闭合。
+局部二度与 crossing 的对应、转轴后的逐点指标比较及 Lemma 1 严格下降仍未闭合，M1/M2/M3 均未验收。
+下一审计文件 `AuditF134.lean`。
+
+### 18.14 切盘的层圆周计数与盘外奇异点
+
+- `CircleIntersection.lean` 新增 PL 圆周去掉任意一点后在原圆周中稠密的 API；不要求环境有限维。
+- `HeightCut.lean` 证明奇异点只依赖曲面局部集合芽、封帽盘之外的奇异点精确对应原曲面的保留部分。
+  离开封帽高度，原层圆周族分成两片圆周族的不交并，其基数相加；在切割高度，不同原层圆周只在一个指定点相交时，
+  每条其他圆周完整落在某一保留片中，两片圆周族交集恰为切割圆周，因此两片圆周数之和等于原数加一。
+- `SingularHeightCut.lean` 的 `exists_isPLSphere_pair_of_mem_heightSingularPoints` 从有限 PL 2-球面三角剖分、
+  顶点上单射的非零高度及奇异点出发，产生水平张成盘、两保留 PL 盘和两封帽 PL 球面；
+  同时给出精确并、交、恢复原球面等式、切割高度与其他高度的圆周计数、盘外奇异点等式及指定凸开邻域控制。
+  层圆周的交点条件由原剖分的一般位置引理推出，没有加入新假设。
+
+三个模块最终聚焦检查分别为 12.3、11.2、13.7 秒，均 exit=0、零 warning。
+`AuditF134.lean` 十四项（含原圆周交点端点）仅标准三公理，已核对组合端点完整签名。
+没有增加 `SchoenfliesInput` 字段。本层的计数等式针对旋转前的保留片和封帽球面的非封帽高度，
+尚不等于转轴后的逐点指标比较。局部二度与 crossing 的对应、小幅转轴后的严格下降及 Lemma 1 归约仍未闭合。
+M1/M2/M3 均未验收；下一审计文件 `AuditF135.lean`。
+
+### 18.15 小幅转轴的载体内顶点投影
+
+- `HeightProjection.lean`：高度 ℓ 在原剖分顶点上单射时，旧临界层上除其原顶点外的每一点均有位于载体方向空间内的非水平向量。
+  对足够接近 ℓ 的线性形式 f，沿该向量将点投影至 `f x = f p`，位移任意小且仍在原载体面的相对内部。
+  有限点族可同时投影；固定族外、原剖分顶点及旧层外的点。前四个投影引理不需要有限维环境。
+- `eventually_exists_isPLHomeomorphOn_move_fiber_vertices` 把任意给定有限共同剖分的这些顶点位移延拓为环境 PL 同胚，
+  位移任意小，固定指定开邻域外；在该剖分每个面上仿射，旧层顶点映到新层，位于原曲面上的剖分顶点仍在各自载体面相对内部。
+  这是原 `GeneralPosition.lean` 的小顶点扰动延拓定理的几何输入生产者，没有调用或扩充 `SchoenfliesInput`。
+
+模块最终聚焦检查 exit=0（12.2 秒），零 warning；`AuditF135.lean` 五项仅标准三公理，已核对环境延拓端点完整签名。
+本层尚未从顶点控制推出整个曲面的像集不变、整个层的搬运或奇异点稳定；这些仍需共同剖分与像集满射的证明。
+局部二度与 crossing 的对应、小幅转轴后的逐点指标比较及 Lemma 1 严格下降仍未闭合，M1/M2/M3 均未验收。
+下一审计文件 `AuditF136.lean`。
+
+### 18.16 同维球面包含判据与转轴时保持整个球面
+
+- `InvarianceOfDomainManifold.lean`：紧致非空流形到同维连通 Hausdorff 流形的连续单射必满射，由开像、紧像闭性和连通性推出。
+- `PLBallSphere.lean`：标准单形的正维边界、任意 PL 盘及正维 PL 球面的连通性，均不要求目标环境有限维。
+- `SphereInclusion.lean`：同维正维 PL 球面之间的连续单射，只要映入目标球面即满射；同维球面的包含关系必为相等。
+  自映射的像集相等只要求连续、单射及映入，不要求额外 PL 假设。
+- `CurveInclusion.lean` 保留两个原一维接口的完整签名，改为上述一般定理的推论，并移除其不再需要的平面整直导入。
+- `CarrierInvariance.lean`：在原复形的细分上逐面仿射，且每个新顶点映入其原载体面的凸包，则每个原单形保持映入自身。
+  对 PL 球面上的连续单射，该条件保证整个球面像集相等。
+- `HeightStability.lean` 的 `eventually_exists_isPLHomeomorphOn_preserving_sphere_move_fiber` 将载体投影、环境延拓及满射判据拼合：
+  对包含球面细分的给定有限共同剖分，足够小的转轴可由任意小的环境 PL 同胚实现，固定原顶点及指定开邻域外，
+  保持整个球面，并将旧高度层中的整张共同剖分面映入新高度层。
+
+六个改动模块最终聚焦检查分别为 11.1、11.1、9.7、10.0、11.3、11.7 秒，均 exit=0、零 warning。
+受接口推广影响的 `CircleIntersection.lean` / `CirclePartition.lean` 复检分别为 11.6、11.9 秒，均 exit=0、零 warning。
+`AuditF136.lean` 十三项（含保留的两个一维接口）仅标准三公理，已核对转轴端点完整签名。
+没有增加 `SchoenfliesInput` 字段。还需要生产同时适配原剖分与高度分割的共同剖分，证明完整层的双向对应，
+再证明 crossing / 奇异点稳定及封帽后选定高度附近的严格下降；M1/M2/M3 均未验收。
+下一审计文件 `AuditF137.lean`。
+
+### 18.17 共同高度剖分与完整临界层搬运
+
+- `HeightSubdivision.lean` 从任意有限复形 K、有限多面体 D 和仿射高度构造共同三角剖分 R：
+  空间恰为 K.space ∪ D，限制到 K.space 是原复形的细分，限制到 D 恰好覆盖 D，每个新单形完整位于指定高度平面的一侧。
+- `HeightFiber.lean` 用正重心坐标证明：单形处于高度平面同侧时，相对内部点位于平面当且仅当全部顶点位于平面。
+  从逐面仿射与顶点符号数据得到完整高度层的双向对应；层圆周族及基数的搬运只要求指定层的精确像集等式。
+- `HeightStability.lean` 保留旧整面搬运接口，把共同剖分和顶点符号稳定拼入环境延拓。
+  `eventually_exists_homeomorph_preserving_sphere_image_fiber` 对有限正维 PL 球面、顶点上单射的非零高度和一个原顶点，
+  构造任意小的环境 PL 同胚，固定原顶点及指定开邻域外，保持整个球面，并将整个旧临界截面恰好映到新截面。
+  同时在该顶点附近把整个旧平面的像与新平面对应为相同集合芽；证明让共同剖分包含一个环境多面体邻域，不另设平面满射假设。
+
+三个模块最终聚焦检查分别为 12.1、10.8、11.7 秒，均 exit=0、零 warning。
+`AuditF137.lean` 十一项（含保留的旧接口）仅标准三公理；已核对完整截面搬运端点签名。
+没有增加 `SchoenfliesInput` 字段。下一步从本层推出 crossing、奇异点及指标的局部稳定，
+再处理水平封帽后选定高度附近的严格指标下降；M1/M2/M3 均未验收。下一审计文件 `AuditF138.lean`。
+
+### 18.18 一般位置高度附近的指标稳定
+
+- `HeightRotation.lean` 从完整截面与平面芽的环境 PL 搬运推出：每个原顶点处的 crossing 性质和截面孤立性保持，
+  因而是否属于 `heightSingularPoints` 保持；整层 `levelPolygons` 的基数也保持。
+- 对有限 PL 2-球面、三维环境和顶点上单射的非零高度，有限交给同时适用于全部顶点的扰动邻域。
+  小扰动仍非零且顶点单射；非顶点处的既有 crossing 定理排除额外奇异点，故新旧奇异点集合相等。
+- `eventually_heightIndex_eq` 沿相等奇异点集的子类型等价搬运求和，给出任意足够小的线性高度扰动下的指标相等。
+  没有把 crossing 稳定、指标比较或整层基数作为新假设。
+
+模块最终聚焦检查 exit=0（14.0 秒）、零 warning；`AuditF138.lean` 三项仅标准三公理，端点完整签名已核对。
+这是旧高度在原剖分顶点上单射时的稳定定理。水平封帽后多个顶点位于同一旧层，不能直接使用本定理；
+仍需处理该退化层、凸化引入的剖分和封帽后的严格降指标。没有扩充 `SchoenfliesInput`，M1/M2/M3 均未验收。
+下一审计文件 `AuditF139.lean`。
