@@ -452,3 +452,70 @@ route, exact scope, and logs. No vendored Lean file or root aggregate
 was modified. No lake build was run. The Euclidean simplex module uses
 a local classical decidable-equality instance so that the fixed
 Euclidean type and generic boundary-complex APIs use the same instance.
+
+## 13. NIGHT_PLAN progress, 2026-09-15 evening
+
+Integration was fetched and checked at `8fb887bb9`; the initial merge was already up to date.
+The following checkpoints are pushed to `origin/codex/moise-s`.
+
+### S-M1: done, now intrinsic in arbitrary finite-dimensional ambient spaces
+
+`2375fc812` generalizes `IsCombinatorialManifoldWithBoundary.isPLBall_union_derivedNeighborhoodCells`,
+`isPLBall_union_derivedNeighborhoodCells_of_card`, and `isPLBall_derivedNeighborhood_simplex`
+from Euclidean three-space to arbitrary finite-dimensional real normed spaces.
+`derivedNeighborhoodCell_inter_subset_boundaryComplex` places the intersection of distinct pieces
+in their intrinsic combinatorial boundaries in all covered dimensions. Together with the
+previous pair-intersection theorem, this gives both boundary incidences in the general ambient setting.
+All three affected modules have focused-check exit 0 and zero warnings.
+`AuditS71General.lean` / `AuditS71General.log`: five declarations, only the three standard axioms.
+The source proof has no Schoenflies assumption.
+
+### S-M2: partial; free-triangle face classification and intrinsic ball gluing checked
+
+`32a3b37e8` adds `FreeTriangleFaces.lean` and `SubcomplexBallGluing.lean`.
+The exact deletion formula is
+`mem_eraseTriangleComplex_iff_of_free_triangle`: the remaining faces are precisely the old
+faces that do not contain `t \ s`, where `s` is the boundary-trace parameter of the free triangle.
+`IsCombinatorialManifoldWithBoundary.isPLBall_union_of_inter_isPLBall_two` proves that two
+PL three-balls contained in the same finite combinatorial three-manifold with boundary,
+whose intersection is a PL two-ball, have PL three-ball union. The proof first derives
+intrinsic boundary incidence from the at-most-two codimension-one cofaces, then applies 23.11.
+This theorem also holds in arbitrary finite-dimensional ambient spaces.
+Both modules have focused-check exit 0 and zero warnings.
+`AuditS70.lean` / `AuditS70.log`: six declarations, only the three standard axioms.
+The remaining S-M2 obligation is the attachment disk for a whole existing disk neighborhood,
+followed by the decreasing-triangle-count induction. Problem 26.1 is not yet marked delivered here.
+
+### I2 signature issue found by source inspection
+
+`LoopTheorem/SingularCell.lean` defines `SingularTwoCell M` with
+`[ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]`.
+`VertexChart.lean` defines `combinatorialChartedSpace K hK` only for
+`hK : IsCombinatorialManifold (n + 1) K`, without boundary.
+Consequently NIGHT_PLAN's proposed application to `K.space` with only
+`IsCombinatorialManifoldWithBoundary 3 K` does not currently elaborate.
+A boundary-compatible singular-cell/chart interface is needed from its owner; adding a
+Euclidean charted-space assumption on a manifold with nonempty boundary would not repair the
+mathematical interface. No such hypothesis has been added, and I2 is not marked delivered.
+The intrinsic PL disk and boundary-ball geometry can be developed independently of that type.
+
+### Concurrent write observed
+
+During this session, the previously absent, untracked `FreeTriangleNeighborhood.lean` appeared
+and continued changing; a separate Lean process was checking that file from this S worktree.
+The user confirmed that another thread had intervened by mistake and that the interference is now corrected. This session is reviewing the retained source and will check and audit it before accepting it.
+Only the explicitly listed files above were included in the checkpoints. Subsequent checks first
+inspect active S-worktree Lean processes and defer when another one is running.
+
+### S-M3: intrinsic geometry checked; containing-ball and singular-cell obligations remain
+
+`SphereBallInclusion.lean`, `BoundaryMonotonicity.lean`, `BoundaryBallTransport.lean`, and
+`BoundaryDiskPush.lean` have focused-check exit 0 and zero warnings.
+`AuditS72Intrinsic.lean` / `AuditS72Intrinsic.log`: seven declarations, only the three standard axioms.
+`exists_isPLBall_inter_boundaryComplex_eq_of_subset` shapes a given containing ball so that its
+intersection with the ambient intrinsic boundary is exactly the prescribed disk.
+`exists_isPLHomeomorphOn_disk_in_boundary_ball` constructs a parametrized PL disk inside the
+ambient manifold with the same boundary image and no other intersection with the ambient boundary.
+Both hold in arbitrary finite-dimensional real normed spaces, without a Schoenflies assumption.
+The containing three-ball is still supplied as input until S-M2 closes Problem 26.1.
+The singular-cell type issue above remains separate; this is not yet the exact bundled I2 endpoint.
