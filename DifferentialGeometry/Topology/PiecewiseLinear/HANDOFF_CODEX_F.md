@@ -2035,3 +2035,13 @@ F-M1 仍为 partial。单个旧三角形的全部纤维及逐边对应已闭合�
 `LinkHeightConnected.lean` 使用 PL 圆周的二点截弧参数化，证明避开链环顶点且至多二点的水平截面，其严格上下两部分各自连通（允许空集）。`isPreconnected_geometricLink_halfSpaces_of_heightIndex_eq_zero` 直接从零指标、原顶点一般位置和球面性生产每个顶点的这两项连通性；没有假设分支上界或两侧连通性。
 
 聚焦检查：`RadialEmbedding` exit=0（9.9 秒）、`HeightLevelLink` exit=0（11.3 秒）、`CrossingFiber` exit=0（11.3 秒）、依赖模块 `HeightRegularity` exit=0（10.4 秒）、`LinkHeightConnected` exit=0（10.6 秒），全部零 warning。`AuditF222.lean` 十四项仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步将连续严格半空间截面的连通性送到低顶点子复形，再按有限顶点高度排序排除下层分量的合并，从而证明中间层连通。M2/M3、薄片边界及 I1 尚未完成；下一审计文件 `AuditF223.lean`。
+
+### 19.74 S.4 M2：零指标球面的严格上下半空间整体连通
+
+`HeightSubcomplex.lean` 实际构造严格子水平集到低顶点子复形的重心投影：证明低顶点权重和严格为正、投影连续且像恰为该子复形，并保留子复形上的恒同。`SimplicialComplex/EdgeConnectivity.lean` 由有限个闭的图分量复形证明空间连通与边图连通等价；此对应不要求环境有限维。
+
+`Combinatorics/HeightConnectivity.lean` 先逐路径证明：新顶点的原有邻点若可在原图内互达，删去该顶点保连通；再按有限顶点高度最大值归纳，证明所有严格子水平诱导图连通。一般图论端点只用有限顶点、线序高度的单射性以及每个顶点较低邻点在较低部分互达，不预设任何整体子水平连通性。
+
+`HeightSublevelConnected.lean` 用 §19.73 的真实下链环连通性、上述重心收缩和边图对应生产图论前提，再用低顶点闭星与严格半空间的交集拼回原空间。`isPreconnected_halfSpaces_of_heightIndex_eq_zero` 因而直接从有限 PL 二维球面、三维环境、非零一般位置高度及零指标，证明任意高度的严格上下两部分各自连通（允许空集）；没有新增结论型假设。
+
+聚焦检查：`HeightSubcomplex` exit=0（9.7 秒）、`EdgeConnectivity` exit=0（10.4 秒）、`HeightConnectivity` exit=0（5.9 秒）、`HeightSublevelConnected` exit=0（11.1 秒），均零 warning。`AuditF223.lean` 十五项均仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步结合球面上 PL 圆周的两侧分离，证明中间水平层恰是一条 PL 圆周；随后推进 Lemma 4–6 的薄片边界。S.4 M2/M3、夜间 F-M1 整体和 I1 尚未完成；下一审计文件 `AuditF224.lean`。
