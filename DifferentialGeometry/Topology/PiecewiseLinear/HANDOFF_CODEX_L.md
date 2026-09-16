@@ -393,3 +393,22 @@ theorem eq_top_of_boundaryLoops_mem_normal
 - 尚未闭合的相邻表示步骤是触边分支分类：需证明有限连通、每点度数 1 或 2 且含度数 1 顶点的图是有限路径，继而用同一
   `OneComplex` 搬运层证明 `branchComplex.space` 是 PL 1-球。二重覆盖原像仍需与 `D.domain` 相容的有限 PL 三角剖分；
   Case 1–4 的环带、替换、切开重建及 I3 边界半空间桥接仍未闭合，也没有被弱化为假设。
+
+## 17. 2026-09-16 E3-M2 追加：触边分支的 PL 区间分类
+
+状态：done（有限一维分支的 PL 球/球面分类已闭合，整体 L.3 仍为 partial）。数学提交 `af04ef1c5`。
+
+- `SimpleGraph.exists_spanning_path_of_connected_degree_one_or_two` 从最长简单道路出发，证明有限连通、各点度数为 1 或 2、
+  且含度数 1 顶点的简单图恰由一条道路覆盖；`exists_pathGraphIsoOfConnectedDegreeOneOrTwo` 将其升级为与标准有限路径图的同构。
+- `polygonPathComplex` 删除 `PolygonalCircle` 的最后一条开边，得到同顶点数的有限路径复形；
+  `polygonPathComplex_isPLBall` 由 PL 圆删除开弧的端点证明其空间是 PL 1-球，
+  `exists_polygonPathEdgeGraphIso` 证明其边图是标准路径图。
+- `isPLBall_one_of_edgeGraph_connected_of_exists_degree_one` 证明有限、边图连通且含度数 1 顶点的带边组合 1-流形空间是 PL 1-球。
+  二顶点情形直接识别为一个非退化线段；至少三顶点时通过路径图同构与 `OneComplex` 的 PL 搬运接口归约到
+  `polygonPathComplex`。`NormalSingularSetTriangulation.branchComplex_isPLBall` 将其应用到每个触边分支。
+- `OneManifoldClassification` 与 `BranchCarrier` 聚焦检查均 exit=0、零 warning；
+  `.lake/scratch/AuditOneManifoldClassification.lean` 的 44 项与更新后的 `.lake/scratch/AuditBranchCarrier.lean` 的 38 项审计
+  全部只含 `propext`、`Classical.choice`、`Quot.sound`。本层未首次复用新的 covering/Van Kampen 声明。
+- 尚未闭合的表示步骤只剩二重覆盖原像连通分支与 `D.domain` 相容的有限 PL 三角剖分；它负责把 §11 的拓扑同胚分支升级为
+  盘内多边形圆或折线。其后 Case 1–4 的环带正则邻域、盘替换与切开重建，以及 I3 边界半空间析取到双片覆盖的桥接仍未闭合，
+  也没有被弱化为显式假设。
