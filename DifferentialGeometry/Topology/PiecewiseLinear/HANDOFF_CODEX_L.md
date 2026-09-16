@@ -280,3 +280,26 @@ theorem eq_top_of_boundaryLoops_mem_normal
   并将触边分支的原像分解为两条不交折线。当 F 的最终 I3 加入边界半空间析取时，还需从
   `HasPLBoundaryDoubleCrossingAt` 到 `HasDoublePointSheetsAt` 的同类桥接。之后 Case 1–4 仍缺环带正则邻域、盘内替换、
   沿两条原像折线切开 PL 2-球并重建较低复杂度奇异胞腔的几何生产者；它们没有被弱化为假设。
+
+## 11. 2026-09-15 E3-M2 追加：二重覆盖的连通分支分类
+
+状态：done（E3-M2 的拓扑分支分类层已闭合，整体 L.3 仍为 partial）。数学提交 `8a4d706ed`。
+
+- 新模块 `Topology/Covering/TwoSheetComponents.lean` 从每个纤维 `encard = 2` 构造规范的另一纤维点
+  `fiberSwap`，并将已有 `exists_exactly_two_components_of_not_connected` 应用于二重覆盖。端点
+  `connectedSpace_or_exists_exactly_two_components` 证明连通基空间上的二重覆盖要么连通，要么恰由两个连通分支组成，
+  且每个分支到基空间都是同胚。
+- `connectedSpace_or_exists_exactly_two_components_restrictPreimage` 将同一结论推广到任意连通子集 `J` 上的限制覆盖；
+  `NormalSingularCellData.doublePointProjection_connected_or_two_components` 因而直接分类任意连通奇异分支上的原像。
+  `doublePointPreimage_isCompact` 与 `doublePointProjection_isClosedMap` 同时把上一里程碑中隐含在覆盖证明里的紧致、闭映射层独立暴露。
+- `TwoSheetComponents` 聚焦检查 exit=0、零 warning；`.lake/scratch/AuditTwoSheetComponents.lean` 的 10 项审计全部只含
+  `propext`、`Classical.choice`、`Quot.sound`。`DoublePointCover` 聚焦检查 exit=0、零 warning；更新后的
+  `.lake/scratch/AuditDoublePointCover.lean` 共 15 项，全部只含这三个标准公理。
+- D4 首次复用并逐条审计了
+  `DifferentialGeometry.Topology.Covering.exists_exactly_two_components_of_not_connected`、
+  `IsCoveringMap.restrictPreimage`、`IsClosedMap.restrictPreimage`；其余上一里程碑的 D4 声明继续保留在同一审计文件中。
+- 确切未闭合项：`NormalSingularSetTriangulation.Branch` 目前只是有限边图的连通分支，尚未有把其顶点支集实现为
+  `doublePointSet D D.domain` 中连通多面体 `J` 的接口；还须证明闭分支的载体为 PL 1-球面、触边分支的载体为 PL 1-球，
+  并证明上述限制覆盖的连通分支在 `D.domain` 中是多边形或折线，而不只是拓扑同胚副本。本树尚缺有限一维分支的 PL 载体与
+  覆盖原像三角剖分桥接。此后 Case 1/2 的环带正则邻域与盘替换、Case 3/4 的切开重建，以及最终 I3 边界半空间析取到
+  `HasDoublePointSheetsAt` 的桥接仍未闭合，也没有被弱化为假设。
