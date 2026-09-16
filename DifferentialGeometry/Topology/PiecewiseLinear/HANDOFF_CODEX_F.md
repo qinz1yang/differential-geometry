@@ -1669,3 +1669,9 @@ F-M2–F-M6 尚未开始；按用户指定顺序推进，只有出现 §1 接口
 `BoundaryArcSection.lean` 已提交并推送为 `124c80557`。`height_section_subsingleton_of_unique_high_boundary_vertex` 证明有限一维组合带边流形中，若一个组合边界顶点严格高于指定高度且所有其他顶点严格低于该高度，则整个载体与该高度层至多交一点；低端点版本由高度取负得到。证明从边界顶点的唯一邻点刻画出发，先证明任一等高点只能落在该唯一边上，再用线性高度在边凸包上的单射性得到唯一性。没有假定载体是一条预先给定的参数弧，也没有把截面上界写入输入。
 
 模块最终聚焦检查 exit=0（13.7 秒）、零 warning；`AuditF168.lean` 两个端点均仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步从保留盘的顶点链环构造实际一维带边子复形，证明其两个组合边界端点沿三角帽直边分居新高度两侧，并由小扰动保持其余顶点的旧高度严格侧别；随后与帽侧的 subsingleton 结论合并为完整链环 `encard ≤ 2`。F-M1 仍为 partial，严格降指标、Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF169.lean`。
+
+### 19.21 F-M1：保留链环弧的高度截面对小扰动稳定
+
+`BoundaryArcStability.lean` 已提交并推送为 `89a746c29`。主端点 `eventually_height_section_subsingleton_of_boundary_segment` 处理有限一维组合带边流形的实际边界弧：两个不同边界顶点之间的开线段包含接缝点，旧高度在其余顶点上严格低于接缝高度。它证明在旧高度的一个邻域内，任何在接缝点与弧顶点上单射的新线性高度，其弧截面至多一点。证明先用有限集上的严格次序稳定性保持内部顶点的侧别；开线段在新高度下仍把接缝值夹在两个边界值之间，故恰有一个边界端点在高侧，再调用上一层唯一越层端点定理。
+
+模块聚焦检查 exit=0（11.1 秒）、零 warning；`AuditF169.lean` 主端点仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步将保留盘的几何链环限制识别为此一维组合带边流形，证明旧单侧性给出其非边界顶点的严格同侧条件；随后与三角帽链环合并。F-M1 仍为 partial，严格降指标、Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF170.lean`。
