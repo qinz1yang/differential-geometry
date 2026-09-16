@@ -2569,3 +2569,22 @@ checks both public declarations, exit 0, only the standard three axioms. This
 supplies the open chain for the auxiliary arc. Connecting and trimming its
 successive arcs, and parametrizing the shrinking simple union at its limit,
 remain to obtain the auxiliary arc itself and then the degree-one theorem.
+
+## Trimming a connected open chain to simple polygonal arcs (2026-09-16)
+
+`PlanarJordan/ArcChain.lean` proves `exists_subarcs_inter_eq_singleton`: two
+successive arcs, each avoiding the other's outer endpoint, contain successive
+subarcs meeting at exactly their common new endpoint. The proof takes the last
+contact along the new arc and cuts the old arc there.
+
+`exists_polygonal_arc_chain_of_isOpen_isConnected` applies this operation
+recursively in any connected open chain whose nonadjacent members are disjoint.
+It constructs polygonal arcs with injectively indexed endpoints, keeps each arc
+inside its assigned open set, makes each adjacent intersection exactly the
+shared endpoint, and preserves nonadjacent disjointness. All connecting arcs
+and all trimming choices are produced from the open-chain hypotheses.
+
+The focused check exits 0 with zero warnings. AuditS141ArcChain checks both
+endpoints, exit 0, only the standard three axioms. For the endpoint-access
+construction, the remaining step is now the continuous injective
+parametrization of the shrinking arc chain together with its limiting point.
