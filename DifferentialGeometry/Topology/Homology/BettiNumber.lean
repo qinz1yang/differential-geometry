@@ -1,5 +1,6 @@
 import DifferentialGeometry.Topology.Homology.HomotopyEquivalence
 import Mathlib.LinearAlgebra.Dimension.Constructions
+import Mathlib.AlgebraicTopology.SingularHomology.HomologyZero
 
 open CategoryTheory AlgebraicTopology
 
@@ -23,5 +24,10 @@ theorem bettiNumber_eq_of_homotopyEquiv (k : Type u) [Field k] {X Y : TopCat.{u}
 
 noncomputable def bettiOne (X : Type) [TopologicalSpace X] : ℕ :=
   bettiNumber ℚ (TopCat.of X) 1
+
+theorem bettiNumber_zero_of_pathConnectedSpace (k : Type u) [Field k]
+    (X : TopCat.{u}) [PathConnectedSpace X] : bettiNumber k X 0 = 1 := by
+  have h := (asIso (X.singularHomology₀ε (ModuleCat.of k k))).toLinearEquiv.finrank_eq
+  simpa only [bettiNumber, Module.finrank_self] using h
 
 end DifferentialGeometry.Homology

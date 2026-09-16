@@ -9,7 +9,7 @@ variable {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E]
 
 def subcomplexInclusion {K L : Geometry.SimplicialComplex ℝ E} (hL : L.faces ⊆ K.faces) :
     C(L.space, K.space) :=
-  ⟨Set.inclusion (space_mono_of_faces_subset hL), continuous_inclusion _⟩
+  (SimplicialComplex.geometricInclusion (K := L) (L := K) hL).hom
 
 theorem subcomplexBarycentricMass_eq_one
     {K L : Geometry.SimplicialComplex ℝ E} [Finite K.faces]
