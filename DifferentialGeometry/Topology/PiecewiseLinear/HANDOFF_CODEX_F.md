@@ -1440,3 +1440,18 @@ M1/M2/M3 均未验收；下一审计文件 `AuditF135.lean`。
 已核对两个图卡端点完整签名。没有扩充 `SchoenfliesInput`，M1/M2/M3 均未验收。
 下一步用凸化支集与其他临界高度的分离控制整层圆周数，继续处理水平封帽边缘与严格降指标。
 下一审计文件 `AuditF142.lean`。
+### 18.22 凸化支集外的临界点与整层比较
+
+- `HeightLocalization.lean` 证明紧集与旧高度层不交时，所有充分小的新高度扰动仍避开该紧集。
+  若同胚固定紧支集外且封帽盘包含于支集，则支集外高度层的封帽圆周族恰为保留片的圆周族。
+- `eventually_mem_heightSingularPoints_image_cap_iff_and_encard_levelPolygons_le` 对支集外的原临界层，
+  证明新封帽曲面的奇异性等价于原曲面奇异且属于保留片，新层圆周数不超过原临界层圆周数。
+- `eventually_heightSingularPoints_image_cap_sdiff_subset_vertices` 用实际保高度图卡及有限顶点族的一致扰动邻域，
+  排除封帽盘之外的新奇异点：新高度在封帽剖分上一般位置时，盘外奇异点必是原剖分顶点的像。
+- `exists_convex_open_neighborhood_disjoint_fibers` 实际构造含水平盘的凸开邻域 U 和包含 U 的紧集 C，
+  同时让 C 避开有限个其他指定高度层。U 可限制在原指定凸开邻域内，可直接供保高度凸化使用。
+
+模块最终聚焦检查 exit=0（10.1 秒）、零 warning；`AuditF142.lean` 六项仅标准三公理，两个生产端点完整签名已核对。
+没有扩充 `SchoenfliesInput`。支集外的临界层比较与盘外的新奇异点排除已闭合；
+接下来拼入实际封帽、局部凸化和有限剖分构造，再处理封帽边缘和选定临界点的严格指标下降。
+M1/M2/M3 均未验收。下一审计文件 `AuditF143.lean`。
