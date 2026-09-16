@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.NormalCell
-import Mathlib.Topology.Covering.Basic
+import DifferentialGeometry.Topology.Covering.TwoSheetComponents
 
 open Set Topology
 
@@ -265,9 +265,9 @@ theorem doublePointProjection_isLocalHomeomorph
   obtain ⟨e, _, hye, hcross⟩ := hD.crossing y hy
   exact doublePointSheetsAt_of_hasPLDoubleCrossingAt_chart D.continuousOn e hye hcross
 
-theorem doublePointProjection_isCoveringMap [T2Space M]
+theorem doublePointPreimage_isCompact [T2Space M]
     (hD : NormalSingularCellData D BdM B) :
-    IsCoveringMap (doublePointProjection D D.domain) := by
+    IsCompact (doublePointPreimage D D.domain) := by
   have hPcompact : IsCompact D.domain := D.isPLBall_domain.isPolyhedron.isCompact
   have hPlocal : IsLocallyInjective (D.domain.domRestrict D) := by
     rw [isLocallyInjective_iff_nhds]
@@ -284,11 +284,21 @@ theorem doublePointProjection_isCoveringMap [T2Space M]
   have hPclosed : IsClosed D.domain := hPcompact.isClosed
   have hQclosed : IsClosed (doublePointPreimage D D.domain) :=
     D.continuousOn.preimage_isClosed_of_isClosed hPclosed hSclosed
-  have hQcompact : IsCompact (doublePointPreimage D D.domain) :=
-    hPcompact.of_isClosed_subset hQclosed inter_subset_left
+  exact hPcompact.of_isClosed_subset hQclosed inter_subset_left
+
+theorem doublePointProjection_isCoveringMap [T2Space M]
+    (hD : NormalSingularCellData D BdM B) :
+    IsCoveringMap (doublePointProjection D D.domain) := by
   let _ : CompactSpace (doublePointPreimage D D.domain) :=
-    isCompact_iff_compactSpace.mp hQcompact
+    isCompact_iff_compactSpace.mp hD.doublePointPreimage_isCompact
   exact isLocalHomeomorph_iff_isCoveringMap.mp hD.doublePointProjection_isLocalHomeomorph
+
+theorem doublePointProjection_isClosedMap [T2Space M]
+    (hD : NormalSingularCellData D BdM B) :
+    IsClosedMap (doublePointProjection D D.domain) := by
+  let _ : CompactSpace (doublePointPreimage D D.domain) :=
+    isCompact_iff_compactSpace.mp hD.doublePointPreimage_isCompact
+  exact hD.doublePointProjection_isCoveringMap.continuous.isClosedMap
 
 theorem doublePointProjection_fiber_encard_eq_two
     (hD : NormalSingularCellData D BdM B)
@@ -318,6 +328,24 @@ theorem doublePointProjection_fiber_encard_eq_two
       (Subtype.val_injective.encard_image fiber).symm
     _ = (D.domain ∩ D ⁻¹' {(y : M)}).encard := congrArg Set.encard himage
     _ = 2 := hD.fiber_encard_eq_two y.2
+
+theorem doublePointProjection_connected_or_two_components [T2Space M]
+    (hD : NormalSingularCellData D BdM B)
+    (J : Set (doublePointSet D D.domain)) [ConnectedSpace J] :
+    ConnectedSpace ((doublePointProjection D D.domain) ⁻¹' J) ∨
+      ∃ x y : (doublePointProjection D D.domain) ⁻¹' J,
+        Disjoint (connectedComponent x) (connectedComponent y) ∧
+        connectedComponent x ∪ connectedComponent y = univ ∧
+        (∃ e : connectedComponent x ≃ₜ J,
+          ∀ z : connectedComponent x,
+            e z = J.restrictPreimage (doublePointProjection D D.domain) z) ∧
+        ∃ e : connectedComponent y ≃ₜ J,
+          ∀ z : connectedComponent y,
+            e z = J.restrictPreimage (doublePointProjection D D.domain) z := by
+  apply DifferentialGeometry.Topology.Covering.connectedSpace_or_exists_exactly_two_components_restrictPreimage
+    J hD.doublePointProjection_isCoveringMap hD.doublePointProjection_isClosedMap
+  intro y
+  exact hD.doublePointProjection_fiber_encard_eq_two y
 
 end NormalSingularCellData
 
