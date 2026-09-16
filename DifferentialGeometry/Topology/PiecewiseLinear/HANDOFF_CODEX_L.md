@@ -835,3 +835,31 @@ theorem eq_top_of_boundaryLoops_mem_normal
   再运输到相应 double 中调用 I2。现有 `DiskDerivedNeighborhood`、`DiskCollar`、
   `BoundaryDiskNeighborhood`只处理已在边界的盘；`BicollarManifold`与 `TwoSidedNeighborhood` 只处理无边界闭曲面，
   均不能填补这一步。该局部乘积/半邻域定理尚未在本树中找到，故本层没有将其改写为假设，也没有弱化 Lemma 2。
+
+## 39. 2026-09-16 C.5：非球面边界分支的连通二重覆盖
+
+状态：done。数学提交 `65bd07eb6`、`cb2153a6c`。
+
+- 已合并整合分支 `bbd488861`的 I5。`BoundaryHomology.lean` 与 `HandleCount.lean` 的 I5 支撑层推广到任意域
+  `k`，得到 `bettiNumber_one_pos_of_boundary_component_not_sphere`；原有 ℚ 系数端点
+  `bettiOne_pos_of_boundary_component_not_sphere` 保持原签名并成为其推论。
+- 新模块 `HomologyCocycle.lean` 直接在 `ZMod 2` normalized chain complex 上工作：由正的一阶 Betti 数取非零同调类，
+  选取在该类上非零的对偶函子，延拓到一链，并以边基向量上的值构造
+  `SimplicialBoolCocycle.exists_not_isCoboundary_of_bettiNumber_one_pos`。三角形边界公式证明 cocycle 条件；若是 coboundary，
+  顶点函子将使该对偶函子在所有一循环上为零，与选定的非零类矛盾。
+- `DoubleCoverExistence.lean` 的
+  `exists_connected_double_cover_complex_of_isOrientable_of_boundary_component_not_sphere`
+  无任何 I5/上循环存在的显式假设：对连通、可定向的带边组合 3-流形复形及一个非 PL 2-球面的边界分支，
+  产生实际非上边界上循环、连通二重覆盖、有限提升复形及带边组合 3-流形性。该新端点的环境类型为
+  `E₀ : Type`，精确对齐当前 I5 支撑链的宇宙层级；原有 `Type*` 覆盖 API 未被改窄。
+- `HomologyCocycle` 与 `DoubleCoverExistence` 聚焦检查均 exit=0、零 warning。
+  `.lake/scratch/AuditC5.lean` 审计 17 项，包括新端点及首次复用的
+  `moduleHomologyClass_surjective`、`moduleHomologyClass_eq_zero_iff`、
+  `Module.Projective.exists_dual_ne_zero`、`Subspace.dualLift`、`realizationHomologyIso`、
+  `isoOfQuasiIsoAt`、`geometricRealizationHomeomorphism`、`orderedNormalizedChainEquiv` 与边界坐标公式，
+  全部只含 `propext`、`Classical.choice`、`Quot.sound`。未 import、未传递经过
+  `Topology/Homology/HurewiczLowDegrees.lean`。`fresh.py` 在全局无 `lean.exe` 时报 8 个改动 Lean 模块全部 fresh，
+  forbidden=0、stale=0、missing=0。
+- C.5 本身已不再条件于 I5。L.4 中的 `orientableNonsphericalBoundaryDoubleCover` 仍是更强的
+  `NormalSystem.DoubleCoverReduction` 生产者：它还要求提升整个正规系统、保持边界环/正规子群数据并证明复杂度严格下降，
+  不能仅由覆盖复形的存在性消去；该 L.4 生产者缺口保持精确记录。

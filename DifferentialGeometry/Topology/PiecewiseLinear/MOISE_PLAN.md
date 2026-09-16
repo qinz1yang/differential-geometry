@@ -591,6 +591,23 @@
   `IsOrientable`、`IsCoveringMap`、`Nat.strong_induction_on`，仅标准三公理。条件性缺口是由 C.4/C.5 与 C.1/C.3
   构造该降阶数据，并完成复杂度相等时限制同胚、基本群满射与指标 2 的矛盾；没有把这些生产者报告为已证。
 
+- 2026-09-16（C.5 闭合，`65bd07eb6`、`cb2153a6c`）：I5 的 `BoundaryHomology`/`HandleCount`
+  支撑层推广到任意域，因而直接在 `ZMod 2` 上得到非零一阶同调。`HomologyCocycle.lean` 用
+  normalized simplicial chain 与 realization 的奇异同调同构，选取非零同调类的对偶函子并延拓到一链，
+  构造真正的非上边界 `SimplicialBoolCocycle`。`DoubleCoverExistence.lean` 的
+  `exists_connected_double_cover_complex_of_isOrientable_of_boundary_component_not_sphere` 将它接到 C.2/C.3，
+  无显式 I5 假设地交付连通二重覆盖、有限提升复形及组合带边 3-流形性。两模块聚焦检查
+  exit=0、零 warning；`.lake/scratch/AuditC5.lean` 审计 17 项新端点和首次复用声明，全部只含
+  `propext`、`Classical.choice`、`Quot.sound`。其中首次复用单独审计
+  `DifferentialGeometry.Topology.moduleHomologyClass_surjective`、`moduleHomologyClass_eq_zero_iff`、
+  `Module.Projective.exists_dual_ne_zero`、`Subspace.dualLift`、`Subspace.dualLift_of_mem`、
+  `Module.nontrivial_of_finrank_pos`、`DifferentialGeometry.SSet.realizationHomologyIso`、`isoOfQuasiIsoAt`、
+  `SimplicialComplex.geometricRealizationHomeomorphism`、`orderedNormalizedChainEquiv`、
+  `orderedNormalizedBoundary_single_apply`、`simplexBoundaryCoefficient_eq_one_or_neg_one`、
+  `ZMod.neg_eq_self_mod_two` 及 C.2/C.3 的连通覆盖端点。未 import、未传递经过含 `sorry` 的
+  `Topology/Homology/HurewiczLowDegrees.lean`。L.4 仍需把覆盖复形提升为携带正规系统相容性与严格降复杂度的
+  `DoubleCoverReduction`；C.5 的覆盖存在性本身已闭合。
+
 ## 7. 决策与风险
 
 - 不采用 Bing 定理 7 的“保留单形”强形式，只用 Moise §8/§35 的紧致图卡归纳（书中 `chap:two-set-gluing` 的方案）。
