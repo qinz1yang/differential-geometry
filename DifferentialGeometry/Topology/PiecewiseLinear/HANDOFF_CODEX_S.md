@@ -2003,3 +2003,18 @@ instruction allowing only an explicit hSchoenflies, no additional 30.4 hypothesi
 has been introduced and no completed 30.5 endpoint is claimed. The outstanding
 external input is a PL 2-sphere in the shell interior separating its two boundary
 components, as specified in I.4. Obtain future I-lane source only by integration merge.
+
+### Publication checkpoint, 2026-09-16
+
+- `30102ea5d`: integration merge and collision repairs; all 88 manifest modules and
+  the additional DerivedCarrier check pass, with the 307-entry S113 audit.
+- `b926417f6`: I2 in the double environment; three modules and the seven-entry S114
+  audit pass, including the silent direct E3 hpush signature check.
+- `8560f9a30`: simultaneous vertex and polygonal crosscut straightening; three modules
+  and the final seven-entry S115 audit pass.
+
+All source checkpoints are pushed to origin/codex/moise-s. The final integration
+fetch and requested merge still report `314c2178f` and already up to date. This
+plan-only publication update changes the S-owned P.4, B.2 and S.6 status cells to
+match the verified endpoints and explicit remaining obligations. E3's L.2 consumer
+row is left to that lane; its hpush producer is now available from DoubleBoundaryPush.
