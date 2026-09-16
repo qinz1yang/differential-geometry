@@ -28,30 +28,37 @@ theorem IsArcBetween.mem_nhdsWithin_of_subarc {A B : Set Plane} {p q r : Plane}
   obtain ⟨s, hs, rfl⟩ := hball ⟨hx.2, hfA.symm ▸ hx.1⟩
   exact mem_image_of_mem f ⟨hs.2.1, hs.1.le⟩
 
-theorem exists_polygonal_subarcs_of_segment_subsets
+theorem exists_polygonal_subarcs_of_polygonal_subsets
     {f : ℝ → Plane} (hf : ContinuousOn f unitInterval) (hi : InjOn f unitInterval)
-    {p q : Plane} (hp : f 0 ≠ p) (hq : f 1 ≠ q)
-    (hl : segment ℝ (f 0) p ⊆ f '' unitInterval)
-    (hr : segment ℝ (f 1) q ⊆ f '' unitInterval) :
+    {P Q : Set Plane} {p q : Plane}
+    (hpArc : IsArcBetween P (f 0) p) (hqArc : IsArcBetween Q (f 1) q)
+    (hpPoly : IsPolygonal P) (hqPoly : IsPolygonal Q)
+    (hpSub : P ⊆ f '' unitInterval) (hqSub : Q ⊆ f '' unitInterval) :
     ∃ a b : ℝ, 0 < a ∧ a < b ∧ b < 1 ∧
       IsPolygonal (f '' Icc 0 a) ∧ IsPolygonal (f '' Icc b 1) := by
+  have hp : f 0 ≠ p := by
+    obtain ⟨g, _, hgi, _, hg0, hg1⟩ := hpArc
+    exact fun heq => zero_ne_one (hgi zero_mem_I one_mem_I (hg0.trans (heq.trans hg1.symm)))
+  have hq : f 1 ≠ q := by
+    obtain ⟨g, _, hgi, _, hg0, hg1⟩ := hqArc
+    exact fun heq => zero_ne_one (hgi zero_mem_I one_mem_I (hg0.trans (heq.trans hg1.symm)))
   have hA : IsArcBetween (f '' unitInterval) (f 0) (f 1) := ⟨f, hf, hi, rfl, rfl, rfl⟩
-  obtain ⟨u, hu, hfu⟩ := hl (right_mem_segment ℝ (f 0) p)
-  obtain ⟨v, hv, hfv⟩ := hr (right_mem_segment ℝ (f 1) q)
+  obtain ⟨u, hu, hfu⟩ := hpSub hpArc.right_mem
+  obtain ⟨v, hv, hfv⟩ := hqSub hqArc.right_mem
   have hu0 : 0 < u := lt_of_le_of_ne hu.1 fun h => hp (h ▸ hfu)
   have hv1 : v < 1 := lt_of_le_of_ne hv.2 fun h => hq (h ▸ hfv)
-  have hL : f '' Icc 0 u = segment ℝ (f 0) p := by
+  have hL : f '' Icc 0 u = P := by
     have hLA : IsArcBetween (f '' Icc 0 u) (f 0) p := by
       simpa only [uIcc_of_le hu.1, hfu] using
         isArcBetween_subarc_of_injOn_I hf hi zero_mem_I hu hu0.ne
-    exact hLA.eq_of_subset_arc (isArcBetween_segment hp) hA
-      (image_mono (Icc_subset_Icc_right hu.2)) hl
-  have hR : f '' Icc v 1 = segment ℝ (f 1) q := by
+    exact hLA.eq_of_subset_arc hpArc hA
+      (image_mono (Icc_subset_Icc_right hu.2)) hpSub
+  have hR : f '' Icc v 1 = Q := by
     have hRA : IsArcBetween (f '' Icc v 1) q (f 1) := by
       simpa only [uIcc_of_le hv.2, hfv] using
         isArcBetween_subarc_of_injOn_I hf hi hv one_mem_I hv1.ne
-    exact hRA.reverse.eq_of_subset_arc (isArcBetween_segment hq) hA
-      (image_mono (Icc_subset_Icc_left hv.1)) hr
+    exact hRA.reverse.eq_of_subset_arc hqArc hA
+      (image_mono (Icc_subset_Icc_left hv.1)) hqSub
   let a := u / 3
   let b := (v + 2) / 3
   have ha : 0 < a := by dsimp [a]; linarith
@@ -68,9 +75,20 @@ theorem exists_polygonal_subarcs_of_segment_subsets
     simpa only [uIcc_of_le hb.le] using
       isArcBetween_subarc_of_injOn_I hf hi hbI one_mem_I hb.ne
   refine ⟨a, b, ha, hab, hb, ?_, ?_⟩
-  · exact hla.isPolygonal_of_subset_arc (isArcBetween_segment hp) (isPolygonal_segment _ _)
+  · exact hla.isPolygonal_of_subset_arc hpArc hpPoly
       ((image_mono (Icc_subset_Icc_right hau)).trans hL.subset)
-  · exact hrb.isPolygonal_of_subset_arc (isArcBetween_segment hq) (isPolygonal_segment _ _)
+  · exact hrb.isPolygonal_of_subset_arc hqArc hqPoly
       ((image_mono (Icc_subset_Icc_left hvb)).trans hR.subset)
+
+theorem exists_polygonal_subarcs_of_segment_subsets
+    {f : ℝ → Plane} (hf : ContinuousOn f unitInterval) (hi : InjOn f unitInterval)
+    {p q : Plane} (hp : f 0 ≠ p) (hq : f 1 ≠ q)
+    (hl : segment ℝ (f 0) p ⊆ f '' unitInterval)
+    (hr : segment ℝ (f 1) q ⊆ f '' unitInterval) :
+    ∃ a b : ℝ, 0 < a ∧ a < b ∧ b < 1 ∧
+      IsPolygonal (f '' Icc 0 a) ∧ IsPolygonal (f '' Icc b 1) :=
+  exists_polygonal_subarcs_of_polygonal_subsets hf hi
+    (isArcBetween_segment hp) (isArcBetween_segment hq)
+    (isPolygonal_segment _ _) (isPolygonal_segment _ _) hl hr
 
 end Schoenflies

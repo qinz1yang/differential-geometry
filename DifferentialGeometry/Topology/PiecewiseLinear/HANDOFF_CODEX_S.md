@@ -2442,3 +2442,29 @@ warnings. AuditS134ArcSequence checks six declarations, including all three
 current local-arc endpoints; exit 0, only the standard three axioms. The next
 geometric obligation is to straighten the intervals between selected points,
 then construct the auxiliary arc approaching the original endpoint.
+
+## Contracting families of whole arcs (2026-09-16)
+
+`ArcNeighborhood.lean` now produces polygonal parameter germs from arbitrary
+polygonal endpoint subarcs. The radial-segment endpoint is a corollary with its
+original signature. `ArcFamilyStraightening.lean` proves
+`exists_homeomorph_polygonal_arc_family_of_disjoint_neighborhoods`: an arbitrary
+family of arcs with polygonal endpoint germs, in pairwise disjoint bounded
+neighborhoods whose diameters tend to zero, admits one ambient homeomorphism
+making every whole arc polygonal. The proof constructs the PL disk supports and
+retains both support and diameter control. The neighborhoods must avoid the
+other whole arcs. The existing finite-family theorem keeps its signature and
+uses the same gluing argument.
+
+`Embedding/RealParameter.lean` also produces pairwise disjoint open ambient
+neighborhoods of subsets of an embedded compact real parameter set, inside
+arbitrary prescribed neighborhoods, whenever those subsets lie in pairwise
+disjoint open parameter sets. This is an actual neighborhood producer using a
+continuous extension of the inverse parameter.
+
+The three changed modules and their consumers `VertexNeighborhood`,
+`GraphStraightening`, and `LocalArcStraightening` check with exit 0 and zero
+warnings. AuditS135ContractingArcFamily checks seven endpoints, including the
+preserved finite graph and sequence endpoints; exit 0, only the standard three
+axioms. These results supply the infinite edge stage; assembling the successive
+parameter intervals and constructing the degree-one auxiliary arc remain.
