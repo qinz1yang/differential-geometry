@@ -1921,3 +1921,13 @@ Moise 17.12 的两个相反转轴现已分别构造，且每张封帽球面的�
 F-M5 状态为 partial。唯一未闭合的生产步骤是：给定 F-M6 的公共仿射细分 `K*`，从 `IsVertexMapGeneralInArrangement` 对每个实际双点识别两张像面星的最小载体，证明其集合芽要么方向张成全空间，要么恰形成 `IsArrangementGeneralFoldPair`；边界点则形成 `IsBoundaryArrangementGeneralPair`。F-M4 已生产方向等式，但尚无现成 API 把目标 `K*` 的共面相邻三胞腔及图卡变换的两侧性搬成两个余面顶点的严格异号条件。不能把这项局部分类作为结论型假设塞入最终正规形式端点；它必须由 `K*` 的组合流形结构和图卡同胚性证明。
 
 聚焦检查 exit=0（13.8 秒）、零 warning；`AuditF207.lean` 十六项全部只依赖 `propext`、`Classical.choice`、`Quot.sound`。下一里程碑 F-M6 在 `SingularNormalForm.lean` 构造紧致片、公共细分与图卡归纳，并尝试生产上述局部分类；下一审计文件 `AuditF208.lean`。
+
+### 19.61 F-M6：紧致载体、星图卡族与公共仿射细分
+
+`PiecewiseAffineSimplicial.lean` 与 `SingularNormalForm.lean` 已提交并推送为 `5d5a89f9f`，星图卡接口加强提交为 `04b71666c`。`exists_isSubdivision_affineOn_faces_finset` 与 `_finite` 对有限族逐片仿射映射构造同一个有限细分；后续细分上的仿射性由载体面包含保持。`IsPiecewiseAffineOn.exists_isSubdivision_affineOn_subcomplex`、`exists_isSubdivision_affineOn_subcomplexes_finset` 与 `_finite` 把该构造推广到有限子复形族：逐个把子复形的仿射细分相对延拓到全复形，随后用限制细分保持已经处理的各子复形。
+
+`SingularTwoCell.exists_compact_piece_neighborhood` 用 F6.2 将整幅紧致像装入一个紧致多面体三维带边流形片。`PLPieceIn.exists_isSubdivision_affineOn_chart_stars` 先细分至每个旧顶点的整个闭星落入一张 PL 图卡，再对全部有限闭星作上述共同相对细分；输出保留旧复形、公共细分、每个旧顶点的实际图卡、闭星包含以及该图卡坐标在公共细分限制中的每个单形上的仿射公式。`PLPieceIn.exists_isSubdivision_affineOn_chart_faces` 给出逐面消费版本。`SingularTwoCell.exists_compact_piece_affine_chart_refinement` 将紧致载体、公共细分、三维带边组合流形性、原像包含于载体内部和逐面仿射图卡一次性打包。这已经完成 F-M6 的 `K_T`、有限星图卡族与 `K*` 生产，不把全域图卡映射的逐片仿射性作为错误假设。
+
+F-M6 状态为 partial。剩余的首个数学义务是一个真实的余面异侧定理：在上述同一星图卡内，若 `q` 是 `K*` 的内部二维面且恰有两个三维余面，则两个余面的对顶点在 `affineSpan ℝ (e(T(q)))` 的严格相反两侧；边界二维面唯一余面的对顶点须位于所选内部严格一侧。现有组合流形 API 给出余面个数，公共细分给出图卡内的仿射性与单射性，但库中尚无把这两项合成为严格符号的定理。缺少该结论时，不能从 `IsVertexMapGeneralInArrangement` 生产 `IsArrangementGeneralFoldPair` 或 `IsBoundaryArrangementGeneralPair`，因此不能证明每个实际双点的 crossing，也不能启动保持该不变量的有限图卡归纳。该严格异侧性必须从 `K*` 的实际相邻三胞腔、图卡同胚性和单形内部不交推出，不能作为 `exists_small_isNormalSingularCell` 的假设。`Ξ = K*` 的二维骨架、图卡归纳和最终端点均留在此义务之后；本次未声明 `exists_small_isNormalSingularCell`。
+
+聚焦检查：`PiecewiseAffineSimplicial` exit=0（9.5 秒）、`SingularNormalForm` exit=0（12.2 秒），均零 warning。`AuditF208.lean` 十八项全部只依赖 `propext`、`Classical.choice`、`Quot.sound`。F-M6 partial；下一审计文件 `AuditF209.lean`。
