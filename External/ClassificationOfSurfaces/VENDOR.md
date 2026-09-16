@@ -1521,3 +1521,27 @@ the preserved closed-star interface: exit 0 and only `propext`,
 before the consumer because its shared olean had been replaced by a
 version with a different exported theorem name. Source dependencies
 were obtained only through integration merges, including `5967f629c`.
+
+## Boundary subdivision subordinate to ball neighborhoods
+
+`BoundarySubdivision.lean` refines the ambient finite combinatorial
+manifold while making a prescribed boundary polyhedron a subcomplex.
+Each face of that subcomplex has its entire cluster of ambient closed
+vertex stars inside an open set whose intersection with the manifold is
+contained in a specified PL ball. The ball's boundary trace is a PL disk.
+For a boundary PL disk, every face star of the resulting disk subcomplex
+therefore has a PL ball whose intersection with the manifold boundary is
+exactly that face star. Both theorems hold in every indicated dimension.
+
+The construction uses the existing mesh and simultaneous-subcomplex
+refinement theorems and the boundary-ball lemmas from `fc3846d10`.
+It is a native preparation for the finite disk argument in Moise 26.1-2;
+no vendored source changed. The separate local balls are not asserted to
+have compatible pairwise intersections. That compatibility, the global
+boundary-disk ball, general `hpush`, and the full product collar remain
+unproved.
+
+The module check exits 0 with zero warnings. `AuditS64.lean` audits both
+new declarations: exit 0, with only `propext`, `Classical.choice`, and
+`Quot.sound`. Logs: `.lake/scratch/check-boundary-subdivision.log` and
+`.lake/scratch/audit-boundary-subdivision.log`.
