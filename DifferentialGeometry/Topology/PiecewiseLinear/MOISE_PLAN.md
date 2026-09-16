@@ -525,16 +525,21 @@
   I5 未闭合：还需 H-M3 的闭曲面顶维同调、一般 3-流形的 23.19 Betti 不等式，以及 H.4b 的
   `b₁=0 → PL 2-sphere` 识别；未将非球面假设弱化成 `χ≠2`。
 
-- 2026-09-15（H-M5 二重覆盖复形的流形与局部定向层，数学提交 `c6830cc26`）：
-  `CoveringOrientation` 证明有限覆盖复形保持组合流形结构，并以链接的 `IsGlueIso` 传递相干定向；
-  对 `SimplicialBoolCocycle` 的二重覆盖建立顶点有限性、带边/无边组合流形、覆盖空间同胚与逐顶点链接可定向端点。
-  聚焦检查 exit=0、零 warning；`.lake/scratch/AuditNightHM5Final.lean` 逐项审计 19 项
-  （10 项新声明、9 项直接复用），全部仅标准三公理。直接复用审计包括
-  `coveringComplex_faces_finite`、`coveringVertexLink_isGlueIso`、`isOrientable_iff_of_isGlueIso`、
-  `isCombinatorialManifoldWithBoundary_coveringComplex`、`coveringSpaceHomeomorph`、
-  `SimplicialBoolCocycle.isCoveringMap`、`SimplicialBoolCocycle.card_fiber`、`coveringVertex.finite` 与
-  `Nat.finite_of_card_ne_zero`。全局可定向性仍缺覆盖边两端 sheet XOR 等于基边上循环值的相容式；
-  逐顶点链接可定向不被当作整体可定向。
+- 2026-09-15（H-M5 定向上循环的二重覆盖复形，数学提交 `c6830cc26`、`4e81f6e2d`）：
+  第一提交证明有限覆盖复形保持组合流形结构，并以链接的 `IsGlueIso` 传递相干定向；第二提交证明
+  `SimplicialBoolCocycle.coveringNeighbor_side`，即提升边两端 sheet 的 XOR 等于基边 `parity`，再把
+  `orientationCocycle` 的局部细分定向符号乘以 sheet 符号，构造全局
+  `orientationCocycleCoveringOrientation`。最终端点
+  `isOrientable_coveringComplex_orientationCocycle` 对任意维有限组合带边流形给出该二重覆盖复形的可定向性。
+  `Orientation`、`OrientationCocycle`、`CoveringOrientation` 最终聚焦检查均 exit=0、零 warning，分别为
+  32.2、29.3、14.9 秒；`.lake/scratch/AuditNightHM5OrientationCover.lean` 逐项审计 37 项
+  （13 项新增/提升端点、24 项复用），全部仅标准三公理。新增/提升端点包括
+  `subdivision_carrierFace_spec`、`subdivision_carrierFace_card`、
+  `CoherentOrientation.affine_coface_pair_cancel`、两个 `localOrientationSign` 接口、四个局部细分定向符号接口、
+  `SimplicialBoolCocycle.coveringNeighbor_side`、`orientationCocycleCoveringOrientation` 与最终可定向性端点；
+  关键复用逐项包括重心细分与 carrier、覆盖边提升与面数据、开星局部平凡化、覆盖基顶点的面上单射、
+  `CoherentOrientation.changeVertexOrder`、单形边界系数及组合流形余面计数。H-M5 无未闭合端点；
+  H-M3/H-M4 的顶维基本类、23.19 与非球面识别缺口保持不变。
 
 ## 7. 决策与风险
 

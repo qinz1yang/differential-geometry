@@ -356,18 +356,21 @@ Reduced/MayerVietorisCoefficients, Reduced/PointClasses}`（`REUSE_AUDIT.md` §2
 - 因而未声明 `bettiOne_pos_of_boundary_component_not_sphere`，也未用 `χ(B)≠2` 替换冻结的非球面假设。
   按 §0.4 转 H-M5 的二重覆盖定向引理。
 
-### H-M5 — partial，二重覆盖复形的流形与局部定向层已交付
+### H-M5 — done，定向上循环的二重覆盖复形整体可定向
 
-- 数学提交：`c6830cc26`。新模块 `CoveringOrientation.lean`。
-- `IsCombinatorialManifold.coveringComplex` 证明闭组合流形的任意有限覆盖三角剖分仍是同维闭组合流形；
-  `CoherentOrientation.coveringVertexLink`、`isOrientable_coveringVertexLink_iff` 把基点链接的相干定向沿
-  `coveringVertexLink_isGlueIso` 传到覆盖点链接。
-- 对 `SimplicialBoolCocycle` 的二重覆盖，已给覆盖顶点的有限实例、覆盖复形的带边/无边组合流形端点、
-  覆盖空间同胚，以及每个覆盖顶点链接的可定向性。模块聚焦检查 exit=0、零 warning，11.5 秒；
-  `.lake/scratch/AuditNightHM5Final.lean` 逐项审计 19 项（10 项新声明、9 项直接复用），全部仅
-  `propext`、`Classical.choice`、`Quot.sound`。
-- 尚不能把“所有顶点链接可定向”提升成覆盖复形整体可定向。冻结端点还缺一个全局相容式：对覆盖复形同一条边的
-  两个覆盖顶点，其 sheet 坐标之 XOR 应等于基边上的 `SimplicialBoolCocycle.parity`；用该等式把
-  `orientationCocycle` 的局部定向乘以 sheet 符号后，才能证明相邻顶维面诱导符号相消。现有
-  `BoolCocycle`/`CoveringTriangulation` API 提供覆盖图、面提升和链接同构，但没有这个端点奇偶公式；
-  未把局部可定向性误报为全局可定向性，也未引入结论型假设。
+- 数学提交：`c6830cc26`（覆盖复形的流形与局部定向层）、`4e81f6e2d`（sheet 奇偶公式与全局相干定向）。
+  模块为 `CoveringOrientation.lean`，并在 `Orientation.lean`、`OrientationCocycle.lean` 导出证明所需的仿射余面相消与
+  局部细分定向符号接口。
+- `SimplicialBoolCocycle.coveringNeighbor_side` 证明一条提升边两端的 sheet 坐标之 XOR 正是基边上的 `parity`；
+  `orientationCocycle_parity_eq_localSubdivisionOrientationSign` 与
+  `localSubdivisionOrientationSign_pair_cancel` 把该奇偶公式变成公共余维一面上的边界符号相消。
+- `orientationCocycleCoveringOrientation` 显式构造
+  `coveringComplex (barycentricSubdivision K) (orientationCocycle hK o).toBoolCocycle.toFiberBundleCore.proj`
+  的相干定向；`isOrientable_coveringComplex_orientationCocycle` 给最终可定向性端点。结论对任意维数的有限组合带边流形成立，
+  无公开 `DecidableEq`，零维由 `isOrientable_zero` 单独闭合。
+- 最终聚焦检查均 exit=0、零 warning：`Orientation` 32.2 秒、`OrientationCocycle` 29.3 秒、
+  `CoveringOrientation` 14.9 秒。`.lake/scratch/AuditNightHM5OrientationCover.lean` 审计 37 项
+  （13 项新增/提升端点、24 项关键复用），全部只有 `propext`、`Classical.choice`、`Quot.sound`；
+  `git diff --check` 与新增禁用项扫描通过。
+- H-M5 无未闭合端点。H-M3 的全局顶维基本类/定向比较，以及 H-M4/I5 的 23.19 Betti 不等式与
+  `b₁=0 → IsPLSphere 2` 识别仍是原有真实缺口，本里程碑没有弱化或包装这些义务。
