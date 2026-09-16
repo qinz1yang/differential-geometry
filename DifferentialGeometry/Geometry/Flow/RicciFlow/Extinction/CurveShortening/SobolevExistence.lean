@@ -1,3 +1,5 @@
+import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Solution.AddCircleDerivativeContinuity
+import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Scalar.AddCircleFiniteRegularity
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Existence.AddCircleLinearizedLift
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Existence.AddCircleContractionRadius
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Duhamel.AddCircleForcing
@@ -4851,6 +4853,74 @@ private theorem ambient_sobolev_solution_exists_with_fourth_order_lift :
   exact ⟨ρ, hρ, hρC, hρ1, T, hT, hTρ, u, gforce, hfacts, hlift,
     ambient_fourth_order_lift_of_parameterDerivative_lift
       (c₀.pullbackMetric (g 0)) hT gforce hlift⟩
+
+private theorem ambient_spatial_contDiff_two_of_parameterDerivative_forcing_lift
+    (g₀ : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ)))
+    {T : ℝ} (hT : 0 < T)
+    (f₀ : CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 2))
+    (gforce : timeL2 (CircleHsPi g₀ (Fin n) ((1 : ℕ) : ℝ)) T)
+    (hlift : parameterDerivativeForcingFieldLift g₀ hT gforce) :
+    let P := circleHsPiInclusion g₀ (Fin n)
+      (show (1 : ℝ) ≤ ((1 : ℕ) : ℝ) + 2 by norm_num)
+    let u := maximalRegularityDuhamelVectorMap (g := g₀) (r := 0) (s := 0)
+      (a := ((1 : ℕ) : ℝ)) hT 0 gforce
+    let S := circleHsPiInclusion g₀ (Fin n)
+      (show (1 : ℝ) ≤ ((1 : ℕ) : ℝ) by norm_num)
+    let f := fun t (x : ℝ) => scalarH1PiToContinuous g₀ (P f₀ + S (u.toFun t))
+      (x : AddCircle (1 : ℝ))
+    (∀ t ∈ Icc 0 T, ContDiff ℝ 2 (f t)) ∧
+      ContinuousOn (fun p : ℝ × ℝ => deriv (deriv (f p.1)) p.2) (Icc 0 T ×ˢ univ) := by
+  intro P u S f
+  obtain ⟨FH, hFH, _⟩ := hlift
+  obtain ⟨w, hw, hwlo, _⟩ :=
+    exists_continuousOn_representative_of_parameterDerivative_forcing_lift g₀ 0 hT gforce FH hFH
+  have h := AddCircle.contDiff_and_continuousOn_iteratedDeriv_scalarH1PiToContinuous
+    g₀ 2 (fun t => P f₀ + S (u.toFun t))
+    (fun t => ContinuousLinearMap.piLpMap 2 (fun _ : Fin n =>
+      tensorHsInclusion (g := g₀) (r := 0) (s := 0)
+        (by norm_num : ((2 : ℕ) : ℝ) + 1 ≤ ((1 : ℕ) : ℝ) + 2)) (f₀ + w t))
+    ((ContinuousLinearMap.piLpMap 2 (fun _ : Fin n =>
+      tensorHsInclusion (g := g₀) (r := 0) (s := 0)
+        (by norm_num : ((2 : ℕ) : ℝ) + 1 ≤ ((1 : ℕ) : ℝ) + 2))).continuous.comp_continuousOn
+      (continuousOn_const.add hw)) (fun t ht => by
+      apply PiLp.ext
+      intro i
+      simp only [ContinuousLinearMap.piLpMap_apply, PiLp.add_apply,
+        ← tensorHsInclusion_trans_apply, map_add]
+      change _ = (P f₀) i + (S (u.toFun t)) i
+      congr 1
+      have hwi := congrArg (fun z => z i) (hwlo t ht)
+      have hwi' := congrArg (tensorHsInclusion (g := g₀) (r := 0) (s := 0)
+        (by norm_num : (1 : ℝ) ≤ ((1 : ℕ) : ℝ))) hwi
+      simpa only [S, circleHsPiInclusion, ContinuousLinearMap.piLpMap_apply,
+        ← tensorHsInclusion_trans_apply] using hwi')
+  simpa only [f, iteratedDeriv_succ, iteratedDeriv_zero, Nat.cast_ofNat] using h
+
+private theorem ambient_sobolev_solution_exists_with_contDiff_two :
+    let C := ambientCoefficients c₀ g ht he hr hEU hleft β hG
+    let g₀ := c₀.pullbackMetric (g 0)
+    let f₀ := ambientSobolev c₀ (g 0) e he (((1 : ℕ) : ℝ) + 2)
+    let P := circleHsPiInclusion g₀ (Fin n)
+      (show (1 : ℝ) ≤ ((1 : ℕ) : ℝ) + 2 by norm_num)
+    let S := circleHsPiInclusion g₀ (Fin n)
+      (show (1 : ℝ) ≤ ((1 : ℕ) : ℝ) by norm_num)
+    ∃ ρ : ℝ, 0 < ρ ∧ ρ ≤ C.radius ∧ ρ ≤ 1 ∧
+      ∃ (T : ℝ) (hT : 0 < T), T ≤ ρ ∧
+        ∃ (u : timeH1 (CircleHsPi g₀ (Fin n) ((1 : ℕ) : ℝ)) T)
+          (gforce : timeL2 (CircleHsPi g₀ (Fin n) ((1 : ℕ) : ℝ)) T),
+          ambientSobolevSolutionFacts c₀ g ht he hr hEU hleft β hG ρ hT u gforce ∧
+            parameterDerivativeForcingFieldLift g₀ hT gforce ∧
+            ambientSobolevFourthOrderLift g₀ hT gforce ∧
+            let f := fun t (x : ℝ) => scalarH1PiToContinuous g₀ (P f₀ + S (u.toFun t))
+              (x : AddCircle (1 : ℝ))
+            (∀ t ∈ Icc 0 T, ContDiff ℝ 2 (f t)) ∧
+              ContinuousOn (fun p : ℝ × ℝ => deriv (deriv (f p.1)) p.2) (Icc 0 T ×ˢ univ) := by
+  intro C g₀ f₀ P S
+  obtain ⟨ρ, hρ, hρC, hρ1, T, hT, hTρ, u, gforce, hfacts, hlift, hfour⟩ :=
+    ambient_sobolev_solution_exists_with_fourth_order_lift c₀ g ht he hr hEU hleft β hG
+  refine ⟨ρ, hρ, hρC, hρ1, T, hT, hTρ, u, gforce, hfacts, hlift, hfour, ?_⟩
+  rw [hfacts.1]
+  exact ambient_spatial_contDiff_two_of_parameterDerivative_forcing_lift g₀ hT f₀ gforce hlift
 
 end
 

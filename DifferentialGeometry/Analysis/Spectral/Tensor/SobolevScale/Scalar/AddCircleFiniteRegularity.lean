@@ -212,4 +212,41 @@ theorem continuous_iteratedDeriv_scalarH1PiToContinuous {ι : Type*} [Fintype ι
       ((contDiff_scalarH1PiToContinuous g n p.1).continuous_iteratedDeriv' n).continuousAt
       (continuous_snd.tendsto p)
 
+
+theorem contDiff_and_continuousOn_iteratedDeriv_scalarH1PiToContinuous
+    {ι X : Type*} [Fintype ι] [TopologicalSpace X]
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ)))
+    (n : ℕ) {s : Set X}
+    (u : X → PiLp 2 (fun _ : ι => TensorHs g 0 0 1))
+    (w : X → PiLp 2 (fun _ : ι => TensorHs g 0 0 ((n : ℝ) + 1)))
+    (hw : ContinuousOn w s)
+    (hwu : ∀ t ∈ s, ContinuousLinearMap.piLpMap 2 (fun _ : ι =>
+      tensorHsInclusion (g := g) (r := 0) (s := 0)
+        (by norm_num : (1 : ℝ) ≤ (n : ℝ) + 1)) (w t) = u t) :
+    let f := fun t (x : ℝ) => scalarH1PiToContinuous g (u t)
+      (x : AddCircle (1 : ℝ))
+    (∀ t ∈ s, ContDiff ℝ n (f t)) ∧
+      ContinuousOn (fun p : X × ℝ => iteratedDeriv n (f p.1) p.2)
+        (s ×ˢ Set.univ) := by
+  intro f
+  have hf (t : X) (ht : t ∈ s) : f t = fun x : ℝ =>
+      scalarH1PiToContinuous g
+        (ContinuousLinearMap.piLpMap 2 (fun _ : ι =>
+          tensorHsInclusion (g := g) (r := 0) (s := 0)
+            (by norm_num : (1 : ℝ) ≤ (n : ℝ) + 1)) (w t))
+        (x : AddCircle (1 : ℝ)) := by
+    rw [hwu t ht]
+  constructor
+  · intro t ht
+    rw [hf t ht]
+    exact contDiff_scalarH1PiToContinuous g n (w t)
+  · have hW : ContinuousOn (fun p : X × ℝ => (w p.1, p.2))
+        (s ×ˢ Set.univ) :=
+      (hw.comp continuousOn_fst (fun _ h => h.1)).prodMk continuousOn_snd
+    have h := (continuous_iteratedDeriv_scalarH1PiToContinuous g n).comp_continuousOn hW
+    apply h.congr
+    intro p hp
+    dsimp only [Function.comp_apply]
+    rw [hf p.1 hp.1]
+
 end AddCircle

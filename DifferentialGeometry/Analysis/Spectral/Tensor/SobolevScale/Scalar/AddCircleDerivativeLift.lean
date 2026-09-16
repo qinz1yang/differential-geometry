@@ -185,4 +185,38 @@ theorem exists_timeL2_tensorHsInclusion_eq_of_parameterDerivative_lift
     exact ht i
   exact tensorHsInclusion_parameterDerivativeReconstruction g n (u t i) (v t i) hi
 
+
+theorem exists_continuousOn_tensorHsInclusion_eq_of_parameterDerivative_lift
+    {X ι : Type*} [TopologicalSpace X] [Finite ι]
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) (n : ℕ)
+    {s : Set X} {σ : ℝ} (hσ : σ ≤ ((n + 1 : ℕ) : ℝ))
+    (u v : X → PiLp 2 (fun _ : ι => TensorHs g 0 0 ((n : ℝ) + 2)))
+    (hu : ContinuousOn u s) (hv : ContinuousOn v s)
+    (h : ∀ x ∈ s, ∀ i : ι,
+      tensorHsInclusion hσ (parameterDerivativeHs g (n + 1)
+        (tensorHsInclusion (by push_cast; linarith :
+          ((n + 1 : ℕ) : ℝ) + 1 ≤ (n : ℝ) + 2) (u x i))) =
+      tensorHsInclusion (hσ.trans (by push_cast; linarith :
+        ((n + 1 : ℕ) : ℝ) ≤ (n : ℝ) + 2)) (v x i)) :
+    ∃ w : X → PiLp 2 (fun _ : ι => TensorHs g 0 0 (((n + 1 : ℕ) : ℝ) + 2)),
+      ContinuousOn w s ∧ ∀ x ∈ s,
+        ContinuousLinearMap.piLpMap 2 (fun _ : ι =>
+          tensorHsInclusion (g := g) (r := 0) (s := 0)
+            (by push_cast; linarith : (n : ℝ) + 2 ≤ ((n + 1 : ℕ) : ℝ) + 2)) (w x) = u x := by
+  let _ := Fintype.ofFinite ι
+  let A := ContinuousLinearMap.piLpMap 2 (fun _ : ι => parameterDerivativeReconstructionState g n)
+  let B := ContinuousLinearMap.piLpMap 2 (fun _ : ι => parameterDerivativeReconstructionDerivative g n)
+  refine ⟨fun x => A (u x) - B (v x),
+    (A.continuous.comp_continuousOn hu).sub (B.continuous.comp_continuousOn hv), ?_⟩
+  intro x hx
+  apply PiLp.ext
+  intro i
+  have hi : derivativeHsNext g n (u x i) =
+      tensorHsInclusion (by push_cast; linarith :
+        ((n + 1 : ℕ) : ℝ) ≤ (n : ℝ) + 2) (v x i) := by
+    apply tensorHsInclusion_injective hσ
+    rw [← tensorHsInclusion_trans_apply]
+    exact h x hx i
+  exact tensorHsInclusion_parameterDerivativeReconstruction g n (u x i) (v x i) hi
+
 end AddCircle
