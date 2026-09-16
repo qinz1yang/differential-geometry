@@ -115,3 +115,56 @@
 - **H-M4** H.5（`HandleCount.lean`）：23.18′ `χ(Bd N) = 2χ(N)` 与 23.19′（I5）。`h(B)` 用 `bettiOne/2` 的定义（D3′）。
 - **H-M5** 若有余力：`isOrientable` 的 24.11（覆盖可定向）所需的"二重覆盖复形的定向"引理，供 E3 的 C.4。
 估计：M1 3 小时，M2 3 小时，M3 3 小时，M4 3 小时。
+
+## 6. 2026-09-16 早上：夜间复核结果、接口修订与今日里程碑
+
+### 6.0 复核（Opus 复核代理，独立重编 + 命名空间审计；整合分支 `aa6bf91e5`）
+
+- H、E3、F 全部通过并并入：H 19/19 模块、392 项审计；E3 25/25、363 项；F 71/71、398 项；全部只含标准三公理，零 warning，
+  无禁用模式，无重名。重述过陈述的 14 个声明的 84 个下游模块也已在整合树里重编，全部通过。
+- **S 未并入**，两个原因：(1) 文件名碰撞 `SubcomplexNeighborhood.lean`（H 351 行 / S 51 行，内容不同）——处理办法已定：S 的版本改名
+  `SubcomplexNhdsWithin.lean`，S 的三个 importer（`ManifoldNeighborhood`、`ManifoldRelativeTopology`、`TwoSidedNeighborhood`）同步改；
+  (2) S 自己的源码不编译：`BoundaryDerivedNeighborhood.lean:151` 的裸名 `inter_subset_boundaryComplex_of_isPLBall` 在
+  `theorem IsCombinatorialManifoldWithBoundary.…` 的体内被后加的 `IsCombinatorialManifoldWithBoundary.inter_subset_boundaryComplex_of_isPLBall`
+  （`SubcomplexBallGluing.lean:161`，21:45）遮蔽；该模块 20:35 后没再检查过，它的 14 个下游（`Bicollar`、`BicollarManifold`、`BoundaryDiskNeighborhood`、
+  `BoundaryDiskPush`、`CollarExtension`、`CollarNeighborhood`、`CollarRestriction`、`DiskCollar`、`DiskCollarComplement`、`DiskDerivedNeighborhood`、
+  `FreeTriangleNeighborhood`、`LoopTheorem/CombinatorialBoundaryPush`、`SimplexDerivedNeighborhood`、`SurfaceCollar`）都是对着旧 olean "通过"的，不算数。
+  另有两处 H×S 重名：`pair_centroid_mem_barycentricSubdivision`（S 的假设更弱、更一般）与
+  `IsCombinatorialManifoldWithBoundary.exists_face_superset_card_eq`（陈述相同）。S 的 72 个未受影响模块的 292 项审计全部标准。
+- **检查脚本已修**：`check-f.ps1` 现在先删目标 olean/ilean 再编译，失败的模块不再留下旧 olean 让下游"通过"。
+- 计划文件的重复行已归并（提交 "Reconcile duplicated plan rows…"），C.4 取了 H 的更新文本。
+
+### 6.1 接口修订（今日起生效）
+
+- **环境（I2、I3 共用）**：`SingularTwoCell X` 要求无边界的 `ChartedSpace ℝ³ X`。带边流形 `K`（`IsCombinatorialManifoldWithBoundary 3 K`）
+  的环境统一取 H 的 double：`X := (double 3 K).space`，图卡 `combinatorialChartedSpace (double 3 K) (isCombinatorialManifold_double_succ_succ K hK)`
+  （`Orientation.lean`，`double n K : SimplicialComplex ℝ (E × E × ℝ)` 是 `gluedComplex (boundaryRelSubdivision n K) K` 沿边界的粘合）；
+  `M := ` K 那一份拷贝的像（`Gluing.lean` 的 `glueEmbed₂`），`BdM := ` 其 `boundaryComplex` 的像。E3 的
+  `exists_nonsingular_two_cell_of_sphere_boundary_map`（`X`、`ι : X → E`、集合在 `E` 中）已是这个形状。
+  **I2 改为**：输入 `(K, hK)` 与 `D ⊆ (boundaryComplex K).space` 的参数化 `r`，输出 `SingularTwoCell (double 3 K).space`，
+  非奇异、像在 `M` 内、`range boundary = 像(r '' ∂)`、`像 ∩ BdM = 像(r '' ∂)`。S 交付；E3 消费时先把 `X := (double 3 K).space` 代入。
+  L.4 的覆盖空间：对 `double 3 K₁` 用 C.3 提升，得到 `K̃₁` 的无边界环境。
+- **I1**（F 的 17.12）未交付：S 继续带显式 `hSchoenflies`。
+- **I5** 未交付且路线修订：不再等奇异同调的顶维基本类。`h(B)` 用 `χ_face`：可定向闭曲面分支 `h(B) := (2 − χ_face B)/2`；
+  23.18′/23.19′ 用 `faceEulerChar`、H.1、H-M2 的 MV 与 H-M4 已有的 Euler 层证 `bettiOne K ≥ h(Bd K)`；"B 不是 PL 2-球面 ⟹ h(B) ≥ 1"
+  需要 **H.4b 球面识别**（今日 H 的第一里程碑）。E3 的 C.5、L.4 在 I5 到位前保持显式假设。
+
+### 6.2 今日里程碑
+
+**F**：F-M1 的 §19.56（相对层圆周删除）→ S.4 的 M2、M3 → 交付 I1（S 随后消参）。之后 F-M5（`IsVertexMapGeneralInArrangement` ⟹ 每个实际双点的
+`IsArrangementGeneralFoldPair`）与 F-M6 的余面异侧定理 → `exists_small_isNormalSingularCell`。
+
+**S**：先做三件修理再合并：(1) `BoundaryDerivedNeighborhood.lean:151` 改成全限定名 `_root_.DifferentialGeometry.Topology.PiecewiseLinear.inter_subset_boundaryComplex_of_isPLBall`
+（或用 `hK.inter_subset_boundaryComplex_of_isPLBall` 显式选用新版本），重检它和上面 14 个下游；(2) 把 `SubcomplexNeighborhood.lean` 改名为
+`SubcomplexNhdsWithin.lean` 并改三个 importer；(3) 重名：删掉自己的 `exists_face_superset_card_eq`（与 H 的 `ManifoldConnectivity.lean` 版本同陈述，改为 import 它），
+把自己的 `pair_centroid_mem_barycentricSubdivision` 改名 `pair_centroid_mem_barycentricSubdivision_of_subset_or_subset`（保留更一般的版本，H 的不动）。
+然后合并整合分支（`aa6bf91e5`）、全量重检本车道昨夜改过的模块（脚本已改，旧 olean 不再掩盖失败）、审计、推送并汇报。
+之后 S-M3 按 6.1 的 I2 形状交付并在 HANDOFF 标"I2 已交付（double 环境）"；再 S-M6 的 P.4（`External/Schoenflies` 路线）；再 S.6（30.5，显式 `hSchoenflies`）。
+
+**E3**：E3-M1 按 6.1 把 `X := (double 3 K).space` 代入并与 S 的 I2 对接（I2 未到前显式）；E3-M2 剩余：两盘沿边界 1-球贴合后
+frontier = 两侧补弧之并的表示引理 → Case 3/4 的 `L₁` 识别与复杂度下降 → Case 1/2（环带重定义、内盘替换与推离）→ Lemma 2 端点
+（条件于 I3）。之后 L.4 骨架接 Lemma 2；C.5 等 I5。
+
+**H**：H.4b 球面识别（`IsCombinatorialManifold 2 B` 连通闭、`faceEulerChar B = 2` ⟹ `IsPLSphere 2 B.space`；路线：1-骨架生成树 `T` 与对偶生成树 `T*`，
+Euler 数迫使每条边恰属其一，沿 `T*` 粘合的三角形是一个 PL 盘，`B` 是该盘沿树 `T` 折叠边界的商，按树边归纳折叠得球面）；
+然后 23.19′ = I5（`bettiOne_pos_of_boundary_component_not_sphere`，按 6.1 用 `χ_face`）；再回 H-M3 的顶维类（可推迟）。
