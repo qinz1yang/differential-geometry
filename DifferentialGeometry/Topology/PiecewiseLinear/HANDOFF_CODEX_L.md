@@ -771,3 +771,23 @@ theorem eq_top_of_boundaryLoops_mem_normal
   `exists_nonsingular_two_cell_of_disk_in_double_boundary` 构造推离替换盘，并证明替换后的奇点图删去所选闭分支、正规 crossing 保持且
   `vertexCollisionPairs` 严格减少。当前一般 `NormalSingularCellData` 不携带 `K`、double 的嵌入 `ι` 或盘像位于相应
   `boundaryComplex` 的等式，所以该接线必须在 Lemma 2 的 double 专门端点中完成，不能在本一般引理中伪造。
+
+## 36. 2026-09-16 E3-M2 追加：Case 2 的源盘替换参数化
+
+状态：partial（两张源盘之间的边界相容 PL 同胚已闭合；double 环境中的 I2 推离、分片贴回、正规性重建与复杂度下降仍待闭合）。数学提交
+`b25555a31`。
+
+- `BranchPreimage.lean` 在两圆情形中为另一圆 `T` 构造 PL 盘 `R ⊆ D.domain`，并由两张
+  `branchCoordinate` 坐标先得到 `T → J` 的边界 PL 同胚，再用盘边界延拓得到
+  `G : R → Q` 的 PL 同胚。其边界满足逐点等式 `EqOn D (D ∘ G) (frontier R)`，不是仅有边界像集相等。
+- `BoundaryBranchCrosscut.lean` 的端点
+  `exists_innermost_isPLBall_doublePointPreimage_with_case_two_replacement` 同时交付全局最内关系
+  `doublePointPreimage D D.domain ∩ Q = J`、上述 `R,G`，以及非奇异内盘胞腔 `A = D.restrict Q`，其中
+  `A '' A.domain = D '' Q` 且 `Set.range A.boundary = D '' J`。这给出了 Moise Case 2 在调用 I2 前所需的两张源盘和精确边界配对。
+- `BranchPreimage` 与 `BoundaryBranchCrosscut` 聚焦检查均 exit=0、零 warning；更新后的
+  `.lake/scratch/AuditE3M2.lean` 共 81 项，`audit-f.ps1` exit=0，全部只含
+  `propext`、`Classical.choice`、`Quot.sound`。本层没有首次复用新的 covering/Van Kampen 声明。
+- 下一精确义务仍必须在 `X := (double 3 K).space` 的 Lemma 2 专门环境中完成：先把 `D '' Q` 识别为 I2 所需的
+  `boundaryComplex 3 K` 内参数化盘并取得被推离的非奇异盘，再沿 `G` 在 `R` 上分片替换 `D`；随后证明分片映射 PL、所选闭分支整条消失、
+  其余 crossing 保持且 `vertexCollisionPairs` 严格减少。一般 `NormalSingularCellData` 没有这些 double/边界定位数据，故本层没有弱化或伪造该接线。
+- Case 1 仍缺 `J` 的 PL 环带邻域、书页 185 Figure 25.2 的显式柱形图模型及替换后复杂度证明；Lemma 2 端点尚未宣称完成。
