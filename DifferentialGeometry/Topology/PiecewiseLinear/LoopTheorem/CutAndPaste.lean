@@ -1,4 +1,6 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BoundaryBranchCrosscut
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CellGluing
+import DifferentialGeometry.External.Schoenflies.BoundaryContinuity2
 import Mathlib.Tactic.Group
 
 open Set
@@ -24,6 +26,49 @@ private theorem connected_subset_left_or_right_of_closed_union
     U V hU hV hcover ⟨y, hyS, hyU⟩ ⟨x, hxS, hxV⟩
   obtain ⟨z, hzS, hzU, hzV⟩ := hmeet
   exact Set.disjoint_left.mp hdisjoint hzS (hinter ▸ ⟨hzU, hzV⟩)
+
+private theorem isCutPair_frontier_side_of_isCrosscut
+    {M : Type u} [TopologicalSpace M]
+    [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
+    (D U : SingularTwoCell M) {A : Set (EuclideanSpace ℝ (Fin 2))}
+    {p q : EuclideanSpace ℝ (Fin 2)}
+    (hcut : Schoenflies.IsCrosscut (frontier D.domain) A p q)
+    (hfront : frontier U.domain = (U.domain ∩ frontier D.domain) ∪ A)
+    (hAfront : A ⊆ frontier U.domain) :
+    Schoenflies.IsCutPair (frontier U.domain) p q A
+      (U.domain ∩ frontier D.domain) := by
+  obtain ⟨R, hpair, -, -⟩ :=
+    exists_isCutPair_of_isArcBetween_subset_isPLSphere U.isPLSphere_frontier
+      hcut.arc hAfront
+  have hp : p ∈ U.domain ∩ frontier D.domain :=
+    ⟨U.frontier_subset_domain (hAfront hcut.arc.left_mem), hcut.left_mem⟩
+  have hq : q ∈ U.domain ∩ frontier D.domain :=
+    ⟨U.frontier_subset_domain (hAfront hcut.arc.right_mem), hcut.right_mem⟩
+  have hR : R = U.domain ∩ frontier D.domain := by
+    apply Subset.antisymm
+    · intro x hxR
+      have hxfront := hpair.snd_subset hxR
+      rw [hfront] at hxfront
+      rcases hxfront with hx | hxA
+      · exact hx
+      · have hxpair : x ∈ ({p, q} : Set (EuclideanSpace ℝ (Fin 2))) :=
+          hpair.inter_eq.subset ⟨hxA, hxR⟩
+        rcases hxpair with rfl | rfl
+        · exact hp
+        · exact hq
+    · intro x hx
+      have hxfront : x ∈ frontier U.domain :=
+        hfront.symm.subset (Or.inl hx)
+      have hxunion : x ∈ A ∪ R := hpair.union_eq.symm.subset hxfront
+      rcases hxunion with hxA | hxR
+      · have hxpair : x ∈ ({p, q} : Set (EuclideanSpace ℝ (Fin 2))) :=
+          hcut.inter_eq.subset ⟨hxA, hx.2⟩
+        rcases hxpair with rfl | rfl
+        · exact hpair.snd.left_mem
+        · exact hpair.snd.right_mem
+      · exact hxR
+  rw [hR] at hpair
+  exact hpair
 
 theorem exists_two_cells_of_isCrosscut
     {M : Type u} [TopologicalSpace M]
@@ -144,10 +189,18 @@ private theorem exists_three_cells_of_nested_splits
     [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
     (D O S Q R : SingularTwoCell M)
     {A C : Set (EuclideanSpace ℝ (Fin 2))}
+    {p q r s : EuclideanSpace ℝ (Fin 2)}
+    (hcutA : Schoenflies.IsCrosscut (frontier D.domain) A p q)
+    (hcutC : Schoenflies.IsCrosscut (frontier D.domain) C r s)
     (hunionOS : O.domain ∪ S.domain = D.domain)
     (hinterOS : O.domain ∩ S.domain = A)
     (hunionQR : Q.domain ∪ R.domain = S.domain)
     (hinterQR : Q.domain ∩ R.domain = C)
+    (hfrontO : frontier O.domain = (O.domain ∩ frontier D.domain) ∪ A)
+    (hfrontS : frontier S.domain = (S.domain ∩ frontier D.domain) ∪ A)
+    (hfrontR : frontier R.domain = (R.domain ∩ frontier S.domain) ∪ C)
+    (htraceO : IsPLBall 1 (O.domain ∩ frontier D.domain))
+    (htraceR : IsPLBall 1 (R.domain ∩ frontier S.domain))
     (hAO : A ⊆ O.domain) (hAQ : A ⊆ Q.domain)
     (hAfrontO : A ⊆ frontier O.domain) (hAfrontS : A ⊆ frontier S.domain)
     (hCfrontQ : C ⊆ frontier Q.domain) (hCfrontR : C ⊆ frontier R.domain)
@@ -161,7 +214,13 @@ private theorem exists_three_cells_of_nested_splits
       A ⊆ frontier D₁.domain ∧ A ⊆ frontier D₂.domain ∧
       C ⊆ frontier D₂.domain ∧ C ⊆ frontier D₃.domain ∧
       Disjoint D₁.domain D₃.domain ∧
-      D₁.toFun = D.toFun ∧ D₂.toFun = D.toFun ∧ D₃.toFun = D.toFun := by
+      D₁.toFun = D.toFun ∧ D₂.toFun = D.toFun ∧ D₃.toFun = D.toFun ∧
+      IsPLBall 1 (D₁.domain ∩ frontier D.domain) ∧
+      IsPLBall 1 (D₃.domain ∩ frontier D.domain) ∧
+      Schoenflies.IsCutPair (frontier D₁.domain) p q A
+        (D₁.domain ∩ frontier D.domain) ∧
+      Schoenflies.IsCutPair (frontier D₃.domain) r s C
+        (D₃.domain ∩ frontier D.domain) := by
   have hQS : Q.domain ⊆ S.domain := by
     intro x hx
     rw [← hunionQR]
@@ -170,26 +229,54 @@ private theorem exists_three_cells_of_nested_splits
     intro x hx
     rw [← hunionQR]
     exact Or.inr hx
+  have hSD : S.domain ⊆ D.domain := by
+    intro x hx
+    rw [← hunionOS]
+    exact Or.inr hx
   have hAfrontQ : A ⊆ frontier Q.domain := by
     intro x hxA
     apply (mem_frontier_iff_notMem_interior (hAQ hxA)).mpr
     intro hxQ
     exact (mem_frontier_iff_notMem_interior
       (S.frontier_subset_domain (hAfrontS hxA))).mp (hAfrontS hxA) (interior_mono hQS hxQ)
-  refine ⟨O, Q, R, ?_, ?_, hinterQR, hAfrontO, hAfrontQ,
-    hCfrontQ, hCfrontR, ?_, hfunO,
-    hfunQ.trans hfunS, hfunR.trans hfunS⟩
-  · rw [union_assoc, hunionQR, hunionOS]
-  · apply Subset.antisymm
+  have hcover : O.domain ∪ Q.domain ∪ R.domain = D.domain := by
+    rw [union_assoc, hunionQR, hunionOS]
+  have hinterOQ : O.domain ∩ Q.domain = A := by
+    apply Subset.antisymm
     · rintro x ⟨hxO, hxQ⟩
       exact hinterOS ▸ ⟨hxO, hQS hxQ⟩
     · intro x hxA
       exact ⟨hAO hxA, hAQ hxA⟩
-  · rw [Set.disjoint_left]
+  have houter : Disjoint O.domain R.domain := by
+    rw [Set.disjoint_left]
     intro x hxO hxR
     have hxA : x ∈ A := hinterOS ▸ ⟨hxO, hRS hxR⟩
     have hxC : x ∈ C := hinterQR ▸ ⟨hAQ hxA, hxR⟩
     exact Set.disjoint_left.mp hdisjoint hxA hxC
+  have htraceEq : R.domain ∩ frontier S.domain =
+      R.domain ∩ frontier D.domain := by
+    apply Subset.antisymm
+    · rintro x ⟨hxR, hxfrontS⟩
+      rw [hfrontS] at hxfrontS
+      rcases hxfrontS with hx | hxA
+      · exact ⟨hxR, hx.2⟩
+      · exact (Set.disjoint_left.mp houter (hAO hxA) hxR).elim
+    · rintro x ⟨hxR, hxfrontD⟩
+      have hxS : x ∈ S.domain := hRS hxR
+      refine ⟨hxR, (mem_frontier_iff_notMem_interior hxS).mpr ?_⟩
+      intro hxintS
+      exact (mem_frontier_iff_notMem_interior (hSD hxS)).mp hxfrontD
+        (interior_mono hSD hxintS)
+  have hfrontR' : frontier R.domain = (R.domain ∩ frontier D.domain) ∪ C := by
+    rw [hfrontR, htraceEq]
+  have htraceR' : IsPLBall 1 (R.domain ∩ frontier D.domain) := by
+    rw [← htraceEq]
+    exact htraceR
+  have hcutO := isCutPair_frontier_side_of_isCrosscut D O hcutA hfrontO hAfrontO
+  have hcutR := isCutPair_frontier_side_of_isCrosscut D R hcutC hfrontR' hCfrontR
+  exact ⟨O, Q, R, hcover, hinterOQ, hinterQR, hAfrontO, hAfrontQ,
+    hCfrontQ, hCfrontR, houter, hfunO, hfunQ.trans hfunS, hfunR.trans hfunS,
+    htraceO, htraceR', hcutO, hcutR⟩
 
 theorem exists_three_cells_of_two_disjoint_crosscuts
     {M : Type u} [TopologicalSpace M]
@@ -206,14 +293,22 @@ theorem exists_three_cells_of_two_disjoint_crosscuts
       A ⊆ frontier D₁.domain ∧ A ⊆ frontier D₂.domain ∧
       C ⊆ frontier D₂.domain ∧ C ⊆ frontier D₃.domain ∧
       Disjoint D₁.domain D₃.domain ∧
-      D₁.toFun = D.toFun ∧ D₂.toFun = D.toFun ∧ D₃.toFun = D.toFun := by
-  obtain ⟨S₁, S₂, hunion, hinter, -, -, hA₁, hA₂, -, -, -, -,
+      D₁.toFun = D.toFun ∧ D₂.toFun = D.toFun ∧ D₃.toFun = D.toFun ∧
+      IsPLBall 1 (D₁.domain ∩ frontier D.domain) ∧
+      IsPLBall 1 (D₃.domain ∩ frontier D.domain) ∧
+      Schoenflies.IsCutPair (frontier D₁.domain) p q A
+        (D₁.domain ∩ frontier D.domain) ∧
+      Schoenflies.IsCutPair (frontier D₃.domain) r s C
+        (D₃.domain ∩ frontier D.domain) := by
+  obtain ⟨S₁, S₂, hunion, hinter, hfront₁, hfront₂, hA₁, hA₂,
+    htrace₁, htrace₂, -, -,
     hfun₁, hfun₂, hCside⟩ :=
     D.exists_two_cells_with_second_crosscut hA hC hdisjoint hcutA hcutC
   have hA₁dom : A ⊆ S₁.domain := hA₁.trans S₁.frontier_subset_domain
   have hA₂dom : A ⊆ S₂.domain := hA₂.trans S₂.frontier_subset_domain
   rcases hCside with ⟨hCS₁, hcutCS₁⟩ | ⟨hCS₂, hcutCS₂⟩
-  · obtain ⟨Q, R, hunionQR, hinterQR, -, -, hCQ, hCR, -, -, -, -,
+  · obtain ⟨Q, R, hunionQR, hinterQR, hfrontQ, hfrontR, hCQ, hCR,
+      htraceQ, htraceR, -, -,
       hfunQ, hfunR, -⟩ := S₁.exists_two_cells_of_isCrosscut hC hcutCS₁
     have hAside : A ⊆ Q.domain ∨ A ⊆ R.domain := by
       apply connected_subset_left_or_right_of_closed_union hA.isConnected
@@ -224,14 +319,17 @@ theorem exists_three_cells_of_two_disjoint_crosscuts
       exact hinter
     rcases hAside with hAQ | hAR
     · exact exists_three_cells_of_nested_splits D S₂ S₁ Q R
-        (by rw [union_comm]; exact hunion) houter hunionQR hinterQR hA₂dom hAQ
+        hcutA hcutC (by rw [union_comm]; exact hunion) houter hunionQR hinterQR
+          hfront₂ hfront₁ hfrontR htrace₂ htraceR hA₂dom hAQ
           hA₂ hA₁ hCQ hCR hdisjoint hfun₂ hfun₁ hfunQ hfunR
     · exact exists_three_cells_of_nested_splits D S₂ S₁ R Q
-        (by rw [union_comm]; exact hunion) houter
+        hcutA hcutC (by rw [union_comm]; exact hunion) houter
           (by rw [union_comm]; exact hunionQR)
-          (by rw [inter_comm]; exact hinterQR) hA₂dom hAR
+          (by rw [inter_comm]; exact hinterQR) hfront₂ hfront₁ hfrontQ
+          htrace₂ htraceQ hA₂dom hAR
           hA₂ hA₁ hCR hCQ hdisjoint hfun₂ hfun₁ hfunR hfunQ
-  · obtain ⟨Q, R, hunionQR, hinterQR, -, -, hCQ, hCR, -, -, -, -,
+  · obtain ⟨Q, R, hunionQR, hinterQR, hfrontQ, hfrontR, hCQ, hCR,
+      htraceQ, htraceR, -, -,
       hfunQ, hfunR, -⟩ := S₂.exists_two_cells_of_isCrosscut hC hcutCS₂
     have hAside : A ⊆ Q.domain ∨ A ⊆ R.domain := by
       apply connected_subset_left_or_right_of_closed_union hA.isConnected
@@ -239,11 +337,13 @@ theorem exists_three_cells_of_two_disjoint_crosscuts
         (fun x hx => by rw [hunionQR]; exact hA₂dom hx) hinterQR hdisjoint
     rcases hAside with hAQ | hAR
     · exact exists_three_cells_of_nested_splits D S₁ S₂ Q R
-        hunion hinter hunionQR hinterQR hA₁dom hAQ
+        hcutA hcutC hunion hinter hunionQR hinterQR hfront₁ hfront₂ hfrontR
+          htrace₁ htraceR hA₁dom hAQ
           hA₁ hA₂ hCQ hCR hdisjoint hfun₁ hfun₂ hfunQ hfunR
     · exact exists_three_cells_of_nested_splits D S₁ S₂ R Q
-        hunion hinter (by rw [union_comm]; exact hunionQR)
-          (by rw [inter_comm]; exact hinterQR) hA₁dom hAR
+        hcutA hcutC hunion hinter (by rw [union_comm]; exact hunionQR)
+          (by rw [inter_comm]; exact hinterQR) hfront₁ hfront₂ hfrontQ
+          htrace₁ htraceQ hA₁dom hAR
           hA₁ hA₂ hCR hCQ hdisjoint hfun₁ hfun₂ hfunR hfunQ
 
 end SingularTwoCell
@@ -267,24 +367,178 @@ theorem exists_three_cells_of_boundaryBranch
     ∃ A C : Set (EuclideanSpace ℝ (Fin 2)),
       IsPLBall 1 A ∧ IsPLBall 1 C ∧ Disjoint A C ∧
       hD.branchPreimage c = A ∪ C ∧
-      ∃ D₁ D₂ D₃ : SingularTwoCell M,
+      ∃ p q r s : EuclideanSpace ℝ (Fin 2),
+      ∃ g : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 2),
+        IsPLHomeomorphOn g A C ∧ EqOn D (D ∘ g) A ∧
+        ∃ D₁ D₂ D₃ : SingularTwoCell M,
         D₁.domain ∪ D₂.domain ∪ D₃.domain = D.domain ∧
         D₁.domain ∩ D₂.domain = A ∧
         D₂.domain ∩ D₃.domain = C ∧
         A ⊆ frontier D₁.domain ∧ A ⊆ frontier D₂.domain ∧
         C ⊆ frontier D₂.domain ∧ C ⊆ frontier D₃.domain ∧
         Disjoint D₁.domain D₃.domain ∧
-        D₁.toFun = D.toFun ∧ D₂.toFun = D.toFun ∧ D₃.toFun = D.toFun := by
-  obtain ⟨A, C, hA, hC, hdisjoint, hcover, ⟨p, q, hcutA⟩,
-    r, s, hcutC⟩ :=
-    hD.exists_two_isCrosscuts_branchPreimage_of_boundaryBranch hc hboundaryCrossing
+        D₁.toFun = D.toFun ∧ D₂.toFun = D.toFun ∧ D₃.toFun = D.toFun ∧
+        IsPLBall 1 (D₁.domain ∩ frontier D.domain) ∧
+        IsPLBall 1 (D₃.domain ∩ frontier D.domain) ∧
+        Schoenflies.IsCutPair (frontier D₁.domain) p q A
+          (D₁.domain ∩ frontier D.domain) ∧
+        Schoenflies.IsCutPair (frontier D₃.domain) r s C
+          (D₃.domain ∩ frontier D.domain) := by
+  obtain ⟨A, C, hA, hC, hdisjoint, hcover, -, -, ⟨g, hg, hcompat⟩,
+    ⟨p, q, hcutA⟩, r, s, hcutC⟩ :=
+    hD.exists_two_isCrosscuts_branchPreimage_of_boundaryBranch_with_coordinate
+      hc hboundaryCrossing
   obtain ⟨D₁, D₂, D₃, hunion, hinter₁, hinter₂,
     hA₁, hA₂, hC₂, hC₃, hdisjoint₁₃,
-    hfun₁, hfun₂, hfun₃⟩ :=
+    hfun₁, hfun₂, hfun₃, htrace₁, htrace₃, hcut₁, hcut₃⟩ :=
     D.exists_three_cells_of_two_disjoint_crosscuts hA hC hdisjoint hcutA hcutC
-  exact ⟨A, C, hA, hC, hdisjoint, hcover, D₁, D₂, D₃, hunion,
+  exact ⟨A, C, hA, hC, hdisjoint, hcover, p, q, r, s, g, hg, hcompat,
+    D₁, D₂, D₃, hunion,
     hinter₁, hinter₂, hA₁, hA₂, hC₂, hC₃,
-    hdisjoint₁₃, hfun₁, hfun₂, hfun₃⟩
+    hdisjoint₁₃, hfun₁, hfun₂, hfun₃,
+    htrace₁, htrace₃, hcut₁, hcut₃⟩
+
+open Classical in
+theorem exists_boundary_surgery_cell_of_boundaryBranch
+    {M : Type u} [TopologicalSpace M]
+    [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] [T2Space M]
+    {D : SingularTwoCell M} {BdM B : Set M}
+    (hD : NormalSingularCellData D BdM B)
+    {c : hD.singularSet.Branch} (hc : hD.singularSet.IsBoundaryBranch c)
+    (hboundaryCrossing : ∀ y ∈ doublePointSet D D.domain ∩ BdM,
+      ∃ e ∈ atlas (EuclideanSpace ℝ (Fin 3)) M, y ∈ e.source ∧
+        ∃ N : Set (EuclideanSpace ℝ (Fin 3)),
+          HasPLBoundaryDoubleCrossingAt (e ∘ D)
+            (D.domain ∩ D ⁻¹' e.source) N (e y)) :
+    ∃ A C U V : Set (EuclideanSpace ℝ (Fin 2)),
+    ∃ p q r s : EuclideanSpace ℝ (Fin 2),
+    ∃ g : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 2),
+    ∃ G : SingularTwoCell M,
+      IsPLBall 1 A ∧ IsPLBall 1 C ∧ Disjoint A C ∧
+      hD.branchPreimage c = A ∪ C ∧
+      IsPLBall 1 U ∧ IsPLBall 1 V ∧ Disjoint U V ∧
+      IsPLHomeomorphOn g A C ∧
+      ((g p = r ∧ g q = s) ∨ (g p = s ∧ g q = r)) ∧
+      G '' G.domain ⊆ D '' D.domain ∧
+      Set.range G.boundary = D '' (U ∪ V) ∧
+      Set.range G.boundary ⊆ B ∧ G '' G.domain ∩ BdM ⊆ B := by
+  obtain ⟨A, C, hA, hC, hAC, hcover, p, q, r, s, g, hg, hcompat,
+    D₁, D₂, D₃, hdomains, -, -, hA₁, -, -, hC₃, hdisjoint₁₃,
+    hfun₁, -, hfun₃, htrace₁, htrace₃, hcut₁, hcut₃⟩ :=
+    hD.exists_three_cells_of_boundaryBranch hc hboundaryCrossing
+  have hcompat₁₃ : EqOn D₁ (D₃ ∘ g) A := by
+    intro x hx
+    change D₁.toFun x = D₃.toFun (g x)
+    rw [hfun₁, hfun₃]
+    exact hcompat hx
+  obtain ⟨G, P, Q, f₁, f₃, hP, hQ, -, hGdomain, -, -, -, hf₁, hf₃, -,
+    hf₁seam, hf₃seam, hG₁, hG₃, a, b, R, T, hcutP, hcutQ, -, -, hfrontG,
+    hf₁a, hf₁b, hf₃a, hf₃b⟩ :=
+    D₁.exists_glue_of_isPLHomeomorphOn_boundary_arc D₃ hA hcut₁.fst hA₁ hg hC₃
+      hcompat₁₃
+  have horientation :=
+    IsPLHomeomorphOn.maps_arc_endpoints hA hC hcut₁.fst hcut₃.fst hg
+  have hf₁front : IsPLHomeomorphOn f₁ (frontier P) (frontier D₁.domain) := by
+    rw [← hf₁.image_frontier (by simp) hP.isPolyhedron.isClosed
+      D₁.isPLBall_domain.isPolyhedron.isClosed]
+    exact hf₁.restrict hP.isPLSphere_frontier.isPolyhedron
+      hP.isPolyhedron.isClosed.frontier_subset
+  have hf₃front : IsPLHomeomorphOn f₃ (frontier Q) (frontier D₃.domain) := by
+    rw [← hf₃.image_frontier (by simp) hQ.isPolyhedron.isClosed
+      D₃.isPLBall_domain.isPolyhedron.isClosed]
+    exact hf₃.restrict hQ.isPLSphere_frontier.isPolyhedron
+      hQ.isPolyhedron.isClosed.frontier_subset
+  have hcutR := hcutP.image hf₁front.isPiecewiseAffineOn.continuousOn
+    hf₁front.bijOn.injOn
+  rw [hf₁front.image_eq, hf₁seam, hf₁a, hf₁b] at hcutR
+  have hRimage : f₁ '' R = D₁.domain ∩ frontier D.domain := by
+    rcases DifferentialGeometry.Topology.PlanarJordan.eq_or_eq_of_isArcBetween_subset_isCutPair
+      hcut₁ hcutR.snd hcutR.snd_subset with hbad | hgood
+    · exact (hcutR.ne hbad.symm).elim
+    · exact hgood
+  have hcutT := hcutQ.image hf₃front.isPiecewiseAffineOn.continuousOn
+    hf₃front.bijOn.injOn
+  rw [hf₃front.image_eq, hf₃seam] at hcutT
+  have hcut₃' : Schoenflies.IsCutPair (frontier D₃.domain) (f₃ a) (f₃ b) C
+      (D₃.domain ∩ frontier D.domain) := by
+    rcases horientation with horientation | horientation
+    · simpa only [hf₃a, hf₃b, horientation.1, horientation.2] using hcut₃
+    · have hrev : Schoenflies.IsCutPair (frontier D₃.domain) s r C
+          (D₃.domain ∩ frontier D.domain) :=
+        ⟨hcut₃.fst.reverse, hcut₃.snd.reverse, hcut₃.union_eq, by
+          rw [hcut₃.inter_eq, pair_comm]⟩
+      simpa only [hf₃a, hf₃b, horientation.1, horientation.2] using hrev
+  have hTimage : f₃ '' T = D₃.domain ∩ frontier D.domain := by
+    rcases DifferentialGeometry.Topology.PlanarJordan.eq_or_eq_of_isArcBetween_subset_isCutPair
+      hcut₃' hcutT.snd hcutT.snd_subset with hbad | hgood
+    · exact (hcutT.ne hbad.symm).elim
+    · exact hgood
+  have hRsubP : R ⊆ P :=
+    hcutP.snd_subset.trans hP.isPolyhedron.isClosed.frontier_subset
+  have hTsubQ : T ⊆ Q :=
+    hcutQ.snd_subset.trans hQ.isPolyhedron.isClosed.frontier_subset
+  have hGR : G '' R = D '' (D₁.domain ∩ frontier D.domain) := by
+    calc
+      G '' R = (D₁ ∘ f₁) '' R := Set.image_congr (hG₁.mono hRsubP)
+      _ = D₁ '' (f₁ '' R) := image_comp D₁ f₁ R
+      _ = D₁ '' (D₁.domain ∩ frontier D.domain) := congrArg (D₁ '' ·) hRimage
+      _ = D '' (D₁.domain ∩ frontier D.domain) := by rw [hfun₁]
+  have hGT : G '' T = D '' (D₃.domain ∩ frontier D.domain) := by
+    calc
+      G '' T = (D₃ ∘ f₃) '' T := Set.image_congr (hG₃.mono hTsubQ)
+      _ = D₃ '' (f₃ '' T) := image_comp D₃ f₃ T
+      _ = D₃ '' (D₃.domain ∩ frontier D.domain) := congrArg (D₃ '' ·) hTimage
+      _ = D '' (D₃.domain ∩ frontier D.domain) := by rw [hfun₃]
+  have hboundaryRange : Set.range G.boundary = G '' frontier G.domain := by
+    ext y
+    constructor
+    · rintro ⟨x, rfl⟩
+      exact ⟨x, x.property, rfl⟩
+    · rintro ⟨x, hx, rfl⟩
+      exact ⟨⟨x, hx⟩, rfl⟩
+  have hGimage : G '' G.domain ⊆ D '' D.domain := by
+    rintro y ⟨x, hx, rfl⟩
+    rw [hGdomain] at hx
+    rcases hx with hxP | hxQ
+    · refine ⟨f₁ x, ?_, ?_⟩
+      · have hxD₁ := hf₁.bijOn.mapsTo hxP
+        rw [← hdomains]
+        exact Or.inl (Or.inl hxD₁)
+      · rw [← hfun₁]
+        exact (hG₁ hxP).symm
+    · refine ⟨f₃ x, ?_, ?_⟩
+      · have hxD₃ := hf₃.bijOn.mapsTo hxQ
+        rw [← hdomains]
+        exact Or.inr hxD₃
+      · rw [← hfun₃]
+        exact (hG₃ hxQ).symm
+  have hrange : Set.range G.boundary =
+      D '' ((D₁.domain ∩ frontier D.domain) ∪
+        (D₃.domain ∩ frontier D.domain)) := by
+    calc
+      Set.range G.boundary = G '' frontier G.domain := hboundaryRange
+      _ = G '' (R ∪ T) := congrArg (G '' ·) hfrontG
+      _ = G '' R ∪ G '' T := image_union G R T
+      _ = D '' (D₁.domain ∩ frontier D.domain) ∪
+          D '' (D₃.domain ∩ frontier D.domain) := congrArg₂ (· ∪ ·) hGR hGT
+      _ = D '' ((D₁.domain ∩ frontier D.domain) ∪
+          (D₃.domain ∩ frontier D.domain)) := (image_union D _ _).symm
+  have hrangeB : Set.range G.boundary ⊆ B := by
+    rw [hrange]
+    rintro y ⟨x, hx, rfl⟩
+    apply hD.boundary_image_subset
+    exact ⟨⟨x, hx.elim And.right And.right⟩, rfl⟩
+  have hinterB : G '' G.domain ∩ BdM ⊆ B := by
+    intro y hy
+    have hyD : y ∈ D '' D.domain := hGimage hy.1
+    apply hD.boundary_image_subset
+    rw [← hD.image_inter_boundary]
+    exact ⟨hyD, hy.2⟩
+  exact ⟨A, C, D₁.domain ∩ frontier D.domain,
+    D₃.domain ∩ frontier D.domain, p, q, r, s, g, G,
+    hA, hC, hAC, hcover, htrace₁, htrace₃,
+    hdisjoint₁₃.mono inter_subset_left inter_subset_left, hg, horientation,
+    hGimage, hrange, hrangeB, hinterB⟩
 
 end NormalSingularCellData
 
