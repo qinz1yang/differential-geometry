@@ -1546,3 +1546,33 @@ recorded in the final bookkeeping entry.
 S-M5's 26.1 and 26.3 endpoints are now proved in the finite-complex and general PL
 charted settings described above. P.4's controlled supported graph extension remains;
 I2's exact target-type compatibility issue is unchanged.
+
+### S-M6 continuation: supported homeomorphism extension and finite gluing
+
+The relative-topology and 26.1 checkpoint is committed and pushed as `7746cff68`;
+the following integration merge was already up to date.
+
+`Topology/Homeomorph/ClosedExtension.lean` defines `Homeomorph.extendById`: a
+self-homeomorphism of a closed subset that fixes its frontier extends to the ambient
+space by the identity. It agrees with the given map on the closed set, preserves that
+set, and fixes the complement of its interior. No separation or metric hypothesis is
+needed for this construction. In a pseudometric space its displacement is bounded by
+the diameter of the closed set, and `dist_extendById_lt` gives pointwise positive-function
+control from a sufficiently small diameter.
+
+`Topology/Homeomorph/DisjointGluing.lean` proves
+`Homeomorph.exists_gluing_of_pairwise_disjoint`: finitely many ambient homeomorphisms
+supported in pairwise disjoint sets glue to a single homeomorphism agreeing with each
+map on its set and fixing the complement of their union. `exists_gluing_dist_lt`
+preserves the individual pointwise displacement bound without summing errors.
+
+Both focused checks have exit 0 and zero warnings (`check-homeomorph-closed-extension.log`,
+`check-homeomorph-disjoint-gluing.log`). `AuditS105SupportedHomeomorphs.lean` / `.log`
+contain nine entries, all with only `propext`, `Classical.choice`, and `Quot.sound`.
+No other-lane or vendored source changed. The source commit hash will be recorded in
+the final bookkeeping entry.
+
+These are supported-extension and control tools for P.4, not a proof of finite graph
+tameness. The actual compatible sector homeomorphisms inside vertex disks and relative
+straightening inside the edge frames still have to be constructed from the planar
+Jordan/Schoenflies inputs. P.4 remains partial, and I2's target-type issue is unchanged.
