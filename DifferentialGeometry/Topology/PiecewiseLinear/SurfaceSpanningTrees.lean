@@ -969,6 +969,33 @@ theorem dualCotreeGraph_connected
   exact dualReachableCutGraph_neighborSet_ncard_ne_one K hK T a w hw
 
 open Classical in
+theorem IsCombinatorialManifold.faceEulerChar_le_two
+    [FiniteDimensional ℝ E] (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
+    (hK : IsCombinatorialManifold 2 K) (hconn : IsConnected K.space) :
+    SimplicialComplex.faceEulerChar K.toPreAbstractSimplicialComplex ≤ 2 := by
+  let _ : Finite K.vertices := (SimplicialComplex.finite_vertices K).to_subtype
+  have hFFinite : Set.Finite {s : Finset E | s ∈ K.faces ∧ s.card = 3} :=
+    (Set.toFinite K.faces).subset fun _ h => h.1
+  let _ : Finite {s : Finset E // s ∈ K.faces ∧ s.card = 3} := hFFinite.to_subtype
+  obtain ⟨T, hT, hTree⟩ := exists_edgeGraph_spanningTree K hconn
+  have htreeCard : T.edgeSet.ncard + 1 = K.vertices.ncard := by
+    simpa using (SimpleGraph.isTree_iff_connected_and_card.mp hTree).2
+  have htreeEdgeLe : T.edgeSet.ncard ≤
+      (SimplicialComplex.facesOfCard K.toPreAbstractSimplicialComplex 2).card := by
+    rw [← ncard_edgeSet_edgeGraph_eq_facesOfCard_two K]
+    exact Set.ncard_le_ncard (SimpleGraph.edgeSet_mono hT)
+  have hdualCard :=
+    (dualCotreeGraph_connected K hK hconn hT hTree).card_vert_le_card_edgeSet_add_one
+  rw [Nat.card_coe_set_eq] at hdualCard
+  rw [natCard_topFaces_eq_facesOfCard_three K,
+    ncard_edgeSet_dualCotreeGraph K hK hT] at hdualCard
+  have hEuler := SimplicialComplex.faceEulerChar_eq_of_card_le_three
+    K.toPreAbstractSimplicialComplex (fun s hs => by simpa using hK.card_le K hs)
+  rw [ncard_vertices_eq_facesOfCard_one K] at htreeCard
+  rw [hEuler]
+  omega
+
+open Classical in
 theorem dualCotreeGraph_isTree
     [FiniteDimensional ℝ E] (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
     (hK : IsCombinatorialManifold 2 K) (hconn : IsConnected K.space)
