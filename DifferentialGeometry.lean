@@ -4702,6 +4702,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Foundations.Poin
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Foundations.PointedMaps
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Foundations.Subsequence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Foundations.WindowEquivalence
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Limits.ClosedInterval
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.AncientHalfLine
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Limits.CurvatureOperator
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Limits.Equation
@@ -7340,6 +7341,7 @@ import DifferentialGeometry.Geometry.Metric.Convergence.Metric.UniformEquivalenc
 import DifferentialGeometry.Geometry.Metric.Convergence.Naturality.CrossTensorCovariantDerivative
 import DifferentialGeometry.Geometry.Metric.Convergence.Naturality.CrossTensorPullback
 import DifferentialGeometry.Geometry.Metric.Convergence.Naturality.PullbackCross
+import DifferentialGeometry.Geometry.Metric.Convergence.Time.ChartJets
 import DifferentialGeometry.Geometry.Metric.Convergence.Time.Lipschitz
 import DifferentialGeometry.Geometry.Metric.Convergence.Window.AllOrders
 import DifferentialGeometry.Geometry.Metric.Convergence.Window.AllPoints
