@@ -1975,3 +1975,9 @@ F-M1 仍为 partial。单个旧三角形的全部纤维及逐边对应已闭合�
 `HeightFiberGluing.lean` 的纯代数引理证明至多两顶点凸包的一般高度纤维至多一点，并由复形面交性质与顶点高度单射，证明不同二维面在目标层的交至多一点。`exists_isPLHomeomorphOn_height_fiber_of_face_maps` 因而把二维有限复形逐面的 PL 纤维映射实际拼成整个 `K.space` 层截面的 PL 同胚。输入的源片多面体性不再单独假设，而是从到旧面线性纤维的局部 PL 同胚反推出。公共交上的相容和全局单射均在证明中推出。
 
 聚焦检查：`FiniteGluing` exit=0（9.2 秒），`HeightFiberGluing` exit=0（11.6 秒），均零 warning；`AuditF215.lean` 五项全部仅依赖 `propext`、`Classical.choice`、`Quot.sound`。F-M1 仍为 partial。下一步用实际仿射三角形坐标把 §19.65 的逐边对应搬为这里所需的逐原面成员关系，并统一有限个小高度邻域；保留盘侧芽到指定圆周删除仍在其后。尚未交付 §19.56 的相对单射、S.4 M2/M3 或 I1。下一审计文件 `AuditF216.lean`。
+
+### 19.67 F-M1：三角形坐标与任意子面的精确搬运
+
+`TriangleCoordinates.lean` 定义按最低、中间、最高角点排列的仿射三角形坐标及三个重心系数，证明坐标像恰为三个顶点的凸包，并由仿射无关性证明坐标映射单射。`triangleAffineMap_mem_convexHull_image_iff` 把属于任意顶点子集凸包精确刻画为其余重心系数为零；`triangleAffineMap_mem_convexHull_image_iff_of_preserving_edges` 因而从三条边的成员关系保持推出每个子面的成员关系保持。全部证明只用实模的代数结构，没有加入范数或有限维假设。
+
+聚焦检查 exit=0（10.6 秒）、零 warning；`AuditF216.lean` 十个定义和公开定理全部仅依赖 `propext`、`Classical.choice`、`Quot.sound`。F-M1 仍为 partial。下一步按原高度排列各旧三角形顶点，把 §19.65 的局部对应搬到实际面并统一有限个小高度邻域，再证明保留盘的相对层圆周删除。§19.56、S.4 M2/M3 与 I1 尚未交付。下一审计文件 `AuditF217.lean`。
