@@ -2644,3 +2644,20 @@ and finite-graph support stages of P.4 are now closed. Full arbitrary
 positive-function displacement control for the whole graph still requires the
 small-edge subdivision and quantitative assembly; the support-only graph
 endpoint does not claim that bound.
+
+## Uniform displacement for short graph edges (2026-09-16)
+
+`GraphStraightening.lean` proves
+`Graph.IsDrawing.exists_homeomorph_polygonal_edges_of_diam_lt`: if every edge
+has diameter less than epsilon / 8, the ambient straightening fixes all original
+vertices and the complement of the prescribed open neighborhood, makes every
+whole edge polygonal, and moves every plane point by less than epsilon.
+The vertex deformation uses epsilon / 8; each middle-edge disk lies in a ball
+of radius epsilon / 4, so its displacement is at most epsilon / 2. The former
+support-only endpoint is now a corollary, with its signature preserved.
+
+The focused check exits 0 with zero warnings. AuditS144SmallGraph checks both
+endpoints, exit 0, only the standard three axioms. Integration was fetched and
+merged at this checkpoint (already up to date at 4401dd9d1). The next obligation
+is finite subdivision into short edges, followed by positive-function control;
+this diameter hypothesis has not been claimed as full P.4.

@@ -9,20 +9,21 @@ open Schoenflies DifferentialGeometry.Topology.PlanarJordan
 open scoped Graph
 
 open Classical in
-theorem IsDrawing.exists_homeomorph_polygonal_edges
+theorem IsDrawing.exists_homeomorph_polygonal_edges_of_diam_lt
     {β : Type*} {G : Graph Plane β} {drawing : β → ℝ → Plane} [G.Finite]
-    (h : IsDrawing G drawing)
+    (h : IsDrawing G drawing) {ε : ℝ} (hε : 0 < ε)
+    (hdiam : ∀ d ∈ E(G), Metric.diam (edgeArc drawing d) < ε / 8)
     {U : Set Plane} (hU : IsOpen U) (hGU : pointSet G drawing ⊆ U) :
     ∃ e : Plane ≃ₜ Plane, (∀ d ∈ E(G), IsPolygonal (e '' edgeArc drawing d)) ∧
-      EqOn e id V(G) ∧ EqOn e id Uᶜ := by
+      EqOn e id V(G) ∧ EqOn e id Uᶜ ∧ ∀ x, dist (e x) x < ε := by
   let s := (finite_vertexSet (G := G)).toFinset.filter fun v => (G.incidenceSet v).Nonempty
   have hs : ∀ v ∈ s, (G.incidenceSet v).Nonempty :=
     fun _ hv => (Finset.mem_filter.mp hv).2
   have hsU : (s : Set Plane) ⊆ U := fun _ hv =>
     hGU (Or.inl ((finite_vertexSet (G := G)).mem_toFinset.mp (Finset.mem_filter.mp hv).1))
-  obtain ⟨r, p, e₀, hr, _, hp, _, _, _, heV, heU, _⟩ :=
+  obtain ⟨r, p, e₀, hr, _, hp, _, _, _, heV, heU, he₀dist⟩ :=
     h.exists_homeomorph_radial_vertex_neighborhoods s hs hU hsU
-      (continuous_const : Continuous fun _ : Plane => (1 : ℝ)) (fun _ => zero_lt_one)
+      (continuous_const : Continuous fun _ : Plane => ε / 8) (fun _ => by positivity)
   let I := {d // d ∈ E(G)}
   let _ : _root_.Finite I := (finite_edgeSet (G := G)).to_subtype
   have hlink (d : I) := (h.edge_param d.2).2.2
@@ -89,9 +90,20 @@ theorem IsDrawing.exists_homeomorph_polygonal_edges
       linarith [ht.1, ha d]
     · have heq := (h.edge_param d.2).2.1 htI one_mem_I h1
       linarith [ht.2, hb d]
-  have hN (d : I) : U \ V(G) ∈ 𝓝ˢ (f d '' Icc (a d) (b d)) :=
-    (hU.sdiff (finite_vertexSet (G := G)).isClosed).mem_nhdsSet.mpr (hcore d)
-  obtain ⟨D, e₁, hD, _, _, hpoly, hfix, _⟩ :=
+  have hball (d : I) : f d '' Icc (a d) (b d) ⊆ Metric.ball (drawing d 0) (ε / 4) := by
+    rintro x ⟨t, ht, rfl⟩
+    have htI : t ∈ unitInterval := ⟨(ha d).le.trans ht.1, ht.2.trans (hb d).le⟩
+    have hdist := Metric.dist_le_diam_of_mem (h.isCompact_edgeArc d.2).isBounded
+      (mem_image_of_mem (drawing d) htI) (mem_image_of_mem (drawing d) zero_mem_I)
+    have hvertex := he₀dist (drawing d t)
+    have hedge := hdiam d d.2
+    change dist (e₀ (drawing d t)) (drawing d 0) < ε / 4
+    linarith [dist_triangle (e₀ (drawing d t)) (drawing d t) (drawing d 0)]
+  have hN (d : I) : (U \ V(G)) ∩ Metric.ball (drawing d 0) (ε / 4) ∈
+      𝓝ˢ (f d '' Icc (a d) (b d)) :=
+    ((hU.sdiff (finite_vertexSet (G := G)).isClosed).inter Metric.isOpen_ball).mem_nhdsSet.mpr
+      (subset_inter (hcore d) (hball d))
+  obtain ⟨D, e₁, hD, _, _, hpoly, hfix, hdist⟩ :=
     exists_homeomorph_polygonal_arc_family_of_polygonal_ends hf hi ha hab hb
       hlpoly hrpoly hmeet hN
   have he₁V : EqOn e₁ id V(G) := by
@@ -99,14 +111,14 @@ theorem IsDrawing.exists_homeomorph_polygonal_edges
     apply hfix
     intro hmem
     obtain ⟨d, hd⟩ := mem_iUnion.mp hmem
-    exact ((hD d).2.2.1 (interior_subset hd)).2 hx
+    exact ((hD d).2.2.1 (interior_subset hd)).1.2 hx
   have he₁U : EqOn e₁ id Uᶜ := by
     intro x hx
     apply hfix
     intro hmem
     obtain ⟨d, hd⟩ := mem_iUnion.mp hmem
-    exact hx ((hD d).2.2.1 (interior_subset hd)).1
-  refine ⟨e₀.trans e₁, ?_, ?_, ?_⟩
+    exact hx ((hD d).2.2.1 (interior_subset hd)).1.1
+  refine ⟨e₀.trans e₁, ?_, ?_, ?_, ?_⟩
   · intro d hd
     have hpolyd := hpoly ⟨d, hd⟩
     rw [himage] at hpolyd
@@ -120,5 +132,33 @@ theorem IsDrawing.exists_homeomorph_polygonal_edges
     change e₁ (e₀ x) = x
     rw [heU hx, id_eq, he₁U hx]
     rfl
+  · intro x
+    have hsmall : dist (e₁ (e₀ x)) (e₀ x) ≤ ε / 2 := by
+      by_cases hx : e₀ x ∈ ⋃ d, interior (D d)
+      · obtain ⟨d, hd⟩ := mem_iUnion.mp hx
+        have hDbound : Metric.diam (D d) ≤ 2 * (ε / 4) :=
+          Metric.diam_le_of_subset_closedBall (by positivity) fun y hy =>
+            Metric.ball_subset_closedBall ((hD d).2.2.1 hy).2
+        exact (hdist d (e₀ x) (interior_subset hd)).trans (by linarith)
+      · rw [hfix hx, id_eq, dist_self]
+        positivity
+    change dist (e₁ (e₀ x)) x < ε
+    have hvertex := he₀dist x
+    linarith [dist_triangle (e₁ (e₀ x)) (e₀ x) x]
+
+theorem IsDrawing.exists_homeomorph_polygonal_edges
+    {β : Type*} {G : Graph Plane β} {drawing : β → ℝ → Plane} [G.Finite]
+    (h : IsDrawing G drawing)
+    {U : Set Plane} (hU : IsOpen U) (hGU : pointSet G drawing ⊆ U) :
+    ∃ e : Plane ≃ₜ Plane, (∀ d ∈ E(G), IsPolygonal (e '' edgeArc drawing d)) ∧
+      EqOn e id V(G) ∧ EqOn e id Uᶜ := by
+  let ε := 8 * (Metric.diam (pointSet G drawing) + 1)
+  have hε : 0 < ε := by dsimp only [ε]; positivity
+  have hdiam (d : β) (hd : d ∈ E(G)) : Metric.diam (edgeArc drawing d) < ε / 8 := by
+    have hle := Metric.diam_mono (edgeArc_subset_pointSet hd) h.isCompact_pointSet.isBounded
+    dsimp only [ε]
+    linarith
+  obtain ⟨e, hpoly, heV, heU, _⟩ := h.exists_homeomorph_polygonal_edges_of_diam_lt hε hdiam hU hGU
+  exact ⟨e, hpoly, heV, heU⟩
 
 end Graph
