@@ -2695,3 +2695,31 @@ integration at bbd488861; no imported lane module was recompiled. The remaining
 P.4 delivery step is the native IsPolyhedron / PL one-cell image bridge and the
 final plan-row update. The ambient homeomorphism itself is not asserted PL on
 an arbitrary topologically embedded original graph.
+
+## P.4 finite-graph tameness: native endpoint delivered (2026-09-16)
+
+`PiecewiseLinear/PlanarGraphTameness.lean` delivers
+`Graph.IsDrawing.exists_homeomorph_isPolyhedron_image_dist_lt` for every finite
+planar graph drawing. Its output is an ambient homeomorphism whose whole graph
+image satisfies the native `IsPolyhedron`, whose individual edge images satisfy
+`IsPLBall 1`, which fixes all original vertices and all points outside the
+prescribed open set, and whose displacement on that open set is less than the
+given strongly positive function. The control hypothesis requires only a
+positive lower bound on each compact subset, exactly as in Moise page 46; the
+continuous positive case is also provided. No Schoenflies parameter or other
+unproved mathematical input remains.
+
+This closes the finite-graph scope of plan P.4 (10.8). The book also treats
+nonfinite locally finite graphs; that extension is outside this plan row and
+is not claimed here. The small-disk argument uses the produced PL disk
+neighborhoods, finite frontier perturbation, and simultaneous crosscut
+straightening. It does not need to retain the book's exact-two-frontier-contact
+frame as an input. Degree-one endpoints use the independently constructed
+auxiliary simple arcs and the shrinking deleted-endpoint straightening.
+
+The native bridge checks with exit 0 and zero warnings. AuditS146PlanarGraphTameness
+checks all three bridge declarations, exit 0, only the standard three axioms.
+Together with AuditS144 and AuditS145, the final quantitative assembly has
+sixteen audited declarations. All new source is native; no vendored Lean source
+or vendor modification log changed. Integration bbd488861 is merged. The final
+bookkeeping commit updates the P.4 row and records the freshness self-check.
