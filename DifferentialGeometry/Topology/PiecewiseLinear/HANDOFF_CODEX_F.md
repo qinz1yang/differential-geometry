@@ -1627,3 +1627,9 @@ F-M2–F-M6 尚未开始；按用户指定顺序推进，只有出现 §1 接口
 `VertexIsolation.lean` 已提交并推送为 `357f41c2c`。`singleton_mem_nhdsWithin_fiber_of_geometricLink_section_eq_empty` 从顶点闭星的实际锥表示证明：若几何链环与该顶点高度层不交，则曲面高度层在顶点处局部恰为单点。三个推论分别排除这种顶点成为高度奇点，并直接覆盖整个链环严格高于或严格低于顶点的两种符号情形。
 
 模块聚焦检查 exit=0（11.1 秒）、零 warning；`AuditF161.lean` 四项均仅依赖 `propext`、`Classical.choice`、`Quot.sound`。结合 `VertexCrossing.lean`，帽边分类现在只剩证明链环零截面为空，或恰为两个不同点且有正负两侧；下一层将从凸三角帽与保留盘的相反单侧性推出这一有限符号分类。F-M1 仍为 partial，Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF162.lean`。
+
+### 19.14 F-M1：PL 圆周至多二点截面的奇偶分类
+
+`CircleHeightSection.lean` 已提交并推送为 `dcd32cdd3`。`exists_lt_and_gt_of_mem_height_section_of_avoids_vertices` 证明连续线性高度若避开有限复形的全部顶点，则经过载体的任一点高度层在该点所在开单形两侧都有严格高低点。`isPLSphere_one_height_section_ne_singleton` 再用 PL 圆周删去一点仍连通和中值定理排除单点截面。`height_section_eq_empty_or_pair_of_encard_le_two` 因而把“截面至多两点”提升为精确的空集或两个不同点二分。
+
+模块聚焦检查 exit=0（11.2 秒）、零 warning；`AuditF162.lean` 三项均仅依赖 `propext`、`Classical.choice`、`Quot.sound`。帽边顶点一旦取得链环截面 `encard ≤ 2`，空分支由上一层给孤立，两点分支自动含正负两侧并可送入 `VertexCrossing`。下一步证明凸三角帽替换后的链环截面至多两点。F-M1 仍为 partial，Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF163.lean`。
