@@ -116,3 +116,53 @@ theorem duhamel_vector_comp_eq (hT : 0 < T)
 end DifferentialGeometry.Analysis.Parabolic.QuasiLinear
 
 end
+
+noncomputable section
+open MeasureTheory Filter Set
+open scoped Manifold ContDiff ENNReal
+namespace DifferentialGeometry.Analysis.Parabolic.QuasiLinear
+open TensorHeatEquation TensorSpectral TimeSobolev MaximalRegularity
+
+variable {ι : Type*} [Fintype ι]
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+variable {g : SmoothRiemannianMetric I M} {r s : ℕ} {a b T : ℝ}
+
+theorem duhamel_vector_comp_zero_eq (hT : 0 < T)
+    (hc : IsCompactOperator (tensorResolventL2 (I := I) (M := M) g r s))
+    (D : PiLp 2 (fun _ : ι => TensorHs g r s b) →L[ℝ]
+      PiLp 2 (fun _ : ι => TensorHs g r s a))
+    (Dh : PiLp 2 (fun _ : ι => TensorHs g r s (b + 2)) →L[ℝ]
+      PiLp 2 (fun _ : ι => TensorHs g r s (a + 2)))
+    (hD : (ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion
+        (g := g) (r := r) (s := s) (show a ≤ a + 2 by linarith))).comp Dh =
+      D.comp (ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion
+        (g := g) (r := r) (s := s) (show b ≤ b + 2 by linarith))))
+    (F : timeL2 (PiLp 2 (fun _ : ι => TensorHs g r s b)) T) :
+    let U := maximalRegularityDuhamelVectorField hT 0 F
+    let Lb := ContinuousLinearMap.piLpMap 2 (fun _ : ι =>
+      tensorScaleLaplacian (g := g) (r := r) (s := s) b)
+    let La := ContinuousLinearMap.piLpMap 2 (fun _ : ι =>
+      tensorScaleLaplacian (g := g) (r := r) (s := s) a)
+    let G := D.compLpL 2 (timeMeasure T) F +
+      (D.comp Lb - La.comp Dh).compLpL 2 (timeMeasure T) U
+    Dh.compLpL 2 (timeMeasure T) U =
+        maximalRegularityDuhamelVectorField hT 0 G ∧
+      (maximalRegularityDuhamelVectorMap hT 0 G).initial = 0 ∧
+      ∀ t ∈ Icc (0 : ℝ) T,
+        (maximalRegularityDuhamelVectorMap hT 0 G).toFun t =
+          D ((maximalRegularityDuhamelVectorMap hT 0 F).toFun t) := by
+  intro U Lb La G
+  have h := duhamel_vector_comp_eq hT hc D Dh hD 0 F
+  dsimp only at h
+  rw [map_zero] at h
+  refine ⟨h.1, ?_, h.2⟩
+  have htrace := maximalRegularityDuhamelVectorMap_trace0 hT
+    (0 : PiLp 2 (fun _ : ι => TensorHs g r s (a + 2))) G
+  simpa only [timeH1.trace0_apply, map_zero] using htrace
+
+end DifferentialGeometry.Analysis.Parabolic.QuasiLinear
+
+end
