@@ -1768,3 +1768,32 @@ The source hash will be recorded at the next checkpoint. P.4 remains partial:
 the rest of a finite vertex fan still needs simultaneous straightening by recursive
 crosscut-side gluing; degree-one endpoints and the edge frames remain outstanding.
 No general graph-tameness endpoint is claimed. I2's target-type issue is unchanged.
+
+### S-M6 continuation: simultaneous extension of a finite boundary fan
+
+The two-arc straightening layer is committed and pushed as `47062f7d4`; the following
+integration merge was already up to date.
+
+`PlanarJordan/BoundaryArc.lean` proves
+`exists_isCutPair_inter_closed_eq_singleton`. From a point of a Jordan curve outside
+a closed set meeting the curve, it constructs a cut pair whose first boundary arc
+meets the closed set only at its far endpoint. The proof takes the first parameter
+meeting the closed set and constructs the complementary arc from the remaining tail.
+The result applies to arbitrary closed sets, not only finite endpoint sets.
+
+`PlanarJordan/BoundaryFan.lean` proves `exists_homeomorph_image_boundary_fan` for any
+finite family of embedded crosscuts sharing a common point on a Jordan boundary,
+with distinct arcs meeting only at that point. Two such families with the same
+boundary endpoints admit a simultaneous ambient matching fixing the disk exterior
+and boundary. The proof selects the first remaining boundary endpoint, matches that
+crosscut, and invokes induction in the remaining Jordan disk. The side-selection
+lemma places every remaining arc in that disk; the induction fixes the matched arc.
+No cyclic-order, sector-decomposition, or unproved extension hypothesis is added.
+
+Both focused checks have exit 0 and zero warnings (`check-planar-boundary-arc.log`,
+`check-planar-boundary-fan.log`). `AuditS111BoundaryFan.lean` / `.log` contain two
+entries, both with only `propext`, `Classical.choice`, and `Quot.sound`.
+No vendored or other-lane source changed. The source hash will be recorded at the
+next checkpoint. The next step applies the boundary-fan theorem to the two sides
+of the first matched pair at an interior vertex. P.4 is still partial; degree-one
+endpoints and edge frames remain beyond that step. I2's target-type issue is unchanged.
