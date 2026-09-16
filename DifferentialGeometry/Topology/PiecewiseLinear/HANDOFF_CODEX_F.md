@@ -1759,3 +1759,9 @@ F-M2–F-M6 尚未开始；按用户指定顺序推进，只有出现 §1 接口
 `TriangleSeamNonsingular.lean` 已提交并推送为 `638d6e59f`。主端点 `eventually_notMem_heightSingularPoints_of_triangle_facet` 把 `TriangleSeamRegularity` 的稳定链环截面上界送入 `VertexSectionSubdivision`：对三角形任一边相对内部的共同边界顶点，所有充分小且在完整球面复形顶点与三角形三个顶点并集上单射的新高度都使该点不属于新球面的 `heightSingularPoints`。非零性由三角形三个互异顶点上的单射在证明中推出，没有新增假设。
 
 模块聚焦检查 exit=0（11.1 秒）、零 warning；`AuditF183.lean` 主端点仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步处理三角帽三个真实角点：用 `ConvexCapLink` 的帽侧链环控制与保留盘边界顶点的链环区间结构证明完整链环截面至多二点，再复用本层的顶点正规性端点。F-M1 仍为 partial，严格降指标、Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF184.lean`。
+
+### 19.36 F-M1：一维保留链环的双端边截面计数
+
+`BoundaryArcCardinality.lean` 已提交并推送为 `f4fdad40b`。`linearMap_level_section_convexHull_pair_subsingleton_of_apply_ne` 证明线性高度层与一条非退化线段至多交一点，只需其中一个端点避开该高度；端点同高时截面为空，端点异高时由线段上的高度单射得到唯一性。主端点 `height_section_encard_le_two_of_boundary_vertices` 对有限一维组合带边流形及两个组合边界顶点，若两端点都避开指定高度、其余顶点都严格位于低侧，则整个载体的等高截面至多两点。证明由每个边界顶点的唯一邻边刻画把任一等高点限制在两条端边之一，没有预设端点高低次序，也没有把截面上界写入输入。
+
+模块聚焦检查 exit=0（12.0 秒）、零 warning；`AuditF184.lean` 两个端点均仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步从三角形严格分离点判断三个真实角点处两个边界链环方向的高度侧别：严格最低角点处保留链环用双端边计数，其余两个角点处至少一个端点严格较低并退化为单点截面；再与 `ConvexCapLink` 合并并调用顶点正规性端点。F-M1 仍为 partial，严格降指标、Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF185.lean`。
