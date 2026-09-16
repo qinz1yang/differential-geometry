@@ -2069,3 +2069,13 @@ F-M1 仍为 partial。单个旧三角形的全部纤维及逐边对应已闭合�
 `HeightCaps.lean` 的 `exists_isPLSphere_pair_of_heightIndex_eq_zero` 使用 §19.76 的两侧曲面盘，实际生产共同平面盘 D，并证明下、上半球各与 D 的并都是 PL 二维球面、两封帽球面的交恰为 D、删去公共盘参数内部后恰好恢复原球面。没有把封帽球性或拼接等式作为输入。此处只交付 PL 球性；封帽边界的单嵌入性仍需后续锥形首尾薄片及中间薄片论证。
 
 聚焦检查：`PlanarSpanningDisk` exit=0（10.1 秒）、`HeightCaps` exit=0（10.8 秒），均零 warning。`AuditF226.lean` 两项仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步证明最低/最高顶点附近的截半球确实是水平圆周的几何锥，以 17.10 处理首尾薄片；S.4 M2/M3、夜间 F-M1 整体及 I1 尚未完成。下一审计文件 `AuditF227.lean`。
+
+### 19.78 S.4 M2：首尾封帽的锥表示与单嵌入生产者
+
+`HeightCone.lean` 对任意实范数空间、任意单纯复形和仿射实值高度证明：若 p 低于 r、其余全部顶点严格高于 r，则每个高度不超过 r 的点所在的面都含 p；沿该面的射线实际构造高度 r 的点，得到闭下截面恰等于 p 与水平纤维的几何锥。这里不需要有限复形、三维环境、零指标或球面性。
+
+`HeightCapCone.lean` 取水平张成盘的实际有限剖分，以其边界复形和上述锥等式证明封帽球面恰为该盘锥的 frontier。`isSimplyEmbedded_lower_cap_of_lt_other_vertices` / `isSimplyEmbedded_upper_cap_of_other_vertices_lt` 因而直接使用固定的 17.10 字段证明首尾封帽单嵌入，没有新增接口字段。
+
+`ExtremeHeightCaps.lean` 的 `exists_height_between_lowest_vertices` 在任意正维有限 PL 球面上实际选出最低两顶点之间的高度；`exists_isSimplyEmbedded_lower_cap_of_heightIndex_eq_zero` / `exists_isSimplyEmbedded_upper_cap_of_heightIndex_eq_zero` 从零指标球面和给定凸开邻域实际生产首尾高度、平面张成盘及单嵌入封帽。两高度都严格位于球面的极端高度之间，且参数边界等于整层圆周。这闭合 Lemma 4/5 的首尾锥形封帽几何论证；未把中间薄片当作已证明。
+
+聚焦检查：`HeightCone` exit=0（8.9 秒）、`HeightCapCone` exit=0（10.6 秒）、`ExtremeHeightCaps` exit=0（10.8 秒），均零 warning。`AuditF227.lean` 九项仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步为中间两层的封口薄片球性、实际三维薄片胞腔分解及 Lemma 6 的自由胞腔删除；S.4 M2/M3、夜间 F-M1 整体及 I1 尚未完成。下一审计文件 `AuditF228.lean`。
