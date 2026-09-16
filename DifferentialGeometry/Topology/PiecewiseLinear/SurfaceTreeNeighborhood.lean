@@ -311,4 +311,301 @@ theorem isPLBall_embeddedGraphDerivedNeighborhood_of_isTree
 termination_by Nat.card V
 decreasing_by exact hcardlt
 
+open Classical in
+noncomputable def embeddedDualTreeDerivedNeighborhood
+    (K : Geometry.SimplicialComplex ℝ E) {V : Type*}
+    (G : SimpleGraph V) (f : V → {s : Finset E // s ∈ K.faces ∧ s.card = 3}) : Set E :=
+  (⋃ u, (derivedNeighborhoodCell K (f u).1).space) ∪
+    ⋃ u, ⋃ v, ⋃ (_ : G.Adj u v),
+      (derivedNeighborhoodCell K ((f u).1 ∩ (f v).1)).space
+
+open Classical in
+theorem mem_embeddedDualTreeDerivedNeighborhood_iff
+    (K : Geometry.SimplicialComplex ℝ E) {V : Type*}
+    (G : SimpleGraph V) (f : V → {s : Finset E // s ∈ K.faces ∧ s.card = 3}) {x : E} :
+    x ∈ embeddedDualTreeDerivedNeighborhood K G f ↔
+      (∃ u, x ∈ (derivedNeighborhoodCell K (f u).1).space) ∨
+      ∃ u v, G.Adj u v ∧
+        x ∈ (derivedNeighborhoodCell K ((f u).1 ∩ (f v).1)).space := by
+  simp only [embeddedDualTreeDerivedNeighborhood, mem_union, mem_iUnion, exists_prop]
+
+theorem embeddedDualTreeDerivedNeighborhood_subset
+    (K : Geometry.SimplicialComplex ℝ E) {V : Type*}
+    (G : SimpleGraph V) (f : V → {s : Finset E // s ∈ K.faces ∧ s.card = 3}) :
+    embeddedDualTreeDerivedNeighborhood K G f ⊆ K.space := by
+  classical
+  intro x hx
+  rcases (mem_embeddedDualTreeDerivedNeighborhood_iff K G f).mp hx with
+      ⟨u, hxu⟩ | ⟨u, v, -, hxuv⟩
+  · exact derivedNeighborhoodCell_space_subset K (f u).1 hxu
+  · exact derivedNeighborhoodCell_space_subset K ((f u).1 ∩ (f v).1) hxuv
+
+open Classical in
+theorem embeddedDualEdgeFace_mem
+    [FiniteDimensional ℝ E] (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
+    {V : Type*} {G : SimpleGraph V}
+    {f : V → {s : Finset E // s ∈ K.faces ∧ s.card = 3}}
+    (hmap : ∀ ⦃u v⦄, G.Adj u v → (dualGraph 2 K).Adj (f u) (f v))
+    {u v : V} (huv : G.Adj u v) : (f u).1 ∩ (f v).1 ∈ K.faces :=
+  (SimplicialComplex.mem_facesOfCard K.toPreAbstractSimplicialComplex).mp
+    (dualGraph_sharedFace_mem_facesOfCard_two K (hmap huv)) |>.1
+
+open Classical in
+theorem embeddedDualEdgeFace_card
+    [FiniteDimensional ℝ E] (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
+    {V : Type*} {G : SimpleGraph V}
+    {f : V → {s : Finset E // s ∈ K.faces ∧ s.card = 3}}
+    (hmap : ∀ ⦃u v⦄, G.Adj u v → (dualGraph 2 K).Adj (f u) (f v))
+    {u v : V} (huv : G.Adj u v) : ((f u).1 ∩ (f v).1).card = 2 :=
+  (SimplicialComplex.mem_facesOfCard K.toPreAbstractSimplicialComplex).mp
+    (dualGraph_sharedFace_mem_facesOfCard_two K (hmap huv)) |>.2
+
+open Classical in
+theorem isPLBall_embeddedDualTreeDerivedNeighborhood_of_isTree
+    [FiniteDimensional ℝ E] {V : Type*} [Finite V]
+    (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
+    (hK : IsCombinatorialManifold 2 K) (G : SimpleGraph V)
+    (f : V → {s : Finset E // s ∈ K.faces ∧ s.card = 3})
+    (hf : Function.Injective f)
+    (hmap : ∀ ⦃u v⦄, G.Adj u v → (dualGraph 2 K).Adj (f u) (f v))
+    (hTree : G.IsTree) : IsPLBall 2 (embeddedDualTreeDerivedNeighborhood K G f) := by
+  let _ : Fintype V := Fintype.ofFinite V
+  let _ : DecidableRel G.Adj := Classical.decRel _
+  let _ : Nonempty V := hTree.connected.nonempty
+  let hKB := hK.isCombinatorialManifoldWithBoundary
+  by_cases hV : Nontrivial V
+  · let _ : Nontrivial V := hV
+    obtain ⟨v, hvdeg⟩ := hTree.exists_vert_degree_one_of_nontrivial
+    have hvcard : (G.neighborSet v).ncard = 1 := by
+      rw [← Set.fintypeCard_eq_ncard, G.card_neighborSet_eq_degree]
+      exact hvdeg
+    obtain ⟨w, hw⟩ := Set.ncard_eq_one.mp hvcard
+    have hvw : G.Adj v w := by
+      apply (G.mem_neighborSet v w).mp
+      rw [hw]
+      exact Set.mem_singleton w
+    have hwv : w ≠ v := hvw.symm.ne
+    have hadj_eq {u : V} (hu : G.Adj v u) : u = w := by
+      have hu' : u ∈ G.neighborSet v := (G.mem_neighborSet v u).mpr hu
+      rw [hw] at hu'
+      exact Set.mem_singleton_iff.mp hu'
+    let W : Set V := {v}ᶜ
+    let G' := G.induce W
+    let f' : W → {s : Finset E // s ∈ K.faces ∧ s.card = 3} := fun u => f u.1
+    have hf' : Function.Injective f' := fun u z huz => Subtype.ext (hf huz)
+    have hmap' : ∀ ⦃u z⦄, G'.Adj u z → (dualGraph 2 K).Adj (f' u) (f' z) := by
+      intro u z huz
+      exact hmap ((SimpleGraph.induce_adj).mp huz)
+    have hTree' : G'.IsTree := by
+      exact ⟨hTree.connected.induce_compl_singleton_of_degree_eq_one hvdeg,
+        hTree.isAcyclic.induce W⟩
+    have hcardlt : Nat.card W < Nat.card V := by
+      rw [Nat.card_eq_fintype_card, Nat.card_eq_fintype_card, Fintype.card_compl_set]
+      have htwo : 2 ≤ Fintype.card V := (Nat.succ_le_iff).mpr Fintype.one_lt_card
+      have hone : Fintype.card ({v} : Set V) = 1 := Fintype.card_unique
+      rw [hone]
+      omega
+    have hprev : IsPLBall 2 (embeddedDualTreeDerivedNeighborhood K G' f') :=
+      isPLBall_embeddedDualTreeDerivedNeighborhood_of_isTree K hK G' f' hf' hmap' hTree'
+    let q := (f v).1 ∩ (f w).1
+    let cv := (f v).1
+    let cw := (f w).1
+    let A := (derivedNeighborhoodCell K q).space ∪
+      (derivedNeighborhoodCell K cv).space
+    have hqK : q ∈ K.faces := embeddedDualEdgeFace_mem K hmap hvw
+    have hqcard : q.card = 2 := embeddedDualEdgeFace_card K hmap hvw
+    have hcvK : cv ∈ K.faces := (f v).2.1
+    have hcvcard : cv.card = 3 := (f v).2.2
+    have hcwK : cw ∈ K.faces := (f w).2.1
+    have hcwcard : cw.card = 3 := (f w).2.2
+    have hqcv : q ≠ cv := by
+      intro h
+      have hc := congrArg Finset.card h
+      rw [hqcard, hcvcard] at hc
+      omega
+    have hqcvsub : q ⊆ cv := Finset.inter_subset_left
+    have hqball : IsPLBall 2 (derivedNeighborhoodCell K q).space :=
+      hKB.isPLBall_derivedNeighborhoodCell hqK
+    have hcvball : IsPLBall 2 (derivedNeighborhoodCell K cv).space :=
+      hKB.isPLBall_derivedNeighborhoodCell hcvK
+    have hqcvball : IsPLBall 1 ((derivedNeighborhoodCell K q).space ∩
+        (derivedNeighborhoodCell K cv).space) :=
+      hKB.isPLBall_derivedNeighborhoodCell_inter hqK hcvK hqcv (Or.inl hqcvsub)
+    have hA : IsPLBall 2 A :=
+      hKB.isPLBall_union_of_inter_isPLBall_one hqball hcvball
+        (derivedNeighborhoodCell_space_subset K q)
+        (derivedNeighborhoodCell_space_subset K cv) hqcvball
+    have hf_eq {a b : V} (hab : (f a).1 = (f b).1) : a = b :=
+      hf (Subtype.ext hab)
+    have hcofacesq : faceCofaces K q 3 = {(f v).1, (f w).1} := by
+      simpa only [q] using faceCofaces_sharedFace_eq_pair K hK (hmap hvw)
+    have hnodeq {u : V} (hqu : q ⊆ (f u).1) : u = v ∨ u = w := by
+      have huco : (f u).1 ∈ faceCofaces K q 3 :=
+        (mem_faceCofaces K).mpr ⟨(f u).2.1, (f u).2.2, hqu⟩
+      rw [hcofacesq] at huco
+      simp only [Finset.mem_insert, Finset.mem_singleton] at huco
+      exact huco.imp hf_eq hf_eq
+    have hinter : embeddedDualTreeDerivedNeighborhood K G' f' ∩ A =
+        (derivedNeighborhoodCell K cw).space ∩ (derivedNeighborhoodCell K q).space := by
+      apply Subset.antisymm
+      · rintro x ⟨hxold, hxq | hxcv⟩
+        · rcases mem_embeddedDualTreeDerivedNeighborhood_iff K G' f' |>.mp hxold with
+              ⟨u, hxu⟩ | ⟨a, b, hab, hxab⟩
+          · have hcomp := subset_or_subset_of_nonempty_derivedNeighborhoodCell_inter K
+                (f' u).2.1 hqK ⟨x, hxu, hxq⟩
+            have hqu : q ⊆ (f' u).1 := by
+              rcases hcomp with h | h
+              · have hc := Finset.card_le_card h
+                rw [(f' u).2.2, hqcard] at hc
+                omega
+              · exact h
+            have huvw : u.1 = v ∨ u.1 = w := hnodeq hqu
+            have huv : u.1 ≠ v := by
+              simpa only [W, Set.mem_compl_iff, Set.mem_singleton_iff] using u.2
+            have huw : u.1 = w := huvw.resolve_left huv
+            exact ⟨by simpa only [cw, f', huw] using hxu, hxq⟩
+          · let r := (f' a).1 ∩ (f' b).1
+            have hrK : r ∈ K.faces := embeddedDualEdgeFace_mem K hmap' hab
+            have hrcard : r.card = 2 := embeddedDualEdgeFace_card K hmap' hab
+            have hcomp := subset_or_subset_of_nonempty_derivedNeighborhoodCell_inter K
+              hrK hqK ⟨x, hxab, hxq⟩
+            have heq : r = q := by
+              rcases hcomp with h | h
+              · exact Finset.eq_of_subset_of_card_le h (by rw [hrcard, hqcard])
+              · exact (Finset.eq_of_subset_of_card_le h (by rw [hqcard, hrcard])).symm
+            have haq : a.1 = v ∨ a.1 = w := hnodeq (by
+              rw [← heq]
+              exact Finset.inter_subset_left)
+            have hbq : b.1 = v ∨ b.1 = w := hnodeq (by
+              rw [← heq]
+              exact Finset.inter_subset_right)
+            have hav : a.1 ≠ v := by
+              simpa only [W, Set.mem_compl_iff, Set.mem_singleton_iff] using a.2
+            have hbv : b.1 ≠ v := by
+              simpa only [W, Set.mem_compl_iff, Set.mem_singleton_iff] using b.2
+            have haw : a.1 = w := haq.resolve_left hav
+            have hbw : b.1 = w := hbq.resolve_left hbv
+            exact (hab.ne (Subtype.ext (haw.trans hbw.symm))).elim
+        · rcases mem_embeddedDualTreeDerivedNeighborhood_iff K G' f' |>.mp hxold with
+              ⟨u, hxu⟩ | ⟨a, b, hab, hxab⟩
+          · have hcomp := subset_or_subset_of_nonempty_derivedNeighborhoodCell_inter K
+                (f' u).2.1 hcvK ⟨x, hxu, hxcv⟩
+            have heq : (f' u).1 = cv := by
+              rcases hcomp with h | h
+              · exact Finset.eq_of_subset_of_card_le h (by rw [(f' u).2.2, hcvcard])
+              · exact (Finset.eq_of_subset_of_card_le h (by rw [hcvcard, (f' u).2.2])).symm
+            have huv : u.1 = v := hf_eq heq
+            have huv' : u.1 ≠ v := by
+              simpa only [W, Set.mem_compl_iff, Set.mem_singleton_iff] using u.2
+            exact (huv' huv).elim
+          · let r := (f' a).1 ∩ (f' b).1
+            have hrK : r ∈ K.faces := embeddedDualEdgeFace_mem K hmap' hab
+            have hrcard : r.card = 2 := embeddedDualEdgeFace_card K hmap' hab
+            have hcomp := subset_or_subset_of_nonempty_derivedNeighborhoodCell_inter K
+              hrK hcvK ⟨x, hxab, hxcv⟩
+            have hrcv : r ⊆ cv := by
+              rcases hcomp with h | h
+              · exact h
+              · have hc := Finset.card_le_card h
+                rw [hcvcard, hrcard] at hc
+                omega
+            have hvco : cv ∈ faceCofaces K r 3 :=
+              (mem_faceCofaces K).mpr ⟨hcvK, hcvcard, hrcv⟩
+            have hcofacesr : faceCofaces K r 3 = {(f' a).1, (f' b).1} := by
+              simpa only [r] using faceCofaces_sharedFace_eq_pair K hK (hmap' hab)
+            rw [hcofacesr] at hvco
+            simp only [Finset.mem_insert, Finset.mem_singleton] at hvco
+            have hva : v = a.1 ∨ v = b.1 := hvco.imp
+              (fun h => hf_eq (by simpa only [cv, f'] using h))
+              (fun h => hf_eq (by simpa only [cv, f'] using h))
+            have hav : a.1 ≠ v := by
+              simpa only [W, Set.mem_compl_iff, Set.mem_singleton_iff] using a.2
+            have hbv : b.1 ≠ v := by
+              simpa only [W, Set.mem_compl_iff, Set.mem_singleton_iff] using b.2
+            exact (hva.elim (fun h => hav h.symm) (fun h => hbv h.symm)).elim
+      · rintro x ⟨hxcw, hxq⟩
+        have hwW : w ∈ W := by
+          simpa only [W, Set.mem_compl_iff, Set.mem_singleton_iff] using hwv
+        refine ⟨mem_embeddedDualTreeDerivedNeighborhood_iff K G' f' |>.mpr
+          (Or.inl ⟨⟨w, hwW⟩, ?_⟩), Or.inl hxq⟩
+        simpa only [cw, f'] using hxcw
+    have hcwq : q ⊆ cw := Finset.inter_subset_right
+    have hcwqne : cw ≠ q := by
+      intro h
+      have hc := congrArg Finset.card h
+      rw [hcwcard, hqcard] at hc
+      omega
+    have hattach : IsPLBall 1 (embeddedDualTreeDerivedNeighborhood K G' f' ∩ A) := by
+      rw [hinter]
+      exact hKB.isPLBall_derivedNeighborhoodCell_inter hcwK hqK hcwqne (Or.inr hcwq)
+    have hunion : embeddedDualTreeDerivedNeighborhood K G' f' ∪ A =
+        embeddedDualTreeDerivedNeighborhood K G f := by
+      ext x
+      constructor
+      · rintro (hxold | hxq | hxcv)
+        · rcases mem_embeddedDualTreeDerivedNeighborhood_iff K G' f' |>.mp hxold with
+              ⟨u, hxu⟩ | ⟨a, b, hab, hxab⟩
+          · exact mem_embeddedDualTreeDerivedNeighborhood_iff K G f |>.mpr
+              (Or.inl ⟨u.1, by simpa only [f'] using hxu⟩)
+          · exact mem_embeddedDualTreeDerivedNeighborhood_iff K G f |>.mpr
+              (Or.inr ⟨a.1, b.1, (SimpleGraph.induce_adj).mp hab,
+                by simpa only [f'] using hxab⟩)
+        · exact mem_embeddedDualTreeDerivedNeighborhood_iff K G f |>.mpr
+            (Or.inr ⟨v, w, hvw, by simpa only [q] using hxq⟩)
+        · exact mem_embeddedDualTreeDerivedNeighborhood_iff K G f |>.mpr
+            (Or.inl ⟨v, by simpa only [cv] using hxcv⟩)
+      · intro hx
+        rcases mem_embeddedDualTreeDerivedNeighborhood_iff K G f |>.mp hx with
+            ⟨u, hxu⟩ | ⟨a, b, hab, hxab⟩
+        · by_cases huv : u = v
+          · subst u
+            exact Or.inr (Or.inr (by simpa only [cv] using hxu))
+          · have huW : u ∈ W := by
+              simpa only [W, Set.mem_compl_iff, Set.mem_singleton_iff]
+            exact Or.inl (mem_embeddedDualTreeDerivedNeighborhood_iff K G' f' |>.mpr
+              (Or.inl ⟨⟨u, huW⟩, by simpa only [f'] using hxu⟩))
+        · by_cases hav : a = v
+          · subst a
+            have hbw : b = w := hadj_eq hab
+            subst b
+            exact Or.inr (Or.inl (by simpa only [q] using hxab))
+          · by_cases hbv : b = v
+            · subst b
+              have haw : a = w := hadj_eq hab.symm
+              subst a
+              exact Or.inr (Or.inl (by simpa only [q, Finset.inter_comm] using hxab))
+            · have haW : a ∈ W := by
+                simpa only [W, Set.mem_compl_iff, Set.mem_singleton_iff]
+              have hbW : b ∈ W := by
+                simpa only [W, Set.mem_compl_iff, Set.mem_singleton_iff]
+              have hab' : G'.Adj ⟨a, haW⟩ ⟨b, hbW⟩ := (SimpleGraph.induce_adj).mpr hab
+              exact Or.inl (mem_embeddedDualTreeDerivedNeighborhood_iff K G' f' |>.mpr
+                (Or.inr ⟨⟨a, haW⟩, ⟨b, hbW⟩, hab', by simpa only [f'] using hxab⟩))
+    have hU := hKB.isPLBall_union_of_inter_isPLBall_one hprev hA
+      (embeddedDualTreeDerivedNeighborhood_subset K G' f')
+      (union_subset (derivedNeighborhoodCell_space_subset K q)
+        (derivedNeighborhoodCell_space_subset K cv)) hattach
+    rwa [hunion] at hU
+  · have hsub : Subsingleton V := not_nontrivial_iff_subsingleton.mp hV
+    let _ : Subsingleton V := hsub
+    let v : V := Classical.choice (inferInstance : Nonempty V)
+    have heq : embeddedDualTreeDerivedNeighborhood K G f =
+        (derivedNeighborhoodCell K (f v).1).space := by
+      ext x
+      constructor
+      · intro hx
+        rcases mem_embeddedDualTreeDerivedNeighborhood_iff K G f |>.mp hx with
+            ⟨u, hxu⟩ | ⟨u, w, huw, -⟩
+        · simpa only [Subsingleton.elim u v] using hxu
+        · have huv : u = v := Subsingleton.elim _ _
+          have hwv' : w = v := Subsingleton.elim _ _
+          have hvv : G.Adj v v := by simpa only [huv, hwv'] using huw
+          exact (G.loopless.irrefl v hvv).elim
+      · intro hx
+        exact mem_embeddedDualTreeDerivedNeighborhood_iff K G f |>.mpr (Or.inl ⟨v, hx⟩)
+    rw [heq]
+    exact hKB.isPLBall_derivedNeighborhoodCell (f v).2.1
+termination_by Nat.card V
+decreasing_by exact hcardlt
+
 end DifferentialGeometry.Topology.PiecewiseLinear
