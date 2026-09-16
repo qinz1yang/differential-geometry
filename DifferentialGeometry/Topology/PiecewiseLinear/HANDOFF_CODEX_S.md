@@ -2319,3 +2319,27 @@ three public declarations; exit 0, only `propext`, `Classical.choice`, and
 `Quot.sound`. The next step assembles these constructions for an arc with
 polygonal endpoint germs. Degree-one germs and the controlled graph assembly
 remain open.
+
+## Edge disks from polygonal endpoint germs (2026-09-16)
+
+`PlanarJordan/ArcStraightening.lean` now also proves
+`exists_homeomorph_polygonal_arc_of_polygonal_ends`. For a continuously and
+injectively parametrized planar arc, with polygonal initial and terminal
+subarcs, every neighborhood of the intervening closed subarc contains a PL disk
+and supports a homeomorphism making the entire arc polygonal. The disk contains
+the intervening subarc in its interior and avoids both endpoints. The map fixes
+the complement of the disk interior, with displacement bounded by its diameter.
+The neighborhood need not be open; an open refinement is constructed.
+
+The proof constructs a disk around the middle arc, preserves that middle arc
+while putting its frontier in general position with the two polygonal ends,
+and proves that all frontier contacts are finite. Its exterior arc portion is
+polyhedral by `IsPolyhedron.sdiff_interior_of_isPLBall`. The finite-contact
+straightening theorem then applies. No prescribed crossing count, tame middle
+arc, or disk frame is assumed.
+
+Focused check exit 0 with zero warnings. AuditS129ArcEnds checks both public
+endpoints of the updated module, exit 0, only the standard three axioms.
+The small edge-disk producer is now present for the previously constructed
+polygonal vertex germs. Degree-one germs and the final controlled graph
+assembly remain to be constructed.

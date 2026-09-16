@@ -1,6 +1,9 @@
 import DifferentialGeometry.Topology.PlanarJordan.CrosscutFamily
+import DifferentialGeometry.Topology.PiecewiseLinear.PlanarArcNeighborhood
+import DifferentialGeometry.Topology.PiecewiseLinear.DiskFrontierPerturbation
+import DifferentialGeometry.Topology.PiecewiseLinear.BallComplement
 
-open Set
+open Set Topology
 
 namespace DifferentialGeometry.Topology.PlanarJordan
 
@@ -120,4 +123,69 @@ theorem exists_homeomorph_polygonal_arc_of_finite_frontier_inter
   have hA : IsArcBetween A p q := ⟨f, hf, hi, himage, hf0, hf1⟩
   exact ⟨e, himagepoly.isPolygonal_of_isArcBetween (isArcBetween_image e hA), hefix, hedist⟩
 
+theorem exists_homeomorph_polygonal_arc_of_polygonal_ends
+    {f : ℝ → Plane} (hf : ContinuousOn f unitInterval) (hi : InjOn f unitInterval)
+    {a b : ℝ} (ha : 0 < a) (hab : a < b) (hb : b < 1)
+    (hl : IsPolygonal (f '' Icc 0 a)) (hr : IsPolygonal (f '' Icc b 1))
+    {U : Set Plane} (hU : U ∈ 𝓝ˢ (f '' Icc a b)) :
+    ∃ D, IsPLBall 2 D ∧ f '' Icc a b ⊆ interior D ∧ D ⊆ U ∧
+      Disjoint D {f 0, f 1} ∧ ∃ e : Plane ≃ₜ Plane,
+        IsPolygonal (e '' (f '' unitInterval)) ∧ EqOn e id (interior D)ᶜ ∧
+        ∀ x, dist (e x) x ≤ Metric.diam D := by
+  have haI : a ∈ unitInterval := ⟨ha.le, hab.le.trans hb.le⟩
+  have hbI : b ∈ unitInterval := ⟨ha.le.trans hab.le, hb.le⟩
+  have hCI : Icc a b ⊆ unitInterval := Icc_subset_Icc ha.le hb.le
+  have hCA : IsArcBetween (f '' Icc a b) (f a) (f b) := by
+    simpa only [uIcc_of_le hab.le] using
+      isArcBetween_subarc_of_injOn_I hf hi haI hbI hab.ne
+  have hlA : IsArcBetween (f '' Icc 0 a) (f 0) (f a) := by
+    simpa only [uIcc_of_le ha.le] using
+      isArcBetween_subarc_of_injOn_I hf hi zero_mem_I haI ha.ne
+  have hrA : IsArcBetween (f '' Icc b 1) (f b) (f 1) := by
+    simpa only [uIcc_of_le hb.le] using
+      isArcBetween_subarc_of_injOn_I hf hi hbI one_mem_I hb.ne
+  let T := (f '' Icc 0 a) ∪ (f '' Icc b 1)
+  have hlB := isPLBall_one_of_isArcBetween_of_isPolygonal hlA hl
+  have hrB := isPLBall_one_of_isArcBetween_of_isPolygonal hrA hr
+  have hT : IsPolyhedron T := hlB.isPolyhedron.union hrB.isPolyhedron
+  have hTI : interior T = ∅ := by
+    rw [interior_union_isClosed_of_interior_empty hlB.isPolyhedron.isClosed
+      (hrB.interior_eq_empty_of_lt_finrank (by simp))]
+    exact hlB.interior_eq_empty_of_lt_finrank (by simp)
+  have hTA : T ⊆ f '' unitInterval := union_subset
+    (image_mono (Icc_subset_Icc_right haI.2)) (image_mono (Icc_subset_Icc_left hbI.1))
+  have hcover : f '' unitInterval ⊆ T ∪ (f '' Icc a b) := by
+    rintro x ⟨t, ht, rfl⟩
+    by_cases hta : t ≤ a
+    · exact Or.inl (Or.inl ⟨t, ⟨ht.1, hta⟩, rfl⟩)
+    by_cases hbt : b ≤ t
+    · exact Or.inl (Or.inr ⟨t, ⟨hbt, ht.2⟩, rfl⟩)
+    exact Or.inr ⟨t, ⟨(lt_of_not_ge hta).le, (lt_of_not_ge hbt).le⟩, rfl⟩
+  have hCZ : f '' Icc a b ⊆ ({f 0, f 1} : Set Plane)ᶜ := by
+    rintro x ⟨t, ht, rfl⟩ (h0 | h1)
+    · have heq := hi (hCI ht) zero_mem_I h0
+      linarith [ht.1]
+    · have heq := hi (hCI ht) one_mem_I h1
+      linarith [ht.2]
+  have hZclosed : IsClosed ({f 0, f 1} : Set Plane) := ((finite_singleton (f 1)).insert (f 0)).isClosed
+  obtain ⟨V, hV, hCV, hVU⟩ := mem_nhdsSet_iff_exists.mp hU
+  obtain ⟨D, hD, hCD, hDV⟩ := exists_isPLBall_neighborhood_of_isArc hCA.isArc
+    ((hV.sdiff hZclosed).mem_nhdsSet.mpr (subset_inter hCV hCZ))
+  obtain ⟨D', hD', hCD', hD'V, hD'Z, hfinite⟩ :=
+    hD.exists_isPLBall_finite_frontier_inter hCA.isArc.isClosed hCD hZclosed
+      (disjoint_left.mpr fun x hx => (hDV hx).2) hT hTI hV
+      (hDV.trans inter_subset_left)
+  have hfin : ((f '' unitInterval) ∩ frontier D').Finite := hfinite.subset fun x hx =>
+    ⟨hx.2, (hcover hx.1).resolve_right fun h => hx.2.2 (hCD' h)⟩
+  have hout : IsPolyhedron ((f '' unitInterval) \ interior D') := by
+    have heq : (f '' unitInterval) \ interior D' = T \ interior D' :=
+      Subset.antisymm (fun _ hx => ⟨(hcover hx.1).resolve_right fun h => hx.2 (hCD' h), hx.2⟩)
+        (fun _ hx => ⟨hTA hx.1, hx.2⟩)
+    rw [heq]
+    exact hT.sdiff_interior_of_isPLBall hD'
+  obtain ⟨e, he, hfix, hdist⟩ := exists_homeomorph_polygonal_arc_of_finite_frontier_inter
+    ⟨f, hf, hi, rfl, rfl, rfl⟩ hD'
+    (fun hx => disjoint_left.mp hD'Z (interior_subset hx) (Or.inl rfl))
+    (fun hx => disjoint_left.mp hD'Z (interior_subset hx) (Or.inr rfl)) hfin hout
+  exact ⟨D', hD', hCD', hD'V.trans hVU, hD'Z, e, he, hfix, hdist⟩
 end DifferentialGeometry.Topology.PlanarJordan
