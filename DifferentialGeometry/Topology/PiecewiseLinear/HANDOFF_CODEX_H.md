@@ -281,3 +281,14 @@ Reduced/MayerVietorisCoefficients, Reduced/PointClasses}`（`REUSE_AUDIT.md` §2
 - 夜间复核：`check-f.ps1` 检查 `OrientationCocycle` exit=0、零 warning（56.6 秒）；
   `.lake/scratch/AuditNightHM1.lean` 保留 24 项命名空间完整的 `#print axioms`，审计 exit=0，12 项核心与 12 项复用声明仅三公理。
 - 确切缺口：I4 无；C.4 覆盖流形的可定向性不是本里程碑端点，余力在 H-M5 做。下一项 H-M2。
+
+### H-M2 — partial，开邻域几何层已闭合
+
+- 新模块 `SubcomplexNeighborhood.lean`：正重心质量定义相对开邻域；
+  `subcomplexOpenNeighborhoodStrongDeformationRetract` 给强形变收缩，
+  `subcomplexOpenNeighborhoodHomotopyEquiv` 的逆映射是原来的子复形包含；
+  `subcomplexOpenNeighborhood_inter` 与 `subcomplexOpenNeighborhood_union` 给交集兼容与开覆盖。
+- 聚焦检查 exit=0、零 warning（10.4 秒）。保留 `.lake/scratch/AuditNightHM2Neighborhood.lean`
+  的 27 项审计（19 项新声明、8 项复用）及 `AuditNightHM2Reuse.lean` 的 19 项复用预审计；全部仅三公理。
+- 此为 H-M2 中间检查点，数学提交哈希见下一段登记。未闭合：小链短正合列的元素级 28.11、
+  从开邻域包含同伦等价向子复形搬运的自然性、Betti 数不等式；尚未声明 H-M2 done。

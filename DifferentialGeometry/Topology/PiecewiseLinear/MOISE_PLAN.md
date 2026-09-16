@@ -466,6 +466,18 @@
   H.2b 要求的三个端点均闭合；C.4 的二重覆盖流形及其可定向性没有在本次代做。
   未经过 `Homology/HurewiczLowDegrees.lean`，未运行根构建，未登记根聚合；H.6/H.4a/H.5 顺序和目标不变。
 
+- 2026-09-15（H-M2 开邻域几何层中间检查点）：`SubcomplexNeighborhood.lean` 聚焦检查 exit=0、零警告。
+  19 项新声明、8 项复用声明在 `AuditNightHM2Neighborhood.lean` 逐项审计，均仅标准三公理。
+  `AuditNightHM2Reuse.lean` 另外逐项预审计了 PL 的质量、投影、同伦、质量与矩的过滤和公式、
+  投影的凸包归属与权重公式、投影固定子复形、质量与矩连续性、细分过滤面、
+  `derivedNeighborhoodStrongDeformationRetract`、细分顶点的重心表示，共 14 项；
+  原生 Homology 的 `subspaceSmallShortExact`、`smallChainHomologyIso`、
+  `augmentedSubspaceSmallShortExact`、`augmentedSmallChainHomologyIso`、
+  `reducedMayerVietorisConnectingMap_coefficient_naturality` 共 5 项，均仅标准三公理。
+  两个审计文件保留在 H 工作树 `.lake/scratch`。闭导出邻域的已有形变收缩不能直接充当开覆盖；
+  此处实际构造了正重心质量开邻域，并证明交子复形的邻域等于邻域之交。
+  H-M2 的同调正合性与自然性搬运仍待完成，没有将几何层记作 28.11 已证明。
+
 ## 7. 决策与风险
 
 - 不采用 Bing 定理 7 的“保留单形”强形式，只用 Moise §8/§35 的紧致图卡归纳（书中 `chap:two-set-gluing` 的方案）。
