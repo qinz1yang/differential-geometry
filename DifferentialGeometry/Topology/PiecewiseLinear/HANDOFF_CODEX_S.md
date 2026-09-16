@@ -684,7 +684,7 @@ no second-batch source or duplicate Jordan extension wrapper was introduced.
 | S-M1 | done: regular-neighborhood pieces, attaching disks, general ambient spaces | `2375fc812`; AuditS67--S69: 42; AuditS71General: 5 | None for the requested piece/intersection layer |
 | S-M2 | done: complete boundary-disk derived neighborhood and Problem 26.1 | `d12dd514a`; AuditS70: 6; AuditS73Disk: 5 | None for the containing-ball theorem |
 | S-M3 | partial: general parametrized PL push-off and Euclidean singular cell | `bd74dd7ca`; AuditS72Intrinsic: 7; AuditS74Push: 3 | `SingularTwoCell K.space` needs a boundary-compatible target type; its current Euclidean open-chart requirement is not available from a manifold-with-boundary hypothesis |
-| S-M4 | partial: disk product collars, including arbitrary relative-neighborhood control | `5f97aca9d`, `41b78491e`; AuditS75Collar: 13; AuditS78BoundaryNeighborhood: 4 | Complement-manifold induction invariant, compatible side-face product gluing, whole-boundary neighborhood property |
+| S-M4 | partial: controlled disk collars, actual manifold complements, exact complementary boundaries, and PL boundary replacement fixing the attaching-disk exterior | `5f97aca9d`, `41b78491e`, `51e4d8f21`, `7f062e84c`; AuditS75: 13; S78: 4; S80: 16; S81: 13 | Compatible side-face product gluing and the whole-boundary neighborhood property |
 | S-M5 | partial: 26.1 in Hausdorff PL charted ambient spaces | `ddf717a4b`; AuditS76TwoSided: 11 | Interior chart transport for arbitrary K; for 26.3, exactly two sides with manifold closures, then full 26.2 |
 | S-M6 | partial: general relative 17.3 done; P.4 inputs checked | `f0383a381`; AuditS77RelativeDisk: 4; AuditS79P4Inputs: 3 | Supported ambient graph extension with control, as detailed above |
 
@@ -772,3 +772,15 @@ map and the local collar parametrization are both proved, but their independent 
 does not yet identify them on the side faces needed for that gluing. Full 26.2 remains partial.
 The exact bundled I2 target-type issue and the recorded P.4 extension/control obligations
 are unchanged. The source checkpoint hash is recorded with the final plan update below.
+
+### S-M4 verified checkpoint and final plan update
+
+The complement-manifold theorem is committed and pushed as `51e4d8f21`; the exact boundary
+and PL boundary replacement layer is committed and pushed as `7f062e84c`.
+The post-checkpoint fetch and merge found `origin/codex/moise-integration` already up to date
+at `8fb887bb9`. The B.3 plan row now records both proved invariants and the actual remaining
+product-gluing and neighborhood obligations. AuditS80/S81 contain 29 audit entries in total,
+all with only the standard three axioms; the nine distinct Lean modules changed across these
+two checkpoints passed their focused checks with zero warnings. The final bookkeeping commit
+changes only this handoff and the B.3 plan row. No whole-boundary collar or bundled I2 delivery
+is asserted.
