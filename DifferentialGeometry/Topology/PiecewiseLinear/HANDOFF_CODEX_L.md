@@ -360,3 +360,17 @@ theorem eq_top_of_boundaryLoops_mem_normal
 - 下一步仍须从有限连通 2-正则边图取得覆盖全部顶点的循环，把其顶点编号与某个同边数的 `PolygonalCircle.edgeComplex`
   做双向面对应，再由 `isPLHomeomorphOn_simplicialMap` 得到闭分支空间是 PL 1-球面。触边分支还需相应的有限路径分类；
   二重覆盖原像的有限 PL 三角剖分、Case 1–4 几何构造与 I3 边界半空间桥接仍未闭合。
+
+## 15. 2026-09-15 E3-M2 追加：一维复形的边图同构搬运
+
+状态：done（闭分支与触边分支分类的共同 PL 搬运层已闭合，整体 L.3 仍为 partial）。数学提交 `3e40133ec`。
+
+- 新模块 `Topology/PiecewiseLinear/OneComplex.lean` 定义 `vertexMapOfEdgeGraphIso`，把两个几何单纯复形边图之间的同构
+  延拓为环境向量空间之间的顶点映射；逆映射由反向图同构同样构造。
+- `image_mem_faces_of_edgeGraphIso` 证明在所有面至多两个顶点时，边图同构自动保持全部面：单点面由顶点条件保持，双点面恰由边邻接保持。
+  `isGlueIso_vertexMapOfEdgeGraphIso` 将双向保持与顶点互逆组装成 `IsGlueIso`；
+  `isPLHomeomorphOn_of_edgeGraphIso` 因而直接给出两个有限一维复形空间之间的 PL 同胚。
+- `OneComplex` 聚焦检查 exit=0、零 warning；`.lake/scratch/AuditOneComplex.lean` 的 5 项审计全部只含
+  `propext`、`Classical.choice`、`Quot.sound`。本层未复用 covering/Van Kampen 声明。
+- 现在闭分支只剩纯有限图步骤：从连通 2-正则边图建立到同边数多边形边复形的图同构；触边分支相应只剩连通度数 1/2 图的路径分类。
+  二重覆盖原像的有限 PL 三角剖分、Case 1–4 几何构造与 I3 边界半空间桥接仍未闭合。
