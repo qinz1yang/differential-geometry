@@ -1751,6 +1751,7 @@ import DifferentialGeometry.Analysis.Sobolev.Euclidean.Multiplication.Multiply
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Multiplication.MultiplyQuant
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Multiplication.MultiplyQuantK
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Multiplication.SmoothCoefWeakPartialIBP
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.Poincare
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.SliceWkp
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.SupportAndDomain.CrossChartBoundStrictMemWkp
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.SupportAndDomain.IteratedSobolevHalfSpace
