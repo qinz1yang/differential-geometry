@@ -1867,3 +1867,9 @@ F-M2–F-M6 尚未开始；按用户指定顺序推进，只有出现 §1 接口
 `TriangleCapSingularComparisonSymmetry.lean` 已提交并推送为 `3327abc5b`。主端点 `exists_triangle_cap_with_singular_comparison_of_cap_below` 把单帽比较完整搬到帽面严格低于帽尖的情形：对旧高度和扰动高度同时取负，调用已经验证的向上帽端点，再用 `heightSingularPoints_neg` 与 `levelPolygons_neg` 把结论搬回。局部半空间析取的两个分支在取负时互换；顶点单射、紧支集纤维分离、边界等高芽、非例外奇异点包含及逐点层圆周数不增均保持。因此可以按照 Moise 17.12 的原始路线，对两张保留盘分别选择方向相反的小倾斜，无需再要求一个共同高度控制变形后原球面的整个临界层。
 
 模块聚焦检查 exit=0（12.2 秒）、零 warning；`AuditF201.lean` 主端点仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步从参数化切割给出的相反半空间芽，为 A、B 两张封帽球面分别选择充分小的一般位置高度：与保留盘位于旧水平面的同一侧倾斜帽面，使选定的最内层圆周 J 在帽尖新高度层消失，同时保留所有非例外奇异点比较。F-M1 仍为 partial，严格指标下降、Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF202.lean`。
+
+### 19.54 F-M1：保持旧次序的向下半空间一般位置扰动
+
+`HeightPerturbationSymmetry.lean` 已提交并推送为 `026576e48`。主端点 `exists_continuousLinearMap_injOn_preserving_strict_order_and_halfSpace_below_of_isPolyhedron` 对有限一般位置集合、有限旧顶点集以及位于旧等高面的紧多面体片构造任意小的新高度，使其在一般位置集合上单射、保持旧顶点的全部严格高度次序，并把多面体片除指定点外严格压到该点下方。证明对旧高度取负后调用向上半空间扰动，再把所得高度取负；距离、非零性、单射性和旧次序均逐项搬回。
+
+模块聚焦检查 exit=0（10.7 秒）、零 warning；`AuditF202.lean` 主端点仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步在参数化三角切割的两个相反侧分支中，分别用向上与向下生产者选择独立高度，并接入相应的单帽奇异点比较端点，输出两张封帽球面及方向相反的严格帽面分离。F-M1 仍为 partial，严格指标下降、Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF203.lean`。
