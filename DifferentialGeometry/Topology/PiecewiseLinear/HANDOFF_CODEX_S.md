@@ -1513,3 +1513,36 @@ The two requested settings for 26.3 are now proved: finite combinatorial manifol
 boundary, and general Hausdorff PL charted three-manifolds. The prior 26.1 interior
 transport for arbitrary K and the supported ambient graph extension in P.4 remain.
 I2's exact target-type compatibility issue is unchanged.
+
+### S-M5 completion: relative topology and two-sidedness in manifolds with boundary
+
+The general PL-manifold bicollar checkpoint is committed and pushed as `52d70d778`;
+the following integration merge was already up to date.
+
+`ManifoldRelativeTopology.lean` closes the remaining 26.1 transport obligation directly
+in the subtype topology of a finite combinatorial manifold K. For a finite manifold A
+of the same dimension contained in K, it proves `closure_interior_preimage` from the
+previous double-complement closure formula. If A avoids the intrinsic boundary of K,
+`inter_closure_sdiff_eq_boundaryComplex_of_disjoint_boundary` and
+`frontier_preimage_space_eq_preimage_boundaryComplex` identify its relative frontier
+with its intrinsic boundary. Neighborhood invariance of intrinsic boundary membership
+supplies the previously missing reverse containment.
+
+`IsCombinatorialManifoldWithBoundary.isTwoSided_boundaryComplex` and
+`.isTwoSided_of_union_boundary_components` then prove the full boundary and any union
+of its connected components are two-sided in K.space. These results hold in every
+positive dimension and arbitrary finite-dimensional real normed ambient spaces.
+Local connectedness of the boundary is proved via its finite complex and transported
+to the subtype. No additional regular-closed, local-connectedness, chart, or separation
+hypothesis is required. Constructing an interior charted-space instance is unnecessary
+for this endpoint, so the earlier 26.1 interior-chart transport gap is removed.
+
+The focused check has exit 0 and zero warnings (`check-manifold-relative-topology.log`).
+`AuditS104RelativeTwoSided.lean` / `.log` contain five entries, all with only `propext`,
+`Classical.choice`, and `Quot.sound`. No Schoenflies or unproved interface parameter is
+present. No other-lane or vendored source changed. The source commit hash will be
+recorded in the final bookkeeping entry.
+
+S-M5's 26.1 and 26.3 endpoints are now proved in the finite-complex and general PL
+charted settings described above. P.4's controlled supported graph extension remains;
+I2's exact target-type compatibility issue is unchanged.
