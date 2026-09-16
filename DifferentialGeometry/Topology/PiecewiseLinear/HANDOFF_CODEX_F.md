@@ -1813,3 +1813,9 @@ F-M2–F-M6 尚未开始；按用户指定顺序推进，只有出现 §1 接口
 `TriangleCapSideSymmetry.lean` 已提交并推送为 `3019d3743`。`levelPolygons_neg` 与 `heightSingularPoints_neg` 分别证明高度函数取负时层圆周族和奇异点集在对应负高度上精确不变。主端点 `exists_triangulation_triangle_cap_with_nonsingular_boundary_of_ge` 将局部位于旧高度高侧的保留盘改看作负高度的低侧盘，调用低侧参数化共同细分定理，再沿连续自同构 `f ↦ -f` 把充分小邻域搬回原高度；顶点单射和奇异点排除同时保持。因此相反侧的两张保留盘现在具有完全对称的整边界正规性，不需要预先选定哪一张在低侧。
 
 模块聚焦检查 exit=0（12.0 秒）、零 warning；`AuditF192.lean` 三个端点均仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步让单帽奇异点比较接受统一低侧或统一高侧两种输入，随后从 `exists_parameterized_triangle_cut_with_opposite_height_sides` 的两个分支同时构造 A、B 两张新球面及其奇异点嵌入。F-M1 仍为 partial，严格指标下降、Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF193.lean`。
+
+### 19.45 F-M1：单帽奇异点比较统一覆盖两个高度侧
+
+`TriangleCapSingularComparison.lean` 的主端点已加强并提交为 `16202494b`。`exists_triangle_cap_with_singular_comparison` 现在接受保留盘在共同水平边界附近统一位于低侧或统一位于高侧的析取输入；低侧直接调用参数化三角帽共同细分，高侧调用取负高度得到的对称版本。两条分支返回完全相同的有限球面、帽边正规性和局部化数据，后续奇异点包含、逐旧顶点成员关系及层圆周数不增的证明无需分叉。
+
+加强后的模块聚焦检查 exit=0（12.1 秒）、零 warning；`AuditF193.lean` 两个端点均仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步从参数化三角切割的相反侧芽构造 A、B 各自的半空间析取和边界等高集合芽，同时实例化两张封帽球面，并统一选择满足两边一般位置与帽内严格分离的高度。F-M1 仍为 partial，严格指标下降、Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF194.lean`。
