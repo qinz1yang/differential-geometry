@@ -1,6 +1,7 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.HeightLocalization
 import DifferentialGeometry.Topology.PiecewiseLinear.FiberInterior
 import DifferentialGeometry.Topology.PiecewiseLinear.ParameterizedTriangleCap
+import DifferentialGeometry.Topology.PiecewiseLinear.TriangleCapSideSymmetry
 
 open Set Topology
 
@@ -36,7 +37,8 @@ theorem exists_triangle_cap_with_singular_comparison
     (hT : AffineIndependent ℝ ((↑) : T → EuclideanSpace ℝ (Fin 2)))
     (hcard : T.card = 3) (he : Function.Injective e)
     (htriangle : H '' D = e '' convexHull ℝ (T : Set _))
-    (hhalf : ∀ q ∈ J \ {p}, ∀ᶠ x in 𝓝 q, x ∈ Q → ℓ x ≤ ℓ q)
+    (hhalf : (∀ q ∈ J \ {p}, ∀ᶠ x in 𝓝 q, x ∈ Q → ℓ x ≤ ℓ q) ∨
+      (∀ q ∈ J \ {p}, ∀ᶠ x in 𝓝 q, x ∈ Q → ℓ q ≤ ℓ x))
     (hboundary : ∀ q ∈ J \ {p},
       ∀ᶠ x in 𝓝 q, x ∈ J ↔ x ∈ Q ∧ ℓ x = ℓ q) :
     ∃ R : Geometry.SimplicialComplex ℝ E, R.faces.Finite ∧
@@ -54,8 +56,11 @@ theorem exists_triangle_cap_with_singular_comparison
   classical
   cases Subsingleton.elim dE (Classical.decEq E)
   obtain ⟨R, hRfin, hRspace, hR, hRQ, -, hRQboundary, -, -, hregular⟩ :=
-    exists_triangulation_triangle_cap_with_nonsingular_boundary hdimE hu hv huJ hvJ
-      hQD H hH ℓ hheight e T hT hcard he htriangle hhalf hboundary
+    hhalf.elim
+      (fun hle => exists_triangulation_triangle_cap_with_nonsingular_boundary hdimE hu hv
+        huJ hvJ hQD H hH ℓ hheight e T hT hcard he htriangle hle hboundary)
+      (fun hge => exists_triangulation_triangle_cap_with_nonsingular_boundary_of_ge hdimE hu hv
+        huJ hvJ hQD H hH ℓ hheight e T hT hcard he htriangle hge hboundary)
   let _ : Finite R.faces := hRfin.to_subtype
   let M := restrict R (H '' Q)
   let _ : Finite M.faces := (restrict_faces_finite R (H '' Q)).to_subtype
