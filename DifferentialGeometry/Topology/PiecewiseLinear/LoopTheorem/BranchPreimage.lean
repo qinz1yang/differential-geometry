@@ -1,9 +1,15 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.ChartPolyhedron
+import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryFacets
+import DifferentialGeometry.Topology.PiecewiseLinear.CirclePartition
 import DifferentialGeometry.Topology.PiecewiseLinear.ClosedStarNeighborhood
+import DifferentialGeometry.Topology.PiecewiseLinear.CoveringLift
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.DoublePointCover
 import DifferentialGeometry.Topology.PiecewiseLinear.ManifoldInvariance
+import DifferentialGeometry.Topology.PiecewiseLinear.OneManifoldComponents
 import DifferentialGeometry.Topology.PiecewiseLinear.PieceRestrict
+import DifferentialGeometry.Topology.PiecewiseLinear.PolygonalCycles
 import DifferentialGeometry.Topology.PiecewiseLinear.SingularGeneralPosition
+import DifferentialGeometry.Topology.Covering.SimplyConnectedCover
 
 open Set Topology
 
@@ -29,6 +35,136 @@ namespace NormalSingularCellData
 variable {M : Type u} [TopologicalSpace M]
   [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
   {D : SingularTwoCell M} {BdM B : Set M}
+
+private noncomputable def euclideanBoundaryComplexModel (n : ℕ)
+    (K : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin n))) :=
+  boundaryComplex 1 K
+
+private noncomputable def classicalEuclideanBoundaryComplexModel (n : ℕ)
+    (K : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin n))) :=
+  @boundaryComplex (EuclideanSpace ℝ (Fin n)) _ _ (Classical.decEq _) 1 K
+
+private theorem euclideanBoundaryComplexModel_eq_classical
+    (n : ℕ) (K : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin n))) :
+    euclideanBoundaryComplexModel n K = classicalEuclideanBoundaryComplexModel n K := by
+  unfold euclideanBoundaryComplexModel classicalEuclideanBoundaryComplexModel
+  exact congrArg
+    (fun d : DecidableEq (EuclideanSpace ℝ (Fin n)) =>
+      @boundaryComplex (EuclideanSpace ℝ (Fin n)) _ _ d 1 K)
+    (Subsingleton.elim _ _)
+
+open Classical in
+private theorem mem_boundaryComplex_source_iff_of_isPLHomeomorphOn
+    {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [NormedAddCommGroup F] [NormedSpace ℝ F]
+    [FiniteDimensional ℝ E] [FiniteDimensional ℝ F]
+    (K : Geometry.SimplicialComplex ℝ E) (L : Geometry.SimplicialComplex ℝ F)
+    [Finite K.faces] [Finite L.faces] (hK : IsCombinatorialManifoldWithBoundary 1 K)
+    {f : E → F} (hf : IsPLHomeomorphOn f K.space L.space) {x : E} (hx : x ∈ K.space) :
+    x ∈ (boundaryComplex 1 K).space ↔ f x ∈ (boundaryComplex 1 L).space :=
+  (mem_boundaryComplex_space_iff_of_isPLHomeomorphOn
+    (n := 0) K L hK hf hx).symm
+
+open Classical in
+private theorem mem_boundaryComplex_faceStar_iff_of_isSubdivision
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    (K R : Geometry.SimplicialComplex ℝ E) [Finite K.faces] [Finite R.faces]
+    (hK : IsCombinatorialManifoldWithBoundary 1 K) (hR : IsSubdivision R K)
+    {x : E} (hx : {x} ∈ R.faces) (hopen : x ∈ openSimplex ({x} : Finset E)) :
+    x ∈ (boundaryComplex 1 (faceStarComplex R ({x} : Finset E))).space ↔
+      x ∈ (boundaryComplex 1 K).space := by
+  exact (mem_boundaryComplex_faceStarComplex_space_iff
+    (n := 0) R (hK.of_isSubdivision hR) hx hopen).trans (by
+      rw [boundaryComplex_space_of_isSubdivision (n := 0) K R hK hR])
+
+private theorem isPLSphere_or_exists_two_isPLSpheres_of_component_split
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    {P : Set E} (hPcompact : IsCompact P) {C : Set (Set E)} (hCfinite : C.Finite)
+    (hCsphere : ∀ S ∈ C, IsPLSphere 1 S) (hCdisjoint : C.PairwiseDisjoint id)
+    (hcover : P = ⋃₀ C)
+    (hsplit : ConnectedSpace P ∨
+      ∃ x y : P, Disjoint (connectedComponent x) (connectedComponent y) ∧
+        connectedComponent x ∪ connectedComponent y = univ) :
+    IsPLSphere 1 P ∨
+      ∃ S T : Set E, IsPLSphere 1 S ∧ IsPLSphere 1 T ∧
+        Disjoint S T ∧ P = S ∪ T := by
+  rcases hsplit with hconnected | ⟨x, y, hxy, hcomponents⟩
+  · apply Or.inl
+    rw [hcover]
+    apply (isPLSphere_one_sUnion_iff_isConnected hCfinite hCsphere hCdisjoint).mpr
+    rw [← hcover]
+    exact isConnected_iff_connectedSpace.mpr hconnected
+  · let _ : CompactSpace P := isCompact_iff_compactSpace.mp hPcompact
+    let S : Set E := ((↑) : P → E) '' connectedComponent x
+    let T : Set E := ((↑) : P → E) '' connectedComponent y
+    have hSconnected : IsConnected S :=
+      isConnected_connectedComponent.image Subtype.val continuous_subtype_val.continuousOn
+    have hTconnected : IsConnected T :=
+      isConnected_connectedComponent.image Subtype.val continuous_subtype_val.continuousOn
+    have hSclosed : IsClosed S :=
+      (isClosed_connectedComponent.isCompact.image continuous_subtype_val).isClosed
+    have hTclosed : IsClosed T :=
+      (isClosed_connectedComponent.isCompact.image continuous_subtype_val).isClosed
+    have hSne : S.Nonempty := ⟨x, ⟨x, mem_connectedComponent, rfl⟩⟩
+    have hTne : T.Nonempty := ⟨y, ⟨y, mem_connectedComponent, rfl⟩⟩
+    have hSTdisjoint : Disjoint S T :=
+      (Set.disjoint_image_iff Subtype.val_injective).mpr hxy
+    have hSTcover : S ∪ T = P := by
+      apply Subset.antisymm
+      · rintro z (hz | hz)
+        · obtain ⟨w, -, rfl⟩ := hz
+          exact w.2
+        · obtain ⟨w, -, rfl⟩ := hz
+          exact w.2
+      · intro z hz
+        let w : P := ⟨z, hz⟩
+        have hw : w ∈ connectedComponent x ∪ connectedComponent y := by
+          rw [hcomponents]
+          exact mem_univ w
+        rcases hw with hw | hw
+        · exact Or.inl ⟨w, hw, rfl⟩
+        · exact Or.inr ⟨w, hw, rfl⟩
+    have hSsub : S ⊆ ⋃₀ C := by
+      intro z hz
+      rw [← hcover]
+      exact hSTcover.subset (Or.inl hz)
+    have hTsub : T ⊆ ⋃₀ C := by
+      intro z hz
+      rw [← hcover]
+      exact hSTcover.subset (Or.inr hz)
+    obtain ⟨S', ⟨hS'C, hSS'⟩, -⟩ :=
+      existsUnique_subset_of_isConnected_of_finite_closed_partition hSconnected hCfinite
+        (fun U hU => (hCsphere U hU).isPolyhedron.isClosed) hCdisjoint hSsub
+    obtain ⟨T', ⟨hT'C, hTT'⟩, -⟩ :=
+      existsUnique_subset_of_isConnected_of_finite_closed_partition hTconnected hCfinite
+        (fun U hU => (hCsphere U hU).isPolyhedron.isClosed) hCdisjoint hTsub
+    have hS'sub : S' ⊆ S := by
+      have hS'cover : S' ⊆ S ∪ T := by
+        rw [hSTcover, hcover]
+        exact subset_sUnion_of_mem hS'C
+      rcases subset_or_subset_of_isPreconnected_of_isClosed
+          (hCsphere S' hS'C).isConnected_one.isPreconnected
+          hSclosed hTclosed hSTdisjoint hS'cover with hS'S | hS'T
+      · exact hS'S
+      · obtain ⟨z, hz⟩ := hSne
+        exact False.elim (Set.disjoint_left.mp hSTdisjoint hz (hS'T (hSS' hz)))
+    have hT'sub : T' ⊆ T := by
+      have hT'cover : T' ⊆ S ∪ T := by
+        rw [hSTcover, hcover]
+        exact subset_sUnion_of_mem hT'C
+      rcases subset_or_subset_of_isPreconnected_of_isClosed
+          (hCsphere T' hT'C).isConnected_one.isPreconnected
+          hSclosed hTclosed hSTdisjoint hT'cover with hT'S | hT'T
+      · obtain ⟨z, hz⟩ := hTne
+        exact False.elim (Set.disjoint_left.mp hSTdisjoint (hT'S (hTT' hz)) hz)
+      · exact hT'T
+    have hSeq : S = S' := Subset.antisymm hSS' hS'sub
+    have hTeq : T = T' := Subset.antisymm hTT' hT'sub
+    refine Or.inr ⟨S, T, ?_, ?_, hSTdisjoint, hSTcover.symm⟩
+    · rw [hSeq]
+      exact hCsphere S' hS'C
+    · rw [hTeq]
+      exact hCsphere T' hT'C
 
 def branchPreimage (hD : NormalSingularCellData D BdM B)
     (c : hD.singularSet.Branch) : Set (EuclideanSpace ℝ (Fin 2)) :=
@@ -231,6 +367,84 @@ theorem branchPreimage_isCompact [T2Space M]
     D.continuousOn.preimage_isClosed_of_isClosed hDclosed hcarrierclosed
   exact hDcompact.of_isClosed_subset hpreimageclosed inter_subset_left
 
+theorem branchProjection_isCoveringMap [T2Space M]
+    (hD : NormalSingularCellData D BdM B) (c : hD.singularSet.Branch) :
+    IsCoveringMap (hD.branchProjection c) := by
+  let _ : CompactSpace (hD.branchPreimage c) :=
+    isCompact_iff_compactSpace.mp (hD.branchPreimage_isCompact c)
+  exact isLocalHomeomorph_iff_isCoveringMap.mp (hD.branchProjection_isLocalHomeomorph c)
+
+theorem branchProjection_isClosedMap [T2Space M]
+    (hD : NormalSingularCellData D BdM B) (c : hD.singularSet.Branch) :
+    IsClosedMap (hD.branchProjection c) := by
+  let _ : CompactSpace (hD.branchPreimage c) :=
+    isCompact_iff_compactSpace.mp (hD.branchPreimage_isCompact c)
+  exact (hD.branchProjection_isCoveringMap c).continuous.isClosedMap
+
+theorem branchProjection_fiber_encard_eq_two
+    (hD : NormalSingularCellData D BdM B) (c : hD.singularSet.Branch)
+    (y : (hD.singularSet.branchComplex c).space) :
+    ((hD.branchProjection c) ⁻¹' {y}).encard = 2 := by
+  let P := hD.branchPreimage c
+  let fiber : Set P := (hD.branchProjection c) ⁻¹' {y}
+  have himage : ((↑) : P → EuclideanSpace ℝ (Fin 2)) '' fiber =
+      D.domain ∩ D ⁻¹' {(hD.singularSet.branchPieceIn c).map y} := by
+    ext x
+    constructor
+    · rintro ⟨z, hz, rfl⟩
+      have hpzy : hD.branchProjection c z = y := hz
+      refine ⟨z.2.1, ?_⟩
+      calc
+        D z = (hD.singularSet.branchPieceIn c).map (hD.branchCoordinate c z) :=
+          (hD.branchPieceIn_map_branchCoordinate c z.2).symm
+        _ = (hD.singularSet.branchPieceIn c).map y :=
+          congrArg (hD.singularSet.branchPieceIn c).map (congrArg Subtype.val hpzy)
+    · rintro ⟨hxD, hDxy⟩
+      have hycarrier :
+          (hD.singularSet.branchPieceIn c).map y ∈ hD.singularSet.branchCarrier c :=
+        (hD.singularSet.branchPieceIn c).bijOn.mapsTo y.2
+      have hxcarrier : D x ∈ hD.singularSet.branchCarrier c := by
+        rw [hDxy]
+        exact hycarrier
+      have hxP : x ∈ P := ⟨hxD, hxcarrier⟩
+      refine ⟨⟨x, hxP⟩, ?_, rfl⟩
+      apply Subtype.ext
+      apply (hD.singularSet.branchPieceIn c).bijOn.injOn
+      · exact hD.branchCoordinate_mem c hxP
+      · exact y.2
+      · exact (hD.branchPieceIn_map_branchCoordinate c hxP).trans hDxy
+  have hyDouble :
+      (hD.singularSet.branchPieceIn c).map y ∈ doublePointSet D D.domain :=
+    hD.singularSet.branchCarrier_subset_doublePointSet c
+      ((hD.singularSet.branchPieceIn c).bijOn.mapsTo y.2)
+  calc
+    fiber.encard = (((↑) : P → EuclideanSpace ℝ (Fin 2)) '' fiber).encard :=
+      (Subtype.val_injective.encard_image fiber).symm
+    _ = (D.domain ∩ D ⁻¹' {(hD.singularSet.branchPieceIn c).map y}).encard :=
+      congrArg Set.encard himage
+    _ = 2 := hD.fiber_encard_eq_two hyDouble
+
+open Classical in
+theorem branchProjection_connected_or_two_components [T2Space M]
+    (hD : NormalSingularCellData D BdM B) (c : hD.singularSet.Branch) :
+    ConnectedSpace (hD.branchPreimage c) ∨
+      ∃ x y : hD.branchPreimage c,
+        Disjoint (connectedComponent x) (connectedComponent y) ∧
+        connectedComponent x ∪ connectedComponent y = univ ∧
+        (∃ e : connectedComponent x ≃ₜ (hD.singularSet.branchComplex c).space,
+          ∀ z : connectedComponent x, e z = hD.branchProjection c z) ∧
+        ∃ e : connectedComponent y ≃ₜ (hD.singularSet.branchComplex c).space,
+          ∀ z : connectedComponent y, e z = hD.branchProjection c z := by
+  let L := hD.singularSet.branchComplex c
+  let _ : ConnectedSpace L.space :=
+    Subtype.connectedSpace (hD.singularSet.branchComplex_space_isConnected c)
+  let y : L.space := Classical.arbitrary L.space
+  obtain ⟨a, b, -, -⟩ := encard_eq_two.mp (hD.branchProjection_fiber_encard_eq_two c y)
+  let _ : Nonempty (hD.branchPreimage c) := ⟨a⟩
+  exact DifferentialGeometry.Topology.Covering.connectedSpace_or_exists_exactly_two_components
+    (hD.branchProjection_isCoveringMap c) (hD.branchProjection_isClosedMap c)
+      (hD.branchProjection_fiber_encard_eq_two c)
+
 open Classical in
 theorem branchPreimage_isPolyhedron [T2Space M]
     (hD : NormalSingularCellData D BdM B) (c : hD.singularSet.Branch) :
@@ -244,7 +458,10 @@ theorem exists_local_branchPreimage_manifold [T2Space M]
     {x : EuclideanSpace ℝ (Fin 2)} (hx : x ∈ hD.branchPreimage c) :
     ∃ H : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2)),
       H.faces.Finite ∧ IsCombinatorialManifoldWithBoundary 1 H ∧ x ∈ H.space ∧
-        ∀ᶠ z in 𝓝 x, z ∈ hD.branchPreimage c ↔ z ∈ H.space := by
+        (∀ᶠ z in 𝓝 x, z ∈ hD.branchPreimage c ↔ z ∈ H.space) ∧
+        (x ∈ (boundaryComplex 1 H).space ↔
+          hD.branchCoordinate c x ∈
+            (boundaryComplex 1 (hD.singularSet.branchComplex c)).space) := by
   let P := hD.branchPreimage c
   let L := hD.singularSet.branchComplex c
   let f := hD.branchCoordinate c
@@ -368,7 +585,38 @@ theorem exists_local_branchPreimage_manifold [T2Space M]
   have hSnhds : S ∈ 𝓝[P] x := Filter.inter_mem hCnhds hpreimageWithin
   obtain ⟨W, hW, hWsub⟩ :=
     mem_nhdsWithin_iff_exists_mem_nhds_inter.mp hSnhds
-  refine ⟨H, hHfinite, hHman, hHspace ▸ hxS, ?_⟩
+  have hxH : x ∈ H.space := hHspace ▸ hxS
+  let T := faceStarComplex R ({y} : Finset _)
+  let _ : Finite T.faces := (faceStarComplex_faces_finite R ({y} : Finset _)).to_subtype
+  have hTspace : T.space = closedStar R y := faceStarComplex_space R hyR hyOpen
+  have hSplHT : IsPLHomeomorphOn f H.space T.space := by
+    rw [hHspace, hTspace]
+    exact hSpl
+  have hboundary :
+      x ∈ (boundaryComplex 1 H).space ↔
+        f x ∈ (boundaryComplex 1 L).space := by
+    change x ∈ (euclideanBoundaryComplexModel 2 H).space ↔
+      f x ∈ (euclideanBoundaryComplexModel hD.singularSet.piece.ambientDim L).space
+    rw [euclideanBoundaryComplexModel_eq_classical,
+      euclideanBoundaryComplexModel_eq_classical]
+    have hmap :
+        x ∈ (classicalEuclideanBoundaryComplexModel 2 H).space ↔
+          f x ∈
+            (classicalEuclideanBoundaryComplexModel
+              hD.singularSet.piece.ambientDim T).space := by
+      exact mem_boundaryComplex_source_iff_of_isPLHomeomorphOn H T hHman hSplHT hxH
+    have htarget :
+        f x ∈
+            (classicalEuclideanBoundaryComplexModel
+              hD.singularSet.piece.ambientDim T).space ↔
+          f x ∈
+            (classicalEuclideanBoundaryComplexModel
+              hD.singularSet.piece.ambientDim L).space := by
+      simpa only [T, y, classicalEuclideanBoundaryComplexModel] using
+        (mem_boundaryComplex_faceStar_iff_of_isSubdivision L R
+          (hD.singularSet.branchComplex_isManifoldWithBoundary c) hR hyR hyOpen)
+    exact hmap.trans htarget
+  refine ⟨H, hHfinite, hHman, hxH, ?_, hboundary⟩
   filter_upwards [hW] with z hzW
   rw [hHspace]
   constructor
@@ -519,10 +767,107 @@ theorem exists_branchPreimage_simplicialComplex_manifold [T2Space M]
   refine ⟨K, hKfinite, hKspace,
     isCombinatorialManifoldWithBoundary_one_of_locally_eq K hKcard ?_, hKaffine, hKmaps⟩
   intro x hx
-  obtain ⟨H, hHfinite, hHman, hxH, heq⟩ :=
+  obtain ⟨H, hHfinite, hHman, hxH, heq, -⟩ :=
     hD.exists_local_branchPreimage_manifold c (hKspace ▸ hx)
   refine ⟨H, hHfinite, hHman, hxH, ?_⟩
   simpa only [hKspace] using heq
+
+open Classical in
+theorem exists_branchPreimage_simplicialComplex_manifold_of_not_boundaryBranch
+    [T2Space M] (hD : NormalSingularCellData D BdM B)
+    {c : hD.singularSet.Branch} (hc : ¬hD.singularSet.IsBoundaryBranch c) :
+    ∃ K : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2)),
+      K.faces.Finite ∧ K.space = hD.branchPreimage c ∧
+        IsCombinatorialManifold 1 K ∧
+        (∀ s ∈ K.faces, ∃ A : EuclideanSpace ℝ (Fin 2) →ᵃ[ℝ]
+            EuclideanSpace ℝ (Fin hD.singularSet.piece.ambientDim),
+          EqOn (hD.branchCoordinate c) A (convexHull ℝ (s : Set _))) ∧
+        ∀ s ∈ K.faces, ∃ t ∈ (hD.singularSet.branchComplex c).faces,
+          MapsTo (hD.branchCoordinate c) (convexHull ℝ (s : Set _))
+            (convexHull ℝ (t : Set _)) := by
+  obtain ⟨K, hKfinite, hKspace, hKman, hKaffine, hKmaps⟩ :=
+    hD.exists_branchPreimage_simplicialComplex_manifold c
+  let _ : Finite K.faces := hKfinite.to_subtype
+  let L := hD.singularSet.branchComplex c
+  let _ : Finite L.faces := (hD.singularSet.branchComplex_faces_finite c).to_subtype
+  have hLman : IsCombinatorialManifold 1 L :=
+    hD.singularSet.branchComplex_isManifold hc
+  refine ⟨K, hKfinite, hKspace, ?_, hKaffine, hKmaps⟩
+  apply (isCombinatorialManifold_one_iff K).mpr
+  refine ⟨fun s hs => hKman.card_le K hs, ?_⟩
+  intro x hx
+  have hxK : x ∈ K.space := K.convexHull_subset_space hx (by simp)
+  obtain ⟨H, hHfinite, hHman, hxH, heq, hboundary⟩ :=
+    hD.exists_local_branchPreimage_manifold c (hKspace ▸ hxK)
+  let _ : Finite H.faces := hHfinite.to_subtype
+  have hLboundaryFaces : (boundaryComplex 1 L).faces = ∅ := by
+    change (euclideanBoundaryComplexModel hD.singularSet.piece.ambientDim L).faces = ∅
+    rw [euclideanBoundaryComplexModel_eq_classical]
+    exact hLman.boundaryComplex_faces_eq_empty L
+  have hyNot : hD.branchCoordinate c x ∉ (boundaryComplex 1 L).space := by
+    intro hy
+    obtain ⟨s, hs, -⟩ := (boundaryComplex 1 L).mem_space_iff.mp hy
+    rw [hLboundaryFaces] at hs
+    exact hs
+  have hxNotH : x ∉ (boundaryComplex 1 H).space :=
+    fun hxB => hyNot (hboundary.mp hxB)
+  obtain ⟨R, hR, hRfinite, hxR⟩ := exists_isSubdivision_singleton_mem H hxH
+  let _ : Finite R.faces := hRfinite.to_subtype
+  have hRman : IsCombinatorialManifoldWithBoundary 1 R := hHman.of_isSubdivision hR
+  have hxNotR : x ∉ (boundaryComplex 1 R).space := by
+    intro hxB
+    apply hxNotH
+    have hboundaryEq :
+        (boundaryComplex 1 R).space = (boundaryComplex 1 H).space := by
+      change (euclideanBoundaryComplexModel 2 R).space =
+        (euclideanBoundaryComplexModel 2 H).space
+      rw [euclideanBoundaryComplexModel_eq_classical,
+        euclideanBoundaryComplexModel_eq_classical]
+      exact boundaryComplex_space_of_isSubdivision H R hHman hR
+    exact hboundaryEq ▸ hxB
+  have heqR : ∀ᶠ z in 𝓝 x, z ∈ K.space ↔ z ∈ R.space := by
+    filter_upwards [heq] with z hz
+    rw [hKspace, hR.space_eq]
+    exact hz
+  rcases (isCombinatorialManifoldWithBoundary_one_iff R).mp hRman |>.2 x hxR with
+    hsingle | hpair
+  · exfalso
+    apply hxNotR
+    have hxBoundaryFace : {x} ∈ (boundaryComplex 1 R).faces := by
+      change {x} ∈ (euclideanBoundaryComplexModel 2 R).faces
+      rw [euclideanBoundaryComplexModel_eq_classical]
+      apply (hRman.mem_boundaryComplex_iff_unique_coface
+        (dE := Classical.decEq _) R (by simp)).mpr
+      simpa only [Finset.mem_singleton, Finset.pair_comm] using hsingle
+    exact (boundaryComplex 1 R).convexHull_subset_space hxBoundaryFace (by simp)
+  · apply neighbors_eq_pair_of_eventually_eq K R
+      (fun s hs => hKman.card_le K hs) (fun s hs => hRman.card_le R hs)
+      hx hxR heqR hpair
+
+open Classical in
+theorem branchPreimage_isPLSphere_or_exists_two_isPLSpheres_of_not_boundaryBranch
+    [T2Space M] (hD : NormalSingularCellData D BdM B)
+    {c : hD.singularSet.Branch} (hc : ¬hD.singularSet.IsBoundaryBranch c) :
+    IsPLSphere 1 (hD.branchPreimage c) ∨
+      ∃ S T : Set (EuclideanSpace ℝ (Fin 2)),
+        IsPLSphere 1 S ∧ IsPLSphere 1 T ∧ Disjoint S T ∧
+          hD.branchPreimage c = S ∪ T := by
+  obtain ⟨K, hKfinite, hKspace, hKman, -, -⟩ :=
+    hD.exists_branchPreimage_simplicialComplex_manifold_of_not_boundaryBranch hc
+  let _ : Finite K.faces := hKfinite.to_subtype
+  obtain ⟨C, hCfinite, hCsphere, hCdisjoint, hCcover⟩ :=
+    exists_finite_isPLSphere_decomposition K hKman
+  have hsplit : ConnectedSpace (hD.branchPreimage c) ∨
+      ∃ x y : hD.branchPreimage c,
+        Disjoint (connectedComponent x) (connectedComponent y) ∧
+          connectedComponent x ∪ connectedComponent y = univ := by
+    rcases hD.branchProjection_connected_or_two_components c with hconnected | htwo
+    · exact Or.inl hconnected
+    · obtain ⟨x, y, hxy, hcover, -⟩ := htwo
+      exact Or.inr ⟨x, y, hxy, hcover⟩
+  exact isPLSphere_or_exists_two_isPLSpheres_of_component_split
+    (hD.branchPreimage_isCompact c) hCfinite hCsphere hCdisjoint
+      (hKspace.symm.trans hCcover) hsplit
 
 end NormalSingularCellData
 
