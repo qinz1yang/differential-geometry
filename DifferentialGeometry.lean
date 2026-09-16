@@ -675,6 +675,8 @@ import DifferentialGeometry.Analysis.Heat.Smoothing.Spectral.Lift
 import DifferentialGeometry.Analysis.HoleFilling
 import DifferentialGeometry.Analysis.InnerProductSpace.Cayley
 import DifferentialGeometry.Analysis.InnerProductSpace.ConformalPair
+import DifferentialGeometry.Analysis.InnerProductSpace.EllipsoidNeighborhood
+import DifferentialGeometry.Analysis.InnerProductSpace.EuclideanSplit
 import DifferentialGeometry.Analysis.InnerProductSpace.HilbertSchmidt
 import DifferentialGeometry.Analysis.InnerProductSpace.IsometryTransitive
 import DifferentialGeometry.Analysis.InnerProductSpace.Laplacian
@@ -8862,8 +8864,10 @@ import DifferentialGeometry.Topology.Manifold.BoundaryCollar.UniformInwardFlow
 import DifferentialGeometry.Topology.Manifold.BoundaryCollar.UnitSpeedField
 import DifferentialGeometry.Topology.Manifold.ChartedSpaceHomeomorph
 import DifferentialGeometry.Topology.Manifold.ClosedDiskExtension
+import DifferentialGeometry.Topology.Manifold.CollarChartIsotopy
 import DifferentialGeometry.Topology.Manifold.CollarFamily
 import DifferentialGeometry.Topology.Manifold.CollarFamilySeparation
+import DifferentialGeometry.Topology.Manifold.NormalChartOrientation
 import DifferentialGeometry.Topology.Manifold.RelativeCollar
 import DifferentialGeometry.Topology.Manifold.RelativeCollarAssembly
 import DifferentialGeometry.Topology.Manifold.RelativeCollarStraightening
