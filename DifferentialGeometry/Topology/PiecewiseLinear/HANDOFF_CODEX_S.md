@@ -1029,3 +1029,30 @@ No vendored or other-lane source changed.
 Full 26.2 remains partial: assemble the finite collar induction using these actual dual-cell
 inputs, then prove that the final image is a neighborhood of the entire original boundary.
 The exact bundled I2 target-type issue and the other milestone obligations are unchanged.
+### S-M4 continuation: finite surface-collar induction
+
+The arc-cover layer is committed and pushed as `691c7329d`; the integration merge was
+already up to date. `SurfaceCollar.lean` now proves
+`IsCombinatorialManifoldWithBoundary.exists_isPLHomeomorphOn_surface_prod_Icc`.
+For any finite combinatorial surface with boundary embedded in the intrinsic boundary
+of a finite combinatorial three-manifold, it constructs a PL embedding of the surface
+times any nondegenerate compact interval. The bottom is fixed, positive heights lie off
+the original boundary, and the image lies in the original manifold. It also returns a
+finite combinatorial three-manifold triangulating the actual closed complement, with
+the old-image and original-boundary intersection conditions preserved.
+
+The proof performs finite induction over the actual vertex dual cells. It consumes the
+shared-arc and finite triple-intersection producers, the generalized collar extension,
+and the later-disk persistence theorem. No cell ordering, extension map, complement
+manifold, or persistence conclusion is added as a hypothesis. The statement permits a
+proper boundary subsurface; the whole boundary is a specialization.
+
+Focused check: `check-surface-collar.log`, exit 0, zero warnings.
+`AuditS89SurfaceCollar.lean` / `.log` audit the public endpoint; its closure contains only
+`propext`, `Classical.choice`, and `Quot.sound`. No vendored or other-lane source changed.
+The source hash is recorded at the next checkpoint.
+
+Full 26.2 still requires the image-neighborhood property. The next proof restricts the
+product embedding to a disk neighborhood in the boundary and uses the exact boundary of
+its three-ball complement to exclude the base point from that complement. The bundled
+I2 target-type issue and other milestone obligations are unchanged.
