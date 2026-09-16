@@ -558,3 +558,29 @@ S-M3 remains partial only at the exact `SingularTwoCell K.space` interface: the 
 a boundary-compatible target chart API from its owner. The phrase "I2 已交付" is deliberately not
 used as a completion label while that obligation remains. S-M4 proceeds with the checked intrinsic
 boundary-ball endpoint; it does not need the singular-cell type adaptation.
+
+### S-M4: local boundary-disk product collar checked
+
+S-M3's geometric producers are committed and pushed as `bd74dd7ca`; the next integration
+merge was already up to date. The exact general-ambient singular-cell type issue remains as above.
+`Product.lean` proves polyhedral products and products of PL homeomorphisms.
+`Prism.lean` triangulates a triangular prism into three tetrahedra and proves
+`isPLBall_three_prod`: a PL two-ball times a PL one-ball is a PL three-ball.
+`PrismBoundary.lean` proves that the bottom of a disk prism lies in its intrinsic boundary.
+The general boundary-incidence theorem added to `SubcomplexBallGluing.lean` supplies this step
+in arbitrary finite-dimensional ambient spaces, without ambient frontier assumptions.
+`DiskCollar.lean` exports
+`IsCombinatorialManifoldWithBoundary.exists_collar_of_boundary_disk`:
+for a boundary PL disk D, there are C contained in K.space and a PL homeomorphism
+from D times [0,1] onto C which fixes (x,0), with C intersected with the intrinsic boundary
+equal to D and every positive-height point lying off that boundary.
+The proof uses Problem 26.1, the prism model, and the existing boundary-disk PL extension.
+It needs no containing-ball or Schoenflies hypothesis.
+All five affected modules have focused-check exit 0 and zero warnings.
+`AuditS75Collar.lean` / `AuditS75Collar.log` audits thirteen public declarations with only
+`propext`, `Classical.choice`, and `Quot.sound`. Check logs are `check-pl-product.log`,
+`check-prism.log`, `check-subcomplex-ball-gluing-boundary.log`, `check-prism-boundary.log`,
+and `check-disk-collar.log` under `.lake/scratch`.
+This completes the requested subcomplex disk collar. The full 26.2 obligation is still the
+compatible product on the entire compact boundary and the neighborhood property of its image.
+A local disk collar alone is not claimed to be a neighborhood at the disk's boundary edges.

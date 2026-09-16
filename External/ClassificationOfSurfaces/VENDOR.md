@@ -1712,3 +1712,15 @@ in the existing singular-cell type. No vendored Lean source changed. `AuditS72In
 seven supporting endpoints and `AuditS74Push` audits the three unconditional producers.
 All focused checks exit 0 with zero warnings, and only the standard three axioms occur.
 The general-ambient singular-cell target chart adaptation is not claimed by these endpoints.
+
+## Boundary disk product collars
+
+The native `Product`, `Prism`, `PrismBoundary`, and `DiskCollar` modules give the local disk
+collar used in Moise 26.2. The prism proof explicitly glues three tetrahedra along their
+triangular faces using 23.11. Intrinsic boundary incidence and the existing boundary-disk
+PL extension then identify its bottom with a prescribed boundary disk in the containing
+three-ball from Problem 26.1. Positive height misses the ambient boundary by injectivity.
+This original native development changes no vendored Lean source. Five focused checks exit 0
+with zero warnings; `AuditS75Collar` checks thirteen declarations, all with only the standard
+three axioms. Compatibility of different disk collars and the whole-boundary neighborhood
+are separate remaining obligations.

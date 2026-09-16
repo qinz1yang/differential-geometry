@@ -156,4 +156,42 @@ theorem IsCombinatorialManifoldWithBoundary.isPLBall_union_iUnion_of_pairwiseDis
       (hA i (Finset.mem_insert_self _ _)) hprevK (hAK i (Finset.mem_insert_self _ _))
       (hinter.symm ▸ hI i (Finset.mem_insert_self _ _))
     simpa only [Finset.set_biUnion_insert, union_assoc, union_left_comm, union_comm] using h
+
+open Classical in
+theorem IsCombinatorialManifoldWithBoundary.inter_subset_boundaryComplex_of_isPLBall
+    {n : ℕ} {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces]
+    (hK : IsCombinatorialManifoldWithBoundary (n + 1) K)
+    (A : Geometry.SimplicialComplex ℝ E) [Finite A.faces]
+    (hA : IsPLBall (n + 1) A.space) (hAK : A.space ⊆ K.space)
+    {D : Set E} (hD : IsPLBall (n + 1) D) (hDK : D ⊆ K.space)
+    (hI : IsPLBall n (A.space ∩ D)) :
+    A.space ∩ D ⊆ (boundaryComplex (n + 1) A).space := by
+  classical
+  obtain ⟨R, hR, hfin, hcover⟩ := exists_isSubdivision_subcomplexes K
+    (fun b : Bool => if b then A.space else D)
+    (fun b => by cases b with
+      | false => exact hD.isPolyhedron
+      | true => exact hA.isPolyhedron)
+    (fun b => by cases b with
+      | false => exact hDK
+      | true => exact hAK)
+  let _ : Finite R.faces := hfin.to_subtype
+  let A' := restrict R A.space
+  let B' := restrict R D
+  let _ : Finite A'.faces := (restrict_faces_finite R A.space).to_subtype
+  let _ : Finite B'.faces := (restrict_faces_finite R D).to_subtype
+  have hA' : A'.space = A.space := restrict_space_of_eq_biUnion R A.space
+    (by simpa using hcover true)
+  have hB' : B'.space = D := restrict_space_of_eq_biUnion R D (by simpa using hcover false)
+  have hI' : IsPLBall n (A'.space ∩ B'.space) := by rwa [hA', hB']
+  have hsub := PiecewiseLinear.inter_subset_boundaryComplex_of_isPLBall R A' B' (hK.of_isSubdivision hR)
+    (hA'.symm ▸ hA) (hB'.symm ▸ hD) (restrict_faces_subset R A.space)
+    (restrict_faces_subset R D) hI'
+  have hid : IsPLHomeomorphOn (id : E → E) A.space A'.space := by
+    rw [hA']
+    exact hA.isPolyhedron.isPLHomeomorphOn_id
+  have hbd := boundaryComplex_space_of_isPLHomeomorphOn A A'
+    hA.isCombinatorialManifoldWithBoundary hid
+  rw [image_id] at hbd
+  rwa [hA', hB', hbd] at hsub
 end DifferentialGeometry.Topology.PiecewiseLinear
