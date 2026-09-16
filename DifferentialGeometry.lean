@@ -778,6 +778,7 @@ import DifferentialGeometry.Analysis.Integration.Lp.Multiplication
 import DifferentialGeometry.Analysis.Integration.Lp.Pairing
 import DifferentialGeometry.Analysis.Integration.Lp.Product
 import DifferentialGeometry.Analysis.Integration.Lp.ProductL2
+import DifferentialGeometry.Analysis.Integration.Lp.QuadraticLowerSemicontinuity
 import DifferentialGeometry.Analysis.Integration.Lp.SmoothPairing
 import DifferentialGeometry.Analysis.Integration.Lp.SpacetimeDual
 import DifferentialGeometry.Analysis.Integration.Lp.SpatialSteklov
@@ -1723,6 +1724,8 @@ import DifferentialGeometry.Analysis.Sobolev.Euclidean.Completeness.IteratedSobo
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Completeness.IteratedSobolevQuot
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.DeGiorgi
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Density
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.DirichletEnergy.Existence
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.DirichletEnergy.WeakLowerSemicontinuity
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.DivergenceForm
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Embedding.Derivative.IteratedSobolevNorm
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Embedding.Derivative.SobolevNorm
@@ -9274,6 +9277,7 @@ import DifferentialGeometry.Topology.OpenCover.Disjoint
 import DifferentialGeometry.Topology.Order.FiniteSeparation
 import DifferentialGeometry.Topology.Order.Interval
 import DifferentialGeometry.Topology.Order.IntervalPush
+import DifferentialGeometry.Topology.Order.LiminfSum
 import DifferentialGeometry.Topology.OrderedCollar
 import DifferentialGeometry.Topology.OrderedSeparatingCollars
 import DifferentialGeometry.Topology.PartitionOfUnity
