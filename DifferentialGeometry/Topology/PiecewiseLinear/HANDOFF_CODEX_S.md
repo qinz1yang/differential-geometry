@@ -685,8 +685,8 @@ no second-batch source or duplicate Jordan extension wrapper was introduced.
 | S-M2 | done: complete boundary-disk derived neighborhood and Problem 26.1 | `d12dd514a`; AuditS70: 6; AuditS73Disk: 5 | None for the containing-ball theorem |
 | S-M3 | partial: general parametrized PL push-off and Euclidean singular cell | `bd74dd7ca`; AuditS72Intrinsic: 7; AuditS74Push: 3 | `SingularTwoCell K.space` needs a boundary-compatible target type; its current Euclidean open-chart requirement is not available from a manifold-with-boundary hypothesis |
 | S-M4 | done: whole-boundary collar with the relative-neighborhood property for finite combinatorial three-manifolds in arbitrary finite-dimensional real normed spaces | `691c7329d`, `e9feba0c2`, `f778f73ff`; AuditS88--S90: 12; earlier layers and audits below | None for the finite-complex endpoint in NIGHT_PLAN; abstract PL charted ambient transport is not asserted |
-| S-M5 | partial: 26.1 in PL charted ambient spaces; arbitrarily small PL bicollars of connected two-sided finite combinatorial surfaces proved | `ddf717a4b`; collar `f778f73ff`; side manifolds `927573c40`; connected bicollar `33e5a92d7`; AuditS95--S99: 26 | Combine finitely many surface components; transport the finite-complex bicollar to general PL charted ambient spaces; finish the prior 26.1 interior-chart transport for arbitrary K |
-| S-M6 | partial: general relative 17.3 done; P.4 inputs checked | `f0383a381`; AuditS77RelativeDisk: 4; AuditS79P4Inputs: 3 | Supported ambient graph extension with control, as detailed above |
+| S-M5 | done: 26.1 in finite combinatorial carriers and general PL charted ambient spaces; arbitrarily small PL bicollars without connectedness assumptions | `ddf717a4b`; finite bicollar `3a55ac834`; general manifold bicollar `52d70d778`; relative topology `7746cff68`; AuditS101--S104: 18 | No remaining 26.1/26.3 obligation in these stated settings; the separate I2 target-type issue remains in S-M3 |
+| S-M6 | partial: general relative 17.3 done; P.4 supported extension, disjoint gluing, and displacement control proved | `f0383a381`; `6d1df9349`; AuditS77: 4; AuditS79: 3; AuditS105: 9 | Construct compatible vertex-sector maps, relative edge straightening, and sufficiently small geometric frames |
 
 All listed completed layers have focused-check exit 0 with zero warnings and transitive axiom
 closures contained in `propext`, `Classical.choice`, and `Quot.sound`. No newly proved layer
@@ -1576,3 +1576,27 @@ These are supported-extension and control tools for P.4, not a proof of finite g
 tameness. The actual compatible sector homeomorphisms inside vertex disks and relative
 straightening inside the edge frames still have to be constructed from the planar
 Jordan/Schoenflies inputs. P.4 remains partial, and I2's target-type issue is unchanged.
+
+### S-M5 completion and S-M6 publication checkpoint, 2026-09-16
+
+The source checkpoints are committed and pushed as `7adcc0194` (finite component
+complexes and disjoint PL gluing), `3a55ac834` (finite bicollars without connectedness),
+`2c0c1c2a4` (two-sidedness and PL piece transport), `52d70d778` (general PL-manifold
+bicollars), `7746cff68` (relative boundary topology and 26.1), and `6d1df9349`
+(supported homeomorphism extension and finite gluing). The nine distinct Lean modules
+changed across these checkpoints have focused-check exit 0 and zero warnings.
+AuditS100--S105 contain 12/2/5/6/5/9 entries, respectively: 39 entries, all with only
+`propext`, `Classical.choice`, and `Quot.sound`.
+
+Every source checkpoint was followed by fetch and merge of the integration branch.
+The final source checkpoint is clean and synchronized with origin/codex/moise-s;
+origin/codex/moise-integration remains merged at `8fb887bb9`. This bookkeeping commit
+updates the S-M5/S-M6 summary and plan rows B.1, B.4, and P.4 to the verified scope,
+and removes the now-discharged B.4 prerequisites from B.2's remaining-work sentence.
+
+S-M5 is complete in the stated finite-complex and general Hausdorff PL charted settings.
+S-M6 remains partial: 17.3 is proved, while P.4 still requires the actual compatible
+vertex-sector and edge-frame constructions. The supported extension and control tools
+do not themselves imply graph tameness. I2's exact target-type issue is unchanged.
+There is no new consultation blocker; the next step is relative straightening of arcs
+inside a disk while fixing its boundary.
