@@ -684,7 +684,7 @@ no second-batch source or duplicate Jordan extension wrapper was introduced.
 | S-M1 | done: regular-neighborhood pieces, attaching disks, general ambient spaces | `2375fc812`; AuditS67--S69: 42; AuditS71General: 5 | None for the requested piece/intersection layer |
 | S-M2 | done: complete boundary-disk derived neighborhood and Problem 26.1 | `d12dd514a`; AuditS70: 6; AuditS73Disk: 5 | None for the containing-ball theorem |
 | S-M3 | partial: general parametrized PL push-off and Euclidean singular cell | `bd74dd7ca`; AuditS72Intrinsic: 7; AuditS74Push: 3 | `SingularTwoCell K.space` needs a boundary-compatible target type; its current Euclidean open-chart requirement is not available from a manifold-with-boundary hypothesis |
-| S-M4 | partial: controlled disk collars, actual manifold complements, exact complementary boundaries, and PL boundary replacement fixing the attaching-disk exterior | `5f97aca9d`, `41b78491e`, `51e4d8f21`, `7f062e84c`; AuditS75: 13; S78: 4; S80: 16; S81: 13 | Compatible side-face product gluing and the whole-boundary neighborhood property |
+| S-M4 | partial: controlled local collars, actual complements, precise boundaries, prescribed-side prism extension, compatible collar enlargement, and preservation of both complementary-boundary interface conditions | `5f97aca9d`, `41b78491e`, `51e4d8f21`, `7f062e84c`, `bc9b5bbcb`, `7ec642daf`, `66d39dbdd`; AuditS75: 13; S78: 4; S80: 16; S81: 13; S82--S84: 25 | Boundary cell ordering, future attaching disks in the new complementary boundary, finite induction, and the whole-boundary neighborhood property |
 | S-M5 | partial: 26.1 in Hausdorff PL charted ambient spaces | `ddf717a4b`; AuditS76TwoSided: 11 | Interior chart transport for arbitrary K; for 26.3, exactly two sides with manifold closures, then full 26.2 |
 | S-M6 | partial: general relative 17.3 done; P.4 inputs checked | `f0383a381`; AuditS77RelativeDisk: 4; AuditS79P4Inputs: 3 | Supported ambient graph extension with control, as detailed above |
 
@@ -883,3 +883,17 @@ complementary boundary; finish the finite induction and prove that the final ima
 neighborhood of the entire original boundary. The step already preserves old coordinates,
 positive-height boundary avoidance, the complement's manifold property, and both interface
 boundary conditions. Full 26.2 remains partial, and the exact I2 target-type issue is unchanged.
+
+### S-M4 verified source checkpoints and plan update, 2026-09-16
+
+The three source checkpoints are committed and pushed: `bc9b5bbcb` (prism attachment disks
+and prescribed side coordinates), `7ec642daf` (actual compatible collar enlargement), and
+`66d39dbdd` (preservation of the complementary-boundary conditions). All nine distinct Lean
+modules changed across them have focused-check exit 0 and zero warnings. AuditS82/S83/S84
+contain 25 entries in total, including repeated affected endpoints; every entry has only
+`propext`, `Classical.choice`, and `Quot.sound`.
+
+Each source checkpoint was followed by fetch and merge of the integration branch, still
+already up to date at `8fb887bb9`. The final bookkeeping commit changes only this handoff and
+the B.3 plan row. Full 26.2 remains partial for the precise obligations above; exact bundled
+I2 is not marked delivered, and the P.4 obligations remain unchanged.
