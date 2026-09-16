@@ -1394,3 +1394,540 @@ M1/M2/M3 均未验收；下一审计文件 `AuditF135.lean`。
 这是旧高度在原剖分顶点上单射时的稳定定理。水平封帽后多个顶点位于同一旧层，不能直接使用本定理；
 仍需处理该退化层、凸化引入的剖分和封帽后的严格降指标。没有扩充 `SchoenfliesInput`，M1/M2/M3 均未验收。
 下一审计文件 `AuditF139.lean`。
+
+### 18.19 允许其他高度层退化的临界层稳定
+
+- `HeightProjection.lean` 增加三个 `of_unique_vertex_in_fiber` 强版。它们只要求当前层的原顶点至多为 p：
+  `∀ v ∈ K.vertices, ℓ v = ℓ p → v = p`，不要求不同高度层的所有顶点一般位置。
+  若 x ≠ p 在当前层，则其载体必有一个不同高度的顶点 v；方向 v - x 属于载体方向空间且高度非零，给出所需投影。
+- `HeightStability.lean` 将强版推广到保持球面、整层像集相等和原顶点处平面芽对应的环境 PL 同胚。
+  `HeightRotation.lean` 的点态强版及 `eventually_heightSingularPoints_inter_eq_and_levelPolygons_encard_eq`
+  给出任意满足上述单层唯一性的一族原顶点上，奇异性与整层圆周数同时保持。
+- 所有旧的顶点单射接口保留完整签名，证明改为新强版的推论；既有全局 `eventually_heightIndex_eq` 不变。
+
+三个改动模块最终聚焦检查分别为 10.9、12.1、11.2 秒，均 exit=0、零 warning。
+`AuditF139.lean` 二十二项（含全部保留接口）仅标准三公理，强版端点签名已核对。
+没有增加 `SchoenfliesInput` 字段。本层允许其他层退化，但不涵盖选定层的多顶点水平封帽；
+还需证明封帽边缘的 crossing/孤立分类、凸化后的剖分控制及严格降指标。M1/M2/M3 均未验收。
+下一审计文件 `AuditF140.lean`。
+
+### 18.20 非水平面与保高度 PL 图卡下的 crossing 稳定
+
+- `TransverseHeight.lean` 给仿射平面与高度层的 crossing 判据。对有限二维组合带边流形，只要求当前载体面的方向空间内
+  有一个非水平向量，即可推出 crossing；不要求整份剖分一般位置。非水平条件在小幅线性高度扰动下保持。
+- `CrossingStability.lean` 从一个 PL Lipschitz 映射 G 构造沿平面内非水平向量的位移：
+  改变量为新旧线性形式之差作用于 G。扰动足够小时，位移的 Lipschitz 常数小于 1，因而得到环境 PL 同胚，
+  固定原点并保持整个指定子空间，同时具有精确高度公式。
+- `eventually_hasPLCrossingAt_of_height_preserving_chart` 对一个局部保高度的环境 PL 图卡，且曲面芽是非水平平面的图卡像，
+  证明所有足够小的线性高度扰动仍在图卡中心 crossing。图卡只需局部保高度；其局部 PL 数据用既有延拓定理变成 Lipschitz 输入。
+  该结论没有剖分顶点单射条件，可供凸化后的非临界点使用，但具体保高度图卡仍须由几何构造提供。
+
+两模块最终聚焦检查分别为 11.9、10.5 秒，均 exit=0、零 warning；`AuditF140.lean` 六项仅标准三公理。
+已核对图卡端点完整签名，没有将 crossing 或指标比较放入假设，也没有扩充 `SchoenfliesInput`。
+下一步从原两上覆面整直构造中导出保高度图卡，随后处理水平封帽边缘与严格降指标。M1/M2/M3 均未验收。
+下一审计文件 `AuditF141.lean`。
+### 18.21 非水平载体面的实际保高度图卡
+
+- `GeneralPosition.lean` 的射线、两半空间和两上覆面整直增加逐点位移属于指定子空间的强版；三个旧接口保留完整签名。
+  在边的方向空间与高度核互补时，取该子空间为高度核，得到整直过程严格保持高度差。
+- `HeightChart.lean` 的 `exists_height_preserving_chart_of_transverse_face` 对有限闭二维组合流形的任意非水平载体面，
+  构造全空间 PL 同胚图卡，曲面芽是二维子空间的图卡像，且逐点满足精确高度公式。图卡生产者不要求环境恰为三维。
+- `eventually_hasPLCrossingAt_image_fiber_of_notMem_vertices` 在三维环境中，从原剖分顶点上单射的高度出发，
+  证明任意保高度环境 PL 同胚后，每个原非顶点的像都在充分小的转轴下保持 crossing。
+  此结论适用于凸化时引入的有限新顶点，没有加入图卡存在性或 crossing 结论作为输入。
+
+两个模块最终聚焦检查分别为 29.0、10.7 秒，均 exit=0、零 warning；`AuditF141.lean` 九项（含三个旧整直接口）仅标准三公理。
+已核对两个图卡端点完整签名。没有扩充 `SchoenfliesInput`，M1/M2/M3 均未验收。
+下一步用凸化支集与其他临界高度的分离控制整层圆周数，继续处理水平封帽边缘与严格降指标。
+下一审计文件 `AuditF142.lean`。
+### 18.22 凸化支集外的临界点与整层比较
+
+- `HeightLocalization.lean` 证明紧集与旧高度层不交时，所有充分小的新高度扰动仍避开该紧集。
+  若同胚固定紧支集外且封帽盘包含于支集，则支集外高度层的封帽圆周族恰为保留片的圆周族。
+- `eventually_mem_heightSingularPoints_image_cap_iff_and_encard_levelPolygons_le` 对支集外的原临界层，
+  证明新封帽曲面的奇异性等价于原曲面奇异且属于保留片，新层圆周数不超过原临界层圆周数。
+- `eventually_heightSingularPoints_image_cap_sdiff_subset_vertices` 用实际保高度图卡及有限顶点族的一致扰动邻域，
+  排除封帽盘之外的新奇异点：新高度在封帽剖分上一般位置时，盘外奇异点必是原剖分顶点的像。
+- `exists_convex_open_neighborhood_disjoint_fibers` 实际构造含水平盘的凸开邻域 U 和包含 U 的紧集 C，
+  同时让 C 避开有限个其他指定高度层。U 可限制在原指定凸开邻域内，可直接供保高度凸化使用。
+
+模块最终聚焦检查 exit=0（10.1 秒）、零 warning；`AuditF142.lean` 六项仅标准三公理，两个生产端点完整签名已核对。
+没有扩充 `SchoenfliesInput`。支集外的临界层比较与盘外的新奇异点排除已闭合；
+接下来拼入实际封帽、局部凸化和有限剖分构造，再处理封帽边缘和选定临界点的严格指标下降。
+M1/M2/M3 均未验收。下一审计文件 `AuditF143.lean`。
+### 18.23 实际凸封帽与盘外比较的统一生产者
+
+- `HeightLocalization.lean` 新增统一比较：若凸化支集避开除 p 外的原顶点高度，则转轴后封帽盘及 H(p) 之外的奇异点
+  包含于原奇异点集；每个其他原顶点的奇异性恰对应其所在保留片，整层圆周数不增。
+- `ConvexHeightCut.lean` 的 `exists_isPLSphere_pair_of_singular_height_with_convex_cap` 从原有限 PL 2-球面、
+  一般位置高度、实际奇异点和指定凸开邻域出发，构造水平盘、两保留盘、两封帽球面及保高度凸化同胚。
+  同胚固定邻域外和除 p 外的所有原顶点；像盘凸，且 H(p) 严格分离像盘除该点外的部分。
+- 端点同时生产两份有限封帽球面剖分，并证明小幅一般位置转轴后，每片盘外的奇异点包含和其他原顶点的圆周计数比较。
+  水平盘、凸化支集、图卡和新剖分均由证明产生，没有将这些存在性或比较结论放进假设。
+  原切盘的交、并、恢复原球面以及切割层圆周数之和为原数加一的等式继续保留。
+
+两模块最终聚焦检查分别为 10.1、10.2 秒，均 exit=0、零 warning；`AuditF143.lean` 两项仅标准三公理。
+已核对端点参数及两片的返回条件，没有扩充 `SchoenfliesInput`。M1 尚缺封帽边缘的 crossing/孤立分类、
+选定点处移去一条层圆周的严格比较与降指标归约；局部二度与 crossing 的对应还需为该分类及 M2 提供支撑。
+M1/M2/M3 均未验收。下一审计文件 `AuditF144.lean`。
+### 18.24 封帽相对内部的 crossing 与边界交集数据
+
+- `FiberInterior.lean` 从参数化 PL 盘的标准边界像出发，证明不在该像中的盘点具有所在仿射高度层内的相对邻域。
+  第一端点对余维一的任意正维 PL 盘成立；证明通过高度层的仿射坐标及已证盘的实际 frontier 定理搬运。
+- 在三维空间中，封帽盘的相对内部附近若没有保留片，曲面芽就是该仿射平面。新高度在 q 与同旧高度层的指定 p 处不同，
+  则 q-p 是平面内非水平向量，从而得到 crossing。若整个 D\{p} 都与 p 的新高度不同，盘内奇异点仅可能在参数边界或 p。
+- `SingularHeightCut.lean` 的强版额外返回已有证明中的 `K.space ∩ D = g '' stdSimplexBoundary 2`；旧接口保留完整签名。
+  `ConvexHeightCut.lean` 继续返回该精确交集，并将相对内部排除接入其实际构造的两片球面，异常集合从整盘缩小至像边界与 H(p)。
+  新高度的分离条件是显式几何条件，已有 `HeightPerturbation.lean` 可通过任意小的严格单侧转轴产生。
+
+三模块最终聚焦检查分别为 9.7、10.0、10.2 秒，均 exit=0、零 warning；`AuditF144.lean` 七项（含旧切盘接口）仅标准三公理。
+已核对相对内部与盘内奇异点端点签名。没有增加 `SchoenfliesInput` 字段。
+仍需封帽边缘的单侧接近与 crossing/孤立分类，以及选定点的圆周数严格下降；M1/M2/M3 均未验收。
+下一审计文件 `AuditF145.lean`。
+### 18.25 两保留盘沿水平圆周的相反单侧接近
+
+- `BallFrontier.lean` 新增参数化正维 PL 盘去掉标准边界像后的稠密性，不要求目标环境与盘同维。
+- `HeightSides.lean` 首先证明局部闭分割的半空间分类：在一个子空间附近，两闭集的交恰为线性高度零集，
+  且两片去掉对方后都逼近中心，则两片各占正、负半空间。证明使用凸半球的连通性，不要求有限维环境。
+- 对有限闭二维组合流形的一般位置高度，除唯一临界顶点外，任一所选层圆周与整个高度截面具有相同集合芽。
+  实际保高度图卡将两保留盘搬到上述闭分割模型，得到逐点单侧分类。
+- `eventually_mem_opposite_halfSpaces_along_levelPolygon_disk_partition` 从两盘的实际 PL 参数化和共同参数边界出发，
+  用穿孔圆周的连通性排除侧别改变，证明沿整个 J\{p}，A、B 始终分别占相反的两个高度半空间，允许整体交换方向。
+  因而原书“D₁ 从一侧接近 J\{p}，D₂ 从另一侧接近”的陈述已闭合，不作为新增输入假设。
+
+两模块最终聚焦检查分别为 10.2、10.1 秒，均 exit=0、零 warning；`AuditF145.lean` 六项仅标准三公理。
+已核对相反单侧端点的完整签名，没有扩充 `SchoenfliesInput`。
+仍需将该侧别接入凸封帽后的局部图卡，证明转轴后封帽边缘的 crossing/孤立分类与选定点的圆周数严格下降。
+M1/M2/M3 均未验收。下一审计文件 `AuditF146.lean`。
+
+### 18.26 保持圆周及截弧给定值的平面盘延拓
+
+- `CrosscutExtension.lean` 的 `exists_isPLHomeomorphOn_eqOn_crosscut` 将两圆周与其正规截弧之并上的任意 PL 同胚
+  延拓到两个闭内域，逐点保持整个给定映射。证明以截弧切出两个 PL 盘，分别调用已证 P.1 和实际 frontier 延拓，再沿截弧拼合。
+- `exists_isPLHomeomorphOn_eqOn_curve_and_crosscut` 允许圆周与截弧分别给定 PL 映射，只要求两端点值一致。
+  `exists_isPLHomeomorphOn_map_crosscut_eqOn_curve` 保持给定圆周映射并将源截弧映到目标截弧；截弧参数匹配由现有区间 PL 接口产生。
+- 本层复用原版 `PolygonalSchoenflies.lean`，没有修改或复制其他车道的文件，也没有增加 `SchoenfliesInput` 字段。
+
+模块最终聚焦检查 exit=0（9.6 秒）、零 warning；`AuditF146.lean` 三项仅标准三公理，已核对两个相对端点完整签名。
+下一步将相对截弧延拓用于顶点链环的 crossing 判据，再处理凸封帽边缘与严格降指标。
+M1/M2/M3 均未验收。下一审计文件 `AuditF147.lean`。
+
+### 18.27 嵌入任意有限维空间的 PL 盘相对截弧延拓
+
+- `DiskCrosscutExtension.lean`（初名 `DiskCrosscut.lean`，整合时避免与 S 车道同名文件冲突而改名）证明平面 PL 1-盘满足 vendored Jordan API 的 polygonal 条件，并把实际区间参数化的正规盘内弧搬到平面截弧。
+- `exists_isPLHomeomorphOn_eqOn_disk_crosscut` 允许源、目标盘位于不同的有限维实范数空间。两盘的边界均由实际标准盘参数化给出；
+  源截弧带区间 PL 参数化，恰在两端点与边界相交。给定边界及截弧之并上的 PL 同胚若分别映到目标边界和目标盘内弧，
+  则可延拓到整个盘，并逐点保持给定映射。目标弧的正规性和两端点对应由这些几何数据推出，没有额外假定。
+- 证明构造两盘的平面坐标，调用上一层相对延拓，再搬回；适用于三维链环的半盘。
+
+模块最终聚焦检查 exit=0（9.8 秒）、零 warning；`AuditF147.lean` 三项仅标准三公理，已核对主端点完整签名。
+下一步构造一般 PL 圆周沿两个交点的弧分解，并接入链环整直；边缘 crossing 和严格降指标仍未完成。
+没有扩充 `SchoenfliesInput`，M1/M2/M3 均未验收。下一审计文件 `AuditF148.lean`。
+
+## 19. 夜间 F-M1–F-M6 接续（NIGHT_PLAN.md，整合基线 8fb887bb9）
+
+已取入 `origin/codex/moise-integration` 的 `8fb887bb9`，按夜间计划顺序继续。本轮先前的相对延拓交付：
+`4e30320a0`（`CrosscutExtension.lean`，AuditF146 三项）与 `b08bc4be9`（嵌入盘版本，AuditF147 三项）。
+整合的 add/add 冲突保留 S 车道 `DiskCrosscut.lean` 原文件，本车道模块改名为 `DiskCrosscutExtension.lean`；
+其 polygonal 桥接改为复用整合的 `PolygonalArc.lean`。联合导入审计发现盘内部稠密性同名声明后，撤下本车道旧副本，
+`BallFrontier.lean` 保持整合版本，`HeightSides.lean` 改为直接消费更一般的 `BallInterior.lean` 端点。
+
+最终四模块聚焦检查（合并的 BallFrontier、本车道 HeightSides、CrosscutExtension、DiskCrosscutExtension）均 exit=0、零 warning；
+`AuditF148.lean` 联合导入 S 的 `SchoenfliesFoundations`，十一项全部仅标准三公理。
+`schoenflies_input` 的四个字段已由 S 车道实际证明，现可实例化既有 `SchoenfliesInput`，不是新增假设。
+
+F-M1 当前仍为 partial：本车道旧 M1 的严格降指标尚未验收，确切义务是凸封帽转轴后的边缘 crossing/孤立分类、
+选定点整层圆周数严格下降以及由此给出的 Lemma 1 归约；随后还需 Lemma 2–6 和最终拼装。I1 尚未交付。
+当前相对截弧延拓为顶点链环 crossing 判据提供已证输入，没有把此判据或降指标结论加入接口。
+F-M2–F-M6 尚未开始；按用户指定顺序推进，只有出现 §1 接口之外的真实数学障碍时，按夜间 §0.4 记录后跳到下一里程碑。
+下一审计文件 `AuditF149.lean`。
+
+### 19.1 F-M1：PL 圆周的两弧分解与高度半空间参数化
+
+`CircleArcs.lean` 已提交并推送为 `b68aa84de`。`exists_arc_decomposition_of_isPLSphere_one` 将任意有限维实范数空间中的 PL 圆周沿两个不同指定点分为两条带实际区间参数化的 PL 弧，端点、并、交均有精确等式。区间像去掉端点后的连通性和闭包接口不要求目标有限维。
+`exists_isPLHomeomorphOn_Icc_inter_of_fiber_pair` 仅从圆周上的连续实值函数、恰含两点的指定层及两侧非空，产生上下闭半空间截弧的参数化；证明由穿孔弧连通性确定侧别。
+
+聚焦检查 exit=0（10.6 秒）、零 warning；`AuditF149.lean` 五项仅标准三公理，并核对高度截弧端点完整签名。F-M1 仍为 partial：下一步将两弧与相对盘截弧延拓接成顶点链环图卡，随后完成封帽边缘 crossing、严格降指标及 Lemma 2–6。I1 尚未交付；下一审计文件 `AuditF150.lean`。
+
+### 19.2 F-M1：沿共同边界拼合的两盘及两条截弧的相对 PL 等价
+
+`CirclePair.lean` 已提交并推送为 `b5df0cbf6`。`exists_isPLHomeomorphOn_pair_of_isPLSphere_one` 在任意两个有限维实范数空间中的 PL 圆周之间对齐任意两个不同指定点；`exists_isPLHomeomorphOn_map_crosscut_eqOn_boundary` 保持整个给定边界映射并对齐盘中正规截弧；`exists_isPLHomeomorphOn_disk_pair_eqOn_boundary` 将两侧延拓沿共同边界拼合。
+主端点 `exists_isPLHomeomorphOn_disk_pair_map_crosscuts` 从两盘实际参数化、恰为共同边界的交集，以及两侧具有共同端点的正规截弧出发，构造同时映射两盘、公共边界、两截弧和两指定端点的 PL 同胚。边界映射在证明中构造，不是额外假设。源、目标环境可不同。
+
+最终聚焦检查 exit=0（10.0 秒）、零 warning；`AuditF150.lean` 四项仅标准三公理，已核对主端点完整签名。下一步从实际星的链环和高度半空间生产此定理的两盘、截弧输入，再锥延拓得到 crossing 图卡。F-M1 仍为 partial，严格降指标及 Lemma 2–6、I1 尚未交付。下一审计文件 `AuditF151.lean`。
+
+### 19.3 F-M1：链环的半空间切盘及参数边界
+
+`LinkSection.lean` 已提交并推送为 `11107a0a1`。先证明适配仿射半空间的剖分限制具有预期像集、凸限制与顶点链环交换。`IsConeBase.mem_frontier_combo_iff` 把严格射线内点位于锥边界转化为底点位于底盘的组合边界；`IsConeBase.boundaryComplex_space_of_halfSpace_germ` 由锥在顶点附近恰为线性半空间，推出底盘边界恰为零高度截面。
+`exists_isPLHomeomorphOn_geometricLink_halfSpace` 从有限复形覆盖顶点的实际邻域、非零线性高度和逐面半空间适配出发，产生链环正半空间部分的标准盘参数化，参数边界精确等于整个链环的零高度截面。维数结论为一般 n+1 维链环盘，环境维数 n+2；两侧可由高度取负得到。不假定所需参数化或边界识别结论。
+
+聚焦检查 exit=0（10.2 秒）、零 warning；`AuditF151.lean` 五项仅标准三公理，已核对主端点完整签名。下一步把曲面链环的二点零截面接入两盘映射和锥延拓；F-M1 的 crossing、严格降指标、Lemma 2–6 与 I1 仍未完成。下一审计文件 `AuditF152.lean`。
+
+### 19.4 F-M1：二点零截面的曲面链环配对
+
+`LinkPair.lean` 已提交并推送为 `b8814ee06`。`exists_isPLHomeomorphOn_geometricLink_pair` 在两个三维有限复形的内部顶点链环之间构造 PL 同胚：两边各有一条实际 PL 圆周，非零线性高度在该圆周上的零截面恰含两个不同点，且圆周两侧非空。结论同时对齐圆周、整个链环的零截面、上下半盘及两个指定交点。所需半盘和截弧参数化全部由前两层构造，不作为输入假设。
+
+聚焦检查 exit=0（10.7 秒）、零 warning；`AuditF152.lean` 主端点仅标准三公理。下一步锥延拓并证明曲面星及高度零面的准确对应，再构造标准平面目标。F-M1 仍为 partial，尚未得到 crossing 主判据或 I1；F-M2–F-M6 尚未开始。下一审计文件 `AuditF153.lean`。
+
+### 19.5 F-M1：链环配对延拓为保子复形与高度层的星映射
+
+`StarPair.lean` 已提交并推送为 `8bbc98bad`。`image_coneComplex_of_radial_eq` 由逐射线的锥映射公式证明任意指定子复形锥的像集相等；`image_coneComplex_inter_fiber_of_radial_eq` 证明锥内线性零截面的像集相等，线性形式允许为零。
+`exists_isPLHomeomorphOn_closedStar_pair` 将环境链环的 PL 同胚延拓到环境闭星，同时对齐指定子复形的闭星、锥顶和整个闭星内的高度零截面。证明复用已有锥延拓，并逐点核对双向像集，不增加局部映射结论假设。
+
+聚焦检查 exit=0（10.7 秒）、零 warning；`AuditF153.lean` 三项仅标准三公理。下一步生产标准平面目标的链环数据，再提取开邻域上的 crossing 图卡；随后仍需封帽边缘分类、严格降指标及 Lemma 2–6。F-M1 仍 partial，I1 尚未交付。下一审计文件 `AuditF154.lean`。
+
+### 19.6 F-M1：平面局部模型的链环二点截面
+
+`LinkSubspace.lean` 已提交并推送为 `2c924bb73`。`eventually_mem_closedStar_iff` 给闭星与复形的相同集合芽；`geometricLink_space_eq_inter_submodule_of_eventually` 从子复形在顶点附近等于仿射子空间，推出子复形链环精确等于环境链环与该仿射子空间的交。`exists_pair_geometricLink_inter_span_singleton` 由环境复形覆盖顶点邻域和径向单射性，证明任意通过顶点的直线与链环恰交于两点；这些结论无需有限维环境。
+`exists_pair_geometricLink_fiber_of_eventually_plane` 对二维平面局部模型和横截的线性高度，同时生产链环二点零截面与正负两侧非空。使用一维核及正负射线生产交点，不把二点截面或两侧非空作为新增输入。
+
+聚焦检查 exit=0（11.9 秒）、零 warning；`AuditF154.lean` 四项仅标准三公理，核对主端点完整签名。下一步构造实际平面目标的共同剖分并提取开邻域 PL 图卡。F-M1 仍 partial；还需 crossing 主判据、封帽边缘分类、严格降指标及 Lemma 2–6，I1 尚未交付。下一审计文件 `AuditF155.lean`。
+
+### 19.7 F-M1：从邻域 PL 映射搬回 crossing
+
+`CrossingNeighborhood.lean` 已提交并推送为 `50b6c8d5c`。`HasPLCrossingAt.of_openPartialHomeomorph` 通过 PL 开图卡和两集合的芽搬回 crossing；`HasPLCrossingAt.of_isPLHomeomorphOn_mem_nhds` 从定义在任意实际邻域上的 PL 同胚及两截面精确像集出发，取内部、证明逆映射并搬回 crossing。
+`HasPLCrossingAt.of_closedStar_pair` 将保持子复形闭星和第二集合截面的 PL 星映射用于完整子复形的 crossing。顶点处的集合芽与闭星相等由前一模块实际证明，目标 crossing 作为运输定理的原有几何性质保留，后续标准平面生产者将证明它。
+
+聚焦检查 exit=0（11.2 秒）、零 warning；`AuditF155.lean` 三项仅标准三公理。下一步生产实际标准平面星并闭合二点链环截面的 crossing 判据。F-M1 仍 partial，严格降指标及 I1 未交付。下一审计文件 `AuditF156.lean`。
+
+### 19.8 F-M1：二点链环截面的顶点 crossing 判据
+
+`VertexCrossing.lean` 已提交并推送为 `ebf03f889`。主端点 `hasPLCrossingAt_fiber_of_geometricLink_section` 从三维有限环境复形、二维子复形顶点的 PL 圆链环、逐面适配高度、链环零截面恰为两个不同点及正负两侧非空，推出该子复形与零高度面的 `HasPLCrossingAt`。
+证明在同一环境中实际构造过原点的平面三角形与三维单纯形邻域，插入原点并作适配横截高度的共同细分；目标曲面链环的 PL 圆周、二点零截面和两侧非空均由构造推出。随后用已证链环配对、径向闭星延拓和邻域运输，把标准平面与横截面的 crossing 搬回源顶点。没有增加目标 crossing、局部图卡或结论型假设。
+
+聚焦检查 exit=0（12.9 秒）、零 warning；`AuditF156.lean` 主端点仅依赖 `propext`、`Classical.choice`、`Quot.sound`，完整签名已核对。F-M1 仍为 partial：下一步从一般位置高度的顶点局部数据推出链环零截面恰含两点且两侧非空，再接入凸封帽边缘分类；选定点整层圆周数严格下降、Lemma 1、Lemma 2–6 和 I1 仍未交付。下一审计文件 `AuditF157.lean`。
+
+### 19.9 F-M1：径向链环细分保持高度符号
+
+`LinkHeightSubdivision.lean` 已提交并推送为 `ee366b46f`。主端点 `exists_isPLHomeomorphOn_geometricLink_of_isSubdivision_preserving_height_sign` 对保持每个细面落在指定高度闭半空间中的任意有限细分，构造原链环与细分链环之间的显式径向单纯 PL 同胚，并分别证明零截面、严格负部和严格正部的精确像集等式。证明由径向比例的正性逐顶点推出高度差同号，再用逐面仿射性扩展；没有依赖存在性定理中隐藏的映射选择，也没有把符号保持写入假设。
+
+模块聚焦检查 exit=0（11.3 秒）、零 warning；`AuditF157.lean` 五项全部仅依赖 `propext`、`Classical.choice`、`Quot.sound`，主端点完整签名已核对。该层允许把为高度半空间适配而取的细分链环数据搬回原星。F-M1 仍为 partial：下一步闭合凸封帽边缘的 crossing/孤立分类与选定点处的严格指标下降；Lemma 1、Lemma 2–6 和 I1 尚未交付。下一审计文件 `AuditF158.lean`。
+
+### 19.10 F-M1：保高度凸化显式保留三角形载体
+
+`TriangleConvexification.lean` 已提交并推送为 `d375040a1`。`exists_isPLHomeomorphOn_triangle_image_strict_separation` 加强平面指定点凸化，显式返回三元素仿射独立顶点集及其凸包，而不只返回抽象凸集。`exists_isPLHomeomorphOn_triangle_image_strict_separation_of_subset_fiber` 将该数据沿实际仿射纤维坐标嵌入三维，同时保留全空间 PL 同胚、凸开集外恒同、逐点保原高度、指定点严格分离及所有集合的高度指标不变。指定点允许在封帽盘外，覆盖原书“`D_J - {P}` 可能就是整个 `D_J`”的情形。
+
+模块最终聚焦检查 exit=0（13.6 秒）、零 warning；`AuditF158.lean` 两个端点均仅依赖 `propext`、`Classical.choice`、`Quot.sound`，完整签名已核对。F-M1 仍为 partial：下一步把显式三角形载体接入凸封帽切割，证明边缘顶点的 crossing/孤立分类，再闭合选定奇异层的圆周数严格下降。Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF159.lean`。
+
+### 19.11 F-M1：奇异水平切割保留三角形封帽坐标
+
+`TriangleHeightCut.lean` 已提交并推送为 `b1b43c61e`。主端点 `exists_isPLSphere_pair_of_singular_height_with_triangle_cap` 将上一层的三元素仿射独立顶点集及仿射嵌入接入完整奇异水平切割。结论保留两张封帽 PL 球面、原水平层圆周计数恒等式、其他原顶点的奇异性对应与圆周数不增、封帽盘外的奇点包含，同时给出 `H '' D = e '' convexHull ℝ T`、指定点严格分离、保高度与指标不变。三角形数据由实际凸化构造产生，没有加入输入假设。
+
+模块聚焦检查 exit=0（13.5 秒）、零 warning；`AuditF159.lean` 主端点仅依赖 `propext`、`Classical.choice`、`Quot.sound`，完整签名已核对。F-M1 仍为 partial：下一步利用三条仿射边及两保留盘的相反单侧接近证明封帽边缘的 crossing/孤立分类，并在指定高度处推出严格圆周数比较。Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF160.lean`。
+
+### 19.12 F-M1：沿奇异点嵌入的高度指标严格比较
+
+`HeightIndexComparison.lean` 已提交并推送为 `73c40fab6`。`tsum_lt_tsum_enat_of_embedding` 对两个有限类型上的有限 `ENat` 权重证明严格总和比较：嵌入所配对的权重逐点不增，且某个配对项严格下降或目标侧有未被命中的正项，即得严格不等式。证明把有限 `ENat` 权重转成自然数有限和并在嵌入像与其补集上比较，没有把总和不等式作为假设。
+`heightIndex_lt_of_embedding` 将该结论专门化到两张有限 PL 二球的一般位置高度：只需构造新奇异点到旧奇异点的嵌入、逐点水平多边形数不增，以及一个严格下降或遗漏的正贡献，即可推出整个 `heightIndex` 严格下降。
+
+模块聚焦检查 exit=0（11.5 秒）、零 warning；`AuditF160.lean` 两个端点均仅依赖 `propext`、`Classical.choice`、`Quot.sound`，完整签名已核对。F-M1 仍为 partial：下一步完成封帽边缘链环的 crossing/孤立分类，由此构造奇异点嵌入并在被删去的最内圆周处给出严格见证。Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF161.lean`。
+
+### 19.13 F-M1：空链环截面的顶点孤立判据
+
+`VertexIsolation.lean` 已提交并推送为 `357f41c2c`。`singleton_mem_nhdsWithin_fiber_of_geometricLink_section_eq_empty` 从顶点闭星的实际锥表示证明：若几何链环与该顶点高度层不交，则曲面高度层在顶点处局部恰为单点。三个推论分别排除这种顶点成为高度奇点，并直接覆盖整个链环严格高于或严格低于顶点的两种符号情形。
+
+模块聚焦检查 exit=0（11.1 秒）、零 warning；`AuditF161.lean` 四项均仅依赖 `propext`、`Classical.choice`、`Quot.sound`。结合 `VertexCrossing.lean`，帽边分类现在只剩证明链环零截面为空，或恰为两个不同点且有正负两侧；下一层将从凸三角帽与保留盘的相反单侧性推出这一有限符号分类。F-M1 仍为 partial，Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF162.lean`。
+
+### 19.14 F-M1：PL 圆周至多二点截面的奇偶分类
+
+`CircleHeightSection.lean` 已提交并推送为 `dcd32cdd3`。`exists_lt_and_gt_of_mem_height_section_of_avoids_vertices` 证明连续线性高度若避开有限复形的全部顶点，则经过载体的任一点高度层在该点所在开单形两侧都有严格高低点。`isPLSphere_one_height_section_ne_singleton` 再用 PL 圆周删去一点仍连通和中值定理排除单点截面。`height_section_eq_empty_or_pair_of_encard_le_two` 因而把“截面至多两点”提升为精确的空集或两个不同点二分。
+
+模块聚焦检查 exit=0（11.2 秒）、零 warning；`AuditF162.lean` 三项均仅依赖 `propext`、`Classical.choice`、`Quot.sound`。帽边顶点一旦取得链环截面 `encard ≤ 2`，空分支由上一层给孤立，两点分支自动含正负两侧并可送入 `VertexCrossing`。下一步证明凸三角帽替换后的链环截面至多两点。F-M1 仍为 partial，Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF163.lean`。
+
+### 19.15 F-M1：顶点 crossing 判据搬运到任意高度层
+
+`VertexCrossingLevel.lean` 已提交并推送为 `7e92e2044`。`isGlueIso_affineImage`、`affineImage_faces_subset` 与 `geometricLink_affineImage_space` 给出有限复形沿仿射等价的面、子复形和顶点链环精确搬运。主端点 `hasPLCrossingAt_fiber_of_geometricLink_section_at` 将原点零高度版判据推广到任意顶点高度：把环境复形、曲面复形和链环整体平移到原点，逐面半空间、PL 圆周、二点截面及正负两侧全部随平移验证，再由全局 PL 平移把 crossing 搬回原高度层。
+
+模块聚焦检查 exit=0（16.1 秒）、零 warning；`AuditF163.lean` 四项均仅依赖 `propext`、`Classical.choice`、`Quot.sound`。因此三角帽边界顶点的两点链环截面可直接产生该顶点自身高度层的 crossing，无需额外假设顶点高度为零。下一步证明凸三角帽替换后的链环截面至多两点并闭合帽边分类。F-M1 仍为 partial，Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF164.lean`。
+
+### 19.16 F-M1：至多二点链环截面的顶点正则性
+
+`VertexSectionRegularity.lean` 已提交并推送为 `a984b8c98`。主端点 `notMem_heightSingularPoints_of_geometricLink_section_encard_le_two` 将前三层闭合成统一判据：若顶点链环是 PL 圆周、当前高度避开链环顶点且零截面 `encard ≤ 2`，则该顶点不属于高度奇点集。空截面由 `VertexIsolation` 给出局部孤立；非空截面由 `CircleHeightSection` 排除单点并产生两个不同点，同时从实际截面点导出高低两侧，再由 `VertexCrossingLevel` 得到当前任意高度层的 crossing。结论没有加入 crossing 或孤立作为假设。
+
+模块聚焦检查 exit=0（11.3 秒）、零 warning；`AuditF164.lean` 主端点仅依赖 `propext`、`Classical.choice`、`Quot.sound`。三角帽边界分类现已归约为实际几何命题：帽与保留盘组成的顶点链环，其新高度零截面至多两点。下一步证明该上界并接入奇异点嵌入与严格指标下降。F-M1 仍为 partial，Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF165.lean`。
+
+### 19.17 F-M1：凸三角帽顶点的链环等高截面至多一点
+
+`ConvexCapLink.lean` 已提交并推送为 `0afbfdf0c`。`finrank_vectorSpan_inf_ker_eq_one_of_affineIndependent_card_three` 证明三元素仿射独立集的二维方向空间与在三顶点上单射的高度核恰交成一维。主端点 `geometricLink_section_subsingleton_of_simplex_vertex` 再用暴露指定凸顶点的线性函数排除该一维交线上的反向射线，并由几何链环的径向单射性推出：载体等于该三角形凸包的任意复形，在三角形顶点处的链环与该顶点等高层的交至多一点。
+
+模块聚焦检查 exit=0（11.8 秒）、零 warning；`AuditF165.lean` 两个端点均仅依赖 `propext`、`Classical.choice`、`Quot.sound`。这已经覆盖封帽三角形的三个真实角点；帽边细分产生的直边内部顶点仍需结合保留盘一侧的链环弧证明至多二点。随后接入 `VertexSectionRegularity`，构造新旧奇异点嵌入并证明严格降指标。F-M1 仍为 partial，Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF166.lean`。
+
+### 19.18 F-M1：支撑面与横向纤维控制凸帽链环
+
+`ConvexBoundaryLink.lean` 已提交并推送为 `99b1121b8`。主端点 `geometricLink_section_subsingleton_of_supporting_fiber` 处理三角形凸包中任意支撑边界点：若线性支撑函数在整个三角形上于该点取最小值，且新高度纤维与支撑面的等值集只在该点相交，则复形几何链环与新高度层的交至多一点。证明用三角形方向平面与高度核的一维交、支撑函数排除反向比例，以及几何链环径向单射性；支撑条件真实约束凸帽，不包含目标结论。
+
+模块聚焦检查 exit=0（11.8 秒）、零 warning；`AuditF166.lean` 主端点仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步从三角形仿射独立性为每条边构造支撑线性函数，并由高度在该边两端取值不同推出支撑面纤维唯一；这将覆盖帽边细分顶点的帽侧链环。保留盘侧的符号弧仍需随后拼接。F-M1 仍为 partial，Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF167.lean`。
+
+### 19.19 F-M1：三角帽边内部点的链环等高截面至多一点
+
+`TriangleEdgeLink.lean` 已提交并推送为 `55ed65b59`。`injOn_linearMap_convexHull_of_card_eq_two` 将线性高度在二元素顶点集上的单射性推广到整条边；`exists_linearMap_supporting_simplex_facet` 从单纯形的仿射无关性构造对边的规范支撑泛函，并精确刻画其最小值集合。主端点 `geometricLink_section_subsingleton_of_simplex_facet` 因而证明：三角形任一对边上的点，只要高度在三角形三个顶点上单射，则三角帽侧的几何链环与该点等高层的交至多一点。支撑泛函与对边纤维唯一性均在证明中构造，不作为新增输入。
+
+模块聚焦检查 exit=0（12.9 秒）、零 warning；`AuditF167.lean` 三个端点均仅依赖 `propext`、`Classical.choice`、`Quot.sound`。帽侧链环弧已经覆盖真实角点和边内部点。下一步利用 `HeightSides.lean` 的相反单侧结论与小高度扰动控制保留盘侧链环弧，再将两侧合并为完整链环截面 `encard ≤ 2`。F-M1 仍为 partial，严格降指标、Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF168.lean`。
+
+### 19.20 F-M1：唯一越层边界端点控制一维盘截面
+
+`BoundaryArcSection.lean` 已提交并推送为 `124c80557`。`height_section_subsingleton_of_unique_high_boundary_vertex` 证明有限一维组合带边流形中，若一个组合边界顶点严格高于指定高度且所有其他顶点严格低于该高度，则整个载体与该高度层至多交一点；低端点版本由高度取负得到。证明从边界顶点的唯一邻点刻画出发，先证明任一等高点只能落在该唯一边上，再用线性高度在边凸包上的单射性得到唯一性。没有假定载体是一条预先给定的参数弧，也没有把截面上界写入输入。
+
+模块最终聚焦检查 exit=0（13.7 秒）、零 warning；`AuditF168.lean` 两个端点均仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步从保留盘的顶点链环构造实际一维带边子复形，证明其两个组合边界端点沿三角帽直边分居新高度两侧，并由小扰动保持其余顶点的旧高度严格侧别；随后与帽侧的 subsingleton 结论合并为完整链环 `encard ≤ 2`。F-M1 仍为 partial，严格降指标、Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF169.lean`。
+
+### 19.21 F-M1：保留链环弧的高度截面对小扰动稳定
+
+`BoundaryArcStability.lean` 已提交并推送为 `89a746c29`。主端点 `eventually_height_section_subsingleton_of_boundary_segment` 处理有限一维组合带边流形的实际边界弧：两个不同边界顶点之间的开线段包含接缝点，旧高度在其余顶点上严格低于接缝高度。它证明在旧高度的一个邻域内，任何在接缝点与弧顶点上单射的新线性高度，其弧截面至多一点。证明先用有限集上的严格次序稳定性保持内部顶点的侧别；开线段在新高度下仍把接缝值夹在两个边界值之间，故恰有一个边界端点在高侧，再调用上一层唯一越层端点定理。
+
+模块聚焦检查 exit=0（11.1 秒）、零 warning；`AuditF169.lean` 主端点仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步将保留盘的几何链环限制识别为此一维组合带边流形，证明旧单侧性给出其非边界顶点的严格同侧条件；随后与三角帽链环合并。F-M1 仍为 partial，严格降指标、Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF170.lean`。
+
+### 19.22 F-M1：保留盘顶点链环的稳定单点截面
+
+`RetainedDiskLink.lean` 已提交并推送为 `ab191e998`。主端点 `eventually_geometricLink_section_subsingleton_of_boundary_segment` 从实际 PL 二球盘、其边界上的接缝顶点，以及边界链环中的两个不同方向构造保留盘顶点链环的一维带边流形。`geometricLink_boundaryComplex` 将这两个接缝方向识别为该链环的两个组合边界端点；其余链环顶点的旧高度严格同侧时，上一层稳定性定理给出所有充分小且在接缝点与链环顶点上单射的新高度的截面至多一点。
+
+模块聚焦检查 exit=0（13.0 秒）、零 warning；`AuditF170.lean` 主端点仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步从 `HeightSides` 与接缝适配剖分实际推出非边界链环顶点的严格同侧条件和两个边界方向间的开线段关系，再把保留盘与三角帽的两个单点截面合并为完整链环的 `encard ≤ 2`。F-M1 仍为 partial，严格降指标、Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF171.lean`。
+
+### 19.23 F-M1：由单侧与边界集合芽推出保留链环严格高度
+
+`BoundaryLinkGerm.lean` 已提交并推送为 `c0598e23c`。`map_le_of_mem_geometricLink_space_of_eventually` 以链环射线缩回接缝点，证明局部位于旧高度闭半空间会强制整个几何链环位于该闭半空间。`mem_geometricLink_boundaryComplex_of_height_eq_of_eventually` 证明任一等高链环顶点必属于边界链环：在对应边上选取足够靠近接缝点的开单形点，由边界等高集合芽把该点放入边界复形，再以开单形载体唯一性把整条边降到边界复形。PL 二球盘的边界链环是 PL 零球面，两个已知不同边界方向因而穷尽它。主端点 `geometricLink_vertices_lt_of_halfSpace_boundary_germ` 由此把所有其他链环顶点的闭侧不等式提升为严格不等式；`eventually_geometricLink_section_subsingleton_of_halfSpace_boundary_germ` 直接给充分小一般位置高度下的保留链环单点截面。
+
+模块聚焦检查 exit=0（11.9 秒）、零 warning；`AuditF171.lean` 六个端点均仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步从 `HeightSides` 的相反半空间集合芽、水平圆周的局部等高识别以及接缝适配三角剖分构造本端点的两个 germ 输入和边界链环两方向。之后将保留盘与凸帽的两个单点截面合并。F-M1 仍为 partial，严格降指标、Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF172.lean`。
+
+### 19.24 F-M1：局部直线接缝的两个相反链环方向
+
+`BoundaryLinkDirections.lean` 已提交并推送为 `48aa32b7c`。主端点 `exists_geometricLink_pair_openSegment_of_eventually_line` 处理有限一维组合流形在顶点附近等于一条仿射直线的情形。证明分别沿直线的正负方向进入载体，以几何链环的射线截取取得两个实际邻接顶点，再用一维组合流形的面维数界把链环点识别为单点面；两个正射线参数给出显式凸组合，证明原顶点位于这两个方向之间的开线段。结论同时返回不同性、两项面成员关系和开线段关系，不把任一项作为假设。
+
+模块聚焦检查 exit=0（12.7 秒）、零 warning；`AuditF172.lean` 主端点仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步证明三元素仿射独立三角形的边界在任一对边相对内部点附近恰等于该对边的仿射直线，并通过保留盘边界空间等式实例化本端点。随后接入 `BoundaryLinkGerm`。F-M1 仍为 partial，严格降指标、Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF173.lean`。
+
+### 19.25 F-M1：二维面内部点产生边界链环的相反方向
+
+`BoundaryFacetDirections.lean` 已提交并推送为 `b214ed095`。`exists_geometricLink_pair_openSegment_of_opposite_rays` 从一维组合流形载体沿某非零方向的正、负两条局部射线，构造几何链环中的两个不同单点面，并以显式正凸组合证明基点位于两方向的开线段中。`exists_geometricLink_pair_openSegment_of_openSimplex_two` 将其用于二元素面的开单形内部点：面方向空间同时包含某方向及其负方向，开单形在这些方向上局部稳定，故不必先证明整个接缝具有局部直线集合芽。
+
+模块聚焦检查 exit=0（12.6 秒）、零 warning；`AuditF173.lean` 两个端点均仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步把接缝适配剖分中的实际二元素面送入该端点，并用 `BoundaryLinkGerm` 得到保留盘链环的稳定单点截面；随后证明帽侧与保留侧链环覆盖完整链环并合并为 `encard ≤ 2`。F-M1 仍为 partial，严格降指标、Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF174.lean`。
+
+### 19.26 F-M1：两片覆盖把链环单点截面合并为至多二点
+
+`LinkUnionSection.lean` 已提交并推送为 `b066c360d`。`geometricLink_space_subset_union_of_faces_cover` 证明：若完整复形的每个面属于两个片复形之一，则顶点的完整几何链环空间包含于两片链环空间之并；证明直接对链环面连同顶点的并面应用面覆盖，不需要满子复形假设。`geometricLink_section_encard_le_two_of_faces_cover` 再把两片各自的等高链环截面 subsingleton 合并为完整截面的 `encard ≤ 2`，经 `encard_mono` 与 `encard_union_le` 得到精确上界。
+
+模块聚焦检查 exit=0（11.6 秒）、零 warning；`AuditF174.lean` 两个端点均仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步加强共同三角剖分存在性，使其显式返回每个新面位于原保留盘或凸帽之一；这将提供本层所需的面覆盖，并允许分别接入 `BoundaryLinkGerm` 与 `TriangleEdgeLink`。F-M1 仍为 partial，严格降指标、Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF175.lean`。
+
+### 19.27 F-M1：共同细分显式保留两片面覆盖
+
+`CoveredHeightSubdivision.lean` 已提交并推送为 `e0878ee1c`。主端点 `exists_triangulation_union_with_face_cover_and_halfSpace_faces` 加强高度半空间适配的共同三角剖分：除原有载体并集、原复形上的细分、第二多面体的精确限制空间和逐面高度侧别外，显式返回每个新面属于两个限制子复形之一。证明在共同 H-多胞形细分的重心所在载体中识别整个新单形；该载体从构造上来自原复形的某面或第二多面体的某个 H-多胞形，因此面覆盖是构造结论，不是附加假设。
+
+模块聚焦检查 exit=0（11.9 秒）、零 warning；`AuditF175.lean` 主端点仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步在三角帽切割的每个保留盘上应用该端点，识别接缝边内部顶点的边界复形面、两条边界链环方向与相反半空间集合芽，再由两片单点截面和面覆盖推出完整链环 `encard ≤ 2`。F-M1 仍为 partial，严格降指标、Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF176.lean`。
+
+### 19.28 F-M1：接缝二维面内部点的保留链环稳定性
+
+`BoundaryFacetLink.lean` 已提交并推送为 `e207e05dc`。主端点 `eventually_geometricLink_section_subsingleton_of_boundary_openSimplex_two` 将前述几层组装为一个可直接实例化的边界判据：PL 二球盘的边界复形若包含某二元素面凸包，接缝顶点位于该面的开单形中，且盘在该点具有旧高度单侧集合芽、边界复形恰为旧等高集合芽，则所有充分小且在该顶点链环上一般位置的新高度，其保留盘链环截面至多一点。证明从边界复形的一维组合流形性构造相反链环方向，再调用 `BoundaryLinkGerm`；没有把方向或截面上界加入输入。
+
+模块聚焦检查 exit=0（11.3 秒）、零 warning；`AuditF176.lean` 主端点仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步从 `HeightSides`、保高度同胚及共同细分的边界空间等式验证该端点的两个集合芽，并与三角帽侧的 `TriangleEdgeLink` 经 `LinkUnionSection` 合并。F-M1 仍为 partial，严格降指标、Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF177.lean`。
+
+### 19.29 F-M1：奇异高度切割保留两盘参数化边界
+
+`ParametricSingularHeightCut.lean` 已提交并推送为 `2b12885e2`。主端点 `exists_isPLSphere_pair_of_mem_heightSingularPoints_with_parameterized_boundary` 保留 `SphereCut` 构造实际产生的两张保留盘参数化 `fA`、`fB`，并分别给出其标准单形边界像等于共同水平圆周；原有两封帽球面、交集与恢复等式、临界层计数、其他层分拆和盘外奇异点等式全部同时保留。该加强只暴露原证明中已经构造但旧端点丢弃的数据。
+
+模块聚焦检查 exit=0（11.9 秒）、零 warning；`AuditF177.lean` 主端点仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步沿三角凸化的保高度环境同胚搬运 `fA`、`fB`，再为每张保留盘与三角帽构造带显式面覆盖的共同细分；组合边界空间将由参数化和细分不变性直接识别。F-M1 仍为 partial，严格降指标、Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF178.lean`。
+
+### 19.30 F-M1：三角凸化保留切割盘参数与全部指标数据
+
+`ParametricTriangleHeightCut.lean` 已提交并推送为 `5bfd5954a`。主端点 `exists_parameterized_triangle_cut_of_singular_height` 把上一层的两张盘参数化贯穿指定点三角凸化：返回原球面的两盘分拆及共同参数边界、水平张成盘、两张封帽球面、保高度且固定支集外和其他原顶点的环境 PL 同胚、三元素仿射独立三角形载体、指定点的严格线性分离，以及临界层圆周计数和所有集合的高度指标不变性。该端点不再提前选择任意三角剖分，后续可用显式参数边界构造适配共同细分。
+
+模块聚焦检查 exit=0（12.4 秒）、零 warning；`AuditF178.lean` 主端点仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步对 `H '' A` 与 `H '' B` 分别建立有限三角剖分，再与 `H '' D` 做显式面覆盖共同细分；沿保高度同胚运输 `HeightSides` 的相反单侧集合芽，闭合接缝边内部顶点的 `encard ≤ 2`。F-M1 仍为 partial，严格降指标、Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF179.lean`。
+
+### 19.31 F-M1：共享参数边界的两盘共同细分
+
+`ParameterizedDiskUnion.lean` 已提交并推送为 `dbd2d65c8`。主端点 `exists_triangulation_parameterized_disk_union` 从两张共享同一标准单形边界像的参数化 PL 二球盘构造其并集的有限共同三角剖分。结论同时给出两限制子复形的精确空间与 PL 球性、两侧组合边界复形空间都精确等于共享接缝、完整复形的逐面二片覆盖，以及相对于任意仿射高度层的逐面半空间适配。组合边界等式由参数化端点直接证明，不作额外输入。
+
+模块聚焦检查 exit=0（14.1 秒）、零 warning；`AuditF179.lean` 主端点仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步把保高度同胚后的保留盘参数化与三角帽参数化送入该端点，并证明接缝边相对内部顶点的保留侧和帽侧链环截面各至多一点，从而经逐面覆盖得到完整链环 `encard ≤ 2`。F-M1 仍为 partial，严格降指标、Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF180.lean`。
+
+### 19.32 F-M1：保高度环境同胚运输单侧与边界集合芽
+
+`HeightGermTransport.lean` 已提交并推送为 `33ceb84e0`。`eventually_image_mem_le_of_height_preserving_homeomorph` 与高侧版本把任一点处盘载体的旧高度单侧集合芽沿保高度环境同胚运输到像点；`eventually_image_boundary_fiber_iff_of_height_preserving_homeomorph` 同时运输“边界集合芽恰为盘内旧等高集合芽”。证明只用同胚逆映射在像点的连续性、双射像成员关系与逐点保高度等式。
+
+模块聚焦检查 exit=0（11.4 秒）、零 warning；`AuditF180.lean` 三个端点均仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步把 `HeightSides` 的全接缝相反单侧结论逐点送入这三个运输端点，并在参数化两盘共同细分中调用 `BoundaryFacetLink`、`TriangleEdgeLink` 与 `LinkUnionSection`，得到接缝边内部顶点的完整链环 `encard ≤ 2`。F-M1 仍为 partial，严格降指标、Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF181.lean`。
+
+### 19.33 F-M1：三角接缝边内部顶点的完整链环至多二点
+
+`TriangleSeamRegularity.lean` 已提交并推送为 `07afa25d8`。主端点 `eventually_geometricLink_section_encard_le_two_of_triangle_facet` 处理由保留盘与凸三角帽组成、逐面由两片覆盖的有限复形。对三角形任一边相对内部的共同边界顶点，保留侧由 `BoundaryFacetLink` 在旧单侧与边界集合芽下得到稳定单点截面，帽侧由 `TriangleEdgeLink` 的支撑泛函得到单点截面；`LinkUnionSection` 随后证明完整球面链环的新等高截面 `encard ≤ 2`。一般位置只要求在完整复形顶点与三个三角顶点的有限并上单射。
+
+模块聚焦检查 exit=0（11.6 秒）、零 warning；`AuditF181.lean` 主端点仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步接入 `VertexSectionRegularity` 排除所有接缝边内部顶点；三角形三个真实角点将用 `ConvexCapLink` 和保留侧链环的端点结构单独分类。随后构造新旧奇异点嵌入与严格指标下降。F-M1 仍为 partial，Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF182.lean`。
+
+### 19.34 F-M1：由原链环截面上界导出顶点正规性
+
+`VertexSectionSubdivision.lean` 已提交并推送为 `f2697b701`。主端点 `notMem_heightSingularPoints_of_geometricLink_section_encard_le_two_of_injOn` 对有限 PL 二球面复形的任一顶点直接使用原复形顶点上的高度单射和原几何链环截面 `encard ≤ 2`。证明先在原链环排除单点截面；空截面分支直接给孤立正规性，两点分支自动构造含顶点邻域的三维多面体复形及高度半空间适配细分，再由径向链环同胚把零层、正侧和负侧搬到细分链环，最后调用 `VertexCrossingLevel` 得到 crossing。因此端点不要求调用者提供环境复形、逐面半空间条件或局部平坦性假设。
+
+模块聚焦检查 exit=0（12.4 秒）、零 warning；`AuditF182.lean` 主端点仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步把该端点与 `TriangleSeamRegularity` 组合，排除三角接缝三条边相对内部的全部细分顶点；随后处理三个真实角点并构造新旧奇异点嵌入。F-M1 仍为 partial，严格降指标、Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF183.lean`。
+
+### 19.35 F-M1：三角接缝边内部顶点全部非奇异
+
+`TriangleSeamNonsingular.lean` 已提交并推送为 `638d6e59f`。主端点 `eventually_notMem_heightSingularPoints_of_triangle_facet` 把 `TriangleSeamRegularity` 的稳定链环截面上界送入 `VertexSectionSubdivision`：对三角形任一边相对内部的共同边界顶点，所有充分小且在完整球面复形顶点与三角形三个顶点并集上单射的新高度都使该点不属于新球面的 `heightSingularPoints`。非零性由三角形三个互异顶点上的单射在证明中推出，没有新增假设。
+
+模块聚焦检查 exit=0（11.1 秒）、零 warning；`AuditF183.lean` 主端点仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步处理三角帽三个真实角点：用 `ConvexCapLink` 的帽侧链环控制与保留盘边界顶点的链环区间结构证明完整链环截面至多二点，再复用本层的顶点正规性端点。F-M1 仍为 partial，严格降指标、Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF184.lean`。
+
+### 19.36 F-M1：一维保留链环的双端边截面计数
+
+`BoundaryArcCardinality.lean` 已提交并推送为 `f4fdad40b`。`linearMap_level_section_convexHull_pair_subsingleton_of_apply_ne` 证明线性高度层与一条非退化线段至多交一点，只需其中一个端点避开该高度；端点同高时截面为空，端点异高时由线段上的高度单射得到唯一性。主端点 `height_section_encard_le_two_of_boundary_vertices` 对有限一维组合带边流形及两个组合边界顶点，若两端点都避开指定高度、其余顶点都严格位于低侧，则整个载体的等高截面至多两点。证明由每个边界顶点的唯一邻边刻画把任一等高点限制在两条端边之一，没有预设端点高低次序，也没有把截面上界写入输入。
+
+模块聚焦检查 exit=0（12.0 秒）、零 warning；`AuditF184.lean` 两个端点均仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步从三角形严格分离点判断三个真实角点处两个边界链环方向的高度侧别：严格最低角点处保留链环用双端边计数，其余两个角点处至少一个端点严格较低并退化为单点截面；再与 `ConvexCapLink` 合并并调用顶点正规性端点。F-M1 仍为 partial，严格降指标、Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF185.lean`。
+
+### 19.37 F-M1：凸三角剖分的真实角点与边界链环端点
+
+`TriangleBoundaryVertices.lean` 已提交并推送为 `ef0695ed4`。`boundaryComplex_space_eq_simplexBoundary_of_space_eq_convexHull` 用相同凸三角载体上的恒等 PL 同胚与组合边界不变性，证明任意有限复形实现的凸三角盘之组合边界恰为规范单形边界。`singleton_mem_boundaryComplex_of_mem_triangle_vertex` 进一步证明三个原始极端点在任意该类剖分中仍是组合边界顶点：若其载体面不含该点，严格支撑泛函会在该点的凸组合上产生矛盾。`segment_subset_boundaryComplex_of_space_eq_convexHull` 给出任意两原始角点间整条边属于组合边界。`exists_geometricLink_boundary_pair_of_isPLBall` 最后从 PL 二球盘和一个组合边界顶点自动构造边界链环的两个不同单点面，并证明它们穷尽边界链环空间；没有把端点存在性加入输入。
+
+模块聚焦检查 exit=0（12.1 秒）、零 warning；`AuditF185.lean` 五个端点均仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步沿最低角点到另外两个角点的实际三角边取得保留链环中的低端方向：最低角点用双端边计数并证明帽侧截面为空，其余角点用一个低端方向证明保留侧截面至多一点；再与帽侧单点截面合并并排除三个角点的奇异性。F-M1 仍为 partial，严格降指标、Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF186.lean`。
+
+### 19.38 F-M1：三角帽真实角点的稳定非奇异性
+
+`TriangleCornerRegularity.lean` 已提交并推送为 `4b3c685a1`。`height_section_subsingleton_of_boundary_vertices_of_one_low` 证明有限一维组合带边流形中，只要一个顶点严格位于目标高度以下、另一组合边界顶点避开该高度且其余顶点全在低侧，整个高度截面至多一点。`singleton_mem_boundaryComplex_of_common_triangle_boundary` 从两盘组合边界空间相等和其中一盘载体为仿射独立三角形推出原始角点也是另一盘的组合边界顶点。主端点 `eventually_notMem_heightSingularPoints_of_triangle_vertex` 随后对保留盘与三角帽逐面覆盖的 PL 二球面处理三角形真实角点：由保留盘边界链环的两个端点、局部半空间与边界等高集合芽控制保留侧；所选三角形最低点等于该角点时帽侧截面为空，否则最低点方向给出保留侧的严格低端而帽侧截面至多一点。两种情形都把完整链环截面压到 `encard ≤ 2`，再由顶点截面正规性排除新奇异点。
+
+模块聚焦检查 exit=0（13.1 秒）、零 warning；`AuditF186.lean` 三个端点均仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步在 `exists_parameterized_triangle_cut_of_singular_height` 返回的两张保留盘与三角帽上分别构造共同细分，统一选择充分小的一般位置高度，并把接缝内部点与真实角点的排除结论拼装成帽内除指定旧奇异点像外无新奇异点；随后构造新旧奇异点嵌入并证明 `heightIndex` 严格下降。F-M1 仍为 partial，Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF187.lean`。
+
+### 19.39 F-M1：共同细分的整条三角边界均非奇异
+
+`TriangleBoundaryNonsingular.lean` 已提交并推送为 `587bbb0bc`。`mem_or_exists_mem_openSimplex_erase_of_mem_simplexBoundary_space` 对三元素仿射独立单形边界上的任一点给出精确分层：它或是原始角点，或位于唯一某条对边的开单形中。主端点 `eventually_notMem_heightSingularPoints_on_triangle_boundary` 对保留盘与凸三角帽逐面覆盖的有限 PL 二球面，把有限个共同边界顶点及三个可能最低的角点同时取有限邻域交；对原始角点调用 `TriangleCornerRegularity`，对边内部细分顶点调用 `TriangleSeamNonsingular`。因此任意充分小、在完整顶点集与三角顶点并上单射且具有某个严格最低三角顶点的新高度，都排除指定例外点以外的全部共同边界奇异点。
+
+模块聚焦检查 exit=0（12.0 秒）、零 warning；`AuditF187.lean` 两个端点均仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步把本端点实例化到 `exists_parameterized_triangle_cut_of_singular_height` 返回的两张保留盘与三角帽共同细分，从 `HeightSides` 和保高度环境同胚导出统一的半空间及边界等高集合芽，并选择同时满足两张球面一般位置的充分小高度。F-M1 仍为 partial，严格指标下降、Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF188.lean`。
+
+### 19.40 F-M1：参数化三角切割显式保留相反高度侧芽
+
+`ParametricTriangleHeightSides.lean` 已提交并推送为 `5acca1317`。主端点 `exists_parameterized_triangle_cut_with_opposite_height_sides` 从指定奇异高度重新暴露最内水平圆周成员关系，并把两张参数化保留盘沿该圆周去掉原奇异点后的统一相反半空间集合芽加入三角凸化输出。端点同时保留两盘与水平张成盘的参数边界、两封帽球面、临界层圆周计数、保高度环境同胚、显式仿射独立三角形、严格分离泛函及全部集合的 `heightIndex` 不变性。侧芽由 `HeightSides` 从实际球面分割推出，不是新增假设。
+
+模块聚焦检查 exit=0（47.4 秒）、零 warning；`AuditF188.lean` 主端点仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步对两种统一侧别分别把保留盘的半空间芽与“共同边界等于盘内旧等高集合”芽沿保高度同胚搬运，调用 `exists_triangulation_parameterized_disk_union` 构造两张逐面覆盖的共同细分球面，并接入整条三角边界非奇异端点。F-M1 仍为 partial，严格指标下降、Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF189.lean`。
+
+### 19.41 F-M1：参数化三角帽共同细分的整边界正规性
+
+`ParameterizedTriangleCap.lean` 已提交并推送为 `2b419419f`。`eventually_mem_inter_iff_left_and_eq_of_opposite_halfSpaces` 从两闭片的相反半空间集合芽直接推出共同边界等于左片内等高集合的芽。主端点 `exists_triangulation_triangle_cap_with_nonsingular_boundary` 把参数化保留盘与水平盘沿共同参数边界的并沿保高度环境同胚搬运，构造逐面由保留盘和凸三角帽覆盖的有限共同细分；仿射三角形顶点集随嵌入映到环境空间。半空间与边界等高芽沿同胚运输后接入上一层整边界定理。对每个新高度，证明在有限三角顶点上存在最低点，并由顶点单射把非严格最小提升为整个三角凸包上的严格最小，故结论不要求调用者预先指定最低角点。
+
+模块聚焦检查 exit=0（12.5 秒）、零 warning；`AuditF189.lean` 两个端点均仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步对参数化奇异高度切割返回的 A、B 两张保留盘分别实例化本端点；再与 `TriangleHeightCut` 的帽内部奇异点定位及盘外旧奇异点比较合并，得到每张新球面除 `H p` 外的奇异点均嵌入原球面奇异点。F-M1 仍为 partial，严格指标下降、Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF190.lean`。
+
+### 19.42 F-M1：三角切割生产者暴露紧支集与旧高度纤维分离
+
+`ParametricTriangleHeightSides.lean` 的主端点已加强并提交为 `e55b0a88a`。凸化证明内部原已构造的紧集 `C` 现在作为存在数据返回，同时给出 `D ⊆ C`、环境同胚在 `Cᶜ` 上恒等，以及 `C` 与每个旧顶点 `q ≠ p` 的高度纤维互不相交。该数据正是 `HeightLocalization` 对其他旧奇异点保持成员关系并控制层圆周数所需的真实几何输入；只返回逐点固定旧顶点不足以控制其邻域，因此没有用较弱条件替代。
+
+加强后的模块聚焦检查 exit=0（12.1 秒）、零 warning；`AuditF190.lean` 主端点仍仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步把两张参数化三角帽共同细分的边界正规性与紧支集局部化合并，证明每张新球面除 `H p` 外的奇异点精确注入原球面的奇异点去掉 `p`，并保留逐点层圆周数不增。F-M1 仍为 partial，严格指标下降、Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF191.lean`。
+
+### 19.43 F-M1：三角封帽后的新奇异点注入旧奇异点去掉指定点
+
+`TriangleCapSingularComparison.lean` 已提交并推送为 `13c88d977`。`mem_vertices_of_faces_subset_of_mem_space` 证明大复形的顶点若落在子复形载体中，则自动成为该子复形顶点；这把帽边上的新奇异点送入整边界正规性端点。主端点 `exists_triangle_cap_with_singular_comparison` 对一张保留盘与凸三角帽的共同细分同时使用三部分信息：紧支集局部化控制帽外旧顶点及层圆周数，帽内部定理把奇异点限制到共同边界或 `H p`，整边界正规性排除前者。由环境同胚固定所有其他旧顶点，进一步证明帽外对应点不可能等于原指定点 `p`。因此新奇异点去掉 `H p` 后包含于原奇异点去掉 `p`，且每个其他旧顶点的奇异成员关系按所属保留盘精确保持、层圆周数不增。
+
+模块聚焦检查 exit=0（13.2 秒）、零 warning；`AuditF191.lean` 两个端点均仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步用相反高度侧的两个方向分别实例化 A、B，统一选择一个同时适合两张有限复形且严格分离 `H p` 与三角帽的高度，并为每张球面构造显式 `heightSingularPoints` 嵌入到原球面。F-M1 仍为 partial，严格指标下降、Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF192.lean`。
+
+### 19.44 F-M1：高度取负给出上侧三角帽的对称正规性
+
+`TriangleCapSideSymmetry.lean` 已提交并推送为 `3019d3743`。`levelPolygons_neg` 与 `heightSingularPoints_neg` 分别证明高度函数取负时层圆周族和奇异点集在对应负高度上精确不变。主端点 `exists_triangulation_triangle_cap_with_nonsingular_boundary_of_ge` 将局部位于旧高度高侧的保留盘改看作负高度的低侧盘，调用低侧参数化共同细分定理，再沿连续自同构 `f ↦ -f` 把充分小邻域搬回原高度；顶点单射和奇异点排除同时保持。因此相反侧的两张保留盘现在具有完全对称的整边界正规性，不需要预先选定哪一张在低侧。
+
+模块聚焦检查 exit=0（12.0 秒）、零 warning；`AuditF192.lean` 三个端点均仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步让单帽奇异点比较接受统一低侧或统一高侧两种输入，随后从 `exists_parameterized_triangle_cut_with_opposite_height_sides` 的两个分支同时构造 A、B 两张新球面及其奇异点嵌入。F-M1 仍为 partial，严格指标下降、Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF193.lean`。
+
+### 19.45 F-M1：单帽奇异点比较统一覆盖两个高度侧
+
+`TriangleCapSingularComparison.lean` 的主端点已加强并提交为 `16202494b`。`exists_triangle_cap_with_singular_comparison` 现在接受保留盘在共同水平边界附近统一位于低侧或统一位于高侧的析取输入；低侧直接调用参数化三角帽共同细分，高侧调用取负高度得到的对称版本。两条分支返回完全相同的有限球面、帽边正规性和局部化数据，后续奇异点包含、逐旧顶点成员关系及层圆周数不增的证明无需分叉。
+
+加强后的模块聚焦检查 exit=0（12.1 秒）、零 warning；`AuditF193.lean` 两个端点均仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步从参数化三角切割的相反侧芽构造 A、B 各自的半空间析取和边界等高集合芽，同时实例化两张封帽球面，并统一选择满足两边一般位置与帽内严格分离的高度。F-M1 仍为 partial，严格指标下降、Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF194.lean`。
+
+### 19.46 F-M1：相反半空间芽同时识别共同边界的两侧
+
+`ParameterizedTriangleCap.lean` 已加强并提交为 `521027c3d`。新端点 `eventually_mem_inter_iff_right_and_eq_of_opposite_halfSpaces` 与原左侧版本对称：两闭片在某点附近分别位于同一函数的相反闭半空间、且交集等于共同边界时，共同边界的集合芽也精确等于右片内的等高集合芽。证明直接使用两个成员等价和反对称性，不交换参数化盘或环境同胚。
+
+模块聚焦检查 exit=0（12.8 秒）、零 warning；`AuditF194.lean` 左侧、右侧及共同细分三个端点均仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步按参数化三角切割返回的两种相反侧分支，分别构造 A、B 的半空间析取与各自边界等高芽，并调用统一单帽比较得到两张有限 PL 球面。F-M1 仍为 partial，严格指标下降、Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF195.lean`。
+
+### 19.47 F-M1：两张三角封帽球面的同时奇异点比较
+
+`TriangleCapPair.lean` 已提交并推送为 `b906f6e2d`。主端点 `exists_triangle_cap_pair_with_singular_comparison` 从一个旧奇异点一次性构造 A、B 两张保留盘的三角封帽有限复形。证明对参数化切割返回的两种相反侧分支逐一提取 A、B 的低侧或高侧析取和各自边界等高芽，再两次调用统一单帽比较。输出保留共同的保高度环境 PL 同胚、水平 PL 盘像、严格分离方向与旧临界层圆周计数，并把两个充分小邻域取交；因此同一个新高度只要在两张复形顶点及有限三角顶点并上单射、且严格抬高帽面，就同时得到两张球面去掉 `H p` 后的奇异点包含和所有其他旧顶点处的层圆周数不增。
+
+模块聚焦检查 exit=0（14.7 秒）、零 warning；`AuditF195.lean` 主端点仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步用 `HeightPerturbation` 在该共同邻域内选取一个高度：在两张新复形及三角顶点的有限并上单射、保持旧顶点严格次序，并在整个帽盘像去掉 `H p` 后严格大于 `f(H p)`。随后构造两张新奇异点集到旧奇异点集的显式嵌入。F-M1 仍为 partial，严格指标下降、Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF196.lean`。
+
+### 19.48 F-M1：为两张封帽球面选择共同的一般位置高度
+
+`TriangleCapPerturbation.lean` 已提交并推送为 `48eb01988`。主端点 `exists_small_triangle_cap_pair_with_singular_comparison` 对任意正误差，把上一层两张球面的共同有效邻域与误差球取交，再调用有限集合一般位置和半空间扰动生产者。所得同一个连续线性高度在两张新复形的顶点上分别单射，保持所有旧顶点之间由原高度给出的严格次序，在整个三角帽像去掉 `H p` 后严格高于 `f(H p)`，并同时满足两张球面的奇异点包含、逐旧顶点成员关系和层圆周数不增。
+
+模块聚焦检查 exit=0（12.6 秒）、零 warning；`AuditF196.lean` 主端点仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步将每张新奇异点集中的 `H p` 映到旧点 `p`，其余点用比较包含恒等映入旧奇异点集；去掉 `H p` 后目标自动避开 `p`，从而证明这是显式嵌入，并在所有非例外点搬运层圆周数不增。F-M1 仍为 partial，严格指标下降、Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF197.lean`。
+
+### 19.49 F-M1：带指定例外点的奇异点集显式嵌入
+
+`SingularPointEmbedding.lean` 已提交并推送为 `908b74641`。主端点 `exists_embedding_heightSingularPoints_of_sdiff_subset` 是后续指标比较的集合论核心：若源奇异点集去掉 `a` 后包含于目标奇异点集去掉 `b`，且 `b` 确为目标奇异点，则构造源到目标的显式嵌入；源中的 `a` 若出现便映到 `b`，所有其他点保持原值。单射性来自非例外像自动避开 `b`，不要求 `a` 本身属于源集。
+
+模块聚焦检查 exit=0（10.8 秒）、零 warning；`AuditF197.lean` 主端点仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步把该端点用于两张封帽球面的去单点包含，并由旧奇异点必为旧复形顶点及逐顶点层圆周数比较，证明每个不映到 `p` 的新奇异点指标贡献不增。剩余核心将只是在两张候选球面中证明至少一张的例外项严格下降。F-M1 仍为 partial，严格指标下降、Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF198.lean`。
+
+### 19.50 F-M1：奇异点嵌入上的非例外层圆周数比较
+
+`SingularPointComparison.lean` 已提交并推送为 `65fb525c2`。主端点 `exists_embedding_heightSingularPoints_with_levelPolygons_le` 把去指定点的奇异点包含升级为带指标数据的嵌入：例外源点若出现映到指定旧奇异点，其他源点保持原值；对每个非例外源奇异点，先由包含得到其为旧奇异点，再用一般位置下旧奇异点属于旧复形顶点，因而可调用单帽比较的逐旧顶点结论，得到新层圆周数不超过嵌入像处的旧层圆周数。
+
+模块聚焦检查 exit=0（10.4 秒）、零 warning；`AuditF198.lean` 主端点仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步分析唯一未覆盖的 `H p` 项：把三角帽在严格分离高度层中的截面压到单点或空集，并把保留盘贡献与旧 A/B 临界层圆周数比较；结合两盘计数和等于旧计数加一，选出至少一张封帽球面的例外贡献严格下降。F-M1 仍为 partial，Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF199.lean`。
+
+### 19.51 F-M1：单点纤维交下的层圆周精确分割
+
+`CapLevelPolygons.lean` 已提交并推送为 `65e6f87f0`。`levelPolygons_union_of_fiber_inter_subset_singleton` 与 `disjoint_levelPolygons_of_fiber_inter_subset_singleton` 证明：两闭片在目标高度纤维中的交若至多为指定单点，则并集的层圆周族恰为两片层圆周族的不交并；`encard_levelPolygons_union_of_fiber_inter_subset_singleton` 给出相应的精确基数加法。`levelPolygons_union_cap_of_fiber_subset_singleton` 进一步证明：若封帽在目标纤维至多含帽尖，则封帽与保留片的并不会新增层圆周。证明使用 PL 圆周删去一点仍连通且稠密，没有把圆周分割或计数关系写入输入。
+
+模块聚焦检查 exit=0（11.5 秒）、零 warning；`AuditF199.lean` 四个端点均仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步把帽面严格分离直接转成单点纤维条件，并在变形后原球面上应用两片精确分割；剩余核心缩成证明小高度扰动保持该球面在原临界值附近的层圆周总数。F-M1 仍为 partial，Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF200.lean`。
+
+### 19.52 F-M1：两张封帽的例外层合并为原球面一层
+
+`TriangleCapLevelCount.lean` 已提交并推送为 `607f4a6d2`。主端点 `encard_levelPolygons_triangle_cap_pair_add_eq` 对任意两闭片 A、B、共同封帽 D 与环境同胚 H 证明：只要 `A ∩ B ⊆ D` 且新高度在 `H '' D` 上除 `H p` 外严格较高，两张封帽球面在 `f(H p)` 层的圆周数之和就精确等于变形后原并集 `H '' (A ∪ B)` 在同层的圆周数。证明先用单点帽纤维去除两个帽盘，再证明两保留片在该纤维至多交于 `H p`，故其圆周族为不交并；没有加入旧新计数比较作为输入。
+
+模块聚焦检查 exit=0（11.7 秒）、零 warning；`AuditF200.lean` 主端点仅依赖 `propext`、`Classical.choice`、`Quot.sound`。因此两张候选球面的例外贡献已经归约为一个单一义务：证明充分小的一般位置高度 f 下，`H '' K.space` 在 `f(H p)` 层的圆周数不超过 K 在旧临界层 `ℓ p` 的圆周数。下一步建立保高度环境 PL 同胚后的临界层稳定性，再把该不等式接回奇异点嵌入。F-M1 仍为 partial，Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF201.lean`。
+
+### 19.53 F-M1：向下三角帽的对称奇异点比较
+
+`TriangleCapSingularComparisonSymmetry.lean` 已提交并推送为 `3327abc5b`。主端点 `exists_triangle_cap_with_singular_comparison_of_cap_below` 把单帽比较完整搬到帽面严格低于帽尖的情形：对旧高度和扰动高度同时取负，调用已经验证的向上帽端点，再用 `heightSingularPoints_neg` 与 `levelPolygons_neg` 把结论搬回。局部半空间析取的两个分支在取负时互换；顶点单射、紧支集纤维分离、边界等高芽、非例外奇异点包含及逐点层圆周数不增均保持。因此可以按照 Moise 17.12 的原始路线，对两张保留盘分别选择方向相反的小倾斜，无需再要求一个共同高度控制变形后原球面的整个临界层。
+
+模块聚焦检查 exit=0（12.2 秒）、零 warning；`AuditF201.lean` 主端点仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步从参数化切割给出的相反半空间芽，为 A、B 两张封帽球面分别选择充分小的一般位置高度：与保留盘位于旧水平面的同一侧倾斜帽面，使选定的最内层圆周 J 在帽尖新高度层消失，同时保留所有非例外奇异点比较。F-M1 仍为 partial，严格指标下降、Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF202.lean`。
+
+### 19.54 F-M1：保持旧次序的向下半空间一般位置扰动
+
+`HeightPerturbationSymmetry.lean` 已提交并推送为 `026576e48`。主端点 `exists_continuousLinearMap_injOn_preserving_strict_order_and_halfSpace_below_of_isPolyhedron` 对有限一般位置集合、有限旧顶点集以及位于旧等高面的紧多面体片构造任意小的新高度，使其在一般位置集合上单射、保持旧顶点的全部严格高度次序，并把多面体片除指定点外严格压到该点下方。证明对旧高度取负后调用向上半空间扰动，再把所得高度取负；距离、非零性、单射性和旧次序均逐项搬回。
+
+模块聚焦检查 exit=0（10.7 秒）、零 warning；`AuditF202.lean` 主端点仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步在参数化三角切割的两个相反侧分支中，分别用向上与向下生产者选择独立高度，并接入相应的单帽奇异点比较端点，输出两张封帽球面及方向相反的严格帽面分离。F-M1 仍为 partial，严格指标下降、Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF203.lean`。
+
+### 19.55 F-M1：两张封帽球面的独立相反方向扰动
+
+`OppositeTriangleCapPerturbation.lean` 已提交并推送为 `feeae6c5a`。主端点 `exists_small_opposite_triangle_cap_pair_with_singular_comparison` 从一个旧奇异点同时保留所选最内层圆周 J、两盘分割和临界层计数恒等式，但为 A、B 两张封帽球面分别选择独立的新高度。若 A 在旧水平面局部高侧，则 A 的帽面严格高于帽尖而 B 的帽面严格低于帽尖；另一侧别分支完全互换。两个高度都可任意逼近旧高度、在各自新复形顶点上单射、保持全部旧顶点严格次序，并分别满足去帽尖后的奇异点包含和每个非例外旧顶点处的层圆周数不增。
+
+模块聚焦检查 exit=0（16.1 秒）、零 warning；`AuditF203.lean` 主端点仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步证明匹配方向的局部层圆周消失引理：保留盘在 J 去掉 p 后位于旧水平面的同一闭半空间，而新高度把整个变形后三角盘去掉 H p 严格推到该侧时，新帽尖层的圆周可注入保留盘的旧临界层圆周族，且像避开指定 J。F-M1 仍为 partial，严格指标下降、Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF204.lean`。
+
+### 19.56 F-M1 停点：相对层圆周删除的确切义务
+
+Moise 17.12 的两个相反转轴现已分别构造，且每张封帽球面的全部非例外奇异点与层圆周贡献均已控制。剩余义务不再是变形后整张原球面的临界层稳定性，而是以下相对带边版本：对 `Q = A` 或 `B`，在 `Q` 沿共同边界圆周 `J` 的穿孔集合芽位于旧水平面一侧、`H '' D \ {H p}` 被新高度严格推到同侧、并保持旧顶点严格次序时，构造单射
+
+`levelPolygons (H '' (Q ∪ D)) f (f (H p)) ↪ levelPolygons Q ℓ (ℓ p) \ {J}`。
+
+等价的计数结论是新帽尖层圆周数加一不超过旧保留盘临界层圆周数。现有 `HeightRotation` 只处理无边界 PL 球面且基剖分在旧高度上一般位置；`HeightLocalization` 只处理扰动支集避开的其他旧顶点；`TriangleCapSingularComparison` 排除了帽尖以外的新奇异点，但不构造跨越边界临界值时的层圆周对应。把整球稳定性用于 `H '' K.space` 也要求一个旧高度一般位置的直线剖分，而凸化同胚在 `H '' J` 上必产生多个同高折点。故当前库缺少的是真实的相对 PL 高度稳定性/一次边界临界圆周删除定理，不能由集合包含或现有 `encard` 引理补出，也不能把所需单射加入最终结论的假设。
+
+按 `NIGHT_PLAN.md` §0.4，F-M1 在此保持 partial 并转入下一里程碑；已完成的相反方向生产者保留为后续证明的精确前置。F-M2 下一审计文件仍使用 `AuditF204.lean`。
+
+### 19.57 F-M2：正规奇异 2-胞腔接口与坐标搬运
+
+`SingularNormalForm.lean` 已提交并推送为 `63077045e`。`IsNormalSingularCell` 同时记录局部单射、至多二重纤维、边界像约束、精确奇点图的一维带边组合三角剖分，以及每个双点的坐标 crossing。边界双点由 `HasPLNormalDoubleCrossingAt` 的第一分支表达：点位于坐标边界像，并显式给出实际局部半空间集合和 `HasPLBoundaryDoubleCrossingAt`；内部点由第二分支给出 `HasPLDoubleCrossingAt`。局部半空间没有误写成二维边界集合，也没有作为图册自动提供的无根据数据。
+
+基本 API 包含 `HasPLNormalDoubleCrossingAt.postcomp_openPartialHomeomorph` 的坐标后复合搬运、`IsNormalSingularCell.locallyInjective_restrict`、`fiber_le_two_restrict`、`doublePointSet_mono` 的源子集限制，以及 `exists_crossing_chart`。聚焦检查 exit=0（12.1 秒）、零 warning；`AuditF204.lean` 七项均只依赖 `propext`、`Classical.choice`、`Quot.sound`。F-M2 done；F-M1 的相对层圆周删除缺口仍保持 §19.56 的精确形式。下一里程碑 F-M3 写 `TwoFoldCrossing.lean`；下一审计文件 `AuditF205.lean`。
+
+### 19.58 F-M3：两张折叠曲面的共同拉直与 crossing
+
+`TwoFoldCrossing.lean` 已提交并推送为 `10fd6827e`。`exists_common_direction_of_eq_apply` 在两条一维折线方向张成的共同折叠平面两侧，显式解出两张半片平面的共同横向方向。`exists_isPLHomeomorphOn_straighten_two_folds` 将正、负方向分别归一到高度 1 和 −1，再用固定整个折叠平面的分片线性剪切把负方向送到正方向；同一个全局 PL 同胚因而同时把两张折叠曲面拉直为 `S ⊔ span {w}` 与 `T ⊔ span {w}`。
+
+主端点 `hasPLCrossingAt_of_two_folds` 证明三维空间中，若两个一维折线方向共同张成折叠平面的高度核，且每张曲面的两个半片分别严格位于该平面两侧，则两张局部折叠曲面在交点满足 `HasPLCrossingAt`。一维条件、三维维数和核的张成等式已经排除两条折线重合；四个严格高度符号给出各半片的横截性，没有另加 crossing 假设。聚焦检查 exit=0（12.2 秒）、零 warning；`AuditF205.lean` 七项均只依赖标准三公理。F-M3 done；下一里程碑 F-M4 写 `ArrangementGeneralPosition.lean`，下一审计文件 `AuditF206.lean`。
+
+### 19.59 F-M4：有限仿射平面族的分层相对通用位置
+
+`ArrangementGeneralPosition.lean` 已提交并推送为 `f1efe8e04`。`arrangementDirection` 与 `arrangementLayer` 把一点所在层定义为所有经过该点的安排超平面的方向交与相应仿射平移；`openCell_mem_nhdsWithin_arrangementLayer` 证明原符号胞腔是该层中的相对邻域。`exists_mem_openCell_notMem_affineSubspaces` 在任意小相对球中同时避开有限个不包含整层的坏仿射子空间，`exists_small_update_affineIndependent_in_arrangement` 给出单顶点插入。
+
+有限同步生产者 `exists_small_affineIndependent_constraints_in_arrangement` 接受固定顶点集、有序可动顶点表和有限约束族。每次插入只要求该约束中已确定点数不超过当前层维数；`arrangementLayer_not_le_affineSpan_of_affineIndependent` 从这个计数实际推出坏仿射包在当前层中为真子空间。所得映射固定全部非可动顶点、任意小、并让每个可动顶点留在原开胞腔的相对内部，同时使全部指定约束仿射无关。
+
+主端点 `exists_small_vertexMap_transverse_in_arrangement` 再以 `arrangementEnvelope` 表示一组顶点各层的最小共同仿射包。只要约束族覆盖每对待比较面之并内、基数不超过包络维数加一的子集，相交的不交面扰动后满足方向空间之和精确等于该安排包络的方向。单平面边界情形的核平面/全空间二分由此成为包络方向的特例；固定部分只输入自身的仿射无关性，没有输入最终横截结论。
+
+聚焦检查 exit=0（12.2 秒）、零 warning；`AuditF206.lean` 十九项全部仅依赖 `propext`、`Classical.choice`、`Quot.sound`。F-M4 done，无剩余缺口；下一里程碑 F-M5 重写 `RelativeNormalForm.lean`，下一审计文件 `AuditF207.lean`。
+
+### 19.60 F-M5：安排分层下的欧氏相对正规形式核心
+
+`RelativeNormalForm.lean` 已重写并提交为 `1c1074eea`。`eventually_mem_space_iff_mem_coface_pair_foldedPlane` 把二维组合流形一条内折边的两个余面精确识别为 `foldedPlane` 集合芽；`hasPLCrossingAt_of_two_fold_faces` 将该识别接到 F-M3 的双折叠定理。`IsArrangementGeneralFoldPair` 用安排超平面、两条折边的方向张成等式、以及两片分别位于超平面两侧来陈述固定折边的一般位置；`foldDirections_ne` 在三维中从这些数据实际推出两折线方向不相同，因而明确排除了 §16.2 的重合固定折边，而没有假设 crossing。
+
+`hasPLCrossingAt_of_transverse_or_arrangement_fold` 统一处理普通横截的平/平、折/平情形与同一安排平面内的折/折情形。`IsBoundaryArrangementGeneralPair.hasPLBoundaryCrossingAt` 给出零平面边界版。`IsVertexMapGeneralInArrangement` 记录顶点留在原安排开胞腔、约束族仿射无关、相交面方向张成安排包络方向；`exists_small_vertexMap_generalInArrangement` 从 F-M4 的生产者给出任意小相对位移并保持这一完整不变量。
+
+F-M5 状态为 partial。唯一未闭合的生产步骤是：给定 F-M6 的公共仿射细分 `K*`，从 `IsVertexMapGeneralInArrangement` 对每个实际双点识别两张像面星的最小载体，证明其集合芽要么方向张成全空间，要么恰形成 `IsArrangementGeneralFoldPair`；边界点则形成 `IsBoundaryArrangementGeneralPair`。F-M4 已生产方向等式，但尚无现成 API 把目标 `K*` 的共面相邻三胞腔及图卡变换的两侧性搬成两个余面顶点的严格异号条件。不能把这项局部分类作为结论型假设塞入最终正规形式端点；它必须由 `K*` 的组合流形结构和图卡同胚性证明。
+
+聚焦检查 exit=0（13.8 秒）、零 warning；`AuditF207.lean` 十六项全部只依赖 `propext`、`Classical.choice`、`Quot.sound`。下一里程碑 F-M6 在 `SingularNormalForm.lean` 构造紧致片、公共细分与图卡归纳，并尝试生产上述局部分类；下一审计文件 `AuditF208.lean`。
+
+### 19.61 F-M6：紧致载体、星图卡族与公共仿射细分
+
+`PiecewiseAffineSimplicial.lean` 与 `SingularNormalForm.lean` 已提交并推送为 `5d5a89f9f`，星图卡接口加强提交为 `04b71666c`。`exists_isSubdivision_affineOn_faces_finset` 与 `_finite` 对有限族逐片仿射映射构造同一个有限细分；后续细分上的仿射性由载体面包含保持。`IsPiecewiseAffineOn.exists_isSubdivision_affineOn_subcomplex`、`exists_isSubdivision_affineOn_subcomplexes_finset` 与 `_finite` 把该构造推广到有限子复形族：逐个把子复形的仿射细分相对延拓到全复形，随后用限制细分保持已经处理的各子复形。
+
+`SingularTwoCell.exists_compact_piece_neighborhood` 用 F6.2 将整幅紧致像装入一个紧致多面体三维带边流形片。`PLPieceIn.exists_isSubdivision_affineOn_chart_stars` 先细分至每个旧顶点的整个闭星落入一张 PL 图卡，再对全部有限闭星作上述共同相对细分；输出保留旧复形、公共细分、每个旧顶点的实际图卡、闭星包含以及该图卡坐标在公共细分限制中的每个单形上的仿射公式。`PLPieceIn.exists_isSubdivision_affineOn_chart_faces` 给出逐面消费版本。`SingularTwoCell.exists_compact_piece_affine_chart_refinement` 将紧致载体、公共细分、三维带边组合流形性、原像包含于载体内部和逐面仿射图卡一次性打包。这已经完成 F-M6 的 `K_T`、有限星图卡族与 `K*` 生产，不把全域图卡映射的逐片仿射性作为错误假设。
+
+F-M6 状态为 partial。剩余的首个数学义务是一个真实的余面异侧定理：在上述同一星图卡内，若 `q` 是 `K*` 的内部二维面且恰有两个三维余面，则两个余面的对顶点在 `affineSpan ℝ (e(T(q)))` 的严格相反两侧；边界二维面唯一余面的对顶点须位于所选内部严格一侧。现有组合流形 API 给出余面个数，公共细分给出图卡内的仿射性与单射性，但库中尚无把这两项合成为严格符号的定理。缺少该结论时，不能从 `IsVertexMapGeneralInArrangement` 生产 `IsArrangementGeneralFoldPair` 或 `IsBoundaryArrangementGeneralPair`，因此不能证明每个实际双点的 crossing，也不能启动保持该不变量的有限图卡归纳。该严格异侧性必须从 `K*` 的实际相邻三胞腔、图卡同胚性和单形内部不交推出，不能作为 `exists_small_isNormalSingularCell` 的假设。`Ξ = K*` 的二维骨架、图卡归纳和最终端点均留在此义务之后；本次未声明 `exists_small_isNormalSingularCell`。
+
+聚焦检查：`PiecewiseAffineSimplicial` exit=0（9.5 秒）、`SingularNormalForm` exit=0（12.2 秒），均零 warning。`AuditF208.lean` 十八项全部只依赖 `propext`、`Classical.choice`、`Quot.sound`。F-M6 partial；下一审计文件 `AuditF209.lean`。
