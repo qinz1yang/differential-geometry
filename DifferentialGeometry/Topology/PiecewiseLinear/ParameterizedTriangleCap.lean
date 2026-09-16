@@ -21,6 +21,21 @@ theorem eventually_mem_inter_iff_left_and_eq_of_opposite_halfSpaces
     apply hinter.subset
     exact ⟨hxA', hxB.mpr ⟨(hxA.mp hxA').1, hxeq.le⟩⟩
 
+theorem eventually_mem_inter_iff_right_and_eq_of_opposite_halfSpaces
+    {X : Type*} [TopologicalSpace X] {A B S J : Set X} (hinter : A ∩ B = J)
+    (f : X → ℝ) (r : ℝ) {q : X}
+    (hA : ∀ᶠ x in 𝓝 q, x ∈ A ↔ x ∈ S ∧ r ≤ f x)
+    (hB : ∀ᶠ x in 𝓝 q, x ∈ B ↔ x ∈ S ∧ f x ≤ r) :
+    ∀ᶠ x in 𝓝 q, x ∈ J ↔ x ∈ B ∧ f x = r := by
+  filter_upwards [hA, hB] with x hxA hxB
+  constructor
+  · intro hxJ
+    have hxAB : x ∈ A ∩ B := hinter.symm.subset hxJ
+    exact ⟨hxAB.2, le_antisymm (hxB.mp hxAB.2).2 (hxA.mp hxAB.1).2⟩
+  · rintro ⟨hxB', hxeq⟩
+    apply hinter.subset
+    exact ⟨hxA.mpr ⟨(hxB.mp hxB').1, hxeq.ge⟩, hxB'⟩
+
 theorem exists_triangulation_triangle_cap_with_nonsingular_boundary
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
     [dE : DecidableEq E] (hdimE : Module.finrank ℝ E = 3)
