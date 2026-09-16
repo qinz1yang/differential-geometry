@@ -458,3 +458,22 @@ theorem eq_top_of_boundaryLoops_mem_normal
   因而不是 Moise Case 3/4 把两条同像原像弧交叉重接所得的 `D₁,D₂`，也不能据此声称新胞腔正规或复杂度下降。
   仍需构造三块源盘沿两条 PL 同胚 crosscut 的两种重接，证明重接映射 PL、边界字分别为书页 186–187 的公式、目标边界相交条件保持，
   并为所选新胞腔重建 `NormalSingularCellData` 且严格减少触边分支数。Case 1/2 还缺环带正则邻域、环带重定义、内盘替换与 I2 推离。
+
+## 20. 2026-09-16 E3-M2 追加：两条 crosscut 的三盘链分解
+
+状态：done（三盘源域分块已闭合，Case 3/4 的交叉重接仍为 partial）。数学提交 `d6f49f179`。
+
+- `DiskCrosscut.lean` 的 `isCrosscut_of_subset_side` 证明：一条 crosscut 若包含在另一条 crosscut 切出的闭盘一侧并避开公共切弧，
+  则它仍是该侧盘的 crosscut；证明同时核对端点落在新盘边界、开弧落在新盘内部。
+- `SingularTwoCell.exists_two_cells_with_second_crosscut` 先沿第一条源折线切盘，并用第二条折线的连通性、两侧闭性与交集恰为第一条折线，
+  证明第二条折线完整落在且仍 crosscut 其中一侧。
+  `SingularTwoCell.exists_three_cells_of_two_disjoint_crosscuts` 再切该侧并规范重排，得到三张 PL 奇异 2-胞腔：三域覆盖原盘，
+  相邻交依次恰为两条指定 crosscut，首尾两域不交，且三张映射都是原 `D` 的限制。
+- `NormalSingularCellData.exists_three_cells_of_boundaryBranch` 将 §19 的触边分支双原像端点与上述通用分解组合，直接为任意触边奇异分支交付
+  `A`、`C` 及三盘链；边界半空间交叉仍使用最终 I3 同形的显式输入。
+- `DiskCrosscut` 与 `CutAndPaste` 聚焦检查均 exit=0、零 warning；更新后的 `.lake/scratch/AuditE3M2.lean` 共 30 项，
+  全部只含 `propext`、`Classical.choice`、`Quot.sound`。本层未首次复用新的 covering/Van Kampen 声明。
+- 确切未闭合项：三张输出仍是原映射在三块源盘上的限制，而书中 `D₁,D₂` 是沿 `A`、`C` 的共同目标像作两种交叉重接后的新盘。
+  下一步需要一个二维边界弧贴合定理：把两张 PL 2-球沿由 `branchCoordinate|A`、`branchCoordinate|C` 诱导的 PL 同胚贴合，证明贴合空间仍为 PL 2-球，
+  并把两侧相容的 PL 映射下降为 `SingularTwoCell`。本树 `Gluing.lean` 提供复形贴合与相容映射，但尚无该二维 PL 球结论的直接端点；
+  完成后还须识别新边界环字、重建正规数据并证明复杂度严格下降。
