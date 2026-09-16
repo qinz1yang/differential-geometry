@@ -540,6 +540,31 @@
   关键复用逐项包括重心细分与 carrier、覆盖边提升与面数据、开星局部平凡化、覆盖基顶点的面上单射、
   `CoherentOrientation.changeVertexOrder`、单形边界系数及组合流形余面计数。H-M5 无未闭合端点；
   H-M3/H-M4 的顶维基本类、23.19 与非球面识别缺口保持不变。
+
+- 2026-09-16（H.4b 闭组合曲面球面识别，数学提交 `465433505`）：
+  `SurfaceSphereRecognition.lean` 用原始生成树和 Euler 计数产生的对偶余树，将任意连通闭组合
+  2-流形分为两个 PL 2-球子复形；共同面的纯 1 维性识别两侧的共同边界，再粘合成 PL 2-球面。
+  端点 `IsCombinatorialManifold.isPLSphere_two_of_faceEulerChar_eq_two` 仅假设连通、闭组合 2-流形及
+  `faceEulerChar = 2`。聚焦检查 exit=0、零 warning；`AuditHSurfaceSphereRecognition` 审计 33 项（22 新、11 复用），
+  全部只含标准三公理。本里程碑首次复用并逐条审计
+  `closure_space_sdiff_space_eq_subcomplexGeneratedBy`、
+  `inter_closure_sdiff_space_eq_boundaryComplex_of_isCombinatorialManifold`、
+  `eq_of_faces_subset_of_space_eq`、`boundaryComplex_boundaryRelSubdivision`、
+  `boundaryComplex_full_boundaryRelSubdivision`、`isPLSphere_gluedComplex_of_isPLBall`、
+  `isPLHomeomorphOn_gluedMap_of_full`、`exists_face_superset_card_eq_of_isPLBall`、
+  `IsCombinatorialManifold.secondDerived`、`secondDerived_isSubdivision`、`exists_primalTree_dualCotree`。
+- 2026-09-16（H-M4 / I5，数学提交 `1d7ffe266`）：`BoundaryHomology.lean` 在现有
+  `orderedSimplicialSet` normalized chain complex 中构造边界分支定向循环与顶单形边界的联合单射，证明
+  `card(other boundary components) ≤ b₂(K)`，并证明连通可定向带非空边界组合 3-流形的奇异 `b₃=0`。
+  `faceEulerChar` 的连通分支求和、H.4b 的 `χ=2 → IsPLSphere 2`、`χ(∂K)=2χ(K)` 与 Euler–Betti 展开
+  随后给出 `HandleCount.bettiOne_pos_of_boundary_component_not_sphere`，交付 I5；H-M3 的闭曲面全局基本类仍后推。
+  三个目标模块聚焦检查 exit=0、零 warning；`fresh.py` 报相对整合分支 7 个改动模块 olean 全部新鲜且零禁用项。
+  `.lake/scratch/AuditHI5.lean` 逐项审计 47 个新增声明与 23 个关键复用声明，均只含标准三公理。
+  本里程碑首次复用单独审计 `orderedNormalizedChainEquiv`、`orderedNormalizedBoundary`、
+  `SSet.finiteDimensional_normalizedChainComplex_X`、`ShortComplex.homologyMapIso`、`isoOfQuasiIsoAt`、
+  `LinearMap.finrank_le_finrank_of_injective`、`LinearMap.finrank_range_le`、`LinearMap.ker_eq_bot`、
+  `Nat.card_le_card_of_surjective` 与 `Finite.card_option`；并复核 realization/奇异同调桥、分量复形、曲面 Euler 上界、
+  H.4b 球面识别、边界定向及边界 Euler 端点的公理闭包。
 - 2026-09-15（C/L 车道，L.2 接口修正与组合曲面层）：`SphereCase.lean` 的
   `exists_nonsingular_two_cell_of_sphere_boundary` 在 `724267986` 增加实际多面体 3-流形 `M`、
   `B ⊆ polyhedralBoundary 3 M hM`，并在 `hpush` 与结论中都要求 `D₁ '' D₁.domain ⊆ M`；检查 exit=0、
