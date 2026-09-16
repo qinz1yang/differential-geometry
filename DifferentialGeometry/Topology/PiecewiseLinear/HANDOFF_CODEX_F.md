@@ -1843,3 +1843,9 @@ F-M2–F-M6 尚未开始；按用户指定顺序推进，只有出现 §1 接口
 `SingularPointEmbedding.lean` 已提交并推送为 `908b74641`。主端点 `exists_embedding_heightSingularPoints_of_sdiff_subset` 是后续指标比较的集合论核心：若源奇异点集去掉 `a` 后包含于目标奇异点集去掉 `b`，且 `b` 确为目标奇异点，则构造源到目标的显式嵌入；源中的 `a` 若出现便映到 `b`，所有其他点保持原值。单射性来自非例外像自动避开 `b`，不要求 `a` 本身属于源集。
 
 模块聚焦检查 exit=0（10.8 秒）、零 warning；`AuditF197.lean` 主端点仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步把该端点用于两张封帽球面的去单点包含，并由旧奇异点必为旧复形顶点及逐顶点层圆周数比较，证明每个不映到 `p` 的新奇异点指标贡献不增。剩余核心将只是在两张候选球面中证明至少一张的例外项严格下降。F-M1 仍为 partial，严格指标下降、Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF198.lean`。
+
+### 19.50 F-M1：奇异点嵌入上的非例外层圆周数比较
+
+`SingularPointComparison.lean` 已提交并推送为 `65fb525c2`。主端点 `exists_embedding_heightSingularPoints_with_levelPolygons_le` 把去指定点的奇异点包含升级为带指标数据的嵌入：例外源点若出现映到指定旧奇异点，其他源点保持原值；对每个非例外源奇异点，先由包含得到其为旧奇异点，再用一般位置下旧奇异点属于旧复形顶点，因而可调用单帽比较的逐旧顶点结论，得到新层圆周数不超过嵌入像处的旧层圆周数。
+
+模块聚焦检查 exit=0（10.4 秒）、零 warning；`AuditF198.lean` 主端点仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步分析唯一未覆盖的 `H p` 项：把三角帽在严格分离高度层中的截面压到单点或空集，并把保留盘贡献与旧 A/B 临界层圆周数比较；结合两盘计数和等于旧计数加一，选出至少一张封帽球面的例外贡献严格下降。F-M1 仍为 partial，Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF199.lean`。
