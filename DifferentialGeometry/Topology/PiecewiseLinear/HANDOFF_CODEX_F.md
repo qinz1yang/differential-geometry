@@ -1723,3 +1723,9 @@ F-M2–F-M6 尚未开始；按用户指定顺序推进，只有出现 §1 接口
 `ParametricSingularHeightCut.lean` 已提交并推送为 `2b12885e2`。主端点 `exists_isPLSphere_pair_of_mem_heightSingularPoints_with_parameterized_boundary` 保留 `SphereCut` 构造实际产生的两张保留盘参数化 `fA`、`fB`，并分别给出其标准单形边界像等于共同水平圆周；原有两封帽球面、交集与恢复等式、临界层计数、其他层分拆和盘外奇异点等式全部同时保留。该加强只暴露原证明中已经构造但旧端点丢弃的数据。
 
 模块聚焦检查 exit=0（11.9 秒）、零 warning；`AuditF177.lean` 主端点仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步沿三角凸化的保高度环境同胚搬运 `fA`、`fB`，再为每张保留盘与三角帽构造带显式面覆盖的共同细分；组合边界空间将由参数化和细分不变性直接识别。F-M1 仍为 partial，严格降指标、Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF178.lean`。
+
+### 19.30 F-M1：三角凸化保留切割盘参数与全部指标数据
+
+`ParametricTriangleHeightCut.lean` 已提交并推送为 `5bfd5954a`。主端点 `exists_parameterized_triangle_cut_of_singular_height` 把上一层的两张盘参数化贯穿指定点三角凸化：返回原球面的两盘分拆及共同参数边界、水平张成盘、两张封帽球面、保高度且固定支集外和其他原顶点的环境 PL 同胚、三元素仿射独立三角形载体、指定点的严格线性分离，以及临界层圆周计数和所有集合的高度指标不变性。该端点不再提前选择任意三角剖分，后续可用显式参数边界构造适配共同细分。
+
+模块聚焦检查 exit=0（12.4 秒）、零 warning；`AuditF178.lean` 主端点仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步对 `H '' A` 与 `H '' B` 分别建立有限三角剖分，再与 `H '' D` 做显式面覆盖共同细分；沿保高度同胚运输 `HeightSides` 的相反单侧集合芽，闭合接缝边内部顶点的 `encard ≤ 2`。F-M1 仍为 partial，严格降指标、Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF179.lean`。
