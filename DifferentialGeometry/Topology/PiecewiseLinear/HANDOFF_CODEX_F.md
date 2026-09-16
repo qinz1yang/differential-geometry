@@ -1989,3 +1989,15 @@ F-M1 仍为 partial。单个旧三角形的全部纤维及逐边对应已闭合�
 `HeightComplexStability.lean` 的 `eventually_exists_isPLHomeomorphOn_height_fiber_preserving_faces` 在有限纯二维复形上统一全部三角形的小高度邻域，由复形的精确面交把逐子面保持升级为任意其他原面的成员关系保持，然后实际拼出整个新旧层的 PL 同胚。源层是 `K.space ∩ {x | f (H x) = f (H p)}`，目标是原直线复形的 `K.space ∩ {x | ℓ x = ℓ p}`；`H` 只要求全域 PL 且保持旧高度，不要求它在旧面上仿射。带边组合二维流形版本直接从已经证明的纯维性得到该生产者，没有把纤维对应作为假设。
 
 聚焦检查：`HeightTriangleStability` exit=0（12.7 秒）、`HeightFaceStability` exit=0（12.9 秒）、`HeightComplexStability` exit=0（12.5 秒），均零 warning。前一模块仅公开现有标准三角域多面体引理供复用；`AuditF217.lean` 四个端点全部仅依赖 `propext`、`Classical.choice`、`Quot.sound`。F-M1 仍为 partial；§19.56 的首个剩余义务现为保留盘相对性：从沿 `J` 的半空间芽及转轴将 `J \ {p}` 推至同侧，证明整体对应把保留盘新层的圆周送到旧保留盘圆周且避开 `J`。不能把本整体纤维稳定性误报为相对删除或 I1。下一审计文件 `AuditF218.lean`。
+
+### 19.69 F-M1 检查点：§19.56 相对层圆周删除已闭合
+
+`FaceLevelPolygons.lean` 证明保持全部原面成员关系的映射也保持最小开面；同一开面内的旧水平截面一旦碰到某条旧圆周，就全部属于该圆周。后者使用截面的凸连通性及非例外点处的真实层圆周集合芽，不要求圆周预先是旧复形的子复形。
+
+`HeightFiberWitness.lean` 在任意小的原开面邻域内，通过保高度连续映射的射线介值构造实际新层点；单侧版本在指定旧层点被推到上侧时，实际给出旧高度严格在下侧的新层点。正高度方向由原顶点的唯一层条件生产。
+
+`RelativeHeightDeletion.lean` 的 `eventually_exists_isPLHomeomorphOn_fiber_deleting_levelPolygon_of_upper_side` 已构造整体层 PL 同胚，其圆周像把保留盘的新层圆周送入旧保留盘圆周族且避开 `J`。证明对每条不属于保留盘的旧圆周选取盘外开面见证，再用旧圆周族有限性统一邻域；对指定 `J` 则用同侧推离和旧半空间芽选取反侧新层见证。映射在实际新层上单射，因此确实给出圆周族单射，而非把单射或计数作为输入。
+
+封帽端点 `eventually_encard_levelPolygons_cap_add_one_le_of_upper_side` 与 `_of_lower_side` 直接证明 `(levelPolygons (H '' (Q ∪ D)) f (f (H p))).encard + 1 ≤ (levelPolygons Q ℓ (ℓ p)).encard`。只需要 `Q` 闭且包含于原球面、`J` 是旧保留盘层圆周、`J ⊆ D`、沿 `J` 的相应半空间芽，以及 `H` 保旧高度和新高度把 `H '' D` 除帽尖外严格推至同侧；允许 `p ∉ J`。§19.56 的数学缺口至此关闭，没有增加 `SchoenfliesInput` 字段。
+
+聚焦检查：`FaceLevelPolygons` exit=0（10.8 秒）、`HeightFiberWitness` exit=0（11.3 秒）、`RelativeHeightDeletion` exit=0（13.1 秒），均零 warning。`AuditF218.lean` 九项全部仅依赖 `propext`、`Classical.choice`、`Quot.sound`；fresh 自检 13/13 新鲜、禁用模式 0。下一步将相对删除邻域并入两方向三角封帽生产者，构造两个严格降指标球面，再做 Lemma 1 归约和 S.4 M2/M3。F-M1 整体与 I1 仍未交付。下一审计文件 `AuditF219.lean`。
