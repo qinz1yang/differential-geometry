@@ -5,7 +5,7 @@ open Set
 
 namespace DifferentialGeometry.Topology.PiecewiseLinear
 
-theorem exists_isPLHomeomorphOn_extension_coneComplex_union
+theorem exists_isPLHomeomorphOn_extension_coneComplex_union_radial
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
     [DecidableEq E] {L B : Geometry.SimplicialComplex ℝ E} [Finite L.faces]
     (hB : B.faces ⊆ L.faces) {p q : E} (hp : IsConeBase p L) (hq : IsConeBase q L)
@@ -16,7 +16,12 @@ theorem exists_isPLHomeomorphOn_extension_coneComplex_union
     ∃ h : E ≃ₜ E, IsPLHomeomorphOn h univ univ ∧ EqOn h f L.space ∧
       h '' (coneComplex hp).space = (coneComplex hp).space ∧
       h '' (coneComplex hq).space = (coneComplex hq).space ∧
-      EqOn h id ((coneComplex hp).space ∪ (coneComplex hq).space)ᶜ := by
+      EqOn h id ((coneComplex hp).space ∪ (coneComplex hq).space)ᶜ ∧
+      h p = p ∧ h q = q ∧
+      (∀ z ∈ L.space, ∀ s : ℝ, 0 ≤ s → s ≤ 1 →
+        h (p + s • (z - p)) = p + s • (f z - p)) ∧
+      (∀ z ∈ L.space, ∀ s : ℝ, 0 ≤ s → s ≤ 1 →
+        h (q + s • (z - q)) = q + s • (f z - q)) := by
   have : Finite (coneComplex hp).faces := (coneComplex_faces_finite hp (Set.toFinite L.faces)).to_subtype
   have : Finite (coneComplex hq).faces := (coneComplex_faces_finite hq (Set.toFinite L.faces)).to_subtype
   have hP := isPolyhedron_space (coneComplex hp)
@@ -64,6 +69,36 @@ theorem exists_isPLHomeomorphOn_extension_coneComplex_union
   have hhP : EqOn h gP (coneComplex hp).space := (hhg.mono subset_union_left).trans hgP'
   have hhQ : EqOn h gQ (coneComplex hq).space := (hhg.mono subset_union_right).trans hgQ'
   exact ⟨h, hh, (hhP.mono (space_subset_coneComplex_space hp)).trans hgPf,
-    hhP.image_eq.trans hgP.image_eq, hhQ.image_eq.trans hgQ.image_eq, hhfix⟩
+    hhP.image_eq.trans hgP.image_eq, hhQ.image_eq.trans hgQ.image_eq, hhfix,
+    (hhP (apex_mem_coneComplex_space hp)).trans hgp,
+    (hhQ (apex_mem_coneComplex_space hq)).trans hgq,
+    fun z hz s hs hs' => (hhP (by
+      by_cases hs0 : s = 0
+      · simpa only [hs0, zero_smul, add_zero] using apex_mem_coneComplex_space hp
+      · exact (mem_coneComplex_space_iff hp).mpr
+          (Or.inr ⟨z, hz, s, lt_of_le_of_ne hs (Ne.symm hs0), hs', rfl⟩))).trans
+        (hPrad z hz s hs hs'),
+    fun z hz s hs hs' => (hhQ (by
+      by_cases hs0 : s = 0
+      · simpa only [hs0, zero_smul, add_zero] using apex_mem_coneComplex_space hq
+      · exact (mem_coneComplex_space_iff hq).mpr
+          (Or.inr ⟨z, hz, s, lt_of_le_of_ne hs (Ne.symm hs0), hs', rfl⟩))).trans
+        (hQrad z hz s hs hs')⟩
+
+theorem exists_isPLHomeomorphOn_extension_coneComplex_union
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    [DecidableEq E] {L B : Geometry.SimplicialComplex ℝ E} [Finite L.faces]
+    (hB : B.faces ⊆ L.faces) {p q : E} (hp : IsConeBase p L) (hq : IsConeBase q L)
+    (hinter : (coneComplex hp).space ∩ (coneComplex hq).space = L.space)
+    (hfrontier : frontier ((coneComplex hp).space ∪ (coneComplex hq).space) ⊆
+      (coneComplex (hp.of_faces_subset hB)).space ∪ (coneComplex (hq.of_faces_subset hB)).space)
+    {f : E → E} (hf : IsPLHomeomorphOn f L.space L.space) (hfix : EqOn f id B.space) :
+    ∃ h : E ≃ₜ E, IsPLHomeomorphOn h univ univ ∧ EqOn h f L.space ∧
+      h '' (coneComplex hp).space = (coneComplex hp).space ∧
+      h '' (coneComplex hq).space = (coneComplex hq).space ∧
+      EqOn h id ((coneComplex hp).space ∪ (coneComplex hq).space)ᶜ := by
+  obtain ⟨h, hh, hhf, hhP, hhQ, hhfix, -⟩ :=
+    exists_isPLHomeomorphOn_extension_coneComplex_union_radial hB hp hq hinter hfrontier hf hfix
+  exact ⟨h, hh, hhf, hhP, hhQ, hhfix⟩
 
 end DifferentialGeometry.Topology.PiecewiseLinear
