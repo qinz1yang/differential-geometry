@@ -1,4 +1,5 @@
-import Mathlib.Analysis.SpecialFunctions.Exp
+import DifferentialGeometry.Analysis.Estimates.GaussianSeries
+import Mathlib.MeasureTheory.Function.L1Space.Integrable
 import Mathlib.Algebra.Order.Floor.Semiring
 import Mathlib.MeasureTheory.Integral.Lebesgue.Add
 
@@ -158,6 +159,95 @@ theorem lintegral_gaussian_le_of_ball_growth {X : Type*} [PseudoMetricSpace X]
       unfold gaussianTail
       congr 1
       exact tsum_congr fun k => by rw [Nat.add_comm N k]
+
+
+theorem lintegral_gaussian_lt_top_of_exponential_ball_growth
+    {X : Type*} [PseudoMetricSpace X] [MeasurableSpace X]
+    (μ : Measure X) (q : X) {C : ℝ≥0∞} (hC : C ≠ ∞) {growth decay : ℝ}
+    (hdecay : 0 < decay)
+    (hball : ∀ r : ℝ, 1 ≤ r →
+      μ (Metric.ball q r) ≤ C * ENNReal.ofReal (Real.exp (growth * r))) :
+    (∫⁻ x, ENNReal.ofReal (Real.exp (-decay * dist q x ^ 2)) ∂μ) < ∞ := by
+  have hterm (k : ℕ) :
+      (∫⁻ x in unitAnnulus q 0 k,
+        ENNReal.ofReal (Real.exp (-decay * dist q x ^ 2)) ∂μ) ≤
+      C * ENNReal.ofReal (Real.exp growth) *
+        ENNReal.ofReal (Real.exp (-decay * (k : ℝ) ^ 2 + growth * k)) := by
+    let e : ℝ≥0∞ := ENNReal.ofReal (Real.exp (-decay * (k : ℝ) ^ 2))
+    have hpoint : ∀ x ∈ unitAnnulus q 0 k,
+        ENNReal.ofReal (Real.exp (-decay * dist q x ^ 2)) ≤ e := by
+      intro x hx
+      apply ENNReal.ofReal_le_ofReal
+      apply Real.exp_le_exp.mpr
+      apply mul_le_mul_of_nonpos_left _ (neg_nonpos.mpr hdecay.le)
+      exact (sq_le_sq₀ (Nat.cast_nonneg k) dist_nonneg).2 (by simpa [unitAnnulus] using hx.1)
+    have hsub : unitAnnulus q 0 k ⊆ Metric.ball q ((k : ℝ) + 1) := by
+      intro x hx
+      rw [Metric.mem_ball, dist_comm]
+      simpa [unitAnnulus, Nat.cast_add, Nat.cast_one] using hx.2
+    calc
+      _ ≤ ∫⁻ _x in unitAnnulus q 0 k, e ∂μ := setLIntegral_mono measurable_const hpoint
+      _ = e * μ (unitAnnulus q 0 k) := setLIntegral_const _ _
+      _ ≤ e * μ (Metric.ball q ((k : ℝ) + 1)) :=
+        mul_le_mul_right (measure_mono hsub) e
+      _ ≤ e * (C * ENNReal.ofReal (Real.exp (growth * ((k : ℝ) + 1)))) :=
+        mul_le_mul_right (hball _ (by linarith [(Nat.cast_nonneg k : (0 : ℝ) ≤ k)])) e
+      _ = _ := by
+        dsimp only [e]
+        rw [show growth * ((k : ℝ) + 1) = growth + growth * k by ring,
+          Real.exp_add, ENNReal.ofReal_mul (Real.exp_pos _).le,
+          Real.exp_add, ENNReal.ofReal_mul (Real.exp_pos _).le]
+        ac_rfl
+  have hcover : (Set.univ : Set X) ⊆ ⋃ k : ℕ, unitAnnulus q 0 k := by
+    simpa only [Nat.cast_zero, Metric.ball_zero, compl_empty] using
+      compl_ball_subset_iUnion_unitAnnulus q 0
+  calc
+    _ = ∫⁻ x in (Set.univ : Set X),
+        ENNReal.ofReal (Real.exp (-decay * dist q x ^ 2)) ∂μ := by rw [Measure.restrict_univ]
+    _ ≤ ∫⁻ x in ⋃ k : ℕ, unitAnnulus q 0 k,
+        ENNReal.ofReal (Real.exp (-decay * dist q x ^ 2)) ∂μ := lintegral_mono_set hcover
+    _ ≤ ∑' k : ℕ, ∫⁻ x in unitAnnulus q 0 k,
+        ENNReal.ofReal (Real.exp (-decay * dist q x ^ 2)) ∂μ := lintegral_iUnion_le _ _
+    _ ≤ ∑' k : ℕ, C * ENNReal.ofReal (Real.exp growth) *
+        ENNReal.ofReal (Real.exp (-decay * (k : ℝ) ^ 2 + growth * k)) :=
+      ENNReal.tsum_le_tsum hterm
+    _ = (C * ENNReal.ofReal (Real.exp growth)) *
+        ∑' k : ℕ, ENNReal.ofReal (Real.exp (-decay * (k : ℝ) ^ 2 + growth * k)) :=
+      ENNReal.tsum_mul_left
+    _ < ∞ := ENNReal.mul_lt_top
+      (ENNReal.mul_lt_top (lt_top_iff_ne_top.mpr hC) ENNReal.ofReal_lt_top)
+      (DifferentialGeometry.Analysis.tsum_ofReal_exp_neg_mul_sq_add_mul_lt_top decay growth hdecay)
+
+theorem integrable_gaussian_of_exponential_ball_growth
+    {X : Type*} [PseudoMetricSpace X] [MeasurableSpace X] [OpensMeasurableSpace X]
+    (μ : Measure X) (q : X) {C : ℝ≥0∞} (hC : C ≠ ∞) {growth decay : ℝ}
+    (hdecay : 0 < decay)
+    (hball : ∀ r : ℝ, 1 ≤ r →
+      μ (Metric.ball q r) ≤ C * ENNReal.ofReal (Real.exp (growth * r))) :
+    Integrable (fun x => Real.exp (-decay * dist q x ^ 2)) μ := by
+  have hmeas : AEStronglyMeasurable (fun x => Real.exp (-decay * dist q x ^ 2)) μ :=
+    (by fun_prop : Continuous (fun x => Real.exp (-decay * dist q x ^ 2))).aestronglyMeasurable
+  refine ⟨hmeas, ?_⟩
+  rw [hasFiniteIntegral_iff_ofReal (Filter.Eventually.of_forall (fun x => (Real.exp_pos _).le))]
+  exact lintegral_gaussian_lt_top_of_exponential_ball_growth μ q hC hdecay hball
+
+theorem integrable_mul_gaussian_of_exponential_ball_growth
+    {X : Type*} [PseudoMetricSpace X] [MeasurableSpace X] [OpensMeasurableSpace X]
+    (μ : Measure X) (q : X) {C : ℝ≥0∞} (hC : C ≠ ∞) {growth decay : ℝ}
+    (hdecay : 0 < decay)
+    (hball : ∀ r : ℝ, 1 ≤ r →
+      μ (Metric.ball q r) ≤ C * ENNReal.ofReal (Real.exp (growth * r)))
+    {f : X → ℝ} (hf : AEStronglyMeasurable f μ) {K : ℝ}
+    (hbound : ∀ᵐ x ∂μ, ‖f x‖ ≤ K) :
+    Integrable (fun x => f x * Real.exp (-decay * dist q x ^ 2)) μ := by
+  have hg := integrable_gaussian_of_exponential_ball_growth μ q hC hdecay hball
+  apply (hg.const_mul K).mono (hf.mul hg.aestronglyMeasurable)
+  filter_upwards [hbound] with x hx
+  change ‖f x * Real.exp (-decay * dist q x ^ 2)‖ ≤
+    ‖K * Real.exp (-decay * dist q x ^ 2)‖
+  rw [norm_mul, norm_mul]
+  apply mul_le_mul_of_nonneg_right _ (norm_nonneg _)
+  exact hx.trans (by simpa only [Real.norm_eq_abs] using le_abs_self K)
 
 end DifferentialGeometry.Analysis.Measure
 
