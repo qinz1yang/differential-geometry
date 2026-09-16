@@ -237,3 +237,24 @@ theorem eq_top_of_boundaryLoops_mem_normal
 - 条件骨架之外尚缺实际 `DoubleCoverReduction` 生产者：要把 C.1/C.3 的提升复形、`relDerived` 正规邻域与提升后的正规系统接好；
   在复杂度相等分支，还须把上述顶点碰撞等价提升为覆盖投影在 `|D̃|` 上的 PL 同胚，再证明其基本群映射满，与
   C.1 的 `card_fiber_eq_index = 2` 矛盾。24.7/24.8 的覆盖本身则等 E3-M4 的 C.4/C.5 接线。
+
+## 9. 2026-09-15 夜间 E3-M4：C.4/C.5 二重覆盖接线
+
+状态：partial。数学提交 `56456ff35`。
+
+- `DoubleCoverExistence.lean` 的 `SimplicialBoolCocycle.finite_fiber` 从 C.2 的纤维基数二得到 C.3 所需的有限纤维；
+  `SimplicialBoolCocycle.exists_lift_simplicialComplex` 将该覆盖直接接到 C.3 的有限提升复形，并保留每个提升单形上投影为仿射映射的完整条款。
+- `SimplicialBoolCocycle.exists_connected_double_cover_complex` 对任意非上边界上循环同时给出连通二重覆盖、每纤维恰两点、
+  有限提升复形及组合流形性保持。`exists_connected_double_cover_complex_of_not_isOrientable` 按 NIGHT_PLAN §1 I4 的精确形式
+  把“不可定向产生非上边界定向上循环”保留为显式假设，并在重心细分上交付 C.4 的上述全部覆盖数据。
+- 聚焦检查 exit=0、零 warning；`.lake/scratch/AuditE3M4.lean` 的 14 项审计全部只含
+  `propext`、`Classical.choice`、`Quot.sound`。其中逐条审计了首次在本模块复用的
+  `SimplicialBoolCocycle.isCoveringMap`、`card_fiber`、`connectedSpace_iff`、
+  `exists_lift_simplicialComplex` 以及组合流形细分接口；另审计了 Bennett `Coefficients` 的四条换系数端点。
+- C.4 尚缺 Problem 24.11 的“所得覆盖可定向”：当前 C.3 已证明提升复形保持带边组合流形性，但整合分支尚无 H.2a 所需的
+  定向覆盖上定向构造或相应 PL 不变性端点；I4 的三条定向上循环端点本身也尚未进入整合分支，故当前端点按夜间规则条件于 I4。
+- C.5 的群论半边仍由 `Topology/Algebra/Group/IndexTwo.lean` 闭合。Bennett `Coefficients.lean` 实际只构造增广奇异链的换系数映射、
+  约化奇异同调换系数映射及其复合与自然性；它不含有限几何复形的单纯链比较、泛系数定理、
+  `H¹(K; ℤ₂) ≃ Hom(H₁(K; ℤ), ℤ₂)`，也不把同调同态变成 `SimplicialBoolCocycle`。
+  本树同时没有无 `sorry` 的一维 Hurewicz `π₁ᵃᵇ ≃ H₁`，且规则禁止经过 `HurewiczLowDegrees.lean`。
+  因而即使 I5 给出 `bettiOne K > 0`，仍不能在不增加结论型假设的前提下产生非上边界 ℤ₂ 上循环；C.5 保持 partial，未弱化端点。
