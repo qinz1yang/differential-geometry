@@ -2251,3 +2251,23 @@ only `propext`, `Classical.choice`, and `Quot.sound`.
 This supplies the infinite gluing operation used by Moise 10.7--10.8. It does not
 produce the endpoint auxiliary arc or the edge frames: P.4 still needs those
 geometric constructions and the final graph assembly.
+
+## Several crosscuts in one disk (2026-09-16)
+
+`PiecewiseLinear/PolygonalArcBall.lean` bridges every simple polygonal arc to the
+native `IsPLBall 1` predicate by induction over the normalized polygonal chain.
+`PlanarJordan/CrosscutFamily.lean` proves
+`exists_homeomorph_polygonal_crosscuts_in_disk`: a finite family of crosscuts in
+one PL disk, with intersections allowed on the disk boundary, can be made
+simultaneously polygonal by an ambient homeomorphism fixing the disk interior's
+complement. Its displacement is at most the disk diameter. Crosscut endpoints
+need not be distinct across the family. The proof straightens one arc, cuts the
+disk into two PL disks along that image, assigns each remaining arc to a side,
+and applies strong induction; both later maps fix the separating arc.
+
+Both focused checks exit 0 with zero warnings. AuditS126CrosscutFamily checks
+three public declarations, exit 0, only the standard three axioms. This offers a
+route for edge neighborhoods with finitely many boundary contacts, including
+contacts that return immediately to the same side. The producer of that finite
+crosscut decomposition from the original edge is still required; no P.4
+completion is claimed.
