@@ -1614,3 +1614,10 @@ F-M2–F-M6 尚未开始；按用户指定顺序推进，只有出现 §1 接口
 `TriangleHeightCut.lean` 已提交并推送为 `b1b43c61e`。主端点 `exists_isPLSphere_pair_of_singular_height_with_triangle_cap` 将上一层的三元素仿射独立顶点集及仿射嵌入接入完整奇异水平切割。结论保留两张封帽 PL 球面、原水平层圆周计数恒等式、其他原顶点的奇异性对应与圆周数不增、封帽盘外的奇点包含，同时给出 `H '' D = e '' convexHull ℝ T`、指定点严格分离、保高度与指标不变。三角形数据由实际凸化构造产生，没有加入输入假设。
 
 模块聚焦检查 exit=0（13.5 秒）、零 warning；`AuditF159.lean` 主端点仅依赖 `propext`、`Classical.choice`、`Quot.sound`，完整签名已核对。F-M1 仍为 partial：下一步利用三条仿射边及两保留盘的相反单侧接近证明封帽边缘的 crossing/孤立分类，并在指定高度处推出严格圆周数比较。Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF160.lean`。
+
+### 19.12 F-M1：沿奇异点嵌入的高度指标严格比较
+
+`HeightIndexComparison.lean` 已提交并推送为 `73c40fab6`。`tsum_lt_tsum_enat_of_embedding` 对两个有限类型上的有限 `ENat` 权重证明严格总和比较：嵌入所配对的权重逐点不增，且某个配对项严格下降或目标侧有未被命中的正项，即得严格不等式。证明把有限 `ENat` 权重转成自然数有限和并在嵌入像与其补集上比较，没有把总和不等式作为假设。
+`heightIndex_lt_of_embedding` 将该结论专门化到两张有限 PL 二球的一般位置高度：只需构造新奇异点到旧奇异点的嵌入、逐点水平多边形数不增，以及一个严格下降或遗漏的正贡献，即可推出整个 `heightIndex` 严格下降。
+
+模块聚焦检查 exit=0（11.5 秒）、零 warning；`AuditF160.lean` 两个端点均仅依赖 `propext`、`Classical.choice`、`Quot.sound`，完整签名已核对。F-M1 仍为 partial：下一步完成封帽边缘链环的 crossing/孤立分类，由此构造奇异点嵌入并在被删去的最内圆周处给出严格见证。Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF161.lean`。
