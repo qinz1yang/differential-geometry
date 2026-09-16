@@ -477,3 +477,22 @@ theorem eq_top_of_boundaryLoops_mem_normal
   下一步需要一个二维边界弧贴合定理：把两张 PL 2-球沿由 `branchCoordinate|A`、`branchCoordinate|C` 诱导的 PL 同胚贴合，证明贴合空间仍为 PL 2-球，
   并把两侧相容的 PL 映射下降为 `SingularTwoCell`。本树 `Gluing.lean` 提供复形贴合与相容映射，但尚无该二维 PL 球结论的直接端点；
   完成后还须识别新边界环字、重建正规数据并证明复杂度严格下降。
+
+## 21. 2026-09-16 E3-M2 追加：奇异 2-胞腔的边界弧贴合
+
+状态：done（二维贴合层已闭合，Case 3/4 的分支专用交叉重贴仍为 partial）。数学提交 `7a87e8fe0`。
+
+- 新模块 `LoopTheorem/CellGluing.lean` 的
+  `SingularTwoCell.exists_glue_of_isPLHomeomorphOn_boundary_arc` 接受两张奇异 2-胞腔、各自边界中的 PL 1-球弧、弧间 PL 同胚，
+  以及两张奇异映射在该识别下逐点相容的条件，实际构造贴合后的 `SingularTwoCell`。
+- 构造先取 F 车道的标准双盘模型，使两盘交于一条线段；用
+  `exists_isPLHomeomorphOn_eqOn_arc_of_isPLSphere_one` 把指定弧同胚延拓到两侧边界，再用
+  `exists_isPLHomeomorphOn_of_frontier` 延拓到整盘。两侧参数化后的映射在公共线段上相等，故可逐片贴合。
+- 模块内部证明了抽象 PL 目标中的两个必要封闭性步骤：PL 映射沿欧氏逐片仿射参数化预合成仍为 PL，且两个定义在闭多面体上的
+  PL 映射若在交集相等，则其逐片函数在并集上仍为 PL。输出保留两侧盘的 PL 参数化、公共弧的精确识别以及贴合映射在每侧的逐点公式。
+- 聚焦检查 exit=0、零 warning；更新后的 `.lake/scratch/AuditE3M2.lean` 共 36 项，全部只含
+  `propext`、`Classical.choice`、`Quot.sound`。首次直接消费的弧参数化、边界弧延拓、整盘延拓和标准双盘模型均已单独审计；
+  本层没有新增 covering/Van Kampen 复用声明。
+- 下一精确义务是用 `branchCoordinate|A` 与 `branchCoordinate|C` 组成弧间 PL 同胚，把 §20 的首尾盘分别与中盘按书页 186–187
+  的两种交叉配对调用该端点，并识别所得两张新盘的外边界环为 Case 3/4 的 `L₁,L₂`。此后仍须为至少一张新胞腔重建
+  `NormalSingularCellData` 并证明触边分支数严格下降；Case 1/2 的环带重定义与内盘替换也尚未闭合。
