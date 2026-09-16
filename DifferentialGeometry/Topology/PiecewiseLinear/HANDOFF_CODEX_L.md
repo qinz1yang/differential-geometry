@@ -621,3 +621,20 @@ theorem eq_top_of_boundaryLoops_mem_normal
 - I5 仍未交付，故 C.5 按 NIGHT_PLAN §6.1 保持等待；没有用 Bennett `Coefficients.lean` 的链绕过缺失的 `χ_face`/球面识别生产者。
 - 复核 `LoopTheorem/CutAndPaste.lean` 使用 `check-f.ps1 -Threads 1`，exit=0、零 warning；
   `.lake/scratch/AuditE3M2.lean` 共 47 项，`audit-f.ps1` exit=0，全部只含 `propext`、`Classical.choice`、`Quot.sound`。
+
+## 28. 2026-09-16 L.1 补强：正规系统的边界参数化
+
+状态：done。数学提交 `b3d9e8150`。
+
+- `NormalSystem` 新增
+  `boundaryParam : loopCircle ≃ₜ frontier sourceComplex.space` 与
+  `boundaryLoop_eq : ∀ θ, (boundaryLoop θ : E) = simplicialMap sourceComplex vertexMap (boundaryParam θ)`；
+  原结构字段 `boundaryLoop_range` 删除，并以完全同名的 `NormalSystem.boundaryLoop_range` 定理从上述两字段和 `loop_space` 推出，
+  所有既有消费者的点记法与结论签名保持不变。
+- 当前整合树没有 `NormalSystem` 的具体构造器，故本树没有需要补字段的生产者。后续生产者应以 §16 的 PL 圆分类构造
+  `boundaryParam`，并以 `BoundaryGeneration.lean` 已有的自由边界环构造证明逐点 `boundaryLoop_eq`；不得再用像集相等替代参数化相容性。
+- `SingularCell.lean` 及其 16 个传递下游按导入顺序逐个使用 `check-f.ps1 -Threads 1` 重编，全部 exit=0、零 warning。
+  `.lake/scratch/AuditE3M2.lean` 增加两个结构投影与推论后共 50 项，最终 `audit-f.ps1` exit=0，
+  全部只含 `propext`、`Classical.choice`、`Quot.sound`。
+- 两次早期审计恰逢共享构建目录中的其它 Lean 进程依次重建 `BoundaryCrossing.olean` 与
+  `BoundaryBranchCrosscut.olean`，分别报告瞬时缺失；等待共享进程退出后原样重跑即通过，未终止其它进程，也未运行 `lake build`。
