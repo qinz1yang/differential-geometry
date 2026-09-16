@@ -2079,3 +2079,9 @@ F-M1 仍为 partial。单个旧三角形的全部纤维及逐边对应已闭合�
 `ExtremeHeightCaps.lean` 的 `exists_height_between_lowest_vertices` 在任意正维有限 PL 球面上实际选出最低两顶点之间的高度；`exists_isSimplyEmbedded_lower_cap_of_heightIndex_eq_zero` / `exists_isSimplyEmbedded_upper_cap_of_heightIndex_eq_zero` 从零指标球面和给定凸开邻域实际生产首尾高度、平面张成盘及单嵌入封帽。两高度都严格位于球面的极端高度之间，且参数边界等于整层圆周。这闭合 Lemma 4/5 的首尾锥形封帽几何论证；未把中间薄片当作已证明。
 
 聚焦检查：`HeightCone` exit=0（8.9 秒）、`HeightCapCone` exit=0（10.6 秒）、`ExtremeHeightCaps` exit=0（10.8 秒），均零 warning。`AuditF227.lean` 九项仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步为中间两层的封口薄片球性、实际三维薄片胞腔分解及 Lemma 6 的自由胞腔删除；S.4 M2/M3、夜间 F-M1 整体及 I1 尚未完成。下一审计文件 `AuditF228.lean`。
+
+### 19.79 S.4 M2：任意两中间高度的双封口薄片是 PL 球面
+
+`HeightSlab.lean` 的 `isPLSphere_slab_of_heightIndex_eq_zero` 从两个实际水平张成盘证明 `(S ∩ {a ≤ ℓ ≤ b}) ∪ D₀ ∪ D₁` 为 PL 二维球面。证明先以 D₀ 替换下半球，再以 D₁ 替换上半球；每次替换的公共圆周、并集和盘参数化均由既有两侧盘定理和高度不等式验证。`exists_isPLSphere_slab_of_heightIndex_eq_zero` 同时在给定凸开邻域内实际生产两张水平盘。端点允许中间高度经过顶点，不附加避顶点条件。
+
+聚焦检查 `HeightSlab` exit=0（10.2 秒）、零 warning；`AuditF228.lean` 两项仅依赖 `propext`、`Classical.choice`、`Quot.sound`。此结果是薄片边界的 PL 球性，尚非单嵌入性。下一步提取只依赖球面与凸胞腔相交盘的实际推移，避免调用要求整体及删除后整体已为 PL 三维球的 `TetrahedronDeletion` 形成循环；随后生产薄片胞腔分解与自由盘相交条件。S.4 M2/M3、夜间 F-M1 整体及 I1 尚未完成。下一审计文件 `AuditF229.lean`。
