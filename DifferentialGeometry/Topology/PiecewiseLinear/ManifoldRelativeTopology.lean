@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.ManifoldSubcomplexBoundary
-import DifferentialGeometry.Topology.PiecewiseLinear.SubcomplexNeighborhood
+import DifferentialGeometry.Topology.PiecewiseLinear.SubcomplexNhdsWithin
 import DifferentialGeometry.Topology.PiecewiseLinear.PolyhedronLocalConnectedness
 import DifferentialGeometry.Topology.Connected.TwoSided
 

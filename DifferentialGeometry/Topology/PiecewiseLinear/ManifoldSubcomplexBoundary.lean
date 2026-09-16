@@ -137,10 +137,10 @@ theorem IsCombinatorialManifoldWithBoundary.closure_sdiff_closure_sdiff_eq {n : 
   have hBman : IsCombinatorialManifoldWithBoundary n B := hA.of_isSubdivision hTA
   have hbound : ∀ t ∈ T.faces, t.card ≤ n + 1 := by
     intro t ht
-    obtain ⟨u, -, htu, hucard⟩ := hTman.exists_face_superset_card_eq T ht
+    obtain ⟨u, -, htu, hucard⟩ := hTman.exists_face_superset_card_eq ht
     exact (Finset.card_le_card htu).trans_eq hucard
   have h := closure_space_sdiff_closure_sdiff_space_eq T B (restrict_faces_subset T A.space)
-    hbound (fun _ hs => hBman.exists_face_superset_card_eq B hs)
+    hbound (fun _ hs => hBman.exists_face_superset_card_eq hs)
   rw [show B.space = (restrict T A.space).space from rfl, hTA.space_eq, hT.space_eq] at h
   exact h
 

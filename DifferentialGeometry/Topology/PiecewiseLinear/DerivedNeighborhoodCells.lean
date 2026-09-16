@@ -189,7 +189,7 @@ theorem subset_or_subset_of_nonempty_derivedNeighborhoodCell_inter
     ((mem_derivedNeighborhoodCell_faces_iff_of_flag ht hd ⟨e, he⟩).mp hut e he)
 
 open Classical in
-theorem pair_centroid_mem_barycentricSubdivision (K : Geometry.SimplicialComplex ℝ E)
+theorem pair_centroid_mem_barycentricSubdivision_of_subset_or_subset (K : Geometry.SimplicialComplex ℝ E)
     {s t : Finset E} (hs : s ∈ K.faces) (ht : t ∈ K.faces) (hst : s ⊆ t ∨ t ⊆ s) :
     {s.centroid ℝ id, t.centroid ℝ id} ∈ (barycentricSubdivision K).faces := by
   classical
@@ -211,14 +211,14 @@ theorem derivedNeighborhoodCell_space_inter (K : Geometry.SimplicialComplex ℝ 
     {s t : Finset E} (hs : s ∈ K.faces) (ht : t ∈ K.faces) (hst : s ⊆ t ∨ t ⊆ s) :
     (derivedNeighborhoodCell K s).space ∩ (derivedNeighborhoodCell K t).space =
       (dualCell (barycentricSubdivision K) {s.centroid ℝ id, t.centroid ℝ id}
-        (pair_centroid_mem_barycentricSubdivision K hs ht hst)).space := by
+        (pair_centroid_mem_barycentricSubdivision_of_subset_or_subset K hs ht hst)).space := by
   classical
   rw [derivedNeighborhoodCell_eq_dualCell K hs, derivedNeighborhoodCell_eq_dualCell K ht]
   simpa only [Finset.singleton_union] using dualCell_space_inter_eq_dualCell _
     (singleton_centroid_mem_barycentricSubdivision K hs)
     (singleton_centroid_mem_barycentricSubdivision K ht)
     (show {s.centroid ℝ id} ∪ {t.centroid ℝ id} ∈ (barycentricSubdivision K).faces by
-      simpa only [Finset.singleton_union] using pair_centroid_mem_barycentricSubdivision K hs ht hst)
+      simpa only [Finset.singleton_union] using pair_centroid_mem_barycentricSubdivision_of_subset_or_subset K hs ht hst)
 
 theorem IsCombinatorialManifoldWithBoundary.isPLBall_derivedNeighborhoodCell_inter
     [FiniteDimensional ℝ E] {n : ℕ} {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces]

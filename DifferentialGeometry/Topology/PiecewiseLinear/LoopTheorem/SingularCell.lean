@@ -4,6 +4,7 @@ import DifferentialGeometry.Topology.LoopSpace.FreeHomotopySurjection
 import DifferentialGeometry.Topology.PiecewiseLinear.BallFrontier
 import DifferentialGeometry.Topology.PiecewiseLinear.DerivedNeighborhoodRetraction
 import DifferentialGeometry.Topology.PiecewiseLinear.Manifold
+import DifferentialGeometry.Topology.PiecewiseLinear.PLMap
 import DifferentialGeometry.Topology.PiecewiseLinear.RelativeDerivedNeighborhood
 
 open Set Topology
@@ -28,6 +29,25 @@ namespace SingularTwoCell
 
 variable {M : Type u} [TopologicalSpace M]
   [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
+
+def restrict (D : SingularTwoCell M) {P : Set (EuclideanSpace ℝ (Fin 2))}
+    (hP : IsPLBall 2 P) (hPD : P ⊆ D.domain) : SingularTwoCell M where
+  domain := P
+  isPLBall_domain := hP
+  toFun := D
+  isPLOn := D.isPLOn.mono_of_isPolyhedron hP.isPolyhedron hPD
+
+@[simp]
+theorem restrict_domain (D : SingularTwoCell M) {P : Set (EuclideanSpace ℝ (Fin 2))}
+    (hP : IsPLBall 2 P) (hPD : P ⊆ D.domain) :
+    (D.restrict hP hPD).domain = P :=
+  rfl
+
+@[simp]
+theorem restrict_apply (D : SingularTwoCell M) {P : Set (EuclideanSpace ℝ (Fin 2))}
+    (hP : IsPLBall 2 P) (hPD : P ⊆ D.domain) (x : EuclideanSpace ℝ (Fin 2)) :
+    D.restrict hP hPD x = D x :=
+  rfl
 
 theorem continuousOn (D : SingularTwoCell M) : ContinuousOn D D.domain :=
   fun x hx => (D.isPLOn x hx).continuousWithinAt
@@ -56,6 +76,21 @@ def IsNonsingular (D : SingularTwoCell M) : Prop :=
 
 theorem isNonsingular_iff (D : SingularTwoCell M) :
     D.IsNonsingular ↔ InjOn D D.domain :=
+  Iff.rfl
+
+theorem range_boundary_restrict (D : SingularTwoCell M)
+    {P : Set (EuclideanSpace ℝ (Fin 2))} (hP : IsPLBall 2 P) (hPD : P ⊆ D.domain) :
+    Set.range (D.restrict hP hPD).boundary = D '' frontier P := by
+  ext y
+  constructor
+  · rintro ⟨x, rfl⟩
+    exact ⟨x, x.property, rfl⟩
+  · rintro ⟨x, hx, rfl⟩
+    exact ⟨⟨x, hx⟩, rfl⟩
+
+theorem restrict_isNonsingular_iff (D : SingularTwoCell M)
+    {P : Set (EuclideanSpace ℝ (Fin 2))} (hP : IsPLBall 2 P) (hPD : P ⊆ D.domain) :
+    (D.restrict hP hPD).IsNonsingular ↔ InjOn D P :=
   Iff.rfl
 
 end SingularTwoCell

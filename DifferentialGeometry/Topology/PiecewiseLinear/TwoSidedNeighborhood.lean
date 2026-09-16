@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.ConnectedNeighborhood
-import DifferentialGeometry.Topology.PiecewiseLinear.SubcomplexNeighborhood
+import DifferentialGeometry.Topology.PiecewiseLinear.SubcomplexNhdsWithin
 import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceComponentClosure
 import DifferentialGeometry.Topology.Connected.TwoSided
 

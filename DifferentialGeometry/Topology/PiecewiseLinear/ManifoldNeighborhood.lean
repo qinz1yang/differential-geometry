@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.SubcomplexNeighborhood
+import DifferentialGeometry.Topology.PiecewiseLinear.SubcomplexNhdsWithin
 
 open Set Topology
 

@@ -23,7 +23,7 @@ P.1–P.5 与 §4.2 的 S.1 尽快成为"已证生产者"，后续责任划分�
   不把模块登记进根聚合 `DifferentialGeometry.lean`。
 - 主机 Lean 进程配额 4 个，三条车道各 1 个：你**同时只跑 1 个** lean 进程。
 - 验证只用 `D:\differential-geometry-moise-s\.lake\scratch\tools\` 的 `check-f.ps1`/`audit-f.ps1`
-  （`$root` 已指向本工作树；olean 写进共享库 `E:\differential-geometry-dev\.lake\build\lib\lean`，
+  （`$root` 已指向本工作树；olean 写进本车道隔离产物目录 `E:\differential-geometry-dev\.lake\scratch\s-verified-20260916`，
   模块名 = 路径去 `.lean`、`/` 换 `.`，对 vendored 文件即 `External.ClassificationOfSurfaces.Moise.X`）。
 - 原生文件（桥接、S.1 起）遵守 `AGENTS.md`：零注释零 docstring；无 `sorry`/`axiom`/`nolint`/`maxHeartbeats`/
   `set_option`；Mathlib 标准 linter 集零警告；提交信息用英文描述数学结果。
@@ -1860,3 +1860,47 @@ edge frames, polygonal target crosscuts, and the global assembly with prescribed
 support and positive control remain. Initial subarcs are used explicitly; later
 parts of an incident edge may return to the chosen square. I2's target-type issue
 is unchanged, and no new consultation blocker was found.
+
+### Integration repair and fresh verification, 2026-09-16
+
+NIGHT_PLAN section 6.2 is implemented against integration commit `314c2178f`.
+The merge preserves both lanes' mathematics and the combined P.3/P.4 plan evidence.
+
+- `BoundaryDerivedNeighborhood` now selects the root-level ball-intersection theorem
+  by its fully qualified name, avoiding the newer namespaced theorem's shadowing.
+- S's neighborhood module is now `SubcomplexNhdsWithin`; its three importers use
+  that name. H's `SubcomplexNeighborhood` is retained unchanged.
+- S's more general centroid lemma is named
+  `pair_centroid_mem_barycentricSubdivision_of_subset_or_subset`. H's original
+  declaration is retained unchanged and both are imported in the collision audit.
+- `ManifoldFaces` imports H's canonical with-boundary face-extension theorem from
+  `ManifoldConnectivity`. The duplicate is removed; the boundaryless wrapper keeps
+  its existing public signature. With-boundary call sites use the canonical signature.
+
+The earlier checks of BoundaryDerivedNeighborhood and its fourteen downstream
+modules did not validate the current sources against fresh dependencies. Those
+claims are superseded by this complete recheck. The manifest contains all 86 S
+modules changed since `8fb887bb9`, with the renamed module substituted, plus H's
+ManifoldConnectivity and SubcomplexNeighborhood: 88/88 focused checks exit 0,
+zero warnings. The unchanged H DerivedCarrier module also has a fresh exit-0,
+zero-warning check. `AuditS113IntegrationRepair.lean` imports these modules and
+checks 307 public declarations, including both formerly colliding H declarations;
+exit 0 and only `propext`, `Classical.choice`, and `Quot.sound`.
+
+A second cache hazard was observed during verification: another check replaced the
+shared FrontierBoundary artifact after S had checked it, removing an S declaration
+from the artifact seen by PrismBoundary. S now writes artifacts to
+`E:\differential-geometry-dev\.lake\scratch\s-verified-20260916`. Both authorized
+local scripts use this directory first. Dependencies refer to existing artifacts
+for source modules already obtained through integration; no other-lane source was
+copied. Before compilation, check-f removes the target olean, ilean, private and
+server artifacts with deletion failure treated as fatal. Each successful check
+requires its new olean to exist. Source fingerprints for all 86 S modules, all 88
+new target artifacts, and 484 unchanged dependency artifacts were verified after
+the full run. The isolated PrismBoundary check passed without a source change.
+
+Evidence remains in `.lake/scratch`: `s-night-recheck.txt`,
+`s-snapshot-recheck-results.tsv`, per-module logs, artifact fingerprints,
+`check-repair-derived-carrier.log`, and `AuditS113IntegrationRepair.log`.
+The initial audit omitted the DerivedCarrier import; the corrected complete audit
+above is the delivery record. I2 in the double environment is the next milestone.

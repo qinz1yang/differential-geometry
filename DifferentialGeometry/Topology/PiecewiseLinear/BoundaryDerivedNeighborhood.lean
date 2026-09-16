@@ -64,7 +64,7 @@ theorem derivedNeighborhoodCell_inter_subset_base (K : Geometry.SimplicialComple
   have hcent : s.centroid ℝ id ≠ t.centroid ℝ id := fun h => hst
     (injOn_faces_of_mem_openSimplex K (centroid_mem_openSimplex_of_mem_faces K) hs ht h)
   apply space_mono_of_faces_subset (dualCell_faces_subset_upperLink _
-    (pair_centroid_mem_barycentricSubdivision K hs ht hcomp) ?_) hx
+    (pair_centroid_mem_barycentricSubdivision_of_subset_or_subset K hs ht hcomp) ?_) hx
   refine Finset.ssubset_iff_subset_ne.mpr ⟨by simp, ?_⟩
   intro heq
   have hmem : t.centroid ℝ id ∈ ({s.centroid ℝ id} : Finset E) :=
@@ -148,7 +148,7 @@ theorem IsCombinatorialManifoldWithBoundary.derivedNeighborhoodCell_inter_subset
     (derivedNeighborhoodCell_faces_finite K t).to_subtype
   by_cases hnon : ((derivedNeighborhoodCell K s).space ∩
       (derivedNeighborhoodCell K t).space).Nonempty
-  · exact inter_subset_boundaryComplex_of_isPLBall (PiecewiseLinear.secondDerived K)
+  · exact _root_.DifferentialGeometry.Topology.PiecewiseLinear.inter_subset_boundaryComplex_of_isPLBall (PiecewiseLinear.secondDerived K)
       (derivedNeighborhoodCell K s) (derivedNeighborhoodCell K t) hK.secondDerived
       (hK.isPLBall_derivedNeighborhoodCell hs) (hK.isPLBall_derivedNeighborhoodCell ht)
       (derivedNeighborhoodCell_faces_subset K s) (derivedNeighborhoodCell_faces_subset K t)
