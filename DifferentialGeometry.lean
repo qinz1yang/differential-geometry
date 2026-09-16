@@ -10200,6 +10200,7 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Embedding.Scal
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Parametric.VectorTimeComposition
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Parametric.SimultaneousComposition
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Scalar.Multiplication
+import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Scalar.MultiplicationInclusion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.SobolevExistence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ChartHolder
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Solution.DerivativeHolder

@@ -348,4 +348,53 @@ theorem parameterSecondDerivativeHs_apply_ccTensorToHs
     (u : PiLp 2 (fun _ : ι => TensorHs g 0 0 ((n : ℝ) + 2))) (i : ι) :
     parameterSecondDerivativeHsPi g n u i = parameterSecondDerivativeHs g n (u i) := rfl
 
+theorem parameterSecondDerivativeHs_comp_tensorHsInclusion
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ)))
+    {n m : ℕ} (h : n ≤ m) :
+    (parameterSecondDerivativeHs g n).comp
+        (tensorHsInclusion (g := g) (r := 0) (s := 0)
+          (show (n : ℝ) + 2 ≤ (m : ℝ) + 2 by exact_mod_cast Nat.add_le_add_right h 2)) =
+      (tensorHsInclusion (g := g) (r := 0) (s := 0)
+        (show (n : ℝ) ≤ (m : ℝ) by exact_mod_cast h)).comp
+          (parameterSecondDerivativeHs g m) := by
+  let L := (parameterSecondDerivativeHs g n).comp
+    (tensorHsInclusion (g := g) (r := 0) (s := 0)
+      (show (n : ℝ) + 2 ≤ (m : ℝ) + 2 by exact_mod_cast Nat.add_le_add_right h 2))
+  let R := (tensorHsInclusion (g := g) (r := 0) (s := 0)
+    (show (n : ℝ) ≤ (m : ℝ) by exact_mod_cast h)).comp (parameterSecondDerivativeHs g m)
+  have heq : (L : _ → _) = R := (ccToHsLin_dense g 0 (by positivity :
+      (0 : ℝ) ≤ (m : ℝ) + 2)).equalizer L.continuous R.continuous (by
+    funext S
+    simp only [Function.comp_apply, L, R, ContinuousLinearMap.comp_apply, ccToHsLin_apply]
+    rw [tensorHsInclusion_ccTensorToHs, parameterSecondDerivativeHs_apply_ccTensorToHs,
+      parameterSecondDerivativeHs_apply_ccTensorToHs, tensorHsInclusion_ccTensorToHs])
+  exact DFunLike.coe_injective heq
+
+theorem parameterSecondDerivativeHs_tensorHsInclusion
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ)))
+    {n m : ℕ} (h : n ≤ m) (u : TensorHs g 0 0 ((m : ℝ) + 2)) :
+    parameterSecondDerivativeHs g n
+        (tensorHsInclusion (show (n : ℝ) + 2 ≤ (m : ℝ) + 2 by
+          exact_mod_cast Nat.add_le_add_right h 2) u) =
+      tensorHsInclusion (show (n : ℝ) ≤ (m : ℝ) by exact_mod_cast h)
+        (parameterSecondDerivativeHs g m u) :=
+  DFunLike.congr_fun (parameterSecondDerivativeHs_comp_tensorHsInclusion g h) u
+
+theorem parameterSecondDerivativeHsPi_comp_tensorHsInclusion
+    {ι : Type*} (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ)))
+    {n m : ℕ} (h : n ≤ m) :
+    (parameterSecondDerivativeHsPi (ι := ι) g n).comp
+        (ContinuousLinearMap.piLpMap 2 (fun _ : ι =>
+          tensorHsInclusion (g := g) (r := 0) (s := 0)
+            (show (n : ℝ) + 2 ≤ (m : ℝ) + 2 by exact_mod_cast Nat.add_le_add_right h 2))) =
+      (ContinuousLinearMap.piLpMap 2 (fun _ : ι =>
+        tensorHsInclusion (g := g) (r := 0) (s := 0)
+          (show (n : ℝ) ≤ (m : ℝ) by exact_mod_cast h))).comp
+            (parameterSecondDerivativeHsPi g m) := by
+  apply ContinuousLinearMap.ext
+  intro u
+  apply PiLp.ext
+  intro i
+  exact parameterSecondDerivativeHs_tensorHsInclusion g h (u i)
+
 end AddCircle
