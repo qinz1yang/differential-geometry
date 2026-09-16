@@ -30,6 +30,91 @@ def branchPreimage (hD : NormalSingularCellData D BdM B)
     (c : hD.singularSet.Branch) : Set (EuclideanSpace ℝ (Fin 2)) :=
   D.domain ∩ D ⁻¹' hD.singularSet.branchCarrier c
 
+noncomputable def branchCoordinate (hD : NormalSingularCellData D BdM B)
+    (c : hD.singularSet.Branch) :
+    EuclideanSpace ℝ (Fin 2) →
+      EuclideanSpace ℝ (Fin hD.singularSet.piece.ambientDim) :=
+  Function.invFunOn (hD.singularSet.branchPieceIn c).map
+    (hD.singularSet.branchPieceIn c).complex.space ∘ D
+
+open Classical in
+theorem branchCoordinate_mem
+    (hD : NormalSingularCellData D BdM B) (c : hD.singularSet.Branch)
+    {x : EuclideanSpace ℝ (Fin 2)} (hx : x ∈ hD.branchPreimage c) :
+    hD.branchCoordinate c x ∈ (hD.singularSet.branchComplex c).space := by
+  exact (hD.singularSet.branchPieceIn c).bijOn.surjOn.mapsTo_invFunOn hx.2
+
+open Classical in
+theorem branchPieceIn_map_branchCoordinate
+    (hD : NormalSingularCellData D BdM B) (c : hD.singularSet.Branch)
+    {x : EuclideanSpace ℝ (Fin 2)} (hx : x ∈ hD.branchPreimage c) :
+    (hD.singularSet.branchPieceIn c).map (hD.branchCoordinate c x) = D x := by
+  exact (hD.singularSet.branchPieceIn c).bijOn.invOn_invFunOn.2 hx.2
+
+open Classical in
+theorem branchCoordinate_isPiecewiseAffineOn
+    (hD : NormalSingularCellData D BdM B) (c : hD.singularSet.Branch) :
+    IsPiecewiseAffineOn (hD.branchCoordinate c) (hD.branchPreimage c) := by
+  exact (hD.singularSet.branchPieceIn c).isPiecewiseAffineOn_invFunOn_comp D.isPLOn
+
+open Classical in
+theorem injOn_affineMap_of_eqOn_branchCoordinate
+    (hD : NormalSingularCellData D BdM B) (c : hD.singularSet.Branch)
+    {s : Finset (EuclideanSpace ℝ (Fin 2))}
+    {A : EuclideanSpace ℝ (Fin 2) →ᵃ[ℝ]
+      EuclideanSpace ℝ (Fin hD.singularSet.piece.ambientDim)}
+    (hsub : convexHull ℝ (s : Set _) ⊆ hD.branchPreimage c)
+    (hA : EqOn (hD.branchCoordinate c) A (convexHull ℝ (s : Set _))) :
+    InjOn A (convexHull ℝ (s : Set _)) := by
+  intro x hx y hy hAxy
+  by_contra hxy
+  let z := midpoint ℝ x y
+  have hz : z ∈ convexHull ℝ (s : Set _) := by
+    change midpoint ℝ x y ∈ convexHull ℝ (s : Set _)
+    exact (convex_convexHull ℝ
+      (s : Set (EuclideanSpace ℝ (Fin 2)))).midpoint_mem hx hy
+  have hxz : x ≠ z := by
+    intro hxz
+    apply hxy
+    exact (left_eq_midpoint_iff (R := ℝ)).mp (by simpa only [z] using hxz)
+  have hyz : y ≠ z := by
+    intro hyz
+    apply hxy
+    exact (right_eq_midpoint_iff (R := ℝ)).mp (by simpa only [z] using hyz)
+  have hAzx : A z = A x := by
+    rw [show z = midpoint ℝ x y by rfl, A.map_midpoint, hAxy, midpoint_self]
+  have hqxy : hD.branchCoordinate c x = hD.branchCoordinate c y :=
+    (hA hx).trans (hAxy.trans (hA hy).symm)
+  have hqzx : hD.branchCoordinate c z = hD.branchCoordinate c x :=
+    (hA hz).trans (hAzx.trans (hA hx).symm)
+  have hxP := hsub hx
+  have hyP := hsub hy
+  have hzP := hsub hz
+  have hDxy : D x = D y := by
+    calc
+      D x = (hD.singularSet.branchPieceIn c).map (hD.branchCoordinate c x) :=
+        (hD.branchPieceIn_map_branchCoordinate c hxP).symm
+      _ = (hD.singularSet.branchPieceIn c).map (hD.branchCoordinate c y) :=
+        congrArg (hD.singularSet.branchPieceIn c).map hqxy
+      _ = D y := hD.branchPieceIn_map_branchCoordinate c hyP
+  have hDzx : D z = D x := by
+    calc
+      D z = (hD.singularSet.branchPieceIn c).map (hD.branchCoordinate c z) :=
+        (hD.branchPieceIn_map_branchCoordinate c hzP).symm
+      _ = (hD.singularSet.branchPieceIn c).map (hD.branchCoordinate c x) :=
+        congrArg (hD.singularSet.branchPieceIn c).map hqzx
+      _ = D x := hD.branchPieceIn_map_branchCoordinate c hxP
+  have hfiber : ({x, y, z} : Set (EuclideanSpace ℝ (Fin 2))) ⊆
+      D.domain ∩ D ⁻¹' {D x} := by
+    intro w hw
+    rcases hw with rfl | rfl | rfl
+    · exact ⟨hxP.1, rfl⟩
+    · exact ⟨hyP.1, hDxy.symm⟩
+    · exact ⟨hzP.1, hDzx⟩
+  have hbound := (encard_mono hfiber).trans (hD.fiber_le_two (D x))
+  rw [encard_insert_of_notMem (by simp [hxy, hxz]), encard_pair hyz] at hbound
+  norm_num at hbound
+
 theorem branchPreimage_subset_doublePointPreimage
     (hD : NormalSingularCellData D BdM B) (c : hD.singularSet.Branch) :
     hD.branchPreimage c ⊆ doublePointPreimage D D.domain := by
@@ -53,6 +138,132 @@ theorem branchPreimage_isPolyhedron [T2Space M]
     IsPolyhedron (hD.branchPreimage c) :=
   (hD.singularSet.branchPieceIn c).isPolyhedron_inter_preimage_of_isCompact
     D.isPLOn (hD.branchPreimage_isCompact c)
+
+open Classical in
+theorem exists_branchPreimage_simplicialComplex [T2Space M]
+    (hD : NormalSingularCellData D BdM B) (c : hD.singularSet.Branch) :
+    ∃ K : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2)),
+      K.faces.Finite ∧ K.space = hD.branchPreimage c ∧
+        ∀ s ∈ K.faces, ∃ A : EuclideanSpace ℝ (Fin 2) →ᵃ[ℝ]
+            EuclideanSpace ℝ (Fin hD.singularSet.piece.ambientDim),
+          EqOn (hD.branchCoordinate c) A (convexHull ℝ (s : Set _)) := by
+  obtain ⟨K, hKfinite, hKspace⟩ := (hD.branchPreimage_isPolyhedron c).exists_simplicialComplex
+  let _ : Finite K.faces := hKfinite.to_subtype
+  have hcoordinate : IsPiecewiseAffineOn (hD.branchCoordinate c) K.space := by
+    rw [hKspace]
+    exact hD.branchCoordinate_isPiecewiseAffineOn c
+  obtain ⟨K', hsub, hfinite, haffine⟩ :=
+    hcoordinate.exists_isSubdivision_affineOn_faces K
+  exact ⟨K', hfinite, hsub.space_eq.trans hKspace, haffine⟩
+
+open Classical in
+theorem exists_branchPreimage_simplicialComplex_aligned [T2Space M]
+    (hD : NormalSingularCellData D BdM B) (c : hD.singularSet.Branch) :
+    ∃ K : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2)),
+      K.faces.Finite ∧ K.space = hD.branchPreimage c ∧
+        (∀ s ∈ K.faces, ∃ A : EuclideanSpace ℝ (Fin 2) →ᵃ[ℝ]
+            EuclideanSpace ℝ (Fin hD.singularSet.piece.ambientDim),
+          EqOn (hD.branchCoordinate c) A (convexHull ℝ (s : Set _))) ∧
+        ∀ s ∈ K.faces, ∃ t ∈ (hD.singularSet.branchComplex c).faces,
+          MapsTo (hD.branchCoordinate c) (convexHull ℝ (s : Set _))
+            (convexHull ℝ (t : Set _)) := by
+  obtain ⟨K, hKfinite, hKspace, hKaffine⟩ := hD.exists_branchPreimage_simplicialComplex c
+  let _ : Finite K.faces := hKfinite.to_subtype
+  let _ : Finite (hD.singularSet.branchComplex c).faces :=
+    (hD.singularSet.branchComplex_faces_finite c).to_subtype
+  let Q : (hD.singularSet.branchComplex c).faces → Set (EuclideanSpace ℝ (Fin 2)) :=
+    fun t => K.space ∩ (hD.branchCoordinate c) ⁻¹'
+      convexHull ℝ (↑t.1 : Set
+        (EuclideanSpace ℝ (Fin hD.singularSet.piece.ambientDim)))
+  have hcoordinate : IsPiecewiseAffineOn (hD.branchCoordinate c) K.space := by
+    rw [hKspace]
+    exact hD.branchCoordinate_isPiecewiseAffineOn c
+  have hQpoly : ∀ t, IsPolyhedron (Q t) := by
+    intro t
+    have htpoly : IsHPolytope
+        (convexHull ℝ (↑t.1 : Set
+          (EuclideanSpace ℝ (Fin hD.singularSet.piece.ambientDim)))) :=
+      isHPolytope_convexHull_of_affineIndependent _
+        ((hD.singularSet.branchComplex c).indep t.2)
+    have hKcompact : IsCompact K.space := (isPolyhedron_space K).isCompact
+    have hKclosed : IsClosed K.space := hKcompact.isClosed
+    have hQclosed : IsClosed (Q t) :=
+      hcoordinate.continuousOn.preimage_isClosed_of_isClosed hKclosed htpoly.isClosed
+    exact isPolyhedron_inter_preimage_of_isCompact hcoordinate htpoly
+      (hKcompact.of_isClosed_subset hQclosed inter_subset_left)
+  have hQsub : ∀ t, Q t ⊆ K.space := fun _ => inter_subset_left
+  obtain ⟨R, hR, hRfinite, hQunion⟩ :=
+    exists_isSubdivision_subcomplexes K Q hQpoly hQsub
+  refine ⟨R, hRfinite, hR.space_eq.trans hKspace, ?_, ?_⟩
+  · intro s hs
+    obtain ⟨t, ht, hst⟩ := hR.exists_face_subset hs
+    obtain ⟨A, hA⟩ := hKaffine t ht
+    exact ⟨A, hA.mono hst⟩
+  · intro s hs
+    have hcent : s.centroid ℝ id ∈ openSimplex s :=
+      centroid_mem_openSimplex (R.nonempty_of_mem_faces hs)
+    have hcentR : s.centroid ℝ id ∈ R.space :=
+      R.convexHull_subset_space hs (openSimplex_subset_convexHull s hcent)
+    have hcentK : s.centroid ℝ id ∈ K.space := hR.space_eq ▸ hcentR
+    have hcentP : s.centroid ℝ id ∈ hD.branchPreimage c := hKspace ▸ hcentK
+    have hqcent := hD.branchCoordinate_mem c hcentP
+    obtain ⟨t, ht, hqt⟩ := (hD.singularSet.branchComplex c).mem_space_iff.mp hqcent
+    let t' : (hD.singularSet.branchComplex c).faces := ⟨t, ht⟩
+    have hcentQ : s.centroid ℝ id ∈ Q t' := ⟨hcentK, hqt⟩
+    rw [hQunion t'] at hcentQ
+    obtain ⟨r, ⟨hr, hrQ⟩, hcentr⟩ := mem_iUnion₂.mp hcentQ
+    have hsr : s ⊆ r :=
+      face_subset_of_mem_openSimplex_of_mem_convexHull R hs hr hcent hcentr
+    have hsQ : convexHull ℝ (s : Set _) ⊆ Q t' :=
+      (convexHull_mono (Finset.coe_subset.mpr hsr)).trans hrQ
+    exact ⟨t, ht, fun x hx => (hsQ hx).2⟩
+
+open Classical in
+theorem exists_branchPreimage_simplicialComplex_card_le_two [T2Space M]
+    (hD : NormalSingularCellData D BdM B) (c : hD.singularSet.Branch) :
+    ∃ K : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2)),
+      K.faces.Finite ∧ K.space = hD.branchPreimage c ∧
+        (∀ s ∈ K.faces, s.card ≤ 2) ∧
+        (∀ s ∈ K.faces, ∃ A : EuclideanSpace ℝ (Fin 2) →ᵃ[ℝ]
+            EuclideanSpace ℝ (Fin hD.singularSet.piece.ambientDim),
+          EqOn (hD.branchCoordinate c) A (convexHull ℝ (s : Set _))) ∧
+        ∀ s ∈ K.faces, ∃ t ∈ (hD.singularSet.branchComplex c).faces,
+          MapsTo (hD.branchCoordinate c) (convexHull ℝ (s : Set _))
+            (convexHull ℝ (t : Set _)) := by
+  obtain ⟨K, hKfinite, hKspace, hKaffine, hKmaps⟩ :=
+    hD.exists_branchPreimage_simplicialComplex_aligned c
+  let _ : Finite (hD.singularSet.branchComplex c).faces :=
+    (hD.singularSet.branchComplex_faces_finite c).to_subtype
+  refine ⟨K, hKfinite, hKspace, ?_, hKaffine, hKmaps⟩
+  intro s hs
+  obtain ⟨A, hA⟩ := hKaffine s hs
+  obtain ⟨t, ht, hmaps⟩ := hKmaps s hs
+  have hsource : convexHull ℝ (s : Set _) ⊆ hD.branchPreimage c := by
+    rw [← hKspace]
+    exact K.convexHull_subset_space hs
+  have hAinj := hD.injOn_affineMap_of_eqOn_branchCoordinate c hsource hA
+  have himageIndependent :
+      AffineIndependent ℝ ((↑) : {u // u ∈ s.image A} →
+        EuclideanSpace ℝ (Fin hD.singularSet.piece.ambientDim)) :=
+    affineIndependent_image_of_injOn_convexHull A (K.indep hs) hAinj
+  have himageSpan :
+      (s.image A : Set (EuclideanSpace ℝ (Fin hD.singularSet.piece.ambientDim))) ⊆
+        ((affineSpan ℝ
+          (t : Set (EuclideanSpace ℝ (Fin hD.singularSet.piece.ambientDim)))) :
+          Set (EuclideanSpace ℝ (Fin hD.singularSet.piece.ambientDim))) := by
+    intro y hy
+    obtain ⟨x, hxs, rfl⟩ := Finset.mem_image.mp (Finset.mem_coe.mp hy)
+    have hxconv : x ∈ convexHull ℝ (s : Set _) :=
+      subset_convexHull ℝ _ (Finset.mem_coe.mpr hxs)
+    have hxmap := hmaps hxconv
+    rw [hA hxconv] at hxmap
+    exact convexHull_subset_affineSpan _ hxmap
+  have hcard : (s.image A).card ≤ t.card :=
+    himageIndependent.card_le_card_of_subset_affineSpan himageSpan
+  have himageCard : (s.image A).card = s.card :=
+    Finset.card_image_iff.mpr (hAinj.mono (subset_convexHull ℝ _))
+  rw [himageCard] at hcard
+  exact hcard.trans ((hD.singularSet.branchComplex_isManifoldWithBoundary c).card_le _ ht)
 
 end NormalSingularCellData
 
