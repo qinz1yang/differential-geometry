@@ -2545,3 +2545,27 @@ endpoints, exit 0, only the standard three axioms. Remaining for the degree-one
 step: construct the shrinking collar sequence from the deleted-endpoint
 polygonal arc, trim successive connecting arcs to remove extra intersections,
 and parametrize their shrinking union together with the limiting endpoint.
+
+## Shrinking open chains approaching arbitrary arc endpoints (2026-09-16)
+
+`PlanarJordan/EndpointCollarChain.lean` proves
+`Schoenflies.exists_shrinking_open_chain_compl_arc`. For any planar arc and any
+neighborhood of its first endpoint, it constructs connected open sets in that
+neighborhood avoiding the whole arc. Successive sets intersect; nonadjacent
+sets are disjoint; the sets converge to the endpoint in the small-sets filter.
+The local-polygonal version is also exposed as
+`exists_shrinking_open_chain_compl_of_polygonal_subarcs`.
+
+For the local-polygonal version, the proof constructs geometric parameter
+bands, localizes the polygonal collars away from both remaining tails, chooses
+compatible sides, and bounds the resulting sets by shrinking balls. Disjoint
+inverse-parameter bands separate nonadjacent sets. The arbitrary-arc endpoint
+then follows by the proved deleted-endpoint straightening and pulling the chain
+back through its ambient homeomorphism. No polygonal or collar hypothesis
+remains in that endpoint.
+
+The focused check exits 0 with zero warnings. AuditS140EndpointCollarChain
+checks both public declarations, exit 0, only the standard three axioms. This
+supplies the open chain for the auxiliary arc. Connecting and trimming its
+successive arcs, and parametrizing the shrinking simple union at its limit,
+remain to obtain the auxiliary arc itself and then the degree-one theorem.
