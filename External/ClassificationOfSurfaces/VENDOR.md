@@ -1769,3 +1769,16 @@ The boundary-disk collar is then packaged with a finite triangulation of its act
 No vendored source changed. Five focused checks exit 0 with zero warnings;
 `AuditS80Complement` audits sixteen new or affected declarations with only the standard three
 axioms. Compatible product gluing and the full boundary collar remain to be proved.
+
+## Complementary boundaries and disk replacement
+
+The original native `ManifoldFaces`, `BoundaryComplement`, `ManifoldSubcomplexBoundary`, and
+`BoundaryBallReplacement` developments supply the boundary step of the Moise 26.2 induction.
+Top-dimensional coface counts give the exact intrinsic boundary of the closed complement;
+link invariance and the two-point zero-sphere case identify the attaching circle. The existing
+P.2 extension theorem then replaces the attaching disk by the complementary disk in the
+boundary sphere while fixing the rest of the old boundary. `DiskCollarComplement` exposes
+this boundary transport together with the controlled disk collar and its actual complement.
+No vendored Lean source changed. Five focused checks exit 0 with zero warnings;
+`AuditS81BoundaryReplacement` audits thirteen declarations with only the standard three axioms.
+The side-face product compatibility and whole-boundary collar conclusion remain unproved.

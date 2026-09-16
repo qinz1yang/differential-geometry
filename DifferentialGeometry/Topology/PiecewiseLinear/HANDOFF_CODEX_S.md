@@ -726,3 +726,49 @@ Logs: `check-planar-disk-complement.log`, `check-subcomplex-complement-link.log`
 This discharges the complement-manifold part of the previously recorded 26.2 invariant.
 The next obligations are the exact new boundary and modified next disk, product maps agreeing
 on the previously fixed side faces, and the whole-boundary neighborhood property.
+
+### S-M4 continuation: exact complementary boundary and boundary replacement
+
+The preceding complement-manifold layer is committed and pushed as `51e4d8f21`.
+`ManifoldFaces.lean` proves extension of every face to a top-dimensional face in a finite
+combinatorial manifold, including dimension zero. `BoundaryComplement.lean` computes the
+codimension-one cofaces in the actual complementary subcomplex. It proves, in every positive
+dimension and for arbitrary finite triangulations of the same spaces,
+
+`Bd R = closure (Bd K - A.space) union closure (Bd A - Bd K)`,
+
+where `R.space = closure (K.space - A.space)` and the three complexes are manifolds with
+boundary of the same dimension. In dimension three the previous complement theorem produces
+R and its manifold proof from a boundary-attached PL ball, so this is not a new assumed
+complement-manifold obligation.
+
+`ManifoldSubcomplexBoundary.lean` proves that a submanifold meets the closure of its complement
+only on its intrinsic boundary. In a manifold without boundary the intersection is exactly
+that boundary. The parameterized disk version identifies the intersection with the image of
+the standard simplex boundary. These results hold in all positive dimensions; the zero-sphere
+link case uses equality of two-point subsets, not an additional dimension restriction.
+
+`BoundaryBallReplacement.lean` constructs
+`IsCombinatorialManifoldWithBoundary.exists_isPLHomeomorphOn_boundary_complement`:
+for a PL three-ball A in K meeting Bd K in a PL disk, it produces the actual finite manifold
+complement R and a PL homeomorphism Bd K to Bd R that fixes the closure of Bd K minus A.
+The proof replaces the attaching disk by the complementary disk in Bd A using P.2.
+`DiskCollarComplement.lean` exports
+`exists_collar_of_boundary_disk_subset_with_boundary_complement`, including the controlled
+local disk collar, the same closed complement R, and this boundary homeomorphism, fixed on
+the closure of Bd K minus the attaching disk. The homeomorphism transports subsequent boundary
+disks to the new boundary. None of these results requires Schoenflies.
+
+All five modules have focused-check exit 0 with zero warnings. `AuditS81BoundaryReplacement.lean`
+and `.log` audit thirteen new or affected declarations, all with only `propext`,
+`Classical.choice`, and `Quot.sound`. Logs under `.lake/scratch` are
+`check-manifold-faces.log`, `check-boundary-complement.log`,
+`check-manifold-subcomplex-boundary.log`, `check-boundary-ball-replacement.log`, and
+`check-disk-collar-complement-boundary.log`.
+
+The remaining 26.2 obligation is compatible product-coordinate gluing over the successive
+boundary disks, followed by the whole-boundary neighborhood property. The boundary replacement
+map and the local collar parametrization are both proved, but their independent existence
+does not yet identify them on the side faces needed for that gluing. Full 26.2 remains partial.
+The exact bundled I2 target-type issue and the recorded P.4 extension/control obligations
+are unchanged. The source checkpoint hash is recorded with the final plan update below.
