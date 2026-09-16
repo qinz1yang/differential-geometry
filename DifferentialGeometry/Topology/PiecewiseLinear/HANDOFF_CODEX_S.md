@@ -686,7 +686,7 @@ no second-batch source or duplicate Jordan extension wrapper was introduced.
 | S-M3 | partial: general parametrized PL push-off and Euclidean singular cell | `bd74dd7ca`; AuditS72Intrinsic: 7; AuditS74Push: 3 | `SingularTwoCell K.space` needs a boundary-compatible target type; its current Euclidean open-chart requirement is not available from a manifold-with-boundary hypothesis |
 | S-M4 | done: whole-boundary collar with the relative-neighborhood property for finite combinatorial three-manifolds in arbitrary finite-dimensional real normed spaces | `691c7329d`, `e9feba0c2`, `f778f73ff`; AuditS88--S90: 12; earlier layers and audits below | None for the finite-complex endpoint in NIGHT_PLAN; abstract PL charted ambient transport is not asserted |
 | S-M5 | done: 26.1 in finite combinatorial carriers and general PL charted ambient spaces; arbitrarily small PL bicollars without connectedness assumptions | `ddf717a4b`; finite bicollar `3a55ac834`; general manifold bicollar `52d70d778`; relative topology `7746cff68`; AuditS101--S104: 18 | No remaining 26.1/26.3 obligation in these stated settings; the separate I2 target-type issue remains in S-M3 |
-| S-M6 | partial: general relative 17.3 done; P.4 supported extension, disjoint gluing, and displacement control proved | `f0383a381`; `6d1df9349`; AuditS77: 4; AuditS79: 3; AuditS105: 9 | Construct compatible vertex-sector maps, relative edge straightening, and sufficiently small geometric frames |
+| S-M6 | partial: general relative 17.3 done; arbitrary crosscut separation and supported, controlled crosscut extension proved | `f0383a381`; `6d1df9349`; `7e1951a69`; `d9f27c4b4`; `4ddbf78f4`; AuditS106--S108: 21 | Construct compatible vertex sectors, sufficiently small frames for the finite graph, and polygonal target arcs inside those frames |
 
 All listed completed layers have focused-check exit 0 with zero warnings and transitive axiom
 closures contained in `propext`, `Classical.choice`, and `Quot.sound`. No newly proved layer
@@ -1691,3 +1691,22 @@ P.4 remains partial. Its relative map inside a chosen Jordan frame is now proved
 the remaining geometric producers are compatible vertex sectors and sufficiently
 small frames around the finite graph, with appropriate polygonal target arcs.
 I2's exact target-type issue is unchanged.
+
+### S-M6 crosscut publication checkpoint, 2026-09-16
+
+The source checkpoints are committed and pushed as `7e1951a69` (compatible arc
+extensions and planar transport), `d9f27c4b4` (arbitrary crosscut separation), and
+`4ddbf78f4` (supported crosscut extension and compact gluing). All five Lean
+modules have final focused-check exit 0 and zero warnings. AuditS106/S107/S108
+contain 6/4/11 entries, respectively: 21 entries, all with only `propext`,
+`Classical.choice`, and `Quot.sound`. S108 also rechecks the arc and crosscut
+chain after factoring out compact gluing; these counts are audit entries,
+not counts of distinct declarations.
+
+The working branch is synchronized with origin/codex/moise-s. Fetch and merge
+after each source checkpoint found origin/codex/moise-integration already merged
+at `8fb887bb9`. This final bookkeeping commit updates only the S-M6 summary
+and P.4 plan row to distinguish the proved relative map inside a given Jordan
+frame from the still-missing finite-graph frame and vertex-sector producers.
+S-M5 remains complete in its stated settings. There is no new consultation
+blocker; the active continuation is the geometric construction required by P.4.
