@@ -430,3 +430,31 @@ theorem eq_top_of_boundaryLoops_mem_normal
   从而把 §11 的拓扑二重覆盖分类升级为盘内的一条或两条多边形圆/折线；现有 `SingularTwoCell.isPLOn` 没有携带源三角剖分，
   本树也没有任意抽象 PL 映射下多面体原像仍为多面体的生产者。之后仍须完成 Case 1–4 的环带正则邻域、盘替换、切开重建，
   以及 I3 的边界半空间析取到 `HasDoublePointSheetsAt` 的桥接；这些步骤没有被弱化为假设。
+
+## 19. 2026-09-16 E3-M2 追加：触边分支的源 crosscut 与共轭类字分解
+
+状态：partial（书页 186–187 的 Case 3/4 已闭合到源 crosscut 与环类代数结论，整体 L.3 仍未闭合）。数学提交
+`1ee830f87`、`57431d277`、`53d256d7e`、`9b039490d`、`7bbeaf51b`。
+
+- `BoundaryCrossing.lean` 用流形版 invariance of domain 证明半空间双交叉的双点纤维只能落在源盘边界；
+  `NormalSingularCellData.fiber_subset_frontier_of_boundary_crossing` 给出供最终 I3 边界析取直接调用的形式。
+- `BranchBoundary.lean` 的 `branchComplex_boundary_iff_map_mem_boundary` 精确识别触边分支的两个组合端点与目标 `BdM` 中的点。
+  `BranchPreimage.lean` 的
+  `exists_two_isPLBalls_branchPreimage_of_boundaryBranch_with_coordinate` 同时给出两条不交源 PL 1-球、覆盖全部分支原像，
+  并证明各自的 `branchCoordinate` 都是到目标分支复形空间的 PL 同胚。
+- `BoundaryBranchCrosscut.lean` 先把任意 PL 1-球参数化为 `Icc 0 1` 并识别组合边界，再由内部点不落盘边界及边界半空间双交叉证明
+  `exists_two_isCrosscuts_branchPreimage_of_boundaryBranch`：触边分支的两条源折线都是真正的盘 crosscut。
+  当前边界半空间交叉按 NIGHT_PLAN §1 I3 的最终字段写成显式输入；它不是 Lemma 2 的结论，也不假设任何复杂度下降。
+- `CutAndPaste.lean` 的 `loopRepresentativeAlong_mem_iff_loopClassMeets` 把选定基点连接道路所得代表元与无基点环的共轭类相交条件对应起来；
+  `not_loopClassMeets_or_not_loopClassMeets_of_eq_mul_conj_mul_conj` 与
+  `not_loopClassMeets_or_not_loopClassMeets_of_four_path_factorization` 分别把 Case 3 和 Case 4 的书中群字提升为环类结论：母环避开正规子群时，
+  两个候选新边界环至少一个仍避开该子群。
+- 五个模块的聚焦检查均 exit=0、零 warning。`.lake/scratch/AuditBoundaryCrossing.lean` 的 5 项、
+  `.lake/scratch/AuditBranchBoundary.lean` 的 1 项、`.lake/scratch/AuditBranchPreimage.lean` 的 27 项、
+  `.lake/scratch/AuditBoundaryBranchCrosscut.lean` 的 3 项及更新后 `.lake/scratch/AuditE3M2.lean` 的 26 项审计全部只含
+  `propext`、`Classical.choice`、`Quot.sound`。本层首次复用的
+  `DifferentialGeometry.Topology.invariance_of_domain_isOpen_image` 已单独审计；没有新增 covering/Van Kampen 复用声明。
+- 确切未闭合项：`SingularTwoCell.exists_two_cells_of_isCrosscut` 只把源盘沿一条 crosscut 限制成两盘，其新边界仍含该奇异弧的像，
+  因而不是 Moise Case 3/4 把两条同像原像弧交叉重接所得的 `D₁,D₂`，也不能据此声称新胞腔正规或复杂度下降。
+  仍需构造三块源盘沿两条 PL 同胚 crosscut 的两种重接，证明重接映射 PL、边界字分别为书页 186–187 的公式、目标边界相交条件保持，
+  并为所选新胞腔重建 `NormalSingularCellData` 且严格减少触边分支数。Case 1/2 还缺环带正则邻域、环带重定义、内盘替换与 I2 推离。
