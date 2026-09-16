@@ -1705,3 +1705,9 @@ F-M2–F-M6 尚未开始；按用户指定顺序推进，只有出现 §1 接口
 `LinkUnionSection.lean` 已提交并推送为 `b066c360d`。`geometricLink_space_subset_union_of_faces_cover` 证明：若完整复形的每个面属于两个片复形之一，则顶点的完整几何链环空间包含于两片链环空间之并；证明直接对链环面连同顶点的并面应用面覆盖，不需要满子复形假设。`geometricLink_section_encard_le_two_of_faces_cover` 再把两片各自的等高链环截面 subsingleton 合并为完整截面的 `encard ≤ 2`，经 `encard_mono` 与 `encard_union_le` 得到精确上界。
 
 模块聚焦检查 exit=0（11.6 秒）、零 warning；`AuditF174.lean` 两个端点均仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步加强共同三角剖分存在性，使其显式返回每个新面位于原保留盘或凸帽之一；这将提供本层所需的面覆盖，并允许分别接入 `BoundaryLinkGerm` 与 `TriangleEdgeLink`。F-M1 仍为 partial，严格降指标、Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF175.lean`。
+
+### 19.27 F-M1：共同细分显式保留两片面覆盖
+
+`CoveredHeightSubdivision.lean` 已提交并推送为 `e0878ee1c`。主端点 `exists_triangulation_union_with_face_cover_and_halfSpace_faces` 加强高度半空间适配的共同三角剖分：除原有载体并集、原复形上的细分、第二多面体的精确限制空间和逐面高度侧别外，显式返回每个新面属于两个限制子复形之一。证明在共同 H-多胞形细分的重心所在载体中识别整个新单形；该载体从构造上来自原复形的某面或第二多面体的某个 H-多胞形，因此面覆盖是构造结论，不是附加假设。
+
+模块聚焦检查 exit=0（11.9 秒）、零 warning；`AuditF175.lean` 主端点仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步在三角帽切割的每个保留盘上应用该端点，识别接缝边内部顶点的边界复形面、两条边界链环方向与相反半空间集合芽，再由两片单点截面和面覆盖推出完整链环 `encard ≤ 2`。F-M1 仍为 partial，严格降指标、Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF176.lean`。
