@@ -753,6 +753,393 @@ theorem doublePointSet_mem_nhdsWithin_of_pullback
   · exact (hrf u' hu'Q).symm.trans ((congrArg f hru).trans hfu)
   · exact (hrf v' hv'Q).symm.trans ((congrArg f hrv).trans hfv)
 
+open Classical in
+private theorem isPLHomeomorphOn_inter_isOpen
+    {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [NormedAddCommGroup F] [NormedSpace ℝ F]
+    [FiniteDimensional ℝ E] [FiniteDimensional ℝ F]
+    {f : E → F} {P : Set E} {Q : Set F} (hf : IsPLHomeomorphOn f P Q)
+    {O : Set E} (hO : IsOpen O) :
+    IsPLHomeomorphOn f (P ∩ O)
+      (Q ∩ Function.invFunOn f P ⁻¹' O) := by
+  let j := Function.invFunOn f P
+  let P' := P ∩ O
+  let Q' := Q ∩ j ⁻¹' O
+  have hbij : BijOn f P' Q' := by
+    refine ⟨?_, ?_, ?_⟩
+    · rintro x ⟨hxP, hxO⟩
+      exact ⟨hf.bijOn.mapsTo hxP, by
+        change Function.invFunOn f P (f x) ∈ O
+        rw [hf.bijOn.invOn_invFunOn.1 hxP]
+        exact hxO⟩
+    · exact hf.bijOn.injOn.mono inter_subset_left
+    · rintro y ⟨hyQ, hyO⟩
+      refine ⟨j y, ⟨hf.bijOn.surjOn.mapsTo_invFunOn hyQ, hyO⟩, ?_⟩
+      exact hf.bijOn.invOn_invFunOn.2 hyQ
+  refine ⟨hbij, hf.isPiecewiseAffineOn.inter_of_isOpen hO, ?_⟩
+  have hj : IsPiecewiseAffineOn j Q' := by
+    intro y hy
+    have hcont : ContinuousWithinAt j Q y :=
+      hf.isPiecewiseAffineOn_invFunOn.continuousOn y hy.1
+    have hpre : j ⁻¹' O ∈ 𝓝[Q] y :=
+      hcont.preimage_mem_nhdsWithin (hO.mem_nhds hy.2)
+    obtain ⟨V, hV, hVsub⟩ := mem_nhdsWithin_iff_exists_mem_nhds_inter.mp hpre
+    have hlocal := (hf.isPiecewiseAffineOn_invFunOn y hy.1).inter_of_mem_nhds hV
+    have heq : Q ∩ V = Q' ∩ V := by
+      apply Subset.antisymm
+      · intro z hz
+        exact ⟨⟨hz.1, hVsub ⟨hz.2, hz.1⟩⟩, hz.2⟩
+      · exact fun z hz => ⟨hz.1.1, hz.2⟩
+    rw [heq] at hlocal
+    exact hlocal.of_inter_of_mem_nhds hV
+  refine hj.congr fun y hy => ?_
+  have hyP' : Function.invFunOn f P' y ∈ P' :=
+    hbij.surjOn.mapsTo_invFunOn hy
+  have hyf : f (Function.invFunOn f P' y) = y :=
+    hbij.invOn_invFunOn.2 hy
+  have hjP : j y ∈ P := hf.bijOn.surjOn.mapsTo_invFunOn hy.1
+  have hjf : f (j y) = y := hf.bijOn.invOn_invFunOn.2 hy.1
+  exact hf.bijOn.injOn hyP'.1 hjP (hyf.trans hjf.symm)
+
+open Classical in
+private theorem isPLHomeomorphOn_trans_inter
+    {E F G : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [NormedAddCommGroup F] [NormedSpace ℝ F]
+    [NormedAddCommGroup G] [NormedSpace ℝ G]
+    [FiniteDimensional ℝ E] [FiniteDimensional ℝ F] [FiniteDimensional ℝ G]
+    {f : E → F} {g : F → G} {P : Set E} {Q A : Set F} {B : Set G}
+    (hf : IsPLHomeomorphOn f P Q) (hg : IsPLHomeomorphOn g A B) :
+    IsPLHomeomorphOn (g ∘ f) (P ∩ f ⁻¹' A)
+      (B ∩ Function.invFunOn g A ⁻¹' Q) := by
+  let R := P ∩ f ⁻¹' A
+  let S := B ∩ Function.invFunOn g A ⁻¹' Q
+  let jf := Function.invFunOn f P
+  let jg := Function.invFunOn g A
+  have hbij : BijOn (g ∘ f) R S := by
+    refine ⟨?_, ?_, ?_⟩
+    · rintro x ⟨hxP, hxfA⟩
+      exact ⟨hg.bijOn.mapsTo hxfA, by
+        change Function.invFunOn g A (g (f x)) ∈ Q
+        rw [hg.bijOn.invOn_invFunOn.1 hxfA]
+        exact hf.bijOn.mapsTo hxP⟩
+    · intro x hx y hy hxy
+      apply hf.bijOn.injOn hx.1 hy.1
+      apply hg.bijOn.injOn hx.2 hy.2
+      exact hxy
+    · rintro z ⟨hzB, hzQ⟩
+      let y := jg z
+      have hyA : y ∈ A := hg.bijOn.surjOn.mapsTo_invFunOn hzB
+      have hgy : g y = z := hg.bijOn.invOn_invFunOn.2 hzB
+      have hyQ : y ∈ Q := hzQ
+      let x := jf y
+      have hxP : x ∈ P := hf.bijOn.surjOn.mapsTo_invFunOn hyQ
+      have hfx : f x = y := hf.bijOn.invOn_invFunOn.2 hyQ
+      refine ⟨x, ⟨hxP, ?_⟩, ?_⟩
+      · change f x ∈ A
+        rw [hfx]
+        exact hyA
+      change g (f x) = z
+      rw [hfx, hgy]
+  refine ⟨hbij, hg.isPiecewiseAffineOn.comp hf.isPiecewiseAffineOn, ?_⟩
+  have hinv : IsPiecewiseAffineOn (jf ∘ jg) S := by
+    change IsPiecewiseAffineOn (jf ∘ jg) (B ∩ jg ⁻¹' Q)
+    exact hf.isPiecewiseAffineOn_invFunOn.comp hg.isPiecewiseAffineOn_invFunOn
+  refine hinv.congr fun z hz => ?_
+  have hzR : Function.invFunOn (g ∘ f) R z ∈ R :=
+    hbij.surjOn.mapsTo_invFunOn hz
+  have hzcomp : (g ∘ f) (Function.invFunOn (g ∘ f) R z) = z :=
+    hbij.invOn_invFunOn.2 hz
+  have hjgA : jg z ∈ A := hg.bijOn.surjOn.mapsTo_invFunOn hz.1
+  have hgjg : g (jg z) = z := hg.bijOn.invOn_invFunOn.2 hz.1
+  have hjfP : jf (jg z) ∈ P := hf.bijOn.surjOn.mapsTo_invFunOn hz.2
+  have hfjf : f (jf (jg z)) = jg z := hf.bijOn.invOn_invFunOn.2 hz.2
+  apply hbij.injOn hzR ⟨hjfP, by
+    change f (jf (jg z)) ∈ A
+    rw [hfjf]
+    exact hjgA⟩
+  calc
+    (g ∘ f) (Function.invFunOn (g ∘ f) R z) = z := hzcomp
+    _ = (g ∘ f) (jf (jg z)) := by
+      change z = g (f (jf (jg z)))
+      rw [hfjf, hgjg]
+
+private theorem eventually_mem_iff_of_subset_of_mem_nhdsWithin
+    {X : Type*} [TopologicalSpace X] {A B : Set X} {x : X}
+    (hBA : B ⊆ A) (hB : B ∈ 𝓝[A] x) :
+    ∀ᶠ y in 𝓝 x, y ∈ A ↔ y ∈ B := by
+  obtain ⟨U, hU, hUA⟩ := mem_nhdsWithin_iff_exists_mem_nhds_inter.mp hB
+  filter_upwards [hU] with y hy
+  exact ⟨fun hyA => hUA ⟨hy, hyA⟩, fun hyB => hBA hyB⟩
+
+open Classical in
+private theorem exists_crossing_patches_of_source_changes
+    {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [NormedAddCommGroup F] [NormedSpace ℝ F]
+    [FiniteDimensional ℝ E] [FiniteDimensional ℝ F]
+    {f g : E → F} {pullback ru rv : E → E}
+    {P Q₀ Q A B Su Sv Tu Tv : Set E} {u v : E} {y : F}
+    (hQQ₀ : Q ⊆ Q₀)
+    (hgu : g u = y) (hgv : g v = y)
+    (hru : IsPLHomeomorphOn ru Su Tu) (hrv : IsPLHomeomorphOn rv Sv Tv)
+    (huSu : u ∈ Su) (hvSv : v ∈ Sv)
+    (hSuNhds : Su ∈ 𝓝[Q₀] u) (hSvNhds : Sv ∈ 𝓝[Q₀] v)
+    (hSuP_Q : Su ∩ ru ⁻¹' P ⊆ Q) (hSvP_Q : Sv ∩ rv ⁻¹' P ⊆ Q)
+    (hruPull : EqOn ru pullback Su) (hrvPull : EqOn rv pullback Sv)
+    (hguEq : EqOn g (f ∘ ru) Su) (hgvEq : EqOn g (f ∘ rv) Sv)
+    (hPTu : P ∈ 𝓝[Tu] (ru u)) (hPTv : P ∈ 𝓝[Tv] (rv v))
+    (hTuNhds : Tu ∈ 𝓝[P] (ru u)) (hTvNhds : Tv ∈ 𝓝[P] (rv v))
+    (hruA : ru u ∈ A) (hrvB : rv v ∈ B)
+    (hAnhds : A ∈ 𝓝[P] (ru u)) (hBnhds : B ∈ 𝓝[P] (rv v))
+    (hAP : A ⊆ P) (hBP : B ⊆ P) (hAB : Disjoint A B)
+    (hfA : IsPLHomeomorphOn f A (f '' A))
+    (hfB : IsPLHomeomorphOn f B (f '' B))
+    (hcoverOfNhds : ∀ A' B' : Set E,
+      A' ∈ 𝓝[Q₀] u → B' ∈ 𝓝[Q₀] v →
+        ∀ᶠ z in 𝓝 y, Q ∩ g ⁻¹' {z} ⊆ A' ∪ B') :
+    ∃ A' B' : Set E,
+      u ∈ A' ∧ v ∈ B' ∧ g u = y ∧ g v = y ∧
+      A' ⊆ Q ∧ B' ⊆ Q ∧ Disjoint A' B' ∧
+      A' ∈ 𝓝[Q] u ∧ B' ∈ 𝓝[Q] v ∧
+      IsPLHomeomorphOn g A' (g '' A') ∧
+      IsPLHomeomorphOn g B' (g '' B') ∧
+      (∀ᶠ z in 𝓝 y, z ∈ f '' A ↔ z ∈ g '' A') ∧
+      (∀ᶠ z in 𝓝 y, z ∈ f '' B ↔ z ∈ g '' B') ∧
+      ∀ᶠ z in 𝓝 y, Q ∩ g ⁻¹' {z} ⊆ A' ∪ B' := by
+  let A' := Su ∩ ru ⁻¹' A
+  let B' := Sv ∩ rv ⁻¹' B
+  have huA' : u ∈ A' := ⟨huSu, hruA⟩
+  have hvB' : v ∈ B' := ⟨hvSv, hrvB⟩
+  have hA'Q : A' ⊆ Q := fun _ hw => hSuP_Q ⟨hw.1, hAP hw.2⟩
+  have hB'Q : B' ⊆ Q := fun _ hw => hSvP_Q ⟨hw.1, hBP hw.2⟩
+  have hA'B' : Disjoint A' B' := by
+    apply Set.disjoint_left.mpr
+    intro w hwA hwB
+    have heq : ru w = rv w := (hruPull hwA.1).trans (hrvPull hwB.1).symm
+    exact Set.disjoint_left.mp hAB hwA.2 (heq ▸ hwB.2)
+  have hA'Su : A' ∈ 𝓝[Su] u := by
+    apply Filter.inter_mem self_mem_nhdsWithin
+    apply (hru.isPiecewiseAffineOn.continuousOn u huSu).preimage_mem_nhdsWithin'
+    rw [hru.image_eq]
+    exact mem_nhdsWithin_of_mem_nhdsWithin_of_mem_nhdsWithin hAnhds hPTu
+  have hB'Sv : B' ∈ 𝓝[Sv] v := by
+    apply Filter.inter_mem self_mem_nhdsWithin
+    apply (hrv.isPiecewiseAffineOn.continuousOn v hvSv).preimage_mem_nhdsWithin'
+    rw [hrv.image_eq]
+    exact mem_nhdsWithin_of_mem_nhdsWithin_of_mem_nhdsWithin hBnhds hPTv
+  have hA'nhds₀ : A' ∈ 𝓝[Q₀] u :=
+    mem_nhdsWithin_of_mem_nhdsWithin_of_mem_nhdsWithin hA'Su hSuNhds
+  have hB'nhds₀ : B' ∈ 𝓝[Q₀] v :=
+    mem_nhdsWithin_of_mem_nhdsWithin_of_mem_nhdsWithin hB'Sv hSvNhds
+  have hA'nhds : A' ∈ 𝓝[Q] u := nhdsWithin_mono u hQQ₀ hA'nhds₀
+  have hB'nhds : B' ∈ 𝓝[Q] v := nhdsWithin_mono v hQQ₀ hB'nhds₀
+  let TA := f '' A ∩ Function.invFunOn f A ⁻¹' Tu
+  let TB := f '' B ∩ Function.invFunOn f B ⁻¹' Tv
+  have hplAraw : IsPLHomeomorphOn (f ∘ ru) A' TA :=
+    isPLHomeomorphOn_trans_inter hru hfA
+  have hplBraw : IsPLHomeomorphOn (f ∘ rv) B' TB :=
+    isPLHomeomorphOn_trans_inter hrv hfB
+  have hplA : IsPLHomeomorphOn g A' TA :=
+    hplAraw.congr (hguEq.mono inter_subset_left)
+  have hplB : IsPLHomeomorphOn g B' TB :=
+    hplBraw.congr (hgvEq.mono inter_subset_left)
+  have hf_ru : f (ru u) = y := (hguEq huSu).symm.trans hgu
+  have hf_rv : f (rv v) = y := (hgvEq hvSv).symm.trans hgv
+  have hyA : y ∈ f '' A := ⟨ru u, hruA, hf_ru⟩
+  have hyB : y ∈ f '' B := ⟨rv v, hrvB, hf_rv⟩
+  have hjA : Function.invFunOn f A y = ru u := by
+    rw [← hf_ru]
+    exact hfA.bijOn.invOn_invFunOn.1 hruA
+  have hjB : Function.invFunOn f B y = rv v := by
+    rw [← hf_rv]
+    exact hfB.bijOn.invOn_invFunOn.1 hrvB
+  have hTAnhds : TA ∈ 𝓝[f '' A] y := by
+    apply Filter.inter_mem self_mem_nhdsWithin
+    apply (hfA.isPiecewiseAffineOn_invFunOn.continuousOn y hyA).preimage_mem_nhdsWithin'
+    rw [hfA.symm.image_eq, hjA]
+    exact nhdsWithin_mono (ru u) hAP hTuNhds
+  have hTBnhds : TB ∈ 𝓝[f '' B] y := by
+    apply Filter.inter_mem self_mem_nhdsWithin
+    apply (hfB.isPiecewiseAffineOn_invFunOn.continuousOn y hyB).preimage_mem_nhdsWithin'
+    rw [hfB.symm.image_eq, hjB]
+    exact nhdsWithin_mono (rv v) hBP hTvNhds
+  have hAgerm : ∀ᶠ z in 𝓝 y, z ∈ f '' A ↔ z ∈ g '' A' := by
+    rw [hplA.image_eq]
+    exact eventually_mem_iff_of_subset_of_mem_nhdsWithin inter_subset_left hTAnhds
+  have hBgerm : ∀ᶠ z in 𝓝 y, z ∈ f '' B ↔ z ∈ g '' B' := by
+    rw [hplB.image_eq]
+    exact eventually_mem_iff_of_subset_of_mem_nhdsWithin inter_subset_left hTBnhds
+  have hcover : ∀ᶠ z in 𝓝 y, Q ∩ g ⁻¹' {z} ⊆ A' ∪ B' :=
+    hcoverOfNhds A' B' hA'nhds₀ hB'nhds₀
+  exact ⟨A', B', huA', hvB', hgu, hgv, hA'Q, hB'Q, hA'B',
+    hA'nhds, hB'nhds, hplA.image_eq.symm ▸ hplA,
+    hplB.image_eq.symm ▸ hplB, hAgerm, hBgerm, hcover⟩
+
+open Classical in
+private theorem transport_doubleCrossing_of_source_changes
+    {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [NormedAddCommGroup F] [NormedSpace ℝ F]
+    [FiniteDimensional ℝ E] [FiniteDimensional ℝ F]
+    {f g : E → F} {pullback ru rv : E → E}
+    {P Q₀ Q Su Sv Tu Tv : Set E} {u v : E} {y : F}
+    (hQQ₀ : Q ⊆ Q₀)
+    (hpullbackInj : InjOn pullback Q₀)
+    (huQ₀ : u ∈ Q₀) (hvQ₀ : v ∈ Q₀) (huv : u ≠ v)
+    (hgu : g u = y) (hgv : g v = y)
+    (hru : IsPLHomeomorphOn ru Su Tu) (hrv : IsPLHomeomorphOn rv Sv Tv)
+    (huSu : u ∈ Su) (hvSv : v ∈ Sv)
+    (hSuNhds : Su ∈ 𝓝[Q₀] u) (hSvNhds : Sv ∈ 𝓝[Q₀] v)
+    (hSuP_Q : Su ∩ ru ⁻¹' P ⊆ Q) (hSvP_Q : Sv ∩ rv ⁻¹' P ⊆ Q)
+    (hruPull : EqOn ru pullback Su) (hrvPull : EqOn rv pullback Sv)
+    (hguEq : EqOn g (f ∘ ru) Su) (hgvEq : EqOn g (f ∘ rv) Sv)
+    (hruP : ru u ∈ P) (hrvP : rv v ∈ P)
+    (hPTu : P ∈ 𝓝[Tu] (ru u)) (hPTv : P ∈ 𝓝[Tv] (rv v))
+    (hTuNhds : Tu ∈ 𝓝[P] (ru u)) (hTvNhds : Tv ∈ 𝓝[P] (rv v))
+    (hcoverOfNhds : ∀ A' B' : Set E,
+      A' ∈ 𝓝[Q₀] u → B' ∈ 𝓝[Q₀] v →
+        ∀ᶠ z in 𝓝 y, Q ∩ g ⁻¹' {z} ⊆ A' ∪ B')
+    (hcross : HasPLDoubleCrossingAt f P y) :
+    HasPLDoubleCrossingAt g Q y := by
+  obtain ⟨a, b, A, B, haA, hbB, hfa, hfb, hAP, hBP, hAB,
+    hAnhds, hBnhds, hfA, hfB, htarget, hcoverOld⟩ := hcross
+  have hf_ru : f (ru u) = y := (hguEq huSu).symm.trans hgu
+  have hf_rv : f (rv v) = y := (hgvEq hvSv).symm.trans hgv
+  have hruAB : ru u ∈ A ∪ B := hcoverOld.self_of_nhds
+    ⟨hruP, hf_ru⟩
+  have hrvAB : rv v ∈ A ∪ B := hcoverOld.self_of_nhds
+    ⟨hrvP, hf_rv⟩
+  rcases hruAB with hruA | hruB <;> rcases hrvAB with hrvA | hrvB
+  · have hrr : ru u = rv v := hfA.bijOn.injOn hruA hrvA (hf_ru.trans hf_rv.symm)
+    have hpull : pullback u = pullback v :=
+      (hruPull huSu).symm.trans (hrr.trans (hrvPull hvSv))
+    exact (huv (hpullbackInj huQ₀ hvQ₀ hpull)).elim
+  · have haru : a = ru u := hfA.bijOn.injOn haA hruA (hfa.trans hf_ru.symm)
+    have hbrv : b = rv v := hfB.bijOn.injOn hbB hrvB (hfb.trans hf_rv.symm)
+    have hAnhds' : A ∈ 𝓝[P] (ru u) := by rwa [← haru]
+    have hBnhds' : B ∈ 𝓝[P] (rv v) := by rwa [← hbrv]
+    obtain ⟨A', B', huA', hvB', hgu', hgv', hA'Q, hB'Q, hA'B',
+      hA'nhds, hB'nhds, hgA, hgB, hAgerm, hBgerm, hcover⟩ :=
+      exists_crossing_patches_of_source_changes
+        (f := f) (g := g) (pullback := pullback)
+        (ru := ru) (rv := rv) (P := P) (Q₀ := Q₀) (Q := Q) (A := A) (B := B)
+        (Su := Su) (Sv := Sv) (Tu := Tu) (Tv := Tv)
+        hQQ₀ hgu hgv hru hrv huSu hvSv hSuNhds hSvNhds hSuP_Q hSvP_Q
+        hruPull hrvPull hguEq hgvEq hPTu hPTv hTuNhds hTvNhds
+        hruA hrvB hAnhds' hBnhds' hAP hBP hAB hfA hfB hcoverOfNhds
+    exact ⟨u, v, A', B', huA', hvB', hgu', hgv', hA'Q, hB'Q,
+      hA'B', hA'nhds, hB'nhds, hgA, hgB, htarget.congr hAgerm hBgerm, hcover⟩
+  · have harv : a = rv v := hfA.bijOn.injOn haA hrvA (hfa.trans hf_rv.symm)
+    have hbru : b = ru u := hfB.bijOn.injOn hbB hruB (hfb.trans hf_ru.symm)
+    have hAnhds' : A ∈ 𝓝[P] (rv v) := by rwa [← harv]
+    have hBnhds' : B ∈ 𝓝[P] (ru u) := by rwa [← hbru]
+    have hcoverSwap : ∀ A' B' : Set E,
+        A' ∈ 𝓝[Q₀] v → B' ∈ 𝓝[Q₀] u →
+          ∀ᶠ z in 𝓝 y, Q ∩ g ⁻¹' {z} ⊆ A' ∪ B' := by
+      intro A' B' hA' hB'
+      filter_upwards [hcoverOfNhds B' A' hB' hA'] with z hz
+      intro w hw
+      rcases hz hw with hwB | hwA
+      · exact Or.inr hwB
+      · exact Or.inl hwA
+    obtain ⟨A', B', hvA', huB', hgv', hgu', hA'Q, hB'Q, hA'B',
+      hA'nhds, hB'nhds, hgA, hgB, hAgerm, hBgerm, hcover⟩ :=
+      exists_crossing_patches_of_source_changes
+        (f := f) (g := g) (pullback := pullback)
+        (ru := rv) (rv := ru) (P := P) (Q₀ := Q₀) (Q := Q) (A := A) (B := B)
+        (Su := Sv) (Sv := Su) (Tu := Tv) (Tv := Tu)
+        hQQ₀ hgv hgu hrv hru hvSv huSu hSvNhds hSuNhds hSvP_Q hSuP_Q
+        hrvPull hruPull hgvEq hguEq hPTv hPTu hTvNhds hTuNhds
+        hrvA hruB hAnhds' hBnhds' hAP hBP hAB hfA hfB hcoverSwap
+    exact ⟨v, u, A', B', hvA', huB', hgv', hgu', hA'Q, hB'Q,
+      hA'B', hA'nhds, hB'nhds, hgA, hgB, htarget.congr hAgerm hBgerm, hcover⟩
+  · have hrr : ru u = rv v := hfB.bijOn.injOn hruB hrvB (hf_ru.trans hf_rv.symm)
+    have hpull : pullback u = pullback v :=
+      (hruPull huSu).symm.trans (hrr.trans (hrvPull hvSv))
+    exact (huv (hpullbackInj huQ₀ hvQ₀ hpull)).elim
+
+open Classical in
+private theorem transport_boundaryDoubleCrossing_of_source_changes
+    {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [NormedAddCommGroup F] [NormedSpace ℝ F]
+    [FiniteDimensional ℝ E] [FiniteDimensional ℝ F]
+    {f g : E → F} {pullback ru rv : E → E}
+    {P Q₀ Q Su Sv Tu Tv : Set E} {M : Set F} {u v : E} {y : F}
+    (hQQ₀ : Q ⊆ Q₀)
+    (hpullbackInj : InjOn pullback Q₀)
+    (huQ₀ : u ∈ Q₀) (hvQ₀ : v ∈ Q₀) (huv : u ≠ v)
+    (hgu : g u = y) (hgv : g v = y)
+    (hru : IsPLHomeomorphOn ru Su Tu) (hrv : IsPLHomeomorphOn rv Sv Tv)
+    (huSu : u ∈ Su) (hvSv : v ∈ Sv)
+    (hSuNhds : Su ∈ 𝓝[Q₀] u) (hSvNhds : Sv ∈ 𝓝[Q₀] v)
+    (hSuP_Q : Su ∩ ru ⁻¹' P ⊆ Q) (hSvP_Q : Sv ∩ rv ⁻¹' P ⊆ Q)
+    (hruPull : EqOn ru pullback Su) (hrvPull : EqOn rv pullback Sv)
+    (hguEq : EqOn g (f ∘ ru) Su) (hgvEq : EqOn g (f ∘ rv) Sv)
+    (hruP : ru u ∈ P) (hrvP : rv v ∈ P)
+    (hPTu : P ∈ 𝓝[Tu] (ru u)) (hPTv : P ∈ 𝓝[Tv] (rv v))
+    (hTuNhds : Tu ∈ 𝓝[P] (ru u)) (hTvNhds : Tv ∈ 𝓝[P] (rv v))
+    (hcoverOfNhds : ∀ A' B' : Set E,
+      A' ∈ 𝓝[Q₀] u → B' ∈ 𝓝[Q₀] v →
+        ∀ᶠ z in 𝓝 y, Q ∩ g ⁻¹' {z} ⊆ A' ∪ B')
+    (hcross : HasPLBoundaryDoubleCrossingAt f P M y) :
+    HasPLBoundaryDoubleCrossingAt g Q M y := by
+  obtain ⟨a, b, A, B, haA, hbB, hfa, hfb, hAP, hBP, hAB,
+    hAnhds, hBnhds, hfA, hfB, htarget, hcoverOld⟩ := hcross
+  have hf_ru : f (ru u) = y := (hguEq huSu).symm.trans hgu
+  have hf_rv : f (rv v) = y := (hgvEq hvSv).symm.trans hgv
+  have hruAB : ru u ∈ A ∪ B := hcoverOld.self_of_nhds
+    ⟨hruP, hf_ru⟩
+  have hrvAB : rv v ∈ A ∪ B := hcoverOld.self_of_nhds
+    ⟨hrvP, hf_rv⟩
+  rcases hruAB with hruA | hruB <;> rcases hrvAB with hrvA | hrvB
+  · have hrr : ru u = rv v := hfA.bijOn.injOn hruA hrvA (hf_ru.trans hf_rv.symm)
+    have hpull : pullback u = pullback v :=
+      (hruPull huSu).symm.trans (hrr.trans (hrvPull hvSv))
+    exact (huv (hpullbackInj huQ₀ hvQ₀ hpull)).elim
+  · have haru : a = ru u := hfA.bijOn.injOn haA hruA (hfa.trans hf_ru.symm)
+    have hbrv : b = rv v := hfB.bijOn.injOn hbB hrvB (hfb.trans hf_rv.symm)
+    have hAnhds' : A ∈ 𝓝[P] (ru u) := by rwa [← haru]
+    have hBnhds' : B ∈ 𝓝[P] (rv v) := by rwa [← hbrv]
+    obtain ⟨A', B', huA', hvB', hgu', hgv', hA'Q, hB'Q, hA'B',
+      hA'nhds, hB'nhds, hgA, hgB, hAgerm, hBgerm, hcover⟩ :=
+      exists_crossing_patches_of_source_changes
+        (f := f) (g := g) (pullback := pullback)
+        (ru := ru) (rv := rv) (P := P) (Q₀ := Q₀) (Q := Q) (A := A) (B := B)
+        (Su := Su) (Sv := Sv) (Tu := Tu) (Tv := Tv)
+        hQQ₀ hgu hgv hru hrv huSu hvSv hSuNhds hSvNhds hSuP_Q hSvP_Q
+        hruPull hrvPull hguEq hgvEq hPTu hPTv hTuNhds hTvNhds
+        hruA hrvB hAnhds' hBnhds' hAP hBP hAB hfA hfB hcoverOfNhds
+    exact ⟨u, v, A', B', huA', hvB', hgu', hgv', hA'Q, hB'Q,
+      hA'B', hA'nhds, hB'nhds, hgA, hgB,
+      htarget.congr (Filter.Eventually.of_forall fun _ => Iff.rfl) hAgerm hBgerm, hcover⟩
+  · have harv : a = rv v := hfA.bijOn.injOn haA hrvA (hfa.trans hf_rv.symm)
+    have hbru : b = ru u := hfB.bijOn.injOn hbB hruB (hfb.trans hf_ru.symm)
+    have hAnhds' : A ∈ 𝓝[P] (rv v) := by rwa [← harv]
+    have hBnhds' : B ∈ 𝓝[P] (ru u) := by rwa [← hbru]
+    have hcoverSwap : ∀ A' B' : Set E,
+        A' ∈ 𝓝[Q₀] v → B' ∈ 𝓝[Q₀] u →
+          ∀ᶠ z in 𝓝 y, Q ∩ g ⁻¹' {z} ⊆ A' ∪ B' := by
+      intro A' B' hA' hB'
+      filter_upwards [hcoverOfNhds B' A' hB' hA'] with z hz
+      intro w hw
+      rcases hz hw with hwB | hwA
+      · exact Or.inr hwB
+      · exact Or.inl hwA
+    obtain ⟨A', B', hvA', huB', hgv', hgu', hA'Q, hB'Q, hA'B',
+      hA'nhds, hB'nhds, hgA, hgB, hAgerm, hBgerm, hcover⟩ :=
+      exists_crossing_patches_of_source_changes
+        (f := f) (g := g) (pullback := pullback)
+        (ru := rv) (rv := ru) (P := P) (Q₀ := Q₀) (Q := Q) (A := A) (B := B)
+        (Su := Sv) (Sv := Su) (Tu := Tv) (Tv := Tu)
+        hQQ₀ hgv hgu hrv hru hvSv huSu hSvNhds hSuNhds hSvP_Q hSuP_Q
+        hrvPull hruPull hgvEq hguEq hPTv hPTu hTvNhds hTuNhds
+        hrvA hruB hAnhds' hBnhds' hAP hBP hAB hfA hfB hcoverSwap
+    exact ⟨v, u, A', B', hvA', huB', hgv', hgu', hA'Q, hB'Q,
+      hA'B', hA'nhds, hB'nhds, hgA, hgB,
+      htarget.congr (Filter.Eventually.of_forall fun _ => Iff.rfl) hAgerm hBgerm, hcover⟩
+  · have hrr : ru u = rv v := hfB.bijOn.injOn hruB hrvB (hf_ru.trans hf_rv.symm)
+    have hpull : pullback u = pullback v :=
+      (hruPull huSu).symm.trans (hrr.trans (hrvPull hvSv))
+    exact (huv (hpullbackInj huQ₀ hvQ₀ hpull)).elim
+
 namespace NormalSingularCellData
 
 open Classical in
@@ -845,9 +1232,10 @@ theorem exists_boundary_surgery_cell_of_boundaryBranch
       Set.range G.boundary ⊆ B ∧ G '' G.domain ∩ BdM ⊆ B ∧
       (∀ x ∈ G.domain, ∃ W ∈ 𝓝[G.domain] x, Set.InjOn G W) ∧
       (∀ y, (G.domain ∩ G ⁻¹' {y}).encard ≤ 2) ∧
-      doublePointSet G G.domain ⊆ doublePointSet D D.domain ∧
-      Disjoint (doublePointSet G G.domain) (hD.singularSet.branchCarrier c) ∧
-      Nonempty (NormalSingularSetTriangulation G BdM) := by
+       doublePointSet G G.domain ⊆ doublePointSet D D.domain ∧
+       Disjoint (doublePointSet G G.domain) (hD.singularSet.branchCarrier c) ∧
+       Nonempty (NormalSingularSetTriangulation G BdM) ∧
+       Nonempty (NormalSingularCellData G BdM B) := by
   obtain ⟨A, C, hA, hC, hAC, hcover, hAcoordinate, -, p, q, r, s, g, hg, hcompat,
     D₁, D₂, D₃, hdomains, hinter₁₂, hinter₂₃, hA₁, -, -, hC₃, hdisjoint₁₃,
     hfun₁, -, hfun₃, htrace₁, htrace₃, hcut₁, hcut₃⟩ :=
@@ -1330,6 +1718,250 @@ theorem exists_boundary_surgery_cell_of_boundaryBranch
       G.isPLBall_domain.isPolyhedron.isCompact G.continuousOn hGlocal
   have hGsingular : Nonempty (NormalSingularSetTriangulation G BdM) :=
     hD.singularSet.restrict_to_clopen_doublePointSet hdouble hdoubleCompact hopenDouble
+  have hside : ∀ x ∈ G.domain,
+      G x ∉ hD.singularSet.branchCarrier c →
+        ∃ S T : Set (EuclideanSpace ℝ (Fin 2)),
+        ∃ r : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 2),
+          x ∈ S ∧ S ∈ 𝓝[G.domain] x ∧ T ∈ 𝓝[D.domain] (r x) ∧
+          IsPLHomeomorphOn r S T ∧ EqOn r pullback S ∧
+          EqOn G (D ∘ r) S ∧ S ⊆ G.domain ∧ T ⊆ D.domain := by
+    intro x hx hximage
+    have hxunion : x ∈ P ∪ Q := hGdomain.subset hx
+    by_cases hxP : x ∈ P
+    · have hxQ : x ∉ Q := by
+        intro hxQ
+        have hfxA : f₁ x ∈ A := by
+          rw [← hf₁seam]
+          exact ⟨x, ⟨hxP, hxQ⟩, rfl⟩
+        apply hximage
+        rw [hG₁ hxP, hfun₁]
+        exact (hAsub hfxA).2
+      let S := P ∩ Qᶜ
+      let T := D₁.domain ∩ Function.invFunOn f₁ P ⁻¹' Qᶜ
+      have hxS : x ∈ S := ⟨hxP, hxQ⟩
+      have hpl : IsPLHomeomorphOn f₁ S T :=
+        isPLHomeomorphOn_inter_isOpen hf₁ hQ.isPolyhedron.isClosed.isOpen_compl
+      have hSnhds : S ∈ 𝓝[G.domain] x := by
+        have hbase : G.domain ∩ Qᶜ ∈ 𝓝[G.domain] x :=
+          Filter.inter_mem self_mem_nhdsWithin
+            (mem_nhdsWithin_of_mem_nhds
+              (hQ.isPolyhedron.isClosed.isOpen_compl.mem_nhds hxQ))
+        apply Filter.mem_of_superset hbase
+        rintro z ⟨hzG, hzQ⟩
+        exact ⟨(hGdomain.subset hzG).resolve_right hzQ, hzQ⟩
+      have hfxD₁ : f₁ x ∈ D₁.domain := hf₁.bijOn.mapsTo hxP
+      have hfxNotD₂ : f₁ x ∉ D₂.domain := by
+        intro hfxD₂
+        have hfxA : f₁ x ∈ A := hinter₁₂.subset ⟨hfxD₁, hfxD₂⟩
+        obtain ⟨z, hz, hzx⟩ := hf₁seam.symm.subset hfxA
+        have hzx' : z = x := hf₁.bijOn.injOn hz.1 hxP hzx
+        exact hxQ (hzx' ▸ hz.2)
+      have hfxNotD₃ : f₁ x ∉ D₃.domain := by
+        intro hfxD₃
+        exact Set.disjoint_left.mp hdisjoint₁₃ hfxD₁ hfxD₃
+      have hD₁nhds : D₁.domain ∈ 𝓝[D.domain] (f₁ x) := by
+        apply mem_nhdsWithin_iff_exists_mem_nhds_inter.mpr
+        refine ⟨(D₂.domain ∪ D₃.domain)ᶜ,
+          (D₂.isPLBall_domain.isPolyhedron.isClosed.union
+            D₃.isPLBall_domain.isPolyhedron.isClosed).isOpen_compl.mem_nhds ?_, ?_⟩
+        · rintro (hfxD₂ | hfxD₃)
+          · exact hfxNotD₂ hfxD₂
+          · exact hfxNotD₃ hfxD₃
+        · intro z hz
+          have hzD : z ∈ D.domain := hz.2
+          rw [← hdomains] at hzD
+          rcases hzD with (hzD₁ | hzD₂) | hzD₃
+          · exact hzD₁
+          · exact (hz.1 (Or.inl hzD₂)).elim
+          · exact (hz.1 (Or.inr hzD₃)).elim
+      have hinv : Function.invFunOn f₁ P (f₁ x) = x :=
+        hf₁.bijOn.invOn_invFunOn.1 hxP
+      have hpre : Function.invFunOn f₁ P ⁻¹' Qᶜ ∈ 𝓝[D₁.domain] (f₁ x) := by
+        apply (hf₁.isPiecewiseAffineOn_invFunOn.continuousOn (f₁ x) hfxD₁).preimage_mem_nhdsWithin'
+        rw [hf₁.symm.image_eq, hinv]
+        exact mem_nhdsWithin_of_mem_nhds
+          (hQ.isPolyhedron.isClosed.isOpen_compl.mem_nhds hxQ)
+      have hTD₁ : T ∈ 𝓝[D₁.domain] (f₁ x) :=
+        Filter.inter_mem self_mem_nhdsWithin hpre
+      have hTnhds : T ∈ 𝓝[D.domain] (f₁ x) :=
+        mem_nhdsWithin_of_mem_nhdsWithin_of_mem_nhdsWithin hTD₁ hD₁nhds
+      have hpull : EqOn f₁ pullback S := by
+        intro z hz
+        change f₁ z = if z ∈ P then f₁ z else f₃ z
+        rw [if_pos hz.1]
+      have hmap : EqOn G (D ∘ f₁) S := by
+        intro z hz
+        exact (hG₁ hz.1).trans (congrFun hfun₁ (f₁ z))
+      exact ⟨S, T, f₁, hxS, hSnhds, hTnhds, hpl, hpull, hmap,
+        fun _ hz => hGdomain.symm.subset (Or.inl hz.1),
+        fun _ hz => hD₁sub hz.1⟩
+    · have hxQ : x ∈ Q := hxunion.resolve_left hxP
+      let S := Q ∩ Pᶜ
+      let T := D₃.domain ∩ Function.invFunOn f₃ Q ⁻¹' Pᶜ
+      have hxS : x ∈ S := ⟨hxQ, hxP⟩
+      have hpl : IsPLHomeomorphOn f₃ S T :=
+        isPLHomeomorphOn_inter_isOpen hf₃ hP.isPolyhedron.isClosed.isOpen_compl
+      have hSnhds : S ∈ 𝓝[G.domain] x := by
+        have hbase : G.domain ∩ Pᶜ ∈ 𝓝[G.domain] x :=
+          Filter.inter_mem self_mem_nhdsWithin
+            (mem_nhdsWithin_of_mem_nhds
+              (hP.isPolyhedron.isClosed.isOpen_compl.mem_nhds hxP))
+        apply Filter.mem_of_superset hbase
+        rintro z ⟨hzG, hzP⟩
+        exact ⟨(hGdomain.subset hzG).resolve_left hzP, hzP⟩
+      have hfxD₃ : f₃ x ∈ D₃.domain := hf₃.bijOn.mapsTo hxQ
+      have hfxNotD₂ : f₃ x ∉ D₂.domain := by
+        intro hfxD₂
+        have hfxC : f₃ x ∈ C := hinter₂₃.subset ⟨hfxD₂, hfxD₃⟩
+        obtain ⟨z, hz, hzx⟩ := hf₃seam.symm.subset hfxC
+        have hzx' : z = x := hf₃.bijOn.injOn hz.2 hxQ hzx
+        exact hxP (hzx' ▸ hz.1)
+      have hfxNotD₁ : f₃ x ∉ D₁.domain := by
+        intro hfxD₁
+        exact Set.disjoint_left.mp hdisjoint₁₃ hfxD₁ hfxD₃
+      have hD₃nhds : D₃.domain ∈ 𝓝[D.domain] (f₃ x) := by
+        apply mem_nhdsWithin_iff_exists_mem_nhds_inter.mpr
+        refine ⟨(D₁.domain ∪ D₂.domain)ᶜ,
+          (D₁.isPLBall_domain.isPolyhedron.isClosed.union
+            D₂.isPLBall_domain.isPolyhedron.isClosed).isOpen_compl.mem_nhds ?_, ?_⟩
+        · rintro (hfxD₁ | hfxD₂)
+          · exact hfxNotD₁ hfxD₁
+          · exact hfxNotD₂ hfxD₂
+        · intro z hz
+          have hzD : z ∈ D.domain := hz.2
+          rw [← hdomains] at hzD
+          rcases hzD with (hzD₁ | hzD₂) | hzD₃
+          · exact (hz.1 (Or.inl hzD₁)).elim
+          · exact (hz.1 (Or.inr hzD₂)).elim
+          · exact hzD₃
+      have hinv : Function.invFunOn f₃ Q (f₃ x) = x :=
+        hf₃.bijOn.invOn_invFunOn.1 hxQ
+      have hpre : Function.invFunOn f₃ Q ⁻¹' Pᶜ ∈ 𝓝[D₃.domain] (f₃ x) := by
+        apply (hf₃.isPiecewiseAffineOn_invFunOn.continuousOn (f₃ x) hfxD₃).preimage_mem_nhdsWithin'
+        rw [hf₃.symm.image_eq, hinv]
+        exact mem_nhdsWithin_of_mem_nhds
+          (hP.isPolyhedron.isClosed.isOpen_compl.mem_nhds hxP)
+      have hTD₃ : T ∈ 𝓝[D₃.domain] (f₃ x) :=
+        Filter.inter_mem self_mem_nhdsWithin hpre
+      have hTnhds : T ∈ 𝓝[D.domain] (f₃ x) :=
+        mem_nhdsWithin_of_mem_nhdsWithin_of_mem_nhdsWithin hTD₃ hD₃nhds
+      have hpull : EqOn f₃ pullback S := by
+        intro z hz
+        change f₃ z = if z ∈ P then f₁ z else f₃ z
+        rw [if_neg hz.2]
+      have hmap : EqOn G (D ∘ f₃) S := by
+        intro z hz
+        exact (hG₃ hz.1).trans (congrFun hfun₃ (f₃ z))
+      exact ⟨S, T, f₃, hxS, hSnhds, hTnhds, hpl, hpull, hmap,
+        fun _ hz => hGdomain.symm.subset (Or.inr hz.1),
+        fun _ hz => hD₃sub hz.1⟩
+  have hGcrossing : ∀ y ∈ doublePointSet G G.domain,
+      ∃ e ∈ atlas (EuclideanSpace ℝ (Fin 3)) M, y ∈ e.source ∧
+        HasPLNormalDoubleCrossingAt (e ∘ G) (G.domain ∩ G ⁻¹' e.source)
+          (e '' (e.source ∩ BdM)) (e y) := by
+    intro y hy
+    have hyOld : y ∈ doublePointSet D D.domain := hdouble hy
+    have hyNotBranch : y ∉ hD.singularSet.branchCarrier c :=
+      Set.disjoint_left.mp hremove hy
+    obtain ⟨u, hu, v, hv, huv, huy, hvy⟩ := hy
+    have huNotBranch : G u ∉ hD.singularSet.branchCarrier c := by
+      simpa only [huy] using hyNotBranch
+    have hvNotBranch : G v ∉ hD.singularSet.branchCarrier c := by
+      simpa only [hvy] using hyNotBranch
+    obtain ⟨Su, Tu, ru, huSu, hSuNhds, hTuNhds, hru, hruPull,
+      hGu, hSuG, hTuD⟩ := hside u hu huNotBranch
+    obtain ⟨Sv, Tv, rv, hvSv, hSvNhds, hTvNhds, hrv, hrvPull,
+      hGv, hSvG, hTvD⟩ := hside v hv hvNotBranch
+    obtain ⟨e, he, hye, hcross⟩ := hD.crossing y hyOld
+    let PD := D.domain ∩ D ⁻¹' e.source
+    let PG := G.domain ∩ G ⁻¹' e.source
+    have hruPD : ru u ∈ PD := by
+      refine ⟨hTuD (hru.bijOn.mapsTo huSu), ?_⟩
+      change D (ru u) ∈ e.source
+      have hEq := hGu huSu
+      change G u = D (ru u) at hEq
+      rw [← hEq, huy]
+      exact hye
+    have hrvPD : rv v ∈ PD := by
+      refine ⟨hTvD (hrv.bijOn.mapsTo hvSv), ?_⟩
+      change D (rv v) ∈ e.source
+      have hEq := hGv hvSv
+      change G v = D (rv v) at hEq
+      rw [← hEq, hvy]
+      exact hye
+    have hPDnhdsTu : PD ∈ 𝓝[Tu] (ru u) := by
+      apply nhdsWithin_mono (ru u) hTuD
+      apply Filter.inter_mem self_mem_nhdsWithin
+      exact (D.continuousOn (ru u) hruPD.1).preimage_mem_nhdsWithin
+        (e.open_source.mem_nhds hruPD.2)
+    have hPDnhdsTv : PD ∈ 𝓝[Tv] (rv v) := by
+      apply nhdsWithin_mono (rv v) hTvD
+      apply Filter.inter_mem self_mem_nhdsWithin
+      exact (D.continuousOn (rv v) hrvPD.1).preimage_mem_nhdsWithin
+        (e.open_source.mem_nhds hrvPD.2)
+    have hTuNhdsPD : Tu ∈ 𝓝[PD] (ru u) :=
+      nhdsWithin_mono (ru u) inter_subset_left hTuNhds
+    have hTvNhdsPD : Tv ∈ 𝓝[PD] (rv v) :=
+      nhdsWithin_mono (rv v) inter_subset_left hTvNhds
+    have hSuPD_PG : Su ∩ ru ⁻¹' PD ⊆ PG := by
+      rintro w ⟨hwSu, hwPD⟩
+      refine ⟨hSuG hwSu, ?_⟩
+      change G w ∈ e.source
+      rw [hGu hwSu]
+      exact hwPD.2
+    have hSvPD_PG : Sv ∩ rv ⁻¹' PD ⊆ PG := by
+      rintro w ⟨hwSv, hwPD⟩
+      refine ⟨hSvG hwSv, ?_⟩
+      change G w ∈ e.source
+      rw [hGv hwSv]
+      exact hwPD.2
+    have hcoordU : EqOn (e ∘ G) ((e ∘ D) ∘ ru) Su := by
+      intro w hw
+      exact congrArg e (hGu hw)
+    have hcoordV : EqOn (e ∘ G) ((e ∘ D) ∘ rv) Sv := by
+      intro w hw
+      exact congrArg e (hGv hw)
+    have hgu : (e ∘ G) u = e y := congrArg e huy
+    have hgv : (e ∘ G) v = e y := congrArg e hvy
+    have hfiberPair : G.domain ∩ G ⁻¹' {y} = {u, v} :=
+      fiber_eq_pair_of_encard_le_two G G.domain hu hv huv huy hvy (hfiber y)
+    have htend : Filter.Tendsto e.symm (𝓝 (e y)) (𝓝 y) := by
+      simpa only [ContinuousAt, e.left_inv hye] using
+        e.symm.continuousAt (e.map_source hye)
+    have hcoverOfNhds : ∀ A' B' : Set (EuclideanSpace ℝ (Fin 2)),
+        A' ∈ 𝓝[G.domain] u → B' ∈ 𝓝[G.domain] v →
+          ∀ᶠ z in 𝓝 (e y), PG ∩ (e ∘ G) ⁻¹' {z} ⊆ A' ∪ B' := by
+      intro A' B' hA' hB'
+      have hcover : ∀ᶠ z in 𝓝 y, G.domain ∩ G ⁻¹' {z} ⊆ A' ∪ B' :=
+        eventually_preimage_subset_union_of_fiber_eq_pair G
+          G.isPLBall_domain.isPolyhedron.isCompact G.continuousOn hfiberPair hA' hB'
+      filter_upwards [htend.eventually hcover,
+        e.open_target.mem_nhds (e.map_source hye)] with z hz hzTarget
+      intro w hw
+      apply hz
+      refine ⟨hw.1.1, ?_⟩
+      change G w = e.symm z
+      have heq : e (G w) = z := hw.2
+      exact e.injOn hw.1.2 (e.map_target hzTarget)
+        (heq.trans (e.right_inv hzTarget).symm)
+    refine ⟨e, he, hye, ?_⟩
+    rcases hcross with ⟨hyBoundary, N, hcross⟩ | ⟨hyInterior, hcross⟩
+    · refine Or.inl ⟨hyBoundary, N, ?_⟩
+      exact transport_boundaryDoubleCrossing_of_source_changes
+        (f := e ∘ D) (g := e ∘ G) (pullback := pullback)
+        (ru := ru) (rv := rv) (P := PD) (Q₀ := G.domain) (Q := PG)
+        (Su := Su) (Sv := Sv) (Tu := Tu) (Tv := Tv)
+        inter_subset_left hpullback_inj hu hv huv hgu hgv hru hrv huSu hvSv
+        hSuNhds hSvNhds hSuPD_PG hSvPD_PG hruPull hrvPull hcoordU hcoordV
+        hruPD hrvPD hPDnhdsTu hPDnhdsTv hTuNhdsPD hTvNhdsPD hcoverOfNhds hcross
+    · refine Or.inr ⟨hyInterior, ?_⟩
+      exact transport_doubleCrossing_of_source_changes
+        (f := e ∘ D) (g := e ∘ G) (pullback := pullback)
+        (ru := ru) (rv := rv) (P := PD) (Q₀ := G.domain) (Q := PG)
+        (Su := Su) (Sv := Sv) (Tu := Tu) (Tv := Tv)
+        inter_subset_left hpullback_inj hu hv huv hgu hgv hru hrv huSu hvSv
+        hSuNhds hSvNhds hSuPD_PG hSvPD_PG hruPull hrvPull hcoordU hcoordV
+        hruPD hrvPD hPDnhdsTu hPDnhdsTv hTuNhdsPD hTvNhdsPD hcoverOfNhds hcross
   have hrange : Set.range G.boundary =
       D '' ((D₁.domain ∩ frontier D.domain) ∪
         (D₃.domain ∩ frontier D.domain)) := by
@@ -1375,12 +2007,20 @@ theorem exists_boundary_surgery_cell_of_boundaryBranch
   have hinterB : G '' G.domain ∩ BdM ⊆ B := by
     rw [himageBoundary]
     exact hrangeB
+  have hGnormal : Nonempty (NormalSingularCellData G BdM B) :=
+    ⟨{
+      locallyInjective := hlocallyInjective
+      fiber_le_two := hfiber
+      boundary_image_subset := hrangeB
+      image_inter_boundary := himageBoundary
+      singularSet := Classical.choice hGsingular
+      crossing := hGcrossing }⟩
   exact ⟨A, C, D₁.domain ∩ frontier D.domain,
     D₃.domain ∩ frontier D.domain, p, q, r, s, g, G,
     hA, hC, hAC, hcover, htrace₁, htrace₃,
     hdisjoint₁₃.mono inter_subset_left inter_subset_left, hg, horientation,
     hGimage, hrange, himageBoundary, hrangeB, hinterB, hlocallyInjective, hfiber,
-    hdouble, hremove, hGsingular⟩
+    hdouble, hremove, hGsingular, hGnormal⟩
 
 end NormalSingularCellData
 

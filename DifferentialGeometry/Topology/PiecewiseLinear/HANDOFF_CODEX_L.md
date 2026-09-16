@@ -675,3 +675,21 @@ theorem eq_top_of_boundaryLoops_mem_normal
   `propext`、`Classical.choice`、`Quot.sound`。
 - 下一精确义务是证明 `doublePointSet G G.domain` 在每条旧 `branchCarrier` 中为开闭子集，从而是若干完整分支之并；
   再以这些分支的子复形重建 `doublePointSet_triangulated`，并把旧正规 crossing 图限制到未删除分支。
+
+## 31. 2026-09-16 E3-M2 追加：割贴胞腔的正规性重建
+
+状态：done（`NormalSingularCellData` 已为手术胞腔实际重建；Case 3/4 的边界环字与复杂度严格下降仍为 partial）。
+
+- `CutAndPaste.lean` 的 `NormalSingularCellData.exists_boundary_surgery_cell_of_boundaryBranch` 现在额外交付
+  `Nonempty (NormalSingularCellData G BdM B)`。局部单射、二重纤维、边界像约束及奇点图三角剖分均来自已证字段，
+  没有把割贴稳定性改写为新假设。
+- 对每个保留下来的双点，两张新源片都避开公共贴缝。首侧和尾侧分别限制到 `P ∩ Qᶜ` 与 `Q ∩ Pᶜ`，
+  沿 `f₁`、`f₃` 得到到旧源盘的相对开 PL 同胚；旧图卡域与这两张目标片在原像点处互为相对邻域。
+  原 `HasPLDoubleCrossingAt` 或 `HasPLBoundaryDoubleCrossingAt` 的两张片由此拉回，新片的像芽与旧片像芽一致。
+- 新坐标映射只在图卡原像上使用。附近全部纤维由两片覆盖这一条先从紧致新源盘上 `G` 的精确两点纤维得到，
+  再经图卡逆映射搬到欧氏坐标，未错误要求 `e ∘ G` 在整个新源盘上连续。
+- `CutAndPaste` 聚焦检查 exit=0、零 warning；`.lake/scratch/audit-cut-and-paste-restriction.lean` 的 12 项及
+  `.lake/scratch/AuditE3M2.lean` 的 50 项审计均 exit=0，全部只含 `propext`、`Classical.choice`、`Quot.sound`。
+  本层没有首次复用新的 covering/Van Kampen 声明。
+- 尚未闭合的是书页 186–187 的 Case 3/4 边界环道路等式及由
+  `vertexCollisionPairs` 或实际分支计数推出的复杂度严格下降；Case 1/2 的环带模型与内盘替换也仍待实现。
