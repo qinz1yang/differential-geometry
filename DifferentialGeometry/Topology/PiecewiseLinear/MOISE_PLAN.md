@@ -610,6 +610,20 @@
   `SSet.realizationHomologyIso`、`geometricRealizationHomeomorphism`、
   `eulerChar_eq_one_sub_bettiOne_add_bettiTwo`、`OpenCellProfile.eulerChar_eq_of_isRefinement` 与
   `simplicialOpenCellProfile_eulerChar`。未经过 `Homology/HurewiczLowDegrees.lean`。
+- 2026-09-16（H-M9 / B.8 / 26.8，数学提交 `6a02d3559`）：`EuclideanSurfaceOrientation.lean` 证明
+  `IsCombinatorialManifold.isOrientable_of_finrank_eq_three` 与 ℝ³ 专门推论。有限连通闭组合曲面先置于大 3-单形内部；
+  B.6 的两侧性经子类型拉回后产生一侧闭包的有限带边组合 3-流形，环境仿射定向诱导其边界定向；共同细分将原曲面
+  实现为该边界的子复形，限制定向并搬回原三角剖分。全程未使用 `H₃ ≅ ℤ`，没有额外结论型假设。
+  聚焦检查 exit=0、10.2 秒、零 warning；`fresh.py` 报七个相对整合基线改动模块 olean 全部新鲜、零禁用项。
+  `.lake/scratch/AuditHM9.lean` 审计两个新端点及十四个关键复用声明，均只含标准三公理。逐项复核
+  `exists_affineIndependent_openSimplex_superset`、`IsCombinatorialManifold.isTwoSided`、
+  `Topology.IsTwoSided.preimage_of_isInducing`、
+  `IsCombinatorialManifoldWithBoundary.exists_neighborhood_manifold_pair_of_twoSided`、
+  `isOrientable_of_space_subset_convexHull`、`IsOrientable.boundary`、
+  `exists_isSubdivision_restrict_isSubdivision`、`isCombinatorialManifold_boundaryComplex`、
+  `IsCombinatorialManifold.of_isSubdivision`、`IsOrientable.subdivision`、`IsOrientable.of_le`、
+  `IsOrientable.of_isSubdivision`、`frontier_space_eq_boundaryComplex_space_of_finrank` 与
+  `isPLBall_convexHull_of_affineIndependent`。
 - 2026-09-15（C/L 车道，L.2 接口修正与组合曲面层）：`SphereCase.lean` 的
   `exists_nonsingular_two_cell_of_sphere_boundary` 在 `724267986` 增加实际多面体 3-流形 `M`、
   `B ⊆ polyhedralBoundary 3 M hM`，并在 `hpush` 与结论中都要求 `D₁ '' D₁.domain ⊆ M`；检查 exit=0、

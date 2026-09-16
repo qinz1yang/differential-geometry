@@ -465,3 +465,19 @@ Reduced/MayerVietorisCoefficients, Reduced/PointClasses}`（`REUSE_AUDIT.md` §2
   全部公理闭包均包含于 `propext`、`Classical.choice`、`Quot.sound`。
 - H-M8 的精确范围是 22.5–22.7：22.7 不依赖曲面分类；22.5–22.6 的柄/交叉帽表述以实际标准剖分及 refinement
   见证为前提，并未冒充已证明 22.4 的正规形存在性。22.8–22.10 的分类仍未闭合；H-M3 原先缺少的闭曲面顶维同调现已闭合。
+
+### H-M9 / B.8 — done，26.8 的欧氏三空间曲面可定向性
+
+- 数学提交：`6a02d3559`。新模块 `EuclideanSurfaceOrientation.lean`；主端点
+  `IsCombinatorialManifold.isOrientable_of_finrank_eq_three` 适用于任意三维有限维实赋范空间，
+  `isOrientable_euclidean_three` 是 `EuclideanSpace ℝ (Fin 3)` 的直接版本。
+- 证明不使用 `H₃ ≅ ℤ`。先把有限曲面放进一个大仿射 3-单形的内部；S 车道 26.6 的
+  `IsCombinatorialManifold.isTwoSided` 经子类型嵌入拉回，再由
+  `exists_neighborhood_manifold_pair_of_twoSided` 把两侧闭包实现为有限带边组合 3-流形。选定一侧位于该 3-单形内，
+  环境仿射定向给出其 `CoherentOrientation`，边界定向随后给整个组合边界的定向。
+- 用 `exists_isSubdivision_restrict_isSubdivision` 取同时适配原曲面的边界共同细分；限制边界定向到该曲面子复形，
+  再由任意线性细分的定向不变性搬回原三角剖分。这正是 §9.2 的“两侧选择 + 环境定向”路线，且结论为实际
+  `IsOrientable 2 L`，没有引入新的表示谓词或结论型假设。
+- 聚焦检查 exit=0、10.2 秒、零 warning；`fresh.py` 报相对整合基线七个改动模块 olean 全部新鲜、零禁用项。
+  `.lake/scratch/AuditHM9.lean` 审计两个新端点和十四个关键复用声明，exit=0，全部只含
+  `propext`、`Classical.choice`、`Quot.sound`。H-M9/B.8 无未闭合项。
