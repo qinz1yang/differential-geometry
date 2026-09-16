@@ -1344,3 +1344,23 @@ M1/M2/M3 均未验收；下一审计文件 `AuditF135.lean`。
 本层尚未从顶点控制推出整个曲面的像集不变、整个层的搬运或奇异点稳定；这些仍需共同剖分与像集满射的证明。
 局部二度与 crossing 的对应、小幅转轴后的逐点指标比较及 Lemma 1 严格下降仍未闭合，M1/M2/M3 均未验收。
 下一审计文件 `AuditF136.lean`。
+
+### 18.16 同维球面包含判据与转轴时保持整个球面
+
+- `InvarianceOfDomainManifold.lean`：紧致非空流形到同维连通 Hausdorff 流形的连续单射必满射，由开像、紧像闭性和连通性推出。
+- `PLBallSphere.lean`：标准单形的正维边界、任意 PL 盘及正维 PL 球面的连通性，均不要求目标环境有限维。
+- `SphereInclusion.lean`：同维正维 PL 球面之间的连续单射，只要映入目标球面即满射；同维球面的包含关系必为相等。
+  自映射的像集相等只要求连续、单射及映入，不要求额外 PL 假设。
+- `CurveInclusion.lean` 保留两个原一维接口的完整签名，改为上述一般定理的推论，并移除其不再需要的平面整直导入。
+- `CarrierInvariance.lean`：在原复形的细分上逐面仿射，且每个新顶点映入其原载体面的凸包，则每个原单形保持映入自身。
+  对 PL 球面上的连续单射，该条件保证整个球面像集相等。
+- `HeightStability.lean` 的 `eventually_exists_isPLHomeomorphOn_preserving_sphere_move_fiber` 将载体投影、环境延拓及满射判据拼合：
+  对包含球面细分的给定有限共同剖分，足够小的转轴可由任意小的环境 PL 同胚实现，固定原顶点及指定开邻域外，
+  保持整个球面，并将旧高度层中的整张共同剖分面映入新高度层。
+
+六个改动模块最终聚焦检查分别为 11.1、11.1、9.7、10.0、11.3、11.7 秒，均 exit=0、零 warning。
+受接口推广影响的 `CircleIntersection.lean` / `CirclePartition.lean` 复检分别为 11.6、11.9 秒，均 exit=0、零 warning。
+`AuditF136.lean` 十三项（含保留的两个一维接口）仅标准三公理，已核对转轴端点完整签名。
+没有增加 `SchoenfliesInput` 字段。还需要生产同时适配原剖分与高度分割的共同剖分，证明完整层的双向对应，
+再证明 crossing / 奇异点稳定及封帽后选定高度附近的严格下降；M1/M2/M3 均未验收。
+下一审计文件 `AuditF137.lean`。

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.FiniteGraphCircles
-import DifferentialGeometry.Topology.PiecewiseLinear.PlanarSchoenflies
+import DifferentialGeometry.Topology.PiecewiseLinear.SphereInclusion
 import DifferentialGeometry.Topology.SimplicialComplex.EdgeGraph
 
 open Set Topology
@@ -126,30 +126,11 @@ theorem space_eq_of_le_isCombinatorialManifold_one
   exact (show (⟨x, hx⟩ : K.space) ∈ ((↑) ⁻¹' H.space : Set K.space) by rw [hfull]; trivial)
 
 omit [FiniteDimensional ℝ E] in
-theorem IsPLSphere.isConnected_one {S : Set E} (hS : IsPLSphere 1 S) : IsConnected S := by
-  let J := polygonalCircleOfAffineIndependentTriple
-    LeanEval.Topology.ClassificationOfSurfaces.Moise.standardTrianglePosition
-    LeanEval.Topology.ClassificationOfSurfaces.Moise.standardTrianglePosition_affineIndependent
-  obtain ⟨f, hf⟩ := hS
-  obtain ⟨g, hg⟩ := isPLSphere_one_carrier J
-  have hbij := hf.bijOn.comp hg.symm.bijOn
-  rw [← hbij.image_eq]
-  exact J.isConnected_carrier.image _ (hf.isPiecewiseAffineOn.continuousOn.comp
-    hg.symm.isPiecewiseAffineOn.continuousOn hg.symm.bijOn.mapsTo)
+theorem IsPLSphere.isConnected_one {S : Set E} (hS : IsPLSphere 1 S) : IsConnected S :=
+  hS.isConnected
 
 theorem eq_of_subset_of_isPLSphere_one {S T : Set E}
-    (hS : IsPLSphere 1 S) (hT : IsPLSphere 1 T) (hST : S ⊆ T) : S = T := by
-  classical
-  obtain ⟨K, hKfin, hKspace⟩ := hT.isPolyhedron.exists_simplicialComplex
-  let _ : Finite K.faces := hKfin.to_subtype
-  have hK : IsCombinatorialManifold 1 K := (hKspace.symm ▸ hT).isCombinatorialManifold
-  let H := restrict K S
-  let _ : Finite H.faces := (restrict_faces_finite K S).to_subtype
-  have hHspace : H.space = S :=
-    restrict_space_eq_of_isPLSphere_one K (fun s hs => hK.card_le K hs) hS (hST.trans_eq hKspace.symm)
-  have hH : IsCombinatorialManifold 1 H := (hHspace.symm ▸ hS).isCombinatorialManifold
-  have heq := space_eq_of_le_isCombinatorialManifold_one H K (restrict_faces_subset K S) hH hK
-    (hKspace.symm ▸ hT.isConnected_one.isPreconnected) (hHspace.symm ▸ hS.nonempty)
-  exact hHspace.symm.trans (heq.trans hKspace)
+    (hS : IsPLSphere 1 S) (hT : IsPLSphere 1 T) (hST : S ⊆ T) : S = T :=
+  eq_of_subset_of_isPLSphere hS hT hST
 
 end DifferentialGeometry.Topology.PiecewiseLinear

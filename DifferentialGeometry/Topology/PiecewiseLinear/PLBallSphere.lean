@@ -33,6 +33,58 @@ theorem IsPLSphere.isPolyhedron [FiniteDimensional ℝ E] {n : ℕ} {P : Set E}
   exact IsPolyhedron.image_of_isPiecewiseAffineOn (isPolyhedron_space _)
     h.isPiecewiseAffineOn h.bijOn.injOn
 
+theorem isConnected_stdSimplexBoundary (n : ℕ) : IsConnected (stdSimplexBoundary (n + 2)) := by
+  classical
+  let C : Fin (n + 3) → Set (Fin (n + 3) → ℝ) :=
+    fun i => {x | x ∈ stdSimplex ℝ (Fin (n + 3)) ∧ x i = 0}
+  have hthird : ∀ i j : Fin (n + 3), ∃ k : Fin (n + 3), k ≠ i ∧ k ≠ j := by
+    intro i j
+    by_contra! h
+    have hall : ∀ k : Fin (n + 3), k.val = i.val ∨ k.val = j.val := by
+      intro k
+      by_cases hki : k = i
+      · exact Or.inl (congrArg Fin.val hki)
+      · exact Or.inr (congrArg Fin.val (h k hki))
+    have h0 : (0 : ℕ) = i.val ∨ 0 = j.val := hall ⟨0, by omega⟩
+    have h1 : (1 : ℕ) = i.val ∨ 1 = j.val := hall ⟨1, by omega⟩
+    have h2 : (2 : ℕ) = i.val ∨ 2 = j.val := hall ⟨2, by omega⟩
+    omega
+  have hmem : ∀ i j : Fin (n + 3), j ≠ i → Pi.single j (1 : ℝ) ∈ C i := by
+    intro i j hji
+    exact ⟨single_mem_stdSimplex ℝ j, by simp only [Pi.single_eq_of_ne (Ne.symm hji)]⟩
+  have hconv : ∀ i, Convex ℝ (C i) := fun i =>
+    (convex_stdSimplex ℝ (Fin (n + 3))).inter
+      ((convex_singleton (0 : ℝ)).linear_preimage (LinearMap.proj i : (Fin (n + 3) → ℝ) →ₗ[ℝ] ℝ))
+  have hcover : stdSimplexBoundary (n + 2) = ⋃ i, C i := by
+    ext x
+    rw [mem_iUnion]
+    change (x ∈ stdSimplex ℝ (Fin (n + 3)) ∧ ∃ i, x i = 0) ↔
+      ∃ i, x ∈ stdSimplex ℝ (Fin (n + 3)) ∧ x i = 0
+    constructor
+    · rintro ⟨hx, i, hi⟩
+      exact ⟨i, hx, hi⟩
+    · rintro ⟨i, hx, hi⟩
+      exact ⟨hx, i, hi⟩
+  rw [hcover]
+  apply IsConnected.iUnion_of_reflTransGen
+  · intro i
+    obtain ⟨j, hji, -⟩ := hthird i i
+    exact (hconv i).isConnected ⟨Pi.single j 1, hmem i j hji⟩
+  · intro i j
+    obtain ⟨k, hki, hkj⟩ := hthird i j
+    exact Relation.ReflTransGen.single ⟨Pi.single k 1, hmem i k hki, hmem j k hkj⟩
+
+theorem IsPLBall.isConnected {n : ℕ} {P : Set E} (hP : IsPLBall n P) : IsConnected P := by
+  obtain ⟨f, hf⟩ := hP
+  rw [← hf.image_eq]
+  exact ((convex_stdSimplex ℝ (Fin (n + 1))).isConnected
+    ⟨Pi.single 0 1, single_mem_stdSimplex ℝ 0⟩).image f hf.isPiecewiseAffineOn.continuousOn
+
+theorem IsPLSphere.isConnected {n : ℕ} {P : Set E} (hP : IsPLSphere (n + 1) P) : IsConnected P := by
+  obtain ⟨f, hf⟩ := hP
+  rw [← hf.image_eq]
+  exact (isConnected_stdSimplexBoundary n).image f hf.isPiecewiseAffineOn.continuousOn
+
 theorem eulerChar_stdSimplex (n : ℕ) :
     Homology.eulerChar ℚ (TopCat.of (stdSimplex ℝ (Fin (n + 1)))) = 1 := by
   have : ContractibleSpace (stdSimplex ℝ (Fin (n + 1))) :=
