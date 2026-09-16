@@ -258,3 +258,25 @@ theorem eq_top_of_boundaryLoops_mem_normal
   `H¹(K; ℤ₂) ≃ Hom(H₁(K; ℤ), ℤ₂)`，也不把同调同态变成 `SimplicialBoolCocycle`。
   本树同时没有无 `sorry` 的一维 Hurewicz `π₁ᵃᵇ ≃ H₁`，且规则禁止经过 `HurewiczLowDegrees.lean`。
   因而即使 I5 给出 `bettiOne K > 0`，仍不能在不增加结论型假设的前提下产生非上边界 ℤ₂ 上循环；C.5 保持 partial，未弱化端点。
+
+## 10. 2026-09-15 E3-M2 追加：奇点原像的二重覆盖
+
+状态：done（E3-M2 的第一个独立阻塞已闭合，整体 L.3 仍为 partial）。数学提交 `3f077e13f`。
+
+- 新模块 `LoopTheorem/DoublePointCover.lean` 定义 `doublePointPreimage` 与
+  `doublePointProjection`。`isLocalHomeomorph_doublePointProjection` 把两张互不相交的局部嵌入片、相对邻域与邻近纤维覆盖
+  组装为奇点原像到奇点集的局部同胚；该拓扑定理不额外假设纤维基数。
+- `doublePointSheetsAt_of_hasPLDoubleCrossingAt_chart` 把图内
+  `HasPLDoubleCrossingAt (e ∘ D)` 的两张 PL 片拉回到目标空间，证明相对邻域、嵌入性和邻近纤维覆盖在拉回后保持。
+  因此 `NormalSingularCellData.doublePointProjection_isCoveringMap` 在 `[T2Space M]` 下给出完整
+  `IsCoveringMap`；紧致性由奇异盘的紧致定义域和局部单射推出。
+- `NormalSingularCellData.doublePointProjection_fiber_encard_eq_two` 把覆盖纤维与
+  `D.domain ∩ D ⁻¹' {y}` 通过子类型值映射精确识别，证明每个奇点上的纤维 `encard = 2`。
+- 聚焦检查 exit=0、零 warning；`.lake/scratch/AuditDoublePointCover.lean` 对 10 个新声明与
+  D4 首次在本桥接复用的 `isLocalHomeomorph_iff_isOpenEmbedding_restrict`、
+  `isLocalHomeomorph_iff_isCoveringMap` 逐条审计，共12 项，全部只含
+  `propext`、`Classical.choice`、`Quot.sound`。
+- 确切未闭合项：下一步要用 C.1 将闭分支上的二重覆盖分类为一条二重多边形或两条不交多边形，
+  并将触边分支的原像分解为两条不交折线。当 F 的最终 I3 加入边界半空间析取时，还需从
+  `HasPLBoundaryDoubleCrossingAt` 到 `HasDoublePointSheetsAt` 的同类桥接。之后 Case 1–4 仍缺环带正则邻域、盘内替换、
+  沿两条原像折线切开 PL 2-球并重建较低复杂度奇异胞腔的几何生产者；它们没有被弱化为假设。
