@@ -76,6 +76,38 @@ theorem exists_two_cells_of_isCrosscut
 
 end SingularTwoCell
 
+universe u
+
+open Classical in
+theorem loopRepresentativeAlong_mem_iff_loopClassMeets
+    {X : Type u} [TopologicalSpace X] [PathConnectedSpace X]
+    (L : freeLoop X) (x : X) (N : Subgroup (FundamentalGroup X x)) [N.Normal]
+    (q : Path x (L 0)) :
+    loopRepresentativeAlong q (⟨L, rfl⟩ : basedCircleLoop (L 0)) ∈ N ↔
+      loopClassMeets L x N := by
+  let l := loopRepresentativeAlong q (⟨L, rfl⟩ : basedCircleLoop (L 0))
+  have hclass : FreeLoop.conjugacyClass L x = ConjClasses.mk l :=
+    FreeLoop.conjugacyClass_eq_mk_loopRepresentativeAlong q
+      (⟨L, rfl⟩ : basedCircleLoop (L 0))
+  have hl : l ∈ (FreeLoop.conjugacyClass L x).carrier := by
+    rw [hclass]
+    exact ConjClasses.mem_carrier_iff_mk_eq.mpr rfl
+  constructor
+  · intro hlN
+    exact ⟨l, hl, hlN⟩
+  · intro hmeet
+    exact ((conjugacyClassMeets_iff_carrier_subset
+      (FreeLoop.conjugacyClass L x) N).mp hmeet) hl
+
+open Classical in
+theorem not_loopClassMeets_iff_loopRepresentativeAlong_not_mem
+    {X : Type u} [TopologicalSpace X] [PathConnectedSpace X]
+    (L : freeLoop X) (x : X) (N : Subgroup (FundamentalGroup X x)) [N.Normal]
+    (q : Path x (L 0)) :
+    ¬loopClassMeets L x N ↔
+      loopRepresentativeAlong q (⟨L, rfl⟩ : basedCircleLoop (L 0)) ∉ N :=
+  (not_congr (loopRepresentativeAlong_mem_iff_loopClassMeets L x N q)).symm
+
 theorem not_mem_or_not_mem_of_eq_mul_conj_mul_conj
     {G : Type*} [Group G] (N : Subgroup G) [N.Normal]
     {l a b x y : G}
@@ -105,6 +137,32 @@ theorem not_mem_or_not_mem_of_eq_mul_conj_inv_mul
   exact N.mul_mem ha
     (‹N.Normal›.conj_mem (b⁻¹ * a) (N.mul_mem (N.inv_mem hb) ha) x)
 
+open Classical in
+theorem not_loopClassMeets_or_not_loopClassMeets_of_eq_mul_conj_mul_conj
+    {X : Type u} [TopologicalSpace X] [PathConnectedSpace X]
+    (x : X) (N : Subgroup (FundamentalGroup X x)) [N.Normal]
+    (L L₁ L₂ : freeLoop X)
+    (q : Path x (L 0)) (q₁ : Path x (L₁ 0)) (q₂ : Path x (L₂ 0))
+    (a b : FundamentalGroup X x)
+    (hword :
+      loopRepresentativeAlong q (⟨L, rfl⟩ : basedCircleLoop (L 0)) =
+        loopRepresentativeAlong q₁ (⟨L₁, rfl⟩ : basedCircleLoop (L₁ 0)) *
+          (a * loopRepresentativeAlong q₂
+            (⟨L₂, rfl⟩ : basedCircleLoop (L₂ 0)) * a⁻¹) *
+          (b * (loopRepresentativeAlong q₁
+            (⟨L₁, rfl⟩ : basedCircleLoop (L₁ 0)))⁻¹ * b⁻¹))
+    (hL : ¬loopClassMeets L x N) :
+    ¬loopClassMeets L₁ x N ∨ ¬loopClassMeets L₂ x N := by
+  have hrep : loopRepresentativeAlong q
+      (⟨L, rfl⟩ : basedCircleLoop (L 0)) ∉ N :=
+    (not_loopClassMeets_iff_loopRepresentativeAlong_not_mem L x N q).mp hL
+  have hsplit := not_mem_or_not_mem_of_eq_mul_conj_mul_conj N hword hrep
+  exact hsplit.imp
+    (fun h => (not_loopClassMeets_iff_loopRepresentativeAlong_not_mem
+      L₁ x N q₁).mpr h)
+    (fun h => (not_loopClassMeets_iff_loopRepresentativeAlong_not_mem
+      L₂ x N q₂).mpr h)
+
 theorem four_path_mul_conj_inv_mul_factorization
     {G : Type*} [Group G] (s t u p : G) :
     s * t * u * p =
@@ -118,5 +176,35 @@ theorem not_mem_or_not_mem_of_four_path_factorization
     s * u ∉ N ∨ s * t⁻¹ * u * p⁻¹ ∉ N := by
   apply not_mem_or_not_mem_of_eq_mul_conj_inv_mul N
     (four_path_mul_conj_inv_mul_factorization s t u p) hN
+
+open Classical in
+theorem not_loopClassMeets_or_not_loopClassMeets_of_four_path_factorization
+    {X : Type u} [TopologicalSpace X] [PathConnectedSpace X]
+    (x : X) (N : Subgroup (FundamentalGroup X x)) [N.Normal]
+    (L L₁ L₂ : freeLoop X)
+    (q : Path x (L 0)) (q₁ : Path x (L₁ 0)) (q₂ : Path x (L₂ 0))
+    (s t u p : FundamentalGroup X x)
+    (hword :
+      loopRepresentativeAlong q (⟨L, rfl⟩ : basedCircleLoop (L 0)) =
+        s * t * u * p)
+    (hword₁ :
+      loopRepresentativeAlong q₁ (⟨L₁, rfl⟩ : basedCircleLoop (L₁ 0)) = s * u)
+    (hword₂ :
+      loopRepresentativeAlong q₂ (⟨L₂, rfl⟩ : basedCircleLoop (L₂ 0)) =
+        s * t⁻¹ * u * p⁻¹)
+    (hL : ¬loopClassMeets L x N) :
+    ¬loopClassMeets L₁ x N ∨ ¬loopClassMeets L₂ x N := by
+  have hrep : loopRepresentativeAlong q
+      (⟨L, rfl⟩ : basedCircleLoop (L 0)) ∉ N :=
+    (not_loopClassMeets_iff_loopRepresentativeAlong_not_mem L x N q).mp hL
+  have hproduct : s * t * u * p ∉ N := by
+    rw [← hword]
+    exact hrep
+  have hsplit := not_mem_or_not_mem_of_four_path_factorization N hproduct
+  exact hsplit.imp
+    (fun h => (not_loopClassMeets_iff_loopRepresentativeAlong_not_mem
+      L₁ x N q₁).mpr (by rw [hword₁]; exact h))
+    (fun h => (not_loopClassMeets_iff_loopRepresentativeAlong_not_mem
+      L₂ x N q₂).mpr (by rw [hword₂]; exact h))
 
 end DifferentialGeometry.Topology.PiecewiseLinear
