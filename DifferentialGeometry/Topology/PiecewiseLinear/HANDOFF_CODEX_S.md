@@ -2521,3 +2521,27 @@ checks both public declarations after the edit; exit 0, only the standard three
 axioms. This closes the deleted-endpoint straightening stage of Moise 10.8. The
 auxiliary arc converging to that endpoint while avoiding the original arc is
 still a separate geometric obligation.
+
+## Localizing collars and choosing compatible sides (2026-09-16)
+
+`PlanarJordan/ArcCollar.lean` proves
+`Schoenflies.exists_hasArcCollars_of_polygonal_subarc`. A polygonal compact
+subarc of an otherwise arbitrary arc has an open neighborhood, inside any
+prescribed open set containing its relative interior, on which the whole arc
+has two-sided collars. The neighborhood meets the whole arc exactly in the
+open subarc. The proof removes the two closed parameter tails and transports
+the existing polygonal collars, so each resulting track avoids the entire
+original arc.
+
+`Schoenflies.ArcCollar.exists_isOpen_connected_chain` then makes a consistent
+choice of sides along any sequence of collars with overlapping compact pieces.
+It constructs connected open sets avoiding the carrier, each approaching its
+own compact piece, with successive open sets intersecting. This is proved by
+recursion from the closure condition at a shared point and passage to connected
+components; compatible side choices are not assumed.
+
+The focused check exits 0 with zero warnings. AuditS139ArcCollars checks both
+endpoints, exit 0, only the standard three axioms. Remaining for the degree-one
+step: construct the shrinking collar sequence from the deleted-endpoint
+polygonal arc, trim successive connecting arcs to remove extra intersections,
+and parametrize their shrinking union together with the limiting endpoint.
