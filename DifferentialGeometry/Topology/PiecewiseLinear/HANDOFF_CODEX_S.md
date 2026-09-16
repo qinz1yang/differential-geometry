@@ -2100,3 +2100,31 @@ Both focused checks pass with exit 0 and zero warnings. `AuditS119TransversePath
 checks all four public declarations; exit 0, only the standard three axioms. These
 are geometric producers for the B.6 contradiction. The single-crossing circle map,
 relative disk filling, and global separation theorem remain to be completed.
+
+### Single-intersection circles and relative parity, 2026-09-16
+
+Merged integration `4401dd9d1` at `8e57b8304`. The local check and audit recipes now
+use only the shared olean library, in accordance with NIGHT_PLAN section 8. All
+new S modules from the boundary-parity checkpoint onward were checked sequentially
+into that library; no private artifact directory remains on LEAN_PATH. Pause Lean
+when integration review requests it and resume only after the explicit release.
+
+`CircleMap.lean` constructs a PL map on any PL circle from two PL interval maps
+with matching endpoints. `SingleIntersectionCircle.lean` uses this producer and
+open-complement PL paths to build an actual circle map with a singleton preimage
+of the target surface. It extends the map to the entire source ambient space and
+proves that a small translation moves the unique intersection away from any finite
+source set while keeping the return arc in the complement.
+
+`PreimageBoundaryRelative.lean` proves even boundary-intersection cardinality when
+only a subcomplex containing all intersections is transverse. Relative general
+position fixes that subcomplex, while compactness gives a positive perturbation
+margin on the remaining boundary faces. Thus the return path need not satisfy
+unnecessary affine-independence hypotheses before perturbation.
+
+All eleven new S modules in this sequence have shared-library focused checks with
+exit 0 and zero warnings. `AuditS120CircleParity.lean` / `.log` re-audit all twenty
+public declarations, including B.2 and the new circle/relative-parity inputs; exit 0,
+only the standard three axioms. B.6 is still in progress: the remaining step is to
+assemble the triangulated disk and its transverse crossing face, apply relative
+parity, and derive the global components/frontier statement. P.4 remains pending.
