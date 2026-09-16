@@ -1782,13 +1782,14 @@ theorem isPLHomeomorphOn_shear [FiniteDimensional ℝ E] (ℓ : E →ₗ[ℝ] �
   exact hleft.injective ((hbij.invOn_invFunOn.2 hy).trans (hright y).symm)
 
 open Classical in
-theorem exists_isPLHomeomorphOn_straighten_rays [FiniteDimensional ℝ E]
+theorem exists_isPLHomeomorphOn_straighten_rays_sub_mem [FiniteDimensional ℝ E]
     (ℓ : E →ₗ[ℝ] ℝ) {u v : E} (hu : 0 < ℓ u) (hv : ℓ v < 0) :
     ∃ h : E → E, IsPLHomeomorphOn h univ univ ∧ EqOn h id (LinearMap.ker ℓ : Set E) ∧
       (∀ r : ℝ, 0 ≤ r → h (r • u) = r • u) ∧
       (∀ r : ℝ, 0 ≤ r → h (r • v) = (r * (ℓ v / ℓ u)) • u) ∧
       (∀ x y, ℓ x = 0 → h (x + y) = x + h y) ∧
-      ∀ W : Submodule ℝ E, u ∈ W → v ∈ W → h '' (W : Set E) = (W : Set E) := by
+      (∀ W : Submodule ℝ E, u ∈ W → v ∈ W → h '' (W : Set E) = (W : Set E)) ∧
+      ∀ W : Submodule ℝ E, u ∈ W → v ∈ W → ∀ x, h x - x ∈ W := by
   let w : E := (ℓ u)⁻¹ • u - (ℓ v)⁻¹ • v
   have hw : ℓ w = 0 := by
     dsimp [w]
@@ -1800,7 +1801,7 @@ theorem exists_isPLHomeomorphOn_straighten_rays [FiniteDimensional ℝ E]
       (isPiecewiseAffineOn_of_affine (AffineMap.const ℝ ℝ 0) isOpen_univ)
   let h : E → E := fun x => x + min (ℓ x) 0 • w
   have hh : IsPLHomeomorphOn h univ univ := isPLHomeomorphOn_shear ℓ hw hmin
-  refine ⟨h, hh, ?_, ?_, ?_, ?_, ?_⟩
+  refine ⟨h, hh, ?_, ?_, ?_, ?_, ?_, ?_⟩
   · intro x hx
     have hx0 : ℓ x = 0 := hx
     change x + min (ℓ x) 0 • w = x
@@ -1835,6 +1836,22 @@ theorem exists_isPLHomeomorphOn_straighten_rays [FiniteDimensional ℝ E]
           exact hy
         exact (W.add_mem_iff_left (W.smul_mem (min (ℓ x) 0) hwW)).mp hy'
       exact ⟨x, hxW, hxy⟩
+  · intro W huW hvW x
+    have hwW : w ∈ W := W.sub_mem (W.smul_mem _ huW) (W.smul_mem _ hvW)
+    change (x + min (ℓ x) 0 • w) - x ∈ W
+    simpa only [add_sub_cancel_left] using W.smul_mem (min (ℓ x) 0) hwW
+
+open Classical in
+theorem exists_isPLHomeomorphOn_straighten_rays [FiniteDimensional ℝ E]
+    (ℓ : E →ₗ[ℝ] ℝ) {u v : E} (hu : 0 < ℓ u) (hv : ℓ v < 0) :
+    ∃ h : E → E, IsPLHomeomorphOn h univ univ ∧ EqOn h id (LinearMap.ker ℓ : Set E) ∧
+      (∀ r : ℝ, 0 ≤ r → h (r • u) = r • u) ∧
+      (∀ r : ℝ, 0 ≤ r → h (r • v) = (r * (ℓ v / ℓ u)) • u) ∧
+      (∀ x y, ℓ x = 0 → h (x + y) = x + h y) ∧
+      ∀ W : Submodule ℝ E, u ∈ W → v ∈ W → h '' (W : Set E) = (W : Set E) := by
+  obtain ⟨h, hh, hfix, hru, hrv, hadd, hsubspace, -⟩ :=
+    exists_isPLHomeomorphOn_straighten_rays_sub_mem ℓ hu hv
+  exact ⟨h, hh, hfix, hru, hrv, hadd, hsubspace⟩
 
 theorem exists_linearMap_eq_one_neg_of_disjoint {V : Type*} [AddCommGroup V] [Module ℝ V]
     {S T : Submodule ℝ V} (hdis : Disjoint S T) {u v : V} (huT : u ∈ T) (hvT : v ∈ T)
@@ -1879,25 +1896,25 @@ theorem exists_linearMap_eq_one_neg_of_disjoint {V : Type*} [AddCommGroup V] [Mo
     · rw [hgP u (Submodule.mem_sup_right (Submodule.subset_span (Set.mem_singleton u))), hfu]
 
 open Classical in
-theorem exists_isPLHomeomorphOn_straighten_two_halfSpaces [FiniteDimensional ℝ E]
+theorem exists_isPLHomeomorphOn_straighten_two_halfSpaces_sub_mem [FiniteDimensional ℝ E]
     {S T : Submodule ℝ E} (hdis : Disjoint S T) {u v : E} (huT : u ∈ T) (hvT : v ∈ T)
     (hu : u ≠ 0) (hv : v ≠ 0) (hnot : ∀ c : ℝ, 0 < c → v ≠ c • u) :
     ∃ h : E → E, IsPLHomeomorphOn h univ univ ∧ EqOn h id (S : Set E) ∧
       h '' (T : Set E) = (T : Set E) ∧
       h '' ({x | ∃ s ∈ S, ∃ r : ℝ, 0 ≤ r ∧ x = s + r • u} ∪
         {x | ∃ s ∈ S, ∃ r : ℝ, 0 ≤ r ∧ x = s + r • v}) =
-          (S ⊔ Submodule.span ℝ {u} : Submodule ℝ E) := by
+          (S ⊔ Submodule.span ℝ {u} : Submodule ℝ E) ∧ ∀ x, h x - x ∈ T := by
   obtain ⟨ℓ, hℓS, hℓu, hℓv⟩ := exists_linearMap_eq_one_neg_of_disjoint hdis huT hvT hu hv hnot
   have hℓupos : 0 < ℓ u := by rw [hℓu]; norm_num
-  obtain ⟨h, hh, hfix, hru, hrv, hadd, hsubspace⟩ :=
-    exists_isPLHomeomorphOn_straighten_rays ℓ hℓupos hℓv
+  obtain ⟨h, hh, hfix, hru, hrv, hadd, hsubspace, hsub⟩ :=
+    exists_isPLHomeomorphOn_straighten_rays_sub_mem ℓ hℓupos hℓv
   have huform : ∀ s ∈ S, ∀ r : ℝ, 0 ≤ r → h (s + r • u) = s + r • u := by
     intro s hs r hr
     rw [hadd s (r • u) (hℓS hs), hru r hr]
   have hvform : ∀ s ∈ S, ∀ r : ℝ, 0 ≤ r → h (s + r • v) = s + (r * ℓ v) • u := by
     intro s hs r hr
     rw [hadd s (r • v) (hℓS hs), hrv r hr, hℓu, div_one]
-  refine ⟨h, hh, hfix.mono hℓS, hsubspace T huT hvT, ?_⟩
+  refine ⟨h, hh, hfix.mono hℓS, hsubspace T huT hvT, ?_, hsub T huT hvT⟩
   have huP : u ∈ S ⊔ Submodule.span ℝ {u} :=
     Submodule.mem_sup_right (Submodule.subset_span (Set.mem_singleton u))
   apply Subset.antisymm
@@ -1916,6 +1933,19 @@ theorem exists_isPLHomeomorphOn_straighten_two_halfSpaces [FiniteDimensional ℝ
       refine ⟨s + (r / ℓ v) • v, Or.inr ⟨s, hs, r / ℓ v, hrc, rfl⟩, ?_⟩
       rw [hvform s hs _ hrc, div_mul_cancel₀ _ hℓv.ne]
       exact hsw
+
+open Classical in
+theorem exists_isPLHomeomorphOn_straighten_two_halfSpaces [FiniteDimensional ℝ E]
+    {S T : Submodule ℝ E} (hdis : Disjoint S T) {u v : E} (huT : u ∈ T) (hvT : v ∈ T)
+    (hu : u ≠ 0) (hv : v ≠ 0) (hnot : ∀ c : ℝ, 0 < c → v ≠ c • u) :
+    ∃ h : E → E, IsPLHomeomorphOn h univ univ ∧ EqOn h id (S : Set E) ∧
+      h '' (T : Set E) = (T : Set E) ∧
+      h '' ({x | ∃ s ∈ S, ∃ r : ℝ, 0 ≤ r ∧ x = s + r • u} ∪
+        {x | ∃ s ∈ S, ∃ r : ℝ, 0 ≤ r ∧ x = s + r • v}) =
+          (S ⊔ Submodule.span ℝ {u} : Submodule ℝ E) := by
+  obtain ⟨h, hh, hfix, hT, hfold, -⟩ :=
+    exists_isPLHomeomorphOn_straighten_two_halfSpaces_sub_mem hdis huT hvT hu hv hnot
+  exact ⟨h, hh, hfix, hT, hfold⟩
 
 theorem eventually_mem_halfSpaces_iff_exists_pos_smul_mem [FiniteDimensional ℝ E]
     {ι : Type*} [Finite ι] (ℓ : ι → E →ₗ[ℝ] ℝ) (b : ι → ℝ) {x : E}
@@ -2135,7 +2165,7 @@ theorem halfSpace_eq_of_sub_mem {V : Type*} [AddCommGroup V] [Module ℝ V]
     module
 
 open Classical in
-theorem exists_isPLHomeomorphOn_linearize_coface_pair [FiniteDimensional ℝ E]
+theorem exists_isPLHomeomorphOn_linearize_coface_pair_sub_mem [FiniteDimensional ℝ E]
     (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces] {s : Finset E} (hs : s ∈ K.faces)
     (hbound : ∀ t ∈ K.faces, s ⊆ t → t.card ≤ s.card + 1) {x a b : E}
     (hx : x ∈ openSimplex s) (hab : a ≠ b)
@@ -2143,7 +2173,8 @@ theorem exists_isPLHomeomorphOn_linearize_coface_pair [FiniteDimensional ℝ E]
     (hcompl : IsCompl (vectorSpan ℝ (s : Set E)) T) :
     ∃ (u : E) (h : E → E), u ∈ T ∧ u ≠ 0 ∧ IsPLHomeomorphOn h univ univ ∧ h x = 0 ∧
       (∀ y, y - x ∈ T ↔ h y ∈ T) ∧
-      ∀ᶠ y in 𝓝 x, y ∈ K.space ↔ h y ∈ vectorSpan ℝ (s : Set E) ⊔ Submodule.span ℝ {u} := by
+      (∀ᶠ y in 𝓝 x, y ∈ K.space ↔ h y ∈ vectorSpan ℝ (s : Set E) ⊔ Submodule.span ℝ {u}) ∧
+      ∀ y, h y - (y - x) ∈ T := by
   have ha : a ∉ s ∧ insert a s ∈ K.faces := by
     change a ∈ {w | w ∉ s ∧ insert w s ∈ K.faces}
     rw [hpair]
@@ -2163,7 +2194,7 @@ theorem exists_isPLHomeomorphOn_linearize_coface_pair [FiniteDimensional ℝ E]
     · exact hab heq
     · exact ha.1 has
   have hnot := not_pos_smul_of_eventually_mem_distinct_openSimplex K ha.2 hb.2 hfaces hru hrv
-  obtain ⟨F, hF, hfix, hFT, hFcone⟩ := exists_isPLHomeomorphOn_straighten_two_halfSpaces
+  obtain ⟨F, hF, hfix, hFT, hFcone, hFdiff⟩ := exists_isPLHomeomorphOn_straighten_two_halfSpaces_sub_mem
     hcompl.disjoint huT hvT hu hv hnot
   let C : E → Set E := fun d =>
     {q | ∃ z ∈ vectorSpan ℝ (s : Set E), ∃ r : ℝ, 0 ≤ r ∧ q = z + r • d}
@@ -2205,7 +2236,7 @@ theorem exists_isPLHomeomorphOn_linearize_coface_pair [FiniteDimensional ℝ E]
     intro y _
     change F (y - x) = F (y + -x)
     rw [sub_eq_add_neg]
-  refine ⟨u, h, huT, hu, hh, ?_, ?_, ?_⟩
+  refine ⟨u, h, huT, hu, hh, ?_, ?_, ?_, fun y => hFdiff (y - x)⟩
   · change F (x - x) = 0
     rw [sub_self]
     exact hfix (Submodule.zero_mem _)
@@ -2221,6 +2252,20 @@ theorem exists_isPLHomeomorphOn_linearize_coface_pair [FiniteDimensional ℝ E]
     have hm := hmem (C u ∪ C v) (y - x)
     rw [hFcone'] at hm
     exact hy.trans hm.symm
+
+open Classical in
+theorem exists_isPLHomeomorphOn_linearize_coface_pair [FiniteDimensional ℝ E]
+    (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces] {s : Finset E} (hs : s ∈ K.faces)
+    (hbound : ∀ t ∈ K.faces, s ⊆ t → t.card ≤ s.card + 1) {x a b : E}
+    (hx : x ∈ openSimplex s) (hab : a ≠ b)
+    (hpair : {w | w ∉ s ∧ insert w s ∈ K.faces} = {a, b}) (T : Submodule ℝ E)
+    (hcompl : IsCompl (vectorSpan ℝ (s : Set E)) T) :
+    ∃ (u : E) (h : E → E), u ∈ T ∧ u ≠ 0 ∧ IsPLHomeomorphOn h univ univ ∧ h x = 0 ∧
+      (∀ y, y - x ∈ T ↔ h y ∈ T) ∧
+      ∀ᶠ y in 𝓝 x, y ∈ K.space ↔ h y ∈ vectorSpan ℝ (s : Set E) ⊔ Submodule.span ℝ {u} := by
+  obtain ⟨u, h, huT, hu, hh, hhx, hT, hlocal, -⟩ :=
+    exists_isPLHomeomorphOn_linearize_coface_pair_sub_mem K hs hbound hx hab hpair T hcompl
+  exact ⟨u, h, huT, hu, hh, hhx, hT, hlocal⟩
 
 open Classical in
 theorem exists_isPLHomeomorphOn_linearize_codimension_one [FiniteDimensional ℝ E]

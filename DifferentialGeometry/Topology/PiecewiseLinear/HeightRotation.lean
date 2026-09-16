@@ -7,14 +7,14 @@ namespace DifferentialGeometry.Topology.PiecewiseLinear
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
 
-theorem eventually_mem_heightSingularPoints_iff_and_encard_levelPolygons_eq {n : ℕ}
+theorem eventually_mem_heightSingularPoints_iff_and_encard_levelPolygons_eq_of_unique_vertex_in_fiber {n : ℕ}
     (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces] (hK : IsPLSphere (n + 1) K.space)
-    (ℓ : E →L[ℝ] ℝ) (hℓ : ℓ ≠ 0) (hinj : InjOn ℓ K.vertices) {p : E} (hp : p ∈ K.vertices) :
+    (ℓ : E →L[ℝ] ℝ) (hℓ : ℓ ≠ 0) {p : E} (hunique : ∀ v ∈ K.vertices, ℓ v = ℓ p → v = p) (hp : p ∈ K.vertices) :
     ∀ᶠ f : E →L[ℝ] ℝ in 𝓝 ℓ,
       (p ∈ heightSingularPoints K.space f ↔ p ∈ heightSingularPoints K.space ℓ) ∧
       (levelPolygons K.space f (f p)).encard = (levelPolygons K.space ℓ (ℓ p)).encard := by
-  filter_upwards [eventually_exists_homeomorph_preserving_sphere_image_fiber
-    K hK ℓ hℓ hinj hp isOpen_univ (subset_univ _) zero_lt_one] with f hf
+  filter_upwards [eventually_exists_homeomorph_preserving_sphere_image_fiber_of_unique_vertex_in_fiber
+    K hK ℓ hℓ hunique hp isOpen_univ (subset_univ _) zero_lt_one] with f hf
   obtain ⟨h, hh, -, -, hfix, himage, hfiber, hplane⟩ := hf
   have hhp : h p = p := hfix hp
   have hcross : HasPLCrossingAt K.space {x | ℓ x = ℓ p} p ↔
@@ -41,6 +41,37 @@ theorem eventually_mem_heightSingularPoints_iff_and_encard_levelPolygons_eq {n :
   change (p ∈ K.space ∧ ¬ HasPLCrossingAt K.space {x | f x = f p} p ∧ _) ↔
     (p ∈ K.space ∧ ¬ HasPLCrossingAt K.space {x | ℓ x = ℓ p} p ∧ _)
   rw [← hcross, hisolated]
+
+theorem eventually_mem_heightSingularPoints_iff_and_encard_levelPolygons_eq {n : ℕ}
+    (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces] (hK : IsPLSphere (n + 1) K.space)
+    (ℓ : E →L[ℝ] ℝ) (hℓ : ℓ ≠ 0) (hinj : InjOn ℓ K.vertices) {p : E} (hp : p ∈ K.vertices) :
+    ∀ᶠ f : E →L[ℝ] ℝ in 𝓝 ℓ,
+      (p ∈ heightSingularPoints K.space f ↔ p ∈ heightSingularPoints K.space ℓ) ∧
+      (levelPolygons K.space f (f p)).encard = (levelPolygons K.space ℓ (ℓ p)).encard :=
+  eventually_mem_heightSingularPoints_iff_and_encard_levelPolygons_eq_of_unique_vertex_in_fiber
+    K hK ℓ hℓ (fun _ hv h => hinj hv hp h) hp
+
+theorem eventually_heightSingularPoints_inter_eq_and_levelPolygons_encard_eq {n : ℕ}
+    (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces] (hK : IsPLSphere (n + 1) K.space)
+    (ℓ : E →L[ℝ] ℝ) (hℓ : ℓ ≠ 0) {A : Set E} (hA : A ⊆ K.vertices)
+    (hunique : ∀ p ∈ A, ∀ v ∈ K.vertices, ℓ v = ℓ p → v = p) :
+    ∀ᶠ f : E →L[ℝ] ℝ in 𝓝 ℓ,
+      heightSingularPoints K.space f ∩ A = heightSingularPoints K.space ℓ ∩ A ∧
+      ∀ p ∈ A, (levelPolygons K.space f (f p)).encard = (levelPolygons K.space ℓ (ℓ p)).encard := by
+  have hAfin : A.Finite :=
+    (Set.Finite.preimage Finset.singleton_injective.injOn (Set.toFinite K.faces)).subset hA
+  have hall : ∀ᶠ f : E →L[ℝ] ℝ in 𝓝 ℓ, ∀ p ∈ A,
+      (p ∈ heightSingularPoints K.space f ↔ p ∈ heightSingularPoints K.space ℓ) ∧
+      (levelPolygons K.space f (f p)).encard = (levelPolygons K.space ℓ (ℓ p)).encard := by
+    rw [hAfin.eventually_all]
+    exact fun p hp =>
+      eventually_mem_heightSingularPoints_iff_and_encard_levelPolygons_eq_of_unique_vertex_in_fiber
+        K hK ℓ hℓ (hunique p hp) (hA hp)
+  filter_upwards [hall] with f hf
+  refine ⟨?_, fun p hp => (hf p hp).2⟩
+  ext p
+  exact ⟨fun hp => ⟨(hf p hp.2).1.mp hp.1, hp.2⟩,
+    fun hp => ⟨(hf p hp.2).1.mpr hp.1, hp.2⟩⟩
 
 theorem eventually_heightSingularPoints_eq_and_levelPolygons_encard_eq
     (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces] (hK : IsPLSphere 2 K.space)
