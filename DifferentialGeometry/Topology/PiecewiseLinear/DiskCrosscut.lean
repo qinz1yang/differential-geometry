@@ -39,6 +39,32 @@ theorem IsPLHomeomorphOn.isCrosscut_of_image_Ioo_subset_interior
   rw [hdiff, ← hD.interior_eq_inside_frontier]
   exact hopen
 
+theorem isCrosscut_of_subset_side
+    {D U A C : Set (EuclideanSpace ℝ (Fin 2))}
+    {p q : EuclideanSpace ℝ (Fin 2)}
+    (hD : IsPLBall 2 D) (hU : IsPLBall 2 U)
+    (h : Schoenflies.IsCrosscut (frontier D) C p q)
+    (hCU : C ⊆ U) (hfront : frontier U = (U ∩ frontier D) ∪ A)
+    (hdisjoint : Disjoint C A) :
+    Schoenflies.IsCrosscut (frontier U) C p q := by
+  refine ⟨isJordanCurve_of_isPLSphere_one hU.isPLSphere_frontier,
+    h.arc, h.polygonal, ?_, ?_, ?_⟩
+  · rw [hfront]
+    exact Or.inl ⟨hCU h.arc.left_mem, h.left_mem⟩
+  · rw [hfront]
+    exact Or.inl ⟨hCU h.arc.right_mem, h.right_mem⟩
+  · rw [← hU.interior_eq_inside_frontier]
+    intro z hz
+    apply (mem_interior_iff_notMem_frontier (hCU hz.1)).mpr
+    intro hzfront
+    rw [hfront] at hzfront
+    rcases hzfront with hzfront | hzA
+    · have hzint : z ∈ interior D := by
+        rw [hD.interior_eq_inside_frontier]
+        exact h.sdiff_subset hz
+      exact hzfront.2.2 hzint
+    · exact Set.disjoint_left.mp hdisjoint hz.1 hzA
+
 theorem exists_isCrosscut_subset_frontier_of_isPLBall_two
     {C D : Set (EuclideanSpace ℝ (Fin 2))} (hC : IsPLBall 2 C) (hD : IsPLBall 2 D)
     (hCD : C ⊆ D) (htrace : (frontier C ∩ frontier D).Nontrivial)
