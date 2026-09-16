@@ -1735,3 +1735,9 @@ F-M2–F-M6 尚未开始；按用户指定顺序推进，只有出现 §1 接口
 `ParameterizedDiskUnion.lean` 已提交并推送为 `dbd2d65c8`。主端点 `exists_triangulation_parameterized_disk_union` 从两张共享同一标准单形边界像的参数化 PL 二球盘构造其并集的有限共同三角剖分。结论同时给出两限制子复形的精确空间与 PL 球性、两侧组合边界复形空间都精确等于共享接缝、完整复形的逐面二片覆盖，以及相对于任意仿射高度层的逐面半空间适配。组合边界等式由参数化端点直接证明，不作额外输入。
 
 模块聚焦检查 exit=0（14.1 秒）、零 warning；`AuditF179.lean` 主端点仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步把保高度同胚后的保留盘参数化与三角帽参数化送入该端点，并证明接缝边相对内部顶点的保留侧和帽侧链环截面各至多一点，从而经逐面覆盖得到完整链环 `encard ≤ 2`。F-M1 仍为 partial，严格降指标、Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF180.lean`。
+
+### 19.32 F-M1：保高度环境同胚运输单侧与边界集合芽
+
+`HeightGermTransport.lean` 已提交并推送为 `33ceb84e0`。`eventually_image_mem_le_of_height_preserving_homeomorph` 与高侧版本把任一点处盘载体的旧高度单侧集合芽沿保高度环境同胚运输到像点；`eventually_image_boundary_fiber_iff_of_height_preserving_homeomorph` 同时运输“边界集合芽恰为盘内旧等高集合芽”。证明只用同胚逆映射在像点的连续性、双射像成员关系与逐点保高度等式。
+
+模块聚焦检查 exit=0（11.4 秒）、零 warning；`AuditF180.lean` 三个端点均仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步把 `HeightSides` 的全接缝相反单侧结论逐点送入这三个运输端点，并在参数化两盘共同细分中调用 `BoundaryFacetLink`、`TriangleEdgeLink` 与 `LinkUnionSection`，得到接缝边内部顶点的完整链环 `encard ≤ 2`。F-M1 仍为 partial，严格降指标、Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF181.lean`。
