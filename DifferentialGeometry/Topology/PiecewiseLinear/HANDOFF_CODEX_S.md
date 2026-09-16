@@ -1797,3 +1797,38 @@ No vendored or other-lane source changed. The source hash will be recorded at th
 next checkpoint. The next step applies the boundary-fan theorem to the two sides
 of the first matched pair at an interior vertex. P.4 is still partial; degree-one
 endpoints and edge frames remain beyond that step. I2's target-type issue is unchanged.
+
+### S-M6 continuation: supported straightening of a finite interior vertex fan
+
+The finite boundary-fan layer is committed and pushed as `1b6245266`; the following
+integration merge was already up to date.
+
+`PlanarJordan/VertexFan.lean` now proves
+`exists_homeomorph_image_vertex_fan_of_nontrivial`: two finite embedded fans with at
+least two branches, a common interior vertex, and matching boundary endpoints admit
+one ambient matching fixing the vertex and the disk exterior. After matching two
+branches, their union is a crosscut. The remaining branches fall into its two labelled
+sides according to their boundary endpoints. The finite boundary-fan theorem extends
+each side, and disjointness from the other closed side makes their composition preserve
+every branch already matched.
+
+`exists_homeomorph_radial_vertex_fan` supplies the actual radial target segments in
+a square, fixes its center and exterior, and bounds all displacement by its diameter.
+`Graph.IsDrawing.exists_homeomorph_radial_vertex_fan` produces the square, every
+incident initial subarc, and the simultaneous ambient straightening inside any given
+neighborhood of a vertex with at least two incident edges. Nonincident edges are avoided.
+This is a local geometric producer for the complete finite fan at that vertex. The
+published two-arc radial statements retain their signatures and are now corollaries
+of the finite-family statements.
+
+The final VertexFan focused check has exit 0 and zero warnings (`check-planar-vertex-fan.log`).
+`AuditS112FiniteVertexFan.lean` / `.log` contain eight entries covering all seven
+VertexFan endpoints and the boundary-fan input, all with only `propext`,
+`Classical.choice`, and `Quot.sound`. No vendored or other-lane source changed.
+The source hash will be recorded in the final publication entry.
+
+P.4 remains partial. The local vertex construction is proved for at least two
+incident edges; degree-one endpoints still need a separate argument. The next
+geometric work is small edge frames and polygonal crosscuts, followed by the
+assembly over disjoint vertex and edge supports with the prescribed global control.
+No new consultation blocker was found. I2's target-type issue is unchanged.
