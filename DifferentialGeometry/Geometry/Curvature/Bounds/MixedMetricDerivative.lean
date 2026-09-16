@@ -211,6 +211,22 @@ private theorem relower_curvature_section (g₁ g₂ : SmoothRiemannianMetric I 
     g₂.symm x (sharpFlat (I := I) g₁ g₂ x (tail (Fin.last 3))), inner_sharpFlat]
   exact g₁.symm x _ _
 
+theorem norm_sq_cross_curvature_le
+    (g₁ g₂ : SmoothRiemannianMetric I M) (x : M)
+    {C : ℝ} (hC : 1 ≤ C)
+    (heq : ∀ v : TangentSpace I x,
+      C⁻¹ * g₁.inner x v v ≤ g₂.inner x v v ∧ g₂.inner x v v ≤ C * g₁.inner x v v) :
+    normSq0S (I := I) g₁ x 4
+        (CovariantDerivative.riemannCurvature04At (I := I) g₁ (metricCov (I := I) g₂)
+          (metricCov_smooth (I := I) g₂) x) ≤
+      (Module.finrank ℝ E : ℝ) ^ 7 * C ^ 6 *
+        normSq0S (I := I) g₂ x 4 (metricRm04At (I := I) g₂ x) := by
+  have h := relower_norm_sq_le_of_metric_equiv (I := I) g₁ g₂
+    (CovariantDerivative.rm04Section (I := I) g₂ (metricCov (I := I) g₂)
+      (metricCov_smooth (I := I) g₂)) x hC heq
+  rw [relower_curvature_section] at h
+  exact h
+
 theorem norm_sq_covariant_derivative_cross_curvature_le
     (g₁ g₂ : SmoothRiemannianMetric I M) (x : M)
     {C : ℝ} (hC : 1 ≤ C)

@@ -689,6 +689,7 @@ import DifferentialGeometry.Analysis.InnerProductSpace.Trace
 import DifferentialGeometry.Analysis.InnerProductSpace.WeakCompactness
 import DifferentialGeometry.Analysis.Integration.CauchyPeak
 import DifferentialGeometry.Analysis.Integration.CompactExhaustionCutoff
+import DifferentialGeometry.Analysis.Integration.CompactExhaustionDerivative
 import DifferentialGeometry.Analysis.Integration.CompactExhaustionIntegral
 import DifferentialGeometry.Analysis.Integration.ConformalScalarCurvature
 import DifferentialGeometry.Analysis.Integration.Convolution.Approximation
@@ -7057,6 +7058,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Energy.Re
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Energy.ReloweringFlux
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Energy.Remainder
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Energy.SpeedBounds
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Energy.UniformCutoff
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Energy.Vanishing
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Isometry
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Measure.DensityRegularity
@@ -7645,6 +7647,7 @@ import DifferentialGeometry.Geometry.Metric.TensorInner.Cotangent.InverseMetric
 import DifferentialGeometry.Geometry.Metric.TensorInner.Cotangent.InverseMetricField
 import DifferentialGeometry.Geometry.Metric.TensorInner.Cotangent.Riemannian
 import DifferentialGeometry.Geometry.Metric.TensorInner.Estimates.ComponentBounds
+import DifferentialGeometry.Geometry.Metric.TensorInner.Estimates.CovariantSlotNorm
 import DifferentialGeometry.Geometry.Metric.TensorInner.Estimates.LoweringNorm
 import DifferentialGeometry.Geometry.Metric.TensorInner.Estimates.TensorProductNorm
 import DifferentialGeometry.Geometry.Metric.TensorInner.Fiber.CoerciveBilinearInverse
