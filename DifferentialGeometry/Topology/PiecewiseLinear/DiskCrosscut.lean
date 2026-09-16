@@ -19,6 +19,26 @@ theorem IsPLBall.isConnected_interior {C : Set (EuclideanSpace ℝ (Fin 2))}
   exact (Schoenflies.jordan_curve_theorem
     (isJordanCurve_of_isPLSphere_one hC.isPLSphere_frontier)).isConnected_inside
 
+theorem IsPLHomeomorphOn.isCrosscut_of_image_Ioo_subset_interior
+    {D A : Set (EuclideanSpace ℝ (Fin 2))}
+    {γ : ℝ → EuclideanSpace ℝ (Fin 2)}
+    (hγ : IsPLHomeomorphOn γ (Icc 0 1) A) (hD : IsPLBall 2 D)
+    (hleft : γ 0 ∈ frontier D) (hright : γ 1 ∈ frontier D)
+    (hopen : γ '' Ioo 0 1 ⊆ interior D) :
+    Schoenflies.IsCrosscut (frontier D) A (γ 0) (γ 1) := by
+  have harc : Schoenflies.IsArcBetween A (γ 0) (γ 1) :=
+    ⟨γ, hγ.isPiecewiseAffineOn.continuousOn, hγ.bijOn.injOn,
+      hγ.image_eq, rfl, rfl⟩
+  have hA : IsPLBall 1 A :=
+    (isPLBall_Icc (by norm_num)).of_isPLHomeomorphOn hγ
+  refine ⟨isJordanCurve_of_isPLSphere_one hD.isPLSphere_frontier, harc,
+    hA.isPolyhedron.isPolygonal_of_isArcBetween harc, hleft, hright, ?_⟩
+  have hdiff : A \ {γ 0, γ 1} = γ '' Ioo 0 1 := by
+    rw [← hγ.image_eq, ← Schoenflies.openArc_eq_diff hγ.bijOn.injOn]
+    rfl
+  rw [hdiff, ← hD.interior_eq_inside_frontier]
+  exact hopen
+
 theorem exists_isCrosscut_subset_frontier_of_isPLBall_two
     {C D : Set (EuclideanSpace ℝ (Fin 2))} (hC : IsPLBall 2 C) (hD : IsPLBall 2 D)
     (hCD : C ⊆ D) (htrace : (frontier C ∩ frontier D).Nontrivial)
