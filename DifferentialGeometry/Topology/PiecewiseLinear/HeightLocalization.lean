@@ -153,4 +153,42 @@ theorem exists_convex_open_neighborhood_disjoint_fibers {D A W : Set E}
     have hin : ℓ x ∈ Metric.ball c δ := hdist.trans_lt (half_lt_self hδ)
     exact hball hin ⟨p, hp, hxp.symm⟩
 
+theorem eventually_heightSingularPoints_image_cap_sdiff_subset_and_encard_levelPolygons_le
+    (K R : Geometry.SimplicialComplex ℝ E) [Finite K.faces] [Finite R.faces]
+    (hK : IsPLSphere 2 K.space) (hR : IsCombinatorialManifoldWithBoundary 2 R)
+    (hdimE : Module.finrank ℝ E = 3) (ℓ : E →L[ℝ] ℝ) (hℓ : ℓ ≠ 0) (hinj : InjOn ℓ K.vertices)
+    (p : E) {A B D C : Set E} (hunion : A ∪ B = K.space) (hB : IsClosed B) (hD : IsClosed D)
+    (hAB : A ∩ B ⊆ D) (hDC : D ⊆ C) (hC : IsCompact C)
+    (hsep : ∀ q ∈ K.vertices \ {p}, Disjoint C {x | ℓ x = ℓ q})
+    (H : E ≃ₜ E) (hH : IsPLHomeomorphOn H univ univ) (hfix : EqOn H id Cᶜ)
+    (hheight : ∀ x, ℓ (H x) = ℓ x) (hRspace : R.space = H '' (A ∪ D)) :
+    ∀ᶠ f : E →L[ℝ] ℝ in 𝓝 ℓ, f ≠ 0 → InjOn f R.vertices →
+      heightSingularPoints R.space f \ (H '' D ∪ {H p}) ⊆ heightSingularPoints K.space ℓ ∧
+      ∀ q ∈ K.vertices \ {p},
+        (q ∈ heightSingularPoints R.space f ↔ q ∈ heightSingularPoints K.space ℓ ∧ q ∈ A) ∧
+        (levelPolygons R.space f (f q)).encard ≤ (levelPolygons K.space ℓ (ℓ q)).encard := by
+  have hV : (K.vertices \ {p}).Finite :=
+    (Set.Finite.preimage Finset.singleton_injective.injOn (Set.toFinite K.faces)).subset sdiff_subset
+  have hpoint : ∀ᶠ f : E →L[ℝ] ℝ in 𝓝 ℓ, ∀ q ∈ K.vertices \ {p},
+      (q ∈ heightSingularPoints R.space f ↔ q ∈ heightSingularPoints K.space ℓ ∧ q ∈ A) ∧
+      (levelPolygons R.space f (f q)).encard ≤ (levelPolygons K.space ℓ (ℓ q)).encard := by
+    rw [hV.eventually_all]
+    intro q hq
+    rw [hRspace]
+    exact eventually_mem_heightSingularPoints_image_cap_iff_and_encard_levelPolygons_le K hK ℓ hℓ hinj hq.1
+      hunion hB hAB hDC hC (fun x hx heq => Set.disjoint_left.mp (hsep q hq) hx heq) H hfix
+  filter_upwards [hpoint, eventually_heightSingularPoints_image_cap_sdiff_subset_vertices K R
+    hK.isCombinatorialManifold hR hdimE ℓ hinj hunion hB hD hAB H hH hheight hRspace]
+    with f hf hvertices hfne hfinj
+  refine ⟨?_, hf⟩
+  rintro q ⟨hq, hqexc⟩
+  have hqD : q ∉ H '' D := fun h => hqexc (Or.inl h)
+  obtain ⟨v, hv, hvq⟩ := hvertices hfne hfinj ⟨hq, hqD⟩
+  have hvp : v ≠ p := fun heq => hqexc (Or.inr (by rw [← hvq, heq]; rfl))
+  have hvC : v ∉ C := fun h => Set.disjoint_left.mp (hsep v ⟨hv, hvp⟩) h rfl
+  have hvfixed : H v = v := hfix hvC
+  have hvq' : v = q := hvfixed.symm.trans hvq
+  have hvR : v ∈ heightSingularPoints R.space f := hvq'.symm ▸ hq
+  exact hvq' ▸ ((hf v ⟨hv, hvp⟩).1.mp hvR).1
+
 end DifferentialGeometry.Topology.PiecewiseLinear
