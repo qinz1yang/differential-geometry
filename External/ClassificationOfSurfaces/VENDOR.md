@@ -1628,3 +1628,34 @@ proof that their intersections with the accumulated union are disks.
 Problem 26.1, general hpush, and the product collar remain open at this
 checkpoint. Other lanes' dependencies were obtained by merging
 `origin/codex/moise-integration` at b9a2cb2ca (merge 0b06c672f).
+
+## Finite grouped attachments for boundary neighborhoods
+
+`DerivedNeighborhoodAttachments.lean` identifies every intersection
+indexed by a nonempty face flag with a dual cell. The combinatorial
+manifold link theorem gives its dimension and PL-ball type. It also
+proves that one piece together with any finite incomparable family of
+incident pieces is a 3-ball, by the already proved 23.11 gluing theorem.
+The uniform face-cardinality version applies to a triangle piece and
+any chosen family of its edge pieces. The original subcomplex lies in
+the union of all its pieces.
+
+`DiskUnion.lean` proves disk gluing inside a common PL disk, including
+finitely many pairwise disjoint arms meeting a central disk in arcs.
+`BoundaryDerivedNeighborhood.lean` proves that the upper-link base of
+a boundary piece is a PL disk, that its intersections with other pieces
+lie in this base, and that a three-face flag gives a PL arc intersection.
+These facts supply the grouped attaching disk when a boundary piece
+meets a central piece and incomparable incident arms. No additional
+unproved geometric hypothesis is used and no vendored source changed.
+
+The three modules pass focused checks with exit 0 and zero warnings.
+`AuditS68.lean` audits all 14 declarations; only `propext`,
+`Classical.choice`, and `Quot.sound` occur. Logs are
+`.lake/scratch/check-derived-neighborhood-attachments.log`,
+`check-disk-union.log`, `check-boundary-derived-neighborhood.log`, and
+`audit-derived-neighborhood-attachments.log`.
+
+This is checked input to the triangle shelling, not its completion.
+The full union over a boundary disk, general hpush, and Theorem 26.2
+still require the shelling and collar inductions.
