@@ -1831,3 +1831,9 @@ F-M2–F-M6 尚未开始；按用户指定顺序推进，只有出现 §1 接口
 `TriangleCapPair.lean` 已提交并推送为 `b906f6e2d`。主端点 `exists_triangle_cap_pair_with_singular_comparison` 从一个旧奇异点一次性构造 A、B 两张保留盘的三角封帽有限复形。证明对参数化切割返回的两种相反侧分支逐一提取 A、B 的低侧或高侧析取和各自边界等高芽，再两次调用统一单帽比较。输出保留共同的保高度环境 PL 同胚、水平 PL 盘像、严格分离方向与旧临界层圆周计数，并把两个充分小邻域取交；因此同一个新高度只要在两张复形顶点及有限三角顶点并上单射、且严格抬高帽面，就同时得到两张球面去掉 `H p` 后的奇异点包含和所有其他旧顶点处的层圆周数不增。
 
 模块聚焦检查 exit=0（14.7 秒）、零 warning；`AuditF195.lean` 主端点仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步用 `HeightPerturbation` 在该共同邻域内选取一个高度：在两张新复形及三角顶点的有限并上单射、保持旧顶点严格次序，并在整个帽盘像去掉 `H p` 后严格大于 `f(H p)`。随后构造两张新奇异点集到旧奇异点集的显式嵌入。F-M1 仍为 partial，严格指标下降、Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF196.lean`。
+
+### 19.48 F-M1：为两张封帽球面选择共同的一般位置高度
+
+`TriangleCapPerturbation.lean` 已提交并推送为 `48eb01988`。主端点 `exists_small_triangle_cap_pair_with_singular_comparison` 对任意正误差，把上一层两张球面的共同有效邻域与误差球取交，再调用有限集合一般位置和半空间扰动生产者。所得同一个连续线性高度在两张新复形的顶点上分别单射，保持所有旧顶点之间由原高度给出的严格次序，在整个三角帽像去掉 `H p` 后严格高于 `f(H p)`，并同时满足两张球面的奇异点包含、逐旧顶点成员关系和层圆周数不增。
+
+模块聚焦检查 exit=0（12.6 秒）、零 warning；`AuditF196.lean` 主端点仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步将每张新奇异点集中的 `H p` 映到旧点 `p`，其余点用比较包含恒等映入旧奇异点集；去掉 `H p` 后目标自动避开 `p`，从而证明这是显式嵌入，并在所有非例外点搬运层圆周数不增。F-M1 仍为 partial，严格指标下降、Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF197.lean`。
