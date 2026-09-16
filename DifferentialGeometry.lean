@@ -40,6 +40,7 @@ import DifferentialGeometry.Analysis.Calculus.Derivative.Curve
 import DifferentialGeometry.Analysis.Calculus.Derivative.DerivativeNorm
 import DifferentialGeometry.Analysis.Calculus.Derivative.Diagonal
 import DifferentialGeometry.Analysis.Calculus.Derivative.DifferentialComparison
+import DifferentialGeometry.Analysis.Calculus.Derivative.EndpointSpatialDerivative
 import DifferentialGeometry.Analysis.Calculus.Derivative.ForwardTimeDifference
 import DifferentialGeometry.Analysis.Calculus.Derivative.HilbertBasis
 import DifferentialGeometry.Analysis.Calculus.Derivative.IicRestriction
@@ -3770,6 +3771,7 @@ import DifferentialGeometry.Geometry.Connection.AlongCurveHom
 import DifferentialGeometry.Geometry.Connection.AlongCurveRegularity
 import DifferentialGeometry.Geometry.Connection.Associated
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Connection.Christoffel
+import DifferentialGeometry.Geometry.Connection.ChartBridge.Connection.Frame
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Curvature.BasisBracket
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Curvature.BasisIdentity
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Curvature.BasisIdentityOffCenter
@@ -4088,6 +4090,7 @@ import DifferentialGeometry.Geometry.Connection.Trivial
 import DifferentialGeometry.Geometry.Connection.Trivial.AlongCurve
 import DifferentialGeometry.Geometry.Connection.Variation.Basic
 import DifferentialGeometry.Geometry.Coordinates.Calculus.FixedBaseDerivative
+import DifferentialGeometry.Geometry.Coordinates.Connection.ChangeOfBasis
 import DifferentialGeometry.Geometry.Coordinates.Connection.Christoffel
 import DifferentialGeometry.Geometry.Coordinates.Connection.ChristoffelTensor
 import DifferentialGeometry.Geometry.Coordinates.Connection.Coefficients
@@ -4096,6 +4099,7 @@ import DifferentialGeometry.Geometry.Coordinates.EmbeddedCurve
 import DifferentialGeometry.Geometry.Coordinates.Fields.Scalar
 import DifferentialGeometry.Geometry.Coordinates.Fields.Tensor
 import DifferentialGeometry.Geometry.Coordinates.Fields.Vector
+import DifferentialGeometry.Geometry.Coordinates.Frame.ChangeOfBasis
 import DifferentialGeometry.Geometry.Coordinates.Frame.Chart
 import DifferentialGeometry.Geometry.Coordinates.Frame.ChartSource
 import DifferentialGeometry.Geometry.Coordinates.Frame.Coordinate
@@ -4876,10 +4880,12 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.TensorNa
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.TerminalCurvature
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Connection.Christoffel
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Connection.Components
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Connection.CoordinateBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Connection.CoordinateEvolution
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Connection.CurvatureDerivative.Basic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Connection.CurvatureDerivative.TimeDerivative
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Connection.DifferenceTimeDerivative
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Connection.EndpointConvergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Connection.Evolution
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Connection.Intrinsic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Connection.MetricCovariantDerivative
@@ -4945,6 +4951,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Uhlenbec
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Variation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Metric.Basic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Metric.CoefficientEvolution
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Metric.CoordinateConvergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Metric.Covariant
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Metric.Evolution
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Metric.InverseSmooth
@@ -7246,6 +7253,7 @@ import DifferentialGeometry.Geometry.Metric.Convergence.Compactness.Components
 import DifferentialGeometry.Geometry.Metric.Convergence.Compactness.Diagonal
 import DifferentialGeometry.Geometry.Metric.Convergence.Compactness.Precompactness
 import DifferentialGeometry.Geometry.Metric.Convergence.Coordinates.ConnectionComparison
+import DifferentialGeometry.Geometry.Metric.Convergence.Coordinates.ConnectionLimits
 import DifferentialGeometry.Geometry.Metric.Convergence.Coordinates.Control
 import DifferentialGeometry.Geometry.Metric.Convergence.Coordinates.GoodFrame
 import DifferentialGeometry.Geometry.Metric.Convergence.Coordinates.InverseGram
@@ -7303,6 +7311,7 @@ import DifferentialGeometry.Geometry.Metric.ConvexProjection
 import DifferentialGeometry.Geometry.Metric.ConvexSourceLipschitz
 import DifferentialGeometry.Geometry.Metric.Coordinates.ChartGram
 import DifferentialGeometry.Geometry.Metric.Coordinates.FiberExpansion
+import DifferentialGeometry.Geometry.Metric.Coordinates.FrameBounds
 import DifferentialGeometry.Geometry.Metric.Coordinates.InnerExpansion
 import DifferentialGeometry.Geometry.Metric.Coordinates.QuadraticBounds
 import DifferentialGeometry.Geometry.Metric.CoveringPullback
