@@ -1596,3 +1596,9 @@ F-M2–F-M6 尚未开始；按用户指定顺序推进，只有出现 §1 接口
 证明在同一环境中实际构造过原点的平面三角形与三维单纯形邻域，插入原点并作适配横截高度的共同细分；目标曲面链环的 PL 圆周、二点零截面和两侧非空均由构造推出。随后用已证链环配对、径向闭星延拓和邻域运输，把标准平面与横截面的 crossing 搬回源顶点。没有增加目标 crossing、局部图卡或结论型假设。
 
 聚焦检查 exit=0（12.9 秒）、零 warning；`AuditF156.lean` 主端点仅依赖 `propext`、`Classical.choice`、`Quot.sound`，完整签名已核对。F-M1 仍为 partial：下一步从一般位置高度的顶点局部数据推出链环零截面恰含两点且两侧非空，再接入凸封帽边缘分类；选定点整层圆周数严格下降、Lemma 1、Lemma 2–6 和 I1 仍未交付。下一审计文件 `AuditF157.lean`。
+
+### 19.9 F-M1：径向链环细分保持高度符号
+
+`LinkHeightSubdivision.lean` 已提交并推送为 `ee366b46f`。主端点 `exists_isPLHomeomorphOn_geometricLink_of_isSubdivision_preserving_height_sign` 对保持每个细面落在指定高度闭半空间中的任意有限细分，构造原链环与细分链环之间的显式径向单纯 PL 同胚，并分别证明零截面、严格负部和严格正部的精确像集等式。证明由径向比例的正性逐顶点推出高度差同号，再用逐面仿射性扩展；没有依赖存在性定理中隐藏的映射选择，也没有把符号保持写入假设。
+
+模块聚焦检查 exit=0（11.3 秒）、零 warning；`AuditF157.lean` 五项全部仅依赖 `propext`、`Classical.choice`、`Quot.sound`，主端点完整签名已核对。该层允许把为高度半空间适配而取的细分链环数据搬回原星。F-M1 仍为 partial：下一步闭合凸封帽边缘的 crossing/孤立分类与选定点处的严格指标下降；Lemma 1、Lemma 2–6 和 I1 尚未交付。下一审计文件 `AuditF158.lean`。
