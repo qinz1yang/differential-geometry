@@ -2128,3 +2128,24 @@ public declarations, including B.2 and the new circle/relative-parity inputs; ex
 only the standard three axioms. B.6 is still in progress: the remaining step is to
 assemble the triangulated disk and its transverse crossing face, apply relative
 parity, and derive the global components/frontier statement. P.4 remains pending.
+
+### Closed surfaces disconnect three-dimensional space, 2026-09-16
+
+`BoundaryCrossingObstruction.lean` proves that a unique boundary preimage point in
+a transverse source facet is impossible. Its local form needs only the target
+open-simplex condition and the sum-of-direction-spaces condition at that point.
+`SurfaceSeparation.lean` assembles the actual PL disk map: it glues the transverse
+segment to a complementary PL path, extends the circle map, triangulates the disk
+and crossing arc, and translates the map to avoid all source vertices. The source
+crossing face is therefore an edge, its image is nondegenerate and transverse, and
+the local parity obstruction applies.
+
+The headline `IsCombinatorialManifold.not_isPreconnected_compl` proves that the
+complement of any nonempty finite closed combinatorial two-manifold in any real
+normed space of dimension three is not preconnected. No connectedness assumption
+on the surface or Schoenflies hypothesis is needed for this separation step.
+Both new modules pass focused checks with exit 0 and zero warnings.
+`AuditS121SurfaceSeparation.lean` / `.log` audit the two obstruction declarations
+and the separation headline; exit 0, only the standard three axioms. B.6's remaining
+endpoint work is exactly two complementary components, their common frontier,
+and two-sidedness for a connected surface.
