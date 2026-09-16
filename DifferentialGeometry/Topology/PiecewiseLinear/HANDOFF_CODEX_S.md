@@ -1029,6 +1029,7 @@ No vendored or other-lane source changed.
 Full 26.2 remains partial: assemble the finite collar induction using these actual dual-cell
 inputs, then prove that the final image is a neighborhood of the entire original boundary.
 The exact bundled I2 target-type issue and the other milestone obligations are unchanged.
+
 ### S-M4 continuation: finite surface-collar induction
 
 The arc-cover layer is committed and pushed as `691c7329d`; the integration merge was
@@ -1056,3 +1057,34 @@ Full 26.2 still requires the image-neighborhood property. The next proof restric
 product embedding to a disk neighborhood in the boundary and uses the exact boundary of
 its three-ball complement to exclude the base point from that complement. The bundled
 I2 target-type issue and other milestone obligations are unchanged.
+
+### S-M4 completed: whole-boundary collar and its neighborhood property
+
+The finite product-embedding construction is committed and pushed as `e9feba0c2`;
+its integration merge was already up to date. `CollarNeighborhood.lean` proves
+`IsPLHomeomorphOn.mem_nhdsSetWithin_boundaryComplex`: a PL product embedding of the
+whole intrinsic boundary, with its bottom fixed and its image in the manifold, has an
+image which is a relative neighborhood of that boundary. At each boundary point, the
+proof chooses a disk neighborhood, restricts the product to its three-ball prism, and
+uses the exact complementary-boundary formula. The original boundary remainder and
+the exposed top and side faces both avoid the chosen point, so the closed complement
+does not contain it. The neighborhood assertion is proved, not included in the input.
+
+`IsCombinatorialManifoldWithBoundary.exists_collar` is the resulting Moise 26.2 endpoint
+for a finite combinatorial three-manifold with boundary in any finite-dimensional real
+normed ambient space. It produces a polyhedral W contained in K.space, a PL homeomorphism
+from the entire intrinsic boundary times [0,1] onto W, the relative-neighborhood property,
+the bottom identity, the exact boundary intersection, and positive-height boundary
+avoidance. No containing-ball, collar, compatibility, Schoenflies, or chart assumption is
+required beyond the finite combinatorial manifold hypotheses. This completes the S-M4
+finite-complex interface in NIGHT_PLAN. Transport to an arbitrary abstract PL charted
+ambient manifold is a separate interface and is not asserted by this endpoint.
+
+Focused check: `check-collar-neighborhood.log`, exit 0, zero warnings.
+`AuditS90CollarNeighborhood.lean` / `.log` contain both new public declarations; each
+has only `propext`, `Classical.choice`, and `Quot.sound`. No vendored or other-lane
+source changed. The source hash is recorded in the final bookkeeping entry.
+
+The next S-M5 obligation is 26.3: identify the two components adjacent to a two-sided
+surface and prove their closures are combinatorial manifolds, then apply the collar
+endpoint. The bundled I2 target-type issue remains unchanged; I2 is not marked delivered.
