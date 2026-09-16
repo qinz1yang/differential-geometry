@@ -956,6 +956,7 @@ import DifferentialGeometry.Analysis.ODE.Flow.Planar.TransverseHittingTime
 import DifferentialGeometry.Analysis.ODE.Flow.Planar.TrappedPlanarOrbit
 import DifferentialGeometry.Analysis.ODE.Flow.Uniqueness
 import DifferentialGeometry.Analysis.ODE.GradientFlow
+import DifferentialGeometry.Analysis.ODE.Gronwall.Backward
 import DifferentialGeometry.Analysis.ODE.Gronwall.ClosedEdge
 import DifferentialGeometry.Analysis.ODE.Gronwall.DominatedSubsolutions
 import DifferentialGeometry.Analysis.ODE.Gronwall.EnergyHierarchy
@@ -4631,6 +4632,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Curvature
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Ricci.Components
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Ricci.Intrinsic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Ricci.QuadraticForm
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.CovariantDerivative.Terminal
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Ricci.Tower
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Ricci.Trace
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Source.Bound
@@ -4831,6 +4833,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.FiniteTime.Curvatu
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.FiniteTime.CurvatureBlowupRateIntrinsic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.FiniteTime.Scalar
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.FiniteTime.Solution
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.CurvatureMetricComparison
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.MetricComparison
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.MetricFirstOrder
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.MetricVariation
