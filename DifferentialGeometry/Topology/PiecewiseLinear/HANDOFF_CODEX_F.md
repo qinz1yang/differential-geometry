@@ -2001,3 +2001,11 @@ F-M1 仍为 partial。单个旧三角形的全部纤维及逐边对应已闭合�
 封帽端点 `eventually_encard_levelPolygons_cap_add_one_le_of_upper_side` 与 `_of_lower_side` 直接证明 `(levelPolygons (H '' (Q ∪ D)) f (f (H p))).encard + 1 ≤ (levelPolygons Q ℓ (ℓ p)).encard`。只需要 `Q` 闭且包含于原球面、`J` 是旧保留盘层圆周、`J ⊆ D`、沿 `J` 的相应半空间芽，以及 `H` 保旧高度和新高度把 `H '' D` 除帽尖外严格推至同侧；允许 `p ∉ J`。§19.56 的数学缺口至此关闭，没有增加 `SchoenfliesInput` 字段。
 
 聚焦检查：`FaceLevelPolygons` exit=0（10.8 秒）、`HeightFiberWitness` exit=0（11.3 秒）、`RelativeHeightDeletion` exit=0（13.1 秒），均零 warning。`AuditF218.lean` 九项全部仅依赖 `propext`、`Classical.choice`、`Quot.sound`；fresh 自检 13/13 新鲜、禁用模式 0。下一步将相对删除邻域并入两方向三角封帽生产者，构造两个严格降指标球面，再做 Lemma 1 归约和 S.4 M2/M3。F-M1 整体与 I1 仍未交付。下一审计文件 `AuditF219.lean`。
+
+### 19.70 F-M1：两封帽球面严格降指标
+
+`OppositeTriangleCapPerturbation.lean` 的新端点 `exists_small_opposite_triangle_cap_pair_with_level_comparison` 已把相对删除的小高度邻域并入两方向通用转轴生产者；它实际返回两张封帽球面在帽尖层的圆周数加一不超过各自旧保留盘圆周数，并保留其他奇异点比较、环境同胚在指定凸开邻域外恒同、公共帽盘和恢复原球面的精确等式。旧的 singular comparison 接口保持不变。
+
+`HeightIndexReduction.lean` 的 `heightIndex_lt_of_singular_comparison` 将实际奇异点嵌入和逐层比较合成为严格指标不等式：帽尖仍是奇异点时该项严格下降，否则正贡献的原点从嵌入像中消失。`exists_cap_pair_heightIndex_lt_of_pos` 从正的原指标实际选出正贡献点，生产两个指标均严格较小的有限 PL 球面、各自一般位置高度，以及可供 17.11 消费的平面公共盘与精确恢复式；同时环境同胚保持原球面的像位于给定凸开邻域内。没有增加结论型假设。
+
+聚焦检查：`OppositeTriangleCapPerturbation` exit=0（19.7 秒）、`HeightIndexReduction` exit=0（14 秒），均零 warning。`AuditF219.lean` 四端点全部仅依赖 `propext`、`Classical.choice`、`Quot.sound`。§19.56 与严格降指标已闭合，下一步做 Lemma 1 的良基归纳，把 S.4 归约到零指标球面，再闭合 M2 的零指标情形。F-M1 整体和 I1 尚未交付；下一审计文件 `AuditF220.lean`。
