@@ -1837,3 +1837,9 @@ F-M2–F-M6 尚未开始；按用户指定顺序推进，只有出现 §1 接口
 `TriangleCapPerturbation.lean` 已提交并推送为 `48eb01988`。主端点 `exists_small_triangle_cap_pair_with_singular_comparison` 对任意正误差，把上一层两张球面的共同有效邻域与误差球取交，再调用有限集合一般位置和半空间扰动生产者。所得同一个连续线性高度在两张新复形的顶点上分别单射，保持所有旧顶点之间由原高度给出的严格次序，在整个三角帽像去掉 `H p` 后严格高于 `f(H p)`，并同时满足两张球面的奇异点包含、逐旧顶点成员关系和层圆周数不增。
 
 模块聚焦检查 exit=0（12.6 秒）、零 warning；`AuditF196.lean` 主端点仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步将每张新奇异点集中的 `H p` 映到旧点 `p`，其余点用比较包含恒等映入旧奇异点集；去掉 `H p` 后目标自动避开 `p`，从而证明这是显式嵌入，并在所有非例外点搬运层圆周数不增。F-M1 仍为 partial，严格指标下降、Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF197.lean`。
+
+### 19.49 F-M1：带指定例外点的奇异点集显式嵌入
+
+`SingularPointEmbedding.lean` 已提交并推送为 `908b74641`。主端点 `exists_embedding_heightSingularPoints_of_sdiff_subset` 是后续指标比较的集合论核心：若源奇异点集去掉 `a` 后包含于目标奇异点集去掉 `b`，且 `b` 确为目标奇异点，则构造源到目标的显式嵌入；源中的 `a` 若出现便映到 `b`，所有其他点保持原值。单射性来自非例外像自动避开 `b`，不要求 `a` 本身属于源集。
+
+模块聚焦检查 exit=0（10.8 秒）、零 warning；`AuditF197.lean` 主端点仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步把该端点用于两张封帽球面的去单点包含，并由旧奇异点必为旧复形顶点及逐顶点层圆周数比较，证明每个不映到 `p` 的新奇异点指标贡献不增。剩余核心将只是在两张候选球面中证明至少一张的例外项严格下降。F-M1 仍为 partial，严格指标下降、Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF198.lean`。
