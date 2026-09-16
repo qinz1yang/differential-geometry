@@ -133,4 +133,41 @@ theorem exists_lp_scalarH2_composition_of_h1_bound
     (tensorHsInclusion_injective (by norm_num : (1 : ℝ) ≤ 2)) ha hb hLift
   exact ⟨v, hv⟩
 
+theorem exists_lp_scalarH2_composition_bound_of_h1_bound
+    {Ω : Type*} [MeasurableSpace Ω]
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ)))
+    (F : (ι → ℝ) → ℝ) {U K : Set (ι → ℝ)}
+    (hF : ContDiffOn ℝ ∞ F U) (hU : IsOpen U) (hK : IsCompact K) (hKU : K ⊆ U)
+    (R : ℝ) :
+    let J := tensorHsInclusion (g := g) (r := 0) (s := 0)
+      (by norm_num : (1 : ℝ) ≤ 2)
+    let P := ContinuousLinearMap.piLpMap 2 (fun _ : ι => J)
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ (μ : Measure Ω) [IsFiniteMeasure μ] {p : ℝ≥0∞}
+      {u : Ω → PiLp 2 (fun _ : ι => TensorHs g 0 0 2)},
+      MemLp u p μ → ∀ (a : Ω → TensorHs g 0 0 1), AEStronglyMeasurable a μ →
+      (∀ᵐ t ∂μ, range (scalarH1PiToContinuous g (P (u t))) ⊆ K) →
+      (∀ᵐ t ∂μ, (∑ i, ‖J (u t i)‖) ≤ R) →
+      (∀ᵐ t ∂μ, ∀ x, scalarH1ToContinuous g (a t) x =
+        F (scalarH1PiToContinuous g (P (u t)) x)) →
+      ∃ v : Lp (TensorHs g 0 0 2) p μ, (fun t => J (v t)) =ᵐ[μ] a ∧
+        ∀ᵐ t ∂μ, ‖v t‖ ≤ C * (1 + ∑ i, ‖u t i‖) := by
+  classical
+  intro J P
+  obtain ⟨C, hC, hc⟩ := exists_scalarH2_composition_bound_of_h1_bound
+    g F hF hU hK hKU R
+  refine ⟨C, hC, ?_⟩
+  intro μ _ p u hu a ha hRange hBound hEval
+  obtain ⟨v, hv⟩ := exists_lp_scalarH2_composition_of_h1_bound
+    μ g F hF hU hK hKU hu ha hRange hBound hEval
+  refine ⟨v, hv, ?_⟩
+  filter_upwards [hRange, hBound, hEval, hv] with t hRt hBt hEt hvt
+  obtain ⟨z, hz, hze⟩ := hc (u t) hRt hBt
+  have hzj : J z = a t := by
+    apply scalarH1ToContinuous_injective g
+    exact ContinuousMap.ext (fun x => (hze x).trans (hEt x).symm)
+  have heq : v t = z :=
+    tensorHsInclusion_injective (by norm_num : (1 : ℝ) ≤ 2) (hvt.trans hzj.symm)
+  rw [heq]
+  exact hz
+
 end AddCircle

@@ -295,4 +295,29 @@ theorem exists_scalar_vectorHs_time_composition_on_closedBall
     exact hBeval t ⟨ht.1, ht.2.trans (min_le_right r s)⟩ (inclB u) x j
 
 
+def scalarHsTimeCoordinate
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) (σ : ℝ) :
+    ℝ × PiLp 2 (fun _ : ι => TensorHs g 0 0 σ) →L[ℝ]
+      PiLp 2 (fun _ : Option ι => TensorHs g 0 0 σ) :=
+  timeCoordinate g σ
+
+omit [Fintype ι] in
+theorem tensorHsInclusion_scalarHsTimeCoordinate
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ)))
+    {σ : ℝ} (hσ : 1 ≤ σ)
+    (p : ℝ × PiLp 2 (fun _ : ι => TensorHs g 0 0 σ)) :
+    ContinuousLinearMap.piLpMap 2 (fun _ : Option ι =>
+      tensorHsInclusion (g := g) (r := 0) (s := 0) hσ)
+        (scalarHsTimeCoordinate g σ p) =
+      scalarH1TimeCoordinate g (p.1, ContinuousLinearMap.piLpMap 2
+        (fun _ : ι => tensorHsInclusion (g := g) (r := 0) (s := 0) hσ) p.2) := by
+  apply PiLp.ext
+  intro j
+  cases j with
+  | none =>
+    change tensorHsInclusion hσ (p.1 • ccTensorToHs g 0 σ (scalarCc g 1)) = _
+    rw [map_smul, tensorHsInclusion_ccTensorToHs]
+    rfl
+  | some i => rfl
+
 end AddCircle
