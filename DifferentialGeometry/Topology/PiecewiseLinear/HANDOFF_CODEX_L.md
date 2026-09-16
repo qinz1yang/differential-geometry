@@ -344,3 +344,19 @@ theorem eq_top_of_boundaryLoops_mem_normal
 - 确切未闭合项因此缩减为两条表示桥：有限连通一维组合流形的 PL 球/球面分类，以及二重覆盖原像连通分支的有限 PL 三角剖分。
   前者把闭分支升级为多边形圆、触边分支升级为折线；后者把 §11 的拓扑覆盖分类升级为盘内的多边形原像。
   Case 1–4 的环带、替换与切开重建，以及 I3 边界半空间桥接仍未闭合，也没有被弱化为假设。
+
+## 14. 2026-09-15 E3-M2 追加：有限平面复形的几何单纯复形桥接
+
+状态：done（闭分支 PL 圆分类的表示层前置已闭合，整体 L.3 仍为 partial）。数学提交 `8c03e7d5c`。
+
+- `PlanarSchoenflies.lean` 新增 `simplicialComplexOfPlaneComplex`，把 vendored `PlaneComplex` 的有限抽象顶点、面与平面位置
+  原样实现为项目的 `Geometry.SimplicialComplex ℝ Plane`；面集是 `simplexes` 经 `position` 的像，不引入额外顶点或面。
+- `mem_simplicialComplexOfPlaneComplex_faces_iff` 暴露精确面对应；
+  `simplicialComplexOfPlaneComplex_faces_finite` 保留有限性；
+  `simplicialComplexOfPlaneComplex_space` 证明新复形空间恰为原 `PlaneComplex.support`。因此
+  `PolygonalCircle.edgeComplex_support` 与 `isPLSphere_one_carrier` 现在可直接接入项目的单纯映射 PL 同胚接口。
+- `PlanarSchoenflies` 聚焦检查 exit=0、零 warning；`.lake/scratch/AuditPlaneComplexBridge.lean` 的 4 项审计全部只含
+  `propext`、`Classical.choice`、`Quot.sound`。本层未首次复用新的 covering/Van Kampen 声明。
+- 下一步仍须从有限连通 2-正则边图取得覆盖全部顶点的循环，把其顶点编号与某个同边数的 `PolygonalCircle.edgeComplex`
+  做双向面对应，再由 `isPLHomeomorphOn_simplicialMap` 得到闭分支空间是 PL 1-球面。触边分支还需相应的有限路径分类；
+  二重覆盖原像的有限 PL 三角剖分、Case 1–4 几何构造与 I3 边界半空间桥接仍未闭合。
