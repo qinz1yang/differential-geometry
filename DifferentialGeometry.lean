@@ -974,6 +974,7 @@ import DifferentialGeometry.Analysis.ODE.IndexForm.NegativeDirection
 import DifferentialGeometry.Analysis.ODE.IndexForm.Positivity
 import DifferentialGeometry.Analysis.ODE.IndexForm.SmoothNegativeDirection
 import DifferentialGeometry.Analysis.ODE.IndexForm.Uniqueness
+import DifferentialGeometry.Analysis.ODE.IntegralCurveNaturality
 import DifferentialGeometry.Analysis.ODE.InvariantHyperplane
 import DifferentialGeometry.Analysis.ODE.InvariantSet.Basic
 import DifferentialGeometry.Analysis.ODE.InvariantSet.Nagumo
@@ -9279,14 +9280,17 @@ import DifferentialGeometry.Topology.Morse.NormalForm.Euclidean
 import DifferentialGeometry.Topology.Morse.NormalForm.Local
 import DifferentialGeometry.Topology.Morse.NormalForm.Manifold
 import DifferentialGeometry.Topology.Morse.NormalForm.Saddle
+import DifferentialGeometry.Topology.Morse.NormalForm.SaddleField
 import DifferentialGeometry.Topology.Morse.Perturbation
 import DifferentialGeometry.Topology.Morse.RegularLevel.CriticalSeparation
+import DifferentialGeometry.Topology.Morse.RegularLevel.DirectionalField
 import DifferentialGeometry.Topology.Morse.RegularLevel.Flow
 import DifferentialGeometry.Topology.Morse.RegularLevel.Isotopy
 import DifferentialGeometry.Topology.Morse.RegularLevel.LevelSet
 import DifferentialGeometry.Topology.Morse.RegularLevel.LocalTransport
 import DifferentialGeometry.Topology.Morse.RegularLevel.NoCriticalValues
 import DifferentialGeometry.Topology.Morse.RegularLevel.RelativeVectorField
+import DifferentialGeometry.Topology.Morse.RegularLevel.SaddleTransport
 import DifferentialGeometry.Topology.Morse.RegularLevel.Sublevel
 import DifferentialGeometry.Topology.Morse.RegularLevel.VectorField
 import DifferentialGeometry.Topology.Morse.RegularSublevelBoundary
