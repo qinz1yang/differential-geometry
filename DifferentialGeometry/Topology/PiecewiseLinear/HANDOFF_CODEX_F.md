@@ -1681,3 +1681,9 @@ F-M2–F-M6 尚未开始；按用户指定顺序推进，只有出现 §1 接口
 `RetainedDiskLink.lean` 已提交并推送为 `ab191e998`。主端点 `eventually_geometricLink_section_subsingleton_of_boundary_segment` 从实际 PL 二球盘、其边界上的接缝顶点，以及边界链环中的两个不同方向构造保留盘顶点链环的一维带边流形。`geometricLink_boundaryComplex` 将这两个接缝方向识别为该链环的两个组合边界端点；其余链环顶点的旧高度严格同侧时，上一层稳定性定理给出所有充分小且在接缝点与链环顶点上单射的新高度的截面至多一点。
 
 模块聚焦检查 exit=0（13.0 秒）、零 warning；`AuditF170.lean` 主端点仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步从 `HeightSides` 与接缝适配剖分实际推出非边界链环顶点的严格同侧条件和两个边界方向间的开线段关系，再把保留盘与三角帽的两个单点截面合并为完整链环的 `encard ≤ 2`。F-M1 仍为 partial，严格降指标、Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF171.lean`。
+
+### 19.23 F-M1：由单侧与边界集合芽推出保留链环严格高度
+
+`BoundaryLinkGerm.lean` 已提交并推送为 `c0598e23c`。`map_le_of_mem_geometricLink_space_of_eventually` 以链环射线缩回接缝点，证明局部位于旧高度闭半空间会强制整个几何链环位于该闭半空间。`mem_geometricLink_boundaryComplex_of_height_eq_of_eventually` 证明任一等高链环顶点必属于边界链环：在对应边上选取足够靠近接缝点的开单形点，由边界等高集合芽把该点放入边界复形，再以开单形载体唯一性把整条边降到边界复形。PL 二球盘的边界链环是 PL 零球面，两个已知不同边界方向因而穷尽它。主端点 `geometricLink_vertices_lt_of_halfSpace_boundary_germ` 由此把所有其他链环顶点的闭侧不等式提升为严格不等式；`eventually_geometricLink_section_subsingleton_of_halfSpace_boundary_germ` 直接给充分小一般位置高度下的保留链环单点截面。
+
+模块聚焦检查 exit=0（11.9 秒）、零 warning；`AuditF171.lean` 六个端点均仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步从 `HeightSides` 的相反半空间集合芽、水平圆周的局部等高识别以及接缝适配三角剖分构造本端点的两个 germ 输入和边界链环两方向。之后将保留盘与凸帽的两个单点截面合并。F-M1 仍为 partial，严格降指标、Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF172.lean`。
