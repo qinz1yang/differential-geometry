@@ -1,5 +1,6 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BoundaryBranchCrosscut
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CellGluing
+import DifferentialGeometry.Topology.PiecewiseLinear.SubcomplexNhdsWithin
 import DifferentialGeometry.External.Schoenflies.BoundaryContinuity2
 import Mathlib.Tactic.Group
 
@@ -349,6 +350,362 @@ theorem exists_three_cells_of_two_disjoint_crosscuts
 end SingularTwoCell
 
 universe u
+
+namespace NormalSingularSetTriangulation
+
+open Classical in
+theorem restrict_space_eq_inter_preimage_doublePointSet
+    {M : Type u} [TopologicalSpace M]
+    [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
+    {D G : SingularTwoCell M} {BdM : Set M}
+    (T : NormalSingularSetTriangulation D BdM)
+    (hclopen : IsClopen
+      (((↑) : doublePointSet D D.domain → M) ⁻¹' doublePointSet G G.domain)) :
+    (restrict T.complex
+      (T.piece.piece.map ⁻¹' doublePointSet G G.domain)).space =
+        T.complex.space ∩
+          T.piece.piece.map ⁻¹' doublePointSet G G.domain := by
+  let Q := T.piece.piece.map ⁻¹' doublePointSet G G.domain
+  let L := restrict T.complex Q
+  apply Subset.antisymm
+  · intro x hx
+    exact ⟨space_mono_of_faces_subset (restrict_faces_subset T.complex Q) hx,
+      restrict_space_subset T.complex Q hx⟩
+  · intro x hx
+    rw [T.space_eq_iUnion_branchComplex] at hx
+    obtain ⟨c, hxc⟩ := mem_iUnion.mp hx.1
+    have hcarrier : T.piece.piece.map x ∈ T.branchCarrier c := ⟨x, hxc, rfl⟩
+    let y : doublePointSet D D.domain :=
+      ⟨T.piece.piece.map x, T.branchCarrier_subset_doublePointSet c hcarrier⟩
+    have hybranch : y ∈ T.branchSet c := hcarrier
+    have hyG : y ∈
+        ((↑) : doublePointSet D D.domain → M) ⁻¹' doublePointSet G G.domain := hx.2
+    have hbranch : T.branchSet c ⊆
+        ((↑) : doublePointSet D D.domain → M) ⁻¹' doublePointSet G G.domain :=
+      (T.branchSet_isConnected c).isPreconnected.subset_isClopen hclopen
+        ⟨y, hybranch, hyG⟩
+    obtain ⟨s, hs, hxs⟩ := (T.branchComplex c).mem_space_iff.mp hxc
+    apply L.convexHull_subset_space
+    · refine ⟨T.branchComplex_faces_subset c hs, ?_⟩
+      intro z hzs
+      have hzcarrier : T.piece.piece.map z ∈ T.branchCarrier c :=
+        ⟨z, (T.branchComplex c).convexHull_subset_space hs hzs, rfl⟩
+      let w : doublePointSet D D.domain :=
+        ⟨T.piece.piece.map z, T.branchCarrier_subset_doublePointSet c hzcarrier⟩
+      have hwbranch : w ∈ T.branchSet c := hzcarrier
+      exact hbranch hwbranch
+    · exact hxs
+
+theorem restrict_space_mem_nhdsWithin_doublePointSet
+    {M : Type u} [TopologicalSpace M]
+    [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
+    {D G : SingularTwoCell M} {BdM : Set M}
+    (T : NormalSingularSetTriangulation D BdM)
+    (hspace : (restrict T.complex
+      (T.piece.piece.map ⁻¹' doublePointSet G G.domain)).space =
+        T.complex.space ∩
+          T.piece.piece.map ⁻¹' doublePointSet G G.domain)
+    (hopen : ∀ y ∈ doublePointSet G G.domain,
+      doublePointSet G G.domain ∈ 𝓝[doublePointSet D D.domain] y) :
+    ∀ x ∈ (restrict T.complex
+      (T.piece.piece.map ⁻¹' doublePointSet G G.domain)).space,
+      (restrict T.complex
+        (T.piece.piece.map ⁻¹' doublePointSet G G.domain)).space ∈
+          𝓝[T.complex.space] x := by
+  let Q := T.piece.piece.map ⁻¹' doublePointSet G G.domain
+  let L := restrict T.complex Q
+  intro x hx
+  have hxold : x ∈ T.complex.space := (hspace.subset hx).1
+  have hxG : T.piece.piece.map x ∈ doublePointSet G G.domain :=
+    (hspace.subset hx).2
+  have hmap : MapsTo T.piece.piece.map T.complex.space
+      (doublePointSet D D.domain) := by
+    intro z hz
+    rw [← T.map_space]
+    exact ⟨z, hz, rfl⟩
+  have hpre : Q ∈ 𝓝[T.complex.space] x :=
+    (T.piece.piece.continuousOn.mono
+      (space_mono_of_faces_subset T.faces_subset) x hxold).tendsto_nhdsWithin hmap
+        (hopen (T.piece.piece.map x) hxG)
+  rw [hspace]
+  exact Filter.inter_mem self_mem_nhdsWithin hpre
+
+open Classical in
+theorem isCombinatorialManifoldWithBoundary_restrict_of_space_mem_nhdsWithin
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces]
+    (hK : IsCombinatorialManifoldWithBoundary 1 K) (Q : Set E)
+    (hnhds : ∀ x ∈ (restrict K Q).space,
+      (restrict K Q).space ∈ 𝓝[K.space] x) :
+    IsCombinatorialManifoldWithBoundary 1 (restrict K Q) := by
+  intro x hx
+  have hxL : x ∈ (restrict K Q).space := (restrict K Q).subset_space hx (by simp)
+  have hlink := geometricLink_eq_of_space_mem_nhdsWithin
+    (restrict_faces_subset K Q) (hnhds x hxL)
+  rw [hlink]
+  exact hK x (restrict_faces_subset K Q hx)
+
+theorem map_restrict_space_eq_doublePointSet
+    {M : Type u} [TopologicalSpace M]
+    [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
+    {D G : SingularTwoCell M} {BdM : Set M}
+    (T : NormalSingularSetTriangulation D BdM)
+    (hsub : doublePointSet G G.domain ⊆ doublePointSet D D.domain)
+    (hspace : (restrict T.complex
+      (T.piece.piece.map ⁻¹' doublePointSet G G.domain)).space =
+        T.complex.space ∩
+          T.piece.piece.map ⁻¹' doublePointSet G G.domain) :
+    T.piece.piece.map '' (restrict T.complex
+      (T.piece.piece.map ⁻¹' doublePointSet G G.domain)).space =
+        doublePointSet G G.domain := by
+  apply Subset.antisymm
+  · rintro y ⟨x, hx, rfl⟩
+    exact (hspace.subset hx).2
+  · intro y hy
+    have hyold : y ∈ doublePointSet D D.domain := hsub hy
+    rw [← T.map_space] at hyold
+    obtain ⟨x, hx, rfl⟩ := hyold
+    exact ⟨x, hspace.symm.subset ⟨hx, hy⟩, rfl⟩
+
+open Classical in
+theorem mem_boundaryComplex_one_space_iff_of_space_mem_nhdsWithin
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    {K L : Geometry.SimplicialComplex ℝ E} [Finite K.faces] [Finite L.faces]
+    (hK : IsCombinatorialManifoldWithBoundary 1 K)
+    (hL : IsCombinatorialManifoldWithBoundary 1 L) (hLK : L.space ⊆ K.space)
+    {p : E} (hp : p ∈ L.space) (hnhds : L.space ∈ 𝓝[K.space] p) :
+    p ∈ (boundaryComplex 1 L).space ↔ p ∈ (boundaryComplex 1 K).space := by
+  exact mem_boundaryComplex_space_iff_of_space_mem_nhdsWithin (n := 0)
+    K L hK hL hLK hp hnhds
+
+open Classical in
+theorem map_boundaryComplex_eq_inter_of_space_mem_nhdsWithin
+    {E M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [FiniteDimensional ℝ E] [TopologicalSpace M]
+    {K L : Geometry.SimplicialComplex ℝ E} [Finite K.faces] [Finite L.faces]
+    (f : E → M) {oldS S BdM : Set M}
+    (hK : IsCombinatorialManifoldWithBoundary 1 K)
+    (hL : IsCombinatorialManifoldWithBoundary 1 L) (hLK : L.space ⊆ K.space)
+    (hnhds : ∀ x ∈ L.space, L.space ∈ 𝓝[K.space] x)
+    (hmapSpace : f '' L.space = S) (hSsub : S ⊆ oldS)
+    (hmapBoundary : f '' (boundaryComplex 1 K).space = oldS ∩ BdM)
+    (hinj : Set.InjOn f K.space) :
+    f '' (boundaryComplex 1 L).space = S ∩ BdM := by
+  have hboundary {x : E} (hx : x ∈ L.space) :
+      x ∈ (boundaryComplex 1 L).space ↔ x ∈ (boundaryComplex 1 K).space :=
+    mem_boundaryComplex_one_space_iff_of_space_mem_nhdsWithin
+      hK hL hLK hx (hnhds x hx)
+  apply Subset.antisymm
+  · rintro y ⟨x, hx, rfl⟩
+    have hxL : x ∈ L.space :=
+      space_mono_of_faces_subset (boundaryComplex_faces_subset 1 L) hx
+    have hxoldBoundary : x ∈ (boundaryComplex 1 K).space := (hboundary hxL).mp hx
+    refine ⟨hmapSpace.subset ⟨x, hxL, rfl⟩, ?_⟩
+    have himage : f x ∈ f '' (boundaryComplex 1 K).space :=
+      ⟨x, hxoldBoundary, rfl⟩
+    rw [hmapBoundary] at himage
+    exact himage.2
+  · intro y hy
+    have hyimage : y ∈ f '' L.space := by
+      rw [hmapSpace]
+      exact hy.1
+    obtain ⟨x, hxL, hxy⟩ := hyimage
+    have hyoldBoundary : y ∈ f '' (boundaryComplex 1 K).space := by
+      rw [hmapBoundary]
+      exact ⟨hSsub hy.1, hy.2⟩
+    obtain ⟨z, hzoldBoundary, hzy⟩ := hyoldBoundary
+    have hzK : z ∈ K.space :=
+      space_mono_of_faces_subset (boundaryComplex_faces_subset 1 K) hzoldBoundary
+    have hzx : z = x := hinj hzK (hLK hxL) (hzy.trans hxy.symm)
+    subst z
+    exact ⟨x, (hboundary hxL).mpr hzoldBoundary, hxy⟩
+
+open Classical in
+private noncomputable def boundaryComplexOne
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    (K : Geometry.SimplicialComplex ℝ E) : Geometry.SimplicialComplex ℝ E :=
+  boundaryComplex 1 K
+
+open Classical in
+private structure BoundaryComplexImage
+    {E M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    (f : E → M) (K : Geometry.SimplicialComplex ℝ E) (S BdM : Set M) : Prop where
+  image_eq : f '' (boundaryComplexOne K).space = S ∩ BdM
+
+open Classical in
+private theorem boundaryComplexImage_of_space_mem_nhdsWithin
+    {E M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [FiniteDimensional ℝ E] [TopologicalSpace M]
+    {K L : Geometry.SimplicialComplex ℝ E} [Finite K.faces] [Finite L.faces]
+    (f : E → M) {oldS S BdM : Set M}
+    (hK : IsCombinatorialManifoldWithBoundary 1 K)
+    (hL : IsCombinatorialManifoldWithBoundary 1 L) (hLK : L.space ⊆ K.space)
+    (hnhds : ∀ x ∈ L.space, L.space ∈ 𝓝[K.space] x)
+    (hmapSpace : f '' L.space = S) (hSsub : S ⊆ oldS)
+    (hmapBoundary : BoundaryComplexImage f K oldS BdM)
+    (hinj : Set.InjOn f K.space) : BoundaryComplexImage f L S BdM :=
+  ⟨map_boundaryComplex_eq_inter_of_space_mem_nhdsWithin f hK hL hLK hnhds
+    hmapSpace hSsub hmapBoundary.image_eq hinj⟩
+
+open Classical in
+private noncomputable def singularBoundaryComplexModel
+    {M : Type u} [TopologicalSpace M]
+    [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
+    {D : SingularTwoCell M} {BdM : Set M}
+    (T : NormalSingularSetTriangulation D BdM) :=
+  boundaryComplex 1 T.complex
+
+open Classical in
+private theorem singularBoundaryComplexModel_image
+    {M : Type u} [TopologicalSpace M]
+    [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
+    {D : SingularTwoCell M} {BdM : Set M}
+    (T : NormalSingularSetTriangulation D BdM) :
+    T.piece.piece.map '' T.singularBoundaryComplexModel.space =
+      doublePointSet D D.domain ∩ BdM :=
+  T.map_boundary
+
+private theorem singularBoundaryComplexModel_eq_boundaryComplexOne
+    {M : Type u} [TopologicalSpace M]
+    [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
+    {D : SingularTwoCell M} {BdM : Set M}
+    (T : NormalSingularSetTriangulation D BdM) :
+    T.singularBoundaryComplexModel = boundaryComplexOne T.complex := by
+  unfold singularBoundaryComplexModel boundaryComplexOne
+  exact congrArg
+    (fun d : DecidableEq (EuclideanSpace ℝ (Fin T.piece.ambientDim)) =>
+      @boundaryComplex (EuclideanSpace ℝ (Fin T.piece.ambientDim)) _ _ d 1 T.complex)
+    (Subsingleton.elim _ _)
+
+open Classical in
+private theorem boundaryComplexImage
+    {M : Type u} [TopologicalSpace M]
+    [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
+    {D : SingularTwoCell M} {BdM : Set M}
+    (T : NormalSingularSetTriangulation D BdM) :
+    BoundaryComplexImage T.piece.piece.map T.complex
+      (doublePointSet D D.domain) BdM := by
+  refine ⟨?_⟩
+  rw [← T.singularBoundaryComplexModel_eq_boundaryComplexOne]
+  exact T.singularBoundaryComplexModel_image
+
+theorem isClopen_preimage_doublePointSet
+    {M : Type*} [TopologicalSpace M]
+    [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] [T2Space M]
+    {D G : SingularTwoCell M}
+    (hcompact : IsCompact (doublePointSet G G.domain))
+    (hopen : ∀ y ∈ doublePointSet G G.domain,
+      doublePointSet G G.domain ∈ 𝓝[doublePointSet D D.domain] y) :
+    IsClopen (((↑) : doublePointSet D D.domain → M) ⁻¹'
+      doublePointSet G G.domain) := by
+  have hopen' : IsOpen (((↑) : doublePointSet D D.domain → M) ⁻¹'
+      doublePointSet G G.domain) := by
+    apply isOpen_iff_mem_nhds.mpr
+    intro y hy
+    exact preimage_coe_mem_nhds_subtype.mpr (hopen y hy)
+  have hclosed : IsClosed (((↑) : doublePointSet D D.domain → M) ⁻¹'
+      doublePointSet G G.domain) :=
+    hcompact.isClosed.preimage continuous_subtype_val
+  exact ⟨hclosed, hopen'⟩
+
+open Classical in
+private theorem boundaryComplexImage_subcomplex
+    {M : Type u} [TopologicalSpace M]
+    [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
+    {D G : SingularTwoCell M} {BdM : Set M}
+    (T : NormalSingularSetTriangulation D BdM)
+    (hsub : doublePointSet G G.domain ⊆ doublePointSet D D.domain)
+    (L : Geometry.SimplicialComplex ℝ
+      (EuclideanSpace ℝ (Fin T.piece.ambientDim)))
+    (hfinite : L.faces.Finite) (hfaces : L.faces ⊆ T.complex.faces)
+    (hLnhds : ∀ x ∈ L.space, L.space ∈ 𝓝[T.complex.space] x)
+    (hLmanifold : IsCombinatorialManifoldWithBoundary 1 L)
+    (hmapSpace : T.piece.piece.map '' L.space = doublePointSet G G.domain) :
+    BoundaryComplexImage T.piece.piece.map L (doublePointSet G G.domain) BdM := by
+  let _ : Finite T.complex.faces := T.finite_faces.to_subtype
+  let _ : Finite L.faces := hfinite.to_subtype
+  have hLsubset : L.space ⊆ T.complex.space :=
+    space_mono_of_faces_subset hfaces
+  have hmapBoundaryOld := T.boundaryComplexImage
+  have hinj : Set.InjOn T.piece.piece.map T.complex.space := by
+    intro x hx y hy hxy
+    exact T.piece.piece.bijOn.injOn
+      (space_mono_of_faces_subset T.faces_subset hx)
+      (space_mono_of_faces_subset T.faces_subset hy) hxy
+  exact boundaryComplexImage_of_space_mem_nhdsWithin
+    (E := EuclideanSpace ℝ (Fin T.piece.ambientDim)) (M := M)
+    (K := T.complex) (L := L) (oldS := doublePointSet D D.domain)
+    (S := doublePointSet G G.domain) (BdM := BdM) T.piece.piece.map
+    T.isManifoldWithBoundary hLmanifold hLsubset hLnhds hmapSpace hsub
+    hmapBoundaryOld hinj
+
+open Classical in
+theorem exists_subcomplex_normalSingularSetTriangulation
+    {M : Type u} [TopologicalSpace M]
+    [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
+    {D G : SingularTwoCell M} {BdM : Set M}
+    (T : NormalSingularSetTriangulation D BdM)
+    (hsub : doublePointSet G G.domain ⊆ doublePointSet D D.domain)
+    (L : Geometry.SimplicialComplex ℝ
+      (EuclideanSpace ℝ (Fin T.piece.ambientDim)))
+    (hfinite : L.faces.Finite) (hfaces : L.faces ⊆ T.complex.faces)
+    (hLnhds : ∀ x ∈ L.space, L.space ∈ 𝓝[T.complex.space] x)
+    (hLmanifold : IsCombinatorialManifoldWithBoundary 1 L)
+    (hmapSpace : T.piece.piece.map '' L.space = doublePointSet G G.domain) :
+    Nonempty (NormalSingularSetTriangulation G BdM) := by
+  let _ : Finite T.complex.faces := T.finite_faces.to_subtype
+  let _ : Finite L.faces := hfinite.to_subtype
+  have hmapBoundary := T.boundaryComplexImage_subcomplex hsub L hfinite hfaces
+    hLnhds hLmanifold hmapSpace
+  exact ⟨{
+    carrier := T.carrier
+    piece := T.piece
+    complex := L
+    finite_faces := hfinite
+    faces_subset := hfaces.trans T.faces_subset
+    isManifoldWithBoundary := hLmanifold
+    map_space := hmapSpace
+    map_boundary := by
+      have hmodel : boundaryComplexOne L = boundaryComplex 1 L := by
+        unfold boundaryComplexOne
+        exact congrArg
+          (fun d : DecidableEq (EuclideanSpace ℝ (Fin T.piece.ambientDim)) =>
+            @boundaryComplex (EuclideanSpace ℝ (Fin T.piece.ambientDim)) _ _ d 1 L)
+          (Subsingleton.elim _ _)
+      rw [← hmodel]
+      exact hmapBoundary.image_eq }⟩
+
+open Classical in
+theorem restrict_to_clopen_doublePointSet
+    {M : Type u} [TopologicalSpace M]
+    [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] [T2Space M]
+    {D G : SingularTwoCell M} {BdM : Set M}
+    (T : NormalSingularSetTriangulation D BdM)
+    (hsub : doublePointSet G G.domain ⊆ doublePointSet D D.domain)
+    (hcompact : IsCompact (doublePointSet G G.domain))
+    (hopen : ∀ y ∈ doublePointSet G G.domain,
+      doublePointSet G G.domain ∈ 𝓝[doublePointSet D D.domain] y) :
+    Nonempty (NormalSingularSetTriangulation G BdM) := by
+  let Q := T.piece.piece.map ⁻¹' doublePointSet G G.domain
+  let L := restrict T.complex Q
+  let _ : Finite T.complex.faces := T.finite_faces.to_subtype
+  let _ : Finite L.faces := (restrict_faces_finite T.complex Q).to_subtype
+  have hSclopen : IsClopen (((↑) : doublePointSet D D.domain → M) ⁻¹'
+      doublePointSet G G.domain) := isClopen_preimage_doublePointSet hcompact hopen
+  have hLspace : L.space = T.complex.space ∩ Q :=
+    T.restrict_space_eq_inter_preimage_doublePointSet hSclopen
+  have hLnhds : ∀ x ∈ L.space, L.space ∈ 𝓝[T.complex.space] x :=
+    T.restrict_space_mem_nhdsWithin_doublePointSet hLspace hopen
+  have hLmanifold : IsCombinatorialManifoldWithBoundary 1 L :=
+    isCombinatorialManifoldWithBoundary_restrict_of_space_mem_nhdsWithin
+      T.isManifoldWithBoundary Q hLnhds
+  have hmapSpace : T.piece.piece.map '' L.space = doublePointSet G G.domain :=
+    T.map_restrict_space_eq_doublePointSet hsub hLspace
+  exact T.exists_subcomplex_normalSingularSetTriangulation hsub L
+    (restrict_faces_finite T.complex Q) (restrict_faces_subset T.complex Q)
+    hLnhds hLmanifold hmapSpace
+
+end NormalSingularSetTriangulation
 
 namespace NormalSingularCellData
 
