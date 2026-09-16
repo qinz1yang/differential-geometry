@@ -418,7 +418,9 @@ structure NormalSystem (E : Type*) [NormedAddCommGroup E] [NormedSpace ℝ E] wh
   boundaryLoop : freeLoop
     (normalSystemBoundaryNeighborhoodSpace ambientComplex imageComplex loopComplex
       image_faces_subset_ambient)
-  boundaryLoop_range : Set.range (fun θ => (boundaryLoop θ : E)) = loopComplex.space
+  boundaryParam : loopCircle ≃ₜ frontier sourceComplex.space
+  boundaryLoop_eq : ∀ θ, (boundaryLoop θ : E) =
+    simplicialMap sourceComplex vertexMap (boundaryParam θ)
   connector : Path basepoint (boundaryLoop 0)
   normalSubgroup : Subgroup (FundamentalGroup
     (normalSystemBoundaryNeighborhoodSpace ambientComplex imageComplex loopComplex
@@ -430,6 +432,22 @@ structure NormalSystem (E : Type*) [NormedAddCommGroup E] [NormedSpace ℝ E] wh
 namespace NormalSystem
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+
+theorem boundaryLoop_range (S : NormalSystem E) :
+    Set.range (fun θ => (S.boundaryLoop θ : E)) = S.loopComplex.space := by
+  rw [S.loop_space]
+  apply Subset.antisymm
+  · rintro _ ⟨θ, rfl⟩
+    change (S.boundaryLoop θ : E) ∈ _
+    rw [S.boundaryLoop_eq θ]
+    exact ⟨S.boundaryParam θ, (S.boundaryParam θ).property, rfl⟩
+  · rintro _ ⟨x, hx, rfl⟩
+    obtain ⟨θ, hθ⟩ := S.boundaryParam.surjective ⟨x, hx⟩
+    refine ⟨θ, ?_⟩
+    change (S.boundaryLoop θ : E) = _
+    rw [S.boundaryLoop_eq θ]
+    exact congrArg (simplicialMap S.sourceComplex S.vertexMap)
+      (congrArg Subtype.val hθ)
 
 open Classical in
 noncomputable def manifoldComplex (S : NormalSystem E) : Geometry.SimplicialComplex ℝ E :=
