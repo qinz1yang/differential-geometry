@@ -364,3 +364,91 @@ Refreshing `BallFrontier` with the prescribed S script immediately before
 checking `BoundaryPush` resolved the mismatch. Do not copy the other
 lane's source or rename a consumer to an unmerged declaration merely to
 match a shared artifact.
+
+## 12. Regular-neighborhood piece checkpoint (2026-09-15)
+
+Integration dependencies were obtained only by the requested merges:
+`0b06c672f` merged b9a2cb2ca; after the mathematical checkpoints,
+`f43dacc60` merged integration 8fb887bb9, adding `NIGHT_PLAN.md` only.
+No other lane's checkout, branch, or source file was used for transfer.
+
+### Completed: checkpoint 1)-2), or S-M1
+
+- `249311c83`, `DerivedNeighborhoodCells.lean` and `BallFrontier.lean`:
+  `derivedNeighborhoodCell` is the centroid closed star in the second
+  derived subdivision. `derivedNeighborhoodCell_space` proves its exact
+  equality with `closure (N(s) \ N(boundary s))`;
+  `derivedNeighborhoodCell_singleton` identifies N(v).
+  `isPLBall_derivedNeighborhoodCell` proves ballness for finite
+  combinatorial manifolds with boundary in all indicated dimensions.
+  `isPLBall_derivedNeighborhoodCell_inter_of_nonempty` proves the
+  codimension-one ball intersection for distinct pieces, and
+  `derivedNeighborhoodCell_inter_subset_frontier` puts the intersection
+  in each frontier in the matching Euclidean dimension. The pieces
+  cover the existing derived neighborhood and stay in K.space.
+- Both focused checks exit 0, zero warnings. AuditS67 checks all 26
+  new declarations, with only the three standard axioms.
+
+This proof uses the existing PL link equivalence and cone theorems for
+sphere links and ball links. No Schoenflies assumption is needed for
+this layer; the regular-neighborhood definition has not changed.
+
+### Partial: disk shelling, or S-M2
+
+- `57a3f6a4e`, `DerivedNeighborhoodAttachments.lean`, `DiskUnion.lean`,
+  and `BoundaryDerivedNeighborhood.lean`: intersections indexed by a
+  face flag are the corresponding dual cell; a central piece and
+  incomparable incident pieces glue to a 3-ball. Boundary-piece bases
+  are PL 2-disks, all other intersections lie in the base, and triple
+  face-flag intersections are PL arcs. The grouped attaching-disk
+  theorem `isPLBall_derivedNeighborhoodCell_inter_union` handles a
+  boundary piece meeting one central piece and incomparable arms.
+  All three focused checks exit 0, zero warnings. AuditS68 has 14
+  declarations, each with only the three standard axioms.
+- `ee2a8a29d`, `SimplexDerivedNeighborhood.lean`:
+  `IsCombinatorialManifoldWithBoundary.isPLBall_derivedNeighborhood_simplex`
+  proves that the complete derived neighborhood of any boundary simplex
+  of a finite combinatorial 3-manifold in Euclidean 3-space is a PL
+  3-ball. The triangle case explicitly glues its triangle piece, three
+  edge pieces, and three vertex pieces. The vertex and edge cases are
+  included. The focused check exits 0, zero warnings; AuditS69 has two
+  public declarations, each with only the three standard axioms.
+
+These give the simplex base case and local grouped attachments. They
+do not yet give the full disk induction. The precise next obligation
+is to use `exists_isPLBall_eraseTriangleComplex_of_isGlueIso_planar`
+(or the general 17.2 interface) to classify which proper faces of a
+free triangle survive in the erased disk. The new triangle piece meets
+old pieces along the subdivided attaching arc; each newly added edge
+or vertex must then have its intersection with the whole accumulated
+union identified with one of the checked grouped disks. Pairwise disk
+intersections alone do not justify that induction.
+
+Only after this step may Problem 26.1 and general hpush be marked done.
+`exists_isPLBall_inter_frontier_eq_of_subset` and
+`exists_nonsingular_two_cell_in_boundary_ball` remain the checked
+Euclidean consumers. NIGHT_PLAN I2 additionally requires the intrinsic
+version in K.space for general finite-dimensional E; the Euclidean
+simplex endpoint does not by itself satisfy that interface. The full
+26.2 product collar and neighborhood control remain open. No new
+unproved hypothesis or axiom was added to any endpoint.
+
+### Verification artifacts
+
+Six changed/new mathematical modules have final focused-check exit 0
+and zero warnings. AuditS67-S69 contain 42 declarations in total.
+The logs and audit files are in this worktree's `.lake/scratch`:
+
+- `check-ball-frontier.log`, `check-derived-neighborhood-cells.log`,
+  `AuditS67.lean`, `audit-derived-neighborhood-cells.log`.
+- `check-derived-neighborhood-attachments.log`, `check-disk-union.log`,
+  `check-boundary-derived-neighborhood.log`, `AuditS68.lean`,
+  `audit-derived-neighborhood-attachments.log`.
+- `check-simplex-derived-neighborhood.log`, `AuditS69.lean`,
+  `audit-simplex-derived-neighborhood.log`.
+
+`External/ClassificationOfSurfaces/VENDOR.md` records the native proof
+route, exact scope, and logs. No vendored Lean file or root aggregate
+was modified. No lake build was run. The Euclidean simplex module uses
+a local classical decidable-equality instance so that the fixed
+Euclidean type and generic boundary-complex APIs use the same instance.
