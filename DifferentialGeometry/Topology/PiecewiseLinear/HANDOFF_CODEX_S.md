@@ -2057,3 +2057,32 @@ Schoenflies assumption is present.
 Focused check: exit 0, zero warnings. `AuditS117PreimageBoundary.lean` checks all
 three public declarations; exit 0, only the standard three axioms. B.6 remains
 partial pending the single-crossing loop producer and the global component result.
+
+### Problem 26.3: two-sided disk neighborhoods delivered, 2026-09-16
+
+`InteriorManifoldComplement.lean` constructs a finite combinatorial three-manifold
+triangulating the actual closed complement of an interior finite submanifold.
+`TwoSidedDiskNeighborhood.lean` applies the existing boundary-disk neighborhood
+producer separately to the submanifold and that complement. It returns PL three-balls
+on the two sides, both contained in any prescribed relative neighborhood of the disk;
+each meets the intrinsic boundary in exactly that disk, and their mutual intersection
+is exactly the disk. A full-dimensional ambient version uses `frontier`.
+
+`ManifoldPieceInclusion.lean` gives a reusable parameterization restriction to any
+polyhedral manifold with boundary. `TwoSidedDiskNeighborhoodManifold.lean` transports
+the ball pair to an abstract Hausdorff PL three-manifold. The final endpoint is
+`IsPolyhedralManifoldWithBoundary.exists_isPolyhedralBall_pair_inter_frontier_eq`:
+for polyhedral three-manifold N, N contained in the interior of M, polyhedral two-ball
+D in frontier N, and any set neighborhood U of D, it constructs polyhedral three-balls
+C1 and C2 with C1 contained in N, C2 contained in closure (M minus N), both contained
+in U, and all three intersections C1 with frontier N, C2 with frontier N, and C1 with
+C2 equal to D. The ambient set M need not carry additional compactness or triangulation
+assumptions. The PL chart groupoid on the ambient space supplies the local environment.
+
+All four new modules pass the focused checks with exit 0 and zero warnings.
+`AuditS118TwoSidedDisk.lean` / `.log` cover all six public declarations: exit 0,
+only `propext`, `Classical.choice`, and `Quot.sound`. No hSchoenflies or unproved
+auxiliary proposition is required. The parameterized core and ambient-neighborhood
+selection are separate mathematical interfaces; this also avoids dependent-dimension
+elaboration blowup without resource overrides. B.2's remaining two-sided Problem 26.3
+obligation is now delivered. B.6 and the remaining P.4 producers are still in progress.
