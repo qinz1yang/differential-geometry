@@ -5206,6 +5206,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.PerturbedEvo
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.PreSquareEvolution
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.ShiControl
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.TraceCorollaries
+import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.TerminalScalar
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.TraceHarnack
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.TraceHarnackAlgebra
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.TriangularJets
