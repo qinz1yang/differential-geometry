@@ -1,3 +1,5 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Energy.ReloweringDivergence
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Energy.ReloweringFlux
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Data.SmoothSolutions
 
 noncomputable section
@@ -145,29 +147,9 @@ private lemma remainder_trace_factor (n BP Background d : Real) :
       4 * n ^ 17 * BP * Background * d := by
   ring
 
-private lemma remainder_four_term_bound
-    {R G L T RG RGL : Real}
-    (hRG : RG ≤ 2 * R + 2 * G)
-    (hRGL : RGL ≤ 2 * RG + 2 * L) :
-    2 * RGL + 2 * T ≤ 8 * R + 8 * G + 4 * L + 2 * T := by
-  linarith
-
-private lemma remainder_four_term_mono
-    {R G L T KR KG KL KT d : Real}
-    (hR : R ≤ KR * d) (hG : G ≤ KG * d)
-    (hL : L ≤ KL * d) (hT : T ≤ KT * d) :
-    8 * R + 8 * G + 4 * L + 2 * T ≤
-      8 * (KR * d) + 8 * (KG * d) + 4 * (KL * d) + 2 * (KT * d) := by
-  linarith
-
-private lemma remainder_total_factor (KR KG KL KT d : Real) :
-    8 * (KR * d) + 8 * (KG * d) + 4 * (KL * d) + 2 * (KT * d) =
-      (8 * KR + 8 * KG + 4 * KL + 2 * KT) * d := by
-  ring
-
-theorem forward_uniqueness_remainder_norm_sq_le
+theorem forward_uniqueness_algebraic_remainder_norm_sq_le
     (g₁ g₂ : ℝ → SmoothRiemannianMetric I M) (t : ℝ) (x : M)
-    {Λ Ce BH BR1 BR2 BP BRic21 B5 B6 BP1 BP2 BR2g2 BRic2g2 B6g2 Background : ℝ}
+    {Λ Ce BH BR1 BR2 BP BRic21 B5 B6 BR2g2 BRic2g2 B6g2 : ℝ}
     (hΛ0 : 0 ≤ Λ)
     (hΛ : ∀ v : TangentSpace I x, (g₁ t).inner x v v ≤ Λ * (g₂ t).inner x v v)
     (hCe : 1 ≤ Ce)
@@ -189,21 +171,12 @@ theorem forward_uniqueness_remainder_norm_sq_le
       (metricNabla0S (I := I) (g₂ t) (metricNabla0S (I := I) (g₂ t)
         (CovariantDerivative.rm04Section (I := I) (g₂ t)
           (metricCov (I := I) (g₂ t)) (metricCov_smooth (I := I) (g₂ t)))) x) ≤ B6)
-    (hBP1 : normSq0S (I := I) (g₁ t) x 5
-      (metricNabla0S (I := I) (g₁ t)
-        (CovariantDerivative.rm04Section (I := I) (g₁ t)
-          (metricCov (I := I) (g₂ t)) (metricCov_smooth (I := I) (g₂ t))) x) ≤ BP1)
-    (hBP2 : normSq0S (I := I) (g₁ t) x 6
-      (metricNabla0S (I := I) (g₁ t) (metricNabla0S (I := I) (g₁ t)
-        (CovariantDerivative.rm04Section (I := I) (g₁ t)
-          (metricCov (I := I) (g₂ t)) (metricCov_smooth (I := I) (g₂ t)))) x) ≤ BP2)
     (hBR2g2 : normSq0S (I := I) (g₂ t) x 4 (metricRm04At (I := I) (g₂ t) x) ≤ BR2g2)
     (hBRic2g2 : normSq0S (I := I) (g₂ t) x 2 (metricRicciAt (I := I) (g₂ t) x) ≤ BRic2g2)
     (hB6g2 : normSq0S (I := I) (g₂ t) x 6
       (metricNabla0S (I := I) (g₂ t) (metricNabla0S (I := I) (g₂ t)
         (CovariantDerivative.rm04Section (I := I) (g₂ t)
-          (metricCov (I := I) (g₂ t)) (metricCov_smooth (I := I) (g₂ t)))) x) ≤ B6g2)
-    (hBackground : normSq0S (I := I) (g₁ t) x 2 (metricTensorField (I := I) (g₂ t) x) ≤ Background) :
+          (metricCov (I := I) (g₂ t)) (metricCov_smooth (I := I) (g₂ t)))) x) ≤ B6g2) :
     let n : Real := Module.finrank Real E
     let KQ : Real :=
       16 * (4 * n ^ 14 * (2 + 2 * n ^ 6 * BP) * (BR1 + BR2) +
@@ -215,11 +188,9 @@ theorem forward_uniqueness_remainder_norm_sq_le
       8 * n ^ 6 * B6g2 + 512 * n ^ 14 * BR2g2 ^ 2 +
           72 * n ^ 6 * (BRic2g2 * BR2g2)
     let KG : Real := 8 * n ^ 10 * BP + 2 * Ce ^ 6 * n ^ 6 * BSpeed
-    let KL : Real := n ^ 12 * BP2
-    let KT : Real := 4 * n ^ 17 * BP1 * Background
-    let C_rem : Real := 8 * KR0 + 8 * KG + 4 * KL + 2 * KT
-    normSq0S (I := I) (g₁ t) x 4 (forwardUniquenessRem (I := I) g₁ g₂ t x) ≤
-      C_rem * forwardUniqueDensity (I := I) g₁ g₂ t x := by
+    normSq0S (I := I) (g₁ t) x 4 (forwardUniquenessRem (I := I) g₁ g₂ t x +
+        covDiv0SField (I := I) (g₁ t) (forwardUniquenessReloweringFlux (I := I) g₁ g₂ t) x) ≤
+      (2 * KR0 + 2 * KG) * forwardUniqueDensity (I := I) g₁ g₂ t x := by
   have hBH0 : 0 ≤ BH := by
     rw [metricDiffSq_def] at hBH
     exact (normSq0S_nonneg (I := I) (g₁ t) x 2 _).trans hBH
@@ -229,8 +200,6 @@ theorem forward_uniqueness_remainder_norm_sq_le
   have hBRic210 : 0 ≤ BRic21 := (normSq0S_nonneg (I := I) (g₁ t) x 2 _).trans hBRic21
   have hB50 : 0 ≤ B5 := (normSq0S_nonneg (I := I) (g₁ t) x 5 _).trans hB5
   have hB60 : 0 ≤ B6 := (normSq0S_nonneg (I := I) (g₁ t) x 6 _).trans hB6
-  have hBP10 : 0 ≤ BP1 := (normSq0S_nonneg (I := I) (g₁ t) x 5 _).trans hBP1
-  have hBP20 : 0 ≤ BP2 := (normSq0S_nonneg (I := I) (g₁ t) x 6 _).trans hBP2
   have hBR2g20 : 0 ≤ BR2g2 := (normSq0S_nonneg (I := I) (g₂ t) x 4 _).trans hBR2g2
   have hBRic2g20 : 0 ≤ BRic2g2 := (normSq0S_nonneg (I := I) (g₂ t) x 2 _).trans hBRic2g2
   have hB6g20 : 0 ≤ B6g2 := (normSq0S_nonneg (I := I) (g₂ t) x 6 _).trans hB6g2
@@ -245,9 +214,6 @@ theorem forward_uniqueness_remainder_norm_sq_le
     8 * n ^ 6 * B6g2 + 512 * n ^ 14 * BR2g2 ^ 2 +
       72 * n ^ 6 * (BRic2g2 * BR2g2)
   let KG : Real := 8 * n ^ 10 * BP + 2 * Ce ^ 6 * n ^ 6 * BSpeed
-  let KL : Real := n ^ 12 * BP2
-  let KT : Real := 4 * n ^ 17 * BP1 * Background
-  let C_rem : Real := 8 * KR0 + 8 * KG + 4 * KL + 2 * KT
   let d : Real := forwardUniqueDensity (I := I) g₁ g₂ t x
   let P : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 4 :=
@@ -267,15 +233,6 @@ theorem forward_uniqueness_remainder_norm_sq_le
       (forwardUniquenessRicUp (I := I) g₂) t x
   let G : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 4 x :=
     gapDot (I := I) (g₁ t) (g₂ t) V₂
-  let L : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 4 x :=
-    (reLower (I := I) (g₂ t) (g₁ t) (roughLap0SField (I := I) (g₁ t) P) -
-      roughLap0SField (I := I) (g₁ t) P) x
-  let K : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
-      (n := (∞ : WithTop ℕ∞)) 3 :=
-    lapDiffFlux (I := I) (g₁ t) (g₂ t) (metricTensorField (I := I) (g₂ t))
-  let T : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 4 x :=
-    metricTraceFirstTwoField (I := I) (M := M) (s := 4) (g₁ t)
-      (reLowerPair (I := I) (g₁ t) (metricNabla0S (I := I) (g₁ t) P) K) x
   have hR0 : normSq0S (I := I) (g₁ t) x 4 R0 ≤ KR0 * d := by
     have hn : 0 ≤ n := by
       dsimp only [n]
@@ -648,6 +605,149 @@ theorem forward_uniqueness_remainder_norm_sq_le
     refine DFunLike.ext _ _ fun y => ?_
     simpa only [P, CovariantDerivative.rm04Section_apply] using
       forwardUniquenessP_eq (I := I) g₁ g₂ t y
+  have hV : forwardUniquenessReloweringFlux (I := I) g₁ g₂ t =
+      reLower (I := I) (g₂ t) (g₁ t) (metricNabla0S (I := I) (g₁ t) P) -
+        metricNabla0S (I := I) (g₁ t) P := by
+    rw [hPfield]
+    rfl
+  have hrem : forwardUniquenessRem (I := I) g₁ g₂ t x = R0 + G -
+      covDiv0SField (I := I) (g₁ t) (forwardUniquenessReloweringFlux (I := I) g₁ g₂ t) x := by
+    change sdecRem (I := I) (g₁ t) (g₂ t) P (coordBasisAt (I := I) x) _ V₂ = _
+    rw [sdecRem_eq_sub_divergence, ← hV]
+  change normSq0S (I := I) (g₁ t) x 4
+      (forwardUniquenessRem (I := I) g₁ g₂ t x +
+        covDiv0SField (I := I) (g₁ t) (forwardUniquenessReloweringFlux (I := I) g₁ g₂ t) x) ≤
+    (2 * KR0 + 2 * KG) * d
+  rw [hrem, sub_add_cancel]
+  calc normSq0S (I := I) (g₁ t) x 4 (R0 + G) ≤
+      2 * normSq0S (I := I) (g₁ t) x 4 R0 + 2 * normSq0S (I := I) (g₁ t) x 4 G :=
+        normSq0S_add_le (I := I) (g₁ t) x 4 R0 G
+    _ ≤ 2 * (KR0 * d) + 2 * (KG * d) := by linarith
+    _ = (2 * KR0 + 2 * KG) * d := by ring
+
+theorem forward_uniqueness_remainder_norm_sq_le
+    (g₁ g₂ : ℝ → SmoothRiemannianMetric I M) (t : ℝ) (x : M)
+    {Λ Ce BH BR1 BR2 BP BRic21 B5 B6 BP1 BP2 BR2g2 BRic2g2 B6g2 Background : ℝ}
+    (hΛ0 : 0 ≤ Λ)
+    (hΛ : ∀ v : TangentSpace I x, (g₁ t).inner x v v ≤ Λ * (g₂ t).inner x v v)
+    (hCe : 1 ≤ Ce)
+    (hEquiv : ∀ v : TangentSpace I x,
+      Ce⁻¹ * (g₁ t).inner x v v ≤ (g₂ t).inner x v v ∧
+        (g₂ t).inner x v v ≤ Ce * (g₁ t).inner x v v)
+    (hBH : metricDiffSq (I := I) (g₁ t) (g₂ t) x ≤ BH)
+    (hBR1 : normSq0S (I := I) (g₁ t) x 4 (metricRm04At (I := I) (g₁ t) x) ≤ BR1)
+    (hBR2 : normSq0S (I := I) (g₁ t) x 4 (metricRm04At (I := I) (g₂ t) x) ≤ BR2)
+    (hBP : normSq0S (I := I) (g₁ t) x 4
+      (CovariantDerivative.riemannCurvature04At (I := I) (g₁ t)
+        (metricCov (I := I) (g₂ t)) (metricCov_smooth (I := I) (g₂ t)) x) ≤ BP)
+    (hBRic21 : normSq0S (I := I) (g₁ t) x 2 (metricRicciAt (I := I) (g₂ t) x) ≤ BRic21)
+    (hB5 : normSq0S (I := I) (g₁ t) x 5
+      (metricNabla0S (I := I) (g₂ t)
+        (CovariantDerivative.rm04Section (I := I) (g₂ t)
+          (metricCov (I := I) (g₂ t)) (metricCov_smooth (I := I) (g₂ t))) x) ≤ B5)
+    (hB6 : normSq0S (I := I) (g₁ t) x 6
+      (metricNabla0S (I := I) (g₂ t) (metricNabla0S (I := I) (g₂ t)
+        (CovariantDerivative.rm04Section (I := I) (g₂ t)
+          (metricCov (I := I) (g₂ t)) (metricCov_smooth (I := I) (g₂ t)))) x) ≤ B6)
+    (hBP1 : normSq0S (I := I) (g₁ t) x 5
+      (metricNabla0S (I := I) (g₁ t)
+        (CovariantDerivative.rm04Section (I := I) (g₁ t)
+          (metricCov (I := I) (g₂ t)) (metricCov_smooth (I := I) (g₂ t))) x) ≤ BP1)
+    (hBP2 : normSq0S (I := I) (g₁ t) x 6
+      (metricNabla0S (I := I) (g₁ t) (metricNabla0S (I := I) (g₁ t)
+        (CovariantDerivative.rm04Section (I := I) (g₁ t)
+          (metricCov (I := I) (g₂ t)) (metricCov_smooth (I := I) (g₂ t)))) x) ≤ BP2)
+    (hBR2g2 : normSq0S (I := I) (g₂ t) x 4 (metricRm04At (I := I) (g₂ t) x) ≤ BR2g2)
+    (hBRic2g2 : normSq0S (I := I) (g₂ t) x 2 (metricRicciAt (I := I) (g₂ t) x) ≤ BRic2g2)
+    (hB6g2 : normSq0S (I := I) (g₂ t) x 6
+      (metricNabla0S (I := I) (g₂ t) (metricNabla0S (I := I) (g₂ t)
+        (CovariantDerivative.rm04Section (I := I) (g₂ t)
+          (metricCov (I := I) (g₂ t)) (metricCov_smooth (I := I) (g₂ t)))) x) ≤ B6g2)
+    (hBackground : normSq0S (I := I) (g₁ t) x 2 (metricTensorField (I := I) (g₂ t) x) ≤ Background) :
+    let n : Real := Module.finrank Real E
+    let KQ : Real :=
+      16 * (4 * n ^ 14 * (2 + 2 * n ^ 6 * BP) * (BR1 + BR2) +
+          2 * (6 * n ^ 18 * Λ ^ 2 + 4 * n ^ 22 * Λ ^ 4 * BH) * BR2 ^ 2)
+    let KD : Real := 32 * n ^ 6 * (n ^ 4 * BR1 + BRic21)
+    let KR0 : Real :=
+      200 * n ^ 12 * B5 + 8 * n ^ 10 * Λ ^ 2 * B6 + 16 * KQ + 2 * KD
+    let BSpeed : Real :=
+      8 * n ^ 6 * B6g2 + 512 * n ^ 14 * BR2g2 ^ 2 +
+          72 * n ^ 6 * (BRic2g2 * BR2g2)
+    let KG : Real := 8 * n ^ 10 * BP + 2 * Ce ^ 6 * n ^ 6 * BSpeed
+    let KL : Real := n ^ 12 * BP2
+    let KT : Real := 4 * n ^ 17 * BP1 * Background
+    let C_rem : Real := 8 * KR0 + 8 * KG + 4 * KL + 2 * KT
+    normSq0S (I := I) (g₁ t) x 4 (forwardUniquenessRem (I := I) g₁ g₂ t x) ≤
+      C_rem * forwardUniqueDensity (I := I) g₁ g₂ t x := by
+  have hBP10 : 0 ≤ BP1 := (normSq0S_nonneg (I := I) (g₁ t) x 5 _).trans hBP1
+  have hBP20 : 0 ≤ BP2 := (normSq0S_nonneg (I := I) (g₁ t) x 6 _).trans hBP2
+  let n : Real := Module.finrank Real E
+  let KQ : Real :=
+    16 * (4 * n ^ 14 * (2 + 2 * n ^ 6 * BP) * (BR1 + BR2) +
+      2 * (6 * n ^ 18 * Λ ^ 2 + 4 * n ^ 22 * Λ ^ 4 * BH) * BR2 ^ 2)
+  let KD : Real := 32 * n ^ 6 * (n ^ 4 * BR1 + BRic21)
+  let KR0 : Real :=
+    200 * n ^ 12 * B5 + 8 * n ^ 10 * Λ ^ 2 * B6 + 16 * KQ + 2 * KD
+  let BSpeed : Real :=
+    8 * n ^ 6 * B6g2 + 512 * n ^ 14 * BR2g2 ^ 2 +
+      72 * n ^ 6 * (BRic2g2 * BR2g2)
+  let KG : Real := 8 * n ^ 10 * BP + 2 * Ce ^ 6 * n ^ 6 * BSpeed
+  let KL : Real := n ^ 12 * BP2
+  let KT : Real := 4 * n ^ 17 * BP1 * Background
+  let C_rem : Real := 8 * KR0 + 8 * KG + 4 * KL + 2 * KT
+  let d : Real := forwardUniqueDensity (I := I) g₁ g₂ t x
+  let P : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+      (n := (∞ : WithTop ℕ∞)) 4 :=
+    forwardUniquenessTf (I := I) g₁ t - forwardUniquenessSfield (I := I) g₁ g₂ t
+  let R0 : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 4 x :=
+    lowOfComp (I := I) (g₁ t) (coordBasisAt (I := I) x)
+      (rmDotRem (I := I) (g₁ t) (g₂ t) (forwardUniquenessTf (I := I) g₂ t)
+        (forwardUniquenessRm04 (I := I) g₁) (forwardUniquenessRm04 (I := I) g₂)
+        (forwardUniquenessBRm (I := I) g₁) (forwardUniquenessBRm (I := I) g₂)
+        (forwardUniquenessRicUp (I := I) g₁) (forwardUniquenessRicUp (I := I) g₂)
+        (fun m z => coordBasisAt (I := I) z m) t x)
+  let V₂ :
+      TangentSpace I x →L[Real] TangentSpace I x →L[Real] TangentSpace I x →L[Real]
+        TangentSpace I x :=
+    uhlRm2Vec (I := I) g₂ (coordBasisAt (I := I))
+      (forwardUniquenessRm04 (I := I) g₂) (forwardUniquenessLapRm (I := I) g₂) (forwardUniquenessBRm (I := I) g₂)
+      (forwardUniquenessRicUp (I := I) g₂) t x
+  let G : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 4 x :=
+    gapDot (I := I) (g₁ t) (g₂ t) V₂
+  let L : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 4 x :=
+    (reLower (I := I) (g₂ t) (g₁ t) (roughLap0SField (I := I) (g₁ t) P) -
+      roughLap0SField (I := I) (g₁ t) P) x
+  let K : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+      (n := (∞ : WithTop ℕ∞)) 3 :=
+    lapDiffFlux (I := I) (g₁ t) (g₂ t) (metricTensorField (I := I) (g₂ t))
+  let T : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 4 x :=
+    metricTraceFirstTwoField (I := I) (M := M) (s := 4) (g₁ t)
+      (reLowerPair (I := I) (g₁ t) (metricNabla0S (I := I) (g₁ t) P) K) x
+  have hPfield :
+      P = CovariantDerivative.rm04Section (I := I) (g₁ t)
+        (metricCov (I := I) (g₂ t)) (metricCov_smooth (I := I) (g₂ t)) := by
+    refine DFunLike.ext _ _ fun y => ?_
+    simpa only [P, CovariantDerivative.rm04Section_apply] using
+      forwardUniquenessP_eq (I := I) g₁ g₂ t y
+  have hV : forwardUniquenessReloweringFlux (I := I) g₁ g₂ t =
+      reLower (I := I) (g₂ t) (g₁ t) (metricNabla0S (I := I) (g₁ t) P) -
+        metricNabla0S (I := I) (g₁ t) P := by
+    rw [hPfield]
+    rfl
+  have hrem : forwardUniquenessRem (I := I) g₁ g₂ t x = R0 + G -
+      covDiv0SField (I := I) (g₁ t) (forwardUniquenessReloweringFlux (I := I) g₁ g₂ t) x := by
+    change sdecRem (I := I) (g₁ t) (g₂ t) P (coordBasisAt (I := I) x) _ V₂ = _
+    rw [sdecRem_eq_sub_divergence, ← hV]
+  have hRG : normSq0S (I := I) (g₁ t) x 4 (R0 + G) ≤ (2 * KR0 + 2 * KG) * d := by
+    have h := forward_uniqueness_algebraic_remainder_norm_sq_le (I := I) g₁ g₂ t x
+      hΛ0 hΛ hCe hEquiv hBH hBR1 hBR2 hBP hBRic21 hB5 hB6 hBR2g2 hBRic2g2 hB6g2
+    change normSq0S (I := I) (g₁ t) x 4
+      (forwardUniquenessRem (I := I) g₁ g₂ t x +
+        covDiv0SField (I := I) (g₁ t) (forwardUniquenessReloweringFlux (I := I) g₁ g₂ t) x) ≤
+      (2 * KR0 + 2 * KG) * d at h
+    rw [hrem, sub_add_cancel] at h
+    exact h
   have hL : normSq0S (I := I) (g₁ t) x 4 L ≤ KL * d := by
     have hn : 0 ≤ n := by
       dsimp only [n]
@@ -772,23 +872,17 @@ theorem forward_uniqueness_remainder_norm_sq_le
       _ ≤ n ^ 6 * (4 * n ^ 11 * BP1 * Background * d) :=
         mul_le_mul_of_nonneg_left hPair (pow_nonneg hn 6)
       _ = 4 * n ^ 17 * BP1 * Background * d := remainder_trace_factor n BP1 Background d
-  have hAB := normSq0S_add_le (I := I) (g₁ t) x 4 R0 G
   have hABC := normSq0S_sub_le (I := I) (g₁ t) x 4 (R0 + G) L
   have hABCD := normSq0S_sub_le (I := I) (g₁ t) x 4 ((R0 + G) - L) T
   change normSq0S (I := I) (g₁ t) x 4 (((R0 + G) - L) - T) ≤ C_rem * d
-  calc
-    normSq0S (I := I) (g₁ t) x 4 (((R0 + G) - L) - T) ≤
-        2 * normSq0S (I := I) (g₁ t) x 4 ((R0 + G) - L) +
-          2 * normSq0S (I := I) (g₁ t) x 4 T := hABCD
-    _ ≤ 8 * normSq0S (I := I) (g₁ t) x 4 R0 +
-          8 * normSq0S (I := I) (g₁ t) x 4 G +
-          4 * normSq0S (I := I) (g₁ t) x 4 L +
-          2 * normSq0S (I := I) (g₁ t) x 4 T := by
-      exact remainder_four_term_bound hAB hABC
-    _ ≤ 8 * (KR0 * d) + 8 * (KG * d) + 4 * (KL * d) + 2 * (KT * d) := by
-      exact remainder_four_term_mono hR0 hG hL hT
-    _ = C_rem * d := by
-      dsimp only [C_rem]
-      exact remainder_total_factor KR0 KG KL KT d
+  calc normSq0S (I := I) (g₁ t) x 4 (((R0 + G) - L) - T) ≤
+      2 * normSq0S (I := I) (g₁ t) x 4 ((R0 + G) - L) +
+        2 * normSq0S (I := I) (g₁ t) x 4 T := hABCD
+    _ ≤ 4 * normSq0S (I := I) (g₁ t) x 4 (R0 + G) +
+        4 * normSq0S (I := I) (g₁ t) x 4 L + 2 * normSq0S (I := I) (g₁ t) x 4 T := by
+      linarith
+    _ ≤ 4 * ((2 * KR0 + 2 * KG) * d) + 4 * (KL * d) + 2 * (KT * d) := by
+      linarith
+    _ = C_rem * d := by dsimp only [C_rem]; ring
 
 end DifferentialGeometry.PDE.RicciFlow
