@@ -1931,3 +1931,13 @@ F-M5 状态为 partial。唯一未闭合的生产步骤是：给定 F-M6 的公�
 F-M6 状态为 partial。剩余的首个数学义务是一个真实的余面异侧定理：在上述同一星图卡内，若 `q` 是 `K*` 的内部二维面且恰有两个三维余面，则两个余面的对顶点在 `affineSpan ℝ (e(T(q)))` 的严格相反两侧；边界二维面唯一余面的对顶点须位于所选内部严格一侧。现有组合流形 API 给出余面个数，公共细分给出图卡内的仿射性与单射性，但库中尚无把这两项合成为严格符号的定理。缺少该结论时，不能从 `IsVertexMapGeneralInArrangement` 生产 `IsArrangementGeneralFoldPair` 或 `IsBoundaryArrangementGeneralPair`，因此不能证明每个实际双点的 crossing，也不能启动保持该不变量的有限图卡归纳。该严格异侧性必须从 `K*` 的实际相邻三胞腔、图卡同胚性和单形内部不交推出，不能作为 `exists_small_isNormalSingularCell` 的假设。`Ξ = K*` 的二维骨架、图卡归纳和最终端点均留在此义务之后；本次未声明 `exists_small_isNormalSingularCell`。
 
 聚焦检查：`PiecewiseAffineSimplicial` exit=0（9.5 秒）、`SingularNormalForm` exit=0（12.2 秒），均零 warning。`AuditF208.lean` 十八项全部只依赖 `propext`、`Classical.choice`、`Quot.sound`。F-M6 partial；下一审计文件 `AuditF209.lean`。
+
+### 19.62 F-M1：小 Lipschitz 扰动下的三角形截面为 PL 弧
+
+`TriangleFiber.lean` 从三角域的水平切片严格递增、左边严格递增、右边严格递减，实际构造每条非极值等高纤维到一个非退化闭区间的第二坐标双射。`exists_isPLHomeomorphOn_snd_triangle_fiber` 用纤维的紧致多面体性将该双射升级为 PL 同胚，`isPLBall_triangle_fiber_of_monotone` 给出 PL 一维球。证明允许函数在原三角形内部任意有限分段，不要求凸化后的函数在整个旧三角形上仿射。
+
+定量端点 `exists_isPLHomeomorphOn_snd_triangle_fiber_of_lipschitz` 与 `isPLBall_triangle_fiber_of_lipschitz` 从实际误差控制生产上述三方向单调性：若 `b(x,y) - (a*x+c*y+d)` 的 Lipschitz 常数 `k` 同时小于 `c` 和 `a-c`，则任意严格介于两个底角值之间的纤维都是 PL 弧。不存在把弧性、纤维对应或层圆周计数加入假设的做法。
+
+聚焦检查 exit=0（10.8 秒），零 warning；`AuditF211.lean` 七个公开端点全都只依赖 `propext`、`Classical.choice`、`Quot.sound`。此前已推送的 `59c52ce24`、`bce61a695` 提供 `RelativeLevelCircleDeletion.lean` 的精确纤维删除消费者及固定子复形外的逐面符号控制，后者由 `AuditF210.lean` 审计；这些仍不是相对删除的生产者。
+
+F-M1 仍为 partial。下一步把凸化映射在紧致旧三角形上的 PL Lipschitz 延拓与新高度的算子范数小量接入本定量端点，然后构造沿旧三角形公共边相容的纤维同胚，并证明它在保留盘上删去指定圆周 `J`。§19.56 的单射、严格降指标、S.4 M2/M3 及 I1 尚未交付。下一审计文件 `AuditF212.lean`。
