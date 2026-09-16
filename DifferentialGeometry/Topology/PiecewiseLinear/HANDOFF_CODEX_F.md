@@ -1789,3 +1789,9 @@ F-M2–F-M6 尚未开始；按用户指定顺序推进，只有出现 §1 接口
 `ParametricTriangleHeightSides.lean` 已提交并推送为 `5acca1317`。主端点 `exists_parameterized_triangle_cut_with_opposite_height_sides` 从指定奇异高度重新暴露最内水平圆周成员关系，并把两张参数化保留盘沿该圆周去掉原奇异点后的统一相反半空间集合芽加入三角凸化输出。端点同时保留两盘与水平张成盘的参数边界、两封帽球面、临界层圆周计数、保高度环境同胚、显式仿射独立三角形、严格分离泛函及全部集合的 `heightIndex` 不变性。侧芽由 `HeightSides` 从实际球面分割推出，不是新增假设。
 
 模块聚焦检查 exit=0（47.4 秒）、零 warning；`AuditF188.lean` 主端点仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步对两种统一侧别分别把保留盘的半空间芽与“共同边界等于盘内旧等高集合”芽沿保高度同胚搬运，调用 `exists_triangulation_parameterized_disk_union` 构造两张逐面覆盖的共同细分球面，并接入整条三角边界非奇异端点。F-M1 仍为 partial，严格指标下降、Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF189.lean`。
+
+### 19.41 F-M1：参数化三角帽共同细分的整边界正规性
+
+`ParameterizedTriangleCap.lean` 已提交并推送为 `2b419419f`。`eventually_mem_inter_iff_left_and_eq_of_opposite_halfSpaces` 从两闭片的相反半空间集合芽直接推出共同边界等于左片内等高集合的芽。主端点 `exists_triangulation_triangle_cap_with_nonsingular_boundary` 把参数化保留盘与水平盘沿共同参数边界的并沿保高度环境同胚搬运，构造逐面由保留盘和凸三角帽覆盖的有限共同细分；仿射三角形顶点集随嵌入映到环境空间。半空间与边界等高芽沿同胚运输后接入上一层整边界定理。对每个新高度，证明在有限三角顶点上存在最低点，并由顶点单射把非严格最小提升为整个三角凸包上的严格最小，故结论不要求调用者预先指定最低角点。
+
+模块聚焦检查 exit=0（12.5 秒）、零 warning；`AuditF189.lean` 两个端点均仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步对参数化奇异高度切割返回的 A、B 两张保留盘分别实例化本端点；再与 `TriangleHeightCut` 的帽内部奇异点定位及盘外旧奇异点比较合并，得到每张新球面除 `H p` 外的奇异点均嵌入原球面奇异点。F-M1 仍为 partial，严格指标下降、Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF190.lean`。
