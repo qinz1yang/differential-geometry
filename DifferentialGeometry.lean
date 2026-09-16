@@ -4871,6 +4871,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Derivatives.Al
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Derivatives.First
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Derivatives.Higher
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Derivatives.Local
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Derivatives.MixedCurvature
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Derivatives.TerminalFromJets
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.FirstDerivativeLocal
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.FirstDerivativeReaction
