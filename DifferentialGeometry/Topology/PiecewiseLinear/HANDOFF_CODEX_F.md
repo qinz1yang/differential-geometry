@@ -1889,3 +1889,9 @@ Moise 17.12 的两个相反转轴现已分别构造，且每张封帽球面的�
 等价的计数结论是新帽尖层圆周数加一不超过旧保留盘临界层圆周数。现有 `HeightRotation` 只处理无边界 PL 球面且基剖分在旧高度上一般位置；`HeightLocalization` 只处理扰动支集避开的其他旧顶点；`TriangleCapSingularComparison` 排除了帽尖以外的新奇异点，但不构造跨越边界临界值时的层圆周对应。把整球稳定性用于 `H '' K.space` 也要求一个旧高度一般位置的直线剖分，而凸化同胚在 `H '' J` 上必产生多个同高折点。故当前库缺少的是真实的相对 PL 高度稳定性/一次边界临界圆周删除定理，不能由集合包含或现有 `encard` 引理补出，也不能把所需单射加入最终结论的假设。
 
 按 `NIGHT_PLAN.md` §0.4，F-M1 在此保持 partial 并转入下一里程碑；已完成的相反方向生产者保留为后续证明的精确前置。F-M2 下一审计文件仍使用 `AuditF204.lean`。
+
+### 19.57 F-M2：正规奇异 2-胞腔接口与坐标搬运
+
+`SingularNormalForm.lean` 已提交并推送为 `63077045e`。`IsNormalSingularCell` 同时记录局部单射、至多二重纤维、边界像约束、精确奇点图的一维带边组合三角剖分，以及每个双点的坐标 crossing。边界双点由 `HasPLNormalDoubleCrossingAt` 的第一分支表达：点位于坐标边界像，并显式给出实际局部半空间集合和 `HasPLBoundaryDoubleCrossingAt`；内部点由第二分支给出 `HasPLDoubleCrossingAt`。局部半空间没有误写成二维边界集合，也没有作为图册自动提供的无根据数据。
+
+基本 API 包含 `HasPLNormalDoubleCrossingAt.postcomp_openPartialHomeomorph` 的坐标后复合搬运、`IsNormalSingularCell.locallyInjective_restrict`、`fiber_le_two_restrict`、`doublePointSet_mono` 的源子集限制，以及 `exists_crossing_chart`。聚焦检查 exit=0（12.1 秒）、零 warning；`AuditF204.lean` 七项均只依赖 `propext`、`Classical.choice`、`Quot.sound`。F-M2 done；F-M1 的相对层圆周删除缺口仍保持 §19.56 的精确形式。下一里程碑 F-M3 写 `TwoFoldCrossing.lean`；下一审计文件 `AuditF205.lean`。
