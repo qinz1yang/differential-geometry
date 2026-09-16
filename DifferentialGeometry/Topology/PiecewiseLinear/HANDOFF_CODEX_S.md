@@ -686,7 +686,7 @@ no second-batch source or duplicate Jordan extension wrapper was introduced.
 | S-M3 | partial: general parametrized PL push-off and Euclidean singular cell | `bd74dd7ca`; AuditS72Intrinsic: 7; AuditS74Push: 3 | `SingularTwoCell K.space` needs a boundary-compatible target type; its current Euclidean open-chart requirement is not available from a manifold-with-boundary hypothesis |
 | S-M4 | done: whole-boundary collar with the relative-neighborhood property for finite combinatorial three-manifolds in arbitrary finite-dimensional real normed spaces | `691c7329d`, `e9feba0c2`, `f778f73ff`; AuditS88--S90: 12; earlier layers and audits below | None for the finite-complex endpoint in NIGHT_PLAN; abstract PL charted ambient transport is not asserted |
 | S-M5 | done: 26.1 in finite combinatorial carriers and general PL charted ambient spaces; arbitrarily small PL bicollars without connectedness assumptions | `ddf717a4b`; finite bicollar `3a55ac834`; general manifold bicollar `52d70d778`; relative topology `7746cff68`; AuditS101--S104: 18 | No remaining 26.1/26.3 obligation in these stated settings; the separate I2 target-type issue remains in S-M3 |
-| S-M6 | partial: general relative 17.3 done; arbitrary crosscut separation and supported, controlled crosscut extension proved | `f0383a381`; `6d1df9349`; `7e1951a69`; `d9f27c4b4`; `4ddbf78f4`; AuditS106--S108: 21 | Construct compatible vertex sectors, sufficiently small frames for the finite graph, and polygonal target arcs inside those frames |
+| S-M6 | partial: general relative 17.3 done; supported crosscut extension and simultaneous local straightening of finite vertex fans with at least two branches proved | `f0383a381`; `4ddbf78f4`; `3302febfc`; `47062f7d4`; `1b6245266`; `5889f3772`; AuditS109--S112: 22 entries | Handle degree-one endpoints, construct small edge frames and polygonal target crosscuts, and assemble the finite graph maps with the prescribed support and control |
 
 All listed completed layers have focused-check exit 0 with zero warnings and transitive axiom
 closures contained in `propext`, `Classical.choice`, and `Quot.sound`. No newly proved layer
@@ -1832,3 +1832,31 @@ incident edges; degree-one endpoints still need a separate argument. The next
 geometric work is small edge frames and polygonal crosscuts, followed by the
 assembly over disjoint vertex and edge supports with the prescribed global control.
 No new consultation blocker was found. I2's target-type issue is unchanged.
+
+### S-M6 finite vertex-fan publication checkpoint, 2026-09-16
+
+The source checkpoints are committed and pushed on `codex/moise-s`:
+
+- `3302febfc`: initial vertex arcs and crosscut-side selection.
+- `47062f7d4`: supported simultaneous straightening of two incident arcs.
+- `1b6245266`: closed boundary-set selection and finite boundary-fan extension.
+- `5889f3772`: finite interior vertex-fan matching and the local finite-graph producer.
+
+The five changed Lean modules (VertexArcs, Crosscut, VertexFan, BoundaryArc, and
+BoundaryFan) and the CrosscutExtension consumer all have final focused-check exit 0
+with zero warnings. AuditS109, S110, S111, and S112 contain respectively 8, 4, 2, and
+8 entries: 22 audit records, including deliberate rechecks of the two-arc corollaries
+after refactoring. Every entry contains only `propext`, `Classical.choice`, and
+`Quot.sound`. Logs and audit probes remain under `.lake/scratch` and are not committed.
+
+After the last source push, `git fetch origin` and the requested integration merge
+reported already up to date at `8fb887bb9`; the worktree and `origin/codex/moise-s`
+were synchronized at `5889f3772`. This final documentation checkpoint updates only
+the S-M6 summary and P.4 plan row to the verified scope.
+
+P.4 remains partial: local simultaneous straightening is proved for all initial
+subarcs at a vertex with at least two incident edges. Degree-one endpoints, small
+edge frames, polygonal target crosscuts, and the global assembly with prescribed
+support and positive control remain. Initial subarcs are used explicitly; later
+parts of an incident edge may return to the chosen square. I2's target-type issue
+is unchanged, and no new consultation blocker was found.
