@@ -956,8 +956,10 @@ import DifferentialGeometry.Analysis.ODE.Flow.Planar.TrappedPlanarOrbit
 import DifferentialGeometry.Analysis.ODE.Flow.Uniqueness
 import DifferentialGeometry.Analysis.ODE.GradientFlow
 import DifferentialGeometry.Analysis.ODE.Gronwall.ClosedEdge
+import DifferentialGeometry.Analysis.ODE.Gronwall.DominatedSubsolutions
 import DifferentialGeometry.Analysis.ODE.Gronwall.EnergyHierarchy
 import DifferentialGeometry.Analysis.ODE.Gronwall.EnergyIntegral
+import DifferentialGeometry.Analysis.ODE.Gronwall.Integrable
 import DifferentialGeometry.Analysis.ODE.Gronwall.Integral
 import DifferentialGeometry.Analysis.ODE.Gronwall.SecondOrder
 import DifferentialGeometry.Analysis.ODE.HamiltonIvey
@@ -7054,6 +7056,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Data.Unif
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Energy.Basic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Energy.Drift
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Energy.Inequality
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Energy.IntegratedCutoff
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Energy.IntegrationByParts
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Energy.QuadraticTerms
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Energy.ReloweringDivergence
@@ -7062,6 +7065,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Energy.Re
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Energy.SpeedBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Energy.UniformCutoff
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Energy.Vanishing
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.IntegrableEnergy
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Isometry
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Measure.DensityRegularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Noncompact
