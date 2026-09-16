@@ -376,12 +376,10 @@ theorem gQuot_inner (x : D.Q) (v w : TangentSpace (𝓡 n) x) :
     D.gQuot.inner x v w = D.gm x v w :=
   (smoothMetric_of_localCoeff (I := 𝓡 n) D.gm D.gm_symm D.gm_pos D.gm_coeff).choose_spec x v w
 
-theorem gQuot_constPosSec :
-    ∃ c : ℝ, 0 < c ∧ ∀ (x : D.Q) (X Y : TangentSpace (𝓡 n) x),
-      metricRm04StandardAt (I := 𝓡 n) D.gQuot x X Y Y X =
-        c * (D.gQuot.inner x X X * D.gQuot.inner x Y Y
-          - D.gQuot.inner x X Y * D.gQuot.inner x X Y) := by
-  refine ⟨1, one_pos, fun x X Y => ?_⟩
+theorem gQuot_sectional_one (x : D.Q) (X Y : TangentSpace (𝓡 n) x) :
+    metricRm04StandardAt (I := 𝓡 n) D.gQuot x X Y Y X =
+      D.gQuot.inner x X X * D.gQuot.inner x Y Y
+        - D.gQuot.inner x X Y * D.gQuot.inner x X Y := by
   have : NeZero (finrank ℝ (EuclideanSpace ℝ (Fin n))) := by
     rw [finrank_euclideanSpace_fin]; infer_instance
   set S := D.sectionAt x with hS
@@ -444,7 +442,14 @@ theorem gQuot_constPosSec :
     roundMetric_sec_value (S.toSphere xW)
       (mfderiv (𝓡 n) (𝓡 n) S.toSphere xW XW)
       (mfderiv (𝓡 n) (𝓡 n) S.toSphere xW YW),
-    hbridge X X, hbridge Y Y, hbridge X Y, one_mul]
+    hbridge X X, hbridge Y Y, hbridge X Y]
+
+theorem gQuot_constPosSec :
+    ∃ c : ℝ, 0 < c ∧ ∀ (x : D.Q) (X Y : TangentSpace (𝓡 n) x),
+      metricRm04StandardAt (I := 𝓡 n) D.gQuot x X Y Y X =
+        c * (D.gQuot.inner x X X * D.gQuot.inner x Y Y
+          - D.gQuot.inner x X Y * D.gQuot.inner x X Y) := by
+  exact ⟨1, one_pos, fun x X Y => by simpa only [one_mul] using D.gQuot_sectional_one x X Y⟩
 
 end RoundSphereQuotient
 

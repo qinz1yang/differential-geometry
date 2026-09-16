@@ -1,3 +1,5 @@
+import DifferentialGeometry.Geometry.Comparison.BonnetMyers.Diameter
+import DifferentialGeometry.Geometry.Curvature.Metric.ConstantRicci
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CrossModelDistanceTransfer
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.RoundCanonicalWitness
 
@@ -10,7 +12,7 @@ open Set
 open DifferentialGeometry.Geometry DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Riemannian
 open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
-open scoped Manifold ContDiff ENNReal
+open scoped _root_.Manifold ContDiff ENNReal
 
 universe u
 
@@ -137,5 +139,29 @@ theorem exists_roundSphereThree_edistDiameterBound (x : RoundSphereThree) :
       riemannianEDistOf (I := I3) roundSphereThreeMetric x z ≤ ENNReal.ofReal Dia := by
   obtain ⟨R, hRpos, hRball⟩ := exists_roundSphereThree_ball_eq_univ x
   exact ⟨R, hRpos.le, fun z => (hRball trivial).le⟩
+
+theorem roundComponent_edist_diameter_bound :
+    RoundComponentEdistDiameterBound.{u} (Real.pi / Real.sqrt (1 / 6)) := by
+  refine ⟨by positivity, ?_⟩
+  intro D M _ _ _ _ _ S eps x t RC
+  let _ : TopologicalSpace RC.Z := RC.topology
+  let _ : ChartedSpace ThreeSpace RC.Z := RC.charted
+  let _ : IsManifold I3 ∞ RC.Z := RC.smooth
+  let _ : T2Space RC.Z := RC.t2
+  let _ : CompactSpace RC.Z := RC.compact
+  let _ : ConnectedSpace RC.Z := RC.connected
+  let _ : NeZero (Module.finrank ℝ ThreeSpace) := ⟨by simp [ThreeSpace]⟩
+  have hRic := ricciBound_of_sec (I := I3) RC.metric (1 / 6) (by
+    intro z v w
+    have h := RC.constant_curvature z v w
+    have hv : (fun i : Fin 4 => ![v, w, w, v] i) = vec4 (I := I3) v w w v := by
+      funext i
+      fin_cases i <;> simp [vec4]
+    rw [hv, ← metricRm04StandardAt_apply] at h
+    simpa only [pow_two] using h)
+  intro z
+  exact BonnetMyers.bonnet_myers_pairwise_edist_le_of_complete_metric (I := I3)
+    RC.metric (RiemannianMetricComplete.of_compact RC.metric)
+    (by simp [ThreeSpace]) (by norm_num : (0 : ℝ) < 1 / 6) hRic RC.p z
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
