@@ -2,7 +2,6 @@ import DifferentialGeometry.Topology.PiecewiseLinear.Orientation
 import DifferentialGeometry.Topology.SimplicialSet.EulerCharacteristic
 import Mathlib.AlgebraicTopology.SimplicialSet.Nonsingular
 
-set_option autoImplicit false
 noncomputable section
 open CategoryTheory CategoryTheory.Limits Simplicial Opposite
 namespace DifferentialGeometry.Topology.SimplicialComplex
