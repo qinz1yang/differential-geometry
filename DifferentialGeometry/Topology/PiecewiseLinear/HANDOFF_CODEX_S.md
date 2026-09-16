@@ -1285,3 +1285,30 @@ The source commit hash will be recorded at the following checkpoint.
 combinatorial manifolds with the surface as a boundary component, after which the two
 existing collars can be glued. No unproved local-flatness or closure-manifold hypothesis
 has been added to the public endpoint.
+
+### S-M5 continuation: triangulating side closures and detecting manifold neighborhoods
+
+The two-sided-neighborhood checkpoint is committed and pushed as `b7ba85f73`; integration
+remained up to date after the required fetch and merge.
+
+`ComplementComponents.lean` proves that the closure of any complementary connected
+component of a subcomplex is precisely the carrier of its restriction subcomplex. A
+common subdivision gives the polyhedral-closure result when only carrier inclusion of
+two finite complexes is known. The proof propagates a component across the relative
+interior of each simplex, then takes closures; it does not assume polyhedral components.
+
+`ManifoldNeighborhood.lean` transfers vertex-link sphere/ball structure from a contained
+relative manifold neighborhood to the ambient complex. It consequently proves
+`isCombinatorialManifoldWithBoundary_of_isPLBall_neighborhoods`: actual PL ball
+neighborhoods at all points imply combinatorial manifold structure for any finite
+triangulation, in every positive dimension.
+
+Both focused checks have exit 0 and zero warnings (`check-complement-components.log`,
+`check-manifold-neighborhood.log`). `AuditS97ComponentTriangulation.lean` / `.log` contain
+five entries, all with only `propext`, `Classical.choice`, and `Quot.sound`.
+The source commit hash will be recorded at the following checkpoint. No other-lane or
+vendored source was modified.
+
+26.3 remains partial: identify the actual local side-ball closures as neighborhoods in
+each global component closure, apply the checked manifold criterion, identify the
+surface boundary component, and glue its two collars.
