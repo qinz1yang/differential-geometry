@@ -2363,3 +2363,28 @@ arc, since every other support avoids that arc.
 Focused check exit 0, zero warnings. AuditS130ArcFamily checks the public
 endpoint, exit 0, only the standard three axioms. This closes the simultaneous
 small-disk construction for finite edge families with polygonal endpoint germs.
+
+## Ambient straightening for finite graphs without endpoints (2026-09-16)
+
+`ArcNeighborhood.lean` now gives
+`exists_polygonal_subarcs_of_segment_subsets`: radial segment germs at the two
+ends of an injectively parametrized arc produce explicit parameters
+`0 < a < b < 1` with polygonal initial and terminal subarcs. Subarc uniqueness
+identifies those pieces with subsets of the radial segments.
+
+`PlanarJordan/GraphStraightening.lean` proves
+`Graph.IsDrawing.exists_homeomorph_polygonal_edges_of_no_endpoints`. For a finite
+planar graph drawing with no vertex incident to exactly one edge, and any open
+neighborhood of the whole drawing, it constructs an ambient homeomorphism making
+every whole edge polygonal, fixing every graph vertex and every point outside
+the specified neighborhood. Isolated vertices are permitted. The proof actually
+constructs the vertex germs, extracts the parameters, and builds disjoint edge
+disks avoiding all graph vertices before gluing the edge straightenings.
+
+`ArcNeighborhood`, its direct consumer `VertexNeighborhood`, and the new
+`GraphStraightening` all check with exit 0 and zero warnings.
+AuditS131GraphStraightening checks the parameter bridge, the vertex-neighborhood
+endpoint, and the graph endpoint; exit 0, only the standard three axioms.
+This endpoint supplies support control. It does not yet claim the full arbitrary
+positive-function displacement bound of Moise 10.7, which requires subdividing
+long edges before the same assembly, or the degree-one extension in 10.8.
