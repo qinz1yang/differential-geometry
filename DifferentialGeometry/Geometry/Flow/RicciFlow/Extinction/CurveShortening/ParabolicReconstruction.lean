@@ -544,12 +544,12 @@ variable {E F H M : Type*}
   [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
   [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
 
-private theorem periodic_mem_range_of_retraction_equation_of_firstJet_mem
+theorem periodic_mem_range_of_retraction_equation_of_firstJet_mem
     (g : ℝ → SmoothRiemannianMetric I M) {D : RealTimeInterval}
-    (hg : MetricFamilySmoothOn D g)
     {e : M → F} (he : ContMDiff I 𝓘(ℝ, F) ∞ e)
     {r : F → M} {O : TopologicalSpace.Opens F}
     (hr : ContMDiffOn 𝓘(ℝ, F) I ∞ r O)
+    (hG : MetricFamilySmoothOn D (fun t => retractionMetric (g t) he hr))
     (hEO : range e ⊆ O) (hleft : ∀ p, r (e p) = p) (β : O)
     {u : ℝ → ℝ → F} {T : ℝ} (hT : 0 < T)
     (hper : ∀ x t, u (x + 1) t = u x t)
@@ -570,7 +570,6 @@ private theorem periodic_mem_range_of_retraction_equation_of_firstJet_mem
   let j : M → O := fun p => ⟨e p, hEO (mem_range_self p)⟩
   let U := curveShorteningChartFirstJetDomain D G β
   let a := curveShorteningChartDiffusionCoefficient G β
-  have hG : MetricFamilySmoothOn D G := metricFamilySmoothOn_retractionMetric g hg he hr
   have hj : ContMDiff I 𝓘(ℝ, F) ∞ j := (ContMDiff.subtypeVal_comp_iff O j).mp he
   have hgeo : ∀ t ∈ D.regular, hasVanishingSecondFundamentalFormAlongCurves (g t) (G t) j :=
     fun t _ => hasVanishingSecondFundamentalFormAlongCurves_retractionMetric (g t) he hr hEO hleft
@@ -648,8 +647,9 @@ theorem CurveMap.exists_parabolic_curve_of_classical_retraction_equation_of_firs
   have hper : ∀ x t, u.lift (x + 1) t = u.lift x t := by
     intro x t
     simp only [CurveMap.lift, AddCircle.coe_add_period]
+  have hG := metricFamilySmoothOn_retractionMetric g hg he hr
   have hrange := periodic_mem_range_of_retraction_equation_of_firstJet_mem
-    g hg he hr hEO hleft β hT hper hcont (fun x => hinit (x : AddCircle (1 : ℝ)))
+    g he hr hG hEO hleft β hT hper hcont (fun x => hinit (x : AddCircle (1 : ℝ)))
     hx hDu hjet (fun x t ht =>
       (hpde x t ⟨ht.1.le, ht.2.le⟩).hasDerivAt (Icc_mem_nhds ht.1 ht.2))
   apply CurveMap.exists_parabolic_curve_of_classical_retraction_equation
