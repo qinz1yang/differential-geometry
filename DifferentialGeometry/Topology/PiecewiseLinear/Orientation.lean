@@ -1,3 +1,4 @@
+import DifferentialGeometry.Topology.PiecewiseLinear.AffineOrientation
 import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryExtension
 import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryInvariance
 import DifferentialGeometry.Topology.PiecewiseLinear.GeneralPosition
@@ -7671,5 +7672,235 @@ theorem isOrientable_simplexBoundary
     letI := (simplexBoundary_faces_finite T hT).to_subtype
     IsOrientable n (simplexBoundary T hT) := by
   exact ⟨CoherentOrientation.simplexBoundary (linearOrderOfSTO WellOrderingRel) T hT hcard⟩
+
+private theorem det_mul_dotProduct_eq_of_rows_eq_except
+    {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (A B : Matrix ι ι ℝ) (hA : A.det ≠ 0) (i₀ : ι)
+    (hrow : ∀ i, i ≠ i₀ → B i = A i) (v : ι → ℝ)
+    (hv : ∀ i, i ≠ i₀ → dotProduct (A i) v = 0) :
+    B.det * dotProduct (A i₀) v = A.det * dotProduct (B i₀) v := by
+  obtain ⟨c, hc⟩ := Matrix.vecMul_surjective_iff_isUnit.mpr
+    (A.isUnit_iff_isUnit_det.mpr (isUnit_iff_ne_zero.mpr hA)) (B i₀)
+  have hsum : ∑ i, c i • A i = B i₀ := by
+    funext j
+    simpa only [Finset.sum_apply, Pi.smul_apply, smul_eq_mul, Matrix.vecMul, dotProduct]
+      using congrFun hc j
+  have hB : B = A.updateRow i₀ (B i₀) := by
+    ext i j
+    by_cases hi : i = i₀
+    · subst i
+      rw [Matrix.updateRow_self]
+    · rw [Matrix.updateRow_ne hi, hrow i hi]
+  have hdet : B.det = c i₀ * A.det := by
+    rw [hB, ← hsum, Matrix.det_updateRow_sum, smul_eq_mul]
+  have hvalue : dotProduct (B i₀) v = c i₀ * dotProduct (A i₀) v := by
+    rw [← hc, ← Matrix.dotProduct_mulVec]
+    change (∑ i, c i * dotProduct (A i) v) = _
+    apply Finset.sum_eq_single i₀
+    · intro i _ hi
+      rw [hv i hi, mul_zero]
+    · simp only [Finset.mem_univ, not_true_eq_false, IsEmpty.forall_iff]
+  rw [hdet, hvalue]
+  ring
+
+private theorem sign_det_permute
+    {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (q : Equiv.Perm ι) (A : Matrix ι ι ℝ) :
+    (SignType.sign (A.submatrix q id).det : ℤ) =
+      (Equiv.Perm.sign q : ℤ) * (SignType.sign A.det : ℤ) := by
+  rw [Matrix.det_permute]
+  rcases Int.units_eq_one_or (Equiv.Perm.sign q) with h | h <;>
+    simp [h, Left.sign_neg, SignType.coe_neg]
+
+open Classical in
+private theorem sign_permuted_simplexCoordinateMatrix_mul_boundary
+    [AddCommGroup E] [Module ℝ E]
+    (r : LinearOrder E) {n : ℕ} {s t u : Finset E}
+    (hs : s.card = n + 2) (hu : u.card = n + 2) {v : E} (hv : v ∈ s)
+    (herase : @Finset.erase E (Classical.decEq E) s v = t) :
+    let q := Fin.cycleIcc (orderPositionOfCard r s hs v hv) (Fin.last (n + 1))
+    (SignType.sign ((simplexCoordinateMatrix r hs hu).submatrix q id).det : ℤ) *
+        (-1 : ℤ) ^ (n + 1) =
+      affineSimplexOrientationSign r hs hu * simplexBoundaryCoefficient r s t := by
+  intro q
+  have hq := sign_cycleIcc_orderPosition_mul_simplexBoundaryCoefficient r hs hv herase
+  change (Equiv.Perm.sign q : ℤ) * simplexBoundaryCoefficient r s t = _ at hq
+  rw [sign_det_permute, ← hq]
+  unfold affineSimplexOrientationSign
+  rcases Int.units_eq_one_or (Equiv.Perm.sign q) with h | h <;>
+    simp [h]
+
+open Classical in
+theorem affineSimplexOrientationSign_pair_cancel
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    (r : LinearOrder E) (K : Geometry.SimplicialComplex ℝ E)
+    {n : ℕ} {s t f u : Finset E} (hs : s ∈ K.faces) (ht : t ∈ K.faces)
+    (hst : s ≠ t) (hfs : f ⊆ s) (hft : f ⊆ t)
+    (hfcard : f.card = n + 1) (hscard : s.card = n + 2)
+    (htcard : t.card = n + 2) (hucard : u.card = n + 2)
+    (hsu : convexHull ℝ (s : Set E) ⊆ convexHull ℝ (u : Set E))
+    (htu : convexHull ℝ (t : Set E) ⊆ convexHull ℝ (u : Set E)) :
+    affineSimplexOrientationSign r hscard hucard * simplexBoundaryCoefficient r s f +
+      affineSimplexOrientationSign r htcard hucard * simplexBoundaryCoefficient r t f = 0 := by
+  let _ := r
+  obtain ⟨a, haf, has⟩ := Finset.exists_eq_insert_iff.mpr ⟨hfs, by omega⟩
+  obtain ⟨b, hbf, hbt⟩ := Finset.exists_eq_insert_iff.mpr ⟨hft, by omega⟩
+  have ha : a ∈ s := has ▸ Finset.mem_insert_self a f
+  have hb : b ∈ t := hbt ▸ Finset.mem_insert_self b f
+  have hab : a ≠ b := fun h => hst (has.symm.trans (h ▸ hbt))
+  have hsErase : @Finset.erase E (Classical.decEq E) s a = f := by
+    have hdec : Classical.decEq E = r.toDecidableEq := Subsingleton.elim _ _
+    rw [hdec, ← has, Finset.erase_insert haf]
+  have htErase : @Finset.erase E (Classical.decEq E) t b = f := by
+    have hdec : Classical.decEq E = r.toDecidableEq := Subsingleton.elim _ _
+    rw [hdec, ← hbt, Finset.erase_insert hbf]
+  let x := f.centroid ℝ id
+  have hfK : f ∈ K.faces := K.down_closed hs hfs (Finset.card_pos.mp (by omega))
+  have hx : x ∈ openSimplex f := centroid_mem_openSimplex_of_mem_faces K f hfK
+  obtain ⟨ℓ, hℓf, hℓa, hℓb⟩ := exists_linearMap_separating_cofaces K hx haf hbf hab
+    (by
+      let _ := Classical.decEq E
+      have has' : insert a f = s := by
+        ext z
+        simpa only [Finset.mem_insert] using Finset.ext_iff.mp has z
+      rw [has']
+      exact hs)
+    (by
+      let _ := Classical.decEq E
+      have hbt' : insert b f = t := by
+        ext z
+        simpa only [Finset.mem_insert] using Finset.ext_iff.mp hbt z
+      rw [hbt']
+      exact ht)
+  let qS := Fin.cycleIcc (orderPositionOfCard r s hscard a ha) (Fin.last (n + 1))
+  let qT := Fin.cycleIcc (orderPositionOfCard r t htcard b hb) (Fin.last (n + 1))
+  let A := (simplexCoordinateMatrix r hscard hucard).submatrix qS id
+  let B := (simplexCoordinateMatrix r htcard hucard).submatrix qT id
+  let v := fun j : Fin (n + 2) => ℓ (((Finset.orderIsoOfFin u hucard) j).1 - x)
+  have hsEnum (i : Fin (n + 1)) :
+      orderValueOfCard r s hscard (qS i.castSucc) = orderValueOfCard r f hfcard i := by
+    have h := orderValueOfCard_erase_apply r s hscard ha (hsErase.symm ▸ hfcard) i
+    simpa only [hsErase] using h.symm
+  have htEnum (i : Fin (n + 1)) :
+      orderValueOfCard r t htcard (qT i.castSucc) = orderValueOfCard r f hfcard i := by
+    have h := orderValueOfCard_erase_apply r t htcard hb (htErase.symm ▸ hfcard) i
+    simpa only [htErase] using h.symm
+  have hsLast : orderValueOfCard r s hscard (qS (Fin.last (n + 1))) = a := by
+    dsimp only [qS]
+    rw [Fin.cycleIcc_of_last (Fin.le_last _)]
+    change ((Finset.orderIsoOfFin s hscard)
+      ((Finset.orderIsoOfFin s hscard).symm ⟨a, ha⟩)).1 = a
+    simp only [OrderIso.apply_symm_apply]
+  have htLast : orderValueOfCard r t htcard (qT (Fin.last (n + 1))) = b := by
+    dsimp only [qT]
+    rw [Fin.cycleIcc_of_last (Fin.le_last _)]
+    change ((Finset.orderIsoOfFin t htcard)
+      ((Finset.orderIsoOfFin t htcard).symm ⟨b, hb⟩)).1 = b
+    simp only [OrderIso.apply_symm_apply]
+  have hrows : ∀ i, i ≠ Fin.last (n + 1) → B i = A i := by
+    intro i hi
+    obtain ⟨j, rfl⟩ := Fin.eq_castSucc_of_ne_last hi
+    funext k
+    change weights u (orderValueOfCard r t htcard (qT j.castSucc))
+      ((Finset.orderIsoOfFin u hucard) k).1 =
+      weights u (orderValueOfCard r s hscard (qS j.castSucc))
+        ((Finset.orderIsoOfFin u hucard) k).1
+    rw [hsEnum, htEnum]
+  have hAeval (i : Fin (n + 2)) :
+      dotProduct (A i) v = ℓ (orderValueOfCard r s hscard (qS i) - x) :=
+    congrFun (simplexCoordinateMatrix_mulVec r hscard hucard hsu ℓ x) (qS i)
+  have hBeval (i : Fin (n + 2)) :
+      dotProduct (B i) v = ℓ (orderValueOfCard r t htcard (qT i) - x) :=
+    congrFun (simplexCoordinateMatrix_mulVec r htcard hucard htu ℓ x) (qT i)
+  have hzero : ∀ i, i ≠ Fin.last (n + 1) → dotProduct (A i) v = 0 := by
+    intro i hi
+    obtain ⟨j, rfl⟩ := Fin.eq_castSucc_of_ne_last hi
+    rw [hAeval, hsEnum]
+    apply hℓf
+    have hy : orderValueOfCard r f hfcard j ∈ affineSpan ℝ (f : Set E) :=
+      mem_affineSpan ℝ (Finset.orderEmbOfFin_mem f hfcard j)
+    have hxspan : x ∈ affineSpan ℝ (f : Set E) :=
+      convexHull_subset_affineSpan (f : Set E) (openSimplex_subset_convexHull f hx)
+    simpa only [direction_affineSpan, vsub_eq_sub] using
+      AffineSubspace.vsub_mem_direction hy hxspan
+  have hA : A.det ≠ 0 := by
+    dsimp only [A]
+    rw [Matrix.det_permute]
+    apply mul_ne_zero
+    · exact_mod_cast (Units.ne_zero (Equiv.Perm.sign qS))
+    · exact simplexCoordinateMatrix_det_ne_zero r hscard hucard (K.indep hs) hsu
+  have hdet := det_mul_dotProduct_eq_of_rows_eq_except A B hA (Fin.last (n + 1)) hrows v hzero
+  rw [hAeval, hBeval, hsLast, htLast, hℓa, mul_one] at hdet
+  have hsign : (SignType.sign B.det : ℤ) = -(SignType.sign A.det : ℤ) := by
+    rw [hdet, sign_mul, sign_neg hℓb, SignType.coe_mul, SignType.coe_neg_one, mul_neg_one]
+  have hS := sign_permuted_simplexCoordinateMatrix_mul_boundary r hscard hucard ha hsErase
+  have hT := sign_permuted_simplexCoordinateMatrix_mul_boundary r htcard hucard hb htErase
+  change (SignType.sign A.det : ℤ) * (-1 : ℤ) ^ (n + 1) = _ at hS
+  change (SignType.sign B.det : ℤ) * (-1 : ℤ) ^ (n + 1) = _ at hT
+  rw [← hS, ← hT, hsign, neg_mul, add_neg_cancel]
+
+open Classical in
+noncomputable def CoherentOrientation.ofConvexHull
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    (r : LinearOrder E) (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
+    {n : ℕ} (hK : IsCombinatorialManifoldWithBoundary (n + 1) K)
+    (T : Finset E) (hTcard : T.card = n + 2)
+    (hsub : K.space ⊆ convexHull ℝ (T : Set E)) : CoherentOrientation (n + 1) K where
+  vertexOrder := r
+  sign s := if hs : s.card = n + 2 then affineSimplexOrientationSign r hs hTcard else 0
+  sign_top := by
+    intro s hs hscard
+    simp only [dif_pos hscard]
+    exact affineSimplexOrientationSign_eq_one_or_neg_one r hscard hTcard (K.indep hs)
+      ((K.convexHull_subset_space hs).trans hsub)
+  coherent := by
+    intro f hf hfcard hnotone
+    have htwo : (faceCofaces K f (n + 2)).card = 2 :=
+      (hK.card_faceCofaces_eq_one_or_two K hf hfcard).resolve_left hnotone
+    obtain ⟨s, t, hst, hcofaces⟩ := Finset.card_eq_two.mp htwo
+    have hsco : s ∈ faceCofaces K f (n + 2) := by
+      rw [hcofaces]
+      exact Finset.mem_insert_self s {t}
+    have htco : t ∈ faceCofaces K f (n + 2) := by
+      rw [hcofaces]
+      exact Finset.mem_insert_of_mem (Finset.mem_singleton_self t)
+    obtain ⟨hs, hscard, hfs⟩ := (mem_faceCofaces K).mp hsco
+    obtain ⟨ht, htcard, hft⟩ := (mem_faceCofaces K).mp htco
+    rw [orientedBoundary_eq_sum_faceCofaces, hcofaces]
+    simp only [Finset.sum_insert, Finset.sum_singleton, Finset.mem_singleton,
+      hst, not_false_eq_true, dif_pos hscard, dif_pos htcard]
+    exact affineSimplexOrientationSign_pair_cancel r K hs ht hst hfs hft hfcard hscard htcard
+      hTcard ((K.convexHull_subset_space hs).trans hsub) ((K.convexHull_subset_space ht).trans hsub)
+
+open Classical in
+theorem isOrientable_of_space_subset_convexHull
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
+    {n : ℕ} (hK : IsCombinatorialManifoldWithBoundary n K)
+    (T : Finset E) (hTcard : T.card = n + 1)
+    (hsub : K.space ⊆ convexHull ℝ (T : Set E)) : IsOrientable n K := by
+  cases n with
+  | zero => exact isOrientable_zero K
+  | succ n =>
+    exact ⟨CoherentOrientation.ofConvexHull (linearOrderOfSTO WellOrderingRel) K hK T hTcard hsub⟩
+
+open Classical in
+theorem isOrientable_of_isSubdivision_simplexComplex
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces]
+    {T : Finset E} (hT : AffineIndependent ℝ ((↑) : T → E))
+    {n : ℕ} (hTcard : T.card = n + 1) (h : IsSubdivision K (simplexComplex T hT)) :
+    IsOrientable n K := by
+  have hTne : T.Nonempty := Finset.card_pos.mp (by omega)
+  have hspace : K.space = convexHull ℝ (T : Set E) :=
+    h.space_eq.trans (simplexComplex_space T hT hTne)
+  have hball : IsPLBall n K.space := by
+    rw [hspace]
+    exact isPLBall_convexHull_of_affineIndependent T hT hTcard
+  cases n with
+  | zero => exact isOrientable_zero K
+  | succ n =>
+    exact isOrientable_of_space_subset_convexHull K hball.isCombinatorialManifoldWithBoundary
+      T hTcard hspace.subset
 
 end DifferentialGeometry.Topology.PiecewiseLinear
