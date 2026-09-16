@@ -1602,3 +1602,9 @@ F-M2–F-M6 尚未开始；按用户指定顺序推进，只有出现 §1 接口
 `LinkHeightSubdivision.lean` 已提交并推送为 `ee366b46f`。主端点 `exists_isPLHomeomorphOn_geometricLink_of_isSubdivision_preserving_height_sign` 对保持每个细面落在指定高度闭半空间中的任意有限细分，构造原链环与细分链环之间的显式径向单纯 PL 同胚，并分别证明零截面、严格负部和严格正部的精确像集等式。证明由径向比例的正性逐顶点推出高度差同号，再用逐面仿射性扩展；没有依赖存在性定理中隐藏的映射选择，也没有把符号保持写入假设。
 
 模块聚焦检查 exit=0（11.3 秒）、零 warning；`AuditF157.lean` 五项全部仅依赖 `propext`、`Classical.choice`、`Quot.sound`，主端点完整签名已核对。该层允许把为高度半空间适配而取的细分链环数据搬回原星。F-M1 仍为 partial：下一步闭合凸封帽边缘的 crossing/孤立分类与选定点处的严格指标下降；Lemma 1、Lemma 2–6 和 I1 尚未交付。下一审计文件 `AuditF158.lean`。
+
+### 19.10 F-M1：保高度凸化显式保留三角形载体
+
+`TriangleConvexification.lean` 已提交并推送为 `d375040a1`。`exists_isPLHomeomorphOn_triangle_image_strict_separation` 加强平面指定点凸化，显式返回三元素仿射独立顶点集及其凸包，而不只返回抽象凸集。`exists_isPLHomeomorphOn_triangle_image_strict_separation_of_subset_fiber` 将该数据沿实际仿射纤维坐标嵌入三维，同时保留全空间 PL 同胚、凸开集外恒同、逐点保原高度、指定点严格分离及所有集合的高度指标不变。指定点允许在封帽盘外，覆盖原书“`D_J - {P}` 可能就是整个 `D_J`”的情形。
+
+模块最终聚焦检查 exit=0（13.6 秒）、零 warning；`AuditF158.lean` 两个端点均仅依赖 `propext`、`Classical.choice`、`Quot.sound`，完整签名已核对。F-M1 仍为 partial：下一步把显式三角形载体接入凸封帽切割，证明边缘顶点的 crossing/孤立分类，再闭合选定奇异层的圆周数严格下降。Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF159.lean`。
