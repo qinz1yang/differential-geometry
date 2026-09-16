@@ -9270,10 +9270,13 @@ import DifferentialGeometry.Topology.Morse.NormalForm.Euclidean
 import DifferentialGeometry.Topology.Morse.NormalForm.Local
 import DifferentialGeometry.Topology.Morse.NormalForm.Manifold
 import DifferentialGeometry.Topology.Morse.Perturbation
+import DifferentialGeometry.Topology.Morse.RegularLevel.CriticalSeparation
 import DifferentialGeometry.Topology.Morse.RegularLevel.Flow
 import DifferentialGeometry.Topology.Morse.RegularLevel.Isotopy
 import DifferentialGeometry.Topology.Morse.RegularLevel.LevelSet
+import DifferentialGeometry.Topology.Morse.RegularLevel.LocalTransport
 import DifferentialGeometry.Topology.Morse.RegularLevel.NoCriticalValues
+import DifferentialGeometry.Topology.Morse.RegularLevel.RelativeVectorField
 import DifferentialGeometry.Topology.Morse.RegularLevel.Sublevel
 import DifferentialGeometry.Topology.Morse.RegularLevel.VectorField
 import DifferentialGeometry.Topology.Morse.RegularSublevelBoundary

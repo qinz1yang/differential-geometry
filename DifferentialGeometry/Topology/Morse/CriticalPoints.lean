@@ -221,7 +221,7 @@ private theorem eventually_eq_of_isCriticalPointAt_of_contMDiff_two [IsManifold 
   have heq : e q = e p := hqisolated (hiff.1 hqcrit)
   exact e.injOn hqsource hpsource heq
 omit [FiniteDimensional ℝ E] in
-private theorem isClosed_criticalPoints_of_contMDiff_one [IsManifold I 1 M] (f : M → ℝ)
+theorem isClosed_criticalPoints_of_contMDiff_one [IsManifold I 1 M] (f : M → ℝ)
     (hf : ContMDiff I 𝓘(ℝ, ℝ) (1 : WithTop ℕ∞) f) :
     IsClosed (criticalPoints I f) := by
   rw [← isOpen_compl_iff]
