@@ -168,3 +168,95 @@ frontier = 两侧补弧之并的表示引理 → Case 3/4 的 `L₁` 识别与�
 **H**：H.4b 球面识别（`IsCombinatorialManifold 2 B` 连通闭、`faceEulerChar B = 2` ⟹ `IsPLSphere 2 B.space`；路线：1-骨架生成树 `T` 与对偶生成树 `T*`，
 Euler 数迫使每条边恰属其一，沿 `T*` 粘合的三角形是一个 PL 盘，`B` 是该盘沿树 `T` 折叠边界的商，按树边归纳折叠得球面）；
 然后 23.19′ = I5（`bettiOne_pos_of_boundary_component_not_sphere`，按 6.1 用 `χ_face`）；再回 H-M3 的顶维类（可推迟）。
+
+## 7. 2026-09-16 中午：`NormalSystem` 的表示缺陷（E3 发现，属实）与下一批里程碑
+
+### 7.1 `NormalSystem` 加一个字段（批准；文件归 E3）
+
+E3 的诊断成立，是 §1 的 L.1 设计（本方写的）欠规定。现状只有像集层面的联系：
+
+```lean
+  loop_space : loopComplex.space = simplicialMap sourceComplex vertexMap '' frontier sourceComplex.space
+  boundaryLoop : freeLoop (normalSystemBoundaryNeighborhoodSpace …)
+  boundaryLoop_range : Set.range (fun θ => (boundaryLoop θ : E)) = loopComplex.space
+```
+
+`boundaryLoop` 只被要求"像集等于边界多边形"，因此它可以绕两圈、反向或任意重参数化，而 Moise 书页 186–187 的 Case 3/4
+字计算要求 `L = Bd D`：把 `Δ` 的边界恰好走一圈后用 `D` 推下去。补一个字段把它钉死（`loopCircle` 见
+`Topology/LoopSpace/Basic.lean`，`freeLoop Q = C(loopCircle, Q)`）：
+
+```lean
+  boundaryParam : loopCircle ≃ₜ frontier sourceComplex.space
+  boundaryLoop_eq : ∀ θ, (boundaryLoop θ : E) =
+    simplicialMap sourceComplex vertexMap (boundaryParam θ : EuclideanSpace ℝ (Fin 2))
+```
+
+`boundaryLoop_range` 随即成为推论（保留为定理，签名不变，下游不受影响）。只有**生产者**需要补这两项：
+`frontier sourceComplex.space` 是 PL 1-球面（`IsPLBall.isPLSphere_frontier`），与 `loopCircle`（= `UnitAddCircle`）的同胚
+由你 §16 的 PL 圆分类加 `BoundaryGeneration.lean` 里已经做过的"自由环满射到指定多边形"的构造给出；
+若两处给的是到标准圆的 PL 同胚，再与 `loopCircle` 的标准同胚复合。改完重检 `SingularCell.lean` 及其下游，审计后推送，并在 §4 表里更新 L.1 行。
+
+### 7.2 割贴后的正规性是 L 车道自己的义务，不是 I3 的缺口
+
+I3（F 的 `IsNormalSingularCell`）是**定义加基本 API**；"沿 `A_j` 切开后两片仍正规、奇点图重建、复杂度严格下降"
+是 Lemma 2 证明本身的内容，不要等 F。可用的材料与路线：
+
+- 局部单射与纤维 ≤ 2 的限制：F 已给 `IsNormalSingularCell.locallyInjective_restrict`、`fiber_le_two_restrict`。
+- 奇点图重建：切开后 `doublePointSet (D|Δ₁) Δ₁ = doublePointSet D Δ \ (被切掉的分支)`，因为两片的原像对被分到不同片；
+  一维带边组合流形性对"去掉若干整个连通分支"的子复形是封闭的（`IsCombinatorialManifoldWithBoundary 1` 对并集分支的限制）。
+- crossing 条款逐点保持：`HasPLDoubleCrossingAt` 的两个不交源邻域在切开后仍落在同一片内（切缝是原像弧，
+  与双点的两个源邻域可取到不交）。
+- 复杂度严格下降：切掉的分支 `A_j` 至少消掉一对碰撞顶点，用 `complexity` 的定义（`vertexCollisionPairs` 的基数）。
+
+### 7.3 里程碑
+
+**E3**：7.1 的字段 → 7.2 的割贴正规性四条 → Case 3/4 的 `L₁` 字计算与复杂度下降 → Case 1/2（盘内 PL 圆的环带邻域用 F4.2，
+柱形图用 Moise 书页 185 Figure 25.2 的显式模型；Case 2 的内盘替换用 S 的 I2 推离）→ Lemma 2 端点（条件于 I3）。
+L.4 仍保持显式参数，直到 Lemma 2 为真定理。
+
+**S**：I2 已交付，谢谢。S.6 确实被 I.4（30.4）挡住，而 I.4 又要 B.5（26.4 扩展环定理，等 L 车道），所以暂时不碰。
+改做 §26 里不依赖环定理的三项，它们是 §32/§33 的直接输入：
+- **B.6 = Moise 26.6**（书页 194）：ℝ³ 中紧致连通多面体 2-流形 `M²` 两侧，`ℝ³ − M²` 恰两个连通分支 `I`、`E`，
+  公共 frontier 为 `M²`。路线正是 F5.1：取从无界分支 `P` 到 `Q` 的折线 `B`，`B ∩ M²` 是单点且落在 `B` 的边内部与
+  `M²` 的 2-单形内部；反设 `Q` 也在无界分支，取 `B ∩ M² = ∅` 的折线 `B′`，`B ∪ B′` 是单连通的，故存在 PL 映射
+  `ρ : Δ → ℝ³`（`Δ` 为 2-胞腔），`ρ|Bd Δ` 同胚到 `B ∪ B′`；用 F 的
+  `exists_small_simplicialMap_preimage_manifold_relative`（`GeneralPosition.lean`：任意子复形相对细分、原像是
+  一维带边组合流形、源边界点度数 1、源内部点度数 2）把 `G := ρ⁻¹(ρ(Δ) ∩ M²)` 化为一维带边组合流形，
+  `G ∩ Bd Δ` 恰一点 `R`；一维紧致带边组合流形的边界点个数是偶数（这条要先证，`boundaryComplex` 的基数模 2），
+  与"恰一个"矛盾。再由正则邻域 `N`：`N − M²` 至多两个连通分支（用 S-M5 的双领 26.3），故恰两个。
+- **B.2 = Problem 26.3**（书页 196）：`d ⊆ Bd N`、`N ⊆ Int M³` ⟹ `d` 在 `M³` 中的每个邻域含两侧的多面体 3-胞腔
+  `C₁ ⊆ N`、`C₂ ⊆ Cl(M³ − N)`，`d = C₁ ∩ Bd N = C₂ ∩ Bd N`。Problem 26.1、26.2 已由 S-M2、S-M4 交付，本条用它们两侧各取一次。
+- **P.4 余项**：度 1 端点与小盘框架。
+三项都允许显式 `hSchoenflies`。`B.8`（26.8 可定向）先不做：它要 3-球面的顶维同调生成元，是 H 的开口。
+
+**F**：不变（§6.2）。**H**：不变（H.4b 球面识别 → I5）。
+
+## 8. 2026-09-16 上午：验证协议（简化）与共享 olean 的使用规则
+
+### 8.1 两档验证
+
+- **平时**：`python .lake/scratch/tools/fresh.py`。不跑 Lean，一秒。做两件事：改动/未跟踪 `.lean` 的禁用模式扫描；
+  每个这样的文件在共享库里的 olean 是否比源码新。后者之所以有意义，是因为 `check-f.ps1` 现在**编译前先删目标 olean/ilean**，
+  所以"olean 存在且更新"等价于"这份源码编译成功过"。
+- **重量级**（聚焦检查 + 命名空间感知的 `#print axioms`）只在三种场合做：宣布里程碑 done；端点模块并入整合分支前；
+  某个声明的陈述被重述后的下游。
+
+### 8.2 `fresh.py` 的两个前提（脚本会自己打印）
+
+1. 本工作树没有 `lean.exe` 在跑。有人在编译时 olean 正被删了重建，读数无效。
+2. git 合并/检出会在同一瞬间重写一批文件的 mtime，内容未必变。一组 stale 条目共享同一时间戳就是合并造成的；
+   这时按 `git log -1 --stat` 只重检合并真正改过的文件，不要全量重检。
+
+### 8.3 共享 olean 库的使用规则（今早发生过一次实际污染）
+
+共享库 `E:\differential-geometry-dev\.lake\build\lib\lean` 是所有工作树共用的**唯一** olean 存储。一次事故：
+整合验证正在复核 E3 的分支时，E3 车道自己用**尚未推送**的源码重写了 `SingularCell.olean` 与 `CutAndPaste.olean`，
+验证代理因此先编译失败、随后又可能对着别人的源码"通过"。规则：
+
+- **同一时刻只有一个工作树可以编译同一个模块。** 我要复核某条车道的合并时，会先通知该车道暂停 Lean；收到"恢复"再继续。
+- 车道之间文件不重叠，所以平时并行编译没问题；冲突只发生在"车道与整合验证同时动同一批文件"。
+- 整合工作树写共享库，因此共享库的内容始终是最近一次被验证过的状态。
+
+（试过给每条车道一个私有 olean 目录并前置到 `LEAN_PATH`：不行。Lean 会认定第一个含 `DifferentialGeometry`
+目录的搜索根，然后不再回退到共享库，于是所有未私有编译过的依赖都报 "object file … does not exist"。
+要走这条路必须先把共享库的 9157 个 olean 全部硬链接进私有目录，代价与收益不成比例，已放弃。）
