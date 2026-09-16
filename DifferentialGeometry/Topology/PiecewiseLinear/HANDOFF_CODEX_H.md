@@ -428,3 +428,22 @@ Reduced/MayerVietorisCoefficients, Reduced/PointClasses}`（`REUSE_AUDIT.md` §2
   `propext`、`Classical.choice`、`Quot.sound`。
 - H-M6 无未闭合项；没有 import `Homology/HurewiczLowDegrees.lean`，没有使用曲面分类。下一项为 H-M7 的
   §21 Euler 运算与 28.20 分裂公式。
+
+### H-M7 — done，§21 Euler 运算与 28.20 分裂公式
+
+- 数学提交：`9bcc38d82`。新模块 `EulerCellOperations.lean` 与 `SurfaceSplitEuler.lean`。
+- `OpenCellProfile.Operation` 的 `alpha`、`beta`、`gamma`、`delta` 精确记录四种开胞腔操作对顶点、边、面的计数变化；
+  `OpenCellProfile.eulerChar_apply` 与 `eulerChar_eq_of_isRefinement` 证明单步及有限次操作保持 χ。
+  `simplicialOpenCellProfile_eulerChar` 将三维数计数重新接回有限二维复形的 `faceEulerChar`；实际线性细分仍由既有
+  `eulerChar_eq_of_isSubdivision` 给出 PL 不变量。
+- `eulerChar_eq_add_sub_of_faces_union` 是任意公共环境中两个子复形的包含排除式；交为 PL 1-球面时，
+  `eulerChar_eq_add_of_faces_union_of_isPLSphere_one` 给出 21.8 的无修正加法。既有
+  `eulerChar_of_isPLSphere_one` 与 `eulerChar_of_isPLBall` 分别给 21.6、21.7。
+- `SurfaceSplitAlongPolygon` 用公共核心、PL 同胚于 `J × [0,1]` 的环带、两条互不相交的 PL 多边形边界以及切后曲面
+  与核心的 PL 同胚定义 21.10 的分裂；`SurfaceSplitAlongPolygon.eulerChar_eq` 证明 χ 不变。
+  `SurfaceSplitAndCap` 再记录两个互不相交的 PL 2-胞腔及其边界粘接，
+  `SurfaceSplitAndCap.eulerChar_eq_add_two` 同时交付 21.11 与 28.20。结构中没有把任何 Euler 等式作为字段。
+- 两个模块聚焦检查 exit=0、零 warning，分别为 9.5 秒与 9.7 秒；`fresh.py` 报本车道相对整合分支的四个改动模块
+  olean 全部新鲜、零禁用项。`.lake/scratch/AuditHM7.lean` 逐项审计 21 个新增声明与 18 个关键复用声明，
+  exit=0，全部公理闭包均包含于 `propext`、`Classical.choice`、`Quot.sound`。
+- H-M7 无未闭合项；下一项为 H-M8 的 22.5–22.7。

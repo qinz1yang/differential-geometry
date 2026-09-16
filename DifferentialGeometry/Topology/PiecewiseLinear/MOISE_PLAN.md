@@ -579,6 +579,21 @@
   `geometricRealizationHomeomorphism`、`bettiNumber_zero_of_isConnected`、`eulerChar_eq_sum_bettiNumber`、
   `faceEulerChar_le_two` 与 `isPLSphere_two_of_faceEulerChar_eq_two`。未经过含 `sorry` 的
   `Homology/HurewiczLowDegrees.lean`，也未借用曲面分类。
+- 2026-09-16（H-M7 / §21 与 28.20，数学提交 `9bcc38d82`）：`EulerCellOperations.lean` 以
+  `OpenCellProfile.Operation` 的 α–δ 四种构造证明开胞腔计数 χ 在单步和有限次细分操作下不变，并将计数桥回
+  有限二维复形的 `faceEulerChar`；同时给出按面并集的 Euler 包含排除与沿 PL 多边形粘接的 21.8 加法。
+  `SurfaceSplitEuler.lean` 以公共核心、乘积环带、两条多边形边界及切后 PL 同胚定义
+  `SurfaceSplitAlongPolygon`，证明 21.10 的 χ 不变；两个互不相交 PL 2-胞腔封口形成
+  `SurfaceSplitAndCap`，其 `eulerChar_eq_add_two` 交付 21.11 与 28.20，且结构字段不含 Euler 结论。
+  两个模块聚焦检查 exit=0、零 warning；`fresh.py` 报本车道四个改动模块 olean 全部新鲜且零禁用项。
+  `.lake/scratch/AuditHM7.lean` 审计 21 个新增声明与 18 个关键复用声明，全部只含标准三公理。
+  D4 首次使用或本里程碑复核逐项包括 `faceEulerChar_eq_of_card_le_three`、
+  `faceEulerChar_sup_add_faceEulerChar_inf`、`faceEulerChar_bot`、`faceEulerChar_congr`、
+  `eulerChar_eq_singular`、`eulerChar_eq_of_isSubdivision`、`eulerChar_union_add_inter`、
+  `eulerChar_of_isPLBall`、`eulerChar_of_isPLSphere_one`、`eulerChar_eq_of_isPLHomeomorphOn`、
+  `Homology.eulerChar_eq_of_homeomorph`、`Homology.eulerChar_eq_of_homotopyEquiv`、
+  `HomotopyEquiv.productConvex`、`Homeomorph.Set.prod`、`IsPLHomeomorphOn.homeomorph`、
+  `intersectionComplex`、`unionComplex` 与 `finite_unionComplex_faces`。
 - 2026-09-15（C/L 车道，L.2 接口修正与组合曲面层）：`SphereCase.lean` 的
   `exists_nonsingular_two_cell_of_sphere_boundary` 在 `724267986` 增加实际多面体 3-流形 `M`、
   `B ⊆ polyhedralBoundary 3 M hM`，并在 `hpush` 与结论中都要求 `D₁ '' D₁.domain ⊆ M`；检查 exit=0、
