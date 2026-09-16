@@ -2661,3 +2661,37 @@ endpoints, exit 0, only the standard three axioms. Integration was fetched and
 merged at this checkpoint (already up to date at 4401dd9d1). The next obligation
 is finite subdivision into short edges, followed by positive-function control;
 this diameter hypothesis has not been claimed as full P.4.
+## Finite graph approximation with strongly positive control (2026-09-16)
+
+`ArcFamilyDrawing.lean` realizes compatible arc families as actual graphs,
+including prescribed isolated vertices. `GraphSubdivision.lean` constructs the
+subdivided drawing, proves that it is a drawing, preserves the exact point set
+and original vertices, expresses every original edge as the finite union of
+its subedges, and chooses subdivisions with arbitrarily small edge diameters.
+The mesh is produced by the existing checked `Schoenflies.exists_mesh`.
+
+`GraphApproximation.lean` now proves the uniform and strongly positive control
+forms of ambient polygonalization for every finite planar graph drawing:
+`Graph.IsDrawing.exists_homeomorph_polygonal_edges_dist_lt_const` and
+`Graph.IsDrawing.exists_homeomorph_polygonal_edges_dist_lt`. Both fix every
+original vertex and the complement of the prescribed open neighborhood.
+The latter bounds the displacement at every point of that neighborhood by the
+given control function. Its explicit hypothesis is precisely a positive lower
+bound on every compact subset of the neighborhood; continuity is not assumed,
+and no condition is imposed outside the neighborhood. The continuous globally
+positive version is a corollary.
+
+This control hypothesis was checked against Moise, book page 46 (PDF page 56);
+the finite-graph target is the specialization of 10.8, book page 76 (PDF page
+86). The proof first uses a compact neighborhood inside the prescribed open
+set, then applies the uniform theorem with its positive control lower bound.
+The degree-one construction and small disk frames were produced in the prior
+milestones, rather than retained as input hypotheses.
+
+All three new modules check with exit 0 and zero warnings.
+AuditS145ControlledGraph checks eleven subdivision and approximation endpoints,
+exit 0, only propext, Classical.choice, and Quot.sound. The checkpoint merged
+integration at bbd488861; no imported lane module was recompiled. The remaining
+P.4 delivery step is the native IsPolyhedron / PL one-cell image bridge and the
+final plan-row update. The ambient homeomorphism itself is not asserted PL on
+an arbitrary topologically embedded original graph.
