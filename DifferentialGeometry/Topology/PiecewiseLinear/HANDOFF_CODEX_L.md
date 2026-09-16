@@ -545,3 +545,28 @@ theorem eq_top_of_boundaryLoops_mem_normal
   `.lake/scratch/AuditE3M2.lean` 共 39 项，全部只含 `propext`、`Classical.choice`、`Quot.sound`。
 - 下一步是把三盘链的首尾盘沿分支双层同胚实际贴合，并用本端点返回的补弧识别书页 186/187 的
   `L₁ = συ⁻¹` 或 `L₁ = συ`。
+
+## 25. 2026-09-16 E3-M2 追加：触边分支的外侧盘手术
+
+状态：partial（Case 3/4 的几何贴合及端点定向二分已闭合；正规性重建、严格复杂度下降与边界环字仍未闭合）。数学提交
+`c05d49b83`。
+
+- `BoundaryBranchCrosscut.lean` 的
+  `exists_two_isCrosscuts_branchPreimage_of_boundaryBranch_with_coordinate` 同时保留两条源 crosscut 的端点、双层 PL 同胚
+  `g : A → C` 与 `EqOn D (D ∘ g) A`，使三盘分解与贴合使用同一组规范见证。
+- `CellGluing.lean` 的 `IsPLHomeomorphOn.maps_arc_endpoints` 证明 PL 弧同胚的端点只有保向或反向两种配对；
+  `exists_complementary_frontier_arcs_of_isPLBall_union_between` 固定公共缝的给定端点，并把这组端点传入两侧 `IsCutPair`；
+  `SingularTwoCell.exists_glue_of_isPLHomeomorphOn_boundary_arc` 进一步精确记录公共缝在两侧参数化下的像和四个端点值。
+- `CutAndPaste.lean` 加强三盘链端点，使首尾盘的原边界迹都是 PL 1-球，并各自与奇异 crosscut 构成完整 `IsCutPair`。
+  新端点 `NormalSingularCellData.exists_boundary_surgery_cell_of_boundaryBranch` 实际沿双层同胚贴合首尾盘，构造
+  `G : SingularTwoCell M`，证明 `G '' G.domain ⊆ D '' D.domain`、
+  `range G.boundary = D '' (U ∪ V)`、`range G.boundary ⊆ B` 及 `G '' G.domain ∩ BdM ⊆ B`，同时交付
+  `(g p = r ∧ g q = s) ∨ (g p = s ∧ g q = r)`，正好区分书中的 Case 4 与 Case 3。
+- `BoundaryBranchCrosscut`、`CellGluing`、`CutAndPaste` 依次聚焦检查 exit=0、零 warning；
+  `.lake/scratch/AuditE3M2.lean` 共 43 项审计，全部只含 `propext`、`Classical.choice`、`Quot.sound`。
+  本层没有首次复用新的 covering/Van Kampen 声明。
+- 确切未闭合项有两层。第一，现有无基点环 API 尚未把任意 `SingularTwoCell.boundary` 参数化与上述补弧集合恒等式自动转换为
+  `L₁ = συ⁻¹`、`L₂ = σφυτ` 或 `L₁ = συ`、`L₂ = στ⁻¹υφ⁻¹` 的道路等式；群字引理因此尚未接到新盘。
+  第二，当前 I3 数据没有“沿一个完整触边分支重贴后仍有相容的正规三角剖分”生产者，故还不能为 `G` 重建
+  `IsNormalSingularCell`，也不能证明所有新双点来自除 `c` 外的旧分支，从而严格降低复杂度。这两项均未被改成结论型假设；
+  Case 1/2 的环带重定义、内盘替换与 I2 推离亦仍待完成。
