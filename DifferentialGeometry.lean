@@ -1728,6 +1728,7 @@ import DifferentialGeometry.Analysis.Sobolev.Euclidean.Embedding.Morrey.SmoothHo
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Embedding.Morrey.SmoothInequality
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Embedding.Rellich.Basic
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Embedding.Rellich.HigherOrder
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.Embedding.Rellich.Vector
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.FiniteSumReindex
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.FiniteWeakPartialSource
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.H1Energy
