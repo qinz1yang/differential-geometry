@@ -1738,3 +1738,33 @@ entries, all with only `propext`, `Classical.choice`, and `Quot.sound`. No vendo
 or other-lane source changed. The source hash will be recorded at the next checkpoint.
 P.4 remains partial: simultaneous straightening of the whole finite vertex fan and
 the small edge frames still have to be constructed. I2's target-type issue is unchanged.
+
+### S-M6 continuation: supported simultaneous straightening of two vertex arcs
+
+The initial-arc and side-selection layer is committed and pushed as `3302febfc`;
+the following integration merge was already up to date.
+
+`PlanarJordan/VertexFan.lean` proves `exists_homeomorph_extending_two_vertex_arcs`:
+two arcs from a common interior vertex to the boundary of one Jordan disk can be
+mapped simultaneously to a second such pair, with their prescribed compatible arc
+maps, by an ambient homeomorphism fixing the disk exterior and boundary. The union
+map preserves the marked common vertex; merely choosing an arbitrary homeomorphism
+of the combined crosscut would not ensure this. Compact gluing constructs that map,
+and the checked supported-crosscut theorem extends it. Displacement is bounded by
+the closed disk diameter.
+
+`exists_homeomorph_image_two_vertex_arcs` chooses the arc maps.
+`exists_homeomorph_image_two_vertex_arcs_radial` supplies the actual straight radial
+targets in a square and fixes the common center. The finite-graph producer
+`Graph.IsDrawing.exists_homeomorph_radial_vertex_arc_pair` constructs the square and
+the two initial subarcs inside any specified neighborhood of a vertex. The square
+avoids all nonincident edges, and the ambient map fixes everything outside its open
+interior and moves points by at most its diameter.
+
+The VertexFan focused check has exit 0 and zero warnings (`check-planar-vertex-fan.log`).
+`AuditS110VertexFan.lean` / `.log` contain four entries, all with only `propext`,
+`Classical.choice`, and `Quot.sound`. No vendored or other-lane source changed.
+The source hash will be recorded at the next checkpoint. P.4 remains partial:
+the rest of a finite vertex fan still needs simultaneous straightening by recursive
+crosscut-side gluing; degree-one endpoints and the edge frames remain outstanding.
+No general graph-tameness endpoint is claimed. I2's target-type issue is unchanged.
