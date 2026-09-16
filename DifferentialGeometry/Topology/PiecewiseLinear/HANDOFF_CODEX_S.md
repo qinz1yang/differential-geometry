@@ -1176,3 +1176,38 @@ All contain only `propext`, `Classical.choice`, and `Quot.sound`.
 26.3 remains partial: the small local two-side models must still be globalized over each
 connected two-sided surface component; the resulting closures must be identified as
 combinatorial manifolds before applying and gluing the already proved collars.
+
+### S-M5 continuation: global component count and closure propagation
+
+The local surface-neighborhood checkpoint is committed and pushed as `68ed572a9`.
+`Connected/LocalSeparation.lean` proves that a complementary component touching a connected
+locally separating set has that whole set in its closure. There are at most two such
+adjacent components. In a connected locally connected ambient set, every complementary
+component of a nonempty closed subset touches that subset. Combining these facts proves
+that a disconnected complement has exactly two components, whose closures cover the closed
+ambient set and meet exactly in the separating set. None of these global conclusions is
+assumed in the proof.
+
+`PolyhedronLocalConnectedness.lean` supplies local connectedness for finite simplicial
+carriers, using small intersections of closed stars with metric balls. The simplicial
+result does not need a finite-dimensional ambient space. Its polyhedral corollary uses
+the existing triangulation theorem.
+
+`SurfaceComponents.lean` consumes the actual local PL neighborhood producer. Its endpoint
+`IsCombinatorialManifoldWithBoundary.exists_connectedComponentIn_pair_sdiff_of_separating_surface`
+proves the two-component conclusion and exact closure union/intersection for a connected
+closed surface in the interior of a connected finite combinatorial three-manifold, when
+the complement is disconnected. The local decomposition and local connectedness assumptions
+are discharged. The separate propagation and adjacent-component endpoints remain available.
+
+All three modules have focused-check exit 0 and zero warnings (`check-local-separation.log`,
+`check-polyhedron-local-connectedness.log`, `check-surface-components.log`).
+`AuditS94SurfaceComponents.lean` / `.log` contain twelve entries, all using only
+`propext`, `Classical.choice`, and `Quot.sound`.
+
+26.3 remains partial. The next step must choose a sufficiently small connected regular
+neighborhood using `IsTwoSided`, thereby producing the disconnected-complement hypothesis
+of the checked global count theorem. The remaining geometric obligation is that both
+component closures are combinatorial manifolds with the surface as a boundary component;
+only then can the existing collars be applied and glued. This entry does not label the
+bicollar theorem complete or introduce a new unproved interface assumption.
