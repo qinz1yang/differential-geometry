@@ -8884,6 +8884,7 @@ import DifferentialGeometry.Topology.Manifold.ClosedDiskExtension
 import DifferentialGeometry.Topology.Manifold.CollarChartIsotopy
 import DifferentialGeometry.Topology.Manifold.CollarFamily
 import DifferentialGeometry.Topology.Manifold.CollarFamilySeparation
+import DifferentialGeometry.Topology.Manifold.ImmersionCriterion
 import DifferentialGeometry.Topology.Manifold.NormalChartOrientation
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.LeftInverse
 import DifferentialGeometry.Topology.Manifold.RelativeCollar
@@ -9334,6 +9335,7 @@ import DifferentialGeometry.Topology.PartitionOfUnity.Locality
 import DifferentialGeometry.Topology.PlanarJordan.AmbientExtension
 import DifferentialGeometry.Topology.PlanarJordan.ArcAndSegment
 import DifferentialGeometry.Topology.PlanarJordan.ClosedInterior
+import DifferentialGeometry.Topology.PlanarJordan.CutPair
 import DifferentialGeometry.Topology.PlanarJordan.Innermost
 import DifferentialGeometry.Topology.PlanarJordan.InvariantDisk
 import DifferentialGeometry.Topology.PlanarJordan.LocalSides
@@ -9341,6 +9343,7 @@ import DifferentialGeometry.Topology.PlanarJordan.PathConnected
 import DifferentialGeometry.Topology.PlanarJordan.PeriodicOrbit
 import DifferentialGeometry.Topology.PlanarJordan.Regions
 import DifferentialGeometry.Topology.PlanarJordan.ReturnDisk
+import DifferentialGeometry.Topology.PlanarJordan.SmoothArc
 import DifferentialGeometry.Topology.ProjectiveSpace.AntipodalCylinderOrientation
 import DifferentialGeometry.Topology.ProjectiveSpace.AntipodalSurfaceOrientation
 import DifferentialGeometry.Topology.ProjectiveSpace.Connected
