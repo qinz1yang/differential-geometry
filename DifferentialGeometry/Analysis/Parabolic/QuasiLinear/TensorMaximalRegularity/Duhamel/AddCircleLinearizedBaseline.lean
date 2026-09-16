@@ -127,4 +127,42 @@ theorem tensorHsInclusion_parameterDerivativeBaselineForcingHsPi
       (Z (D (J a₂))) + Z (D (J (b₂ i)))
   rw [hQ, hD, hD]
 
+section
+
+open MeasureTheory
+
+variable [Fintype ι]
+
+def parameterDerivativeBaselineForcingLp
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ)))
+    (f₀ : PiLp 2 (fun _ : ι => TensorHs g 0 0 (((2 : ℕ) : ℝ) + 2)))
+    {Ω : Type*} [MeasurableSpace Ω] {p : ℝ≥0∞} [Fact (1 ≤ p)] {μ : Measure Ω}
+    (a₂ : Lp (TensorHs g 0 0 (((1 : ℕ) : ℝ) + 1)) p μ)
+    (b₂ : Lp (PiLp 2 (fun _ : ι => TensorHs g 0 0 (((1 : ℕ) : ℝ) + 1))) p μ) :
+    Lp (PiLp 2 (fun _ : ι => TensorHs g 0 0 ((1 : ℕ) : ℝ))) p μ :=
+    let L := parameterDerivativeBaselineForcingHsPi g f₀
+    (L.comp (ContinuousLinearMap.inl ℝ _ _)).compLpL p μ a₂ +
+      (L.comp (ContinuousLinearMap.inr ℝ _ _)).compLpL p μ b₂
+
+theorem parameterDerivativeBaselineForcingLp_ae
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ)))
+    (f₀ : PiLp 2 (fun _ : ι => TensorHs g 0 0 (((2 : ℕ) : ℝ) + 2)))
+    {Ω : Type*} [MeasurableSpace Ω] {p : ℝ≥0∞} [Fact (1 ≤ p)] {μ : Measure Ω}
+    (a₂ : Lp (TensorHs g 0 0 (((1 : ℕ) : ℝ) + 1)) p μ)
+    (b₂ : Lp (PiLp 2 (fun _ : ι => TensorHs g 0 0 (((1 : ℕ) : ℝ) + 1))) p μ) :
+    ∀ᵐ t ∂μ, parameterDerivativeBaselineForcingLp g f₀ a₂ b₂ t =
+      parameterDerivativeBaselineForcingHsPi g f₀ (a₂ t, b₂ t) := by
+  let L := parameterDerivativeBaselineForcingHsPi g f₀
+  let A := L.comp (ContinuousLinearMap.inl ℝ _ _)
+  let B := L.comp (ContinuousLinearMap.inr ℝ _ _)
+  filter_upwards [Lp.coeFn_add (A.compLpL p μ a₂) (B.compLpL p μ b₂),
+    A.coeFn_compLpL a₂, B.coeFn_compLpL b₂] with t hsum hA hB
+  change (A.compLpL p μ a₂ + B.compLpL p μ b₂) t = _
+  rw [hsum, Pi.add_apply, hA, hB]
+  change L (a₂ t, 0) + L (0, b₂ t) = L (a₂ t, b₂ t)
+  rw [← L.map_add]
+  simp only [Prod.mk_add_mk, add_zero, zero_add]
+
+end
+
 end AddCircle
