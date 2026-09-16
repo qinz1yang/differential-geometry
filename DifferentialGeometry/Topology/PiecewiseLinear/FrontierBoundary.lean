@@ -433,11 +433,11 @@ private theorem boundaryComplex_space_eq_of_isSubdivision [FiniteDimensional ℝ
   exact boundaryComplex_space_of_isSubdivision K K' hK h
 
 open Classical in
-theorem exists_isPLBall_closedStar_inter_boundary [FiniteDimensional ℝ E] {n : ℕ}
+theorem exists_isPLBall_subset_inter_boundary [FiniteDimensional ℝ E] {n : ℕ}
     (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
     (hK : IsCombinatorialManifoldWithBoundary (n + 1) K) :
     ∀ x ∈ (@boundaryComplex _ _ _ (Classical.decEq _) (n + 1) K).space,
-      ∃ C : Set E, IsPLBall (n + 1) C ∧ C ∈ 𝓝[K.space] x ∧
+      ∃ C : Set E, IsPLBall (n + 1) C ∧ C ⊆ K.space ∧ C ∈ 𝓝[K.space] x ∧
         IsPLBall n (C ∩ (@boundaryComplex _ _ _ (Classical.decEq _) (n + 1) K).space) := by
   classical
   intro x hxB
@@ -482,7 +482,10 @@ theorem exists_isPLBall_closedStar_inter_boundary [FiniteDimensional ℝ E] {n :
     rw [← hBspace]
     exact closedStar_barycentricSubdivision_inter_space_eq
       (boundaryComplex_faces_subset (n + 1) K₀) hxBface
-  refine ⟨closedStar K₁ x, hCball, hCnhds, ?_⟩
+  have hCsub : closedStar K₁ x ⊆ K.space := by
+    rw [← hK₀.space_eq, ← (barycentricSubdivision_isSubdivision K₀).space_eq]
+    exact closedStar_subset_space K₁ x
+  refine ⟨closedStar K₁ x, hCball, hCsub, hCnhds, ?_⟩
   rw [hinter]
   have hBman : IsCombinatorialManifold n B := isCombinatorialManifold_boundaryComplex K₀ hman₀
   have hB₁man : IsCombinatorialManifold n B₁ :=
@@ -509,5 +512,16 @@ theorem exists_isPLBall_closedStar_inter_boundary [FiniteDimensional ℝ E] {n :
       simpa only [Finset.coe_singleton, convexHull_singleton] using hpoint
   | succ m =>
       exact hB₁man.isPLBall_closedStar hxB₁
+
+open Classical in
+theorem exists_isPLBall_closedStar_inter_boundary [FiniteDimensional ℝ E] {n : ℕ}
+    (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
+    (hK : IsCombinatorialManifoldWithBoundary (n + 1) K) :
+    ∀ x ∈ (@boundaryComplex _ _ _ (Classical.decEq _) (n + 1) K).space,
+      ∃ C : Set E, IsPLBall (n + 1) C ∧ C ∈ 𝓝[K.space] x ∧
+        IsPLBall n (C ∩ (@boundaryComplex _ _ _ (Classical.decEq _) (n + 1) K).space) := by
+  intro x hx
+  obtain ⟨C, hC, -, hCn, hCB⟩ := exists_isPLBall_subset_inter_boundary K hK x hx
+  exact ⟨C, hC, hCn, hCB⟩
 
 end DifferentialGeometry.Topology.PiecewiseLinear

@@ -49,6 +49,35 @@ theorem isConeBase_of_space_subset_frontier_convex
   have hz := (Finset.sum_eq_zero_iff_of_nonneg hn).mp hsum v hv
   exact (mul_eq_zero.mp hz).resolve_left hpos.ne'
 
+theorem coneComplex_space_subset_convex [DecidableEq E] {C : Set E}
+    (hC : Convex ℝ C) {p : E} (hp : p ∈ C)
+    {L : Geometry.SimplicialComplex ℝ E} (hpL : IsConeBase p L) (hLC : L.space ⊆ C) :
+    (coneComplex hpL).space ⊆ C := by
+  intro x hx
+  rcases (mem_coneComplex_space_iff hpL).mp hx with rfl | ⟨z, hz, t, ht, ht', rfl⟩
+  · exact hp
+  · rw [add_smul_sub_eq_combo]
+    exact hC hp (hLC hz) (sub_nonneg.mpr ht') ht.le (by ring)
+
+theorem coneComplex_space_inter_frontier [DecidableEq E] {C : Set E}
+    (hC : Convex ℝ C) (hCc : IsClosed C) {p : E} (hp : p ∈ interior C)
+    {L : Geometry.SimplicialComplex ℝ E} (hpL : IsConeBase p L)
+    (hLC : L.space ⊆ frontier C) : (coneComplex hpL).space ∩ frontier C = L.space := by
+  apply Subset.antisymm
+  · rintro x ⟨hx, hxC⟩
+    rcases (mem_coneComplex_space_iff hpL).mp hx with rfl | ⟨z, hz, t, ht, ht', rfl⟩
+    · exact False.elim (hxC.2 hp)
+    · have ht1 : t = 1 := by
+        by_contra hne
+        have hti : t < 1 := lt_of_le_of_ne ht' hne
+        apply hxC.2
+        rw [add_smul_sub_eq_combo]
+        exact hC.combo_interior_self_mem_interior hp (hCc.frontier_subset (hLC hz))
+          (sub_pos.mpr hti) ht.le (by ring)
+      simpa only [ht1, one_smul, add_sub_cancel] using hz
+  · intro x hx
+    exact ⟨space_subset_coneComplex_space hpL hx, hLC hx⟩
+
 theorem coneComplex_space_eq_of_convex [DecidableEq E] {C : Set E}
     (hC : Convex ℝ C) (hCc : IsCompact C) {p : E} (hp : p ∈ C)
     {L : Geometry.SimplicialComplex ℝ E} (hpL : IsConeBase p L)

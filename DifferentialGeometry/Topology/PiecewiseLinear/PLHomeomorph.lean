@@ -40,6 +40,15 @@ theorem IsPiecewiseAffineOn.mono_of_isPolyhedron {f : E → F} {u v : Set E}
     (hf : IsPiecewiseAffineOn f u) (hv : IsPolyhedron v) (hvu : v ⊆ u) :
     IsPiecewiseAffineOn f v := fun x hx => (hf x (hvu hx)).mono_of_isPolyhedron hv hvu
 
+theorem IsPolyhedron.isPLHomeomorphOn_id {P : Set E} (hP : IsPolyhedron P) :
+    IsPLHomeomorphOn (id : E → E) P P := by
+  have hpl : IsPiecewiseAffineOn (id : E → E) P := by
+    obtain ⟨ι, hι, C, hC, rfl⟩ := hP
+    let _ : Finite ι := hι
+    exact isPiecewiseAffineOn_of_forall_isHPolytope C hC
+      (fun _ => ⟨AffineMap.id ℝ E, fun _ _ => rfl⟩)
+  exact ⟨bijOn_id P, hpl, hpl.congr fun _ hx => (bijOn_id P).invOn_invFunOn.1 hx⟩
+
 namespace IsPLHomeomorphOn
 
 variable {f : E → F} {g : F → G} {P : Set E} {Q : Set F} {R : Set G}
