@@ -1125,3 +1125,25 @@ The source hash is recorded at the next checkpoint.
 26.3 remains partial. Next: transport these components through the radial cone model,
 then identify the global components in a sufficiently small regular neighborhood and
 prove that their closures have the required manifold boundaries before applying 26.2.
+
+### S-M5 continuation: coned circles separate coned spheres into two balls
+
+The spherical-link checkpoint is committed and pushed as `da8b336d9`.
+`ConeComplement.lean` identifies the difference of two cones with the radial image of
+`(K.space \ L.space) × (0, 1]`, proves connectedness, and computes its closure when the
+base difference is dense. These results do not require finite-dimensional ambient space.
+`ConeComponents.lean` proves `IsConeBase.exists_connectedComponentIn_pair_sdiff`:
+when a PL circle is a subcomplex of a PL two-sphere, coning both from the same admissible
+apex produces exactly two complementary connected components, each with PL three-ball
+closure. The closures cover the ambient cone and meet exactly in the cone on the circle.
+The proof uses an actual common subdivision of the two disk closures and radial uniqueness.
+
+Both modules have focused-check exit 0, zero warnings (`check-cone-complement.log`,
+`check-cone-components.log`). `AuditS92ConeComponents.lean` / `.log` contain five entries,
+all using only `propext`, `Classical.choice`, and `Quot.sound`. No external assumptions,
+vendored changes, or other-lane source edits were introduced.
+
+26.3 still needs the global side and manifold-closure construction. For the local surface
+trace, an arbitrary subcomplex need not intersect an ambient closed star in its own closed
+star. The existing barycentric-star intersection lemma in `FrontierBoundary.lean` supplies
+the correct trace after subdivision; the next step reuses it instead of assuming fullness.
