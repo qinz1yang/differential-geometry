@@ -1410,3 +1410,19 @@ M1/M2/M3 均未验收；下一审计文件 `AuditF135.lean`。
 没有增加 `SchoenfliesInput` 字段。本层允许其他层退化，但不涵盖选定层的多顶点水平封帽；
 还需证明封帽边缘的 crossing/孤立分类、凸化后的剖分控制及严格降指标。M1/M2/M3 均未验收。
 下一审计文件 `AuditF140.lean`。
+
+### 18.20 非水平面与保高度 PL 图卡下的 crossing 稳定
+
+- `TransverseHeight.lean` 给仿射平面与高度层的 crossing 判据。对有限二维组合带边流形，只要求当前载体面的方向空间内
+  有一个非水平向量，即可推出 crossing；不要求整份剖分一般位置。非水平条件在小幅线性高度扰动下保持。
+- `CrossingStability.lean` 从一个 PL Lipschitz 映射 G 构造沿平面内非水平向量的位移：
+  改变量为新旧线性形式之差作用于 G。扰动足够小时，位移的 Lipschitz 常数小于 1，因而得到环境 PL 同胚，
+  固定原点并保持整个指定子空间，同时具有精确高度公式。
+- `eventually_hasPLCrossingAt_of_height_preserving_chart` 对一个局部保高度的环境 PL 图卡，且曲面芽是非水平平面的图卡像，
+  证明所有足够小的线性高度扰动仍在图卡中心 crossing。图卡只需局部保高度；其局部 PL 数据用既有延拓定理变成 Lipschitz 输入。
+  该结论没有剖分顶点单射条件，可供凸化后的非临界点使用，但具体保高度图卡仍须由几何构造提供。
+
+两模块最终聚焦检查分别为 11.9、10.5 秒，均 exit=0、零 warning；`AuditF140.lean` 六项仅标准三公理。
+已核对图卡端点完整签名，没有将 crossing 或指标比较放入假设，也没有扩充 `SchoenfliesInput`。
+下一步从原两上覆面整直构造中导出保高度图卡，随后处理水平封帽边缘与严格降指标。M1/M2/M3 均未验收。
+下一审计文件 `AuditF141.lean`。
