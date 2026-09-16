@@ -447,3 +447,21 @@ Reduced/MayerVietorisCoefficients, Reduced/PointClasses}`（`REUSE_AUDIT.md` §2
   olean 全部新鲜、零禁用项。`.lake/scratch/AuditHM7.lean` 逐项审计 21 个新增声明与 18 个关键复用声明，
   exit=0，全部公理闭包均包含于 `propext`、`Classical.choice`、`Quot.sound`。
 - H-M7 无未闭合项；下一项为 H-M8 的 22.5–22.7。
+
+### H-M8 — done，22.5–22.7 的闭曲面同调与数值公式
+
+- 数学提交：`3fdf6d58e`。新模块 `SurfaceHomology.lean` 与 `SurfaceInvariants.lean`。
+- `SurfaceHomology.lean` 直接在现有有序 normalized chain complex 中计算闭连通组合 2-流形的顶维同调：
+  可定向时相干定向链生成 `ker d₂`，不可定向时任一非零有理顶循环会沿对偶图重建相干定向并导致矛盾。
+  经既有 realization/奇异同调桥，得到
+  `bettiNumber_two_eq_one_of_isOrientable`、`bettiNumber_two_eq_zero_of_not_isOrientable`，以及无条件的 22.7：
+  可定向时 `χ = 2 - b₁`，不可定向时 `χ = 1 - b₁`。
+- `SurfaceInvariants.lean` 定义标准的 `surfaceHandleCrosscapProfile h m`，证明其
+  `χ = 2 - (2h + m)`；凡实际给出该标准剖分的细分见证，22.5 即由开胞腔 refinement 桥传给
+  `faceEulerChar`。结合 22.7，分别得到可定向、一个交叉帽、两个交叉帽情形的 22.6 数值公式；
+  `surfaceHandleNumber K := Homology.bettiOne K.space / 2`，并证明在可定向柄剖分见证下等于 `h` 且 `b₁` 为偶数。
+- 两个模块聚焦检查均 exit=0、零 warning，分别约 14.1 秒与 10.0 秒；`fresh.py` 报相对整合分支的六个改动模块
+  olean 全部新鲜、零禁用项。`.lake/scratch/AuditHM8.lean` 逐项审计 36 个新增端点与关键复用声明，exit=0，
+  全部公理闭包均包含于 `propext`、`Classical.choice`、`Quot.sound`。
+- H-M8 的精确范围是 22.5–22.7：22.7 不依赖曲面分类；22.5–22.6 的柄/交叉帽表述以实际标准剖分及 refinement
+  见证为前提，并未冒充已证明 22.4 的正规形存在性。22.8–22.10 的分类仍未闭合；H-M3 原先缺少的闭曲面顶维同调现已闭合。

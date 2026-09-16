@@ -594,6 +594,22 @@
   `Homology.eulerChar_eq_of_homeomorph`、`Homology.eulerChar_eq_of_homotopyEquiv`、
   `HomotopyEquiv.productConvex`、`Homeomorph.Set.prod`、`IsPLHomeomorphOn.homeomorph`、
   `intersectionComplex`、`unionComplex` 与 `finite_unionComplex_faces`。
+- 2026-09-16（H-M8 / 22.5–22.7，数学提交 `3fdf6d58e`）：`SurfaceHomology.lean` 在现有有序
+  normalized chain complex 中证明闭连通组合 2-流形可定向时 `b₂=1`、不可定向时 `b₂=0`，再经
+  realization/奇异同调桥与 Euler–Betti 展开得到无条件的 22.7。`SurfaceInvariants.lean` 定义标准
+  `surfaceHandleCrosscapProfile h m`，对实际给出的标准剖分 refinement 证明 22.5，并导出可定向、一个交叉帽、
+  两个交叉帽情形的 22.6 及 `surfaceHandleNumber = h`。这不声称 22.4 的正规形存在性；22.8–22.10 仍待分类。
+  两模块聚焦检查 exit=0、零 warning；`fresh.py` 报六个相对整合分支改动模块 olean 全部新鲜、零禁用项。
+  `.lake/scratch/AuditHM8.lean` 审计 36 项，全部只含标准三公理。D4 首次使用或本里程碑复核逐项包括
+  `orderedNormalizedBoundary_intCast_apply`、`orderedNormalizedBoundary_apply_eq_sum_faceCofaces`、
+  `CoherentOrientation.pair_cancel_of_faceCofaces_eq`、`IsCombinatorialManifold.card_faceCofaces_eq_two`、
+  `IsCombinatorialManifoldWithBoundary.dualGraph_preconnected`、`SimplicialComplex.orderedNormalizedChainEquiv`、
+  `SSet.finiteDimensional_normalizedChainComplex_X`、`SimplicialComplex.orderedSimplicialSet_hasDimensionLT`、
+  `SSet.isZero_normalizedChainComplex_X_of_hasDimensionLT`、`ShortComplex.finrank_ker_eq_homology_add_range`、
+  `CategoryTheory.ShortComplex.homologyMapIso`、`HomologicalComplex.isoSc'`、`isoOfQuasiIsoAt`、
+  `SSet.realizationHomologyIso`、`geometricRealizationHomeomorphism`、
+  `eulerChar_eq_one_sub_bettiOne_add_bettiTwo`、`OpenCellProfile.eulerChar_eq_of_isRefinement` 与
+  `simplicialOpenCellProfile_eulerChar`。未经过 `Homology/HurewiczLowDegrees.lean`。
 - 2026-09-15（C/L 车道，L.2 接口修正与组合曲面层）：`SphereCase.lean` 的
   `exists_nonsingular_two_cell_of_sphere_boundary` 在 `724267986` 增加实际多面体 3-流形 `M`、
   `B ⊆ polyhedralBoundary 3 M hM`，并在 `hpush` 与结论中都要求 `D₁ '' D₁.domain ⊆ M`；检查 exit=0、
