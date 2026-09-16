@@ -10,7 +10,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.Fini
 
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology DifferentialGeometry.Tensor0SBundle
-open scoped Manifold ContDiff ENNReal
+open scoped _root_.DifferentialGeometry.Manifold ContDiff ENNReal
 
 universe u
 
@@ -64,6 +64,70 @@ theorem highCurvatureFlowSequence_scalar_le_one_of_pastMaximum {T : ℝ} (hT : 0
   refine (mul_le_mul_of_nonneg_left ?_ (inv_nonneg.mpr hQ.le)).trans_eq (inv_mul_cancel₀ hQ.ne')
   simpa only [SolutionOn.scalar, SolutionFamily.scalar, SolutionOn.family_metric] using
     hmax k (parabolicTime (t k) (S.scalar (t k) (x k)) s) htime y
+
+theorem highCurvatureFlowSequence_rmNormSq_eventually_le_of_past_scalar_maximum
+    {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M] [IsManifold I3 ∞ M]
+    [T2Space M] [CompactSpace M]
+    {T : ℝ} (hT : 0 < T)
+    (S : SolutionOn (I := I3) (M := M) (RealTimeInterval.closedOpen 0 T hT))
+    (hS : IsSolutionOn S) (x : ℕ → M) (t : ℕ → ℝ)
+    (htmem : ∀ i, t i ∈ Set.Ico (0 : ℝ) T) (htpos : ∀ i, 0 < t i)
+    (hpos : ∀ i, 0 < S.scalar (t i) (x i))
+    (hmax : ∀ i s, s ∈ Set.Icc 0 (t i) → ∀ y : M,
+      S.scalar s y ≤ S.scalar (t i) (x i))
+    (hscalar : Filter.Tendsto (fun i => S.scalar (t i) (x i)) Filter.atTop Filter.atTop) :
+    ∀ᶠ i in Filter.atTop, ∀ s ∈ (highCurvatureInterval hT S x t htpos hpos i).carrier,
+      ∀ y : ((highCurvatureFlowSequence hT S hS x t htmem htpos hpos).term i).M,
+        ((highCurvatureFlowSequence hT S hS x t htmem htpos hpos).term i).rmNormSq s y ≤ 243 := by
+  have hdim : Module.finrank ℝ ThreeSpace = 3 := by simp [ThreeSpace]
+  obtain ⟨Phi, hPhi, hanc⟩ :=
+    exists_admissiblePinchingFunction_phiAlmostNonnegative_closedOpen (I := I3) hT S hS hdim
+  obtain ⟨Q₀, _, hQ⟩ :=
+    exists_forall_rescalePinchingFunction_le hPhi (eps := 1) (B := 1) one_pos
+  have hQev : ∀ᶠ i in Filter.atTop, Q₀ ≤ S.scalar (t i) (x i) :=
+    hscalar.eventually (Filter.eventually_ge_atTop Q₀)
+  filter_upwards [hQev] with i hi s hs y
+  have hQpos : 0 < S.scalar (t i) (x i) := hpos i
+  have hscal :
+      ((highCurvatureFlowSequence hT S hS x t htmem htpos hpos).term i).S.scalar s y ≤ 1 :=
+    highCurvatureFlowSequence_scalar_le_one_of_pastMaximum hT S hS x t htmem htpos hpos hmax i s hs y
+  have hbridge : RmNormBoundOn (I := I3)
+      ((highCurvatureFlowSequence hT S hS x t htmem htpos hpos).term i).S (2 * Real.sqrt 3) :=
+    fun t' w' basis horth _ ha =>
+      sqrt_rmNormSq_le_of_abs_orderedSectionalCurvaturesAt_le (I := I3)
+        ((highCurvatureFlowSequence hT S hS x t htmem htpos hpos).term i).S
+        t' w' basis horth ha
+  have hanc' := phiAlmostNonnegative_paraSolution (I := I3) S hQpos (htmem i) hanc
+  have hanc'' : PhiAlmostNonnegative (I := I3)
+      ((highCurvatureFlowSequence hT S hS x t htmem htpos hpos).term i).S
+      (highCurvatureInterval hT S x t htpos hpos i).carrier
+      (rescalePinchingFunction (S.scalar (t i) (x i)) Phi) := by
+    intro s' hs' y'
+    exact hanc' s' (highCurvatureInterval_carrier_subset hT S x t htpos hpos htmem i hs') y'
+  have hrm := sqrt_rmNormSq_le_of_scalar_le (I := I3) (by positivity) hbridge
+    (hPhi.rescale hQpos) hanc'' hdim hs y (by norm_num : (0 : ℝ) < 1 / 4) (by linarith)
+  have hphi1 := hQ (S.scalar (t i) (x i)) hi 1 (by norm_num : (1 : ℝ) ∈ Set.Icc 0 1)
+  have hphi0 := hQ (S.scalar (t i) (x i)) hi 0 (by norm_num : (0 : ℝ) ∈ Set.Icc 0 1)
+  have hsqrt : Real.sqrt (FlowMetricBall.rmNormSq (I := I3)
+      ((highCurvatureFlowSequence hT S hS x t htmem htpos hpos).term i).S s y) ≤
+      9 * Real.sqrt 3 := by
+    have hnonneg : 0 ≤ 2 * Real.sqrt 3 := by positivity
+    norm_num only [show (4 : ℝ) * (1 / 4) = 1 by norm_num] at hrm
+    nlinarith [hrm, hphi1, hphi0]
+  have hnn : 0 ≤ FlowMetricBall.rmNormSq (I := I3)
+      ((highCurvatureFlowSequence hT S hS x t htmem htpos hpos).term i).S s y :=
+    normSq0S_nonneg (I := I3)
+      (((highCurvatureFlowSequence hT S hS x t htmem htpos hpos).term i).S.base.metric s) y 4
+      (metricRm04At (I := I3)
+        (((highCurvatureFlowSequence hT S hS x t htmem htpos hpos).term i).S.base.metric s) y)
+  have hsq : FlowMetricBall.rmNormSq (I := I3)
+      ((highCurvatureFlowSequence hT S hS x t htmem htpos hpos).term i).S s y ≤ 243 := by
+    have hsq' := pow_le_pow_left₀ (Real.sqrt_nonneg _) hsqrt 2
+    rw [Real.sq_sqrt hnn, mul_pow, Real.sq_sqrt (by norm_num : (0 : ℝ) ≤ 3)] at hsq'
+    norm_num at hsq'
+    exact hsq'
+  simpa only [PointedFlowData.rmNormSq, SolutionOn.family, SolutionFamily.rm04,
+    metricRm04_apply, FlowMetricBall.rmNormSq] using hsq
 
 def MaximalPointSlabCompactnessAtPastMaximum {T : ℝ} (hT : 0 < T)
     (S : SolutionOn (I := I3) (M := M) (RealTimeInterval.closedOpen 0 T hT))

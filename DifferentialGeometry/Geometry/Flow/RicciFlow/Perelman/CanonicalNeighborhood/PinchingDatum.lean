@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIvey.MaximumPrinciple
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Scaling.Parabolic
+import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorBounds
 import Mathlib.Analysis.Calculus.ContDiff.Operations
 import Mathlib.Analysis.Calculus.Deriv.Shift
 import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
@@ -930,6 +931,54 @@ theorem exists_admissiblePinchingFunction_phiAlmostNonnegative_of_curvatureOpera
     (I := I) (M := M) S hK
     (curvatureOperatorRegionPropagationOn_of_initial_lower_bound (I := I) (M := M) S hS hT hK
       hslab hreg hdim hinit)
+
+theorem exists_admissiblePinchingFunction_phiAlmostNonnegative_closedOpen
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+    [T2Space M] [CompactSpace M]
+    {a b : ℝ} (hab : a < b)
+    (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closedOpen a b hab))
+    (hS : IsSolutionOn S) (hdim : Module.finrank ℝ E = 3) :
+    ∃ Phi : ℝ → ℝ, AdmissiblePinchingFunction Phi ∧
+      PhiAlmostNonnegative S (Ico a b) Phi := by
+  let : CompleteSpace E := FiniteDimensional.complete ℝ E
+  obtain ⟨K, hK, hKbound⟩ :=
+    exists_curvatureOperatorLowerBoundAt_metricRm04 (S.base.metric a) hdim
+  have hinit : ∀ x : M, curvatureOperatorLowerBoundAt (S.base.metric a) x
+      ⟨S.base.rm04 a x, metricRm04At_mem_algebraicCurvatureTensorSubmodule
+        (S.base.metric a) x⟩ K := by
+    simpa only [SolutionFamily.rm04, metricRm04_apply] using hKbound
+  obtain ⟨Phi0, hPhi0, hge⟩ := exists_admissiblePinchingFunction_ge
+    (psi := hamiltonIveyPinchingBound K)
+    (MonotoneOn.mono (Monotone.monotoneOn (hamiltonIveyPinchingBound_monotone hK.le)
+      Set.univ) (Set.subset_univ _))
+    (fun s _ => hamiltonIveyPinchingBound_nonneg hK.le s)
+    (hamiltonIveyPinchingBound_quotient_tendsto hK.le)
+  have hKexp : (0 : ℝ) < K * Real.exp 3 := mul_pos hK (Real.exp_pos 3)
+  refine ⟨fun s => Phi0 s + K * Real.exp 3, hPhi0.add_const hKexp.le, ?_⟩
+  apply (phiAlmostNonnegative_iff_neg_le_leastCurvatureOperatorEigenvalueAt
+    S (Ico a b) (fun s => Phi0 s + K * Real.exp 3) hdim).mpr
+  intro t ht x
+  have hslab : Icc a (a + (t - a)) ⊆
+      (RealTimeInterval.closedOpen a b hab).carrier := by
+    intro s hs
+    exact ⟨hs.1, by linarith [hs.2, ht.2]⟩
+  have hreg : Ioo a (a + (t - a)) ⊆
+      (RealTimeInterval.closedOpen a b hab).regular := by
+    intro s hs
+    exact ⟨hs.1, by linarith [hs.2, ht.2]⟩
+  have htt : t ∈ Icc a (a + (t - a)) := ⟨ht.1, by ring_nf; exact le_rfl⟩
+  have hprop := curvatureOperatorRegionPropagationOn_of_initial_lower_bound
+    S hS (sub_nonneg.mpr ht.1) hK hslab hreg hdim hinit
+  have hbound := neg_leastCurvatureOperatorEigenvalueAt_le_hamiltonIveyPinchingBound
+    S hK hprop htt x
+  rcases le_total 0 (S.scalar t x) with hR | hR
+  · have h1 := hge (S.scalar t x) hR
+    linarith
+  · have h1 := hamiltonIveyPinchingBound_le_of_nonpos hK.le hR
+    have h2 := hPhi0.pos (S.scalar t x)
+    linarith
 
 section Rescaling
 
