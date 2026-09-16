@@ -416,6 +416,32 @@
   `External/ClassificationOfSurfaces/VENDOR.md`。没有修改 vendored Lean、没有 lake build 或根聚合登记。
   最后文档提交前已 fetch 并 merge `origin/codex/moise-integration`，保留所有已发布检查点。
 
+- 2026-09-15（H 车道 H.2a，任意线性细分与 PL 定向不变性）：
+  已通过整合分支取得 F 的 `PLBallSphere.lean` 连通性 API；本次合并的远端端点为 `b9a2cb2ca`，
+  H 的合并提交为 `4be28804d`，没有复制、cherry-pick 或直接合并其它车道。
+  `AffineOrientation.lean`、`ManifoldConnectivity.lean`、`Orientation.lean` 串行聚焦检查均 exit=0、零警告
+  （分别 12.9、10.9、30.8 秒），使用原始 `check-f.ps1` 写入共享库，每次启动前核对主机进程配额。
+  正向细分以仿射坐标矩阵行列式的符号传递顶维定向，反向用每个旧顶维单形内的对偶图连通性证明局部比较符号恒定；
+  对偶图连通性经顶点 link 的维数归纳取得。由此闭合
+  `isOrientable_iff_of_isSubdivision`、`isOrientable_iff_of_isPLHomeomorphOn`、
+  `isOrientable_of_isPLBall`、`isOrientable_of_isPLSphere`、`isOrientable_faceStarComplex`、
+  `exists_unique_coherentOrientation_comparison_faceStarComplex`，包含零维。
+  细分和 PL 不变性保留源复形的组合流形假设；球面接口维数为 `IsPLSphere n → IsOrientable n`。
+  “恰两个定向”指统一顶点序后的所有顶维符号相同或互为负号，不是原始 `CoherentOrientation` 结构仅有两个元素。
+  `AuditH2aIntegrated` 对 53 项核心声明逐项审计 exit=0；`AuditH2aIntegratedReuse` 对下列 22 项复用声明逐项审计
+  exit=0，所有闭包均为 `propext`、`Classical.choice`、`Quot.sound`：
+  本库 `Topology.SimplicialComplex.mem_geometricLink_singleton`、`finite_geometricLink_faces`；
+  PL 层的 `exists_face_superset_card_eq_of_isPLBall_or_isPLSphere`、`exists_face_superset_card_eq_of_isPLBall`、
+  `IsPLBall.nonempty`、`IsPLSphere.nonempty`、`IsPLBall.isCombinatorialManifoldWithBoundary`、
+  `IsPLSphere.isCombinatorialManifold`、`IsCombinatorialManifoldWithBoundary.card_le_one`、
+  `IsPLBall.isConnected`、`IsPLSphere.isConnected`、`isConnected_stdSimplexBoundary`、
+  `faceStarComplex`、`faceStarComplex_faces_finite`、`IsCombinatorialManifoldWithBoundary.isPLBall_faceStarComplex`、
+  `restrict`、`restrict_faces_finite`、`restrict_space_of_eq_biUnion`、`IsSubdivision.convexHull_eq_biUnion`、
+  `exists_isGlueIso_of_isPLHomeomorphOn`、`IsCombinatorialManifoldWithBoundary.of_isPLHomeomorphOn`；
+  Mathlib 的 `AffineIndependent.card_le_card_of_subset_affineSpan`。
+  未经过 `Homology/HurewiczLowDegrees.lean`，未运行根构建，未登记根聚合。
+  H.2a 无未闭合端点；H.2b 的定向上循环仍待按交接 §7.3 构造，H.6/H.4a/H.5 不在本次闭合范围。
+
 ## 7. 决策与风险
 
 - 不采用 Bing 定理 7 的“保留单形”强形式，只用 Moise §8/§35 的紧致图卡归纳（书中 `chap:two-set-gluing` 的方案）。

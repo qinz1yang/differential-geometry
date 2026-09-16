@@ -2,10 +2,11 @@ import DifferentialGeometry.Topology.PiecewiseLinear.AffineOrientation
 import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryExtension
 import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryInvariance
 import DifferentialGeometry.Topology.PiecewiseLinear.GeneralPosition
+import DifferentialGeometry.Topology.PiecewiseLinear.ManifoldConnectivity
+import DifferentialGeometry.Topology.PiecewiseLinear.SingularGeneralPosition
 import DifferentialGeometry.Topology.PiecewiseLinear.StellarSphere
 import DifferentialGeometry.Topology.SimplicialComplex.Incidence
 import DifferentialGeometry.Topology.SphereSeparation.PermutationDeletion
-import Mathlib.Combinatorics.SimpleGraph.Connectivity.Connected
 import Mathlib.Data.Fin.SuccPredOrder
 import Mathlib.Data.Prod.Lex
 import Mathlib.Data.Sum.Order
@@ -3111,19 +3112,18 @@ theorem IsOrientable.boundary
   exact ⟨o.boundary K hK⟩
 
 open Classical in
-theorem IsOrientable.of_le
+noncomputable def CoherentOrientation.restrict
     [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
     (K L : Geometry.SimplicialComplex ℝ E) [Finite K.faces] [Finite L.faces]
     {n : ℕ} (hLK : L ≤ K)
     (hK : IsCombinatorialManifoldWithBoundary (n + 1) K)
     (hL : IsCombinatorialManifoldWithBoundary (n + 1) L)
-    (h : IsOrientable (n + 1) K) : IsOrientable (n + 1) L := by
-  obtain ⟨o⟩ := h
-  refine ⟨{
+    (o : CoherentOrientation (n + 1) K) : CoherentOrientation (n + 1) L := by
+  refine {
     vertexOrder := o.vertexOrder
     sign := o.sign
     sign_top := fun s hs hscard => o.sign_top s (hLK hs) hscard
-    coherent := ?_ }⟩
+    coherent := ?_ }
   intro t htL htcard hLne
   have htK : t ∈ K.faces := hLK htL
   have hsub : faceCofaces L t (n + 2) ⊆ faceCofaces K t (n + 2) := by
@@ -3144,6 +3144,17 @@ theorem IsOrientable.of_le
     Finset.eq_of_subset_of_card_le hsub (by rw [hLtwo, hKtwo])
   rw [← orientedBoundary_eq_of_faceCofaces_eq o.vertexOrder K L o.sign t hcofaces.symm]
   exact o.coherent t htK htcard hKnotone
+
+open Classical in
+theorem IsOrientable.of_le
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    (K L : Geometry.SimplicialComplex ℝ E) [Finite K.faces] [Finite L.faces]
+    {n : ℕ} (hLK : L ≤ K)
+    (hK : IsCombinatorialManifoldWithBoundary (n + 1) K)
+    (hL : IsCombinatorialManifoldWithBoundary (n + 1) L)
+    (h : IsOrientable (n + 1) K) : IsOrientable (n + 1) L := by
+  obtain ⟨o⟩ := h
+  exact ⟨o.restrict K L hLK hK hL⟩
 
 section
 
@@ -7471,17 +7482,6 @@ theorem isOrientable_barycentricSubdivision_iff
   | succ n =>
     exact ⟨IsOrientable.of_barycentricSubdivision hK, fun h => h.barycentricSubdivision hK⟩
 
-def dualGraph [AddCommGroup E] [Module ℝ E]
-    (n : ℕ) (K : Geometry.SimplicialComplex ℝ E) :
-    SimpleGraph {s : Finset E // s ∈ K.faces ∧ s.card = n + 1} where
-  Adj s t := s ≠ t ∧ ∃ f ∈ K.faces, f.card = n ∧ f ⊆ s.1 ∧ f ⊆ t.1
-  symm := ⟨by
-    rintro s t ⟨hne, f, hf, hcard, hfs, hft⟩
-    exact ⟨hne.symm, f, hf, hcard, hft, hfs⟩⟩
-  loopless := ⟨by
-    intro s h
-    exact h.1 rfl⟩
-
 open Classical in
 theorem CoherentOrientation.sign_mul_sign_eq_of_dualGraph_adj
     [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
@@ -8255,5 +8255,392 @@ theorem IsOrientable.subdivision
   | succ n =>
     obtain ⟨o⟩ := ho
     exact ⟨o.subdivision hK h⟩
+
+private theorem subdivision_restrict_convexHull_space
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {K K' : Geometry.SimplicialComplex ℝ E} (h : IsSubdivision K' K)
+    {S : Finset E} (hS : S ∈ K.faces) :
+    (restrict K' (convexHull ℝ (S : Set E))).space = convexHull ℝ (S : Set E) :=
+  restrict_space_of_eq_biUnion K' _ (h.convexHull_eq_biUnion hS)
+
+theorem IsSubdivision.exists_face_card_eq_convexHull_subset
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    {K K' : Geometry.SimplicialComplex ℝ E} [Finite K'.faces]
+    (h : IsSubdivision K' K) {S : Finset E} (hS : S ∈ K.faces) :
+    ∃ s ∈ K'.faces, s.card = S.card ∧ convexHull ℝ (s : Set E) ⊆ convexHull ℝ (S : Set E) := by
+  classical
+  let R := PiecewiseLinear.restrict K' (convexHull ℝ (S : Set E))
+  let _ : Finite R.faces := (restrict_faces_finite K' _).to_subtype
+  have hspace : R.space = convexHull ℝ (S : Set E) :=
+    subdivision_restrict_convexHull_space h hS
+  have hpos := Finset.card_pos.mpr (K.nonempty_of_mem_faces hS)
+  have hball : IsPLBall (S.card - 1) R.space := by
+    rw [hspace]
+    exact isPLBall_convexHull_of_affineIndependent S (K.indep hS) (by omega)
+  obtain ⟨x, hx⟩ := hball.nonempty
+  obtain ⟨f, hf, _⟩ := R.mem_space_iff.mp hx
+  obtain ⟨s, hs, _, hcard⟩ := exists_face_superset_card_eq_of_isPLBall R hball hf
+  exact ⟨s, hs.1, by omega, hs.2⟩
+
+open Classical in
+private theorem exists_orientationSign_on_subdivision_face
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    {K K' : Geometry.SimplicialComplex ℝ E} [Finite K'.faces] {n : ℕ}
+    (hK' : IsCombinatorialManifoldWithBoundary (n + 1) K')
+    (o : CoherentOrientation (n + 1) K') (h : IsSubdivision K' K)
+    {S : Finset E} (hS : S ∈ K.faces) (hScard : S.card = n + 2) :
+    ∃ ε : ℤ, (ε = 1 ∨ ε = -1) ∧ ∀ s ∈ K'.faces, ∀ hs : s.card = n + 2,
+      convexHull ℝ (s : Set E) ⊆ convexHull ℝ (S : Set E) →
+        o.sign s = affineSimplexOrientationSign o.vertexOrder hs hScard * ε := by
+  classical
+  let R := restrict K' (convexHull ℝ (S : Set E))
+  let _ : Finite R.faces := (restrict_faces_finite K' _).to_subtype
+  have hspace : R.space = convexHull ℝ (S : Set E) :=
+    subdivision_restrict_convexHull_space h hS
+  have hball : IsPLBall (n + 1) R.space := by
+    rw [hspace]
+    exact isPLBall_convexHull_of_affineIndependent S (K.indep hS) hScard
+  have hR := hball.isCombinatorialManifoldWithBoundary
+  let q := o.restrict K' R (restrict_faces_subset K' _) hK' hR
+  let c := CoherentOrientation.ofConvexHull o.vertexOrder R hR S hScard hspace.subset
+  obtain ⟨s₀, hs₀, hcard₀, hsub₀⟩ := h.exists_face_card_eq_convexHull_subset hS
+  have hcard₀' : s₀.card = n + 2 := hcard₀.trans hScard
+  have hs₀R : s₀ ∈ R.faces := ⟨hs₀, hsub₀⟩
+  refine ⟨q.sign s₀ * c.sign s₀, ?_, ?_⟩
+  · rcases q.sign_top s₀ hs₀R hcard₀' with hq | hq <;>
+      rcases c.sign_top s₀ hs₀R hcard₀' with hc | hc <;> simp [hq, hc]
+  · intro s hs hscard hsub
+    have hsR : s ∈ R.faces := ⟨hs, hsub⟩
+    have hratio := q.sign_mul_sign_eq_of_dualGraph_reachable hR c rfl
+      (hR.dualGraph_preconnected (by rw [hspace]; exact (convex_convexHull ℝ _).isPreconnected)
+        ⟨s, hsR, hscard⟩ ⟨s₀, hs₀R, hcard₀'⟩)
+    change o.sign s * (if hs : s.card = n + 2 then
+      affineSimplexOrientationSign o.vertexOrder hs hScard else 0) =
+        q.sign s₀ * c.sign s₀ at hratio
+    rw [dif_pos hscard] at hratio
+    rcases affineSimplexOrientationSign_eq_one_or_neg_one o.vertexOrder hscard hScard
+      (K'.indep hs) hsub with hsign | hsign <;> rw [hsign] at hratio ⊢ <;> linarith
+
+private theorem exists_subdivision_coface_in_parent
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    {K K' : Geometry.SimplicialComplex ℝ E} [Finite K'.faces] {n : ℕ}
+    (h : IsSubdivision K' K) {S f : Finset E} (hS : S ∈ K.faces)
+    (hScard : S.card = n + 2) (hf : f ∈ K'.faces)
+    (hfS : convexHull ℝ (f : Set E) ⊆ convexHull ℝ (S : Set E)) :
+    ∃ s ∈ K'.faces, f ⊆ s ∧ s.card = n + 2 ∧
+      convexHull ℝ (s : Set E) ⊆ convexHull ℝ (S : Set E) := by
+  let R := restrict K' (convexHull ℝ (S : Set E))
+  let _ : Finite R.faces := (restrict_faces_finite K' _).to_subtype
+  have hball : IsPLBall (n + 1) R.space := by
+    rw [show R.space = convexHull ℝ (S : Set E) from subdivision_restrict_convexHull_space h hS]
+    exact isPLBall_convexHull_of_affineIndependent S (K.indep hS) hScard
+  obtain ⟨s, hs, hfs, hscard⟩ :=
+    exists_face_superset_card_eq_of_isPLBall R hball (show f ∈ R.faces from ⟨hf, hfS⟩)
+  exact ⟨s, hs.1, hfs, hscard, hs.2⟩
+
+theorem IsSubdivision.exists_adjacent_faces
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    {K K' : Geometry.SimplicialComplex ℝ E} [Finite K'.faces] {n : ℕ}
+    (h : IsSubdivision K' K) {S T F : Finset E}
+    (hS : S ∈ K.faces) (hT : T ∈ K.faces) (hF : F ∈ K.faces) (hST : S ≠ T)
+    (hScard : S.card = n + 2) (hTcard : T.card = n + 2) (hFcard : F.card = n + 1)
+    (hFS : F ⊆ S) (hFT : F ⊆ T) :
+    ∃ f ∈ K'.faces, ∃ s ∈ K'.faces, ∃ t ∈ K'.faces,
+      f.card = n + 1 ∧ s.card = n + 2 ∧ t.card = n + 2 ∧ s ≠ t ∧ f ⊆ s ∧ f ⊆ t ∧
+      convexHull ℝ (f : Set E) ⊆ convexHull ℝ (F : Set E) ∧
+      convexHull ℝ (s : Set E) ⊆ convexHull ℝ (S : Set E) ∧
+      convexHull ℝ (t : Set E) ⊆ convexHull ℝ (T : Set E) := by
+  classical
+  obtain ⟨f, hf, hfcard, hfF⟩ := h.exists_face_card_eq_convexHull_subset hF
+  obtain ⟨s, hs, hfs, hscard, hsS⟩ := exists_subdivision_coface_in_parent h hS hScard hf
+    (hfF.trans (convexHull_mono (Finset.coe_subset.mpr hFS)))
+  obtain ⟨t, ht, hft, htcard, htT⟩ := exists_subdivision_coface_in_parent h hT hTcard hf
+    (hfF.trans (convexHull_mono (Finset.coe_subset.mpr hFT)))
+  refine ⟨f, hf, s, hs, t, ht, hfcard.trans hFcard, hscard, htcard, ?_, hfs, hft, hfF, hsS, htT⟩
+  intro heq
+  have hsub : convexHull ℝ (s : Set E) ⊆ convexHull ℝ ((S ∩ T : Finset E) : Set E) := by
+    rw [Finset.coe_inter]
+    intro x hx
+    exact K.inter_subset_convexHull hS hT ⟨hsS hx, htT (heq ▸ hx)⟩
+  have hle := (K'.indep hs).card_le_card_of_subset_affineSpan
+    ((subset_convexHull ℝ _).trans (hsub.trans (convexHull_subset_affineSpan _)))
+  have hproper : S ∩ T ⊂ S := by
+    refine Finset.ssubset_iff_subset_ne.mpr ⟨Finset.inter_subset_left, ?_⟩
+    intro hinter
+    apply hST
+    exact Finset.eq_of_subset_of_card_le
+      (by rw [← hinter]; exact Finset.inter_subset_right) (by rw [hScard, hTcard])
+  have hlt := Finset.card_lt_card hproper
+  omega
+
+open Classical in
+noncomputable def CoherentOrientation.ofSubdivision
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    {K K' : Geometry.SimplicialComplex ℝ E} [Finite K.faces] [Finite K'.faces] {n : ℕ}
+    (o : CoherentOrientation (n + 1) K') (hK : IsCombinatorialManifoldWithBoundary (n + 1) K)
+    (h : IsSubdivision K' K) : CoherentOrientation (n + 1) K := by
+  classical
+  have hK' := hK.of_isSubdivision h
+  let g (S : Finset E) : ℤ := if hs : S ∈ K.faces ∧ S.card = n + 2 then
+    (exists_orientationSign_on_subdivision_face hK' o h hs.1 hs.2).choose else 0
+  have hg (S : Finset E) (hS : S ∈ K.faces) (hScard : S.card = n + 2) :
+      (g S = 1 ∨ g S = -1) ∧ ∀ s ∈ K'.faces, ∀ hs : s.card = n + 2,
+        convexHull ℝ (s : Set E) ⊆ convexHull ℝ (S : Set E) →
+          o.sign s = affineSimplexOrientationSign o.vertexOrder hs hScard * g S := by
+    dsimp only [g]
+    rw [dif_pos ⟨hS, hScard⟩]
+    exact (exists_orientationSign_on_subdivision_face hK' o h hS hScard).choose_spec
+  refine {
+    vertexOrder := o.vertexOrder
+    sign := g
+    sign_top := fun S hS hScard => (hg S hS hScard).1
+    coherent := ?_ }
+  intro F hF hFcard hnotone
+  have htwo : (faceCofaces K F (n + 2)).card = 2 :=
+    (hK.card_faceCofaces_eq_one_or_two K hF hFcard).resolve_left hnotone
+  obtain ⟨S, T, hST, hcofaces⟩ := Finset.card_eq_two.mp htwo
+  have hSCo : S ∈ faceCofaces K F (n + 2) := by
+    rw [hcofaces]
+    exact Finset.mem_insert_self S {T}
+  have hTCo : T ∈ faceCofaces K F (n + 2) := by
+    rw [hcofaces]
+    exact Finset.mem_insert_of_mem (Finset.mem_singleton_self T)
+  obtain ⟨hS, hScard, hFS⟩ := (mem_faceCofaces K).mp hSCo
+  obtain ⟨hT, hTcard, hFT⟩ := (mem_faceCofaces K).mp hTCo
+  obtain ⟨f, hf, s, hs, t, ht, hfcard, hscard, htcard, hst, hfs, hft, hfF, hsS, htT⟩ :=
+    h.exists_adjacent_faces hS hT hF hST hScard hTcard hFcard hFS hFT
+  have hsub : ({s, t} : Finset (Finset E)) ⊆ faceCofaces K' f (n + 2) := by
+    simp only [Finset.insert_subset_iff, Finset.singleton_subset_iff]
+    exact ⟨(mem_faceCofaces K').mpr ⟨hs, hscard, hfs⟩,
+      (mem_faceCofaces K').mpr ⟨ht, htcard, hft⟩⟩
+  have htwo' : (faceCofaces K' f (n + 2)).card = 2 := by
+    have hge := Finset.card_le_card hsub
+    rw [Finset.card_pair hst] at hge
+    exact (hK'.card_faceCofaces_eq_one_or_two K' hf hfcard).resolve_left (by omega)
+  have hpair : faceCofaces K' f (n + 2) = {s, t} := by
+    apply (Finset.eq_of_subset_of_card_le hsub ?_).symm
+    rw [htwo', Finset.card_pair hst]
+  have hcancel := o.pair_cancel_of_faceCofaces_eq hf hfcard hst hpair
+  rw [(hg S hS hScard).2 s hs hscard hsS, (hg T hT hTcard).2 t ht htcard htT] at hcancel
+  have hcompatS := affineSimplexOrientationSign_mul_simplexBoundaryCoefficient o.vertexOrder
+    hscard hfcard hScard hFcard (K'.indep hs) (K.indep hS) hfs hFS hsS hfF
+  have hcompatT := affineSimplexOrientationSign_mul_simplexBoundaryCoefficient o.vertexOrder
+    htcard hfcard hTcard hFcard (K'.indep ht) (K.indep hT) hft hFT htT hfF
+  have hprod : affineSimplexOrientationSign o.vertexOrder hfcard hFcard *
+      (g S * simplexBoundaryCoefficient o.vertexOrder S F +
+        g T * simplexBoundaryCoefficient o.vertexOrder T F) = 0 := by
+    calc
+      _ = g S * (affineSimplexOrientationSign o.vertexOrder hfcard hFcard *
+          simplexBoundaryCoefficient o.vertexOrder S F) +
+        g T * (affineSimplexOrientationSign o.vertexOrder hfcard hFcard *
+          simplexBoundaryCoefficient o.vertexOrder T F) := by ring
+      _ = g S * (affineSimplexOrientationSign o.vertexOrder hscard hScard *
+          simplexBoundaryCoefficient o.vertexOrder s f) +
+        g T * (affineSimplexOrientationSign o.vertexOrder htcard hTcard *
+          simplexBoundaryCoefficient o.vertexOrder t f) := by rw [hcompatS, hcompatT]
+      _ = 0 := by linear_combination hcancel
+  have hfac : affineSimplexOrientationSign o.vertexOrder hfcard hFcard ≠ 0 := by
+    rcases affineSimplexOrientationSign_eq_one_or_neg_one o.vertexOrder hfcard hFcard
+      (K'.indep hf) hfF with hsign | hsign <;> rw [hsign] <;> norm_num
+  rw [orientedBoundary_eq_sum_faceCofaces, hcofaces]
+  simp only [Finset.sum_insert, Finset.sum_singleton, Finset.mem_singleton, hST, not_false_eq_true]
+  exact (mul_eq_zero.mp hprod).resolve_left hfac
+
+open Classical in
+theorem IsOrientable.of_isSubdivision
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    {K K' : Geometry.SimplicialComplex ℝ E} [Finite K.faces] [Finite K'.faces] {n : ℕ}
+    (ho : IsOrientable n K') (hK : IsCombinatorialManifoldWithBoundary n K)
+    (h : IsSubdivision K' K) : IsOrientable n K := by
+  cases n with
+  | zero => exact isOrientable_zero K
+  | succ n =>
+    obtain ⟨o⟩ := ho
+    exact ⟨o.ofSubdivision hK h⟩
+
+open Classical in
+theorem isOrientable_iff_of_isSubdivision
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    {K K' : Geometry.SimplicialComplex ℝ E} [Finite K.faces] [Finite K'.faces] {n : ℕ}
+    (hK : IsCombinatorialManifoldWithBoundary n K) (h : IsSubdivision K' K) :
+    IsOrientable n K' ↔ IsOrientable n K :=
+  ⟨fun ho => ho.of_isSubdivision hK h, fun ho => ho.subdivision hK h⟩
+
+open Classical in
+theorem isOrientable_iff_of_isPLHomeomorphOn
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
+    {K : Geometry.SimplicialComplex ℝ E} {L : Geometry.SimplicialComplex ℝ F}
+    [Finite K.faces] [Finite L.faces] {n : ℕ} {f : E → F}
+    (hK : IsCombinatorialManifoldWithBoundary n K) (hf : IsPLHomeomorphOn f K.space L.space) :
+    IsOrientable n K ↔ IsOrientable n L := by
+  obtain ⟨K₁, L₁, _, hK₁, hK₁fin, hL₁, hL₁fin, hiso, _⟩ :=
+    exists_isGlueIso_of_isPLHomeomorphOn K L hf
+  let _ : Finite K₁.faces := hK₁fin.to_subtype
+  let _ : Finite L₁.faces := hL₁fin.to_subtype
+  exact (isOrientable_iff_of_isSubdivision hK hK₁).symm.trans
+    ((isOrientable_iff_of_isGlueIso hiso).trans
+      (isOrientable_iff_of_isSubdivision (hK.of_isPLHomeomorphOn hf) hL₁))
+
+theorem isOrientable_of_isPLBall
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces] {n : ℕ}
+    (h : IsPLBall n K.space) : IsOrientable n K := by
+  classical
+  cases n with
+  | zero => exact isOrientable_zero K
+  | succ n =>
+    let S := simplexComplex (stdVertices n) (stdVertices_affineIndependent n)
+    let _ : Finite S.faces := (simplexComplex_faces_finite _ _).to_subtype
+    have hspace : S.space = stdSimplex ℝ (Fin (n + 2)) := by
+      rw [simplexComplex_space _ _ (Finset.card_pos.mp (by rw [card_stdVertices]; omega)),
+        convexHull_stdVertices]
+    have hS : IsPLBall (n + 1) S.space := by
+      rw [simplexComplex_space _ _ (Finset.card_pos.mp (by rw [card_stdVertices]; omega))]
+      exact isPLBall_convexHull_of_affineIndependent _ (stdVertices_affineIndependent n)
+        (card_stdVertices n)
+    obtain ⟨f, hf⟩ := h
+    have hf' : IsPLHomeomorphOn f S.space K.space := by rwa [hspace]
+    exact (isOrientable_iff_of_isPLHomeomorphOn hS.isCombinatorialManifoldWithBoundary hf').mp
+      (isOrientable_simplexComplex _ (stdVertices_affineIndependent n) (card_stdVertices n))
+
+theorem isOrientable_of_isPLSphere
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces] {n : ℕ}
+    (h : IsPLSphere n K.space) : IsOrientable n K := by
+  classical
+  cases n with
+  | zero => exact isOrientable_zero K
+  | succ n =>
+    let S := simplexBoundary (stdVertices (n + 1)) (stdVertices_affineIndependent (n + 1))
+    let _ : Finite S.faces := (simplexBoundary_faces_finite _ _).to_subtype
+    have hS : IsPLSphere (n + 1) S.space := isPLSphere_simplexBoundary_std (n + 1)
+    obtain ⟨f, hf⟩ := h
+    obtain ⟨g, hg⟩ := hS
+    exact (isOrientable_iff_of_isPLHomeomorphOn
+      (isPLSphere_simplexBoundary_std (n + 1)).isCombinatorialManifold.isCombinatorialManifoldWithBoundary
+      (hg.symm.trans hf)).mp
+        (isOrientable_simplexBoundary _ (stdVertices_affineIndependent (n + 1))
+          (card_stdVertices (n + 1)))
+
+open Classical in
+theorem subset_of_mem_faceStarComplex_faces_of_card_eq
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {K : Geometry.SimplicialComplex ℝ E} {n : ℕ}
+    (hbound : ∀ t ∈ K.faces, Finset.card t ≤ n) {s σ : Finset E}
+    (hs : s ∈ (faceStarComplex K σ).faces) (hscard : s.card = n) : σ ⊆ s := by
+  have hunion : s ∪ σ = s := (Finset.eq_of_subset_of_card_le Finset.subset_union_left
+    (by rw [hscard]; exact hbound _ hs.2)).symm
+  rw [← hunion]
+  exact Finset.subset_union_right
+
+open Classical in
+theorem IsCombinatorialManifoldWithBoundary.faceStar
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces] {n : ℕ}
+    (hK : IsCombinatorialManifoldWithBoundary n K) {σ : Finset E} (hσ : σ ∈ K.faces) :
+    IsCombinatorialManifoldWithBoundary n (faceStarComplex K σ) := by
+  let _ : Finite (faceStarComplex K σ).faces := (faceStarComplex_faces_finite K σ).to_subtype
+  cases n with
+  | zero =>
+    intro v hv
+    apply Set.eq_empty_iff_forall_notMem.mpr
+    intro t ht
+    obtain ⟨hne, hvt, hins⟩ :=
+      (SimplicialComplex.mem_geometricLink_singleton (faceStarComplex K σ) v t).mp ht
+    have htK := (SimplicialComplex.mem_geometricLink_singleton K v t).mpr ⟨hne, hvt, hins.1⟩
+    rw [hK v hv.1] at htK
+    exact htK
+  | succ n => exact (hK.isPLBall_faceStarComplex K hσ).isCombinatorialManifoldWithBoundary
+
+open Classical in
+theorem IsCombinatorialManifoldWithBoundary.dualGraph_faceStarComplex_preconnected
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces] {n : ℕ}
+    (hK : IsCombinatorialManifoldWithBoundary n K) {σ : Finset E} (hσ : σ ∈ K.faces) :
+    (dualGraph n (faceStarComplex K σ)).Preconnected := by
+  let _ : Finite (faceStarComplex K σ).faces := (faceStarComplex_faces_finite K σ).to_subtype
+  cases n with
+  | zero =>
+    intro s t
+    obtain ⟨v, hv⟩ := K.nonempty_of_mem_faces hσ
+    have hvs : v ∈ s.1 :=
+      subset_of_mem_faceStarComplex_faces_of_card_eq (fun _ ht => hK.card_le_one ht) s.2.1 s.2.2 hv
+    have hvt : v ∈ t.1 :=
+      subset_of_mem_faceStarComplex_faces_of_card_eq (fun _ ht => hK.card_le_one ht) t.2.1 t.2.2 hv
+    have hs : ({v} : Finset E) = s.1 := Finset.eq_of_subset_of_card_le
+      (Finset.singleton_subset_iff.mpr hvs) (by rw [s.2.2]; simp)
+    have ht : ({v} : Finset E) = t.1 := Finset.eq_of_subset_of_card_le
+      (Finset.singleton_subset_iff.mpr hvt) (by rw [t.2.2]; simp)
+    have heq : s = t := Subtype.ext (hs.symm.trans ht)
+    rw [heq]
+  | succ n =>
+    exact (hK.faceStar hσ).dualGraph_preconnected
+      (hK.isPLBall_faceStarComplex K hσ).isConnected.isPreconnected
+
+open Classical in
+theorem isOrientable_faceStarComplex
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces] {n : ℕ}
+    (hK : IsCombinatorialManifoldWithBoundary n K) {σ : Finset E} (hσ : σ ∈ K.faces) :
+    letI := (faceStarComplex_faces_finite K σ).to_subtype
+    IsOrientable n (faceStarComplex K σ) := by
+  let _ := (faceStarComplex_faces_finite K σ).to_subtype
+  cases n with
+  | zero => exact isOrientable_zero _
+  | succ n => exact isOrientable_of_isPLBall (hK.isPLBall_faceStarComplex K hσ)
+
+open Classical in
+theorem coherentOrientation_eq_or_eq_neg_faceStarComplex
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces] {n : ℕ}
+    (hK : IsCombinatorialManifoldWithBoundary n K) {σ : Finset E} (hσ : σ ∈ K.faces) :
+    letI := (faceStarComplex_faces_finite K σ).to_subtype
+    ∀ o o' : CoherentOrientation n (faceStarComplex K σ),
+      (∀ s ∈ (faceStarComplex K σ).faces, s.card = n + 1 →
+        o.sign s = (o'.changeVertexOrder o.vertexOrder).sign s) ∨
+      (∀ s ∈ (faceStarComplex K σ).faces, s.card = n + 1 →
+        o.sign s = -(o'.changeVertexOrder o.vertexOrder).sign s) := by
+  let _ := (faceStarComplex_faces_finite K σ).to_subtype
+  exact coherentOrientation_eq_or_eq_neg (hK.faceStar hσ)
+    (hK.dualGraph_faceStarComplex_preconnected hσ)
+
+open Classical in
+theorem exists_unique_coherentOrientation_comparison
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces] {n : ℕ}
+    (hK : IsCombinatorialManifoldWithBoundary n K) (hconn : (dualGraph n K).Preconnected)
+    (hne : K.space.Nonempty) (o o' : CoherentOrientation n K) :
+    ∃! ε : ℤ, (ε = 1 ∨ ε = -1) ∧ ∀ s ∈ K.faces, s.card = n + 1 →
+      o.sign s = ε * (o'.changeVertexOrder o.vertexOrder).sign s := by
+  obtain ⟨ε, hεunit, hε⟩ : ∃ ε : ℤ, (ε = 1 ∨ ε = -1) ∧ ∀ s ∈ K.faces, s.card = n + 1 →
+      o.sign s = ε * (o'.changeVertexOrder o.vertexOrder).sign s := by
+    rcases coherentOrientation_eq_or_eq_neg hK hconn o o' with h | h
+    · exact ⟨1, Or.inl rfl, fun s hs hscard => by simpa only [one_mul] using h s hs hscard⟩
+    · exact ⟨-1, Or.inr rfl, fun s hs hscard => by simpa only [neg_one_mul] using h s hs hscard⟩
+  refine ⟨ε, ⟨hεunit, hε⟩, ?_⟩
+  intro δ hδ
+  obtain ⟨x, hx⟩ := hne
+  obtain ⟨f, hf, _⟩ := K.mem_space_iff.mp hx
+  obtain ⟨s, hs, _, hscard⟩ := hK.exists_face_superset_card_eq hf
+  have hεs := hε s hs hscard
+  have hδs := hδ.2 s hs hscard
+  rcases (o'.changeVertexOrder o.vertexOrder).sign_top s hs hscard with hq | hq <;>
+    rw [hq] at hεs hδs <;> linarith
+
+open Classical in
+theorem exists_unique_coherentOrientation_comparison_faceStarComplex
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces] {n : ℕ}
+    (hK : IsCombinatorialManifoldWithBoundary n K) {σ : Finset E} (hσ : σ ∈ K.faces) :
+    letI := (faceStarComplex_faces_finite K σ).to_subtype
+    ∀ o o' : CoherentOrientation n (faceStarComplex K σ),
+      ∃! ε : ℤ, (ε = 1 ∨ ε = -1) ∧ ∀ s ∈ (faceStarComplex K σ).faces, s.card = n + 1 →
+        o.sign s = ε * (o'.changeVertexOrder o.vertexOrder).sign s := by
+  let _ := (faceStarComplex_faces_finite K σ).to_subtype
+  apply exists_unique_coherentOrientation_comparison (hK.faceStar hσ)
+    (hK.dualGraph_faceStarComplex_preconnected hσ)
+  obtain ⟨v, hv⟩ := K.nonempty_of_mem_faces hσ
+  exact ⟨v, (faceStarComplex K σ).subset_space ⟨hσ, by rwa [Finset.union_self]⟩ hv⟩
 
 end DifferentialGeometry.Topology.PiecewiseLinear
