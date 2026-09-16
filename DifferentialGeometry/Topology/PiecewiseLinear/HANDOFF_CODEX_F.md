@@ -1675,3 +1675,9 @@ F-M2–F-M6 尚未开始；按用户指定顺序推进，只有出现 §1 接口
 `BoundaryArcStability.lean` 已提交并推送为 `89a746c29`。主端点 `eventually_height_section_subsingleton_of_boundary_segment` 处理有限一维组合带边流形的实际边界弧：两个不同边界顶点之间的开线段包含接缝点，旧高度在其余顶点上严格低于接缝高度。它证明在旧高度的一个邻域内，任何在接缝点与弧顶点上单射的新线性高度，其弧截面至多一点。证明先用有限集上的严格次序稳定性保持内部顶点的侧别；开线段在新高度下仍把接缝值夹在两个边界值之间，故恰有一个边界端点在高侧，再调用上一层唯一越层端点定理。
 
 模块聚焦检查 exit=0（11.1 秒）、零 warning；`AuditF169.lean` 主端点仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步将保留盘的几何链环限制识别为此一维组合带边流形，证明旧单侧性给出其非边界顶点的严格同侧条件；随后与三角帽链环合并。F-M1 仍为 partial，严格降指标、Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF170.lean`。
+
+### 19.22 F-M1：保留盘顶点链环的稳定单点截面
+
+`RetainedDiskLink.lean` 已提交并推送为 `ab191e998`。主端点 `eventually_geometricLink_section_subsingleton_of_boundary_segment` 从实际 PL 二球盘、其边界上的接缝顶点，以及边界链环中的两个不同方向构造保留盘顶点链环的一维带边流形。`geometricLink_boundaryComplex` 将这两个接缝方向识别为该链环的两个组合边界端点；其余链环顶点的旧高度严格同侧时，上一层稳定性定理给出所有充分小且在接缝点与链环顶点上单射的新高度的截面至多一点。
+
+模块聚焦检查 exit=0（13.0 秒）、零 warning；`AuditF170.lean` 主端点仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步从 `HeightSides` 与接缝适配剖分实际推出非边界链环顶点的严格同侧条件和两个边界方向间的开线段关系，再把保留盘与三角帽的两个单点截面合并为完整链环的 `encard ≤ 2`。F-M1 仍为 partial，严格降指标、Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF171.lean`。
