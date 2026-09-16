@@ -1949,3 +1949,11 @@ F-M1 仍为 partial。下一步把凸化映射在紧致旧三角形上的 PL Lip
 主端点 `eventually_isPLBall_affine_triangle_image_fiber` 已直接用于环境同胚：只要求 `H` 是保 `ℓ` 的全域 PL 同胚，仿射三角形的三个旧顶点高度严格排序，就证明充分小的每个新高度 `f` 在 `H` 的三角形像内、严格介于两底角值之间的截面是 PL 一维球。没有要求 `H` 在旧三角形上仿射，也没有假设凸化后旧高度在新顶点上单射。故同高折点已经不再阻挡单个旧面的纤维稳定性。
 
 聚焦检查 exit=0（13.3 秒）、零 warning；`AuditF212.lean` 三个公开端点全部仅依赖 `propext`、`Classical.choice`、`Quot.sound`。F-M1 仍为 partial；下一步补弧端点与旧边的精确对应、极值层的单点/空集分类，然后沿公共边拼接各旧面的纤维映射，接入 `Q` 的侧芽以得到 §19.56 的相对删除。S.4 M2/M3、I1 尚未交付。下一审计文件 `AuditF213.lean`。
+
+### 19.64 F-M1：逐边保持的三角形纤维 PL 对应
+
+`TriangleFiberBoundary.lean` 证明中间层截面恰在区间参数的两个端点碰三角形边界，并精确识别退出边：左边当且仅当参数为上端点且目标层不高于上角值，右边当且仅当参数为上端点且目标层不低于上角值。最低、最高纤维分别精确等于对应单点；高度范围外的纤维为空。端点分类由实际单调性和介值性推出。
+
+`TriangleFiberEquivalence.lean` 的 `exists_isPLHomeomorphOn_triangle_fibers_preserving_edges` 以两个纤维的区间参数和正比例缩放构造 PL 同胚。只要两个目标高度相对中间角点的大小/相等情形一致，所得对应逐点保持三条旧边的成员关系，包含经过上角的情形；边兼容不是输入。该结论是随后沿旧三角形公共边拼接的局部数据。
+
+聚焦检查：`TriangleFiberBoundary` exit=0（11.7 秒），`TriangleFiberEquivalence` exit=0（11.7 秒），均零 warning；`AuditF213.lean` 七项全都仅依赖 `propext`、`Classical.choice`、`Quot.sound`。F-M1 仍为 partial。下一步从 §19.63 的 Lipschitz 误差生产三方向单调性和顶点符号稳定性，实际得到每个小转轴的逐边保持对应；再进行有限复形拼接和保留盘侧芽分析。§19.56 的相对层圆周删除、S.4 M2/M3 与 I1 尚未交付。下一审计文件 `AuditF214.lean`。
