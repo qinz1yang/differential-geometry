@@ -1,5 +1,6 @@
 import DifferentialGeometry.Topology.Connected.Loop
 import DifferentialGeometry.Topology.PiecewiseLinear.CurveInclusion
+import Mathlib.Topology.Perfect
 
 open Set Topology
 
@@ -41,6 +42,25 @@ theorem IsPLSphere.not_singleton_mem_nhdsWithin_one {S : Set E} (hS : IsPLSphere
     ⟨isClosed_singleton.preimage continuous_subtype_val, hopen⟩).eq_univ ⟨⟨p, hp⟩, rfl⟩
   obtain ⟨q, hqS, hqp⟩ := (hS.isConnected_sdiff_singleton_one p).nonempty
   exact hqp (show (⟨q, hqS⟩ : S) ∈ ((↑) ⁻¹' ({p} : Set E) : Set S) by rw [hfull]; trivial)
+
+omit [FiniteDimensional ℝ E] in
+theorem IsPLSphere.closure_sdiff_singleton_one {S : Set E} (hS : IsPLSphere 1 S) (p : E) :
+    closure (S \ {p}) = S := by
+  have hclosed : IsClosed S := by
+    obtain ⟨f, hf⟩ := hS
+    rw [← hf.image_eq, ← stdTriangleLoop_image, ← image_comp]
+    exact (isCompact_Icc.image_of_continuousOn
+      (hf.isPiecewiseAffineOn.continuousOn.comp continuous_stdTriangleLoop.continuousOn
+        (fun t ht => stdTriangleLoop_image.subset ⟨t, ht, rfl⟩))).isClosed
+  apply Subset.antisymm (closure_minimal sdiff_subset hclosed)
+  intro x hx
+  by_cases hxp : x = p
+  · subst x
+    obtain ⟨y, hyS, hyp⟩ := (hS.isConnected_sdiff_singleton_one p).nonempty
+    have hnontrivial : S.Nontrivial := ⟨p, hx, y, hyS, Ne.symm hyp⟩
+    have hacc := hS.isConnected_one.isPreconnected.preperfect_of_nontrivial hnontrivial p hx
+    rwa [accPt_principal_iff_clusterPt, ← mem_closure_iff_clusterPt] at hacc
+  · exact subset_closure ⟨hx, hxp⟩
 
 open Classical in
 theorem face_mem_of_inter_space_sdiff_singleton_nonempty
