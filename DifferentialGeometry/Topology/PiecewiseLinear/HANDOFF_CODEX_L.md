@@ -638,3 +638,25 @@ theorem eq_top_of_boundaryLoops_mem_normal
   全部只含 `propext`、`Classical.choice`、`Quot.sound`。
 - 两次早期审计恰逢共享构建目录中的其它 Lean 进程依次重建 `BoundaryCrossing.olean` 与
   `BoundaryBranchCrosscut.olean`，分别报告瞬时缺失；等待共享进程退出后原样重跑即通过，未终止其它进程，也未运行 `lake build`。
+
+## 29. 2026-09-16 E3-M2 追加：割贴后整条边界分支消去
+
+状态：partial（纤维上界、新旧双点集包含及所选分支消去已闭合；局部单射、剩余分支三角剖分与 crossing 搬运待闭合）。数学提交 `9556ea4b2`。
+
+- 已按 NIGHT_PLAN 规则合并并推送整合分支 `11b74c480`，本分支合并提交为 `c42577124`。整合后 S 的
+  `exists_nonsingular_two_cell_of_boundary_disk` 及 `exists_nonsingular_two_cell_of_disk_in_double_boundary` 已以 §6.1 的 double 环境进入本树，
+  Case 1/2 到内盘推离层时可直接消去旧的显式 I2 参数。
+- `exists_three_cells_of_boundaryBranch` 保留两张分支原像片上 `branchCoordinate` 的 PL 同胚；
+  `exists_boundary_surgery_cell_of_boundaryBranch` 据此增强为同时交付
+  `∀ y, (G.domain ∩ G ⁻¹' {y}).encard ≤ 2`、
+  `doublePointSet G G.domain ⊆ doublePointSet D D.domain` 与
+  `Disjoint (doublePointSet G G.domain) (hD.singularSet.branchCarrier c)`。
+- 证明将新源盘两片分别送回原盘首、尾片，得到新源点到旧源点的单射；于是新纤维注入旧纤维。
+  对所选分支，两张坐标片把同像原像精确钉在贴缝上，而贴缝在新源盘中只有一份，因此新双点集与整条 `branchCarrier c` 不交。
+- `SingularCell` 与 `CutAndPaste` 均用 `check-f.ps1 -Threads 1` 重编，exit=0、零 warning；
+  `.lake/scratch/AuditE3M2.lean` 的 50 项用 `audit-f.ps1` 审计 exit=0，全部只含
+  `propext`、`Classical.choice`、`Quot.sound`。首次审计发现整合检查留下的旧 `SingularCell.olean`，
+  按规则窄重建 `SingularCell` 及当前模块后原样审计通过。
+- 下一精确义务是从原胞腔的局部单射得到贴合胞腔的局部单射：贴缝处需用有限个其它分支的闭性取避开它们的目标邻域，
+  再用两片的局部单射与贴缝唯一性排除交叉重合。随后需证明新双点集是旧一维带边组合流形的若干完整连通分支之并，
+  以限制子复形重建 `doublePointSet_triangulated`，并在剩余分支上搬运 crossing。
