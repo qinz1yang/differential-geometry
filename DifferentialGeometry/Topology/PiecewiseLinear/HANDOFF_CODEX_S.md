@@ -2086,3 +2086,17 @@ auxiliary proposition is required. The parameterized core and ambient-neighborho
 selection are separate mathematical interfaces; this also avoids dependent-dimension
 elaboration blowup without resource overrides. B.2's remaining two-sided Problem 26.3
 obligation is now delivered. B.6 and the remaining P.4 producers are still in progress.
+
+### Transverse segments and PL paths in open sets, 2026-09-16
+
+`OpenPLPath.lean` proves that any two points of an open preconnected set in a real
+normed space can be joined by a PL path, without a finite-dimensional assumption.
+`TransverseSegment.lean` constructs a transverse segment through the relative
+interior of a codimension-one maximal simplex, meeting the complex only at its
+midpoint. Its surface corollary supplies such a segment for every nonempty finite
+combinatorial two-manifold in a three-dimensional ambient space.
+
+Both focused checks pass with exit 0 and zero warnings. `AuditS119TransversePath`
+checks all four public declarations; exit 0, only the standard three axioms. These
+are geometric producers for the B.6 contradiction. The single-crossing circle map,
+relative disk filling, and global separation theorem remain to be completed.
