@@ -1693,3 +1693,9 @@ F-M2–F-M6 尚未开始；按用户指定顺序推进，只有出现 §1 接口
 `BoundaryLinkDirections.lean` 已提交并推送为 `48aa32b7c`。主端点 `exists_geometricLink_pair_openSegment_of_eventually_line` 处理有限一维组合流形在顶点附近等于一条仿射直线的情形。证明分别沿直线的正负方向进入载体，以几何链环的射线截取取得两个实际邻接顶点，再用一维组合流形的面维数界把链环点识别为单点面；两个正射线参数给出显式凸组合，证明原顶点位于这两个方向之间的开线段。结论同时返回不同性、两项面成员关系和开线段关系，不把任一项作为假设。
 
 模块聚焦检查 exit=0（12.7 秒）、零 warning；`AuditF172.lean` 主端点仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步证明三元素仿射独立三角形的边界在任一对边相对内部点附近恰等于该对边的仿射直线，并通过保留盘边界空间等式实例化本端点。随后接入 `BoundaryLinkGerm`。F-M1 仍为 partial，严格降指标、Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF173.lean`。
+
+### 19.25 F-M1：二维面内部点产生边界链环的相反方向
+
+`BoundaryFacetDirections.lean` 已提交并推送为 `b214ed095`。`exists_geometricLink_pair_openSegment_of_opposite_rays` 从一维组合流形载体沿某非零方向的正、负两条局部射线，构造几何链环中的两个不同单点面，并以显式正凸组合证明基点位于两方向的开线段中。`exists_geometricLink_pair_openSegment_of_openSimplex_two` 将其用于二元素面的开单形内部点：面方向空间同时包含某方向及其负方向，开单形在这些方向上局部稳定，故不必先证明整个接缝具有局部直线集合芽。
+
+模块聚焦检查 exit=0（12.6 秒）、零 warning；`AuditF173.lean` 两个端点均仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步把接缝适配剖分中的实际二元素面送入该端点，并用 `BoundaryLinkGerm` 得到保留盘链环的稳定单点截面；随后证明帽侧与保留侧链环覆盖完整链环并合并为 `encard ≤ 2`。F-M1 仍为 partial，严格降指标、Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF174.lean`。
