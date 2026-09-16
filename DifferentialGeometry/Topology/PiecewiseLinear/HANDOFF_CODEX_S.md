@@ -1147,3 +1147,32 @@ vendored changes, or other-lane source edits were introduced.
 trace, an arbitrary subcomplex need not intersect an ambient closed star in its own closed
 star. The existing barycentric-star intersection lemma in `FrontierBoundary.lean` supplies
 the correct trace after subdivision; the next step reuses it instead of assuming fullness.
+
+### S-M5 continuation: arbitrarily small neighborhoods of embedded surfaces
+
+The cone-component checkpoint is committed and pushed as `7e6e37d0f`.
+`StarIntersection.lean` promotes the existing barycentric closed-star intersection proof
+from `FrontierBoundary.lean` without changing its hypotheses or proof. The old consumer
+imports that module; no duplicate proof remains. `StarComponents.lean` then identifies
+the two actual components of the subdivided ambient closed star minus the surface.
+
+`SurfaceNeighborhood.lean` proves
+`IsCombinatorialManifoldWithBoundary.exists_isPLBall_neighborhood_pair_sdiff`.
+For any point of a finite closed combinatorial surface lying in the interior of a finite
+combinatorial three-manifold, every prescribed relative neighborhood contains a PL three-ball
+neighborhood C. Its trace on the surface is a PL two-disk. The complement in C has exactly
+two connected components with PL three-ball closures; the closures cover C and their
+intersection is precisely the surface trace. Surface and ambient triangulations need only
+have carrier inclusion; compatibility is produced by a common subdivision. No global
+separation or two-sidedness assumption is used for this local result.
+
+All four changed modules have focused-check exit 0 and zero warnings
+(`check-star-intersection.log`, `check-frontier-boundary-star.log`,
+`check-star-components.log`, `check-surface-neighborhood.log`).
+`AuditS93SurfaceNeighborhood.lean` / `.log` contain six entries: the three new public
+results, the two old boundary-ball consumers, and the existing whole-boundary collar.
+All contain only `propext`, `Classical.choice`, and `Quot.sound`.
+
+26.3 remains partial: the small local two-side models must still be globalized over each
+connected two-sided surface component; the resulting closures must be identified as
+combinatorial manifolds before applying and gluing the already proved collars.
