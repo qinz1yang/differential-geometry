@@ -10522,3 +10522,6 @@ import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegulari
 import DifferentialGeometry.Analysis.Integration.Measure.VolumeDensityContinuity
 import DifferentialGeometry.Analysis.Integration.Measure.Family.CompactSupportContinuity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Energy.CutoffContinuity
+import DifferentialGeometry.Geometry.Connection.LeviCivita.DifferenceNorm
+import DifferentialGeometry.Geometry.Connection.TensorNabla.Tensor0S.MetricConnectionDifference
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Algebra.IndexRaising

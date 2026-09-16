@@ -1,3 +1,5 @@
+import DifferentialGeometry.Geometry.Connection.TensorNabla.Tensor0S.MetricConnectionDifference
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Algebra.IndexRaising
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Curvature.TimeDerivative
 import DifferentialGeometry.Geometry.Curvature.MetricPairing
 
@@ -41,57 +43,6 @@ private theorem inner_expand (g : SmoothRiemannianMetric I M)
   rw [← metField0 (I := I) g x W Z,
     tensor02_expand (I := I) (metricTensorField (I := I) g x) basis W Z]
   exact Finset.sum_congr rfl fun p _ => by rw [metField0]
-
-def raiseAt (g : SmoothRiemannianMetric I M) (x : M)
-    (basis : Module.Basis Idx Real (TangentSpace I x)) (a : Idx -> Real) :
-    TangentSpace I x :=
-  ∑ p : Idx, (∑ l : Idx, basisInvMetric (I := I) g x basis p l * a l) • basis p
-
-omit [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
-theorem raiseAt_eq (g : SmoothRiemannianMetric I M) (x : M)
-    (basis : Module.Basis Idx Real (TangentSpace I x)) (a : Idx -> Real) :
-    raiseAt (I := I) g x basis a =
-      ∑ p : Idx, (∑ l : Idx, basisInvMetric (I := I) g x basis p l * a l) • basis p := rfl
-
-omit [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
-theorem raiseAt_lower (g : SmoothRiemannianMetric I M) (x : M)
-    (basis : Module.Basis Idx Real (TangentSpace I x)) (V : TangentSpace I x) :
-    raiseAt (I := I) g x basis (fun l : Idx => g.inner x V (basis l)) = V := by
-  classical
-  have hcoord : ∀ p : Idx,
-      (∑ l : Idx, basisInvMetric (I := I) g x basis p l * g.inner x V (basis l)) =
-        basis.repr V p := by
-    intro p
-    set S : TangentSpace I x :=
-      (tangentFlatEquiv (I := I) g x).symm (basis.coord p) with hS
-    have hb : ∀ l : Idx, basisInvMetric (I := I) g x basis p l = basis.repr S l := by
-      intro l
-      rw [hS]
-      exact basis.coord_apply l _
-    have hsum : (∑ l : Idx, basis.repr S l * g.inner x V (basis l)) = g.inner x V S := by
-      conv_rhs => rw [← basis.sum_repr S]
-      rw [map_sum]
-      exact Finset.sum_congr rfl fun l _ => by rw [map_smul, smul_eq_mul]
-    have hflat : g.inner x V S = basis.repr V p := by
-      have h1 : g.inner x V S = g.inner x S V := g.symm x V S
-      have h2 : g.inner x S V = tangentFlatEquiv (I := I) g x S V :=
-        (tangentFlatEquiv_apply (I := I) g x S V).symm
-      have h3 : tangentFlatEquiv (I := I) g x S = basis.coord p := by
-        rw [hS]
-        exact (tangentFlatEquiv (I := I) g x).apply_symm_apply _
-      rw [h1, h2, h3]
-      exact basis.coord_apply p V
-    calc (∑ l : Idx, basisInvMetric (I := I) g x basis p l * g.inner x V (basis l))
-        = ∑ l : Idx, basis.repr S l * g.inner x V (basis l) :=
-          Finset.sum_congr rfl fun l _ => by rw [hb l]
-      _ = g.inner x V S := hsum
-      _ = basis.repr V p := hflat
-  rw [raiseAt_eq]
-  calc (∑ p : Idx,
-        (∑ l : Idx, basisInvMetric (I := I) g x basis p l * g.inner x V (basis l)) • basis p)
-      = ∑ p : Idx, basis.repr V p • basis p :=
-        Finset.sum_congr rfl fun p _ => by rw [hcoord p]
-    _ = V := basis.sum_repr V
 
 private theorem mulVanish_deriv {f A : Real -> Real} {A' : Real} {s : Set Real} {t : Real}
     (hf : ContinuousWithinAt f s t) (hA : HasDerivWithinAt A A' s t) (hA0 : A t = 0) :
@@ -336,64 +287,9 @@ theorem rmDiffVec_deriv
 
 end Curvature
 
-section Parallel
-
-omit [SigmaCompactSpace M] [BoundarylessManifold I M] in
-theorem metricNabla0S_self (g : SmoothRiemannianMetric I M) :
-    metricNabla0S (I := I) g (metricTensorField (I := I) g) =
-      (0 : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
-        (n := (∞ : WithTop ℕ∞)) 3) := by
-  classical
-  have hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible
-      (I := I) (metricCov (I := I) g) g :=
-    DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric_isMetricCompatible
-      (I := I) g
-  refine DFunLike.ext _ _ fun x => ?_
-  have hfib : metricNabla0S (I := I) g (metricTensorField (I := I) g) x = 0 := by
-    refine ContinuousMultilinearMap.ext fun v => ?_
-    obtain ⟨Xsec, hXx⟩ :=
-      ContMDiffSection.exists_eq_at
-        (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x (v 0)
-    have hv : Fin.cons (Xsec x) (Fin.tail v) = v := by
-      rw [hXx]
-      exact Fin.cons_self_tail v
-    have hsec := totalNabla0SFun_apply_section (𝕜 := Real) (E := E) (H := H)
-      (I := I) (M := M) 2 (metricCov (I := I) g) Xsec (metricTensorField (I := I) g) x
-      (Fin.tail v)
-    rw [hv] at hsec
-    have hzero := nabla_metric_zero (I := I) (metricCov (I := I) g) g hmc Xsec x
-    rw [metricNabla0S_apply]
-    exact hsec.trans (by
-      rw [hzero]
-      rfl)
-  rw [hfib]
-  rfl
-
-omit [SigmaCompactSpace M] [BoundarylessManifold I M] in
-theorem nabla2_metric1 (g₁ g₂ : SmoothRiemannianMetric I M) :
-    metricNabla0S (I := I) g₂ (metricTensorField (I := I) g₁) =
-      -lapDiffFlux (I := I) g₁ g₂ (metricTensorField (I := I) g₁) := by
-  rw [lapDiffFlux, metricNabla0S_self]
-  abel
-
-end Parallel
-
 section ReLower
 
 variable {x : M}
-
-def sharpFlat (g₁ g₂ : SmoothRiemannianMetric I M) (x : M) :
-    TangentSpace I x →ₗ[Real] TangentSpace I x :=
-  (tangentFlatEquiv (I := I) g₂ x).symm.toLinearMap ∘ₗ
-    (tangentFlatEquiv (I := I) g₁ x).toLinearMap
-
-omit [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
-@[simp]
-theorem sharpFlat_self (g : SmoothRiemannianMetric I M) (x : M) (W : TangentSpace I x) :
-    sharpFlat (I := I) g g x W = W := by
-  change (tangentFlatEquiv (I := I) g x).symm
-    ((tangentFlatEquiv (I := I) g x) W) = W
-  exact (tangentFlatEquiv (I := I) g x).symm_apply_apply W
 
 omit [SigmaCompactSpace M] in
 theorem mixLow_eq_rm04 (g₁ g₂ : SmoothRiemannianMetric I M) (x : M)
