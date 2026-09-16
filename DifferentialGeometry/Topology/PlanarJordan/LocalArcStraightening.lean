@@ -1,6 +1,9 @@
 import DifferentialGeometry.Topology.PlanarJordan.VertexFan
 import DifferentialGeometry.Topology.Homeomorph.UniformGluing
 import DifferentialGeometry.Topology.DiscreteNeighborhoods
+import DifferentialGeometry.Topology.Embedding.RealParameter
+import DifferentialGeometry.Topology.Order.DiscreteRange
+import Mathlib.Analysis.SpecificLimits.Basic
 
 open Set Topology
 
@@ -157,5 +160,60 @@ theorem exists_homeomorph_polygonal_subarcs_of_isDiscrete
   · intro i x hx
     rw [he i hx]
     exact hdist i x
+
+
+theorem exists_homeomorph_polygonal_subarcs_of_strictAnti
+    {f : ℝ → Plane} (hf : ContinuousOn f unitInterval) (hi : InjOn f unitInterval)
+    {t : ℕ → ℝ} (ht : ∀ n, t n ∈ Ioo (0 : ℝ) 1) (hanti : StrictAnti t)
+    {N : ℕ → Set Plane} (hN : ∀ n, N n ∈ 𝓝 (f (t n))) :
+    ∃ (a b : ℕ → ℝ) (e : Plane ≃ₜ Plane),
+      (∀ n, 0 < a n ∧ a n < t n ∧ t n < b n ∧ b n < 1 ∧
+        IsPolygonal (e '' (f '' Icc (a n) (t n))) ∧
+        IsPolygonal (e '' (f '' Icc (t n) (b n))) ∧ e (f (t n)) = f (t n)) ∧
+      e (f 0) = f 0 ∧ e (f 1) = f 1 ∧ EqOn e id (⋃ n, N n)ᶜ := by
+  obtain ⟨g, hg, hgf⟩ := isCompact_I.exists_continuous_leftInvOn hf hi
+  have htI (n : ℕ) : t n ∈ unitInterval := ⟨(ht n).1.le, (ht n).2.le⟩
+  have hd : IsDiscrete (range fun n => f (t n)) := by
+    apply isDiscrete_iff_forall_mem_exists_isOpen.mpr
+    rintro x ⟨n, rfl⟩
+    obtain ⟨V, hV, hVt⟩ := isDiscrete_iff_forall_mem_exists_isOpen.mp
+      hanti.isDiscrete_range_nat (t n) (mem_range_self n)
+    refine ⟨g ⁻¹' V, hV.preimage hg, Subset.antisymm ?_ ?_⟩
+    · rintro x ⟨hx, m, rfl⟩
+      have htm : t m ∈ V := hgf (htI m) ▸ hx
+      have heq : t m = t n := hVt.subset ⟨htm, mem_range_self m⟩
+      exact congrArg f heq
+    · apply singleton_subset_iff.mpr
+      refine ⟨?_, mem_range_self n⟩
+      change g (f (t n)) ∈ V
+      rw [hgf (htI n)]
+      exact (hVt.symm.subset rfl).1
+  let Z : Set Plane := {f 0, f 1}
+  have hZ : IsClosed Z := ((finite_singleton (f 1)).insert (f 0)).isClosed
+  have htZ (n : ℕ) : f (t n) ∉ Z := by
+    rintro (h0 | h1)
+    · exact (ht n).1.ne' (hi (htI n) zero_mem_I h0)
+    · exact (ht n).2.ne (hi (htI n) one_mem_I h1)
+  have hN' (n : ℕ) : N n ∩ Zᶜ ∈ 𝓝 (f (t n)) :=
+    Filter.inter_mem (hN n) (hZ.isOpen_compl.mem_nhds (htZ n))
+  have hδ : ∀ n : ℕ, 0 < (1 / 2 : ℝ) ^ n := fun n => pow_pos (by norm_num) n
+  have hδlim : Filter.Tendsto (fun n : ℕ => (1 / 2 : ℝ) ^ n) Filter.cofinite (𝓝 0) := by
+    rw [Nat.cofinite_eq_atTop]
+    exact tendsto_pow_atTop_nhds_zero_of_lt_one (by norm_num) (by norm_num)
+  obtain ⟨r, a, b, e, hdata, _, _, hfix, _⟩ :=
+    exists_homeomorph_polygonal_subarcs_of_isDiscrete hf hi ht hanti.injective hd hN' hδ hδlim
+  have houtside : EqOn e id (⋃ n, N n ∩ Zᶜ)ᶜ := hfix.mono (compl_subset_compl.mpr
+    (iUnion_mono fun n => (Plane.openSquare_subset_closedSquare _ _).trans (hdata n).2.1))
+  have hfixZ : EqOn e id Z := by
+    intro x hx
+    apply houtside
+    intro hmem
+    obtain ⟨n, hn⟩ := mem_iUnion.mp hmem
+    exact hn.2 hx
+  refine ⟨a, b, e, ?_, hfixZ (Or.inl rfl), hfixZ (Or.inr rfl), ?_⟩
+  · intro n
+    obtain ⟨_, _, ha, hat, htb, hb, _, hpolyA, hpolyB, he⟩ := hdata n
+    exact ⟨ha, hat, htb, hb, hpolyA, hpolyB, he⟩
+  · exact houtside.mono (compl_subset_compl.mpr (iUnion_mono fun _ => inter_subset_left))
 
 end DifferentialGeometry.Topology.PlanarJordan

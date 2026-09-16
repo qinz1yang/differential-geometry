@@ -2417,3 +2417,28 @@ This is the vertex stage of the deleted-endpoint construction in Moise 10.8.
 It still needs straightening between successive selected points and the
 auxiliary arc approaching the deleted endpoint; this is not yet a degree-one
 endpoint theorem.
+
+## Producing the discrete sequence input (2026-09-16)
+
+`Embedding/RealParameter.lean` uses Tietze extension to extend the inverse
+parameter of any compact real-parameter embedding into a normal Hausdorff space
+to a continuous real-valued function on the ambient space.
+`Order/DiscreteRange.lean` proves that strictly monotone or strictly antitone
+natural-number sequences have discrete ranges in any linearly ordered space
+with the order-closed topology.
+
+`LocalArcStraightening.lean` now gives
+`exists_homeomorph_polygonal_subarcs_of_strictAnti`: every strictly decreasing
+sequence of interior parameters of a planar arc admits simultaneous supported
+polygonal germs at all its points, inside arbitrary prescribed neighborhoods,
+while fixing both original endpoints and all selected centers. Discreteness of
+the image points is proved from the extended inverse parameter; shrinking bounds
+are produced using the geometric sequence `(1/2)^n`. Neither condition is an
+extra input to this endpoint. The complements of the prescribed neighborhoods
+are fixed.
+
+The two new modules and the updated local-arc module check with exit 0 and zero
+warnings. AuditS134ArcSequence checks six declarations, including all three
+current local-arc endpoints; exit 0, only the standard three axioms. The next
+geometric obligation is to straighten the intervals between selected points,
+then construct the auxiliary arc approaching the original endpoint.
