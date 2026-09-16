@@ -1,5 +1,6 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Scalar.ContinuousMultiplication
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Scalar.ContinuousMultiplier
+import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Embedding.ScalarContinuousInjective
 
 noncomputable section
 open scoped Manifold ContDiff
@@ -51,5 +52,23 @@ theorem tensorHsInclusion_scalarHsMul_zero
   simp only [ccToHsLin_apply, m, scalarHsMul_apply_ccTensorToHs, J, C,
     ContinuousLinearMap.comp_apply, tensorHsInclusion_ccTensorToHs,
     scalarH0ContinuousMul_smooth_product]
+
+theorem scalarH0ContinuousMul_scalarH1ToContinuous_comm
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) M)
+    (u v : TensorHs g 0 0 ((1 : ℕ) : ℝ)) :
+    let J := tensorHsInclusion (g := g) (r := 0) (s := 0)
+      (by norm_num : (0 : ℝ) ≤ ((1 : ℕ) : ℝ))
+    let C := (scalarH1ToContinuous g).comp (tensorHsInclusion (g := g) (r := 0) (s := 0)
+      (by norm_num : (1 : ℝ) ≤ ((1 : ℕ) : ℝ)))
+    scalarH0ContinuousMul g (C u) (J v) = scalarH0ContinuousMul g (C v) (J u) := by
+  intro J C
+  rw [← tensorHsInclusion_scalarHsMul_zero, ← tensorHsInclusion_scalarHsMul_zero]
+  congr 1
+  apply tensorHsInclusion_injective (g := g) (r := 0) (s := 0)
+    (by norm_num : (1 : ℝ) ≤ ((1 : ℕ) : ℝ))
+  apply scalarH1ToContinuous_injective g
+  apply ContinuousMap.ext
+  intro x
+  rw [scalarH1ToContinuous_scalarHsMul, scalarH1ToContinuous_scalarHsMul, mul_comm]
 
 end DifferentialGeometry.Analysis.Spectral
