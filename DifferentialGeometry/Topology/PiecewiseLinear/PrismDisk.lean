@@ -1,6 +1,7 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.PrismBoundary
 import DifferentialGeometry.Topology.PiecewiseLinear.SphericalDiskComplement
 import DifferentialGeometry.Topology.PiecewiseLinear.DiskUnion
+import DifferentialGeometry.Topology.PiecewiseLinear.ArcDecomposition
 
 open Set
 
@@ -47,7 +48,7 @@ theorem isPLBall_prism_bottom_union_side (K : Geometry.SimplicialComplex ℝ E) 
   exact h
 
 open Classical in
-theorem isPLBall_prism_bottom_union_strips {ι : Type*}
+private theorem isPLBall_prism_bottom_union_strips_of_pairwiseDisjoint {ι : Type*}
     (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces] (hK : IsPLBall 2 K.space)
     {a b : ℝ} (hab : a < b) (d : Finset ι) (A : ι → Set E)
     (hA : ∀ i ∈ d, IsPLBall 1 (A i))
@@ -81,4 +82,17 @@ theorem isPLBall_prism_bottom_union_strips {ι : Type*}
     aesop
   rwa [heq] at h
 
+open Classical in
+theorem isPLBall_prism_bottom_union_strips {ι : Type*}
+    (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces] (hK : IsPLBall 2 K.space)
+    {a b : ℝ} (hab : a < b) (d : Finset ι) (A : ι → Set E)
+    (hA : ∀ i ∈ d, IsPLBall 1 (A i))
+    (hAB : ∀ i ∈ d, A i ⊆ (boundaryComplex 2 K).space) :
+    IsPLBall 2 (K.space ×ˢ {a} ∪ (⋃ i ∈ d, A i) ×ˢ Icc a b) := by
+  have hS := isPLSphere_boundaryComplex_space_of_isPLBall K hK
+  rcases hS.eq_or_exists_disjoint_arc_cover d A hA hAB with hfull | ⟨c, hC, hCB, hdis, hcover⟩
+  · rw [hfull]
+    exact isPLBall_prism_bottom_union_side K hK hab
+  · rw [← hcover]
+    exact isPLBall_prism_bottom_union_strips_of_pairwiseDisjoint K hK hab c id hC hCB hdis
 end DifferentialGeometry.Topology.PiecewiseLinear

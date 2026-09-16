@@ -146,7 +146,6 @@ theorem exists_collar_extension_of_boundary_arcs {ι : Type*}
     (hbottom : ∀ x ∈ P, ρ (x, a) = x) (hWB : W ∩ B = P)
     (d : Finset ι) (A : ι → Set E) (hA : ∀ i ∈ d, IsPLBall 1 (A i))
     (hAB : ∀ i ∈ d, A i ⊆ (boundaryComplex 2 K).space)
-    (hdis : ∀ i ∈ d, ∀ j ∈ d, i ≠ j → Disjoint (A i) (A j))
     (hcover : (⋃ i ∈ d, A i) = K.space ∩ P)
     (hattach : K.space ∪ ρ '' ((K.space ∩ P) ×ˢ Icc a b) ⊆ (boundaryComplex 3 R).space)
     (hWR : W ∩ R.space ⊆ (boundaryComplex 3 R).space)
@@ -169,7 +168,7 @@ theorem exists_collar_extension_of_boundary_arcs {ι : Type*}
   have hmeet : K.space ∩ P ⊆ (boundaryComplex 2 K).space := by
     rw [← hcover]
     exact iUnion₂_subset hAB
-  have hpatch := isPLBall_prism_bottom_union_strips K hK hab d A hA hAB hdis
+  have hpatch := isPLBall_prism_bottom_union_strips K hK hab d A hA hAB
   rw [hcover] at hpatch
   exact exists_collar_extension_of_isPLBall_bottom_union_sides K R hK hR hP hKB hab
     hρ hbottom hWB hmeet hpatch hattach hWR hBR hU

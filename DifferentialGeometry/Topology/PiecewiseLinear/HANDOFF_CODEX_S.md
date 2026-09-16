@@ -999,3 +999,33 @@ already up to date at `8fb887bb9`. This final bookkeeping change updates the S-M
 B.3 plan row to the exact current proof frontier. No new consultation is required for the
 next step: classify the finite boundary-arc cover into disjoint arc components or the whole
 circle. Full 26.2 is still partial; exact bundled I2 is not marked delivered.
+
+### S-M4 continuation: arbitrary finite boundary-arc covers
+
+`Topology/Connected/FiniteComponents.lean` proves `exists_finite_isConnected_partition`:
+a finite union of compact connected sets has a finite partition into compact connected
+components, each containing an original member. No separation axiom is required.
+`ArcSubset.lean` proves that a closed proper subset of a PL circle lies in a PL arc,
+and that a compact connected nontrivial subset of a PL arc is again a PL arc.
+`ArcDecomposition.lean` combines these facts in
+`IsPLSphere.eq_or_exists_disjoint_arc_cover`: a finite union of boundary arcs is the
+whole circle or a finite union of pairwise disjoint PL arcs. `IsPLBall.nontrivial`
+is exposed in `BallDensity.lean` and reused by the existing density theorem.
+
+`isPLBall_prism_bottom_union_strips` and the boundary-arc endpoints in `CollarGluing.lean`
+and `CollarExtension.lean` now accept arbitrary finite boundary-arc covers; their former
+pairwise-disjointness hypotheses are removed. In particular the actual shared arcs from
+`DualCellDecomposition.lean`, which may meet at endpoints, supply their input directly.
+
+All seven changed Lean modules have focused-check exit 0 and zero warnings. Logs are
+`check-arc-subset.log`, `check-finite-connected-components.log`,
+`check-ball-density-nontrivial.log`, `check-arc-decomposition.log`, and
+`check-PrismDisk-arc-cover.log`, `check-CollarGluing-arc-cover.log`,
+`check-CollarExtension-arc-cover.log`. `AuditS88ArcDecomposition.lean` / `.log`
+contain nine new or affected public endpoints, all with only `propext`,
+`Classical.choice`, and `Quot.sound`. The source hash is recorded at the next checkpoint.
+No vendored or other-lane source changed.
+
+Full 26.2 remains partial: assemble the finite collar induction using these actual dual-cell
+inputs, then prove that the final image is a neighborhood of the entire original boundary.
+The exact bundled I2 target-type issue and the other milestone obligations are unchanged.

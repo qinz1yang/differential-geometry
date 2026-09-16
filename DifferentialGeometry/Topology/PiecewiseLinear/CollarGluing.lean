@@ -74,7 +74,6 @@ theorem exists_isPLHomeomorphOn_prism_eqOn_collar_sides_of_boundary_arcs {ι : T
     (hbottom : ∀ x ∈ P, ρ (x, a) = x) (hWB : W ∩ B = P)
     (d : Finset ι) (C : ι → Set E) (hC : ∀ i ∈ d, IsPLBall 1 (C i))
     (hCB : ∀ i ∈ d, C i ⊆ (boundaryComplex 2 K).space)
-    (hdis : ∀ i ∈ d, ∀ j ∈ d, i ≠ j → Disjoint (C i) (C j))
     (hcover : (⋃ i ∈ d, C i) = K.space ∩ P)
     (L : Geometry.SimplicialComplex ℝ E) [Finite L.faces] (hL : IsPLBall 3 L.space)
     (hattach : K.space ∪ ρ '' ((K.space ∩ P) ×ˢ Icc a b) ⊆ (boundaryComplex 3 L).space) :
@@ -83,7 +82,7 @@ theorem exists_isPLHomeomorphOn_prism_eqOn_collar_sides_of_boundary_arcs {ι : T
   have hmeet : K.space ∩ P ⊆ (boundaryComplex 2 K).space := by
     rw [← hcover]
     exact iUnion₂_subset hCB
-  have hpatch := isPLBall_prism_bottom_union_strips K hK hab d C hC hCB hdis
+  have hpatch := isPLBall_prism_bottom_union_strips K hK hab d C hC hCB
   rw [hcover] at hpatch
   exact exists_isPLHomeomorphOn_prism_eqOn_collar_sides_of_isPLBall K hK hP hKB hab
     hρ hbottom hWB hmeet hpatch L hL hattach

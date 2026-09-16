@@ -83,19 +83,22 @@ theorem IsPLBall.closure_sdiff_eq_of_inter_subset_iUnion {ι : Type*} {n : ℕ} 
   have h := closure_mono hsub
   rwa [hdense] at h
 
+omit [FiniteDimensional ℝ E] in
+theorem IsPLBall.nontrivial {n : ℕ} {P : Set E} (hP : IsPLBall (n + 1) P) : P.Nontrivial := by
+  obtain ⟨f, hf⟩ := hP
+  refine ⟨f (Pi.single 0 1), hf.bijOn.mapsTo (single_mem_stdSimplex ℝ 0),
+    f (Pi.single 1 1), hf.bijOn.mapsTo (single_mem_stdSimplex ℝ 1), ?_⟩
+  intro heq
+  have h := congrFun (hf.bijOn.injOn (single_mem_stdSimplex ℝ 0)
+    (single_mem_stdSimplex ℝ 1) heq) 0
+  simp only [Pi.single_eq_same, Pi.single_eq_of_ne (show (0 : Fin (n + 2)) ≠ 1 by simp)] at h
+  exact one_ne_zero h
+
 theorem IsPLBall.closure_sdiff_of_finite {n : ℕ} {P A : Set E}
     (hP : IsPLBall (n + 1) P) (hA : A.Finite) : closure (P \ A) = P := by
   apply Subset.antisymm (closure_minimal sdiff_subset hP.isPolyhedron.isClosed)
-  have hne : P.Nontrivial := by
-    obtain ⟨f, hf⟩ := hP
-    refine ⟨f (Pi.single 0 1), hf.bijOn.mapsTo (single_mem_stdSimplex ℝ 0),
-      f (Pi.single 1 1), hf.bijOn.mapsTo (single_mem_stdSimplex ℝ 1), ?_⟩
-    intro heq
-    have h := congrFun (hf.bijOn.injOn (single_mem_stdSimplex ℝ 0)
-      (single_mem_stdSimplex ℝ 1) heq) 0
-    simp only [Pi.single_eq_same, Pi.single_eq_of_ne (show (0 : Fin (n + 2)) ≠ 1 by simp)] at h
-    exact one_ne_zero h
-  exact Topology.IsPreconnected.subset_closure_sdiff_finite hP.isConnected.isPreconnected hne hA
+  exact Topology.IsPreconnected.subset_closure_sdiff_finite
+    hP.isConnected.isPreconnected hP.nontrivial hA
 
 theorem IsPLHomeomorphOn.closure_image_prod_Ioc_sdiff {F : Type*}
     [NormedAddCommGroup F] [NormedSpace ℝ F] {n : ℕ} {P A Q : Set E} {W : Set F}
