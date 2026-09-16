@@ -1297,3 +1297,19 @@ Lemma 1 严格下降仍未闭合，M1/M2/M3 均未验收。下一审计文件 `A
 没有增加 `SchoenfliesInput` 字段；封帽球性不作为输入假设。
 仍缺奇异层的内最圆周选择、局部二度与 crossing 的对应、转轴后的逐点指标比较及 Lemma 1 严格下降。
 M1/M2/M3 均未验收。下一审计文件 `AuditF133.lean`。
+
+### 18.13 最内水平圆周与张成盘
+
+- `PlanarJordan/Innermost.lean` 将最内 Jordan 圆周定理推广到不同圆周的交集仅能包含指定一点；
+  去掉该点后的连通性及稠密性保证最小内域不包含其他圆周。原两两不交接口保持签名。
+- `InnermostLevel.lean` 的 `exists_innermost_isPLBall` 给有限平面 PL 圆周族中的一条圆周及填充盘，
+  整族与盘的交集恰为所选圆周。`exists_spanning_disk_of_mem_heightSingularPoints` 对三维空间中的有限闭二维组合流形、
+  顶点上单射的非零高度及其奇异点，构造实际参数化水平 PL 2-盘；盘与流形交集恰为参数边界，
+  位于指定的包含流形的凸开邻域内，且奇异点不在盘的平面相对内部。
+
+两个模块最终聚焦检查分别为 9.6、12.4 秒，均 exit=0、零 warning。
+检查时发现共享 `BallFrontier.olean` 缺少本车道已提交的边界像引理，按原脚本刷新后 exit=0（13.1 秒）。
+`AuditF133.lean` 七项仅标准三公理，已核对张成盘端点完整签名。
+没有增加 `SchoenfliesInput` 字段；奇异层最内圆周及张成盘已闭合。
+局部二度与 crossing 的对应、转轴后的逐点指标比较及 Lemma 1 严格下降仍未闭合，M1/M2/M3 均未验收。
+下一审计文件 `AuditF134.lean`。
