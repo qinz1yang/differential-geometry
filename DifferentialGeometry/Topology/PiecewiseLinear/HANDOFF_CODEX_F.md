@@ -1849,3 +1849,9 @@ F-M2–F-M6 尚未开始；按用户指定顺序推进，只有出现 §1 接口
 `SingularPointComparison.lean` 已提交并推送为 `65fb525c2`。主端点 `exists_embedding_heightSingularPoints_with_levelPolygons_le` 把去指定点的奇异点包含升级为带指标数据的嵌入：例外源点若出现映到指定旧奇异点，其他源点保持原值；对每个非例外源奇异点，先由包含得到其为旧奇异点，再用一般位置下旧奇异点属于旧复形顶点，因而可调用单帽比较的逐旧顶点结论，得到新层圆周数不超过嵌入像处的旧层圆周数。
 
 模块聚焦检查 exit=0（10.4 秒）、零 warning；`AuditF198.lean` 主端点仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步分析唯一未覆盖的 `H p` 项：把三角帽在严格分离高度层中的截面压到单点或空集，并把保留盘贡献与旧 A/B 临界层圆周数比较；结合两盘计数和等于旧计数加一，选出至少一张封帽球面的例外贡献严格下降。F-M1 仍为 partial，Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF199.lean`。
+
+### 19.51 F-M1：单点纤维交下的层圆周精确分割
+
+`CapLevelPolygons.lean` 已提交并推送为 `65e6f87f0`。`levelPolygons_union_of_fiber_inter_subset_singleton` 与 `disjoint_levelPolygons_of_fiber_inter_subset_singleton` 证明：两闭片在目标高度纤维中的交若至多为指定单点，则并集的层圆周族恰为两片层圆周族的不交并；`encard_levelPolygons_union_of_fiber_inter_subset_singleton` 给出相应的精确基数加法。`levelPolygons_union_cap_of_fiber_subset_singleton` 进一步证明：若封帽在目标纤维至多含帽尖，则封帽与保留片的并不会新增层圆周。证明使用 PL 圆周删去一点仍连通且稠密，没有把圆周分割或计数关系写入输入。
+
+模块聚焦检查 exit=0（11.5 秒）、零 warning；`AuditF199.lean` 四个端点均仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步把帽面严格分离直接转成单点纤维条件，并在变形后原球面上应用两片精确分割；剩余核心缩成证明小高度扰动保持该球面在原临界值附近的层圆周总数。F-M1 仍为 partial，Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF200.lean`。
