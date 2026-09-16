@@ -1454,3 +1454,28 @@ The source commit hash will be recorded at the next checkpoint.
 The finite-complex case of 26.3 is now proved. Transport to the general PL charted
 manifold setting remains; the prior 26.1 interior-chart transport and P.4 obligations
 are unchanged. I2's exact target-type compatibility issue is unchanged.
+
+### S-M5 continuation: two-sidedness and PL piece parametrizations
+
+The general finite-complex bicollar checkpoint is committed and pushed as `3a55ac834`;
+the following integration merge was already up to date.
+
+`Connected/TwoSided.lean` adds `IsTwoSided.preimage_of_isInducing`: two-sidedness pulls
+back along a map inducing the domain topology whenever its range is a neighborhood
+of the surface. Injectivity is unnecessary. Connected components pull back exactly,
+and neighborhood images remain neighborhoods under the stated local range condition.
+
+`PieceParametrization.lean` proves `PLPieceIn.isClosedEmbedding` for the restriction of
+a finite-dimensional PL piece map to its carrier in a Hausdorff target. It defines
+`PLPieceIn.precomp` to change a piece's parametrization by a PL homeomorphism, preserving
+both directions of the chartwise PL condition. The new parameter ambient is finite
+dimensional; the existing piece ambient need not be. Carrier and map formulas are explicit.
+
+Both focused checks have exit 0 and zero warnings (`check-two-sided-transport.log`,
+`check-piece-parametrization.log`). `AuditS102PieceTransport.lean` / `.log` contain five
+entries, all with only `propext`, `Classical.choice`, and `Quot.sound`. No other-lane or
+vendored source changed. The source commit hash will be recorded at the next checkpoint.
+
+Next, choose a finite manifold neighborhood of the compact polyhedral surface, pull it
+back into that piece, apply the finite-complex bicollar, and reparametrize its image piece.
+General PL manifold 26.3 is not yet marked complete.
