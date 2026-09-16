@@ -178,3 +178,20 @@ theorem eq_top_of_boundaryLoops_mem_normal
   `B = B' ∪ ⋃ Δ_i`。这是接口 5.1 的输入。
 
 里程碑：M1 单胞腔核定理（含径向收缩与生成元自然性）→ 汇报；M2 端点 5.1 → 直接进第 3 砖（Lemma 1 条件版，`hpush` 显式）。
+
+## 6. 2026-09-15 夜间 E3-M1：SphereCase 一般目标版
+
+状态：partial。数学提交 `e3c1b1c96`。
+
+- `exists_nonsingular_two_cell_of_sphere_boundary_map` 把 Lemma 1 的纯逻辑层推广到任意有限维实赋范环境 `E`、任意带
+  `ChartedSpace (EuclideanSpace ℝ (Fin 3))` 的目标 `X` 与实现映射 `ι : X → E`；`hpush` 和结论都保留胞腔像落在指定
+  `M`、参数化边界像以及与指定 `BdM` 的精确交集。
+- `exists_nonsingular_two_cell_of_sphere_boundary` 取 `X = K.space`、`ι = Subtype.val`、
+  `BdM = (boundaryComplex 3 K).space`，因此条件端点与 `hpush` 已不再限制于 ℝ³，且结论中的胞腔确实取值于 `K.space`。
+- `SphereCase` 聚焦检查 exit=0、零 warning；`.lake/scratch/AuditSphereCase.lean` 的 13 项命名空间感知审计全部只含
+  `propext`、`Classical.choice`、`Quot.sound`。
+- 确切未闭合项：I2 要从 `hK : IsCombinatorialManifoldWithBoundary 3 K` 自动取得上述 `ChartedSpace`，但本树
+  `combinatorialChartedSpace K hK` 的参数实际是 `IsCombinatorialManifold 3 K`；边界顶点的 link 是 PL 2-球而非 PL 2-球面，
+  因而不存在到 ℝ³ 开集的局部同胚。当前 `SingularTwoCell` 把目标模型硬编码为 ℝ³，不能用于一般带边 `K.space`。
+  要无附加表示假设闭合 I2，必须先提供带边模型（例如半空间图卡）对应的奇异胞腔/PL 映射类型，或把胞腔定义改为内在单纯数据；
+  不能用现有 `VertexChart.lean` 的无边界图册冒充该生产者。
