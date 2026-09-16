@@ -1747,3 +1747,9 @@ F-M2–F-M6 尚未开始；按用户指定顺序推进，只有出现 §1 接口
 `TriangleSeamRegularity.lean` 已提交并推送为 `07afa25d8`。主端点 `eventually_geometricLink_section_encard_le_two_of_triangle_facet` 处理由保留盘与凸三角帽组成、逐面由两片覆盖的有限复形。对三角形任一边相对内部的共同边界顶点，保留侧由 `BoundaryFacetLink` 在旧单侧与边界集合芽下得到稳定单点截面，帽侧由 `TriangleEdgeLink` 的支撑泛函得到单点截面；`LinkUnionSection` 随后证明完整球面链环的新等高截面 `encard ≤ 2`。一般位置只要求在完整复形顶点与三个三角顶点的有限并上单射。
 
 模块聚焦检查 exit=0（11.6 秒）、零 warning；`AuditF181.lean` 主端点仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步接入 `VertexSectionRegularity` 排除所有接缝边内部顶点；三角形三个真实角点将用 `ConvexCapLink` 和保留侧链环的端点结构单独分类。随后构造新旧奇异点嵌入与严格指标下降。F-M1 仍为 partial，Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF182.lean`。
+
+### 19.34 F-M1：由原链环截面上界导出顶点正规性
+
+`VertexSectionSubdivision.lean` 已提交并推送为 `f2697b701`。主端点 `notMem_heightSingularPoints_of_geometricLink_section_encard_le_two_of_injOn` 对有限 PL 二球面复形的任一顶点直接使用原复形顶点上的高度单射和原几何链环截面 `encard ≤ 2`。证明先在原链环排除单点截面；空截面分支直接给孤立正规性，两点分支自动构造含顶点邻域的三维多面体复形及高度半空间适配细分，再由径向链环同胚把零层、正侧和负侧搬到细分链环，最后调用 `VertexCrossingLevel` 得到 crossing。因此端点不要求调用者提供环境复形、逐面半空间条件或局部平坦性假设。
+
+模块聚焦检查 exit=0（12.4 秒）、零 warning；`AuditF182.lean` 主端点仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步把该端点与 `TriangleSeamRegularity` 组合，排除三角接缝三条边相对内部的全部细分顶点；随后处理三个真实角点并构造新旧奇异点嵌入。F-M1 仍为 partial，严格降指标、Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF183.lean`。
