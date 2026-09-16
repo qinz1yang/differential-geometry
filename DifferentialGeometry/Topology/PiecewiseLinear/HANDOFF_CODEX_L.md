@@ -374,3 +374,22 @@ theorem eq_top_of_boundaryLoops_mem_normal
   `propext`、`Classical.choice`、`Quot.sound`。本层未复用 covering/Van Kampen 声明。
 - 现在闭分支只剩纯有限图步骤：从连通 2-正则边图建立到同边数多边形边复形的图同构；触边分支相应只剩连通度数 1/2 图的路径分类。
   二重覆盖原像的有限 PL 三角剖分、Case 1–4 几何构造与 I3 边界半空间桥接仍未闭合。
+
+## 16. 2026-09-16 E3-M2 追加：闭分支的 PL 圆分类
+
+状态：done（闭分支的有限一维组合流形分类已闭合，整体 L.3 仍为 partial）。数学提交 `a0c440917`。
+
+- 新模块 `Topology/PiecewiseLinear/OneManifoldClassification.lean` 证明有限连通 2-正则简单图同构于同顶点数的循环图。
+  `exists_spanning_cycle_of_connected_degree_two` 取得覆盖全部顶点的单圈；`cycleVertexEquiv` 精确编号其顶点；
+  `exists_cycleGraphIsoOfConnectedDegreeTwo` 将覆盖全部顶点的循环 copy 用两侧度数均为 2 升级为图同构。
+- `exists_polygonalCircle_n` 从标准三角形反复在边的中点插点，构造任意指定 `n ≥ 3` 个顶点的 `PolygonalCircle`。
+  `polygonComplex` 用 §14 的桥接实现其边复形；`polygonVertexEquiv`、`polygonEdgeGraph_connected` 与
+  `exists_polygonEdgeGraphIso` 证明该边复形的边图正是同顶点数循环图。
+- `isPLSphere_one_of_edgeGraph_connected` 通过 §15 的边图同构搬运证明：有限、边图连通的组合 1-流形空间是 PL 1-球面。
+  `NormalSingularSetTriangulation.branchComplex_isPLSphere` 将此应用于每个非触边分支，正式交付闭分支的 PL 圆端点。
+- `OneManifoldClassification` 与 `BranchCarrier` 聚焦检查均 exit=0、零 warning；
+  `.lake/scratch/AuditOneManifoldClassification.lean` 的 20 项与更新后 `.lake/scratch/AuditBranchCarrier.lean` 的 37 项审计
+  全部只含 `propext`、`Classical.choice`、`Quot.sound`。本层未复用 covering/Van Kampen 声明。
+- 尚未闭合的相邻表示步骤是触边分支分类：需证明有限连通、每点度数 1 或 2 且含度数 1 顶点的图是有限路径，继而用同一
+  `OneComplex` 搬运层证明 `branchComplex.space` 是 PL 1-球。二重覆盖原像仍需与 `D.domain` 相容的有限 PL 三角剖分；
+  Case 1–4 的环带、替换、切开重建及 I3 边界半空间桥接仍未闭合，也没有被弱化为假设。
