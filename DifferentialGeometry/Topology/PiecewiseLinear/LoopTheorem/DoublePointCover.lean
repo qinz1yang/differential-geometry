@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.NormalCell
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BranchCarrier
 import DifferentialGeometry.Topology.Covering.TwoSheetComponents
 
 open Set Topology
@@ -346,6 +346,27 @@ theorem doublePointProjection_connected_or_two_components [T2Space M]
     J hD.doublePointProjection_isCoveringMap hD.doublePointProjection_isClosedMap
   intro y
   exact hD.doublePointProjection_fiber_encard_eq_two y
+
+theorem doublePointProjection_branch_connected_or_two_components [T2Space M]
+    (hD : NormalSingularCellData D BdM B) (c : hD.singularSet.Branch) :
+    ConnectedSpace
+        ((doublePointProjection D D.domain) ⁻¹' hD.singularSet.branchSet c) ∨
+      ∃ x y :
+          (doublePointProjection D D.domain) ⁻¹' hD.singularSet.branchSet c,
+        Disjoint (connectedComponent x) (connectedComponent y) ∧
+        connectedComponent x ∪ connectedComponent y = univ ∧
+        (∃ e : connectedComponent x ≃ₜ hD.singularSet.branchSet c,
+          ∀ z : connectedComponent x,
+            e z = (hD.singularSet.branchSet c).restrictPreimage
+              (doublePointProjection D D.domain) z) ∧
+        ∃ e : connectedComponent y ≃ₜ hD.singularSet.branchSet c,
+          ∀ z : connectedComponent y,
+            e z = (hD.singularSet.branchSet c).restrictPreimage
+              (doublePointProjection D D.domain) z := by
+  let _ : ConnectedSpace (hD.singularSet.branchSet c) :=
+    Subtype.connectedSpace (hD.singularSet.branchSet_isConnected c)
+  exact hD.doublePointProjection_connected_or_two_components
+    (hD.singularSet.branchSet c)
 
 end NormalSingularCellData
 
