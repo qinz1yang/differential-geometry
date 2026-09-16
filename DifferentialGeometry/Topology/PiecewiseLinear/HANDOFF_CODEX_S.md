@@ -695,3 +695,34 @@ explicit Schoenflies parameter until I1 arrives through integration.
 The final plan-only checkpoint updates both preserved P.3 rows and the S-owned P.4/B.1--B.4
 statuses. It does not mark the exact bundled I2 delivered, claim a whole-boundary collar,
 claim a bicollar, modify another lane's source, or register modules in the root aggregate.
+
+### S-M4 continuation: the complement-manifold invariant is proved
+
+`PlanarDiskComplement.lean` proves that deleting a subdisk attached along a boundary arc
+leaves a PL disk after closure, both in the plane and in arbitrary finite-dimensional ambient
+spaces with intrinsic boundary. The full-boundary inclusion case forces equality of the disks.
+`SubcomplexComplementLink.lean` identifies the links of the actual complementary subcomplex
+with closures of differences of links, and identifies the boundary trace links.
+`ManifoldComplement.lean` proves `IsCombinatorialManifoldWithBoundary.complement`:
+for finite combinatorial three-manifolds A contained as a subcomplex of K, if their boundary
+trace is a combinatorial two-manifold with boundary, the closure of K.space minus A.space
+is a combinatorial three-manifold with boundary. This hypothesis concerns the boundary trace,
+not the desired complement. The PL boundary-disk corollary discharges it automatically.
+`exists_isCombinatorialManifoldWithBoundary_closure_sdiff` constructs a finite triangulation
+of the exact closure after deleting any PL three-ball whose intersection with Bd K is a PL disk.
+The proof separates sphere and ball links; the ball case uses the new planar complement theorem.
+No Schoenflies assumption or complement-manifold assumption is introduced.
+
+`DiskCollarComplement.lean` exports
+`exists_collar_of_boundary_disk_subset_with_complement`: the already controlled local disk
+collar now comes with this finite combinatorial triangulation of its actual closed complement.
+The private disk-inclusion proof in `RelativeFreeDiskCell.lean` now reuses the canonical result;
+its 17.3 statement is unchanged. All five affected modules have focused-check exit 0 and zero
+warnings. `AuditS80Complement.lean` / `.log` audits sixteen new or affected declarations,
+all with only `propext`, `Classical.choice`, and `Quot.sound`.
+Logs: `check-planar-disk-complement.log`, `check-subcomplex-complement-link.log`,
+`check-manifold-complement.log`, `check-disk-collar-complement.log`, and
+`check-relative-free-disk-cell-complement.log` under `.lake/scratch`.
+This discharges the complement-manifold part of the previously recorded 26.2 invariant.
+The next obligations are the exact new boundary and modified next disk, product maps agreeing
+on the previously fixed side faces, and the whole-boundary neighborhood property.

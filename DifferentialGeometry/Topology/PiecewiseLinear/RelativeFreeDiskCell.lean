@@ -1,21 +1,9 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.FreeDiskCell
+import DifferentialGeometry.Topology.PiecewiseLinear.PlanarDiskComplement
 
 open Set
 
 namespace DifferentialGeometry.Topology.PiecewiseLinear
-
-private theorem not_frontier_subset_of_proper_disk
-    {D P : Set (EuclideanSpace ℝ (Fin 2))} (hD : IsPLBall 2 D) (hP : IsPLBall 2 P)
-    (hDP : D ⊆ P) (hne : D ≠ P) : ¬frontier P ⊆ D := by
-  intro hsub
-  have hbd : frontier P ⊆ frontier D := fun x hx =>
-    ⟨subset_closure (hsub hx), fun hxint => hx.2 (interior_mono hDP hxint)⟩
-  have heq := PlanarJordan.eq_of_isJordanCurve_of_subset
-    (isJordanCurve_of_isPLSphere_one hP.isPLSphere_frontier)
-    (isJordanCurve_of_isPLSphere_one hD.isPLSphere_frontier) hbd
-  apply hne
-  rw [← hD.closure_interior, ← hP.closure_interior,
-    hD.interior_eq_inside_frontier, hP.interior_eq_inside_frontier, heq]
 
 private theorem exists_cell_not_subset_with_nontrivial_frontier_inter
     {K : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2))}
@@ -61,7 +49,7 @@ private theorem exists_free_disk_cell_not_subset_planar
     rw [hcover]
     exact subset_iUnion_of_subset C (subset_iUnion_of_subset hC Subset.rfl)
   obtain ⟨C, hC, hnotCD, htr⟩ := exists_cell_not_subset_with_nontrivial_frontier_inter h
-    hD.isPolyhedron.isClosed (not_frontier_subset_of_proper_disk hD h.isPLBall hDK hne)
+    hD.isPolyhedron.isClosed (fun hbd => hne (hD.eq_of_subset_of_frontier_subset h.isPLBall hDK hbd))
   by_cases hfree : IsFreeDiskCell K C
   · exact ⟨C, hC, hnotCD, hfree⟩
   have hmore : 1 < cells.card := by

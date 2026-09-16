@@ -1757,3 +1757,15 @@ boundary monotonicity and the proved Problem 26.1 construction. No vendored sour
 The focused check exits 0 with zero warnings. `AuditS78BoundaryNeighborhood` checks four
 endpoints, all with only the standard three axioms. The whole-boundary collar and the
 two-sided interior-surface neighborhood remain separate obligations.
+
+## Manifold complements for the collar induction
+
+The original native `PlanarDiskComplement`, `SubcomplexComplementLink`, `ManifoldComplement`,
+and `DiskCollarComplement` developments supply the closed-complement manifold invariant in
+the Moise 26.2 induction. A crosscut identifies the planar disk complement; exact simplicial
+link identities reduce the three-dimensional local cases to disk and sphere complements.
+The boundary-disk collar is then packaged with a finite triangulation of its actual complement.
+`RelativeFreeDiskCell` reuses the promoted planar inclusion theorem without changing 17.3.
+No vendored source changed. Five focused checks exit 0 with zero warnings;
+`AuditS80Complement` audits sixteen new or affected declarations with only the standard three
+axioms. Compatible product gluing and the full boundary collar remain to be proved.
