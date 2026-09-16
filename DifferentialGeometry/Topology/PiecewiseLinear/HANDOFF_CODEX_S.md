@@ -622,3 +622,25 @@ of a two-sided PL surface has exactly two complementary components, whose closur
 combinatorial three-manifolds with that surface as a boundary component. This is not a
 consequence of disconnectedness alone; after it is proved, both sides still need full 26.2.
 No bicollar endpoint is claimed. S-M6 proceeds under NIGHT_PLAN section 0.4.
+
+### S-M6: relative free disk cell theorem checked
+
+The S-M5 separation layer is committed and pushed as `ddf717a4b`; the next integration merge
+was already up to date. `RelativeFreeDiskCell.lean` proves
+`IsPLDiskDecomposition.exists_free_disk_cell_not_subset`, Moise 17.3 (printed page 118):
+if a proper PL disk D is the union of a subfamily of the cells of a finite PL disk decomposition,
+there is a free cell not contained in D. The statement holds in arbitrary finite-dimensional
+real normed spaces. It does not replace the protected disk by a single protected cell.
+The planar proof first finds an outside cell with nontrivial outer-boundary trace, splits at
+that cell if necessary, and applies general 17.2 to the side opposite D. Planarization transports
+the conclusion back to the original ambient space. `FreeDiskCell.lean` promotes and generalizes
+its finite-union restriction identity for this reuse; its existing public endpoints are unchanged.
+Both focused checks exit 0 with zero warnings. `AuditS77RelativeDisk.lean` /
+`AuditS77RelativeDisk.log` audits four declarations with only the standard three axioms.
+A missing declaration in the shared `DiskCrosscut.olean` was resolved by a focused refresh of
+that module from this branch, also exit 0 with zero warnings. No source workaround was needed.
+Logs: `check-free-disk-cell-relative.log`, `check-disk-crosscut-refresh.log`, and
+`check-relative-free-disk-cell.log`. No Schoenflies assumption is used.
+P.4 remains separate: polygonal graph redrawing alone does not produce a supported ambient
+homeomorphism. Compatible sector extensions around vertices and edges, with the prescribed
+neighborhood and pointwise displacement control, are the remaining geometric construction.

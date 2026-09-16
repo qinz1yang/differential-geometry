@@ -1735,3 +1735,14 @@ finite simplex images isolate boundary components. No vendored Lean source chang
 Three focused checks exit 0 with zero warnings. `AuditS76TwoSided` audits eleven declarations,
 all using only the standard three axioms. The full collar and bicollar constructions of 26.2
 and 26.3 are not asserted here.
+
+## Relative free cells in a disk decomposition
+
+The native `RelativeFreeDiskCell.lean` proves Moise 17.3, printed page 118, for a specified
+proper disk which is a union of cells. It uses a finite boundary-trace argument, the existing
+planar split and general 17.2, then transports the result to arbitrary finite-dimensional
+ambient spaces. `FreeDiskCell.lean` exposes its generalized union-restriction identity.
+This is original native Lean source; no vendored Lean file changed. The two focused checks
+exit 0 with zero warnings, and `AuditS77RelativeDisk` audits four declarations with only
+`propext`, `Classical.choice`, and `Quot.sound`. The supported ambient polygonalization
+of P.4 is not claimed by this result.
