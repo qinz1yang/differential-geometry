@@ -1555,3 +1555,10 @@ F-M2–F-M6 尚未开始；按用户指定顺序推进，只有出现 §1 接口
 主端点 `exists_isPLHomeomorphOn_disk_pair_map_crosscuts` 从两盘实际参数化、恰为共同边界的交集，以及两侧具有共同端点的正规截弧出发，构造同时映射两盘、公共边界、两截弧和两指定端点的 PL 同胚。边界映射在证明中构造，不是额外假设。源、目标环境可不同。
 
 最终聚焦检查 exit=0（10.0 秒）、零 warning；`AuditF150.lean` 四项仅标准三公理，已核对主端点完整签名。下一步从实际星的链环和高度半空间生产此定理的两盘、截弧输入，再锥延拓得到 crossing 图卡。F-M1 仍为 partial，严格降指标及 Lemma 2–6、I1 尚未交付。下一审计文件 `AuditF151.lean`。
+
+### 19.3 F-M1：链环的半空间切盘及参数边界
+
+`LinkSection.lean` 已提交并推送为 `11107a0a1`。先证明适配仿射半空间的剖分限制具有预期像集、凸限制与顶点链环交换。`IsConeBase.mem_frontier_combo_iff` 把严格射线内点位于锥边界转化为底点位于底盘的组合边界；`IsConeBase.boundaryComplex_space_of_halfSpace_germ` 由锥在顶点附近恰为线性半空间，推出底盘边界恰为零高度截面。
+`exists_isPLHomeomorphOn_geometricLink_halfSpace` 从有限复形覆盖顶点的实际邻域、非零线性高度和逐面半空间适配出发，产生链环正半空间部分的标准盘参数化，参数边界精确等于整个链环的零高度截面。维数结论为一般 n+1 维链环盘，环境维数 n+2；两侧可由高度取负得到。不假定所需参数化或边界识别结论。
+
+聚焦检查 exit=0（10.2 秒）、零 warning；`AuditF151.lean` 五项仅标准三公理，已核对主端点完整签名。下一步把曲面链环的二点零截面接入两盘映射和锥延拓；F-M1 的 crossing、严格降指标、Lemma 2–6 与 I1 仍未完成。下一审计文件 `AuditF152.lean`。
