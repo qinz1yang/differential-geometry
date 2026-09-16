@@ -791,3 +791,24 @@ theorem eq_top_of_boundaryLoops_mem_normal
   `boundaryComplex 3 K` 内参数化盘并取得被推离的非奇异盘，再沿 `G` 在 `R` 上分片替换 `D`；随后证明分片映射 PL、所选闭分支整条消失、
   其余 crossing 保持且 `vertexCollisionPairs` 严格减少。一般 `NormalSingularCellData` 没有这些 double/边界定位数据，故本层没有弱化或伪造该接线。
 - Case 1 仍缺 `J` 的 PL 环带邻域、书页 185 Figure 25.2 的显式柱形图模型及替换后复杂度证明；Lemma 2 端点尚未宣称完成。
+
+## 37. 2026-09-16 E3-M2 追加：I2 的逐点边界参数桥接
+
+状态：partial（double 环境中的 I2 已补成可逐点贴回指定源盘的形式；Case 2 的分片替换、正规性重建与复杂度下降仍待闭合）。数学提交
+`095dabd4d`。
+
+- 新文件 `LoopTheorem/LemmaTwo.lean` 的
+  `exists_nonsingular_two_cell_of_disk_in_double_boundary_eqOn` 接受任意 PL 2-盘 `R` 及到
+  `ι '' (boundaryComplex 3 K).space` 内边界盘的 PL 同胚 `r : R → D`。它构造
+  `A : SingularTwoCell (double 3 K).space`，满足 `A.domain = R`、`A.IsNonsingular`、像落在 `ι '' K.space`，并有逐点接缝等式
+  `EqOn (fun x => (A x : E × E × ℝ)) r (frontier R)`；同时保留边界像和与嵌入组合边界的交集都等于 `r '' frontier R`。
+- 证明先沿第二份拷贝的 PL 嵌入 `ι` 把输入盘拉回 `K`，调用原生
+  `exists_isPLHomeomorphOn_push_boundary_disk`，再把两条同像边界圆之间的 PL 同胚用
+  `exists_isPLHomeomorphOn_of_stdSimplexBoundary` 延拓到整盘。最后用 `combinatorialPLPieceIn` 在指定源盘 `R` 上直接实现胞腔，
+  因而没有从“边界像集相等”非法推出参数化相等，也没有修改 S 车道的 I2 文件。
+- `LemmaTwo` 聚焦检查 exit=0、零 warning；`.lake/scratch/AuditE3M2.lean` 共 82 项，`audit-f.ps1` exit=0，
+  全部只含 `propext`、`Classical.choice`、`Quot.sound`。本层没有首次复用新的 covering/Van Kampen 声明。
+- 下一精确义务是在 `NormalSystem` 的专门化中把 `simplicialMap sourceComplex vertexMap` 嵌入第二份拷贝，证明 Case 2 内盘限制的环境坐标映射满足本桥接的
+  `IsPLHomeomorphOn` 与组合边界包含条件；随后在另一源盘 `R` 上以新胞腔替换原映射，并实际证明 PL 性、所选闭分支消失、其余 crossing 保持及
+  `vertexCollisionPairs` 严格减少。一般 `NormalSingularCellData` 仍不携带这组 double/嵌入数据，故没有在一般层伪造该结论。
+- Case 1 的环带与 Figure 25.2 柱形图模型仍未闭合；Lemma 2 端点尚未宣称完成。
