@@ -1,4 +1,5 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.Barycentric
+import DifferentialGeometry.Topology.PiecewiseLinear.GeneralPosition
 import Mathlib.Data.Sign.Basic
 import Mathlib.LinearAlgebra.Matrix.ToLinearEquiv
 
@@ -6,7 +7,11 @@ open Set
 
 namespace DifferentialGeometry.Topology.PiecewiseLinear
 
-variable {E : Type*} [AddCommGroup E] [Module ℝ E]
+variable {E : Type*}
+
+section
+
+variable [AddCommGroup E] [Module ℝ E]
 
 private theorem det_ne_zero_of_affine_coordinates
     {ι : Type*} [Fintype ι] [DecidableEq ι]
@@ -69,6 +74,24 @@ theorem simplexCoordinateMatrix_row_smul (r : LinearOrder E)
   exact ((Finset.orderIsoOfFin t ht).toEquiv.sum_comp
     (fun v : t => weights t x v • (v : E))).trans
     ((Finset.sum_coe_sort t (fun v => weights t x v • v)).trans (sum_weights_smul hx))
+
+theorem simplexCoordinateMatrix_mulVec (r : LinearOrder E)
+    {N : ℕ} {s t : Finset E} (hs : s.card = N) (ht : t.card = N)
+    (hst : convexHull ℝ (s : Set E) ⊆ convexHull ℝ (t : Set E))
+    (ℓ : E →ₗ[ℝ] ℝ) (x : E) :
+    let _ := r
+    (simplexCoordinateMatrix r hs ht).mulVec
+        (fun j => ℓ (((Finset.orderIsoOfFin t ht) j).1 - x)) =
+      fun i => ℓ (((Finset.orderIsoOfFin s hs) i).1 - x) := by
+  let _ := r
+  funext i
+  have hpoint := congrArg ℓ (simplexCoordinateMatrix_row_smul r hs ht hst i)
+  simp only [map_sum, map_smul, smul_eq_mul] at hpoint
+  change (∑ j, simplexCoordinateMatrix r hs ht i j *
+    ℓ (((Finset.orderIsoOfFin t ht) j).1 - x)) = _
+  simp_rw [map_sub, mul_sub]
+  rw [Finset.sum_sub_distrib, ← Finset.sum_mul,
+    simplexCoordinateMatrix_row_sum r hs ht hst i, one_mul, hpoint]
 
 theorem simplexCoordinateMatrix_det_ne_zero (r : LinearOrder E)
     {N : ℕ} {s t : Finset E} (hs : s.card = N) (ht : t.card = N)
@@ -154,5 +177,32 @@ theorem affineSimplexOrientationSign_mul (r : LinearOrder E)
       affineSimplexOrientationSign r hs hu := by
   simp only [affineSimplexOrientationSign, ← simplexCoordinateMatrix_mul r hs ht hu hindep hst htu,
     Matrix.det_mul, sign_mul, SignType.coe_mul]
+
+end
+
+open Classical in
+theorem exists_linearMap_separating_cofaces
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    (K : Geometry.SimplicialComplex ℝ E) {s : Finset E} {x a b : E}
+    (hx : x ∈ openSimplex s) (ha : a ∉ s) (hb : b ∉ s) (hab : a ≠ b)
+    (haK : insert a s ∈ K.faces) (hbK : insert b s ∈ K.faces) :
+    ∃ ℓ : E →ₗ[ℝ] ℝ, vectorSpan ℝ (s : Set E) ≤ LinearMap.ker ℓ ∧
+      ℓ (a - x) = 1 ∧ ℓ (b - x) < 0 := by
+  obtain ⟨V, hV⟩ := (vectorSpan ℝ (s : Set E)).exists_isCompl
+  obtain ⟨u, huV, hu, hau, hru⟩ := exists_direction_into_simplex_of_transverse_submodule hx
+    (notMem_affineSpan_of_affineIndependent_insert ha (K.indep haK)) V hV.sup_eq_top
+  obtain ⟨v, hvV, hv, hbv, hrv⟩ := exists_direction_into_simplex_of_transverse_submodule hx
+    (notMem_affineSpan_of_affineIndependent_insert hb (K.indep hbK)) V hV.sup_eq_top
+  have hfaces : insert a s ≠ insert b s := by
+    intro heq
+    have hamem : a ∈ insert b s := heq ▸ Finset.mem_insert_self a s
+    exact hab ((Finset.mem_insert.mp hamem).resolve_right ha)
+  have hnot := not_pos_smul_of_eventually_mem_distinct_openSimplex K haK hbK hfaces hru hrv
+  obtain ⟨ℓ, hℓS, hℓu, hℓv⟩ :=
+    exists_linearMap_eq_one_neg_of_disjoint hV.disjoint huV hvV hu hv hnot
+  have hau0 : ℓ (a - x - u) = 0 := hℓS hau
+  have hbv0 : ℓ (b - x - v) = 0 := hℓS hbv
+  rw [map_sub] at hau0 hbv0
+  exact ⟨ℓ, hℓS, by linarith, by linarith⟩
 
 end DifferentialGeometry.Topology.PiecewiseLinear
