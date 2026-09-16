@@ -2700,6 +2700,7 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Pairing.CrossS
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Pairing.CrossScaleCauchySchwarz
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Pairing.FiniteSpectral
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Parametric.Application
+import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Parametric.ApplicationInclusion
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Parametric.ScalarMultiplication
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Parametric.TimeDependentApplication
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Regularity.SeriesContinuity
@@ -10104,6 +10105,7 @@ import DifferentialGeometry.Geometry.Operator.Laplacian.AddCircle
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ScalarEvaluation
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Embedding.SmoothInclusion
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Scalar.AddCircleDerivative
+import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Scalar.AddCircleDerivativeLift
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Scalar.H0MultiplicationInclusion
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Scalar.AddCircleMultiplication
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Scalar.AddCircleDerivativeComposition

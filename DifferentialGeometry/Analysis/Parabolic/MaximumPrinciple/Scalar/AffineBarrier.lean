@@ -18,7 +18,6 @@ variable {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 omit [CompleteSpace E] in
 theorem scalar_lower_affine_barrier
     [I.Boundaryless] [CompactSpace M]
-    [VectorBundle ℝ E (TangentSpace I : M → Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) ℝ)
     (T K : ℝ) (X : ℝ → (x : M) → TangentSpace I x)
     (v : ℝ → M → ℝ)
@@ -112,7 +111,6 @@ theorem scalar_lower_affine_barrier
 omit [CompleteSpace E] in
 theorem scalar_two_sided_affine_barrier
     [I.Boundaryless] [CompactSpace M]
-    [VectorBundle ℝ E (TangentSpace I : M → Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) ℝ)
     (T K : ℝ) (X : ℝ → (x : M) → TangentSpace I x)
     (v : ℝ → M → ℝ)
