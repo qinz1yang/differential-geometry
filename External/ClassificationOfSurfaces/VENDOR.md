@@ -1480,3 +1480,116 @@ paths; `.lake/scratch/audit-s3-p3-s5-final.log` contains the final audit.
 No vendored Lean source changed in this continuation. The final
 checkpoint fetched and merged `origin/codex/moise-integration` before
 updating the plan and handoff documents.
+
+## Local boundary balls and nonsingular disk push-offs
+
+`ConvexCone.lean` now proves that a cone stays in a convex body and meets
+its frontier exactly in its base when its apex is interior.
+`BoundaryBall.lean` transports this construction through a PL ball
+parametrization. In every finite-dimensional real normed space of the
+appropriate dimension, a prescribed PL boundary disk can be cut out by
+a smaller PL ball with exactly that boundary intersection.
+
+`FrontierBoundary.lean` exposes the containment in the ambient complex
+already supplied by its closed-star construction. The previous
+`exists_isPLBall_closedStar_inter_boundary` signature is preserved as a
+corollary of `exists_isPLBall_subset_inter_boundary`.
+
+`LoopTheorem/BoundaryPush.lean` turns a parameterized PL disk into a
+nonsingular `SingularTwoCell`, preserving the exact boundary image.
+The complement disk on the frontier of a boundary ball supplies a
+push-off whose image lies in the ambient manifold and meets its boundary
+only in the prescribed boundary curve. This gives the full image and
+intersection conclusions locally and for a PL-ball ambient manifold.
+
+These are native preliminary lemmas for Moise Problem Set 26, Problems
+1-2 (printed pages 195-196), and Theorem 26.2 (printed pages 191-192).
+They do not yet prove that an arbitrary boundary disk spanning several
+charts lies in one boundary ball. The general `hpush` producer and the
+product collar of Theorem 26.2 remain open. No vendored Lean source was
+modified, and no unproved proposition or Schoenflies assumption was
+introduced into these local lemmas.
+
+All four changed/new modules pass the prescribed focused checks with
+exit 0 and zero warnings. `AuditS63.lean` audits 12 declarations, including
+the preserved closed-star interface: exit 0 and only `propext`,
+`Classical.choice`, and `Quot.sound`. Logs are
+`.lake/scratch/check-convexcone-boundary.log`,
+`check-frontierboundary-boundary.log`, `check-boundaryball-boundary.log`,
+`check-looptheorem-boundarypush-boundary.log`, and
+`audit-boundary-push-local.log`. `BallFrontier` was refreshed immediately
+before the consumer because its shared olean had been replaced by a
+version with a different exported theorem name. Source dependencies
+were obtained only through integration merges, including `5967f629c`.
+
+## Boundary subdivision subordinate to ball neighborhoods
+
+`BoundarySubdivision.lean` refines the ambient finite combinatorial
+manifold while making a prescribed boundary polyhedron a subcomplex.
+Each face of that subcomplex has its entire cluster of ambient closed
+vertex stars inside an open set whose intersection with the manifold is
+contained in a specified PL ball. The ball's boundary trace is a PL disk.
+For a boundary PL disk, every face star of the resulting disk subcomplex
+therefore has a PL ball whose intersection with the manifold boundary is
+exactly that face star. Both theorems hold in every indicated dimension.
+
+The construction uses the existing mesh and simultaneous-subcomplex
+refinement theorems and the boundary-ball lemmas from `fc3846d10`.
+It is a native preparation for the finite disk argument in Moise 26.1-2;
+no vendored source changed. The separate local balls are not asserted to
+have compatible pairwise intersections. That compatibility, the global
+boundary-disk ball, general `hpush`, and the full product collar remain
+unproved.
+
+The module check exits 0 with zero warnings. `AuditS64.lean` audits both
+new declarations: exit 0, with only `propext`, `Classical.choice`, and
+`Quot.sound`. Logs: `.lake/scratch/check-boundary-subdivision.log` and
+`.lake/scratch/audit-boundary-subdivision.log`.
+
+## Relative boundary-disk extensions
+
+`SphericalDiskExtension.lean` now extends a PL self-homeomorphism of a
+parameterized disk, fixed on its parameter boundary, to its containing
+PL 2-sphere while fixing the closed complement disk pointwise. The
+boundary-extension theorem then extends this map over a PL 3-ball with
+the same fixed complement. A union version extends over an additional
+polyhedron by the identity when its intersection with the ball lies in
+that fixed complement. These are native relative consequences of the
+already proved sphere-disk complement and boundary-extension results;
+no vendored source changed.
+
+The intersection condition is explicit and is not claimed to follow
+from an arbitrary finite cover. General boundary-disk engulfing,
+`hpush`, and the collar remain open. The module check exits 0 with zero
+warnings; `AuditS65.lean` checks the three new declarations and the two
+preserved extension interfaces, all with only `propext`,
+`Classical.choice`, and `Quot.sound`. Logs are
+`.lake/scratch/check-relative-disk-extension.log` and
+`.lake/scratch/audit-relative-disk-extension.log`.
+
+## Extension across the complement of a boundary neighborhood
+
+`SubcomplexComplement.lean` proves that the closure of the difference
+of two polyhedra is a polyhedron by a simultaneous triangulation.
+`AmbientExtension.lean` uses this actual complement to extend a PL
+self-homeomorphism of C to M, where C is a subpolyhedron of M. An open
+set U satisfies U intersect M contained in C; the map fixes frontier C
+outside U. The resulting extension fixes the closure of M minus C.
+
+`BoundaryDiskExtension.lean` applies the relative sphere and ball
+extensions to a parameterized boundary disk. Its boundary-patch form
+uses precisely the existing local-neighborhood conditions: C is a PL
+3-ball in M, C intersect frontier M is a PL 2-ball, and U intersect M
+is contained in C. A self-homeomorphism of this boundary patch fixed
+outside U extends to M. Fixing its intrinsic boundary is derived from
+these hypotheses, not added as another input.
+
+These native lemmas provide local relative maps for the finite disk
+argument; they do not supply the finite sequence of compatible moves
+for a whole boundary disk. General `hpush` and Theorem 26.2 are still
+unproved. No vendored Lean source changed. The three modules check with
+exit 0 and zero warnings. `AuditS66.lean` audits all four declarations:
+exit 0 and only `propext`, `Classical.choice`, and `Quot.sound`. Logs:
+`.lake/scratch/check-polyhedron-complement.log`,
+`check-relative-polyhedron-extension.log`, `check-boundary-disk-extension.log`,
+and `audit-polyhedron-boundary-extension.log`.
