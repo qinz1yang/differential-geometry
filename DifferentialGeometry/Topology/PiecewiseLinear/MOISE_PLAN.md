@@ -525,6 +525,17 @@
   I5 未闭合：还需 H-M3 的闭曲面顶维同调、一般 3-流形的 23.19 Betti 不等式，以及 H.4b 的
   `b₁=0 → PL 2-sphere` 识别；未将非球面假设弱化成 `χ≠2`。
 
+- 2026-09-15（H-M5 二重覆盖复形的流形与局部定向层，数学提交 `c6830cc26`）：
+  `CoveringOrientation` 证明有限覆盖复形保持组合流形结构，并以链接的 `IsGlueIso` 传递相干定向；
+  对 `SimplicialBoolCocycle` 的二重覆盖建立顶点有限性、带边/无边组合流形、覆盖空间同胚与逐顶点链接可定向端点。
+  聚焦检查 exit=0、零 warning；`.lake/scratch/AuditNightHM5Final.lean` 逐项审计 19 项
+  （10 项新声明、9 项直接复用），全部仅标准三公理。直接复用审计包括
+  `coveringComplex_faces_finite`、`coveringVertexLink_isGlueIso`、`isOrientable_iff_of_isGlueIso`、
+  `isCombinatorialManifoldWithBoundary_coveringComplex`、`coveringSpaceHomeomorph`、
+  `SimplicialBoolCocycle.isCoveringMap`、`SimplicialBoolCocycle.card_fiber`、`coveringVertex.finite` 与
+  `Nat.finite_of_card_ne_zero`。全局可定向性仍缺覆盖边两端 sheet XOR 等于基边上循环值的相容式；
+  逐顶点链接可定向不被当作整体可定向。
+
 ## 7. 决策与风险
 
 - 不采用 Bing 定理 7 的“保留单形”强形式，只用 Moise §8/§35 的紧致图卡归纳（书中 `chap:two-set-gluing` 的方案）。

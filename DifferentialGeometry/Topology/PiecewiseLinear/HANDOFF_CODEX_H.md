@@ -355,3 +355,19 @@ Reduced/MayerVietorisCoefficients, Reduced/PointClasses}`（`REUSE_AUDIT.md` §2
   `b₁=0 → IsPLSphere 2`。这些都不是 NIGHT_PLAN §1 已给的跨车道接口，不能包装成结论型假设。
 - 因而未声明 `bettiOne_pos_of_boundary_component_not_sphere`，也未用 `χ(B)≠2` 替换冻结的非球面假设。
   按 §0.4 转 H-M5 的二重覆盖定向引理。
+
+### H-M5 — partial，二重覆盖复形的流形与局部定向层已交付
+
+- 数学提交：`c6830cc26`。新模块 `CoveringOrientation.lean`。
+- `IsCombinatorialManifold.coveringComplex` 证明闭组合流形的任意有限覆盖三角剖分仍是同维闭组合流形；
+  `CoherentOrientation.coveringVertexLink`、`isOrientable_coveringVertexLink_iff` 把基点链接的相干定向沿
+  `coveringVertexLink_isGlueIso` 传到覆盖点链接。
+- 对 `SimplicialBoolCocycle` 的二重覆盖，已给覆盖顶点的有限实例、覆盖复形的带边/无边组合流形端点、
+  覆盖空间同胚，以及每个覆盖顶点链接的可定向性。模块聚焦检查 exit=0、零 warning，11.5 秒；
+  `.lake/scratch/AuditNightHM5Final.lean` 逐项审计 19 项（10 项新声明、9 项直接复用），全部仅
+  `propext`、`Classical.choice`、`Quot.sound`。
+- 尚不能把“所有顶点链接可定向”提升成覆盖复形整体可定向。冻结端点还缺一个全局相容式：对覆盖复形同一条边的
+  两个覆盖顶点，其 sheet 坐标之 XOR 应等于基边上的 `SimplicialBoolCocycle.parity`；用该等式把
+  `orientationCocycle` 的局部定向乘以 sheet 符号后，才能证明相邻顶维面诱导符号相消。现有
+  `BoolCocycle`/`CoveringTriangulation` API 提供覆盖图、面提升和链接同构，但没有这个端点奇偶公式；
+  未把局部可定向性误报为全局可定向性，也未引入结论型假设。
