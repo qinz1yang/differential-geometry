@@ -510,3 +510,66 @@ theorem maximalRegularityDuhamelVectorField_toFunL2 (hT : 0 < T)
 end DifferentialGeometry.Analysis.Parabolic.QuasiLinear
 
 end
+
+noncomputable section
+open MeasureTheory Filter
+open scoped Manifold ContDiff ENNReal
+namespace DifferentialGeometry.Analysis.Parabolic.QuasiLinear
+open TensorHeatEquation TensorSpectral TimeSobolev MaximalRegularity
+
+variable {ι : Type*} [Fintype ι]
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+variable {g : SmoothRiemannianMetric I M} {r s : ℕ} {a T : ℝ}
+
+theorem strongPair_eq_duhamel_vector (hT : 0 < T)
+    (hc : IsCompactOperator (tensorResolventL2 (I := I) (M := M) g r s))
+    (u₀ : PiLp 2 (fun _ : ι => TensorHs g r s (a + 2)))
+    (F : timeL2 (PiLp 2 (fun _ : ι => TensorHs g r s a)) T)
+    (u : timeH1 (PiLp 2 (fun _ : ι => TensorHs g r s a)) T)
+    (field : timeL2 (PiLp 2 (fun _ : ι => TensorHs g r s (a + 2))) T)
+    (htrace : timeH1.trace0 _ T u =
+      ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion
+        (g := g) (r := r) (s := s) (show a ≤ a + 2 by linarith)) u₀)
+    (hlink : (ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion
+        (g := g) (r := r) (s := s) (show a ≤ a + 2 by linarith))).compLpL
+          2 (timeMeasure T) field = u.toFunL2)
+    (heq : timeH1.timeDeriv _ T u =
+      (ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorScaleLaplacian
+        (g := g) (r := r) (s := s) a)).compLpL 2 (timeMeasure T) field + F) :
+    field = maximalRegularityDuhamelVectorField hT u₀ F ∧
+      u = maximalRegularityDuhamelVectorMap hT u₀ F := by
+  have hcomponent (i : ι) := strongPair_eq_duhamel hT hc (u₀ i)
+    (Lp.piLpEquiv (𝕜 := ℝ) (timeMeasure T) F i) (timeH1.piLpEquiv u i)
+    (Lp.piLpEquiv (𝕜 := ℝ) (timeMeasure T) field i)
+  have hparts (i : ι) :
+      Lp.piLpEquiv (𝕜 := ℝ) (timeMeasure T) field i =
+        maximalRegularityDuhamelSolutionField a hT (u₀ i)
+          (Lp.piLpEquiv (𝕜 := ℝ) (timeMeasure T) F i) ∧
+      timeH1.piLpEquiv u i = maximalRegularityDuhamelMap a hT (u₀ i)
+        (Lp.piLpEquiv (𝕜 := ℝ) (timeMeasure T) F i) := by
+    apply hcomponent i
+    · exact congrArg (fun x => x i) htrace
+    · have h := congrArg (fun x => Lp.piLpEquiv (𝕜 := ℝ) (timeMeasure T) x i) hlink
+      rw [Lp.piLpEquiv_compLpL] at h
+      simpa only [ContinuousLinearMap.piLpMap_apply, timeH1.toTimeL2_apply,
+        timeH1.piLpEquiv_toFunL2, timeL2Inclusion] using h
+    · have h := congrArg (fun x => Lp.piLpEquiv (𝕜 := ℝ) (timeMeasure T) x i) heq
+      rw [map_add, Lp.piLpEquiv_compLpL] at h
+      exact h
+  constructor
+  · apply (Lp.piLpEquiv (𝕜 := ℝ) (timeMeasure T)).injective
+    change _ = (Lp.piLpEquiv (𝕜 := ℝ) (timeMeasure T))
+      ((Lp.piLpEquiv (𝕜 := ℝ) (timeMeasure T)).symm _)
+    rw [LinearIsometryEquiv.apply_symm_apply]
+    exact PiLp.ext fun i => (hparts i).1
+  · apply timeH1.piLpEquiv.injective
+    change _ = timeH1.piLpEquiv (timeH1.piLpEquiv.symm _)
+    rw [LinearIsometryEquiv.apply_symm_apply]
+    exact PiLp.ext fun i => (hparts i).2
+
+end DifferentialGeometry.Analysis.Parabolic.QuasiLinear
+
+end
