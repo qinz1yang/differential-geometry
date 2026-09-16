@@ -362,6 +362,10 @@ theorem exists_three_cells_of_boundaryBranch
     ∃ A C : Set (EuclideanSpace ℝ (Fin 2)),
       IsPLBall 1 A ∧ IsPLBall 1 C ∧ Disjoint A C ∧
       hD.branchPreimage c = A ∪ C ∧
+      IsPLHomeomorphOn (hD.branchCoordinate c) A
+        (hD.singularSet.branchComplex c).space ∧
+      IsPLHomeomorphOn (hD.branchCoordinate c) C
+        (hD.singularSet.branchComplex c).space ∧
       ∃ p q r s : EuclideanSpace ℝ (Fin 2),
       ∃ g : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 2),
         IsPLHomeomorphOn g A C ∧ EqOn D (D ∘ g) A ∧
@@ -379,7 +383,7 @@ theorem exists_three_cells_of_boundaryBranch
           (D₁.domain ∩ frontier D.domain) ∧
         Schoenflies.IsCutPair (frontier D₃.domain) r s C
           (D₃.domain ∩ frontier D.domain) := by
-  obtain ⟨A, C, hA, hC, hdisjoint, hcover, -, -, ⟨g, hg, hcompat⟩,
+  obtain ⟨A, C, hA, hC, hdisjoint, hcover, hAcoordinate, hCcoordinate, ⟨g, hg, hcompat⟩,
     ⟨p, q, hcutA⟩, r, s, hcutC⟩ :=
     hD.exists_two_isCrosscuts_branchPreimage_of_boundaryBranch_with_coordinate
       hc
@@ -387,7 +391,8 @@ theorem exists_three_cells_of_boundaryBranch
     hA₁, hA₂, hC₂, hC₃, hdisjoint₁₃,
     hfun₁, hfun₂, hfun₃, htrace₁, htrace₃, hcut₁, hcut₃⟩ :=
     D.exists_three_cells_of_two_disjoint_crosscuts hA hC hdisjoint hcutA hcutC
-  exact ⟨A, C, hA, hC, hdisjoint, hcover, p, q, r, s, g, hg, hcompat,
+  exact ⟨A, C, hA, hC, hdisjoint, hcover, hAcoordinate, hCcoordinate,
+    p, q, r, s, g, hg, hcompat,
     D₁, D₂, D₃, hunion,
     hinter₁, hinter₂, hA₁, hA₂, hC₂, hC₃,
     hdisjoint₁₃, hfun₁, hfun₂, hfun₃,
@@ -411,8 +416,11 @@ theorem exists_boundary_surgery_cell_of_boundaryBranch
       ((g p = r ∧ g q = s) ∨ (g p = s ∧ g q = r)) ∧
       G '' G.domain ⊆ D '' D.domain ∧
       Set.range G.boundary = D '' (U ∪ V) ∧
-      Set.range G.boundary ⊆ B ∧ G '' G.domain ∩ BdM ⊆ B := by
-  obtain ⟨A, C, hA, hC, hAC, hcover, p, q, r, s, g, hg, hcompat,
+      Set.range G.boundary ⊆ B ∧ G '' G.domain ∩ BdM ⊆ B ∧
+      (∀ y, (G.domain ∩ G ⁻¹' {y}).encard ≤ 2) ∧
+      doublePointSet G G.domain ⊆ doublePointSet D D.domain ∧
+      Disjoint (doublePointSet G G.domain) (hD.singularSet.branchCarrier c) := by
+  obtain ⟨A, C, hA, hC, hAC, hcover, hAcoordinate, -, p, q, r, s, g, hg, hcompat,
     D₁, D₂, D₃, hdomains, -, -, hA₁, -, -, hC₃, hdisjoint₁₃,
     hfun₁, -, hfun₃, htrace₁, htrace₃, hcut₁, hcut₃⟩ :=
     hD.exists_three_cells_of_boundaryBranch hc
@@ -502,6 +510,144 @@ theorem exists_boundary_surgery_cell_of_boundaryBranch
         exact Or.inr hxD₃
       · rw [← hfun₃]
         exact (hG₃ hxQ).symm
+  have hD₁sub : D₁.domain ⊆ D.domain := by
+    intro x hx
+    rw [← hdomains]
+    exact Or.inl (Or.inl hx)
+  have hD₃sub : D₃.domain ⊆ D.domain := by
+    intro x hx
+    rw [← hdomains]
+    exact Or.inr hx
+  let pullback : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 2) :=
+    fun x => if x ∈ P then f₁ x else f₃ x
+  have hpullback_mem : MapsTo pullback G.domain D.domain := by
+    intro x hx
+    rw [hGdomain] at hx
+    by_cases hxP : x ∈ P
+    · change (if x ∈ P then f₁ x else f₃ x) ∈ D.domain
+      rw [if_pos hxP]
+      exact hD₁sub (hf₁.bijOn.mapsTo hxP)
+    · have hxQ : x ∈ Q := hx.resolve_left hxP
+      change (if x ∈ P then f₁ x else f₃ x) ∈ D.domain
+      rw [if_neg hxP]
+      exact hD₃sub (hf₃.bijOn.mapsTo hxQ)
+  have hpullback_apply : ∀ x ∈ G.domain, D (pullback x) = G x := by
+    intro x hx
+    rw [hGdomain] at hx
+    by_cases hxP : x ∈ P
+    · change D (if x ∈ P then f₁ x else f₃ x) = G x
+      rw [if_pos hxP]
+      exact (congrFun hfun₁ (f₁ x)).symm.trans (hG₁ hxP).symm
+    · have hxQ : x ∈ Q := hx.resolve_left hxP
+      change D (if x ∈ P then f₁ x else f₃ x) = G x
+      rw [if_neg hxP]
+      exact (congrFun hfun₃ (f₃ x)).symm.trans (hG₃ hxQ).symm
+  have hpullback_inj : InjOn pullback G.domain := by
+    intro x hx y hy hxy
+    rw [hGdomain] at hx hy
+    by_cases hxP : x ∈ P <;> by_cases hyP : y ∈ P
+    · apply hf₁.bijOn.injOn hxP hyP
+      simpa only [pullback, if_pos hxP, if_pos hyP] using hxy
+    · have hyQ : y ∈ Q := hy.resolve_left hyP
+      exfalso
+      have hmaps : f₁ x = f₃ y := by
+        simpa only [pullback, if_pos hxP, if_neg hyP] using hxy
+      exact Set.disjoint_left.mp hdisjoint₁₃
+        (hf₁.bijOn.mapsTo hxP) (hmaps ▸ hf₃.bijOn.mapsTo hyQ)
+    · have hxQ : x ∈ Q := hx.resolve_left hxP
+      exfalso
+      have hmaps : f₁ y = f₃ x := by
+        simpa only [pullback, if_neg hxP, if_pos hyP] using hxy.symm
+      exact Set.disjoint_left.mp hdisjoint₁₃
+        (hf₁.bijOn.mapsTo hyP) (hmaps ▸ hf₃.bijOn.mapsTo hxQ)
+    · have hxQ : x ∈ Q := hx.resolve_left hxP
+      have hyQ : y ∈ Q := hy.resolve_left hyP
+      apply hf₃.bijOn.injOn hxQ hyQ
+      simpa only [pullback, if_neg hxP, if_neg hyP] using hxy
+  have hfiber : ∀ y, (G.domain ∩ G ⁻¹' {y}).encard ≤ 2 := by
+    intro y
+    have hmaps : pullback '' (G.domain ∩ G ⁻¹' {y}) ⊆
+        D.domain ∩ D ⁻¹' {y} := by
+      rintro _ ⟨x, hx, rfl⟩
+      refine ⟨hpullback_mem hx.1, ?_⟩
+      change D (pullback x) = y
+      exact (hpullback_apply x hx.1).trans hx.2
+    calc
+      (G.domain ∩ G ⁻¹' {y}).encard =
+          (pullback '' (G.domain ∩ G ⁻¹' {y})).encard :=
+        (hpullback_inj.mono inter_subset_left).encard_image.symm
+      _ ≤ (D.domain ∩ D ⁻¹' {y}).encard := encard_le_encard hmaps
+      _ ≤ 2 := hD.fiber_le_two y
+  have hdouble : doublePointSet G G.domain ⊆ doublePointSet D D.domain := by
+    rintro y ⟨x, hx, z, hz, hxz, hxy, hzy⟩
+    refine ⟨pullback x, hpullback_mem hx, pullback z, hpullback_mem hz, ?_, ?_, ?_⟩
+    · intro h
+      exact hxz (hpullback_inj hx hz h)
+    · exact (hpullback_apply x hx).trans hxy
+    · exact (hpullback_apply z hz).trans hzy
+  have hAsub : A ⊆ hD.branchPreimage c := by
+    rw [hcover]
+    exact subset_union_left
+  have hDinjA : InjOn D A := by
+    intro x hx z hz hxz
+    apply hAcoordinate.bijOn.injOn hx hz
+    apply (hD.singularSet.branchPieceIn c).bijOn.injOn
+      (hAcoordinate.bijOn.mapsTo hx) (hAcoordinate.bijOn.mapsTo hz)
+    calc
+      (hD.singularSet.branchPieceIn c).map (hD.branchCoordinate c x) = D x :=
+        hD.branchPieceIn_map_branchCoordinate c (hAsub hx)
+      _ = D z := hxz
+      _ = (hD.singularSet.branchPieceIn c).map (hD.branchCoordinate c z) :=
+        (hD.branchPieceIn_map_branchCoordinate c (hAsub hz)).symm
+  have hpullback_branch : ∀ {x}, x ∈ G.domain → pullback x ∈ A ∪ C →
+      x ∈ P ∩ Q ∧ f₁ x ∈ A := by
+    intro x hx hxbranch
+    rw [hGdomain] at hx
+    by_cases hxP : x ∈ P
+    · have hxbranch' : f₁ x ∈ A ∪ C := by
+        simpa only [pullback, if_pos hxP] using hxbranch
+      rcases hxbranch' with hxA | hxC
+      · have hximage : f₁ x ∈ f₁ '' (P ∩ Q) := hf₁seam.symm.subset hxA
+        obtain ⟨w, hw, hwx⟩ := hximage
+        have hxeq : x = w := hf₁.bijOn.injOn hxP hw.1 hwx.symm
+        exact ⟨hxeq ▸ hw, hxA⟩
+      · exact (Set.disjoint_left.mp hdisjoint₁₃
+          (hf₁.bijOn.mapsTo hxP) (D₃.frontier_subset_domain (hC₃ hxC))).elim
+    · have hxQ : x ∈ Q := hx.resolve_left hxP
+      have hxbranch' : f₃ x ∈ A ∪ C := by
+        simpa only [pullback, if_neg hxP] using hxbranch
+      rcases hxbranch' with hxA | hxC
+      · exact (Set.disjoint_left.mp hdisjoint₁₃
+          (D₁.frontier_subset_domain (hA₁ hxA)) (hf₃.bijOn.mapsTo hxQ)).elim
+      · have hximage : f₃ x ∈ f₃ '' (P ∩ Q) := hf₃seam.symm.subset hxC
+        obtain ⟨w, hw, hwx⟩ := hximage
+        have hxeq : x = w := hf₃.bijOn.injOn hxQ hw.2 hwx.symm
+        exact (hxP (hxeq ▸ hw.1)).elim
+  have hremove : Disjoint (doublePointSet G G.domain)
+      (hD.singularSet.branchCarrier c) := by
+    apply Set.disjoint_left.mpr
+    rintro y ⟨x, hx, z, hz, hxz, hxy, hzy⟩ hybranch
+    have hxpre : pullback x ∈ hD.branchPreimage c := by
+      refine ⟨hpullback_mem hx, ?_⟩
+      change D (pullback x) ∈ hD.singularSet.branchCarrier c
+      rw [hpullback_apply x hx, hxy]
+      exact hybranch
+    have hzpre : pullback z ∈ hD.branchPreimage c := by
+      refine ⟨hpullback_mem hz, ?_⟩
+      change D (pullback z) ∈ hD.singularSet.branchCarrier c
+      rw [hpullback_apply z hz, hzy]
+      exact hybranch
+    rw [hcover] at hxpre hzpre
+    obtain ⟨hxseam, hxA⟩ := hpullback_branch hx hxpre
+    obtain ⟨hzseam, hzA⟩ := hpullback_branch hz hzpre
+    apply hxz
+    apply hf₁.bijOn.injOn hxseam.1 hzseam.1
+    apply hDinjA hxA hzA
+    calc
+      D (f₁ x) = G x := (congrFun hfun₁ (f₁ x)).symm.trans (hG₁ hxseam.1).symm
+      _ = y := hxy
+      _ = G z := hzy.symm
+      _ = D (f₁ z) := (hG₁ hzseam.1).trans (congrFun hfun₁ (f₁ z))
   have hrange : Set.range G.boundary =
       D '' ((D₁.domain ∩ frontier D.domain) ∪
         (D₃.domain ∩ frontier D.domain)) := by
@@ -528,7 +674,7 @@ theorem exists_boundary_surgery_cell_of_boundaryBranch
     D₃.domain ∩ frontier D.domain, p, q, r, s, g, G,
     hA, hC, hAC, hcover, htrace₁, htrace₃,
     hdisjoint₁₃.mono inter_subset_left inter_subset_left, hg, horientation,
-    hGimage, hrange, hrangeB, hinterB⟩
+    hGimage, hrange, hrangeB, hinterB, hfiber, hdouble, hremove⟩
 
 end NormalSingularCellData
 
