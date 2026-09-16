@@ -78,6 +78,17 @@ theorem isOpenMap_of_continuous_injective {E : Type*}
   intro U hU
   exact isOpen_image_of_continuousOn_injOn (E := E) hU hf.continuousOn hinj.injOn
 
+theorem surjective_of_continuous_injective {E : Type*}
+    [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
+    {M₁ M₂ : Type*} [TopologicalSpace M₁] [ChartedSpace E M₁] [CompactSpace M₁] [Nonempty M₁]
+    [TopologicalSpace M₂] [ChartedSpace E M₂] [T2Space M₂] [ConnectedSpace M₂]
+    {f : M₁ → M₂} (hf : Continuous f) (hinj : Function.Injective f) : Function.Surjective f := by
+  have hopen : IsOpen (range f) := by
+    rw [← image_univ]
+    exact isOpenMap_of_continuous_injective (E := E) hf hinj univ isOpen_univ
+  have hclopen : IsClopen (range f) := ⟨(isCompact_range hf).isClosed, hopen⟩
+  exact range_eq_univ.mp (hclopen.eq_univ (range_nonempty f))
+
 theorem isOpen_range_of_isOpen_of_continuous_injective_real {E : Type*}
     [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
     {H : Type*} [TopologicalSpace H] (I : ModelWithCorners ℝ E H)
