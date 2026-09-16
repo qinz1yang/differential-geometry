@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.GlobalCurvatureLine
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.ProductQuotient
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.UniversalCover
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.SurfaceProductCompactness
@@ -703,5 +704,90 @@ theorem curvatureOperatorImageAt_finrank_eq_one_on_interval_of_compact
     (hsub.trans hreg) (fun u hu => hR u (hsub hu)) x x₀).trans (hall t ht)
 
 end Compact
+
+section
+
+variable {H : Type} [TopologicalSpace H]
+  {I : ModelWithCorners ℝ (DifferentialGeometry.Topology.Morse.MorseModel 3) H}
+  [I.Boundaryless] {M : Type} [TopologicalSpace M] [ChartedSpace H M]
+  [IsManifold I ∞ M] [T2Space M]
+  [SigmaCompactSpace M]
+
+theorem exists_right_interval_common_parallel_unit_section_of_complete_existence_and_uniqueness
+    [SimplyConnectedSpace M]
+    {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S)
+    {a b s : ℝ} (hs : s ∈ Ioo a b) (hreg : Ioo a b ⊆ D.regular)
+    (hR : ∀ t ∈ Ioo a b, ∀ x,
+      (⟨metricRm04At (S.family.metric t) x,
+        metricRm04At_mem_algebraicCurvatureTensorSubmodule (S.family.metric t) x⟩ :
+          algebraicCurvatureTensorSubmodule (I := I) (M := M) x) ∈
+            algebraicCurvatureOperatorNonnegativeCone (I := I) (M := M))
+    (hcomplete : ∀ t ∈ Ioo a b, RiemannianMetricComplete (S.family.metric t))
+    (hbound : ∀ u v, a < u → u < v → v < b →
+      ∃ C : ℝ, 0 ≤ C ∧ ∀ t ∈ Icc u v, ∀ x : M,
+        normSq0S (S.family.metric t) x 4 (metricRm04At (S.family.metric t) x) ≤ C)
+    (hexists : ∀ (N : Type) [TopologicalSpace N]
+        [ChartedSpace (DifferentialGeometry.Topology.Morse.MorseModel 2) N]
+        [IsManifold 𝓘(ℝ, DifferentialGeometry.Topology.Morse.MorseModel 2) ∞ N]
+        [T2Space N] [SigmaCompactSpace N],
+      ∀ h₀ : SmoothRiemannianMetric 𝓘(ℝ, DifferentialGeometry.Topology.Morse.MorseModel 2) N,
+      RiemannianMetricComplete h₀ →
+      (∃ C : ℝ, 0 ≤ C ∧ ∀ y : N, normSq0S h₀ y 4 (metricRm04At h₀ y) ≤ C) →
+      ∃ (d : ℝ) (hsd : s < d),
+        ∃ Q : CompleteBoundedCurvatureSolutionOn
+          (I := 𝓘(ℝ, DifferentialGeometry.Topology.Morse.MorseModel 2)) (M := N)
+          (D := RealTimeInterval.closedOpen s d hsd),
+          Q.solution.base.metric s = h₀ ∧
+          ∃ C : ℝ, 0 ≤ C ∧ ∀ t ∈ Ico s d, ∀ y : N,
+            normSq0S (Q.solution.base.metric t) y 4
+              (metricRm04At (Q.solution.base.metric t) y) ≤ C)
+    (hunique : ∀ u v, a < u → (huv : u < v) → v < b →
+      ∀ S₁ S₂ : CompleteBoundedCurvatureSolutionOn (I := I) (M := M)
+        (D := RealTimeInterval.closedOpen u v huv),
+      (∃ C : ℝ, 0 ≤ C ∧ ∀ t ∈ Ico u v, ∀ x : M,
+        normSq0S (S₁.solution.base.metric t) x 4
+          (metricRm04At (S₁.solution.base.metric t) x) ≤ C) →
+      (∃ C : ℝ, 0 ≤ C ∧ ∀ t ∈ Ico u v, ∀ x : M,
+        normSq0S (S₂.solution.base.metric t) x 4
+          (metricRm04At (S₂.solution.base.metric t) x) ≤ C) →
+      S₁.solution.base.metric u = S₂.solution.base.metric u →
+      ∀ t ∈ Ico u v, S₁.solution.base.metric t = S₂.solution.base.metric t)
+    (x₀ : M)
+    (hrank : Module.finrank ℝ (curvatureOperatorImageAt (S.family.metric s) x₀
+      ⟨metricRm04At (S.family.metric s) x₀,
+        metricRm04At_mem_algebraicCurvatureTensorSubmodule (S.family.metric s) x₀⟩) = 1) :
+    ∃ c ∈ Ioo s b, ∃ X : Cₛ^∞⟮I; DifferentialGeometry.Topology.Morse.MorseModel 3,
+        TangentSpace I⟯,
+      (∀ t ∈ Icc s c, ∀ x : M,
+        Module.finrank ℝ (curvatureOperatorImageAt (S.family.metric t) x
+          ⟨metricRm04At (S.family.metric t) x,
+            metricRm04At_mem_algebraicCurvatureTensorSubmodule (S.family.metric t) x⟩) = 1) ∧
+      (∀ t ∈ Icc s c, ∀ x, X x ∈ curvatureOperatorImageAnnihilatorAt (S.family.metric t) x
+        ⟨metricRm04At (S.family.metric t) x,
+          metricRm04At_mem_algebraicCurvatureTensorSubmodule (S.family.metric t) x⟩) ∧
+      (∀ t ∈ Icc s c, ∀ x, (S.family.metric t).inner x (X x) (X x) = 1) ∧
+      (∀ t ∈ Icc s c, ∀ x, ∀ v : TangentSpace I x,
+        (DifferentialGeometry.Geometry.Connection.LeviCivita (S.family.metric t)) X x v = 0) ∧
+      ∀ t ∈ Icc s c, ∀ x, ∀ v : TangentSpace I x,
+        (S.family.metric t).inner x (X x) v = (S.family.metric s).inner x (X x) v := by
+  obtain ⟨d, hd, hq⟩ :=
+    exists_right_interval_curvatureOperatorImageAt_finrank_eq_one_of_complete_existence_and_uniqueness
+      S hS hs hreg hR hcomplete hbound hexists hunique x₀ hrank
+  obtain ⟨c, hsc, hcd⟩ := exists_between hd.1
+  have hcb : c < b := hcd.trans hd.2
+  have hq' : ∀ t ∈ Icc s c, ∀ x : M,
+      Module.finrank ℝ (curvatureOperatorImageAt (S.family.metric t) x
+        ⟨metricRm04At (S.family.metric t) x,
+          metricRm04At_mem_algebraicCurvatureTensorSubmodule (S.family.metric t) x⟩) = 1 :=
+    fun t ht => hq t ⟨ht.1, ht.2.trans_lt hcd⟩
+  have hsub : Icc s c ⊆ Ioo a b :=
+    fun t ht => ⟨hs.1.trans_le ht.1, ht.2.trans_lt hcb⟩
+  obtain ⟨X, hmem, hunit, hparallel, hdual⟩ :=
+    exists_global_parallel_unit_section_on_interval_of_curvatureOperatorImage_rank_eq_one
+      S hS (by simp [DifferentialGeometry.Topology.Morse.MorseModel]) hreg
+      ordConnected_Icc hsub (left_mem_Icc.mpr hsc.le) hR hq'
+  exact ⟨c, ⟨hsc, hcb⟩, X, hq', hmem, hunit, hparallel, hdual⟩
+
+end
 
 end DifferentialGeometry.PDE.RicciFlow
