@@ -1777,3 +1777,9 @@ F-M2–F-M6 尚未开始；按用户指定顺序推进，只有出现 §1 接口
 `TriangleCornerRegularity.lean` 已提交并推送为 `4b3c685a1`。`height_section_subsingleton_of_boundary_vertices_of_one_low` 证明有限一维组合带边流形中，只要一个顶点严格位于目标高度以下、另一组合边界顶点避开该高度且其余顶点全在低侧，整个高度截面至多一点。`singleton_mem_boundaryComplex_of_common_triangle_boundary` 从两盘组合边界空间相等和其中一盘载体为仿射独立三角形推出原始角点也是另一盘的组合边界顶点。主端点 `eventually_notMem_heightSingularPoints_of_triangle_vertex` 随后对保留盘与三角帽逐面覆盖的 PL 二球面处理三角形真实角点：由保留盘边界链环的两个端点、局部半空间与边界等高集合芽控制保留侧；所选三角形最低点等于该角点时帽侧截面为空，否则最低点方向给出保留侧的严格低端而帽侧截面至多一点。两种情形都把完整链环截面压到 `encard ≤ 2`，再由顶点截面正规性排除新奇异点。
 
 模块聚焦检查 exit=0（13.1 秒）、零 warning；`AuditF186.lean` 三个端点均仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步在 `exists_parameterized_triangle_cut_of_singular_height` 返回的两张保留盘与三角帽上分别构造共同细分，统一选择充分小的一般位置高度，并把接缝内部点与真实角点的排除结论拼装成帽内除指定旧奇异点像外无新奇异点；随后构造新旧奇异点嵌入并证明 `heightIndex` 严格下降。F-M1 仍为 partial，Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF187.lean`。
+
+### 19.39 F-M1：共同细分的整条三角边界均非奇异
+
+`TriangleBoundaryNonsingular.lean` 已提交并推送为 `587bbb0bc`。`mem_or_exists_mem_openSimplex_erase_of_mem_simplexBoundary_space` 对三元素仿射独立单形边界上的任一点给出精确分层：它或是原始角点，或位于唯一某条对边的开单形中。主端点 `eventually_notMem_heightSingularPoints_on_triangle_boundary` 对保留盘与凸三角帽逐面覆盖的有限 PL 二球面，把有限个共同边界顶点及三个可能最低的角点同时取有限邻域交；对原始角点调用 `TriangleCornerRegularity`，对边内部细分顶点调用 `TriangleSeamNonsingular`。因此任意充分小、在完整顶点集与三角顶点并上单射且具有某个严格最低三角顶点的新高度，都排除指定例外点以外的全部共同边界奇异点。
+
+模块聚焦检查 exit=0（12.0 秒）、零 warning；`AuditF187.lean` 两个端点均仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步把本端点实例化到 `exists_parameterized_triangle_cut_of_singular_height` 返回的两张保留盘与三角帽共同细分，从 `HeightSides` 和保高度环境同胚导出统一的半空间及边界等高集合芽，并选择同时满足两张球面一般位置的充分小高度。F-M1 仍为 partial，严格指标下降、Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF188.lean`。
