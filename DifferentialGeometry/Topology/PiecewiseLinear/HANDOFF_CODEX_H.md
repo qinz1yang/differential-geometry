@@ -374,3 +374,110 @@ Reduced/MayerVietorisCoefficients, Reduced/PointClasses}`（`REUSE_AUDIT.md` §2
   `git diff --check` 与新增禁用项扫描通过。
 - H-M5 无未闭合端点。H-M3 的全局顶维基本类/定向比较，以及 H-M4/I5 的 23.19 Betti 不等式与
   `b₁=0 → IsPLSphere 2` 识别仍是原有真实缺口，本里程碑没有弱化或包装这些义务。
+
+### H.4b — done，`faceEulerChar = 2` 的闭组合曲面是 PL 2-球面
+
+- 数学提交：`465433505`；支撑层提交：`c322bee57`、`7cbe0839f`。新模块
+  `SurfaceSphereRecognition.lean`，最终端点为
+  `IsCombinatorialManifold.isPLSphere_two_of_faceEulerChar_eq_two`。
+- 对连通有限闭组合 2-流形取 1-骨架生成树 `T`；Euler 计数使未选边的对偶图
+  `dualCotreeGraph K T` 也是树。原面按“顶点/树边”与“三角形/非树边”分区，各自的导出邻域胞腔并
+  分别由 `isPLBall_primalTreeCellComplex` 和 `isPLBall_dualCotreeCellComplex` 识别为 PL 2-球。
+- 两侧共同面通过两个不同导出胞腔的 PL 1-球交扩张到共同边，因此没有共同顶维面。
+  `subcomplexGeneratedBy_compl_eq_of_faces_cover_of_pure_inter` 将两侧互相识别为闭曲面中的闭补复形，
+  现有的子流形边界定理给出交集恰是两个球的公共边界；经 `boundaryRelSubdivision`
+  使边界满后，`isPLSphere_gluedComplex_of_isPLBall` 完成粘合球面识别。
+- `SurfaceSphereRecognition` 聚焦检查 exit=0，11.0 秒，零 warning；
+  `.lake/scratch/AuditHSurfaceSphereRecognition.lean` 对 22 个新定理及 11 个关键复用声明逐项审计，
+  exit=0，全部只依赖 `propext`、`Classical.choice`、`Quot.sound`。
+- H.4b 无未闭合项。下一里程碑按 `NIGHT_PLAN.md` §6.1 用 `faceEulerChar` 路线交付 I5；
+  H-M3 的顶维基本类继续后推。
+
+### I5 / H-M4 — done，非球面边界分支迫使一阶 Betti 数为正
+
+- 数学提交：`1d7ffe266`。新模块 `BoundaryHomology.lean`；`HandleCount.lean` 的跨车道端点为
+  `bettiOne_pos_of_boundary_component_not_sphere`，签名保持 `IsCombinatorialManifoldWithBoundary 3 K`、
+  `IsOrientable 3 K`、`IsConnected K.space`、指定边界连通分支及该分支非 `IsPLSphere 2`。
+- 证明使用现有有序单纯集合的 normalized chain complex 作内部坐标，不新增同调表示层；最终结论仍是本库奇异
+  `Homology.bettiOne`。每个非基准边界分支的相干定向 2-循环与所有 3-单形边界组成一个到 2-循环空间的单射，
+  给出 `card(other boundary components) ≤ b₂(K)`。同一余维一面传播论证证明带非空边界的连通可定向
+  3-流形顶微分单射，因而奇异 `b₃(K)=0`。
+- `faceEulerChar` 按连通分支分解；H.4b 与每个闭连通组合曲面的 `χ≤2` 将指定非球面分支改进为严格上界
+  `χ(∂K)<2·card(π₀∂K)`。结合 `χ(∂K)=2χ(K)`、`χ(K)=1-b₁+b₂` 和上述秩界，若 `b₁=0`
+  即得矛盾，闭合 I5；没有等待 H-M3 的闭曲面全局顶维基本类。
+- 聚焦检查均 exit=0、零 warning：`OrderedChainCoordinates` 13.1 秒、`BoundaryHomology` 25.3 秒、
+  `HandleCount` 11.9 秒；`fresh.py` 报 7 个相对整合分支改动模块全部 olean 新鲜、零禁用项。
+  `.lake/scratch/AuditHI5.lean` 逐项审计 47 个新增声明与 23 个关键复用声明，exit=0，全部仅含
+  `propext`、`Classical.choice`、`Quot.sound`。
+- I5 无未闭合项。H-M3 的闭曲面基本类、可定向/不可定向闭曲面完整 `b₂` 公式仍按计划后推；本里程碑只证明
+  I5 所需的带非空边界三维顶同调消失，不冒充 H-M3 完成。
+
+### H-M6 — done，22.11 单连通闭组合曲面是 PL 2-球面
+
+- 数学提交：`0a4d434c7`。新模块 `Topology/Homology/FieldPathCones.lean` 与
+  `PiecewiseLinear/SurfaceSimplyConnected.lean`；最终端点为
+  `IsCombinatorialManifold.isPLSphere_two_of_simplyConnectedSpace`。
+- `fieldSingularConeZero` / `fieldSingularConeOne` 将既有道路锥论证推广到任意域系数，证明单连通空间的一维奇异同调
+  为零；`Homology.bettiOne_eq_zero_of_simplyConnectedSpace` 给出有理 Betti 数版本。
+- 对闭组合 2-流形，以所有三角形系数均为 1 构造 ℤ₂ 顶维链；每条边恰有两个余面且 ℤ₂ 中符号消失，故边界为零。
+  复形无三维 normalized chains，因而该非零循环给出
+  `IsCombinatorialManifold.bettiNumber_two_pos_mod_two`。单连通性再给 `b₀=1`、`b₁=0`，Euler–Betti 公式与
+  `faceEulerChar_le_two` 夹出 `faceEulerChar=2`，最后消费 H.4b 的球面识别端点。
+- 两个模块聚焦检查 exit=0、零 warning，分别为 9.4 秒与 11.3 秒；`fresh.py` 报两个改动模块 olean 全部新鲜、
+  零禁用项。`.lake/scratch/AuditHM6.lean` 逐项审计 26 个新增声明与 18 个关键复用声明，exit=0，全部仅含
+  `propext`、`Classical.choice`、`Quot.sound`。
+- H-M6 无未闭合项；没有 import `Homology/HurewiczLowDegrees.lean`，没有使用曲面分类。下一项为 H-M7 的
+  §21 Euler 运算与 28.20 分裂公式。
+
+### H-M7 — done，§21 Euler 运算与 28.20 分裂公式
+
+- 数学提交：`9bcc38d82`。新模块 `EulerCellOperations.lean` 与 `SurfaceSplitEuler.lean`。
+- `OpenCellProfile.Operation` 的 `alpha`、`beta`、`gamma`、`delta` 精确记录四种开胞腔操作对顶点、边、面的计数变化；
+  `OpenCellProfile.eulerChar_apply` 与 `eulerChar_eq_of_isRefinement` 证明单步及有限次操作保持 χ。
+  `simplicialOpenCellProfile_eulerChar` 将三维数计数重新接回有限二维复形的 `faceEulerChar`；实际线性细分仍由既有
+  `eulerChar_eq_of_isSubdivision` 给出 PL 不变量。
+- `eulerChar_eq_add_sub_of_faces_union` 是任意公共环境中两个子复形的包含排除式；交为 PL 1-球面时，
+  `eulerChar_eq_add_of_faces_union_of_isPLSphere_one` 给出 21.8 的无修正加法。既有
+  `eulerChar_of_isPLSphere_one` 与 `eulerChar_of_isPLBall` 分别给 21.6、21.7。
+- `SurfaceSplitAlongPolygon` 用公共核心、PL 同胚于 `J × [0,1]` 的环带、两条互不相交的 PL 多边形边界以及切后曲面
+  与核心的 PL 同胚定义 21.10 的分裂；`SurfaceSplitAlongPolygon.eulerChar_eq` 证明 χ 不变。
+  `SurfaceSplitAndCap` 再记录两个互不相交的 PL 2-胞腔及其边界粘接，
+  `SurfaceSplitAndCap.eulerChar_eq_add_two` 同时交付 21.11 与 28.20。结构中没有把任何 Euler 等式作为字段。
+- 两个模块聚焦检查 exit=0、零 warning，分别为 9.5 秒与 9.7 秒；`fresh.py` 报本车道相对整合分支的四个改动模块
+  olean 全部新鲜、零禁用项。`.lake/scratch/AuditHM7.lean` 逐项审计 21 个新增声明与 18 个关键复用声明，
+  exit=0，全部公理闭包均包含于 `propext`、`Classical.choice`、`Quot.sound`。
+- H-M7 无未闭合项；下一项为 H-M8 的 22.5–22.7。
+
+### H-M8 — done，22.5–22.7 的闭曲面同调与数值公式
+
+- 数学提交：`3fdf6d58e`。新模块 `SurfaceHomology.lean` 与 `SurfaceInvariants.lean`。
+- `SurfaceHomology.lean` 直接在现有有序 normalized chain complex 中计算闭连通组合 2-流形的顶维同调：
+  可定向时相干定向链生成 `ker d₂`，不可定向时任一非零有理顶循环会沿对偶图重建相干定向并导致矛盾。
+  经既有 realization/奇异同调桥，得到
+  `bettiNumber_two_eq_one_of_isOrientable`、`bettiNumber_two_eq_zero_of_not_isOrientable`，以及无条件的 22.7：
+  可定向时 `χ = 2 - b₁`，不可定向时 `χ = 1 - b₁`。
+- `SurfaceInvariants.lean` 定义标准的 `surfaceHandleCrosscapProfile h m`，证明其
+  `χ = 2 - (2h + m)`；凡实际给出该标准剖分的细分见证，22.5 即由开胞腔 refinement 桥传给
+  `faceEulerChar`。结合 22.7，分别得到可定向、一个交叉帽、两个交叉帽情形的 22.6 数值公式；
+  `surfaceHandleNumber K := Homology.bettiOne K.space / 2`，并证明在可定向柄剖分见证下等于 `h` 且 `b₁` 为偶数。
+- 两个模块聚焦检查均 exit=0、零 warning，分别约 14.1 秒与 10.0 秒；`fresh.py` 报相对整合分支的六个改动模块
+  olean 全部新鲜、零禁用项。`.lake/scratch/AuditHM8.lean` 逐项审计 36 个新增端点与关键复用声明，exit=0，
+  全部公理闭包均包含于 `propext`、`Classical.choice`、`Quot.sound`。
+- H-M8 的精确范围是 22.5–22.7：22.7 不依赖曲面分类；22.5–22.6 的柄/交叉帽表述以实际标准剖分及 refinement
+  见证为前提，并未冒充已证明 22.4 的正规形存在性。22.8–22.10 的分类仍未闭合；H-M3 原先缺少的闭曲面顶维同调现已闭合。
+
+### H-M9 / B.8 — done，26.8 的欧氏三空间曲面可定向性
+
+- 数学提交：`6a02d3559`。新模块 `EuclideanSurfaceOrientation.lean`；主端点
+  `IsCombinatorialManifold.isOrientable_of_finrank_eq_three` 适用于任意三维有限维实赋范空间，
+  `isOrientable_euclidean_three` 是 `EuclideanSpace ℝ (Fin 3)` 的直接版本。
+- 证明不使用 `H₃ ≅ ℤ`。先把有限曲面放进一个大仿射 3-单形的内部；S 车道 26.6 的
+  `IsCombinatorialManifold.isTwoSided` 经子类型嵌入拉回，再由
+  `exists_neighborhood_manifold_pair_of_twoSided` 把两侧闭包实现为有限带边组合 3-流形。选定一侧位于该 3-单形内，
+  环境仿射定向给出其 `CoherentOrientation`，边界定向随后给整个组合边界的定向。
+- 用 `exists_isSubdivision_restrict_isSubdivision` 取同时适配原曲面的边界共同细分；限制边界定向到该曲面子复形，
+  再由任意线性细分的定向不变性搬回原三角剖分。这正是 §9.2 的“两侧选择 + 环境定向”路线，且结论为实际
+  `IsOrientable 2 L`，没有引入新的表示谓词或结论型假设。
+- 聚焦检查 exit=0、10.2 秒、零 warning；`fresh.py` 报相对整合基线七个改动模块 olean 全部新鲜、零禁用项。
+  `.lake/scratch/AuditHM9.lean` 审计两个新端点和十四个关键复用声明，exit=0，全部只含
+  `propext`、`Classical.choice`、`Quot.sound`。H-M9/B.8 无未闭合项。
