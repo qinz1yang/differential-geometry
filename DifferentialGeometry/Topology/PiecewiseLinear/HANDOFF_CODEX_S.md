@@ -2018,3 +2018,21 @@ fetch and requested merge still report `314c2178f` and already up to date. This
 plan-only publication update changes the S-owned P.4, B.2 and S.6 status cells to
 match the verified endpoints and explicit remaining obligations. E3's L.2 consumer
 row is left to that lane; its hpush producer is now available from DoubleBoundaryPush.
+
+### Boundary parity for Moise 26.6, 2026-09-16
+
+`OneManifoldBoundary.lean` proves that the intrinsic boundary of every finite
+combinatorial one-manifold with boundary has even cardinality. The proof identifies
+boundary points with degree-one vertices of its edge graph and applies the
+handshaking lemma; interior vertices have degree two. The corollary
+`boundaryComplex_one_space_ne_singleton` rules out exactly one boundary point.
+The statements apply in every finite-dimensional real normed ambient space and
+require no Schoenflies hypothesis.
+
+Focused check: exit 0, zero warnings. `AuditS116BoundaryParity.lean` audits all three
+new declarations; exit 0, only `propext`, `Classical.choice`, and `Quot.sound`.
+This is the parity input to B.6, not yet the surface separation endpoint. The
+remaining B.6 work is the single-crossing boundary-loop construction and its
+relative general-position disk filling, followed by the component/frontier result.
+Per the latest assignment, S.6 and B.8 are deferred; current order is B.6, the
+internal two-sided Problem 26.3 endpoint, and the remaining P.4 producers.
