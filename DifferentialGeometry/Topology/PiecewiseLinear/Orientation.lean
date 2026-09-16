@@ -3116,43 +3116,47 @@ noncomputable def CoherentOrientation.restrict
     [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
     (K L : Geometry.SimplicialComplex ℝ E) [Finite K.faces] [Finite L.faces]
     {n : ℕ} (hLK : L ≤ K)
-    (hK : IsCombinatorialManifoldWithBoundary (n + 1) K)
-    (hL : IsCombinatorialManifoldWithBoundary (n + 1) L)
-    (o : CoherentOrientation (n + 1) K) : CoherentOrientation (n + 1) L := by
+    (hK : IsCombinatorialManifoldWithBoundary n K)
+    (hL : IsCombinatorialManifoldWithBoundary n L)
+    (o : CoherentOrientation n K) : CoherentOrientation n L := by
   refine {
     vertexOrder := o.vertexOrder
     sign := o.sign
     sign_top := fun s hs hscard => o.sign_top s (hLK hs) hscard
     coherent := ?_ }
   intro t htL htcard hLne
-  have htK : t ∈ K.faces := hLK htL
-  have hsub : faceCofaces L t (n + 2) ⊆ faceCofaces K t (n + 2) := by
-    intro s hs
-    exact (mem_faceCofaces K).mpr
-      ⟨hLK ((mem_faceCofaces L).mp hs).1, ((mem_faceCofaces L).mp hs).2.1,
-        ((mem_faceCofaces L).mp hs).2.2⟩
-  have hLtwo : (faceCofaces L t (n + 2)).card = 2 :=
-    (hL.card_faceCofaces_eq_one_or_two L htL htcard).resolve_left hLne
-  have hKnotone : (faceCofaces K t (n + 2)).card ≠ 1 := by
-    intro hKone
-    have hcardle := Finset.card_le_card hsub
-    rw [hLtwo, hKone] at hcardle
-    omega
-  have hKtwo : (faceCofaces K t (n + 2)).card = 2 :=
-    (hK.card_faceCofaces_eq_one_or_two K htK htcard).resolve_left hKnotone
-  have hcofaces : faceCofaces L t (n + 2) = faceCofaces K t (n + 2) :=
-    Finset.eq_of_subset_of_card_le hsub (by rw [hLtwo, hKtwo])
-  rw [← orientedBoundary_eq_of_faceCofaces_eq o.vertexOrder K L o.sign t hcofaces.symm]
-  exact o.coherent t htK htcard hKnotone
+  cases n with
+  | zero =>
+    exact ((L.nonempty_of_mem_faces htL).ne_empty (Finset.card_eq_zero.mp htcard)).elim
+  | succ n =>
+    have htK : t ∈ K.faces := hLK htL
+    have hsub : faceCofaces L t (n + 2) ⊆ faceCofaces K t (n + 2) := by
+      intro s hs
+      exact (mem_faceCofaces K).mpr
+        ⟨hLK ((mem_faceCofaces L).mp hs).1, ((mem_faceCofaces L).mp hs).2.1,
+          ((mem_faceCofaces L).mp hs).2.2⟩
+    have hLtwo : (faceCofaces L t (n + 2)).card = 2 :=
+      (hL.card_faceCofaces_eq_one_or_two L htL htcard).resolve_left hLne
+    have hKnotone : (faceCofaces K t (n + 2)).card ≠ 1 := by
+      intro hKone
+      have hcardle := Finset.card_le_card hsub
+      rw [hLtwo, hKone] at hcardle
+      omega
+    have hKtwo : (faceCofaces K t (n + 2)).card = 2 :=
+      (hK.card_faceCofaces_eq_one_or_two K htK htcard).resolve_left hKnotone
+    have hcofaces : faceCofaces L t (n + 2) = faceCofaces K t (n + 2) :=
+      Finset.eq_of_subset_of_card_le hsub (by rw [hLtwo, hKtwo])
+    rw [← orientedBoundary_eq_of_faceCofaces_eq o.vertexOrder K L o.sign t hcofaces.symm]
+    exact o.coherent t htK htcard hKnotone
 
 open Classical in
 theorem IsOrientable.of_le
     [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
     (K L : Geometry.SimplicialComplex ℝ E) [Finite K.faces] [Finite L.faces]
     {n : ℕ} (hLK : L ≤ K)
-    (hK : IsCombinatorialManifoldWithBoundary (n + 1) K)
-    (hL : IsCombinatorialManifoldWithBoundary (n + 1) L)
-    (h : IsOrientable (n + 1) K) : IsOrientable (n + 1) L := by
+    (hK : IsCombinatorialManifoldWithBoundary n K)
+    (hL : IsCombinatorialManifoldWithBoundary n L)
+    (h : IsOrientable n K) : IsOrientable n L := by
   obtain ⟨o⟩ := h
   exact ⟨o.restrict K L hLK hK hL⟩
 
