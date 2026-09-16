@@ -5497,6 +5497,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborho
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.VolumeTransport
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedCanonicalPullbackReduction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedGoodPointBounds
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedMixedCurvature
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedModelComparisonBridge
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedShiTerminal
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedSourceCurvature
@@ -6401,6 +6402,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.RicciPinching
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.ScalarLowerBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.ScalarPositivity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Scaling.DerivativeNorm
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Scaling.MixedCurvature
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Scaling.Parabolic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.Compact
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.ConjugatingFlow.CutoffExtension
