@@ -756,6 +756,28 @@ theorem doublePointSet_mem_nhdsWithin_of_pullback
 namespace NormalSingularCellData
 
 open Classical in
+theorem fiber_subset_frontier_of_mem_image_inter_boundary
+    {M : Type u} [TopologicalSpace M]
+    [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
+    {D : SingularTwoCell M} {BdM B : Set M}
+    (hD : NormalSingularCellData D BdM B) {y : M}
+    (hy : y ∈ D '' D.domain ∩ BdM) :
+    D.domain ∩ D ⁻¹' {y} ⊆ frontier D.domain := by
+  intro x hx
+  by_cases hdouble : y ∈ doublePointSet D D.domain
+  · obtain ⟨e, -, hye, N, hcrossing⟩ :=
+      hD.exists_boundary_crossing_chart ⟨hdouble, hy.2⟩
+    exact hD.fiber_subset_frontier_of_boundary_crossing hye hcrossing hx
+  · have hyrange : y ∈ Set.range D.boundary := hD.image_inter_boundary.subset hy
+    obtain ⟨z, hz⟩ := hyrange
+    have hzdomain : (z : EuclideanSpace ℝ (Fin 2)) ∈ D.domain :=
+      D.frontier_subset_domain z.property
+    have hxz : x = z := by
+      by_contra hxz
+      exact hdouble ⟨x, hx.1, z, hzdomain, hxz, hx.2, hz⟩
+    exact hxz ▸ z.property
+
+open Classical in
 theorem exists_three_cells_of_boundaryBranch
     {M : Type u} [TopologicalSpace M]
     [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] [T2Space M]
@@ -819,6 +841,7 @@ theorem exists_boundary_surgery_cell_of_boundaryBranch
       ((g p = r ∧ g q = s) ∨ (g p = s ∧ g q = r)) ∧
       G '' G.domain ⊆ D '' D.domain ∧
       Set.range G.boundary = D '' (U ∪ V) ∧
+      G '' G.domain ∩ BdM = Set.range G.boundary ∧
       Set.range G.boundary ⊆ B ∧ G '' G.domain ∩ BdM ⊆ B ∧
       (∀ x ∈ G.domain, ∃ W ∈ 𝓝[G.domain] x, Set.InjOn G W) ∧
       (∀ y, (G.domain ∩ G ⁻¹' {y}).encard ≤ 2) ∧
@@ -1318,23 +1341,46 @@ theorem exists_boundary_surgery_cell_of_boundaryBranch
           D '' (D₃.domain ∩ frontier D.domain) := congrArg₂ (· ∪ ·) hGR hGT
       _ = D '' ((D₁.domain ∩ frontier D.domain) ∪
           (D₃.domain ∩ frontier D.domain)) := (image_union D _ _).symm
+  have himageBoundary : G '' G.domain ∩ BdM = Set.range G.boundary := by
+    apply Subset.antisymm
+    · rintro y ⟨⟨x, hx, hxy⟩, hyBdM⟩
+      have hpullbackDomain : pullback x ∈ D.domain := hpullback_mem hx
+      have hpullbackImage : D (pullback x) = y := (hpullback_apply x hx).trans hxy
+      have hpullbackFrontier : pullback x ∈ frontier D.domain :=
+        hD.fiber_subset_frontier_of_mem_image_inter_boundary
+          ⟨⟨pullback x, hpullbackDomain, hpullbackImage⟩, hyBdM⟩
+          ⟨hpullbackDomain, hpullbackImage⟩
+      rw [hrange]
+      refine ⟨pullback x, ?_, hpullbackImage⟩
+      rcases hpullback_outer hx with hpullbackD₁ | hpullbackD₃
+      · exact Or.inl ⟨hpullbackD₁, hpullbackFrontier⟩
+      · exact Or.inr ⟨hpullbackD₃, hpullbackFrontier⟩
+    · intro y hy
+      have hyOld := hy
+      rw [hrange] at hyOld
+      obtain ⟨x, hx, hxy⟩ := hyOld
+      have hxfrontier : x ∈ frontier D.domain := hx.elim And.right And.right
+      have hyOldRange : y ∈ Set.range D.boundary := ⟨⟨x, hxfrontier⟩, hxy⟩
+      have hyOldBoundary : y ∈ D '' D.domain ∩ BdM := by
+        rw [hD.image_inter_boundary]
+        exact hyOldRange
+      refine ⟨?_, hyOldBoundary.2⟩
+      obtain ⟨z, hzy⟩ := hy
+      exact ⟨z, G.frontier_subset_domain z.property, hzy⟩
   have hrangeB : Set.range G.boundary ⊆ B := by
     rw [hrange]
     rintro y ⟨x, hx, rfl⟩
     apply hD.boundary_image_subset
     exact ⟨⟨x, hx.elim And.right And.right⟩, rfl⟩
   have hinterB : G '' G.domain ∩ BdM ⊆ B := by
-    intro y hy
-    have hyD : y ∈ D '' D.domain := hGimage hy.1
-    apply hD.boundary_image_subset
-    rw [← hD.image_inter_boundary]
-    exact ⟨hyD, hy.2⟩
+    rw [himageBoundary]
+    exact hrangeB
   exact ⟨A, C, D₁.domain ∩ frontier D.domain,
     D₃.domain ∩ frontier D.domain, p, q, r, s, g, G,
     hA, hC, hAC, hcover, htrace₁, htrace₃,
     hdisjoint₁₃.mono inter_subset_left inter_subset_left, hg, horientation,
-    hGimage, hrange, hrangeB, hinterB, hlocallyInjective, hfiber, hdouble, hremove,
-    hGsingular⟩
+    hGimage, hrange, himageBoundary, hrangeB, hinterB, hlocallyInjective, hfiber,
+    hdouble, hremove, hGsingular⟩
 
 end NormalSingularCellData
 
