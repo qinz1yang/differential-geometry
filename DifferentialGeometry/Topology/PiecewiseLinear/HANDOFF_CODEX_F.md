@@ -1639,3 +1639,9 @@ F-M2–F-M6 尚未开始；按用户指定顺序推进，只有出现 §1 接口
 `VertexCrossingLevel.lean` 已提交并推送为 `7e92e2044`。`isGlueIso_affineImage`、`affineImage_faces_subset` 与 `geometricLink_affineImage_space` 给出有限复形沿仿射等价的面、子复形和顶点链环精确搬运。主端点 `hasPLCrossingAt_fiber_of_geometricLink_section_at` 将原点零高度版判据推广到任意顶点高度：把环境复形、曲面复形和链环整体平移到原点，逐面半空间、PL 圆周、二点截面及正负两侧全部随平移验证，再由全局 PL 平移把 crossing 搬回原高度层。
 
 模块聚焦检查 exit=0（16.1 秒）、零 warning；`AuditF163.lean` 四项均仅依赖 `propext`、`Classical.choice`、`Quot.sound`。因此三角帽边界顶点的两点链环截面可直接产生该顶点自身高度层的 crossing，无需额外假设顶点高度为零。下一步证明凸三角帽替换后的链环截面至多两点并闭合帽边分类。F-M1 仍为 partial，Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF164.lean`。
+
+### 19.16 F-M1：至多二点链环截面的顶点正则性
+
+`VertexSectionRegularity.lean` 已提交并推送为 `a984b8c98`。主端点 `notMem_heightSingularPoints_of_geometricLink_section_encard_le_two` 将前三层闭合成统一判据：若顶点链环是 PL 圆周、当前高度避开链环顶点且零截面 `encard ≤ 2`，则该顶点不属于高度奇点集。空截面由 `VertexIsolation` 给出局部孤立；非空截面由 `CircleHeightSection` 排除单点并产生两个不同点，同时从实际截面点导出高低两侧，再由 `VertexCrossingLevel` 得到当前任意高度层的 crossing。结论没有加入 crossing 或孤立作为假设。
+
+模块聚焦检查 exit=0（11.3 秒）、零 warning；`AuditF164.lean` 主端点仅依赖 `propext`、`Classical.choice`、`Quot.sound`。三角帽边界分类现已归约为实际几何命题：帽与保留盘组成的顶点链环，其新高度零截面至多两点。下一步证明该上界并接入奇异点嵌入与严格指标下降。F-M1 仍为 partial，Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF165.lean`。
