@@ -135,3 +135,46 @@ L.5（25.2 第一形式，需 H.2 的可定向）。
 6. 有余力再做 B.1（26.1 两侧性，书页 191）。
 
 L.3（Cases 1–4）等 F 车道的 F5.2；B.3 与 L.2 的推离等 S.5。每砖检查点同 §3；第 1–3 项做完先汇报。
+
+## 5. 2026-09-15 追加：第 1 砖已复核；第 2 砖的接口与架构（2-胞腔贴合基础设施纳入本车道）
+
+### 5.0 复核
+
+`SphereSchoenflies` 由本方独立重编 exit=0、零 warning；`AuditSphereSchoenflies` 三项只含标准三公理。
+端点 `exists_isPLBall_pair_of_isPLSphere_two` 的形式（两个盘各带标准单形参数化、并为 `B`、交为 `J`）正是第 2、3 砖要用的。
+
+### 5.1 第 2 砖的接口
+
+```lean
+theorem eq_top_of_boundaryLoops_mem_normal
+    {B : Set E} (hB : IsPLSphere 2 B) {k : ℕ} (D : Fin k → Set E) (q : Fin k → (Fin 3 → ℝ) → E)
+    (hq : ∀ i, IsPLHomeomorphOn (q i) (stdSimplex ℝ (Fin 3)) (D i)) (hDB : ∀ i, D i ⊆ B)
+    (hdisj : Pairwise (Disjoint on D))
+    -- B' := B \ ⋃ i, q i '' (相对内部)，作为子类型；P₀ : B'
+    (N : Subgroup (FundamentalGroup B' P₀)) [N.Normal]
+    (hN : ∀ i, loopClassMeets (第 i 个边界多边形作为 B' 中的 freeLoop) N) : N = ⊤
+```
+写法自定，以 L.1 的 `freeLoop`、`loopClassMeets`、`loopRepresentativeAlong` 为准；必须允许 `k` 个胞腔与任意基点。
+它就是 Lemma 1 里"若所有 `p̄_i ∈ N'` 则 `N' = π(B')`"的那一步。
+
+### 5.2 架构
+
+- 不用库里的抽象贴合空间（`CellAdjunctionSpace` 的 `outerInclusion` 只做了 3-胞腔）。直接在 `B` 里逐个贴胞腔：
+  第 `j` 步的环境空间 `X_j := B' ∪ D_1 ∪ … ∪ D_j`（`B` 的闭子集，当作拓扑空间），开集 `U := X_j \ {c_j}`
+  （`c_j := q_j(重心)`）、`V := Int D_j`，`U ∩ V` = 去心开盘。`π₁(V) = 1`；`π₁(U ∩ V) ≅ ℤ`
+  （`Topology/FundamentalGroup/Circle.lean` 的 `fundamentalGroupCircleEquivInt` 沿 `q_j` 搬运），其生成元在 `U` 中
+  同伦于边界环 `p_j`（沿 `q_j` 的径向同伦）；`π₁(U) ≅ π₁(X_{j-1})`（`U` 沿 `q_j` 径向强形变收缩到 `X_{j-1}`，
+  `Topology/Homotopy/DeformationRetract.lean`）。
+- van Kampen 用 `Topology/VanKampen/Based.lean`（`GrpCat` 中的 pushout）与 `AmalgamatedProduct.lean`；核公式用你在
+  scratch 已验证的 `ker_eq_normalClosure_range_of_isPushout_of_subsingleton`（移入正式文件）。
+  每步结论：`π₁(X_{j-1}) → π₁(X_j)` 满，核 = `⟨⟨p̄_j⟩⟩`。
+- 有限迭代：各步满射 + 核的合成 ⇒ `ker (π₁(B') → π₁(B)) = ⟨⟨p̄_1, …, p̄_k⟩⟩`；`B` 单连通
+  （`sphereTwoSimplyConnectedSpace` 沿 `IsPLSphere 2` 的 PL 同胚搬运）⇒ 端点。基点全程取 `P₀ ∈ B'`，
+  各环用连接道路；正规闭包与连接道路的选择无关（L.1 已证共轭类不依赖连接道路）。
+- 文件：`LoopTheorem/CellAttachmentKernel.lean`（单个胞腔的核定理，纯拓扑）、`LoopTheorem/BoundaryGeneration.lean`
+  （迭代与球面）。这组 2-胞腔贴合基础设施明确纳入本车道。
+- 第 3 砖的准备：Lemma 1 的 `B'` 是 `|L|` 在 `B` 中的导出邻域，是带边组合 2-流形（F4.2），边界为有限个不交多边形；
+  每个边界多边形用第 1 砖分 `B` 为两盘，`B'` 连通且不碰多边形内部，故落在一侧，另一侧就是补分支 `Δ_i`，
+  `B = B' ∪ ⋃ Δ_i`。这是接口 5.1 的输入。
+
+里程碑：M1 单胞腔核定理（含径向收缩与生成元自然性）→ 汇报；M2 端点 5.1 → 直接进第 3 砖（Lemma 1 条件版，`hpush` 显式）。
