@@ -2009,3 +2009,11 @@ F-M1 仍为 partial。单个旧三角形的全部纤维及逐边对应已闭合�
 `HeightIndexReduction.lean` 的 `heightIndex_lt_of_singular_comparison` 将实际奇异点嵌入和逐层比较合成为严格指标不等式：帽尖仍是奇异点时该项严格下降，否则正贡献的原点从嵌入像中消失。`exists_cap_pair_heightIndex_lt_of_pos` 从正的原指标实际选出正贡献点，生产两个指标均严格较小的有限 PL 球面、各自一般位置高度，以及可供 17.11 消费的平面公共盘与精确恢复式；同时环境同胚保持原球面的像位于给定凸开邻域内。没有增加结论型假设。
 
 聚焦检查：`OppositeTriangleCapPerturbation` exit=0（19.7 秒）、`HeightIndexReduction` exit=0（14 秒），均零 warning。`AuditF219.lean` 四端点全部仅依赖 `propext`、`Classical.choice`、`Quot.sound`。§19.56 与严格降指标已闭合，下一步做 Lemma 1 的良基归纳，把 S.4 归约到零指标球面，再闭合 M2 的零指标情形。F-M1 整体和 I1 尚未交付；下一审计文件 `AuditF220.lean`。
+
+### 19.71 S.4 M1 检查点：Lemma 1 的零指标归约闭合
+
+`SchoenfliesReduction.lean` 的 `isSimplyEmbedded_of_heightIndex_zero_case` 已对有限自然数指标作强归纳。正指标分支使用 §19.70 的实际两封帽生产者，分别由归纳假设得到两球面单嵌入，再由 `SchoenfliesInput` 的 17.11 字段拼合；最后复合指定凸开邻域外恒同的环境同胚，恢复原球面的单嵌入，完整保留 `IsSimplyEmbedded` 对每个凸开邻域的量词。任意 PL 球面的有限剖分和非零一般位置高度均由现有生产者选出。
+
+这里的零指标情形是 Lemma 1 要归约到的明确子问题，尚未作为新的 `SchoenfliesInput` 字段，也不是最终 17.12 端点。主定理实际完成从零指标子类到任意球面的归纳论证；S.4 的旧 M1 至此闭合。聚焦检查 exit=0（11.9 秒）、零 warning；`AuditF220.lean` 主端点仅依赖 `propext`、`Classical.choice`、`Quot.sound`。
+
+下一步进入 M2：先证明零指标时不存在高度奇异点，再证明中间水平截面为一条 PL 圆周及相邻层薄片边界单嵌入。M2/M3 与 I1 尚未交付，S.4 和夜间 F-M1 整体仍为 partial；下一审计文件 `AuditF221.lean`。
