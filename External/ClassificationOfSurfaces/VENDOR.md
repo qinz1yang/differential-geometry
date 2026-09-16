@@ -1480,3 +1480,44 @@ paths; `.lake/scratch/audit-s3-p3-s5-final.log` contains the final audit.
 No vendored Lean source changed in this continuation. The final
 checkpoint fetched and merged `origin/codex/moise-integration` before
 updating the plan and handoff documents.
+
+## Local boundary balls and nonsingular disk push-offs
+
+`ConvexCone.lean` now proves that a cone stays in a convex body and meets
+its frontier exactly in its base when its apex is interior.
+`BoundaryBall.lean` transports this construction through a PL ball
+parametrization. In every finite-dimensional real normed space of the
+appropriate dimension, a prescribed PL boundary disk can be cut out by
+a smaller PL ball with exactly that boundary intersection.
+
+`FrontierBoundary.lean` exposes the containment in the ambient complex
+already supplied by its closed-star construction. The previous
+`exists_isPLBall_closedStar_inter_boundary` signature is preserved as a
+corollary of `exists_isPLBall_subset_inter_boundary`.
+
+`LoopTheorem/BoundaryPush.lean` turns a parameterized PL disk into a
+nonsingular `SingularTwoCell`, preserving the exact boundary image.
+The complement disk on the frontier of a boundary ball supplies a
+push-off whose image lies in the ambient manifold and meets its boundary
+only in the prescribed boundary curve. This gives the full image and
+intersection conclusions locally and for a PL-ball ambient manifold.
+
+These are native preliminary lemmas for Moise Problem Set 26, Problems
+1-2 (printed pages 195-196), and Theorem 26.2 (printed pages 191-192).
+They do not yet prove that an arbitrary boundary disk spanning several
+charts lies in one boundary ball. The general `hpush` producer and the
+product collar of Theorem 26.2 remain open. No vendored Lean source was
+modified, and no unproved proposition or Schoenflies assumption was
+introduced into these local lemmas.
+
+All four changed/new modules pass the prescribed focused checks with
+exit 0 and zero warnings. `AuditS63.lean` audits 12 declarations, including
+the preserved closed-star interface: exit 0 and only `propext`,
+`Classical.choice`, and `Quot.sound`. Logs are
+`.lake/scratch/check-convexcone-boundary.log`,
+`check-frontierboundary-boundary.log`, `check-boundaryball-boundary.log`,
+`check-looptheorem-boundarypush-boundary.log`, and
+`audit-boundary-push-local.log`. `BallFrontier` was refreshed immediately
+before the consumer because its shared olean had been replaced by a
+version with a different exported theorem name. Source dependencies
+were obtained only through integration merges, including `5967f629c`.
