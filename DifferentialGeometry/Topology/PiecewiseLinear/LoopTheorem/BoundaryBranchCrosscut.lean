@@ -69,6 +69,26 @@ variable {M : Type u} [TopologicalSpace M]
   [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
   {D : SingularTwoCell M} {BdM B : Set M}
 
+private theorem disjoint_isPLBall_of_isCrosscut_of_subset_interior
+    {P A Q : Set (EuclideanSpace ℝ (Fin 2))}
+    {p q : EuclideanSpace ℝ (Fin 2)}
+    (h : Schoenflies.IsCrosscut (frontier P) A p q)
+    (hQ : IsPLBall 2 Q) (hQP : Q ⊆ interior P)
+    (hdisjoint : Disjoint A (frontier Q)) : Disjoint A Q := by
+  have hcover : A ⊆ interior Q ∪ Qᶜ := by
+    intro x hxA
+    by_cases hxQ : x ∈ Q
+    · exact Or.inl ((mem_interior_iff_notMem_frontier hxQ).mpr
+        (Set.disjoint_left.mp hdisjoint hxA))
+    · exact Or.inr hxQ
+  have hsplit := IsPreconnected.subset_or_subset isOpen_interior
+    hQ.isPolyhedron.isClosed.isOpen_compl
+    (disjoint_compl_right.mono_left interior_subset) hcover
+    h.arc.isArc.isConnected.isPreconnected
+  rcases hsplit with hAin | hAout
+  · exact (h.left_mem.2 (hQP (interior_subset (hAin h.arc.left_mem)))).elim
+  · exact Set.disjoint_left.mpr fun x hxA hxQ => hAout hxA hxQ
+
 open Classical in
 theorem exists_isCrosscut_of_isPLBall_subset_branchPreimage
     [T2Space M] (hD : NormalSingularCellData D BdM B)
@@ -175,6 +195,74 @@ theorem exists_two_isCrosscuts_branchPreimage_of_boundaryBranch
     hD.exists_two_isCrosscuts_branchPreimage_of_boundaryBranch_with_coordinate
       hc
   exact ⟨A, C, hA, hC, hdisjoint, hcover, hAcrosscut, hCcrosscut⟩
+
+open Classical in
+theorem exists_innermost_isPLBall_doublePointPreimage_decomposition_of_exists_not_boundaryBranch
+    [T2Space M] (hD : NormalSingularCellData D BdM B)
+    (hclosed : ∃ c : hD.singularSet.Branch,
+      ¬hD.singularSet.IsBoundaryBranch c) :
+    ∃ c : hD.singularSet.Branch,
+    ∃ J Q : Set (EuclideanSpace ℝ (Fin 2)),
+      ¬hD.singularSet.IsBoundaryBranch c ∧ IsPLSphere 1 J ∧
+        IsPLBall 2 Q ∧ Q ⊆ interior D.domain ∧ frontier Q = J ∧
+          doublePointPreimage D D.domain ∩ Q = J ∧
+            (hD.branchPreimage c = J ∨
+              ∃ T : Set (EuclideanSpace ℝ (Fin 2)),
+                IsPLSphere 1 T ∧ Disjoint J T ∧ hD.branchPreimage c = J ∪ T) := by
+  obtain ⟨c, J, Q, hc, hJ, hQ, hQsub, hfrontier, hclosedInter, hsplit⟩ :=
+    hD.exists_innermost_isPLBall_branchPreimage_decomposition_of_exists_not_boundaryBranch
+      hclosed
+  have hJsub : J ⊆ hD.branchPreimage c := by
+    rcases hsplit with hsingle | ⟨T, -, -, hcover⟩
+    · rw [hsingle]
+    · rw [hcover]
+      exact subset_union_left
+  have hfull : doublePointPreimage D D.domain ∩ Q = J := by
+    apply Subset.antisymm
+    · intro x hx
+      have hxunion : x ∈ ⋃ d : hD.singularSet.Branch, hD.branchPreimage d := by
+        rw [hD.iUnion_branchPreimage]
+        exact hx.1
+      obtain ⟨d, hxd⟩ := mem_iUnion.mp hxunion
+      by_cases hd : hD.singularSet.IsBoundaryBranch d
+      · obtain ⟨A, C, -, -, -, hcover, hAcrosscut, hCcrosscut⟩ :=
+          hD.exists_two_isCrosscuts_branchPreimage_of_boundaryBranch hd
+        have hdc : d ≠ c := by
+          intro h
+          subst d
+          exact hc hd
+        have hpreDisjoint : Disjoint (hD.branchPreimage d) (hD.branchPreimage c) :=
+          hD.pairwise_disjoint_branchPreimage hdc
+        have hAsub : A ⊆ hD.branchPreimage d := by
+          rw [hcover]
+          exact subset_union_left
+        have hCsub : C ⊆ hD.branchPreimage d := by
+          rw [hcover]
+          exact subset_union_right
+        have hAfrontier : Disjoint A (frontier Q) := by
+          rw [hfrontier]
+          exact Disjoint.mono hAsub hJsub hpreDisjoint
+        have hCfrontier : Disjoint C (frontier Q) := by
+          rw [hfrontier]
+          exact Disjoint.mono hCsub hJsub hpreDisjoint
+        obtain ⟨p, q, hAcrosscut⟩ := hAcrosscut
+        obtain ⟨r, s, hCcrosscut⟩ := hCcrosscut
+        have hAQ : Disjoint A Q :=
+          disjoint_isPLBall_of_isCrosscut_of_subset_interior hAcrosscut hQ hQsub hAfrontier
+        have hCQ : Disjoint C Q :=
+          disjoint_isPLBall_of_isCrosscut_of_subset_interior hCcrosscut hQ hQsub hCfrontier
+        rcases hcover.subset hxd with hxA | hxC
+        · exact (Set.disjoint_left.mp hAQ hxA hx.2).elim
+        · exact (Set.disjoint_left.mp hCQ hxC hx.2).elim
+      · have hxclosed : x ∈ ⋃ d : {d : hD.singularSet.Branch //
+            ¬hD.singularSet.IsBoundaryBranch d}, hD.branchPreimage d.1 :=
+          mem_iUnion.mpr ⟨⟨d, hd⟩, hxd⟩
+        exact hclosedInter.subset ⟨hxclosed, hx.2⟩
+    · intro x hxJ
+      refine ⟨hD.branchPreimage_subset_doublePointPreimage c (hJsub hxJ), ?_⟩
+      exact hQ.isPolyhedron.isClosed.closure_eq ▸
+        frontier_subset_closure (hfrontier.symm.subset hxJ)
+  exact ⟨c, J, Q, hc, hJ, hQ, hQsub, hfrontier, hfull, hsplit⟩
 
 end NormalSingularCellData
 
