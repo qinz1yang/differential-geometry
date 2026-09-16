@@ -1734,9 +1734,11 @@ import DifferentialGeometry.Analysis.Sobolev.Euclidean.Embedding.Morrey.HigherOr
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Embedding.Morrey.RieszKernel
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Embedding.Morrey.SmoothHolderBound
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Embedding.Morrey.SmoothInequality
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.Embedding.Rellich.Affine
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Embedding.Rellich.Basic
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Embedding.Rellich.HigherOrder
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Embedding.Rellich.Vector
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.Embedding.Rellich.WeakGradient
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.FiniteSumReindex
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.FiniteWeakPartialSource
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.H1Energy
@@ -1774,6 +1776,7 @@ import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakPartialSource
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakPartialTree
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakPartialUniqueness
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakPartialWkpTwo
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.ZeroBoundaryGraph
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.ZeroExtension
 import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenberg.FiberNorm.Basic
 import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenberg.FiberNorm.CovariantDerivativeFrameSum
