@@ -1819,3 +1819,9 @@ F-M2–F-M6 尚未开始；按用户指定顺序推进，只有出现 §1 接口
 `TriangleCapSingularComparison.lean` 的主端点已加强并提交为 `16202494b`。`exists_triangle_cap_with_singular_comparison` 现在接受保留盘在共同水平边界附近统一位于低侧或统一位于高侧的析取输入；低侧直接调用参数化三角帽共同细分，高侧调用取负高度得到的对称版本。两条分支返回完全相同的有限球面、帽边正规性和局部化数据，后续奇异点包含、逐旧顶点成员关系及层圆周数不增的证明无需分叉。
 
 加强后的模块聚焦检查 exit=0（12.1 秒）、零 warning；`AuditF193.lean` 两个端点均仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步从参数化三角切割的相反侧芽构造 A、B 各自的半空间析取和边界等高集合芽，同时实例化两张封帽球面，并统一选择满足两边一般位置与帽内严格分离的高度。F-M1 仍为 partial，严格指标下降、Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF194.lean`。
+
+### 19.46 F-M1：相反半空间芽同时识别共同边界的两侧
+
+`ParameterizedTriangleCap.lean` 已加强并提交为 `521027c3d`。新端点 `eventually_mem_inter_iff_right_and_eq_of_opposite_halfSpaces` 与原左侧版本对称：两闭片在某点附近分别位于同一函数的相反闭半空间、且交集等于共同边界时，共同边界的集合芽也精确等于右片内的等高集合芽。证明直接使用两个成员等价和反对称性，不交换参数化盘或环境同胚。
+
+模块聚焦检查 exit=0（12.8 秒）、零 warning；`AuditF194.lean` 左侧、右侧及共同细分三个端点均仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步按参数化三角切割返回的两种相反侧分支，分别构造 A、B 的半空间析取与各自边界等高芽，并调用统一单帽比较得到两张有限 PL 球面。F-M1 仍为 partial，严格指标下降、Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF195.lean`。
