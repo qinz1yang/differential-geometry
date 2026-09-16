@@ -1895,3 +1895,9 @@ Moise 17.12 的两个相反转轴现已分别构造，且每张封帽球面的�
 `SingularNormalForm.lean` 已提交并推送为 `63077045e`。`IsNormalSingularCell` 同时记录局部单射、至多二重纤维、边界像约束、精确奇点图的一维带边组合三角剖分，以及每个双点的坐标 crossing。边界双点由 `HasPLNormalDoubleCrossingAt` 的第一分支表达：点位于坐标边界像，并显式给出实际局部半空间集合和 `HasPLBoundaryDoubleCrossingAt`；内部点由第二分支给出 `HasPLDoubleCrossingAt`。局部半空间没有误写成二维边界集合，也没有作为图册自动提供的无根据数据。
 
 基本 API 包含 `HasPLNormalDoubleCrossingAt.postcomp_openPartialHomeomorph` 的坐标后复合搬运、`IsNormalSingularCell.locallyInjective_restrict`、`fiber_le_two_restrict`、`doublePointSet_mono` 的源子集限制，以及 `exists_crossing_chart`。聚焦检查 exit=0（12.1 秒）、零 warning；`AuditF204.lean` 七项均只依赖 `propext`、`Classical.choice`、`Quot.sound`。F-M2 done；F-M1 的相对层圆周删除缺口仍保持 §19.56 的精确形式。下一里程碑 F-M3 写 `TwoFoldCrossing.lean`；下一审计文件 `AuditF205.lean`。
+
+### 19.58 F-M3：两张折叠曲面的共同拉直与 crossing
+
+`TwoFoldCrossing.lean` 已提交并推送为 `10fd6827e`。`exists_common_direction_of_eq_apply` 在两条一维折线方向张成的共同折叠平面两侧，显式解出两张半片平面的共同横向方向。`exists_isPLHomeomorphOn_straighten_two_folds` 将正、负方向分别归一到高度 1 和 −1，再用固定整个折叠平面的分片线性剪切把负方向送到正方向；同一个全局 PL 同胚因而同时把两张折叠曲面拉直为 `S ⊔ span {w}` 与 `T ⊔ span {w}`。
+
+主端点 `hasPLCrossingAt_of_two_folds` 证明三维空间中，若两个一维折线方向共同张成折叠平面的高度核，且每张曲面的两个半片分别严格位于该平面两侧，则两张局部折叠曲面在交点满足 `HasPLCrossingAt`。一维条件、三维维数和核的张成等式已经排除两条折线重合；四个严格高度符号给出各半片的横截性，没有另加 crossing 假设。聚焦检查 exit=0（12.2 秒）、零 warning；`AuditF205.lean` 七项均只依赖标准三公理。F-M3 done；下一里程碑 F-M4 写 `ArrangementGeneralPosition.lean`，下一审计文件 `AuditF206.lean`。
