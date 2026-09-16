@@ -412,3 +412,21 @@ theorem eq_top_of_boundaryLoops_mem_normal
 - 尚未闭合的表示步骤只剩二重覆盖原像连通分支与 `D.domain` 相容的有限 PL 三角剖分；它负责把 §11 的拓扑同胚分支升级为
   盘内多边形圆或折线。其后 Case 1–4 的环带正则邻域、盘替换与切开重建，以及 I3 边界半空间析取到双片覆盖的桥接仍未闭合，
   也没有被弱化为显式假设。
+
+## 18. 2026-09-16 E3-M2 追加：实际分支载体的多面体类型与边界定位
+
+状态：done（目标中的分支载体类型及其环境边界定位已闭合，整体 L.3 仍为 partial）。数学提交 `c9dd16be0`。
+
+- `NormalSingularSetTriangulation.branchPieceIn` 将目标中的实际 `branchCarrier` 表示为原 PL 片在 `branchComplex` 上的限制；
+  `branchCarrier_isPolyhedralSphere` 与 `branchCarrier_isPolyhedralBall` 因而把 §16–§17 的源复形分类搬到目标，分别证明闭分支载体是
+  一维多面体球面、触边分支载体是一维多面体球。
+- `isBoundaryBranch_of_mem_branchComplex_space_of_map_mem_boundary` 证明分支中任一点若映入 `BdM`，该分支必为触边分支；
+  `branchCarrier_disjoint_boundary_of_not_isBoundaryBranch` 因而证明闭分支完全位于 `BdM` 外。
+  `branchCarrier_inter_boundary_nonempty_of_isBoundaryBranch` 反向证明每个触边分支确实接触 `BdM`；
+  `NormalSingularCellData.branchCarrier_inter_boundary_subset` 再证明所有实际边界接触点都落在指定边界邻域 `B`。
+- `BranchCarrier` 聚焦检查 exit=0、零 warning；更新后的 `.lake/scratch/AuditBranchCarrier.lean` 共 47 项，
+  全部只含 `propext`、`Classical.choice`、`Quot.sound`。本层未首次复用新的 covering/Van Kampen 声明。
+- 尚未闭合的精确表示缺口是：给 `doublePointProjection` 在每个 `branchSet` 上的连通原像分支构造与 `D.domain` 相容的有限 PL 三角剖分，
+  从而把 §11 的拓扑二重覆盖分类升级为盘内的一条或两条多边形圆/折线；现有 `SingularTwoCell.isPLOn` 没有携带源三角剖分，
+  本树也没有任意抽象 PL 映射下多面体原像仍为多面体的生产者。之后仍须完成 Case 1–4 的环带正则邻域、盘替换、切开重建，
+  以及 I3 的边界半空间析取到 `HasDoublePointSheetsAt` 的桥接；这些步骤没有被弱化为假设。
