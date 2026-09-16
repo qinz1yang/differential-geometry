@@ -496,3 +496,19 @@ theorem eq_top_of_boundaryLoops_mem_normal
 - 下一精确义务是用 `branchCoordinate|A` 与 `branchCoordinate|C` 组成弧间 PL 同胚，把 §20 的首尾盘分别与中盘按书页 186–187
   的两种交叉配对调用该端点，并识别所得两张新盘的外边界环为 Case 3/4 的 `L₁,L₂`。此后仍须为至少一张新胞腔重建
   `NormalSingularCellData` 并证明触边分支数严格下降；Case 1/2 的环带重定义与内盘替换也尚未闭合。
+
+## 22. 2026-09-16 E3-M2 追加：分支双层识别与三盘缝边界
+
+状态：done（交叉重贴所需的弧间识别与缝边界数据已闭合，Case 3/4 的外边界环识别仍为 partial）。
+
+- `BranchPreimage.lean` 的 `NormalSingularCellData.exists_isPLHomeomorphOn_branch_sheets` 取触边分支的两条源 PL 1-球 `A,C`，
+  用 `branchCoordinate|A` 与 `branchCoordinate|C` 的逆合成规范 PL 同胚 `g : A → C`，并由两侧经同一 `branchPieceIn.map`
+  证明 `EqOn D (D ∘ g) A`。这是 `SingularTwoCell.exists_glue_of_isPLHomeomorphOn_boundary_arc` 的精确相容性输入。
+- `CutAndPaste.lean` 加强三盘链分解：除 `D₁∩D₂=A` 与 `D₂∩D₃=C` 外，现在显式交付
+  `A ⊆ frontier D₁.domain ∩ frontier D₂.domain` 及
+  `C ⊆ frontier D₂.domain ∩ frontier D₃.domain`。其中中盘的 `A` 边界性由内部单调性与分割前盘的边界性推出。
+- `BranchPreimage` 与 `CutAndPaste` 聚焦检查均 exit=0、零 warning；更新后的 `.lake/scratch/AuditE3M2.lean` 共 37 项，
+  全部只含 `propext`、`Classical.choice`、`Quot.sound`。本层没有新增 covering/Van Kampen 复用声明。
+- 下一精确义务是将首、尾盘沿 `g` 调用边界弧贴合端点，再证贴合盘的剩余边界正是书页 186/187 的
+  `συ⁻¹` 或 `συ`。当前贴合端点保留两侧参数化与公共缝，但还没有“两盘沿边界 1-球贴合后，新盘 frontier 等于两侧补弧之并”的精确集合恒等式；
+  这一表示引理是识别 `L₁` 的当前精确缺口，未用假设绕过。
