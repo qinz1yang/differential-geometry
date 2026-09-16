@@ -268,3 +268,16 @@ theorem exists_orientationCocycle_of_not_isOrientable : ¬ IsOrientable n K →
 H.6、H.4a、H.5 顺序不变。整合分支现已含 Bennett 的 `Topology/Homology/{Coefficients, ChangeOfRings, CoveringTransfer*,
 Reduced/MayerVietorisCoefficients, Reduced/PointClasses}`（`REUSE_AUDIT.md` §2），H.5 的 ℤ₂/ℚ 系数与二重覆盖 transfer 可直接用；
 下一个检查点先合并 `origin/codex/moise-integration`。检查点：H.2a 的细分不变性做完汇报，再做 H.2b。
+
+## 8. 夜间里程碑（2026-09-15 → 09-16）
+
+### H-M1 — done，I4 已交付
+
+- 数学提交：`85cd6e095`（局部定向上循环构造）、`fe39d3cca`（上边界等价与非平凡性）；H.2a 已由 `87b44df51` 交付。
+- 整合基线：已合并包含 `8fb887bb9` 的整合分支，H 合并提交 `050f9246e`。
+- 文件：`OrientationCocycle.lean`，辅助 `DerivedCarrier.lean`；`Orientation.lean` 的限制接口现包含零维。
+- I4 三端点：`orientationCocycle`、`orientationCocycle_isCoboundary_iff`、`exists_orientationCocycle_of_not_isOrientable`。
+  局部族是每个非空面的 `faceStarComplex` 的相干定向；任意维数、有限复形、有限维实赋范环境，无公开 `DecidableEq`。
+- 夜间复核：`check-f.ps1` 检查 `OrientationCocycle` exit=0、零 warning（56.6 秒）；
+  `.lake/scratch/AuditNightHM1.lean` 保留 24 项命名空间完整的 `#print axioms`，审计 exit=0，12 项核心与 12 项复用声明仅三公理。
+- 确切缺口：I4 无；C.4 覆盖流形的可定向性不是本里程碑端点，余力在 H-M5 做。下一项 H-M2。
