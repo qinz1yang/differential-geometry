@@ -897,3 +897,26 @@ Each source checkpoint was followed by fetch and merge of the integration branch
 already up to date at `8fb887bb9`. The final bookkeeping commit changes only this handoff and
 the B.3 plan row. Full 26.2 remains partial for the precise obligations above; exact bundled
 I2 is not marked delivered, and the P.4 obligations remain unchanged.
+
+### S-M4 continuation: density and persistence on complementary boundaries
+
+`BallDensity.lean` proves `IsPLBall.closure_sdiff_eq_of_isPLBall`,
+`IsPLBall.closure_sdiff_iUnion_eq`, and
+`IsPLBall.closure_sdiff_eq_of_inter_subset_iUnion`: deleting a finite union of
+strictly lower-dimensional PL balls from a positive-dimensional PL ball leaves a dense subset.
+`BoundaryDiskPersistence.lean` combines this with the exact complementary-boundary formula.
+Its two public endpoints preserve disks from either the old boundary or the newly exposed
+ball boundary when the removed intersection has such a finite lower-dimensional cover.
+These results are in arbitrary finite-dimensional real normed ambient spaces.
+
+Both modules have focused-check exit 0, zero warnings; logs are
+`check-ball-density.log` and `check-boundary-disk-persistence.log`.
+`AuditS85BoundaryDiskPersistence.lean` / `.log` contain five entries, all with only
+`propext`, `Classical.choice`, and `Quot.sound`. No new assumptions on Schoenflies,
+no vendored source changes, and no other-lane source changes are involved.
+The source commit hash is recorded at the next checkpoint.
+
+Full 26.2 remains partial. Next: produce the lower-dimensional intersection covers for
+actual old collar patches and newly added vertical strips, then construct the finite
+boundary cell ordering and finish the induction and whole-boundary neighborhood property.
+The exact bundled I2 target-type issue is unchanged.
