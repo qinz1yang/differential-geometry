@@ -2588,3 +2588,29 @@ The focused check exits 0 with zero warnings. AuditS141ArcChain checks both
 endpoints, exit 0, only the standard three axioms. For the endpoint-access
 construction, the remaining step is now the continuous injective
 parametrization of the shrinking arc chain together with its limiting point.
+
+## Auxiliary simple arcs at arbitrary planar arc endpoints (2026-09-16)
+
+`PlanarJordan/EndpointAccess.lean` proves
+`Schoenflies.IsArcBetween.exists_isArcBetween_inter_eq_singleton`: for an
+arbitrary planar arc from `p` to `q` and any neighborhood `U` of `p`, it
+constructs an arc from `p` to a new endpoint, wholly in `U`, whose intersection
+with the original arc is exactly `{p}`. No polygonality, side-selection,
+accessibility, or Schoenflies hypothesis is assumed.
+
+The proof uses the constructed shrinking open chain and its trimmed polygonal
+arc chain. `ArcChainLimit.lean` proves that adding the limiting point to such a
+shrinking simple chain gives a simple arc, with the exact union as its image.
+`Topology/PathConcatenation.lean` supplies the reusable topological machinery:
+countable compatible paths concatenate continuously on the nonnegative real
+axis, shrinking images force a limit at infinity, and reciprocal
+reparametrization extends that limit continuously to the endpoint of a closed
+unit interval. Injectivity and the exact image are checked separately for the
+simple arc chain.
+
+The three new modules check with exit 0 and zero warnings. AuditS142EndpointAccess
+checks six declarations, including the auxiliary-arc endpoint; exit 0, only the
+standard three axioms. The auxiliary arc asserted in Moise 10.8 is now proved.
+Remaining P.4 assembly: use it to straighten degree-one vertex germs, include
+those vertices in the finite graph assembly, and finish arbitrary positive-
+function displacement control.
