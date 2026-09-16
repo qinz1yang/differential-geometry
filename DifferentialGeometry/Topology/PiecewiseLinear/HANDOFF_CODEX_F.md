@@ -1657,3 +1657,9 @@ F-M2–F-M6 尚未开始；按用户指定顺序推进，只有出现 §1 接口
 `ConvexBoundaryLink.lean` 已提交并推送为 `99b1121b8`。主端点 `geometricLink_section_subsingleton_of_supporting_fiber` 处理三角形凸包中任意支撑边界点：若线性支撑函数在整个三角形上于该点取最小值，且新高度纤维与支撑面的等值集只在该点相交，则复形几何链环与新高度层的交至多一点。证明用三角形方向平面与高度核的一维交、支撑函数排除反向比例，以及几何链环径向单射性；支撑条件真实约束凸帽，不包含目标结论。
 
 模块聚焦检查 exit=0（11.8 秒）、零 warning；`AuditF166.lean` 主端点仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步从三角形仿射独立性为每条边构造支撑线性函数，并由高度在该边两端取值不同推出支撑面纤维唯一；这将覆盖帽边细分顶点的帽侧链环。保留盘侧的符号弧仍需随后拼接。F-M1 仍为 partial，Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF167.lean`。
+
+### 19.19 F-M1：三角帽边内部点的链环等高截面至多一点
+
+`TriangleEdgeLink.lean` 已提交并推送为 `55ed65b59`。`injOn_linearMap_convexHull_of_card_eq_two` 将线性高度在二元素顶点集上的单射性推广到整条边；`exists_linearMap_supporting_simplex_facet` 从单纯形的仿射无关性构造对边的规范支撑泛函，并精确刻画其最小值集合。主端点 `geometricLink_section_subsingleton_of_simplex_facet` 因而证明：三角形任一对边上的点，只要高度在三角形三个顶点上单射，则三角帽侧的几何链环与该点等高层的交至多一点。支撑泛函与对边纤维唯一性均在证明中构造，不作为新增输入。
+
+模块聚焦检查 exit=0（12.9 秒）、零 warning；`AuditF167.lean` 三个端点均仅依赖 `propext`、`Classical.choice`、`Quot.sound`。帽侧链环弧已经覆盖真实角点和边内部点。下一步利用 `HeightSides.lean` 的相反单侧结论与小高度扰动控制保留盘侧链环弧，再将两侧合并为完整链环截面 `encard ≤ 2`。F-M1 仍为 partial，严格降指标、Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF168.lean`。
