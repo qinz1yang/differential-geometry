@@ -570,3 +570,22 @@ theorem eq_top_of_boundaryLoops_mem_normal
   第二，当前 I3 数据没有“沿一个完整触边分支重贴后仍有相容的正规三角剖分”生产者，故还不能为 `G` 重建
   `IsNormalSingularCell`，也不能证明所有新双点来自除 `c` 外的旧分支，从而严格降低复杂度。这两项均未被改成结论型假设；
   Case 1/2 的环带重定义、内盘替换与 I2 推离亦仍待完成。
+
+## 26. 2026-09-16 E3-M2 追加：F 的 I3 原生接口对接
+
+状态：done（触边分支构造已直接消费 `IsNormalSingularCell` 的正规交叉数据，不再带同形的显式 boundary-crossing 假设）。
+数学提交 `67068fb77`。
+
+- `NormalCell.lean` 将 `NormalSingularCellData.crossing` 校正为 I3 的
+  `HasPLNormalDoubleCrossingAt`，并新增 `IsNormalSingularCell.exists_normalSingularCellData`，直接从 F 的
+  `doublePointSet_triangulated` 见证构造本车道带显式奇点集三角剖分的数据。
+- `DoublePointCover.lean` 新增 `doublePointSheetsAt_of_hasPLBoundaryDoubleCrossingAt_chart`；边界半空间双交叉与内部双交叉现在都给出
+  `doublePointProjection` 的局部双层，从而原有覆盖空间链保持有效。
+- `BoundaryCrossing.lean` 的 `NormalSingularCellData.exists_boundary_crossing_chart` 从 I3 的析取和
+  `y ∈ BdM` 自动排除内部分支。`BoundaryBranchCrosscut.lean` 与 `CutAndPaste.lean` 因而删除了贯穿多个端点的显式
+  `hboundaryCrossing` 参数；Case 3/4 的 crosscut、三盘链与外侧盘手术现在只条件于 I3 本身。
+- 按依赖顺序重检 `NormalCell`、`BranchCarrier`、`DoublePointCover`、`BranchPreimage`、`BranchBoundary`、
+  `BoundaryCrossing`、`BoundaryBranchCrosscut`、`CutAndPaste`，全部 exit=0、零 warning；
+  `.lake/scratch/AuditE3M2.lean` 共 47 项，全部只含 `propext`、`Classical.choice`、`Quot.sound`。
+- 本次对接没有消除 §25 末尾记录的两个剩余义务：需要从手术盘重建 I3 并严格降低复杂度，以及把边界补弧表示接到书中道路字。
+  它只消除了此前 I3 已交付却仍重复显式要求边界交叉的接口偏差。
