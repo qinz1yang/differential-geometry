@@ -519,6 +519,49 @@ theorem iUnion_branchPreimage
     obtain ⟨c, hxc⟩ := mem_iUnion.mp hxunion
     exact mem_iUnion.mpr ⟨c, hxD, hxc⟩
 
+theorem injOn_of_doublePointPreimage_inter_eq_of_branchCoordinate
+    (hD : NormalSingularCellData D BdM B) {c : hD.singularSet.Branch}
+    {J Q : Set (EuclideanSpace ℝ (Fin 2))}
+    (hJsub : J ⊆ hD.branchPreimage c) (hQsub : Q ⊆ D.domain)
+    (hinter : doublePointPreimage D D.domain ∩ Q = J)
+    (hcoordinate : IsPLHomeomorphOn (hD.branchCoordinate c) J
+      (hD.singularSet.branchComplex c).space) :
+    InjOn D Q := by
+  intro x hxQ y hyQ hxy
+  by_contra hne
+  have hxD : x ∈ D.domain := hQsub hxQ
+  have hyD : y ∈ D.domain := hQsub hyQ
+  have hxDouble : x ∈ doublePointPreimage D D.domain :=
+    ⟨hxD, x, hxD, y, hyD, hne, rfl, hxy.symm⟩
+  have hyDouble : y ∈ doublePointPreimage D D.domain :=
+    ⟨hyD, y, hyD, x, hxD, Ne.symm hne, rfl, hxy⟩
+  have hxJ : x ∈ J := hinter.subset ⟨hxDouble, hxQ⟩
+  have hyJ : y ∈ J := hinter.subset ⟨hyDouble, hyQ⟩
+  apply hne
+  apply hcoordinate.bijOn.injOn hxJ hyJ
+  apply (hD.singularSet.branchPieceIn c).bijOn.injOn
+  · exact hD.branchCoordinate_mem c (hJsub hxJ)
+  · exact hD.branchCoordinate_mem c (hJsub hyJ)
+  · exact (hD.branchPieceIn_map_branchCoordinate c (hJsub hxJ)).trans
+      (hxy.trans (hD.branchPieceIn_map_branchCoordinate c (hJsub hyJ)).symm)
+
+theorem restrict_isNonsingular_of_doublePointPreimage_inter_eq_of_branchCoordinate
+    (hD : NormalSingularCellData D BdM B) {c : hD.singularSet.Branch}
+    {J Q : Set (EuclideanSpace ℝ (Fin 2))}
+    (hJsub : J ⊆ hD.branchPreimage c) (hQ : IsPLBall 2 Q)
+    (hQsub : Q ⊆ D.domain) (hfrontier : frontier Q = J)
+    (hinter : doublePointPreimage D D.domain ∩ Q = J)
+    (hcoordinate : IsPLHomeomorphOn (hD.branchCoordinate c) J
+      (hD.singularSet.branchComplex c).space) :
+    (D.restrict hQ hQsub).IsNonsingular ∧
+      Set.range (D.restrict hQ hQsub).boundary = D '' J := by
+  constructor
+  · exact (D.restrict_isNonsingular_iff hQ hQsub).mpr
+      (hD.injOn_of_doublePointPreimage_inter_eq_of_branchCoordinate hJsub hQsub
+        hinter hcoordinate)
+  · exact (D.range_boundary_restrict hQ hQsub).trans
+      (congrArg (fun S => D '' S) hfrontier)
+
 theorem branchPreimage_isCompact [T2Space M]
     (hD : NormalSingularCellData D BdM B) (c : hD.singularSet.Branch) :
     IsCompact (hD.branchPreimage c) := by
@@ -1066,6 +1109,100 @@ theorem branchPreimage_isPLSphere_or_exists_two_isPLSpheres_of_not_boundaryBranc
       (hKspace.symm.trans hCcover) hsplit
 
 open Classical in
+theorem branchPreimage_isPLSphere_or_exists_two_isPLSpheres_with_coordinate_of_not_boundaryBranch
+    [T2Space M] (hD : NormalSingularCellData D BdM B)
+    {c : hD.singularSet.Branch} (hc : ¬hD.singularSet.IsBoundaryBranch c) :
+    IsPLSphere 1 (hD.branchPreimage c) ∨
+      ∃ S T : Set (EuclideanSpace ℝ (Fin 2)),
+        IsPLSphere 1 S ∧ IsPLSphere 1 T ∧ Disjoint S T ∧
+          hD.branchPreimage c = S ∪ T ∧
+            IsPLHomeomorphOn (hD.branchCoordinate c) S
+              (hD.singularSet.branchComplex c).space ∧
+            IsPLHomeomorphOn (hD.branchCoordinate c) T
+              (hD.singularSet.branchComplex c).space := by
+  let P := hD.branchPreimage c
+  let L := hD.singularSet.branchComplex c
+  let f := hD.branchCoordinate c
+  let p := hD.branchProjection c
+  obtain ⟨K, hKfinite, hKspace, hKman, -, -⟩ :=
+    hD.exists_branchPreimage_simplicialComplex_manifold_of_not_boundaryBranch hc
+  let _ : Finite K.faces := hKfinite.to_subtype
+  obtain ⟨C, hCfinite, hCsphere, hCdisjoint, hCcover⟩ :=
+    exists_finite_isPLSphere_decomposition K hKman
+  have hcover : P = ⋃₀ C := hKspace.symm.trans hCcover
+  rcases hD.branchProjection_connected_or_two_components c with hconnected | hsplit
+  · left
+    change IsPLSphere 1 P
+    rw [hcover]
+    apply (isPLSphere_one_sUnion_iff_isConnected hCfinite hCsphere hCdisjoint).mpr
+    rw [← hcover]
+    exact isConnected_iff_connectedSpace.mpr hconnected
+  · obtain ⟨x, y, hxy, hcomponents, ⟨eS, heS⟩, ⟨eT, heT⟩⟩ := hsplit
+    have hCconnected : ∀ S ∈ C, IsConnected S := by
+      intro S hS
+      exact (hCsphere S hS).isConnected_one
+    have hCclosed : ∀ S ∈ C, IsClosed S := by
+      intro S hS
+      exact (hCsphere S hS).isPolyhedron.isClosed
+    obtain ⟨S, T, hSC, hTC, hAS, hBT⟩ :=
+      exists_partition_members_of_two_component_split (hD.branchPreimage_isCompact c)
+        hCfinite hCconnected hCclosed hCdisjoint hcover hxy hcomponents
+    let A : Set (EuclideanSpace ℝ (Fin 2)) :=
+      ((↑) : P → EuclideanSpace ℝ (Fin 2)) '' connectedComponent x
+    let R : Set (EuclideanSpace ℝ (Fin 2)) :=
+      ((↑) : P → EuclideanSpace ℝ (Fin 2)) '' connectedComponent y
+    have hApoly : IsPolyhedron A := by
+      change IsPolyhedron (((↑) : P → EuclideanSpace ℝ (Fin 2)) '' connectedComponent x)
+      rw [hAS]
+      exact (hCsphere S hSC).isPolyhedron
+    have hRpoly : IsPolyhedron R := by
+      change IsPolyhedron (((↑) : P → EuclideanSpace ℝ (Fin 2)) '' connectedComponent y)
+      rw [hBT]
+      exact (hCsphere T hTC).isPolyhedron
+    have hAsub : A ⊆ P := by
+      rintro z ⟨w, -, rfl⟩
+      exact w.2
+    have hRsub : R ⊆ P := by
+      rintro z ⟨w, -, rfl⟩
+      exact w.2
+    have hp (z : P) :
+        (p z : EuclideanSpace ℝ (Fin hD.singularSet.piece.ambientDim)) = f z := rfl
+    have hAbij : BijOn f A L.space :=
+      bijOn_componentImage_of_homeomorph f p hp eS heS
+    have hRbij : BijOn f R L.space :=
+      bijOn_componentImage_of_homeomorph f p hp eT heT
+    have hAPL : IsPLHomeomorphOn f A L.space :=
+      isPLHomeomorphOn_of_isPiecewiseAffineOn_of_bijOn hApoly
+        ((hD.branchCoordinate_isPiecewiseAffineOn c).mono_of_isPolyhedron hApoly hAsub) hAbij
+    have hRPL : IsPLHomeomorphOn f R L.space :=
+      isPLHomeomorphOn_of_isPiecewiseAffineOn_of_bijOn hRpoly
+        ((hD.branchCoordinate_isPiecewiseAffineOn c).mono_of_isPolyhedron hRpoly hRsub) hRbij
+    have hAsphere : IsPLSphere 1 A := by
+      change IsPLSphere 1
+        (((↑) : P → EuclideanSpace ℝ (Fin 2)) '' connectedComponent x)
+      rw [hAS]
+      exact hCsphere S hSC
+    have hRsphere : IsPLSphere 1 R := by
+      change IsPLSphere 1
+        (((↑) : P → EuclideanSpace ℝ (Fin 2)) '' connectedComponent y)
+      rw [hBT]
+      exact hCsphere T hTC
+    have hdisjoint : Disjoint A R :=
+      (Set.disjoint_image_iff Subtype.val_injective).mpr hxy
+    have hARcover : A ∪ R = P := by
+      apply Subset.antisymm
+      · exact union_subset hAsub hRsub
+      · intro z hz
+        let w : P := ⟨z, hz⟩
+        have hw : w ∈ connectedComponent x ∪ connectedComponent y := by
+          rw [hcomponents]
+          exact mem_univ w
+        rcases hw with hw | hw
+        · exact Or.inl ⟨w, hw, rfl⟩
+        · exact Or.inr ⟨w, hw, rfl⟩
+    exact Or.inr ⟨A, R, hAsphere, hRsphere, hdisjoint, hARcover.symm, hAPL, hRPL⟩
+
+open Classical in
 theorem branchPreimage_isPLSphere_or_exists_two_isPLSpheres_with_innermost_disk_of_not_boundaryBranch
     [T2Space M] (hD : NormalSingularCellData D BdM B)
     {c : hD.singularSet.Branch} (hc : ¬hD.singularSet.IsBoundaryBranch c) :
@@ -1229,6 +1366,41 @@ theorem exists_innermost_isPLBall_branchPreimage_decomposition_of_exists_not_bou
     · have hJT' : J = T := eq_of_subset_of_isPLSphere_one hJ hT hJT
       exact Or.inr ⟨S, hS, hJT' ▸ hdisjoint.symm,
         hcover.trans ((hJT' ▸ union_comm S T))⟩
+
+open Classical in
+theorem exists_innermost_isPLBall_branchPreimage_decomposition_with_coordinate_of_exists_not_boundaryBranch
+    [T2Space M] (hD : NormalSingularCellData D BdM B)
+    (hclosed : ∃ c : hD.singularSet.Branch,
+      ¬hD.singularSet.IsBoundaryBranch c) :
+    ∃ c : hD.singularSet.Branch,
+    ∃ J Q : Set (EuclideanSpace ℝ (Fin 2)),
+      ¬hD.singularSet.IsBoundaryBranch c ∧ IsPLSphere 1 J ∧
+        IsPLBall 2 Q ∧ Q ⊆ interior D.domain ∧ frontier Q = J ∧
+          (⋃ d : {d : hD.singularSet.Branch //
+              ¬hD.singularSet.IsBoundaryBranch d}, hD.branchPreimage d.1) ∩ Q = J ∧
+            (hD.branchPreimage c = J ∨
+              ∃ T : Set (EuclideanSpace ℝ (Fin 2)),
+                IsPLSphere 1 T ∧ Disjoint J T ∧ hD.branchPreimage c = J ∪ T ∧
+                  IsPLHomeomorphOn (hD.branchCoordinate c) J
+                    (hD.singularSet.branchComplex c).space ∧
+                  IsPLHomeomorphOn (hD.branchCoordinate c) T
+                    (hD.singularSet.branchComplex c).space) := by
+  obtain ⟨c, J, Q, hc, hJ, hJsub, hQ, hQsub, hfrontier, hinter⟩ :=
+    hD.exists_innermost_isPLBall_branchPreimage_of_exists_not_boundaryBranch hclosed
+  refine ⟨c, J, Q, hc, hJ, hQ, hQsub, hfrontier, hinter, ?_⟩
+  rcases
+      hD.branchPreimage_isPLSphere_or_exists_two_isPLSpheres_with_coordinate_of_not_boundaryBranch
+        hc with hsingle | ⟨S, T, hS, hT, hdisjoint, hcover, hScoord, hTcoord⟩
+  · exact Or.inl (eq_of_subset_of_isPLSphere_one hJ hsingle hJsub).symm
+  · have hsub : J ⊆ S ∪ T := hJsub.trans hcover.subset
+    rcases subset_or_subset_of_isPreconnected_of_isClosed hJ.isConnected_one.isPreconnected
+        hS.isPolyhedron.isClosed hT.isPolyhedron.isClosed hdisjoint hsub with hJS | hJT
+    · have hJS' : J = S := eq_of_subset_of_isPLSphere_one hJ hS hJS
+      exact Or.inr ⟨T, hT, hJS' ▸ hdisjoint, hcover.trans (hJS' ▸ rfl),
+        hJS' ▸ hScoord, hTcoord⟩
+    · have hJT' : J = T := eq_of_subset_of_isPLSphere_one hJ hT hJT
+      exact Or.inr ⟨S, hS, hJT' ▸ hdisjoint.symm,
+        hcover.trans ((hJT' ▸ union_comm S T)), hJT' ▸ hTcoord, hScoord⟩
 
 open Classical in
 theorem exists_two_isPLBalls_branchPreimage_of_boundaryBranch_with_coordinate
