@@ -565,6 +565,65 @@
   `LinearMap.finrank_le_finrank_of_injective`、`LinearMap.finrank_range_le`、`LinearMap.ker_eq_bot`、
   `Nat.card_le_card_of_surjective` 与 `Finite.card_option`；并复核 realization/奇异同调桥、分量复形、曲面 Euler 上界、
   H.4b 球面识别、边界定向及边界 Euler 端点的公理闭包。
+- 2026-09-16（H-M6 / 22.11，数学提交 `0a4d434c7`）：`FieldPathCones.lean` 将道路锥推广到任意域系数，
+  证明单连通空间的一维奇异同调为零；`SurfaceSimplyConnected.lean` 构造闭组合曲面的 ℤ₂ 顶维基本循环，
+  得到 `bettiNumber 2 > 0`，再由 Euler–Betti、`χ≤2` 与 H.4b 的 `χ=2 → IsPLSphere 2` 证明
+  `IsCombinatorialManifold.isPLSphere_two_of_simplyConnectedSpace`。两个模块聚焦检查 exit=0、零 warning；
+  `fresh.py` 报两个改动模块 olean 全部新鲜且零禁用项。`.lake/scratch/AuditHM6.lean` 审计 26 个新增声明与
+  18 个关键复用声明，全部只含标准三公理。D4 首次复用逐项审计
+  `exists_integralPathTriangle`、`integralPathSimplex`、`integralSimplexPath`、
+  `integralPathSimplex_simplexPath`、`orderedNormalizedBoundary_apply_eq_sum_faceCofaces`、
+  `orderedNormalizedChainEquiv`、`orderedNormalizedBoundary`、`orderedSimplicialSet_hasDimensionLT`、
+  `SSet.isZero_normalizedChainComplex_X_of_hasDimensionLT`、`SSet.finiteDimensional_normalizedChainComplex_X`、
+  `ShortComplex.homologyMapIso`、`isoOfQuasiIsoAt`、`SSet.realizationHomologyIso`、
+  `geometricRealizationHomeomorphism`、`bettiNumber_zero_of_isConnected`、`eulerChar_eq_sum_bettiNumber`、
+  `faceEulerChar_le_two` 与 `isPLSphere_two_of_faceEulerChar_eq_two`。未经过含 `sorry` 的
+  `Homology/HurewiczLowDegrees.lean`，也未借用曲面分类。
+- 2026-09-16（H-M7 / §21 与 28.20，数学提交 `9bcc38d82`）：`EulerCellOperations.lean` 以
+  `OpenCellProfile.Operation` 的 α–δ 四种构造证明开胞腔计数 χ 在单步和有限次细分操作下不变，并将计数桥回
+  有限二维复形的 `faceEulerChar`；同时给出按面并集的 Euler 包含排除与沿 PL 多边形粘接的 21.8 加法。
+  `SurfaceSplitEuler.lean` 以公共核心、乘积环带、两条多边形边界及切后 PL 同胚定义
+  `SurfaceSplitAlongPolygon`，证明 21.10 的 χ 不变；两个互不相交 PL 2-胞腔封口形成
+  `SurfaceSplitAndCap`，其 `eulerChar_eq_add_two` 交付 21.11 与 28.20，且结构字段不含 Euler 结论。
+  两个模块聚焦检查 exit=0、零 warning；`fresh.py` 报本车道四个改动模块 olean 全部新鲜且零禁用项。
+  `.lake/scratch/AuditHM7.lean` 审计 21 个新增声明与 18 个关键复用声明，全部只含标准三公理。
+  D4 首次使用或本里程碑复核逐项包括 `faceEulerChar_eq_of_card_le_three`、
+  `faceEulerChar_sup_add_faceEulerChar_inf`、`faceEulerChar_bot`、`faceEulerChar_congr`、
+  `eulerChar_eq_singular`、`eulerChar_eq_of_isSubdivision`、`eulerChar_union_add_inter`、
+  `eulerChar_of_isPLBall`、`eulerChar_of_isPLSphere_one`、`eulerChar_eq_of_isPLHomeomorphOn`、
+  `Homology.eulerChar_eq_of_homeomorph`、`Homology.eulerChar_eq_of_homotopyEquiv`、
+  `HomotopyEquiv.productConvex`、`Homeomorph.Set.prod`、`IsPLHomeomorphOn.homeomorph`、
+  `intersectionComplex`、`unionComplex` 与 `finite_unionComplex_faces`。
+- 2026-09-16（H-M8 / 22.5–22.7，数学提交 `3fdf6d58e`）：`SurfaceHomology.lean` 在现有有序
+  normalized chain complex 中证明闭连通组合 2-流形可定向时 `b₂=1`、不可定向时 `b₂=0`，再经
+  realization/奇异同调桥与 Euler–Betti 展开得到无条件的 22.7。`SurfaceInvariants.lean` 定义标准
+  `surfaceHandleCrosscapProfile h m`，对实际给出的标准剖分 refinement 证明 22.5，并导出可定向、一个交叉帽、
+  两个交叉帽情形的 22.6 及 `surfaceHandleNumber = h`。这不声称 22.4 的正规形存在性；22.8–22.10 仍待分类。
+  两模块聚焦检查 exit=0、零 warning；`fresh.py` 报六个相对整合分支改动模块 olean 全部新鲜、零禁用项。
+  `.lake/scratch/AuditHM8.lean` 审计 36 项，全部只含标准三公理。D4 首次使用或本里程碑复核逐项包括
+  `orderedNormalizedBoundary_intCast_apply`、`orderedNormalizedBoundary_apply_eq_sum_faceCofaces`、
+  `CoherentOrientation.pair_cancel_of_faceCofaces_eq`、`IsCombinatorialManifold.card_faceCofaces_eq_two`、
+  `IsCombinatorialManifoldWithBoundary.dualGraph_preconnected`、`SimplicialComplex.orderedNormalizedChainEquiv`、
+  `SSet.finiteDimensional_normalizedChainComplex_X`、`SimplicialComplex.orderedSimplicialSet_hasDimensionLT`、
+  `SSet.isZero_normalizedChainComplex_X_of_hasDimensionLT`、`ShortComplex.finrank_ker_eq_homology_add_range`、
+  `CategoryTheory.ShortComplex.homologyMapIso`、`HomologicalComplex.isoSc'`、`isoOfQuasiIsoAt`、
+  `SSet.realizationHomologyIso`、`geometricRealizationHomeomorphism`、
+  `eulerChar_eq_one_sub_bettiOne_add_bettiTwo`、`OpenCellProfile.eulerChar_eq_of_isRefinement` 与
+  `simplicialOpenCellProfile_eulerChar`。未经过 `Homology/HurewiczLowDegrees.lean`。
+- 2026-09-16（H-M9 / B.8 / 26.8，数学提交 `6a02d3559`）：`EuclideanSurfaceOrientation.lean` 证明
+  `IsCombinatorialManifold.isOrientable_of_finrank_eq_three` 与 ℝ³ 专门推论。有限连通闭组合曲面先置于大 3-单形内部；
+  B.6 的两侧性经子类型拉回后产生一侧闭包的有限带边组合 3-流形，环境仿射定向诱导其边界定向；共同细分将原曲面
+  实现为该边界的子复形，限制定向并搬回原三角剖分。全程未使用 `H₃ ≅ ℤ`，没有额外结论型假设。
+  聚焦检查 exit=0、10.2 秒、零 warning；`fresh.py` 报七个相对整合基线改动模块 olean 全部新鲜、零禁用项。
+  `.lake/scratch/AuditHM9.lean` 审计两个新端点及十四个关键复用声明，均只含标准三公理。逐项复核
+  `exists_affineIndependent_openSimplex_superset`、`IsCombinatorialManifold.isTwoSided`、
+  `Topology.IsTwoSided.preimage_of_isInducing`、
+  `IsCombinatorialManifoldWithBoundary.exists_neighborhood_manifold_pair_of_twoSided`、
+  `isOrientable_of_space_subset_convexHull`、`IsOrientable.boundary`、
+  `exists_isSubdivision_restrict_isSubdivision`、`isCombinatorialManifold_boundaryComplex`、
+  `IsCombinatorialManifold.of_isSubdivision`、`IsOrientable.subdivision`、`IsOrientable.of_le`、
+  `IsOrientable.of_isSubdivision`、`frontier_space_eq_boundaryComplex_space_of_finrank` 与
+  `isPLBall_convexHull_of_affineIndependent`。
 - 2026-09-15（C/L 车道，L.2 接口修正与组合曲面层）：`SphereCase.lean` 的
   `exists_nonsingular_two_cell_of_sphere_boundary` 在 `724267986` 增加实际多面体 3-流形 `M`、
   `B ⊆ polyhedralBoundary 3 M hM`，并在 `hpush` 与结论中都要求 `D₁ '' D₁.domain ⊆ M`；检查 exit=0、
@@ -590,6 +649,23 @@
   `mem_vertexCollisionPairs`、`Finset.card_lt_card`、`Finset.ssubset_iff_subset_ne`、`connectedComponentIn`、
   `IsOrientable`、`IsCoveringMap`、`Nat.strong_induction_on`，仅标准三公理。条件性缺口是由 C.4/C.5 与 C.1/C.3
   构造该降阶数据，并完成复杂度相等时限制同胚、基本群满射与指标 2 的矛盾；没有把这些生产者报告为已证。
+
+- 2026-09-16（C.5 闭合，`65bd07eb6`、`cb2153a6c`）：I5 的 `BoundaryHomology`/`HandleCount`
+  支撑层推广到任意域，因而直接在 `ZMod 2` 上得到非零一阶同调。`HomologyCocycle.lean` 用
+  normalized simplicial chain 与 realization 的奇异同调同构，选取非零同调类的对偶函子并延拓到一链，
+  构造真正的非上边界 `SimplicialBoolCocycle`。`DoubleCoverExistence.lean` 的
+  `exists_connected_double_cover_complex_of_isOrientable_of_boundary_component_not_sphere` 将它接到 C.2/C.3，
+  无显式 I5 假设地交付连通二重覆盖、有限提升复形及组合带边 3-流形性。两模块聚焦检查
+  exit=0、零 warning；`.lake/scratch/AuditC5.lean` 审计 17 项新端点和首次复用声明，全部只含
+  `propext`、`Classical.choice`、`Quot.sound`。其中首次复用单独审计
+  `DifferentialGeometry.Topology.moduleHomologyClass_surjective`、`moduleHomologyClass_eq_zero_iff`、
+  `Module.Projective.exists_dual_ne_zero`、`Subspace.dualLift`、`Subspace.dualLift_of_mem`、
+  `Module.nontrivial_of_finrank_pos`、`DifferentialGeometry.SSet.realizationHomologyIso`、`isoOfQuasiIsoAt`、
+  `SimplicialComplex.geometricRealizationHomeomorphism`、`orderedNormalizedChainEquiv`、
+  `orderedNormalizedBoundary_single_apply`、`simplexBoundaryCoefficient_eq_one_or_neg_one`、
+  `ZMod.neg_eq_self_mod_two` 及 C.2/C.3 的连通覆盖端点。未 import、未传递经过含 `sorry` 的
+  `Topology/Homology/HurewiczLowDegrees.lean`。L.4 仍需把覆盖复形提升为携带正规系统相容性与严格降复杂度的
+  `DoubleCoverReduction`；C.5 的覆盖存在性本身已闭合。
 
 ## 7. 决策与风险
 
