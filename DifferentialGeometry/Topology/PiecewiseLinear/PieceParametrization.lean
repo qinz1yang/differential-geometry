@@ -14,6 +14,14 @@ theorem PLPieceIn.isClosedEmbedding [T2Space X] {Y : Set X} (T : PLPieceIn E n X
   exact T.continuousOn.domRestrict.isClosedEmbedding
     (fun x y hxy => Subtype.ext (T.bijOn.injOn x.2 y.2 hxy))
 
+noncomputable def PLPieceIn.homeomorph [T2Space X] {Y : Set X} (T : PLPieceIn E n X Y) :
+    T.complex.space ≃ₜ Y :=
+  T.isClosedEmbedding.isEmbedding.toHomeomorph.trans (Homeomorph.setCongr (by
+    change range (T.map ∘ ((↑) : T.complex.space → E)) = Y
+    rw [range_comp, Subtype.range_coe, T.bijOn.image_eq]))
+
+theorem PLPieceIn.homeomorph_apply_coe [T2Space X] {Y : Set X} (T : PLPieceIn E n X Y)
+    (x : T.complex.space) : (T.homeomorph x : X) = T.map x := rfl
 variable {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
 
 def PLPieceIn.precomp {Y : Set X} (T : PLPieceIn F n X Y)

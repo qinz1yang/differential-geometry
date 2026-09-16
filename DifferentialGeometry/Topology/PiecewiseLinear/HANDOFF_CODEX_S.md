@@ -1479,3 +1479,37 @@ vendored source changed. The source commit hash will be recorded at the next che
 Next, choose a finite manifold neighborhood of the compact polyhedral surface, pull it
 back into that piece, apply the finite-complex bicollar, and reparametrize its image piece.
 General PL manifold 26.3 is not yet marked complete.
+
+### S-M5 continuation: bicollars in general PL manifolds
+
+The PL transport checkpoint is committed and pushed as `2c0c1c2a4`; the following
+integration merge was already up to date.
+
+`BicollarManifold.lean` proves `PLPieceIn.exists_bicollar_of_subset_interior` inside a
+finite manifold piece, `PLPieceIn.exists_bicollar` in every prescribed neighborhood of
+a two-sided finite polyhedral surface in a Hausdorff PL three-manifold, and the concrete
+homeomorphism endpoints `PLPieceIn.exists_bicollar_homeomorph` and
+`IsPolyhedralManifold.exists_bicollar`. The ambient manifold need not be compact or
+second countable; the surface need not be connected. A finite surface piece already
+supplies its compactness. The bicollar map is the identity at parameter zero, and its
+image is a neighborhood of the entire surface contained in the prescribed U.
+
+The PL certificate is explicit: the image has a `PLPieceIn (E x R) 3 X W` whose carrier
+is exactly the chosen surface carrier times `[-1,1]`, and the delivered homeomorphism
+`S x [-1,1] -> W` agrees with that piece map in the given surface parametrization.
+Both the forward and inverse chartwise PL conditions are fields of this piece. The
+proof obtains a finite manifold neighborhood, transports two-sidedness to its carrier,
+applies the finite-complex bicollar, and changes its parametrization back.
+`PieceParametrization.lean` adds the carrier homeomorphism and its evaluation formula.
+
+Both final focused checks have exit 0 and zero warnings
+(`check-piece-parametrization-homeomorph.log`, `check-bicollar-manifold.log`).
+`AuditS103BicollarManifold.lean` / `.log` contain six entries, all with only `propext`,
+`Classical.choice`, and `Quot.sound`. The endpoints have no Schoenflies or unproved
+interface parameter. No other-lane or vendored source changed.
+The source commit hash will be recorded at the next checkpoint.
+
+The two requested settings for 26.3 are now proved: finite combinatorial manifolds with
+boundary, and general Hausdorff PL charted three-manifolds. The prior 26.1 interior
+transport for arbitrary K and the supported ambient graph extension in P.4 remain.
+I2's exact target-type compatibility issue is unchanged.
