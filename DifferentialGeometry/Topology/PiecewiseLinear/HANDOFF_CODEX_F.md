@@ -1873,3 +1873,9 @@ F-M2–F-M6 尚未开始；按用户指定顺序推进，只有出现 §1 接口
 `HeightPerturbationSymmetry.lean` 已提交并推送为 `026576e48`。主端点 `exists_continuousLinearMap_injOn_preserving_strict_order_and_halfSpace_below_of_isPolyhedron` 对有限一般位置集合、有限旧顶点集以及位于旧等高面的紧多面体片构造任意小的新高度，使其在一般位置集合上单射、保持旧顶点的全部严格高度次序，并把多面体片除指定点外严格压到该点下方。证明对旧高度取负后调用向上半空间扰动，再把所得高度取负；距离、非零性、单射性和旧次序均逐项搬回。
 
 模块聚焦检查 exit=0（10.7 秒）、零 warning；`AuditF202.lean` 主端点仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步在参数化三角切割的两个相反侧分支中，分别用向上与向下生产者选择独立高度，并接入相应的单帽奇异点比较端点，输出两张封帽球面及方向相反的严格帽面分离。F-M1 仍为 partial，严格指标下降、Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF203.lean`。
+
+### 19.55 F-M1：两张封帽球面的独立相反方向扰动
+
+`OppositeTriangleCapPerturbation.lean` 已提交并推送为 `feeae6c5a`。主端点 `exists_small_opposite_triangle_cap_pair_with_singular_comparison` 从一个旧奇异点同时保留所选最内层圆周 J、两盘分割和临界层计数恒等式，但为 A、B 两张封帽球面分别选择独立的新高度。若 A 在旧水平面局部高侧，则 A 的帽面严格高于帽尖而 B 的帽面严格低于帽尖；另一侧别分支完全互换。两个高度都可任意逼近旧高度、在各自新复形顶点上单射、保持全部旧顶点严格次序，并分别满足去帽尖后的奇异点包含和每个非例外旧顶点处的层圆周数不增。
+
+模块聚焦检查 exit=0（16.1 秒）、零 warning；`AuditF203.lean` 主端点仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步证明匹配方向的局部层圆周消失引理：保留盘在 J 去掉 p 后位于旧水平面的同一闭半空间，而新高度把整个变形后三角盘去掉 H p 严格推到该侧时，新帽尖层的圆周可注入保留盘的旧临界层圆周族，且像避开指定 J。F-M1 仍为 partial，严格指标下降、Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF204.lean`。
