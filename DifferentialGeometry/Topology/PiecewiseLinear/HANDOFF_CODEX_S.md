@@ -2149,3 +2149,28 @@ Both new modules pass focused checks with exit 0 and zero warnings.
 and the separation headline; exit 0, only the standard three axioms. B.6's remaining
 endpoint work is exactly two complementary components, their common frontier,
 and two-sidedness for a connected surface.
+
+### Moise 26.6: surface complement and two-sidedness delivered, 2026-09-16
+
+`SurfaceComplement.lean` combines the proved parity obstruction with local
+separation neighborhoods. For a connected finite closed combinatorial two-manifold
+in a three-dimensional real normed space, it constructs exactly two complementary
+connected components, proves their closures cover the ambient space and intersect
+in the surface, and proves that each component has frontier equal to the surface.
+It also proves `Topology.IsTwoSided` for the surface.
+
+`EuclideanPolyhedralManifold.lean` identifies the Euclidean chart definition of a
+polyhedral manifold with an embedded finite simplicial complex. The resulting
+`PolyhedralSurfaceComplement.lean` endpoints apply directly to a connected
+`IsPolyhedralManifold (n := 3) 2 S` in Euclidean three-space:
+`IsPolyhedralManifold.exists_connectedComponentIn_pair_compl` and
+`IsPolyhedralManifold.isTwoSided`. Its disconnection theorem only requires S to be
+nonempty. No Schoenflies parameter or additional unproved input is present.
+
+All three focused checks return exit 0 with zero warnings.
+`AuditS122SurfaceComplement.lean` / `.log` audit all seven public declarations;
+exit 0, only `propext`, `Classical.choice`, and `Quot.sound`. With no Lean process
+running, `fresh.py` reports all sixteen changed modules fresh, zero stale or
+missing artifacts, and zero forbidden-pattern hits. B.6 is complete; B.2 was
+completed at the preceding disk-neighborhood milestone. The remaining active work
+is P.4's endpoint and small-disk producers.
