@@ -1499,3 +1499,15 @@ M1/M2/M3 均未验收。下一审计文件 `AuditF144.lean`。
 已核对相反单侧端点的完整签名，没有扩充 `SchoenfliesInput`。
 仍需将该侧别接入凸封帽后的局部图卡，证明转轴后封帽边缘的 crossing/孤立分类与选定点的圆周数严格下降。
 M1/M2/M3 均未验收。下一审计文件 `AuditF146.lean`。
+
+### 18.26 保持圆周及截弧给定值的平面盘延拓
+
+- `CrosscutExtension.lean` 的 `exists_isPLHomeomorphOn_eqOn_crosscut` 将两圆周与其正规截弧之并上的任意 PL 同胚
+  延拓到两个闭内域，逐点保持整个给定映射。证明以截弧切出两个 PL 盘，分别调用已证 P.1 和实际 frontier 延拓，再沿截弧拼合。
+- `exists_isPLHomeomorphOn_eqOn_curve_and_crosscut` 允许圆周与截弧分别给定 PL 映射，只要求两端点值一致。
+  `exists_isPLHomeomorphOn_map_crosscut_eqOn_curve` 保持给定圆周映射并将源截弧映到目标截弧；截弧参数匹配由现有区间 PL 接口产生。
+- 本层复用原版 `PolygonalSchoenflies.lean`，没有修改或复制其他车道的文件，也没有增加 `SchoenfliesInput` 字段。
+
+模块最终聚焦检查 exit=0（9.6 秒）、零 warning；`AuditF146.lean` 三项仅标准三公理，已核对两个相对端点完整签名。
+下一步将相对截弧延拓用于顶点链环的 crossing 判据，再处理凸封帽边缘与严格降指标。
+M1/M2/M3 均未验收。下一审计文件 `AuditF147.lean`。
