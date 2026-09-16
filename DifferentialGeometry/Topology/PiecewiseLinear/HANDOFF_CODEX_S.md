@@ -685,7 +685,7 @@ no second-batch source or duplicate Jordan extension wrapper was introduced.
 | S-M2 | done: complete boundary-disk derived neighborhood and Problem 26.1 | `d12dd514a`; AuditS70: 6; AuditS73Disk: 5 | None for the containing-ball theorem |
 | S-M3 | partial: general parametrized PL push-off and Euclidean singular cell | `bd74dd7ca`; AuditS72Intrinsic: 7; AuditS74Push: 3 | `SingularTwoCell K.space` needs a boundary-compatible target type; its current Euclidean open-chart requirement is not available from a manifold-with-boundary hypothesis |
 | S-M4 | done: whole-boundary collar with the relative-neighborhood property for finite combinatorial three-manifolds in arbitrary finite-dimensional real normed spaces | `691c7329d`, `e9feba0c2`, `f778f73ff`; AuditS88--S90: 12; earlier layers and audits below | None for the finite-complex endpoint in NIGHT_PLAN; abstract PL charted ambient transport is not asserted |
-| S-M5 | partial: 26.1 in Hausdorff PL charted ambient spaces; the collar input for 26.3 is now proved | `ddf717a4b`; AuditS76TwoSided: 11; S-M4 collar: `f778f73ff` | Interior chart transport for arbitrary K; for 26.3, exactly two sides with manifold closures, followed by applying and gluing the proved collars |
+| S-M5 | partial: 26.1 in PL charted ambient spaces; arbitrarily small local surface separation and global two-component count for separating surfaces | `ddf717a4b`; collar `f778f73ff`; `7e6e37d0f`, `68ed572a9`, `6294e3dd3`; AuditS92--S94: 23 | Interior chart transport for arbitrary K; choose a small connected regular neighborhood using IsTwoSided, prove both complementary closures are combinatorial manifolds, then apply and glue the proved collars |
 | S-M6 | partial: general relative 17.3 done; P.4 inputs checked | `f0383a381`; AuditS77RelativeDisk: 4; AuditS79P4Inputs: 3 | Supported ambient graph extension with control, as detailed above |
 
 All listed completed layers have focused-check exit 0 with zero warnings and transitive axiom
@@ -1211,3 +1211,14 @@ of the checked global count theorem. The remaining geometric obligation is that 
 component closures are combinatorial manifolds with the surface as a boundary component;
 only then can the existing collars be applied and glued. This entry does not label the
 bicollar theorem complete or introduce a new unproved interface assumption.
+
+### S-M5 publication checkpoint, 2026-09-16
+
+All three source checkpoints are committed and pushed: `7e6e37d0f` (coned-circle
+components), `68ed572a9` (arbitrarily small local surface neighborhoods), and `6294e3dd3`
+(global components and closure formulas). The nine changed Lean modules have focused-check
+exit 0 and zero warnings. AuditS92/S93/S94 contain 23 entries, all with only the standard
+three axioms. Each checkpoint was followed by fetch and merge of the integration branch,
+still already up to date at `8fb887bb9`. This final bookkeeping commit updates only the
+S-M5 summary and B.4 plan row to that verified scope. The overall S-M5/26.3 status remains
+partial, with the exact remaining obligations recorded above.
