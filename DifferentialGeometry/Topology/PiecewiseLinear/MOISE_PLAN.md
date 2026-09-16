@@ -565,6 +565,20 @@
   `LinearMap.finrank_le_finrank_of_injective`、`LinearMap.finrank_range_le`、`LinearMap.ker_eq_bot`、
   `Nat.card_le_card_of_surjective` 与 `Finite.card_option`；并复核 realization/奇异同调桥、分量复形、曲面 Euler 上界、
   H.4b 球面识别、边界定向及边界 Euler 端点的公理闭包。
+- 2026-09-16（H-M6 / 22.11，数学提交 `0a4d434c7`）：`FieldPathCones.lean` 将道路锥推广到任意域系数，
+  证明单连通空间的一维奇异同调为零；`SurfaceSimplyConnected.lean` 构造闭组合曲面的 ℤ₂ 顶维基本循环，
+  得到 `bettiNumber 2 > 0`，再由 Euler–Betti、`χ≤2` 与 H.4b 的 `χ=2 → IsPLSphere 2` 证明
+  `IsCombinatorialManifold.isPLSphere_two_of_simplyConnectedSpace`。两个模块聚焦检查 exit=0、零 warning；
+  `fresh.py` 报两个改动模块 olean 全部新鲜且零禁用项。`.lake/scratch/AuditHM6.lean` 审计 26 个新增声明与
+  18 个关键复用声明，全部只含标准三公理。D4 首次复用逐项审计
+  `exists_integralPathTriangle`、`integralPathSimplex`、`integralSimplexPath`、
+  `integralPathSimplex_simplexPath`、`orderedNormalizedBoundary_apply_eq_sum_faceCofaces`、
+  `orderedNormalizedChainEquiv`、`orderedNormalizedBoundary`、`orderedSimplicialSet_hasDimensionLT`、
+  `SSet.isZero_normalizedChainComplex_X_of_hasDimensionLT`、`SSet.finiteDimensional_normalizedChainComplex_X`、
+  `ShortComplex.homologyMapIso`、`isoOfQuasiIsoAt`、`SSet.realizationHomologyIso`、
+  `geometricRealizationHomeomorphism`、`bettiNumber_zero_of_isConnected`、`eulerChar_eq_sum_bettiNumber`、
+  `faceEulerChar_le_two` 与 `isPLSphere_two_of_faceEulerChar_eq_two`。未经过含 `sorry` 的
+  `Homology/HurewiczLowDegrees.lean`，也未借用曲面分类。
 - 2026-09-15（C/L 车道，L.2 接口修正与组合曲面层）：`SphereCase.lean` 的
   `exists_nonsingular_two_cell_of_sphere_boundary` 在 `724267986` 增加实际多面体 3-流形 `M`、
   `B ⊆ polyhedralBoundary 3 M hM`，并在 `hpush` 与结论中都要求 `D₁ '' D₁.domain ⊆ M`；检查 exit=0、

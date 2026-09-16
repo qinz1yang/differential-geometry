@@ -411,3 +411,20 @@ Reduced/MayerVietorisCoefficients, Reduced/PointClasses}`（`REUSE_AUDIT.md` §2
   `propext`、`Classical.choice`、`Quot.sound`。
 - I5 无未闭合项。H-M3 的闭曲面基本类、可定向/不可定向闭曲面完整 `b₂` 公式仍按计划后推；本里程碑只证明
   I5 所需的带非空边界三维顶同调消失，不冒充 H-M3 完成。
+
+### H-M6 — done，22.11 单连通闭组合曲面是 PL 2-球面
+
+- 数学提交：`0a4d434c7`。新模块 `Topology/Homology/FieldPathCones.lean` 与
+  `PiecewiseLinear/SurfaceSimplyConnected.lean`；最终端点为
+  `IsCombinatorialManifold.isPLSphere_two_of_simplyConnectedSpace`。
+- `fieldSingularConeZero` / `fieldSingularConeOne` 将既有道路锥论证推广到任意域系数，证明单连通空间的一维奇异同调
+  为零；`Homology.bettiOne_eq_zero_of_simplyConnectedSpace` 给出有理 Betti 数版本。
+- 对闭组合 2-流形，以所有三角形系数均为 1 构造 ℤ₂ 顶维链；每条边恰有两个余面且 ℤ₂ 中符号消失，故边界为零。
+  复形无三维 normalized chains，因而该非零循环给出
+  `IsCombinatorialManifold.bettiNumber_two_pos_mod_two`。单连通性再给 `b₀=1`、`b₁=0`，Euler–Betti 公式与
+  `faceEulerChar_le_two` 夹出 `faceEulerChar=2`，最后消费 H.4b 的球面识别端点。
+- 两个模块聚焦检查 exit=0、零 warning，分别为 9.4 秒与 11.3 秒；`fresh.py` 报两个改动模块 olean 全部新鲜、
+  零禁用项。`.lake/scratch/AuditHM6.lean` 逐项审计 26 个新增声明与 18 个关键复用声明，exit=0，全部仅含
+  `propext`、`Classical.choice`、`Quot.sound`。
+- H-M6 无未闭合项；没有 import `Homology/HurewiczLowDegrees.lean`，没有使用曲面分类。下一项为 H-M7 的
+  §21 Euler 运算与 28.20 分裂公式。
