@@ -2778,3 +2778,58 @@ check with exit 0 and zero warnings. AuditS147PhragmenBrouwer has nine public
 theorems, exit 0, only propext, Classical.choice, and Quot.sound. There are no
 unproved input parameters. The post-publication fetch found integration
 unchanged. I.2 is next.
+
+## I.2 delivered and cyclic-neighborhood reduction published (2026-09-16)
+
+I.2 is committed and pushed in `bc20b0b45`. `Connected/SeparatingComponent.lean`
+proves `exists_separates_of_finite_iUnion`,
+`exists_separating_connectedComponentIn`, and `exists_separating_component`.
+The main input is a closed set C with `Finite (ConnectedComponents C)` which
+separates nonempty connected H and K. The output supplies an actual point
+x in C whose `connectedComponentIn C x` separates H and K. The finite family
+of disjoint closed components is constructed in the proof, not assumed as a
+precomputed decomposition. The source check exits 0 with zero warnings;
+AuditS148SeparatingComponent has three declarations, all standard three axioms.
+The connected-open-path-connected and locally-path-connected versions are both
+available, with no unproved theorem input.
+
+After I.2, the independent geometric part of C.6/C.7 was advanced and published
+as `bcdfe9778`:
+
+- `BallChain.lean`: `IsCombinatorialManifoldWithBoundary.isPLBall_iUnion_of_chain`
+  proves the linear PL three-ball chain theorem in any finite-dimensional real
+  normed ambient space. `isPLBall_iUnion_castSucc_of_cycle` proves that omitting
+  one cell from a cyclic chain leaves a PL three-ball.
+- `NeighborhoodCycle.lean`: `exists_cyclic_face_order` obtains a genuine cyclic
+  enumeration of all faces of a finite connected closed one-manifold, via its
+  barycentric edge graph. `exists_cyclic_derivedNeighborhoodCell_decomposition`
+  proves that the derived-neighborhood three-ball pieces meet exactly for
+  adjacent indices and each such intersection is a PL two-disk in both cell
+  boundaries. `disjoint_derivedNeighborhoodCell_inter_of_card_le_two` rules
+  out all triple intersections of distinct pieces.
+- `exists_isPLBall_pair_cover_derivedNeighborhood_circle` constructs actual
+  sets A, B, D0, D1 with A and B PL three-balls, D0 and D1 disjoint PL two-disks,
+  A union B equal to the full derived neighborhood, and A intersection B equal
+  to D0 union D1. No orientability hypothesis is used for this reduction.
+
+Both modules check with exit 0 and zero warnings. AuditS149NeighborhoodCycle
+has nine public declarations, only propext, Classical.choice, and Quot.sound.
+Together AuditS147--S149 contain 21 audited declarations from five new modules.
+All five use native proofs and have no unproved theorem parameters.
+
+The earlier C.7 note about an unconstructed cyclic order is superseded by this
+checkpoint. C.6/C.7 remain partial: simultaneous standardization of the two
+boundary disks, compatibility of the closing identification, and the untwisted
+classification are still missing. Neither the CST/cylindrical-diagram
+recognition theorem nor 24.10/24.11/24.12 is claimed. The 24.12 contraction and
+orientation-cover descent has not been wired. The only permitted future
+external parameter there remains the actual missing covering theorem; the
+classification gap has not been turned into a hypothesis. B.7 is not started.
+
+The post-checkpoint fetch/merge leaves integration at `9512c800c` (already
+merged); other lanes are obtained only through integration. The final `fresh.py`
+check ran with no Lean process on the host: five changed modules, five fresh
+oleans, zero forbidden hits, zero stale and zero missing artifacts, exit 0.
+This supersedes the earlier freshness reading taken during an F-lane check.
+The module exit codes and axiom audits above remain the verification gate.
+The final documentation commit updates only C.6/C.7/I.1/I.2 rows and this handoff.
