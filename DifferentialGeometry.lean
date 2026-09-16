@@ -1724,7 +1724,9 @@ import DifferentialGeometry.Analysis.Sobolev.Euclidean.Completeness.IteratedSobo
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Completeness.IteratedSobolevQuot
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.DeGiorgi
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Density
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.DirichletEnergy.EulerLagrange
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.DirichletEnergy.Existence
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.DirichletEnergy.HarmonicMinimizer
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.DirichletEnergy.WeakLowerSemicontinuity
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.DivergenceForm
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Embedding.Derivative.IteratedSobolevNorm
