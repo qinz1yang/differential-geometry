@@ -1663,3 +1663,9 @@ F-M2–F-M6 尚未开始；按用户指定顺序推进，只有出现 §1 接口
 `TriangleEdgeLink.lean` 已提交并推送为 `55ed65b59`。`injOn_linearMap_convexHull_of_card_eq_two` 将线性高度在二元素顶点集上的单射性推广到整条边；`exists_linearMap_supporting_simplex_facet` 从单纯形的仿射无关性构造对边的规范支撑泛函，并精确刻画其最小值集合。主端点 `geometricLink_section_subsingleton_of_simplex_facet` 因而证明：三角形任一对边上的点，只要高度在三角形三个顶点上单射，则三角帽侧的几何链环与该点等高层的交至多一点。支撑泛函与对边纤维唯一性均在证明中构造，不作为新增输入。
 
 模块聚焦检查 exit=0（12.9 秒）、零 warning；`AuditF167.lean` 三个端点均仅依赖 `propext`、`Classical.choice`、`Quot.sound`。帽侧链环弧已经覆盖真实角点和边内部点。下一步利用 `HeightSides.lean` 的相反单侧结论与小高度扰动控制保留盘侧链环弧，再将两侧合并为完整链环截面 `encard ≤ 2`。F-M1 仍为 partial，严格降指标、Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF168.lean`。
+
+### 19.20 F-M1：唯一越层边界端点控制一维盘截面
+
+`BoundaryArcSection.lean` 已提交并推送为 `124c80557`。`height_section_subsingleton_of_unique_high_boundary_vertex` 证明有限一维组合带边流形中，若一个组合边界顶点严格高于指定高度且所有其他顶点严格低于该高度，则整个载体与该高度层至多交一点；低端点版本由高度取负得到。证明从边界顶点的唯一邻点刻画出发，先证明任一等高点只能落在该唯一边上，再用线性高度在边凸包上的单射性得到唯一性。没有假定载体是一条预先给定的参数弧，也没有把截面上界写入输入。
+
+模块最终聚焦检查 exit=0（13.7 秒）、零 warning；`AuditF168.lean` 两个端点均仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步从保留盘的顶点链环构造实际一维带边子复形，证明其两个组合边界端点沿三角帽直边分居新高度两侧，并由小扰动保持其余顶点的旧高度严格侧别；随后与帽侧的 subsingleton 结论合并为完整链环 `encard ≤ 2`。F-M1 仍为 partial，严格降指标、Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF169.lean`。
