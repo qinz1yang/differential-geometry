@@ -693,3 +693,26 @@ theorem eq_top_of_boundaryLoops_mem_normal
   本层没有首次复用新的 covering/Van Kampen 声明。
 - 尚未闭合的是书页 186–187 的 Case 3/4 边界环道路等式及由
   `vertexCollisionPairs` 或实际分支计数推出的复杂度严格下降；Case 1/2 的环带模型与内盘替换也仍待实现。
+
+## 32. 2026-09-16 E3-M2 追加：割贴拉回与单纯复杂度严格下降
+
+状态：partial（跨复形的碰撞对基数比较及手术拉回条件下的严格下降已闭合；适配三角剖分、边界环道路等式与第二张割贴胞腔待闭合）。
+
+- `SingularCell.lean` 新增跨两个有限源复形的比较层：若顶点映射 `r` 单射、把新顶点送到旧顶点且满足
+  `f (r v) = g v`，则新 `vertexCollisionPairs` 经 `Finset.image r` 注入旧碰撞对；若至少一个旧碰撞对不在该像中，
+  `simplicialComplexity L g < simplicialComplexity K f`。具体的
+  `simplicialComplexity_lt_of_vertex_injection_of_missing_collision` 只需给出一对旧碰撞顶点，其中一个不在新顶点像中。
+- `NormalSingularCellData.exists_boundary_surgery_cell_of_boundaryBranch` 现在显式交付手术胞腔到原胞腔的
+  `pullback`，以及 `MapsTo pullback G.domain D.domain`、`InjOn pullback G.domain`、
+  `EqOn (D ∘ pullback) G G.domain` 和 `Disjoint (pullback '' G.domain) C`。最后一项说明第二张分支原像片
+  `C` 被整个新源盘的拉回像遗漏，不只是新双点集与分支载体不交。
+- `simplicialComplexity_lt_of_surgery_pullback` 已把上述拉回数据接到跨复形比较层：一旦给出适配的原/新有限源三角剖分、
+  拉回对顶点的相容性，以及位于 `C` 上的一对旧碰撞顶点，就得到严格复杂度下降。
+- 本层没有宣称 Case 3/4 或 Lemma 2 已完成。当前仍缺从 `NormalSystem`/I3 构造上述适配源三角剖分，
+  以及把 `C` 上的同像原像选成旧复形顶点；还缺 `L₁` 的边界参数道路等式和由三片交叉贴合产生第二张胞腔 `L₂`。
+  现有群论引理已经匹配书页 186–187 的 Case 3/4 字，但在这些几何生产者完成前不能接成 Lemma 2。
+- `SingularCell` 与 `CutAndPaste` 的聚焦检查均 exit=0、零 warning；`fresh.py` 报告相对整合提交
+  `4401dd9d1` 的 2 个改动 Lean 模块均为 fresh，forbidden=0、stale=0、missing=0。
+  `.lake/scratch/AuditE3M2.lean` 的 54 项与 `.lake/scratch/audit-cut-and-paste-restriction.lean` 的 12 项审计均 exit=0，
+  全部只含 `propext`、`Classical.choice`、`Quot.sound`。首次 fresh 尝试检测到其它工作树的 Lean 进程后按规则以 17 退出；
+  等该进程自然结束后才继续，没有终止其它进程。

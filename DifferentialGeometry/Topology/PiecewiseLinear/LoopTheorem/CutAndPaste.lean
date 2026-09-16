@@ -1221,11 +1221,16 @@ theorem exists_boundary_surgery_cell_of_boundaryBranch
     ∃ p q r s : EuclideanSpace ℝ (Fin 2),
     ∃ g : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 2),
     ∃ G : SingularTwoCell M,
+    ∃ pullback : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 2),
       IsPLBall 1 A ∧ IsPLBall 1 C ∧ Disjoint A C ∧
       hD.branchPreimage c = A ∪ C ∧
       IsPLBall 1 U ∧ IsPLBall 1 V ∧ Disjoint U V ∧
       IsPLHomeomorphOn g A C ∧
       ((g p = r ∧ g q = s) ∨ (g p = s ∧ g q = r)) ∧
+      MapsTo pullback G.domain D.domain ∧
+      InjOn pullback G.domain ∧
+      EqOn (D ∘ pullback) G G.domain ∧
+      Disjoint (pullback '' G.domain) C ∧
       G '' G.domain ⊆ D '' D.domain ∧
       Set.range G.boundary = D '' (U ∪ V) ∧
       G '' G.domain ∩ BdM = Set.range G.boundary ∧
@@ -1464,6 +1469,15 @@ theorem exists_boundary_surgery_cell_of_boundaryBranch
       _ = y := hxy
       _ = G z := hzy.symm
       _ = D (f₁ z) := (hG₁ hzseam.1).trans (congrFun hfun₁ (f₁ z))
+  have hpullback_disjoint_C : Disjoint (pullback '' G.domain) C := by
+    apply Set.disjoint_left.mpr
+    rintro _ ⟨x, hx, rfl⟩ hxC
+    obtain ⟨hxseam, hfxA⟩ := hpullback_branch hx (Or.inr hxC)
+    have hpullback_eq : pullback x = f₁ x := by
+      change (if x ∈ P then f₁ x else f₃ x) = f₁ x
+      rw [if_pos hxseam.1]
+    rw [hpullback_eq] at hxC
+    exact Set.disjoint_left.mp hAC hfxA hxC
   let outer := D₁.domain ∪ D₃.domain
   have hpullback_outer : MapsTo pullback G.domain outer := by
     intro x hx
@@ -2016,13 +2030,41 @@ theorem exists_boundary_surgery_cell_of_boundaryBranch
       singularSet := Classical.choice hGsingular
       crossing := hGcrossing }⟩
   exact ⟨A, C, D₁.domain ∩ frontier D.domain,
-    D₃.domain ∩ frontier D.domain, p, q, r, s, g, G,
+    D₃.domain ∩ frontier D.domain, p, q, r, s, g, G, pullback,
     hA, hC, hAC, hcover, htrace₁, htrace₃,
     hdisjoint₁₃.mono inter_subset_left inter_subset_left, hg, horientation,
+    hpullback_mem, hpullback_inj, hpullback_apply, hpullback_disjoint_C,
     hGimage, hrange, himageBoundary, hrangeB, hinterB, hlocallyInjective, hfiber,
     hdouble, hremove, hGsingular, hGnormal⟩
 
 end NormalSingularCellData
+
+open Classical in
+theorem simplicialComplexity_lt_of_surgery_pullback
+    {M : Type u} [TopologicalSpace M]
+    [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
+    (K L : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2)))
+    [Finite K.faces] [Finite L.faces]
+    (D G : SingularTwoCell M)
+    (pullback : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 2))
+    {C : Set (EuclideanSpace ℝ (Fin 2))}
+    (hLdomain : L.vertices ⊆ G.domain)
+    (hvertices : MapsTo pullback L.vertices K.vertices)
+    (hinj : InjOn pullback G.domain)
+    (hfactor : EqOn (D ∘ pullback) G G.domain)
+    (hdisjoint : Disjoint (pullback '' G.domain) C)
+    {v w : EuclideanSpace ℝ (Fin 2)}
+    (hv : v ∈ K.vertices) (hw : w ∈ K.vertices)
+    (hvw : v ≠ w) (hDvw : D v = D w) (hwC : w ∈ C) :
+    simplicialComplexity L G < simplicialComplexity K D := by
+  apply simplicialComplexity_lt_of_vertex_injection_of_missing_collision
+    K L D G pullback hvertices (hinj.mono hLdomain)
+  · intro x hx
+    exact hfactor (hLdomain hx)
+  · refine ⟨v, hv, w, hw, hvw, hDvw, ?_⟩
+    rintro ⟨x, hx, hxeq⟩
+    exact Set.disjoint_left.mp hdisjoint
+      ⟨x, hLdomain hx, rfl⟩ (hxeq ▸ hwC)
 
 open Classical in
 theorem loopRepresentativeAlong_mem_iff_loopClassMeets

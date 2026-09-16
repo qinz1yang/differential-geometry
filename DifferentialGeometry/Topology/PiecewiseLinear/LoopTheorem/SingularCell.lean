@@ -295,6 +295,117 @@ noncomputable def simplicialComplexity (K : Geometry.SimplicialComplex ℝ E)
   (vertexCollisionPairs K f).card
 
 open Classical in
+theorem vertexCollisionPairs_image_subset_of_vertex_injection
+    {E' F' X : Type*}
+    [NormedAddCommGroup E'] [NormedSpace ℝ E']
+    [NormedAddCommGroup F'] [NormedSpace ℝ F']
+    (K : Geometry.SimplicialComplex ℝ E') [Finite K.faces]
+    (L : Geometry.SimplicialComplex ℝ F') [Finite L.faces]
+    (f : E' → X) (g : F' → X) (r : F' → E')
+    (hr : MapsTo r L.vertices K.vertices) (hinj : InjOn r L.vertices)
+    (hfactor : ∀ v ∈ L.vertices, f (r v) = g v) :
+    (vertexCollisionPairs L g).image (fun s => s.image r) ⊆
+      vertexCollisionPairs K f := by
+  intro s hs
+  rw [Finset.mem_image] at hs
+  obtain ⟨t, ht, rfl⟩ := hs
+  rw [mem_vertexCollisionPairs] at ht ⊢
+  refine ⟨?_, ?_, ?_⟩
+  · intro x hx
+    obtain ⟨v, hv, rfl⟩ := Finset.mem_image.mp hx
+    exact hr (ht.1 hv)
+  · calc
+      (t.image r).card = t.card := Finset.card_image_of_injOn (hinj.mono ht.1)
+      _ = 2 := ht.2.1
+  · intro hfinj
+    apply ht.2.2
+    intro v hv w hw hgw
+    apply hinj (ht.1 hv) (ht.1 hw)
+    apply hfinj
+      (by exact Finset.mem_image.mpr ⟨v, hv, rfl⟩)
+      (by exact Finset.mem_image.mpr ⟨w, hw, rfl⟩)
+    calc
+      f (r v) = g v := hfactor v (ht.1 hv)
+      _ = g w := hgw
+      _ = f (r w) := (hfactor w (ht.1 hw)).symm
+
+open Classical in
+theorem simplicialComplexity_lt_of_vertex_injection
+    {E' F' X : Type*}
+    [NormedAddCommGroup E'] [NormedSpace ℝ E']
+    [NormedAddCommGroup F'] [NormedSpace ℝ F']
+    (K : Geometry.SimplicialComplex ℝ E') [Finite K.faces]
+    (L : Geometry.SimplicialComplex ℝ F') [Finite L.faces]
+    (f : E' → X) (g : F' → X) (r : F' → E')
+    (hr : MapsTo r L.vertices K.vertices) (hinj : InjOn r L.vertices)
+    (hfactor : ∀ v ∈ L.vertices, f (r v) = g v)
+    (hmissing : ∃ s ∈ vertexCollisionPairs K f,
+      s ∉ (vertexCollisionPairs L g).image (fun t => t.image r)) :
+    simplicialComplexity L g < simplicialComplexity K f := by
+  have hsubset := vertexCollisionPairs_image_subset_of_vertex_injection
+    K L f g r hr hinj hfactor
+  have himageInj : InjOn (fun s : Finset F' => s.image r)
+      (vertexCollisionPairs L g : Set (Finset F')) := by
+    intro a ha b hb hab
+    have haVertices := (mem_vertexCollisionPairs L g a).mp ha |>.1
+    have hbVertices := (mem_vertexCollisionPairs L g b).mp hb |>.1
+    have habInj : InjOn r ((a ∪ b : Finset F') : Set F') :=
+      hinj.mono fun x hx => by
+        rcases Finset.mem_union.mp hx with hxa | hxb
+        · exact haVertices hxa
+        · exact hbVertices hxb
+    exact (Finset.image_eq_image_iff_of_injOn habInj
+      Finset.subset_union_left Finset.subset_union_right).mp hab
+  obtain ⟨s, hs, hsMissing⟩ := hmissing
+  unfold simplicialComplexity
+  calc
+    (vertexCollisionPairs L g).card =
+        ((vertexCollisionPairs L g).image (fun t => t.image r)).card :=
+      (Finset.card_image_of_injOn himageInj).symm
+    _ < (vertexCollisionPairs K f).card := by
+      apply Finset.card_lt_card
+      rw [Finset.ssubset_iff_subset_ne]
+      refine ⟨hsubset, ?_⟩
+      intro heq
+      exact hsMissing (by simpa only [heq] using hs)
+
+open Classical in
+theorem simplicialComplexity_lt_of_vertex_injection_of_missing_collision
+    {E' F' X : Type*}
+    [NormedAddCommGroup E'] [NormedSpace ℝ E']
+    [NormedAddCommGroup F'] [NormedSpace ℝ F']
+    (K : Geometry.SimplicialComplex ℝ E') [Finite K.faces]
+    (L : Geometry.SimplicialComplex ℝ F') [Finite L.faces]
+    (f : E' → X) (g : F' → X) (r : F' → E')
+    (hr : MapsTo r L.vertices K.vertices) (hinj : InjOn r L.vertices)
+    (hfactor : ∀ v ∈ L.vertices, f (r v) = g v)
+    (hmissing : ∃ v ∈ K.vertices, ∃ w ∈ K.vertices,
+      v ≠ w ∧ f v = f w ∧ w ∉ r '' L.vertices) :
+    simplicialComplexity L g < simplicialComplexity K f := by
+  apply simplicialComplexity_lt_of_vertex_injection K L f g r hr hinj hfactor
+  obtain ⟨v, hv, w, hw, hvw, hfvw, hwRange⟩ := hmissing
+  let s : Finset E' := {v, w}
+  refine ⟨s, ?_, ?_⟩
+  · rw [mem_vertexCollisionPairs]
+    refine ⟨?_, by simp [s, hvw], ?_⟩
+    · intro x hx
+      simp only [s, Finset.mem_coe, Finset.mem_insert, Finset.mem_singleton] at hx
+      rcases hx with rfl | rfl
+      · exact hv
+      · exact hw
+    · intro hfinj
+      exact hvw (hfinj (by simp [s]) (by simp [s]) hfvw)
+  · intro hs
+    rw [Finset.mem_image] at hs
+    obtain ⟨t, ht, hts⟩ := hs
+    have hwImage : w ∈ t.image r := by
+      rw [hts]
+      simp [s]
+    obtain ⟨z, hzt, hrz⟩ := Finset.mem_image.mp hwImage
+    apply hwRange
+    exact ⟨z, (mem_vertexCollisionPairs L g t).mp ht |>.1 hzt, hrz⟩
+
+open Classical in
 theorem simplicialComplexity_eq_zero_iff_injOn_vertices
     (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces] (f : E → F) :
     simplicialComplexity K f = 0 ↔ InjOn f K.vertices := by
