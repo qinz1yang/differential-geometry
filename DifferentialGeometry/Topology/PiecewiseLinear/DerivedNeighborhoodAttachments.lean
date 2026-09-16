@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.BallGluing
+import DifferentialGeometry.Topology.PiecewiseLinear.SubcomplexBallGluing
 import DifferentialGeometry.Topology.PiecewiseLinear.DerivedNeighborhoodCells
 
 open Set
@@ -66,10 +66,10 @@ theorem space_subset_iUnion_derivedNeighborhoodCell_space
 
 open Classical in
 theorem IsCombinatorialManifoldWithBoundary.isPLBall_union_derivedNeighborhoodCells
-    {K : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3))} [Finite K.faces]
+    [FiniteDimensional ℝ E] {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces]
     (hK : IsCombinatorialManifoldWithBoundary 3 K)
-    {s : Finset (EuclideanSpace ℝ (Fin 3))} (hs : s ∈ K.faces)
-    (d : Finset (Finset (EuclideanSpace ℝ (Fin 3))))
+    {s : Finset E} (hs : s ∈ K.faces)
+    (d : Finset (Finset E))
     (hd : ∀ t ∈ d, t ∈ K.faces) (hds : ∀ t ∈ d, t ≠ s)
     (hcomp : ∀ t ∈ d, s ⊆ t ∨ t ⊆ s)
     (hincomp : ∀ t ∈ d, ∀ u ∈ d, t ≠ u → ¬t ⊆ u ∧ ¬u ⊆ t) :
@@ -106,20 +106,19 @@ theorem IsCombinatorialManifoldWithBoundary.isPLBall_union_derivedNeighborhoodCe
       exact hK.isPLBall_derivedNeighborhoodCell_inter hs htK hts.symm
         (hcomp t (Finset.mem_insert_self _ _))
     have htball := hK.isPLBall_derivedNeighborhoodCell htK
-    have hleft := htball.inter_subset_frontier_of_isPLBall hI (by decide : 2 < 3)
-    have hright : ((derivedNeighborhoodCell K s).space ∪
-        ⋃ u ∈ d, (derivedNeighborhoodCell K u).space) ∩ (derivedNeighborhoodCell K t).space ⊆
-        frontier (derivedNeighborhoodCell K t).space := by
-      rw [inter_comm] at hI ⊢
-      exact hball.inter_subset_frontier_of_isPLBall hI (by decide : 2 < 3)
-    have h := isPLBall_union_of_inter_isPLBall_two hball htball hI hleft hright
+    have hsub : ((derivedNeighborhoodCell K s).space ∪
+        ⋃ u ∈ d, (derivedNeighborhoodCell K u).space) ⊆ K.space :=
+      union_subset (derivedNeighborhoodCell_space_subset K s)
+        (iUnion₂_subset fun u _ => derivedNeighborhoodCell_space_subset K u)
+    have h := hK.isPLBall_union_of_inter_isPLBall_two hball htball hsub
+      (derivedNeighborhoodCell_space_subset K t) hI
     simpa only [Finset.set_biUnion_insert, union_assoc, union_left_comm, union_comm] using h
 
 theorem IsCombinatorialManifoldWithBoundary.isPLBall_union_derivedNeighborhoodCells_of_card
-    {K : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3))} [Finite K.faces]
+    [FiniteDimensional ℝ E] {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces]
     (hK : IsCombinatorialManifoldWithBoundary 3 K)
-    {s : Finset (EuclideanSpace ℝ (Fin 3))} (hs : s ∈ K.faces)
-    (d : Finset (Finset (EuclideanSpace ℝ (Fin 3)))) {k : ℕ} (hk : 0 < k)
+    {s : Finset E} (hs : s ∈ K.faces)
+    (d : Finset (Finset E)) {k : ℕ} (hk : 0 < k)
     (hks : k < s.card) (hsub : ∀ t ∈ d, t ⊆ s) (hcard : ∀ t ∈ d, t.card = k) :
     IsPLBall 3 ((derivedNeighborhoodCell K s).space ∪
       ⋃ t ∈ d, (derivedNeighborhoodCell K t).space) := by

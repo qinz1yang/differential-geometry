@@ -35,29 +35,29 @@ theorem derivedNeighborhood_simplex_space_eq_of_card_le_three
     · obtain ⟨v, hv, hxv⟩ := mem_iUnion₂.mp hx
       exact mem_iUnion₂.mpr ⟨{v}, ⟨Finset.singleton_nonempty v, Finset.singleton_subset_iff.mpr hv⟩, hxv⟩
 
-noncomputable local instance : DecidableEq (EuclideanSpace ℝ (Fin 3)) := Classical.decEq _
+variable [FiniteDimensional ℝ E]
 
 open Classical in
 private theorem isPLBall_triangle_cells
-    {K : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3))} [Finite K.faces]
+    {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces]
     (hK : IsCombinatorialManifoldWithBoundary 3 K)
-    {s : Finset (EuclideanSpace ℝ (Fin 3))} (hs : s ∈ (boundaryComplex 3 K).faces)
+    {s : Finset E} (hs : s ∈ (boundaryComplex 3 K).faces)
     (hcard : s.card = 3) :
     IsPLBall 3 (((derivedNeighborhoodCell K s).space ∪
       ⋃ e ∈ s.powersetCard 2, (derivedNeighborhoodCell K e).space) ∪
         ⋃ v ∈ s, (derivedNeighborhoodCell K {v}).space) := by
   classical
-  let C := fun t : Finset (EuclideanSpace ℝ (Fin 3)) => (derivedNeighborhoodCell K t).space
+  let C := fun t : Finset E => (derivedNeighborhoodCell K t).space
   let edges := s.powersetCard 2
   let B := C s ∪ ⋃ e ∈ edges, C e
   have hsK := boundaryComplex_faces_subset 3 K hs
-  have hedges (e : Finset (EuclideanSpace ℝ (Fin 3))) (he : e ∈ edges) :
+  have hedges (e : Finset E) (he : e ∈ edges) :
       e ⊆ s ∧ e.card = 2 := Finset.mem_powersetCard.mp he
-  have heK (e : Finset (EuclideanSpace ℝ (Fin 3))) (he : e ∈ edges) : e ∈ K.faces :=
+  have heK (e : Finset E) (he : e ∈ edges) : e ∈ K.faces :=
     K.down_closed hsK (hedges e he).1 (Finset.card_pos.mp (by rw [(hedges e he).2]; decide))
   have hB : IsPLBall 3 B := hK.isPLBall_union_derivedNeighborhoodCells_of_card hsK edges
     (by decide : 0 < 2) (by omega) (fun e he => (hedges e he).1) (fun e he => (hedges e he).2)
-  suffices h : ∀ a : Finset (EuclideanSpace ℝ (Fin 3)), a ⊆ s →
+  suffices h : ∀ a : Finset E, a ⊆ s →
       IsPLBall 3 (B ∪ ⋃ v ∈ a, C {v}) from h s Finset.Subset.rfl
   intro a
   induction a using Finset.induction_on with
@@ -71,27 +71,27 @@ private theorem isPLBall_triangle_cells
       (boundaryComplex 3 K).down_closed hs (Finset.singleton_subset_iff.mpr hvs)
         (Finset.singleton_nonempty v)
     have hvK := boundaryComplex_faces_subset 3 K hvB
-    have hvne : ({v} : Finset (EuclideanSpace ℝ (Fin 3))) ≠ s := by
+    have hvne : ({v} : Finset E) ≠ s := by
       intro heq
       have hc := congrArg Finset.card heq
       simp only [Finset.card_singleton, hcard] at hc
       omega
     let arms := edges.filter (fun e => v ∈ e)
-    have harme (e : Finset (EuclideanSpace ℝ (Fin 3))) (he : e ∈ arms) : e ∈ edges :=
+    have harme (e : Finset E) (he : e ∈ arms) : e ∈ edges :=
       Finset.mem_of_mem_filter e he
-    have harms (e : Finset (EuclideanSpace ℝ (Fin 3))) (he : e ∈ arms) :
+    have harms (e : Finset E) (he : e ∈ arms) :
         e ≠ {v} ∧ e ≠ s := by
       have hc := (hedges e (harme e he)).2
       constructor <;> intro heq <;> rw [heq] at hc
       · simp only [Finset.card_singleton] at hc
         omega
       · omega
-    have hcomp (e : Finset (EuclideanSpace ℝ (Fin 3))) (he : e ∈ arms) :
+    have hcomp (e : Finset E) (he : e ∈ arms) :
         ({v} ⊆ e ∨ e ⊆ {v}) ∧ (s ⊆ e ∨ e ⊆ s) :=
       ⟨Or.inl (Finset.singleton_subset_iff.mpr (Finset.mem_filter.mp he).2),
         Or.inr (hedges e (harme e he)).1⟩
-    have hincomp (e : Finset (EuclideanSpace ℝ (Fin 3))) (he : e ∈ arms)
-        (f : Finset (EuclideanSpace ℝ (Fin 3))) (hf : f ∈ arms) (hne : e ≠ f) :
+    have hincomp (e : Finset E) (he : e ∈ arms)
+        (f : Finset E) (hf : f ∈ arms) (hne : e ≠ f) :
         ¬e ⊆ f ∧ ¬f ⊆ e := by
       have hec := (hedges e (harme e he)).2
       have hfc := (hedges f (harme f hf)).2
@@ -129,18 +129,19 @@ private theorem isPLBall_triangle_cells
           exact ⟨Or.inl (Or.inr (mem_iUnion₂.mpr ⟨e, harme e he, hxe⟩)), hxv⟩
     have hI : IsPLBall 2 ((B ∪ ⋃ w ∈ a, C {w}) ∩ C {v}) := hinter.symm ▸ hattach
     have hvball : IsPLBall 3 (C {v}) := hK.isPLBall_derivedNeighborhoodCell hvK
-    have hleft := hvball.inter_subset_frontier_of_isPLBall hI (by decide : 2 < 3)
-    have hright : (B ∪ ⋃ w ∈ a, C {w}) ∩ C {v} ⊆ frontier (C {v}) := by
-      rw [inter_comm] at hI ⊢
-      exact hprev.inter_subset_frontier_of_isPLBall hI (by decide : 2 < 3)
-    have h := isPLBall_union_of_inter_isPLBall_two hprev hvball hI hleft hright
+    have hprevK : (B ∪ ⋃ w ∈ a, C {w}) ⊆ K.space :=
+      union_subset (union_subset (derivedNeighborhoodCell_space_subset K s)
+        (iUnion₂_subset fun e _ => derivedNeighborhoodCell_space_subset K e))
+        (iUnion₂_subset fun w _ => derivedNeighborhoodCell_space_subset K {w})
+    have h := hK.isPLBall_union_of_inter_isPLBall_two hprev hvball hprevK
+      (derivedNeighborhoodCell_space_subset K {v}) hI
     simpa only [Finset.set_biUnion_insert, union_assoc, union_left_comm, union_comm] using h
 
 open Classical in
 theorem IsCombinatorialManifoldWithBoundary.isPLBall_derivedNeighborhood_simplex
-    {K : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3))} [Finite K.faces]
+    {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces]
     (hK : IsCombinatorialManifoldWithBoundary 3 K)
-    {s : Finset (EuclideanSpace ℝ (Fin 3))} (hs : s ∈ (boundaryComplex 3 K).faces) :
+    {s : Finset E} (hs : s ∈ (boundaryComplex 3 K).faces) :
     IsPLBall 3 (PiecewiseLinear.derivedNeighborhood K
       (simplexComplex s (K.indep (boundaryComplex_faces_subset 3 K hs)))).space := by
   classical

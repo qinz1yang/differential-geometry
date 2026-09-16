@@ -134,4 +134,25 @@ theorem IsCombinatorialManifoldWithBoundary.isPLBall_derivedNeighborhoodCell_int
     (derivedNeighborhoodCell_inter_subset_base K hsK ht hst) d A hA hAB hI hdis
   simpa only [inter_union_distrib_left, inter_iUnion] using h
 
+open Classical in
+theorem IsCombinatorialManifoldWithBoundary.derivedNeighborhoodCell_inter_subset_boundaryComplex
+    [FiniteDimensional ℝ E] {n : ℕ} {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces]
+    (hK : IsCombinatorialManifoldWithBoundary (n + 2) K) {s t : Finset E}
+    (hs : s ∈ K.faces) (ht : t ∈ K.faces) (hne : s ≠ t) :
+    (derivedNeighborhoodCell K s).space ∩ (derivedNeighborhoodCell K t).space ⊆
+      (boundaryComplex (n + 2) (derivedNeighborhoodCell K s)).space := by
+  classical
+  let _ : Finite (derivedNeighborhoodCell K s).faces :=
+    (derivedNeighborhoodCell_faces_finite K s).to_subtype
+  let _ : Finite (derivedNeighborhoodCell K t).faces :=
+    (derivedNeighborhoodCell_faces_finite K t).to_subtype
+  by_cases hnon : ((derivedNeighborhoodCell K s).space ∩
+      (derivedNeighborhoodCell K t).space).Nonempty
+  · exact inter_subset_boundaryComplex_of_isPLBall (PiecewiseLinear.secondDerived K)
+      (derivedNeighborhoodCell K s) (derivedNeighborhoodCell K t) hK.secondDerived
+      (hK.isPLBall_derivedNeighborhoodCell hs) (hK.isPLBall_derivedNeighborhoodCell ht)
+      (derivedNeighborhoodCell_faces_subset K s) (derivedNeighborhoodCell_faces_subset K t)
+      (hK.isPLBall_derivedNeighborhoodCell_inter_of_nonempty hs ht hne hnon)
+  · exact fun x hx => (hnon ⟨x, hx⟩).elim
+
 end DifferentialGeometry.Topology.PiecewiseLinear
