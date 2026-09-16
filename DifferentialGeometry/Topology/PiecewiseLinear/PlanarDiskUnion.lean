@@ -1,19 +1,14 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.PolygonalSchoenflies
 import DifferentialGeometry.Topology.PiecewiseLinear.BallFrontier
-import DifferentialGeometry.Topology.Connected.Dense
+import DifferentialGeometry.Topology.PiecewiseLinear.BallDensity
 
 open Set
 
 namespace DifferentialGeometry.Topology.PiecewiseLinear
 
 theorem IsPLBall.subset_closure_sdiff_finite {A F : Set (EuclideanSpace ℝ (Fin 2))}
-    (hA : IsPLBall 1 A) (hF : F.Finite) : A ⊆ closure (A \ F) := by
-  obtain ⟨f, hf⟩ := exists_isPLHomeomorphOn_Icc_of_isPLBall_one hA
-  have hne : A.Nontrivial := by
-    refine ⟨f 0, hf.bijOn.mapsTo Schoenflies.zero_mem_I,
-      f 1, hf.bijOn.mapsTo Schoenflies.one_mem_I, ?_⟩
-    exact fun heq => zero_ne_one (hf.bijOn.injOn Schoenflies.zero_mem_I Schoenflies.one_mem_I heq)
-  exact Topology.IsPreconnected.subset_closure_sdiff_finite hA.isArc.isConnected.isPreconnected hne hF
+    (hA : IsPLBall 1 A) (hF : F.Finite) : A ⊆ closure (A \ F) :=
+  (hA.closure_sdiff_of_finite hF).symm.subset
 
 open Classical in
 theorem isPLBall_union_and_finite_frontier_inter {C D : Set (EuclideanSpace ℝ (Fin 2))}
