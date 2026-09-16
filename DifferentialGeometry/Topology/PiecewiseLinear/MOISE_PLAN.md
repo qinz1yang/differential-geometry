@@ -499,6 +499,20 @@
   全部闭包只含标准三公理或更少；无 `sorryAx`，不经过 `HurewiczLowDegrees`，未登记根聚合。
   闭曲面顶维同调与 I5 仍属于后续 H-M3/H-M4，不由本次 MV 工具自动推出。
 
+- 2026-09-15（H-M3 低阶同调层，数学提交 `163a27733`）：
+  `GeometricHomology` 复用既有有限 simplicial-set realization 的奇异同调桥，证明任意环/系数模的维数以上消失；
+  `GeometricConnectivity` 给有限几何复形的局部路径连通与连通到路径连通；
+  `BettiPolyhedra` 给低阶 χ 展开、连通图的 `b_1=1-χ` 与 PL 多边形 `b_1=1`。
+  `.lake/scratch/AuditNightHM3*.lean` 逐项审计 26 项去重声明（11 新、2 既有复核、13 复用/预审计），仅标准三公理。
+  首次复用单独审计：`orderedSimplicialSet`、`orderedSimplicialSet_hasDimensionLT`、
+  `geometricRealizationHomeomorphism`、`geometricInclusion`、`DifferentialGeometry.SSet.realizationHomologyIso`、
+  `SSet.isZero_homology_of_hasDimensionLT`、`Homology.eulerChar_eq_sum`；另预审计
+  `localEuclideanSphereHomologyIso`、`euclideanLocalGenerator_ne_zero`、`euclideanBallLocalGenerator_ne_zero`。
+  三条 PL 复用复核为 `IsPLSphere.isCombinatorialManifold`、`IsCombinatorialManifold.card_le`、`IsPLSphere.isConnected`。
+  `subcomplexInclusion` 现直接复用原生 `geometricInclusion`，重查 MV 消费者 exit=0。
+  五个改动模块均检查 exit=0、零 warning；`BettiPolyhedra` 11.2 秒，MV 消费者 12.1 秒。
+  全局 H₂ 的局部检测与跨边符号比较未证明，未声称 H.4a 完成；具体义务和原路线修正在 HANDOFF §8。
+
 ## 7. 决策与风险
 
 - 不采用 Bing 定理 7 的“保留单形”强形式，只用 Moise §8/§35 的紧致图卡归纳（书中 `chap:two-set-gluing` 的方案）。

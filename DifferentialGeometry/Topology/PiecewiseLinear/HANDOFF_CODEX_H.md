@@ -308,3 +308,27 @@ Reduced/MayerVietorisCoefficients, Reduced/PointClasses}`（`REUSE_AUDIT.md` §2
   全部只有 `propext`、`Classical.choice`、`Quot.sound` 或更少；复用记录已写 `MOISE_PLAN.md` §6。
 - 确切缺口：28.11、相对开邻域 SDR、上述各阶 Betti 上界无；未导出整条命名的子复形长正合列或更尖锐的连通交集估计。
   H-M3 的全局顶维基本类/定向判据、H-M4 的 I5 不是本里程碑结论。下一项 H-M3。
+
+### H-M3 — partial，低阶同调层已交付，顶维定向比较未闭合
+
+- 数学提交：`163a27733`。新模块 `SimplicialComplex/GeometricHomology.lean`、
+  `SimplicialComplex/GeometricConnectivity.lean`、`PiecewiseLinear/BettiPolyhedra.lean`；
+  `Homology/BettiNumber.lean` 增加路径连通空间的零阶 Betti 数。
+- `isZero_singularHomology_geometricSpace_of_card_le` 对任意环与系数模证明维数以上的奇异同调消失。
+  复用已有有限 simplicial-set realization 到奇异同调的同构（也是 χ 桥的基础），未新建单纯链复形。
+  有限几何复形局部路径连通；连通即路径连通，因此 `bettiNumber_zero_of_isConnected` 给 `b_0=1`。
+- `eulerChar_eq_sum_bettiNumber`、`eulerChar_eq_one_sub_bettiOne_add_bettiTwo`、
+  `bettiOne_graph`、`bettiOne_polygon` 已闭合。多边形结论是有理 `b_1=1`，不是已交付整系数指定生成元。
+  `SubcomplexNeighborhood.subcomplexInclusion` 改为复用原生 `geometricInclusion`，签名不变。
+- 五个修改/新增模块检查 exit=0、零 warning；更新后 `MayerVietorisSubcomplex` 再检查 exit=0（12.1 秒）。
+  `BettiPolyhedra` 最后检查 11.2 秒。`.lake/scratch/AuditNightHM3*.lean` 保留 26 项去重审计：
+  11 项新声明、2 项既有端点复核、13 项复用/预审计，全部仅标准三公理；复用已登记 `MOISE_PLAN.md` §6。
+- 确切缺口：相干定向的仿射奇异基本类具有指定局部生成元像；跨公共边的局部生成元符号比较；
+  全局顶维类到局部同调的检测/单射定理。已有 `Local/FiniteSet` 只分解相对群
+  `H_2(K,K\Z)`，并不证明 `H_2(K)` 到该群单射。缺这些生产者，不能导出定向/非定向的 `b_2=1/0`。
+  有理一阶 Betti 数偶性还需交叉配对或曲面归约，尚未闭合。
+- §4 路线修正：一般不能说“去掉一个二维开面后剩余是一维复形”；应另证删去所有顶面内点后的
+  骨架形变收缩，或沿对偶树作逐面消去。已核对 Moise 原书 22.6–22.7：原证明使用盘加条带归约，
+  不能把它当作本库现成的局部到全局基本类比较。
+- 按夜间 §0.4 记录这一真实数学缺口后转 H-M4 的独立边界 χ 计算；未弱化 H.4a 的冻结端点，
+  未引入结论型假设、`sorry` 或未审计的 Hurewicz 链。
