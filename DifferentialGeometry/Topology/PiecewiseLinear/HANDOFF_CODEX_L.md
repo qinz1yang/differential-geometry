@@ -749,3 +749,25 @@ theorem eq_top_of_boundaryLoops_mem_normal
 - 下一精确义务是为非触边分支的一圆/两圆分解保留 `branchCoordinate` 在每个圆分量上的 PL 同胚，从而由
   `doublePointPreimage D D.domain ∩ Q = J` 推出 `D` 在 `Q` 内除边界配对外单射，并构造 Case 2 的内盘替换后调用已交付的 I2。
   Case 1 仍缺盘内圆的 PL 环带及 Figure 25.2 柱形图显式模型；Lemma 2 端点尚未宣称完成。
+
+## 35. 2026-09-16 E3-M2 追加：Case 2 的非奇异内盘
+
+状态：partial（两圆情形的内盘限制已构造成实际非奇异 2-胞腔；I2 替换、替换后正规性与复杂度下降仍待闭合）。数学提交
+`174006132`。
+
+- `BranchPreimage.lean` 将非触边分支的两圆分解加强为带坐标版本：两圆上的
+  `branchCoordinate` 都是到同一 `branchComplex.space` 的 PL 同胚。该结论直接来自二重覆盖的两个连通分支及已有的分支原像
+  PL 三角剖分，不把双层参数化另作假设。
+- 若 `doublePointPreimage D D.domain ∩ Q = J` 且 `branchCoordinate|J` 为 PL 同胚，则 `D|Q` 单射：两点若在 `Q`
+  中同像且不等，二者都属于全局双点原像，故都在 `J`；再由 `branchPieceIn` 与 `branchCoordinate|J` 的单射性得到二者相等。
+  `restrict_isNonsingular_of_doublePointPreimage_inter_eq_of_branchCoordinate` 因而构造实际限制胞腔并证明其边界像是 `D '' J`。
+- 端点 `exists_innermost_isPLBall_doublePointPreimage_with_nonsingular_case_two` 保留 Case 1/2 二分；在 Case 2 中交付
+  `A : SingularTwoCell M`，满足 `A.IsNonsingular`、`A '' A.domain = D '' Q` 与
+  `Set.range A.boundary = D '' J`，并同时保留另一圆 `T` 及两张坐标 PL 同胚。
+- `BranchPreimage` 与 `BoundaryBranchCrosscut` 聚焦检查均 exit=0、零 warning；
+  `.lake/scratch/AuditE3M2.lean` 共 78 项，`audit-f.ps1` exit=0，全部只含
+  `propext`、`Classical.choice`、`Quot.sound`。本层没有首次复用新的 covering/Van Kampen 声明。
+- 下一精确义务是把上述 `A` 在 `X := (double 3 K).space` 的专门环境中转成 I2 所需的边界盘参数化，调用
+  `exists_nonsingular_two_cell_of_disk_in_double_boundary` 构造推离替换盘，并证明替换后的奇点图删去所选闭分支、正规 crossing 保持且
+  `vertexCollisionPairs` 严格减少。当前一般 `NormalSingularCellData` 不携带 `K`、double 的嵌入 `ι` 或盘像位于相应
+  `boundaryComplex` 的等式，所以该接线必须在 Lemma 2 的 double 专门端点中完成，不能在本一般引理中伪造。
