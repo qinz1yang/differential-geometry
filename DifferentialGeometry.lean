@@ -8329,6 +8329,7 @@ import DifferentialGeometry.Topology.Handle.Collar
 import DifferentialGeometry.Topology.Handle.Defs
 import DifferentialGeometry.Topology.Handle.Duality
 import DifferentialGeometry.Topology.Handle.Embedding
+import DifferentialGeometry.Topology.Handle.DiffeomorphExtension
 import DifferentialGeometry.Topology.Handle.Extension
 import DifferentialGeometry.Topology.Handle.Gluing
 import DifferentialGeometry.Topology.Handle.Isotopy

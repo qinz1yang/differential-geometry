@@ -1,4 +1,5 @@
 import Mathlib.Geometry.Manifold.LocalDiffeomorph
+import Mathlib.Topology.Separation.Hausdorff
 
 set_option autoImplicit false
 noncomputable section
@@ -7,12 +8,14 @@ open scoped Manifold ContDiff Topology
 
 namespace DifferentialGeometry
 
+variable {𝕜 : Type*} [NontriviallyNormedField 𝕜]
+
 theorem IsLocalDiffeomorphAt.of_eventuallyEq
-    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-    {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace 𝕜 E]
+    {H : Type*} [TopologicalSpace H] {I : ModelWithCorners 𝕜 E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
-    {E' : Type*} [NormedAddCommGroup E'] [NormedSpace ℝ E']
-    {H' : Type*} [TopologicalSpace H'] {J : ModelWithCorners ℝ E' H'}
+    {E' : Type*} [NormedAddCommGroup E'] [NormedSpace 𝕜 E']
+    {H' : Type*} [TopologicalSpace H'] {J : ModelWithCorners 𝕜 E' H'}
     {N : Type*} [TopologicalSpace N] [ChartedSpace H' N] {n : WithTop ℕ∞}
     {f g : M → N} {x : M} (h : f =ᶠ[𝓝 x] g)
     (hg : IsLocalDiffeomorphAt I J n g x) : IsLocalDiffeomorphAt I J n f x := by
@@ -46,11 +49,11 @@ theorem IsLocalDiffeomorphAt.of_eventuallyEq
     ⟨hx, hxW⟩, fun y hy => rfl⟩
 
 theorem OpenPartialHomeomorph.isLocalDiffeomorphAt_of_contMDiffOn
-    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-    {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace 𝕜 E]
+    {H : Type*} [TopologicalSpace H] {I : ModelWithCorners 𝕜 E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
-    {E' : Type*} [NormedAddCommGroup E'] [NormedSpace ℝ E']
-    {H' : Type*} [TopologicalSpace H'] {J : ModelWithCorners ℝ E' H'}
+    {E' : Type*} [NormedAddCommGroup E'] [NormedSpace 𝕜 E']
+    {H' : Type*} [TopologicalSpace H'] {J : ModelWithCorners 𝕜 E' H'}
     {N : Type*} [TopologicalSpace N] [ChartedSpace H' N] {n : WithTop ℕ∞}
     {e : OpenPartialHomeomorph M N}
     (he : ContMDiffOn I J n e e.source) (he' : ContMDiffOn J I n e.symm e.target)
@@ -62,11 +65,11 @@ theorem OpenPartialHomeomorph.isLocalDiffeomorphAt_of_contMDiffOn
      contMDiffOn_invFun := he' }, hx, fun _ _ => rfl⟩
 
 theorem IsLocalDiffeomorphOn.exists_partialDiffeomorph_of_injOn
-    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-    {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace 𝕜 E]
+    {H : Type*} [TopologicalSpace H] {I : ModelWithCorners 𝕜 E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
-    {E' : Type*} [NormedAddCommGroup E'] [NormedSpace ℝ E']
-    {H' : Type*} [TopologicalSpace H'] {J : ModelWithCorners ℝ E' H'}
+    {E' : Type*} [NormedAddCommGroup E'] [NormedSpace 𝕜 E']
+    {H' : Type*} [TopologicalSpace H'] {J : ModelWithCorners 𝕜 E' H'}
     {N : Type*} [TopologicalSpace N] [ChartedSpace H' N] {n : WithTop ℕ∞}
     {f : M → N} {U : Set M}
     (hf : IsLocalDiffeomorphOn I J n f U) (hU : IsOpen U) (hne : U.Nonempty)
@@ -132,5 +135,38 @@ theorem IsLocalDiffeomorphOn.exists_partialDiffeomorph_of_injOn
       have h1 : g z ∈ U := hg_mem ⟨hloc.localInverse z, hzU, hrep⟩
       exact hinj h1 hzU (by rw [hg_of ⟨hloc.localInverse z, hzU, hrep⟩, hrep])
     exact (heq.contMDiffAt_iff.mpr hloc.localInverse_contMDiffAt).contMDiffWithinAt
+
+theorem IsLocalDiffeomorphOn.exists_partialDiffeomorph_of_isCompact
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace 𝕜 E]
+    {H : Type*} [TopologicalSpace H] {I : ModelWithCorners 𝕜 E H}
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
+    {E' : Type*} [NormedAddCommGroup E'] [NormedSpace 𝕜 E']
+    {H' : Type*} [TopologicalSpace H'] {J : ModelWithCorners 𝕜 E' H'}
+    {N : Type*} [TopologicalSpace N] [ChartedSpace H' N] [T2Space N]
+    {n : WithTop ℕ∞} {f : M → N} {K : Set M}
+    (hf : IsLocalDiffeomorphOn I J n f K) (hK : IsCompact K)
+    (hne : K.Nonempty) (hinj : Set.InjOn f K) :
+    ∃ Φ : PartialDiffeomorph I J M N n, K ⊆ Φ.source ∧ Φ.toFun = f := by
+  obtain ⟨U, hU, hKU, hUi⟩ := hinj.exists_isOpen_superset hK
+    (fun x hx => (hf ⟨x, hx⟩).contMDiffAt.continuousAt) (by
+      intro x hx
+      obtain ⟨φ, hxφ, hφ⟩ := hf ⟨x, hx⟩
+      refine ⟨φ.source, φ.open_source.mem_nhds hxφ, ?_⟩
+      intro y hy z hz h
+      apply φ.toPartialEquiv.injOn hy hz
+      rwa [← hφ hy, ← hφ hz])
+  let V : Set M := {x | IsLocalDiffeomorphAt I J n f x}
+  have hV : IsOpen V := by
+    apply isOpen_iff_mem_nhds.mpr
+    intro x hx
+    obtain ⟨φ, hxφ, hφ⟩ := hx
+    exact Filter.mem_of_superset (φ.open_source.mem_nhds hxφ)
+      (fun y hy => ⟨φ, hy, hφ⟩)
+  have hKV : K ⊆ V := fun x hx => hf ⟨x, hx⟩
+  obtain ⟨φ, hsrc, _, hφ⟩ :=
+    IsLocalDiffeomorphOn.exists_partialDiffeomorph_of_injOn
+      (show IsLocalDiffeomorphOn I J n f (U ∩ V) from fun x => x.property.2)
+      (hU.inter hV) (hne.mono (subset_inter hKU hKV)) (hUi.mono inter_subset_left)
+  exact ⟨φ, hsrc.symm ▸ subset_inter hKU hKV, hφ⟩
 
 end DifferentialGeometry

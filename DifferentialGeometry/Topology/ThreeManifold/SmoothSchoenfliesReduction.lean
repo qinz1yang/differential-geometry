@@ -1,4 +1,5 @@
 import DifferentialGeometry.Topology.Manifold.BallDiffeomorphExtension
+import DifferentialGeometry.Topology.Handle.DiffeomorphExtension
 import DifferentialGeometry.Topology.ThreeManifold.SmoothSchoenfliesCore
 import DifferentialGeometry.Topology.ThreeManifold.SmoothSchoenfliesRoundSphere
 import DifferentialGeometry.Topology.ThreeManifold.schoenflies
@@ -96,6 +97,14 @@ theorem smooth_schoenflies_three_of_boundsSmoothBall_and_isAmbientDiffeomorphic
     ∃ Φ : ℝ³ ≃ₘ[ℝ] ℝ³, Φ '' Metric.sphere (0 : ℝ³) 1 = Set.range e := by
   obtain ⟨b, hb, hbdy⟩ := h₁ e he
   obtain ⟨Φ, hΦ⟩ := h₂ e b hb hbdy
+  exact ⟨Φ, image_sphere_eq_range_of_eqOn_closedCell e b hbdy Φ hΦ⟩
+
+theorem smooth_schoenflies_three_of_boundsSmoothBall
+    (h : smoothEmbeddedSphereBoundsSmoothBall)
+    (e : S² → ℝ³) (he : IsSmoothEmbedding (𝓡 2) (𝓡 3) ∞ e) :
+    ∃ Φ : ℝ³ ≃ₘ[ℝ] ℝ³, Φ '' Metric.sphere (0 : ℝ³) 1 = Set.range e := by
+  obtain ⟨b, hb, hbdy⟩ := h e he
+  obtain ⟨Φ, hΦ⟩ := Handle.exists_diffeomorph_extension_closedCell 2 hb
   exact ⟨Φ, image_sphere_eq_range_of_eqOn_closedCell e b hbdy Φ hΦ⟩
 
 theorem smoothEmbeddedSphereBoundsSmoothBall_of_exists_ambient_diffeomorph
