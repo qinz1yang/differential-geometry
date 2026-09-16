@@ -1,5 +1,6 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.CircleArcs
 import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryExtension
+import DifferentialGeometry.Topology.PiecewiseLinear.SubcomplexBallGluing
 
 open Set
 
@@ -121,5 +122,45 @@ theorem isPLBall_union_of_boundary_arc_of_ambient
     hf₁g.image_eq.trans (hg.image_eq.trans hinter.symm)
   have h := hf₁.piecewise hf₂ hK.isPolyhedron hL.isPolyhedron hfg himage
   exact hPQ.of_isPLHomeomorphOn h.symm
+
+open Classical in
+theorem IsCombinatorialManifoldWithBoundary.isPLBall_union_of_inter_isPLBall_one
+    [FiniteDimensional ℝ E]
+    {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces]
+    (hK : IsCombinatorialManifoldWithBoundary 2 K) {C D : Set E}
+    (hC : IsPLBall 2 C) (hD : IsPLBall 2 D) (hCK : C ⊆ K.space) (hDK : D ⊆ K.space)
+    (hI : IsPLBall 1 (C ∩ D)) : IsPLBall 2 (C ∪ D) := by
+  obtain ⟨R, hR, hfin, hcover⟩ := exists_isSubdivision_subcomplexes K
+    (fun b : Bool => if b then C else D)
+    (fun b => by
+      cases b with
+      | false => exact hD.isPolyhedron
+      | true => exact hC.isPolyhedron)
+    (fun b => by
+      cases b with
+      | false => exact hDK
+      | true => exact hCK)
+  let _ : Finite R.faces := hfin.to_subtype
+  let A := restrict R C
+  let B := restrict R D
+  let _ : Finite A.faces := (restrict_faces_finite R C).to_subtype
+  let _ : Finite B.faces := (restrict_faces_finite R D).to_subtype
+  have hA : A.space = C := restrict_space_of_eq_biUnion R C (by simpa using hcover true)
+  have hB : B.space = D := restrict_space_of_eq_biUnion R D (by simpa using hcover false)
+  have hAB : IsPLBall 1 (A.space ∩ B.space) := by rwa [hA, hB]
+  have hboundaryA : A.space ∩ B.space ⊆ (boundaryComplex 2 A).space :=
+    _root_.DifferentialGeometry.Topology.PiecewiseLinear.inter_subset_boundaryComplex_of_isPLBall
+      R A B (hK.of_isSubdivision hR)
+      (hA.symm ▸ hC) (hB.symm ▸ hD) (restrict_faces_subset R C)
+      (restrict_faces_subset R D) hAB
+  have hboundaryB : A.space ∩ B.space ⊆ (boundaryComplex 2 B).space := by
+    rw [inter_comm] at hAB ⊢
+    exact _root_.DifferentialGeometry.Topology.PiecewiseLinear.inter_subset_boundaryComplex_of_isPLBall
+      R B A (hK.of_isSubdivision hR)
+      (hB.symm ▸ hD) (hA.symm ▸ hC) (restrict_faces_subset R D)
+      (restrict_faces_subset R C) hAB
+  have hU := isPLBall_union_of_boundary_arc_of_ambient A B (hA.symm ▸ hC)
+    (hB.symm ▸ hD) hAB hboundaryA hboundaryB
+  rwa [hA, hB] at hU
 
 end DifferentialGeometry.Topology.PiecewiseLinear
