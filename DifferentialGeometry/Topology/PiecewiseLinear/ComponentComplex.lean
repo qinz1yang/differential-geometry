@@ -1,5 +1,6 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.Subcomplex
 import DifferentialGeometry.Topology.PiecewiseLinear.ManifoldWithBoundary
+import DifferentialGeometry.Topology.PiecewiseLinear.PolyhedronLocalConnectedness
 
 open Set
 
@@ -69,4 +70,79 @@ theorem IsCombinatorialManifold.restrict_connectedComponentIn
     rw [geometricLink_restrict_connectedComponentIn K hvc]
     exact hK v hv.1
 
+def connectedComponentComplex (K : Geometry.SimplicialComplex ℝ E)
+    (c : ConnectedComponents K.space) : Geometry.SimplicialComplex ℝ E :=
+  restrict K (((↑) : K.space → E) '' (ConnectedComponents.mk ⁻¹' {c}))
+
+theorem connectedComponentComplex_mk (K : Geometry.SimplicialComplex ℝ E) (p : K.space) :
+    connectedComponentComplex K (ConnectedComponents.mk p) =
+      restrict K (connectedComponentIn K.space (p : E)) := by
+  simp only [connectedComponentComplex, connectedComponents_preimage_singleton,
+    ← connectedComponentIn_eq_image p.property]
+
+theorem connectedComponentComplex_space (K : Geometry.SimplicialComplex ℝ E)
+    (c : ConnectedComponents K.space) :
+    (connectedComponentComplex K c).space =
+      ((↑) : K.space → E) '' (ConnectedComponents.mk ⁻¹' {c}) := by
+  obtain ⟨p, rfl⟩ := ConnectedComponents.surjective_coe c
+  rw [connectedComponentComplex_mk, restrict_connectedComponentIn_space,
+    connectedComponents_preimage_singleton, connectedComponentIn_eq_image p.property]
+
+theorem connectedComponentComplex_faces_finite (K : Geometry.SimplicialComplex ℝ E)
+    [Finite K.faces] (c : ConnectedComponents K.space) :
+    (connectedComponentComplex K c).faces.Finite := restrict_faces_finite K _
+
+theorem isConnected_connectedComponentComplex_space (K : Geometry.SimplicialComplex ℝ E)
+    (c : ConnectedComponents K.space) : IsConnected (connectedComponentComplex K c).space := by
+  obtain ⟨p, rfl⟩ := ConnectedComponents.surjective_coe c
+  rw [connectedComponentComplex_mk, restrict_connectedComponentIn_space]
+  exact isConnected_connectedComponentIn_iff.mpr p.property
+
+theorem iUnion_connectedComponentComplex_space (K : Geometry.SimplicialComplex ℝ E) :
+    ⋃ c, (connectedComponentComplex K c).space = K.space := by
+  apply Subset.antisymm
+  · intro x hx
+    obtain ⟨c, hc⟩ := mem_iUnion.mp hx
+    rw [connectedComponentComplex_space] at hc
+    obtain ⟨p, -, rfl⟩ := hc
+    exact p.property
+  · intro x hx
+    apply mem_iUnion.mpr
+    refine ⟨ConnectedComponents.mk (⟨x, hx⟩ : K.space), ?_⟩
+    rw [connectedComponentComplex_space]
+    exact ⟨⟨x, hx⟩, rfl, rfl⟩
+
+theorem pairwise_disjoint_connectedComponentComplex_space (K : Geometry.SimplicialComplex ℝ E) :
+    Pairwise fun c d => Disjoint (connectedComponentComplex K c).space
+      (connectedComponentComplex K d).space := by
+  intro c d hcd
+  apply disjoint_left.mpr
+  intro x hxC hxD
+  rw [connectedComponentComplex_space] at hxC hxD
+  obtain ⟨p, hp, hpx⟩ := hxC
+  obtain ⟨q, hq, hqx⟩ := hxD
+  have hpq : p = q := Subtype.val_injective (hpx.trans hqx.symm)
+  subst q
+  exact hcd (hp.symm.trans hq)
+
+theorem IsCombinatorialManifold.connectedComponentComplex {n : ℕ}
+    {K : Geometry.SimplicialComplex ℝ E} (hK : IsCombinatorialManifold n K)
+    (c : ConnectedComponents K.space) : IsCombinatorialManifold n (connectedComponentComplex K c) := by
+  obtain ⟨p, rfl⟩ := ConnectedComponents.surjective_coe c
+  rw [PiecewiseLinear.connectedComponentComplex_mk]
+  exact hK.restrict_connectedComponentIn p
+
+theorem IsCombinatorialManifoldWithBoundary.connectedComponentComplex {n : ℕ}
+    {K : Geometry.SimplicialComplex ℝ E} (hK : IsCombinatorialManifoldWithBoundary n K)
+    (c : ConnectedComponents K.space) :
+    IsCombinatorialManifoldWithBoundary n (connectedComponentComplex K c) := by
+  obtain ⟨p, rfl⟩ := ConnectedComponents.surjective_coe c
+  rw [PiecewiseLinear.connectedComponentComplex_mk]
+  exact hK.restrict_connectedComponentIn p
+
+theorem finite_connectedComponents_space [FiniteDimensional ℝ E]
+    (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces] : Finite (ConnectedComponents K.space) := by
+  let _ : LocallyConnectedSpace K.space := locallyConnectedSpace_space K
+  let _ : CompactSpace K.space := isCompact_iff_compactSpace.mp (isPolyhedron_space K).isCompact
+  infer_instance
 end DifferentialGeometry.Topology.PiecewiseLinear

@@ -1405,3 +1405,27 @@ case is proved, while the finite-component assembly and general manifold transpo
 There is no new consultation blocker. The next mathematical step is the finite-component
 assembly, using local connectedness and compactness for finiteness, pairwise disjoint
 neighborhoods for the component bicollars, and finite PL gluing.
+
+### S-M5 continuation: finite component decomposition and disjoint PL gluing
+
+`ComponentComplex.lean` now defines `connectedComponentComplex K c`, indexed canonically
+by `ConnectedComponents K.space`, and proves its carrier formula, finite face set,
+connectedness, pairwise disjointness, and exact union. Both manifold predicates are
+preserved. A finite polyhedral carrier has finitely many components, using compactness
+and the already proved local connectedness.
+
+`DisjointGluing.lean` proves `exists_isPLHomeomorphOn_iUnion_of_pairwise_disjoint` for a
+finite family of PL homeomorphisms with pairwise disjoint source and target sets. The
+global map agrees with every original map on its domain. `Connected/TwoSided.lean`
+adds `IsTwoSided.preimage_connectedComponentIn`, so restricting an already two-sided
+preimage to any target connected component preserves two-sidedness.
+
+All three focused checks have exit 0 and zero warnings (`check-component-complex-finite.log`,
+`check-disjoint-gluing.log`, `check-two-sided-components.log`).
+`AuditS100FiniteComponents.lean` / `.log` contain twelve entries, each with only
+`propext`, `Classical.choice`, and `Quot.sound`. No other-lane or vendored source changed.
+The source commit hash will be recorded at the next checkpoint.
+
+The next step assembles the existing connected bicollars in pairwise disjoint
+neighborhoods of these finitely many components, removing the connectedness assumption
+from the finite-complex bicollar endpoint. General PL charted ambient transport remains.

@@ -92,6 +92,15 @@ theorem IsTwoSided.of_union_components {S T : Set X} (hT : IsTwoSided T)
         (mem_connectedComponentIn (hST hx)) (hcomponents x hx))
   simpa only [heq] using hT x (hST hx)
 
+theorem IsTwoSided.preimage_connectedComponentIn {Y : Type*} [TopologicalSpace Y]
+    {f : X → Y} {S : Set Y} (h : IsTwoSided (f ⁻¹' S)) (hf : Continuous f) (p : Y) :
+    IsTwoSided (f ⁻¹' connectedComponentIn S p) := by
+  apply h.of_union_components (preimage_mono (connectedComponentIn_subset S p))
+  intro x hx y hy
+  have hxS : x ∈ f ⁻¹' S := connectedComponentIn_subset S p hx
+  have hfy := connectedComponentIn_mono (f x) (image_preimage_subset f S)
+    (hf.continuousOn.mapsTo_connectedComponentIn hxS hy)
+  rwa [← connectedComponentIn_eq hx] at hfy
 theorem isTwoSided_of_union_frontier_components {N S : Set X}
     (hN : closure (interior N) = N) [LocallyConnectedSpace (frontier N)]
     (hSN : S ⊆ frontier N)
