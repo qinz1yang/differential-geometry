@@ -1741,3 +1741,9 @@ F-M2–F-M6 尚未开始；按用户指定顺序推进，只有出现 §1 接口
 `HeightGermTransport.lean` 已提交并推送为 `33ceb84e0`。`eventually_image_mem_le_of_height_preserving_homeomorph` 与高侧版本把任一点处盘载体的旧高度单侧集合芽沿保高度环境同胚运输到像点；`eventually_image_boundary_fiber_iff_of_height_preserving_homeomorph` 同时运输“边界集合芽恰为盘内旧等高集合芽”。证明只用同胚逆映射在像点的连续性、双射像成员关系与逐点保高度等式。
 
 模块聚焦检查 exit=0（11.4 秒）、零 warning；`AuditF180.lean` 三个端点均仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步把 `HeightSides` 的全接缝相反单侧结论逐点送入这三个运输端点，并在参数化两盘共同细分中调用 `BoundaryFacetLink`、`TriangleEdgeLink` 与 `LinkUnionSection`，得到接缝边内部顶点的完整链环 `encard ≤ 2`。F-M1 仍为 partial，严格降指标、Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF181.lean`。
+
+### 19.33 F-M1：三角接缝边内部顶点的完整链环至多二点
+
+`TriangleSeamRegularity.lean` 已提交并推送为 `07afa25d8`。主端点 `eventually_geometricLink_section_encard_le_two_of_triangle_facet` 处理由保留盘与凸三角帽组成、逐面由两片覆盖的有限复形。对三角形任一边相对内部的共同边界顶点，保留侧由 `BoundaryFacetLink` 在旧单侧与边界集合芽下得到稳定单点截面，帽侧由 `TriangleEdgeLink` 的支撑泛函得到单点截面；`LinkUnionSection` 随后证明完整球面链环的新等高截面 `encard ≤ 2`。一般位置只要求在完整复形顶点与三个三角顶点的有限并上单射。
+
+模块聚焦检查 exit=0（11.6 秒）、零 warning；`AuditF181.lean` 主端点仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步接入 `VertexSectionRegularity` 排除所有接缝边内部顶点；三角形三个真实角点将用 `ConvexCapLink` 和保留侧链环的端点结构单独分类。随后构造新旧奇异点嵌入与严格指标下降。F-M1 仍为 partial，Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF182.lean`。
