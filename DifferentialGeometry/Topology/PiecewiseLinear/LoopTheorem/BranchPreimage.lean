@@ -1530,6 +1530,78 @@ theorem exists_isPLHomeomorphOn_eqOn_of_branchCoordinate
     _ = D (g x) := hD.branchPieceIn_map_branchCoordinate c (hCsub hgC)
 
 open Classical in
+theorem exists_replacement_disk_of_two_branch_sheets
+    [T2Space M] (hD : NormalSingularCellData D BdM B)
+    {c : hD.singularSet.Branch} (hc : ¬hD.singularSet.IsBoundaryBranch c)
+    {J T Q : Set (EuclideanSpace ℝ (Fin 2))}
+    (hJsub : J ⊆ hD.branchPreimage c) (hTsub : T ⊆ hD.branchPreimage c)
+    (hT : IsPLSphere 1 T) (hQ : IsPLBall 2 Q) (hfrontier : frontier Q = J)
+    (hJcoordinate : IsPLHomeomorphOn (hD.branchCoordinate c) J
+      (hD.singularSet.branchComplex c).space)
+    (hTcoordinate : IsPLHomeomorphOn (hD.branchCoordinate c) T
+      (hD.singularSet.branchComplex c).space) :
+    ∃ (R : Set (EuclideanSpace ℝ (Fin 2)))
+        (G : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 2)),
+      IsPLBall 2 R ∧ R ⊆ D.domain ∧ frontier R = T ∧
+        IsPLHomeomorphOn G R Q ∧ EqOn D (D ∘ G) (frontier R) := by
+  obtain ⟨R, hR, hRfrontier, -⟩ := isPLBall_of_isPLSphere_one hT
+  have hRsub : R ⊆ D.domain := by
+    apply isPLBall_subset_of_frontier_subset_interior hR D.isPLBall_domain
+    rw [hRfrontier]
+    exact hTsub.trans (hD.branchPreimage_subset_interior_of_not_boundaryBranch hc)
+  obtain ⟨g, hg, hcompat⟩ :=
+    hD.exists_isPLHomeomorphOn_eqOn_of_branchCoordinate c hTsub hJsub
+      hTcoordinate hJcoordinate
+  have hgfrontier : IsPLHomeomorphOn g (frontier R) (frontier Q) := by
+    rw [hRfrontier, hfrontier]
+    exact hg
+  obtain ⟨G, hG, hGg⟩ := exists_isPLHomeomorphOn_of_frontier hR hQ hgfrontier
+  refine ⟨R, G, hR, hRsub, hRfrontier, hG, ?_⟩
+  intro x hx
+  have hxT : x ∈ T := hRfrontier ▸ hx
+  change D x = D (G x)
+  exact (hcompat hxT).trans (congrArg D (hGg hx).symm)
+
+open Classical in
+theorem exists_innermost_isPLBall_branchPreimage_with_replacement_of_exists_not_boundaryBranch
+    [T2Space M] (hD : NormalSingularCellData D BdM B)
+    (hclosed : ∃ c : hD.singularSet.Branch,
+      ¬hD.singularSet.IsBoundaryBranch c) :
+    ∃ c : hD.singularSet.Branch,
+    ∃ J Q : Set (EuclideanSpace ℝ (Fin 2)),
+      ¬hD.singularSet.IsBoundaryBranch c ∧ IsPLSphere 1 J ∧
+        IsPLBall 2 Q ∧ Q ⊆ interior D.domain ∧ frontier Q = J ∧
+          (⋃ d : {d : hD.singularSet.Branch //
+              ¬hD.singularSet.IsBoundaryBranch d}, hD.branchPreimage d.1) ∩ Q = J ∧
+            (hD.branchPreimage c = J ∨
+              ∃ (T R : Set (EuclideanSpace ℝ (Fin 2)))
+                  (G : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 2)),
+                IsPLSphere 1 T ∧ Disjoint J T ∧ hD.branchPreimage c = J ∪ T ∧
+                  IsPLHomeomorphOn (hD.branchCoordinate c) J
+                    (hD.singularSet.branchComplex c).space ∧
+                  IsPLHomeomorphOn (hD.branchCoordinate c) T
+                    (hD.singularSet.branchComplex c).space ∧
+                  IsPLBall 2 R ∧ R ⊆ D.domain ∧ frontier R = T ∧
+                  IsPLHomeomorphOn G R Q ∧ EqOn D (D ∘ G) (frontier R)) := by
+  obtain ⟨c, J, Q, hc, hJ, hQ, hQsub, hfrontier, hinter, hsplit⟩ :=
+    hD.exists_innermost_isPLBall_branchPreimage_decomposition_with_coordinate_of_exists_not_boundaryBranch
+      hclosed
+  refine ⟨c, J, Q, hc, hJ, hQ, hQsub, hfrontier, hinter, ?_⟩
+  rcases hsplit with hsingle | ⟨T, hT, hdisjoint, hcover, hJcoordinate, hTcoordinate⟩
+  · exact Or.inl hsingle
+  · have hJsub : J ⊆ hD.branchPreimage c := by
+      rw [hcover]
+      exact subset_union_left
+    have hTsub : T ⊆ hD.branchPreimage c := by
+      rw [hcover]
+      exact subset_union_right
+    obtain ⟨R, G, hR, hRsub, hRfrontier, hG, hcompat⟩ :=
+      hD.exists_replacement_disk_of_two_branch_sheets hc hJsub hTsub hT hQ hfrontier
+        hJcoordinate hTcoordinate
+    exact Or.inr ⟨T, R, G, hT, hdisjoint, hcover, hJcoordinate, hTcoordinate,
+      hR, hRsub, hRfrontier, hG, hcompat⟩
+
+open Classical in
 theorem exists_isPLHomeomorphOn_branch_sheets
     [T2Space M] (hD : NormalSingularCellData D BdM B)
     {c : hD.singularSet.Branch} (hc : hD.singularSet.IsBoundaryBranch c) :

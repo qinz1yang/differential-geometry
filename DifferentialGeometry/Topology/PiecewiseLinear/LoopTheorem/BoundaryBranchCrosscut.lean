@@ -345,6 +345,55 @@ theorem exists_innermost_isPLBall_doublePointPreimage_with_nonsingular_case_two
     change D '' Q = D '' Q
     rfl
 
+open Classical in
+theorem exists_innermost_isPLBall_doublePointPreimage_with_case_two_replacement
+    [T2Space M] (hD : NormalSingularCellData D BdM B)
+    (hclosed : ∃ c : hD.singularSet.Branch,
+      ¬hD.singularSet.IsBoundaryBranch c) :
+    ∃ c : hD.singularSet.Branch,
+    ∃ J Q : Set (EuclideanSpace ℝ (Fin 2)),
+      ¬hD.singularSet.IsBoundaryBranch c ∧ IsPLSphere 1 J ∧
+        IsPLBall 2 Q ∧ Q ⊆ interior D.domain ∧ frontier Q = J ∧
+          doublePointPreimage D D.domain ∩ Q = J ∧
+            (hD.branchPreimage c = J ∨
+              ∃ (T R : Set (EuclideanSpace ℝ (Fin 2)))
+                  (G : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 2))
+                  (A : SingularTwoCell M),
+                IsPLSphere 1 T ∧ Disjoint J T ∧ hD.branchPreimage c = J ∪ T ∧
+                  IsPLHomeomorphOn (hD.branchCoordinate c) J
+                    (hD.singularSet.branchComplex c).space ∧
+                  IsPLHomeomorphOn (hD.branchCoordinate c) T
+                    (hD.singularSet.branchComplex c).space ∧
+                  IsPLBall 2 R ∧ R ⊆ D.domain ∧ frontier R = T ∧
+                  IsPLHomeomorphOn G R Q ∧ EqOn D (D ∘ G) (frontier R) ∧
+                  A.IsNonsingular ∧ A '' A.domain = D '' Q ∧
+                    Set.range A.boundary = D '' J) := by
+  obtain ⟨c, J, Q, hc, hJ, hQ, hQsub, hfrontier, hclosedInter, hsplit⟩ :=
+    hD.exists_innermost_isPLBall_branchPreimage_with_replacement_of_exists_not_boundaryBranch
+      hclosed
+  have hJsub : J ⊆ hD.branchPreimage c := by
+    rcases hsplit with hsingle | ⟨T, R, G, -, -, hcover, -, -, -, -, -, -, -⟩
+    · rw [hsingle]
+    · rw [hcover]
+      exact subset_union_left
+  have hfull := doublePointPreimage_inter_eq_of_closedBranch_inter_eq hD hc hJsub hQ
+    hQsub hfrontier hclosedInter
+  refine ⟨c, J, Q, hc, hJ, hQ, hQsub, hfrontier, hfull, ?_⟩
+  rcases hsplit with hsingle |
+    ⟨T, R, G, hT, hdisjoint, hcover, hJcoordinate, hTcoordinate,
+      hR, hRsub, hRfrontier, hG, hcompat⟩
+  · exact Or.inl hsingle
+  · right
+    have hQdomain : Q ⊆ D.domain := hQsub.trans interior_subset
+    let A := D.restrict hQ hQdomain
+    have hA :=
+      hD.restrict_isNonsingular_of_doublePointPreimage_inter_eq_of_branchCoordinate
+        hJsub hQ hQdomain hfrontier hfull hJcoordinate
+    refine ⟨T, R, G, A, hT, hdisjoint, hcover, hJcoordinate, hTcoordinate,
+      hR, hRsub, hRfrontier, hG, hcompat, hA.1, ?_, hA.2⟩
+    change D '' Q = D '' Q
+    rfl
+
 end NormalSingularCellData
 
 end DifferentialGeometry.Topology.PiecewiseLinear
