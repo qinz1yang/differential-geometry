@@ -2295,3 +2295,27 @@ endpoint, exit 0, only the standard three axioms. The remaining P.4 geometry is
 to choose small edge disks whose frontiers have finite intersection with the
 already straightened endpoint germs, followed by the degree-one construction
 and the full graph assembly.
+
+## Perturbing disk frontiers away from a fixed core (2026-09-16)
+
+`PiecewiseLinear/BallComplement.lean` proves that removing the interior of a PL
+ball from a polyhedron leaves a polyhedron, in every positive Euclidean dimension.
+`FiniteIntersection.lean` specializes the existing relative general-position
+homeomorphism to finite intersections when the two face dimensions sum to at
+most the ambient dimension. It retains arbitrary small displacement and the
+specified open support.
+
+`DiskFrontierPerturbation.lean` gives
+`IsPLBall.exists_isPLBall_finite_frontier_inter`: a planar PL disk can be replaced
+inside a given open set, retaining a specified closed subset in its interior,
+avoiding another specified closed set, and making its frontier meet a given
+polyhedron of empty interior in only finitely many points. The support avoids
+the retained core and the forbidden set. No regularity of an arc inside the
+retained core is assumed. Together with the finite-contact straightening theorem,
+this removes the need for an exact-two-crossings edge frame.
+
+All three focused checks exit 0 with zero warnings. AuditS128DiskFrontier checks
+three public declarations; exit 0, only `propext`, `Classical.choice`, and
+`Quot.sound`. The next step assembles these constructions for an arc with
+polygonal endpoint germs. Degree-one germs and the controlled graph assembly
+remain open.
