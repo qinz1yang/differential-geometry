@@ -340,6 +340,7 @@ theorem exists_uniform_curvature_concentration [CompactSpace M]
   exact ⟨v, hv, (hlenEq p v).symm.trans heq, (htcEq p v).symm ▸ htc⟩
 
 
+omit [CompleteSpace E] [SigmaCompactSpace M] in
 theorem projection_sweptDensity_le_totalCurvature
     (c : ProductCurve M) (g : ℝ → SmoothRiemannianMetric I M)
     (lambda : ℝ) (hlambda : 0 < lambda) {J : Set ℝ}
