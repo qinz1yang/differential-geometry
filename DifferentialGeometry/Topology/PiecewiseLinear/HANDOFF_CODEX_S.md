@@ -1627,3 +1627,29 @@ No vendored or other-lane source changed. The source hash will be recorded at th
 next checkpoint. The next step transports the proved polygonal crosscut theorem
 to arbitrary embedded crosscuts, then constructs the boundary-fixed disk map.
 P.4 remains partial; I2's target-type issue is unchanged.
+
+### S-M6 continuation: crosscuts without a polygonality assumption
+
+The compatible-arc extension layer is committed and pushed as `7e1951a69`; the
+following integration merge was already up to date.
+
+`PlanarJordan/Crosscut.lean` proves `crosscut_regions` for an arbitrary embedded
+arc in a Jordan disk with its distinct endpoints on the boundary. The two labelled
+sides are the interiors of the curves formed with the two boundary arcs; they are
+disjoint, cover the disk minus the crosscut, and their closures meet the outer
+boundary in the respective boundary arcs. `closed_crosscut_regions` proves that
+the two closed sides cover the original closed disk and intersect exactly in the
+crosscut. `arc_inter_curve_eq_pair` and `isJordanCurve_cut_arc_union` expose the
+intersection and Jordan-curve facts used in the construction.
+
+The proof first makes the crosscut polygonal by extending its compatible boundary
+arc maps, applies the existing checked polygonal theorem, and transports its
+regions and closures back. The public statements do not assume polygonality,
+collars, local flatness, or an unproved separation theorem.
+
+The focused check has exit 0 and zero warnings (`check-planar-crosscut.log`).
+`AuditS107Crosscut.lean` / `.log` contain four entries, all with only `propext`,
+`Classical.choice`, and `Quot.sound`. No vendored or other-lane source changed.
+The source hash will be recorded at the next checkpoint. The next step extends
+a prescribed crosscut homeomorphism over both closed sides, glues them, and extends
+by the identity outside the disk. P.4 is still partial.
