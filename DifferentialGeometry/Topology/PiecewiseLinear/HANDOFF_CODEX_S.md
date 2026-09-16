@@ -1103,3 +1103,25 @@ verified scope. S-M4's finite-complex collar endpoint is complete. S-M3's exact 
 signature still requires the target-type owner's boundary-compatible interface; the geometric
 push producer is already proved. S-M5's next mathematical task is the actual two-component
 and manifold-closure construction for 26.3. The P.4 obligations remain unchanged.
+
+### S-M5 continuation: the two components in a spherical link
+
+`Connected/ClosedCover.lean` proves `connectedComponentIn_sdiff_inter_eq_sdiff`:
+for two closed sets, a connected side of their union minus their intersection is the
+corresponding full connected component. `SphericalComponents.lean` applies this to the
+existing universe-polymorphic `exists_disk_decomposition_of_isPLSphere_one_subset_two`.
+Its endpoint `IsPLSphere.exists_connectedComponentIn_pair_sdiff` proves that a PL circle
+in a PL two-sphere has exactly two complementary connected components. Their closures
+are parametrized PL disks, their common boundary is the given circle, and the closures
+cover the sphere. This is the actual two-side producer needed in the vertex links of an
+embedded surface; a mere non-connectedness assumption is not being substituted for it.
+
+Both modules have focused-check exit 0, zero warnings (`check-connected-closed-cover.log`,
+`check-spherical-components.log`). `AuditS91SphericalComponents.lean` / `.log` audit the
+two new declarations and the reused disk-decomposition producer; all three contain only
+`propext`, `Classical.choice`, and `Quot.sound`. No vendored or other-lane source changed.
+The source hash is recorded at the next checkpoint.
+
+26.3 remains partial. Next: transport these components through the radial cone model,
+then identify the global components in a sufficiently small regular neighborhood and
+prove that their closures have the required manifold boundaries before applying 26.2.
