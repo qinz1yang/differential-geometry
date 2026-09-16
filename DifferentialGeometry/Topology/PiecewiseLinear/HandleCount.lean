@@ -38,14 +38,15 @@ theorem bettiOne_derivedNeighborhood_graph
   exact bettiOne_graph L hd hconn
 
 open Classical in
-theorem bettiOne_pos_of_boundary_component_not_sphere
+theorem bettiNumber_one_pos_of_boundary_component_not_sphere
+    (k : Type) [Field k]
     (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
     (hK : IsCombinatorialManifoldWithBoundary 3 K)
     (hor : IsOrientable 3 K) (hconn : IsConnected K.space)
     (c : ConnectedComponents (boundaryComplex 3 K).space)
     (hnot : ¬ IsPLSphere 2
       (connectedComponentComplex (boundaryComplex 3 K) c).space) :
-    0 < Homology.bettiOne K.space := by
+    0 < Homology.bettiNumber k (TopCat.of K.space) 1 := by
   obtain ⟨o⟩ := hor
   let B := boundaryComplex 3 K
   let _ : Finite B.faces := (boundaryComplex_faces_finite 3 K).to_subtype
@@ -54,9 +55,9 @@ theorem bettiOne_pos_of_boundary_component_not_sphere
   have hstrict := faceEulerChar_lt_two_mul_card_of_component_not_sphere
     B hB c hnot
   change eulerChar B < (2 : ℤ) * Nat.card (ConnectedComponents B.space) at hstrict
-  have hrank := card_otherBoundaryComponent_le_bettiNumber_two K hK hconn o c
+  have hrank := card_otherBoundaryComponent_le_bettiNumber_two (k := k) K hK hconn o c
   change Nat.card (OtherBoundaryComponent B c) ≤
-    Homology.bettiNumber ℚ (TopCat.of K.space) 2 at hrank
+    Homology.bettiNumber k (TopCat.of K.space) 2 at hrank
   let cover : Option (OtherBoundaryComponent B c) → ConnectedComponents B.space
     | none => c
     | some d => d.1
@@ -69,18 +70,32 @@ theorem bettiOne_pos_of_boundary_component_not_sphere
   have hcardCover := Nat.card_le_card_of_surjective cover hcover
   rw [Finite.card_option] at hcardCover
   have hcomponents : Nat.card (ConnectedComponents B.space) ≤
-      Homology.bettiNumber ℚ (TopCat.of K.space) 2 + 1 := by
+      Homology.bettiNumber k (TopCat.of K.space) 2 + 1 := by
     omega
   have hcomponentsInt : (Nat.card (ConnectedComponents B.space) : ℤ) ≤
-      (Homology.bettiNumber ℚ (TopCat.of K.space) 2 : ℤ) + 1 := by
+      (Homology.bettiNumber k (TopCat.of K.space) 2 : ℤ) + 1 := by
     exact_mod_cast hcomponents
-  have hEuler := eulerChar_eq_one_sub_bettiOne_add_bettiTwo_of_coherentOrientation
-    K hK hconn o c
+  have hEuler :=
+    eulerChar_eq_one_sub_bettiNumber_one_add_bettiNumber_two_of_coherentOrientation
+      (k := k) K hK hconn o c
   have hboundary : eulerChar B = 2 * eulerChar K := by
     simpa only [B] using eulerChar_boundaryComplex_eq_two_mul K hK
   by_contra hpos
-  have hb₁ : Homology.bettiOne K.space = 0 := Nat.eq_zero_of_not_pos hpos
+  have hb₁ : Homology.bettiNumber k (TopCat.of K.space) 1 = 0 :=
+    Nat.eq_zero_of_not_pos hpos
   rw [hb₁, Nat.cast_zero, sub_zero] at hEuler
   omega
+
+open Classical in
+theorem bettiOne_pos_of_boundary_component_not_sphere
+    (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
+    (hK : IsCombinatorialManifoldWithBoundary 3 K)
+    (hor : IsOrientable 3 K) (hconn : IsConnected K.space)
+    (c : ConnectedComponents (boundaryComplex 3 K).space)
+    (hnot : ¬ IsPLSphere 2
+      (connectedComponentComplex (boundaryComplex 3 K) c).space) :
+    0 < Homology.bettiOne K.space := by
+  simpa only [Homology.bettiOne] using
+    bettiNumber_one_pos_of_boundary_component_not_sphere ℚ K hK hor hconn c hnot
 
 end DifferentialGeometry.Topology.PiecewiseLinear
