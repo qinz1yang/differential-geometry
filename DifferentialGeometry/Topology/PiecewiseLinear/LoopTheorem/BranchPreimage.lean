@@ -1074,6 +1074,31 @@ theorem exists_two_isPLBalls_branchPreimage_of_boundaryBranch_with_coordinate
     hLball.of_isPLHomeomorphOn hCPL.symm, hAdisjointC, hACcover.symm, hAPL, hCPL⟩
 
 open Classical in
+theorem exists_isPLHomeomorphOn_eqOn_of_branchCoordinate
+    (hD : NormalSingularCellData D BdM B) (c : hD.singularSet.Branch)
+    {A C : Set (EuclideanSpace ℝ (Fin 2))}
+    (hAsub : A ⊆ hD.branchPreimage c) (hCsub : C ⊆ hD.branchPreimage c)
+    (hAcoord : IsPLHomeomorphOn (hD.branchCoordinate c) A
+      (hD.singularSet.branchComplex c).space)
+    (hCcoord : IsPLHomeomorphOn (hD.branchCoordinate c) C
+      (hD.singularSet.branchComplex c).space) :
+    ∃ g : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 2),
+      IsPLHomeomorphOn g A C ∧ EqOn D (D ∘ g) A := by
+  let g := Function.invFunOn (hD.branchCoordinate c) C ∘ hD.branchCoordinate c
+  have hg : IsPLHomeomorphOn g A C := hAcoord.trans hCcoord.symm
+  refine ⟨g, hg, ?_⟩
+  intro x hxA
+  have hgC : g x ∈ C := hg.bijOn.mapsTo hxA
+  have hcoord : hD.branchCoordinate c (g x) = hD.branchCoordinate c x :=
+    hCcoord.bijOn.invOn_invFunOn.2 (hAcoord.bijOn.mapsTo hxA)
+  calc
+    D x = (hD.singularSet.branchPieceIn c).map (hD.branchCoordinate c x) :=
+      (hD.branchPieceIn_map_branchCoordinate c (hAsub hxA)).symm
+    _ = (hD.singularSet.branchPieceIn c).map (hD.branchCoordinate c (g x)) :=
+      congrArg (hD.singularSet.branchPieceIn c).map hcoord.symm
+    _ = D (g x) := hD.branchPieceIn_map_branchCoordinate c (hCsub hgC)
+
+open Classical in
 theorem exists_isPLHomeomorphOn_branch_sheets
     [T2Space M] (hD : NormalSingularCellData D BdM B)
     {c : hD.singularSet.Branch} (hc : hD.singularSet.IsBoundaryBranch c) :
@@ -1084,25 +1109,15 @@ theorem exists_isPLHomeomorphOn_branch_sheets
           IsPLHomeomorphOn g A C ∧ EqOn D (D ∘ g) A := by
   obtain ⟨A, C, hA, hC, hdisjoint, hcover, hAcoord, hCcoord⟩ :=
     hD.exists_two_isPLBalls_branchPreimage_of_boundaryBranch_with_coordinate hc
-  let g := Function.invFunOn (hD.branchCoordinate c) C ∘ hD.branchCoordinate c
-  have hg : IsPLHomeomorphOn g A C := hAcoord.trans hCcoord.symm
-  refine ⟨A, C, hA, hC, hdisjoint, hcover, g, hg, ?_⟩
-  intro x hxA
-  have hxP : x ∈ hD.branchPreimage c := by
+  have hAsub : A ⊆ hD.branchPreimage c := by
     rw [hcover]
-    exact Or.inl hxA
-  have hgC : g x ∈ C := hg.bijOn.mapsTo hxA
-  have hgP : g x ∈ hD.branchPreimage c := by
+    exact subset_union_left
+  have hCsub : C ⊆ hD.branchPreimage c := by
     rw [hcover]
-    exact Or.inr hgC
-  have hcoord : hD.branchCoordinate c (g x) = hD.branchCoordinate c x :=
-    hCcoord.bijOn.invOn_invFunOn.2 (hAcoord.bijOn.mapsTo hxA)
-  calc
-    D x = (hD.singularSet.branchPieceIn c).map (hD.branchCoordinate c x) :=
-      (hD.branchPieceIn_map_branchCoordinate c hxP).symm
-    _ = (hD.singularSet.branchPieceIn c).map (hD.branchCoordinate c (g x)) :=
-      congrArg (hD.singularSet.branchPieceIn c).map hcoord.symm
-    _ = D (g x) := hD.branchPieceIn_map_branchCoordinate c hgP
+    exact subset_union_right
+  obtain ⟨g, hg, hcompat⟩ :=
+    hD.exists_isPLHomeomorphOn_eqOn_of_branchCoordinate c hAsub hCsub hAcoord hCcoord
+  exact ⟨A, C, hA, hC, hdisjoint, hcover, g, hg, hcompat⟩
 
 open Classical in
 theorem exists_two_isPLBalls_branchPreimage_of_boundaryBranch
