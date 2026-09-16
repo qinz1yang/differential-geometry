@@ -527,3 +527,21 @@ theorem eq_top_of_boundaryLoops_mem_normal
   `glueEmbed₂` 像版本经 `glueSnd_glueEmbed₂` 消去这一显式输入。
 - `SphereCase` 聚焦检查 exit=0、零 warning；更新后的 `.lake/scratch/AuditSphereCase.lean` 共 14 项，
   全部只含 `propext`、`Classical.choice`、`Quot.sound`。
+
+## 24. 2026-09-16 E3-M2 追加：边界弧贴合的 frontier 表示
+
+状态：done（NIGHT_PLAN §6.2 的“frontier = 两侧补弧之并”已闭合）。
+
+- `CellGluing.lean` 新增 `exists_complementary_frontier_arcs_of_isPLBall_union`：对平面中两张 PL 2-球 `C,D`，若
+  `C ∩ D` 是同时位于两侧 frontier 的 PL 1-球，则给出共同端点 `p,q` 及两条 PL 补弧 `A,B`，两侧都构成
+  `Schoenflies.IsCutPair`，并有精确恒等式 `frontier (C ∪ D) = A ∪ B`。
+- 证明先用闭盘的 `interior_union_left` 排除补弧非端点落入并盘内部，再用 PL 1-球删去有限端点后稠密及
+  frontier 闭性补回两端。两补弧之并与并盘 frontier 都是 Jordan 圆，
+  `PlanarJordan.eq_of_isJordanCurve_of_subset` 将包含关系升级为集合相等。
+- `SingularTwoCell.exists_glue_of_isPLHomeomorphOn_boundary_arc` 的输出已加强：除原有两侧盘、参数化、公共缝及映射公式外，
+  直接返回两条补弧的 `IsCutPair`、PL 1-球性和新胞腔的 frontier 等式。
+- 因整合后共享目录缺少新导入链的中间产物，按规则仅用 `check-f.ps1` 顺次刷新
+  `FrontierBoundary`、`BallFrontier`、`PlanarDiskUnion`，未运行 `lake build`。`CellGluing` 最终聚焦检查 exit=0、零 warning；
+  `.lake/scratch/AuditE3M2.lean` 共 39 项，全部只含 `propext`、`Classical.choice`、`Quot.sound`。
+- 下一步是把三盘链的首尾盘沿分支双层同胚实际贴合，并用本端点返回的补弧识别书页 186/187 的
+  `L₁ = συ⁻¹` 或 `L₁ = συ`。
