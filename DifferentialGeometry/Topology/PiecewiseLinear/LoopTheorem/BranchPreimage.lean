@@ -51,6 +51,101 @@ theorem branchPieceIn_map_branchCoordinate
     (hD.singularSet.branchPieceIn c).map (hD.branchCoordinate c x) = D x := by
   exact (hD.singularSet.branchPieceIn c).bijOn.invOn_invFunOn.2 hx.2
 
+noncomputable def branchProjection
+    (hD : NormalSingularCellData D BdM B) (c : hD.singularSet.Branch) :
+    hD.branchPreimage c → (hD.singularSet.branchComplex c).space :=
+  fun x => ⟨hD.branchCoordinate c x, hD.branchCoordinate_mem c x.2⟩
+
+def branchPreimageCoverHomeomorph
+    (hD : NormalSingularCellData D BdM B) (c : hD.singularSet.Branch) :
+    hD.branchPreimage c ≃ₜ
+      ((doublePointProjection D D.domain) ⁻¹' hD.singularSet.branchSet c) where
+  toFun x :=
+    ⟨⟨x, ⟨x.2.1,
+      hD.singularSet.branchCarrier_subset_doublePointSet c x.2.2⟩⟩, x.2.2⟩
+  invFun x := ⟨x.1, ⟨x.1.2.1, x.2⟩⟩
+  left_inv _ := rfl
+  right_inv _ := rfl
+  continuous_toFun := by
+    exact (continuous_subtype_val.subtype_mk _).subtype_mk _
+  continuous_invFun := by
+    exact (continuous_subtype_val.comp continuous_subtype_val).subtype_mk _
+
+noncomputable def branchComplexBranchSetHomeomorph [T2Space M]
+    (hD : NormalSingularCellData D BdM B) (c : hD.singularSet.Branch) :
+    (hD.singularSet.branchComplex c).space ≃ₜ hD.singularSet.branchSet c := by
+  let f : (hD.singularSet.branchComplex c).space → hD.singularSet.branchSet c :=
+    fun x =>
+      ⟨⟨(hD.singularSet.branchPieceIn c).map x,
+        hD.singularSet.branchCarrier_subset_doublePointSet c
+          ((hD.singularSet.branchPieceIn c).bijOn.mapsTo x.2)⟩,
+        (hD.singularSet.branchPieceIn c).bijOn.mapsTo x.2⟩
+  have hfbij : Function.Bijective f := by
+    constructor
+    · intro x y hxy
+      apply Subtype.ext
+      apply (hD.singularSet.branchPieceIn c).bijOn.injOn x.2 y.2
+      exact congrArg (fun z : hD.singularSet.branchSet c => (z : M)) hxy
+    · intro y
+      obtain ⟨x, hx, hxy⟩ :=
+        (hD.singularSet.branchPieceIn c).bijOn.surjOn y.2
+      refine ⟨⟨x, hx⟩, ?_⟩
+      apply Subtype.ext
+      apply Subtype.ext
+      exact hxy
+  let e : (hD.singularSet.branchComplex c).space ≃
+      hD.singularSet.branchSet c := Equiv.ofBijective f hfbij
+  have hfcont : Continuous f := by
+    exact ((continuousOn_iff_continuous_domRestrict.mp
+      (hD.singularSet.branchPieceIn c).continuousOn).subtype_mk _).subtype_mk _
+  let _ : CompactSpace (hD.singularSet.branchComplex c).space :=
+    isCompact_iff_compactSpace.mp
+      (hD.singularSet.branchComplex_space_isPolyhedron c).isCompact
+  exact e.toHomeomorphOfContinuousClosed hfcont hfcont.isClosedMap
+
+open Classical in
+theorem branchComplexBranchSetHomeomorph_symm_coe [T2Space M]
+    (hD : NormalSingularCellData D BdM B) (c : hD.singularSet.Branch)
+    (y : hD.singularSet.branchSet c) :
+    ((hD.branchComplexBranchSetHomeomorph c).symm y :
+      EuclideanSpace ℝ (Fin hD.singularSet.piece.ambientDim)) =
+      Function.invFunOn (hD.singularSet.branchPieceIn c).map
+        (hD.singularSet.branchPieceIn c).complex.space (y : M) := by
+  apply (hD.singularSet.branchPieceIn c).bijOn.injOn
+  · exact (hD.branchComplexBranchSetHomeomorph c).symm y |>.2
+  · exact (hD.singularSet.branchPieceIn c).bijOn.surjOn.mapsTo_invFunOn y.2
+  · calc
+      (hD.singularSet.branchPieceIn c).map
+          ((hD.branchComplexBranchSetHomeomorph c).symm y) = (y : M) := by
+        exact congrArg (fun z : hD.singularSet.branchSet c => (z : M))
+          ((hD.branchComplexBranchSetHomeomorph c).apply_symm_apply y)
+      _ = (hD.singularSet.branchPieceIn c).map
+          (Function.invFunOn (hD.singularSet.branchPieceIn c).map
+            (hD.singularSet.branchPieceIn c).complex.space (y : M)) :=
+        ((hD.singularSet.branchPieceIn c).bijOn.invOn_invFunOn.2 y.2).symm
+
+open Classical in
+theorem branchProjection_isLocalHomeomorph [T2Space M]
+    (hD : NormalSingularCellData D BdM B) (c : hD.singularSet.Branch) :
+    IsLocalHomeomorph (hD.branchProjection c) := by
+  let J := hD.singularSet.branchSet c
+  let p := doublePointProjection D D.domain
+  let eSource := hD.branchPreimageCoverHomeomorph c
+  let eTarget := hD.branchComplexBranchSetHomeomorph c
+  have hlocal : IsLocalHomeomorph
+      (eTarget.symm ∘ J.restrictPreimage p ∘ eSource) :=
+    eTarget.symm.isLocalHomeomorph.comp
+      ((hD.doublePointProjection_isCoveringMap.restrictPreimage J).isLocalHomeomorph.comp
+        eSource.isLocalHomeomorph)
+  have heq : hD.branchProjection c =
+      eTarget.symm ∘ J.restrictPreimage p ∘ eSource := by
+    funext x
+    apply Subtype.ext
+    exact (hD.branchComplexBranchSetHomeomorph_symm_coe c
+      (J.restrictPreimage p (eSource x))).symm
+  rw [heq]
+  exact hlocal
+
 open Classical in
 theorem branchCoordinate_isPiecewiseAffineOn
     (hD : NormalSingularCellData D BdM B) (c : hD.singularSet.Branch) :
