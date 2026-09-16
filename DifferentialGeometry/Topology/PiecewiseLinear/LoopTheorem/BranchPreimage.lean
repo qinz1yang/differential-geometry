@@ -166,6 +166,108 @@ private theorem isPLSphere_or_exists_two_isPLSpheres_of_component_split
     · rw [hTeq]
       exact hCsphere T' hT'C
 
+private theorem exists_partition_members_of_two_component_split
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {P : Set E} (hPcompact : IsCompact P) {C : Set (Set E)} (hCfinite : C.Finite)
+    (hCconnected : ∀ S ∈ C, IsConnected S) (hCclosed : ∀ S ∈ C, IsClosed S)
+    (hCdisjoint : C.PairwiseDisjoint id) (hcover : P = ⋃₀ C)
+    {x y : P} (hxy : Disjoint (connectedComponent x) (connectedComponent y))
+    (hcomponents : connectedComponent x ∪ connectedComponent y = univ) :
+    ∃ S T : Set E, S ∈ C ∧ T ∈ C ∧
+      ((↑) : P → E) '' connectedComponent x = S ∧
+      ((↑) : P → E) '' connectedComponent y = T := by
+  let _ : CompactSpace P := isCompact_iff_compactSpace.mp hPcompact
+  let A : Set E := ((↑) : P → E) '' connectedComponent x
+  let B : Set E := ((↑) : P → E) '' connectedComponent y
+  have hAconnected : IsConnected A :=
+    isConnected_connectedComponent.image Subtype.val continuous_subtype_val.continuousOn
+  have hBconnected : IsConnected B :=
+    isConnected_connectedComponent.image Subtype.val continuous_subtype_val.continuousOn
+  have hAclosed : IsClosed A :=
+    (isClosed_connectedComponent.isCompact.image continuous_subtype_val).isClosed
+  have hBclosed : IsClosed B :=
+    (isClosed_connectedComponent.isCompact.image continuous_subtype_val).isClosed
+  have hAne : A.Nonempty := ⟨x, ⟨x, mem_connectedComponent, rfl⟩⟩
+  have hBne : B.Nonempty := ⟨y, ⟨y, mem_connectedComponent, rfl⟩⟩
+  have hABdisjoint : Disjoint A B :=
+    (Set.disjoint_image_iff Subtype.val_injective).mpr hxy
+  have hABcover : A ∪ B = P := by
+    apply Subset.antisymm
+    · rintro z (hz | hz)
+      · obtain ⟨w, -, rfl⟩ := hz
+        exact w.2
+      · obtain ⟨w, -, rfl⟩ := hz
+        exact w.2
+    · intro z hz
+      let w : P := ⟨z, hz⟩
+      have hw : w ∈ connectedComponent x ∪ connectedComponent y := by
+        rw [hcomponents]
+        exact mem_univ w
+      rcases hw with hw | hw
+      · exact Or.inl ⟨w, hw, rfl⟩
+      · exact Or.inr ⟨w, hw, rfl⟩
+  have hAsub : A ⊆ ⋃₀ C := by
+    intro z hz
+    rw [← hcover]
+    exact hABcover.subset (Or.inl hz)
+  have hBsub : B ⊆ ⋃₀ C := by
+    intro z hz
+    rw [← hcover]
+    exact hABcover.subset (Or.inr hz)
+  obtain ⟨S, ⟨hSC, hAS⟩, -⟩ :=
+    existsUnique_subset_of_isConnected_of_finite_closed_partition hAconnected hCfinite
+      hCclosed hCdisjoint hAsub
+  obtain ⟨T, ⟨hTC, hBT⟩, -⟩ :=
+    existsUnique_subset_of_isConnected_of_finite_closed_partition hBconnected hCfinite
+      hCclosed hCdisjoint hBsub
+  have hSA : S ⊆ A := by
+    have hScover : S ⊆ A ∪ B := by
+      rw [hABcover, hcover]
+      exact subset_sUnion_of_mem hSC
+    rcases subset_or_subset_of_isPreconnected_of_isClosed
+        (hCconnected S hSC).isPreconnected hAclosed hBclosed hABdisjoint hScover with h | h
+    · exact h
+    · obtain ⟨z, hz⟩ := hAne
+      exact False.elim (Set.disjoint_left.mp hABdisjoint hz (h (hAS hz)))
+  have hTB : T ⊆ B := by
+    have hTcover : T ⊆ A ∪ B := by
+      rw [hABcover, hcover]
+      exact subset_sUnion_of_mem hTC
+    rcases subset_or_subset_of_isPreconnected_of_isClosed
+        (hCconnected T hTC).isPreconnected hAclosed hBclosed hABdisjoint hTcover with h | h
+    · obtain ⟨z, hz⟩ := hBne
+      exact False.elim (Set.disjoint_left.mp hABdisjoint (h (hBT hz)) hz)
+    · exact h
+  exact ⟨S, T, hSC, hTC, Subset.antisymm hAS hSA, Subset.antisymm hBT hTB⟩
+
+private theorem bijOn_componentImage_of_homeomorph
+    {E F : Type*} [TopologicalSpace E] [TopologicalSpace F]
+    {P : Set E} {Q : Set F} (f : E → F) (p : P → Q)
+    (hp : ∀ z : P, (p z : F) = f z) {x : P}
+    (e : connectedComponent x ≃ₜ Q)
+    (he : ∀ z : connectedComponent x, e z = p z) :
+    BijOn f (((↑) : P → E) '' connectedComponent x) Q := by
+  refine ⟨?_, ?_, ?_⟩
+  · rintro z ⟨w, -, rfl⟩
+    rw [← hp]
+    exact (p w).2
+  · rintro z ⟨a, ha, rfl⟩ w ⟨b, hb, rfl⟩ hab
+    have hpab : p a = p b := by
+      apply Subtype.ext
+      rw [hp, hp]
+      exact hab
+    have heab : e ⟨a, ha⟩ = e ⟨b, hb⟩ := by
+      rw [he, he]
+      exact hpab
+    exact congrArg (fun q : connectedComponent x => ((q : P) : E)) (e.injective heab)
+  · intro z hz
+    obtain ⟨w, hw⟩ := e.surjective ⟨z, hz⟩
+    refine ⟨w.1, ⟨w.1, w.2, rfl⟩, ?_⟩
+    calc
+      f w.1 = (p w.1 : F) := (hp w.1).symm
+      _ = (e w : F) := congrArg Subtype.val (he w).symm
+      _ = z := congrArg Subtype.val hw
+
 def branchPreimage (hD : NormalSingularCellData D BdM B)
     (c : hD.singularSet.Branch) : Set (EuclideanSpace ℝ (Fin 2)) :=
   D.domain ∩ D ⁻¹' hD.singularSet.branchCarrier c
@@ -868,6 +970,104 @@ theorem branchPreimage_isPLSphere_or_exists_two_isPLSpheres_of_not_boundaryBranc
   exact isPLSphere_or_exists_two_isPLSpheres_of_component_split
     (hD.branchPreimage_isCompact c) hCfinite hCsphere hCdisjoint
       (hKspace.symm.trans hCcover) hsplit
+
+open Classical in
+theorem exists_two_isPLBalls_branchPreimage_of_boundaryBranch
+    [T2Space M] (hD : NormalSingularCellData D BdM B)
+    {c : hD.singularSet.Branch} (hc : hD.singularSet.IsBoundaryBranch c) :
+    ∃ A C : Set (EuclideanSpace ℝ (Fin 2)),
+      IsPLBall 1 A ∧ IsPLBall 1 C ∧ Disjoint A C ∧
+        hD.branchPreimage c = A ∪ C := by
+  let P := hD.branchPreimage c
+  let L := hD.singularSet.branchComplex c
+  let f := hD.branchCoordinate c
+  let p := hD.branchProjection c
+  have hLball : IsPLBall 1 L.space := hD.singularSet.branchComplex_isPLBall hc
+  let _ : SimplyConnectedSpace L.space := hLball.simplyConnectedSpace
+  let _ : LocallyPathConnectedSpace L.space := hLball.locallyPathConnectedSpace
+  have htwo : ∃ x y : P,
+      Disjoint (connectedComponent x) (connectedComponent y) ∧
+      connectedComponent x ∪ connectedComponent y = univ ∧
+      (∃ e : connectedComponent x ≃ₜ L.space,
+        ∀ z : connectedComponent x, e z = p z) ∧
+      ∃ e : connectedComponent y ≃ₜ L.space,
+        ∀ z : connectedComponent y, e z = p z := by
+    rcases hD.branchProjection_connected_or_two_components c with hconnected | hsplit
+    · let _ : ConnectedSpace P := hconnected
+      have hinj : Function.Injective p := (hD.branchProjection_isCoveringMap c).injective_of_simplyConnected
+      let q : L.space := Classical.arbitrary L.space
+      obtain ⟨a, b, hab, hfiber⟩ := encard_eq_two.mp (hD.branchProjection_fiber_encard_eq_two c q)
+      have ha : p a = q := by
+        change a ∈ p ⁻¹' {q}
+        rw [hfiber]
+        exact Or.inl rfl
+      have hb : p b = q := by
+        change b ∈ p ⁻¹' {q}
+        rw [hfiber]
+        exact Or.inr rfl
+      exact False.elim (hab (hinj (ha.trans hb.symm)))
+    · exact hsplit
+  obtain ⟨x, y, hxy, hcomponents, ⟨eA, heA⟩, ⟨eC, heC⟩⟩ := htwo
+  obtain ⟨K, hKfinite, hKspace, hKman, -, -⟩ :=
+    hD.exists_branchPreimage_simplicialComplex_manifold c
+  let _ : Finite K.faces := hKfinite.to_subtype
+  obtain ⟨Q, hQfinite, hQshape, hQdisjoint, hQcover⟩ :=
+    exists_finite_isPLSphere_or_isPLBall_decomposition K hKman
+  have hQconnected : ∀ S ∈ Q, IsConnected S := by
+    intro S hS
+    exact (hQshape S hS).elim (fun h => h.isConnected_one) (fun h => h.isConnected)
+  have hQclosed : ∀ S ∈ Q, IsClosed S := by
+    intro S hS
+    exact (hQshape S hS).elim
+      (fun h => h.isPolyhedron.isClosed) (fun h => h.isPolyhedron.isClosed)
+  obtain ⟨S, T, hSQ, hTQ, hAS, hCT⟩ :=
+    exists_partition_members_of_two_component_split (hD.branchPreimage_isCompact c)
+      hQfinite hQconnected hQclosed hQdisjoint (hKspace.symm.trans hQcover)
+        hxy hcomponents
+  let A : Set (EuclideanSpace ℝ (Fin 2)) :=
+    ((↑) : P → EuclideanSpace ℝ (Fin 2)) '' connectedComponent x
+  let C : Set (EuclideanSpace ℝ (Fin 2)) :=
+    ((↑) : P → EuclideanSpace ℝ (Fin 2)) '' connectedComponent y
+  have hApoly : IsPolyhedron A := by
+    change IsPolyhedron (((↑) : P → EuclideanSpace ℝ (Fin 2)) '' connectedComponent x)
+    rw [hAS]
+    exact (hQshape S hSQ).elim (fun h => h.isPolyhedron) (fun h => h.isPolyhedron)
+  have hCpoly : IsPolyhedron C := by
+    change IsPolyhedron (((↑) : P → EuclideanSpace ℝ (Fin 2)) '' connectedComponent y)
+    rw [hCT]
+    exact (hQshape T hTQ).elim (fun h => h.isPolyhedron) (fun h => h.isPolyhedron)
+  have hAsub : A ⊆ P := by
+    rintro z ⟨w, -, rfl⟩
+    exact w.2
+  have hCsub : C ⊆ P := by
+    rintro z ⟨w, -, rfl⟩
+    exact w.2
+  have hp (z : P) : (p z : EuclideanSpace ℝ (Fin hD.singularSet.piece.ambientDim)) = f z := rfl
+  have hAbij : BijOn f A L.space :=
+    bijOn_componentImage_of_homeomorph f p hp eA heA
+  have hCbij : BijOn f C L.space :=
+    bijOn_componentImage_of_homeomorph f p hp eC heC
+  have hAPL : IsPLHomeomorphOn f A L.space :=
+    isPLHomeomorphOn_of_isPiecewiseAffineOn_of_bijOn hApoly
+      ((hD.branchCoordinate_isPiecewiseAffineOn c).mono_of_isPolyhedron hApoly hAsub) hAbij
+  have hCPL : IsPLHomeomorphOn f C L.space :=
+    isPLHomeomorphOn_of_isPiecewiseAffineOn_of_bijOn hCpoly
+      ((hD.branchCoordinate_isPiecewiseAffineOn c).mono_of_isPolyhedron hCpoly hCsub) hCbij
+  have hAdisjointC : Disjoint A C :=
+    (Set.disjoint_image_iff Subtype.val_injective).mpr hxy
+  have hACcover : A ∪ C = P := by
+    apply Subset.antisymm
+    · exact union_subset hAsub hCsub
+    · intro z hz
+      let w : P := ⟨z, hz⟩
+      have hw : w ∈ connectedComponent x ∪ connectedComponent y := by
+        rw [hcomponents]
+        exact mem_univ w
+      rcases hw with hw | hw
+      · exact Or.inl ⟨w, hw, rfl⟩
+      · exact Or.inr ⟨w, hw, rfl⟩
+  exact ⟨A, C, hLball.of_isPLHomeomorphOn hAPL.symm,
+    hLball.of_isPLHomeomorphOn hCPL.symm, hAdisjointC, hACcover.symm⟩
 
 end NormalSingularCellData
 
