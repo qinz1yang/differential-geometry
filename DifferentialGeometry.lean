@@ -10575,3 +10575,8 @@ import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Algebra.Relower
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Tensor0S.Relowering
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Algebra.ReloweringNorm
 import DifferentialGeometry.Geometry.Curvature.Bounds.MixedMetricDerivative
+import DifferentialGeometry.Analysis.Elliptic.Euclidean.Regularity.Harmonic
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.DirichletEnergy.HarmonicRegularity
+import DifferentialGeometry.Topology.Manifold.OpenCoverLocalDiffeomorph
+import DifferentialGeometry.Topology.Manifold.OpenEmbeddingChart
+import DifferentialGeometry.Topology.Manifold.LocalDiffeomorphAtlas
