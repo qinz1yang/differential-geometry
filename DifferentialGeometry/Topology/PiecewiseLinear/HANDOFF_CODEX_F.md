@@ -2093,3 +2093,11 @@ F-M1 仍为 partial。单个旧三角形的全部纤维及逐边对应已闭合�
 `HasPushProperty.isSimplyEmbedded_of_sphere_surgery` 在 C 位于 S 的凸包内时，将手术后球面的单嵌入传回 S；证明对定义中的每个凸开邻域构造上述相对推移并复合，保留邻域外逐点固定。此处是删除归纳的传递引理，尚未生产薄片胞腔及可删相交盘，未将这些条件当作 I1 的结论。
 
 聚焦检查 `SphereCellPush` exit=0（9.8 秒）、零 warning；`AuditF229.lean` 三项仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步为实际薄片胞腔分解、自由盘相交条件与 Lemma 6；S.4 M2/M3、夜间 F-M1 整体及 I1 尚未完成。下一审计文件 `AuditF230.lean`。
+
+### 19.81 S.4 M2：凸多胞体的实际 PL 球性
+
+`PolytopeBoundary.lean` 的 `IsHPolytope.isPolyhedron_frontier` 从有限线性不等式表示证明边界是非零约束等号截面的有限并，从而是多面体；允许空集、低维退化集和零约束，没有附加内部非空条件。
+
+`ConvexPolytope.lean` 的 `isPLSphere_frontier_and_isPLBall_of_convex` 对任意有限维实范数空间，假设紧凸集有非空内部且边界为多面体，以内部点为顶点将边界剖分作锥；锥空间恰为原凸集，其顶点链环由欧氏邻域定理是 PL 球面，链环又恰为原边界剖分。由此同时生产边界 PL 球面和整体 PL 球。`IsHPolytope.isPLSphere_frontier` 与 `IsHPolytope.isPLBall` 应用于紧凸多胞体；后者维数为环境 finrank，并包含零维情形。证明没有使用三维 Schoenflies，也没有假设胞体已是 PL 球。
+
+聚焦检查：`PolytopeBoundary` exit=0（11.9 秒）、`ConvexPolytope` exit=0（9.6 秒），均零 warning。`AuditF230.lean` 四项均仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步将球性生产者应用到水平截面和薄片胞腔，再完成自由胞腔的球面相交盘与删除归纳；S.4 M2/M3、夜间 F-M1 整体及 I1 尚未完成。下一审计文件 `AuditF231.lean`。
