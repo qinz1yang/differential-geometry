@@ -123,7 +123,7 @@ open Classical in
 theorem IsDrawing.exists_homeomorph_radial_vertex_neighborhoods
     {β : Type*} {G : Graph Plane β} {drawing : β → ℝ → Plane} [G.Finite]
     (h : IsDrawing G drawing) (s : Finset Plane)
-    (hs : ∀ v ∈ s, (G.incidenceSet v).Nontrivial)
+    (hs : ∀ v ∈ s, (G.incidenceSet v).Nonempty)
     {U : Set Plane} (hU : IsOpen U) (hsU : (s : Set Plane) ⊆ U)
     {ε : Plane → ℝ} (hε : Continuous ε) (hεpos : ∀ x, 0 < ε x) :
     ∃ (r : {v // v ∈ s} → ℝ)
@@ -140,7 +140,7 @@ theorem IsDrawing.exists_homeomorph_radial_vertex_neighborhoods
       EqOn e id V(G) ∧ EqOn e id Uᶜ ∧ ∀ x, dist (e x) x < ε x := by
   let I := {v // v ∈ s}
   have hv (v : I) : v.1 ∈ V(G) := by
-    obtain ⟨d, hd, _, _, _⟩ := hs v.1 v.2
+    obtain ⟨d, hd⟩ := hs v.1 v.2
     exact hd.vertex_mem
   obtain ⟨R, A, q, e, hR, hdis, _, hA, heA, heV, heU, hesmall⟩ :=
     h.exists_homeomorph_radial_vertex_fans s hs hU hsU hε hεpos

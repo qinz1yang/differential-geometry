@@ -2614,3 +2614,33 @@ standard three axioms. The auxiliary arc asserted in Moise 10.8 is now proved.
 Remaining P.4 assembly: use it to straighten degree-one vertex germs, include
 those vertices in the finite graph assembly, and finish arbitrary positive-
 function displacement control.
+
+## Degree-one vertices and arbitrary finite planar graphs (2026-09-16)
+
+`PlanarJordan/EndpointStraightening.lean` uses the proved auxiliary arc to
+construct a radial initial subarc at any arc endpoint, inside any prescribed
+neighborhood, with a square support and its diameter displacement bound.
+`Graph.IsDrawing.exists_homeomorph_radial_vertex_fan_of_nonempty` now handles
+any nonisolated vertex, including degree one, while avoiding nonincident edges.
+
+The canonical finite vertex-fan and vertex-neighborhood interfaces in
+`VertexStraightening.lean` and `VertexNeighborhood.lean` have been generalized
+from nontrivial incidence sets to nonempty incidence sets. Their support,
+vertex-fixing, exact full-edge intersections, and positive continuous control
+function conclusions are unchanged. All Lean consumers were updated together.
+
+`GraphStraightening.lean` now proves
+`Graph.IsDrawing.exists_homeomorph_polygonal_edges` for every finite planar
+graph drawing. It fixes every original vertex and every point outside the
+prescribed open neighborhood and makes every whole edge polygonal. The former
+`exists_homeomorph_polygonal_edges_of_no_endpoints` declaration is replaced by
+this general primary theorem; there are no Lean consumers of the old name.
+Isolated vertices remain allowed and fixed.
+
+The import graph is acyclic. The new endpoint module and all three changed
+consumers check with exit 0 and zero warnings. AuditS143AllGraphVertices checks
+five current endpoints, exit 0, only the standard three axioms. The degree-one
+and finite-graph support stages of P.4 are now closed. Full arbitrary
+positive-function displacement control for the whole graph still requires the
+small-edge subdivision and quantitative assembly; the support-only graph
+endpoint does not claim that bound.

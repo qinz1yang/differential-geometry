@@ -9,15 +9,14 @@ open Schoenflies DifferentialGeometry.Topology.PlanarJordan
 open scoped Graph
 
 open Classical in
-theorem IsDrawing.exists_homeomorph_polygonal_edges_of_no_endpoints
+theorem IsDrawing.exists_homeomorph_polygonal_edges
     {β : Type*} {G : Graph Plane β} {drawing : β → ℝ → Plane} [G.Finite]
     (h : IsDrawing G drawing)
-    (hdeg : ∀ v, (G.incidenceSet v).Nonempty → (G.incidenceSet v).Nontrivial)
     {U : Set Plane} (hU : IsOpen U) (hGU : pointSet G drawing ⊆ U) :
     ∃ e : Plane ≃ₜ Plane, (∀ d ∈ E(G), IsPolygonal (e '' edgeArc drawing d)) ∧
       EqOn e id V(G) ∧ EqOn e id Uᶜ := by
-  let s := (finite_vertexSet (G := G)).toFinset.filter fun v => (G.incidenceSet v).Nontrivial
-  have hs : ∀ v ∈ s, (G.incidenceSet v).Nontrivial :=
+  let s := (finite_vertexSet (G := G)).toFinset.filter fun v => (G.incidenceSet v).Nonempty
+  have hs : ∀ v ∈ s, (G.incidenceSet v).Nonempty :=
     fun _ hv => (Finset.mem_filter.mp hv).2
   have hsU : (s : Set Plane) ⊆ U := fun _ hv =>
     hGU (Or.inl ((finite_vertexSet (G := G)).mem_toFinset.mp (Finset.mem_filter.mp hv).1))
@@ -29,10 +28,10 @@ theorem IsDrawing.exists_homeomorph_polygonal_edges_of_no_endpoints
   have hlink (d : I) := (h.edge_param d.2).2.2
   have hleft (d : I) : drawing d 0 ∈ s := Finset.mem_filter.mpr
     ⟨(finite_vertexSet (G := G)).mem_toFinset.mpr (hlink d).left_mem,
-      hdeg _ ⟨d, (hlink d).inc_left⟩⟩
+      ⟨d, (hlink d).inc_left⟩⟩
   have hright (d : I) : drawing d 1 ∈ s := Finset.mem_filter.mpr
     ⟨(finite_vertexSet (G := G)).mem_toFinset.mpr (hlink d).right_mem,
-      hdeg _ ⟨d, (hlink d).inc_right⟩⟩
+      ⟨d, (hlink d).inc_right⟩⟩
   have hne (v : {v // v ∈ s}) (d : {d // G.Inc d v.1}) : v.1 ≠ p v d := by
     have hbd : Plane.supDist (p v d) v.1 = r v := by
       simpa only [Plane.frontier_closedSquare, mem_ofPred_eq] using (hp v d).1
