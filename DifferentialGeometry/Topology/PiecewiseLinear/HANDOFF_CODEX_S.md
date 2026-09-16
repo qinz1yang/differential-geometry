@@ -2036,3 +2036,24 @@ remaining B.6 work is the single-crossing boundary-loop construction and its
 relative general-position disk filling, followed by the component/frontier result.
 Per the latest assignment, S.6 and B.8 are deferred; current order is B.6, the
 internal two-sided Problem 26.3 endpoint, and the remaining P.4 producers.
+
+### Boundary intersections under relative general position, 2026-09-16
+
+`PreimageBoundary.lean` identifies the boundary of the transverse one-dimensional
+preimage complex with the preimage of the target manifold on the source boundary.
+A source-boundary point lies in a boundary face. The carrier-face dimension estimate
+forces its preimage face to have one vertex; the existing degree classification
+then identifies it as a boundary point. This closes the previously missing link
+between graph parity and geometric boundary intersections.
+
+`even_ncard_boundary_preimage_of_transverse_faces` gives even intersection count
+for a transverse simplicial map. `even_ncard_boundary_preimage_of_transverse_boundary`
+only assumes transversality and affine independence on the source boundary; the
+interior is perturbed by `exists_small_simplicialMap_preimage_manifold_relative`,
+which fixes that boundary pointwise. The results hold for source dimension m+1,
+closed target dimension n+1, and ambient dimension m+n+1. No extra class or
+Schoenflies assumption is present.
+
+Focused check: exit 0, zero warnings. `AuditS117PreimageBoundary.lean` checks all
+three public declarations; exit 0, only the standard three axioms. B.6 remains
+partial pending the single-crossing loop producer and the global component result.
