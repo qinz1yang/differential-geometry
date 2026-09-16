@@ -1608,3 +1608,9 @@ F-M2–F-M6 尚未开始；按用户指定顺序推进，只有出现 §1 接口
 `TriangleConvexification.lean` 已提交并推送为 `d375040a1`。`exists_isPLHomeomorphOn_triangle_image_strict_separation` 加强平面指定点凸化，显式返回三元素仿射独立顶点集及其凸包，而不只返回抽象凸集。`exists_isPLHomeomorphOn_triangle_image_strict_separation_of_subset_fiber` 将该数据沿实际仿射纤维坐标嵌入三维，同时保留全空间 PL 同胚、凸开集外恒同、逐点保原高度、指定点严格分离及所有集合的高度指标不变。指定点允许在封帽盘外，覆盖原书“`D_J - {P}` 可能就是整个 `D_J`”的情形。
 
 模块最终聚焦检查 exit=0（13.6 秒）、零 warning；`AuditF158.lean` 两个端点均仅依赖 `propext`、`Classical.choice`、`Quot.sound`，完整签名已核对。F-M1 仍为 partial：下一步把显式三角形载体接入凸封帽切割，证明边缘顶点的 crossing/孤立分类，再闭合选定奇异层的圆周数严格下降。Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF159.lean`。
+
+### 19.11 F-M1：奇异水平切割保留三角形封帽坐标
+
+`TriangleHeightCut.lean` 已提交并推送为 `b1b43c61e`。主端点 `exists_isPLSphere_pair_of_singular_height_with_triangle_cap` 将上一层的三元素仿射独立顶点集及仿射嵌入接入完整奇异水平切割。结论保留两张封帽 PL 球面、原水平层圆周计数恒等式、其他原顶点的奇异性对应与圆周数不增、封帽盘外的奇点包含，同时给出 `H '' D = e '' convexHull ℝ T`、指定点严格分离、保高度与指标不变。三角形数据由实际凸化构造产生，没有加入输入假设。
+
+模块聚焦检查 exit=0（13.5 秒）、零 warning；`AuditF159.lean` 主端点仅依赖 `propext`、`Classical.choice`、`Quot.sound`，完整签名已核对。F-M1 仍为 partial：下一步利用三条仿射边及两保留盘的相反单侧接近证明封帽边缘的 crossing/孤立分类，并在指定高度处推出严格圆周数比较。Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF160.lean`。
