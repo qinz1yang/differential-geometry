@@ -1600,3 +1600,30 @@ vertex-sector and edge-frame constructions. The supported extension and control 
 do not themselves imply graph tameness. I2's exact target-type issue is unchanged.
 There is no new consultation blocker; the next step is relative straightening of arcs
 inside a disk while fixing its boundary.
+
+### S-M6 continuation: compatible boundary-arc extensions
+
+The S-M5 completion and S-M6 bookkeeping is committed and pushed as `a7ccc3533`;
+the following integration merge was already up to date.
+
+`PlanarJordan/Transport.lean` proves `isArcBetween_image`,
+`isJordanCurve_image`, and `image_inside` for ambient plane homeomorphisms.
+The inside-image formula holds for every subset of the plane; bounded components
+remain bounded because their closures are compact.
+
+`PlanarJordan/ArcExtension.lean` proves `exists_homeomorph_extending_two_arcs`:
+two arcs forming a Jordan curve, equipped with endpoint-compatible homeomorphisms
+to a second such pair, admit one ambient extension realizing both prescribed maps.
+The compact glued boundary map is a homeomorphism, and the proved relative
+Jordan--Schoenflies theorem extends it. `exists_homeomorph_image_two_arcs` supplies
+the maps by matching arc parameters. `exists_homeomorph_image_arc_polygonal`
+simultaneously makes both arcs polygonal using the two halves of the model square.
+No polygonality of either original arc is assumed.
+
+Both focused checks have exit 0 and zero warnings (`check-planar-jordan-transport.log`,
+`check-planar-arc-extension.log`). `AuditS106PlanarArcExtension.lean` / `.log`
+contain six entries, all with only `propext`, `Classical.choice`, and `Quot.sound`.
+No vendored or other-lane source changed. The source hash will be recorded at the
+next checkpoint. The next step transports the proved polygonal crosscut theorem
+to arbitrary embedded crosscuts, then constructs the boundary-fixed disk map.
+P.4 remains partial; I2's target-type issue is unchanged.
