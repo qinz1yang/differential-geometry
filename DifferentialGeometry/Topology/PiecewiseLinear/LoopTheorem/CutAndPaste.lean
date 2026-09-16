@@ -707,6 +707,52 @@ theorem restrict_to_clopen_doublePointSet
 
 end NormalSingularSetTriangulation
 
+open Classical in
+theorem doublePointSet_mem_nhdsWithin_of_pullback
+    {X Z Y : Type*} [TopologicalSpace X] [TopologicalSpace Y] [T2Space Y]
+    {P O : Set X} {Q : Set Z} {S : Set Y} {f : X → Y} {g : Z → Y} {r : Z → X}
+    (hP : IsCompact P) (hf : ContinuousOn f P)
+    (hcard : ∀ y, (P ∩ f ⁻¹' {y}).encard ≤ 2)
+    (hrP : MapsTo r Q P) (hrf : ∀ x ∈ Q, f (r x) = g x) (hrinj : InjOn r Q)
+    (hrO : MapsTo r Q O)
+    (hOnhds : ∀ x ∈ O, f x ∉ S → O ∈ 𝓝[P] x)
+    (hlift : ∀ x ∈ O, f x ∉ S → ∃ z ∈ Q, r z = x)
+    (hS : IsClosed S) (hdisjoint : Disjoint (doublePointSet g Q) S) :
+    ∀ y ∈ doublePointSet g Q, doublePointSet g Q ∈ 𝓝[doublePointSet f P] y := by
+  intro y hy
+  have hyS : y ∉ S := fun hyS => Set.disjoint_left.mp hdisjoint hy hyS
+  obtain ⟨a, ha, b, hb, hab, hga, hgb⟩ := hy
+  have hrab : r a ≠ r b := fun h => hab (hrinj ha hb h)
+  have hfa : f (r a) = y := (hrf a ha).trans hga
+  have hfb : f (r b) = y := (hrf b hb).trans hgb
+  have hfiber : P ∩ f ⁻¹' {y} = {r a, r b} :=
+    fiber_eq_pair_of_encard_le_two f P (hrP ha) (hrP hb) hrab hfa hfb (hcard y)
+  have hcover : ∀ᶠ z in 𝓝 y, P ∩ f ⁻¹' {z} ⊆ O := by
+    have h := eventually_preimage_subset_union_of_fiber_eq_pair f hP hf hfiber
+      (hOnhds (r a) (hrO ha) (hfa ▸ hyS))
+      (hOnhds (r b) (hrO hb) (hfb ▸ hyS))
+    simpa only [union_self] using h
+  apply mem_nhdsWithin_iff_exists_mem_nhds_inter.mpr
+  refine ⟨Sᶜ ∩ {z | P ∩ f ⁻¹' {z} ⊆ O},
+    Filter.inter_mem (hS.isOpen_compl.mem_nhds hyS) hcover, ?_⟩
+  rintro z ⟨hz, u, huP, v, hvP, huv, hfu, hfv⟩
+  have huO : u ∈ O := hz.2 ⟨huP, hfu⟩
+  have hvO : v ∈ O := hz.2 ⟨hvP, hfv⟩
+  have hfuS : f u ∉ S := fun hmem => hz.1 (hfu ▸ hmem)
+  have hfvS : f v ∉ S := fun hmem => hz.1 (hfv ▸ hmem)
+  obtain ⟨u', hu'Q, hru⟩ := hlift u huO hfuS
+  obtain ⟨v', hv'Q, hrv⟩ := hlift v hvO hfvS
+  have hu'v' : u' ≠ v' := by
+    intro huv'
+    apply huv
+    calc
+      u = r u' := hru.symm
+      _ = r v' := congrArg r huv'
+      _ = v := hrv
+  refine ⟨u', hu'Q, v', hv'Q, hu'v', ?_, ?_⟩
+  · exact (hrf u' hu'Q).symm.trans ((congrArg f hru).trans hfu)
+  · exact (hrf v' hv'Q).symm.trans ((congrArg f hrv).trans hfv)
+
 namespace NormalSingularCellData
 
 open Classical in
@@ -777,9 +823,10 @@ theorem exists_boundary_surgery_cell_of_boundaryBranch
       (∀ x ∈ G.domain, ∃ W ∈ 𝓝[G.domain] x, Set.InjOn G W) ∧
       (∀ y, (G.domain ∩ G ⁻¹' {y}).encard ≤ 2) ∧
       doublePointSet G G.domain ⊆ doublePointSet D D.domain ∧
-      Disjoint (doublePointSet G G.domain) (hD.singularSet.branchCarrier c) := by
+      Disjoint (doublePointSet G G.domain) (hD.singularSet.branchCarrier c) ∧
+      Nonempty (NormalSingularSetTriangulation G BdM) := by
   obtain ⟨A, C, hA, hC, hAC, hcover, hAcoordinate, -, p, q, r, s, g, hg, hcompat,
-    D₁, D₂, D₃, hdomains, -, -, hA₁, -, -, hC₃, hdisjoint₁₃,
+    D₁, D₂, D₃, hdomains, hinter₁₂, hinter₂₃, hA₁, -, -, hC₃, hdisjoint₁₃,
     hfun₁, -, hfun₃, htrace₁, htrace₃, hcut₁, hcut₃⟩ :=
     hD.exists_three_cells_of_boundaryBranch hc
   have hcompat₁₃ : EqOn D₁ (D₃ ∘ g) A := by
@@ -1006,6 +1053,73 @@ theorem exists_boundary_surgery_cell_of_boundaryBranch
       _ = y := hxy
       _ = G z := hzy.symm
       _ = D (f₁ z) := (hG₁ hzseam.1).trans (congrFun hfun₁ (f₁ z))
+  let outer := D₁.domain ∪ D₃.domain
+  have hpullback_outer : MapsTo pullback G.domain outer := by
+    intro x hx
+    have hxunion : x ∈ P ∪ Q := hGdomain.subset hx
+    by_cases hxP : x ∈ P
+    · exact Or.inl (by
+        simpa only [pullback, if_pos hxP] using hf₁.bijOn.mapsTo hxP)
+    · have hxQ : x ∈ Q := hxunion.resolve_left hxP
+      exact Or.inr (by
+        simpa only [pullback, if_neg hxP] using hf₃.bijOn.mapsTo hxQ)
+  have houter_nhds : ∀ x ∈ outer, D x ∉ hD.singularSet.branchCarrier c →
+      outer ∈ 𝓝[D.domain] x := by
+    intro x hxouter hximage
+    have hxD₂ : x ∉ D₂.domain := by
+      intro hxD₂
+      rcases hxouter with hxD₁ | hxD₃
+      · have hxA : x ∈ A := hinter₁₂.subset ⟨hxD₁, hxD₂⟩
+        have hxpre : x ∈ hD.branchPreimage c := by
+          rw [hcover]
+          exact Or.inl hxA
+        exact hximage hxpre.2
+      · have hxC : x ∈ C := hinter₂₃.subset ⟨hxD₂, hxD₃⟩
+        have hxpre : x ∈ hD.branchPreimage c := by
+          rw [hcover]
+          exact Or.inr hxC
+        exact hximage hxpre.2
+    apply mem_nhdsWithin_iff_exists_mem_nhds_inter.mpr
+    refine ⟨D₂.domainᶜ,
+      D₂.isPLBall_domain.isPolyhedron.isClosed.isOpen_compl.mem_nhds hxD₂, ?_⟩
+    intro z hz
+    have hzdomain : z ∈ D.domain := hz.2
+    rw [← hdomains] at hzdomain
+    rcases hzdomain with (hzD₁ | hzD₂) | hzD₃
+    · exact Or.inl hzD₁
+    · exact (hz.1 hzD₂).elim
+    · exact Or.inr hzD₃
+  have hlift_outer : ∀ x ∈ outer, D x ∉ hD.singularSet.branchCarrier c →
+      ∃ z ∈ G.domain, pullback z = x := by
+    intro x hxouter hximage
+    rcases hxouter with hxD₁ | hxD₃
+    · obtain ⟨z, hzP, hzx⟩ := hf₁.bijOn.surjOn hxD₁
+      have hzG : z ∈ G.domain := hGdomain.symm.subset (Or.inl hzP)
+      refine ⟨z, hzG, ?_⟩
+      change (if z ∈ P then f₁ z else f₃ z) = x
+      rw [if_pos hzP, hzx]
+    · obtain ⟨z, hzQ, hzx⟩ := hf₃.bijOn.surjOn hxD₃
+      have hzP : z ∉ P := by
+        intro hzP
+        have hxC : x ∈ C := by
+          rw [← hf₃seam]
+          exact ⟨z, ⟨hzP, hzQ⟩, hzx⟩
+        have hxpre : x ∈ hD.branchPreimage c := by
+          rw [hcover]
+          exact Or.inr hxC
+        exact hximage hxpre.2
+      have hzG : z ∈ G.domain := hGdomain.symm.subset (Or.inr hzQ)
+      refine ⟨z, hzG, ?_⟩
+      change (if z ∈ P then f₁ z else f₃ z) = x
+      rw [if_neg hzP, hzx]
+  have hopenDouble : ∀ y ∈ doublePointSet G G.domain,
+      doublePointSet G G.domain ∈ 𝓝[doublePointSet D D.domain] y :=
+    doublePointSet_mem_nhdsWithin_of_pullback
+      (P := D.domain) (O := outer) (Q := G.domain)
+      (S := hD.singularSet.branchCarrier c) (f := D) (g := G) (r := pullback)
+      D.isPLBall_domain.isPolyhedron.isCompact D.continuousOn hD.fiber_le_two
+      hpullback_mem hpullback_apply hpullback_inj hpullback_outer houter_nhds
+      hlift_outer (hD.singularSet.branchCarrier_isCompact c).isClosed hremove
   let _ : Finite hD.singularSet.complex.faces :=
     hD.singularSet.finite_faces.to_subtype
   let _ : Finite hD.singularSet.complex.vertices :=
@@ -1179,6 +1293,20 @@ theorem exists_boundary_surgery_cell_of_boundaryBranch
           D (f₃ u) = G u := (congrFun hfun₃ (f₃ u)).symm.trans (hG₃ hu.1.1).symm
           _ = G v := huv
           _ = D (f₃ v) := (hG₃ hv.1.1).trans (congrFun hfun₃ (f₃ v))
+  have hGlocal : IsLocallyInjective (G.domain.domRestrict G) := by
+    rw [isLocallyInjective_iff_nhds]
+    intro x
+    obtain ⟨W, hW, hinj⟩ := hlocallyInjective x x.2
+    let V : Set G.domain := ((↑) : G.domain → EuclideanSpace ℝ (Fin 2)) ⁻¹' W
+    refine ⟨V, preimage_coe_mem_nhds_subtype.mpr hW, ?_⟩
+    intro a ha b hb hab
+    apply Subtype.ext
+    exact hinj ha hb hab
+  have hdoubleCompact : IsCompact (doublePointSet G G.domain) :=
+    isCompact_doublePointSet_of_isLocallyInjective
+      G.isPLBall_domain.isPolyhedron.isCompact G.continuousOn hGlocal
+  have hGsingular : Nonempty (NormalSingularSetTriangulation G BdM) :=
+    hD.singularSet.restrict_to_clopen_doublePointSet hdouble hdoubleCompact hopenDouble
   have hrange : Set.range G.boundary =
       D '' ((D₁.domain ∩ frontier D.domain) ∪
         (D₃.domain ∩ frontier D.domain)) := by
@@ -1205,7 +1333,8 @@ theorem exists_boundary_surgery_cell_of_boundaryBranch
     D₃.domain ∩ frontier D.domain, p, q, r, s, g, G,
     hA, hC, hAC, hcover, htrace₁, htrace₃,
     hdisjoint₁₃.mono inter_subset_left inter_subset_left, hg, horientation,
-    hGimage, hrange, hrangeB, hinterB, hlocallyInjective, hfiber, hdouble, hremove⟩
+    hGimage, hrange, hrangeB, hinterB, hlocallyInjective, hfiber, hdouble, hremove,
+    hGsingular⟩
 
 end NormalSingularCellData
 
