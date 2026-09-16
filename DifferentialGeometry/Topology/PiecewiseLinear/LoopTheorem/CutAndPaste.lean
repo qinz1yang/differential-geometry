@@ -149,6 +149,8 @@ private theorem exists_three_cells_of_nested_splits
     (hunionQR : Q.domain ∪ R.domain = S.domain)
     (hinterQR : Q.domain ∩ R.domain = C)
     (hAO : A ⊆ O.domain) (hAQ : A ⊆ Q.domain)
+    (hAfrontO : A ⊆ frontier O.domain) (hAfrontS : A ⊆ frontier S.domain)
+    (hCfrontQ : C ⊆ frontier Q.domain) (hCfrontR : C ⊆ frontier R.domain)
     (hdisjoint : Disjoint A C)
     (hfunO : O.toFun = D.toFun) (hfunS : S.toFun = D.toFun)
     (hfunQ : Q.toFun = S.toFun) (hfunR : R.toFun = S.toFun) :
@@ -156,6 +158,8 @@ private theorem exists_three_cells_of_nested_splits
       D₁.domain ∪ D₂.domain ∪ D₃.domain = D.domain ∧
       D₁.domain ∩ D₂.domain = A ∧
       D₂.domain ∩ D₃.domain = C ∧
+      A ⊆ frontier D₁.domain ∧ A ⊆ frontier D₂.domain ∧
+      C ⊆ frontier D₂.domain ∧ C ⊆ frontier D₃.domain ∧
       Disjoint D₁.domain D₃.domain ∧
       D₁.toFun = D.toFun ∧ D₂.toFun = D.toFun ∧ D₃.toFun = D.toFun := by
   have hQS : Q.domain ⊆ S.domain := by
@@ -166,7 +170,14 @@ private theorem exists_three_cells_of_nested_splits
     intro x hx
     rw [← hunionQR]
     exact Or.inr hx
-  refine ⟨O, Q, R, ?_, ?_, hinterQR, ?_, hfunO,
+  have hAfrontQ : A ⊆ frontier Q.domain := by
+    intro x hxA
+    apply (mem_frontier_iff_notMem_interior (hAQ hxA)).mpr
+    intro hxQ
+    exact (mem_frontier_iff_notMem_interior
+      (S.frontier_subset_domain (hAfrontS hxA))).mp (hAfrontS hxA) (interior_mono hQS hxQ)
+  refine ⟨O, Q, R, ?_, ?_, hinterQR, hAfrontO, hAfrontQ,
+    hCfrontQ, hCfrontR, ?_, hfunO,
     hfunQ.trans hfunS, hfunR.trans hfunS⟩
   · rw [union_assoc, hunionQR, hunionOS]
   · apply Subset.antisymm
@@ -192,6 +203,8 @@ theorem exists_three_cells_of_two_disjoint_crosscuts
       D₁.domain ∪ D₂.domain ∪ D₃.domain = D.domain ∧
       D₁.domain ∩ D₂.domain = A ∧
       D₂.domain ∩ D₃.domain = C ∧
+      A ⊆ frontier D₁.domain ∧ A ⊆ frontier D₂.domain ∧
+      C ⊆ frontier D₂.domain ∧ C ⊆ frontier D₃.domain ∧
       Disjoint D₁.domain D₃.domain ∧
       D₁.toFun = D.toFun ∧ D₂.toFun = D.toFun ∧ D₃.toFun = D.toFun := by
   obtain ⟨S₁, S₂, hunion, hinter, -, -, hA₁, hA₂, -, -, -, -,
@@ -200,7 +213,7 @@ theorem exists_three_cells_of_two_disjoint_crosscuts
   have hA₁dom : A ⊆ S₁.domain := hA₁.trans S₁.frontier_subset_domain
   have hA₂dom : A ⊆ S₂.domain := hA₂.trans S₂.frontier_subset_domain
   rcases hCside with ⟨hCS₁, hcutCS₁⟩ | ⟨hCS₂, hcutCS₂⟩
-  · obtain ⟨Q, R, hunionQR, hinterQR, -, -, -, -, -, -, -, -,
+  · obtain ⟨Q, R, hunionQR, hinterQR, -, -, hCQ, hCR, -, -, -, -,
       hfunQ, hfunR, -⟩ := S₁.exists_two_cells_of_isCrosscut hC hcutCS₁
     have hAside : A ⊆ Q.domain ∨ A ⊆ R.domain := by
       apply connected_subset_left_or_right_of_closed_union hA.isConnected
@@ -212,13 +225,13 @@ theorem exists_three_cells_of_two_disjoint_crosscuts
     rcases hAside with hAQ | hAR
     · exact exists_three_cells_of_nested_splits D S₂ S₁ Q R
         (by rw [union_comm]; exact hunion) houter hunionQR hinterQR hA₂dom hAQ
-          hdisjoint hfun₂ hfun₁ hfunQ hfunR
+          hA₂ hA₁ hCQ hCR hdisjoint hfun₂ hfun₁ hfunQ hfunR
     · exact exists_three_cells_of_nested_splits D S₂ S₁ R Q
         (by rw [union_comm]; exact hunion) houter
           (by rw [union_comm]; exact hunionQR)
-          (by rw [inter_comm]; exact hinterQR) hA₂dom hAR hdisjoint
-          hfun₂ hfun₁ hfunR hfunQ
-  · obtain ⟨Q, R, hunionQR, hinterQR, -, -, -, -, -, -, -, -,
+          (by rw [inter_comm]; exact hinterQR) hA₂dom hAR
+          hA₂ hA₁ hCR hCQ hdisjoint hfun₂ hfun₁ hfunR hfunQ
+  · obtain ⟨Q, R, hunionQR, hinterQR, -, -, hCQ, hCR, -, -, -, -,
       hfunQ, hfunR, -⟩ := S₂.exists_two_cells_of_isCrosscut hC hcutCS₂
     have hAside : A ⊆ Q.domain ∨ A ⊆ R.domain := by
       apply connected_subset_left_or_right_of_closed_union hA.isConnected
@@ -226,12 +239,12 @@ theorem exists_three_cells_of_two_disjoint_crosscuts
         (fun x hx => by rw [hunionQR]; exact hA₂dom hx) hinterQR hdisjoint
     rcases hAside with hAQ | hAR
     · exact exists_three_cells_of_nested_splits D S₁ S₂ Q R
-        hunion hinter hunionQR hinterQR hA₁dom hAQ hdisjoint
-          hfun₁ hfun₂ hfunQ hfunR
+        hunion hinter hunionQR hinterQR hA₁dom hAQ
+          hA₁ hA₂ hCQ hCR hdisjoint hfun₁ hfun₂ hfunQ hfunR
     · exact exists_three_cells_of_nested_splits D S₁ S₂ R Q
         hunion hinter (by rw [union_comm]; exact hunionQR)
-          (by rw [inter_comm]; exact hinterQR) hA₁dom hAR hdisjoint
-          hfun₁ hfun₂ hfunR hfunQ
+          (by rw [inter_comm]; exact hinterQR) hA₁dom hAR
+          hA₁ hA₂ hCR hCQ hdisjoint hfun₁ hfun₂ hfunR hfunQ
 
 end SingularTwoCell
 
@@ -258,16 +271,20 @@ theorem exists_three_cells_of_boundaryBranch
         D₁.domain ∪ D₂.domain ∪ D₃.domain = D.domain ∧
         D₁.domain ∩ D₂.domain = A ∧
         D₂.domain ∩ D₃.domain = C ∧
+        A ⊆ frontier D₁.domain ∧ A ⊆ frontier D₂.domain ∧
+        C ⊆ frontier D₂.domain ∧ C ⊆ frontier D₃.domain ∧
         Disjoint D₁.domain D₃.domain ∧
         D₁.toFun = D.toFun ∧ D₂.toFun = D.toFun ∧ D₃.toFun = D.toFun := by
   obtain ⟨A, C, hA, hC, hdisjoint, hcover, ⟨p, q, hcutA⟩,
     r, s, hcutC⟩ :=
     hD.exists_two_isCrosscuts_branchPreimage_of_boundaryBranch hc hboundaryCrossing
-  obtain ⟨D₁, D₂, D₃, hunion, hinter₁, hinter₂, hdisjoint₁₃,
+  obtain ⟨D₁, D₂, D₃, hunion, hinter₁, hinter₂,
+    hA₁, hA₂, hC₂, hC₃, hdisjoint₁₃,
     hfun₁, hfun₂, hfun₃⟩ :=
     D.exists_three_cells_of_two_disjoint_crosscuts hA hC hdisjoint hcutA hcutC
   exact ⟨A, C, hA, hC, hdisjoint, hcover, D₁, D₂, D₃, hunion,
-    hinter₁, hinter₂, hdisjoint₁₃, hfun₁, hfun₂, hfun₃⟩
+    hinter₁, hinter₂, hA₁, hA₂, hC₂, hC₃,
+    hdisjoint₁₃, hfun₁, hfun₂, hfun₃⟩
 
 end NormalSingularCellData
 
