@@ -1575,3 +1575,10 @@ F-M2–F-M6 尚未开始；按用户指定顺序推进，只有出现 §1 接口
 `exists_isPLHomeomorphOn_closedStar_pair` 将环境链环的 PL 同胚延拓到环境闭星，同时对齐指定子复形的闭星、锥顶和整个闭星内的高度零截面。证明复用已有锥延拓，并逐点核对双向像集，不增加局部映射结论假设。
 
 聚焦检查 exit=0（10.7 秒）、零 warning；`AuditF153.lean` 三项仅标准三公理。下一步生产标准平面目标的链环数据，再提取开邻域上的 crossing 图卡；随后仍需封帽边缘分类、严格降指标及 Lemma 2–6。F-M1 仍 partial，I1 尚未交付。下一审计文件 `AuditF154.lean`。
+
+### 19.6 F-M1：平面局部模型的链环二点截面
+
+`LinkSubspace.lean` 已提交并推送为 `2c924bb73`。`eventually_mem_closedStar_iff` 给闭星与复形的相同集合芽；`geometricLink_space_eq_inter_submodule_of_eventually` 从子复形在顶点附近等于仿射子空间，推出子复形链环精确等于环境链环与该仿射子空间的交。`exists_pair_geometricLink_inter_span_singleton` 由环境复形覆盖顶点邻域和径向单射性，证明任意通过顶点的直线与链环恰交于两点；这些结论无需有限维环境。
+`exists_pair_geometricLink_fiber_of_eventually_plane` 对二维平面局部模型和横截的线性高度，同时生产链环二点零截面与正负两侧非空。使用一维核及正负射线生产交点，不把二点截面或两侧非空作为新增输入。
+
+聚焦检查 exit=0（11.9 秒）、零 warning；`AuditF154.lean` 四项仅标准三公理，核对主端点完整签名。下一步构造实际平面目标的共同剖分并提取开邻域 PL 图卡。F-M1 仍 partial；还需 crossing 主判据、封帽边缘分类、严格降指标及 Lemma 2–6，I1 尚未交付。下一审计文件 `AuditF155.lean`。
