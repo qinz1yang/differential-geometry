@@ -1621,3 +1621,9 @@ F-M2–F-M6 尚未开始；按用户指定顺序推进，只有出现 §1 接口
 `heightIndex_lt_of_embedding` 将该结论专门化到两张有限 PL 二球的一般位置高度：只需构造新奇异点到旧奇异点的嵌入、逐点水平多边形数不增，以及一个严格下降或遗漏的正贡献，即可推出整个 `heightIndex` 严格下降。
 
 模块聚焦检查 exit=0（11.5 秒）、零 warning；`AuditF160.lean` 两个端点均仅依赖 `propext`、`Classical.choice`、`Quot.sound`，完整签名已核对。F-M1 仍为 partial：下一步完成封帽边缘链环的 crossing/孤立分类，由此构造奇异点嵌入并在被删去的最内圆周处给出严格见证。Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF161.lean`。
+
+### 19.13 F-M1：空链环截面的顶点孤立判据
+
+`VertexIsolation.lean` 已提交并推送为 `357f41c2c`。`singleton_mem_nhdsWithin_fiber_of_geometricLink_section_eq_empty` 从顶点闭星的实际锥表示证明：若几何链环与该顶点高度层不交，则曲面高度层在顶点处局部恰为单点。三个推论分别排除这种顶点成为高度奇点，并直接覆盖整个链环严格高于或严格低于顶点的两种符号情形。
+
+模块聚焦检查 exit=0（11.1 秒）、零 warning；`AuditF161.lean` 四项均仅依赖 `propext`、`Classical.choice`、`Quot.sound`。结合 `VertexCrossing.lean`，帽边分类现在只剩证明链环零截面为空，或恰为两个不同点且有正负两侧；下一层将从凸三角帽与保留盘的相反单侧性推出这一有限符号分类。F-M1 仍为 partial，Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF162.lean`。
