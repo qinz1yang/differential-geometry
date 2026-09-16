@@ -2227,3 +2227,27 @@ finite fan and disk results do not yet implement this infinite construction.
 The edge-frame obligation also still includes the exact two boundary crossings
 of the entire truncated edge; merely containing a compact arc is insufficient.
 P.4 remains partial with these obligations explicit.
+
+## Contracting families of supported homeomorphisms (2026-09-16)
+
+`Homeomorph/UniformGluing.lean` proves
+`Homeomorph.exists_gluing_of_pairwise_disjoint_of_tendstoUniformly` for an arbitrary
+index type and an arbitrary uniform space: pairwise disjoint supported
+homeomorphisms that converge uniformly to the identity along the cofinite filter
+glue to a homeomorphism, with the specified map on every support and the identity
+outside their union. The proof constructs both inverse maps and obtains their
+continuity from the net of finite gluings; it does not assume local finiteness,
+completeness, or countability. Metric corollaries preserve a prescribed positive
+pointwise displacement bound and produce the uniform convergence from bounded
+supports whose diameters tend to zero.
+
+`PlanarJordan/PolygonalCrosscut.lean` now gives
+`exists_homeomorph_polygonal_crosscuts_of_tendsto_diam` for arbitrary pairwise
+disjoint contracting families of PL disks and actual crosscuts. The original
+finite-family signature is preserved as a corollary. Both module checks exit 0
+with zero warnings. AuditS125UniformGluing checks six public declarations; exit 0,
+only `propext`, `Classical.choice`, and `Quot.sound`.
+
+This supplies the infinite gluing operation used by Moise 10.7--10.8. It does not
+produce the endpoint auxiliary arc or the edge frames: P.4 still needs those
+geometric constructions and the final graph assembly.
