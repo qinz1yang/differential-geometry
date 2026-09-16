@@ -1514,7 +1514,7 @@ M1/M2/M3 均未验收。下一审计文件 `AuditF147.lean`。
 
 ### 18.27 嵌入任意有限维空间的 PL 盘相对截弧延拓
 
-- `DiskCrosscut.lean` 证明平面 PL 1-盘满足 vendored Jordan API 的 polygonal 条件，并把实际区间参数化的正规盘内弧搬到平面截弧。
+- `DiskCrosscutExtension.lean`（初名 `DiskCrosscut.lean`，整合时避免与 S 车道同名文件冲突而改名）证明平面 PL 1-盘满足 vendored Jordan API 的 polygonal 条件，并把实际区间参数化的正规盘内弧搬到平面截弧。
 - `exists_isPLHomeomorphOn_eqOn_disk_crosscut` 允许源、目标盘位于不同的有限维实范数空间。两盘的边界均由实际标准盘参数化给出；
   源截弧带区间 PL 参数化，恰在两端点与边界相交。给定边界及截弧之并上的 PL 同胚若分别映到目标边界和目标盘内弧，
   则可延拓到整个盘，并逐点保持给定映射。目标弧的正规性和两端点对应由这些几何数据推出，没有额外假定。
@@ -1523,3 +1523,21 @@ M1/M2/M3 均未验收。下一审计文件 `AuditF147.lean`。
 模块最终聚焦检查 exit=0（9.8 秒）、零 warning；`AuditF147.lean` 三项仅标准三公理，已核对主端点完整签名。
 下一步构造一般 PL 圆周沿两个交点的弧分解，并接入链环整直；边缘 crossing 和严格降指标仍未完成。
 没有扩充 `SchoenfliesInput`，M1/M2/M3 均未验收。下一审计文件 `AuditF148.lean`。
+
+## 19. 夜间 F-M1–F-M6 接续（NIGHT_PLAN.md，整合基线 8fb887bb9）
+
+已取入 `origin/codex/moise-integration` 的 `8fb887bb9`，按夜间计划顺序继续。本轮先前的相对延拓交付：
+`4e30320a0`（`CrosscutExtension.lean`，AuditF146 三项）与 `b08bc4be9`（嵌入盘版本，AuditF147 三项）。
+整合的 add/add 冲突保留 S 车道 `DiskCrosscut.lean` 原文件，本车道模块改名为 `DiskCrosscutExtension.lean`；
+其 polygonal 桥接改为复用整合的 `PolygonalArc.lean`。联合导入审计发现盘内部稠密性同名声明后，撤下本车道旧副本，
+`BallFrontier.lean` 保持整合版本，`HeightSides.lean` 改为直接消费更一般的 `BallInterior.lean` 端点。
+
+最终四模块聚焦检查（合并的 BallFrontier、本车道 HeightSides、CrosscutExtension、DiskCrosscutExtension）均 exit=0、零 warning；
+`AuditF148.lean` 联合导入 S 的 `SchoenfliesFoundations`，十一项全部仅标准三公理。
+`schoenflies_input` 的四个字段已由 S 车道实际证明，现可实例化既有 `SchoenfliesInput`，不是新增假设。
+
+F-M1 当前仍为 partial：本车道旧 M1 的严格降指标尚未验收，确切义务是凸封帽转轴后的边缘 crossing/孤立分类、
+选定点整层圆周数严格下降以及由此给出的 Lemma 1 归约；随后还需 Lemma 2–6 和最终拼装。I1 尚未交付。
+当前相对截弧延拓为顶点链环 crossing 判据提供已证输入，没有把此判据或降指标结论加入接口。
+F-M2–F-M6 尚未开始；按用户指定顺序推进，只有出现 §1 接口之外的真实数学障碍时，按夜间 §0.4 记录后跳到下一里程碑。
+下一审计文件 `AuditF149.lean`。

@@ -6,6 +6,20 @@ namespace DifferentialGeometry.Topology.PiecewiseLinear
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 
+theorem IsConeBase.space_inter_convexHull_insert [DecidableEq E]
+    {K : Geometry.SimplicialComplex ℝ E} {p : E} (hp : IsConeBase p K)
+    {t : Finset E} (ht : t ∈ K.faces) :
+    K.space ∩ convexHull ℝ ((insert p t : Finset E) : Set E) = convexHull ℝ (t : Set E) := by
+  apply Subset.antisymm
+  · rintro x ⟨hxK, hx⟩
+    rcases exists_combo_of_mem_convexHull_insert (hp.notMem_face ht) hx with
+      rfl | ⟨z, hz, s, hs, -, hxs⟩
+    · exact (hp.notMem_space hxK).elim
+    · exact hp.radial z (K.convexHull_subset_space ht hz) x hxK s hs hxs ▸ hz
+  · intro x hx
+    exact ⟨K.convexHull_subset_space ht hx,
+      convexHull_mono (Finset.coe_subset.mpr (Finset.subset_insert p t)) hx⟩
+
 theorem coneComplex_space_inter [DecidableEq E] {K L M B : Geometry.SimplicialComplex ℝ E}
     {p : E} (hp : IsConeBase p K) (hL : L.faces ⊆ K.faces) (hM : M.faces ⊆ K.faces)
     (hB : B.faces ⊆ L.faces) (hinter : L.space ∩ M.space = B.space) :

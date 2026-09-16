@@ -14,6 +14,16 @@ theorem add_smul_sub_eq_combo (p x : E) (s : ℝ) : p + s • (x - p) = (1 - s) 
   simp only [sub_smul, one_smul, smul_sub]
   abel
 
+theorem IsRadiallyInjective.eq_of_add_smul_eq {p : E} {S : Set E}
+    (hS : IsRadiallyInjective p S) {x y : E} (hx : x ∈ S) (hy : y ∈ S)
+    {s t : ℝ} (hs : 0 < s) (ht : 0 < t)
+    (hxy : p + s • (x - p) = p + t • (y - p)) : x = y := by
+  have heq : s • (x - p) = t • (y - p) := add_left_cancel hxy
+  have h := congrArg (fun v : E => t⁻¹ • v) heq
+  simp only [smul_smul, inv_mul_cancel₀ ht.ne', one_smul] at h
+  apply (hS x hx y hy (s / t) (div_pos hs ht) ?_).symm
+  rw [div_eq_inv_mul, h, add_sub_cancel]
+
 theorem exists_ray_mem_convexHull_of_mem_convexHull_insert [DecidableEq E] {p : E}
     {τ : Finset E} {w : E} (hw : w ∈ convexHull ℝ ((insert p τ : Finset E) : Set E))
     (hwp : w ≠ p) : ∃ s : ℝ, 0 < s ∧ p + s • (w - p) ∈ convexHull ℝ (τ : Set E) := by

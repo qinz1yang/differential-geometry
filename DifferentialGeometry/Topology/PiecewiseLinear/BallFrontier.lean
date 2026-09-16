@@ -35,6 +35,21 @@ theorem IsPLBall.isPLSphere_frontier {n : ℕ}
     (IsPLBall.isCombinatorialManifoldWithBoundary (n := n) (K := K) hP)]
   exact isPLSphere_boundaryComplex_space_of_isPLBall (n := n) K hP
 
+theorem IsPLHomeomorphOn.image_stdSimplexBoundary_eq_frontier {n : ℕ}
+    {P : Set (EuclideanSpace ℝ (Fin (n + 1)))}
+    {f : (Fin (n + 2) → ℝ) → EuclideanSpace ℝ (Fin (n + 1))}
+    (hf : IsPLHomeomorphOn f (stdSimplex ℝ (Fin (n + 2))) P) :
+    f '' stdSimplexBoundary (n + 1) = frontier P := by
+  classical
+  let _ : DecidableEq (EuclideanSpace ℝ (Fin (n + 1))) := Classical.decEq _
+  have hP : IsPLBall (n + 1) P := ⟨f, hf⟩
+  obtain ⟨K, hfin, hKspace⟩ := hP.isPolyhedron.exists_simplicialComplex
+  let _ : Finite K.faces := hfin.to_subtype
+  have hK : IsPLBall (n + 1) K.space := hKspace.symm ▸ hP
+  rw [← hKspace, frontier_space_eq_boundaryComplex_space hK.isCombinatorialManifoldWithBoundary,
+    boundaryComplex_space_of_isPLHomeomorphOn_stdSimplex K (hKspace.symm ▸ hf),
+    simplexBoundary_stdVertices_space]
+
 theorem IsPLBall.interior_nonempty {n : ℕ}
     {P : Set (EuclideanSpace ℝ (Fin (n + 1)))} (hP : IsPLBall (n + 1) P) :
     (interior P).Nonempty := by
@@ -79,31 +94,5 @@ theorem exists_isPLHomeomorphOn_of_frontier {n : ℕ}
   rw [frontier_space_eq_boundaryComplex_space (n := n) (K := K)
     (IsPLBall.isCombinatorialManifoldWithBoundary (n := n) (K := K) hP)]
   exact exists_isPLHomeomorphOn_of_boundaryComplex (n := n) K L hP hQ hg
-
-theorem IsPLHomeomorphOn.closure_sdiff_image_stdSimplexBoundary {E : Type*}
-    [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E] {n : ℕ}
-    {A : Set E} {g : (Fin (n + 2) → ℝ) → E} (hg : IsPLHomeomorphOn g (stdSimplex ℝ (Fin (n + 2))) A) :
-    closure (A \ (g '' stdSimplexBoundary (n + 1))) = A := by
-  have hA : IsPLBall (n + 1) A := ⟨g, hg⟩
-  apply Subset.antisymm (closure_minimal sdiff_subset hA.isPolyhedron.isClosed)
-  have hmap : MapsTo g (openSimplex (stdVertices n)) (A \ (g '' stdSimplexBoundary (n + 1))) := by
-    intro y hy
-    have hyS := openSimplex_stdVertices_subset_stdSimplex hy
-    refine ⟨hg.bijOn.mapsTo hyS, ?_⟩
-    rintro ⟨z, hz, hzy⟩
-    have heq : z = y := hg.bijOn.injOn hz.1 hyS hzy
-    have hyJ : y ∈ stdSimplexBoundary (n + 1) := heq ▸ hz
-    rw [openSimplex_eq_sdiff_simplexBoundary (stdVertices n) (stdVertices_affineIndependent n),
-      simplexBoundary_stdVertices_space] at hy
-    exact hy.2 hyJ
-  have hclsub : closure (openSimplex (stdVertices n)) ⊆ stdSimplex ℝ (Fin (n + 2)) :=
-    closure_minimal openSimplex_stdVertices_subset_stdSimplex (isClosed_stdSimplex ℝ _)
-  have hclmap := hmap.closure_of_continuousOn (hg.isPiecewiseAffineOn.continuousOn.mono hclsub)
-  intro y hy
-  obtain ⟨x, hx, rfl⟩ := hg.bijOn.surjOn hy
-  apply hclmap
-  apply convexHull_subset_closure_openSimplex
-    (Finset.card_pos.mp (lt_of_lt_of_le (by decide : 0 < 2) (two_le_card_stdVertices n)))
-  rwa [convexHull_stdVertices]
 
 end DifferentialGeometry.Topology.PiecewiseLinear

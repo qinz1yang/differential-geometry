@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.PLPiece
+import DifferentialGeometry.Topology.PiecewiseLinear.PieceRestrict
 import DifferentialGeometry.Topology.PiecewiseLinear.Groupoid
 
 open Set Topology
@@ -31,50 +31,66 @@ theorem injOn_symm_of_subset_target {C : Set (EuclideanSpace ℝ (Fin n))} (hCe 
     rw [OpenPartialHomeomorph.symm_source]
     exact hCe)
 
-theorem isPiecewiseAffineOn_chart_symm_chart [HasGroupoid X (plGroupoid n)]
+theorem isPiecewiseAffineOn_chart_symm_chart_of_isPolyhedron [HasGroupoid X (plGroupoid n)]
     (he : e ∈ atlas (EuclideanSpace ℝ (Fin n)) X) {C : Set (EuclideanSpace ℝ (Fin n))}
-    (hC : IsHPolytope C) (hCe : C ⊆ e.target) (e' : OpenPartialHomeomorph X (EuclideanSpace ℝ (Fin n)))
+    (hC : IsPolyhedron C) (hCe : C ⊆ e.target) (e' : OpenPartialHomeomorph X (EuclideanSpace ℝ (Fin n)))
     (he' : e' ∈ atlas (EuclideanSpace ℝ (Fin n)) X) :
     IsPiecewiseAffineOn (e' ∘ e.symm) (C ∩ e.symm ⁻¹' e'.source) := by
   have hpl : IsPiecewiseAffineOn (e.symm ≫ₕ e') (e.target ∩ e.symm ⁻¹' e'.source) := by
     have h := (mem_plGroupoid_iff.mp (StructureGroupoid.compatible (plGroupoid n) he he')).1
     rwa [OpenPartialHomeomorph.trans_source, OpenPartialHomeomorph.symm_source] at h
-  have h2 := hpl.inter_of_isHPolytope hC
-  have heq : e.target ∩ e.symm ⁻¹' e'.source ∩ C = C ∩ e.symm ⁻¹' e'.source := by
+  have h := hpl.inter_of_isPolyhedron hC
+  have hdom : e.target ∩ e.symm ⁻¹' e'.source ∩ C = C ∩ e.symm ⁻¹' e'.source := by
     ext y
     constructor
     · rintro ⟨⟨-, hy⟩, hyC⟩
       exact ⟨hyC, hy⟩
     · rintro ⟨hyC, hy⟩
       exact ⟨⟨hCe hyC, hy⟩, hyC⟩
-  rw [heq] at h2
-  exact h2.congr fun y _ => rfl
+  rw [hdom] at h
+  exact h.congr fun _ _ => rfl
 
-theorem isPiecewiseAffineOn_chart_chart_symm [HasGroupoid X (plGroupoid n)]
+theorem isPiecewiseAffineOn_chart_chart_symm_of_isPolyhedron [HasGroupoid X (plGroupoid n)]
     (he : e ∈ atlas (EuclideanSpace ℝ (Fin n)) X) {C : Set (EuclideanSpace ℝ (Fin n))}
-    (hC : IsHPolytope C) (hCe : C ⊆ e.target) (e' : OpenPartialHomeomorph X (EuclideanSpace ℝ (Fin n)))
+    (hC : IsPolyhedron C) (hCe : C ⊆ e.target) (e' : OpenPartialHomeomorph X (EuclideanSpace ℝ (Fin n)))
     (he' : e' ∈ atlas (EuclideanSpace ℝ (Fin n)) X) :
     IsPiecewiseAffineOn (Function.invFunOn e.symm C ∘ e'.symm)
       (e'.target ∩ e'.symm ⁻¹' (e.symm '' C)) := by
   have hpl : IsPiecewiseAffineOn (e'.symm ≫ₕ e) (e'.target ∩ e'.symm ⁻¹' e.source) := by
     have h := (mem_plGroupoid_iff.mp (StructureGroupoid.compatible (plGroupoid n) he' he)).1
     rwa [OpenPartialHomeomorph.trans_source, OpenPartialHomeomorph.symm_source] at h
-  have h2 := hpl.inter_preimage_of_isHPolytope hC
+  have h := hpl.inter_preimage_of_isPolyhedron hC
   have himg : e.symm '' C = e.source ∩ e ⁻¹' C := e.symm_image_eq_source_inter_preimage hCe
-  have heq : e'.target ∩ e'.symm ⁻¹' e.source ∩ (e'.symm ≫ₕ e) ⁻¹' C =
+  have hdom : e'.target ∩ e'.symm ⁻¹' e.source ∩ (e'.symm ≫ₕ e) ⁻¹' C =
       e'.target ∩ e'.symm ⁻¹' (e.symm '' C) := by
     rw [himg]
     ext y
     simp only [mem_inter_iff, mem_preimage, OpenPartialHomeomorph.trans_apply]
     tauto
-  rw [heq] at h2
-  refine h2.congr fun y hy => ?_
-  obtain ⟨-, hy₂⟩ := hy
-  rw [mem_preimage, himg] at hy₂
+  rw [hdom] at h
+  refine h.congr fun y hy => ?_
+  obtain ⟨-, hy⟩ := hy
+  rw [mem_preimage, himg] at hy
   change Function.invFunOn e.symm C (e'.symm y) = e (e'.symm y)
-  calc Function.invFunOn e.symm C (e'.symm y)
-      = Function.invFunOn e.symm C (e.symm (e (e'.symm y))) := by rw [e.left_inv hy₂.1]
-    _ = e (e'.symm y) := (injOn_symm_of_subset_target e hCe).leftInvOn_invFunOn hy₂.2
+  calc
+    Function.invFunOn e.symm C (e'.symm y) = Function.invFunOn e.symm C (e.symm (e (e'.symm y))) := by
+      rw [e.left_inv hy.1]
+    _ = e (e'.symm y) := (injOn_symm_of_subset_target e hCe).leftInvOn_invFunOn hy.2
+
+theorem isPiecewiseAffineOn_chart_symm_chart [HasGroupoid X (plGroupoid n)]
+    (he : e ∈ atlas (EuclideanSpace ℝ (Fin n)) X) {C : Set (EuclideanSpace ℝ (Fin n))}
+    (hC : IsHPolytope C) (hCe : C ⊆ e.target) (e' : OpenPartialHomeomorph X (EuclideanSpace ℝ (Fin n)))
+    (he' : e' ∈ atlas (EuclideanSpace ℝ (Fin n)) X) :
+    IsPiecewiseAffineOn (e' ∘ e.symm) (C ∩ e.symm ⁻¹' e'.source) :=
+  isPiecewiseAffineOn_chart_symm_chart_of_isPolyhedron e he hC.isPolyhedron hCe e' he'
+
+theorem isPiecewiseAffineOn_chart_chart_symm [HasGroupoid X (plGroupoid n)]
+    (he : e ∈ atlas (EuclideanSpace ℝ (Fin n)) X) {C : Set (EuclideanSpace ℝ (Fin n))}
+    (hC : IsHPolytope C) (hCe : C ⊆ e.target) (e' : OpenPartialHomeomorph X (EuclideanSpace ℝ (Fin n)))
+    (he' : e' ∈ atlas (EuclideanSpace ℝ (Fin n)) X) :
+    IsPiecewiseAffineOn (Function.invFunOn e.symm C ∘ e'.symm)
+      (e'.target ∩ e'.symm ⁻¹' (e.symm '' C)) :=
+  isPiecewiseAffineOn_chart_chart_symm_of_isPolyhedron e he hC.isPolyhedron hCe e' he'
 
 noncomputable def chartPiece [HasGroupoid X (plGroupoid n)]
     (he : e ∈ atlas (EuclideanSpace ℝ (Fin n)) X) {C : Set (EuclideanSpace ℝ (Fin n))}

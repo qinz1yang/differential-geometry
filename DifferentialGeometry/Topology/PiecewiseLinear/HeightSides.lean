@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.BallFrontier
+import DifferentialGeometry.Topology.PiecewiseLinear.BallInterior
 import DifferentialGeometry.Topology.PiecewiseLinear.HeightChart
 import DifferentialGeometry.Topology.PiecewiseLinear.SingularLevelPolygons
 

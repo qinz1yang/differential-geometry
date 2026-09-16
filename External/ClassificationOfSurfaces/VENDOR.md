@@ -946,3 +946,650 @@ exactly `propext`, `Classical.choice`, and `Quot.sound`. Logs are
 `.lake/scratch/audit-s2-push-property.log`. S.2 is complete. The 17.9-17.12
 developments and the general cell-decomposition versions of P.3 remain
 separate pending work.
+
+## Relative polyhedral neighborhoods for three-dimensional push moves
+
+The native `PolyhedralSeparation.lean` adds finite piecewise affine
+nonnegative defining functions for polyhedra, polyhedral sublevels, and
+`exists_isPolyhedron_neighborhood_sdiff`. For polyhedra C and A and an
+open set U containing C, this constructs a polyhedron N with
+`C \ A ⊆ interior N`, `N ⊆ U`, and `N ∩ A = C ∩ A`.
+This supplies the controlled closed neighborhoods used in Moise 17.9
+and 17.11 (printed pages 121-122). The construction is native and uses
+finite maxima and minima of affine functions; no vendor source changes
+were made. It is a neighborhood input, not completion of those theorems.
+
+The focused check exits 0 with zero warnings. `AuditS40.lean` checks all
+four new declarations, exits 0, and reports only `propext`,
+`Classical.choice`, and `Quot.sound`. Logs are
+`.lake/scratch/check-polyhedral-separation.log` and
+`.lake/scratch/audit-polyhedral-separation.log`.
+
+## Protected push moves and complementary disks on PL two-spheres
+
+Four native modules add inputs to the Moise 17.9-17.11 arguments.
+`RelativePush.lean` uses the relative polyhedral neighborhood to realize
+a push while fixing a protected polyhedron, under the explicit
+intersection and density conditions used by the book. It also gives the
+exact image of the union of the moving disk and protected set.
+`PLHomeomorphTopology.lean` transports closures of subsets of compact
+PL homeomorphism domains. `SimplexFacetComplement.lean` identifies the
+closure of a simplex boundary minus one facet and its intersection with
+that facet. `SphericalDiskComplement.lean` uses the verified 17.5 to
+identify an arbitrary PL two-sphere with a tetrahedral boundary while
+sending a prescribed disk to a facet. It proves that the complementary
+closure is a PL two-ball and that the two disks intersect in exactly
+the intrinsic boundary from any disk parametrization.
+
+These are native arguments and consequences of earlier native results;
+no vendor Lean source was changed. They do not yet prove 17.9, 17.10,
+or 17.11, and do not assert the general cell-decomposition version of P.3.
+Each of the four focused module checks exits 0 with zero warnings.
+`AuditS41.lean` checks all seven new declarations, exits 0, and reports
+only `propext`, `Classical.choice`, and `Quot.sound`. Logs are
+`.lake/scratch/check-relative-push.log`,
+`.lake/scratch/check-pl-homeomorph-topology.log`,
+`.lake/scratch/check-simplex-facet-complement.log`,
+`.lake/scratch/check-spherical-disk-complement.log`, and
+`.lake/scratch/audit-spherical-disk-complement.log`.
+
+## Convex open neighborhoods of compact frontiers
+
+The native `Analysis/Convex/CompactFrontier.lean` proves that an open
+convex set containing the frontier of a compact set contains the whole
+compact set, in any nontrivial real normed space. This justifies the
+support containment used in Moise 17.9 and 17.11. It uses Hahn-Banach
+separation and an extremum argument, with no finite-dimensional
+assumption and no vendor source edits. The focused check exits 0 with
+zero warnings; `AuditS42.lean` exits 0 and reports only the three standard
+axioms. Logs: `.lake/scratch/check-compact-frontier.log` and
+`.lake/scratch/audit-compact-frontier.log`.
+
+## Cones from interior points of convex polyhedra
+
+The native `ConvexCone.lean` proves that a simplicial complex contained
+in the frontier of a closed convex set is a cone base for any interior
+point. Supporting affine functions at face centroids vanish on the
+whole face. It also identifies the cone over the full frontier with
+the original compact convex set. The supporting ray lemma in
+`Analysis/Convex/CompactFrontier.lean` holds for arbitrary compact sets
+and uses a maximum on a line, without a finite-dimensional assumption.
+These are inputs to Moise 17.9 (printed page 121), not yet its ambient
+PL straightening conclusion. Vendor Lean sources are unchanged.
+
+Both focused checks exit 0 with zero warnings. `AuditS43.lean` checks
+all three new declarations, exits 0, and reports only `propext`,
+`Classical.choice`, and `Quot.sound`. Logs:
+`.lake/scratch/check-compact-frontier.log`,
+`.lake/scratch/check-convex-cone.log`, and
+`.lake/scratch/audit-convex-cone.log`.
+
+## Boundaries of cones over PL balls
+
+The native `ConeBoundary.lean` identifies the frontier of a cone over
+an (n+1)-dimensional PL ball in an (n+2)-dimensional real normed space
+as the union of the base and the cone over its intrinsic boundary.
+It transports the cone to a simplex, computes its facets, and uses
+boundary invariance. The companion `PLHomeomorphTopology.lean` results
+transport interiors and closed-domain frontiers between equal-dimensional
+real normed spaces. `InvarianceOfDomainManifold.lean` adds the required
+normed-space form of invariance of domain by continuous linear transport
+to Euclidean space. Existing signatures are unchanged.
+
+These native inputs support the deletion argument of Moise 17.10
+(printed page 121). No vendor Lean sources were modified, and the
+ambient straightening conclusion of 17.10 remains pending.
+The three changed modules and the complementary-disk consumer pass
+focused checks with exit 0 and zero warnings. `AuditS44.lean` checks
+five declarations (including the prior closure transport), and
+`AuditS45.lean` checks the two cone-boundary declarations. Both exit 0;
+all seven axiom closures contain only the standard three axioms.
+Logs: `.lake/scratch/check-invariance-domain-normed.log`,
+`.lake/scratch/check-pl-homeomorph-topology.log`,
+`.lake/scratch/check-cone-boundary.log`,
+`.lake/scratch/check-spherical-disk-complement.log`,
+`.lake/scratch/audit-pl-homeomorph-topology.log`, and
+`.lake/scratch/audit-cone-boundary.log`.
+
+## Deleting a free tetrahedron from a triangulated PL three-ball
+
+Four native modules supply the single deletion step used by Moise
+17.9-17.10 (printed page 121). `BoundaryFacets.lean` characterizes a
+boundary facet by its unique coface and generates a PL ball boundary
+from its facets. `SubcomplexComplement.lean` computes closures of
+subcomplex differences. `BoundaryDeletion.lean` proves the exact
+change of the intrinsic boundary after deleting one top-dimensional
+simplex, in every dimension, when the remaining complex is a PL ball.
+
+`TetrahedronDeletion.lean` realizes the corresponding frontier change
+by an ambient PL homeomorphism fixed outside any prescribed open
+neighborhood of the deleted tetrahedron. Its free-face hypothesis is
+that the intersection of that tetrahedron with the original frontier
+is a PL two-ball. The proof derives the protected complementary disk
+and its density condition, then applies the verified tetrahedral push
+property. This closes a deletion step, not the full finite induction
+for 17.9 or 17.10. Vendor Lean sources remain unchanged.
+
+All four focused checks exit 0 with zero warnings. `AuditS46.lean`
+checks all seven declarations, exits 0, and reports only `propext`,
+`Classical.choice`, and `Quot.sound`. Logs:
+`.lake/scratch/check-boundary-facets.log`,
+`.lake/scratch/check-subcomplex-complement.log`,
+`.lake/scratch/check-boundary-deletion.log`,
+`.lake/scratch/check-tetrahedron-deletion.log`, and
+`.lake/scratch/audit-tetrahedron-deletion.log`.
+
+## Supported ambient straightening of cones over PL two-balls (Moise 17.10)
+
+The native `ConeStraightening.isSimplyEmbedded_frontier_coneComplex`
+proves Moise 17.10 (printed page 121) for any finite simplicial complex
+whose space is a PL two-ball and any `IsConeBase` apex. The conclusion
+is the full `IsSimplyEmbedded` predicate, including an ambient PL
+homeomorphism fixed outside every prescribed convex open neighborhood
+of the boundary. It has no unproved topological producer assumption.
+
+`ConeFreeFace.lean` computes the boundary trace of a cone simplex and
+proves that coning a free base face produces the required PL disk.
+`ConeDeletion.lean` combines the face-deletion relation with the
+previous ambient tetrahedron deletion. `ConeStraightening.lean` keeps
+one base triangle and recurses on the strictly decreasing number of
+triangles, using the same open neighborhood throughout. A general PL
+two-ball is first subdivided into a complex with a planar simplicial
+isomorphism; `PlanarDiskSubdivision.lean` adds that direct interface.
+`Cone.lean` adds uniqueness of positive radial representations.
+Vendor Lean sources are unchanged. The proof follows the book's
+finite deletion argument and supplies the explicit boundary and
+support bookkeeping. The 17.9 and 17.11 endpoints and the general
+cell-decomposition version of 17.2 remain pending.
+
+All five changed modules pass focused checks with exit 0 and zero
+warnings. `AuditS47.lean` checks all eight new declarations and the
+full 17.10 signature, exits 0, and reports only `propext`,
+`Classical.choice`, and `Quot.sound`. Logs:
+`.lake/scratch/check-cone.log`, `.lake/scratch/check-cone-free-face.log`,
+`.lake/scratch/check-cone-deletion.log`,
+`.lake/scratch/check-planar-disk-subdivision.log`,
+`.lake/scratch/check-cone-straightening.log`, and
+`.lake/scratch/audit-cone-straightening.log`.
+
+## Supported ambient straightening of convex PL three-balls (Moise 17.9)
+
+The native `ConvexStraightening.lean` proves
+`isSimplyEmbedded_frontier_of_convex` from convexity and PL three-ball
+structure. Polyhedrality follows from the latter and is not a separate
+hypothesis. The conclusion retains the ambient PL homeomorphism fixed
+outside every prescribed convex open neighborhood of the frontier.
+
+Following printed page 121, the proof cones a boundary triangulation
+from an interior point and deletes one tetrahedron. The remaining
+base is a PL disk, so the verified 17.10 straightening applies.
+`SphericalTriangleDeletion.lean` identifies the remaining complex
+with the closure of the complement of a triangle and proves its disk
+structure. `ConeIntersection.lean` adds the exact intersection of the
+base with a cone simplex. Only frontier images are needed for the
+stated endpoint; no unproved claim about images of filled regions is
+used. Vendor Lean sources remain unchanged. The 17.11 and general
+cell-decomposition 17.2 endpoints are still pending.
+
+All three changed modules pass focused checks with exit 0 and zero
+warnings. `AuditS48.lean` checks all four new declarations and the
+full 17.9 signature, exits 0, and reports only `propext`,
+`Classical.choice`, and `Quot.sound`. Logs:
+`.lake/scratch/check-spherical-triangle-deletion.log`,
+`.lake/scratch/check-cone-intersection.log`,
+`.lake/scratch/check-convex-straightening.log`, and
+`.lake/scratch/audit-convex-straightening.log`.
+
+## Complementary disk topology and supported gluing (Moise 17.11 inputs)
+
+`BallInterior.lean` proves that the image of the standard open simplex
+is the intrinsic interior of a PL ball, with connectedness and dense
+closure. `SphericalDiskComplement.lean` adds the complementary-disk
+involution, both boundary-circle identifications, and connectedness
+of a sphere with a disk removed. `CompactFrontier.lean` adds the
+compact-region containment principle for closed convex targets and
+for targets made convex by a homeomorphism.
+
+`DiskGluing.lean` implements both cases on printed pages 121-122. It
+pushes one complementary disk while fixing the other, and straightens
+the resulting sphere with support in any convex open neighborhood
+containing the original two spheres. This intermediate statement
+does not yet replace that neighborhood condition by containment of
+only the glued sphere; the planar-disk containment argument is still
+required for the full 17.11 endpoint. No vendor Lean source changed.
+
+All four changed modules pass focused checks with exit 0 and zero
+warnings. `AuditS49.lean` checks all eleven new declarations and the
+straightening signature, exits 0, and reports only `propext`,
+`Classical.choice`, and `Quot.sound`. Logs:
+`.lake/scratch/check-ball-interior.log`,
+`.lake/scratch/check-spherical-disk-complement.log`,
+`.lake/scratch/check-compact-frontier.log`,
+`.lake/scratch/check-disk-gluing.log`, and
+`.lake/scratch/audit-disk-gluing.log`.
+
+## Full supported gluing along a planar disk (Moise 17.11)
+
+`PlanarDiskGluing.isSimplyEmbedded_union_sdiff_diskInterior` proves
+the complete statement on printed pages 121-122. Two simply embedded
+PL two-spheres meet in a PL disk contained in a two-dimensional
+affine subspace. Their union with the intrinsic interior of that disk
+removed is simply embedded. The conclusion quantifies over every
+convex open neighborhood of the resulting sphere and fixes its
+complement pointwise. The removed set uses the disk parametrization
+and its intrinsic boundary circle, not ambient interior in R3.
+
+`AffineSubspaceTransport.lean` constructs affine PL coordinates and
+an affine inverse on the polyhedron. `BallFrontier.lean` identifies
+the image of the standard boundary with the actual frontier in the
+matching dimension. `PlanarDiskContainment.lean` proves, in all
+dimensions, that a flat PL ball lies in any convex open set containing
+its intrinsic boundary. This supplies the remaining support control
+for the two-case argument already checked in `DiskGluing.lean`.
+No vendor Lean source changed. The theorem expresses planarity by an
+affine subspace whose direction has finrank two. The new F interface
+rows have not yet appeared in the integration branch at this point;
+any representation adapter will be checked against those rows.
+
+All four changed modules pass focused checks with exit 0 and zero
+warnings. `AuditS50.lean` checks all four new declarations and the
+full 17.11 signature, exits 0, and reports only `propext`,
+`Classical.choice`, and `Quot.sound`. Logs:
+`.lake/scratch/check-affine-subspace-transport.log`,
+`.lake/scratch/check-ball-frontier.log`,
+`.lake/scratch/check-planar-disk-containment.log`,
+`.lake/scratch/check-planar-disk-gluing.log`, and
+`.lake/scratch/audit-planar-disk-gluing.log`.
+
+## Manifold filling in a vertex open star (Moise 23.9, conditional on 17.12)
+
+`SchoenfliesManifold.lean` proves the manifold chart and combinatorial
+vertex-open-star forms of printed page 169, Theorem 9. A polyhedral
+two-sphere in a convex-target PL chart bounds a polyhedral three-ball
+inside the same chart, with its actual frontier equal to the given
+sphere. The vertex-chart corollary constructs the existing native
+PL atlas on a finite combinatorial three-manifold and returns the
+ball inside the specified open star.
+
+Both endpoints explicitly take the exact 17.12 statement
+`forall S, IsPLSphere 2 S -> IsSimplyEmbedded S` as an argument, as
+authorized for S.5 while F owns its proof. No new axiom or class is
+introduced. Their axiom audits certify these conditional theorems;
+they do not certify an unconditional Schoenflies theorem.
+
+`ChartPiece.lean` generalizes chart transition restrictions to all
+polyhedra; the original polytope signatures remain wrappers.
+`ChartComplexPiece.lean` realizes a finite complex through a chart
+and transports PL balls and spheres. `ChartBallFrontier.lean` proves
+the exact frontier transport. `StdChart.lean` proves convexity of
+the standard vertex chart target. `SimplyEmbedded.lean` adds a
+filling with push property contained in a prescribed convex open
+neighborhood. No vendor Lean source changed.
+
+All six changed modules pass focused checks with exit 0 and zero
+warnings. `AuditS52.lean` checks twelve declarations (including the
+two preserved chart interfaces), prints the open-star endpoint
+signature, exits 0, and reports only `propext`, `Classical.choice`,
+and `Quot.sound`. Logs: `.lake/scratch/check-simply-embedded.log`,
+`.lake/scratch/check-chart-piece.log`,
+`.lake/scratch/check-chart-complex-piece.log`,
+`.lake/scratch/check-chart-ball-frontier.log`,
+`.lake/scratch/check-std-chart.log`,
+`.lake/scratch/check-schoenflies-manifold.log`, and
+`.lake/scratch/audit-schoenflies-manifold.log`. Theorem 23.10 and
+Theorem 23.11 remain pending at this checkpoint.
+
+## Compact regions and chart support for manifold pushes
+
+`Analysis/Convex/CompactFrontier.lean` now identifies a compact set
+with nonempty interior from equality of its frontier with the frontier
+of a closed convex set. `SimplyEmbedded.lean` uses this to give the push
+property to a specified PL three-ball whose frontier is simply embedded.
+
+`ChartPolyhedron.lean` extends the existing chart restriction API from
+convex polytopes to arbitrary finite polyhedra. Its neighborhood theorem
+localizes a polyhedral neighborhood to a compact subset of a chart while
+preserving the exact condition `C \ J` contained in its interior.
+`ChartBallFrontier.lean` also transports the frontier of a manifold ball
+into chart coordinates. These are native supporting results for Moise
+23.10; no vendored Lean source changed.
+
+All four changed modules pass focused checks with exit 0 and no warnings.
+`AuditS53.lean` checks six declarations with only `propext`,
+`Classical.choice`, and `Quot.sound`, exit 0. Logs are
+`.lake/scratch/check-compact-frontier.log`,
+`.lake/scratch/check-simply-embedded.log`,
+`.lake/scratch/check-chart-polyhedron.log`,
+`.lake/scratch/check-chart-ball-frontier.log`, and
+`.lake/scratch/audit-chart-push-inputs.log`.
+
+## Manifold disk pushes (Moise 23.10, conditional on 17.12)
+
+`PushManifold.lean` proves the chart and vertex-open-star statements
+of printed page 169, Theorem 10. For two polyhedral disks covering a
+three-ball's frontier and meeting in both intrinsic boundaries, it
+produces a homeomorphism of the entire manifold which is PL in both
+directions, maps the first disk onto the second, and fixes the complement
+of the original polyhedral neighborhood. The hypothesis remains exactly
+`C \ (D1 inter D2)` contained in `interior N`; the supplied neighborhood
+need not be contained in the chart.
+
+`PolyhedralBallBoundary.lean` identifies the existing choice-independent
+`polyhedralBoundary` through simplex parametrizations, transports it
+into charts, and proves density of a ball minus its intrinsic boundary.
+These supporting results hold in every positive dimension. The main
+push endpoints explicitly assume `forall S, IsPLSphere 2 S ->
+IsSimplyEmbedded S`, as authorized while F supplies 17.12. No vendored
+Lean source changed.
+
+Both new modules pass focused checks with exit 0 and zero warnings.
+`AuditS54.lean` checks six declarations and the full open-star statement,
+exits 0, and reports only `propext`, `Classical.choice`, and `Quot.sound`.
+Logs: `.lake/scratch/check-polyhedral-ball-boundary.log`,
+`.lake/scratch/check-push-manifold.log`, and
+`.lake/scratch/audit-push-manifold.log`. Theorem 23.11 remains pending.
+
+## Exact Schoenflies input signatures
+
+`SchoenfliesInput.lean` is brought in unchanged from F's first-party
+commit `44806ee61` on `origin/codex/moise-smoothing`; its Git blob is
+`b0130fd228f2242155aa2a6cd63c5b30e009cf90`. The integration branch had
+not yet included this interface at the checkpoint. The S branch preserves
+its definitions and four field signatures exactly.
+
+`PlanarDiskGluing.lean` adds
+`isSimplyEmbedded_union_sdiff_diskInterior_of_subset_fiber`, expressing
+the planar disk as a level set of a nonzero linear functional. Its proof
+uses the two-dimensional affine fiber and the previously checked 17.11
+endpoint. The complete support quantifier is preserved.
+
+Both modules pass focused checks with exit 0 and zero warnings.
+`AuditS55.lean` verifies the exact types of the three S.3 interface fields
+by assigning the actual producers, and audits these producers plus the
+three elementary decomposition lemmas: six declarations, only the three
+standard axioms, exit 0. Logs: `.lake/scratch/check-schoenflies-input.log`,
+`.lake/scratch/check-planar-disk-gluing.log`, and
+`.lake/scratch/audit-schoenflies-fields.log`. The general 17.2 field remains
+unproved; no `SchoenfliesInput` instance is claimed.
+
+## Gluing PL three-balls along a boundary disk (Moise 23.11, Euclidean form)
+
+`BallGluing.lean` proves the exact planned Euclidean endpoint
+`isPLBall_union_of_inter_isPLBall_two`. Its common-ambient complex form
+`isPLBall_union_of_boundary_disk` permits any finite-dimensional real
+normed ambient space. Both require a genuine PL two-ball intersection
+contained in both intrinsic boundaries.
+
+`SphericalDiskExtension.lean` extends a prescribed PL map of disks in
+PL two-spheres to the whole spheres and then to PL three-balls.
+`BoundaryExtension.lean` adds the parametrized-boundary version in every
+positive dimension. `SimplexBallPair.lean` constructs two PL three-balls
+whose union is a tetrahedron and whose intersection is a common boundary
+disk. The gluing proof maps each given ball to this model while agreeing
+on the intersection. It uses the already proved two-dimensional
+Schoenflies and boundary-extension APIs; it does not assume 17.12.
+This is a native implementation of the gluing result; no vendored Lean
+source changed. The general manifold transport remains the next step.
+
+All four changed modules pass focused checks with exit 0 and zero
+warnings. `AuditS56.lean` checks seven declarations, prints the exact
+Euclidean endpoint, and exits 0 with only the three standard axioms.
+Logs: `.lake/scratch/check-boundary-extension.log`,
+`.lake/scratch/check-spherical-disk-extension.log`,
+`.lake/scratch/check-simplex-ball-pair.log`,
+`.lake/scratch/check-ball-gluing.log`, and
+`.lake/scratch/audit-ball-gluing.log`.
+
+## Gluing polyhedral three-balls in a triangulated manifold (Moise 23.11)
+
+`BallGluingManifold.lean` transports the checked boundary-disk gluing
+theorem through an existing PL piece. Its finite combinatorial
+three-manifold endpoint allows the two balls to lie in different vertex
+stars. In fact, the PL ball hypotheses suffice without any star
+restriction or 17.12 assumption. The intersection is a polyhedral
+two-ball contained in both topological frontiers.
+
+`PieceTransition.lean` generalizes transitions to nested pieces while
+preserving both original signatures. `PieceInclusion.lean` represents a
+polyhedral sub-ball in any containing piece, restricts a piece to a
+polyhedron, and transports native PL balls back into the manifold.
+These supporting results retain arbitrary dimensions and finite-dimensional
+real normed ambient spaces. No vendored Lean source changed.
+
+All three changed modules pass focused checks with exit 0 and zero
+warnings. `AuditS57.lean` audits eleven declarations, including the two
+preserved transition endpoints, and prints the triangulated-manifold
+statement: exit 0, only `propext`, `Classical.choice`, and `Quot.sound`.
+Logs: `.lake/scratch/check-piece-transition.log`,
+`.lake/scratch/check-piece-inclusion.log`,
+`.lake/scratch/check-ball-gluing-manifold.log`, and
+`.lake/scratch/audit-ball-gluing-manifold.log`.
+
+## Transport of the general disk-decomposition interface
+
+`DiskDecomposition.lean` proves that F's exact `IsPLDiskDecomposition`
+and `IsFreeDiskCell` definitions are preserved by subdivision and PL
+coordinate changes. Every finite-dimensional decomposition has a planar
+image with the same number of cells, and each original cell is free if
+and only if its image is free. This implements the initial planar
+reduction in Moise 17.2 without changing the interface. The two-free-cell
+existence theorem itself remains unproved. No vendored source changed.
+
+The module passes its focused check with exit 0 and zero warnings.
+`AuditS58.lean` audits all six declarations: exit 0, only the three
+standard axioms. Logs: `.lake/scratch/check-disk-decomposition.log` and
+`.lake/scratch/audit-disk-decomposition.log`.
+
+## Planar crosscuts and boundary cells for general disk decompositions
+
+`PlanarJordan/ArcGap.lean` extracts a subarc whose interior avoids a closed
+set between its two endpoint contacts. `PlanarJordan/CompactRegion.lean`
+identifies the bounded Jordan region of a compact planar set with its
+interior. `PolygonalArc.lean` bridges native polyhedra to the vendored
+polygonal-arc API; `Polytope.lean` supplies convexity of H-polytopes.
+
+`DiskCrosscut.lean` obtains a PL crosscut from a cell boundary with two
+outer-boundary contacts, and splits a PL disk along a crosscut into two
+PL disks. Any contained PL disk whose interior avoids the crosscut lies
+on one side. `PlanarDiskDecomposition.lean` identifies the intrinsic
+boundary traces in F's interface with planar frontier intersections,
+proves disjointness of cell interiors, and obtains two distinct cells
+with nontrivial outer-boundary trace. These are foundations for Moise
+17.2; they do not yet prove that the two cells are free. No vendored
+Lean source changed.
+
+All six changed modules pass focused checks with exit 0 and zero
+warnings. `AuditS59.lean` audits 22 declarations: exit 0, only `propext`,
+`Classical.choice`, and `Quot.sound`. Logs are in `.lake/scratch/`:
+`check-polytope.log`, `check-polygonal-arc.log`, `check-arc-gap.log`,
+`check-compact-region.log`, `check-disk-crosscut.log`,
+`check-planar-disk-decomposition.log`, and `audit-disk-crosscut.log`.
+
+## Free-cell transfer and splitting at a nonfree boundary cell
+
+`PlanarDiskUnion.lean` proves that two planar PL disks meeting along a
+common boundary arc form a PL disk and that the common arc has finite
+intersection with the frontier of the union. The existing model and
+gluing proofs in `PolygonalSchoenflies.lean` now retain this frontier
+information; their earlier public signatures remain available. The
+supporting simplex lemma is in `SimplexBoundary.lean`, and finite-point
+removal density is proved for preperfect and nontrivial preconnected
+sets in `Topology/Connected/Dense.lean`.
+
+`DiskCrosscut.lean` additionally identifies each side's outer-boundary
+trace as a PL arc. `PlanarDiskSplit.lean` uses this to split at a nonfree
+boundary cell into two proper PL subdisks whose intersection is that
+cell. `DiskDecomposition.lean` restricts the decomposition to any cell
+subfamily whose union is a PL disk. `PlanarDiskDecomposition.lean` proves
+that a free cell distinct from the shared cell stays free in the original
+disk. These are the geometric induction steps of Moise 17.2; the finite
+cell-count induction remains to be assembled. No vendored source changed.
+
+All eight changed modules pass focused checks with exit 0 and zero
+warnings. `AuditS60.lean` audits 16 declarations, including the preserved
+model, gluing, and crosscut endpoints: exit 0 and only the three standard
+axioms. Logs are `.lake/scratch/check-connected-dense.log`,
+`check-simplex-boundary.log`, `check-polygonal-schoenflies.log`,
+`check-disk-crosscut.log`, `check-disk-decomposition.log`,
+`check-planar-disk-union.log`, `check-planar-disk-split.log`,
+`check-planar-disk-decomposition.log`, and `audit-free-disk-transfer.log`.
+
+## General two-free-cell theorem and the complete Schoenflies input
+
+`FreeDiskCell.lean` proves Moise 17.2 for F's unchanged
+`IsPLDiskDecomposition` interface, allowing arbitrary PL disk cells in a
+common finite triangulation. The public theorem
+`IsPLDiskDecomposition.exists_two_free_disk_cells` works in every
+finite-dimensional real normed space. Its corollary
+`exists_free_disk_cell_ne` avoids any one prescribed cell. The proof
+reduces to the plane, splits at a nonfree boundary cell, and inducts on
+strictly smaller cell subfamilies. Free-cell transfer then returns two
+distinct free cells of the original decomposition. This does not claim
+the still stronger 17.3 statement about avoiding a prescribed proper disk
+subcomplex.
+
+`SchoenfliesFoundations.lean` proves `schoenflies_input : SchoenfliesInput`
+from the actual 17.9, 17.10, 17.11, and 17.2 producers. All four field
+signatures from F's interface are preserved exactly, including the full
+support quantifier for simple embedding. It is a proved structure value,
+with no unresolved proposition or class assumption. S.4 remains owned by
+F. No vendored source changed.
+
+Both modules pass focused checks with exit 0 and zero warnings.
+`AuditS61.lean` checks the exact three-dimensional fourth-field statement,
+type-checks the complete structure, prints both general free-cell types,
+and audits the two endpoints plus `schoenflies_input`: exit 0 and only
+`propext`, `Classical.choice`, and `Quot.sound`. Logs:
+`.lake/scratch/check-free-disk-cell.log`,
+`.lake/scratch/check-schoenflies-foundations.log`, and
+`.lake/scratch/audit-schoenflies-foundations.log`.
+
+## Final S.3, general 17.2, and S.5 verification
+
+At mathematical commit `08ee37003`, all nine headline modules pass
+focused checks with exit 0 and zero warnings. `AuditS62.lean` audits 16
+public endpoints across S.3, general 17.2, the complete four-field input,
+and S.5: only `propext`, `Classical.choice`, and `Quot.sound`, exit 0.
+The 23.9 and 23.10 statements retain the explicitly authorized full
+17.12 hypothesis; 23.11 and all four `SchoenfliesInput` producers are
+unconditional. The stronger proper-subdisk avoidance form of 17.3 is
+still outside the completed results.
+
+`.lake/scratch/S3-P3-S5-VERIFICATION.json` records source hashes and log
+paths; `.lake/scratch/audit-s3-p3-s5-final.log` contains the final audit.
+No vendored Lean source changed in this continuation. The final
+checkpoint fetched and merged `origin/codex/moise-integration` before
+updating the plan and handoff documents.
+
+## Local boundary balls and nonsingular disk push-offs
+
+`ConvexCone.lean` now proves that a cone stays in a convex body and meets
+its frontier exactly in its base when its apex is interior.
+`BoundaryBall.lean` transports this construction through a PL ball
+parametrization. In every finite-dimensional real normed space of the
+appropriate dimension, a prescribed PL boundary disk can be cut out by
+a smaller PL ball with exactly that boundary intersection.
+
+`FrontierBoundary.lean` exposes the containment in the ambient complex
+already supplied by its closed-star construction. The previous
+`exists_isPLBall_closedStar_inter_boundary` signature is preserved as a
+corollary of `exists_isPLBall_subset_inter_boundary`.
+
+`LoopTheorem/BoundaryPush.lean` turns a parameterized PL disk into a
+nonsingular `SingularTwoCell`, preserving the exact boundary image.
+The complement disk on the frontier of a boundary ball supplies a
+push-off whose image lies in the ambient manifold and meets its boundary
+only in the prescribed boundary curve. This gives the full image and
+intersection conclusions locally and for a PL-ball ambient manifold.
+
+These are native preliminary lemmas for Moise Problem Set 26, Problems
+1-2 (printed pages 195-196), and Theorem 26.2 (printed pages 191-192).
+They do not yet prove that an arbitrary boundary disk spanning several
+charts lies in one boundary ball. The general `hpush` producer and the
+product collar of Theorem 26.2 remain open. No vendored Lean source was
+modified, and no unproved proposition or Schoenflies assumption was
+introduced into these local lemmas.
+
+All four changed/new modules pass the prescribed focused checks with
+exit 0 and zero warnings. `AuditS63.lean` audits 12 declarations, including
+the preserved closed-star interface: exit 0 and only `propext`,
+`Classical.choice`, and `Quot.sound`. Logs are
+`.lake/scratch/check-convexcone-boundary.log`,
+`check-frontierboundary-boundary.log`, `check-boundaryball-boundary.log`,
+`check-looptheorem-boundarypush-boundary.log`, and
+`audit-boundary-push-local.log`. `BallFrontier` was refreshed immediately
+before the consumer because its shared olean had been replaced by a
+version with a different exported theorem name. Source dependencies
+were obtained only through integration merges, including `5967f629c`.
+
+## Boundary subdivision subordinate to ball neighborhoods
+
+`BoundarySubdivision.lean` refines the ambient finite combinatorial
+manifold while making a prescribed boundary polyhedron a subcomplex.
+Each face of that subcomplex has its entire cluster of ambient closed
+vertex stars inside an open set whose intersection with the manifold is
+contained in a specified PL ball. The ball's boundary trace is a PL disk.
+For a boundary PL disk, every face star of the resulting disk subcomplex
+therefore has a PL ball whose intersection with the manifold boundary is
+exactly that face star. Both theorems hold in every indicated dimension.
+
+The construction uses the existing mesh and simultaneous-subcomplex
+refinement theorems and the boundary-ball lemmas from `fc3846d10`.
+It is a native preparation for the finite disk argument in Moise 26.1-2;
+no vendored source changed. The separate local balls are not asserted to
+have compatible pairwise intersections. That compatibility, the global
+boundary-disk ball, general `hpush`, and the full product collar remain
+unproved.
+
+The module check exits 0 with zero warnings. `AuditS64.lean` audits both
+new declarations: exit 0, with only `propext`, `Classical.choice`, and
+`Quot.sound`. Logs: `.lake/scratch/check-boundary-subdivision.log` and
+`.lake/scratch/audit-boundary-subdivision.log`.
+
+## Relative boundary-disk extensions
+
+`SphericalDiskExtension.lean` now extends a PL self-homeomorphism of a
+parameterized disk, fixed on its parameter boundary, to its containing
+PL 2-sphere while fixing the closed complement disk pointwise. The
+boundary-extension theorem then extends this map over a PL 3-ball with
+the same fixed complement. A union version extends over an additional
+polyhedron by the identity when its intersection with the ball lies in
+that fixed complement. These are native relative consequences of the
+already proved sphere-disk complement and boundary-extension results;
+no vendored source changed.
+
+The intersection condition is explicit and is not claimed to follow
+from an arbitrary finite cover. General boundary-disk engulfing,
+`hpush`, and the collar remain open. The module check exits 0 with zero
+warnings; `AuditS65.lean` checks the three new declarations and the two
+preserved extension interfaces, all with only `propext`,
+`Classical.choice`, and `Quot.sound`. Logs are
+`.lake/scratch/check-relative-disk-extension.log` and
+`.lake/scratch/audit-relative-disk-extension.log`.
+
+## Extension across the complement of a boundary neighborhood
+
+`SubcomplexComplement.lean` proves that the closure of the difference
+of two polyhedra is a polyhedron by a simultaneous triangulation.
+`AmbientExtension.lean` uses this actual complement to extend a PL
+self-homeomorphism of C to M, where C is a subpolyhedron of M. An open
+set U satisfies U intersect M contained in C; the map fixes frontier C
+outside U. The resulting extension fixes the closure of M minus C.
+
+`BoundaryDiskExtension.lean` applies the relative sphere and ball
+extensions to a parameterized boundary disk. Its boundary-patch form
+uses precisely the existing local-neighborhood conditions: C is a PL
+3-ball in M, C intersect frontier M is a PL 2-ball, and U intersect M
+is contained in C. A self-homeomorphism of this boundary patch fixed
+outside U extends to M. Fixing its intrinsic boundary is derived from
+these hypotheses, not added as another input.
+
+These native lemmas provide local relative maps for the finite disk
+argument; they do not supply the finite sequence of compatible moves
+for a whole boundary disk. General `hpush` and Theorem 26.2 are still
+unproved. No vendored Lean source changed. The three modules check with
+exit 0 and zero warnings. `AuditS66.lean` audits all four declarations:
+exit 0 and only `propext`, `Classical.choice`, and `Quot.sound`. Logs:
+`.lake/scratch/check-polyhedron-complement.log`,
+`check-relative-polyhedron-extension.log`, `check-boundary-disk-extension.log`,
+and `audit-polyhedron-boundary-extension.log`.
