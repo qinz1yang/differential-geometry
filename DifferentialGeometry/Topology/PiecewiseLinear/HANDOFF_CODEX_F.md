@@ -1801,3 +1801,9 @@ F-M2–F-M6 尚未开始；按用户指定顺序推进，只有出现 §1 接口
 `ParametricTriangleHeightSides.lean` 的主端点已加强并提交为 `e55b0a88a`。凸化证明内部原已构造的紧集 `C` 现在作为存在数据返回，同时给出 `D ⊆ C`、环境同胚在 `Cᶜ` 上恒等，以及 `C` 与每个旧顶点 `q ≠ p` 的高度纤维互不相交。该数据正是 `HeightLocalization` 对其他旧奇异点保持成员关系并控制层圆周数所需的真实几何输入；只返回逐点固定旧顶点不足以控制其邻域，因此没有用较弱条件替代。
 
 加强后的模块聚焦检查 exit=0（12.1 秒）、零 warning；`AuditF190.lean` 主端点仍仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步把两张参数化三角帽共同细分的边界正规性与紧支集局部化合并，证明每张新球面除 `H p` 外的奇异点精确注入原球面的奇异点去掉 `p`，并保留逐点层圆周数不增。F-M1 仍为 partial，严格指标下降、Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF191.lean`。
+
+### 19.43 F-M1：三角封帽后的新奇异点注入旧奇异点去掉指定点
+
+`TriangleCapSingularComparison.lean` 已提交并推送为 `13c88d977`。`mem_vertices_of_faces_subset_of_mem_space` 证明大复形的顶点若落在子复形载体中，则自动成为该子复形顶点；这把帽边上的新奇异点送入整边界正规性端点。主端点 `exists_triangle_cap_with_singular_comparison` 对一张保留盘与凸三角帽的共同细分同时使用三部分信息：紧支集局部化控制帽外旧顶点及层圆周数，帽内部定理把奇异点限制到共同边界或 `H p`，整边界正规性排除前者。由环境同胚固定所有其他旧顶点，进一步证明帽外对应点不可能等于原指定点 `p`。因此新奇异点去掉 `H p` 后包含于原奇异点去掉 `p`，且每个其他旧顶点的奇异成员关系按所属保留盘精确保持、层圆周数不增。
+
+模块聚焦检查 exit=0（13.2 秒）、零 warning；`AuditF191.lean` 两个端点均仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步用相反高度侧的两个方向分别实例化 A、B，统一选择一个同时适合两张有限复形且严格分离 `H p` 与三角帽的高度，并为每张球面构造显式 `heightSingularPoints` 嵌入到原球面。F-M1 仍为 partial，严格指标下降、Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF192.lean`。
