@@ -1,5 +1,6 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.BallFrontier
 import DifferentialGeometry.Topology.PiecewiseLinear.PLHomeomorphTopology
+import DifferentialGeometry.Topology.Connected.Dense
 
 open Set
 
@@ -82,4 +83,31 @@ theorem IsPLBall.closure_sdiff_eq_of_inter_subset_iUnion {ι : Type*} {n : ℕ} 
   have h := closure_mono hsub
   rwa [hdense] at h
 
+theorem IsPLBall.closure_sdiff_of_finite {n : ℕ} {P A : Set E}
+    (hP : IsPLBall (n + 1) P) (hA : A.Finite) : closure (P \ A) = P := by
+  apply Subset.antisymm (closure_minimal sdiff_subset hP.isPolyhedron.isClosed)
+  have hne : P.Nontrivial := by
+    obtain ⟨f, hf⟩ := hP
+    refine ⟨f (Pi.single 0 1), hf.bijOn.mapsTo (single_mem_stdSimplex ℝ 0),
+      f (Pi.single 1 1), hf.bijOn.mapsTo (single_mem_stdSimplex ℝ 1), ?_⟩
+    intro heq
+    have h := congrFun (hf.bijOn.injOn (single_mem_stdSimplex ℝ 0)
+      (single_mem_stdSimplex ℝ 1) heq) 0
+    simp only [Pi.single_eq_same, Pi.single_eq_of_ne (show (0 : Fin (n + 2)) ≠ 1 by simp)] at h
+    exact one_ne_zero h
+  exact Topology.IsPreconnected.subset_closure_sdiff_finite hP.isConnected.isPreconnected hne hA
+
+theorem IsPLHomeomorphOn.closure_image_prod_Ioc_sdiff {F : Type*}
+    [NormedAddCommGroup F] [NormedSpace ℝ F] {n : ℕ} {P A Q : Set E} {W : Set F}
+    {a b : ℝ} (hab : a < b) {f : E × ℝ → F}
+    (hf : IsPLHomeomorphOn f (P ×ˢ Icc a b) W) (hP : IsPolyhedron P)
+    (hA : IsPLBall (n + 1) A) (hAP : A ⊆ P) (hfinite : (A ∩ Q).Finite) :
+    closure (f '' ((A \ Q) ×ˢ Ioc a b)) = f '' (A ×ˢ Icc a b) := by
+  have hcl : closure (A \ Q) = A := by
+    have heq : A \ (A ∩ Q) = A \ Q := by ext x; simp only [mem_sdiff, mem_inter_iff]; tauto
+    rw [← heq]
+    exact hA.closure_sdiff_of_finite hfinite
+  rw [← hf.image_closure (hP.isCompact.prod isCompact_Icc)
+      (prod_mono (sdiff_subset.trans hAP) Ioc_subset_Icc_self),
+    closure_prod_eq, hcl, closure_Ioc hab.ne]
 end DifferentialGeometry.Topology.PiecewiseLinear

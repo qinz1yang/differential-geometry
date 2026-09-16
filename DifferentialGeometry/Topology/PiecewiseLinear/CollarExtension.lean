@@ -32,7 +32,11 @@ private theorem exists_collar_extension_of_isPLBall_bottom_union_sides
       R'.faces.Finite ∧ IsCombinatorialManifoldWithBoundary 3 R' ∧
       R'.space = closure (R.space \ C) ∧
       (W ∪ C) ∩ R'.space ⊆ (boundaryComplex 3 R').space ∧
-      B ∩ R'.space ⊆ (boundaryComplex 3 R').space := by
+      B ∩ R'.space ⊆ (boundaryComplex 3 R').space ∧
+      IsPLHomeomorphOn σ (K.space ×ˢ Icc a b) C ∧
+      C ∩ (boundaryComplex 3 R).space =
+        σ '' (K.space ×ˢ {a} ∪ (K.space ∩ P) ×ˢ Icc a b) ∧
+      C ∩ B = K.space ∧ W ∩ C = ρ '' ((K.space ∩ P) ×ˢ Icc a b) := by
   obtain ⟨g, hg, -, -⟩ := exists_isPLHomeomorphOn_bottom_union_collar_sides
     hP hK.isPolyhedron hKB hab hρ hbottom hWB
   have hmodified := hpatch.of_isPLHomeomorphOn hg
@@ -114,8 +118,23 @@ private theorem exists_collar_extension_of_isPLBall_bottom_union_sides
   have hBR' : B ∩ R'.space ⊆ (boundaryComplex 3 R').space := by
     rintro x ⟨hxB, hxR'⟩
     exact hboundary ⟨hxR', hBR ⟨hxB, hR'sub hxR'⟩⟩
+  have hbottomImage : σ '' (K.space ×ˢ {a}) = K.space := by
+    apply Subset.antisymm
+    · rintro x ⟨z, hz, rfl⟩
+      have heq : z = (z.1, a) := Prod.ext rfl hz.2
+      rw [heq, hbase z.1 (Or.inr hz.1)]
+      exact hz.1
+    · intro x hx
+      exact ⟨(x, a), ⟨hx, rfl⟩, hbase x (Or.inr hx)⟩
+  have hsideImage : σ '' ((K.space ∩ P) ×ˢ Icc a b) =
+      ρ '' ((K.space ∩ P) ×ˢ Icc a b) :=
+    (hσρ.mono (prod_mono inter_subset_right Subset.rfl)).image_eq
+  have hattachImage : L.space ∩ (boundaryComplex 3 R).space =
+      σ '' (K.space ×ˢ {a} ∪ (K.space ∩ P) ×ˢ Icc a b) := by
+    rw [image_union, hbottomImage, hsideImage]
+    exact hLmeet
   exact ⟨L.space, σ, R', hL, hLR, hLU, hσ, hσρ, hbase, htrace, hpositive,
-    hR'fin, hR', hR'space, hWR', hBR'⟩
+    hR'fin, hR', hR'space, hWR', hBR', hG.congr hσG, hattachImage, hLB, hWL⟩
 
 open Classical in
 theorem exists_collar_extension_of_boundary_arcs {ι : Type*}
@@ -142,7 +161,11 @@ theorem exists_collar_extension_of_boundary_arcs {ι : Type*}
       R'.faces.Finite ∧ IsCombinatorialManifoldWithBoundary 3 R' ∧
       R'.space = closure (R.space \ C) ∧
       (W ∪ C) ∩ R'.space ⊆ (boundaryComplex 3 R').space ∧
-      B ∩ R'.space ⊆ (boundaryComplex 3 R').space := by
+      B ∩ R'.space ⊆ (boundaryComplex 3 R').space ∧
+      IsPLHomeomorphOn σ (K.space ×ˢ Icc a b) C ∧
+      C ∩ (boundaryComplex 3 R).space =
+        σ '' (K.space ×ˢ {a} ∪ (K.space ∩ P) ×ˢ Icc a b) ∧
+      C ∩ B = K.space ∧ W ∩ C = ρ '' ((K.space ∩ P) ×ˢ Icc a b) := by
   have hmeet : K.space ∩ P ⊆ (boundaryComplex 2 K).space := by
     rw [← hcover]
     exact iUnion₂_subset hAB
@@ -173,7 +196,11 @@ theorem exists_collar_extension_of_boundary
       R'.faces.Finite ∧ IsCombinatorialManifoldWithBoundary 3 R' ∧
       R'.space = closure (R.space \ C) ∧
       (W ∪ C) ∩ R'.space ⊆ (boundaryComplex 3 R').space ∧
-      B ∩ R'.space ⊆ (boundaryComplex 3 R').space := by
+      B ∩ R'.space ⊆ (boundaryComplex 3 R').space ∧
+      IsPLHomeomorphOn σ (K.space ×ˢ Icc a b) C ∧
+      C ∩ (boundaryComplex 3 R).space =
+        σ '' (K.space ×ˢ {a} ∪ (K.space ∩ P) ×ˢ Icc a b) ∧
+      C ∩ B = K.space ∧ W ∩ C = ρ '' ((K.space ∩ P) ×ˢ Icc a b) := by
   have hpatch : IsPLBall 2 (K.space ×ˢ {a} ∪ (K.space ∩ P) ×ˢ Icc a b) := by
     rw [hmeet]
     exact isPLBall_prism_bottom_union_side K hK hab

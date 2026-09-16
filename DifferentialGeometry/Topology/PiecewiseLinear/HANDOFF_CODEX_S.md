@@ -920,3 +920,40 @@ Full 26.2 remains partial. Next: produce the lower-dimensional intersection cove
 actual old collar patches and newly added vertical strips, then construct the finite
 boundary cell ordering and finish the induction and whole-boundary neighborhood property.
 The exact bundled I2 target-type issue is unchanged.
+
+### S-M4 continuation: later collar disks remain on the new complementary boundary
+
+The density checkpoint is committed and pushed as `ee372da29`; its integration merge was
+already up to date. `BallDensity.lean` now also proves finite-point deletion density for
+arbitrary positive-dimensional PL balls and transports the dense positive-height product
+through a PL homeomorphism. The previous planar finite-point result in
+`PlanarDiskUnion.lean` is a compatibility corollary of the general theorem.
+
+`CollarBoundary.lean` proves `image_prism_side_subset_boundaryComplex`,
+`image_strip_subset_boundaryComplex_complement`, and
+`image_prism_side_subset_boundaryComplex_complement`. The first identifies actual prism sides
+on the ball boundary. The other two preserve old and new strips using their finite base
+intersections and the exact complementary-boundary formula. The combined endpoint
+`collar_disk_subset_boundaryComplex_complement` preserves a later disk together with its
+enlarged side strips. It handles both a shared PL arc and a disjoint new disk. Its hypotheses
+are the previous collar geometry, a finite arc cover of the previous base intersection,
+and finiteness of the triple intersection; these are still to be produced by the boundary
+cell decomposition. The new complementary-boundary inclusion is proved, not assumed.
+
+Both public endpoints in `CollarExtension.lean` now return the new prism parametrization,
+the precise trace of the new ball on the old complementary boundary in those coordinates,
+and the exact intersections with the original boundary and previous collar. These are
+properties of the same ball and map constructed by the existing extension proof.
+
+Focused checks for the four changed source modules and the directly affected `DiskUnion`
+module have exit 0 and zero warnings. Logs are `check-ball-density-finite.log`,
+`check-planar-disk-union-density.log`, `check-collar-boundary-persistence.log`,
+`check-collar-extension-trace.log`, and `check-disk-union-density.log`.
+`AuditS86CollarBoundary.lean` / `.log` audit nine new or affected public declarations;
+every entry has only `propext`, `Classical.choice`, and `Quot.sound`.
+No vendored or other-lane source changed. The source hash is recorded at the next checkpoint.
+
+Full 26.2 remains partial: construct the finite dual boundary-cell decomposition and its
+intersection data, discharge the attachment-arc or whole-boundary alternative, assemble the
+finite collar induction, and prove the final neighborhood property. The exact bundled I2
+target-type issue and P.4 obligations remain unchanged.
