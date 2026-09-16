@@ -1855,3 +1855,9 @@ F-M2–F-M6 尚未开始；按用户指定顺序推进，只有出现 §1 接口
 `CapLevelPolygons.lean` 已提交并推送为 `65e6f87f0`。`levelPolygons_union_of_fiber_inter_subset_singleton` 与 `disjoint_levelPolygons_of_fiber_inter_subset_singleton` 证明：两闭片在目标高度纤维中的交若至多为指定单点，则并集的层圆周族恰为两片层圆周族的不交并；`encard_levelPolygons_union_of_fiber_inter_subset_singleton` 给出相应的精确基数加法。`levelPolygons_union_cap_of_fiber_subset_singleton` 进一步证明：若封帽在目标纤维至多含帽尖，则封帽与保留片的并不会新增层圆周。证明使用 PL 圆周删去一点仍连通且稠密，没有把圆周分割或计数关系写入输入。
 
 模块聚焦检查 exit=0（11.5 秒）、零 warning；`AuditF199.lean` 四个端点均仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步把帽面严格分离直接转成单点纤维条件，并在变形后原球面上应用两片精确分割；剩余核心缩成证明小高度扰动保持该球面在原临界值附近的层圆周总数。F-M1 仍为 partial，Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF200.lean`。
+
+### 19.52 F-M1：两张封帽的例外层合并为原球面一层
+
+`TriangleCapLevelCount.lean` 已提交并推送为 `607f4a6d2`。主端点 `encard_levelPolygons_triangle_cap_pair_add_eq` 对任意两闭片 A、B、共同封帽 D 与环境同胚 H 证明：只要 `A ∩ B ⊆ D` 且新高度在 `H '' D` 上除 `H p` 外严格较高，两张封帽球面在 `f(H p)` 层的圆周数之和就精确等于变形后原并集 `H '' (A ∪ B)` 在同层的圆周数。证明先用单点帽纤维去除两个帽盘，再证明两保留片在该纤维至多交于 `H p`，故其圆周族为不交并；没有加入旧新计数比较作为输入。
+
+模块聚焦检查 exit=0（11.7 秒）、零 warning；`AuditF200.lean` 主端点仅依赖 `propext`、`Classical.choice`、`Quot.sound`。因此两张候选球面的例外贡献已经归约为一个单一义务：证明充分小的一般位置高度 f 下，`H '' K.space` 在 `f(H p)` 层的圆周数不超过 K 在旧临界层 `ℓ p` 的圆周数。下一步建立保高度环境 PL 同胚后的临界层稳定性，再把该不等式接回奇异点嵌入。F-M1 仍为 partial，Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF201.lean`。
