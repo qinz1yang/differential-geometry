@@ -442,6 +442,30 @@
   未经过 `Homology/HurewiczLowDegrees.lean`，未运行根构建，未登记根聚合。
   H.2a 无未闭合端点；H.2b 的定向上循环仍待按交接 §7.3 构造，H.6/H.4a/H.5 不在本次闭合范围。
 
+- 2026-09-15（H 车道 H.2b，闭星局部定向上循环）：
+  `DerivedCarrier.lean` 给重心细分顶点与原面载体的对应及旗标公共上面；
+  `Orientation.lean` 的 `CoherentOrientation.restrict` / `IsOrientable.of_le` 推广到包含零维的任意 `n`；
+  `OrientationCocycle.lean` 先统一局部顶点序，再在公共顶维单形上比较每个非空面闭星的相干定向。
+  比较符号的选择无关性由公共闭星的对偶连通性证明，三角形恒等式在同一顶维单形上验证；
+  没有使用旧“非顶维边取 0”的构造。构造层提交 `85cd6e095`。
+  `orientationCocycle_isCoboundary_iff` 双向证明上边界当且仅当全局可定向：
+  正向由上边界的顶点符号翻转局部定向并验证所有余维一面的边界抵消，反向限制全局定向并取局部比较符号。
+  `exists_orientationCocycle_of_not_isOrientable` 从 H.2a 的闭星可定向性选局部族，给 C.4 所需的非上边界上循环。
+  三个端点对任意 `n`、有限维实赋范环境、有限复形成立，没有连通性、正维或公开 `DecidableEq` 假设。
+  三个目标模块均聚焦检查 exit=0、零警告；`AuditH2bReuse` exit=0，逐项核对 12 项核心声明与 12 项复用声明，
+  公理闭包全为 `propext`、`Classical.choice`、`Quot.sound`，并检查三个端点的完整签名。
+  核心审计为 `CoherentOrientation.restrict`、`IsOrientable.of_le`、`carrierFace_centroid`、
+  `carrierFace_mem_of_mem_barycentricSubdivision`、`centroid_carrierFace_of_mem_barycentricSubdivision`、
+  `exists_face_superset_carrierFaces_of_mem_barycentricSubdivision`、`pair_centroid_mem_barycentricSubdivision`、
+  `faceStarComplex_antitone`、`faceCofaces_faceStarComplex_self`、`orientationCocycle`、
+  `orientationCocycle_isCoboundary_iff`、`exists_orientationCocycle_of_not_isOrientable`。
+  复用审计为 `SimplicialBoolCocycle`、`SimplicialBoolCocycle.IsCoboundary`、`carrierFace`、`carrierFace_mem`、
+  `mem_openSimplex_carrierFace`、`face_eq_of_mem_openSimplex`、`centroid_mem_openSimplex`、
+  `centroid_mem_openSimplex_of_mem_faces`、`IsFlag.subset_or_subset`、`IsFlag.exists_top`、
+  `mem_faceStarComplex_faces_of_subset`、`faceStarComplex_faces_subset`，均来自整合后已有 PL 源码。
+  H.2b 要求的三个端点均闭合；C.4 的二重覆盖流形及其可定向性没有在本次代做。
+  未经过 `Homology/HurewiczLowDegrees.lean`，未运行根构建，未登记根聚合；H.6/H.4a/H.5 顺序和目标不变。
+
 ## 7. 决策与风险
 
 - 不采用 Bing 定理 7 的“保留单形”强形式，只用 Moise §8/§35 的紧致图卡归纳（书中 `chap:two-set-gluing` 的方案）。

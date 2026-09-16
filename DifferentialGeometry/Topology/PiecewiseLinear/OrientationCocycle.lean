@@ -33,6 +33,17 @@ private theorem localOrientationSign_eq_one_or_neg_one (r : LinearOrder E)
   simpa only [localOrientationSign, dif_pos hs] using
     ((o s hs).changeVertexOrder r).sign_top t (mem_faceStarComplex_faces_of_subset K ht hst) htcard
 
+open Classical in
+theorem faceCofaces_faceStarComplex_self (s : Finset E) (m : ℕ) :
+    faceCofaces (faceStarComplex K s) s m = faceCofaces K s m := by
+  ext t
+  rw [mem_faceCofaces, mem_faceCofaces]
+  constructor
+  · rintro ⟨ht, hcard, hst⟩
+    exact ⟨ht.1, hcard, hst⟩
+  · rintro ⟨ht, hcard, hst⟩
+    exact ⟨mem_faceStarComplex_faces_of_subset K ht hst, hcard, hst⟩
+
 variable [FiniteDimensional ℝ E]
 
 open Classical in
@@ -137,5 +148,126 @@ noncomputable def orientationCocycle
       (localOrientationSign_eq_one_or_neg_one r o haK hS (hsub a ha) hScard)
       (localOrientationSign_eq_one_or_neg_one r o hbK hS (hsub b hb) hScard)
       (localOrientationSign_eq_one_or_neg_one r o hcK hS (hsub c hc) hScard)
+
+open Classical in
+private theorem orientationCocycle_isCoboundary_of_isOrientable
+    (hK : IsCombinatorialManifoldWithBoundary n K)
+    (o : ∀ s ∈ K.faces, CoherentOrientation n (faceStarComplex K s))
+    (h : IsOrientable n K) : (orientationCocycle hK o).IsCoboundary := by
+  obtain ⟨q⟩ := h
+  let r : LinearOrder E := linearOrderOfSTO WellOrderingRel
+  let _ : DecidableEq E := Classical.decEq E
+  let p := q.changeVertexOrder r
+  have hex (s : Finset E) (hs : s ∈ K.faces) : ∃ b : Bool,
+      ∀ S ∈ K.faces, S.card = n + 1 → s ⊆ S →
+        b = decide (p.sign S * localOrientationSign r o s S = -1) := by
+    obtain ⟨T, hT, hsT, hTcard⟩ := hK.exists_face_superset_card_eq hs
+    refine ⟨decide (p.sign T * localOrientationSign r o s T = -1), ?_⟩
+    intro S hS hScard hsS
+    let ps := p.restrict K (faceStarComplex K s) (faceStarComplex_faces_subset K s)
+      hK (hK.faceStar hs)
+    let os := (o s hs).changeVertexOrder r
+    have hratio := ps.sign_mul_sign_eq_of_dualGraph_reachable (hK.faceStar hs) os rfl
+      (hK.dualGraph_faceStarComplex_preconnected hs
+        ⟨T, mem_faceStarComplex_faces_of_subset K hT hsT, hTcard⟩
+        ⟨S, mem_faceStarComplex_faces_of_subset K hS hsS, hScard⟩)
+    have heq : p.sign T * localOrientationSign r o s T =
+        p.sign S * localOrientationSign r o s S := by
+      simpa only [ps, os, CoherentOrientation.restrict, localOrientationSign, dif_pos hs] using hratio
+    rw [heq]
+  choose b hb using hex
+  refine ⟨fun a => if ha : carrierFace K a ∈ K.faces then b (carrierFace K a) ha else false, ?_⟩
+  intro a c hac
+  have ha : a ∈ ({a, c} : Finset E) := by simp
+  have hc : c ∈ ({a, c} : Finset E) := by simp
+  have haK := carrierFace_mem_of_mem_barycentricSubdivision hac ha
+  have hcK := carrierFace_mem_of_mem_barycentricSubdivision hac hc
+  obtain ⟨S, hS, hScard, hsub⟩ := exists_topFace_superset_carrierFaces hK hac
+  change localOrientationParity hK r o (carrierFace K a) (carrierFace K c) = _
+  dsimp only
+  rw [dif_pos haK, dif_pos hcK, hb _ haK S hS hScard (hsub a ha),
+    hb _ hcK S hS hScard (hsub c hc),
+    localOrientationParity_eq hK r o haK hcK hS hScard (hsub a ha) (hsub c hc)]
+  simpa only [mul_comm] using
+    (xor_decide_sign_mul
+      (localOrientationSign_eq_one_or_neg_one r o haK hS (hsub a ha) hScard)
+      (p.sign_top S hS hScard)
+      (localOrientationSign_eq_one_or_neg_one r o hcK hS (hsub c hc) hScard)).symm
+
+private theorem sign_flip_eq_of_parity {a b : ℤ}
+    (ha : a = 1 ∨ a = -1) (hb : b = 1 ∨ b = -1) (d e : Bool)
+    (h : decide (a * b = -1) = Bool.xor d e) :
+    (if d then -1 else 1) * a = (if e then -1 else 1) * b := by
+  rcases ha with rfl | rfl <;> rcases hb with rfl | rfl <;> cases d <;> cases e <;> norm_num at *
+
+open Classical in
+private theorem isOrientable_of_orientationCocycle_isCoboundary
+    (hK : IsCombinatorialManifoldWithBoundary n K)
+    (o : ∀ s ∈ K.faces, CoherentOrientation n (faceStarComplex K s))
+    (h : (orientationCocycle hK o).IsCoboundary) : IsOrientable n K := by
+  obtain ⟨δ, hδ⟩ := h
+  let r : LinearOrder E := linearOrderOfSTO WellOrderingRel
+  let _ : DecidableEq E := Classical.decEq E
+  let g (S : Finset E) : ℤ :=
+    (if δ (S.centroid ℝ id) then -1 else 1) * localOrientationSign r o S S
+  have hg (t S : Finset E) (ht : t ∈ K.faces) (hS : S ∈ K.faces)
+      (hScard : S.card = n + 1) (htS : t ⊆ S) :
+      g S = (if δ (t.centroid ℝ id) then -1 else 1) * localOrientationSign r o t S := by
+    have heq := hδ _ _ (pair_centroid_mem_barycentricSubdivision ht hS htS)
+    change localOrientationParity hK r o (carrierFace K (t.centroid ℝ id))
+      (carrierFace K (S.centroid ℝ id)) = _ at heq
+    rw [carrierFace_centroid ht, carrierFace_centroid hS,
+      localOrientationParity_eq hK r o ht hS hS hScard htS (Finset.Subset.refl S)] at heq
+    exact (sign_flip_eq_of_parity
+      (localOrientationSign_eq_one_or_neg_one r o ht hS htS hScard)
+      (localOrientationSign_eq_one_or_neg_one r o hS hS (Finset.Subset.refl S) hScard)
+      _ _ heq).symm
+  refine ⟨{
+    vertexOrder := r
+    sign := g
+    sign_top := ?_
+    coherent := ?_ }⟩
+  · intro S hS hScard
+    rcases localOrientationSign_eq_one_or_neg_one r o hS hS (Finset.Subset.refl S) hScard with hs | hs <;>
+      cases hd : δ (S.centroid ℝ id) <;> simp only [g, hd, hs] <;> norm_num
+  · intro t ht htcard hnotone
+    let ot := (o t ht).changeVertexOrder r
+    have htstar : t ∈ (faceStarComplex K t).faces :=
+      mem_faceStarComplex_faces_of_subset K ht (Finset.Subset.refl t)
+    have hold := ot.coherent t htstar htcard (by
+      rwa [faceCofaces_faceStarComplex_self])
+    rw [orientedBoundary_eq_sum_faceCofaces, faceCofaces_faceStarComplex_self] at hold
+    have hsum : (∑ S ∈ faceCofaces K t (n + 1),
+        localOrientationSign r o t S * simplexBoundaryCoefficient r S t) = 0 := by
+      simpa only [ot, CoherentOrientation.changeVertexOrder, localOrientationSign, dif_pos ht]
+        using hold
+    rw [orientedBoundary_eq_sum_faceCofaces]
+    calc
+      (∑ S ∈ faceCofaces K t (n + 1), g S * simplexBoundaryCoefficient r S t) =
+          (if δ (t.centroid ℝ id) then -1 else 1) *
+            (∑ S ∈ faceCofaces K t (n + 1),
+              localOrientationSign r o t S * simplexBoundaryCoefficient r S t) := by
+        rw [Finset.mul_sum]
+        apply Finset.sum_congr rfl
+        intro S hS
+        obtain ⟨hSK, hScard, htS⟩ := (mem_faceCofaces K).mp hS
+        rw [hg t S ht hSK hScard htS, mul_assoc]
+      _ = 0 := by rw [hsum, mul_zero]
+
+open Classical in
+theorem orientationCocycle_isCoboundary_iff
+    (hK : IsCombinatorialManifoldWithBoundary n K)
+    (o : ∀ s ∈ K.faces, CoherentOrientation n (faceStarComplex K s)) :
+    (orientationCocycle hK o).IsCoboundary ↔ IsOrientable n K :=
+  ⟨isOrientable_of_orientationCocycle_isCoboundary hK o,
+    orientationCocycle_isCoboundary_of_isOrientable hK o⟩
+
+open Classical in
+theorem exists_orientationCocycle_of_not_isOrientable
+    (hK : IsCombinatorialManifoldWithBoundary n K) (h : ¬IsOrientable n K) :
+    ∃ ε : SimplicialBoolCocycle (barycentricSubdivision K), ¬ε.IsCoboundary := by
+  let o (s : Finset E) (hs : s ∈ K.faces) : CoherentOrientation n (faceStarComplex K s) :=
+    Classical.choice (isOrientable_faceStarComplex hK hs)
+  exact ⟨orientationCocycle hK o, fun hε => h ((orientationCocycle_isCoboundary_iff hK o).mp hε)⟩
 
 end DifferentialGeometry.Topology.PiecewiseLinear
