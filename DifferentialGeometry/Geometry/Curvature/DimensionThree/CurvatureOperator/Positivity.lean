@@ -120,6 +120,24 @@ theorem curvatureOperatorPositiveAt_iff_sectional (g : SmoothRiemannianMetric I 
       h a b (hgram.symm ▸ hnorm)
 
 
+
+end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
+
+end
+
+noncomputable section
+namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Curvature.DimensionThree
+open scoped Manifold ContDiff
+
+universe u uE uH
+variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E]
+  {H : Type uH} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M]
+  [IsManifold I ∞ M] [T2Space M]
+
 theorem curvatureOperatorPositiveAt_of_leastCurvatureOperatorEigenvalueAt_pos
     (g : SmoothRiemannianMetric I M) (x : M)
     (hdim : Module.finrank ℝ E = 3)
