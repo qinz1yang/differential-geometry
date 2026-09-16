@@ -2271,3 +2271,27 @@ route for edge neighborhoods with finitely many boundary contacts, including
 contacts that return immediately to the same side. The producer of that finite
 crosscut decomposition from the original edge is still required; no P.4
 completion is claimed.
+
+## Straightening an arc with finite boundary contacts (2026-09-16)
+
+`PlanarJordan/ArcStraightening.lean` proves
+`exists_homeomorph_polygonal_arc_of_finite_frontier_inter`. For a planar arc with
+both endpoints outside the interior of a PL disk, finitely many contacts with
+the disk frontier, and a polyhedral part outside the disk interior, it constructs
+an ambient homeomorphism making the whole arc polygonal, fixing the disk
+interior's complement, and moving points by at most the disk diameter.
+
+The proof produces the crosscuts from the arc parametrization: the last outside
+parameter before an interior point and the first outside parameter after it
+bound an interval lying in the disk interior. The finite set of boundary
+parameters indexes all such intervals. Different resulting arcs can meet only
+on the disk boundary, including immediate returns to the same side, so the
+previous finite-family theorem applies. The unchanged exterior part and the
+polygonalized interior pieces form a polyhedron; the whole image is still an
+arc, hence polygonal. No exact-two-crossings assumption is used.
+
+Focused check exit 0, zero warnings. AuditS127ArcStraightening checks the public
+endpoint, exit 0, only the standard three axioms. The remaining P.4 geometry is
+to choose small edge disks whose frontiers have finite intersection with the
+already straightened endpoint germs, followed by the degree-one construction
+and the full graph assembly.
