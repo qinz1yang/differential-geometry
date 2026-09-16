@@ -584,3 +584,41 @@ and `check-disk-collar.log` under `.lake/scratch`.
 This completes the requested subcomplex disk collar. The full 26.2 obligation is still the
 compatible product on the entire compact boundary and the neighborhood property of its image.
 A local disk collar alone is not claimed to be a neighborhood at the disk's boundary edges.
+
+### S-M4 publication and whole-boundary collar frontier
+
+The checked local product collar layer is pushed as `5f97aca9d` (thirteen audited declarations).
+The integration merge was already up to date. Full 26.2 is partial. The exact remaining
+induction invariant is a finite combinatorial triangulation of the closure of K.space minus
+the accumulated collar image, together with the modified next disk in its intrinsic boundary.
+One must prove that this closure is a manifold with boundary and extend the next product
+map while preserving every previously fixed side face. The present 23.11 ball-union theorem
+and independent disk collars do not establish either assertion. The final whole-boundary
+image must also be shown to be a neighborhood. No compatibility or complement-manifold
+assumption has been added to an endpoint. Under NIGHT_PLAN section 0.4, S-M5 proceeds.
+
+### S-M5: 26.1 in PL charted ambient spaces checked; 26.3 remains open
+
+`Connected/TwoSided.lean` defines `IsTwoSided` by separation of sufficiently small connected
+neighborhoods of every connected component, as on Moise printed page 191.
+For a regular closed set, an isolated boundary component separates each such neighborhood
+into its nonempty interior and exterior parts. `Connected/FiniteCover.lean` proves that a finite
+closed preconnected cover isolates its connected components.
+`PolyhedralManifoldTopology.lean` proves `IsPolyhedralBall.closure_interior` and
+`IsPolyhedralManifoldWithBoundary.closure_interior`, derives boundary-component isolation
+from the finite simplicial cover, and exports
+`IsPolyhedralManifoldWithBoundary.isTwoSided_of_union_boundary_components`.
+This holds for full-dimensional polyhedral manifolds in an arbitrary Hausdorff PL charted
+ambient space, in all positive dimensions. No regular-closed, local-connectedness, or
+Schoenflies hypothesis remains in the PL endpoint. The ambient has Euclidean open charts;
+applying it inside the interior of a general K with boundary still needs that interior chart
+interface. This is recorded separately from the already valid PL ambient theorem.
+All three modules have focused-check exit 0 and zero warnings. `AuditS76TwoSided.lean` /
+`AuditS76TwoSided.log` audits eleven declarations with only the standard three axioms.
+Check logs: `check-two-sided.log`, `check-finite-connected-cover.log`, and
+`check-polyhedral-manifold-topology.log`.
+For 26.3, the exact additional obligation is that a sufficiently small regular neighborhood
+of a two-sided PL surface has exactly two complementary components, whose closures are
+combinatorial three-manifolds with that surface as a boundary component. This is not a
+consequence of disconnectedness alone; after it is proved, both sides still need full 26.2.
+No bicollar endpoint is claimed. S-M6 proceeds under NIGHT_PLAN section 0.4.

@@ -1724,3 +1724,14 @@ This original native development changes no vendored Lean source. Five focused c
 with zero warnings; `AuditS75Collar` checks thirteen declarations, all with only the standard
 three axioms. Compatibility of different disk collars and the whole-boundary neighborhood
 are separate remaining obligations.
+
+## Boundary components separate small neighborhoods
+
+The original native `Connected/TwoSided`, `Connected/FiniteCover`, and
+`PiecewiseLinear/PolyhedralManifoldTopology` proofs implement the separation argument of
+Moise 26.1, printed page 191. They retain the definition using each connected component and
+sufficiently small connected neighborhoods. Interior density is proved from PL ball charts;
+finite simplex images isolate boundary components. No vendored Lean source changed.
+Three focused checks exit 0 with zero warnings. `AuditS76TwoSided` audits eleven declarations,
+all using only the standard three axioms. The full collar and bicollar constructions of 26.2
+and 26.3 are not asserted here.
