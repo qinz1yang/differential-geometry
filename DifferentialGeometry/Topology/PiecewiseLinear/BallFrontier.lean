@@ -6,6 +6,24 @@ open Set
 
 namespace DifferentialGeometry.Topology.PiecewiseLinear
 
+theorem IsPLHomeomorphOn.image_stdSimplexBoundary {n : ℕ}
+    {P : Set (EuclideanSpace ℝ (Fin (n + 1)))}
+    {f : (Fin (n + 2) → ℝ) → EuclideanSpace ℝ (Fin (n + 1))}
+    (hf : IsPLHomeomorphOn f (stdSimplex ℝ (Fin (n + 2))) P) :
+    f '' stdSimplexBoundary (n + 1) = frontier P := by
+  classical
+  have hP : IsPLBall (n + 1) P := ⟨f, hf⟩
+  obtain ⟨K, hKfin, hKP⟩ := hP.isPolyhedron.exists_simplicialComplex
+  let _ : Finite K.faces := hKfin.to_subtype
+  have hfK : IsPLHomeomorphOn f (stdSimplex ℝ (Fin (n + 2))) K.space := hKP.symm ▸ hf
+  have hK : IsPLBall (n + 1) K.space := ⟨f, hfK⟩
+  rw [← hKP, frontier_space_eq_boundaryComplex_space (n := n) hK.isCombinatorialManifoldWithBoundary]
+  have hboundary := boundaryComplex_space_of_isPLHomeomorphOn_stdSimplex K hfK
+  rw [simplexBoundary_stdVertices_space] at hboundary
+  convert hboundary.symm using 1
+  congr 2
+  exact Subsingleton.elim _ _
+
 theorem IsPLBall.isPLSphere_frontier {n : ℕ}
     {P : Set (EuclideanSpace ℝ (Fin (n + 1)))} (hP : IsPLBall (n + 1) P) :
     IsPLSphere n (frontier P) := by
