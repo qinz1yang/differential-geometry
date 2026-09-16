@@ -1717,3 +1717,9 @@ F-M2–F-M6 尚未开始；按用户指定顺序推进，只有出现 §1 接口
 `BoundaryFacetLink.lean` 已提交并推送为 `e207e05dc`。主端点 `eventually_geometricLink_section_subsingleton_of_boundary_openSimplex_two` 将前述几层组装为一个可直接实例化的边界判据：PL 二球盘的边界复形若包含某二元素面凸包，接缝顶点位于该面的开单形中，且盘在该点具有旧高度单侧集合芽、边界复形恰为旧等高集合芽，则所有充分小且在该顶点链环上一般位置的新高度，其保留盘链环截面至多一点。证明从边界复形的一维组合流形性构造相反链环方向，再调用 `BoundaryLinkGerm`；没有把方向或截面上界加入输入。
 
 模块聚焦检查 exit=0（11.3 秒）、零 warning；`AuditF176.lean` 主端点仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步从 `HeightSides`、保高度同胚及共同细分的边界空间等式验证该端点的两个集合芽，并与三角帽侧的 `TriangleEdgeLink` 经 `LinkUnionSection` 合并。F-M1 仍为 partial，严格降指标、Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF177.lean`。
+
+### 19.29 F-M1：奇异高度切割保留两盘参数化边界
+
+`ParametricSingularHeightCut.lean` 已提交并推送为 `2b12885e2`。主端点 `exists_isPLSphere_pair_of_mem_heightSingularPoints_with_parameterized_boundary` 保留 `SphereCut` 构造实际产生的两张保留盘参数化 `fA`、`fB`，并分别给出其标准单形边界像等于共同水平圆周；原有两封帽球面、交集与恢复等式、临界层计数、其他层分拆和盘外奇异点等式全部同时保留。该加强只暴露原证明中已经构造但旧端点丢弃的数据。
+
+模块聚焦检查 exit=0（11.9 秒）、零 warning；`AuditF177.lean` 主端点仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步沿三角凸化的保高度环境同胚搬运 `fA`、`fB`，再为每张保留盘与三角帽构造带显式面覆盖的共同细分；组合边界空间将由参数化和细分不变性直接识别。F-M1 仍为 partial，严格降指标、Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF178.lean`。
