@@ -2045,3 +2045,11 @@ F-M1 仍为 partial。单个旧三角形的全部纤维及逐边对应已闭合�
 `HeightSublevelConnected.lean` 用 §19.73 的真实下链环连通性、上述重心收缩和边图对应生产图论前提，再用低顶点闭星与严格半空间的交集拼回原空间。`isPreconnected_halfSpaces_of_heightIndex_eq_zero` 因而直接从有限 PL 二维球面、三维环境、非零一般位置高度及零指标，证明任意高度的严格上下两部分各自连通（允许空集）；没有新增结论型假设。
 
 聚焦检查：`HeightSubcomplex` exit=0（9.7 秒）、`EdgeConnectivity` exit=0（10.4 秒）、`HeightConnectivity` exit=0（5.9 秒）、`HeightSublevelConnected` exit=0（11.1 秒），均零 warning。`AuditF223.lean` 十五项均仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步结合球面上 PL 圆周的两侧分离，证明中间水平层恰是一条 PL 圆周；随后推进 Lemma 4–6 的薄片边界。S.4 M2/M3、夜间 F-M1 整体和 I1 尚未完成；下一审计文件 `AuditF224.lean`。
+
+### 19.75 S.4 M2：Lemma 3 的全部中间水平层为 PL 圆周
+
+`Connected/CompactIntersection.lean` 证明 Hausdorff 空间中向下有向的紧致连通集族之交连通，并把严格子水平集的连通性传到闭子水平集。`HeightFiberClosure.lean` 证明一般位置高度的每个非顶点点可由同一面的低高度线段逼近；结合有限顶点删除的稠密性，得到零指标球面在每个严格中间高度的闭上下半空间恰为严格两侧的闭包。这一步覆盖孤立候选顶点，不只处理避开顶点的水平面。
+
+`SimplicialComplex/PuncturedConnected.lean` 从既有流形图卡定理证明维数至少二的连通有限组合流形去掉一点仍连通。`HeightFiberCircle.lean` 的 `exists_levelPolygon_of_between_heights` 因而在经过唯一顶点的层也实际生产一个层圆周；非顶点层使用已有圆周分解。`fiber_eq_levelPolygon_of_heightIndex_eq_zero` 再由球面上的两盘分解、严格两侧连通性及上述闭包公式，证明该圆周等于整个层。最终端点 `isPLSphere_one_fiber_of_heightIndex_eq_zero` 对所有严格位于最高与最低高度之间的 r 成立，没有避开顶点的附加条件。
+
+聚焦检查：`CompactIntersection` exit=0（7.4 秒）、`HeightFiberClosure` exit=0（11 秒）、`PuncturedConnected` exit=0（8.8 秒）、`HeightFiberCircle` exit=0（11.1 秒），均零 warning。`AuditF224.lean` 十项仅依赖 `propext`、`Classical.choice`、`Quot.sound`。Lemma 3 已闭合；下一步提取水平两侧盘及有界填充的层结构，进入 Lemma 4–6 的薄片边界单嵌入。S.4 M2/M3、夜间 F-M1 整体及 I1 尚未完成；下一审计文件 `AuditF225.lean`。
