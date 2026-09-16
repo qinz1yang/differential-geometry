@@ -195,3 +195,26 @@ theorem eq_top_of_boundaryLoops_mem_normal
   因而不存在到 ℝ³ 开集的局部同胚。当前 `SingularTwoCell` 把目标模型硬编码为 ℝ³，不能用于一般带边 `K.space`。
   要无附加表示假设闭合 I2，必须先提供带边模型（例如半空间图卡）对应的奇异胞腔/PL 映射类型，或把胞腔定义改为内在单纯数据；
   不能用现有 `VertexChart.lean` 的无边界图册冒充该生产者。
+
+## 7. 2026-09-15 夜间 E3-M2：正规奇异分支与割贴字计算
+
+状态：partial。数学提交 `6c8b8e812`。
+
+- `LoopTheorem/NormalCell.lean` 在 I3 尚未进入整合分支时按 §1 I3 的同形字段给出
+  `NormalSingularCellData` 与 `NormalSingularSetTriangulation`。它证明奇点复形每个顶点的边数为 1 或 2、边界复形顶点当且
+  仅当边数为 1、闭分支每个顶点边数为 2、触边分支含边数为 1 的端点，并以闭分支数加触边分支数定义复杂度。
+  `NormalSingularSetTriangulation.complexity_eq_zero_iff` 与
+  `NormalSingularCellData.complexity_eq_zero_iff` 证明该复杂度为零当且仅当原奇异 2-胞腔非奇异；
+  `NormalSingularCellData.exists_fiber_eq_pair` 和 `fiber_encard_eq_two` 证明每个奇点恰有两个原像。
+- `LoopTheorem/CutAndPaste.lean` 证明正规子群中“母环不属于正规子群则至少一个子环不属于正规子群”的两个共轭乘积引理；
+  `four_path_mul_conj_inv_mul_factorization` 是书页 187 Case 4 的完整群字恒等式，
+  `not_mem_or_not_mem_of_four_path_factorization` 给出其保持 `L(B') ∩ N' = ∅` 的代数结论。
+- `NormalCell` 与 `CutAndPaste` 聚焦检查均 exit=0、零 warning；`.lake/scratch/AuditE3M2.lean` 的 15 项
+  命名空间感知审计全部只含 `propext`、`Classical.choice`、`Quot.sound`。
+- 尚未闭合的第一处义务是从 I3 的 `crossing` 证明
+  `D : D.domain ∩ D ⁻¹' doublePointSet D D.domain → doublePointSet D D.domain` 为二重覆盖：
+  `HasPLDoubleCrossingAt` 给两张局部片与邻近纤维覆盖，但本树没有把该数据组装成限制映射 `IsCoveringMap` 的桥接定理。
+  没有它就不能用 C.1 将闭分支原像分类为一条二重圆周或两条圆周，也不能得到触边分支的两条折线原像。
+- 下一处义务是 Case 1/2 的盘内环带正则邻域、在环带上替换 `D` 后仍为正规奇异胞腔，以及 Case 2 的内盘替换与 I2 推离；
+  Case 3/4 还需要沿两条原像折线实际切开 PL 2-球并构造两个较低复杂度的 `SingularTwoCell`。现有树只有上面的正规子群字计算，
+  没有这些几何构造，因此未建立 `LoopTheorem/LemmaTwo.lean` 的 Lemma 2 端点，也未把几何降复杂度伪装成显式假设。
