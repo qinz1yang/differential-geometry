@@ -1,5 +1,6 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.SingularCell
 import DifferentialGeometry.Topology.PiecewiseLinear.Pasting
+import DifferentialGeometry.Topology.PiecewiseLinear.PlanarDiskUnion
 import DifferentialGeometry.Topology.PiecewiseLinear.PolygonalSchoenflies
 import DifferentialGeometry.Topology.PiecewiseLinear.BallFrontier
 
@@ -76,6 +77,178 @@ private theorem isPLOn_piecewise_of_isClosed
       exact ⟨Or.inr, fun h => h.resolve_left hy⟩
     exact (piecewiseAffineProperty_localInvariantProp.liftPropWithinAt_congr_set hset).mp hhQ
 
+open Classical in
+theorem exists_complementary_frontier_arcs_of_isPLBall_union_between
+    {C D : Set (EuclideanSpace ℝ (Fin 2))}
+    (hC : IsPLBall 2 C) (hD : IsPLBall 2 D) (hI : IsPLBall 1 (C ∩ D))
+    {p q : EuclideanSpace ℝ (Fin 2)}
+    (hIpq : Schoenflies.IsArcBetween (C ∩ D) p q)
+    (hIC : C ∩ D ⊆ frontier C) (hID : C ∩ D ⊆ frontier D) :
+    ∃ A B : Set (EuclideanSpace ℝ (Fin 2)),
+      Schoenflies.IsCutPair (frontier C) p q (C ∩ D) A ∧
+      Schoenflies.IsCutPair (frontier D) p q (C ∩ D) B ∧
+      IsPLBall 1 A ∧ IsPLBall 1 B ∧ frontier (C ∪ D) = A ∪ B := by
+  obtain ⟨A, hcutC, -, hA⟩ :=
+    exists_isCutPair_of_isArcBetween_subset_isPLSphere hC.isPLSphere_frontier hIpq hIC
+  obtain ⟨B, hcutD, -, hB⟩ :=
+    exists_isCutPair_of_isArcBetween_subset_isPLSphere hD.isPLSphere_frontier hIpq hID
+  have hCclosed : IsClosed C := hC.isPolyhedron.isClosed
+  have hDclosed : IsClosed D := hD.isPolyhedron.isClosed
+  have hAfront : A ⊆ frontier (C ∪ D) := by
+    have hAdiff : A \ {p, q} ⊆ frontier (C ∪ D) := by
+      intro x hx
+      have hxfrontC : x ∈ frontier C := hcutC.snd_subset hx.1
+      have hxC : x ∈ C := hCclosed.frontier_subset hxfrontC
+      have hxnotI : x ∉ C ∩ D := by
+        intro hxI
+        have hxpair : x ∈ ({p, q} : Set (EuclideanSpace ℝ (Fin 2))) := by
+          rw [← hcutC.inter_eq]
+          exact ⟨hxI, hx.1⟩
+        exact hx.2 hxpair
+      have hxnotD : x ∉ D := fun hxD => hxnotI ⟨hxC, hxD⟩
+      apply (mem_frontier_iff_notMem_interior
+        (show x ∈ C ∪ D from Or.inl hxC)).mpr
+      intro hxint
+      have hxside : x ∈ D ∪ interior C := by
+        apply hDclosed.interior_union_left
+        rwa [union_comm]
+      rcases hxside with hxD | hxintC
+      · exact hxnotD hxD
+      · exact (mem_frontier_iff_notMem_interior hxC).mp hxfrontC hxintC
+    calc
+      A ⊆ closure (A \ {p, q}) := hA.subset_closure_sdiff_finite (Set.toFinite {p, q})
+      _ ⊆ closure (frontier (C ∪ D)) := closure_mono hAdiff
+      _ = frontier (C ∪ D) := isClosed_frontier.closure_eq
+  have hBfront : B ⊆ frontier (C ∪ D) := by
+    have hBdiff : B \ {p, q} ⊆ frontier (C ∪ D) := by
+      intro x hx
+      have hxfrontD : x ∈ frontier D := hcutD.snd_subset hx.1
+      have hxD : x ∈ D := hDclosed.frontier_subset hxfrontD
+      have hxnotI : x ∉ C ∩ D := by
+        intro hxI
+        have hxpair : x ∈ ({p, q} : Set (EuclideanSpace ℝ (Fin 2))) := by
+          rw [← hcutD.inter_eq]
+          exact ⟨hxI, hx.1⟩
+        exact hx.2 hxpair
+      have hxnotC : x ∉ C := fun hxC => hxnotI ⟨hxC, hxD⟩
+      apply (mem_frontier_iff_notMem_interior
+        (show x ∈ C ∪ D from Or.inr hxD)).mpr
+      intro hxint
+      have hxside : x ∈ C ∪ interior D := hCclosed.interior_union_left hxint
+      rcases hxside with hxC | hxintD
+      · exact hxnotC hxC
+      · exact (mem_frontier_iff_notMem_interior hxD).mp hxfrontD hxintD
+    calc
+      B ⊆ closure (B \ {p, q}) := hB.subset_closure_sdiff_finite (Set.toFinite {p, q})
+      _ ⊆ closure (frontier (C ∪ D)) := closure_mono hBdiff
+      _ = frontier (C ∪ D) := isClosed_frontier.closure_eq
+  have hinterAB : A ∩ B = ({p, q} : Set (EuclideanSpace ℝ (Fin 2))) := by
+    apply Subset.antisymm
+    · intro x hx
+      have hxC : x ∈ C := hCclosed.frontier_subset (hcutC.snd_subset hx.1)
+      have hxD : x ∈ D := hDclosed.frontier_subset (hcutD.snd_subset hx.2)
+      rw [← hcutC.inter_eq]
+      exact ⟨⟨hxC, hxD⟩, hx.1⟩
+    · intro x hx
+      have hxA : x ∈ (C ∩ D) ∩ A := hcutC.inter_eq.symm.subset hx
+      have hxB : x ∈ (C ∩ D) ∩ B := hcutD.inter_eq.symm.subset hx
+      exact ⟨hxA.2, hxB.2⟩
+  have hcutAB : Schoenflies.IsCutPair (A ∪ B) p q A B :=
+    ⟨hcutC.snd, hcutD.snd, rfl, hinterAB⟩
+  have hABsphere : IsPLSphere 1 (A ∪ B) :=
+    isPLSphere_one_of_isCutPair hcutAB hA hB
+  have hCDball : IsPLBall 2 (C ∪ D) :=
+    (isPLBall_union_and_finite_frontier_inter hC hD hI hIC hID).1
+  have hfrontierEq : A ∪ B = frontier (C ∪ D) :=
+    DifferentialGeometry.Topology.PlanarJordan.eq_of_isJordanCurve_of_subset
+      (isJordanCurve_of_isPLSphere_one hABsphere)
+      (isJordanCurve_of_isPLSphere_one hCDball.isPLSphere_frontier)
+      (union_subset hAfront hBfront)
+  exact ⟨A, B, hcutC, hcutD, hA, hB, hfrontierEq.symm⟩
+
+open Classical in
+theorem exists_complementary_frontier_arcs_of_isPLBall_union
+    {C D : Set (EuclideanSpace ℝ (Fin 2))}
+    (hC : IsPLBall 2 C) (hD : IsPLBall 2 D) (hI : IsPLBall 1 (C ∩ D))
+    (hIC : C ∩ D ⊆ frontier C) (hID : C ∩ D ⊆ frontier D) :
+    ∃ p q : EuclideanSpace ℝ (Fin 2), ∃ A B : Set (EuclideanSpace ℝ (Fin 2)),
+      Schoenflies.IsCutPair (frontier C) p q (C ∩ D) A ∧
+      Schoenflies.IsCutPair (frontier D) p q (C ∩ D) B ∧
+      IsPLBall 1 A ∧ IsPLBall 1 B ∧ frontier (C ∪ D) = A ∪ B := by
+  obtain ⟨p, q, hIpq⟩ := hI.isArc.exists_isArcBetween
+  obtain ⟨A, B, hcutC, hcutD, hA, hB, hfront⟩ :=
+    exists_complementary_frontier_arcs_of_isPLBall_union_between
+      hC hD hI hIpq hIC hID
+  exact ⟨p, q, A, B, hcutC, hcutD, hA, hB, hfront⟩
+
+open Classical in
+theorem IsPLHomeomorphOn.maps_arc_endpoints
+    {A B : Set (EuclideanSpace ℝ (Fin 2))}
+    {p q r s : EuclideanSpace ℝ (Fin 2)}
+    (hA : IsPLBall 1 A) (hB : IsPLBall 1 B)
+    (hApq : Schoenflies.IsArcBetween A p q)
+    (hBrs : Schoenflies.IsArcBetween B r s)
+    {g : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 2)}
+    (hg : IsPLHomeomorphOn g A B) :
+    (g p = r ∧ g q = s) ∨ (g p = s ∧ g q = r) := by
+  obtain ⟨α, hα, hα0, hα1⟩ :=
+    exists_isPLHomeomorphOn_Icc_of_isArcBetween hA hApq
+  obtain ⟨β, hβ, hβ0, hβ1⟩ :=
+    exists_isPLHomeomorphOn_Icc_of_isArcBetween hB hBrs
+  let k := Function.invFunOn β (Icc (0 : ℝ) 1) ∘ g ∘ α
+  have hk : IsPLHomeomorphOn k (Icc (0 : ℝ) 1) (Icc (0 : ℝ) 1) :=
+    (hα.trans hg).trans hβ.symm
+  have hk0mem : k 0 ∈ Icc (0 : ℝ) 1 := hk.bijOn.mapsTo Schoenflies.zero_mem_I
+  have hk1mem : k 1 ∈ Icc (0 : ℝ) 1 := hk.bijOn.mapsTo Schoenflies.one_mem_I
+  have hβ0comp : β (k 0) = g (α 0) := by
+    change β (Function.invFunOn β (Icc (0 : ℝ) 1) (g (α 0))) = g (α 0)
+    exact hβ.bijOn.invOn_invFunOn.2 ((hα.trans hg).bijOn.mapsTo Schoenflies.zero_mem_I)
+  have hβ1comp : β (k 1) = g (α 1) := by
+    change β (Function.invFunOn β (Icc (0 : ℝ) 1) (g (α 1))) = g (α 1)
+    exact hβ.bijOn.invOn_invFunOn.2 ((hα.trans hg).bijOn.mapsTo Schoenflies.one_mem_I)
+  rcases hk.isPiecewiseAffineOn.continuousOn.strictMonoOn_of_injOn_Icc'
+      (by norm_num : (0 : ℝ) ≤ 1) hk.bijOn.injOn with hmono | hanti
+  · obtain ⟨t₀, ht₀, hkt₀⟩ := hk.bijOn.surjOn Schoenflies.zero_mem_I
+    obtain ⟨t₁, ht₁, hkt₁⟩ := hk.bijOn.surjOn Schoenflies.one_mem_I
+    have hk0 : k 0 = 0 := by
+      apply le_antisymm
+      · simpa only [hkt₀] using hmono.monotoneOn Schoenflies.zero_mem_I ht₀ ht₀.1
+      · exact hk0mem.1
+    have hk1 : k 1 = 1 := by
+      apply le_antisymm hk1mem.2
+      simpa only [hkt₁] using hmono.monotoneOn ht₁ Schoenflies.one_mem_I ht₁.2
+    exact Or.inl ⟨by
+      calc
+        g p = g (α 0) := congrArg g hα0.symm
+        _ = β (k 0) := hβ0comp.symm
+        _ = β 0 := congrArg β hk0
+        _ = r := hβ0, by
+      calc
+        g q = g (α 1) := congrArg g hα1.symm
+        _ = β (k 1) := hβ1comp.symm
+        _ = β 1 := congrArg β hk1
+        _ = s := hβ1⟩
+  · obtain ⟨t₀, ht₀, hkt₀⟩ := hk.bijOn.surjOn Schoenflies.zero_mem_I
+    obtain ⟨t₁, ht₁, hkt₁⟩ := hk.bijOn.surjOn Schoenflies.one_mem_I
+    have hk0 : k 0 = 1 := by
+      apply le_antisymm hk0mem.2
+      simpa only [hkt₁] using hanti.antitoneOn Schoenflies.zero_mem_I ht₁ ht₁.1
+    have hk1 : k 1 = 0 := by
+      apply le_antisymm
+      · simpa only [hkt₀] using hanti.antitoneOn ht₀ Schoenflies.one_mem_I ht₀.2
+      · exact hk1mem.1
+    exact Or.inr ⟨by
+      calc
+        g p = g (α 0) := congrArg g hα0.symm
+        _ = β (k 0) := hβ0comp.symm
+        _ = β 1 := congrArg β hk0
+        _ = s := hβ1, by
+      calc
+        g q = g (α 1) := congrArg g hα1.symm
+        _ = β (k 1) := hβ1comp.symm
+        _ = β 0 := congrArg β hk1
+        _ = r := hβ0⟩
+
 namespace SingularTwoCell
 
 open Classical in
@@ -84,7 +257,9 @@ theorem exists_glue_of_isPLHomeomorphOn_boundary_arc
     [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
     (D₁ D₂ : SingularTwoCell M)
     {A B : Set (EuclideanSpace ℝ (Fin 2))}
-    (hA : IsPLBall 1 A) (hAfront : A ⊆ frontier D₁.domain)
+    (hA : IsPLBall 1 A) {a₀ a₁ : EuclideanSpace ℝ (Fin 2)}
+    (hAarc : Schoenflies.IsArcBetween A a₀ a₁)
+    (hAfront : A ⊆ frontier D₁.domain)
     {g : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 2)}
     (hg : IsPLHomeomorphOn g A B) (hBfront : B ⊆ frontier D₂.domain)
     (hcompat : EqOn D₁ (D₂ ∘ g) A) :
@@ -96,7 +271,13 @@ theorem exists_glue_of_isPLHomeomorphOn_boundary_arc
       IsPLHomeomorphOn f₁ P D₁.domain ∧
       IsPLHomeomorphOn f₂ Q D₂.domain ∧
       EqOn f₂ (g ∘ f₁) (P ∩ Q) ∧
-      EqOn D (D₁ ∘ f₁) P ∧ EqOn D (D₂ ∘ f₂) Q := by
+      f₁ '' (P ∩ Q) = A ∧ f₂ '' (P ∩ Q) = B ∧
+      EqOn D (D₁ ∘ f₁) P ∧ EqOn D (D₂ ∘ f₂) Q ∧
+      ∃ p q : EuclideanSpace ℝ (Fin 2), ∃ R T : Set (EuclideanSpace ℝ (Fin 2)),
+        Schoenflies.IsCutPair (frontier P) p q (P ∩ Q) R ∧
+        Schoenflies.IsCutPair (frontier Q) p q (P ∩ Q) T ∧
+        IsPLBall 1 R ∧ IsPLBall 1 T ∧ frontier D.domain = R ∪ T ∧
+        f₁ p = a₀ ∧ f₁ q = a₁ ∧ f₂ p = g a₀ ∧ f₂ q = g a₁ := by
   obtain ⟨K, L, hKfin, hLfin, hK, hL, hKL, p, q, hpq, hinter, hSK, hSL⟩ :=
     exists_isPLBall_pair_with_segment_inter
   let _ : Finite K.faces := hKfin.to_subtype
@@ -104,9 +285,8 @@ theorem exists_glue_of_isPLHomeomorphOn_boundary_arc
   let S := segment ℝ p q
   have hS : IsPLBall 1 S := isPLBall_segment hpq
   have hSarc : Schoenflies.IsArcBetween S p q := Schoenflies.isArcBetween_segment hpq
-  obtain ⟨r, s, hArs⟩ := hA.isArc.exists_isArcBetween
-  obtain ⟨a, ha, -, -⟩ :=
-    exists_isPLHomeomorphOn_of_isArcBetween hS hA hSarc hArs
+  obtain ⟨a, ha, ha₀, ha₁⟩ :=
+    exists_isPLHomeomorphOn_of_isArcBetween hS hA hSarc hAarc
   have hSfrontK : S ⊆ frontier K.space := by
     rw [← boundaryComplex_space_eq_of_isPLBall_of_frontier K hK hK.isPLSphere_frontier rfl]
     exact hSK
@@ -147,17 +327,34 @@ theorem exists_glue_of_isPLHomeomorphOn_boundary_arc
       toFun := F
       isPLOn := hF }
   refine ⟨D, K.space, L.space, f₁, f₂, hK, hL, hKL, rfl, hinter.symm ▸ hS,
-    ?_, ?_, hf₁, hf₂, hinter.symm ▸ hf₂f₁, ?_, ?_⟩
+    ?_, ?_, hf₁, hf₂, hinter.symm ▸ hf₂f₁, ?_, ?_, ?_, ?_, ?_⟩
   · rw [hinter]
     exact hSfrontK
   · rw [hinter]
     exact hSfrontL
+  · rw [hinter]
+    calc
+      f₁ '' S = a '' S := Set.image_congr hf₁a
+      _ = A := ha.image_eq
+  · rw [hinter]
+    calc
+      f₂ '' S = (g ∘ a) '' S := Set.image_congr hf₂ga
+      _ = B := hga.image_eq
   · exact K.space.piecewise_eqOn F₁ F₂
   · intro x hx
     by_cases hxK : x ∈ K.space
     · rw [show D x = F₁ x from K.space.piecewise_eq_of_mem F₁ F₂ hxK]
       exact hFcompat ⟨hxK, hx⟩
     · exact K.space.piecewise_eq_of_notMem F₁ F₂ hxK
+  · obtain ⟨R, T, hcutK, hcutL, hR, hT, hfront⟩ :=
+      exists_complementary_frontier_arcs_of_isPLBall_union_between hK hL
+        (hinter.symm ▸ hS) (by rw [hinter]; exact hSarc)
+          (hinter.symm ▸ hSfrontK) (hinter.symm ▸ hSfrontL)
+    refine ⟨p, q, R, T, hcutK, hcutL, hR, hT, hfront, ?_, ?_, ?_, ?_⟩
+    · exact (hf₁a hSarc.left_mem).trans ha₀
+    · exact (hf₁a hSarc.right_mem).trans ha₁
+    · exact (hf₂ga hSarc.left_mem).trans (congrArg g ha₀)
+    · exact (hf₂ga hSarc.right_mem).trans (congrArg g ha₁)
 
 end SingularTwoCell
 

@@ -1,5 +1,6 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.SingularCell
 import DifferentialGeometry.Topology.PiecewiseLinear.SingularGeneralPosition
+import DifferentialGeometry.Topology.PiecewiseLinear.SingularNormalForm
 import DifferentialGeometry.Topology.SimplicialComplex.EdgeGraph
 import Mathlib.Combinatorics.SimpleGraph.Matching
 
@@ -76,7 +77,8 @@ structure NormalSingularCellData
   singularSet : NormalSingularSetTriangulation D BdM
   crossing : ∀ y ∈ doublePointSet D D.domain,
     ∃ e ∈ atlas (EuclideanSpace ℝ (Fin 3)) M, y ∈ e.source ∧
-      HasPLDoubleCrossingAt (e ∘ D) (D.domain ∩ D ⁻¹' e.source) (e y)
+      HasPLNormalDoubleCrossingAt (e ∘ D) (D.domain ∩ D ⁻¹' e.source)
+        (e '' (e.source ∩ BdM)) (e y)
 
 namespace NormalSingularSetTriangulation
 
@@ -223,11 +225,33 @@ theorem complexity_eq_zero_iff (T : NormalSingularSetTriangulation D BdM) :
 
 end NormalSingularSetTriangulation
 
-namespace NormalSingularCellData
-
 variable {M : Type u} [TopologicalSpace M]
   [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
   {D : SingularTwoCell M} {BdM B : Set M}
+
+open Classical in
+theorem IsNormalSingularCell.exists_normalSingularCellData
+    (h : IsNormalSingularCell D BdM B) :
+    Nonempty (NormalSingularCellData D BdM B) := by
+  obtain ⟨P, T, G, hfinite, hfaces, hmanifold, hspace, hboundary⟩ :=
+    h.doublePointSet_triangulated
+  exact ⟨{
+    locallyInjective := h.locallyInjective
+    fiber_le_two := h.fiber_le_two
+    boundary_image_subset := h.boundary_image_subset
+    image_inter_boundary := h.image_inter_boundary
+    singularSet := {
+      carrier := P
+      piece := T
+      complex := G
+      finite_faces := hfinite
+      faces_subset := hfaces
+      isManifoldWithBoundary := hmanifold
+      map_space := hspace
+      map_boundary := hboundary }
+    crossing := h.crossing }⟩
+
+namespace NormalSingularCellData
 
 theorem exists_fiber_eq_pair (hD : NormalSingularCellData D BdM B)
     {y : M} (hy : y ∈ doublePointSet D D.domain) :

@@ -1,4 +1,5 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BoundaryGeneration
+import DifferentialGeometry.Topology.PiecewiseLinear.Orientation
 
 open Set
 
@@ -65,6 +66,54 @@ theorem exists_nonsingular_two_cell_of_sphere_boundary_map
   refine ⟨D₁, L₁, hD₁, hD₁M, ?_, ?_, hi⟩
   · exact hD₁boundary.trans hL₁range.symm
   · exact hD₁intersection.trans hL₁range.symm
+
+open Classical in
+theorem exists_nonsingular_two_cell_of_sphere_boundary_double
+    {E : Type v} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
+    (hK : IsCombinatorialManifoldWithBoundary 3 K)
+    {B : Set E} (hB : IsPLSphere 2 B)
+    (hBBdM : B ⊆ (boundaryComplex 3 K).space) {k : ℕ}
+    (D : Fin k → Set E) (q : Fin k → (Fin 3 → ℝ) → E)
+    (hq : ∀ i, IsPLHomeomorphOn (q i) (stdSimplex ℝ (Fin 3)) (D i))
+    (hDB : ∀ i, D i ⊆ B)
+    (hdisj : Pairwise (Function.onFun Disjoint D))
+    [PathConnectedSpace (sphereWithDiskInteriorsRemoved B D)]
+    (P₀ : sphereWithDiskInteriorsRemoved B D)
+    (N : Subgroup (FundamentalGroup (sphereWithDiskInteriorsRemoved B D) P₀))
+    [N.Normal]
+    (L : freeLoop (sphereWithDiskInteriorsRemoved B D))
+    (hL : ¬loopClassMeets L P₀ N) :
+    let _ := combinatorialChartedSpace (double 3 K)
+      (isCombinatorialManifold_double_succ_succ K (n := 1) hK)
+    (∀ (Δ : Set E) (r : (Fin 3 → ℝ) → E),
+      IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Δ →
+        Δ ⊆ (boundaryComplex 3 K).space →
+        ∃ D₁ : SingularTwoCell (double 3 K).space,
+          D₁.IsNonsingular ∧
+          (fun z : (double 3 K).space => glueSnd E E z) '' (D₁ '' D₁.domain) ⊆ K.space ∧
+          Set.range (fun x => glueSnd E E (D₁.boundary x)) =
+            r '' stdSimplexBoundary 2 ∧
+          (fun z : (double 3 K).space => glueSnd E E z) '' (D₁ '' D₁.domain) ∩
+              (boundaryComplex 3 K).space = r '' stdSimplexBoundary 2) →
+      ∃ (D₁ : SingularTwoCell (double 3 K).space)
+          (L₁ : freeLoop (sphereWithDiskInteriorsRemoved B D)),
+        D₁.IsNonsingular ∧
+        (fun z : (double 3 K).space => glueSnd E E z) '' (D₁ '' D₁.domain) ⊆ K.space ∧
+        Set.range (fun x => glueSnd E E (D₁.boundary x)) =
+          Set.range (fun θ => (L₁ θ : E)) ∧
+        (fun z : (double 3 K).space => glueSnd E E z) '' (D₁ '' D₁.domain) ∩
+            (boundaryComplex 3 K).space = Set.range (fun θ => (L₁ θ : E)) ∧
+        ¬loopClassMeets L₁ P₀ N := by
+  dsimp only
+  intro hpush
+  let _ := combinatorialChartedSpace (double 3 K)
+    (isCombinatorialManifold_double_succ_succ K (n := 1) hK)
+  exact exists_nonsingular_two_cell_of_sphere_boundary_map
+    (M := K.space) (BdM := (boundaryComplex 3 K).space)
+    (X := (double 3 K).space)
+    (fun z : (double 3 K).space => glueSnd E E z)
+    hB hBBdM D q hq hDB hdisj P₀ N L hL hpush
 
 open Classical in
 theorem exists_nonsingular_two_cell_of_sphere_boundary
