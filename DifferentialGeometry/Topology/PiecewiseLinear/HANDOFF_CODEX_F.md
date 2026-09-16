@@ -2085,3 +2085,11 @@ F-M1 仍为 partial。单个旧三角形的全部纤维及逐边对应已闭合�
 `HeightSlab.lean` 的 `isPLSphere_slab_of_heightIndex_eq_zero` 从两个实际水平张成盘证明 `(S ∩ {a ≤ ℓ ≤ b}) ∪ D₀ ∪ D₁` 为 PL 二维球面。证明先以 D₀ 替换下半球，再以 D₁ 替换上半球；每次替换的公共圆周、并集和盘参数化均由既有两侧盘定理和高度不等式验证。`exists_isPLSphere_slab_of_heightIndex_eq_zero` 同时在给定凸开邻域内实际生产两张水平盘。端点允许中间高度经过顶点，不附加避顶点条件。
 
 聚焦检查 `HeightSlab` exit=0（10.2 秒）、零 warning；`AuditF228.lean` 两项仅依赖 `propext`、`Classical.choice`、`Quot.sound`。此结果是薄片边界的 PL 球性，尚非单嵌入性。下一步提取只依赖球面与凸胞腔相交盘的实际推移，避免调用要求整体及删除后整体已为 PL 三维球的 `TetrahedronDeletion` 形成循环；随后生产薄片胞腔分解与自由盘相交条件。S.4 M2/M3、夜间 F-M1 整体及 I1 尚未完成。下一审计文件 `AuditF229.lean`。
+
+### 19.80 S.4 M2：不预设整体三维球性的相对凸胞腔推移
+
+`SphereCellPush.lean` 的 `HasPushProperty.exists_isPLHomeomorphOn_sphere_surgery` 从实际 PL 二维球面 S、具有推移性质的胞腔 C、盘 S∩C 及其位于 frontier C 的条件，构造全空间 PL 自同胚，将 S 送到 `closure (S \ C) ∪ closure (frontier C \ S)`，同时固定 `closure (S \ C)` 和给定开邻域外部。`exists_isPLHomeomorphOn_sphere_surgery_of_convex` 用固定的 17.9 字段生产凸 PL 三维胞腔的推移性质。没有假设薄片整体或删除后的整体已是三维球。
+
+`HasPushProperty.isSimplyEmbedded_of_sphere_surgery` 在 C 位于 S 的凸包内时，将手术后球面的单嵌入传回 S；证明对定义中的每个凸开邻域构造上述相对推移并复合，保留邻域外逐点固定。此处是删除归纳的传递引理，尚未生产薄片胞腔及可删相交盘，未将这些条件当作 I1 的结论。
+
+聚焦检查 `SphereCellPush` exit=0（9.8 秒）、零 warning；`AuditF229.lean` 三项仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步为实际薄片胞腔分解、自由盘相交条件与 Lemma 6；S.4 M2/M3、夜间 F-M1 整体及 I1 尚未完成。下一审计文件 `AuditF230.lean`。
