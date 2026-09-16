@@ -374,3 +374,21 @@ Reduced/MayerVietorisCoefficients, Reduced/PointClasses}`（`REUSE_AUDIT.md` §2
   `git diff --check` 与新增禁用项扫描通过。
 - H-M5 无未闭合端点。H-M3 的全局顶维基本类/定向比较，以及 H-M4/I5 的 23.19 Betti 不等式与
   `b₁=0 → IsPLSphere 2` 识别仍是原有真实缺口，本里程碑没有弱化或包装这些义务。
+
+### H.4b — done，`faceEulerChar = 2` 的闭组合曲面是 PL 2-球面
+
+- 数学提交：`465433505`；支撑层提交：`c322bee57`、`7cbe0839f`。新模块
+  `SurfaceSphereRecognition.lean`，最终端点为
+  `IsCombinatorialManifold.isPLSphere_two_of_faceEulerChar_eq_two`。
+- 对连通有限闭组合 2-流形取 1-骨架生成树 `T`；Euler 计数使未选边的对偶图
+  `dualCotreeGraph K T` 也是树。原面按“顶点/树边”与“三角形/非树边”分区，各自的导出邻域胞腔并
+  分别由 `isPLBall_primalTreeCellComplex` 和 `isPLBall_dualCotreeCellComplex` 识别为 PL 2-球。
+- 两侧共同面通过两个不同导出胞腔的 PL 1-球交扩张到共同边，因此没有共同顶维面。
+  `subcomplexGeneratedBy_compl_eq_of_faces_cover_of_pure_inter` 将两侧互相识别为闭曲面中的闭补复形，
+  现有的子流形边界定理给出交集恰是两个球的公共边界；经 `boundaryRelSubdivision`
+  使边界满后，`isPLSphere_gluedComplex_of_isPLBall` 完成粘合球面识别。
+- `SurfaceSphereRecognition` 聚焦检查 exit=0，11.0 秒，零 warning；
+  `.lake/scratch/AuditHSurfaceSphereRecognition.lean` 对 22 个新定理及 11 个关键复用声明逐项审计，
+  exit=0，全部只依赖 `propext`、`Classical.choice`、`Quot.sound`。
+- H.4b 无未闭合项。下一里程碑按 `NIGHT_PLAN.md` §6.1 用 `faceEulerChar` 路线交付 I5；
+  H-M3 的顶维基本类继续后推。
