@@ -1,6 +1,8 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.NormalCell
 import DifferentialGeometry.Topology.PiecewiseLinear.OneManifoldClassification
+import DifferentialGeometry.Topology.PiecewiseLinear.PieceTransition
 import DifferentialGeometry.Topology.SimplicialComplex.ConnectedSpace
+import DifferentialGeometry.Topology.SimplicialComplex.GeometricBoundaryPair
 
 open Set Topology
 
@@ -13,6 +15,32 @@ namespace NormalSingularSetTriangulation
 variable {M : Type u} [TopologicalSpace M]
   [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
   {D : SingularTwoCell M} {BdM : Set M}
+
+open Classical in
+private noncomputable def boundaryComplexModel
+    (T : NormalSingularSetTriangulation D BdM) :=
+  DifferentialGeometry.Topology.PiecewiseLinear.boundaryComplex 1 T.complex
+
+private noncomputable def classicalBoundaryComplexModel
+    (T : NormalSingularSetTriangulation D BdM) :=
+  @DifferentialGeometry.Topology.PiecewiseLinear.boundaryComplex
+    (EuclideanSpace ℝ (Fin T.piece.ambientDim)) _ _ (Classical.decEq _) 1 T.complex
+
+private theorem boundaryComplexModel_eq_classicalBoundaryComplexModel
+    (T : NormalSingularSetTriangulation D BdM) :
+    T.boundaryComplexModel = T.classicalBoundaryComplexModel := by
+  unfold boundaryComplexModel classicalBoundaryComplexModel
+  exact congrArg
+    (fun d : DecidableEq (EuclideanSpace ℝ (Fin T.piece.ambientDim)) =>
+      @DifferentialGeometry.Topology.PiecewiseLinear.boundaryComplex
+        (EuclideanSpace ℝ (Fin T.piece.ambientDim)) _ _ d 1 T.complex)
+    (Subsingleton.elim _ _)
+
+open Classical in
+private theorem map_boundaryComplexModel (T : NormalSingularSetTriangulation D BdM) :
+    T.piece.piece.map '' T.boundaryComplexModel.space =
+      doublePointSet D D.domain ∩ BdM :=
+  T.map_boundary
 
 def branchVertices (T : NormalSingularSetTriangulation D BdM) (c : T.Branch) :
     Set (EuclideanSpace ℝ (Fin T.piece.ambientDim)) :=
@@ -228,6 +256,41 @@ theorem branchComplex_space_isPolyhedron
 def branchCarrier (T : NormalSingularSetTriangulation D BdM) (c : T.Branch) : Set M :=
   T.piece.piece.map '' (T.branchComplex c).space
 
+open Classical in
+noncomputable def branchPieceIn
+    (T : NormalSingularSetTriangulation D BdM) (c : T.Branch) :
+    PLPieceIn (EuclideanSpace ℝ (Fin T.piece.ambientDim)) 3 M (T.branchCarrier c) :=
+  T.piece.piece.restrict (T.branchComplex c)
+    ((T.branchComplex_faces_subset c).trans T.faces_subset)
+
+@[simp]
+theorem branchPieceIn_complex
+    (T : NormalSingularSetTriangulation D BdM) (c : T.Branch) :
+    (T.branchPieceIn c).complex = T.branchComplex c :=
+  rfl
+
+@[simp]
+theorem branchPieceIn_map
+    (T : NormalSingularSetTriangulation D BdM) (c : T.Branch) :
+    (T.branchPieceIn c).map = T.piece.piece.map :=
+  rfl
+
+open Classical in
+theorem branchCarrier_isPolyhedralSphere
+    (T : NormalSingularSetTriangulation D BdM) {c : T.Branch}
+    (hc : ¬T.IsBoundaryBranch c) :
+    IsPolyhedralSphere (n := 3) 1 (T.branchCarrier c) := by
+  apply isPolyhedralSphere_of_pieceIn (T.branchPieceIn c)
+  simpa only [branchPieceIn_complex] using T.branchComplex_isPLSphere hc
+
+open Classical in
+theorem branchCarrier_isPolyhedralBall
+    (T : NormalSingularSetTriangulation D BdM) {c : T.Branch}
+    (hc : T.IsBoundaryBranch c) :
+    IsPolyhedralBall (n := 3) 1 (T.branchCarrier c) := by
+  apply isPolyhedralBall_of_pieceIn (T.branchPieceIn c)
+  simpa only [branchPieceIn_complex] using T.branchComplex_isPLBall hc
+
 theorem branchComplex_space_subset
     (T : NormalSingularSetTriangulation D BdM) (c : T.Branch) :
     (T.branchComplex c).space ⊆ T.complex.space :=
@@ -297,6 +360,156 @@ theorem branchCarrier_subset_doublePointSet
     T.branchCarrier c ⊆ doublePointSet D D.domain := by
   rw [← T.map_space]
   exact image_mono (T.branchComplex_space_subset c)
+
+open Classical in
+private theorem mem_branch_supp_of_vertex
+    (T : NormalSingularSetTriangulation D BdM) (c : T.Branch)
+    {x : EuclideanSpace ℝ (Fin T.piece.ambientDim)}
+    (hxvertex : x ∈ T.complex.vertices)
+    (hxbranch : x ∈ (T.branchComplex c).space) :
+    (⟨x, hxvertex⟩ : T.complex.vertices) ∈ c.supp := by
+  have hxbranchface : {x} ∈ (T.branchComplex c).faces :=
+    (SimplicialComplex.singleton_mem_subcomplex_iff_mem_space
+      (K := T.complex) (L := T.branchComplex c)
+      (T.branchComplex_faces_subset c) hxvertex).mpr hxbranch
+  have hxvertices : x ∈ T.branchVertices c := hxbranchface.2 (by simp)
+  obtain ⟨v, hvc, hvx⟩ := hxvertices
+  have hv : v = (⟨x, hxvertex⟩ : T.complex.vertices) := Subtype.ext hvx
+  exact hv ▸ hvc
+
+open Classical in
+private theorem exists_mem_boundaryComplexModel_of_mem_doublePointSet_inter_boundary
+    (T : NormalSingularSetTriangulation D BdM) {y : M}
+    (hy : y ∈ doublePointSet D D.domain ∩ BdM) :
+    ∃ x ∈ T.boundaryComplexModel.space, T.piece.piece.map x = y := by
+  change y ∈ T.piece.piece.map '' T.boundaryComplexModel.space
+  rw [T.map_boundaryComplexModel]
+  exact hy
+
+open Classical in
+private theorem exists_degree_one_vertex_of_mem_boundaryComplexModel
+    (T : NormalSingularSetTriangulation D BdM)
+    {x : EuclideanSpace ℝ (Fin T.piece.ambientDim)}
+    (hxboundary : x ∈ T.boundaryComplexModel.space) :
+    ∃ hxvertex : x ∈ T.complex.vertices,
+      ((SimplicialComplex.edgeGraph T.complex).neighborSet
+        (⟨x, hxvertex⟩ : T.complex.vertices)).ncard = 1 := by
+  have hxclassical : x ∈ T.classicalBoundaryComplexModel.space := by
+    rw [← T.boundaryComplexModel_eq_classicalBoundaryComplexModel]
+    exact hxboundary
+  obtain ⟨s, hs, hxs⟩ := T.classicalBoundaryComplexModel.mem_space_iff.mp hxclassical
+  have hsB := hs
+  obtain ⟨hsG, t, _, hst, _, _⟩ := hs
+  have hsc : s.card = 1 := by
+    have hpos := Finset.card_pos.mpr (T.complex.nonempty_of_mem_faces hsG)
+    have hle := Finset.card_le_card hst
+    omega
+  obtain ⟨v, rfl⟩ := Finset.card_eq_one.mp hsc
+  have hxv : x = v := by
+    simpa only [Finset.coe_singleton, convexHull_singleton, Set.mem_singleton_iff] using hxs
+  subst x
+  let _ : Finite T.complex.faces := T.finite_faces.to_subtype
+  refine ⟨hsG, ?_⟩
+  apply (mem_boundaryComplex_vertices_iff_edgeGraph_neighborSet_ncard_eq_one
+    T.complex T.isManifoldWithBoundary ⟨v, hsG⟩).mp
+  change ({v} : Finset (EuclideanSpace ℝ (Fin T.piece.ambientDim))) ∈
+    (@boundaryComplex (EuclideanSpace ℝ (Fin T.piece.ambientDim)) _ _
+      (Classical.decEq _) 1 T.complex).faces
+  simpa only [classicalBoundaryComplexModel] using hsB
+
+open Classical in
+private theorem exists_degree_one_preimage_of_mem_doublePointSet_inter_boundary
+    (T : NormalSingularSetTriangulation D BdM) {y : M}
+    (hy : y ∈ doublePointSet D D.domain ∩ BdM) :
+    ∃ v : T.complex.vertices,
+      ((SimplicialComplex.edgeGraph T.complex).neighborSet v).ncard = 1 ∧
+        T.piece.piece.map v = y := by
+  obtain ⟨x, hxboundary, hxy⟩ :=
+    T.exists_mem_boundaryComplexModel_of_mem_doublePointSet_inter_boundary hy
+  obtain ⟨hxvertex, hdegree⟩ :=
+    T.exists_degree_one_vertex_of_mem_boundaryComplexModel hxboundary
+  exact ⟨⟨x, hxvertex⟩, hdegree, hxy⟩
+
+open Classical in
+theorem isBoundaryBranch_of_mem_branchComplex_space_of_map_mem_boundary
+    (T : NormalSingularSetTriangulation D BdM) (c : T.Branch)
+    {x : EuclideanSpace ℝ (Fin T.piece.ambientDim)}
+    (hxbranch : x ∈ (T.branchComplex c).space)
+    (hxboundary : T.piece.piece.map x ∈ BdM) :
+    T.IsBoundaryBranch c := by
+  have hdouble : T.piece.piece.map x ∈ doublePointSet D D.domain :=
+    T.branchCarrier_subset_doublePointSet c ⟨x, hxbranch, rfl⟩
+  obtain ⟨v, hdegree, hvx⟩ :=
+    T.exists_degree_one_preimage_of_mem_doublePointSet_inter_boundary
+      ⟨hdouble, hxboundary⟩
+  have hvspace : (v : EuclideanSpace ℝ (Fin T.piece.ambientDim)) ∈
+      T.piece.piece.complex.space :=
+    space_mono_of_faces_subset T.faces_subset (T.complex.vertices_subset_space v.2)
+  have hxspace : x ∈ T.piece.piece.complex.space :=
+    T.branchComplex_space_subset_piece c hxbranch
+  have hvx' : (v : EuclideanSpace ℝ (Fin T.piece.ambientDim)) = x :=
+    T.piece.piece.bijOn.injOn hvspace hxspace hvx
+  have hxvertex : x ∈ T.complex.vertices := hvx' ▸ v.2
+  let w : T.complex.vertices := ⟨x, hxvertex⟩
+  have hvw : v = w := Subtype.ext hvx'
+  refine ⟨w, T.mem_branch_supp_of_vertex c hxvertex hxbranch, ?_⟩
+  rw [← hvw]
+  exact hdegree
+
+open Classical in
+theorem branchCarrier_disjoint_boundary_of_not_isBoundaryBranch
+    (T : NormalSingularSetTriangulation D BdM) {c : T.Branch}
+    (hc : ¬T.IsBoundaryBranch c) :
+    Disjoint (T.branchCarrier c) BdM := by
+  apply Set.disjoint_left.mpr
+  rintro _ ⟨x, hxbranch, rfl⟩ hxboundary
+  apply hc
+  exact T.isBoundaryBranch_of_mem_branchComplex_space_of_map_mem_boundary
+    c hxbranch hxboundary
+
+open Classical in
+private theorem mem_boundaryComplexModel_of_degree_one
+    (T : NormalSingularSetTriangulation D BdM) (v : T.complex.vertices)
+    (hdegree : ((SimplicialComplex.edgeGraph T.complex).neighborSet v).ncard = 1) :
+    (v : EuclideanSpace ℝ (Fin T.piece.ambientDim)) ∈ T.boundaryComplexModel.space := by
+  let _ : Finite T.complex.faces := T.finite_faces.to_subtype
+  have hvclassical : (v : EuclideanSpace ℝ (Fin T.piece.ambientDim)) ∈
+      T.classicalBoundaryComplexModel.vertices := by
+    have hv :=
+      (mem_boundaryComplex_vertices_iff_edgeGraph_neighborSet_ncard_eq_one
+        T.complex T.isManifoldWithBoundary v).mpr hdegree
+    change ({(v : EuclideanSpace ℝ (Fin T.piece.ambientDim))} :
+      Finset (EuclideanSpace ℝ (Fin T.piece.ambientDim))) ∈
+        (@boundaryComplex (EuclideanSpace ℝ (Fin T.piece.ambientDim)) _ _
+          (Classical.decEq _) 1 T.complex).faces at hv
+    change ({(v : EuclideanSpace ℝ (Fin T.piece.ambientDim))} :
+      Finset (EuclideanSpace ℝ (Fin T.piece.ambientDim))) ∈
+        (@boundaryComplex (EuclideanSpace ℝ (Fin T.piece.ambientDim)) _ _
+          (Classical.decEq _) 1 T.complex).faces
+    exact hv
+  rw [T.boundaryComplexModel_eq_classicalBoundaryComplexModel]
+  exact T.classicalBoundaryComplexModel.vertices_subset_space hvclassical
+
+open Classical in
+private theorem map_mem_doublePointSet_inter_boundary_of_degree_one
+    (T : NormalSingularSetTriangulation D BdM) (v : T.complex.vertices)
+    (hdegree : ((SimplicialComplex.edgeGraph T.complex).neighborSet v).ncard = 1) :
+    T.piece.piece.map v ∈ doublePointSet D D.domain ∩ BdM := by
+  rw [← T.map_boundaryComplexModel]
+  exact ⟨v, T.mem_boundaryComplexModel_of_degree_one v hdegree, rfl⟩
+
+open Classical in
+theorem branchCarrier_inter_boundary_nonempty_of_isBoundaryBranch
+    (T : NormalSingularSetTriangulation D BdM) {c : T.Branch}
+    (hc : T.IsBoundaryBranch c) :
+    (T.branchCarrier c ∩ BdM).Nonempty := by
+  obtain ⟨v, hvc, hdegree⟩ := T.exists_degree_one_vertex_of_isBoundaryBranch hc
+  let w : c.supp := ⟨v, hvc⟩
+  have hvbranch : (v : EuclideanSpace ℝ (Fin T.piece.ambientDim)) ∈
+      (T.branchComplex c).space :=
+    (T.branchComplex c).vertices_subset_space (T.branchVertex c w).2
+  have hyboundary := T.map_mem_doublePointSet_inter_boundary_of_degree_one v hdegree
+  exact ⟨T.piece.piece.map v, ⟨v, hvbranch, rfl⟩, hyboundary.2⟩
 
 theorem branchCarrier_isConnected
     (T : NormalSingularSetTriangulation D BdM) (c : T.Branch) :
@@ -375,5 +588,23 @@ theorem branchSet_isConnected
     exact (T.branchCarrier_isConnected c).isPreconnected
 
 end NormalSingularSetTriangulation
+
+namespace NormalSingularCellData
+
+variable {M : Type u} [TopologicalSpace M]
+  [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
+  {D : SingularTwoCell M} {BdM B : Set M}
+
+theorem branchCarrier_inter_boundary_subset
+    (hD : NormalSingularCellData D BdM B) (c : hD.singularSet.Branch) :
+    hD.singularSet.branchCarrier c ∩ BdM ⊆ B := by
+  rintro y ⟨hycarrier, hyboundary⟩
+  have hydouble := hD.singularSet.branchCarrier_subset_doublePointSet c hycarrier
+  obtain ⟨x, hx, _, _, _, hxy, _⟩ := hydouble
+  apply hD.boundary_image_subset
+  rw [← hD.image_inter_boundary]
+  exact ⟨⟨x, hx, hxy⟩, hyboundary⟩
+
+end NormalSingularCellData
 
 end DifferentialGeometry.Topology.PiecewiseLinear
