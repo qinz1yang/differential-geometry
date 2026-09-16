@@ -1941,3 +1941,11 @@ F-M6 状态为 partial。剩余的首个数学义务是一个真实的余面异�
 聚焦检查 exit=0（10.8 秒），零 warning；`AuditF211.lean` 七个公开端点全都只依赖 `propext`、`Classical.choice`、`Quot.sound`。此前已推送的 `59c52ce24`、`bce61a695` 提供 `RelativeLevelCircleDeletion.lean` 的精确纤维删除消费者及固定子复形外的逐面符号控制，后者由 `AuditF210.lean` 审计；这些仍不是相对删除的生产者。
 
 F-M1 仍为 partial。下一步把凸化映射在紧致旧三角形上的 PL Lipschitz 延拓与新高度的算子范数小量接入本定量端点，然后构造沿旧三角形公共边相容的纤维同胚，并证明它在保留盘上删去指定圆周 `J`。§19.56 的单射、严格降指标、S.4 M2/M3 及 I1 尚未交付。下一审计文件 `AuditF212.lean`。
+
+### 19.63 F-M1：保高度凸化后的旧三角形小转轴截面
+
+`HeightTriangleStability.lean` 已把 §19.62 的定量判据接到实际 PL 映射。`eventually_exists_isPLHomeomorphOn_triangle_fiber_of_affine_height` 对在紧致三角形上具有仿射旧高度的逐片仿射映射，先构造全域 PL Lipschitz 延拓，再把扰动写成旧仿射高度加 `(f-ℓ) ∘ G`；算子范数邻域统一控制全部中间层。输出每条这样的实际纤维到非退化区间的 PL 同胚。`eventually_isPLBall_image_triangle_fiber_of_affine_height` 在映射单射时把弧性送到像截面。
+
+主端点 `eventually_isPLBall_affine_triangle_image_fiber` 已直接用于环境同胚：只要求 `H` 是保 `ℓ` 的全域 PL 同胚，仿射三角形的三个旧顶点高度严格排序，就证明充分小的每个新高度 `f` 在 `H` 的三角形像内、严格介于两底角值之间的截面是 PL 一维球。没有要求 `H` 在旧三角形上仿射，也没有假设凸化后旧高度在新顶点上单射。故同高折点已经不再阻挡单个旧面的纤维稳定性。
+
+聚焦检查 exit=0（13.3 秒）、零 warning；`AuditF212.lean` 三个公开端点全部仅依赖 `propext`、`Classical.choice`、`Quot.sound`。F-M1 仍为 partial；下一步补弧端点与旧边的精确对应、极值层的单点/空集分类，然后沿公共边拼接各旧面的纤维映射，接入 `Q` 的侧芽以得到 §19.56 的相对删除。S.4 M2/M3、I1 尚未交付。下一审计文件 `AuditF213.lean`。
