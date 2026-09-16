@@ -644,3 +644,22 @@ Logs: `check-free-disk-cell-relative.log`, `check-disk-crosscut-refresh.log`, an
 P.4 remains separate: polygonal graph redrawing alone does not produce a supported ambient
 homeomorphism. Compatible sector extensions around vertices and edges, with the prescribed
 neighborhood and pointwise displacement control, are the remaining geometric construction.
+
+### S-M4 local refinement: prescribed relative neighborhoods
+
+The relative 17.3 theorem is committed and pushed as `f0383a381`; the next integration merge
+was already up to date. `BoundaryDiskNeighborhood.lean` strengthens Problem 26.1, the precise
+boundary-ball theorem, the local disk collar, and the parametrized disk push-off: each output
+can be chosen inside any prescribed member of the relative neighborhood filter of D in K.space.
+The four endpoints are `exists_isPLBall_inter_boundaryComplex_eq_subset`,
+`exists_isPLBall_containing_boundary_disk_subset`, `exists_collar_of_boundary_disk_subset`, and
+`exists_isPLHomeomorphOn_push_boundary_disk_subset`, in the
+`IsCombinatorialManifoldWithBoundary` namespace. All hold in arbitrary finite-dimensional
+real normed spaces and need no Schoenflies or containing-ball assumption.
+The proof first uses the existing controlled subdivision neighborhood, then intrinsic boundary
+monotonicity transfers the smaller manifold's exact boundary incidence back to K.
+This closes the arbitrary-neighborhood requirement for the boundary-disk part of B.2.
+The focused check `check-boundary-disk-neighborhood.log` exits 0 with zero warnings.
+`AuditS78BoundaryNeighborhood.lean` / `.log` audits the four endpoints using only the standard
+three axioms. Full 26.2 still needs compatible collar gluing and the complement-manifold
+induction invariant recorded above; neither is introduced as an extra assumption here.

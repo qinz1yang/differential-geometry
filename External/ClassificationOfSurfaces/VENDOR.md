@@ -1746,3 +1746,14 @@ This is original native Lean source; no vendored Lean file changed. The two focu
 exit 0 with zero warnings, and `AuditS77RelativeDisk` audits four declarations with only
 `propext`, `Classical.choice`, and `Quot.sound`. The supported ambient polygonalization
 of P.4 is not claimed by this result.
+
+## Controlled neighborhoods of boundary disks
+
+The native `BoundaryDiskNeighborhood.lean` supplies the arbitrary relative-neighborhood
+control in Problems 26.1--26.3 for a disk in the boundary: the containing ball, exact boundary
+ball, local disk collar, and push-off disk all fit inside the prescribed neighborhood.
+The argument combines the existing controlled subdivision neighborhood with intrinsic
+boundary monotonicity and the proved Problem 26.1 construction. No vendored source changed.
+The focused check exits 0 with zero warnings. `AuditS78BoundaryNeighborhood` checks four
+endpoints, all with only the standard three axioms. The whole-boundary collar and the
+two-sided interior-surface neighborhood remain separate obligations.
