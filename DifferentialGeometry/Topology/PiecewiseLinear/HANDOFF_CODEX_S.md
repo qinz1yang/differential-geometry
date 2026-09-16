@@ -957,3 +957,31 @@ Full 26.2 remains partial: construct the finite dual boundary-cell decomposition
 intersection data, discharge the attachment-arc or whole-boundary alternative, assemble the
 finite collar induction, and prove the final neighborhood property. The exact bundled I2
 target-type issue and P.4 obligations remain unchanged.
+
+### S-M4 continuation: dual-cell coverage and intersection producers
+
+The collar-boundary persistence layer is committed and pushed as `142653991`; its integration
+merge was already up to date. `DualCellDecomposition.lean` now reuses the existing
+`dualCell_space_inter_eq_dualCell` and proves that nonempty intersections force the union
+face, nonfaces give disjoint dual cells, and maximal-dimensional dual cells reduce to their
+barycenters. The vertex dual cells cover the full carrier. Adjacent vertex dual cells in an
+(n+2)-manifold meet in an (n+1)-ball lying on each cell boundary.
+
+For a two-dimensional manifold, three distinct vertex dual cells have finite intersection.
+`IsCombinatorialManifoldWithBoundary.finite_inter_dualCell_singleton_iUnion` produces the
+finite intersection with any already processed finite cell family.
+`IsCombinatorialManifoldWithBoundary.exists_boundary_arcs_cover_inter_dualCell_iUnion`
+produces an explicit finite family of shared boundary arcs covering the new cell's
+intersection with that processed union. It does not assert that these arcs are pairwise
+disjoint: adjacent arcs can share endpoints. Together these are the actual finite-intersection
+and arc-cover inputs needed by `collar_disk_subset_boundaryComplex_complement`.
+
+The new module has focused-check exit 0 and zero warnings (`check-dual-cell-decomposition.log`).
+`AuditS87DualCellDecomposition.lean` / `.log` audit all ten public theorems, each with only
+`propext`, `Classical.choice`, and `Quot.sound`. The existing other-lane `DualCells.lean` was
+only imported and was not modified. The source hash is recorded in the final bookkeeping entry.
+
+Remaining for full 26.2: turn the shared boundary-arc cover into pairwise disjoint arc
+components or the whole boundary circle, connect these producers to the finite collar
+induction, and prove the final image is a neighborhood of the entire original boundary.
+The exact bundled I2 target-type issue and the other recorded milestones remain unchanged.
