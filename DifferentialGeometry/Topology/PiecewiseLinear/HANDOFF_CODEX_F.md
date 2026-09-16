@@ -1765,3 +1765,9 @@ F-M2–F-M6 尚未开始；按用户指定顺序推进，只有出现 §1 接口
 `BoundaryArcCardinality.lean` 已提交并推送为 `f4fdad40b`。`linearMap_level_section_convexHull_pair_subsingleton_of_apply_ne` 证明线性高度层与一条非退化线段至多交一点，只需其中一个端点避开该高度；端点同高时截面为空，端点异高时由线段上的高度单射得到唯一性。主端点 `height_section_encard_le_two_of_boundary_vertices` 对有限一维组合带边流形及两个组合边界顶点，若两端点都避开指定高度、其余顶点都严格位于低侧，则整个载体的等高截面至多两点。证明由每个边界顶点的唯一邻边刻画把任一等高点限制在两条端边之一，没有预设端点高低次序，也没有把截面上界写入输入。
 
 模块聚焦检查 exit=0（12.0 秒）、零 warning；`AuditF184.lean` 两个端点均仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步从三角形严格分离点判断三个真实角点处两个边界链环方向的高度侧别：严格最低角点处保留链环用双端边计数，其余两个角点处至少一个端点严格较低并退化为单点截面；再与 `ConvexCapLink` 合并并调用顶点正规性端点。F-M1 仍为 partial，严格降指标、Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF185.lean`。
+
+### 19.37 F-M1：凸三角剖分的真实角点与边界链环端点
+
+`TriangleBoundaryVertices.lean` 已提交并推送为 `ef0695ed4`。`boundaryComplex_space_eq_simplexBoundary_of_space_eq_convexHull` 用相同凸三角载体上的恒等 PL 同胚与组合边界不变性，证明任意有限复形实现的凸三角盘之组合边界恰为规范单形边界。`singleton_mem_boundaryComplex_of_mem_triangle_vertex` 进一步证明三个原始极端点在任意该类剖分中仍是组合边界顶点：若其载体面不含该点，严格支撑泛函会在该点的凸组合上产生矛盾。`segment_subset_boundaryComplex_of_space_eq_convexHull` 给出任意两原始角点间整条边属于组合边界。`exists_geometricLink_boundary_pair_of_isPLBall` 最后从 PL 二球盘和一个组合边界顶点自动构造边界链环的两个不同单点面，并证明它们穷尽边界链环空间；没有把端点存在性加入输入。
+
+模块聚焦检查 exit=0（12.1 秒）、零 warning；`AuditF185.lean` 五个端点均仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步沿最低角点到另外两个角点的实际三角边取得保留链环中的低端方向：最低角点用双端边计数并证明帽侧截面为空，其余角点用一个低端方向证明保留侧截面至多一点；再与帽侧单点截面合并并排除三个角点的奇异性。F-M1 仍为 partial，严格降指标、Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF186.lean`。
