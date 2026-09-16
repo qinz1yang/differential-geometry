@@ -2741,3 +2741,40 @@ checks and AuditS144--S146 all exited 0 with zero source warnings and only the
 standard three foundational axioms. `git diff --check` passes. This last commit
 changes only the P.4 plan row and this handoff; the root aggregate and vendored
 sources remain unchanged by the final quantitative assembly.
+
+## Section 24 and section 30 checkpoint (2026-09-16)
+
+Integration `9512c800c` is merged by `8eaa8e32f`. The book was checked at
+pages 178--180 and 214--215 (PDF pages 188--190 and 224--225).
+
+C.6 remains blocked at the two-disjoint-boundary-disks extension and the
+untwisted closing identification. The CST definition on page 178 starts with
+a triangulated topological solid torus, before imposing the cyclic PL-ball
+decomposition. The shorter plan description omits that condition; a cyclic
+ball chain alone also permits the twisted disk bundle. No weakened CST
+predicate or classification hypothesis has been added. The existing
+`exists_isPLHomeomorphOn_eqOn_disk_of_boundaryComplex` handles one prescribed
+disk; it does not provide the simultaneous two-disk compatibility needed to
+close the cylindrical diagram and prove uniqueness of its PL type.
+
+C.7 inherits that classification gap. The original neighborhood-cell results
+supply PL three-balls and pairwise disk intersections, but the cyclic order,
+its end-disk compatibility, and the untwisted classification remain to be
+assembled. The 23.17 input itself is already available as
+`IsOrientable.of_le` in `Orientation.lean:3153`; an extra `hsub` should not be
+introduced for that existing subcomplex statement. No C.7 endpoint is claimed.
+Following NIGHT_PLAN section 0, work then advanced to the independent I.1.
+
+I.1 is delivered in `6cf85c2d3` (pushed). `Connected/Separation.lean` provides
+`Separates` and its connected-component characterization.
+`Connected/PhragmenBrouwer.lean` proves `separates_or_separates_of_union` under
+the book's simply-connected / locally-connected / connected-open-path-connected
+hypotheses and the `phragmen_brouwer` locally-path-connected corollary. The
+closed separating sets C and D are explicitly disjoint, as required by the
+book. H and K need only be preconnected and may be empty; their closedness is
+unnecessary. The proof uses the existing proved Van Kampen cover-cycle
+obstruction, with labels constant on paths in the overlap. Both source modules
+check with exit 0 and zero warnings. AuditS147PhragmenBrouwer has nine public
+theorems, exit 0, only propext, Classical.choice, and Quot.sound. There are no
+unproved input parameters. The post-publication fetch found integration
+unchanged. I.2 is next.
