@@ -2723,3 +2723,21 @@ Together with AuditS144 and AuditS145, the final quantitative assembly has
 sixteen audited declarations. All new source is native; no vendored Lean source
 or vendor modification log changed. Integration bbd488861 is merged. The final
 bookkeeping commit updates the P.4 row and records the freshness self-check.
+
+## Final B.2 / B.6 / finite P.4 publication checkpoint (2026-09-16)
+
+The native finite P.4 endpoint is committed and pushed as `138e73e21`, after
+`93d1aa39d` (subdivision and strongly positive approximation) and `866b2535e`
+(short-edge displacement bound). Integration `bbd488861` is merged. B.2 and
+B.6 remain delivered at `7d74a1d84` and `c4645eeb0`; all three assigned results
+have unconditional endpoints, with no Schoenflies parameter.
+
+The final freshness check was run with no Lean process active on the host:
+49 changed Lean modules versus integration, 49 fresh oleans, zero forbidden
+matches, zero stale artifacts, zero missing artifacts. Two earlier readings
+were explicitly flagged by the script because unrelated F-lane Lean processes
+were active; this final unflagged reading supersedes them. The final source
+checks and AuditS144--S146 all exited 0 with zero source warnings and only the
+standard three foundational axioms. `git diff --check` passes. This last commit
+changes only the P.4 plan row and this handoff; the root aggregate and vendored
+sources remain unchanged by the final quantitative assembly.
