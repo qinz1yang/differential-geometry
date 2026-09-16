@@ -72,6 +72,7 @@ import DifferentialGeometry.Analysis.Calculus.Inverse.BoundaryLocalInverse
 import DifferentialGeometry.Analysis.Calculus.Inverse.ContinuousLinearMapNeumann
 import DifferentialGeometry.Analysis.Calculus.Inverse.CoordinateDerivativeEquiv
 import DifferentialGeometry.Analysis.Calculus.Inverse.DerivativePerturbation
+import DifferentialGeometry.Analysis.Calculus.Inverse.HalfSpaceDerivative
 import DifferentialGeometry.Analysis.Calculus.Inverse.ImplicitDerivativeBounds
 import DifferentialGeometry.Analysis.Calculus.Inverse.InjectiveParameterizedInverse
 import DifferentialGeometry.Analysis.Calculus.Inverse.IntervalInverseDerivative
@@ -166,6 +167,8 @@ import DifferentialGeometry.Analysis.Calculus.Smoothness.Closure
 import DifferentialGeometry.Analysis.Calculus.Smoothness.ExtendInterval
 import DifferentialGeometry.Analysis.Calculus.Smoothness.Tsum
 import DifferentialGeometry.Analysis.Calculus.Taylor
+import DifferentialGeometry.Analysis.Calculus.Hadamard.Parametric
+import DifferentialGeometry.Analysis.Calculus.Hadamard.Within
 import DifferentialGeometry.Analysis.Calculus.TimeJet.ClosedJetEvolution
 import DifferentialGeometry.Analysis.Calculus.TimeJet.Commutation
 import DifferentialGeometry.Analysis.Calculus.TimeJet.CompleteEndpointTower
