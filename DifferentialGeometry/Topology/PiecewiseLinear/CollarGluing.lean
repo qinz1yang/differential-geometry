@@ -34,7 +34,7 @@ theorem exists_isPLHomeomorphOn_bottom_union_collar_sides
     exact ⟨(y, a), ⟨⟨hyD, rfl⟩, ⟨hyD, hyP⟩, le_rfl, hab.le⟩, rfl⟩
 
 open Classical in
-private theorem exists_isPLHomeomorphOn_prism_of_isPLBall_bottom_union_sides
+theorem exists_isPLHomeomorphOn_prism_eqOn_collar_sides_of_isPLBall
     (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces] (hK : IsPLBall 2 K.space)
     {B P W : Set E} (hP : IsPolyhedron P) (hKB : K.space ⊆ B)
     {a b : ℝ} (hab : a < b) {ρ : E × ℝ → E}
@@ -85,7 +85,7 @@ theorem exists_isPLHomeomorphOn_prism_eqOn_collar_sides_of_boundary_arcs {ι : T
     exact iUnion₂_subset hCB
   have hpatch := isPLBall_prism_bottom_union_strips K hK hab d C hC hCB hdis
   rw [hcover] at hpatch
-  exact exists_isPLHomeomorphOn_prism_of_isPLBall_bottom_union_sides K hK hP hKB hab
+  exact exists_isPLHomeomorphOn_prism_eqOn_collar_sides_of_isPLBall K hK hP hKB hab
     hρ hbottom hWB hmeet hpatch L hL hattach
 
 open Classical in
@@ -103,7 +103,7 @@ theorem exists_isPLHomeomorphOn_prism_eqOn_collar_sides_of_boundary
   have hpatch : IsPLBall 2 (K.space ×ˢ {a} ∪ (K.space ∩ P) ×ˢ Icc a b) := by
     rw [hmeet]
     exact isPLBall_prism_bottom_union_side K hK hab
-  exact exists_isPLHomeomorphOn_prism_of_isPLBall_bottom_union_sides K hK hP hKB hab
+  exact exists_isPLHomeomorphOn_prism_eqOn_collar_sides_of_isPLBall K hK hP hKB hab
     hρ hbottom hWB hmeet.subset hpatch L hL hattach
 
 end DifferentialGeometry.Topology.PiecewiseLinear

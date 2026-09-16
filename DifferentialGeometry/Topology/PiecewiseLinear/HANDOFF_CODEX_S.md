@@ -819,3 +819,33 @@ produce each modified attaching disk in the actual complement, then the compatib
 old and new product maps and the whole-boundary neighborhood property. The exact I2 target-type
 issue and the recorded P.4 obligations remain unchanged. The source checkpoint hash is recorded
 in the following checkpoint entry.
+
+### S-M4 checkpoint: compatible collar enlargement
+
+The prism and prescribed-side-coordinate layer is committed and pushed as `bc9b5bbcb`.
+Its post-checkpoint integration merge was already up to date at `8fb887bb9`.
+
+`CollarGluing.lean` now exposes the common relative extension core
+`exists_isPLHomeomorphOn_prism_eqOn_collar_sides_of_isPLBall`; the boundary-arc and whole-circle
+corollaries discharge its attaching-disk hypothesis with the proved prism disk constructions.
+`CollarExtension.lean` proves `exists_collar_extension_of_boundary_arcs` and
+`exists_collar_extension_of_boundary`. Given the current collar and its complementary-boundary
+conditions, these theorems use Problem 26.1 to produce the new three-ball in any prescribed
+relative neighborhood. They prove its intersection with the old collar is exactly the existing
+side strip, glue the two product maps, preserve the entire old collar map, fix the enlarged
+bottom, and prove that positive height avoids the original boundary. They also construct a
+finite combinatorial three-manifold triangulation of the exact closed complement of the new
+ball inside the current complement.
+
+The public enlargement statements keep the inductive geometry explicit: the modified disk
+lies on the current complementary boundary, and the intersections of that complement with
+the old collar and the original boundary lie on its boundary. They do not assume the new ball,
+the enlarged collar map, or the new complement manifold. Establishing and preserving these
+geometric conditions through a finite boundary cell ordering is still required for full 26.2.
+The whole-boundary neighborhood property is also still pending.
+
+Focused checks for `CollarGluing.lean` and `CollarExtension.lean` exit 0 with zero warnings;
+logs are `check-collar-gluing-extension.log` and `check-collar-extension.log`.
+`AuditS83CollarExtension.lean` / `.log` audit five new or affected public declarations, all with
+only `propext`, `Classical.choice`, and `Quot.sound`. The source checkpoint hash is recorded
+with the next status update. No vendored source, other-lane source, or root aggregate changed.
