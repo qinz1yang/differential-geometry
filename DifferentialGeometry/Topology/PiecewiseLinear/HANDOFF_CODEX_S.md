@@ -1312,3 +1312,44 @@ vendored source was modified.
 26.3 remains partial: identify the actual local side-ball closures as neighborhoods in
 each global component closure, apply the checked manifold criterion, identify the
 surface boundary component, and glue its two collars.
+
+### S-M5 continuation: the two side closures are manifolds with their exact boundaries
+
+The component-triangulation checkpoint is committed and pushed as `92a27c0fb`; the
+required integration merge was already up to date.
+
+`Connected/ComponentNeighborhood.lean` proves that one of the two local component
+closures is a relative neighborhood in a specified global component closure. The proof
+uses points from both global components near the surface, so it does not silently identify
+local components that could reconnect globally.
+
+`ClosedStarNeighborhood.lean` generalizes the existing ball-neighborhood producer to
+combinatorial manifolds with boundary and prescribed relative neighborhoods. The original
+boundaryless theorem keeps its signature and becomes a corollary.
+
+`SurfaceComponentClosure.lean` proves that every finite triangulation of either side
+closure is a combinatorial three-manifold with boundary. Its boundary is exactly the
+surface together with the part inherited from the ambient neighborhood boundary:
+`Bd A = L.space ∪ (A.space ∩ Bd N)`. Away from the surface, local boundary membership
+is inherited from N; at the surface, the actual two local PL three-balls meet in a PL
+two-disk, placing the surface in the boundary of the appropriate side.
+
+`TwoSidedNeighborhood.lean` now includes
+`IsCombinatorialManifoldWithBoundary.exists_neighborhood_manifold_pair_of_twoSided`.
+It produces an arbitrarily small connected manifold neighborhood N and connected finite
+combinatorial manifolds A and B, with `A.space ∪ B.space = N.space`,
+`A.space ∩ B.space = L.space`, both exact boundary formulas, and the relative-neighborhood
+property along the whole surface. The only geometric input is the original two-sided
+interior surface; neither side-manifold structure nor separation is an assumed interface.
+
+All four changed modules have focused-check exit 0 and zero warnings
+(`check-component-neighborhood.log`, `check-closed-star-neighborhood-boundary.log`,
+`check-surface-component-closure.log`, `check-two-sided-neighborhood-manifolds.log`).
+`AuditS98SurfaceComponentClosure.lean` / `.log` contain eight entries, all with only
+`propext`, `Classical.choice`, and `Quot.sound`. The source commit hash will be recorded
+at the following checkpoint. No other-lane or vendored source changed.
+
+26.3 remains partial. The side-manifold construction and exact boundaries are now proved.
+Next: restrict the existing boundary collars to this surface component, preserve their
+relative-neighborhood property, and glue the two products along the middle surface.
+The disconnected-surface case will then require combining the finitely many components.

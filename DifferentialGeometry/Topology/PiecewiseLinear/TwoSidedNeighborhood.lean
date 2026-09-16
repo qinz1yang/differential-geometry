@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.ConnectedNeighborhood
 import DifferentialGeometry.Topology.PiecewiseLinear.SubcomplexNeighborhood
-import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceComponents
+import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceComponentClosure
 import DifferentialGeometry.Topology.Connected.TwoSided
 
 open Set Topology
@@ -93,4 +93,52 @@ theorem IsCombinatorialManifoldWithBoundary.exists_neighborhood_connectedCompone
     hN.exists_connectedComponentIn_pair_sdiff_of_separating_surface hL hLN hBN
       hNconn.isPreconnected hconn hsep⟩
 
+open Classical in
+theorem IsCombinatorialManifoldWithBoundary.exists_neighborhood_manifold_pair_of_twoSided
+    {K L : Geometry.SimplicialComplex ℝ E} [Finite K.faces] [Finite L.faces]
+    (hK : IsCombinatorialManifoldWithBoundary 3 K) (hL : IsCombinatorialManifold 2 L)
+    (hLK : L.space ⊆ K.space) (hB : Disjoint L.space (boundaryComplex 3 K).space)
+    (hconn : IsConnected L.space)
+    (htwo : Topology.IsTwoSided (((↑) : K.space → E) ⁻¹' L.space))
+    {U : Set E} (hU : U ∈ 𝓝ˢ[K.space] L.space) :
+    ∃ N A B : Geometry.SimplicialComplex ℝ E,
+      N.faces.Finite ∧ A.faces.Finite ∧ B.faces.Finite ∧
+      IsCombinatorialManifoldWithBoundary 3 N ∧ IsCombinatorialManifoldWithBoundary 3 A ∧
+      IsCombinatorialManifoldWithBoundary 3 B ∧
+      IsConnected N.space ∧ IsConnected A.space ∧ IsConnected B.space ∧
+      N.space ⊆ K.space ∧ N.space ⊆ U ∧
+      (∀ x ∈ L.space, N.space ∈ 𝓝[K.space] x) ∧
+      Disjoint L.space (boundaryComplex 3 N).space ∧
+      A.space ∪ B.space = N.space ∧ A.space ∩ B.space = L.space ∧
+      (boundaryComplex 3 A).space = L.space ∪ (A.space ∩ (boundaryComplex 3 N).space) ∧
+      (boundaryComplex 3 B).space = L.space ∪ (B.space ∩ (boundaryComplex 3 N).space) := by
+  obtain ⟨N, hNfin, hN, hNconn, hNK, hNU, hLN, hNnhds, hBN,
+    a, ha, b, hb, hdis, hcover, hclcover, hclmeet⟩ :=
+    hK.exists_neighborhood_connectedComponentIn_pair_sdiff_of_twoSided hL hLK hB hconn htwo hU
+  let _ : Finite N.faces := hNfin.to_subtype
+  obtain ⟨A, hAfin, hAspace⟩ :=
+    (isPolyhedron_closure_connectedComponentIn_sdiff_of_subset N L hLN a).exists_simplicialComplex
+  obtain ⟨B, hBfin, hBspace⟩ :=
+    (isPolyhedron_closure_connectedComponentIn_sdiff_of_subset N L hLN b).exists_simplicialComplex
+  let _ : Finite A.faces := hAfin.to_subtype
+  let _ : Finite B.faces := hBfin.to_subtype
+  have hclmeet' : closure (connectedComponentIn (N.space \ L.space) b) ∩
+      closure (connectedComponentIn (N.space \ L.space) a) = L.space := by
+    rwa [inter_comm]
+  have hA := isCombinatorialManifoldWithBoundary_of_space_eq_closure_connectedComponentIn_sdiff
+    hN hL hLN hBN hdis hclmeet A hAspace
+  have hB := isCombinatorialManifoldWithBoundary_of_space_eq_closure_connectedComponentIn_sdiff
+    hN hL hLN hBN hdis.symm hclmeet' B hBspace
+  refine ⟨N, A, B, hNfin, hAfin, hBfin, hN, hA, hB, hNconn,
+    ?_, ?_, hNK, hNU, hNnhds, hBN, ?_, ?_, ?_, ?_⟩
+  · rw [hAspace]
+    exact (isConnected_connectedComponentIn_iff.mpr ha).closure
+  · rw [hBspace]
+    exact (isConnected_connectedComponentIn_iff.mpr hb).closure
+  · rwa [hAspace, hBspace]
+  · rwa [hAspace, hBspace]
+  · exact boundaryComplex_space_of_space_eq_closure_connectedComponentIn_sdiff
+      hN hL hLN hBN hdis hclmeet A hAspace
+  · exact boundaryComplex_space_of_space_eq_closure_connectedComponentIn_sdiff
+      hN hL hLN hBN hdis.symm hclmeet' B hBspace
 end DifferentialGeometry.Topology.PiecewiseLinear
