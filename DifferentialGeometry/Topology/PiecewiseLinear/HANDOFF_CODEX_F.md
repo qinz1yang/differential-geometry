@@ -1568,3 +1568,10 @@ F-M2–F-M6 尚未开始；按用户指定顺序推进，只有出现 §1 接口
 `LinkPair.lean` 已提交并推送为 `b8814ee06`。`exists_isPLHomeomorphOn_geometricLink_pair` 在两个三维有限复形的内部顶点链环之间构造 PL 同胚：两边各有一条实际 PL 圆周，非零线性高度在该圆周上的零截面恰含两个不同点，且圆周两侧非空。结论同时对齐圆周、整个链环的零截面、上下半盘及两个指定交点。所需半盘和截弧参数化全部由前两层构造，不作为输入假设。
 
 聚焦检查 exit=0（10.7 秒）、零 warning；`AuditF152.lean` 主端点仅标准三公理。下一步锥延拓并证明曲面星及高度零面的准确对应，再构造标准平面目标。F-M1 仍为 partial，尚未得到 crossing 主判据或 I1；F-M2–F-M6 尚未开始。下一审计文件 `AuditF153.lean`。
+
+### 19.5 F-M1：链环配对延拓为保子复形与高度层的星映射
+
+`StarPair.lean` 已提交并推送为 `8bbc98bad`。`image_coneComplex_of_radial_eq` 由逐射线的锥映射公式证明任意指定子复形锥的像集相等；`image_coneComplex_inter_fiber_of_radial_eq` 证明锥内线性零截面的像集相等，线性形式允许为零。
+`exists_isPLHomeomorphOn_closedStar_pair` 将环境链环的 PL 同胚延拓到环境闭星，同时对齐指定子复形的闭星、锥顶和整个闭星内的高度零截面。证明复用已有锥延拓，并逐点核对双向像集，不增加局部映射结论假设。
+
+聚焦检查 exit=0（10.7 秒）、零 warning；`AuditF153.lean` 三项仅标准三公理。下一步生产标准平面目标的链环数据，再提取开邻域上的 crossing 图卡；随后仍需封帽边缘分类、严格降指标及 Lemma 2–6。F-M1 仍 partial，I1 尚未交付。下一审计文件 `AuditF154.lean`。
