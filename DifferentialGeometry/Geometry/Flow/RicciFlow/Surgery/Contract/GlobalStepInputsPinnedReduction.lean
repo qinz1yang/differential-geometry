@@ -169,17 +169,19 @@ theorem nonempty_globalStepInputs_falseDiscard_iff (p : CutoffParameters) (τ ε
   · rintro ⟨endInput, hneck, hcylinder, hprotect⟩
     exact ⟨{ endInput := endInput
              neckInput := hneck
-             pieceInput := fun _ _ _ _ _ _ h => h.elim
+             pieceInput := fun _ _ _ h => h.elim
              roundInput := sphericalSpaceFormCovering_holds
              cylinderInput := hcylinder
              protectInput := hprotect }⟩
 
-theorem nonempty_globalStepInputs_of_uniformEpsilon_of_connectedDiscard
+open DifferentialGeometry.Topology
+  (componentwiseConnectedSumStandardFactor_of_componentwiseStandardFactor) in
+theorem nonempty_globalStepInputs_of_uniformEpsilon_of_standardDiscard
     {p : CutoffParameters} {τ d : ℝ} {k : ℕ} {DiscardedCutOpen : Type u → Prop}
     (hτ : 0 < τ) (huniform : HasUniformEpsilonSphericalFrontier.{u} τ)
-    (hconnected : ∀ (C : Type u) [TopologicalSpace C] [ChartedSpace ThreeSpace C]
-      [IsManifold ThreeModel ∞ C] [T2Space C] [CompactSpace C],
-      DiscardedCutOpen C → ConnectedSpace C)
+    (hmodels : ∀ (H : ObservedHistory.{u}) (i : Fin H.eventCount),
+      GeometricCutoffRecord H i p → DiscardedCutOpen (H.event i).discarded.Carrier →
+      (H.event i).discarded.toClosedOrientedManifold.componentwiseStandardFactor)
     (hneck : ∀ Λ : ℝ, 1 ≤ Λ →
       (∀ D : OneStepIncoming.{u}, τ ≤ D.endTime →
         Nonempty (TerminalCorePresentation.{u} D (1 / 2) Λ)) →
@@ -194,7 +196,9 @@ theorem nonempty_globalStepInputs_of_uniformEpsilon_of_connectedDiscard
       protectionInput.{u} τ (1 / 2) Λ) :
     Nonempty (GlobalStepInputs.{u} p τ (1 / 2) d k DiscardedCutOpen) :=
   nonempty_globalStepInputs_of_uniformEpsilon hτ (by norm_num) (by norm_num) huniform hneck
-    hcylinder hprotect (pieceInput_of_connectedSpace DiscardedCutOpen hconnected)
+    hcylinder hprotect (fun H i R hD =>
+      componentwiseConnectedSumStandardFactor_of_componentwiseStandardFactor
+        (H.event i).discarded.toClosedOrientedManifold (hmodels H i R hD))
 
 structure PinnedPoincareExtinctionContracts (DiscardedCutOpen : Type u → Prop) where
   geometric : geometricReconstructionBackground.{u}

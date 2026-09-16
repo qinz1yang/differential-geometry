@@ -16,9 +16,9 @@ structure GlobalStepFrontierInputs (p : CutoffParameters) (τ ε d : ℝ) (k : �
     (DiscardedCutOpen : Type u → Prop) where
   endInput : TerminalCorePresentationInput.{u} τ ε
   neckInput : historicalNeckRecognition.{u} τ ε d k endInput.lambda
-  pieceInput : ∀ (C : Type u) [TopologicalSpace C] [ChartedSpace ThreeSpace C]
-    [IsManifold ThreeModel ∞ C] [T2Space C] [CompactSpace C],
-    DiscardedCutOpen C → HasElementaryDiscardDecomposition C
+  pieceInput : ∀ (H : ObservedHistory.{u}) (i : Fin H.eventCount),
+    GeometricCutoffRecord H i p → DiscardedCutOpen (H.event i).discarded.Carrier →
+    (H.event i).discarded.toClosedOrientedManifold.componentwiseConnectedSumStandardFactor
   cylinderInput : hornCylinderLimit.{u} ε endInput.lambda
   protectInput : protectionInput.{u} τ ε endInput.lambda
 
@@ -51,22 +51,18 @@ theorem toGlobalStepInputs_endInput
     (G : GlobalStepFrontierInputs.{u} p τ ε d k DiscardedCutOpen) :
     (toGlobalStepInputs G).endInput = G.endInput := rfl
 
-@[simp]
 theorem toGlobalStepInputs_neckInput
     (G : GlobalStepFrontierInputs.{u} p τ ε d k DiscardedCutOpen) :
     (toGlobalStepInputs G).neckInput = G.neckInput := rfl
 
-@[simp]
 theorem toGlobalStepInputs_pieceInput
     (G : GlobalStepFrontierInputs.{u} p τ ε d k DiscardedCutOpen) :
     (toGlobalStepInputs G).pieceInput = G.pieceInput := rfl
 
-@[simp]
 theorem toGlobalStepInputs_cylinderInput
     (G : GlobalStepFrontierInputs.{u} p τ ε d k DiscardedCutOpen) :
     (toGlobalStepInputs G).cylinderInput = G.cylinderInput := rfl
 
-@[simp]
 theorem toGlobalStepInputs_protectInput
     (G : GlobalStepFrontierInputs.{u} p τ ε d k DiscardedCutOpen) :
     (toGlobalStepInputs G).protectInput = G.protectInput := rfl
@@ -112,9 +108,9 @@ theorem nonempty_globalStepInputs_of_endInput
     (p : CutoffParameters) (τ ε d : ℝ) (k : ℕ) (DiscardedCutOpen : Type u → Prop)
     (endInput : TerminalCorePresentationInput.{u} τ ε)
     (neckInput : historicalNeckRecognition.{u} τ ε d k endInput.lambda)
-    (pieceInput : ∀ (C : Type u) [TopologicalSpace C] [ChartedSpace ThreeSpace C]
-      [IsManifold ThreeModel ∞ C] [T2Space C] [CompactSpace C],
-      DiscardedCutOpen C → HasElementaryDiscardDecomposition C)
+    (pieceInput : ∀ (H : ObservedHistory.{u}) (i : Fin H.eventCount),
+      GeometricCutoffRecord H i p → DiscardedCutOpen (H.event i).discarded.Carrier →
+      (H.event i).discarded.toClosedOrientedManifold.componentwiseConnectedSumStandardFactor)
     (cylinderInput : hornCylinderLimit.{u} ε endInput.lambda)
     (protectInput : protectionInput.{u} τ ε endInput.lambda) :
     Nonempty (GlobalStepInputs.{u} p τ ε d k DiscardedCutOpen) :=

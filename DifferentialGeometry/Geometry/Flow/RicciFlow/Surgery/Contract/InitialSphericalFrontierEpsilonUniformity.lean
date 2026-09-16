@@ -63,9 +63,9 @@ theorem nonempty_globalStepInputs_of_uniformEpsilon {p : CutoffParameters} {τ �
       (∀ D : OneStepIncoming.{u}, τ ≤ D.endTime →
         Nonempty (TerminalCorePresentation.{u} D ε Λ)) →
       protectionInput.{u} τ ε Λ)
-    (hpiece : ∀ (C : Type u) [TopologicalSpace C] [ChartedSpace ThreeSpace C]
-      [IsManifold ThreeModel ∞ C] [T2Space C] [CompactSpace C],
-      DiscardedCutOpen C → HasElementaryDiscardDecomposition C) :
+    (hpiece : ∀ (H : ObservedHistory.{u}) (i : Fin H.eventCount),
+      GeometricCutoffRecord H i p → DiscardedCutOpen (H.event i).discarded.Carrier →
+      (H.event i).discarded.toClosedOrientedManifold.componentwiseConnectedSumStandardFactor) :
     Nonempty (GlobalStepInputs.{u} p τ ε d k DiscardedCutOpen) := by
   obtain ⟨Λ, hΛ, hΛpres⟩ := U ε hε hε1
   exact Nonempty.intro
@@ -97,9 +97,9 @@ theorem exists_pair_and_globalStepInputs_of_hasInitialSphericalFrontier
       (∀ D : OneStepIncoming.{u}, τ ≤ D.endTime →
         Nonempty (TerminalCorePresentation.{u} D ε Λ)) →
       protectionInput.{u} τ ε Λ)
-    (hpiece : ∀ (C : Type u) [TopologicalSpace C] [ChartedSpace ThreeSpace C]
-      [IsManifold ThreeModel ∞ C] [T2Space C] [CompactSpace C],
-      DiscardedCutOpen C → HasElementaryDiscardDecomposition C) :
+    (hpiece : ∀ (H : ObservedHistory.{u}) (i : Fin H.eventCount),
+      GeometricCutoffRecord H i p → DiscardedCutOpen (H.event i).discarded.Carrier →
+      (H.event i).discarded.toClosedOrientedManifold.componentwiseConnectedSumStandardFactor) :
     ∃ ε Λ : ℝ, 0 < ε ∧ ε < 1 ∧ 1 ≤ Λ ∧
       Nonempty (GlobalStepInputs.{u} p τ ε d k DiscardedCutOpen) := by
   obtain ⟨ε, Λ, hε, hε1, hΛ, hΛpres⟩ := H

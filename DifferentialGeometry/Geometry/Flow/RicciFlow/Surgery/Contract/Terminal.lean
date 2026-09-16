@@ -5,6 +5,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryExte
 import DifferentialGeometry.Topology.Manifold.SmoothTwoSidedCollar
 import DifferentialGeometry.Topology.ThreeManifold.CutCapReconstruction
 import DifferentialGeometry.Topology.ThreeManifold.PoincareStandard
+import DifferentialGeometry.Topology.ThreeManifold.PoincareStandardDiscarded
 import DifferentialGeometry.Topology.ThreeManifold.StandardFactors
 import DifferentialGeometry.Geometry.Curvature.Riemann.SectionalCurvature
 import DifferentialGeometry.Geometry.Metric.Distance.Ball
@@ -394,9 +395,9 @@ structure GlobalStepInputs (p : CutoffParameters) (τ ε d : ℝ) (k : ℕ)
     (DiscardedCutOpen : Type u → Prop) where
   endInput : TerminalCorePresentationInput.{u} τ ε
   neckInput : historicalNeckRecognition.{u} τ ε d k endInput.lambda
-  pieceInput : ∀ (C : Type u) [TopologicalSpace C] [ChartedSpace ThreeSpace C]
-    [IsManifold ThreeModel ∞ C] [T2Space C] [CompactSpace C],
-    DiscardedCutOpen C → HasElementaryDiscardDecomposition C
+  pieceInput : ∀ (H : ObservedHistory.{u}) (i : Fin H.eventCount),
+    GeometricCutoffRecord H i p → DiscardedCutOpen (H.event i).discarded.Carrier →
+    (H.event i).discarded.toClosedOrientedManifold.componentwiseConnectedSumStandardFactor
   roundInput : sphericalSpaceFormCovering.{u}
   cylinderInput : hornCylinderLimit.{u} ε endInput.lambda
   protectInput : protectionInput.{u} τ ε endInput.lambda

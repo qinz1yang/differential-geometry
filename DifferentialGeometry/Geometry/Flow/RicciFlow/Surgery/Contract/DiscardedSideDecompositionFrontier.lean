@@ -139,4 +139,14 @@ theorem componentwiseStandardFactorOrProjectiveThreeSpaceSum_of_discardPresentat
     obtain ⟨i, he⟩ := h c
     exact Or.inl (isStandardFactor_component_of_discardPresentation P c i (Classical.choice he))
 
+theorem GlobalStepInputs.component_isPoincareStandard
+    {p : CutoffParameters} {τ ε d : ℝ} {k : ℕ} {DiscardedCutOpen : Type u → Prop}
+    (G : GlobalStepInputs.{u} p τ ε d k DiscardedCutOpen)
+    (H : ObservedHistory.{u}) (i : Fin H.eventCount) (R : GeometricCutoffRecord H i p)
+    (hD : DiscardedCutOpen (H.event i).discarded.Carrier)
+    (C : ConnectedComponents (H.event i).discarded.Carrier) :
+    componentIsPoincareStandard (H.event i).discarded.toClosedOrientedManifold C :=
+  componentwise_isPoincareStandard_of_componentwiseConnectedSumStandardFactor
+    (H.event i).discarded.toClosedOrientedManifold (G.pieceInput H i R hD) C
+
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
