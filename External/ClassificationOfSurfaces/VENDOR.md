@@ -1545,3 +1545,24 @@ The module check exits 0 with zero warnings. `AuditS64.lean` audits both
 new declarations: exit 0, with only `propext`, `Classical.choice`, and
 `Quot.sound`. Logs: `.lake/scratch/check-boundary-subdivision.log` and
 `.lake/scratch/audit-boundary-subdivision.log`.
+
+## Relative boundary-disk extensions
+
+`SphericalDiskExtension.lean` now extends a PL self-homeomorphism of a
+parameterized disk, fixed on its parameter boundary, to its containing
+PL 2-sphere while fixing the closed complement disk pointwise. The
+boundary-extension theorem then extends this map over a PL 3-ball with
+the same fixed complement. A union version extends over an additional
+polyhedron by the identity when its intersection with the ball lies in
+that fixed complement. These are native relative consequences of the
+already proved sphere-disk complement and boundary-extension results;
+no vendored source changed.
+
+The intersection condition is explicit and is not claimed to follow
+from an arbitrary finite cover. General boundary-disk engulfing,
+`hpush`, and the collar remain open. The module check exits 0 with zero
+warnings; `AuditS65.lean` checks the three new declarations and the two
+preserved extension interfaces, all with only `propext`,
+`Classical.choice`, and `Quot.sound`. Logs are
+`.lake/scratch/check-relative-disk-extension.log` and
+`.lake/scratch/audit-relative-disk-extension.log`.
