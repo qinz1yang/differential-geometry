@@ -716,3 +716,14 @@ theorem eq_top_of_boundaryLoops_mem_normal
   `.lake/scratch/AuditE3M2.lean` 的 54 项与 `.lake/scratch/audit-cut-and-paste-restriction.lean` 的 12 项审计均 exit=0，
   全部只含 `propext`、`Classical.choice`、`Quot.sound`。首次 fresh 尝试检测到其它工作树的 Lean 进程后按规则以 17 退出；
   等该进程自然结束后才继续，没有终止其它进程。
+
+## 33. 2026-09-16 E3-M2 追加：Case 3/4 边界道路字与缝端碰撞
+
+状态：partial（书页 186–187 的两种道路重接已按 Mathlib 基本群乘法约定闭合；外侧手术胞腔的缝端碰撞自动给出严格复杂度下降，几何道路生产者与第二张手术胞腔仍待闭合）。
+
+- `SingularCell.lean` 的 `loopRepresentativeAlong_pathToCircle` 把道路闭环 `pathToCircle p` 沿任意基点连接道路搬到 `fundamentalGroupChangeBasepoint q ⟦p⟧`。`CutAndPaste.lean` 的 `loopRepresentativeAlong_mem_iff_loopClassMeets_basedCircle` 及否定版把该指定代表元与自由环共轭类是否遇到正规子群精确对应。
+- Mathlib 的基本群乘法满足 `p * q = q.trans p`，所以书中的从左到右道路字在基本群中必须反序。`not_loopClassMeets_or_not_loopClassMeets_of_endpoint_reversing_reconnection` 对
+  `L = στυφ` 给出 `L₁ = συ⁻¹` 或 `L₂ = σφυτ` 至少一个仍避开正规子群；`not_loopClassMeets_or_not_loopClassMeets_of_endpoint_preserving_reconnection` 对同一母道路给出 `L₁ = συ` 或 `L₂ = στ⁻¹υφ⁻¹` 至少一个仍避开正规子群。证明插入任意连接道路 `c`，在基本群胚中消去 `c⁻¹c`，再用 `not_mem_or_not_mem_of_four_path_reverse_order` 与 `not_mem_or_not_mem_of_four_path_preserving_order` 的正规共轭闭性；没有把道路字等式改写为假设。
+- `NormalSingularCellData.exists_boundary_surgery_cell_of_boundaryBranch` 现在还交付四个缝端分别落在 `A,C` 及 `EqOn D (D ∘ g) A`。`simplicialComplexity_lt_of_surgery_pullback_of_seam` 由端点定向二分自动选择被新拉回遗漏的旧碰撞对 `(p,r)` 或 `(p,s)`；调用者仍需提供适配的原/新有限源三角剖分、顶点搬运和三个缝端是旧顶点。
+- `SingularCell` 与 `CutAndPaste` 聚焦检查均 exit=0、零 warning。`fresh.py` 对相对整合提交 `4401dd9d1` 的两个改动 Lean 模块报告 fresh=2、forbidden=0、stale=0、missing=0。更新后的 `.lake/scratch/AuditE3M2.lean` 共 62 项，审计 exit=0，全部只含 `propext`、`Classical.choice`、`Quot.sound`。检查和审计前均先确认全局没有 `lean.exe`；检测到其它工作树进程时以 17 退出并等待，没有终止进程。
+- 本层没有宣称 Case 3/4 或 Lemma 2 已完成。仍缺从 `NormalSystem.boundaryParam`、I3 的两条实际分支原像和贴合后的 frontier 表示构造上述 `σ,τ,υ,φ`，并证明手术胞腔的边界参数恰为相应 `pathToCircle`；还缺构造第二张交叉贴合胞腔 `L₂`，以及从适配源三角剖分把缝端选为顶点。Case 1/2 的环带模型、内盘替换与 I2 推离也仍未闭合。

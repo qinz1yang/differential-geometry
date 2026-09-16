@@ -175,6 +175,19 @@ noncomputable def loopRepresentativeAlong
   DifferentialGeometry.Topology.fundamentalGroupChangeBasepoint q
     (basedCircleFundamentalGroupClass γ)
 
+open Classical in
+theorem loopRepresentativeAlong_pathToCircle
+    {X : Type u} [TopologicalSpace X] {x y : X}
+    (q : Path x y) (p : Path y y) :
+    loopRepresentativeAlong q
+        (⟨pathToCircle p, pathToCircle_zero p⟩ : basedCircleLoop y) =
+      DifferentialGeometry.Topology.fundamentalGroupChangeBasepoint q
+        (Path.Homotopic.Quotient.mk p) := by
+  unfold loopRepresentativeAlong basedCircleFundamentalGroupClass
+  rw [show circleToPath
+      (⟨pathToCircle p, pathToCircle_zero p⟩ : basedCircleLoop y) = p from
+    (basedPathCircleHomeomorph y).left_inv p]
+
 theorem loopRepresentativeAlong_connector
     {X : Type u} [TopologicalSpace X] {x y : X}
     (q q' : Path x y) (γ : basedCircleLoop y) :

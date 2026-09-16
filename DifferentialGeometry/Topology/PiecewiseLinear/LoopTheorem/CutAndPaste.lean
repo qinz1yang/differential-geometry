@@ -1226,6 +1226,8 @@ theorem exists_boundary_surgery_cell_of_boundaryBranch
       hD.branchPreimage c = A ∪ C ∧
       IsPLBall 1 U ∧ IsPLBall 1 V ∧ Disjoint U V ∧
       IsPLHomeomorphOn g A C ∧
+      p ∈ A ∧ q ∈ A ∧ r ∈ C ∧ s ∈ C ∧
+      EqOn D (D ∘ g) A ∧
       ((g p = r ∧ g q = s) ∨ (g p = s ∧ g q = r)) ∧
       MapsTo pullback G.domain D.domain ∧
       InjOn pullback G.domain ∧
@@ -2032,7 +2034,9 @@ theorem exists_boundary_surgery_cell_of_boundaryBranch
   exact ⟨A, C, D₁.domain ∩ frontier D.domain,
     D₃.domain ∩ frontier D.domain, p, q, r, s, g, G, pullback,
     hA, hC, hAC, hcover, htrace₁, htrace₃,
-    hdisjoint₁₃.mono inter_subset_left inter_subset_left, hg, horientation,
+    hdisjoint₁₃.mono inter_subset_left inter_subset_left, hg,
+    hcut₁.fst.left_mem, hcut₁.fst.right_mem,
+    hcut₃.fst.left_mem, hcut₃.fst.right_mem, hcompat, horientation,
     hpullback_mem, hpullback_inj, hpullback_apply, hpullback_disjoint_C,
     hGimage, hrange, himageBoundary, hrangeB, hinterB, hlocallyInjective, hfiber,
     hdouble, hremove, hGsingular, hGnormal⟩
@@ -2065,6 +2069,67 @@ theorem simplicialComplexity_lt_of_surgery_pullback
     rintro ⟨x, hx, hxeq⟩
     exact Set.disjoint_left.mp hdisjoint
       ⟨x, hLdomain hx, rfl⟩ (hxeq ▸ hwC)
+
+open Classical in
+theorem simplicialComplexity_lt_of_surgery_pullback_of_seam
+    {M : Type u} [TopologicalSpace M]
+    [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
+    (K L : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2)))
+    [Finite K.faces] [Finite L.faces]
+    (D G : SingularTwoCell M)
+    (pullback g : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 2))
+    {A C : Set (EuclideanSpace ℝ (Fin 2))}
+    {p q r s : EuclideanSpace ℝ (Fin 2)}
+    (hLdomain : L.vertices ⊆ G.domain)
+    (hvertices : MapsTo pullback L.vertices K.vertices)
+    (hinj : InjOn pullback G.domain)
+    (hfactor : EqOn (D ∘ pullback) G G.domain)
+    (hdisjoint : Disjoint (pullback '' G.domain) C)
+    (hAC : Disjoint A C) (hpA : p ∈ A) (hrC : r ∈ C) (hsC : s ∈ C)
+    (hcompat : EqOn D (D ∘ g) A)
+    (horientation : (g p = r ∧ g q = s) ∨ (g p = s ∧ g q = r))
+    (hp : p ∈ K.vertices) (hr : r ∈ K.vertices) (hs : s ∈ K.vertices) :
+    simplicialComplexity L G < simplicialComplexity K D := by
+  rcases horientation with horientation | horientation
+  · apply simplicialComplexity_lt_of_surgery_pullback K L D G pullback
+      hLdomain hvertices hinj hfactor hdisjoint hp hr
+    · intro hpr
+      exact Set.disjoint_left.mp hAC hpA (by simpa only [hpr] using hrC)
+    · exact (hcompat hpA).trans (congrArg D horientation.1)
+    · exact hrC
+  · apply simplicialComplexity_lt_of_surgery_pullback K L D G pullback
+      hLdomain hvertices hinj hfactor hdisjoint hp hs
+    · intro hps
+      exact Set.disjoint_left.mp hAC hpA (by simpa only [hps] using hsC)
+    · exact (hcompat hpA).trans (congrArg D horientation.1)
+    · exact hsC
+
+open Classical in
+theorem loopRepresentativeAlong_mem_iff_loopClassMeets_basedCircle
+    {X : Type u} [TopologicalSpace X] [PathConnectedSpace X]
+    {x y : X} (q : Path x y) (γ : basedCircleLoop y)
+    (N : Subgroup (FundamentalGroup X x)) [N.Normal] :
+    loopRepresentativeAlong q γ ∈ N ↔ loopClassMeets γ.val x N := by
+  let l := loopRepresentativeAlong q γ
+  have hclass : FreeLoop.conjugacyClass γ.val x = ConjClasses.mk l :=
+    FreeLoop.conjugacyClass_eq_mk_loopRepresentativeAlong q γ
+  have hl : l ∈ (FreeLoop.conjugacyClass γ.val x).carrier := by
+    rw [hclass]
+    exact ConjClasses.mem_carrier_iff_mk_eq.mpr rfl
+  constructor
+  · intro hlN
+    exact ⟨l, hl, hlN⟩
+  · intro hmeet
+    exact ((conjugacyClassMeets_iff_carrier_subset
+      (FreeLoop.conjugacyClass γ.val x) N).mp hmeet) hl
+
+open Classical in
+theorem not_loopClassMeets_iff_loopRepresentativeAlong_not_mem_basedCircle
+    {X : Type u} [TopologicalSpace X] [PathConnectedSpace X]
+    {x y : X} (q : Path x y) (γ : basedCircleLoop y)
+    (N : Subgroup (FundamentalGroup X x)) [N.Normal] :
+    ¬loopClassMeets γ.val x N ↔ loopRepresentativeAlong q γ ∉ N :=
+  (not_congr (loopRepresentativeAlong_mem_iff_loopClassMeets_basedCircle q γ N)).symm
 
 open Classical in
 theorem loopRepresentativeAlong_mem_iff_loopClassMeets
@@ -2151,6 +2216,45 @@ theorem not_loopClassMeets_or_not_loopClassMeets_of_eq_mul_conj_mul_conj
     (fun h => (not_loopClassMeets_iff_loopRepresentativeAlong_not_mem
       L₂ x N q₂).mpr h)
 
+theorem not_mem_or_not_mem_of_four_path_reverse_order
+    {G : Type*} [Group G] (N : Subgroup G) [N.Normal]
+    {a b c d : G} (hN : d * c * b * a ∉ N) :
+    c⁻¹ * a ∉ N ∨ b * c * d * a ∉ N := by
+  by_contra h
+  rw [not_or] at h
+  have h₁ : c⁻¹ * a ∈ N := not_not.mp h.1
+  have h₂ : b * c * d * a ∈ N := not_not.mp h.2
+  apply hN
+  rw [show d * c * b * a =
+      ((d * a) * (c⁻¹ * a)⁻¹ * (d * a)⁻¹) *
+        ((b * c)⁻¹ * (b * c * d * a) * (b * c)) * (c⁻¹ * a) by group]
+  exact N.mul_mem
+    (N.mul_mem
+      (‹N.Normal›.conj_mem (c⁻¹ * a)⁻¹ (N.inv_mem h₁) (d * a))
+      (by
+        have hconj := ‹N.Normal›.conj_mem (b * c * d * a) h₂ (b * c)⁻¹
+        simpa only [inv_inv] using hconj)) h₁
+
+theorem not_mem_or_not_mem_of_four_path_preserving_order
+    {G : Type*} [Group G] (N : Subgroup G) [N.Normal]
+    {a b c d : G} (hN : d * c * b * a ∉ N) :
+    c * a ∉ N ∨ d⁻¹ * c * b⁻¹ * a ∉ N := by
+  by_contra h
+  rw [not_or] at h
+  have h₁ : c * a ∈ N := not_not.mp h.1
+  have h₂ : d⁻¹ * c * b⁻¹ * a ∈ N := not_not.mp h.2
+  apply hN
+  rw [show d * c * b * a =
+      (c * b * c⁻¹)⁻¹ *
+        ((c * a) * (d⁻¹ * c * b⁻¹ * a)⁻¹) *
+        (c * b * c⁻¹) * (c * a) by group]
+  exact N.mul_mem
+    (by
+      have hconj := ‹N.Normal›.conj_mem
+        ((c * a) * (d⁻¹ * c * b⁻¹ * a)⁻¹)
+        (N.mul_mem h₁ (N.inv_mem h₂)) (c * b * c⁻¹)⁻¹
+      simpa only [inv_inv] using hconj) h₁
+
 theorem four_path_mul_conj_inv_mul_factorization
     {G : Type*} [Group G] (s t u p : G) :
     s * t * u * p =
@@ -2194,5 +2298,330 @@ theorem not_loopClassMeets_or_not_loopClassMeets_of_four_path_factorization
       L₁ x N q₁).mpr (by rw [hword₁]; exact h))
     (fun h => (not_loopClassMeets_iff_loopRepresentativeAlong_not_mem
       L₂ x N q₂).mpr (by rw [hword₂]; exact h))
+
+section
+
+open CategoryTheory
+
+private def reconnectionPathArrow
+    {X : Type u} [TopologicalSpace X] {x y : X}
+    (p : Path x y) : FundamentalGroupoid.mk x ⟶ FundamentalGroupoid.mk y :=
+  Path.Homotopic.Quotient.mk p
+
+private def reconnectionPathClass
+    {X : Type u} [TopologicalSpace X] {x : X}
+    (p : Path x x) : FundamentalGroup X x :=
+  reconnectionPathArrow p
+
+private theorem pathClass_reverse_reconnection_original
+    {X : Type u} [TopologicalSpace X] {a b : X}
+    (c σ υ : Path a b) (τ φ : Path b a) :
+    reconnectionPathClass (σ.trans (τ.trans (υ.trans φ))) =
+      reconnectionPathClass (c.trans φ) *
+        reconnectionPathClass (υ.trans c.symm) *
+        reconnectionPathClass (c.trans τ) *
+        reconnectionPathClass (σ.trans c.symm) := by
+  unfold reconnectionPathClass reconnectionPathArrow
+  simp only [FundamentalGroup.mul_def, Path.Homotopic.Quotient.mk_trans,
+    Path.Homotopic.Quotient.mk_symm]
+  change (reconnectionPathArrow σ ≫ (reconnectionPathArrow τ ≫
+      (reconnectionPathArrow υ ≫ reconnectionPathArrow φ))) =
+    (reconnectionPathArrow σ ≫ CategoryTheory.Groupoid.inv (reconnectionPathArrow c)) ≫
+      ((reconnectionPathArrow c ≫ reconnectionPathArrow τ) ≫
+      ((reconnectionPathArrow υ ≫ CategoryTheory.Groupoid.inv (reconnectionPathArrow c)) ≫
+      (reconnectionPathArrow c ≫ reconnectionPathArrow φ)))
+  simp
+
+private theorem pathClass_reverse_reconnection_first
+    {X : Type u} [TopologicalSpace X] {a b : X}
+    (c σ υ : Path a b) :
+    reconnectionPathClass (σ.trans υ.symm) =
+      (reconnectionPathClass (υ.trans c.symm))⁻¹ *
+        reconnectionPathClass (σ.trans c.symm) := by
+  unfold reconnectionPathClass reconnectionPathArrow
+  simp only [FundamentalGroup.mul_def, FundamentalGroup.inv_def,
+    Path.Homotopic.Quotient.mk_trans, Path.Homotopic.Quotient.mk_symm]
+  change reconnectionPathArrow σ ≫ CategoryTheory.Groupoid.inv (reconnectionPathArrow υ) =
+    (reconnectionPathArrow σ ≫ CategoryTheory.Groupoid.inv (reconnectionPathArrow c)) ≫
+      CategoryTheory.Groupoid.inv
+        (reconnectionPathArrow υ ≫ CategoryTheory.Groupoid.inv (reconnectionPathArrow c))
+  simp
+
+private theorem pathClass_reverse_reconnection_second
+    {X : Type u} [TopologicalSpace X] {a b : X}
+    (c σ υ : Path a b) (τ φ : Path b a) :
+    reconnectionPathClass (σ.trans (φ.trans (υ.trans τ))) =
+      reconnectionPathClass (c.trans τ) *
+        reconnectionPathClass (υ.trans c.symm) *
+        reconnectionPathClass (c.trans φ) *
+        reconnectionPathClass (σ.trans c.symm) := by
+  unfold reconnectionPathClass reconnectionPathArrow
+  simp only [FundamentalGroup.mul_def, Path.Homotopic.Quotient.mk_trans,
+    Path.Homotopic.Quotient.mk_symm]
+  change (reconnectionPathArrow σ ≫ (reconnectionPathArrow φ ≫
+      (reconnectionPathArrow υ ≫ reconnectionPathArrow τ))) =
+    (reconnectionPathArrow σ ≫ CategoryTheory.Groupoid.inv (reconnectionPathArrow c)) ≫
+      ((reconnectionPathArrow c ≫ reconnectionPathArrow φ) ≫
+      ((reconnectionPathArrow υ ≫ CategoryTheory.Groupoid.inv (reconnectionPathArrow c)) ≫
+      (reconnectionPathArrow c ≫ reconnectionPathArrow τ)))
+  simp
+
+private theorem pathClass_preserving_reconnection_original
+    {X : Type u} [TopologicalSpace X] {a b : X}
+    (c σ : Path a b) (τ : Path b b) (υ : Path b a) (φ : Path a a) :
+    reconnectionPathClass (σ.trans (τ.trans (υ.trans φ))) =
+      reconnectionPathClass φ * reconnectionPathClass (c.trans υ) *
+        reconnectionPathClass (c.trans (τ.trans c.symm)) *
+        reconnectionPathClass (σ.trans c.symm) := by
+  unfold reconnectionPathClass reconnectionPathArrow
+  simp only [FundamentalGroup.mul_def, Path.Homotopic.Quotient.mk_trans,
+    Path.Homotopic.Quotient.mk_symm]
+  change (reconnectionPathArrow σ ≫ (reconnectionPathArrow τ ≫
+      (reconnectionPathArrow υ ≫ reconnectionPathArrow φ))) =
+    (reconnectionPathArrow σ ≫ CategoryTheory.Groupoid.inv (reconnectionPathArrow c)) ≫
+      ((reconnectionPathArrow c ≫
+        (reconnectionPathArrow τ ≫ CategoryTheory.Groupoid.inv (reconnectionPathArrow c))) ≫
+      ((reconnectionPathArrow c ≫ reconnectionPathArrow υ) ≫ reconnectionPathArrow φ))
+  simp
+
+private theorem pathClass_preserving_reconnection_first
+    {X : Type u} [TopologicalSpace X] {a b : X}
+    (c σ : Path a b) (υ : Path b a) :
+    reconnectionPathClass (σ.trans υ) =
+      reconnectionPathClass (c.trans υ) *
+        reconnectionPathClass (σ.trans c.symm) := by
+  unfold reconnectionPathClass reconnectionPathArrow
+  simp only [FundamentalGroup.mul_def, Path.Homotopic.Quotient.mk_trans,
+    Path.Homotopic.Quotient.mk_symm]
+  change reconnectionPathArrow σ ≫ reconnectionPathArrow υ =
+    (reconnectionPathArrow σ ≫ CategoryTheory.Groupoid.inv (reconnectionPathArrow c)) ≫
+      (reconnectionPathArrow c ≫ reconnectionPathArrow υ)
+  simp
+
+private theorem pathClass_preserving_reconnection_second
+    {X : Type u} [TopologicalSpace X] {a b : X}
+    (c σ : Path a b) (τ : Path b b) (υ : Path b a) (φ : Path a a) :
+    reconnectionPathClass (σ.trans (τ.symm.trans (υ.trans φ.symm))) =
+      (reconnectionPathClass φ)⁻¹ * reconnectionPathClass (c.trans υ) *
+        (reconnectionPathClass (c.trans (τ.trans c.symm)))⁻¹ *
+        reconnectionPathClass (σ.trans c.symm) := by
+  unfold reconnectionPathClass reconnectionPathArrow
+  simp only [FundamentalGroup.mul_def, FundamentalGroup.inv_def,
+    Path.Homotopic.Quotient.mk_trans, Path.Homotopic.Quotient.mk_symm]
+  change (reconnectionPathArrow σ ≫
+      (CategoryTheory.Groupoid.inv (reconnectionPathArrow τ) ≫
+      (reconnectionPathArrow υ ≫ CategoryTheory.Groupoid.inv (reconnectionPathArrow φ)))) =
+    (reconnectionPathArrow σ ≫ CategoryTheory.Groupoid.inv (reconnectionPathArrow c)) ≫
+      (CategoryTheory.Groupoid.inv
+        (reconnectionPathArrow c ≫
+          (reconnectionPathArrow τ ≫ CategoryTheory.Groupoid.inv (reconnectionPathArrow c))) ≫
+      ((reconnectionPathArrow c ≫ reconnectionPathArrow υ) ≫
+        CategoryTheory.Groupoid.inv (reconnectionPathArrow φ)))
+  simp
+
+open Classical in
+private theorem loopRepresentativeAlong_reverse_reconnection_original
+    {X : Type u} [TopologicalSpace X] {x a b : X}
+    (q : Path x a) (c σ υ : Path a b) (τ φ : Path b a) :
+    let F := DifferentialGeometry.Topology.fundamentalGroupChangeBasepoint q
+    loopRepresentativeAlong q
+        (⟨pathToCircle (σ.trans (τ.trans (υ.trans φ))),
+          pathToCircle_zero _⟩ : basedCircleLoop a) =
+      F (reconnectionPathClass (c.trans φ)) *
+        F (reconnectionPathClass (υ.trans c.symm)) *
+        F (reconnectionPathClass (c.trans τ)) *
+        F (reconnectionPathClass (σ.trans c.symm)) := by
+  dsimp only
+  rw [loopRepresentativeAlong_pathToCircle]
+  change DifferentialGeometry.Topology.fundamentalGroupChangeBasepoint q
+    (reconnectionPathClass (σ.trans (τ.trans (υ.trans φ)))) = _
+  rw [pathClass_reverse_reconnection_original c σ υ τ φ]
+  simp only [map_mul]
+
+open Classical in
+private theorem loopRepresentativeAlong_reverse_reconnection_first
+    {X : Type u} [TopologicalSpace X] {x a b : X}
+    (q : Path x a) (c σ υ : Path a b) :
+    let F := DifferentialGeometry.Topology.fundamentalGroupChangeBasepoint q
+    loopRepresentativeAlong q
+        (⟨pathToCircle (σ.trans υ.symm), pathToCircle_zero _⟩ : basedCircleLoop a) =
+      (F (reconnectionPathClass (υ.trans c.symm)))⁻¹ *
+        F (reconnectionPathClass (σ.trans c.symm)) := by
+  dsimp only
+  rw [loopRepresentativeAlong_pathToCircle]
+  change DifferentialGeometry.Topology.fundamentalGroupChangeBasepoint q
+    (reconnectionPathClass (σ.trans υ.symm)) = _
+  rw [pathClass_reverse_reconnection_first c σ υ]
+  simp only [map_mul]
+  rw [(DifferentialGeometry.Topology.fundamentalGroupChangeBasepoint q).map_inv]
+
+open Classical in
+private theorem loopRepresentativeAlong_reverse_reconnection_second
+    {X : Type u} [TopologicalSpace X] {x a b : X}
+    (q : Path x a) (c σ υ : Path a b) (τ φ : Path b a) :
+    let F := DifferentialGeometry.Topology.fundamentalGroupChangeBasepoint q
+    loopRepresentativeAlong q
+        (⟨pathToCircle (σ.trans (φ.trans (υ.trans τ))),
+          pathToCircle_zero _⟩ : basedCircleLoop a) =
+      F (reconnectionPathClass (c.trans τ)) *
+        F (reconnectionPathClass (υ.trans c.symm)) *
+        F (reconnectionPathClass (c.trans φ)) *
+        F (reconnectionPathClass (σ.trans c.symm)) := by
+  dsimp only
+  rw [loopRepresentativeAlong_pathToCircle]
+  change DifferentialGeometry.Topology.fundamentalGroupChangeBasepoint q
+    (reconnectionPathClass (σ.trans (φ.trans (υ.trans τ)))) = _
+  rw [pathClass_reverse_reconnection_second c σ υ τ φ]
+  simp only [map_mul]
+
+open Classical in
+private theorem loopRepresentativeAlong_preserving_reconnection_original
+    {X : Type u} [TopologicalSpace X] {x a b : X}
+    (q : Path x a) (c σ : Path a b) (τ : Path b b) (υ : Path b a) (φ : Path a a) :
+    let F := DifferentialGeometry.Topology.fundamentalGroupChangeBasepoint q
+    loopRepresentativeAlong q
+        (⟨pathToCircle (σ.trans (τ.trans (υ.trans φ))),
+          pathToCircle_zero _⟩ : basedCircleLoop a) =
+      F (reconnectionPathClass φ) * F (reconnectionPathClass (c.trans υ)) *
+        F (reconnectionPathClass (c.trans (τ.trans c.symm))) *
+        F (reconnectionPathClass (σ.trans c.symm)) := by
+  dsimp only
+  rw [loopRepresentativeAlong_pathToCircle]
+  change DifferentialGeometry.Topology.fundamentalGroupChangeBasepoint q
+    (reconnectionPathClass (σ.trans (τ.trans (υ.trans φ)))) = _
+  rw [pathClass_preserving_reconnection_original c σ τ υ φ]
+  simp only [map_mul]
+
+open Classical in
+private theorem loopRepresentativeAlong_preserving_reconnection_first
+    {X : Type u} [TopologicalSpace X] {x a b : X}
+    (q : Path x a) (c σ : Path a b) (υ : Path b a) :
+    let F := DifferentialGeometry.Topology.fundamentalGroupChangeBasepoint q
+    loopRepresentativeAlong q
+        (⟨pathToCircle (σ.trans υ), pathToCircle_zero _⟩ : basedCircleLoop a) =
+      F (reconnectionPathClass (c.trans υ)) *
+        F (reconnectionPathClass (σ.trans c.symm)) := by
+  dsimp only
+  rw [loopRepresentativeAlong_pathToCircle]
+  change DifferentialGeometry.Topology.fundamentalGroupChangeBasepoint q
+    (reconnectionPathClass (σ.trans υ)) = _
+  rw [pathClass_preserving_reconnection_first c σ υ]
+  simp only [map_mul]
+
+open Classical in
+private theorem loopRepresentativeAlong_preserving_reconnection_second
+    {X : Type u} [TopologicalSpace X] {x a b : X}
+    (q : Path x a) (c σ : Path a b) (τ : Path b b) (υ : Path b a) (φ : Path a a) :
+    let F := DifferentialGeometry.Topology.fundamentalGroupChangeBasepoint q
+    loopRepresentativeAlong q
+        (⟨pathToCircle (σ.trans (τ.symm.trans (υ.trans φ.symm))),
+          pathToCircle_zero _⟩ : basedCircleLoop a) =
+      (F (reconnectionPathClass φ))⁻¹ * F (reconnectionPathClass (c.trans υ)) *
+        (F (reconnectionPathClass (c.trans (τ.trans c.symm))))⁻¹ *
+        F (reconnectionPathClass (σ.trans c.symm)) := by
+  dsimp only
+  rw [loopRepresentativeAlong_pathToCircle]
+  change DifferentialGeometry.Topology.fundamentalGroupChangeBasepoint q
+    (reconnectionPathClass (σ.trans (τ.symm.trans (υ.trans φ.symm)))) = _
+  rw [pathClass_preserving_reconnection_second c σ τ υ φ]
+  simp only [map_mul]
+  rw [(DifferentialGeometry.Topology.fundamentalGroupChangeBasepoint q).map_inv,
+    (DifferentialGeometry.Topology.fundamentalGroupChangeBasepoint q).map_inv]
+
+open Classical in
+private theorem not_loopClassMeets_based_of_reverse_words
+    {X : Type u} [TopologicalSpace X] [PathConnectedSpace X]
+    {x a : X} (q : Path x a) (N : Subgroup (FundamentalGroup X x)) [N.Normal]
+    (γ γ₁ γ₂ : basedCircleLoop a) (A B C D : FundamentalGroup X x)
+    (hword : loopRepresentativeAlong q γ = D * C * B * A)
+    (hword₁ : loopRepresentativeAlong q γ₁ = C⁻¹ * A)
+    (hword₂ : loopRepresentativeAlong q γ₂ = B * C * D * A)
+    (hL : ¬loopClassMeets γ.val x N) :
+    ¬loopClassMeets γ₁.val x N ∨ ¬loopClassMeets γ₂.val x N := by
+  have hrep : loopRepresentativeAlong q γ ∉ N :=
+    (not_loopClassMeets_iff_loopRepresentativeAlong_not_mem_basedCircle q γ N).mp hL
+  have hsplit : C⁻¹ * A ∉ N ∨ B * C * D * A ∉ N :=
+    not_mem_or_not_mem_of_four_path_reverse_order N (by rw [← hword]; exact hrep)
+  exact hsplit.imp
+    (fun h =>
+      (not_loopClassMeets_iff_loopRepresentativeAlong_not_mem_basedCircle q γ₁ N).mpr
+        (by rw [hword₁]; exact h))
+    (fun h =>
+      (not_loopClassMeets_iff_loopRepresentativeAlong_not_mem_basedCircle q γ₂ N).mpr
+        (by rw [hword₂]; exact h))
+
+open Classical in
+private theorem not_loopClassMeets_based_of_preserving_words
+    {X : Type u} [TopologicalSpace X] [PathConnectedSpace X]
+    {x a : X} (q : Path x a) (N : Subgroup (FundamentalGroup X x)) [N.Normal]
+    (γ γ₁ γ₂ : basedCircleLoop a) (A B C D : FundamentalGroup X x)
+    (hword : loopRepresentativeAlong q γ = D * C * B * A)
+    (hword₁ : loopRepresentativeAlong q γ₁ = C * A)
+    (hword₂ : loopRepresentativeAlong q γ₂ = D⁻¹ * C * B⁻¹ * A)
+    (hL : ¬loopClassMeets γ.val x N) :
+    ¬loopClassMeets γ₁.val x N ∨ ¬loopClassMeets γ₂.val x N := by
+  have hrep : loopRepresentativeAlong q γ ∉ N :=
+    (not_loopClassMeets_iff_loopRepresentativeAlong_not_mem_basedCircle q γ N).mp hL
+  have hsplit : C * A ∉ N ∨ D⁻¹ * C * B⁻¹ * A ∉ N :=
+    not_mem_or_not_mem_of_four_path_preserving_order N (by rw [← hword]; exact hrep)
+  exact hsplit.imp
+    (fun h =>
+      (not_loopClassMeets_iff_loopRepresentativeAlong_not_mem_basedCircle q γ₁ N).mpr
+        (by rw [hword₁]; exact h))
+    (fun h =>
+      (not_loopClassMeets_iff_loopRepresentativeAlong_not_mem_basedCircle q γ₂ N).mpr
+        (by rw [hword₂]; exact h))
+
+open Classical in
+theorem not_loopClassMeets_or_not_loopClassMeets_of_endpoint_reversing_reconnection
+    {X : Type u} [TopologicalSpace X] [PathConnectedSpace X]
+    {x a b : X} (q : Path x a) (c σ υ : Path a b) (τ φ : Path b a)
+    (N : Subgroup (FundamentalGroup X x)) [N.Normal]
+    (hL : ¬loopClassMeets (pathToCircle (σ.trans (τ.trans (υ.trans φ)))) x N) :
+    ¬loopClassMeets (pathToCircle (σ.trans υ.symm)) x N ∨
+      ¬loopClassMeets (pathToCircle (σ.trans (φ.trans (υ.trans τ)))) x N := by
+  exact not_loopClassMeets_based_of_reverse_words q N
+    (⟨pathToCircle (σ.trans (τ.trans (υ.trans φ))), pathToCircle_zero _⟩)
+    (⟨pathToCircle (σ.trans υ.symm), pathToCircle_zero _⟩)
+    (⟨pathToCircle (σ.trans (φ.trans (υ.trans τ))), pathToCircle_zero _⟩)
+    (DifferentialGeometry.Topology.fundamentalGroupChangeBasepoint q
+      (reconnectionPathClass (σ.trans c.symm)))
+    (DifferentialGeometry.Topology.fundamentalGroupChangeBasepoint q
+      (reconnectionPathClass (c.trans τ)))
+    (DifferentialGeometry.Topology.fundamentalGroupChangeBasepoint q
+      (reconnectionPathClass (υ.trans c.symm)))
+    (DifferentialGeometry.Topology.fundamentalGroupChangeBasepoint q
+      (reconnectionPathClass (c.trans φ)))
+    (loopRepresentativeAlong_reverse_reconnection_original q c σ υ τ φ)
+    (loopRepresentativeAlong_reverse_reconnection_first q c σ υ)
+    (loopRepresentativeAlong_reverse_reconnection_second q c σ υ τ φ) hL
+
+open Classical in
+theorem not_loopClassMeets_or_not_loopClassMeets_of_endpoint_preserving_reconnection
+    {X : Type u} [TopologicalSpace X] [PathConnectedSpace X]
+    {x a b : X} (q : Path x a) (c σ : Path a b)
+    (τ : Path b b) (υ : Path b a) (φ : Path a a)
+    (N : Subgroup (FundamentalGroup X x)) [N.Normal]
+    (hL : ¬loopClassMeets (pathToCircle (σ.trans (τ.trans (υ.trans φ)))) x N) :
+    ¬loopClassMeets (pathToCircle (σ.trans υ)) x N ∨
+      ¬loopClassMeets
+        (pathToCircle (σ.trans (τ.symm.trans (υ.trans φ.symm)))) x N := by
+  exact not_loopClassMeets_based_of_preserving_words q N
+    (⟨pathToCircle (σ.trans (τ.trans (υ.trans φ))), pathToCircle_zero _⟩)
+    (⟨pathToCircle (σ.trans υ), pathToCircle_zero _⟩)
+    (⟨pathToCircle (σ.trans (τ.symm.trans (υ.trans φ.symm))), pathToCircle_zero _⟩)
+    (DifferentialGeometry.Topology.fundamentalGroupChangeBasepoint q
+      (reconnectionPathClass (σ.trans c.symm)))
+    (DifferentialGeometry.Topology.fundamentalGroupChangeBasepoint q
+      (reconnectionPathClass (c.trans (τ.trans c.symm))))
+    (DifferentialGeometry.Topology.fundamentalGroupChangeBasepoint q
+      (reconnectionPathClass (c.trans υ)))
+    (DifferentialGeometry.Topology.fundamentalGroupChangeBasepoint q
+      (reconnectionPathClass φ))
+    (loopRepresentativeAlong_preserving_reconnection_original q c σ τ υ φ)
+    (loopRepresentativeAlong_preserving_reconnection_first q c σ υ)
+    (loopRepresentativeAlong_preserving_reconnection_second q c σ τ υ φ) hL
+
+end
 
 end DifferentialGeometry.Topology.PiecewiseLinear
