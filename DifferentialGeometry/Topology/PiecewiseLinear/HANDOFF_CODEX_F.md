@@ -1687,3 +1687,9 @@ F-M2–F-M6 尚未开始；按用户指定顺序推进，只有出现 §1 接口
 `BoundaryLinkGerm.lean` 已提交并推送为 `c0598e23c`。`map_le_of_mem_geometricLink_space_of_eventually` 以链环射线缩回接缝点，证明局部位于旧高度闭半空间会强制整个几何链环位于该闭半空间。`mem_geometricLink_boundaryComplex_of_height_eq_of_eventually` 证明任一等高链环顶点必属于边界链环：在对应边上选取足够靠近接缝点的开单形点，由边界等高集合芽把该点放入边界复形，再以开单形载体唯一性把整条边降到边界复形。PL 二球盘的边界链环是 PL 零球面，两个已知不同边界方向因而穷尽它。主端点 `geometricLink_vertices_lt_of_halfSpace_boundary_germ` 由此把所有其他链环顶点的闭侧不等式提升为严格不等式；`eventually_geometricLink_section_subsingleton_of_halfSpace_boundary_germ` 直接给充分小一般位置高度下的保留链环单点截面。
 
 模块聚焦检查 exit=0（11.9 秒）、零 warning；`AuditF171.lean` 六个端点均仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步从 `HeightSides` 的相反半空间集合芽、水平圆周的局部等高识别以及接缝适配三角剖分构造本端点的两个 germ 输入和边界链环两方向。之后将保留盘与凸帽的两个单点截面合并。F-M1 仍为 partial，严格降指标、Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF172.lean`。
+
+### 19.24 F-M1：局部直线接缝的两个相反链环方向
+
+`BoundaryLinkDirections.lean` 已提交并推送为 `48aa32b7c`。主端点 `exists_geometricLink_pair_openSegment_of_eventually_line` 处理有限一维组合流形在顶点附近等于一条仿射直线的情形。证明分别沿直线的正负方向进入载体，以几何链环的射线截取取得两个实际邻接顶点，再用一维组合流形的面维数界把链环点识别为单点面；两个正射线参数给出显式凸组合，证明原顶点位于这两个方向之间的开线段。结论同时返回不同性、两项面成员关系和开线段关系，不把任一项作为假设。
+
+模块聚焦检查 exit=0（12.7 秒）、零 warning；`AuditF172.lean` 主端点仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步证明三元素仿射独立三角形的边界在任一对边相对内部点附近恰等于该对边的仿射直线，并通过保留盘边界空间等式实例化本端点。随后接入 `BoundaryLinkGerm`。F-M1 仍为 partial，严格降指标、Lemma 1、Lemma 2–6 和 I1 尚未交付；下一审计文件 `AuditF173.lean`。
