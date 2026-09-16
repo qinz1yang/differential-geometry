@@ -684,7 +684,7 @@ no second-batch source or duplicate Jordan extension wrapper was introduced.
 | S-M1 | done: regular-neighborhood pieces, attaching disks, general ambient spaces | `2375fc812`; AuditS67--S69: 42; AuditS71General: 5 | None for the requested piece/intersection layer |
 | S-M2 | done: complete boundary-disk derived neighborhood and Problem 26.1 | `d12dd514a`; AuditS70: 6; AuditS73Disk: 5 | None for the containing-ball theorem |
 | S-M3 | partial: general parametrized PL push-off and Euclidean singular cell | `bd74dd7ca`; AuditS72Intrinsic: 7; AuditS74Push: 3 | `SingularTwoCell K.space` needs a boundary-compatible target type; its current Euclidean open-chart requirement is not available from a manifold-with-boundary hypothesis |
-| S-M4 | partial: controlled local collars, actual complements, precise boundaries, prescribed-side prism extension, compatible collar enlargement, and preservation of both complementary-boundary interface conditions | `5f97aca9d`, `41b78491e`, `51e4d8f21`, `7f062e84c`, `bc9b5bbcb`, `7ec642daf`, `66d39dbdd`; AuditS75: 13; S78: 4; S80: 16; S81: 13; S82--S84: 25 | Boundary cell ordering, future attaching disks in the new complementary boundary, finite induction, and the whole-boundary neighborhood property |
+| S-M4 | partial: controlled local collars, actual complements, precise boundaries, compatible enlargement, persistence of later collar disks, and dual-cell intersection producers | `5f97aca9d`, `41b78491e`, `51e4d8f21`, `7f062e84c`, `bc9b5bbcb`, `7ec642daf`, `66d39dbdd`, `ee372da29`, `142653991`, `fe71026b6`; AuditS75: 13; S78: 4; S80: 16; S81: 13; S82--S84: 25; S85--S87: 24 | Convert the shared-arc cover to disjoint arc components or the whole circle, assemble the finite collar induction, and prove the whole-boundary neighborhood property |
 | S-M5 | partial: 26.1 in Hausdorff PL charted ambient spaces | `ddf717a4b`; AuditS76TwoSided: 11 | Interior chart transport for arbitrary K; for 26.3, exactly two sides with manifold closures, then full 26.2 |
 | S-M6 | partial: general relative 17.3 done; P.4 inputs checked | `f0383a381`; AuditS77RelativeDisk: 4; AuditS79P4Inputs: 3 | Supported ambient graph extension with control, as detailed above |
 
@@ -985,3 +985,17 @@ Remaining for full 26.2: turn the shared boundary-arc cover into pairwise disjoi
 components or the whole boundary circle, connect these producers to the finite collar
 induction, and prove the final image is a neighborhood of the entire original boundary.
 The exact bundled I2 target-type issue and the other recorded milestones remain unchanged.
+
+### S-M4 verified checkpoints and remaining global obligations, 2026-09-16
+
+The three source checkpoints are committed and pushed: `ee372da29` (density and complementary
+boundary persistence), `142653991` (actual future collar-disk persistence and precise extension
+traces), and `fe71026b6` (dual-cell coverage and intersection producers). All six changed Lean
+modules and the directly affected `DiskUnion` module have focused-check exit 0 and zero
+warnings. AuditS85/S86/S87 contain 24 entries, all with only the standard three axioms.
+
+Every source checkpoint was followed by fetch and merge of the integration branch, still
+already up to date at `8fb887bb9`. This final bookkeeping change updates the S-M4 table and
+B.3 plan row to the exact current proof frontier. No new consultation is required for the
+next step: classify the finite boundary-arc cover into disjoint arc components or the whole
+circle. Full 26.2 is still partial; exact bundled I2 is not marked delivered.
