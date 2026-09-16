@@ -1,5 +1,9 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.ChartPolyhedron
+import DifferentialGeometry.Topology.PiecewiseLinear.ClosedStarNeighborhood
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.DoublePointCover
+import DifferentialGeometry.Topology.PiecewiseLinear.ManifoldInvariance
+import DifferentialGeometry.Topology.PiecewiseLinear.PieceRestrict
+import DifferentialGeometry.Topology.PiecewiseLinear.SingularGeneralPosition
 
 open Set Topology
 
@@ -235,6 +239,143 @@ theorem branchPreimage_isPolyhedron [T2Space M]
     D.isPLOn (hD.branchPreimage_isCompact c)
 
 open Classical in
+theorem exists_local_branchPreimage_manifold [T2Space M]
+    (hD : NormalSingularCellData D BdM B) (c : hD.singularSet.Branch)
+    {x : EuclideanSpace ℝ (Fin 2)} (hx : x ∈ hD.branchPreimage c) :
+    ∃ H : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2)),
+      H.faces.Finite ∧ IsCombinatorialManifoldWithBoundary 1 H ∧ x ∈ H.space ∧
+        ∀ᶠ z in 𝓝 x, z ∈ hD.branchPreimage c ↔ z ∈ H.space := by
+  let P := hD.branchPreimage c
+  let L := hD.singularSet.branchComplex c
+  let f := hD.branchCoordinate c
+  let px : P := ⟨x, hx⟩
+  let y := f x
+  have hy : y ∈ L.space := hD.branchCoordinate_mem c hx
+  obtain ⟨ι, hι, C₀, A, hC₀, hC₀nhds⟩ :=
+    hD.branchCoordinate_isPiecewiseAffineOn c x hx
+  obtain ⟨U, hU, hDinj⟩ := hD.locallyInjective x hx.1
+  obtain ⟨O, hO, hOU⟩ := mem_nhdsWithin_iff_exists_mem_nhds_inter.mp hU
+  obtain ⟨Q, hQpoly, hQO, hQnhds⟩ := exists_isHPolytope_subset_mem_nhds hO
+  let C := (⋃ i, C₀ i) ∩ Q
+  have hCpoly : IsPolyhedron C :=
+    (IsPolyhedron.iUnion fun i => (hC₀ i).1.isPolyhedron).inter hQpoly.isPolyhedron
+  have hCsubP : C ⊆ P := by
+    rintro z ⟨hz, -⟩
+    obtain ⟨i, hzi⟩ := mem_iUnion.mp hz
+    exact (hC₀ i).2.1 hzi
+  have hCsubU : C ⊆ U := by
+    intro z hz
+    exact hOU ⟨hQO hz.2, (hCsubP hz).1⟩
+  have hCnhds : C ∈ 𝓝[P] x :=
+    Filter.inter_mem hC₀nhds (mem_nhdsWithin_of_mem_nhds hQnhds)
+  have hfC : IsPiecewiseAffineOn f C :=
+    (hD.branchCoordinate_isPiecewiseAffineOn c).mono_of_isPolyhedron hCpoly hCsubP
+  have hfinj : InjOn f C := by
+    intro a ha b hb hab
+    apply hDinj (hCsubU ha) (hCsubU hb)
+    calc
+      D a = (hD.singularSet.branchPieceIn c).map (f a) :=
+        (hD.branchPieceIn_map_branchCoordinate c (hCsubP ha)).symm
+      _ = (hD.singularSet.branchPieceIn c).map (f b) := congrArg _ hab
+      _ = D b := hD.branchPieceIn_map_branchCoordinate c (hCsubP hb)
+  have hCpl : IsPLHomeomorphOn f C (f '' C) :=
+    isPLHomeomorphOn_of_isPiecewiseAffineOn_of_bijOn hCpoly hfC hfinj.bijOn_image
+  have hsourceNhds : ((↑) : P → EuclideanSpace ℝ (Fin 2)) ⁻¹' C ∈ 𝓝 px :=
+    preimage_coe_mem_nhds_subtype.mpr hCnhds
+  have himageNhds :=
+    (hD.branchProjection_isLocalHomeomorph c).isOpenMap.image_mem_nhds hsourceNhds
+  have himageEq : hD.branchProjection c ''
+      (((↑) : P → EuclideanSpace ℝ (Fin 2)) ⁻¹' C) =
+        ((↑) : L.space → EuclideanSpace ℝ
+          (Fin hD.singularSet.piece.ambientDim)) ⁻¹' (f '' C) := by
+    ext z
+    constructor
+    · rintro ⟨w, hwC, rfl⟩
+      exact ⟨w, hwC, rfl⟩
+    · rintro ⟨w, hwC, hwz⟩
+      have hwP : w ∈ P := hCsubP hwC
+      refine ⟨⟨w, hwP⟩, hwC, ?_⟩
+      apply Subtype.ext
+      change f w = z
+      exact hwz
+  rw [himageEq] at himageNhds
+  have hImageWithin : f '' C ∈ 𝓝[L.space] y :=
+    preimage_coe_mem_nhds_subtype.mp himageNhds
+  obtain ⟨V, hV, hVsub⟩ :=
+    mem_nhdsWithin_iff_exists_mem_nhds_inter.mp hImageWithin
+  let _ : Finite L.faces :=
+    (hD.singularSet.branchComplex_faces_finite c).to_subtype
+  obtain ⟨R, hR, hRfinite, hyR, hstarV⟩ :=
+    exists_isSubdivision_closedStar_subset_of_mem_nhds L hy hV
+  let _ : Finite R.faces := hRfinite.to_subtype
+  have hstarSub : closedStar R y ⊆ f '' C := by
+    intro z hz
+    apply hVsub
+    refine ⟨hstarV hz, ?_⟩
+    rw [← hR.space_eq]
+    exact closedStar_subset_space R y hz
+  have hyOpen : y ∈ openSimplex ({y} : Finset _) := mem_openSimplex_singleton y
+  have hstarBall : IsPLBall 1 (closedStar R y) := by
+    have hball :=
+      (hD.singularSet.branchComplex_isManifoldWithBoundary c).of_isSubdivision hR
+        |>.isPLBall_faceStarComplex R hyR
+    rwa [faceStarComplex_space R hyR hyOpen] at hball
+  let S := C ∩ f ⁻¹' closedStar R y
+  have hSpoly : IsPolyhedron S := hCpl.isPolyhedron_preimage hstarBall.isPolyhedron hstarSub
+  have himageS : f '' S = closedStar R y := by
+    apply Subset.antisymm
+    · rintro z ⟨w, hw, rfl⟩
+      exact hw.2
+    · intro z hz
+      obtain ⟨w, hwC, hwz⟩ := hstarSub hz
+      refine ⟨w, ⟨hwC, ?_⟩, hwz⟩
+      change f w ∈ closedStar R y
+      rw [hwz]
+      exact hz
+  have hSpl : IsPLHomeomorphOn f S (closedStar R y) := by
+    have h := hCpl.restrict hSpoly inter_subset_left
+    rwa [himageS] at h
+  have hSball : IsPLBall 1 S := hstarBall.of_isPLHomeomorphOn hSpl.symm
+  obtain ⟨H, hHfinite, hHspace⟩ := hSpoly.exists_simplicialComplex
+  let _ : Finite H.faces := hHfinite.to_subtype
+  have hHman : IsCombinatorialManifoldWithBoundary 1 H := by
+    apply IsPLBall.isCombinatorialManifoldWithBoundary (n := 0) (K := H)
+    rw [hHspace]
+    exact hSball
+  have hxC : x ∈ C := mem_of_mem_nhdsWithin hx hCnhds
+  have hxS : x ∈ S := ⟨hxC, mem_closedStar_self R hyR⟩
+  have hstarWithin : closedStar R y ∈ 𝓝[L.space] y := by
+    rw [← hR.space_eq]
+    exact closedStar_mem_nhdsWithin R y
+  have htargetNhds :
+      ((↑) : L.space → EuclideanSpace ℝ
+        (Fin hD.singularSet.piece.ambientDim)) ⁻¹' closedStar R y ∈
+          𝓝 (hD.branchProjection c px) :=
+    preimage_coe_mem_nhds_subtype.mpr hstarWithin
+  have hpreimageNhds :=
+    (hD.branchProjection_isLocalHomeomorph c).continuous.continuousAt htargetNhds
+  change (hD.branchProjection c) ⁻¹'
+      (((↑) : L.space → EuclideanSpace ℝ
+        (Fin hD.singularSet.piece.ambientDim)) ⁻¹' closedStar R y) ∈ 𝓝 px at hpreimageNhds
+  have hpreimageEq : (hD.branchProjection c) ⁻¹'
+      (((↑) : L.space → EuclideanSpace ℝ
+        (Fin hD.singularSet.piece.ambientDim)) ⁻¹' closedStar R y) =
+        ((↑) : P → EuclideanSpace ℝ (Fin 2)) ⁻¹' (f ⁻¹' closedStar R y) := by
+    rfl
+  rw [hpreimageEq] at hpreimageNhds
+  have hpreimageWithin : f ⁻¹' closedStar R y ∈ 𝓝[P] x :=
+    preimage_coe_mem_nhds_subtype.mp hpreimageNhds
+  have hSnhds : S ∈ 𝓝[P] x := Filter.inter_mem hCnhds hpreimageWithin
+  obtain ⟨W, hW, hWsub⟩ :=
+    mem_nhdsWithin_iff_exists_mem_nhds_inter.mp hSnhds
+  refine ⟨H, hHfinite, hHman, hHspace ▸ hxS, ?_⟩
+  filter_upwards [hW] with z hzW
+  rw [hHspace]
+  constructor
+  · exact fun hzP => hWsub ⟨hzW, hzP⟩
+  · exact fun hzS => hCsubP hzS.1
+
+open Classical in
 theorem exists_branchPreimage_simplicialComplex [T2Space M]
     (hD : NormalSingularCellData D BdM B) (c : hD.singularSet.Branch) :
     ∃ K : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2)),
@@ -359,6 +500,29 @@ theorem exists_branchPreimage_simplicialComplex_card_le_two [T2Space M]
     Finset.card_image_iff.mpr (hAinj.mono (subset_convexHull ℝ _))
   rw [himageCard] at hcard
   exact hcard.trans ((hD.singularSet.branchComplex_isManifoldWithBoundary c).card_le _ ht)
+
+open Classical in
+theorem exists_branchPreimage_simplicialComplex_manifold [T2Space M]
+    (hD : NormalSingularCellData D BdM B) (c : hD.singularSet.Branch) :
+    ∃ K : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2)),
+      K.faces.Finite ∧ K.space = hD.branchPreimage c ∧
+        IsCombinatorialManifoldWithBoundary 1 K ∧
+        (∀ s ∈ K.faces, ∃ A : EuclideanSpace ℝ (Fin 2) →ᵃ[ℝ]
+            EuclideanSpace ℝ (Fin hD.singularSet.piece.ambientDim),
+          EqOn (hD.branchCoordinate c) A (convexHull ℝ (s : Set _))) ∧
+        ∀ s ∈ K.faces, ∃ t ∈ (hD.singularSet.branchComplex c).faces,
+          MapsTo (hD.branchCoordinate c) (convexHull ℝ (s : Set _))
+            (convexHull ℝ (t : Set _)) := by
+  obtain ⟨K, hKfinite, hKspace, hKcard, hKaffine, hKmaps⟩ :=
+    hD.exists_branchPreimage_simplicialComplex_card_le_two c
+  let _ : Finite K.faces := hKfinite.to_subtype
+  refine ⟨K, hKfinite, hKspace,
+    isCombinatorialManifoldWithBoundary_one_of_locally_eq K hKcard ?_, hKaffine, hKmaps⟩
+  intro x hx
+  obtain ⟨H, hHfinite, hHman, hxH, heq⟩ :=
+    hD.exists_local_branchPreimage_manifold c (hKspace ▸ hx)
+  refine ⟨H, hHfinite, hHman, hxH, ?_⟩
+  simpa only [hKspace] using heq
 
 end NormalSingularCellData
 
