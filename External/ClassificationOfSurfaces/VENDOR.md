@@ -1700,3 +1700,15 @@ Lean file was changed. `AuditS70`, `AuditS71General`, and `AuditS73Disk` record 
 layers and the final five public endpoints; all have only the standard three axioms.
 The whole boundary collar product and the boundary-compatible singular-cell type are separate
 remaining obligations and are not asserted by this result.
+
+## Intrinsic boundary ball and disk push-off
+
+The native `SphereBallInclusion`, `BoundaryMonotonicity`, `BoundaryBallTransport`, and
+`BoundaryDiskPush` modules transport the checked boundary-ball construction to arbitrary finite-
+dimensional ambient spaces. Sphere-versus-ball noncontainment gives intrinsic boundary
+monotonicity. Problem 26.1 supplies the containing ball; the complementary disk in its boundary
+sphere gives the push-off. `LoopTheorem/CombinatorialBoundaryPush` packages the Euclidean case
+in the existing singular-cell type. No vendored Lean source changed. `AuditS72Intrinsic` audits
+seven supporting endpoints and `AuditS74Push` audits the three unconditional producers.
+All focused checks exit 0 with zero warnings, and only the standard three axioms occur.
+The general-ambient singular-cell target chart adaptation is not claimed by these endpoints.

@@ -1,4 +1,5 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryBallTransport
+import DifferentialGeometry.Topology.PiecewiseLinear.DiskDerivedNeighborhood
 import DifferentialGeometry.Topology.PiecewiseLinear.SphericalDiskComplement
 
 open Set
@@ -37,4 +38,35 @@ theorem exists_isPLHomeomorphOn_disk_in_boundary_ball
   · exact (hS.image_stdSimplexBoundary_complement hD hDL hq).trans hQD
   · rw [← hQD, ← hLB, ← inter_assoc, inter_eq_left.mpr hQL]
 
+open Classical in
+theorem IsCombinatorialManifoldWithBoundary.exists_isPLBall_inter_boundaryComplex_eq
+    {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces]
+    (hK : IsCombinatorialManifoldWithBoundary 3 K) {D : Set E}
+    (hD : IsPLBall 2 D) (hDK : D ⊆ (boundaryComplex 3 K).space) :
+    ∃ L : Geometry.SimplicialComplex ℝ E, L.faces.Finite ∧ IsPLBall 3 L.space ∧
+      L.space ⊆ K.space ∧ L.space ∩ (boundaryComplex 3 K).space = D ∧
+      D ⊆ (boundaryComplex 3 L).space := by
+  classical
+  obtain ⟨C, hC, hCK, hDC⟩ := hK.exists_isPLBall_containing_boundary_disk hD hDK
+  obtain ⟨A, hAfin, hAC⟩ := hC.isPolyhedron.exists_simplicialComplex
+  let _ : Finite A.faces := hAfin.to_subtype
+  exact exists_isPLBall_inter_boundaryComplex_eq_of_subset K A hK (hAC.symm ▸ hC)
+    (hAC.symm ▸ hCK) hD (hAC.symm ▸ hDC) hDK
+
+open Classical in
+theorem IsCombinatorialManifoldWithBoundary.exists_isPLHomeomorphOn_push_boundary_disk
+    {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces]
+    (hK : IsCombinatorialManifoldWithBoundary 3 K) {D : Set E} {r : (Fin 3 → ℝ) → E}
+    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D)
+    (hDK : D ⊆ (boundaryComplex 3 K).space) :
+    ∃ (Q : Set E) (q : (Fin 3 → ℝ) → E),
+      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) Q ∧ Q ⊆ K.space ∧
+      q '' stdSimplexBoundary 2 = r '' stdSimplexBoundary 2 ∧
+      Q ∩ (boundaryComplex 3 K).space = r '' stdSimplexBoundary 2 := by
+  classical
+  obtain ⟨C, hC, hCK, hDC⟩ := hK.exists_isPLBall_containing_boundary_disk ⟨r, hr⟩ hDK
+  obtain ⟨A, hAfin, hAC⟩ := hC.isPolyhedron.exists_simplicialComplex
+  let _ : Finite A.faces := hAfin.to_subtype
+  exact exists_isPLHomeomorphOn_disk_in_boundary_ball K A hK (hAC.symm ▸ hC)
+    (hAC.symm ▸ hCK) hr (hAC.symm ▸ hDC) hDK
 end DifferentialGeometry.Topology.PiecewiseLinear

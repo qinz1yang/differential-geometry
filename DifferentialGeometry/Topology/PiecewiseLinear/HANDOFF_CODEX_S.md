@@ -540,3 +540,21 @@ All three modules have focused-check exit 0 and zero warnings. `AuditS73Disk.lea
 The previously retained source has now been reviewed, completed, checked, and audited.
 Logs are `check-subcomplex-ball-gluing-finite.log`, `check-free-triangle-neighborhood.log`,
 and `check-disk-derived-neighborhood.log` under `.lake/scratch`.
+
+### S-M2 publication and S-M3 geometric delivery
+
+S-M2 is committed and pushed as `d12dd514a`. The following fetch/merge found integration
+already up to date. `BoundaryDiskPush.lean` now exports
+`IsCombinatorialManifoldWithBoundary.exists_isPLBall_inter_boundaryComplex_eq` and
+`IsCombinatorialManifoldWithBoundary.exists_isPLHomeomorphOn_push_boundary_disk`.
+Neither takes a containing-ball hypothesis: it is constructed by Problem 26.1.
+`LoopTheorem/CombinatorialBoundaryPush.lean` proves
+`exists_nonsingular_two_cell_in_combinatorial_manifold`, the Euclidean three-space singular-cell
+endpoint with image inside K.space, prescribed boundary image, and no extra frontier contact.
+Both modules have focused-check exit 0 and zero warnings. `AuditS74Push.lean` /
+`AuditS74Push.log` audits these three endpoints with only the standard three axioms.
+No Schoenflies assumption is needed. The general-ambient parametrized PL disk producer is complete.
+S-M3 remains partial only at the exact `SingularTwoCell K.space` interface: the current type needs
+a boundary-compatible target chart API from its owner. The phrase "I2 已交付" is deliberately not
+used as a completion label while that obligation remains. S-M4 proceeds with the checked intrinsic
+boundary-ball endpoint; it does not need the singular-cell type adaptation.
