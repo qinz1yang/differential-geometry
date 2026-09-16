@@ -1659,3 +1659,28 @@ The three modules pass focused checks with exit 0 and zero warnings.
 This is checked input to the triangle shelling, not its completion.
 The full union over a boundary disk, general hpush, and Theorem 26.2
 still require the shelling and collar inductions.
+
+## Derived neighborhoods of boundary simplices
+
+`SimplexDerivedNeighborhood.lean` proves
+`IsCombinatorialManifoldWithBoundary.isPLBall_derivedNeighborhood_simplex`:
+for every face s of the boundary of a finite combinatorial 3-manifold,
+the existing `derivedNeighborhood K (simplexComplex s ...)` is a PL
+3-ball. A face-cardinality argument separates vertices, edges, and
+triangles. The triangle proof starts with its central piece and three
+edge pieces, then attaches its three vertex pieces. Each attachment
+uses the grouped disk proved in `BoundaryDerivedNeighborhood` and
+23.11. The decomposition identity retains all seven pieces; it does
+not substitute a smaller closed star for the neighborhood.
+
+This provides the simplex base case for the disk shelling in Problem
+26.1. The deletion step for a general triangulated disk is still open:
+it must identify the retained/new faces of a free triangle and prove
+the intersection with the accumulated neighborhood at each addition.
+General hpush and the product collar are not claimed. No Schoenflies
+assumption or vendored source change was needed in this layer.
+
+The module check exits 0 with zero warnings. `AuditS69.lean` checks both
+public declarations, with only `propext`, `Classical.choice`, and
+`Quot.sound`. Logs: `.lake/scratch/check-simplex-derived-neighborhood.log`
+and `audit-simplex-derived-neighborhood.log`.
