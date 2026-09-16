@@ -260,3 +260,26 @@ L.4 仍保持显式参数，直到 Lemma 2 为真定理。
 （试过给每条车道一个私有 olean 目录并前置到 `LEAN_PATH`：不行。Lean 会认定第一个含 `DifferentialGeometry`
 目录的搜索根，然后不再回退到共享库，于是所有未私有编译过的依赖都报 "object file … does not exist"。
 要走这条路必须先把共享库的 9157 个 olean 全部硬链接进私有目录，代价与收益不成比例，已放弃。）
+
+## 9. 2026-09-16 下午：I5 已交付；H 车道转 §21–§22 与 §28.20
+
+### 9.1 I5 交付
+
+`bettiOne_pos_of_boundary_component_not_sphere`（`HandleCount.lean`）与支撑层 `BoundaryHomology.lean` 已并入整合分支。
+E3 的 C.5 解除阻塞：`H₁(K;ℤ) ↠ ℤ₂` 的输入现在有了，接 C.2 的 `SimplicialBoolCocycle` 即可。
+
+### 9.2 H 车道的下一批（按被消费的广度排序）
+
+- **H-M6 = 22.11**：单连通的闭多面体 2-流形是 PL 2-球面。几乎是 H.4b 的推论：单连通 ⟹ `bettiOne = 0` ⟹
+  `faceEulerChar = 2`（用 `eulerChar_eq_one_sub_bettiOne_add_bettiTwo` 与 `faceEulerChar_le_two` 的两侧夹逼，
+  `b₂` 的上界由闭曲面顶维消失给出）⟹ `isPLSphere_two_of_faceEulerChar_eq_two`。消费者：§30.6、§32。
+- **H-M7 = H.3（§21 的 χ 运算）+ T.9（28.20）**：开胞腔复形的 χ 在运算 α–δ 下不变、21.6–21.8、21.10–21.11；
+  然后定义沿 2-胞腔 `Δ` 的分裂运算并证 `χ(M₁²) = χ(M²) + 2`。消费者最广：§30.3–30.4、§30.6、§32、§33 L3–L7、§34 Op.1。
+- **H-M8 = 22.5–22.7**：紧致带边曲面 `χ = 2 − (2h + m)`，以及 `p¹` 与 `χ` 的关系。`h(B)` 已按 D3′ 用 `(2 − χ)/2`，
+  本条把它与实际手柄数对齐。消费者：§23.18–19 的加强、§33 L7/L11/L12。
+- **H-M9 = B.8（26.8）**：ℝ³ 中紧致连通多面体 2-流形可定向。**不要走计划行里写的 H₃ ≅ ℤ 路线**（顶维基本类是你后推的项）。
+  改用 S 车道刚交付的 26.6：`IsPolyhedralManifold.isTwoSided` 与 `exists_connectedComponentIn_pair_compl` 给出补集恰两个分支
+  `I`、`E`，于是每个顶维面的两侧可以全局一致地区分为"朝 `I`"与"朝 `E`"；把这个法向选择与 ℝ³ 的标准定向组合，
+  直接构造 `CoherentOrientation`，或等价地证明 H.2b 的定向上循环是上边缘。消费者：§33 L11。
+
+顺序 H-M6 → H-M7 → H-M8 → H-M9。B.8 需要先合并含 S 的 26.6 的整合分支。其余规则同 §0 与 §8。
