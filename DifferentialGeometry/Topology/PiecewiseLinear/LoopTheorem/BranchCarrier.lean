@@ -1,4 +1,5 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.NormalCell
+import DifferentialGeometry.Topology.PiecewiseLinear.OneManifoldClassification
 import DifferentialGeometry.Topology.SimplicialComplex.ConnectedSpace
 
 open Set Topology
@@ -193,6 +194,15 @@ theorem branchComplex_space_isConnected
     IsConnected (T.branchComplex c).space :=
   isConnected_space_of_edgeGraph_connected (T.branchComplex c)
     (T.edgeGraph_branchComplex_connected c)
+
+open Classical in
+theorem branchComplex_isPLSphere
+    (T : NormalSingularSetTriangulation D BdM) {c : T.Branch}
+    (hc : ¬T.IsBoundaryBranch c) :
+    IsPLSphere 1 (T.branchComplex c).space := by
+  let _ : Finite (T.branchComplex c).faces := (T.branchComplex_faces_finite c).to_subtype
+  exact isPLSphere_one_of_edgeGraph_connected (T.branchComplex c)
+    (T.branchComplex_isManifold hc) (T.edgeGraph_branchComplex_connected c)
 
 open Classical in
 theorem branchComplex_space_isPolyhedron
