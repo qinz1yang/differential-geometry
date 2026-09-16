@@ -1710,3 +1710,31 @@ and P.4 plan row to distinguish the proved relative map inside a given Jordan
 frame from the still-missing finite-graph frame and vertex-sector producers.
 S-M5 remains complete in its stated settings. There is no new consultation
 blocker; the active continuation is the geometric construction required by P.4.
+
+### S-M6 continuation: vertex arcs and crosscut-side selection
+
+The supported-crosscut publication checkpoint is committed and pushed as `d97cab7af`;
+the next integration merge was already up to date.
+
+`PlanarJordan/VertexArcs.lean` proves `exists_initial_arc_to_frontier`: an embedded
+arc leaving an open set has an initial subarc whose far endpoint is on the frontier
+and whose remaining points stay in the open set. `Graph.IsDrawing.exists_vertex_arcs`
+constructs these subarcs for every edge incident with a vertex. They meet pairwise
+exactly at that vertex and have distinct frontier endpoints. It requires only an
+open neighborhood whose closure contains no other graph vertex, with no finiteness
+assumption on the graph. `exists_vertex_arcs_in_square` produces such a square
+inside any specified neighborhood for a finite drawing and also avoids all
+nonincident edges. The rest of an edge is allowed to return to the square later.
+
+`Crosscut.lean` adds `subset_crosscut_side_of_mem_closure` and
+`arc_diff_subset_crosscut_side`: a connected set in the complement of the crosscut
+lies on the side identified by its limiting boundary point. This supplies the
+geometric side-selection step for further vertex-fan cuts.
+
+VertexArcs, Crosscut, and the affected CrosscutExtension consumer have focused-check
+exit 0 and zero warnings (`check-planar-vertex-arcs.log`, `check-planar-crosscut.log`,
+`check-crosscut-extension.log`). `AuditS109VertexArcs.lean` / `.log` contain eight
+entries, all with only `propext`, `Classical.choice`, and `Quot.sound`. No vendored
+or other-lane source changed. The source hash will be recorded at the next checkpoint.
+P.4 remains partial: simultaneous straightening of the whole finite vertex fan and
+the small edge frames still have to be constructed. I2's target-type issue is unchanged.

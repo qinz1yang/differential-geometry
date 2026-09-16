@@ -130,4 +130,26 @@ theorem closed_crosscut_regions {C P A₁ A₂ : Set Plane} {p q : Plane}
         · exact hxP hP.right_mem
     · exact fun _ hx => ⟨Or.inr (Or.inr hx), Or.inr (Or.inr hx)⟩
 
+theorem subset_crosscut_side_of_mem_closure {C P A₁ A₂ R : Set Plane} {p q r : Plane}
+    (hC : IsJordanCurve C) (hP : IsArcBetween P p q)
+    (hcut : IsCutPair C p q A₁ A₂) (hPC : P \ {p, q} ⊆ inside C)
+    (hR : IsPreconnected R) (hRC : R ⊆ inside C \ P)
+    (hr : r ∈ closure R) (hrA : r ∈ A₁ \ {p, q}) : R ⊆ inside (A₁ ∪ P) := by
+  obtain ⟨hcover, hdis, _, htrace⟩ := crosscut_regions hC hP hcut hPC
+  have hsep₁ := jordan_curve_theorem (isJordanCurve_cut_arc_union hP hcut hPC)
+  have hsep₂ := jordan_curve_theorem (isJordanCurve_cut_arc_union hP hcut.symm hPC)
+  rcases hR.subset_or_subset hsep₁.isOpen_inside hsep₂.isOpen_inside hdis
+      (hRC.trans hcover.subset) with hsub | hsub
+  · exact hsub
+  · have hrA₂ : r ∈ A₂ := htrace.subset
+      ⟨closure_mono hsub hr, hcut.fst_subset hrA.1⟩
+    exact (hrA.2 (hcut.inter_eq.subset ⟨hrA.1, hrA₂⟩)).elim
+
+theorem arc_diff_subset_crosscut_side {C P A₁ A₂ R : Set Plane} {p q v r : Plane}
+    (hC : IsJordanCurve C) (hP : IsArcBetween P p q)
+    (hcut : IsCutPair C p q A₁ A₂) (hPC : P \ {p, q} ⊆ inside C)
+    (hR : IsArcBetween R v r) (hRC : R \ {v, r} ⊆ inside C \ P)
+    (hrA : r ∈ A₁ \ {p, q}) : R \ {v, r} ⊆ inside (A₁ ∪ P) :=
+  subset_crosscut_side_of_mem_closure hC hP hcut hPC hR.isPreconnected_diff hRC
+    hR.right_mem_closure_diff hrA
 end DifferentialGeometry.Topology.PlanarJordan
