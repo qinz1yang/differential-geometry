@@ -1222,3 +1222,36 @@ three axioms. Each checkpoint was followed by fetch and merge of the integration
 still already up to date at `8fb887bb9`. This final bookkeeping commit updates only the
 S-M5 summary and B.4 plan row to that verified scope. The overall S-M5/26.3 status remains
 partial, with the exact remaining obligations recorded above.
+
+### S-M5 continuation: connected manifold neighborhoods and local boundary invariance
+
+`ComponentComplex.lean` realizes every connected component of a simplicial carrier as
+its restriction subcomplex. The vertex links are unchanged; both combinatorial manifolds
+and combinatorial manifolds with boundary are preserved. These results do not require
+finite-dimensional ambient space or finitely many faces.
+
+`SubcomplexNeighborhood.lean` proves equality of vertex links when a subcomplex is a
+relative neighborhood at the vertex, reusing `mem_faces_of_mem_nhdsWithin_space`.
+Its boundary endpoint compares arbitrary finite triangulations: at a point where one
+combinatorial manifold is a relative neighborhood inside another, intrinsic boundary
+membership is equivalent. A common subdivision is produced in the proof.
+
+`ConnectedNeighborhood.lean` proves
+`IsCombinatorialManifoldWithBoundary.exists_connected_neighborhood`: a compact connected
+set in a finite combinatorial manifold with boundary has arbitrarily small connected
+finite combinatorial manifold neighborhoods. The proof takes the connected component
+containing the set in the existing small manifold neighborhood, and uses local
+connectedness to retain the neighborhood property. The result works in every positive
+dimension and arbitrary finite-dimensional real normed ambient space.
+
+All three focused checks have exit 0 and zero warnings (`check-component-complex.log`,
+`check-subcomplex-neighborhood.log`, `check-connected-neighborhood.log`).
+`AuditS95ConnectedNeighborhood.lean` / `.log` audit seven new declarations and the reused
+face-neighborhood lemma: all eight have only `propext`, `Classical.choice`, and `Quot.sound`.
+The source commit hash will be recorded at the following checkpoint. No other-lane or
+vendored source was modified.
+
+26.3 remains partial. Next: apply two-sidedness in the subtype of the ambient manifold
+to these connected neighborhoods and discharge the disconnected-complement input of
+the global two-component theorem. Component closures still need their manifold structure
+before the two existing collars can be glued into the bicollar.
