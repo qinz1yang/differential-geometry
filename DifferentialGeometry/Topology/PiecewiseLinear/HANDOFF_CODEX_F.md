@@ -1911,3 +1911,13 @@ Moise 17.12 的两个相反转轴现已分别构造，且每张封帽球面的�
 主端点 `exists_small_vertexMap_transverse_in_arrangement` 再以 `arrangementEnvelope` 表示一组顶点各层的最小共同仿射包。只要约束族覆盖每对待比较面之并内、基数不超过包络维数加一的子集，相交的不交面扰动后满足方向空间之和精确等于该安排包络的方向。单平面边界情形的核平面/全空间二分由此成为包络方向的特例；固定部分只输入自身的仿射无关性，没有输入最终横截结论。
 
 聚焦检查 exit=0（12.2 秒）、零 warning；`AuditF206.lean` 十九项全部仅依赖 `propext`、`Classical.choice`、`Quot.sound`。F-M4 done，无剩余缺口；下一里程碑 F-M5 重写 `RelativeNormalForm.lean`，下一审计文件 `AuditF207.lean`。
+
+### 19.60 F-M5：安排分层下的欧氏相对正规形式核心
+
+`RelativeNormalForm.lean` 已重写并提交为 `1c1074eea`。`eventually_mem_space_iff_mem_coface_pair_foldedPlane` 把二维组合流形一条内折边的两个余面精确识别为 `foldedPlane` 集合芽；`hasPLCrossingAt_of_two_fold_faces` 将该识别接到 F-M3 的双折叠定理。`IsArrangementGeneralFoldPair` 用安排超平面、两条折边的方向张成等式、以及两片分别位于超平面两侧来陈述固定折边的一般位置；`foldDirections_ne` 在三维中从这些数据实际推出两折线方向不相同，因而明确排除了 §16.2 的重合固定折边，而没有假设 crossing。
+
+`hasPLCrossingAt_of_transverse_or_arrangement_fold` 统一处理普通横截的平/平、折/平情形与同一安排平面内的折/折情形。`IsBoundaryArrangementGeneralPair.hasPLBoundaryCrossingAt` 给出零平面边界版。`IsVertexMapGeneralInArrangement` 记录顶点留在原安排开胞腔、约束族仿射无关、相交面方向张成安排包络方向；`exists_small_vertexMap_generalInArrangement` 从 F-M4 的生产者给出任意小相对位移并保持这一完整不变量。
+
+F-M5 状态为 partial。唯一未闭合的生产步骤是：给定 F-M6 的公共仿射细分 `K*`，从 `IsVertexMapGeneralInArrangement` 对每个实际双点识别两张像面星的最小载体，证明其集合芽要么方向张成全空间，要么恰形成 `IsArrangementGeneralFoldPair`；边界点则形成 `IsBoundaryArrangementGeneralPair`。F-M4 已生产方向等式，但尚无现成 API 把目标 `K*` 的共面相邻三胞腔及图卡变换的两侧性搬成两个余面顶点的严格异号条件。不能把这项局部分类作为结论型假设塞入最终正规形式端点；它必须由 `K*` 的组合流形结构和图卡同胚性证明。
+
+聚焦检查 exit=0（13.8 秒）、零 warning；`AuditF207.lean` 十六项全部只依赖 `propext`、`Classical.choice`、`Quot.sound`。下一里程碑 F-M6 在 `SingularNormalForm.lean` 构造紧致片、公共细分与图卡归纳，并尝试生产上述局部分类；下一审计文件 `AuditF208.lean`。
