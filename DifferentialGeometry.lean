@@ -2666,6 +2666,7 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Basic.Exponent
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Basic.FractionalPower
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Basic.GraphNorm
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Defs
+import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Separable
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Embedding.Inclusion
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Embedding.SmoothCompactSupportDense
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Embedding.SmoothInjectivity
@@ -10367,6 +10368,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.Prepared
 
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Scalar.AddCircleComposition
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Parametric.AddCircleLocalComposition
+import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Parametric.AddCircleTameComposition
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Scalar.AddCircleFirstJet
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Parametric.AddCircleTimeComposition
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Jet.Bounds.LaplacianNorm

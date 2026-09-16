@@ -338,4 +338,95 @@ theorem exists_norm_ccTensorToHs_scalarCompOn_h2_sub_le_of_isCompact
   simpa only [hn] using
     exists_norm_ccTensorToHs_scalarCompOn_sub_le_of_isCompact g 1 F hF hU hK hKU R
 
+
+theorem exists_norm_ccTensorToHs_scalarCompOn_h2_le_of_h1_bound
+    {ι : Type*} [Fintype ι]
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ)))
+    (F : (ι → ℝ) → ℝ) {U K : Set (ι → ℝ)}
+    (hF : ContDiffOn ℝ ∞ F U) (hU : IsOpen U) (hK : IsCompact K) (hKU : K ⊆ U)
+    (R : ℝ) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ (u : ι → SmoothCcTensor g 0 0)
+      (hu : ∀ x, (fun i => TensorRSField.scalar0 (u i).toSection x) ∈ K),
+      (∑ i, ‖ccTensorToHs g 0 1 (u i)‖) ≤ R →
+      ‖ccTensorToHs g 0 2
+        (SmoothCcTensor.scalarCompOn u F hF (fun x => hKU (hu x)))‖ ≤
+        C * (1 + ∑ i, ‖ccTensorToHs g 0 2 (u i)‖) := by
+  classical
+  have hnorm {a b : ℝ} (h : a = b) (W : SmoothCcTensor g 0 0) :
+      ‖ccTensorToHs g 0 a W‖ = ‖ccTensorToHs g 0 b W‖ :=
+    congrArg (fun σ : ℝ => ‖ccTensorToHs g 0 σ W‖) h
+  have habs (G : (ι → ℝ) → ℝ) (hG : ContDiffOn ℝ ∞ G U) :
+      ∃ A : ℝ, 0 ≤ A ∧ ∀ (u : ι → SmoothCcTensor g 0 0)
+        (hu : ∀ x, (fun i => TensorRSField.scalar0 (u i).toSection x) ∈ K),
+        (∑ i, ‖ccTensorToHs g 0 1 (u i)‖) ≤ R →
+        ‖ccTensorToHs g 0 1
+          (SmoothCcTensor.scalarCompOn u G hG (fun x => hKU (hu x)))‖ ≤ A := by
+    obtain ⟨C, hC, hc⟩ := exists_norm_ccTensorToHs_scalarCompOn_sub_le_of_isCompact
+      g 0 G hG hU hK hKU R
+    simp_rw [hnorm (by norm_num : ((0 : ℕ) : ℝ) + 1 = 1)] at hc
+    exact absolute_bound_of_difference g 1 G hG hKU R C hC hc
+  obtain ⟨V, hV, hv⟩ := habs F hF
+  let G (i : ι) (z : ι → ℝ) := fderiv ℝ F z (Pi.single i 1)
+  have hG (i : ι) : ContDiffOn ℝ ∞ (G i) U :=
+    (hF.fderiv_of_isOpen hU (by simp)).clm_apply contDiffOn_const
+  choose A hA ha using fun i => habs (G i) (hG i)
+  let A₀ := ∑ i, A i
+  have hA₀ : 0 ≤ A₀ := Finset.sum_nonneg (fun i _ => hA i)
+  have hAi (i : ι) : A i ≤ A₀ :=
+    Finset.single_le_sum (fun j _ => hA j) (Finset.mem_univ i)
+  obtain ⟨P, hP, hp⟩ := scalar_product_hs_bound g 1 (by norm_num)
+  obtain ⟨D, hD, hd⟩ := norm_parameterDerivativeCcTensor_le g 1
+  obtain ⟨H, hH, hh⟩ := exists_norm_ccTensorToHs_add_two_le_add_parameterDerivative g 0
+  let Q := P * A₀ * D
+  have hQ : 0 ≤ Q := by positivity
+  refine ⟨H * (V + Q), by positivity, ?_⟩
+  intro u hu hnu
+  let Pu := SmoothCcTensor.scalarCompOn u F hF (fun x => hKU (hu x))
+  let Gu (i : ι) := SmoothCcTensor.scalarCompOn u (G i) (hG i) (fun x => hKU (hu x))
+  let L₁ := ccToHsLin g 0 1
+  let N := ∑ i, ‖ccTensorToHs g 0 2 (u i)‖
+  have hN : 0 ≤ N := Finset.sum_nonneg (fun i _ => norm_nonneg _)
+  have hGu (i : ι) : ‖ccTensorToHs g 0 1 (Gu i)‖ ≤ A₀ :=
+    (ha i u hu hnu).trans (hAi i)
+  have hDu (i : ι) :
+      ‖ccTensorToHs g 0 1 (parameterDerivativeCcTensor g (u i))‖ ≤
+        D * ‖ccTensorToHs g 0 2 (u i)‖ := by
+    simpa only [hnorm (by norm_num : ((1 : ℕ) : ℝ) = 1),
+      hnorm (by norm_num : ((1 : ℕ) : ℝ) + 1 = 2)] using hd (u i)
+  have hprod (i : ι) :
+      ‖L₁ (ccOperatorFieldComp g 0 0 0 (Gu i) (parameterDerivativeCcTensor g (u i)))‖ ≤
+        Q * ‖ccTensorToHs g 0 2 (u i)‖ := by
+    have h := hp (Gu i) (parameterDerivativeCcTensor g (u i))
+    simp_rw [hnorm (by norm_num : ((1 : ℕ) : ℝ) = 1)] at h
+    change ‖L₁ _‖ ≤ P * ‖ccTensorToHs g 0 1 (Gu i)‖ *
+      ‖ccTensorToHs g 0 1 (parameterDerivativeCcTensor g (u i))‖ at h
+    calc
+      _ ≤ P * ‖ccTensorToHs g 0 1 (Gu i)‖ *
+          ‖ccTensorToHs g 0 1 (parameterDerivativeCcTensor g (u i))‖ := h
+      _ ≤ P * A₀ * (D * ‖ccTensorToHs g 0 2 (u i)‖) :=
+        mul_le_mul (mul_le_mul_of_nonneg_left (hGu i) hP) (hDu i)
+          (norm_nonneg _) (mul_nonneg hP hA₀)
+      _ = Q * ‖ccTensorToHs g 0 2 (u i)‖ := by dsimp only [Q]; ring
+  have hder : ‖L₁ (parameterDerivativeCcTensor g Pu)‖ ≤ Q * N := by
+    have heq : parameterDerivativeCcTensor g Pu =
+        ∑ i, ccOperatorFieldComp g 0 0 0 (Gu i) (parameterDerivativeCcTensor g (u i)) :=
+      parameterDerivativeCcTensor_scalarCompOn g u F hF hU (fun x => hKU (hu x))
+    rw [heq, map_sum]
+    exact (norm_sum_le _ _).trans ((Finset.sum_le_sum (fun i _ => hprod i)).trans_eq
+      (Finset.mul_sum _ _ _).symm)
+  have hval : ‖ccTensorToHs g 0 0 Pu‖ ≤ V :=
+    (ccToHs_norm_mono g 0 (by norm_num : (0 : ℝ) ≤ 1) Pu).trans (hv u hu hnu)
+  have hgraph : ‖ccTensorToHs g 0 2 Pu‖ ≤
+      H * (‖ccTensorToHs g 0 0 Pu‖ + ‖L₁ (parameterDerivativeCcTensor g Pu)‖) := by
+    simpa only [hnorm (by norm_num : ((0 : ℕ) : ℝ) + 2 = 2),
+      hnorm (by norm_num : ((0 : ℕ) : ℝ) = 0),
+      hnorm (by norm_num : ((0 : ℕ) : ℝ) + 1 = 1), L₁, ccToHsLin_apply] using hh Pu
+  calc
+    _ ≤ H * (‖ccTensorToHs g 0 0 Pu‖ + ‖L₁ (parameterDerivativeCcTensor g Pu)‖) := hgraph
+    _ ≤ H * (V + Q * N) := mul_le_mul_of_nonneg_left (add_le_add hval hder) hH
+    _ ≤ H * ((V + Q) * (1 + N)) := by
+      apply mul_le_mul_of_nonneg_left _ hH
+      nlinarith [mul_nonneg hV hN]
+    _ = (H * (V + Q)) * (1 + N) := by ring
+
 end AddCircle
