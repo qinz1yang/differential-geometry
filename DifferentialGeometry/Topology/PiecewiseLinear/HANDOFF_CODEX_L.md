@@ -812,3 +812,26 @@ theorem eq_top_of_boundaryLoops_mem_normal
   `IsPLHomeomorphOn` 与组合边界包含条件；随后在另一源盘 `R` 上以新胞腔替换原映射，并实际证明 PL 性、所选闭分支消失、其余 crossing 保持及
   `vertexCollisionPairs` 严格减少。一般 `NormalSingularCellData` 仍不携带这组 double/嵌入数据，故没有在一般层伪造该结论。
 - Case 1 的环带与 Figure 25.2 柱形图模型仍未闭合；Lemma 2 端点尚未宣称完成。
+
+## 38. 2026-09-16 E3-M2 追加：正规系统的 double 环境实现
+
+状态：partial（正规系统已实现为 `double 3 K` 中的实际奇异 2-胞腔；Case 2 仍缺内盘的单侧局部 3-流形邻域）。数学提交
+`dec8e5da0`。
+
+- `LemmaTwo.lean` 的 `NormalSystem.exists_singular_two_cell_in_double` 令
+  `K := S.manifoldComplex`，通过第二份拷贝嵌入
+  `ι := simplicialMap K (glueEmbed₂ (boundaryComplex 3 K) id)` 构造实际
+  `D : SingularTwoCell (double 3 K).space`。它保留源盘、整个像、边界环像、与 double 组合边界的交，
+  并给出逐点边界参数等式与 `D.IsNonsingular ↔ S.IsNonsingular`。因此后续 Case 1/2 可以在 H 车道规定的
+  `double 3 K` 环境中直接使用，不再依赖同形的假定结构。
+- `LemmaTwo` 聚焦检查 exit=0、零 warning；`.lake/scratch/AuditE3M2.lean` 共 83 项，
+  `audit-f.ps1` exit=0，全部只含 `propext`、`Classical.choice`、`Quot.sound`。
+  全局无 `lean.exe` 后运行 `fresh.py`，相对整合提交 `4401dd9d1` 的 5 个改动 Lean 模块均为 fresh，
+  forbidden=0、stale=0、missing=0。检测到其它工作树的 Lean 进程时已立即暂停，未终止或并发编译。
+- 现有 I2 的前提是待推盘已位于一个有边界 3-流形复形的 `boundaryComplex`。但
+  `S.imageComplex.space ∩ S.boundaryComplex.space = S.loopComplex.space`，所以 Moise Case 2 的最内盘像位于正则邻域内部，
+  只有它的边界圆落在外边界上；它不是 I2 可直接接受的边界盘。
+  下一精确生产者是：为这个内嵌 PL 2-盘构造单侧局部 PL 3-流形（或 PL 3-球）邻域，使该盘成为其组合边界子盘，
+  再运输到相应 double 中调用 I2。现有 `DiskDerivedNeighborhood`、`DiskCollar`、
+  `BoundaryDiskNeighborhood`只处理已在边界的盘；`BicollarManifold`与 `TwoSidedNeighborhood` 只处理无边界闭曲面，
+  均不能填补这一步。该局部乘积/半邻域定理尚未在本树中找到，故本层没有将其改写为假设，也没有弱化 Lemma 2。
