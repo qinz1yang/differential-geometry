@@ -972,12 +972,16 @@ theorem branchPreimage_isPLSphere_or_exists_two_isPLSpheres_of_not_boundaryBranc
       (hKspace.symm.trans hCcover) hsplit
 
 open Classical in
-theorem exists_two_isPLBalls_branchPreimage_of_boundaryBranch
+theorem exists_two_isPLBalls_branchPreimage_of_boundaryBranch_with_coordinate
     [T2Space M] (hD : NormalSingularCellData D BdM B)
     {c : hD.singularSet.Branch} (hc : hD.singularSet.IsBoundaryBranch c) :
     ∃ A C : Set (EuclideanSpace ℝ (Fin 2)),
       IsPLBall 1 A ∧ IsPLBall 1 C ∧ Disjoint A C ∧
-        hD.branchPreimage c = A ∪ C := by
+        hD.branchPreimage c = A ∪ C ∧
+        IsPLHomeomorphOn (hD.branchCoordinate c) A
+          (hD.singularSet.branchComplex c).space ∧
+        IsPLHomeomorphOn (hD.branchCoordinate c) C
+          (hD.singularSet.branchComplex c).space := by
   let P := hD.branchPreimage c
   let L := hD.singularSet.branchComplex c
   let f := hD.branchCoordinate c
@@ -1067,7 +1071,18 @@ theorem exists_two_isPLBalls_branchPreimage_of_boundaryBranch
       · exact Or.inl ⟨w, hw, rfl⟩
       · exact Or.inr ⟨w, hw, rfl⟩
   exact ⟨A, C, hLball.of_isPLHomeomorphOn hAPL.symm,
-    hLball.of_isPLHomeomorphOn hCPL.symm, hAdisjointC, hACcover.symm⟩
+    hLball.of_isPLHomeomorphOn hCPL.symm, hAdisjointC, hACcover.symm, hAPL, hCPL⟩
+
+open Classical in
+theorem exists_two_isPLBalls_branchPreimage_of_boundaryBranch
+    [T2Space M] (hD : NormalSingularCellData D BdM B)
+    {c : hD.singularSet.Branch} (hc : hD.singularSet.IsBoundaryBranch c) :
+    ∃ A C : Set (EuclideanSpace ℝ (Fin 2)),
+      IsPLBall 1 A ∧ IsPLBall 1 C ∧ Disjoint A C ∧
+        hD.branchPreimage c = A ∪ C := by
+  obtain ⟨A, C, hA, hC, hdisjoint, hcover, -, -⟩ :=
+    hD.exists_two_isPLBalls_branchPreimage_of_boundaryBranch_with_coordinate hc
+  exact ⟨A, C, hA, hC, hdisjoint, hcover⟩
 
 end NormalSingularCellData
 
