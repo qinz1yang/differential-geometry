@@ -346,9 +346,15 @@ F 车道的 `Topology/Pasting.lean` 与 `SingularPasting.lean` 正是为这种"�
 输出细分 `K'` 与新顶点映射 `φ`，满足 `B.faces ⊆ K'.faces`、`EqOn (simplicialMap K' φ) (simplicialMap K φ₀) B.space`、
 `dist < ε`，加上横截性与双点复形 `G` 是一维带边组合流形。边界版还给出 `G` 的顶点在边界上度数为 1、内部度数为 2。
 
-所以**"连续 → 单纯 →（保持边界不动的）一般位置"这条流水线现在是通的**：
+"连续 → 单纯 →（保持边界不动的）一般位置"这条流水线的两段都在树上了：
 前一段用本轮的 `exists_isSubdivision_simplicialApproximation`，后一段用上面这条。
 它建立在 `RelativeDerived.lean` 的 `relDerived`（相对导出细分）之上，`faces_subset_relDerived` 保证子复形的面被原样保留。
+
+**但两段不能直接串**，有一条必须补上的条款：一般位置那一步是在环境向量空间 `F` 里把顶点像挪动 `< ε`，
+`GeneralPosition.lean` 里**没有任何结论说扰动后的像仍落在某个给定复形的载体里**
+（全文只有一处 `MapsTo (simplicialMap K φ) …`，且是单个单形之间的，不是全局的）。
+而 Moise 用它的时候，盘必须始终留在 `M³` 内。所以还需要一条"扰动保持像落在 `|K_amb|` 内"的版本，
+或者在应用处用"像落在 `Int M³` 的某个紧子集里、`ε` 取得比到边界的距离小"来补。这一条要先确认，再谈串联。
 
 ### 2. 但迭代 `relDerived` **不会**把靠近子复形的单形变小
 
