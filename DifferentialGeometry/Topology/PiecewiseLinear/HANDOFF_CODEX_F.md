@@ -2289,3 +2289,15 @@ F-M1 仍为 partial。单个旧三角形的全部纤维及逐边对应已闭合�
 检查 `ArrangementConstraints` exit=0（9.6 秒）、零 warning；`AuditF251.lean` 三项仅标准三公理。此前已证欧氏/半空间保像、实际双点图、两折线 crossing、满维余面严格异侧和图卡搬运均保留有效；完整 F5.2 / 新 F-M1 为 partial，当前的“全约束安排生产者直接实例化”路线 blocked，不声明最终正规形式。
 
 可选路线：用尊重每个受迫子层秩的分层通用位置条件替换当前 `hcomplete`，重新证明存在及双点分类；或先在图卡中使曲面对目标骨架横截，再对骨架截出的折边采用相容的相对移动与双点分类。两条路线都还需要实际证明曲面各支跨越目标公共面；不能仅删除约束、增加 `IsArrangementGeneralFoldPair` 假设或把 C0 小扰动当 crossing 保持。按常驻规则 §5 转做已授权的新 F-M2 非紧多面体接口；不改变既有公共定义的语义。下一审计文件 `AuditF252.lean`。
+
+### 19.103 新 F-M2：非紧局部多面体定义、紧致等价与集合运算
+
+`LocallyPolyhedral.lean` 定义 `IsLocallyPolyhedral S`：S 的每个点都有一个包含于 S 的紧致有限多面体 P，且 P 是该点相对于 S 的邻域。它允许非紧、非闭及非流形的集合，不改变旧 `IsPolyhedron` 的有限紧致含义。§32 的要求现在可写成 `IsLocallyPolyhedral (U \ P)`，不再因 U 是开胞腔而强迫该部分紧致。
+
+`isPolyhedron_iff_isLocallyPolyhedral_and_isCompact` 证明与旧紧致情形完全相容。`exists_isPolyhedron_neighborhood_of_isCompact` 实际用有限子覆盖把 S 内任意紧集放入 S 内的有限多面体相对邻域。`isLocallyPolyhedral_iff_isPiecewiseAffineOn_id` 与现有逐片仿射 API 对接；一般 `IsPiecewiseAffineOn` 的源域也满足此局部多面体性。
+
+集合运算包含无附加条件的相交、开集及相对开子集、删去闭集，以及各片在并中相对闭时的有限并（附环境闭集推论）。闭子集接口 `iff_forall_isPolyhedron_inter_of_isClosed`：S 内相对闭的 T 为局部多面体，当且仅当它与 S 内每个有限多面体的交都是有限多面体。没有声称任意闭子集仍为多面体（Cantor 集反例），也没有声称任意两局部多面体之并仍局部多面体（离散集合 `{1/n : n ≥ 1}` 加上 `{0}` 的积聚反例）。这些条件是数学必需的。
+
+`of_locallyFinite_cover` 与 `isLocallyPolyhedral_space_of_locallyFinite` 接收集合自身拓扑中的局部有限有限多面体覆盖／单形覆盖，推出新谓词；局部有限性不强加在整个环境空间，因而允许开胞腔。新定义不捆绑一个全局无限复形，本次未声明从局部条件反向构造一个全局相容无限三角剖分。
+
+新 F-M2 的定义及所需基本接口 done：`LocallyPolyhedral` 最终检查 exit=0（8.7 秒）、零 warning；`AuditF252.lean` 全部 22 个公开定义与端点仅标准三公理。F5.2 仍按 §19.102 保持 partial，当前完整安排约束路线 blocked。下一审计文件 `AuditF253.lean`。
