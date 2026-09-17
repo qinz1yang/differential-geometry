@@ -178,6 +178,7 @@ import DifferentialGeometry.Analysis.Calculus.TimeJet.CompleteEndpointTower
 import DifferentialGeometry.Analysis.Calculus.TimeJet.EndpointJets
 import DifferentialGeometry.Analysis.Calculus.TimeJet.EndpointTower
 import DifferentialGeometry.Analysis.Calculus.TimeJet.Evolution
+import DifferentialGeometry.Analysis.Calculus.TimeJet.EvolutionJets
 import DifferentialGeometry.Analysis.Calculus.TimeJet.Matching
 import DifferentialGeometry.Analysis.Calculus.TimeJet.PolynomialEvolution
 import DifferentialGeometry.Analysis.Calculus.TimeJet.SliceBootstrap

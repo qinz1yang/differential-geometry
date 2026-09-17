@@ -524,4 +524,130 @@ theorem exists_timeL2_vectorH2_composition_firstJet_norm_le_of_norm_le
         Finset.sum_le_sum (fun j _ => hvnorm j)
       _ = (∑ j, C j) * (Real.sqrt T + ‖u‖) := (Finset.sum_mul _ _ _).symm
 
+theorem exists_timeL2_scalarHs_composition_norm_le_of_lower_order_bound
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) (k : ℕ) (T : ℝ)
+    (F : (ι → ℝ) → ℝ) {U K : Set (ι → ℝ)}
+    (hF : ContDiffOn ℝ ∞ F U) (hU : IsOpen U) (hK : IsCompact K) (hKU : K ⊆ U)
+    (R : ℝ) :
+    let J := tensorHsInclusion (g := g) (r := 0) (s := 0)
+      (by have := Nat.cast_nonneg (α := ℝ) k; linarith : (1 : ℝ) ≤ (k : ℝ) + 2)
+    let P := ContinuousLinearMap.piLpMap 2 (fun _ : ι => J)
+    let L := tensorHsInclusion (g := g) (r := 0) (s := 0)
+      (by linarith : (k : ℝ) + 1 ≤ (k : ℝ) + 2)
+    let K₁ := tensorHsInclusion (g := g) (r := 0) (s := 0)
+      (by have := Nat.cast_nonneg (α := ℝ) k; linarith : (1 : ℝ) ≤ (k : ℝ) + 1)
+    ∃ C : ℝ, 0 ≤ C ∧
+      ∀ u : timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 ((k : ℝ) + 2))) T,
+      ∀ a : ℝ → TensorHs g 0 0 ((k : ℝ) + 1),
+      AEStronglyMeasurable a (timeMeasure T) →
+      (∀ᵐ t ∂timeMeasure T, range (scalarH1PiToContinuous g (P (u t))) ⊆ K) →
+      (∀ᵐ t ∂timeMeasure T, (∑ i, ‖L (u t i)‖) ≤ R) →
+      (∀ᵐ t ∂timeMeasure T, ∀ x, scalarH1ToContinuous g (K₁ (a t)) x =
+        F (scalarH1PiToContinuous g (P (u t)) x)) →
+      ∃ v : timeL2 (TensorHs g 0 0 ((k : ℝ) + 2)) T,
+        (fun t => L (v t)) =ᵐ[timeMeasure T] a ∧
+        ‖v‖ ≤ C * (Real.sqrt T + ‖u‖) := by
+  intro J P L K₁
+  obtain ⟨C₀, hC₀, hc⟩ := exists_lp_scalarHs_composition_bound_of_lower_order_bound
+    (Ω := ℝ) g k F hF hU hK hKU R
+  let c := (Fintype.card ι : ℝ)
+  have hc₀ : 0 ≤ c := Nat.cast_nonneg _
+  refine ⟨C₀ * (1 + c), mul_nonneg hC₀ (by positivity), ?_⟩
+  intro u a ha hRange hBound hEval
+  obtain ⟨v, hv, hnorm⟩ := hc (timeMeasure T) (Lp.memLp u) a ha hRange hBound hEval
+  refine ⟨v, hv, ?_⟩
+  have hpoint : ∀ᵐ t ∂timeMeasure T, ‖v t‖ ≤ (C₀ * c) * ‖u t‖ + C₀ := by
+    filter_upwards [hnorm] with t ht
+    have hsum : (∑ i, ‖u t i‖) ≤ c * ‖u t‖ := by
+      calc
+        _ ≤ ∑ _i : ι, ‖u t‖ := Finset.sum_le_sum (fun i _ => PiLp.norm_apply_le _ i)
+        _ = _ := by simp [c]
+    calc
+      ‖v t‖ ≤ C₀ * (1 + ∑ i, ‖u t i‖) := ht
+      _ ≤ C₀ * (1 + c * ‖u t‖) :=
+        mul_le_mul_of_nonneg_left (add_le_add le_rfl hsum) hC₀
+      _ = (C₀ * c) * ‖u t‖ + C₀ := by ring
+  calc
+    ‖v‖ ≤ (C₀ * c) * ‖u‖ + Real.sqrt T * C₀ :=
+      timeL2_norm_le_of_ae_affine_bound v u (mul_nonneg hC₀ hc₀) hC₀ hpoint
+    _ ≤ (C₀ * (1 + c)) * (Real.sqrt T + ‖u‖) := by
+      nlinarith [mul_nonneg hC₀ (norm_nonneg u),
+        mul_nonneg (mul_nonneg hC₀ hc₀) (Real.sqrt_nonneg T)]
+
+def scalarHsTimeFirstJet
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) (n : ℕ) :
+    ℝ × PiLp 2 (fun _ : ι => TensorHs g 0 0 ((n : ℝ) + 1)) →L[ℝ]
+      PiLp 2 (fun _ : Option (ι ⊕ ι) => TensorHs g 0 0 (n : ℝ)) :=
+  (scalarHsTimeCoordinate g (n : ℝ)).comp
+    ((ContinuousLinearMap.fst ℝ ℝ _).prod
+      ((firstJetHs g n).comp (ContinuousLinearMap.snd ℝ ℝ _)))
+
+omit [Fintype ι] in
+@[simp] theorem scalarHsTimeFirstJet_apply
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) (n : ℕ)
+    (p : ℝ × PiLp 2 (fun _ : ι => TensorHs g 0 0 ((n : ℝ) + 1))) :
+    scalarHsTimeFirstJet g n p = scalarHsTimeCoordinate g (n : ℝ) (p.1, firstJetHs g n p.2) := rfl
+
+theorem exists_timeL2_scalarHs_composition_firstJet_norm_le
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) (k : ℕ)
+    (f₀ : PiLp 2 (fun _ : ι => TensorHs g 0 0 (((k + 2 : ℕ) : ℝ) + 1)))
+    (T : ℝ) (hT : T ≤ 1)
+    (F : (Option (ι ⊕ ι) → ℝ) → ℝ) {S K : Set (Option (ι ⊕ ι) → ℝ)}
+    (hF : ContDiffOn ℝ ∞ F S) (hS : IsOpen S) (hK : IsCompact K) (hKS : K ⊆ S)
+    (R : ℝ) :
+    let P : PiLp 2 (fun _ : Option (ι ⊕ ι) => TensorHs g 0 0 ((k + 2 : ℕ) : ℝ)) →L[ℝ]
+        PiLp 2 (fun _ : Option (ι ⊕ ι) => TensorHs g 0 0 ((k : ℝ) + 2)) :=
+      ContinuousLinearMap.piLpMap 2 (fun _ : Option (ι ⊕ ι) =>
+        tensorHsInclusion (g := g) (r := 0) (s := 0)
+          (by push_cast; rfl : (k : ℝ) + 2 ≤ ((k + 2 : ℕ) : ℝ)))
+    let H : ℝ × PiLp 2 (fun _ : ι => TensorHs g 0 0 (((k + 2 : ℕ) : ℝ) + 1)) →L[ℝ]
+        PiLp 2 (fun _ : Option (ι ⊕ ι) => TensorHs g 0 0 ((k : ℝ) + 2)) :=
+      P.comp (scalarHsTimeFirstJet (ι := ι) g (k + 2))
+    let Q := ContinuousLinearMap.piLpMap 2 (fun _ : Option (ι ⊕ ι) =>
+        tensorHsInclusion (g := g) (r := 0) (s := 0)
+          (by have := Nat.cast_nonneg (α := ℝ) k; linarith : (1 : ℝ) ≤ (k : ℝ) + 2))
+    let A := tensorHsInclusion (g := g) (r := 0) (s := 0)
+        (by linarith : (k : ℝ) + 1 ≤ (k : ℝ) + 2)
+    let J := tensorHsInclusion (g := g) (r := 0) (s := 0)
+        (by have := Nat.cast_nonneg (α := ℝ) k; linarith : (1 : ℝ) ≤ (k : ℝ) + 1)
+    ∃ C : ℝ, 0 ≤ C ∧
+      ∀ u : timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 (((k + 2 : ℕ) : ℝ) + 1))) T,
+      ∀ a : ℝ → TensorHs g 0 0 ((k : ℝ) + 1), AEStronglyMeasurable a (timeMeasure T) →
+      (∀ᵐ t ∂timeMeasure T, range (scalarH1PiToContinuous g (Q (H (t, f₀ + u t)))) ⊆ K) →
+      (∀ᵐ t ∂timeMeasure T, (∑ i, ‖A (H (t, f₀ + u t) i)‖) ≤ R) →
+      (∀ᵐ t ∂timeMeasure T, ∀ x, scalarH1ToContinuous g (J (a t)) x =
+        F (scalarH1PiToContinuous g (Q (H (t, f₀ + u t))) x)) →
+      ∃ a₂ : timeL2 (TensorHs g 0 0 ((k : ℝ) + 2)) T,
+        (fun t => A (a₂ t)) =ᵐ[timeMeasure T] a ∧
+        ‖a₂‖ ≤ C * (Real.sqrt T + ‖u‖) := by
+  intro P H Q A J
+  obtain ⟨C₀, hC₀, hc⟩ := exists_timeL2_scalarHs_composition_norm_le_of_lower_order_bound
+    (ι := Option (ι ⊕ ι)) g k T F hF hS hK hKS R
+  let B := ‖H‖ * (2 + ‖f₀‖)
+  have hB : 0 ≤ B := mul_nonneg (norm_nonneg H) (by positivity)
+  refine ⟨C₀ * (1 + B), mul_nonneg hC₀ (by positivity), ?_⟩
+  intro u a ha hRange hBound hEval
+  obtain ⟨v, hv, hvnorm⟩ := exists_timeL2_affine_comp_norm_le H f₀ T hT u
+  have hvRange : ∀ᵐ t ∂timeMeasure T, range (scalarH1PiToContinuous g (Q (v t))) ⊆ K := by
+    filter_upwards [hv, hRange] with t hvt ht
+    rw [hvt]
+    exact ht
+  have hvBound : ∀ᵐ t ∂timeMeasure T, (∑ i, ‖A (v t i)‖) ≤ R := by
+    filter_upwards [hv, hBound] with t hvt ht
+    rw [hvt]
+    exact ht
+  have hvEval : ∀ᵐ t ∂timeMeasure T, ∀ x, scalarH1ToContinuous g (J (a t)) x =
+      F (scalarH1PiToContinuous g (Q (v t)) x) := by
+    filter_upwards [hv, hEval] with t hvt ht
+    rw [hvt]
+    exact ht
+  obtain ⟨a₂, ha₂, ha₂norm⟩ := hc v a ha hvRange hvBound hvEval
+  refine ⟨a₂, ha₂, ?_⟩
+  calc
+    ‖a₂‖ ≤ C₀ * (Real.sqrt T + ‖v‖) := ha₂norm
+    _ ≤ C₀ * (Real.sqrt T + B * (Real.sqrt T + ‖u‖)) :=
+      mul_le_mul_of_nonneg_left (add_le_add le_rfl hvnorm) hC₀
+    _ ≤ C₀ * (1 + B) * (Real.sqrt T + ‖u‖) := by
+      nlinarith [mul_nonneg hC₀ (norm_nonneg u)]
+
 end AddCircle

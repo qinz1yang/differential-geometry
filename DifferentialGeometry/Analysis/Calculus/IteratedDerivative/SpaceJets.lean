@@ -1,3 +1,5 @@
+import DifferentialGeometry.Analysis.Calculus.TimeJet.SliceSwap
+import Mathlib.Analysis.Calculus.Deriv.Prod
 import Mathlib.Analysis.Calculus.ContDiff.Comp
 import Mathlib.Analysis.Calculus.ContDiff.Operations
 import DifferentialGeometry.Analysis.Calculus.TimeJet.Evolution
@@ -619,3 +621,70 @@ theorem contDiffOn_and_continuousOn_spatial_iteratedFDeriv_comp
 end DifferentialGeometry.Analysis
 
 end
+
+noncomputable section
+
+open Set
+open scoped ContDiff
+
+namespace DifferentialGeometry.Analysis
+
+variable {E F : Type*}
+  [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [NormedAddCommGroup F] [NormedSpace ℝ F]
+
+def spatialJetPrefix (n : ℕ) (f : E → F) (x : E) :
+    (i : Fin (n + 1)) → E [×i.val]→L[ℝ] F :=
+  fun i => iteratedFDeriv ℝ i.val f x
+
+def spatialJetProjection {m n : ℕ} (h : m ≤ n) :
+    ((i : Fin (n + 1)) → E [×i.val]→L[ℝ] F) →L[ℝ]
+      ((i : Fin (m + 1)) → E [×i.val]→L[ℝ] F) :=
+  ContinuousLinearMap.pi fun i =>
+    ContinuousLinearMap.proj (Fin.castLE (Nat.add_le_add_right h 1) i)
+
+@[simp]
+theorem spatialJetProjection_apply {m n : ℕ} (h : m ≤ n)
+    (v : (i : Fin (n + 1)) → E [×i.val]→L[ℝ] F) (i : Fin (m + 1)) :
+    spatialJetProjection h v i = v (Fin.castLE (Nat.add_le_add_right h 1) i) := rfl
+
+@[simp]
+theorem spatialJetProjection_spatialJetPrefix {m n : ℕ} (h : m ≤ n)
+    (f : E → F) (x : E) :
+    spatialJetProjection h (spatialJetPrefix n f x) = spatialJetPrefix m f x := rfl
+
+@[simp]
+theorem spatialJetProjection_refl (n : ℕ) :
+    spatialJetProjection (E := E) (F := F) (Nat.le_refl n) = ContinuousLinearMap.id ℝ _ := by
+  ext v i
+  rfl
+
+theorem spatialJetProjection_comp {l m n : ℕ} (hlm : l ≤ m) (hmn : m ≤ n) :
+    (spatialJetProjection (E := E) (F := F) hlm).comp (spatialJetProjection hmn) =
+      spatialJetProjection (hlm.trans hmn) := by
+  ext v i
+  rfl
+
+theorem continuousOn_spatialJetPrefix {P : Type*} [TopologicalSpace P]
+    {S : Set P} {G : P → E → F} {x : P → E} (n : ℕ)
+    (h : ∀ r ≤ n, ContinuousOn (fun p => iteratedFDeriv ℝ r (G p) (x p)) S) :
+    ContinuousOn (fun p => spatialJetPrefix n (G p) (x p)) S := by
+  exact continuousOn_pi.mpr fun i => h i.val (Nat.le_of_lt_succ i.isLt)
+
+theorem hasDerivWithinAt_spatialJetPrefix [CompleteSpace F]
+    {G R : ℝ → E → F} {a b : ℝ} {V : Set E} (hV : IsOpen V) (n : ℕ)
+    (hGs : ∀ t ∈ Icc a b, ContDiffOn ℝ ∞ (G t) V)
+    (hRs : ∀ t ∈ Icc a b, ContDiffOn ℝ ∞ (R t) V)
+    (hpde : ∀ t ∈ Icc a b, ∀ x ∈ V,
+      HasDerivWithinAt (fun s => G s x) (R t x) (Icc a b) t)
+    (hRjet : ∀ r ≤ n, ContinuousOn
+      (fun p : ℝ × E => iteratedFDeriv ℝ r (R p.1) p.2) (Icc a b ×ˢ V))
+    {t : ℝ} (ht : t ∈ Icc a b) {x : E} (hx : x ∈ V) :
+    HasDerivWithinAt (fun s => spatialJetPrefix n (G s) x)
+      (spatialJetPrefix n (R t) x) (Icc a b) t := by
+  apply hasDerivWithinAt_pi.mpr
+  intro i
+  exact hasDerivWithin_iterF hV i.val hGs hRs hpde
+    (fun r hr => hRjet r (hr.trans (Nat.le_of_lt_succ i.isLt))) ht hx
+
+end DifferentialGeometry.Analysis
