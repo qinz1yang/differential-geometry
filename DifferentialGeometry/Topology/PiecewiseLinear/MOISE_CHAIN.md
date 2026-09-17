@@ -15,7 +15,7 @@ Phase 3 的终点已经归约成一句话：`plApproximationManifold_three_of_mo
 | 25.2 | 环定理第一形式（183） | `Moise252` ✔已陈述 | 开。**箭头便宜**：书上从 25.1 推出只用"把 `Int|D₁|` 推离 `Bd M`"，即 S 已交付的 I2 |
 | 26.4 | 扩展环定理（193） | `Moise264` ✔已陈述 | 开。用 25.2 与 26.3 双领（S 已交付） |
 | 30.4 | 球壳定理（216） | `Moise304` ✔已陈述 | 开。用 26.4、23.8、26.1（S 已证）、28.19、28.20（H 已证）、30.3 |
-| 30.5 | 嵌套拓扑 3-胞腔（216） | `Moise305` ✔已陈述 | 开。**箭头便宜**：书上从 30.4 五行推出 |
+| 30.5 | 嵌套拓扑 3-胞腔（216） | `Moise305` ✔已陈述 | blocked：除 30.4 外还缺 `TopologicalCellComplementConnected`；H-M3 评估最窄 Alexander 对偶路线约 10k–18k 行 |
 | 30.6 | 环壳定理（216–217） | `Moise306` ✔已陈述 | 开。用 30.7、van Kampen、§22 |
 | 30.7 | 拓扑实心环面之间有 CST（217） | `Moise307` ✔已陈述 | 开。用 30.6、28.1、24.9–24.12（S 正在做） |
 | 30.8 | 脊生成 `π(S)`（218） | `Moise308` | 开。用 §31 |
@@ -124,8 +124,10 @@ Phase 3 的终点已经归约成一句话：`plApproximationManifold_three_of_mo
 但没有"`C₂ᶜ` 连通"就无法排除另一侧也含 `C₂ᶜ` 的点。
 
 树里的相关材料：`Topology/SphereSeparation/JordanBrouwer.lean` 的
-`hasTwoComplementComponents_of_alexanderDualityH0Certificate` 给出了这个结论，但条件于一个 `H₀` 证书，
-只对标准球面无条件成立。把该证书对任意拓扑 2-球面证出来，就是 Alexander 对偶的一个实例，属于同调侧的工作。
+`hasTwoComplementComponents_of_isCompact_of_alexanderDualityH0Certificate` 已把任意紧致像的 `H₀` 证书转为恰两个补分支；
+光滑性不在这个末端。缺的是证书生产者：`SpecializedAlexanderDuality` 仍只是条件，而从两分支反推它的现有定理对本目标循环。
+任意拓扑球可为 wild sphere，不能走 smooth/open-bicollar；树中也没有 Čech或紧支撑上同调。H-M3 评估认为最窄专门
+Alexander 对偶实现约 10k–18k 行，完整可复用基础约 20k–35k 行，未获批准前不启动。
 
 所以"便宜箭头"名单里只剩 25.2 ← 25.1 与 26.4 ← 25.2 + 26.3 两条；30.5 ← 30.4 要先补上面这条拓扑输入。
 
@@ -145,7 +147,8 @@ Phase 3 的终点已经归约成一句话：`plApproximationManifold_three_of_mo
   树里**没有**任何单纯逼近/连续映射 PL 化的结果；`Approximation.lean` 的 `PLApproximation` 是同胚的 PL 逼近，
   是终点本身，不是这个。
 - `TopologicalCellComplementConnected`：ℝ³ 中拓扑 3-胞腔的补集连通。
-  `Topology/SphereSeparation/JordanBrouwer.lean` 有条件于 `H₀` 证书的版本，把证书对任意拓扑 2-球面证出来即可。
+  `Topology/SphereSeparation/JordanBrouwer.lean` 有条件于 `H₀` 证书的紧致像版本；任意拓扑 2-球面的证书需要真正的
+  Alexander 对偶，不能由现有 smooth bicollar 或循环的 `specializedAlexanderDuality_of_componentCount` 得到。
 
 结论：**"便宜箭头"这一类其实不存在**。Moise 用一段话带过的归约，靠的是前面章节的经典逼近定理。
 单纯逼近是其中最值钱的一条：它同时解锁 25.2 与 26.4，而且几乎每一章的开头都用它把连续对象换成 PL 对象。

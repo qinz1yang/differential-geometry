@@ -680,6 +680,11 @@
   一维 Hurewicz/阿贝尔化桥给 `b₁(Bd X)=b₁(Bd N)`；各 `A'_v` 逐边界封盘后，用 H.4a 的闭可定向曲面公式、Euler
   加法与 H.4b 的 `χ=2` 球面识别证明其为球面删有限开盘。原 Lemma 11 的无分块同胚不进入主链，最终保持
   `A_v ↦ A'_v` 的 PLH 由 Lemma 13 另造。禁止消费含 `sorry` 的 `Topology/Homology/HurewiczLowDegrees.lean`。
+- 2026-09-17（H-M3 评估）：`TopologicalCellComplementConnected` 不是现有球面分离链的薄包装。
+  `hasTwoComplementComponents_of_isCompact_of_alexanderDualityH0Certificate` 已适用于任意紧致像；真正缺口是任意拓扑
+  2-球面的 `HasAlexanderDualityH0Certificate`。现有 `SpecializedAlexanderDuality` 是未生产的条件，且其从两分支反推的
+  定理与目标循环；wild sphere 不能用 smooth/open-bicollar，树中无 Čech或紧支撑理论。最窄专门实现估 10k–18k 行，
+  完整可复用 Alexander 对偶估 20k–35k；在用户另行批准前暂缓，不把 30.5 报成只差 30.4 的 1k 收尾。
 - 不采用 Bing 定理 7 的“保留单形”强形式，只用 Moise §8/§35 的紧致图卡归纳（书中 `chap:two-set-gluing` 的方案）。
 - 不变域定理不进入 Phase 1（`f(O) = O` 由接口 A 给出，与 Moise 36.1 一致）。
 - `PLApproximation`/`PLSmoothing` 以 `Prop` 假设而非 `sorry` 出现：公理审计干净，但**报告时必须说明条件性**。

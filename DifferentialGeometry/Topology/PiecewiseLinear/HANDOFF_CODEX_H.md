@@ -508,3 +508,19 @@ Reduced/MayerVietorisCoefficients, Reduced/PointClasses}`（`REUSE_AUDIT.md` §2
 - 结论：22.8–22.10 对 §33 主链改为 skip，不移植完整曲面分类。仍需两个窄生产者：不经过
   `Homology/HurewiczLowDegrees.lean` 的一维 Hurewicz/基本群阿贝尔化桥，以及有限个边界分支的封盘复形与删盘识别；
   预计合计 3k–5k 行，归 G.5，而不是 H.4 分类。
+
+### H-M3 — assessed，`TopologicalCellComplementConnected` 暂缓
+
+- `JordanBrouwer.lean` 实际已有不要求光滑性的末端：
+  `hasTwoComplementComponents_of_isCompact_of_alexanderDualityH0Certificate` 只要嵌入像紧致与
+  `HasAlexanderDualityH0Certificate`。光滑性只出现在现有证书生产者和若干包装层，不是分支计数消费者的本质限制。
+- `DualityAssembly.lean` 仍显式要求 `SpecializedAlexanderDuality e` 与球面 cellular comparison；前者本身就是
+  `reduced H₀(complement) ≅ H²(compactum)`。`SpecializedDuality.lean` 唯一无该假设的生产者
+  `specializedAlexanderDuality_of_componentCount` 反而以“两补分支”为输入，且
+  `specializedAlexanderDuality_iff_twoComponents` 明示它与目标等价，因此这条链不能用来证明目标。
+- 任意拓扑 3-胞腔的边界可为 wild sphere，不能消费现有 smooth/open-bicollar 证书。当前树和 Mathlib 没有 Čech
+  上同调、紧支撑上同调或一般 Alexander 对偶；`SphereCellularComparison.lean` 也只做到球面开覆盖的链级短正合列，
+  尚未生产 `DualityAssembly` 要的 comparison。
+- 最窄路线的成本分解：拓扑胞腔边界参数化与不变域桥 0.5k–1k；球面 cellular comparison 1k–2k；专门的
+  `\widetilde H₀(ℝ³-e(S²)) ≅ H²(S²)` Alexander 对偶 8k–14k；从两侧分解推出 `Cᶜ` 连通 0.5k–1k。
+  合计约 10k–18k 行且高风险；若建可复用 Čech/紧支撑理论则约 20k–35k。结论是在用户另行批准前不启动 H-M3。
