@@ -4,6 +4,7 @@ import DifferentialGeometry.Topology.Connected.Separation
 import DifferentialGeometry.Topology.Connected.TwoSided
 import DifferentialGeometry.Topology.PiecewiseLinear.CylindricalDiagram
 import DifferentialGeometry.Topology.PiecewiseLinear.Transition361
+import DifferentialGeometry.Topology.PiecewiseLinear.MapApproximation
 
 open Set
 
@@ -155,6 +156,10 @@ def PLMapApproximation : Prop :=
     ∀ ε : ℝ, 0 < ε →
       ∃ g : E → EuclideanSpace ℝ (Fin 3),
         IsPiecewiseAffineOn g P ∧ ∀ x ∈ P, dist (g x) (f x) < ε
+
+theorem plMapApproximation : PLMapApproximation := by
+  intro E _ _ _ P hP hPc f hf ε hε
+  exact exists_isPiecewiseAffineOn_dist_lt hP hPc hf hε
 
 def TopologicalCellComplementConnected : Prop :=
   ∀ C : Set (EuclideanSpace ℝ (Fin 3)), IsTopologicalCell 3 C → IsConnected Cᶜ

@@ -150,3 +150,18 @@ Phase 3 的终点已经归约成一句话：`plApproximationManifold_three_of_mo
 结论：**"便宜箭头"这一类其实不存在**。Moise 用一段话带过的归约，靠的是前面章节的经典逼近定理。
 单纯逼近是其中最值钱的一条：它同时解锁 25.2 与 26.4，而且几乎每一章的开头都用它把连续对象换成 PL 对象。
 下一步若要推进主链，`PLMapApproximation` 是性价比最高的目标。
+
+## `PLMapApproximation` 已证（2026-09-16 夜）
+
+`MapApproximation.lean` 的 `exists_isPiecewiseAffineOn_dist_lt`：`E` 有限维赋范空间中的紧致多面体 `P`、
+任意赋范空间 `F`、`P` 上连续的 `f : E → F`、`ε > 0`，则存在逐片仿射的 `g` 使 `∀ x ∈ P, dist (g x) (f x) < ε`。
+`MoiseChain.lean` 的 `plMapApproximation` 由它给出。审计仅标准三公理。
+
+证明是经典的顶点插值，目标凸所以不需要完整的单纯逼近定理：`P` 紧致给一致连续，取 `δ`；用 `Mesh.lean` 的
+`exists_isSubdivision_diam_lt` 把三角剖分细分到每个单形直径 `< δ`；令 `g := simplicialMap K' f`，
+即在顶点上取 `f` 值、在每个单形上重心插值；对 `x` 落在的面 `s`，`g x − f x = ∑ w_v • (f v − f x)`，
+每个 `‖f v − f x‖ < ε/2`（因为 `dist v x ≤ diam < δ`），权非负且和为 1，故 `‖g x − f x‖ ≤ ε/2 < ε`。
+
+**这消掉了两条箭头里的一半缺口。** 25.2 ← 25.1 与 26.4 ← 25.2 需要的是**映入 PL 3-流形**的版本；
+目标是 ℝ³（或任意赋范空间）的情形已经有了，流形版按图卡归约即可，但要处理像跨图卡时的拼接，
+这是下一步。凡目标本来就是 ℝ³ 的地方（§26.6、§30 的若干处）现在可以直接用。
