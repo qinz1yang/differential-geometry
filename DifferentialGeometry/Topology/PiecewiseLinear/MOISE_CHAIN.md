@@ -417,3 +417,42 @@ F 车道的 `Topology/Pasting.lean` 与 `SingularPasting.lean` 正是为这种"�
 `sourceComplex.space` 是 PL 2-球，`frontier` 是 PL 1-球面（`IsPLBall.isPLSphere_frontier`），
 所以那条字段现在可以由定理给出，不必当作数据携带。
 `exists_isPiecewiseAffineOn_freeLoop_homotopic` 需要的参数化输入也由这条供给。
+
+## PL 棱柱与 PL 同伦（2026-09-17，整日）
+
+上一节记的"出路 (b)（环带技巧）"所缺的那块已经建好了。直线同伦 `(1-t)A x + t B x` 含 `t·x` 项，
+在任何有内点的块上都不仿射，所以棱柱必须切开。四个模块：
+
+1. `PrismMap.lean`
+   - `upperPrismTriangle`、`lowerPrismTriangle`：单位正方形被对角线切成的两块，都是 H-多胞形。
+   - `prismSquareMap a b c d`：在上三角取仿射映射 `a + t•(c-a) + λ•(d-c)`，下三角取 `a + λ•(b-a) + t•(d-b)`，
+     两者在对角线上都等于 `a + t•(d-a)` 故可拼。四条边分别是四个角值的仿射插值，像落在 `hull {a,b,c,d}` 内。
+   - `prismStripMap p q a b c d`：沿仿射重标度搬到 `Icc p q ×ˢ Icc 0 1` 上。
+2. `PrismInterval.lean`
+   - `exists_isPiecewiseAffineOn_prism_of_partition`：给定 `[0,1]` 的分划 `s 0 = 0 < … < s n = 1`，
+     两个映射在每个格上都是端点值的仿射插值，则把各条 strip 沿竖直线段 `{s k} × [0,1]` 归纳拼起来，
+     得到正方形上的逐片仿射映射：底边是 `f`，顶边是 `g`，两侧是端点值的直线插值，
+     每个格上方的像落在该格四个角值的凸包里。
+   - `..._of_loop`：两端是环路时两侧相等，于是映射降到环带上。
+   - `mapsTo_of_forall_mem_convexHull_cell`：四角值都在凸集里时整块棱柱落在该凸集里。
+3. `BrokenLine.lean`
+   - `exists_partition_affineOn_two`：`[0,1]` 上两个逐片仿射映射共用一个分划，在每格上都是仿射插值。
+     证明：`IsPolyhedron.exists_simplicialComplex` 把 `[0,1]` 三角剖分，
+     `exists_isSubdivision_affineOn_faces_finite` 细分到两个映射都逐面仿射，取所有面的顶点作有限集 `P`，
+     用 `Finset.orderIsoOfFin` 排序；相邻两点之间没有 `P` 的点，故每个格落在某一个面里。
+   - `affineMap_apply_eq_interp`：仿射映射就是端点值的插值。
+4. `PrismHomotopy.lean`
+   - `exists_isPiecewiseAffineOn_prism`：去掉分划假设的版本。
+   - `exists_isPiecewiseAffineOn_prism_mapsTo`：两端都映进凸集时整块映进该凸集。
+   - `exists_isPiecewiseAffineOn_annulus_of_partition`：两条 PL 环路在每格四角同落一张面里时，
+     得到**落在 `|L|` 内的 PL 奇异环带**，底是 `f`、顶是 `g`、两侧粘合。
+   - `exists_face_of_cell_of_mem_convexHull_carrierFace`：上一条的面条件由"单纯逼近"自动给出——
+     若 `f` 把每个格映进一张闭单形，而 `g x` 落在 `carrierFace L (f x)` 的凸包里，则四角同面。
+
+全部只依赖标准三公理。
+
+**离"边界指定的 PL 奇异盘"还差一步**：把环带贴到逼近好的盘上。具体做法已经想清楚：
+取盘的模型为方块 `[-1,1]²`（`Prism.lean` 的 `isPLBall_unit_square`），内方块 `[-1/2,1/2]²` 上放 `G(2z)`，
+方形环带 `A = [-1,1]² ∖ int [-1/2,1/2]²` 上放本轮的环带映射。所缺的是 `A` 与 `[0,1]²` 之间的 PL 对应：
+径向参数化 `p ↦ p/‖p‖_∞` **不是** PL 的，必须用把每条边对应的梯形切成两个三角形的 8 片仿射映射来写。
+这一步是纯粹的显式构造，没有新的数学内容。
