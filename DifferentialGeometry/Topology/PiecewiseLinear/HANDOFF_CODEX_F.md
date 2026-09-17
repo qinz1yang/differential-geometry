@@ -2135,3 +2135,11 @@ F-M1 仍为 partial。单个旧三角形的全部纤维及逐边对应已闭合�
 `HeightSectionDecomposition.lean` 定义 `heightSectionCells` 为实际四面体的非退化水平截面。`biUnion_heightSectionCells_eq_fiber` 用填充的正规闭性与盘删去有限顶点后的稠密性，证明这些二维胞腔覆盖整个水平盘，故经过顶点时的单点截面也已覆盖。`exists_isPLDiskDecomposition_fiber_of_heightIndex_eq_zero` 从 §19.84 所生产的零指标填充数据实际构造每个中间层的有限盘胞腔分解及参数化边界；无需另加截面球性、共同剖分或胞腔边界相交假设。
 
 聚焦检查：`SimplexSection` exit=0（10.6 秒）、`DiskCover` exit=0（10.3 秒）、`HeightSectionDecomposition` exit=0（10.3 秒），均零 warning。`AuditF234.lean` 十五项仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步证明指定层顶点的闭星截面 d0 是上述胞腔中的子盘，再将相对自由盘提升为三维薄片中与边界相交为盘的凸胞腔，执行有限删除及 M3 拼装。S.4 M2/M3、夜间 F-M1 整体及 I1 尚未完成。下一审计文件 `AuditF235.lean`。
+
+### 19.86 S.4 M2：闭星截面子盘及其外部自由胞腔的实际选择
+
+`ConeFiber.lean` 证明过锥顶的线性水平截面仍是锥，并实际构造有限底复形。`ClosedStarFiber.lean` 的 `isPLBall_closedStar_inter_fiber` 从整层为正维 PL 球推出顶点闭星的同层截面为同维 PL 球：先将原链环的水平截面与整层剖分的顶点链环作 PL 对应，再分别对球面链环和球链环作锥。结论适用于任意有限维实范数空间，不需要三维、顶点高度单射或预设闭星截面球性。
+
+`HeightStarDecomposition.lean` 从正规闭填充的纯三维性及盘删去有限顶点后的稠密性，证明 d0 恰为实际截面胞腔中包含于闭星者的并。`exists_free_heightSectionCell_outside_closedStar` 因而从整层盘、一般位置高度及 d0 不等于整层，实际生产共同剖分和 d0 外的一块自由截面盘；没有把 d0 球性、子胞腔覆盖或自由胞腔作为额外输入。
+
+聚焦检查：`ConeFiber` exit=0（8.9 秒）、`ClosedStarFiber` exit=0（10.4 秒）、`HeightStarDecomposition` exit=0（10.4 秒），均零 warning。`AuditF235.lean` 七项（含链环搬运输入）仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步将所选自由盘提升为三维薄片凸胞腔，证明其与当前边界的交为盘并闭合有限删除，再做 M3。S.4 M2/M3、夜间 F-M1 整体及 I1 尚未完成。下一审计文件 `AuditF236.lean`。
