@@ -71,11 +71,11 @@ variable [I.Boundaryless] [ConnectedSpace N]
 private local instance nestingC1 : IsManifold I 1 N :=
   IsManifold.of_le (n := ∞) (by decide)
 
-theorem minimum_mem_lower_zero (hEnorm : IsMetricNorm (I := I) h)
+theorem mem_lower_zero_of_busemann_le (hEnorm : IsMetricNorm (I := I) h)
     (hsmall : epsilon ≤ spatialNeckControlEpsilon)
     (hsec : DifferentialGeometry.Geometry.HasNonnegativeSectionalCurvature (I := I) h)
     {c : ℝ≥0 → N} (hc : Isometry c) {q : N}
-    (hmin : ∀ x : N, busemann c q ≤ busemann c x) (hnotcore : q ∉ W1.core) :
+    (hlevel : busemann c q ≤ busemann c p1) (hnotcore : q ∉ W1.core) :
     q ∈ D1.lower 0 := by
   have hgap := spatialNeckControlEpsilon_inverse_gap W1.epsilon_pos hsmall
   have hzero : |(0 : ℝ)| < epsilon⁻¹ + 1 := by
@@ -104,8 +104,16 @@ theorem minimum_mem_lower_zero (hEnorm : IsMetricNorm (I := I) h)
     have houtA : q ∈ D1.upper (5 * Real.pi) := by
       simpa only [D1.closure_lower_eq_compl_upper (5 * Real.pi) hA,
         mem_compl_iff, not_not] using hnotA
-    exact False.elim ((not_lt_of_ge (hmin p1))
+    exact False.elim ((not_lt_of_ge hlevel)
       (D1.busemann_outward_lt hEnorm hsmall hsec hc houtA))
+
+theorem minimum_mem_lower_zero (hEnorm : IsMetricNorm (I := I) h)
+    (hsmall : epsilon ≤ spatialNeckControlEpsilon)
+    (hsec : DifferentialGeometry.Geometry.HasNonnegativeSectionalCurvature (I := I) h)
+    {c : ℝ≥0 → N} (hc : Isometry c) {q : N}
+    (hmin : ∀ x : N, busemann c q ≤ busemann c x) (hnotcore : q ∉ W1.core) :
+    q ∈ D1.lower 0 :=
+  D1.mem_lower_zero_of_busemann_le hEnorm hsmall hsec hc (hmin p1) hnotcore
 
 end CompatibleMetric
 
