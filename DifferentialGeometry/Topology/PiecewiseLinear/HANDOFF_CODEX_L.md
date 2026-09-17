@@ -889,3 +889,25 @@ theorem eq_top_of_boundaryLoops_mem_normal
   `.lake/scratch/AuditE3M2.lean` 共 87 项，`audit-f.ps1` exit=0，全部仅含
   `propext`、`Classical.choice`、`Quot.sound`（部分纯群等式只含 `propext`）。本层没有首次复用新的 covering/Van Kampen 声明。
 - 下一精确义务是把三个源片按交叉方式贴合为第二张胞腔 `L₂`，保留边界参数、正规性和对应的严格复杂度下降；随后才进入 Case 1/2。
+
+## 42. 2026-09-16 E3-M2 追加：Case 3/4 的第二张交叉贴合胞腔 L₂
+
+状态：partial（L₂ 的三片交叉重贴、像因子分解与逐点边界参数已闭合；正规性、严格复杂度下降及原四段边界字识别待闭合）。数学提交
+`20482bfd3`。
+
+- `CellGluing.lean` 的
+  `SingularTwoCell.exists_cross_glue_of_isPLHomeomorphOn_disjoint_boundary_arcs` 先把首片的 `A` 边与中片的 `C` 边沿双层同胚贴合，
+  再把中片剩余的 `A` 边与尾片的 `C` 边贴合，实际构造第二张 `SingularTwoCell`。端点保留两级盘参数化、两条公共缝、
+  最终补边弧及端点值，并构造 `e : loopCircle ≃ₜ frontier G.domain` 与道路 `σ,ω`，逐点证明
+  `G (e θ) = pathToCircle (σ.trans ω) θ`。
+- `CutAndPaste.lean` 的
+  `NormalSingularCellData.exists_cross_boundary_surgery_cell_of_boundaryBranch` 将该构造接到实际触边分支的三盘链。
+  结论显式记录原三片覆盖与相邻交、两次交叉贴合的全部 PL 同胚及逐片映射公式、端点保向/反向二分，并证明
+  `G '' G.domain ⊆ D '' D.domain`；因此该端点不是只给出一张与分支数据无关的存在盘。
+- `CellGluing` 与 `CutAndPaste` 聚焦检查均 exit=0、零 warning；`.lake/scratch/AuditE3M2.lean` 共 89 项，
+  `audit-f.ps1` exit=0，两个新端点均只含 `propext`、`Classical.choice`、`Quot.sound`。
+  全局无 `lean.exe` 后运行 `fresh.py`，相对基线的两个改动 Lean 模块均为 fresh，forbidden=0、stale=0、missing=0。
+- 尚不能把该 L₂ 称为复杂度下降的正规胞腔：外侧 L₁ 的证明使用一张单射拉回并遗漏整条 `C` 片；L₂ 有两条不同新缝都映到所选目标分支，
+  不能直接复用该单射拉回。下一步必须从两级逐片参数化重建局部单射、二重纤维、奇点图与 crossing，继而在适配三角剖分上证明碰撞顶点数严格下降；
+  还须把当前两段边界道路进一步识别成书页 186–187 的原四段字 `σφυτ` 或 `στ⁻¹υφ⁻¹`。这些步骤未被改写为假设，Lemma 2 仍未宣称完成；
+  在此之前不进入 Case 1/2。
