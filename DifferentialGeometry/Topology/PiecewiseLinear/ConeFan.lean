@@ -67,6 +67,34 @@ theorem exists_isPiecewiseAffineOn_stdConeSector {N : ℕ} {σ : ℕ → ℝ} {u
     · rw [← sectorCoord_add hu z]
       exact hloc.2.2.2
 
+theorem dist_cellCorner_le {u u' p q a b : ℝ} {z : ℝ × ℝ}
+    (hz : z ∈ stdConeSector u u') (h1 : p ≤ z.1 + z.2) (h2 : z.1 + z.2 ≤ q)
+    (ha : a ∈ Icc p q) (hb : b ∈ Icc u u') (hu : 0 ≤ u) (hu' : u' ≤ 1) :
+    dist ((a * (1 - b), a * b) : ℝ × ℝ) z ≤ 2 * (q - p) + (u' - u) := by
+  obtain ⟨hz1, hz2, hz3, hz4, hz5⟩ := hz
+  obtain ⟨ha1, ha2⟩ := ha
+  obtain ⟨hb1, hb2⟩ := hb
+  have hs0 : 0 ≤ z.1 + z.2 := by linarith
+  have hb0 : 0 ≤ b := by linarith
+  have hb1' : b ≤ 1 := by linarith
+  have hqp : 0 ≤ q - p := by linarith
+  have hkey : |a * b - z.2| ≤ q - p + (u' - u) := by
+    rw [abs_le]
+    constructor <;>
+      nlinarith [mul_nonneg (by linarith : (0 : ℝ) ≤ q - p - (a - (z.1 + z.2))) hb0,
+        mul_nonneg (by linarith : (0 : ℝ) ≤ a - (z.1 + z.2) - (p - q)) hb0,
+        mul_nonneg hqp (by linarith : (0 : ℝ) ≤ 1 - b),
+        mul_nonneg hs0 (by linarith : (0 : ℝ) ≤ u' - b),
+        mul_nonneg hs0 (by linarith : (0 : ℝ) ≤ b - u),
+        mul_nonneg (by linarith : (0 : ℝ) ≤ 1 - (z.1 + z.2)) (by linarith : (0 : ℝ) ≤ u' - u)]
+  rw [Prod.dist_eq, Real.dist_eq, Real.dist_eq, max_le_iff]
+  rw [abs_le] at hkey
+  refine ⟨?_, ?_⟩
+  · rw [abs_le]
+    constructor <;> nlinarith [hkey.1, hkey.2]
+  · rw [abs_le]
+    constructor <;> nlinarith [hkey.1, hkey.2]
+
 open Classical in
 theorem exists_isPiecewiseAffineOn_stdCone_fan {M N : ℕ} {u σ : ℕ → ℝ} (w : ℕ → ℕ → F)
     (hu0 : u 0 = 0) (huM : u (M + 1) = 1) (humono : ∀ j ≤ M, u j < u (j + 1))
@@ -231,5 +259,123 @@ theorem exists_isPiecewiseAffineOn_stdCone_fan {M N : ℕ} {u σ : ℕ → ℝ} 
   obtain ⟨Ψ, hPA, hapex, -, houter, himg⟩ := key M le_rfl
   rw [stdConeSector_union hu0 huM] at hPA himg
   exact ⟨Ψ, hPA, hapex, houter, himg⟩
+
+theorem exists_pos_forall_exists_isPiecewiseAffineOn_stdCone_dist_le
+    (f : ℝ × ℝ → F) (hf : ContinuousOn f stdCone) {ε : ℝ} (hε : 0 < ε) :
+    ∃ δ > 0, ∀ (M : ℕ) (u : ℕ → ℝ) (g : ℕ → F), u 0 = 0 → u (M + 1) = 1 →
+      (∀ j ≤ M, u j < u (j + 1)) → (∀ j ≤ M, u (j + 1) - u j < δ) →
+      (∀ j ≤ M + 1, dist (g j) (f (1 - u j, u j)) ≤ ε) →
+      ∃ Ψ : ℝ × ℝ → F, IsPiecewiseAffineOn Ψ stdCone ∧
+        (∀ j ≤ M, ∀ r ∈ Icc (u j) (u (j + 1)),
+          Ψ (1 - r, r) = AffineMap.lineMap (g j) (g (j + 1)) ((r - u j) / (u (j + 1) - u j))) ∧
+        ∀ z ∈ stdCone, dist (Ψ z) (f z) ≤ 2 * ε := by
+  classical
+  have hcompact : IsCompact stdCone := by
+    rw [← stdConeLayer_zero_one]
+    exact (isHPolytope_stdConeLayer le_rfl).isCompact
+  obtain ⟨δ₀, hδ₀, hunif⟩ := Metric.uniformContinuousOn_iff.mp
+    (hcompact.uniformContinuousOn_of_continuous hf) ε hε
+  obtain ⟨N, hN⟩ := exists_nat_one_div_lt (show (0 : ℝ) < δ₀ / 4 by linarith)
+  refine ⟨δ₀ / 2, by linarith, ?_⟩
+  intro M u g hu0 huM humono humesh hgclose
+  have hNpos : (0 : ℝ) < (N : ℝ) + 1 := by positivity
+  have huchain := le_of_chain (fun j hj => (humono j hj).le)
+  have hunn : ∀ j ≤ M + 1, 0 ≤ u j := by
+    intro j hj
+    have h := huchain j hj 0 (Nat.zero_le _)
+    rwa [hu0] at h
+  have hule : ∀ j ≤ M + 1, u j ≤ 1 := by
+    intro j hj
+    have h := huchain (M + 1) le_rfl j hj
+    rwa [huM] at h
+  set σ : ℕ → ℝ := fun k => (k : ℝ) / ((N : ℝ) + 1) with hσdef
+  have hσ0 : σ 0 = 0 := by
+    simp [hσdef]
+  have hσN : σ (N + 1) = 1 := by
+    simp only [hσdef]
+    push_cast
+    field_simp
+  have hmesh : ∀ k : ℕ, σ (k + 1) - σ k = 1 / ((N : ℝ) + 1) := by
+    intro k
+    simp only [hσdef]
+    push_cast
+    rw [← sub_div]
+    congr 1
+    ring
+  have hσmono : ∀ k ≤ N, σ k < σ (k + 1) := by
+    intro k _
+    have h := hmesh k
+    have h2 : (0 : ℝ) < 1 / ((N : ℝ) + 1) := by positivity
+    linarith
+  have hσ01 : ∀ a ≤ N + 1, σ a ∈ Icc (0 : ℝ) 1 := by
+    intro a ha
+    refine ⟨by positivity, ?_⟩
+    simp only [hσdef]
+    rw [div_le_one hNpos]
+    have : (a : ℝ) ≤ ((N : ℝ) + 1) := by
+      have := Nat.cast_le (α := ℝ) |>.mpr ha
+      push_cast at this
+      linarith
+    linarith
+  set w : ℕ → ℕ → F := fun k j => if k ≤ N then f (σ k * (1 - u j), σ k * u j) else g j with hwdef
+  have hwle : ∀ k ≤ N, ∀ j, w k j = f (σ k * (1 - u j), σ k * u j) := by
+    intro k hk j
+    simp only [hwdef]
+    rw [if_pos hk]
+  have hwtop : ∀ j, w (N + 1) j = g j := by
+    intro j
+    simp only [hwdef]
+    rw [if_neg (by omega)]
+  have hw0 : ∀ j, w 0 j = w 0 0 := by
+    intro j
+    rw [hwle 0 (Nat.zero_le N) j, hwle 0 (Nat.zero_le N) 0, hσ0]
+    norm_num
+  obtain ⟨Ψ, hPA, hapex, houter, himg⟩ :=
+    exists_isPiecewiseAffineOn_stdCone_fan w hu0 huM humono hσ0 hσN hσmono hw0
+  refine ⟨Ψ, hPA, ?_, ?_⟩
+  · intro j hj r hr
+    rw [houter j hj r hr, hwtop j, hwtop (j + 1)]
+  · intro z hz
+    obtain ⟨k, hk, j, hj, h1, h2, hsec, hmem⟩ := himg z hz
+    have hcorner : ∀ a b : ℕ, a ≤ N + 1 → b ≤ M + 1 → σ a ∈ Icc (σ k) (σ (k + 1)) →
+        u b ∈ Icc (u j) (u (j + 1)) → dist (w a b) (f z) ≤ 2 * ε := by
+      intro a b ha hb hσa hub
+      have hp : ((σ a * (1 - u b), σ a * u b) : ℝ × ℝ) ∈ stdCone :=
+        stdConeSector_subset_stdCone _ _
+          (mem_stdConeSector_smul_left le_rfl (hunn b hb) (hule b hb) (hσ01 a ha))
+      have hdcell := dist_cellCorner_le hsec h1 h2 hσa hub (hunn j (by omega))
+        (hule (j + 1) (by omega))
+      have hdlt : dist ((σ a * (1 - u b), σ a * u b) : ℝ × ℝ) z < δ₀ := by
+        have e1 := hmesh k
+        have e2 := humesh j hj
+        have e3 : 1 / ((N : ℝ) + 1) < δ₀ / 4 := hN
+        linarith
+      have hfd : dist (f (σ a * (1 - u b), σ a * u b)) (f z) < ε := hunif _ hp _ hz hdlt
+      have hwd : dist (w a b) (f (σ a * (1 - u b), σ a * u b)) ≤ ε := by
+        by_cases hc : a ≤ N
+        · rw [hwle a hc b, dist_self]
+          exact hε.le
+        · have haN : a = N + 1 := by omega
+          subst haN
+          rw [hwtop b, hσN, one_mul, one_mul]
+          exact hgclose b hb
+      calc dist (w a b) (f z)
+          ≤ dist (w a b) (f (σ a * (1 - u b), σ a * u b)) +
+            dist (f (σ a * (1 - u b), σ a * u b)) (f z) := dist_triangle _ _ _
+        _ ≤ 2 * ε := by linarith
+    have hball : ({w k j, w k (j + 1), w (k + 1) j, w (k + 1) (j + 1)} : Set F) ⊆
+        Metric.closedBall (f z) (2 * ε) := by
+      intro x hx
+      have hσk : σ k ∈ Icc (σ k) (σ (k + 1)) := ⟨le_rfl, (hσmono k hk).le⟩
+      have hσk1 : σ (k + 1) ∈ Icc (σ k) (σ (k + 1)) := ⟨(hσmono k hk).le, le_rfl⟩
+      have huj : u j ∈ Icc (u j) (u (j + 1)) := ⟨le_rfl, (humono j hj).le⟩
+      have huj1 : u (j + 1) ∈ Icc (u j) (u (j + 1)) := ⟨(humono j hj).le, le_rfl⟩
+      simp only [mem_insert_iff, mem_singleton_iff] at hx
+      rcases hx with rfl | rfl | rfl | rfl
+      · exact hcorner k j (by omega) (by omega) hσk huj
+      · exact hcorner k (j + 1) (by omega) (by omega) hσk huj1
+      · exact hcorner (k + 1) j (by omega) (by omega) hσk1 huj
+      · exact hcorner (k + 1) (j + 1) (by omega) (by omega) hσk1 huj1
+    exact convexHull_min hball (convex_closedBall (f z) (2 * ε)) hmem
 
 end DifferentialGeometry.Topology.PiecewiseLinear
