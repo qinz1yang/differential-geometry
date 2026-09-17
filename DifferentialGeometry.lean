@@ -10925,3 +10925,9 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Geodesic.
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Geodesic.SmoothExtension
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientTerminalMinimizer
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.TerminalCanonicalAlternatives
+import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.AncientNullRank
+import DifferentialGeometry.Topology.Manifold.Sard
+import DifferentialGeometry.Topology.Manifold.RegularNeighborhood
+import DifferentialGeometry.Topology.Manifold.RegularSuperlevel
+import DifferentialGeometry.Geometry.Boundary.RegularSuperlevelMetric
+import DifferentialGeometry.Topology.Manifold.RegularExhaustion

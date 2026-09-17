@@ -1,3 +1,5 @@
+import DifferentialGeometry.Analysis.FiniteDimensional.Rank
+import DifferentialGeometry.Geometry.Curvature.DimensionThree.ExteriorRank
 import DifferentialGeometry.Analysis.InnerProductSpace.SpectralBounds
 import Mathlib.Analysis.Matrix.Hermitian
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Basic
@@ -968,17 +970,16 @@ theorem continuousOn_infDist_uhlenbeckPulledRm04At_fiberHamiltonIveyRegion
   simp [intrinsicFiberInfDist]
 
 omit [SigmaCompactSpace M] in
-private theorem leastCurvatureOperatorEigenvalueAt_eq_flowFrame_rayleigh
+private theorem exists_orthonormalBasis_flowFrameOperatorMatrix
     {T : ℝ} (hT : 0 < T)
     (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closed 0 T hT.le))
     (hdim : ∀ x : M, Module.finrank ℝ (TangentSpace I x) = 3)
     (t : ℝ) (α x : M) (hx : x ∈ smoothOrthoOpen (I := I) (M := M) α) :
-    leastCurvatureOperatorEigenvalueAt (I := I) (S.base.metric t) x
-      ⟨S.base.rm04 t x,
-        metricRm04At_mem_algebraicCurvatureTensorSubmodule (I := I) (S.base.metric t) x⟩ =
-      ⨅ v : {v : EuclideanSpace ℝ (Fin 3) // v ≠ 0},
-        (Matrix.toEuclideanLin (flowFrameOperatorMatrix (I := I) hT S hdim α (t,
-          x))).toContinuousLinearMap.rayleighQuotient v := by
+    ∃ basis : Module.Basis (Fin 3) ℝ (TangentSpace I x),
+      OrthonormalBasisAt (I := I) (S.base.metric t) x basis ∧
+        flowFrameOperatorMatrix (I := I) hT S hdim α (t, x) =
+          curvatureOperatorMatrixAt (I := I) x basis
+            (metricAlgebraicCurvatureTensorAt (S.base.metric t) x) := by
   classical
   let gτ := S.base.metric t
   let e : Fin 3 → TangentSpace I x :=
@@ -1031,6 +1032,25 @@ private theorem leastCurvatureOperatorEigenvalueAt_eq_flowFrame_rayleigh
       curvatureOperatorMatrixAt (I := I) x basis A := by
     ext i j
     simp only [curvatureOperatorMatrixAt, hbasis, e, gτ, A, flowFrameOperatorMatrix]
+  exact ⟨basis, horth, hmat⟩
+
+omit [SigmaCompactSpace M] in
+private theorem leastCurvatureOperatorEigenvalueAt_eq_flowFrame_rayleigh
+    {T : ℝ} (hT : 0 < T)
+    (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closed 0 T hT.le))
+    (hdim : ∀ x : M, Module.finrank ℝ (TangentSpace I x) = 3)
+    (t : ℝ) (α x : M) (hx : x ∈ smoothOrthoOpen (I := I) (M := M) α) :
+    leastCurvatureOperatorEigenvalueAt (I := I) (S.base.metric t) x
+      ⟨S.base.rm04 t x,
+        metricRm04At_mem_algebraicCurvatureTensorSubmodule (I := I) (S.base.metric t) x⟩ =
+      ⨅ v : {v : EuclideanSpace ℝ (Fin 3) // v ≠ 0},
+        (Matrix.toEuclideanLin (flowFrameOperatorMatrix (I := I) hT S hdim α (t,
+          x))).toContinuousLinearMap.rayleighQuotient v := by
+  obtain ⟨basis, horth, hmat⟩ :=
+    exists_orthonormalBasis_flowFrameOperatorMatrix hT S hdim t α x hx
+  let gτ := S.base.metric t
+  let A : algebraicCurvatureTensorSubmodule (I := I) (M := M) x :=
+    ⟨S.base.rm04 t x, metricRm04At_mem_algebraicCurvatureTensorSubmodule (I := I) gτ x⟩
   change leastCurvatureOperatorEigenvalueAt (I := I) gτ x A = _
   rw [leastCurvatureOperatorEigenvalueAt_eq_sectionalMin gτ x basis horth A, hmat]
   let B := (Matrix.toEuclideanLin (curvatureOperatorMatrixAt (I := I) x basis
@@ -1140,3 +1160,74 @@ theorem continuousOn_leastCurvatureOperatorEigenvalueAt_rm04_time
 end DifferentialGeometry.PDE.RicciFlow
 
 end
+
+namespace DifferentialGeometry.PDE.RicciFlow
+
+open Bundle Filter Set
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Curvature.DimensionThree
+open DifferentialGeometry.Geometry.Connection
+open scoped Manifold ContDiff Topology
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
+
+theorem curvatureOperatorImageAt_finrank_le_at_terminal
+    {T : ℝ} (hT : 0 < T)
+    (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closed 0 T hT.le))
+    (hS : IsSolutionOn S)
+    (hdim : ∀ x : M, Module.finrank ℝ (TangentSpace I x) = 3)
+    (x : M) {q : ℕ}
+    (hbound : ∀ t ∈ Ioo 0 T,
+      Module.finrank ℝ (curvatureOperatorImageAt (S.base.metric t) x
+        (metricAlgebraicCurvatureTensorAt (S.base.metric t) x)) ≤ q) :
+    Module.finrank ℝ (curvatureOperatorImageAt (S.base.metric T) x
+      (metricAlgebraicCurvatureTensorAt (S.base.metric T) x)) ≤ q := by
+  let _ : CompleteSpace E := FiniteDimensional.complete ℝ E
+  let _ : NeZero (Module.finrank ℝ E) := by
+    have heq := ((trivializationAt E (TangentSpace I) x).linearEquivAt ℝ x
+      (mem_baseSet_trivializationAt E (TangentSpace I) x)).finrank_eq
+    exact ⟨by rw [← heq, hdim x]; decide⟩
+  let L : Matrix (Fin 3) (Fin 3) ℝ →ₗ[ℝ]
+      (EuclideanSpace ℝ (Fin 3) →L[ℝ] EuclideanSpace ℝ (Fin 3)) :=
+    LinearMap.toContinuousLinearMap.toLinearMap.comp Matrix.toEuclideanLin.toLinearMap
+  let A := fun t : ℝ => L (flowFrameOperatorMatrix (I := I) hT S hdim x (t, x))
+  have hmatrix := (flowFrameOperatorMatrix_continuousOn_local hT S hS hdim x).comp
+    (continuous_id.prodMk continuous_const).continuousOn
+    (fun t ht => ⟨ht, mem_smoothOrthoOpen (I := I) (M := M) x⟩)
+  have hm : ContinuousOn (fun t => flowFrameOperatorMatrix (I := I) hT S hdim x (t, x))
+      (Icc 0 T) := by
+    apply continuousOn_pi.2
+    intro i
+    apply continuousOn_pi.2
+    intro j
+    exact (PiLp.continuous_apply 2 (fun _ : Fin 3 × Fin 3 => ℝ) (i, j)).comp_continuousOn hmatrix
+  have hcont : ContinuousOn A (Icc 0 T) := L.continuous_of_finiteDimensional.comp_continuousOn hm
+  have hrank (t : ℝ) : Module.finrank ℝ (A t).range =
+      Module.finrank ℝ (curvatureOperatorImageAt (S.base.metric t) x
+        (metricAlgebraicCurvatureTensorAt (S.base.metric t) x)) := by
+    obtain ⟨basis, horth, heq⟩ :=
+      exists_orthonormalBasis_flowFrameOperatorMatrix hT S hdim t x x
+        (mem_smoothOrthoOpen (I := I) (M := M) x)
+    change Module.finrank ℝ
+      (Matrix.toEuclideanLin (flowFrameOperatorMatrix (I := I) hT S hdim x (t, x))).range = _
+    have hmatrixRank (B : Matrix (Fin 3) (Fin 3) ℝ) :
+        B.rank = Module.finrank ℝ B.toEuclideanLin.range :=
+      Matrix.rank_eq_finrank_range_toLin B
+        (PiLp.basisFun 2 ℝ (Fin 3)) (PiLp.basisFun 2 ℝ (Fin 3))
+    rw [← hmatrixRank, heq]
+    rw [← metricCurvatureOperatorRankAt_eq_matrix_rank_of_orthonormal
+      (S.base.metric t) x (hdim x) basis horth]
+    exact metricCurvatureOperatorRankAt_eq_curvatureOperatorImageAt_finrank
+      (S.base.metric t) x (hdim x)
+  have hend : ContinuousWithinAt A (Iio T) T := by
+    have h := hcont T ⟨hT.le, le_rfl⟩
+    rw [ContinuousWithinAt, nhdsWithin_Icc_eq_nhdsLE hT] at h
+    exact h.mono_left (nhdsWithin_mono T Iio_subset_Iic_self)
+  have hev := hend.eventually_finrank_range_ge
+  obtain ⟨t, ht, hle⟩ := (Filter.eventually_and.2 ⟨Ioo_mem_nhdsLT hT, hev⟩).exists
+  rw [hrank T, hrank t] at hle
+  exact hle.trans (hbound t ht)
+
+end DifferentialGeometry.PDE.RicciFlow
