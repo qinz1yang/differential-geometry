@@ -2105,6 +2105,154 @@ theorem simplicialComplexity_lt_of_surgery_pullback_of_seam
     · exact hsC
 
 open Classical in
+theorem exists_isSubdivision_mapsTo_vertices
+    {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ E]
+    (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
+    (L : Geometry.SimplicialComplex ℝ F) [Finite L.faces]
+    (f : F → E) (hf : MapsTo f L.vertices K.space) :
+    ∃ K' : Geometry.SimplicialComplex ℝ E,
+      IsSubdivision K' K ∧ K'.faces.Finite ∧ MapsTo f L.vertices K'.vertices := by
+  let _ : Finite L.vertices := (SimplicialComplex.finite_vertices L).to_subtype
+  let Q : L.vertices → Set E := fun v => {f v}
+  have hsingleton : ∀ x : E, IsPolyhedron ({x} : Set E) := by
+    intro x
+    have h := isPolyhedron_convexHull_of_affineIndependent ({x} : Finset E)
+      (affineIndependent_of_subsingleton ℝ _)
+    rwa [Finset.coe_singleton, convexHull_singleton] at h
+  obtain ⟨K', hK', hfinite, hcover⟩ := exists_isSubdivision_subcomplexes K Q
+    (fun v => hsingleton (f v))
+    (fun v => singleton_subset_iff.mpr (hf v.property))
+  refine ⟨K', hK', hfinite, ?_⟩
+  intro v hv
+  have hmem : f v ∈ Q ⟨v, hv⟩ := rfl
+  obtain ⟨s, ⟨hs, hsQ⟩, -⟩ := mem_iUnion₂.mp ((hcover ⟨v, hv⟩).subset hmem)
+  have hpoint : ∀ w ∈ s, w = f v := fun w hw =>
+    Set.mem_singleton_iff.mp (hsQ (subset_convexHull ℝ _ (Finset.mem_coe.mpr hw)))
+  obtain ⟨w, hw⟩ := K'.nonempty_of_mem_faces hs
+  have hseq : s = {f v} :=
+    Finset.eq_singleton_iff_unique_mem.mpr ⟨hpoint w hw ▸ hw, hpoint⟩
+  change ({f v} : Finset E) ∈ K'.faces
+  rw [← hseq]
+  exact hs
+
+open Classical in
+theorem exists_simplicialComplexity_lt_of_surgery_pullback_of_seam
+    {M : Type u} [TopologicalSpace M]
+    [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
+    (D G : SingularTwoCell M)
+    (pullback g : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 2))
+    {A C : Set (EuclideanSpace ℝ (Fin 2))}
+    {p q r s : EuclideanSpace ℝ (Fin 2)}
+    (hpD : p ∈ D.domain) (hrD : r ∈ D.domain) (hsD : s ∈ D.domain)
+    (hpullback : MapsTo pullback G.domain D.domain)
+    (hinj : InjOn pullback G.domain)
+    (hfactor : EqOn (D ∘ pullback) G G.domain)
+    (hdisjoint : Disjoint (pullback '' G.domain) C)
+    (hAC : Disjoint A C) (hpA : p ∈ A) (hrC : r ∈ C) (hsC : s ∈ C)
+    (hcompat : EqOn D (D ∘ g) A)
+    (horientation : (g p = r ∧ g q = s) ∨ (g p = s ∧ g q = r)) :
+    ∃ (K L : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2)))
+        (hKfinite : K.faces.Finite) (hLfinite : L.faces.Finite),
+      let _ : Finite K.faces := hKfinite.to_subtype
+      let _ : Finite L.faces := hLfinite.to_subtype
+      K.space = D.domain ∧ L.space = G.domain ∧
+        MapsTo pullback L.vertices K.vertices ∧
+          p ∈ K.vertices ∧ r ∈ K.vertices ∧ s ∈ K.vertices ∧
+            simplicialComplexity L G < simplicialComplexity K D := by
+  obtain ⟨L, hLfinite, hLspace⟩ := G.isPLBall_domain.isPolyhedron.exists_simplicialComplex
+  let _ : Finite L.faces := hLfinite.to_subtype
+  have hLdomain : L.vertices ⊆ G.domain := by
+    rw [← hLspace]
+    exact L.vertices_subset_space
+  obtain ⟨K₀, hK₀finite, hK₀space⟩ := D.isPLBall_domain.isPolyhedron.exists_simplicialComplex
+  let _ : Finite K₀.faces := hK₀finite.to_subtype
+  have hpullback₀ : MapsTo pullback L.vertices K₀.space := by
+    intro v hv
+    rw [hK₀space]
+    exact hpullback (hLdomain hv)
+  obtain ⟨K₁, hK₁, hK₁finite, hpullback₁⟩ :=
+    exists_isSubdivision_mapsTo_vertices K₀ L pullback hpullback₀
+  let _ : Finite K₁.faces := hK₁finite.to_subtype
+  have hpK₁ : p ∈ K₁.space := by
+    rw [hK₁.space_eq, hK₀space]
+    exact hpD
+  obtain ⟨K₂, hK₂, hK₂finite, hpK₂⟩ := exists_isSubdivision_singleton_mem K₁ hpK₁
+  let _ : Finite K₂.faces := hK₂finite.to_subtype
+  have hrK₂ : r ∈ K₂.space := by
+    rw [hK₂.space_eq, hK₁.space_eq, hK₀space]
+    exact hrD
+  obtain ⟨K₃, hK₃, hK₃finite, hrK₃⟩ := exists_isSubdivision_singleton_mem K₂ hrK₂
+  let _ : Finite K₃.faces := hK₃finite.to_subtype
+  have hsK₃ : s ∈ K₃.space := by
+    rw [hK₃.space_eq, hK₂.space_eq, hK₁.space_eq, hK₀space]
+    exact hsD
+  obtain ⟨K, hK, hKfinite, hsK⟩ := exists_isSubdivision_singleton_mem K₃ hsK₃
+  let _ : Finite K.faces := hKfinite.to_subtype
+  have hpullbackK : MapsTo pullback L.vertices K.vertices := fun v hv =>
+    hK.singleton_mem (hK₃.singleton_mem (hK₂.singleton_mem (hpullback₁ hv)))
+  have hpK : p ∈ K.vertices := hK.singleton_mem (hK₃.singleton_mem hpK₂)
+  have hrK : r ∈ K.vertices := hK.singleton_mem hrK₃
+  have hKspace : K.space = D.domain :=
+    hK.space_eq.trans (hK₃.space_eq.trans
+      (hK₂.space_eq.trans (hK₁.space_eq.trans hK₀space)))
+  refine ⟨K, L, hKfinite, hLfinite, hKspace, hLspace, hpullbackK, hpK, hrK, hsK, ?_⟩
+  exact simplicialComplexity_lt_of_surgery_pullback_of_seam K L D G pullback g
+    hLdomain hpullbackK hinj hfactor hdisjoint hAC hpA hrC hsC hcompat horientation
+    hpK hrK hsK
+
+namespace NormalSingularCellData
+
+open Classical in
+theorem exists_boundary_surgery_cell_with_simplicialComplexity_lt
+    {M : Type u} [TopologicalSpace M]
+    [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] [T2Space M]
+    {D : SingularTwoCell M} {BdM B : Set M}
+    (hD : NormalSingularCellData D BdM B)
+    {c : hD.singularSet.Branch} (hc : hD.singularSet.IsBoundaryBranch c) :
+    ∃ (U V : Set (EuclideanSpace ℝ (Fin 2))) (G : SingularTwoCell M)
+        (K L : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2)))
+        (hKfinite : K.faces.Finite) (hLfinite : L.faces.Finite),
+      let _ : Finite K.faces := hKfinite.to_subtype
+      let _ : Finite L.faces := hLfinite.to_subtype
+      IsPLBall 1 U ∧ IsPLBall 1 V ∧ Disjoint U V ∧
+        G '' G.domain ⊆ D '' D.domain ∧
+          Set.range G.boundary = D '' (U ∪ V) ∧
+            G '' G.domain ∩ BdM = Set.range G.boundary ∧
+              Set.range G.boundary ⊆ B ∧
+                Nonempty (NormalSingularCellData G BdM B) ∧
+                  K.space = D.domain ∧ L.space = G.domain ∧
+                    simplicialComplexity L G < simplicialComplexity K D := by
+  obtain ⟨A, C, U, V, p, q, r, s, g, G, pullback,
+    hA, hC, hAC, hcover, hU, hV, hUV, hg, hpA, hqA, hrC, hsC,
+    hcompat, horientation, hpullback, hinj, hfactor, hdisjoint,
+    hGimage, hboundary, himageBoundary, hboundaryB, hinterB, hlocal, hfiber,
+    hdouble, hremove, htriangulated, hnormal⟩ :=
+    hD.exists_boundary_surgery_cell_of_boundaryBranch hc
+  have hpD : p ∈ D.domain := by
+    have : p ∈ hD.branchPreimage c := by
+      rw [hcover]
+      exact Or.inl hpA
+    exact this.1
+  have hrD : r ∈ D.domain := by
+    have : r ∈ hD.branchPreimage c := by
+      rw [hcover]
+      exact Or.inr hrC
+    exact this.1
+  have hsD : s ∈ D.domain := by
+    have : s ∈ hD.branchPreimage c := by
+      rw [hcover]
+      exact Or.inr hsC
+    exact this.1
+  obtain ⟨K, L, hKfinite, hLfinite, hKspace, hLspace, -, -, -, -, hlt⟩ :=
+    exists_simplicialComplexity_lt_of_surgery_pullback_of_seam D G pullback g
+      hpD hrD hsD hpullback hinj hfactor hdisjoint hAC hpA hrC hsC hcompat horientation
+  exact ⟨U, V, G, K, L, hKfinite, hLfinite, hU, hV, hUV, hGimage, hboundary,
+    himageBoundary, hboundaryB, hnormal, hKspace, hLspace, hlt⟩
+
+end NormalSingularCellData
+
+open Classical in
 theorem loopRepresentativeAlong_mem_iff_loopClassMeets_basedCircle
     {X : Type u} [TopologicalSpace X] [PathConnectedSpace X]
     {x y : X} (q : Path x y) (γ : basedCircleLoop y)
