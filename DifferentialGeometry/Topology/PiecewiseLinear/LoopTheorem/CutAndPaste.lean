@@ -1211,6 +1211,110 @@ theorem exists_three_cells_of_boundaryBranch
     htrace₁, htrace₃, hcut₁, hcut₃⟩
 
 open Classical in
+theorem exists_cross_boundary_surgery_cell_of_boundaryBranch
+    {M : Type u} [TopologicalSpace M]
+    [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] [T2Space M]
+    {D : SingularTwoCell M} {BdM B : Set M}
+    (hD : NormalSingularCellData D BdM B)
+    {c : hD.singularSet.Branch} (hc : hD.singularSet.IsBoundaryBranch c) :
+    ∃ A C U₁ U₂ U₃ P Q P' Q' A' R T : Set (EuclideanSpace ℝ (Fin 2)),
+    ∃ p q r s a b : EuclideanSpace ℝ (Fin 2),
+    ∃ g f₁ f₂ h f₃ : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 2),
+    ∃ H G : SingularTwoCell M,
+      IsPLBall 1 A ∧ IsPLBall 1 C ∧ Disjoint A C ∧
+      hD.branchPreimage c = A ∪ C ∧
+      IsPLHomeomorphOn g A C ∧ EqOn D (D ∘ g) A ∧
+      p ∈ A ∧ q ∈ A ∧ r ∈ C ∧ s ∈ C ∧
+      ((g p = r ∧ g q = s) ∨ (g p = s ∧ g q = r)) ∧
+      U₁ ∪ U₂ ∪ U₃ = D.domain ∧ U₁ ∩ U₂ = A ∧ U₂ ∩ U₃ = C ∧
+      Disjoint U₁ U₃ ∧
+      IsPLBall 2 P ∧ IsPLBall 2 Q ∧ H.domain = P ∪ Q ∧
+      IsPLHomeomorphOn f₁ P U₁ ∧ IsPLHomeomorphOn f₂ Q U₂ ∧
+      f₁ '' (P ∩ Q) = A ∧ f₂ '' (P ∩ Q) = C ∧
+      EqOn H (D ∘ f₁) P ∧ EqOn H (D ∘ f₂) Q ∧
+      A' = Function.invFunOn f₂ Q '' A ∧ IsPLBall 1 A' ∧
+      A' ⊆ frontier H.domain ∧ IsPLHomeomorphOn (g ∘ f₂) A' C ∧
+      IsPLBall 2 P' ∧ IsPLBall 2 Q' ∧ G.domain = P' ∪ Q' ∧
+      IsPLHomeomorphOn h P' H.domain ∧ IsPLHomeomorphOn f₃ Q' U₃ ∧
+      h '' (P' ∩ Q') = A' ∧ f₃ '' (P' ∩ Q') = C ∧
+      EqOn G (H ∘ h) P' ∧ EqOn G (D ∘ f₃) Q' ∧
+      Schoenflies.IsCutPair (frontier P') a b (P' ∩ Q') R ∧
+      Schoenflies.IsCutPair (frontier Q') a b (P' ∩ Q') T ∧
+      IsPLBall 1 R ∧ IsPLBall 1 T ∧ frontier G.domain = R ∪ T ∧
+      h a = Function.invFunOn f₂ Q p ∧ h b = Function.invFunOn f₂ Q q ∧
+      f₃ a = g p ∧ f₃ b = g q ∧
+      G '' G.domain ⊆ D '' D.domain ∧
+      ∃ (x y : M) (σ : Path x y) (ω : Path y x)
+          (e : loopCircle ≃ₜ frontier G.domain),
+        Set.range σ = G '' R ∧ Set.range ω = G '' T ∧
+          ∀ θ, G (e θ) = pathToCircle (σ.trans ω) θ := by
+  obtain ⟨A, C, hA, hC, hAC, hcover, -, -, p, q, r, s, g, hg, hcompat,
+    D₁, D₂, D₃, hdomains, hinter₁₂, hinter₂₃, hA₁, hA₂, hC₂, hC₃,
+    hdisjoint₁₃, hfun₁, hfun₂, hfun₃, -, -, hcut₁, hcut₃⟩ :=
+    hD.exists_three_cells_of_boundaryBranch hc
+  have hcompat₁₂ : EqOn D₁ (D₂ ∘ g) A := by
+    intro x hx
+    change D₁.toFun x = D₂.toFun (g x)
+    rw [hfun₁, hfun₂]
+    exact hcompat hx
+  have hcompat₂₃ : EqOn D₂ (D₃ ∘ g) A := by
+    intro x hx
+    change D₂.toFun x = D₃.toFun (g x)
+    rw [hfun₂, hfun₃]
+    exact hcompat hx
+  obtain ⟨H, G, P, Q, P', Q', f₁, f₂, h, f₃, A', hP, hQ, hHdomain,
+    hf₁, hf₂, hf₁seam, hf₂seam, hH₁, hH₂, hA'def, hA', hA'front, hk,
+    hP', hQ', hGdomain, hh, hf₃, hhseam, hf₃seam, hGH, hG₃,
+    a, b, R, T, hcutP', hcutQ', hR, hT, hfrontG, hha, hhb, hf₃a, hf₃b,
+    x, y, σ, ω, e, hσrange, hωrange, hboundaryParam⟩ :=
+    D₁.exists_cross_glue_of_isPLHomeomorphOn_disjoint_boundary_arcs D₂ D₃ hA hAC
+      hcut₁.fst hA₁ hA₂ hC₂ hC₃ hg hcompat₁₂ hcompat₂₃
+  have horientation :=
+    IsPLHomeomorphOn.maps_arc_endpoints hA hC hcut₁.fst hcut₃.fst hg
+  have hH₁' : EqOn H (D ∘ f₁) P := by
+    intro z hz
+    simpa only [Function.comp_apply, hfun₁] using hH₁ hz
+  have hH₂' : EqOn H (D ∘ f₂) Q := by
+    intro z hz
+    simpa only [Function.comp_apply, hfun₂] using hH₂ hz
+  have hG₃' : EqOn G (D ∘ f₃) Q' := by
+    intro z hz
+    simpa only [Function.comp_apply, hfun₃] using hG₃ hz
+  have hU₁D : D₁.domain ⊆ D.domain := by
+    intro z hz
+    rw [← hdomains]
+    exact Or.inl (Or.inl hz)
+  have hU₂D : D₂.domain ⊆ D.domain := by
+    intro z hz
+    rw [← hdomains]
+    exact Or.inl (Or.inr hz)
+  have hU₃D : D₃.domain ⊆ D.domain := by
+    intro z hz
+    rw [← hdomains]
+    exact Or.inr hz
+  have hHimage : H '' H.domain ⊆ D '' D.domain := by
+    rintro z ⟨w, hw, rfl⟩
+    rw [hHdomain] at hw
+    rcases hw with hwP | hwQ
+    · exact ⟨f₁ w, hU₁D (hf₁.bijOn.mapsTo hwP), (hH₁' hwP).symm⟩
+    · exact ⟨f₂ w, hU₂D (hf₂.bijOn.mapsTo hwQ), (hH₂' hwQ).symm⟩
+  have hGimage : G '' G.domain ⊆ D '' D.domain := by
+    rintro z ⟨w, hw, rfl⟩
+    rw [hGdomain] at hw
+    rcases hw with hwP | hwQ
+    · obtain ⟨u, hu, hGu⟩ := hHimage ⟨h w, hh.bijOn.mapsTo hwP, rfl⟩
+      exact ⟨u, hu, hGu.trans (hGH hwP).symm⟩
+    · exact ⟨f₃ w, hU₃D (hf₃.bijOn.mapsTo hwQ), (hG₃' hwQ).symm⟩
+  exact ⟨A, C, D₁.domain, D₂.domain, D₃.domain, P, Q, P', Q', A', R, T,
+    p, q, r, s, a, b, g, f₁, f₂, h, f₃, H, G, hA, hC, hAC, hcover, hg,
+    hcompat, hcut₁.fst.left_mem, hcut₁.fst.right_mem, hcut₃.fst.left_mem,
+    hcut₃.fst.right_mem, horientation, hdomains, hinter₁₂, hinter₂₃,
+    hdisjoint₁₃, hP, hQ, hHdomain, hf₁, hf₂, hf₁seam, hf₂seam, hH₁', hH₂',
+    hA'def, hA', hA'front, hk, hP', hQ', hGdomain, hh, hf₃, hhseam,
+    hf₃seam, hGH, hG₃', hcutP', hcutQ', hR, hT, hfrontG, hha, hhb,
+    hf₃a, hf₃b, hGimage, x, y, σ, ω, e, hσrange, hωrange, hboundaryParam⟩
+
+open Classical in
 theorem exists_boundary_surgery_cell_of_boundaryBranch
     {M : Type u} [TopologicalSpace M]
     [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] [T2Space M]
