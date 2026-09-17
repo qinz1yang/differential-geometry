@@ -10710,3 +10710,10 @@ import DifferentialGeometry.Topology.Manifold.SmallDiffeomorph
 import DifferentialGeometry.Geometry.Metric.Family.ProductSlice
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.ProductFactor
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientProductExtension
+import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Duhamel.AddCircleIteratedDerivativeSource
+import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Existence.AddCircleDerivativeForcingLift
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized.CarrierIntegrability
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Chart.CarrierAction
+import DifferentialGeometry.Geometry.Operator.Family.Gram.CarrierStrongConvergence
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Compactness.CarrierDensity
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.TerminalAttainment

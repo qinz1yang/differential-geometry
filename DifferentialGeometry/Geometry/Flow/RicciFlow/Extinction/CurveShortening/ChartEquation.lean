@@ -1,3 +1,4 @@
+import DifferentialGeometry.Analysis.Calculus.TimeJet.ClosedJetEvolution
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Basic
 import DifferentialGeometry.Geometry.Comparison.Variation.FirstVariation.Basic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Connection
@@ -746,6 +747,72 @@ theorem contDiffOn_one_of_parametric_chart_equation
     (fun p hp => ((hspace p.1 hp.1 p.2 hp.2).differentiableAt (hV.mem_nhds hp.2)).hasDerivAt.hasFDerivAt)
     (contDiffOn_zero.mpr hR) (contDiffOn_zero.mpr hW)
   simpa only [Nat.cast_zero, zero_add, Function.uncurry_def] using h
+
+end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening
+
+end
+
+noncomputable section
+open Set Filter
+open scoped Manifold ContDiff Topology
+open DifferentialGeometry.Geometry.Curvature
+namespace DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+
+theorem contDiffOn_of_parametric_chart_equation_spatial_jets
+    {D : RealTimeInterval} {g : ℝ → SmoothRiemannianMetric I M}
+    (hg : MetricFamilySmoothOn D g) (β : M)
+    {G : ℝ → ℝ → E} {a b : ℝ} {V : Set ℝ} (hab : a < b) (hV : IsOpen V)
+    (hGs : ∀ t ∈ Icc a b, ContDiffOn ℝ ∞ (G t) V)
+    (hjets : ∀ r : ℕ, ContinuousOn
+      (fun p : ℝ × ℝ => iteratedFDeriv ℝ r (G p.1) p.2) (Icc a b ×ˢ V))
+    (hjet : ∀ t ∈ Icc a b, ∀ x ∈ V,
+      (t, G t x, deriv (G t) x) ∈ curveShorteningChartFirstJetDomain D g β)
+    (hpde : ∀ t ∈ Ioo a b, ∀ x ∈ V,
+      HasDerivAt (fun s => G s x)
+        (curveShorteningParametricChartRhs g β
+          (t, G t x, deriv (G t) x, deriv (deriv (G t)) x)) t) :
+    ContDiffOn ℝ ∞ (Function.uncurry G) (Icc a b ×ˢ V) := by
+  let Q := (ℝ × ℝ) × E × (ℝ →L[ℝ] E) × (ℝ →L[ℝ] (ℝ →L[ℝ] E))
+  let first : Q → ℝ × E × E := fun p => (p.1.1, p.2.1, p.2.2.1 1)
+  let second : Q → E := fun p => p.2.2.2 1 1
+  let Ω := first ⁻¹' curveShorteningChartFirstJetDomain D g β
+  let Φ : Q → E := fun p => curveShorteningParametricChartRhs g β
+    (p.1.1, p.2.1, p.2.2.1 1, p.2.2.2 1 1)
+  have hfirst : ContDiff ℝ ∞ first := by fun_prop
+  have hsecond : ContDiff ℝ ∞ second := by fun_prop
+  have hΩ : IsOpen Ω :=
+    (isOpen_curveShorteningChartFirstJetDomain hg β).preimage hfirst.continuous
+  have hΦ : ContDiffOn ℝ ∞ Φ Ω :=
+    (((contDiffOn_curveShorteningChartDiffusionCoefficient hg β).comp
+      hfirst.contDiffOn (fun _ h => h)).smul hsecond.contDiffOn).add
+        ((contDiffOn_curveShorteningParametricChartReaction hg β).comp
+          hfirst.contDiffOn (fun _ h => h))
+  have hmap : MapsTo (fun p : ℝ × ℝ => (p, Analysis.jet2 (G p.1) p.2))
+      (Icc a b ×ˢ V) Ω := by
+    intro p hp
+    change (p.1, G p.1 p.2, fderiv ℝ (G p.1) p.2 1) ∈
+      curveShorteningChartFirstJetDomain D g β
+    exact hjet p.1 hp.1 p.2 hp.2
+  have hR (t : ℝ) (ht : t ∈ Icc a b) (x : ℝ) (hx : x ∈ V) :
+      Φ ((t, x), Analysis.jet2 (G t) x) = curveShorteningParametricChartRhs g β
+        (t, G t x, deriv (G t) x, deriv (deriv (G t)) x) := by
+    have hs : ContDiffAt ℝ 2 (G t) x :=
+      contDiffAt_infty.mp ((hGs t ht x hx).contDiffAt (hV.mem_nhds hx)) 2
+    have hd₂ := second_deriv_eq_fderiv_apply_one hs
+    change curveShorteningParametricChartRhs g β
+      (t, G t x, fderiv ℝ (G t) x 1, fderiv ℝ (fderiv ℝ (G t)) x 1 1) = _
+    rw [← hd₂, fderiv_apply_one_eq_deriv]
+  have hpde' : ∀ t ∈ Ioo a b, ∀ x ∈ V,
+      HasDerivAt (fun s => G s x) (Φ ((t, x), Analysis.jet2 (G t) x)) t := by
+    intro t ht x hx
+    rw [hR t ⟨ht.1.le, ht.2.le⟩ x hx]
+    exact hpde t ht x hx
+  exact (Analysis.contDiffOn_and_equation_Icc_of_time_dependent_spatial_jets
+    G a b hab V hV Φ Ω hΩ hΦ hmap hGs hjets hpde').1
 
 end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening
 

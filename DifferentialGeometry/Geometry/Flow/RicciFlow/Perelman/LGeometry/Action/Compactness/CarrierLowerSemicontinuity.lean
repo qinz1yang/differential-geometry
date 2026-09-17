@@ -1,5 +1,10 @@
 import DifferentialGeometry.Geometry.Operator.Family.Gram.CarrierWeakConvergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Chart.CarrierKineticEnergy
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Compactness.CarrierWeakH1
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized.CarrierIntegrability
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Chart.CarrierAction
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ChartPartition.Compactness
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Compactness.LowerSemicontinuity
 
 noncomputable section
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman
@@ -439,3 +444,161 @@ theorem lRegularizedAction_fin_compact_of_carrier
 
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman
+
+end
+
+noncomputable section
+
+namespace DifferentialGeometry.PDE.RicciFlow.Perelman
+
+open Bundle Filter Function MeasureTheory Set
+open scoped ContDiff Manifold Topology Interval
+open DifferentialGeometry.Analysis.Parabolic.TimeSobolev
+open DifferentialGeometry.Geometry.Curvature
+
+universe u uE uH
+variable {E : Type uE} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+  [FiniteDimensional ℝ E]
+  {H : Type uH} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+  {M : Type u} [UniformSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+  {D : RealTimeInterval}
+
+theorem exists_chartH1_representation_of_tendstoUniformly_of_lRegularizedAction_le_on_carrier
+    (S : SolutionOn (I := I) (M := M) D)
+    (hMet : MetricFamilySmoothOn (I := I) (M := M) D S.family.metric)
+    (hSc : ScalarSTContOn (I := I) (M := M) S)
+    (T a b A : ℝ) (hab : a ≤ b)
+    (alpha : ℕ → ℝ → M)
+    (halpha : ∀ n, ContMDiffOn 𝓘(ℝ, ℝ) I 1 (alpha n) (Icc a b))
+    (Q : Set M) (hQ : IsCompact Q)
+    (hval : ∀ n s, s ∈ Icc a b → alpha n s ∈ Q)
+    (hact : ∀ n, lRegularizedAction S T (alpha n) a b ≤ A)
+    (gamma : ℝ → M)
+    (hconvG : TendstoUniformly (fun n (s : Icc a b) ↦ alpha n s.1)
+      (fun s ↦ gamma s.1) atTop)
+    (hreg : ∀ s ∈ Icc a b, T - s ^ 2 ∈ D.carrier) :
+    ∃ (m : ℕ) (t : Fin (m + 1) → ℝ) (p : Fin m → M)
+      (uLim : (i : Fin m) → timeH1 E (partitionIntervalLength t i)),
+      Monotone t ∧ t 0 = a ∧ t (Fin.last m) = b ∧
+      (∀ i, MapsTo gamma (Icc (t i.castSucc) (t i.succ)) (chartAt H (p i)).source) ∧
+      (∀ i, EqOn (uLim i).toFun
+        (fun r ↦ extChartAt I (p i) (gamma (t i.castSucc + r)))
+        (Icc (0 : ℝ) (partitionIntervalLength t i))) ∧
+      IntervalIntegrable (lRegularizedLagrangian S T gamma) volume a b ∧
+      ∃ chi : ℕ → ℕ, StrictMono chi ∧
+        lRegularizedAction S T gamma a b ≤
+          liminf (fun n ↦ lRegularizedAction S T (alpha (chi n)) a b) atTop := by
+  classical
+  have hLag (n : ℕ) : IntervalIntegrable (lRegularizedLagrangian S T (alpha n)) volume a b :=
+    intervalIntegrable_lRegularizedLagrangian_of_contMDiffOn_one_of_carrier S hMet hSc T a b hab
+      (alpha n) (halpha n) hreg
+  have hgamma : ContinuousOn gamma (Icc a b) := by
+    rw [continuousOn_iff_continuous_domRestrict]
+    exact hconvG.continuous
+      ((Eventually.of_forall fun n ↦ (halpha n).continuousOn.domRestrict).frequently)
+  let : LocallyCompactSpace M :=
+    Manifold.locallyCompact_of_finiteDimensional (M := M) I
+  obtain ⟨q, hq0, hqmono, ⟨m, hqm⟩, hpieces⟩ :=
+    DifferentialGeometry.Geometry.exists_compact_chart_subdivision (H := H) hab
+      hgamma
+  let t : Fin (m + 1) → Real := fun i ↦ (q i).1
+  have htmono : Monotone t := fun i j hij ↦ hqmono hij
+  have ht0 : t 0 = a := congrArg Subtype.val hq0
+  have htlast : t (Fin.last m) = b := congrArg Subtype.val (hqm m le_rfl)
+  choose p Kman hKman hKsrc hgammaK using fun i : Fin m ↦ hpieces i
+  obtain ⟨N, Kcoord, u, hKc, hKchart, hsrc, hrep, huK⟩ :=
+    exists_chartH1_coordinates_with_compact_range_of_tendstoUniformly (I := I) a b t htmono ht0 htlast p Kman hKman hKsrc
+      gamma hgamma (fun i ↦ hgammaK i)
+      alpha halpha hconvG
+  let beta : Nat → Real → M := fun n ↦ alpha (n + N)
+  have hLagBeta : ∀ n, IntervalIntegrable (lRegularizedLagrangian S T (beta n)) volume a b :=
+    fun n ↦ hLag _
+  have hactBeta : ∀ n, lRegularizedAction S T (beta n) a b ≤ A := fun n ↦ hact _
+  obtain ⟨psi, uLim, hpsi, hdu, hu⟩ :=
+    exists_chartH1_weakly_convergent_subsequence_of_compact_range_carrier
+      S hMet hSc T a b t htmono ht0 htlast p beta Q hQ
+      (fun n s hs ↦ hval (n + N) s hs) hLagBeta u
+      (fun i n ↦ by simpa only [beta, Nat.add_comm] using hsrc i n)
+      (fun i n ↦ by simpa only [beta, Nat.add_comm] using hrep i n)
+      Kcoord hKc (fun i ↦ (hKchart i).trans interior_subset) (fun i n r ↦ by
+        simpa only [beta, Nat.add_comm] using huK i n r)
+      hactBeta hreg
+  let chi : Nat → Nat := fun n ↦ psi n + N
+  have hpsiN : StrictMono (fun n ↦ psi n + N) := fun i j hij ↦
+    by simpa only [Nat.add_comm] using add_lt_add_right (hpsi hij) N
+  have hchi : StrictMono chi := hpsiN
+  have hconv : TendstoUniformly
+      (fun n (s : Icc a b) ↦ alpha (chi n) s.1)
+      (fun s ↦ gamma s.1) atTop := by
+    intro V hV
+    obtain ⟨k, hk⟩ := Filter.eventually_atTop.mp (hconvG V hV)
+    filter_upwards [hpsi.tendsto_atTop.eventually (eventually_ge_atTop k)]
+      with n hn
+    exact hk (psi n + N) (hn.trans (Nat.le_add_right _ _))
+  have hsrc' (i : Fin m) (n : Nat) : MapsTo (alpha (chi n))
+      (Icc (t i.castSucc) (t i.succ)) (chartAt H (p i)).source := by
+    simpa only [chi, beta, Nat.add_comm] using hsrc i (psi n)
+  have hrep' (i : Fin m) (n : Nat) : EqOn (u i (psi n)).toFun
+      (fun r ↦ extChartAt I (p i) (alpha (chi n) (t i.castSucc + r)))
+      (Icc (0 : Real) (partitionIntervalLength t i)) := by
+    simpa only [chi, beta, Nat.add_comm] using hrep i (psi n)
+  have huK' (i : Fin m) (n : Nat) (r : Icc (0 : Real) (partitionIntervalLength t i)) :
+      (u i (psi n)).toFun r.1 ∈ Kcoord i := by
+    simpa only [beta, Nat.add_comm] using huK i (psi n) r
+  have hgammaSource (i : Fin m) : MapsTo gamma
+      (Icc (t i.castSucc) (t i.succ)) (chartAt H (p i)).source :=
+    (hgammaK i).mono_right (interior_subset.trans (hKsrc i))
+  have hlimRep (i : Fin m) : EqOn (uLim i).toFun
+      (fun r ↦ extChartAt I (p i) (gamma (t i.castSucc + r)))
+      (Icc (0 : Real) (partitionIntervalLength t i)) := by
+    intro r hr
+    have hpoint : Tendsto (fun n ↦ alpha (chi n) (t i.castSucc + r)) atTop
+        (nhds (gamma (t i.castSucc + r))) := by
+      have hsub : t i.castSucc + r ∈ Icc a b := by
+        have hleft : a ≤ t i.castSucc := by rw [← ht0]; exact htmono (Fin.zero_le _)
+        have hright : t i.succ ≤ b := by rw [← htlast]; exact htmono (Fin.le_last _)
+        change r ∈ Icc (0 : Real) (t i.succ - t i.castSucc) at hr
+        exact ⟨by linarith [hleft, hr.1], by linarith [hr.2, hright]⟩
+      exact hconv.tendsto_at ⟨t i.castSucc + r, hsub⟩
+    have hrpiece : t i.castSucc + r ∈ Icc (t i.castSucc) (t i.succ) := by
+      change r ∈ Icc (0 : Real) (t i.succ - t i.castSucc) at hr
+      exact ⟨by linarith [hr.1], by linarith [hr.2]⟩
+    let rsub : Icc (0 : Real) (partitionIntervalLength t i) := ⟨r, hr⟩
+    have hExtSource : gamma (t i.castSucc + r) ∈ (extChartAt I (p i)).source := by
+      rw [extChartAt_source]
+      exact hgammaSource i hrpiece
+    have hchart : Tendsto (fun n ↦
+        extChartAt I (p i) (alpha (chi n) (t i.castSucc + r))) atTop
+        (nhds (extChartAt I (p i) (gamma (t i.castSucc + r)))) :=
+      (continuousAt_extChartAt' (I := I) hExtSource).tendsto.comp hpoint
+    have huPoint := (hu i).tendsto_at rsub
+    have huChart : Tendsto (fun n ↦
+        extChartAt I (p i) (alpha (chi n) (t i.castSucc + r))) atTop
+        (nhds ((uLim i).toFun r)) := by
+      apply huPoint.congr'
+      filter_upwards with n
+      exact hrep' i n rsub.2
+    exact tendsto_nhds_unique huChart hchart
+  have hactBound : IsBoundedUnder (· ≤ ·) atTop
+      (fun n ↦ lRegularizedAction S T (alpha (chi n)) a b) :=
+    isBoundedUnder_of_eventually_le (Eventually.of_forall fun n ↦ hact (chi n))
+  have hlsc := lRegularizedAction_fin_compact_of_carrier S hMet hSc T a b t htmono ht0 htlast p
+    (fun n ↦ alpha (chi n)) gamma Q hQ
+    (fun n s hs ↦ hval (psi n + N) s hs)
+    (fun i n ↦ u i (psi n))
+    hsrc' hrep' Kcoord hKc (fun i ↦ (hKchart i).trans interior_subset) huK' uLim
+    (fun i ↦ by intro V hV; exact hu i V hV)
+    (fun i z ↦ by simpa only using hdu i z)
+    hconv hactBound hreg
+  have haction := lRegularizedAction_chart_of_carrier S hMet hSc T a b t htmono ht0 htlast
+    p gamma uLim hgammaSource hlimRep hreg
+  have hLagLim := intervalIntegrable_lRegularizedLagrangian_of_chartH1_partition_of_carrier
+    S hMet hSc T a b t htmono ht0 htlast p gamma uLim hgammaSource hlimRep hreg
+  refine ⟨m, t, p, uLim, htmono, ht0, htlast, hgammaSource, hlimRep, hLagLim,
+    chi, hchi, ?_⟩
+  rw [haction]
+  exact hlsc
+
+end DifferentialGeometry.PDE.RicciFlow.Perelman
+
+end
