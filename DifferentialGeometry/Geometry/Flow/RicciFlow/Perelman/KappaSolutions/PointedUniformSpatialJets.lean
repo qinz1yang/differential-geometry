@@ -14,7 +14,7 @@ open Bundle Filter Set
 open DifferentialGeometry.CheegerGromovCompactness DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Integral.Measure
 open CanonicalNeighborhood
-open scoped Manifold ContDiff _root_.Topology
+open scoped _root_.Manifold ContDiff _root_.Topology
 
 universe u uE uH
 

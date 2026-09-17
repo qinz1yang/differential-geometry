@@ -12,7 +12,7 @@ variable {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [I.Boundaryless] [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [T2Space M] [SigmaCompactSpace M]
 
-theorem exists_metric_subsequence_tendsto_uniformly_on_time_interval_of_eventual_bounds
+theorem exists_metric_subsequence_tendsto_uniformly_on_time_interval_of_eventual_pointwise_lower
     {a b : ℝ} (hab : a ≤ b)
     (gRef : SmoothRiemannianMetric I M) (gSeq : ℕ → ℝ → SmoothRiemannianMetric I M)
     (hind : ∀ i, ∀ K : Set M, IsCompact K → ∀ p : ℕ,
@@ -25,8 +25,8 @@ theorem exists_metric_subsequence_tendsto_uniformly_on_time_interval_of_eventual
           metricDerivNorm q (gSeq i s) (gSeq i t) gRef x ≤ L * |s - t|)
     (hcov : ∀ t ∈ Icc a b, ∀ q : ℕ, ∀ K : Set M, IsCompact K →
       ∃ C : ℝ, ∀ᶠ i in atTop, ∀ x ∈ K, metricCovDerivNorm q (gSeq i t) gRef x ≤ C)
-    (hlower : ∀ t ∈ Icc a b, ∃ c : ℝ, 0 < c ∧
-      ∀ i, ∀ x : M, ∀ v : TangentSpace I x,
+    (hlower : ∀ t ∈ Icc a b, ∀ x : M, ∃ c : ℝ, 0 < c ∧
+      ∀ᶠ i in atTop, ∀ v : TangentSpace I x,
         c * gRef.inner x v v ≤ (gSeq i t).inner x v v) :
     ∃ f : ℕ → ℕ, StrictMono f ∧ ∃ g : ℝ → SmoothRiemannianMetric I M,
       ∀ K : Set M, IsCompact K → ∀ p : ℕ, ∀ epsilon : ℝ, 0 < epsilon →
@@ -87,10 +87,62 @@ theorem exists_metric_subsequence_tendsto_uniformly_on_time_interval_of_eventual
     obtain ⟨n, hn⟩ := (TopologicalSpace.denseRange_denseSeq T).exists_dist_lt (⟨t, ht⟩ : T) hd
     refine ⟨n, ?_⟩
     simpa [T, Subtype.dist_eq, Real.dist_eq, e] using hn
-  exact exists_metric_subsequence_tendsto_in_derivative_sup_norm_on_compacts_uniformly_on_time_interval
+  exact exists_metric_subsequence_tendsto_uniformly_on_compacts_and_time_of_eventual_pointwise_lower
     hne a b gRef gSeq e he hdense hfull hbounded
-    (fun rho _hrho t ht => by
-      obtain ⟨c, hc, hlow⟩ := hlower t ht
-      exact ⟨c, hc, fun i x v => hlow (rho i) x v⟩)
+    (fun rho hrho t ht x => by
+      obtain ⟨c, hc, hlow⟩ := hlower t ht x
+      exact ⟨c, hc, hrho.tendsto_atTop.eventually hlow⟩)
+
+theorem exists_metric_subsequence_tendsto_uniformly_on_time_interval_of_eventual_compact_lower
+    {a b : ℝ} (hab : a ≤ b)
+    (gRef : SmoothRiemannianMetric I M) (gSeq : ℕ → ℝ → SmoothRiemannianMetric I M)
+    (hind : ∀ i, ∀ K : Set M, IsCompact K → ∀ p : ℕ,
+      ∃ L : ℝ, 0 ≤ L ∧ ∀ s ∈ Icc a b, ∀ t ∈ Icc a b,
+        ∀ q ≤ p, ∀ x ∈ K,
+          metricDerivNorm q (gSeq i s) (gSeq i t) gRef x ≤ L * |s - t|)
+    (hlip : ∀ K : Set M, IsCompact K → ∀ p : ℕ,
+      ∃ L : ℝ, 0 ≤ L ∧ ∀ᶠ i in atTop, ∀ s ∈ Icc a b, ∀ t ∈ Icc a b,
+        ∀ q ≤ p, ∀ x ∈ K,
+          metricDerivNorm q (gSeq i s) (gSeq i t) gRef x ≤ L * |s - t|)
+    (hcov : ∀ t ∈ Icc a b, ∀ q : ℕ, ∀ K : Set M, IsCompact K →
+      ∃ C : ℝ, ∀ᶠ i in atTop, ∀ x ∈ K, metricCovDerivNorm q (gSeq i t) gRef x ≤ C)
+    (hlower : ∀ t ∈ Icc a b, ∀ K : Set M, IsCompact K →
+      ∃ c : ℝ, 0 < c ∧ ∀ᶠ i in atTop, ∀ x ∈ K, ∀ v : TangentSpace I x,
+        c * gRef.inner x v v ≤ (gSeq i t).inner x v v) :
+    ∃ f : ℕ → ℕ, StrictMono f ∧ ∃ g : ℝ → SmoothRiemannianMetric I M,
+      ∀ K : Set M, IsCompact K → ∀ p : ℕ, ∀ epsilon : ℝ, 0 < epsilon →
+        ∃ N : ℕ, ∀ i ≥ N, ∀ t ∈ Icc a b,
+          metricDerivNormSupOn K p (gSeq (f i) t) (g t) gRef < epsilon := by
+  apply exists_metric_subsequence_tendsto_uniformly_on_time_interval_of_eventual_pointwise_lower
+    hab gRef gSeq hind hlip hcov
+  intro t ht x
+  obtain ⟨c, hc, hbound⟩ := hlower t ht {x} isCompact_singleton
+  exact ⟨c, hc, hbound.mono fun i hi => hi x (Set.mem_singleton x)⟩
+
+theorem exists_metric_subsequence_tendsto_uniformly_on_time_interval_of_eventual_bounds
+    {a b : ℝ} (hab : a ≤ b)
+    (gRef : SmoothRiemannianMetric I M) (gSeq : ℕ → ℝ → SmoothRiemannianMetric I M)
+    (hind : ∀ i, ∀ K : Set M, IsCompact K → ∀ p : ℕ,
+      ∃ L : ℝ, 0 ≤ L ∧ ∀ s ∈ Icc a b, ∀ t ∈ Icc a b,
+        ∀ q ≤ p, ∀ x ∈ K,
+          metricDerivNorm q (gSeq i s) (gSeq i t) gRef x ≤ L * |s - t|)
+    (hlip : ∀ K : Set M, IsCompact K → ∀ p : ℕ,
+      ∃ L : ℝ, 0 ≤ L ∧ ∀ᶠ i in atTop, ∀ s ∈ Icc a b, ∀ t ∈ Icc a b,
+        ∀ q ≤ p, ∀ x ∈ K,
+          metricDerivNorm q (gSeq i s) (gSeq i t) gRef x ≤ L * |s - t|)
+    (hcov : ∀ t ∈ Icc a b, ∀ q : ℕ, ∀ K : Set M, IsCompact K →
+      ∃ C : ℝ, ∀ᶠ i in atTop, ∀ x ∈ K, metricCovDerivNorm q (gSeq i t) gRef x ≤ C)
+    (hlower : ∀ t ∈ Icc a b, ∃ c : ℝ, 0 < c ∧
+      ∀ i, ∀ x : M, ∀ v : TangentSpace I x,
+        c * gRef.inner x v v ≤ (gSeq i t).inner x v v) :
+    ∃ f : ℕ → ℕ, StrictMono f ∧ ∃ g : ℝ → SmoothRiemannianMetric I M,
+      ∀ K : Set M, IsCompact K → ∀ p : ℕ, ∀ epsilon : ℝ, 0 < epsilon →
+        ∃ N : ℕ, ∀ i ≥ N, ∀ t ∈ Icc a b,
+          metricDerivNormSupOn K p (gSeq (f i) t) (g t) gRef < epsilon := by
+  apply exists_metric_subsequence_tendsto_uniformly_on_time_interval_of_eventual_pointwise_lower
+    hab gRef gSeq hind hlip hcov
+  intro t ht x
+  obtain ⟨c, hc, hbound⟩ := hlower t ht
+  exact ⟨c, hc, Filter.Eventually.of_forall fun i v => hbound i x v⟩
 
 end DifferentialGeometry.CheegerGromovCompactness

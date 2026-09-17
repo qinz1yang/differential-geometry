@@ -10832,3 +10832,5 @@ import DifferentialGeometry.Topology.PlanarJordan.BandCut
 import DifferentialGeometry.Topology.PlanarJordan.InnermostSmoothDisk
 import DifferentialGeometry.Topology.Diffeomorph.FiberwiseReparametrization
 import DifferentialGeometry.Analysis.Calculus.Interpolation.ParabolicCompression
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Compactness.MetricExtension
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Foundations.MetricSlices

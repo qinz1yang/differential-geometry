@@ -15,7 +15,7 @@ open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Riemannian
 open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Tensor0SBundle
-open scoped Manifold ContDiff _root_.Topology Interval
+open scoped _root_.Manifold ContDiff _root_.Topology Interval
 
 universe u uE uH
 

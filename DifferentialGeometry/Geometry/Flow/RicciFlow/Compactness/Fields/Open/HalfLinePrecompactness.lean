@@ -2,6 +2,8 @@ import DifferentialGeometry.Geometry.Metric.Convergence.Window.EventualBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Open.BumpFamilyChange
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Open.HalfLineConvergence
 
+section
+
 set_option autoImplicit false
 
 noncomputable section
@@ -151,3 +153,79 @@ theorem exists_halfLineMetricConvergenceData_of_window_cutoff_bounds
       (BumpFamily.compSubseq Phi bf rho hrho) htau hg)⟩
 
 end DifferentialGeometry.CheegerGromovCompactness
+
+end
+
+end
+
+set_option autoImplicit false
+
+noncomputable section
+
+namespace DifferentialGeometry.CheegerGromovCompactness
+
+open Set Filter
+open scoped Manifold ContDiff _root_.Topology
+
+universe u uE uH
+
+variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E] {H : Type uH} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  [I.Boundaryless]
+  {X : PointedFlowSeq.{u, uE, uH} (I := I)}
+  {P : PointedRiemannianManifold.{u, uE, uH} (I := I)}
+  {phi : ℕ → ℕ}
+
+attribute [local instance] PointedRiemannianManifold.topology
+  PointedRiemannianManifold.charted PointedRiemannianManifold.smooth
+  PointedRiemannianManifold.t2 PointedRiemannianManifold.sigmaCompact
+
+theorem exists_halfLineMetricConvergenceData_of_eventual_pointwise_lower
+    (Phi : PointedCGHMaps (I := I) X P phi)
+    (R : SmoothRiemannianMetric I P.M)
+    (bf : BumpFamily Phi) (hsrc : SourceIsSigmaCompact Phi)
+    (htgt : TargetIsSigmaCompact Phi)
+    (hind : ∀ n i : ℕ, ∀ K : Set P.M, IsCompact K → ∀ p : ℕ,
+      ∃ L : ℝ, 0 ≤ L ∧ ∀ s ∈ Icc (-(n : ℝ)) 0, ∀ t ∈ Icc (-(n : ℝ)) 0,
+        ∀ q ≤ p, ∀ x ∈ K,
+          metricDerivNorm q (gSeqExt Phi R bf hsrc htgt i s)
+            (gSeqExt Phi R bf hsrc htgt i t) R x ≤ L * |s - t|)
+    (hlip : ∀ n : ℕ, ∀ K : Set P.M, IsCompact K → ∀ p : ℕ,
+      ∃ L : ℝ, 0 ≤ L ∧ ∀ᶠ i in atTop,
+        ∀ s ∈ Icc (-(n : ℝ)) 0, ∀ t ∈ Icc (-(n : ℝ)) 0,
+          ∀ q ≤ p, ∀ x ∈ K,
+            metricDerivNorm q (gSeqExt Phi R bf hsrc htgt i s)
+              (gSeqExt Phi R bf hsrc htgt i t) R x ≤ L * |s - t|)
+    (hcov : ∀ n : ℕ, ∀ t ∈ Icc (-(n : ℝ)) 0, ∀ q : ℕ,
+      ∀ K : Set P.M, IsCompact K → ∃ C : ℝ, ∀ᶠ i in atTop, ∀ x ∈ K,
+        metricCovDerivNorm q (gSeqExt Phi R bf hsrc htgt i t) R x ≤ C)
+    (hlower : ∀ n : ℕ, ∀ t ∈ Icc (-(n : ℝ)) 0, ∀ x : P.M, ∃ c : ℝ, 0 < c ∧
+      ∀ᶠ i in atTop, ∀ v : TangentSpace I x,
+        c * R.inner x v v ≤ (gSeqExt Phi R bf hsrc htgt i t).inner x v v) :
+    Nonempty (HalfLineMetricConvergenceData Phi R bf hsrc htgt) := by
+  apply nonempty_halfLineMetricConvergenceData (Φ := Phi)
+  intro n rho hrho
+  obtain ⟨tau, htau, g, hg⟩ :=
+    exists_metric_subsequence_tendsto_uniformly_on_time_interval_of_eventual_pointwise_lower
+      (neg_nonpos.mpr (Nat.cast_nonneg n) : -(n : ℝ) ≤ 0) R
+      (fun i => gSeqExt Phi R bf hsrc htgt (rho i))
+      (fun i => hind n (rho i))
+      (fun K hK p => by
+        obtain ⟨L, hL, hb⟩ := hlip n K hK p
+        exact ⟨L, hL, hrho.tendsto_atTop.eventually hb⟩)
+      (fun t ht q K hK => by
+        obtain ⟨C, hb⟩ := hcov n t ht q K hK
+        exact ⟨C, hrho.tendsto_atTop.eventually hb⟩)
+      (fun t ht x => by
+        obtain ⟨c, hc, hb⟩ := hlower n t ht x
+        exact ⟨c, hc, hrho.tendsto_atTop.eventually hb⟩)
+  refine ⟨tau, htau, g, hg, ?_⟩
+  intro K hK p epsilon hepsilon
+  obtain ⟨N, hN⟩ := hg K hK p epsilon hepsilon
+  exact ⟨N, fun k hk t ht q hq x hx =>
+    (derivNorm_le_sup hK hq (gSeqExt Phi R bf hsrc htgt (rho (tau k)) t) (g t) R hx).trans_lt
+      (hN k hk t ht)⟩
+
+end DifferentialGeometry.CheegerGromovCompactness
+
+end

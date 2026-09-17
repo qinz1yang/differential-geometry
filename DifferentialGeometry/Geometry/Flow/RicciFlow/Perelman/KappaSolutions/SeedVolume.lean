@@ -9,13 +9,13 @@ noncomputable section
 
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 
-open Bundle Manifold Filter Set MeasureTheory
+open Bundle _root_.Manifold Filter Set MeasureTheory
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Riemannian.BonnetMyers
 open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Integral.Measure
 open CanonicalNeighborhood
-open scoped Manifold ContDiff ENNReal _root_.Topology
+open scoped _root_.Manifold ContDiff ENNReal _root_.Topology
 
 universe u uE uH
 
