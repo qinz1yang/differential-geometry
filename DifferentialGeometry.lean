@@ -1454,9 +1454,12 @@ import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.Semigroup.BoundedC0Se
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.Semigroup.Contraction
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.Semigroup.DuhamelMap
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.Semigroup.MildSolutionExistence
+import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Duhamel.AddCircleSecondDerivativeSource
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Duhamel.Estimates
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Duhamel.StrongBackwardIdentification
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Duhamel.ZeroCrossTerm
+import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Existence.HeatTraceLift
+import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Existence.LinearTimeDependentContinuation
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Existence.LocallyLipschitz
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Existence.ShiftedCoefficients
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.FixedPoint.Forcing
@@ -5605,6 +5608,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Anci
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientCylinderSmoothModels
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientCylinderTopologicalModels
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientDistanceRegularity
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientEndpoint
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientGaussianIntegrability
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientKappaFixedCompactness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientKappaModelCurvatureWindow
@@ -5738,6 +5742,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Cyli
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.CylinderTranslationSlab
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.CylindricalComparisonRestriction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.DisjointCompactSides
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.EndpointPairing
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.EqualDimensionImmersion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.EuclideanComplementCompactSide
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.FiniteArcAncientLimit
@@ -6189,6 +6194,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Geodesic.
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Geodesic.Naturality
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Geodesic.Scaling
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Geodesic.Uniqueness
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Hamilton.Ancient
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Hamilton.Basic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Hamilton.TraceIntegral
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Index.AdaptedField
@@ -9370,6 +9376,7 @@ import DifferentialGeometry.Topology.NearIdentity
 import DifferentialGeometry.Topology.OpenCover.Disjoint
 import DifferentialGeometry.Topology.Order.FiniteSeparation
 import DifferentialGeometry.Topology.Order.Interval
+import DifferentialGeometry.Topology.Order.IntervalContinuation
 import DifferentialGeometry.Topology.Order.IntervalPush
 import DifferentialGeometry.Topology.Order.LiminfSum
 import DifferentialGeometry.Topology.OrderedCollar

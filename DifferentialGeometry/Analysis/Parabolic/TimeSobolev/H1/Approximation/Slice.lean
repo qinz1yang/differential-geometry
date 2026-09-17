@@ -161,4 +161,36 @@ theorem timeL2.norm_slice_toLp_eq {X : Type*} [NormedAddCommGroup X]
     fun _ ht => ⟨ha.trans ht.1, ht.2.trans hbT⟩
   exact hf.coeFn_toLp.filter_mono (ae_mono (Measure.restrict_mono hsub le_rfl))
 
+theorem aestronglyMeasurable_add_timeMeasure
+    {X : Type*} [TopologicalSpace X] {T c d : ℝ} {f : ℝ → X}
+    (hf : AEStronglyMeasurable f (timeMeasure T)) (hc : 0 ≤ c) (hd : d ≤ T) :
+    AEStronglyMeasurable (fun t => f (t + c)) (timeMeasure (d - c)) := by
+  have hI : Icc c d ⊆ Icc (0 : ℝ) T :=
+    fun _ ht => ⟨hc.trans ht.1, ht.2.trans hd⟩
+  have h := (hf.restrict (s := Icc c d)).comp_quasiMeasurePreserving
+    (measurePreserving_add_right_timeMeasure_restrict hI).quasiMeasurePreserving
+  simpa only [Function.comp_def, add_comm c] using h
+
+theorem memLp_add_timeMeasure
+    {X : Type*} [TopologicalSpace X] [ContinuousENorm X]
+    {p : ℝ≥0∞} {T c d : ℝ} {f : ℝ → X}
+    (hf : MemLp f p (timeMeasure T)) (hc : 0 ≤ c) (hd : d ≤ T) :
+    MemLp (fun t => f (t + c)) p (timeMeasure (d - c)) := by
+  have hI : Icc c d ⊆ Icc (0 : ℝ) T :=
+    fun _ ht => ⟨hc.trans ht.1, ht.2.trans hd⟩
+  have h := (hf.restrict (Icc c d)).comp_measurePreserving
+    (measurePreserving_add_right_timeMeasure_restrict hI)
+  simpa only [Function.comp_def, add_comm c] using h
+
+theorem timeL2.toLp_add_eq_slice
+    {X : Type*} [NormedAddCommGroup X] {T c d : ℝ} {f : ℝ → X}
+    (hf : MemLp f 2 (timeMeasure T)) (hc : 0 ≤ c) (hd : d ≤ T) :
+    (memLp_add_timeMeasure hf hc hd).toLp (fun t => f (t + c)) =
+      timeL2.slice (hf.toLp f) c d hc hd := by
+  apply Lp.ext
+  filter_upwards [(memLp_add_timeMeasure hf hc hd).coeFn_toLp,
+    timeL2.slice_coe (hf.toLp f) c d hc hd,
+    ae_add_right_timeMeasure hc hd hf.coeFn_toLp] with t ht hs hf'
+  exact ht.trans (hf'.symm.trans hs.symm)
+
 end DifferentialGeometry.Analysis.Parabolic.TimeSobolev

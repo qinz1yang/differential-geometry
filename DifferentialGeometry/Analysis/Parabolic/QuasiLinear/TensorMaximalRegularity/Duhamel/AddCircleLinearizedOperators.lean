@@ -204,4 +204,48 @@ theorem parameterDerivativeParabolicForcing_eq_operators
   rw [C.map_sub, C.map_sub, hc, hc]
   exact parameterDerivativeParabolicForcing_eq_principal_add_drift g a₂ (b i) (f₀ i) (v i)
 
+theorem parameterDriftOperatorH0Pi_smul_apply
+    {ι : Type*} [Fintype ι]
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) (c : ℝ)
+    (a : TensorHs g 0 0 ((2 : ℕ) : ℝ))
+    (v : PiLp 2 (fun _ : ι => TensorHs g 0 0 ((2 : ℕ) : ℝ))) :
+    let N := tensorHsInclusion (g := g) (r := 0) (s := 0)
+      (by norm_num : ((1 : ℕ) : ℝ) + 1 ≤ ((2 : ℕ) : ℝ))
+    let K := tensorHsInclusion (g := g) (r := 0) (s := 0)
+      (by norm_num : ((0 : ℕ) : ℝ) + 1 ≤ ((2 : ℕ) : ℝ))
+    let Z := tensorHsInclusion (g := g) (r := 0) (s := 0)
+      (by norm_num : (0 : ℝ) ≤ ((1 : ℕ) : ℝ))
+    let C := (scalarH1ToContinuous g).comp (tensorHsInclusion
+      (g := g) (r := 0) (s := 0) (by norm_num : (1 : ℝ) ≤ ((1 : ℕ) : ℝ)))
+    let D := (parameterDerivativeHs g 1).comp N
+    let d : C(AddCircle (1 : ℝ), ℝ) :=
+      ⟨laplacianDriftCoefficient g, (laplacianDriftCoefficient g).2.continuous⟩
+    parameterDriftOperatorH0Pi g (c • N a)
+      ((ContinuousLinearMap.piLpMap 2 fun _ : ι => K) v) =
+        WithLp.toLp 2 (fun i =>
+          scalarH0ContinuousMul g (c • C (D a) - d) (Z (D (v i)))) := by
+  intro N K Z C D d
+  let Z₀ := tensorHsInclusion (g := g) (r := 0) (s := 0)
+    (by norm_num : (0 : ℝ) ≤ ((0 : ℕ) : ℝ))
+  let d₁ := ccTensorToHs g 0 ((1 : ℕ) : ℝ) (scalarCc g (laplacianDriftCoefficient g))
+  have hd : C d₁ = d := by
+    ext x
+    simp only [C, d₁, ContinuousLinearMap.comp_apply, tensorHsInclusion_ccTensorToHs,
+      scalarH1ToContinuous_apply_ccTensorToHs,
+      DifferentialGeometry.Analysis.Sobolev.scalar0_scalarCc]
+    rfl
+  have hder (w : TensorHs g 0 0 ((2 : ℕ) : ℝ)) :
+      Z₀ (parameterDerivativeHs g 0 (K w)) = Z (D w) := by
+    have h := congrArg Z₀
+      (parameterDerivativeHs_tensorHsInclusion g (by omega : 0 ≤ 1) (N w))
+    simpa only [Z₀, Z, D, K, N, ContinuousLinearMap.comp_apply,
+      ← tensorHsInclusion_trans_apply, tensorHsInclusion_refl_apply] using h
+  apply PiLp.ext
+  intro i
+  change scalarH0ContinuousMul g
+    (C (parameterDerivativeHs g 1 (c • N a) - d₁))
+      (Z₀ (parameterDerivativeHs g 0 (K (v i)))) = _
+  rw [map_smul, C.map_sub, C.map_smul, hd, hder]
+  rfl
+
 end AddCircle
