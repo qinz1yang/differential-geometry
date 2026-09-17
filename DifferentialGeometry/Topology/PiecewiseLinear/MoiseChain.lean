@@ -6,6 +6,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.CylindricalDiagram
 import DifferentialGeometry.Topology.PiecewiseLinear.Transition361
 import DifferentialGeometry.Topology.PiecewiseLinear.MapApproximation
 import DifferentialGeometry.Topology.PiecewiseLinear.ManifoldApproximation
+import DifferentialGeometry.Topology.PiecewiseLinear.SimplicialApproximation
 
 open Set
 
@@ -161,6 +162,22 @@ def PLMapApproximation : Prop :=
 theorem plMapApproximation : PLMapApproximation := by
   intro E _ _ _ P hP hPc f hf ε hε
   exact exists_isPiecewiseAffineOn_dist_lt hP hPc hf hε
+
+def PLPolyhedronMapApproximation : Prop :=
+  ∀ {E F : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
+    (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
+    (L : Geometry.SimplicialComplex ℝ F) [Finite L.faces]
+    {f : E → F}, ContinuousOn f K.space → MapsTo f K.space L.space →
+    ∀ ε : ℝ, 0 < ε →
+      ∃ g : E → F, IsPiecewiseAffineOn g K.space ∧ MapsTo g K.space L.space ∧
+        ∀ x ∈ K.space, dist (g x) (f x) < ε
+
+theorem plPolyhedronMapApproximation : PLPolyhedronMapApproximation := by
+  intro E F _ _ _ _ _ _ K _ L _ f hf hmap ε hε
+  obtain ⟨g, hg, hgmap, hdist, -, -⟩ :=
+    exists_isPiecewiseAffineOn_mapsTo_dist_lt K L hf hmap hε
+  exact ⟨g, hg, hgmap, hdist⟩
 
 def PLManifoldMapApproximation : Prop :=
   ∀ {n : ℕ} {M : Type} [MetricSpace M] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]

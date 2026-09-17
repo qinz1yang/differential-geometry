@@ -394,7 +394,10 @@ F 车道的 `Topology/Pasting.lean` 与 `SingularPasting.lean` 正是为这种"�
   于是 `IsNullHomotopic` 这个假设在换成 PL 环路后不变，`Moise252`、`Moise264` 的
   "不妨设 `L` 是 PL 的"这句话有了对应的定理。
 
-全部只依赖标准三公理。
+`MoiseChain.lean` 里现在有三个逼近结点，都是已证的（审计仅标准三公理）：
+`plMapApproximation`（目标是赋范空间）、`plPolyhedronMapApproximation`（目标是有限复形的载体，像不出界）、
+`plManifoldMapApproximation`（目标是带 `plGroupoid` 的度量流形，相对版）。
+书里"不妨设某映射是 PL 的"这句话，按目标是向量空间 / 多面体 / 流形三种情形，分别对应这三条。
 
 **还缺的一步**（写 `Moise252 ← Moise251` 时会立刻撞上）：`loopCircle ≃ₜ |J|` 这个参数化本身。
 树里 `LoopTheorem/CellGluing.lean` 用 `pathToCircle` 加紧致到 Hausdorff 的连续双射造过
