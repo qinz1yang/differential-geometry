@@ -94,4 +94,49 @@ theorem exists_isPiecewiseAffineOn_square_eqOn_bottom
     exists_isPiecewiseAffineOn_glue_prism_collar L hG hGL hbot hε hε1.le hδ T hT hface
   exact ⟨g, hgPA, hgL, hgbot⟩
 
+open Classical in
+theorem exists_face_of_no_partition_point_between
+    {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
+    (L : Geometry.SimplicialComplex ℝ F) {h : ℝ → F} {n : ℕ} {s : ℕ → ℝ}
+    (hs0 : s 0 = 0) (hsn : s n = 1) (hn : 0 < n) (hmono : ∀ i < n, s i < s (i + 1))
+    (hcell : ∀ i < n, ∃ u ∈ L.faces, ∀ x ∈ Icc (s i) (s (i + 1)),
+      h x ∈ convexHull ℝ (u : Set F))
+    {a b : ℝ} (ha : a ∈ Icc (0 : ℝ) 1) (hb : b ∈ Icc (0 : ℝ) 1) (hab : a ≤ b)
+    (hgap : ∀ i ≤ n, ¬(a < s i ∧ s i < b)) :
+    ∃ u ∈ L.faces, ({h a, h b} : Set F) ⊆ convexHull ℝ (u : Set F) := by
+  classical
+  have hP0 : (fun i => s i ≤ a) 0 := by
+    change s 0 ≤ a
+    rw [hs0]
+    exact ha.1
+  have hPlam : (fun i => s i ≤ a) (Nat.findGreatest (fun i => s i ≤ a) n) :=
+    Nat.findGreatest_spec (P := fun i => s i ≤ a) (Nat.zero_le n) hP0
+  have hPi : s (Nat.findGreatest (fun i => s i ≤ a) n) ≤ a := hPlam
+  have hle : Nat.findGreatest (fun i => s i ≤ a) n ≤ n :=
+    Nat.findGreatest_le n
+  have key : ∃ i < n, a ∈ Icc (s i) (s (i + 1)) ∧ b ∈ Icc (s i) (s (i + 1)) := by
+    rcases eq_or_lt_of_le hle with heq | hlt
+    · have hsna : s n ≤ a := heq ▸ hPi
+      have ha1 : a = 1 := le_antisymm ha.2 (by rw [← hsn]; exact hsna)
+      have hb1 : b = 1 := le_antisymm hb.2 (ha1 ▸ hab)
+      have hlast : s (n - 1) ≤ 1 :=
+        (mem_Icc_of_forall_lt_succ hmono hs0 hsn (by omega : n - 1 ≤ n)).2
+      refine ⟨n - 1, by omega, ?_, ?_⟩
+      · rw [show n - 1 + 1 = n by omega, hsn, ha1]
+        exact ⟨hlast, le_rfl⟩
+      · rw [show n - 1 + 1 = n by omega, hsn, hb1]
+        exact ⟨hlast, le_rfl⟩
+    · have hnotlam : ¬ (fun i => s i ≤ a) (Nat.findGreatest (fun i => s i ≤ a) n + 1) :=
+        Nat.findGreatest_is_greatest (P := fun i => s i ≤ a) (Nat.lt_succ_self _)
+          (Nat.succ_le_of_lt hlt)
+      have hnotP : ¬ (s (Nat.findGreatest (fun i => s i ≤ a) n + 1) ≤ a) := hnotlam
+      have hagt : a < s (Nat.findGreatest (fun i => s i ≤ a) n + 1) := lt_of_not_ge hnotP
+      have hble : b ≤ s (Nat.findGreatest (fun i => s i ≤ a) n + 1) := by
+        by_contra hcon
+        exact hgap _ (Nat.succ_le_of_lt hlt) ⟨hagt, lt_of_not_ge hcon⟩
+      exact ⟨_, hlt, ⟨hPi, hagt.le⟩, ⟨hPi.trans hab, hble⟩⟩
+  obtain ⟨i, hi, hai, hbi⟩ := key
+  obtain ⟨u, hu, hfu⟩ := hcell i hi
+  exact ⟨u, hu, by rintro y (rfl | rfl); exacts [hfu _ hai, hfu _ hbi]⟩
+
 end DifferentialGeometry.Topology.PiecewiseLinear
