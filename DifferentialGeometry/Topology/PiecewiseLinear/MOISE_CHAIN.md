@@ -202,3 +202,18 @@ F 车道的 `LocallyFinitePieceTower`（F6.3）已经给了非紧 PL 流形的�
 
 要注意的一点：第 5 步之后要说明 `Q` 仍是最终复形的子复形（从而 `Q` 中点的载体面落在 `Q` 内），
 这需要 `IsSubdivision` 对 `restrict` 的相容性引理；没找到现成的就得补一条。
+
+## 相对版逼近已证（2026-09-16 夜）
+
+`MapApproximation.lean` 的 `exists_isPiecewiseAffineOn_dist_lt_eqOn`：`P` 紧致多面体、`Q ⊆ P` 多面体、
+`f` 在 `P` 上连续且在 `Q` 上逐片仿射、`ε > 0`，则存在逐片仿射的 `g`，在 `Q` 上与 `f` 逐点相等，
+且 `∀ x ∈ P, dist (g x) (f x) < ε`。审计仅标准三公理。
+
+拼装用到的现成接口正是上一节列的四条：`exists_isSubdivision_restrict_space`（把 `Q` 变成子复形）、
+`exists_isSubdivision_affineOn_faces_finite`（在 `Q` 的三角剖分上让 `f` 逐面仿射）、
+`exists_isSubdivision_extension_of_disjoint`（把 `Q` 的细分扩到整个 `P`，`A` 取空复形）、
+`exists_isSubdivision_diam_lt`（小网格）。上一节担心的"`restrict` 与细分相容"其实已经有了：
+`IsSubdivision.restrict`（`Subcomplex.lean`）。再加本轮的 `simplicialMap_eqOn_of_affineOn`，误差在 `Q` 上恰为零。
+
+至此欧氏目标的逼近层完整：绝对版、相对版、以及仿射还原引理。**剩下的是把目标从赋范空间换成 PL 3-流形**，
+按图卡归约；难点是像跨图卡时的拼接，F 车道的 `Topology/Pasting.lean` 与 `SingularPasting.lean` 是为这类拼接建的。
