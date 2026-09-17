@@ -1,4 +1,5 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.ConeBase
+import DifferentialGeometry.Topology.PiecewiseLinear.SimplexAvoiding
 import DifferentialGeometry.Topology.PiecewiseLinear.Subcomplex
 import DifferentialGeometry.Topology.PiecewiseLinear.Gluing
 
@@ -7,13 +8,6 @@ open Set
 namespace DifferentialGeometry.Topology.PiecewiseLinear
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-
-theorem IsConeBase.of_faces_subset {p : E} {K L : Geometry.SimplicialComplex ℝ E}
-    (hK : IsConeBase p K) (hLK : L.faces ⊆ K.faces) : IsConeBase p L where
-  notMem_space hp := hK.notMem_space (space_mono_of_faces_subset hLK hp)
-  indep s hs := hK.indep s (hLK hs)
-  radial x hx y hy := hK.radial x (space_mono_of_faces_subset hLK hx)
-    y (space_mono_of_faces_subset hLK hy)
 
 open Classical in
 theorem coneComplex_space_inter_fiber {p : E} {K L : Geometry.SimplicialComplex ℝ E}

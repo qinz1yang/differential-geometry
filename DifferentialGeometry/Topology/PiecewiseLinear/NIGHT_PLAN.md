@@ -324,3 +324,50 @@ B.6、B.2、P.4（有限图范围）均已交付且不带 `hSchoenflies`。S 的
 
 C.6 → C.7 → I.1 → I.2；有余力再做 B.7（26.7，`§32 Type 2` 的输入，路线是 2.7 的三维类比）。
 显式假设只允许用于别的车道未交付的定理（23.17、C.4、26.4），交付后在下一次合并时消掉。其余规则同 §0 与 §8。
+
+## 11. 2026-09-16 傍晚：L₂ 的表示层缺口属实；补"沿分支切开并分离"的生产者
+
+### 11.1 E3 的判断成立（书上证据）
+
+`branchCarrier c ⊆ doublePointSet G G.domain` 这条证明说明：只在源侧交叉重贴，被选分支仍留在奇点集里，
+所以那不可能是 Moise 的降复杂度 `L₂`。把端点改名为 `exists_cross_reglued_cell_of_boundaryBranch` 是对的。
+
+书上的证据在 Figure 25.4（书页 186）与 Figure 25.6（书页 187）：`|D|` 画成一个"8 字形"，`A_j` 是中间那段竖直线段，
+四条路径 `σ, υ`（上）与 `φ, τ`（下）交于 `A_j` 与基点 `P₀`。"cut `|D|` apart at `A_j`"就是把这个 8 字在 `A_j` 处**打开**，
+得到一个小环 `L₁ = συ⁻¹` 与一个大环 `L₂ = σφυτ`（Case 4 是 `L₁ = συ`、`L₂ = στ⁻¹υφ⁻¹`）。
+打开之后 `A_j` 不再是任何一张新胞腔的奇点分支，这正是复杂度下降的来源。所以这个运算必须真正把两张片分开，
+而不是把源盘重新粘一遍。参照 §30 定理 3 与 28.20 前的讨论：书里的"split apart at Δ"同样是用正则邻域在环境里真正分开。
+
+### 11.2 缺的生产者：沿一条紧致分支把两张片分离
+
+```lean
+theorem exists_separated_along_branch (hD : IsNormalSingularCell D BdM B')
+    (c : 触边分支) (W : Set M) (hW : W ∈ 𝓝ˢ (branchCarrier c)) :
+    ∃ D' : (从 Δ 沿 c 的两条原像弧切开后的源) → M,
+      (在 W 外与 D 逐点相等) ∧ IsNormalSingularCell D' BdM B' ∧
+      doublePointSet D' = doublePointSet D \ branchCarrier c ∧
+      (其余分支及其 crossing、纤维 ≤ 2、局部单射、边界像条款全部保持)
+```
+
+架构（局部到整体，材料都在整合分支上）：
+
+1. **局部模型**：分支内部的点由 `HasPLDoubleCrossingAt` 给出两个不交源邻域、到像的 PL 同胚与环境 crossing 模型
+   （两张横截平面）；端点由 `HasPLBoundaryDoubleCrossingAt` 的半空间模型给出。在这两个模型里把一张片沿
+   crossing 的横截方向推开是显式线性构造，支撑落在给定的小邻域内。
+2. **沿分支globalize**：`branchCarrier c` 是紧致一维带边组合流形，取有限个上述图卡覆盖它，按 §16/§17 已经证过的
+   PL 圆/区间分类给出的次序逐段推开；相邻图卡的重叠区用同一方向的推移，靠线性插值拼接。
+3. **粘回全局**：用 F 车道 `Topology/Pasting.lean` 与 `SingularPasting.lean` 的既有接口
+   （`exists_isPLOn_postcomp_on_polyhedron_of_locallyInjective`、`exists_isPLBall_patches_at_doublePoint_within`、
+   `exists_isPLBall_postcomp_neighborhood_at_doublePoint_in_manifold`）。它们正是为"在一个邻域内改，邻域外精确不变，
+   并保住纤维计数"设计的；本条要做的是把单点版本沿紧致分支串起来。
+4. **源盘的切开**：切开后的源就是 `Δ` 沿两条原像弧切开再按 Figure 25.3/25.5 的方式重连；你已有三盘分解与
+   `exists_isPLHomeomorphOn_branch_sheets` 的 `g`，把重连写成 `IsGlueIso` 即可。
+
+归属：这条归 E3（分支结构、crossing 数据、三盘分解都在你手里），允许直接消费 F 的 pasting 接口。
+若第 2 步沿分支的串接在现有接口下闭合不了，写清确切缺口后汇报；届时我把它移交 F 车道，在 17.12 之后与 F5.2 的
+图卡归纳一起做——那两件事的技术内容是同一类。
+
+### 11.3 之后
+
+拿到 `exists_separated_along_branch` 后：Case 3/4 的 `D₁`、`D₂` 与 `L₁`、`L₂` 的字等式 → 复杂度严格下降
+（你已有的跨复形比较层）→ Case 1/2（盘内 PL 圆的环带邻域与柱形图；Case 2 的内盘替换用 S 的 I2）→ Lemma 2 端点。
