@@ -2211,3 +2211,11 @@ F-M1 仍为 partial。单个旧三角形的全部纤维及逐边对应已闭合�
 `SlabCellDeletion.lean` 与 `SlabDeletionSequence.lean` 的三项删除端点已同步采用 `a < b`、`ℓ p ∈ Icc a b`。被删四面体仍不含 p，故其自身端面继续避开全部顶点；剩余区域的正规闭裁剪由新定理实际生产，闭差交换公式随之成立。书中一端经过 p 的薄片现已纳入完整有限环境删除，未增添剩余区域正规闭性或相交盘假设。
 
 聚焦检查：`SlabFiberInterior` exit=0（9.6 秒）、`SlabCellDeletion` exit=0（10.7 秒）、`SlabDeletionSequence` exit=0（10.1 秒），全部零 warning。`AuditF243.lean` 五项仅依赖 `propext`、`Classical.choice`、`Quot.sound`；无 Lean 进程时 `fresh.py` 为 82/82 fresh、零 stale/missing、零禁用项。下一步构造单侧闭星薄片的实际锥底并证明其 PL 二维盘性，消费 17.10，再按 17.11 做 M3。S.4 M2/M3、夜间 F-M1 整体及 I1 仍为 partial。下一审计文件 `AuditF244.lean`。
+
+### 19.95 S.4 M2：单侧裁剪锥的实际有限底复形
+
+`RadialIndependence.lean` 证明：仿射独立单形的凸包不含 p，且每条以 p 为起点的正射线至多交它一点，则插入 p 后仍仿射独立。若存在将 p 表为该面顶点仿射组合的系数，就从重心沿此仿射组合取足够小的位移，得到同一射线上的两个不同凸包点，矛盾。`isConeBase_of_isRadiallyInjective` 因而从不含锥顶及径向单射实际生产任意给定复形的 `IsConeBase`；两项结果均不要求有限维或复形有限。
+
+`ConeSlab.lean` 的 `IsConeBase.exists_coneComplex_inter_slab` 对任意有限锥、任意仿射高度 ℓ 和 `ℓ p < b`，实际构造有限底复形 L 及 `IsConeBase p L`。其空间恰为旧底中高度落在 `[ℓ p, b]` 的部分与原锥的上端截面之并；新锥空间恰为原锥的整个闭薄片。径向唯一性、插顶独立性、底面多面体性和空间双向等式均已证明，不预设新的锥表示，也不要求三维、顶点高度一般位置或原底为球。应用于原顶点链环即可得到单侧闭星薄片的真实锥表示；该底的二维盘性尚待接入实际边界球性和锥顶链环分类。
+
+聚焦检查：`RadialIndependence` exit=0（66.2 秒）、`ConeSlab` exit=0（14.0 秒），全部零 warning。`AuditF244.lean` 六项仅依赖 `propext`、`Classical.choice`、`Quot.sound`；无 Lean 进程时 `fresh.py` 为 84/84 fresh、零 stale/missing、零禁用项。按用户要求在当前文件闭环后返回，未继续后续证明。下一步从实际残余球面边界与正规闭区域生产三维流形，用位于边界的锥顶识别锥底为 PL 二维盘并消费 17.10，再做 M3。`ConeManifold` 的未验证草稿保存于本工作树 `.lake/scratch/ConeManifold.pending.lean`，未放入源码或提交，不能当作已证输入。S.4 M2/M3、夜间 F-M1 整体及 I1 仍为 partial。下一审计文件 `AuditF245.lean`。
