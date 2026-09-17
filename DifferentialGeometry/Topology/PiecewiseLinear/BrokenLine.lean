@@ -36,9 +36,10 @@ theorem convexHull_coe_finset_real {u : Finset ℝ} (hu : u.Nonempty) :
 open Classical in
 theorem exists_partition_affineOn_two {f g : ℝ → F}
     (hf : IsPiecewiseAffineOn f (Icc (0 : ℝ) 1)) (hg : IsPiecewiseAffineOn g (Icc (0 : ℝ) 1))
-    {δ : ℝ} (hδ : 0 < δ) :
+    {δ : ℝ} (hδ : 0 < δ) (T : Finset ℝ) (hT : ∀ x ∈ T, x ∈ Icc (0 : ℝ) 1) :
     ∃ (n : ℕ) (s : ℕ → ℝ), s 0 = 0 ∧ s n = 1 ∧ (∀ i < n, s i < s (i + 1)) ∧
-      (∀ i < n, s (i + 1) - s i < δ) ∧
+      (∀ i < n, s (i + 1) - s i < δ) ∧ (∀ x ∈ T, ∃ i ≤ n, s i = x) ∧
+      (∀ i < n, ∀ x ∈ T, ¬(s i < x ∧ x < s (i + 1))) ∧
       (∀ i < n, ∀ x ∈ Icc (s i) (s (i + 1)),
         f x = f (s i) + ((x - s i) / (s (i + 1) - s i)) • (f (s (i + 1)) - f (s i))) ∧
       (∀ i < n, ∀ x ∈ Icc (s i) (s (i + 1)),
@@ -66,17 +67,18 @@ theorem exists_partition_affineOn_two {f g : ℝ → F}
     exact ⟨A, fun x hx => hA (hsub hx)⟩
   have hK' : IsSubdivision K' K := hK'sub.trans hK₀
   have hK'space : K'.space = Icc (0 : ℝ) 1 := by rw [hK'.space_eq, hKspace]
-  set P : Finset ℝ := hK'fin.toFinset.biUnion id with hPdef
-  have hmemP : ∀ x, x ∈ P ↔ ∃ u ∈ K'.faces, x ∈ u := by
-    intro x
-    rw [hPdef, Finset.mem_biUnion]
-    exact ⟨fun ⟨u, hu, hx⟩ => ⟨u, hK'fin.mem_toFinset.mp hu, hx⟩,
-      fun ⟨u, hu, hx⟩ => ⟨u, hK'fin.mem_toFinset.mpr hu, hx⟩⟩
+  set P : Finset ℝ := hK'fin.toFinset.biUnion id ∪ T with hPdef
+  have hmemP : ∀ x, (∃ u ∈ K'.faces, x ∈ u) → x ∈ P := by
+    intro x ⟨u, hu, hx⟩
+    rw [hPdef, Finset.mem_union, Finset.mem_biUnion]
+    exact Or.inl ⟨u, hK'fin.mem_toFinset.mpr hu, hx⟩
   have hPsub : ∀ x ∈ P, x ∈ Icc (0 : ℝ) 1 := by
     intro x hx
-    obtain ⟨u, hu, hxu⟩ := (hmemP x).mp hx
-    rw [← hK'space]
-    exact K'.convexHull_subset_space hu (subset_convexHull ℝ _ hxu)
+    rw [hPdef, Finset.mem_union, Finset.mem_biUnion] at hx
+    rcases hx with ⟨u, hu, hxu⟩ | hxT
+    · rw [← hK'space]
+      exact K'.convexHull_subset_space (hK'fin.mem_toFinset.mp hu) (subset_convexHull ℝ _ hxu)
+    · exact hT x hxT
   have hend : ∀ y ∈ Icc (0 : ℝ) 1, (∀ z ∈ Icc (0 : ℝ) 1, y ≤ z) ∨ (∀ z ∈ Icc (0 : ℝ) 1, z ≤ y) →
       y ∈ P := by
     intro y hy hext
@@ -84,14 +86,14 @@ theorem exists_partition_affineOn_two {f g : ℝ → F}
     have hune : u.Nonempty := K'.nonempty_of_mem_faces hu
     rw [convexHull_coe_finset_real hune] at hyu
     have husub : ∀ z ∈ u, z ∈ Icc (0 : ℝ) 1 := fun z hz =>
-      hPsub z ((hmemP z).mpr ⟨u, hu, hz⟩)
+      hPsub z (hmemP z ⟨u, hu, hz⟩)
     rcases hext with h | h
     · have : y = u.min' hune := le_antisymm (h _ (husub _ (u.min'_mem hune))) hyu.1
       rw [this]
-      exact (hmemP _).mpr ⟨u, hu, u.min'_mem hune⟩
+      exact hmemP _ ⟨u, hu, u.min'_mem hune⟩
     · have : y = u.max' hune := le_antisymm hyu.2 (h _ (husub _ (u.max'_mem hune)))
       rw [this]
-      exact (hmemP _).mpr ⟨u, hu, u.max'_mem hune⟩
+      exact hmemP _ ⟨u, hu, u.max'_mem hune⟩
   have h0P : (0 : ℝ) ∈ P := hend 0 ⟨le_rfl, zero_le_one⟩ (Or.inl fun z hz => hz.1)
   have h1P : (1 : ℝ) ∈ P := hend 1 ⟨zero_le_one, le_rfl⟩ (Or.inr fun z hz => hz.2)
   have hN2 : 2 ≤ P.card := Finset.one_lt_card.mpr ⟨0, h0P, 1, h1P, by norm_num⟩
@@ -156,14 +158,14 @@ theorem exists_partition_affineOn_two {f g : ℝ → F}
     refine Icc_subset_Icc ?_ ?_
     · by_contra hcon
       push Not at hcon
-      exact hgap i hi1 (u.min' hune) ((hmemP _).mpr ⟨u, hu, u.min'_mem hune⟩)
+      exact hgap i hi1 (u.min' hune) (hmemP _ ⟨u, hu, u.min'_mem hune⟩)
         ⟨hcon, lt_of_le_of_lt hmu.1 (by linarith)⟩
     · by_contra hcon
       push Not at hcon
-      exact hgap i hi1 (u.max' hune) ((hmemP _).mpr ⟨u, hu, u.max'_mem hune⟩)
+      exact hgap i hi1 (u.max' hune) (hmemP _ ⟨u, hu, u.max'_mem hune⟩)
         ⟨lt_of_lt_of_le (by linarith) hmu.2, hcon⟩
   refine ⟨N - 1, s, hs0, hsn, fun i hi => hsmono i (i + 1) (by omega) (by omega) (by omega),
-    ?_, ?_, ?_⟩
+    ?_, ?_, ?_, ?_, ?_⟩
   · intro i hi
     obtain ⟨u, hu, hsub⟩ := hcell i hi
     have hlt : s i < s (i + 1) := hsmono i (i + 1) (by omega) (by omega) (by omega)
@@ -173,6 +175,16 @@ theorem exists_partition_affineOn_two {f g : ℝ → F}
     rw [Real.dist_eq, abs_of_nonpos (by linarith)] at hd
     have := hK'diam u hu
     linarith
+  · intro x hxT
+    have hxP : x ∈ P := by rw [hPdef, Finset.mem_union]; exact Or.inr hxT
+    refine ⟨(e.symm ⟨x, hxP⟩ : Fin N), by have := (e.symm ⟨x, hxP⟩).is_lt; omega, ?_⟩
+    rw [hsval _ (e.symm ⟨x, hxP⟩).is_lt]
+    have : e ⟨(e.symm ⟨x, hxP⟩ : Fin N), (e.symm ⟨x, hxP⟩).is_lt⟩ = e (e.symm ⟨x, hxP⟩) := rfl
+    rw [this, e.apply_symm_apply]
+  · intro i hi x hxT
+    refine hgap i (by omega) x ?_
+    rw [hPdef, Finset.mem_union]
+    exact Or.inr hxT
   · intro i hi x hx
     obtain ⟨u, hu, hsub⟩ := hcell i hi
     obtain ⟨A, hA⟩ := haff true u hu

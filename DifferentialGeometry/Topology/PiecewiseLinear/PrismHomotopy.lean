@@ -18,8 +18,8 @@ theorem exists_isPiecewiseAffineOn_prism {f g : ℝ → F}
       (∀ t ∈ Icc (0 : ℝ) 1, Φ (1, t) = f 1 + t • (g 1 - f 1)) ∧
       (∀ z ∈ Icc (0 : ℝ) 1 ×ˢ Icc (0 : ℝ) 1, ∃ i, i < n ∧
         Φ z ∈ convexHull ℝ ({f (s i), f (s (i + 1)), g (s i), g (s (i + 1))} : Set F)) := by
-  obtain ⟨n, s, hs0, hsn, hmono, -, hfaff, hgaff⟩ :=
-    exists_partition_affineOn_two hf hg (δ := 1) one_pos
+  obtain ⟨n, s, hs0, hsn, hmono, -, -, -, hfaff, hgaff⟩ :=
+    exists_partition_affineOn_two hf hg (δ := 1) one_pos ∅ (by simp)
   obtain ⟨Φ, hPA, hbot, htop, hleft, hright, himg⟩ :=
     exists_isPiecewiseAffineOn_prism_of_partition hs0 hsn hmono hfaff hgaff
   exact ⟨n, s, Φ, hs0, hsn, hmono, hPA, hbot, htop, hleft, hright, himg⟩
@@ -97,7 +97,9 @@ theorem exists_face_of_cell_of_mem_convexHull_carrierFace (L : Geometry.Simplici
 theorem exists_isPiecewiseAffineOn_prism_mapsTo_space (L : Geometry.SimplicialComplex ℝ F)
     {f g : ℝ → F} (hf : IsPiecewiseAffineOn f (Icc (0 : ℝ) 1))
     (hg : IsPiecewiseAffineOn g (Icc (0 : ℝ) 1)) {δ : ℝ} (hδ : 0 < δ)
+    (T : Finset ℝ) (hT : ∀ x ∈ T, x ∈ Icc (0 : ℝ) 1)
     (hface : ∀ a ∈ Icc (0 : ℝ) 1, ∀ b ∈ Icc (0 : ℝ) 1, b - a < δ →
+      (∀ x ∈ T, ¬(a < x ∧ x < b)) →
       ∃ u ∈ L.faces, ({f a, f b, g a, g b} : Set F) ⊆ convexHull ℝ (u : Set F)) :
     ∃ Φ : ℝ × ℝ → F, IsPiecewiseAffineOn Φ (Icc (0 : ℝ) 1 ×ˢ Icc (0 : ℝ) 1) ∧
       MapsTo Φ (Icc (0 : ℝ) 1 ×ˢ Icc (0 : ℝ) 1) L.space ∧
@@ -105,22 +107,24 @@ theorem exists_isPiecewiseAffineOn_prism_mapsTo_space (L : Geometry.SimplicialCo
       (∀ x ∈ Icc (0 : ℝ) 1, Φ (x, 1) = g x) ∧
       (∀ t ∈ Icc (0 : ℝ) 1, Φ (0, t) = f 0 + t • (g 0 - f 0)) ∧
       (∀ t ∈ Icc (0 : ℝ) 1, Φ (1, t) = f 1 + t • (g 1 - f 1)) := by
-  obtain ⟨n, s, hs0, hsn, hmono, hmesh, hfaff, hgaff⟩ := exists_partition_affineOn_two hf hg hδ
+  obtain ⟨n, s, hs0, hsn, hmono, hmesh, -, hgap, hfaff, hgaff⟩ :=
+    exists_partition_affineOn_two hf hg hδ T hT
   obtain ⟨Φ, hPA, hbot, htop, hleft, hright, himg⟩ :=
     exists_isPiecewiseAffineOn_prism_of_partition hs0 hsn hmono hfaff hgaff
   refine ⟨Φ, hPA, ?_, hbot, htop, hleft, hright⟩
   intro z hz
   obtain ⟨i, hi, hmem⟩ := himg z hz
   obtain ⟨u, hu, hsub⟩ := hface (s i) (mem_Icc_of_forall_lt_succ hmono hs0 hsn (by omega))
-    (s (i + 1)) (mem_Icc_of_forall_lt_succ hmono hs0 hsn (by omega)) (hmesh i hi)
+    (s (i + 1)) (mem_Icc_of_forall_lt_succ hmono hs0 hsn (by omega)) (hmesh i hi) (hgap i hi)
   exact L.convexHull_subset_space hu
     ((convex_convexHull ℝ (u : Set F)).convexHull_subset_iff.mpr hsub hmem)
 
 theorem exists_isPiecewiseAffineOn_annulus_mapsTo_space (L : Geometry.SimplicialComplex ℝ F)
     {f g : ℝ → F} (hf : IsPiecewiseAffineOn f (Icc (0 : ℝ) 1))
     (hg : IsPiecewiseAffineOn g (Icc (0 : ℝ) 1)) (hfloop : f 0 = f 1) (hgloop : g 0 = g 1)
-    {δ : ℝ} (hδ : 0 < δ)
+    {δ : ℝ} (hδ : 0 < δ) (T : Finset ℝ) (hT : ∀ x ∈ T, x ∈ Icc (0 : ℝ) 1)
     (hface : ∀ a ∈ Icc (0 : ℝ) 1, ∀ b ∈ Icc (0 : ℝ) 1, b - a < δ →
+      (∀ x ∈ T, ¬(a < x ∧ x < b)) →
       ∃ u ∈ L.faces, ({f a, f b, g a, g b} : Set F) ⊆ convexHull ℝ (u : Set F)) :
     ∃ Φ : ℝ × ℝ → F, IsPiecewiseAffineOn Φ (Icc (0 : ℝ) 1 ×ˢ Icc (0 : ℝ) 1) ∧
       MapsTo Φ (Icc (0 : ℝ) 1 ×ˢ Icc (0 : ℝ) 1) L.space ∧
@@ -128,7 +132,7 @@ theorem exists_isPiecewiseAffineOn_annulus_mapsTo_space (L : Geometry.Simplicial
       (∀ x ∈ Icc (0 : ℝ) 1, Φ (x, 1) = g x) ∧
       (∀ t ∈ Icc (0 : ℝ) 1, Φ (0, t) = Φ (1, t)) := by
   obtain ⟨Φ, hPA, hmaps, hbot, htop, hleft, hright⟩ :=
-    exists_isPiecewiseAffineOn_prism_mapsTo_space L hf hg hδ hface
+    exists_isPiecewiseAffineOn_prism_mapsTo_space L hf hg hδ T hT hface
   refine ⟨Φ, hPA, hmaps, hbot, htop, fun t ht => ?_⟩
   rw [hleft t ht, hright t ht, hfloop, hgloop]
 
