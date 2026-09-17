@@ -506,17 +506,6 @@ open scoped ContDiff
 
 namespace Schoenflies
 
-private theorem smooth_max_left_deriv_mem_Icc (ε x : ℝ) :
-    deriv (fun y => Real.smoothMax ε y 0) x ∈ Icc (0 : ℝ) 1 := by
-  have hLip : LipschitzWith 1 (fun y => Real.smoothMax ε y 0) := by
-    apply LipschitzWith.of_dist_le_mul
-    intro a b
-    simpa only [Real.dist_eq, NNReal.coe_one, one_mul, sub_self, abs_zero,
-      max_eq_left (abs_nonneg (a - b))] using Real.smoothMax.abs_sub_le_max ε a 0 b 0
-  have hbound := norm_deriv_le_of_lipschitz hLip (x₀ := x)
-  refine ⟨(Real.smoothMax.monotone_left ε 0).deriv_nonneg, ?_⟩
-  exact (le_abs_self _).trans (by simpa only [Real.norm_eq_abs, NNReal.coe_one] using hbound)
-
 private theorem affine_smooth_corner_fderiv_pos
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
     (f g : E →ᴬ[ℝ] ℝ) (ε : ℝ) {v : E}
@@ -537,7 +526,7 @@ private theorem affine_smooth_corner_fderiv_pos
   rw [hderiv]
   simp only [sub_apply, smul_apply, smul_eq_mul]
   let α := deriv (fun x => Real.smoothMax ε x 0) (f p)
-  obtain ⟨hα₀, hα₁⟩ := smooth_max_left_deriv_mem_Icc ε (f p)
+  obtain ⟨hα₀, hα₁⟩ := Real.smoothMax.deriv_left_mem_Icc ε (f p) 0
   change 0 < g.contLinear v - α * f.contLinear v
   by_cases hα : α = 1
   · rw [hα, one_mul]

@@ -247,6 +247,46 @@ theorem mul_left (a ε x : ℝ) : smoothAbs (a * ε) (a * x) = a * smoothAbs ε 
 theorem div (ε x a : ℝ) : smoothAbs (ε / a) (x / a) = smoothAbs ε x / a := by
   simpa only [div_eq_mul_inv, mul_comm] using smoothAbs.mul_left a⁻¹ ε x
 
+theorem deriv_pos {ε x : ℝ} (hε : 0 < ε) (hx : 0 < x) :
+    0 < _root_.deriv (smoothAbs ε) x := by
+  have hmono := (convexOn hε).monotoneOn_deriv
+    (fun y _ => (contDiff ε).differentiable (by simp) y)
+  have hz : _root_.deriv (smoothAbs ε) 0 = 0 := (deriv_eq_zero_iff hε.ne' 0).mpr rfl
+  have hn : 0 ≤ _root_.deriv (smoothAbs ε) x := by
+    simpa only [hz] using hmono (Set.mem_univ 0) (Set.mem_univ x) hx.le
+  exact lt_of_le_of_ne hn (Ne.symm (fun h => hx.ne' ((deriv_eq_zero_iff hε.ne' x).mp h)))
+
+theorem strictMonoOn_Ici {ε : ℝ} (hε : 0 < ε) :
+    StrictMonoOn (smoothAbs ε) (Set.Ici 0) := by
+  apply strictMonoOn_of_deriv_pos (convex_Ici 0) (contDiff ε).continuous.continuousOn
+  intro x hx
+  rw [interior_Ici] at hx
+  exact deriv_pos hε hx
+
+theorem image_Ici {ε : ℝ} (hε : 0 < ε) :
+    smoothAbs ε '' Set.Ici 0 = Set.Ici (smoothAbs ε 0) := by
+  apply (contDiff ε).continuous.continuousOn.image_Ici_of_monotoneOn (strictMonoOn_Ici hε).monotoneOn
+  apply Filter.tendsto_id.congr'
+  filter_upwards [Filter.eventually_ge_atTop ε] with x hx
+  exact (eq_self_of_le hε hx).symm
+
+theorem pos_zero {ε : ℝ} (hε : 0 < ε) : 0 < smoothAbs ε 0 := by
+  have hi : 0 < ∫ t : ℝ in 0..ε, smoothTransition ((ε - t) / (2 * ε)) := by
+    apply intervalIntegral.intervalIntegral_pos_of_pos_on
+      ((contDiff_integrand ε).continuous.intervalIntegrable 0 ε) ?_ hε
+    intro t ht
+    exact smoothTransition.pos_of_pos (div_pos (sub_pos.mpr ht.2) (by positivity))
+  unfold smoothAbs
+  linarith
+
+theorem apply_zero_le {ε : ℝ} (hε : 0 < ε) (x : ℝ) : smoothAbs ε 0 ≤ smoothAbs ε x := by
+  have h := (strictMonoOn_Ici hε).monotoneOn (show (0 : ℝ) ∈ Set.Ici 0 by simp)
+    (show |x| ∈ Set.Ici 0 from abs_nonneg x) (abs_nonneg x)
+  rwa [abs hε.ne'] at h
+
+theorem pos {ε : ℝ} (hε : 0 < ε) (x : ℝ) : 0 < smoothAbs ε x :=
+  (pos_zero hε).trans_le (apply_zero_le hε x)
+
 end smoothAbs
 
 end Real

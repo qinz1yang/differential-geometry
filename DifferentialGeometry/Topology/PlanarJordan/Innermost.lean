@@ -5,7 +5,7 @@ open Set
 
 namespace DifferentialGeometry.Topology.PlanarJordan
 
-private theorem inside_ssubset_of_subset_inside
+theorem inside_ssubset_of_subset_inside
     {C J : Set Schoenflies.Plane}
     (hC : Schoenflies.IsSeparating C) (hJ : Schoenflies.IsSeparating J)
     (hJC : J ⊆ Schoenflies.inside C) :
@@ -61,5 +61,26 @@ theorem exists_innermost_jordan_curve
   · have hproper := inside_ssubset_of_subset_inside hC hJ hsub
     exact hproper.not_ge (hmin.2 hJmem hproper.le)
   · exact hmeet (Schoenflies.disjoint_inside_outside.mono_right hsub)
+
+theorem disjoint_jordan_curves_trichotomy
+    {C J : Set Schoenflies.Plane} (hC : Schoenflies.IsJordanCurve C)
+    (hJ : Schoenflies.IsJordanCurve J) (hdisj : Disjoint C J) :
+    (C ⊆ Schoenflies.inside J ∧ J ⊆ Schoenflies.outside C) ∨
+      (J ⊆ Schoenflies.inside C ∧ C ⊆ Schoenflies.outside J) ∨
+      (C ⊆ Schoenflies.outside J ∧ J ⊆ Schoenflies.outside C) := by
+  have hCs := Schoenflies.jordan_curve_theorem hC
+  have hJs := Schoenflies.jordan_curve_theorem hJ
+  obtain ⟨W, V, hWV, hCW⟩ := hJs.exists_isRegionPair_subset
+    hC.isConnected.isPreconnected hC.nonempty hdisj
+  obtain ⟨W', V', hWV', hJW⟩ := hCs.exists_isRegionPair_subset
+    hJ.isConnected.isPreconnected hJ.nonempty hdisj.symm
+  rcases hWV with ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩
+  · rcases hWV' with ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩
+    · exact False.elim ((inside_ssubset_of_subset_inside hJs hCs hCW).not_ge
+        (inside_ssubset_of_subset_inside hCs hJs hJW).le)
+    · exact Or.inl ⟨hCW, hJW⟩
+  · rcases hWV' with ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩
+    · exact Or.inr (Or.inl ⟨hJW, hCW⟩)
+    · exact Or.inr (Or.inr ⟨hCW, hJW⟩)
 
 end DifferentialGeometry.Topology.PlanarJordan

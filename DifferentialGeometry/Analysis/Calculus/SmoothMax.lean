@@ -1,4 +1,5 @@
 import DifferentialGeometry.Analysis.Calculus.SmoothTransition
+import Mathlib.Analysis.Calculus.Deriv.MeanValue
 import Mathlib.Tactic.Linarith
 import Mathlib.Tactic.Ring
 
@@ -127,6 +128,96 @@ theorem mul_left (a ε x y : ℝ) :
 theorem div (ε x y a : ℝ) :
     smoothMax (ε / a) (x / a) (y / a) = smoothMax ε x y / a := by
   simpa only [div_eq_mul_inv, mul_comm] using smoothMax.mul_left a⁻¹ ε x y
+
+theorem deriv_left_mem_Icc (ε x y : ℝ) :
+    deriv (fun z => Real.smoothMax ε z y) x ∈ Set.Icc (0 : ℝ) 1 := by
+  have hLip : LipschitzWith 1 (fun z => Real.smoothMax ε z y) := by
+    apply LipschitzWith.of_dist_le_mul
+    intro a b
+    simpa only [Real.dist_eq, NNReal.coe_one, one_mul, sub_self, abs_zero,
+      max_eq_left (abs_nonneg (a - b))] using abs_sub_le_max ε a y b y
+  have hbound := norm_deriv_le_of_lipschitz hLip (x₀ := x)
+  refine ⟨(monotone_left ε y).deriv_nonneg, ?_⟩
+  exact (le_abs_self _).trans (by simpa only [Real.norm_eq_abs, NNReal.coe_one] using hbound)
+
+theorem deriv_right_mem_Icc (ε x y : ℝ) :
+    deriv (Real.smoothMax ε x) y ∈ Set.Icc (0 : ℝ) 1 := by
+  have hLip : LipschitzWith 1 (Real.smoothMax ε x) := by
+    apply LipschitzWith.of_dist_le_mul
+    intro a b
+    simpa only [Real.dist_eq, NNReal.coe_one, one_mul, sub_self, abs_zero,
+      max_eq_right (abs_nonneg (a - b))] using abs_sub_le_max ε x a x b
+  have hbound := norm_deriv_le_of_lipschitz hLip (x₀ := y)
+  refine ⟨(monotone_right ε x).deriv_nonneg, ?_⟩
+  exact (le_abs_self _).trans (by simpa only [Real.norm_eq_abs, NNReal.coe_one] using hbound)
+
+theorem fderiv_apply_one_one (ε x y : ℝ) :
+    fderiv ℝ (fun p : ℝ × ℝ => Real.smoothMax ε p.1 p.2) (x, y) (1, 1) = 1 := by
+  have h := ((contDiff ε).differentiable (by simp) (x, y)).hasFDerivAt
+  have hline : HasDerivAt (fun t : ℝ => (x + t, y + t)) (1, 1) 0 :=
+    ((hasDerivAt_id 0).const_add x).prodMk ((hasDerivAt_id 0).const_add y)
+  have hbase : HasFDerivAt (fun p : ℝ × ℝ => Real.smoothMax ε p.1 p.2)
+      (fderiv ℝ (fun p : ℝ × ℝ => Real.smoothMax ε p.1 p.2) (x, y))
+      (x + 0, y + 0) := by simpa only [add_zero] using h
+  have hc := hbase.comp_hasDerivAt 0 hline
+  have hid : HasDerivAt (fun t : ℝ => Real.smoothMax ε (x + t) (y + t)) 1 0 := by
+    simpa only [Real.smoothMax.add_right, id_eq] using
+      (hasDerivAt_id 0).const_add (Real.smoothMax ε x y)
+  simpa only [add_zero] using hc.unique hid
+theorem surjective_fderiv_comp
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {f : E → ℝ × ℝ} {f' : E →L[ℝ] ℝ × ℝ} {x : E}
+    (hdf : HasFDerivAt f f' x) (hsurj : Function.Surjective f') (ε : ℝ) :
+    Function.Surjective (fderiv ℝ (fun y => Real.smoothMax ε (f y).1 (f y).2) x) := by
+  have h := (((contDiff ε).differentiable (by simp) (f x)).hasFDerivAt.comp x hdf).fderiv
+  simp only [Function.comp_def] at h
+  intro y
+  obtain ⟨v, hv⟩ := hsurj (y, y)
+  refine ⟨v, ?_⟩
+  rw [h, ContinuousLinearMap.comp_apply, hv,
+    show (y, y) = y • (1, 1) by simp, map_smul]
+  have hp := fderiv_apply_one_one ε (f x).1 (f x).2
+  simp only [hp, smul_eq_mul, mul_one]
+
+theorem comp_convexOn {E : Type*} [AddCommMonoid E] [Module ℝ E]
+    {s : Set E} {f g : E → ℝ} {ε : ℝ} (hε : 0 < ε)
+    (hf : ConvexOn ℝ s f) (hg : ConvexOn ℝ s g) :
+    ConvexOn ℝ s (fun x => smoothMax ε (f x) (g x)) := by
+  refine ⟨hf.1, ?_⟩
+  intro x hx y hy a b ha hb hab
+  have hleft := monotone_left ε (g (a • x + b • y)) (hf.2 hx hy ha hb hab)
+  have hright := monotone_right ε (a • f x + b • f y) (hg.2 hx hy ha hb hab)
+  exact (hleft.trans hright).trans ((convexOn hε).2 (Set.mem_univ (f x, g x))
+    (Set.mem_univ (f y, g y)) ha hb hab)
+
+theorem deriv_comp_neg {f g : ℝ → ℝ} {x : ℝ}
+    (hf : DifferentiableAt ℝ f x) (hg : DifferentiableAt ℝ g x)
+    (hf' : deriv f x < 0) (hg' : deriv g x < 0) (ε : ℝ) :
+    deriv (fun t => Real.smoothMax ε (f t) (g t)) x < 0 := by
+  let d := deriv (Real.smoothAbs ε) (f x - g x)
+  have hd : |d| ≤ 1 := by
+    simpa only [Real.norm_eq_abs, NNReal.coe_one] using
+      norm_deriv_le_of_lipschitz (Real.smoothAbs.lipschitzWith ε) (x₀ := f x - g x)
+  have habs := ((Real.smoothAbs.contDiff ε).differentiable (by simp)
+    (f x - g x)).hasDerivAt.comp x (hf.hasDerivAt.sub hg.hasDerivAt)
+  have hh := ((hf.hasDerivAt.add hg.hasDerivAt).add habs).div_const 2
+  simp only [Pi.add_apply, Pi.sub_apply, Function.comp_def] at hh
+  have heq : deriv (fun t => Real.smoothMax ε (f t) (g t)) x =
+      ((1 + d) * deriv f x + (1 - d) * deriv g x) / 2 := by
+    rw [show (fun t => Real.smoothMax ε (f t) (g t)) =
+      (fun t => (f t + g t + Real.smoothAbs ε (f t - g t)) / 2) from rfl, hh.deriv]
+    dsimp [d]
+    ring
+  rw [heq]
+  have h1 : 0 ≤ 1 + d := by linarith [(abs_le.mp hd).1]
+  have h2 : 0 ≤ 1 - d := by linarith [(abs_le.mp hd).2]
+  have hn1 := mul_nonpos_of_nonneg_of_nonpos h1 hf'.le
+  have hn2 := mul_nonpos_of_nonneg_of_nonpos h2 hg'.le
+  rcases lt_or_eq_of_le h1 with hpos | hz
+  · have hh := mul_neg_of_pos_of_neg hpos hf'
+    linarith
+  · have hh := mul_neg_of_pos_of_neg (show 0 < 1 - d by linarith) hg'
+    linarith
 
 end smoothMax
 end Real

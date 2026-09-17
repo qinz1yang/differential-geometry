@@ -16,7 +16,7 @@ namespace Schoenflies
 
 open LeanEval.Topology.ClassificationOfSurfaces.Moise
 
-private theorem PrePolygon.exists_ball_carrier_eq_incident_edges
+theorem PrePolygon.exists_ball_carrier_eq_incident_edges
     {m : ℕ} (P : PrePolygon m) (i : ZMod (m + 3)) :
     ∃ r > 0, ball (P.vertex i) r ∩ P.carrier =
       ball (P.vertex i) r ∩ (P.edge (i - 1) ∪ P.edge i) := by
@@ -54,7 +54,7 @@ private theorem PrePolygon.exists_affine_vertex_model
       e (P.vertex (i - 1)) = Plane.mk (-1) 0 ∧
       e (P.vertex (i + 1)) = Plane.mk r (d * r) ∧
       (d = 0 ↔ Plane.det (P.vertex (i - 1) - P.vertex i)
-        (P.vertex (i + 1) - P.vertex i) = 0) := by
+        (P.vertex (i + 1) - P.vertex i) = 0) ∧ (d = 1 → r = 1) := by
   classical
   by_cases hd : Plane.det (P.vertex (i - 1) - P.vertex i)
       (P.vertex (i + 1) - P.vertex i) = 0
@@ -94,7 +94,7 @@ private theorem PrePolygon.exists_affine_vertex_model
     simp only [mul_zero, zero_add] at heY
     have hr : 0 < e (P.vertex (i + 1)) 0 := by nlinarith
     have hy : e (P.vertex (i + 1)) 1 = 0 := (mul_eq_zero.mp heY).resolve_left hv.ne'
-    refine ⟨e, e (P.vertex (i + 1)) 0, 0, hr, Or.inl rfl, he0, he1, ?_, ?_⟩
+    refine ⟨e, e (P.vertex (i + 1)) 0, 0, hr, Or.inl rfl, he0, he1, ?_, ?_, by norm_num⟩
     · ext j
       fin_cases j
       · rfl
@@ -111,49 +111,54 @@ private theorem PrePolygon.exists_affine_vertex_model
     let e := triangleAffineEquiv ![P.vertex i, P.vertex (i - 1), P.vertex (i + 1)]
       ![Plane.mk 0 0, Plane.mk (-1) 0, Plane.mk 1 1] hp hq
     refine ⟨e, 1, 1, zero_lt_one, Or.inr rfl,
-      triangleAffineEquiv_apply _ _ hp hq 0, triangleAffineEquiv_apply _ _ hp hq 1, ?_, ?_⟩
+      triangleAffineEquiv_apply _ _ hp hq 0, triangleAffineEquiv_apply _ _ hp hq 1, ?_, ?_, fun _ => rfl⟩
     · change e (P.vertex (i + 1)) = Plane.mk 1 (1 * 1)
       rw [mul_one]
       exact triangleAffineEquiv_apply _ _ hp hq 2
     · exact ⟨fun h => False.elim (one_ne_zero h), fun h => False.elim (hd h)⟩
 
-private theorem mem_two_segments_vertex_model {r d : ℝ} (hr : 0 < r)
-    {p : Plane} (hp : -1 < p 0 ∧ p 0 < r) :
-    p ∈ segment ℝ (Plane.mk (-1) 0) (Plane.mk 0 0) ∪
+theorem mem_union_segments_iff_max {a r d : ℝ} (ha : 0 < a) (hr : 0 < r)
+    {p : Plane} :
+    p ∈ segment ℝ (Plane.mk (-a) 0) (Plane.mk 0 0) ∪
         segment ℝ (Plane.mk 0 0) (Plane.mk r (d * r)) ↔
-      p 1 = d * max (p 0) 0 := by
+      (p 0 ∈ Icc (-a) r ∧ p 1 = d * max (p 0) 0) := by
   constructor
-  · rintro (⟨u, v, hu, _, _, he⟩ | ⟨u, v, _, hv, _, he⟩)
+  · rintro (⟨u, v, hu, hv, huv, he⟩ | ⟨u, v, hu, hv, huv, he⟩)
     · have heX := congrArg (fun q : Plane => q 0) he
       have heY := congrArg (fun q : Plane => q 1) he
-      change u * (-1) + v * 0 = p 0 at heX
+      change u * (-a) + v * 0 = p 0 at heX
       change u * 0 + v * 0 = p 1 at heY
       simp only [mul_zero, zero_add] at heY
-      rw [max_eq_right (by linarith : p 0 ≤ 0), mul_zero]
+      refine ⟨⟨by nlinarith, by nlinarith⟩, ?_⟩
+      rw [max_eq_right (by nlinarith : p 0 ≤ 0), mul_zero]
       exact heY.symm
     · have heX := congrArg (fun q : Plane => q 0) he
       have heY := congrArg (fun q : Plane => q 1) he
       change u * 0 + v * r = p 0 at heX
       change u * 0 + v * (d * r) = p 1 at heY
       simp only [mul_zero, zero_add] at heX heY
+      refine ⟨⟨by nlinarith, by nlinarith⟩, ?_⟩
       rw [max_eq_left (by nlinarith : 0 ≤ p 0)]
       calc
         p 1 = v * (d * r) := heY.symm
         _ = d * (v * r) := by ring
         _ = d * p 0 := by rw [heX]
-  · intro he
+  · rintro ⟨hp, he⟩
     by_cases hx : p 0 ≤ 0
-    · refine Or.inl ⟨-p 0, 1 + p 0, by linarith, by linarith, by ring, ?_⟩
-      rw [max_eq_right hx, mul_zero] at he
-      ext j
-      fin_cases j
-      · change (-p 0) * (-1) + (1 + p 0) * 0 = p 0
-        ring
-      · change (-p 0) * 0 + (1 + p 0) * 0 = p 1
-        simpa only [mul_zero, zero_add] using he.symm
+    · refine Or.inl ⟨-p 0 / a, 1 + p 0 / a, div_nonneg (by linarith) ha.le, ?_, by ring, ?_⟩
+      · have hbound : -1 ≤ p 0 / a := (le_div_iff₀ ha).mpr (by nlinarith [hp.1])
+        linarith
+      · rw [max_eq_right hx, mul_zero] at he
+        ext j
+        fin_cases j
+        · change (-p 0 / a) * (-a) + (1 + p 0 / a) * 0 = p 0
+          field_simp
+          ring
+        · change (-p 0 / a) * 0 + (1 + p 0 / a) * 0 = p 1
+          simpa only [mul_zero, zero_add] using he.symm
     · have hxpos : 0 < p 0 := lt_of_not_ge hx
       refine Or.inr ⟨1 - p 0 / r, p 0 / r, ?_, (div_pos hxpos hr).le, by ring, ?_⟩
-      · have := (div_lt_one hr).mpr hp.2
+      · have := (div_le_one hr).mpr hp.2
         linarith
       · rw [max_eq_left hxpos.le] at he
         have hcancel : p 0 / r * r = p 0 := div_mul_cancel₀ _ hr.ne'
@@ -176,9 +181,10 @@ private theorem PrePolygon.exists_affine_vertex_graph
       e (P.vertex (i + 1)) = Plane.mk r (d * r) ∧
       (d = 0 ↔ Plane.det (P.vertex (i - 1) - P.vertex i)
         (P.vertex (i + 1) - P.vertex i) = 0) ∧
+      (d = 1 → r = 1) ∧
       ∀ p ∈ U, (p ∈ P.carrier ↔ (e p) 1 = d * max ((e p) 0) 0) := by
   obtain ⟨ρ, hρ, hlocal⟩ := P.exists_ball_carrier_eq_incident_edges i
-  obtain ⟨e, r, d, hr, hd, he0, he1, he2, hstraight⟩ := P.exists_affine_vertex_model i
+  obtain ⟨e, r, d, hr, hd, he0, he1, he2, hstraight, hunit⟩ := P.exists_affine_vertex_model i
   let f := cartesianX.comp e.toAffineMap
   let U := ball (P.vertex i) ρ ∩ f ⁻¹' Ioo (-1) r
   have hU : IsOpen U := isOpen_ball.inter
@@ -189,7 +195,7 @@ private theorem PrePolygon.exists_affine_vertex_graph
     change -1 < (e (P.vertex i)) 0 ∧ (e (P.vertex i)) 0 < r
     rw [he0]
     exact ⟨by norm_num, hr⟩
-  refine ⟨e, U, r, d, hU, hUc, hiU, hr, hd, he0, he1, he2, hstraight, ?_⟩
+  refine ⟨e, U, r, d, hU, hUc, hiU, hr, hd, he0, he1, he2, hstraight, hunit, ?_⟩
   intro p hp
   have hpI : -1 < (e p) 0 ∧ (e p) 0 < r := hp.2
   have hedge : p ∈ P.carrier ↔ p ∈ P.edge (i - 1) ∪ P.edge i := by
@@ -210,7 +216,8 @@ private theorem PrePolygon.exists_affine_vertex_graph
       segment ℝ (e (P.vertex i)) (e (P.vertex (i + 1))) = _
     rw [he0, he1, he2]
   rw [hedge, ← e.injective.mem_set_image, himage]
-  exact mem_two_segments_vertex_model hr hpI
+  rw [mem_union_segments_iff_max zero_lt_one hr]
+  exact and_iff_right ⟨hpI.1.le, hpI.2.le⟩
 
 end Schoenflies
 
@@ -294,7 +301,7 @@ private theorem isPreconnected_affine_max_sides
       rw [hpg, hpf]
       linarith
 
-theorem PrePolygon.exists_affine_vertex_graph_sides
+theorem PrePolygon.exists_affine_vertex_graph_sides_normalized
     {m : ℕ} (P : PrePolygon m) (i : ZMod (m + 3)) :
     ∃ (e : Plane ≃ᵃ[ℝ] Plane) (U : Set Plane) (r d σ : ℝ),
       IsOpen U ∧ Convex ℝ U ∧ P.vertex i ∈ U ∧ 0 < r ∧
@@ -304,6 +311,7 @@ theorem PrePolygon.exists_affine_vertex_graph_sides
       e (P.vertex (i + 1)) = Plane.mk r (d * r) ∧
       (d = 0 ↔ Plane.det (P.vertex (i - 1) - P.vertex i)
         (P.vertex (i + 1) - P.vertex i) = 0) ∧
+      (d = 1 → r = 1) ∧
       ∀ p ∈ U,
         (p ∈ closure (inside P.carrier) ↔
           0 ≤ σ * ((e p) 1 - d * max ((e p) 0) 0)) ∧
@@ -312,7 +320,7 @@ theorem PrePolygon.exists_affine_vertex_graph_sides
         (p ∈ frontier (closure (inside P.carrier)) ↔
           (e p) 1 = d * max ((e p) 0) 0) ∧
         (p ∈ P.carrier ↔ (e p) 1 = d * max ((e p) 0) 0) := by
-  obtain ⟨e, U, r, d, hU, hcU, hiU, hr, hd, he0, he1, he2, hstraight, hgraph⟩ :=
+  obtain ⟨e, U, r, d, hU, hcU, hiU, hr, hd, he0, he1, he2, hstraight, hunit, hgraph⟩ :=
     P.exists_affine_vertex_graph i
   let g : Plane → ℝ := fun p => (e p) 1 - d * max ((e p) 0) 0
   have hz : ∀ p ∈ U, p ∈ P.carrier ↔ g p = 0 := by
@@ -332,7 +340,7 @@ theorem PrePolygon.exists_affine_vertex_graph_sides
     · refine ⟨-1, Or.inl rfl, fun p hp => ?_⟩
       simpa only [neg_one_mul, neg_pos] using h p hp
   have hσne : σ ≠ 0 := by rcases hσ with rfl | rfl <;> norm_num
-  refine ⟨e, U, r, d, σ, hU, hcU, hiU, hr, hd, hσ, he0, he1, he2, hstraight, ?_⟩
+  refine ⟨e, U, r, d, σ, hU, hcU, hiU, hr, hd, hσ, he0, he1, he2, hstraight, hunit, ?_⟩
   intro p hp
   have hweak : p ∈ closure (inside P.carrier) ↔ 0 ≤ σ * g p := by
     rw [(IsRegionOf.inside P.carrier).closure_eq P.isSeparating_carrier,
@@ -356,6 +364,28 @@ theorem PrePolygon.exists_affine_vertex_graph_sides
     have hg : g p = 0 := sub_eq_zero.mpr h
     rw [hg, mul_zero]
     exact ⟨le_rfl, le_rfl⟩
+
+theorem PrePolygon.exists_affine_vertex_graph_sides
+    {m : ℕ} (P : PrePolygon m) (i : ZMod (m + 3)) :
+    ∃ (e : Plane ≃ᵃ[ℝ] Plane) (U : Set Plane) (r d σ : ℝ),
+      IsOpen U ∧ Convex ℝ U ∧ P.vertex i ∈ U ∧ 0 < r ∧
+      (d = 0 ∨ d = 1) ∧ (σ = -1 ∨ σ = 1) ∧
+      e (P.vertex i) = Plane.mk 0 0 ∧
+      e (P.vertex (i - 1)) = Plane.mk (-1) 0 ∧
+      e (P.vertex (i + 1)) = Plane.mk r (d * r) ∧
+      (d = 0 ↔ Plane.det (P.vertex (i - 1) - P.vertex i)
+        (P.vertex (i + 1) - P.vertex i) = 0) ∧
+      ∀ p ∈ U,
+        (p ∈ closure (inside P.carrier) ↔
+          0 ≤ σ * ((e p) 1 - d * max ((e p) 0) 0)) ∧
+        (p ∈ interior (closure (inside P.carrier)) ↔
+          0 < σ * ((e p) 1 - d * max ((e p) 0) 0)) ∧
+        (p ∈ frontier (closure (inside P.carrier)) ↔
+          (e p) 1 = d * max ((e p) 0) 0) ∧
+        (p ∈ P.carrier ↔ (e p) 1 = d * max ((e p) 0) 0) := by
+  obtain ⟨e, U, r, d, σ, hU, hcU, hiU, hr, hd, hσ, he0, he1, he2,
+    hstraight, _, hside⟩ := P.exists_affine_vertex_graph_sides_normalized i
+  exact ⟨e, U, r, d, σ, hU, hcU, hiU, hr, hd, hσ, he0, he1, he2, hstraight, hside⟩
 
 end Schoenflies
 

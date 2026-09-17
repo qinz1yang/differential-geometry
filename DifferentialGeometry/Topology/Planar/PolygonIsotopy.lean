@@ -9,7 +9,8 @@ theorem PrePolygon.exists_compactly_supported_isotopy_near_one_edge_free_triangl
     {m : ℕ} (P : PrePolygon m)
     (M : LeanEval.Topology.ClassificationOfSurfaces.Moise.TriangleMesh)
     (hfrontier : frontier M.toPlaneComplex.support = P.carrier)
-    (T : M.Triangle) (k : Fin 3) (hfree : M.IsOneEdgeFreeTriangle T k) :
+    (T : M.Triangle) (k : Fin 3) (hfree : M.IsOneEdgeFreeTriangle T k)
+    {σ : ℝ} (hσ : 0 < σ) (hσsmall : σ ≤ 1 / 4) :
     let b := LeanEval.Topology.ClassificationOfSurfaces.Moise.affineBasisOfTriangle
       (M.freeTriangleOrder T k) (M.freeTriangleOrder_affineIndependent T k)
     let R := closure (P.carrier \ segment ℝ (b 0) (b 1))
@@ -37,7 +38,7 @@ theorem PrePolygon.exists_compactly_supported_isotopy_near_one_edge_free_triangl
       Set.EqOn F (fun p => (A₀ p, B₀ p)) U₀ ∧
       Set.EqOn F (fun p => (A₁ p, B₁ p)) U₁ ∧
       Set.EqOn F (fun p => (-b.coord 2 p,
-        -Real.smoothMax (1 / 4) (-b.coord 0 p) (-b.coord 1 p))) V ∧
+        -Real.smoothMax σ (-b.coord 0 p) (-b.coord 1 p))) V ∧
       (∀ p ∈ U₀,
         (p ∈ M.toPlaneComplex.support ↔
           (if f₀ p < 0 then b.coord 2 v₀ / f₀ v₀ * f₀ p else 0) ≤ b.coord 2 p) ∧
@@ -149,7 +150,7 @@ theorem PrePolygon.exists_compactly_supported_isotopy_near_one_edge_free_triangl
     he₀, he₁, heV, hgraph₀, hgraph₁, hreg, hH, hderiv, hstart, hend,
     hregH, hstat₀, hstat₁, hposV, hcentral,
     J, hJ, htriangleJ, hJW, hactive, hweak₀, hweak₁, hexterior, hraw, hsign, hremoved⟩ :=
-    P.exists_regular_interpolation_near_one_edge_free_triangle M hfrontier T k hfree
+    P.exists_regular_interpolation_near_one_edge_free_triangle M hfrontier T k hfree hσ hσsmall
   obtain ⟨K, X, Ω, κ, hK, hJK, hKW, hX, hsX, hΩ, hΩcover, hΩW, hκ, htransport, hXzero⟩ :=
     DifferentialGeometry.Analysis.exists_contDiff_compactly_supported_proportional_vector_field
       hF.fst hF.snd ((hU₀.union hU₁).union hV) hJ hJW

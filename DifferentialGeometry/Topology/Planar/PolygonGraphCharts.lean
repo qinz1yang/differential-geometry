@@ -1,3 +1,6 @@
+import DifferentialGeometry.Topology.Planar.CornerNormalization
+import DifferentialGeometry.Analysis.Convex.TriangleComplement
+import DifferentialGeometry.Analysis.Convex.SegmentSigns
 import DifferentialGeometry.Topology.PlanarJordan.LocalSides
 import DifferentialGeometry.Topology.Diffeomorph.Graph
 import Mathlib.Topology.Homeomorph.Lemmas
@@ -30,7 +33,7 @@ import Mathlib.Topology.Order.DenselyOrdered
 
 namespace LeanEval.Topology.ClassificationOfSurfaces.Moise
 
-private theorem TriangleMesh.one_edge_free_central_neighborhood
+theorem TriangleMesh.one_edge_free_central_neighborhood
     (M : TriangleMesh) (T : M.Triangle) (k : Fin 3)
     (hfree : M.IsOneEdgeFreeTriangle T k) :
     let b := affineBasisOfTriangle (M.freeTriangleOrder T k)
@@ -168,6 +171,36 @@ private theorem TriangleMesh.one_edge_free_central_neighborhood
   rw [hweak, hstrict, not_lt]
   exact ⟨fun h => le_antisymm h.2 h.1, fun h => ⟨h.ge, h.le⟩⟩
 
+theorem TriangleMesh.one_edge_free_central_survivor_sides
+    (M : TriangleMesh) (T : M.Triangle) (k : Fin 3)
+    (hfree : M.IsOneEdgeFreeTriangle T k) :
+    let b := affineBasisOfTriangle (M.freeTriangleOrder T k)
+      (M.freeTriangleOrder_affineIndependent T k)
+    let N := (interior M.toPlaneComplex.support ∩ {p | 0 < b.coord 2 p}) ∪
+      ((M.eraseTriangle T.1).toPlaneComplex.supportᶜ ∩
+        {p | 0 < b.coord 0 p ∧ 0 < b.coord 1 p})
+    ∀ p ∈ N,
+      (p ∈ (M.eraseTriangle T.1).toPlaneComplex.support ↔
+        min (b.coord 0 p) (b.coord 1 p) ≤ 0) ∧
+      (p ∈ interior (M.eraseTriangle T.1).toPlaneComplex.support ↔
+        min (b.coord 0 p) (b.coord 1 p) < 0) ∧
+      (p ∈ frontier (M.eraseTriangle T.1).toPlaneComplex.support ↔
+        min (b.coord 0 p) (b.coord 1 p) = 0) := by
+  dsimp only
+  let b := affineBasisOfTriangle (M.freeTriangleOrder T k)
+    (M.freeTriangleOrder_affineIndependent T k)
+  have htriangle : convexHull ℝ (Set.range b) = M.triangleCarrier T.1 := by
+    change convexHull ℝ (Set.range ((M.position ∘ M.orderedVertex T) ∘ Equiv.swap 2 k)) = _
+    rw [EquivLike.range_comp, Set.range_comp, M.range_orderedVertex T]
+    rfl
+  have hsplit : M.toPlaneComplex.support =
+      (M.eraseTriangle T.1).toPlaneComplex.support ∪ M.triangleCarrier T.1 :=
+    M.support_eq_eraseTriangle_union_triangleCarrier T.2
+  have hattach := M.eraseTriangle_support_inter_triangleCarrier_of_oneEdgeFree T k hfree
+  rw [← htriangle] at hsplit hattach
+  exact (b.triangle_complement_sides
+    (M.eraseTriangle T.1).toPlaneComplex.isCompact_support.isClosed hsplit hattach).2
+
 end LeanEval.Topology.ClassificationOfSurfaces.Moise
 
 
@@ -298,42 +331,6 @@ private theorem affine_triangle_map_apply_of_vertex_zero
   exact congrArg (fun g : Plane →ᵃ[ℝ] ℝ => g p) hf
 
 end Schoenflies
-end
-section
-
-namespace LeanEval.Topology.ClassificationOfSurfaces.Moise
-
-private theorem exists_affine_triangle_chart_with_first_coordinate
-    (b : AffineBasis (Fin 3) ℝ Plane) (f : Plane →ᵃ[ℝ] ℝ)
-    (hf0 : f (b 0) = 0) (hf1 : 0 < f (b 1)) :
-    ∃ e : Plane ≃ᵃ[ℝ] Plane,
-      (∀ p, (e p) 0 = f p) ∧
-      e (b 0) = planePoint 0 0 ∧
-      e (b 1) = planePoint (f (b 1)) 0 ∧
-      e (b 2) = planePoint (f (b 2)) 1 := by
-  let q : Fin 3 → Plane :=
-    ![planePoint 0 0, planePoint (f (b 1)) 0, planePoint (f (b 2)) 1]
-  have hq : AffineIndependent ℝ q := by
-    apply affineIndependent_plane_triple_of_det_ne_zero
-    simpa only [planePoint_apply_zero, planePoint_apply_one, PiLp.sub_apply,
-      sub_zero, mul_one, mul_zero, zero_mul] using hf1.ne'
-  let e := triangleAffineEquiv b q b.ind hq
-  have he (i : Fin 3) : e (b i) = q i := triangleAffineEquiv_apply b q b.ind hq i
-  have hx : cartesianX.comp e.toAffineMap = f := by
-    apply AffineMap.ext_on b.tot
-    rintro p ⟨i, rfl⟩
-    change (e (b i)) 0 = f (b i)
-    rw [he]
-    fin_cases i
-    · change 0 = f (b 0)
-      exact hf0.symm
-    · rfl
-    · rfl
-  refine ⟨e, ?_, he 0, he 1, he 2⟩
-  intro p
-  exact congrArg (fun g : Plane →ᵃ[ℝ] ℝ => g p) hx
-
-end LeanEval.Topology.ClassificationOfSurfaces.Moise
 end
 section
 
@@ -1388,9 +1385,6 @@ section
 
 namespace Schoenflies
 
-open LeanEval.Topology.ClassificationOfSurfaces.Moise
-  (exists_affine_triangle_chart_with_first_coordinate)
-
 private theorem affine_triangle_graph_comparison
     (b : AffineBasis (Fin 3) ℝ Plane) (f : Plane →ᵃ[ℝ] ℝ)
     (hf0 : f (b 0) = 0) (hf1 : 0 < f (b 1)) (hf2 : 0 < f (b 2)) (p : Plane) :
@@ -1467,26 +1461,9 @@ private theorem exists_one_edge_free_endpoint_graph_regions_of_basis
     {p | f p < 0} ∩ (M.eraseTriangle T.1).toPlaneComplex.support at hS
   change {p | f p < 0} ∩ interior M.toPlaneComplex.support =
     {p | f p < 0} ∩ interior (M.eraseTriangle T.1).toPlaneComplex.support at hI
-  obtain ⟨e, heX, he0, he1, he2⟩ :=
-    exists_affine_triangle_chart_with_first_coordinate
-      b f hf0 hf1
-  have heY : ∀ p, (e p) 1 = b.coord 2 p := by
-    have he : LeanEval.Topology.ClassificationOfSurfaces.Moise.cartesianY.comp e.toAffineMap =
-        b.coord 2 := by
-      apply AffineMap.ext_on b.tot
-      rintro p ⟨i, rfl⟩
-      change (e (b i)) 1 = b.coord 2 (b i)
-      fin_cases i
-      · change (e (b 0)) 1 = b.coord 2 (b 0)
-        rw [he0, b.coord_apply_ne (by decide : (2 : Fin 3) ≠ 0)]
-        rfl
-      · change (e (b 1)) 1 = b.coord 2 (b 1)
-        rw [he1, b.coord_apply_ne (by decide : (2 : Fin 3) ≠ 1)]
-        rfl
-      · change (e (b 2)) 1 = b.coord 2 (b 2)
-        rw [he2, b.coord_apply_eq]
-        rfl
-    exact fun p => congrArg (fun g : Plane →ᵃ[ℝ] ℝ => g p) he
+  obtain ⟨e, he⟩ := exists_affine_triangle_graph_coordinates b f (by rw [hf0]; exact hf1.ne')
+  have heX (p : Plane) : (e p) 0 = f p := congrArg (fun q : Plane => q 0) (he p)
+  have heY (p : Plane) : (e p) 1 = b.coord 2 p := congrArg (fun q : Plane => q 1) (he p)
   let U := {p | 0 < b.coord 0 p} ∩ {p | f v < f p}
   have hU : IsOpen U := (isOpen_lt continuous_const
     (b.coord 0).continuous_of_finiteDimensional).inter
@@ -2789,10 +2766,9 @@ private theorem exists_fixed_cover_small_matched_interpolation
     (hgap₀ : ∀ p ∈ U₀, (1 : ℝ) / 4 < b.coord 0 p - b.coord 1 p)
     (hgap₁ : ∀ p ∈ U₁, (1 : ℝ) / 4 < b.coord 1 p - b.coord 0 p)
     (N : Set Plane) (hN : IsOpen N)
-    (hKN : convexHull ℝ (Set.range b) \ {b 0, b 1} ⊆ N) :
+    (hKN : convexHull ℝ (Set.range b) \ {b 0, b 1} ⊆ N)
+    {τ : ℝ} (hτ : 0 < τ) :
     let K := convexHull ℝ (Set.range b)
-    let G := fun p => (-b.coord 2 p,
-      -Real.smoothMax (1 / 4) (-b.coord 0 p) (-b.coord 1 p))
     let F₀ := fun η p => (s₀ * (f₀ p - Real.smoothMax η (f₀ p) 0) - b.coord 2 p,
       f₀ (b 2) / f₀ (b 1) * (s₀ * (f₀ p - Real.smoothMax η (f₀ p) 0) +
         Real.smoothMax η (f₀ p) 0 / f₀ (b 2) - b.coord 2 p))
@@ -2801,8 +2777,11 @@ private theorem exists_fixed_cover_small_matched_interpolation
         Real.smoothMax η (f₁ p) 0 / f₁ (b 2) - b.coord 2 p))
     ∃ (ε₀ ε : ℝ) (J : Set Plane),
       let V := {p | ε₀ < f₀ p ∧ ε₀ < f₁ p} ∩ N
-      0 < ε₀ ∧ 0 < ε ∧ ε ≤ ε₀ ∧ IsCompact J ∧ K ⊆ interior J ∧
+      0 < ε₀ ∧ 0 < ε ∧ ε ≤ τ ∧ ε ≤ ε₀ ∧ IsCompact J ∧ K ⊆ interior J ∧
       J ⊆ U₀ ∪ U₁ ∪ V ∧ K ⊆ U₀ ∪ U₁ ∪ V ∧
+      ∀ σ ∈ Set.Ioc (0 : ℝ) (1 / 4),
+      let G := fun p => (-b.coord 2 p,
+        -Real.smoothMax σ (-b.coord 0 p) (-b.coord 1 p))
       (∀ η ∈ Set.Ioc 0 ε, Set.EqOn (F₀ η) G (U₀ ∩ V)) ∧
       (∀ η ∈ Set.Ioc 0 ε, Set.EqOn (F₁ η) G (U₁ ∩ V)) ∧
       (∀ η ∈ Set.Ioc 0 ε, ∀ t ∈ Set.Icc 0 1, ∀ p ∈ U₀,
@@ -2913,13 +2892,13 @@ private theorem exists_fixed_cover_small_matched_interpolation
     linarith only [hC₀, hC₁, mul_nonneg hC₀.le hL₀, mul_nonneg hC₁.le hL₁]
   obtain ⟨δ, hδ, hδbound⟩ := exists_pos_mul_lt
     (lt_min (by norm_num : (0 : ℝ) < 1 / 12) hρ) B
-  let ε := min ε₀ δ
-  have hε : 0 < ε := lt_min hε₀ hδ
+  let ε := min ε₀ (min δ τ)
+  have hε : 0 < ε := lt_min hε₀ (lt_min hδ hτ)
   have hε₀bound : ε ≤ ε₀ := min_le_left _ _
   have hbound {η : ℝ} (hη : η ∈ Set.Ioc 0 ε) :
       C₀ * η ≤ 1 / 12 ∧ C₁ * η ≤ 1 / 12 ∧
         C₀ * η * L₀ < ρ ∧ C₁ * η * L₁ < ρ := by
-    have hηδ : η ≤ δ := hη.2.trans (min_le_right _ _)
+    have hηδ : η ≤ δ := hη.2.trans ((min_le_right _ _).trans (min_le_left _ _))
     have hBη : B * η < min (1 / 12) ρ :=
       (mul_le_mul_of_nonneg_left hηδ hB.le).trans_lt hδbound
     have hsmall := hBη.trans_le (min_le_left _ _)
@@ -2934,23 +2913,26 @@ private theorem exists_fixed_cover_small_matched_interpolation
       calc
         C₁ * η * L₁ = C₁ * L₁ * η := mul_right_comm _ _ _
         _ < ρ := h
-  refine ⟨ε₀, ε, J, hε₀, hε, hε₀bound, hJ, hKJ, hρsub, hcover,
-    ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  refine ⟨ε₀, ε, J, hε₀, hε, (min_le_right _ _).trans (min_le_right _ _), hε₀bound,
+    hJ, hKJ, hρsub, hcover, ?_⟩
+  intro σ hσbound
+  obtain ⟨hσ, hσsmall⟩ := hσbound
+  refine ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
   · intro η hη p hp
     have h := (matched_endpoint_defining_functions_overlap b f₀ hf₀ hfb hfc₀ s₀ hη.1
-      (by norm_num : (0 : ℝ) < 1 / 4)).2.2.2.2.2 p
-      ⟨(hη.2.trans hε₀bound).trans_lt hp.2.1.1, hgap₀ p hp.1⟩
+      hσ).2.2.2.2.2 p
+      ⟨(hη.2.trans hε₀bound).trans_lt hp.2.1.1, hσsmall.trans_lt (hgap₀ p hp.1)⟩
     exact Prod.ext h.1 h.2.1
   · intro η hη p hp
     have h := (matched_endpoint_defining_functions_overlap c f₁
       (by simpa only [hc0] using hf₁) (by simpa only [hc1] using hfa)
       (by simpa only [hc2] using hfc₁) s₁ hη.1
-      (by norm_num : (0 : ℝ) < 1 / 4)).2.2.2.2.2 p
+      hσ).2.2.2.2.2 p
       ⟨(hη.2.trans hε₀bound).trans_lt hp.2.1.2,
-        by simpa only [hcoord0, hcoord1] using hgap₁ p hp.1⟩
+        by simpa only [hcoord0, hcoord1] using hσsmall.trans_lt (hgap₁ p hp.1)⟩
     simp only [hc1, hc2, hcoord0, hcoord1, hcoord2] at h
     refine Prod.ext h.1 (h.2.1.trans ?_)
-    exact congrArg Neg.neg (Real.smoothMax.comm (by norm_num : (1 / 4 : ℝ) ≠ 0) _ _)
+    exact congrArg Neg.neg (Real.smoothMax.comm hσ.ne' _ _)
   · intro η hη t ht p hp
     exact endpoint_zero_mem_interior_cthickening b f₀ hf₀ hfb hfc₀ s₀ hη.1 ht
       (hbound hη).1 (hbound hη).2.2.1 (hgap₀ p hp)
@@ -2966,7 +2948,7 @@ private theorem exists_fixed_cover_small_matched_interpolation
     simpa only [hcrange] using h
   · intro t ht p hp hz
     exact central_interpolation_zero_mem_triangle b f₀ f₁ hf₀ hfb hfc₀ hf₁ hfa hfc₁
-      (hε₀.trans hp.1.1) (hε₀.trans hp.1.2) (by norm_num) (by norm_num) ht hz
+      (hε₀.trans hp.1.1) (hε₀.trans hp.1.2) hσ (by linarith) ht hz
   · intro η hη p hp hpJ
     exact endpoint_signs_eq_outside_cthickening b f₀ hf₀ hfb hfc₀ s₀ hη.1
       (hbound hη).1 (hbound hη).2.2.1 (hgap₀ p hp) hpJ
@@ -3005,30 +2987,6 @@ namespace Schoenflies
 section
 
 open scoped Topology
-
-private theorem interpolation_signs_eq_of_ne_zero {a b : ℝ}
-    (hn : ∀ t ∈ Set.Icc (0 : ℝ) 1, (1 - t) * a + t * b ≠ 0) :
-    (a ≤ 0 ↔ b ≤ 0) ∧ (a < 0 ↔ b < 0) ∧ (a = 0 ↔ b = 0) := by
-  let f := fun t : ℝ => (1 - t) * a + t * b
-  have hf : Continuous f :=
-    ((continuous_const.sub continuous_id).mul continuous_const).add
-      (continuous_id.mul continuous_const)
-  have hnot : (0 : ℝ) ∉ Set.uIcc a b := by
-    intro hz
-    have hz' : (0 : ℝ) ∈ Set.uIcc (f 0) (f 1) := by
-      simpa only [f, sub_zero, one_mul, zero_mul, add_zero, sub_self, zero_add] using hz
-    obtain ⟨t, ht, hft⟩ := intermediate_value_uIcc hf.continuousOn hz'
-    exact hn t (by simpa only [Set.uIcc_of_le (by norm_num : (0 : ℝ) ≤ 1)] using ht) hft
-  have hs : (a < 0 ∧ b < 0) ∨ (0 < a ∧ 0 < b) := by
-    by_cases hmax : max a b < 0
-    · exact Or.inl ⟨(le_max_left a b).trans_lt hmax, (le_max_right a b).trans_lt hmax⟩
-    · have hmin : 0 < min a b := lt_of_not_ge
-        (fun h => hnot ⟨h, le_of_not_gt hmax⟩)
-      exact Or.inr ⟨hmin.trans_le (min_le_left a b), hmin.trans_le (min_le_right a b)⟩
-  rcases hs with ⟨ha, hb⟩ | ⟨ha, hb⟩
-  · exact ⟨iff_of_true ha.le hb.le, iff_of_true ha hb, iff_of_false ha.ne hb.ne⟩
-  · exact ⟨iff_of_false (not_le_of_gt ha) (not_le_of_gt hb),
-      iff_of_false (not_lt_of_ge ha.le) (not_lt_of_ge hb.le), iff_of_false ha.ne' hb.ne'⟩
 
 private theorem mesh_erase_triangle_sides_of_not_mem
     (M : LeanEval.Topology.ClassificationOfSurfaces.Moise.TriangleMesh)
@@ -3073,7 +3031,7 @@ private theorem central_survivor_signs_outside_compact_set
   intro p hp hpJ
   have hpT : p ∉ M.triangleCarrier T.1 := fun h => hpJ (hTJ h)
   have hs := mesh_erase_triangle_sides_of_not_mem M T hpT
-  have hf := interpolation_signs_eq_of_ne_zero
+  have hf := linear_interpolation_signs_eq_of_ne_zero
     (fun t ht hz => hpT (hzero t ht p hp hz))
   have hr := hold p hp hpJ
   exact ⟨hs.1.symm.trans (hr.1.trans hf.1), hs.2.1.symm.trans (hr.2.1.trans hf.2.1),
@@ -3113,7 +3071,8 @@ theorem PrePolygon.exists_regular_interpolation_near_one_edge_free_triangle
     {m : ℕ} (P : PrePolygon m)
     (M : LeanEval.Topology.ClassificationOfSurfaces.Moise.TriangleMesh)
     (hfrontier : frontier M.toPlaneComplex.support = P.carrier)
-    (T : M.Triangle) (k : Fin 3) (hfree : M.IsOneEdgeFreeTriangle T k) :
+    (T : M.Triangle) (k : Fin 3) (hfree : M.IsOneEdgeFreeTriangle T k)
+    {σ : ℝ} (hσ : 0 < σ) (hσsmall : σ ≤ 1 / 4) :
     let b := LeanEval.Topology.ClassificationOfSurfaces.Moise.affineBasisOfTriangle
       (M.freeTriangleOrder T k) (M.freeTriangleOrder_affineIndependent T k)
     let R := closure (P.carrier \ segment ℝ (b 0) (b 1))
@@ -3141,7 +3100,7 @@ theorem PrePolygon.exists_regular_interpolation_near_one_edge_free_triangle
       Set.EqOn F (fun p => (A₀ p, B₀ p)) U₀ ∧
       Set.EqOn F (fun p => (A₁ p, B₁ p)) U₁ ∧
       Set.EqOn F (fun p => (-b.coord 2 p,
-        -Real.smoothMax (1 / 4) (-b.coord 0 p) (-b.coord 1 p))) V ∧
+        -Real.smoothMax σ (-b.coord 0 p) (-b.coord 1 p))) V ∧
       (∀ p ∈ U₀,
         (p ∈ M.toPlaneComplex.support ↔
           (if f₀ p < 0 then b.coord 2 v₀ / f₀ v₀ * f₀ p else 0) ≤ b.coord 2 p) ∧
@@ -3249,12 +3208,12 @@ theorem PrePolygon.exists_regular_interpolation_near_one_edge_free_triangle
   have hKN : convexHull ℝ (Set.range b) \ {b 0, b 1} ⊆ N := by
     rw [htriangle]
     exact hNC
-  obtain ⟨ε₀, ε, J, _, hε, hεle, hJ, hKJ, hJcover, hcover,
-    heleft, heright, htrace₀, htrace₁, hcentral, hsign₀, hsign₁,
-    hremoved₀, hremoved₁⟩ :=
+  obtain ⟨ε₀, ε, J, _, hε, _, hεle, hJ, hKJ, hJcover, hcover, hprofiles⟩ :=
     exists_fixed_cover_small_matched_interpolation b f₀ f₁ hf₀ hfb hfc₀ hf₁ hfa hfc₁
       (b.coord 2 v₀ / f₀ v₀) (b.coord 2 v₁ / f₁ v₁) hU₀ hU₁ hb₀ hb₁
-      (fun _ hp => hp.2) (fun _ hp => hp.2) N hN hKN
+      (fun _ hp => hp.2) (fun _ hp => hp.2) N hN hKN (show (0 : ℝ) < 1 by norm_num)
+  obtain ⟨heleft, heright, htrace₀, htrace₁, hcentral, hsign₀, hsign₁, hremoved₀, hremoved₁⟩ :=
+    hprofiles σ ⟨hσ, hσsmall⟩
   let V := {p | ε₀ < f₀ p ∧ ε₀ < f₁ p} ∩ N
   have hV : IsOpen V :=
     ((isOpen_lt continuous_const f₀.continuous_of_finiteDimensional).inter
@@ -3262,7 +3221,7 @@ theorem PrePolygon.exists_regular_interpolation_near_one_edge_free_triangle
   let s₀ := b.coord 2 v₀ / f₀ v₀
   let s₁ := b.coord 2 v₁ / f₁ v₁
   have hleft := matched_endpoint_defining_functions_overlap b f₀ hf₀ hfb hfc₀ s₀ hε
-    (show (0 : ℝ) < 1 / 4 by norm_num)
+    hσ
   let c := b.reindex (Equiv.swap (0 : Fin 3) 1)
   have hc0 : c 0 = b 1 := by simp [c]
   have hc1 : c 1 = b 0 := by simp [c]
@@ -3273,7 +3232,7 @@ theorem PrePolygon.exists_regular_interpolation_near_one_edge_free_triangle
   have hright := matched_endpoint_defining_functions_overlap c f₁
     (by simpa only [hc0] using hf₁) (by simpa only [hc1] using hfa)
     (by simpa only [hc2] using hfc₁) s₁ hε
-    (show (0 : ℝ) < 1 / 4 by norm_num)
+    hσ
   simp only [hc1, hc2, hcoord0, hcoord1, hcoord2] at hright
   rw [htriangle] at hcover hKJ hcentral
   obtain ⟨F, W, hF, hW, hJW, he₀, he₁, he₂⟩ :=
@@ -3298,7 +3257,7 @@ theorem PrePolygon.exists_regular_interpolation_near_one_edge_free_triangle
         (by simpa only [hc2] using hfc₁) (b.coord 2 v₁ / f₁ v₁) ε ht p
       simpa only [hc1, hc2, hcoord2] using h)
     have hregV := eqOn_interpolation_fderiv_ne_zero (hW.inter hV) he₂ t
-      (barycentric_central_interpolation_fderiv_ne_zero b (1 / 4) ht.2)
+      (barycentric_central_interpolation_fderiv_ne_zero b σ ht.2)
     intro p hp
     rcases hp with (hp₀ | hp₁) | hpV
     · exact hreg₀ p hp₀
@@ -3670,9 +3629,6 @@ open Set Metric
 
 namespace Schoenflies
 
-open LeanEval.Topology.ClassificationOfSurfaces.Moise
-  (exists_affine_triangle_chart_with_first_coordinate)
-
 private theorem exists_two_edge_endpoint_graph_sides_of_basis
     {m n : ℕ} (P : PrePolygon m) (Q : PrePolygon n)
     (M : LeanEval.Topology.ClassificationOfSurfaces.Moise.TriangleMesh)
@@ -3703,26 +3659,11 @@ private theorem exists_two_edge_endpoint_graph_sides_of_basis
           b.coord 2 p < b.coord 2 v / f v * (f p - max (f p) 0)) ∧
         (p ∈ frontier (M.eraseTriangle T.1).toPlaneComplex.support ↔
           b.coord 2 p = b.coord 2 v / f v * (f p - max (f p) 0)) := by
-  obtain ⟨e, heX, he0, he1, he2⟩ :=
-    exists_affine_triangle_chart_with_first_coordinate
-      b f hf0 hf1
-  have heY : ∀ p, (e p) 1 = b.coord 2 p := by
-    have he : LeanEval.Topology.ClassificationOfSurfaces.Moise.cartesianY.comp e.toAffineMap =
-        b.coord 2 := by
-      apply AffineMap.ext_on b.tot
-      rintro p ⟨i, rfl⟩
-      change (e (b i)) 1 = b.coord 2 (b i)
-      fin_cases i
-      · change (e (b 0)) 1 = b.coord 2 (b 0)
-        rw [he0, b.coord_apply_ne (by decide : (2 : Fin 3) ≠ 0)]
-        rfl
-      · change (e (b 1)) 1 = b.coord 2 (b 1)
-        rw [he1, b.coord_apply_ne (by decide : (2 : Fin 3) ≠ 1)]
-        rfl
-      · change (e (b 2)) 1 = b.coord 2 (b 2)
-        rw [he2, b.coord_apply_eq]
-        rfl
-    exact fun p => congrArg (fun g : Plane →ᵃ[ℝ] ℝ => g p) he
+  obtain ⟨e, he⟩ := exists_affine_triangle_graph_coordinates b f (by rw [hf0]; exact hf1.ne')
+  have heX (p : Plane) : (e p) 0 = f p := congrArg (fun q : Plane => q 0) (he p)
+  have heY (p : Plane) : (e p) 1 = b.coord 2 p := congrArg (fun q : Plane => q 1) (he p)
+  have he0 : e (b 0) = Plane.mk 0 0 := by
+    rw [he, hf0, b.coord_apply_ne (by decide : (2 : Fin 3) ≠ 0)]
   let O := ball (b 0) ρ ∩ f ⁻¹' Ioo (f v) (min (f (b 1)) (f (b 2)))
   have hO : IsOpen O := isOpen_ball.inter
     (isOpen_Ioo.preimage f.continuous_of_finiteDimensional)
@@ -3828,7 +3769,7 @@ open Set Metric
 
 namespace Schoenflies
 
-private theorem PrePolygon.exists_affine_graph_charts_of_two_edge_free_triangle
+theorem PrePolygon.exists_affine_graph_charts_of_two_edge_free_triangle
     {m : ℕ} (P : PrePolygon m)
     (M : LeanEval.Topology.ClassificationOfSurfaces.Moise.TriangleMesh)
     (hfrontier : frontier M.toPlaneComplex.support = P.carrier)
@@ -4103,7 +4044,7 @@ private theorem affine_triangle_base_coords_pos
       · exact hp₂.trans (b.coord_apply_ne (by decide : (2 : Fin 3) ≠ 0)).symm
     exact hpends (Or.inl he)
 
-private theorem PrePolygon.two_edge_free_central_neighborhood
+theorem PrePolygon.two_edge_free_central_neighborhood
     {m : ℕ} (P : PrePolygon m)
     (M : LeanEval.Topology.ClassificationOfSurfaces.Moise.TriangleMesh)
     (hfrontier : frontier M.toPlaneComplex.support = P.carrier)
@@ -4330,11 +4271,11 @@ private theorem exists_fixed_cover_small_two_edge_interpolation
     (s₀ s₁ : ℝ) {O₀ O₁ : Set Plane} (hO₀ : IsOpen O₀) (hO₁ : IsOpen O₁)
     (hb₀ : b 0 ∈ O₀) (hb₁ : b 1 ∈ O₁)
     (N : Set Plane) (hN : IsOpen N)
-    (hKN : convexHull ℝ (range b) \ {b 0, b 1} ⊆ N) :
+    (hKN : convexHull ℝ (range b) \ {b 0, b 1} ⊆ N)
+    {τ : ℝ} (hτ : 0 < τ) :
     let K := convexHull ℝ (range b)
     let U₀ := O₀ ∩ {p | (1 : ℝ) / 4 < b.coord 0 p - b.coord 1 p}
     let U₁ := O₁ ∩ {p | (1 : ℝ) / 4 < b.coord 1 p - b.coord 0 p}
-    let G := fun p => (Real.smoothMax (1 / 4) (-b.coord 0 p) (-b.coord 1 p), b.coord 2 p)
     let F₀ := fun η p =>
       (-(f₀ (b 2) / f₀ (b 1) * (s₀ * (f₀ p - Real.smoothMax η (f₀ p) 0) +
         Real.smoothMax η (f₀ p) 0 / f₀ (b 2) - b.coord 2 p)),
@@ -4346,8 +4287,10 @@ private theorem exists_fixed_cover_small_two_edge_interpolation
     ∃ (ε₀ ε : ℝ) (J : Set Plane),
       let V := {p | ε₀ < f₀ p ∧ ε₀ < f₁ p} ∩ N
       IsOpen U₀ ∧ IsOpen U₁ ∧ IsOpen V ∧ b 0 ∈ U₀ ∧ b 1 ∈ U₁ ∧
-      0 < ε₀ ∧ 0 < ε ∧ ε ≤ ε₀ ∧ IsCompact J ∧ K ⊆ interior J ∧
+      0 < ε₀ ∧ 0 < ε ∧ ε ≤ τ ∧ ε ≤ ε₀ ∧ IsCompact J ∧ K ⊆ interior J ∧
       J ⊆ U₀ ∪ U₁ ∪ V ∧ K ⊆ U₀ ∪ U₁ ∪ V ∧
+      ∀ σ ∈ Ioc (0 : ℝ) (1 / 4),
+      let G := fun p => (Real.smoothMax σ (-b.coord 0 p) (-b.coord 1 p), b.coord 2 p)
       (∀ η ∈ Ioc 0 ε, EqOn (F₀ η) G (U₀ ∩ V)) ∧
       (∀ η ∈ Ioc 0 ε, EqOn (F₁ η) G (U₁ ∩ V)) ∧
       (∀ η ∈ Ioc 0 ε, ∀ t ∈ Icc 0 1, ∀ p ∈ U₀,
@@ -4397,15 +4340,18 @@ private theorem exists_fixed_cover_small_two_edge_interpolation
   have hU₁ : IsOpen U₁ := hO₁.inter (isOpen_lt continuous_const ((hcoord 1).sub (hcoord 0)))
   have hbU₀ : b 0 ∈ U₀ := ⟨hb₀, by norm_num [b.coord_apply, Fin.ext_iff]⟩
   have hbU₁ : b 1 ∈ U₁ := ⟨hb₁, by norm_num [b.coord_apply, Fin.ext_iff]⟩
-  obtain ⟨ε₀, ε, J, hε₀, hε, hεle, hJ, hKJ, hJcover, hKcover,
-      heq₀, heq₁, hzero₀, hzero₁, hzeroC, hbase₀, hbase₁, houter₀, houter₁⟩ :=
+  obtain ⟨ε₀, ε, J, hε₀, hε, hετ, hεle, hJ, hKJ, hJcover, hKcover, hprofiles⟩ :=
     exists_fixed_cover_small_matched_interpolation b f₀ f₁ hf₀ hfb hfc₀ hf₁ hfa hfc₁
-      s₀ s₁ hU₀ hU₁ hbU₀ hbU₁ (fun _ hp => hp.2) (fun _ hp => hp.2) N hN hKN
+      s₀ s₁ hU₀ hU₁ hbU₀ hbU₁ (fun _ hp => hp.2) (fun _ hp => hp.2) N hN hKN hτ
   have hV : IsOpen ({p | ε₀ < f₀ p ∧ ε₀ < f₁ p} ∩ N) :=
     ((isOpen_lt continuous_const f₀.continuous_of_finiteDimensional).inter
       (isOpen_lt continuous_const f₁.continuous_of_finiteDimensional)).inter hN
-  refine ⟨ε₀, ε, J, hU₀, hU₁, hV, hbU₀, hbU₁, hε₀, hε, hεle,
-    hJ, hKJ, hJcover, hKcover, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  refine ⟨ε₀, ε, J, hU₀, hU₁, hV, hbU₀, hbU₁, hε₀, hε, hετ, hεle,
+    hJ, hKJ, hJcover, hKcover, ?_⟩
+  intro σ hσbound
+  obtain ⟨heq₀, heq₁, hzero₀, hzero₁, hzeroC, hbase₀, hbase₁, houter₀, houter₁⟩ :=
+    hprofiles σ hσbound
+  refine ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
   · intro η hη p hp
     simpa only [neg_neg] using
       congrArg (fun z : ℝ × ℝ => (-z.2, -z.1)) (heq₀ η hη hp)
@@ -4434,7 +4380,7 @@ private theorem exists_fixed_cover_small_two_edge_interpolation
     exact hzero₁ η hη (1 - t) ⟨by linarith [ht.2], by linarith [ht.1]⟩ p hp hz hstrip
   · intro t ht p hp hz
     have he := pair_interpolation_neg_swap (-b.coord 2 p)
-      (-Real.smoothMax (1 / 4) (-b.coord 0 p) (-b.coord 1 p)) t
+      (-Real.smoothMax σ (-b.coord 0 p) (-b.coord 1 p)) t
     simp only [neg_neg] at he
     rw [he, neg_eq_zero] at hz
     exact hzeroC (1 - t) ⟨by linarith [ht.2], by linarith [ht.1]⟩ p hp hz
@@ -4530,20 +4476,24 @@ open scoped ContDiff Manifold Topology
 
 namespace Schoenflies
 
-private theorem exists_regular_two_edge_affine_triangle_profiles
+theorem exists_regular_two_edge_affine_triangle_profiles
     (b : AffineBasis (Fin 3) ℝ Plane) (f₀ f₁ : Plane →ᵃ[ℝ] ℝ)
     (hf₀ : f₀ (b 0) = 0) (hfb : 0 < f₀ (b 1)) (hfc₀ : 0 < f₀ (b 2))
     (hf₁ : f₁ (b 1) = 0) (hfa : 0 < f₁ (b 0)) (hfc₁ : 0 < f₁ (b 2))
     (s₀ s₁ : ℝ) {O₀ O₁ : Set Plane} (hO₀ : IsOpen O₀) (hO₁ : IsOpen O₁)
     (hb₀ : b 0 ∈ O₀) (hb₁ : b 1 ∈ O₁)
     (N : Set Plane) (hN : IsOpen N)
-    (hKN : convexHull ℝ (range b) \ {b 0, b 1} ⊆ N) :
+    (hKN : convexHull ℝ (range b) \ {b 0, b 1} ⊆ N)
+    {τ : ℝ} (hτ : 0 < τ) :
     let U₀ := O₀ ∩ {p | (1 : ℝ) / 4 < b.coord 0 p - b.coord 1 p}
     let U₁ := O₁ ∩ {p | (1 : ℝ) / 4 < b.coord 1 p - b.coord 0 p}
-    ∃ (ε₀ ε : ℝ) (J W : Set Plane) (F : Plane → ℝ × ℝ),
+    ∃ (ε₀ εmax : ℝ) (J : Set Plane),
+      0 < ε₀ ∧ 0 < εmax ∧ εmax ≤ τ ∧ εmax ≤ ε₀ ∧ IsCompact J ∧
+      convexHull ℝ (range b) ⊆ interior J ∧
+      ∀ σ ∈ Ioc (0 : ℝ) (1 / 4),
+      ∀ ε ∈ Ioc 0 εmax, ∃ (W : Set Plane) (F : Plane → ℝ × ℝ),
       let V := {p | ε₀ < f₀ p ∧ ε₀ < f₁ p} ∩ N
-      0 < ε₀ ∧ 0 < ε ∧ ε ≤ ε₀ ∧ IsCompact J ∧
-      convexHull ℝ (range b) ⊆ interior J ∧ IsOpen W ∧ J ⊆ W ∧
+      IsOpen W ∧ J ⊆ W ∧
       W ⊆ U₀ ∪ U₁ ∪ V ∧ ContDiff ℝ ∞ F ∧
       EqOn F (fun p =>
         (-(f₀ (b 2) / f₀ (b 1) * (s₀ * (f₀ p - Real.smoothMax ε (f₀ p) 0) +
@@ -4553,7 +4503,7 @@ private theorem exists_regular_two_edge_affine_triangle_profiles
         (-(f₁ (b 2) / f₁ (b 0) * (s₁ * (f₁ p - Real.smoothMax ε (f₁ p) 0) +
           Real.smoothMax ε (f₁ p) 0 / f₁ (b 2) - b.coord 2 p)),
           -(s₁ * (f₁ p - Real.smoothMax ε (f₁ p) 0) - b.coord 2 p))) (W ∩ U₁) ∧
-      EqOn F (fun p => (Real.smoothMax (1 / 4) (-b.coord 0 p) (-b.coord 1 p),
+      EqOn F (fun p => (Real.smoothMax σ (-b.coord 0 p) (-b.coord 1 p),
         b.coord 2 p)) (W ∩ V) ∧
       (∀ t ∈ Icc (0 : ℝ) 1, ∀ p ∈ W ∩ V,
         (1 - t) * (F p).1 + t * (F p).2 = 0 → p ∈ convexHull ℝ (range b)) ∧
@@ -4588,11 +4538,16 @@ private theorem exists_regular_two_edge_affine_triangle_profiles
   dsimp only
   let U₀ := O₀ ∩ {p | (1 : ℝ) / 4 < b.coord 0 p - b.coord 1 p}
   let U₁ := O₁ ∩ {p | (1 : ℝ) / 4 < b.coord 1 p - b.coord 0 p}
-  obtain ⟨ε₀, ε, J, hU₀, hU₁, hV, _, _, hε₀, hε, hεle, hJ, hKJ,
-      hJcover, _, heq₀, heq₁, hzero₀, hzero₁, _, _, hcentral,
-      houter₀, hbase₀, houter₁, hbase₁⟩ :=
+  obtain ⟨ε₀, εmax, J, hU₀, hU₁, hV, _, _, hε₀, hεmax, hετ, hεmaxle, hJ, hKJ,
+      hJcover, _, hprofiles⟩ :=
     exists_fixed_cover_small_two_edge_interpolation b f₀ f₁ hf₀ hfb hfc₀ hf₁ hfa hfc₁
-      s₀ s₁ hO₀ hO₁ hb₀ hb₁ N hN hKN
+      s₀ s₁ hO₀ hO₁ hb₀ hb₁ N hN hKN hτ
+  refine ⟨ε₀, εmax, J, hε₀, hεmax, hετ, hεmaxle, hJ, hKJ, ?_⟩
+  intro σ hσbound ε hεbound
+  have hσ := hσbound.1
+  obtain ⟨heq₀, heq₁, hzero₀, hzero₁, _, _, hcentral,
+      houter₀, hbase₀, houter₁, hbase₁⟩ := hprofiles σ hσbound
+  have hε := hεbound.1
   let V := {p | ε₀ < f₀ p ∧ ε₀ < f₁ p} ∩ N
   have hdisj : Disjoint U₀ U₁ := disjoint_left.mpr (by
     intro p hp₀ hp₁
@@ -4600,7 +4555,7 @@ private theorem exists_regular_two_edge_affine_triangle_profiles
     have h₁ : (1 : ℝ) / 4 < b.coord 1 p - b.coord 0 p := hp₁.2
     linarith only [h₀, h₁])
   have hleft := two_edge_endpoint_profiles_overlap b f₀ hf₀ hfb hfc₀ s₀ hε
-    (show (0 : ℝ) < 1 / 4 by norm_num)
+    hσ
   let c := b.reindex (Equiv.swap (0 : Fin 3) 1)
   have hc0 : c 0 = b 1 := by simp [c]
   have hc1 : c 1 = b 0 := by simp [c]
@@ -4609,13 +4564,13 @@ private theorem exists_regular_two_edge_affine_triangle_profiles
   have hright := two_edge_endpoint_profiles_overlap c f₁
     (by simpa only [hc0] using hf₁) (by simpa only [hc1] using hfa)
     (by simpa only [hc2] using hfc₁) s₁ hε
-    (show (0 : ℝ) < 1 / 4 by norm_num)
+    hσ
   have hrightF := hright.1
   simp only [hc1, hc2, hcoord2] at hrightF
   obtain ⟨F, Z, hF, hZ, hJZ, he₀, he₁, heV⟩ :=
     DifferentialGeometry.Analysis.exists_contDiff_glued_near_compact hJ hU₀ hU₁ hV
       hdisj hJcover _ _ _ hleft.1 hrightF hleft.2.1
-      (heq₀ ε ⟨hε, le_rfl⟩) (heq₁ ε ⟨hε, le_rfl⟩)
+      (heq₀ ε hεbound) (heq₁ ε hεbound)
   let W := Z ∩ (U₀ ∪ U₁ ∪ V)
   have hW : IsOpen W := hZ.inter ((hU₀.union hU₁).union hV)
   have hJW : J ⊆ W := fun p hp => ⟨hJZ hp, hJcover hp⟩
@@ -4633,14 +4588,14 @@ private theorem exists_regular_two_edge_affine_triangle_profiles
       simpa only [hc1, hc2, hcoord2] using h)
     have hregV := eqOn_interpolation_fderiv_ne_zero (hW.inter hV) heWV t (fun p => by
       have heFun : (fun q =>
-          (1 - t) * Real.smoothMax (1 / 4) (-b.coord 0 q) (-b.coord 1 q) +
+          (1 - t) * Real.smoothMax σ (-b.coord 0 q) (-b.coord 1 q) +
             t * b.coord 2 q) = fun q => -((1 - (1 - t)) * (-b.coord 2 q) +
-              (1 - t) * (-Real.smoothMax (1 / 4) (-b.coord 0 q) (-b.coord 1 q))) := by
+              (1 - t) * (-Real.smoothMax σ (-b.coord 0 q) (-b.coord 1 q))) := by
         funext q
         simpa only [neg_neg] using pair_interpolation_neg_swap (-b.coord 2 q)
-          (-Real.smoothMax (1 / 4) (-b.coord 0 q) (-b.coord 1 q)) t
+          (-Real.smoothMax σ (-b.coord 0 q) (-b.coord 1 q)) t
       rw [heFun, fderiv_fun_neg, neg_ne_zero]
-      exact barycentric_central_interpolation_fderiv_ne_zero b (1 / 4)
+      exact barycentric_central_interpolation_fderiv_ne_zero b σ
         (by linarith [ht.1]) p)
     intro p hp
     rcases hp.2 with (hp₀ | hp₁) | hpV
@@ -4661,36 +4616,37 @@ private theorem exists_regular_two_edge_affine_triangle_profiles
       · exact Or.inr ⟨hp, hpV⟩) heW₀ heW₁ (by
       intro t ht p hp hz hf
       rw [heW₀ hp] at hz
-      exact interior_subset (hzero₀ ε ⟨hε, le_rfl⟩ t ht p hp.2 hz hf)) (by
+      exact interior_subset (hzero₀ ε hεbound t ht p hp.2 hz hf)) (by
       intro t ht p hp hz hf
       rw [heW₁ hp] at hz
-      exact interior_subset (hzero₁ ε ⟨hε, le_rfl⟩ t ht p hp.2 hz hf)) (by
+      exact interior_subset (hzero₁ ε hεbound t ht p hp.2 hz hf)) (by
       intro t ht p hp hz
       rw [heWV hp] at hz
       exact interior_subset (hKJ (hcentral t ht p hp.2 hz)))
-  refine ⟨ε₀, ε, J, W, F, hε₀, hε, hεle, hJ, hKJ, hW, hJW,
+  refine ⟨W, F, hW, hJW,
     inter_subset_right, hF, heW₀, heW₁, heWV, ?_, ?_, ?_, ?_, ?_, hreg, hprop⟩
   · intro t ht p hp hz
     rw [heWV hp] at hz
     exact hcentral t ht p hp.2 hz
   · intro p hp hpJ
     rw [heW₀ hp]
-    exact houter₀ ε ⟨hε, le_rfl⟩ p hp.2 hpJ
+    exact houter₀ ε hεbound p hp.2 hpJ
   · intro p hp hpJ
     rw [heW₀ hp]
-    exact hbase₀ ε ⟨hε, le_rfl⟩ p hp.2 hpJ
+    exact hbase₀ ε hεbound p hp.2 hpJ
   · intro p hp hpJ
     rw [heW₁ hp]
-    exact houter₁ ε ⟨hε, le_rfl⟩ p hp.2 hpJ
+    exact houter₁ ε hεbound p hp.2 hpJ
   · intro p hp hpJ
     rw [heW₁ hp]
-    exact hbase₁ ε ⟨hε, le_rfl⟩ p hp.2 hpJ
+    exact hbase₁ ε hεbound p hp.2 hpJ
 
 theorem PrePolygon.exists_regular_interpolation_near_two_edge_free_triangle
     {m : ℕ} (P : PrePolygon m)
     (M : LeanEval.Topology.ClassificationOfSurfaces.Moise.TriangleMesh)
     (hfrontier : frontier M.toPlaneComplex.support = P.carrier)
-    (T : M.Triangle) (k : Fin 3) (hfree : M.IsTwoEdgeFreeTriangle T k) :
+    (T : M.Triangle) (k : Fin 3) (hfree : M.IsTwoEdgeFreeTriangle T k)
+    {σ : ℝ} (hσ : 0 < σ) (hσsmall : σ ≤ 1 / 4) :
     let b := LeanEval.Topology.ClassificationOfSurfaces.Moise.affineBasisOfTriangle
       (M.freeTriangleOrder T k) (M.freeTriangleOrder_affineIndependent T k)
     let R := closure (P.carrier \ (segment ℝ (b 0) (b 2) ∪ segment ℝ (b 1) (b 2)))
@@ -4722,7 +4678,7 @@ theorem PrePolygon.exists_regular_interpolation_near_two_edge_free_triangle
         (-(f₁ (b 2) / f₁ (b 0) * (s₁ * (f₁ p - Real.smoothMax ε (f₁ p) 0) +
           Real.smoothMax ε (f₁ p) 0 / f₁ (b 2) - b.coord 2 p)),
           -(s₁ * (f₁ p - Real.smoothMax ε (f₁ p) 0) - b.coord 2 p))) (W ∩ U₁) ∧
-      EqOn F (fun p => (Real.smoothMax (1 / 4) (-b.coord 0 p) (-b.coord 1 p),
+      EqOn F (fun p => (Real.smoothMax σ (-b.coord 0 p) (-b.coord 1 p),
         b.coord 2 p)) (W ∩ V) ∧
       (∀ t ∈ Icc (0 : ℝ) 1, ∀ p ∈ W ∩ V,
         (1 - t) * (F p).1 + t * (F p).2 = 0 → p ∈ M.triangleCarrier T.1) ∧
@@ -4758,13 +4714,15 @@ theorem PrePolygon.exists_regular_interpolation_near_two_edge_free_triangle
   have hKN : convexHull ℝ (range b) \ {b 0, b 1} ⊆ N := by
     rw [htriangle]
     exact hNC
-  obtain ⟨ε₀, ε, J, W, F, hε₀, hε, hεle, hJ, hTJ, hW, hJW,
-      hcover, hF, heW₀, heW₁, heWV, hzeroC, houter₀, hbase₀, houter₁, hbase₁,
-      hreg, hprop⟩ :=
+  obtain ⟨ε₀, ε, J, hε₀, hε, _, hεle, hJ, hTJ, hprofiles⟩ :=
     exists_regular_two_edge_affine_triangle_profiles b f₀ f₁ hf₀ hfb hfc₀ hf₁ hfa hfc₁
       (b.coord 2 v₀ / f₀ v₀) (b.coord 2 v₁ / f₁ v₁)
       (O₀ := ball (b 0) r₀) (O₁ := ball (b 1) r₁)
       isOpen_ball isOpen_ball (mem_ball_self hr₀) (mem_ball_self hr₁) N hN hKN
+        (show (0 : ℝ) < 1 by norm_num)
+  obtain ⟨W, F, hW, hJW, hcover, hF, heW₀, heW₁, heWV, hzeroC,
+      houter₀, hbase₀, houter₁, hbase₁, hreg, hprop⟩ :=
+    hprofiles σ ⟨hσ, hσsmall⟩ ε ⟨hε, le_rfl⟩
   rw [htriangle] at hTJ hzeroC
   have hsides (p : Plane) (hp : p ∈ W) (hpJ : p ∉ interior J) :
       ((p ∈ M.toPlaneComplex.support ↔ (F p).1 ≤ 0) ∧
@@ -4790,7 +4748,7 @@ theorem PrePolygon.exists_regular_interpolation_near_two_edge_free_triangle
         hraw.2.2.2.2.2.trans hn.2.2.symm⟩
     · have hpT : p ∉ M.triangleCarrier T.1 := fun h => hpJ (hTJ h)
       have hsame := mesh_erase_triangle_sides_of_not_mem M T hpT
-      have hsign := interpolation_signs_eq_of_ne_zero
+      have hsign := linear_interpolation_signs_eq_of_ne_zero
         (fun t ht hz => hpT (hzeroC t ht p ⟨hp, hpV⟩ hz))
       have hnew := (hNsides p hpV.2).2
       have hF₂ : (F p).2 = b.coord 2 p := congrArg Prod.snd (heWV ⟨hp, hpV⟩)
