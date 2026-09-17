@@ -217,3 +217,19 @@ F 车道的 `LocallyFinitePieceTower`（F6.3）已经给了非紧 PL 流形的�
 
 至此欧氏目标的逼近层完整：绝对版、相对版、以及仿射还原引理。**剩下的是把目标从赋范空间换成 PL 3-流形**，
 按图卡归约；难点是像跨图卡时的拼接，F 车道的 `Topology/Pasting.lean` 与 `SingularPasting.lean` 是为这类拼接建的。
+
+## 单图卡的流形版逼近已证（2026-09-16 夜）
+
+`ManifoldApproximation.lean` 的 `exists_isPLOn_dist_lt_of_mapsTo_chart`：`P ⊆ ℝⁿ` 紧致多面体、
+`N` 为带 `plGroupoid m` 的度量流形、`f : ℝⁿ → N` 在 `P` 上连续且把 `P` 映进某张极大图册里的图卡 `e` 的定义域、
+`ε > 0`，则存在 `g` 使 `IsPLOn n m g P` 且 `∀ x ∈ P, dist (g x) (f x) < ε`。审计仅标准三公理。
+
+关键步骤：`e ∘ f` 的像紧致且含于开集 `e.target`，用 `IsCompact.exists_thickening_subset_open` 取余量 `r`；
+在闭厚化 `cthickening (r/2)`（紧致）上 `e.symm` 一致连续，取 `δ`；用欧氏版逼近以 `min δ (r/2)` 逼近 `e ∘ f`，
+所得 `g'` 仍落在 `e.target` 内；`g := e.symm ∘ g'`，PL 性由 F 车道的
+`isPLOn_iff_isPiecewiseAffineOn_comp_chart` 给出，误差由 `e.symm` 的一致连续性给出。
+
+**逼近层的剩余部分只有一件**：像跨多张图卡时的整体版本。书里每次用"设某映射是 PL 的"时，像通常不在单张图卡里，
+所以还要做覆盖归纳：把 `P` 剖分成有限块使每块的像落在一张图卡内，逐块逼近并在交界处拼接。
+F 车道的 `Topology/Pasting.lean` 与 `SingularPasting.lean` 正是为这种"改一块、界外不变、保住纤维"的拼接建的。
+相对版（本轮已证的 `exists_isPiecewiseAffineOn_dist_lt_eqOn`）是归纳步骤的关键：逐块处理时前面已处理的部分要保持不动。
