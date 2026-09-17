@@ -1596,23 +1596,33 @@ private lemma eLpNorm_weakGrad_component_le_norm_real
   exact eLpNorm_mono_measure _ (Measure.restrict_mono_set _ hS)
 
 
-private theorem morrey_representative_of_W1pWitness
+private theorem morrey_representative_of_W1pWitness_uniform
     {d : ℕ} [NeZero d] {p : ℝ} (hp : (d : ℝ) < p)
-    {x₀ : EuclideanSpace ℝ (Fin d)} {R : ℝ} (hR : 0 < R)
-    {u : EuclideanSpace ℝ (Fin d) → ℝ}
-    (hu : DeGiorgi.MemW1pWitness (ENNReal.ofReal p) u (Metric.ball x₀ R)) :
-    ∃ (ũ : EuclideanSpace ℝ (Fin d) → ℝ) (CHolder Csup : ℝ),
-      Continuous ũ ∧ 0 ≤ CHolder ∧ 0 ≤ Csup ∧
-      (∀ᵐ z ∂(volume.restrict (Metric.ball x₀ (R / 4))), ũ z = u z) ∧
-      (∀ x ∈ Metric.ball x₀ (R / 4), ∀ y ∈ Metric.ball x₀ (R / 4),
-        ‖ũ x - ũ y‖ ≤ CHolder * (dist x y) ^ (1 - (d : ℝ) / p) *
-          (eLpNorm (fun z => ‖hu.weakGrad z‖) (ENNReal.ofReal p)
-            (volume.restrict (Metric.ball x₀ R))).toReal) ∧
-      (∀ x ∈ Metric.ball x₀ (R / 4), ‖ũ x‖ ≤ Csup * (
-        (eLpNorm u (ENNReal.ofReal p) (volume.restrict (Metric.ball x₀ R))).toReal +
-        (eLpNorm (fun z => ‖hu.weakGrad z‖) (ENNReal.ofReal p)
-          (volume.restrict (Metric.ball x₀ R))).toReal)) := by
+    {x₀ : EuclideanSpace ℝ (Fin d)} {R : ℝ} (hR : 0 < R) :
+    ∃ CHolder Csup : ℝ, 0 ≤ CHolder ∧ 0 ≤ Csup ∧
+      ∀ {u : EuclideanSpace ℝ (Fin d) → ℝ}
+        (hu : DeGiorgi.MemW1pWitness (ENNReal.ofReal p) u (Metric.ball x₀ R)),
+        ∃ ũ : EuclideanSpace ℝ (Fin d) → ℝ,
+          Continuous ũ ∧
+          (∀ᵐ z ∂(volume.restrict (Metric.ball x₀ (R / 4))), ũ z = u z) ∧
+          (∀ x ∈ Metric.ball x₀ (R / 4), ∀ y ∈ Metric.ball x₀ (R / 4),
+            ‖ũ x - ũ y‖ ≤ CHolder * (dist x y) ^ (1 - (d : ℝ) / p) *
+              (eLpNorm (fun z => ‖hu.weakGrad z‖) (ENNReal.ofReal p)
+                (volume.restrict (Metric.ball x₀ R))).toReal) ∧
+          (∀ x ∈ Metric.ball x₀ (R / 4), ‖ũ x‖ ≤ Csup * (
+            (eLpNorm u (ENNReal.ofReal p) (volume.restrict (Metric.ball x₀ R))).toReal +
+            (eLpNorm (fun z => ‖hu.weakGrad z‖) (ENNReal.ofReal p)
+              (volume.restrict (Metric.ball x₀ R))).toReal)) := by
   classical
+  have hR34 : 0 < 3 * R / 4 := by linarith
+  obtain ⟨C_sup_smooth, hC_sup_nn, h_sup_bound⟩ :=
+    smooth_morrey_sup_bound_uniform (d := d) hp hR34 (x₀ := x₀)
+  obtain ⟨C_pair_smooth, hC_pair_nn, h_pair_bound⟩ :=
+    smooth_morrey_pair_bound_uniform (d := d) hp hR34 (x₀ := x₀)
+  refine ⟨(d : ℝ) * C_pair_smooth, ((d : ℝ) + 1) * C_sup_smooth,
+    mul_nonneg (Nat.cast_nonneg d) hC_pair_nn,
+    mul_nonneg (by positivity) hC_sup_nn, ?_⟩
+  intro u hu
   have hd_pos : (0 : ℝ) < d := Nat.cast_pos.mpr (NeZero.pos d)
   have hd_one_le : (1 : ℝ) ≤ d :=
     by exact_mod_cast (Nat.one_le_iff_ne_zero.mpr (NeZero.ne d))
@@ -1673,10 +1683,6 @@ private theorem morrey_representative_of_W1pWitness
   have h_chi_one_on_R4 : ∀ z ∈ Metric.ball x₀ (R / 4), χ z = 1 := fun z hz => by
     apply hχ_one
     rw [Metric.mem_ball] at hz; rw [Metric.mem_closedBall]; linarith
-  obtain ⟨C_sup_smooth, hC_sup_nn, h_sup_bound⟩ :=
-    smooth_morrey_sup_bound_uniform (d := d) hp h_R34_pos (x₀ := x₀)
-  obtain ⟨C_pair_smooth, hC_pair_nn, h_pair_bound⟩ :=
-    smooth_morrey_pair_bound_uniform (d := d) hp h_R34_pos (x₀ := x₀)
   have h_eta_u_memLp_R : MemLp (fun z => η z * u z) (ENNReal.ofReal p)
       (volume.restrict (Metric.ball x₀ R)) := hw'.memLp
   have h_phi_memLp_R : ∀ n, MemLp (φ n) (ENNReal.ofReal p)
@@ -2261,14 +2267,51 @@ private theorem morrey_representative_of_W1pWitness
         mul_le_mul_of_nonneg_left h_factor_le hC_sup_nn
       linarith
     exact h_C_left.trans h_C_right
-  refine ⟨ũ, (d : ℝ) * C_pair_smooth, ((d : ℝ) + 1) * C_sup_smooth, hũ_cont, ?_, ?_, h_ae_eq, ?_,
-    ?_⟩
-  · exact mul_nonneg hd_pos.le hC_pair_nn
-  · exact mul_nonneg (by linarith) hC_sup_nn
+  refine ⟨ũ, hũ_cont, h_ae_eq, ?_, ?_⟩
   · intro x hx y hy
     exact h_holder_ũ x hx y hy
   · intro x hx
     exact h_sup_ũ x hx
+
+private theorem morrey_representative_of_W1pWitness
+    {d : ℕ} [NeZero d] {p : ℝ} (hp : (d : ℝ) < p)
+    {x₀ : EuclideanSpace ℝ (Fin d)} {R : ℝ} (hR : 0 < R)
+    {u : EuclideanSpace ℝ (Fin d) → ℝ}
+    (hu : DeGiorgi.MemW1pWitness (ENNReal.ofReal p) u (Metric.ball x₀ R)) :
+    ∃ (ũ : EuclideanSpace ℝ (Fin d) → ℝ) (CHolder Csup : ℝ),
+      Continuous ũ ∧ 0 ≤ CHolder ∧ 0 ≤ Csup ∧
+      (∀ᵐ z ∂(volume.restrict (Metric.ball x₀ (R / 4))), ũ z = u z) ∧
+      (∀ x ∈ Metric.ball x₀ (R / 4), ∀ y ∈ Metric.ball x₀ (R / 4),
+        ‖ũ x - ũ y‖ ≤ CHolder * (dist x y) ^ (1 - (d : ℝ) / p) *
+          (eLpNorm (fun z => ‖hu.weakGrad z‖) (ENNReal.ofReal p)
+            (volume.restrict (Metric.ball x₀ R))).toReal) ∧
+      (∀ x ∈ Metric.ball x₀ (R / 4), ‖ũ x‖ ≤ Csup * (
+        (eLpNorm u (ENNReal.ofReal p) (volume.restrict (Metric.ball x₀ R))).toReal +
+        (eLpNorm (fun z => ‖hu.weakGrad z‖) (ENNReal.ofReal p)
+          (volume.restrict (Metric.ball x₀ R))).toReal)) := by
+  obtain ⟨CHolder, Csup, hCHolder, hCsup, h⟩ :=
+    morrey_representative_of_W1pWitness_uniform (d := d) hp hR
+  obtain ⟨ũ, hũ, hũae, hholder, hsup⟩ := h hu
+  exact ⟨ũ, CHolder, Csup, hũ, hCHolder, hCsup, hũae, hholder, hsup⟩
+
+theorem morrey_holder_representative_uniform
+    {d : ℕ} [NeZero d] {p : ℝ} (hp : (d : ℝ) < p)
+    {x₀ : EuclideanSpace ℝ (Fin d)} {R : ℝ} (hR : 0 < R) :
+    ∃ C : ℝ, 0 ≤ C ∧
+      ∀ {u : EuclideanSpace ℝ (Fin d) → ℝ}
+        (hu : DeGiorgi.MemW1pWitness (ENNReal.ofReal p) u (Metric.ball x₀ R)),
+        ∃ ũ : EuclideanSpace ℝ (Fin d) → ℝ,
+          Continuous ũ ∧
+          (∀ᵐ z ∂(volume.restrict (Metric.ball x₀ (R / 4))), ũ z = u z) ∧
+          (∀ x ∈ Metric.ball x₀ (R / 4), ∀ y ∈ Metric.ball x₀ (R / 4),
+            ‖ũ x - ũ y‖ ≤ C * (dist x y) ^ (1 - (d : ℝ) / p) *
+              (eLpNorm (fun z => ‖hu.weakGrad z‖) (ENNReal.ofReal p)
+                (volume.restrict (Metric.ball x₀ R))).toReal) := by
+  obtain ⟨C, _, hC, _, h⟩ := morrey_representative_of_W1pWitness_uniform (d := d) hp hR
+  refine ⟨C, hC, ?_⟩
+  intro u hu
+  obtain ⟨ũ, hũ, hũae, hholder, _⟩ := h hu
+  exact ⟨ũ, hũ, hũae, hholder⟩
 
 theorem morrey_holder_representative
     {d : ℕ} [NeZero d] {p : ℝ} (hp : (d : ℝ) < p)
