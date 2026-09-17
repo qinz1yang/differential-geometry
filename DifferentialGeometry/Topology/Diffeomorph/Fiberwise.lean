@@ -1,4 +1,6 @@
+import DifferentialGeometry.Topology.FiberwiseHomeomorph
 import Mathlib.Geometry.Manifold.Diffeomorph
+import Mathlib.Geometry.Manifold.LocalDiffeomorph
 import Mathlib.Logic.Equiv.Prod
 
 open scoped Manifold ContDiff
@@ -120,6 +122,134 @@ theorem prodCongrRight_symm (e : P → Diffeomorph J K M N n)
   intro p
   rfl
 
+def prodCongrLeft (e : P → Diffeomorph J K M N n)
+    (he : ContMDiff (J.prod I) K n (fun z : M × P => e z.2 z.1))
+    (hi : ContMDiff (K.prod I) J n (fun z : N × P => (e z.2).symm z.1)) :
+    Diffeomorph (J.prod I) (K.prod I) (M × P) (N × P) n where
+  toEquiv := Equiv.prodCongrLeft (fun p => (e p).toEquiv)
+  contMDiff_toFun := he.prodMk contMDiff_snd
+  contMDiff_invFun := hi.prodMk contMDiff_snd
+
+@[simp] theorem prodCongrLeft_apply (e : P → Diffeomorph J K M N n)
+    (he : ContMDiff (J.prod I) K n (fun z : M × P => e z.2 z.1))
+    (hi : ContMDiff (K.prod I) J n (fun z : N × P => (e z.2).symm z.1)) (p : M × P) :
+    prodCongrLeft e he hi p = (e p.2 p.1, p.2) := rfl
+
+@[simp] theorem prodCongrLeft_symm_apply (e : P → Diffeomorph J K M N n)
+    (he : ContMDiff (J.prod I) K n (fun z : M × P => e z.2 z.1))
+    (hi : ContMDiff (K.prod I) J n (fun z : N × P => (e z.2).symm z.1)) (p : N × P) :
+    (prodCongrLeft e he hi).symm p = ((e p.2).symm p.1, p.2) := rfl
+
+
 end ProdCongrRight
+
+end Diffeomorph
+
+namespace PartialDiffeomorph
+
+variable {𝕜 E F : Type*} [NontriviallyNormedField 𝕜]
+  [NormedAddCommGroup E] [NormedSpace 𝕜 E]
+  [NormedAddCommGroup F] [NormedSpace 𝕜 F]
+  {n : ℕ∞ω} {f : F → 𝕜}
+
+def fiberwiseSmulOn {U : Set F} (hU : IsOpen U) (hf : ContDiffOn 𝕜 n f U)
+    (h₀ : ∀ b ∈ U, f b ≠ 0) :
+    PartialDiffeomorph 𝓘(𝕜, E × F) 𝓘(𝕜, E × F) (E × F) (E × F) n where
+  toFun p := (f p.2 • p.1, p.2)
+  invFun p := ((f p.2)⁻¹ • p.1, p.2)
+  source := Prod.snd ⁻¹' U
+  target := Prod.snd ⁻¹' U
+  map_source' _ hp := hp
+  map_target' _ hp := hp
+  left_inv' p hp := by simp only [smul_smul, inv_mul_cancel₀ (h₀ p.2 hp), one_smul]
+  right_inv' p hp := by simp only [smul_smul, mul_inv_cancel₀ (h₀ p.2 hp), one_smul]
+  open_source := hU.preimage continuous_snd
+  open_target := hU.preimage continuous_snd
+  contMDiffOn_toFun :=
+    (((hf.comp contDiff_snd.contDiffOn (fun _ hp => hp)).smul
+      contDiff_fst.contDiffOn).prodMk contDiff_snd.contDiffOn).contMDiffOn
+  contMDiffOn_invFun :=
+    ((((hf.inv h₀).comp contDiff_snd.contDiffOn (fun _ hp => hp)).smul
+      contDiff_fst.contDiffOn).prodMk contDiff_snd.contDiffOn).contMDiffOn
+
+@[simp] theorem fiberwiseSmulOn_apply {U : Set F} (hU : IsOpen U)
+    (hf : ContDiffOn 𝕜 n f U) (h₀ : ∀ b ∈ U, f b ≠ 0) (p : E × F) :
+    fiberwiseSmulOn hU hf h₀ p = (f p.2 • p.1, p.2) := rfl
+
+theorem fiberwiseSmulOn_symm_apply {U : Set F} (hU : IsOpen U)
+    (hf : ContDiffOn 𝕜 n f U) (h₀ : ∀ b ∈ U, f b ≠ 0) (p : E × F) :
+    (fiberwiseSmulOn hU hf h₀).symm p = ((f p.2)⁻¹ • p.1, p.2) := rfl
+
+@[simp] theorem fiberwiseSmulOn_source {U : Set F} (hU : IsOpen U)
+    (hf : ContDiffOn 𝕜 n f U) (h₀ : ∀ b ∈ U, f b ≠ 0) :
+    (fiberwiseSmulOn (E := E) hU hf h₀).source = Prod.snd ⁻¹' U := rfl
+
+@[simp] theorem fiberwiseSmulOn_target {U : Set F} (hU : IsOpen U)
+    (hf : ContDiffOn 𝕜 n f U) (h₀ : ∀ b ∈ U, f b ≠ 0) :
+    (fiberwiseSmulOn (E := E) hU hf h₀).target = Prod.snd ⁻¹' U := rfl
+
+def fiberwiseSmul (hf : ContDiff 𝕜 n f) :
+    PartialDiffeomorph 𝓘(𝕜, E × F) 𝓘(𝕜, E × F) (E × F) (E × F) n :=
+  fiberwiseSmulOn (isOpen_ne_fun hf.continuous continuous_const) hf.contDiffOn (fun _ h => h)
+
+@[simp] theorem fiberwiseSmul_apply (hf : ContDiff 𝕜 n f) (p : E × F) :
+    fiberwiseSmul hf p = (f p.2 • p.1, p.2) := rfl
+
+theorem fiberwiseSmul_symm_apply (hf : ContDiff 𝕜 n f) (p : E × F) :
+    (fiberwiseSmul hf).symm p = ((f p.2)⁻¹ • p.1, p.2) := rfl
+
+@[simp] theorem fiberwiseSmul_source (hf : ContDiff 𝕜 n f) :
+    (fiberwiseSmul (E := E) hf).source = {p | f p.2 ≠ 0} := rfl
+
+@[simp] theorem fiberwiseSmul_target (hf : ContDiff 𝕜 n f) :
+    (fiberwiseSmul (E := E) hf).target = {p | f p.2 ≠ 0} := rfl
+
+end PartialDiffeomorph
+
+namespace Diffeomorph
+
+section RestrictFiber
+
+variable {𝕜 : Type*} [NontriviallyNormedField 𝕜]
+  {E F G : Type*}
+  [NormedAddCommGroup E] [NormedSpace 𝕜 E]
+  [NormedAddCommGroup F] [NormedSpace 𝕜 F]
+  [NormedAddCommGroup G] [NormedSpace 𝕜 G]
+  {H H' H'' : Type*} [TopologicalSpace H] [TopologicalSpace H'] [TopologicalSpace H'']
+  {I : ModelWithCorners 𝕜 E H} {J : ModelWithCorners 𝕜 F H'} {K : ModelWithCorners 𝕜 G H''}
+  {M N P : Type*} [TopologicalSpace M] [TopologicalSpace N] [TopologicalSpace P]
+  [ChartedSpace H M] [ChartedSpace H' N] [ChartedSpace H'' P] {n : ℕ∞ω}
+
+theorem snd_symm_eq_of_snd_eq (Φ : (M × P) ≃ₘ^n⟮I.prod K, J.prod K⟯ (N × P))
+    (hΦ : ∀ q, (Φ q).2 = q.2) (q : N × P) : (Φ.symm q).2 = q.2 :=
+  (hΦ (Φ.symm q)).symm.trans (congrArg Prod.snd (Φ.apply_symm_apply q))
+
+def restrictFiber (Φ : (M × P) ≃ₘ^n⟮I.prod K, J.prod K⟯ (N × P))
+    (hΦ : ∀ q, (Φ q).2 = q.2) (p : P) : M ≃ₘ^n⟮I, J⟯ N where
+  toEquiv := (Φ.toHomeomorph.restrictFiber hΦ p).toEquiv
+  contMDiff_toFun := (Φ.contMDiff.comp (contMDiff_id.prodMk contMDiff_const)).fst
+  contMDiff_invFun := (Φ.symm.contMDiff.comp (contMDiff_id.prodMk contMDiff_const)).fst
+
+@[simp] theorem restrictFiber_apply
+    (Φ : (M × P) ≃ₘ^n⟮I.prod K, J.prod K⟯ (N × P))
+    (hΦ : ∀ q, (Φ q).2 = q.2) (p : P) (x : M) :
+    Φ.restrictFiber hΦ p x = (Φ (x, p)).1 := rfl
+
+@[simp] theorem restrictFiber_symm_apply
+    (Φ : (M × P) ≃ₘ^n⟮I.prod K, J.prod K⟯ (N × P))
+    (hΦ : ∀ q, (Φ q).2 = q.2) (p : P) (y : N) :
+    (Φ.restrictFiber hΦ p).symm y = (Φ.symm (y, p)).1 := rfl
+
+theorem contMDiff_restrictFiber
+    (Φ : (M × P) ≃ₘ^n⟮I.prod K, J.prod K⟯ (N × P)) (hΦ : ∀ q, (Φ q).2 = q.2) :
+    ContMDiff (K.prod I) J n (fun q : P × M => Φ.restrictFiber hΦ q.1 q.2) :=
+  (Φ.contMDiff.comp (contMDiff_snd.prodMk contMDiff_fst)).fst
+
+theorem contMDiff_restrictFiber_symm
+    (Φ : (M × P) ≃ₘ^n⟮I.prod K, J.prod K⟯ (N × P)) (hΦ : ∀ q, (Φ q).2 = q.2) :
+    ContMDiff (K.prod J) I n (fun q : P × N => (Φ.restrictFiber hΦ q.1).symm q.2) :=
+  (Φ.symm.contMDiff.comp (contMDiff_snd.prodMk contMDiff_fst)).fst
+
+end RestrictFiber
 
 end Diffeomorph

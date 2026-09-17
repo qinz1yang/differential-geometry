@@ -80,3 +80,43 @@ theorem prod_Icc_subset_range_of_fiberwise_bijective
   exact ⟨Φ.symm (p, t), Prod.ext (hfirst (p, t)) ht⟩
 
 end DifferentialGeometry.Topology
+
+namespace Homeomorph
+
+variable {M N P : Type*} [TopologicalSpace M] [TopologicalSpace N] [TopologicalSpace P]
+
+theorem snd_symm_eq_of_snd_eq (Φ : (M × P) ≃ₜ (N × P))
+    (hΦ : ∀ q, (Φ q).2 = q.2) (q : N × P) : (Φ.symm q).2 = q.2 :=
+  (hΦ (Φ.symm q)).symm.trans (congrArg Prod.snd (Φ.apply_symm_apply q))
+
+def restrictFiber (Φ : (M × P) ≃ₜ (N × P)) (hΦ : ∀ q, (Φ q).2 = q.2) (p : P) : M ≃ₜ N where
+  toFun x := (Φ (x, p)).1
+  invFun y := (Φ.symm (y, p)).1
+  left_inv x := by
+    have h : ((Φ (x, p)).1, p) = Φ (x, p) := Prod.ext rfl (hΦ (x, p)).symm
+    change (Φ.symm ((Φ (x, p)).1, p)).1 = x
+    rw [h, Φ.symm_apply_apply]
+  right_inv y := by
+    have h : ((Φ.symm (y, p)).1, p) = Φ.symm (y, p) :=
+      Prod.ext rfl (Φ.snd_symm_eq_of_snd_eq hΦ (y, p)).symm
+    change (Φ ((Φ.symm (y, p)).1, p)).1 = y
+    rw [h, Φ.apply_symm_apply]
+  continuous_toFun := (Φ.continuous.comp (continuous_id.prodMk continuous_const)).fst
+  continuous_invFun := (Φ.symm.continuous.comp (continuous_id.prodMk continuous_const)).fst
+
+@[simp] theorem restrictFiber_apply (Φ : (M × P) ≃ₜ (N × P))
+    (hΦ : ∀ q, (Φ q).2 = q.2) (p : P) (x : M) : Φ.restrictFiber hΦ p x = (Φ (x, p)).1 := rfl
+
+@[simp] theorem restrictFiber_symm_apply (Φ : (M × P) ≃ₜ (N × P))
+    (hΦ : ∀ q, (Φ q).2 = q.2) (p : P) (y : N) :
+    (Φ.restrictFiber hΦ p).symm y = (Φ.symm (y, p)).1 := rfl
+
+theorem continuous_restrictFiber (Φ : (M × P) ≃ₜ (N × P)) (hΦ : ∀ q, (Φ q).2 = q.2) :
+    Continuous (fun q : P × M => Φ.restrictFiber hΦ q.1 q.2) :=
+  (Φ.continuous.comp (continuous_snd.prodMk continuous_fst)).fst
+
+theorem continuous_restrictFiber_symm (Φ : (M × P) ≃ₜ (N × P)) (hΦ : ∀ q, (Φ q).2 = q.2) :
+    Continuous (fun q : P × N => (Φ.restrictFiber hΦ q.1).symm q.2) :=
+  (Φ.symm.continuous.comp (continuous_snd.prodMk continuous_fst)).fst
+
+end Homeomorph
