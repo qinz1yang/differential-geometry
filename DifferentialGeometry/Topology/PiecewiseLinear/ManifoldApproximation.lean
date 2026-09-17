@@ -104,4 +104,81 @@ theorem exists_isPLOn_dist_lt_eqOn_of_mapsTo_chart {n m : ℕ} {N : Type*} [Metr
       (lt_of_lt_of_le (hg'dist x hx) (min_le_left _ _))
     simpa only [Function.comp_apply, e.left_inv (hmap hx)] using this
 
+theorem exists_pos_forall_exists_isPLOn_dist_lt_eqOn_of_mapsTo_chart {n m : ℕ} {N : Type*}
+    [MetricSpace N] [ChartedSpace (EuclideanSpace ℝ (Fin m)) N] [HasGroupoid N (plGroupoid m)]
+    {P Q : Set (EuclideanSpace ℝ (Fin n))} (hP : IsPolyhedron P) (hPc : IsCompact P)
+    (hQ : IsPolyhedron Q) (hQP : Q ⊆ P)
+    {f : EuclideanSpace ℝ (Fin n) → N} (hf : ContinuousOn f P)
+    (e : OpenPartialHomeomorph N (EuclideanSpace ℝ (Fin m)))
+    (he : e ∈ (plGroupoid m).maximalAtlas N) (hmap : MapsTo f P e.source)
+    {ε : ℝ} (hε : 0 < ε) :
+    ∃ η > 0, ∀ u : EuclideanSpace ℝ (Fin n) → N, IsPLOn n m u Q →
+      (∀ x ∈ Q, dist (u x) (f x) < η) →
+        ∃ g : EuclideanSpace ℝ (Fin n) → N, IsPLOn n m g P ∧ EqOn g u Q ∧
+          ∀ x ∈ P, dist (g x) (f x) < ε := by
+  classical
+  have hφc : ContinuousOn (e ∘ f) P := e.continuousOn.comp hf hmap
+  have himg : IsCompact ((e ∘ f) '' P) := hPc.image_of_continuousOn hφc
+  have hsub : (e ∘ f) '' P ⊆ e.target := by
+    rintro _ ⟨x, hx, rfl⟩
+    exact e.map_source (hmap hx)
+  obtain ⟨r, hr, hrsub⟩ := himg.exists_thickening_subset_open e.open_target hsub
+  set C := cthickening (r / 2) ((e ∘ f) '' P) with hC
+  have hCsub : C ⊆ e.target := (cthickening_subset_thickening' hr (by linarith) _).trans hrsub
+  have hCcompact : IsCompact C := himg.cthickening
+  obtain ⟨δ₁, hδ₁, hδ₁close⟩ :=
+    Metric.uniformContinuousOn_iff.mp
+      (hCcompact.uniformContinuousOn_of_continuous (e.symm.continuousOn.mono hCsub)) ε hε
+  set δ := min δ₁ (r / 2) with hδdef
+  have hδ : 0 < δ := lt_min hδ₁ (by linarith)
+  have hδ2 : (0 : ℝ) < δ / 2 := by linarith
+  have hfimg : IsCompact (f '' P) := hPc.image_of_continuousOn hf
+  have hfsub : f '' P ⊆ e.source := by
+    rintro _ ⟨x, hx, rfl⟩
+    exact hmap hx
+  have hloc : LocallyCompactSpace N := ChartedSpace.locallyCompactSpace (EuclideanSpace ℝ (Fin m)) N
+  obtain ⟨D, hDcompact, hfD, hDsub⟩ := exists_compact_between hfimg e.open_source hfsub
+  obtain ⟨ρ, hρ, hρsub⟩ := hfimg.exists_thickening_subset_open isOpen_interior hfD
+  obtain ⟨η₀, hη₀, hη₀close⟩ :=
+    Metric.uniformContinuousOn_iff.mp
+      (hDcompact.uniformContinuousOn_of_continuous (e.continuousOn.mono hDsub)) (δ / 2) hδ2
+  refine ⟨min η₀ ρ, lt_min hη₀ hρ, ?_⟩
+  intro u hu hclose
+  have hfmem : ∀ x ∈ P, f x ∈ D := fun x hx => interior_subset (hfD ⟨x, hx, rfl⟩)
+  have humem : ∀ x ∈ Q, u x ∈ D := by
+    intro x hx
+    refine interior_subset (hρsub (Metric.mem_thickening_iff.mpr ⟨f x, ⟨x, hQP hx, rfl⟩, ?_⟩))
+    exact lt_of_lt_of_le (hclose x hx) (min_le_right _ _)
+  have humap : MapsTo u Q e.source := fun x hx => hDsub (humem x hx)
+  have hchartclose : ∀ x ∈ Q, dist ((e ∘ u) x) ((e ∘ f) x) ≤ δ / 2 := fun x hx =>
+    le_of_lt (hη₀close (u x) (humem x hx) (f x) (hfmem x (hQP hx))
+      (lt_of_lt_of_le (hclose x hx) (min_le_left _ _)))
+  have hψQ : IsPiecewiseAffineOn (e ∘ u) Q :=
+    (isPLOn_iff_isPiecewiseAffineOn_comp_chart e he humap).mp hu
+  obtain ⟨g', hg'pa, hg'eq, hg'dist⟩ :=
+    exists_isPiecewiseAffineOn_dist_lt_eqOn_of_dist_le (δ := δ / 2) (ε := δ / 2)
+      hP hQ hQP hPc hφc hψQ hδ2.le hchartclose hδ2
+  have hg'lt : ∀ x ∈ P, dist (g' x) ((e ∘ f) x) < δ := by
+    intro x hx
+    have h := hg'dist x hx
+    linarith
+  have hg'mem : ∀ x ∈ P, g' x ∈ C := by
+    intro x hx
+    refine mem_cthickening_of_dist_le _ _ (r / 2) _ ⟨x, hx, rfl⟩ ?_
+    exact le_of_lt (lt_of_lt_of_le (hg'lt x hx) (min_le_right _ _))
+  have hφmem : ∀ x ∈ P, (e ∘ f) x ∈ C := fun x hx => self_subset_cthickening _ ⟨x, hx, rfl⟩
+  have hg'target : MapsTo g' P e.target := fun x hx => hCsub (hg'mem x hx)
+  refine ⟨fun y => e.symm (g' y), ?_, ?_, ?_⟩
+  · have hmapsTo : MapsTo (fun y => e.symm (g' y)) P e.source := fun x hx =>
+      e.map_target (hg'target hx)
+    rw [isPLOn_iff_isPiecewiseAffineOn_comp_chart e he hmapsTo]
+    exact hg'pa.congr (fun x hx => e.right_inv (hg'target hx))
+  · intro x hx
+    simp only [hg'eq hx, Function.comp_apply]
+    exact e.left_inv (humap hx)
+  · intro x hx
+    have h := hδ₁close (g' x) (hg'mem x hx) ((e ∘ f) x) (hφmem x hx)
+      (lt_of_lt_of_le (hg'lt x hx) (min_le_left _ _))
+    simpa only [Function.comp_apply, e.left_inv (hmap hx)] using h
+
 end DifferentialGeometry.Topology.PiecewiseLinear
