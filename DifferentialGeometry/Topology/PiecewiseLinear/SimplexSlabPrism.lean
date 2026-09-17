@@ -37,12 +37,12 @@ private def simplexSlabArrangement (ℓ : (ι → ℝ) →ₗ[ℝ] ℝ) (a b : �
     ![(∑ i, (LinearMap.proj i : (ι → ℝ) →ₗ[ℝ] ℝ)).toAffineMap - AffineMap.const ℝ _ 1,
       0, ℓ.toAffineMap - AffineMap.const ℝ _ a, ℓ.toAffineMap - AffineMap.const ℝ _ b]
 
-private def simplexPrismArrangement (ℓ : (ι → ℝ) →ₗ[ℝ] ℝ) (a b : ℝ) :
+private def simplexPrismArrangement (ℓ : (ι → ℝ) →ₗ[ℝ] ℝ) (a b r : ℝ) :
     ι ⊕ Fin 4 → ((ι → ℝ) × ℝ) →ᵃ[ℝ] ℝ :=
   Sum.elim (fun i => ((LinearMap.proj i).comp (LinearMap.fst ℝ (ι → ℝ) ℝ)).toAffineMap)
     ![((∑ i, (LinearMap.proj i : (ι → ℝ) →ₗ[ℝ] ℝ)).comp
         (LinearMap.fst ℝ (ι → ℝ) ℝ)).toAffineMap - AffineMap.const ℝ _ 1,
-      (ℓ.comp (LinearMap.fst ℝ (ι → ℝ) ℝ)).toAffineMap - AffineMap.const ℝ _ a,
+      (ℓ.comp (LinearMap.fst ℝ (ι → ℝ) ℝ)).toAffineMap - AffineMap.const ℝ _ r,
       (LinearMap.snd ℝ (ι → ℝ) ℝ).toAffineMap - AffineMap.const ℝ _ a,
       (LinearMap.snd ℝ (ι → ℝ) ℝ).toAffineMap - AffineMap.const ℝ _ b]
 
@@ -53,10 +53,10 @@ private theorem simplexSlabArrangement_apply (ℓ : (ι → ℝ) →ₗ[ℝ] ℝ
   · rfl
   · fin_cases i <;> simp [simplexSlabArrangement]
 
-private theorem simplexPrismArrangement_apply (ℓ : (ι → ℝ) →ₗ[ℝ] ℝ) (a b : ℝ)
+private theorem simplexPrismArrangement_apply (ℓ : (ι → ℝ) →ₗ[ℝ] ℝ) (a b r : ℝ)
     (x : (ι → ℝ) × ℝ) (i : ι ⊕ Fin 4) :
-    simplexPrismArrangement ℓ a b i x =
-      Sum.elim x.1 ![∑ j, x.1 j - 1, ℓ x.1 - a, x.2 - a, x.2 - b] i := by
+    simplexPrismArrangement ℓ a b r i x =
+      Sum.elim x.1 ![∑ j, x.1 j - 1, ℓ x.1 - r, x.2 - a, x.2 - b] i := by
   rcases i with i | i
   · rfl
   · fin_cases i <;> simp [simplexPrismArrangement]
@@ -78,11 +78,11 @@ private theorem isCellClosed_simplexSlab (ℓ : (ι → ℝ) →ₗ[ℝ] ℝ) (a
   · have h := nonpos_of_sign_eq_or_zero (hsign (Sum.inr 3)) (sub_nonpos.mpr hxb)
     exact sub_nonpos.mp h
 
-private theorem isCellClosed_simplexPrism (ℓ : (ι → ℝ) →ₗ[ℝ] ℝ) (a b : ℝ) :
-    IsCellClosed (simplexPrismArrangement ℓ a b)
-      ((stdSimplex ℝ ι ∩ {x | ℓ x = a}) ×ˢ Icc a b) := by
+private theorem isCellClosed_simplexPrism (ℓ : (ι → ℝ) →ₗ[ℝ] ℝ) (a b r : ℝ) :
+    IsCellClosed (simplexPrismArrangement ℓ a b r)
+      ((stdSimplex ℝ ι ∩ {x | ℓ x = r}) ×ˢ Icc a b) := by
   rintro x ⟨⟨hx, hxlevel⟩, hxa, hxb⟩ y hy
-  change ℓ x.1 = a at hxlevel
+  change ℓ x.1 = r at hxlevel
   have hsign (i) := hy i
   simp only [signVec, simplexPrismArrangement_apply] at hsign
   have hsum := hsign (Sum.inr 0)
@@ -91,7 +91,7 @@ private theorem isCellClosed_simplexPrism (ℓ : (ι → ℝ) →ₗ[ℝ] ℝ) (
     have hz := sign_eq_zero_iff.mp (hsum.elim id id)
     linarith
   have hlevel := hsign (Sum.inr 1)
-  have hyzero : ℓ y.1 - a = 0 := by
+  have hyzero : ℓ y.1 - r = 0 := by
     apply sign_eq_zero_iff.mp
     simpa only [Sum.elim_inr, Matrix.cons_val_one, Matrix.cons_val_zero,
       hxlevel, sub_self, sign_zero, or_self] using hlevel
@@ -101,15 +101,15 @@ private theorem isCellClosed_simplexPrism (ℓ : (ι → ℝ) →ₗ[ℝ] ℝ) (
   · exact sub_nonpos.mp (nonpos_of_sign_eq_or_zero (hsign (Sum.inr 3)) (sub_nonpos.mpr hxb))
 
 open Classical in
-private theorem cellsOf_simplexSlab_eq_simplexPrism (ℓ : (ι → ℝ) →ₗ[ℝ] ℝ) {a b : ℝ}
+private theorem cellsOf_simplexSlab_eq_simplexPrism (ℓ : (ι → ℝ) →ₗ[ℝ] ℝ) {a b r : ℝ} (hr : r ∈ Icc a b)
     (hvertices : ∀ i, ℓ (Pi.single i 1) < a ∨ b < ℓ (Pi.single i 1)) :
     cellsOf (simplexSlabArrangement ℓ a b) (stdSimplex ℝ ι ∩ {x | a ≤ ℓ x ∧ ℓ x ≤ b}) =
-      cellsOf (simplexPrismArrangement ℓ a b) ((stdSimplex ℝ ι ∩ {x | ℓ x = a}) ×ˢ Icc a b) := by
+      cellsOf (simplexPrismArrangement ℓ a b r) ((stdSimplex ℝ ι ∩ {x | ℓ x = r}) ×ˢ Icc a b) := by
   ext σ
   constructor
   · rintro ⟨x, ⟨hx, hxa, hxb⟩, rfl⟩
     obtain ⟨y, hy, hya, hsupport⟩ := exists_stdSimplex_same_support_height ℓ hvertices
-      hx hxa hxb (r := a) le_rfl (hxa.trans hxb)
+      hx hxa hxb hr.1 hr.2
     refine ⟨(y, ℓ x), ⟨⟨hy, hya⟩, hxa, hxb⟩, ?_⟩
     funext i
     simp only [signVec, simplexSlabArrangement_apply, simplexPrismArrangement_apply]
@@ -117,9 +117,9 @@ private theorem cellsOf_simplexSlab_eq_simplexPrism (ℓ : (ι → ℝ) →ₗ[�
     · exact sign_eq_of_nonneg_of_zero_iff (hy.1 i) (hx.1 i) (hsupport i)
     · fin_cases i <;> simp [hx.2, hy.2, hya]
   · rintro ⟨⟨x, t⟩, ⟨⟨hx, hxa⟩, hta, htb⟩, rfl⟩
-    change ℓ x = a at hxa
+    change ℓ x = r at hxa
     obtain ⟨y, hy, hyt, hsupport⟩ := exists_stdSimplex_same_support_height ℓ hvertices
-      hx hxa.ge (hxa.le.trans (hta.trans htb)) (r := t) hta htb
+      hx (hr.1.trans hxa.ge) (hxa.le.trans hr.2) (r := t) hta htb
     refine ⟨y, ⟨hy, hyt.symm ▸ hta, hyt.symm ▸ htb⟩, ?_⟩
     funext i
     simp only [signVec, simplexSlabArrangement_apply, simplexPrismArrangement_apply]
@@ -129,11 +129,11 @@ private theorem cellsOf_simplexSlab_eq_simplexPrism (ℓ : (ι → ℝ) →ₗ[�
 
 open Classical in
 theorem exists_isPLHomeomorphOn_stdSimplex_slab_prism
-    (ℓ : (ι → ℝ) →ₗ[ℝ] ℝ) {a b : ℝ}
+    (ℓ : (ι → ℝ) →ₗ[ℝ] ℝ) {a b r : ℝ} (hr : r ∈ Icc a b)
     (hvertices : ∀ i, ℓ (Pi.single i 1) < a ∨ b < ℓ (Pi.single i 1)) :
     ∃ f : (ι → ℝ) → (ι → ℝ) × ℝ,
       IsPLHomeomorphOn f (stdSimplex ℝ ι ∩ {x | a ≤ ℓ x ∧ ℓ x ≤ b})
-        ((stdSimplex ℝ ι ∩ {x | ℓ x = a}) ×ˢ Icc a b) ∧
+        ((stdSimplex ℝ ι ∩ {x | ℓ x = r}) ×ˢ Icc a b) ∧
       ∀ x ∈ stdSimplex ℝ ι ∩ {x | a ≤ ℓ x ∧ ℓ x ≤ b},
         (∀ i, (f x).1 i = 0 ↔ x i = 0) ∧ ((f x).2 = a ↔ ℓ x = a) ∧
           ((f x).2 = b ↔ ℓ x = b) := by
@@ -141,13 +141,13 @@ theorem exists_isPLHomeomorphOn_stdSimplex_slab_prism
   have hP : IsCompact (stdSimplex ℝ ι ∩ {x | a ≤ ℓ x ∧ ℓ x ≤ b}) :=
     (isCompact_stdSimplex ℝ ι).inter_right ((isClosed_le continuous_const ℓ.continuous_of_finiteDimensional).inter
       (isClosed_le ℓ.continuous_of_finiteDimensional continuous_const))
-  have hQ : IsCompact ((stdSimplex ℝ ι ∩ {x | ℓ x = a}) ×ˢ Icc a b) :=
+  have hQ : IsCompact ((stdSimplex ℝ ι ∩ {x | ℓ x = r}) ×ˢ Icc a b) :=
     ((isCompact_stdSimplex ℝ ι).inter_right
       (isClosed_eq ℓ.continuous_of_finiteDimensional continuous_const)).prod isCompact_Icc
   obtain ⟨f, hf, hsign⟩ := exists_isPLHomeomorphOn_of_cellsOf_eq
-    (simplexSlabArrangement ℓ a b) _ (simplexPrismArrangement ℓ a b) _
-    (isCellClosed_simplexSlab ℓ a b) hP (isCellClosed_simplexPrism ℓ a b) hQ
-    (cellsOf_simplexSlab_eq_simplexPrism ℓ hvertices)
+    (simplexSlabArrangement ℓ a b) _ (simplexPrismArrangement ℓ a b r) _
+    (isCellClosed_simplexSlab ℓ a b) hP (isCellClosed_simplexPrism ℓ a b r) hQ
+    (cellsOf_simplexSlab_eq_simplexPrism ℓ hr hvertices)
   refine ⟨f, hf, ?_⟩
   intro x hx
   have heq (i) := congrFun (hsign x hx) i

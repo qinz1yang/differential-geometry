@@ -11,10 +11,10 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimension
 
 theorem exists_isPLHomeomorphOn_slab_prism_of_affineIndependent
     {ι : Type} [Finite ι] {v : ι → E} (hv : AffineIndependent ℝ v)
-    (ℓ : E →ₗ[ℝ] ℝ) {a b : ℝ} (hvertices : ∀ i, ℓ (v i) < a ∨ b < ℓ (v i)) :
+    (ℓ : E →ₗ[ℝ] ℝ) {a b r : ℝ} (hr : r ∈ Icc a b) (hvertices : ∀ i, ℓ (v i) < a ∨ b < ℓ (v i)) :
     ∃ f : E → E × ℝ,
       IsPLHomeomorphOn f (convexHull ℝ (range v) ∩ {x | a ≤ ℓ x ∧ ℓ x ≤ b})
-        ((convexHull ℝ (range v) ∩ {x | ℓ x = a}) ×ˢ Icc a b) ∧
+        ((convexHull ℝ (range v) ∩ {x | ℓ x = r}) ×ˢ Icc a b) ∧
       ∀ x ∈ convexHull ℝ (range v) ∩ {x | a ≤ ℓ x ∧ ℓ x ≤ b},
         (∀ J : Set ι, (f x).1 ∈ convexHull ℝ (v '' J) ↔ x ∈ convexHull ℝ (v '' J)) ∧
         ((f x).2 = a ↔ ℓ x = a) ∧ ((f x).2 = b ↔ ℓ x = b) := by
@@ -23,13 +23,13 @@ theorem exists_isPLHomeomorphOn_slab_prism_of_affineIndependent
   let A := Fintype.linearCombination ℝ v
   let g := ℓ.comp A
   let P := stdSimplex ℝ ι ∩ {x | a ≤ g x ∧ g x ≤ b}
-  let Q := stdSimplex ℝ ι ∩ {x | g x = a}
+  let Q := stdSimplex ℝ ι ∩ {x | g x = r}
   have hA : IsPLHomeomorphOn A (stdSimplex ℝ ι) (convexHull ℝ (range v)) :=
     isPLHomeomorphOn_linearCombination_of_affineIndependent hv
   have hP : IsPolyhedron P :=
     ((isHPolytope_stdSimplex ι).inter_preimage isHPolytope_Icc g.toAffineMap).isPolyhedron
-  have hsingle : IsHPolytope ({a} : Set ℝ) := by
-    simpa only [Icc_self] using (isHPolytope_Icc (a := a) (b := a))
+  have hsingle : IsHPolytope ({r} : Set ℝ) := by
+    simpa only [Icc_self] using (isHPolytope_Icc (a := r) (b := r))
   have hQ : IsPolyhedron Q :=
     ((isHPolytope_stdSimplex ι).inter_preimage hsingle g.toAffineMap).isPolyhedron
   have hAslab : A '' P = convexHull ℝ (range v) ∩ {x | a ≤ ℓ x ∧ ℓ x ≤ b} := by
@@ -40,7 +40,7 @@ theorem exists_isPLHomeomorphOn_slab_prism_of_affineIndependent
     · rintro ⟨hx, hxa, hxb⟩
       obtain ⟨y, hy, rfl⟩ := hA.bijOn.surjOn hx
       exact ⟨y, ⟨hy, hxa, hxb⟩, rfl⟩
-  have hAlevel : A '' Q = convexHull ℝ (range v) ∩ {x | ℓ x = a} := by
+  have hAlevel : A '' Q = convexHull ℝ (range v) ∩ {x | ℓ x = r} := by
     ext x
     constructor
     · rintro ⟨y, ⟨hy, hya⟩, rfl⟩
@@ -55,7 +55,7 @@ theorem exists_isPLHomeomorphOn_slab_prism_of_affineIndependent
   have hgvertices : ∀ i, g (Pi.single i 1) < a ∨ b < g (Pi.single i 1) := by
     intro i
     simpa only [g, LinearMap.comp_apply, A, Fintype.linearCombination_apply_single, one_smul] using hvertices i
-  obtain ⟨f₀, hf₀, hcontrol⟩ := exists_isPLHomeomorphOn_stdSimplex_slab_prism g hgvertices
+  obtain ⟨f₀, hf₀, hcontrol⟩ := exists_isPLHomeomorphOn_stdSimplex_slab_prism g hr hgvertices
   let f := Prod.map A id ∘ f₀ ∘ Function.invFunOn A P
   have hprod := hfQ.prodMap (isPLHomeomorphOn_id_of_isHPolytope (isHPolytope_Icc (a := a) (b := b)))
   refine ⟨f, (hfA.symm.trans hf₀).trans hprod, ?_⟩
@@ -78,10 +78,10 @@ theorem exists_isPLHomeomorphOn_slab_prism_of_affineIndependent
 
 theorem exists_isPLHomeomorphOn_convexHull_slab_prism
     (T : Finset E) (hT : AffineIndependent ℝ ((↑) : T → E))
-    (ℓ : E →ₗ[ℝ] ℝ) {a b : ℝ} (hvertices : ∀ v ∈ T, ℓ v < a ∨ b < ℓ v) :
+    (ℓ : E →ₗ[ℝ] ℝ) {a b r : ℝ} (hr : r ∈ Icc a b) (hvertices : ∀ v ∈ T, ℓ v < a ∨ b < ℓ v) :
     ∃ f : E → E × ℝ,
       IsPLHomeomorphOn f (convexHull ℝ (T : Set E) ∩ {x | a ≤ ℓ x ∧ ℓ x ≤ b})
-        ((convexHull ℝ (T : Set E) ∩ {x | ℓ x = a}) ×ˢ Icc a b) ∧
+        ((convexHull ℝ (T : Set E) ∩ {x | ℓ x = r}) ×ˢ Icc a b) ∧
       ∀ x ∈ convexHull ℝ (T : Set E) ∩ {x | a ≤ ℓ x ∧ ℓ x ≤ b},
         (∀ t ⊆ T, (f x).1 ∈ convexHull ℝ (t : Set E) ↔ x ∈ convexHull ℝ (t : Set E)) ∧
         ((f x).2 = a ↔ ℓ x = a) ∧ ((f x).2 = b ↔ ℓ x = b) := by
@@ -96,7 +96,7 @@ theorem exists_isPLHomeomorphOn_convexHull_slab_prism
       exact (e i).property
     · intro hx
       exact ⟨e.symm ⟨x, hx⟩, congrArg Subtype.val (e.apply_symm_apply ⟨x, hx⟩)⟩
-  obtain ⟨f, hf, hcontrol⟩ := exists_isPLHomeomorphOn_slab_prism_of_affineIndependent hv ℓ
+  obtain ⟨f, hf, hcontrol⟩ := exists_isPLHomeomorphOn_slab_prism_of_affineIndependent hv ℓ hr
     (fun i => hvertices (v i) (e i).property)
   rw [hrange] at hf hcontrol
   refine ⟨f, hf, ?_⟩

@@ -2151,3 +2151,11 @@ F-M1 仍为 partial。单个旧三角形的全部纤维及逐边对应已闭合�
 `SimplexSlabPrism.lean` 因而实际生产标准单形闭薄片到其下端截面乘闭区间的 PL 同胚，保留全部零坐标及上下端面。`SimplexCoordinates.lean` 提取标准线性组合的 PL 坐标、任意子面由坐标零集确定的纯代数 API。`SimplexSlab.lean` 的 `exists_isPLHomeomorphOn_convexHull_slab_prism` 将模型搬回任意有限维实范数空间中的仿射独立单形，保留每个原子面的成员关系及两端截面；不要求单形满维、不要求恰四个顶点，也不假设一个棱柱参数化。该结果用于 d0 外非关联顶点胞腔的侧面带与可删边界盘。
 
 聚焦检查：`CellEquivalence` exit=0（8.2 秒）、`SimplexHeightInterpolation` exit=0（8.1 秒）、`SimplexSlabPrism` exit=0（9.3 秒）、`SimplexCoordinates` exit=0（8.4 秒）、`SimplexSlab` exit=0（9.2 秒），均零 warning。`AuditF236.lean` 十项仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步生产自由截面盘对应的三维侧面带，证明其与当前薄片边界的交为 PL 盘，随后有限删除及 M3。S.4 M2/M3、夜间 F-M1 整体及 I1 尚未完成。下一审计文件 `AuditF237.lean`。
+
+### 19.88 S.4 M2：自由截面胞腔的实际侧面带与两端相交盘
+
+`SimplexSlabPrism.lean` 与 `SimplexSlab.lean` 将既有棱柱模型推广到闭区间内任意参考高度 r，仍保持所有原子面和上下端截面；参考截面可取层内唯一顶点的高度。`SlabFaceTransport.lean` 从单形交为公共面的性质，将逐子面控制提升为对原复形每个子复形的成员关系保持，不假设各侧面带已经存在。
+
+`PrismArcPatch.lean` 的 `isPLBall_prism_ends_union_arc` 用实际棱柱边界上的两次沿弧粘盘，证明两端盘与一条边界弧上方的侧面带之并是 PL 二维盘。`FreeCellSlab.lean` 的 `isPLBall_slab_patch_of_isFreeDiskCell` 从实际截面盘分解中的自由胞腔及精确截面边界等式，生产原薄片中对应的相交盘。自由弧等于胞腔与整层边界之交由子流形边界单调性导出，棱柱模型沿原边界子复形保持此交；没有增添相交盘球性或侧面带参数化假设。
+
+聚焦检查：`SimplexSlabPrism` exit=0（8.8 秒）、`SimplexSlab` exit=0（9.3 秒）、`SlabFaceTransport` exit=0（8.4 秒）、`PrismArcPatch` exit=0（11.3 秒）、`FreeCellSlab` exit=0（9.8 秒），均零 warning。`AuditF237.lean` 六项仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步把此相交盘生产者接入 d0 外自由胞腔的实际选择，证明凸胞腔及可推移条件并执行有限删除，再做 M3。S.4 M2/M3、夜间 F-M1 整体及 I1 尚未完成。下一审计文件 `AuditF238.lean`。
