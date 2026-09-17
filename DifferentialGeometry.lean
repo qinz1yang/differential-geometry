@@ -549,6 +549,7 @@ import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletChartPullbac
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletChartSourceDual
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletChartSourceIdentification
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletCompactness
+import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletCoordinateEnergy
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletDensity
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletDirectionalDerivative
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletDomainPowers
@@ -559,6 +560,7 @@ import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletForms
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletH1Compl
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletH1EigenBasis
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletHeatSemigroup
+import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletInteriorRegularity
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletLocalForm
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletLocalNirenbergCoercivity
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletLocalSecondDerivative
@@ -1783,6 +1785,7 @@ import DifferentialGeometry.Analysis.Sobolev.Euclidean.IteratedSobolevSpace.Weak
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.IteratedSobolevSpace.WkpNormHkDecomposition
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.LipschitzW1
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Localization
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.Multiplication.Local
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Multiplication.Multiply
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Multiplication.MultiplyQuant
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Multiplication.MultiplyQuantK

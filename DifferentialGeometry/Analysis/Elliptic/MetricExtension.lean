@@ -806,3 +806,88 @@ lemma exists_uniform_inv_gram_lower_bound_on_compact
   rwa [hnorm, hquad] at hb
 
 end DifferentialGeometry.Analysis.Laplacian.MetricExtension
+
+end
+
+noncomputable section
+
+open Manifold Set
+open scoped ContDiff Manifold
+
+namespace DifferentialGeometry.Analysis.Laplacian.MetricExtension
+
+open DifferentialGeometry.Integral.Measure
+open DifferentialGeometry.Analysis.Sobolev.NirenbergEuclidean
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
+variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+
+local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
+
+theorem exists_smooth_metric_extension_of_subset_interior
+    (g : SmoothRiemannianMetric I M) (α : M)
+    {K : Set EuclN} (hK : IsCompact K)
+    (hK_target : K ⊆ toEuclidean (E := E) '' interior (extChartAt I α).target) :
+    ∃ B : SmoothEllipticBilinearForm (Module.finrank ℝ E) (Set.univ : Set EuclN),
+      (∀ y ∈ K, ∀ i j : Fin (Module.finrank ℝ E),
+        B.a y i j = weightedInvGramOnEuclid (I := I) g α i j y) ∧
+      B.c = (fun _ : EuclN => (0 : ℝ)) := by
+  classical
+  let U : Set EuclN := toEuclidean (E := E) '' interior (extChartAt I α).target
+  have hU : IsOpen U :=
+    (toEuclidean (E := E)).toHomeomorph.isOpenMap _ isOpen_interior
+  have hU_target : U ⊆ chartTargetEuclid (I := I) (M := M) α :=
+    image_mono interior_subset
+  obtain ⟨χ, hχ_smooth, hχ_compact, hχ_one_nhds, hχ_support, hχ_range⟩ :=
+    DifferentialGeometry.Analysis.exists_bump_compact hK hU hK_target
+  have hχ_one : ∀ y ∈ K, χ y = 1 := fun _ hy =>
+    hχ_one_nhds.self_of_nhdsSet hy
+  have hχ_target : tsupport χ ⊆ chartTargetEuclid (I := I) (M := M) α :=
+    hχ_support.trans hU_target
+  obtain ⟨lamK, hlamK_pos, hlamK_bound⟩ :=
+    exists_uniform_lower_bound_on_compact (I := I) g α hχ_compact hχ_target
+  have hbound : ∀ y ∈ tsupport χ, ∀ ξ : EuclN,
+      min 1 lamK * ‖ξ‖ ^ 2 ≤
+        inner ℝ ξ (DeGiorgi.matMulE
+          (Matrix.of (fun i j : Fin (Module.finrank ℝ E) =>
+            weightedInvGramOnEuclid (I := I) g α i j y)) ξ) := by
+    intro y hy ξ
+    exact (mul_le_mul_of_nonneg_right (min_le_right 1 lamK)
+      (sq_nonneg ‖ξ‖)).trans (hlamK_bound y hy ξ)
+  let aFun : EuclN → Matrix (Fin (Module.finrank ℝ E)) (Fin (Module.finrank ℝ E)) ℝ :=
+    fun y => Matrix.of (fun i j => extendedMatrix (I := I) g α χ i j y)
+  have h_a_smooth : ∀ i j : Fin (Module.finrank ℝ E),
+      ContDiff ℝ (⊤ : ℕ∞) (fun y : EuclN => aFun y i j) := by
+    intro i j
+    have hproduct : ContDiff ℝ (⊤ : ℕ∞)
+        (fun y : EuclN => χ y * weightedInvGramOnEuclid (I := I) g α i j y) := by
+      simpa only [smul_eq_mul] using DifferentialGeometry.Analysis.contDiff_cutoff_smul
+        hU hχ_smooth hχ_support
+        ((weightedInvGramOnEuclid_contDiffOn (I := I) g α i j).mono hU_target)
+    change ContDiff ℝ (⊤ : ℕ∞) (extendedMatrix (I := I) g α χ i j)
+    unfold extendedMatrix
+    exact hproduct.add ((contDiff_const.sub hχ_smooth).mul contDiff_const)
+  let B : SmoothEllipticBilinearForm (Module.finrank ℝ E) (Set.univ : Set EuclN) :=
+    { a := aFun
+      c := fun _ => 0
+      symm := fun y i j => extendedMatrix_symm (I := I) g α hχ_target i j y
+      smooth_a := h_a_smooth
+      smooth_c := contDiff_const
+      lam := min 1 lamK
+      capLam := 1
+      ellipticity_pos := lt_min one_pos hlamK_pos
+      ellipticity_le_upper := min_le_left _ _
+      coercive := fun y _ ξ => extendedMatrix_coercive (I := I) g α
+        hχ_range hχ_target (min_le_left 1 lamK) hbound y ξ }
+  refine ⟨B, ?_, rfl⟩
+  intro y hy i j
+  change extendedMatrix (I := I) g α χ i j y =
+    weightedInvGramOnEuclid (I := I) g α i j y
+  unfold extendedMatrix
+  simp only [hχ_one y hy, one_mul, sub_self, zero_mul, add_zero]
+
+end DifferentialGeometry.Analysis.Laplacian.MetricExtension
+
+end
