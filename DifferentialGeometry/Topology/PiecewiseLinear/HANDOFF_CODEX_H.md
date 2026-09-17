@@ -495,3 +495,16 @@ Reduced/MayerVietorisCoefficients, Reduced/PointClasses}`（`REUSE_AUDIT.md` §2
 - 当前整合树聚焦重编 `SurfaceHomology` exit=0（14.4 秒）、`MayerVietorisSubcomplex` exit=0（10.1 秒），均零 warning；
   `.lake/scratch/AuditHM1Current.lean` 审计九个 H.4a/H.6 端点，exit=0，全部只含
   `propext`、`Classical.choice`、`Quot.sound`。
+
+### H-M2 — done，§33 L11–L12 不需要 22.8–22.10
+
+- 原书书页 236（PDF 246）中，Lemma 10 已给 `π₁(Bd X) ≅ π₁(Bd N)`，从而所需的一阶秩相等不依赖 22.9。
+  Lemma 11 用 22.9 得到的只是一个不保持分块的同胚；Lemma 13 随后会从各 `A_v`、`A'_v` 重新构造满足
+  `f(A_v)=A'_v` 的更强 PLH，因此主链可删 Lemma 11。
+- Lemma 12 不走一般曲面正规形。设 `r_v` 为 `A'_v` 的多边形边界分支数，逐分支封 PL 盘得到闭可定向曲面 `Â'_v`。
+  由封盘 Euler 加法与 H.4a，`χ(A'_v)=2-r_v-b₁(Â'_v)`；沿公共边界圆拼合后得到
+  `b₁(Bd X)=b₁(Bd N)+∑v b₁(Â'_v)`。L10 给左边两 Betti 数相等，故每个非负项都为零；H.4b 的
+  `isPLSphere_two_of_faceEulerChar_eq_two` 将每个 `Â'_v` 识别为 PL 2-球面，删去封盘内部即得 `A'_v` 是盘或带孔盘。
+- 结论：22.8–22.10 对 §33 主链改为 skip，不移植完整曲面分类。仍需两个窄生产者：不经过
+  `Homology/HurewiczLowDegrees.lean` 的一维 Hurewicz/基本群阿贝尔化桥，以及有限个边界分支的封盘复形与删盘识别；
+  预计合计 3k–5k 行，归 G.5，而不是 H.4 分类。

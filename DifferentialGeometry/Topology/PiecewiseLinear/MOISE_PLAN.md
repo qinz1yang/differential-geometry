@@ -676,6 +676,10 @@
 
 ## 7. 决策与风险
 
+- 2026-09-17（H-M2）：§33 L11–L12 不再以前置 22.8–22.10 的完整曲面分类闭合。Lemma 10 的基本群同构先经独立证明的
+  一维 Hurewicz/阿贝尔化桥给 `b₁(Bd X)=b₁(Bd N)`；各 `A'_v` 逐边界封盘后，用 H.4a 的闭可定向曲面公式、Euler
+  加法与 H.4b 的 `χ=2` 球面识别证明其为球面删有限开盘。原 Lemma 11 的无分块同胚不进入主链，最终保持
+  `A_v ↦ A'_v` 的 PLH 由 Lemma 13 另造。禁止消费含 `sorry` 的 `Topology/Homology/HurewiczLowDegrees.lean`。
 - 不采用 Bing 定理 7 的“保留单形”强形式，只用 Moise §8/§35 的紧致图卡归纳（书中 `chap:two-set-gluing` 的方案）。
 - 不变域定理不进入 Phase 1（`f(O) = O` 由接口 A 给出，与 Moise 36.1 一致）。
 - `PLApproximation`/`PLSmoothing` 以 `Prop` 假设而非 `sorry` 出现：公理审计干净，但**报告时必须说明条件性**。
