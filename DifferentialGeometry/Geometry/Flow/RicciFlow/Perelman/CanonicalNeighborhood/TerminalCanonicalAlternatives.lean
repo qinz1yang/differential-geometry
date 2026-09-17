@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CanonicalStrictBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.BlowupConvergence
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.InteriorWitnessRestriction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.PointedScalarCompactControl
 
 set_option autoImplicit false
@@ -18,6 +19,68 @@ attribute [local instance] PointedFlowData.topology PointedFlowData.charted
   PointedRiemannianManifold.topology PointedRiemannianManifold.charted
   PointedRiemannianManifold.smooth PointedRiemannianManifold.t2
   PointedRiemannianManifold.sigmaCompact PointedRiemannianManifold.t2TangentBundle
+
+theorem NormalizedSequence.eventually_orientedWitness_of_terminal_scalar_gt_two
+    {eps kappa sigma : ℝ} {Phi : ℝ → ℝ}
+    (X : NormalizedSequence.{u} eps kappa sigma Phi)
+    (P : MetricCompactLimit (X.toFlowSequence.atTime 0))
+    (hcanonical : ∀ i, P.convergence.metrics.domain i =
+      CanonicalMetricCompactness.canonicalSourceData P.maps i)
+    (K : Set P.limit.M) (hK : IsCompact K)
+    (hscalar : ∀ q ∈ K, 2 < metricScalarAt P.limit.metric q) :
+    ∀ᶠ i in Filter.atTop,
+      K ⊆ P.maps.source i ∧
+      ∀ q ∈ K,
+        OrientedWitness (X.term (P.subseq i)).S
+          (X.orientation (P.subseq i)) eps kappa (P.maps.map i q) 0 := by
+  by_cases hne : K.Nonempty
+  · obtain ⟨q0, hq0, hmin⟩ := hK.exists_isMinOn hne
+      (metricScalar_smooth P.limit.metric).continuous.continuousOn
+    let eta : ℝ := (metricScalarAt P.limit.metric q0 - 2) / 2
+    have heta : 0 < eta := by
+      dsimp only [eta]
+      linarith [hscalar q0 hq0]
+    obtain ⟨i0, hi0⟩ := KappaSolutions.pointedScalar_uniform_on_compact_of_canonical_domains
+      P.convergence.metrics hcanonical K hK eta heta
+    filter_upwards [Filter.eventually_ge_atTop i0] with i hi
+    refine ⟨(hi0 i hi).1, fun q hq => ?_⟩
+    have hsource : 2 < (X.term (P.subseq i)).S.scalar 0 (P.maps.map i q) := by
+      have herr := (abs_lt.mp ((hi0 i hi).2 q hq)).1
+      have hminq : metricScalarAt P.limit.metric q0 ≤ metricScalarAt P.limit.metric q :=
+        hmin hq
+      change -eta < (X.term (P.subseq i)).S.scalar 0 (P.maps.map i q) -
+        metricScalarAt P.limit.metric q at herr
+      dsimp only [eta] at herr
+      linarith [hscalar q0 hq0]
+    apply X.higher_good (P.subseq i) 0
+      (show 0 ∈ Set.Icc (-X.depth (P.subseq i)) 0 from
+        ⟨by linarith [X.depth_pos (P.subseq i)], le_rfl⟩)
+      (P.maps.map i q)
+    exact le_of_lt hsource
+  · have hempty : K = ∅ := Set.not_nonempty_iff_eq_empty.mp hne
+    subst K
+    exact Filter.Eventually.of_forall fun _ => ⟨Set.empty_subset _, by simp⟩
+
+theorem NormalizedSequence.eventually_orientedWitness_mono_of_terminal_scalar_gt_two
+    {eps epsTarget kappa sigma : ℝ} {Phi : ℝ → ℝ}
+    (X : NormalizedSequence.{u} eps kappa sigma Phi)
+    (P : MetricCompactLimit (X.toFlowSequence.atTime 0))
+    (hcanonical : ∀ i, P.convergence.metrics.domain i =
+      CanonicalMetricCompactness.canonicalSourceData P.maps i)
+    (heps : eps ≤ epsTarget) (hepsTarget : epsTarget < 1)
+    (K : Set P.limit.M) (hK : IsCompact K)
+    (hscalar : ∀ q ∈ K, 2 < metricScalarAt P.limit.metric q) :
+    ∀ᶠ i in Filter.atTop,
+      K ⊆ P.maps.source i ∧
+      ∀ q ∈ K,
+        OrientedWitness (X.term (P.subseq i)).S
+          (X.orientation (P.subseq i)) epsTarget kappa (P.maps.map i q) 0 := by
+  filter_upwards [X.eventually_orientedWitness_of_terminal_scalar_gt_two
+    P hcanonical K hK hscalar] with i hi
+  refine ⟨hi.1, fun q hq => ?_⟩
+  apply orientedWitness_mono_of_interior_regular (X.term (P.subseq i)).isSolution ?_
+    (o := X.orientation (P.subseq i)) heps hepsTarget (hi.2 q hq)
+  rw [X.carrier_eq, X.regular_eq, interior_Icc]
 
 theorem NormalizedSequence.eventually_canonicalWitness_alternative_eq_neck_or_cap
     {eps kappa sigma : ℝ} {Phi : ℝ → ℝ}
