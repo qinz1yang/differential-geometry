@@ -1,6 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.DynamicProgramming
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientTerminalBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.Continuity.CarrierBaseTime
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedLength.Defs
 import DifferentialGeometry.Analysis.Calculus.Derivative.Curve
 import DifferentialGeometry.Geometry.Comparison.Variation.Curve.PrescribedTangentInOpenSet
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.Bounds

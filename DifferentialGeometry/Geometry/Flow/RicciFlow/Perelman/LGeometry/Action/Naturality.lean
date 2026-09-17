@@ -87,4 +87,40 @@ theorem lLength_restrictOpen
   intro s _
   exact lDensity_restrictOpen S U T gamma s
 
+section CrossModel
+
+variable {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
+  [FiniteDimensional ℝ F]
+  {G : Type*} [TopologicalSpace G] {J : ModelWithCorners ℝ F G} [J.Boundaryless]
+  {N : Type*} [TopologicalSpace N] [ChartedSpace G N] [IsManifold J ∞ N]
+  [T2Space N]
+
+theorem lDensity_pullback_cross
+    (S : SolutionOn (I := J) (M := N) D) (Φ : M ≃ₘ⟮I, J⟯ N)
+    (T : ℝ) (alpha : ℝ → M) (s : ℝ) :
+    lDensity (S.pullback Φ) T alpha s =
+      lDensity S T (fun r => Φ (alpha r)) s := by
+  have hvel : lVelocity (I := J) (fun r => Φ (alpha r)) s =
+      mfderiv I J Φ (alpha s) (lVelocity (I := I) alpha s) := by
+    change (mfderiv 𝓘(ℝ, ℝ) J (Φ ∘ alpha) s) (1 : ℝ) = _
+    rw [Φ.mfderiv_comp (by decide)]
+    rfl
+  unfold lDensity lSpeedSq
+  rw [SolutionOn.pullback_scalar]
+  rw [show (S.pullback Φ).base.metric (T - s) =
+      Diffeomorph.pullbackMetricCross (S.base.metric (T - s)) Φ from rfl]
+  rw [Diffeomorph.pullbackMetricCross_inner, hvel]
+
+theorem lLength_pullback_cross
+    (S : SolutionOn (I := J) (M := N) D) (Φ : M ≃ₘ⟮I, J⟯ N)
+    (T : ℝ) (alpha : ℝ → M) (a b : ℝ) :
+    lLength (S.pullback Φ) T alpha a b =
+      lLength S T (fun r => Φ (alpha r)) a b := by
+  unfold lLength
+  apply intervalIntegral.integral_congr
+  intro s _
+  exact lDensity_pullback_cross S Φ T alpha s
+
+end CrossModel
+
 end DifferentialGeometry.PDE.RicciFlow.Perelman

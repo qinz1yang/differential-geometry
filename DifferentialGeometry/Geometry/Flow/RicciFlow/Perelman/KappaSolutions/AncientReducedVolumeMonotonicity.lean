@@ -1,4 +1,6 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AsymptoticShrinkerNormalization
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ModelWitness
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.ReducedVolumeNormalization
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedVolume.Monotonicity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.ReducedVolumeMonotonicity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.NonnegativeCurvatureScalarNorm
 import Mathlib.Analysis.SpecialFunctions.Gaussian.FourierTransform
@@ -20,7 +22,9 @@ open scoped Manifold ContDiff _root_.Topology
 
 universe u uE uH
 
-variable {E : Type uE} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+section RegularBase
+
+variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E]
   {H : Type uH} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
   (F : PointedFlowData.{u, uE, uH} (I := I) ancientTimeInterval)
@@ -80,10 +84,6 @@ theorem ancient_reducedVolume_antitone_of_regular_base
     AntitoneOn (intrinsicReducedVolume F.S T p) (Set.Ioi 0) := by
   have hTneg : T < 0 := by simpa only [ancientTimeInterval_regular, Set.mem_Iio] using hT
   let _ : ConnectedSpace F.M := hF.connected
-  let : TopologicalSpace.MetrizableSpace F.M :=
-    Manifold.metrizableSpace I F.M
-  let : PseudoMetricSpace F.M :=
-    TopologicalSpace.pseudoMetrizableSpacePseudoMetric F.M
   have hcomplete : RiemannianMetricComplete (I := I) (F.S.base.metric T) :=
     ⟨hF.complete T (by rw [ancientTimeInterval_carrier]; exact hTneg.le)⟩
   obtain ⟨C, hC⟩ := hF.globalScalarBound
@@ -93,12 +93,30 @@ theorem ancient_reducedVolume_antitone_of_regular_base
     intro t ht
     simp only [ancientTimeInterval_regular, Set.mem_Iio]
     exact ht.2.trans_lt hTneg
-  have h := DifferentialGeometry.PDE.RicciFlow.Perelman.redVolume_anti_of_rm_Ico_of_base_eq
-    (I := I) (M := F.M) (D := ancientTimeInterval) (D' := ancientTimeInterval)
-    F.S F.S rfl F.isSolution T p hcomplete
+  have h := DifferentialGeometry.PDE.RicciFlow.Perelman.redVolume_anti_of_rm
+    (I := I) (M := F.M) (D := ancientTimeInterval)
+    F.S F.isSolution T hcomplete p
     (fun sigma _ _ => exists_rmNormSq_le_of_isAncientKappaSolution F hF hC hTneg.le)
     h₁ h₁₂ hslab
   exact h
+
+end RegularBase
+
+section TerminalExtension
+
+variable {E : Type uE} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+  [FiniteDimensional ℝ E] [CompleteSpace E]
+  {H : Type uH} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+  (F : PointedFlowData.{u, uE, uH} (I := I) ancientTimeInterval)
+
+attribute [local instance]
+  ancientReducedVolumeTopology
+  ancientReducedVolumeCharted
+  ancientReducedVolumeSmooth
+  ancientReducedVolumeC1
+  ancientReducedVolumeT2
+  ancientReducedVolumeTangentT2
+  ancientReducedVolumeSigma
 
 
 theorem ancient_reducedVolume_antitone_of_terminal_extension
@@ -186,6 +204,8 @@ theorem euclidean_gaussian_reducedDensity_integral_eq_one
   exact Real.rpow_zero _
 
 end GaussianDensity
+
+end TerminalExtension
 
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
