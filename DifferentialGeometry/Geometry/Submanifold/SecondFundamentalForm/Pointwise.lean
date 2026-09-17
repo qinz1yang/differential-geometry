@@ -2,6 +2,7 @@ import Batteries.Tactic.Alias
 import DifferentialGeometry.Geometry.Submanifold.NormalBundle.Defs
 import DifferentialGeometry.Geometry.Submanifold.SecondFundamentalForm.MetricCompatibility
 import DifferentialGeometry.Geometry.Submanifold.SecondFundamentalForm.AlongCurve
+import DifferentialGeometry.Topology.Manifold.CurveExtension
 import DifferentialGeometry.Geometry.Metric.TensorInner.Fiber.MetricData
 import Mathlib.Analysis.Calculus.FDeriv.Symmetric
 import Mathlib.Analysis.Calculus.IteratedDeriv.FaaDiBruno
@@ -778,6 +779,206 @@ theorem hasVanishingSecondFundamentalForm_id
   have hmem : (h.secondFundamentalFormAt x u v : TangentSpace I (id x)) ∈
       h.normalSpaceAt x := Subtype.property _
   exact (Submodule.eq_bot_iff (h.normalSpaceAt x)).mp hbot _ hmem
+
+
+omit [NeZero (Module.finrank ℝ EN)] [NeZero (Module.finrank ℝ E)]
+    [I.Boundaryless] in
+theorem covariantAcceleration_chartCoord_of_contMDiffAt
+    (g : SmoothRiemannianMetric I M) (gamma : ℝ → M) (t : ℝ)
+    (hgamma : ContMDiffAt (modelWithCornersSelf ℝ ℝ) I 2 gamma t) :
+    trivToE (I := I) (gamma t) (gamma t)
+        (covariantAcceleration (I := I) g gamma t) =
+      deriv (deriv (chartCurve (I := I) (gamma t) gamma)) t +
+        chartChristoffelContraction (I := I) g (gamma t)
+          (deriv (chartCurve (I := I) (gamma t) gamma) t)
+          (deriv (chartCurve (I := I) (gamma t) gamma) t)
+          (extChartAt I (gamma t) (gamma t)) := by
+  classical
+  let u : ℝ → E := chartCurve (I := I) (gamma t) gamma
+  let V : ∀ s, TangentSpace I (gamma s) := fun s ↦
+    (mfderiv (modelWithCornersSelf ℝ ℝ) I gamma s : ℝ →L[ℝ] _) (1 : ℝ)
+  let rep : ℝ → E := chartRepAt (I := I) gamma V t
+  have hsrc : {s : ℝ | gamma s ∈ (chartAt H (gamma t)).source} ∈ nhds t := by
+    exact hgamma.continuousAt.preimage_mem_nhds
+      ((chartAt H (gamma t)).open_source.mem_nhds
+        (mem_chart_source H (gamma t)))
+  have hnear : ∀ᶠ s in nhds t, ContMDiffAt 𝓘(ℝ, ℝ) I 2 gamma s :=
+    (contMDiffAt_iff_contMDiffAt_nhds (n := 2) (by decide)).mp hgamma
+  have hrepEq : Filter.EventuallyEq (nhds t) rep (deriv u) := by
+    filter_upwards [hsrc, hnear] with s hs hgs
+    dsimp only [rep]
+    rw [chartRepAt_apply]
+    have hcoord :=
+      MFDerivAlongCurve.chartCoord_mfderiv_along_curve_eq_fderiv_of_mdifferentiableAt
+        (I := I) (M := M) (γ := gamma) (hgs.mdifferentiableAt (by norm_num)) (gamma t) hs
+    change
+      (trivializationAt E (TangentSpace I) (gamma t)).continuousLinearMapAt
+          ℝ (gamma s)
+          ((mfderiv (modelWithCornersSelf ℝ ℝ) I gamma s : ℝ →L[ℝ] _) 1) =
+        deriv ((extChartAt I (gamma t)) ∘ gamma) s
+    rw [← fderiv_apply_one_eq_deriv]
+    exact hcoord
+  have hrepSelf : rep t = deriv u t := hrepEq.eq_of_nhds
+  have hrepDeriv : deriv rep t = deriv (deriv u) t := hrepEq.deriv_eq
+  change trivToE (I := I) (gamma t) (gamma t)
+      (covariantAcceleration (I := I) g gamma t) = _
+  rw [covariantAcceleration_def]
+  change trivToE (I := I) (gamma t) (gamma t)
+      (covDerivAlong (I := I) g gamma V t) = _
+  rw [covDerivAlong_chartCoord]
+  change chartCovDerivAlong (I := I) g (gamma t) gamma rep t = _
+  rw [chartCovDerivAlong_def, hrepDeriv, hrepSelf]
+  rfl
+
+omit [NeZero (Module.finrank ℝ EN)] [NeZero (Module.finrank ℝ E)]
+    [I.Boundaryless] in
+theorem covariantAcceleration_modelCoord_of_contMDiffAt
+    (g : SmoothRiemannianMetric I M) (gamma : ℝ → M) (t : ℝ)
+    (hgamma : ContMDiffAt (modelWithCornersSelf ℝ ℝ) I 2 gamma t) :
+    tangentSpaceModelContinuousLinearEquiv (I := I) (gamma t)
+        (covariantAcceleration (I := I) g gamma t) =
+      deriv (deriv (chartCurve (I := I) (gamma t) gamma)) t +
+        chartChristoffelContraction (I := I) g (gamma t)
+          (deriv (chartCurve (I := I) (gamma t) gamma) t)
+          (deriv (chartCurve (I := I) (gamma t) gamma) t)
+          (extChartAt I (gamma t) (gamma t)) := by
+  rw [← trivToE_self_apply_tangentSpaceModel (I := I)]
+  exact covariantAcceleration_chartCoord_of_contMDiffAt (I := I) g gamma t hgamma
+
+omit [NeZero (Module.finrank ℝ EN)] [NeZero (Module.finrank ℝ E)]
+    [I.Boundaryless] in
+theorem secondFundamentalFormAmbientAt_diagonal_along_curve_of_contMDiffAt
+    (gN : SmoothRiemannianMetric IN N)
+    (gM : SmoothRiemannianMetric I M) {iota : N → M}
+    (gamma : ℝ → N) (t : ℝ)
+    (hiota : ContMDiffAt IN I 2 iota (gamma t))
+    (hgamma : ContMDiffAt (modelWithCornersSelf ℝ ℝ) IN 2 gamma t) :
+    secondFundamentalFormAmbientAt gN gM iota (gamma t)
+        ((mfderiv (modelWithCornersSelf ℝ ℝ) IN gamma t : ℝ →L[ℝ] _) 1)
+        ((mfderiv (modelWithCornersSelf ℝ ℝ) IN gamma t : ℝ →L[ℝ] _) 1) =
+      secondFundamentalFormDiagonalAlongCurve gN gM iota gamma t := by
+  classical
+  let sourceCoord : ℝ → EN :=
+    chartCurve (I := IN) (gamma t) gamma
+  let targetCurve : ℝ → M := fun s ↦ iota (gamma s)
+  let targetCoord : ℝ → E :=
+    chartCurve (I := I) (iota (gamma t)) targetCurve
+  let F : EN → E := writtenInExtChartAt IN I (gamma t) iota
+  let velocity : TangentSpace IN (gamma t) :=
+    (mfderiv (modelWithCornersSelf ℝ ℝ) IN gamma t : ℝ →L[ℝ] _) 1
+  let sourceAcceleration : TangentSpace IN (gamma t) :=
+    covariantAcceleration (I := IN) gN gamma t
+  have htargetSmooth :
+      ContMDiffAt (modelWithCornersSelf ℝ ℝ) I 2 targetCurve t := by
+    exact hiota.comp t hgamma
+  have hsourceCoordC2 : ContDiffAt ℝ 2 sourceCoord t := by
+    exact ((contMDiffAt_extChartAt' (mem_chart_source HN (gamma t))).comp t hgamma).contDiffAt
+  have hFC2 : ContDiffAt ℝ 2 F (sourceCoord t) := by
+    have hchart :=
+      (contMDiffAt_iff.mp hiota).2
+    rw [ModelWithCorners.Boundaryless.range_eq_univ,
+      contDiffWithinAt_univ] at hchart
+    exact (by simpa only [F, sourceCoord, chartCurve, writtenInExtChartAt] using
+      hchart)
+  have hsourceNhd :
+      {s : ℝ | gamma s ∈ (extChartAt IN (gamma t)).source} ∈ nhds t := by
+    exact hgamma.continuousAt.preimage_mem_nhds
+      ((isOpen_extChartAt_source (I := IN) (gamma t)).mem_nhds
+        (mem_extChartAt_source (gamma t)))
+  have htargetCoordEq :
+      Filter.EventuallyEq (nhds t) targetCoord (F ∘ sourceCoord) := by
+    filter_upwards [hsourceNhd] with s hs
+    dsimp only [targetCoord, targetCurve, sourceCoord, F, chartCurve,
+      writtenInExtChartAt, Function.comp_apply]
+    rw [(extChartAt IN (gamma t)).left_inv hs]
+  have hsecondEq :
+      deriv (deriv targetCoord) t =
+        fderiv ℝ (fderiv ℝ F) (sourceCoord t)
+            (deriv sourceCoord t) (deriv sourceCoord t) +
+          fderiv ℝ F (sourceCoord t) (deriv (deriv sourceCoord) t) := by
+    have heq := Filter.EventuallyEq.iteratedDeriv_eq 2 htargetCoordEq
+    have hchain := deriv_deriv_comp hFC2 hsourceCoordC2
+    have heq' :
+        deriv (deriv targetCoord) t = deriv (deriv (F ∘ sourceCoord)) t := by
+      simpa only [iteratedDeriv_eq_iterate, Function.iterate_succ_apply,
+        Function.iterate_zero_apply] using heq
+    exact heq'.trans hchain
+  have hvelocityCoord :
+      tangentSpaceModelContinuousLinearEquiv (I := IN) (gamma t) velocity =
+        deriv sourceCoord t := by
+    have hcoord :=
+      MFDerivAlongCurve.chartCoord_mfderiv_along_curve_eq_fderiv_of_mdifferentiableAt
+        (I := IN) (M := N) (γ := gamma) (hgamma.mdifferentiableAt (by norm_num)) (gamma t)
+        (mem_chart_source HN (gamma t))
+    rw [← trivToE_self_apply_tangentSpaceModel (I := IN)]
+    change trivToE (I := IN) (gamma t) (gamma t) velocity = _
+    change trivToE (I := IN) (gamma t) (gamma t) velocity =
+      deriv ((extChartAt IN (gamma t)) ∘ gamma) t
+    rw [← fderiv_apply_one_eq_deriv]
+    exact hcoord
+  have htargetVelocity :
+      deriv targetCoord t =
+        fderiv ℝ F (sourceCoord t) (deriv sourceCoord t) := by
+    rw [htargetCoordEq.deriv_eq]
+    exact ((hFC2.differentiableAt (by norm_num)).hasFDerivAt.comp_hasDerivAt t
+      (hsourceCoordC2.differentiableAt (by norm_num)).hasDerivAt).deriv
+  have hmapAcceleration :
+      tangentSpaceModelContinuousLinearEquiv (I := I) (iota (gamma t))
+          (mfderiv IN I iota (gamma t) sourceAcceleration) =
+        tangentLinearMapToModel (mfderiv IN I iota (gamma t))
+          (tangentSpaceModelContinuousLinearEquiv (I := IN) (gamma t)
+            sourceAcceleration) := by
+    rfl
+  apply (tangentSpaceModelContinuousLinearEquiv
+    (I := I) (iota (gamma t))).injective
+  simp only [secondFundamentalFormAmbientAt_apply,
+    ContinuousLinearEquiv.apply_symm_apply,
+    secondFundamentalFormDiagonalAlongCurve_def, map_sub]
+  change gaussDefectModelValue gN gM iota (gamma t)
+      (tangentSpaceModelContinuousLinearEquiv (I := IN) (gamma t) velocity)
+      (tangentSpaceModelContinuousLinearEquiv (I := IN) (gamma t) velocity) =
+    tangentSpaceModelContinuousLinearEquiv (I := I) (iota (gamma t))
+        (covariantAcceleration (I := I) gM targetCurve t) -
+      tangentSpaceModelContinuousLinearEquiv (I := I) (iota (gamma t))
+        (mfderiv IN I iota (gamma t) sourceAcceleration)
+  rw [hvelocityCoord, hmapAcceleration,
+    covariantAcceleration_modelCoord_of_contMDiffAt (I := I) gM targetCurve t htargetSmooth,
+    covariantAcceleration_modelCoord_of_contMDiffAt (I := IN) gN gamma t hgamma]
+  simp_rw [tangentLinearMapToModel_mfderiv_eq_fderiv_writtenInExtChartAt
+    (I := I) (IN := IN) (hiota.mdifferentiableAt (by norm_num))]
+  dsimp only [F, sourceCoord, targetCoord, targetCurve, chartCurve] at hsecondEq htargetVelocity
+  dsimp only [F, sourceCoord, targetCoord, targetCurve, chartCurve]
+  simp only [gaussDefectModelValue]
+  simp_rw [tangentLinearMapToModel_mfderiv_eq_fderiv_writtenInExtChartAt
+    (I := I) (IN := IN) (hiota.mdifferentiableAt (by norm_num))]
+  rw [hsecondEq]
+  rw [htargetVelocity]
+  simp only [map_add]
+  abel
+
+omit [NeZero (Module.finrank ℝ EN)] [NeZero (Module.finrank ℝ E)]
+    [I.Boundaryless] in
+theorem hasVanishingSecondFundamentalFormAlongCurves.covariantAcceleration_comp_of_contMDiffAt
+    {gN : SmoothRiemannianMetric IN N} {gM : SmoothRiemannianMetric I M}
+    {iota : N → M} (h : hasVanishingSecondFundamentalFormAlongCurves gN gM iota)
+    (hiota : ContMDiff IN I ∞ iota) (gamma : ℝ → N) (t : ℝ)
+    (hgamma : ContMDiffAt 𝓘(ℝ, ℝ) IN 2 gamma t) :
+    covariantAcceleration gM (fun s => iota (gamma s)) t =
+      mfderiv IN I iota (gamma t) (covariantAcceleration gN gamma t) := by
+  let v : TangentSpace IN (gamma t) := mfderiv 𝓘(ℝ, ℝ) IN gamma t 1
+  obtain ⟨sigma, hsigma, _, hv⟩ := exists_contMDiff_curve_with_velocity_range_subset
+    (I := IN) BoundarylessManifold.isInteriorPoint v
+    (Filter.univ_mem : Set.univ ∈ nhds (gamma t))
+  have hzero := secondFundamentalFormAmbientAt_diagonal_along_curve gN gM hiota sigma hsigma 0
+  rw [h sigma 0 hsigma] at hzero
+  have hvel := congrArg (fun q : TangentBundle IN N =>
+    secondFundamentalFormAmbientAt gN gM iota q.1 q.2 q.2) hv
+  have hz : secondFundamentalFormAmbientAt gN gM iota (gamma t) v v = 0 :=
+    hvel.symm.trans hzero
+  rw [secondFundamentalFormAmbientAt_diagonal_along_curve_of_contMDiffAt
+    gN gM gamma t (hiota.contMDiffAt.of_le (by decide : (2 : ℕ∞ω) ≤ ∞)) hgamma] at hz
+  exact sub_eq_zero.mp hz
+
 
 end PointwiseGaussDefect
 

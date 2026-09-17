@@ -5675,6 +5675,238 @@ private theorem ambient_contDiffOn_one_of_parameterDerivative_lift
   · intro t ht x hx
     exact hchart t ht x
 
+omit [FiniteDimensional ℝ E] [T2Space M] [IsManifold I ∞ M] in
+private theorem contMDiffOn_retraction_of_contDiffOn
+    (hr : ContMDiffOn 𝓘(ℝ, EuclideanSpace ℝ (Fin n)) I ∞ r U)
+    (d : CurveMap (EuclideanSpace ℝ (Fin n))) (J : Set ℝ)
+    (hd : ContDiffOn ℝ 1 (fun p : ℝ × ℝ => d.lift p.2 p.1) (J ×ˢ univ))
+    (hmap : ∀ x t, t ∈ J → d.lift x t ∈ (U : Set (EuclideanSpace ℝ (Fin n)))) :
+    ContMDiffOn 𝓘(ℝ, ℝ × ℝ) I 1 (fun p : ℝ × ℝ => r (d.lift p.1 p.2)) (univ ×ˢ J) := by
+  have hswap : ContDiffOn ℝ 1 (fun p : ℝ × ℝ => (p.2, p.1)) (univ ×ˢ J) :=
+    contDiffOn_snd.prodMk contDiffOn_fst
+  have hd' : ContDiffOn ℝ 1 (fun p : ℝ × ℝ => d.lift p.1 p.2) (univ ×ˢ J) :=
+    hd.comp hswap (fun _ hp => ⟨hp.2, hp.1⟩)
+  exact (hr.of_le (by norm_num : (1 : ℕ∞ω) ≤ (∞ : ℕ∞ω))).comp hd'.contMDiffOn
+    (fun p hp => hmap p.1 p.2 hp.2)
+
+private theorem ambient_retraction_contMDiffOn_one_of_parameterDerivative_lift
+    {ρ T : ℝ} (hT : 0 < T) (hTρ : T ≤ ρ)
+    (hρC : ρ ≤ ScalarVectorTimeCoefficients.radius
+      (ambientCoefficients c₀ g ht he hr hEU hleft β hG))
+    (u : timeH1 (CircleHsPi (c₀.pullbackMetric (g 0)) (Fin n) ((1 : ℕ) : ℝ)) T)
+    (gforce : timeL2 (CircleHsPi (c₀.pullbackMetric (g 0)) (Fin n) ((1 : ℕ) : ℝ)) T)
+    (hfacts : ambientSobolevSolutionFacts c₀ g ht he hr hEU hleft β hG ρ hT u gforce)
+    (hlift : parameterDerivativeForcingFieldLift (c₀.pullbackMetric (g 0)) hT gforce) :
+    let g₀ := c₀.pullbackMetric (g 0)
+    let f₀ := ambientSobolev c₀ (g 0) e he (((1 : ℕ) : ℝ) + 2)
+    let P := circleHsPiInclusion g₀ (Fin n)
+      (show (1 : ℝ) ≤ ((1 : ℕ) : ℝ) + 2 by norm_num)
+    let S := circleHsPiInclusion g₀ (Fin n)
+      (show (1 : ℝ) ≤ ((1 : ℕ) : ℝ) by norm_num)
+    let d : CurveMap (EuclideanSpace ℝ (Fin n)) := fun z t => WithLp.toLp 2
+      (scalarH1PiToContinuous g₀ (P f₀ + S (u.toFun t)) z)
+    let c : CurveMap M := fun z t => r (d z t)
+    ContMDiffOn 𝓘(ℝ, ℝ × ℝ) I 1 (fun p : ℝ × ℝ => c.lift p.1 p.2)
+      (univ ×ˢ Icc 0 T) := by
+  intro g₀ f₀ P S d c
+  have hjoint : ContDiffOn ℝ 1 (fun p : ℝ × ℝ => d.lift p.2 p.1)
+      (Icc 0 T ×ˢ univ) :=
+    ambient_contDiffOn_one_of_parameterDerivative_lift
+      c₀ g ht he hr hEU hleft β hG hT hTρ hρC u gforce hfacts hlift
+  have hjet : ∀ t ∈ Icc 0 T, ∀ x : ℝ,
+      (t, d.lift x t, deriv (fun y => d.lift y t) x) ∈
+        curveShorteningChartFirstJetDomain D
+          (fun t => Geometry.Riemannian.retractionMetric (g t) he hr) β :=
+    ambient_firstJet_mem_of_sobolev_solution_facts
+      c₀ g ht he hr hEU hleft β hG hT hTρ hρC u gforce hfacts
+  apply contMDiffOn_retraction_of_contDiffOn (U := U) (r := r) hr d (Icc 0 T) hjoint
+  intro x t htt
+  simpa only [DifferentialGeometry.extChartAt_opens_target, U.isOpen.interior_eq] using
+    (hjet t htt x).2.1
+
+private theorem ambient_sobolev_solution_exists_with_retraction_regular [I.Boundaryless] :
+    let C := ambientCoefficients c₀ g ht he hr hEU hleft β hG
+    let g₀ := c₀.pullbackMetric (g 0)
+    let f₀ := ambientSobolev c₀ (g 0) e he (((1 : ℕ) : ℝ) + 2)
+    let P := circleHsPiInclusion g₀ (Fin n)
+      (show (1 : ℝ) ≤ ((1 : ℕ) : ℝ) + 2 by norm_num)
+    let S := circleHsPiInclusion g₀ (Fin n)
+      (show (1 : ℝ) ≤ ((1 : ℕ) : ℝ) by norm_num)
+    ∃ ρ : ℝ, 0 < ρ ∧ ρ ≤ ScalarVectorTimeCoefficients.radius C ∧ ρ ≤ 1 ∧
+      ∃ (T : ℝ) (hT : 0 < T), T ≤ ρ ∧
+        ∃ (u : timeH1 (CircleHsPi g₀ (Fin n) ((1 : ℕ) : ℝ)) T)
+          (gforce : timeL2 (CircleHsPi g₀ (Fin n) ((1 : ℕ) : ℝ)) T),
+          ambientSobolevSolutionFacts c₀ g ht he hr hEU hleft β hG ρ hT u gforce ∧
+            parameterDerivativeForcingFieldLift g₀ hT gforce ∧
+            ambientSobolevFourthOrderLift g₀ hT gforce ∧
+            let d : CurveMap (EuclideanSpace ℝ (Fin n)) := fun z t => WithLp.toLp 2
+              (scalarH1PiToContinuous g₀ (P f₀ + S (u.toFun t)) z)
+            let c : CurveMap M := fun z t => r (d z t)
+            (∀ z, c z 0 = c₀.map z) ∧
+              (∀ z t, t ∈ Icc 0 T → e (c z t) = d z t) ∧
+              ContMDiffOn 𝓘(ℝ, ℝ × ℝ) I 1 (fun p : ℝ × ℝ => c.lift p.1 p.2)
+                (univ ×ˢ Icc 0 T) ∧
+              (∀ t ∈ Icc 0 T, ContMDiff 𝓘(ℝ, ℝ) I 2 (fun x : ℝ => c.lift x t)) ∧
+              c.ImmersedOn (I := I) (Icc 0 T) ∧
+              ∀ x t, t ∈ Icc 0 T →
+                mfderiv I 𝓘(ℝ, EuclideanSpace ℝ (Fin n)) e (c.lift x t)
+                  (c.velocity (I := I) (Icc 0 T) x t) =
+                    d.velocity (I := 𝓘(ℝ, EuclideanSpace ℝ (Fin n))) (Icc 0 T) x t := by
+  intro C g₀ f₀ P S
+  obtain ⟨ρ, hρ, hρC, hρ1, T, hT, hTρ, u, gforce, hfacts, hlift, hfour, _⟩ :=
+    ambient_sobolev_solution_exists_with_mem_range c₀ g ht he hr hEU hleft β hG
+  obtain ⟨hinit, hce, hc2, himm⟩ :=
+    ambient_retraction_contMDiff_two_and_immersed_of_parameterDerivative_lift
+      c₀ g ht he hr hEU hleft β hG hT hTρ hρC u gforce hfacts hlift
+  have hc1 := ambient_retraction_contMDiffOn_one_of_parameterDerivative_lift
+    c₀ g ht he hr hEU hleft β hG hT hTρ hρC u gforce hfacts hlift
+  refine ⟨ρ, hρ, hρC, hρ1, T, hT, hTρ, u, gforce,
+    hfacts, hlift, hfour, hinit, hce, hc1, hc2, himm, ?_⟩
+  let d : CurveMap (EuclideanSpace ℝ (Fin n)) := fun z t => WithLp.toLp 2
+    (scalarH1PiToContinuous g₀ (P f₀ + S (u.toFun t)) z)
+  let c : CurveMap M := fun z t => r (d z t)
+  change ContMDiffOn 𝓘(ℝ, ℝ × ℝ) I 1 (fun p : ℝ × ℝ => c.lift p.1 p.2)
+    (univ ×ˢ Icc 0 T) at hc1
+  change ∀ z t, t ∈ Icc 0 T → e (c z t) = d z t at hce
+  intro x t htt
+  have hslice : ContMDiffOn 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ × ℝ) 1
+      (fun τ : ℝ => (x, τ)) (Icc 0 T) :=
+    (show ContDiffOn ℝ 1 (fun τ : ℝ => (x, τ)) (Icc 0 T) from
+      contDiffOn_const.prodMk contDiffOn_id).contMDiffOn
+  have htime : MDifferentiableWithinAt 𝓘(ℝ, ℝ) I (c.lift x) (Icc 0 T) t :=
+    ((hc1.comp hslice (fun τ hτ => ⟨mem_univ x, hτ⟩)) t htt).mdifferentiableWithinAt (by norm_num)
+  have hvel := CurveMap.velocity_comp he htime (uniqueDiffOn_Icc hT t htt)
+  have heq : CurveMap.velocity (I := 𝓘(ℝ, EuclideanSpace ℝ (Fin n)))
+      (fun z τ => e (c z τ)) (Icc 0 T) x t =
+        d.velocity (I := 𝓘(ℝ, EuclideanSpace ℝ (Fin n))) (Icc 0 T) x t := by
+    unfold CurveMap.velocity
+    have h := mfderivWithin_congr_of_mem (I := 𝓘(ℝ, ℝ))
+      (I' := 𝓘(ℝ, EuclideanSpace ℝ (Fin n)))
+      (f₁ := fun τ => e (c.lift x τ)) (f := d.lift x)
+      (fun τ hτ => hce (x : AddCircle (1 : ℝ)) τ hτ) htt
+    exact congrArg (fun L : ℝ →L[ℝ] EuclideanSpace ℝ (Fin n) => L 1) h
+  exact hvel.symm.trans heq
+
+private theorem ambient_retraction_parametric_equation_of_parameterDerivative_lift [I.Boundaryless]
+    {ρ T : ℝ} (hT : 0 < T) (hTρ : T ≤ ρ)
+    (hρC : ρ ≤ ScalarVectorTimeCoefficients.radius
+      (ambientCoefficients c₀ g ht he hr hEU hleft β hG))
+    (u : timeH1 (CircleHsPi (c₀.pullbackMetric (g 0)) (Fin n) ((1 : ℕ) : ℝ)) T)
+    (gforce : timeL2 (CircleHsPi (c₀.pullbackMetric (g 0)) (Fin n) ((1 : ℕ) : ℝ)) T)
+    (hfacts : ambientSobolevSolutionFacts c₀ g ht he hr hEU hleft β hG ρ hT u gforce)
+    (hlift : parameterDerivativeForcingFieldLift (c₀.pullbackMetric (g 0)) hT gforce) :
+    let g₀ := c₀.pullbackMetric (g 0)
+    let f₀ := ambientSobolev c₀ (g 0) e he (((1 : ℕ) : ℝ) + 2)
+    let P := circleHsPiInclusion g₀ (Fin n)
+      (show (1 : ℝ) ≤ ((1 : ℕ) : ℝ) + 2 by norm_num)
+    let S := circleHsPiInclusion g₀ (Fin n)
+      (show (1 : ℝ) ≤ ((1 : ℕ) : ℝ) by norm_num)
+    let d : CurveMap (EuclideanSpace ℝ (Fin n)) := fun z t => WithLp.toLp 2
+      (scalarH1PiToContinuous g₀ (P f₀ + S (u.toFun t)) z)
+    let c : CurveMap M := fun z t => r (d z t)
+    ∀ x t, t ∈ Icc 0 T → c.velocity (I := I) (Icc 0 T) x t =
+      c.speed g x t ^ (-2 : ℤ) • c.Dx g c.X x t := by
+  intro g₀ f₀ P S d c
+  have hcjoint : ContMDiffOn 𝓘(ℝ, ℝ × ℝ) I 1
+      (fun p : ℝ × ℝ => c.lift p.1 p.2) (univ ×ˢ Icc 0 T) :=
+    ambient_retraction_contMDiffOn_one_of_parameterDerivative_lift
+      c₀ g ht he hr hEU hleft β hG hT hTρ hρC u gforce hfacts hlift
+  have hfinite := ambient_retraction_contMDiff_two_and_immersed_of_parameterDerivative_lift
+    c₀ g ht he hr hEU hleft β hG hT hTρ hρC u gforce hfacts hlift
+  have hce : ∀ z t, t ∈ Icc 0 T → e (c z t) = d z t := hfinite.2.1
+  have hcspace : ∀ t ∈ Icc 0 T, ContMDiff 𝓘(ℝ, ℝ) I 2 (fun x => c.lift x t) :=
+    hfinite.2.2.1
+  have hpde : ∀ t ∈ Icc 0 T, ∀ x,
+      HasDerivWithinAt (fun s => d.lift x s)
+        (curveShorteningParametricChartRhs
+          (fun s => Geometry.Riemannian.retractionMetric (g s) he hr) β
+          (t, d.lift x t, deriv (fun y => d.lift y t) x,
+            deriv (deriv (fun y => d.lift y t)) x)) (Icc 0 T) t :=
+    ambient_chart_equation_of_parameterDerivative_lift
+      c₀ g ht he hr hEU hleft β hG hT hTρ hρC u gforce hfacts hlift
+  let j : M → U := fun p => ⟨e p, hEU (mem_range_self p)⟩
+  have hj : ContMDiff I 𝓘(ℝ, EuclideanSpace ℝ (Fin n)) ∞ j :=
+    (ContMDiff.subtypeVal_comp_iff U j).mp he
+  have hmetric : ∀ t p v w,
+      (Geometry.Riemannian.retractionMetric (g t) he hr).inner (j p)
+        (mfderiv I 𝓘(ℝ, EuclideanSpace ℝ (Fin n)) j p v)
+        (mfderiv I 𝓘(ℝ, EuclideanSpace ℝ (Fin n)) j p w) = (g t).inner p v w := by
+    intro t p v w
+    rw [← mfderiv_subtypeVal_comp j p]
+    exact Geometry.Riemannian.retractionMetric_inner_map (g t) he hr hEU hleft p v w
+  intro x t htt
+  have htime : MDifferentiableWithinAt 𝓘(ℝ, ℝ) I (c.lift x) (Icc 0 T) t := by
+    have hslice : ContMDiffWithinAt 𝓘(ℝ, ℝ) I 1 (c.lift x) (Icc 0 T) t :=
+      (hcjoint (x, t) ⟨mem_univ _, htt⟩).comp t
+        ((contDiffWithinAt_const.prodMk contDiffWithinAt_id).contMDiffWithinAt)
+        (fun s hs => ⟨mem_univ x, hs⟩)
+    exact hslice.mdifferentiableWithinAt one_ne_zero
+  apply CurveMap.velocity_eq_parametric_acceleration_of_comp_of_contMDiffAt hj hmetric
+    (fun s => Geometry.Riemannian.hasVanishingSecondFundamentalFormAlongCurves_retractionMetric
+      (g s) he hr hEU hleft) htime (hcspace t htt x) (uniqueDiffOn_Icc hT t htt)
+  apply CurveMap.velocity_eq_parametric_acceleration_of_chart_of_contMDiffAt β x t
+    ((hj.mdifferentiableAt (by simp)).comp_mdifferentiableWithinAt t htime)
+    ((hj.contMDiffAt.of_le (by decide : (2 : ℕ∞ω) ≤ (∞ : ℕ∞ω))).comp x (hcspace t htt x))
+    (uniqueDiffOn_Icc hT t htt)
+    (by rw [DifferentialGeometry.extChartAt_opens_source]; trivial)
+  have hspace : (fun y => extChartAt 𝓘(ℝ, EuclideanSpace ℝ (Fin n)) β
+      (j (c.lift y t))) = (fun y => d.lift y t) := by
+    funext y
+    exact hce (y : AddCircle (1 : ℝ)) t htt
+  change HasDerivWithinAt (fun s => extChartAt 𝓘(ℝ, EuclideanSpace ℝ (Fin n)) β
+    (j (c.lift x s)))
+    (curveShorteningParametricChartRhs
+      (fun s => Geometry.Riemannian.retractionMetric (g s) he hr) β
+      (t, extChartAt 𝓘(ℝ, EuclideanSpace ℝ (Fin n)) β (j (c.lift x t)),
+        deriv (fun y => extChartAt 𝓘(ℝ, EuclideanSpace ℝ (Fin n)) β (j (c.lift y t))) x,
+        deriv (deriv (fun y => extChartAt 𝓘(ℝ, EuclideanSpace ℝ (Fin n)) β
+          (j (c.lift y t)))) x)) (Icc 0 T) t
+  rw [hspace, show extChartAt 𝓘(ℝ, EuclideanSpace ℝ (Fin n)) β (j (c.lift x t)) =
+    d.lift x t from congrFun hspace x]
+  apply (hpde t htt x).congr
+  · intro s hs
+    exact hce (x : AddCircle (1 : ℝ)) s hs
+  · exact hce (x : AddCircle (1 : ℝ)) t htt
+
+private theorem ambient_sobolev_solution_exists_with_parametric_equation [I.Boundaryless] :
+    let C := ambientCoefficients c₀ g ht he hr hEU hleft β hG
+    let g₀ := c₀.pullbackMetric (g 0)
+    let f₀ := ambientSobolev c₀ (g 0) e he (((1 : ℕ) : ℝ) + 2)
+    let P := circleHsPiInclusion g₀ (Fin n)
+      (show (1 : ℝ) ≤ ((1 : ℕ) : ℝ) + 2 by norm_num)
+    let S := circleHsPiInclusion g₀ (Fin n)
+      (show (1 : ℝ) ≤ ((1 : ℕ) : ℝ) by norm_num)
+    ∃ ρ : ℝ, 0 < ρ ∧ ρ ≤ ScalarVectorTimeCoefficients.radius C ∧ ρ ≤ 1 ∧
+      ∃ (T : ℝ) (hT : 0 < T), T ≤ ρ ∧
+        ∃ (u : timeH1 (CircleHsPi g₀ (Fin n) ((1 : ℕ) : ℝ)) T)
+          (gforce : timeL2 (CircleHsPi g₀ (Fin n) ((1 : ℕ) : ℝ)) T),
+          ambientSobolevSolutionFacts c₀ g ht he hr hEU hleft β hG ρ hT u gforce ∧
+            parameterDerivativeForcingFieldLift g₀ hT gforce ∧
+            ambientSobolevFourthOrderLift g₀ hT gforce ∧
+            let d : CurveMap (EuclideanSpace ℝ (Fin n)) := fun z t => WithLp.toLp 2
+              (scalarH1PiToContinuous g₀ (P f₀ + S (u.toFun t)) z)
+            let c : CurveMap M := fun z t => r (d z t)
+            (∀ z, c z 0 = c₀.map z) ∧
+              (∀ z t, t ∈ Icc 0 T → e (c z t) = d z t) ∧
+              ContMDiffOn 𝓘(ℝ, ℝ × ℝ) I 1 (fun p : ℝ × ℝ => c.lift p.1 p.2)
+                (univ ×ˢ Icc 0 T) ∧
+              (∀ t ∈ Icc 0 T, ContMDiff 𝓘(ℝ, ℝ) I 2 (fun x : ℝ => c.lift x t)) ∧
+              c.ImmersedOn (I := I) (Icc 0 T) ∧
+              (∀ x t, t ∈ Icc 0 T →
+                mfderiv I 𝓘(ℝ, EuclideanSpace ℝ (Fin n)) e (c.lift x t)
+                  (c.velocity (I := I) (Icc 0 T) x t) =
+                    d.velocity (I := 𝓘(ℝ, EuclideanSpace ℝ (Fin n))) (Icc 0 T) x t) ∧
+              ∀ x t, t ∈ Icc 0 T → c.velocity (I := I) (Icc 0 T) x t =
+                c.speed g x t ^ (-2 : ℤ) • c.Dx g c.X x t := by
+  intro C g₀ f₀ P S
+  obtain ⟨ρ, hρ, hρC, hρ1, T, hT, hTρ, u, gforce,
+    hfacts, hlift, hfour, hinit, hce, hc1, hc2, himm, hvel⟩ :=
+    ambient_sobolev_solution_exists_with_retraction_regular c₀ g ht he hr hEU hleft β hG
+  refine ⟨ρ, hρ, hρC, hρ1, T, hT, hTρ, u, gforce,
+    hfacts, hlift, hfour, hinit, hce, hc1, hc2, himm, hvel, ?_⟩
+  exact ambient_retraction_parametric_equation_of_parameterDerivative_lift
+    c₀ g ht he hr hEU hleft β hG hT hTρ hρC u gforce hfacts hlift
+
 end
 
 end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening.SmoothImmersion

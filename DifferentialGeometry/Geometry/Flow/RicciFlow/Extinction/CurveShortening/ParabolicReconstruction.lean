@@ -6,6 +6,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.C
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ParabolicGaugeLocalExistence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.WindowGluing
 import DifferentialGeometry.Geometry.Submanifold.SecondFundamentalForm.AlongCurve
+import DifferentialGeometry.Geometry.Submanifold.SecondFundamentalForm.Pointwise
 import DifferentialGeometry.Geometry.Submanifold.SecondFundamentalForm.Retraction
 import DifferentialGeometry.Topology.Manifold.OpenSubtypeModel
 import DifferentialGeometry.Topology.Manifold.ContMDiff.OpenSubtype
@@ -52,6 +53,35 @@ theorem velocity_eq_parametric_acceleration_of_chart
     simpa only [TangentBundle.trivializationAt_baseSet] using hsrc
   have h := congrArg ((trivializationAt E (TangentSpace I) β).symmL ℝ (c.lift x t)) hvel
   simpa only [trivToE, (trivializationAt E (TangentSpace I) β).symmL_continuousLinearMapAt hb] using h
+
+
+theorem velocity_eq_parametric_acceleration_of_chart_of_contMDiffAt
+    {g : ℝ → SmoothRiemannianMetric I M} {c : CurveMap M} {J : Set ℝ}
+    (β : M) (x t : ℝ)
+    (htime : MDifferentiableWithinAt 𝓘(ℝ, ℝ) I (c.lift x) J t)
+    (hslice : ContMDiffAt 𝓘(ℝ, ℝ) I 2 (fun y => c.lift y t) x)
+    (hJ : UniqueDiffWithinAt ℝ J t) (hchart : c.lift x t ∈ (extChartAt I β).source)
+    (heq : HasDerivWithinAt (fun τ => extChartAt I β (c.lift x τ))
+      (curveShorteningParametricChartRhs g β
+        (t, extChartAt I β (c.lift x t), deriv (fun y => extChartAt I β (c.lift y t)) x,
+          deriv (deriv (fun y => extChartAt I β (c.lift y t))) x)) J t) :
+    c.velocity (I := I) J x t = c.speed g x t ^ (-2 : ℤ) • c.Dx g c.X x t := by
+  have hsrc : c.lift x t ∈ (chartAt H β).source := by
+    rwa [extChartAt_source] at hchart
+  have hbridge := chartCoord_mfderivWithin_along_curve_eq_fderivWithin
+    htime htime.continuousWithinAt hJ.uniqueMDiffWithinAt hsrc
+  have hrhs := trivToE_parametric_acceleration_eq_chart g c β x t hslice hchart
+  have hvel : trivToE I β (c.lift x t) (c.velocity (I := I) J x t) =
+      trivToE I β (c.lift x t) (c.speed g x t ^ (-2 : ℤ) • c.Dx g c.X x t) := by
+    rw [hrhs]
+    exact hbridge.trans (heq.derivWithin hJ)
+  have hb : c.lift x t ∈ (trivializationAt E (TangentSpace I) β).baseSet := by
+    simpa only [TangentBundle.trivializationAt_baseSet] using hsrc
+  have h := congrArg ((trivializationAt E (TangentSpace I) β).symmL ℝ (c.lift x t)) hvel
+  simpa only [trivToE, (trivializationAt E (TangentSpace I) β).symmL_continuousLinearMapAt hb] using h
+
+
+
 
 end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening.CurveMap
 
@@ -195,6 +225,42 @@ theorem exists_parabolic_curve_of_retraction
   intro x t ht
   apply velocity_eq_parametric_acceleration_of_comp he hg hII hc ht (hJ t ht)
   exact velocity_eq_parametric_acceleration_of_eqOn hagree ht (hpde x t ht)
+
+
+theorem velocity_eq_parametric_acceleration_of_comp_of_contMDiffAt [I.Boundaryless]
+    {g : ℝ → SmoothRiemannianMetric I M} {g' : ℝ → SmoothRiemannianMetric I' N}
+    {e : M → N} (he : ContMDiff I I' ∞ e)
+    (hg : ∀ t p v w, (g' t).inner (e p) (mfderiv I I' e p v) (mfderiv I I' e p w) =
+      (g t).inner p v w)
+    (hII : ∀ t, hasVanishingSecondFundamentalFormAlongCurves (g t) (g' t) e)
+    {c : CurveMap M} {J : Set ℝ} {x t : ℝ}
+    (htime : MDifferentiableWithinAt 𝓘(ℝ, ℝ) I (c.lift x) J t)
+    (hs : ContMDiffAt 𝓘(ℝ, ℝ) I 2 (fun y => c.lift y t) x) (hJ : UniqueDiffWithinAt ℝ J t)
+    (heq : CurveMap.velocity (I := I') (fun z τ => e (c z τ)) J x t =
+      CurveMap.speed (I := I') (fun z τ => e (c z τ)) g' x t ^ (-2 : ℤ) •
+        CurveMap.Dx (I := I') (fun z τ => e (c z τ)) g'
+          (CurveMap.X (I := I') (fun z τ => e (c z τ))) x t) :
+    c.velocity (I := I) J x t = c.speed g x t ^ (-2 : ℤ) • c.Dx g c.X x t := by
+  have hinj : Function.Injective (mfderiv I I' e (c.lift x t)) := by
+    intro v w hv
+    by_contra hne
+    have hpos := (g t).pos (c.lift x t) (v - w) (sub_ne_zero.mpr hne)
+    have hz : mfderiv I I' e (c.lift x t) (v - w) = 0 := by
+      rw [map_sub, hv, sub_self]
+    rw [← hg t (c.lift x t) (v - w) (v - w), hz] at hpos
+    simp only [map_zero, lt_self_iff_false] at hpos
+  have hacc : CurveMap.Dx (I := I') (fun z τ => e (c z τ)) g'
+      (CurveMap.X (I := I') (fun z τ => e (c z τ))) x t =
+      mfderiv I I' e (c.lift x t) (c.Dx g c.X x t) :=
+    (hII t).covariantAcceleration_comp_of_contMDiffAt he (fun y => c.lift y t) x hs
+  apply hinj
+  rw [map_smul, ← hacc,
+    ← speed_comp_of_inner_map he hg (hs.mdifferentiableAt (by norm_num)),
+    ← velocity_comp he htime hJ]
+  exact heq
+
+
+
 
 end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening.CurveMap
 
