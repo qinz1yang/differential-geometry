@@ -12,7 +12,7 @@ theorem exists_isPLHomeomorphOn_slab_of_free_disk_cell_deletion_sequence (I : Sc
     (K A : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3))) [Finite K.faces] [Finite A.faces]
     (hAK : A.faces ⊆ K.faces) (hreg : closure (interior A.space) = A.space)
     (ℓ : EuclideanSpace ℝ (Fin 3) →L[ℝ] ℝ) (hℓ : ℓ ≠ 0) (hinj : InjOn ℓ K.vertices)
-    {p : EuclideanSpace ℝ (Fin 3)} {a b : ℝ} (hpheight : ℓ p ∈ Ioo a b)
+    {p : EuclideanSpace ℝ (Fin 3)} {a b : ℝ} (hab : a < b) (hpheight : ℓ p ∈ Icc a b)
     (hgap : ∀ v ∈ K.vertices, v ≠ p → ℓ v < a ∨ b < ℓ v)
     {P Q : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3)) × Finset (Set (EuclideanSpace ℝ (Fin 3)))}
     (hsequence : Relation.ReflTransGen (IsFreeDiskCellDeletion (closedStar K p ∩ {x | ℓ x = ℓ p})) P Q)
@@ -40,7 +40,7 @@ theorem exists_isPLHomeomorphOn_slab_of_free_disk_cell_deletion_sequence (I : Sc
   | @head P R hstep hseq ih =>
       obtain ⟨B, hBfin, hBA, hBreg, hkeep, hRspace, hRdec, hRcells, H, hH, hHfix, hHimage⟩ :=
         exists_isPLHomeomorphOn_slab_of_free_disk_cell_deletion I K A hAK hreg ℓ hℓ hinj
-          hpheight hgap hstep hPspace hcells hS hW hWconv hSW
+          hab hpheight hgap hstep hPspace hcells hS hW hWconv hSW
       let _ : Finite B.faces := hBfin.to_subtype
       have hBpoly : IsPLSphere 2 (frontier (B.space ∩ ℓ ⁻¹' Icc a b)) := by
         rw [← hHimage]
@@ -68,7 +68,7 @@ theorem exists_isPLHomeomorphOn_frontier_slab_closedStar (I : SchoenfliesInput)
     (hreg : closure (interior K.space) = K.space) (hconn : IsPreconnected (interior K.space))
     (ℓ : EuclideanSpace ℝ (Fin 3) →L[ℝ] ℝ) (hℓ : ℓ ≠ 0) (hinj : InjOn ℓ K.vertices)
     (hzero : heightIndex (frontier K.space) ℓ = 0)
-    {p : EuclideanSpace ℝ (Fin 3)} (hp : {p} ∈ K.faces) {a b : ℝ} (hpheight : ℓ p ∈ Ioo a b)
+    {p : EuclideanSpace ℝ (Fin 3)} (hp : {p} ∈ K.faces) {a b : ℝ} (hab : a < b) (hpheight : ℓ p ∈ Icc a b)
     (hgap : ∀ v ∈ K.vertices, v ≠ p → ℓ v < a ∨ b < ℓ v)
     (hbelow : ∃ x ∈ frontier K.space, ℓ x < a) (habove : ∃ y ∈ frontier K.space, b < ℓ y)
     {W : Set (EuclideanSpace ℝ (Fin 3))} (hW : IsOpen W) (hWconv : Convex ℝ W)
@@ -79,15 +79,15 @@ theorem exists_isPLHomeomorphOn_frontier_slab_closedStar (I : SchoenfliesInput)
   classical
   obtain ⟨_, _, _, _, g, hg, -⟩ := exists_isPLDiskDecomposition_fiber_of_heightIndex_eq_zero K hK hS
     (by simp) hreg hconn ℓ hℓ hinj hzero (ℓ p)
-    (hbelow.imp fun _ hx => ⟨hx.1, hx.2.trans hpheight.1⟩)
-    (habove.imp fun _ hx => ⟨hx.1, hpheight.2.trans hx.2⟩)
+    (hbelow.imp fun _ hx => ⟨hx.1, hx.2.trans_le hpheight.1⟩)
+    (habove.imp fun _ hx => ⟨hx.1, hpheight.2.trans_lt hx.2⟩)
   obtain ⟨L, R, hL, hLspace, -, hRspace, hsequence⟩ :=
     exists_free_disk_cell_deletion_sequence_to_closedStar K (by simp) hreg ℓ.toLinearMap hinj hp ⟨g, hg⟩
   have hslab := isPLSphere_frontier_slab_of_heightIndex_eq_zero K hK hS (by simp) hreg hconn
-    ℓ hℓ hinj hzero (hpheight.1.trans hpheight.2) hbelow habove
+    ℓ hℓ hinj hzero hab hbelow habove
   obtain ⟨B, hBfin, hBK, -, hkeep, hfiber, -, -, H, hH, hfix, himage⟩ :=
     exists_isPLHomeomorphOn_slab_of_free_disk_cell_deletion_sequence I K K Subset.rfl hreg ℓ hℓ hinj
-      hpheight hgap hsequence hL hLspace Subset.rfl hslab hW hWconv hSW
+      hab hpheight hgap hsequence hL hLspace Subset.rfl hslab hW hWconv hSW
   have hstar : closedStar K p ⊆ B.space := by
     intro x hx
     obtain ⟨T, ⟨hT, hpT⟩, hxT⟩ := mem_iUnion₂.mp hx
@@ -96,7 +96,7 @@ theorem exists_isPLHomeomorphOn_frontier_slab_closedStar (I : SchoenfliesInput)
     intro x hx
     exact (hRspace.subset (hfiber.symm.subset hx)).1
   have heq := inter_slab_eq_closedStar_inter_of_fiber_subset K B hBK hp hstar ℓ.toLinearMap
-    ⟨hpheight.1.le, hpheight.2.le⟩ hgap hfiber'
+    hpheight hgap hfiber'
   change B.space ∩ ℓ ⁻¹' Icc a b = closedStar K p ∩ ℓ ⁻¹' Icc a b at heq
   rw [heq] at himage
   exact ⟨H, hH, hfix, himage⟩

@@ -2203,3 +2203,11 @@ F-M1 仍为 partial。单个旧三角形的全部纤维及逐边对应已闭合�
 当前完整删除端点使用 `a < ℓ p < b`，这是 §19.91–19.92 的端面避开全部顶点版本。书页 124–125 的最终锥论证把 p 放在一端平面，故下一步应将正规闭裁剪和删除步骤推广到 `a = ℓ p` 或 `b = ℓ p`（保持 p 层为真实 PL 盘，删除胞腔仍避开 p），再识别单侧残余闭星为盘与点的 join，消费 17.10，最后按 17.11 做 M3。不能把当前双侧闭星薄片直接冒充 17.10 的盘锥。
 
 聚焦检查：`SlabCellDeletion` exit=0（10.6 秒）、`ClosedStarSlab` exit=0（8.2 秒）、`SlabDeletionSequence` exit=0（9.9 秒），全部零 warning。`AuditF242.lean` 四项仅依赖 `propext`、`Classical.choice`、`Quot.sound`；无 Lean 进程时 `fresh.py` 为 81/81 fresh、零 stale/missing、零禁用项。三维有限删除及闭星精确终点已闭合，单侧锥识别和 M3 尚未完成；S.4 M2/M3、夜间 F-M1 整体及 I1 仍为 partial。下一审计文件 `AuditF243.lean`。
+
+### 19.94 S.4 M2：参考顶点可在端面的完整薄片删除
+
+`SlabFiberInterior.lean` 从凸包中分别严格低于上端和高于下端的点生产满维单形薄片的非空内部，不再要求端面避开全部顶点。`closure_interior_space_inter_slab_of_isPLBall_fiber` 从有限正规闭复形、顶点高度一般位置、闭区间内至多一个顶点 p 及 p 层的正维 PL 球性，证明整个闭薄片正规闭；p 可在任一端面。证明对非顶点使用跨越高度的满维面，对 p 使用水平 PL 球删去有限顶点后的稠密性；适用于任意有限维实范数空间，不要求三维。
+
+`SlabCellDeletion.lean` 与 `SlabDeletionSequence.lean` 的三项删除端点已同步采用 `a < b`、`ℓ p ∈ Icc a b`。被删四面体仍不含 p，故其自身端面继续避开全部顶点；剩余区域的正规闭裁剪由新定理实际生产，闭差交换公式随之成立。书中一端经过 p 的薄片现已纳入完整有限环境删除，未增添剩余区域正规闭性或相交盘假设。
+
+聚焦检查：`SlabFiberInterior` exit=0（9.6 秒）、`SlabCellDeletion` exit=0（10.7 秒）、`SlabDeletionSequence` exit=0（10.1 秒），全部零 warning。`AuditF243.lean` 五项仅依赖 `propext`、`Classical.choice`、`Quot.sound`；无 Lean 进程时 `fresh.py` 为 82/82 fresh、零 stale/missing、零禁用项。下一步构造单侧闭星薄片的实际锥底并证明其 PL 二维盘性，消费 17.10，再按 17.11 做 M3。S.4 M2/M3、夜间 F-M1 整体及 I1 仍为 partial。下一审计文件 `AuditF244.lean`。

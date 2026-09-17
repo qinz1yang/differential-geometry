@@ -2,6 +2,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.SubcomplexSlab
 import DifferentialGeometry.Topology.PiecewiseLinear.HeightCellDeletion
 import DifferentialGeometry.Topology.PiecewiseLinear.DiskCellDeletion
 import DifferentialGeometry.Topology.PiecewiseLinear.RegionCellPush
+import DifferentialGeometry.Topology.PiecewiseLinear.SlabFiberInterior
 
 open Set
 
@@ -12,7 +13,7 @@ theorem exists_isPLHomeomorphOn_slab_of_free_disk_cell_deletion (I : Schoenflies
     (K A : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3))) [Finite K.faces] [Finite A.faces]
     (hAK : A.faces ⊆ K.faces) (hreg : closure (interior A.space) = A.space)
     (ℓ : EuclideanSpace ℝ (Fin 3) →L[ℝ] ℝ) (hℓ : ℓ ≠ 0) (hinj : InjOn ℓ K.vertices)
-    {p : EuclideanSpace ℝ (Fin 3)} {a b : ℝ} (hpheight : ℓ p ∈ Ioo a b)
+    {p : EuclideanSpace ℝ (Fin 3)} {a b : ℝ} (hab : a < b) (hpheight : ℓ p ∈ Icc a b)
     (hgap : ∀ v ∈ K.vertices, v ≠ p → ℓ v < a ∨ b < ℓ v)
     {P Q : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3)) × Finset (Set (EuclideanSpace ℝ (Fin 3)))}
     (hstep : IsFreeDiskCellDeletion (closedStar K p ∩ {x | ℓ x = ℓ p}) P Q)
@@ -40,18 +41,14 @@ theorem exists_isPLHomeomorphOn_slab_of_free_disk_cell_deletion (I : Schoenflies
     rw [hCeq]
     rintro x ⟨hxT, hxp⟩
     exact ⟨mem_iUnion₂.mpr ⟨T, ⟨hAK hT, subset_convexHull ℝ _ hpT⟩, hxT⟩, hxp⟩
-  have hab : a < b := hpheight.1.trans hpheight.2
   have hvertices : ∀ v ∈ T, ℓ v < a ∨ b < ℓ v := fun v hv =>
     hgap v (K.down_closed (hAK hT) (Finset.singleton_subset_iff.mpr hv) (Finset.singleton_nonempty v))
       (fun h => hpnot (h ▸ hv))
-  have havoid : ∀ v ∈ A.vertices, ℓ v ≠ a ∧ ℓ v ≠ b := by
+  have havoidT : ∀ v ∈ T, ℓ v ≠ a ∧ ℓ v ≠ b := by
     intro v hv
-    by_cases hvp : v = p
-    · subst v
-      exact ⟨hpheight.1.ne', hpheight.2.ne⟩
-    · rcases hgap v (hAK hv) hvp with hlow | hhigh
-      · exact ⟨hlow.ne, (hlow.trans hab).ne⟩
-      · exact ⟨(hab.trans hhigh).ne', hhigh.ne'⟩
+    rcases hvertices v hv with hlow | hhigh
+    · exact ⟨hlow.ne, (hlow.trans hab).ne⟩
+    · exact ⟨(hab.trans hhigh).ne', hhigh.ne'⟩
   let B := subcomplexGeneratedBy A {s | ¬s ⊆ T}
   have hBfin : B.faces.Finite := subcomplexGeneratedBy_faces_finite A _
   let _ : Finite B.faces := hBfin.to_subtype
@@ -74,8 +71,8 @@ theorem exists_isPLHomeomorphOn_slab_of_free_disk_cell_deletion (I : Schoenflies
     exact (fiber_subcomplexGeneratedBy_eq_closure_sdiff A (by simp) hreg hT hTcard ℓ.toLinearMap
       (hinj.mono (fun _ hv => hAK hv)) (fun v hv => by
         rcases hvertices v hv with hlow | hhigh
-        · exact (hlow.trans hpheight.1).ne
-        · exact (hpheight.2.trans hhigh).ne')).symm
+        · exact (hlow.trans_le hpheight.1).ne
+        · exact (hpheight.2.trans_lt hhigh).ne')).symm
   have hQheight : Q.2 ⊆ heightSectionCells 2 B ℓ.toLinearMap (ℓ p) := by
     intro D hD
     rw [hQcells] at hD
@@ -89,23 +86,32 @@ theorem exists_isPLHomeomorphOn_slab_of_free_disk_cell_deletion (I : Schoenflies
   have hZne : Z.Nonempty := by
     obtain ⟨x, hx⟩ := (hdec.cell_isPLBall C hC).nonempty
     rw [hCeq] at hx
-    exact ⟨x, hx.1, by change a ≤ ℓ x ∧ ℓ x ≤ b; have hxp : ℓ x = ℓ p := hx.2; rw [hxp]; exact ⟨hpheight.1.le, hpheight.2.le⟩⟩
+    exact ⟨x, hx.1, by change a ≤ ℓ x ∧ ℓ x ≤ b; have hxp : ℓ x = ℓ p := hx.2; rw [hxp]; exact hpheight⟩
   have hZ : IsPLBall 3 Z := by
     have h := hZpoly.isPLBall (interior_convexHull_inter_slab_nonempty T (A.indep hT)
       (by simpa using hTcard) ℓ.toLinearMap.toAffineMap hab
-      (fun v hv => havoid v (A.down_closed hT (Finset.singleton_subset_iff.mpr hv) (Finset.singleton_nonempty v))) hZne)
+      havoidT hZne)
     simpa using h
   have hpatch := isPLBall_frontier_slab_inter_cell_of_isFreeDiskCell K A hAK (by simp) hT ℓ hℓ hinj hab
-    ⟨hpheight.1.le, hpheight.2.le⟩ hvertices hdec hPspace (hCeq ▸ hC) (hCeq ▸ hfree)
+    hpheight hvertices hdec hPspace (hCeq ▸ hC) (hCeq ▸ hfree)
   have hslabpoly : IsPolyhedron (A.space ∩ ℓ ⁻¹' Icc a b) :=
     (isPolyhedron_space A).inter_preimage isHPolytope_Icc.isPolyhedron ℓ.toLinearMap.toAffineMap
-  have hslabreg := closure_interior_space_inter_slab A hreg ℓ.toLinearMap.toAffineMap hab havoid
+  have hD : IsPLBall 2 (A.space ∩ {x | ℓ.toLinearMap x = ℓ.toLinearMap p}) := hPspace ▸ hdec.isPLBall
+  have hslabreg := closure_interior_space_inter_slab_of_isPLBall_fiber A hreg ℓ.toLinearMap
+    (hinj.mono (fun _ hv => hAK hv)) hab hpheight (fun v hv => hgap v (hAK hv)) hD
   obtain ⟨H, hH, hfix, -, himage⟩ := exists_isPLHomeomorphOn_frontier_closure_sdiff_of_convex I
     hslabpoly hslabreg hS hZ hZpoly.convex (inter_subset_inter_left _ (A.convexHull_subset_space hT))
     hpatch hW hWconv hSW
-  have hslabeq := closure_sdiff_slab_eq_subcomplexGeneratedBy_inter A hreg hT (by simpa using hTcard)
-    ℓ.toLinearMap.toAffineMap hab havoid
-  change closure ((A.space ∩ ℓ ⁻¹' Icc a b) \ Z) = B.space ∩ ℓ ⁻¹' Icc a b at hslabeq
+  have hBD : IsPLBall 2 (B.space ∩ {x | ℓ.toLinearMap x = ℓ.toLinearMap p}) := hfiber ▸ hQdec.isPLBall
+  have hBslabreg := closure_interior_space_inter_slab_of_isPLBall_fiber B hBreg ℓ.toLinearMap
+    (hinj.mono (fun _ hv => hAK (hBA hv))) hab hpheight
+    (fun v hv => hgap v (hAK (hBA hv))) hBD
+  have hTball : IsPLBall 3 (convexHull ℝ (T : Set (EuclideanSpace ℝ (Fin 3)))) :=
+    isPLBall_convexHull_of_affineIndependent T (A.indep hT) hTcard
+  have hslabeq : closure ((A.space ∩ ℓ ⁻¹' Icc a b) \ Z) = B.space ∩ ℓ ⁻¹' Icc a b := by
+    rw [hBspace] at hBslabreg ⊢
+    exact Topology.closure_inter_sdiff_eq_inter_closure_sdiff (isPolyhedron_space A).isClosed
+      (isClosed_Icc.preimage ℓ.continuous) hTball.closure_interior hBslabreg
   rw [hslabeq] at himage
   exact ⟨B, hBfin, hBA, hBreg, hkeep, hfiber, hQdec, hQheight, H, hH, hfix, himage⟩
 
