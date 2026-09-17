@@ -182,6 +182,59 @@ theorem exists_pos_forall_exists_isPLOn_dist_lt_eqOn_of_mapsTo_chart {n m : ℕ}
       (lt_of_lt_of_le (hg'lt x hx) (min_le_left _ _))
     simpa only [Function.comp_apply, e.left_inv (hmap hx)] using h
 
+theorem exists_isPLOn_dist_lt_eqOn_of_biUnion {n m : ℕ} {N : Type*} [MetricSpace N]
+    [ChartedSpace (EuclideanSpace ℝ (Fin m)) N] [HasGroupoid N (plGroupoid m)]
+    {ι : Type*} {C : ι → Set (EuclideanSpace ℝ (Fin n))} (hC : ∀ i, IsPolyhedron (C i))
+    {Q : Set (EuclideanSpace ℝ (Fin n))} (hQ : IsPolyhedron Q)
+    {f : EuclideanSpace ℝ (Fin n) → N} (hfQ : IsPLOn n m f Q) (s : Finset ι)
+    (hf : ContinuousOn f (Q ∪ ⋃ i ∈ s, C i))
+    (hchart : ∀ i ∈ s, ∃ e : OpenPartialHomeomorph N (EuclideanSpace ℝ (Fin m)),
+      e ∈ (plGroupoid m).maximalAtlas N ∧ MapsTo f (C i) e.source)
+    {ε : ℝ} (hε : 0 < ε) :
+    ∃ g : EuclideanSpace ℝ (Fin n) → N, IsPLOn n m g (Q ∪ ⋃ i ∈ s, C i) ∧ EqOn g f Q ∧
+      ∀ x ∈ Q ∪ ⋃ i ∈ s, C i, dist (g x) (f x) < ε := by
+  classical
+  induction s using Finset.induction_on generalizing ε with
+  | empty =>
+    refine ⟨f, ?_, fun x _ => rfl, ?_⟩
+    · simpa using hfQ
+    · intro x _
+      rw [dist_self]
+      exact hε
+  | insert j t hj ih =>
+    have hset : Q ∪ ⋃ i ∈ insert j t, C i = C j ∪ (Q ∪ ⋃ i ∈ t, C i) := by
+      rw [Finset.set_biUnion_insert, Set.union_left_comm]
+    rw [hset] at hf ⊢
+    set U := Q ∪ ⋃ i ∈ t, C i with hUdef
+    have hU : IsPolyhedron U := hQ.union (IsPolyhedron.finsetBiUnion t hC)
+    obtain ⟨e, he, hemap⟩ := hchart j (Finset.mem_insert_self j t)
+    have hQ' : IsPolyhedron (U ∩ C j) := hU.inter (hC j)
+    obtain ⟨η, hη, hηprop⟩ :=
+      exists_pos_forall_exists_isPLOn_dist_lt_eqOn_of_mapsTo_chart (hC j) (hC j).isCompact
+        hQ' inter_subset_right (hf.mono subset_union_left) e he hemap hε
+    obtain ⟨g₀, hg₀, hg₀Q, hg₀d⟩ :=
+      ih (hf.mono subset_union_right) (fun i hi => hchart i (Finset.mem_insert_of_mem hi))
+        (lt_min hε hη)
+    obtain ⟨g₁, hg₁, hg₁eq, hg₁d⟩ :=
+      hηprop g₀ (hg₀.mono_of_isPolyhedron hQ' inter_subset_left)
+        (fun x hx => lt_of_lt_of_le (hg₀d x hx.1) (min_le_right _ _))
+    refine ⟨(C j).piecewise g₁ g₀, ?_, ?_, ?_⟩
+    · exact hg₁.piecewise_of_isClosed hg₀ (hC j).isClosed hU.isClosed
+        (fun x hx => hg₁eq ⟨hx.2, hx.1⟩)
+    · intro x hx
+      have hxU : x ∈ U := subset_union_left hx
+      by_cases hxV : x ∈ C j
+      · rw [Set.piecewise_eq_of_mem _ _ _ hxV, hg₁eq ⟨hxU, hxV⟩]
+        exact hg₀Q hx
+      · rw [Set.piecewise_eq_of_notMem _ _ _ hxV]
+        exact hg₀Q hx
+    · intro x hx
+      by_cases hxV : x ∈ C j
+      · rw [Set.piecewise_eq_of_mem _ _ _ hxV]
+        exact hg₁d x hxV
+      · rw [Set.piecewise_eq_of_notMem _ _ _ hxV]
+        exact lt_of_lt_of_le (hg₀d x (hx.resolve_left hxV)) (min_le_left _ _)
+
 theorem exists_isPLOn_dist_lt_of_biUnion {n m : ℕ} {N : Type*} [MetricSpace N]
     [ChartedSpace (EuclideanSpace ℝ (Fin m)) N] [HasGroupoid N (plGroupoid m)]
     {ι : Type*} {C : ι → Set (EuclideanSpace ℝ (Fin n))} (hC : ∀ i, IsPolyhedron (C i))
@@ -192,40 +245,22 @@ theorem exists_isPLOn_dist_lt_of_biUnion {n m : ℕ} {N : Type*} [MetricSpace N]
     {ε : ℝ} (hε : 0 < ε) :
     ∃ g : EuclideanSpace ℝ (Fin n) → N, IsPLOn n m g (⋃ i ∈ s, C i) ∧
       ∀ x ∈ ⋃ i ∈ s, C i, dist (g x) (f x) < ε := by
-  classical
-  induction s using Finset.induction_on generalizing ε with
-  | empty => exact ⟨f, fun x hx => absurd hx (by simp), fun x hx => absurd hx (by simp)⟩
-  | insert j t hj ih =>
-    rw [Finset.set_biUnion_insert] at hf ⊢
-    set U := ⋃ i ∈ t, C i with hUdef
-    have hU : IsPolyhedron U := IsPolyhedron.finsetBiUnion t hC
-    obtain ⟨e, he, hemap⟩ := hchart j (Finset.mem_insert_self j t)
-    have hQ : IsPolyhedron (U ∩ C j) := hU.inter (hC j)
-    obtain ⟨η, hη, hηprop⟩ :=
-      exists_pos_forall_exists_isPLOn_dist_lt_eqOn_of_mapsTo_chart (hC j) (hC j).isCompact
-        hQ inter_subset_right (hf.mono subset_union_left) e he hemap hε
-    obtain ⟨g₀, hg₀, hg₀d⟩ :=
-      ih (hf.mono subset_union_right) (fun i hi => hchart i (Finset.mem_insert_of_mem hi))
-        (lt_min hε hη)
-    obtain ⟨g₁, hg₁, hg₁eq, hg₁d⟩ :=
-      hηprop g₀ (hg₀.mono_of_isPolyhedron hQ inter_subset_left)
-        (fun x hx => lt_of_lt_of_le (hg₀d x hx.1) (min_le_right _ _))
-    refine ⟨(C j).piecewise g₁ g₀, ?_, ?_⟩
-    · exact hg₁.piecewise_of_isClosed hg₀ (hC j).isClosed hU.isClosed
-        (fun x hx => hg₁eq ⟨hx.2, hx.1⟩)
-    · intro x hx
-      by_cases hxV : x ∈ C j
-      · rw [Set.piecewise_eq_of_mem _ _ _ hxV]
-        exact hg₁d x hxV
-      · rw [Set.piecewise_eq_of_notMem _ _ _ hxV]
-        exact lt_of_lt_of_le (hg₀d x (hx.resolve_left hxV)) (min_le_left _ _)
+  obtain ⟨g, hg, -, hgd⟩ :=
+    exists_isPLOn_dist_lt_eqOn_of_biUnion hC IsPolyhedron.empty
+      (Q := (∅ : Set (EuclideanSpace ℝ (Fin n)))) (fun x hx => absurd hx (by simp)) s
+      (by simpa using hf) hchart hε
+  rw [Set.empty_union] at hg hgd
+  exact ⟨g, hg, hgd⟩
 
-theorem exists_isPLOn_dist_lt {n m : ℕ} {N : Type*} [MetricSpace N]
+theorem exists_finsetBiUnion_eq_mapsTo_chart {n m : ℕ} {N : Type*} [MetricSpace N]
     [ChartedSpace (EuclideanSpace ℝ (Fin m)) N] [HasGroupoid N (plGroupoid m)]
     {P : Set (EuclideanSpace ℝ (Fin n))} (hP : IsPolyhedron P)
-    {f : EuclideanSpace ℝ (Fin n) → N} (hf : ContinuousOn f P)
-    {ε : ℝ} (hε : 0 < ε) :
-    ∃ g : EuclideanSpace ℝ (Fin n) → N, IsPLOn n m g P ∧ ∀ x ∈ P, dist (g x) (f x) < ε := by
+    {f : EuclideanSpace ℝ (Fin n) → N} (hf : ContinuousOn f P) :
+    ∃ (C : Finset (EuclideanSpace ℝ (Fin n)) → Set (EuclideanSpace ℝ (Fin n)))
+      (T : Finset (Finset (EuclideanSpace ℝ (Fin n)))),
+      (∀ s, IsPolyhedron (C s)) ∧ (⋃ s ∈ T, C s) = P ∧
+        ∀ s ∈ T, ∃ e : OpenPartialHomeomorph N (EuclideanSpace ℝ (Fin m)),
+          e ∈ (plGroupoid m).maximalAtlas N ∧ MapsTo f (C s) e.source := by
   classical
   have hPc : IsCompact P := hP.isCompact
   have hnhds : ∀ x : P, ∃ W : Set (EuclideanSpace ℝ (Fin n)), IsOpen W ∧ (x : EuclideanSpace ℝ (Fin n)) ∈ W ∧
@@ -295,9 +330,32 @@ theorem exists_isPLOn_dist_lt {n m : ℕ} {N : Type*} [MetricSpace N]
       rw [dist_comm]
       exact dist_le_diam_of_mem hbdd (by rw [← hCs]; exact hvC) (by rw [← hCs]; exact hy)
     exact hWsub i ⟨hi hyball, hCsub s hsK hy⟩
+  exact ⟨C, T, hC, hunion, hchart⟩
+
+theorem exists_isPLOn_dist_lt {n m : ℕ} {N : Type*} [MetricSpace N]
+    [ChartedSpace (EuclideanSpace ℝ (Fin m)) N] [HasGroupoid N (plGroupoid m)]
+    {P : Set (EuclideanSpace ℝ (Fin n))} (hP : IsPolyhedron P)
+    {f : EuclideanSpace ℝ (Fin n) → N} (hf : ContinuousOn f P)
+    {ε : ℝ} (hε : 0 < ε) :
+    ∃ g : EuclideanSpace ℝ (Fin n) → N, IsPLOn n m g P ∧ ∀ x ∈ P, dist (g x) (f x) < ε := by
+  obtain ⟨C, T, hC, hunion, hchart⟩ := exists_finsetBiUnion_eq_mapsTo_chart (m := m) hP hf
   obtain ⟨g, hg, hgd⟩ :=
     exists_isPLOn_dist_lt_of_biUnion hC T (by rw [hunion]; exact hf) hchart hε
   rw [hunion] at hg hgd
   exact ⟨g, hg, hgd⟩
+
+theorem exists_isPLOn_dist_lt_eqOn {n m : ℕ} {N : Type*} [MetricSpace N]
+    [ChartedSpace (EuclideanSpace ℝ (Fin m)) N] [HasGroupoid N (plGroupoid m)]
+    {P Q : Set (EuclideanSpace ℝ (Fin n))} (hP : IsPolyhedron P) (hQ : IsPolyhedron Q)
+    (hQP : Q ⊆ P) {f : EuclideanSpace ℝ (Fin n) → N} (hf : ContinuousOn f P)
+    (hfQ : IsPLOn n m f Q) {ε : ℝ} (hε : 0 < ε) :
+    ∃ g : EuclideanSpace ℝ (Fin n) → N, IsPLOn n m g P ∧ EqOn g f Q ∧
+      ∀ x ∈ P, dist (g x) (f x) < ε := by
+  obtain ⟨C, T, hC, hunion, hchart⟩ := exists_finsetBiUnion_eq_mapsTo_chart (m := m) hP hf
+  have hQunion : Q ∪ ⋃ s ∈ T, C s = P := by rw [hunion]; exact union_eq_self_of_subset_left hQP
+  obtain ⟨g, hg, hgQ, hgd⟩ :=
+    exists_isPLOn_dist_lt_eqOn_of_biUnion hC hQ hfQ T (by rw [hQunion]; exact hf) hchart hε
+  rw [hQunion] at hg hgd
+  exact ⟨g, hg, hgQ, hgd⟩
 
 end DifferentialGeometry.Topology.PiecewiseLinear
