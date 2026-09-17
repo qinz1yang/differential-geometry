@@ -162,4 +162,25 @@ theorem eqOn_high_low {σ₀ σ₁ σ₂ : ℝ} (hσ₀ : 0 < σ₀) (h01 : σ�
       (layerLowMap_vertex₁ (lt_trans hσ₀ h01) h12 v₁ v₂ v₃).symm)
     (sum_eq_subset_segment (lt_trans hσ₀ h01) hz)
 
+theorem layerLowMap_eq_combo {σ' σ : ℝ} (v₀ v₁ v₂ : F) (z : ℝ × ℝ) :
+    layerLowMap σ' σ v₀ v₁ v₂ z =
+      (1 - z.2 / σ' - (z.1 + z.2 - σ') / (σ - σ')) • v₀ + (z.2 / σ') • v₁ +
+        ((z.1 + z.2 - σ') / (σ - σ')) • v₂ := by
+  rw [layerLowMap, affineOfCoeffs_apply, coeffLin_apply, coeffLin_apply]
+  match_scalars <;> ring
+
+theorem layerHighMap_eq_combo {σ' σ : ℝ} (hσ : σ ≠ 0) (hd : σ - σ' ≠ 0)
+    (v₁ v₂ v₃ : F) (z : ℝ × ℝ) :
+    layerHighMap σ' σ v₁ v₂ v₃ z =
+      (1 - z.1 / σ - (σ' * z.1 / σ + z.2 - σ') / (σ - σ')) • v₁ + (z.1 / σ) • v₂ +
+        ((σ' * z.1 / σ + z.2 - σ') / (σ - σ')) • v₃ := by
+  rw [layerHighMap, affineOfCoeffs_apply, coeffLin_apply, coeffLin_apply]
+  match_scalars <;> field_simp <;> ring
+
+theorem centralConeMap_eq_combo {σ : ℝ} (vc v₁ v₂ : F) (z : ℝ × ℝ) :
+    centralConeMap σ vc v₁ v₂ z =
+      (1 - z.1 / σ - z.2 / σ) • vc + (z.1 / σ) • v₁ + (z.2 / σ) • v₂ := by
+  rw [centralConeMap, affineOfCoeffs_apply, coeffLin_apply, coeffLin_apply]
+  match_scalars <;> ring
+
 end DifferentialGeometry.Topology.PiecewiseLinear
