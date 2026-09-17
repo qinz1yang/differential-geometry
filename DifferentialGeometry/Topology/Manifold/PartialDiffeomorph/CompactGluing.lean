@@ -54,36 +54,37 @@ theorem exists_gluing_of_isCompact {ι : Type*}
       hlocal hK ⟨x₀, hx₀⟩ hinj
   exact ⟨ψ, hsrc, fun i x hx => (congrFun hψ x).trans (hf i hx.2)⟩
 
-omit [T2Space N] in
 theorem exists_eqOn_neighborhoods_of_isCompact [T3Space M]
-    (D₀ D₁ : Diffeomorph I J M N n)
+    (D₀ D₁ : PartialDiffeomorph I J M N n)
     {K₀ K₁ O : Set M} (hK₀ : IsCompact K₀) (hK₁ : IsCompact K₁)
+    (hs₀ : K₀ ⊆ D₀.source) (hs₁ : K₁ ⊆ D₁.source)
     (hO : IsOpen O) (hKO : K₀ ∩ K₁ ⊆ O) (heq : EqOn D₀ D₁ O)
     (himage : D₀ '' K₀ ∩ D₁ '' K₁ ⊆ D₀ '' (K₀ ∩ K₁)) :
     ∃ ψ : PartialDiffeomorph I J M N n, ∃ U₀ U₁ : Set M,
       IsOpen U₀ ∧ IsOpen U₁ ∧ K₀ ⊆ U₀ ∧ K₁ ⊆ U₁ ∧ U₀ ∪ U₁ ⊆ ψ.source ∧
       EqOn ψ D₀ U₀ ∧ EqOn ψ D₁ U₁ := by
-  let _ : T2Space N := T2Space.of_injective_continuous D₀.symm.injective D₀.symm.continuous
   classical
   rcases (K₀ ∪ K₁).eq_empty_or_nonempty with hzero | hne
   · have h₀ : K₀ = ∅ := Set.Subset.antisymm (hzero ▸ subset_union_left) (empty_subset _)
     have h₁ : K₁ = ∅ := Set.Subset.antisymm (hzero ▸ subset_union_right) (empty_subset _)
     subst K₀ K₁
-    exact ⟨D₀.toPartialDiffeomorph, ∅, ∅, isOpen_empty, isOpen_empty,
+    exact ⟨D₀, ∅, ∅, isOpen_empty, isOpen_empty,
       subset_rfl, subset_rfl, by simp, eqOn_empty _ _, eqOn_empty _ _⟩
   have hW : IsOpen (K₁ \ O)ᶜ := (hK₁.isClosed.inter hO.isClosed_compl).isOpen_compl
   have hK₀W : K₀ ⊆ (K₁ \ O)ᶜ := fun x hx h => h.2 (hKO ⟨hx, h.1⟩)
-  obtain ⟨V, hV, hK₀V, hVW⟩ := hK₀.exists_isOpen_closure_subset (hW.mem_nhdsSet.mpr hK₀W)
-  let W := O ∪ (closure V)ᶜ
-  have hWopen : IsOpen W := hO.union isClosed_closure.isOpen_compl
+  obtain ⟨V, hV, hK₀V, hVW⟩ := hK₀.exists_isOpen_closure_subset
+    ((D₀.open_source.inter hW).mem_nhdsSet.mpr (fun x hx => ⟨hs₀ hx, hK₀W hx⟩))
+  let W := D₁.source ∩ (O ∪ (closure V)ᶜ)
+  have hWopen : IsOpen W := D₁.open_source.inter (hO.union isClosed_closure.isOpen_compl)
   have hK₁W : K₁ ⊆ W := by
     intro x hx
+    refine ⟨hs₁ hx, ?_⟩
     by_cases hxV : x ∈ closure V
-    · exact Or.inl (not_not.mp (fun hxO => hVW hxV ⟨hx, hxO⟩))
+    · exact Or.inl (not_not.mp (fun hxO => (hVW hxV).2 ⟨hx, hxO⟩))
     · exact Or.inr hxV
   have hVWsub : V ∩ W ⊆ O := by
     intro x hx
-    exact hx.2.resolve_right (fun h => h (subset_closure hx.1))
+    exact hx.2.2.resolve_right (fun h => h (subset_closure hx.1))
   let f := V.piecewise D₀ D₁
   have hf₀ : EqOn f D₀ V := fun x hx => if_pos hx
   have hf₁ : EqOn f D₁ W := by
@@ -95,25 +96,26 @@ theorem exists_eqOn_neighborhoods_of_isCompact [T3Space M]
   have hfK₁ : EqOn f D₁ K₁ := hf₁.mono hK₁W
   have hcross {x y : M} (hx : x ∈ K₀) (hy : y ∈ K₁) (hxy : D₀ x = D₁ y) : x = y := by
     obtain ⟨z, hz, hzx⟩ := himage ⟨⟨x, hx, rfl⟩, ⟨y, hy, hxy.symm⟩⟩
-    have hzx' : z = x := D₀.injective hzx
-    have hzy : z = y := D₁.injective ((heq (hKO hz)).symm.trans (hzx.trans hxy))
+    have hzx' : z = x := D₀.toPartialEquiv.injOn (hs₀ hz.1) (hs₀ hx) hzx
+    have hzy : z = y := D₁.toPartialEquiv.injOn (hs₁ hz.2) (hs₁ hy)
+      ((heq (hKO hz)).symm.trans (hzx.trans hxy))
     exact hzx'.symm.trans hzy
   have hinj : InjOn f (K₀ ∪ K₁) := by
     intro x hx y hy hxy
     rcases hx with hx | hx <;> rcases hy with hy | hy
-    · exact D₀.injective ((hfK₀ hx).symm.trans (hxy.trans (hfK₀ hy)))
+    · exact D₀.toPartialEquiv.injOn (hs₀ hx) (hs₀ hy) ((hfK₀ hx).symm.trans (hxy.trans (hfK₀ hy)))
     · exact hcross hx hy ((hfK₀ hx).symm.trans (hxy.trans (hfK₁ hy)))
     · exact (hcross hy hx ((hfK₀ hy).symm.trans (hxy.symm.trans (hfK₁ hx)))).symm
-    · exact D₁.injective ((hfK₁ hx).symm.trans (hxy.trans (hfK₁ hy)))
+    · exact D₁.toPartialEquiv.injOn (hs₁ hx) (hs₁ hy) ((hfK₁ hx).symm.trans (hxy.trans (hfK₁ hy)))
   have hlocal : IsLocalDiffeomorphOn I J n f (K₀ ∪ K₁) := by
     intro x
     rcases x.property with hx | hx
     · exact DifferentialGeometry.IsLocalDiffeomorphAt.of_eventuallyEq
         (eventuallyEq_of_mem (hV.mem_nhds (hK₀V hx)) (fun y hy => hf₀ hy))
-        (D₀.isLocalDiffeomorph x)
+        (D₀.isLocalDiffeomorphAt I J n (hs₀ hx))
     · exact DifferentialGeometry.IsLocalDiffeomorphAt.of_eventuallyEq
         (eventuallyEq_of_mem (hWopen.mem_nhds (hK₁W hx)) (fun y hy => hf₁ hy))
-        (D₁.isLocalDiffeomorph x)
+        (D₁.isLocalDiffeomorphAt I J n (hs₁ hx))
   obtain ⟨ψ, hsrc, hψ⟩ :=
     DifferentialGeometry.IsLocalDiffeomorphOn.exists_partialDiffeomorph_of_isCompact
       hlocal (hK₀.union hK₁) hne hinj

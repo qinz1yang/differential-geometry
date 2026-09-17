@@ -1,12 +1,81 @@
+import DifferentialGeometry.Analysis.Calculus.SmoothExtension.ConvexOpen
 import DifferentialGeometry.Topology.Diffeomorph.SphereCollar
 import Mathlib.Analysis.SpecialFunctions.SmoothTransition
 
-open Set Metric
-open scoped ContDiff Manifold
+open Set Metric Filter
+open scoped ContDiff Manifold Topology
 
 namespace Diffeomorph
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] {n : ℕ∞}
+
+private theorem exists_contDiff_family_eqOn_of_time_map
+    (Ψ P : ℝ → E ≃ₘ^n⟮𝓘(ℝ, E), 𝓘(ℝ, E)⟯ E)
+    (hΨ : ContDiff ℝ n (fun z : ℝ × E => Ψ z.1 z.2))
+    (hΨi : ContDiff ℝ n (fun z : ℝ × E => (Ψ z.1).symm z.2))
+    (hP : ContDiff ℝ n (fun z : ℝ × E => P z.1 z.2))
+    (hPi : ContDiff ℝ n (fun z : ℝ × E => (P z.1).symm z.2))
+    {c : ℝ} (hc : P c = Ψ c) {J U : Set ℝ} {K : Set E}
+    (himage : ∀ t ∈ J, P t '' K = Ψ t '' K)
+    (ψ : ℝ → ℝ) (hψ : ContDiff ℝ n ψ) (hψrange : range ψ ⊆ J)
+    (hψU : EqOn ψ id U) (hψout : EqOn ψ (fun _ => c) Jᶜ) :
+    ∃ F : ℝ → E ≃ₘ^n⟮𝓘(ℝ, E), 𝓘(ℝ, E)⟯ E,
+      ContDiff ℝ n (fun z : ℝ × E => F z.1 z.2) ∧
+      ContDiff ℝ n (fun z : ℝ × E => (F z.1).symm z.2) ∧
+      (∀ t x, F t x = Ψ t ((Ψ (ψ t)).symm (P (ψ t) x))) ∧
+      EqOn F P U ∧ EqOn F Ψ Jᶜ ∧
+      ∀ t, F t '' K = Ψ t '' K := by
+  let F : ℝ → E ≃ₘ^n⟮𝓘(ℝ, E), 𝓘(ℝ, E)⟯ E :=
+    fun t => (P (ψ t)).trans ((Ψ (ψ t)).symm.trans (Ψ t))
+  have hψfst : ContDiff ℝ n (fun z : ℝ × E => ψ z.1) := hψ.comp contDiff_fst
+  have hFP : ContDiff ℝ n (fun z : ℝ × E => P (ψ z.1) z.2) :=
+    hP.comp (hψfst.prodMk contDiff_snd)
+  have hF : ContDiff ℝ n (fun z : ℝ × E => F z.1 z.2) :=
+    hΨ.comp (contDiff_fst.prodMk (hΨi.comp (hψfst.prodMk hFP)))
+  have hFi : ContDiff ℝ n (fun z : ℝ × E => (F z.1).symm z.2) :=
+    hPi.comp (hψfst.prodMk (hΨ.comp (hψfst.prodMk hΨi)))
+  refine ⟨F, hF, hFi, (fun _ _ => rfl), ?_, ?_, ?_⟩
+  · intro t ht
+    ext x
+    change Ψ t ((Ψ (ψ t)).symm (P (ψ t) x)) = P t x
+    rw [hψU ht, id_eq, (Ψ t).apply_symm_apply]
+  · intro t ht
+    ext x
+    change Ψ t ((Ψ (ψ t)).symm (P (ψ t) x)) = Ψ t x
+    rw [hψout ht, hc, (Ψ c).symm_apply_apply]
+  · intro t
+    calc
+      F t '' K = Ψ t '' ((Ψ (ψ t)).symm '' (P (ψ t) '' K)) := by
+        rw [image_image, image_image]
+        rfl
+      _ = Ψ t '' K := by
+        rw [himage (ψ t) (hψrange (mem_range_self t)), (Ψ (ψ t)).symm_image_image]
+
+theorem exists_contDiff_family_eqOn_of_image_eq
+    (Ψ P : ℝ → E ≃ₘ^n⟮𝓘(ℝ, E), 𝓘(ℝ, E)⟯ E)
+    (hΨ : ContDiff ℝ n (fun z : ℝ × E => Ψ z.1 z.2))
+    (hΨi : ContDiff ℝ n (fun z : ℝ × E => (Ψ z.1).symm z.2))
+    (hP : ContDiff ℝ n (fun z : ℝ × E => P z.1 z.2))
+    (hPi : ContDiff ℝ n (fun z : ℝ × E => (P z.1).symm z.2))
+    {a b c : ℝ} (hac : a < c) (hcb : c < b) (hc : P c = Ψ c)
+    {K : Set E} (himage : ∀ t ∈ Ioo a b, P t '' K = Ψ t '' K) :
+    ∃ ψ : ℝ → ℝ, ∃ ε > 0, ContDiff ℝ ∞ ψ ∧ range ψ ⊆ Ioo a b ∧
+      Ioo (c - ε) (c + ε) ⊆ Ioo a b ∧
+      EqOn ψ id (Ioo (c - ε) (c + ε)) ∧ EqOn ψ (fun _ => c) (Ioo a b)ᶜ ∧
+      ∃ F : ℝ → E ≃ₘ^n⟮𝓘(ℝ, E), 𝓘(ℝ, E)⟯ E,
+        ContDiff ℝ n (fun z : ℝ × E => F z.1 z.2) ∧
+        ContDiff ℝ n (fun z : ℝ × E => (F z.1).symm z.2) ∧
+        (∀ t x, F t x = Ψ t ((Ψ (ψ t)).symm (P (ψ t) x))) ∧
+        EqOn F P (Ioo (c - ε) (c + ε)) ∧ EqOn F Ψ (Ioo a b)ᶜ ∧
+        ∀ t, F t '' K = Ψ t '' K := by
+  obtain ⟨ψ, ε, hε, hψ, hψrange, hεsub, hψid, hψout⟩ :=
+    DifferentialGeometry.Analysis.exists_contDiff_range_subset_eqOn_nhds_Ioo hac hcb
+  have hψn : ContDiff ℝ n ψ := hψ.of_le (WithTop.coe_le_coe.mpr le_top)
+  obtain ⟨F, hF, hFi, hFformula, hFU, hFout, hFK⟩ :=
+    exists_contDiff_family_eqOn_of_time_map Ψ P hΨ hΨi hP hPi hc himage
+      ψ hψn hψrange hψid hψout
+  exact ⟨ψ, ε, hε, hψ, hψrange, hεsub, hψid, hψout,
+    F, hF, hFi, hFformula, hFU, hFout, hFK⟩
 
 theorem exists_contDiff_family_eqOn_of_isotopy
     (F C : ℝ → (E ≃ₘ^n⟮𝓘(ℝ, E), 𝓘(ℝ, E)⟯ E))
@@ -59,6 +128,72 @@ theorem exists_contDiff_family_eqOn_of_isotopy
         rw [image_image, image_image]
         rfl
       _ = F t '' K := by rw [hCK (θ t) (hθmem t), hCzeroK]
+
+private theorem contDiff_ite_fst_le_of_eqOn
+    {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [NormedAddCommGroup F] [NormedSpace ℝ F]
+    {n : ℕ∞ω} {L R : ℝ × E → F}
+    (hL : ContDiff ℝ n L) (hR : ContDiff ℝ n R)
+    {c ε : ℝ} (hε : 0 < ε)
+    (heq : ∀ t ∈ Ioo (c - ε) (c + ε), ∀ x, L (t, x) = R (t, x)) :
+    ContDiff ℝ n (fun z : ℝ × E => if z.1 ≤ c then L z else R z) := by
+  rw [contDiff_iff_contDiffAt]
+  intro z
+  by_cases hz : z.1 < c + ε
+  · apply hL.contDiffAt.congr_of_eventuallyEq
+    have hnear : ∀ᶠ y : ℝ × E in 𝓝 z, y.1 < c + ε :=
+      (isOpen_Iio.preimage continuous_fst).mem_nhds hz
+    filter_upwards [hnear] with y hy
+    split_ifs with h
+    · rfl
+    · exact (heq y.1 ⟨by linarith, hy⟩ y.2).symm
+  · apply hR.contDiffAt.congr_of_eventuallyEq
+    have hzc : c - ε < z.1 := by linarith
+    have hnear : ∀ᶠ y : ℝ × E in 𝓝 z, c - ε < y.1 :=
+      (isOpen_Ioi.preimage continuous_fst).mem_nhds hzc
+    filter_upwards [hnear] with y hy
+    split_ifs with h
+    · exact heq y.1 ⟨hy, by linarith⟩ y.2
+    · rfl
+
+theorem exists_contDiff_family_eqOn_Iio_Ioi
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] {n : ℕ∞}
+    (P F : ℝ → E ≃ₘ^n⟮𝓘(ℝ, E), 𝓘(ℝ, E)⟯ E)
+    (hP : ContDiff ℝ n (fun z : ℝ × E => P z.1 z.2))
+    (hPi : ContDiff ℝ n (fun z : ℝ × E => (P z.1).symm z.2))
+    (hF : ContDiff ℝ n (fun z : ℝ × E => F z.1 z.2))
+    (hFi : ContDiff ℝ n (fun z : ℝ × E => (F z.1).symm z.2))
+    {c ε : ℝ} (hε : 0 < ε) (heq : EqOn P F (Ioo (c - ε) (c + ε))) :
+    ∃ H : ℝ → E ≃ₘ^n⟮𝓘(ℝ, E), 𝓘(ℝ, E)⟯ E,
+      ContDiff ℝ n (fun z : ℝ × E => H z.1 z.2) ∧
+      ContDiff ℝ n (fun z : ℝ × E => (H z.1).symm z.2) ∧
+      EqOn H P (Iio (c + ε)) ∧ EqOn H F (Ioi (c - ε)) := by
+  let H (t : ℝ) := if t ≤ c then P t else F t
+  have hH : ContDiff ℝ n (fun z : ℝ × E => H z.1 z.2) := by
+    have hh := contDiff_ite_fst_le_of_eqOn hP hF hε
+      (fun t ht x => congrArg (fun f : E ≃ₘ^n⟮𝓘(ℝ, E), 𝓘(ℝ, E)⟯ E => f x) (heq ht))
+    convert hh using 1
+    funext z
+    simp only [H]
+    split_ifs <;> rfl
+  have hHi : ContDiff ℝ n (fun z : ℝ × E => (H z.1).symm z.2) := by
+    have hh := contDiff_ite_fst_le_of_eqOn hPi hFi hε
+      (fun t ht x => congrArg (fun f : E ≃ₘ^n⟮𝓘(ℝ, E), 𝓘(ℝ, E)⟯ E => f.symm x) (heq ht))
+    convert hh using 1
+    funext z
+    simp only [H]
+    split_ifs <;> rfl
+  refine ⟨H, hH, hHi, ?_, ?_⟩
+  · intro t ht
+    dsimp only [H]
+    split_ifs with h
+    · rfl
+    · exact (heq ⟨by linarith, ht⟩).symm
+  · intro t ht
+    dsimp only [H]
+    split_ifs with h
+    · exact heq ⟨ht, by linarith⟩
+    · rfl
 
 end Diffeomorph
 

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.Morse.Attachment.ModelCell
+import DifferentialGeometry.Topology.Morse.NormalForm.Derivative
 import Mathlib.Analysis.SpecialFunctions.SmoothTransition
 import Mathlib.Analysis.Calculus.Deriv.Basic
 import Mathlib.Analysis.InnerProductSpace.Calculus
@@ -724,24 +724,6 @@ theorem contDiff_modGamma {δ : ℝ} : ContDiff ℝ (↑(⊤ : ℕ∞) : WithTop
     (fun s : ℝ => 1 - Real.smoothTransition ((2 * s - δ) / δ))
   exact hone
 
-theorem contDiff_morseNormalForm {n k : ℕ} (hk : k ≤ n) (c : ℝ) :
-    ContDiff ℝ (↑(⊤ : ℕ∞) : WithTop ℕ∞) (morseNormalForm hk c) := by
-  have hpos : ContDiff ℝ (↑(⊤ : ℕ∞) : WithTop ℕ∞) (fun y : MorseModel n => ‖posPart hk y‖ ^ 2) :=
-    ContDiff.norm_sq ℝ (ContinuousLinearMap.contDiff (posPartCLM hk))
-  have hneg : ContDiff ℝ (↑(⊤ : ℕ∞) : WithTop ℕ∞) (fun y : MorseModel n => ‖negPart hk y‖ ^ 2) :=
-    ContDiff.norm_sq ℝ (ContinuousLinearMap.contDiff (negPartCLM hk))
-  have hdiff := ContDiff.sub hpos hneg
-  have hhalf : ContDiff ℝ (↑(⊤ : ℕ∞) : WithTop ℕ∞)
-      (fun y : MorseModel n => (1 / 2) * (‖posPart hk y‖ ^ 2 - ‖negPart hk y‖ ^ 2)) :=
-    ContDiff.mul (contDiff_const : ContDiff ℝ (↑(⊤ : ℕ∞) : WithTop ℕ∞)
-      (fun _ : MorseModel n => (1 / 2 : ℝ))) hdiff
-  have hcst : ContDiff ℝ (↑(⊤ : ℕ∞) : WithTop ℕ∞) (fun _ : MorseModel n => c) := contDiff_const
-  have hsum : ContDiff ℝ (↑(⊤ : ℕ∞) : WithTop ℕ∞)
-      (fun y : MorseModel n => c + (1 / 2) * (‖posPart hk y‖ ^ 2 - ‖negPart hk y‖ ^ 2)) :=
-    ContDiff.add hcst hhalf
-  change ContDiff ℝ (↑(⊤ : ℕ∞) : WithTop ℕ∞) (fun y : MorseModel n => morseNormalForm hk c y)
-  simpa [morseNormalForm_split] using hsum
-
 theorem contDiff_modGamma_norm {n k : ℕ} (hk : k ≤ n) (δ : ℝ) (hδ : 0 < δ) :
     ContDiff ℝ (↑(⊤ : ℕ∞) : WithTop ℕ∞) (fun y : MorseModel n => modGamma δ ‖posPart hk y‖) := by
   let s : Set (MorseModel n) := {y : MorseModel n | ‖posPart hk y‖ < δ / 2}
@@ -800,7 +782,8 @@ theorem contDiff_modGamma_norm {n k : ℕ} (hk : k ≤ n) (δ : ℝ) (hδ : 0 < 
 
 theorem contDiff_modifiedNormalForm {n k : ℕ} (hk : k ≤ n) (c ε δ : ℝ) (hδ : 0 < δ) :
     ContDiff ℝ (↑(⊤ : ℕ∞) : WithTop ℕ∞) (modifiedNormalForm hk c ε δ) := by
-  have h1 : ContDiff ℝ (↑(⊤ : ℕ∞) : WithTop ℕ∞) (morseNormalForm hk c) := contDiff_morseNormalForm hk c
+  have h1 : ContDiff ℝ (↑(⊤ : ℕ∞) : WithTop ℕ∞) (morseNormalForm hk c) :=
+    contDiff_morseNormalForm (m := ∞) hk c
   have hmu : ContDiff ℝ (↑(⊤ : ℕ∞) : WithTop ℕ∞)
       (fun y : MorseModel n => modMu ε (‖negPart hk y‖ ^ 2)) := by
     have hn : ContDiff ℝ (↑(⊤ : ℕ∞) : WithTop ℕ∞) (fun y : MorseModel n => ‖negPart hk y‖ ^ 2) :=
@@ -1160,7 +1143,7 @@ private lemma morseNormalForm_eq_of_mem_frontier_sublevel {n k : ℕ} (hk : k �
     {y : MorseModel n} (hy : y ∈ frontier {y : MorseModel n | morseNormalForm hk c y ≤ c - ε}) :
     morseNormalForm hk c y = c - ε :=
   frontier_eq_of_continuous_le (fun y : MorseModel n => morseNormalForm hk c y)
-    (contDiff_morseNormalForm hk c).continuous (c - ε) hy
+    (contDiff_morseNormalForm (m := ∞) hk c).continuous (c - ε) hy
 
 private lemma negPart_sq_eq_of_mem_frontier {n k : ℕ} (hk : k ≤ n) (ε : ℝ)
     {y : MorseModel n} (hy : y ∈ frontier {y : MorseModel n | ‖negPart hk y‖ ^ 2 ≤ 2 * ε}) :
@@ -1379,7 +1362,7 @@ theorem continuousOn_modifiedCollarRetraction_sublevel {n k : ℕ} (hk : k ≤ n
       intro y hy
       have hyc : y ∈ closure {z : MorseModel n | ¬(morseNormalForm hk c z ≤ c - ε)} := hy.2
       have hclosed : IsClosed {z : MorseModel n | c - ε ≤ morseNormalForm hk c z} :=
-        isClosed_le continuous_const (contDiff_morseNormalForm hk c).continuous
+        isClosed_le continuous_const (contDiff_morseNormalForm (m := ∞) hk c).continuous
       exact closure_minimal (by intro z hz; exact le_of_lt (lt_of_not_ge hz)) hclosed hyc
     have hin : ContinuousOn inner {y : MorseModel n | c - ε ≤ morseNormalForm hk c y} := by
       refine ContinuousOn.if ?_ ?_ ?_
@@ -1623,7 +1606,7 @@ theorem continuousOn_modifiedCollarHomotopy_sublevel {n k : ℕ} (hk : k ≤ n)
       have hclosed : IsClosed {q : Set.Icc (0 : ℝ) 1 × MorseModel n |
           c - ε ≤ morseNormalForm hk c q.2} :=
         isClosed_le continuous_const
-          ((contDiff_morseNormalForm hk c).continuous.comp continuous_snd)
+          ((contDiff_morseNormalForm (m := ∞) hk c).continuous.comp continuous_snd)
       exact ⟨trivial, closure_minimal (by intro q hq; exact le_of_lt (lt_of_not_ge hq)) hclosed hp.2⟩
     have hin : ContinuousOn inner (Set.univ ×ˢ {y : MorseModel n | c - ε ≤ morseNormalForm hk c y}) := by
       refine ContinuousOn.if ?_ ?_ ?_
@@ -1657,7 +1640,7 @@ theorem continuousOn_modifiedCollarHomotopy_sublevel {n k : ℕ} (hk : k ≤ n)
   · intro p hp
     have hEq := frontier_eq_of_continuous_le
       (fun q : Set.Icc (0 : ℝ) 1 × MorseModel n => morseNormalForm hk c q.2)
-      ((contDiff_morseNormalForm hk c).continuous.comp continuous_snd) (c - ε) hp.2
+      ((contDiff_morseNormalForm (m := ∞) hk c).continuous.comp continuous_snd) (c - ε) hp.2
     by_cases hb : ‖negPart hk p.2‖ ^ 2 ≤ 2 * ε
     · have hpos := posPart_eq_zero_of_morseNormalForm_eq hk c ε hEq hb
       have hstep : recombine hk (negPart hk p.2) ((1 - (p.1 : ℝ)) • posPart hk p.2) = p.2 := by

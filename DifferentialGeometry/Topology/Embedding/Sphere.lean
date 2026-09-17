@@ -1,6 +1,12 @@
+import DifferentialGeometry.Topology.Manifold.AddCircle.Circle
+import DifferentialGeometry.Topology.Manifold.LocalDiffeomorphImmersion
+import DifferentialGeometry.Topology.Manifold.SmoothEmbeddingComposition
+import DifferentialGeometry.Topology.Embedding.Diffeomorph
+import DifferentialGeometry.Topology.Embedding.LinearEquiv
 import Mathlib.Geometry.Manifold.Instances.Sphere
 import Mathlib.Geometry.Manifold.SmoothEmbedding
 import Mathlib.Geometry.Euclidean.Inversion.Calculus
+import Mathlib.Analysis.Normed.Module.Span
 
 open scoped Manifold ContDiff RealInnerProductSpace
 
@@ -73,16 +79,38 @@ private theorem sphereFlattening_apply (v x : Metric.sphere (0 : E) 1) (hx : x �
       all_goals field_simp
       all_goals ring
 
-private def sphereChartEquiv {n : ℕ} [Fact (Module.finrank ℝ E = n + 1)]
+def sphereChartEquiv {n : ℕ} [Fact (Module.finrank ℝ E = n + 1)]
     (v : Metric.sphere (0 : E) 1) : (EuclideanSpace ℝ (Fin n) × ℝ) ≃L[ℝ] E := by
   letI : FiniteDimensional ℝ E := FiniteDimensional.of_fact_finrank_eq_succ n
   let U := (OrthonormalBasis.fromOrthogonalSpanSingleton (𝕜 := ℝ) n
     (ne_zero_of_mem_unit_sphere v)).repr
-  let V : ℝ ≃ₗ[ℝ] (ℝ ∙ (v : E)) := LinearEquiv.ofFinrankEq ℝ _ (by
-    rw [Module.finrank_self, finrank_span_singleton (ne_zero_of_mem_unit_sphere v)])
-  exact ((U.symm.toLinearEquiv.prodCongr V).trans
+  let V := ContinuousLinearEquiv.toSpanNonzeroSingleton ℝ (v : E)
+    (ne_zero_of_mem_unit_sphere v)
+  exact ((U.symm.toLinearEquiv.prodCongr V.toLinearEquiv).trans
     ((ℝ ∙ (v : E))ᗮ.prodEquivOfIsCompl (ℝ ∙ (v : E))
       (Submodule.isCompl_orthogonal (ℝ ∙ (v : E))).symm)).toContinuousLinearEquiv
+
+theorem sphereChartEquiv_apply {n : ℕ} [Fact (Module.finrank ℝ E = n + 1)]
+    (v : Metric.sphere (0 : E) 1) (p : EuclideanSpace ℝ (Fin n) × ℝ) :
+    sphereChartEquiv v p =
+      (((OrthonormalBasis.fromOrthogonalSpanSingleton (𝕜 := ℝ) n
+        (ne_zero_of_mem_unit_sphere v)).repr.symm p.1 : (ℝ ∙ (v : E))ᗮ) : E) + p.2 • v := by
+  rfl
+
+theorem sphereChartEquiv_norm_sq {n : ℕ} [Fact (Module.finrank ℝ E = n + 1)]
+    (v : Metric.sphere (0 : E) 1) (p : EuclideanSpace ℝ (Fin n) × ℝ) :
+    ‖sphereChartEquiv v p‖ ^ 2 = ‖p.1‖ ^ 2 + p.2 ^ 2 := by
+  let U := (OrthonormalBasis.fromOrthogonalSpanSingleton (𝕜 := ℝ) n
+    (ne_zero_of_mem_unit_sphere v)).repr
+  have ho : inner ℝ (U.symm p.1 : E) (p.2 • (v : E)) = 0 := by
+    rw [inner_smul_right,
+      Submodule.mem_orthogonal_singleton_iff_inner_left.mp (U.symm p.1).property, mul_zero]
+  rw [sphereChartEquiv_apply]
+  calc
+    _ = ‖(U.symm p.1 : E)‖ ^ 2 + ‖p.2 • (v : E)‖ ^ 2 := by
+      simpa only [← sq] using norm_add_sq_eq_norm_sq_add_norm_sq_of_inner_eq_zero _ _ ho
+    _ = _ := by simp [← Submodule.coe_norm, norm_smul, sq_abs]
+
 
 private theorem sphereChartEquiv_apply_zero {n : ℕ} [Fact (Module.finrank ℝ E = n + 1)]
     (v : Metric.sphere (0 : E) 1) (u : EuclideanSpace ℝ (Fin n)) :
@@ -126,3 +154,48 @@ theorem isSmoothEmbedding_coe_sphere {n : ℕ} [Fact (Module.finrank ℝ E = n +
       (stereo_right_inv (norm_eq_of_mem_sphere (-x)) (U.symm u))
 
 end
+
+open Set Metric in
+theorem exists_isSmoothEmbedding_addCircle_range_eq_sphere
+    {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+    (hdim : Module.finrank ℝ E = 2) (x : E) {r : ℝ} (hr : 0 < r) :
+    ∃ γ : AddCircle (1 : ℝ) → E,
+      Manifold.IsSmoothEmbedding 𝓘(ℝ, ℝ) 𝓘(ℝ, E) ∞ γ ∧
+      range γ = sphere x r := by
+  let _ : FiniteDimensional ℝ E := FiniteDimensional.of_finrank_pos (by omega)
+  let _ : Fact (Module.finrank ℝ ℂ = 1 + 1) := ⟨by norm_num⟩
+  let L : ℂ ≃ₗᵢ[ℝ] E := Complex.orthonormalBasisOneI.repr.trans
+    ((stdOrthonormalBasis ℝ E).reindex (finCongr hdim)).repr.symm
+  let S : E ≃L[ℝ] E := (LinearEquiv.smulOfNeZero ℝ E r hr.ne').toContinuousLinearEquiv
+  let T : E ≃ₘ[ℝ] E :=
+    { toEquiv := (Homeomorph.addLeft x).toEquiv
+      contMDiff_toFun := (contDiff_const.add contDiff_id).contMDiff
+      contMDiff_invFun := (contDiff_const.add contDiff_id).contMDiff }
+  let γ := fun t : AddCircle (1 : ℝ) => x + r • L (AddCircle.diffeomorphCircle t).val
+  have hc : Manifold.IsSmoothEmbedding 𝓘(ℝ, ℝ) (𝓡 1) ∞ AddCircle.diffeomorphCircle :=
+    DifferentialGeometry.Topology.Manifold.isSmoothEmbedding_of_isLocalDiffeomorph_of_injective
+      AddCircle.diffeomorphCircle.isLocalDiffeomorph AddCircle.diffeomorphCircle.injective
+  have hcoe := isSmoothEmbedding_coe_sphere (E := ℂ) (n := 1)
+  have hγ := (((hcoe.comp hc (by simp)).continuousLinearEquiv_comp
+    L.toContinuousLinearEquiv).continuousLinearEquiv_comp S).diffeomorph_comp T
+  refine ⟨γ, hγ, ?_⟩
+  ext z
+  constructor
+  · rintro ⟨t, rfl⟩
+    rw [mem_sphere_iff_norm]
+    dsimp [γ]
+    rw [add_sub_cancel_left, norm_smul, Real.norm_eq_abs, abs_of_pos hr, L.norm_map,
+      (AddCircle.diffeomorphCircle t).norm_coe, mul_one]
+  · intro hz
+    have hnorm : ‖r⁻¹ • (z - x)‖ = 1 := by
+      rw [norm_smul, Real.norm_eq_abs, abs_of_pos (inv_pos.mpr hr), mem_sphere_iff_norm.mp hz,
+        inv_mul_cancel₀ hr.ne']
+    let w : Circle := ⟨L.symm (r⁻¹ • (z - x)), by
+      apply mem_sphere_zero_iff_norm.mpr
+      rw [L.symm.norm_map, hnorm]⟩
+    refine ⟨AddCircle.diffeomorphCircle.symm w, ?_⟩
+    dsimp [γ]
+    rw [AddCircle.diffeomorphCircle.apply_symm_apply]
+    change x + r • L (L.symm (r⁻¹ • (z - x))) = z
+    rw [L.apply_symm_apply, smul_smul, mul_inv_cancel₀ hr.ne', one_smul]
+    exact add_sub_cancel _ _

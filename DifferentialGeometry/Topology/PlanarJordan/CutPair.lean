@@ -1,5 +1,6 @@
 import DifferentialGeometry.External.Schoenflies.GeneralCrosscut
 import DifferentialGeometry.External.Schoenflies.FaceCyclesProof
+import DifferentialGeometry.External.Schoenflies.JordanSeparates
 
 open Set
 
@@ -69,3 +70,25 @@ theorem eq_of_mem_diff
   exact Set.Subset.antisymm (hsub hA hB hfirst) (hsub hB hA hfirst.symm)
 
 end Schoenflies.IsCutPair
+
+namespace Schoenflies.IsJordanCurve
+
+theorem eq_of_subset {C D : Set Plane} (hC : IsJordanCurve C) (hD : IsJordanCurve D)
+    (hsub : C ⊆ D) : C = D := by
+  obtain ⟨p, hp, q, hq, hpq⟩ := hC.exists_ne
+  obtain ⟨A₀, A₁, hA⟩ := exists_isCutPair hC hp hq hpq
+  obtain ⟨B₀, B₁, hB⟩ := exists_isCutPair hD (hsub hp) (hsub hq) hpq
+  have hne : A₀ ≠ A₁ := by
+    intro heq
+    apply hA.fst.not_subset_pair
+    intro z hz
+    rw [← hA.inter_eq]
+    exact ⟨hz, heq ▸ hz⟩
+  rcases hA.fst.eq_fst_or_eq_snd_of_subset (hA.fst_subset.trans hsub) hB with h₀ | h₀ <;>
+    rcases hA.snd.eq_fst_or_eq_snd_of_subset (hA.snd_subset.trans hsub) hB with h₁ | h₁
+  · exact False.elim (hne (h₀.trans h₁.symm))
+  · rw [← hA.union_eq, h₀, h₁, hB.union_eq]
+  · rw [← hA.union_eq, h₀, h₁, union_comm, hB.union_eq]
+  · exact False.elim (hne (h₀.trans h₁.symm))
+
+end Schoenflies.IsJordanCurve

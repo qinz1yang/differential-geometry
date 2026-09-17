@@ -1,3 +1,4 @@
+import DifferentialGeometry.Topology.Connected.Frontier
 import DifferentialGeometry.External.Schoenflies.JordanClosed
 import Mathlib.Analysis.InnerProductSpace.PiL2
 
@@ -91,3 +92,39 @@ theorem frontier_closure_inside {C : Set Plane} (hC : IsSeparating C) :
   rw [← frontier_compl, ← hC.outside_eq_compl_closure_inside, hC.frontier_outside]
 
 end Schoenflies.IsSeparating
+
+namespace DifferentialGeometry.Topology.PlanarJordan
+
+theorem eq_closure_inside_of_isCompact_of_frontier_subset
+    {K C : Set Schoenflies.Plane} (hK : IsCompact K)
+    (hC : Schoenflies.IsJordanCurve C) (hne : (interior K).Nonempty)
+    (hfront : frontier K ⊆ C) : K = closure (Schoenflies.inside C) := by
+  have hsep := Schoenflies.jordan_curve_theorem hC
+  have hdisj : Disjoint (Schoenflies.outside C) (frontier K) :=
+    disjoint_left.mpr (fun x hx hxf => hx.1 (hfront hxf))
+  have hKout : Disjoint K (Schoenflies.outside C) := by
+    apply disjoint_left.mpr
+    intro x hxK hxo
+    have hxi : x ∈ interior K := (mem_interior_iff_notMem_frontier hxK).mpr
+      (fun hxf => hxo.1 (hfront hxf))
+    have hsub :=
+      DifferentialGeometry.Topology.subset_interior_of_isPreconnected_of_disjoint_frontier
+      hsep.isConnected_outside.isPreconnected hdisj ⟨x, hxo, hxi⟩
+    exact hsep.not_isBounded_outside (hK.isBounded.subset (hsub.trans interior_subset))
+  have hsub : K ⊆ closure (Schoenflies.inside C) := by
+    intro x hx
+    by_contra hn
+    have hout : x ∈ Schoenflies.outside C := by
+      rw [hsep.outside_eq_compl_closure_inside]
+      exact hn
+    exact disjoint_left.mp hKout hx hout
+  obtain ⟨x, hx⟩ := hne
+  obtain ⟨y, hyK, hyinside⟩ := mem_closure_iff.mp (hsub (interior_subset hx))
+    (interior K) isOpen_interior hx
+  have hinside : Schoenflies.inside C ⊆ interior K :=
+    DifferentialGeometry.Topology.subset_interior_of_isPreconnected_of_disjoint_frontier
+      hsep.isConnected_inside.isPreconnected
+      (disjoint_left.mpr (fun z hz hzf => hz.1 (hfront hzf))) ⟨y, hyinside, hyK⟩
+  exact subset_antisymm hsub (closure_minimal (hinside.trans interior_subset) hK.isClosed)
+
+end DifferentialGeometry.Topology.PlanarJordan

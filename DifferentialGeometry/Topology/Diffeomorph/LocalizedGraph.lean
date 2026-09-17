@@ -1,3 +1,4 @@
+import DifferentialGeometry.Analysis.Calculus.SmoothExtension.Compact
 import Mathlib.Topology.MetricSpace.Thickening
 import Mathlib.Topology.UniformSpace.HeineCantor
 import Mathlib.Analysis.Normed.Group.Real
@@ -536,5 +537,76 @@ theorem exists_isotopy_graphOn_endpoints_in_open {E : Type*}
       exact (H 1).symm_image_image _
     · intro t
       exact (hfix t).symm
+
+open Set Filter in
+theorem exists_diffeomorph_graph_replacement_below
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    {S W : Set (E × ℝ)} (hS : IsClosed S) (hW : IsOpen W)
+    {Y O : Set E} (hY : IsCompact Y) (hO : IsOpen O) (hYO : Y ⊆ O)
+    {g k : E → ℝ} (hg : ContDiffOn ℝ ∞ g O) (hk : ContDiff ℝ ∞ k)
+    (hgraph : ∀ x ∈ Y, (x, g x) ∈ W ∩ S)
+    {a : ℝ} (hbelow : ∀ x ∈ Y, a ≤ k x ∧ k x ≤ g x)
+    (hclear : ∀ x ∈ Y, ∀ t ∈ Ico a (g x), (x, t) ∉ S)
+    {C : Set E} (hC : IsCompact C) (hCY : C ⊆ interior Y) (hmatch : EqOn k g (Y \ C)) :
+    ∃ A : (E × ℝ) ≃ₘ[ℝ] (E × ℝ),
+      (∀ p, (A p).1 = p.1) ∧
+      (∀ x ∈ Y, A (x, g x) = (x, k x)) ∧
+      (∀ p ∈ S, p ∉ W ∩ {q | q.1 ∈ interior Y} →
+        (A : (E × ℝ) → E × ℝ) =ᶠ[𝓝 p] id) := by
+  classical
+  obtain ⟨g₀, hg₀, _, hg₀eq⟩ :=
+    DifferentialGeometry.Analysis.exists_contDiff_compactSupport_extension_on_isCompact hY hO hYO hg
+  have hg₀Y : EqOn g₀ g Y := subset_of_mem_nhdsSet hg₀eq
+  obtain ⟨χ, hχ, hχcompact, hχone, hχsupport, _⟩ :=
+    DifferentialGeometry.Analysis.exists_bump_compact hC isOpen_interior hCY
+  have hχC : ∀ x ∈ C, χ x = 1 := fun x hx => subset_of_mem_nhdsSet hχone hx
+  let g₁ := fun x => g₀ x + χ x * (k x - g₀ x)
+  have hg₁ : ContDiff ℝ ∞ g₁ := hg₀.add (hχ.mul (hk.sub hg₀))
+  have hg₁Y : EqOn g₁ k Y := by
+    intro x hx
+    by_cases hxC : x ∈ C
+    · simp only [g₁, hχC x hxC, one_mul, add_sub_cancel]
+    · rw [show g₁ x = g₀ x + χ x * (k x - g₀ x) from rfl, hg₀Y hx, hmatch ⟨hx, hxC⟩,
+        sub_self, mul_zero, add_zero]
+  let G : ℝ × E → ℝ := fun p => (1 - p.1) * g₀ p.2 + p.1 * g₁ p.2
+  have hG : ContDiff ℝ ∞ G :=
+    ((contDiff_const.sub contDiff_fst).mul (hg₀.comp contDiff_snd)).add
+      (contDiff_fst.mul (hg₁.comp contDiff_snd))
+  have hGzero (x : E) : G (0, x) = g₀ x := by simp [G]
+  have hGone (x : E) : G (1, x) = g₁ x := by simp [G]
+  have hfixed : ∀ t ∈ Icc (0 : ℝ) 1, ∀ x ∉ tsupport χ, G (t, x) = G (0, x) := by
+    intro t _ x hx
+    have hc : χ x = 0 := image_eq_zero_of_notMem_tsupport hx
+    simp only [G, g₁, hc, zero_mul, add_zero, zero_mul, one_mul, sub_zero]
+    ring
+  let P : Set (E × ℝ) := S \ (W ∩ {q | q.1 ∈ interior Y})
+  have hP : IsClosed P := hS.sdiff (hW.inter (isOpen_interior.preimage continuous_fst))
+  have htrace : ∀ t ∈ Icc (0 : ℝ) 1, ∀ x ∈ tsupport χ, (x, G (t, x)) ∈ Pᶜ := by
+    intro t ht x hx
+    have hxint := hχsupport hx
+    have hxY := interior_subset hxint
+    have he : G (t, x) = (1 - t) * g x + t * k x := by
+      dsimp [G]; rw [hg₀Y hxY, hg₁Y hxY]
+    have hb := hbelow x hxY
+    have hlow : a ≤ G (t, x) := by
+      rw [he]
+      nlinarith [mul_nonneg (sub_nonneg.mpr ht.2) (sub_nonneg.mpr (hb.1.trans hb.2)),
+        mul_nonneg ht.1 (sub_nonneg.mpr hb.1)]
+    have hupp : G (t, x) ≤ g x := by
+      rw [he]
+      nlinarith [mul_nonneg ht.1 (sub_nonneg.mpr hb.2)]
+    intro hp
+    by_cases heq : G (t, x) = g x
+    · exact hp.2 ⟨by simpa only [heq] using (hgraph x hxY).1, hxint⟩
+    · exact hclear x hxY _ ⟨hlow, lt_of_le_of_ne hupp heq⟩ hp.1
+  obtain ⟨H, _, _, _, hHfst, hHgraph, _, _, D, hD, hDP, hHfix⟩ :=
+    exists_isotopy_graphOn_endpoints_in_open hG hχcompact hfixed hP.isOpen_compl htrace
+  refine ⟨H 1, hHfst 1, ?_, ?_⟩
+  · intro x hx
+    have hh := hHgraph x
+    simpa only [hGzero, hGone, hg₀Y hx, hg₁Y hx] using hh
+  · intro p hp hpP
+    have hpD : p ∉ D := fun hpD => hDP hpD ⟨hp, hpP⟩
+    exact eventuallyEq_of_mem (hD.isClosed.isOpen_compl.mem_nhds hpD) (fun q hq => (hHfix 1).1 hq)
 
 end Diffeomorph

@@ -15,6 +15,18 @@ private theorem fderiv_fderiv_const_sub (f : E → ℝ) (b : ℝ) (x : E) :
   have heq : fderiv ℝ (fun y => b - f y) = -fderiv ℝ f := funext fun y => fderiv_const_sub b
   rw [heq,fderiv_neg]
 
+theorem chartHessianAt_const_sub (f : E → ℝ) (b : ℝ) (x : E) :
+    chartHessianAt (fun y => b - f y) x = -chartHessianAt f x := by
+  ext v
+  change (fderiv ℝ (fderiv ℝ (fun y => b - f y)) x v) v =
+    -((fderiv ℝ (fderiv ℝ f) x v) v)
+  rw [fderiv_fderiv_const_sub]
+  rfl
+
+theorem chartHessianAt_neg (f : E → ℝ) (x : E) :
+    chartHessianAt (fun y => -f y) x = -chartHessianAt f x := by
+  simpa only [zero_sub] using chartHessianAt_const_sub f 0 x
+
 variable {H M : Type} [TopologicalSpace H] [TopologicalSpace M] [ChartedSpace H M]
   {I : ModelWithCorners ℝ E H}
 
@@ -31,10 +43,12 @@ variable [IsManifold I ∞ M]
 
 theorem isNondegenerateCriticalPointAt_const_sub_iff {f : M → ℝ} {x : M}
     (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (hx : I.IsInteriorPoint x) (b : ℝ) :
-    IsNondegenerateCriticalPointAt I (fun y => b - f y) x ↔ IsNondegenerateCriticalPointAt I f x := by
+    IsNondegenerateCriticalPointAt I (fun y => b - f y) x ↔
+      IsNondegenerateCriticalPointAt I f x := by
   let c := DifferentialGeometry.Manifold.interiorChart I ∞ x
   let g : E → ℝ := fun z => f (c.symm z)
-  have hxc : x ∈ c.source := (DifferentialGeometry.Manifold.mem_interiorChart_source_iff I ∞ x).mpr hx
+  have hxc : x ∈ c.source :=
+    (DifferentialGeometry.Manifold.mem_interiorChart_source_iff I ∞ x).mpr hx
   have hg : ContDiffAt ℝ 2 g (c x) :=
     (((hf.comp_contMDiffOn c.symm.contMDiffOn).contMDiffAt
       (c.open_target.mem_nhds (c.map_source hxc))).contDiffAt).of_le
@@ -42,9 +56,11 @@ theorem isNondegenerateCriticalPointAt_const_sub_iff {f : M → ℝ} {x : M}
   have hbg : ContDiffAt ℝ 2 (fun z => b - g z) (c x) := contDiffAt_const.sub hg
   change (IsCriticalPointAt I (fun y => b - f y) x ∧
       (QuadraticMap.associated (R := ℝ) (chartHessianAt (fun z => b - g z) (c x))).SeparatingLeft) ↔
-    (IsCriticalPointAt I f x ∧ (QuadraticMap.associated (R := ℝ) (chartHessianAt g (c x))).SeparatingLeft)
+    (IsCriticalPointAt I f x ∧
+      (QuadraticMap.associated (R := ℝ) (chartHessianAt g (c x))).SeparatingLeft)
   rw [isCriticalPointAt_const_sub_iff (hf.mdifferentiableAt (by simp)) b,
-    separatingLeft_chartHessianAt_iff hbg,separatingLeft_chartHessianAt_iff hg,fderiv_fderiv_const_sub]
+    separatingLeft_chartHessianAt_iff hbg, separatingLeft_chartHessianAt_iff hg,
+    fderiv_fderiv_const_sub]
   constructor
   · rintro ⟨hc,h⟩
     refine ⟨hc,fun v w hvw => ?_⟩

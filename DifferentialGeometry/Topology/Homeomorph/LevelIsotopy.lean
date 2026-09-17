@@ -46,4 +46,30 @@ theorem image_sublevel_eq_of_image_level_eq
     exact ⟨(P t).symm x, (hle ((P t).symm x)).mp (by simpa only [(P t).apply_symm_apply] using hx),
       (P t).apply_symm_apply x⟩
 
+theorem isOpen_image_prod_level_of_height_translation
+    {X : Type*} [TopologicalSpace X] (Φ : ℝ → X ≃ₜ X)
+    (hΦi : Continuous (fun p : ℝ × X => (Φ p.1).symm p.2))
+    {f : X → ℝ} (hf : Continuous f) {N : Set X} (hN : IsOpen N)
+    {J : Set ℝ} (hJ : IsOpen J) (a : ℝ)
+    (hheight : ∀ t ∈ J, ∀ x ∈ N, f (Φ t x) = f x + t) :
+    IsOpen ((fun p : ℝ × X => Φ p.1 p.2) '' (J ×ˢ (N ∩ {x | f x = a}))) := by
+  have heq : (fun p : ℝ × X => Φ p.1 p.2) '' (J ×ˢ (N ∩ {x | f x = a})) =
+      {y | f y - a ∈ J ∧ (Φ (f y - a)).symm y ∈ N} := by
+    ext y
+    constructor
+    · rintro ⟨⟨t, x⟩, ⟨ht, hx, hxa⟩, rfl⟩
+      have hvalue : f (Φ t x) - a = t := by rw [hheight t ht x hx, hxa]; ring
+      simp only [mem_ofPred_eq, hvalue, symm_apply_apply]
+      exact ⟨ht, hx⟩
+    · intro hy
+      have hh := hheight (f y - a) hy.1 ((Φ (f y - a)).symm y) hy.2
+      rw [(Φ (f y - a)).apply_symm_apply] at hh
+      refine ⟨(f y - a, (Φ (f y - a)).symm y), ⟨hy.1, hy.2, ?_⟩,
+        (Φ (f y - a)).apply_symm_apply y⟩
+      change f ((Φ (f y - a)).symm y) = a
+      linarith
+  rw [heq]
+  exact (hJ.preimage (hf.sub continuous_const)).inter
+    (hN.preimage (hΦi.comp ((hf.sub continuous_const).prodMk continuous_id)))
+
 end Homeomorph

@@ -5092,7 +5092,7 @@ theorem modelSublevelFamilyCutoff_notCritical_of_ratio_neg {n k : ℕ} (hk : k �
         modelRoundedFunction hk c ε r δ R₀ R₁ z - c) y :=
       (contDiff_modelRoundedFunction hk c ε r δ R₀ R₁).continuous.continuousAt.sub continuousAt_const
     have hβ : ContinuousAt (fun z : MorseModel n => morseNormalForm hk c z - c - ε) y :=
-      (contDiff_morseNormalForm hk c).continuous.continuousAt.sub continuousAt_const |>.sub
+      (contDiff_morseNormalForm (m := ∞) hk c).continuous.continuousAt.sub continuousAt_const |>.sub
         continuousAt_const
     have hden : modelRoundedFunction hk c ε r δ R₀ R₁ y - c -
         (morseNormalForm hk c y - c - ε) ≠ 0 := by
@@ -5156,7 +5156,7 @@ theorem modelSublevelFamilyCutoff_notCritical_of_ratio_top {n k : ℕ} (hk : k �
         modelRoundedFunction hk c ε r δ R₀ R₁ z - c) y :=
       (contDiff_modelRoundedFunction hk c ε r δ R₀ R₁).continuous.continuousAt.sub continuousAt_const
     have hβ : ContinuousAt (fun z : MorseModel n => morseNormalForm hk c z - c - ε) y :=
-      (contDiff_morseNormalForm hk c).continuous.continuousAt.sub continuousAt_const |>.sub
+      (contDiff_morseNormalForm (m := ∞) hk c).continuous.continuousAt.sub continuousAt_const |>.sub
         continuousAt_const
     have hden : modelRoundedFunction hk c ε r δ R₀ R₁ y - c -
         (morseNormalForm hk c y - c - ε) ≠ 0 := by

@@ -1,7 +1,9 @@
+import DifferentialGeometry.External.Schoenflies.Subarc
 import DifferentialGeometry.Topology.PlanarJordan.RegularCurve
 import DifferentialGeometry.Topology.Morse.NormalForm.Saddle
 import DifferentialGeometry.Topology.PlanarJordan.Regions
 import DifferentialGeometry.Topology.Connected.ComponentIn
+import DifferentialGeometry.Topology.Connected.Frontier
 
 open Set Schoenflies
 open scoped ContDiff Manifold
@@ -470,5 +472,226 @@ theorem image_sphere_diff_saddleBandLevelCurve_subset
       exact hy.2 ⟨z, ⟨z.1, hmem, heq.symm⟩, rfl⟩
     exact ⟨z, ⟨z.1, ⟨hz.1, houtside⟩, heq.symm⟩, rfl⟩
   · exact Or.inl hbox
+
+theorem isArcBetween_image_saddleBandLevelCurve
+    {B : (ℝ × ℝ) → Schoenflies.Plane} (hB : Continuous B) (hBi : Function.Injective B)
+    {s τ h σ : ℝ} (hs : 0 ≤ s) (hτ : 0 < τ) (hh : 0 < h) (hh1 : h < 1) :
+    Schoenflies.IsArcBetween (B '' (saddleBandLevelCurve s τ σ '' Icc (-h) h))
+      (B (saddleBandLevelCurve s τ σ (-h))) (B (saddleBandLevelCurve s τ σ h)) := by
+  let f := B ∘ saddleBandLevelCurve s τ σ
+  have hI : Icc (-h) h ⊆ Ioo (-1 : ℝ) 1 := by
+    intro u hu
+    constructor <;> linarith [hu.1, hu.2]
+  have hmap : MapsTo (Schoenflies.reparam (-h) h) (Icc (0 : ℝ) 1) (Icc (-h) h) := by
+    simpa only [uIcc_of_le (by linarith : -h ≤ h)] using
+      (Schoenflies.mapsTo_reparam (a := -h) (b := h))
+  have hc : ContinuousOn (Schoenflies.subarc f (-h) h) (Icc (0 : ℝ) 1) :=
+    (hB.comp_continuousOn ((contDiffOn_saddleBandLevelCurve hs hτ σ).continuousOn.mono hI)).comp
+      Schoenflies.continuous_reparam.continuousOn hmap
+  have hi : Function.Injective f := by
+    intro u v huv
+    exact congrArg Prod.fst (hBi huv)
+  refine ⟨Schoenflies.subarc f (-h) h, hc,
+    Schoenflies.injOn_subarc hi.injOn (by linarith), ?_,
+    Schoenflies.subarc_zero, Schoenflies.subarc_one⟩
+  rw [Schoenflies.subarc_image, uIcc_of_le (by linarith : -h ≤ h), image_comp]
+
+open Metric in
+theorem not_mem_image_closedBall_of_lt_saddleBandLevelCurve
+    (B : (ℝ × ℝ) ≃ₜ Schoenflies.Plane) (G : Schoenflies.Plane ≃ₜ Schoenflies.Plane)
+    {s t σ h R r : ℝ} (hs : 0 ≤ s) (ht : 0 < t) (hσ : σ ^ 2 = 1) (hh : h < 1)
+    {Γ S : Set Schoenflies.Plane}
+    (hcircle : G '' sphere 0 r =
+      B '' (saddleBandLevelCurve s t σ '' Icc (-h) h) ∪ Γ)
+    (hΓ : Γ ∩ B '' (Icc (-h) h ×ˢ Icc (-R) R) ⊆
+      {B (saddleBandLevelCurve s t σ (-h)), B (saddleBandLevelCurve s t σ h)})
+    (hcontact : (G '' closedBall 0 r) ∩ S = G '' sphere 0 r)
+    (hopposite : B '' (saddleBandLevelCurve s t (-σ) '' Icc (-h) h) ⊆ S)
+    (hrectangle : saddleBandLevelCurve s t (-σ) '' Icc (-h) h ⊆
+      Icc (-h) h ×ˢ Icc (-R) R)
+    {z : ℝ × ℝ} (hz : z ∈ Icc (-h) h ×ˢ Icc (-R) R)
+    (hzside : σ * z.2 < σ * (saddleBandLevelCurve s t σ z.1).2) :
+    B z ∉ G '' closedBall 0 r := by
+  let Q : Set (ℝ × ℝ) := Icc (-h) h ×ˢ Icc (-R) R
+  let D : Set Schoenflies.Plane := G '' closedBall 0 r
+  have hroot (u : ℝ) (hu : u ∈ Icc (-h) h) :
+      0 < σ * (saddleBandLevelCurve s t σ u).2 := by
+    have hu' : u ∈ Ioo (-1 : ℝ) 1 := ⟨by linarith [hu.1], by linarith [hu.2]⟩
+    change 0 < σ * (σ * Real.sqrt (2 * (t + s * u ^ 2) / (1 - u ^ 2)))
+    rw [← mul_assoc, ← pow_two, hσ, one_mul]
+    apply Real.sqrt_pos.mpr
+    apply div_pos
+      (mul_pos (by norm_num) (add_pos_of_pos_of_nonneg ht (mul_nonneg hs (sq_nonneg u))))
+    nlinarith [hu'.1, hu'.2]
+  have hlocal (x : ℝ × ℝ) (hx : x ∈ Q) (hxc : B x ∈ G '' sphere 0 r) :
+      x = saddleBandLevelCurve s t σ x.1 := by
+    have hselected : B x ∈ B '' (saddleBandLevelCurve s t σ '' Icc (-h) h) := by
+      rcases hcircle.subset hxc with hsel | hother
+      · exact hsel
+      · have he := hΓ ⟨hother, mem_image_of_mem B hx⟩
+        rcases he with he | he
+        · exact ⟨_, ⟨-h, ⟨le_rfl, le_trans hx.1.1 hx.1.2⟩, rfl⟩, he.symm⟩
+        · exact ⟨_, ⟨h, ⟨le_trans hx.1.1 hx.1.2, le_rfl⟩, rfl⟩, (mem_singleton_iff.mp he).symm⟩
+    obtain ⟨_, ⟨u, _, rfl⟩, hxu⟩ := hselected
+    have hxu' := B.injective hxu
+    have hu' : u = x.1 := congrArg Prod.fst hxu'
+    simpa only [hu'] using hxu'.symm
+  let w := saddleBandLevelCurve s t (-σ) z.1
+  have hwQ : w ∈ Q := hrectangle ⟨z.1, hz.1, rfl⟩
+  have hwside : σ * w.2 < σ * (saddleBandLevelCurve s t σ z.1).2 := by
+    have hp := hroot z.1 hz.1
+    change σ * (-σ * _) < σ * (σ * _)
+    dsimp only [saddleBandLevelCurve] at hp
+    nlinarith
+  have hwS : B w ∈ S := hopposite ⟨_, ⟨z.1, hz.1, rfl⟩, rfl⟩
+  have hwD : B w ∉ D := by
+    intro hw
+    have hc : B w ∈ G '' sphere 0 r := hcontact.subset ⟨hw, hwS⟩
+    have heq := congrArg (fun p : ℝ × ℝ => σ * p.2) (hlocal w hwQ hc)
+    exact hwside.ne heq
+  let f : ℝ → ℝ × ℝ := fun a => (z.1, (1 - a) * z.2 + a * w.2)
+  have hf : Continuous f := by fun_prop
+  have hfQ (a : ℝ) (ha : a ∈ Icc (0 : ℝ) 1) : f a ∈ Q := by
+    refine ⟨hz.1, ?_⟩
+    have h0 : 0 ≤ 1 - a := sub_nonneg.mpr ha.2
+    constructor
+    · dsimp [f]
+      nlinarith [mul_le_mul_of_nonneg_left hz.2.1 h0,
+        mul_le_mul_of_nonneg_left hwQ.2.1 ha.1]
+    · dsimp [f]
+      nlinarith [mul_le_mul_of_nonneg_left hz.2.2 h0,
+        mul_le_mul_of_nonneg_left hwQ.2.2 ha.1]
+  have hfside (a : ℝ) (ha : a ∈ Icc (0 : ℝ) 1) :
+      σ * (f a).2 < σ * (saddleBandLevelCurve s t σ z.1).2 := by
+    have h1 := mul_le_mul_of_nonneg_left hzside.le (sub_nonneg.mpr ha.2)
+    rcases eq_or_lt_of_le ha.1 with ha0 | ha0
+    · rw [← ha0]
+      simpa only [f, sub_zero, one_mul, zero_mul, add_zero] using hzside
+    · have h2' := mul_lt_mul_of_pos_left hwside ha0
+      dsimp [f]
+      nlinarith
+  have hfront : frontier D ⊆ G '' sphere 0 r := by
+    rw [← G.image_frontier]
+    exact image_mono frontier_closedBall_subset_sphere
+  have hdisj : Disjoint ((B ∘ f) '' Icc (0 : ℝ) 1) (frontier Dᶜ) := by
+    rw [frontier_compl]
+    apply disjoint_left.mpr
+    rintro _ ⟨a, ha, rfl⟩ hmem
+    have heq := congrArg (fun p : ℝ × ℝ => σ * p.2)
+      (hlocal (f a) (hfQ a ha) (hfront hmem))
+    exact (hfside a ha).ne heq
+  have hclosed : IsClosed D := G.isClosedMap _ isClosed_closedBall
+  have hsub : (B ∘ f) '' Icc (0 : ℝ) 1 ⊆ interior Dᶜ :=
+    DifferentialGeometry.Topology.subset_interior_of_isPreconnected_of_disjoint_frontier
+      (isPreconnected_Icc.image _ (B.continuous.comp hf).continuousOn) hdisj
+      ⟨B w, ⟨1, ⟨by norm_num, le_rfl⟩, by simp [f, w, saddleBandLevelCurve]⟩,
+        by rw [hclosed.isOpen_compl.interior_eq]; exact hwD⟩
+  exact interior_subset (hsub ⟨0, ⟨le_rfl, by norm_num⟩, by simp [f]⟩)
+
+open Metric in
+theorem exists_cthickening_saddle_band_sublevel_disjoint_image_closedBall
+    (B : (ℝ × ℝ) ≃ₜ Schoenflies.Plane) (G : Schoenflies.Plane ≃ₜ Schoenflies.Plane)
+    {s t σ h R r : ℝ} (hs : 0 ≤ s) (ht : 0 < t) (hσ : σ ^ 2 = 1) (hh : h < 1)
+    {Γ S : Set Schoenflies.Plane}
+    (hcircle : G '' sphere 0 r =
+      B '' (saddleBandLevelCurve s t σ '' Icc (-h) h) ∪ Γ)
+    (hΓ : Γ ∩ B '' (Icc (-h) h ×ˢ Icc (-R) R) ⊆
+      {B (saddleBandLevelCurve s t σ (-h)), B (saddleBandLevelCurve s t σ h)})
+    (hcontact : (G '' closedBall 0 r) ∩ S = G '' sphere 0 r)
+    (hopposite : B '' (saddleBandLevelCurve s t (-σ) '' Icc (-h) h) ⊆ S)
+    (hrectangle : saddleBandLevelCurve s t (-σ) '' Icc (-h) h ⊆
+      Icc (-h) h ×ˢ Icc (-R) R)
+    {a : ℝ} (ha : a < t) :
+    ∃ ε > 0, cthickening ε
+      (B '' {z : ℝ × ℝ | z ∈ Icc (-h) h ×ˢ Icc (-R) R ∧
+        (1 - z.1 ^ 2) * (z.2 ^ 2 + 2 * s) / 2 ≤ s + a}) ⊆
+      (G '' closedBall 0 r)ᶜ := by
+  let K : Set (ℝ × ℝ) := {z | z ∈ Icc (-h) h ×ˢ Icc (-R) R ∧
+    (1 - z.1 ^ 2) * (z.2 ^ 2 + 2 * s) / 2 ≤ s + a}
+  have hK : IsCompact K :=
+    (isCompact_Icc.prod isCompact_Icc).inter_right
+      (isClosed_le (show Continuous (fun z : ℝ × ℝ =>
+        (1 - z.1 ^ 2) * (z.2 ^ 2 + 2 * s) / 2) by fun_prop) continuous_const)
+  have hKD : B '' K ⊆ (G '' closedBall 0 r)ᶜ := by
+    rintro _ ⟨z, hz, rfl⟩
+    apply not_mem_image_closedBall_of_lt_saddleBandLevelCurve B G hs ht hσ hh
+      hcircle hΓ hcontact hopposite hrectangle hz.1
+    have hu : z.1 ∈ Ioo (-1 : ℝ) 1 := ⟨by linarith [hz.1.1.1], by linarith [hz.1.1.2]⟩
+    have hden : 0 < 1 - z.1 ^ 2 := by nlinarith [hu.1, hu.2]
+    let v := (saddleBandLevelCurve s t σ z.1).2
+    have hheight : (1 - z.1 ^ 2) * (v ^ 2 + 2 * s) / 2 = s + t := by
+      simpa only [zero_add, saddleBandLevelCurve, v] using saddleBandLevelCurve_height hs ht hσ hu 0
+    have hsq : z.2 ^ 2 < v ^ 2 := by
+      by_contra hn
+      have hm := mul_le_mul_of_nonneg_left (le_of_not_gt hn) hden.le
+      nlinarith [hz.2]
+    have hv : 0 < σ * v := by
+      change 0 < σ * (σ * Real.sqrt (2 * (t + s * z.1 ^ 2) / (1 - z.1 ^ 2)))
+      rw [← mul_assoc, ← pow_two, hσ, one_mul]
+      exact Real.sqrt_pos.mpr (div_pos
+        (mul_pos (by norm_num) (add_pos_of_pos_of_nonneg ht (mul_nonneg hs (sq_nonneg z.1)))) hden)
+    have hsquare (w : ℝ) : (σ * w) ^ 2 = w ^ 2 := by rw [mul_pow, hσ, one_mul]
+    have hsq' : (σ * z.2) ^ 2 < (σ * v) ^ 2 := by simpa only [hsquare] using hsq
+    change σ * z.2 < σ * v
+    nlinarith
+  exact (hK.image B.continuous).exists_cthickening_subset_open
+    (G.isClosedMap _ isClosed_closedBall).isOpen_compl hKD
+
+open Metric in
+theorem not_mem_interior_image_closedBall_of_le_saddleBandLevelCurve
+    (B : (ℝ × ℝ) ≃ₜ Schoenflies.Plane) (G : Schoenflies.Plane ≃ₜ Schoenflies.Plane)
+    {s t σ h R r : ℝ} (hs : 0 ≤ s) (ht : 0 < t) (hσ : σ ^ 2 = 1) (hh : h < 1)
+    {Γ S : Set Schoenflies.Plane}
+    (hcircle : G '' sphere 0 r =
+      B '' (saddleBandLevelCurve s t σ '' Icc (-h) h) ∪ Γ)
+    (hΓ : Γ ∩ B '' (Icc (-h) h ×ˢ Icc (-R) R) ⊆
+      {B (saddleBandLevelCurve s t σ (-h)), B (saddleBandLevelCurve s t σ h)})
+    (hcontact : (G '' closedBall 0 r) ∩ S = G '' sphere 0 r)
+    (hopposite : B '' (saddleBandLevelCurve s t (-σ) '' Icc (-h) h) ⊆ S)
+    (hrectangle : saddleBandLevelCurve s t (-σ) '' Icc (-h) h ⊆
+      Icc (-h) h ×ˢ Icc (-R) R)
+    {z : ℝ × ℝ} (hz : z ∈ Icc (-h) h ×ˢ Icc (-R) R)
+    (hzside : σ * z.2 ≤ σ * (saddleBandLevelCurve s t σ z.1).2) :
+    B z ∉ interior (G '' closedBall 0 r) := by
+  rcases lt_or_eq_of_le hzside with hlt | heq
+  · exact fun hzD => not_mem_image_closedBall_of_lt_saddleBandLevelCurve B G hs ht hσ hh
+      hcircle hΓ hcontact hopposite hrectangle hz hlt (interior_subset hzD)
+  · have hσne : σ ≠ 0 := by
+      intro hzero
+      rw [hzero] at hσ
+      norm_num at hσ
+    have hzcurve : z = saddleBandLevelCurve s t σ z.1 :=
+      Prod.ext rfl (mul_left_cancel₀ hσne heq)
+    have hboundary : B z ∈ frontier (G '' closedBall 0 r) := by
+      rw [← G.image_frontier, frontier_closedBall']
+      apply hcircle.symm.subset
+      exact Or.inl ⟨_, ⟨z.1, hz.1, hzcurve.symm⟩, rfl⟩
+    exact fun hi => disjoint_left.mp disjoint_interior_frontier hi hboundary
+
+open Metric in
+theorem cap_circle_height_eq_on_side_neighborhood
+    (B : (ℝ × ℝ) ≃ₜ Schoenflies.Plane)
+    (G : Schoenflies.Plane ≃ₜ Schoenflies.Plane)
+    {s t₀ r : ℝ} (hr : 0 < r) {V : Set (ℝ × ℝ)} (hV : IsOpen V)
+    (hside : ∀ z ∈ V, B z ∈ G '' closedBall 0 r ↔
+      s + t₀ ≤ (1 - z.1 ^ 2) * (z.2 ^ 2 + 2 * s) / 2)
+    {z : ℝ × ℝ} (hz : z ∈ V) (hzC : B z ∈ G '' sphere 0 r) :
+    (1 - z.1 ^ 2) * (z.2 ^ 2 + 2 * s) / 2 = s + t₀ := by
+  have hzD : B z ∈ G '' closedBall 0 r := image_mono sphere_subset_closedBall hzC
+  have hle := (hside z hz).mp hzD
+  apply le_antisymm _ hle
+  by_contra hn
+  have hlt : s + t₀ < (1 - z.1 ^ 2) * (z.2 ^ 2 + 2 * s) / 2 := lt_of_not_ge hn
+  let O : Set (ℝ × ℝ) := V ∩ {z | s + t₀ < (1 - z.1 ^ 2) * (z.2 ^ 2 + 2 * s) / 2}
+  have hO : IsOpen O := hV.inter (isOpen_lt continuous_const (by fun_prop))
+  have hinterior : B z ∈ interior (G '' closedBall 0 r) := by
+    apply mem_interior.mpr
+    refine ⟨B '' O, ?_, B.isOpenMap _ hO, mem_image_of_mem B ⟨hz, hlt⟩⟩
+    rintro _ ⟨w, hw, rfl⟩
+    exact (hside w hw.1).mpr hw.2.le
+  have hfront : B z ∈ frontier (G '' closedBall 0 r) := by
+    rw [← G.image_frontier, frontier_closedBall (0 : Schoenflies.Plane) hr.ne']
+    exact hzC
+  exact disjoint_left.mp disjoint_interior_frontier hinterior hfront
 
 end DifferentialGeometry.Topology.PlanarJordan
