@@ -2,6 +2,8 @@ import DifferentialGeometry.Topology.PiecewiseLinear.Mesh
 import DifferentialGeometry.Topology.PiecewiseLinear.Triangulation
 import DifferentialGeometry.Topology.PiecewiseLinear.Combinatorial
 import DifferentialGeometry.Topology.PiecewiseLinear.SimplicialMap
+import DifferentialGeometry.Topology.PiecewiseLinear.PiecewiseAffineSimplicial
+import DifferentialGeometry.Topology.PiecewiseLinear.RelativeSubdivision
 
 open Set Metric
 
@@ -83,6 +85,91 @@ theorem exists_isPiecewiseAffineOn_dist_lt
               (le_of_lt (by simpa [dist_eq_norm] using hclose' v hv)) (weights_nonneg hxs hv)
         _ = ε / 2 := by rw [← Finset.sum_mul, sum_weights hxs, one_mul]
     calc dist (simplicialMap K' f x) (f x) = ‖simplicialMap K' f x - f x‖ := dist_eq_norm _ _
+      _ ≤ ε / 2 := hbound
+      _ < ε := by linarith
+
+open Classical in
+theorem exists_isPiecewiseAffineOn_dist_lt_eqOn
+    {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    [NormedAddCommGroup F] [NormedSpace ℝ F]
+    {P Q : Set E} (hP : IsPolyhedron P) (hQ : IsPolyhedron Q) (hQP : Q ⊆ P)
+    (hPc : IsCompact P)
+    {f : E → F} (hf : ContinuousOn f P) (hfQ : IsPiecewiseAffineOn f Q)
+    {ε : ℝ} (hε : 0 < ε) :
+    ∃ g : E → F, IsPiecewiseAffineOn g P ∧ EqOn g f Q ∧ ∀ x ∈ P, dist (g x) (f x) < ε := by
+  classical
+  obtain ⟨K, hKfin, hKspace⟩ := IsPolyhedron.exists_simplicialComplex hP
+  let _ : Finite K.faces := hKfin.to_subtype
+  obtain ⟨R₀, hR₀, hR₀fin, hR₀Q⟩ :=
+    exists_isSubdivision_restrict_space K hQ (by rw [hKspace]; exact hQP)
+  let _ : Finite R₀.faces := hR₀fin.to_subtype
+  set L := restrict R₀ Q with hLdef
+  have hLfin : L.faces.Finite := hR₀fin.subset (restrict_faces_subset R₀ Q)
+  let _ : Finite L.faces := hLfin.to_subtype
+  have hLspace : L.space = Q := hR₀Q
+  obtain ⟨L', hL', hL'fin, hL'aff⟩ :=
+    exists_isSubdivision_affineOn_faces_finite L (fun _ : Unit => f)
+      (fun _ => by rw [hLspace]; exact hfQ)
+  let _ : Finite L'.faces := hL'fin.to_subtype
+  obtain ⟨R₁, hR₁, hR₁fin, -, hL'R₁, -⟩ :=
+    exists_isSubdivision_extension_of_disjoint (K := R₀) (A := ⊥) (B := L)
+      (by rw [Geometry.SimplicialComplex.faces_bot]; exact Set.empty_subset _)
+      (restrict_faces_subset R₀ Q)
+      (by rw [Geometry.SimplicialComplex.space_bot]; exact disjoint_bot_left) hL'
+  let _ : Finite R₁.faces := hR₁fin.to_subtype
+  have hR₁space : R₁.space = P := by rw [hR₁.space_eq, hR₀.space_eq, hKspace]
+  have hL'space : L'.space = Q := by rw [hL'.space_eq, hLspace]
+  have huc : UniformContinuousOn f P := hPc.uniformContinuousOn_of_continuous hf
+  obtain ⟨δ, hδ, hclose⟩ := Metric.uniformContinuousOn_iff.mp huc (ε / 2) (by positivity)
+  obtain ⟨K'', hK'', hK''fin, -, hK''diam⟩ :=
+    exists_isSubdivision_diam_lt R₁ (N := Module.finrank ℝ E)
+      (fun s hs => card_le_finrank_succ_of_mem_faces R₁ hs) hδ
+  let _ : Finite K''.faces := hK''fin.to_subtype
+  have hK''space : K''.space = P := by rw [hK''.space_eq, hR₁space]
+  refine ⟨simplicialMap K'' f, by rw [← hK''space]; exact isPiecewiseAffineOn_simplicialMap K'' f,
+    ?_, ?_⟩
+  · intro x hx
+    have hxK : x ∈ K''.space := by rw [hK''space]; exact hQP hx
+    have hres : IsSubdivision (restrict K'' L'.space) L' := hK''.restrict L' hL'R₁
+    have hxres : x ∈ (restrict K'' L'.space).space := by
+      rw [hres.space_eq, hL'space]; exact hx
+    obtain ⟨t, ht, hxt⟩ := (restrict K'' L'.space).mem_space_iff.mp hxres
+    have hcar : carrierFace K'' x ⊆ t := carrierFace_subset hxK ht.1 hxt
+    have hcarQ : convexHull ℝ ((carrierFace K'' x : Finset E) : Set E) ⊆ L'.space :=
+      (convexHull_mono (Finset.coe_subset.mpr hcar)).trans ht.2
+    obtain ⟨u, hu, hsu⟩ := hres.2 (carrierFace K'' x) ⟨carrierFace_mem hxK, hcarQ⟩
+    obtain ⟨A, hA⟩ := hL'aff () u hu
+    exact simplicialMap_eqOn_of_affineOn K'' f (carrierFace_mem hxK)
+      (fun y hy => hA (hsu hy)) (mem_convexHull_carrierFace hxK)
+  · intro x hx
+    have hxK : x ∈ K''.space := by rw [hK''space]; exact hx
+    set s := carrierFace K'' x with hsdef
+    have hs : s ∈ K''.faces := carrierFace_mem hxK
+    have hxs : x ∈ convexHull ℝ (s : Set E) := mem_convexHull_carrierFace hxK
+    have hsubP : (s : Set E) ⊆ P := by
+      intro v hv
+      rw [← hK''space]
+      exact K''.convexHull_subset_space hs (subset_convexHull ℝ _ hv)
+    have hbdd : Bornology.IsBounded (convexHull ℝ (s : Set E)) :=
+      isBounded_convexHull.mpr s.finite_toSet.isBounded
+    have hclose' : ∀ v ∈ s, dist (f v) (f x) < ε / 2 := fun v hv =>
+      hclose v (hsubP hv) x hx
+        (lt_of_le_of_lt (dist_le_diam_of_mem hbdd (subset_convexHull ℝ _ hv) hxs)
+          (hK''diam s hs))
+    have hsum : simplicialMap K'' f x - f x = ∑ v ∈ s, weights s x v • (f v - f x) := by
+      simp only [smul_sub, Finset.sum_sub_distrib, ← Finset.sum_smul, sum_weights hxs, one_smul]
+      rfl
+    have hbound : ‖simplicialMap K'' f x - f x‖ ≤ ε / 2 := by
+      rw [hsum]
+      refine (norm_sum_le _ _).trans ?_
+      calc ∑ v ∈ s, ‖weights s x v • (f v - f x)‖
+          ≤ ∑ v ∈ s, weights s x v * (ε / 2) := by
+            refine Finset.sum_le_sum fun v hv => ?_
+            rw [norm_smul, Real.norm_eq_abs, abs_of_nonneg (weights_nonneg hxs hv)]
+            exact mul_le_mul_of_nonneg_left
+              (le_of_lt (by simpa [dist_eq_norm] using hclose' v hv)) (weights_nonneg hxs hv)
+        _ = ε / 2 := by rw [← Finset.sum_mul, sum_weights hxs, one_mul]
+    calc dist (simplicialMap K'' f x) (f x) = ‖simplicialMap K'' f x - f x‖ := dist_eq_norm _ _
       _ ≤ ε / 2 := hbound
       _ < ε := by linarith
 
