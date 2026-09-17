@@ -24,6 +24,54 @@ theorem IsPiecewiseAffineOn.piecewise_of_isClosed [FiniteDimensional ℝ E]
   exact (hf.congr hleft).union_of_isClosed (hg.congr hright) hP hQ
 
 open Classical in
+theorem IsPLOn.piecewise_of_isClosed
+    {n m : ℕ} {M : Type*} [TopologicalSpace M]
+    [ChartedSpace (EuclideanSpace ℝ (Fin m)) M]
+    {f g : EuclideanSpace ℝ (Fin n) → M}
+    {P Q : Set (EuclideanSpace ℝ (Fin n))}
+    (hf : IsPLOn n m f P) (hg : IsPLOn n m g Q)
+    (hP : IsClosed P) (hQ : IsClosed Q) (hfg : EqOn f g (P ∩ Q)) :
+    IsPLOn n m (P.piecewise f g) (P ∪ Q) := by
+  let h := P.piecewise f g
+  have hPf : EqOn h f P := P.piecewise_eqOn f g
+  have hQg : EqOn h g Q := by
+    intro x hx
+    by_cases hxP : x ∈ P
+    · change P.piecewise f g x = g x
+      rw [P.piecewise_eq_of_mem f g hxP, hfg ⟨hxP, hx⟩]
+    · change P.piecewise f g x = g x
+      exact P.piecewise_eq_of_notMem f g hxP
+  intro x hx
+  by_cases hxP : x ∈ P
+  · have hhP : IsPLWithinAt n m h P x :=
+      piecewiseAffineProperty_localInvariantProp.liftPropWithinAt_congr_of_mem
+        (hf x hxP) hPf hxP
+    by_cases hxQ : x ∈ Q
+    · have hhQ : IsPLWithinAt n m h Q x :=
+        piecewiseAffineProperty_localInvariantProp.liftPropWithinAt_congr_of_mem
+          (hg x hxQ) hQg hxQ
+      have hhP' :=
+        (StructureGroupoid.liftPropWithinAt_self_source).mp hhP
+      have hhQ' :=
+        (StructureGroupoid.liftPropWithinAt_self_source).mp hhQ
+      apply (StructureGroupoid.liftPropWithinAt_self_source).mpr
+      exact ⟨hhP'.1.union hhQ'.1, hhP'.2.union hhQ'.2⟩
+    · have hset : (fun y => y ∈ P) =ᶠ[𝓝 x] (fun y => y ∈ P ∪ Q) := by
+        filter_upwards [hQ.isOpen_compl.mem_nhds hxQ] with y hy
+        apply propext
+        exact ⟨Or.inl, fun h => h.resolve_right hy⟩
+      exact (piecewiseAffineProperty_localInvariantProp.liftPropWithinAt_congr_set hset).mp hhP
+  · have hxQ : x ∈ Q := hx.resolve_left hxP
+    have hhQ : IsPLWithinAt n m h Q x :=
+      piecewiseAffineProperty_localInvariantProp.liftPropWithinAt_congr_of_mem
+        (hg x hxQ) hQg hxQ
+    have hset : (fun y => y ∈ Q) =ᶠ[𝓝 x] (fun y => y ∈ P ∪ Q) := by
+      filter_upwards [hP.isOpen_compl.mem_nhds hxP] with y hy
+      apply propext
+      exact ⟨Or.inr, fun h => h.resolve_left hy⟩
+    exact (piecewiseAffineProperty_localInvariantProp.liftPropWithinAt_congr_set hset).mp hhQ
+
+open Classical in
 theorem exists_piecewiseAffineOn_postcomp_on_polyhedron [FiniteDimensional ℝ E]
     {f : E → F} {P Q : Set E} (hf : IsPiecewiseAffineOn f (P ∪ Q)) (hP : IsPolyhedron P)
     (hQ : IsPolyhedron Q) {h : F → F} (hh : IsPiecewiseAffineOn h univ)

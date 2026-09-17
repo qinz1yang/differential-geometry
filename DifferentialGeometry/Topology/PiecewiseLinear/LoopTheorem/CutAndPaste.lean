@@ -1211,6 +1211,165 @@ theorem exists_three_cells_of_boundaryBranch
     htrace₁, htrace₃, hcut₁, hcut₃⟩
 
 open Classical in
+theorem exists_cross_reglued_cell_of_boundaryBranch
+    {M : Type u} [TopologicalSpace M]
+    [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] [T2Space M]
+    {D : SingularTwoCell M} {BdM B : Set M}
+    (hD : NormalSingularCellData D BdM B)
+    {c : hD.singularSet.Branch} (hc : hD.singularSet.IsBoundaryBranch c) :
+    ∃ A C U₁ U₂ U₃ P Q P' Q' A' R T : Set (EuclideanSpace ℝ (Fin 2)),
+    ∃ p q r s a b : EuclideanSpace ℝ (Fin 2),
+    ∃ g f₁ f₂ h f₃ : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 2),
+    ∃ H G : SingularTwoCell M,
+      IsPLBall 1 A ∧ IsPLBall 1 C ∧ Disjoint A C ∧
+      hD.branchPreimage c = A ∪ C ∧
+      IsPLHomeomorphOn g A C ∧ EqOn D (D ∘ g) A ∧
+      p ∈ A ∧ q ∈ A ∧ r ∈ C ∧ s ∈ C ∧
+      ((g p = r ∧ g q = s) ∨ (g p = s ∧ g q = r)) ∧
+      U₁ ∪ U₂ ∪ U₃ = D.domain ∧ U₁ ∩ U₂ = A ∧ U₂ ∩ U₃ = C ∧
+      Disjoint U₁ U₃ ∧
+      IsPLBall 2 P ∧ IsPLBall 2 Q ∧ H.domain = P ∪ Q ∧
+      IsPLHomeomorphOn f₁ P U₁ ∧ IsPLHomeomorphOn f₂ Q U₂ ∧
+      f₁ '' (P ∩ Q) = A ∧ f₂ '' (P ∩ Q) = C ∧
+      EqOn H (D ∘ f₁) P ∧ EqOn H (D ∘ f₂) Q ∧
+      A' = Function.invFunOn f₂ Q '' A ∧ IsPLBall 1 A' ∧ Disjoint A' (P ∩ Q) ∧
+      A' ⊆ frontier H.domain ∧ IsPLHomeomorphOn (g ∘ f₂) A' C ∧
+      IsPLBall 2 P' ∧ IsPLBall 2 Q' ∧ G.domain = P' ∪ Q' ∧
+      IsPLHomeomorphOn h P' H.domain ∧ IsPLHomeomorphOn f₃ Q' U₃ ∧
+      h '' (P' ∩ Q') = A' ∧ f₃ '' (P' ∩ Q') = C ∧
+      EqOn G (H ∘ h) P' ∧ EqOn G (D ∘ f₃) Q' ∧
+      Schoenflies.IsCutPair (frontier P') a b (P' ∩ Q') R ∧
+      Schoenflies.IsCutPair (frontier Q') a b (P' ∩ Q') T ∧
+      IsPLBall 1 R ∧ IsPLBall 1 T ∧ frontier G.domain = R ∪ T ∧
+      h a = Function.invFunOn f₂ Q p ∧ h b = Function.invFunOn f₂ Q q ∧
+      f₃ a = g p ∧ f₃ b = g q ∧
+      G '' G.domain ⊆ D '' D.domain ∧
+      hD.singularSet.branchCarrier c ⊆ doublePointSet G G.domain ∧
+      ∃ (x y : M) (σ : Path x y) (ω : Path y x)
+          (e : loopCircle ≃ₜ frontier G.domain),
+        Set.range σ = G '' R ∧ Set.range ω = G '' T ∧
+          ∀ θ, G (e θ) = pathToCircle (σ.trans ω) θ := by
+  obtain ⟨A, C, hA, hC, hAC, hcover, hAcoordinate, -, p, q, r, s, g, hg, hcompat,
+    D₁, D₂, D₃, hdomains, hinter₁₂, hinter₂₃, hA₁, hA₂, hC₂, hC₃,
+    hdisjoint₁₃, hfun₁, hfun₂, hfun₃, -, -, hcut₁, hcut₃⟩ :=
+    hD.exists_three_cells_of_boundaryBranch hc
+  have hcompat₁₂ : EqOn D₁ (D₂ ∘ g) A := by
+    intro x hx
+    change D₁.toFun x = D₂.toFun (g x)
+    rw [hfun₁, hfun₂]
+    exact hcompat hx
+  have hcompat₂₃ : EqOn D₂ (D₃ ∘ g) A := by
+    intro x hx
+    change D₂.toFun x = D₃.toFun (g x)
+    rw [hfun₂, hfun₃]
+    exact hcompat hx
+  obtain ⟨H, G, P, Q, P', Q', f₁, f₂, h, f₃, A', hP, hQ, hHdomain,
+    hf₁, hf₂, hf₁seam, hf₂seam, hH₁, hH₂, hA'def, hA', hA'seam, hA'front, hk,
+    hP', hQ', hGdomain, hh, hf₃, hhseam, hf₃seam, hGH, hG₃,
+    a, b, R, T, hcutP', hcutQ', hR, hT, hfrontG, hha, hhb, hf₃a, hf₃b,
+    x, y, σ, ω, e, hσrange, hωrange, hboundaryParam⟩ :=
+    D₁.exists_cross_glue_of_isPLHomeomorphOn_disjoint_boundary_arcs D₂ D₃ hA hAC
+      hcut₁.fst hA₁ hA₂ hC₂ hC₃ hg hcompat₁₂ hcompat₂₃
+  have horientation :=
+    IsPLHomeomorphOn.maps_arc_endpoints hA hC hcut₁.fst hcut₃.fst hg
+  have hH₁' : EqOn H (D ∘ f₁) P := by
+    intro z hz
+    simpa only [Function.comp_apply, hfun₁] using hH₁ hz
+  have hH₂' : EqOn H (D ∘ f₂) Q := by
+    intro z hz
+    simpa only [Function.comp_apply, hfun₂] using hH₂ hz
+  have hG₃' : EqOn G (D ∘ f₃) Q' := by
+    intro z hz
+    simpa only [Function.comp_apply, hfun₃] using hG₃ hz
+  have hU₁D : D₁.domain ⊆ D.domain := by
+    intro z hz
+    rw [← hdomains]
+    exact Or.inl (Or.inl hz)
+  have hU₂D : D₂.domain ⊆ D.domain := by
+    intro z hz
+    rw [← hdomains]
+    exact Or.inl (Or.inr hz)
+  have hU₃D : D₃.domain ⊆ D.domain := by
+    intro z hz
+    rw [← hdomains]
+    exact Or.inr hz
+  have hHimage : H '' H.domain ⊆ D '' D.domain := by
+    rintro z ⟨w, hw, rfl⟩
+    rw [hHdomain] at hw
+    rcases hw with hwP | hwQ
+    · exact ⟨f₁ w, hU₁D (hf₁.bijOn.mapsTo hwP), (hH₁' hwP).symm⟩
+    · exact ⟨f₂ w, hU₂D (hf₂.bijOn.mapsTo hwQ), (hH₂' hwQ).symm⟩
+  have hGimage : G '' G.domain ⊆ D '' D.domain := by
+    rintro z ⟨w, hw, rfl⟩
+    rw [hGdomain] at hw
+    rcases hw with hwP | hwQ
+    · obtain ⟨u, hu, hGu⟩ := hHimage ⟨h w, hh.bijOn.mapsTo hwP, rfl⟩
+      exact ⟨u, hu, hGu.trans (hGH hwP).symm⟩
+    · exact ⟨f₃ w, hU₃D (hf₃.bijOn.mapsTo hwQ), (hG₃' hwQ).symm⟩
+  have hAsub : A ⊆ hD.branchPreimage c := by
+    rw [hcover]
+    exact subset_union_left
+  have hbranchImage : hD.singularSet.branchCarrier c ⊆ D '' A := by
+    intro z hz
+    change z ∈ hD.singularSet.piece.piece.map ''
+      (hD.singularSet.branchComplex c).space at hz
+    obtain ⟨w, hw, rfl⟩ := hz
+    obtain ⟨v, hvA, hvw⟩ := hAcoordinate.bijOn.surjOn hw
+    refine ⟨v, hvA, ?_⟩
+    calc
+      D v = (hD.singularSet.branchPieceIn c).map (hD.branchCoordinate c v) :=
+        (hD.branchPieceIn_map_branchCoordinate c (hAsub hvA)).symm
+      _ = (hD.singularSet.branchPieceIn c).map w := congrArg _ hvw
+      _ = hD.singularSet.piece.piece.map w := rfl
+  have hbranchPersists :
+      hD.singularSet.branchCarrier c ⊆ doublePointSet G G.domain := by
+    intro z hz
+    obtain ⟨v, hvA, hvz⟩ := hbranchImage hz
+    obtain ⟨w₁, hw₁, hw₁v⟩ := hf₁seam.symm.subset hvA
+    have hw₁H : w₁ ∈ H.domain := hHdomain.symm.subset (Or.inl hw₁.1)
+    obtain ⟨z₁, hz₁P, hz₁w⟩ := hh.bijOn.surjOn hw₁H
+    let j := Function.invFunOn f₂ Q
+    have hvD₂ : v ∈ D₂.domain :=
+      D₂.frontier_subset_domain (hA₂ hvA)
+    have hjvA' : j v ∈ A' := by
+      rw [hA'def]
+      exact ⟨v, hvA, rfl⟩
+    have hjvQ : j v ∈ Q := hf₂.bijOn.surjOn.mapsTo_invFunOn hvD₂
+    obtain ⟨z₂, hz₂seam, hz₂j⟩ := hhseam.symm.subset hjvA'
+    have hz₁ne₂ : z₁ ≠ z₂ := by
+      intro h₁₂
+      have hwj : w₁ = j v := by
+        calc
+          w₁ = h z₁ := hz₁w.symm
+          _ = h z₂ := congrArg h h₁₂
+          _ = j v := hz₂j
+      exact Set.disjoint_left.mp hA'seam hjvA' (hwj ▸ hw₁)
+    have hz₁G : z₁ ∈ G.domain := hGdomain.symm.subset (Or.inl hz₁P)
+    have hz₂G : z₂ ∈ G.domain := hGdomain.symm.subset (Or.inl hz₂seam.1)
+    have hGz₁ : G z₁ = D v := by
+      calc
+        G z₁ = H (h z₁) := hGH hz₁P
+        _ = H w₁ := congrArg H hz₁w
+        _ = D (f₁ w₁) := hH₁' hw₁.1
+        _ = D v := congrArg D hw₁v
+    have hGz₂ : G z₂ = D v := by
+      calc
+        G z₂ = H (h z₂) := hGH hz₂seam.1
+        _ = H (j v) := congrArg H hz₂j
+        _ = D (f₂ (j v)) := hH₂' hjvQ
+        _ = D v := congrArg D (hf₂.bijOn.invOn_invFunOn.2 hvD₂)
+    exact ⟨z₁, hz₁G, z₂, hz₂G, hz₁ne₂, hGz₁.trans hvz, hGz₂.trans hvz⟩
+  exact ⟨A, C, D₁.domain, D₂.domain, D₃.domain, P, Q, P', Q', A', R, T,
+    p, q, r, s, a, b, g, f₁, f₂, h, f₃, H, G, hA, hC, hAC, hcover, hg,
+    hcompat, hcut₁.fst.left_mem, hcut₁.fst.right_mem, hcut₃.fst.left_mem,
+    hcut₃.fst.right_mem, horientation, hdomains, hinter₁₂, hinter₂₃,
+    hdisjoint₁₃, hP, hQ, hHdomain, hf₁, hf₂, hf₁seam, hf₂seam, hH₁', hH₂',
+    hA'def, hA', hA'seam, hA'front, hk, hP', hQ', hGdomain, hh, hf₃, hhseam,
+    hf₃seam, hGH, hG₃', hcutP', hcutQ', hR, hT, hfrontG, hha, hhb,
+    hf₃a, hf₃b, hGimage, hbranchPersists,
+    x, y, σ, ω, e, hσrange, hωrange, hboundaryParam⟩
+
+open Classical in
 theorem exists_boundary_surgery_cell_of_boundaryBranch
     {M : Type u} [TopologicalSpace M]
     [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] [T2Space M]
@@ -1242,7 +1401,11 @@ theorem exists_boundary_surgery_cell_of_boundaryBranch
        doublePointSet G G.domain ⊆ doublePointSet D D.domain ∧
        Disjoint (doublePointSet G G.domain) (hD.singularSet.branchCarrier c) ∧
        Nonempty (NormalSingularSetTriangulation G BdM) ∧
-       Nonempty (NormalSingularCellData G BdM B) := by
+       Nonempty (NormalSingularCellData G BdM B) ∧
+       ∃ (x y : M) (σ : Path x y) (ω : Path y x)
+          (e : loopCircle ≃ₜ frontier G.domain),
+         Set.range σ = D '' U ∧ Set.range ω = D '' V ∧
+           ∀ θ, G (e θ) = pathToCircle (σ.trans ω) θ := by
   obtain ⟨A, C, hA, hC, hAC, hcover, hAcoordinate, -, p, q, r, s, g, hg, hcompat,
     D₁, D₂, D₃, hdomains, hinter₁₂, hinter₂₃, hA₁, -, -, hC₃, hdisjoint₁₃,
     hfun₁, -, hfun₃, htrace₁, htrace₃, hcut₁, hcut₃⟩ :=
@@ -1310,6 +1473,60 @@ theorem exists_boundary_surgery_cell_of_boundaryBranch
       _ = D₃ '' (f₃ '' T) := image_comp D₃ f₃ T
       _ = D₃ '' (D₃.domain ∩ frontier D.domain) := congrArg (D₃ '' ·) hTimage
       _ = D '' (D₃.domain ∩ frontier D.domain) := by rw [hfun₃]
+  have hRT : R ∩ T = {a, b} := by
+    apply Subset.antisymm
+    · rintro x ⟨hxR, hxT⟩
+      have hxP : x ∈ P :=
+        hP.isPolyhedron.isClosed.frontier_subset (hcutP.snd_subset hxR)
+      have hxQ : x ∈ Q :=
+        hQ.isPolyhedron.isClosed.frontier_subset (hcutQ.snd_subset hxT)
+      exact hcutP.inter_eq.subset ⟨⟨hxP, hxQ⟩, hxR⟩
+    · rintro x (rfl | rfl)
+      · exact ⟨hcutP.snd.left_mem, hcutQ.snd.left_mem⟩
+      · exact ⟨hcutP.snd.right_mem, hcutQ.snd.right_mem⟩
+  obtain ⟨a', b', ρ, κ, e, hρrange, hκrange, he⟩ :=
+    exists_boundaryParam_paths_of_isCutPair_union hcutP.snd hcutQ.snd hRT hfrontG
+  let σ : Path (G.boundary a') (G.boundary b') := ρ.map G.boundary.continuous
+  let ω : Path (G.boundary b') (G.boundary a') := κ.map G.boundary.continuous
+  have hσrange : Set.range σ = D '' (D₁.domain ∩ frontier D.domain) := by
+    calc
+      Set.range σ = G '' R := by
+        ext z
+        constructor
+        · rintro ⟨t, rfl⟩
+          refine ⟨ρ t, ?_, rfl⟩
+          rw [← hρrange]
+          exact ⟨t, rfl⟩
+        · rintro ⟨w, hwR, rfl⟩
+          rw [← hρrange] at hwR
+          obtain ⟨t, htw⟩ := hwR
+          refine ⟨t, ?_⟩
+          change G (ρ t) = G w
+          exact congrArg G htw
+      _ = D '' (D₁.domain ∩ frontier D.domain) := hGR
+  have hωrange : Set.range ω = D '' (D₃.domain ∩ frontier D.domain) := by
+    calc
+      Set.range ω = G '' T := by
+        ext z
+        constructor
+        · rintro ⟨t, rfl⟩
+          refine ⟨κ t, ?_, rfl⟩
+          rw [← hκrange]
+          exact ⟨t, rfl⟩
+        · rintro ⟨w, hwT, rfl⟩
+          rw [← hκrange] at hwT
+          obtain ⟨t, htw⟩ := hwT
+          refine ⟨t, ?_⟩
+          change G (κ t) = G w
+          exact congrArg G htw
+      _ = D '' (D₃.domain ∩ frontier D.domain) := hGT
+  have hboundaryParam : ∀ θ, G (e θ) = pathToCircle (σ.trans ω) θ := by
+    intro θ
+    rw [he θ]
+    obtain ⟨t, rfl⟩ := unitInterval_to_loopCircle_surjective θ
+    simp only [pathToCircle_coe]
+    change ((ρ.trans κ).map G.boundary.continuous) t = (σ.trans ω) t
+    rw [Path.map_trans]
   have hboundaryRange : Set.range G.boundary = G '' frontier G.domain := by
     ext y
     constructor
@@ -2038,8 +2255,9 @@ theorem exists_boundary_surgery_cell_of_boundaryBranch
     hcut₁.fst.left_mem, hcut₁.fst.right_mem,
     hcut₃.fst.left_mem, hcut₃.fst.right_mem, hcompat, horientation,
     hpullback_mem, hpullback_inj, hpullback_apply, hpullback_disjoint_C,
-    hGimage, hrange, himageBoundary, hrangeB, hinterB, hlocallyInjective, hfiber,
-    hdouble, hremove, hGsingular, hGnormal⟩
+     hGimage, hrange, himageBoundary, hrangeB, hinterB, hlocallyInjective, hfiber,
+     hdouble, hremove, hGsingular, hGnormal,
+     G.boundary a', G.boundary b', σ, ω, e, hσrange, hωrange, hboundaryParam⟩
 
 end NormalSingularCellData
 
@@ -2103,6 +2321,154 @@ theorem simplicialComplexity_lt_of_surgery_pullback_of_seam
       exact Set.disjoint_left.mp hAC hpA (by simpa only [hps] using hsC)
     · exact (hcompat hpA).trans (congrArg D horientation.1)
     · exact hsC
+
+open Classical in
+theorem exists_isSubdivision_mapsTo_vertices
+    {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ E]
+    (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
+    (L : Geometry.SimplicialComplex ℝ F) [Finite L.faces]
+    (f : F → E) (hf : MapsTo f L.vertices K.space) :
+    ∃ K' : Geometry.SimplicialComplex ℝ E,
+      IsSubdivision K' K ∧ K'.faces.Finite ∧ MapsTo f L.vertices K'.vertices := by
+  let _ : Finite L.vertices := (SimplicialComplex.finite_vertices L).to_subtype
+  let Q : L.vertices → Set E := fun v => {f v}
+  have hsingleton : ∀ x : E, IsPolyhedron ({x} : Set E) := by
+    intro x
+    have h := isPolyhedron_convexHull_of_affineIndependent ({x} : Finset E)
+      (affineIndependent_of_subsingleton ℝ _)
+    rwa [Finset.coe_singleton, convexHull_singleton] at h
+  obtain ⟨K', hK', hfinite, hcover⟩ := exists_isSubdivision_subcomplexes K Q
+    (fun v => hsingleton (f v))
+    (fun v => singleton_subset_iff.mpr (hf v.property))
+  refine ⟨K', hK', hfinite, ?_⟩
+  intro v hv
+  have hmem : f v ∈ Q ⟨v, hv⟩ := rfl
+  obtain ⟨s, ⟨hs, hsQ⟩, -⟩ := mem_iUnion₂.mp ((hcover ⟨v, hv⟩).subset hmem)
+  have hpoint : ∀ w ∈ s, w = f v := fun w hw =>
+    Set.mem_singleton_iff.mp (hsQ (subset_convexHull ℝ _ (Finset.mem_coe.mpr hw)))
+  obtain ⟨w, hw⟩ := K'.nonempty_of_mem_faces hs
+  have hseq : s = {f v} :=
+    Finset.eq_singleton_iff_unique_mem.mpr ⟨hpoint w hw ▸ hw, hpoint⟩
+  change ({f v} : Finset E) ∈ K'.faces
+  rw [← hseq]
+  exact hs
+
+open Classical in
+theorem exists_simplicialComplexity_lt_of_surgery_pullback_of_seam
+    {M : Type u} [TopologicalSpace M]
+    [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
+    (D G : SingularTwoCell M)
+    (pullback g : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 2))
+    {A C : Set (EuclideanSpace ℝ (Fin 2))}
+    {p q r s : EuclideanSpace ℝ (Fin 2)}
+    (hpD : p ∈ D.domain) (hrD : r ∈ D.domain) (hsD : s ∈ D.domain)
+    (hpullback : MapsTo pullback G.domain D.domain)
+    (hinj : InjOn pullback G.domain)
+    (hfactor : EqOn (D ∘ pullback) G G.domain)
+    (hdisjoint : Disjoint (pullback '' G.domain) C)
+    (hAC : Disjoint A C) (hpA : p ∈ A) (hrC : r ∈ C) (hsC : s ∈ C)
+    (hcompat : EqOn D (D ∘ g) A)
+    (horientation : (g p = r ∧ g q = s) ∨ (g p = s ∧ g q = r)) :
+    ∃ (K L : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2)))
+        (hKfinite : K.faces.Finite) (hLfinite : L.faces.Finite),
+      let _ : Finite K.faces := hKfinite.to_subtype
+      let _ : Finite L.faces := hLfinite.to_subtype
+      K.space = D.domain ∧ L.space = G.domain ∧
+        MapsTo pullback L.vertices K.vertices ∧
+          p ∈ K.vertices ∧ r ∈ K.vertices ∧ s ∈ K.vertices ∧
+            simplicialComplexity L G < simplicialComplexity K D := by
+  obtain ⟨L, hLfinite, hLspace⟩ := G.isPLBall_domain.isPolyhedron.exists_simplicialComplex
+  let _ : Finite L.faces := hLfinite.to_subtype
+  have hLdomain : L.vertices ⊆ G.domain := by
+    rw [← hLspace]
+    exact L.vertices_subset_space
+  obtain ⟨K₀, hK₀finite, hK₀space⟩ := D.isPLBall_domain.isPolyhedron.exists_simplicialComplex
+  let _ : Finite K₀.faces := hK₀finite.to_subtype
+  have hpullback₀ : MapsTo pullback L.vertices K₀.space := by
+    intro v hv
+    rw [hK₀space]
+    exact hpullback (hLdomain hv)
+  obtain ⟨K₁, hK₁, hK₁finite, hpullback₁⟩ :=
+    exists_isSubdivision_mapsTo_vertices K₀ L pullback hpullback₀
+  let _ : Finite K₁.faces := hK₁finite.to_subtype
+  have hpK₁ : p ∈ K₁.space := by
+    rw [hK₁.space_eq, hK₀space]
+    exact hpD
+  obtain ⟨K₂, hK₂, hK₂finite, hpK₂⟩ := exists_isSubdivision_singleton_mem K₁ hpK₁
+  let _ : Finite K₂.faces := hK₂finite.to_subtype
+  have hrK₂ : r ∈ K₂.space := by
+    rw [hK₂.space_eq, hK₁.space_eq, hK₀space]
+    exact hrD
+  obtain ⟨K₃, hK₃, hK₃finite, hrK₃⟩ := exists_isSubdivision_singleton_mem K₂ hrK₂
+  let _ : Finite K₃.faces := hK₃finite.to_subtype
+  have hsK₃ : s ∈ K₃.space := by
+    rw [hK₃.space_eq, hK₂.space_eq, hK₁.space_eq, hK₀space]
+    exact hsD
+  obtain ⟨K, hK, hKfinite, hsK⟩ := exists_isSubdivision_singleton_mem K₃ hsK₃
+  let _ : Finite K.faces := hKfinite.to_subtype
+  have hpullbackK : MapsTo pullback L.vertices K.vertices := fun v hv =>
+    hK.singleton_mem (hK₃.singleton_mem (hK₂.singleton_mem (hpullback₁ hv)))
+  have hpK : p ∈ K.vertices := hK.singleton_mem (hK₃.singleton_mem hpK₂)
+  have hrK : r ∈ K.vertices := hK.singleton_mem hrK₃
+  have hKspace : K.space = D.domain :=
+    hK.space_eq.trans (hK₃.space_eq.trans
+      (hK₂.space_eq.trans (hK₁.space_eq.trans hK₀space)))
+  refine ⟨K, L, hKfinite, hLfinite, hKspace, hLspace, hpullbackK, hpK, hrK, hsK, ?_⟩
+  exact simplicialComplexity_lt_of_surgery_pullback_of_seam K L D G pullback g
+    hLdomain hpullbackK hinj hfactor hdisjoint hAC hpA hrC hsC hcompat horientation
+    hpK hrK hsK
+
+namespace NormalSingularCellData
+
+open Classical in
+theorem exists_boundary_surgery_cell_with_simplicialComplexity_lt
+    {M : Type u} [TopologicalSpace M]
+    [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] [T2Space M]
+    {D : SingularTwoCell M} {BdM B : Set M}
+    (hD : NormalSingularCellData D BdM B)
+    {c : hD.singularSet.Branch} (hc : hD.singularSet.IsBoundaryBranch c) :
+    ∃ (U V : Set (EuclideanSpace ℝ (Fin 2))) (G : SingularTwoCell M)
+        (K L : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2)))
+        (hKfinite : K.faces.Finite) (hLfinite : L.faces.Finite),
+      let _ : Finite K.faces := hKfinite.to_subtype
+      let _ : Finite L.faces := hLfinite.to_subtype
+      IsPLBall 1 U ∧ IsPLBall 1 V ∧ Disjoint U V ∧
+        G '' G.domain ⊆ D '' D.domain ∧
+          Set.range G.boundary = D '' (U ∪ V) ∧
+            G '' G.domain ∩ BdM = Set.range G.boundary ∧
+              Set.range G.boundary ⊆ B ∧
+                Nonempty (NormalSingularCellData G BdM B) ∧
+                  K.space = D.domain ∧ L.space = G.domain ∧
+                    simplicialComplexity L G < simplicialComplexity K D := by
+  obtain ⟨A, C, U, V, p, q, r, s, g, G, pullback,
+    hA, hC, hAC, hcover, hU, hV, hUV, hg, hpA, hqA, hrC, hsC,
+    hcompat, horientation, hpullback, hinj, hfactor, hdisjoint,
+    hGimage, hboundary, himageBoundary, hboundaryB, hinterB, hlocal, hfiber,
+    hdouble, hremove, htriangulated, hnormal, -⟩ :=
+    hD.exists_boundary_surgery_cell_of_boundaryBranch hc
+  have hpD : p ∈ D.domain := by
+    have : p ∈ hD.branchPreimage c := by
+      rw [hcover]
+      exact Or.inl hpA
+    exact this.1
+  have hrD : r ∈ D.domain := by
+    have : r ∈ hD.branchPreimage c := by
+      rw [hcover]
+      exact Or.inr hrC
+    exact this.1
+  have hsD : s ∈ D.domain := by
+    have : s ∈ hD.branchPreimage c := by
+      rw [hcover]
+      exact Or.inr hsC
+    exact this.1
+  obtain ⟨K, L, hKfinite, hLfinite, hKspace, hLspace, -, -, -, -, hlt⟩ :=
+    exists_simplicialComplexity_lt_of_surgery_pullback_of_seam D G pullback g
+      hpD hrD hsD hpullback hinj hfactor hdisjoint hAC hpA hrC hsC hcompat horientation
+  exact ⟨U, V, G, K, L, hKfinite, hLfinite, hU, hV, hUV, hGimage, hboundary,
+    himageBoundary, hboundaryB, hnormal, hKspace, hLspace, hlt⟩
+
+end NormalSingularCellData
 
 open Classical in
 theorem loopRepresentativeAlong_mem_iff_loopClassMeets_basedCircle

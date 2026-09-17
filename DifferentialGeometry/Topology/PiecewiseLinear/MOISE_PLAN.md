@@ -679,3 +679,19 @@
   `PHASE3_APPROXIMATION_PLAN.md` §1；最大开放点是同调层（单纯 vs 奇异）。
 - Schoenflies 三版本互不蕴含：平面拓扑版（vendored）、PL ℝ³ 版（本链 §17 自证，依赖平面多边形版 3.6、3.3、10.8）、
   光滑 ℝ³ 版（负责人，sorry）。本链不消费光滑版；不重复负责人的工作。
+
+- 2026-09-16（F 车道 S.4 / I1）：`Schoenflies.lean` 已证明原显式 `SchoenfliesInput` 下的
+  `isSimplyEmbedded_of_isPLSphere_two` 与 `exists_isPLBall_of_isPLSphere_two`；由有限顶点高度归纳、实际水平盘粘合、
+  顶端盘锥和降指标归约完成 17.12。S 的既有 `schoenflies_input` 可直接实例化，不再欠 F 的 I1 生产者。
+  五个本次模块检查均 exit=0、零 warning；AuditF246 十八项全部仅标准三公理，fresh.py 为 92/92 fresh。
+  证明细节与验证记录见 `HANDOFF_CODEX_F.md` §19.97；F-M5/F-M6 的双点分类和余面异侧义务仍独立待证。
+
+- 2026-09-16（整合，夜）：F 车道交付 17.12，S 车道的 `schoenflies_input` 实例将其消条件，
+  `PLSchoenflies.lean` 给出无条件的三维 PL Schoenflies（`IsPLSphere.isSimplyEmbedded`、
+  `IsPLSphere.exists_isPLBall_frontier_eq`）。23.9/23.10 与图卡内推移定理的显式 `hSchoenflies`
+  参数随之删除，PL 侧不再有该假设。F 车道 92 个模块在合并后的树里逐个重编 exit=0、零 warning，
+  250 项命名空间感知审计仅 `propext`、`Classical.choice`、`Quot.sound`；另有一处与既有
+  `IsConeBase.of_faces_subset` 的重名已合并为单一声明。
+  同夜新增 `MoiseChain.lean` 与 `MOISE_CHAIN.md`：把 `Moise352` 之下的关键路径写成十个具名 `Prop`
+  （25.1、25.2、26.4、30.4、30.5、30.6、30.7、33.1、34.1、35.1）与所需词汇，全部通过编译。
+  `ThreeCellExtension.lean` 指出计划行 S.7 其实是 P.2 一般定理在 `n = 2` 的实例，已补为具名定理。

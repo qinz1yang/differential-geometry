@@ -56,4 +56,15 @@ theorem IsPLSphere.exists_connectedComponentIn_pair_sdiff {S J : Set E}
   · rw [hclosure₀, hclosure₁]
     exact ⟨f₀, f₁, hf₀, hf₁, hf₀J, hf₁J, hunion, hinter⟩
 
+theorem IsPLSphere.exists_isPLHomeomorphOn_closure_connectedComponentIn_sdiff {S J : Set E}
+    (hS : IsPLSphere 2 S) (hJ : IsPLSphere 1 J) (hJS : J ⊆ S) {p : E} (hp : p ∈ S \ J) :
+    ∃ f : (Fin 3 → ℝ) → E,
+      IsPLHomeomorphOn f (stdSimplex ℝ (Fin 3)) (closure (connectedComponentIn (S \ J) p)) ∧
+      f '' stdSimplexBoundary 2 = J := by
+  obtain ⟨x, -, y, -, -, hcover, f, g, hf, hg, hfJ, hgJ, -, -⟩ :=
+    hS.exists_connectedComponentIn_pair_sdiff hJ hJS
+  rcases hcover.symm.subset hp with h | h
+  · exact ⟨f, (connectedComponentIn_eq h) ▸ hf, hfJ⟩
+  · exact ⟨g, (connectedComponentIn_eq h) ▸ hg, hgJ⟩
+
 end DifferentialGeometry.Topology.PiecewiseLinear
