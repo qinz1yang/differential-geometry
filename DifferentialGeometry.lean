@@ -10880,6 +10880,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing.Pullb
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Solutions.PointedPullback
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientPullback
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientCostContinuity
+import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Embedding.LpInclusion
 import DifferentialGeometry.Topology.Diffeomorph.CylinderCapTranslation
 import DifferentialGeometry.Topology.Diffeomorph.QuadraticCapProjection
 import DifferentialGeometry.Topology.Embedding.CylinderCap
