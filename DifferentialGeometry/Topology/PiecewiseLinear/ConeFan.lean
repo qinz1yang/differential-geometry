@@ -260,6 +260,27 @@ theorem exists_isPiecewiseAffineOn_stdCone_fan {M N : ℕ} {u σ : ℕ → ℝ} 
   rw [stdConeSector_union hu0 huM] at hPA himg
   exact ⟨Ψ, hPA, hapex, houter, himg⟩
 
+theorem exists_isPiecewiseAffineOn_stdCone_fan_mapsTo {M N : ℕ} {u σ : ℕ → ℝ}
+    {L : Geometry.SimplicialComplex ℝ F} (w : ℕ → ℕ → F)
+    (hu0 : u 0 = 0) (huM : u (M + 1) = 1) (humono : ∀ j ≤ M, u j < u (j + 1))
+    (hσ0 : σ 0 = 0) (hσN : σ (N + 1) = 1) (hσmono : ∀ k ≤ N, σ k < σ (k + 1))
+    (hw0 : ∀ j, w 0 j = w 0 0)
+    (hcell : ∀ k ≤ N, ∀ j ≤ M, ∃ s ∈ L.faces,
+      ({w k j, w k (j + 1), w (k + 1) j, w (k + 1) (j + 1)} : Set F) ⊆
+        convexHull ℝ (s : Set F)) :
+    ∃ Ψ : ℝ × ℝ → F, IsPiecewiseAffineOn Ψ stdCone ∧ MapsTo Ψ stdCone L.space ∧
+      Ψ (0, 0) = w 0 0 ∧
+      ∀ j ≤ M, ∀ r ∈ Icc (u j) (u (j + 1)),
+        Ψ (1 - r, r) =
+          AffineMap.lineMap (w (N + 1) j) (w (N + 1) (j + 1)) ((r - u j) / (u (j + 1) - u j)) := by
+  obtain ⟨Ψ, hPA, hapex, houter, himg⟩ :=
+    exists_isPiecewiseAffineOn_stdCone_fan w hu0 huM humono hσ0 hσN hσmono hw0
+  refine ⟨Ψ, hPA, ?_, hapex, houter⟩
+  intro z hz
+  obtain ⟨k, hk, j, hj, -, -, -, hmem⟩ := himg z hz
+  obtain ⟨s, hs, hsub⟩ := hcell k hk j hj
+  exact L.mem_space_iff.mpr ⟨s, hs, convexHull_min hsub (convex_convexHull ℝ _) hmem⟩
+
 theorem exists_pos_forall_exists_isPiecewiseAffineOn_stdCone_dist_le
     (f : ℝ × ℝ → F) (hf : ContinuousOn f stdCone) {ε : ℝ} (hε : 0 < ε) :
     ∃ δ > 0, ∀ (M : ℕ) (u : ℕ → ℝ) (g : ℕ → F), u 0 = 0 → u (M + 1) = 1 →
