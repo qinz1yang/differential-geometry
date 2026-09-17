@@ -10706,3 +10706,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Co
 import DifferentialGeometry.Geometry.Operator.Family.Gram.CarrierWeakConvergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Chart.CarrierKineticEnergy
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Compactness.CarrierLowerSemicontinuity
+import DifferentialGeometry.Topology.Manifold.SmallDiffeomorph
+import DifferentialGeometry.Geometry.Metric.Family.ProductSlice
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.ProductFactor
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientProductExtension
