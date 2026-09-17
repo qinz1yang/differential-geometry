@@ -546,3 +546,22 @@ F 车道的 `Topology/Pasting.lean` 与 `SingularPasting.lean` 正是为这种"�
 3. 第 2 步还需要"底边映射每个格的像落在一张面里"。PA 映射映进 `|L|` 时这不自动成立，
    但线段穿过面的参数只有有限个，在那里再细分即可（用本轮 `exists_partition_affineOn_two`
    的 `T` 参数把这些点钉进分划）。
+
+## 乘积相对一端的 PL 逼近已证（2026-09-17 收尾）
+
+`RelativeSquareApproximation.lean`：
+
+- `exists_isPiecewiseAffineOn_square_eqOn_bottom_of_cells`：`f` 在 `[0,1]²` 上连续、映进 `|L|`，
+  底边映射 `x ↦ f (x,0)` 逐片仿射且**每个格的像落在 `L` 的一张面里**，
+  则存在逐片仿射的 `g`，映进 `|L|`，且在底边与 `f` 逐点相等。审计仅标准三公理。
+- 证明按上一节列的三步：`collarReparam` 把 `f` 沿 `t` 重参数化成在 `[0,1/2]` 上与 `t` 无关；
+  对重参数化后的映射做单纯逼近得 `G`；于是 `G (a, 1/2) ∈ convexHull (carrierFace L (f (a,0)))`，
+  面条件自动成立；最后用 `exists_isPiecewiseAffineOn_glue_prism_collar` 把领口棱柱贴上去。
+  **先重参数化再逼近是关键**，反过来 `G(·,1/2)` 逼近的是 `f(·,1/2)`，与底边无关，面条件不成立。
+- `exists_face_of_no_partition_point_between`：把"逐格的像在一张面里"翻译成棱柱要的
+  "中间没有分划点的两个参数的像在一张面里"（用 `Nat.findGreatest` 找 `a` 所在的格）。
+- 面条件现在都带 `a ≤ b`，因为它们只在格的两端用到。
+
+**结论**：`P ×ˢ [0,1]` 相对 `P × {0}` 这一形状（`P = [0,1]`）已经通了。取 `P` 为 PL 圆周的版本
+只差把同一套论证沿 `PrismArc.lean` 的弧分解搬一遍，是机械工作。
+真正还没做的仍然只有"盘相对整条边界"，需要方形环带的显式 8 片仿射映射。
