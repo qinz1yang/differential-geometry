@@ -2229,3 +2229,15 @@ F-M1 仍为 partial。单个旧三角形的全部纤维及逐边对应已闭合�
 `SlabEmbedding.lean` 的 `isSimplyEmbedded_frontier_slab_of_heightIndex_eq_zero_of_vertex_lower` 与 `isSimplyEmbedded_frontier_slab_of_heightIndex_eq_zero_of_vertex_upper` 从原零指标填充、一般位置高度和区间内唯一端点顶点，实际证明薄片边界单嵌入。先按 §19.93–19.94 的有限删除送到闭星薄片，再消费原 `SchoenfliesInput` 的 17.10，将其送到单形边界；完整复合仍固定任意给定凸开邻域外。上端版本通过高度反射，逐一对应全部奇异点及层圆周数。未增加锥底盘性、删除后边界球性、区域流形性或额外推移接口等最终假设。
 
 状态：M2（Lemma 2–6）done；M3、I1 与夜间 F-M1 整体仍为 partial。四模块聚焦检查依次为 `ConeManifold` exit=0（11.9 秒）、`BallRegularClosed` exit=0（11.6 秒）、`ClosedStarCone` exit=0（12.1 秒）、`SlabEmbedding` exit=0（14.2 秒），全部零 warning。`AuditF245.lean` 七项仅依赖 `propext`、`Classical.choice`、`Quot.sound`；无 Lean 进程时 `fresh.py` 为 88/88 fresh、零 stale/missing、零禁用项。下一步 M3：证明相邻薄片与下截区域的精确平面公共盘和删盘恢复式，按有限顶点高度归纳消费 17.11，接回零指标归约及 I1 两端点。下一审计文件 `AuditF246.lean`。
+
+### 19.97 S.4 M3 done：有限水平盘拼装与 I1 两端点
+
+`Topology/SlabBoundary.lean` 给出闭区域与上下半空间相交的边界公式，以及相邻薄片/下截区域的平面公共盘和删盘恢复式；纯拓扑结果适用于任意实范数空间。`Topology/HeightRange.lean` 证明非平凡实范数空间中紧致区域的严格高度见证可在其边界找到，无需高度非零或有限维。`SublevelGluing.lean` 据此精确消费原 17.11，沿实际参数化水平盘拼接相邻边界。
+
+`SublevelEmbedding.lean` 的 `isSimplyEmbedded_frontier_sublevel_of_heightIndex_eq_zero` 按不高于截面高度的原顶点数作强归纳。最底部由真实盘锥及 17.10 生产；归纳步在最高已越过顶点之前选择新高度，使用 M2 的上端、下端顶点薄片，再沿各层实际水平盘连续消费 17.11。归纳计数的严格下降由有限顶点集合的真包含给出；没有把有限薄片序列、公共盘或各步单嵌入作为最终假设。
+
+`Schoenflies.lean` 在最大顶点之前选取最后一层，与顶端盘锥拼合，得到 `isSimplyEmbedded_frontier_of_heightIndex_eq_zero`。`HeightFilling` 实际生产所需带边界三维流形填充及顶点一般高度，得到 `isSimplyEmbedded_of_heightIndex_eq_zero`，再接回已证的降指标归约。I1 已交付：`isSimplyEmbedded_of_isPLSphere_two (I : SchoenfliesInput) (hS : IsPLSphere 2 S) : IsSimplyEmbedded S` 与 `exists_isPLBall_of_isPLSphere_two (I : SchoenfliesInput) (hS : IsPLSphere 2 S) : ∃ B, IsPLBall 3 B ∧ frontier B = S ∧ Bornology.IsBounded B`，其中 `S : Set (EuclideanSpace ℝ (Fin 3))`。接口仍是原四字段，未增加结论型假设；S 车道可用已整合的 `schoenflies_input` 实例化，解除其消费者参数。
+
+状态：S.4 的 M1、M2、M3 及夜间 F-M1 done；I1 已交付，无剩余数学义务。最终五模块检查为 `SlabBoundary` exit=0（12.5 秒）、`HeightRange` exit=0（10.0 秒）、`SublevelGluing` exit=0（12.1 秒）、`SublevelEmbedding` exit=0（13.0 秒）、`Schoenflies` exit=0（11.0 秒），全部零 warning。`AuditF246.lean` 对十七项新声明及原 `schoenflies_input` 共十八项审计，全部仅依赖 `propext`、`Classical.choice`、`Quot.sound`。无 Lean 进程时 `fresh.py` 为 92/92 fresh、零 stale/missing、零禁用项；`git diff --check` 通过。源码、交接与两个计划记录同次提交。恢复后下一步按 NIGHT_PLAN §6.2 做 F-M5 的实际双点分类，并生产 F-M6 的余面严格异侧性；这两项及最终 `exists_small_isNormalSingularCell` 仍为 partial。下一审计文件 `AuditF247.lean`。
+
+按用户要求，本结果整理、同次提交并推送后暂停。未开始新的 F-M5/F-M6 证明；本车道无运行中的 Lean 进程。
