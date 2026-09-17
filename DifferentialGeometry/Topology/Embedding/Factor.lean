@@ -1,6 +1,7 @@
 import DifferentialGeometry.Topology.Manifold.ImmersionRange
 import DifferentialGeometry.Topology.Manifold.ImmersionCriterion
 import DifferentialGeometry.Topology.Manifold.ImmersionDifferential
+import DifferentialGeometry.Topology.Manifold.Interval.Immersion
 import Mathlib.Geometry.Manifold.SmoothEmbedding
 
 open scoped ContDiff Manifold
@@ -75,5 +76,32 @@ theorem IsImmersion.isOpen_preimage_range_of_range_subset
     · rintro ⟨x, rfl⟩
       exact ⟨x, (heq x).symm⟩
   rwa [hr]
+
+end Manifold
+
+namespace Manifold
+
+theorem IsSmoothEmbedding.fst_Icc_of_snd_eq_const
+    {F V : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
+    [NormedAddCommGroup V] [NormedSpace ℝ V]
+    {a b : ℝ} [Fact (a < b)] {f : Set.Icc a b → F × V} {c : V}
+    (h : IsSmoothEmbedding (𝓡∂ 1) 𝓘(ℝ, F × V) ∞ f)
+    (hsnd : ∀ x, (f x).2 = c) :
+    IsSmoothEmbedding (𝓡∂ 1) 𝓘(ℝ, F) ∞ (fun x => (f x).1) := by
+  let p : Set.Icc a b → F := fun x => (f x).1
+  let j : F → F × V := fun y => (y, c)
+  have hp : ContMDiff (𝓡∂ 1) 𝓘(ℝ, F) ∞ p := contDiff_fst.contMDiff.comp h.contMDiff
+  have hj : ContMDiff 𝓘(ℝ, F) 𝓘(ℝ, F × V) ∞ j :=
+    (contDiff_id.prodMk contDiff_const).contMDiff
+  have heq : j ∘ p = f := by
+    funext x
+    exact Prod.ext rfl (hsnd x).symm
+  have hh : IsSmoothEmbedding (𝓡∂ 1) 𝓘(ℝ, F × V) ∞ (j ∘ p) := heq ▸ h
+  refine ⟨isImmersion_Icc_of_injective_mfderiv hp ?_,
+    Topology.IsEmbedding.of_comp hp.continuous hj.continuous hh.isEmbedding⟩
+  intro x
+  have hinj := (hh.isImmersion.isImmersionAt x).injective_mfderiv (by simp)
+  rw [mfderiv_comp x (hj.mdifferentiableAt (by simp)) (hp.mdifferentiableAt (by simp))] at hinj
+  exact Function.Injective.of_comp hinj
 
 end Manifold

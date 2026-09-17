@@ -23,6 +23,50 @@ structure TwoSidedSeparation {X : Type*} [TopologicalSpace X] (S : Set X) where
 
 namespace TwoSidedSeparation
 
+def ofClosedCover {X : Type*} [TopologicalSpace X] {S A B : Set X}
+    (hA : closure (interior A) = A) (hB : closure (interior B) = B)
+    (hAne : A.Nonempty) (hBne : B.Nonempty)
+    (hcover : A ∪ B = univ) (hinter : A ∩ B = S)
+    (hfrontA : frontier A = S) (hfrontB : frontier B = S) : TwoSidedSeparation S := by
+  have hAc : IsClosed A := hA ▸ isClosed_closure
+  have hBc : IsClosed B := hB ▸ isClosed_closure
+  have hAS : interior A ⊆ Sᶜ := by
+    rw [← hfrontA]
+    exact disjoint_left.mp disjoint_interior_frontier
+  have hBS : interior B ⊆ Sᶜ := by
+    rw [← hfrontB]
+    exact disjoint_left.mp disjoint_interior_frontier
+  refine ⟨interior A, interior B, isOpen_interior, isOpen_interior, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · by_contra hn
+    have he : interior A = ∅ := not_nonempty_iff_eq_empty.mp hn
+    rw [he, closure_empty] at hA
+    exact hAne.ne_empty hA.symm
+  · by_contra hn
+    have he : interior B = ∅ := not_nonempty_iff_eq_empty.mp hn
+    rw [he, closure_empty] at hB
+    exact hBne.ne_empty hB.symm
+  · rw [disjoint_left]
+    intro x hxA hxB
+    exact hAS hxA (hinter.subset ⟨interior_subset hxA, interior_subset hxB⟩)
+  · ext x
+    constructor
+    · rintro (h | h)
+      · exact hAS h
+      · exact hBS h
+    · intro hx
+      have hmem : x ∈ A ∪ B := hcover.symm.subset (mem_univ x)
+      rcases hmem with h | h
+      · left
+        rw [← self_sdiff_frontier A, hfrontA]
+        exact ⟨h, hx⟩
+      · right
+        rw [← self_sdiff_frontier B, hfrontB]
+        exact ⟨h, hx⟩
+  · rw [frontier, hA, interior_interior, ← hfrontA, frontier]
+    rw [hAc.closure_eq]
+  · rw [frontier, hB, interior_interior, ← hfrontB, frontier]
+    rw [hBc.closure_eq]
+
 variable {X : Type*} [TopologicalSpace X] {S C U V O : Set X}
 
 theorem positiveSide_subset_compl (d : TwoSidedSeparation S) : d.positiveSide ⊆ Sᶜ := by
@@ -87,30 +131,30 @@ theorem not_mem_connectedComponentIn_of_mem_other_side_symm (d : TwoSidedSeparat
   · exact Set.disjoint_left.mp d.disjoint (h hzcomp) hz
   · exact Set.disjoint_left.mp d.disjoint hp (h (mem_connectedComponentIn hpcompl))
 
-theorem neighborhood_halves_opposite (d : TwoSidedSeparation S)
-    (hS : S.Nonempty) (hU : IsConnected U) (hV : IsConnected V)
+theorem neighborhood_halves_opposite_of_inter_nonempty (d : TwoSidedSeparation S)
+    (hU : IsConnected U) (hV : IsConnected V)
     (hUS : U ⊆ Sᶜ) (hVS : V ⊆ Sᶜ)
-    (hOopen : IsOpen O) (hSO : S ⊆ O) (hO : O ⊆ (U ∪ S) ∪ V) :
+    (hOopen : IsOpen O) (hSO : (S ∩ O).Nonempty) (hO : O ⊆ (U ∪ S) ∪ V) :
     Xor (U ⊆ d.positiveSide ∧ V ⊆ d.negativeSide)
       (U ⊆ d.negativeSide ∧ V ⊆ d.positiveSide) := by
   have not_both_positive : ¬ (U ⊆ d.positiveSide ∧ V ⊆ d.positiveSide) := by
     rintro ⟨hUB, hVB⟩
-    obtain ⟨s, hsS⟩ := hS
+    obtain ⟨s, hsS, hsO⟩ := hSO
     have hsClosure : s ∈ closure d.negativeSide := by
       apply frontier_subset_closure
       simpa only [d.frontier_negativeSide] using hsS
-    obtain ⟨x, hxO, hxE⟩ := mem_closure_iff.1 hsClosure O hOopen (hSO hsS)
+    obtain ⟨x, hxO, hxE⟩ := mem_closure_iff.1 hsClosure O hOopen hsO
     rcases hO hxO with (hxU | hxS) | hxV
     · exact Set.disjoint_left.1 d.disjoint (hUB hxU) hxE
     · exact Set.disjoint_left.1 d.negativeSide_disjoint_sphere hxE hxS
     · exact Set.disjoint_left.1 d.disjoint (hVB hxV) hxE
   have not_both_negative : ¬ (U ⊆ d.negativeSide ∧ V ⊆ d.negativeSide) := by
     rintro ⟨hUE, hVE⟩
-    obtain ⟨s, hsS⟩ := hS
+    obtain ⟨s, hsS, hsO⟩ := hSO
     have hsClosure : s ∈ closure d.positiveSide := by
       apply frontier_subset_closure
       simpa only [d.frontier_positiveSide] using hsS
-    obtain ⟨x, hxO, hxB⟩ := mem_closure_iff.1 hsClosure O hOopen (hSO hsS)
+    obtain ⟨x, hxO, hxB⟩ := mem_closure_iff.1 hsClosure O hOopen hsO
     rcases hO hxO with (hxU | hxS) | hxV
     · exact Set.disjoint_left.1 d.disjoint hxB (hUE hxU)
     · exact Set.disjoint_left.1 d.positiveSide_disjoint_sphere hxB hxS
@@ -128,6 +172,35 @@ theorem neighborhood_halves_opposite (d : TwoSidedSeparation S)
       obtain ⟨x, hxU⟩ := hU.nonempty
       exact Set.disjoint_left.1 d.disjoint (hUB' hxU) (hUE hxU)
     · exact False.elim (not_both_negative ⟨hUE, hVE⟩)
+
+theorem neighborhood_halves_opposite (d : TwoSidedSeparation S)
+    (hS : S.Nonempty) (hU : IsConnected U) (hV : IsConnected V)
+    (hUS : U ⊆ Sᶜ) (hVS : V ⊆ Sᶜ)
+    (hOopen : IsOpen O) (hSO : S ⊆ O) (hO : O ⊆ (U ∪ S) ∪ V) :
+    Xor (U ⊆ d.positiveSide ∧ V ⊆ d.negativeSide)
+      (U ⊆ d.negativeSide ∧ V ⊆ d.positiveSide) := by
+  exact d.neighborhood_halves_opposite_of_inter_nonempty hU hV hUS hVS hOopen
+    (hS.mono (fun _ hx => ⟨hx, hSO hx⟩)) hO
+
+theorem positiveSide_eq_connectedComponentIn (d : TwoSidedSeparation S)
+    {x : X} (hU : U ⊆ Sᶜ) (hp : IsPreconnected d.positiveSide)
+    (hsub : d.positiveSide ⊆ U) (hx : x ∈ d.positiveSide) :
+    d.positiveSide = connectedComponentIn U x := by
+  apply Subset.antisymm (hp.subset_connectedComponentIn hx hsub)
+  rcases d.subset_positiveSide_or_subset_negativeSide isPreconnected_connectedComponentIn
+    ((connectedComponentIn_subset U x).trans hU) with h | h
+  · exact h
+  · exact False.elim (disjoint_left.mp d.disjoint hx (h (mem_connectedComponentIn (hsub hx))))
+
+theorem negativeSide_eq_connectedComponentIn (d : TwoSidedSeparation S)
+    {x : X} (hU : U ⊆ Sᶜ) (hp : IsPreconnected d.negativeSide)
+    (hsub : d.negativeSide ⊆ U) (hx : x ∈ d.negativeSide) :
+    d.negativeSide = connectedComponentIn U x := by
+  apply Subset.antisymm (hp.subset_connectedComponentIn hx hsub)
+  rcases d.subset_positiveSide_or_subset_negativeSide isPreconnected_connectedComponentIn
+    ((connectedComponentIn_subset U x).trans hU) with h | h
+  · exact False.elim (disjoint_left.mp d.disjoint (h (mem_connectedComponentIn (hsub hx))) hx)
+  · exact h
 
 end TwoSidedSeparation
 
