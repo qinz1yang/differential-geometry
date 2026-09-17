@@ -72,7 +72,7 @@ def Moise304 : Prop :=
 def Moise305 : Prop :=
   ∀ (C₁ C₂ : Set (EuclideanSpace ℝ (Fin 3))),
     IsTopologicalCell 3 C₁ → IsTopologicalCell 3 C₂ → C₁ ⊆ interior C₂ →
-    (∃ B₀ B₁, IsSphericalShell (closure (C₂ \ C₁)) B₀ B₁) →
+    IsSphericalShell (closure (C₂ \ C₁)) (frontier C₁) (frontier C₂) →
     ∃ C : Set (EuclideanSpace ℝ (Fin 3)),
       IsPLBall 3 C ∧ C₁ ⊆ interior C ∧ C ⊆ interior C₂
 
@@ -112,7 +112,7 @@ def HasCylindricalDiagram (S : Set (EuclideanSpace ℝ (Fin 3))) : Prop :=
 def Moise307 : Prop :=
   ∀ (S₁ S₂ : Set (EuclideanSpace ℝ (Fin 3))),
     IsTopologicalSolidTorus S₁ → IsTopologicalSolidTorus S₂ → S₁ ⊆ interior S₂ →
-    (∃ T₀ T₁, IsToroidalShell (closure (S₂ \ S₁)) T₀ T₁) →
+    IsToroidalShell (closure (S₂ \ S₁)) (frontier S₁) (frontier S₂) →
     ∃ S : Set (EuclideanSpace ℝ (Fin 3)),
       HasCylindricalDiagram S ∧ S₁ ⊆ interior S ∧ S ⊆ interior S₂
 
