@@ -7,6 +7,27 @@ open Set Metric
 
 namespace DifferentialGeometry.Topology.PiecewiseLinear
 
+variable {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [NormedAddCommGroup F] [NormedSpace ℝ F]
+
+theorem simplicialMap_eqOn_of_affineOn (K : Geometry.SimplicialComplex ℝ E) (φ : E → F)
+    {s : Finset E} (hs : s ∈ K.faces) {A : E →ᵃ[ℝ] F}
+    (hA : EqOn φ A (convexHull ℝ (s : Set E))) :
+    EqOn (simplicialMap K φ) φ (convexHull ℝ (s : Set E)) := by
+  classical
+  intro x hx
+  rw [simplicialMap_eq_of_mem K φ hs hx, hA hx]
+  have hw := sum_weights hx
+  have hvals : ∀ v ∈ s, φ v = A v := fun v hv =>
+    hA (subset_convexHull ℝ _ hv)
+  have hcomb : s.affineCombination ℝ id (weights s x) = x := by
+    rw [Finset.affineCombination_eq_linear_combination s id (weights s x) hw]
+    simpa using sum_weights_smul hx
+  have hmap := s.map_affineCombination id (weights s x) hw (f := A)
+  rw [hcomb] at hmap
+  rw [hmap, Finset.affineCombination_eq_linear_combination s (A ∘ id) (weights s x) hw]
+  exact Finset.sum_congr rfl fun v hv => by rw [hvals v hv]; rfl
+
 open Classical in
 theorem exists_isPiecewiseAffineOn_dist_lt
     {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
