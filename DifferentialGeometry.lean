@@ -744,6 +744,7 @@ import DifferentialGeometry.Analysis.Integration.Integral.CompactSupportParametr
 import DifferentialGeometry.Analysis.Integration.Integral.ComplexSquare
 import DifferentialGeometry.Analysis.Integration.Integral.HalfPlaneLaplacian
 import DifferentialGeometry.Analysis.Integration.Integral.Laplacian
+import DifferentialGeometry.Analysis.Integration.Integral.ParametricIntervalContinuity
 import DifferentialGeometry.Analysis.Integration.Integral.Prod
 import DifferentialGeometry.Analysis.Integration.IntervalEndpointBound
 import DifferentialGeometry.Analysis.Integration.L2.Basic
@@ -5594,6 +5595,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Anci
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientLocalEllipticity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientLocalScalarOperatorBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientLocalTensorConnection
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientReducedDensityMeasurability
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientReducedVolumeMonotonicity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientReducedVolumeTerminal
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientReducedVolumeTerminalReduction
@@ -6100,6 +6102,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Re
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized.Basic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized.Coercivity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized.Defs
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized.FamilyContinuity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized.FirstVariation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized.Integrability
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized.Length
@@ -6115,6 +6118,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.Char
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.Continuity.Basepoint
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.Continuity.Basic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.Continuity.CarrierBaseTime
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.Continuity.EndpointSemicontinuity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.Continuity.JointParameters
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.Continuity.TimeParameter
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.Continuity.UpperSemicontinuity
@@ -8893,6 +8897,7 @@ import DifferentialGeometry.Topology.Manifold.ClosedDiskExtension
 import DifferentialGeometry.Topology.Manifold.CollarChartIsotopy
 import DifferentialGeometry.Topology.Manifold.CollarFamily
 import DifferentialGeometry.Topology.Manifold.CollarFamilySeparation
+import DifferentialGeometry.Topology.Manifold.CurveEndpointPerturbation
 import DifferentialGeometry.Topology.Manifold.ImmersionCriterion
 import DifferentialGeometry.Topology.Manifold.NormalChartOrientation
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.LeftInverse
