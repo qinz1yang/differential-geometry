@@ -176,4 +176,68 @@ theorem prismSquareMap_mem_convexHull (a b c d : F) {z : ℝ × ℝ}
     · simp [Fin.sum_univ_three]
     · fin_cases i <;> exact subset_convexHull ℝ _ (by simp)
 
+noncomputable def stripToSquare (p q : ℝ) : (ℝ × ℝ) →ᵃ[ℝ] (ℝ × ℝ) :=
+  AffineMap.const ℝ (ℝ × ℝ) (-(p / (q - p)), 0) +
+    (LinearMap.prod ((q - p)⁻¹ • LinearMap.fst ℝ ℝ ℝ) (LinearMap.snd ℝ ℝ ℝ)).toAffineMap
+
+theorem stripToSquare_apply (p q : ℝ) (z : ℝ × ℝ) :
+    stripToSquare p q z = ((z.1 - p) / (q - p), z.2) := by
+  simp [stripToSquare, Prod.ext_iff, sub_div]
+  ring
+
+noncomputable def prismStripMap (p q : ℝ) (a b c d : F) : ℝ × ℝ → F :=
+  fun z => prismSquareMap a b c d (stripToSquare p q z)
+
+theorem preimage_stripToSquare {p q : ℝ} (hpq : p < q) :
+    stripToSquare p q ⁻¹' (Icc (0 : ℝ) 1 ×ˢ Icc (0 : ℝ) 1) = Icc p q ×ˢ Icc (0 : ℝ) 1 := by
+  have hd : (0 : ℝ) < q - p := by linarith
+  ext z
+  rw [mem_preimage, stripToSquare_apply]
+  simp only [Set.mem_prod, mem_Icc]
+  constructor
+  · rintro ⟨⟨h1, h2⟩, h3⟩
+    rw [le_div_iff₀ hd] at h1
+    rw [div_le_one hd] at h2
+    exact ⟨⟨by linarith, by linarith⟩, h3⟩
+  · rintro ⟨⟨h1, h2⟩, h3⟩
+    refine ⟨⟨?_, ?_⟩, h3⟩
+    · rw [le_div_iff₀ hd]; linarith
+    · rw [div_le_one hd]; linarith
+
+theorem isPiecewiseAffineOn_prismStripMap {p q : ℝ} (hpq : p < q) (a b c d : F) :
+    IsPiecewiseAffineOn (prismStripMap p q a b c d) (Icc p q ×ˢ Icc (0 : ℝ) 1) := by
+  have h := (isPiecewiseAffineOn_prismSquareMap a b c d).comp
+    (isPiecewiseAffineOn_of_affine (stripToSquare p q) isOpen_univ)
+  rwa [univ_inter, preimage_stripToSquare hpq] at h
+
+theorem prismStripMap_bottom {p q : ℝ} (a b c d : F) (x : ℝ) :
+    prismStripMap p q a b c d (x, 0) = a + ((x - p) / (q - p)) • (b - a) := by
+  rw [prismStripMap, stripToSquare_apply]
+  exact prismSquareMap_bottom a b c d _
+
+theorem prismStripMap_top {p q : ℝ} (a b c d : F) {x : ℝ} (hx : x ∈ Icc p q) (hpq : p < q) :
+    prismStripMap p q a b c d (x, 1) = c + ((x - p) / (q - p)) • (d - c) := by
+  have hd : (0 : ℝ) < q - p := by linarith
+  rw [prismStripMap, stripToSquare_apply]
+  exact prismSquareMap_top a b c d
+    ⟨by rw [le_div_iff₀ hd]; linarith [hx.1], by rw [div_le_one hd]; linarith [hx.2]⟩
+
+theorem prismStripMap_left {p q : ℝ} (a b c d : F) {t : ℝ} (ht : t ∈ Icc (0 : ℝ) 1) :
+    prismStripMap p q a b c d (p, t) = a + t • (c - a) := by
+  rw [prismStripMap, stripToSquare_apply]
+  simpa using prismSquareMap_left a b c d ht
+
+theorem prismStripMap_right {p q : ℝ} (hpq : p < q) (a b c d : F) {t : ℝ}
+    (ht : t ∈ Icc (0 : ℝ) 1) : prismStripMap p q a b c d (q, t) = b + t • (d - b) := by
+  have hd : (q : ℝ) - p ≠ 0 := by linarith
+  rw [prismStripMap, stripToSquare_apply]
+  simpa [div_self hd] using prismSquareMap_right a b c d ht
+
+theorem prismStripMap_mem_convexHull {p q : ℝ} (hpq : p < q) (a b c d : F) {z : ℝ × ℝ}
+    (hz : z ∈ Icc p q ×ˢ Icc (0 : ℝ) 1) :
+    prismStripMap p q a b c d z ∈ convexHull ℝ ({a, b, c, d} : Set F) := by
+  refine prismSquareMap_mem_convexHull a b c d ?_
+  rw [← preimage_stripToSquare hpq] at hz
+  exact hz
+
 end DifferentialGeometry.Topology.PiecewiseLinear
