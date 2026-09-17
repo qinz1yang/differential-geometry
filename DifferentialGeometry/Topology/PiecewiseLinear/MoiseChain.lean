@@ -164,4 +164,18 @@ theorem plMapApproximation : PLMapApproximation := by
 def TopologicalCellComplementConnected : Prop :=
   ∀ C : Set (EuclideanSpace ℝ (Fin 3)), IsTopologicalCell 3 C → IsConnected Cᶜ
 
+def IsSpine (S J : Set (EuclideanSpace ℝ (Fin 3))) : Prop :=
+  ∃ (φ : (Metric.closedBall (0 : EuclideanSpace ℝ (Fin 2)) 1 ×
+      Metric.sphere (0 : EuclideanSpace ℝ (Fin 2)) 1) ≃ₜ S)
+    (p : EuclideanSpace ℝ (Fin 2)),
+    p ∈ interior (Metric.closedBall (0 : EuclideanSpace ℝ (Fin 2)) 1) ∧
+    J = Subtype.val '' (φ '' {q | (q.1 : EuclideanSpace ℝ (Fin 2)) = p})
+
+def Moise308 : Prop :=
+  ∀ (S J : Set (EuclideanSpace ℝ (Fin 3))),
+    HasCylindricalDiagram S → IsSpine S J →
+    ∀ hJS : J ⊆ S, ∀ x : J,
+      Subgroup.closure (Set.range (FundamentalGroup.map
+        (⟨Set.inclusion hJS, continuous_inclusion hJS⟩ : C(J, S)) x)) = ⊤
+
 end DifferentialGeometry.Topology.PiecewiseLinear
