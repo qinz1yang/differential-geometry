@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientMetricMonotonicity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.GoodPointDerivatives
 import DifferentialGeometry.Geometry.Comparison.DistanceHessianLocal
 import DifferentialGeometry.Geometry.Metric.DirectLimit.Distance
@@ -157,83 +158,9 @@ theorem closedBall_subset_image_of_metric_lower
 
 end Static
 
-section ClosedEnd
-
-variable [I.Boundaryless]
-variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [IsManifold I 1 M] [T2Space M]
-
-omit [I.Boundaryless] in
-theorem metric_inner_antitoneOn_of_ricci_nonnegative_interior
-    {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
-    (hS : IsSolutionOn (I := I) S) {a b : ℝ}
-    (hslab : Set.Icc a b ⊆ D.carrier) (hreg : Set.Ioo a b ⊆ D.regular)
-    (hRic : ∀ s ∈ Set.Ioo a b, ∀ y : M, ∀ w : TangentSpace I y,
-      0 ≤ S.ricciAt s y (vec2 w w))
-    (x : M) (v : TangentSpace I x) :
-    AntitoneOn (fun s : ℝ => (S.base.metric s).inner x v v) (Set.Icc a b) := by
-  have hcont : ContinuousOn (fun s : ℝ => (S.base.metric s).inner x v v) D.carrier := by
-    rw [continuousOn_iff_continuous_domRestrict]
-    exact hS.smoothMetric.metricTensor_cont.eval_continuous
-      (P := {s : ℝ // s ∈ D.carrier}) (τ := Subtype.val) (b := fun _ => x)
-      continuous_subtype_val (fun p => p.2) continuous_const
-      (v := fun i _ => vec2 v v i) (fun _ => continuous_const)
-  apply antitoneOn_of_hasDerivWithinAt_nonpos (convex_Icc a b)
-    (f' := fun s => (-2 : ℝ) * S.ricciAt s x (vec2 v v)) (hcont.mono hslab)
-  · intro s hs
-    have hs' : s ∈ Set.Ioo a b := by simpa only [interior_Icc] using hs
-    exact (metricDerivAt (I := I) S hS ⟨s, hreg hs'⟩ x v v).hasDerivWithinAt
-  · intro s hs
-    have hs' : s ∈ Set.Ioo a b := by simpa only [interior_Icc] using hs
-    exact mul_nonpos_of_nonpos_of_nonneg (by norm_num) (hRic s hs' x v)
-
-end ClosedEnd
-
 section Witness
 
 variable [I.Boundaryless] [NeZero (Module.finrank ℝ E)]
-
-omit [I.Boundaryless] [NeZero (Module.finrank ℝ E)] in
-theorem ancientModel_metric_zero_le
-    (L : PointedFlowData.{u, uE, uH} (I := I) ancientTimeInterval)
-    {kappa : ℝ} (hL : IsAncientKappaSolution (I := I) kappa L)
-    {s : ℝ} (hs : s ≤ 0) :
-    let : TopologicalSpace L.M := L.topology
-    let : ChartedSpace H L.M := L.charted
-    let : IsManifold I ∞ L.M := L.smooth
-    let : IsManifold I 1 L.M :=
-      IsManifold.of_le (n := (∞ : WithTop ℕ∞)) (by decide)
-    let : SigmaCompactSpace L.M := L.sigmaCompact
-    let : T2Space L.M := L.t2
-    ∀ (x : L.M) (v : TangentSpace I x),
-      (L.S.base.metric 0).inner x v v ≤ (L.S.base.metric s).inner x v v := by
-  let : TopologicalSpace L.M := L.topology
-  let : ChartedSpace H L.M := L.charted
-  let : IsManifold I ∞ L.M := L.smooth
-  let : IsManifold I 1 L.M :=
-    IsManifold.of_le (n := (∞ : WithTop ℕ∞)) (by decide)
-  let : SigmaCompactSpace L.M := L.sigmaCompact
-  let : T2Space L.M := L.t2
-  change ∀ (x : L.M) (v : TangentSpace I x),
-    (L.S.base.metric 0).inner x v v ≤ (L.S.base.metric s).inner x v v
-  intro x v
-  have hRic : ∀ q ∈ Set.Ioo s 0, ∀ y : L.M, ∀ w : TangentSpace I y,
-      0 ≤ L.S.ricciAt q y (vec2 w w) := by
-    intro q hq y w
-    have hqmem : q ∈ ancientTimeInterval.carrier := by
-      simpa only [ancientTimeInterval_carrier, Set.mem_Iic] using hq.2.le
-    apply metricRicciAt_nonnegative_of_curvatureOperator_nonnegative
-    apply (metricAlgebraicCurvatureTensorAt_mem_curvatureOperatorNonnegativeCone_iff
-      (I := I) (L.S.base.metric q) y).mpr
-    intro n c a b
-    simpa [SolutionFamily.rm04, metricRm04StandardAt_apply, vec4] using
-      hL.nonnegativeCurvatureOperator q hqmem y n c a b
-  have hanti := metric_inner_antitoneOn_of_ricci_nonnegative_interior L.S L.isSolution
-    (a := s) (b := 0)
-    (fun q hq => by simpa only [ancientTimeInterval_carrier, Set.mem_Iic] using hq.2)
-    (fun q hq => by simpa only [ancientTimeInterval_regular, Set.mem_Iio] using hq.2)
-    hRic x v
-  exact hanti ⟨le_rfl, hs⟩ ⟨hs, le_rfl⟩ hs
 
 variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [IsManifold I 1 M] [T2Space M] [SigmaCompactSpace M]

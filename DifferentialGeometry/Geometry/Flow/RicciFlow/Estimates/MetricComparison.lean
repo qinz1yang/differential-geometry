@@ -420,3 +420,38 @@ theorem complete_of_ricBound
     simpa only [Real.exp_neg] using hequiv x v
 
 end DifferentialGeometry.PDE.RicciFlow
+
+namespace DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood
+
+open scoped Manifold ContDiff
+
+variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E] [CompleteSpace E]
+variable {H : Type uH} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+  [IsManifold I 1 M] [T2Space M]
+
+theorem metric_inner_antitoneOn_of_ricci_nonnegative_interior
+    {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
+    (hS : IsSolutionOn (I := I) S) {a b : ℝ}
+    (hslab : Set.Icc a b ⊆ D.carrier) (hreg : Set.Ioo a b ⊆ D.regular)
+    (hRic : ∀ s ∈ Set.Ioo a b, ∀ y : M, ∀ w : TangentSpace I y,
+      0 ≤ S.ricciAt s y (vec2 w w))
+    (x : M) (v : TangentSpace I x) :
+    AntitoneOn (fun s : ℝ => (S.base.metric s).inner x v v) (Set.Icc a b) := by
+  have hcont : ContinuousOn (fun s : ℝ => (S.base.metric s).inner x v v) D.carrier := by
+    rw [continuousOn_iff_continuous_domRestrict]
+    exact hS.smoothMetric.metricTensor_cont.eval_continuous
+      (P := {s : ℝ // s ∈ D.carrier}) (τ := Subtype.val) (b := fun _ => x)
+      continuous_subtype_val (fun p => p.2) continuous_const
+      (v := fun i _ => vec2 v v i) (fun _ => continuous_const)
+  apply antitoneOn_of_hasDerivWithinAt_nonpos (convex_Icc a b)
+    (f' := fun s => (-2 : ℝ) * S.ricciAt s x (vec2 v v)) (hcont.mono hslab)
+  · intro s hs
+    have hs' : s ∈ Set.Ioo a b := by simpa only [interior_Icc] using hs
+    exact (metricDerivAt (I := I) S hS ⟨s, hreg hs'⟩ x v v).hasDerivWithinAt
+  · intro s hs
+    have hs' : s ∈ Set.Ioo a b := by simpa only [interior_Icc] using hs
+    exact mul_nonpos_of_nonpos_of_nonneg (by norm_num) (hRic s hs' x v)
+
+end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood

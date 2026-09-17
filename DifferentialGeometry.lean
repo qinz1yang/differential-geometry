@@ -52,6 +52,7 @@ import DifferentialGeometry.Analysis.Calculus.Derivative.ParametricIntervalInteg
 import DifferentialGeometry.Analysis.Calculus.Derivative.Punctured
 import DifferentialGeometry.Analysis.Calculus.Derivative.PuncturedBallDerivativeHomotopy
 import DifferentialGeometry.Analysis.Calculus.Derivative.Right
+import DifferentialGeometry.Analysis.Calculus.Derivative.SqrtSupport
 import DifferentialGeometry.Analysis.Calculus.Derivative.TargetModulus
 import DifferentialGeometry.Analysis.Calculus.Derivative.UpperContact
 import DifferentialGeometry.Analysis.Calculus.DyadicScale
@@ -131,6 +132,7 @@ import DifferentialGeometry.Analysis.Calculus.Potential
 import DifferentialGeometry.Analysis.Calculus.RatioMonotonicity
 import DifferentialGeometry.Analysis.Calculus.RegularSplice
 import DifferentialGeometry.Analysis.Calculus.RegularValue
+import DifferentialGeometry.Analysis.Calculus.RegularizedExp
 import DifferentialGeometry.Analysis.Calculus.Rescaling
 import DifferentialGeometry.Analysis.Calculus.Retraction.Approximation
 import DifferentialGeometry.Analysis.Calculus.Retraction.Ball
@@ -573,6 +575,7 @@ import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletNirenbergOpe
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletNirenbergSource
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletNirenbergSourceIntegral
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletNirenbergTest
+import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletSemilinear
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletSeparability
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletSmoothBasis
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletSmoothMul
@@ -586,6 +589,7 @@ import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletWeakDerivati
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletWeakFormChart
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletWeakFormIntegration
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletWeakPartialDual
+import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletWeightedResolvent
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.InteriorH1Compl
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.InteriorSmoothBridge
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.InteriorSmoothScalarPreH1
@@ -737,6 +741,7 @@ import DifferentialGeometry.Analysis.Integration.EntropyLp
 import DifferentialGeometry.Analysis.Integration.EntropyMix
 import DifferentialGeometry.Analysis.Integration.EntropyUniform
 import DifferentialGeometry.Analysis.Integration.Gaussian.AnnularIntegral
+import DifferentialGeometry.Analysis.Integration.Gaussian.DistanceCoercivity
 import DifferentialGeometry.Analysis.Integration.Gaussian.VolumeTail
 import DifferentialGeometry.Analysis.Integration.Holder.Weighted
 import DifferentialGeometry.Analysis.Integration.Integral.CompactSupportDerivative
@@ -777,6 +782,7 @@ import DifferentialGeometry.Analysis.Integration.Lp.Bilinear
 import DifferentialGeometry.Analysis.Integration.Lp.BilinearForm
 import DifferentialGeometry.Analysis.Integration.Lp.ContinuousOn
 import DifferentialGeometry.Analysis.Integration.Lp.Curry
+import DifferentialGeometry.Analysis.Integration.Lp.FiniteCover
 import DifferentialGeometry.Analysis.Integration.Lp.Lifting
 import DifferentialGeometry.Analysis.Integration.Lp.Multiplication
 import DifferentialGeometry.Analysis.Integration.Lp.Pairing
@@ -807,6 +813,7 @@ import DifferentialGeometry.Analysis.Integration.Measure.Chart.PartitionOfUnity.
 import DifferentialGeometry.Analysis.Integration.Measure.Chart.PartitionOfUnity.Thickening
 import DifferentialGeometry.Analysis.Integration.Measure.Chart.Rellich
 import DifferentialGeometry.Analysis.Integration.Measure.Chart.TensorPullback
+import DifferentialGeometry.Analysis.Integration.Measure.Chart.WeightedRestriction
 import DifferentialGeometry.Analysis.Integration.Measure.ChartIntegral
 import DifferentialGeometry.Analysis.Integration.Measure.ComplexNullLines
 import DifferentialGeometry.Analysis.Integration.Measure.Conformal
@@ -867,6 +874,7 @@ import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.MetricCompar
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Product
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Properties
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Scaling
+import DifferentialGeometry.Analysis.Integration.Measure.SandwichConvergence
 import DifferentialGeometry.Analysis.Integration.Measure.SmoothDensity
 import DifferentialGeometry.Analysis.Integration.Measure.SublevelSurface
 import DifferentialGeometry.Analysis.Integration.Measure.SublevelVolume
@@ -1474,6 +1482,7 @@ import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegulari
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Regularity.SmallTimeSmoothness
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Solution.AddCircleDerivativeContinuity
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Solution.FieldIdentification
+import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Solution.HeatEvolutionRestart
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Solution.PointwiseSpectralCoordinates
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Solution.Space
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Solution.TimeSupremumTrace
@@ -1550,7 +1559,9 @@ import DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation.Smoothing.Sobo
 import DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation.Spectral.Bounds
 import DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation.Spectral.Calculus
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Bochner.ContinuousInterior
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Bochner.FiniteCover
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Bochner.L2
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Bochner.LocalSmallness
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Bochner.MixedNorm
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Bochner.RankOne
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Chart.C1Regularity
@@ -2066,6 +2077,7 @@ import DifferentialGeometry.Analysis.Sobolev.Tools.Convolution
 import DifferentialGeometry.Analysis.Sobolev.Tools.CutoffDiffQuotLp
 import DifferentialGeometry.Analysis.Sobolev.Tools.DiffQuotLocal
 import DifferentialGeometry.Analysis.Sobolev.Tools.DifferenceQuotient
+import DifferentialGeometry.Analysis.Sobolev.Tools.DifferenceQuotient.CutoffWeakLimit
 import DifferentialGeometry.Analysis.Sobolev.Tools.DifferenceQuotient.IntegrationByParts
 import DifferentialGeometry.Analysis.Sobolev.Tools.DifferenceQuotient.LocalWeakLimit
 import DifferentialGeometry.Analysis.Sobolev.Tools.DifferenceQuotient.SmoothRegularity
@@ -3451,6 +3463,7 @@ import DifferentialGeometry.Geometry.Comparison.Distance.Hessian
 import DifferentialGeometry.Geometry.Comparison.Distance.Laplacian
 import DifferentialGeometry.Geometry.Comparison.Distance.RadialIntegral
 import DifferentialGeometry.Geometry.Comparison.Distance.RadialPairing
+import DifferentialGeometry.Geometry.Comparison.Distance.SqrtSupport
 import DifferentialGeometry.Geometry.Comparison.DistanceCutoff
 import DifferentialGeometry.Geometry.Comparison.DistanceFamily
 import DifferentialGeometry.Geometry.Comparison.DistanceHessianLocal
@@ -3645,6 +3658,7 @@ import DifferentialGeometry.Geometry.Comparison.Variation.Covariant.Jets
 import DifferentialGeometry.Geometry.Comparison.Variation.Covariant.TwoParameterFields
 import DifferentialGeometry.Geometry.Comparison.Variation.Curve.AffineParameter
 import DifferentialGeometry.Geometry.Comparison.Variation.Curve.ArcLength
+import DifferentialGeometry.Geometry.Comparison.Variation.Curve.FixedInitialGerm
 import DifferentialGeometry.Geometry.Comparison.Variation.Curve.LocalVelocity
 import DifferentialGeometry.Geometry.Comparison.Variation.Curve.PathLength
 import DifferentialGeometry.Geometry.Comparison.Variation.Curve.PrescribedTangentInOpenSet
@@ -3654,6 +3668,7 @@ import DifferentialGeometry.Geometry.Comparison.Variation.CurveEnergy
 import DifferentialGeometry.Geometry.Comparison.Variation.EndpointInterpolation
 import DifferentialGeometry.Geometry.Comparison.Variation.EndpointParallel
 import DifferentialGeometry.Geometry.Comparison.Variation.ExponentialEndpoint
+import DifferentialGeometry.Geometry.Comparison.Variation.ExponentialTail
 import DifferentialGeometry.Geometry.Comparison.Variation.Field.ChartConstruction
 import DifferentialGeometry.Geometry.Comparison.Variation.Field.PairRealization
 import DifferentialGeometry.Geometry.Comparison.Variation.Field.Realization
@@ -3971,6 +3986,7 @@ import DifferentialGeometry.Geometry.Connection.MetricTrace.CovariantDerivative
 import DifferentialGeometry.Geometry.Connection.MetricTrace.CovariantFourTensor
 import DifferentialGeometry.Geometry.Connection.MetricTrace.CovariantTwoTensor
 import DifferentialGeometry.Geometry.Connection.MetricTrace.Higher
+import DifferentialGeometry.Geometry.Connection.MetricTrace.Iterated
 import DifferentialGeometry.Geometry.Connection.MetricTrace.LineSplit
 import DifferentialGeometry.Geometry.Connection.MetricTrace.NormBound
 import DifferentialGeometry.Geometry.Connection.MetricTrace.Relowering
@@ -4838,6 +4854,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.Variation.Interval
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.Variation.Monotonicity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.Variation.Rigidity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.Variation.WeightedHessian
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.AncientScalarTimeControl
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Curvature.MultiNormHeat
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Curvature.NormEvolution
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Curvature.NormHeatEquation
@@ -4845,6 +4862,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Curvature.NormEvol
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Curvature.Flatness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Distance.Barrier
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Distance.CalabiSupport
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Distance.EndpointRicci
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Distance.Laplacian
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Distance.LengthVariation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Distance.LocalCutoff
@@ -4861,6 +4879,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.CurvatureMetricCom
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.MetricComparison
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.MetricFirstOrder
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.MetricVariation
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.ScalarLaplacian
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.ScalarLowerBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.ScalarUniform
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.BernsteinMaximum
@@ -5585,6 +5604,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Anci
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientCylinderNoTranslation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientCylinderSmoothModels
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientCylinderTopologicalModels
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientDistanceRegularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientKappaFixedCompactness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientKappaModelCurvatureWindow
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientKappaReducedVolumeBound
@@ -5595,6 +5615,8 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Anci
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientLocalEllipticity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientLocalScalarOperatorBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientLocalTensorConnection
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientMetricMonotonicity
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientReducedDensityContinuity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientReducedDensityMeasurability
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientReducedVolumeMonotonicity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientReducedVolumeTerminal
@@ -6099,6 +6121,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Mi
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Minimizer.Stationarity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Naturality
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularity
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized.BaseTimeComparison
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized.Basic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized.Coercivity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized.Defs
@@ -6115,6 +6138,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.AdaptedFi
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.Approximation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.ChartLipschitz
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.ChartRamp
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.Continuity.BaseTimeSemicontinuity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.Continuity.Basepoint
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.Continuity.Basic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.Continuity.CarrierBaseTime
@@ -6132,6 +6156,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.Natu
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.NoAdmissibleCurve
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.RampBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.UpperSupport.Action
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.UpperSupport.EndpointVariation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.UpperSupport.Hessian
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.UpperSupport.Laplacian
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.CutLocus.Alternative
@@ -7947,6 +7972,7 @@ import DifferentialGeometry.Geometry.Operator.GradientTouchingSupport
 import DifferentialGeometry.Geometry.Operator.HarmonicParallelGradient
 import DifferentialGeometry.Geometry.Operator.Heat.Tensor
 import DifferentialGeometry.Geometry.Operator.Hessian.Basic
+import DifferentialGeometry.Geometry.Operator.Hessian.IteratedCovariantDerivative
 import DifferentialGeometry.Geometry.Operator.Hessian.Trace.ChartDensityDerivative
 import DifferentialGeometry.Geometry.Operator.Hessian.Trace.ChartGramRegularity
 import DifferentialGeometry.Geometry.Operator.Hessian.Trace.ChartInverseGramDerivative

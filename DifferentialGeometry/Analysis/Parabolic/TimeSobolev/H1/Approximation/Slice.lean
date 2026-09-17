@@ -1,4 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.H1.Basic
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeMeasureRestrict
 
 set_option autoImplicit false
 
@@ -42,6 +43,30 @@ theorem slice_coe (f : timeL2 X T) (a b : ℝ) (ha : 0 ≤ a) (hbT : b ≤ T) :
   unfold slice
   exact MemLp.coeFn_toLp _
 
+omit [NormedSpace ℝ X] [CompleteSpace X] in
+theorem slice_add (f g : timeL2 X T) (a b : ℝ) (ha : 0 ≤ a) (hbT : b ≤ T) :
+    slice (f + g) a b ha hbT = slice f a b ha hbT + slice g a b ha hbT := by
+  apply Lp.ext
+  filter_upwards [slice_coe (f + g) a b ha hbT, slice_coe f a b ha hbT,
+    slice_coe g a b ha hbT, Lp.coeFn_add (slice f a b ha hbT) (slice g a b ha hbT),
+    ae_add_right_timeMeasure ha hbT (Lp.coeFn_add f g)] with t hfg hf hg hadd hshift
+  simpa only [hfg, hadd, hf, hg, Pi.add_apply] using hshift
+
+
+omit [CompleteSpace X] in
+theorem slice_compLpL {Y : Type*} [NormedAddCommGroup Y] [NormedSpace ℝ Y] (L : X →L[ℝ] Y) (f : timeL2 X T)
+    (a b : ℝ) (ha : 0 ≤ a) (hbT : b ≤ T) :
+    slice (L.compLpL 2 (timeMeasure T) f) a b ha hbT =
+      L.compLpL 2 (timeMeasure (b - a)) (slice f a b ha hbT) := by
+  apply Lp.ext
+  filter_upwards [slice_coe (L.compLpL 2 (timeMeasure T) f) a b ha hbT,
+    L.coeFn_compLpL (p := 2) (μ := timeMeasure (b - a)) (slice f a b ha hbT),
+    slice_coe f a b ha hbT,
+    ae_add_right_timeMeasure ha hbT (L.coeFn_compLpL (p := 2) (μ := timeMeasure T) f)]
+    with t hslice hL hf hshift
+  simpa only [hslice, hL, hf] using hshift
+
+
 end timeL2
 
 namespace timeH1
@@ -84,9 +109,56 @@ theorem slice_toFun (u : timeH1 X T) (a b : ℝ) (ha : 0 ≤ a) (hbT : b ≤ T)
   rw [← hdiff]
   abel_nf
 
+omit [CompleteSpace X] in
+theorem slice_toFunL2 (u : timeH1 X T) (c d : ℝ) (hc : 0 ≤ c) (hdT : d ≤ T) :
+    (u.slice c d hc hdT).toFunL2 = timeL2.slice u.toFunL2 c d hc hdT := by
+  apply Lp.ext
+  have hI : Icc c d ⊆ Icc (0 : ℝ) T :=
+    fun _ ht => ⟨hc.trans ht.1, ht.2.trans hdT⟩
+  have hrep := (measurePreserving_add_right_timeMeasure_restrict hI).quasiMeasurePreserving.ae
+    (ae_restrict_of_ae (coeFn_ofContinuousOn u.continuousOn_toFun))
+  filter_upwards [coeFn_ofContinuousOn (u.slice c d hc hdT).continuousOn_toFun,
+    timeL2.slice_coe u.toFunL2 c d hc hdT, hrep,
+    ae_restrict_mem (μ := volume) measurableSet_Icc] with t hs hf hu ht
+  change (u.slice c d hc hdT).toFunL2 t = (u.slice c d hc hdT).toFun t at hs
+  change u.toFunL2 (c + t) = u.toFun (c + t) at hu
+  rw [hs, hf, add_comm t c, hu, slice_toFun u c d hc hdT ht]
+
+
 end timeH1
 
 end TimeSobolev
 end Parabolic
 end Analysis
 end DifferentialGeometry
+
+namespace DifferentialGeometry.Analysis.Parabolic.TimeSobolev
+
+theorem timeL2.norm_slice_eq {X : Type*} [NormedAddCommGroup X]
+    {T : ℝ} (f : timeL2 X T) (a b : ℝ) (ha : 0 ≤ a) (hbT : b ≤ T) :
+    ‖timeL2.slice f a b ha hbT‖ =
+      (eLpNorm f 2 (volume.restrict (Icc a b))).toReal := by
+  have hsub : Icc a b ⊆ Icc (0 : ℝ) T :=
+    fun _ ht => ⟨ha.trans ht.1, ht.2.trans hbT⟩
+  have hshift := measurePreserving_add_right_timeMeasure_restrict hsub
+  have hmeas := ((Lp.memLp f).restrict (Icc a b)).aestronglyMeasurable
+  have hnorm : eLpNorm (fun t => f (t + a)) 2 (timeMeasure (b - a)) =
+      eLpNorm f 2 (volume.restrict (Icc a b)) := by
+    have h := eLpNorm_comp_measurePreserving (p := (2 : ℝ≥0∞)) hmeas hshift
+    rw [timeMeasure_restrict_Icc_eq_volume_restrict_Icc hsub] at h
+    simpa only [Function.comp_def, add_comm] using h
+  rw [Lp.norm_def, eLpNorm_congr_ae (timeL2.slice_coe f a b ha hbT), hnorm]
+
+theorem timeL2.norm_slice_toLp_eq {X : Type*} [NormedAddCommGroup X]
+    {T : ℝ} {f : ℝ → X} (hf : MemLp f 2 (timeMeasure T))
+    (a b : ℝ) (ha : 0 ≤ a) (hbT : b ≤ T) :
+    ‖timeL2.slice (hf.toLp f) a b ha hbT‖ =
+      (eLpNorm f 2 (volume.restrict (Icc a b))).toReal := by
+  rw [timeL2.norm_slice_eq]
+  apply congrArg ENNReal.toReal
+  apply eLpNorm_congr_ae
+  have hsub : Icc a b ⊆ Icc (0 : ℝ) T :=
+    fun _ ht => ⟨ha.trans ht.1, ht.2.trans hbT⟩
+  exact hf.coeFn_toLp.filter_mono (ae_mono (Measure.restrict_mono hsub le_rfl))
+
+end DifferentialGeometry.Analysis.Parabolic.TimeSobolev

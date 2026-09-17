@@ -54,3 +54,29 @@ theorem compLpL_toFunL2_mk_const (L : X →L[ℝ] Y) (x v : X) :
 
 end DifferentialGeometry.Analysis.Parabolic.TimeSobolev.timeH1
 end
+
+noncomputable section
+
+open scoped NNReal
+
+namespace DifferentialGeometry.Analysis.Parabolic.TimeSobolev.timeH1
+
+variable {X : Type*} [NormedAddCommGroup X] {T : ℝ}
+
+@[simp] theorem norm_mk_zero (x : X) : ‖mk x (0 : timeL2 X T)‖ = ‖x‖ :=
+  WithLp.norm_toLp_fst 2 X (timeL2 X T) x
+
+theorem isometry_mk_zero : Isometry (fun x : X => mk x (0 : timeL2 X T)) :=
+  fun x y => WithLp.edist_toLp_fst 2 X (timeL2 X T) x y
+
+theorem lipschitzWith_mk_zero_add {P : Type*} [PseudoEMetricSpace P]
+    {f : P → X} {u : P → timeH1 X T} {Kf Ku : ℝ≥0}
+    (hf : LipschitzWith Kf f) (hu : LipschitzWith Ku u) :
+    LipschitzWith (Kf + Ku) (fun p => mk (f p) 0 + u p) := by
+  have hc : LipschitzWith Kf (fun p => mk (f p) (0 : timeL2 X T)) := by
+    simpa only [one_mul, Function.comp_def] using (isometry_mk_zero (X := X) (T := T)).lipschitz.comp hf
+  exact hc.add hu
+
+end DifferentialGeometry.Analysis.Parabolic.TimeSobolev.timeH1
+
+end

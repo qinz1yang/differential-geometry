@@ -443,3 +443,76 @@ theorem norm_dirichletWeakFormCompl_le
 end DifferentialGeometry.Analysis.Parabolic.Dirichlet
 
 end
+
+noncomputable section
+
+open Manifold MeasureTheory
+open scoped ContDiff ENNReal InnerProductSpace Manifold RealInnerProductSpace Topology
+
+namespace DifferentialGeometry.Analysis.Parabolic.Dirichlet
+
+open DifferentialGeometry.Analysis.Laplacian.WithBoundary
+open DifferentialGeometry.Analysis.Laplacian.WithBoundary.Dirichlet
+open DifferentialGeometry.Integral.Measure
+
+variable {n : ℕ} [NeZero n]
+variable {M : Type*} [TopologicalSpace M]
+  [ChartedSpace (EuclideanHalfSpace n) M]
+  [IsManifold (modelWithCornersEuclideanHalfSpace n) ∞ M]
+  [T2Space M] [CompactSpace M]
+
+local notation "I_hs" => modelWithCornersEuclideanHalfSpace n
+
+private local instance : MeasurableSpace M := borel M
+private local instance : BorelSpace M := ⟨rfl⟩
+
+theorem dirichletWeakFormCompl_self_zero_apply
+    (q : SmoothRiemannianMetric I_hs M)
+    (B : ℝ) (hX : ∀ x : M, q.inner x (0 : TangentSpace I_hs x) 0 ≤ B)
+    {Cg : ℝ} (hCg : 1 ≤ Cg)
+    (hequiv : ∀ x : M, ∀ v : TangentSpace I_hs x,
+      Cg⁻¹ * q.inner x v v ≤ q.inner x v v ∧
+        q.inner x v v ≤ Cg * q.inner x v v)
+    (Cv : ℝ≥0∞) (hCv0 : Cv ≠ 0) (hCvtop : Cv ≠ ⊤)
+    (hvol : riemannianVolumeMeasure (I := I_hs) (M := M) q ≤
+      Cv • riemannianVolumeMeasure (I := I_hs) (M := M) q)
+    (u v : H1ComplDirichlet q) :
+    dirichletWeakFormCompl q 0 0 B hX hCg hequiv Cv hCv0 hCvtop hvol u v =
+      ⟪H1ComplDirichletToLp q u, H1ComplDirichletToLp q v⟫_ℝ - ⟪u, v⟫_ℝ := by
+  let F := dirichletWeakFormCompl q 0 0 B hX hCg hequiv Cv hCv0 hCvtop hvol
+  have hsmooth (u₀ : SmoothScalarDirichlet q) :
+      (fun v => F (smoothToH1ComplDirichlet q u₀) v) =
+        fun v => ⟪H1ComplDirichletToLp q (smoothToH1ComplDirichlet q u₀),
+          H1ComplDirichletToLp q v⟫_ℝ - ⟪smoothToH1ComplDirichlet q u₀, v⟫_ℝ := by
+    apply DenseRange.equalizer (denseRange_smoothToH1ComplDirichlet q)
+      (F (smoothToH1ComplDirichlet q u₀)).continuous
+      ((continuous_const.inner (H1ComplDirichletToLp q).continuous).sub
+        (continuous_const.inner continuous_id))
+    funext v₀
+    simp only [Function.comp_apply, Pi.sub_apply, id_eq]
+    dsimp only [F]
+    rw [dirichletWeakFormCompl_apply_smooth,
+      H1ComplDirichletToLp_smoothToH1ComplDirichlet,
+      H1ComplDirichletToLp_smoothToH1ComplDirichlet]
+    have hm := dirichletMassLp_apply_smooth q Cv hCvtop hvol u₀ v₀
+    rw [dirichletMassLp_self_apply] at hm
+    rw [hm]
+    have hi : ⟪smoothToH1ComplDirichlet q u₀,
+        smoothToH1ComplDirichlet q v₀⟫_ℝ = interiorSmoothScalarH1Inner u₀ v₀ :=
+      inner_smoothToH1ComplInterior_smoothToH1ComplInterior u₀ v₀
+    rw [hi]
+    simp [dirichletWeakForm, dirichletDrift, dirichletMass, dirichletEnergy,
+      interiorSmoothScalarH1Inner]
+  have hall : (fun u => F u v) = fun u =>
+      ⟪H1ComplDirichletToLp q u, H1ComplDirichletToLp q v⟫_ℝ - ⟪u, v⟫_ℝ := by
+    apply DenseRange.equalizer (denseRange_smoothToH1ComplDirichlet q)
+      (F.flip v).continuous
+      (((H1ComplDirichletToLp q).continuous.inner continuous_const).sub
+        (continuous_id.inner continuous_const))
+    funext u₀
+    exact congrFun (hsmooth u₀) v
+  exact congrFun hall u
+
+end DifferentialGeometry.Analysis.Parabolic.Dirichlet
+
+end

@@ -320,4 +320,24 @@ theorem tensorHsInclusion_scalarHsTimeCoordinate
     rfl
   | some i => rfl
 
+omit [Fintype ι] in
+theorem tensorHsInclusion_scalarHsTimeCoordinate_eq
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ)))
+    {σ τ : ℝ} (h : σ ≤ τ)
+    (p : ℝ × PiLp 2 (fun _ : ι => TensorHs g 0 0 τ)) :
+    ContinuousLinearMap.piLpMap 2 (fun _ : Option ι =>
+      tensorHsInclusion (g := g) (r := 0) (s := 0) h)
+        (scalarHsTimeCoordinate g τ p) =
+      scalarHsTimeCoordinate g σ (p.1, ContinuousLinearMap.piLpMap 2
+        (fun _ : ι => tensorHsInclusion (g := g) (r := 0) (s := 0) h) p.2) := by
+  apply PiLp.ext
+  intro j
+  cases j with
+  | none =>
+    change tensorHsInclusion h (p.1 • ccTensorToHs g 0 τ (DifferentialGeometry.Analysis.Sobolev.scalarCc g 1)) = _
+    rw [map_smul, tensorHsInclusion_ccTensorToHs]
+    rfl
+  | some i => rfl
+
+
 end AddCircle

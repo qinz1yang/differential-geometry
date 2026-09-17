@@ -15,11 +15,11 @@ open DifferentialGeometry.Geometry.Curvature
 
 universe u uE uH
 
-variable {E : Type uE} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E]
 variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners ℝ E H} [I.Boundaryless]
-variable {M : Type u} [PseudoMetricSpace M] [ChartedSpace H M]
+variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M]
 variable {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
 

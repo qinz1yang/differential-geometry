@@ -1,3 +1,4 @@
+import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Parametric.TimeComposition
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Parametric.SimultaneousComposition
 import DifferentialGeometry.Analysis.FunctionalAnalysis.ContinuousLinearMap.ClosedBall
 import DifferentialGeometry.Analysis.FunctionalAnalysis.ClosedBall
@@ -171,3 +172,81 @@ theorem exists_scalar_vectorH1_time_composition_on_translated_closedBall
           rw [hpoint]
 
 end DifferentialGeometry.Analysis.Spectral
+
+end
+
+noncomputable section
+
+open Set
+open scoped Manifold ContDiff BigOperators
+
+namespace DifferentialGeometry.Analysis.Spectral
+
+open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
+
+variable {ι : Type*} [Fintype ι]
+variable {M : Type*} [TopologicalSpace M] [ChartedSpace ℝ M]
+  [IsManifold 𝓘(ℝ, ℝ) ∞ M] [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+
+private local instance : NeZero (Module.finrank ℝ ℝ) := ⟨by simp⟩
+
+theorem exists_scalarH1TimeCoordinate_bounds_on_translated_closedBall
+    {X Y : Type*} [SeminormedAddCommGroup X] [NormedSpace ℝ X]
+    [SeminormedAddCommGroup Y] [NormedSpace ℝ Y]
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) M)
+    (P : X →L[ℝ] PiLp 2 (fun _ : ι => TensorHs g 0 0 1))
+    (J : Y →L[ℝ] PiLp 2 (fun _ : ι => TensorHs g 0 0 1)) (f₀ : X)
+    {S : Set (Option ι → ℝ)} (hS : IsOpen S)
+    (hf₀ : range (scalarH1PiToContinuous g (scalarH1TimeCoordinate g (0, P f₀))) ⊆ S) :
+    ∃ δ ρ : ℝ, 0 < δ ∧ 0 < ρ ∧
+      ∃ Krange : Set (Option ι → ℝ), IsCompact Krange ∧ Krange ⊆ S ∧
+      ∃ R : ℝ, 0 ≤ R ∧ ∀ f : X, dist f f₀ ≤ δ →
+        ∀ t ∈ Icc (0 : ℝ) ρ, ∀ w : Y, ‖w‖ ≤ ρ →
+          range (scalarH1PiToContinuous g (scalarH1TimeCoordinate g (t, P f + J w))) ⊆ Krange ∧
+            (∑ i, ‖scalarH1TimeCoordinate g (t, P f + J w) i‖) ≤ R := by
+  let q₀ := scalarH1TimeCoordinate g (0, P f₀)
+  obtain ⟨η, hη, Krange, hK, hKS, hrange⟩ :=
+    exists_scalarH1Pi_ball_range_subset g q₀ hS hf₀
+  let A : X × Y →L[ℝ] PiLp 2 (fun _ : ι => TensorHs g 0 0 1) :=
+    P.comp (ContinuousLinearMap.fst ℝ X Y) + J.comp (ContinuousLinearMap.snd ℝ X Y)
+  let B : ℝ × (X × Y) →L[ℝ] PiLp 2 (fun _ : Option ι => TensorHs g 0 0 1) :=
+    (scalarH1TimeCoordinate g).comp ((ContinuousLinearMap.fst ℝ ℝ (X × Y)).prod
+      (A.comp (ContinuousLinearMap.snd ℝ ℝ (X × Y))))
+  obtain ⟨r, hr, _, hB⟩ := B.exists_pos_norm_mul_le (half_pos hη)
+  let R := (Fintype.card (Option ι) : ℝ) * (‖q₀‖ + η)
+  refine ⟨r, r, hr, hr, Krange, hK, hKS, R, by positivity, ?_⟩
+  intro f hf t ht w hw
+  have hp : ‖(t, (f - f₀, w))‖ ≤ r := by
+    rw [Prod.norm_def, Prod.norm_def]
+    apply max_le
+    · simpa only [Real.norm_eq_abs, abs_of_nonneg ht.1] using ht.2
+    · exact max_le (by simpa only [dist_eq_norm] using hf) hw
+  have hpert : ‖B (t, (f - f₀, w))‖ < η := by
+    calc
+      _ ≤ ‖B‖ * ‖(t, (f - f₀, w))‖ := B.le_opNorm _
+      _ ≤ ‖B‖ * r := mul_le_mul_of_nonneg_left hp (norm_nonneg B)
+      _ ≤ η / 2 := hB
+      _ < η := half_lt_self hη
+  have hq : scalarH1TimeCoordinate g (t, P f + J w) = q₀ + B (t, (f - f₀, w)) := by
+    change scalarH1TimeCoordinate g (t, P f + J w) =
+      scalarH1TimeCoordinate g (0, P f₀) + scalarH1TimeCoordinate g (t, P (f - f₀) + J w)
+    rw [← map_add]
+    congr 1
+    simp only [Prod.mk_add_mk, zero_add, map_sub]
+    abel_nf
+  have hmem : scalarH1TimeCoordinate g (t, P f + J w) ∈ Metric.ball q₀ η := by
+    rw [Metric.mem_ball, dist_eq_norm, hq, add_sub_cancel_left]
+    exact hpert
+  refine ⟨hrange _ hmem, ?_⟩
+  have hnorm : ‖scalarH1TimeCoordinate g (t, P f + J w)‖ ≤ ‖q₀‖ + η := by
+    rw [hq]
+    exact (norm_add_le _ _).trans (add_le_add le_rfl hpert.le)
+  calc
+    _ ≤ ∑ _i : Option ι, ‖scalarH1TimeCoordinate g (t, P f + J w)‖ :=
+      Finset.sum_le_sum (fun i _ => PiLp.norm_apply_le _ i)
+    _ = (Fintype.card (Option ι) : ℝ) * ‖scalarH1TimeCoordinate g (t, P f + J w)‖ := by simp
+    _ ≤ R := mul_le_mul_of_nonneg_left hnorm (Nat.cast_nonneg _)
+
+end DifferentialGeometry.Analysis.Spectral
+
+end
