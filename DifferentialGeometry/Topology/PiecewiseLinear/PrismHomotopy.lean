@@ -18,7 +18,8 @@ theorem exists_isPiecewiseAffineOn_prism {f g : ℝ → F}
       (∀ t ∈ Icc (0 : ℝ) 1, Φ (1, t) = f 1 + t • (g 1 - f 1)) ∧
       (∀ z ∈ Icc (0 : ℝ) 1 ×ˢ Icc (0 : ℝ) 1, ∃ i, i < n ∧
         Φ z ∈ convexHull ℝ ({f (s i), f (s (i + 1)), g (s i), g (s (i + 1))} : Set F)) := by
-  obtain ⟨n, s, hs0, hsn, hmono, hfaff, hgaff⟩ := exists_partition_affineOn_two hf hg
+  obtain ⟨n, s, hs0, hsn, hmono, -, hfaff, hgaff⟩ :=
+    exists_partition_affineOn_two hf hg (δ := 1) one_pos
   obtain ⟨Φ, hPA, hbot, htop, hleft, hright, himg⟩ :=
     exists_isPiecewiseAffineOn_prism_of_partition hs0 hsn hmono hfaff hgaff
   exact ⟨n, s, Φ, hs0, hsn, hmono, hPA, hbot, htop, hleft, hright, himg⟩

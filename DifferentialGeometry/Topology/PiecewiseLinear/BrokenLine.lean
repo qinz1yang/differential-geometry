@@ -1,7 +1,9 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.PiecewiseAffineSimplicial
 import DifferentialGeometry.Topology.PiecewiseLinear.PLPath
+import DifferentialGeometry.Topology.PiecewiseLinear.Mesh
+import DifferentialGeometry.Topology.PiecewiseLinear.Combinatorial
 
-open Set
+open Set Metric
 
 namespace DifferentialGeometry.Topology.PiecewiseLinear
 
@@ -33,8 +35,10 @@ theorem convexHull_coe_finset_real {u : Finset ℝ} (hu : u.Nonempty) :
 
 open Classical in
 theorem exists_partition_affineOn_two {f g : ℝ → F}
-    (hf : IsPiecewiseAffineOn f (Icc (0 : ℝ) 1)) (hg : IsPiecewiseAffineOn g (Icc (0 : ℝ) 1)) :
+    (hf : IsPiecewiseAffineOn f (Icc (0 : ℝ) 1)) (hg : IsPiecewiseAffineOn g (Icc (0 : ℝ) 1))
+    {δ : ℝ} (hδ : 0 < δ) :
     ∃ (n : ℕ) (s : ℕ → ℝ), s 0 = 0 ∧ s n = 1 ∧ (∀ i < n, s i < s (i + 1)) ∧
+      (∀ i < n, s (i + 1) - s i < δ) ∧
       (∀ i < n, ∀ x ∈ Icc (s i) (s (i + 1)),
         f x = f (s i) + ((x - s i) / (s (i + 1) - s i)) • (f (s (i + 1)) - f (s i))) ∧
       (∀ i < n, ∀ x ∈ Icc (s i) (s (i + 1)),
@@ -43,13 +47,24 @@ theorem exists_partition_affineOn_two {f g : ℝ → F}
   obtain ⟨K, hKfin, hKspace⟩ :=
     IsPolyhedron.exists_simplicialComplex (isHPolytope_Icc (a := (0 : ℝ)) (b := 1)).isPolyhedron
   let _ : Finite K.faces := hKfin.to_subtype
-  obtain ⟨K', hK', hK'fin, haff⟩ :=
+  obtain ⟨K₀, hK₀, hK₀fin, haff₀⟩ :=
     exists_isSubdivision_affineOn_faces_finite K (fun i : Bool => cond i f g) (by
       intro i
       rw [hKspace]
       cases i
       · exact hg
       · exact hf)
+  let _ : Finite K₀.faces := hK₀fin.to_subtype
+  obtain ⟨K', hK'sub, hK'fin, -, hK'diam⟩ :=
+    exists_isSubdivision_diam_lt K₀ (N := Module.finrank ℝ ℝ)
+      (fun t ht => card_le_finrank_succ_of_mem_faces K₀ ht) hδ
+  have haff : ∀ i : Bool, ∀ t ∈ K'.faces, ∃ A : ℝ →ᵃ[ℝ] F,
+      EqOn (cond i f g) A (convexHull ℝ (t : Set ℝ)) := by
+    intro i t ht
+    obtain ⟨t₀, ht₀, hsub⟩ := hK'sub.exists_face_subset ht
+    obtain ⟨A, hA⟩ := haff₀ i t₀ ht₀
+    exact ⟨A, fun x hx => hA (hsub hx)⟩
+  have hK' : IsSubdivision K' K := hK'sub.trans hK₀
   have hK'space : K'.space = Icc (0 : ℝ) 1 := by rw [hK'.space_eq, hKspace]
   set P : Finset ℝ := hK'fin.toFinset.biUnion id with hPdef
   have hmemP : ∀ x, x ∈ P ↔ ∃ u ∈ K'.faces, x ∈ u := by
@@ -148,7 +163,16 @@ theorem exists_partition_affineOn_two {f g : ℝ → F}
       exact hgap i hi1 (u.max' hune) ((hmemP _).mpr ⟨u, hu, u.max'_mem hune⟩)
         ⟨lt_of_lt_of_le (by linarith) hmu.2, hcon⟩
   refine ⟨N - 1, s, hs0, hsn, fun i hi => hsmono i (i + 1) (by omega) (by omega) (by omega),
-    ?_, ?_⟩
+    ?_, ?_, ?_⟩
+  · intro i hi
+    obtain ⟨u, hu, hsub⟩ := hcell i hi
+    have hlt : s i < s (i + 1) := hsmono i (i + 1) (by omega) (by omega) (by omega)
+    have hbdd : Bornology.IsBounded (convexHull ℝ (u : Set ℝ)) :=
+      isBounded_convexHull.mpr u.finite_toSet.isBounded
+    have hd := dist_le_diam_of_mem hbdd (hsub ⟨le_rfl, hlt.le⟩) (hsub ⟨hlt.le, le_rfl⟩)
+    rw [Real.dist_eq, abs_of_nonpos (by linarith)] at hd
+    have := hK'diam u hu
+    linarith
   · intro i hi x hx
     obtain ⟨u, hu, hsub⟩ := hcell i hi
     obtain ⟨A, hA⟩ := haff true u hu
