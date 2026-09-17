@@ -51,6 +51,15 @@ theorem iUnion {ι : Type*} [Finite ι] {P : ι → Set E} (hP : ∀ i, IsPolyhe
   simp_rw [← hP]
   exact (e.symm.surjective.iUnion_comp P).symm
 
+theorem finsetBiUnion {ι : Type*} (t : Finset ι) {P : ι → Set E} (hP : ∀ i, IsPolyhedron (P i)) :
+    IsPolyhedron (⋃ i ∈ t, P i) := by
+  classical
+  induction t using Finset.induction_on with
+  | empty => simpa using IsPolyhedron.empty
+  | insert j t hj ih =>
+    rw [Finset.set_biUnion_insert]
+    exact (hP j).union ih
+
 theorem inter (hP : IsPolyhedron P) (hQ : IsPolyhedron Q) : IsPolyhedron (P ∩ Q) := by
   obtain ⟨ι, hι, C, hC, rfl⟩ := hP
   obtain ⟨κ, hκ, D, hD, rfl⟩ := hQ

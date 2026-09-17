@@ -1,5 +1,6 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.MapApproximation
 import DifferentialGeometry.Topology.PiecewiseLinear.PLMap
+import DifferentialGeometry.Topology.PiecewiseLinear.Pasting
 
 open Set Metric
 
@@ -180,5 +181,43 @@ theorem exists_pos_forall_exists_isPLOn_dist_lt_eqOn_of_mapsTo_chart {n m : ℕ}
     have h := hδ₁close (g' x) (hg'mem x hx) ((e ∘ f) x) (hφmem x hx)
       (lt_of_lt_of_le (hg'lt x hx) (min_le_left _ _))
     simpa only [Function.comp_apply, e.left_inv (hmap hx)] using h
+
+theorem exists_isPLOn_dist_lt_of_biUnion {n m : ℕ} {N : Type*} [MetricSpace N]
+    [ChartedSpace (EuclideanSpace ℝ (Fin m)) N] [HasGroupoid N (plGroupoid m)]
+    {ι : Type*} {C : ι → Set (EuclideanSpace ℝ (Fin n))} (hC : ∀ i, IsPolyhedron (C i))
+    {f : EuclideanSpace ℝ (Fin n) → N} (s : Finset ι)
+    (hf : ContinuousOn f (⋃ i ∈ s, C i))
+    (hchart : ∀ i ∈ s, ∃ e : OpenPartialHomeomorph N (EuclideanSpace ℝ (Fin m)),
+      e ∈ (plGroupoid m).maximalAtlas N ∧ MapsTo f (C i) e.source)
+    {ε : ℝ} (hε : 0 < ε) :
+    ∃ g : EuclideanSpace ℝ (Fin n) → N, IsPLOn n m g (⋃ i ∈ s, C i) ∧
+      ∀ x ∈ ⋃ i ∈ s, C i, dist (g x) (f x) < ε := by
+  classical
+  induction s using Finset.induction_on generalizing ε with
+  | empty => exact ⟨f, fun x hx => absurd hx (by simp), fun x hx => absurd hx (by simp)⟩
+  | insert j t hj ih =>
+    rw [Finset.set_biUnion_insert] at hf ⊢
+    set U := ⋃ i ∈ t, C i with hUdef
+    have hU : IsPolyhedron U := IsPolyhedron.finsetBiUnion t hC
+    obtain ⟨e, he, hemap⟩ := hchart j (Finset.mem_insert_self j t)
+    have hQ : IsPolyhedron (U ∩ C j) := hU.inter (hC j)
+    obtain ⟨η, hη, hηprop⟩ :=
+      exists_pos_forall_exists_isPLOn_dist_lt_eqOn_of_mapsTo_chart (hC j) (hC j).isCompact
+        hQ inter_subset_right (hf.mono subset_union_left) e he hemap hε
+    obtain ⟨g₀, hg₀, hg₀d⟩ :=
+      ih (hf.mono subset_union_right) (fun i hi => hchart i (Finset.mem_insert_of_mem hi))
+        (lt_min hε hη)
+    obtain ⟨g₁, hg₁, hg₁eq, hg₁d⟩ :=
+      hηprop g₀ (hg₀.mono_of_isPolyhedron hQ inter_subset_left)
+        (fun x hx => lt_of_lt_of_le (hg₀d x hx.1) (min_le_right _ _))
+    refine ⟨(C j).piecewise g₁ g₀, ?_, ?_⟩
+    · exact hg₁.piecewise_of_isClosed hg₀ (hC j).isClosed hU.isClosed
+        (fun x hx => hg₁eq ⟨hx.2, hx.1⟩)
+    · intro x hx
+      by_cases hxV : x ∈ C j
+      · rw [Set.piecewise_eq_of_mem _ _ _ hxV]
+        exact hg₁d x hxV
+      · rw [Set.piecewise_eq_of_notMem _ _ _ hxV]
+        exact lt_of_lt_of_le (hg₀d x (hx.resolve_left hxV)) (min_le_left _ _)
 
 end DifferentialGeometry.Topology.PiecewiseLinear
