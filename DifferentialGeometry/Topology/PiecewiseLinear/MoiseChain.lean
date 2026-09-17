@@ -5,6 +5,7 @@ import DifferentialGeometry.Topology.Connected.TwoSided
 import DifferentialGeometry.Topology.PiecewiseLinear.CylindricalDiagram
 import DifferentialGeometry.Topology.PiecewiseLinear.Transition361
 import DifferentialGeometry.Topology.PiecewiseLinear.MapApproximation
+import DifferentialGeometry.Topology.PiecewiseLinear.ManifoldApproximation
 
 open Set
 
@@ -160,6 +161,19 @@ def PLMapApproximation : Prop :=
 theorem plMapApproximation : PLMapApproximation := by
   intro E _ _ _ P hP hPc f hf ε hε
   exact exists_isPiecewiseAffineOn_dist_lt hP hPc hf hε
+
+def PLManifoldMapApproximation : Prop :=
+  ∀ {n : ℕ} {M : Type} [MetricSpace M] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
+    [HasGroupoid M (plGroupoid 3)]
+    {P Q : Set (EuclideanSpace ℝ (Fin n))}, IsPolyhedron P → IsPolyhedron Q → Q ⊆ P →
+    ∀ {f : EuclideanSpace ℝ (Fin n) → M}, ContinuousOn f P → IsPLOn n 3 f Q →
+    ∀ ε : ℝ, 0 < ε →
+      ∃ g : EuclideanSpace ℝ (Fin n) → M,
+        IsPLOn n 3 g P ∧ EqOn g f Q ∧ ∀ x ∈ P, dist (g x) (f x) < ε
+
+theorem plManifoldMapApproximation : PLManifoldMapApproximation := by
+  intro n M _ _ _ P Q hP hQ hQP f hf hfQ ε hε
+  exact exists_isPLOn_dist_lt_eqOn hP hQ hQP hf hfQ hε
 
 def TopologicalCellComplementConnected : Prop :=
   ∀ C : Set (EuclideanSpace ℝ (Fin 3)), IsTopologicalCell 3 C → IsConnected Cᶜ

@@ -233,3 +233,34 @@ F 车道的 `LocallyFinitePieceTower`（F6.3）已经给了非紧 PL 流形的�
 所以还要做覆盖归纳：把 `P` 剖分成有限块使每块的像落在一张图卡内，逐块逼近并在交界处拼接。
 F 车道的 `Topology/Pasting.lean` 与 `SingularPasting.lean` 正是为这种"改一块、界外不变、保住纤维"的拼接建的。
 相对版（本轮已证的 `exists_isPiecewiseAffineOn_dist_lt_eqOn`）是归纳步骤的关键：逐块处理时前面已处理的部分要保持不动。
+
+## 流形版逼近已证，逼近层关闭（2026-09-17）
+
+`ManifoldApproximation.lean` 现在给出无图卡限制的版本：
+
+- `exists_isPLOn_dist_lt`：`P ⊆ ℝⁿ` 紧致多面体、`N` 为带 `plGroupoid m` 的度量流形、`f` 在 `P` 上连续、`ε > 0`，
+  则存在 `g` 使 `IsPLOn n m g P` 且 `∀ x ∈ P, dist (g x) (f x) < ε`。
+- `exists_isPLOn_dist_lt_eqOn`：相对版，`Q ⊆ P` 子多面体上 `f` 已是 PL 时，`g` 在 `Q` 上与 `f` 逐点相等。
+- `MoiseChain.lean` 的 `PLManifoldMapApproximation` / `plManifoldMapApproximation` 记录这一结点。审计仅标准三公理。
+
+架构（四层，每层都是独立可用的定理）：
+
+1. `MapApproximation.lean` 的 `exists_isPiecewiseAffineOn_dist_lt_eqOn_of_dist_le`：欧氏相对版的推广——
+   不再要求 `f` 本身在 `Q` 上逐片仿射，而是给定一个在 `Q` 上逐片仿射、与 `f` 相距 `≤ δ` 的 `u`，
+   结论是 `g` 在 `Q` 上**等于 `u`**、在 `P` 上与 `f` 相距 `< δ + ε`。顶点映射取 `Q.piecewise u f`，
+   其余与原证明相同。原来的相对版是 `δ = 0` 的特例。
+2. `ManifoldApproximation.lean` 的 `exists_pos_forall_exists_isPLOn_dist_lt_eqOn_of_mapsTo_chart`：
+   单图卡版，但**先给出容差 `η`**：`∃ η > 0, ∀ u, (u 在 Q 上 PL 且与 f 相距 < η) → ∃ g …`。
+   量词次序是归纳能跑通的关键——处理第 `k+1` 块时，先由这块定出 `η`，再让前 `k` 块以 `min ε η` 的精度完成。
+   N 侧不能用 `cthickening`（一般度量空间非 proper），改用 `ChartedSpace.locallyCompactSpace` +
+   `exists_compact_between` 取紧邻域，再在其上用 `e` 的一致连续性。
+3. `exists_isPLOn_dist_lt_eqOn_of_biUnion`：对有限族 `C : ι → Set ℝⁿ`（每块是多面体且像落在一张图卡里）
+   按 `Finset.induction_on` 逐块处理，归纳假设对**所有** `ε` 成立，因此误差的递减时间表自动产生。
+   拼接用 `Pasting.lean` 的 `IsPLOn.piecewise_of_isClosed`（本轮从 `LoopTheorem/CellGluing.lean` 的 private 提上来）。
+4. `exists_finsetBiUnion_eq_mapsTo_chart`：造覆盖。对每点取 `f ⁻¹' (chartAt (f x)).source` 的开邻域，
+   `lebesgue_number_lemma_of_metric` 给 Lebesgue 数 `d`，`exists_isSubdivision_diam_lt` 把三角剖分细到直径 `< d`，
+   闭单形即为各块（空面用 `Finset.filter` 去掉，否则无法给出图卡）。
+
+**影响**：`MOISE_CHAIN.md` 上"三条便宜箭头共用同一个缺口"里的**逼近缺口已经消掉**。
+25.2 ← 25.1 与 26.4 ← 25.2 + 26.3 两条箭头现在只差书上本身的论证，不再缺前置定理。
+30.5 ← 30.4 仍缺 `TopologicalCellComplementConnected`（拓扑 Jordan–Brouwer），那是同调侧的工作。
