@@ -3,6 +3,9 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Geodesic.
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Solutions.Pullback
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Regularity
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.Naturality.Pullback
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Geodesic.Basic
+import DifferentialGeometry.Geometry.Operator.Pullback
+import DifferentialGeometry.Geometry.Curvature.RicciPullback
 
 set_option autoImplicit false
 
@@ -270,3 +273,131 @@ theorem lExp_pull
   exact lRegularizedCurve_pull (I := I) S hS Phi T x Z (Real.sqrt tau)
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman
+
+end
+section
+
+set_option autoImplicit false
+
+noncomputable section
+
+open Bundle
+open scoped Manifold ContDiff
+
+namespace DifferentialGeometry.PDE.RicciFlow.Perelman
+
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Operator
+
+variable {E F H G M N : Type*}
+  [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+  [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
+  [TopologicalSpace H] [TopologicalSpace G]
+  {I : ModelWithCorners ℝ E H} {J : ModelWithCorners ℝ F G}
+  [I.Boundaryless] [J.Boundaryless]
+  [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
+  [TopologicalSpace N] [ChartedSpace G N] [IsManifold J ∞ N] [T2Space N]
+  {D : RealTimeInterval}
+
+theorem lRegularizedAccel_pullback
+    (S : SolutionOn (I := J) (M := N) D) (Φ : M ≃ₘ⟮I, J⟯ N)
+    (T s : ℝ) (x : M) (v : TangentSpace I x) :
+    mfderiv I J Φ x (lRegularizedAccel (S.pullback Φ) T s x v) =
+      lRegularizedAccel S T s (Φ x) (mfderiv I J Φ x v) := by
+  let instCompleteF : CompleteSpace F := FiniteDimensional.complete ℝ F
+  let g := S.base.metric (T - s ^ 2)
+  have hscalar : (S.pullback Φ).scalar (T - s ^ 2) =
+      S.scalar (T - s ^ 2) ∘ (Φ : M → N) := by
+    funext y
+    exact S.pullback_scalar Φ (T - s ^ 2) y
+  have hgrad : mfderiv I J Φ x
+      (gradientFun (Diffeomorph.pullbackMetricCross g Φ)
+        ((S.pullback Φ).scalar (T - s ^ 2)) x) =
+      gradientFun g (S.scalar (T - s ^ 2)) (Φ x) := by
+    rw [hscalar, gradientFun_pullbackCross g Φ (S.scalar (T - s ^ 2)) x
+      ((scalarSmoothOfSolution S (T - s ^ 2)).contMDiffAt.mdifferentiableAt (by simp))]
+    rw [← Φ.mfderivToContinuousLinearEquiv_coe (by simp)]
+    exact (Φ.mfderivToContinuousLinearEquiv (by simp) x).apply_symm_apply _
+  change mfderiv I J Φ x
+      ((2 * s ^ 2) • gradientFun (Diffeomorph.pullbackMetricCross g Φ)
+        ((S.pullback Φ).scalar (T - s ^ 2)) x -
+        (4 * s) • ricciSharp (Diffeomorph.pullbackMetricCross g Φ) x v) =
+      (2 * s ^ 2) • gradientFun g (S.scalar (T - s ^ 2)) (Φ x) -
+        (4 * s) • ricciSharp g (Φ x) (mfderiv I J Φ x v)
+  rw [map_sub, map_smul, map_smul, hgrad, ricciSharp_pullbackMetricCross]
+
+end DifferentialGeometry.PDE.RicciFlow.Perelman
+
+end
+
+end
+noncomputable section
+
+namespace DifferentialGeometry.PDE.RicciFlow.Perelman
+
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Riemannian.AlongCurve
+open DifferentialGeometry.Geometry.Riemannian.CovariantDerivativeAlong
+open scoped Manifold ContDiff
+
+variable {E F H G M N : Type*}
+  [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+  [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
+  [TopologicalSpace H] [TopologicalSpace G]
+  {I : ModelWithCorners ℝ E H} {J : ModelWithCorners ℝ F G}
+  [I.Boundaryless] [J.Boundaryless]
+  [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
+  [TopologicalSpace N] [ChartedSpace G N] [IsManifold J ∞ N] [T2Space N]
+  {D : RealTimeInterval}
+
+omit [FiniteDimensional ℝ E] [FiniteDimensional ℝ F]
+  [I.Boundaryless] [J.Boundaryless]
+  [IsManifold I ∞ M] [IsManifold J ∞ N] [T2Space M] [T2Space N] in
+theorem lVelocity_comp_diffeomorph (Φ : M ≃ₘ⟮I, J⟯ N) (alpha : ℝ → M) (s : ℝ) :
+    lVelocity (I := J) (Φ ∘ alpha) s =
+      mfderiv I J Φ (alpha s) (lVelocity (I := I) alpha s) := by
+  change (mfderiv 𝓘(ℝ, ℝ) J (Φ ∘ alpha) s) 1 = _
+  rw [Φ.mfderiv_comp (by decide)]
+  rfl
+
+theorem IsLRegularizedGeodesicOn.comp_diffeomorph
+    (S : SolutionOn (I := J) (M := N) D) (Φ : M ≃ₘ⟮I, J⟯ N)
+    {T : ℝ} {alpha : ℝ → M} {K : Set ℝ}
+    (h : IsLRegularizedGeodesicOn (S.pullback Φ) T alpha K) :
+    IsLRegularizedGeodesicOn S T (Φ ∘ alpha) K := by
+  intro s hs
+  obtain ⟨ht, hmd, hvel, hacc⟩ := h s hs
+  refine ⟨ht, (Φ.contMDiff.mdifferentiableAt (by decide)).comp s hmd, ?_, ?_⟩
+  · have hmap := chartRep_map_diff Φ alpha
+      (fun r => lVelocity (I := I) alpha r) s hmd hvel
+    simpa only [← lVelocity_comp_diffeomorph, Function.comp_def] using hmap
+  · have hnat := covDerivAlong_pullback (S.base.metric (T - s ^ 2)) Φ alpha
+      (fun r => lVelocity (I := I) alpha r) s hmd hvel
+    change covDerivAlong
+      (Diffeomorph.pullbackMetricCross (S.base.metric (T - s ^ 2)) Φ) alpha
+      (fun r => lVelocity (I := I) alpha r) s = _ at hacc
+    rw [hacc, lRegularizedAccel_pullback] at hnat
+    simpa only [← lVelocity_comp_diffeomorph, Function.comp_def] using hnat.symm
+
+
+theorem isLRegularizedGeodesicOn_pullback_iff
+    (S : SolutionOn (I := J) (M := N) D) (Φ : M ≃ₘ⟮I, J⟯ N)
+    {T : ℝ} {alpha : ℝ → M} {K : Set ℝ} :
+    IsLRegularizedGeodesicOn (S.pullback Φ) T alpha K ↔
+      IsLRegularizedGeodesicOn S T (Φ ∘ alpha) K := by
+  constructor
+  · exact IsLRegularizedGeodesicOn.comp_diffeomorph S Φ
+  · intro h
+    have hsource : IsLRegularizedGeodesicOn
+        ((S.pullback Φ).pullback Φ.symm) T (Φ ∘ alpha) K := by
+      simpa only [SolutionOn.pullback_symm] using h
+    have h' := IsLRegularizedGeodesicOn.comp_diffeomorph (S.pullback Φ) Φ.symm hsource
+    have heq : Φ.symm ∘ (Φ ∘ alpha) = alpha := by
+      funext s
+      exact Φ.symm_apply_apply (alpha s)
+    rw [heq] at h'
+    exact h'
+
+end DifferentialGeometry.PDE.RicciFlow.Perelman
+
+end

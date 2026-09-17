@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ChartPartition.Regularity.Interior
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ChartPartition.Construction.StrictRefinement
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Geodesic.ExponentialMap
 
 set_option autoImplicit false
 
@@ -67,5 +68,73 @@ theorem lMinCurve_regularity
     gamma hgamma u' hsrc' hrep' hreg hmin
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman
+
+end
+section
+
+set_option autoImplicit false
+
+noncomputable section
+
+namespace DifferentialGeometry.PDE.RicciFlow.Perelman
+
+open Bundle Function Set
+open scoped ContDiff Manifold Topology
+
+open DifferentialGeometry.Analysis.Parabolic.TimeSobolev
+open DifferentialGeometry.Geometry
+open DifferentialGeometry.Geometry.Curvature
+
+universe u uE uH
+
+variable {E : Type uE} [NormedAddCommGroup E] [InnerProductSpace Real E]
+  [FiniteDimensional Real E]
+variable {H : Type uH} [TopologicalSpace H]
+variable {I : ModelWithCorners Real E H} [I.Boundaryless]
+variable {M : Type u} [PseudoMetricSpace M] [ChartedSpace H M]
+  [IsManifold I ∞ M] [T2Space M] [CompactSpace M]
+variable {D : RealTimeInterval}
+
+omit [CompactSpace M] in
+theorem lMinCurve_regularizedGeodesicOn_of_spatial_derivatives
+    (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
+    (T a b : Real) {m : Nat} (t : Fin (m + 1) → Real)
+    (htmono : Monotone t) (ht0 : t 0 = a)
+    (htlast : t (Fin.last m) = b) (p : Fin m → M)
+    (gamma : Real → M) (hgamma : Continuous gamma)
+    (u : (i : Fin m) → timeH1 E (partitionIntervalLength t i))
+    (hsrc : ∀ i, MapsTo gamma (Icc (t i.castSucc) (t i.succ))
+      (chartAt H (p i)).source)
+    (hrep : ∀ i, EqOn (u i).toFun
+      (fun r ↦ extChartAt I (p i) (gamma (t i.castSucc + r)))
+      (Icc (0 : Real) (partitionIntervalLength t i)))
+    (U : Set Real) (hU : U ⊆ D.carrier)
+    (htime : ∀ s ∈ Icc a b, T - s ^ 2 ∈ U)
+    (hreg : ∀ s ∈ Ioo a b, T - s ^ 2 ∈ D.regular)
+    (hGramFd : ∀ p : M, ContinuousOn (fun z : Real × E => fderiv Real
+      (fun y : E => chartGramOp (I := I) S.family p (z.1, y)) z.2)
+      (U ×ˢ interior (extChartAt I p).target))
+    (hScalFd : ∀ p : M, ContinuousOn (fun z : Real × E => fderiv Real
+      (DifferentialGeometry.Tensor.Coordinates.scalarOnE (I := I) p (S.scalar z.1)) z.2)
+      (U ×ˢ interior (extChartAt I p).target))
+    (hmin : ∀ delta : Real → M,
+      ContMDiff (modelWithCornersSelf Real Real) I 1 delta →
+      delta a = gamma a → delta b = gamma b →
+      lRegularizedAction S T gamma a b ≤ lRegularizedAction S T delta a b) :
+    IsLRegularizedGeodesicOn S T gamma (Ioo a b) := by
+  classical
+  obtain ⟨k, s, _q, p', u', hs, _hq, hs0, hslast, _hseg, _hp,
+      hsrc', hrep'⟩ := exists_strict_chart_partition (I := I) t htmono p u gamma hsrc hrep
+  have hs0a : s 0 = a := hs0.trans ht0
+  have hslastb : s (Fin.last k) = b := hslast.trans htlast
+  intro r hr
+  refine ⟨hreg r hr, ?_⟩
+  exact lRegularizedAction_minimizer_differentiable_and_acceleration_eq_on_interior_of_spatial_derivatives
+    (I := I) S hS T a b s hs hs0a hslastb p' gamma hgamma u' hsrc' hrep'
+    U hU htime hreg (fun i => hGramFd (p' i)) (fun i => hScalFd (p' i)) hmin r hr
+
+end DifferentialGeometry.PDE.RicciFlow.Perelman
+
+end
 
 end
