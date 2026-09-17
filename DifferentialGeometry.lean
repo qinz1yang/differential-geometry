@@ -3363,6 +3363,9 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Compactne
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Compactness.NormalCharts
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.ConnectedComponent
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.Defs
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.DomainEmbedding
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.DomainMetric
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.FixedDomain
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.Maps
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.MetricSource
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.Restriction
@@ -4261,6 +4264,7 @@ import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Defs
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Derivatives.LocalPullback
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Derivatives.Norm
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Derivatives.ParsevalTrace
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Derivatives.PartialDiffeomorph
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Derivatives.Pointwise
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Derivatives.Restriction
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Derivatives.RicciEndomorphism
@@ -4741,6 +4745,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Foundations.Poin
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Foundations.Subsequence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Foundations.WindowEquivalence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Limits.ClosedInterval
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Limits.FixedDomain
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.AncientHalfLine
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Limits.CurvatureOperator
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Limits.Equation
@@ -4761,6 +4766,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Endpoint.
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Endpoint.CurvatureJetPolynomialContinuity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Endpoint.UniformCoordinateJets
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Solution.Bounds
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Solution.TerminalConvergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Solution.TimeRegularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Solution.WindowPrecompactness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.TracefreeRicciPullback
@@ -5530,6 +5536,8 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborho
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.SphereSeparationDiffeomorphEuclidean
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.SubendRadialLevelSharpness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.TerminalBackwardExtension
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.TerminalCurvatureBounds
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.TerminalLocalBackwardFlow
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.TerminalScalarEscape
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.TerminalCarrierBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.TerminalChartJets
@@ -7349,6 +7357,7 @@ import DifferentialGeometry.Geometry.Metric.Construction.BumpExtension
 import DifferentialGeometry.Geometry.Metric.Construction.CompactPerturbationCompleteness
 import DifferentialGeometry.Geometry.Metric.Construction.ConvexCombination
 import DifferentialGeometry.Geometry.Metric.Construction.Existence
+import DifferentialGeometry.Geometry.Metric.Construction.Immersion
 import DifferentialGeometry.Geometry.Metric.Construction.SmoothMetricFromCoefficients
 import DifferentialGeometry.Geometry.Metric.Construction.TensorBumpExtension
 import DifferentialGeometry.Geometry.Metric.Convergence.Compactness.Bridge
@@ -7407,7 +7416,9 @@ import DifferentialGeometry.Geometry.Metric.Convergence.Metric.Tower
 import DifferentialGeometry.Geometry.Metric.Convergence.Metric.UniformEquivalence
 import DifferentialGeometry.Geometry.Metric.Convergence.Naturality.CrossTensorCovariantDerivative
 import DifferentialGeometry.Geometry.Metric.Convergence.Naturality.CrossTensorPullback
+import DifferentialGeometry.Geometry.Metric.Convergence.Naturality.FixedDomain
 import DifferentialGeometry.Geometry.Metric.Convergence.Naturality.PullbackCross
+import DifferentialGeometry.Geometry.Metric.Convergence.Naturality.PullbackCrossConvergence
 import DifferentialGeometry.Geometry.Metric.Convergence.Time.ChartJets
 import DifferentialGeometry.Geometry.Metric.Convergence.Time.Lipschitz
 import DifferentialGeometry.Geometry.Metric.Convergence.Window.AllOrders
@@ -8942,6 +8953,7 @@ import DifferentialGeometry.Topology.Manifold.CollarFamily
 import DifferentialGeometry.Topology.Manifold.CollarFamilySeparation
 import DifferentialGeometry.Topology.Manifold.CurveEndpointPerturbation
 import DifferentialGeometry.Topology.Manifold.ImmersionCriterion
+import DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.Embedding
 import DifferentialGeometry.Topology.Manifold.NormalChartOrientation
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.LeftInverse
 import DifferentialGeometry.Topology.Manifold.RegularLevel.Tangent
