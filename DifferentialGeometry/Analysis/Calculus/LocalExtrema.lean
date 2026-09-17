@@ -52,3 +52,72 @@ theorem IsLocalMinOn.hasFDerivWithinAt_pos_of_halfSpace
   change f' w = 0
   simpa only [map_sub, map_smul, smul_eq_mul, ← hzero, mul_zero, sub_zero,
     Pi.zero_apply] using heq
+
+theorem HasFDerivAt.apply_nonneg_of_eventually_nonneg
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {f g : E → ℝ} {a : E} {f' g' : E →L[ℝ] ℝ}
+    (hf : HasFDerivAt f f' a) (hg : HasFDerivAt g g' a)
+    (hfa : f a = 0) (hga : g a = 0)
+    (hpos : ∀ᶠ x in 𝓝 a, 0 < f x → 0 ≤ g x)
+    {v : E} (hv : 0 < f' v) : 0 ≤ g' v := by
+  by_contra! hn
+  have hc : HasDerivAt (fun t : ℝ => a + t • v) v 0 := by
+    simpa using ((hasDerivAt_id (0 : ℝ)).smul_const v).const_add a
+  have hfc : HasDerivAt (fun t : ℝ => f (a + t • v)) (f' v) 0 := by
+    exact (show HasFDerivAt f f' (a + (0 : ℝ) • v) by simpa using hf).comp_hasDerivAt 0 hc
+  have hgc : HasDerivAt (fun t : ℝ => g (a + t • v)) (g' v) 0 := by
+    exact (show HasFDerivAt g g' (a + (0 : ℝ) • v) by simpa using hg).comp_hasDerivAt 0 hc
+  have hfs := eventually_nhdsWithin_sign_eq_of_deriv_pos
+    (hfc.deriv.symm ▸ hv) (by simpa using hfa)
+  have hgs := eventually_nhdsWithin_sign_eq_of_deriv_neg
+    (hgc.deriv.symm ▸ hn) (by simpa using hga)
+  have hct : Tendsto (fun t : ℝ => a + t • v) (𝓝 0) (𝓝 a) := by
+    simpa using hc.continuousAt.tendsto
+  have hps := hct.eventually hpos
+  have hboth := hfs.and (hgs.and hps)
+  obtain ⟨ε, hε, hεprop⟩ := Metric.eventually_nhds_iff.mp hboth
+  have ht : 0 < ε / 2 := by linarith
+  have hdist : dist (ε / 2) (0 : ℝ) < ε := by
+    rw [Real.dist_eq, sub_zero, abs_of_pos ht]
+    linarith
+  obtain ⟨hft, hgt, hpt⟩ := hεprop hdist
+  have hfpos : 0 < f (a + (ε / 2) • v) := by
+    apply sign_eq_one_iff.mp
+    simpa only [sub_zero, sign_pos ht] using hft
+  have hgneg : g (a + (ε / 2) • v) < 0 := by
+    apply sign_eq_neg_one_iff.mp
+    simpa only [zero_sub, sign_neg (neg_neg_of_pos ht)] using hgt
+  exact (hpt hfpos).not_gt hgneg
+
+private theorem continuousLinearMap_apply_pos_of_nonneg
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    (φ ψ : E →L[ℝ] ℝ) (hψ : ψ ≠ 0)
+    (h : ∀ v, 0 < φ v → 0 ≤ ψ v) {v : E} (hv : 0 < φ v) : 0 < ψ v := by
+  apply lt_of_le_of_ne (h v hv)
+  intro heq
+  have hz : ψ v = 0 := heq.symm
+  apply hψ
+  ext w
+  let t := (|φ w| + 1) / φ v
+  have ht : t * φ v = |φ w| + 1 := div_mul_cancel₀ _ hv.ne'
+  have hp : 0 < φ (w + t • v) := by
+    rw [map_add, map_smul, smul_eq_mul, ht]
+    linarith [neg_abs_le (φ w)]
+  have hn : 0 < φ (-w + t • v) := by
+    rw [map_add, map_neg, map_smul, smul_eq_mul, ht]
+    linarith [le_abs_self (φ w)]
+  have hwp := h _ hp
+  have hwn := h _ hn
+  simp only [map_add, map_smul, smul_eq_mul, hz, mul_zero, add_zero, map_neg] at hwp hwn
+  change ψ w = 0
+  exact le_antisymm (by linarith) hwp
+
+theorem HasFDerivAt.apply_pos_of_eventually_nonneg
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {f g : E → ℝ} {a : E} {f' g' : E →L[ℝ] ℝ}
+    (hf : HasFDerivAt f f' a) (hg : HasFDerivAt g g' a)
+    (hfa : f a = 0) (hga : g a = 0) (hg' : g' ≠ 0)
+    (hpos : ∀ᶠ x in 𝓝 a, 0 < f x → 0 ≤ g x)
+    {v : E} (hv : 0 < f' v) : 0 < g' v :=
+  continuousLinearMap_apply_pos_of_nonneg f' g' hg'
+    (fun _ hw => HasFDerivAt.apply_nonneg_of_eventually_nonneg hf hg hfa hga hpos hw) hv
