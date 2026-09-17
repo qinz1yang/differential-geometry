@@ -2,6 +2,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.OpenStar
 import DifferentialGeometry.Topology.PiecewiseLinear.SimplicialMap
 import DifferentialGeometry.Topology.PiecewiseLinear.Mesh
 import DifferentialGeometry.Topology.PiecewiseLinear.Combinatorial
+import DifferentialGeometry.Topology.LoopSpace.Basic
 
 open Set Metric
 
@@ -217,5 +218,45 @@ theorem exists_isPiecewiseAffineOn_mapsTo_dist_lt_homotopic
   refine ⟨g, hg, hgmap, hdist, ?_⟩
   exact homotopic_restrict_of_continuousOn hf hg.continuousOn hmap hgmap hHcont hHmap
     (fun x _ => by simp) (fun x _ => by simp)
+
+open Classical in
+theorem exists_isPiecewiseAffineOn_freeLoop_homotopic
+    {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
+    (J : Geometry.SimplicialComplex ℝ E) [Finite J.faces]
+    (L : Geometry.SimplicialComplex ℝ F) [Finite L.faces]
+    (e : loopCircle ≃ₜ J.space) (γ : freeLoop L.space) {ε : ℝ} (hε : 0 < ε) :
+    ∃ (g : E → F) (hg : IsPiecewiseAffineOn g J.space) (hgmap : MapsTo g J.space L.space),
+      γ.Homotopic
+        ((⟨fun x : J.space => (⟨g x, hgmap x.2⟩ : L.space),
+          hg.continuousOn.domRestrict.subtype_mk _⟩ : C(J.space, L.space)).comp
+            (e : C(loopCircle, J.space))) := by
+  classical
+  set Φ : C(J.space, L.space) := γ.comp (e.symm : C(J.space, loopCircle)) with hΦdef
+  set f : E → F := fun x => if h : x ∈ J.space then ((Φ ⟨x, h⟩ : L.space) : F) else 0 with hfdef
+  have hfval : ∀ x : J.space, f x = ((Φ x : L.space) : F) := by
+    intro x
+    rw [hfdef]
+    simp only [dif_pos x.2]
+  have hf : ContinuousOn f J.space := by
+    rw [continuousOn_iff_continuous_domRestrict]
+    have hres : J.space.domRestrict f = fun x => ((Φ x : L.space) : F) := funext hfval
+    rw [hres]
+    exact continuous_subtype_val.comp Φ.continuous
+  have hmap : MapsTo f J.space L.space := by
+    intro x hx
+    rw [hfval ⟨x, hx⟩]
+    exact (Φ ⟨x, hx⟩).2
+  obtain ⟨g, hg, hgmap, -, hhom⟩ :=
+    exists_isPiecewiseAffineOn_mapsTo_dist_lt_homotopic J L hf hmap hε
+  refine ⟨g, hg, hgmap, ?_⟩
+  have hFΦ : (⟨fun x : J.space => (⟨f x, hmap x.2⟩ : L.space),
+      hf.domRestrict.subtype_mk _⟩ : C(J.space, L.space)) = Φ :=
+    ContinuousMap.ext fun x => Subtype.ext (hfval x)
+  rw [hFΦ] at hhom
+  have hγ : γ = Φ.comp (e : C(loopCircle, J.space)) :=
+    ContinuousMap.ext fun t => by rw [hΦdef]; simp
+  rw [hγ]
+  exact hhom.comp (ContinuousMap.Homotopic.refl (e : C(loopCircle, J.space)))
 
 end DifferentialGeometry.Topology.PiecewiseLinear
