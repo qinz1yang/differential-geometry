@@ -164,6 +164,72 @@ theorem exists_unique_vector_forcing_of_l2_coefficients
     rw [hout, Pi.add_apply, hadd, Pi.add_apply, h2, h1, hfield]
     exact ht
 
+
+theorem vector_forcing_norm_le_of_l2_coefficients
+    (hT : 0 < T)
+    (A2 : ℝ → HsPi (ι := ι) (g := g) (r := r) (s := s) (a + 2) →L[ℝ]
+      HsPi (ι := ι) (g := g) (r := r) (s := s) a)
+    (hA2 : AEStronglyMeasurable A2 (timeMeasure T))
+    (C2 : ℝ≥0) (hC2 : ∀ᵐ t ∂timeMeasure T, ‖A2 t‖ ≤ C2)
+    (A1 : ℝ → HsPi (ι := ι) (g := g) (r := r) (s := s) (a + 1) →L[ℝ]
+      HsPi (ι := ι) (g := g) (r := r) (s := s) a)
+    (hA1 : MemLp A1 2 (timeMeasure T))
+    (f0 : timeL2 (HsPi (ι := ι) (g := g) (r := r) (s := s) a) T)
+    (hsmall : (C2 : ℝ) * (1 + T) + Real.sqrt (1 + T) * ‖hA1.toLp A1‖ < 1)
+    (f : timeL2 (HsPi (ι := ι) (g := g) (r := r) (s := s) a) T)
+    (hf : ∀ᵐ t ∂timeMeasure T,
+        f t = A2 t (maximalRegularityDuhamelVectorField hT 0 f t) +
+          A1 t (ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion
+            (I := I) (M := M) (g := g) (r := r) (s := s)
+            (show a + 1 ≤ a + 2 by linarith))
+              (maximalRegularityDuhamelVectorField hT 0 f t)) + f0 t) :
+    ‖f‖ ≤ ‖f0‖ / (1 - ((C2 : ℝ) * (1 + T) + Real.sqrt (1 + T) * ‖hA1.toLp A1‖)) := by
+  let L := maximalRegularityVectorFieldL (ι := ι) (g := g) (r := r) (s := s) a hT.le
+  let J := ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion
+    (I := I) (M := M) (g := g) (r := r) (s := s)
+    (show a + 1 ≤ a + 2 by linarith))
+  let C : ℝ≥0 := ⟨Real.sqrt (1 + T), Real.sqrt_nonneg _⟩
+  have hL : ‖L‖ ≤ 1 + T := maximalRegularityVectorFieldL_norm_le hT
+  have hC (v) : ∀ᵐ t ∂timeMeasure T, ‖J (L v t)‖ ≤ (C : ℝ) * ‖v‖ := by
+    dsimp only [L]
+    rw [maximalRegularityVectorFieldL_eq_duhamel hT]
+    exact maximalRegularityDuhamelVectorField_Ha1_ae_pointwise_le hT v
+  have heq : f = timeOp A2 hA2 C2 hC2 (L f) + timeResponse L J C hC A1 hA1 f + f0 := by
+    apply Lp.ext
+    have hfield : L f = maximalRegularityDuhamelVectorField hT 0 f :=
+      maximalRegularityVectorFieldL_eq_duhamel hT f
+    filter_upwards [hf, Lp.coeFn_add
+        (timeOp A2 hA2 C2 hC2 (L f) + timeResponse L J C hC A1 hA1 f) f0,
+      Lp.coeFn_add (timeOp A2 hA2 C2 hC2 (L f)) (timeResponse L J C hC A1 hA1 f),
+      timeOp_apply_ae A2 hA2 C2 hC2 (L f),
+      timeResponse_ae L J C hC A1 hA1 f] with t ht hout hadd h2 h1
+    rw [hout, Pi.add_apply, hadd, Pi.add_apply, h2, h1, hfield]
+    exact ht
+  have hprincipal : ‖timeOp A2 hA2 C2 hC2 (L f)‖ ≤
+      ((C2 : ℝ) * (1 + T)) * ‖f‖ := by
+    calc
+      _ ≤ ‖timeOp A2 hA2 C2 hC2‖ * ‖L f‖ := (timeOp A2 hA2 C2 hC2).le_opNorm _
+      _ ≤ (C2 : ℝ) * ((1 + T) * ‖f‖) :=
+        mul_le_mul (timeOp_norm_le A2 hA2 C2 hC2)
+          ((L.le_opNorm f).trans (mul_le_mul_of_nonneg_right hL (norm_nonneg f)))
+          (norm_nonneg _) C2.coe_nonneg
+      _ = _ := by ring
+  have hdrift : ‖timeResponse L J C hC A1 hA1 f‖ ≤
+      Real.sqrt (1 + T) * ‖hA1.toLp A1‖ * ‖f‖ :=
+    timeResponse_norm_le L J C hC A1 hA1 f
+  have hnorm : ‖f‖ ≤
+      ((C2 : ℝ) * (1 + T) + Real.sqrt (1 + T) * ‖hA1.toLp A1‖) * ‖f‖ + ‖f0‖ := by
+    calc
+      ‖f‖ = ‖timeOp A2 hA2 C2 hC2 (L f) + timeResponse L J C hC A1 hA1 f + f0‖ :=
+        congrArg norm heq
+      _ ≤ (‖timeOp A2 hA2 C2 hC2 (L f)‖ + ‖timeResponse L J C hC A1 hA1 f‖) + ‖f0‖ :=
+        (norm_add_le _ _).trans (add_le_add (norm_add_le _ _) le_rfl)
+      _ ≤ _ := by
+        have hsum := add_le_add (add_le_add hprincipal hdrift) (le_refl ‖f0‖)
+        simpa only [add_mul] using hsum
+  apply (le_div_iff₀ (sub_pos.mpr hsmall)).mpr
+  nlinarith
+
 end DifferentialGeometry.Analysis.Parabolic.QuasiLinear
 end
 

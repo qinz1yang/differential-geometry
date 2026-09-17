@@ -445,3 +445,110 @@ theorem exists_unique_parameterDerivativeDuhamelForcing_lift
   exact h
 
 end DifferentialGeometry.Analysis.Parabolic.QuasiLinear
+
+noncomputable section
+open MeasureTheory
+open scoped Manifold ContDiff ENNReal NNReal
+namespace DifferentialGeometry.Analysis.Parabolic.QuasiLinear
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
+open DifferentialGeometry.Analysis.Parabolic.TimeSobolev
+open DifferentialGeometry.Analysis.Parabolic.MaximalRegularity
+private local instance : NeZero (Module.finrank ℝ ℝ) := ⟨by simp⟩
+variable {ι : Type*} [Fintype ι]
+
+private theorem affineHeatEquation_norm_le
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) (a : ℝ)
+    {T : ℝ} (hT : 0 < T)
+    (A2 : ℝ → (PiLp 2 (fun _ : ι => TensorHs g 0 0 (a + 2))) →L[ℝ]
+      PiLp 2 (fun _ : ι => TensorHs g 0 0 a))
+    (hA2 : AEStronglyMeasurable A2 (timeMeasure T))
+    (C2 : ℝ≥0) (hC2 : ∀ᵐ t ∂timeMeasure T, ‖A2 t‖ ≤ C2)
+    (A1 : ℝ → (PiLp 2 (fun _ : ι => TensorHs g 0 0 (a + 1))) →L[ℝ]
+      PiLp 2 (fun _ : ι => TensorHs g 0 0 a))
+    (hA1 : MemLp A1 2 (timeMeasure T))
+    (fhigh FH : timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 a)) T)
+    (q : ℝ) (hq : q < 1)
+    (hmargin : (C2 : ℝ) * (1 + T) + Real.sqrt (1 + T) * ‖hA1.toLp A1‖ ≤ q)
+    (hf : affineHeatEquation g a hT A2 A1 fhigh FH) :
+    ‖FH‖ ≤ ‖fhigh‖ / (1 - q) := by
+  have hsmall := lt_of_le_of_lt hmargin hq
+  have hheat : heatDuhamelVectorField (g := g) (r := 0) (s := 0) (a := a) hT 0 FH =
+      maximalRegularityDuhamelVectorField (g := g) (r := 0) (s := 0) (a := a) hT 0 FH := by
+    simpa only [map_zero] using heatDuhamelVectorField_inclusion (g := g) (r := 0) (s := 0)
+      (a := a) hT (tensorResolventL2_isCompactOperator g 0 0) 0 FH
+  unfold affineHeatEquation at hf
+  rw [hheat] at hf
+  have hnorm := vector_forcing_norm_le_of_l2_coefficients (g := g) (r := 0) (s := 0)
+    (a := a) hT A2 hA2 C2 hC2 A1 hA1 fhigh hsmall FH hf
+  apply hnorm.trans
+  apply (div_le_div_iff₀ (sub_pos.mpr hsmall) (sub_pos.mpr hq)).mpr
+  exact mul_le_mul_of_nonneg_left (sub_le_sub_left hmargin 1) (norm_nonneg fhigh)
+
+private theorem parameterDerivativeBaseline_affineHeatEquation_norm_le
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ)))
+    {T : ℝ} (hT : 0 < T)
+    (f₀ : PiLp 2 (fun _ : ι => TensorHs g 0 0 (((2 : ℕ) : ℝ) + 2)))
+    (a₂ : timeL2 (TensorHs g 0 0 (((1 : ℕ) : ℝ) + 1)) T)
+    (b₂ : timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 (((1 : ℕ) : ℝ) + 1))) T)
+    (C2h : ℝ≥0) (q : ℝ) (hq : q < 1)
+    (hC2h : ∀ᵐ t ∂timeMeasure T, ‖principalOperatorHigh (ι := ι) g a₂ t‖ ≤ C2h)
+    (hmargin : (C2h : ℝ) * (1 + T) + Real.sqrt (1 + T) *
+      ‖(memLp_parameterDrift_high (ι := ι) g a₂).toLp (driftOperatorHigh g a₂)‖ ≤ q)
+    (FH : timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 ((1 : ℕ) : ℝ))) T)
+    (hf : affineHeatEquation g ((1 : ℕ) : ℝ) hT
+      (principalOperatorHigh g a₂) (driftOperatorHigh g a₂)
+      (AddCircle.parameterDerivativeBaselineForcingLp g f₀ a₂ b₂) FH) :
+    ‖FH‖ ≤ ‖AddCircle.parameterDerivativeBaselineForcingHsPi g f₀‖ *
+      (‖a₂‖ + ‖b₂‖) / (1 - q) := by
+  have hnorm : ‖FH‖ ≤ ‖AddCircle.parameterDerivativeBaselineForcingLp g f₀ a₂ b₂‖ / (1 - q) := by
+    apply affineHeatEquation_norm_le g ((1 : ℕ) : ℝ) hT (principalOperatorHigh g a₂)
+      (memLp_parameterPrincipal_high (ι := ι) g a₂ (lowerCoefficient g)).aestronglyMeasurable
+      C2h hC2h (driftOperatorHigh g a₂) (memLp_parameterDrift_high g a₂)
+      (AddCircle.parameterDerivativeBaselineForcingLp g f₀ a₂ b₂) FH q hq hmargin
+    exact hf
+  apply hnorm.trans
+  apply div_le_div_of_nonneg_right _ (sub_pos.mpr hq).le
+  apply AddCircle.parameterDerivativeBaselineForcingLp_norm_le
+
+section
+
+variable (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ)))
+variable {T : ℝ} (hT : 0 < T)
+variable (F : timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 ((1 : ℕ) : ℝ))) T)
+variable (f₀ : PiLp 2 (fun _ : ι => TensorHs g 0 0 (((2 : ℕ) : ℝ) + 2)))
+variable (a₂ : timeL2 (TensorHs g 0 0 (((1 : ℕ) : ℝ) + 1)) T)
+variable (b₂ : timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 (((1 : ℕ) : ℝ) + 1))) T)
+variable (C2h C2l : ℝ≥0) (q : ℝ) (hq : q < 1)
+variable (hC2h : ∀ᵐ t ∂timeMeasure T, ‖principalOperatorHigh (ι := ι) g a₂ t‖ ≤ C2h)
+variable (hC2l : ∀ᵐ t ∂timeMeasure T, ‖principalOperatorLow (ι := ι) g a₂ t‖ ≤ C2l)
+variable (hmargin : (C2h : ℝ) * (1 + T) + Real.sqrt (1 + T) *
+  ‖(memLp_parameterDrift_high (ι := ι) g a₂).toLp (driftOperatorHigh g a₂)‖ ≤ q)
+variable (hsmalll : coefficientContractionBound (driftOperatorLow (ι := ι) g a₂)
+  (memLp_parameterDrift_low (ι := ι) g a₂ (normalizeZeroPi g)) C2l)
+
+private abbrev parameterDerivativeLiftWithPrincipalBounds :=
+  exists_unique_parameterDerivativeDuhamelForcing_lift (ι := ι)
+    g hT F f₀ a₂ b₂ C2h C2l hC2h hC2l
+
+private abbrev parameterDerivativeLiftWithContractionBounds :=
+  parameterDerivativeLiftWithPrincipalBounds (ι := ι) g hT F f₀ a₂ b₂ C2h C2l hC2h hC2l
+    (lt_of_le_of_lt hmargin hq) hsmalll
+
+include hC2h hC2l hmargin hq hsmalll in
+ theorem exists_parameterDerivativeDuhamelForcing_lift_norm_le
+    (heq : weakParameterEquation g hT F f₀ a₂ b₂) :
+    ∃ FH : timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 ((1 : ℕ) : ℝ))) T,
+      affineHeatLift (ι := ι) g hT (principalOperatorHigh g a₂) (driftOperatorHigh g a₂)
+        (AddCircle.parameterDerivativeBaselineForcingLp g f₀ a₂ b₂)
+        (parameterDerivativeDuhamelForcing (ι := ι) g 0 hT F) FH ∧
+      ‖FH‖ ≤ ‖AddCircle.parameterDerivativeBaselineForcingHsPi g f₀‖ *
+        (‖a₂‖ + ‖b₂‖) / (1 - q) := by
+  obtain ⟨FH, hFH, _⟩ := parameterDerivativeLiftWithContractionBounds (ι := ι)
+    g hT F f₀ a₂ b₂ C2h C2l q hq hC2h hC2l hmargin hsmalll heq
+  exact ⟨FH, hFH, parameterDerivativeBaseline_affineHeatEquation_norm_le
+    g hT f₀ a₂ b₂ C2h q hq hC2h hmargin FH hFH.1⟩
+
+end
+end DifferentialGeometry.Analysis.Parabolic.QuasiLinear
+end

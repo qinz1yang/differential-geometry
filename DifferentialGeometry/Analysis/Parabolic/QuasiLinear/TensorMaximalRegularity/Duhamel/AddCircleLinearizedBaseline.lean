@@ -166,3 +166,55 @@ theorem parameterDerivativeBaselineForcingLp_ae
 end
 
 end AddCircle
+
+noncomputable section
+open MeasureTheory
+open scoped Manifold ContDiff ENNReal
+namespace AddCircle
+open DifferentialGeometry
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
+
+private theorem norm_compLpL_inl_add_compLpL_inr_le
+    {X Y Z : Type*} [NormedAddCommGroup X] [NormedSpace ℝ X]
+    [NormedAddCommGroup Y] [NormedSpace ℝ Y]
+    [NormedAddCommGroup Z] [NormedSpace ℝ Z]
+    {Ω : Type*} [MeasurableSpace Ω] {p : ℝ≥0∞} [Fact (1 ≤ p)] {μ : Measure Ω}
+    (L : (X × Y) →L[ℝ] Z) (a : Lp X p μ) (b : Lp Y p μ) :
+    ‖(L.comp (ContinuousLinearMap.inl ℝ X Y)).compLpL p μ a +
+      (L.comp (ContinuousLinearMap.inr ℝ X Y)).compLpL p μ b‖ ≤
+        ‖L‖ * (‖a‖ + ‖b‖) := by
+  have hA : ‖L.comp (ContinuousLinearMap.inl ℝ X Y)‖ ≤ ‖L‖ :=
+    (ContinuousLinearMap.opNorm_comp_le L (ContinuousLinearMap.inl ℝ X Y)).trans (by
+      simpa only [mul_one] using mul_le_mul_of_nonneg_left
+        (ContinuousLinearMap.norm_inl_le_one ℝ X Y) (norm_nonneg L))
+  have hB : ‖L.comp (ContinuousLinearMap.inr ℝ X Y)‖ ≤ ‖L‖ :=
+    (ContinuousLinearMap.opNorm_comp_le L (ContinuousLinearMap.inr ℝ X Y)).trans (by
+      simpa only [mul_one] using mul_le_mul_of_nonneg_left
+        (ContinuousLinearMap.norm_inr_le_one ℝ X Y) (norm_nonneg L))
+  calc
+    _ ≤ ‖(L.comp (ContinuousLinearMap.inl ℝ X Y)).compLpL p μ a‖ +
+        ‖(L.comp (ContinuousLinearMap.inr ℝ X Y)).compLpL p μ b‖ := norm_add_le _ _
+    _ ≤ ‖L.comp (ContinuousLinearMap.inl ℝ X Y)‖ * ‖a‖ +
+        ‖L.comp (ContinuousLinearMap.inr ℝ X Y)‖ * ‖b‖ :=
+      add_le_add ((L.comp (ContinuousLinearMap.inl ℝ X Y)).norm_compLp_le a)
+        ((L.comp (ContinuousLinearMap.inr ℝ X Y)).norm_compLp_le b)
+    _ ≤ ‖L‖ * ‖a‖ + ‖L‖ * ‖b‖ :=
+      add_le_add (mul_le_mul_of_nonneg_right hA (norm_nonneg a))
+        (mul_le_mul_of_nonneg_right hB (norm_nonneg b))
+    _ = _ := (mul_add _ _ _).symm
+
+theorem parameterDerivativeBaselineForcingLp_norm_le
+    {ι : Type*} [Fintype ι]
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ)))
+    (f₀ : PiLp 2 (fun _ : ι => TensorHs g 0 0 (((2 : ℕ) : ℝ) + 2)))
+    {Ω : Type*} [MeasurableSpace Ω] {p : ℝ≥0∞} [Fact (1 ≤ p)] {μ : Measure Ω}
+    (a₂ : Lp (TensorHs g 0 0 (((1 : ℕ) : ℝ) + 1)) p μ)
+    (b₂ : Lp (PiLp 2 (fun _ : ι => TensorHs g 0 0 (((1 : ℕ) : ℝ) + 1))) p μ) :
+    ‖parameterDerivativeBaselineForcingLp g f₀ a₂ b₂‖ ≤
+      ‖parameterDerivativeBaselineForcingHsPi g f₀‖ * (‖a₂‖ + ‖b₂‖) := by
+  dsimp only [parameterDerivativeBaselineForcingLp]
+  apply norm_compLpL_inl_add_compLpL_inr_le
+
+end AddCircle
+end

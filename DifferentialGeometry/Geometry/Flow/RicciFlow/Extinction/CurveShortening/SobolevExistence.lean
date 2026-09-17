@@ -4939,6 +4939,17 @@ private abbrev ambientParameterDerivativeOperatorLift
   ambient_parameterDerivative_forcing_lift_of_operator_bounds c₀ g ht he hr hEU hleft β hG
     T hT gforce w a₂ b₂
 
+private def parameterDerivativeOperatorBoundsWithMargin {n : ℕ}
+    (g₀ : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) {T : ℝ}
+    (a₂ : timeL2 (TensorHs g₀ 0 0 (((1 : ℕ) : ℝ) + 1)) T) (q : ℝ) : Prop :=
+  ∃ C₂h C₂l : ℝ≥0,
+    (∀ᵐ t ∂timeMeasure T, ‖parameterPrincipalHigh (n := n) g₀ a₂ t‖ ≤ C₂h) ∧
+    (∀ᵐ t ∂timeMeasure T, ‖parameterPrincipalLow (n := n) g₀ a₂ t‖ ≤ C₂l) ∧
+    (C₂h : ℝ) * (1 + T) + Real.sqrt (1 + T) *
+      (eLpNorm (parameterDriftHigh (n := n) g₀ a₂) 2 (timeMeasure T)).toReal ≤ q ∧
+    (C₂l : ℝ) * (1 + T) + Real.sqrt (1 + T) *
+      (eLpNorm (parameterDriftLow (n := n) g₀ a₂) 2 (timeMeasure T)).toReal < 1
+
 private def parameterDerivativeOperatorBounds
     (g₀ : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) {T : ℝ}
     (a₂ : timeL2 (TensorHs g₀ 0 0 (((1 : ℕ) : ℝ) + 1)) T) : Prop :=
@@ -4949,6 +4960,14 @@ private def parameterDerivativeOperatorBounds
       (eLpNorm (parameterDriftHigh (n := n) g₀ a₂) 2 (timeMeasure T)).toReal < 1 ∧
     (C₂l : ℝ) * (1 + T) + Real.sqrt (1 + T) *
       (eLpNorm (parameterDriftLow (n := n) g₀ a₂) 2 (timeMeasure T)).toReal < 1
+
+private theorem parameterDerivativeOperatorBounds_of_margin
+    (g₀ : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) {T q : ℝ}
+    (a₂ : timeL2 (TensorHs g₀ 0 0 (((1 : ℕ) : ℝ) + 1)) T)
+    (hq : q < 1) (h : parameterDerivativeOperatorBoundsWithMargin (n := n) g₀ a₂ q) :
+    parameterDerivativeOperatorBounds (n := n) g₀ a₂ := by
+  obtain ⟨C₂h, C₂l, hhigh, hlow, hmargin, hsmall⟩ := h
+  exact ⟨C₂h, C₂l, hhigh, hlow, hmargin.trans_lt hq, hsmall⟩
 
 private theorem ambient_h2_coefficient_contraction
     (c₀ : SmoothImmersion (I := I) (M := M))
@@ -6715,7 +6734,7 @@ private theorem exists_pos_parameterDrift_norm_lt {n : ℕ}
   exact ⟨by simpa only [Lp.norm_toLp] using hhbound,
     by simpa only [Lp.norm_toLp] using hlbound⟩
 
-private theorem exists_pos_parameterDerivative_contraction_threshold {n : ℕ}
+private theorem exists_pos_parameterDerivative_contraction_margin {n : ℕ}
     (g₀ : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) :
     let H := tensorHsInclusion (g := g₀) (r := 0) (s := 0)
       (by norm_num : ((1 : ℕ) : ℝ) ≤ ((1 : ℕ) : ℝ) + 1)
@@ -6727,7 +6746,7 @@ private theorem exists_pos_parameterDerivative_contraction_threshold {n : ℕ}
         ∀ a₂ : timeL2 (TensorHs g₀ 0 0 (((1 : ℕ) : ℝ) + 1)) T,
         (∀ᵐ t ∂timeMeasure T, ‖H (a₂ t) - q‖ ≤ ε) →
         ‖a₂‖ ≤ A * (Real.sqrt T + (1 + T) * ρ / 4) →
-        parameterDerivativeOperatorBounds (n := n) g₀ a₂ := by
+        parameterDerivativeOperatorBoundsWithMargin (n := n) g₀ a₂ (3 / 4) := by
   intro H q
   obtain ⟨ε, hε, hp⟩ := exists_pos_parameterPrincipal_norm_le (n := n) g₀
   refine ⟨ε, hε, ?_⟩
@@ -6745,8 +6764,8 @@ private theorem exists_pos_parameterDerivative_contraction_threshold {n : ℕ}
       ‖AddCircle.parameterPrincipalOperatorH0Pi (ι := Fin n) g₀ (H (a₂ t))‖ ≤ (1 / 4 : ℝ) := by
     filter_upwards [hclose] with t ht
     exact (hp _ ht).2
-  have hsmallh : (1 / 4 : ℝ) * (1 + T) + Real.sqrt (1 + T) *
-      (eLpNorm (parameterDriftHigh (n := n) g₀ a₂) 2 (timeMeasure T)).toReal < 1 := by
+  have hmargin : (1 / 4 : ℝ) * (1 + T) + Real.sqrt (1 + T) *
+      (eLpNorm (parameterDriftHigh (n := n) g₀ a₂) 2 (timeMeasure T)).toReal ≤ 3 / 4 := by
     linarith
   have hsmalll : (1 / 4 : ℝ) * (1 + T) + Real.sqrt (1 + T) *
       ‖(AddCircle.memLp_parameterDriftOperatorH0Pi (ι := Fin n) g₀ (Lp.memLp a₂)).toLp
@@ -6755,7 +6774,30 @@ private theorem exists_pos_parameterDerivative_contraction_threshold {n : ℕ}
     linarith
   obtain ⟨hpl', hsmalll'⟩ := parameterDerivativeH0Pi_normalized_contraction g₀ a₂
     (1 / 4) hpl hsmalll
-  exact ⟨1 / 4, 1 / 4, hph, hpl', hsmallh, hsmalll'⟩
+  exact ⟨1 / 4, 1 / 4, hph, hpl', hmargin, hsmalll'⟩
+
+private theorem exists_pos_parameterDerivative_contraction_threshold {n : ℕ}
+    (g₀ : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) :
+    let H := tensorHsInclusion (g := g₀) (r := 0) (s := 0)
+      (by norm_num : ((1 : ℕ) : ℝ) ≤ ((1 : ℕ) : ℝ) + 1)
+    let q := ccTensorToHs g₀ 0 ((1 : ℕ) : ℝ)
+      (scalarCc g₀ (AddCircle.laplacianPrincipalCoefficient g₀))
+    ∃ ε : ℝ, 0 < ε ∧ ∀ A : ℝ≥0, ∀ R : ℝ, 0 < R →
+      ∃ δ : ℝ, 0 < δ ∧ δ ≤ R ∧ δ ≤ 1 ∧ ∀ {ρ T : ℝ},
+        0 < T → T ≤ ρ → ρ ≤ δ →
+        ∀ a₂ : timeL2 (TensorHs g₀ 0 0 (((1 : ℕ) : ℝ) + 1)) T,
+        (∀ᵐ t ∂timeMeasure T, ‖H (a₂ t) - q‖ ≤ ε) →
+        ‖a₂‖ ≤ A * (Real.sqrt T + (1 + T) * ρ / 4) →
+        parameterDerivativeOperatorBounds (n := n) g₀ a₂ := by
+  intro H q
+  obtain ⟨ε, hε, hcontract⟩ := exists_pos_parameterDerivative_contraction_margin (n := n) g₀
+  refine ⟨ε, hε, ?_⟩
+  intro A R hR
+  obtain ⟨δ, hδ, hδR, hδ1, hmargin⟩ := hcontract A R hR
+  refine ⟨δ, hδ, hδR, hδ1, ?_⟩
+  intro ρ T hT hTρ hρδ a₂ hclose hnorm
+  exact parameterDerivativeOperatorBounds_of_margin g₀ a₂ (by norm_num : (3 / 4 : ℝ) < 1)
+    (hmargin hT hTρ hρδ a₂ hclose hnorm)
 
 end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening.SmoothImmersion
 end
@@ -6928,7 +6970,7 @@ variable {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 private local instance : NeZero (Module.finrank ℝ ℝ) := ⟨by simp⟩
 
 
-private theorem exists_pos_parameterDerivative_translated_radius
+private theorem exists_pos_parameterDerivative_translated_margin_radius
     (g₀ : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ)))
     (A Cα : ℝ≥0) {R r : ℝ} (hR : 0 < R) (hr : 0 < r)
     (Jn : ℝ) (hJn : 0 ≤ Jn) :
@@ -6941,9 +6983,9 @@ private theorem exists_pos_parameterDerivative_translated_radius
       ∀ a₂ : timeL2 (TensorHs g₀ 0 0 (((1 : ℕ) : ℝ) + 1)) T,
       (∀ᵐ t ∂timeMeasure T, ‖H (a₂ t) - q‖ ≤ (Cα : ℝ) * (2 * δ)) →
       ‖a₂‖ ≤ A * (Real.sqrt T + (1 + T) * ρ / 4) →
-      parameterDerivativeOperatorBounds (n := n) g₀ a₂ := by
+      parameterDerivativeOperatorBoundsWithMargin (n := n) g₀ a₂ (3 / 4) := by
   intro H q
-  obtain ⟨ε, hε, hεcontract⟩ := exists_pos_parameterDerivative_contraction_threshold (n := n) g₀
+  obtain ⟨ε, hε, hεcontract⟩ := exists_pos_parameterDerivative_contraction_margin (n := n) g₀
   let r₀ := min (R / 2) (min (r / (2 * (1 + Jn))) (ε / (2 * (1 + (Cα : ℝ)))))
   have hr₀ : 0 < r₀ := by dsimp only [r₀]; positivity
   have hrR : r₀ ≤ R / 2 := min_le_left _ _
@@ -6982,7 +7024,7 @@ private theorem translated_state_norm_bounds
   exact (J.le_opNorm _).trans ((mul_le_mul_of_nonneg_left (hnorm t ht) (norm_nonneg J)).trans
     (by nlinarith only [hJ]))
 
-private theorem ambient_translated_coefficients_h2_and_contraction
+private theorem ambient_translated_coefficients_h2_and_margin
     (c₀ : SmoothImmersion (I := I) (M := M))
     (g : ℝ → SmoothRiemannianMetric I M) {D : RealTimeInterval} (ht : 0 ∈ D.regular)
     {e : M → EuclideanSpace ℝ (Fin n)} (he : ContMDiff I 𝓘(ℝ, EuclideanSpace ℝ (Fin n)) ∞ e)
@@ -7021,13 +7063,13 @@ private theorem ambient_translated_coefficients_h2_and_contraction
           (fun t => circleHsPiCongr g₀ (Fin n)
             (Nat.cast_one.symm : (1 : ℝ) = ((1 : ℕ) : ℝ))
             (extendClosedBall (ScalarVectorTimeCoefficients.radius_pos C).le (ScalarVectorTimeCoefficients.reaction C) t (J (K (f - f₀) + w t)))) ∧
-        parameterDerivativeOperatorBounds (n := n) g₀ a₂ := by
+        parameterDerivativeOperatorBoundsWithMargin (n := n) g₀ a₂ (3 / 4) := by
   intro C g₀ f₀ J K H P
   obtain ⟨δ₀, hδ₀, hδ₀C, hδ₀1, A, B, hab⟩ :=
     ambient_coefficients_h2_norm_le_of_translated_state c₀ g ht he hr hEU hleft β hG
   obtain ⟨Cα, hclose⟩ := ambient_diffusion_sub_baseline_norm_le c₀ g ht he hr hEU hleft β hG
   obtain ⟨δ, hδ, hδδ, hδ1, hδJ, hcontract⟩ :=
-    exists_pos_parameterDerivative_translated_radius (n := n) g₀ A Cα hδ₀
+    exists_pos_parameterDerivative_translated_margin_radius (n := n) g₀ A Cα hδ₀
       (ScalarVectorTimeCoefficients.radius_pos C) ‖J‖ (norm_nonneg J)
   have hδC : δ ≤ ScalarVectorTimeCoefficients.radius C :=
     (hδδ.trans (by linarith only [hδ₀])).trans hδ₀C
@@ -8318,7 +8360,7 @@ private theorem eventually_coefficients_comp_eq_of_state_eq
     exact ⟨congrArg L₁ h₁.symm, congrArg L₂ h₂.symm⟩
   exact ⟨ha.trans (hpair.mono (fun _ h => h.1)), hb.trans (hpair.mono (fun _ h => h.2))⟩
 
-private theorem reference_coefficient_lifts_at_ae_state
+private theorem reference_coefficient_lifts_with_margin_at_ae_state
     (c₀ : SmoothImmersion (I := I) (M := M))
     (g : ℝ → SmoothRiemannianMetric I M) {D : RealTimeInterval} (ht : 0 ∈ D.regular)
     {e : M → EuclideanSpace ℝ (Fin n)} (he : ContMDiff I 𝓘(ℝ, EuclideanSpace ℝ (Fin n)) ∞ e)
@@ -8371,14 +8413,14 @@ private theorem reference_coefficient_lifts_at_ae_state
         (fun t => HP (b₂ t)) =ᵐ[timeMeasure T]
           (fun t => Cpi (extendClosedBall (ScalarVectorTimeCoefficients.radius_pos C).le
             (ScalarVectorTimeCoefficients.reaction C) t (J (K (f.val - f₀) + w t)))) ∧
-        parameterDerivativeOperatorBounds (n := n) g₀ a₂) →
+        parameterDerivativeOperatorBoundsWithMargin (n := n) g₀ a₂ (3 / 4)) →
       ∃ (a₂ : timeL2 (TensorHs g₀ 0 0 (((1 : ℕ) : ℝ) + 1)) T)
         (b₂ : timeL2 (CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 1)) T),
         (fun t => H (a₂ t)) =ᵐ[timeMeasure T]
           (fun t => C₁ (alpha f t (K (field t)))) ∧
         (fun t => HP (b₂ t)) =ᵐ[timeMeasure T]
           (fun t => Cpi (reaction f t (K (field t)))) ∧
-        parameterDerivativeOperatorBounds (n := n) g₀ a₂ := by
+        parameterDerivativeOperatorBoundsWithMargin (n := n) g₀ a₂ (3 / 4) := by
   intro g₀ f₀ J₀ K₀ P J K F G S H HP C₁ Cpi C δ ρ T hTρ hρC
     alpha reaction hcoeff f field w hwu hbound hJw hlifts
   obtain ⟨a₂, b₂, ha₂, hb₂, hab⟩ := hlifts
@@ -8393,7 +8435,7 @@ private theorem reference_coefficient_lifts_at_ae_state
     (fun t => H (a₂ t)) (fun t => HP (b₂ t)) ha₂ hb₂ heq
   exact ⟨a₂, b₂, haeq, hbeq, hab⟩
 
-private theorem reference_coefficients_h2_lifts_and_contraction_of_continuous_state
+private theorem reference_coefficients_h2_lifts_and_margin_of_continuous_state
     (c₀ : SmoothImmersion (I := I) (M := M))
     (g : ℝ → SmoothRiemannianMetric I M) {D : RealTimeInterval} (ht : 0 ∈ D.regular)
     {e : M → EuclideanSpace ℝ (Fin n)} (he : ContMDiff I 𝓘(ℝ, EuclideanSpace ℝ (Fin n)) ∞ e)
@@ -8444,22 +8486,85 @@ private theorem reference_coefficients_h2_lifts_and_contraction_of_continuous_st
             (by norm_num : ((1 : ℕ) : ℝ) ≤ ((1 : ℕ) : ℝ) + 1))) (b₂ t)) =ᵐ[timeMeasure T]
           (fun t => circleHsPiCongr (c₀.pullbackMetric (g 0)) (Fin n)
             (Nat.cast_one.symm : (1 : ℝ) = ((1 : ℕ) : ℝ)) (reaction f t (K (field t)))) ∧
-        parameterDerivativeOperatorBounds (n := n) (c₀.pullbackMetric (g 0)) a₂ := by
+        parameterDerivativeOperatorBoundsWithMargin (n := n) (c₀.pullbackMetric (g 0)) a₂ (3 / 4) := by
   intro f₀ J₀ K₀ P J K F G S
   obtain ⟨δcap, hδcap, hδC, _, hlift⟩ :=
-    ambient_translated_coefficients_h2_and_contraction c₀ g ht he hr hEU hleft β hG
+    ambient_translated_coefficients_h2_and_margin c₀ g ht he hr hEU hleft β hG
   refine ⟨δcap, hδcap, ?_⟩
   intro δ ρ hδ hρ alpha reaction hcoeff f T hT hTρ gforce field w hw hwu hbound hforce
   have hf : ‖f.val - f₀‖ ≤ δcap :=
     (by simpa only [Metric.mem_closedBall, dist_eq_norm] using f.property : ‖f.val - f₀‖ ≤ δ).trans hδ
   obtain ⟨hJw, hlifts⟩ :=
     hlift f.val hf hT hTρ hρ gforce w hw hwu hbound hforce
-  have htransfer := reference_coefficient_lifts_at_ae_state c₀ g ht he hr hEU hleft β hG
+  have htransfer := reference_coefficient_lifts_with_margin_at_ae_state c₀ g ht he hr hEU hleft β hG
     (δ := δ) (ρ := ρ) (T := T)
   dsimp only [f₀, J₀, K₀, P, J, K, F, G, S] at hcoeff
   exact htransfer hTρ (hρ.trans hδC) alpha reaction hcoeff
     f field w hwu hbound hJw hlifts
 
+
+private theorem reference_coefficients_h2_lifts_and_margin_for_selected_solution
+    (c₀ : SmoothImmersion (I := I) (M := M))
+    (g : ℝ → SmoothRiemannianMetric I M) {D : RealTimeInterval} (ht : 0 ∈ D.regular)
+    {e : M → EuclideanSpace ℝ (Fin n)} (he : ContMDiff I 𝓘(ℝ, EuclideanSpace ℝ (Fin n)) ∞ e)
+    {r : EuclideanSpace ℝ (Fin n) → M} {U : TopologicalSpace.Opens (EuclideanSpace ℝ (Fin n))}
+    (hr : ContMDiffOn 𝓘(ℝ, EuclideanSpace ℝ (Fin n)) I ∞ r U)
+    (hEU : Set.range e ⊆ U) (hleft : ∀ p, r (e p) = p) (β : U)
+    (hG : MetricFamilySmoothOn D (fun t => Geometry.Riemannian.retractionMetric (g t) he hr)) :
+    let f₀ := ambientSobolev c₀ (g 0) e he (((1 : ℕ) : ℝ) + 2)
+    let J₀ := circleFirstJet (ι := Fin n) (c₀.pullbackMetric (g 0))
+    let K₀ : CircleHsPi (c₀.pullbackMetric (g 0)) (Fin n) (((1 : ℕ) : ℝ) + 2) →L[ℝ]
+        CircleHsPi (c₀.pullbackMetric (g 0)) (Fin n) ((1 : ℝ) + 1) :=
+      ContinuousLinearMap.piLpMap 2 (fun _ : Fin n =>
+        tensorHsInclusion (g := (c₀.pullbackMetric (g 0))) (r := 0) (s := 0)
+          (show (1 : ℝ) + 1 ≤ ((1 : ℕ) : ℝ) + 2 by norm_num))
+    let P := J₀.comp K₀
+    let J := J₀.comp (circleHsPiCongr (c₀.pullbackMetric (g 0)) (Fin n)
+      (by norm_num : ((1 : ℕ) : ℝ) + 1 = (1 : ℝ) + 1)).toLinearIsometry.toContinuousLinearMap
+    let K := circleHsPiInclusion (c₀.pullbackMetric (g 0)) (Fin n)
+      (show ((1 : ℕ) : ℝ) + 1 ≤ ((1 : ℕ) : ℝ) + 2 by norm_num)
+    let F := curveShorteningChartDiffusionCoefficient
+      (fun t => Geometry.Riemannian.retractionMetric (g t) he hr) β ∘ firstJetCoordinates n
+    let G := fun z j => curveShorteningParametricChartReaction
+      (fun t => Geometry.Riemannian.retractionMetric (g t) he hr) β (firstJetCoordinates n z) j
+    let S := firstJetCoordinates n ⁻¹' curveShorteningChartFirstJetDomain D
+      (fun t => Geometry.Riemannian.retractionMetric (g t) he hr) β
+    ∃ δcap : ℝ, 0 < δcap ∧ ∀ {δ ρ : ℝ}, δ ≤ δcap → ρ ≤ δcap →
+      ∀ (alpha : Metric.closedBall f₀ δ → ℝ →
+          CircleHsPi (c₀.pullbackMetric (g 0)) (Fin n) (((1 : ℕ) : ℝ) + 1) → TensorHs (c₀.pullbackMetric (g 0)) 0 0 1)
+        (reaction : Metric.closedBall f₀ δ → ℝ →
+          CircleHsPi (c₀.pullbackMetric (g 0)) (Fin n) (((1 : ℕ) : ℝ) + 1) → CircleHsPi (c₀.pullbackMetric (g 0)) (Fin n) 1),
+      referenceCircleCoefficientFacts (c₀.pullbackMetric (g 0)) f₀ P J F G S δ ρ alpha reaction →
+      ∀ (f : Metric.closedBall f₀ δ) {T : ℝ} (hT : 0 < T), T ≤ ρ →
+      ∀ (u : timeH1 (CircleHsPi (c₀.pullbackMetric (g 0)) (Fin n) ((1 : ℕ) : ℝ)) T)
+        (gforce : timeL2 (CircleHsPi (c₀.pullbackMetric (g 0)) (Fin n) ((1 : ℕ) : ℝ)) T),
+      referenceCircleSolutionFacts (c₀.pullbackMetric (g 0)) f.val (alpha f) (reaction f) ρ hT u gforce →
+      let field := maximalRegularityDuhamelVectorField (g := (c₀.pullbackMetric (g 0))) (r := 0) (s := 0)
+        (a := ((1 : ℕ) : ℝ)) hT 0 gforce
+      ∃ a₂ : timeL2 (TensorHs (c₀.pullbackMetric (g 0)) 0 0 (((1 : ℕ) : ℝ) + 1)) T,
+      ∃ b₂ : timeL2 (CircleHsPi (c₀.pullbackMetric (g 0)) (Fin n) (((1 : ℕ) : ℝ) + 1)) T,
+        (fun t => tensorHsInclusion (g := (c₀.pullbackMetric (g 0))) (r := 0) (s := 0)
+          (by norm_num : ((1 : ℕ) : ℝ) ≤ ((1 : ℕ) : ℝ) + 1) (a₂ t)) =ᵐ[timeMeasure T]
+          (fun t => tensorHsCongrL (c₀.pullbackMetric (g 0)) 0 0
+            (Nat.cast_one.symm : (1 : ℝ) = ((1 : ℕ) : ℝ)) (alpha f t (K (field t)))) ∧
+        (fun t => (ContinuousLinearMap.piLpMap 2 (fun _ : Fin n =>
+          tensorHsInclusion (g := (c₀.pullbackMetric (g 0))) (r := 0) (s := 0)
+            (by norm_num : ((1 : ℕ) : ℝ) ≤ ((1 : ℕ) : ℝ) + 1))) (b₂ t)) =ᵐ[timeMeasure T]
+          (fun t => circleHsPiCongr (c₀.pullbackMetric (g 0)) (Fin n)
+            (Nat.cast_one.symm : (1 : ℝ) = ((1 : ℕ) : ℝ)) (reaction f t (K (field t)))) ∧
+        parameterDerivativeOperatorBoundsWithMargin (n := n) (c₀.pullbackMetric (g 0)) a₂ (3 / 4) := by
+  intro f₀ J₀ K₀ P J K F G S
+  obtain ⟨δcap, hδcap, hlift⟩ :=
+    reference_coefficients_h2_lifts_and_margin_of_continuous_state
+      c₀ g ht he hr hEU hleft β hG
+  refine ⟨δcap, hδcap, ?_⟩
+  intro δ ρ hδ hρ alpha reaction hcoeff f T hT hTρ u gforce hfacts field
+  obtain ⟨w, hw, _, hwu, hbound, _, _⟩ :=
+    reference_solution_exists_continuousOn_representative (c₀.pullbackMetric (g 0)) f.val (alpha f) (reaction f)
+      hT u gforce hfacts
+  have hforce : ‖gforce‖ ≤ ρ / 4 := hfacts.2.2.2.2.2.1
+  dsimp only [f₀, J₀, K₀, P, J, K, F, G, S] at hcoeff
+  exact hlift hδ hρ alpha reaction hcoeff f hT hTρ gforce w hw hwu hbound hforce
 
 private theorem reference_coefficients_h2_lifts_and_contraction_for_selected_solution
     (c₀ : SmoothImmersion (I := I) (M := M))
@@ -8512,17 +8617,14 @@ private theorem reference_coefficients_h2_lifts_and_contraction_for_selected_sol
             (Nat.cast_one.symm : (1 : ℝ) = ((1 : ℕ) : ℝ)) (reaction f t (K (field t)))) ∧
         parameterDerivativeOperatorBounds (n := n) (c₀.pullbackMetric (g 0)) a₂ := by
   intro f₀ J₀ K₀ P J K F G S
-  obtain ⟨δcap, hδcap, hlift⟩ :=
-    reference_coefficients_h2_lifts_and_contraction_of_continuous_state
-      c₀ g ht he hr hEU hleft β hG
+  obtain ⟨δcap, hδcap, hmargin⟩ :=
+    reference_coefficients_h2_lifts_and_margin_for_selected_solution c₀ g ht he hr hEU hleft β hG
   refine ⟨δcap, hδcap, ?_⟩
   intro δ ρ hδ hρ alpha reaction hcoeff f T hT hTρ u gforce hfacts field
-  obtain ⟨w, hw, _, hwu, hbound, _, _⟩ :=
-    reference_solution_exists_continuousOn_representative (c₀.pullbackMetric (g 0)) f.val (alpha f) (reaction f)
-      hT u gforce hfacts
-  have hforce : ‖gforce‖ ≤ ρ / 4 := hfacts.2.2.2.2.2.1
-  dsimp only [f₀, J₀, K₀, P, J, K, F, G, S] at hcoeff
-  exact hlift hδ hρ alpha reaction hcoeff f hT hTρ gforce w hw hwu hbound hforce
+  obtain ⟨a₂, b₂, ha₂, hb₂, hmargin⟩ :=
+    hmargin hδ hρ alpha reaction hcoeff f hT hTρ u gforce hfacts
+  exact ⟨a₂, b₂, ha₂, hb₂, parameterDerivativeOperatorBounds_of_margin
+    (c₀.pullbackMetric (g 0)) a₂ (by norm_num : (3 / 4 : ℝ) < 1) hmargin⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening.SmoothImmersion
 end
@@ -12402,4 +12504,494 @@ theorem curveShorteningParabolicGaugeLocalExistence_of_compact
   rw [hc.equation x t ht, hpar.2, add_sub_cancel_right]
 
 end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening
+end
+
+noncomputable section
+open MeasureTheory
+open scoped ENNReal
+namespace DifferentialGeometry.Analysis.Parabolic.TimeSobolev
+
+private theorem lp_eq_of_continuousLinearMap_ae_eq
+    {X Y Ω : Type*} [NormedAddCommGroup X] [NormedSpace ℝ X]
+    [NormedAddCommGroup Y] [NormedSpace ℝ Y] [MeasurableSpace Ω]
+    {p : ℝ≥0∞} {μ : Measure Ω}
+    (D : X →L[ℝ] Y) (hD : Function.Injective D)
+    (u v : Lp X p μ) (h : ∀ᵐ t ∂μ, D (u t) = D (v t)) : u = v := by
+  apply Lp.ext
+  filter_upwards [h] with t ht
+  exact hD ht
+
+end DifferentialGeometry.Analysis.Parabolic.TimeSobolev
+end
+
+noncomputable section
+open MeasureTheory
+open scoped Manifold ContDiff ENNReal NNReal
+namespace DifferentialGeometry.Analysis.Parabolic.QuasiLinear
+open DifferentialGeometry
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
+open DifferentialGeometry.Analysis.Parabolic.TimeSobolev
+
+private theorem timeL2_tensorHs_eq_of_inclusion_ae_eq
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ)))
+    {T : ℝ} (a a' : timeL2 (TensorHs g 0 0 (((1 : ℕ) : ℝ) + 1)) T)
+    (h : ∀ᵐ t ∂timeMeasure T,
+      tensorHsInclusion (g := g) (r := 0) (s := 0)
+        (by norm_num : ((1 : ℕ) : ℝ) ≤ ((1 : ℕ) : ℝ) + 1) (a t) =
+      tensorHsInclusion (g := g) (r := 0) (s := 0)
+        (by norm_num : ((1 : ℕ) : ℝ) ≤ ((1 : ℕ) : ℝ) + 1) (a' t)) :
+    a = a' := by
+  apply TimeSobolev.lp_eq_of_continuousLinearMap_ae_eq
+    (tensorHsInclusion (g := g) (r := 0) (s := 0)
+      (by norm_num : ((1 : ℕ) : ℝ) ≤ ((1 : ℕ) : ℝ) + 1))
+    (tensorHsInclusion_injective (by norm_num : ((1 : ℕ) : ℝ) ≤ ((1 : ℕ) : ℝ) + 1))
+    a a' h
+
+private theorem timeL2_piLp_eq_of_inclusion_ae_eq
+    {ι : Type*} [Fintype ι]
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ)))
+    {T : ℝ}
+    (b b' : timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 (((1 : ℕ) : ℝ) + 1))) T)
+    (h : ∀ᵐ t ∂timeMeasure T,
+      (ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion (g := g)
+        (r := 0) (s := 0) (by norm_num : ((1 : ℕ) : ℝ) ≤ ((1 : ℕ) : ℝ) + 1))) (b t) =
+      (ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion (g := g)
+        (r := 0) (s := 0) (by norm_num : ((1 : ℕ) : ℝ) ≤ ((1 : ℕ) : ℝ) + 1))) (b' t)) :
+    b = b' := by
+  apply TimeSobolev.lp_eq_of_continuousLinearMap_ae_eq
+    (ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion (g := g)
+      (r := 0) (s := 0) (by norm_num : ((1 : ℕ) : ℝ) ≤ ((1 : ℕ) : ℝ) + 1))) ?_ b b' h
+  intro x y hxy
+  apply PiLp.ext
+  intro i
+  apply tensorHsInclusion_injective (by norm_num : ((1 : ℕ) : ℝ) ≤ ((1 : ℕ) : ℝ) + 1)
+  exact congrArg (fun z => z i) hxy
+
+
+private theorem timeL2_parameter_coefficient_pair_eq_of_inclusion_ae_eq
+    {ι : Type*} [Fintype ι]
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) {T : ℝ}
+    (a a' : timeL2 (TensorHs g 0 0 (((1 : ℕ) : ℝ) + 1)) T)
+    (b b' : timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 (((1 : ℕ) : ℝ) + 1))) T)
+    (ha : ∀ᵐ t ∂timeMeasure T,
+      tensorHsInclusion (g := g) (r := 0) (s := 0)
+        (by norm_num : ((1 : ℕ) : ℝ) ≤ ((1 : ℕ) : ℝ) + 1) (a t) =
+      tensorHsInclusion (g := g) (r := 0) (s := 0)
+        (by norm_num : ((1 : ℕ) : ℝ) ≤ ((1 : ℕ) : ℝ) + 1) (a' t))
+    (hb : ∀ᵐ t ∂timeMeasure T,
+      (ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion (g := g)
+        (r := 0) (s := 0) (by norm_num : ((1 : ℕ) : ℝ) ≤ ((1 : ℕ) : ℝ) + 1))) (b t) =
+      (ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion (g := g)
+        (r := 0) (s := 0) (by norm_num : ((1 : ℕ) : ℝ) ≤ ((1 : ℕ) : ℝ) + 1))) (b' t)) :
+    a = a' ∧ b = b' := by
+  exact ⟨timeL2_tensorHs_eq_of_inclusion_ae_eq g a a' ha,
+    timeL2_piLp_eq_of_inclusion_ae_eq g b b' hb⟩
+
+end DifferentialGeometry.Analysis.Parabolic.QuasiLinear
+end
+
+noncomputable section
+open private vectorTensorHsNormedSpace from
+  DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Existence.ShiftedCoefficients
+open scoped Manifold ContDiff NNReal
+open MeasureTheory Set Filter
+namespace DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening.SmoothImmersion
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Parabolic
+open DifferentialGeometry.Analysis.Parabolic.QuasiLinear
+open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
+open DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Analysis.Parabolic.TimeSobolev
+open DifferentialGeometry.Analysis.Parabolic.MaximalRegularity
+open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
+variable {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E] [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
+  {n : ℕ}
+attribute [local instance] DifferentialGeometry.Analysis.Parabolic.vectorTensorHsNormedSpace
+private local instance : NeZero (Module.finrank ℝ ℝ) := ⟨by norm_num⟩
+
+private theorem reference_coefficients_h2_norm_le_for_selected_solution
+    (c₀ : SmoothImmersion (I := I) (M := M))
+    (g : ℝ → SmoothRiemannianMetric I M) {D : RealTimeInterval} (ht : 0 ∈ D.regular)
+    {e : M → EuclideanSpace ℝ (Fin n)} (he : ContMDiff I 𝓘(ℝ, EuclideanSpace ℝ (Fin n)) ∞ e)
+    {r : EuclideanSpace ℝ (Fin n) → M} {U : TopologicalSpace.Opens (EuclideanSpace ℝ (Fin n))}
+    (hr : ContMDiffOn 𝓘(ℝ, EuclideanSpace ℝ (Fin n)) I ∞ r U)
+    (hEU : Set.range e ⊆ U) (hleft : ∀ p, r (e p) = p) (β : U)
+    (hG : MetricFamilySmoothOn D (fun t => Geometry.Riemannian.retractionMetric (g t) he hr)) :
+    let f₀ := ambientSobolev c₀ (g 0) e he (((1 : ℕ) : ℝ) + 2)
+    let J₀ := circleFirstJet (ι := Fin n) (c₀.pullbackMetric (g 0))
+    let K₀ : CircleHsPi (c₀.pullbackMetric (g 0)) (Fin n) (((1 : ℕ) : ℝ) + 2) →L[ℝ]
+        CircleHsPi (c₀.pullbackMetric (g 0)) (Fin n) ((1 : ℝ) + 1) :=
+      ContinuousLinearMap.piLpMap 2 (fun _ : Fin n =>
+        tensorHsInclusion (g := (c₀.pullbackMetric (g 0))) (r := 0) (s := 0)
+          (show (1 : ℝ) + 1 ≤ ((1 : ℕ) : ℝ) + 2 by norm_num))
+    let P := J₀.comp K₀
+    let J := J₀.comp (circleHsPiCongr (c₀.pullbackMetric (g 0)) (Fin n)
+      (by norm_num : ((1 : ℕ) : ℝ) + 1 = (1 : ℝ) + 1)).toLinearIsometry.toContinuousLinearMap
+    let K := circleHsPiInclusion (c₀.pullbackMetric (g 0)) (Fin n)
+      (show ((1 : ℕ) : ℝ) + 1 ≤ ((1 : ℕ) : ℝ) + 2 by norm_num)
+    let F := curveShorteningChartDiffusionCoefficient
+      (fun t => Geometry.Riemannian.retractionMetric (g t) he hr) β ∘ firstJetCoordinates n
+    let G := fun z j => curveShorteningParametricChartReaction
+      (fun t => Geometry.Riemannian.retractionMetric (g t) he hr) β (firstJetCoordinates n z) j
+    let S := firstJetCoordinates n ⁻¹' curveShorteningChartFirstJetDomain D
+      (fun t => Geometry.Riemannian.retractionMetric (g t) he hr) β
+    ∃ δcap : ℝ, 0 < δcap ∧ ∃ A B : ℝ≥0, ∀ {δ ρ : ℝ}, δ ≤ δcap → ρ ≤ δcap →
+      ∀ (alpha : Metric.closedBall f₀ δ → ℝ →
+          CircleHsPi (c₀.pullbackMetric (g 0)) (Fin n) (((1 : ℕ) : ℝ) + 1) → TensorHs (c₀.pullbackMetric (g 0)) 0 0 1)
+        (reaction : Metric.closedBall f₀ δ → ℝ →
+          CircleHsPi (c₀.pullbackMetric (g 0)) (Fin n) (((1 : ℕ) : ℝ) + 1) → CircleHsPi (c₀.pullbackMetric (g 0)) (Fin n) 1),
+      referenceCircleCoefficientFacts (c₀.pullbackMetric (g 0)) f₀ P J F G S δ ρ alpha reaction →
+      ∀ (f : Metric.closedBall f₀ δ) {T : ℝ} (hT : 0 < T), T ≤ ρ →
+      ∀ (u : timeH1 (CircleHsPi (c₀.pullbackMetric (g 0)) (Fin n) ((1 : ℕ) : ℝ)) T)
+        (gforce : timeL2 (CircleHsPi (c₀.pullbackMetric (g 0)) (Fin n) ((1 : ℕ) : ℝ)) T),
+      referenceCircleSolutionFacts (c₀.pullbackMetric (g 0)) f.val (alpha f) (reaction f) ρ hT u gforce →
+      let field := maximalRegularityDuhamelVectorField (g := (c₀.pullbackMetric (g 0))) (r := 0) (s := 0)
+        (a := ((1 : ℕ) : ℝ)) hT 0 gforce
+      ∃ a₂ : timeL2 (TensorHs (c₀.pullbackMetric (g 0)) 0 0 (((1 : ℕ) : ℝ) + 1)) T,
+      ∃ b₂ : timeL2 (CircleHsPi (c₀.pullbackMetric (g 0)) (Fin n) (((1 : ℕ) : ℝ) + 1)) T,
+        (fun t => tensorHsInclusion (g := (c₀.pullbackMetric (g 0))) (r := 0) (s := 0)
+          (by norm_num : ((1 : ℕ) : ℝ) ≤ ((1 : ℕ) : ℝ) + 1) (a₂ t)) =ᵐ[timeMeasure T]
+          (fun t => tensorHsCongrL (c₀.pullbackMetric (g 0)) 0 0
+            (Nat.cast_one.symm : (1 : ℝ) = ((1 : ℕ) : ℝ)) (alpha f t (K (field t)))) ∧
+        (fun t => (ContinuousLinearMap.piLpMap 2 (fun _ : Fin n =>
+          tensorHsInclusion (g := (c₀.pullbackMetric (g 0))) (r := 0) (s := 0)
+            (by norm_num : ((1 : ℕ) : ℝ) ≤ ((1 : ℕ) : ℝ) + 1))) (b₂ t)) =ᵐ[timeMeasure T]
+          (fun t => circleHsPiCongr (c₀.pullbackMetric (g 0)) (Fin n)
+            (Nat.cast_one.symm : (1 : ℝ) = ((1 : ℕ) : ℝ)) (reaction f t (K (field t)))) ∧
+        ‖a₂‖ ≤ A * (Real.sqrt T + (1 + T) * ρ / 4) ∧
+        ‖b₂‖ ≤ B * (Real.sqrt T + (1 + T) * ρ / 4) := by
+  intro f₀ J₀ K₀ P J K F G S
+  let C := ambientCoefficients c₀ g ht he hr hEU hleft β hG
+  obtain ⟨δ₀, hδ₀, hδ₀C, _, A, B, hlift⟩ :=
+    ambient_coefficients_h2_norm_le_of_translated_state c₀ g ht he hr hEU hleft β hG
+  let δcap := min (δ₀ / 2)
+    (ScalarVectorTimeCoefficients.radius C / (2 * (1 + ‖J‖)))
+  have hδcap : 0 < δcap := by
+    have hC := ScalarVectorTimeCoefficients.radius_pos C
+    dsimp only [δcap]
+    positivity
+  have hcaphalf : δcap ≤ δ₀ / 2 := min_le_left _ _
+  have hcapC : δcap ≤ ScalarVectorTimeCoefficients.radius C :=
+    (hcaphalf.trans (by linarith only [hδ₀])).trans hδ₀C
+  have hcapJ : 2 * ‖J‖ * δcap ≤ ScalarVectorTimeCoefficients.radius C := by
+    have hp := (le_div_iff₀ (by positivity : 0 < 2 * (1 + ‖J‖))).mp
+      (min_le_right (δ₀ / 2)
+        (ScalarVectorTimeCoefficients.radius C / (2 * (1 + ‖J‖))))
+    change δcap * (2 * (1 + ‖J‖)) ≤ ScalarVectorTimeCoefficients.radius C at hp
+    nlinarith only [hp, hδcap]
+  refine ⟨δcap, hδcap, A, B, ?_⟩
+  intro δ ρ hδ hρ alpha reaction hcoeff f T hT hTρ u gforce hfacts field
+  obtain ⟨w, hw, _, hwu, hbound, _, _⟩ :=
+    reference_solution_exists_continuousOn_representative
+      (c₀.pullbackMetric (g 0)) f.val (alpha f) (reaction f) hT u gforce hfacts
+  have hforce : ‖gforce‖ ≤ ρ / 4 := hfacts.2.2.2.2.2.1
+  have hf : ‖f.val - f₀‖ ≤ δcap :=
+    (by simpa only [Metric.mem_closedBall, dist_eq_norm] using f.property :
+      ‖f.val - f₀‖ ≤ δ).trans hδ
+  obtain ⟨_, hJw⟩ := translated_state_norm_bounds K J
+    (ContinuousLinearMap.norm_piLpMap_le _ zero_le_one
+      (fun _ => tensorHsInclusion_opNorm_le_one _))
+    hcapJ (f.val - f₀) hf (Icc 0 T) w
+    (fun t htt => (hbound t htt).trans hρ)
+  obtain ⟨a₂, b₂, ha₂, hb₂, hanorm, hbnorm⟩ :=
+    hlift f.val (hf.trans hcaphalf) hT hTρ (hρ.trans hcaphalf)
+      gforce w hw hwu hbound hforce
+  have hρC := hρ.trans hcapC
+  dsimp only [C, f₀, J₀, K₀, P, J, K, F, G, S] at hcoeff hJw hρC
+  have heq (t : ℝ) (htt : t ∈ Icc 0 T) :=
+    reference_coefficients_eq_ambient_at_translated_state c₀ g ht he hr hEU hleft β hG
+      alpha reaction hcoeff f (w t) t ⟨htt.1, htt.2.trans hTρ⟩
+      ⟨htt.1, htt.2.trans (hTρ.trans hρC)⟩ (hbound t htt) (hJw t htt)
+  have htmem : ∀ᵐ t ∂timeMeasure T, t ∈ Icc 0 T :=
+    ae_restrict_mem measurableSet_Icc
+  refine ⟨a₂, b₂, ?_, ?_, hanorm, hbnorm⟩
+  · filter_upwards [ha₂, hwu, htmem] with t hat hwt htt
+    obtain ⟨haeq, _⟩ := heq t htt
+    rw [← hwt]
+    exact hat.trans (congrArg (tensorHsCongrL (c₀.pullbackMetric (g 0)) 0 0
+      (Nat.cast_one.symm : (1 : ℝ) = ((1 : ℕ) : ℝ))) haeq.symm)
+  · filter_upwards [hb₂, hwu, htmem] with t hbt hwt htt
+    obtain ⟨_, hbeq⟩ := heq t htt
+    rw [← hwt]
+    exact hbt.trans (congrArg (circleHsPiCongr (c₀.pullbackMetric (g 0)) (Fin n)
+      (Nat.cast_one.symm : (1 : ℝ) = ((1 : ℕ) : ℝ))) hbeq.symm)
+
+end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening.SmoothImmersion
+end
+
+noncomputable section
+open private affineHeatLift weakParameterEquation principalOperatorHigh principalOperatorLow
+  driftOperatorHigh driftOperatorLow memLp_parameterDrift_high memLp_parameterDrift_low
+  coefficientContractionBound normalizeZeroPi from
+  DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Existence.AddCircleLinearizedLift
+open scoped Manifold ContDiff NNReal ENNReal
+open MeasureTheory Filter Set
+namespace DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening.SmoothImmersion
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.Analysis.Parabolic
+open DifferentialGeometry.Analysis.Parabolic.QuasiLinear
+open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
+open DifferentialGeometry.Analysis.Parabolic.TimeSobolev
+open DifferentialGeometry.Analysis.Parabolic.MaximalRegularity
+open DifferentialGeometry.Geometry.Curvature
+attribute [local instance] DifferentialGeometry.Analysis.Parabolic.vectorTensorHsNormedSpace
+variable {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E] [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
+  {n : ℕ}
+private local instance : NeZero (Module.finrank ℝ ℝ) := ⟨by norm_num⟩
+
+private theorem reference_parameterDerivative_weakEquation_of_h2_coefficients
+    {n : ℕ}
+    (g₀ : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ)))
+    (f : CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 2))
+    (f₄ : CircleHsPi g₀ (Fin n) (((2 : ℕ) : ℝ) + 2))
+    (alpha : ℝ → CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 1) → TensorHs g₀ 0 0 1)
+    (reaction : ℝ → CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 1) → CircleHsPi g₀ (Fin n) 1)
+    {ρ T : ℝ} (hT : 0 < T)
+    (u : timeH1 (CircleHsPi g₀ (Fin n) ((1 : ℕ) : ℝ)) T)
+    (gforce : timeL2 (CircleHsPi g₀ (Fin n) ((1 : ℕ) : ℝ)) T)
+    (a₂ : timeL2 (TensorHs g₀ 0 0 (((1 : ℕ) : ℝ) + 1)) T)
+    (b₂ : timeL2 (CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 1)) T)
+    (hfacts : referenceCircleSolutionFacts g₀ f alpha reaction ρ hT u gforce) :
+    let K := circleHsPiInclusion g₀ (Fin n)
+      (show ((1 : ℕ) : ℝ) + 1 ≤ ((1 : ℕ) : ℝ) + 2 by norm_num)
+    let K₄ := ContinuousLinearMap.piLpMap 2 (fun _ : Fin n =>
+      tensorHsInclusion (g := g₀) (r := 0) (s := 0)
+        (by norm_num : ((1 : ℕ) : ℝ) + 2 ≤ ((2 : ℕ) : ℝ) + 2))
+    let H := tensorHsInclusion (g := g₀) (r := 0) (s := 0)
+      (by norm_num : ((1 : ℕ) : ℝ) ≤ ((1 : ℕ) : ℝ) + 1)
+    let P := ContinuousLinearMap.piLpMap 2 (fun _ : Fin n => H)
+    let C := tensorHsCongrL g₀ 0 0 (Nat.cast_one.symm : (1 : ℝ) = ((1 : ℕ) : ℝ))
+    let Cpi := circleHsPiCongr g₀ (Fin n) (Nat.cast_one.symm : (1 : ℝ) = ((1 : ℕ) : ℝ))
+    let field := maximalRegularityDuhamelVectorField
+      (I := 𝓘(ℝ, ℝ)) (M := AddCircle (1 : ℝ)) (ι := Fin n)
+      (g := g₀) (r := 0) (s := 0) (a := ((1 : ℕ) : ℝ)) hT
+      (0 : CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 2)) gforce
+    K₄ f₄ = f →
+    (fun t => H (a₂ t)) =ᵐ[timeMeasure T]
+      (fun t => C (alpha t (K (field t)))) →
+    (fun t => P (b₂ t)) =ᵐ[timeMeasure T]
+      (fun t => Cpi (reaction t (K (field t)))) →
+    weakParameterEquation g₀ hT gforce f₄ a₂ b₂ := by
+  intro K K₄ H P C Cpi field hf₄ ha hb
+  obtain ⟨_, _, _, _, _, _, heq⟩ := hfacts
+  have hweak : ∀ᵐ t ∂timeMeasure T, ∀ i,
+      tensorScaleLaplacian (g := g₀) (r := 0) (s := 0) ((1 : ℕ) : ℝ) (field t i) +
+        gforce t i = scalarHsMul g₀ 1 (by norm_num) (H (a₂ t))
+          (AddCircle.parameterSecondDerivativeHs g₀ 1
+            (tensorHsInclusion (g := g₀) (r := 0) (s := 0)
+              (by norm_num : ((1 : ℕ) : ℝ) + 2 ≤ ((2 : ℕ) : ℝ) + 2)
+                (f₄ i) + field t i)) + H (b₂ t i) := by
+    filter_upwards [heq, ha, hb] with t ht hat hbt
+    intro i
+    have hbase := congrArg (fun v => v i) hf₄
+    change tensorHsInclusion (by norm_num : ((1 : ℕ) : ℝ) + 2 ≤ ((2 : ℕ) : ℝ) + 2) (f₄ i) = f i at hbase
+    rw [hbase]
+    rw [← hat, ← hbt] at ht
+    exact congrArg (fun v : CircleHsPi g₀ (Fin n) ((1 : ℕ) : ℝ) => v i) ht
+  exact hweak
+
+private theorem parameterDerivative_forcing_lift_norm_le_of_margin
+    {n : ℕ}
+    (g₀ : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ)))
+    {T : ℝ} (hT : 0 < T)
+    (gforce : timeL2 (CircleHsPi g₀ (Fin n) ((1 : ℕ) : ℝ)) T)
+    (f₄ : CircleHsPi g₀ (Fin n) (((2 : ℕ) : ℝ) + 2))
+    (a₂ : timeL2 (TensorHs g₀ 0 0 (((1 : ℕ) : ℝ) + 1)) T)
+    (b₂ : timeL2 (CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 1)) T)
+    (hbounds : parameterDerivativeOperatorBoundsWithMargin (n := n) g₀ a₂ (3 / 4))
+    (hweak : weakParameterEquation g₀ hT gforce f₄ a₂ b₂) :
+    ∃ FH : timeL2 (CircleHsPi g₀ (Fin n) ((1 : ℕ) : ℝ)) T,
+      affineHeatLift (ι := Fin n) g₀ hT (principalOperatorHigh g₀ a₂) (driftOperatorHigh g₀ a₂)
+        (AddCircle.parameterDerivativeBaselineForcingLp g₀ f₄ a₂ b₂)
+        (parameterDerivativeDuhamelForcing (ι := Fin n) g₀ 0 hT gforce) FH ∧
+      ‖FH‖ ≤ ‖AddCircle.parameterDerivativeBaselineForcingHsPi g₀ f₄‖ *
+        (‖a₂‖ + ‖b₂‖) / (1 - (3 / 4 : ℝ)) := by
+  obtain ⟨C₂h, C₂l, hC₂h, hC₂l, hmargin, hsmalll⟩ := hbounds
+  apply exists_parameterDerivativeDuhamelForcing_lift_norm_le g₀ hT gforce
+    f₄ a₂ b₂ C₂h C₂l (3 / 4) (by norm_num) hC₂h hC₂l
+    (by erw [Lp.norm_toLp]; exact hmargin)
+    (by change _ + _ * ‖_‖ < (1 : ℝ); erw [Lp.norm_toLp]; exact hsmalll)
+  exact hweak
+
+private theorem parameterDerivative_forcing_lift_norm_le_of_coefficient_bounds
+    {n : ℕ}
+    (g₀ : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ)))
+    {T : ℝ} (hT : 0 < T)
+    (gforce : timeL2 (CircleHsPi g₀ (Fin n) ((1 : ℕ) : ℝ)) T)
+    (f₄ : CircleHsPi g₀ (Fin n) (((2 : ℕ) : ℝ) + 2))
+    (a₂ : timeL2 (TensorHs g₀ 0 0 (((1 : ℕ) : ℝ) + 1)) T)
+    (b₂ : timeL2 (CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 1)) T)
+    (A B R : ℝ)
+    (hbounds : parameterDerivativeOperatorBoundsWithMargin (n := n) g₀ a₂ (3 / 4))
+    (hweak : weakParameterEquation g₀ hT gforce f₄ a₂ b₂)
+    (hanorm : ‖a₂‖ ≤ A * R) (hbnorm : ‖b₂‖ ≤ B * R) :
+    ∃ FH : timeL2 (CircleHsPi g₀ (Fin n) ((1 : ℕ) : ℝ)) T,
+      parameterDerivativeDuhamelForcing (ι := Fin n) g₀ 0 hT gforce =
+        (ContinuousLinearMap.piLpMap 2 (fun _ : Fin n =>
+          tensorHsInclusion (g := g₀) (r := 0) (s := 0)
+            (by norm_num : ((0 : ℕ) : ℝ) ≤ ((1 : ℕ) : ℝ)))).compLpL
+              2 (timeMeasure T) FH ∧
+      ‖FH‖ ≤ 4 * ‖AddCircle.parameterDerivativeBaselineForcingHsPi g₀ f₄‖ * (A + B) * R := by
+  obtain ⟨FH, hFH, hnorm⟩ := parameterDerivative_forcing_lift_norm_le_of_margin
+    g₀ hT gforce f₄ a₂ b₂ hbounds hweak
+  refine ⟨FH, hFH.2, hnorm.trans ?_⟩
+  calc
+    _ ≤ ‖AddCircle.parameterDerivativeBaselineForcingHsPi g₀ f₄‖ *
+        (A * R + B * R) / (1 - (3 / 4 : ℝ)) :=
+      div_le_div_of_nonneg_right
+        (mul_le_mul_of_nonneg_left (add_le_add hanorm hbnorm) (norm_nonneg _)) (by norm_num)
+    _ = _ := by ring
+
+private theorem reference_coefficients_h2_margin_and_norm_le_for_selected_solution
+    (c₀ : SmoothImmersion (I := I) (M := M))
+    (g : ℝ → SmoothRiemannianMetric I M) {D : RealTimeInterval} (ht : 0 ∈ D.regular)
+    {e : M → EuclideanSpace ℝ (Fin n)} (he : ContMDiff I 𝓘(ℝ, EuclideanSpace ℝ (Fin n)) ∞ e)
+    {r : EuclideanSpace ℝ (Fin n) → M} {U : TopologicalSpace.Opens (EuclideanSpace ℝ (Fin n))}
+    (hr : ContMDiffOn 𝓘(ℝ, EuclideanSpace ℝ (Fin n)) I ∞ r U)
+    (hEU : Set.range e ⊆ U) (hleft : ∀ p, r (e p) = p) (β : U)
+    (hG : MetricFamilySmoothOn D (fun t => Geometry.Riemannian.retractionMetric (g t) he hr)) :
+    let f₀ := ambientSobolev c₀ (g 0) e he (((1 : ℕ) : ℝ) + 2)
+    let J₀ := circleFirstJet (ι := Fin n) (c₀.pullbackMetric (g 0))
+    let K₀ : CircleHsPi (c₀.pullbackMetric (g 0)) (Fin n) (((1 : ℕ) : ℝ) + 2) →L[ℝ]
+        CircleHsPi (c₀.pullbackMetric (g 0)) (Fin n) ((1 : ℝ) + 1) :=
+      ContinuousLinearMap.piLpMap 2 (fun _ : Fin n =>
+        tensorHsInclusion (g := (c₀.pullbackMetric (g 0))) (r := 0) (s := 0)
+          (show (1 : ℝ) + 1 ≤ ((1 : ℕ) : ℝ) + 2 by norm_num))
+    let P := J₀.comp K₀
+    let J := J₀.comp (circleHsPiCongr (c₀.pullbackMetric (g 0)) (Fin n)
+      (by norm_num : ((1 : ℕ) : ℝ) + 1 = (1 : ℝ) + 1)).toLinearIsometry.toContinuousLinearMap
+    let K := circleHsPiInclusion (c₀.pullbackMetric (g 0)) (Fin n)
+      (show ((1 : ℕ) : ℝ) + 1 ≤ ((1 : ℕ) : ℝ) + 2 by norm_num)
+    let F := curveShorteningChartDiffusionCoefficient
+      (fun t => Geometry.Riemannian.retractionMetric (g t) he hr) β ∘ firstJetCoordinates n
+    let G := fun z j => curveShorteningParametricChartReaction
+      (fun t => Geometry.Riemannian.retractionMetric (g t) he hr) β (firstJetCoordinates n z) j
+    let S := firstJetCoordinates n ⁻¹' curveShorteningChartFirstJetDomain D
+      (fun t => Geometry.Riemannian.retractionMetric (g t) he hr) β
+    ∃ δcap : ℝ, 0 < δcap ∧ ∃ A B : ℝ≥0, ∀ {δ ρ : ℝ}, δ ≤ δcap → ρ ≤ δcap →
+      ∀ (alpha : Metric.closedBall f₀ δ → ℝ →
+          CircleHsPi (c₀.pullbackMetric (g 0)) (Fin n) (((1 : ℕ) : ℝ) + 1) → TensorHs (c₀.pullbackMetric (g 0)) 0 0 1)
+        (reaction : Metric.closedBall f₀ δ → ℝ →
+          CircleHsPi (c₀.pullbackMetric (g 0)) (Fin n) (((1 : ℕ) : ℝ) + 1) → CircleHsPi (c₀.pullbackMetric (g 0)) (Fin n) 1),
+      referenceCircleCoefficientFacts (c₀.pullbackMetric (g 0)) f₀ P J F G S δ ρ alpha reaction →
+      ∀ (f : Metric.closedBall f₀ δ) {T : ℝ} (hT : 0 < T), T ≤ ρ →
+      ∀ (u : timeH1 (CircleHsPi (c₀.pullbackMetric (g 0)) (Fin n) ((1 : ℕ) : ℝ)) T)
+        (gforce : timeL2 (CircleHsPi (c₀.pullbackMetric (g 0)) (Fin n) ((1 : ℕ) : ℝ)) T),
+      referenceCircleSolutionFacts (c₀.pullbackMetric (g 0)) f.val (alpha f) (reaction f) ρ hT u gforce →
+      let field := maximalRegularityDuhamelVectorField (g := (c₀.pullbackMetric (g 0))) (r := 0) (s := 0)
+        (a := ((1 : ℕ) : ℝ)) hT 0 gforce
+      ∃ a₂ : timeL2 (TensorHs (c₀.pullbackMetric (g 0)) 0 0 (((1 : ℕ) : ℝ) + 1)) T,
+      ∃ b₂ : timeL2 (CircleHsPi (c₀.pullbackMetric (g 0)) (Fin n) (((1 : ℕ) : ℝ) + 1)) T,
+        (fun t => tensorHsInclusion (g := (c₀.pullbackMetric (g 0))) (r := 0) (s := 0)
+          (by norm_num : ((1 : ℕ) : ℝ) ≤ ((1 : ℕ) : ℝ) + 1) (a₂ t)) =ᵐ[timeMeasure T]
+          (fun t => tensorHsCongrL (c₀.pullbackMetric (g 0)) 0 0
+            (Nat.cast_one.symm : (1 : ℝ) = ((1 : ℕ) : ℝ)) (alpha f t (K (field t)))) ∧
+        (fun t => (ContinuousLinearMap.piLpMap 2 (fun _ : Fin n =>
+          tensorHsInclusion (g := (c₀.pullbackMetric (g 0))) (r := 0) (s := 0)
+            (by norm_num : ((1 : ℕ) : ℝ) ≤ ((1 : ℕ) : ℝ) + 1))) (b₂ t)) =ᵐ[timeMeasure T]
+          (fun t => circleHsPiCongr (c₀.pullbackMetric (g 0)) (Fin n)
+            (Nat.cast_one.symm : (1 : ℝ) = ((1 : ℕ) : ℝ)) (reaction f t (K (field t)))) ∧
+        parameterDerivativeOperatorBoundsWithMargin (n := n) (c₀.pullbackMetric (g 0)) a₂ (3 / 4) ∧
+        ‖a₂‖ ≤ A * (Real.sqrt T + (1 + T) * ρ / 4) ∧
+        ‖b₂‖ ≤ B * (Real.sqrt T + (1 + T) * ρ / 4) := by
+  intro f₀ J₀ K₀ P J K F G S
+  obtain ⟨δm, hδm, hliftm⟩ :=
+    reference_coefficients_h2_lifts_and_margin_for_selected_solution
+      c₀ g ht he hr hEU hleft β hG
+  obtain ⟨δn, hδn, A, B, hliftn⟩ :=
+    reference_coefficients_h2_norm_le_for_selected_solution
+      c₀ g ht he hr hEU hleft β hG
+  refine ⟨min δm δn, lt_min hδm hδn, A, B, ?_⟩
+  intro δ ρ hδ hρ alpha reaction hcoeff f T hT hTρ u gforce hfacts field
+  obtain ⟨a₂, b₂, ha₂, hb₂, hab⟩ :=
+    hliftm (hδ.trans (min_le_left _ _)) (hρ.trans (min_le_left _ _))
+      alpha reaction hcoeff f hT hTρ u gforce hfacts
+  obtain ⟨a₂', b₂', ha₂', hb₂', hanorm, hbnorm⟩ :=
+    hliftn (hδ.trans (min_le_right _ _)) (hρ.trans (min_le_right _ _))
+      alpha reaction hcoeff f hT hTρ u gforce hfacts
+  obtain ⟨haeq, hbeq⟩ := timeL2_parameter_coefficient_pair_eq_of_inclusion_ae_eq
+    (c₀.pullbackMetric (g 0)) a₂ a₂' b₂ b₂' (ha₂.trans ha₂'.symm) (hb₂.trans hb₂'.symm)
+  rw [← haeq] at hanorm
+  rw [← hbeq] at hbnorm
+  exact ⟨a₂, b₂, ha₂, hb₂, hab, hanorm, hbnorm⟩
+
+private def parameterDerivativeForcingLiftBound
+    {n : ℕ}
+    (g₀ : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ)))
+    {T : ℝ} (hT : 0 < T)
+    (gforce : timeL2 (CircleHsPi g₀ (Fin n) ((1 : ℕ) : ℝ)) T)
+    (f₄ : CircleHsPi g₀ (Fin n) (((2 : ℕ) : ℝ) + 2))
+    (A B R : ℝ) : Prop :=
+  ∃ FH : timeL2 (CircleHsPi g₀ (Fin n) ((1 : ℕ) : ℝ)) T,
+    parameterDerivativeDuhamelForcing (ι := Fin n) g₀ 0 hT gforce =
+      (ContinuousLinearMap.piLpMap 2 (fun _ : Fin n =>
+        tensorHsInclusion (g := g₀) (r := 0) (s := 0)
+          (by norm_num : ((0 : ℕ) : ℝ) ≤ ((1 : ℕ) : ℝ)))).compLpL
+            2 (timeMeasure T) FH ∧
+    ‖FH‖ ≤ 4 * ‖AddCircle.parameterDerivativeBaselineForcingHsPi g₀ f₄‖ * (A + B) * R
+
+private theorem reference_parameterDerivative_forcing_lift_norm_le_for_selected_solution
+    (c₀ : SmoothImmersion (I := I) (M := M))
+    (g : ℝ → SmoothRiemannianMetric I M) {D : RealTimeInterval} (ht : 0 ∈ D.regular)
+    {e : M → EuclideanSpace ℝ (Fin n)} (he : ContMDiff I 𝓘(ℝ, EuclideanSpace ℝ (Fin n)) ∞ e)
+    {r : EuclideanSpace ℝ (Fin n) → M} {U : TopologicalSpace.Opens (EuclideanSpace ℝ (Fin n))}
+    (hr : ContMDiffOn 𝓘(ℝ, EuclideanSpace ℝ (Fin n)) I ∞ r U)
+    (hEU : Set.range e ⊆ U) (hleft : ∀ p, r (e p) = p) (β : U)
+    (hG : MetricFamilySmoothOn D (fun t => Geometry.Riemannian.retractionMetric (g t) he hr)) :
+    let f₀ := ambientSobolev c₀ (g 0) e he (((1 : ℕ) : ℝ) + 2)
+    let J₀ := circleFirstJet (ι := Fin n) (c₀.pullbackMetric (g 0))
+    let K₀ : CircleHsPi (c₀.pullbackMetric (g 0)) (Fin n) (((1 : ℕ) : ℝ) + 2) →L[ℝ]
+        CircleHsPi (c₀.pullbackMetric (g 0)) (Fin n) ((1 : ℝ) + 1) :=
+      ContinuousLinearMap.piLpMap 2 (fun _ : Fin n =>
+        tensorHsInclusion (g := (c₀.pullbackMetric (g 0))) (r := 0) (s := 0)
+          (show (1 : ℝ) + 1 ≤ ((1 : ℕ) : ℝ) + 2 by norm_num))
+    let P := J₀.comp K₀
+    let J := J₀.comp (circleHsPiCongr (c₀.pullbackMetric (g 0)) (Fin n)
+      (by norm_num : ((1 : ℕ) : ℝ) + 1 = (1 : ℝ) + 1)).toLinearIsometry.toContinuousLinearMap
+    let F := curveShorteningChartDiffusionCoefficient
+      (fun t => Geometry.Riemannian.retractionMetric (g t) he hr) β ∘ firstJetCoordinates n
+    let G := fun z j => curveShorteningParametricChartReaction
+      (fun t => Geometry.Riemannian.retractionMetric (g t) he hr) β (firstJetCoordinates n z) j
+    let S := firstJetCoordinates n ⁻¹' curveShorteningChartFirstJetDomain D
+      (fun t => Geometry.Riemannian.retractionMetric (g t) he hr) β
+    ∃ δcap : ℝ, 0 < δcap ∧ ∃ A B : ℝ≥0, ∀ {δ ρ : ℝ}, δ ≤ δcap → ρ ≤ δcap →
+      ∀ (alpha : Metric.closedBall f₀ δ → ℝ →
+          CircleHsPi (c₀.pullbackMetric (g 0)) (Fin n) (((1 : ℕ) : ℝ) + 1) → TensorHs (c₀.pullbackMetric (g 0)) 0 0 1)
+        (reaction : Metric.closedBall f₀ δ → ℝ →
+          CircleHsPi (c₀.pullbackMetric (g 0)) (Fin n) (((1 : ℕ) : ℝ) + 1) → CircleHsPi (c₀.pullbackMetric (g 0)) (Fin n) 1),
+      referenceCircleCoefficientFacts (c₀.pullbackMetric (g 0)) f₀ P J F G S δ ρ alpha reaction →
+      ∀ (f : Metric.closedBall f₀ δ)
+        (f₄ : CircleHsPi (c₀.pullbackMetric (g 0)) (Fin n) (((2 : ℕ) : ℝ) + 2)),
+      (ContinuousLinearMap.piLpMap 2 (fun _ : Fin n =>
+        tensorHsInclusion (g := (c₀.pullbackMetric (g 0))) (r := 0) (s := 0)
+          (by norm_num : ((1 : ℕ) : ℝ) + 2 ≤ ((2 : ℕ) : ℝ) + 2))) f₄ = f.val →
+      ∀ {T : ℝ} (hT : 0 < T), T ≤ ρ →
+      ∀ (u : timeH1 (CircleHsPi (c₀.pullbackMetric (g 0)) (Fin n) ((1 : ℕ) : ℝ)) T)
+        (gforce : timeL2 (CircleHsPi (c₀.pullbackMetric (g 0)) (Fin n) ((1 : ℕ) : ℝ)) T),
+      referenceCircleSolutionFacts (c₀.pullbackMetric (g 0)) f.val (alpha f) (reaction f) ρ hT u gforce →
+      parameterDerivativeForcingLiftBound (c₀.pullbackMetric (g 0))
+        hT gforce f₄ A B (Real.sqrt T + (1 + T) * ρ / 4) := by
+  intro f₀ J₀ K₀ P J F G S
+  obtain ⟨δcap, hδcap, A, B, hlift⟩ :=
+    reference_coefficients_h2_margin_and_norm_le_for_selected_solution
+      c₀ g ht he hr hEU hleft β hG
+  refine ⟨δcap, hδcap, A, B, ?_⟩
+  intro δ ρ hδ hρ alpha reaction hcoeff f f₄ hbase T hT hTρ u gforce hfacts
+  obtain ⟨a₂, b₂, ha₂, hb₂, hab, hanorm, hbnorm⟩ :=
+    hlift hδ hρ alpha reaction hcoeff f hT hTρ u gforce hfacts
+  have hweak := reference_parameterDerivative_weakEquation_of_h2_coefficients
+    (c₀.pullbackMetric (g 0)) f.val f₄ (alpha f) (reaction f) hT u gforce a₂ b₂
+      hfacts hbase ha₂ hb₂
+  exact parameterDerivative_forcing_lift_norm_le_of_coefficient_bounds
+    (c₀.pullbackMetric (g 0)) hT gforce f₄ a₂ b₂ A B
+      (Real.sqrt T + (1 + T) * ρ / 4) hab hweak hanorm hbnorm
+
+end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening.SmoothImmersion
 end
