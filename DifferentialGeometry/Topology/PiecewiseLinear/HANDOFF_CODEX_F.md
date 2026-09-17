@@ -2269,3 +2269,11 @@ F-M1 仍为 partial。单个旧三角形的全部纤维及逐边对应已闭合�
 `affineMap_mul_neg_of_distinct_cofaces_of_card_eq_finrank` 从公共面顶点数等于环境维数、仿射函数非零线性部分及面上为零，实际推出所需核等式。`IsCombinatorialManifoldWithBoundary.exists_cofaces_pos_neg` 再为满维带边组合流形的内部余维一面选出正、负两侧的全部两个对顶点。基础版本不需要有限维或有限面族，只有维数和流形推论增加对应条件。
 
 检查 `CofaceSeparation` exit=0（10.0 秒）、零 warning；`AuditF249.lean` 五项（四个新端点及分离输入）仅标准三公理。本层 done；F5.2 / 新 F-M1 仍 partial。尚需将该满维余面结论经公共仿射细分和图卡搬到奇异曲面的折叠支上，生产实际双点的横截/双折分类，再完成保持旧区域 crossing 的有限图卡拼接；不能将满维条件直接套在三维中的二维曲面上。下一审计文件 `AuditF250.lean`。
+
+### 19.101 F5.2：公共仿射细分的余面异侧性实际搬入图卡
+
+`CofaceTransport.lean` 的 `affineMap_mul_neg_of_distinct_cofaces_of_affineOn_faces` 从每面仿射且在载体上单射的映射实际构造像复形，证明仿射无关、公共面顶点数与余面对顶点均被保留，再应用 §19.100 的指定超平面分离。源复形不要求有限面族或有限维环境；只有目标坐标需要有限维。
+
+`PLPieceIn.affineMap_mul_neg_of_distinct_cofaces_in_chart` 用片映射的单射性与图卡的单射性提供实际输入，恰可用于 §19.61 公共细分在一个星图卡中的限制。已闭合先前明确列出的“同一星图卡内相邻满维余面对指定公共面平面的严格异侧性”，未假设曲面折叠支已经异侧。
+
+检查 `CofaceTransport` exit=0（10.3 秒）、零 warning；`AuditF250.lean` 两个新端点仅标准三公理。本层 done；完整 F5.2 仍 partial。接下来的义务是分层生产者的实例化与实际曲面支分类：公共目标余面的异侧性本身不保证一张奇异曲面的两个支分属这些余面。当前完整仿射无关约束在两个共配置平面折边的场景还需单独核对维数相容性。下一审计文件 `AuditF251.lean`。
