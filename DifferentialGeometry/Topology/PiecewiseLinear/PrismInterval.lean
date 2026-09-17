@@ -148,4 +148,36 @@ theorem exists_isPiecewiseAffineOn_prism_of_partition {f g : ℝ → F} {n : ℕ
   rw [hsn] at hPA hbot htop hright himg
   exact ⟨Φ, hPA, hbot, htop, hleft, hright, himg⟩
 
+theorem mapsTo_of_forall_mem_convexHull_cell {Φ : ℝ × ℝ → F} {S : Set F} (hS : Convex ℝ S)
+    {n : ℕ} {s : ℕ → ℝ} {f g : ℝ → F}
+    (himg : ∀ z ∈ Icc (0 : ℝ) 1 ×ˢ Icc (0 : ℝ) 1, ∃ i, i < n ∧
+      Φ z ∈ convexHull ℝ ({f (s i), f (s (i + 1)), g (s i), g (s (i + 1))} : Set F))
+    (hcell : ∀ i < n, f (s i) ∈ S ∧ f (s (i + 1)) ∈ S ∧ g (s i) ∈ S ∧ g (s (i + 1)) ∈ S) :
+    MapsTo Φ (Icc (0 : ℝ) 1 ×ˢ Icc (0 : ℝ) 1) S := by
+  intro z hz
+  obtain ⟨i, hi, hmem⟩ := himg z hz
+  obtain ⟨h1, h2, h3, h4⟩ := hcell i hi
+  have hsub : ({f (s i), f (s (i + 1)), g (s i), g (s (i + 1))} : Set F) ⊆ S := by
+    rintro y (rfl | rfl | rfl | rfl) <;> assumption
+  exact hS.convexHull_subset_iff.mpr hsub hmem
+
+open Classical in
+theorem exists_isPiecewiseAffineOn_prism_of_partition_of_loop {f g : ℝ → F} {n : ℕ} {s : ℕ → ℝ}
+    (hs0 : s 0 = 0) (hsn : s n = 1) (hmono : ∀ i < n, s i < s (i + 1))
+    (hf : ∀ i < n, ∀ x ∈ Icc (s i) (s (i + 1)),
+      f x = f (s i) + ((x - s i) / (s (i + 1) - s i)) • (f (s (i + 1)) - f (s i)))
+    (hg : ∀ i < n, ∀ x ∈ Icc (s i) (s (i + 1)),
+      g x = g (s i) + ((x - s i) / (s (i + 1) - s i)) • (g (s (i + 1)) - g (s i)))
+    (hfloop : f 0 = f 1) (hgloop : g 0 = g 1) :
+    ∃ Φ : ℝ × ℝ → F, IsPiecewiseAffineOn Φ (Icc (0 : ℝ) 1 ×ˢ Icc (0 : ℝ) 1) ∧
+      (∀ x ∈ Icc (0 : ℝ) 1, Φ (x, 0) = f x) ∧
+      (∀ x ∈ Icc (0 : ℝ) 1, Φ (x, 1) = g x) ∧
+      (∀ t ∈ Icc (0 : ℝ) 1, Φ (0, t) = Φ (1, t)) ∧
+      (∀ z ∈ Icc (0 : ℝ) 1 ×ˢ Icc (0 : ℝ) 1, ∃ i, i < n ∧
+        Φ z ∈ convexHull ℝ ({f (s i), f (s (i + 1)), g (s i), g (s (i + 1))} : Set F)) := by
+  obtain ⟨Φ, hPA, hbot, htop, hleft, hright, himg⟩ :=
+    exists_isPiecewiseAffineOn_prism_of_partition hs0 hsn hmono hf hg
+  refine ⟨Φ, hPA, hbot, htop, fun t ht => ?_, himg⟩
+  rw [hleft t ht, hright t ht, hfloop, hgloop]
+
 end DifferentialGeometry.Topology.PiecewiseLinear
