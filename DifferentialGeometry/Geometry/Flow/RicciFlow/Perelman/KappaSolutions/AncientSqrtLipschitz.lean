@@ -1,3 +1,6 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientCostContinuity
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientTerminalMinimizer
+import DifferentialGeometry.Geometry.Metric.Comparison.DistanceScaling
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientCostSupport
 import DifferentialGeometry.Geometry.Comparison.Distance.SqrtSupport
 
@@ -87,5 +90,74 @@ theorem sqrt_redLength_sub_le_distance_of_continuous_and_minimizers
     have hfactor : 2 * (Real.sqrt 3 / (2 * Real.sqrt tau)) = Real.sqrt 3 / Real.sqrt tau := by ring
     rw [hfactor]
     exact hbound'
+
+end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
+
+end
+
+noncomputable section
+
+namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
+
+open Set
+open DifferentialGeometry.CheegerGromovCompactness CanonicalNeighborhood
+open DifferentialGeometry.Geometry.Curvature
+open scoped Manifold ContDiff
+
+universe u uE uH
+
+variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E]
+  {H : Type uH} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+  (F : PointedFlowData.{u, uE, uH} (I := I) ancientTimeInterval)
+
+private local instance topology : TopologicalSpace F.M := F.topology
+private local instance charted : ChartedSpace H F.M := F.charted
+private local instance smooth : IsManifold I ∞ F.M := F.smooth
+private local instance t2 : T2Space F.M := F.t2
+private local instance sigma : SigmaCompactSpace F.M := F.sigmaCompact
+
+theorem redLength_le_of_rescaled_distance_le
+    {kappa : ℝ} (hF : IsAncientKappaSolution kappa F)
+    (p q x : F.M) {tau A D : ℝ} (htau : 0 < tau) (hD : 0 ≤ D)
+    (hbase : redLength F.S 0 p q tau ≤ A)
+    (hdist : riemannianEDistOf
+      (scaleMetric tau⁻¹ (inv_pos.mpr htau) (F.S.base.metric (-tau))) q x ≤
+      ENNReal.ofReal D) :
+    redLength F.S 0 p x tau ≤ (Real.sqrt A + Real.sqrt 3 / 2 * D) ^ 2 := by
+  let _ : CompleteSpace E := FiniteDimensional.complete ℝ E
+  let _ : T2Space (TangentBundle I F.M) := F.t2TangentBundle
+  let _ : NeZero (Module.finrank ℝ E) := by
+    obtain ⟨t, _ht, z, hz⟩ := hF.notFlat
+    exact ⟨Tensor0SBundle.finrank_ne_zero_of_normSq0S_ne_zero
+      (F.S.base.metric t) z (by norm_num : 0 < 4) _ hz⟩
+  have hnonneg : 0 ≤ redLength F.S 0 p x tau := by
+    obtain ⟨C, hC⟩ := hF.globalScalarBound
+    apply div_nonneg _ (by positivity)
+    apply lCost_nonneg_of_scalar_nonneg F.S 0 htau.le
+    intro s hs y
+    simpa only [zero_sub] using (hC (-s) (by
+      rw [ancientTimeInterval_carrier]
+      exact neg_nonpos.mpr hs.1) y).1
+  have hreal := ENNReal.toReal_mono ENNReal.ofReal_ne_top hdist
+  rw [edistOf_scale, ENNReal.toReal_mul,
+    ENNReal.toReal_ofReal (Real.sqrt_nonneg _), ENNReal.toReal_ofReal hD,
+    Real.sqrt_inv] at hreal
+  have hroot := sqrt_redLength_sub_le_distance_of_continuous_and_minimizers
+    F hF p q x htau (continuous_redLength_of_ancient F hF p htau)
+    (fun y ↦ exists_lRegularized_minimizer_of_ancient F hF p y htau)
+  have hterm : Real.sqrt 3 / (2 * Real.sqrt tau) *
+      (riemannianEDistOf (F.S.base.metric (-tau)) q x).toReal ≤
+      Real.sqrt 3 / 2 * D := by
+    calc
+      _ = (Real.sqrt 3 / 2) * ((Real.sqrt tau)⁻¹ *
+          (riemannianEDistOf (F.S.base.metric (-tau)) q x).toReal) := by ring
+      _ ≤ _ := mul_le_mul_of_nonneg_left hreal (by positivity)
+  have hbound : Real.sqrt (redLength F.S 0 p x tau) ≤
+      Real.sqrt A + Real.sqrt 3 / 2 * D :=
+    hroot.trans (add_le_add (Real.sqrt_le_sqrt hbase) hterm)
+  have hsq := (sq_le_sq₀ (Real.sqrt_nonneg (redLength F.S 0 p x tau))
+    (by positivity : 0 ≤ Real.sqrt A + Real.sqrt 3 / 2 * D)).2 hbound
+  rwa [Real.sq_sqrt hnonneg] at hsq
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions

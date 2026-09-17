@@ -11079,3 +11079,6 @@ import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.CoerciveMassUniquenes
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.VariableMassUniqueness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedCanonicalDomain
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.TerminalKernel
+import DifferentialGeometry.Topology.SphereSeparation.BicollarSliceEmbedding
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NeckCompactSides
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NeckCap

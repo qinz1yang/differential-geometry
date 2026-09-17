@@ -282,3 +282,20 @@ theorem halves_subset_opposite_sides
 end SphereSides
 
 end DifferentialGeometry.Topology.SphereSeparation
+
+section
+
+set_option autoImplicit false
+
+namespace DifferentialGeometry.Topology.SphereSeparation.SphereSides
+
+variable {X : Type*} [TopologicalSpace X] {S : Set X}
+
+theorem frontier_closure_compactSide (d : SphereSides S) :
+    frontier (closure d.compactSide) = S := by
+  simpa only [frontier, closure_closure, d.interior_closure_compactSide,
+    d.isOpen_compactSide.interior_eq] using d.frontier_compactSide
+
+end DifferentialGeometry.Topology.SphereSeparation.SphereSides
+
+end
