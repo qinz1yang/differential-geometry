@@ -2143,3 +2143,11 @@ F-M1 仍为 partial。单个旧三角形的全部纤维及逐边对应已闭合�
 `HeightStarDecomposition.lean` 从正规闭填充的纯三维性及盘删去有限顶点后的稠密性，证明 d0 恰为实际截面胞腔中包含于闭星者的并。`exists_free_heightSectionCell_outside_closedStar` 因而从整层盘、一般位置高度及 d0 不等于整层，实际生产共同剖分和 d0 外的一块自由截面盘；没有把 d0 球性、子胞腔覆盖或自由胞腔作为额外输入。
 
 聚焦检查：`ConeFiber` exit=0（8.9 秒）、`ClosedStarFiber` exit=0（10.4 秒）、`HeightStarDecomposition` exit=0（10.4 秒），均零 warning。`AuditF235.lean` 七项（含链环搬运输入）仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步将所选自由盘提升为三维薄片凸胞腔，证明其与当前边界的交为盘并闭合有限删除，再做 M3。S.4 M2/M3、夜间 F-M1 整体及 I1 尚未完成。下一审计文件 `AuditF236.lean`。
+
+### 19.87 S.4 M2：无顶点单形薄片的逐子面 PL 棱柱模型
+
+`CellEquivalence.lean` 对两个有限仿射超平面配置，从出现的符号向量族相同构造导出剖分的同构及 PL 同胚，并证明每一点的全部定义符号保持。`SimplexHeightInterpolation.lean` 从高度闭区间避开全部顶点，实际生产各层上具有相同零坐标集合的标准单形点；不假设层的面对应。
+
+`SimplexSlabPrism.lean` 因而实际生产标准单形闭薄片到其下端截面乘闭区间的 PL 同胚，保留全部零坐标及上下端面。`SimplexCoordinates.lean` 提取标准线性组合的 PL 坐标、任意子面由坐标零集确定的纯代数 API。`SimplexSlab.lean` 的 `exists_isPLHomeomorphOn_convexHull_slab_prism` 将模型搬回任意有限维实范数空间中的仿射独立单形，保留每个原子面的成员关系及两端截面；不要求单形满维、不要求恰四个顶点，也不假设一个棱柱参数化。该结果用于 d0 外非关联顶点胞腔的侧面带与可删边界盘。
+
+聚焦检查：`CellEquivalence` exit=0（8.2 秒）、`SimplexHeightInterpolation` exit=0（8.1 秒）、`SimplexSlabPrism` exit=0（9.3 秒）、`SimplexCoordinates` exit=0（8.4 秒）、`SimplexSlab` exit=0（9.2 秒），均零 warning。`AuditF236.lean` 十项仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步生产自由截面盘对应的三维侧面带，证明其与当前薄片边界的交为 PL 盘，随后有限删除及 M3。S.4 M2/M3、夜间 F-M1 整体及 I1 尚未完成。下一审计文件 `AuditF237.lean`。
