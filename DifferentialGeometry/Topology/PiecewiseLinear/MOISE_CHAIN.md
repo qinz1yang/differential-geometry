@@ -107,3 +107,24 @@ Phase 3 的终点已经归约成一句话：`plApproximationManifold_three_of_mo
 来定顺序——这一步又要 26.8 的可定向性。
 
 结论：主链上 §33 之前必须补两项：**22.9** 与 **S.7（3-胞腔边界延拓）**。两者都不在原来的"便宜箭头"名单里。
+
+## 更正：30.5 ← 30.4 不是便宜箭头（2026-09-16 夜，尝试后）
+
+`SphereComplement.lean` 的 `IsPLSphere.exists_isPLBall_complement_components` 已经把书上那句
+"令 `C` 为 `ℝ³ − B` 中含 `C₁` 的分支的闭包，则 `C` 是多面体 3-胞腔"变成了真定理。但把箭头补完还差一步，
+而这一步不在树里：
+
+**缺的输入**：拓扑 3-胞腔 `C₂ ⊆ ℝ³` 的补集连通（等价地：ℝ³ 中拓扑 2-球面的 Jordan–Brouwer 分离，
+外侧分支唯一）。
+
+为什么需要：设 `B` 是 30.4 给出的分离球面，`D` 是它界定的 PL 3-球。要判定 `C₁` 落在有界侧、`ℝ³ − C₂` 落在无界侧，
+必须排除"`C₂ᶜ` 有一个有界分支落在 `interior D` 里"。已经能证的部分是：`B ⊆ interior X ⊆ interior C₂`
+（`X = Cl(C₂ − C₁)` 是壳，`frontier C₁`、`frontier C₂` 由不变域落在 `frontier X` 上，故与 `interior X` 不交），
+以及 `C₁` 连通且与 `B` 不交，因此 `C₁` 整个落在某一侧；`C₂ᶜ` 的无界分支落在 `Dᶜ` 一侧。
+但没有"`C₂ᶜ` 连通"就无法排除另一侧也含 `C₂ᶜ` 的点。
+
+树里的相关材料：`Topology/SphereSeparation/JordanBrouwer.lean` 的
+`hasTwoComplementComponents_of_alexanderDualityH0Certificate` 给出了这个结论，但条件于一个 `H₀` 证书，
+只对标准球面无条件成立。把该证书对任意拓扑 2-球面证出来，就是 Alexander 对偶的一个实例，属于同调侧的工作。
+
+所以"便宜箭头"名单里只剩 25.2 ← 25.1 与 26.4 ← 25.2 + 26.3 两条；30.5 ← 30.4 要先补上面这条拓扑输入。
