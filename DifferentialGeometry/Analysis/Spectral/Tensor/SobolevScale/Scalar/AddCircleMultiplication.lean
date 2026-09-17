@@ -96,4 +96,63 @@ theorem parameterDerivativeHs_scalarHsMul
     hmul0, parameterDerivativeCcTensor_ccOperatorFieldComp,
     ccTensorToHs_add]
 
+theorem parameterDerivativeHs_scalarHsMul_of_one_le
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ)))
+    {n : ℕ} (hn : 1 ≤ n)
+    (u v : TensorHs g 0 0 ((n + 1 : ℕ) : ℝ)) :
+    let D := (parameterDerivativeHs g n).comp (tensorHsInclusion
+      (g := g) (r := 0) (s := 0) (by norm_num))
+    let J := tensorHsInclusion (g := g) (r := 0) (s := 0)
+      (show (n : ℝ) ≤ ((n + 1 : ℕ) : ℝ) by exact_mod_cast Nat.le_succ n)
+    let m := scalarHsMul g n (by simpa using hn)
+    D (scalarHsMul g (n + 1) (by simp) u v) =
+      m (J u) (D v) + m (J v) (D u) := by
+  intro D J m
+  let M := scalarHsMul g (n + 1) (by simp)
+  have hD (S : SmoothCcTensor g 0 0) :
+      D (ccTensorToHs g 0 ((n + 1 : ℕ) : ℝ) S) =
+        ccTensorToHs g 0 (n : ℝ) (parameterDerivativeCcTensor g S) := by
+    simp only [D, ContinuousLinearMap.comp_apply, tensorHsInclusion_ccTensorToHs,
+      parameterDerivativeHs_apply_ccTensorToHs]
+  have hJ (S : SmoothCcTensor g 0 0) :
+      J (ccTensorToHs g 0 ((n + 1 : ℕ) : ℝ) S) =
+        ccTensorToHs g 0 (n : ℝ) S := by
+    simp only [J, tensorHsInclusion_ccTensorToHs]
+  change D (M u v) = _
+  refine (ccToHsLin_dense g 0 (by positivity : (0 : ℝ) ≤ ((n + 1 : ℕ) : ℝ))).induction_on u ?_ ?_
+  · apply isClosed_eq
+    · exact D.continuous.comp (M.continuous.clm_apply continuous_const)
+    · exact ((m.continuous.comp J.continuous).clm_apply continuous_const).add
+        ((m (J v)).continuous.comp D.continuous)
+  intro S
+  refine (ccToHsLin_dense g 0 (by positivity : (0 : ℝ) ≤ ((n + 1 : ℕ) : ℝ))).induction_on v ?_ ?_
+  · apply isClosed_eq
+    · exact D.continuous.comp (M (ccToHsLin g 0 ((n + 1 : ℕ) : ℝ) S)).continuous
+    · exact ((m (J (ccToHsLin g 0 ((n + 1 : ℕ) : ℝ) S))).continuous.comp
+        D.continuous).add ((m.continuous.comp J.continuous).clm_apply continuous_const)
+  intro T
+  simp only [ccToHsLin_apply, M, m, scalarHsMul_apply_ccTensorToHs, hD, hJ,
+    parameterDerivativeCcTensor_ccOperatorFieldComp, ccTensorToHs_add]
+
+
+theorem norm_parameterDerivativeHs_scalarHsMul_of_one_le
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ)))
+    {n : ℕ} (hn : 1 ≤ n)
+    (u v : TensorHs g 0 0 ((n + 1 : ℕ) : ℝ)) :
+    let D := (parameterDerivativeHs g n).comp (tensorHsInclusion
+      (g := g) (r := 0) (s := 0) (by norm_num))
+    let J := tensorHsInclusion (g := g) (r := 0) (s := 0)
+      (show (n : ℝ) ≤ ((n + 1 : ℕ) : ℝ) by exact_mod_cast Nat.le_succ n)
+    let m := scalarHsMul g n (by simpa using hn)
+    ‖D (scalarHsMul g (n + 1) (by simp) u v)‖ ≤
+      ‖m‖ * (‖J u‖ * ‖D v‖ + ‖J v‖ * ‖D u‖) := by
+  intro D J m
+  rw [parameterDerivativeHs_scalarHsMul_of_one_le g hn u v]
+  calc
+    ‖m (J u) (D v) + m (J v) (D u)‖ ≤
+        ‖m (J u) (D v)‖ + ‖m (J v) (D u)‖ := norm_add_le _ _
+    _ ≤ ‖m‖ * ‖J u‖ * ‖D v‖ + ‖m‖ * ‖J v‖ * ‖D u‖ :=
+      add_le_add (m.le_opNorm₂ _ _) (m.le_opNorm₂ _ _)
+    _ = ‖m‖ * (‖J u‖ * ‖D v‖ + ‖J v‖ * ‖D u‖) := by ring
+
 end AddCircle

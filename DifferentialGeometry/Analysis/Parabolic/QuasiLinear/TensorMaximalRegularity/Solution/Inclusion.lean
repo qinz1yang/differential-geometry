@@ -165,4 +165,37 @@ theorem maximalRegularityDuhamelVectorField_compLpL_tensorHsInclusion
   exact maximalRegularityDuhamelSolutionField_compLpL_tensorHsInclusion hab hT h_compact
     (u₀ i) (Lp.piLpEquiv (𝕜 := ℝ) (timeMeasure T) f i)
 
+theorem eq_maximalRegularityDuhamelVectorField_of_tensorHsInclusion_eq
+    (hab : a ≤ b) (hT : 0 < T)
+    (hc : IsCompactOperator (tensorResolventL2 (I := I) (M := M) g r s))
+    (u₀ : PiLp 2 (fun _ : ι => TensorHs g r s (b + 2)))
+    (FL : timeL2 (PiLp 2 (fun _ : ι => TensorHs g r s a)) T)
+    (FH : timeL2 (PiLp 2 (fun _ : ι => TensorHs g r s b)) T)
+    (U : timeL2 (PiLp 2 (fun _ : ι => TensorHs g r s (b + 2))) T) :
+    let J := ContinuousLinearMap.piLpMap 2 (fun _ : ι =>
+      tensorHsInclusion (g := g) (r := r) (s := s) hab)
+    let K := ContinuousLinearMap.piLpMap 2 (fun _ : ι =>
+      tensorHsInclusion (g := g) (r := r) (s := s)
+        (show a + 2 ≤ b + 2 by linarith))
+    J.compLpL 2 (timeMeasure T) FH = FL →
+    K.compLpL 2 (timeMeasure T) U = maximalRegularityDuhamelVectorField hT (K u₀) FL →
+    U = maximalRegularityDuhamelVectorField hT u₀ FH := by
+  intro J K hF hU
+  have hD : K.compLpL 2 (timeMeasure T)
+      (maximalRegularityDuhamelVectorField hT u₀ FH) =
+        maximalRegularityDuhamelVectorField hT (K u₀) FL := by
+    rw [← hF]
+    exact maximalRegularityDuhamelVectorField_compLpL_tensorHsInclusion hab hT hc u₀ FH
+  have heq : K.compLpL 2 (timeMeasure T) U = K.compLpL 2 (timeMeasure T)
+      (maximalRegularityDuhamelVectorField hT u₀ FH) := hU.trans hD.symm
+  apply Lp.ext
+  filter_upwards [K.coeFn_compLpL U,
+    K.coeFn_compLpL (maximalRegularityDuhamelVectorField hT u₀ FH)] with t ht hu
+  apply PiLp.ext
+  intro i
+  apply tensorHsInclusion_injective (g := g) (r := r) (s := s)
+    (show a + 2 ≤ b + 2 by linarith)
+  rw [heq] at ht
+  exact congrArg (fun z => z i) (ht.symm.trans hu)
+
 end DifferentialGeometry.Analysis.Parabolic.QuasiLinear
