@@ -2804,6 +2804,7 @@ import DifferentialGeometry.Bundle.PartialMfderiv.ModelMixed
 import DifferentialGeometry.Bundle.PartialMfderiv.Parameter
 import DifferentialGeometry.Bundle.PartialMfderiv.Regularity
 import DifferentialGeometry.Bundle.PartialMfderiv.TimeDerivative
+import DifferentialGeometry.Bundle.PartialMfderiv.TimeDerivativeWithin
 import DifferentialGeometry.Bundle.Point
 import DifferentialGeometry.Bundle.PositiveSection
 import DifferentialGeometry.Bundle.Principal.Defs
@@ -4648,6 +4649,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Ricci.Com
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Ricci.Intrinsic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Ricci.QuadraticForm
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.CovariantDerivative.Terminal
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.CovariantDerivative.TimeLipschitz
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Ricci.Tower
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Ricci.Trace
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Source.Bound
@@ -4681,6 +4683,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.FlowLimit
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.GramConvergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.KineticConvergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.MetricExtension
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.TimeLipschitz
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.MetricLowerBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Open.BumpFamilyChange
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Open.Completeness
