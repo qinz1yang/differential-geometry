@@ -4769,6 +4769,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Solution.
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Solution.TerminalConvergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Solution.TimeRegularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Solution.WindowPrecompactness
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Solution.CountableTerminalConvergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.TracefreeRicciPullback
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Shi.CurvatureDerivativeBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Shi.Estimate
@@ -10743,6 +10744,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Covariant
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.PointedExtensionMetricBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.PointedCompactMetricBounds
 import DifferentialGeometry.Geometry.Metric.Convergence.Time.CompactBounds
+import DifferentialGeometry.Geometry.Metric.Convergence.Restriction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Endpoint.TimeLipschitz
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.CurvatureUpperSupport
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.TerminalLeastEigenvalue
