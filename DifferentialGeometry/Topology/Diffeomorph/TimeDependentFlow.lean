@@ -1,5 +1,6 @@
 import DifferentialGeometry.Analysis.ODE.Flow.CompactSupport
 import Mathlib.Geometry.Manifold.Diffeomorph
+import Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Quotient
 
 noncomputable section
 
@@ -165,6 +166,24 @@ theorem isIntegralCurve_timeDependentFlow (s : ℝ) (x : E) :
   change HasDerivAt (fun u => (γ (u - s)).2) (V (t, (γ (t - s)).2)) t
   simpa only [Function.comp_def, id_eq, one_smul] using hshift
 
+open Set in
+theorem timeDependentFlow_eqOn_Icc
+    {V : Type*} [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimensional ℝ V]
+    (X : ℝ × V → V) (hX : ContDiff ℝ ∞ X) (hXc : HasCompactSupport X)
+    {γ : ℝ → V} {a b : ℝ} (hγ : ContinuousOn γ (Icc a b))
+    (hγ' : ∀ t ∈ Ico a b, HasDerivWithinAt γ (X (t, γ t)) (Ici t) t) :
+    EqOn (fun t => Diffeomorph.timeDependentFlow X hX hXc a t (γ a)) γ (Icc a b) := by
+  obtain ⟨L, hL⟩ := ContDiff.lipschitzWith_of_hasCompactSupport hXc hX (by simp)
+  have hslice (t : ℝ) : LipschitzWith L (fun x : V => X (t, x)) := by
+    simpa only [mul_one, Function.comp_def] using hL.comp (LipschitzWith.prodMk_left t)
+  have hflow := Diffeomorph.isIntegralCurve_timeDependentFlow X hX hXc a (γ a)
+  exact ODE_solution_unique_of_mem_Icc_right (s := fun _ => univ)
+    (fun t _ => (hslice t).lipschitzOnWith)
+    (continuous_iff_continuousAt.mpr (fun t => (hflow t).continuousAt)).continuousOn
+    (fun t _ => (hflow t).hasDerivWithinAt) (fun _ _ => mem_univ _)
+    hγ hγ' (fun _ _ => mem_univ _)
+    (by simp only [Diffeomorph.timeDependentFlow_refl, Diffeomorph.coe_refl, id_eq])
+
 theorem timeDependentFlow_apply_eq_of_isIntegralCurve {γ : ℝ → E}
     (hγ : IsIntegralCurve γ (fun t x => V (t, x))) (s t : ℝ) :
     timeDependentFlow V hV hs s t (γ s) = γ t := by
@@ -230,6 +249,27 @@ theorem timeDependentFlow_eq_refl_of_eq_zero_on (s t : ℝ)
   calc
     γ t = γ s := ht.trans hstart.symm
     _ = x := by simp only [γ, timeDependentFlow_refl, Diffeomorph.coe_refl, id_eq]
+
+theorem map_timeDependentFlow_eq_of_map_eq_zero
+    {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
+    (L : E →L[ℝ] F) (hL : ∀ p, L (V p) = 0) (s t : ℝ) (x : E) :
+    L (timeDependentFlow V hV hs s t x) = L x := by
+  have hd (u : ℝ) : HasDerivAt (fun v => L (timeDependentFlow V hV hs s v x)) 0 u := by
+    simpa only [hL, Function.comp_def] using L.hasFDerivAt.comp_hasDerivAt u
+      (isIntegralCurve_timeDependentFlow V hV hs s x u)
+  have h := is_const_of_deriv_eq_zero (fun u => (hd u).differentiableAt)
+    (fun u => (hd u).deriv) t s
+  simpa only [timeDependentFlow_refl, Diffeomorph.coe_refl, id_eq] using h
+
+theorem timeDependentFlow_sub_mem_of_mem_submodule (S : Submodule ℝ E)
+    (hS : ∀ p, V p ∈ S) (s t : ℝ) (x : E) :
+    timeDependentFlow V hV hs s t x - x ∈ S := by
+  let : IsClosed (S : Set E) := S.closed_of_finiteDimensional
+  have h := map_timeDependentFlow_eq_of_map_eq_zero V hV hs S.mkQL
+    (fun p => by exact (Submodule.Quotient.mk_eq_zero S).mpr (hS p)) s t x
+  apply (Submodule.Quotient.mk_eq_zero S).mp
+  change S.mkQL (timeDependentFlow V hV hs s t x - x) = 0
+  rw [map_sub, h, sub_self]
 
 end Diffeomorph
 

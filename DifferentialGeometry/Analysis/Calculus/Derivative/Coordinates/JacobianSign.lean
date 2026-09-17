@@ -55,3 +55,28 @@ theorem det_fderiv_pos_iff_of_preconnected
   exact ⟨hprop x y hx hy, hprop y x hy hx⟩
 
 end DifferentialGeometry.Analysis
+
+namespace Diffeomorph
+
+theorem det_fderiv_pos_of_eqOn_compl_isCompact
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    (F : E ≃ₘ[ℝ] E) {K : Set E} (hK : IsCompact K)
+    (hfix : EqOn F id Kᶜ) (x : E) :
+    0 < (fderiv ℝ F x).toLinearMap.det := by
+  cases subsingleton_or_nontrivial E with
+  | inl h =>
+    let _ := h
+    rw [LinearMap.det_eq_one_of_subsingleton]
+    exact zero_lt_one
+  | inr h =>
+    let _ := h
+    obtain ⟨y, hy⟩ := Set.nonempty_compl.mpr hK.ne_univ
+    have hnear : (F : E → E) =ᶠ[𝓝 y] id :=
+      Filter.Eventually.mono (hK.isClosed.isOpen_compl.mem_nhds hy) hfix
+    have hypos : 0 < (fderiv ℝ F y).toLinearMap.det := by
+      rw [hnear.fderiv_eq, fderiv_id]
+      simp
+    exact (DifferentialGeometry.Analysis.det_fderiv_pos_iff_of_preconnected F.toPartialDiffeomorph
+      isPreconnected_univ (mem_univ y) (mem_univ x)).mp hypos
+
+end Diffeomorph

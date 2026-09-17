@@ -10744,3 +10744,9 @@ import DifferentialGeometry.Analysis.Convex.AffineBasis
 import DifferentialGeometry.Analysis.Convex.SegmentGerm
 import DifferentialGeometry.Analysis.Convex.SegmentSigns
 import DifferentialGeometry.Analysis.InnerProductSpace.SphereDerivative
+import DifferentialGeometry.Tensor.QuadraticForm.Scaling
+import DifferentialGeometry.Topology.Diffeomorph.CompactLocalIsotopy
+import DifferentialGeometry.Topology.Diffeomorph.HeightReparametrization
+import DifferentialGeometry.Topology.Diffeomorph.LocalFlowExtension
+import DifferentialGeometry.Topology.Morse.HeightCompression
+import DifferentialGeometry.Topology.Morse.ScalarComposition

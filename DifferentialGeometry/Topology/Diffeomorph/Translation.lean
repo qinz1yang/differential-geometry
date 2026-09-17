@@ -1,4 +1,5 @@
 import DifferentialGeometry.Topology.Diffeomorph.Perturbation
+import DifferentialGeometry.Topology.Diffeomorph.LocalFlowExtension
 import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension
 import Mathlib.Analysis.Calculus.ContDiff.RCLike
 import Mathlib.Analysis.Normed.Group.Bounded
@@ -6,7 +7,8 @@ import Mathlib.Tactic.NormNum
 import Mathlib.Tactic.Linarith
 import Mathlib.Tactic.Ring
 
-open scoped ContDiff Manifold NNReal
+open Set
+open scoped ContDiff Manifold NNReal Topology
 
 namespace Diffeomorph
 
@@ -69,5 +71,177 @@ theorem exists_isotopy_translation_of_isBounded {E : Type*}
     ?_, exists_isCompact_eqOn_addLipschitzIsotopy hf hlip hC hs⟩
   intro t x hx
   rw [addLipschitzIsotopy_apply, heq x hx]
+
+theorem exists_isotopy_translation_in_open {E : Type*}
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    {K U : Set E} (hK : IsCompact K) (hU : IsOpen U) (v : E)
+    (htrace : ∀ t ∈ Icc (0 : ℝ) 1, ∀ x ∈ K, x + t • v ∈ U) :
+    ∃ H : ℝ → (E ≃ₘ[ℝ] E),
+      ContDiff ℝ ∞ (fun z : ℝ × E => H z.1 z.2) ∧
+      ContDiff ℝ ∞ (fun z : ℝ × E => (H z.1).symm z.2) ∧
+      H 0 = Diffeomorph.refl 𝓘(ℝ, E) E ∞ ∧
+      (∀ t ∈ Icc (0 : ℝ) 1, ∀ x ∈ K, H t x = x + t • v) ∧
+      (∀ t x, H t x - x ∈ Submodule.span ℝ {v}) ∧
+      ∃ J : Set E, IsCompact J ∧ J ⊆ U ∧ ∀ t : ℝ,
+        EqOn (H t) id Jᶜ ∧ EqOn (H t).symm id Jᶜ := by
+  let C := (fun p : ℝ × E => (p.1, p.2 + p.1 • v)) '' (Icc (0 : ℝ) 1 ×ˢ K)
+  have hC : IsCompact C := (isCompact_Icc.prod hK).image
+    (continuous_fst.prodMk (continuous_snd.add (continuous_fst.smul continuous_const)))
+  have hCU : C ⊆ univ ×ˢ U := by
+    rintro _ ⟨p, hp, rfl⟩
+    exact ⟨mem_univ _, htrace p.1 hp.1 p.2 hp.2⟩
+  obtain ⟨H, hH, hHi, hH0, hmove, _, hspan, hsupport⟩ :=
+    exists_contDiff_compact_isotopy_eqOn_integralCurve_of_mem_submodule hU isOpen_univ hC
+      (by simpa only [univ_inter] using hCU) (W := fun _ => v) contDiff_const.contDiffOn
+      (S := ∅) (fun _ _ h => h.elim) (Submodule.span ℝ {v})
+      (fun _ _ => Submodule.mem_span_singleton_self v)
+      (P := K) (γ := fun x t => (x : E) + t • v) (c := fun _ => 0) (d := fun _ => 1) 0
+      (fun _ => (continuous_const.add (continuous_id.smul continuous_const)).continuousOn)
+      (fun x t _ => by
+        have h := (hasDerivAt_const t (x : E)).add ((hasDerivAt_id t).smul_const v)
+        simp only [zero_add, one_smul] at h
+        exact h.hasDerivWithinAt)
+      (fun x t ht => ⟨(t, x), ⟨ht, x.property⟩, rfl⟩)
+  refine ⟨H, hH, hHi, hH0, ?_, hspan, hsupport⟩
+  intro t ht x hx
+  simpa only [hH0, Diffeomorph.symm_refl, Diffeomorph.coe_refl, id_eq,
+    zero_smul, add_zero] using hmove ⟨x, hx⟩ t ht
+
+theorem exists_isotopy_vertical_translation_of_isCompact {E : Type*}
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    {K U : Set (E × ℝ)} (hK : IsCompact K) (hU : IsOpen U) (d : ℝ)
+    (htrace : ∀ t ∈ Icc (0 : ℝ) 1, ∀ p ∈ K, (p.1, p.2 + t * d) ∈ U) :
+    ∃ H : ℝ → ((E × ℝ) ≃ₘ[ℝ] (E × ℝ)),
+      ContDiff ℝ ∞ (fun z : ℝ × (E × ℝ) => H z.1 z.2) ∧
+      ContDiff ℝ ∞ (fun z : ℝ × (E × ℝ) => (H z.1).symm z.2) ∧
+      H 0 = Diffeomorph.refl 𝓘(ℝ, E × ℝ) (E × ℝ) ∞ ∧
+      (∀ t ∈ Icc (0 : ℝ) 1, ∀ p ∈ K, H t p = (p.1, p.2 + t * d)) ∧
+      (∀ t z, (H t z).1 = z.1) ∧
+      ∃ J : Set (E × ℝ), IsCompact J ∧ J ⊆ U ∧ ∀ t : ℝ,
+        EqOn (H t) id Jᶜ ∧ EqOn (H t).symm id Jᶜ := by
+  obtain ⟨H, hH, hHi, hH0, hmove, hspan, J, hJ, hJU, hfix⟩ :=
+    exists_isotopy_translation_in_open hK hU ((0 : E), d) (by
+      rintro t ht ⟨x, y⟩ hp
+      simpa only [Prod.smul_mk, Prod.mk_add_mk, smul_zero, add_zero, smul_eq_mul] using
+        htrace t ht (x, y) hp)
+  refine ⟨H, hH, hHi, hH0, ?_, ?_, J, hJ, hJU, hfix⟩
+  · rintro t ht ⟨x, y⟩ hp
+    simpa only [Prod.smul_mk, Prod.mk_add_mk, smul_zero, add_zero, smul_eq_mul] using
+      hmove t ht (x, y) hp
+  · intro t z
+    have hker : Submodule.span ℝ {((0 : E), d)} ≤
+        (ContinuousLinearMap.fst ℝ E ℝ).ker := by
+      apply Submodule.span_le.mpr
+      rintro y (rfl : y = _)
+      rfl
+    have h := hker (hspan t z)
+    change (H t z).1 - z.1 = 0 at h
+    exact sub_eq_zero.mp h
+
+theorem exists_isotopy_vertical_translation_in_open {E : Type*}
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    {K : Set E} (hK : IsCompact K) {U : Set (E × ℝ)} (hU : IsOpen U)
+    (a b : ℝ) (htrace : K ×ˢ uIcc a b ⊆ U) :
+    ∃ H : ℝ → ((E × ℝ) ≃ₘ[ℝ] (E × ℝ)),
+      ContDiff ℝ ∞ (fun z : ℝ × (E × ℝ) => H z.1 z.2) ∧
+      ContDiff ℝ ∞ (fun z : ℝ × (E × ℝ) => (H z.1).symm z.2) ∧
+      H 0 = Diffeomorph.refl 𝓘(ℝ, E × ℝ) (E × ℝ) ∞ ∧
+      (∀ t ∈ Icc (0 : ℝ) 1, ∀ x ∈ K, H t (x, a) = (x, a + t * (b - a))) ∧
+      (∀ t z, (H t z).1 = z.1) ∧
+      ∃ J : Set (E × ℝ), IsCompact J ∧ J ⊆ U ∧ ∀ t : ℝ,
+        EqOn (H t) id Jᶜ ∧ EqOn (H t).symm id Jᶜ := by
+  obtain ⟨H, hH, hHi, hH0, hmove, hfst, hsupport⟩ :=
+    exists_isotopy_vertical_translation_of_isCompact
+      (hK.prod (isCompact_singleton (x := a))) hU (b - a) (by
+        rintro t ht ⟨x, s⟩ ⟨hx, hs⟩
+        have hs' : s = a := hs
+        subst s
+        apply htrace
+        refine ⟨hx, ?_⟩
+        change a + t * (b - a) ∈ uIcc a b
+        rcases le_total a b with hab | hba
+        · rw [uIcc_of_le hab]
+          constructor <;> nlinarith [ht.1, ht.2]
+        · rw [uIcc_of_ge hba]
+          constructor <;> nlinarith [ht.1, ht.2])
+  exact ⟨H, hH, hHi, hH0, fun t ht x hx => hmove t ht (x, a) ⟨hx, mem_singleton a⟩,
+    hfst, hsupport⟩
+
+theorem exists_isotopy_vertical_translation_of_local_product {E : Type*}
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    {K S U : Set (E × ℝ)} {C V : Set E} {W : Set ℝ}
+    (hK : IsCompact K) (hS : S ∩ (V ×ˢ W) = (C ∩ V) ×ˢ W)
+    (hU : IsOpen U) (hUV : U ⊆ V ×ˢ W) (d : ℝ)
+    (htrace : ∀ t ∈ Icc (0 : ℝ) 1, ∀ p ∈ K, (p.1, p.2 + t * d) ∈ U) :
+    ∃ H : ℝ → ((E × ℝ) ≃ₘ[ℝ] (E × ℝ)),
+      ContDiff ℝ ∞ (fun z : ℝ × (E × ℝ) => H z.1 z.2) ∧
+      ContDiff ℝ ∞ (fun z : ℝ × (E × ℝ) => (H z.1).symm z.2) ∧
+      H 0 = Diffeomorph.refl 𝓘(ℝ, E × ℝ) (E × ℝ) ∞ ∧
+      (∀ t ∈ Icc (0 : ℝ) 1, ∀ p ∈ K, H t p = (p.1, p.2 + t * d)) ∧
+      (∀ t z, (H t z).1 = z.1) ∧ (∀ t, H t '' S = S) ∧
+      ∃ J : Set (E × ℝ), IsCompact J ∧ J ⊆ U ∧ ∀ t : ℝ,
+        EqOn (H t) id Jᶜ ∧ EqOn (H t).symm id Jᶜ := by
+  obtain ⟨H, hH, hHi, hH0, hmove, hfst, J, hJ, hJU, hfix⟩ :=
+    exists_isotopy_vertical_translation_of_isCompact hK hU d htrace
+  refine ⟨H, hH, hHi, hH0, hmove, hfst, ?_, J, hJ, hJU, hfix⟩
+  intro t
+  have hmem (z : E × ℝ) : H t z ∈ S ↔ z ∈ S := by
+    by_cases hz : z ∈ J
+    · have hHz : H t z ∈ J := by
+        by_contra hn
+        have heq : H t (H t z) = H t z := (hfix t).1 hn
+        have hzeq : H t z = z := (H t).injective heq
+        exact hn (hzeq.symm ▸ hz)
+      have hzW : z ∈ V ×ˢ W := hUV (hJU hz)
+      have hHzW : H t z ∈ V ×ˢ W := hUV (hJU hHz)
+      have hlocal (y : E × ℝ) (hy : y ∈ V ×ˢ W) : y ∈ S ↔ y.1 ∈ C := by
+        constructor
+        · intro hyS
+          exact (hS.subset ⟨hyS, hy⟩).1.1
+        · intro hyC
+          exact (hS.symm.subset ⟨⟨hyC, hy.1⟩, hy.2⟩).1
+      rw [hlocal _ hHzW, hlocal _ hzW, hfst]
+    · rw [(hfix t).1 hz]
+      rfl
+  ext z
+  constructor
+  · rintro ⟨x, hx, rfl⟩
+    exact (hmem x).mpr hx
+  · intro hz
+    refine ⟨(H t).symm z, ?_, (H t).apply_symm_apply z⟩
+    apply (hmem _).mp
+    rwa [(H t).apply_symm_apply]
+
+theorem exists_isotopy_vertical_translation_preserving_set {E : Type*}
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    {K : Set E} (hK : IsCompact K) {S : Set (E × ℝ)} {C : Set E} {W : Set ℝ}
+    (hS : S ∩ (univ ×ˢ W) = C ×ˢ W)
+    {U : Set (E × ℝ)} (hU : IsOpen U) (hUW : U ⊆ univ ×ˢ W)
+    (a b : ℝ) (htrace : K ×ˢ uIcc a b ⊆ U) :
+    ∃ H : ℝ → ((E × ℝ) ≃ₘ[ℝ] (E × ℝ)),
+      ContDiff ℝ ∞ (fun z : ℝ × (E × ℝ) => H z.1 z.2) ∧
+      ContDiff ℝ ∞ (fun z : ℝ × (E × ℝ) => (H z.1).symm z.2) ∧
+      H 0 = Diffeomorph.refl 𝓘(ℝ, E × ℝ) (E × ℝ) ∞ ∧
+      (∀ t ∈ Icc (0 : ℝ) 1, ∀ x ∈ K, H t (x, a) = (x, a + t * (b - a))) ∧
+      (∀ t z, (H t z).1 = z.1) ∧ (∀ t, H t '' S = S) ∧
+      ∃ J : Set (E × ℝ), IsCompact J ∧ J ⊆ U ∧ ∀ t : ℝ,
+        EqOn (H t) id Jᶜ ∧ EqOn (H t).symm id Jᶜ := by
+  obtain ⟨H, hH, hHi, hH0, hmove, hfst, hHS, hsupport⟩ :=
+    exists_isotopy_vertical_translation_of_local_product
+      (hK.prod (isCompact_singleton (x := a))) (by simpa only [inter_univ] using hS)
+      hU hUW (b - a) (by
+        rintro t ht ⟨x, s⟩ ⟨hx, hs⟩
+        have hs' : s = a := hs
+        subst s
+        apply htrace
+        refine ⟨hx, ?_⟩
+        change a + t * (b - a) ∈ uIcc a b
+        rcases le_total a b with hab | hba
+        · rw [uIcc_of_le hab]
+          constructor <;> nlinarith [ht.1, ht.2]
+        · rw [uIcc_of_ge hba]
+          constructor <;> nlinarith [ht.1, ht.2])
+  exact ⟨H, hH, hHi, hH0, fun t ht x hx => hmove t ht (x, a) ⟨hx, mem_singleton a⟩,
+    hfst, hHS, hsupport⟩
 
 end Diffeomorph
