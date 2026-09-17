@@ -72,7 +72,7 @@ theorem exists_isPiecewiseAffineOn_prism_of_isPLHomeomorphOn_mapsTo_space
     (hθ : IsPLHomeomorphOn θ (Icc (0 : ℝ) 1) J) {f g : E → F}
     (hf : IsPiecewiseAffineOn f J) (hg : IsPiecewiseAffineOn g J)
     {δ : ℝ} (hδ : 0 < δ) (T : Finset ℝ) (hT : ∀ x ∈ T, x ∈ Icc (0 : ℝ) 1)
-    (hface : ∀ a ∈ Icc (0 : ℝ) 1, ∀ b ∈ Icc (0 : ℝ) 1, b - a < δ →
+    (hface : ∀ a ∈ Icc (0 : ℝ) 1, ∀ b ∈ Icc (0 : ℝ) 1, a ≤ b → b - a < δ →
       (∀ x ∈ T, ¬(a < x ∧ x < b)) →
       ∃ u ∈ L.faces, ({f (θ a), f (θ b), g (θ a), g (θ b)} : Set F) ⊆ convexHull ℝ (u : Set F)) :
     ∃ Φ : E × ℝ → F, IsPiecewiseAffineOn Φ (J ×ˢ Icc (0 : ℝ) 1) ∧
@@ -206,10 +206,10 @@ theorem exists_isPiecewiseAffineOn_prism_of_arcs_mapsTo_space
     (hunion : A ∪ B = J) (hinter : A ∩ B = {p, q})
     {f g : E → F} (hf : IsPiecewiseAffineOn f J) (hg : IsPiecewiseAffineOn g J)
     {δ : ℝ} (hδ : 0 < δ) (T : Finset ℝ) (hT : ∀ x ∈ T, x ∈ Icc (0 : ℝ) 1)
-    (hfaceγ : ∀ a ∈ Icc (0 : ℝ) 1, ∀ b ∈ Icc (0 : ℝ) 1, b - a < δ →
+    (hfaceγ : ∀ a ∈ Icc (0 : ℝ) 1, ∀ b ∈ Icc (0 : ℝ) 1, a ≤ b → b - a < δ →
       (∀ x ∈ T, ¬(a < x ∧ x < b)) →
       ∃ u ∈ L.faces, ({f (γ a), f (γ b), g (γ a), g (γ b)} : Set F) ⊆ convexHull ℝ (u : Set F))
-    (hfaceκ : ∀ a ∈ Icc (0 : ℝ) 1, ∀ b ∈ Icc (0 : ℝ) 1, b - a < δ →
+    (hfaceκ : ∀ a ∈ Icc (0 : ℝ) 1, ∀ b ∈ Icc (0 : ℝ) 1, a ≤ b → b - a < δ →
       (∀ x ∈ T, ¬(a < x ∧ x < b)) →
       ∃ u ∈ L.faces, ({f (κ a), f (κ b), g (κ a), g (κ b)} : Set F) ⊆ convexHull ℝ (u : Set F)) :
     ∃ Φ : E × ℝ → F, IsPiecewiseAffineOn Φ (J ×ˢ Icc (0 : ℝ) 1) ∧

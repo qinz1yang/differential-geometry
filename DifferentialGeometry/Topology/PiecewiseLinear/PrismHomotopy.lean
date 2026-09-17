@@ -100,7 +100,7 @@ theorem exists_isPiecewiseAffineOn_prism_mapsTo_space (L : Geometry.SimplicialCo
     {f g : ℝ → F} (hf : IsPiecewiseAffineOn f (Icc (0 : ℝ) 1))
     (hg : IsPiecewiseAffineOn g (Icc (0 : ℝ) 1)) {δ : ℝ} (hδ : 0 < δ)
     (T : Finset ℝ) (hT : ∀ x ∈ T, x ∈ Icc (0 : ℝ) 1)
-    (hface : ∀ a ∈ Icc (0 : ℝ) 1, ∀ b ∈ Icc (0 : ℝ) 1, b - a < δ →
+    (hface : ∀ a ∈ Icc (0 : ℝ) 1, ∀ b ∈ Icc (0 : ℝ) 1, a ≤ b → b - a < δ →
       (∀ x ∈ T, ¬(a < x ∧ x < b)) →
       ∃ u ∈ L.faces, ({f a, f b, g a, g b} : Set F) ⊆ convexHull ℝ (u : Set F)) :
     ∃ Φ : ℝ × ℝ → F, IsPiecewiseAffineOn Φ (Icc (0 : ℝ) 1 ×ˢ Icc (0 : ℝ) 1) ∧
@@ -117,7 +117,8 @@ theorem exists_isPiecewiseAffineOn_prism_mapsTo_space (L : Geometry.SimplicialCo
   intro z hz
   obtain ⟨i, hi, hmem⟩ := himg z hz
   obtain ⟨u, hu, hsub⟩ := hface (s i) (mem_Icc_of_forall_lt_succ hmono hs0 hsn (by omega))
-    (s (i + 1)) (mem_Icc_of_forall_lt_succ hmono hs0 hsn (by omega)) (hmesh i hi) (hgap i hi)
+    (s (i + 1)) (mem_Icc_of_forall_lt_succ hmono hs0 hsn (by omega)) (hmono i hi).le
+    (hmesh i hi) (hgap i hi)
   exact L.convexHull_subset_space hu
     ((convex_convexHull ℝ (u : Set F)).convexHull_subset_iff.mpr hsub hmem)
 
@@ -125,7 +126,7 @@ theorem exists_isPiecewiseAffineOn_annulus_mapsTo_space (L : Geometry.Simplicial
     {f g : ℝ → F} (hf : IsPiecewiseAffineOn f (Icc (0 : ℝ) 1))
     (hg : IsPiecewiseAffineOn g (Icc (0 : ℝ) 1)) (hfloop : f 0 = f 1) (hgloop : g 0 = g 1)
     {δ : ℝ} (hδ : 0 < δ) (T : Finset ℝ) (hT : ∀ x ∈ T, x ∈ Icc (0 : ℝ) 1)
-    (hface : ∀ a ∈ Icc (0 : ℝ) 1, ∀ b ∈ Icc (0 : ℝ) 1, b - a < δ →
+    (hface : ∀ a ∈ Icc (0 : ℝ) 1, ∀ b ∈ Icc (0 : ℝ) 1, a ≤ b → b - a < δ →
       (∀ x ∈ T, ¬(a < x ∧ x < b)) →
       ∃ u ∈ L.faces, ({f a, f b, g a, g b} : Set F) ⊆ convexHull ℝ (u : Set F)) :
     ∃ Φ : ℝ × ℝ → F, IsPiecewiseAffineOn Φ (Icc (0 : ℝ) 1 ×ˢ Icc (0 : ℝ) 1) ∧
@@ -163,7 +164,7 @@ theorem exists_isPiecewiseAffineOn_prism_height_mapsTo_space
     (L : Geometry.SimplicialComplex ℝ F) {f g : ℝ → F}
     (hf : IsPiecewiseAffineOn f (Icc (0 : ℝ) 1)) (hg : IsPiecewiseAffineOn g (Icc (0 : ℝ) 1))
     {δ : ℝ} (hδ : 0 < δ) (T : Finset ℝ) (hT : ∀ x ∈ T, x ∈ Icc (0 : ℝ) 1)
-    (hface : ∀ a ∈ Icc (0 : ℝ) 1, ∀ b ∈ Icc (0 : ℝ) 1, b - a < δ →
+    (hface : ∀ a ∈ Icc (0 : ℝ) 1, ∀ b ∈ Icc (0 : ℝ) 1, a ≤ b → b - a < δ →
       (∀ x ∈ T, ¬(a < x ∧ x < b)) →
       ∃ u ∈ L.faces, ({f a, f b, g a, g b} : Set F) ⊆ convexHull ℝ (u : Set F))
     {h : ℝ} (hh : 0 < h) :
@@ -197,7 +198,7 @@ theorem exists_isPiecewiseAffineOn_glue_prism_collar (L : Geometry.SimplicialCom
     {f : ℝ → F} (hf : IsPiecewiseAffineOn f (Icc (0 : ℝ) 1))
     {ε : ℝ} (hε : 0 < ε) (hε1 : ε ≤ 1)
     {δ : ℝ} (hδ : 0 < δ) (T : Finset ℝ) (hT : ∀ x ∈ T, x ∈ Icc (0 : ℝ) 1)
-    (hface : ∀ a ∈ Icc (0 : ℝ) 1, ∀ b ∈ Icc (0 : ℝ) 1, b - a < δ →
+    (hface : ∀ a ∈ Icc (0 : ℝ) 1, ∀ b ∈ Icc (0 : ℝ) 1, a ≤ b → b - a < δ →
       (∀ x ∈ T, ¬(a < x ∧ x < b)) →
       ∃ u ∈ L.faces,
         ({f a, f b, G (a, ε), G (b, ε)} : Set F) ⊆ convexHull ℝ (u : Set F)) :

@@ -30,7 +30,7 @@ theorem exists_isPiecewiseAffineOn_square_eqOn_bottom
     (hfL : MapsTo f (Icc (0 : ℝ) 1 ×ˢ Icc (0 : ℝ) 1) L.space)
     (hbot : IsPiecewiseAffineOn (fun x : ℝ => f (x, 0)) (Icc (0 : ℝ) 1))
     {δ : ℝ} (hδ : 0 < δ) (T : Finset ℝ) (hT : ∀ x ∈ T, x ∈ Icc (0 : ℝ) 1)
-    (hbotface : ∀ a ∈ Icc (0 : ℝ) 1, ∀ b ∈ Icc (0 : ℝ) 1, b - a < δ →
+    (hbotface : ∀ a ∈ Icc (0 : ℝ) 1, ∀ b ∈ Icc (0 : ℝ) 1, a ≤ b → b - a < δ →
       (∀ x ∈ T, ¬(a < x ∧ x < b)) →
       ∃ u ∈ L.faces, ({f (a, 0), f (b, 0)} : Set F) ⊆ convexHull ℝ (u : Set F)) :
     ∃ g : ℝ × ℝ → F, IsPiecewiseAffineOn g (Icc (0 : ℝ) 1 ×ˢ Icc (0 : ℝ) 1) ∧
@@ -67,12 +67,12 @@ theorem exists_isPiecewiseAffineOn_square_eqOn_bottom
     rw [Function.comp_apply, hρdef]
     simp only
     rw [collarReparam_eq_zero hε1 le_rfl]
-  have hface : ∀ a ∈ Icc (0 : ℝ) 1, ∀ b ∈ Icc (0 : ℝ) 1, b - a < δ →
+  have hface : ∀ a ∈ Icc (0 : ℝ) 1, ∀ b ∈ Icc (0 : ℝ) 1, a ≤ b → b - a < δ →
       (∀ x ∈ T, ¬(a < x ∧ x < b)) →
       ∃ u ∈ L.faces, ({f (a, 0), f (b, 0), simplicialMap K' φ (a, 1 / 2),
         simplicialMap K' φ (b, 1 / 2)} : Set F) ⊆ convexHull ℝ (u : Set F) := by
-    intro a ha b hb hab hgap
-    obtain ⟨u, hu, hsub⟩ := hbotface a ha b hb hab hgap
+    intro a ha b hb hle hab hgap
+    obtain ⟨u, hu, hsub⟩ := hbotface a ha b hb hle hab hgap
     have hmemu : ∀ c : ℝ, c ∈ Icc (0 : ℝ) 1 → f (c, 0) ∈ convexHull ℝ (u : Set F) →
         simplicialMap K' φ (c, 1 / 2) ∈ convexHull ℝ (u : Set F) := by
       intro c hc hfc
@@ -138,5 +138,30 @@ theorem exists_face_of_no_partition_point_between
   obtain ⟨i, hi, hai, hbi⟩ := key
   obtain ⟨u, hu, hfu⟩ := hcell i hi
   exact ⟨u, hu, by rintro y (rfl | rfl); exacts [hfu _ hai, hfu _ hbi]⟩
+
+theorem exists_isPiecewiseAffineOn_square_eqOn_bottom_of_cells
+    {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
+    (L : Geometry.SimplicialComplex ℝ F) [Finite L.faces]
+    {f : ℝ × ℝ → F} (hf : ContinuousOn f (Icc (0 : ℝ) 1 ×ˢ Icc (0 : ℝ) 1))
+    (hfL : MapsTo f (Icc (0 : ℝ) 1 ×ˢ Icc (0 : ℝ) 1) L.space)
+    (hbot : IsPiecewiseAffineOn (fun x : ℝ => f (x, 0)) (Icc (0 : ℝ) 1))
+    {n : ℕ} {s : ℕ → ℝ} (hs0 : s 0 = 0) (hsn : s n = 1) (hn : 0 < n)
+    (hmono : ∀ i < n, s i < s (i + 1))
+    (hbotcell : ∀ i < n, ∃ u ∈ L.faces, ∀ x ∈ Icc (s i) (s (i + 1)),
+      f (x, 0) ∈ convexHull ℝ (u : Set F)) :
+    ∃ g : ℝ × ℝ → F, IsPiecewiseAffineOn g (Icc (0 : ℝ) 1 ×ˢ Icc (0 : ℝ) 1) ∧
+      MapsTo g (Icc (0 : ℝ) 1 ×ˢ Icc (0 : ℝ) 1) L.space ∧
+      (∀ x ∈ Icc (0 : ℝ) 1, g (x, 0) = f (x, 0)) := by
+  classical
+  refine exists_isPiecewiseAffineOn_square_eqOn_bottom L hf hfL hbot one_pos
+    ((Finset.range (n + 1)).image s) ?_ ?_
+  · intro x hx
+    obtain ⟨i, hi, rfl⟩ := Finset.mem_image.mp hx
+    exact mem_Icc_of_forall_lt_succ hmono hs0 hsn
+      (Nat.lt_succ_iff.mp (Finset.mem_range.mp hi))
+  · intro a ha b hb hle _ hgap
+    exact exists_face_of_no_partition_point_between L hs0 hsn hn hmono hbotcell ha hb hle
+      (fun i hi hcon => hgap (s i)
+        (Finset.mem_image.mpr ⟨i, Finset.mem_range.mpr (by omega), rfl⟩) hcon)
 
 end DifferentialGeometry.Topology.PiecewiseLinear
