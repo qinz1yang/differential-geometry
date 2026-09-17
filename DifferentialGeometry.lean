@@ -10722,3 +10722,5 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.PointedCu
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Limits.HalfLine
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Norm.Convergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Endpoint.CovariantContinuity
+import DifferentialGeometry.Geometry.Curvature.DimensionThree.ExteriorKyFan
+import DifferentialGeometry.Geometry.Curvature.DimensionThree.LeastEigenvalueNullPlane

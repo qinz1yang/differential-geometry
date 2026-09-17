@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Metric.Distance.Basic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CylinderBallCapture
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.AncientExtension
 
@@ -11,6 +12,29 @@ namespace DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.Fini
 
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
+private theorem distance_toReal_oscillation_le
+    {M : Type*} [TopologicalSpace M] [ChartedSpace ThreeSpace M] [IsManifold I3 ∞ M]
+    (g : SmoothRiemannianMetric I3 M) (p v z : M)
+    (hvz : riemannianEDistOf g v z ≠ ⊤) :
+    |(riemannianEDistOf g p z).toReal - (riemannianEDistOf g p v).toReal| ≤
+      (riemannianEDistOf g v z).toReal := by
+  have hzv : riemannianEDistOf g z v ≠ ⊤ := by
+    simpa only [riemannianEDistOf_comm g z v] using hvz
+  by_cases hpv : riemannianEDistOf g p v = ⊤
+  · have hpz : riemannianEDistOf g p z = ⊤ := by
+      by_contra hpz
+      have hfinite : riemannianEDistOf g p v ≠ ⊤ := ne_top_of_le_ne_top
+        (ENNReal.add_ne_top.mpr ⟨hpz, hzv⟩) (riemannianEDistOf_triangle g p z v)
+      exact hfinite hpv
+    rw [hpz, hpv, ENNReal.toReal_top, sub_self, abs_zero]
+    exact ENNReal.toReal_nonneg
+  · have hpz : riemannianEDistOf g p z ≠ ⊤ := ne_top_of_le_ne_top
+      (ENNReal.add_ne_top.mpr ⟨hpv, hvz⟩) (riemannianEDistOf_triangle g p v z)
+    have hupper := riemannianEDistOf_toReal_triangle g p v z hpv hvz
+    have hlower := riemannianEDistOf_toReal_triangle g p z v hpz hzv
+    rw [riemannianEDistOf_comm g z v] at hlower
+    exact abs_le.mpr ⟨by linarith, by linarith⟩
 
 universe u
 variable {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
@@ -68,6 +92,37 @@ theorem exists_fixed_neck_central_diameter :
     (rescaledMetric S t (S.scalar t x) neck.Q_pos 0) (by norm_num : (0 : ℝ) ≤ 1) hgamma
   rw [hstart, hend] at hdist
   exact hdist.trans hlen
+
+
+theorem StrongNeck.centralSphere_distance_sub_center_le
+    {J : RealTimeInterval} {S : SolutionOn (I := I3) (M := M) J}
+    {eps : ℝ} {v : M} {t : ℝ} (neck : StrongNeck S eps v t)
+    {Dc : ℝ} (hDc : 0 ≤ Dc)
+    (hdiam : ∀ y z : Sphere 2,
+      riemannianEDistOf (rescaledMetric S t (S.scalar t v) neck.Q_pos 0)
+        (neck.map (y, 0)) (neck.map (z, 0)) ≤ ENNReal.ofReal Dc)
+    (p : M) {z : M} (hz : z ∈ neck.map '' (univ ×ˢ ({0} : Set ℝ))) :
+    |metricDistance (S.base.metric t) p z - metricDistance (S.base.metric t) p v| ≤
+      Dc / Real.sqrt (S.scalar t v) := by
+  obtain ⟨y, hy, rfl⟩ := hz
+  have hy0 : y.2 = 0 := hy.2
+  have hyform : ((y.1, (0 : ℝ)) : Cylinder) = y := Prod.ext rfl hy0.symm
+  have hpair := hdiam neck.center y.1
+  rw [neck.center_eq, hyform, edistOf_rescaledMetric_zero] at hpair
+  have hsqrt : 0 < Real.sqrt (S.scalar t v) := Real.sqrt_pos.mpr neck.Q_pos
+  have hfinite : riemannianEDistOf (S.base.metric t) v (neck.map y) ≠ ⊤ := by
+    intro hinf
+    rw [hinf, ENNReal.mul_top (ENNReal.ofReal_ne_zero_iff.mpr hsqrt)] at hpair
+    exact (not_le_of_gt ENNReal.ofReal_lt_top) hpair
+  have hreal := ENNReal.toReal_mono ENNReal.ofReal_ne_top hpair
+  rw [ENNReal.toReal_mul, ENNReal.toReal_ofReal hsqrt.le,
+    ENNReal.toReal_ofReal hDc] at hreal
+  have hbound : (riemannianEDistOf (S.base.metric t) v (neck.map y)).toReal ≤
+      Dc / Real.sqrt (S.scalar t v) := by
+    apply (le_div_iff₀ hsqrt).mpr
+    simpa only [mul_comm] using hreal
+  exact (distance_toReal_oscillation_le (S.base.metric t) p v (neck.map y) hfinite).trans hbound
+
 
 
 theorem StrongNeck.le_edistOf_of_height [T2Space M] {J : RealTimeInterval}

@@ -161,3 +161,51 @@ theorem scalarH1ToContinuous_iteratedParameterDerivativeHs
 
 
 end AddCircle
+
+end
+
+noncomputable section
+open scoped Manifold ContDiff
+namespace AddCircle
+open DifferentialGeometry
+open DifferentialGeometry.Integral.L2
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
+private local instance : NeZero (Module.finrank ℝ ℝ) := ⟨by simp⟩
+
+theorem iteratedParameterDerivativeHs_parameterSecondDerivativeHs
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) (n k : ℕ)
+    (u : TensorHs g 0 0 (((n + k : ℕ) : ℝ) + 2)) :
+    iteratedParameterDerivativeHs g n k (parameterSecondDerivativeHs g (n + k) u) =
+      parameterSecondDerivativeHs g n
+        (tensorHsInclusion (by push_cast; rfl : (n : ℝ) + 2 ≤ ((n + 2 : ℕ) : ℝ))
+          (iteratedParameterDerivativeHs g (n + 2) k
+            (tensorHsInclusion (by push_cast; linarith :
+              ((n + 2 + k : ℕ) : ℝ) ≤ ((n + k : ℕ) : ℝ) + 2) u))) := by
+  let L := (iteratedParameterDerivativeHs g n k).comp
+    (parameterSecondDerivativeHs g (n + k))
+  let R := (parameterSecondDerivativeHs g n).comp
+    ((tensorHsInclusion (g := g) (r := 0) (s := 0)
+      (by push_cast; rfl : (n : ℝ) + 2 ≤ ((n + 2 : ℕ) : ℝ))).comp
+        ((iteratedParameterDerivativeHs g (n + 2) k).comp
+          (tensorHsInclusion (g := g) (r := 0) (s := 0)
+            (by push_cast; linarith :
+              ((n + 2 + k : ℕ) : ℝ) ≤ ((n + k : ℕ) : ℝ) + 2))))
+  have heq : (L : _ → _) = R :=
+    (ccToHsLin_dense g 0 (by positivity :
+      (0 : ℝ) ≤ ((n + k : ℕ) : ℝ) + 2)).equalizer L.continuous R.continuous (by
+        funext S
+        simp only [L, R, Function.comp_apply, ContinuousLinearMap.comp_apply,
+          ccToHsLin_apply, tensorHsInclusion_ccTensorToHs,
+          iteratedParameterDerivativeHs_apply_ccTensorToHs,
+          parameterSecondDerivativeHs_apply_ccTensorToHs]
+        apply congrArg (ccTensorToHs g 0 (n : ℝ))
+        calc
+          _ = (parameterDerivativeCcTensor g)^[k + 2] S := by
+            simp only [Function.iterate_succ_apply]
+          _ = _ := by simp only [Function.iterate_succ_apply']
+    )
+  exact congrFun heq u
+
+end AddCircle
+end

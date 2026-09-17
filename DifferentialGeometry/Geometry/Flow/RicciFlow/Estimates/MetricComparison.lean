@@ -455,3 +455,34 @@ theorem metric_inner_antitoneOn_of_ricci_nonnegative_interior
     exact mul_nonpos_of_nonpos_of_nonneg (by norm_num) (hRic s hs' x v)
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood
+
+namespace DifferentialGeometry.PDE.RicciFlow
+
+open DifferentialGeometry.Geometry.Curvature
+open scoped Manifold ContDiff
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+  [SigmaCompactSpace M] [T2Space M]
+
+theorem complete_at_earlier_time_of_ricci_nonnegative
+    {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
+    (hS : IsSolutionOn S) {a b s : ℝ}
+    (hslab : Set.Icc a b ⊆ D.carrier) (hreg : Set.Ioo a b ⊆ D.regular)
+    (hRic : ∀ t ∈ Set.Ioo a b, ∀ x : M, ∀ v : TangentSpace I x,
+      0 ≤ S.ricciAt t x (vec2 v v))
+    (hb : RiemannianMetricComplete (I := I) (S.base.metric b))
+    (hs : s ∈ Set.Icc a b) :
+    RiemannianMetricComplete (I := I) (S.base.metric s) := by
+  let _ : CompleteSpace E := FiniteDimensional.complete ℝ E
+  let _ : IsManifold I 1 M := IsManifold.of_le (n := ∞) (by decide)
+  refine RiemannianMetricComplete.of_lower hb (c := 1) zero_lt_one ?_
+  intro x v
+  have hanti :=
+    Perelman.CanonicalNeighborhood.metric_inner_antitoneOn_of_ricci_nonnegative_interior
+      S hS hslab hreg hRic x v
+  simpa only [one_mul] using hanti hs ⟨hs.1.trans hs.2, le_rfl⟩ hs.2
+
+end DifferentialGeometry.PDE.RicciFlow

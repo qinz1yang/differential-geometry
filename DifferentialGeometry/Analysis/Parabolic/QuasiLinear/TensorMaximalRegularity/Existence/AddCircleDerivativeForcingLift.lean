@@ -1,3 +1,4 @@
+import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Duhamel.AddCircleIteratedDerivativeSource
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Duhamel.AddCircleSecondDerivativeSource
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Duhamel.AddCircleLinearizedForcing
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Duhamel.AddCircleLinearizedOperators
@@ -176,9 +177,9 @@ private theorem parameterPrincipalOperatorH0Pi_eq_continuous_mul
   simp only [Q, B₂, ContinuousLinearMap.comp_apply,
     ← tensorHsInclusion_trans_apply, tensorHsInclusion_refl_apply]
 
-private theorem parameterDriftOperatorH0Pi_two_smul_eq_continuous_mul
+private theorem parameterDriftOperatorH0Pi_smul_eq_continuous_mul
     {ι : Type*} [Fintype ι]
-    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ)))
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) (c : ℝ)
     (w : PiLp 2 (fun _ : ι => TensorHs g 0 0 (((0 : ℕ) : ℝ) + 2)))
     (a₂ : TensorHs g 0 0 ((2 : ℕ) : ℝ)) (i : ι) :
     let N := tensorHsInclusion (g := g) (r := 0) (s := 0)
@@ -192,10 +193,10 @@ private theorem parameterDriftOperatorH0Pi_two_smul_eq_continuous_mul
     let C := (scalarH1ToContinuous g).comp (tensorHsInclusion
       (g := g) (r := 0) (s := 0) (by norm_num : (1 : ℝ) ≤ ((1 : ℕ) : ℝ)))
     let D := (parameterDerivativeHs g 1).comp N
-    parameterDriftOperatorH0Pi g ((2 : ℝ) • N a₂)
+    parameterDriftOperatorH0Pi g (c • N a₂)
       ((ContinuousLinearMap.piLpMap 2 (fun _ : ι => K₁)) w) i =
         scalarH0ContinuousMul g
-          ((2 : ℝ) • C (D a₂) - ⟨laplacianDriftCoefficient g,
+          (c • C (D a₂) - ⟨laplacianDriftCoefficient g,
             (laplacianDriftCoefficient g).2.continuous⟩) (Zr (D (B₂ (w i)))) := by
   intro N K₁ Zr B₂ C D
   let K₂ := tensorHsInclusion (g := g) (r := 0) (s := 0)
@@ -208,20 +209,20 @@ private theorem parameterDriftOperatorH0Pi_two_smul_eq_continuous_mul
     simp only [K₂, K₁, B₂, ContinuousLinearMap.piLpMap_apply,
       ← tensorHsInclusion_trans_apply]
   have hh := congrArg (fun z => z i) (parameterDriftOperatorH0Pi_smul_apply g
-    (2 : ℝ) a₂ ((ContinuousLinearMap.piLpMap 2 (fun _ : ι => B₂)) w))
-  change parameterDriftOperatorH0Pi g ((2 : ℝ) • N a₂)
+    c a₂ ((ContinuousLinearMap.piLpMap 2 (fun _ : ι => B₂)) w))
+  change parameterDriftOperatorH0Pi g (c • N a₂)
     ((ContinuousLinearMap.piLpMap 2 (fun _ : ι => K₂))
       ((ContinuousLinearMap.piLpMap 2 (fun _ : ι => B₂)) w)) i = _ at hh
   rw [hKw] at hh
   simpa only [N, B₂, C, D, Zr, ContinuousLinearMap.piLpMap_apply,
     ContinuousLinearMap.comp_apply] using hh
 
-private theorem exists_normalized_secondDerivative_forcing_lift
+private theorem exists_normalized_parameterDerivative_forcing_lift
     {ι : Type*} [Fintype ι]
-    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ)))
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) (c : ℝ)
     {T : ℝ} (hT : 0 < T)
-    (a : ℝ → TensorHs g 0 0 ((2 : ℕ) : ℝ))
-    (ham : MemLp a 2 (timeMeasure T)) (C2h C2l : ℝ≥0)
+    (a₂ : ℝ → TensorHs g 0 0 ((2 : ℕ) : ℝ))
+    (ham : MemLp a₂ 2 (timeMeasure T)) (C2h C2l : ℝ≥0)
     (G : timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 ((0 : ℕ) : ℝ))) T)
     (R : timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 ((1 : ℕ) : ℝ))) T) :
     let J := tensorHsInclusion (g := g) (r := 0) (s := 0)
@@ -233,12 +234,12 @@ private theorem exists_normalized_secondDerivative_forcing_lift
     let Z := tensorHsInclusion (g := g) (r := 0) (s := 0)
       (by norm_num : ((0 : ℕ) : ℝ) ≤ ((1 : ℕ) : ℝ))
     let J₀ := ContinuousLinearMap.piLpMap 2 (fun _ : ι => Z)
-    (∀ᵐ t ∂timeMeasure T, ‖parameterPrincipalOperatorHsPi (ι := ι) g (J (a t))‖ ≤ C2h) →
-    (∀ᵐ t ∂timeMeasure T, ‖parameterPrincipalOperatorH0Pi (ι := ι) g (J (a t))‖ ≤ C2l) →
+    (∀ᵐ t ∂timeMeasure T, ‖parameterPrincipalOperatorHsPi (ι := ι) g (J (a₂ t))‖ ≤ C2h) →
+    (∀ᵐ t ∂timeMeasure T, ‖parameterPrincipalOperatorH0Pi (ι := ι) g (J (a₂ t))‖ ≤ C2l) →
     (C2h : ℝ) < 1 → (C2l : ℝ) < 1 →
     (∀ᵐ t ∂timeMeasure T,
-      G t = normalizedPrincipalOperator g (J (a t)) (heatDuhamelVectorField hT 0 G t) +
-        normalizedDriftOperator g ((2 : ℝ) • N (a t))
+      G t = normalizedPrincipalOperator g (J (a₂ t)) (heatDuhamelVectorField hT 0 G t) +
+        normalizedDriftOperator g (c • N (a₂ t))
           ((ContinuousLinearMap.piLpMap 2 (fun _ : ι => K₁))
             (heatDuhamelVectorField hT 0 G t)) + J₀.compLpL 2 (timeMeasure T) R t) →
     ∃ FH : timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 ((1 : ℕ) : ℝ))) T,
@@ -247,27 +248,27 @@ private theorem exists_normalized_secondDerivative_forcing_lift
   let R₀ := J₀.compLpL 2 (timeMeasure T) R
   let A2h : ℝ → PiLp 2 (fun _ : ι => TensorHs g 0 0 ((((1 : ℕ) : ℝ) + 2))) →L[ℝ]
       PiLp 2 (fun _ : ι => TensorHs g 0 0 ((1 : ℕ) : ℝ)) :=
-    fun t => parameterPrincipalOperatorHsPi (ι := ι) g (J (a t))
+    fun t => parameterPrincipalOperatorHsPi (ι := ι) g (J (a₂ t))
   let A2l : ℝ → PiLp 2 (fun _ : ι => TensorHs g 0 0 ((((0 : ℕ) : ℝ) + 2))) →L[ℝ]
       PiLp 2 (fun _ : ι => TensorHs g 0 0 ((0 : ℕ) : ℝ)) :=
-    fun t => normalizedPrincipalOperator (ι := ι) g (J (a t))
+    fun t => normalizedPrincipalOperator (ι := ι) g (J (a₂ t))
   let A1h : ℝ → PiLp 2 (fun _ : ι => TensorHs g 0 0 ((((1 : ℕ) : ℝ) + 1))) →L[ℝ]
       PiLp 2 (fun _ : ι => TensorHs g 0 0 ((1 : ℕ) : ℝ)) :=
-    fun t => parameterDriftOperatorHsPi (ι := ι) g ((2 : ℝ) • N (a t))
+    fun t => parameterDriftOperatorHsPi (ι := ι) g (c • N (a₂ t))
   let A1l : ℝ → PiLp 2 (fun _ : ι => TensorHs g 0 0 ((((0 : ℕ) : ℝ) + 1))) →L[ℝ]
       PiLp 2 (fun _ : ι => TensorHs g 0 0 ((0 : ℕ) : ℝ)) :=
-    fun t => normalizedDriftOperator (ι := ι) g ((2 : ℝ) • N (a t))
+    fun t => normalizedDriftOperator (ι := ι) g (c • N (a₂ t))
   have hA2h : AEStronglyMeasurable A2h (timeMeasure T) :=
     (memLp_parameterPrincipalOperatorHsPi g (ham.continuousLinearMap_comp J)).aestronglyMeasurable
   have hA2l : AEStronglyMeasurable A2l (timeMeasure T) :=
     (memLp_normalizedPrincipalOperator g (ham.continuousLinearMap_comp J)).aestronglyMeasurable
   have hA1h : MemLp A1h 2 (timeMeasure T) :=
-    memLp_parameterDriftOperatorHsPi g ((ham.continuousLinearMap_comp N).const_smul (2 : ℝ))
+    memLp_parameterDriftOperatorHsPi g ((ham.continuousLinearMap_comp N).const_smul c)
   have hA1l : MemLp A1l 2 (timeMeasure T) :=
-    memLp_normalizedDriftOperator g ((ham.continuousLinearMap_comp N).const_smul (2 : ℝ))
+    memLp_normalizedDriftOperator g ((ham.continuousLinearMap_comp N).const_smul c)
   have hC2l' : ∀ᵐ t ∂timeMeasure T, ‖A2l t‖ ≤ C2l := by
     filter_upwards [hC2l] with t ht
-    exact (norm_normalizedPrincipalOperator_le g (J (a t))).trans ht
+    exact (norm_normalizedPrincipalOperator_le g (J (a₂ t))).trans ht
   have hc := tensorResolventL2_isCompactOperator
     (I := 𝓘(ℝ, ℝ)) (M := AddCircle (1 : ℝ)) g 0 0
   refine exists_heat_vector_forcing_lift_of_l2_coefficients
@@ -276,11 +277,159 @@ private theorem exists_normalized_secondDerivative_forcing_lift
     (by norm_num) hT hc 0 G A2h hA2h C2h hC2h A1h hA1h R
     A2l hA2l C2l hC2l' A1l hA1l R₀ ?_ ?_ rfl hfLeq hC2hlt hC2llt 0 ?_
   · exact Eventually.of_forall fun t x =>
-      tensorHsInclusion_parameterPrincipalOperatorHsPi_normalized g (J (a t)) x
+      tensorHsInclusion_parameterPrincipalOperatorHsPi_normalized g (J (a₂ t)) x
   · exact Eventually.of_forall fun t x =>
-      tensorHsInclusion_parameterDriftOperatorHsPi_normalized g ((2 : ℝ) • N (a t)) x
+      tensorHsInclusion_parameterDriftOperatorHsPi_normalized g (c • N (a₂ t)) x
   · exact (map_zero _).symm
 
+theorem exists_iteratedParameterDerivative_forcing_lift_of_principal_norm_lt_one
+    {ι : Type*} [Fintype ι]
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) (k : ℕ)
+    {T : ℝ} (hT : 0 < T)
+    (F : timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 ((k + 2 : ℕ) : ℝ))) T)
+    (f₀ : PiLp 2 (fun _ : ι => TensorHs g 0 0 (((k + 3 : ℕ) : ℝ) + 2)))
+    (W : ℝ → PiLp 2 (fun _ : ι => TensorHs g 0 0 ((k + 3 : ℕ) : ℝ)))
+    (hW : ContinuousOn W (Icc 0 T))
+    (a : timeL2 (TensorHs g 0 0 ((k + 3 : ℕ) : ℝ)) T)
+    (bHigh : timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 ((k + 3 : ℕ) : ℝ))) T)
+    (b : ℝ → PiLp 2 (fun _ : ι => TensorHs g 0 0 ((k + 2 : ℕ) : ℝ)))
+    (C2h C2l : ℝ≥0) :
+    let J := tensorHsInclusion (g := g) (r := 0) (s := 0)
+      (by exact_mod_cast (show k + 2 ≤ k + 3 by omega) :
+        ((k + 2 : ℕ) : ℝ) ≤ ((k + 3 : ℕ) : ℝ))
+    let A := tensorHsInclusion (g := g) (r := 0) (s := 0)
+      (by exact_mod_cast (show 1 ≤ k + 3 by omega) : ((1 : ℕ) : ℝ) ≤ ((k + 3 : ℕ) : ℝ))
+    let P := tensorHsInclusion (g := g) (r := 0) (s := 0)
+      (by push_cast; linarith :
+        ((k + 2 : ℕ) : ℝ) + 2 ≤ ((k + 3 : ℕ) : ℝ) + 2)
+    let K := tensorHsInclusion (g := g) (r := 0) (s := 0)
+      (by push_cast; linarith : ((k + 3 : ℕ) : ℝ) ≤ ((k + 2 : ℕ) : ℝ) + 2)
+    let Z := tensorHsInclusion (g := g) (r := 0) (s := 0)
+      (by norm_num : ((0 : ℕ) : ℝ) ≤ ((1 : ℕ) : ℝ))
+    let U := maximalRegularityDuhamelVectorField hT 0 F
+    (∀ᵐ t ∂timeMeasure T, ∀ i, J (bHigh t i) = b t i) →
+    (∀ᵐ t ∂timeMeasure T, ∀ i, W t i = K (U t i)) →
+    (∀ᵐ t ∂timeMeasure T, ∀ i,
+      tensorScaleLaplacian (g := g) (r := 0) (s := 0) ((k + 2 : ℕ) : ℝ) (U t i) +
+        F t i = scalarHsMul g (k + 2) (by simp) (J (a t))
+          (parameterSecondDerivativeHs g (k + 2) (P (f₀ i) + U t i)) + b t i) →
+    (∀ᵐ t ∂timeMeasure T, ‖parameterPrincipalOperatorHsPi (ι := ι) g (A (a t))‖ ≤ C2h) →
+    (∀ᵐ t ∂timeMeasure T, ‖parameterPrincipalOperatorH0Pi (ι := ι) g (A (a t))‖ ≤ C2l) →
+    (C2h : ℝ) < 1 → (C2l : ℝ) < 1 →
+    ∃ FH : timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 ((1 : ℕ) : ℝ))) T,
+      iteratedParameterDerivativeDuhamelForcing g 0 (k + 2) hT F =
+        (ContinuousLinearMap.piLpMap 2 (fun _ : ι => Z)).compLpL 2 (timeMeasure T) FH := by
+  intro J A P K Z U hb hWU heq hC2h hC2l hC2hlt hC2llt
+  let H₂ := tensorHsInclusion (g := g) (r := 0) (s := 0)
+    (by exact_mod_cast (show 2 ≤ k + 3 by omega) :
+      ((2 : ℕ) : ℝ) ≤ ((k + 3 : ℕ) : ℝ))
+  let a₂ : ℝ → TensorHs g 0 0 ((2 : ℕ) : ℝ) := fun t => H₂ (a t)
+  let J₂ := tensorHsInclusion (g := g) (r := 0) (s := 0)
+    (by norm_num : ((1 : ℕ) : ℝ) ≤ ((2 : ℕ) : ℝ))
+  let N₂ := tensorHsInclusion (g := g) (r := 0) (s := 0)
+    (by norm_num : ((1 : ℕ) : ℝ) + 1 ≤ ((2 : ℕ) : ℝ))
+  let N := tensorHsInclusion (g := g) (r := 0) (s := 0)
+    (by push_cast; have := Nat.cast_nonneg (α := ℝ) k; linarith :
+      ((1 : ℕ) : ℝ) + 1 ≤ ((k + 3 : ℕ) : ℝ))
+  let A₁ := (iteratedParameterDerivativeHs g 1 1).comp
+    (tensorHsInclusion (g := g) (r := 0) (s := 0)
+      (by exact_mod_cast (show 1 + 1 ≤ k + 3 by omega) :
+        ((1 + 1 : ℕ) : ℝ) ≤ ((k + 3 : ℕ) : ℝ)))
+  let K₁ := tensorHsInclusion (g := g) (r := 0) (s := 0)
+    (by norm_num : ((0 : ℕ) : ℝ) + 1 ≤ ((0 : ℕ) : ℝ) + 2)
+  let E₀ := tensorHsInclusion (g := g) (r := 0) (s := 0)
+    (by norm_num : (0 : ℝ) ≤ ((0 : ℕ) : ℝ))
+  let B₀ := tensorHsInclusion (g := g) (r := 0) (s := 0)
+    (by norm_num : ((0 : ℕ) : ℝ) ≤ (0 : ℝ))
+  let B₂ := tensorHsInclusion (g := g) (r := 0) (s := 0)
+    (by norm_num : ((2 : ℕ) : ℝ) ≤ ((0 : ℕ) : ℝ) + 2)
+  let E₂ := tensorHsInclusion (g := g) (r := 0) (s := 0)
+    (by norm_num : ((0 : ℕ) : ℝ) + 2 ≤ ((2 : ℕ) : ℝ))
+  let Zr := tensorHsInclusion (g := g) (r := 0) (s := 0)
+    (by norm_num : (0 : ℝ) ≤ ((1 : ℕ) : ℝ))
+  let C := (scalarH1ToContinuous g).comp (tensorHsInclusion
+    (g := g) (r := 0) (s := 0) (by norm_num : (1 : ℝ) ≤ ((1 : ℕ) : ℝ)))
+  let Q := E₀.comp ((parameterSecondDerivativeHs g 0).comp E₂)
+  let D := (parameterDerivativeHs g 1).comp N₂
+  let D₀ := E₀.comp ((parameterDerivativeHs g 0).comp (K₁.comp E₂))
+  have hEB (x : TensorHs g 0 0 (0 : ℝ)) : E₀ (B₀ x) = x := by
+    simp only [E₀, B₀, ← tensorHsInclusion_trans_apply, tensorHsInclusion_refl_apply]
+  have hEZ (x : TensorHs g 0 0 ((1 : ℕ) : ℝ)) : E₀ (Z x) = Zr x := by
+    simp only [E₀, Z, Zr, ← tensorHsInclusion_trans_apply]
+  have hJA (t : ℝ) : J₂ (a₂ t) = A (a t) := by
+    simp only [J₂, a₂, H₂, A, ← tensorHsInclusion_trans_apply]
+  have hNA (t : ℝ) : N₂ (a₂ t) = N (a t) := by
+    simp only [N₂, a₂, H₂, N, ← tensorHsInclusion_trans_apply]
+  have hfirst (x : TensorHs g 0 0 ((k + 3 : ℕ) : ℝ)) :
+      A₁ x = parameterDerivativeHs g 1 (N x) := by
+    simp only [A₁, N, iteratedParameterDerivativeHs, ContinuousLinearMap.comp_apply,
+      ContinuousLinearMap.id_apply, ← tensorHsInclusion_trans_apply]
+  have hDA (t : ℝ) : D (a₂ t) = A₁ (a t) := by
+    simp only [D, ContinuousLinearMap.comp_apply, hNA, hfirst]
+  have hD₀ (w : TensorHs g 0 0 ((2 : ℕ) : ℝ)) : D₀ w = Zr (D w) := by
+    have hh := congrArg E₀
+      (parameterDerivativeHs_tensorHsInclusion g (by omega : 0 ≤ 1) (N₂ w))
+    simpa only [D₀, D, E₀, E₂, K₁, N₂, Zr, ContinuousLinearMap.comp_apply,
+      ← tensorHsInclusion_trans_apply] using hh
+  obtain ⟨R, hres⟩ := exists_timeL2_tensorHsInclusion_eq_iteratedParameterDerivativeSource
+    g k f₀ a bHigh b W hW U hb hWU
+  let J₀ := ContinuousLinearMap.piLpMap 2 (fun _ : ι => Z)
+  let R₀ := J₀.compLpL 2 (timeMeasure T) R
+  let G := iteratedParameterDerivativeDuhamelForcing g 0 (k + 2) hT F
+  let V := maximalRegularityDuhamelVectorField hT 0 G
+  let A2l : ℝ → PiLp 2 (fun _ : ι => TensorHs g 0 0 (((0 : ℕ) : ℝ) + 2)) →L[ℝ]
+      PiLp 2 (fun _ : ι => TensorHs g 0 0 ((0 : ℕ) : ℝ)) :=
+    fun t => normalizedPrincipalOperator g (J₂ (a₂ t))
+  let A1l : ℝ → PiLp 2 (fun _ : ι => TensorHs g 0 0 (((0 : ℕ) : ℝ) + 1)) →L[ℝ]
+      PiLp 2 (fun _ : ι => TensorHs g 0 0 ((0 : ℕ) : ℝ)) :=
+    fun t => normalizedDriftOperator g (((k + 2 : ℕ) : ℝ) • N₂ (a₂ t))
+  have hc := tensorResolventL2_isCompactOperator
+    (I := 𝓘(ℝ, ℝ)) (M := AddCircle (1 : ℝ)) g 0 0
+  have hlow := iteratedParameterDerivativeDuhamelForcing_ae_eq
+    g k hT F ((ContinuousLinearMap.piLpMap 2 (fun _ : ι => P)) f₀) a b heq
+  have hheat : heatDuhamelVectorField hT 0 G = V := by
+    simpa only [map_zero] using heatDuhamelVectorField_inclusion hT hc 0 G
+  have hprincipal (w : PiLp 2 (fun _ : ι => TensorHs g 0 0 (((0 : ℕ) : ℝ) + 2)))
+      (a₁ : TensorHs g 0 0 ((1 : ℕ) : ℝ)) (i : ι) :
+      parameterPrincipalOperatorH0Pi g a₁ w i =
+        scalarH0ContinuousMul g
+          (C a₁ - ⟨laplacianPrincipalCoefficient g,
+            (laplacianPrincipalCoefficient g).2.continuous⟩) (Q (B₂ (w i))) :=
+    parameterPrincipalOperatorH0Pi_eq_continuous_mul g w a₁ i
+  have hdrift (w : PiLp 2 (fun _ : ι => TensorHs g 0 0 (((0 : ℕ) : ℝ) + 2)))
+      (t : ℝ) (i : ι) :
+      parameterDriftOperatorH0Pi g (((k + 2 : ℕ) : ℝ) • N₂ (a₂ t))
+        ((ContinuousLinearMap.piLpMap 2 (fun _ : ι => K₁)) w) i =
+          scalarH0ContinuousMul g
+            (((k + 2 : ℕ) : ℝ) • C (D (a₂ t)) - ⟨laplacianDriftCoefficient g,
+              (laplacianDriftCoefficient g).2.continuous⟩) (Zr (D (B₂ (w i)))) :=
+    parameterDriftOperatorH0Pi_smul_eq_continuous_mul g ((k + 2 : ℕ) : ℝ) w (a₂ t) i
+  have hfLeq : ∀ᵐ t ∂timeMeasure T,
+      G t = A2l t (heatDuhamelVectorField hT 0 G t) +
+        A1l t ((ContinuousLinearMap.piLpMap 2 (fun _ : ι => K₁))
+          (heatDuhamelVectorField hT 0 G t)) + R₀ t := by
+    filter_upwards [hlow, hres, J₀.coeFn_compLpL R] with t hlt hrt hRt
+    rw [hheat, hRt]
+    apply PiLp.ext
+    intro i
+    apply tensorHsInclusion_injective (by norm_num : (0 : ℝ) ≤ ((0 : ℕ) : ℝ))
+    change E₀ (G t i) = E₀ (B₀ (parameterPrincipalOperatorH0Pi g (J₂ (a₂ t)) (V t) i) +
+      B₀ (parameterDriftOperatorH0Pi g (((k + 2 : ℕ) : ℝ) • N₂ (a₂ t))
+        ((ContinuousLinearMap.piLpMap 2 (fun _ : ι => K₁)) (V t)) i) + Z (R t i))
+    rw [map_add, map_add, hEB, hEB, hEZ, hprincipal, hdrift, hJA, hDA, hrt i, ← hD₀]
+    exact hlt i
+  have ham : MemLp a₂ 2 (timeMeasure T) := (Lp.memLp a).continuousLinearMap_comp H₂
+  apply exists_normalized_parameterDerivative_forcing_lift g ((k + 2 : ℕ) : ℝ) hT
+    a₂ ham C2h C2l G R
+  · change ∀ᵐ t ∂timeMeasure T,
+      ‖parameterPrincipalOperatorHsPi (ι := ι) g (J₂ (a₂ t))‖ ≤ C2h
+    simpa only [hJA] using hC2h
+  · change ∀ᵐ t ∂timeMeasure T,
+      ‖parameterPrincipalOperatorH0Pi (ι := ι) g (J₂ (a₂ t))‖ ≤ C2l
+    simpa only [hJA] using hC2l
+  · exact hC2hlt
+  · exact hC2llt
+  · exact hfLeq
 
 theorem exists_parameterSecondDerivative_forcing_lift_of_principal_norm_lt_one
     {ι : Type*} [Fintype ι]
@@ -383,7 +532,7 @@ theorem exists_parameterSecondDerivative_forcing_lift_of_principal_norm_lt_one
           scalarH0ContinuousMul g
             ((2 : ℝ) • C (D (a t)) - ⟨laplacianDriftCoefficient g,
               (laplacianDriftCoefficient g).2.continuous⟩) (Zr (D (B₂ (w i)))) :=
-    parameterDriftOperatorH0Pi_two_smul_eq_continuous_mul g w (a t) i
+    parameterDriftOperatorH0Pi_smul_eq_continuous_mul g (2 : ℝ) w (a t) i
   have hfLeq : ∀ᵐ t ∂timeMeasure T,
       G t = A2l t (heatDuhamelVectorField hT 0 G t) +
         A1l t ((ContinuousLinearMap.piLpMap 2 (fun _ : ι => K₁))
@@ -401,7 +550,7 @@ theorem exists_parameterSecondDerivative_forcing_lift_of_principal_norm_lt_one
       simp only [Z₀, Z, Zr, ← tensorHsInclusion_trans_apply]
     rw [hZR, hrt i]
     exact hlt i
-  exact exists_normalized_secondDerivative_forcing_lift g hT a ham C2h C2l G R
+  exact exists_normalized_parameterDerivative_forcing_lift g (2 : ℝ) hT a ham C2h C2l G R
     hC2h hC2l hC2hlt hC2llt hfLeq
 
 end DifferentialGeometry.Analysis.Parabolic.QuasiLinear
