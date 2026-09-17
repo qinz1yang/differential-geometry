@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Operator.Family.Gram.Basic
+import DifferentialGeometry.Geometry.Operator.Family.Gram.Carrier
 import DifferentialGeometry.Geometry.Metric.Coordinates.ChartGram
 
 set_option autoImplicit false
@@ -72,46 +72,8 @@ theorem chartGramOp_continuousOn_carrier
     {J : Set ℝ} (hJ : J ⊆ D.carrier) (x₀ : M) {K : Set E}
     (hK : K ⊆ interior (extChartAt I x₀).target) :
     ContinuousOn (chartGramOp (I := I) G x₀) (J ×ˢ K) := by
-  classical
-  let P := {q : ℝ × E // q ∈ J ×ˢ K}
-  let base : P → M := fun q ↦ (extChartAt I x₀).symm q.1.2
-  have hbase : Continuous base :=
-    (continuousOn_extChartAt_symm (I := I) x₀).comp_continuous
-      (continuous_snd.comp continuous_subtype_val)
-      (fun q ↦ interior_subset (hK q.2.2))
-  have hbaseSet : ∀ q : P,
-      base q ∈ (trivializationAt E (TangentSpace I) x₀).baseSet := by
-    intro q
-    have hsource := (extChartAt I x₀).map_target (interior_subset (hK q.2.2))
-    change (extChartAt I x₀).symm q.1.2 ∈ (chartAt H x₀).source
-    rwa [← extChartAt_source (I := I) (H := H) x₀]
-  let lift : P → {t : ℝ // t ∈ D.carrier} × M :=
-    fun q ↦ (⟨q.1.1, hJ q.2.1⟩, base q)
-  have hlift : Continuous lift :=
-    ((continuous_fst.comp continuous_subtype_val).subtype_mk _).prodMk hbase
-  have hentry : ∀ i j : Fin (Module.finrank ℝ E),
-      ContinuousOn
-        (fun q : ℝ × E ↦ chartGramOnE (I := I) (G.metric q.1) x₀ i j q.2)
-        (J ×ˢ K) := by
-    intro i j
-    rw [continuousOn_iff_continuous_domRestrict]
-    exact (chartGramMatrix_continuousOn_carrier G.metric hG x₀ i j).comp_continuous
-      hlift hbaseSet
-  let : IsTopologicalAddGroup (E →L[ℝ] ℝ) := ContinuousLinearMap.topologicalAddGroup
-  let : IsTopologicalAddGroup (E →L[ℝ] E →L[ℝ] ℝ) := ContinuousLinearMap.topologicalAddGroup
-  let : ContinuousAdd (E →L[ℝ] E →L[ℝ] ℝ) :=
-    (ContinuousLinearMap.topologicalAddGroup (E := E) (F := E →L[ℝ] ℝ)).toContinuousAdd
-  have hbilin : ContinuousOn
-      (fun q : ℝ × E ↦ chartGramBilin (E := E) (I := I) (M := M)
-        (G.metric q.1) x₀ ((extChartAt I x₀).symm q.2)) (J ×ˢ K) := by
-    change ContinuousOn
-      (fun q : ℝ × E ↦
-        ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
-          chartGramOnE (I := I) (G.metric q.1) x₀ i j q.2 •
-            (chartCoordCLM E i).smulRight (chartCoordCLM E j)) (J ×ˢ K)
-    exact continuousOn_finsetSum _ fun i _ ↦
-      continuousOn_finsetSum _ fun j _ ↦ (hentry i j).smul continuousOn_const
-  exact (IsCoercive.gramCLM (F := E)).continuous.comp_continuousOn hbilin
+  exact DifferentialGeometry.Geometry.Curvature.chartGramOp_continuousOn_of_carrier
+    hG hJ x₀ (hK.trans interior_subset)
 
 end GramOperator
 

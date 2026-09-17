@@ -219,4 +219,101 @@ theorem exists_continuousOn_tensorHsInclusion_eq_of_parameterDerivative_lift
     exact h x hx i
   exact tensorHsInclusion_parameterDerivativeReconstruction g n (u x i) (v x i) hi
 
+
+private def secondDerivativeHsPredecessor
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) (n : ℕ) :
+    TensorHs g 0 0 (((n + 1 : ℕ) : ℝ) + 2) →L[ℝ]
+      TensorHs g 0 0 ((n : ℝ) + 2) :=
+  (tensorHsInclusion (g := g) (r := 0) (s := 0)
+    (by push_cast; rfl : (n : ℝ) + 2 ≤ ((n + 2 : ℕ) : ℝ))).comp
+      ((parameterDerivativeHs g (n + 2)).comp
+        (tensorHsInclusion (g := g) (r := 0) (s := 0)
+          (by push_cast; linarith :
+            ((n + 2 : ℕ) : ℝ) + 1 ≤ ((n + 1 : ℕ) : ℝ) + 2)))
+
+private theorem parameterDerivativeHs_secondDerivativeHsPredecessor
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) (n : ℕ)
+    (u : TensorHs g 0 0 (((n + 1 : ℕ) : ℝ) + 2)) :
+    parameterDerivativeHs g (n + 1)
+        (tensorHsInclusion (by push_cast; linarith :
+          ((n + 1 : ℕ) : ℝ) + 1 ≤ (n : ℝ) + 2)
+            (secondDerivativeHsPredecessor g n u)) =
+      parameterSecondDerivativeHs g (n + 1) u := by
+  simp only [secondDerivativeHsPredecessor, parameterSecondDerivativeHs,
+    ContinuousLinearMap.comp_apply, ← tensorHsInclusion_trans_apply]
+
+theorem exists_continuousOn_tensorHsInclusion_eq_of_parameterSecondDerivative_lift
+    {X ι : Type*} [TopologicalSpace X] [Finite ι]
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) (n : ℕ)
+    {s : Set X} {σ : ℝ} (hσ : σ ≤ ((n + 1 : ℕ) : ℝ))
+    (u : X → PiLp 2 (fun _ : ι => TensorHs g 0 0 (((n + 1 : ℕ) : ℝ) + 2)))
+    (v : X → PiLp 2 (fun _ : ι => TensorHs g 0 0 ((n : ℝ) + 2)))
+    (hu : ContinuousOn u s) (hv : ContinuousOn v s)
+    (h : ∀ x ∈ s, ∀ i : ι,
+      tensorHsInclusion hσ (parameterSecondDerivativeHs g (n + 1) (u x i)) =
+        tensorHsInclusion (hσ.trans (by push_cast; linarith :
+          ((n + 1 : ℕ) : ℝ) ≤ (n : ℝ) + 2)) (v x i)) :
+    ∃ w : X → PiLp 2 (fun _ : ι => TensorHs g 0 0 (((n + 2 : ℕ) : ℝ) + 2)),
+      ContinuousOn w s ∧ ∀ x ∈ s,
+        ContinuousLinearMap.piLpMap 2 (fun _ : ι =>
+          tensorHsInclusion (g := g) (r := 0) (s := 0)
+            (by push_cast; linarith :
+              ((n + 1 : ℕ) : ℝ) + 2 ≤ ((n + 2 : ℕ) : ℝ) + 2)) (w x) = u x := by
+  let P := ContinuousLinearMap.piLpMap 2 (fun _ : ι => secondDerivativeHsPredecessor g n)
+  obtain ⟨du, hdu, hduproj⟩ :=
+    exists_continuousOn_tensorHsInclusion_eq_of_parameterDerivative_lift
+      g n hσ (fun x => P (u x)) v (P.continuous.comp_continuousOn hu) hv (by
+        intro x hx i
+        simpa only [P, ContinuousLinearMap.piLpMap_apply,
+          parameterDerivativeHs_secondDerivativeHsPredecessor] using h x hx i)
+  exact exists_continuousOn_tensorHsInclusion_eq_of_parameterDerivative_lift
+    g (n + 1) (σ := (n : ℝ) + 2) (by push_cast; linarith) u du hu hdu (by
+      intro x hx i
+      have hi := congrArg (fun z => z i) (hduproj x hx)
+      simpa only [P, ContinuousLinearMap.piLpMap_apply,
+        secondDerivativeHsPredecessor, ContinuousLinearMap.comp_apply] using hi.symm)
+
+theorem exists_timeL2_tensorHsInclusion_eq_of_parameterSecondDerivative_lift
+    {ι : Type*} [Fintype ι]
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) (n : ℕ)
+    {T σ : ℝ} (hσ : σ ≤ ((n + 1 : ℕ) : ℝ))
+    (u : timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 (((n + 1 : ℕ) : ℝ) + 2))) T)
+    (v : timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 ((n : ℝ) + 2))) T)
+    (h : ∀ᵐ t ∂timeMeasure T, ∀ i : ι,
+      tensorHsInclusion hσ (parameterSecondDerivativeHs g (n + 1) (u t i)) =
+        tensorHsInclusion (hσ.trans (by push_cast; linarith :
+          ((n + 1 : ℕ) : ℝ) ≤ (n : ℝ) + 2)) (v t i)) :
+    ∃ w : timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 (((n + 2 : ℕ) : ℝ) + 2))) T,
+      (ContinuousLinearMap.piLpMap 2 (fun _ : ι =>
+        tensorHsInclusion (g := g) (r := 0) (s := 0)
+          (by push_cast; linarith :
+            ((n + 1 : ℕ) : ℝ) + 2 ≤ ((n + 2 : ℕ) : ℝ) + 2))).compLpL
+              2 (timeMeasure T) w = u := by
+  let P := ContinuousLinearMap.piLpMap 2 (fun _ : ι => secondDerivativeHsPredecessor g n)
+  let p := P.compLpL 2 (timeMeasure T) u
+  obtain ⟨du, hduproj⟩ :=
+    exists_timeL2_tensorHsInclusion_eq_of_parameterDerivative_lift g n hσ p v (by
+      filter_upwards [P.coeFn_compLpL u, h] with t ht hh
+      intro i
+      change p t = P (u t) at ht
+      rw [ht]
+      simpa only [P, ContinuousLinearMap.piLpMap_apply,
+        parameterDerivativeHs_secondDerivativeHsPredecessor] using hh i)
+  let K := ContinuousLinearMap.piLpMap 2 (fun _ : ι =>
+    tensorHsInclusion (g := g) (r := 0) (s := 0)
+      (by push_cast; linarith : (n : ℝ) + 2 ≤ ((n + 1 : ℕ) : ℝ) + 2))
+  change K.compLpL 2 (timeMeasure T) du = p at hduproj
+  apply exists_timeL2_tensorHsInclusion_eq_of_parameterDerivative_lift
+    g (n + 1) (σ := (n : ℝ) + 2) (by push_cast; linarith) u du
+  filter_upwards [K.coeFn_compLpL du, P.coeFn_compLpL u] with t hK hP
+  have ht : K (du t) = P (u t) := by
+    rw [← hK]
+    change (K.compLpL 2 (timeMeasure T) du) t = _
+    rw [hduproj]
+    exact hP
+  intro i
+  have hi := congrArg (fun z => z i) ht
+  simpa only [K, P, ContinuousLinearMap.piLpMap_apply,
+    secondDerivativeHsPredecessor, ContinuousLinearMap.comp_apply] using hi.symm
+
 end AddCircle

@@ -155,4 +155,62 @@ theorem norm_parameterDerivativeHs_scalarHsMul_of_one_le
       add_le_add (m.le_opNorm₂ _ _) (m.le_opNorm₂ _ _)
     _ = ‖m‖ * (‖J u‖ * ‖D v‖ + ‖J v‖ * ‖D u‖) := by ring
 
+
+theorem parameterSecondDerivativeHs_scalarHsMul
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ)))
+    (u v : TensorHs g 0 0 ((2 : ℕ) : ℝ)) :
+    let J := tensorHsInclusion (g := g) (r := 0) (s := 0)
+      (by norm_num : ((1 : ℕ) : ℝ) ≤ ((2 : ℕ) : ℝ))
+    let Z := tensorHsInclusion (g := g) (r := 0) (s := 0)
+      (by norm_num : (0 : ℝ) ≤ ((1 : ℕ) : ℝ))
+    let C := (scalarH1ToContinuous g).comp (tensorHsInclusion
+      (g := g) (r := 0) (s := 0) (by norm_num : (1 : ℝ) ≤ ((1 : ℕ) : ℝ)))
+    let D := (parameterDerivativeHs g 1).comp (tensorHsInclusion
+      (g := g) (r := 0) (s := 0)
+        (by norm_num : ((1 : ℕ) : ℝ) + 1 ≤ ((2 : ℕ) : ℝ)))
+    let Q := (tensorHsInclusion (g := g) (r := 0) (s := 0)
+      (by norm_num : (0 : ℝ) ≤ ((0 : ℕ) : ℝ))).comp
+        ((parameterSecondDerivativeHs g 0).comp (tensorHsInclusion
+          (g := g) (r := 0) (s := 0)
+            (by norm_num : ((0 : ℕ) : ℝ) + 2 ≤ ((2 : ℕ) : ℝ))))
+    let m := scalarH0ContinuousMul g
+    Q (scalarHsMul g 2 (by norm_num) u v) =
+      m (C (J u)) (Q v) + (2 : ℝ) • m (C (D u)) (Z (D v)) +
+        m (C (J v)) (Q u) := by
+  intro J Z C D Q m
+  let D₀ := (tensorHsInclusion (g := g) (r := 0) (s := 0)
+    (by norm_num : (0 : ℝ) ≤ ((0 : ℕ) : ℝ))).comp
+      ((parameterDerivativeHs g 0).comp (tensorHsInclusion
+        (g := g) (r := 0) (s := 0)
+          (by norm_num : ((0 : ℕ) : ℝ) + 1 ≤ ((1 : ℕ) : ℝ))))
+  have hQ (w : TensorHs g 0 0 ((2 : ℕ) : ℝ)) : D₀ (D w) = Q w := by
+    simp only [D₀, D, Q, parameterSecondDerivativeHs, ContinuousLinearMap.comp_apply]
+    rw [← tensorHsInclusion_trans_apply]
+  have hJ (w : TensorHs g 0 0 ((2 : ℕ) : ℝ)) : D₀ (J w) = Z (D w) := by
+    have h := parameterDerivativeHs_tensorHsInclusion g (by decide : 0 ≤ 1)
+      (tensorHsInclusion (g := g) (r := 0) (s := 0)
+        (by norm_num : ((1 : ℕ) : ℝ) + 1 ≤ ((2 : ℕ) : ℝ)) w)
+    have hh := congrArg (tensorHsInclusion (g := g) (r := 0) (s := 0)
+      (by norm_num : (0 : ℝ) ≤ ((0 : ℕ) : ℝ))) h
+    simpa only [D₀, D, J, Z, ContinuousLinearMap.comp_apply,
+      ← tensorHsInclusion_trans_apply] using hh
+  have hfirst := parameterDerivativeHs_scalarHsMul_of_one_le g (by decide : 1 ≤ 1) u v
+  change D (scalarHsMul g 2 (by norm_num) u v) =
+    scalarHsMul g 1 (by norm_num) (J u) (D v) +
+      scalarHsMul g 1 (by norm_num) (J v) (D u) at hfirst
+  have h := congrArg D₀ hfirst
+  rw [map_add] at h
+  have hleft := parameterDerivativeHs_scalarHsMul g (J u) (D v)
+  have hright := parameterDerivativeHs_scalarHsMul g (J v) (D u)
+  change D₀ (scalarHsMul g 1 (by norm_num) (J u) (D v)) =
+    m (C (J u)) (D₀ (D v)) + m (C (D v)) (D₀ (J u)) at hleft
+  change D₀ (scalarHsMul g 1 (by norm_num) (J v) (D u)) =
+    m (C (J v)) (D₀ (D u)) + m (C (D u)) (D₀ (J v)) at hright
+  rw [hQ, hleft, hright, hQ, hQ, hJ, hJ] at h
+  have hcomm := scalarH0ContinuousMul_scalarH1ToContinuous_comm g (D v) (D u)
+  change m (C (D v)) (Z (D u)) = m (C (D u)) (Z (D v)) at hcomm
+  rw [hcomm] at h
+  rw [h]
+  module
+
 end AddCircle

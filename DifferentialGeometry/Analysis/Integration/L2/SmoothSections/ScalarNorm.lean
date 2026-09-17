@@ -1,3 +1,4 @@
+import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Properties
 import DifferentialGeometry.Analysis.Integration.L2.SmoothSections.PreHilbert
 import DifferentialGeometry.Tensor.RSTensor.RankZero
 import DifferentialGeometry.Tensor.RSTensor.Coordinates.Field
@@ -93,3 +94,69 @@ theorem norm_eq_scalar0_eLpNorm (g : SmoothRiemannianMetric I M)
   rw [real_inner_self_eq_norm_sq, Real.norm_eq_abs, sq_abs, pow_two]
 
 end DifferentialGeometry.Integral.L2.SmoothCcTensor
+
+end
+
+noncomputable section
+
+open MeasureTheory
+open scoped Manifold ContDiff
+
+namespace DifferentialGeometry.Integral.L2.SmoothCcTensor
+
+open DifferentialGeometry.Integral.Measure
+open DifferentialGeometry.Tensor0SBundle
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E]
+variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
+  [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M]
+
+theorem norm_le_mul_sqrt_volume_of_scalar0_bound
+    (g : SmoothRiemannianMetric I M)
+    [IsFiniteMeasure (riemannianVolumeMeasure I M g)] (S : SmoothCcTensor g 0 0)
+    {K : ℝ} (hK : 0 ≤ K)
+    (hS : ∀ x : M, |TensorRSField.scalar0 S.toSection x| ≤ K) :
+    ‖S‖ ≤ K * Real.sqrt ((riemannianVolumeMeasure I M g).real Set.univ) := by
+  have hvol : 0 ≤ (riemannianVolumeMeasure I M g).real Set.univ := ENNReal.toReal_nonneg
+  have hsq : ‖S‖ ^ 2 =
+      ∫ x, (TensorRSField.scalar0 S.toSection x) ^ 2 ∂riemannianVolumeMeasure I M g := by
+    rw [← real_inner_self_eq_norm_sq, inner_eq_integral_scalar0_mul]
+    simp only [pow_two]
+  have hint : (∫ x, (TensorRSField.scalar0 S.toSection x) ^ 2
+        ∂riemannianVolumeMeasure I M g) ≤
+      (riemannianVolumeMeasure I M g).real Set.univ * K ^ 2 := by
+    have hle := integral_mono_of_nonneg
+      (μ := riemannianVolumeMeasure I M g)
+      (f := fun x => (TensorRSField.scalar0 S.toSection x) ^ 2)
+      (g := fun _ : M => K ^ 2)
+      (Filter.Eventually.of_forall (fun x => sq_nonneg (TensorRSField.scalar0 S.toSection x)))
+      (integrable_const _)
+      (Filter.Eventually.of_forall (fun x => by
+        calc
+          (TensorRSField.scalar0 S.toSection x) ^ 2 =
+              |TensorRSField.scalar0 S.toSection x| ^ 2 := (sq_abs _).symm
+          _ ≤ K ^ 2 := (sq_le_sq₀ (abs_nonneg _) hK).2 (hS x)))
+    simpa only [integral_const, smul_eq_mul] using hle
+  have hfinal : ‖S‖ ^ 2 ≤
+      (K * Real.sqrt ((riemannianVolumeMeasure I M g).real Set.univ)) ^ 2 := by
+    rw [hsq, mul_pow, Real.sq_sqrt hvol, mul_comm (K ^ 2)]
+    exact hint
+  have hsqrt := Real.sqrt_le_sqrt hfinal
+  rwa [Real.sqrt_sq (norm_nonneg S),
+    Real.sqrt_sq (mul_nonneg hK (Real.sqrt_nonneg _))] at hsqrt
+
+theorem exists_norm_le_mul_of_scalar0_bound [CompactSpace M]
+    (g : SmoothRiemannianMetric I M) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ (S : SmoothCcTensor g 0 0) (K : ℝ), 0 ≤ K →
+      (∀ x : M, |TensorRSField.scalar0 S.toSection x| ≤ K) → ‖S‖ ≤ C * K := by
+  let _ := riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace g
+  refine ⟨Real.sqrt ((riemannianVolumeMeasure I M g).real Set.univ),
+    Real.sqrt_nonneg _, ?_⟩
+  intro S K hK hS
+  simpa only [mul_comm] using norm_le_mul_sqrt_volume_of_scalar0_bound g S hK hS
+
+end DifferentialGeometry.Integral.L2.SmoothCcTensor
+
+end
