@@ -51,15 +51,17 @@ attribute [local instance] PointedRiemannianManifold.topology
   PointedRiemannianManifold.t2TangentBundle
 
 
-theorem sectional_nonnegative_of_pointed_admissible_pinching
+theorem sectional_nonnegative_of_pointed_admissible_pinching_eventually
     (C : MetricConvergenceData F)
     (hcanonical : ∀ k, C.domain k = CanonicalMetricCompactness.canonicalSourceData F k)
     {Phi : ℝ → ℝ} (hPhi : AdmissiblePinchingFunction Phi)
     (Q : ℕ → ℝ) (hQpos : ∀ i, 0 < Q i)
     (hQ : Tendsto (fun k => Q (subseq k)) atTop atTop)
-    (hpinching : ∀ i (y : (X.obj i).M), curvatureOperatorLowerBoundAt
-      (X.obj i).metric y (metricAlgebraicCurvatureTensorAt (X.obj i).metric y)
-      (rescalePinchingFunction (Q i) Phi (metricScalarAt (X.obj i).metric y))) :
+    (hpinching : ∀ᶠ k in atTop, ∀ y : (X.obj (subseq k)).M, curvatureOperatorLowerBoundAt
+      (X.obj (subseq k)).metric y
+      (metricAlgebraicCurvatureTensorAt (X.obj (subseq k)).metric y)
+      (rescalePinchingFunction (Q (subseq k)) Phi
+        (metricScalarAt (X.obj (subseq k)).metric y))) :
     ∀ (x : L.M) (v w : TangentSpace I x),
       0 ≤ metricRm04StandardAt L.metric x v w w v := by
   intro x v w
@@ -93,7 +95,7 @@ theorem sectional_nonnegative_of_pointed_admissible_pinching
       atTop (𝓝 (metricRm04StandardAt L.metric x v w w v)) := by
     simpa only [zero_mul, add_zero] using hcurvature.add (hsmall.mul_const D)
   apply ge_of_tendsto hlimit
-  filter_upwards [eventually_ge_atTop k0] with k hk
+  filter_upwards [eventually_ge_atTop k0, hpinching] with k hk hpin
   let g := (X.obj (subseq k)).metric
   let y := F.map k x
   let vk := mfderiv I I (F.map k) x v
@@ -117,7 +119,7 @@ theorem sectional_nonnegative_of_pointed_admissible_pinching
     have h := mul_le_mul hav hbw hb (mul_nonneg (by norm_num : (0 : ℝ) ≤ 2) hA)
     dsimp only [D]
     nlinarith
-  have hp := hpinching (subseq k) y 1 (fun _ => 1) (fun _ => vk) (fun _ => wk)
+  have hp := hpin y 1 (fun _ => 1) (fun _ => vk) (fun _ => wk)
   simp only [algebraicCurvatureOperatorQuadraticEval,
     algebraicCurvatureIdentityQuadraticEval, Fin.sum_univ_one, one_mul] at hp
   change 0 ≤ metricRm04StandardAt g y vk wk wk vk +
@@ -128,6 +130,21 @@ theorem sectional_nonnegative_of_pointed_admissible_pinching
   have hsq := mul_nonneg hK (sq_nonneg c)
   change 0 ≤ metricRm04StandardAt g y vk wk wk vk + K * D
   nlinarith
+
+
+theorem sectional_nonnegative_of_pointed_admissible_pinching
+    (C : MetricConvergenceData F)
+    (hcanonical : ∀ k, C.domain k = CanonicalMetricCompactness.canonicalSourceData F k)
+    {Phi : ℝ → ℝ} (hPhi : AdmissiblePinchingFunction Phi)
+    (Q : ℕ → ℝ) (hQpos : ∀ i, 0 < Q i)
+    (hQ : Tendsto (fun k => Q (subseq k)) atTop atTop)
+    (hpinching : ∀ i (y : (X.obj i).M), curvatureOperatorLowerBoundAt
+      (X.obj i).metric y (metricAlgebraicCurvatureTensorAt (X.obj i).metric y)
+      (rescalePinchingFunction (Q i) Phi (metricScalarAt (X.obj i).metric y))) :
+    ∀ (x : L.M) (v w : TangentSpace I x),
+      0 ≤ metricRm04StandardAt L.metric x v w w v := by
+  exact sectional_nonnegative_of_pointed_admissible_pinching_eventually C hcanonical hPhi
+    Q hQpos hQ (Eventually.of_forall fun k => hpinching (subseq k))
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
 
