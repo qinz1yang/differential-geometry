@@ -565,3 +565,28 @@ F 车道的 `Topology/Pasting.lean` 与 `SingularPasting.lean` 正是为这种"�
 **结论**：`P ×ˢ [0,1]` 相对 `P × {0}` 这一形状（`P = [0,1]`）已经通了。取 `P` 为 PL 圆周的版本
 只差把同一套论证沿 `PrismArc.lean` 的弧分解搬一遍，是机械工作。
 真正还没做的仍然只有"盘相对整条边界"，需要方形环带的显式 8 片仿射映射。
+
+## 大目标：相对 PL 逼近层（2026-09-17 起，进行中）
+
+目标：**给定映进 `|L|` 的连续映射，若它在某个子多面体上已是 PL，则换成映进 `|L|` 的 PL 映射且在那里逐点相等。**
+Moise 每一章开头"不妨设某映射是 PL 的"都是这一条。分三个里程碑：
+
+- **M1 乘积相对一端：已证。** `[0,1] ×ˢ [0,1]` 相对底边（`RelativeSquareApproximation.lean` 的
+  `exists_isPiecewiseAffineOn_square_eqOn_bottom_of_cells`），以及一般多面体底 `J ×ˢ [0,1]` 相对 `J × {0}`
+  （`PrismProdCollar.lean` 的 `exists_isPiecewiseAffineOn_prod_eqOn_bottom_of_arcs`，`J` 为嵌入的 PL 圆周，
+  取两条弧的分解作输入）。配套工具：`heightRescaleProd`（棱柱高度任意）、
+  `exists_isPiecewiseAffineOn_glue_collar_prod`（任意多面体底上的领口拼接）。
+- **M2 盘的径向分层：进行中。** `ConeLayers.lean`：`hull{0,a,b}` 等于 `{αa+βb : α,β ≥ 0, α+β ≤ 1}`
+  （`convexHull_zero_pair`）；按 `α+β` 切出的层等于四个缩放顶点的凸包（`coneCoeffSet_eq_convexHull`）；
+  层可以重新拼成整个锥（`coneCoeffSet_union`、`coneCoeffSet_biUnion`）。
+  `StdConeLayers.lean`：在标准三角形 `stdCone` 上，层是 `z.1 + z.2` 的切片，层内的对角线
+  `σ' z.1 + σ z.2 = σ'σ` 把它切成两个三角形；三者都是 H-多胞形，且层的并是整个三角形
+  （`stdConeLayer_union`、`isHPolytope_stdConeLayerLow/High`）。
+  **剩下的**：把每条边上的锥 `hull{0, y_i, y_{i+1}}` 看成 `stdCone` 的仿射像（`y_i, y_{i+1}` 线性无关），
+  在每个小三角形上按三个顶点值定仿射映射，用 `PiecewiseAffineCover.lean` 的
+  `exists_isPiecewiseAffineOn_of_affine_cover` 拼起来；相邻块的相容性由
+  `eqOn_of_affineMap_eq_of_mem_segment`（两个仿射映射在线段两端相等则沿线段相等）给出。
+- **M3 盘相对整条边界。** 层 `k` 的顶点值取第 `k` 层环路的值；相邻层的环路相邻（contiguous）保证每个小三角形
+  的像落在一张面里，于是整体映进 `|L|`；最外层给出指定的边界环路。环路序列来自零伦的逐层逼近。
+
+这条路线**不需要**方形环带的径向参数化（那不是 PL 的），因为分层是按 `α+β` 的线性切片做的。
