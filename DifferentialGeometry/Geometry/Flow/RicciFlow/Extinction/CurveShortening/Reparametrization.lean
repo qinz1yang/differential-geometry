@@ -467,3 +467,82 @@ theorem CurveMap.IsGeometricSolutionOn.isSolutionOn_reparam_of_local_lifts
 end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening
 
 end
+
+noncomputable section
+
+open Set Filter
+open scoped ContDiff Topology
+
+namespace DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening
+
+def CircleReparametrization.compTime {J K : Set ℝ} (P : CircleReparametrization J)
+    {σ : ℝ → ℝ} (hσ : ContDiffOn ℝ ∞ σ K) (hmap : MapsTo σ K J) :
+    CircleReparametrization K where
+  map t := P.map (σ t)
+  smooth := by
+    intro x t ht
+    obtain ⟨l, hl, heq⟩ := P.smooth x (σ t) (hmap ht)
+    let F : ℝ × ℝ → ℝ × ℝ := fun p => (p.1, σ p.2)
+    have hF : ContDiffOn ℝ ∞ F (univ ×ˢ K) :=
+      contDiffOn_fst.prodMk (hσ.comp contDiffOn_snd (fun _ hp => hp.2))
+    have hm : MapsTo F (univ ×ˢ K) (univ ×ˢ J) :=
+      fun _ hp => ⟨mem_univ _, hmap hp.2⟩
+    refine ⟨l ∘ F, hl.comp (x, t) (hF (x, t) ⟨mem_univ _, ht⟩) hm, ?_⟩
+    exact ((hF.continuousOn (x, t) ⟨mem_univ _, ht⟩).tendsto_nhdsWithin hm).eventually heq
+  smooth_inverse := by
+    intro x t ht
+    obtain ⟨l, hl, heq⟩ := P.smooth_inverse x (σ t) (hmap ht)
+    let F : ℝ × ℝ → ℝ × ℝ := fun p => (p.1, σ p.2)
+    have hF : ContDiffOn ℝ ∞ F (univ ×ˢ K) :=
+      contDiffOn_fst.prodMk (hσ.comp contDiffOn_snd (fun _ hp => hp.2))
+    have hm : MapsTo F (univ ×ˢ K) (univ ×ˢ J) :=
+      fun _ hp => ⟨mem_univ _, hmap hp.2⟩
+    refine ⟨l ∘ F, hl.comp (x, t) (hF (x, t) ⟨mem_univ _, ht⟩) hm, ?_⟩
+    exact ((hF.continuousOn (x, t) ⟨mem_univ _, ht⟩).tendsto_nhdsWithin hm).eventually heq
+
+end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening
+
+end
+
+noncomputable section
+
+open Set
+open scoped Manifold ContDiff
+
+namespace DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening
+
+def CircleReparametrization.symm {J : Set ℝ} (P : CircleReparametrization J) :
+    CircleReparametrization J where
+  map := fun t => (P.map t).symm
+  smooth := P.smooth_inverse
+  smooth_inverse := by
+    intro x t ht
+    simpa only [Homeomorph.symm_symm] using P.smooth x t ht
+
+@[simp] theorem CircleReparametrization.symm_map {J : Set ℝ}
+    (P : CircleReparametrization J) (t : ℝ) : P.symm.map t = (P.map t).symm := rfl
+
+@[simp] theorem CircleReparametrization.symm_symm {J : Set ℝ}
+    (P : CircleReparametrization J) : P.symm.symm = P := by
+  cases P
+  rfl
+
+def CircleReparametrization.restrict {J K : Set ℝ}
+    (P : CircleReparametrization J) (hK : K ⊆ J) : CircleReparametrization K where
+  map := P.map
+  smooth := by
+    intro x t ht
+    obtain ⟨l, hl, heq⟩ := P.smooth x t (hK ht)
+    refine ⟨l, hl.mono (prod_mono Subset.rfl hK), ?_⟩
+    exact heq.filter_mono (nhdsWithin_mono _ (prod_mono Subset.rfl hK))
+  smooth_inverse := by
+    intro x t ht
+    obtain ⟨l, hl, heq⟩ := P.smooth_inverse x t (hK ht)
+    refine ⟨l, hl.mono (prod_mono Subset.rfl hK), ?_⟩
+    exact heq.filter_mono (nhdsWithin_mono _ (prod_mono Subset.rfl hK))
+
+@[simp] theorem CircleReparametrization.restrict_map {J K : Set ℝ}
+    (P : CircleReparametrization J) (hK : K ⊆ J) (t : ℝ) :
+    (P.restrict hK).map t = P.map t := rfl
+
+end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening

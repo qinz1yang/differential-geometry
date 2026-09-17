@@ -60,3 +60,41 @@ theorem IsSolutionOn.time_translate {c : CurveMap M}
     exact hc.equation x (t + τ) (hmap ht)
 
 end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening.CurveMap
+
+end
+
+noncomputable section
+
+open Set
+open scoped Manifold ContDiff
+
+namespace DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening.CurveMap
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+
+theorem parabolic_equation_time_translate {c : CurveMap M}
+    {g : ℝ → SmoothRiemannianMetric I M} {J K : Set ℝ}
+    (hc : c.SmoothOn (I := I) J)
+    (heq : ∀ x t, t ∈ J → c.velocity (I := I) J x t =
+      c.speed g x t ^ (-2 : ℤ) • c.Dx g c.X x t)
+    (τ : ℝ) (hmap : MapsTo (fun t : ℝ => t + τ) K J)
+    (hK : UniqueDiffOn ℝ K) :
+    ∀ x t, t ∈ K →
+      CurveMap.velocity (I := I) (fun z s => c z (s + τ)) K x t =
+        CurveMap.speed (I := I) (fun z s => c z (s + τ))
+            (fun s => g (s + τ)) x t ^ (-2 : ℤ) •
+          CurveMap.Dx (I := I) (fun z s => c z (s + τ))
+            (fun s => g (s + τ))
+            (CurveMap.X (I := I) (fun z s => c z (s + τ))) x t := by
+  intro x t ht
+  have htime := (c.time_slice_contMDiffWithinAt J hc x
+    (t + τ) (hmap ht)).mdifferentiableWithinAt (by simp)
+  rw [velocity_time_translate τ hmap htime (hK t ht)]
+  exact heq x (t + τ) (hmap ht)
+
+end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening.CurveMap
+
+end
