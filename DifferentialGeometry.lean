@@ -10951,3 +10951,4 @@ import DifferentialGeometry.Topology.Manifold.RegularExhaustion
 import DifferentialGeometry.Topology.Embedding.SaddleQuadraticIsotopy
 import DifferentialGeometry.Topology.Morse.RegularLevel.QuadraticCap
 import DifferentialGeometry.Topology.SphereSeparation.SmoothReconstructionRegions
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.TerminalCompatibleBackwardFlow
