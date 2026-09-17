@@ -36,7 +36,8 @@ theorem exists_isPiecewiseAffineOn_stdCone_of_layers {N : ℕ} {σ : ℕ → ℝ
         Ψ (t, 0) = AffineMap.lineMap (A k) (A (k + 1)) ((t - σ k) / (σ (k + 1) - σ k))) ∧
       (∀ k ≤ N, ∀ t ∈ Icc (σ k) (σ (k + 1)),
         Ψ (0, t) = AffineMap.lineMap (B k) (B (k + 1)) ((t - σ k) / (σ (k + 1) - σ k))) ∧
-      ∀ z ∈ stdCone, ∃ k ≤ N, Ψ z ∈ convexHull ℝ ({A k, B k, A (k + 1), B (k + 1)} : Set F) := by
+      ∀ z ∈ stdCone, ∃ k ≤ N, z ∈ stdConeLayer (σ k) (σ (k + 1)) ∧
+        Ψ z ∈ convexHull ℝ ({A k, B k, A (k + 1), B (k + 1)} : Set F) := by
   classical
   have hchain := le_of_chain (fun k hk => (hmono k hk).le)
   have hσnn : ∀ k ≤ N + 1, 0 ≤ σ k := by
@@ -78,7 +79,7 @@ theorem exists_isPiecewiseAffineOn_stdCone_of_layers {N : ℕ} {σ : ℕ → ℝ
         Ψ (t, 0) = AffineMap.lineMap (A j) (A (j + 1)) ((t - σ j) / (σ (j + 1) - σ j))) ∧
       (∀ j ≤ k, ∀ t ∈ Icc (σ j) (σ (j + 1)),
         Ψ (0, t) = AffineMap.lineMap (B j) (B (j + 1)) ((t - σ j) / (σ (j + 1) - σ j))) ∧
-      ∀ z ∈ stdConeLayer 0 (σ (k + 1)), ∃ j ≤ k,
+      ∀ z ∈ stdConeLayer 0 (σ (k + 1)), ∃ j ≤ k, z ∈ stdConeLayer (σ j) (σ (j + 1)) ∧
         Ψ z ∈ convexHull ℝ ({A j, B j, A (j + 1), B (j + 1)} : Set F) := by
     intro k
     induction k with
@@ -103,8 +104,10 @@ theorem exists_isPiecewiseAffineOn_stdCone_of_layers {N : ℕ} {σ : ℕ → ℝ
           AffineMap.lineMap_apply_module, hσ0, ← hAB]
         match_scalars <;> field_simp <;> ring
       · intro z hz
-        exact ⟨0, le_rfl, hsub (A 0) (B 0) (A 1) (B 1)
+        refine ⟨0, le_rfl, ?_, hsub (A 0) (B 0) (A 1) (B 1)
           (centralConeMap_mem_convexHull (hpos 0 hk) _ _ _ hz)⟩
+        rw [hσ0]
+        exact hz
     | succ k ih =>
       intro hk
       obtain ⟨Ψ, hPA, hapex, hedge, hbot, hleft, himg⟩ := ih (by omega)
@@ -189,8 +192,8 @@ theorem exists_isPiecewiseAffineOn_stdCone_of_layers {N : ℕ} {σ : ℕ → ℝ
           match_scalars <;> field_simp <;> ring
       · rintro z ⟨hz1, hz2, -, hz4⟩
         by_cases hzP : z ∈ stdConeLayer 0 (σ (k + 1))
-        · obtain ⟨j, hj, hjmem⟩ := himg z hzP
-          refine ⟨j, by omega, ?_⟩
+        · obtain ⟨j, hj, hjloc, hjmem⟩ := himg z hzP
+          refine ⟨j, by omega, hjloc, ?_⟩
           rwa [piecewise_eq_of_mem _ _ _ hzP]
         · have hzQ : z ∈ stdConeLayer (σ (k + 1)) (σ (k + 1 + 1)) :=
             ⟨hz1, hz2, not_lt.mp (fun hlt => hzP ⟨hz1, hz2, by linarith, hlt.le⟩), hz4⟩
@@ -199,7 +202,7 @@ theorem exists_isPiecewiseAffineOn_stdCone_of_layers {N : ℕ} {σ : ℕ → ℝ
             rw [stdConeLayer_union_split]
             exact hzQ
           rw [piecewise_eq_of_notMem _ _ _ hzP]
-          refine ⟨k + 1, le_rfl, ?_⟩
+          refine ⟨k + 1, le_rfl, hzQ, ?_⟩
           rcases hzu with hl | hh
           · rw [hΦlow hl]
             exact hsubL _ _ _ (B (k + 1 + 1)) (layerLowMap_mem_convexHull (hpos k (by omega))
