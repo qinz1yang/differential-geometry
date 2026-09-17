@@ -923,3 +923,37 @@ theorem eq_top_of_boundaryLoops_mem_normal
 - 因而该顺序重贴虽然产生合法 PL 奇异胞腔、保留像因子分解和逐点边界参数，却仍完整保留被选奇异分支；它不能满足 Case 3/4 所需的严格复杂度下降，也不能作为书中 L₂。缺少的精确生产者是沿整条紧致触边双点分支把两张折叠片真正切开并分离的全局 PL 构造，同时保留书页 186–187 的四段边界字、局部单射、纤维至多二、其余 crossing 与适配三角剖分，并使被选分支从新双点集中消失。
 - `CellGluing`、`CutAndPaste` 聚焦检查均 exit=0、零 warning；`.lake/scratch/AuditE3M2.lean` 仍审计 89 项，全部只含 `propext`、`Classical.choice`、`Quot.sound`。全局无 `lean.exe` 后 `fresh.py` 报两个改动 Lean 模块均 fresh，forbidden=0、stale=0、missing=0。
 - 现有 `locallyInjective_restrict`、`fiber_le_two_restrict` 与 crossing 搬运只能验证给定限制或拉回，不能产生上述整支分离。按既定顺序，L₂ 未闭合前没有进入 Case 1/2。
+
+## 44. 2026-09-16 E3-M2：紧致分支图卡有限化与相容推开的精确缺口
+
+状态：blocked（`NIGHT_PLAN.md` §11.2 的有限覆盖层已闭合；相邻 crossing 图卡上的同向推移无法由现有接口串接，转交 F）。
+
+- `BranchPreimage.lean` 新增
+  `NormalSingularCellData.exists_finite_crossing_chart_cover`。对任意正规奇异胞腔和任意奇异分支，它选择每个分支点的
+  `OpenPartialHomeomorph`，保留该点的 `HasPLNormalDoubleCrossingAt`，并由
+  `branchCarrier_isCompact` 产生一个有限点集，其图卡源覆盖整条 `branchCarrier`。这一步同时覆盖普通内部 crossing 与
+  `HasPLBoundaryDoubleCrossingAt` 的端点半空间分支，不把有限覆盖作为假设。
+- 聚焦检查 `BranchPreimage` exit=0、零 warning；`.lake/scratch/AuditBranchSeparation.lean` 的新端点审计 exit=0，
+  只依赖 `propext`、`Classical.choice`、`Quot.sound`。
+- 精确缺口不是有限子覆盖，也不是源盘的两条原像弧或三盘分解。现有
+  `HasPLCrossingAt`/`HasPLBoundaryCrossingAt` 在每一点分别存在性地给出图卡、两张平面片和横截模型；在两个图卡的重叠上，
+  数据没有指定哪张平面对应固定的源片 `A`，也没有指定横向商线的正向。§16/§17 的 PL 圆/区间分类只给分支本身的次序，
+  不给这条横向商线沿分支的相容平凡化。因此无法证明相邻局部推移在重叠上同向，亦无法用线性插值得到单射的全局 PL 自映射。
+- F 的三个指定接口都位于这项义务之后：
+  `exists_isPLOn_postcomp_on_polyhedron_of_locallyInjective` 只把一个已经给定的全局 `IsPL` 单射 `h` 粘到一张源片；
+  `exists_isPLBall_patches_at_doublePoint_within` 只在单个双点选局部源片；
+  `exists_isPLBall_postcomp_neighborhood_at_doublePoint_in_manifold` 同样消费已经构造好的、支撑外恒等的 `h`。
+  逐点迭代这些定理既不给重叠相等，也不给同向选择；`exists_small_homeomorph_generalPosition` 保持横截交线而不删除它。
+  `BicollarManifold.lean` 只接受无边界组合 2-流形，不能用于两条源 crosscut 周围的带边条带；
+  `PlanarArcNeighborhood.lean` 只在源平面给弧的盘邻域，不产生目标三流形中的横向坐标。
+- 转交 F 的精确生产义务可写成 `exists_supported_separation_along_compact_crossing_arc`：输入紧致 PL 1-球
+  `S = branchCarrier c`、两张与 `S` 相交且沿 `S` 满足普通/边界 crossing 的嵌入 PL 条带、`W ∈ 𝓝ˢ S`；输出
+  `U`、两张缩小条带 `P,Q` 及全局 `h : M → M`，满足 `IsOpen U`、`S ⊆ U`、`closure U ⊆ W`、
+  `IsPL 3 3 h`、`Function.Injective h`、`EqOn h id Uᶜ`、边界端点处 `h (U ∩ BdM) ⊆ BdM`，并使
+  `Disjoint (h '' (D '' P)) (D '' Q)`。同时必须给 `P` 与源余片的接缝像避开 `closure U`、余片在 `D ⁻¹' U` 上单射，
+  以及分片映射 `g := P.piecewise (h ∘ D) D` 的精确等式
+  `doublePointSet g D.domain = doublePointSet D D.domain \ S`。最后一条需包含“不产生邻近的新交线”，不能只给旧分支点离开新奇点集。
+  有了这些数据，现有 Pasting/SingularPasting 可直接给 PL 性、局部单射、纤维至多二和支撑外纤维不变；E3 再用已有
+  `g`、三盘分解与 `IsGlueIso` 完成 Figure 25.3/25.5 的源盘重连及 Figure 25.4/25.6 的两张胞腔。
+- 在该生产者交付前，不能诚实声明 `exists_separated_along_branch`，也不能继续 Case 3/4 的实际 `L₂` 或复杂度下降接线；
+  Case 1/2 按用户指定顺序保持未开始。本次没有把缺口改写成显式结论型假设。
