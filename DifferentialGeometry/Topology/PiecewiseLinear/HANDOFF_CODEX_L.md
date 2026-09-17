@@ -621,3 +621,245 @@ theorem eq_top_of_boundaryLoops_mem_normal
 - I5 仍未交付，故 C.5 按 NIGHT_PLAN §6.1 保持等待；没有用 Bennett `Coefficients.lean` 的链绕过缺失的 `χ_face`/球面识别生产者。
 - 复核 `LoopTheorem/CutAndPaste.lean` 使用 `check-f.ps1 -Threads 1`，exit=0、零 warning；
   `.lake/scratch/AuditE3M2.lean` 共 47 项，`audit-f.ps1` exit=0，全部只含 `propext`、`Classical.choice`、`Quot.sound`。
+
+## 28. 2026-09-16 L.1 补强：正规系统的边界参数化
+
+状态：done。数学提交 `b3d9e8150`。
+
+- `NormalSystem` 新增
+  `boundaryParam : loopCircle ≃ₜ frontier sourceComplex.space` 与
+  `boundaryLoop_eq : ∀ θ, (boundaryLoop θ : E) = simplicialMap sourceComplex vertexMap (boundaryParam θ)`；
+  原结构字段 `boundaryLoop_range` 删除，并以完全同名的 `NormalSystem.boundaryLoop_range` 定理从上述两字段和 `loop_space` 推出，
+  所有既有消费者的点记法与结论签名保持不变。
+- 当前整合树没有 `NormalSystem` 的具体构造器，故本树没有需要补字段的生产者。后续生产者应以 §16 的 PL 圆分类构造
+  `boundaryParam`，并以 `BoundaryGeneration.lean` 已有的自由边界环构造证明逐点 `boundaryLoop_eq`；不得再用像集相等替代参数化相容性。
+- `SingularCell.lean` 及其 16 个传递下游按导入顺序逐个使用 `check-f.ps1 -Threads 1` 重编，全部 exit=0、零 warning。
+  `.lake/scratch/AuditE3M2.lean` 增加两个结构投影与推论后共 50 项，最终 `audit-f.ps1` exit=0，
+  全部只含 `propext`、`Classical.choice`、`Quot.sound`。
+- 两次早期审计恰逢共享构建目录中的其它 Lean 进程依次重建 `BoundaryCrossing.olean` 与
+  `BoundaryBranchCrosscut.olean`，分别报告瞬时缺失；等待共享进程退出后原样重跑即通过，未终止其它进程，也未运行 `lake build`。
+
+## 29. 2026-09-16 E3-M2 追加：割贴后整条边界分支消去
+
+状态：partial（纤维上界、新旧双点集包含及所选分支消去已闭合；局部单射、剩余分支三角剖分与 crossing 搬运待闭合）。数学提交 `9556ea4b2`。
+
+- 已按 NIGHT_PLAN 规则合并并推送整合分支 `11b74c480`，本分支合并提交为 `c42577124`。整合后 S 的
+  `exists_nonsingular_two_cell_of_boundary_disk` 及 `exists_nonsingular_two_cell_of_disk_in_double_boundary` 已以 §6.1 的 double 环境进入本树，
+  Case 1/2 到内盘推离层时可直接消去旧的显式 I2 参数。
+- `exists_three_cells_of_boundaryBranch` 保留两张分支原像片上 `branchCoordinate` 的 PL 同胚；
+  `exists_boundary_surgery_cell_of_boundaryBranch` 据此增强为同时交付
+  `∀ y, (G.domain ∩ G ⁻¹' {y}).encard ≤ 2`、
+  `doublePointSet G G.domain ⊆ doublePointSet D D.domain` 与
+  `Disjoint (doublePointSet G G.domain) (hD.singularSet.branchCarrier c)`。
+- 证明将新源盘两片分别送回原盘首、尾片，得到新源点到旧源点的单射；于是新纤维注入旧纤维。
+  对所选分支，两张坐标片把同像原像精确钉在贴缝上，而贴缝在新源盘中只有一份，因此新双点集与整条 `branchCarrier c` 不交。
+- `SingularCell` 与 `CutAndPaste` 均用 `check-f.ps1 -Threads 1` 重编，exit=0、零 warning；
+  `.lake/scratch/AuditE3M2.lean` 的 50 项用 `audit-f.ps1` 审计 exit=0，全部只含
+  `propext`、`Classical.choice`、`Quot.sound`。首次审计发现整合检查留下的旧 `SingularCell.olean`，
+  按规则窄重建 `SingularCell` 及当前模块后原样审计通过。
+- 下一精确义务是从原胞腔的局部单射得到贴合胞腔的局部单射：贴缝处需用有限个其它分支的闭性取避开它们的目标邻域，
+  再用两片的局部单射与贴缝唯一性排除交叉重合。随后需证明新双点集是旧一维带边组合流形的若干完整连通分支之并，
+  以限制子复形重建 `doublePointSet_triangulated`，并在剩余分支上搬运 crossing。
+
+## 30. 2026-09-16 E3-M2 追加：割贴胞腔的局部单射
+
+状态：partial（局部单射已闭合；剩余完整分支、奇点图三角剖分与 crossing 搬运待闭合）。
+
+- `NormalSingularCellData.exists_boundary_surgery_cell_of_boundaryBranch` 现在额外交付
+  `∀ x ∈ G.domain, ∃ W ∈ 𝓝[G.domain] x, InjOn G W`。缝外在 `P \ Q` 或 `Q \ P` 内沿 PL 同胚搬运旧胞腔的局部单射；
+  缝上先取所有非所选分支载体的有限并，利用每条分支紧致而得到闭集，并在目标中避开该闭集。
+- 缝上若出现跨侧同像，首尾盘在旧源盘中不交，故给出旧胞腔的真实双点。避开所有其它分支迫使该双点落在所选分支；
+  两个原像随即都落在被贴合的缝上，再由分支坐标片上的单射与首侧 PL 同胚推出源点相等。因此没有把局部单射作为新假设。
+- `CutAndPaste` 用 `check-f.ps1 -Threads 1` 检查 exit=0、零 warning；刷新共享缓存中的 `SingularCell` 后再次检查仍 exit=0。
+  `.lake/scratch/AuditE3M2.lean` 的 50 项用 `audit-f.ps1` 审计 exit=0，全部只含
+  `propext`、`Classical.choice`、`Quot.sound`。
+- 下一精确义务是证明 `doublePointSet G G.domain` 在每条旧 `branchCarrier` 中为开闭子集，从而是若干完整分支之并；
+  再以这些分支的子复形重建 `doublePointSet_triangulated`，并把旧正规 crossing 图限制到未删除分支。
+
+## 31. 2026-09-16 E3-M2 追加：割贴胞腔的正规性重建
+
+状态：done（`NormalSingularCellData` 已为手术胞腔实际重建；Case 3/4 的边界环字与复杂度严格下降仍为 partial）。
+
+- `CutAndPaste.lean` 的 `NormalSingularCellData.exists_boundary_surgery_cell_of_boundaryBranch` 现在额外交付
+  `Nonempty (NormalSingularCellData G BdM B)`。局部单射、二重纤维、边界像约束及奇点图三角剖分均来自已证字段，
+  没有把割贴稳定性改写为新假设。
+- 对每个保留下来的双点，两张新源片都避开公共贴缝。首侧和尾侧分别限制到 `P ∩ Qᶜ` 与 `Q ∩ Pᶜ`，
+  沿 `f₁`、`f₃` 得到到旧源盘的相对开 PL 同胚；旧图卡域与这两张目标片在原像点处互为相对邻域。
+  原 `HasPLDoubleCrossingAt` 或 `HasPLBoundaryDoubleCrossingAt` 的两张片由此拉回，新片的像芽与旧片像芽一致。
+- 新坐标映射只在图卡原像上使用。附近全部纤维由两片覆盖这一条先从紧致新源盘上 `G` 的精确两点纤维得到，
+  再经图卡逆映射搬到欧氏坐标，未错误要求 `e ∘ G` 在整个新源盘上连续。
+- `CutAndPaste` 聚焦检查 exit=0、零 warning；`.lake/scratch/audit-cut-and-paste-restriction.lean` 的 12 项及
+  `.lake/scratch/AuditE3M2.lean` 的 50 项审计均 exit=0，全部只含 `propext`、`Classical.choice`、`Quot.sound`。
+  本层没有首次复用新的 covering/Van Kampen 声明。
+- 尚未闭合的是书页 186–187 的 Case 3/4 边界环道路等式及由
+  `vertexCollisionPairs` 或实际分支计数推出的复杂度严格下降；Case 1/2 的环带模型与内盘替换也仍待实现。
+
+## 32. 2026-09-16 E3-M2 追加：割贴拉回与单纯复杂度严格下降
+
+状态：partial（跨复形的碰撞对基数比较及手术拉回条件下的严格下降已闭合；适配三角剖分、边界环道路等式与第二张割贴胞腔待闭合）。
+
+- `SingularCell.lean` 新增跨两个有限源复形的比较层：若顶点映射 `r` 单射、把新顶点送到旧顶点且满足
+  `f (r v) = g v`，则新 `vertexCollisionPairs` 经 `Finset.image r` 注入旧碰撞对；若至少一个旧碰撞对不在该像中，
+  `simplicialComplexity L g < simplicialComplexity K f`。具体的
+  `simplicialComplexity_lt_of_vertex_injection_of_missing_collision` 只需给出一对旧碰撞顶点，其中一个不在新顶点像中。
+- `NormalSingularCellData.exists_boundary_surgery_cell_of_boundaryBranch` 现在显式交付手术胞腔到原胞腔的
+  `pullback`，以及 `MapsTo pullback G.domain D.domain`、`InjOn pullback G.domain`、
+  `EqOn (D ∘ pullback) G G.domain` 和 `Disjoint (pullback '' G.domain) C`。最后一项说明第二张分支原像片
+  `C` 被整个新源盘的拉回像遗漏，不只是新双点集与分支载体不交。
+- `simplicialComplexity_lt_of_surgery_pullback` 已把上述拉回数据接到跨复形比较层：一旦给出适配的原/新有限源三角剖分、
+  拉回对顶点的相容性，以及位于 `C` 上的一对旧碰撞顶点，就得到严格复杂度下降。
+- 本层没有宣称 Case 3/4 或 Lemma 2 已完成。当前仍缺从 `NormalSystem`/I3 构造上述适配源三角剖分，
+  以及把 `C` 上的同像原像选成旧复形顶点；还缺 `L₁` 的边界参数道路等式和由三片交叉贴合产生第二张胞腔 `L₂`。
+  现有群论引理已经匹配书页 186–187 的 Case 3/4 字，但在这些几何生产者完成前不能接成 Lemma 2。
+- `SingularCell` 与 `CutAndPaste` 的聚焦检查均 exit=0、零 warning；`fresh.py` 报告相对整合提交
+  `4401dd9d1` 的 2 个改动 Lean 模块均为 fresh，forbidden=0、stale=0、missing=0。
+  `.lake/scratch/AuditE3M2.lean` 的 54 项与 `.lake/scratch/audit-cut-and-paste-restriction.lean` 的 12 项审计均 exit=0，
+  全部只含 `propext`、`Classical.choice`、`Quot.sound`。首次 fresh 尝试检测到其它工作树的 Lean 进程后按规则以 17 退出；
+  等该进程自然结束后才继续，没有终止其它进程。
+
+## 33. 2026-09-16 E3-M2 追加：Case 3/4 边界道路字与缝端碰撞
+
+状态：partial（书页 186–187 的两种道路重接已按 Mathlib 基本群乘法约定闭合；外侧手术胞腔的缝端碰撞自动给出严格复杂度下降，几何道路生产者与第二张手术胞腔仍待闭合）。
+
+- `SingularCell.lean` 的 `loopRepresentativeAlong_pathToCircle` 把道路闭环 `pathToCircle p` 沿任意基点连接道路搬到 `fundamentalGroupChangeBasepoint q ⟦p⟧`。`CutAndPaste.lean` 的 `loopRepresentativeAlong_mem_iff_loopClassMeets_basedCircle` 及否定版把该指定代表元与自由环共轭类是否遇到正规子群精确对应。
+- Mathlib 的基本群乘法满足 `p * q = q.trans p`，所以书中的从左到右道路字在基本群中必须反序。`not_loopClassMeets_or_not_loopClassMeets_of_endpoint_reversing_reconnection` 对
+  `L = στυφ` 给出 `L₁ = συ⁻¹` 或 `L₂ = σφυτ` 至少一个仍避开正规子群；`not_loopClassMeets_or_not_loopClassMeets_of_endpoint_preserving_reconnection` 对同一母道路给出 `L₁ = συ` 或 `L₂ = στ⁻¹υφ⁻¹` 至少一个仍避开正规子群。证明插入任意连接道路 `c`，在基本群胚中消去 `c⁻¹c`，再用 `not_mem_or_not_mem_of_four_path_reverse_order` 与 `not_mem_or_not_mem_of_four_path_preserving_order` 的正规共轭闭性；没有把道路字等式改写为假设。
+- `NormalSingularCellData.exists_boundary_surgery_cell_of_boundaryBranch` 现在还交付四个缝端分别落在 `A,C` 及 `EqOn D (D ∘ g) A`。`simplicialComplexity_lt_of_surgery_pullback_of_seam` 由端点定向二分自动选择被新拉回遗漏的旧碰撞对 `(p,r)` 或 `(p,s)`；调用者仍需提供适配的原/新有限源三角剖分、顶点搬运和三个缝端是旧顶点。
+- `SingularCell` 与 `CutAndPaste` 聚焦检查均 exit=0、零 warning。`fresh.py` 对相对整合提交 `4401dd9d1` 的两个改动 Lean 模块报告 fresh=2、forbidden=0、stale=0、missing=0。更新后的 `.lake/scratch/AuditE3M2.lean` 共 62 项，审计 exit=0，全部只含 `propext`、`Classical.choice`、`Quot.sound`。检查和审计前均先确认全局没有 `lean.exe`；检测到其它工作树进程时以 17 退出并等待，没有终止进程。
+- 本层没有宣称 Case 3/4 或 Lemma 2 已完成。仍缺从 `NormalSystem.boundaryParam`、I3 的两条实际分支原像和贴合后的 frontier 表示构造上述 `σ,τ,υ,φ`，并证明手术胞腔的边界参数恰为相应 `pathToCircle`；还缺构造第二张交叉贴合胞腔 `L₂`，以及从适配源三角剖分把缝端选为顶点。Case 1/2 的环带模型、内盘替换与 I2 推离也仍未闭合。
+
+## 34. 2026-09-16 E3-M2 追加：Case 2 的全局最内奇异圆盘
+
+状态：partial（全体奇异分支中的最内圆与内盘隔离已闭合；内盘上的单射坐标、I2 替换及替换后正规性仍待闭合）。数学提交
+`faa031702`。
+
+- `BranchPreimage.lean` 证明所有分支原像两两不交，其并集恰为
+  `doublePointPreimage D D.domain`；非触边分支的原像位于源盘内部，并可有限分解为一或两个两两不交的 PL 圆。
+- 对所有非触边分支的全部圆分量同时应用 `exists_innermost_isPLBall`，得到 `J = frontier Q`，其中
+  `Q ⊆ interior D.domain`，且所有非触边分支原像与 `Q` 的交恰为 `J`。被选分支的原像同时保留书中 Case 1/2 的精确二分：
+  它等于单个 `J`，或等于 `J ∪ T`，其中 `T` 是与 `J` 不交的另一个 PL 圆。
+- `BoundaryBranchCrosscut.lean` 证明若源盘横切弧避开 `frontier Q`，则整条横切弧避开 `Q`：横切弧连通，端点在外盘边界上，而
+  `Q` 完全位于外盘内部。每个触边分支的原像是两条这样的横切弧，且不同分支原像两两不交；故最终端点
+  `exists_innermost_isPLBall_doublePointPreimage_decomposition_of_exists_not_boundaryBranch`
+  将上述交式加强为
+  `doublePointPreimage D D.domain ∩ Q = J`，没有把“最内”作为假设。
+- `BranchPreimage` 与 `BoundaryBranchCrosscut` 聚焦检查均 exit=0、零 warning；更新后的
+  `.lake/scratch/AuditE3M2.lean` 共 72 项，`audit-f.ps1` exit=0，全部只含
+  `propext`、`Classical.choice`、`Quot.sound`。本层没有首次复用新的 covering/Van Kampen 声明。
+- 下一精确义务是为非触边分支的一圆/两圆分解保留 `branchCoordinate` 在每个圆分量上的 PL 同胚，从而由
+  `doublePointPreimage D D.domain ∩ Q = J` 推出 `D` 在 `Q` 内除边界配对外单射，并构造 Case 2 的内盘替换后调用已交付的 I2。
+  Case 1 仍缺盘内圆的 PL 环带及 Figure 25.2 柱形图显式模型；Lemma 2 端点尚未宣称完成。
+
+## 35. 2026-09-16 E3-M2 追加：Case 2 的非奇异内盘
+
+状态：partial（两圆情形的内盘限制已构造成实际非奇异 2-胞腔；I2 替换、替换后正规性与复杂度下降仍待闭合）。数学提交
+`174006132`。
+
+- `BranchPreimage.lean` 将非触边分支的两圆分解加强为带坐标版本：两圆上的
+  `branchCoordinate` 都是到同一 `branchComplex.space` 的 PL 同胚。该结论直接来自二重覆盖的两个连通分支及已有的分支原像
+  PL 三角剖分，不把双层参数化另作假设。
+- 若 `doublePointPreimage D D.domain ∩ Q = J` 且 `branchCoordinate|J` 为 PL 同胚，则 `D|Q` 单射：两点若在 `Q`
+  中同像且不等，二者都属于全局双点原像，故都在 `J`；再由 `branchPieceIn` 与 `branchCoordinate|J` 的单射性得到二者相等。
+  `restrict_isNonsingular_of_doublePointPreimage_inter_eq_of_branchCoordinate` 因而构造实际限制胞腔并证明其边界像是 `D '' J`。
+- 端点 `exists_innermost_isPLBall_doublePointPreimage_with_nonsingular_case_two` 保留 Case 1/2 二分；在 Case 2 中交付
+  `A : SingularTwoCell M`，满足 `A.IsNonsingular`、`A '' A.domain = D '' Q` 与
+  `Set.range A.boundary = D '' J`，并同时保留另一圆 `T` 及两张坐标 PL 同胚。
+- `BranchPreimage` 与 `BoundaryBranchCrosscut` 聚焦检查均 exit=0、零 warning；
+  `.lake/scratch/AuditE3M2.lean` 共 78 项，`audit-f.ps1` exit=0，全部只含
+  `propext`、`Classical.choice`、`Quot.sound`。本层没有首次复用新的 covering/Van Kampen 声明。
+- 下一精确义务是把上述 `A` 在 `X := (double 3 K).space` 的专门环境中转成 I2 所需的边界盘参数化，调用
+  `exists_nonsingular_two_cell_of_disk_in_double_boundary` 构造推离替换盘，并证明替换后的奇点图删去所选闭分支、正规 crossing 保持且
+  `vertexCollisionPairs` 严格减少。当前一般 `NormalSingularCellData` 不携带 `K`、double 的嵌入 `ι` 或盘像位于相应
+  `boundaryComplex` 的等式，所以该接线必须在 Lemma 2 的 double 专门端点中完成，不能在本一般引理中伪造。
+
+## 36. 2026-09-16 E3-M2 追加：Case 2 的源盘替换参数化
+
+状态：partial（两张源盘之间的边界相容 PL 同胚已闭合；double 环境中的 I2 推离、分片贴回、正规性重建与复杂度下降仍待闭合）。数学提交
+`b25555a31`。
+
+- `BranchPreimage.lean` 在两圆情形中为另一圆 `T` 构造 PL 盘 `R ⊆ D.domain`，并由两张
+  `branchCoordinate` 坐标先得到 `T → J` 的边界 PL 同胚，再用盘边界延拓得到
+  `G : R → Q` 的 PL 同胚。其边界满足逐点等式 `EqOn D (D ∘ G) (frontier R)`，不是仅有边界像集相等。
+- `BoundaryBranchCrosscut.lean` 的端点
+  `exists_innermost_isPLBall_doublePointPreimage_with_case_two_replacement` 同时交付全局最内关系
+  `doublePointPreimage D D.domain ∩ Q = J`、上述 `R,G`，以及非奇异内盘胞腔 `A = D.restrict Q`，其中
+  `A '' A.domain = D '' Q` 且 `Set.range A.boundary = D '' J`。这给出了 Moise Case 2 在调用 I2 前所需的两张源盘和精确边界配对。
+- `BranchPreimage` 与 `BoundaryBranchCrosscut` 聚焦检查均 exit=0、零 warning；更新后的
+  `.lake/scratch/AuditE3M2.lean` 共 81 项，`audit-f.ps1` exit=0，全部只含
+  `propext`、`Classical.choice`、`Quot.sound`。本层没有首次复用新的 covering/Van Kampen 声明。
+- 下一精确义务仍必须在 `X := (double 3 K).space` 的 Lemma 2 专门环境中完成：先把 `D '' Q` 识别为 I2 所需的
+  `boundaryComplex 3 K` 内参数化盘并取得被推离的非奇异盘，再沿 `G` 在 `R` 上分片替换 `D`；随后证明分片映射 PL、所选闭分支整条消失、
+  其余 crossing 保持且 `vertexCollisionPairs` 严格减少。一般 `NormalSingularCellData` 没有这些 double/边界定位数据，故本层没有弱化或伪造该接线。
+- Case 1 仍缺 `J` 的 PL 环带邻域、书页 185 Figure 25.2 的显式柱形图模型及替换后复杂度证明；Lemma 2 端点尚未宣称完成。
+
+## 37. 2026-09-16 E3-M2 追加：I2 的逐点边界参数桥接
+
+状态：partial（double 环境中的 I2 已补成可逐点贴回指定源盘的形式；Case 2 的分片替换、正规性重建与复杂度下降仍待闭合）。数学提交
+`095dabd4d`。
+
+- 新文件 `LoopTheorem/LemmaTwo.lean` 的
+  `exists_nonsingular_two_cell_of_disk_in_double_boundary_eqOn` 接受任意 PL 2-盘 `R` 及到
+  `ι '' (boundaryComplex 3 K).space` 内边界盘的 PL 同胚 `r : R → D`。它构造
+  `A : SingularTwoCell (double 3 K).space`，满足 `A.domain = R`、`A.IsNonsingular`、像落在 `ι '' K.space`，并有逐点接缝等式
+  `EqOn (fun x => (A x : E × E × ℝ)) r (frontier R)`；同时保留边界像和与嵌入组合边界的交集都等于 `r '' frontier R`。
+- 证明先沿第二份拷贝的 PL 嵌入 `ι` 把输入盘拉回 `K`，调用原生
+  `exists_isPLHomeomorphOn_push_boundary_disk`，再把两条同像边界圆之间的 PL 同胚用
+  `exists_isPLHomeomorphOn_of_stdSimplexBoundary` 延拓到整盘。最后用 `combinatorialPLPieceIn` 在指定源盘 `R` 上直接实现胞腔，
+  因而没有从“边界像集相等”非法推出参数化相等，也没有修改 S 车道的 I2 文件。
+- `LemmaTwo` 聚焦检查 exit=0、零 warning；`.lake/scratch/AuditE3M2.lean` 共 82 项，`audit-f.ps1` exit=0，
+  全部只含 `propext`、`Classical.choice`、`Quot.sound`。本层没有首次复用新的 covering/Van Kampen 声明。
+- 下一精确义务是在 `NormalSystem` 的专门化中把 `simplicialMap sourceComplex vertexMap` 嵌入第二份拷贝，证明 Case 2 内盘限制的环境坐标映射满足本桥接的
+  `IsPLHomeomorphOn` 与组合边界包含条件；随后在另一源盘 `R` 上以新胞腔替换原映射，并实际证明 PL 性、所选闭分支消失、其余 crossing 保持及
+  `vertexCollisionPairs` 严格减少。一般 `NormalSingularCellData` 仍不携带这组 double/嵌入数据，故没有在一般层伪造该结论。
+- Case 1 的环带与 Figure 25.2 柱形图模型仍未闭合；Lemma 2 端点尚未宣称完成。
+
+## 38. 2026-09-16 E3-M2 追加：正规系统的 double 环境实现
+
+状态：partial（正规系统已实现为 `double 3 K` 中的实际奇异 2-胞腔；Case 2 仍缺内盘的单侧局部 3-流形邻域）。数学提交
+`dec8e5da0`。
+
+- `LemmaTwo.lean` 的 `NormalSystem.exists_singular_two_cell_in_double` 令
+  `K := S.manifoldComplex`，通过第二份拷贝嵌入
+  `ι := simplicialMap K (glueEmbed₂ (boundaryComplex 3 K) id)` 构造实际
+  `D : SingularTwoCell (double 3 K).space`。它保留源盘、整个像、边界环像、与 double 组合边界的交，
+  并给出逐点边界参数等式与 `D.IsNonsingular ↔ S.IsNonsingular`。因此后续 Case 1/2 可以在 H 车道规定的
+  `double 3 K` 环境中直接使用，不再依赖同形的假定结构。
+- `LemmaTwo` 聚焦检查 exit=0、零 warning；`.lake/scratch/AuditE3M2.lean` 共 83 项，
+  `audit-f.ps1` exit=0，全部只含 `propext`、`Classical.choice`、`Quot.sound`。
+  全局无 `lean.exe` 后运行 `fresh.py`，相对整合提交 `4401dd9d1` 的 5 个改动 Lean 模块均为 fresh，
+  forbidden=0、stale=0、missing=0。检测到其它工作树的 Lean 进程时已立即暂停，未终止或并发编译。
+- 现有 I2 的前提是待推盘已位于一个有边界 3-流形复形的 `boundaryComplex`。但
+  `S.imageComplex.space ∩ S.boundaryComplex.space = S.loopComplex.space`，所以 Moise Case 2 的最内盘像位于正则邻域内部，
+  只有它的边界圆落在外边界上；它不是 I2 可直接接受的边界盘。
+  下一精确生产者是：为这个内嵌 PL 2-盘构造单侧局部 PL 3-流形（或 PL 3-球）邻域，使该盘成为其组合边界子盘，
+  再运输到相应 double 中调用 I2。现有 `DiskDerivedNeighborhood`、`DiskCollar`、
+  `BoundaryDiskNeighborhood`只处理已在边界的盘；`BicollarManifold`与 `TwoSidedNeighborhood` 只处理无边界闭曲面，
+  均不能填补这一步。该局部乘积/半邻域定理尚未在本树中找到，故本层没有将其改写为假设，也没有弱化 Lemma 2。
+
+## 39. 2026-09-16 C.5：非球面边界分支的连通二重覆盖
+
+状态：done。数学提交 `65bd07eb6`、`cb2153a6c`。
+
+- 已合并整合分支 `bbd488861`的 I5。`BoundaryHomology.lean` 与 `HandleCount.lean` 的 I5 支撑层推广到任意域
+  `k`，得到 `bettiNumber_one_pos_of_boundary_component_not_sphere`；原有 ℚ 系数端点
+  `bettiOne_pos_of_boundary_component_not_sphere` 保持原签名并成为其推论。
+- 新模块 `HomologyCocycle.lean` 直接在 `ZMod 2` normalized chain complex 上工作：由正的一阶 Betti 数取非零同调类，
+  选取在该类上非零的对偶函子，延拓到一链，并以边基向量上的值构造
+  `SimplicialBoolCocycle.exists_not_isCoboundary_of_bettiNumber_one_pos`。三角形边界公式证明 cocycle 条件；若是 coboundary，
+  顶点函子将使该对偶函子在所有一循环上为零，与选定的非零类矛盾。
+- `DoubleCoverExistence.lean` 的
+  `exists_connected_double_cover_complex_of_isOrientable_of_boundary_component_not_sphere`
+  无任何 I5/上循环存在的显式假设：对连通、可定向的带边组合 3-流形复形及一个非 PL 2-球面的边界分支，
+  产生实际非上边界上循环、连通二重覆盖、有限提升复形及带边组合 3-流形性。该新端点的环境类型为
+  `E₀ : Type`，精确对齐当前 I5 支撑链的宇宙层级；原有 `Type*` 覆盖 API 未被改窄。
+- `HomologyCocycle` 与 `DoubleCoverExistence` 聚焦检查均 exit=0、零 warning。
+  `.lake/scratch/AuditC5.lean` 审计 17 项，包括新端点及首次复用的
+  `moduleHomologyClass_surjective`、`moduleHomologyClass_eq_zero_iff`、
+  `Module.Projective.exists_dual_ne_zero`、`Subspace.dualLift`、`realizationHomologyIso`、
+  `isoOfQuasiIsoAt`、`geometricRealizationHomeomorphism`、`orderedNormalizedChainEquiv` 与边界坐标公式，
+  全部只含 `propext`、`Classical.choice`、`Quot.sound`。未 import、未传递经过
+  `Topology/Homology/HurewiczLowDegrees.lean`。`fresh.py` 在全局无 `lean.exe` 时报 8 个改动 Lean 模块全部 fresh，
+  forbidden=0、stale=0、missing=0。
+- C.5 本身已不再条件于 I5。L.4 中的 `orientableNonsphericalBoundaryDoubleCover` 仍是更强的
+  `NormalSystem.DoubleCoverReduction` 生产者：它还要求提升整个正规系统、保持边界环/正规子群数据并证明复杂度严格下降，
+  不能仅由覆盖复形的存在性消去；该 L.4 生产者缺口保持精确记录。

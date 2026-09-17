@@ -330,8 +330,8 @@ open Classical in
 noncomputable def boundaryComponentCycle
     (B : Geometry.SimplicialComplex ℝ E) [Finite B.faces]
     (o : CoherentOrientation 2 B) (c : ConnectedComponents B.space) :
-    {s : Finset E // s ∈ B.faces ∧ s.card = 3} → ℚ :=
-  fun s => (componentOrientationChain B o c s.1 : ℚ)
+    {s : Finset E // s ∈ B.faces ∧ s.card = 3} → k :=
+  fun s => (componentOrientationChain B o c s.1 : k)
 
 open Classical in
 theorem orientedBoundary_componentOrientationChain
@@ -367,16 +367,16 @@ theorem orderedNormalizedBoundary_boundaryComponentCycle
     (hB : IsCombinatorialManifold 2 B) (o : CoherentOrientation 2 B)
     (c : ConnectedComponents B.space) :
     let _ := o.vertexOrder
-    SimplicialComplex.orderedNormalizedBoundary (k := ℚ) B.toPreAbstractSimplicialComplex 1
+    SimplicialComplex.orderedNormalizedBoundary (k := k) B.toPreAbstractSimplicialComplex 1
       (boundaryComponentCycle B o c) = 0 := by
   dsimp
   let _ := o.vertexOrder
   ext t
   rw [show boundaryComponentCycle B o c =
-      fun s => (componentOrientationChain B o c s.1 : ℚ) from rfl]
-  change SimplicialComplex.orderedNormalizedBoundary (k := ℚ)
+      fun s => (componentOrientationChain B o c s.1 : k) from rfl]
+  change SimplicialComplex.orderedNormalizedBoundary (k := k)
     B.toPreAbstractSimplicialComplex 1
-      (fun s => (componentOrientationChain B o c s.1 : ℚ)) t = 0
+      (fun s => (componentOrientationChain B o c s.1 : k)) t = 0
   rw [orderedNormalizedBoundary_intCast_apply o.vertexOrder B 1
     (componentOrientationChain B o c) t]
   rw [orientedBoundary_componentOrientationChain B o c t]
@@ -397,18 +397,18 @@ open Classical in
 noncomputable def boundaryComponentCombinationCoeff
     (B : Geometry.SimplicialComplex ℝ E) [Finite B.faces]
     (o : CoherentOrientation 2 B) (c₀ : ConnectedComponents B.space)
-    (a : OtherBoundaryComponent B c₀ → ℚ) : Finset E → ℚ :=
+    (a : OtherBoundaryComponent B c₀ → k) : Finset E → k :=
   fun s => if hs : s ∈ B.faces ∧ s.card = 3 then
     if hc : connectedComponentOfFace B hs.1 ≠ c₀ then
-      a ⟨connectedComponentOfFace B hs.1, hc⟩ * (o.sign s : ℚ)
+      a ⟨connectedComponentOfFace B hs.1, hc⟩ * (o.sign s : k)
     else 0 else 0
 
 open Classical in
 noncomputable def boundaryComponentCombination
     (B : Geometry.SimplicialComplex ℝ E) [Finite B.faces]
     (o : CoherentOrientation 2 B) (c₀ : ConnectedComponents B.space) :
-    (OtherBoundaryComponent B c₀ → ℚ) →ₗ[ℚ]
-      ({s : Finset E // s ∈ B.faces ∧ s.card = 3} → ℚ) where
+    (OtherBoundaryComponent B c₀ → k) →ₗ[k]
+      ({s : Finset E // s ∈ B.faces ∧ s.card = 3} → k) where
   toFun a s := boundaryComponentCombinationCoeff B o c₀ a s.1
   map_add' a b := by
     ext s
@@ -431,14 +431,14 @@ theorem orderedNormalizedBoundary_boundaryComponentCombination
     [FiniteDimensional ℝ E]
     (B : Geometry.SimplicialComplex ℝ E) [Finite B.faces]
     (hB : IsCombinatorialManifold 2 B) (o : CoherentOrientation 2 B)
-    (c₀ : ConnectedComponents B.space) (a : OtherBoundaryComponent B c₀ → ℚ) :
+    (c₀ : ConnectedComponents B.space) (a : OtherBoundaryComponent B c₀ → k) :
     let _ := o.vertexOrder
-    SimplicialComplex.orderedNormalizedBoundary (k := ℚ) B.toPreAbstractSimplicialComplex 1
+    SimplicialComplex.orderedNormalizedBoundary (k := k) B.toPreAbstractSimplicialComplex 1
       (boundaryComponentCombination B o c₀ a) = 0 := by
   dsimp
   let _ := o.vertexOrder
   ext t
-  change SimplicialComplex.orderedNormalizedBoundary (k := ℚ)
+  change SimplicialComplex.orderedNormalizedBoundary (k := k)
     B.toPreAbstractSimplicialComplex 1
       (fun s => boundaryComponentCombinationCoeff B o c₀ a s.1) t = 0
   rw [orderedNormalizedBoundary_apply_eq_sum_faceCofaces o.vertexOrder B 1
@@ -459,10 +459,10 @@ theorem orderedNormalizedBoundary_boundaryComponentCombination
     calc
       (∑ s ∈ faceCofaces B t.1 (1 + 2),
           boundaryComponentCombinationCoeff B o c₀ a s *
-            (simplexBoundaryCoefficient o.vertexOrder s t.1 : ℚ)) =
+            (simplexBoundaryCoefficient o.vertexOrder s t.1 : k)) =
         ∑ s ∈ faceCofaces B t.1 3,
-          a d' * ((o.sign s : ℚ) *
-            (simplexBoundaryCoefficient o.vertexOrder s t.1 : ℚ)) := by
+          a d' * ((o.sign s : k) *
+            (simplexBoundaryCoefficient o.vertexOrder s t.1 : k)) := by
           apply Finset.sum_congr rfl
           intro s hs
           obtain ⟨hsB, hscard, hts⟩ := (mem_faceCofaces B).mp hs
@@ -475,10 +475,10 @@ theorem orderedNormalizedBoundary_boundaryComponentCombination
           simp [boundaryComponentCombinationCoeff, hsB, hcard, hsnot, hsub]
           ring
       _ = a d' * ∑ s ∈ faceCofaces B t.1 3,
-          (o.sign s : ℚ) *
-            (simplexBoundaryCoefficient o.vertexOrder s t.1 : ℚ) := by
+          (o.sign s : k) *
+            (simplexBoundaryCoefficient o.vertexOrder s t.1 : k) := by
           rw [Finset.mul_sum]
-      _ = a d' * (orientedBoundary o.vertexOrder B 2 o.sign t.1 : ℚ) := by
+      _ = a d' * (orientedBoundary o.vertexOrder B 2 o.sign t.1 : k) := by
           rw [orientedBoundary_eq_sum_faceCofaces]
           push_cast
           rfl
@@ -491,8 +491,8 @@ noncomputable def boundaryComponentCombinationIn
     (hK : IsCombinatorialManifoldWithBoundary 3 K)
     (o : CoherentOrientation 3 K)
     (c₀ : ConnectedComponents (boundaryComplex 3 K).space) :
-    (OtherBoundaryComponent (boundaryComplex 3 K) c₀ → ℚ) →ₗ[ℚ]
-      ({s : Finset E // s ∈ K.faces ∧ s.card = 3} → ℚ) where
+    (OtherBoundaryComponent (boundaryComplex 3 K) c₀ → k) →ₗ[k]
+      ({s : Finset E // s ∈ K.faces ∧ s.card = 3} → k) where
   toFun a s := boundaryComponentCombinationCoeff (boundaryComplex 3 K)
     (o.boundary K hK) c₀ a s.1
   map_add' a b := by
@@ -529,9 +529,9 @@ theorem orderedNormalizedBoundary_boundaryComponentCombinationIn
     (hK : IsCombinatorialManifoldWithBoundary 3 K)
     (o : CoherentOrientation 3 K)
     (c₀ : ConnectedComponents (boundaryComplex 3 K).space)
-    (a : OtherBoundaryComponent (boundaryComplex 3 K) c₀ → ℚ) :
+    (a : OtherBoundaryComponent (boundaryComplex 3 K) c₀ → k) :
     let _ := o.vertexOrder
-    SimplicialComplex.orderedNormalizedBoundary (k := ℚ) K.toPreAbstractSimplicialComplex 1
+    SimplicialComplex.orderedNormalizedBoundary (k := k) K.toPreAbstractSimplicialComplex 1
       (boundaryComponentCombinationIn K hK o c₀ a) = 0 := by
   dsimp
   let B : Geometry.SimplicialComplex ℝ E := boundaryComplex 3 K
@@ -542,7 +542,7 @@ theorem orderedNormalizedBoundary_boundaryComponentCombinationIn
     simpa only [B] using boundaryComplex_faces_subset 3 K
   let _ := o.vertexOrder
   ext t
-  change SimplicialComplex.orderedNormalizedBoundary (k := ℚ)
+  change SimplicialComplex.orderedNormalizedBoundary (k := k)
     K.toPreAbstractSimplicialComplex 1
       (fun s => boundaryComponentCombinationCoeff B oB c₀ a s.1) t = 0
   rw [orderedNormalizedBoundary_apply_eq_sum_faceCofaces o.vertexOrder K 1
@@ -551,7 +551,7 @@ theorem orderedNormalizedBoundary_boundaryComponentCombinationIn
   · let tB : {t : Finset E // t ∈ B.faces ∧ t.card = 2} := ⟨t.1, htB, t.2.2⟩
     have hcycle := congrFun
       (orderedNormalizedBoundary_boundaryComponentCombination B hB oB c₀ a) tB
-    change SimplicialComplex.orderedNormalizedBoundary (k := ℚ)
+    change SimplicialComplex.orderedNormalizedBoundary (k := k)
       B.toPreAbstractSimplicialComplex 1
         (fun s => boundaryComponentCombinationCoeff B oB c₀ a s.1) tB = 0 at hcycle
     rw [orderedNormalizedBoundary_apply_eq_sum_faceCofaces o.vertexOrder B 1
@@ -583,16 +583,16 @@ open Classical in
 noncomputable def orientedTopChainCoeff
     (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
     (o : CoherentOrientation 3 K)
-    (x : {s : Finset E // s ∈ K.faces ∧ s.card = 4} → ℚ) : Finset E → ℚ :=
+    (x : {s : Finset E // s ∈ K.faces ∧ s.card = 4} → k) : Finset E → k :=
   fun s => if hs : s ∈ K.faces ∧ s.card = 4 then
-    x ⟨s, hs⟩ * (o.sign s : ℚ) else 0
+    x ⟨s, hs⟩ * (o.sign s : k) else 0
 
 open Classical in
 noncomputable def orientedTopChain
     (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
     (o : CoherentOrientation 3 K) :
-    ({s : Finset E // s ∈ K.faces ∧ s.card = 4} → ℚ) →ₗ[ℚ]
-      ({s : Finset E // s ∈ K.faces ∧ s.card = 4} → ℚ) where
+    ({s : Finset E // s ∈ K.faces ∧ s.card = 4} → k) →ₗ[k]
+      ({s : Finset E // s ∈ K.faces ∧ s.card = 4} → k) where
   toFun x s := orientedTopChainCoeff K o x s.1
   map_add' x y := by
     ext s
@@ -604,19 +604,19 @@ noncomputable def orientedTopChain
 theorem orderedNormalizedBoundary_orientedTopChain_apply_of_faceCofaces_eq_singleton
     (r : LinearOrder E) (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
     (o : CoherentOrientation 3 K)
-    (x : {s : Finset E // s ∈ K.faces ∧ s.card = 4} → ℚ)
+    (x : {s : Finset E // s ∈ K.faces ∧ s.card = 4} → k)
     (t : {t : Finset E // t ∈ K.faces ∧ t.card = 3})
     (s : {s : Finset E // s ∈ K.faces ∧ s.card = 4}) :
     let _ := r
     faceCofaces K t.1 4 = {s.1} →
-    SimplicialComplex.orderedNormalizedBoundary (k := ℚ)
+    SimplicialComplex.orderedNormalizedBoundary (k := k)
         K.toPreAbstractSimplicialComplex 2 (orientedTopChain K o x) t =
-      x s * (o.sign s.1 : ℚ) *
-        (simplexBoundaryCoefficient r s.1 t.1 : ℚ) := by
+      x s * (o.sign s.1 : k) *
+        (simplexBoundaryCoefficient r s.1 t.1 : k) := by
   dsimp
   let _ := r
   intro hcofaces
-  change SimplicialComplex.orderedNormalizedBoundary (k := ℚ)
+  change SimplicialComplex.orderedNormalizedBoundary (k := k)
       K.toPreAbstractSimplicialComplex 2
         (fun s => orientedTopChainCoeff K o x s.1) t = _
   rw [orderedNormalizedBoundary_apply_eq_sum_faceCofaces r K 2
@@ -626,21 +626,21 @@ theorem orderedNormalizedBoundary_orientedTopChain_apply_of_faceCofaces_eq_singl
 theorem orderedNormalizedBoundary_orientedTopChain_apply_of_faceCofaces_eq_pair
     (r : LinearOrder E) (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
     (o : CoherentOrientation 3 K)
-    (x : {s : Finset E // s ∈ K.faces ∧ s.card = 4} → ℚ)
+    (x : {s : Finset E // s ∈ K.faces ∧ s.card = 4} → k)
     (f : {f : Finset E // f ∈ K.faces ∧ f.card = 3})
     (s t : {s : Finset E // s ∈ K.faces ∧ s.card = 4}) (hst : s.1 ≠ t.1) :
     let _ := r
     faceCofaces K f.1 4 = {s.1, t.1} →
-    SimplicialComplex.orderedNormalizedBoundary (k := ℚ)
+    SimplicialComplex.orderedNormalizedBoundary (k := k)
         K.toPreAbstractSimplicialComplex 2 (orientedTopChain K o x) f =
-      x s * (o.sign s.1 : ℚ) *
-          (simplexBoundaryCoefficient r s.1 f.1 : ℚ) +
-        x t * (o.sign t.1 : ℚ) *
-          (simplexBoundaryCoefficient r t.1 f.1 : ℚ) := by
+      x s * (o.sign s.1 : k) *
+          (simplexBoundaryCoefficient r s.1 f.1 : k) +
+        x t * (o.sign t.1 : k) *
+          (simplexBoundaryCoefficient r t.1 f.1 : k) := by
   dsimp
   let _ := r
   intro hcofaces
-  change SimplicialComplex.orderedNormalizedBoundary (k := ℚ)
+  change SimplicialComplex.orderedNormalizedBoundary (k := k)
       K.toPreAbstractSimplicialComplex 2
         (fun s => orientedTopChainCoeff K o x s.1) f = _
   rw [orderedNormalizedBoundary_apply_eq_sum_faceCofaces r K 2
@@ -653,12 +653,12 @@ theorem orientedTopChain_coeff_eq_of_boundary_apply_eq_zero
     (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
     (hK : IsCombinatorialManifoldWithBoundary 3 K)
     (o : CoherentOrientation 3 K)
-    (x : {s : Finset E // s ∈ K.faces ∧ s.card = 4} → ℚ)
+    (x : {s : Finset E // s ∈ K.faces ∧ s.card = 4} → k)
     (f : {f : Finset E // f ∈ K.faces ∧ f.card = 3})
     (s t : {s : Finset E // s ∈ K.faces ∧ s.card = 4}) (hst : s.1 ≠ t.1)
     (hcofaces : faceCofaces K f.1 4 = {s.1, t.1})
     (hzero : let _ := o.vertexOrder
-      SimplicialComplex.orderedNormalizedBoundary (k := ℚ)
+      SimplicialComplex.orderedNormalizedBoundary (k := k)
           K.toPreAbstractSimplicialComplex 2 (orientedTopChain K o x) f = 0) :
     x s = x t := by
   have hsco : s.1 ∈ faceCofaces K f.1 4 := by
@@ -692,21 +692,22 @@ theorem orientedTopChain_coeff_eq_of_boundary_apply_eq_zero
     o.vertexOrder K o x f s t hst hcofaces'
   dsimp at hzero hvalue
   have hcancelQ :
-      (o.sign s.1 : ℚ) * (simplexBoundaryCoefficient o.vertexOrder s.1 f.1 : ℚ) +
-        (o.sign t.1 : ℚ) * (simplexBoundaryCoefficient o.vertexOrder t.1 f.1 : ℚ) = 0 := by
-    exact_mod_cast hcancel
+      (o.sign s.1 : k) * (simplexBoundaryCoefficient o.vertexOrder s.1 f.1 : k) +
+        (o.sign t.1 : k) * (simplexBoundaryCoefficient o.vertexOrder t.1 f.1 : k) = 0 := by
+    simpa only [Int.cast_add, Int.cast_mul, Int.cast_zero] using
+      congrArg (fun z : ℤ => (z : k)) hcancel
   rw [hvalue] at hzero
-  let A : ℚ := (o.sign s.1 : ℚ) *
-    (simplexBoundaryCoefficient o.vertexOrder s.1 f.1 : ℚ)
-  let B : ℚ := (o.sign t.1 : ℚ) *
-    (simplexBoundaryCoefficient o.vertexOrder t.1 f.1 : ℚ)
+  let A : k := (o.sign s.1 : k) *
+    (simplexBoundaryCoefficient o.vertexOrder s.1 f.1 : k)
+  let B : k := (o.sign t.1 : k) *
+    (simplexBoundaryCoefficient o.vertexOrder t.1 f.1 : k)
   have hAne : A ≠ 0 := by
     apply mul_ne_zero
     · rcases o.sign_top s.1 s.2.1 s.2.2 with h | h <;> simp [h]
     · rcases simplexBoundaryCoefficient_eq_one_or_neg_one o.vertexOrder hfs
         (by omega) with h | h <;> simp [h]
   have hAB : A + B = 0 := by simpa only [A, B] using hcancelQ
-  have hB : B = -A := by linarith only [hAB]
+  have hB : B = -A := eq_neg_of_add_eq_zero_right hAB
   have hprod : (x s - x t) * A = 0 := by
     calc
       (x s - x t) * A = x s * A + x t * B := by rw [hB]; ring
@@ -720,13 +721,13 @@ noncomputable def topBoundaryAndBoundaryComponents
     (hK : IsCombinatorialManifoldWithBoundary 3 K)
     (o : CoherentOrientation 3 K)
     (c₀ : ConnectedComponents (boundaryComplex 3 K).space) :
-    (({s : Finset E // s ∈ K.faces ∧ s.card = 4} → ℚ) ×
-      (OtherBoundaryComponent (boundaryComplex 3 K) c₀ → ℚ)) →ₗ[ℚ]
-        ({s : Finset E // s ∈ K.faces ∧ s.card = 3} → ℚ) := by
+    (({s : Finset E // s ∈ K.faces ∧ s.card = 4} → k) ×
+      (OtherBoundaryComponent (boundaryComplex 3 K) c₀ → k)) →ₗ[k]
+        ({s : Finset E // s ∈ K.faces ∧ s.card = 3} → k) := by
   let _ := o.vertexOrder
   exact {
     toFun := fun z =>
-      SimplicialComplex.orderedNormalizedBoundary (k := ℚ)
+      SimplicialComplex.orderedNormalizedBoundary (k := k)
           K.toPreAbstractSimplicialComplex 2 (orientedTopChain K o z.1) +
         boundaryComponentCombinationIn K hK o c₀ z.2
     map_add' := by
@@ -744,15 +745,15 @@ theorem orderedNormalizedBoundary_topBoundaryAndBoundaryComponents
     (hK : IsCombinatorialManifoldWithBoundary 3 K)
     (o : CoherentOrientation 3 K)
     (c₀ : ConnectedComponents (boundaryComplex 3 K).space)
-    (z : ({s : Finset E // s ∈ K.faces ∧ s.card = 4} → ℚ) ×
-      (OtherBoundaryComponent (boundaryComplex 3 K) c₀ → ℚ)) :
+    (z : ({s : Finset E // s ∈ K.faces ∧ s.card = 4} → k) ×
+      (OtherBoundaryComponent (boundaryComplex 3 K) c₀ → k)) :
     let _ := o.vertexOrder
-    SimplicialComplex.orderedNormalizedBoundary (k := ℚ) K.toPreAbstractSimplicialComplex 1
+    SimplicialComplex.orderedNormalizedBoundary (k := k) K.toPreAbstractSimplicialComplex 1
       (topBoundaryAndBoundaryComponents K hK o c₀ z) = 0 := by
   dsimp
   let _ := o.vertexOrder
   rw [show topBoundaryAndBoundaryComponents K hK o c₀ z =
-    SimplicialComplex.orderedNormalizedBoundary (k := ℚ)
+    SimplicialComplex.orderedNormalizedBoundary (k := k)
         K.toPreAbstractSimplicialComplex 2 (orientedTopChain K o z.1) +
       boundaryComponentCombinationIn K hK o c₀ z.2 from rfl]
   rw [map_add, SimplicialComplex.orderedNormalizedBoundary_boundary,
@@ -765,8 +766,8 @@ theorem topBoundaryAndBoundaryComponents_fst_eq_of_dualGraph_adj
     (hK : IsCombinatorialManifoldWithBoundary 3 K)
     (o : CoherentOrientation 3 K)
     (c₀ : ConnectedComponents (boundaryComplex 3 K).space)
-    (z : ({s : Finset E // s ∈ K.faces ∧ s.card = 4} → ℚ) ×
-      (OtherBoundaryComponent (boundaryComplex 3 K) c₀ → ℚ))
+    (z : ({s : Finset E // s ∈ K.faces ∧ s.card = 4} → k) ×
+      (OtherBoundaryComponent (boundaryComplex 3 K) c₀ → k))
     (hz : topBoundaryAndBoundaryComponents K hK o c₀ z = 0)
     {s t : {s : Finset E // s ∈ K.faces ∧ s.card = 4}}
     (hadj : (dualGraph 3 K).Adj s t) :
@@ -797,7 +798,7 @@ theorem topBoundaryAndBoundaryComponents_fst_eq_of_dualGraph_adj
     omega
   let f' : {f : Finset E // f ∈ K.faces ∧ f.card = 3} := ⟨f, hf, hfcard⟩
   have hD : let _ := o.vertexOrder
-      SimplicialComplex.orderedNormalizedBoundary (k := ℚ)
+      SimplicialComplex.orderedNormalizedBoundary (k := k)
         K.toPreAbstractSimplicialComplex 2 (orientedTopChain K o z.1) f' = 0 := by
     dsimp
     let B : Geometry.SimplicialComplex ℝ E := boundaryComplex 3 K
@@ -808,7 +809,7 @@ theorem topBoundaryAndBoundaryComponents_fst_eq_of_dualGraph_adj
       simp [boundaryComponentCombinationCoeff, B, hfnot]
     have hzval := congrFun hz f'
     rw [show topBoundaryAndBoundaryComponents K hK o c₀ z =
-      SimplicialComplex.orderedNormalizedBoundary (k := ℚ)
+      SimplicialComplex.orderedNormalizedBoundary (k := k)
           K.toPreAbstractSimplicialComplex 2 (orientedTopChain K o z.1) +
         boundaryComponentCombinationIn K hK o c₀ z.2 from rfl] at hzval
     simpa only [Pi.add_apply, hb, add_zero, Pi.zero_apply] using hzval
@@ -822,8 +823,8 @@ theorem topBoundaryAndBoundaryComponents_fst_eq_of_dualGraph_reachable
     (hK : IsCombinatorialManifoldWithBoundary 3 K)
     (o : CoherentOrientation 3 K)
     (c₀ : ConnectedComponents (boundaryComplex 3 K).space)
-    (z : ({s : Finset E // s ∈ K.faces ∧ s.card = 4} → ℚ) ×
-      (OtherBoundaryComponent (boundaryComplex 3 K) c₀ → ℚ))
+    (z : ({s : Finset E // s ∈ K.faces ∧ s.card = 4} → k) ×
+      (OtherBoundaryComponent (boundaryComplex 3 K) c₀ → k))
     (hz : topBoundaryAndBoundaryComponents K hK o c₀ z = 0)
     {s t : {s : Finset E // s ∈ K.faces ∧ s.card = 4}}
     (hreach : (dualGraph 3 K).Reachable s t) :
@@ -842,8 +843,8 @@ theorem topBoundaryAndBoundaryComponents_fst_eq_zero_of_base_boundary_face
     (hK : IsCombinatorialManifoldWithBoundary 3 K)
     (o : CoherentOrientation 3 K)
     (c₀ : ConnectedComponents (boundaryComplex 3 K).space)
-    (z : ({s : Finset E // s ∈ K.faces ∧ s.card = 4} → ℚ) ×
-      (OtherBoundaryComponent (boundaryComplex 3 K) c₀ → ℚ))
+    (z : ({s : Finset E // s ∈ K.faces ∧ s.card = 4} → k) ×
+      (OtherBoundaryComponent (boundaryComplex 3 K) c₀ → k))
     (hz : topBoundaryAndBoundaryComponents K hK o c₀ z = 0)
     (t : {t : Finset E // t ∈ K.faces ∧ t.card = 3})
     (htB : t.1 ∈ (boundaryComplex 3 K).faces)
@@ -873,11 +874,11 @@ theorem topBoundaryAndBoundaryComponents_fst_eq_zero_of_base_boundary_face
   have hb : boundaryComponentCombinationIn K hK o c₀ z.2 t = 0 := by
     change boundaryComponentCombinationCoeff B oB c₀ z.2 t.1 = 0
     simp [boundaryComponentCombinationCoeff, B, htB, t.2.2, hcomp]
-  have hD : SimplicialComplex.orderedNormalizedBoundary (k := ℚ)
+  have hD : SimplicialComplex.orderedNormalizedBoundary (k := k)
       K.toPreAbstractSimplicialComplex 2 (orientedTopChain K o z.1) t = 0 := by
     have hzval := congrFun hz t
     rw [show topBoundaryAndBoundaryComponents K hK o c₀ z =
-      SimplicialComplex.orderedNormalizedBoundary (k := ℚ)
+      SimplicialComplex.orderedNormalizedBoundary (k := k)
           K.toPreAbstractSimplicialComplex 2 (orientedTopChain K o z.1) +
         boundaryComponentCombinationIn K hK o c₀ z.2 from rfl] at hzval
     simpa only [Pi.add_apply, hb, add_zero, Pi.zero_apply] using hzval
@@ -885,13 +886,13 @@ theorem topBoundaryAndBoundaryComponents_fst_eq_zero_of_base_boundary_face
     o.vertexOrder K o z.1 t s hcofaces'
   dsimp at hvalue
   rw [hvalue] at hD
-  have hsign : (o.sign s.1 : ℚ) ≠ 0 := by
+  have hsign : (o.sign s.1 : k) ≠ 0 := by
     rcases o.sign_top s.1 s.2.1 s.2.2 with h | h <;> simp [h]
-  have hcoefficient : (simplexBoundaryCoefficient o.vertexOrder s.1 t.1 : ℚ) ≠ 0 := by
+  have hcoefficient : (simplexBoundaryCoefficient o.vertexOrder s.1 t.1 : k) ≠ 0 := by
     rcases simplexBoundaryCoefficient_eq_one_or_neg_one o.vertexOrder hts
       (by omega) with h | h <;> simp [h]
-  have hprod : z.1 s * ((o.sign s.1 : ℚ) *
-      (simplexBoundaryCoefficient o.vertexOrder s.1 t.1 : ℚ)) = 0 := by
+  have hprod : z.1 s * ((o.sign s.1 : k) *
+      (simplexBoundaryCoefficient o.vertexOrder s.1 t.1 : k)) = 0 := by
     simpa only [mul_assoc] using hD
   exact (mul_eq_zero.mp hprod).resolve_right (mul_ne_zero hsign hcoefficient)
 
@@ -902,8 +903,8 @@ theorem topBoundaryAndBoundaryComponents_fst_eq_zero
     (hK : IsCombinatorialManifoldWithBoundary 3 K) (hconn : IsConnected K.space)
     (o : CoherentOrientation 3 K)
     (c₀ : ConnectedComponents (boundaryComplex 3 K).space)
-    (z : ({s : Finset E // s ∈ K.faces ∧ s.card = 4} → ℚ) ×
-      (OtherBoundaryComponent (boundaryComplex 3 K) c₀ → ℚ))
+    (z : ({s : Finset E // s ∈ K.faces ∧ s.card = 4} → k) ×
+      (OtherBoundaryComponent (boundaryComplex 3 K) c₀ → k))
     (hz : topBoundaryAndBoundaryComponents K hK o c₀ z = 0) :
     z.1 = 0 := by
   let B : Geometry.SimplicialComplex ℝ E := boundaryComplex 3 K
@@ -936,8 +937,8 @@ theorem topBoundaryAndBoundaryComponents_snd_apply_eq_zero_of_fst_eq_zero
     (hK : IsCombinatorialManifoldWithBoundary 3 K)
     (o : CoherentOrientation 3 K)
     (c₀ : ConnectedComponents (boundaryComplex 3 K).space)
-    (z : ({s : Finset E // s ∈ K.faces ∧ s.card = 4} → ℚ) ×
-      (OtherBoundaryComponent (boundaryComplex 3 K) c₀ → ℚ))
+    (z : ({s : Finset E // s ∈ K.faces ∧ s.card = 4} → k) ×
+      (OtherBoundaryComponent (boundaryComplex 3 K) c₀ → k))
     (hz : topBoundaryAndBoundaryComponents K hK o c₀ z = 0)
     (hfst : z.1 = 0) (c : OtherBoundaryComponent (boundaryComplex 3 K) c₀) :
     z.2 c = 0 := by
@@ -949,7 +950,7 @@ theorem topBoundaryAndBoundaryComponents_snd_apply_eq_zero_of_fst_eq_zero
   let t : {t : Finset E // t ∈ K.faces ∧ t.card = 3} :=
     ⟨tB.1, boundaryComplex_faces_subset 3 K tB.2.1, tB.2.2⟩
   have htop : let _ := o.vertexOrder
-      SimplicialComplex.orderedNormalizedBoundary (k := ℚ)
+      SimplicialComplex.orderedNormalizedBoundary (k := k)
         K.toPreAbstractSimplicialComplex 2 (orientedTopChain K o z.1) t = 0 := by
     dsimp
     let _ := o.vertexOrder
@@ -959,7 +960,7 @@ theorem topBoundaryAndBoundaryComponents_snd_apply_eq_zero_of_fst_eq_zero
     let _ := o.vertexOrder
     have hzval := congrFun hz t
     rw [show topBoundaryAndBoundaryComponents K hK o c₀ z =
-      SimplicialComplex.orderedNormalizedBoundary (k := ℚ)
+      SimplicialComplex.orderedNormalizedBoundary (k := k)
           K.toPreAbstractSimplicialComplex 2 (orientedTopChain K o z.1) +
         boundaryComponentCombinationIn K hK o c₀ z.2 from rfl] at hzval
     dsimp at htop
@@ -972,7 +973,7 @@ theorem topBoundaryAndBoundaryComponents_snd_apply_eq_zero_of_fst_eq_zero
     dite_true, hcsub] at hbc
   by_cases hc : connectedComponentOfFace B tB.2.1 ≠ c₀
   · rw [dif_pos hc] at hbc
-    have hsign : (oB.sign tB.1 : ℚ) ≠ 0 := by
+    have hsign : (oB.sign tB.1 : k) ≠ 0 := by
       rcases oB.sign_top tB.1 tB.2.1 tB.2.2 with h | h <;> simp [h]
     exact (mul_eq_zero.mp hbc).resolve_right hsign
   · exact (hc hcnot).elim
@@ -984,8 +985,8 @@ theorem topBoundaryAndBoundaryComponents_eq_zero
     (hK : IsCombinatorialManifoldWithBoundary 3 K) (hconn : IsConnected K.space)
     (o : CoherentOrientation 3 K)
     (c₀ : ConnectedComponents (boundaryComplex 3 K).space)
-    (z : ({s : Finset E // s ∈ K.faces ∧ s.card = 4} → ℚ) ×
-      (OtherBoundaryComponent (boundaryComplex 3 K) c₀ → ℚ))
+    (z : ({s : Finset E // s ∈ K.faces ∧ s.card = 4} → k) ×
+      (OtherBoundaryComponent (boundaryComplex 3 K) c₀ → k))
     (hz : topBoundaryAndBoundaryComponents K hK o c₀ z = 0) :
     z = 0 := by
   have hfst := topBoundaryAndBoundaryComponents_fst_eq_zero K hK hconn o c₀ z hz
@@ -1001,10 +1002,10 @@ theorem topBoundaryAndBoundaryComponents_injective
     (hK : IsCombinatorialManifoldWithBoundary 3 K) (hconn : IsConnected K.space)
     (o : CoherentOrientation 3 K)
     (c₀ : ConnectedComponents (boundaryComplex 3 K).space) :
-    Function.Injective (topBoundaryAndBoundaryComponents K hK o c₀) := by
+    Function.Injective (topBoundaryAndBoundaryComponents (k := k) K hK o c₀) := by
   intro z w hzw
   apply sub_eq_zero.mp
-  apply topBoundaryAndBoundaryComponents_eq_zero K hK hconn o c₀
+  apply topBoundaryAndBoundaryComponents_eq_zero (k := k) K hK hconn o c₀
   rw [map_sub, hzw, sub_self]
 
 open Classical in
@@ -1016,24 +1017,24 @@ noncomputable def topBoundaryAndBoundaryComponentsToCycles
     (c₀ : ConnectedComponents (boundaryComplex 3 K).space) :
     let B := boundaryComplex 3 K
     let _ := o.vertexOrder
-    (({s : Finset E // s ∈ K.faces ∧ s.card = 4} → ℚ) ×
-      (OtherBoundaryComponent B c₀ → ℚ)) →ₗ[ℚ]
+    (({s : Finset E // s ∈ K.faces ∧ s.card = 4} → k) ×
+      (OtherBoundaryComponent B c₀ → k)) →ₗ[k]
       LinearMap.ker
         (((SimplicialComplex.orderedSimplicialSet K.toPreAbstractSimplicialComplex).normalizedChainComplex
-          (ModuleCat.of ℚ ℚ)).d 2 1).hom := by
+          (ModuleCat.of k k)).d 2 1).hom := by
   dsimp
   let _ := o.vertexOrder
   let X := SimplicialComplex.orderedSimplicialSet K.toPreAbstractSimplicialComplex
-  let C := X.normalizedChainComplex (ModuleCat.of ℚ ℚ)
-  let e₁ := SimplicialComplex.orderedNormalizedChainEquiv (k := ℚ)
+  let C := X.normalizedChainComplex (ModuleCat.of k k)
+  let e₁ := SimplicialComplex.orderedNormalizedChainEquiv (k := k)
     K.toPreAbstractSimplicialComplex 1
-  let e₂ := SimplicialComplex.orderedNormalizedChainEquiv (k := ℚ)
+  let e₂ := SimplicialComplex.orderedNormalizedChainEquiv (k := k)
     K.toPreAbstractSimplicialComplex 2
-  let L := topBoundaryAndBoundaryComponents K hK o c₀
+  let L := topBoundaryAndBoundaryComponents (k := k) K hK o c₀
   exact {
     toFun := fun z => ⟨e₂.symm (L z), by
       have hcoord := orderedNormalizedBoundary_topBoundaryAndBoundaryComponents
-        K hK o c₀ z
+        (k := k) K hK o c₀ z
       dsimp at hcoord
       have heq : e₁ (C.d 2 1 (e₂.symm (L z))) = 0 := by
         simpa [SimplicialComplex.orderedNormalizedBoundary, X, C, e₁, e₂, L] using hcoord
@@ -1055,13 +1056,13 @@ theorem topBoundaryAndBoundaryComponentsToCycles_injective
     (o : CoherentOrientation 3 K)
     (c₀ : ConnectedComponents (boundaryComplex 3 K).space) :
     let _ := o.vertexOrder
-    Function.Injective (topBoundaryAndBoundaryComponentsToCycles K hK o c₀) := by
+    Function.Injective (topBoundaryAndBoundaryComponentsToCycles (k := k) K hK o c₀) := by
   dsimp
   let _ := o.vertexOrder
-  let e₂ := SimplicialComplex.orderedNormalizedChainEquiv (k := ℚ)
+  let e₂ := SimplicialComplex.orderedNormalizedChainEquiv (k := k)
     K.toPreAbstractSimplicialComplex 2
   intro z w hzw
-  apply topBoundaryAndBoundaryComponents_injective K hK hconn o c₀
+  apply topBoundaryAndBoundaryComponents_injective (k := k) K hK hconn o c₀
   apply e₂.symm.injective
   exact congrArg Subtype.val hzw
 
@@ -1073,7 +1074,7 @@ theorem card_otherBoundaryComponent_le_bettiNumber_two
     (o : CoherentOrientation 3 K)
     (c₀ : ConnectedComponents (boundaryComplex 3 K).space) :
     Nat.card (OtherBoundaryComponent (boundaryComplex 3 K) c₀) ≤
-      Homology.bettiNumber ℚ (TopCat.of K.space) 2 := by
+      Homology.bettiNumber k (TopCat.of K.space) 2 := by
   let B : Geometry.SimplicialComplex ℝ E := boundaryComplex 3 K
   let _ : Finite B.faces := (boundaryComplex_faces_finite 3 K).to_subtype
   let _ : Finite (ConnectedComponents B.space) := finite_connectedComponents_space B
@@ -1086,64 +1087,64 @@ theorem card_otherBoundaryComponent_le_bettiNumber_two
   let _ : Fintype Top := Fintype.ofFinite _
   let _ := o.vertexOrder
   let X := SimplicialComplex.orderedSimplicialSet K.toPreAbstractSimplicialComplex
-  let R := ModuleCat.of ℚ ℚ
+  let R := ModuleCat.of k k
   let C := X.normalizedChainComplex R
-  let _ : FiniteDimensional ℚ (C.X 2) :=
+  let _ : FiniteDimensional k (C.X 2) :=
     DifferentialGeometry.SSet.finiteDimensional_normalizedChainComplex_X X R 2
-  let _ : FiniteDimensional ℚ (C.X 3) :=
+  let _ : FiniteDimensional k (C.X 3) :=
     DifferentialGeometry.SSet.finiteDimensional_normalizedChainComplex_X X R 3
-  let _ : FiniteDimensional ℚ (C.sc' 3 2 1).X₂ := by
-    change FiniteDimensional ℚ (C.X 2)
+  let _ : FiniteDimensional k (C.sc' 3 2 1).X₂ := by
+    change FiniteDimensional k (C.X 2)
     infer_instance
-  let J := topBoundaryAndBoundaryComponentsToCycles K hK o c₀
+  let J := topBoundaryAndBoundaryComponentsToCycles (k := k) K hK o c₀
   have hJ : Function.Injective J :=
-    topBoundaryAndBoundaryComponentsToCycles_injective K hK hconn o c₀
+    topBoundaryAndBoundaryComponentsToCycles_injective (k := k) K hK hconn o c₀
   have hinj := LinearMap.finrank_le_finrank_of_injective hJ
-  have hdomain : Module.finrank ℚ (Top → ℚ) +
-      Module.finrank ℚ (OtherBoundaryComponent B c₀ → ℚ) ≤
-      Module.finrank ℚ (LinearMap.ker (C.d 2 1).hom) := by
+  have hdomain : Module.finrank k (Top → k) +
+      Module.finrank k (OtherBoundaryComponent B c₀ → k) ≤
+      Module.finrank k (LinearMap.ker (C.d 2 1).hom) := by
     simpa [J, Top, B, C, X, R, Module.finrank_prod] using hinj
   have hker := DifferentialGeometry.ShortComplex.finrank_ker_eq_homology_add_range
     (C.sc' 3 2 1)
-  change Module.finrank ℚ (LinearMap.ker (C.d 2 1).hom) =
-    Module.finrank ℚ (C.sc' 3 2 1).homology +
-      Module.finrank ℚ (LinearMap.range (C.d 3 2).hom) at hker
+  change Module.finrank k (LinearMap.ker (C.d 2 1).hom) =
+    Module.finrank k (C.sc' 3 2 1).homology +
+      Module.finrank k (LinearMap.range (C.d 3 2).hom) at hker
   have hsc := (CategoryTheory.ShortComplex.homologyMapIso
     (C.isoSc' 3 2 1 (by simp) (by simp))).toLinearEquiv.finrank_eq
-  change Module.finrank ℚ (C.homology 2) =
-    Module.finrank ℚ (C.sc' 3 2 1).homology at hsc
+  change Module.finrank k (C.homology 2) =
+    Module.finrank k (C.sc' 3 2 1).homology at hsc
   have hrange := LinearMap.finrank_range_le (C.d 3 2).hom
-  let e₃ := SimplicialComplex.orderedNormalizedChainEquiv (k := ℚ)
+  let e₃ := SimplicialComplex.orderedNormalizedChainEquiv (k := k)
     K.toPreAbstractSimplicialComplex 3
-  have hC3 : Module.finrank ℚ (C.X 3) = Fintype.card Top := by
+  have hC3 : Module.finrank k (C.X 3) = Fintype.card Top := by
     have he := e₃.finrank_eq
-    change Module.finrank ℚ (C.X 3) = Module.finrank ℚ (Top → ℚ) at he
+    change Module.finrank k (C.X 3) = Module.finrank k (Top → k) at he
     rw [Module.finrank_pi] at he
     exact he
   have hnorm := (isoOfQuasiIsoAt (X.toNormalizedChainComplex R) 2).toLinearEquiv.finrank_eq
-  change Module.finrank ℚ ((X.chainComplex R).homology 2) =
-    Module.finrank ℚ (C.homology 2) at hnorm
+  change Module.finrank k ((X.chainComplex R).homology 2) =
+    Module.finrank k (C.homology 2) at hnorm
   have hreal := (DifferentialGeometry.SSet.realizationHomologyIso R X 2).toLinearEquiv.finrank_eq
-  let F := (singularHomologyFunctor (ModuleCat ℚ) 2).obj R
+  let F := (singularHomologyFunctor (ModuleCat k) 2).obj R
   let e : _root_.SSet.toTop.obj X ≅ TopCat.of K.space :=
     TopCat.isoOfHomeo (by simpa [X] using
       SimplicialComplex.geometricRealizationHomeomorphism K)
   have hhomeo := (F.mapIso e).toLinearEquiv.finrank_eq
-  have hbetti : Module.finrank ℚ (C.homology 2) =
-      Homology.bettiNumber ℚ (TopCat.of K.space) 2 := by
+  have hbetti : Module.finrank k (C.homology 2) =
+      Homology.bettiNumber k (TopCat.of K.space) 2 := by
     calc
-      Module.finrank ℚ (C.homology 2) =
-          Module.finrank ℚ ((X.chainComplex R).homology 2) := hnorm.symm
-      _ = Module.finrank ℚ (((singularHomologyFunctor (ModuleCat ℚ) 2).obj R).obj
+      Module.finrank k (C.homology 2) =
+          Module.finrank k ((X.chainComplex R).homology 2) := hnorm.symm
+      _ = Module.finrank k (((singularHomologyFunctor (ModuleCat k) 2).obj R).obj
           (_root_.SSet.toTop.obj X)) := hreal
-      _ = Module.finrank ℚ (((singularHomologyFunctor (ModuleCat ℚ) 2).obj R).obj
+      _ = Module.finrank k (((singularHomologyFunctor (ModuleCat k) 2).obj R).obj
           (TopCat.of K.space)) := by simpa [F, X] using hhomeo
-      _ = Homology.bettiNumber ℚ (TopCat.of K.space) 2 := rfl
+      _ = Homology.bettiNumber k (TopCat.of K.space) 2 := rfl
   rw [Module.finrank_pi, Module.finrank_pi] at hdomain
   rw [← hsc, hbetti] at hker
   rw [hC3] at hrange
   change Nat.card (OtherBoundaryComponent B c₀) ≤
-    Homology.bettiNumber ℚ (TopCat.of K.space) 2
+    Homology.bettiNumber k (TopCat.of K.space) 2
   rw [Nat.card_eq_fintype_card]
   omega
 
@@ -1151,7 +1152,7 @@ open Classical in
 theorem orientedTopChain_involutive
     (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
     (o : CoherentOrientation 3 K)
-    (x : {s : Finset E // s ∈ K.faces ∧ s.card = 4} → ℚ) :
+    (x : {s : Finset E // s ∈ K.faces ∧ s.card = 4} → k) :
     orientedTopChain K o (orientedTopChain K o x) = x := by
   funext s
   rcases o.sign_top s.1 s.2.1 s.2.2 with h | h <;>
@@ -1160,13 +1161,14 @@ theorem orientedTopChain_involutive
 open Classical in
 theorem orientedTopChain_injective
     (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
-    (o : CoherentOrientation 3 K) : Function.Injective (orientedTopChain K o) := by
+    (o : CoherentOrientation 3 K) : Function.Injective (orientedTopChain (k := k) K o) := by
   intro x y hxy
   calc
     x = orientedTopChain K o (orientedTopChain K o x) :=
-      (orientedTopChain_involutive K o x).symm
-    _ = orientedTopChain K o (orientedTopChain K o y) := congrArg (orientedTopChain K o) hxy
-    _ = y := orientedTopChain_involutive K o y
+      (orientedTopChain_involutive (k := k) K o x).symm
+    _ = orientedTopChain K o (orientedTopChain K o y) :=
+      congrArg (orientedTopChain (k := k) K o) hxy
+    _ = y := orientedTopChain_involutive (k := k) K o y
 
 open Classical in
 theorem orderedNormalizedBoundary_two_injective
@@ -1177,22 +1179,22 @@ theorem orderedNormalizedBoundary_two_injective
     (c₀ : ConnectedComponents (boundaryComplex 3 K).space) :
     let _ := o.vertexOrder
     Function.Injective
-      (SimplicialComplex.orderedNormalizedBoundary (k := ℚ)
+      (SimplicialComplex.orderedNormalizedBoundary (k := k)
         K.toPreAbstractSimplicialComplex 2) := by
   dsimp
   let B := boundaryComplex 3 K
-  let L := topBoundaryAndBoundaryComponents K hK o c₀
-  let Q := boundaryComponentCombinationIn K hK o c₀
+  let L := topBoundaryAndBoundaryComponents (k := k) K hK o c₀
+  let Q := boundaryComponentCombinationIn (k := k) K hK o c₀
   have hLzero : ∀ z, L z = 0 → z = 0 := by
     intro z hz
-    exact topBoundaryAndBoundaryComponents_eq_zero K hK hconn o c₀ z hz
+    exact topBoundaryAndBoundaryComponents_eq_zero (k := k) K hK hconn o c₀ z hz
   let _ := o.vertexOrder
   intro u v huv
   let a := orientedTopChain K o (u - v)
-  let z : ({s : Finset E // s ∈ K.faces ∧ s.card = 4} → ℚ) ×
-      (OtherBoundaryComponent B c₀ → ℚ) := (a, 0)
+  let z : ({s : Finset E // s ∈ K.faces ∧ s.card = 4} → k) ×
+      (OtherBoundaryComponent B c₀ → k) := (a, 0)
   have hz : L z = 0 := by
-    change SimplicialComplex.orderedNormalizedBoundary (k := ℚ)
+    change SimplicialComplex.orderedNormalizedBoundary (k := k)
           K.toPreAbstractSimplicialComplex 2 (orientedTopChain K o a) +
         Q 0 = 0
     rw [orientedTopChain_involutive]
@@ -1200,7 +1202,7 @@ theorem orderedNormalizedBoundary_two_injective
   have hzzero := hLzero z hz
   have ha : a = 0 := congrArg Prod.fst hzzero
   apply sub_eq_zero.mp
-  apply orientedTopChain_injective K o
+  apply orientedTopChain_injective (k := k) K o
   simpa only [a, map_zero] using ha
 
 open Classical in
@@ -1213,15 +1215,15 @@ theorem normalizedChainDifferential_three_two_injective
     let _ := o.vertexOrder
     Function.Injective
       (((SimplicialComplex.orderedSimplicialSet K.toPreAbstractSimplicialComplex).normalizedChainComplex
-        (ModuleCat.of ℚ ℚ)).d 3 2).hom := by
+        (ModuleCat.of k k)).d 3 2).hom := by
   dsimp
-  have hcoord := orderedNormalizedBoundary_two_injective K hK hconn o c₀
+  have hcoord := orderedNormalizedBoundary_two_injective (k := k) K hK hconn o c₀
   let _ := o.vertexOrder
   let X := SimplicialComplex.orderedSimplicialSet K.toPreAbstractSimplicialComplex
-  let C := X.normalizedChainComplex (ModuleCat.of ℚ ℚ)
-  let e₂ := SimplicialComplex.orderedNormalizedChainEquiv (k := ℚ)
+  let C := X.normalizedChainComplex (ModuleCat.of k k)
+  let e₂ := SimplicialComplex.orderedNormalizedChainEquiv (k := k)
     K.toPreAbstractSimplicialComplex 2
-  let e₃ := SimplicialComplex.orderedNormalizedChainEquiv (k := ℚ)
+  let e₃ := SimplicialComplex.orderedNormalizedChainEquiv (k := k)
     K.toPreAbstractSimplicialComplex 3
   intro x y hxy
   apply e₃.injective
@@ -1236,51 +1238,66 @@ theorem bettiNumber_three_eq_zero_of_coherentOrientation
     (hK : IsCombinatorialManifoldWithBoundary 3 K) (hconn : IsConnected K.space)
     (o : CoherentOrientation 3 K)
     (c₀ : ConnectedComponents (boundaryComplex 3 K).space) :
-    Homology.bettiNumber ℚ (TopCat.of K.space) 3 = 0 := by
-  have hinj₀ := normalizedChainDifferential_three_two_injective K hK hconn o c₀
+    Homology.bettiNumber k (TopCat.of K.space) 3 = 0 := by
+  have hinj₀ := normalizedChainDifferential_three_two_injective (k := k) K hK hconn o c₀
   let _ := o.vertexOrder
   let X := SimplicialComplex.orderedSimplicialSet K.toPreAbstractSimplicialComplex
-  let R := ModuleCat.of ℚ ℚ
+  let R := ModuleCat.of k k
   let C := X.normalizedChainComplex R
-  let _ : FiniteDimensional ℚ (C.X 3) :=
+  let _ : FiniteDimensional k (C.X 3) :=
     DifferentialGeometry.SSet.finiteDimensional_normalizedChainComplex_X X R 3
-  let _ : FiniteDimensional ℚ (C.sc' 4 3 2).X₂ := by
-    change FiniteDimensional ℚ (C.X 3)
+  let _ : FiniteDimensional k (C.sc' 4 3 2).X₂ := by
+    change FiniteDimensional k (C.X 3)
     infer_instance
   have hinj : Function.Injective (C.d 3 2).hom := hinj₀
-  have hker : Module.finrank ℚ (LinearMap.ker (C.d 3 2).hom) = 0 := by
+  have hker : Module.finrank k (LinearMap.ker (C.d 3 2).hom) = 0 := by
     rw [LinearMap.ker_eq_bot.mpr hinj, finrank_bot]
   have hrank := DifferentialGeometry.ShortComplex.finrank_ker_eq_homology_add_range
     (C.sc' 4 3 2)
-  change Module.finrank ℚ (LinearMap.ker (C.d 3 2).hom) =
-    Module.finrank ℚ (C.sc' 4 3 2).homology +
-      Module.finrank ℚ (LinearMap.range (C.d 4 3).hom) at hrank
+  change Module.finrank k (LinearMap.ker (C.d 3 2).hom) =
+    Module.finrank k (C.sc' 4 3 2).homology +
+      Module.finrank k (LinearMap.range (C.d 4 3).hom) at hrank
   have hsc := (CategoryTheory.ShortComplex.homologyMapIso
     (C.isoSc' 4 3 2 (by simp) (by simp))).toLinearEquiv.finrank_eq
-  change Module.finrank ℚ (C.homology 3) =
-    Module.finrank ℚ (C.sc' 4 3 2).homology at hsc
-  have hCzero : Module.finrank ℚ (C.homology 3) = 0 := by
+  change Module.finrank k (C.homology 3) =
+    Module.finrank k (C.sc' 4 3 2).homology at hsc
+  have hCzero : Module.finrank k (C.homology 3) = 0 := by
     rw [hker, ← hsc] at hrank
     omega
   have hnorm := (isoOfQuasiIsoAt (X.toNormalizedChainComplex R) 3).toLinearEquiv.finrank_eq
-  change Module.finrank ℚ ((X.chainComplex R).homology 3) =
-    Module.finrank ℚ (C.homology 3) at hnorm
+  change Module.finrank k ((X.chainComplex R).homology 3) =
+    Module.finrank k (C.homology 3) at hnorm
   have hreal := (DifferentialGeometry.SSet.realizationHomologyIso R X 3).toLinearEquiv.finrank_eq
-  let F := (singularHomologyFunctor (ModuleCat ℚ) 3).obj R
+  let F := (singularHomologyFunctor (ModuleCat k) 3).obj R
   let e : _root_.SSet.toTop.obj X ≅ TopCat.of K.space :=
     TopCat.isoOfHomeo (by simpa [X] using
       SimplicialComplex.geometricRealizationHomeomorphism K)
   have hhomeo := (F.mapIso e).toLinearEquiv.finrank_eq
-  change Module.finrank ℚ (((singularHomologyFunctor (ModuleCat ℚ) 3).obj R).obj
+  change Module.finrank k (((singularHomologyFunctor (ModuleCat k) 3).obj R).obj
     (TopCat.of K.space)) = 0
   calc
-    Module.finrank ℚ (((singularHomologyFunctor (ModuleCat ℚ) 3).obj R).obj
+    Module.finrank k (((singularHomologyFunctor (ModuleCat k) 3).obj R).obj
         (TopCat.of K.space)) =
-        Module.finrank ℚ (((singularHomologyFunctor (ModuleCat ℚ) 3).obj R).obj
+        Module.finrank k (((singularHomologyFunctor (ModuleCat k) 3).obj R).obj
           (_root_.SSet.toTop.obj X)) := by simpa [F, X] using hhomeo.symm
-    _ = Module.finrank ℚ ((X.chainComplex R).homology 3) := hreal.symm
-    _ = Module.finrank ℚ (C.homology 3) := hnorm
+    _ = Module.finrank k ((X.chainComplex R).homology 3) := hreal.symm
+    _ = Module.finrank k (C.homology 3) := hnorm
     _ = 0 := hCzero
+
+open Classical in
+theorem eulerChar_eq_one_sub_bettiNumber_one_add_bettiNumber_two_of_coherentOrientation
+    [FiniteDimensional ℝ E]
+    (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
+    (hK : IsCombinatorialManifoldWithBoundary 3 K) (hconn : IsConnected K.space)
+    (o : CoherentOrientation 3 K)
+    (c₀ : ConnectedComponents (boundaryComplex 3 K).space) :
+    eulerChar K = 1 - (Homology.bettiNumber k (TopCat.of K.space) 1 : ℤ) +
+      (Homology.bettiNumber k (TopCat.of K.space) 2 : ℤ) := by
+  have hb₀ := bettiNumber_zero_of_isConnected K k hconn
+  have hb₃ := bettiNumber_three_eq_zero_of_coherentOrientation (k := k) K hK hconn o c₀
+  rw [eulerChar_eq_sum_bettiNumber K k 3 (fun s hs => hK.card_le K hs)]
+  norm_num [Finset.sum_range_succ, hb₀, hb₃]
+  ring
 
 open Classical in
 theorem eulerChar_eq_one_sub_bettiOne_add_bettiTwo_of_coherentOrientation
@@ -1291,10 +1308,8 @@ theorem eulerChar_eq_one_sub_bettiOne_add_bettiTwo_of_coherentOrientation
     (c₀ : ConnectedComponents (boundaryComplex 3 K).space) :
     eulerChar K = 1 - (Homology.bettiOne K.space : ℤ) +
       (Homology.bettiNumber ℚ (TopCat.of K.space) 2 : ℤ) := by
-  have hb₀ := bettiNumber_zero_of_isConnected K ℚ hconn
-  have hb₃ := bettiNumber_three_eq_zero_of_coherentOrientation K hK hconn o c₀
-  rw [eulerChar_eq_sum_bettiNumber K ℚ 3 (fun s hs => hK.card_le K hs)]
-  norm_num [Finset.sum_range_succ, Homology.bettiOne, hb₀, hb₃]
-  ring
+  simpa only [Homology.bettiOne] using
+    eulerChar_eq_one_sub_bettiNumber_one_add_bettiNumber_two_of_coherentOrientation
+      (k := ℚ) K hK hconn o c₀
 
 end DifferentialGeometry.Topology.PiecewiseLinear

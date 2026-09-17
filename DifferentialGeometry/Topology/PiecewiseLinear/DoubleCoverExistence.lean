@@ -1,5 +1,6 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.CoveringTriangulation
 import DifferentialGeometry.Topology.PiecewiseLinear.DoubleCoverComplex
+import DifferentialGeometry.Topology.PiecewiseLinear.HomologyCocycle
 import DifferentialGeometry.Topology.PiecewiseLinear.Orientation
 
 noncomputable section
@@ -58,6 +59,35 @@ theorem exists_connected_double_cover_complex [FiniteDimensional ℝ E]
     ε.card_fiber, ε.connectedSpace_iff.mpr hε⟩
 
 end SimplicialBoolCocycle
+
+open Classical in
+theorem exists_connected_double_cover_complex_of_isOrientable_of_boundary_component_not_sphere
+    {E₀ : Type} [NormedAddCommGroup E₀] [NormedSpace ℝ E₀] [FiniteDimensional ℝ E₀]
+    (K : Geometry.SimplicialComplex ℝ E₀) [Finite K.faces] [ConnectedSpace K.space]
+    (hK : IsCombinatorialManifoldWithBoundary 3 K)
+    (hor : IsOrientable 3 K)
+    (c : ConnectedComponents (boundaryComplex 3 K).space)
+    (hnot : ¬ IsPLSphere 2
+      (connectedComponentComplex (boundaryComplex 3 K) c).space) :
+    ∃ (ε : SimplicialBoolCocycle K)
+      (N : ℕ)
+      (K' : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin N)))
+      (_ : K'.space ≃ₜ ε.toBoolCocycle.toFiberBundleCore.TotalSpace),
+      ¬ ε.IsCoboundary ∧
+      K'.faces.Finite ∧
+      IsCombinatorialManifoldWithBoundary 3 K' ∧
+      IsCoveringMap ε.toBoolCocycle.toFiberBundleCore.proj ∧
+      (∀ x, Nat.card (ε.toBoolCocycle.toFiberBundleCore.proj ⁻¹' {x}) = 2) ∧
+      ConnectedSpace ε.toBoolCocycle.toFiberBundleCore.TotalSpace := by
+  have hconnected : IsConnected K.space :=
+    isConnected_iff_connectedSpace.mpr inferInstance
+  have hbetti := bettiNumber_one_pos_of_boundary_component_not_sphere
+    (ZMod 2) K hK hor hconnected c hnot
+  obtain ⟨ε, hε⟩ :=
+    SimplicialBoolCocycle.exists_not_isCoboundary_of_bettiNumber_one_pos K hbetti
+  obtain ⟨N, K', e, hfinite, hmanifold, hcover, hfiber, hconnected'⟩ :=
+    ε.exists_connected_double_cover_complex hε hK
+  exact ⟨ε, N, K', e, hε, hfinite, hmanifold, hcover, hfiber, hconnected'⟩
 
 open Classical in
 theorem exists_connected_double_cover_complex_of_not_isOrientable

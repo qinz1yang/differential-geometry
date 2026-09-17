@@ -2741,3 +2741,95 @@ checks and AuditS144--S146 all exited 0 with zero source warnings and only the
 standard three foundational axioms. `git diff --check` passes. This last commit
 changes only the P.4 plan row and this handoff; the root aggregate and vendored
 sources remain unchanged by the final quantitative assembly.
+
+## Section 24 and section 30 checkpoint (2026-09-16)
+
+Integration `9512c800c` is merged by `8eaa8e32f`. The book was checked at
+pages 178--180 and 214--215 (PDF pages 188--190 and 224--225).
+
+C.6 remains blocked at the two-disjoint-boundary-disks extension and the
+untwisted closing identification. The CST definition on page 178 starts with
+a triangulated topological solid torus, before imposing the cyclic PL-ball
+decomposition. The shorter plan description omits that condition; a cyclic
+ball chain alone also permits the twisted disk bundle. No weakened CST
+predicate or classification hypothesis has been added. The existing
+`exists_isPLHomeomorphOn_eqOn_disk_of_boundaryComplex` handles one prescribed
+disk; it does not provide the simultaneous two-disk compatibility needed to
+close the cylindrical diagram and prove uniqueness of its PL type.
+
+C.7 inherits that classification gap. The original neighborhood-cell results
+supply PL three-balls and pairwise disk intersections, but the cyclic order,
+its end-disk compatibility, and the untwisted classification remain to be
+assembled. The 23.17 input itself is already available as
+`IsOrientable.of_le` in `Orientation.lean:3153`; an extra `hsub` should not be
+introduced for that existing subcomplex statement. No C.7 endpoint is claimed.
+Following NIGHT_PLAN section 0, work then advanced to the independent I.1.
+
+I.1 is delivered in `6cf85c2d3` (pushed). `Connected/Separation.lean` provides
+`Separates` and its connected-component characterization.
+`Connected/PhragmenBrouwer.lean` proves `separates_or_separates_of_union` under
+the book's simply-connected / locally-connected / connected-open-path-connected
+hypotheses and the `phragmen_brouwer` locally-path-connected corollary. The
+closed separating sets C and D are explicitly disjoint, as required by the
+book. H and K need only be preconnected and may be empty; their closedness is
+unnecessary. The proof uses the existing proved Van Kampen cover-cycle
+obstruction, with labels constant on paths in the overlap. Both source modules
+check with exit 0 and zero warnings. AuditS147PhragmenBrouwer has nine public
+theorems, exit 0, only propext, Classical.choice, and Quot.sound. There are no
+unproved input parameters. The post-publication fetch found integration
+unchanged. I.2 is next.
+
+## I.2 delivered and cyclic-neighborhood reduction published (2026-09-16)
+
+I.2 is committed and pushed in `bc20b0b45`. `Connected/SeparatingComponent.lean`
+proves `exists_separates_of_finite_iUnion`,
+`exists_separating_connectedComponentIn`, and `exists_separating_component`.
+The main input is a closed set C with `Finite (ConnectedComponents C)` which
+separates nonempty connected H and K. The output supplies an actual point
+x in C whose `connectedComponentIn C x` separates H and K. The finite family
+of disjoint closed components is constructed in the proof, not assumed as a
+precomputed decomposition. The source check exits 0 with zero warnings;
+AuditS148SeparatingComponent has three declarations, all standard three axioms.
+The connected-open-path-connected and locally-path-connected versions are both
+available, with no unproved theorem input.
+
+After I.2, the independent geometric part of C.6/C.7 was advanced and published
+as `bcdfe9778`:
+
+- `BallChain.lean`: `IsCombinatorialManifoldWithBoundary.isPLBall_iUnion_of_chain`
+  proves the linear PL three-ball chain theorem in any finite-dimensional real
+  normed ambient space. `isPLBall_iUnion_castSucc_of_cycle` proves that omitting
+  one cell from a cyclic chain leaves a PL three-ball.
+- `NeighborhoodCycle.lean`: `exists_cyclic_face_order` obtains a genuine cyclic
+  enumeration of all faces of a finite connected closed one-manifold, via its
+  barycentric edge graph. `exists_cyclic_derivedNeighborhoodCell_decomposition`
+  proves that the derived-neighborhood three-ball pieces meet exactly for
+  adjacent indices and each such intersection is a PL two-disk in both cell
+  boundaries. `disjoint_derivedNeighborhoodCell_inter_of_card_le_two` rules
+  out all triple intersections of distinct pieces.
+- `exists_isPLBall_pair_cover_derivedNeighborhood_circle` constructs actual
+  sets A, B, D0, D1 with A and B PL three-balls, D0 and D1 disjoint PL two-disks,
+  A union B equal to the full derived neighborhood, and A intersection B equal
+  to D0 union D1. No orientability hypothesis is used for this reduction.
+
+Both modules check with exit 0 and zero warnings. AuditS149NeighborhoodCycle
+has nine public declarations, only propext, Classical.choice, and Quot.sound.
+Together AuditS147--S149 contain 21 audited declarations from five new modules.
+All five use native proofs and have no unproved theorem parameters.
+
+The earlier C.7 note about an unconstructed cyclic order is superseded by this
+checkpoint. C.6/C.7 remain partial: simultaneous standardization of the two
+boundary disks, compatibility of the closing identification, and the untwisted
+classification are still missing. Neither the CST/cylindrical-diagram
+recognition theorem nor 24.10/24.11/24.12 is claimed. The 24.12 contraction and
+orientation-cover descent has not been wired. The only permitted future
+external parameter there remains the actual missing covering theorem; the
+classification gap has not been turned into a hypothesis. B.7 is not started.
+
+The post-checkpoint fetch/merge leaves integration at `9512c800c` (already
+merged); other lanes are obtained only through integration. The final `fresh.py`
+check ran with no Lean process on the host: five changed modules, five fresh
+oleans, zero forbidden hits, zero stale and zero missing artifacts, exit 0.
+This supersedes the earlier freshness reading taken during an F-lane check.
+The module exit codes and axiom audits above remain the verification gate.
+The final documentation commit updates only C.6/C.7/I.1/I.2 rows and this handoff.
