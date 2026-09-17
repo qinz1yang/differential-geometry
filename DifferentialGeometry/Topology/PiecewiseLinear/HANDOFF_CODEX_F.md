@@ -2125,3 +2125,13 @@ F-M1 仍为 partial。单个旧三角形的全部纤维及逐边对应已闭合�
 `exists_isPLHomeomorphOn_filling_fiber_of_heightIndex_eq_zero` 从零指标与实际填充内部的连通性，通过介值性生产非空条件，覆盖全部严格中间高度，包含顶点高度。`HeightFilling.lean` 的 `exists_continuousLinearMap_injOn_heightIndex_eq` 在任意给定有限点集上选择任意小的一般位置高度，保持原球面指标。端点 `exists_filling_injOn_vertices_of_heightIndex_eq_zero` 实际生产有限三维填充 R、全部 R 顶点上单射的非零高度 f、零指标，以及每个严格中间高度的填充 PL 盘和精确参数边界。边界使用 R 自带的边界复形，原球面与边界复形的空间相等，未假设两份剖分的顶点一致。
 
 聚焦检查：`RegionRecognition` exit=0（8.1 秒）、`FiberFilling` exit=0（10.5 秒）、`HeightFilling` exit=0（10.2 秒），均零 warning。`AuditF233.lean` 五项仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步从填充的单形水平截面实际构造有限盘胞腔分解，包含截面公共面与自由盘相交条件，再完成 Lemma 6 的有限删除及 M3 拼装。S.4 M2/M3、夜间 F-M1 整体及 I1 尚未完成。下一审计文件 `AuditF234.lean`。
+
+### 19.85 S.4 M2：实际四面体截面的有限盘胞腔分解
+
+`SimplexSection.lean` 将截面球性推广到单形自身的维数：仿射独立的 n+2 个顶点跨越给定仿射高度时，截面为 PL n-球，不要求单形满维于环境。一般位置下，任何非空截面要么恰为一个极值顶点，要么跨越高度两侧。因此两个不同至多四顶点的单形的非空截面交，实际为 PL 零维球或 PL 一维球，包含经过顶点的高度层。
+
+`DiskCover.lean` 从有限 PL 二维盘覆盖及点/弧公共部分，实际构造共同剖分并证明 `IsPLDiskDecomposition`。公共部分位于胞腔边界并未作为假设：先用低维 PL 球的稠密补集，再用子流形边界定理导出。
+
+`HeightSectionDecomposition.lean` 定义 `heightSectionCells` 为实际四面体的非退化水平截面。`biUnion_heightSectionCells_eq_fiber` 用填充的正规闭性与盘删去有限顶点后的稠密性，证明这些二维胞腔覆盖整个水平盘，故经过顶点时的单点截面也已覆盖。`exists_isPLDiskDecomposition_fiber_of_heightIndex_eq_zero` 从 §19.84 所生产的零指标填充数据实际构造每个中间层的有限盘胞腔分解及参数化边界；无需另加截面球性、共同剖分或胞腔边界相交假设。
+
+聚焦检查：`SimplexSection` exit=0（10.6 秒）、`DiskCover` exit=0（10.3 秒）、`HeightSectionDecomposition` exit=0（10.3 秒），均零 warning。`AuditF234.lean` 十五项仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步证明指定层顶点的闭星截面 d0 是上述胞腔中的子盘，再将相对自由盘提升为三维薄片中与边界相交为盘的凸胞腔，执行有限删除及 M3 拼装。S.4 M2/M3、夜间 F-M1 整体及 I1 尚未完成。下一审计文件 `AuditF235.lean`。
