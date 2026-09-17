@@ -863,3 +863,13 @@ theorem eq_top_of_boundaryLoops_mem_normal
 - C.5 本身已不再条件于 I5。L.4 中的 `orientableNonsphericalBoundaryDoubleCover` 仍是更强的
   `NormalSystem.DoubleCoverReduction` 生产者：它还要求提升整个正规系统、保持边界环/正规子群数据并证明复杂度严格下降，
   不能仅由覆盖复形的存在性消去；该 L.4 生产者缺口保持精确记录。
+
+## 40. 2026-09-16 E3-M2 追加：Case 3/4 的适配三角剖分与碰撞顶点
+
+状态：partial（适配三角剖分、C 片缝端碰撞及外侧手术胞腔的严格复杂度下降已闭合；L₁ 边界参数道路等式与第二张胞腔 L₂ 待闭合）。数学提交 `b1f2dc7c2`。
+
+- `exists_isSubdivision_mapsTo_vertices` 同时细分旧源盘复形，使新源盘有限顶点经手术拉回全部成为旧顶点；随后三次单点细分把缝端 `p,r,s` 变成旧顶点。此构造只用有限点集与源盘的多面体性，不额外假设拉回连续或本身为 PL 映射。
+- `exists_simplicialComplexity_lt_of_surgery_pullback_of_seam` 由实际手术拉回、端点定向二分及 `C` 片被拉回像遗漏，自动选择 `(p,r)` 或 `(p,s)` 作为不在新碰撞对像中的旧碰撞对，并产生有限复形 `K,L`，满足 `K.space = D.domain`、`L.space = G.domain` 及 `simplicialComplexity L G < simplicialComplexity K D`。
+- `NormalSingularCellData.exists_boundary_surgery_cell_with_simplicialComplexity_lt` 把上述比较接回实际正规手术胞腔；同一个 `G` 同时具有正规性、精确边界载体 `Set.range G.boundary = D '' (U ∪ V)`、像包含关系及严格复杂度下降，没有把所需适配数据改写为调用者假设。
+- `CutAndPaste` 聚焦检查 exit=0、零 warning；`.lake/scratch/AuditE3M2.lean` 共 86 项，`audit-f.ps1` exit=0，三个新端点均只含 `propext`、`Classical.choice`、`Quot.sound`。本层没有首次复用新的 covering/Van Kampen 声明。
+- 下一精确义务是从 `NormalSystem.boundaryParam` 与三片割贴的 frontier 表示构造 `σ,τ,υ,φ`，证明外侧手术胞腔边界参数对应书页 186–187 的 `L₁` 道路字；随后构造另一种重接得到第二张正规胞腔 `L₂`。Case 1/2 只在这两项完成后继续。
