@@ -2018,3 +2018,818 @@ fetch and requested merge still report `314c2178f` and already up to date. This
 plan-only publication update changes the S-owned P.4, B.2 and S.6 status cells to
 match the verified endpoints and explicit remaining obligations. E3's L.2 consumer
 row is left to that lane; its hpush producer is now available from DoubleBoundaryPush.
+
+### Boundary parity for Moise 26.6, 2026-09-16
+
+`OneManifoldBoundary.lean` proves that the intrinsic boundary of every finite
+combinatorial one-manifold with boundary has even cardinality. The proof identifies
+boundary points with degree-one vertices of its edge graph and applies the
+handshaking lemma; interior vertices have degree two. The corollary
+`boundaryComplex_one_space_ne_singleton` rules out exactly one boundary point.
+The statements apply in every finite-dimensional real normed ambient space and
+require no Schoenflies hypothesis.
+
+Focused check: exit 0, zero warnings. `AuditS116BoundaryParity.lean` audits all three
+new declarations; exit 0, only `propext`, `Classical.choice`, and `Quot.sound`.
+This is the parity input to B.6, not yet the surface separation endpoint. The
+remaining B.6 work is the single-crossing boundary-loop construction and its
+relative general-position disk filling, followed by the component/frontier result.
+Per the latest assignment, S.6 and B.8 are deferred; current order is B.6, the
+internal two-sided Problem 26.3 endpoint, and the remaining P.4 producers.
+
+### Boundary intersections under relative general position, 2026-09-16
+
+`PreimageBoundary.lean` identifies the boundary of the transverse one-dimensional
+preimage complex with the preimage of the target manifold on the source boundary.
+A source-boundary point lies in a boundary face. The carrier-face dimension estimate
+forces its preimage face to have one vertex; the existing degree classification
+then identifies it as a boundary point. This closes the previously missing link
+between graph parity and geometric boundary intersections.
+
+`even_ncard_boundary_preimage_of_transverse_faces` gives even intersection count
+for a transverse simplicial map. `even_ncard_boundary_preimage_of_transverse_boundary`
+only assumes transversality and affine independence on the source boundary; the
+interior is perturbed by `exists_small_simplicialMap_preimage_manifold_relative`,
+which fixes that boundary pointwise. The results hold for source dimension m+1,
+closed target dimension n+1, and ambient dimension m+n+1. No extra class or
+Schoenflies assumption is present.
+
+Focused check: exit 0, zero warnings. `AuditS117PreimageBoundary.lean` checks all
+three public declarations; exit 0, only the standard three axioms. B.6 remains
+partial pending the single-crossing loop producer and the global component result.
+
+### Problem 26.3: two-sided disk neighborhoods delivered, 2026-09-16
+
+`InteriorManifoldComplement.lean` constructs a finite combinatorial three-manifold
+triangulating the actual closed complement of an interior finite submanifold.
+`TwoSidedDiskNeighborhood.lean` applies the existing boundary-disk neighborhood
+producer separately to the submanifold and that complement. It returns PL three-balls
+on the two sides, both contained in any prescribed relative neighborhood of the disk;
+each meets the intrinsic boundary in exactly that disk, and their mutual intersection
+is exactly the disk. A full-dimensional ambient version uses `frontier`.
+
+`ManifoldPieceInclusion.lean` gives a reusable parameterization restriction to any
+polyhedral manifold with boundary. `TwoSidedDiskNeighborhoodManifold.lean` transports
+the ball pair to an abstract Hausdorff PL three-manifold. The final endpoint is
+`IsPolyhedralManifoldWithBoundary.exists_isPolyhedralBall_pair_inter_frontier_eq`:
+for polyhedral three-manifold N, N contained in the interior of M, polyhedral two-ball
+D in frontier N, and any set neighborhood U of D, it constructs polyhedral three-balls
+C1 and C2 with C1 contained in N, C2 contained in closure (M minus N), both contained
+in U, and all three intersections C1 with frontier N, C2 with frontier N, and C1 with
+C2 equal to D. The ambient set M need not carry additional compactness or triangulation
+assumptions. The PL chart groupoid on the ambient space supplies the local environment.
+
+All four new modules pass the focused checks with exit 0 and zero warnings.
+`AuditS118TwoSidedDisk.lean` / `.log` cover all six public declarations: exit 0,
+only `propext`, `Classical.choice`, and `Quot.sound`. No hSchoenflies or unproved
+auxiliary proposition is required. The parameterized core and ambient-neighborhood
+selection are separate mathematical interfaces; this also avoids dependent-dimension
+elaboration blowup without resource overrides. B.2's remaining two-sided Problem 26.3
+obligation is now delivered. B.6 and the remaining P.4 producers are still in progress.
+
+### Transverse segments and PL paths in open sets, 2026-09-16
+
+`OpenPLPath.lean` proves that any two points of an open preconnected set in a real
+normed space can be joined by a PL path, without a finite-dimensional assumption.
+`TransverseSegment.lean` constructs a transverse segment through the relative
+interior of a codimension-one maximal simplex, meeting the complex only at its
+midpoint. Its surface corollary supplies such a segment for every nonempty finite
+combinatorial two-manifold in a three-dimensional ambient space.
+
+Both focused checks pass with exit 0 and zero warnings. `AuditS119TransversePath`
+checks all four public declarations; exit 0, only the standard three axioms. These
+are geometric producers for the B.6 contradiction. The single-crossing circle map,
+relative disk filling, and global separation theorem remain to be completed.
+
+### Single-intersection circles and relative parity, 2026-09-16
+
+Merged integration `4401dd9d1` at `8e57b8304`. The local check and audit recipes now
+use only the shared olean library, in accordance with NIGHT_PLAN section 8. All
+new S modules from the boundary-parity checkpoint onward were checked sequentially
+into that library; no private artifact directory remains on LEAN_PATH. Pause Lean
+when integration review requests it and resume only after the explicit release.
+
+`CircleMap.lean` constructs a PL map on any PL circle from two PL interval maps
+with matching endpoints. `SingleIntersectionCircle.lean` uses this producer and
+open-complement PL paths to build an actual circle map with a singleton preimage
+of the target surface. It extends the map to the entire source ambient space and
+proves that a small translation moves the unique intersection away from any finite
+source set while keeping the return arc in the complement.
+
+`PreimageBoundaryRelative.lean` proves even boundary-intersection cardinality when
+only a subcomplex containing all intersections is transverse. Relative general
+position fixes that subcomplex, while compactness gives a positive perturbation
+margin on the remaining boundary faces. Thus the return path need not satisfy
+unnecessary affine-independence hypotheses before perturbation.
+
+All eleven new S modules in this sequence have shared-library focused checks with
+exit 0 and zero warnings. `AuditS120CircleParity.lean` / `.log` re-audit all twenty
+public declarations, including B.2 and the new circle/relative-parity inputs; exit 0,
+only the standard three axioms. B.6 is still in progress: the remaining step is to
+assemble the triangulated disk and its transverse crossing face, apply relative
+parity, and derive the global components/frontier statement. P.4 remains pending.
+
+### Closed surfaces disconnect three-dimensional space, 2026-09-16
+
+`BoundaryCrossingObstruction.lean` proves that a unique boundary preimage point in
+a transverse source facet is impossible. Its local form needs only the target
+open-simplex condition and the sum-of-direction-spaces condition at that point.
+`SurfaceSeparation.lean` assembles the actual PL disk map: it glues the transverse
+segment to a complementary PL path, extends the circle map, triangulates the disk
+and crossing arc, and translates the map to avoid all source vertices. The source
+crossing face is therefore an edge, its image is nondegenerate and transverse, and
+the local parity obstruction applies.
+
+The headline `IsCombinatorialManifold.not_isPreconnected_compl` proves that the
+complement of any nonempty finite closed combinatorial two-manifold in any real
+normed space of dimension three is not preconnected. No connectedness assumption
+on the surface or Schoenflies hypothesis is needed for this separation step.
+Both new modules pass focused checks with exit 0 and zero warnings.
+`AuditS121SurfaceSeparation.lean` / `.log` audit the two obstruction declarations
+and the separation headline; exit 0, only the standard three axioms. B.6's remaining
+endpoint work is exactly two complementary components, their common frontier,
+and two-sidedness for a connected surface.
+
+### Moise 26.6: surface complement and two-sidedness delivered, 2026-09-16
+
+`SurfaceComplement.lean` combines the proved parity obstruction with local
+separation neighborhoods. For a connected finite closed combinatorial two-manifold
+in a three-dimensional real normed space, it constructs exactly two complementary
+connected components, proves their closures cover the ambient space and intersect
+in the surface, and proves that each component has frontier equal to the surface.
+It also proves `Topology.IsTwoSided` for the surface.
+
+`EuclideanPolyhedralManifold.lean` identifies the Euclidean chart definition of a
+polyhedral manifold with an embedded finite simplicial complex. The resulting
+`PolyhedralSurfaceComplement.lean` endpoints apply directly to a connected
+`IsPolyhedralManifold (n := 3) 2 S` in Euclidean three-space:
+`IsPolyhedralManifold.exists_connectedComponentIn_pair_compl` and
+`IsPolyhedralManifold.isTwoSided`. Its disconnection theorem only requires S to be
+nonempty. No Schoenflies parameter or additional unproved input is present.
+
+All three focused checks return exit 0 with zero warnings.
+`AuditS122SurfaceComplement.lean` / `.log` audit all seven public declarations;
+exit 0, only `propext`, `Classical.choice`, and `Quot.sound`. With no Lean process
+running, `fresh.py` reports all sixteen changed modules fresh, zero stale or
+missing artifacts, and zero forbidden-pattern hits. B.6 is complete; B.2 was
+completed at the preceding disk-neighborhood milestone. The remaining active work
+is P.4's endpoint and small-disk producers.
+
+### Exact small vertex neighborhoods after simultaneous straightening, 2026-09-16
+
+`PlanarJordan/ArcNeighborhood.lean` proves that a nondegenerate initial subarc is
+a relative neighborhood of the endpoint in the entire arc.
+`PlanarJordan/VertexNeighborhood.lean` uses this to shrink each radial fan to an
+actual square with exact full-edge intersections. The endpoint
+`Graph.IsDrawing.exists_homeomorph_radial_vertex_neighborhoods` constructs, for any
+finite selection of vertices with at least two incident edges, pairwise disjoint
+small squares and an ambient homeomorphism. Each transformed incident edge meets
+its square in exactly one radial segment, all nonincident transformed edges avoid
+the square, the only graph vertex in the square is its center, and the radial
+boundary endpoints are distinct. The homeomorphism fixes every graph vertex and
+the complement of the specified open set and obeys the continuous positive
+pointwise error bound.
+
+Both module checks return exit 0 with zero warnings. `AuditS123VertexNeighborhood`
+audits all three new public declarations; exit 0, only the standard three axioms.
+With no Lean process running, `fresh.py` reports 18 changed modules fresh, no stale
+or missing artifacts, and no forbidden patterns. This removes later edge reentry
+from the vertex-square interface. P.4 still needs arbitrary degree-one endpoints
+and the compatible edge-disk frames and final graph assembly; it is not complete.
+
+### Arbitrarily small PL disk neighborhoods of planar arcs, 2026-09-16
+
+`PlanarJordan/ArcDiskNeighborhood.lean` constructs a polygonal Jordan curve J for
+any planar arc A and any set neighborhood U of A, with A contained in inside J
+and closure (inside J) contained in U. The construction refines a chain of small
+square boundaries along the arc, uses the proved outer-chain theorem to control
+all points outside the prescribed thickening, and obtains J as the boundary cycle
+of the unbounded face of the finite two-connected graph.
+
+`PiecewiseLinear/PolygonalJordan.lean` bridges the cyclic polygon presentations
+and proves that every polygonal Jordan curve is a native PL one-sphere.
+`PiecewiseLinear/PlanarArcNeighborhood.lean` consequently produces an actual PL
+two-ball D with A contained in interior D and D contained in U. Its finite-family
+version produces pairwise disjoint such disks for pairwise disjoint arcs, each
+inside its independently prescribed neighborhood.
+
+All three focused checks return exit 0 with zero warnings.
+`AuditS124ArcNeighborhood.lean` / `.log` audit the four public declarations;
+exit 0, only the standard three axioms. The native adaptation of the upstream
+square-chain proof is recorded in `docs/third_party/PlanarArcNeighborhood.md`;
+no vendored source was modified.
+
+Moise printed pages 76-77 clarify the remaining degree-one producer: first apply
+the no-endpoint construction to the locally finite graph obtained by deleting
+the endpoints, then trace a complementary arc alongside the resulting locally
+polygonal open edge with shrinking support toward its endpoint. The present
+finite fan and disk results do not yet implement this infinite construction.
+The edge-frame obligation also still includes the exact two boundary crossings
+of the entire truncated edge; merely containing a compact arc is insufficient.
+P.4 remains partial with these obligations explicit.
+
+## Contracting families of supported homeomorphisms (2026-09-16)
+
+`Homeomorph/UniformGluing.lean` proves
+`Homeomorph.exists_gluing_of_pairwise_disjoint_of_tendstoUniformly` for an arbitrary
+index type and an arbitrary uniform space: pairwise disjoint supported
+homeomorphisms that converge uniformly to the identity along the cofinite filter
+glue to a homeomorphism, with the specified map on every support and the identity
+outside their union. The proof constructs both inverse maps and obtains their
+continuity from the net of finite gluings; it does not assume local finiteness,
+completeness, or countability. Metric corollaries preserve a prescribed positive
+pointwise displacement bound and produce the uniform convergence from bounded
+supports whose diameters tend to zero.
+
+`PlanarJordan/PolygonalCrosscut.lean` now gives
+`exists_homeomorph_polygonal_crosscuts_of_tendsto_diam` for arbitrary pairwise
+disjoint contracting families of PL disks and actual crosscuts. The original
+finite-family signature is preserved as a corollary. Both module checks exit 0
+with zero warnings. AuditS125UniformGluing checks six public declarations; exit 0,
+only `propext`, `Classical.choice`, and `Quot.sound`.
+
+This supplies the infinite gluing operation used by Moise 10.7--10.8. It does not
+produce the endpoint auxiliary arc or the edge frames: P.4 still needs those
+geometric constructions and the final graph assembly.
+
+## Several crosscuts in one disk (2026-09-16)
+
+`PiecewiseLinear/PolygonalArcBall.lean` bridges every simple polygonal arc to the
+native `IsPLBall 1` predicate by induction over the normalized polygonal chain.
+`PlanarJordan/CrosscutFamily.lean` proves
+`exists_homeomorph_polygonal_crosscuts_in_disk`: a finite family of crosscuts in
+one PL disk, with intersections allowed on the disk boundary, can be made
+simultaneously polygonal by an ambient homeomorphism fixing the disk interior's
+complement. Its displacement is at most the disk diameter. Crosscut endpoints
+need not be distinct across the family. The proof straightens one arc, cuts the
+disk into two PL disks along that image, assigns each remaining arc to a side,
+and applies strong induction; both later maps fix the separating arc.
+
+Both focused checks exit 0 with zero warnings. AuditS126CrosscutFamily checks
+three public declarations, exit 0, only the standard three axioms. This offers a
+route for edge neighborhoods with finitely many boundary contacts, including
+contacts that return immediately to the same side. The producer of that finite
+crosscut decomposition from the original edge is still required; no P.4
+completion is claimed.
+
+## Straightening an arc with finite boundary contacts (2026-09-16)
+
+`PlanarJordan/ArcStraightening.lean` proves
+`exists_homeomorph_polygonal_arc_of_finite_frontier_inter`. For a planar arc with
+both endpoints outside the interior of a PL disk, finitely many contacts with
+the disk frontier, and a polyhedral part outside the disk interior, it constructs
+an ambient homeomorphism making the whole arc polygonal, fixing the disk
+interior's complement, and moving points by at most the disk diameter.
+
+The proof produces the crosscuts from the arc parametrization: the last outside
+parameter before an interior point and the first outside parameter after it
+bound an interval lying in the disk interior. The finite set of boundary
+parameters indexes all such intervals. Different resulting arcs can meet only
+on the disk boundary, including immediate returns to the same side, so the
+previous finite-family theorem applies. The unchanged exterior part and the
+polygonalized interior pieces form a polyhedron; the whole image is still an
+arc, hence polygonal. No exact-two-crossings assumption is used.
+
+Focused check exit 0, zero warnings. AuditS127ArcStraightening checks the public
+endpoint, exit 0, only the standard three axioms. The remaining P.4 geometry is
+to choose small edge disks whose frontiers have finite intersection with the
+already straightened endpoint germs, followed by the degree-one construction
+and the full graph assembly.
+
+## Perturbing disk frontiers away from a fixed core (2026-09-16)
+
+`PiecewiseLinear/BallComplement.lean` proves that removing the interior of a PL
+ball from a polyhedron leaves a polyhedron, in every positive Euclidean dimension.
+`FiniteIntersection.lean` specializes the existing relative general-position
+homeomorphism to finite intersections when the two face dimensions sum to at
+most the ambient dimension. It retains arbitrary small displacement and the
+specified open support.
+
+`DiskFrontierPerturbation.lean` gives
+`IsPLBall.exists_isPLBall_finite_frontier_inter`: a planar PL disk can be replaced
+inside a given open set, retaining a specified closed subset in its interior,
+avoiding another specified closed set, and making its frontier meet a given
+polyhedron of empty interior in only finitely many points. The support avoids
+the retained core and the forbidden set. No regularity of an arc inside the
+retained core is assumed. Together with the finite-contact straightening theorem,
+this removes the need for an exact-two-crossings edge frame.
+
+All three focused checks exit 0 with zero warnings. AuditS128DiskFrontier checks
+three public declarations; exit 0, only `propext`, `Classical.choice`, and
+`Quot.sound`. The next step assembles these constructions for an arc with
+polygonal endpoint germs. Degree-one germs and the controlled graph assembly
+remain open.
+
+## Edge disks from polygonal endpoint germs (2026-09-16)
+
+`PlanarJordan/ArcStraightening.lean` now also proves
+`exists_homeomorph_polygonal_arc_of_polygonal_ends`. For a continuously and
+injectively parametrized planar arc, with polygonal initial and terminal
+subarcs, every neighborhood of the intervening closed subarc contains a PL disk
+and supports a homeomorphism making the entire arc polygonal. The disk contains
+the intervening subarc in its interior and avoids both endpoints. The map fixes
+the complement of the disk interior, with displacement bounded by its diameter.
+The neighborhood need not be open; an open refinement is constructed.
+
+The proof constructs a disk around the middle arc, preserves that middle arc
+while putting its frontier in general position with the two polygonal ends,
+and proves that all frontier contacts are finite. Its exterior arc portion is
+polyhedral by `IsPolyhedron.sdiff_interior_of_isPLBall`. The finite-contact
+straightening theorem then applies. No prescribed crossing count, tame middle
+arc, or disk frame is assumed.
+
+Focused check exit 0 with zero warnings. AuditS129ArcEnds checks both public
+endpoints of the updated module, exit 0, only the standard three axioms.
+The small edge-disk producer is now present for the previously constructed
+polygonal vertex germs. Degree-one germs and the final controlled graph
+assembly remain to be constructed.
+
+## Simultaneous edge disks and straightening (2026-09-16)
+
+`PlanarJordan/ArcFamilyStraightening.lean` proves
+`exists_homeomorph_polygonal_arc_family_of_polygonal_ends` for any finite family
+of parametrized arcs meeting only at their endpoints. From polygonal initial
+and terminal subarcs and arbitrary neighborhoods of their middle subarcs, it
+constructs pairwise disjoint PL disks, each avoiding every other whole arc and
+its own endpoints. One ambient homeomorphism makes every whole arc polygonal,
+fixes the complement of the union of disk interiors, and moves points in each
+disk by at most that disk's diameter. Shared graph vertices are allowed.
+
+The disks are produced using separation of the compact middle arcs and the
+closed union of all other arcs. They are not additional hypotheses. The finite
+gluing theorem then agrees with each individual straightening on its entire
+arc, since every other support avoids that arc.
+
+Focused check exit 0, zero warnings. AuditS130ArcFamily checks the public
+endpoint, exit 0, only the standard three axioms. This closes the simultaneous
+small-disk construction for finite edge families with polygonal endpoint germs.
+
+## Ambient straightening for finite graphs without endpoints (2026-09-16)
+
+`ArcNeighborhood.lean` now gives
+`exists_polygonal_subarcs_of_segment_subsets`: radial segment germs at the two
+ends of an injectively parametrized arc produce explicit parameters
+`0 < a < b < 1` with polygonal initial and terminal subarcs. Subarc uniqueness
+identifies those pieces with subsets of the radial segments.
+
+`PlanarJordan/GraphStraightening.lean` proves
+`Graph.IsDrawing.exists_homeomorph_polygonal_edges_of_no_endpoints`. For a finite
+planar graph drawing with no vertex incident to exactly one edge, and any open
+neighborhood of the whole drawing, it constructs an ambient homeomorphism making
+every whole edge polygonal, fixing every graph vertex and every point outside
+the specified neighborhood. Isolated vertices are permitted. The proof actually
+constructs the vertex germs, extracts the parameters, and builds disjoint edge
+disks avoiding all graph vertices before gluing the edge straightenings.
+
+`ArcNeighborhood`, its direct consumer `VertexNeighborhood`, and the new
+`GraphStraightening` all check with exit 0 and zero warnings.
+AuditS131GraphStraightening checks the parameter bridge, the vertex-neighborhood
+endpoint, and the graph endpoint; exit 0, only the standard three axioms.
+This endpoint supplies support control. It does not yet claim the full arbitrary
+positive-function displacement bound of Moise 10.7, which requires subdividing
+long edges before the same assembly, or the degree-one extension in 10.8.
+
+## Contracting neighborhoods at discrete arc points (2026-09-16)
+
+`Topology/DiscreteNeighborhoods.lean` proves
+`Metric.exists_pairwise_disjoint_closedBall_of_isDiscrete` in pseudometric
+spaces: an injectively indexed discrete set admits pairwise disjoint positive
+closed-ball neighborhoods inside arbitrary prescribed neighborhoods, with each
+radius below its prescribed positive bound. No finiteness or closedness of the
+discrete set is assumed.
+
+`PlanarJordan/LocalArcStraightening.lean` first constructs supported two-sided
+polygonal subarcs at any interior point of an arbitrary arc. It then proves
+`exists_homeomorph_polygonal_subarcs_of_isDiscrete`: for any discrete family of
+interior points and positive bounds tending to zero along the cofinite filter,
+it constructs pairwise disjoint shrinking square supports and one ambient
+homeomorphism straightening both sides at every point. The whole selected
+parameter interval lies in its support, all selected centers are fixed, the
+complement of the open supports is fixed, and displacement on each square is
+bounded by that square's diameter. The supports are produced, not assumed.
+
+Both focused checks exit 0 with zero warnings. AuditS133DiscreteArcs checks all
+three public endpoints, exit 0, only the standard three axioms. AuditS132 was the
+first local-endpoint audit; S133 supersedes it after the interval-containment
+conclusion and discrete-family endpoint were added.
+
+This is the vertex stage of the deleted-endpoint construction in Moise 10.8.
+It still needs straightening between successive selected points and the
+auxiliary arc approaching the deleted endpoint; this is not yet a degree-one
+endpoint theorem.
+
+## Producing the discrete sequence input (2026-09-16)
+
+`Embedding/RealParameter.lean` uses Tietze extension to extend the inverse
+parameter of any compact real-parameter embedding into a normal Hausdorff space
+to a continuous real-valued function on the ambient space.
+`Order/DiscreteRange.lean` proves that strictly monotone or strictly antitone
+natural-number sequences have discrete ranges in any linearly ordered space
+with the order-closed topology.
+
+`LocalArcStraightening.lean` now gives
+`exists_homeomorph_polygonal_subarcs_of_strictAnti`: every strictly decreasing
+sequence of interior parameters of a planar arc admits simultaneous supported
+polygonal germs at all its points, inside arbitrary prescribed neighborhoods,
+while fixing both original endpoints and all selected centers. Discreteness of
+the image points is proved from the extended inverse parameter; shrinking bounds
+are produced using the geometric sequence `(1/2)^n`. Neither condition is an
+extra input to this endpoint. The complements of the prescribed neighborhoods
+are fixed.
+
+The two new modules and the updated local-arc module check with exit 0 and zero
+warnings. AuditS134ArcSequence checks six declarations, including all three
+current local-arc endpoints; exit 0, only the standard three axioms. The next
+geometric obligation is to straighten the intervals between selected points,
+then construct the auxiliary arc approaching the original endpoint.
+
+## Contracting families of whole arcs (2026-09-16)
+
+`ArcNeighborhood.lean` now produces polygonal parameter germs from arbitrary
+polygonal endpoint subarcs. The radial-segment endpoint is a corollary with its
+original signature. `ArcFamilyStraightening.lean` proves
+`exists_homeomorph_polygonal_arc_family_of_disjoint_neighborhoods`: an arbitrary
+family of arcs with polygonal endpoint germs, in pairwise disjoint bounded
+neighborhoods whose diameters tend to zero, admits one ambient homeomorphism
+making every whole arc polygonal. The proof constructs the PL disk supports and
+retains both support and diameter control. The neighborhoods must avoid the
+other whole arcs. The existing finite-family theorem keeps its signature and
+uses the same gluing argument.
+
+`Embedding/RealParameter.lean` also produces pairwise disjoint open ambient
+neighborhoods of subsets of an embedded compact real parameter set, inside
+arbitrary prescribed neighborhoods, whenever those subsets lie in pairwise
+disjoint open parameter sets. This is an actual neighborhood producer using a
+continuous extension of the inverse parameter.
+
+The three changed modules and their consumers `VertexNeighborhood`,
+`GraphStraightening`, and `LocalArcStraightening` check with exit 0 and zero
+warnings. AuditS135ContractingArcFamily checks seven endpoints, including the
+preserved finite graph and sequence endpoints; exit 0, only the standard three
+axioms. These results supply the infinite edge stage; assembling the successive
+parameter intervals and constructing the degree-one auxiliary arc remain.
+
+## Diameters of shrinking interval images (2026-09-16)
+
+`Topology/MetricSpace/Diameter.lean` proves `Metric.tendsto_diam_smallSets` for
+pseudometric spaces: the diameter tends to zero along the filter of sets
+shrinking to a point. `ContinuousWithinAt.tendsto_diam_image_Icc` applies this to
+continuous images of intervals whose endpoints converge to the same point,
+with the intervals eventually in the domain of continuity. The parameter space
+is any linearly ordered space with its order topology; the convergence filter
+is arbitrary. No injectivity or compactness is assumed.
+
+The focused check exits 0 with zero warnings. AuditS136Diameter checks both
+endpoints, exit 0, only the standard three axioms. This provides the quantitative
+shrinking estimate needed for the intervals approaching a deleted arc endpoint.
+
+## Straightening every interval in an endpoint sequence (2026-09-16)
+
+`PlanarJordan/ArcSubdivisionStraightening.lean` proves
+`exists_homeomorph_polygonal_intervals_of_strictAnti`. For an arbitrary planar
+arc, a strictly decreasing sequence of interior parameters converging to zero,
+and an open neighborhood of the whole arc, one ambient homeomorphism makes
+every interval between consecutive parameters polygonal. It fixes every
+selected point, both original endpoints, and every point outside the prescribed
+open set.
+
+The proof first constructs polygonal germs at the selected points. It extends
+the inverse parameter continuously to the plane, uses inverse images of the
+disjoint open parameter intervals to separate the edge supports, and bounds them
+by shrinking balls using the diameter convergence theorem. The infinite-family
+straightening then applies to neighborhoods actually constructed in the proof.
+
+The focused check exits 0 with zero warnings. AuditS137ArcSubdivision checks the
+new endpoint; exit 0, only the standard three axioms. The auxiliary arc
+approaching the original endpoint and full positive-function control remain
+open; this is the infinite interval stage, not the degree-one endpoint theorem.
+
+## Polygonal compact subarcs after deleting one endpoint (2026-09-16)
+
+`ArcSubdivisionStraightening.lean` now also proves
+`exists_homeomorph_polygonal_subarcs_away_from_endpoint`. For any interior
+parameter `r` of an arbitrary planar arc, one ambient homeomorphism makes every
+compact subarc with parameters `0 < a < b <= r` polygonal. It fixes both original
+endpoints, the point at `r`, and the complement of any prescribed open
+neighborhood of the whole arc. The geometric sequence used for the construction
+is produced internally; the caller need not supply a sequence or polygonal
+germs. Finite unions of consecutive intervals and subarc uniqueness turn the
+previous interval endpoint into this statement.
+
+The changed module checks with exit 0 and zero warnings. AuditS138DeletedEndpoint
+checks both public declarations after the edit; exit 0, only the standard three
+axioms. This closes the deleted-endpoint straightening stage of Moise 10.8. The
+auxiliary arc converging to that endpoint while avoiding the original arc is
+still a separate geometric obligation.
+
+## Localizing collars and choosing compatible sides (2026-09-16)
+
+`PlanarJordan/ArcCollar.lean` proves
+`Schoenflies.exists_hasArcCollars_of_polygonal_subarc`. A polygonal compact
+subarc of an otherwise arbitrary arc has an open neighborhood, inside any
+prescribed open set containing its relative interior, on which the whole arc
+has two-sided collars. The neighborhood meets the whole arc exactly in the
+open subarc. The proof removes the two closed parameter tails and transports
+the existing polygonal collars, so each resulting track avoids the entire
+original arc.
+
+`Schoenflies.ArcCollar.exists_isOpen_connected_chain` then makes a consistent
+choice of sides along any sequence of collars with overlapping compact pieces.
+It constructs connected open sets avoiding the carrier, each approaching its
+own compact piece, with successive open sets intersecting. This is proved by
+recursion from the closure condition at a shared point and passage to connected
+components; compatible side choices are not assumed.
+
+The focused check exits 0 with zero warnings. AuditS139ArcCollars checks both
+endpoints, exit 0, only the standard three axioms. Remaining for the degree-one
+step: construct the shrinking collar sequence from the deleted-endpoint
+polygonal arc, trim successive connecting arcs to remove extra intersections,
+and parametrize their shrinking union together with the limiting endpoint.
+
+## Shrinking open chains approaching arbitrary arc endpoints (2026-09-16)
+
+`PlanarJordan/EndpointCollarChain.lean` proves
+`Schoenflies.exists_shrinking_open_chain_compl_arc`. For any planar arc and any
+neighborhood of its first endpoint, it constructs connected open sets in that
+neighborhood avoiding the whole arc. Successive sets intersect; nonadjacent
+sets are disjoint; the sets converge to the endpoint in the small-sets filter.
+The local-polygonal version is also exposed as
+`exists_shrinking_open_chain_compl_of_polygonal_subarcs`.
+
+For the local-polygonal version, the proof constructs geometric parameter
+bands, localizes the polygonal collars away from both remaining tails, chooses
+compatible sides, and bounds the resulting sets by shrinking balls. Disjoint
+inverse-parameter bands separate nonadjacent sets. The arbitrary-arc endpoint
+then follows by the proved deleted-endpoint straightening and pulling the chain
+back through its ambient homeomorphism. No polygonal or collar hypothesis
+remains in that endpoint.
+
+The focused check exits 0 with zero warnings. AuditS140EndpointCollarChain
+checks both public declarations, exit 0, only the standard three axioms. This
+supplies the open chain for the auxiliary arc. Connecting and trimming its
+successive arcs, and parametrizing the shrinking simple union at its limit,
+remain to obtain the auxiliary arc itself and then the degree-one theorem.
+
+## Trimming a connected open chain to simple polygonal arcs (2026-09-16)
+
+`PlanarJordan/ArcChain.lean` proves `exists_subarcs_inter_eq_singleton`: two
+successive arcs, each avoiding the other's outer endpoint, contain successive
+subarcs meeting at exactly their common new endpoint. The proof takes the last
+contact along the new arc and cuts the old arc there.
+
+`exists_polygonal_arc_chain_of_isOpen_isConnected` applies this operation
+recursively in any connected open chain whose nonadjacent members are disjoint.
+It constructs polygonal arcs with injectively indexed endpoints, keeps each arc
+inside its assigned open set, makes each adjacent intersection exactly the
+shared endpoint, and preserves nonadjacent disjointness. All connecting arcs
+and all trimming choices are produced from the open-chain hypotheses.
+
+The focused check exits 0 with zero warnings. AuditS141ArcChain checks both
+endpoints, exit 0, only the standard three axioms. For the endpoint-access
+construction, the remaining step is now the continuous injective
+parametrization of the shrinking arc chain together with its limiting point.
+
+## Auxiliary simple arcs at arbitrary planar arc endpoints (2026-09-16)
+
+`PlanarJordan/EndpointAccess.lean` proves
+`Schoenflies.IsArcBetween.exists_isArcBetween_inter_eq_singleton`: for an
+arbitrary planar arc from `p` to `q` and any neighborhood `U` of `p`, it
+constructs an arc from `p` to a new endpoint, wholly in `U`, whose intersection
+with the original arc is exactly `{p}`. No polygonality, side-selection,
+accessibility, or Schoenflies hypothesis is assumed.
+
+The proof uses the constructed shrinking open chain and its trimmed polygonal
+arc chain. `ArcChainLimit.lean` proves that adding the limiting point to such a
+shrinking simple chain gives a simple arc, with the exact union as its image.
+`Topology/PathConcatenation.lean` supplies the reusable topological machinery:
+countable compatible paths concatenate continuously on the nonnegative real
+axis, shrinking images force a limit at infinity, and reciprocal
+reparametrization extends that limit continuously to the endpoint of a closed
+unit interval. Injectivity and the exact image are checked separately for the
+simple arc chain.
+
+The three new modules check with exit 0 and zero warnings. AuditS142EndpointAccess
+checks six declarations, including the auxiliary-arc endpoint; exit 0, only the
+standard three axioms. The auxiliary arc asserted in Moise 10.8 is now proved.
+Remaining P.4 assembly: use it to straighten degree-one vertex germs, include
+those vertices in the finite graph assembly, and finish arbitrary positive-
+function displacement control.
+
+## Degree-one vertices and arbitrary finite planar graphs (2026-09-16)
+
+`PlanarJordan/EndpointStraightening.lean` uses the proved auxiliary arc to
+construct a radial initial subarc at any arc endpoint, inside any prescribed
+neighborhood, with a square support and its diameter displacement bound.
+`Graph.IsDrawing.exists_homeomorph_radial_vertex_fan_of_nonempty` now handles
+any nonisolated vertex, including degree one, while avoiding nonincident edges.
+
+The canonical finite vertex-fan and vertex-neighborhood interfaces in
+`VertexStraightening.lean` and `VertexNeighborhood.lean` have been generalized
+from nontrivial incidence sets to nonempty incidence sets. Their support,
+vertex-fixing, exact full-edge intersections, and positive continuous control
+function conclusions are unchanged. All Lean consumers were updated together.
+
+`GraphStraightening.lean` now proves
+`Graph.IsDrawing.exists_homeomorph_polygonal_edges` for every finite planar
+graph drawing. It fixes every original vertex and every point outside the
+prescribed open neighborhood and makes every whole edge polygonal. The former
+`exists_homeomorph_polygonal_edges_of_no_endpoints` declaration is replaced by
+this general primary theorem; there are no Lean consumers of the old name.
+Isolated vertices remain allowed and fixed.
+
+The import graph is acyclic. The new endpoint module and all three changed
+consumers check with exit 0 and zero warnings. AuditS143AllGraphVertices checks
+five current endpoints, exit 0, only the standard three axioms. The degree-one
+and finite-graph support stages of P.4 are now closed. Full arbitrary
+positive-function displacement control for the whole graph still requires the
+small-edge subdivision and quantitative assembly; the support-only graph
+endpoint does not claim that bound.
+
+## Uniform displacement for short graph edges (2026-09-16)
+
+`GraphStraightening.lean` proves
+`Graph.IsDrawing.exists_homeomorph_polygonal_edges_of_diam_lt`: if every edge
+has diameter less than epsilon / 8, the ambient straightening fixes all original
+vertices and the complement of the prescribed open neighborhood, makes every
+whole edge polygonal, and moves every plane point by less than epsilon.
+The vertex deformation uses epsilon / 8; each middle-edge disk lies in a ball
+of radius epsilon / 4, so its displacement is at most epsilon / 2. The former
+support-only endpoint is now a corollary, with its signature preserved.
+
+The focused check exits 0 with zero warnings. AuditS144SmallGraph checks both
+endpoints, exit 0, only the standard three axioms. Integration was fetched and
+merged at this checkpoint (already up to date at 4401dd9d1). The next obligation
+is finite subdivision into short edges, followed by positive-function control;
+this diameter hypothesis has not been claimed as full P.4.
+## Finite graph approximation with strongly positive control (2026-09-16)
+
+`ArcFamilyDrawing.lean` realizes compatible arc families as actual graphs,
+including prescribed isolated vertices. `GraphSubdivision.lean` constructs the
+subdivided drawing, proves that it is a drawing, preserves the exact point set
+and original vertices, expresses every original edge as the finite union of
+its subedges, and chooses subdivisions with arbitrarily small edge diameters.
+The mesh is produced by the existing checked `Schoenflies.exists_mesh`.
+
+`GraphApproximation.lean` now proves the uniform and strongly positive control
+forms of ambient polygonalization for every finite planar graph drawing:
+`Graph.IsDrawing.exists_homeomorph_polygonal_edges_dist_lt_const` and
+`Graph.IsDrawing.exists_homeomorph_polygonal_edges_dist_lt`. Both fix every
+original vertex and the complement of the prescribed open neighborhood.
+The latter bounds the displacement at every point of that neighborhood by the
+given control function. Its explicit hypothesis is precisely a positive lower
+bound on every compact subset of the neighborhood; continuity is not assumed,
+and no condition is imposed outside the neighborhood. The continuous globally
+positive version is a corollary.
+
+This control hypothesis was checked against Moise, book page 46 (PDF page 56);
+the finite-graph target is the specialization of 10.8, book page 76 (PDF page
+86). The proof first uses a compact neighborhood inside the prescribed open
+set, then applies the uniform theorem with its positive control lower bound.
+The degree-one construction and small disk frames were produced in the prior
+milestones, rather than retained as input hypotheses.
+
+All three new modules check with exit 0 and zero warnings.
+AuditS145ControlledGraph checks eleven subdivision and approximation endpoints,
+exit 0, only propext, Classical.choice, and Quot.sound. The checkpoint merged
+integration at bbd488861; no imported lane module was recompiled. The remaining
+P.4 delivery step is the native IsPolyhedron / PL one-cell image bridge and the
+final plan-row update. The ambient homeomorphism itself is not asserted PL on
+an arbitrary topologically embedded original graph.
+
+## P.4 finite-graph tameness: native endpoint delivered (2026-09-16)
+
+`PiecewiseLinear/PlanarGraphTameness.lean` delivers
+`Graph.IsDrawing.exists_homeomorph_isPolyhedron_image_dist_lt` for every finite
+planar graph drawing. Its output is an ambient homeomorphism whose whole graph
+image satisfies the native `IsPolyhedron`, whose individual edge images satisfy
+`IsPLBall 1`, which fixes all original vertices and all points outside the
+prescribed open set, and whose displacement on that open set is less than the
+given strongly positive function. The control hypothesis requires only a
+positive lower bound on each compact subset, exactly as in Moise page 46; the
+continuous positive case is also provided. No Schoenflies parameter or other
+unproved mathematical input remains.
+
+This closes the finite-graph scope of plan P.4 (10.8). The book also treats
+nonfinite locally finite graphs; that extension is outside this plan row and
+is not claimed here. The small-disk argument uses the produced PL disk
+neighborhoods, finite frontier perturbation, and simultaneous crosscut
+straightening. It does not need to retain the book's exact-two-frontier-contact
+frame as an input. Degree-one endpoints use the independently constructed
+auxiliary simple arcs and the shrinking deleted-endpoint straightening.
+
+The native bridge checks with exit 0 and zero warnings. AuditS146PlanarGraphTameness
+checks all three bridge declarations, exit 0, only the standard three axioms.
+Together with AuditS144 and AuditS145, the final quantitative assembly has
+sixteen audited declarations. All new source is native; no vendored Lean source
+or vendor modification log changed. Integration bbd488861 is merged. The final
+bookkeeping commit updates the P.4 row and records the freshness self-check.
+
+## Final B.2 / B.6 / finite P.4 publication checkpoint (2026-09-16)
+
+The native finite P.4 endpoint is committed and pushed as `138e73e21`, after
+`93d1aa39d` (subdivision and strongly positive approximation) and `866b2535e`
+(short-edge displacement bound). Integration `bbd488861` is merged. B.2 and
+B.6 remain delivered at `7d74a1d84` and `c4645eeb0`; all three assigned results
+have unconditional endpoints, with no Schoenflies parameter.
+
+The final freshness check was run with no Lean process active on the host:
+49 changed Lean modules versus integration, 49 fresh oleans, zero forbidden
+matches, zero stale artifacts, zero missing artifacts. Two earlier readings
+were explicitly flagged by the script because unrelated F-lane Lean processes
+were active; this final unflagged reading supersedes them. The final source
+checks and AuditS144--S146 all exited 0 with zero source warnings and only the
+standard three foundational axioms. `git diff --check` passes. This last commit
+changes only the P.4 plan row and this handoff; the root aggregate and vendored
+sources remain unchanged by the final quantitative assembly.
+
+## Section 24 and section 30 checkpoint (2026-09-16)
+
+Integration `9512c800c` is merged by `8eaa8e32f`. The book was checked at
+pages 178--180 and 214--215 (PDF pages 188--190 and 224--225).
+
+C.6 remains blocked at the two-disjoint-boundary-disks extension and the
+untwisted closing identification. The CST definition on page 178 starts with
+a triangulated topological solid torus, before imposing the cyclic PL-ball
+decomposition. The shorter plan description omits that condition; a cyclic
+ball chain alone also permits the twisted disk bundle. No weakened CST
+predicate or classification hypothesis has been added. The existing
+`exists_isPLHomeomorphOn_eqOn_disk_of_boundaryComplex` handles one prescribed
+disk; it does not provide the simultaneous two-disk compatibility needed to
+close the cylindrical diagram and prove uniqueness of its PL type.
+
+C.7 inherits that classification gap. The original neighborhood-cell results
+supply PL three-balls and pairwise disk intersections, but the cyclic order,
+its end-disk compatibility, and the untwisted classification remain to be
+assembled. The 23.17 input itself is already available as
+`IsOrientable.of_le` in `Orientation.lean:3153`; an extra `hsub` should not be
+introduced for that existing subcomplex statement. No C.7 endpoint is claimed.
+Following NIGHT_PLAN section 0, work then advanced to the independent I.1.
+
+I.1 is delivered in `6cf85c2d3` (pushed). `Connected/Separation.lean` provides
+`Separates` and its connected-component characterization.
+`Connected/PhragmenBrouwer.lean` proves `separates_or_separates_of_union` under
+the book's simply-connected / locally-connected / connected-open-path-connected
+hypotheses and the `phragmen_brouwer` locally-path-connected corollary. The
+closed separating sets C and D are explicitly disjoint, as required by the
+book. H and K need only be preconnected and may be empty; their closedness is
+unnecessary. The proof uses the existing proved Van Kampen cover-cycle
+obstruction, with labels constant on paths in the overlap. Both source modules
+check with exit 0 and zero warnings. AuditS147PhragmenBrouwer has nine public
+theorems, exit 0, only propext, Classical.choice, and Quot.sound. There are no
+unproved input parameters. The post-publication fetch found integration
+unchanged. I.2 is next.
+
+## I.2 delivered and cyclic-neighborhood reduction published (2026-09-16)
+
+I.2 is committed and pushed in `bc20b0b45`. `Connected/SeparatingComponent.lean`
+proves `exists_separates_of_finite_iUnion`,
+`exists_separating_connectedComponentIn`, and `exists_separating_component`.
+The main input is a closed set C with `Finite (ConnectedComponents C)` which
+separates nonempty connected H and K. The output supplies an actual point
+x in C whose `connectedComponentIn C x` separates H and K. The finite family
+of disjoint closed components is constructed in the proof, not assumed as a
+precomputed decomposition. The source check exits 0 with zero warnings;
+AuditS148SeparatingComponent has three declarations, all standard three axioms.
+The connected-open-path-connected and locally-path-connected versions are both
+available, with no unproved theorem input.
+
+After I.2, the independent geometric part of C.6/C.7 was advanced and published
+as `bcdfe9778`:
+
+- `BallChain.lean`: `IsCombinatorialManifoldWithBoundary.isPLBall_iUnion_of_chain`
+  proves the linear PL three-ball chain theorem in any finite-dimensional real
+  normed ambient space. `isPLBall_iUnion_castSucc_of_cycle` proves that omitting
+  one cell from a cyclic chain leaves a PL three-ball.
+- `NeighborhoodCycle.lean`: `exists_cyclic_face_order` obtains a genuine cyclic
+  enumeration of all faces of a finite connected closed one-manifold, via its
+  barycentric edge graph. `exists_cyclic_derivedNeighborhoodCell_decomposition`
+  proves that the derived-neighborhood three-ball pieces meet exactly for
+  adjacent indices and each such intersection is a PL two-disk in both cell
+  boundaries. `disjoint_derivedNeighborhoodCell_inter_of_card_le_two` rules
+  out all triple intersections of distinct pieces.
+- `exists_isPLBall_pair_cover_derivedNeighborhood_circle` constructs actual
+  sets A, B, D0, D1 with A and B PL three-balls, D0 and D1 disjoint PL two-disks,
+  A union B equal to the full derived neighborhood, and A intersection B equal
+  to D0 union D1. No orientability hypothesis is used for this reduction.
+
+Both modules check with exit 0 and zero warnings. AuditS149NeighborhoodCycle
+has nine public declarations, only propext, Classical.choice, and Quot.sound.
+Together AuditS147--S149 contain 21 audited declarations from five new modules.
+All five use native proofs and have no unproved theorem parameters.
+
+The earlier C.7 note about an unconstructed cyclic order is superseded by this
+checkpoint. C.6/C.7 remain partial: simultaneous standardization of the two
+boundary disks, compatibility of the closing identification, and the untwisted
+classification are still missing. Neither the CST/cylindrical-diagram
+recognition theorem nor 24.10/24.11/24.12 is claimed. The 24.12 contraction and
+orientation-cover descent has not been wired. The only permitted future
+external parameter there remains the actual missing covering theorem; the
+classification gap has not been turned into a hypothesis. B.7 is not started.
+
+The post-checkpoint fetch/merge leaves integration at `9512c800c` (already
+merged); other lanes are obtained only through integration. The final `fresh.py`
+check ran with no Lean process on the host: five changed modules, five fresh
+oleans, zero forbidden hits, zero stale and zero missing artifacts, exit 0.
+This supersedes the earlier freshness reading taken during an F-lane check.
+The module exit codes and axiom audits above remain the verification gate.
+The final documentation commit updates only C.6/C.7/I.1/I.2 rows and this handoff.
