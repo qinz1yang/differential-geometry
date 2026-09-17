@@ -10946,3 +10946,6 @@ import DifferentialGeometry.Topology.Manifold.RegularNeighborhood
 import DifferentialGeometry.Topology.Manifold.RegularSuperlevel
 import DifferentialGeometry.Geometry.Boundary.RegularSuperlevelMetric
 import DifferentialGeometry.Topology.Manifold.RegularExhaustion
+import DifferentialGeometry.Topology.Embedding.SaddleQuadraticIsotopy
+import DifferentialGeometry.Topology.Morse.RegularLevel.QuadraticCap
+import DifferentialGeometry.Topology.SphereSeparation.SmoothReconstructionRegions
