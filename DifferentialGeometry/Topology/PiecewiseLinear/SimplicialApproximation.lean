@@ -131,4 +131,33 @@ theorem exists_isPiecewiseAffineOn_mapsTo_dist_lt
       (dist_le_diam_of_mem hbdd (hclose x hx) (mem_convexHull_carrierFace hxL))
       (hL'diam _ (carrierFace_mem hxL))
 
+theorem mapsTo_lineMap_of_mem_convexHull_carrierFace
+    {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [NormedAddCommGroup F] [NormedSpace ℝ F]
+    (L : Geometry.SimplicialComplex ℝ F) {f g : E → F} {s : Set E}
+    (hmap : MapsTo f s L.space)
+    (hg : ∀ x ∈ s, g x ∈ convexHull ℝ ((carrierFace L (f x) : Finset F) : Set F))
+    {t : ℝ} (ht₀ : 0 ≤ t) (ht₁ : t ≤ 1) :
+    MapsTo (fun x => (1 - t) • f x + t • g x) s L.space := by
+  intro x hx
+  refine L.convexHull_subset_space (carrierFace_mem (hmap hx)) ?_
+  exact (convex_convexHull ℝ _) (mem_convexHull_carrierFace (hmap hx)) (hg x hx)
+    (by linarith) ht₀ (by ring)
+
+theorem eqOn_simplicialApproximation_of_mem_carrierFace_singleton
+    {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [NormedAddCommGroup F] [NormedSpace ℝ F]
+    (L : Geometry.SimplicialComplex ℝ F) {f g : E → F} {s : Set E}
+    (hmap : MapsTo f s L.space)
+    (hg : ∀ x ∈ s, g x ∈ convexHull ℝ ((carrierFace L (f x) : Finset F) : Set F))
+    {x : E} (hx : x ∈ s) (hcard : (carrierFace L (f x)).card = 1) : g x = f x := by
+  obtain ⟨v, hv⟩ := Finset.card_eq_one.mp hcard
+  have hsub : convexHull ℝ ((carrierFace L (f x) : Finset F) : Set F) = {v} := by
+    rw [hv]
+    simp
+  have h1 := hg x hx
+  have h2 := mem_convexHull_carrierFace (hmap hx)
+  rw [hsub] at h1 h2
+  rw [h1, h2]
+
 end DifferentialGeometry.Topology.PiecewiseLinear

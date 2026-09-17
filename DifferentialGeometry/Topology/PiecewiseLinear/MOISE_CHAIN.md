@@ -264,3 +264,31 @@ F 车道的 `Topology/Pasting.lean` 与 `SingularPasting.lean` 正是为这种"�
 **影响**：`MOISE_CHAIN.md` 上"三条便宜箭头共用同一个缺口"里的**逼近缺口已经消掉**。
 25.2 ← 25.1 与 26.4 ← 25.2 + 26.3 两条箭头现在只差书上本身的论证，不再缺前置定理。
 30.5 ← 30.4 仍缺 `TopologicalCellComplementConnected`（拓扑 Jordan–Brouwer），那是同调侧的工作。
+
+## 单纯逼近定理已证（2026-09-17）
+
+`SimplicialApproximation.lean`：
+
+- `exists_isSubdivision_simplicialApproximation`：`K`、`L` 为有限单纯复形，`f` 在 `|K|` 上连续且映入 `|L|`，
+  则存在 `K` 的细分 `K'` 与顶点映射 `φ`，使 `∀ s ∈ K'.faces, s.image φ ∈ L.faces`，
+  且 `∀ x ∈ |K|, simplicialMap K' φ x ∈ convexHull (carrierFace L (f x))`。
+- `exists_isPiecewiseAffineOn_mapsTo_dist_lt`：先把 `L` 细分到网格 `< ε`，得到逐片仿射、**像仍落在 `|L|` 内**、
+  且与 `f` 处处相距 `< ε` 的 `g`。
+- `mapsTo_lineMap_of_mem_convexHull_carrierFace`：直线同伦 `(1-t)f + tg` 全程落在 `|L|` 内
+  （两端同在 `carrierFace L (f x)` 的凸包里）。于是逼近与原映射在 `|L|` 中同伦，边界环路的同伦类不变。
+- `eqOn_simplicialApproximation_of_mem_carrierFace_singleton`：`f x` 落在 `L` 的顶点上时逼近与 `f` 相等。
+
+审计仅标准三公理。
+
+证明是经典的星形条件：`L` 的顶点开星 `openStar L w` 覆盖 `|L|`（`exists_vertex_mem_openStar`）；
+`avoidingUnion` 闭（`isClosed_avoidingUnion`）故开星是 `|L|` 的相对开集，用 `continuousOn_iff'` 拉回成环境开集；
+`lebesgue_number_lemma_of_metric` 给 Lebesgue 数 `d`；`exists_isSubdivision_diam_lt` 把 `K` 细分到直径 `< d`，
+于是每个顶点的闭星落在半径 `d` 的球里，从而整体落在某个 `f⁻¹(openStar L w)` 内，令 `φ(v) := w`。
+关键一步 `w ∈ carrierFace L y ← y ∈ openStar L w` 直接由 `avoidingUnion` 的定义得到
+（`mem_carrierFace_of_mem_openStar`）。
+
+**为什么这条比图卡版更要紧**：`NormalSystem`（`LoopTheorem/SingularCell.lean`）的 `vertexMap` 与
+`source_faces_map` 字段要求的正是"源复形的每个面在顶点映射下的像是环境复形的面"，即单纯逼近的结论本身；
+而 `Moise252` 里的环境是带边组合流形 `K`，其图卡模型是半空间，`IsPLOn n 3`（图卡模型为 `ℝ³`）对不上。
+因此 25.2 ← 25.1 这条箭头要用的是本条，不是 `ManifoldApproximation.lean` 的图卡版。
+图卡版仍然适用于 `IsNormalSingularCell`（其环境 `M` 是无边的 `ChartedSpace (EuclideanSpace ℝ (Fin 3)) M`）。
