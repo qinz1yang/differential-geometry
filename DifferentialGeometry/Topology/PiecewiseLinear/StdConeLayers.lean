@@ -144,4 +144,54 @@ theorem isHPolytope_stdConeLayerHigh {σ' σ : ℝ} (hσ1 : σ ≤ 1) :
       simp at h0 h1 h2 h3 h4
       exact ⟨by linarith, by linarith, by linarith, by linarith, by linarith⟩
 
+theorem stdConeLayer_zero_one : stdConeLayer 0 1 = stdCone := by
+  ext z
+  exact ⟨fun h => ⟨h.1, h.2.1, h.2.2.2⟩, fun h => ⟨h.1, h.2.1, by linarith [h.1, h.2.1], h.2.2⟩⟩
+
+theorem stdConeLayer_union_consecutive {σ' σ : ℝ} (h2 : σ' ≤ σ) :
+    stdConeLayer 0 σ' ∪ stdConeLayer σ' σ = stdConeLayer 0 σ := by
+  ext z
+  constructor
+  · rintro (⟨a1, a2, a3, a4⟩ | ⟨a1, a2, a3, a4⟩)
+    · exact ⟨a1, a2, a3, by linarith⟩
+    · exact ⟨a1, a2, by linarith, a4⟩
+  · rintro ⟨a1, a2, a3, a4⟩
+    rcases le_total (z.1 + z.2) σ' with h | h
+    · exact Or.inl ⟨a1, a2, a3, h⟩
+    · exact Or.inr ⟨a1, a2, h, a4⟩
+
+theorem stdConeLayer_subset {σ' σ : ℝ} (hσ1 : σ ≤ 1) :
+    stdConeLayer σ' σ ⊆ Icc (0 : ℝ) 1 ×ˢ Icc (0 : ℝ) 1 := by
+  rintro ⟨x, y⟩ ⟨h1, h2, h3, h4⟩
+  exact ⟨⟨h1, by simp only at *; linarith⟩, ⟨h2, by simp only at *; linarith⟩⟩
+
+theorem isHPolytope_stdConeLayer {σ' σ : ℝ} (hσ1 : σ ≤ 1) : IsHPolytope (stdConeLayer σ' σ) := by
+  refine ⟨?_, Fin 4, inferInstance,
+    ![-(LinearMap.fst ℝ ℝ ℝ), -(LinearMap.snd ℝ ℝ ℝ),
+      -(LinearMap.fst ℝ ℝ ℝ) - LinearMap.snd ℝ ℝ ℝ,
+      LinearMap.fst ℝ ℝ ℝ + LinearMap.snd ℝ ℝ ℝ],
+    ![0, 0, -σ', σ], ?_⟩
+  · refine IsCompact.of_isClosed_subset (isCompact_Icc.prod isCompact_Icc) ?_
+      (stdConeLayer_subset hσ1)
+    have hrw : stdConeLayer σ' σ = ({z : ℝ × ℝ | 0 ≤ z.1} ∩ {z : ℝ × ℝ | 0 ≤ z.2}) ∩
+        ({z : ℝ × ℝ | σ' ≤ z.1 + z.2} ∩ {z : ℝ × ℝ | z.1 + z.2 ≤ σ}) := by
+      ext z
+      exact ⟨fun h => ⟨⟨h.1, h.2.1⟩, ⟨h.2.2.1, h.2.2.2⟩⟩, fun h => ⟨h.1.1, h.1.2, h.2.1, h.2.2⟩⟩
+    rw [hrw]
+    exact ((isClosed_le continuous_const continuous_fst).inter
+      (isClosed_le continuous_const continuous_snd)).inter
+      ((isClosed_le continuous_const (continuous_fst.add continuous_snd)).inter
+        (isClosed_le (continuous_fst.add continuous_snd) continuous_const))
+  · ext z
+    constructor
+    · rintro ⟨h1, h2, h3, h4⟩ i
+      fin_cases i <;> simp <;> linarith
+    · intro h
+      have h0 := h 0
+      have h1 := h 1
+      have h2 := h 2
+      have h3 := h 3
+      simp at h0 h1 h2 h3
+      exact ⟨by linarith, by linarith, by linarith, by linarith⟩
+
 end DifferentialGeometry.Topology.PiecewiseLinear

@@ -113,4 +113,41 @@ theorem layerHighMap_mem_convexHull {σ' σ : ℝ} (hσ' : 0 < σ') (hσ : σ' <
   · field_simp
     ring
 
+theorem centralConeMap_mem_convexHull {σ : ℝ} (hσ : 0 < σ) (vc v₁ v₂ : F)
+    {z : ℝ × ℝ} (hz : z ∈ stdConeLayer 0 σ) :
+    centralConeMap σ vc v₁ v₂ z ∈ convexHull ℝ ({vc, v₁, v₂} : Set F) := by
+  obtain ⟨h1, h2, -, h4⟩ := hz
+  rw [centralConeMap_eq_combo]
+  refine mem_convexHull_triple ?_ (by positivity) (by positivity) (by ring)
+  have hkey : 1 - z.1 / σ - z.2 / σ = (σ - z.1 - z.2) / σ := by
+    field_simp
+  rw [hkey]
+  exact div_nonneg (by linarith) hσ.le
+
+theorem eqOn_layerLow_central {σ' σ : ℝ} (hσ' : 0 < σ') (hσ : σ' < σ) (v₀ v₁ v₂ : F) :
+    EqOn (layerLowMap σ' σ v₀ v₁ v₂) (centralConeMap σ' 0 v₀ v₁)
+      {z : ℝ × ℝ | 0 ≤ z.1 ∧ 0 ≤ z.2 ∧ z.1 + z.2 = σ'} :=
+  fun _ hz => eqOn_of_affineMap_eq_of_mem_segment
+    ((layerLowMap_vertex₀ hσ' hσ v₀ v₁ v₂).trans (centralConeMap_vertex₁ hσ' 0 v₀ v₁).symm)
+    ((layerLowMap_vertex₁ hσ' hσ v₀ v₁ v₂).trans (centralConeMap_vertex₂ hσ' 0 v₀ v₁).symm)
+    (sum_eq_subset_segment hσ' hz)
+
+theorem eqOn_layerHigh_central {σ' σ : ℝ} (hσ' : 0 < σ') (hσ : σ' < σ) (v₁ v₂ v₃ : F) :
+    EqOn (layerHighMap σ' σ v₁ v₂ v₃) (centralConeMap σ 0 v₂ v₃)
+      {z : ℝ × ℝ | 0 ≤ z.1 ∧ 0 ≤ z.2 ∧ z.1 + z.2 = σ} :=
+  fun _ hz => eqOn_of_affineMap_eq_of_mem_segment
+    ((layerHighMap_vertex₂ hσ' hσ v₁ v₂ v₃).trans
+      (centralConeMap_vertex₁ (lt_trans hσ' hσ) 0 v₂ v₃).symm)
+    ((layerHighMap_vertex₃ hσ' hσ v₁ v₂ v₃).trans
+      (centralConeMap_vertex₂ (lt_trans hσ' hσ) 0 v₂ v₃).symm)
+    (sum_eq_subset_segment (lt_trans hσ' hσ) hz)
+
+theorem eqOn_central_central {σ : ℝ} (hσ : 0 < σ) (vc v₁ v₂ : F) :
+    EqOn (centralConeMap σ vc v₁ v₂) (centralConeMap σ 0 v₁ v₂)
+      {z : ℝ × ℝ | 0 ≤ z.1 ∧ 0 ≤ z.2 ∧ z.1 + z.2 = σ} :=
+  fun _ hz => eqOn_of_affineMap_eq_of_mem_segment
+    ((centralConeMap_vertex₁ hσ vc v₁ v₂).trans (centralConeMap_vertex₁ hσ 0 v₁ v₂).symm)
+    ((centralConeMap_vertex₂ hσ vc v₁ v₂).trans (centralConeMap_vertex₂ hσ 0 v₁ v₂).symm)
+    (sum_eq_subset_segment hσ hz)
+
 end DifferentialGeometry.Topology.PiecewiseLinear
