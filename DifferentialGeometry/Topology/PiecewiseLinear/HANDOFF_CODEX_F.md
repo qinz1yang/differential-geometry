@@ -2159,3 +2159,11 @@ F-M1 仍为 partial。单个旧三角形的全部纤维及逐边对应已闭合�
 `PrismArcPatch.lean` 的 `isPLBall_prism_ends_union_arc` 用实际棱柱边界上的两次沿弧粘盘，证明两端盘与一条边界弧上方的侧面带之并是 PL 二维盘。`FreeCellSlab.lean` 的 `isPLBall_slab_patch_of_isFreeDiskCell` 从实际截面盘分解中的自由胞腔及精确截面边界等式，生产原薄片中对应的相交盘。自由弧等于胞腔与整层边界之交由子流形边界单调性导出，棱柱模型沿原边界子复形保持此交；没有增添相交盘球性或侧面带参数化假设。
 
 聚焦检查：`SimplexSlabPrism` exit=0（8.8 秒）、`SimplexSlab` exit=0（9.3 秒）、`SlabFaceTransport` exit=0（8.4 秒）、`PrismArcPatch` exit=0（11.3 秒）、`FreeCellSlab` exit=0（9.8 秒），均零 warning。`AuditF237.lean` 六项仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步把此相交盘生产者接入 d0 外自由胞腔的实际选择，证明凸胞腔及可推移条件并执行有限删除，再做 M3。S.4 M2/M3、夜间 F-M1 整体及 I1 尚未完成。下一审计文件 `AuditF238.lean`。
+
+### 19.89 S.4 M2：闭星外实际凸胞腔的选择与单步相对环境删除
+
+`Topology/SlabBoundary.lean` 证明闭集交的精确边界公式，以及任意实范数空间中非零连续线性高度的闭薄片边界公式。`HeightFreeSlab.lean` 的 `exists_convex_slab_cell_of_ne_closedStar` 从实际填充、精确参数边界的水平盘和层内唯一顶点 p，在 d0 不等于整层时实际选出不含 p 的四面体 T。其闭薄片胞腔 C 是凸 PL 三维球，与整体薄片边界的交是 PL 二维盘，且此交包含于 frontier C；未把自由胞腔、三维球性或可删相交盘作为额外输入。
+
+`HeightSlabSurgery.lean` 先从零指标生产整体填充薄片边界的 PL 二维球性。`exists_isPLHomeomorphOn_delete_slab_cell` 随后消费上述实际胞腔与固定 17.9 输入，构造环境 PL 自同胚，将 S 送到 `closure (S \ C) ∪ closure (frontier C \ S)`，固定 `closure (S \ C)` 及给定凸开邻域 W 外。C 位于 W 的条件由薄片紧致性和 `Topology/ConvexFrontier.lean` 的边界包含定理证明，不要求 W 预先包含三维填充，也不假设整体薄片为 PL 三维球。
+
+聚焦检查：`SlabBoundary` exit=0（7.9 秒）、`HeightFreeSlab` exit=0（10.2 秒）、`HeightSlabSurgery` exit=0（10.8 秒），均零 warning。`AuditF238.lean` 五项仅依赖 `propext`、`Classical.choice`、`Quot.sound`。已闭合实际单步删除；下一步证明删除后的区域与截面分解保留归纳条件，有限迭代到残余闭星锥，再做 M3。S.4 M2/M3、夜间 F-M1 整体及 I1 尚未完成。下一审计文件 `AuditF239.lean`。
