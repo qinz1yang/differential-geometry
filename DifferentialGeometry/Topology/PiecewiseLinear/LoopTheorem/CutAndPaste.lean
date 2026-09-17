@@ -1242,7 +1242,11 @@ theorem exists_boundary_surgery_cell_of_boundaryBranch
        doublePointSet G G.domain ⊆ doublePointSet D D.domain ∧
        Disjoint (doublePointSet G G.domain) (hD.singularSet.branchCarrier c) ∧
        Nonempty (NormalSingularSetTriangulation G BdM) ∧
-       Nonempty (NormalSingularCellData G BdM B) := by
+       Nonempty (NormalSingularCellData G BdM B) ∧
+       ∃ (x y : M) (σ : Path x y) (ω : Path y x)
+          (e : loopCircle ≃ₜ frontier G.domain),
+         Set.range σ = D '' U ∧ Set.range ω = D '' V ∧
+           ∀ θ, G (e θ) = pathToCircle (σ.trans ω) θ := by
   obtain ⟨A, C, hA, hC, hAC, hcover, hAcoordinate, -, p, q, r, s, g, hg, hcompat,
     D₁, D₂, D₃, hdomains, hinter₁₂, hinter₂₃, hA₁, -, -, hC₃, hdisjoint₁₃,
     hfun₁, -, hfun₃, htrace₁, htrace₃, hcut₁, hcut₃⟩ :=
@@ -1310,6 +1314,60 @@ theorem exists_boundary_surgery_cell_of_boundaryBranch
       _ = D₃ '' (f₃ '' T) := image_comp D₃ f₃ T
       _ = D₃ '' (D₃.domain ∩ frontier D.domain) := congrArg (D₃ '' ·) hTimage
       _ = D '' (D₃.domain ∩ frontier D.domain) := by rw [hfun₃]
+  have hRT : R ∩ T = {a, b} := by
+    apply Subset.antisymm
+    · rintro x ⟨hxR, hxT⟩
+      have hxP : x ∈ P :=
+        hP.isPolyhedron.isClosed.frontier_subset (hcutP.snd_subset hxR)
+      have hxQ : x ∈ Q :=
+        hQ.isPolyhedron.isClosed.frontier_subset (hcutQ.snd_subset hxT)
+      exact hcutP.inter_eq.subset ⟨⟨hxP, hxQ⟩, hxR⟩
+    · rintro x (rfl | rfl)
+      · exact ⟨hcutP.snd.left_mem, hcutQ.snd.left_mem⟩
+      · exact ⟨hcutP.snd.right_mem, hcutQ.snd.right_mem⟩
+  obtain ⟨a', b', ρ, κ, e, hρrange, hκrange, he⟩ :=
+    exists_boundaryParam_paths_of_isCutPair_union hcutP.snd hcutQ.snd hRT hfrontG
+  let σ : Path (G.boundary a') (G.boundary b') := ρ.map G.boundary.continuous
+  let ω : Path (G.boundary b') (G.boundary a') := κ.map G.boundary.continuous
+  have hσrange : Set.range σ = D '' (D₁.domain ∩ frontier D.domain) := by
+    calc
+      Set.range σ = G '' R := by
+        ext z
+        constructor
+        · rintro ⟨t, rfl⟩
+          refine ⟨ρ t, ?_, rfl⟩
+          rw [← hρrange]
+          exact ⟨t, rfl⟩
+        · rintro ⟨w, hwR, rfl⟩
+          rw [← hρrange] at hwR
+          obtain ⟨t, htw⟩ := hwR
+          refine ⟨t, ?_⟩
+          change G (ρ t) = G w
+          exact congrArg G htw
+      _ = D '' (D₁.domain ∩ frontier D.domain) := hGR
+  have hωrange : Set.range ω = D '' (D₃.domain ∩ frontier D.domain) := by
+    calc
+      Set.range ω = G '' T := by
+        ext z
+        constructor
+        · rintro ⟨t, rfl⟩
+          refine ⟨κ t, ?_, rfl⟩
+          rw [← hκrange]
+          exact ⟨t, rfl⟩
+        · rintro ⟨w, hwT, rfl⟩
+          rw [← hκrange] at hwT
+          obtain ⟨t, htw⟩ := hwT
+          refine ⟨t, ?_⟩
+          change G (κ t) = G w
+          exact congrArg G htw
+      _ = D '' (D₃.domain ∩ frontier D.domain) := hGT
+  have hboundaryParam : ∀ θ, G (e θ) = pathToCircle (σ.trans ω) θ := by
+    intro θ
+    rw [he θ]
+    obtain ⟨t, rfl⟩ := unitInterval_to_loopCircle_surjective θ
+    simp only [pathToCircle_coe]
+    change ((ρ.trans κ).map G.boundary.continuous) t = (σ.trans ω) t
+    rw [Path.map_trans]
   have hboundaryRange : Set.range G.boundary = G '' frontier G.domain := by
     ext y
     constructor
@@ -2038,8 +2096,9 @@ theorem exists_boundary_surgery_cell_of_boundaryBranch
     hcut₁.fst.left_mem, hcut₁.fst.right_mem,
     hcut₃.fst.left_mem, hcut₃.fst.right_mem, hcompat, horientation,
     hpullback_mem, hpullback_inj, hpullback_apply, hpullback_disjoint_C,
-    hGimage, hrange, himageBoundary, hrangeB, hinterB, hlocallyInjective, hfiber,
-    hdouble, hremove, hGsingular, hGnormal⟩
+     hGimage, hrange, himageBoundary, hrangeB, hinterB, hlocallyInjective, hfiber,
+     hdouble, hremove, hGsingular, hGnormal,
+     G.boundary a', G.boundary b', σ, ω, e, hσrange, hωrange, hboundaryParam⟩
 
 end NormalSingularCellData
 
@@ -2227,7 +2286,7 @@ theorem exists_boundary_surgery_cell_with_simplicialComplexity_lt
     hA, hC, hAC, hcover, hU, hV, hUV, hg, hpA, hqA, hrC, hsC,
     hcompat, horientation, hpullback, hinj, hfactor, hdisjoint,
     hGimage, hboundary, himageBoundary, hboundaryB, hinterB, hlocal, hfiber,
-    hdouble, hremove, htriangulated, hnormal⟩ :=
+    hdouble, hremove, htriangulated, hnormal, -⟩ :=
     hD.exists_boundary_surgery_cell_of_boundaryBranch hc
   have hpD : p ∈ D.domain := by
     have : p ∈ hD.branchPreimage c := by

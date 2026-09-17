@@ -10,6 +10,174 @@ namespace DifferentialGeometry.Topology.PiecewiseLinear
 
 universe u
 
+open Classical in
+theorem exists_boundaryParam_paths_of_isCutPair_union
+    {P R T : Set (EuclideanSpace ℝ (Fin 2))}
+    {a b : EuclideanSpace ℝ (Fin 2)}
+    (hR : Schoenflies.IsArcBetween R a b)
+    (hT : Schoenflies.IsArcBetween T a b)
+    (hinter : R ∩ T = {a, b}) (hfront : frontier P = R ∪ T) :
+    ∃ (a' b' : frontier P) (ρ : Path a' b') (κ : Path b' a')
+        (e : loopCircle ≃ₜ frontier P),
+      Set.range (fun t => ((ρ t : frontier P) : EuclideanSpace ℝ (Fin 2))) = R ∧
+        Set.range (fun t => ((κ t : frontier P) : EuclideanSpace ℝ (Fin 2))) = T ∧
+          ∀ θ, e θ = pathToCircle (ρ.trans κ) θ := by
+  have haR := hR.left_mem
+  have hbR := hR.right_mem
+  obtain ⟨f, hfc, hfi, hfimage, hf0, hf1⟩ := hR
+  obtain ⟨g, hgc, hgi, hgimage, hg0, hg1⟩ := hT.reverse
+  have ha : a ∈ frontier P := by
+    rw [hfront]
+    exact Or.inl haR
+  have hb : b ∈ frontier P := by
+    rw [hfront]
+    exact Or.inl hbR
+  let a' : frontier P := ⟨a, ha⟩
+  let b' : frontier P := ⟨b, hb⟩
+  have hfmem (t : unitInterval) : f t ∈ frontier P := by
+    rw [hfront]
+    apply Or.inl
+    rw [← hfimage]
+    exact ⟨t, t.property, rfl⟩
+  have hgmem (t : unitInterval) : g t ∈ frontier P := by
+    rw [hfront]
+    apply Or.inr
+    rw [← hgimage]
+    exact ⟨t, t.property, rfl⟩
+  let ρ : Path a' b' :=
+    { toFun := fun t => ⟨f t, hfmem t⟩
+      continuous_toFun := hfc.domRestrict.subtype_mk _
+      source' := Subtype.ext hf0
+      target' := Subtype.ext hf1 }
+  let κ : Path b' a' :=
+    { toFun := fun t => ⟨g t, hgmem t⟩
+      continuous_toFun := hgc.domRestrict.subtype_mk _
+      source' := Subtype.ext hg0
+      target' := Subtype.ext hg1 }
+  have hrangeρ : Set.range (fun t : unitInterval => ρ t) =
+      {x : frontier P | (x : EuclideanSpace ℝ (Fin 2)) ∈ R} := by
+    ext x
+    constructor
+    · rintro ⟨t, rfl⟩
+      change f t ∈ R
+      rw [← hfimage]
+      exact ⟨t, t.property, rfl⟩
+    · intro hx
+      change (x : EuclideanSpace ℝ (Fin 2)) ∈ R at hx
+      rw [← hfimage] at hx
+      obtain ⟨t, ht, htx⟩ := hx
+      exact ⟨⟨t, ht⟩, Subtype.ext htx⟩
+  have hrangeκ : Set.range (fun t : unitInterval => κ t) =
+      {x : frontier P | (x : EuclideanSpace ℝ (Fin 2)) ∈ T} := by
+    ext x
+    constructor
+    · rintro ⟨t, rfl⟩
+      change g t ∈ T
+      rw [← hgimage]
+      exact ⟨t, t.property, rfl⟩
+    · intro hx
+      change (x : EuclideanSpace ℝ (Fin 2)) ∈ T at hx
+      rw [← hgimage] at hx
+      obtain ⟨t, ht, htx⟩ := hx
+      exact ⟨⟨t, ht⟩, Subtype.ext htx⟩
+  have hmid : f 1 = g 0 := hf1.trans hg0.symm
+  have hclose : g 1 = f 0 := hg1.trans hf0.symm
+  have hmeet : ∀ z ∈ f '' Set.Icc 0 1, z ∈ g '' Set.Icc 0 1 →
+      z = f 0 ∨ z = f 1 := by
+    intro z hzR hzT
+    rw [hfimage] at hzR
+    rw [hgimage] at hzT
+    have hz : z ∈ ({a, b} : Set (EuclideanSpace ℝ (Fin 2))) :=
+      hinter ▸ ⟨hzR, hzT⟩
+    rcases hz with rfl | rfl
+    · exact Or.inl hf0.symm
+    · exact Or.inr hf1.symm
+  have hloop : Schoenflies.IsLoop (Schoenflies.concatenate f g) :=
+    Schoenflies.IsLoop.concatenate hfc hfi hgc hgi hmid hclose hmeet
+  have hline (t : ℝ) (ht : t ∈ Set.Icc (0 : ℝ) 1) :
+      (((ρ.trans κ) ⟨t, ht⟩ : frontier P) : EuclideanSpace ℝ (Fin 2)) =
+        Schoenflies.concatenate f g t := by
+    rw [Path.trans_apply]
+    split_ifs with htHalf
+    · change t ≤ 1 / 2 at htHalf
+      change f (2 * t) = Schoenflies.concatenate f g t
+      rw [Schoenflies.concatenate, if_pos htHalf]
+    · change ¬t ≤ 1 / 2 at htHalf
+      change g (2 * t - 1) = Schoenflies.concatenate f g t
+      rw [Schoenflies.concatenate, if_neg htHalf]
+  let p : Path a' a' := ρ.trans κ
+  let F : loopCircle → frontier P := pathToCircle p
+  have hFcontinuous : Continuous F := by
+    simpa [F] using (pathToCircle p).continuous
+  have hFinjective : Function.Injective F := by
+    intro θ η hθη
+    let t := AddCircle.equivIco (1 : ℝ) 0 θ
+    let s := AddCircle.equivIco (1 : ℝ) 0 η
+    have htCircle : (((t : ℝ) : loopCircle)) = θ := by
+      simp [t]
+    have hsCircle : (((s : ℝ) : loopCircle)) = η := by
+      simp [s]
+    have htIco : (t : ℝ) ∈ Set.Ico (0 : ℝ) 1 := by
+      simpa [t] using t.property
+    have hsIco : (s : ℝ) ∈ Set.Ico (0 : ℝ) 1 := by
+      simpa [s] using s.property
+    have htI : (t : ℝ) ∈ Set.Icc (0 : ℝ) 1 := ⟨htIco.1, htIco.2.le⟩
+    have hsI : (s : ℝ) ∈ Set.Icc (0 : ℝ) 1 := ⟨hsIco.1, hsIco.2.le⟩
+    have hpEq : p ⟨t, htI⟩ = p ⟨s, hsI⟩ := by
+      calc
+        p ⟨t, htI⟩ = pathToCircle p ((t : ℝ) : loopCircle) :=
+          (pathToCircle_coe p ⟨t, htI⟩).symm
+        _ = pathToCircle p θ := congrArg (pathToCircle p) htCircle
+        _ = pathToCircle p η := hθη
+        _ = pathToCircle p ((s : ℝ) : loopCircle) :=
+          congrArg (pathToCircle p) hsCircle.symm
+        _ = p ⟨s, hsI⟩ := pathToCircle_coe p ⟨s, hsI⟩
+    have hreal : Schoenflies.concatenate f g t = Schoenflies.concatenate f g s := by
+      rw [← hline t htI, ← hline s hsI]
+      exact congrArg Subtype.val hpEq
+    have hts : (t : ℝ) = s := hloop.injOn htIco hsIco hreal
+    calc
+      θ = ((t : ℝ) : loopCircle) := htCircle.symm
+      _ = ((s : ℝ) : loopCircle) := congrArg (fun x : ℝ => (x : loopCircle)) hts
+      _ = η := hsCircle
+  have hpRange : Set.range (fun t : unitInterval => p t) = Set.univ := by
+    rw [show p = ρ.trans κ from rfl, Path.trans_range, hrangeρ, hrangeκ]
+    ext x
+    simp only [Set.mem_union, Set.mem_ofPred_eq, Set.mem_univ, iff_true]
+    exact (congrArg (fun S : Set (EuclideanSpace ℝ (Fin 2)) =>
+      (x : EuclideanSpace ℝ (Fin 2)) ∈ S) hfront).mp x.property
+  have hFsurjective : Function.Surjective F := by
+    intro x
+    have hx : x ∈ Set.range p := by rw [hpRange]; exact Set.mem_univ x
+    obtain ⟨t, rfl⟩ := hx
+    exact ⟨((t : unitInterval).val : loopCircle), pathToCircle_coe p t⟩
+  let e₀ : loopCircle ≃ frontier P := Equiv.ofBijective F ⟨hFinjective, hFsurjective⟩
+  let e : loopCircle ≃ₜ frontier P :=
+    Continuous.homeoOfEquivCompactToT2 (f := e₀) hFcontinuous
+  refine ⟨a', b', ρ, κ, e, ?_, ?_, ?_⟩
+  · ext x
+    constructor
+    · rintro ⟨t, rfl⟩
+      change f t ∈ R
+      rw [← hfimage]
+      exact ⟨t, t.property, rfl⟩
+    · intro hx
+      rw [← hfimage] at hx
+      obtain ⟨t, ht, htx⟩ := hx
+      exact ⟨⟨t, ht⟩, htx⟩
+  · ext x
+    constructor
+    · rintro ⟨t, rfl⟩
+      change g t ∈ T
+      rw [← hgimage]
+      exact ⟨t, t.property, rfl⟩
+    · intro hx
+      rw [← hgimage] at hx
+      obtain ⟨t, ht, htx⟩ := hx
+      exact ⟨⟨t, ht⟩, htx⟩
+  · intro θ
+    rfl
+
 private theorem IsPLOn.comp_isPiecewiseAffineOn
     {n m p : ℕ} {M : Type u} [TopologicalSpace M]
     [ChartedSpace (EuclideanSpace ℝ (Fin m)) M]
