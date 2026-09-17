@@ -667,6 +667,13 @@
   `Topology/Homology/HurewiczLowDegrees.lean`。L.4 仍需把覆盖复形提升为携带正规系统相容性与严格降复杂度的
   `DoubleCoverReduction`；C.5 的覆盖存在性本身已闭合。
 
+- 2026-09-17（H-M1，H.4a / H.6 当前整合树复核）：`SurfaceHomology.lean` 新增
+  `IsCombinatorialManifold.bettiOne_pos_of_isOrientable_of_eulerChar_ne_two`，直接由已证闭连通可定向曲面公式
+  `χ=2-b₁` 得到 H.4a 消费端点。`MayerVietorisSubcomplex.lean` 的 28.11 端点
+  `exists_mem_inter_of_map_eq_zero` 及 Betti 上界在当前整合树重新确认。两模块聚焦重编 exit=0、零 warning，分别为
+  14.4 秒与 10.1 秒；`.lake/scratch/AuditHM1Current.lean` 审计九个新端点、直接生产者与 H.6 端点，全部只含
+  `propext`、`Classical.choice`、`Quot.sound`。未 import 或传递经过 `Topology/Homology/HurewiczLowDegrees.lean`。
+
 ## 7. 决策与风险
 
 - 不采用 Bing 定理 7 的“保留单形”强形式，只用 Moise §8/§35 的紧致图卡归纳（书中 `chap:two-set-gluing` 的方案）。

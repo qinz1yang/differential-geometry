@@ -481,3 +481,17 @@ Reduced/MayerVietorisCoefficients, Reduced/PointClasses}`（`REUSE_AUDIT.md` §2
 - 聚焦检查 exit=0、10.2 秒、零 warning；`fresh.py` 报相对整合基线七个改动模块 olean 全部新鲜、零禁用项。
   `.lake/scratch/AuditHM9.lean` 审计两个新端点和十四个关键复用声明，exit=0，全部只含
   `propext`、`Classical.choice`、`Quot.sound`。H-M9/B.8 无未闭合项。
+
+## 8. 2026-09-17 新批次
+
+### H-M1 — done，H.4a 顶维基本类与 H.6 子复形 Mayer–Vietoris
+
+- `SurfaceHomology.lean` 的闭连通组合曲面顶维计算已在 `3fdf6d58e` 交付：可定向时 `b₂=1`，不可定向时 `b₂=0`，并有
+  `χ=2-b₁` / `χ=1-b₁`。本里程碑新增直接消费者
+  `IsCombinatorialManifold.bettiOne_pos_of_isOrientable_of_eulerChar_ne_two`。
+- `MayerVietorisSubcomplex.lean` 的 `exists_mem_inter_of_map_eq_zero` 已在 `c9fff0308` 交付：有限复形的两个子复形覆盖、
+  任意次数、任意环与系数模，严格给出 28.11；相容开邻域强形变收缩来自 `11826f868`。
+- `PHASE3_APPROXIMATION_PLAN.md` 的 H.4、H.6 与 R3 陈旧状态已同步；22.8–22.10 是否仍为主链前置留给 H-M2 的证据判断。
+- 当前整合树聚焦重编 `SurfaceHomology` exit=0（14.4 秒）、`MayerVietorisSubcomplex` exit=0（10.1 秒），均零 warning；
+  `.lake/scratch/AuditHM1Current.lean` 审计九个 H.4a/H.6 端点，exit=0，全部只含
+  `propext`、`Classical.choice`、`Quot.sound`。
