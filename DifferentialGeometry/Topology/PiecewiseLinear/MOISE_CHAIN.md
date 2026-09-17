@@ -399,7 +399,21 @@ F 车道的 `Topology/Pasting.lean` 与 `SingularPasting.lean` 正是为这种"�
 `plManifoldMapApproximation`（目标是带 `plGroupoid` 的度量流形，相对版）。
 书里"不妨设某映射是 PL 的"这句话，按目标是向量空间 / 多面体 / 流形三种情形，分别对应这三条。
 
-**还缺的一步**（写 `Moise252 ← Moise251` 时会立刻撞上）：`loopCircle ≃ₜ |J|` 这个参数化本身。
-树里 `LoopTheorem/CellGluing.lean` 用 `pathToCircle` 加紧致到 Hausdorff 的连续双射造过
-`loopCircle ≃ₜ frontier P`（约 155 行），`NormalSystem.boundaryParam` 也是这个类型。
-所以材料在，只是还没有"任意 PL 1-球面都能这样参数化"的独立陈述。这条很短，值得单独补。
+## 多边形圆周的参数化已证（2026-09-17）
+
+`CircleParametrization.lean`：
+
+- `exists_ne_mem_of_isPLSphere_one`：PL 1-球面至少有两个不同的点（用 `stdSimplexBoundary 2` 的两个顶点）。
+- `nonempty_homeomorph_loopCircle_of_isPLSphere_one`：任意 PL 1-球面 `S` 都有 `loopCircle ≃ₜ ↥S`。
+
+证明：`CircleArcs.lean` 的 `exists_arc_decomposition_of_isPLSphere_one` 把 `S` 分成两条弧 `A`、`B`，
+`A ∪ B = S`、`A ∩ B = {p, q}`，各自由 `Icc 0 1` 的 PL 同胚参数化。把第一条正向、第二条反向接起来得
+`Path ⟨p⟩ ⟨p⟩`，`pathToCircle` 给出 `loopCircle → ↥S`。单射性按 `Path.trans_apply` 分四种情形：
+两端同在前半段或同在后半段时由弧的单射性得出；跨段时公共值落在 `A ∩ B = {p, q}` 里，
+取值 `p` 只能是两端点 `t₁ = 0`、`t₂ = 1`（在 `AddCircle 1` 里同一点），取值 `q` 则与半段的严格不等式矛盾。
+满射性由 `A ∪ B = S`。最后用紧致到 Hausdorff 的连续双射是同胚。审计仅标准三公理。
+
+这条正好配 `NormalSystem.boundaryParam : loopCircle ≃ₜ frontier sourceComplex.space`：
+`sourceComplex.space` 是 PL 2-球，`frontier` 是 PL 1-球面（`IsPLBall.isPLSphere_frontier`），
+所以那条字段现在可以由定理给出，不必当作数据携带。
+`exists_isPiecewiseAffineOn_freeLoop_homotopic` 需要的参数化输入也由这条供给。
