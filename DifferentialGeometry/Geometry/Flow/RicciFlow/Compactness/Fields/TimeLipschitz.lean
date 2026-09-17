@@ -1,4 +1,8 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.MetricExtension
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Endpoint.TimeLipschitz
+
+section
+
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
@@ -346,3 +350,70 @@ theorem exists_metric_extension_time_lipschitz_constant
 end ConvergenceField
 end CheegerGromovCompactness
 end DifferentialGeometry
+
+end
+
+end
+
+noncomputable section
+
+open Set
+open scoped Manifold ContDiff
+
+namespace DifferentialGeometry.CheegerGromovCompactness
+
+open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Geometry.Curvature
+
+variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+  [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+
+private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
+
+theorem exists_metric_extension_time_lipschitz_constant_on_closed_interval
+    {X : PointedFlowSeq (I := I)} {P : PointedRiemannianManifold (I := I)}
+    {subseq : ℕ → ℕ} (Φ : PointedCGHMaps (I := I) X P subseq)
+    (R : letI : TopologicalSpace P.M := P.topology
+      letI : ChartedSpace H P.M := P.charted
+      letI : IsManifold I ∞ P.M := P.smooth
+      SmoothRiemannianMetric I P.M)
+    (bf : BumpFamily Φ) (hsrc : SourceIsSigmaCompact Φ) (htgt : TargetIsSigmaCompact Φ)
+    {a b : ℝ} (hab : a < b) (hslab : Icc a b ⊆ X.D.carrier)
+    (hregular : Ico a b ⊆ X.D.regular) :
+    letI : TopologicalSpace P.M := P.topology
+    letI : ChartedSpace H P.M := P.charted
+    letI : T2Space P.M := P.t2
+    letI : IsManifold I ∞ P.M := P.smooth
+    letI : SigmaCompactSpace P.M := P.sigmaCompact
+    ∀ i : ℕ, ∀ K : Set P.M, IsCompact K → ∀ p : ℕ,
+      ∃ L : ℝ, 0 ≤ L ∧ ∀ s ∈ Icc a b, ∀ t ∈ Icc a b, ∀ q ≤ p, ∀ x ∈ K,
+        metricDerivNorm q (gSeqExt Φ R bf hsrc htgt i s)
+          (gSeqExt Φ R bf hsrc htgt i t) R x ≤ L * |s - t| := by
+  let : TopologicalSpace P.M := P.topology
+  let : ChartedSpace H P.M := P.charted
+  let : T2Space P.M := P.t2
+  let : IsManifold I ∞ P.M := P.smooth
+  let : SigmaCompactSpace P.M := P.sigmaCompact
+  intro i
+  apply exists_metric_extension_time_lipschitz_constant Φ R bf hsrc htgt (Icc a b) i
+  let : TopologicalSpace (SourceDomain Φ i) := sourceDomTop Φ i
+  let : ChartedSpace H (SourceDomain Φ i) := sourceDomCharted Φ i
+  let : T2Space (SourceDomain Φ i) := sourceDomT2 Φ i
+  let : IsManifold I ∞ (SourceDomain Φ i) := sourceDomSmooth Φ i
+  let : SigmaCompactSpace (SourceDomain Φ i) := sourceDomSigmaOf Φ i (hsrc i)
+  let : SigmaCompactSpace ↥(sourceOpen Φ i) := sourceDomSigmaOf Φ i (hsrc i)
+  let : T2Space ↥(sourceOpen Φ i) := sourceDomT2 Φ i
+  let : IsManifold I 1 (SourceDomain Φ i) := IsManifold.of_le (n := ∞) (by decide)
+  let : IsManifold I (∞ + 1) (SourceDomain Φ i) := by
+    change IsManifold I ∞ (SourceDomain Φ i)
+    infer_instance
+  intro C hC p
+  obtain ⟨L, hL, hlip⟩ := exists_metric_time_lipschitz_constant_on_compact_of_solution
+    (sourceFlow Φ i (hsrc i) (htgt i))
+    (isSolutionOn_sourceFlow Φ i (hsrc i) (htgt i))
+    hab hslab hregular (sourceMetricRestriction Φ R i) hC p
+  exact ⟨L, hL, fun s t hs ht q hq y hy => hlip q hq s hs t ht y hy⟩
+
+end DifferentialGeometry.CheegerGromovCompactness
+
+end

@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.MetricExtension
 
+section
 
 set_option autoImplicit false
 
@@ -105,6 +106,58 @@ theorem exists_pointed_pullback_metric_extensions
     inter_subset_right, ?_⟩
   intro t x hx v w
   have heq := gSeqExt_inner_of_mem Phi P.metric bf hsrc htgt i t x hx.2 v w
+  rw [hchi x hx.1, one_smul, sub_self, zero_smul, add_zero] at heq
+  exact heq.trans (pointed_srcMetric_inner_eq_pullback Phi hsrc htgt i t x hx.2 v w)
+
+end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
+
+end
+
+end
+
+set_option autoImplicit false
+
+noncomputable section
+
+namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
+
+open Bundle Filter Set
+open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.CheegerGromovCompactness
+open scoped Manifold ContDiff Topology
+
+universe u uE uH
+
+variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E] [CompleteSpace E]
+  {H : Type uH} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+
+attribute [local instance] PointedRiemannianManifold.topology
+  PointedRiemannianManifold.charted PointedRiemannianManifold.smooth
+  PointedRiemannianManifold.t2 PointedRiemannianManifold.sigmaCompact
+  PointedFlowData.topology PointedFlowData.charted PointedFlowData.smooth
+  PointedFlowData.sigmaCompact
+
+theorem eventually_gSeqExt_eq_pullback
+    {X : PointedFlowSeq.{u, uE, uH} (I := I)}
+    {P : PointedRiemannianManifold.{u, uE, uH} (I := I)} {phi : ℕ → ℕ}
+    (Phi : PointedCGHMaps (I := I) X P phi)
+    (R : SmoothRiemannianMetric I P.M)
+    (bf : BumpFamily Phi) (hsrc : SourceIsSigmaCompact Phi) (htgt : TargetIsSigmaCompact Phi) :
+    ∀ K : Set P.M, IsCompact K → ∀ᶠ i in atTop,
+      ∃ U : Set P.M, IsOpen U ∧ K ⊆ U ∧ U ⊆ Phi.source i ∧
+        ∀ t : ℝ, ∀ x ∈ U, ∀ v w : TangentSpace I x,
+          (gSeqExt Phi R bf hsrc htgt i t).inner x v w =
+            ((X.term (phi i)).S.base.metric t).inner (Phi.map i x)
+              (mfderiv I I (Phi.map i) x v) (mfderiv I I (Phi.map i) x w) := by
+  intro K hK
+  obtain ⟨N, hN⟩ := bf.grow_cover K hK
+  filter_upwards [Filter.eventually_ge_atTop N] with i hi
+  obtain ⟨W, hW, hgrow, hchi⟩ := bf.chi_one i
+  refine ⟨W ∩ Phi.source i, hW.inter (Phi.source_open i),
+    fun x hx => ⟨hgrow (hN i hi hx), bf.grow_subset i (hN i hi hx)⟩,
+    inter_subset_right, ?_⟩
+  intro t x hx v w
+  have heq := gSeqExt_inner_of_mem Phi R bf hsrc htgt i t x hx.2 v w
   rw [hchi x hx.1, one_smul, sub_self, zero_smul, add_zero] at heq
   exact heq.trans (pointed_srcMetric_inner_eq_pullback Phi hsrc htgt i t x hx.2 v w)
 
