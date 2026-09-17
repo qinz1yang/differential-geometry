@@ -465,8 +465,11 @@ F 车道的 `Topology/Pasting.lean` 与 `SingularPasting.lean` 正是为这种"�
 7. `PrismArc.lean`：沿 PL 参数化把棱柱搬到嵌入的 PL 弧上
    （`exists_isPiecewiseAffineOn_prism_of_isPLHomeomorphOn`，同时给出两条竖直边的值），
    再把两条弧的棱柱沿 `{p, q} × [0,1]` 拼起来，得到**嵌入的 PL 圆周上的棱柱**
-   （`exists_isPiecewiseAffineOn_prism_of_isPLSphere_one`）。圆周版目前只带"两端映进凸集则整体映进"
-   的结论；要得到"落在 `|L|` 内"，需要把格数据穿过这两层，是机械工作。
+   （`exists_isPiecewiseAffineOn_prism_of_isPLSphere_one`，结论是"两端映进凸集则整体映进"）。
+   落在 `|L|` 内的版本也有了：`exists_isPiecewiseAffineOn_prism_of_isPLHomeomorphOn_mapsTo_space`（弧）
+   与 `exists_isPiecewiseAffineOn_prism_of_arcs_mapsTo_space`（圆周）。
+   圆周版把两条弧及其参数化取作**输入**，这样面条件是关于调用者手里的数据说的，可以逐条验证；
+   若把弧取作存在量词产生的数据，调用者就无法陈述假设——这是接口设计上必须这样写的原因。
 
 ### 离"边界指定的 PL 奇异盘"还差的一步
 
