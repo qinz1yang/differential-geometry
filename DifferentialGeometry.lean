@@ -10866,6 +10866,12 @@ import DifferentialGeometry.Topology.Handle.BoundaryEmbedding
 import DifferentialGeometry.Topology.Manifold.StereographicClosedBall
 import DifferentialGeometry.Topology.Embedding.Graph
 import DifferentialGeometry.Topology.Homeomorph.SupportedLocalEmbedding
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.ReducedCostLocalRicci
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedLength.PrefixBound
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientSpeed
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientDistanceContinuity
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientPrefix
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.PhysicalSpeed
 import DifferentialGeometry.Topology.PlanarJordan.Band
 import DifferentialGeometry.Topology.PlanarJordan.ArcCollar
 import DifferentialGeometry.Topology.Embedding.ArcGluing
