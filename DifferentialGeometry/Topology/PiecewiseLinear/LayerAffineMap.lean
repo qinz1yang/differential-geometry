@@ -1,4 +1,5 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.StdConeLayers
+import DifferentialGeometry.Topology.PiecewiseLinear.PiecewiseAffineCover
 
 open Set
 
@@ -74,5 +75,36 @@ theorem layerHighMap_vertex₃ {σ' σ : ℝ} (hσ' : 0 < σ') (hσ : σ' < σ) 
   have hs : σ ≠ 0 := ne_of_gt (lt_trans hσ' hσ)
   rw [layerHighMap, affineOfCoeffs_apply, coeffLin_apply, coeffLin_apply]
   match_scalars <;> field_simp <;> ring
+
+theorem inter_layer_subset_segment {σ' σ : ℝ} (hσ' : 0 < σ') (hσ : σ' < σ) :
+    stdConeLayerLow σ' σ ∩ stdConeLayerHigh σ' σ ⊆
+      segment ℝ ((0, σ') : ℝ × ℝ) ((σ, 0) : ℝ × ℝ) := by
+  rintro ⟨x, y⟩ ⟨⟨h1, h2, h3, h4, h5⟩, -, -, -, -, h6⟩
+  have hσ0 : (0 : ℝ) < σ := lt_trans hσ' hσ
+  have hline : σ' * x + σ * y = σ' * σ := le_antisymm h5 h6
+  have hx : x ≤ σ := by simp only at *; linarith
+  refine ⟨1 - x / σ, x / σ, by
+      rw [sub_nonneg, div_le_one hσ0]
+      exact hx, by positivity, by ring, ?_⟩
+  have hy : y = σ' * (σ - x) / σ := by
+    field_simp at hline ⊢
+    linarith
+  rw [Prod.ext_iff]
+  constructor
+  · simp only [Prod.fst_add, Prod.smul_fst, smul_eq_mul]
+    field_simp
+    ring
+  · simp only [Prod.snd_add, Prod.smul_snd, smul_eq_mul]
+    rw [hy]
+    field_simp
+    ring
+
+theorem eqOn_layerMaps {σ' σ : ℝ} (hσ' : 0 < σ') (hσ : σ' < σ) (v₀ v₁ v₂ v₃ : F) :
+    EqOn (layerLowMap σ' σ v₀ v₁ v₂) (layerHighMap σ' σ v₁ v₂ v₃)
+      (stdConeLayerLow σ' σ ∩ stdConeLayerHigh σ' σ) :=
+  fun _ hz => eqOn_of_affineMap_eq_of_mem_segment
+    ((layerLowMap_vertex₁ hσ' hσ v₀ v₁ v₂).trans (layerHighMap_vertex₁ hσ' hσ v₁ v₂ v₃).symm)
+    ((layerLowMap_vertex₂ hσ' hσ v₀ v₁ v₂).trans (layerHighMap_vertex₂ hσ' hσ v₁ v₂ v₃).symm)
+    (inter_layer_subset_segment hσ' hσ hz)
 
 end DifferentialGeometry.Topology.PiecewiseLinear
