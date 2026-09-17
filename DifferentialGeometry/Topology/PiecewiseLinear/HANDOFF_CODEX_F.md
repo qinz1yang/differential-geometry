@@ -2109,3 +2109,11 @@ F-M1 仍为 partial。单个旧三角形的全部纤维及逐边对应已闭合�
 `PolytopeSection.lean` 先证明紧凸多胞体在有限维定义域的单射仿射映射下的原像仍为紧凸多胞体。`IsHPolytope.isPLBall_inter_fiber` 通过真实仿射纤维坐标和 §19.81 的球性定理，生产横截于内部的余维一 PL 球；`isPLBall_inter_slab` 生产实际穿过内部的闭薄片 PL 球。随后以顶点/点的高度不等式生产内部条件，得到 `isPLBall_convexHull_inter_fiber` 和 `isPLBall_convexHull_inter_slab`。在三维环境中，前者覆盖四面体的三角形与四边形截面，后者覆盖截断四面体；不把截面/胞腔球性藏入假设。
 
 聚焦检查：`ConvexLevelSet` exit=0（7.9 秒）、`PolytopeSection` exit=0（13.9 秒），均零 warning。`AuditF231.lean` 八项仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步保留所有原面上的截面控制并构造有限胞腔分解，再生产自由胞腔与薄片球面的相交盘。S.4 M2/M3、夜间 F-M1 整体及 I1 尚未完成。下一审计文件 `AuditF232.lean`。
+
+### 19.83 S.4 M2：有界补分支与实际三维流形填充
+
+已通过合并整合分支取得 `2abc555f9`（合并提交 `df3228eaa`），使用 S 车道已证明且不带 Schoenflies 假设的闭曲面补集两分支定理。整合版 `Topology/Connected/BallComplement.lean` 提供更强的道路连通性，保留其原源码与接口；此前本地同名草稿已撤除，并恢复对应共享产物。
+
+`BoundedSurfaceComponent.lean` 从补集两分支与大球外连通性实际选出有界分支，证明其闭包是多面体、内部恰为该分支、闭包边界恰为原曲面且外部连通。`SurfaceFilling.lean` 的 `isCombinatorialManifoldWithBoundary_of_space_eq_closure_connectedComponentIn_compl` 将 S 的局部两侧 PL 球与补分支闭包配对，证明任意有限剖分的顶点链环均满足三维流形条件。端点 `IsCombinatorialManifold.exists_isCombinatorialManifoldWithBoundary_boundaryComplex` 从有限连通闭组合二维流形实际生产有限三维带边界流形 R，组合边界及拓扑边界均恰为原曲面；R 是内部的闭包，内部与外部都连通。适用于任意三维实范数空间，不预设原曲面为球面，也未把填充宣称为 PL 三维球。
+
+聚焦检查：`BoundedSurfaceComponent` exit=0（10.3 秒）、`SurfaceFilling` exit=0（10.0 秒），均零 warning；整合版 `BallComplement` 产物恢复检查 exit=0（7.8 秒）。`AuditF232.lean` 六项（含两项整合输入）仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步在实际填充顶点上选择保零指标的一般位置高度，确定水平填充盘和薄片胞腔分解，再做 Lemma 6 自由胞腔删除。S.4 M2/M3、夜间 F-M1 整体及 I1 尚未完成。下一审计文件 `AuditF233.lean`。
