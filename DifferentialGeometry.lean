@@ -10901,3 +10901,6 @@ import DifferentialGeometry.Topology.SphereSeparation.HeightCapComponent
 import DifferentialGeometry.Topology.SphereSeparation.HeightCapRegion
 import DifferentialGeometry.Topology.SphereSeparation.LevelComponents
 import DifferentialGeometry.Topology.SphereSeparation.SaddleCapTransport
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.TimeTranslation
+import DifferentialGeometry.Geometry.Metric.Family.TimeShift
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProductLocalExistence
