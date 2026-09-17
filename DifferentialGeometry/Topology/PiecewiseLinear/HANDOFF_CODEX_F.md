@@ -2167,3 +2167,11 @@ F-M1 仍为 partial。单个旧三角形的全部纤维及逐边对应已闭合�
 `HeightSlabSurgery.lean` 先从零指标生产整体填充薄片边界的 PL 二维球性。`exists_isPLHomeomorphOn_delete_slab_cell` 随后消费上述实际胞腔与固定 17.9 输入，构造环境 PL 自同胚，将 S 送到 `closure (S \ C) ∪ closure (frontier C \ S)`，固定 `closure (S \ C)` 及给定凸开邻域 W 外。C 位于 W 的条件由薄片紧致性和 `Topology/ConvexFrontier.lean` 的边界包含定理证明，不要求 W 预先包含三维填充，也不假设整体薄片为 PL 三维球。
 
 聚焦检查：`SlabBoundary` exit=0（7.9 秒）、`HeightFreeSlab` exit=0（10.2 秒）、`HeightSlabSurgery` exit=0（10.8 秒），均零 warning。`AuditF238.lean` 五项仅依赖 `propext`、`Classical.choice`、`Quot.sound`。已闭合实际单步删除；下一步证明删除后的区域与截面分解保留归纳条件，有限迭代到残余闭星锥，再做 M3。S.4 M2/M3、夜间 F-M1 整体及 I1 尚未完成。下一审计文件 `AuditF239.lean`。
+
+### 19.90 S.4 M2：截面上保留 d0 的实际有限自由胞腔删除序列
+
+`DiskCellDeletion.lean` 证明删除一块原胞腔 C 后的闭包恰为其余原胞腔之并；证明使用两两点/弧交的低维稠密补集，没有将覆盖余项的等式作为假设。自由胞腔与整层边界的交是弧，由此证明删除后仍是 PL 盘，并在原共同剖分的限制上保留全部剩余胞腔，得到新的 `IsPLDiskDecomposition`。
+
+`IsFreeDiskCellDeletion D` 精确记录一轮删除：源盘分解、所选自由胞腔 C、C 不包含于固定子盘 D，以及目标复形和胞腔族恰为闭差限制与 erase。`IsPLDiskDecomposition.exists_free_disk_cell_deletion_sequence` 以胞腔族的严格子集归纳，实际构造有限轮删除到 D，保留组成 D 的所有原胞腔。`HeightStarDeletion.lean` 的 `exists_free_disk_cell_deletion_sequence_to_closedStar` 将此序列接到实际四面体水平截面；终点恰为闭星截面 d0，剩余胞腔恰为最初包含于闭星者。
+
+聚焦检查：`DiskCellDeletion` exit=0（9.7 秒）、`HeightStarDeletion` exit=0（9.9 秒），均零 warning。`AuditF239.lean` 六项仅依赖 `propext`、`Classical.choice`、`Quot.sound`。二维有限删除及准确终点已闭合；下一步把序列的每一步提升到三维剩余薄片，证明更新后的相交盘与区域边界公式，拼接环境推移并识别残余闭星锥。现有 §19.89 环境删除定理直接适用于初始零指标填充，尚未把它宣称为整个三维迭代。S.4 M2/M3、夜间 F-M1 整体及 I1 尚未完成。下一审计文件 `AuditF240.lean`。
