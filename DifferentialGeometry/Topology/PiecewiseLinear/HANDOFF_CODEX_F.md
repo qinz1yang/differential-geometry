@@ -2175,3 +2175,11 @@ F-M1 仍为 partial。单个旧三角形的全部纤维及逐边对应已闭合�
 `IsFreeDiskCellDeletion D` 精确记录一轮删除：源盘分解、所选自由胞腔 C、C 不包含于固定子盘 D，以及目标复形和胞腔族恰为闭差限制与 erase。`IsPLDiskDecomposition.exists_free_disk_cell_deletion_sequence` 以胞腔族的严格子集归纳，实际构造有限轮删除到 D，保留组成 D 的所有原胞腔。`HeightStarDeletion.lean` 的 `exists_free_disk_cell_deletion_sequence_to_closedStar` 将此序列接到实际四面体水平截面；终点恰为闭星截面 d0，剩余胞腔恰为最初包含于闭星者。
 
 聚焦检查：`DiskCellDeletion` exit=0（9.7 秒）、`HeightStarDeletion` exit=0（9.9 秒），均零 warning。`AuditF239.lean` 六项仅依赖 `propext`、`Classical.choice`、`Quot.sound`。二维有限删除及准确终点已闭合；下一步把序列的每一步提升到三维剩余薄片，证明更新后的相交盘与区域边界公式，拼接环境推移并识别残余闭星锥。现有 §19.89 环境删除定理直接适用于初始零指标填充，尚未把它宣称为整个三维迭代。S.4 M2/M3、夜间 F-M1 整体及 I1 尚未完成。下一审计文件 `AuditF240.lean`。
+
+### 19.91 S.4 M2：任意剩余子复形的截面边界与自由胞腔相交盘
+
+`FaceProjection.lean` 证明：在原单形的相对内部，沿该面方向的小投影保持任意有限子复形的成员关系；由此将环境内部点与水平截面的相对内部点精确对应。`FiberBoundary.lean` 用真实仿射平面坐标把 PL 盘的相对内部与参数边界互补对应，得到任意剩余子复形在非顶点处的环境边界与其水平盘组合边界的等价，不要求剩余子复形预先为三维流形。
+
+`FaceInterior.lean` 证明任意有限子复形的内部/边界成员关系在每个原开单形上恒定，因此其拓扑边界实际为原复形的限制子复形。`FreeCellSlab.lean` 将既有相交盘生产者的边界等式减弱为所选胞腔上的局部交等式，唯一旧消费者已同步。`SubcomplexSlab.lean` 的 `isPLBall_frontier_slab_inter_cell_of_isFreeDiskCell` 因而直接从当前水平盘分解及其自由胞腔，生产对应三维薄片胞腔与当前薄片边界的 PL 二维相交盘。避开胞腔全部顶点的高度区间排除了该胞腔截面上的原顶点，局部边界等价遂覆盖整块自由胞腔；没有新增整体边界等式或相交盘假设。
+
+聚焦检查：`FaceProjection` exit=0（9.5 秒）、`FiberBoundary` exit=0（9.8 秒）、`FaceInterior` exit=0（9.3 秒）、`FreeCellSlab` exit=0（9.7 秒）、`SubcomplexSlab` exit=0（9.8 秒）；旧消费者 `HeightFreeSlab` exit=0（10.4 秒）、`HeightSlabSurgery` exit=0（10.8 秒），全部零 warning。`AuditF240.lean` 十三项仅依赖 `propext`、`Classical.choice`、`Quot.sound`；无 Lean 进程时 `fresh.py` 为 71/71 fresh、零 stale/missing、零禁用项。下一步连接现有三维流形补集定理，识别每轮剩余薄片与原胞腔删除，迭代环境推移到闭星锥并做 M3。S.4 M2/M3、夜间 F-M1 整体及 I1 尚未完成。下一审计文件 `AuditF241.lean`。

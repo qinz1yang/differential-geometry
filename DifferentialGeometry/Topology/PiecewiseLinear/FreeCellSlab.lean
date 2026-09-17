@@ -17,7 +17,8 @@ theorem isPLBall_slab_patch_of_isFreeDiskCell
     (hvertices : ∀ v ∈ T, ℓ v < a ∨ b < ℓ v)
     {L : Geometry.SimplicialComplex ℝ E} {cells : Finset (Set E)}
     (hL : IsPLDiskDecomposition L cells)
-    (hboundary : (boundaryComplex 2 L).space = A.space ∩ {x | ℓ x = r})
+    (hboundary : (convexHull ℝ (T : Set E) ∩ {x | ℓ x = r}) ∩ (boundaryComplex 2 L).space =
+      (convexHull ℝ (T : Set E) ∩ {x | ℓ x = r}) ∩ A.space)
     (hC : convexHull ℝ (T : Set E) ∩ {x | ℓ x = r} ∈ cells)
     (hfree : IsFreeDiskCell L (convexHull ℝ (T : Set E) ∩ {x | ℓ x = r})) :
     IsPLBall 2 ((convexHull ℝ (T : Set E) ∩ {x | a ≤ ℓ x ∧ ℓ x ≤ b}) ∩
@@ -35,13 +36,13 @@ theorem isPLBall_slab_patch_of_isFreeDiskCell
   have hbandBoundary : C ∩ A.space ⊆ (boundaryComplex 2 J).space := by
     intro x hx
     apply hboundarySub
-    exact ⟨hJspace.symm ▸ hx.1, hboundary.symm ▸ ⟨hx.2, hx.1.2⟩⟩
+    exact ⟨hJspace.symm ▸ hx.1, (hboundary.symm.subset hx).2⟩
   have hfreeEq : (boundaryComplex 2 J).space ∩ (boundaryComplex 2 L).space = C ∩ A.space := by
     apply Subset.antisymm
     · intro x hx
-      exact ⟨hJspace ▸ boundaryComplex_space_subset 2 J hx.1, (hboundary ▸ hx.2).1⟩
+      exact hboundary.subset ⟨hJspace.subset (boundaryComplex_space_subset 2 J hx.1), hx.2⟩
     · intro x hx
-      exact ⟨hbandBoundary hx, hboundary.symm ▸ ⟨hx.2, hx.1.2⟩⟩
+      exact ⟨hbandBoundary hx, (hboundary.symm.subset hx).2⟩
   have harc : IsPLBall 1 (C ∩ A.space) := by
     change IsPLBall 1 ((boundaryComplex 2 J).space ∩ (boundaryComplex 2 L).space) at hfree
     rwa [hfreeEq] at hfree

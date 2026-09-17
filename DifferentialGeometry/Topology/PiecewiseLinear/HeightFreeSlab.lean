@@ -69,7 +69,7 @@ theorem exists_convex_slab_cell_of_ne_closedStar
     rw [boundaryComplex_space_of_isPLHomeomorphOn_stdSimplex L hgL,
       simplexBoundary_stdVertices_space, hgBd, hKfront]
   have hpatch := isPLBall_slab_patch_of_isFreeDiskCell K (boundaryComplex 3 K)
-    (boundaryComplex_faces_subset 3 K) hT ℓ.toLinearMap hab hpheight hvertices hdec hLboundary
+    (boundaryComplex_faces_subset 3 K) hT ℓ.toLinearMap hab hpheight hvertices hdec (by rw [hLboundary]; ext x; simp only [mem_inter_iff, mem_ofPred_eq]; tauto)
     (hD_eq ▸ hD) (hD_eq ▸ hfree)
   have hslabBoundary := Topology.frontier_inter_preimage_Icc_of_ne_zero
     (isPolyhedron_space K).isClosed ℓ hℓ hab.le
