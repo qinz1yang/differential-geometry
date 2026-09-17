@@ -114,6 +114,19 @@ theorem isClosed_setOf_isCriticalPointAt [IsManifold I 1 M]
   rw [← isOpen_compl_iff]
   exact isOpen_iff_mem_nhds.mpr fun p hp => eventually_not_isCriticalPointAt I (hf p) hp
 
+theorem isOpen_setOf_regular_values [IsManifold I 1 M] {f : M → ℝ}
+    (hf : ContMDiff I 𝓘(ℝ, ℝ) 1 f) (hclosed : IsClosedMap f) :
+    IsOpen {a : ℝ | ∀ x, f x = a → ¬ IsCriticalPointAt I f x} := by
+  convert! (hclosed _ (isClosed_setOf_isCriticalPointAt I hf)).isOpen_compl using 1
+  ext a
+  constructor
+  · intro ha
+    rintro ⟨x, hx, hfx⟩
+    exact ha x hfx hx
+  · intro ha x hfx hx
+    exact ha ⟨x, hx, hfx⟩
+
+
 theorem IsNondegenerateCriticalPointAt.isolated [FiniteDimensional ℝ E] [IsManifold I 2 M]
     {f : M → ℝ} {p : M} (hf : ContMDiffAt I 𝓘(ℝ, ℝ) 2 f p)
     (hnd : IsNondegenerateCriticalPointAt I f p) :

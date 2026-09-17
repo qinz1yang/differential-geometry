@@ -6,6 +6,7 @@ Authors: The Tau Ceti contributors
 import DifferentialGeometry.Topology.Embedding.Retraction
 import DifferentialGeometry.Analysis.Calculus.Cutoff.Compact
 import DifferentialGeometry.Analysis.Calculus.SmoothExtension.HalfSpace
+import DifferentialGeometry.Analysis.Calculus.SmoothExtension.Closed
 import Mathlib.Geometry.Manifold.SmoothEmbedding
 import Mathlib.Geometry.Manifold.ContMDiff.Atlas
 import Mathlib.Geometry.Manifold.ContMDiff.NormedSpace
@@ -17,35 +18,6 @@ open scoped ContDiff Manifold Topology
 namespace Manifold
 
 open Set
-
-private theorem exists_contDiff_extension_of_local
-    {M : Type*} {V : Type*} [NormedAddCommGroup V] [NormedSpace ℝ V]
-    [FiniteDimensional ℝ V] {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
-    {n : ℕ∞} {f : M → V} {g : M → F} {K : Set M}
-    (hK : IsClosed (f '' K))
-    (hloc : ∀ x ∈ K, ∃ U ∈ 𝓝 (f x), ∃ G : V → F, ContDiffOn ℝ n G U ∧
-      ∀ y ∈ K, f y ∈ U → G (f y) = g y) :
-    ∃ G : V → F, ContDiff ℝ n G ∧ EqOn (G ∘ f) g K := by
-  let C : V → Set F := fun z => {v | ∀ x ∈ K, f x = z → v = g x}
-  have hC (z : V) : Convex ℝ (C z) := by
-    rw [convex_iff_add_mem]
-    intro a ha b hb s t _ _ hsum x hx hfx
-    rw [ha x hx hfx, hb x hx hfx, ← add_smul, hsum, one_smul]
-  have hlocal (z : V) : ∃ U ∈ 𝓝 z, ∃ G : V → F,
-      ContMDiffOn 𝓘(ℝ, V) 𝓘(ℝ, F) n G U ∧ ∀ y ∈ U, G y ∈ C y := by
-    by_cases hz : z ∈ f '' K
-    · obtain ⟨x, hx, rfl⟩ := hz
-      obtain ⟨U, hU, G, hG, hGf⟩ := hloc x hx
-      refine ⟨U, hU, G, hG.contMDiffOn, ?_⟩
-      intro y hy x' hx' hxy
-      subst y
-      exact hGf x' hx' hy
-    · refine ⟨(f '' K)ᶜ, hK.isOpen_compl.mem_nhds hz, 0, contMDiffOn_const, ?_⟩
-      intro y hy x hx hxy
-      exact False.elim (hy ⟨x, hx, hxy⟩)
-  obtain ⟨G, hG⟩ := exists_contMDiffMap_forall_mem_convex_of_local
-    (I := 𝓘(ℝ, V)) (n := n) hC hlocal
-  exact ⟨G, G.contMDiff.contDiff, fun x hx => hG (f x) x hx rfl⟩
 
 private theorem exists_contDiff_compact_extension_of_eqOn
     {M : Type*} [TopologicalSpace M]
@@ -80,7 +52,7 @@ theorem IsSmoothEmbedding.exists_contDiff_extension_of_isClosed_image
     (hf : IsSmoothEmbedding I 𝓘(ℝ, V) n f) (hg : ContMDiff I 𝓘(ℝ, F) n g)
     (hK : IsClosed (f '' K)) :
     ∃ G : V → F, ContDiff ℝ n G ∧ EqOn (G ∘ f) g K := by
-  apply exists_contDiff_extension_of_local hK
+  apply DifferentialGeometry.Analysis.exists_contDiff_extension_of_local hK
   intro x _
   obtain ⟨U, hxU, r, hr, _, hfix⟩ := hf.exists_contMDiff_local_retraction x
   let G : V → F := Subtype.val.extend (fun q : U => g (r q)) 0
@@ -351,7 +323,7 @@ theorem IsSmoothEmbedding.exists_contDiff_extension_halfspace_of_isClosed_image
     (hf : IsSmoothEmbedding (𝓡∂ (d + 1)) 𝓘(ℝ, V) ∞ f)
     (hg : ContMDiff (𝓡∂ (d + 1)) 𝓘(ℝ, F) ∞ g) (hK : IsClosed (f '' K)) :
     ∃ G : V → F, ContDiff ℝ ∞ G ∧ EqOn (G ∘ f) g K := by
-  apply exists_contDiff_extension_of_local (n := (⊤ : ℕ∞)) hK
+  apply DifferentialGeometry.Analysis.exists_contDiff_extension_of_local (n := (⊤ : ℕ∞)) hK
   intro x _
   obtain ⟨U, hU, hxU, G, hG, hGf⟩ := hf.exists_contDiffOn_local_extension_halfspace hg x
   exact ⟨U, hU.mem_nhds hxU, G, hG, fun y _ hy => hGf y hy⟩
@@ -535,7 +507,8 @@ theorem IsSmoothEmbedding.exists_contDiffOn_local_extension_prod_halfspace
     (hg : ContMDiff (𝓘(ℝ, P).prod (𝓡∂ (d + 1))) 𝓘(ℝ, F) ∞ g) (x : M) :
     ∃ U : Set V, IsOpen U ∧ f x ∈ U ∧ ∃ G : V → F,
       ContDiffOn ℝ ∞ G U ∧ ∀ y, f y ∈ U → G (f y) = g y :=
-  (hf.isImmersion.isImmersionOfComplement_complement x).exists_contDiffOn_local_extension_prod_halfspace
+  (hf.isImmersion.isImmersionOfComplement_complement
+    x).exists_contDiffOn_local_extension_prod_halfspace
     hf.isEmbedding.isInducing hg
 
 theorem IsSmoothEmbedding.exists_contDiff_extension_prod_halfspace_of_isClosed_image
@@ -549,7 +522,7 @@ theorem IsSmoothEmbedding.exists_contDiff_extension_prod_halfspace_of_isClosed_i
     (hg : ContMDiff (𝓘(ℝ, P).prod (𝓡∂ (d + 1))) 𝓘(ℝ, F) ∞ g)
     (hK : IsClosed (f '' K)) :
     ∃ G : V → F, ContDiff ℝ ∞ G ∧ EqOn (G ∘ f) g K := by
-  apply exists_contDiff_extension_of_local (n := (⊤ : ℕ∞)) hK
+  apply DifferentialGeometry.Analysis.exists_contDiff_extension_of_local (n := (⊤ : ℕ∞)) hK
   intro x _
   obtain ⟨U, hU, hxU, G, hG, hGf⟩ := hf.exists_contDiffOn_local_extension_prod_halfspace hg x
   exact ⟨U, hU.mem_nhds hxU, G, hG, fun y _ hy => hGf y hy⟩
