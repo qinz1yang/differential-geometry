@@ -14,7 +14,6 @@ variable {N : Type*} [TopologicalSpace N] [ChartedSpace EuclideanThree N]
   {e : SphereTwo → N} {x : SphereTwo}
 
 theorem not_both_normalHalves_subset_of_twoSidedCover
-    [IsManifold (modelWithCornersSelf ℝ EuclideanThree) ∞ N]
     {B D : Set N} (hBd : Disjoint B D)
     (hunion : B ∪ D = (Set.range e)ᶜ)
     (hBcl : closure B = B ∪ Set.range e)
@@ -211,14 +210,11 @@ private theorem isConnected_negativeHalf_of_neighborhood_eq_chart_symm_ball
 
 end EmbeddedSphereNormalChart
 
-theorem exists_normalChart_connectedHalves_subset
-    [IsManifold (modelWithCornersSelf ℝ EuclideanThree) ∞ N]
-    {e : SphereTwo → N} (he : IsSmoothEmbedding (𝓡 2)
-      (modelWithCornersSelf ℝ EuclideanThree) ∞ e)
-    (x : SphereTwo) {O : Set N} (hO : IsOpen O) (hxO : e x ∈ O) :
+theorem EmbeddedSphereNormalChart.exists_connectedHalves_subset
+    (c₀ : EmbeddedSphereNormalChart e x)
+    {O : Set N} (hO : IsOpen O) (hxO : e x ∈ O) :
     ∃ c : EmbeddedSphereNormalChart e x, IsConnected c.positiveHalf ∧
       IsConnected c.negativeHalf ∧ c.neighborhood ⊆ O := by
-  let c₀ := Classical.choice (embeddedSphereNormalChart_nonempty he x)
   let h := c₀.normalForm
   let z₀ : EuclideanThree := h.codChart (e x)
   have hO' : IsOpen (O ∩ c₀.neighborhood) := hO.inter c₀.isOpen_neighborhood
@@ -268,5 +264,13 @@ theorem exists_normalChart_connectedHalves_subset
       c ε hε
     · simpa [c, h, z₀] using hballTarget
     · rfl
+
+theorem exists_normalChart_connectedHalves_subset
+    {e : SphereTwo → N} (he : IsSmoothEmbedding (𝓡 2)
+      (modelWithCornersSelf ℝ EuclideanThree) ∞ e)
+    (x : SphereTwo) {O : Set N} (hO : IsOpen O) (hxO : e x ∈ O) :
+    ∃ c : EmbeddedSphereNormalChart e x, IsConnected c.positiveHalf ∧
+      IsConnected c.negativeHalf ∧ c.neighborhood ⊆ O :=
+  (Classical.choice (embeddedSphereNormalChart_nonempty he x)).exists_connectedHalves_subset hO hxO
 
 end DifferentialGeometry.Topology.SphereSeparation
