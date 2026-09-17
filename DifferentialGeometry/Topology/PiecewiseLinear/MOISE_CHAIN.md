@@ -179,3 +179,26 @@ F 车道的 `LocallyFinitePieceTower`（F6.3）已经给了非紧 PL 流形的�
 
 同夜新增：`IsSpine` 与 `Moise308`（脊生成 `π(S)`，用包含映射诱导的 `π₁(J) → π₁(S)` 的像生成整个群来表述，
 避免共轭类与基点的额外实例要求）。
+
+## 相对版逼近的确切剩余步骤（2026-09-16 夜，数学核心已证）
+
+目标：`P` 紧致多面体、`Q ⊆ P` 子多面体、`f` 在 `P` 上连续且在 `Q` 上已经是逐片仿射，则存在逐片仿射的 `g`，
+在 `Q` 上与 `f` **逐点相等**，在 `P` 上 `dist (g x) (f x) < ε`。Moise 每次"设某映射已经是 PL 的"都用这一条。
+
+数学核心已经证了：`MapApproximation.lean` 的 `simplicialMap_eqOn_of_affineOn` —— 若 `f` 在一个闭单形上与某仿射映射相等，
+则顶点插值 `simplicialMap` 在该单形上就等于 `f` 本身。于是只要三角剖分做到"`Q` 是子复形且 `f` 在 `Q` 的每个面上仿射"，
+误差在 `Q` 上自动为零，其余部分用已证的小网格估计。
+
+剩下的是纯组合的拼装，四步都有现成接口：
+
+1. `IsPolyhedron.exists_simplicialComplex` 把 `P` 三角剖分成 `K`。
+2. `StarSubdivision.lean` 的 `exists_isSubdivision_subcomplexes_closedStars_subset_openStar`（取单个多面体 `Q`）
+   给细分 `R₀`，使 `(restrict R₀ Q).space = Q`，即 `Q` 成为子复形。
+3. `PiecewiseAffineSimplicial.lean` 的 `exists_isSubdivision_affineOn_faces_finite` 用在子复形 `restrict R₀ Q` 上
+   （`f` 在它的载体 `Q` 上逐片仿射），得 `L'`，使 `f` 在 `L'` 的每个面上仿射。
+4. `RelativeSubdivision.lean` 的 `exists_isSubdivision_extension_of_disjoint`（取 `A` 为空复形）把 `L'` 扩成整个 `R₀` 的细分 `R₁`。
+5. 最后用 `exists_isSubdivision_diam_lt` 把 `R₁` 再细分到小网格；因为仿射映射限制到子单形仍仿射，
+   第 3 步的性质在再细分后保持，所以 `Q` 上仍然精确相等。
+
+要注意的一点：第 5 步之后要说明 `Q` 仍是最终复形的子复形（从而 `Q` 中点的载体面落在 `Q` 内），
+这需要 `IsSubdivision` 对 `restrict` 的相容性引理；没找到现成的就得补一条。
