@@ -377,3 +377,26 @@ F 车道的 `Topology/Pasting.lean` 与 `SingularPasting.lean` 正是为这种"�
 `exists_isSubdivision_closedStars_subset_cover`：给 `|K|` 的一个相对开覆盖，返回细分 `R` 使
 `∀ s ∈ R.faces, ∃ i, (⋃ v ∈ s, closedStar R v) ⊆ U i`。本轮的单纯逼近里这一步是手写的
 （Lebesgue 数 + `exists_isSubdivision_diam_lt` + 闭星落在球里）；以后写同类证明可以直接用这条。
+
+## 逼近层已接到链条的词汇上（2026-09-17 续）
+
+`SimplicialApproximation.lean` 现在还提供三条把分析陈述翻译成链条词汇的桥：
+
+- `exists_isPiecewiseAffineOn_mapsTo_dist_lt` 扩充了两条结论：直线同伦
+  `(t, x) ↦ (1-t) • f x + t • g x` 在 `Icc 0 1 ×ˢ |K|` 上连续，且把它映进 `|L|`。
+- `homotopic_restrict_of_continuousOn`：一般拓扑的桥。给定 `f`、`g` 在 `S` 上连续且映进 `T`，
+  以及一条在 `Icc 0 1 ×ˢ S` 上连续、映进 `T`、两端分别是 `f`、`g` 的同伦，
+  则限制成的 `C(↥S, ↥T)` 两个映射是 `ContinuousMap.Homotopic` 的。
+- `exists_isPiecewiseAffineOn_mapsTo_dist_lt_homotopic`：上面两条的合成，直接给出
+  `C(↥|K|, ↥|L|)` 层面的同伦。
+- `exists_isPiecewiseAffineOn_freeLoop_homotopic`：给一条多边形圆周的参数化 `e : loopCircle ≃ₜ |J|`，
+  任意 `γ : freeLoop |L|` 在 `|L|` 中同伦于一条逐片仿射的环路。
+  于是 `IsNullHomotopic` 这个假设在换成 PL 环路后不变，`Moise252`、`Moise264` 的
+  "不妨设 `L` 是 PL 的"这句话有了对应的定理。
+
+全部只依赖标准三公理。
+
+**还缺的一步**（写 `Moise252 ← Moise251` 时会立刻撞上）：`loopCircle ≃ₜ |J|` 这个参数化本身。
+树里 `LoopTheorem/CellGluing.lean` 用 `pathToCircle` 加紧致到 Hausdorff 的连续双射造过
+`loopCircle ≃ₜ frontier P`（约 155 行），`NormalSystem.boundaryParam` 也是这个类型。
+所以材料在，只是还没有"任意 PL 1-球面都能这样参数化"的独立陈述。这条很短，值得单独补。
