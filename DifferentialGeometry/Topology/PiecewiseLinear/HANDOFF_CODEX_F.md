@@ -2219,3 +2219,13 @@ F-M1 仍为 partial。单个旧三角形的全部纤维及逐边对应已闭合�
 `ConeSlab.lean` 的 `IsConeBase.exists_coneComplex_inter_slab` 对任意有限锥、任意仿射高度 ℓ 和 `ℓ p < b`，实际构造有限底复形 L 及 `IsConeBase p L`。其空间恰为旧底中高度落在 `[ℓ p, b]` 的部分与原锥的上端截面之并；新锥空间恰为原锥的整个闭薄片。径向唯一性、插顶独立性、底面多面体性和空间双向等式均已证明，不预设新的锥表示，也不要求三维、顶点高度一般位置或原底为球。应用于原顶点链环即可得到单侧闭星薄片的真实锥表示；该底的二维盘性尚待接入实际边界球性和锥顶链环分类。
 
 聚焦检查：`RadialIndependence` exit=0（66.2 秒）、`ConeSlab` exit=0（14.0 秒），全部零 warning。`AuditF244.lean` 六项仅依赖 `propext`、`Classical.choice`、`Quot.sound`；无 Lean 进程时 `fresh.py` 为 84/84 fresh、零 stale/missing、零禁用项。按用户要求在当前文件闭环后返回，未继续后续证明。下一步从实际残余球面边界与正规闭区域生产三维流形，用位于边界的锥顶识别锥底为 PL 二维盘并消费 17.10，再做 M3。`ConeManifold` 的未验证草稿保存于本工作树 `.lake/scratch/ConeManifold.pending.lean`，未放入源码或提交，不能当作已证输入。S.4 M2/M3、夜间 F-M1 整体及 I1 仍为 partial。下一审计文件 `AuditF245.lean`。
+
+### 19.96 S.4 M2 done：中间薄片的实际盘锥与单嵌入
+
+已合并整合分支 `a8f07c475` 并读取本目录 `AGENTS.md`；本结果的源码、交接及计划记录一起暂存提交。`BallRegularClosed.lean` 将满维 PL 球的正规闭性搬到任意同维有限维实范数空间。`ConeManifold.lean` 由锥顶位于实际拓扑边界及组合流形的链环分类识别锥底为 PL 球；三维特例先从正规闭区域及实际球面边界生产三维带边界流形，再识别锥底为 PL 二维盘，不消费 Schoenflies。
+
+`ClosedStarCone.lean` 证明带边界组合流形的顶点闭星为同维 PL 球，并将 §19.95 的真实裁剪锥接到 §19.94 的端面正规闭性。`exists_isPLBall_coneComplex_eq_closedStar_slab` 实际构造单侧闭星薄片的有限盘锥：底面盘性来自锥顶边界的链环，锥顶在边界由端面边界公式证明。该辅助结果所用残余边界球性，在最终消费者中由完整有限环境删除的实际像生产。
+
+`SlabEmbedding.lean` 的 `isSimplyEmbedded_frontier_slab_of_heightIndex_eq_zero_of_vertex_lower` 与 `isSimplyEmbedded_frontier_slab_of_heightIndex_eq_zero_of_vertex_upper` 从原零指标填充、一般位置高度和区间内唯一端点顶点，实际证明薄片边界单嵌入。先按 §19.93–19.94 的有限删除送到闭星薄片，再消费原 `SchoenfliesInput` 的 17.10，将其送到单形边界；完整复合仍固定任意给定凸开邻域外。上端版本通过高度反射，逐一对应全部奇异点及层圆周数。未增加锥底盘性、删除后边界球性、区域流形性或额外推移接口等最终假设。
+
+状态：M2（Lemma 2–6）done；M3、I1 与夜间 F-M1 整体仍为 partial。四模块聚焦检查依次为 `ConeManifold` exit=0（11.9 秒）、`BallRegularClosed` exit=0（11.6 秒）、`ClosedStarCone` exit=0（12.1 秒）、`SlabEmbedding` exit=0（14.2 秒），全部零 warning。`AuditF245.lean` 七项仅依赖 `propext`、`Classical.choice`、`Quot.sound`；无 Lean 进程时 `fresh.py` 为 88/88 fresh、零 stale/missing、零禁用项。下一步 M3：证明相邻薄片与下截区域的精确平面公共盘和删盘恢复式，按有限顶点高度归纳消费 17.11，接回零指标归约及 I1 两端点。下一审计文件 `AuditF246.lean`。
