@@ -679,3 +679,9 @@
   `PHASE3_APPROXIMATION_PLAN.md` §1；最大开放点是同调层（单纯 vs 奇异）。
 - Schoenflies 三版本互不蕴含：平面拓扑版（vendored）、PL ℝ³ 版（本链 §17 自证，依赖平面多边形版 3.6、3.3、10.8）、
   光滑 ℝ³ 版（负责人，sorry）。本链不消费光滑版；不重复负责人的工作。
+
+- 2026-09-16（F 车道 S.4 / I1）：`Schoenflies.lean` 已证明原显式 `SchoenfliesInput` 下的
+  `isSimplyEmbedded_of_isPLSphere_two` 与 `exists_isPLBall_of_isPLSphere_two`；由有限顶点高度归纳、实际水平盘粘合、
+  顶端盘锥和降指标归约完成 17.12。S 的既有 `schoenflies_input` 可直接实例化，不再欠 F 的 I1 生产者。
+  五个本次模块检查均 exit=0、零 warning；AuditF246 十八项全部仅标准三公理，fresh.py 为 92/92 fresh。
+  证明细节与验证记录见 `HANDOFF_CODEX_F.md` §19.97；F-M5/F-M6 的双点分类和余面异侧义务仍独立待证。
