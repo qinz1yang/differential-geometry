@@ -2183,3 +2183,13 @@ F-M1 仍为 partial。单个旧三角形的全部纤维及逐边对应已闭合�
 `FaceInterior.lean` 证明任意有限子复形的内部/边界成员关系在每个原开单形上恒定，因此其拓扑边界实际为原复形的限制子复形。`FreeCellSlab.lean` 将既有相交盘生产者的边界等式减弱为所选胞腔上的局部交等式，唯一旧消费者已同步。`SubcomplexSlab.lean` 的 `isPLBall_frontier_slab_inter_cell_of_isFreeDiskCell` 因而直接从当前水平盘分解及其自由胞腔，生产对应三维薄片胞腔与当前薄片边界的 PL 二维相交盘。避开胞腔全部顶点的高度区间排除了该胞腔截面上的原顶点，局部边界等价遂覆盖整块自由胞腔；没有新增整体边界等式或相交盘假设。
 
 聚焦检查：`FaceProjection` exit=0（9.5 秒）、`FiberBoundary` exit=0（9.8 秒）、`FaceInterior` exit=0（9.3 秒）、`FreeCellSlab` exit=0（9.7 秒）、`SubcomplexSlab` exit=0（9.8 秒）；旧消费者 `HeightFreeSlab` exit=0（10.4 秒）、`HeightSlabSurgery` exit=0（10.8 秒），全部零 warning。`AuditF240.lean` 十三项仅依赖 `propext`、`Classical.choice`、`Quot.sound`；无 Lean 进程时 `fresh.py` 为 71/71 fresh、零 stale/missing、零禁用项。下一步连接现有三维流形补集定理，识别每轮剩余薄片与原胞腔删除，迭代环境推移到闭星锥并做 M3。S.4 M2/M3、夜间 F-M1 整体及 I1 尚未完成。下一审计文件 `AuditF241.lean`。
+
+### 19.92 S.4 M2：真实闭差区域的边界、原胞腔和水平盘同步删除
+
+`Topology/Connected/CompactRegion.lean` 证明非紧 Hausdorff 空间中紧致正规闭区域的边界唯一性，参照区域的内部与外部连通。`SurfaceRegion.lean` 将它接到已证的有界补分支生产者，从实际正规闭区域及连通闭组合曲面边界证明该区域是三维带边界组合流形；球面特例不消费 Schoenflies。`RegionCellPush.lean` 因而先用已有三维流形补集定理证明 `frontier (closure (P \ C))` 的精确换盘公式，再构造环境 PL 同胚，将旧边界实际送到这个闭差区域的边界，固定未删部分和给定凸开邻域外。
+
+`Topology/RegularClosed.lean` 证明正规闭集删去闭集后的闭包仍正规闭，并给出在正规闭条件下闭差与闭集裁剪的交换公式。`ConvexLevelSet.lean` 新 API 由凸集的两端严格不等式生产其内部落在开区间的点；`SimplexSlabInterior.lean` 从端面避开原顶点生产满维单形薄片的非空内部，并证明任意有限正规闭复形的这种薄片仍正规闭。`SimplexSlabDeletion.lean` 的 `closure_sdiff_slab_eq_subcomplexGeneratedBy_inter` 将薄片中删去一块原满维单形的闭差，准确识别为 `subcomplexGeneratedBy K {s | ¬s ⊆ T}` 的薄片。
+
+`HeightCellDeletion.lean` 的 `fiber_subcomplexGeneratedBy_eq_closure_sdiff` 证明同一生成子复形的水平截面恰为旧水平截面删去该胞腔后的闭包。证明在被删单形上排除原顶点，在剩余满维原面上利用点/弧相交的低维稠密补集；不预设余截面为盘。`heightSectionCells_erase_subset_subcomplexGeneratedBy` 同时保证其余每一块原截面胞腔仍由剩余原面生产，且此结果无需有限维假设。下一步把 §19.91 的自由相交盘与这些等式组合为完整删除步骤，对 §19.90 的有限序列归纳，直到闭星锥后做 M3。
+
+聚焦检查：`CompactRegion` exit=0（5.5 秒）、`SurfaceRegion` exit=0（9.5 秒）、`RegularClosed` exit=0（5.2 秒）、`RegionCellPush` exit=0（9.6 秒）、`ConvexLevelSet` exit=0（7.4 秒）、`SimplexSlabInterior` exit=0（9.1 秒）、`SimplexSlabDeletion` exit=0（9.5 秒）、`HeightCellDeletion` exit=0（10.2 秒），均零 warning。`AuditF241.lean` 十七项仅依赖 `propext`、`Classical.choice`、`Quot.sound`；无 Lean 进程时 `fresh.py` 为 78/78 fresh、零 stale/missing、零禁用项。三维有限迭代和残余锥识别尚未拼装；S.4 M2/M3、夜间 F-M1 整体及 I1 尚未完成。下一审计文件 `AuditF242.lean`。
