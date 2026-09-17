@@ -60,6 +60,20 @@ theorem finsetBiUnion {ι : Type*} (t : Finset ι) {P : ι → Set E} (hP : ∀ 
     rw [Finset.set_biUnion_insert]
     exact (hP j).union ih
 
+theorem prod {P : Set E} {Q : Set F} (hP : IsPolyhedron P) (hQ : IsPolyhedron Q) :
+    IsPolyhedron (P ×ˢ Q) := by
+  obtain ⟨ι, hι, C, hC, rfl⟩ := hP
+  obtain ⟨κ, hκ, D, hD, rfl⟩ := hQ
+  refine ⟨ι × κ, inferInstance, fun p => C p.1 ×ˢ D p.2,
+    fun p => (hC p.1).prod (hD p.2), ?_⟩
+  ext p
+  simp only [Set.mem_prod, Set.mem_iUnion]
+  constructor
+  · rintro ⟨⟨i, hi⟩, ⟨j, hj⟩⟩
+    exact ⟨(i, j), hi, hj⟩
+  · rintro ⟨⟨i, j⟩, hi, hj⟩
+    exact ⟨⟨i, hi⟩, ⟨j, hj⟩⟩
+
 theorem inter (hP : IsPolyhedron P) (hQ : IsPolyhedron Q) : IsPolyhedron (P ∩ Q) := by
   obtain ⟨ι, hι, C, hC, rfl⟩ := hP
   obtain ⟨κ, hκ, D, hD, rfl⟩ := hQ

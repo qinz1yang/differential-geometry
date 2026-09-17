@@ -35,6 +35,35 @@ theorem univ_of_subsingleton [Subsingleton E] : IsHPolytope (univ : Set E) :=
     ext x
     simp⟩
 
+theorem prod {C : Set E} {D : Set F} (hC : IsHPolytope C) (hD : IsHPolytope D) :
+    IsHPolytope (C ×ˢ D) := by
+  obtain ⟨hCc, ι, hι, l, c, rfl⟩ := hC
+  obtain ⟨hDc, κ, hκ, m, d, rfl⟩ := hD
+  refine ⟨hCc.prod hDc, ι ⊕ κ, inferInstance,
+    Sum.elim (fun i => (l i).comp (LinearMap.fst ℝ E F))
+      (fun j => (m j).comp (LinearMap.snd ℝ E F)), Sum.elim c d, ?_⟩
+  ext p
+  constructor
+  · rintro ⟨h₁, h₂⟩ (i | j)
+    · exact h₁ i
+    · exact h₂ j
+  · intro h
+    exact ⟨fun i => h (Sum.inl i), fun j => h (Sum.inr j)⟩
+
+theorem isHPolytope_Icc (a b : ℝ) : IsHPolytope (Set.Icc a b) := by
+  refine ⟨isCompact_Icc, Bool, inferInstance,
+    fun i => cond i (LinearMap.id : ℝ →ₗ[ℝ] ℝ) (-LinearMap.id), fun i => cond i b (-a), ?_⟩
+  ext x
+  constructor
+  · rintro ⟨hax, hxb⟩ i
+    cases i
+    · exact neg_le_neg hax
+    · exact hxb
+  · intro h
+    have h₁ : x ≤ b := h true
+    have h₂ : -x ≤ -a := h false
+    exact ⟨by linarith, h₁⟩
+
 theorem inter (hC : IsHPolytope C) (hD : IsHPolytope D) : IsHPolytope (C ∩ D) := by
   obtain ⟨hCc, ι, hι, l, c, rfl⟩ := hC
   obtain ⟨hDc, κ, hκ, m, d, rfl⟩ := hD
