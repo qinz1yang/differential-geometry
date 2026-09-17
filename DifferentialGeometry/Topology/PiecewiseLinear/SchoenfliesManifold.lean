@@ -1,4 +1,5 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.ChartBallFrontier
+import DifferentialGeometry.Topology.PiecewiseLinear.PLSchoenflies
 import DifferentialGeometry.Topology.PiecewiseLinear.SimplyEmbedded
 
 open Set
@@ -12,7 +13,6 @@ variable {X : Type u} [TopologicalSpace X] [T2Space X]
   [ChartedSpace (EuclideanSpace ℝ (Fin 3)) X] [HasGroupoid X (plGroupoid 3)]
 
 theorem exists_isPolyhedralBall_of_isPolyhedralSphere_in_chart
-    (hSchoenflies : ∀ S : Set (EuclideanSpace ℝ (Fin 3)), IsPLSphere 2 S → IsSimplyEmbedded S)
     {S : Set X} (hS : IsPolyhedralSphere (n := 3) 2 S)
     (e : OpenPartialHomeomorph X (EuclideanSpace ℝ (Fin 3)))
     (he : e ∈ atlas (EuclideanSpace ℝ (Fin 3)) X) (hconv : Convex ℝ e.target) (hSe : S ⊆ e.source) :
@@ -22,7 +22,7 @@ theorem exists_isPolyhedralBall_of_isPolyhedralSphere_in_chart
     rintro _ ⟨x, hx, rfl⟩
     exact e.map_source (hSe hx)
   obtain ⟨B, hB, hfront, hBt⟩ := exists_hasPushProperty_subset_of_isSimplyEmbedded
-    (hSchoenflies (e '' S) himage) hconv e.open_target hSt
+    himage.isSimplyEmbedded hconv e.open_target hSt
   refine ⟨e.symm '' B, isPolyhedralBall_chart_symm_image e he hB.1 hBt, ?_, ?_⟩
   · rw [frontier_chart_symm_image_of_isPLBall e he hB.1 hBt, hfront]
     exact e.symm_image_image_of_subset_source hSe
@@ -31,7 +31,6 @@ theorem exists_isPolyhedralBall_of_isPolyhedralSphere_in_chart
 
 theorem exists_isPolyhedralBall_of_isPolyhedralSphere_in_openStar
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
-    (hSchoenflies : ∀ S : Set (EuclideanSpace ℝ (Fin 3)), IsPLSphere 2 S → IsSimplyEmbedded S)
     (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces] (hK : IsCombinatorialManifold 3 K)
     {p : E} (hp : {p} ∈ K.faces) :
     letI := combinatorialChartedSpace K hK
@@ -43,6 +42,6 @@ theorem exists_isPolyhedralBall_of_isPolyhedralSphere_in_openStar
   intro S hS hSe
   let e := vertexChart K hp (hK.isPLSphere_link hp)
   have he : e ∈ atlas (EuclideanSpace ℝ (Fin 3)) K.space := ⟨⟨p, hp⟩, rfl⟩
-  exact exists_isPolyhedralBall_of_isPolyhedralSphere_in_chart hSchoenflies hS e he (convex_stdTarget 2) hSe
+  exact exists_isPolyhedralBall_of_isPolyhedralSphere_in_chart hS e he (convex_stdTarget 2) hSe
 
 end DifferentialGeometry.Topology.PiecewiseLinear

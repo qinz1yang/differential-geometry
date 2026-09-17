@@ -1,4 +1,5 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.SchoenfliesManifold
+import DifferentialGeometry.Topology.PiecewiseLinear.PLSchoenflies
 import DifferentialGeometry.Topology.PiecewiseLinear.ChartPolyhedron
 import DifferentialGeometry.Topology.PiecewiseLinear.ChartConjugate
 import DifferentialGeometry.Topology.PiecewiseLinear.PolyhedralBallBoundary
@@ -14,7 +15,6 @@ variable {X : Type u} [TopologicalSpace X] [T2Space X]
   [ChartedSpace (EuclideanSpace ℝ (Fin 3)) X] [HasGroupoid X (plGroupoid 3)]
 
 theorem exists_isPL_homeomorph_push_disk_in_chart
-    (hSchoenflies : ∀ S : Set (EuclideanSpace ℝ (Fin 3)), IsPLSphere 2 S → IsSimplyEmbedded S)
     {C D N : Set X} (hC : IsPolyhedralBall (n := 3) 3 C)
     (hD : IsPolyhedralBall (n := 3) 2 D) (hDC : D ⊆ frontier C)
     (e : OpenPartialHomeomorph X (EuclideanSpace ℝ (Fin 3)))
@@ -28,7 +28,7 @@ theorem exists_isPL_homeomorph_push_disk_in_chart
   have hC' := hC.isPLBall_chart_image e he hCe
   have hD' := hD.isPLBall_chart_image e he hDe
   have hpush := hasPushProperty_of_isSimplyEmbedded_frontier hC'
-    (hSchoenflies _ hC'.isPLSphere_frontier)
+    hC'.isPLSphere_frontier.isSimplyEmbedded
   have hDC' : e '' D ⊆ frontier (e '' C) := by
     rw [← hC.image_frontier_chart e he hCe]
     exact image_mono hDC
@@ -62,7 +62,6 @@ theorem exists_isPL_homeomorph_push_disk_in_chart
     exact e.conjugateMap_eqOn_compl hkfix (fun hxP => hx (hPN hxP))
 
 theorem exists_isPL_homeomorph_push_between_disks_in_chart
-    (hSchoenflies : ∀ S : Set (EuclideanSpace ℝ (Fin 3)), IsPLSphere 2 S → IsSimplyEmbedded S)
     {C D₁ D₂ N : Set X} (hC : IsPolyhedralBall (n := 3) 3 C)
     (hD₁ : IsPolyhedralBall (n := 3) 2 D₁) (hD₂ : IsPolyhedralBall (n := 3) 2 D₂)
     (hcover : D₁ ∪ D₂ = frontier C)
@@ -75,7 +74,7 @@ theorem exists_isPL_homeomorph_push_between_disks_in_chart
   have hD₁C : D₁ ⊆ frontier C := subset_union_left.trans hcover.le
   rw [hinter₁] at hCN
   obtain ⟨h, hh, hhi, himage, hfix⟩ :=
-    exists_isPL_homeomorph_push_disk_in_chart hSchoenflies hC hD₁ hD₁C e he hCe T hCN
+    exists_isPL_homeomorph_push_disk_in_chart hC hD₁ hD₁C e he hCe T hCN
   refine ⟨h, hh, hhi, himage.trans ?_, hfix⟩
   have hdiff : frontier C \ D₁ = D₂ \ (D₁ ∩ D₂) := by
     rw [← hcover]
@@ -87,7 +86,6 @@ theorem exists_isPL_homeomorph_push_between_disks_in_chart
 
 theorem exists_isPL_homeomorph_push_between_disks_in_openStar
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
-    (hSchoenflies : ∀ S : Set (EuclideanSpace ℝ (Fin 3)), IsPLSphere 2 S → IsSimplyEmbedded S)
     (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces] (hK : IsCombinatorialManifold 3 K)
     {p : E} (hp : {p} ∈ K.faces) :
     letI := combinatorialChartedSpace K hK
@@ -105,7 +103,7 @@ theorem exists_isPL_homeomorph_push_between_disks_in_openStar
   intro C D₁ D₂ N hC hD₁ hD₂ hcover hinter₁ hinter₂ hCe T hCN
   let e := vertexChart K hp (hK.isPLSphere_link hp)
   have he : e ∈ atlas (EuclideanSpace ℝ (Fin 3)) K.space := ⟨⟨p, hp⟩, rfl⟩
-  exact exists_isPL_homeomorph_push_between_disks_in_chart hSchoenflies hC hD₁ hD₂
+  exact exists_isPL_homeomorph_push_between_disks_in_chart hC hD₁ hD₂
     hcover hinter₁ hinter₂ e he hCe T hCN
 
 end DifferentialGeometry.Topology.PiecewiseLinear
