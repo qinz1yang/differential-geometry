@@ -2193,3 +2193,13 @@ F-M1 仍为 partial。单个旧三角形的全部纤维及逐边对应已闭合�
 `HeightCellDeletion.lean` 的 `fiber_subcomplexGeneratedBy_eq_closure_sdiff` 证明同一生成子复形的水平截面恰为旧水平截面删去该胞腔后的闭包。证明在被删单形上排除原顶点，在剩余满维原面上利用点/弧相交的低维稠密补集；不预设余截面为盘。`heightSectionCells_erase_subset_subcomplexGeneratedBy` 同时保证其余每一块原截面胞腔仍由剩余原面生产，且此结果无需有限维假设。下一步把 §19.91 的自由相交盘与这些等式组合为完整删除步骤，对 §19.90 的有限序列归纳，直到闭星锥后做 M3。
 
 聚焦检查：`CompactRegion` exit=0（5.5 秒）、`SurfaceRegion` exit=0（9.5 秒）、`RegularClosed` exit=0（5.2 秒）、`RegionCellPush` exit=0（9.6 秒）、`ConvexLevelSet` exit=0（7.4 秒）、`SimplexSlabInterior` exit=0（9.1 秒）、`SimplexSlabDeletion` exit=0（9.5 秒）、`HeightCellDeletion` exit=0（10.2 秒），均零 warning。`AuditF241.lean` 十七项仅依赖 `propext`、`Classical.choice`、`Quot.sound`；无 Lean 进程时 `fresh.py` 为 78/78 fresh、零 stale/missing、零禁用项。三维有限迭代和残余锥识别尚未拼装；S.4 M2/M3、夜间 F-M1 整体及 I1 尚未完成。下一审计文件 `AuditF242.lean`。
+
+### 19.93 S.4 M2：完整三维有限环境删除及闭星薄片精确终点
+
+`SlabCellDeletion.lean` 的 `exists_isPLHomeomorphOn_slab_of_free_disk_cell_deletion` 消费一轮实际二维自由胞腔删除，从当前原子复形中选择对应四面体，证明其不含固定顶点 p，并实际构造下一原子复形。输出同时保留正规闭性、所有含 p 的原面、二维删除后的精确水平盘和其余原截面胞腔，且构造环境 PL 同胚把当前薄片边界送到真实下一薄片边界。未追加余截面盘性、相交盘球性、余区域流形性或额外环境推移输入。
+
+`SlabDeletionSequence.lean` 的 `exists_isPLHomeomorphOn_slab_of_free_disk_cell_deletion_sequence` 对 §19.90 的有限序列作头部归纳，实际复合全部环境同胚。每轮新边界的球性由前一轮环境像传递；给定凸开邻域 W 外始终固定，故新边界仍在 W 内。`ClosedStarSlab.lean` 通过保持全部原子复形的单形棱柱模型，将最终水平盘包含于 d0 的条件提升为整个剩余薄片恰等于闭星薄片，无需额外纯维性或胞腔计数。端点 `exists_isPLHomeomorphOn_frontier_slab_closedStar` 从原零指标填充实际生产环境 PL 同胚，将整个薄片边界送到 `frontier (closedStar K p ∩ ℓ ⁻¹' Icc a b)`，固定 W 外。
+
+当前完整删除端点使用 `a < ℓ p < b`，这是 §19.91–19.92 的端面避开全部顶点版本。书页 124–125 的最终锥论证把 p 放在一端平面，故下一步应将正规闭裁剪和删除步骤推广到 `a = ℓ p` 或 `b = ℓ p`（保持 p 层为真实 PL 盘，删除胞腔仍避开 p），再识别单侧残余闭星为盘与点的 join，消费 17.10，最后按 17.11 做 M3。不能把当前双侧闭星薄片直接冒充 17.10 的盘锥。
+
+聚焦检查：`SlabCellDeletion` exit=0（10.6 秒）、`ClosedStarSlab` exit=0（8.2 秒）、`SlabDeletionSequence` exit=0（9.9 秒），全部零 warning。`AuditF242.lean` 四项仅依赖 `propext`、`Classical.choice`、`Quot.sound`；无 Lean 进程时 `fresh.py` 为 81/81 fresh、零 stale/missing、零禁用项。三维有限删除及闭星精确终点已闭合，单侧锥识别和 M3 尚未完成；S.4 M2/M3、夜间 F-M1 整体及 I1 仍为 partial。下一审计文件 `AuditF243.lean`。
