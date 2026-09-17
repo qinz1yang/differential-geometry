@@ -5508,6 +5508,173 @@ private theorem ambient_sobolev_solution_exists_with_mem_range [I.Boundaryless] 
   exact ambient_mem_range_of_parameterDerivative_lift
     c₀ g ht he hr hEU hleft β hG hT hTρ hρC u gforce hfacts hlift
 
+
+private theorem ambient_retraction_contMDiff_two_and_immersed_of_parameterDerivative_lift
+    [I.Boundaryless] {ρ T : ℝ} (hT : 0 < T) (hTρ : T ≤ ρ)
+    (hρC : ρ ≤ ScalarVectorTimeCoefficients.radius
+      (ambientCoefficients c₀ g ht he hr hEU hleft β hG))
+    (u : timeH1 (CircleHsPi (c₀.pullbackMetric (g 0)) (Fin n) ((1 : ℕ) : ℝ)) T)
+    (gforce : timeL2 (CircleHsPi (c₀.pullbackMetric (g 0)) (Fin n) ((1 : ℕ) : ℝ)) T)
+    (hfacts : ambientSobolevSolutionFacts c₀ g ht he hr hEU hleft β hG ρ hT u gforce)
+    (hlift : parameterDerivativeForcingFieldLift (c₀.pullbackMetric (g 0)) hT gforce) :
+    let g₀ := c₀.pullbackMetric (g 0)
+    let f₀ := ambientSobolev c₀ (g 0) e he (((1 : ℕ) : ℝ) + 2)
+    let P := circleHsPiInclusion g₀ (Fin n)
+      (show (1 : ℝ) ≤ ((1 : ℕ) : ℝ) + 2 by norm_num)
+    let S := circleHsPiInclusion g₀ (Fin n)
+      (show (1 : ℝ) ≤ ((1 : ℕ) : ℝ) by norm_num)
+    let d : CurveMap (EuclideanSpace ℝ (Fin n)) := fun z t => WithLp.toLp 2
+      (scalarH1PiToContinuous g₀ (P f₀ + S (u.toFun t)) z)
+    let c : CurveMap M := fun z t => r (d z t)
+    (∀ z, c z 0 = c₀.map z) ∧
+      (∀ z t, t ∈ Icc 0 T → e (c z t) = d z t) ∧
+      (∀ t ∈ Icc 0 T, ContMDiff 𝓘(ℝ, ℝ) I 2 (fun x : ℝ => c.lift x t)) ∧
+      c.ImmersedOn (I := I) (Icc 0 T) := by
+  intro g₀ f₀ P S d c
+  have himage := ambient_mem_range_of_parameterDerivative_lift
+    c₀ g ht he hr hEU hleft β hG hT hTρ hρC u gforce hfacts hlift
+  have hjet := ambient_firstJet_mem_of_sobolev_solution_facts
+    c₀ g ht he hr hEU hleft β hG hT hTρ hρC u gforce hfacts
+  have hspatial := ambient_spatial_contDiff_two_of_parameterDerivative_forcing_lift
+    g₀ hT f₀ gforce hlift
+  have hu := hfacts.1
+  rw [← hu] at hspatial
+  rcases hfacts with ⟨_, _, _, _, _, _, _, w, hw, hwu, _, _, hw₀, _, _, _⟩
+  have hu₀ : u.toFun 0 = 0 := by
+    rw [← hwu 0 ⟨le_rfl, hT.le⟩, hw₀, map_zero]
+  obtain ⟨_, _, _, hinit⟩ :=
+    ambient_first_order_regular_of_sobolev_representative c₀ (g 0) he u w hw hwu hu₀
+  change ∀ x : ℝ, d (x : AddCircle (1 : ℝ)) 0 = e (c₀.map (x : AddCircle (1 : ℝ))) at hinit
+  have hrange (z : AddCircle (1 : ℝ)) (t : ℝ) (htt : t ∈ Icc 0 T) : d z t ∈ range e := by
+    induction z using QuotientAddGroup.induction_on with
+    | H x => exact himage t htt x
+  have hce (z : AddCircle (1 : ℝ)) (t : ℝ) (htt : t ∈ Icc 0 T) : e (c z t) = d z t := by
+    obtain ⟨p, hp⟩ := hrange z t htt
+    change e (r (d z t)) = d z t
+    rw [← hp, hleft]
+  let L : (Fin n → ℝ) →L[ℝ] EuclideanSpace ℝ (Fin n) :=
+    (PiLp.continuousLinearEquiv 2 ℝ (fun _ : Fin n => ℝ)).symm.toContinuousLinearMap
+  have hd (t : ℝ) (htt : t ∈ Icc 0 T) :
+      ContDiff ℝ 2 (fun x : ℝ => d.lift x t) :=
+    L.contDiff.comp (hspatial.1 t htt)
+  have hc (t : ℝ) (htt : t ∈ Icc 0 T) :
+      ContMDiff 𝓘(ℝ, ℝ) I 2 (fun x : ℝ => c.lift x t) :=
+    (hr.of_le (ENat.natCast_le_of_coe_top_le_withTop le_rfl 2)).comp_contMDiff
+      (hd t htt).contMDiff (fun x => hEU (hrange (x : AddCircle (1 : ℝ)) t htt))
+  refine ⟨?_, hce, hc, ?_⟩
+  · intro z
+    induction z using QuotientAddGroup.induction_on with
+    | H x => change r (d (x : AddCircle (1 : ℝ)) 0) = _; rw [hinit x, hleft]
+  · intro x t htt hzero
+    have hdne : deriv (fun y => d.lift y t) x ≠ 0 := by
+      have hpos := (hjet t htt x).2.2
+      let B := TensorSpectral.chartGramBilin (Geometry.Riemannian.retractionMetric (g t) he hr) β
+        ((extChartAt 𝓘(ℝ, EuclideanSpace ℝ (Fin n)) β).symm (d.lift x t))
+      change 0 < B (deriv (fun y => d.lift y t) x) (deriv (fun y => d.lift y t) x) at hpos
+      intro h
+      rw [h, map_zero] at hpos
+      exact lt_irrefl _ hpos
+    have hcomp := mfderiv_comp_apply x (he.mdifferentiableAt (by simp))
+      ((hc t htt).mdifferentiableAt (by norm_num)) (1 : ℝ)
+    have heq : (fun y : ℝ => e (c.lift y t)) = fun y => d.lift y t :=
+      funext (fun y => hce (y : AddCircle (1 : ℝ)) t htt)
+    change e ∘ (fun y : ℝ => c.lift y t) = (fun y => d.lift y t) at heq
+    rw [heq, mfderiv_eq_fderiv] at hcomp
+    change deriv (fun y => d.lift y t) x =
+      mfderiv I 𝓘(ℝ, EuclideanSpace ℝ (Fin n)) e (c.lift x t) (c.X (I := I) x t) at hcomp
+    rw [hzero, map_zero] at hcomp
+    exact hdne hcomp
+
+private theorem ambient_contDiffOn_one_of_parameterDerivative_lift
+    {ρ T : ℝ} (hT : 0 < T) (hTρ : T ≤ ρ)
+    (hρC : ρ ≤ ScalarVectorTimeCoefficients.radius
+      (ambientCoefficients c₀ g ht he hr hEU hleft β hG))
+    (u : timeH1 (CircleHsPi (c₀.pullbackMetric (g 0)) (Fin n) ((1 : ℕ) : ℝ)) T)
+    (gforce : timeL2 (CircleHsPi (c₀.pullbackMetric (g 0)) (Fin n) ((1 : ℕ) : ℝ)) T)
+    (hfacts : ambientSobolevSolutionFacts c₀ g ht he hr hEU hleft β hG ρ hT u gforce)
+    (hlift : parameterDerivativeForcingFieldLift (c₀.pullbackMetric (g 0)) hT gforce) :
+    let g₀ := c₀.pullbackMetric (g 0)
+    let f₀ := ambientSobolev c₀ (g 0) e he (((1 : ℕ) : ℝ) + 2)
+    let P := circleHsPiInclusion g₀ (Fin n)
+      (show (1 : ℝ) ≤ ((1 : ℕ) : ℝ) + 2 by norm_num)
+    let S := circleHsPiInclusion g₀ (Fin n)
+      (show (1 : ℝ) ≤ ((1 : ℕ) : ℝ) by norm_num)
+    let F : ℝ → ℝ → EuclideanSpace ℝ (Fin n) := fun t x => WithLp.toLp 2
+      (scalarH1PiToContinuous g₀ (P f₀ + S (u.toFun t)) (x : AddCircle (1 : ℝ)))
+    ContDiffOn ℝ 1 (Function.uncurry F) (Icc 0 T ×ˢ (univ : Set ℝ)) := by
+  intro g₀ f₀ P S F
+  have hchart := ambient_chart_equation_of_parameterDerivative_lift
+    c₀ g ht he hr hEU hleft β hG hT hTρ hρC u gforce hfacts hlift
+  have hjet := ambient_firstJet_mem_of_sobolev_solution_facts
+    c₀ g ht he hr hEU hleft β hG hT hTρ hρC u gforce hfacts
+  have hspatial := ambient_spatial_contDiff_two_of_parameterDerivative_forcing_lift
+    g₀ hT f₀ gforce hlift
+  rw [← hfacts.1] at hspatial
+  rcases hfacts with ⟨_, _, _, _, _, _, _, w, hw, hwu, _, _, hw₀, _, _, _⟩
+  let L : (Fin n → ℝ) →L[ℝ] EuclideanSpace ℝ (Fin n) :=
+    (PiLp.continuousLinearEquiv 2 ℝ (fun _ : Fin n => ℝ)).symm.toContinuousLinearMap
+  let f := fun t (x : ℝ) => scalarH1PiToContinuous g₀
+    (P f₀ + S (u.toFun t)) (x : AddCircle (1 : ℝ))
+  change (∀ t ∈ Icc 0 T, ContDiff ℝ 2 (f t)) ∧
+    ContinuousOn (fun p : ℝ × ℝ => deriv (deriv (f p.1)) p.2) (Icc 0 T ×ˢ univ) at hspatial
+  have hd (q : ℝ → (Fin n → ℝ)) (hq : Differentiable ℝ q) :
+      deriv (fun y => L (q y)) = fun y => L (deriv q y) := by
+    funext y
+    exact (L.hasFDerivAt.comp_hasDerivAt y (hq y).hasDerivAt).deriv
+  have hFd (t : ℝ) (htt : t ∈ Icc 0 T) :
+      deriv (F t) = fun y => L (deriv (f t) y) :=
+    hd (f t) ((hspatial.1 t htt).differentiable (by norm_num))
+  have hFdd (t : ℝ) (htt : t ∈ Icc 0 T) :
+      deriv (deriv (F t)) = fun y => L (deriv (deriv (f t)) y) := by
+    rw [hFd t htt]
+    exact hd (deriv (f t)) (show Differentiable ℝ (deriv (f t)) from
+      (show ContDiff ℝ 1 (deriv (f t)) from (hspatial.1 t htt).deriv').differentiable (by norm_num))
+  let K := circleHsPiInclusion g₀ (Fin n)
+    (show ((1 : ℕ) : ℝ) + 1 ≤ ((1 : ℕ) : ℝ) + 2 by norm_num)
+  have hfirst := AddCircle.contDiff_and_continuousOn_iteratedDeriv_scalarH1PiToContinuous
+    g₀ 1 (fun t => P f₀ + S (u.toFun t)) (fun t => K f₀ + w t)
+    (continuousOn_const.add hw) (fun t htt => by
+      apply PiLp.ext
+      intro i
+      simp only [ContinuousLinearMap.piLpMap_apply, PiLp.add_apply, map_add]
+      change _ = (P f₀) i + (S (u.toFun t)) i
+      apply congrArg₂ (· + ·)
+      · exact (tensorHsInclusion_trans_apply
+          (by norm_num : (1 : ℝ) ≤ ((1 : ℕ) : ℝ) + 1)
+          (by norm_num : ((1 : ℕ) : ℝ) + 1 ≤ ((1 : ℕ) : ℝ) + 2) (f₀ i)).symm
+      · have hi := congrArg (fun z => z i) (hwu t htt)
+        have hi' := congrArg (tensorHsInclusion (g := g₀) (r := 0) (s := 0)
+          (by norm_num : (1 : ℝ) ≤ ((1 : ℕ) : ℝ))) hi
+        simpa only [S, circleHsPiInclusion, ContinuousLinearMap.piLpMap_apply,
+          ← tensorHsInclusion_trans_apply] using hi')
+  have hC0 : ContinuousOn (Function.uncurry F) (Icc 0 T ×ˢ (univ : Set ℝ)) := by
+    apply L.continuous.comp_continuousOn
+    have hstate : ContinuousOn (fun t => P f₀ + S (u.toFun t)) (Icc 0 T) :=
+      continuousOn_const.add (S.continuous.comp_continuousOn u.continuousOn_toFun)
+    exact (((scalarH1PiToContinuous g₀).continuous.comp_continuousOn hstate).comp
+      continuousOn_fst (fun _ hp => hp.1)).eval
+        ((AddCircle.continuous_mk' 1).comp continuous_snd).continuousOn
+  have hDx : ContinuousOn (fun p : ℝ × ℝ => deriv (F p.1) p.2)
+      (Icc 0 T ×ˢ (univ : Set ℝ)) := by
+    have hh : ContinuousOn (fun p : ℝ × ℝ => deriv (f p.1) p.2)
+        (Icc 0 T ×ˢ (univ : Set ℝ)) := by
+      simpa only [f, iteratedDeriv_succ, iteratedDeriv_zero] using hfirst.2
+    apply (L.continuous.comp_continuousOn hh).congr
+    intro p hp
+    exact congrFun (hFd p.1 hp.1) p.2
+  have hDxx : ContinuousOn (fun p : ℝ × ℝ => deriv (deriv (F p.1)) p.2)
+      (Icc 0 T ×ˢ (univ : Set ℝ)) := by
+    apply (L.continuous.comp_continuousOn (hspatial.2.mono
+      (fun p hp => ⟨hp.1, mem_univ _⟩))).congr
+    intro p hp
+    exact congrFun (hFdd p.1 hp.1) p.2
+  apply contDiffOn_one_of_parametric_chart_equation hG β (hab := hT) (hV := isOpen_univ)
+    hC0 (fun t htt => (L.contDiff.comp (hspatial.1 t htt)).differentiable (by norm_num) |>.differentiableOn) hDx hDxx
+  · intro t ht x hx
+    exact hjet t ht x
+  · intro t ht x hx
+    exact hchart t ht x
+
 end
 
 end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening.SmoothImmersion

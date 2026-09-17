@@ -5,6 +5,7 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.Inner.LowerAllU
 import DifferentialGeometry.Geometry.Metric.Family.ChartCurvature.ManifoldSmoothness
 import DifferentialGeometry.Geometry.Geodesic.Equation.Basic
 import DifferentialGeometry.Analysis.Calculus.TimeJet.Evolution
+import DifferentialGeometry.Analysis.Calculus.TimeJet.SliceBootstrap
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.Derivative.MFDerivAlongCurve
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Chart.Local
 
@@ -703,6 +704,48 @@ theorem trivToE_parametric_acceleration_eq_chart
   simp only [curveShorteningParametricChartRhs, curveShorteningParametricChartReaction, smul_add]
 
 end CurveMap
+
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E] {H : Type*} [TopologicalSpace H]
+  {I : ModelWithCorners ℝ E H} {M : Type*} [TopologicalSpace M]
+  [ChartedSpace H M] [IsManifold I ∞ M]
+
+theorem contDiffOn_one_of_parametric_chart_equation
+    {D : RealTimeInterval} {g : ℝ → SmoothRiemannianMetric I M}
+    (hg : MetricFamilySmoothOn D g) (β : M)
+    {G : ℝ → ℝ → E} {a b : ℝ} {V : Set ℝ} (hab : a < b) (hV : IsOpen V)
+    (hG : ContinuousOn (Function.uncurry G) (Icc a b ×ˢ V))
+    (hspace : ∀ t ∈ Icc a b, DifferentiableOn ℝ (G t) V)
+    (hDx : ContinuousOn (fun p : ℝ × ℝ => deriv (G p.1) p.2) (Icc a b ×ˢ V))
+    (hDxx : ContinuousOn (fun p : ℝ × ℝ => deriv (deriv (G p.1)) p.2)
+      (Icc a b ×ˢ V))
+    (hjet : ∀ t ∈ Icc a b, ∀ x ∈ V,
+      (t, G t x, deriv (G t) x) ∈ curveShorteningChartFirstJetDomain D g β)
+    (hpde : ∀ t ∈ Icc a b, ∀ x ∈ V,
+      HasDerivWithinAt (fun s => G s x)
+        (curveShorteningParametricChartRhs g β
+          (t, G t x, deriv (G t) x, deriv (deriv (G t)) x)) (Icc a b) t) :
+    ContDiffOn ℝ 1 (Function.uncurry G) (Icc a b ×ˢ V) := by
+  let R := fun p : ℝ × ℝ => curveShorteningParametricChartRhs g β
+    (p.1, G p.1 p.2, deriv (G p.1) p.2, deriv (deriv (G p.1)) p.2)
+  let W := fun p : ℝ × ℝ => ContinuousLinearMap.toSpanSingleton ℝ (deriv (G p.1) p.2)
+  have hfirst : ContinuousOn (fun p : ℝ × ℝ => (p.1, G p.1 p.2, deriv (G p.1) p.2))
+      (Icc a b ×ˢ V) := continuousOn_fst.prodMk (hG.prodMk hDx)
+  have hmap : MapsTo (fun p : ℝ × ℝ => (p.1, G p.1 p.2, deriv (G p.1) p.2))
+      (Icc a b ×ˢ V) (curveShorteningChartFirstJetDomain D g β) :=
+    fun p hp => hjet p.1 hp.1 p.2 hp.2
+  have hR : ContinuousOn R (Icc a b ×ˢ V) := by
+    exact (((contDiffOn_curveShorteningChartDiffusionCoefficient hg β).continuousOn.comp
+      hfirst hmap).smul hDxx).add
+        ((contDiffOn_curveShorteningParametricChartReaction hg β).continuousOn.comp hfirst hmap)
+  have hW : ContinuousOn W (Icc a b ×ˢ V) := by
+    exact (ContinuousLinearMap.toSpanSingletonLIE ℝ E).continuous.comp_continuousOn hDx
+  have h := DifferentialGeometry.Analysis.contDiffIcc_succ (q := 0) hab hV
+    (R := R) (W := W) (fun p hp => hpde p.1 hp.1 p.2 hp.2)
+    (fun p hp => ((hspace p.1 hp.1 p.2 hp.2).differentiableAt (hV.mem_nhds hp.2)).hasDerivAt.hasFDerivAt)
+    (contDiffOn_zero.mpr hR) (contDiffOn_zero.mpr hW)
+  simpa only [Nat.cast_zero, zero_add, Function.uncurry_def] using h
 
 end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening
 
