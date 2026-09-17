@@ -101,6 +101,13 @@ theorem exists_isPiecewiseAffineOn_stdCone_fan {M N : ℕ} {u σ : ℕ → ℝ} 
     (hσ0 : σ 0 = 0) (hσN : σ (N + 1) = 1) (hσmono : ∀ k ≤ N, σ k < σ (k + 1))
     (hw0 : ∀ j, w 0 j = w 0 0) :
     ∃ Ψ : ℝ × ℝ → F, IsPiecewiseAffineOn Ψ stdCone ∧ Ψ (0, 0) = w 0 0 ∧
+      (∀ k ≤ N, ∀ t ∈ Icc (σ k) (σ (k + 1)),
+        Ψ (t * (1 - u 0), t * u 0) =
+          AffineMap.lineMap (w k 0) (w (k + 1) 0) ((t - σ k) / (σ (k + 1) - σ k))) ∧
+      (∀ k ≤ N, ∀ t ∈ Icc (σ k) (σ (k + 1)),
+        Ψ (t * (1 - u (M + 1)), t * u (M + 1)) =
+          AffineMap.lineMap (w k (M + 1)) (w (k + 1) (M + 1))
+            ((t - σ k) / (σ (k + 1) - σ k))) ∧
       (∀ j ≤ M, ∀ r ∈ Icc (u j) (u (j + 1)),
         Ψ (1 - r, r) =
           AffineMap.lineMap (w (N + 1) j) (w (N + 1) (j + 1)) ((r - u j) / (u (j + 1) - u j))) ∧
@@ -139,6 +146,9 @@ theorem exists_isPiecewiseAffineOn_stdCone_fan {M N : ℕ} {u σ : ℕ → ℝ} 
   have key : ∀ j, j ≤ M → ∃ Ψ : ℝ × ℝ → F,
       IsPiecewiseAffineOn Ψ (⋃ i ≤ j, stdConeSector (u i) (u (i + 1))) ∧ Ψ (0, 0) = w 0 0 ∧
       (∀ k ≤ N, ∀ t ∈ Icc (σ k) (σ (k + 1)),
+        Ψ (t * (1 - u 0), t * u 0) =
+          AffineMap.lineMap (w k 0) (w (k + 1) 0) ((t - σ k) / (σ (k + 1) - σ k))) ∧
+      (∀ k ≤ N, ∀ t ∈ Icc (σ k) (σ (k + 1)),
         Ψ (t * (1 - u (j + 1)), t * u (j + 1)) =
           AffineMap.lineMap (w k (j + 1)) (w (k + 1) (j + 1)) ((t - σ k) / (σ (k + 1) - σ k))) ∧
       (∀ i ≤ j, ∀ r ∈ Icc (u i) (u (i + 1)),
@@ -164,7 +174,7 @@ theorem exists_isPiecewiseAffineOn_stdCone_fan {M N : ℕ} {u σ : ℕ → ℝ} 
           exact hz
         · intro hz
           exact ⟨0, le_rfl, hz⟩
-      refine ⟨Φ, ?_, ?_, hΦleft, ?_, ?_⟩
+      refine ⟨Φ, ?_, ?_, hΦbot, hΦleft, ?_, ?_⟩
       · rw [hU]
         exact hΦPA
       · exact hΦapex
@@ -178,7 +188,7 @@ theorem exists_isPiecewiseAffineOn_stdCone_fan {M N : ℕ} {u σ : ℕ → ℝ} 
         exact ⟨k, hk, 0, le_rfl, h1, h2, hz, hmem⟩
     | succ j ih =>
       intro hj
-      obtain ⟨Ψ, hPA, hapex, hray, houterj, himgj⟩ := ih (by omega)
+      obtain ⟨Ψ, hPA, hapex, hray0, hray, houterj, himgj⟩ := ih (by omega)
       obtain ⟨Φ, hΦPA, hΦapex, hΦbot, hΦleft, hΦouter, hΦimg⟩ :=
         exists_isPiecewiseAffineOn_stdConeSector (humono (j + 1) hj) (fun k => w k (j + 1))
           (fun k => w k (j + 1 + 1)) hσ0 hσN hσmono (by rw [hw0 (j + 1), hw0 (j + 1 + 1)])
@@ -220,7 +230,7 @@ theorem exists_isPiecewiseAffineOn_stdCone_fan {M N : ℕ} {u σ : ℕ → ℝ} 
         · rw [piecewise_eq_of_mem _ _ _ hmem]
           exact hcompat ⟨hmem, hz⟩
         · exact piecewise_eq_of_notMem _ _ _ hmem
-      refine ⟨(⋃ i ≤ j, stdConeSector (u i) (u (i + 1))).piecewise Ψ Φ, ?_, ?_, ?_, ?_, ?_⟩
+      refine ⟨(⋃ i ≤ j, stdConeSector (u i) (u (i + 1))).piecewise Ψ Φ, ?_, ?_, ?_, ?_, ?_, ?_⟩
       · rw [hUsucc]
         exact hPA.piecewise_of_isClosed hΦPA (hUclosed j)
           (isHPolytope_stdConeSector _ _).isClosed hcompat
@@ -229,6 +239,14 @@ theorem exists_isPiecewiseAffineOn_stdCone_fan {M N : ℕ} {u σ : ℕ → ℝ} 
           exact ⟨0, Nat.zero_le _, le_rfl, le_rfl, by norm_num, by simp, by simp⟩
         rw [piecewise_eq_of_mem _ _ _ h00]
         exact hapex
+      · intro k hk t ht
+        have hmem0 : ((t * (1 - u 0), t * u 0) : ℝ × ℝ) ∈
+            ⋃ i ≤ j, stdConeSector (u i) (u (i + 1)) := by
+          simp only [mem_iUnion, exists_prop]
+          exact ⟨0, Nat.zero_le _, mem_stdConeSector_smul_left (humono 0 (by omega)).le
+            (hunn 0 (by omega)) (hule 1 (by omega)) (hσ01 k hk t ht)⟩
+        rw [piecewise_eq_of_mem _ _ _ hmem0]
+        exact hray0 k hk t ht
       · intro k hk t ht
         have hmem : ((t * (1 - u (j + 1 + 1)), t * u (j + 1 + 1)) : ℝ × ℝ) ∈
             stdConeSector (u (j + 1)) (u (j + 1 + 1)) :=
@@ -256,9 +274,9 @@ theorem exists_isPiecewiseAffineOn_stdCone_fan {M N : ℕ} {u σ : ℕ → ℝ} 
         · obtain ⟨k, hk, h1, h2, hmem⟩ := hΦimg z hz
           refine ⟨k, hk, j + 1, le_rfl, h1, h2, hz, ?_⟩
           rwa [hΦval _ hz]
-  obtain ⟨Ψ, hPA, hapex, -, houter, himg⟩ := key M le_rfl
+  obtain ⟨Ψ, hPA, hapex, hray0, hray, houter, himg⟩ := key M le_rfl
   rw [stdConeSector_union hu0 huM] at hPA himg
-  exact ⟨Ψ, hPA, hapex, houter, himg⟩
+  exact ⟨Ψ, hPA, hapex, hray0, hray, houter, himg⟩
 
 theorem exists_isPiecewiseAffineOn_stdCone_fan_mapsTo {M N : ℕ} {u σ : ℕ → ℝ}
     {L : Geometry.SimplicialComplex ℝ F} (w : ℕ → ℕ → F)
@@ -273,7 +291,7 @@ theorem exists_isPiecewiseAffineOn_stdCone_fan_mapsTo {M N : ℕ} {u σ : ℕ �
       ∀ j ≤ M, ∀ r ∈ Icc (u j) (u (j + 1)),
         Ψ (1 - r, r) =
           AffineMap.lineMap (w (N + 1) j) (w (N + 1) (j + 1)) ((r - u j) / (u (j + 1) - u j)) := by
-  obtain ⟨Ψ, hPA, hapex, houter, himg⟩ :=
+  obtain ⟨Ψ, hPA, hapex, -, -, houter, himg⟩ :=
     exists_isPiecewiseAffineOn_stdCone_fan w hu0 huM humono hσ0 hσN hσmono hw0
   refine ⟨Ψ, hPA, ?_, hapex, houter⟩
   intro z hz
@@ -351,7 +369,7 @@ theorem exists_pos_forall_exists_isPiecewiseAffineOn_stdCone_dist_le
     intro j
     rw [hwle 0 (Nat.zero_le N) j, hwle 0 (Nat.zero_le N) 0, hσ0]
     norm_num
-  obtain ⟨Ψ, hPA, hapex, houter, himg⟩ :=
+  obtain ⟨Ψ, hPA, hapex, -, -, houter, himg⟩ :=
     exists_isPiecewiseAffineOn_stdCone_fan w hu0 huM humono hσ0 hσN hσmono hw0
   refine ⟨Ψ, hPA, ?_, ?_⟩
   · intro j hj r hr
