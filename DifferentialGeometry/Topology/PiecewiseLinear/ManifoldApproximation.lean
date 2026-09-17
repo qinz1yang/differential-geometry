@@ -220,4 +220,84 @@ theorem exists_isPLOn_dist_lt_of_biUnion {n m : ℕ} {N : Type*} [MetricSpace N]
       · rw [Set.piecewise_eq_of_notMem _ _ _ hxV]
         exact lt_of_lt_of_le (hg₀d x (hx.resolve_left hxV)) (min_le_left _ _)
 
+theorem exists_isPLOn_dist_lt {n m : ℕ} {N : Type*} [MetricSpace N]
+    [ChartedSpace (EuclideanSpace ℝ (Fin m)) N] [HasGroupoid N (plGroupoid m)]
+    {P : Set (EuclideanSpace ℝ (Fin n))} (hP : IsPolyhedron P)
+    {f : EuclideanSpace ℝ (Fin n) → N} (hf : ContinuousOn f P)
+    {ε : ℝ} (hε : 0 < ε) :
+    ∃ g : EuclideanSpace ℝ (Fin n) → N, IsPLOn n m g P ∧ ∀ x ∈ P, dist (g x) (f x) < ε := by
+  classical
+  have hPc : IsCompact P := hP.isCompact
+  have hnhds : ∀ x : P, ∃ W : Set (EuclideanSpace ℝ (Fin n)), IsOpen W ∧ (x : EuclideanSpace ℝ (Fin n)) ∈ W ∧
+      W ∩ P ⊆ f ⁻¹' (chartAt (EuclideanSpace ℝ (Fin m)) (f x)).source := by
+    intro x
+    exact mem_nhdsWithin.mp (hf x x.2
+      ((chartAt (EuclideanSpace ℝ (Fin m)) (f x)).open_source.mem_nhds (mem_chart_source _ _)))
+  choose W hWopen hWmem hWsub using hnhds
+  obtain ⟨d, hd, hdsub⟩ := lebesgue_number_lemma_of_metric hPc hWopen
+    (fun x hx => mem_iUnion.mpr ⟨⟨x, hx⟩, hWmem ⟨x, hx⟩⟩)
+  obtain ⟨K, hKfin, hKspace⟩ := IsPolyhedron.exists_simplicialComplex hP
+  let _ : Finite K.faces := hKfin.to_subtype
+  obtain ⟨K', hK', hK'fin, -, hK'diam⟩ :=
+    exists_isSubdivision_diam_lt K (N := Module.finrank ℝ (EuclideanSpace ℝ (Fin n)))
+      (fun s hs => card_le_finrank_succ_of_mem_faces K hs) hd
+  have hK'space : K'.space = P := by rw [hK'.space_eq, hKspace]
+  set C : Finset (EuclideanSpace ℝ (Fin n)) → Set (EuclideanSpace ℝ (Fin n)) :=
+    fun s => if s ∈ K'.faces then convexHull ℝ (s : Set (EuclideanSpace ℝ (Fin n))) else ∅ with hCdef
+  have hC : ∀ s, IsPolyhedron (C s) := by
+    intro s
+    by_cases hs : s ∈ K'.faces
+    · rw [hCdef]
+      simp only [hs, if_true]
+      exact isPolyhedron_convexHull_of_affineIndependent _ (K'.indep hs)
+    · rw [hCdef]
+      simp only [hs, if_false]
+      exact IsPolyhedron.empty
+  set T : Finset (Finset (EuclideanSpace ℝ (Fin n))) :=
+    hK'fin.toFinset.filter fun s => s.Nonempty with hTdef
+  have hCsub : ∀ s ∈ K'.faces, C s ⊆ P := by
+    intro s hs y hy
+    rw [hCdef] at hy
+    simp only [hs, if_true] at hy
+    rw [← hK'space]
+    exact K'.convexHull_subset_space hs hy
+  have hunion : ⋃ s ∈ T, C s = P := by
+    apply Subset.antisymm
+    · refine iUnion₂_subset fun s hs => hCsub s ?_
+      exact hK'fin.mem_toFinset.mp (Finset.mem_filter.mp hs).1
+    · intro x hx
+      obtain ⟨s, hs, hxs⟩ := K'.mem_space_iff.mp (by rw [hK'space]; exact hx)
+      have hsne : s.Nonempty := by
+        rcases Finset.eq_empty_or_nonempty s with rfl | h
+        · simp at hxs
+        · exact h
+      refine mem_iUnion₂.mpr ⟨s, Finset.mem_filter.mpr ⟨hK'fin.mem_toFinset.mpr hs, hsne⟩, ?_⟩
+      rw [hCdef]
+      simpa only [hs, if_true] using hxs
+  have hchart : ∀ s ∈ T, ∃ e : OpenPartialHomeomorph N (EuclideanSpace ℝ (Fin m)),
+      e ∈ (plGroupoid m).maximalAtlas N ∧ MapsTo f (C s) e.source := by
+    intro s hs
+    obtain ⟨hsf, hsne⟩ := Finset.mem_filter.mp hs
+    have hsK : s ∈ K'.faces := hK'fin.mem_toFinset.mp hsf
+    obtain ⟨v, hv⟩ := hsne
+    have hCs : C s = convexHull ℝ (s : Set (EuclideanSpace ℝ (Fin n))) := by
+      rw [hCdef]; simp only [hsK, if_true]
+    have hvC : v ∈ C s := by rw [hCs]; exact subset_convexHull ℝ _ hv
+    have hvP : v ∈ P := hCsub s hsK hvC
+    obtain ⟨i, hi⟩ := hdsub v hvP
+    refine ⟨chartAt (EuclideanSpace ℝ (Fin m)) (f i),
+      StructureGroupoid.chart_mem_maximalAtlas (plGroupoid m) _, fun y hy => ?_⟩
+    have hbdd : Bornology.IsBounded (convexHull ℝ (s : Set (EuclideanSpace ℝ (Fin n)))) :=
+      isBounded_convexHull.mpr s.finite_toSet.isBounded
+    have hyball : y ∈ ball v d := by
+      rw [mem_ball]
+      refine lt_of_le_of_lt ?_ (hK'diam s hsK)
+      rw [dist_comm]
+      exact dist_le_diam_of_mem hbdd (by rw [← hCs]; exact hvC) (by rw [← hCs]; exact hy)
+    exact hWsub i ⟨hi hyball, hCsub s hsK hy⟩
+  obtain ⟨g, hg, hgd⟩ :=
+    exists_isPLOn_dist_lt_of_biUnion hC T (by rw [hunion]; exact hf) hchart hε
+  rw [hunion] at hg hgd
+  exact ⟨g, hg, hgd⟩
+
 end DifferentialGeometry.Topology.PiecewiseLinear
