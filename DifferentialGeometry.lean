@@ -10734,3 +10734,13 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Endpoint.
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.CurvatureUpperSupport
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.TerminalLeastEigenvalue
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.AncientNullPlane
+import DifferentialGeometry.Analysis.Calculus.BallBoundary
+import DifferentialGeometry.Analysis.Calculus.CurveSubdivision
+import DifferentialGeometry.Analysis.Calculus.Inverse.MonotoneGraph
+import DifferentialGeometry.Analysis.Calculus.Inverse.RectangleInjectivity
+import DifferentialGeometry.Analysis.Calculus.RegularRegion
+import DifferentialGeometry.Analysis.Calculus.SmoothExtension.Closed
+import DifferentialGeometry.Analysis.Convex.AffineBasis
+import DifferentialGeometry.Analysis.Convex.SegmentGerm
+import DifferentialGeometry.Analysis.Convex.SegmentSigns
+import DifferentialGeometry.Analysis.InnerProductSpace.SphereDerivative
