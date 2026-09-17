@@ -156,13 +156,15 @@ private theorem cycleGraph_adj_last_iff {n : ℕ} (i : Fin (n + 2)) :
   · rintro (rfl | rfl) <;> simp
 
 open Classical in
-theorem exists_isPLBall_pair_cover_derivedNeighborhood_circle [FiniteDimensional ℝ E]
+theorem exists_isPLBall_pair_cover_derivedNeighborhood_circle_with_boundary [FiniteDimensional ℝ E]
     (K L : Geometry.SimplicialComplex ℝ E) [Finite K.faces] [Finite L.faces]
     (hK : IsCombinatorialManifoldWithBoundary 3 K) (hLK : L.faces ⊆ K.faces)
     (hL : IsCombinatorialManifold 1 L) (hconn : IsConnected L.space) :
     ∃ A B D₀ D₁ : Set E,
       IsPLBall 3 A ∧ IsPLBall 3 B ∧ IsPLBall 2 D₀ ∧ IsPLBall 2 D₁ ∧ Disjoint D₀ D₁ ∧
-      A ∪ B = (derivedNeighborhood K L).space ∧ A ∩ B = D₀ ∪ D₁ := by
+      A ∪ B = (derivedNeighborhood K L).space ∧ A ∩ B = D₀ ∪ D₁ ∧
+      ∃ Q : Geometry.SimplicialComplex ℝ E, Q.faces.Finite ∧ Q.space = B ∧
+        D₀ ⊆ (boundaryComplex 3 Q).space ∧ D₁ ⊆ (boundaryComplex 3 Q).space := by
   classical
   obtain ⟨n, hn, e, hcover, hball, hpair⟩ :=
     exists_cyclic_derivedNeighborhoodCell_decomposition K L hK hLK hL hconn
@@ -196,7 +198,7 @@ theorem exists_isPLBall_pair_cover_derivedNeighborhood_circle [FiniteDimensional
     exact disjoint_left.mpr fun x hx hy => disjoint_left.mp ht ⟨hx.1, hy.1⟩ hx.2
   refine ⟨⋃ i : Fin (m + 2), C i.castSucc, C c, C a ∩ C c, C b ∩ C c,
     hA, hball c, ((hpair a c hac).2 hac_adj).1, ((hpair b c hbc).2 hbc_adj).1,
-    hdis, ?_, ?_⟩
+    hdis, ?_, ?_, ?_⟩
   · rw [← hcover]
     ext x
     simp only [mem_union, mem_iUnion]
@@ -224,5 +226,19 @@ theorem exists_isPLBall_pair_cover_derivedNeighborhood_circle [FiniteDimensional
     · rintro x (hx | hx)
       · exact ⟨mem_iUnion.mpr ⟨0, hx.1⟩, hx.2⟩
       · exact ⟨mem_iUnion.mpr ⟨Fin.last (m + 1), hx.1⟩, hx.2⟩
+  · exact ⟨derivedNeighborhoodCell K (e c).val, derivedNeighborhoodCell_faces_finite K (e c).val, rfl,
+      ((hpair a c hac).2 hac_adj).2.2, ((hpair b c hbc).2 hbc_adj).2.2⟩
+
+open Classical in
+theorem exists_isPLBall_pair_cover_derivedNeighborhood_circle [FiniteDimensional ℝ E]
+    (K L : Geometry.SimplicialComplex ℝ E) [Finite K.faces] [Finite L.faces]
+    (hK : IsCombinatorialManifoldWithBoundary 3 K) (hLK : L.faces ⊆ K.faces)
+    (hL : IsCombinatorialManifold 1 L) (hconn : IsConnected L.space) :
+    ∃ A B D₀ D₁ : Set E,
+      IsPLBall 3 A ∧ IsPLBall 3 B ∧ IsPLBall 2 D₀ ∧ IsPLBall 2 D₁ ∧ Disjoint D₀ D₁ ∧
+      A ∪ B = (derivedNeighborhood K L).space ∧ A ∩ B = D₀ ∪ D₁ := by
+  obtain ⟨A, B, D₀, D₁, hA, hB, hD₀, hD₁, hdis, hcover, hinter, _⟩ :=
+    exists_isPLBall_pair_cover_derivedNeighborhood_circle_with_boundary K L hK hLK hL hconn
+  exact ⟨A, B, D₀, D₁, hA, hB, hD₀, hD₁, hdis, hcover, hinter⟩
 
 end DifferentialGeometry.Topology.PiecewiseLinear
