@@ -2117,3 +2117,11 @@ F-M1 仍为 partial。单个旧三角形的全部纤维及逐边对应已闭合�
 `BoundedSurfaceComponent.lean` 从补集两分支与大球外连通性实际选出有界分支，证明其闭包是多面体、内部恰为该分支、闭包边界恰为原曲面且外部连通。`SurfaceFilling.lean` 的 `isCombinatorialManifoldWithBoundary_of_space_eq_closure_connectedComponentIn_compl` 将 S 的局部两侧 PL 球与补分支闭包配对，证明任意有限剖分的顶点链环均满足三维流形条件。端点 `IsCombinatorialManifold.exists_isCombinatorialManifoldWithBoundary_boundaryComplex` 从有限连通闭组合二维流形实际生产有限三维带边界流形 R，组合边界及拓扑边界均恰为原曲面；R 是内部的闭包，内部与外部都连通。适用于任意三维实范数空间，不预设原曲面为球面，也未把填充宣称为 PL 三维球。
 
 聚焦检查：`BoundedSurfaceComponent` exit=0（10.3 秒）、`SurfaceFilling` exit=0（10.0 秒），均零 warning；整合版 `BallComplement` 产物恢复检查 exit=0（7.8 秒）。`AuditF232.lean` 六项（含两项整合输入）仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步在实际填充顶点上选择保零指标的一般位置高度，确定水平填充盘和薄片胞腔分解，再做 Lemma 6 自由胞腔删除。S.4 M2/M3、夜间 F-M1 整体及 I1 尚未完成。下一审计文件 `AuditF233.lean`。
+
+### 19.84 S.4 M2：保零指标的填充高度与每个中间层的实际 PL 盘
+
+`PlanarJordan/RegionRecognition.lean` 在不预设开集连通的条件下证明：非空有界开集避开 Jordan 曲线且边界包含于该曲线时，它恰为曲线内部。`FiberFilling.lean` 的 `exists_isPLHomeomorphOn_closure_inter_fiber` 将三维有界开集的水平截面搬到真实仿射平面坐标，以此识别截面并生产闭截面的 PL 盘参数化，参数边界恰为原边界的水平圆周。只需截面非空和边界截面为 PL 圆周；无需假设截面连通、截面是盘或其闭包交换公式。
+
+`exists_isPLHomeomorphOn_filling_fiber_of_heightIndex_eq_zero` 从零指标与实际填充内部的连通性，通过介值性生产非空条件，覆盖全部严格中间高度，包含顶点高度。`HeightFilling.lean` 的 `exists_continuousLinearMap_injOn_heightIndex_eq` 在任意给定有限点集上选择任意小的一般位置高度，保持原球面指标。端点 `exists_filling_injOn_vertices_of_heightIndex_eq_zero` 实际生产有限三维填充 R、全部 R 顶点上单射的非零高度 f、零指标，以及每个严格中间高度的填充 PL 盘和精确参数边界。边界使用 R 自带的边界复形，原球面与边界复形的空间相等，未假设两份剖分的顶点一致。
+
+聚焦检查：`RegionRecognition` exit=0（8.1 秒）、`FiberFilling` exit=0（10.5 秒）、`HeightFilling` exit=0（10.2 秒），均零 warning。`AuditF233.lean` 五项仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步从填充的单形水平截面实际构造有限盘胞腔分解，包含截面公共面与自由盘相交条件，再完成 Lemma 6 的有限删除及 M3 拼装。S.4 M2/M3、夜间 F-M1 整体及 I1 尚未完成。下一审计文件 `AuditF234.lean`。
