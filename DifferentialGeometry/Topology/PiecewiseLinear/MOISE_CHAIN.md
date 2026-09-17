@@ -336,3 +336,38 @@ F 车道的 `Topology/Pasting.lean` 与 `SingularPasting.lean` 正是为这种"�
 后者树里没有两张曲面互相横截的谓词（只有 `HasPLDoubleCrossingAt` 这种针对奇异集的），
 不要临时造一个。四条定理里 Theorem 2、4 都要"某圆周携带 `π(S'')` 的生成元"，
 直接复用 `Moise308` 已经用过的写法（包含映射诱导的像生成整个基本群）即可。
+
+## 树里已有的两件东西，改变了"相对逼近"的路线（2026-09-17）
+
+### 1. `GeneralPosition.lean` 已经有"保持子复形不动的一般位置"
+
+`exists_small_simplicialMap_transverse_on_subcomplex`（约 3771 行）与它的边界版（约 4961 行）：
+输入一个单纯映射 `simplicialMap K φ₀` 与子复形 `B`（或 `boundaryComplex (m+1) K`），
+输出细分 `K'` 与新顶点映射 `φ`，满足 `B.faces ⊆ K'.faces`、`EqOn (simplicialMap K' φ) (simplicialMap K φ₀) B.space`、
+`dist < ε`，加上横截性与双点复形 `G` 是一维带边组合流形。边界版还给出 `G` 的顶点在边界上度数为 1、内部度数为 2。
+
+所以**"连续 → 单纯 →（保持边界不动的）一般位置"这条流水线现在是通的**：
+前一段用本轮的 `exists_isSubdivision_simplicialApproximation`，后一段用上面这条。
+它建立在 `RelativeDerived.lean` 的 `relDerived`（相对导出细分）之上，`faces_subset_relDerived` 保证子复形的面被原样保留。
+
+### 2. 但迭代 `relDerived` **不会**把靠近子复形的单形变小
+
+`relDerived` 的面形如 `τ ∪ {一串重心}`，其中 `τ` 是被保留的子复形 `B` 的面。含有整个 `τ` 的面，
+直径总是 `≥ diam τ`，无论迭代多少次。因此"保持 `K₀` 不动、把别处细到小网格"这个想法**不成立**，
+上一节列的出路 (a) 要重新设计，不能简单地迭代相对导出细分。
+
+经典的相对单纯逼近（Spanier 3.4.8）之所以还成立，是因为对 `K₀` 的顶点 `v`，星条件
+`f(openStar v) ⊆ openStar_L (f v)` 在 `|K₀|` 内部分自动满足（`f` 在那里是单纯的，重心坐标里 `f v` 的系数为正），
+只有跨出 `|K₀|` 的那部分需要控制；这一步不是"把网格变小"能直接给的。所以这条定理要按原证明逐条搬，
+不要指望用现有的网格引理拼出来。
+
+**因此推荐走出路 (b)（环带技巧）**，它只需要：一个多边形环带的三角剖分 + 顶点映射（外圈取给定 PL 环路的顶点值，
+内圈取逼近的顶点值），由相邻两圈顶点的像同在 `L` 的一张面里保证像落在 `|L|` 内；再用
+`Gluing.lean` / `PlanarDiskUnion.lean` 把环带与盘粘起来重新参数化。注意**直线同伦本身不是 PL 的**：
+`(1-t) A x + t B x` 含 `t·x` 项，在任何有内点的块上都不是仿射的，所以必须用棱柱三角剖分而不是直线同伦。
+
+### 3. `Mesh.lean` 已有 Lebesgue 数 + 细分的打包版
+
+`exists_isSubdivision_closedStars_subset_cover`：给 `|K|` 的一个相对开覆盖，返回细分 `R` 使
+`∀ s ∈ R.faces, ∃ i, (⋃ v ∈ s, closedStar R v) ⊆ U i`。本轮的单纯逼近里这一步是手写的
+（Lebesgue 数 + `exists_isSubdivision_diam_lt` + 闭星落在球里）；以后写同类证明可以直接用这条。
