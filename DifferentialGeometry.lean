@@ -8312,6 +8312,7 @@ import DifferentialGeometry.Topology.Embedding.ProductChartEndpoint
 import DifferentialGeometry.Topology.Embedding.ProductChartInwardSegment
 import DifferentialGeometry.Topology.Embedding.Sphere
 import DifferentialGeometry.Topology.Embedding.SubtypeRestriction
+import DifferentialGeometry.Topology.Embedding.TangentLift
 import DifferentialGeometry.Topology.Ends.EscapingComponent
 import DifferentialGeometry.Topology.Ends.FiniteEnds
 import DifferentialGeometry.Topology.Ends.ProductLineEnds
@@ -8324,6 +8325,7 @@ import DifferentialGeometry.Topology.FiniteAtlasIndexOnCompact
 import DifferentialGeometry.Topology.FiniteSubdivision
 import DifferentialGeometry.Topology.FirstExit
 import DifferentialGeometry.Topology.FixedPoint.PlanarDisk
+import DifferentialGeometry.Topology.Flow.Circle
 import DifferentialGeometry.Topology.Flow.FirstReturn
 import DifferentialGeometry.Topology.Flow.ForwardInvariant
 import DifferentialGeometry.Topology.Flow.PeriodicOrbit
@@ -8880,6 +8882,7 @@ import DifferentialGeometry.Topology.Manifold.BoundaryCollar.UniformFlow
 import DifferentialGeometry.Topology.Manifold.BoundaryCollar.UniformInwardFlow
 import DifferentialGeometry.Topology.Manifold.BoundaryCollar.UnitSpeedField
 import DifferentialGeometry.Topology.Manifold.ChartedSpaceHomeomorph
+import DifferentialGeometry.Topology.Manifold.CircleComponents
 import DifferentialGeometry.Topology.Manifold.ClosedDiskExtension
 import DifferentialGeometry.Topology.Manifold.CollarChartIsotopy
 import DifferentialGeometry.Topology.Manifold.CollarFamily
@@ -8887,6 +8890,7 @@ import DifferentialGeometry.Topology.Manifold.CollarFamilySeparation
 import DifferentialGeometry.Topology.Manifold.ImmersionCriterion
 import DifferentialGeometry.Topology.Manifold.NormalChartOrientation
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.LeftInverse
+import DifferentialGeometry.Topology.Manifold.RegularLevel.Tangent
 import DifferentialGeometry.Topology.Manifold.RelativeCollar
 import DifferentialGeometry.Topology.Manifold.RelativeCollarAssembly
 import DifferentialGeometry.Topology.Manifold.RelativeCollarStraightening
@@ -9342,7 +9346,9 @@ import DifferentialGeometry.Topology.PlanarJordan.LocalSides
 import DifferentialGeometry.Topology.PlanarJordan.PathConnected
 import DifferentialGeometry.Topology.PlanarJordan.PeriodicOrbit
 import DifferentialGeometry.Topology.PlanarJordan.Regions
+import DifferentialGeometry.Topology.PlanarJordan.RegularCurve
 import DifferentialGeometry.Topology.PlanarJordan.ReturnDisk
+import DifferentialGeometry.Topology.PlanarJordan.SaddleCapSides
 import DifferentialGeometry.Topology.PlanarJordan.SmoothArc
 import DifferentialGeometry.Topology.ProjectiveSpace.AntipodalCylinderOrientation
 import DifferentialGeometry.Topology.ProjectiveSpace.AntipodalSurfaceOrientation

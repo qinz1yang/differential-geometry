@@ -51,3 +51,43 @@ theorem exists_regions_of_simple_closed_curve
     exact hsep.not_isBounded_outside (he.isBounded.subset subset_closure)
 
 end DifferentialGeometry.Topology.PlanarJordan
+
+namespace Schoenflies.IsSeparating
+
+theorem inside_eq_compl_closure_outside {C : Set Plane} (hC : IsSeparating C) :
+    inside C = (closure (outside C))ᶜ := by
+  rw [(IsRegionOf.outside C).closure_eq hC]
+  ext p
+  constructor
+  · intro hp
+    rintro (ho | hc)
+    · exact disjoint_left.mp disjoint_inside_outside hp ho
+    · exact hp.1 hc
+  · intro hp
+    have hpc : p ∉ C := fun hc => hp (Or.inr hc)
+    have hm : p ∈ inside C ∪ outside C := by
+      rw [inside_union_outside]
+      exact hpc
+    exact hm.resolve_right (fun ho => hp (Or.inl ho))
+
+theorem outside_eq_compl_closure_inside {C : Set Plane} (hC : IsSeparating C) :
+    outside C = (closure (inside C))ᶜ := by
+  rw [(IsRegionOf.inside C).closure_eq hC]
+  ext p
+  constructor
+  · intro hp
+    rintro (hi | hc)
+    · exact disjoint_left.mp disjoint_inside_outside hi hp
+    · exact hp.1 hc
+  · intro hp
+    have hpc : p ∉ C := fun hc => hp (Or.inr hc)
+    have hm : p ∈ inside C ∪ outside C := by
+      rw [inside_union_outside]
+      exact hpc
+    exact hm.resolve_left (fun hi => hp (Or.inl hi))
+
+theorem frontier_closure_inside {C : Set Plane} (hC : IsSeparating C) :
+    frontier (closure (inside C)) = C := by
+  rw [← frontier_compl, ← hC.outside_eq_compl_closure_inside, hC.frontier_outside]
+
+end Schoenflies.IsSeparating
