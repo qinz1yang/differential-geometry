@@ -24,6 +24,22 @@ theorem verticalPrismAffine_mem_convexHull (a c : F) {z : ℝ × ℝ} (hz : z.2 
   exact (convex_convexHull ℝ S) (subset_convexHull ℝ S ha) (subset_convexHull ℝ S hc)
     (by linarith [hz.2]) hz.1 (by ring)
 
+theorem le_of_forall_lt_succ {s : ℕ → ℝ} {n : ℕ} (hmono : ∀ i < n, s i < s (i + 1)) :
+    ∀ j, j ≤ n → ∀ i, i ≤ j → s i ≤ s j := by
+  intro j
+  induction j with
+  | zero => intro _ i hi; rw [Nat.le_zero.mp hi]
+  | succ j ih =>
+    intro hj i hi
+    rcases Nat.lt_or_ge i (j + 1) with h | h
+    · exact (ih (by omega) i (by omega)).trans (hmono j (by omega)).le
+    · rw [Nat.le_antisymm hi h]
+
+theorem mem_Icc_of_forall_lt_succ {s : ℕ → ℝ} {n : ℕ} (hmono : ∀ i < n, s i < s (i + 1))
+    (hs0 : s 0 = 0) (hsn : s n = 1) {i : ℕ} (hi : i ≤ n) : s i ∈ Icc (0 : ℝ) 1 :=
+  ⟨hs0 ▸ le_of_forall_lt_succ hmono i hi 0 (Nat.zero_le i),
+    hsn ▸ le_of_forall_lt_succ hmono n le_rfl i hi⟩
+
 open Classical in
 theorem exists_isPiecewiseAffineOn_prism_of_partition {f g : ℝ → F} {n : ℕ} {s : ℕ → ℝ}
     (hs0 : s 0 = 0) (hsn : s n = 1) (hmono : ∀ i < n, s i < s (i + 1))
@@ -43,16 +59,8 @@ theorem exists_isPiecewiseAffineOn_prism_of_partition {f g : ℝ → F} {n : ℕ
     rcases Nat.eq_zero_or_pos n with rfl | h
     · rw [hs0] at hsn; norm_num at hsn
     · exact h
-  have hmono2 : ∀ j, j ≤ n → ∀ i, i ≤ j → s i ≤ s j := by
-    intro j
-    induction j with
-    | zero => intro _ i hi; rw [Nat.le_zero.mp hi]
-    | succ j ih =>
-      intro hj i hi
-      rcases Nat.lt_or_ge i (j + 1) with h | h
-      · exact (ih (by omega) i (by omega)).trans (hmono j (by omega)).le
-      · rw [Nat.le_antisymm hi h]
-  have hs_nonneg : ∀ k, k ≤ n → 0 ≤ s k := fun k hk => hs0 ▸ hmono2 k hk 0 (Nat.zero_le k)
+  have hs_nonneg : ∀ k, k ≤ n → 0 ≤ s k :=
+    fun k hk => hs0 ▸ le_of_forall_lt_succ hmono k hk 0 (Nat.zero_le k)
   have key : ∀ k, k ≤ n → ∃ Φ : ℝ × ℝ → F,
       IsPiecewiseAffineOn Φ (Icc (0 : ℝ) (s k) ×ˢ Icc (0 : ℝ) 1) ∧
       (∀ x ∈ Icc (0 : ℝ) (s k), Φ (x, 0) = f x) ∧

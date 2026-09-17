@@ -1,0 +1,69 @@
+import DifferentialGeometry.Topology.PiecewiseLinear.PrismInterval
+import DifferentialGeometry.Topology.PiecewiseLinear.BrokenLine
+
+open Set
+
+namespace DifferentialGeometry.Topology.PiecewiseLinear
+
+variable {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
+
+theorem exists_isPiecewiseAffineOn_prism {f g : ℝ → F}
+    (hf : IsPiecewiseAffineOn f (Icc (0 : ℝ) 1)) (hg : IsPiecewiseAffineOn g (Icc (0 : ℝ) 1)) :
+    ∃ (n : ℕ) (s : ℕ → ℝ) (Φ : ℝ × ℝ → F), s 0 = 0 ∧ s n = 1 ∧ (∀ i < n, s i < s (i + 1)) ∧
+      IsPiecewiseAffineOn Φ (Icc (0 : ℝ) 1 ×ˢ Icc (0 : ℝ) 1) ∧
+      (∀ x ∈ Icc (0 : ℝ) 1, Φ (x, 0) = f x) ∧
+      (∀ x ∈ Icc (0 : ℝ) 1, Φ (x, 1) = g x) ∧
+      (∀ t ∈ Icc (0 : ℝ) 1, Φ (0, t) = f 0 + t • (g 0 - f 0)) ∧
+      (∀ t ∈ Icc (0 : ℝ) 1, Φ (1, t) = f 1 + t • (g 1 - f 1)) ∧
+      (∀ z ∈ Icc (0 : ℝ) 1 ×ˢ Icc (0 : ℝ) 1, ∃ i, i < n ∧
+        Φ z ∈ convexHull ℝ ({f (s i), f (s (i + 1)), g (s i), g (s (i + 1))} : Set F)) := by
+  obtain ⟨n, s, hs0, hsn, hmono, hfaff, hgaff⟩ := exists_partition_affineOn_two hf hg
+  obtain ⟨Φ, hPA, hbot, htop, hleft, hright, himg⟩ :=
+    exists_isPiecewiseAffineOn_prism_of_partition hs0 hsn hmono hfaff hgaff
+  exact ⟨n, s, Φ, hs0, hsn, hmono, hPA, hbot, htop, hleft, hright, himg⟩
+
+theorem exists_isPiecewiseAffineOn_prism_mapsTo {f g : ℝ → F} {S : Set F} (hS : Convex ℝ S)
+    (hf : IsPiecewiseAffineOn f (Icc (0 : ℝ) 1)) (hg : IsPiecewiseAffineOn g (Icc (0 : ℝ) 1))
+    (hfS : MapsTo f (Icc (0 : ℝ) 1) S) (hgS : MapsTo g (Icc (0 : ℝ) 1) S) :
+    ∃ Φ : ℝ × ℝ → F, IsPiecewiseAffineOn Φ (Icc (0 : ℝ) 1 ×ˢ Icc (0 : ℝ) 1) ∧
+      MapsTo Φ (Icc (0 : ℝ) 1 ×ˢ Icc (0 : ℝ) 1) S ∧
+      (∀ x ∈ Icc (0 : ℝ) 1, Φ (x, 0) = f x) ∧
+      (∀ x ∈ Icc (0 : ℝ) 1, Φ (x, 1) = g x) ∧
+      (∀ t ∈ Icc (0 : ℝ) 1, Φ (0, t) = f 0 + t • (g 0 - f 0)) ∧
+      (∀ t ∈ Icc (0 : ℝ) 1, Φ (1, t) = f 1 + t • (g 1 - f 1)) := by
+  obtain ⟨n, s, Φ, hs0, hsn, hmono, hPA, hbot, htop, hleft, hright, himg⟩ :=
+    exists_isPiecewiseAffineOn_prism hf hg
+  have hsmem : ∀ i, i ≤ n → s i ∈ Icc (0 : ℝ) 1 :=
+    fun i hi => mem_Icc_of_forall_lt_succ hmono hs0 hsn hi
+  refine ⟨Φ, hPA, ?_, hbot, htop, hleft, hright⟩
+  refine mapsTo_of_forall_mem_convexHull_cell hS himg (fun i hi => ⟨?_, ?_, ?_, ?_⟩)
+  · exact hfS (hsmem i (by omega))
+  · exact hfS (hsmem (i + 1) (by omega))
+  · exact hgS (hsmem i (by omega))
+  · exact hgS (hsmem (i + 1) (by omega))
+
+theorem exists_isPiecewiseAffineOn_annulus_of_partition (L : Geometry.SimplicialComplex ℝ F)
+    {f g : ℝ → F} {n : ℕ} {s : ℕ → ℝ}
+    (hs0 : s 0 = 0) (hsn : s n = 1) (hmono : ∀ i < n, s i < s (i + 1))
+    (hfaff : ∀ i < n, ∀ x ∈ Icc (s i) (s (i + 1)),
+      f x = f (s i) + ((x - s i) / (s (i + 1) - s i)) • (f (s (i + 1)) - f (s i)))
+    (hgaff : ∀ i < n, ∀ x ∈ Icc (s i) (s (i + 1)),
+      g x = g (s i) + ((x - s i) / (s (i + 1) - s i)) • (g (s (i + 1)) - g (s i)))
+    (hfloop : f 0 = f 1) (hgloop : g 0 = g 1)
+    (hface : ∀ i < n, ∃ u ∈ L.faces,
+      ({f (s i), f (s (i + 1)), g (s i), g (s (i + 1))} : Set F) ⊆ convexHull ℝ (u : Set F)) :
+    ∃ Φ : ℝ × ℝ → F, IsPiecewiseAffineOn Φ (Icc (0 : ℝ) 1 ×ˢ Icc (0 : ℝ) 1) ∧
+      MapsTo Φ (Icc (0 : ℝ) 1 ×ˢ Icc (0 : ℝ) 1) L.space ∧
+      (∀ x ∈ Icc (0 : ℝ) 1, Φ (x, 0) = f x) ∧
+      (∀ x ∈ Icc (0 : ℝ) 1, Φ (x, 1) = g x) ∧
+      (∀ t ∈ Icc (0 : ℝ) 1, Φ (0, t) = Φ (1, t)) := by
+  obtain ⟨Φ, hPA, hbot, htop, hsides, himg⟩ :=
+    exists_isPiecewiseAffineOn_prism_of_partition_of_loop hs0 hsn hmono hfaff hgaff hfloop hgloop
+  refine ⟨Φ, hPA, ?_, hbot, htop, hsides⟩
+  intro z hz
+  obtain ⟨i, hi, hmem⟩ := himg z hz
+  obtain ⟨u, hu, hsub⟩ := hface i hi
+  exact L.convexHull_subset_space hu
+    ((convex_convexHull ℝ (u : Set F)).convexHull_subset_iff.mpr hsub hmem)
+
+end DifferentialGeometry.Topology.PiecewiseLinear
