@@ -550,7 +550,7 @@ theorem exists_cross_glue_of_isPLHomeomorphOn_disjoint_boundary_arcs
       IsPLHomeomorphOn f₂ Q D₂.domain ∧
       f₁ '' (P ∩ Q) = A ∧ f₂ '' (P ∩ Q) = C ∧
       EqOn H (D₁ ∘ f₁) P ∧ EqOn H (D₂ ∘ f₂) Q ∧
-      A' = Function.invFunOn f₂ Q '' A ∧ IsPLBall 1 A' ∧
+      A' = Function.invFunOn f₂ Q '' A ∧ IsPLBall 1 A' ∧ Disjoint A' (P ∩ Q) ∧
       A' ⊆ frontier H.domain ∧
       IsPLHomeomorphOn (g ∘ f₂) A' C ∧
       IsPLBall 2 P' ∧ IsPLBall 2 Q' ∧ G.domain = P' ∪ Q' ∧
@@ -693,7 +693,7 @@ theorem exists_cross_glue_of_isPLHomeomorphOn_disjoint_boundary_arcs
     change ((ρ.trans κ).map G.boundary.continuous) t = (σ.trans ω) t
     rw [Path.map_trans]
   exact ⟨H, G, P, Q, P', Q', f₁, f₂, h, f₃, A', hP, hQ, hHdomain,
-    hf₁, hf₂, hf₁seam, hf₂seam, hH₁, hH₂, rfl, hA', hA'frontH, hk,
+    hf₁, hf₂, hf₁seam, hf₂seam, hH₁, hH₂, rfl, hA', hA'seam, hA'frontH, hk,
     hP', hQ', hGdomain, hh, hf₃, hhseam, hf₃seam, hGH, hG₃,
     a, b, R', T', hcutP', hcutQ', hR', hT', hfrontG, hha, hhb,
     hf₃a.trans (congrArg g (hf₂.bijOn.invOn_invFunOn.2
