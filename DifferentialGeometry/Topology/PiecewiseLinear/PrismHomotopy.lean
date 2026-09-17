@@ -1,5 +1,6 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.PrismInterval
 import DifferentialGeometry.Topology.PiecewiseLinear.BrokenLine
+import DifferentialGeometry.Topology.PiecewiseLinear.SimplicialMap
 
 open Set
 
@@ -65,5 +66,31 @@ theorem exists_isPiecewiseAffineOn_annulus_of_partition (L : Geometry.Simplicial
   obtain ⟨u, hu, hsub⟩ := hface i hi
   exact L.convexHull_subset_space hu
     ((convex_convexHull ℝ (u : Set F)).convexHull_subset_iff.mpr hsub hmem)
+
+theorem exists_face_of_cell_of_mem_convexHull_carrierFace (L : Geometry.SimplicialComplex ℝ F)
+    {f g : ℝ → F} {n : ℕ} {s : ℕ → ℝ}
+    (hcell : ∀ i < n, ∃ u ∈ L.faces, ∀ x ∈ Icc (s i) (s (i + 1)), f x ∈ convexHull ℝ (u : Set F))
+    (happrox : ∀ i < n, ∀ x ∈ Icc (s i) (s (i + 1)),
+      g x ∈ convexHull ℝ ((carrierFace L (f x) : Finset F) : Set F))
+    (hmono : ∀ i < n, s i < s (i + 1)) :
+    ∀ i < n, ∃ u ∈ L.faces,
+      ({f (s i), f (s (i + 1)), g (s i), g (s (i + 1))} : Set F) ⊆ convexHull ℝ (u : Set F) := by
+  intro i hi
+  obtain ⟨u, hu, hfu⟩ := hcell i hi
+  have hle := (hmono i hi).le
+  have hfi : f (s i) ∈ convexHull ℝ (u : Set F) := hfu _ ⟨le_rfl, hle⟩
+  have hfi1 : f (s (i + 1)) ∈ convexHull ℝ (u : Set F) := hfu _ ⟨hle, le_rfl⟩
+  have hcarrier : ∀ x ∈ Icc (s i) (s (i + 1)),
+      g x ∈ convexHull ℝ (u : Set F) := by
+    intro x hx
+    have hfx : f x ∈ L.space := L.convexHull_subset_space hu (hfu x hx)
+    have hsub : carrierFace L (f x) ⊆ u := carrierFace_subset hfx hu (hfu x hx)
+    exact convexHull_mono (Finset.coe_subset.mpr hsub) (happrox i hi x hx)
+  refine ⟨u, hu, ?_⟩
+  rintro y (rfl | rfl | rfl | rfl)
+  · exact hfi
+  · exact hfi1
+  · exact hcarrier _ ⟨le_rfl, hle⟩
+  · exact hcarrier _ ⟨hle, le_rfl⟩
 
 end DifferentialGeometry.Topology.PiecewiseLinear
