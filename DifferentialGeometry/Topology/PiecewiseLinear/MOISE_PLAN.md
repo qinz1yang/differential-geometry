@@ -695,3 +695,7 @@
   同夜新增 `MoiseChain.lean` 与 `MOISE_CHAIN.md`：把 `Moise352` 之下的关键路径写成十个具名 `Prop`
   （25.1、25.2、26.4、30.4、30.5、30.6、30.7、33.1、34.1、35.1）与所需词汇，全部通过编译。
   `ThreeCellExtension.lean` 指出计划行 S.7 其实是 P.2 一般定理在 `n = 2` 的实例，已补为具名定理。
+
+- 2026-09-17（F 车道 F5.2 目标区域保持）：`GeneralPositionWithin.lean` 为相对横截和真实双点流形生产者补开目标 MapsTo，
+  并在流形自身的度量中实际生产保护奇异盘全像的紧致片与正扰动半径；图卡局部正规化保留指定目标片。
+  两模块 exit=0、零 warning，AuditF247 五项仅标准三公理。F5.2 仍 partial；有限图卡 crossing 保持与边界拼装见 HANDOFF §19.98。

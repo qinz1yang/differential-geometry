@@ -2241,3 +2241,15 @@ F-M1 仍为 partial。单个旧三角形的全部纤维及逐边对应已闭合�
 状态：S.4 的 M1、M2、M3 及夜间 F-M1 done；I1 已交付，无剩余数学义务。最终五模块检查为 `SlabBoundary` exit=0（12.5 秒）、`HeightRange` exit=0（10.0 秒）、`SublevelGluing` exit=0（12.1 秒）、`SublevelEmbedding` exit=0（13.0 秒）、`Schoenflies` exit=0（11.0 秒），全部零 warning。`AuditF246.lean` 对十七项新声明及原 `schoenflies_input` 共十八项审计，全部仅依赖 `propext`、`Classical.choice`、`Quot.sound`。无 Lean 进程时 `fresh.py` 为 92/92 fresh、零 stale/missing、零禁用项；`git diff --check` 通过。源码、交接与两个计划记录同次提交。恢复后下一步按 NIGHT_PLAN §6.2 做 F-M5 的实际双点分类，并生产 F-M6 的余面严格异侧性；这两项及最终 `exists_small_isNormalSingularCell` 仍为 partial。下一审计文件 `AuditF247.lean`。
 
 按用户要求，本结果整理、同次提交并推送后暂停。未开始新的 F-M5/F-M6 证明；本车道无运行中的 Lean 进程。
+
+### 19.98 2026-09-17 F5.2：目标区域保持与实际紧致片扰动半径
+
+按新任务恢复，已合并整合基线 `b069cd003`（合并提交 `3f69fe924`）。本轮 F-M1 指 F5.2，旧夜间 F-M1 = S.4 已在 §19.97 done。重新核对了 `GeneralPosition.lean`：相对子复形横截生产者原来没有像包含结论；`exists_small_simplicialMap_preimage_manifold_relative` 的 G 是固定目标复形的逆像，不是双点集，不可直接填 `doublePointSet_triangulated`。
+
+`GeneralPositionWithin.lean` 的 `exists_small_simplicialMap_transverse_on_subcomplex_mapsTo` 在原相对横截端点上增加开目标 U 的真实 MapsTo 结论，同时保留精确固定子复形、逐面单射、横截、任意小距离和有限细分。证明从原紧致像到 U 的闭加厚余量选择更小扰动半径；取 U = 给定复形载体的环境内部即得到对应保像版本。`exists_small_simplicialMap_doublePointSet_manifold_mapsTo` 则消费真正的自横截生产者，保留全源局部单射、纤维至多二重、精确双点集的一维带边组合流形和所有 crossing，同时保证全像仍在 U 内。
+
+对抽象流形中的目标片，不能把上段的环境内部用于高维欧氏嵌入。`SingularTwoCell.exists_compact_piece_with_perturbation_radius` 已在 M 自身的度量中实际构造紧致带边界三维片 P、PLPiece T 和 δ > 0；原盘全像落在 interior P，任何 M 值映射 g 只要在原域逐点满足 dist(g x, D x) < δ，全像仍落在 interior P。这里的内部和距离均属于 M，不属于 T 的高维线性环境。
+
+`Topology/Pasting.lean` 的 `mapsTo_of_preimage_singleton_eq_off` 从修改区外完整纤维相等推出区域保持。`exists_isOpen_forall_exists_small_isPLOn_crossing_in_chart_mapsTo` 将它实际接到已有流形图卡正规化：若原像在 P 内且当前双点在 interior P，先把修改邻域收进 interior P；所得任意小局部正规化保留 MapsTo g K.space P、局部单射、二重纤维和真实局部双点 crossing，且选定开覆盖邻域仍独立于误差量。后续采用三维图卡中的内在修改；未宣称在高维载体之外自由挪顶点的旧端点可保持载体，也未宣称该局部结果已经保持所有旧区域的 crossing。给定原有物理边界的点仍需半空间局部构造，不能套用内部双点版本。
+
+本闭合层为目标区域保持，F5.2 / 新 F-M1 整体仍 partial。`Topology.Pasting` 检查 exit=0（7.3 秒），`GeneralPositionWithin` exit=0（12.7 秒），零 warning。`AuditF247.lean` 五项均仅标准三公理；`git diff --check` 通过。下一步接相对分层通用位置和余面异侧性以保持有限图卡归纳中的既有 crossing，随后拼装精确双点三角剖分与 `IsNormalSingularCell`；边界情形须保留半空间约束。F-M2 的非紧多面体概念尚未开始。下一审计文件 `AuditF248.lean`。
