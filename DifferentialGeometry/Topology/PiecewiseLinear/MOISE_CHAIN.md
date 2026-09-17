@@ -128,3 +128,25 @@ Phase 3 的终点已经归约成一句话：`plApproximationManifold_three_of_mo
 只对标准球面无条件成立。把该证书对任意拓扑 2-球面证出来，就是 Alexander 对偶的一个实例，属于同调侧的工作。
 
 所以"便宜箭头"名单里只剩 25.2 ← 25.1 与 26.4 ← 25.2 + 26.3 两条；30.5 ← 30.4 要先补上面这条拓扑输入。
+
+## 三条"便宜箭头"共用同一个缺口：连续映射的 PL 逼近（2026-09-16 夜，逐条核对后）
+
+把三条箭头的书面证明逐句拆开之后，发现它们都停在同一类前置上，而树里没有：
+
+| 箭头 | 书上那句话 | 真正需要的东西 |
+|---|---|---|
+| 25.2 ← 25.1（183） | "we assume (with no loss of generality) that `L` and the contraction of `L` are PL" | 把连续的环与收缩换成 PL 的，即**连续映射的 PL 逼近**（单纯逼近，§6） |
+| 26.4 ← 25.2 + 26.3（193） | "Let `D : Δ → M³` be a PL singular 2-cell … with `L` not contractible in `M²`" | `ker i*` 非平凡只给出**连续**的奇异盘，要先 PL 化，同上 |
+| 30.5 ← 30.4（216） | "let `C` be the closure of the component of `ℝ³ − B` that contains `C₁`" | 拓扑 3-胞腔补集连通（拓扑 Jordan–Brouwer） |
+
+因此新增两个具名 `Prop`（`MoiseChain.lean`）：
+
+- `PLMapApproximation`：紧致多面体上的连续映射可被逐点 ε-接近的逐片仿射映射逼近。
+  树里**没有**任何单纯逼近/连续映射 PL 化的结果；`Approximation.lean` 的 `PLApproximation` 是同胚的 PL 逼近，
+  是终点本身，不是这个。
+- `TopologicalCellComplementConnected`：ℝ³ 中拓扑 3-胞腔的补集连通。
+  `Topology/SphereSeparation/JordanBrouwer.lean` 有条件于 `H₀` 证书的版本，把证书对任意拓扑 2-球面证出来即可。
+
+结论：**"便宜箭头"这一类其实不存在**。Moise 用一段话带过的归约，靠的是前面章节的经典逼近定理。
+单纯逼近是其中最值钱的一条：它同时解锁 25.2 与 26.4，而且几乎每一章的开头都用它把连续对象换成 PL 对象。
+下一步若要推进主链，`PLMapApproximation` 是性价比最高的目标。

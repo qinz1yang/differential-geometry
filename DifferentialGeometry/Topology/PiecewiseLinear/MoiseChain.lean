@@ -148,4 +148,15 @@ def Moise351 (n : ℕ) : Prop :=
       ∃ f : M₁ → M₂, IsPLHomeomorphInto n f N ∧
         f '' N ∈ nhdsSet (h '' K) ∧ ∀ x ∈ N, dist (f x) (h x) < φ x
 
+def PLMapApproximation : Prop :=
+  ∀ {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    {P : Set E}, IsPolyhedron P → IsCompact P →
+    ∀ {f : E → EuclideanSpace ℝ (Fin 3)}, ContinuousOn f P →
+    ∀ ε : ℝ, 0 < ε →
+      ∃ g : E → EuclideanSpace ℝ (Fin 3),
+        IsPiecewiseAffineOn g P ∧ ∀ x ∈ P, dist (g x) (f x) < ε
+
+def TopologicalCellComplementConnected : Prop :=
+  ∀ C : Set (EuclideanSpace ℝ (Fin 3)), IsTopologicalCell 3 C → IsConnected Cᶜ
+
 end DifferentialGeometry.Topology.PiecewiseLinear
