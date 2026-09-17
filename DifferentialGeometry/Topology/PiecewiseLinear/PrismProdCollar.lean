@@ -4,8 +4,7 @@ open Set
 
 namespace DifferentialGeometry.Topology.PiecewiseLinear
 
-variable {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
-  [NormedAddCommGroup F] [NormedSpace ℝ F]
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 
 noncomputable def heightRescaleProd (h : ℝ) : (E × ℝ) →ᵃ[ℝ] (E × ℝ) :=
   (LinearMap.prod (LinearMap.fst ℝ E ℝ) (h⁻¹ • LinearMap.snd ℝ E ℝ)).toAffineMap
@@ -28,6 +27,8 @@ theorem preimage_heightRescaleProd {h : ℝ} (hh : 0 < h) (P : Set E) :
     refine ⟨h1, ?_, ?_⟩
     · rw [le_div_iff₀ hh]; linarith
     · rw [div_le_one hh]; linarith
+
+variable [FiniteDimensional ℝ E] {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
 
 theorem exists_isPiecewiseAffineOn_prism_of_arcs_height (L : Geometry.SimplicialComplex ℝ F)
     {J A B : Set E} {γ κ : ℝ → E} {p q : E}
