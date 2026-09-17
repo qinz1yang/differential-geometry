@@ -2261,3 +2261,11 @@ F-M1 仍为 partial。单个旧三角形的全部纤维及逐边对应已闭合�
 证明将相对邻域转为 `interior (U ∪ halfSpaceᶜ)`，用紧致像生产统一正余量，再调用原半空间自横截生产者。其非负性排除补半空间分支，从而实际证明整个新像落在 U 中。输出仍含原完整有限细分、局部单射、纤维至多二重、星上 PL 同胚、精确双点集 G、一维带边流形、零层恰对应原边界、两种 crossing、度数 1/2 和 `(boundaryComplex 1 G).space = G.space ∩ {ℓ = 0}`。未加入扰动后保像、crossing 或图流形性等结论型假设。
 
 检查 `GeneralPositionWithin` exit=0（11.0 秒）、零 warning；`AuditF248.lean` 一项仅标准三公理。半空间标准模型的保像层 done；完整 F5.2 / 新 F-M1 仍 partial，尚需在实际带边图卡内使用该模型并完成保持旧区域 crossing 的有限拼接。下一步从单形内部不交证明相邻满维余面的严格异侧性，再做安排分层下的实际双点分类。下一审计文件 `AuditF249.lean`。
+
+### 19.100 F5.2：指定超平面上的余面严格异侧性
+
+`CofaceSeparation.lean` 复用整合分支 `AffineOrientation.lean` 中 `exists_linearMap_separating_cofaces` 的实际分离生产者，证明 `linearMap_mul_neg_of_distinct_cofaces` 与 `affineMap_mul_neg_of_distinct_cofaces`：公共面的方向恰为指定线性泛函的核时，两个不同余面的对顶点在指定平面两侧取严格相反的符号。证明从分离泛函消去公共面方向，得到两个指定高度的商严格为负；不把异侧性作为假设。
+
+`affineMap_mul_neg_of_distinct_cofaces_of_card_eq_finrank` 从公共面顶点数等于环境维数、仿射函数非零线性部分及面上为零，实际推出所需核等式。`IsCombinatorialManifoldWithBoundary.exists_cofaces_pos_neg` 再为满维带边组合流形的内部余维一面选出正、负两侧的全部两个对顶点。基础版本不需要有限维或有限面族，只有维数和流形推论增加对应条件。
+
+检查 `CofaceSeparation` exit=0（10.0 秒）、零 warning；`AuditF249.lean` 五项（四个新端点及分离输入）仅标准三公理。本层 done；F5.2 / 新 F-M1 仍 partial。尚需将该满维余面结论经公共仿射细分和图卡搬到奇异曲面的折叠支上，生产实际双点的横截/双折分类，再完成保持旧区域 crossing 的有限图卡拼接；不能将满维条件直接套在三维中的二维曲面上。下一审计文件 `AuditF250.lean`。
