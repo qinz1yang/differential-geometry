@@ -901,7 +901,7 @@ theorem eq_top_of_boundaryLoops_mem_normal
   最终补边弧及端点值，并构造 `e : loopCircle ≃ₜ frontier G.domain` 与道路 `σ,ω`，逐点证明
   `G (e θ) = pathToCircle (σ.trans ω) θ`。
 - `CutAndPaste.lean` 的
-  `NormalSingularCellData.exists_cross_boundary_surgery_cell_of_boundaryBranch` 将该构造接到实际触边分支的三盘链。
+  `NormalSingularCellData.exists_cross_reglued_cell_of_boundaryBranch` 将该构造接到实际触边分支的三盘链。
   结论显式记录原三片覆盖与相邻交、两次交叉贴合的全部 PL 同胚及逐片映射公式、端点保向/反向二分，并证明
   `G '' G.domain ⊆ D '' D.domain`；因此该端点不是只给出一张与分支数据无关的存在盘。
 - `CellGluing` 与 `CutAndPaste` 聚焦检查均 exit=0、零 warning；`.lake/scratch/AuditE3M2.lean` 共 89 项，
@@ -911,3 +911,15 @@ theorem eq_top_of_boundaryLoops_mem_normal
   不能直接复用该单射拉回。下一步必须从两级逐片参数化重建局部单射、二重纤维、奇点图与 crossing，继而在适配三角剖分上证明碰撞顶点数严格下降；
   还须把当前两段边界道路进一步识别成书页 186–187 的原四段字 `σφυτ` 或 `στ⁻¹υφ⁻¹`。这些步骤未被改写为假设，Lemma 2 仍未宣称完成；
   在此之前不进入 Case 1/2。
+
+## 43. 2026-09-16 E3-M2 追加：顺序交叉贴合的分支保留障碍
+
+状态：partial（已严格排除现有顺序交叉贴合作为 Moise 的降复杂度 L₂；真正的整支切开并分离构造仍缺）。数学提交
+`caddcb29c`。
+
+- `CellGluing.lean` 将第二次贴合前的拉回弧 `A'` 与第一次贴合缝 `P ∩ Q` 的不交性加入公开结论；这是区分最终源盘中两条新缝的必要数据。
+- 专门端点改名为 `NormalSingularCellData.exists_cross_reglued_cell_of_boundaryBranch`，并实际证明
+  `hD.singularSet.branchCarrier c ⊆ doublePointSet G G.domain`。证明逐点从第一次缝与第二次缝各取一个不同原像，利用上述不交性证明两原像不同，再由两级逐片映射公式证明它们在 `G` 下同像。
+- 因而该顺序重贴虽然产生合法 PL 奇异胞腔、保留像因子分解和逐点边界参数，却仍完整保留被选奇异分支；它不能满足 Case 3/4 所需的严格复杂度下降，也不能作为书中 L₂。缺少的精确生产者是沿整条紧致触边双点分支把两张折叠片真正切开并分离的全局 PL 构造，同时保留书页 186–187 的四段边界字、局部单射、纤维至多二、其余 crossing 与适配三角剖分，并使被选分支从新双点集中消失。
+- `CellGluing`、`CutAndPaste` 聚焦检查均 exit=0、零 warning；`.lake/scratch/AuditE3M2.lean` 仍审计 89 项，全部只含 `propext`、`Classical.choice`、`Quot.sound`。全局无 `lean.exe` 后 `fresh.py` 报两个改动 Lean 模块均 fresh，forbidden=0、stale=0、missing=0。
+- 现有 `locallyInjective_restrict`、`fiber_le_two_restrict` 与 crossing 搬运只能验证给定限制或拉回，不能产生上述整支分离。按既定顺序，L₂ 未闭合前没有进入 Case 1/2。
