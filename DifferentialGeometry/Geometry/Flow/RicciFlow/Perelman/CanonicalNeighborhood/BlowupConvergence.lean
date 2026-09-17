@@ -78,6 +78,32 @@ def MetricSourceCapture {X : PointedRiemannianSeq.{u, 0, 0} I3}
       (F.partialDiffeomorph i) '' (F.partialDiffeomorph i).source
 
 
+theorem metricSourceCapture_of_metricConvergenceData
+    {X : PointedRiemannianSeq.{u, 0, 0} I3}
+    {P : PointedRiemannianManifold.{u, 0, 0} I3} {f : ℕ → ℕ}
+    {F : PointedRiemannianConvergenceMaps X P f}
+    (C : MetricConvergenceData F)
+    (hreference : ∀ k, (C.domain k).referenceMetric = (C.domain k).limitMetric)
+    (hcomplete : MetricComplete P) : MetricSourceCapture F := by
+  let : NeZero (Module.finrank ℝ ThreeSpace) := ⟨by simp [ThreeSpace]⟩
+  intro r hr
+  obtain ⟨_, k₀, hk₀⟩ := KappaSolutions.exists_pointed_inverse_capture_at
+    C hreference hcomplete P.basepoint hr.le (show (0 : ℝ) < 1 by norm_num)
+  filter_upwards [Filter.eventually_ge_atTop k₀] with k hk
+  intro y hy
+  have hclosed : y ∈ riemannianClosedBallOf (X.obj (f k)).metric
+      (F.map k P.basepoint) r := by
+    have hbase : F.map k P.basepoint = (X.obj (f k)).basepoint := F.basepoint_map k
+    rw [hbase]
+    change riemannianEDistOf (X.obj (f k)).metric (X.obj (f k)).basepoint y ≤ ENNReal.ofReal r
+    change riemannianEDistOf (X.obj (f k)).metric (X.obj (f k)).basepoint y < ENNReal.ofReal r at hy
+    exact hy.le
+  have ht := (hk₀ k hk y hclosed).1
+  exact ⟨(F.partialDiffeomorph k).symm y,
+    (F.partialDiffeomorph k).symm.map_source ht,
+    (F.partialDiffeomorph k).right_inv ht⟩
+
+
 def subsequenceMaps {X : PointedRiemannianSeq.{u, 0, 0} I3}
     {P : PointedRiemannianManifold.{u, 0, 0} I3} {f : ℕ → ℕ}
     (F : PointedRiemannianConvergenceMaps X P f) (k : ℕ → ℕ) (hk : StrictMono k) :
@@ -163,7 +189,7 @@ theorem noncollapse_passes_to_limit (X : PointedRiemannianSeq.{u, 0, 0} I3)
         field_simp [ne_of_gt h1]
       _ < r := (div_lt_self hr (by linarith))
   obtain ⟨kv, hkv⟩ :=
-    DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions.exists_pointed_buffered_ball_volume_le_at
+    KappaSolutions.exists_pointed_buffered_ball_volume_le_at
       (I := I3) (X := X) (L := P) (subseq := f) (Φ := F) conv hreference complete z
       hsj he hbuffer he
   obtain ⟨kc, hkc⟩ :=
@@ -241,7 +267,8 @@ structure TerminalLimit {eps kappa sigma : ℝ} {Phi : ℝ → ℝ}
   capture : MetricSourceCapture maps
   precompact : ∀ i, IsCompact (closure (maps.partialDiffeomorph i).source)
   connected_domains : ∀ i, IsConnected (maps.partialDiffeomorph i).source
-  nested : ∀ i, closure (maps.partialDiffeomorph i).source ⊆ (maps.partialDiffeomorph (i + 1)).source
+  nested : ∀ i, closure (maps.partialDiffeomorph i).source ⊆
+    (maps.partialDiffeomorph (i + 1)).source
   connected : ConnectedSpace space.M
   orientation : TangentOrientationSection space.M
   orientation_preserved : ∀ i y, y ∈ (maps.partialDiffeomorph i).source →
