@@ -2253,3 +2253,11 @@ F-M1 仍为 partial。单个旧三角形的全部纤维及逐边对应已闭合�
 `Topology/Pasting.lean` 的 `mapsTo_of_preimage_singleton_eq_off` 从修改区外完整纤维相等推出区域保持。`exists_isOpen_forall_exists_small_isPLOn_crossing_in_chart_mapsTo` 将它实际接到已有流形图卡正规化：若原像在 P 内且当前双点在 interior P，先把修改邻域收进 interior P；所得任意小局部正规化保留 MapsTo g K.space P、局部单射、二重纤维和真实局部双点 crossing，且选定开覆盖邻域仍独立于误差量。后续采用三维图卡中的内在修改；未宣称在高维载体之外自由挪顶点的旧端点可保持载体，也未宣称该局部结果已经保持所有旧区域的 crossing。给定原有物理边界的点仍需半空间局部构造，不能套用内部双点版本。
 
 本闭合层为目标区域保持，F5.2 / 新 F-M1 整体仍 partial。`Topology.Pasting` 检查 exit=0（7.3 秒），`GeneralPositionWithin` exit=0（12.7 秒），零 warning。`AuditF247.lean` 五项均仅标准三公理；`git diff --check` 通过。下一步接相对分层通用位置和余面异侧性以保持有限图卡归纳中的既有 crossing，随后拼装精确双点三角剖分与 `IsNormalSingularCell`；边界情形须保留半空间约束。F-M2 的非紧多面体概念尚未开始。下一审计文件 `AuditF248.lean`。
+
+### 19.99 F5.2：半空间相对邻域内的完整保像正规形式
+
+`GeneralPositionWithin.lean` 新增 `exists_small_simplicialMap_doublePointSet_with_boundary_in_halfSpace_mapsTo`。输入是原有限二维带边组合流形、局部单射且至多二重的 PL 映射、原像位于非负半空间、原边界落在零平面，以及目标 U 在每个原像点处是半空间内的相对邻域。U 无需为环境开集，因而覆盖真实边界附近的半空间目标约束。
+
+证明将相对邻域转为 `interior (U ∪ halfSpaceᶜ)`，用紧致像生产统一正余量，再调用原半空间自横截生产者。其非负性排除补半空间分支，从而实际证明整个新像落在 U 中。输出仍含原完整有限细分、局部单射、纤维至多二重、星上 PL 同胚、精确双点集 G、一维带边流形、零层恰对应原边界、两种 crossing、度数 1/2 和 `(boundaryComplex 1 G).space = G.space ∩ {ℓ = 0}`。未加入扰动后保像、crossing 或图流形性等结论型假设。
+
+检查 `GeneralPositionWithin` exit=0（11.0 秒）、零 warning；`AuditF248.lean` 一项仅标准三公理。半空间标准模型的保像层 done；完整 F5.2 / 新 F-M1 仍 partial，尚需在实际带边图卡内使用该模型并完成保持旧区域 crossing 的有限拼接。下一步从单形内部不交证明相邻满维余面的严格异侧性，再做安排分层下的实际双点分类。下一审计文件 `AuditF249.lean`。

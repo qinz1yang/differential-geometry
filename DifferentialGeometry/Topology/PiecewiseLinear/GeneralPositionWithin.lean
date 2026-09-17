@@ -73,6 +73,61 @@ theorem exists_small_simplicialMap_doublePointSet_manifold_mapsTo
   exact hδU (mem_cthickening_of_dist_le _ _ δ _ ⟨x, hx, rfl⟩
     ((hclose x hx).trans_le (min_le_right ε δ)).le)
 
+open Classical in
+theorem exists_small_simplicialMap_doublePointSet_with_boundary_in_halfSpace_mapsTo
+    [FiniteDimensional ℝ E] [FiniteDimensional ℝ F]
+    (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
+    (hK : IsCombinatorialManifoldWithBoundary 2 K) (hdim : Module.finrank ℝ F = 3)
+    (ℓ : F →ₗ[ℝ] ℝ) (hℓ : ℓ ≠ 0) (f : E → F) (hf : IsPiecewiseAffineOn f K.space)
+    (hloc : IsLocallyInjective (K.space.domRestrict f))
+    (hcard : ∀ y : F, (K.space ∩ f ⁻¹' {y}).encard ≤ 2)
+    (hnonneg : ∀ x ∈ K.space, 0 ≤ ℓ (f x))
+    (hboundary : ∀ x ∈ (boundaryComplex 2 K).space, ℓ (f x) = 0)
+    {U : Set F} (hU : ∀ x ∈ K.space, U ∈ 𝓝[{y : F | 0 ≤ ℓ y}] (f x))
+    {ε : ℝ} (hε : 0 < ε) :
+    ∃ (R : Geometry.SimplicialComplex ℝ E) (φ : E → F) (G : Geometry.SimplicialComplex ℝ F),
+      IsSubdivision R K ∧ R.faces.Finite ∧ IsPiecewiseAffineOn (simplicialMap R φ) K.space ∧
+      (∀ x ∈ K.space, dist (simplicialMap R φ x) (f x) < ε) ∧
+      MapsTo (simplicialMap R φ) K.space U ∧
+      (∀ v ∈ R.vertices, IsPLHomeomorphOn (simplicialMap R φ) (starComplex R v).space
+        (simplicialMap R φ '' (starComplex R v).space)) ∧
+      IsLocallyInjective (K.space.domRestrict (simplicialMap R φ)) ∧
+      (∀ y : F, (K.space ∩ (simplicialMap R φ) ⁻¹' {y}).encard ≤ 2) ∧
+      (∀ x ∈ K.space, 0 ≤ ℓ (simplicialMap R φ x)) ∧
+      (∀ x ∈ K.space, ℓ (simplicialMap R φ x) = 0 ↔ x ∈ (boundaryComplex 2 K).space) ∧
+      G.faces.Finite ∧ G.space = doublePointSet (simplicialMap R φ) K.space ∧
+      IsCombinatorialManifoldWithBoundary 1 G ∧
+      (∀ y ∈ G.space,
+        (ℓ y = 0 ∧ HasPLBoundaryDoubleCrossingAt (simplicialMap R φ) K.space {z : F | 0 ≤ ℓ z} y) ∨
+        (0 < ℓ y ∧ HasPLDoubleCrossingAt (simplicialMap R φ) K.space y)) ∧
+      (∀ y, {y} ∈ G.faces → ℓ y = 0 → ∃ a, {z | z ≠ y ∧ {y, z} ∈ G.faces} = {a}) ∧
+      (∀ y, {y} ∈ G.faces → ℓ y ≠ 0 →
+        ∃ a b, a ≠ b ∧ {z | z ≠ y ∧ {y, z} ∈ G.faces} = {a, b}) ∧
+      (boundaryComplex 1 G).space = G.space ∩ {y : F | ℓ y = 0} := by
+  let V := interior (U ∪ {y : F | 0 ≤ ℓ y}ᶜ)
+  have hcompact : IsCompact (f '' K.space) :=
+    (isPolyhedron_space K).isCompact.image_of_continuousOn hf.continuousOn
+  have hsub : f '' K.space ⊆ V := by
+    rintro y ⟨x, hx, rfl⟩
+    obtain ⟨W, hW, hWU⟩ := mem_nhdsWithin_iff_exists_mem_nhds_inter.mp (hU x hx)
+    apply mem_interior_iff_mem_nhds.mpr
+    apply Filter.mem_of_superset hW
+    intro z hz
+    by_cases hnonnegz : 0 ≤ ℓ z
+    · exact Or.inl (hWU ⟨hz, hnonnegz⟩)
+    · exact Or.inr hnonnegz
+  obtain ⟨δ, hδ, hδV⟩ := hcompact.exists_cthickening_subset_open isOpen_interior hsub
+  obtain ⟨R, φ, G, hR, hfinite, hpl, hclose, hstar, hlocal, hfiber, hnonneg', hboundary',
+      hGfinite, hGspace, hGman, hcross, hdegree, hdegreeInterior, hGboundary⟩ :=
+    exists_small_simplicialMap_doublePointSet_with_boundary_in_halfSpace
+      K hK hdim ℓ hℓ f hf hloc hcard hnonneg hboundary (lt_min hε hδ)
+  refine ⟨R, φ, G, hR, hfinite, hpl, fun x hx => (hclose x hx).trans_le (min_le_left ε δ),
+    ?_, hstar, hlocal, hfiber, hnonneg', hboundary', hGfinite, hGspace, hGman,
+    hcross, hdegree, hdegreeInterior, hGboundary⟩
+  intro x hx
+  have hmem := interior_subset (hδV (mem_cthickening_of_dist_le _ _ δ _ ⟨x, hx, rfl⟩
+    ((hclose x hx).trans_le (min_le_right ε δ)).le))
+  exact hmem.resolve_right (fun hnot => hnot (hnonneg' x hx))
 theorem exists_isOpen_forall_exists_small_isPLOn_crossing_in_chart_mapsTo
     {d : ℕ} {X : Type*} [MetricSpace X] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) X]
     [HasGroupoid X (plGroupoid 3)]
