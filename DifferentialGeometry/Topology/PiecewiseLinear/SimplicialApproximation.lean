@@ -98,39 +98,6 @@ theorem exists_isSubdivision_simplicialApproximation
     obtain ⟨v, hv, rfl⟩ := Finset.mem_image.mp (Finset.mem_coe.mp hy)
     exact hkey _ (carrierFace_mem hxK') x (mem_convexHull_carrierFace hxK') v hv
 
-open Classical in
-theorem exists_isPiecewiseAffineOn_mapsTo_dist_lt
-    {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
-    [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
-    (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
-    (L : Geometry.SimplicialComplex ℝ F) [Finite L.faces]
-    {f : E → F} (hf : ContinuousOn f K.space) (hmap : MapsTo f K.space L.space)
-    {ε : ℝ} (hε : 0 < ε) :
-    ∃ g : E → F, IsPiecewiseAffineOn g K.space ∧ MapsTo g K.space L.space ∧
-      ∀ x ∈ K.space, dist (g x) (f x) < ε := by
-  classical
-  obtain ⟨L', hL', hL'fin, -, hL'diam⟩ :=
-    exists_isSubdivision_diam_lt L (N := Module.finrank ℝ F)
-      (fun s hs => card_le_finrank_succ_of_mem_faces L hs) hε
-  let _ : Finite L'.faces := hL'fin.to_subtype
-  have hL'space : L'.space = L.space := hL'.space_eq
-  obtain ⟨K', φ, hK', hK'fin, hφ, hclose⟩ :=
-    exists_isSubdivision_simplicialApproximation K L' hf (by rw [hL'space]; exact hmap)
-  let _ : Finite K'.faces := hK'fin.to_subtype
-  have hK'space : K'.space = K.space := hK'.space_eq
-  refine ⟨simplicialMap K' φ, ?_, ?_, ?_⟩
-  · rw [← hK'space]
-    exact isPiecewiseAffineOn_simplicialMap K' φ
-  · rw [← hL'space, ← hK'space]
-    exact simplicialMap_mapsTo K' L' φ hφ
-  · intro x hx
-    have hxL : f x ∈ L'.space := by rw [hL'space]; exact hmap hx
-    have hbdd : Bornology.IsBounded (convexHull ℝ ((carrierFace L' (f x) : Finset F) : Set F)) :=
-      isBounded_convexHull.mpr (carrierFace L' (f x)).finite_toSet.isBounded
-    exact lt_of_le_of_lt
-      (dist_le_diam_of_mem hbdd (hclose x hx) (mem_convexHull_carrierFace hxL))
-      (hL'diam _ (carrierFace_mem hxL))
-
 theorem mapsTo_lineMap_of_mem_convexHull_carrierFace
     {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
     [NormedAddCommGroup F] [NormedSpace ℝ F]
@@ -143,6 +110,53 @@ theorem mapsTo_lineMap_of_mem_convexHull_carrierFace
   refine L.convexHull_subset_space (carrierFace_mem (hmap hx)) ?_
   exact (convex_convexHull ℝ _) (mem_convexHull_carrierFace (hmap hx)) (hg x hx)
     (by linarith) ht₀ (by ring)
+
+open Classical in
+theorem exists_isPiecewiseAffineOn_mapsTo_dist_lt
+    {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
+    (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
+    (L : Geometry.SimplicialComplex ℝ F) [Finite L.faces]
+    {f : E → F} (hf : ContinuousOn f K.space) (hmap : MapsTo f K.space L.space)
+    {ε : ℝ} (hε : 0 < ε) :
+    ∃ g : E → F, IsPiecewiseAffineOn g K.space ∧ MapsTo g K.space L.space ∧
+      (∀ x ∈ K.space, dist (g x) (f x) < ε) ∧
+      ContinuousOn (fun p : ℝ × E => (1 - p.1) • f p.2 + p.1 • g p.2)
+        (Set.Icc (0 : ℝ) 1 ×ˢ K.space) ∧
+      MapsTo (fun p : ℝ × E => (1 - p.1) • f p.2 + p.1 • g p.2)
+        (Set.Icc (0 : ℝ) 1 ×ˢ K.space) L.space := by
+  classical
+  obtain ⟨L', hL', hL'fin, -, hL'diam⟩ :=
+    exists_isSubdivision_diam_lt L (N := Module.finrank ℝ F)
+      (fun s hs => card_le_finrank_succ_of_mem_faces L hs) hε
+  let _ : Finite L'.faces := hL'fin.to_subtype
+  have hL'space : L'.space = L.space := hL'.space_eq
+  obtain ⟨K', φ, hK', hK'fin, hφ, hclose⟩ :=
+    exists_isSubdivision_simplicialApproximation K L' hf (by rw [hL'space]; exact hmap)
+  let _ : Finite K'.faces := hK'fin.to_subtype
+  have hK'space : K'.space = K.space := hK'.space_eq
+  have hgc : ContinuousOn (simplicialMap K' φ) K.space := by
+    rw [← hK'space]
+    exact (isPiecewiseAffineOn_simplicialMap K' φ).continuousOn
+  have hmapL' : MapsTo f K.space L'.space := by rw [hL'space]; exact hmap
+  refine ⟨simplicialMap K' φ, ?_, ?_, ?_, ?_, ?_⟩
+  · rw [← hK'space]
+    exact isPiecewiseAffineOn_simplicialMap K' φ
+  · rw [← hL'space, ← hK'space]
+    exact simplicialMap_mapsTo K' L' φ hφ
+  · intro x hx
+    have hxL : f x ∈ L'.space := by rw [hL'space]; exact hmap hx
+    have hbdd : Bornology.IsBounded (convexHull ℝ ((carrierFace L' (f x) : Finset F) : Set F)) :=
+      isBounded_convexHull.mpr (carrierFace L' (f x)).finite_toSet.isBounded
+    exact lt_of_le_of_lt
+      (dist_le_diam_of_mem hbdd (hclose x hx) (mem_convexHull_carrierFace hxL))
+      (hL'diam _ (carrierFace_mem hxL))
+  · exact ((continuousOn_const.sub (continuous_fst.continuousOn)).smul
+      (hf.comp continuous_snd.continuousOn fun p hp => hp.2)).add
+      ((continuous_fst.continuousOn).smul (hgc.comp continuous_snd.continuousOn fun p hp => hp.2))
+  · intro p hp
+    rw [← hL'space]
+    exact mapsTo_lineMap_of_mem_convexHull_carrierFace L' hmapL' hclose hp.1.1 hp.1.2 hp.2
 
 theorem eqOn_simplicialApproximation_of_mem_carrierFace_singleton
     {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -159,5 +173,49 @@ theorem eqOn_simplicialApproximation_of_mem_carrierFace_singleton
   have h2 := mem_convexHull_carrierFace (hmap hx)
   rw [hsub] at h1 h2
   rw [h1, h2]
+
+theorem homotopic_restrict_of_continuousOn
+    {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y] {S : Set X} {T : Set Y}
+    {f g : X → Y} (hf : ContinuousOn f S) (hg : ContinuousOn g S)
+    (hfT : MapsTo f S T) (hgT : MapsTo g S T)
+    {H : ℝ × X → Y} (hH : ContinuousOn H (Set.Icc (0 : ℝ) 1 ×ˢ S))
+    (hHT : MapsTo H (Set.Icc (0 : ℝ) 1 ×ˢ S) T)
+    (h0 : ∀ x ∈ S, H (0, x) = f x) (h1 : ∀ x ∈ S, H (1, x) = g x) :
+    ContinuousMap.Homotopic
+      (⟨fun x : S => (⟨f x, hfT x.2⟩ : T), hf.domRestrict.subtype_mk _⟩ : C(S, T))
+      (⟨fun x : S => (⟨g x, hgT x.2⟩ : T), hg.domRestrict.subtype_mk _⟩ : C(S, T)) := by
+  refine ⟨{ toFun := fun q => ⟨H ((q.1 : ℝ), (q.2 : X)), hHT ⟨q.1.2, q.2.2⟩⟩
+            continuous_toFun := ?_
+            map_zero_left := ?_
+            map_one_left := ?_ }⟩
+  · refine Continuous.subtype_mk ?_ _
+    refine hH.comp_continuous ((continuous_subtype_val.comp continuous_fst).prodMk
+      (continuous_subtype_val.comp continuous_snd)) ?_
+    exact fun q => ⟨q.1.2, q.2.2⟩
+  · intro x
+    exact Subtype.ext (h0 x x.2)
+  · intro x
+    exact Subtype.ext (h1 x x.2)
+
+open Classical in
+theorem exists_isPiecewiseAffineOn_mapsTo_dist_lt_homotopic
+    {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
+    (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
+    (L : Geometry.SimplicialComplex ℝ F) [Finite L.faces]
+    {f : E → F} (hf : ContinuousOn f K.space) (hmap : MapsTo f K.space L.space)
+    {ε : ℝ} (hε : 0 < ε) :
+    ∃ (g : E → F) (hg : IsPiecewiseAffineOn g K.space) (hgmap : MapsTo g K.space L.space),
+      (∀ x ∈ K.space, dist (g x) (f x) < ε) ∧
+      ContinuousMap.Homotopic
+        (⟨fun x : K.space => (⟨f x, hmap x.2⟩ : L.space), hf.domRestrict.subtype_mk _⟩ :
+          C(K.space, L.space))
+        (⟨fun x : K.space => (⟨g x, hgmap x.2⟩ : L.space),
+          hg.continuousOn.domRestrict.subtype_mk _⟩ : C(K.space, L.space)) := by
+  obtain ⟨g, hg, hgmap, hdist, hHcont, hHmap⟩ :=
+    exists_isPiecewiseAffineOn_mapsTo_dist_lt K L hf hmap hε
+  refine ⟨g, hg, hgmap, hdist, ?_⟩
+  exact homotopic_restrict_of_continuousOn hf hg.continuousOn hmap hgmap hHcont hHmap
+    (fun x _ => by simp) (fun x _ => by simp)
 
 end DifferentialGeometry.Topology.PiecewiseLinear
