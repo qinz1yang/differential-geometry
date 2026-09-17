@@ -519,3 +519,30 @@ F 车道的 `Topology/Pasting.lean` 与 `SingularPasting.lean` 正是为这种"�
 `exists_isPiecewiseAffineOn_of_affine_cover`（由有限覆盖上两两相容的仿射片拼出逐片仿射映射）、
 `mapsTo_of_affine_cover`、`eqOn_of_affineMap_eq_of_mem_segment`（两个仿射映射在线段两端相等则沿线段相等，
 这是三角形共边时验证相容性的办法）。
+
+### 乘积领口的拼接已证（同日）
+
+`PrismHomotopy.lean` 新增两条：
+
+- `exists_isPiecewiseAffineOn_prism_height_mapsTo_space`：棱柱的高度可以取任意 `h > 0`
+  （与 `(x,t) ↦ (x, t/h)` 复合）。
+- `exists_isPiecewiseAffineOn_glue_prism_collar`：给定 `G` 在正方形上逐片仿射且映进 `|L|`、
+  `f` 在 `[0,1]` 上逐片仿射、`ε > 0`，以及"相距 `< δ` 且中间无 `T` 点的 `a, b` 使
+  `{f a, f b, G (a,ε), G (b,ε)}` 同落一张面"这一条件，则存在 `g` 逐片仿射、映进 `|L|`、
+  **在底边等于 `f`**、在 `[0,1] ×ˢ [ε,1]` 上等于 `G`。
+
+`PiecewiseAffineCover.lean` 提供的是另一类工具（由有限覆盖上的仿射片拼出映射），
+两者都可以用来做这类"改一条边、其余不变"的构造。
+
+**剩下两小步就能得到"乘积相对一端的 PL 逼近"**：
+
+1. 把 `f` 沿 `t` 方向重参数化成在 `[0,ε]` 上与 `t` 无关（`f'(x,t) := f (x, max 0 ((t-ε)/(1-ε)))`），
+   这样 `f'` 连续、在 `[0,ε]` 上恒等于 `f(·,0)`，且与 `f` 相对底边同伦。
+2. 对 `f'` 用单纯逼近得 `G`（`G z ∈ convexHull (carrierFace L (f' z))`）。
+   于是 `G (a, ε) ∈ convexHull (carrierFace L (f (a,0)))`，
+   只要底边映射的每个格的像落在一张面 `u` 里，就有 `carrierFace L (f (a,0)) ⊆ u`，
+   四个点同落 `u` —— `hface` 成立。这一步是**关键**：先重参数化再逼近，
+   逼近的顶边值就自动与底边值贴合，否则 `G(·,ε)` 逼近的是 `f(·,ε)`，与 `f(·,0)` 无关。
+3. 第 2 步还需要"底边映射每个格的像落在一张面里"。PA 映射映进 `|L|` 时这不自动成立，
+   但线段穿过面的参数只有有限个，在那里再细分即可（用本轮 `exists_partition_affineOn_two`
+   的 `T` 参数把这些点钉进分划）。
