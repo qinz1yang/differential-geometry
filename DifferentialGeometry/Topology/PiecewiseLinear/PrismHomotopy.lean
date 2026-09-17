@@ -1,6 +1,8 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.PrismInterval
 import DifferentialGeometry.Topology.PiecewiseLinear.BrokenLine
 import DifferentialGeometry.Topology.PiecewiseLinear.SimplicialMap
+import DifferentialGeometry.Topology.PiecewiseLinear.Product
+import DifferentialGeometry.Topology.PiecewiseLinear.PLPath
 
 open Set
 
@@ -187,5 +189,79 @@ theorem exists_isPiecewiseAffineOn_prism_height_mapsTo_space
       simp [div_self (ne_of_gt hh)]
     rw [Function.comp_apply, hz]
     exact htop x hx
+
+open Classical in
+theorem exists_isPiecewiseAffineOn_glue_prism_collar (L : Geometry.SimplicialComplex ℝ F)
+    {G : ℝ × ℝ → F} (hG : IsPiecewiseAffineOn G (Icc (0 : ℝ) 1 ×ˢ Icc (0 : ℝ) 1))
+    (hGL : MapsTo G (Icc (0 : ℝ) 1 ×ˢ Icc (0 : ℝ) 1) L.space)
+    {f : ℝ → F} (hf : IsPiecewiseAffineOn f (Icc (0 : ℝ) 1))
+    {ε : ℝ} (hε : 0 < ε) (hε1 : ε ≤ 1)
+    {δ : ℝ} (hδ : 0 < δ) (T : Finset ℝ) (hT : ∀ x ∈ T, x ∈ Icc (0 : ℝ) 1)
+    (hface : ∀ a ∈ Icc (0 : ℝ) 1, ∀ b ∈ Icc (0 : ℝ) 1, b - a < δ →
+      (∀ x ∈ T, ¬(a < x ∧ x < b)) →
+      ∃ u ∈ L.faces,
+        ({f a, f b, G (a, ε), G (b, ε)} : Set F) ⊆ convexHull ℝ (u : Set F)) :
+    ∃ g : ℝ × ℝ → F, IsPiecewiseAffineOn g (Icc (0 : ℝ) 1 ×ˢ Icc (0 : ℝ) 1) ∧
+      MapsTo g (Icc (0 : ℝ) 1 ×ˢ Icc (0 : ℝ) 1) L.space ∧
+      (∀ x ∈ Icc (0 : ℝ) 1, g (x, 0) = f x) ∧
+      (∀ z ∈ Icc (0 : ℝ) 1 ×ˢ Icc ε 1, g z = G z) := by
+  classical
+  have hslice : IsPiecewiseAffineOn (fun x : ℝ => G (x, ε)) (Icc (0 : ℝ) 1) := by
+    have haff : IsPiecewiseAffineOn
+        (fun x : ℝ => ((x, ε) : ℝ × ℝ)) (univ : Set ℝ) :=
+      (isPiecewiseAffineOn_of_affine
+        (AffineMap.const ℝ ℝ ((0 : ℝ), ε) + ((LinearMap.id).prod 0).toAffineMap)
+        isOpen_univ).congr (fun x _ => by simp)
+    have hc := hG.comp haff
+    have hset : (univ : Set ℝ) ∩ (fun x : ℝ => ((x, ε) : ℝ × ℝ)) ⁻¹'
+        (Icc (0 : ℝ) 1 ×ˢ Icc (0 : ℝ) 1) = Icc (0 : ℝ) 1 := by
+      ext x
+      simp only [univ_inter, mem_preimage, Set.mem_prod, mem_Icc]
+      exact ⟨fun h => h.1, fun h => ⟨h, hε.le, hε1⟩⟩
+    rwa [hset] at hc
+  obtain ⟨Φ, hPAΦ, hmapsΦ, hbotΦ, htopΦ⟩ :=
+    exists_isPiecewiseAffineOn_prism_height_mapsTo_space L hf hslice hδ T hT hface hε
+  have hGupper : IsPiecewiseAffineOn G (Icc (0 : ℝ) 1 ×ˢ Icc ε 1) :=
+    hG.mono_of_isPolyhedron (isHPolytope_Icc.prod isHPolytope_Icc).isPolyhedron
+      (prod_mono_right (Icc_subset_Icc hε.le le_rfl))
+  have hunion : Icc (0 : ℝ) 1 ×ˢ Icc (0 : ℝ) ε ∪ Icc (0 : ℝ) 1 ×ˢ Icc ε 1
+      = Icc (0 : ℝ) 1 ×ˢ Icc (0 : ℝ) 1 := by
+    rw [← prod_union, Icc_union_Icc_eq_Icc hε.le hε1]
+  have heq : EqOn Φ G (Icc (0 : ℝ) 1 ×ˢ Icc (0 : ℝ) ε ∩ Icc (0 : ℝ) 1 ×ˢ Icc ε 1) := by
+    rintro ⟨x, t⟩ ⟨⟨hx, -, ht2⟩, -, ht3, -⟩
+    have hte : t = ε := le_antisymm ht2 ht3
+    subst hte
+    exact htopΦ x hx
+  set g : ℝ × ℝ → F :=
+    @Set.piecewise (ℝ × ℝ) (fun _ => F) (Icc (0 : ℝ) 1 ×ˢ Icc (0 : ℝ) ε) Φ G
+      (fun j => Classical.propDecidable _) with hgdef
+  have hgmem : ∀ z ∈ Icc (0 : ℝ) 1 ×ˢ Icc (0 : ℝ) ε, g z = Φ z := by
+    intro z hz
+    rw [hgdef]
+    exact if_pos hz
+  have hgnot : ∀ z ∉ Icc (0 : ℝ) 1 ×ˢ Icc (0 : ℝ) ε, g z = G z := by
+    intro z hz
+    rw [hgdef]
+    exact if_neg hz
+  refine ⟨g, ?_, ?_, ?_, ?_⟩
+  · rw [← hunion]
+    exact hPAΦ.piecewise_of_isClosed hGupper (isClosed_Icc.prod isClosed_Icc)
+      (isClosed_Icc.prod isClosed_Icc) heq
+  · intro z hz
+    by_cases hzc : z ∈ Icc (0 : ℝ) 1 ×ˢ Icc (0 : ℝ) ε
+    · rw [hgmem _ hzc]
+      exact hmapsΦ hzc
+    · rw [hgnot _ hzc]
+      exact hGL hz
+  · intro x hx
+    rw [hgmem _ ⟨hx, le_rfl, hε.le⟩]
+    exact hbotΦ x hx
+  · rintro ⟨x, t⟩ ⟨hx, ht1, ht2⟩
+    by_cases hzc : ((x, t) : ℝ × ℝ) ∈ Icc (0 : ℝ) 1 ×ˢ Icc (0 : ℝ) ε
+    · rw [hgmem _ hzc]
+      have hte : t = ε := le_antisymm hzc.2.2 ht1
+      subst hte
+      exact htopΦ x hx
+    · rw [hgnot _ hzc]
 
 end DifferentialGeometry.Topology.PiecewiseLinear
