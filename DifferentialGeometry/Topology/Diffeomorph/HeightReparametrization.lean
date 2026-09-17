@@ -1,3 +1,9 @@
+import DifferentialGeometry.Topology.Manifold.InverseFunction
+import Mathlib.Analysis.Calculus.Deriv.MeanValue
+import Mathlib.Analysis.Calculus.LocalExtr.Basic
+import Mathlib.Analysis.SpecialFunctions.SmoothTransition
+import Mathlib.Analysis.SpecialFunctions.ExpDeriv
+import Mathlib.Analysis.SpecialFunctions.Log.Basic
 import DifferentialGeometry.Topology.Diffeomorph.Translation
 import DifferentialGeometry.Topology.Diffeomorph.CompactLocalIsotopy
 import DifferentialGeometry.Analysis.Calculus.Derivative.Coordinates.JacobianSign
@@ -68,5 +74,113 @@ theorem exists_compact_isotopy_height_reparametrization
   intro t ht z hz
   have h := htrack t ht z hz
   rwa [hA0] at h
+
+
+theorem exists_eq_exponential_on_Iic
+    {a b m μ : ℝ} (hab : a < b) (hbm : b < m) (hμ : 0 < μ) :
+    ∃ ψ : ℝ ≃ₘ[ℝ] ℝ,
+      (∀ t, 0 < deriv ψ t) ∧
+      (∀ t ≤ a, ψ t = m - (m - a + 1) * Real.exp (-2 * μ * (t - b))) ∧
+      ∀ t, b ≤ t → ψ t = t := by
+  let C := m - a + 1
+  have hC : 0 < C := by dsimp [C]; linarith
+  let f : ℝ → ℝ := fun t => m - C * Real.exp (-2 * μ * (t - b))
+  let χ : ℝ → ℝ := fun t => Real.smoothTransition ((t - a) / (b - a))
+  let g : ℝ → ℝ := fun t => f t + χ t * (t - f t)
+  have hf : ContDiff ℝ ∞ f := by dsimp [f]; fun_prop
+  have hχ : ContDiff ℝ ∞ χ := by dsimp [χ]; fun_prop
+  have hg : ContDiff ℝ ∞ g := hf.add (hχ.mul (contDiff_id.sub hf))
+  have hfd (t : ℝ) : HasDerivAt f (2 * μ * C * Real.exp (-2 * μ * (t - b))) t := by
+    have hd := ((((hasDerivAt_id t).sub_const b).const_mul (-2 * μ)).exp.const_mul C).const_sub m
+    convert hd using 1 <;> first | rfl | (dsimp; ring)
+  have hfp (t : ℝ) : 0 < deriv f t := by
+    rw [(hfd t).deriv]
+    positivity
+  have hχ01 (t : ℝ) : χ t ∈ Icc (0 : ℝ) 1 :=
+    ⟨Real.smoothTransition.nonneg _, Real.smoothTransition.le_one _⟩
+  have hχmono : Monotone χ := Real.smoothTransition.monotone.comp
+    (fun x y hxy => div_le_div_of_nonneg_right (sub_le_sub_right hxy a) (sub_nonneg.mpr hab.le))
+  have hχlo (t : ℝ) (ht : t ≤ a) : χ t = 0 :=
+    Real.smoothTransition.zero_of_nonpos (div_nonpos_of_nonpos_of_nonneg
+      (sub_nonpos.mpr ht) (sub_nonneg.mpr hab.le))
+  have hχhi (t : ℝ) (ht : b ≤ t) : χ t = 1 :=
+    Real.smoothTransition.one_of_one_le ((le_div_iff₀ (sub_pos.mpr hab)).mpr (by linarith))
+  have hglo (t : ℝ) (ht : t ≤ a) : g t = f t := by simp only [g, hχlo t ht, zero_mul, add_zero]
+  have hghi (t : ℝ) (ht : b ≤ t) : g t = t := by dsimp only [g]; rw [hχhi t ht]; ring
+  have hgap (t : ℝ) (ht : t ∈ Icc a b) : 0 < t - f t := by
+    have he : 1 ≤ Real.exp (-2 * μ * (t - b)) := Real.one_le_exp_iff.mpr
+      (by nlinarith [ht.2])
+    have hm := mul_le_mul_of_nonneg_left he hC.le
+    dsimp only [f]
+    dsimp only [C] at hm
+    nlinarith [ht.1]
+  have hgd (t : ℝ) : deriv g t =
+      (1 - χ t) * deriv f t + χ t + deriv χ t * (t - f t) := by
+    have hd := (hf.differentiable (by simp) t).hasDerivAt.add
+      ((hχ.differentiable (by simp) t).hasDerivAt.mul
+        ((hasDerivAt_id t).sub (hf.differentiable (by simp) t).hasDerivAt))
+    convert hd.deriv using 1 <;> first | rfl | (dsimp; ring)
+  have hgp (t : ℝ) : 0 < deriv g t := by
+    rw [hgd]
+    have hweights := hχ01 t
+    have hpositive : 0 < (1 - χ t) * deriv f t + χ t := by
+      rcases eq_or_lt_of_le hweights.2 with heq | hlt
+      · rw [heq]; norm_num
+      · have hp := mul_pos (sub_pos.mpr hlt) (hfp t)
+        linarith [hweights.1]
+    have hterm : 0 ≤ deriv χ t * (t - f t) := by
+      by_cases htlo : t ≤ a
+      · have hmin : IsLocalMin χ t := Filter.Eventually.of_forall (fun x => by
+          change χ t ≤ χ x
+          rw [hχlo t htlo]
+          exact (hχ01 x).1)
+        rw [hmin.deriv_eq_zero, zero_mul]
+      · by_cases hthi : b ≤ t
+        · have hmax : IsLocalMax χ t := Filter.Eventually.of_forall (fun x => by
+            change χ x ≤ χ t
+            rw [hχhi t hthi]
+            exact (hχ01 x).2)
+          rw [hmax.deriv_eq_zero, zero_mul]
+        · exact mul_nonneg hχmono.deriv_nonneg
+            (hgap t ⟨(lt_of_not_ge htlo).le, (lt_of_not_ge hthi).le⟩).le
+    linarith
+  have hmono : StrictMono g := strictMono_of_deriv_pos hgp
+  have hsurj : Function.Surjective g := by
+    intro y
+    let v := min (y - 1) (m - 1)
+    have hvm : v < m := by dsimp [v]; linarith [min_le_right (y - 1) (m - 1)]
+    have hvy : v < y := by dsimp [v]; linarith [min_le_left (y - 1) (m - 1)]
+    let x := b - Real.log ((m - v) / C) / (2 * μ)
+    have hratio : 0 < (m - v) / C := div_pos (sub_pos.mpr hvm) hC
+    have hfx : f x = v := by
+      have he : -2 * μ * (x - b) = Real.log ((m - v) / C) := by
+        dsimp [x]
+        field_simp
+        ring
+      dsimp only [f]
+      rw [he, Real.exp_log hratio]
+      field_simp
+      ring
+    let l := min a x
+    let u := max b y
+    have hlu : l ≤ u := (min_le_left a x).trans (hab.le.trans (le_max_left b y))
+    have hlo : g l ≤ y := by
+      rw [hglo l (min_le_left _ _)]
+      exact ((strictMono_of_deriv_pos hfp).monotone (min_le_right a x)).trans
+        (hfx.le.trans hvy.le)
+    have hhi : y ≤ g u := by rw [hghi u (le_max_left _ _)]; exact le_max_right _ _
+    obtain ⟨t, _, ht⟩ := intermediate_value_Icc hlu hg.continuous.continuousOn ⟨hlo, hhi⟩
+    exact ⟨t, ht⟩
+  have hlocal : IsLocalDiffeomorph 𝓘(ℝ) 𝓘(ℝ) ∞ g := by
+    intro t
+    let L := (ContinuousLinearEquiv.unitsEquivAut ℝ) (Units.mk0 (deriv g t) (hgp t).ne')
+    exact DifferentialGeometry.Topology.Manifold.isLocalDiffeomorphAt_of_hasMFDerivAt_equiv
+      g hg.contMDiff t L (((hg.differentiable (by simp) t).hasDerivAt.hasFDerivAt_equiv
+        (hgp t).ne').hasMFDerivAt)
+  let ψ := hlocal.diffeomorphOfBijective ⟨hmono.injective, hsurj⟩
+  have hψ : (ψ : ℝ → ℝ) = g := rfl
+  exact ⟨ψ, hψ ▸ hgp, fun t ht => (congrFun hψ t).trans (hglo t ht),
+    fun t ht => (congrFun hψ t).trans (hghi t ht)⟩
+
 
 end Diffeomorph

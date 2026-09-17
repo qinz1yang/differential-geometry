@@ -1,4 +1,6 @@
 import Mathlib.Geometry.Manifold.SmoothEmbedding
+import Mathlib.Geometry.Manifold.IsManifold.InteriorBoundary
+import Mathlib.Topology.Homeomorph.Lemmas
 
 open scoped ContDiff
 
@@ -117,5 +119,60 @@ lemma _root_.Diffeomorph.isSmoothEmbedding [IsManifold J n N] [IsManifold J n N'
     (Φ : Diffeomorph J J N N' n) : IsSmoothEmbedding J J n Φ := by
   simpa only [Function.comp_id] using
     (IsSmoothEmbedding.id (I := J) (M := N) (n := n)).diffeomorph_comp Φ
+
+noncomputable def IsSmoothEmbedding.diffeomorphOfSurjective
+    (hf : IsSmoothEmbedding I J n f) (hs : Function.Surjective f) :
+    Diffeomorph I J M N n := by
+  let e := hf.isEmbedding.toHomeomorphOfSurjective hs
+  refine
+    { toEquiv := e.toEquiv
+      contMDiff_toFun := hf.contMDiff
+      contMDiff_invFun := ?_ }
+  apply (ContMDiff.iff_comp_isImmersion hf.isImmersion).mpr
+  refine ⟨e.symm.continuous, ?_⟩
+  exact contMDiff_id.congr (fun y => e.apply_symm_apply y)
+
+@[simp] theorem IsSmoothEmbedding.diffeomorphOfSurjective_apply
+    (hf : IsSmoothEmbedding I J n f) (hs : Function.Surjective f) (x : M) :
+    hf.diffeomorphOfSurjective hs x = f x := rfl
+
+theorem IsSmoothEmbedding.not_surjective_of_isBoundaryPoint
+    [BoundarylessManifold J N] (hf : IsSmoothEmbedding I J n f) (hn : n ≠ 0)
+    {x : M} (hx : I.IsBoundaryPoint x) : ¬ Function.Surjective f := by
+  intro hs
+  let e := hf.diffeomorphOfSurjective hs
+  have hi : I.IsInteriorPoint x :=
+    ((e.isLocalDiffeomorph x).isInteriorPoint_iff hn).mpr
+      BoundarylessManifold.isInteriorPoint
+  exact (I.isInteriorPoint_iff_not_isBoundaryPoint x).mp hi hx
+
+variable {E'' H'' P : Type*} [NormedAddCommGroup E''] [NormedSpace 𝕜 E'']
+  [TopologicalSpace H''] {K : ModelWithCorners 𝕜 E'' H''}
+  [TopologicalSpace P] [ChartedSpace H'' P] {g : P → N}
+
+noncomputable def IsSmoothEmbedding.diffeomorphOfRangeEq
+    (hf : IsSmoothEmbedding I J n f) (hg : IsSmoothEmbedding K J n g)
+    (h : Set.range f = Set.range g) : Diffeomorph I K M P n := by
+  let e := hf.isEmbedding.toHomeomorph.trans
+    ((Homeomorph.setCongr h).trans hg.isEmbedding.toHomeomorph.symm)
+  have he (x : M) : g (e x) = f x := by
+    have hx := hg.isEmbedding.toHomeomorph.apply_symm_apply
+      ((Homeomorph.setCongr h) (hf.isEmbedding.toHomeomorph x))
+    exact congrArg Subtype.val hx
+  have hei (y : P) : f (e.symm y) = g y := by
+    rw [← he, e.apply_symm_apply]
+  exact
+    { toEquiv := e.toEquiv
+      contMDiff_toFun := (ContMDiff.iff_comp_isImmersion hg.isImmersion).mpr
+        ⟨e.continuous, hf.contMDiff.congr he⟩
+      contMDiff_invFun := (ContMDiff.iff_comp_isImmersion hf.isImmersion).mpr
+        ⟨e.symm.continuous, hg.contMDiff.congr hei⟩ }
+
+theorem IsSmoothEmbedding.comp_diffeomorphOfRangeEq
+    (hf : IsSmoothEmbedding I J n f) (hg : IsSmoothEmbedding K J n g)
+    (h : Set.range f = Set.range g) (x : M) :
+    g (hf.diffeomorphOfRangeEq hg h x) = f x := by
+  exact congrArg Subtype.val (hg.isEmbedding.toHomeomorph.apply_symm_apply
+    ((Homeomorph.setCongr h) (hf.isEmbedding.toHomeomorph x)))
 
 end Manifold

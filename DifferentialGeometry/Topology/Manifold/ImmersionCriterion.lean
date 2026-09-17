@@ -174,6 +174,32 @@ theorem isImmersionAt_of_injective_mfderiv
     rw [J.right_inv (by rw [J.range_eq_univ]; exact mem_univ _), hIz]
     exact h.writtenInCharts (by simpa using hzt)
 
+theorem isImmersion_of_isImmersionAt
+    {𝕜 : Type*} [NontriviallyNormedField 𝕜] [CompleteSpace 𝕜]
+    {E F : Type*} [NormedAddCommGroup E] [NormedSpace 𝕜 E]
+    [NormedAddCommGroup F] [NormedSpace 𝕜 F] [FiniteDimensional 𝕜 F]
+    {H G M N : Type*} [TopologicalSpace H] [TopologicalSpace G]
+    [TopologicalSpace M] [ChartedSpace H M] [TopologicalSpace N] [ChartedSpace G N]
+    {I : ModelWithCorners 𝕜 E H} {J : ModelWithCorners 𝕜 F G}
+    {n : ℕ∞ω} {f : M → N} (hf : ∀ x, IsImmersionAt I J n f x) :
+    IsImmersion I J n f := by
+  let C := Fin (Module.finrank 𝕜 F - Module.finrank 𝕜 E) → 𝕜
+  apply IsImmersionOfComplement.isImmersion (F := C)
+  intro x
+  let h := hf x
+  let L₁ := h.equiv.toLinearMap.comp (LinearMap.inl 𝕜 E h.complement)
+  let _ : FiniteDimensional 𝕜 E :=
+    FiniteDimensional.of_injective L₁ (h.equiv.injective.comp LinearMap.inl_injective)
+  let L₂ := h.equiv.toLinearMap.comp (LinearMap.inr 𝕜 E h.complement)
+  let _ : FiniteDimensional 𝕜 h.complement :=
+    FiniteDimensional.of_injective L₂ (h.equiv.injective.comp LinearMap.inr_injective)
+  have hdim : Module.finrank 𝕜 h.complement = Module.finrank 𝕜 C := by
+    have hsum := h.equiv.toLinearEquiv.finrank_eq
+    rw [Module.finrank_prod] at hsum
+    simp only [C, Module.finrank_fin_fun]
+    omega
+  exact h.isImmersionAtOfComplement_complement.trans_F (ContinuousLinearEquiv.ofFinrankEq hdim)
+
 theorem isImmersion_of_injective_mfderiv
     {𝕜 : Type*} [RCLike 𝕜]
     {E F : Type*} [NormedAddCommGroup E] [NormedSpace 𝕜 E] [FiniteDimensional 𝕜 E]

@@ -120,3 +120,25 @@ theorem continuous_restrictFiber_symm (Φ : (M × P) ≃ₜ (N × P)) (hΦ : ∀
   (Φ.symm.continuous.comp (continuous_snd.prodMk continuous_fst)).fst
 
 end Homeomorph
+
+namespace Set
+
+theorem image_prod_inter_range {M E F P : Type*}
+    (f : M → F × P) (H : P → E → F) {K L : Set E} {J : Set P}
+    (hlevels : ∀ t ∈ J,
+      (H t '' K) ∩ ((fun x => (f x).1) '' {x | (f x).2 = t}) = H t '' L) :
+    ((fun q : E × P => (H q.2 q.1, q.2)) '' (K ×ˢ J)) ∩ range f =
+      (fun q : E × P => (H q.2 q.1, q.2)) '' (L ×ˢ J) := by
+  apply Subset.antisymm
+  · rintro z ⟨⟨⟨y, t⟩, ⟨hy, ht⟩, rfl⟩, x, hx⟩
+    have hmem : H t y ∈ (H t '' K) ∩ ((fun x => (f x).1) '' {x | (f x).2 = t}) :=
+      ⟨mem_image_of_mem _ hy, x, congrArg Prod.snd hx, congrArg Prod.fst hx⟩
+    obtain ⟨w, hw, hwy⟩ := (hlevels t ht).subset hmem
+    exact ⟨(w, t), ⟨hw, ht⟩, Prod.ext hwy rfl⟩
+  · rintro z ⟨⟨y, t⟩, ⟨hy, ht⟩, rfl⟩
+    have hmem := (hlevels t ht).symm.subset (mem_image_of_mem (H t) hy)
+    obtain ⟨w, hw, hwy⟩ := hmem.1
+    obtain ⟨x, hx, hxy⟩ := hmem.2
+    exact ⟨⟨(w, t), ⟨hw, ht⟩, Prod.ext hwy rfl⟩, x, Prod.ext hxy hx⟩
+
+end Set

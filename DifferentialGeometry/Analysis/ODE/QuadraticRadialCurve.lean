@@ -72,4 +72,31 @@ theorem contDiffOn_quadraticRadialCurve {F : Type*} [NormedAddCommGroup F] [Inne
     contDiffAt_const.add ((contDiffAt_const.mul contDiffAt_fst).div (contDiffAt_snd.norm_sq ℝ) hn)
   exact ((hinner.sqrt hp.2.ne').smul contDiffAt_snd).contDiffWithinAt
 
+theorem quadraticRadialCurve_reverse_radicand
+    {b t : ℝ} {x : E}
+    (ht : 0 < 1 + 2 * b * t / ‖x‖ ^ 2) :
+    1 + 2 * b * (-t) / ‖quadraticRadialCurve b x t‖ ^ 2 =
+      (1 + 2 * b * t / ‖x‖ ^ 2)⁻¹ := by
+  by_cases hx : x = 0
+  · subst x
+    simp only [quadraticRadialCurve, smul_zero, norm_zero, ne_eq, OfNat.ofNat_ne_zero,
+      not_false_eq_true, zero_pow, div_zero, add_zero, inv_one]
+  rw [norm_sq_quadraticRadialCurve b hx ht.le]
+  have hn : ‖x‖ ^ 2 ≠ 0 := pow_ne_zero 2 (norm_ne_zero_iff.mpr hx)
+  have hr : ‖x‖ ^ 2 + 2 * b * t ≠ 0 := by
+    have heq : ‖x‖ ^ 2 + 2 * b * t = ‖x‖ ^ 2 * (1 + 2 * b * t / ‖x‖ ^ 2) := by
+      field_simp
+    rw [heq]
+    exact mul_ne_zero hn ht.ne'
+  field_simp
+  ring
+
+theorem quadraticRadialCurve_reverse
+    {b t : ℝ} {x : E}
+    (ht : 0 < 1 + 2 * b * t / ‖x‖ ^ 2) :
+    quadraticRadialCurve b (quadraticRadialCurve b x t) (-t) = x := by
+  rw [quadraticRadialCurve, quadraticRadialCurve_reverse_radicand ht,
+    quadraticRadialCurve, Real.sqrt_inv, smul_smul,
+    inv_mul_cancel₀ (Real.sqrt_pos.mpr ht).ne', one_smul]
+
 end DifferentialGeometry.Analysis.ODE

@@ -4,6 +4,9 @@ import Mathlib.Geometry.Manifold.MFDeriv.SpecificFunctions
 import Mathlib.LinearAlgebra.FiniteDimensional.Lemmas
 import DifferentialGeometry.Topology.SphereSeparation.GlobalNormal
 import DifferentialGeometry.Topology.SphereSeparation.ManifoldInverseFunction
+import DifferentialGeometry.Topology.Manifold.InverseFunction
+import DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.PartialDiffeomorph
+import Mathlib.Analysis.Normed.Operator.Banach
 
 set_option autoImplicit false
 
@@ -550,5 +553,33 @@ theorem exists_uniform_normal_bicollar_product
   refine ⟨a, ha, ?_⟩
   have hcomp := hcollar.comp domainEquiv.isOpenEmbedding
   simpa [domainEquiv, normalFieldParametrization, Function.comp_def] using hcomp
+
+theorem exists_partialDiffeomorph_normalFieldParametrization
+    {e ν : SphereTwo → EuclideanThree} (he : Manifold.IsSmoothEmbedding (𝓡 2) (𝓡 3) ∞ e)
+    (hν : ContMDiff (𝓡 2) (𝓡 3) ∞ ν)
+    (hνnormal : ∀ p, ν p ∈ embeddedSphereNormalLine e p) (hνne : ∀ p, ν p ≠ 0) :
+    ∃ Φ : _root_.PartialDiffeomorph ((𝓡 2).prod 𝓘(ℝ)) (𝓡 3)
+        (SphereTwo × ℝ) EuclideanThree ∞,
+      normalZeroSection ⊆ Φ.source ∧ Φ.toFun = normalFieldParametrization e ν := by
+  have hF := contMDiff_normalFieldParametrization he hν
+  have hlocal : IsLocalDiffeomorphOn ((𝓡 2).prod 𝓘(ℝ)) (𝓡 3) ∞
+      (normalFieldParametrization e ν) normalZeroSection := by
+    rintro ⟨_, p, rfl⟩
+    let T : (EuclideanSpace ℝ (Fin 2) × ℝ) →L[ℝ] EuclideanThree :=
+      mfderiv ((𝓡 2).prod 𝓘(ℝ)) (𝓡 3) (normalFieldParametrization e ν) (p, 0)
+    have hbij := bijective_mfderiv_normalFieldParametrization_zero he hν hνnormal hνne p
+    let A := ContinuousLinearEquiv.ofBijective T
+      (LinearMap.ker_eq_bot.mpr hbij.1) (LinearMap.range_eq_top.mpr hbij.2)
+    apply Manifold.isLocalDiffeomorphAt_of_hasMFDerivAt_equiv
+      (normalFieldParametrization e ν) hF (p, 0) A
+    convert! (hF.mdifferentiable (by simp) (p, 0)).hasMFDerivAt using 1
+  have hinj : InjOn (normalFieldParametrization e ν) normalZeroSection := by
+    rintro _ ⟨p, rfl⟩ _ ⟨q, rfl⟩ hpq
+    exact Prod.ext (he.isEmbedding.injective (by simpa using hpq)) rfl
+  let p : SphereTwo := ⟨EuclideanSpace.single 0 1, by
+    rw [mem_sphere_zero_iff_norm]
+    simp⟩
+  exact DifferentialGeometry.IsLocalDiffeomorphOn.exists_partialDiffeomorph_of_isCompact
+    hlocal isCompact_normalZeroSection ⟨(p, 0), mem_range_self _⟩ hinj
 
 end DifferentialGeometry.Topology.SphereSeparation

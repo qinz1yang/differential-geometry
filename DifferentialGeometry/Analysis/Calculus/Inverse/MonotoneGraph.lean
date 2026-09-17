@@ -81,4 +81,65 @@ theorem exists_contDiffOn_implicit_graph_of_deriv_neg
     · rw [← (hspec x hx).2]
       exact (hanti x hx).lt_iff_gt hg ht
 
+
+theorem exists_isOpen_contDiffOn_implicit_graph_of_injOn
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
+    {n : ℕ∞ω} (hn : n ≠ 0) {W : Set (E × ℝ)} (hW : IsOpen W)
+    {F : E × ℝ → ℝ} (hF : ContDiffOn ℝ n F W)
+    (hregular : ∀ p ∈ W, F p = 0 → fderiv ℝ F p (0, 1) ≠ 0)
+    (hinj : InjOn (Prod.fst : E × ℝ → E) (W ∩ {p | F p = 0})) :
+    ∃ O : Set E, IsOpen O ∧ ∃ g : E → ℝ, ContDiffOn ℝ n g O ∧
+      W ∩ {p | F p = 0} = {p : E × ℝ | p.1 ∈ O ∧ p.2 = g p.1} := by
+  classical
+  have hlocal (p : E × ℝ) (hp : p ∈ W) (hz : F p = 0) :
+      ∃ ψ : E → ℝ, ContDiffAt ℝ n ψ p.1 ∧ ψ p.1 = p.2 ∧
+        ∀ᶠ x in 𝓝 p.1, (x, ψ x) ∈ W ∧ F (x, ψ x) = 0 := by
+    have hFp : ContDiffAt ℝ n F p := hF.contDiffAt (hW.mem_nhds hp)
+    have hd : HasFDerivAt (fun t => F (p.1, t))
+        ((fderiv ℝ F p).comp (ContinuousLinearMap.inr ℝ E ℝ)) p.2 :=
+      (hFp.differentiableAt hn).hasFDerivAt.comp p.2
+        ((hasFDerivAt_const p.1 p.2).prodMk (hasFDerivAt_id p.2))
+    have hne : ((fderiv ℝ F p).comp (ContinuousLinearMap.inr ℝ E ℝ)) 1 ≠ 0 :=
+      hregular p hp hz
+    have hinv : ((fderiv ℝ F p).comp (ContinuousLinearMap.inr ℝ E ℝ)).IsInvertible :=
+      ⟨_, (hd.hasDerivAt.hasFDerivAt_equiv hne).unique hd⟩
+    let ψ := hFp.implicitFunction hn hinv
+    have hψ : ContDiffAt ℝ n ψ p.1 := hFp.contDiffAt_implicitFunction hn hinv
+    have hψp : ψ p.1 = p.2 := hFp.implicitFunction_apply_self hn hinv
+    refine ⟨ψ, hψ, hψp, ?_⟩
+    have hmem : ∀ᶠ x in 𝓝 p.1, (x, ψ x) ∈ W :=
+      (continuousAt_id.prodMk hψ.continuousAt)
+        (hW.mem_nhds (by simpa only [hψp, id_eq, Prod.mk.eta] using hp))
+    filter_upwards [hmem, hFp.eventually_apply_implicitFunction hn hinv] with x hx hxF
+    exact ⟨hx, hxF.trans hz⟩
+  let O : Set E := {x | ∃ t, (x, t) ∈ W ∧ F (x, t) = 0}
+  let g : E → ℝ := fun x => if hx : x ∈ O then Classical.choose hx else 0
+  have hspec (x : E) (hx : x ∈ O) : (x, g x) ∈ W ∧ F (x, g x) = 0 := by
+    dsimp only [g]
+    rw [dif_pos hx]
+    exact Classical.choose_spec hx
+  have huniq (x : E) (hx : x ∈ O) (t : ℝ) (ht : (x, t) ∈ W ∧ F (x, t) = 0) :
+      t = g x := congrArg Prod.snd (hinj ht (hspec x hx) rfl)
+  have hO : IsOpen O := by
+    rw [isOpen_iff_mem_nhds]
+    intro x hx
+    obtain ⟨ψ, _, _, hψ⟩ := hlocal (x, g x) (hspec x hx).1 (hspec x hx).2
+    exact Filter.mem_of_superset hψ (fun y hy => ⟨ψ y, hy⟩)
+  refine ⟨O, hO, g, ?_, ?_⟩
+  · intro x hx
+    obtain ⟨ψ, hψ, _, hψmem⟩ := hlocal (x, g x) (hspec x hx).1 (hspec x hx).2
+    have heq : g =ᶠ[𝓝 x] ψ := by
+      filter_upwards [hψmem] with y hy
+      exact (huniq y ⟨ψ y, hy⟩ (ψ y) hy).symm
+    exact (hψ.congr_of_eventuallyEq heq).contDiffWithinAt
+  · ext p
+    constructor
+    · intro hp
+      exact ⟨⟨p.2, hp⟩, huniq p.1 ⟨p.2, hp⟩ p.2 hp⟩
+    · rintro ⟨hp, heq⟩
+      have h := hspec p.1 hp
+      change p ∈ W ∧ F p = 0
+      simpa only [← heq, Prod.mk.eta] using h
+
+
 end DifferentialGeometry.Analysis

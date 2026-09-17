@@ -1,8 +1,14 @@
-import Mathlib.Topology.Maps.Basic
+import DifferentialGeometry.Topology.Embedding.CompactFrontier
 
 open Set Filter Topology
 
 namespace DifferentialGeometry.Topology.Embedding
+
+theorem interior_image_of_isOpenEmbedding
+    {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
+    {f : X → Y} (hf : _root_.Topology.IsOpenEmbedding f) (A : Set X) :
+    interior (f '' A) = f '' interior A :=
+  (image_interior_of_isOpenEmbedding hf A).symm
 
 theorem frontier_image_of_isEmbedding
     {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
