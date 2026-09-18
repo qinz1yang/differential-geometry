@@ -160,4 +160,17 @@ theorem redLength_le_of_rescaled_distance_le
     (by positivity : 0 ≤ Real.sqrt A + Real.sqrt 3 / 2 * D)).2 hbound
   rwa [Real.sq_sqrt hnonneg] at hsq
 
+theorem scalar_le_of_rescaled_distance_le
+    {kappa : ℝ} (hF : IsAncientKappaSolution kappa F)
+    (p q x : F.M) {tau A D : ℝ} (htau : 0 < tau) (hD : 0 ≤ D)
+    (hbase : redLength F.S 0 p q tau ≤ A)
+    (hdist : riemannianEDistOf
+      (scaleMetric tau⁻¹ (inv_pos.mpr htau) (F.S.base.metric (-tau))) q x ≤
+      ENNReal.ofReal D) :
+    tau * F.S.scalar (-tau) x ≤ 3 * (Real.sqrt A + Real.sqrt 3 / 2 * D) ^ 2 := by
+  have hscalar := (le_div_iff₀ htau).mp
+    (scalar_le_three_mul_redLength_div_of_ancient F hF p x htau)
+  have hlength := redLength_le_of_rescaled_distance_le F hF p q x htau hD hbase hdist
+  nlinarith
+
 end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions

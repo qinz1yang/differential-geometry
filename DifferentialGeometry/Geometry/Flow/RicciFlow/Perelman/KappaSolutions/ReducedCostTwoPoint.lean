@@ -132,12 +132,7 @@ private theorem exists_reduced_minimizing_curves_with_endpoint_controls
       (gamma₁ s) (gamma₂ s) q₁ q₂ hs.1 htau
       (redLength_prefix_le_of_ancient_action_eq_lCost F hF alpha₁ ha₁ p q₁ hs.1 hs.2 h0₁ ht₁ hc₁)
       (redLength_prefix_le_of_ancient_action_eq_lCost F hF alpha₂ ha₂ p q₂ hs.1 hs.2 h0₂ ht₂ hc₂)
-    · intro z
-      obtain ⟨alpha, ha, h0, ht, hg, hc⟩ :=
-        exists_lRegularized_minimizer_of_ancient F hF p z hs.1
-      have hh := scalar_le_three_mul_redLength_of_ancient_action_eq_lCost F hF alpha ha p hs.1
-        (fun r hr => hg r ⟨hr.1, hr.2.le⟩) hc
-      simpa only [ht] using hh
+    · exact fun z => scalar_le_three_mul_redLength_div_of_ancient F hF p z hs.1
     · let _ : NeZero (Module.finrank ℝ E) := by
         obtain ⟨t, ht, z, hz⟩ := hF.notFlat
         exact ⟨Tensor0SBundle.finrank_ne_zero_of_normSq0S_ne_zero
