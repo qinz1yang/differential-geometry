@@ -2519,3 +2519,48 @@ E3 §45 的 `ZMod 2` 循环障碍仍然成立并且有用（它是沿分支相�
   必须同时交付"该图卡把流形边界拉直成 `{p.2.2 = 0}`"这一条，形式就是上面的 `hB`。
 
 检查 `BranchSlideSeparation` exit=0（9.3 秒）、零 warning；`AuditF258.lean` 十四项无 `sorryAx`。
+
+### 19.115 生产者的代数核心已闭合，几何核心的确切缺口
+
+`HasBranchSlideChart`（§19.112）的生产者分成代数与几何两半。代数一半现在闭合：
+
+- `TransversePlaneCoordinates.lean` 的 `exists_linearEquiv_of_transverse_planes`：设
+  `P Q : Submodule ℝ E`，`finrank P = finrank Q = 2`、`finrank (P ⊓ Q) = 1`、`P ⊔ Q = ⊤`
+  （这正是 `HasPLCrossingAt`/`HasPLBoundaryCrossingAt` 里携带的数据），则存在线性同构
+  `L : E ≃ₗ[ℝ] ℝ × ℝ × ℝ`，使 `y ∈ P ↔ (L y).2.2 = 0` 且 `y ∈ Q ↔ (L y).2.1 = 0`。
+  推论 `mem_inf_iff_of_linearEquiv_of_transverse_planes` 给 `y ∈ P ⊓ Q ↔ (L y).2 = 0`，
+  即分支线被送到第一坐标轴——`slideMapLong` 正是沿这条轴滑动的方向。
+  构造不用基：由 `Submodule.exists_dual_map_eq_bot_of_lt_top` 取 `ker β = P`、`ker γ = Q`
+  （核相等由 `P ≤ ker β`、`finrank P = 2` 与 `finrank (ker β) < 3` 夹出），由
+  `Module.Projective.exists_dual_ne_zero` 取在 `P ⊓ Q` 的生成元上非零的 `α`，
+  取 `α.prod (γ.prod β)`；单射性用 `P ⊓ Q = span {u}`，满射性用
+  `LinearMap.injective_iff_surjective_of_finrank_eq_finrank` 与 `finrank E = 3`
+  （后者由 `finrank_sup_add_finrank_inf_eq` 得：`3 + 1 = 2 + 2`）。
+  辅助 `exists_ker_eq_of_finrank_succ_eq` 对任意余维一子空间都成立，可复用。
+
+几何一半**未闭合**，且不能由本次指定的两个输入得到，理由要记清楚：
+
+- `exists_subordinate_chain_of_isPLBall_one` 只说"每小段整体落在某个开集里"。它不给相邻图卡之间
+  的任何关系，因此无法把两张局部平凡化对接。
+- `exists_sideChoice_of_chain` 只在 `ZMod 2` 层面给相容的侧选择。它解决的是"横向正向"的组合障碍，
+  不产生任何 PL 同胚；即使 `ε` 已定，两张图卡在重叠上仍相差一个未受控的 PL 自同胚。
+- `HasPLCrossingAt` 是逐点的，并且只在 `∀ᶠ y in 𝓝 x` 的意义下把两片认同成半平面。把相邻两张平凡化
+  拼成一张，需要"两个球对（ball pair）的平凡化沿公共横截盘对相等时相差一个可锥化的 PL 同胚"，
+  即 **PL 球对的正则邻域唯一性 / 相对 Alexander 技巧**。本树有 `ConeExtension.lean` 的
+  `exists_isPLHomeomorphOn_coneComplex` 与 `ConeAmbientExtension.lean` 的两条延拓，都是单个复形的锥化，
+  没有球对版本，也没有沿链归纳所需的相对（在一张面上固定）版本。因此缺口不是"再拼一下"，
+  而是缺一条定理。
+
+确切的缺失输入（下一个里程碑的目标）：设 `S` 是紧致 PL 弧，`A B` 是沿 `S` 横截相交的两张 PL 2-片，
+`W ∈ 𝓝ˢ S`；求开集 `U` 与 `e : OpenPartialHomeomorph M (ℝ × ℝ × ℝ)`，使 `S ⊆ e.source ⊆ W`、
+`e` 两向逐片仿射，且 `e '' (A ∩ e.source) ⊆ {p | p.2.2 = 0}`、`e '' (B ∩ e.source) ⊆ {p | p.2.1 = 0}`，
+并且 `e.source` 只碰这两张片（不含第三张片的点）。有了它，取 `c` 为 `S` 在图卡里的长度上界、
+`[a,b]` 为 `B` 的区间、`R ≥ c + 2 * d`，再按需缩放坐标即得 `HasBranchSlideChart`，
+于是 §19.113/19.114 立刻给出 E3 §44 的全部输出条款。
+"`e.source` 只碰这两张片"这一条对应 E3 §44 里
+`doublePointSet g D.domain = doublePointSet D D.domain \ S` 的"不产生邻近的新交线"，
+它属于生产者的义务，不属于滑动层：滑动本身支撑在 `e.symm '' slideSupportLong R` 内，
+不会把任何点移出 `e.source`。
+
+检查 `TransversePlaneCoordinates` exit=0（7.5 秒）、零 warning；`AuditF259.lean` 三项仅
+`propext`、`Classical.choice`、`Quot.sound`。下一审计文件 `AuditF260.lean`。
