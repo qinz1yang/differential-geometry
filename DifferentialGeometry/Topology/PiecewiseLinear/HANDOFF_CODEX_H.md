@@ -481,3 +481,46 @@ Reduced/MayerVietorisCoefficients, Reduced/PointClasses}`（`REUSE_AUDIT.md` §2
 - 聚焦检查 exit=0、10.2 秒、零 warning；`fresh.py` 报相对整合基线七个改动模块 olean 全部新鲜、零禁用项。
   `.lake/scratch/AuditHM9.lean` 审计两个新端点和十四个关键复用声明，exit=0，全部只含
   `propext`、`Classical.choice`、`Quot.sound`。H-M9/B.8 无未闭合项。
+
+## 8. 2026-09-17 新批次
+
+### H-M1 — done，H.4a 顶维基本类与 H.6 子复形 Mayer–Vietoris
+
+- `SurfaceHomology.lean` 的闭连通组合曲面顶维计算已在 `3fdf6d58e` 交付：可定向时 `b₂=1`，不可定向时 `b₂=0`，并有
+  `χ=2-b₁` / `χ=1-b₁`。本里程碑新增直接消费者
+  `IsCombinatorialManifold.bettiOne_pos_of_isOrientable_of_eulerChar_ne_two`。
+- `MayerVietorisSubcomplex.lean` 的 `exists_mem_inter_of_map_eq_zero` 已在 `c9fff0308` 交付：有限复形的两个子复形覆盖、
+  任意次数、任意环与系数模，严格给出 28.11；相容开邻域强形变收缩来自 `11826f868`。
+- `PHASE3_APPROXIMATION_PLAN.md` 的 H.4、H.6 与 R3 陈旧状态已同步；22.8–22.10 是否仍为主链前置留给 H-M2 的证据判断。
+- 当前整合树聚焦重编 `SurfaceHomology` exit=0（14.4 秒）、`MayerVietorisSubcomplex` exit=0（10.1 秒），均零 warning；
+  `.lake/scratch/AuditHM1Current.lean` 审计九个 H.4a/H.6 端点，exit=0，全部只含
+  `propext`、`Classical.choice`、`Quot.sound`。
+
+### H-M2 — done，§33 L11–L12 不需要 22.8–22.10
+
+- 原书书页 236（PDF 246）中，Lemma 10 已给 `π₁(Bd X) ≅ π₁(Bd N)`，从而所需的一阶秩相等不依赖 22.9。
+  Lemma 11 用 22.9 得到的只是一个不保持分块的同胚；Lemma 13 随后会从各 `A_v`、`A'_v` 重新构造满足
+  `f(A_v)=A'_v` 的更强 PLH，因此主链可删 Lemma 11。
+- Lemma 12 不走一般曲面正规形。设 `r_v` 为 `A'_v` 的多边形边界分支数，逐分支封 PL 盘得到闭可定向曲面 `Â'_v`。
+  由封盘 Euler 加法与 H.4a，`χ(A'_v)=2-r_v-b₁(Â'_v)`；沿公共边界圆拼合后得到
+  `b₁(Bd X)=b₁(Bd N)+∑v b₁(Â'_v)`。L10 给左边两 Betti 数相等，故每个非负项都为零；H.4b 的
+  `isPLSphere_two_of_faceEulerChar_eq_two` 将每个 `Â'_v` 识别为 PL 2-球面，删去封盘内部即得 `A'_v` 是盘或带孔盘。
+- 结论：22.8–22.10 对 §33 主链改为 skip，不移植完整曲面分类。仍需两个窄生产者：不经过
+  `Homology/HurewiczLowDegrees.lean` 的一维 Hurewicz/基本群阿贝尔化桥，以及有限个边界分支的封盘复形与删盘识别；
+  预计合计 3k–5k 行，归 G.5，而不是 H.4 分类。
+
+### H-M3 — assessed，`TopologicalCellComplementConnected` 暂缓
+
+- `JordanBrouwer.lean` 实际已有不要求光滑性的末端：
+  `hasTwoComplementComponents_of_isCompact_of_alexanderDualityH0Certificate` 只要嵌入像紧致与
+  `HasAlexanderDualityH0Certificate`。光滑性只出现在现有证书生产者和若干包装层，不是分支计数消费者的本质限制。
+- `DualityAssembly.lean` 仍显式要求 `SpecializedAlexanderDuality e` 与球面 cellular comparison；前者本身就是
+  `reduced H₀(complement) ≅ H²(compactum)`。`SpecializedDuality.lean` 唯一无该假设的生产者
+  `specializedAlexanderDuality_of_componentCount` 反而以“两补分支”为输入，且
+  `specializedAlexanderDuality_iff_twoComponents` 明示它与目标等价，因此这条链不能用来证明目标。
+- 任意拓扑 3-胞腔的边界可为 wild sphere，不能消费现有 smooth/open-bicollar 证书。当前树和 Mathlib 没有 Čech
+  上同调、紧支撑上同调或一般 Alexander 对偶；`SphereCellularComparison.lean` 也只做到球面开覆盖的链级短正合列，
+  尚未生产 `DualityAssembly` 要的 comparison。
+- 最窄路线的成本分解：拓扑胞腔边界参数化与不变域桥 0.5k–1k；球面 cellular comparison 1k–2k；专门的
+  `\widetilde H₀(ℝ³-e(S²)) ≅ H²(S²)` Alexander 对偶 8k–14k；从两侧分解推出 `Cᶜ` 连通 0.5k–1k。
+  合计约 10k–18k 行且高风险；若建可复用 Čech/紧支撑理论则约 20k–35k。结论是在用户另行批准前不启动 H-M3。

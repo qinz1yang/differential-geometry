@@ -2833,3 +2833,117 @@ oleans, zero forbidden hits, zero stale and zero missing artifacts, exit 0.
 This supersedes the earlier freshness reading taken during an F-lane check.
 The module exit codes and axiom audits above remain the verification gate.
 The final documentation commit updates only C.6/C.7/I.1/I.2 rows and this handoff.
+
+## Boundary disk pair standardization (2026-09-16)
+
+The integration branch was merged through `89dddcd06`; `IsOrientable.of_le`
+is used directly by the neighborhood-orientability endpoint below.
+No parameter for 23.17 is introduced.
+I.1's plan draft now gives the full book statement: H, K, C, D closed and
+pairwise disjoint, H and K connected. The checked primary theorem has explicit
+`IsPreconnected H` and `IsPreconnected K`, which are implied by those book
+hypotheses; the source statement and its already checked consumers are unchanged.
+
+Commit `77345bbef` is pushed and closes simultaneous positioning of two disjoint
+boundary disks while prescribing the map on one disk. The four new modules are
+`AmbientPointMove`, `PlanarDiskMove`, `DiskInteriorMove`, and `SphericalDiskPair`.
+Each focused check exits 0 with zero warnings. AuditS150DiskPair audits all seven
+public endpoints and reports only propext, Classical.choice, and Quot.sound.
+The last endpoint is
+`exists_isPLHomeomorphOn_map_disk_pair_of_boundaryComplex`: for two PL three-balls
+with a pair of disjoint PL boundary disks each, a prescribed PL map of the first
+disks extends to a PL map of the balls which maps the second disks onto each
+other. No orientation or unproved theorem parameter is used.
+
+The construction uses actual supported point moves in a connected open set,
+then a common triangulation to straighten intersecting planar disks to the same
+triangle. Moving the disks in the complement of the first spherical disk fixes
+that disk pointwise. Extension from the sphere gives the three-ball result.
+Two independent prescribed disk maps are not asserted: their orientations must
+be compatible. The subsequent cylindrical-diagram checkpoint is recorded below.
+
+## Cylindrical neighborhoods and their cuts (2026-09-16)
+
+Commit `3a22c9bc4` is pushed. Its five checked modules are `PrismDiskPair`,
+`CylindricalDiagram`, `BallIntersectionBoundary`, `NeighborhoodCycle` (strengthened
+producer with its old public signature retained as a corollary), and
+`NeighborhoodCylinder`.
+
+- `exists_isPLHomeomorphOn_prism_map_ends` parametrizes a PL three-ball by a
+  disk prism, prescribing the bottom disk map and mapping the top onto a
+  second disjoint boundary disk.
+- `exists_cylindricalDiagram_of_ball_pair` glues two such parametrizations at
+  their common middle disk. `IsCylindricalDiagram` records a PL surjection,
+  equality of the two end images, and the exact restriction that only points
+  on opposite ends can be identified. It does not assert pointwise matching
+  of the end parametrizations.
+- `subset_boundaryComplex_of_subset_inter_of_isPLBall` transfers the boundary
+  containment of any PL codimension-one disk in the intersection of two balls.
+  It uses an actual small ball attached to that disk and the existing
+  intersection-boundary theorem; no coface-counting proof is duplicated.
+- `exists_ball_pair_with_boundary_cover_derivedNeighborhood_circle` obtains
+  finite three-ball complexes and two disjoint two-disks in both boundaries.
+  `exists_cylindricalDiagram_derivedNeighborhood_circle` constructs the diagram.
+- `exists_cylindricalDiagram_isOrientable_derivedNeighborhood_circle` also proves
+  orientability of the derived neighborhood when K is orientable. The proof
+  calls `IsOrientable.of_le` on the second subdivision and uses the two proved
+  barycentric-subdivision orientation transports. The only orientability
+  assumption is the mathematical hypothesis `IsOrientable 3 K`.
+
+All five focused checks exit 0 with zero warnings. AuditS151NeighborhoodCylinder
+has nine affected endpoints plus the reused `IsOrientable.of_le`, all with only
+propext, Classical.choice, and Quot.sound.
+
+Commit `1c7986c99` is pushed. `CylinderCut` and `CylinderComparison` both check
+with exit 0 and zero warnings. AuditS152CylinderCut has eight public endpoints,
+all with only the three standard axioms.
+
+- A cylindrical diagram restricts to a PL homeomorphism on every proper closed
+  subinterval which does not contain both ends. Cutting at any a in (0,1)
+  yields two actual finite PL three-ball complexes. Their intersection is
+  exactly the disjoint union of the bottom disk image and the slice at a;
+  both disks lie in both ball boundaries.
+- `exists_cylindricalDiagram_iff_ball_pair` proves the converse as well. It is
+  a precise recognition criterion for cylindrical diagrams, including twisted
+  disk bundles; it does not redefine CST or claim the full book's 24.9.
+- `IsCylindricalDiagram.exists_isPLHomeomorphOn_of_end_identification` constructs
+  a PL homeomorphism between diagram images when their end identifications
+  agree. The construction pastes the two inverse-chart comparisons and proves
+  their equality and surjectivity on the overlap. This is a comparison lemma,
+  not a replacement hypothesis for 24.10.
+
+The total new verification is eleven changed Lean modules (ten new, one
+modified) and 25 audit entries across AuditS150--S152, including one reused
+orientation theorem. A final `fresh.py` run with no Lean process on the host
+reported 11 fresh oleans, zero stale or missing oleans, zero forbidden hits,
+and exit 0. The source checks and axiom audits, rather than freshness alone,
+are the delivery evidence. The integration branch remains `89dddcd06` after
+fetch/merge at the source checkpoints. No other lane was copied or cherry-picked.
+
+### Exact remaining obligations
+
+The old note that two boundary disks cannot yet be positioned is superseded.
+The 23.17 parameter is also fully gone. C.6 and C.7 nevertheless remain partial:
+
+1. Connect the general book definition of a cyclic decomposition of a
+   topological solid torus to the proved two-ball criterion. The regular
+   neighborhood's own cyclic decomposition already has this connection.
+2. Prove the disk-bundle classification: for a cylindrical diagram whose
+   three-manifold is orientable, change the disk parametrizations to remove
+   the end twist and identify the result with a solid torus. Equivalently, the
+   missing geometric ingredient is the relative extension for two prescribed
+   boundary-disk maps with compatible orientation, together with the proof
+   that ambient orientability supplies that compatibility. The current
+   disk-pair theorem prescribes one disk map, not two arbitrary disk maps.
+   No orientation-preserving disk-isotopy or PL mapping-torus classification
+   theorem was found in the present native or vendored sources.
+3. For 24.12, turn a contraction of the polygon in the ambient manifold into
+   coherent orientation of its neighborhood by lifting to the orientation
+   double cover. The integrated `CoveringOrientation.lean` already contains
+   `isOrientable_coveringComplex_orientationCocycle`; its actual producer
+   exists. The contraction/lift/descent consumer has not been proved here.
+
+No CST endpoint or full 24.9--24.12 completion is claimed. None of these local
+mathematical obligations is introduced as an extra theorem hypothesis.
+I.1 remains complete: its plan now states the full book assumptions, and the
+stronger checked primary theorem retains explicit preconnectedness of H and K.
