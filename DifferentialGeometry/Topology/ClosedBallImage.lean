@@ -1,6 +1,15 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.OpenEmbeddingFrontier
 import DifferentialGeometry.Topology.BicollaredComplement
 import Mathlib.Analysis.Normed.Module.Connected
+
+/-!
+# Images of closed balls under homeomorphisms
+-/
 
 open Set Metric
 

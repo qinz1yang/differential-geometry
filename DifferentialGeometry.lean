@@ -8276,6 +8276,8 @@ import DifferentialGeometry.Topology.PartitionOfUnity
 import DifferentialGeometry.Topology.PartitionOfUnity.CompactSupport
 import DifferentialGeometry.Topology.PartitionOfUnity.Locality
 import DifferentialGeometry.Topology.PiecewiseLinear.BicollarEmbedding
+import DifferentialGeometry.Topology.PiecewiseLinear.SphereNesting
+import DifferentialGeometry.Topology.PiecewiseLinear.TameNestedCells
 import DifferentialGeometry.Topology.PlanarJordan.AmbientExtension
 import DifferentialGeometry.Topology.PlanarJordan.ArcAndSegment
 import DifferentialGeometry.Topology.PlanarJordan.ClosedInterior
