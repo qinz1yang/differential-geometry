@@ -2460,3 +2460,124 @@ E3 §45 的 `ZMod 2` 循环障碍仍然成立并且有用（它是沿分支相�
 就不需要串接，一次滑动即可**；因此下一步的正确目标是沿弧的乘积邻域，而不是逐张图卡的插值。
 
 检查 `ChartSlideLong` exit=0（8.9 秒）、零 warning；`AuditF257.lean` 九项无 `sorryAx`。下一审计文件 `AuditF258.lean`。
+
+### 19.112 沿整条分支的滑动图卡：谓词层
+
+`BranchSlideSeparation.lean` 按 §19.111 的结论把"单张乘积图卡即可"写成谓词。E3 §44 要的生产者从此分成
+两段：谓词的**生产**（几何，尚未闭合，见 §19.115）与谓词的**消费**（分离数据，已闭合，见 §19.113/19.114）。
+
+- `IsBranchSlideChart R c a b P Q e`：`e : OpenPartialHomeomorph M (ℝ × ℝ × ℝ)` 两向逐片仿射，
+  `slideSupportLong R`、`slideBandA c`、`slideBandQ a b` 三者都落在 `e.target` 内，且两张片正好是
+  `P = e.symm '' slideBandA c`、`Q = e.symm '' slideBandQ a b`。
+  常数分工：`c` 是分支（A 片与 Q 片的交线）在图卡里的长度上界，`[a,b]` 是 Q 片沿分支方向的区间，
+  `R` 是锥度半径。§19.110 的定量条件 `c + 2 * d ≤ R` 因此是对 `R` 的要求而非对滑距 `d` 的要求——
+  谓词本身不含 `d`，滑距在消费定理里取。
+- `HasBranchSlideChart R c a b P Q` 是它的存在版本，也就是 §19.115 里生产者的确切目标。
+- 附带 `symm_image_subset_source`、`isCompact_symm_image_slideSupportLong` 与四条访问器
+  （`sheet_subset_source`、`crossing_subset_source`、`support_subset_source`、`isCompact_support`）。
+  支撑 `e.symm '' slideSupportLong R` 紧致这一条给出 E3 §44 输出条款里"支撑外恒等"所需的闭集。
+
+检查 `BranchSlideSeparation` exit=0（9.0 秒）、零 warning；`AuditF258.lean` 八项仅
+`propext`、`Classical.choice`、`Quot.sound`。
+
+### 19.113 谓词直接给出 E3 §44 的分离数据
+
+`exists_supported_separation_of_isBranchSlideChart`：设 `IsBranchSlideChart R c a b P Q e`，
+`0 ≤ d`、`c + 2 * d ≤ R`、`c - d < a`，则存在 `h : M → M` 同时满足
+
+- `IsPiecewiseAffineOn h univ`（§19.111 的 `isPiecewiseAffineOn_chartSlideLong`）；
+- `Function.Injective h`（`injective_chartSlideLong`）；
+- `EqOn h id (e.symm '' slideSupportLong R)ᶜ`；
+- `Disjoint (h '' P) Q`（`disjoint_chartSlideLong_image`）。
+
+见证就是 `e.conjugateMap (slideMapLong d R)`，没有选择也没有黏合。第三条是新的一块：
+`eqOn_chartSlideLong_id_compl` 由 `OpenPartialHomeomorph.conjugateMap_eqOn_compl` 与
+`eqOn_slideMapLong_id_compl` 直接合成，支撑集取图卡里紧致 `slideSupportLong R` 的原像。
+三个数值条件之间没有冲突：给定 `c` 与 `a`（`c < a` 时取 `d` 小、`a ≤ c` 时取 `d > c - a`），
+再把 `R` 取到至少 `c + 2 * d` 即可，这正是 §19.110 说的"代价全在锥度半径"。
+
+检查 `BranchSlideSeparation` exit=0（9.6 秒）、零 warning；`AuditF258.lean` 十项无 `sorryAx`。
+
+### 19.114 滑动保持流形边界：E3 §44 的端点条款
+
+`slideMapLong` 只改第一坐标（`slideMapLong_snd`），所以 `bijOn_slideMapLong_prod` 说任何
+`{p | p.2 ∈ T}` 被双射保持。把它经图卡共轭就得到本条：
+
+- `mapsTo_chartSlideLong_of_forall_mem_iff`：设 `slideSupportLong R ⊆ e.target`、`0 ≤ d`，
+  并设 `B : Set M` 在图卡内由横向条件刻画，即 `∀ x ∈ e.source, x ∈ B ↔ (e x).2 ∈ T`，
+  则 `MapsTo (e.conjugateMap (slideMapLong d R)) B B`。图卡外共轭是恒等，图卡内用
+  `mapsTo_slideMapLong_prod`（即 `bijOn_slideMapLong_prod` 的 `MapsTo` 分量，
+  不需要 `0 ≤ R`，故按最少假设取这一半）。双向 `↔` 是必需的：正向把 `x ∈ B` 搬进模型，
+  反向把滑动后的点搬回 `B`。
+- `mapsTo_chartSlideLong_boundary`（`T = {q | q.2 = 0}`，即模型边界平面）与
+  `mapsTo_chartSlideLong_halfSpace`（`T = {q | 0 ≤ q.2}`，即模型半空间）是两个特例。
+  于是 §19.109 遗留的"端点处要把模型换成半空间版本使滑动与 `Bd M` 相切"彻底消解：
+  不需要第二个模型，滑动方向本来就与所有横向水平集相切。
+- `exists_supported_separation_of_isBranchSlideChart_boundary` 是把 §19.113 的四条与边界条款
+  `h '' (e.symm '' slideSupportLong R ∩ B) ⊆ B` 合并后的完整包，对应 E3 §44 的
+  `h (U ∩ BdM) ⊆ BdM`。这里的 `B` 是显式参数而不是 `Bd M` 的内置概念：生产者交付图卡时
+  必须同时交付"该图卡把流形边界拉直成 `{p.2.2 = 0}`"这一条，形式就是上面的 `hB`。
+
+检查 `BranchSlideSeparation` exit=0（9.3 秒）、零 warning；`AuditF258.lean` 十四项无 `sorryAx`。
+
+### 19.115 生产者的代数核心已闭合，几何核心的确切缺口
+
+`HasBranchSlideChart`（§19.112）的生产者分成代数与几何两半。代数一半现在闭合：
+
+- `TransversePlaneCoordinates.lean` 的 `exists_linearEquiv_of_transverse_planes`：设
+  `P Q : Submodule ℝ E`，`finrank P = finrank Q = 2`、`finrank (P ⊓ Q) = 1`、`P ⊔ Q = ⊤`
+  （这正是 `HasPLCrossingAt`/`HasPLBoundaryCrossingAt` 里携带的数据），则存在线性同构
+  `L : E ≃ₗ[ℝ] ℝ × ℝ × ℝ`，使 `y ∈ P ↔ (L y).2.2 = 0` 且 `y ∈ Q ↔ (L y).2.1 = 0`。
+  推论 `mem_inf_iff_of_linearEquiv_of_transverse_planes` 给 `y ∈ P ⊓ Q ↔ (L y).2 = 0`，
+  即分支线被送到第一坐标轴——`slideMapLong` 正是沿这条轴滑动的方向。
+  构造不用基：由 `Submodule.exists_dual_map_eq_bot_of_lt_top` 取 `ker β = P`、`ker γ = Q`
+  （核相等由 `P ≤ ker β`、`finrank P = 2` 与 `finrank (ker β) < 3` 夹出），由
+  `Module.Projective.exists_dual_ne_zero` 取在 `P ⊓ Q` 的生成元上非零的 `α`，
+  取 `α.prod (γ.prod β)`；单射性用 `P ⊓ Q = span {u}`，满射性用
+  `LinearMap.injective_iff_surjective_of_finrank_eq_finrank` 与 `finrank E = 3`
+  （后者由 `finrank_sup_add_finrank_inf_eq` 得：`3 + 1 = 2 + 2`）。
+  辅助 `exists_ker_eq_of_finrank_succ_eq` 对任意余维一子空间都成立，可复用。
+
+几何一半**未闭合**，且不能由本次指定的两个输入得到，理由要记清楚：
+
+- `exists_subordinate_chain_of_isPLBall_one` 只说"每小段整体落在某个开集里"。它不给相邻图卡之间
+  的任何关系，因此无法把两张局部平凡化对接。
+- `exists_sideChoice_of_chain` 只在 `ZMod 2` 层面给相容的侧选择。它解决的是"横向正向"的组合障碍，
+  不产生任何 PL 同胚；即使 `ε` 已定，两张图卡在重叠上仍相差一个未受控的 PL 自同胚。
+- `HasPLCrossingAt` 是逐点的，并且只在 `∀ᶠ y in 𝓝 x` 的意义下把两片认同成半平面。把相邻两张平凡化
+  拼成一张，需要"两个球对（ball pair）的平凡化沿公共横截盘对相等时相差一个可锥化的 PL 同胚"，
+  即 **PL 球对的正则邻域唯一性 / 相对 Alexander 技巧**。本树有 `ConeExtension.lean` 的
+  `exists_isPLHomeomorphOn_coneComplex` 与 `ConeAmbientExtension.lean` 的两条延拓，都是单个复形的锥化，
+  没有球对版本，也没有沿链归纳所需的相对（在一张面上固定）版本。因此缺口不是"再拼一下"，
+  而是缺一条定理。
+
+确切的缺失输入（下一个里程碑的目标）：设 `S` 是紧致 PL 弧，`A B` 是沿 `S` 横截相交的两张 PL 2-片，
+`W ∈ 𝓝ˢ S`；求开集 `U` 与 `e : OpenPartialHomeomorph M (ℝ × ℝ × ℝ)`，使 `S ⊆ e.source ⊆ W`、
+`e` 两向逐片仿射，且 `e '' (A ∩ e.source) ⊆ {p | p.2.2 = 0}`、`e '' (B ∩ e.source) ⊆ {p | p.2.1 = 0}`，
+并且 `e.source` 只碰这两张片（不含第三张片的点）。有了它，取 `c` 为 `S` 在图卡里的长度上界、
+`[a,b]` 为 `B` 的区间、`R ≥ c + 2 * d`，再按需缩放坐标即得 `HasBranchSlideChart`，
+于是 §19.113/19.114 立刻给出 E3 §44 的全部输出条款。
+"`e.source` 只碰这两张片"这一条对应 E3 §44 里
+`doublePointSet g D.domain = doublePointSet D D.domain \ S` 的"不产生邻近的新交线"，
+它属于生产者的义务，不属于滑动层：滑动本身支撑在 `e.symm '' slideSupportLong R` 内，
+不会把任何点移出 `e.source`。
+
+检查 `TransversePlaneCoordinates` exit=0（7.5 秒）、零 warning；`AuditF259.lean` 三项仅
+`propext`、`Classical.choice`、`Quot.sound`。下一审计文件 `AuditF260.lean`。
+
+### 19.116 环境类型的转写义务（§19.112–19.115 的适用范围）
+
+§19.112–19.114 与 §19.108–19.111 一样，环境 `M` 是有限维实赋范空间，图卡取
+`OpenPartialHomeomorph M (ℝ × ℝ × ℝ)`，结论里的 PL 性是 `IsPiecewiseAffineOn h univ`。
+E3 §44 的 `M` 是带 `ChartedSpace (EuclideanSpace ℝ (Fin 3))` 的拓扑 3-流形，结论要求 `IsPL 3 3 h`。
+两者之间还差一次转写，且这不是记号问题：
+
+- `ChartConjugate.lean` 已有流形版的 `isPL_conjugateHomeomorph`，但它要求 `h` 是
+  `EuclideanSpace ℝ (Fin 3) ≃ₜ EuclideanSpace ℝ (Fin 3)` 的同胚，模型空间是 `EuclideanSpace`
+  而不是 `ℝ × ℝ × ℝ`，并且要 `Homeomorph` 而不是裸函数。
+- 因此还需要：把 `slideMapLong d R` 经 `ℝ × ℝ × ℝ ≃ EuclideanSpace ℝ (Fin 3)` 的线性同胚搬过去
+  （逐片仿射性经仿射同构保持，见 `AffineImageTransport.lean`），并用
+  `bijective_slideMapLong`（`0 ≤ R`）把它升级成 `Homeomorph`（连续性由
+  `continuous_slideMapLong` 给出，逆的连续性由紧支撑加双射得到）。
+  然后 `isPL_conjugateHomeomorph` 直接给 `IsPL 3 3`，`disjoint`/边界两条不受影响。
+- 这一步不难但不是零工作量，交付给下一次；在它完成前，§19.113/19.114 的端点只对赋范空间环境成立。
