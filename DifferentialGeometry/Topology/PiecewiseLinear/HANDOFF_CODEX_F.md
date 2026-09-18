@@ -3975,3 +3975,49 @@ H 的 `exists_arcChartChain_of_imageContract` 不受影响（它按 `hvertex` �
    （取 `L` 的一个 2-单形 `σ`，在双领域里取在 `∂σ` 上恰为零的 PL 高度函数的图；26.3 已交付），
    于是 30.4 无法从它得到任何东西。缺的条款用链条词汇写是：`r` 限制到 `stdSimplexBoundary 2` 的环路在
    `S` 中不 `IsNullHomotopic`。`Moise264` 尚未被任何定理消费，可以直接改；我没有动共享的 `MoiseChain.lean`。
+
+### 19.145 链图卡加上两端面（板状）边界条款，并先给出一个具体实例
+
+E3（HANDOFF_CODEX_L §81.3）证明单平面边界模型对触边分支无实例：分支是两端点都在 `Bd M` 的多面体 1-球，
+图卡假设把每个分支点放到轴上，`Bd M = {p.1 = 0}` 与轴只交一点，两端点被迫重合。修正接口是**板**：
+`M ↔ {0 ≤ x.1 ≤ c}`，`Bd M ↔ {x.1 = 0} ∪ {x.1 = c}`（两个端面），两张片仍是坐标平面。本车道的链定理原本没有
+边界条款（所以它本身不空），这是新增不是修补。`BranchChainChart.lean` 新增三条：
+- `image_inter_source_eq_of_forall_mem_iff`：`OpenPartialHomeomorph` 的通用引理，
+  `(∀ y ∈ e.source, y ∈ P ↔ e y ∈ Q) → e '' (P ∩ e.source) = e.target ∩ Q`。
+- `exists_openPartialHomeomorph_branch_chain_slab`：在原链定理的六条假设之外加两条逐图卡的 iff
+  `y ∈ M ↔ 0 ≤ (Φ y).1 ∧ (Φ y).1 ≤ c`、`y ∈ BdM ↔ (Φ y).1 = 0 ∨ (Φ y).1 = c`；结论在原七条之外给出
+  同样两条 iff 以及像等式 `e '' (M ∩ e.source) = e.target ∩ 板`、`e '' (BdM ∩ e.source) = e.target ∩ 两端面`。
+  用 iff 而不是单向包含，因为 E3 的楔推要把模型里"端面逐点固定、留在板内"拉回到 `M`，两个方向都要。
+  生产者在两端各用一次 `exists_linearEquiv_boundaryCrossing_normalForm`（`TransversePlaneCoordinates.lean:357`，
+  远端先平移到 `x.1 = c`），内部顶点图卡的像须落在开板 `{0 < x.1 < c}` 内。原 `exists_openPartialHomeomorph_branch_chain`
+  保留（无边界分支仍用它）。
+- `exists_slab_branch_chain_instance`：**先做的实例审计**（按 §19.143 之后的第二条审计）。在 `ℝ³` 里取
+  `A = {x.2.2 = 0}`、`B = {x.2.1 = 0}`、`M = 板`、`BdM = 两端面`、`S = A ∩ B ∩ M`（轴上从 `(0,0,0)` 到 `(c,0,0)` 的线段），
+  单张图卡 `Φ = id`；定理把 `p = (0,0,0) ≠ q = (c,0,0)`、两点都在 `BdM` 与 `S`、`S = A ∩ B ∩ M`，连同对该数据
+  实际调用板状链定理得到的图卡与全部条款一起证出。这正是 E3 证明在单平面模型里不存在的构型：
+  一条两端在不同端面上的分支。
+
+检查 `BranchChainChart` exit=0（10.7 秒）、零 warning；`AuditF285.lean` 四项
+（三条新定理与原链定理）仅 `propext`、`Classical.choice`、`Quot.sound`（通用引理不含 `Classical.choice`）。
+`BranchChainChart` 无导入者，无需重编下游。下一个审计文件 `AuditF286.lean`。
+
+### 中断时状态（2026-09-18，主人会话结束）
+
+**已落地并推送**（`codex/moise-smoothing`）：
+1. `57a2cd48b` §19.142 `FoldPlaneCrossing.lean`（F5.2 共享前置）。
+2. `561a91b9e` §19.143 (β) 修：`VertexBranchChartPair.lean` 拆成生产者 `exists_transcription_of_transverse_vertex`
+   与顶层假设形的 `exists_chart_two_sheets_of_transverse_vertex`。
+3. `f2da69cc9` §19.144 `SubcomplexMesh.lean`：26.4 消费限制形细分（已打包），固定形反证为假，
+   并指出 `Moise264` 结论缺 "Bd Δ 在 M² 中不可缩"。
+4. `9454cf931` 合并整合分支（`MOISE_CHAIN.md` 冲突两边保留）。
+5. 本提交 §19.145 板状链图卡 + 实例。
+
+**无未编译改动、无 stash。** 所有审计文件在 `.lake/scratch/AuditF282–285.lean`。
+
+**确切的下一步**（按优先级）：
+- H：把 `ArcChartChain` 改为消费顶层形（`obtain` 生产者 → 对该 `N₁` 证像侧契约 → 调图卡定理），
+  并在链构造里生产 §19.145 的两条 iff（两端各用一次单端法式，内部图卡落在开板）。
+- E3：楔推消费 `exists_openPartialHomeomorph_branch_chain_slab` 的两条像等式。
+- 链主人：给 `Moise264` 补结论条款（`MoiseChain.lean:43`，尚无消费者）。
+- F（26.4）：棱柱插值引理（§19.144 C.1），然后环带与盘的粘接（C.2）。
+- F5.2 两条路线仍开放，各自欠的东西见 §19.142 C。
