@@ -1306,3 +1306,34 @@ grep，不能只在建文件时 grep 一次**；而且导入面窄会让本地�
 聚焦检查 `BallStarring` exit=0（9.6 秒）、零 warning；
 `.lake/scratch/AuditHBallStarring.lean` 同时导入 `DiskCrosscut` 与 `BallPairModel`
 （撞名回归检查）exit=0，四项仅 `propext`、`Classical.choice`、`Quot.sound`。
+
+### M1 任意余维情形 — done，补盘那一步的障碍消解
+
+第 11 节末尾说补盘（`∂K` 里的二维盘）那一步因 `IsOpen U` 失效而需要内蕴齐性或三角剖分论证。
+**不需要**：把问题搬到余维零的模型里即可，代价很小。
+
+- `IsPLHomeomorphOn.exists_stdCenter_eq_of_mem_image_openSimplex`：设 `E` 任意有限维赋范空间、
+  `hg : IsPLHomeomorphOn g (stdSimplex ℝ (Fin (m+2))) P`（`P ⊆ E`，**余维任意**）、
+  `x ∈ g '' openSimplex (stdVertices m)`，则存在 `f` 使
+  `IsPLHomeomorphOn f (stdSimplex ℝ (Fin (m+2))) P` 且 `f (stdCenter m) = x`。
+- 证明：在 `EuclideanSpace ℝ (Fin (m+1))`（对 `m+1` 维球而言是余维零）里用
+  `SimplexBoundary.lean:400 exists_affineIndependent_openSimplex_subset` 取 `m+2` 个仿射无关点，
+  `SimplexBall.lean:14 isPLBall_convexHull_of_affineIndependent` 给模型球 `C`，
+  它的参数化 `u` 把 `openSimplex` 送进 `interior C`（本节第一条引理），
+  于是余维零版 M1 适用；再用 `IsPLHomeomorphOn.symm`／`.trans` 把
+  `g ∘ invFunOn u _ ∘ f₀` 拼回去。核心是**模型球的维数等于环境维数**，与原来的 `P` 无关。
+
+聚焦检查 `BallStarring` exit=0（9.6 秒）、零 warning；审计五项仅
+`propext`、`Classical.choice`、`Quot.sound`。
+
+坑：`IsPLBall` 展开是 `∃`，所以 `obtain ⟨u, hu⟩ : IsPLBall _ _ := ...` 之后点记号会去找
+`Exists.xxx`。要先 `have hC : IsPLBall ... := ...` 再 `obtain ⟨u, hu⟩ := id hC` 保住 `hC`。
+`show` 若真改变目标会被 `linter.style.show` 报 warning，用 `change`。
+
+**唯一遗留限定**：任意余维版本的假设 `x ∈ g '' openSimplex (stdVertices m)` 是**相对于给定参数化 `g`** 的。
+数学上该集合与 `g` 无关（它是球的内蕴开胞腔），但本次没有证。要消掉这个限定，路线是
+`BoundaryInvariance.lean:125 boundaryComplex_space_of_isPLHomeomorphOn` 加
+`boundaryComplex_space_of_isPLHomeomorphOn_stdSimplex`：照 `BallFrontier.lean:9
+IsPLHomeomorphOn.image_stdSimplexBoundary` 的写法，把 `g '' stdSimplexBoundary (m+1)` 证成
+`(boundaryComplex (m+1) K).space`（`K.space = P` 的任意复形），即得 `g` 无关性。估 10–40 行，未验证。
+余维零版本不受此限定影响：它的假设是真正的 `interior P`，完全内蕴。

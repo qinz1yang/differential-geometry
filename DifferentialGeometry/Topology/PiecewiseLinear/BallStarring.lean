@@ -70,4 +70,27 @@ theorem IsPLBall.exists_isPLHomeomorphOn_coneSet_of_mem_interior {n : ℕ}
   refine ⟨f, ?_, hfc⟩
   rwa [← coneComplex_space_eq_coneSet (isConeBase_std n), coneComplex_std_space]
 
+theorem IsPLHomeomorphOn.exists_stdCenter_eq_of_mem_image_openSimplex {E : Type*}
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E] {m : ℕ} {P : Set E}
+    {g : (Fin (m + 2) → ℝ) → E} (hg : IsPLHomeomorphOn g (stdSimplex ℝ (Fin (m + 2))) P)
+    {x : E} (hx : x ∈ g '' openSimplex (stdVertices m)) :
+    ∃ f : (Fin (m + 2) → ℝ) → E,
+      IsPLHomeomorphOn f (stdSimplex ℝ (Fin (m + 2))) P ∧ f (stdCenter m) = x := by
+  obtain ⟨T, hT, hTcard, -, -, -⟩ :=
+    exists_affineIndependent_openSimplex_subset (E := EuclideanSpace ℝ (Fin (m + 1))) (n := m)
+      (by simp) 0 Filter.univ_mem
+  have hC : IsPLBall (m + 1) (convexHull ℝ (T : Set (EuclideanSpace ℝ (Fin (m + 1))))) :=
+    isPLBall_convexHull_of_affineIndependent T hT hTcard
+  obtain ⟨u, hu⟩ := id hC
+  obtain ⟨y, hy, rfl⟩ := hx
+  have hyS : y ∈ stdSimplex ℝ (Fin (m + 2)) := openSimplex_stdVertices_subset_stdSimplex hy
+  have hz : u y ∈ interior (convexHull ℝ (T : Set (EuclideanSpace ℝ (Fin (m + 1))))) := by
+    rw [← hu.image_openSimplex_eq_interior]
+    exact mem_image_of_mem u hy
+  obtain ⟨f₀, hf₀, hf₀c⟩ := hC.exists_isPLHomeomorphOn_stdSimplex_stdCenter_eq hz
+  refine ⟨g ∘ (Function.invFunOn u (stdSimplex ℝ (Fin (m + 2))) ∘ f₀),
+    (hf₀.trans hu.symm).trans hg, ?_⟩
+  change g (Function.invFunOn u (stdSimplex ℝ (Fin (m + 2))) (f₀ (stdCenter m))) = g y
+  rw [hf₀c, hu.bijOn.invOn_invFunOn.1 hyS]
+
 end DifferentialGeometry.Topology.PiecewiseLinear
