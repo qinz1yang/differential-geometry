@@ -2241,3 +2241,183 @@ F-M1 仍为 partial。单个旧三角形的全部纤维及逐边对应已闭合�
 状态：S.4 的 M1、M2、M3 及夜间 F-M1 done；I1 已交付，无剩余数学义务。最终五模块检查为 `SlabBoundary` exit=0（12.5 秒）、`HeightRange` exit=0（10.0 秒）、`SublevelGluing` exit=0（12.1 秒）、`SublevelEmbedding` exit=0（13.0 秒）、`Schoenflies` exit=0（11.0 秒），全部零 warning。`AuditF246.lean` 对十七项新声明及原 `schoenflies_input` 共十八项审计，全部仅依赖 `propext`、`Classical.choice`、`Quot.sound`。无 Lean 进程时 `fresh.py` 为 92/92 fresh、零 stale/missing、零禁用项；`git diff --check` 通过。源码、交接与两个计划记录同次提交。恢复后下一步按 NIGHT_PLAN §6.2 做 F-M5 的实际双点分类，并生产 F-M6 的余面严格异侧性；这两项及最终 `exists_small_isNormalSingularCell` 仍为 partial。下一审计文件 `AuditF247.lean`。
 
 按用户要求，本结果整理、同次提交并推送后暂停。未开始新的 F-M5/F-M6 证明；本车道无运行中的 Lean 进程。
+
+### 19.98 2026-09-17 F5.2：目标区域保持与实际紧致片扰动半径
+
+按新任务恢复，已合并整合基线 `b069cd003`（合并提交 `3f69fe924`）。本轮 F-M1 指 F5.2，旧夜间 F-M1 = S.4 已在 §19.97 done。重新核对了 `GeneralPosition.lean`：相对子复形横截生产者原来没有像包含结论；`exists_small_simplicialMap_preimage_manifold_relative` 的 G 是固定目标复形的逆像，不是双点集，不可直接填 `doublePointSet_triangulated`。
+
+`GeneralPositionWithin.lean` 的 `exists_small_simplicialMap_transverse_on_subcomplex_mapsTo` 在原相对横截端点上增加开目标 U 的真实 MapsTo 结论，同时保留精确固定子复形、逐面单射、横截、任意小距离和有限细分。证明从原紧致像到 U 的闭加厚余量选择更小扰动半径；取 U = 给定复形载体的环境内部即得到对应保像版本。`exists_small_simplicialMap_doublePointSet_manifold_mapsTo` 则消费真正的自横截生产者，保留全源局部单射、纤维至多二重、精确双点集的一维带边组合流形和所有 crossing，同时保证全像仍在 U 内。
+
+对抽象流形中的目标片，不能把上段的环境内部用于高维欧氏嵌入。`SingularTwoCell.exists_compact_piece_with_perturbation_radius` 已在 M 自身的度量中实际构造紧致带边界三维片 P、PLPiece T 和 δ > 0；原盘全像落在 interior P，任何 M 值映射 g 只要在原域逐点满足 dist(g x, D x) < δ，全像仍落在 interior P。这里的内部和距离均属于 M，不属于 T 的高维线性环境。
+
+`Topology/Pasting.lean` 的 `mapsTo_of_preimage_singleton_eq_off` 从修改区外完整纤维相等推出区域保持。`exists_isOpen_forall_exists_small_isPLOn_crossing_in_chart_mapsTo` 将它实际接到已有流形图卡正规化：若原像在 P 内且当前双点在 interior P，先把修改邻域收进 interior P；所得任意小局部正规化保留 MapsTo g K.space P、局部单射、二重纤维和真实局部双点 crossing，且选定开覆盖邻域仍独立于误差量。后续采用三维图卡中的内在修改；未宣称在高维载体之外自由挪顶点的旧端点可保持载体，也未宣称该局部结果已经保持所有旧区域的 crossing。给定原有物理边界的点仍需半空间局部构造，不能套用内部双点版本。
+
+本闭合层为目标区域保持，F5.2 / 新 F-M1 整体仍 partial。`Topology.Pasting` 检查 exit=0（7.3 秒），`GeneralPositionWithin` exit=0（12.7 秒），零 warning。`AuditF247.lean` 五项均仅标准三公理；`git diff --check` 通过。下一步接相对分层通用位置和余面异侧性以保持有限图卡归纳中的既有 crossing，随后拼装精确双点三角剖分与 `IsNormalSingularCell`；边界情形须保留半空间约束。F-M2 的非紧多面体概念尚未开始。下一审计文件 `AuditF248.lean`。
+
+### 19.99 F5.2：半空间相对邻域内的完整保像正规形式
+
+`GeneralPositionWithin.lean` 新增 `exists_small_simplicialMap_doublePointSet_with_boundary_in_halfSpace_mapsTo`。输入是原有限二维带边组合流形、局部单射且至多二重的 PL 映射、原像位于非负半空间、原边界落在零平面，以及目标 U 在每个原像点处是半空间内的相对邻域。U 无需为环境开集，因而覆盖真实边界附近的半空间目标约束。
+
+证明将相对邻域转为 `interior (U ∪ halfSpaceᶜ)`，用紧致像生产统一正余量，再调用原半空间自横截生产者。其非负性排除补半空间分支，从而实际证明整个新像落在 U 中。输出仍含原完整有限细分、局部单射、纤维至多二重、星上 PL 同胚、精确双点集 G、一维带边流形、零层恰对应原边界、两种 crossing、度数 1/2 和 `(boundaryComplex 1 G).space = G.space ∩ {ℓ = 0}`。未加入扰动后保像、crossing 或图流形性等结论型假设。
+
+检查 `GeneralPositionWithin` exit=0（11.0 秒）、零 warning；`AuditF248.lean` 一项仅标准三公理。半空间标准模型的保像层 done；完整 F5.2 / 新 F-M1 仍 partial，尚需在实际带边图卡内使用该模型并完成保持旧区域 crossing 的有限拼接。下一步从单形内部不交证明相邻满维余面的严格异侧性，再做安排分层下的实际双点分类。下一审计文件 `AuditF249.lean`。
+
+### 19.100 F5.2：指定超平面上的余面严格异侧性
+
+`CofaceSeparation.lean` 复用整合分支 `AffineOrientation.lean` 中 `exists_linearMap_separating_cofaces` 的实际分离生产者，证明 `linearMap_mul_neg_of_distinct_cofaces` 与 `affineMap_mul_neg_of_distinct_cofaces`：公共面的方向恰为指定线性泛函的核时，两个不同余面的对顶点在指定平面两侧取严格相反的符号。证明从分离泛函消去公共面方向，得到两个指定高度的商严格为负；不把异侧性作为假设。
+
+`affineMap_mul_neg_of_distinct_cofaces_of_card_eq_finrank` 从公共面顶点数等于环境维数、仿射函数非零线性部分及面上为零，实际推出所需核等式。`IsCombinatorialManifoldWithBoundary.exists_cofaces_pos_neg` 再为满维带边组合流形的内部余维一面选出正、负两侧的全部两个对顶点。基础版本不需要有限维或有限面族，只有维数和流形推论增加对应条件。
+
+检查 `CofaceSeparation` exit=0（10.0 秒）、零 warning；`AuditF249.lean` 五项（四个新端点及分离输入）仅标准三公理。本层 done；F5.2 / 新 F-M1 仍 partial。尚需将该满维余面结论经公共仿射细分和图卡搬到奇异曲面的折叠支上，生产实际双点的横截/双折分类，再完成保持旧区域 crossing 的有限图卡拼接；不能将满维条件直接套在三维中的二维曲面上。下一审计文件 `AuditF250.lean`。
+
+### 19.101 F5.2：公共仿射细分的余面异侧性实际搬入图卡
+
+`CofaceTransport.lean` 的 `affineMap_mul_neg_of_distinct_cofaces_of_affineOn_faces` 从每面仿射且在载体上单射的映射实际构造像复形，证明仿射无关、公共面顶点数与余面对顶点均被保留，再应用 §19.100 的指定超平面分离。源复形不要求有限面族或有限维环境；只有目标坐标需要有限维。
+
+`PLPieceIn.affineMap_mul_neg_of_distinct_cofaces_in_chart` 用片映射的单射性与图卡的单射性提供实际输入，恰可用于 §19.61 公共细分在一个星图卡中的限制。已闭合先前明确列出的“同一星图卡内相邻满维余面对指定公共面平面的严格异侧性”，未假设曲面折叠支已经异侧。
+
+检查 `CofaceTransport` exit=0（10.3 秒）、零 warning；`AuditF250.lean` 两个新端点仅标准三公理。本层 done；完整 F5.2 仍 partial。接下来的义务是分层生产者的实例化与实际曲面支分类：公共目标余面的异侧性本身不保证一张奇异曲面的两个支分属这些余面。当前完整仿射无关约束在两个共配置平面折边的场景还需单独核对维数相容性。下一审计文件 `AuditF251.lean`。
+
+### 19.102 F5.2：完整安排约束在共面双折情形的确切维数障碍
+
+`ArrangementConstraints.lean` 证明 `IsVertexMapGeneralInArrangement.card_le_finrank_of_zero`：在 B 上固定、在 V 上保持原安排开胞腔的通用位移中，若某个仿射无关约束的全部原顶点落在非零配置泛函的零超平面内，则该约束至多含环境维数个顶点。证明先由符号保持得到新点仍在零平面内，再用方向空间包含于核与仿射无关的维数界。
+
+`card_le_finrank_of_complete_zero` 将此计数接到现有生产者的原样 `hcomplete`。端点 `not_isVertexMapGeneralInArrangement_of_complete_hyperplane` 精确证明：若一对面 s q、t q 的安排包络方向为全空间，而其并中含有环境维数加一的顶点 u 全部落在某个非零配置零超平面，覆盖与完整约束假设成立，则任何在 B 上固定的 φ 都不可能满足当前通用位置谓词。
+
+三维中的具体义务：两个折边各有两个不同源顶点，四个顶点都留在同一配置平面；取含这两条折边且有离平面顶点的两张三角形，其安排包络可为三维。现有 `hcomplete` 要求这四个共面顶点组成一个仿射无关约束，因为 `4 ≤ 3 + 1`。保层后四点仍共面，而新端点推出 `4 ≤ 3`。这不仅是旧的重合固定折边反例：两条不同方向的折边也触发该阻碍，且顶点可全是可动的。
+
+检查 `ArrangementConstraints` exit=0（9.6 秒）、零 warning；`AuditF251.lean` 三项仅标准三公理。此前已证欧氏/半空间保像、实际双点图、两折线 crossing、满维余面严格异侧和图卡搬运均保留有效；完整 F5.2 / 新 F-M1 为 partial，当前的“全约束安排生产者直接实例化”路线 blocked，不声明最终正规形式。
+
+可选路线：用尊重每个受迫子层秩的分层通用位置条件替换当前 `hcomplete`，重新证明存在及双点分类；或先在图卡中使曲面对目标骨架横截，再对骨架截出的折边采用相容的相对移动与双点分类。两条路线都还需要实际证明曲面各支跨越目标公共面；不能仅删除约束、增加 `IsArrangementGeneralFoldPair` 假设或把 C0 小扰动当 crossing 保持。按常驻规则 §5 转做已授权的新 F-M2 非紧多面体接口；不改变既有公共定义的语义。下一审计文件 `AuditF252.lean`。
+
+### 19.103 新 F-M2：非紧局部多面体定义、紧致等价与集合运算
+
+`LocallyPolyhedral.lean` 定义 `IsLocallyPolyhedral S`：S 的每个点都有一个包含于 S 的紧致有限多面体 P，且 P 是该点相对于 S 的邻域。它允许非紧、非闭及非流形的集合，不改变旧 `IsPolyhedron` 的有限紧致含义。§32 的要求现在可写成 `IsLocallyPolyhedral (U \ P)`，不再因 U 是开胞腔而强迫该部分紧致。
+
+`isPolyhedron_iff_isLocallyPolyhedral_and_isCompact` 证明与旧紧致情形完全相容。`exists_isPolyhedron_neighborhood_of_isCompact` 实际用有限子覆盖把 S 内任意紧集放入 S 内的有限多面体相对邻域。`isLocallyPolyhedral_iff_isPiecewiseAffineOn_id` 与现有逐片仿射 API 对接；一般 `IsPiecewiseAffineOn` 的源域也满足此局部多面体性。
+
+集合运算包含无附加条件的相交、开集及相对开子集、删去闭集，以及各片在并中相对闭时的有限并（附环境闭集推论）。闭子集接口 `iff_forall_isPolyhedron_inter_of_isClosed`：S 内相对闭的 T 为局部多面体，当且仅当它与 S 内每个有限多面体的交都是有限多面体。没有声称任意闭子集仍为多面体（Cantor 集反例），也没有声称任意两局部多面体之并仍局部多面体（离散集合 `{1/n : n ≥ 1}` 加上 `{0}` 的积聚反例）。这些条件是数学必需的。
+
+`of_locallyFinite_cover` 与 `isLocallyPolyhedral_space_of_locallyFinite` 接收集合自身拓扑中的局部有限有限多面体覆盖／单形覆盖，推出新谓词；局部有限性不强加在整个环境空间，因而允许开胞腔。新定义不捆绑一个全局无限复形，本次未声明从局部条件反向构造一个全局相容无限三角剖分。
+
+新 F-M2 的定义及所需基本接口 done：`LocallyPolyhedral` 最终检查 exit=0（8.7 秒）、零 warning；`AuditF252.lean` 全部 22 个公开定义与端点仅标准三公理。F5.2 仍按 §19.102 保持 partial，当前完整安排约束路线 blocked。下一审计文件 `AuditF253.lean`。
+
+### 19.104 新 F-M2：局部多面体性经 PL 同胚的实际搬运
+
+`LocallyPolyhedralImage.lean` 的 `IsLocallyPolyhedral.image_of_isPLHomeomorphOn`：若 `S` 局部多面体、
+`S ⊆ U` 且 `f` 在 `U` 上是到 `V` 的 PL 同胚，则 `f '' S` 局部多面体。证明在每点取 `S` 内的紧致多面体相对邻域 `P`，
+用 `IsPolyhedron.image_of_isPiecewiseAffineOn`（f 在 P 上逐片仿射且单射）得到 `f '' P` 是有限多面体，
+再用逆映射在 `V` 上的逐片仿射性（故连续）经 `continuousOn_iff'` 把 `P` 的相对邻域性搬成 `f '' P` 在 `f '' S` 中的
+相对邻域性。没有假设 `f '' S` 或 `V` 是开集，也没有假设 `S` 紧致。
+`IsLocallyPolyhedral.image_invFunOn_of_isPLHomeomorphOn` 用既有的 `IsPLHomeomorphOn.symm` 给出反方向。
+§32 需要的是把 `IsLocallyPolyhedral (U \ P)` 在 PL 图卡之间搬运，这一条正是那一步。
+
+检查 `LocallyPolyhedralImage` exit=0（7.9 秒）、零 warning；`AuditF253.lean` 两项仅
+`propext`、`Classical.choice`、`Quot.sound`。注意：`IsPLHomeomorphOn.symm` 早已存在于 `PLHomeomorph.lean`
+（在 `namespace IsPLHomeomorphOn` 内写作 `theorem symm`），按名字 grep 找不到；本轮一度重证，被编译器的
+"已声明" 报错挡下。下一审计文件 `AuditF254.lean`。
+
+### 19.105 E3 交来的分离生产者：沿圆分支时需要双侧性（数学分析，未形式化）
+
+E3 §44 把 `exists_supported_separation_along_compact_crossing_arc` 交给 F。逐点局部模型缺的两项里，
+第一项（哪张平面对应固定源片 `A`）其实不是选择：两张片只沿 `S` 相交，故"含 `D(A)` 的那张平面"在每个图卡里
+唯一确定，可以直接把它作为定义，不需要沿分支作相容选择。
+
+第二项（横向商线的正向）是真的障碍，而且它不是技术性的：把 `A` 推离 `Q` 需要 `Q` 沿 `S` 的法线丛有不消失的截面，
+即 `Q` 沿 `S` 双侧。若 `S` 是圆且该法线丛不可定向（Möbius 情形），任何支撑在 `S` 邻域内的环境同胚都不能使
+`h(A) ∩ Q = ∅`：`A` 与 `Q` 沿 `S` 的模二相交数是该芽的同痕不变量。因此按 E3 现在的措辞，该生产者对一般紧致 PL
+1-球面 `S` 为假，必须加上"`Q` 沿 `S` 双侧"或等价的相容框架假设。
+
+对 §25.1 实际需要的情形这不是限制：Case 3/4 里的 `A_j` 是**触边分支**，即端点落在 `Bd |D|` 上的弧。
+区间上的 ±1 丛平凡，故相容正向自动存在；端点处的半空间模型只额外要求推移方向与 `Bd M` 相切。
+建议把生产者重述为两条：(i) 弧情形无条件（先沿弧的有限图卡链按次序传播正向，再插值）；
+(ii) 圆情形以双侧性为显式假设。E3 §44 列出的输出条款其余部分不变。本条只是分析，没有 Lean 端点。
+
+### 19.106 分离生产者的链骨架：紧致 PL 弧的从属链覆盖
+
+`ArcChainCover.lean` 的 `exists_subordinate_chain_of_isPLBall_one`：设 `S` 是紧致 PL 1-球（弧），
+`U : ι → Set E` 是开集族且覆盖 `S`，则存在 `n` 与 PL 同胚 `γ : Icc 0 1 → S`，使得均匀分划的每一小段
+`γ '' Icc (j/(n+1)) ((j+1)/(n+1))`（`j ≤ n`）整体落在某个 `U i` 内，且这些小段的并恰好是 `S`。
+证明用 `exists_isPLHomeomorphOn_Icc_of_isPLBall_one` 取参数化，用 `continuousOn_iff'` 把图卡拉回成
+`[0,1]` 的环境开覆盖，再用 `lebesgue_number_lemma_of_metric` 与 `exists_nat_one_div_lt` 选网距小于 Lebesgue 数的
+均匀分划；`mem_Icc_uniform_partition` 用 `Nat.floor` 给出覆盖性（`x = 1` 落在最后一段）。
+
+这条与 E3 §45 的 `exists_sideChoice_of_chain` 合起来就是 §44 缺口的骨架：小段按 `j` 天然沿弧排序，
+相邻小段只交于一个端点，侧选择 `ε` 在该端点两侧一致，因此横向方向场在整条弧上连续；
+余下的义务是在单张 crossing 图卡内写出线性推移，并用该方向场把它们拼成全局单射 PL 自映射
+（幅度取 `S` 邻域上的一个正函数即可，不需要小段重叠）。
+
+检查 `ArcChainCover` exit=0（10.5 秒）、零 warning；`AuditF254.lean` 两项仅
+`propext`、`Classical.choice`、`Quot.sound`。下一审计文件 `AuditF255.lean`。
+
+### 19.107 更正 §19.105：横向推移证明失败，弧情形靠沿分支滑出而不是双侧性
+
+§19.105 把缺口归结为"`Q` 沿 `S` 的双侧性"。这个框架是错的，现更正如下。
+
+局部模型里两张条带是 `A = {z = 0, |y| ≤ 1}` 与 `Q = {y = 0, |z| ≤ 1}`，沿 x 轴横截相交。
+把 `A` 沿 `Q` 的法向平移 `ε`（`0 < ε ≤ 1`）后，`h(A)` 仍含点 `(x, 0, ε)`，而该点满足 `|z| ≤ 1`，
+故仍在 `Q` 内：**任何横向推移都不能把两张相交的条带分开**，与 `Q` 是否双侧无关。
+沿 `A` 自身的带方向平移同理无效。所以 §19.105 里"弧情形无条件、圆情形加双侧性假设"的建议作废。
+
+实际可行的机制是**沿分支方向滑出**：若 `S` 是端点到达自由边界（`Bd |D|` 或 `Q` 条带的端边）的弧，
+把 `A` 沿 `S` 的方向推过 `Q` 条带的端点，即可使 `h(A) ∩ Q = ∅`；支撑是 `S` 的邻域并上滑动路径的邻域，
+仍落在给定的 `W` 内（只要 `W` 含该端点的邻域）。这对圆分支不可用：圆没有端点可滑出。
+
+这与 Moise 的分情形恰好吻合：§25.1 的 Case 1/2 是盘内部的 PL 圆，书中不做分离，而是**换掉内盘**
+（环带邻域加柱形图，Case 2 的内盘替换用 S 车道的 I2）；Case 3/4 才是触边分支，用切开重贴加沿分支滑出。
+因此 E3 §44 交来的 `exists_supported_separation_along_compact_crossing_arc` 应当只对**触边弧**提，
+并且输出条款里要允许支撑包含滑动路径；圆分支不应走这条生产者。
+
+尚未在此证明"圆分支的交点不能由支撑在其邻域内的环境同胚消去"这一否定命题；上面只证了横向平移这一族构造失败。
+E3 §45 的 `ZMod 2` 循环障碍仍然成立并且有用（它是沿分支相容定向的障碍），但它不是这里的分离障碍，
+两者的联系应按本条更正理解。
+
+### 19.108 沿分支滑出的标准模型：显式 PL 自同构与实际分离
+
+`ModelSlide.lean` 按 §19.107 的更正给出标准模型里的滑动，全部是显式公式：
+
+- `slideAmount p = max 0 (min (1 - |y| - |z|) ((3 - |x|)/2))`，`slideMap p = (x - slideAmount p, y, z)`；
+  沿 x 方向按到 x 轴的距离滑动，横向宽度 1，纵向锥度 3。
+- `isPiecewiseAffineOn_slideMap`：`slideMap` 在整个 `ℝ × ℝ × ℝ` 上逐片仿射。证明只用既有的
+  `IsPiecewiseAffineOn` 代数（`abs`、`max`、`min`、`add`、`prod_mk`、`affine_comp`）与
+  `IsLocallyPolyhedral.of_isOpen isOpen_univ` 给出的 `id` 的逐片仿射性；锥度里的 `/2` 用
+  `halfMap`（`(2:ℝ)⁻¹ • LinearMap.id` 的仿射化）搬进来。
+- `bijective_slideMap`：单射由"锥度斜率 1/2 ⟹ `x ↦ x - slideAmount` 严格增"给出
+  （`slideAmount_le_add`：固定 `(y,z)` 时 `slideAmount` 对 `x` 是 (1/2)-Lipschitz）；满射由
+  `|x| ≥ 3` 处是恒等加中值定理给出。
+- `slideMap_eq_self_of_width`（`1 ≤ |y| + |z|`）与 `slideMap_eq_self_of_taper`（`3 ≤ |x|`）：
+  支撑落在盒 `{|y| + |z| ≤ 1, |x| ≤ 3}` 内，故可以在图卡里用恒等延拓。
+- `modelBandA = {z = 0, |y| ≤ 1, x ∈ [0,1]}`，`modelBandQ = {y = 0, |z| ≤ 1, x ∈ [1/2,2]}`：
+  `inter_modelBandA_modelBandQ` 说明滑动前两条带沿 `x ∈ [1/2,1]` 的弧横截相交（非平凡），
+  `disjoint_slideMap_image_modelBandA` 说明滑动后 `slideMap '' modelBandA` 与 `modelBandQ` 不相交
+  （在 `y = z = 0` 处滑动量恰为 1，把 A 的 x 区间移到 `[-1,0]`）。
+
+这就是 §19.107 里"沿分支滑出"的局部实现，并且证明了横向推移做不到的事它能做到。
+检查 `ModelSlide` exit=0（9.7 秒）、零 warning；`AuditF255.lean` 六项无 `sorryAx`。
+剩下的义务：把这个模型经 crossing 图卡搬到流形里（图卡是 PL 同胚，`slideMap` 的支撑在盒内，
+可用 `Topology/Pasting.lean` 的支撑外恒等接口拼接），并按 `ArcChainCover` 的链与 E3 §45 的侧选择
+沿整条触边弧串起来；端点处要把模型换成半空间版本使滑动与 `Bd M` 相切。下一审计文件 `AuditF256.lean`。
+
+### 19.109 滑动经图卡共轭成环境自映射
+
+`ChartSlide.lean` 把 §19.108 的模型滑动搬进图卡：
+
+- `slideSupport = {|y| + |z| ≤ 1, |x| ≤ 3}`，`isCompact_slideSupport`（闭且含于 `closedBall 0 3`）、
+  `eqOn_slideMap_id_compl`（支撑外恒等）、`mapsTo_slideMap_slideSupport` 与
+  `mapsTo_slideMap_of_subset`（任何含支撑的集合被 `slideMap` 映回自身）。
+- `isPiecewiseAffineOn_chartSlide`：对任意 PL 图卡 `e : OpenPartialHomeomorph M (ℝ × ℝ × ℝ)`
+  （两向逐片仿射）与 `slideSupport ⊆ e.target`，共轭映射 `e.conjugateMap slideMap` 在整个 `M` 上逐片仿射。
+  直接消费既有的 `isPiecewiseAffineOn_conjugateMap`，`slideMap` 在开集 `e.target` 上的逐片仿射性由
+  `IsPiecewiseAffineOn.mono` 从 univ 版本取得。
+- `injective_chartSlide`：共轭映射整体单射（图卡内用 `slideMap` 的单射性与 `right_inv`/`left_inv`，
+  图卡外恒等；混合情形用"像落在 `e.source` 内"排除）。
+- `disjoint_chartSlide_image`：若两条模型带都落在 `e.target` 内，则
+  `e.conjugateMap slideMap '' (e.symm '' modelBandA)` 与 `e.symm '' modelBandQ` 不相交。
+
+于是"单张 crossing 图卡内的支撑滑动"这一层 done：它给出 E3 §44 输出条款里的 `IsPL`（逐片仿射）、
+`Function.Injective`、`EqOn h id Uᶜ` 与一张带的分离。剩下的义务是沿 `ArcChainCover` 的链把逐张图卡的滑动
+串成一个整体自映射（用 E3 §45 的侧选择定向，相邻段在公共端点处方向一致），并在触边端点换成半空间模型
+使滑动与 `Bd M` 相切；另外需要把这里的欧氏环境 `M` 换成流形图卡下的版本（`Manifold.lean` 的 `IsPLOn` 接口）。
+
+检查 `ChartSlide` exit=0（9.6 秒）、零 warning；`AuditF256.lean` 五项无 `sorryAx`。下一审计文件 `AuditF257.lean`。
+

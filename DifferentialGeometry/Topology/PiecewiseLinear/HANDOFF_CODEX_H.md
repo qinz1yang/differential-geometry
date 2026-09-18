@@ -524,3 +524,19 @@ Reduced/MayerVietorisCoefficients, Reduced/PointClasses}`（`REUSE_AUDIT.md` §2
 - 最窄路线的成本分解：拓扑胞腔边界参数化与不变域桥 0.5k–1k；球面 cellular comparison 1k–2k；专门的
   `\widetilde H₀(ℝ³-e(S²)) ≅ H²(S²)` Alexander 对偶 8k–14k；从两侧分解推出 `Cᶜ` 连通 0.5k–1k。
   合计约 10k–18k 行且高风险；若建可复用 Čech/紧支撑理论则约 20k–35k。结论是在用户另行批准前不启动 H-M3。
+
+### G.5 封盘 Euler 加法 — done
+
+- `ConeEuler.lean` 的 `eulerChar_coneComplex`：任意有限复形上的锥（`coneComplex`，锥顶在 `IsConeBase` 意义下）
+  的组合 Euler 数恒为 1。证明把 `coneFaces` 的面集拆成三块不交部分（原复形的面、`{p}`、`insert p` 的像），
+  用 `Finset.sum_union`、`Finset.sum_image` 与 `card_insert_of_notMem` 得到
+  `χ(L) + 1 + (-χ(L))`；不用同调，也不假设锥是流形。
+- `eulerChar_eq_add_one_of_faces_union_coneComplex`：若 `M` 的面集是 `A` 与该锥的面集之并、且二者的交是 PL 1-球面，
+  则 `χ(M) = χ(A) + 1`。它把 §33 Lemma 12 里"逐分支封 PL 盘"的 Euler 记账化为现成引理，
+  复用既有的 `eulerChar_eq_add_of_faces_union_of_isPLSphere_one` 与 `eulerChar_of_isPLSphere_one`。
+- 聚焦检查 `ConeEuler` exit=0（9.3 秒）、零 warning；`.lake/scratch/AuditHConeEuler.lean` 两项仅
+  `propext`、`Classical.choice`、`Quot.sound`。
+- 仍未闭合：封盘复形本身的几何构造（把锥顶放在何处使 `M.faces = A.faces ∪ coneFaces` 真的是几何复形，
+  且交恰为该边界圆）、删盘识别，以及不经 `Homology/HurewiczLowDegrees.lean` 的一维 Hurewicz 桥。
+  本条只交付 Euler 记账层。
+
