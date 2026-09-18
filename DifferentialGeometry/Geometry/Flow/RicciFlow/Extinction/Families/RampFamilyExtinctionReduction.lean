@@ -26,15 +26,13 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 
 include hT2 hCompact hConnected hBoundary
 
+omit [SigmaCompactSpace Q] in
 theorem rfs_ramp_uniform_bounds_of_ramp_producers
     (B : RicciBackground (I := I) (M := Q) D a b)
     (L₀ Theta₀ Ainit : ℝ) (hL₀ : 0 ≤ L₀) (hTheta₀ : 0 ≤ Theta₀) (hAinit : 0 ≤ Ainit)
     (hev : RampLengthEvolution (I := I) (Q := Q) (D := D) (a := a) (b := b) B)
     (hcurv : curveShorteningTotalCurvatureBound (I := I) (M := Q) B)
-    (hslope : curveShorteningLeastAreaSlope (I := I) (M := Q) B)
-    (himmersed : ∀ (lambda : ℝ), 0 < lambda → lambda ≤ 1 → ∀ c : ProductCurve Q,
-      c.IsSolutionOn B.family.metric lambda (Icc a b) →
-      c.projection.ImmersedOn (I := I) (Icc a b)) :
+    (hslope : curveShorteningLeastAreaSlope (I := I) (M := Q) B) :
     let delta := b - a
     let Lbar := Real.exp (B.B₀ * delta) * L₀
     let Thetabar := (Theta₀ + L₀) * Real.exp ((B.C + B.B₀) * delta)
@@ -60,8 +58,9 @@ theorem rfs_ramp_uniform_bounds_of_ramp_producers
           loopFamilyLeastArea B.family.metric γ t - loopFamilyLeastArea B.family.metric γ s ≤
             Cup * (t - s) :=
   rfs_ramp_uniform_bounds_of_input B L₀ Theta₀ Ainit hL₀ hTheta₀ hAinit
-    (rampUniformBoundsInput_of_extinction_frontiers B Ainit hAinit hev hcurv hslope himmersed)
+    (rampUniformBoundsInput_of_extinction_frontiers B Ainit hAinit hev hcurv hslope)
 
+omit [SigmaCompactSpace Q] in
 theorem rfs_uniform_ramp_alternative_of_ramp_producers
     (B : RicciBackground (I := I) (M := Q) D a b)
     (hdim : Module.finrank ℝ E = 3)
@@ -70,9 +69,6 @@ theorem rfs_uniform_ramp_alternative_of_ramp_producers
     (hev : RampLengthEvolution (I := I) (Q := Q) (D := D) (a := a) (b := b) B)
     (hcurv : curveShorteningTotalCurvatureBound (I := I) (M := Q) B)
     (hslope : curveShorteningLeastAreaSlope (I := I) (M := Q) B)
-    (himmersed : ∀ (lambda : ℝ), 0 < lambda → lambda ≤ 1 → ∀ c : ProductCurve Q,
-      c.IsSolutionOn B.family.metric lambda (Icc a b) →
-      c.projection.ImmersedOn (I := I) (Icc a b))
     (hwindow : ∀ eta : ℝ, 0 < eta → eta < 1 → ∀ threshold : ℝ, 1 ≤ threshold →
       ∀ epsilon : ℝ, 0 < epsilon → ∃ d : ℝ, 0 < d ∧ d < epsilon ∧
         RampWindowInput (I := I) (Q := Q) (D := D) (a := a) (b := b) B
@@ -93,7 +89,7 @@ theorem rfs_uniform_ramp_alternative_of_ramp_producers
   rfs_uniform_ramp_alternative_of_input B hdim L₀ Theta₀ Ainit hL₀ hTheta₀ hAinit
     ell epsilon hell hepsilon
     ⟨rfs_rampProductBounds_of_length_evolution B hev hcurv,
-      rampAreaBounds_of_projection_frontiers B hslope hcurv himmersed Ainit hAinit, hwindow⟩
+      rampAreaBounds_of_projection_frontiers B hslope hcurv Ainit hAinit, hwindow⟩
 
 omit [CompleteSpace E] hT2 hCompact hConnected hBoundary in
 structure FlatPolygonRampBoundsInput (g : SmoothRiemannianMetric I Q) (P : FlatteningProfile)

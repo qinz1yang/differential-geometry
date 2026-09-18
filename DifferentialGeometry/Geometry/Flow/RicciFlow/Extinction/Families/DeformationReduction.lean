@@ -24,11 +24,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 
 def rampAreaData (B : RicciBackground (I := I) (M := Q) D a b) : Prop :=
   curveShorteningLeastAreaSlope (I := I) (M := Q) B ∧
-    curveShorteningTotalCurvatureBound (I := I) (M := Q) B ∧
-    ∀ (lambda : ℝ), 0 < lambda → lambda ≤ 1 → ∀ c : ProductCurve Q,
-      c.IsSolutionOn B.family.metric lambda (Icc a b) →
-      c.IsRampOn B.family.metric lambda (Icc a b) → c.degree = 1 →
-      c.projection.ImmersedOn (I := I) (Icc a b)
+    curveShorteningTotalCurvatureBound (I := I) (M := Q) B
 
 def rampUniformBoundsData (B : RicciBackground (I := I) (M := Q) D a b) : Prop :=
   RampLengthEvolution (I := I) (Q := Q) (D := D) (a := a) (b := b) B ∧

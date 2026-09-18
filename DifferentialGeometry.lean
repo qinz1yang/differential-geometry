@@ -5132,6 +5132,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.P
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProductSolutionReduction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProductWindowSmoothness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Projection
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProjectedAreaBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProjectionFrontier
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.QuotientEquationDescent
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.QuotientProductRicciBackground

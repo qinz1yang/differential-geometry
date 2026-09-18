@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProjectedAreaBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.LoopFamilyContinuity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.Flow
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.InitialRampBounds
@@ -98,13 +99,11 @@ theorem productCurve_degree_eq_one_of_map_eq_initialRamp (c : ProductCurve Q)
   exact_mod_cast hz
 
 
+omit [SigmaCompactSpace Q] in
 theorem rampAreaBounds_of_projection_frontiers
     (B : RicciBackground (I := I) (M := Q) D a b)
     (hslope : curveShorteningLeastAreaSlope (I := I) (M := Q) B)
     (hcurv : curveShorteningTotalCurvatureBound (I := I) (M := Q) B)
-    (himmersed : ∀ (lambda : ℝ), 0 < lambda → lambda ≤ 1 → ∀ c : ProductCurve Q,
-      c.IsSolutionOn B.family.metric lambda (Icc a b) →
-      c.projection.ImmersedOn (I := I) (Icc a b))
     (Ainit : ℝ) (hAinit : 0 ≤ Ainit) :
     RampAreaBounds (I := I) (Q := Q) (D := D) (a := a) (b := b) B Ainit := by
   intro L Theta hL hTheta lambda hlambda hlambda_one c hsol hlen htot γ hγ hctr hLa
@@ -117,20 +116,18 @@ theorem rampAreaBounds_of_projection_frontiers
   have hcont := continuousOn_loopFamilyLeastArea_of_contractible B γ hγsmooth hctr
   obtain ⟨hrange, hslopeBound⟩ := rfs_csf_projection_upper_control B hslope hcurv L Theta Ainit hL
     hTheta hAinit lambda hlambda hlambda_one c hsol
-    (himmersed lambda hlambda hlambda_one c hsol) γ hagree hctr hcont hlen htot hLa
+    γ hagree hctr hcont hlen htot hLa
   exact ⟨hcont, hrange, hslopeBound⟩
 
+omit [SigmaCompactSpace Q] in
 theorem rampUniformBoundsInput_of_extinction_frontiers
     (B : RicciBackground (I := I) (M := Q) D a b) (Ainit : ℝ) (hAinit : 0 ≤ Ainit)
     (hev : RampLengthEvolution (I := I) (Q := Q) (D := D) (a := a) (b := b) B)
     (hcurv : curveShorteningTotalCurvatureBound (I := I) (M := Q) B)
-    (hslope : curveShorteningLeastAreaSlope (I := I) (M := Q) B)
-    (himmersed : ∀ (lambda : ℝ), 0 < lambda → lambda ≤ 1 → ∀ c : ProductCurve Q,
-      c.IsSolutionOn B.family.metric lambda (Icc a b) →
-      c.projection.ImmersedOn (I := I) (Icc a b)) :
+    (hslope : curveShorteningLeastAreaSlope (I := I) (M := Q) B) :
     RampUniformBoundsInput (I := I) (Q := Q) (D := D) (a := a) (b := b) B Ainit :=
   ⟨rfs_rampProductBounds_of_length_evolution B hev hcurv,
-    rampAreaBounds_of_projection_frontiers B hslope hcurv himmersed Ainit hAinit⟩
+    rampAreaBounds_of_projection_frontiers B hslope hcurv Ainit hAinit⟩
 
 theorem rfs_rampFamilyFlowSolutions_of_ramp_frontiers
     (B : RicciBackground (I := I) (M := Q) D a b) {d : ℕ}

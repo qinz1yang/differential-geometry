@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProjectedAreaBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.Flow
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.DeformationReduction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.LoopFamilyContinuity
@@ -44,13 +45,13 @@ theorem rfs_rampArea_continuity (B : RicciBackground (I := I) (M := Q) D a b) :
   exact continuousOn_loopFamilyLeastArea_of_contractible B γ
     (curveOfLoopFamily_smoothOn_of_product_solution B lambda c hc γ hagree) hctr
 
+omit [SigmaCompactSpace Q] in
 theorem rfs_rampArea_control_of_rampData
     (B : RicciBackground (I := I) (M := Q) D a b) (Ainit : ℝ) (hAinit : 0 ≤ Ainit)
     (hdata : rampAreaData (I := I) (Q := Q) (D := D) (a := a) (b := b) B) :
     ∀ (L Theta : ℝ), 0 ≤ L → 0 ≤ Theta → ∀ (lambda : ℝ), 0 < lambda → lambda ≤ 1 →
       ∀ c : ProductCurve Q,
         c.IsSolutionOn B.family.metric lambda (Icc a b) →
-        c.IsRampOn B.family.metric lambda (Icc a b) → c.degree = 1 →
         c.length B.family.metric lambda a ≤ L →
         c.totalCurvature B.family.metric lambda a ≤ Theta →
         ∀ γ : ℝ → ContinuousFreeLoop Q,
@@ -68,13 +69,14 @@ theorem rfs_rampArea_control_of_rampData
                 (2 * B.B₀ * (Real.exp (2 * B.B₀ * (b - a)) *
                     (Ainit + (b - a) * ((Theta + L) * Real.exp ((B.C + B.B₀) * (b - a))))) +
                   (Theta + L) * Real.exp ((B.C + B.B₀) * (b - a))) * (t - s)) := by
-  intro L Theta hL hTheta lambda hlambda hlambda_one c hc hramp hdeg hlen htot γ hagree hctr hAa
+  intro L Theta hL hTheta lambda hlambda hlambda_one c hc hlen htot γ hagree hctr hAa
   have hγ := curveOfLoopFamily_smoothOn_of_product_solution B lambda c hc γ hagree
   have hcont := continuousOn_loopFamilyLeastArea_of_contractible B γ hγ hctr
-  exact ⟨hcont, rfs_csf_projection_upper_control B hdata.1 hdata.2.1 L Theta Ainit hL hTheta
-    hAinit lambda hlambda hlambda_one c hc (hdata.2.2 lambda hlambda hlambda_one c hc hramp hdeg)
+  exact ⟨hcont, rfs_csf_projection_upper_control B hdata.1 hdata.2 L Theta Ainit hL hTheta
+    hAinit lambda hlambda hlambda_one c hc
     γ (fun z t ht => hagree t ht z) hctr hcont hlen htot hAa⟩
 
+omit [SigmaCompactSpace Q] in
 theorem rfs_ramp_uniform_bounds_of_rampUniformBoundsData
     (B : RicciBackground (I := I) (M := Q) D a b)
     (L₀ Theta₀ Ainit : ℝ) (hL₀ : 0 ≤ L₀) (hTheta₀ : 0 ≤ Theta₀) (hAinit : 0 ≤ Ainit)
@@ -104,16 +106,16 @@ theorem rfs_ramp_uniform_bounds_of_rampUniformBoundsData
           loopFamilyLeastArea B.family.metric γ t - loopFamilyLeastArea B.family.metric γ s ≤
             Cup * (t - s) := by
   dsimp only
-  intro lambda hlambda hlambda_one c hsol hramp hdeg γ hγ hctr hlen0 hcurv0 hAinit0
+  intro lambda hlambda hlambda_one c hsol _ _ γ hγ hctr hlen0 hcurv0 hAinit0
   have hC : 0 ≤ B.C + B.B₀ := by
     rw [RicciBackground.C]
     linarith [B.B₀_nonneg, B.B₁_nonneg, B.B₂_nonneg]
   have hTnn : 0 ≤ Theta₀ + L₀ := by linarith
-  have hkeys := rfs_rampProductBounds_of_length_evolution B hdata.1 hdata.2.2.1
+  have hkeys := rfs_rampProductBounds_of_length_evolution B hdata.1 hdata.2.2
     L₀ Theta₀ hL₀ hTheta₀ lambda hlambda hlambda_one c hsol hlen0 hcurv0
   obtain ⟨hcont, hrange, hslope⟩ :=
     rfs_rampArea_control_of_rampData B Ainit hAinit hdata.2 L₀ Theta₀ hL₀ hTheta₀ lambda hlambda
-      hlambda_one c hsol hramp hdeg hlen0 hcurv0 γ hγ hctr hAinit0
+      hlambda_one c hsol hlen0 hcurv0 γ hγ hctr hAinit0
   refine ⟨hcont, ?_, ?_, fun s hs t ht => ?_⟩
   · intro t ht
     have hlen_le : c.length B.family.metric lambda t ≤
