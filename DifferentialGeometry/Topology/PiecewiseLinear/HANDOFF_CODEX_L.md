@@ -2259,3 +2259,18 @@ step 2 只做了 grep 与接口陈述，没有动工（月牙是一个项目，�
 - 验证：`SingularCrossingSource` 聚焦检查 exit=0（11.0 秒）、零 warning；
   `.lake/scratch/AuditE3CrossingSource.lean` 的 7 条 `#print axioms` 全部只含
   `propext`、`Classical.choice`、`Quot.sound`，无 `sorryAx`。
+
+## 72. 2026-09-18 E3-M3：§65 源侧搬运的推广版（落到任意 `BijOn` 的小集合上）
+
+状态：done。`SingularCrossingPrecomp.lean` 新增 5 条声明（名字在四条车道分支上都不存在）；
+§65 的特化版保留（`GluedCellInjectivity` 的 `locallyInjective` 在用 `mem_nhdsWithin_inter_preimage`）。
+
+- `precomp_bijOn_of_isPLHomeomorphOn`（三个谓词各一条）：把 §65 的
+  `IsPLHomeomorphOn φ Q P` 拆成 `IsPLHomeomorphOn φ QBig PBig` 加 `BijOn φ Q P`、
+  `Q ⊆ QBig`、`P ⊆ PBig`、`hback : ∀ x ∈ QBig, φ x ∈ P → x ∈ Q`，结论落在**小的** `Q` 上。
+  关键是 `inter_preimage_eq_of_mapsTo_back`：由 `hback` 与 `A ⊆ P` 得
+  `QBig ∩ φ ⁻¹' A = Q ∩ φ ⁻¹' A`，于是 §65 的"复合代替限制"原样适用——
+  `isPLHomeomorphOn_comp_inter_preimage` 在 `QBig` 上复合，结果的定义域自动就是 `Q ∩ φ ⁻¹' A`。
+  `mem_nhdsWithin_inter_preimage_of_bijOn` 是邻域拉回的 `BijOn` + `ContinuousOn` 版
+  （连续性可以自由限制，分片仿射性不行，所以这里换成 `ContinuousOn φ Q`）。
+- 验证：`SingularCrossingPrecomp` 聚焦检查 exit=0（11.1 秒）、零 warning。
