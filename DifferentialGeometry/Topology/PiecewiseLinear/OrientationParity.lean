@@ -74,4 +74,33 @@ theorem prod_incidenceSign_triple (r : LinearOrder E) {a b c : E} (hab : a ≠ b
   rw [mul_assoc, hprod]
   norm_num
 
+omit [NormedAddCommGroup E] [NormedSpace ℝ E] in
+theorem sum_incidenceIndex (r : LinearOrder E) (s : Finset E) :
+    ∑ v ∈ s, incidenceIndex r s v = s.card.choose 2 := by
+  let _ := r
+  classical
+  induction s using Finset.induction_on_max with
+  | empty => simp
+  | insert m t hm ih =>
+      have hmt : m ∉ t := fun h => lt_irrefl m (hm m h)
+      rw [Finset.sum_insert hmt, incidenceIndex_max r hm]
+      have hrest : ∑ v ∈ t, incidenceIndex r (insert m t) v = ∑ v ∈ t, incidenceIndex r t v :=
+        Finset.sum_congr rfl fun v hv => incidenceIndex_insert_of_lt r hm hv
+      rw [hrest, ih, Finset.card_insert_of_notMem hmt, Nat.choose_succ_succ, Nat.choose_one_right]
+
+omit [NormedAddCommGroup E] [NormedSpace ℝ E] in
+theorem incidenceIndex_union [DecidableEq E] (r : LinearOrder E) {s t : Finset E}
+    (h : Disjoint s t) (v : E) :
+    incidenceIndex r (s ∪ t) v = incidenceIndex r s v + incidenceIndex r t v := by
+  simp only [incidenceIndex]
+  rw [Finset.filter_union, Finset.card_union_of_disjoint]
+  exact Finset.disjoint_filter_filter h
+
+omit [NormedAddCommGroup E] [NormedSpace ℝ E] in
+theorem incidenceIndex_singleton_self (r : LinearOrder E) (v : E) :
+    incidenceIndex r {v} v = 0 := by
+  have h := sum_incidenceIndex r ({v} : Finset E)
+  rw [Finset.sum_singleton, Finset.card_singleton] at h
+  simpa using h
+
 end DifferentialGeometry.Topology.PiecewiseLinear
