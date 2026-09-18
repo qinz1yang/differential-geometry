@@ -1,4 +1,5 @@
 import DifferentialGeometry.Analysis.Calculus.Periodic.Affine
+import Mathlib.Algebra.Field.Periodic
 import Mathlib.Analysis.Calculus.ContDiff.Deriv
 import Mathlib.Analysis.Calculus.Deriv.Shift
 import Mathlib.Analysis.Calculus.MeanValue
@@ -31,3 +32,31 @@ theorem exists_lipschitz_affinePeriodic {ψ : ℝ → ℝ} (hc : ContDiff ℝ 1 
   exact_mod_cast hb x
 
 end DifferentialGeometry.Analysis
+
+open Set
+
+namespace Function.Periodic
+
+theorem fderiv
+    {𝕜 E F : Type*} [NontriviallyNormedField 𝕜]
+    [NormedAddCommGroup E] [NormedSpace 𝕜 E]
+    [NormedAddCommGroup F] [NormedSpace 𝕜 F]
+    {f : E → F} {c : E} (hf : Function.Periodic f c) :
+    Function.Periodic (_root_.fderiv 𝕜 f) c := by
+  intro x
+  rw [← fderiv_comp_add_right]
+  exact congrArg (fun g : E → F => _root_.fderiv 𝕜 g x) (funext hf)
+
+theorem lipschitzWith_of_norm_fderiv_le_Icc
+    {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
+    {f : ℝ → F} {c : ℝ} (hp : Function.Periodic f c) (hc : 0 < c)
+    (hf : Differentiable ℝ f) {L : NNReal}
+    (hbound : ∀ x ∈ Icc (0 : ℝ) c, ‖_root_.fderiv ℝ f x‖ ≤ (L : ℝ)) :
+    LipschitzWith L f := by
+  apply lipschitzWith_of_nnnorm_fderiv_le hf
+  intro x
+  obtain ⟨y, hy, hxy⟩ := (hp.fderiv (𝕜 := ℝ)).exists_mem_Ico₀ hc x
+  rw [hxy]
+  exact_mod_cast hbound y ⟨hy.1, hy.2.le⟩
+
+end Function.Periodic

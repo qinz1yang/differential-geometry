@@ -149,14 +149,14 @@ private theorem exists_pos_gronwallBound_lt
   · exact (le_abs_self _).trans_lt (by simpa [Real.dist_eq] using hnBound)
 
 theorem integralCurve_tendstoUniformlyOn_of_limit_tube
-    {P X : Type*}
+    {ι P X : Type*} {l : Filter ι}
     [NormedAddCommGroup X] [NormedSpace ℝ X]
     {K : Set P} {t₀ t₁ r : ℝ}
     (ht₀₁ : t₀ ≤ t₁)
     (hr : 0 < r)
-    {v : ℕ → ℝ → X → X}
+    {v : ι → ℝ → X → X}
     {vInf : ℝ → X → X}
-    {γ : ℕ → P → ℝ → X}
+    {γ : ι → P → ℝ → X}
     {γInf : P → ℝ → X}
     (hγ :
       ∀ n p, p ∈ K →
@@ -168,21 +168,21 @@ theorem integralCurve_tendstoUniformlyOn_of_limit_tube
       TendstoUniformlyOn
         (fun n p => γ n p t₀)
         (fun p => γInf p t₀)
-        atTop K)
+        l K)
     (hfield :
       TendstoUniformlyOn
         (fun n (q : P × ℝ) => v n q.2 (γInf q.1 q.2))
         (fun q : P × ℝ => vInf q.2 (γInf q.1 q.2))
-        atTop (K ×ˢ Icc t₀ t₁))
+        l (K ×ˢ Icc t₀ t₁))
     (hLip :
-      ∃ L : NNReal, ∀ᶠ n in atTop,
+      ∃ L : NNReal, ∀ᶠ n in l,
         ∀ p ∈ K, ∀ t ∈ Ico t₀ t₁,
           LipschitzOnWith L (v n t)
             (closedBall (γInf p t) r)) :
     TendstoUniformlyOn
       (fun n (q : P × ℝ) => γ n q.1 q.2)
       (fun q : P × ℝ => γInf q.1 q.2)
-      atTop (K ×ˢ Icc t₀ t₁) := by
+      l (K ×ˢ Icc t₀ t₁) := by
   rw [Metric.tendstoUniformlyOn_iff] at hinit hfield ⊢
   intro ε hε
   let R : ℝ := min r ε

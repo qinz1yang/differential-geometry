@@ -11199,3 +11199,6 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Scalar.AddCirc
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Parametric.AddCircleLpCompositionContinuity
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Duhamel.AddCircleSourceContinuity
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Duhamel.AddCircleBaselineDependence
+import DifferentialGeometry.Analysis.Calculus.Periodic.Convergence
+import DifferentialGeometry.Analysis.ODE.Flow.VariationalBounds
+import DifferentialGeometry.Analysis.ODE.Regularity.VariationalConvergence

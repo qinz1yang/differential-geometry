@@ -376,3 +376,133 @@ theorem iteratedParameterDerivativeSourceHs_zero
   abel
 
 end AddCircle
+
+noncomputable section
+
+open Set Filter MeasureTheory
+open scoped Manifold ContDiff Topology ENNReal
+
+namespace AddCircle
+
+open DifferentialGeometry
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
+open DifferentialGeometry.Analysis.Parabolic.TimeSobolev
+
+private local instance : NeZero (Module.finrank ℝ ℝ) := ⟨by simp⟩
+
+private theorem second_derivative_source_ae_iterated
+    {ι : Type*} [Fintype ι]
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) (T : ℝ)
+    (f : PiLp 2 (fun _ : ι => TensorHs g 0 0 (((3 : ℕ) : ℝ) + 2)))
+    (a : timeL2 (TensorHs g 0 0 (((1 : ℕ) : ℝ) + 2)) T)
+    (b : timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 (((1 : ℕ) : ℝ) + 2))) T)
+    (v : ℝ → PiLp 2 (fun _ : ι => TensorHs g 0 0 ((1 : ℕ) : ℝ)))
+    (hv : ContinuousOn v (Icc 0 T))
+    (V : Lp (PiLp 2 (fun _ : ι => TensorHs g 0 0 ((1 : ℕ) : ℝ))) ∞ (timeMeasure T))
+    (hV : V =ᵐ[timeMeasure T] v) :
+    let J := tensorHsInclusion (g := g) (r := 0) (s := 0)
+      (by norm_num : ((3 : ℕ) : ℝ) ≤ ((1 : ℕ) : ℝ) + 2)
+    let A := J.compLpL 2 (timeMeasure T)
+    let B := (ContinuousLinearMap.piLpMap 2 (fun _ : ι => J)).compLpL 2 (timeMeasure T)
+    ∀ᵐ t ∂timeMeasure T, ∀ i,
+      parameterSecondDerivativeSourceTimeL2 g f a b hv t i =
+        iteratedParameterDerivativeSourceHs g 0 (f i) (A a t) (B b t i) (V t i) := by
+  intro J A B
+  filter_upwards [parameterSecondDerivativeSourceTimeL2_coe g f a b hv,
+    J.coeFn_compLpL a, (ContinuousLinearMap.piLpMap 2 (fun _ : ι => J)).coeFn_compLpL b, hV]
+      with t ht hat hbt hvt
+  intro i
+  change A a t = J (a t) at hat
+  change B b t = ContinuousLinearMap.piLpMap 2 (fun _ : ι => J) (b t) at hbt
+  rw [ht i, hat, hbt, hvt, ContinuousLinearMap.piLpMap_apply,
+    iteratedParameterDerivativeSourceHs_zero]
+  simp only [J, ← tensorHsInclusion_trans_apply, tensorHsInclusion_refl_apply]
+
+theorem tendsto_parameterSecondDerivativeSourceTimeL2
+    {X ι : Type*} [Fintype ι] {l : Filter X}
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) (T : ℝ)
+    (f : X → PiLp 2 (fun _ : ι => TensorHs g 0 0 (((3 : ℕ) : ℝ) + 2)))
+    (f0 : PiLp 2 (fun _ : ι => TensorHs g 0 0 (((3 : ℕ) : ℝ) + 2)))
+    (a : X → timeL2 (TensorHs g 0 0 (((1 : ℕ) : ℝ) + 2)) T)
+    (a0 : timeL2 (TensorHs g 0 0 (((1 : ℕ) : ℝ) + 2)) T)
+    (b : X → timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 (((1 : ℕ) : ℝ) + 2))) T)
+    (b0 : timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 (((1 : ℕ) : ℝ) + 2))) T)
+    (v : X → ℝ → PiLp 2 (fun _ : ι => TensorHs g 0 0 ((1 : ℕ) : ℝ)))
+    (v0 : ℝ → PiLp 2 (fun _ : ι => TensorHs g 0 0 ((1 : ℕ) : ℝ)))
+    (hv : ∀ x, ContinuousOn (v x) (Icc 0 T)) (hv0 : ContinuousOn v0 (Icc 0 T))
+    (hf : Tendsto f l (𝓝 f0)) (ha : Tendsto a l (𝓝 a0)) (hb : Tendsto b l (𝓝 b0))
+    (hvu : TendstoUniformlyOn v v0 l (Icc 0 T)) :
+    Tendsto (fun x => parameterSecondDerivativeSourceTimeL2 g (f x) (a x) (b x) (hv x)) l
+      (𝓝 (parameterSecondDerivativeSourceTimeL2 g f0 a0 b0 hv0)) := by
+  let J := tensorHsInclusion (g := g) (r := 0) (s := 0)
+    (by norm_num : ((3 : ℕ) : ℝ) ≤ ((1 : ℕ) : ℝ) + 2)
+  let A := J.compLpL 2 (timeMeasure T)
+  let B := (ContinuousLinearMap.piLpMap 2 (fun _ : ι => J)).compLpL 2 (timeMeasure T)
+  have hvm (x : X) : MemLp (v x) ∞ (timeMeasure T) :=
+    (hv x).memLp_top_of_isCompact isCompact_Icc measurableSet_Icc
+  have hv0m : MemLp v0 ∞ (timeMeasure T) :=
+    hv0.memLp_top_of_isCompact isCompact_Icc measurableSet_Icc
+  let V x := (hvm x).toLp (v x)
+  let V0 := hv0m.toLp v0
+  have hV : Tendsto V l (𝓝 V0) :=
+    Lp.tendsto_top_of_tendstoUniformlyOn
+      (ae_restrict_mem (μ := volume) measurableSet_Icc) V V0 v v0
+      (fun x => (hvm x).coeFn_toLp) hv0m.coeFn_toLp hvu
+  apply tendsto_lp_iteratedParameterDerivativeSourceHs_piLp (timeMeasure T) g 0
+    f f0 (fun x => A (a x)) (A a0) (fun x => B (b x)) (B b0) V V0
+    (fun x => parameterSecondDerivativeSourceTimeL2 g (f x) (a x) (b x) (hv x))
+    (parameterSecondDerivativeSourceTimeL2 g f0 a0 b0 hv0)
+    hf (A.continuous.tendsto a0 |>.comp ha) (B.continuous.tendsto b0 |>.comp hb) hV
+  · intro x
+    exact second_derivative_source_ae_iterated g T (f x) (a x) (b x) (v x) (hv x)
+      (V x) (hvm x).coeFn_toLp
+  · exact second_derivative_source_ae_iterated g T f0 a0 b0 v0 hv0 V0 hv0m.coeFn_toLp
+
+end AddCircle
+
+noncomputable section
+
+open Set Filter MeasureTheory
+open scoped Manifold ContDiff Topology ENNReal
+
+namespace AddCircle
+
+open DifferentialGeometry
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
+open DifferentialGeometry.Analysis.Parabolic.TimeSobolev
+
+private local instance : NeZero (Module.finrank ℝ ℝ) := ⟨by simp⟩
+
+theorem tendsto_parameterSecondDerivativeSourceTimeL2_of_tendstoUniformlyOn
+    {X ι : Type*} [Fintype ι] {l : Filter X}
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) (T : ℝ)
+    (f : X → PiLp 2 (fun _ : ι => TensorHs g 0 0 (((3 : ℕ) : ℝ) + 2)))
+    (f0 : PiLp 2 (fun _ : ι => TensorHs g 0 0 (((3 : ℕ) : ℝ) + 2)))
+    (a : X → timeL2 (TensorHs g 0 0 (((1 : ℕ) : ℝ) + 2)) T)
+    (a0 : timeL2 (TensorHs g 0 0 (((1 : ℕ) : ℝ) + 2)) T)
+    (b : X → timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 (((1 : ℕ) : ℝ) + 2))) T)
+    (b0 : timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 (((1 : ℕ) : ℝ) + 2))) T)
+    (W : X → ℝ → PiLp 2 (fun _ : ι => TensorHs g 0 0 (((1 : ℕ) : ℝ) + 2)))
+    (W0 : ℝ → PiLp 2 (fun _ : ι => TensorHs g 0 0 (((1 : ℕ) : ℝ) + 2)))
+    (hWc : ∀ x, ContinuousOn (W x) (Icc 0 T)) (hW0c : ContinuousOn W0 (Icc 0 T))
+    (hf : Tendsto f l (𝓝 f0)) (ha : Tendsto a l (𝓝 a0)) (hb : Tendsto b l (𝓝 b0))
+    (hW : TendstoUniformlyOn W W0 l (Icc 0 T)) :
+    let B := tensorHsInclusion (g := g) (r := 0) (s := 0)
+      (by norm_num : ((1 : ℕ) : ℝ) + 2 ≤ ((3 : ℕ) : ℝ) + 2)
+    let Bp := ContinuousLinearMap.piLpMap 2 (fun _ : ι => B)
+    let Qp := parameterSecondDerivativeHsPi (ι := ι) g 1
+    let v := fun x t => Qp (Bp (f x) + W x t)
+    let v0 := fun t => Qp (Bp f0 + W0 t)
+    let hv := fun x => Qp.continuous.comp_continuousOn (continuousOn_const.add (hWc x))
+    let hv0 := Qp.continuous.comp_continuousOn (continuousOn_const.add hW0c)
+    Tendsto (fun x => parameterSecondDerivativeSourceTimeL2 g (f x) (a x) (b x)
+      (v := v x) (hv x)) l
+      (𝓝 (parameterSecondDerivativeSourceTimeL2 g f0 a0 b0 (v := v0) hv0)) := by
+  intro B Bp Qp v v0 hv hv0
+  apply tendsto_parameterSecondDerivativeSourceTimeL2 g T f f0 a a0 b b0 v v0 hv hv0 hf ha hb
+  exact Qp.uniformContinuous.comp_tendstoUniformlyOn
+    ((((Bp.continuous.tendsto f0).comp hf).tendstoUniformlyOn_const (Icc 0 T)).add hW)
+
+end AddCircle

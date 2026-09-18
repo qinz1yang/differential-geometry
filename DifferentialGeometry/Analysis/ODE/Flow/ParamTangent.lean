@@ -1,4 +1,5 @@
 import DifferentialGeometry.Analysis.Calculus.MapConvergence.Composition
+import Mathlib.Analysis.Calculus.FDeriv.CompCLM
 import DifferentialGeometry.Analysis.Calculus.MapConvergence.Derivative
 import DifferentialGeometry.Analysis.Calculus.TimeJet.Commutation
 import DifferentialGeometry.Analysis.ODE.Flow.GlobalSliceSmoothness
@@ -108,18 +109,17 @@ theorem paramTangentCurve_initial
     Filter.eventuallyEq_of_mem (hA.mem_nhds hp) hγ
   simp only [paramTangentCurve, paramTangentInitial, hγ p hp, heq.fderiv_eq]
 
-theorem paramTangentCurve_initial_isIntegralCurveOn
+theorem paramTangentCurve_initial_isIntegralCurveOn_of_contDiffOn
     {P X : Type*}
     [NormedAddCommGroup P] [NormedSpace ℝ P]
-    [NormedAddCommGroup X] [NormedSpace ℝ X] [FiniteDimensional ℝ X]
+    [NormedAddCommGroup X] [NormedSpace ℝ X]
     {A : Set P} (hA : IsOpen A)
-    {J : Set ℝ} (hJ : IsOpen J)
     {V : Set X} (hV : IsOpen V)
-    {t₀ t₁ : ℝ} (ht₀₁ : t₀ ≤ t₁) (hI : Icc t₀ t₁ ⊆ J)
+    {t₀ t₁ : ℝ} (ht₀₁ : t₀ ≤ t₁)
     {v : ℝ → X → X}
-    (hv : ContDiffOn ℝ ∞ (uncurry v) (J ×ˢ V))
-    {a : P → X} (ha : ContDiffOn ℝ ∞ a A)
-    {γ : P → ℝ → X}
+    (hv : ∀ t ∈ Icc t₀ t₁, DifferentiableOn ℝ (v t) V)
+    {a : P → X} {γ : P → ℝ → X}
+    (hγjoint : ContDiffOn ℝ ∞ (uncurry γ) (A ×ˢ Icc t₀ t₁))
     (hγ : ∀ p, p ∈ A →
       γ p t₀ = a p ∧ IsIntegralCurveOn (γ p) v (Icc t₀ t₁))
     (hstay : ∀ p ∈ A, ∀ t ∈ Icc t₀ t₁, γ p t ∈ V) :
@@ -127,9 +127,6 @@ theorem paramTangentCurve_initial_isIntegralCurveOn
       paramTangentCurve γ p t₀ = paramTangentInitial a p ∧
       IsIntegralCurveOn (paramTangentCurve γ p) (paramTangentVF P v)
         (Icc t₀ t₁) := by
-  have hγjoint : ContDiffOn ℝ ∞ (uncurry γ) (A ×ˢ Icc t₀ t₁) :=
-    contDiffOn_solutionFamily_of_stays hJ hV hv hA hI ha hγ
-      (fun p hp t ht => hstay p hp t ht)
   intro p hp
   refine ⟨paramTangentCurve_initial hA (fun q hq => (hγ q hq).1) hp, ?_⟩
   rcases ht₀₁.eq_or_lt with rfl | ht₀₁
@@ -186,11 +183,9 @@ theorem paramTangentCurve_initial_isIntegralCurveOn
         (fun q hq => ⟨hq, ht⟩)
     have hγdiff : DifferentiableAt ℝ (fun q => γ q t) p :=
       (hγslice.contDiffAt (hA.mem_nhds hp)).differentiableAt (by simp)
-    have hv_slice : ContDiffOn ℝ ∞ (v t) V := by
-      exact hv.comp (contDiff_const.prodMk contDiff_id).contDiffOn
-        (fun x hx => ⟨hI ht, hx⟩)
     have hvdiff : DifferentiableAt ℝ (v t) (γ p t) :=
-      (hv_slice.contDiffAt (hV.mem_nhds (hstay p hp t ht))).differentiableAt (by simp)
+      (hv t ht (γ p t) (hstay p hp t ht)).differentiableAt
+        (hV.mem_nhds (hstay p hp t ht))
     have hchain : fderiv ℝ (fun q => v t (γ q t)) p =
         (fderiv ℝ (v t) (γ p t)).comp
           (fderiv ℝ (fun q => γ q t) p) := by
@@ -210,6 +205,58 @@ theorem paramTangentCurve_initial_isIntegralCurveOn
         (paramTangentVF P v t (paramTangentCurve γ p t)) (Icc t₀ t₁) t :=
       hstate.prodMk (hZderiv.congr_deriv hZeq)
     exact h
+
+theorem paramTangentCurve_initial_isIntegralCurveOn
+    {P X : Type*}
+    [NormedAddCommGroup P] [NormedSpace ℝ P]
+    [NormedAddCommGroup X] [NormedSpace ℝ X] [FiniteDimensional ℝ X]
+    {A : Set P} (hA : IsOpen A)
+    {J : Set ℝ} (hJ : IsOpen J)
+    {V : Set X} (hV : IsOpen V)
+    {t₀ t₁ : ℝ} (ht₀₁ : t₀ ≤ t₁) (hI : Icc t₀ t₁ ⊆ J)
+    {v : ℝ → X → X}
+    (hv : ContDiffOn ℝ ∞ (uncurry v) (J ×ˢ V))
+    {a : P → X} (ha : ContDiffOn ℝ ∞ a A)
+    {γ : P → ℝ → X}
+    (hγ : ∀ p, p ∈ A →
+      γ p t₀ = a p ∧ IsIntegralCurveOn (γ p) v (Icc t₀ t₁))
+    (hstay : ∀ p ∈ A, ∀ t ∈ Icc t₀ t₁, γ p t ∈ V) :
+    ∀ p ∈ A,
+      paramTangentCurve γ p t₀ = paramTangentInitial a p ∧
+      IsIntegralCurveOn (paramTangentCurve γ p) (paramTangentVF P v)
+        (Icc t₀ t₁) := by
+  have hγjoint : ContDiffOn ℝ ∞ (uncurry γ) (A ×ˢ Icc t₀ t₁) :=
+    contDiffOn_solutionFamily_of_stays hJ hV hv hA hI ha hγ
+      (fun p hp t ht => hstay p hp t ht)
+  apply paramTangentCurve_initial_isIntegralCurveOn_of_contDiffOn hA hV ht₀₁
+    (v := v) ?_ hγjoint hγ hstay
+  intro t ht
+  have hv_slice : ContDiffOn ℝ ∞ (v t) V :=
+    hv.comp (contDiff_const.prodMk contDiff_id).contDiffOn
+      (fun x hx => ⟨hI ht, hx⟩)
+  exact hv_slice.differentiableOn (by simp)
+
+
+theorem fderiv_paramTangentVF_apply
+    {P X : Type*}
+    [NormedAddCommGroup P] [NormedSpace ℝ P]
+    [NormedAddCommGroup X] [NormedSpace ℝ X]
+    (v : ℝ → X → X) (t : ℝ) (x h : X) (Z H : P →L[ℝ] X)
+    (hv : DifferentiableAt ℝ (v t) x)
+    (hDv : DifferentiableAt ℝ (fderiv ℝ (v t)) x) :
+    fderiv ℝ (paramTangentVF P v t) (x,Z) (h,H) =
+      (fderiv ℝ (v t) x h,
+        (fderiv ℝ (v t) x).comp H + (fderiv ℝ (fderiv ℝ (v t)) x h).comp Z) := by
+  have hfirst := hv.hasFDerivAt.comp (x,Z)
+    (hasFDerivAt_fst (𝕜 := ℝ) (p := (x,Z)))
+  have hmatrix := hDv.hasFDerivAt.comp (x,Z)
+    (hasFDerivAt_fst (𝕜 := ℝ) (p := (x,Z)))
+  have hsecond := hmatrix.clm_comp (hasFDerivAt_snd (𝕜 := ℝ) (p := (x,Z)))
+  have hboth := hfirst.prodMk hsecond
+  change HasFDerivAt (paramTangentVF P v t) _ (x,Z) at hboth
+  rw [hboth.fderiv]
+  rfl
+
 
 end Flow
 end ODE

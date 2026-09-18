@@ -473,6 +473,64 @@ theorem tendsto_heat_vector_forcing_of_tendsto_residual
     (fun p => heatVectorForcingResidualL hT (A2p p) (hA2p p) (C2p p) (hC2p p)
       (A1p p) (hA1p p)) F₀ F hC hbound hQ hF hsource
 
+theorem heatVectorForcingResidualL_eq_iff_tensorHsInclusion
+    (hab : a ≤ b) (hT : 0 < T)
+    (hc : IsCompactOperator (tensorResolventL2 (I := I) (M := M) g r s))
+    (A2h : ℝ → HsPi (ι := ι) (g := g) (r := r) (s := s) (b + 2) →L[ℝ]
+      HsPi (ι := ι) (g := g) (r := r) (s := s) b)
+    (hA2h : AEStronglyMeasurable A2h (timeMeasure T))
+    (C2h : ℝ≥0) (hC2h : ∀ᵐ t ∂timeMeasure T, ‖A2h t‖ ≤ C2h)
+    (A1h : ℝ → HsPi (ι := ι) (g := g) (r := r) (s := s) (b + 1) →L[ℝ]
+      HsPi (ι := ι) (g := g) (r := r) (s := s) b)
+    (hA1h : MemLp A1h 2 (timeMeasure T))
+    (A2l : ℝ → HsPi (ι := ι) (g := g) (r := r) (s := s) (a + 2) →L[ℝ]
+      HsPi (ι := ι) (g := g) (r := r) (s := s) a)
+    (hA2l : AEStronglyMeasurable A2l (timeMeasure T))
+    (C2l : ℝ≥0) (hC2l : ∀ᵐ t ∂timeMeasure T, ‖A2l t‖ ≤ C2l)
+    (A1l : ℝ → HsPi (ι := ι) (g := g) (r := r) (s := s) (a + 1) →L[ℝ]
+      HsPi (ι := ι) (g := g) (r := r) (s := s) a)
+    (hA1l : MemLp A1l 2 (timeMeasure T))
+    (hA2 : ∀ᵐ t ∂timeMeasure T, ∀ x,
+      (ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion
+        (g := g) (r := r) (s := s) hab)) (A2h t x) =
+        A2l t ((ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion
+          (g := g) (r := r) (s := s) (show a + 2 ≤ b + 2 by linarith))) x))
+    (hA1 : ∀ᵐ t ∂timeMeasure T, ∀ x,
+      (ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion
+        (g := g) (r := r) (s := s) hab)) (A1h t x) =
+        A1l t ((ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion
+          (g := g) (r := r) (s := s) (show a + 1 ≤ b + 1 by linarith))) x))
+    (FH R : timeL2 (HsPi (ι := ι) (g := g) (r := r) (s := s) b) T) :
+    let J := (ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion
+      (g := g) (r := r) (s := s) hab)).compLpL 2 (timeMeasure T)
+    heatVectorForcingResidualL hT A2h hA2h C2h hC2h A1h hA1h FH = R ↔
+      heatVectorForcingResidualL hT A2l hA2l C2l hC2l A1l hA1l (J FH) = J R := by
+  let J₀ := ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion
+    (g := g) (r := r) (s := s) hab)
+  intro J
+  have hJ₀ : Function.Injective J₀ := by
+    intro x y hxy
+    apply PiLp.ext
+    intro i
+    exact tensorHsInclusion_injective hab (congrArg (fun v => v i) hxy)
+  have hJ : Function.Injective J := by
+    intro x y hxy
+    apply Lp.ext
+    have hx := J₀.coeFn_compLpL (p := 2) (μ := timeMeasure T) x
+    have hy := J₀.coeFn_compLpL (p := 2) (μ := timeMeasure T) y
+    change J x =ᵐ[timeMeasure T] fun t => J₀ (x t) at hx
+    rw [hxy] at hx
+    filter_upwards [hx, hy] with t ht ht'
+    exact hJ₀ (ht.symm.trans ht')
+  have hcomm := DFunLike.congr_fun
+    (heatVectorForcingResidualL_comp_tensorHsInclusion hab hT hc
+      A2h hA2h C2h hC2h A1h hA1h A2l hA2l C2l hC2l A1l hA1l hA2 hA1) FH
+  change heatVectorForcingResidualL hT A2l hA2l C2l hC2l A1l hA1l (J FH) =
+    J (heatVectorForcingResidualL hT A2h hA2h C2h hC2h A1h hA1h FH) at hcomm
+  rw [hcomm]
+  exact ⟨congrArg J, fun h => hJ h⟩
+
+
 end DifferentialGeometry.Analysis.Parabolic.QuasiLinear
 
 end
