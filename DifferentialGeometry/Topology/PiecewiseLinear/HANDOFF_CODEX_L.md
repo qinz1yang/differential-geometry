@@ -2485,3 +2485,23 @@ step 2 只做了 grep 与接口陈述，没有动工（月牙是一个项目，�
     `EuclideanSpace.single_apply / norm_single` 已弃用，用 `PiLp.single_eq_same / PiLp.norm_single`。
 - 下一步仍按 §75 的顺序：`Λ` 上的映射 `(t₁, t₂) ↦ E.symm (e.symm (t₁, u (θ t₂), v (θ t₂)))`
   → `hD₂bd / hluneW / hD₂inj` → 最后在坐标里逐点验 `hD₂disj`（§74 记的共面问题）。
+
+## 77. 2026-09-18 E3-M3：图像区域的边界只由"底边 + 图像弧"两段组成（月牙 `hD₂bd` 的平面前提）
+
+状态：**已闭合**，并入 `PlanarGraphRegion.lean`，`check-f.ps1` exit=0 零警告，
+`AuditE3GraphRegion.lean` 现 16 条全部只依赖 `propext / Classical.choice / Quot.sound`。
+
+- `frontier_graphRegion_subset`：`a` 在 `Icc s t` 上连续、`a s ≤ 0`、`a t ≤ 0`（区域闭）
+  ⟹ `frontier (graphRegion a s t) ⊆ {w | w 0 = 0} ∪ graphArc a s t`，
+  其中 `graphArc a s t = {w | w 1 ∈ Icc s t ∧ w 0 = a (w 1)}`。
+  **这正是 `hD₂bd` 要的那一步**：边界上不在粘合弧（图像弧）里的点都满足 `w 0 = 0`，
+  于是它们的像第一坐标为零，即落在 `Bd M` 里。
+  `a s ≤ 0`、`a t ≤ 0` 在月牙那边由"滑移量在弧端为零"（§64 的位移判据）给出，
+  也正是任务口径里"两端为零"真正被用到的地方——**它对 2-球性质无用，对 `hD₂bd` 必需**。
+- 中间件：`mem_interior_graphRegion`（`w 1 ∈ Ioo s t`、`0 < w 0 < a (w 1)` ⟹ 内点，
+  用 `ContinuousAt.eventually_lt` + `filter_upwards`，不需要 `a` 分片仿射，只要连续）、
+  `eq_zero_or_eq_of_notMem_interior_graphRegion`、
+  `continuousOn_of_subdivision`（分片仿射的细分 ⟹ `ContinuousOn a (Icc (σ 0) (σ (N+1)))`，
+  对 `N` 归纳 + `ContinuousOn.union_of_isClosed` + `Icc_union_Icc_eq_Icc`）。
+- 工具层事实：本树 Mathlib 的 `push_neg` 已弃用（改 `push Not`，或像这里直接手写两条 `≠`）；
+  `ContinuousAt.comp` 在 `fun x => a (x 1)` 这种形状上高阶合一会选错，必须显式给 `(g := ) (f := )`。

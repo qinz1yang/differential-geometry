@@ -4,7 +4,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.GeneralPosition
 import DifferentialGeometry.Topology.PiecewiseLinear.Product
 import DifferentialGeometry.Topology.PiecewiseLinear.DiskCrosscut
 
-open Set
+open Set Topology
 
 namespace DifferentialGeometry.Topology.PiecewiseLinear
 
@@ -16,6 +16,9 @@ theorem planePoint_apply_one (x y : ℝ) : planePoint x y 1 = y := rfl
 
 def graphRegion (a : ℝ → ℝ) (s t : ℝ) : Set (EuclideanSpace ℝ (Fin 2)) :=
   {w | w 1 ∈ Icc s t ∧ 0 ≤ w 0 ∧ w 0 ≤ a (w 1)}
+
+def graphArc (a : ℝ → ℝ) (s t : ℝ) : Set (EuclideanSpace ℝ (Fin 2)) :=
+  {w | w 1 ∈ Icc s t ∧ w 0 = a (w 1)}
 
 theorem coordPair_apply (w : EuclideanSpace ℝ (Fin 2)) :
     (((EuclideanSpace.projₗ (0 : Fin 2)).prod
@@ -232,5 +235,75 @@ theorem isPLBall_two_and_closure_inside_frontier_graphRegion {N : ℕ} {σ : ℕ
     have h := isPLBall_two_graphRegion_of_subdivision hσ haff (by rw [hσ0, hσN]; exact hpos)
     rwa [hσ0, hσN] at h
   exact ⟨hball, hball.closure_inside_frontier⟩
+
+theorem continuousOn_of_subdivision {N : ℕ} {σ : ℕ → ℝ} {a : ℝ → ℝ}
+    (hσ : ∀ k ≤ N, σ k < σ (k + 1))
+    (haff : ∀ k ≤ N, ∃ p q : ℝ, ∀ u ∈ Icc (σ k) (σ (k + 1)), a u = p * u + q) :
+    ContinuousOn a (Icc (σ 0) (σ (N + 1))) := by
+  induction N with
+  | zero =>
+    obtain ⟨p, q, hpq⟩ := haff 0 le_rfl
+    exact ContinuousOn.congr
+      ((continuous_const.mul continuous_id').add continuous_const).continuousOn hpq
+  | succ n ih =>
+    have hIH := ih (fun k hk => hσ k (by omega)) fun k hk => haff k (by omega)
+    obtain ⟨p, q, hpq⟩ := haff (n + 1) le_rfl
+    have hlast : ContinuousOn a (Icc (σ (n + 1)) (σ (n + 1 + 1))) :=
+      ContinuousOn.congr
+        ((continuous_const.mul continuous_id').add continuous_const).continuousOn hpq
+    rw [← Icc_union_Icc_eq_Icc (lt_of_subdivision fun k hk => hσ k (by omega)).le
+      (hσ (n + 1) le_rfl).le]
+    exact hIH.union_of_isClosed hlast isClosed_Icc isClosed_Icc
+
+theorem mem_interior_graphRegion {a : ℝ → ℝ} {s t : ℝ} (hcont : ContinuousOn a (Icc s t))
+    {w : EuclideanSpace ℝ (Fin 2)} (hw1 : w 1 ∈ Ioo s t) (hw0 : 0 < w 0)
+    (hlt : w 0 < a (w 1)) : w ∈ interior (graphRegion a s t) := by
+  have hc0 : Continuous fun x : EuclideanSpace ℝ (Fin 2) => x 0 :=
+    (EuclideanSpace.proj (0 : Fin 2)).continuous
+  have hc1 : Continuous fun x : EuclideanSpace ℝ (Fin 2) => x 1 :=
+    (EuclideanSpace.proj (1 : Fin 2)).continuous
+  have hIcc : Icc s t ∈ 𝓝 (w 1) :=
+    mem_nhds_iff.mpr ⟨Ioo s t, Ioo_subset_Icc_self, isOpen_Ioo, hw1⟩
+  have hA : ContinuousAt (fun x : EuclideanSpace ℝ (Fin 2) => a (x 1)) w :=
+    ContinuousAt.comp (g := a) (f := fun x : EuclideanSpace ℝ (Fin 2) => (x 1 : ℝ))
+      (hcont.continuousAt hIcc) hc1.continuousAt
+  rw [mem_interior_iff_mem_nhds]
+  filter_upwards [(isOpen_lt continuous_const hc1).mem_nhds hw1.1,
+    (isOpen_lt hc1 continuous_const).mem_nhds hw1.2,
+    (isOpen_lt continuous_const hc0).mem_nhds hw0,
+    hc0.continuousAt.eventually_lt hA hlt] with x hx1 hx2 hx3 hx4
+  exact ⟨⟨hx1.le, hx2.le⟩, hx3.le, hx4.le⟩
+
+theorem eq_zero_or_eq_of_notMem_interior_graphRegion {a : ℝ → ℝ} {s t : ℝ}
+    (hcont : ContinuousOn a (Icc s t)) (has : a s ≤ 0) (hat : a t ≤ 0)
+    {w : EuclideanSpace ℝ (Fin 2)} (hw : w ∈ graphRegion a s t)
+    (hwi : w ∉ interior (graphRegion a s t)) : w 0 = 0 ∨ w 0 = a (w 1) := by
+  by_contra hcon
+  have hne0 : w 0 ≠ 0 := fun h => hcon (Or.inl h)
+  have hnea : w 0 ≠ a (w 1) := fun h => hcon (Or.inr h)
+  obtain ⟨⟨hs, ht⟩, h0, h1⟩ := hw
+  have hpos : 0 < w 0 := lt_of_le_of_ne h0 (Ne.symm hne0)
+  have hlt : w 0 < a (w 1) := lt_of_le_of_ne h1 hnea
+  have hnes : w 1 ≠ s := by
+    intro h
+    rw [h] at hlt
+    linarith
+  have hnet : w 1 ≠ t := by
+    intro h
+    rw [h] at hlt
+    linarith
+  exact hwi (mem_interior_graphRegion hcont
+    ⟨lt_of_le_of_ne hs (Ne.symm hnes), lt_of_le_of_ne ht hnet⟩ hpos hlt)
+
+theorem frontier_graphRegion_subset {a : ℝ → ℝ} {s t : ℝ}
+    (hclosed : IsClosed (graphRegion a s t)) (hcont : ContinuousOn a (Icc s t))
+    (has : a s ≤ 0) (hat : a t ≤ 0) :
+    frontier (graphRegion a s t) ⊆ {w : EuclideanSpace ℝ (Fin 2) | w 0 = 0} ∪ graphArc a s t := by
+  intro w hw
+  have hwR : w ∈ graphRegion a s t := hclosed.frontier_subset hw
+  rcases eq_zero_or_eq_of_notMem_interior_graphRegion hcont has hat hwR
+    ((mem_frontier_iff_notMem_interior hwR).mp hw) with h | h
+  · exact Or.inl h
+  · exact Or.inr ⟨hwR.1, h⟩
 
 end DifferentialGeometry.Topology.PiecewiseLinear
