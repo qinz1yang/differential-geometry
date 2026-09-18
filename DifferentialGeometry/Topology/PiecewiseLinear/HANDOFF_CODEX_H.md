@@ -2211,3 +2211,41 @@ M1 只给"PL 同胚于一个锥"，不给"是一个锥"，所以绕不过去。
 `segment q z ∪ segment q d` 并成 `segment z d`）与公共面对（第 17 节）尚未接，
 两者与 `isPLBallPair_cut_left` 同型，属机械重复；
 另外第 20/21 节的并等式与交等式尚未并入本模块的结论。第 3、4 步未开始。**不报区间。**
+
+## 31. 2026-09-18 模型拼装完成：四对与两条集合等式（`BallPairCutModel.lean`）
+
+在第 30 节的构型上补齐，新增一个构型条件 `hℓp : ℓ p < r`（顶点严格落在近侧），
+这是 `C₂` 与公共面那两条交恒等式要的严格不等号，属于对 `p` 的选点条件。
+
+- `isPLBallPair_cut_right`：**`C₂` 对加交恒等式**。生产者给的是
+  `segment ℝ q z ∪ segment ℝ q d`，再由第 19 节 `segment_union_segment_of_mem_segment hqs`
+  （`q ∈ segment ℝ z d`）并成 `segment ℝ z d`；交恒等式用第 29 节的 ge 版本。
+- `isPLBallPair_cut_face`：**公共面对加交恒等式**，第 17 节加第 29 节的超平面版本。
+- `convexHull_cut_union`：`conv T₁ ∪ conv T₂ = conv T`（第 20 节）。
+  所需的 `c ∉ F`、`c ≠ m`、`d ≠ m`、`c ≠ d` 都从 `hcdF`／`hcmF`／`hdmF` 推出，不必另设变量。
+- `convexHull_cut_inter`：`conv T₁ ∩ conv T₂ = conv Fm`（第 21 节）。
+  这两条都不需要有限维，加 `omit`。
+
+**四对与两条等式齐了**，即第 3 步要的模型数据全部到位。
+
+聚焦检查 `BallPairCutModel` exit=0（15.7 秒）、零 warning；
+`.lake/scratch/AuditHCutModel.lean` 七项仅 `propext`、`Classical.choice`、`Quot.sound`。
+
+### 两个坑
+
+1. `unknown identifier` 那条**又踩了一次**，而且是在第 28 节刚把它写成教训之后、由我自己踩的：
+   `inter_arc_of_subset_halfSpace_le` 在 `SegmentSplit.lean`，`BallPairArc` 那条导入链不含它。
+   补 `import` 即解决，没有任何东西缺失。
+   **记下来不等于免疫**——下次看到 `unknown identifier` 先查导入，再想别的。
+2. `(hFm : AffineIndependent ℝ ((↑) : (insert m F : Finset E) → E))` 这个 binder
+   **单独一个 `insert` 时**会报 `cannot coerce x to type Finset E → Finset E → E`，
+   而两层 `insert`（`insert c (insert d F)`）写法相同却没问题。
+   把到 Sort 的强制写成显式 `↥`（`((↑) : ↥(insert m F : Finset E) → E)`）即通过。
+   不清楚根因，但现象与修法都确切，下次直接写 `↥`。
+
+### 剩余
+
+第 3 步（相对黏合，照 `BallGluing.lean:11` 模板，用 `IsPLBallPair.of_isPLHomeomorphOn` 把模型搬到
+`(C ∪ D, A)`，用 M2 `exists_isPLHomeomorphOn_coneSet_pair_of_disk_marked` 提供
+`PLPiece.lean:83` 要的逐点相等）与第 4 步（沿弧的链归纳，`arcChainFace_subset_iff`）
+**未开始，不报区间**。给 F 的输出形状仍未定。
