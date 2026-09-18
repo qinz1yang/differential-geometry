@@ -11140,3 +11140,9 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.Terminal
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.TerminalKernel
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.StrongNeckCompactPlacement
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedSourceBallSandwich
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.LpMultiplication
+import DifferentialGeometry.Analysis.Integration.Lp.ReciprocalCoefficient
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakDerivative.LinearOperator
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.H1.Lifting
+import DifferentialGeometry.Analysis.Integration.Lp.BoundedConvergence
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedComponentImage
