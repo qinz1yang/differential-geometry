@@ -1506,3 +1506,36 @@ theorem eq_top_of_boundaryLoops_mem_normal
   `BranchBoundaryCollar` 与 `BranchCaseThreeFour`，因此也顺带验证这两支没有重名声明）
   的 11 条 `#print axioms` 全部只含 `propext`、`Classical.choice`、`Quot.sound`。
   全程无其它 `lean.exe`。
+
+## 58. 2026-09-18 E3-M3：§55 的 `hdom` 与 `hfactor` 被 §38 的 double 生产者消掉
+
+状态：done。新模块 `BoundaryWordDoubleCell.lean`（模块名在四条车道分支上都不存在）。
+这是 §55 末尾列出的"确切剩余义务"里的第 1 条。
+
+- `NormalSystem.exists_boundary_word_loop_dichotomy_in_double`：在
+  `double 3 S.manifoldComplex` 的 charted space 里**取出** §38 的
+  `NormalSystem.exists_singular_two_cell_in_double` 给的那个 `D`，于是
+  `hdom : D.domain = S.sourceComplex.space` 直接是它的第一条输出；
+  `hfactor` 由它的第二条输出 `EqOn (fun x => (D x : E × E × ℝ)) (ι ∘ S.singularMap)
+  S.sourceComplex.space` 加上 `ι` 在 `K.space` 上的单射性得到，其中
+  `ι := simplicialMap K (glueEmbed₂ (boundaryComplex 3 K) id)`，单射性由
+  `isPLHomeomorphOn_embedComplex K (glueEmbed₂ B id) (glueSnd E E) (fun _ _ _ _ => rfl)`
+  的 `.bijOn.injOn` 给出（与 `LemmaTwo.lean` 内部用的是同一条），
+  `frontier D.domain ⊆ D.domain = S.sourceComplex.space` 由 `SingularTwoCell.frontier_subset_domain`
+  加 `hdom` 给出，两个点都落在 `K.space` 里靠 `S.singularMap_mapsTo_manifoldComplex`。
+- 输出形状：`∃ D, D.domain = S.sourceComplex.space ∧ ∀ BdM Bn (hD : NormalSingularCellData D BdM Bn)
+  (c : hD.singularSet.Branch), IsBoundaryBranch c → <§55 的四段弧二分>`。
+  也就是说 §55 的端点在这两个输入上**已经无条件**；还需要的只有该 `D` 上的
+  `NormalSingularCellData`（正规化数据）与一个触边分支，这是另一层的义务，不是本节的缺口。
+- 实现上的两个坑（记下免得重走）：
+  1. §38 的陈述以 `let K := …; letI : Finite K.faces := …; letI := combinatorialChartedSpace …`
+     开头，但两条 `letI` 的实例在 elaboration 时被 zeta 约简掉，目标里**只剩 `K` 一个 `let`**。
+     证明里要写 `intro K`（不是 `intro K _ _`），再自己用 `let _ : Finite K.faces := …`
+     与 `let _ := combinatorialChartedSpace …` 把两个实例放回局部上下文，否则
+     `Finite K.faces` 与 `ChartedSpace (EuclideanSpace ℝ (Fin 3)) ↑(double 3 K).space` 都合成不出来。
+  2. 这两条要写 `let _ :=` 而不是 `letI :=`：目标是命题时 `linter.style.haveILetI` 会对 `letI` 报警。
+- 未做（保持主人指定的范围）：§43 的障碍仍在，`L₂` 的实际重贴胞腔没做；Case 1/2 未开始。
+- 验证：`BoundaryWordDoubleCell` 聚焦检查 exit=0（11.0 秒）、零 warning；
+  `.lake/scratch/AuditE3BoundaryCollar.lean`（同时 import `BranchBoundaryCollar`、
+  `BranchCaseThreeFour` 与 `BoundaryWordDoubleCell`）的 12 条 `#print axioms` 全部只含
+  `propext`、`Classical.choice`、`Quot.sound`。全程无其它 `lean.exe`。
