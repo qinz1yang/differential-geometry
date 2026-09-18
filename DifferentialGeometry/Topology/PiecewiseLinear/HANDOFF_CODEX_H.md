@@ -1416,3 +1416,60 @@ M2 的路线是：先把 `g` 从子盘 `D` 延到整个边界球面并把弧的�
 需要在 M2 陈述里显式写出、否则不成立的条件：**弧的两个端点必须一个在 `D` 的开胞腔里、
 一个在补盘 `A` 的开胞腔里**（不能落在公共圆周 `D ∩ A` 上），否则 M1 对补盘不适用。
 这不是技术限制而是几何前提：子盘 `D` 必须把两个端点分开。
+
+## 14. 2026-09-18 M2 已闭合（`SphereDiskMarked.lean`、`ConeDiskPairExtension.lean`）
+
+### 第一步：带标记点的球面延拓（`SphereDiskMarked.lean`）
+
+- `exists_isPLHomeomorphOn_extension_marked_stdSimplexBoundary`：把第 13 节的带标记延拓改用
+  `stdSimplexBoundary (m+1)` 表述（经 `simplexBoundary_stdVertices_space` 一次改写），
+  好让树里既有的盘引理直接对接。
+- `exists_isPLHomeomorphOn_eqOn_disk_of_isPLSphere_two_marked`：设 `S`、`S'` 是 2-球面，
+  `D ⊆ S`、`D' ⊆ S'` 是 2-球，`g : D → D'` 是 PL 同胚，
+  `y ∈ closure (S \ D) \ D`、`y' ∈ closure (S' \ D') \ D'`，则存在 `G` 使
+  `IsPLHomeomorphOn G S S'`、`EqOn G g D` 且 **`G y = y'`**。
+  骨架照抄 `SphericalDiskExtension.lean:11`，只把其中
+  `exists_isPLHomeomorphOn_of_stdSimplexBoundary`（无标记）换成第 13 节的带标记延拓，
+  并先用 M1 把补盘的参数化重心挪到 `y`。
+  **不需要**第 13 节的 `image_stdSimplexBoundary_congr`：
+  `SphericalDiskComplement.lean:160 IsPLSphere.image_stdSimplexBoundary_complement`
+  对**任意**参数化 `q` 都给 `q '' stdSimplexBoundary 2 = closure (S \ D) ∩ D`，
+  所以 M1 造出来的参数化的边界圆自动就是 `D ∩ A`。这是又一次"障碍其实是找错引理形状"。
+  `y` 落在补盘开胞腔的条件恰好化简成 `y ∉ D`：
+  `a '' openSimplex = A \ (A ∩ D) = A \ D`（`Set.sdiff_self_inter`）。
+
+### 第二步：锥化进球内（`ConeDiskPairExtension.lean`）
+
+- `exists_isPLHomeomorphOn_coneSet_pair_of_disk_marked`：**M2 本体**。输入锥数据
+  `IsConeBase p Lc`、`J.faces ⊆ Lc.faces`、`IsPLSphere 2 Lc.space`（另一侧同），
+  边界球面里的子盘 `D`、`D'` 与 `g`，端点分离数据 `y`、`y'`，以及
+  `hJsplit : J.space = J.space ∩ D ∪ {y}`、`hJ'split`、`hgJ : g '' (J.space ∩ D) = J'.space ∩ D'`；
+  输出 `G` 使 `IsPLHomeomorphOn G (coneSet p Lc.space) (coneSet q Lc'.space)`、
+  `EqOn G g D`、`G p = q`、`G '' coneSet p J.space = coneSet q J'.space`。
+  证明五行：带标记球面延拓给 `Gs`，`hJsplit` 把 `Gs '' J.space = J'.space` 算出来，
+  再喂第 10 节的 `exists_isPLHomeomorphOn_coneSet_pair`。
+
+### 端点分离假设：为什么写成 `hJsplit` 而不是别的
+
+协调者要求把"弧的两个端点一个在 `D` 的开胞腔、一个在补盘开胞腔、都不在公共圆周上"写进陈述。
+实际可用的形式是三条：`hy : y ∈ closure (Lc.space \ D) \ D`（第二个端点在补盘开胞腔）、
+`hJsplit : J.space = J.space ∩ D ∪ {y}`（弧的链**恰好**由 `D` 内的部分加上 `y` 组成）、
+以及 `hgJ`（`g` 把 `D` 内那部分送对）。
+不能只写"两个端点"：`IsPLBallPair 2 1` 按定义只要求 `IsPLBall 1 A`，**不蕴含** `J.space` 是两个点，
+所以要么额外假设 `IsPLSphere 0 J.space`，要么像这里一样直接假设链在 `D` 与 `{y}` 之间的分解。
+后者更弱也更好用，`hJsplit` 正是"`D` 把两端点分开"的精确内容。
+
+聚焦检查 `SphereDiskMarked` exit=0（9.9 秒）、`ConeDiskPairExtension` exit=0（9.8 秒），均零 warning；
+`.lake/scratch/AuditHM2.lean`（同时导入 `SphericalDiskExtension` 与 `BallPairModel`）
+三项仅 `propext`、`Classical.choice`、`Quot.sound`。
+
+坑：`Set.diff_self_inter` 已废弃，用 `Set.sdiff_self_inter`（与第 12 节的
+`diff_diff_cancel_left → sdiff_sdiff_cancel_left` 是同一批改名）。
+本节两个定理里 `coneComplex` 都只出现在证明中，故用证明内 `classical`，不要留 `[DecidableEq]` 参数。
+
+### 第 3、4 步未开始
+
+第 3 步（相对球黏合，照 `BallGluing.lean:11` 模板）与第 4 步（沿弧的链归纳，
+用 `ArcDerivedNeighborhood.lean:73 arcChainFace_subset_iff`）本次未开始，未估成本。
+M2 已经把 `IsPLHomeomorphOn.piecewise` 所需的"两个同胚在重叠上逐点相等"这一条备好：
+第二个同胚由 M2 延拓第一个而来，重叠上相等是构造给出的，不是额外义务。
