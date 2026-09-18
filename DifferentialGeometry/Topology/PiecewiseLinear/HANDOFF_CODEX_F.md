@@ -2301,3 +2301,35 @@ F-M1 仍为 partial。单个旧三角形的全部纤维及逐边对应已闭合�
 `of_locallyFinite_cover` 与 `isLocallyPolyhedral_space_of_locallyFinite` 接收集合自身拓扑中的局部有限有限多面体覆盖／单形覆盖，推出新谓词；局部有限性不强加在整个环境空间，因而允许开胞腔。新定义不捆绑一个全局无限复形，本次未声明从局部条件反向构造一个全局相容无限三角剖分。
 
 新 F-M2 的定义及所需基本接口 done：`LocallyPolyhedral` 最终检查 exit=0（8.7 秒）、零 warning；`AuditF252.lean` 全部 22 个公开定义与端点仅标准三公理。F5.2 仍按 §19.102 保持 partial，当前完整安排约束路线 blocked。下一审计文件 `AuditF253.lean`。
+
+### 19.104 新 F-M2：局部多面体性经 PL 同胚的实际搬运
+
+`LocallyPolyhedralImage.lean` 的 `IsLocallyPolyhedral.image_of_isPLHomeomorphOn`：若 `S` 局部多面体、
+`S ⊆ U` 且 `f` 在 `U` 上是到 `V` 的 PL 同胚，则 `f '' S` 局部多面体。证明在每点取 `S` 内的紧致多面体相对邻域 `P`，
+用 `IsPolyhedron.image_of_isPiecewiseAffineOn`（f 在 P 上逐片仿射且单射）得到 `f '' P` 是有限多面体，
+再用逆映射在 `V` 上的逐片仿射性（故连续）经 `continuousOn_iff'` 把 `P` 的相对邻域性搬成 `f '' P` 在 `f '' S` 中的
+相对邻域性。没有假设 `f '' S` 或 `V` 是开集，也没有假设 `S` 紧致。
+`IsLocallyPolyhedral.image_invFunOn_of_isPLHomeomorphOn` 用既有的 `IsPLHomeomorphOn.symm` 给出反方向。
+§32 需要的是把 `IsLocallyPolyhedral (U \ P)` 在 PL 图卡之间搬运，这一条正是那一步。
+
+检查 `LocallyPolyhedralImage` exit=0（7.9 秒）、零 warning；`AuditF253.lean` 两项仅
+`propext`、`Classical.choice`、`Quot.sound`。注意：`IsPLHomeomorphOn.symm` 早已存在于 `PLHomeomorph.lean`
+（在 `namespace IsPLHomeomorphOn` 内写作 `theorem symm`），按名字 grep 找不到；本轮一度重证，被编译器的
+"已声明" 报错挡下。下一审计文件 `AuditF254.lean`。
+
+### 19.105 E3 交来的分离生产者：沿圆分支时需要双侧性（数学分析，未形式化）
+
+E3 §44 把 `exists_supported_separation_along_compact_crossing_arc` 交给 F。逐点局部模型缺的两项里，
+第一项（哪张平面对应固定源片 `A`）其实不是选择：两张片只沿 `S` 相交，故"含 `D(A)` 的那张平面"在每个图卡里
+唯一确定，可以直接把它作为定义，不需要沿分支作相容选择。
+
+第二项（横向商线的正向）是真的障碍，而且它不是技术性的：把 `A` 推离 `Q` 需要 `Q` 沿 `S` 的法线丛有不消失的截面，
+即 `Q` 沿 `S` 双侧。若 `S` 是圆且该法线丛不可定向（Möbius 情形），任何支撑在 `S` 邻域内的环境同胚都不能使
+`h(A) ∩ Q = ∅`：`A` 与 `Q` 沿 `S` 的模二相交数是该芽的同痕不变量。因此按 E3 现在的措辞，该生产者对一般紧致 PL
+1-球面 `S` 为假，必须加上"`Q` 沿 `S` 双侧"或等价的相容框架假设。
+
+对 §25.1 实际需要的情形这不是限制：Case 3/4 里的 `A_j` 是**触边分支**，即端点落在 `Bd |D|` 上的弧。
+区间上的 ±1 丛平凡，故相容正向自动存在；端点处的半空间模型只额外要求推移方向与 `Bd M` 相切。
+建议把生产者重述为两条：(i) 弧情形无条件（先沿弧的有限图卡链按次序传播正向，再插值）；
+(ii) 圆情形以双侧性为显式假设。E3 §44 列出的输出条款其余部分不变。本条只是分析，没有 Lean 端点。
+
