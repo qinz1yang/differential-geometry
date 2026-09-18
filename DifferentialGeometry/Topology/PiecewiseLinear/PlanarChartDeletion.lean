@@ -33,7 +33,7 @@ theorem exists_isPLHomeomorphOn_eraseTriangleComplex_in_planar_chart
   have hdE : dE = fun a b => Classical.propDecidable (a = b) := Subsingleton.elim _ _
   subst dE
   let _ : DecidableEq (EuclideanSpace ℝ (Fin 2)) := Classical.decEq _
-  obtain ⟨M, ψ, hMfin, hMspace, hIso, -, hsm⟩ := exists_isGlueIso_of_affineOn_faces K hAff hinj
+  obtain ⟨M, ψ, hMfin, hMspace, hIso, -, hsm, -⟩ := exists_isGlueIso_of_affineOn_faces K hAff hinj
   let _ : Finite M.faces := hMfin.to_subtype
   let P := faceStarComplex K s
   let N := faceStarComplex M (s.image f)

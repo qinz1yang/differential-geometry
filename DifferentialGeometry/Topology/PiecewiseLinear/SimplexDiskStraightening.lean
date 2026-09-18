@@ -151,7 +151,7 @@ theorem exists_isPLHomeomorphOn_straighten_disk_on_simplexBoundary
   have hJAff : ∀ w ∈ J.faces, ∃ C : E →ᵃ[ℝ] EuclideanSpace ℝ (Fin 2),
       EqOn A C (convexHull ℝ (w : Set E)) := fun _ _ => ⟨A, fun _ _ => rfl⟩
   have hAinj : InjOn A J.space := hJspace.symm ▸ hA.bijOn.injOn
-  obtain ⟨L', ψ', hL'fin, -, hIso', hA', -⟩ := exists_isGlueIso_of_affineOn_faces J hJAff hAinj
+  obtain ⟨L', ψ', hL'fin, -, hIso', hA', -, -⟩ := exists_isGlueIso_of_affineOn_faces J hJAff hAinj
   let _ : Finite L'.faces := hL'fin.to_subtype
   have hL' : IsPLBall 2 L'.space := hJ.of_isPLHomeomorphOn hA'
   obtain ⟨H, hH, hHC, hHJ, hHfix⟩ := exists_isPLHomeomorphOn_straighten_to_face_on_simplexBoundary
