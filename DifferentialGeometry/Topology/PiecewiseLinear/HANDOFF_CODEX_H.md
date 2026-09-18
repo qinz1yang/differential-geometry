@@ -1337,3 +1337,26 @@ grep，不能只在建文件时 grep 一次**；而且导入面窄会让本地�
 IsPLHomeomorphOn.image_stdSimplexBoundary` 的写法，把 `g '' stdSimplexBoundary (m+1)` 证成
 `(boundaryComplex (m+1) K).space`（`K.space = P` 的任意复形），即得 `g` 无关性。估 10–40 行，未验证。
 余维零版本不受此限定影响：它的假设是真正的 `interior P`，完全内蕴。
+
+### M1 的参数化限定已消除 — done（同模块）
+
+第 12 节末尾留的那条限定（任意余维版本的假设相对于给定参数化 `g`）现已闭合，估计 10–40 行属实。
+
+- `IsPLHomeomorphOn.image_stdSimplexBoundary_eq_boundaryComplex`：设 `K.space = P`，则
+  `g '' stdSimplexBoundary (m+1) = (boundaryComplex (m+1) K).space`。两行：
+  `BoundaryOfBall.lean:66 boundaryComplex_space_of_isPLHomeomorphOn_stdSimplex` 加
+  `SimplexBoundaryImage.lean:38 simplexBoundary_stdVertices_space`。
+  `BallFrontier.lean:9` 末尾那段 `convert ... congr 2; Subsingleton.elim` 在这里**不需要**，
+  因为不再把结果化成 `frontier P`（那一步才是余维零专有的）。
+- `IsPLHomeomorphOn.image_openSimplex_eq_sdiff_boundaryComplex`：
+  `g '' openSimplex (stdVertices m) = P \ (boundaryComplex (m+1) K).space`。右边只依赖 `K`，
+  与参数化无关，这就是所要的 `g` 无关性。
+- `IsPLBall.exists_isPLHomeomorphOn_stdSimplex_stdCenter_eq_of_notMem_boundaryComplex`：
+  **内蕴版 M1**。假设改成 `x ∈ P \ (boundaryComplex (m+1) K).space`（`K` 是 `P` 的任意三角剖分），
+  结论不变。至此 starring 在任意余维下都是内蕴陈述。
+
+坑：`boundaryComplex` 出现在**陈述**里，所以要显式 `[DecidableEq E]` 参数，不能用证明内 `classical`；
+这与第 10 节 `BallPair` 那边的情况相反（那里 `coneComplex` 只出现在证明里）。
+
+聚焦检查 `BallStarring` exit=0（9.7 秒）、零 warning；审计八项仅
+`propext`、`Classical.choice`、`Quot.sound`。
