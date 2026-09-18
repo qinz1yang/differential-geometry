@@ -4124,3 +4124,45 @@ E3（HANDOFF_CODEX_L §81.3）证明单平面边界模型对触边分支无实�
 F 检查进程已结束；源码、根登记、本记录与 `MOISE_CHAIN.md` 状态随同一数学提交交付。
 完整弧链仍 partial：尚缺实际分支上两片的统一标记、相邻胞腔片迹匹配及单射全局图卡。
 下一审计编号为 `AuditF288.lean`。
+
+### 19.148 触边分支的一致标记多面体源片邻域（2026-09-18）
+
+§19.147 已在 `7302186ab` 推送。本层从真实 `NormalSingularCellData` 的触边分支生产源侧邻域，
+不消费弱 transcription 的横截结论，也不把最终环境图卡的相容性作为输入。
+
+**源片邻域生产层 done：`BoundaryBranchSheets.lean`。** 公开端点
+`NormalSingularCellData.exists_polyhedral_sheet_neighborhoods_of_boundaryBranch`。
+它调用现有 `exists_two_isPLBalls_branchPreimage_of_boundaryBranch_with_coordinate`，取得
+实际分支原像的两条不交 PL 弧 `A, C` 及其共同分支坐标。由该坐标的单射性推出 `D` 在各弧上
+单射；用 Mathlib 的 `Set.InjOn.exists_isOpen_superset` 将紧弧上的单射性与真实
+`locallyInjective` 字段扩到相对源域的邻域。分离这两条紧弧后，用现有多面体邻域定理取得
+不交多面体 `S, T ⊆ D.domain`，分别是整条 `A, C` 的相对邻域，且 `D` 在每片上均为嵌入
+并保留 `IsPLOn 2 3`。它们并未被声明为 PL 2-球。
+
+再从源域子类型中两片相对内部的补集出发，用紧致源域映射的闭性构造开集 `W`，满足：
+
+- 整条实际 `branchCarrier c` 落在 `W` 内；
+- 对每个 `y ∈ W`，全部纤维 `D.domain ∩ D ⁻¹' {y}` 均落在固定的 `S ∪ T`；
+- `y ∈ doublePointSet D D.domain ↔ y ∈ D '' S ∩ D '' T`。
+
+这在源侧给出沿整条分支固定的两片标签及精确双点集；没有逐点重新选择可能互换的标签。
+`CutAndPaste` 的源片 germ 搬运和 `ConePairExtension` 的标记锥延拓保持原样、未复制。
+尚未生产相邻环境胞腔的边界片迹匹配、保持两片的过渡映射或单射全局板图卡；
+真实 carrier/boundary 的兼容缺口也没有因此消除。
+
+验证：统一私有检查脚本在 `F-BranchSheets-20260918` 窗口内于
+2026-09-18 23:15:37 UTC 完成模块检查，exit=0、零诊断、sourceStable=true；
+标准语法 linter 集、header 与 longLine 均启用。外部静默 `AuditF288` 于
+23:18:12 UTC 完成最终审计：本模块一个公开定理、一个私有引理及三个复用关键端点，
+共五项传递公理闭包仅含 `propext`、`Classical.choice`、`Quot.sound`。
+复用项为上述分支两弧生产者、Mathlib 的开单射邻域定理与
+`mem_doublePointSet_iff_mem_image_inter_of_injOn`；本模块全部非自动声明均纳入审计。
+默认环境 linter 集仅排除 `docBlame`、`docBlameThm`，显式断言恰有 13 项且全部通过；
+审计 exit=0、零诊断。源码 SHA256 为
+`45AEA24E05FE32A4530A42D4B5A6295A058C6937209F538BC2722540D0C54245`。
+回执、空日志、importArts 与私有产物位于
+`C:\Users\liao9\AppData\Local\Temp\codex-f-boundary-private`，共享对象未改写。
+本轮复用导入模块的既有对象；独立完整源码根重编仍由协调者负责，本结果未宣称该根检查完成。
+源码、根登记、交接与计划同提交交付。完整板图卡仍 partial，下一步是固定源片与既有 crossing
+片的局部 germ 对齐，再生产相邻胞腔片迹匹配；真实载体/边界兼容继续保持显式。
+下一审计编号为 `AuditF289.lean`。
