@@ -3552,3 +3552,50 @@ import ...StarPair failed, environment already contains
 所以本轮不写，等接口定下来再一次成型，避免写两遍。
 
 本轮无 Lean 改动，按 `AGENTS.md` §1 作纯文档提交。下一审计文件 `AuditF278.lean`。
+
+### 19.136 链层陈述已闭合（§19.115 的图卡条款）；germ 入口的确切缺口
+
+**本轮闭合两条**（新模块 `BranchChainChart.lean`）
+- `isPLHomeomorphOn_iUnion_of_forall`：若 `Φ` 在每个开集 `U i` 上是到 `V i` 的 PL 同胚，
+  且 `Φ` 在 `⋃ U i` 上单射，则 `IsPLHomeomorphOn Φ (⋃ i, U i) (⋃ i, V i)`。
+  正、逆两向都用 `isPiecewiseAffineOn_of_locally`（`PiecewiseAffine.lean:197`）局部化：
+  正向取 `v := U i`，逆向取 `v := V i`（关键是目标写成 `⋃ V i` 而不是像集，
+  这样 `(⋃ V) ∩ V i = V i` 是开的，`mono` 才能用）；
+  逆向还要证 `Function.invFunOn Φ (⋃ U) = Function.invFunOn Φ (U i)` 在 `V i` 上逐点相等，
+  由两边都是 `w` 在 `⋃ U` 中的原像加 `hinj` 得到。
+- `exists_chart_branch_chain`：**§19.115 的图卡条款**。产出开集 `O = ⋃ U i` 与
+  `IsPLHomeomorphOn Φ O (⋃ i, V i)`，满足 `S ⊆ O ⊆ W`、`O ∩ T = ∅`（无第三张片）、
+  `∀ y ∈ O, y ∈ A → (Φ y).2.2 = 0`、`∀ y ∈ O, y ∈ B → (Φ y).2.1 = 0`。
+
+**五条假设如何落在这条定理里（供 H 对照）**
+1. 顶点族 → `U : ι → Set E` 与每个 `hPL i`。
+2. 相邻在公共连接上一致 → **抽象成"存在单一的 `Φ`"**。连接一致是生产者拼出同一个 `Φ` 的手段；
+   在本层正确的写法就是一个函数在每片上都是 PL 同胚，不必把拼接过程写进假设。
+3. 相容侧选择 → 落在 `hA`、`hB` 上：**每个 `i` 都把 `A` 送进同一张平面**。
+   若侧选择不相容，就无法对所有 `i` 同时给出这两条，正是 §19.134 算出的
+   `ZMod 2 × ZMod 2` 自由度被固定下来的地方。
+4. 覆盖级无第三片 → `hthird : ∀ i, U i ∩ T = ∅`，结论里 `O ∩ T = ∅` 由 `iUnion_inter` 得到。
+5. `S ⊆ ⋃ U i ⊆ W` → `hSU`、`hUW` 直接进出。
+**外加一条必须明说的假设**：`hinj : InjOn Φ (⋃ i, U i)`。
+逐片单射**不蕴含**整体单射（两个相距很远的片可以撞在一起），
+所以这是生产者要另外交付的一条，不是 bookkeeping。它正是"这一族图卡真的拼成一张图卡"的实质内容。
+
+**输出形式**：交付的是 `IsPLHomeomorphOn`，不是 `OpenPartialHomeomorph`。
+本树的下游（§19.113/19.114 的滑动层）收的就是 `IsPLHomeomorphOn` 与 germ 条款，
+所以这是可直接消费的形式；要 `OpenPartialHomeomorph` 需另加一层打包（两向连续 + 源/靶开），
+**本轮未做**，按需再说。
+
+**第 2 项（germ 入口）未做，确切缺口如下**
+候选 `∀ᶠ y in 𝓝 p, y ∈ M.space ∩ N.space ↔ y ∈ A`（`A` 是过 `p` 的弧）形状正确：
+germ 沿 `φ` 可搬，像侧第一张片是真平面、半径无关。搬过去得到
+`∀ᶠ z in 𝓝 0, z ∈ M₁.space ∩ N₁.space ↔ z ∈ φ '' A`。
+**剩下的一步**是从"`M₁ ∩ N₁` 在 `q` 附近是一条弧"推出
+`(link N₁ {q}).space ∩ {x | x.2.2 = 0}` 恰两点：
+先用第一张图卡的 iff 把平面换成 `M₁.space`，于是该集合落在弧上；
+再需要"PL 1-球体内点处的连接是 0-球面（两点）"。
+树里最接近的是 `isPLSphere_or_isPLBall_geometricLink_of_isPLBall`（`BallSphereLink.lean:151`），
+**但它给的是析取**，要额外排除"`q` 是弧的端点"那一支——
+而 `q` 是分支内点，这一支应当可排除，只是要写。**不估行数。**
+
+检查 `BranchChainChart` exit=0（10.9 秒）、零 warning；`AuditF278.lean` 两项仅
+`propext`、`Classical.choice`、`Quot.sound`。下一审计文件 `AuditF279.lean`。
