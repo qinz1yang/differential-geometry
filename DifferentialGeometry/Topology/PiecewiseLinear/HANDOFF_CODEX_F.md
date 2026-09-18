@@ -3599,3 +3599,48 @@ germ 沿 `φ` 可搬，像侧第一张片是真平面、半径无关。搬过去
 
 检查 `BranchChainChart` exit=0（10.9 秒）、零 warning；`AuditF278.lean` 两项仅
 `propext`、`Classical.choice`、`Quot.sound`。下一审计文件 `AuditF279.lean`。
+
+### 19.137 1-球体版链接截面已闭合；"排除端点"这一步是**免费的**，不需要内点论证
+
+**grep 先行的收获**（协调者要求查"树里有没有区分 1-球体的内点与端点"）
+不需要那种区分。真正有用的是两条把低维球/球面**完全刻画**的引理：
+`isPLBall_zero_iff`（`GeneralPosition.lean:655`）：`IsPLBall 0 P ↔ ∃ p, P = {p}`；
+`isPLSphere_zero_iff`（`:710`）：`IsPLSphere 0 P ↔ ∃ a b, a ≠ b ∧ P = {a, b}`。
+于是 `isPLSphere_or_isPLBall_geometricLink_of_isPLBall`（`BallSphereLink.lean:151`）的析取
+两支都给出**具体的集合**：两点或一点。
+
+**因此"排除球体那一支"根本不必做。** 两支的 `encard` 分别是 2 与 1，都 `≤ 2`；
+而一旦另外知道该集合含有两个**不同**的点，单点那一支自动矛盾。
+所以协调者设想的"`q` 是弧的内点 ⟹ 排除端点情形"这条论证**不需要写**——
+是否内点这件事根本不用谈。
+
+**本轮闭合两条**（`VertexBranchSection.lean`）
+- `encard_geometricLink_fiber_le_two_of_isPLBall_one`：若 `K.space ∩ {x | ℓ x = ℓ p}`
+  是 PL **1-球体**（弧），则 `((link K {p}).space ∩ {x | ℓ x = ℓ p}).encard ≤ 2`。
+  证法与 `encard_geometricLink_fiber_of_isPLSphere_one`（`HeightLevelLink.lean:75`）同构，
+  只是把结尾的 `isPLSphere_geometricLink_of_isPLSphere` 换成上面的析取，两支分别算 encard。
+- `geometricLink_fiber_eq_pair_of_isPLBall_one`：再给两个不同的成员 `a`、`b`，
+  得 `(link K {p}).space ∩ {x | ℓ x = ℓ p} = {a, b}`。
+  用 `Set.Finite.eq_of_subset_of_encard_le`（树里的写法见 `BoundaryLinkGerm.lean:77`）。
+
+**这补上了 §19.127 的那个洞。** §19.127 发现 `hfiber : IsPLSphere 1 (…)` 对圆盘状的片恒假；
+现在有了 1-**球体**版，弧状截面（正是闭星被平面截出来的形状）可以直接用。
+消费者要给的从"整片截线是闭曲线"降成"整片截线是一条弧 + 两个不同的交点"，后者真实可满足。
+
+**germ 入口的剩余部分（未做）**
+`∀ᶠ y in 𝓝 p, y ∈ M.space ∩ N.space ↔ y ∈ A` 现在离像侧契约只差把
+`link N₁ {q} ∩ {x.2.2 = 0}` 的两个成员找出来：由上面的定理，只要
+`M₁.space ∩ N₁.space ∩ {x.2.2 = 0}` 是弧（即 germ 条件搬过去）并给出弧与连接的两个交点即可。
+"两个交点"就是弧在 `q` 两侧各穿出连接一次，属于**第二条 germ 条件**（`N` 在 `M` 两侧都有点）
+的内容，与 §19.123 判定的独立性一致——**germ 入口需要两条 germ 条件，不是一条**。
+这一点值得记下：单靠"两片交成一条弧"给不出两侧性。**不估行数。**
+
+**`OpenPartialHomeomorph` 包装：不短，未做。**
+要造结构体需要两向连续（可由 `IsPiecewiseAffineOn.continuousOn` 给）、
+`source`/`target` 开、`toFun`/`invFun` 互逆并且 `map_source`/`map_target` 齐全，
+还要把 `Function.invFunOn` 换成结构体要求的 `invFun` 形式。不是一两行。
+下游滑动层（§19.113/19.114）收 `IsPLHomeomorphOn` 加 germ 条款，不需要它，故按协调者的话略过。
+
+检查 `VertexBranchSection` exit=0（11.3 秒）、`VertexBranchInput` exit=0（11.1 秒）、
+`VertexBranchChartPair` exit=0（11.3 秒）、`BranchChainChart` exit=0（10.9 秒），均零 warning；
+`AuditF279.lean` 两项仅 `propext`、`Classical.choice`、`Quot.sound`。下一审计文件 `AuditF280.lean`。
