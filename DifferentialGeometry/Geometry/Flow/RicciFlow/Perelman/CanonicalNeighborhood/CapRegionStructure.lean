@@ -256,6 +256,23 @@ theorem StrongNeck.frontier_window_eq_union_boundary_spheres {eps : ℝ} {x : M}
     ext y; simp only [Set.mem_insert_iff, Set.mem_singleton_iff, Set.mem_union]
   simp only [hset, Set.prod_union, Set.image_union]
 
+omit [T2Space M] [SigmaCompactSpace M] in
+theorem OrderedNeckChain.isCompact_swept {eps t : ℝ} {V : Set M}
+    (c : OrderedNeckChain S eps t V) : IsCompact V := by
+  rw [c.swept_eq]
+  exact isCompact_iUnion fun i => (isCompact_univ.prod isCompact_Icc).image_of_continuousOn
+    ((c.necks i).map.contMDiffOn_toFun.continuousOn.mono (c.inside i))
+
+omit [T2Space M] [SigmaCompactSpace M] in
+theorem LocalCap.isCompact_tube {eps : ℝ} {x : M} {t : ℝ} {U : Set M}
+    (c : LocalCap S eps x t U) : IsCompact c.tube := c.chain.isCompact_swept
+
+omit [T2Space M] [SigmaCompactSpace M] in
+theorem LocalCap.isCompact_carrier {eps t : ℝ} {x : M} {U : Set M}
+    (c : LocalCap S eps x t U) : IsCompact U := by
+  rw [c.union_eq]
+  exact c.core.compact.union c.isCompact_tube
+
 end NeckChain
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
