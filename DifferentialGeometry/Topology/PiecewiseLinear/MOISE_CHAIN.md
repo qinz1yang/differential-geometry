@@ -909,6 +909,12 @@ F 局部板图卡（2026-09-18，**局部生产层 done；完整链 partial**）
 转写输入允许 `M = N`，不能独自产生这些契约；未标记球对也不等于两片保持。
 聚焦检查与 `AuditF286` 均 exit=0、零诊断，五项声明仅标准三公理，默认适用环境 linters 通过。
 确切声明、输入退化检查和验证边界见 `HANDOFF_CODEX_F.md` §19.146；独立根重编仍待协调者完成。
+`BoundaryDoubleCrossingChart.lean` 的实际双点集半轴图卡层 **done**（§19.147）：
+`HasPLBoundaryDoubleCrossingAt.exists_openPartialHomeomorph_doublePointSet` 及其
+`_of_halfSpace_chart` 版本给出真实载体、边界、两片与实际双点集的双向像契约，并保留全纤维覆盖；
+`HasPLBoundaryCrossingAt.not_eventuallyEq` 排除两片 germ 重合。聚焦检查与 `AuditF287`
+均 exit=0、零诊断，四项声明仅标准三公理，默认适用环境 linters 通过。
+任意 `NormalSingularCellData` 尚不能恢复真实载体；相邻胞腔两片匹配和全局单射图卡仍未闭合。
 
 ## 2026-09-18 Codex: essential boundary in the extended loop theorem
 
