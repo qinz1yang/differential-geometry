@@ -1,7 +1,7 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.PlanarGraphRegion
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.SingularCell
 import DifferentialGeometry.Topology.PiecewiseLinear.PLMap
-import DifferentialGeometry.Topology.PiecewiseLinear.ModelSlideLong
+import DifferentialGeometry.Topology.PiecewiseLinear.ModelSlideFwd
 
 open Set Topology
 
@@ -88,7 +88,8 @@ theorem exists_lune_singularTwoCell {M : Type u} [TopologicalSpace M]
       (∀ w ∈ D₂.domain, D₂ w = E.symm (e.symm (luneModelMap μ ν w))) ∧
       InjOn D₂ D₂.domain ∧
       D₂ '' D₂.domain ⊆ E.symm '' (e.symm '' slideSupportLong R) ∧
-      ∀ z ∈ frontier D₂.domain, z ∉ graphArc α 0 1 → D₂ z ∈ BdM := by
+      (∀ z ∈ frontier D₂.domain, z ∉ graphArc α 0 1 → D₂ z ∈ BdM) ∧
+      ∀ x ∈ D₂.domain, E (D₂ x) ∈ e.source ∧ e (E (D₂ x)) = luneModelMap μ ν x := by
   have hball : IsPLBall 2 (graphRegion α 0 1) :=
     (isPLBall_two_and_closure_inside_frontier_graphRegion hσ0 hσN hσ haff hpos).1
   have hmap1 : MapsTo (fun w : EuclideanSpace ℝ (Fin 2) => w 1) (graphRegion α 0 1) (Icc 0 1) :=
@@ -114,7 +115,7 @@ theorem exists_lune_singularTwoCell {M : Type u} [TopologicalSpace M]
     intro p hp p' hp' h
     rw [← e.right_inv hp, ← e.right_inv hp', h]
   refine ⟨⟨graphRegion α 0 1, hball, fun w => E.symm (e.symm (luneModelMap μ ν w)), hPL⟩,
-    rfl, fun _ _ => rfl, ?_, ?_, ?_⟩
+    rfl, fun _ _ => rfl, ?_, ?_, ?_, ?_⟩
   · intro w hw v hv h
     exact injOn_luneModelMap hmap1 hinj hw hv
       (heinj _ (htgt w hw) _ (htgt v hv)
@@ -135,5 +136,64 @@ theorem exists_lune_singularTwoCell {M : Type u} [TopologicalSpace M]
     change E.symm (e.symm (luneModelMap μ ν z)) ∈ BdM
     rw [hBdE _ hx, E.right_inv (hesrc hy), hBd₁ _ hy, e.right_inv hp]
     exact hz0
+  · intro x hx
+    have hp : luneModelMap μ ν x ∈ e.target := htgt x hx
+    have hy : e.symm (luneModelMap μ ν x) ∈ e.source := e.map_target hp
+    have hEy : E (E.symm (e.symm (luneModelMap μ ν x))) = e.symm (luneModelMap μ ν x) :=
+      E.right_inv (hesrc hy)
+    exact ⟨by rw [show E (E.symm (e.symm (luneModelMap μ ν x))) =
+        e.symm (luneModelMap μ ν x) from hEy]; exact hy,
+      by rw [show E (E.symm (e.symm (luneModelMap μ ν x))) =
+        e.symm (luneModelMap μ ν x) from hEy]; exact e.right_inv hp⟩
+
+theorem lune_ne_of_fiber_height {M : Type u} [TopologicalSpace M]
+    [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
+    (E : OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin 3)))
+    (e : OpenPartialHomeomorph (EuclideanSpace ℝ (Fin 3)) (ℝ × ℝ × ℝ))
+    {α μ ν : ℝ → ℝ} {D₂ : SingularTwoCell M} (hdom : D₂.domain = graphRegion α 0 1)
+    (hchart : ∀ x ∈ D₂.domain, E (D₂ x) ∈ e.source ∧ e (E (D₂ x)) = luneModelMap μ ν x)
+    {S : Set M}
+    (hfib : ∀ y ∈ S, E y ∈ e.source → ∀ s ∈ Icc (0 : ℝ) 1,
+      (e (E y)).2 = (μ s, ν s) → α s ≤ (e (E y)).1) :
+    ∀ x ∈ D₂.domain, x ∉ graphArc α 0 1 → ∀ y ∈ S, D₂ x ≠ y := by
+  intro x hx hxarc y hy heq
+  obtain ⟨hsrc, hval⟩ := hchart x hx
+  rw [heq] at hsrc hval
+  rw [hdom] at hx
+  obtain ⟨hx1, hx0, hxa⟩ := hx
+  have hlt : x 0 < α (x 1) := lt_of_le_of_ne hxa fun h => hxarc ⟨hx1, h⟩
+  have h2 : (e (E y)).2 = (μ (x 1), ν (x 1)) := by
+    rw [hval]
+    rfl
+  have hge := hfib y hy hsrc (x 1) hx1 h2
+  rw [hval] at hge
+  exact absurd hge (not_le.mpr hlt)
+
+theorem slideAmountLong_le_slideMapFwd_fst {d R : ℝ} {p : ℝ × ℝ × ℝ} (hp : 0 ≤ p.1) :
+    slideAmountLong d R (0, p.2) ≤ (slideMapFwd d R p).1 := by
+  have h := slideAmountLong_le_add' (d := d) (R := R) (p := ((0 : ℝ), p.2)) (q := p) rfl hp
+  have hfst : (slideMapFwd d R p).1 = p.1 + slideAmountLong d R p := rfl
+  rw [hfst]
+  have h0 : ((0 : ℝ), p.2).1 = 0 := rfl
+  rw [h0] at h
+  linarith
+
+theorem lune_base_notMem_graphArc {α : ℝ → ℝ} {s : ℝ} (hs : s ∈ Icc (0 : ℝ) 1) (hα : 0 < α s) :
+    planePoint 0 s ∈ graphRegion α 0 1 ∧ planePoint 0 s ∉ graphArc α 0 1 := by
+  refine ⟨⟨hs, le_rfl, hα.le⟩, ?_⟩
+  rintro ⟨-, h⟩
+  exact hα.ne' h.symm
+
+theorem exists_lune_base_off_graphArc {M : Type u} [TopologicalSpace M]
+    [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
+    (E : OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin 3)))
+    (e : OpenPartialHomeomorph (EuclideanSpace ℝ (Fin 3)) (ℝ × ℝ × ℝ))
+    {α μ ν : ℝ → ℝ} {D₂ : SingularTwoCell M} (hdom : D₂.domain = graphRegion α 0 1)
+    (hval : ∀ w ∈ D₂.domain, D₂ w = E.symm (e.symm (luneModelMap μ ν w)))
+    {s : ℝ} (hs : s ∈ Icc (0 : ℝ) 1) (hα : 0 < α s) :
+    ∃ x ∈ D₂.domain, x ∉ graphArc α 0 1 ∧ D₂ x = E.symm (e.symm (0, μ s, ν s)) := by
+  obtain ⟨hmem, hoff⟩ := lune_base_notMem_graphArc (α := α) hs hα
+  rw [← hdom] at hmem
+  exact ⟨planePoint 0 s, hmem, hoff, hval _ hmem⟩
 
 end DifferentialGeometry.Topology.PiecewiseLinear

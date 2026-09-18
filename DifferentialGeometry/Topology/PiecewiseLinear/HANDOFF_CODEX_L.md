@@ -2547,3 +2547,67 @@ step 2 只做了 grep 与接口陈述，没有动工（月牙是一个项目，�
       `n = 0` 与 `s 0 = 0 = s n = 1` 矛盾，所以 `n` 必为 `N + 1`。
   `InjOn (fun u => (μ u, ν u)) (Icc 0 1)` 由 `hinjP : InjOn D P` 加 `θ` 单射得到
   （`e`、`E` 在各自 source 上单射，第一坐标在弧上恒为 0 所以 `(μ, ν)` 与整点互相决定）。
+
+## 79. 2026-09-18 E3-M3：`hD₂disj` 的确切归约，以及它对**当前月牙定义**为假的机制（必须改构造）
+
+状态：归约与模型不等式**已闭合**（并入 `LuneCell.lean`，`check-f.ps1` exit=0 零警告，
+`AuditE3LuneCell.lean` 9 条全部只依赖 `propext / Classical.choice / Quot.sound`）；
+`hD₂disj` 本身**不成立**，下面给出确切的反例机制。这是构造的修改点，不是路线的失败。
+
+- **归约（已证）`lune_ne_of_fiber_height`。** 设 `D₂.domain = graphRegion α 0 1`、
+  `E (D₂ x) ∈ e.source ∧ e (E (D₂ x)) = (x 0, μ (x 1), ν (x 1))`（这一条现在是
+  `exists_lune_singularTwoCell` 的第 5 条输出）。若集合 `S ⊆ M` 满足**纤维高度条件**
+  `∀ y ∈ S, E y ∈ e.source → ∀ s ∈ Icc 0 1, (e (E y)).2 = (μ s, ν s) → α s ≤ (e (E y)).1`，
+  则 `∀ x ∈ D₂.domain, x ∉ graphArc α 0 1 → ∀ y ∈ S, D₂ x ≠ y`。
+  取 `S = D₁ '' D₁.domain` 即 `hD₂disj`。**所以 `hD₂disj` 等价于纤维高度条件**，
+  §74 猜的"严格不等式"路线在 Lean 里就是这一条。
+- **被滑移的那一半无条件成立（已证）`slideAmountLong_le_slideMapFwd_fst`：**
+  `0 ≤ p.1 ⟹ slideAmountLong d R (0, p.2) ≤ (slideMapFwd d R p).1`。
+  由 `slideAmountLong_le_add'`（`ModelSlideFwd.lean:37`）加 `p.1 / 2 ≤ p.1` 得。
+  把 `α s` 取成 `slideAmountLong d R (0, μ s, ν s)`（这**就是**弧上的滑移量，因为弧在
+  `Bd M` 上第一坐标为零），并用 `hDN : MapsTo D D.domain N` 与
+  `hN₁ : y ∈ N₁ ↔ 0 ≤ (e y).1` 得 `0 ≤ p.1`，于是
+  **对一切 `z ∈ P`，`g z = h (D z)` 的高度 ≥ `α s`，纤维高度条件成立，不需要 `InjOn D P`，
+  也不需要"滑移后的胞腔在该纤维上只有一个点"**（§74 担心的纤维分析其实不必做）。
+- **不成立的那一半：`z ∉ P` 时 `g z = D z`，纤维高度条件在 Case 3/4 的构型下必然被违反。**
+  取 `t = 0`：`exists_lune_base_off_graphArc`（已证）说，对每个 `α s > 0` 的 `s`，
+  点 `x = planePoint 0 s` 落在 `D₂.domain` 里、**不**在粘合弧 `graphArc α 0 1` 上，且
+  `D₂ x = E.symm (e.symm (0, μ s, ν s))`，而后者正是**滑移前**的弧点 `D (θ s)`。
+  于是 `hD₂disj` 蕴含：**每个被推离的弧点的原始位置都不在 `g '' D.domain` 里**；
+  因为 `g = D` 在 `P` 外，它蕴含 `D (θ s) ∉ D '' (D.domain \ P)`，
+  即"被推离弧上没有与互补片的双点"。在触边分支端点处这条被违反，逐条理由：
+  1. 触边分支给出 `y₀ ∈ D '' D.domain ∩ BdM`，两个原像 `z_P`、`z_Q`；由 `hinjP : InjOn D P`
+     两者不能都在 `P` 里，故（重排后）`z_Q ∈ Pc \ P`，`g z_Q = D z_Q = y₀`。
+  2. `y₀ ∈ BdM` 加 `hBd₁` 给 `(e (E y₀)).1 = 0`；`hA` 给 `(e (E y₀)).2.2 = 0`（band A）；
+     `D z_Q ∈ W` 加 `hPcQ` 给 `z_Q ∈ Q`，再由 `hB` 给 `(e (E y₀)).2.1 = 0`（band Q）。
+     所以 `e (E y₀) = (0, 0, 0)`，并顺带得到 `0 ∈ Icc a b`。
+  3. `|0| + |0| = 0 < 1`，由 §64 的位移判据 `z_P` 被推离，故 `z_P ∈ W`（被推离集），
+     即存在 `s₀` 使 `θ s₀ = z_P`，且 `(μ s₀, ν s₀) = (0, 0)`。
+  4. `α s₀ = slideAmountLong d R (0,0,0) = max 0 (min d (R/2)) = d > 0`
+     （用 `0 < d`、`c + 2 * d ≤ R`、`0 ≤ c`）。
+  5. 于是 `x = planePoint 0 s₀` 满足 `x ∈ D₂.domain`、`x ∉ graphArc α 0 1`、
+     `D₂ x = E.symm (e.symm (0,0,0)) = y₀ = g z_Q`，`hD₂disj` 给出矛盾。
+  **一句话：月牙的底边就是弧的原始位置，而弧的原始位置在触边分支端点处与互补片重合。**
+- **这不是路线失败，是构造要改。** 三条候选，按可行性排：
+  1. **把月牙的底边挖掉**：域取 `{w | w 1 ∈ Icc 0 1 ∧ 0 < w 0 ≤ α (w 1)}` 的闭包不行
+     （闭包又把底边带回来）；正确做法是**把粘合弧改到底边**、外弧改成图像弧，
+     即把 `B` 取成 `{w | w 0 = 0}` 而不是 `graphArc`——但那样 `hD₂bd` 要求图像弧落在 `Bd M`，
+     而图像弧是滑移后的位置，不在 `Bd M` 上，`hD₂bd` 反而坏掉。**此路不通。**
+  2. **抬高底边**：把域改成 `{w | 0 < ε (w 1) ≤ w 0 ≤ α (w 1)}`，其中 `ε` 分片仿射、
+     在弧端为零。这保持 `hD₂bd`（`w 0 = ε (w 1)` 的那条边不再在 `Bd M` 上，需要重证）——
+     同样破坏 `hD₂bd`。**也不通。**
+  3. **缩短弧**：把被推离弧 `closure W` 换成**去掉触边分支端点的那一段**，
+     即只在 `α > 0` 且弧点不是双点的部分贴月牙。这不改月牙的形状，只改 `θ` 的定义域，
+     代价是新的粘合弧不再是整条 `closure W`，`image_inter_boundary` 一侧要重算。
+     **这条看起来是对的**：几何上正确的说法是"月牙扫过的帘子确实要穿过互补片，
+     `hD₂disj` 这条字段本身对触边分支太强"。
+  4. **改 `hD₂disj` 的陈述**：把它弱化成"月牙内部（`0 < w 0 < α (w 1)`）不碰旧胞腔"，
+     把底边上的碰撞交给 `singularSet` / `crossing` 去描述（它本来就是一个双点）。
+     由上面的归约，弱化版只需要纤维高度条件的**严格**形式，而第二条已经把 `z ∈ P` 那一半
+     无条件证完；剩下的是 `z ∈ Pc \ P` 那一半，在 `0 < w 0` 下要求
+     `D '' (D.domain \ P)` 在该纤维上的高度不落在 `(0, α s)` 内——
+     这在 band Q 的 `p.1 ∈ Icc a b` 与 `b < d` 下**仍然不成立**（band Q 横穿 `(0, d)`）。
+     **所以弱化陈述也不够，必须动构造。**
+  结论：**下一轮必须先和主人确认走哪一条**（3 最可能），因为它改的是 `NormalSingularCellData`
+  的粘合数据形状，属于"改变公开语义"的决定。在确认之前不要硬写 `hD₂disj`。
+- 本轮未做：`L₂` 的重贴胞腔、Case 1/2（按任务范围）。
