@@ -596,3 +596,37 @@ Reduced/MayerVietorisCoefficients, Reduced/PointClasses}`（`REUSE_AUDIT.md` §2
 `CapDeletion` 检查 exit=0（10.3 秒）、零 warning；`.lake/scratch/AuditHCapDeletion.lean` 五项仅
 `propext`、`Classical.choice`、`Quot.sound`。G.5 剩下的是不经 `Homology/HurewiczLowDegrees.lean`
 的一维 Hurewicz 桥，以及上面那条密度前提的组合流形版生产者。
+
+### G.5 删盘识别的密度前提：组合 2-流形生产者（`ManifoldInteriorDensity.lean`）— done
+
+上一条 `CapDeletion.lean` 留下的唯一额外前提 `A.space ⊆ closure (A.space \ L.space)` 现在有了生产者，
+而且不需要新的几何内容：树里已经有组合带边流形的纯性，缺的只是把它接到闭包上。
+
+- 纯性不必重证。`ManifoldConnectivity.lean` 的
+  `IsCombinatorialManifoldWithBoundary.exists_face_superset_card_eq` 已经给出：有限面、有限维下，
+  `n` 维组合带边流形的每个面都含在一个基数 `n+1` 的面里。它对顶点链接是 PL 球或 PL 球面两种情形一起归纳，
+  正是"每个面都是某个顶维单形的面"。
+- `card_le_of_mem_boundaryComplex_faces`：`boundaryFaces n K` 的定义里就写着 `∃ t ∈ K.faces, s ⊆ t ∧ t.card ≤ n`，
+  所以边界复形的面基数都 `≤ n`。纯组合，不用流形假设，也不用 `mem_boundaryComplex_iff_unique_coface`。
+- `IsCombinatorialManifoldWithBoundary.space_subset_closure_sdiff_space`（一般 `n`，本条的数学内容）：
+  设 `L.faces ⊆ K.faces` 且 `L` 的面基数都 `≤ n`，则 `K.space ⊆ closure (K.space \ L.space)`。
+  取 `x ∈ K.space`，`exists_face_mem_openSimplex` 给出 `x ∈ openSimplex s`；纯性给 `t ⊇ s`、`t.card = n+1`。
+  基数条件使 `t ∉ L.faces`（`n+1 ≤ n` 不成立），于是 `notMem_space_of_notMem_faces`（`RelativeDerived.lean`）
+  给 `openSimplex t ∩ L.space = ∅`，即 `openSimplex t ⊆ K.space \ L.space`；再用
+  `convexHull_subset_closure_openSimplex`（`LinkDimension.lean`）把 `x ∈ hull s ⊆ hull t` 送进
+  `closure (openSimplex t) ⊆ closure (K.space \ L.space)`。
+- `IsCombinatorialManifoldWithBoundary.space_subset_closure_sdiff_boundaryComplex_space`：
+  `L = boundaryComplex n K` 时两条假设自动满足，`K.space ⊆ closure (K.space \ (boundaryComplex n K).space)`。
+- 端点重述 `isPLBall_space_of_isPLSphere_capComplex_of_isCombinatorialManifoldWithBoundary`：
+  假设 = `CapDeletion` 原端点的假设减去 `hdense`，加上 `IsCombinatorialManifoldWithBoundary 2 A`，**没有别的新前提**。
+  关键的一点是 `L` 的基数条件不必另写：端点本来就带 `hL : IsPLSphere 1 L.space`，
+  `card_le_of_isPLSphere`（`LinkDimension.lean`）直接给 `s.card ≤ 2`，正好是 `n = 2` 需要的。
+  另有 `isPLBall_space_of_isPLSphere_capComplex_boundaryComplex`，把 `L` 固定成 `boundaryComplex 2 A`。
+- 查过但用不上的路线：`ManifoldSubcomplexBoundary.lean` 的
+  `boundaryComplex_space_subset_closure_sdiff_of_isCombinatorialManifold` 是
+  `(boundaryComplex (n+1) A).space ⊆ closure (K.space \ A.space)`，说的是边界落在**外侧**补集的闭包里，
+  方向与这里要的"内部在 `A` 里稠密"相反，不能改写成本条；也不需要它那条导出邻域机器。
+- `ManifoldInteriorDensity` 检查 exit=0（9.9 秒）、零 warning；
+  `.lake/scratch/AuditHManifoldInteriorDensity.lean` 五项仅 `propext`、`Classical.choice`、`Quot.sound`。
+
+G.5 至此只剩不经 `Homology/HurewiczLowDegrees.lean` 的一维 Hurewicz／基本群阿贝尔化桥。
