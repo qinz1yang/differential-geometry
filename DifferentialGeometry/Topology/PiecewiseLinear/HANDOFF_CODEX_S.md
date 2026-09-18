@@ -5320,3 +5320,81 @@ In particular its endpoint parametrizations must satisfy
 `alpha1(s) = v^-1(alpha0(1-s))`; matching just the endpoints or using bilinear
 interpolation does not supply this piecewise affine tube. No invariant arc or
 new conclusion-shaped assumption has been added.
+
+## Prescribed-end annulus maps and arc strips delivered (2026-09-18)
+
+After `f17036dd1`, this layer constructs annulus maps with full prescribed ends
+and embeds arc strips by restricting those maps. It reuses the existing circle
+pseudo-isotopy producer.
+
+`Topology/LoopSpace/CircleLiftOrientation.lean` adds two statements: a reversing
+circle homeomorphism composed on the left with negation has an increasing
+periodic lift; the composition of two reversing circle homeomorphisms has an
+increasing periodic lift. The proof uses the existing lift dichotomy and
+`HasIncreasingCircleLift.negConj`. The module has 21 nonautomatic declarations.
+Its required copyright and module headers were added without altering any
+existing mathematical declaration.
+
+`CirclePrismComparison.lean` has four new declarations:
+
+- `IsPLCirclePositive.of_leftInverse` transports positivity to a left inverse
+  which maps the circle into itself, using the existing lift inverse theorem.
+- `isPLCirclePositive_comp_of_not_isPLCirclePositive` proves positivity for the
+  composite of any two reversing PL automorphisms of a PL circle.
+- `exists_isPLHomeomorphOn_circle_prod_of_isPLCirclePositive_iff` constructs an
+  actual PL homeomorphism of `S` times the closed unit interval, with bottom
+  map exactly `u` and top map exactly `v`, whenever `u` and `v` have the same
+  orientation. It proves that `v` composed with the inverse of `u` is positive,
+  consumes `isPLPseudoIsotopicToId_of_isPLCirclePositive`, and precomposes with
+  the product of `u` and the interval identity. The end equalities hold for
+  every point of `S`.
+- `exists_isPLHomeomorphOn_arc_prod_of_isPLCirclePositive_iff` restricts that
+  annulus homeomorphism to a parametrized arc times the interval. It returns a
+  PL homeomorphism from the closed square onto a polyhedral strip in `S` times
+  the interval, both full end parametrizations, and the two exact equivalences
+  that an image point has height 0 or 1 precisely when its source point has
+  that same height. Global injectivity follows from the annulus homeomorphism.
+
+This is a pseudo-isotopy construction: the strip need not have one arc in each
+horizontal slice. The exact end preimages and full end parametrizations are
+sufficient for the intended mapping-torus fiber argument. The orientation
+condition is proved for the composite of two reversing maps; injectivity and
+piecewise affinity are conclusions of the constructed strip.
+
+Verification used the unified `codex-moise-lane-check.ps1` under window
+`S-CirclePrism-20260918`, with one S Lean process and private output under
+`C:/Users/liao9/AppData/Local/Temp/codex-s-circle-prism-20260918/lib`.
+Both modules compiled in dependency order with exit 0 and zero diagnostics.
+Strict header/long-line checks and the standard syntax linter set were enabled.
+The private circle-lift artifact was selected by the exact `--setup importArts`
+mapping for the prism module. No shared artifact was deleted or replaced.
+
+External silent audits re-elaborated each source and dynamically enumerated its
+current-module declarations, filtering only `env.isAutoDecl`. The actual counts
+are 21 and 4, all public. All 25 transitive axiom closures contain only `propext`,
+`Classical.choice`, and `Quot.sound`. Each module passed all 13 applicable default
+environment linters; only `docBlame` and `docBlameThm` were excluded. Both audits
+returned exit 0 with zero diagnostics; all four final logs are empty.
+
+The stable source SHA256 values are:
+
+- `CircleLiftOrientation`: `557210EB63A2D6E3EF011C3639B1EC06C20C5031EE465FE38616F2C190B88DD3`.
+- `CirclePrismComparison`: `9EE43030F8720A1DE4333AF6729ED09498194FE600A4C8A616AE0DE959D33198`.
+
+The combined receipt is `CirclePrism-verification.json`; exact per-declaration
+axiom inventories and linter names are retained in the two `*-audit.tsv` files
+in the same external temporary directory. Per-module compile and audit receipts
+are under `lib`. Audit probes are removed after retaining the receipts.
+`git diff --check` and static source checks pass. The new leaf is registered in
+the flat root aggregate. Source, root registration, this record and the C.7 plan
+row belong to one mathematical commit. The integration root build remains the
+coordinator's separate gate.
+
+Status: the prescribed-end annulus and embedded-strip producer is done. C.7
+remains partial. Still required: choose a reversing reflection with a
+parametrized invariant arc satisfying the full parameter flip, take actual
+monodromy inverse composed with that reflection as the top map, and prove the
+exact flip-only fibers after composing with the cylindrical diagram. This must
+give `alpha1(s) = v^-1(alpha0(1-s))` on the entire interval. No invariant arc is
+assumed for the original arbitrary reversing monodromy. The orientability bridge
+remains a separate obligation.
