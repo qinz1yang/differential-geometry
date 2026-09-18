@@ -2630,3 +2630,36 @@ F 在每个顶点自己把顶点定理与该顶点的横截性合成，交出打
 `isPLBallPair_union_of_coneSet_disk` 沿 `arcChainFace` 归纳，
 前置是把 `derivedNeighborhoodCell K (arcChainFace v j)` 认成**原位锥形球对**
 （锥顶、边界 2-球面、弧在其中的那一段）。这一条尚未测绘，**未开始，不报区间**。
+
+## 40. 2026-09-18 第 4 步球对方向的前置 2 — **测试通过**（`DerivedCellCone.lean`）
+
+协调者要求先测再建。测了：**相接盘的锥顶正是弧的穿越点，且全部原位**，不必换顶点，
+`hmeet` 的形状不变。零新几何，八条全是既有引理的换写：
+
+- `derivedNeighborhoodCell_space_eq_coneSet`：`cell s = coneSet ĉ_s (upperLink K' {ĉ_s}).space`
+  （`derivedNeighborhoodCell_eq_dualCell` ＋ `dualCell` 按定义就是 `coneComplex` ＋
+  `coneComplex_space_eq_coneSet` ＋ `Finset.centroid_singleton`）。
+- `isConeBase_centroid_upperLink`：其锥基证书；
+  `IsCombinatorialManifold.isPLSphere_upperLink_centroid`：闭组合 3-流形时基是 2-球面
+  （`isPLSphere_upperLink` 取 `k = 0`，经 `hK.barycentricSubdivision`）。
+- `derivedNeighborhoodCell_inter_eq_coneSet`：`cell s ∩ cell t =
+  coneSet (centroid {ĉ_s, ĉ_t}) (upperLink K' {ĉ_s, ĉ_t}).space`——
+  `derivedNeighborhoodCell_space_inter` 早就把交写成 `dualCell K' {ĉ_s, ĉ_t}`，它按定义是锥。
+- `IsCombinatorialManifold.isPLSphere_upperLink_pair_centroid`：该基是 1-球面（`k = 1`）。
+- `coneSet_pair_centroid_subset_upperLink` / `_right`：相接盘落在两块各自的基球面里
+  （`dualCell_faces_subset_upperLink`，`BoundaryDerivedNeighborhood.lean:16`，已有）。
+- `centroid_ne_centroid_of_ne`：不同面的重心不同（`injOn_faces_of_mem_openSimplex`）。
+
+所以第 38 节 `isPLBallPair_union_of_coneSet_disk` 要的 `hL₀ : IsConeBase z L₀`、`hS₀`、`hD₁`、`hD₂`、
+`hmeet` 在导出邻域胞腔上**全部现成**，`z = centroid {ĉ_s, ĉ_t}`。
+
+坑：定理名以 `IsCombinatorialManifold.` 开头时，陈述里裸写 `barycentricSubdivision K`
+会解析成 `IsCombinatorialManifold.barycentricSubdivision`（命名空间被打开），报
+"argument K expected to have type IsCombinatorialManifold"。写 `PiecewiseLinear.barycentricSubdivision K`。
+另：`rw [Finset.centroid_singleton]` 留下 `id x`，`rw` 收尾的 `rfl` 不展开 `id`，要补一行 `rfl`。
+
+合并后 `fresh.py` 报六个模块 STALE，但 `git diff` 显示只有 `VertexBranchSection.lean` 内容变了
+（F 的文件，本车道不导入它）；其余只是 mtime 被合并碰过，olean 仍对应当前源码。
+
+聚焦检查 `DerivedCellCone` exit=0（9.8 秒）、零 warning；
+`.lake/scratch/AuditHDerivedCellCone.lean` 八项仅 `propext`、`Classical.choice`、`Quot.sound`。
