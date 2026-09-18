@@ -362,3 +362,73 @@ are not; standard applicable linters and axiom checks remain mandatory. Scratch
 probes stay outside the project tree. HW remains separate until section 5 passes.
 The tame 30.5 layer is complete only as the explicit `Moise304` implication.
 No F5.2 redesign, Case 1/2, or section 31/32 expansion is assigned here.
+
+## 12. First delivery from the four existing tasks (2026-09-18)
+
+All four existing tasks now own one lane and report directly to the coordinator.
+No new subagent was created for this flow. F and S run `gpt-6-astra` at `max`;
+E3 and h run `gpt-5.6-sol` at `high`. Their first verified layers are integrated:
+
+| Task | Published lane checkpoint | Integration merge | Verified mathematical result |
+| --- | --- | --- | --- |
+| S | `af1264891` | `f3154028e` | All ten unordered pairs of the five square triangles have exact intersections: four segments, three singleton vertices, and three empty intersections. |
+| h | `a90eb99c8`, maintenance note `d07ed19ea` | `8b3fc56ad` | The combined cut model supplies the actual outer cone, marked two-ray cone, marked points, and the outer-boundary inclusion; both ball-pair consumers use the stronger producer. |
+| F | `1fbdc358f` | `49ce60444` | Local boundary crossings produce left/right slab charts with exact carrier, frontier, and two-sheet images. The interior crossing supplies the carrier/frontier contract and one-way plane containment for the sheets. |
+| E3 | `54a96de92` | `3d2a74597` | An explicit compactly supported PL wedge push fixes both slab ends. The closed fold images intersect exactly in the two endpoints; the open-slab fold images are disjoint. |
+
+The coordinator recompiled all five affected integration leaves:
+`MobiusSquare`, `BallPairCutConfig`, `BallPairRelativeGluing`,
+`BoundaryCrossingChart`, and `SlabWedgePush`. All returned exit 0 with no
+warnings or other diagnostics, using the standard syntax linter set and explicit
+header and long-line checks. The combined silent audit selected every
+nonautomatic declaration from these modules, including private declarations:
+25 + 8 + 4 + 5 + 52 = 94 declarations, plus the reused
+`isPLHomeomorphOn_id_add_of_lipschitz` producer. All 95 transitive axiom closures
+use only `propext`, `Classical.choice`, and `Quot.sound`; all 13 default applicable
+environment linters passed, excluding only `docBlame` and `docBlameThm`.
+The earlier E3 external probe checked axioms only; this combined audit supplies
+the missing environment-linter check and the exact declaration census.
+
+Private module receipts, source hashes, setup/import mappings, the combined
+receipt, and `audit-coverage.txt` are retained outside the checkout under
+`C:\Users\liao9\AppData\Local\Temp\codex-integration-batch-20260918`.
+The local checks reuse imported project objects, so they do not certify the
+full current-source dependency closure. The independent full-root build was
+restarted at source checkpoint `3d2a74597df73418048e6a6e35cd498d360700dd` and remains
+in progress. A subsequent documentation-only commit has identical Lean source.
+No full-root success is claimed.
+
+The current memory-safe compiler policy supersedes the initial two-worker
+setting in section 10: one full-root worker and at most one private lane worker.
+The private checker requires at least 12 GiB of free commit headroom before
+starting alongside the root build. Only the coordinator grants compiler windows;
+actual UTC start/end times and the queue live in `.lake/lane-compiler-lease.json`.
+Completed windows are retained in `.lake/lane-compiler-history.jsonl`.
+Use the coordinator's external `codex-moise-lane-check.ps1`, which writes only
+private outputs, matches dependency source hashes, and passes precise `importArts`
+entries. A partial project directory must not be prepended to `LEAN_PATH`:
+Lean resolves the namespace root there and can hide other imported modules.
+The obsolete scripts that delete shared objects before compilation are forbidden.
+The deleted baseline `BallPairCutConfig` objects from h's obsolete-script attempt
+were rebuilt from the original integration source, independently import-tested,
+and restored; `.lake/cutconfig-shared-cache-restoration.json` records the repair.
+
+Each task keeps its lane after its first delivery. The next source drafts are
+pending verification, not completed theorems:
+
+| Task | Next bounded obligation | Current verification state |
+| --- | --- | --- |
+| S | `MobiusSquareMap`: five affine charts and flip-compatible seam gluing. Global quotient injectivity and mapping-torus embedding remain later obligations. | Compiler window granted after the integration audit. |
+| h | `ArcCellBallPair`: a single non-endpoint derived-neighborhood cell is a marked ball pair. The trimmed union induction remains open and must handle chain nondegeneracy. | Source ready; next in the queue. |
+| E3 | `SlabWedgeDoublePoint`: tagged source sheets and the exact closed/open double-point formulas. | Source ready; queued after h. |
+| F | `BoundaryDoubleCrossingChart`: the actual double-point set has a bidirectional half-axis chart, with the local carrier/frontier identification. | Source ready; queued after E3. |
+
+F found a genuine upstream boundary: `HasPLNormalDoubleCrossingAt` existentially
+packages a local carrier without identifying it with the advertised ambient
+carrier/boundary. `SingularChart` does preserve the real carrier when supplied
+its boundary chart, but there is no completed global normal-cell producer that
+recovers the lost compatibility. The finite arc-chain level-circle/opposite-side
+and marked-sheet extension obligations therefore remain open. The new local
+chart theorem must not be described as the completed global slab construction.
+HW remains unmerged under the original gate; tame 30.5 still depends explicitly
+on `Moise304`. The owner choices in section 6 remain unchanged.
