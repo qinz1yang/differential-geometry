@@ -11164,3 +11164,5 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.OpenCover
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Congruence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.AncientGluing
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.HighCurvatureAncientLimit
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.OpenPullback
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.HighCurvatureLimitGeometry
