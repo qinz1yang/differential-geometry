@@ -99,4 +99,62 @@ theorem exists_isPLHomeomorphOn_coneComplex_fixing [FiniteDimensional ℝ E] [De
     exists_isPLHomeomorphOn_coneComplex_pair hL hL' hf
   exact ⟨g, hg, hgf, hgp, eqOn_id_coneSet_of_radial hgp hrad hZ hfix, hpair⟩
 
+theorem geometricLink_singleton_faces_subset [DecidableEq E]
+    {K J : Geometry.SimplicialComplex ℝ E} (hJK : J.faces ⊆ K.faces) (p : E) :
+    (SimplicialComplex.geometricLink J {p}).faces ⊆
+      (SimplicialComplex.geometricLink K {p}).faces := by
+  intro t ht
+  rw [SimplicialComplex.mem_geometricLink_singleton] at ht ⊢
+  exact ⟨ht.1, ht.2.1, hJK ht.2.2⟩
+
+theorem geometricLink_singleton_space_subset [DecidableEq E]
+    {K J : Geometry.SimplicialComplex ℝ E} (hJK : J.faces ⊆ K.faces) (p : E) :
+    (SimplicialComplex.geometricLink J {p}).space ⊆
+      (SimplicialComplex.geometricLink K {p}).space := by
+  intro x hx
+  obtain ⟨t, ht, hxt⟩ := Geometry.SimplicialComplex.mem_space_iff.mp hx
+  exact (SimplicialComplex.geometricLink K {p}).convexHull_subset_space
+    (geometricLink_singleton_faces_subset hJK p ht) hxt
+
+theorem closedStar_eq_coneSet [DecidableEq E] (K : Geometry.SimplicialComplex ℝ E) {p : E}
+    (hp : {p} ∈ K.faces) :
+    closedStar K p = coneSet p (SimplicialComplex.geometricLink K {p}).space :=
+  (closedStar_eq_coneComplex_space K hp).trans
+    (coneComplex_space_eq_coneSet (isConeBase_geometricLink K (p := p)))
+
+theorem exists_isPLHomeomorphOn_closedStar_pair [FiniteDimensional ℝ E] [FiniteDimensional ℝ F]
+    [DecidableEq E] [DecidableEq F] {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces] {p : E}
+    (hp : {p} ∈ K.faces) {K' : Geometry.SimplicialComplex ℝ F} [Finite K'.faces] {p' : F}
+    (hp' : {p'} ∈ K'.faces) {f : E → F}
+    (hf : IsPLHomeomorphOn f (SimplicialComplex.geometricLink K {p}).space
+      (SimplicialComplex.geometricLink K' {p'}).space) :
+    ∃ g : E → F, IsPLHomeomorphOn g (closedStar K p) (closedStar K' p') ∧
+      EqOn g f (SimplicialComplex.geometricLink K {p}).space ∧ g p = p' ∧
+      ∀ X ⊆ (SimplicialComplex.geometricLink K {p}).space,
+        g '' coneSet p X = coneSet p' (f '' X) := by
+  obtain ⟨g, hg, hgf, hgp, -, hpair⟩ :=
+    exists_isPLHomeomorphOn_coneComplex_pair (isConeBase_geometricLink K (p := p))
+      (isConeBase_geometricLink K' (p := p')) hf
+  refine ⟨g, ?_, hgf, hgp, hpair⟩
+  rw [closedStar_eq_coneComplex_space K hp, closedStar_eq_coneComplex_space K' hp']
+  exact hg
+
+theorem exists_isPLHomeomorphOn_closedStar_of_geometricLink_subcomplex
+    [FiniteDimensional ℝ E] [FiniteDimensional ℝ F] [DecidableEq E] [DecidableEq F]
+    {K J : Geometry.SimplicialComplex ℝ E} [Finite K.faces] {p : E} (hp : {p} ∈ K.faces)
+    (hJK : J.faces ⊆ K.faces) (hpJ : {p} ∈ J.faces)
+    {K' J' : Geometry.SimplicialComplex ℝ F} [Finite K'.faces] {p' : F} (hp' : {p'} ∈ K'.faces)
+    (hpJ' : {p'} ∈ J'.faces) {f : E → F}
+    (hf : IsPLHomeomorphOn f (SimplicialComplex.geometricLink K {p}).space
+      (SimplicialComplex.geometricLink K' {p'}).space)
+    (hfJ : f '' (SimplicialComplex.geometricLink J {p}).space =
+      (SimplicialComplex.geometricLink J' {p'}).space) :
+    ∃ g : E → F, IsPLHomeomorphOn g (closedStar K p) (closedStar K' p') ∧
+      EqOn g f (SimplicialComplex.geometricLink K {p}).space ∧ g p = p' ∧
+      g '' closedStar J p = closedStar J' p' := by
+  obtain ⟨g, hg, hgf, hgp, hpair⟩ := exists_isPLHomeomorphOn_closedStar_pair hp hp' hf
+  refine ⟨g, hg, hgf, hgp, ?_⟩
+  rw [closedStar_eq_coneSet J hpJ, closedStar_eq_coneSet J' hpJ',
+    hpair _ (geometricLink_singleton_space_subset hJK p), hfJ]
+
 end DifferentialGeometry.Topology.PiecewiseLinear

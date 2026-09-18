@@ -842,3 +842,54 @@ F §19.115 把触边分离的缺口定位到"两张球对平凡化在重叠上�
 
 坑：`EqOn g id` 的目标是 `g x = id x`，`rw [..., hfix hz, id_eq]` 只改写了 `id z` 而把外层
 `id (p + s • (z - p))` 留下，末尾要显式 `rfl`。
+
+### H-A2 — done，顶点处球对结构由链对唯一决定（同模块）
+
+F §19.115 给的两个候选形状里，(a) 相对锥延拓由 H-A1 闭合；(b)"同一弧的两个 PL 球对结构相差一个
+固定该弧的 PL 同胚"的**逐点形式**现在也闭合。桥是 `ConeComplex.lean:262`
+`closedStar_eq_coneComplex_space`：顶点的闭星本来就是链上的锥。
+
+- `closedStar_eq_coneSet : closedStar K p = coneSet p (geometricLink K {p}).space`。
+  把闭星直接写成集合层的锥，于是 H-A1 的全部球对条款可以逐字用到闭星上。
+- `geometricLink_singleton_faces_subset` / `geometricLink_singleton_space_subset`：
+  `J.faces ⊆ K.faces` ⟹ 链与链空间的包含。由 `mem_geometricLink_singleton` 三条分量直接给出，
+  不需要 `Gluing.lean` 的 `space_mono_of_faces_subset`，故本模块不新增导入。
+- `exists_isPLHomeomorphOn_closedStar_pair`：设 `{p} ∈ K.faces`、`{p'} ∈ K'.faces`，
+  `f` 是两条链空间之间的 PL 同胚，则存在 `g : closedStar K p → closedStar K' p'` 为 PL 同胚，
+  在链上等于 `f`、`g p = p'`，且对**任意** `X ⊆ (geometricLink K {p}).space` 有
+  `g '' coneSet p X = coneSet p' (f '' X)`。
+  `Finite (geometricLink K s).faces` 是 `GeometricLink.lean:29` 的现成 instance，不用手工构造。
+- `exists_isPLHomeomorphOn_closedStar_of_geometricLink_subcomplex`：**(b) 的成品**。
+  再设子复形 `J ⊆ K`、`J' ⊆ K'`，`{p} ∈ J.faces`、`{p'} ∈ J'.faces`，且
+  `f '' (geometricLink J {p}).space = (geometricLink J' {p'}).space`，
+  则同一个 `g` 满足 `g '' closedStar J p = closedStar J' p'`。
+  读作：**顶点处的球对 (star, sub-star) 完全由链对 (link, sub-link) 决定**。
+  沿分支合并相邻图卡时，"两张平凡化在重叠上相差一个可锥化 PL 同胚"就是这一条；
+  片是子复形时 `A ∩ closedStar K p` 的锥形状不是额外假设，而是 `closedStar_eq_coneSet` 的推论。
+
+聚焦检查 `ConePairExtension` exit=0（8.3 秒）、零 warning；
+`.lake/scratch/AuditHConePairExtension.lean` 十二项仅 `propext`、`Classical.choice`、`Quot.sound`。
+
+### 仍未闭合的确切义务（交回 F）
+
+H-A1/H-A2 交付的是**锥/星层**的球对与相对 Alexander 技巧。F §19.115 的整条图卡定理**尚未闭合**，
+剩下的确切缺口是把逐点的星对结论沿弧串起来，需要下面三件，都不在本树内：
+
+1. **弧的正则邻域是球，且球对标准**。本树 `regularNeighborhood`（`RegularNeighborhood.lean:72`）
+   只有 4 条平凡引理，没有任何"是球"的定理；`derivedNeighborhood` 的球定理只到单纯形
+   （`SimplexDerivedNeighborhood.lean:141`，且只对边界复形的面）与边界二维盘
+   （`DiskDerivedNeighborhood.lean:74`）。弧（1-复形）的版本没有。
+2. **塌陷理论**。全树 `collaps` 零命中，无 `freeFace` 标识符；折叠归纳只在
+   `FreeTriangleNeighborhood.lean:946` 以 `htrace`/`hinter` 内联写死于二／三维，未抽象。
+   "可塌陷集的正则邻域是球"因此无法陈述。
+3. **正则邻域唯一性本身**（两个正则邻域相差一个 PL 同胚）与**环境同痕**。
+   `ambientIsotop`/`isotop` 在全树文件内容中零命中，每条结果都只产生**单个**同胚，
+   没有 `I → (E ≃ₜ E)` 的族，也没有同痕延拓定理。
+
+成本分解（按本树既有层级估计，不含风险缓冲）：抽象自由面与初等塌陷谓词、把
+`FreeTriangleNeighborhood` 的归纳提取成一般维数形式 2k–4k 行；一维复形（弧）的正则邻域是球
+1k–2k 行；球对版本的正则邻域唯一性（沿弧归纳，每步用 H-A2 的星对唯一性，外加重叠上的相容性）
+3k–6k 行；再接到 §19.115 的图卡陈述（`OpenPartialHomeomorph M (ℝ × ℝ × ℝ)`、两向逐片仿射、
+`e.source` 不碰第三张片）1k–2k 行。合计约 7k–14k 行。
+H-A1/H-A2 把其中"锥化/球对"那一块消掉了，它原本是唯一没有现成套路的一块；
+剩下三件都是标准 PL 拓扑，路线明确但工作量实在。
