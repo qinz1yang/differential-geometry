@@ -2811,3 +2811,33 @@ remain private and were not copied into the shared library.
 The remaining section 42 obligation is the trimmed arc-chain ball-pair induction
 over the non-endpoint cells.  The old full-chain statement remains false and must
 not be reinstated.
+
+## 45. 2026-09-18 Interior arc-chain cell ball pair — done
+
+`ArcCellBallPair.lean` proves
+`IsCombinatorialManifold.isPLBallPair_derivedNeighborhoodCell_arcChainFace`.
+For an injective simplicial arc chain in a closed combinatorial 3-manifold and an
+index satisfying `1 ≤ j` and `j + 1 ≤ 2 * n`, the single derived-neighborhood
+cell at `arcChainFace v j`, paired with its trace on `arcComplexIn K v n`, is an
+`IsPLBallPair 2 1`.
+
+The proof identifies the cell with the cone over the upper link at the face
+centroid.  The two adjacent arc-chain faces give distinct marked points in that
+upper-link 2-sphere.  Cone-base radial injectivity then supplies the standard
+conical arc pair, while `derivedNeighborhoodCell_inter_arcComplexIn_space`
+identifies its two radial segments with the actual arc trace.  The hypotheses
+exclude the two endpoint vertex cells; no nondegeneracy hypothesis beyond those
+index inequalities was added.
+
+The module is registered directly in `DifferentialGeometry.lean`.  Strict private
+verification used token `H-ArcCell-20260918` and output root
+`C:\Users\liao9\AppData\Local\Temp\codex-h-cutmodel-private`.  The module check
+and external silent audit both exited 0 with zero diagnostics and unchanged
+shared outputs.  The audit enumerated the module's single non-automatic
+declaration, checked its direct reused declarations, found only
+`{propext, Classical.choice, Quot.sound}`, and passed all default environment
+linters other than `docBlame` and `docBlameThm`.
+
+This closes only the one-cell input.  The induction proving an `IsPLBallPair 2 1`
+for the union of all non-endpoint cells `1 ≤ j ≤ 2 * n - 1` remains open; the
+false full-chain statement including the endpoint cells remains forbidden.
