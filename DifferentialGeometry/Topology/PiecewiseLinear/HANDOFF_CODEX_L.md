@@ -2166,3 +2166,53 @@ step 2 只做了 grep 与接口陈述，没有动工（月牙是一个项目，�
 - 验证：`GluedCellInjectivity` 聚焦检查 exit=0（10.9 秒）、零 warning；
   `.lake/scratch/AuditE3GluedFields.lean` 的 11 条 `#print axioms` 全部只含
   `propext`、`Classical.choice`、`Quot.sound`，无 `sorryAx`。
+
+## 70. 2026-09-18 E3-M3：分离后的双点集与滑移支撑邻域**不交**，于是 `crossing` 要的输入换了形状
+
+状态：step 1 done，step 2 done（形状定了），step 3 未做（缺三族通用引理，见末尾）。
+新模块 `BranchDoublePointSeparation.lean`（模块名与 3 条声明名在四条车道分支上都不存在）。
+
+- **step 1 的结论，而且它不是新输入。** 分支分离层本来就有
+  `hclean : doublePointSet D D.domain ∩ W ⊆ branchCarrier cb`（**假设**）与
+  `hgdouble : doublePointSet (P.piecewise (h ∘ D) D) D.domain =
+   doublePointSet D D.domain \ branchCarrier cb`（**结论**）。
+  两条一合：
+  `doublePointSet (P.piecewise (h ∘ D) D) D.domain ∩ W = ∅`。
+  即**分离后的胞腔的双点集与整个滑移支撑邻域 `W` 不交**——
+  比"离月牙远"强得多，而且**完全不需要新的几何输入**，纯是已有两条的集合代数
+  （`doublePointSet_inter_eq_empty_of_eq_sdiff`、`disjoint_doublePointSet_of_eq_sdiff`、
+  以及取 `f = D`、`g = P.piecewise (h ∘ D) D` 的
+  `NormalSingularCellData.disjoint_doublePointSet_separated_of_subset_nbhd`）。
+- **step 2：`crossing` 要的输入因此换了形状，也变弱了。**
+  §69 里我拒绝写的那条
+  `∀ y ∈ doublePointSet D₁ D₁.domain, y ∉ closure (D₂ '' D₂.domain)`
+  **形状是错的**：它把条件挂在双点集上（不可当场验证），而真正该约束的是**月牙**。
+  正确的输入是 `hluneW : D₂ '' D₂.domain ⊆ W`，即
+  **月牙建在滑移支撑的那个邻域 `W` 里面**——这本来就是月牙该待的地方
+  （被推离弧的像落在 `U ⊆ closure U ⊆ W` 里，月牙沿它贴到 `Bd M`），
+  是一条**构造要求**，生产者建月牙时直接满足，不是关于双点集位置的断言。
+  有了它，step 1 直接给
+  `Disjoint (doublePointSet (P.piecewise (h ∘ D) D) D.domain) (D₂ '' D₂.domain)`。
+  另外 §69 里那条还**多要了一个闭包**：`D₂.domain` 是 PL 2-球（紧），`D₂` 连续，
+  `M` 是 T2，所以 `D₂ '' D₂.domain` 本身就闭，`closure` 是多余的。
+- **step 3 未做，缺的是三族通用引理（已按"数一数再读"的规矩清点）。**
+  把 `D₁` 在 `y` 处的 `crossing` 搬到粘合胞腔要五步：
+  (1) 把源集合从 `D₁.domain ∩ D₁ ⁻¹' e.source` **放大**到 `D₁.domain`
+      （靠 `e.source` 开、`D₁` 连续）；
+  (2) 沿 `f₁ : P ≃ D₁.domain` 用 §65 的 `precomp_isPLHomeomorphOn`（这一步现成）；
+  (3) 用 `EqOn D (D₁ ∘ f₁) P` 把函数从 `e ∘ D₁ ∘ f₁` 换成 `e ∘ D`；
+  (4) 把源集合从 `P` **放大**到 `D.domain`（靠上面的 `Disjoint`，
+      `D₂ '' D₂.domain` 闭且不含 `y`，所以 `y` 附近的纤维避开 `Q \ P`）；
+  (5) 把源集合从 `D.domain` **缩小**到 `D.domain ∩ D ⁻¹' e.source`
+      （**免费**：缩小 ambient 集合只会让 `𝓝[·]` 变细，而见证 `A, B` 在第 (2) 步后
+      自动落在 `D ⁻¹' e.source` 里，因为它们的 `f₁` 像在 `D₁ ⁻¹' e.source` 里）。
+  对这三个谓词清点现有引理，命中共 9 条：`postcomp_openPartialHomeomorph` ×3、
+  §65 的 `precomp_isPLHomeomorphOn` ×3、`congr_target` ×1、
+  `fiber_subset_frontier` 与 `fiber_subset_frontier_of_comp_openPartialHomeomorph` 各 1。
+  **源集合的 `mono`（放大，带两条局部条件）、源集合的 `mono_subset`（缩小，免费）、
+  以及源函数的 `congr` 都不存在**（只有目标集合的 `congr_target`）。
+  这三族各要给 `HasPLDoubleCrossingAt` 与 `HasPLBoundaryDoubleCrossingAt` 两个版本
+  再加法向版的分情形，是下一轮的内容；放大版的两条条件是
+  `∀ a ∈ Pd, f a = y → ∃ V ∈ 𝓝 a, Pd' ∩ V ⊆ Pd` 与
+  `∀ᶠ z in 𝓝 y, Pd' ∩ f ⁻¹' {z} ⊆ Pd`，第 (1)、(4) 步各兑现一次。
+- 验证：`BranchDoublePointSeparation` 聚焦检查 exit=0（10.1 秒）、零 warning。
