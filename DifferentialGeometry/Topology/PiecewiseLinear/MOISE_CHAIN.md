@@ -13,9 +13,9 @@ Phase 3 的终点已经归约成一句话：`plApproximationManifold_three_of_mo
 |---|---|---|---|
 | 25.1 | Stallings 形式的环定理（183） | `Moise251` ✔已陈述 | 开。L1 已有条件版（E3 `SphereCase`）；L2 卡在"沿分支切开并分离"（`NIGHT_PLAN` §11）；L3 未开始 |
 | 25.2 | 环定理第一形式（183） | `Moise252` ✔已陈述 | 开。**箭头便宜**：书上从 25.1 推出只用"把 `Int|D₁|` 推离 `Bd M`"，即 S 已交付的 I2 |
-| 26.4 | 扩展环定理（193） | `Moise264` ✔已陈述 | 开。用 25.2 与 26.3 双领（S 已交付） |
+| 26.4 | 扩展环定理（193） | `Moise264` ✔已修正陈述 | 开。结论已补盘边界包含映射在曲面中非零伦；用 25.2 与 26.3 双领（S 已交付） |
 | 30.4 | 球壳定理（216） | `Moise304` ✔已陈述 | 开。用 26.4、23.8、26.1（S 已证）、28.19、28.20（H 已证）、30.3 |
-| 30.5 | 嵌套拓扑 3-胞腔（216） | `Moise305` ✔已陈述 | blocked：除 30.4 外还缺 `TopologicalCellComplementConnected`；H-M3 评估最窄 Alexander 对偶路线约 10k–18k 行 |
+| 30.5 | 嵌套拓扑 3-胞腔（216） | `Moise305` 已陈述；`moise305_tame_of_moise304` 已证 | §34 的 tame 条件箭头及双领口生产者已合入；30.4 仍是显式未证输入。一般 wild 版仍开，旧 10k–18k 前置不适用于 tame 路线 |
 | 30.6 | 环壳定理（216–217） | `Moise306` ✔已陈述 | 开。用 30.7、van Kampen、§22 |
 | 30.7 | 拓扑实心环面之间有 CST（217） | `Moise307` ✔已陈述 | 开。用 30.6、28.1、24.9–24.12（S 正在做） |
 | 30.8 | 脊生成 `π(S)`（218） | `Moise308` | 开。用 §31 |
@@ -830,6 +830,7 @@ Moise 每一章开头"不妨设某映射是 PL 的"都是这一条。分三个�
 当日过程事实：各车道自我更正约十次，其中四个曾报"已关"的项被查出空或不可满足
 （`hgen` 等价于自身结论、`IsGeneratedByPolygon` 在 ℕ 上不可满足、`hJoff` 强迫空交、`hfiber` 对盘形片恒假）。
 自此每个端点的收尾要求同时做两项审计：假设是否扛着结论、假设在目标实例中是否可满足。
+2026-09-18 追加第三项（H 在 `exists_chart_two_sheets_of_transverse_vertex` 上查出，F 已按 (β) 修）：结论形如 `∃ x, … ∧ (hyp x → …)` 时，检查消费者能否对被存在量词藏住的那个 `x` 实际供给 `hyp x`；供不了就把 `hyp` 提到顶层假设、把 `x` 变成参数，见 HANDOFF_CODEX_F §19.143。
 "便宜箭头"名单只剩 25.2←25.1 与 26.4←25.2+26.3，且后者已确认需要树里没有的相对子复形细分。
 
 ### 2026-09-18 晚：边界分支的"滑动 + 月牙"路线作废，改回经典切贴（决定）
@@ -847,3 +848,75 @@ E3 的 `LuneCell.lean`（`exists_lune_base_off_graphArc`）证明：月牙在参
 分支不再是双线、无需环境映射。粘合引擎为 `LoopTheorem/CellGluing.lean:375`。
 待核：§43 所记"顺序交叉贴合保留分支"的构造取的是"第一次缝与第二次缝各一个原像"（`HANDOFF_CODEX_L.md` §43），
 即把三块并成**一个**带两条缝的胞腔；若确认，则该障碍是输出形状造成，`A ∪ B` 与 `C` 分开即可通。
+
+## 2026-09-18（F）：26.4 的相对子复形细分——定案、反证、`Moise264` 结论缺一条
+
+- 26.4 消费的是**限制形**（`K'` 细分 `K` 且 `restrict K' L.space` 细分 `L`，网格任意小）：
+  `IsSubdivision.restrict` + `exists_isSubdivision_diam_lt`，现打包为 `SubcomplexMesh.lean` 的
+  `exists_isSubdivision_diam_lt_restrict_isSubdivision`。理由：`Moise264` 的假设是基本群元，边界环路由我们选，
+  只须留在 `|L|` 里且同伦于代表，所以上面第 314 行要求的"逐点相等"不必要；环带路线 (b) 的棱柱格子四顶点值
+  同在 `L` 的一个闭单形里，靠的正是"细边落在粗边里"这条限制形。
+- 上面第 327 行的出路 (a)（`L` 固定、`L` 外的面全小）**为假**：只要 `L` 有一个面在 `K` 里有真余面，
+  `ε ≤ diam τ` 时不存在这样的细分——`not_exists_isSubdivision_faces_subset_forall_diam_lt`。
+  第 362 行"迭代 `relDerived` 不会变小"由此升级为"任何构造都不行"。
+- **`Moise264` 的结论少了 "Bd Δ 在 M² 中不可缩"**：按现有陈述，一张推离 `S` 的小盘（26.3 的双领域里取
+  在 `∂σ` 上为零的 PL 高度函数的图）就满足它，30.4 无法消费。它尚未被消费，改陈述即可。
+细节与 26.4 仍缺的四件事见 HANDOFF_CODEX_F §19.144。
+### 2026-09-18 晚：30.5 不需要 wild 球面的 Alexander 对偶（只读核查结论）
+
+书中 Theorem 30.5 全书**只被引用一次**：§34 Lemma 3（p. 240）。那里交给 30.5 的胞腔是 `C₁' = h(C₁)`、`C₂' = h(C₂)`，
+`C₁, C₂ ⊆ U` 是 2-单形 `σ` 的**多面体** 3-胞腔邻域、`h : U → ℝ³` 是**开集**上的嵌入（§34 开头的归约 = 计划 A.1），
+所以 `frontier C₂'` 是双领口的，wild 情形从不出现。30.5 的证明重构（本文件"更正：30.5 ← 30.4"一节）只需 `C₂` tame，
+`C₁` 可保持任意拓扑胞腔。
+
+而**双领口情形在树里已是无条件定理**：`TubularExcision.lean:170 hasAlexanderDualityH0Certificate_of_openBicollar_of_sphereH1`
++ `SphereH1.lean:189 isZero_integerSingularHomology_sphereTwo_one`（无假设，Mayer–Vietoris）+ `JordanBrouwer.lean:28`，
+纯拓扑、不要光滑性；核查者用一个 scratch 文件实际编译并审计（只含三条标准公理）。另有
+`VanKampen/TwoSidedCollarSeparation.lean:246` 给"补集至多两个分支"、不要同调，且避免了树里没有的 `SphereTwo ≃ₜ frontier C` 参数化。
+**H-M3 评估已过时**：它只查了 `DualityAssembly`/`SpecializedDuality` 那支（确需光滑 + 循环），漏了 `TubularExcision → BicollarCertificates`。
+
+拟定受限陈述（不改 `MoiseChain.lean`）：`IsBicollared S := ∃ Φ : S × ℝ → ℝ³, IsOpenEmbedding Φ ∧ ∀ x, Φ (x,0) = x`；
+`BicollaredCellComplementConnected`；`Moise305Tame` 在 30.5 的假设上加 `IsBicollared (frontier C₂)`。
+§34 L3 侧要生产的每一步材料都在（`PolyhedralSurfaceComplement.lean:29`、`BicollarManifold.lean:135`、
+`InvarianceOfDomain.lean:346/508`），只缺"拓扑胞腔在同胚下的 `frontier`/`interior` 桥"（H-M3 原也列为 0.5k–1k）。
+修正估计 **约 1k–2k 行**（未原型化），原 10k–18k 作废。30.5 仍等 30.4（I.4，4k–6k，等 26.4）；本核查只移除了较大的那个阻塞。
+一般（wild）版 `TopologicalCellComplementConnected` 仍在原成本之外，但 Moise 链不需要它。
+
+### 2026-09-18 晚：L₁ 早已存在；边界分支的整条滑动链无实例；L₂ 改走"交叉重贴 + 横向楔推"（决定）
+
+E3 核对后三条事实（`HANDOFF_CODEX_L.md` §80–§81）：
+
+1. **`A ∪ B` 就是 `L₁`，且早已完整交付**：`CutAndPaste.lean:1373 exists_boundary_surgery_cell_of_boundaryBranch`
+   （`Bd D₁ ⊆ Bd M`、双点集等式、`Nonempty (NormalSingularCellData G BdM B)` 五字段、边界字 `σ.trans ω`）与
+   `:2425 …_with_simplicialComplexity_lt`（严格下降）。§43 所记"重贴保留分支"的构造是把三块并成一个带两条缝的胞腔
+   （`:1214`），那是关于像的真陈述，与 `A ∪ B` 无关。本文件上一条要 E3"重新审视经典切贴"的指示是多余的——它已经在树里。
+2. **§46–§73 的滑动链对边界分支无实例**：由 `map_boundary`，边界分支是两端点都在 `BdM` 的多面体 1-球；
+   `hSK + hA + hB + hinjP + hinjQ + hPcQ + hW` 把每个分支点放到图卡轴上，`hBdE/hBd₁` 又令 `BdM = {p.1 = 0}`，
+   轴与之只交于一点，故两端点重合。那些定理是正确的条件式，但**路线为空**。根源是一端的边界模型 `{x = 0}`
+   被当成了整条分支的边界模型；两端都在 `BdM` 的弧不可能落在横截 `BdM` 的直线上。
+3. **`L₂` 的真正路线**（书上第二个半步）：交叉重贴（已有 `:1214`）后，把两条缝各自**横向楔推**进开象限
+   `(0, ε, ε)` / 反向，推移**无 `p.1` 分量**，故 `Bd M` 逐点保持——这就是边界环的"8 字"光滑化，不需要任何边界修复。
+   形状是 `P'.piecewise (ψ₊ ∘ G) (ψ₋ ∘ G)`；新义务是楔推版的 `doublePointSet G' = doublePointSet G \ branchCarrier`。
+   §19.107 的反例（两张**平**带无法横推分离）不适用：重贴后每条缝两侧是一张**折**片、占两个相邻象限，楔推可分。
+
+决定：采纳 3。阻塞接口改为**板状图卡**：沿整条分支的乘积邻域中两张片是坐标平面、`M` 是板 `{0 ≤ x ≤ c} × ℝ²`、
+`Bd M` 是两个端面 `{x = 0}` 与 `{x = c}`（F 的 `TransversePlaneNormalForm` 在两端各用一次 + F 的链 + H 的球对）。
+滑动机制（`ModelSlide*`、`ChartSlide*`、`BranchSlide*`）保留为已证基础设施，但不在主链路径上。
+
+## 2026-09-18 Codex: essential boundary in the extended loop theorem
+
+`Moise264` now requires that the inclusion of `r '' stdSimplexBoundary 2` into
+`S` is not `ContinuousMap.Nullhomotopic`. The boundary inclusion proof is an
+existential typing witness already implied by the preceding intersection equality;
+it is not an additional geometric hypothesis. This records essentiality of the
+produced boundary, without requiring that it represent the particular input `g`.
+The theorem itself remains unproved. There were no source importers or consumers
+of `Moise264` at the time of this correction.
+
+After root registration and the owner-authorized required headers were added, the
+changed module compiled with the standard syntax linter set, explicit header and
+long-line checks, and no diagnostic output. Its exported definition was inspected,
+and the default environment linters
+were checked with only `docBlame` and `docBlameThm` excluded. These are local checks
+against the current imported objects, not a fresh certification of the entire
+integration source dependency graph.

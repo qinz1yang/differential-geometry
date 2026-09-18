@@ -509,7 +509,9 @@ Reduced/MayerVietorisCoefficients, Reduced/PointClasses}`（`REUSE_AUDIT.md` §2
   `Homology/HurewiczLowDegrees.lean` 的一维 Hurewicz/基本群阿贝尔化桥，以及有限个边界分支的封盘复形与删盘识别；
   预计合计 3k–5k 行，归 G.5，而不是 H.4 分类。
 
-### H-M3 — assessed，`TopologicalCellComplementConnected` 暂缓
+### H-M3 — 原 wild 评估保留；§34 的 tame 路线已取代此前置
+
+2026-09-18 更新：`TameNestedCells.lean` 的 `moise305_tame_of_moise304` 已证明，并保留 `Moise304` 为显式输入；`BicollarEmbedding.lean` 生产开集嵌入下 PL 3-胞腔边界的双领口。七模块 709 行，局部检查通过。以下 10k–18k 的一般 wild 估计不再阻塞 §34；它不是一般 `Moise305` 已证的声明。
 
 - `JordanBrouwer.lean` 实际已有不要求光滑性的末端：
   `hasTwoComplementComponents_of_isCompact_of_alexanderDualityH0Certificate` 只要嵌入像紧致与

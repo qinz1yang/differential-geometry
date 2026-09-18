@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.LemmaThree
 import DifferentialGeometry.Topology.PiecewiseLinear.ComponentComplex
 import DifferentialGeometry.Topology.Connected.Separation
@@ -7,6 +12,10 @@ import DifferentialGeometry.Topology.PiecewiseLinear.Transition361
 import DifferentialGeometry.Topology.PiecewiseLinear.MapApproximation
 import DifferentialGeometry.Topology.PiecewiseLinear.ManifoldApproximation
 import DifferentialGeometry.Topology.PiecewiseLinear.SimplicialApproximation
+
+/-!
+# Statements in the piecewise linear approximation chain
+-/
 
 open Set
 
@@ -56,7 +65,10 @@ def Moise264 : Prop :=
       ∃ (Δ : Set E) (r : (Fin 3 → ℝ) → E),
         IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Δ ∧
         Δ ⊆ K.space \ (boundaryComplex 3 K).space ∧
-        Δ ∩ S = r '' stdSimplexBoundary 2
+        Δ ∩ S = r '' stdSimplexBoundary 2 ∧
+        ∃ hboundary : r '' stdSimplexBoundary 2 ⊆ S,
+          ¬ (⟨Set.inclusion hboundary, continuous_inclusion hboundary⟩ :
+            C(r '' stdSimplexBoundary 2, S)).Nullhomotopic
 
 def IsTopologicalCell (n : ℕ) {E : Type u} [TopologicalSpace E] (C : Set E) : Prop :=
   Nonempty (C ≃ₜ Metric.closedBall (0 : EuclideanSpace ℝ (Fin n)) 1)

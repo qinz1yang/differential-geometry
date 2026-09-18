@@ -3743,13 +3743,19 @@ germ 沿 `φ` 可搬，像侧第一张片是真平面、半径无关。搬过去
 5. `hthird : ∀ i, U i ∩ T = ∅`（覆盖级，非单张图卡的性质）；
 6. `hSU : S ⊆ ⋃ U i`、`hUW : ⋃ U i ⊆ W`。
 
-#### C. 每个顶点要什么（`exists_chart_two_sheets_of_transverse_vertex`，`VertexBranchChartPair.lean`）
-输入第一张片的数据：`finrank ℝ E = 3`、`M.faces ⊆ K.faces`、`N.faces ⊆ K.faces`、
-`{p} ∈ M.faces`、`{p} ∈ N.faces`、`K.space ∈ 𝓝 p`、`ℓ ≠ 0`、
-`IsPLSphere 1 (link M {p}).space`、`IsPLSphere 1 (link N {p}).space`、
-`M` 的连接截面对 `{ℓ = ℓ p}` 的两点与两侧性。
-产出转写配置 `(K₁, N₁, φ)` 与全部结构性条款，外加一条蕴含：
-给了**像侧契约**就产出图卡。
+#### C. 每个顶点要什么（`VertexBranchChartPair.lean`，**2026-09-18 按 §19.143 改成两条**）
+- `exists_transcription_of_transverse_vertex`（生产者）：输入第一张片的数据
+  `finrank ℝ E = 3`、`M.faces ⊆ K.faces`、`N.faces ⊆ K.faces`、`{p} ∈ M.faces`、`{p} ∈ N.faces`、
+  `K.space ∈ 𝓝 p`、`ℓ ≠ 0`、`IsPLSphere 1 (link M {p}).space`、`IsPLSphere 1 (link N {p}).space`、
+  `M` 的连接截面对 `{ℓ = ℓ p}` 的两点与两侧性。产出 `∃ K₁ N₁ φ U W`，带全部结构条款
+  （有限、`N₁ ⊆ K₁`、`φ p = 0`、`{φ p} ∈ N₁.faces`、`K₁.space ∈ 𝓝 (φ p)`、`link N₁` 是 1-球面）
+  以及图卡半边实际要吃的三条：`IsOpen U ∧ p ∈ U ∧ IsOpen W ∧ IsPLHomeomorphOn φ U W`、
+  `∀ᶠ y in 𝓝 p, y ∈ M.space → (φ y).2.2 = 0`、`∀ᶠ y in 𝓝 p, y ∈ N.space → φ y ∈ N₁.space`。
+- `exists_chart_two_sheets_of_transverse_vertex`（图卡）：`K₁ N₁ φ U W` 是**参数**，上面每一条与
+  像侧契约 D 都是**顶层假设**，结论只有图卡
+  `∃ U₀ V₀ Ψ, IsOpen U₀ ∧ p ∈ U₀ ∧ IsPLHomeomorphOn Ψ U₀ V₀ ∧ Ψ p = 0 ∧ ∀ᶠ …`。
+  两张片只以集合 `A B : Set E` 出现，不要 `DecidableEq`、不要源侧复形。
+消费者的用法：先 `obtain` 生产者，再对**拿到手的那个** `N₁` 证 D，最后调图卡定理。
 
 #### D. 像侧契约（**最终接口**，两种等价给法）
 - 原始：`(link N₁ {q}).space ∩ {x | x.2.2 = q.2.2} = {a₁, b₁}`、`a₁ ≠ b₁`、两侧性。
@@ -3770,10 +3776,11 @@ germ 沿 `φ` 可搬，像侧第一张片是真平面、半径无关。搬过去
 
 #### F. 还欠谁
 **只剩 H 的链构造**：造出满足 B 全部六条的 `(U, V, Φ)`，其中 3.（整体单射）与
-4.（相容侧选择）是实质的。顶点层无几何债：C 的输入是标准分支点数据，
-D 的两条是真横截性，其余（`Finite`、面包含、`{q} ∈ N₁.faces`、`K₁.space ∈ 𝓝 q`、
-`hlinkN₁`）全部由 T1（`exists_simplicialComplex_triple_image_closedStar_of_isPiecewiseAffineOn`）
-与 `image_closedStar_mem_nhds_of_isPLHomeomorphOn` 交付。
+4.（相容侧选择）是实质的。顶点层无几何债：C 的生产者输入是标准分支点数据，
+D 的两条是真横截性，须由消费者对生产者交出的 `N₁` 证明（H 的星形链已按这个形状消费）；
+其余结构条款现在直接写在生产者的结论里，由 T1
+（`exists_simplicialComplex_triple_image_closedStar_of_isPiecewiseAffineOn`）与
+`image_closedStar_mem_nhds_of_isPLHomeomorphOn` 交付。
 
 ### 19.141 本车道其余条目的状态（逐条附证据，非凭记忆）
 
@@ -3879,3 +3886,138 @@ hneg : x ∈ closure (K.space ∩ {y | ℓ y < 0})
 `propext`、`Classical.choice`、`Quot.sound`。零注释、无 `sorry` / `axiom` / `nolint` /
 `maxHeartbeats` / `set_option`；`fresh.py` forbidden hits 0、无 stale/missing olean；
 未登记根聚合，未跑 `lake build`。下一个审计文件 `AuditF283.lean`。
+
+### 19.143 顶点定理的量词形状缺陷（H 查出）已按 (β) 修：契约提到顶层，`(K₁, N₁, φ)` 变成参数
+
+**缺陷。** 旧的 `exists_chart_two_sheets_of_transverse_vertex` 结论是
+`∃ K₁ N₁ φ, 结构条款 ∧ (∀ a₁ b₁, 契约 → … → ∃ 图卡)`。像侧契约位于存在量词内部的蕴含前件，
+消费者要用它就得对定理藏起来的那个 `N₁` 证契约，而外部写得出的任何契约假设要么与该 `N₁` 无关、
+要么对所有 `N₁` 全称而为假（H 的反例：`link N₁ {0}` 取平面 `{x.2.2 = 0}` 内的三角形边界，
+满足全部结构条款，但与该平面的交是整条圆周）。H 据此弃掉了自己的链定理（HANDOFF_CODEX_H
+"给 F 的接口缺陷报告"）。这与 `hgen`、`hfiber` 同类：编译与审计都干净、但按预期实例化不了。
+我 §19.140 的假设审计只查了每条假设可否满足，没查结论的量词结构，故漏过。
+
+**修法 (β)。** 拆成两条（`VertexBranchChartPair.lean`，新形状见 §19.140 C）：
+- `exists_transcription_of_transverse_vertex`：旧定理的存在部分，另外把图卡半边实际消费的三条
+  （`IsPLHomeomorphOn φ U W` 连同 `U`、`W` 开与 `p ∈ U`；`M` 送进 `{x.2.2 = 0}` 的 `∀ᶠ`；
+  `N` 送进 `N₁.space` 的 `∀ᶠ`）写进结论。这三条原先只活在证明内部，不暴露就没人能重建图卡。
+- `exists_chart_two_sheets_of_transverse_vertex`：`K₁ N₁ φ U W` 为参数，结构条款与
+  `a₁ ≠ b₁`、`link N₁ ∩ {x.2.2 = (φ p).2.2} = {a₁, b₁}`、两侧性两条为顶层假设，结论只留图卡。
+  按 `omit` 纪律：不需要 `DecidableEq E`，源侧只留 `A B : Set E`（消费者传 `M.space`、`N.space`），
+  有限性写成显式 `Set.Finite` 假设以便直接接生产者的 `obtain` 输出。
+H 的 `exists_arcChartChain_of_imageContract` 不受影响（它按 `hvertex` 打包形状消费）；
+它换到顶层形状时的调用顺序是：`obtain` 生产者 → 对该 `N₁` 证 D → 调图卡定理。
+
+**标准审计追加第三项**（已写进 `MOISE_CHAIN.md` 可行性复盘段）：结论形如
+`∃ x, … ∧ (hyp x → …)` 时，检查消费者能否对被藏住的 `x` 实际供给 `hyp x`；供不了就提到顶层。
+
+**验证。** 消费者计数：定理名在树中只有定义处 1 处命中；导入 `VertexBranchChartPair` 的模块 2 个
+（`BranchChainChart`（本车道，未用该名）、`ArcChartChain`（H，只读）），无二级导入者。
+`VertexBranchChartPair` exit=0（10.3 秒）、`BranchChainChart` exit=0（10.7 秒）、
+`ArcChartChain` exit=0（10.6 秒），均零 warning；`AuditF283.lean` 五项（两条新定理、
+`exists_chart_branch_chain`、`exists_openPartialHomeomorph_branch_chain`、
+`exists_arcChartChain_of_imageContract`）仅 `propext`、`Classical.choice`、`Quot.sound`。
+下一个审计文件 `AuditF284.lean`。
+
+### 19.144 26.4 的"相对子复形细分"：定案为限制形、把记录里的固定形反证掉、指出 `Moise264` 结论缺一条
+
+#### A. 陈述定案（先定后证）
+
+"相对子复形的细分"有两种不同的定理：
+- **(i) 限制形**：`∃ K', IsSubdivision K' K ∧ K'.faces.Finite ∧ (∀ s ∈ K'.faces, diam < ε) ∧
+  IsSubdivision (restrict K' L.space) L`——`L` 被相容地一起细分，`K'` 落在 `|L|` 内的每个面都在 `L` 的某个面里
+  （`IsSubdivision.exists_face_subset`）。
+- **(ii) 固定形**（MOISE_CHAIN 第 327 行的出路 (a)）：`L.faces ⊆ K'.faces ∧ ∀ s ∉ L.faces, diam < ε`。
+
+**26.4 需要的是 (i)，而且它已经在树上**（`IsSubdivision.restrict`，`Subcomplex.lean:109`，
+配 `exists_isSubdivision_diam_lt`，`Mesh.lean:184`）。理由：26.4 全程只在一处用逼近——把所选环路的连续零伦
+`f : Δ → |K|` 换成边界落在 `|L|` 里的 PL 奇异盘。`Moise264` 的假设是基本群元 `g`，不是固定的环路，
+所以边界环路由我们选，只须留在 `|L|` 内且在 `|L|` 中自由同伦于 `g` 的代表；记录里之所以要"逐点相等"
+（从而要 (ii)），是照抄书上 "Let D … with Bd D = L" 的字面，而 MOISE_CHAIN 第 397 行已经指出
+`IsNullHomotopic` 换成 PL 环路后不变——同一个观察。按记录推荐的环带路线 (b)：在边界复形 `K₀` 上把环路
+取成单纯映射（`exists_isPiecewiseAffineOn_freeLoop_homotopic`），对 `Δ` 的三角剖分 `K ⊇ K₀` 取细网格细分
+`K'` 并做绝对单纯逼近 `g`（`exists_isSubdivision_simplicialApproximation`，`SimplicialApproximation.lean:20`），
+再在棱柱 `∂Δ × [0,1]` 上以粗环路为顶、`g|∂Δ` 为底插值。棱柱每个格子的四个顶点值都落在同一个闭单形
+`σ_e ∈ L` 里：粗边 `e` 上 `f` 仿射且 `f(e) = σ_e`（单纯），细顶点 `m ∈ e` 有
+`g m ∈ conv (carrierFace L (f m)) ⊆ σ_e`（逼近定理的载体条款），而"细边落在某条粗边里"正是 (i)。
+没有混合格问题，于是不需要 (ii)。
+
+**(ii) 是假的**，只要 `L` 有一个面 `τ` 在 `K` 里有真余面 `σ`，且 `ε ≤ diam τ`：
+`not_exists_isSubdivision_faces_subset_forall_diam_lt`。证明：`K' ⊇ L` 含 `τ`，`conv σ` 被 `K'` 的面覆盖，
+`τ` 的重心在 `openSimplex σ` 的闭包里，有限并的闭包给出一个面 `s` 同时含重心且与 `openSimplex σ` 相交；
+前者经 `face_subset_of_mem_openSimplex_of_mem_convexHull` 得 `τ ⊆ s`，后者经
+`notMem_space_of_notMem_faces` 得 `s ∉ L`，于是 `diam τ ≤ diam s`。这把记录里"迭代 `relDerived` 不会变小"
+从"这个构造不行"升级为"任何构造都不行"。(ii) 的最弱真形式是 `RelativeMesh.lean:9`（远离 `L` 在 `K` 中的闭星才小），
+最强真形式是 join/扇形（`L` 固定、无 `L`-顶点的面全小、星内面 = `L` 的面 ∪ 一个小的 link 面），
+后者才是 Zeeman 式逐点相等相对逼近要的东西；26.4 不需要它，本轮没做，也不给代价范围。
+
+#### B. 模块 `SubcomplexMesh.lean`（新，三条）
+
+- `exists_isSubdivision_diam_lt_restrict_isSubdivision`：(i)。按 `omit` 纪律不要面基数上界 `N`（由有限性内部导出）。
+- `exists_face_notMem_diam_ge_of_isSubdivision_of_faces_subset`：上面证明的可复用中间件，
+  给出 `s ∈ K'`, `s ∉ L`, `τ ⊆ s`, `diam τ ≤ diam s`。只要 `[Finite K'.faces]`、`L ⊆ K`、`L ⊆ K'`；不要有限维。
+- `not_exists_isSubdivision_faces_subset_forall_diam_lt`：¬(ii)，逐字否定记录里的写法（含 `K'.faces.Finite`）。
+
+检查 `SubcomplexMesh` exit=0（9.1 秒）、零 warning；`AuditF284.lean` 三项仅 `propext`、`Classical.choice`、
+`Quot.sound`。零注释、无 `sorry`/`axiom`/`nolint`/`maxHeartbeats`/`set_option`。下一个审计文件 `AuditF285.lean`。
+
+#### C. 26.4 在此之外还缺什么（未起头，不给代价范围）
+
+1. 棱柱插值引理：`K₀' × [0,1]`（`K₀'` 是边界多边形的细分）上的 PA 映射，顶是粗单纯环路、底是细逼近的
+   `simplicialMap`，格子四顶点值同在一个闭单形里故映进 `|L|`。`PrismProdCollar.lean` 的"乘积相对一端"
+   是相近工具，是否能直接给两端插值要核对。
+2. 把环带与缩小的盘沿圆周粘起来并重参数化成 PL 盘（`Gluing.lean` / `PlanarDiskUnion.lean`）。
+3. 盘相对 `Bd W` 的一般位置且保持边界与像落在 `|K|` 内：`exists_small_simplicialMap_transverse_on_subcomplex`
+   与 `GeneralPositionWithin.lean` 的 `_mapsTo` 版。
+4. 双领域 `ρ` 的消费、沿最内多边形把盘推过双领域（Case 1/2）、Case 3 = 25.2 用于 `Cl(M³ − W)` 再补环带。
+5. **`Moise264` 的结论缺一条**（`MoiseChain.lean:43`）：书上 26.4 的结论含 "Bd Δ 在 M² 中不可缩"，
+   Lean 陈述只有 `Δ ∩ S = r '' stdSimplexBoundary 2`。按现状它可由一张推离 `S` 的小盘平凡满足
+   （取 `L` 的一个 2-单形 `σ`，在双领域里取在 `∂σ` 上恰为零的 PL 高度函数的图；26.3 已交付），
+   于是 30.4 无法从它得到任何东西。缺的条款用链条词汇写是：`r` 限制到 `stdSimplexBoundary 2` 的环路在
+   `S` 中不 `IsNullHomotopic`。`Moise264` 尚未被任何定理消费，可以直接改；我没有动共享的 `MoiseChain.lean`。
+
+### 19.145 链图卡加上两端面（板状）边界条款，并先给出一个具体实例
+
+E3（HANDOFF_CODEX_L §81.3）证明单平面边界模型对触边分支无实例：分支是两端点都在 `Bd M` 的多面体 1-球，
+图卡假设把每个分支点放到轴上，`Bd M = {p.1 = 0}` 与轴只交一点，两端点被迫重合。修正接口是**板**：
+`M ↔ {0 ≤ x.1 ≤ c}`，`Bd M ↔ {x.1 = 0} ∪ {x.1 = c}`（两个端面），两张片仍是坐标平面。本车道的链定理原本没有
+边界条款（所以它本身不空），这是新增不是修补。`BranchChainChart.lean` 新增三条：
+- `image_inter_source_eq_of_forall_mem_iff`：`OpenPartialHomeomorph` 的通用引理，
+  `(∀ y ∈ e.source, y ∈ P ↔ e y ∈ Q) → e '' (P ∩ e.source) = e.target ∩ Q`。
+- `exists_openPartialHomeomorph_branch_chain_slab`：在原链定理的六条假设之外加两条逐图卡的 iff
+  `y ∈ M ↔ 0 ≤ (Φ y).1 ∧ (Φ y).1 ≤ c`、`y ∈ BdM ↔ (Φ y).1 = 0 ∨ (Φ y).1 = c`；结论在原七条之外给出
+  同样两条 iff 以及像等式 `e '' (M ∩ e.source) = e.target ∩ 板`、`e '' (BdM ∩ e.source) = e.target ∩ 两端面`。
+  用 iff 而不是单向包含，因为 E3 的楔推要把模型里"端面逐点固定、留在板内"拉回到 `M`，两个方向都要。
+  生产者在两端各用一次 `exists_linearEquiv_boundaryCrossing_normalForm`（`TransversePlaneCoordinates.lean:357`，
+  远端先平移到 `x.1 = c`），内部顶点图卡的像须落在开板 `{0 < x.1 < c}` 内。原 `exists_openPartialHomeomorph_branch_chain`
+  保留（无边界分支仍用它）。
+- `exists_slab_branch_chain_instance`：**先做的实例审计**（按 §19.143 之后的第二条审计）。在 `ℝ³` 里取
+  `A = {x.2.2 = 0}`、`B = {x.2.1 = 0}`、`M = 板`、`BdM = 两端面`、`S = A ∩ B ∩ M`（轴上从 `(0,0,0)` 到 `(c,0,0)` 的线段），
+  单张图卡 `Φ = id`；定理把 `p = (0,0,0) ≠ q = (c,0,0)`、两点都在 `BdM` 与 `S`、`S = A ∩ B ∩ M`，连同对该数据
+  实际调用板状链定理得到的图卡与全部条款一起证出。这正是 E3 证明在单平面模型里不存在的构型：
+  一条两端在不同端面上的分支。
+
+检查 `BranchChainChart` exit=0（10.7 秒）、零 warning；`AuditF285.lean` 四项
+（三条新定理与原链定理）仅 `propext`、`Classical.choice`、`Quot.sound`（通用引理不含 `Classical.choice`）。
+`BranchChainChart` 无导入者，无需重编下游。下一个审计文件 `AuditF286.lean`。
+
+### 中断时状态（2026-09-18，主人会话结束）
+
+**已落地并推送**（`codex/moise-smoothing`）：
+1. `57a2cd48b` §19.142 `FoldPlaneCrossing.lean`（F5.2 共享前置）。
+2. `561a91b9e` §19.143 (β) 修：`VertexBranchChartPair.lean` 拆成生产者 `exists_transcription_of_transverse_vertex`
+   与顶层假设形的 `exists_chart_two_sheets_of_transverse_vertex`。
+3. `f2da69cc9` §19.144 `SubcomplexMesh.lean`：26.4 消费限制形细分（已打包），固定形反证为假，
+   并指出 `Moise264` 结论缺 "Bd Δ 在 M² 中不可缩"。
+4. `9454cf931` 合并整合分支（`MOISE_CHAIN.md` 冲突两边保留）。
+5. 本提交 §19.145 板状链图卡 + 实例。
+
+**无未编译改动、无 stash。** 所有审计文件在 `.lake/scratch/AuditF282–285.lean`。
+
+**确切的下一步**（按优先级）：
+- H：把 `ArcChartChain` 改为消费顶层形（`obtain` 生产者 → 对该 `N₁` 证像侧契约 → 调图卡定理），
+  并在链构造里生产 §19.145 的两条 iff（两端各用一次单端法式，内部图卡落在开板）。
+- E3：楔推消费 `exists_openPartialHomeomorph_branch_chain_slab` 的两条像等式。
+- 链主人：给 `Moise264` 补结论条款（`MoiseChain.lean:43`，尚无消费者）。
+- F（26.4）：棱柱插值引理（§19.144 C.1），然后环带与盘的粘接（C.2）。
+- F5.2 两条路线仍开放，各自欠的东西见 §19.142 C。
