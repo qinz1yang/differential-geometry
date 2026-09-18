@@ -11178,3 +11178,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.UniformTi
 import DifferentialGeometry.Geometry.Metric.Convergence.Coordinates.UniformParameter
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.UniformTensorNorm
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.IntrinsicTimeJetConvergence
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.OpenTimeJetExtension
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CompactTimeComparison
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.HighCurvatureMixedConvergence
