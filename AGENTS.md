@@ -74,9 +74,11 @@ For variants, follow the conclusion:
 
 ## Source discipline
 
-- Write zero comments and zero docstrings in non-vendored Lean source. Preserve required existing
-  Apache Copyright/Authors headers; add no new per-file copyright headers.
-- New source files begin with imports. There is no module docstring after them.
+- Write no inline comments or declaration docstrings in non-vendored Lean source. Required Apache
+  Copyright/Authors headers and module docstrings required by the standard header linter are allowed.
+  Preserve existing attribution and license information.
+- New source files begin with the required copyright header, followed by imports. The required module
+  docstring is the first command after the imports. Keep it concise and mathematical.
 - On-disk identifiers and code are English. User-facing discussion may be Chinese.
 - Preserve exact `variable`, `open`, `omit`, `include`, `attribute`, `noncomputable`, and local-instance
   scopes when moving code. A wider or reconstructed scope can silently change an elaborated signature.
@@ -116,7 +118,7 @@ A green build is necessary but not sufficient.
 
 - The Mathlib standard linter set, excluding the documentation-presence linters `docBlame` and
   `docBlameThm`, is a delivery gate. Those two linters are inapplicable because this repository
-  requires zero docstrings in non-vendored Lean source; do not suppress them in source.
+  requires no declaration docstrings in non-vendored Lean source; do not suppress them in source.
 - Never add `@[nolint ...]`, `attribute [nolint ...]`, or any global, file-local, or
   declaration-scoped linter disable. Repair the declaration or proof instead.
 - Resolve `unusedSectionVars` first with `omit`, a smaller variable block, or a more general statement.
@@ -155,7 +157,7 @@ A green build is necessary but not sufficient.
   diagnostics. Normal build progress and `Built DifferentialGeometry...` lines are expected.
 - Run `git diff --check`. Review the complete diff for mathematical correctness, generality, duplicated
   APIs, naming, placement, import cycles, accidental imports, hidden assumptions, vacuity, diagnostic
-  commands, comments, resource overrides, and dead code.
+  commands, non-header comments, resource overrides, and dead code.
 - Register every new leaf module in the flat root aggregate and verify that it is built. Zero current
   consumers means unwired, not mathematically dead; classify value by the theorem suite and natural API,
   not by a source-grep import count alone.

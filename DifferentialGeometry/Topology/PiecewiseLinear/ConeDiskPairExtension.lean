@@ -1,5 +1,14 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.SphereDiskMarked
 import DifferentialGeometry.Topology.PiecewiseLinear.BallPair
+
+/-!
+# Relative extensions of marked cone pairs
+-/
 
 open Set
 
@@ -20,7 +29,7 @@ theorem exists_isPLHomeomorphOn_coneSet_pair_of_disk_marked
     (hJsplit : X = X ∩ D ∪ {y}) (hJ'split : X' = X' ∩ D' ∪ {y'})
     (hgJ : g '' (X ∩ D) = X' ∩ D') :
     ∃ G : E → F, IsPLHomeomorphOn G (coneSet p Lc.space) (coneSet q Lc'.space) ∧
-      EqOn G g D ∧ G p = q ∧ G '' coneSet p X = coneSet q X' := by
+      EqOn G g D ∧ G p = q ∧ G '' coneSet p X = coneSet q X' ∧ G '' Lc.space = Lc'.space := by
   classical
   obtain ⟨Gs, hGs, hGseq, hGsy⟩ :=
     exists_isPLHomeomorphOn_eqOn_disk_of_isPLSphere_two_marked hSph hSph' hD hDS hg hD'S' hy hy'
@@ -29,6 +38,6 @@ theorem exists_isPLHomeomorphOn_coneSet_pair_of_disk_marked
       (hGseq.mono inter_subset_right).image_eq, hgJ, ← hJ'split]
   obtain ⟨G, hG, hGeq, hGp, hGJ⟩ :=
     exists_isPLHomeomorphOn_coneSet_pair hLc hXLc hLc' hGs hGsJ
-  exact ⟨G, hG, (hGeq.mono hDS).trans hGseq, hGp, hGJ⟩
+  exact ⟨G, hG, (hGeq.mono hDS).trans hGseq, hGp, hGJ, hGeq.image_eq.trans hGs.image_eq⟩
 
 end DifferentialGeometry.Topology.PiecewiseLinear
