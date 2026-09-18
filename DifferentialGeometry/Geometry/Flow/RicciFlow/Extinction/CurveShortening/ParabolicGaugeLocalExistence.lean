@@ -134,3 +134,76 @@ theorem curveShorteningParabolicGaugeLocalExistence_of_parabolic_equation
 end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening
 
 end
+
+noncomputable section
+
+open Filter Set
+open DifferentialGeometry.Geometry.Curvature
+open scoped ContDiff Manifold
+
+namespace DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E] {H : Type*} [TopologicalSpace H]
+  {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+
+theorem exists_diffeomorph_flow_lift_iteratedFDeriv_tendstoUniformlyOn_of_parabolic_equation
+    {ι : Type*} {l : Filter ι}
+    {D : ι → RealTimeInterval} {DInf : RealTimeInterval}
+    {g : ι → ℝ → SmoothRiemannianMetric I M} {gInf : ℝ → SmoothRiemannianMetric I M}
+    (hG : ∀ i, MetricFamilySmoothOn (I := I) (M := M) (D i) (g i))
+    (hGInf : MetricFamilySmoothOn (I := I) (M := M) DInf gInf)
+    {a b : ℝ} (hab : a < b)
+    (hJ : ∀ i, Icc a b ⊆ (D i).regular) (hJInf : Icc a b ⊆ DInf.regular)
+    {c : ι → CurveMap M} {cInf : CurveMap M}
+    (hc : ∀ i, (c i).SmoothOn (I := I) (Icc a b))
+    (hi : ∀ i, (c i).ImmersedOn (I := I) (Icc a b))
+    (hcInf : cInf.SmoothOn (I := I) (Icc a b))
+    (hiInf : cInf.ImmersedOn (I := I) (Icc a b))
+    (heq : ∀ i x t, t ∈ Icc a b → (c i).velocity (I := I) (Icc a b) x t =
+      (c i).speed (g i) x t ^ (-2 : ℤ) • (c i).Dx (g i) (c i).X x t)
+    (heqInf : ∀ x t, t ∈ Icc a b → cInf.velocity (I := I) (Icc a b) x t =
+      cInf.speed gInf x t ^ (-2 : ℤ) • cInf.Dx gInf cInf.X x t)
+    (hconv : ∀ k : ℕ, TendstoUniformlyOn
+      (fun i (q : ℝ × ℝ) => iteratedDeriv (k + 1)
+        (fun x => (c i).speed (g i) x q.2 ^ (-2 : ℤ)) q.1)
+      (fun q : ℝ × ℝ => iteratedDeriv (k + 1)
+        (fun x => cInf.speed gInf x q.2 ^ (-2 : ℤ)) q.1)
+      l (Icc (0 : ℝ) 1 ×ˢ Icc a b)) :
+    ∃ (F : ι → ℝ → (AddCircle (1 : ℝ) ≃ₘ⟮𝓘(ℝ, ℝ), 𝓘(ℝ, ℝ)⟯ AddCircle (1 : ℝ)))
+      (FInf : ℝ → (AddCircle (1 : ℝ) ≃ₘ⟮𝓘(ℝ, ℝ), 𝓘(ℝ, ℝ)⟯ AddCircle (1 : ℝ)))
+      (γ : ι → ℝ → ℝ → ℝ) (γInf : ℝ → ℝ → ℝ),
+      (∀ i, CurveMap.IsSolutionOn (I := I) (fun z t => c i (F i t z) t) (g i) (Icc a b)) ∧
+      CurveMap.IsSolutionOn (I := I) (fun z t => cInf (FInf t z) t) gInf (Icc a b) ∧
+      (∀ i z, F i a z = z) ∧ (∀ z, FInf a z = z) ∧
+      (∀ i, ContDiffOn ℝ ∞ (Function.uncurry (γ i)) (univ ×ˢ Icc a b)) ∧
+      ContDiffOn ℝ ∞ (Function.uncurry γInf) (univ ×ˢ Icc a b) ∧
+      (∀ i x t, t ∈ Icc a b →
+        (γ i x t : AddCircle (1 : ℝ)) = F i t (x : AddCircle (1 : ℝ))) ∧
+      (∀ x t, t ∈ Icc a b →
+        (γInf x t : AddCircle (1 : ℝ)) = FInf t (x : AddCircle (1 : ℝ))) ∧
+      (∀ i x t, t ∈ Icc a b → γ i (x + 1) t = γ i x t + 1) ∧
+      (∀ x t, t ∈ Icc a b → γInf (x + 1) t = γInf x t + 1) ∧
+      (∀ i x, γ i x a = x) ∧ (∀ x, γInf x a = x) ∧
+      (∀ i x, IsIntegralCurveOn (γ i x)
+        (fun t y => -(deriv (fun z => (c i).speed (g i) z t) y / (c i).speed (g i) y t ^ 2) /
+          (c i).speed (g i) y t) (Icc a b)) ∧
+      (∀ x, IsIntegralCurveOn (γInf x)
+        (fun t y => -(deriv (fun z => cInf.speed gInf z t) y / cInf.speed gInf y t ^ 2) /
+        cInf.speed gInf y t) (Icc a b)) ∧
+      ∀ K : Set ℝ, IsCompact K → ∀ k : ℕ, TendstoUniformlyOn
+        (fun i (q : ℝ × ℝ) => iteratedFDeriv ℝ k (fun x => γ i x q.2) q.1)
+        (fun q : ℝ × ℝ => iteratedFDeriv ℝ k (fun x => γInf x q.2) q.1)
+        l (K ×ˢ Icc a b) := by
+  have hgeo (i : ι) := CurveMap.isGeometricSolutionOn_of_parabolicGauge
+    (hG i) (uniqueDiffOn_Icc hab) (hJ i) (hc i) (hi i) (heq i)
+  have hgeoInf := CurveMap.isGeometricSolutionOn_of_parabolicGauge
+    hGInf (uniqueDiffOn_Icc hab) hJInf hcInf hiInf heqInf
+  exact exists_diffeomorph_flow_lift_iteratedFDeriv_tendstoUniformlyOn hG hGInf hab hJ hJInf
+    hgeo hgeoInf (fun k => CurveMap.tendstoUniformlyOn_iteratedFDeriv_gaugeCoefficient_of_diffusion
+      hc hi hcInf hiInf k (hconv k))
+
+end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening
+
+end

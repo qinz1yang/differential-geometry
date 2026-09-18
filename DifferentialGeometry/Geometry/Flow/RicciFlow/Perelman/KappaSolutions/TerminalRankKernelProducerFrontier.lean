@@ -14,7 +14,7 @@ open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Riemannian
 open DifferentialGeometry.Geometry.Riemannian.Topology
 open DifferentialGeometry.CheegerGromovCompactness
-open scoped Manifold ContDiff
+open scoped _root_.Manifold ContDiff
 
 universe u uE uH
 

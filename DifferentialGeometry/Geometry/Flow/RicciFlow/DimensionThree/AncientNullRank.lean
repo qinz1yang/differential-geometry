@@ -1,3 +1,5 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.RankContinuity
+import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorVanishing
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIvey.Continuity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.AncientNullPlane
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.CurvatureRank
@@ -116,5 +118,67 @@ theorem curvatureOperatorImageAt_finrank_le_one_of_terminal_least_eigenvalue_eq_
     rw [add_neg_cancel]
   rw [hmetric] at hend
   exact hend
+
+open scoped _root_.Topology in
+open Filter in
+theorem exists_curvatureOperatorImageAt_finrank_eq_one_on_terminal_interval
+    {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S)
+    (hdim : Module.finrank ℝ E = 3)
+    (hcarrier : D.carrier = Iic 0) (hregular : D.regular = Iio 0)
+    (hR : ∀ t ≤ 0, ∀ x, metricAlgebraicCurvatureTensorAt (S.base.metric t) x ∈
+      algebraicCurvatureOperatorNonnegativeCone (I := I) (M := M))
+    (hnotflat : ∃ t ≤ 0, ∃ y : M, metricRm04At (S.base.metric t) y ≠ 0)
+    (x : M)
+    (hzero : leastCurvatureOperatorEigenvalueAt (S.base.metric 0) x
+      (metricAlgebraicCurvatureTensorAt (S.base.metric 0) x) = 0) :
+    ∃ s < 0, ∀ t ∈ Ioo s 0, ∀ y : M,
+      Module.finrank ℝ (curvatureOperatorImageAt (S.base.metric t) y
+        (metricAlgebraicCurvatureTensorAt (S.base.metric t) y)) = 1 := by
+  let rank (t : ℝ) (y : M) := Module.finrank ℝ
+    (curvatureOperatorImageAt (S.base.metric t) y
+      (metricAlgebraicCurvatureTensorAt (S.base.metric t) y))
+  obtain ⟨s, hs, z, hpositive⟩ : ∃ s < 0, ∃ y : M, 0 < rank s y := by
+    obtain ⟨t, ht, y, hnonzero⟩ := hnotflat
+    have hpositive : 0 < rank t y := by
+      apply Nat.pos_of_ne_zero
+      intro hrank
+      let _ : FiniteDimensional ℝ (TangentSpace I y [⋀^Fin 2]→L[ℝ] ℝ) :=
+        (ContinuousAlternatingMap.elementaryCovectorBasis (k := 2)
+          (Module.finBasis ℝ (TangentSpace I y))).finiteDimensional_of_finite
+      have hbot : curvatureOperatorImageAt (S.base.metric t) y
+          (metricAlgebraicCurvatureTensorAt (S.base.metric t) y) = ⊥ :=
+        Submodule.finrank_eq_zero.mp hrank
+      apply hnonzero
+      apply metricRm04At_eq_zero_of_curvatureOperatorEndomorphismAt_eq_zero
+        (S.base.metric t) y hdim
+      apply ContinuousLinearMap.ext
+      intro a
+      have ha : curvatureOperatorEndomorphismAt (S.base.metric t) y
+          (metricAlgebraicCurvatureTensorAt (S.base.metric t) y) a ∈
+          curvatureOperatorImageAt (S.base.metric t) y
+            (metricAlgebraicCurvatureTensorAt (S.base.metric t) y) := ⟨a, rfl⟩
+      rw [hbot] at ha
+      simpa [metricAlgebraicCurvatureTensorAt] using ha
+    rcases lt_or_eq_of_le ht with htneg | rfl
+    · exact ⟨t, htneg, y, hpositive⟩
+    · have hlow : ∀ᶠ r in 𝓝[D.carrier] (0 : ℝ), rank 0 y ≤ rank r y :=
+        curvatureOperatorImageAt_finrank_eventually_ge S hS hdim y
+          (by simp only [hcarrier, mem_Iic, le_refl])
+      rw [hcarrier] at hlow
+      have hleft : ∀ᶠ r in 𝓝[<] (0 : ℝ), rank 0 y ≤ rank r y :=
+        hlow.filter_mono (nhdsWithin_mono 0 Iio_subset_Iic_self)
+      obtain ⟨s, hsrank, hs⟩ := (hleft.and self_mem_nhdsWithin).exists
+      exact ⟨s, hs, y, hpositive.trans_le hsrank⟩
+  refine ⟨s, hs, ?_⟩
+  intro t ht y
+  change rank t y = 1
+  have hle : rank s z ≤ rank t y :=
+    curvatureOperatorImageAt_finrank_le_at_later_time S hS hdim ht.1
+      (by intro r hr; rw [hregular]; exact hr.2.trans_lt ht.2)
+      (fun r hr => hR r (hr.2.trans ht.2.le)) z y
+  have hupper : rank t y ≤ 1 :=
+    curvatureOperatorImageAt_finrank_le_one_of_terminal_least_eigenvalue_eq_zero
+      S hS hdim hcarrier hregular hR x hzero ht.2.le y
+  exact Nat.le_antisymm hupper (Nat.succ_le_iff.mpr (hpositive.trans_le hle))
 
 end DifferentialGeometry.PDE.RicciFlow

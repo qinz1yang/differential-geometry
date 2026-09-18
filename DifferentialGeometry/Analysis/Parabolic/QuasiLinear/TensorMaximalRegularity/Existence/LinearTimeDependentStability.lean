@@ -601,3 +601,50 @@ theorem tendsto_heatVectorForcingResidualL_of_tendsto_lp
 end DifferentialGeometry.Analysis.Parabolic.QuasiLinear
 
 end
+
+noncomputable section
+
+open MeasureTheory
+open scoped Manifold ContDiff NNReal
+
+namespace DifferentialGeometry.Analysis.Parabolic.QuasiLinear
+
+open TensorHeatEquation TensorSpectral TimeSobolev MaximalRegularity
+
+variable {ι : Type*} [Fintype ι]
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
+variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+variable {g : SmoothRiemannianMetric I M} {r s : ℕ} {a T : ℝ}
+
+private local instance vectorTensorHsNormedSpace_residualCongr (q : ℝ) :
+    NormedSpace ℝ (PiLp 2 (fun _ : ι => TensorHs g r s q)) := inferInstance
+
+theorem heatVectorForcingResidualL_congr_ae (hT : 0 < T)
+    (A2 B2 : ℝ → PiLp 2 (fun _ : ι => TensorHs g r s (a + 2)) →L[ℝ]
+      PiLp 2 (fun _ : ι => TensorHs g r s a))
+    (hA2 : AEStronglyMeasurable A2 (timeMeasure T))
+    (hB2 : AEStronglyMeasurable B2 (timeMeasure T))
+    (CA CB : ℝ≥0)
+    (hCA : ∀ᵐ t ∂timeMeasure T, ‖A2 t‖ ≤ CA)
+    (hCB : ∀ᵐ t ∂timeMeasure T, ‖B2 t‖ ≤ CB)
+    (A1 B1 : ℝ → PiLp 2 (fun _ : ι => TensorHs g r s (a + 1)) →L[ℝ]
+      PiLp 2 (fun _ : ι => TensorHs g r s a))
+    (hA1 : MemLp A1 2 (timeMeasure T))
+    (hB1 : MemLp B1 2 (timeMeasure T))
+    (h2 : A2 =ᵐ[timeMeasure T] B2) (h1 : A1 =ᵐ[timeMeasure T] B1) :
+    heatVectorForcingResidualL hT A2 hA2 CA hCA A1 hA1 =
+      heatVectorForcingResidualL hT B2 hB2 CB hCB B1 hB1 := by
+  apply ContinuousLinearMap.ext
+  intro F
+  apply Lp.ext
+  filter_upwards [heatVectorForcingResidualL_apply_ae hT A2 hA2 CA hCA A1 hA1 F,
+    heatVectorForcingResidualL_apply_ae hT B2 hB2 CB hCB B1 hB1 F, h2, h1]
+    with t hAt hBt h2t h1t
+  rw [hAt, hBt, h2t, h1t]
+
+end DifferentialGeometry.Analysis.Parabolic.QuasiLinear
+
+end

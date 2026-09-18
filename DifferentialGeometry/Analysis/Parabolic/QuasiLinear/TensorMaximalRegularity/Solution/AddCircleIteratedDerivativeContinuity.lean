@@ -660,3 +660,293 @@ theorem tendstoUniformlyOn_duhamel_representatives_of_iterated_forcing_lift
 end DifferentialGeometry.Analysis.Parabolic.QuasiLinear
 
 end
+
+noncomputable section
+
+open Filter MeasureTheory
+open scoped Manifold ContDiff Topology
+
+namespace DifferentialGeometry.Analysis.Parabolic.QuasiLinear
+
+open TensorHeatEquation TensorSpectral TimeSobolev MaximalRegularity
+
+private local instance : NeZero (Module.finrank ℝ ℝ) := ⟨by simp⟩
+
+private theorem tendsto_duhamel_zero
+    {ι P : Type*} [Fintype ι] {l : Filter P}
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ)))
+    {a T : ℝ} (hT : 0 < T)
+    (F₀ : timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 a)) T)
+    (F : P → timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 a)) T)
+    (hF : Tendsto F l (𝓝 F₀)) :
+    Tendsto (fun p => maximalRegularityDuhamelVectorField hT 0 (F p)) l
+      (𝓝 (maximalRegularityDuhamelVectorField hT 0 F₀)) := by
+  let S := maximalRegularityVectorFieldL (ι := ι) (g := g) (r := 0) (s := 0) a hT.le
+  have hS : Tendsto (fun p => S (F p)) l (𝓝 (S F₀)) :=
+    (S.continuous.tendsto F₀).comp hF
+  have heq (f : timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 a)) T) :
+      S f = maximalRegularityDuhamelVectorField hT 0 f :=
+    maximalRegularityVectorFieldL_eq_duhamel hT f
+  simpa only [heq] using hS
+
+private theorem tendsto_compLpL
+    {X Y P : Type*} [NormedAddCommGroup X] [NormedSpace ℝ X]
+    [NormedAddCommGroup Y] [NormedSpace ℝ Y] {l : Filter P} {T : ℝ}
+    (A : X →L[ℝ] Y) (f₀ : timeL2 X T) (f : P → timeL2 X T)
+    (hf : Tendsto f l (𝓝 f₀)) :
+    Tendsto (fun p => A.compLpL 2 (timeMeasure T) (f p)) l
+      (𝓝 (A.compLpL 2 (timeMeasure T) f₀)) :=
+  ((A.compLpL 2 (timeMeasure T)).continuous.tendsto f₀).comp hf
+
+private theorem compLpL_commutation
+    {X Y Z Q : Type*} [NormedAddCommGroup X] [NormedSpace ℝ X]
+    [NormedAddCommGroup Y] [NormedSpace ℝ Y] [NormedAddCommGroup Z] [NormedSpace ℝ Z]
+    [NormedAddCommGroup Q] [NormedSpace ℝ Q] {T : ℝ}
+    (A : X →L[ℝ] Y) (B : Y →L[ℝ] Z) (C : X →L[ℝ] Q) (D : Q →L[ℝ] Z)
+    (h : ∀ x, B (A x) = D (C x)) (f : timeL2 X T) :
+    B.compLpL 2 (timeMeasure T) (A.compLpL 2 (timeMeasure T) f) =
+      D.compLpL 2 (timeMeasure T) (C.compLpL 2 (timeMeasure T) f) := by
+  apply Lp.ext
+  filter_upwards [B.coeFn_compLpL (A.compLpL 2 (timeMeasure T) f),
+    A.coeFn_compLpL f, D.coeFn_compLpL (C.compLpL 2 (timeMeasure T) f),
+    C.coeFn_compLpL f] with t hB hA hD hC
+  rw [hB, hA, hD, hC]
+  exact h (f t)
+
+private theorem compLpL_leftInverse
+    {X Y : Type*} [NormedAddCommGroup X] [NormedSpace ℝ X]
+    [NormedAddCommGroup Y] [NormedSpace ℝ Y] {T : ℝ}
+    (A : X →L[ℝ] Y) (B : Y →L[ℝ] X) (h : ∀ x, B (A x) = x)
+    (f : timeL2 X T) :
+    B.compLpL 2 (timeMeasure T) (A.compLpL 2 (timeMeasure T) f) = f := by
+  apply Lp.ext
+  filter_upwards [B.coeFn_compLpL (A.compLpL 2 (timeMeasure T) f),
+    A.coeFn_compLpL f] with t hB hA
+  rw [hB, hA]
+  exact h (f t)
+
+private def stateProjection {ι : Type*}
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) (m : ℕ) :=
+  ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion
+    (g := g) (r := 0) (s := 0)
+      (by linarith : (m : ℝ) + 2 ≤ (m : ℝ) + 3))
+
+private def stateDerivative {ι : Type*}
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) (m : ℕ) :=
+  ContinuousLinearMap.piLpMap 2 (fun _ : ι =>
+    (tensorHsInclusion (g := g) (r := 0) (s := 0)
+      (by norm_num : (1 : ℝ) + 2 ≤ ((3 : ℕ) : ℝ))).comp
+        ((AddCircle.iteratedParameterDerivativeHs g 3 m).comp
+          (tensorHsInclusion (g := g) (r := 0) (s := 0)
+            (by push_cast; linarith : ((3 + m : ℕ) : ℝ) ≤ (m : ℝ) + 3))))
+
+private def stateNormalization {ι : Type*}
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) (m : ℕ) :=
+  ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion
+    (g := g) (r := 0) (s := 0)
+      (by push_cast; linarith : ((1 + 2 + m : ℕ) : ℝ) ≤ (m : ℝ) + 3))
+
+private def stateDenormalization {ι : Type*}
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) (m : ℕ) :=
+  ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion
+    (g := g) (r := 0) (s := 0)
+      (by push_cast; linarith : (m : ℝ) + 3 ≤ ((1 + 2 + m : ℕ) : ℝ)))
+
+private def projectionNormalization {ι : Type*}
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) (m : ℕ) :=
+  ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion
+    (g := g) (r := 0) (s := 0)
+      (by push_cast; linarith : ((1 + 1 + m : ℕ) : ℝ) ≤ (m : ℝ) + 2))
+
+private def derivativeNormalization {ι : Type*}
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) :=
+  ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion
+    (g := g) (r := 0) (s := 0)
+      (by norm_num : ((1 + 2 : ℕ) : ℝ) ≤ (1 : ℝ) + 2))
+
+private def naturalStateProjection {ι : Type*}
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) (m : ℕ) :=
+  ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion
+    (g := g) (r := 0) (s := 0)
+      (by exact_mod_cast (show 1 + 1 + m ≤ 1 + 2 + m by omega) :
+        ((1 + 1 + m : ℕ) : ℝ) ≤ ((1 + 2 + m : ℕ) : ℝ)))
+
+private def naturalStateDerivative {ι : Type*}
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) (m : ℕ) :=
+  ContinuousLinearMap.piLpMap 2 (fun _ : ι =>
+    AddCircle.iteratedParameterDerivativeHs g (1 + 2) m)
+
+private theorem projectionNormalization_compLpL
+    {ι : Type*} [Fintype ι]
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) (m : ℕ) (T : ℝ)
+    (x : timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 ((m : ℝ) + 3))) T) :
+    (naturalStateProjection (ι := ι) g m).compLpL 2 (timeMeasure T)
+        ((stateNormalization (ι := ι) g m).compLpL 2 (timeMeasure T) x) =
+      (projectionNormalization (ι := ι) g m).compLpL 2 (timeMeasure T)
+        ((stateProjection (ι := ι) g m).compLpL 2 (timeMeasure T) x) := by
+  refine compLpL_commutation (T := T) (stateNormalization (ι := ι) g m)
+    (naturalStateProjection (ι := ι) g m)
+    (stateProjection (ι := ι) g m) (projectionNormalization (ι := ι) g m) ?_ x
+  intro y
+  apply PiLp.ext
+  intro i
+  simp only [naturalStateProjection, stateNormalization, projectionNormalization,
+    stateProjection, ContinuousLinearMap.piLpMap_apply, ← tensorHsInclusion_trans_apply]
+
+private theorem derivativeNormalization_compLpL
+    {ι : Type*} [Fintype ι]
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) (m : ℕ) (T : ℝ)
+    (x : timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 ((m : ℝ) + 3))) T) :
+    (naturalStateDerivative (ι := ι) g m).compLpL 2 (timeMeasure T)
+        ((stateNormalization (ι := ι) g m).compLpL 2 (timeMeasure T) x) =
+      (derivativeNormalization (ι := ι) g).compLpL 2 (timeMeasure T)
+        ((stateDerivative (ι := ι) g m).compLpL 2 (timeMeasure T) x) := by
+  refine compLpL_commutation (T := T) (stateNormalization (ι := ι) g m)
+    (naturalStateDerivative (ι := ι) g m)
+    (stateDerivative (ι := ι) g m) (derivativeNormalization (ι := ι) g) ?_ x
+  intro y
+  apply PiLp.ext
+  intro i
+  simp only [naturalStateDerivative, stateNormalization, derivativeNormalization,
+    stateDerivative, ContinuousLinearMap.piLpMap_apply, ContinuousLinearMap.comp_apply,
+    ← tensorHsInclusion_trans_apply, tensorHsInclusion_refl_apply]
+
+private theorem stateDenormalization_compLpL
+    {ι : Type*} [Fintype ι]
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) (m : ℕ) (T : ℝ)
+    (x : timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 ((m : ℝ) + 3))) T) :
+    (stateDenormalization (ι := ι) g m).compLpL 2 (timeMeasure T)
+      ((stateNormalization (ι := ι) g m).compLpL 2 (timeMeasure T) x) = x := by
+  refine compLpL_leftInverse (T := T) (stateNormalization (ι := ι) g m)
+    (stateDenormalization (ι := ι) g m) ?_ x
+  intro y
+  apply PiLp.ext
+  intro i
+  simp only [stateDenormalization, stateNormalization, ContinuousLinearMap.piLpMap_apply,
+    ← tensorHsInclusion_trans_apply, tensorHsInclusion_refl_apply]
+
+private theorem tendsto_normalized_graph
+    {ι P : Type*} [Fintype ι] {l : Filter P}
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) (m : ℕ) (T : ℝ)
+    (W₀ : timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 ((1 + 2 + m : ℕ) : ℝ))) T)
+    (W : P → timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 ((1 + 2 + m : ℕ) : ℝ))) T) :
+    let J := (naturalStateProjection (ι := ι) g m).compLpL 2 (timeMeasure T)
+    let D := (naturalStateDerivative (ι := ι) g m).compLpL 2 (timeMeasure T)
+    Tendsto (fun p => J (W p)) l (𝓝 (J W₀)) →
+    Tendsto (fun p => D (W p)) l (𝓝 (D W₀)) → Tendsto W l (𝓝 W₀) := by
+  intro J D hJ hD
+  exact AddCircle.tendsto_timeL2_of_tensorHsInclusion_of_iteratedParameterDerivativeHs
+    (ι := ι) (P := P) (l := l) g 1 m T W₀ W hJ hD
+
+private theorem tendsto_projection_normalization
+    {ι P : Type*} [Fintype ι] {l : Filter P}
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) (m : ℕ) (T : ℝ)
+    (V₀ : timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 ((m : ℝ) + 3))) T)
+    (V : P → timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 ((m : ℝ) + 3))) T) :
+    let J := (stateProjection (ι := ι) g m).compLpL 2 (timeMeasure T)
+    let A := (stateNormalization (ι := ι) g m).compLpL 2 (timeMeasure T)
+    let N := (naturalStateProjection (ι := ι) g m).compLpL 2 (timeMeasure T)
+    Tendsto (fun p => J (V p)) l (𝓝 (J V₀)) →
+      Tendsto (fun p => N (A (V p))) l (𝓝 (N (A V₀))) := by
+  intro J A N hJ
+  have h := tendsto_compLpL (T := T) (P := P) (l := l)
+    (projectionNormalization (ι := ι) g m) (J V₀) (fun p => J (V p)) hJ
+  simpa only [J, A, N, projectionNormalization_compLpL] using h
+
+private theorem tendsto_derivative_normalization
+    {ι P : Type*} [Fintype ι] {l : Filter P}
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) (m : ℕ) (T : ℝ)
+    (V₀ : timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 ((m : ℝ) + 3))) T)
+    (V : P → timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 ((m : ℝ) + 3))) T) :
+    let J := (stateDerivative (ι := ι) g m).compLpL 2 (timeMeasure T)
+    let A := (stateNormalization (ι := ι) g m).compLpL 2 (timeMeasure T)
+    let N := (naturalStateDerivative (ι := ι) g m).compLpL 2 (timeMeasure T)
+    Tendsto (fun p => J (V p)) l (𝓝 (J V₀)) →
+      Tendsto (fun p => N (A (V p))) l (𝓝 (N (A V₀))) := by
+  intro J A N hJ
+  have h := tendsto_compLpL (T := T) (P := P) (l := l)
+    (derivativeNormalization (ι := ι) g) (J V₀) (fun p => J (V p)) hJ
+  simpa only [J, A, N, derivativeNormalization_compLpL] using h
+
+private theorem tendsto_iterated_graph
+    {ι P : Type*} [Fintype ι] {l : Filter P}
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) (m : ℕ) (T : ℝ)
+    (V₀ : timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 ((m : ℝ) + 3))) T)
+    (V : P → timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 ((m : ℝ) + 3))) T) :
+    let J := (stateProjection (ι := ι) g m).compLpL 2 (timeMeasure T)
+    let D := (stateDerivative (ι := ι) g m).compLpL 2 (timeMeasure T)
+    Tendsto (fun p => J (V p)) l (𝓝 (J V₀)) →
+    Tendsto (fun p => D (V p)) l (𝓝 (D V₀)) → Tendsto V l (𝓝 V₀) := by
+  intro J D hJ hD
+  let A := stateNormalization (ι := ι) g m
+  let B := stateDenormalization (ι := ι) g m
+  have hJForward := tendsto_projection_normalization (ι := ι) (P := P) (l := l)
+    g m T V₀ V hJ
+  have hDForward := tendsto_derivative_normalization (ι := ι) (P := P) (l := l)
+    g m T V₀ V hD
+  have hA := tendsto_normalized_graph
+    (ι := ι) (P := P) (l := l) g m T
+      (A.compLpL 2 (timeMeasure T) V₀)
+      (fun p => A.compLpL 2 (timeMeasure T) (V p)) hJForward hDForward
+  have hback := tendsto_compLpL (T := T) (P := P) (l := l)
+    B (A.compLpL 2 (timeMeasure T) V₀)
+    (fun p => A.compLpL 2 (timeMeasure T) (V p)) hA
+  simpa only [A, B, stateDenormalization_compLpL] using hback
+
+theorem tendsto_timeL2_duhamel_lifts_of_tendsto_forcing
+    {ι P : Type*} [Fintype ι] {l : Filter P}
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) (m : ℕ)
+    {T : ℝ} (hT : 0 < T)
+    (F₀ : timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 (m : ℝ))) T)
+    (F : P → timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 (m : ℝ))) T)
+    (FH₀ : timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 (1 : ℝ))) T)
+    (FH : P → timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 (1 : ℝ))) T)
+    (V₀ : timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 ((m : ℝ) + 3))) T)
+    (V : P → timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 ((m : ℝ) + 3))) T)
+    (hlift₀ : iteratedParameterDerivativeDuhamelForcing g 0 m hT F₀ =
+      (ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion
+        (g := g) (r := 0) (s := 0) (by norm_num : ((0 : ℕ) : ℝ) ≤ 1))).compLpL
+          2 (timeMeasure T) FH₀)
+    (hlift : ∀ p, iteratedParameterDerivativeDuhamelForcing g 0 m hT (F p) =
+      (ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion
+        (g := g) (r := 0) (s := 0) (by norm_num : ((0 : ℕ) : ℝ) ≤ 1))).compLpL
+          2 (timeMeasure T) (FH p))
+    (hV₀ : (ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion
+      (g := g) (r := 0) (s := 0)
+        (by linarith : (m : ℝ) + 2 ≤ (m : ℝ) + 3))).compLpL
+          2 (timeMeasure T) V₀ = maximalRegularityDuhamelVectorField hT 0 F₀)
+    (hV : ∀ p, (ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion
+      (g := g) (r := 0) (s := 0)
+        (by linarith : (m : ℝ) + 2 ≤ (m : ℝ) + 3))).compLpL
+          2 (timeMeasure T) (V p) = maximalRegularityDuhamelVectorField hT 0 (F p))
+    (hprojection : Tendsto (fun p => (ContinuousLinearMap.piLpMap 2
+      (fun _ : ι => tensorHsInclusion (g := g) (r := 0) (s := 0)
+        (by linarith : (m : ℝ) + 2 ≤ (m : ℝ) + 3))).compLpL
+          2 (timeMeasure T) (V p)) l
+      (𝓝 ((ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion
+        (g := g) (r := 0) (s := 0)
+          (by linarith : (m : ℝ) + 2 ≤ (m : ℝ) + 3))).compLpL
+            2 (timeMeasure T) V₀)))
+    (hFH : Tendsto FH l (𝓝 FH₀)) :
+    Tendsto V l (𝓝 V₀) := by
+  let D := (ContinuousLinearMap.piLpMap 2 (fun _ : ι =>
+    (tensorHsInclusion (g := g) (r := 0) (s := 0)
+      (by norm_num : (1 : ℝ) + 2 ≤ ((3 : ℕ) : ℝ))).comp
+        ((AddCircle.iteratedParameterDerivativeHs g 3 m).comp
+          (tensorHsInclusion (g := g) (r := 0) (s := 0)
+            (by push_cast; linarith : ((3 + m : ℕ) : ℝ) ≤ (m : ℝ) + 3))))).compLpL
+              2 (timeMeasure T)
+  have hD₀ := iteratedParameterDerivativeHs_duhamel_field_of_lift
+    (ι := ι) g m hT F₀ FH₀ V₀ hlift₀ hV₀
+  have hD : ∀ p, D (V p) = maximalRegularityDuhamelVectorField hT 0 (FH p) :=
+    fun p => iteratedParameterDerivativeHs_duhamel_field_of_lift
+      (ι := ι) g m hT (F p) (FH p) (V p) (hlift p) (hV p)
+  have hDF : Tendsto (fun p => D (V p)) l (𝓝 (D V₀)) := by
+    have hbase := tendsto_duhamel_zero (ι := ι) (P := P) (l := l) g hT FH₀ FH hFH
+    have hlimit : D V₀ = maximalRegularityDuhamelVectorField hT 0 FH₀ := hD₀
+    exact hlimit.symm ▸ hbase.congr' (Eventually.of_forall fun p => (hD p).symm)
+  exact tendsto_iterated_graph (ι := ι) (P := P) (l := l) g m T V₀ V hprojection hDF
+
+end DifferentialGeometry.Analysis.Parabolic.QuasiLinear
+
+end

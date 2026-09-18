@@ -1,3 +1,5 @@
+import DifferentialGeometry.Analysis.Calculus.IteratedDerivative.SpaceJets
+import Mathlib.Analysis.Calculus.ContDiff.FaaDiBruno
 import DifferentialGeometry.Analysis.Calculus.MapConvergence.Composition
 import Mathlib.Analysis.Calculus.FDeriv.CompCLM
 import DifferentialGeometry.Analysis.Calculus.MapConvergence.Derivative
@@ -442,3 +444,147 @@ theorem MapCInfConvergenceOnCompacts.paramTangentVF
 
 end CheegerGromovCompactness
 end DifferentialGeometry
+
+noncomputable section
+
+open scoped ContDiff
+
+namespace DifferentialGeometry.Analysis.ODE.Flow
+
+variable {Q X : Type*} [NormedAddCommGroup Q] [NormedSpace ℝ Q]
+  [NormedAddCommGroup X] [NormedSpace ℝ X]
+
+theorem exists_continuous_spatialJetPrefix_paramTangentVF (n : ℕ) :
+    ∃ T : (((i : Fin (n + 2)) → X [×i.val]→L[ℝ] X) × (X × (Q →L[ℝ] X))) →
+        ((i : Fin (n + 1)) → (X × (Q →L[ℝ] X)) [×i.val]→L[ℝ] (X × (Q →L[ℝ] X))),
+      Continuous T ∧ ∀ v : ℝ → X → X, ∀ t, ContDiff ℝ (n + 1) (v t) → ∀ z,
+        T (spatialJetPrefix (n + 1) (v t) z.1, z) =
+          spatialJetPrefix n (paramTangentVF Q v t) z := by
+  let Y := X × (Q →L[ℝ] X)
+  let W := X × ((X →L[ℝ] X) × (Q →L[ℝ] X))
+  let A := (i : Fin (n + 2)) → X [×i.val]→L[ℝ] X
+  let U (f : X → X) (z : Y) : W := (f z.1, fderiv ℝ f z.1, z.2)
+  let R : W → Y := fun w => (w.1, w.2.1.comp w.2.2)
+  have hR : ContDiff ℝ ∞ R :=
+    contDiff_fst.prodMk
+      ((isBoundedBilinearMap_comp (𝕜 := ℝ) (E := Q) (F := X) (G := X)).contDiff.comp
+        contDiff_snd)
+  let UJet (k : ℕ) (hk : k ≤ n) (p : A × Y) : Y [×k]→L[ℝ] W :=
+    ((p.1 ⟨k, by omega⟩).compContinuousLinearMap
+      (fun _ : Fin k => ContinuousLinearMap.fst ℝ X (Q →L[ℝ] X))).prod
+      ((ContinuousMultilinearMap.compContinuousLinearMap
+          ((continuousMultilinearCurryRightEquiv' ℝ k X X) (p.1 ⟨k + 1, by omega⟩))
+          (fun _ : Fin k => ContinuousLinearMap.fst ℝ X (Q →L[ℝ] X))).prod
+        (iteratedFDeriv ℝ k (fun z : Y => z.2) p.2))
+  have hUJet (k : ℕ) (hk : k ≤ n) : Continuous (UJet k hk) := by
+    have hfirst : Continuous (fun p : A × Y =>
+        (p.1 ⟨k, by omega⟩).compContinuousLinearMap
+          (fun _ : Fin k => ContinuousLinearMap.fst ℝ X (Q →L[ℝ] X))) :=
+      (ContinuousMultilinearMap.compContinuousLinearMapL
+        (fun _ : Fin k => ContinuousLinearMap.fst ℝ X (Q →L[ℝ] X))).continuous.comp
+        ((continuous_apply (⟨k, by omega⟩ : Fin (n + 2))).comp continuous_fst)
+    have hsecond : Continuous (fun p : A × Y =>
+        ContinuousMultilinearMap.compContinuousLinearMap
+          ((continuousMultilinearCurryRightEquiv' ℝ k X X) (p.1 ⟨k + 1, by omega⟩))
+            (fun _ : Fin k => ContinuousLinearMap.fst ℝ X (Q →L[ℝ] X))) :=
+      (ContinuousMultilinearMap.compContinuousLinearMapL
+        (fun _ : Fin k => ContinuousLinearMap.fst ℝ X (Q →L[ℝ] X))).continuous.comp
+        ((continuousMultilinearCurryRightEquiv' ℝ k X X).continuous.comp
+          ((continuous_apply (⟨k + 1, by omega⟩ : Fin (n + 2))).comp continuous_fst))
+    have hthird : Continuous (fun p : A × Y =>
+        iteratedFDeriv ℝ k (fun z : Y => z.2) p.2) :=
+      (ContDiff.continuous_iteratedFDeriv (by exact_mod_cast le_top)
+        (contDiff_snd : ContDiff ℝ ∞ (fun z : Y => z.2))).comp continuous_snd
+    exact (ContinuousMultilinearMap.prodL ℝ (fun _ : Fin k => Y) X
+      ((X →L[ℝ] X) × (Q →L[ℝ] X))).continuous.comp
+      (hfirst.prodMk ((ContinuousMultilinearMap.prodL ℝ (fun _ : Fin k => Y)
+        (X →L[ℝ] X) (Q →L[ℝ] X)).continuous.comp (hsecond.prodMk hthird)))
+  let U₀ (p : A × Y) : W := continuousMultilinearCurryFin0 ℝ Y W (UJet 0 (Nat.zero_le n) p)
+  have hU₀ : Continuous U₀ :=
+    (continuousMultilinearCurryFin0 ℝ Y W).continuous.comp (hUJet 0 (Nat.zero_le n))
+  let T (p : A × Y) (j : Fin (n + 1)) : Y [×j.val]→L[ℝ] Y :=
+    ∑ c : OrderedFinpartition j.val,
+      c.compAlongOrderedFinpartition (iteratedFDeriv ℝ c.length R (U₀ p))
+        (fun i => UJet (c.partSize i)
+          ((c.partSize_le i).trans (Nat.le_of_lt_succ j.isLt)) p)
+  have hT : Continuous T := by
+    apply continuous_pi
+    intro j
+    have hterm (c : OrderedFinpartition j.val) : Continuous (fun p : A × Y =>
+        c.compAlongOrderedFinpartition (iteratedFDeriv ℝ c.length R (U₀ p))
+          (fun i => UJet (c.partSize i)
+            ((c.partSize_le i).trans (Nat.le_of_lt_succ j.isLt)) p)) := by
+      have houter : Continuous (fun p : A × Y =>
+          iteratedFDeriv ℝ c.length R (U₀ p)) :=
+        (ContDiff.continuous_iteratedFDeriv (by exact_mod_cast le_top) hR).comp hU₀
+      have hinner : Continuous (fun p : A × Y =>
+          fun i : Fin c.length => UJet (c.partSize i)
+            ((c.partSize_le i).trans (Nat.le_of_lt_succ j.isLt)) p) :=
+        continuous_pi fun i => hUJet (c.partSize i)
+          ((c.partSize_le i).trans (Nat.le_of_lt_succ j.isLt))
+      let Lflip : ContinuousMultilinearMap ℝ
+          (fun i : Fin c.length => Y [×c.partSize i]→L[ℝ] W)
+          ((W [×c.length]→L[ℝ] Y) →L[ℝ] Y [×j.val]→L[ℝ] Y) :=
+        (c.compAlongOrderedFinpartitionL ℝ Y W Y).flipMultilinear
+      simpa only [Lflip, Function.comp_apply, ContinuousLinearMap.flipMultilinear_apply_apply,
+        OrderedFinpartition.compAlongOrderedFinpartitionL_apply] using
+        ((ContinuousMultilinearMap.contDiff (𝕜 := ℝ) (n := 0) Lflip).continuous.comp hinner).clm_apply
+          houter
+    exact continuous_finsetSum _ fun c _ => hterm c
+  refine ⟨T, hT, ?_⟩
+  intro v t hv z
+  have hvn : ContDiff ℝ n (v t) := hv.of_le (by exact_mod_cast Nat.le_succ n)
+  have hDv : ContDiff ℝ n (fderiv ℝ (v t)) := hv.fderiv_right (by simp)
+  have hfs : ContDiff ℝ n (fun y : Y => v t y.1) := hvn.comp contDiff_fst
+  have hdfs : ContDiff ℝ n (fun y : Y => fderiv ℝ (v t) y.1) :=
+    hDv.comp contDiff_fst
+  have hsnd : ContDiff ℝ n (fun y : Y => y.2) := contDiff_snd
+  have hU : ContDiff ℝ n (U (v t)) := hfs.prodMk (hdfs.prodMk hsnd)
+  have hRn : ContDiff ℝ n R := hR.of_le (by exact_mod_cast le_top)
+  have hUeq (k : ℕ) (hk : k ≤ n) :
+      UJet k hk (spatialJetPrefix (n + 1) (v t) z.1, z) =
+        iteratedFDeriv ℝ k (U (v t)) z := by
+    have hf : iteratedFDeriv ℝ k (fun y : Y => v t y.1) z =
+        (iteratedFDeriv ℝ k (v t) z.1).compContinuousLinearMap
+          (fun _ => ContinuousLinearMap.fst ℝ X (Q →L[ℝ] X)) :=
+      (ContinuousLinearMap.fst ℝ X (Q →L[ℝ] X)).iteratedFDeriv_comp_right hvn z
+        (by exact_mod_cast hk)
+    have hdf : iteratedFDeriv ℝ k (fun y : Y => fderiv ℝ (v t) y.1) z =
+        (iteratedFDeriv ℝ k (fderiv ℝ (v t)) z.1).compContinuousLinearMap
+          (fun _ => ContinuousLinearMap.fst ℝ X (Q →L[ℝ] X)) :=
+      (ContinuousLinearMap.fst ℝ X (Q →L[ℝ] X)).iteratedFDeriv_comp_right hDv z
+        (by exact_mod_cast hk)
+    have hcurry : (continuousMultilinearCurryRightEquiv' ℝ k X X)
+        (iteratedFDeriv ℝ (k + 1) (v t) z.1) =
+          iteratedFDeriv ℝ k (fderiv ℝ (v t)) z.1 := by
+      simp only [iteratedFDeriv_succ_eq_comp_right, Function.comp_apply,
+        LinearIsometryEquiv.apply_symm_apply]
+    change _ = iteratedFDeriv ℝ k
+      (fun y : Y => (v t y.1, fderiv ℝ (v t) y.1, y.2)) z
+    rw [iteratedFDeriv_prodMk hfs.contDiffAt (hdfs.prodMk hsnd).contDiffAt
+      (by exact_mod_cast hk)]
+    rw [iteratedFDeriv_prodMk hdfs.contDiffAt hsnd.contDiffAt
+      (by exact_mod_cast hk), hf, hdf]
+    simp only [UJet, spatialJetPrefix, hcurry]
+  have hU₀eq : U₀ (spatialJetPrefix (n + 1) (v t) z.1, z) = U (v t) z := by
+    dsimp only [U₀]
+    rw [hUeq 0 (Nat.zero_le n)]
+    rfl
+  funext j
+  change T (spatialJetPrefix (n + 1) (v t) z.1, z) j =
+    iteratedFDeriv ℝ j.val (paramTangentVF Q v t) z
+  have hcompEq : paramTangentVF Q v t = R ∘ U (v t) := by
+    funext y
+    rfl
+  rw [hcompEq]
+  dsimp only [T]
+  simp only [hU₀eq, hUeq]
+  simpa only [FormalMultilinearSeries.taylorComp,
+    FormalMultilinearSeries.compAlongOrderedFinpartition, ftaylorSeries, Function.comp_def,
+    R, U, paramTangentVF] using
+    (iteratedFDeriv_comp hRn.contDiffAt hU.contDiffAt
+      (i := j.val) (by exact_mod_cast Nat.le_of_lt_succ j.isLt)).symm
+
+end DifferentialGeometry.Analysis.ODE.Flow
+
+end

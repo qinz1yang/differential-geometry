@@ -62,4 +62,33 @@ theorem MetricFamilySmoothOn.eq_sliceFst_prod_at_terminal_of_lt
   exact tendsto_nhds_unique (hA.mono_left (nhdsWithin_mono b Iio_subset_Iic_self))
     ((hB.mono_left (nhdsWithin_mono b Iio_subset_Iic_self)).congr' heq.symm)
 
+theorem MetricFamilySmoothOn.eq_sliceFst_prod_at_terminal_of_eventually
+    {D : RealTimeInterval} {g : ℝ → SmoothRiemannianMetric (I.prod J) (M × N)}
+    (hg : MetricFamilySmoothOn D g) {b : ℝ} (hb : b ∈ D.carrier)
+    (hleft : D.carrier ∈ 𝓝[<] b)
+    (h : SmoothRiemannianMetric J N) (y : N)
+    (hprod : ∀ᶠ t in 𝓝[<] b, g t = ((g t).sliceFst y).prod h) :
+    g b = ((g b).sliceFst y).prod h := by
+  apply SmoothRiemannianMetric.ext_inner
+  intro z v w
+  have hinner (t : ℝ) :
+      (((g t).sliceFst y).prod h).inner z v w =
+        (g t).inner (z.1, y) (v.1, 0) (w.1, 0) + h.inner z.2 v.2 w.2 :=
+    (SmoothRiemannianMetric.prod_inner ((g t).sliceFst y) h z v w).trans
+      (congrArg (fun r : ℝ => r + h.inner z.2 v.2 w.2)
+        (SmoothRiemannianMetric.sliceFst_inner (g t) y z.1 v.1 w.1))
+  have hA : ContinuousWithinAt (fun t : ℝ => (g t).inner z v w) (Iio b) b :=
+    (hg.coeff_cont z v w b hb).mono_of_mem_nhdsWithin hleft
+  have hB : ContinuousWithinAt
+      (fun t : ℝ => (g t).inner (z.1, y) (v.1, 0) (w.1, 0) + h.inner z.2 v.2 w.2)
+      (Iio b) b :=
+    ((hg.coeff_cont (z.1, y) (v.1, 0) (w.1, 0) b hb).mono_of_mem_nhdsWithin
+      hleft).add continuousWithinAt_const
+  have heq : (fun t : ℝ => (g t).inner z v w) =ᶠ[𝓝[<] b]
+      (fun t : ℝ => (g t).inner (z.1, y) (v.1, 0) (w.1, 0) + h.inner z.2 v.2 w.2) := by
+    filter_upwards [hprod] with t ht
+    exact (congrArg (fun q : SmoothRiemannianMetric (I.prod J) (M × N) =>
+      q.inner z v w) ht).trans (hinner t)
+  exact (tendsto_nhds_unique hA (hB.congr' heq.symm)).trans (hinner b).symm
+
 end DifferentialGeometry.Geometry.Curvature

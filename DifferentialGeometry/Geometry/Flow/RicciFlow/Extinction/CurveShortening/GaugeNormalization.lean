@@ -392,3 +392,152 @@ theorem tendstoUniformlyOn_gaugeCoefficient_of_diffusion
 end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening.CurveMap
 
 end
+
+noncomputable section
+
+open Filter Set
+open DifferentialGeometry.Geometry.Curvature
+open scoped ContDiff Manifold
+
+namespace DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening.CurveMap
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+
+theorem tendstoUniformlyOn_iteratedFDeriv_gaugeCoefficient_of_diffusion
+    {ι : Type*} {l : Filter ι} {J K : Set ℝ}
+    {g : ι → ℝ → SmoothRiemannianMetric I M} {gInf : ℝ → SmoothRiemannianMetric I M}
+    {c : ι → CurveMap M} {cInf : CurveMap M}
+    (hc : ∀ i, (c i).SmoothOn (I := I) J) (hi : ∀ i, (c i).ImmersedOn (I := I) J)
+    (hcInf : cInf.SmoothOn (I := I) J) (hiInf : cInf.ImmersedOn (I := I) J) (k : ℕ)
+    (hconv : TendstoUniformlyOn
+      (fun i (q : ℝ × ℝ) => iteratedDeriv (k + 1)
+        (fun x => (c i).speed (g i) x q.2 ^ (-2 : ℤ)) q.1)
+      (fun q : ℝ × ℝ => iteratedDeriv (k + 1)
+        (fun x => cInf.speed gInf x q.2 ^ (-2 : ℤ)) q.1)
+      l (K ×ˢ J)) :
+    let β := fun i t x =>
+      -(deriv (fun y => (c i).speed (g i) y t) x / (c i).speed (g i) x t ^ 2) /
+        (c i).speed (g i) x t
+    let βInf := fun t x =>
+      -(deriv (fun y => cInf.speed gInf y t) x / cInf.speed gInf x t ^ 2) /
+        cInf.speed gInf x t
+    TendstoUniformlyOn
+      (fun i (q : ℝ × ℝ) => iteratedFDeriv ℝ k (β i q.2) q.1)
+      (fun q : ℝ × ℝ => iteratedFDeriv ℝ k (βInf q.2) q.1) l (K ×ˢ J) := by
+  intro β βInf
+  have hscalar : TendstoUniformlyOn
+      (fun i (q : ℝ × ℝ) => iteratedDeriv k (β i q.2) q.1)
+      (fun q : ℝ × ℝ => iteratedDeriv k (βInf q.2) q.1) l (K ×ˢ J) := by
+    have hh := ((1 / 2 : ℝ) • ContinuousLinearMap.id ℝ ℝ).uniformContinuous.comp_tendstoUniformlyOn hconv
+    apply (hh.congr (Eventually.of_forall fun i q hq => ?_)).congr_right (fun q hq => ?_)
+    · exact (iteratedDeriv_neg_deriv_speed_div_sq_div_speed (hc i) (hi i) hq.2 k q.1).symm
+    · exact (iteratedDeriv_neg_deriv_speed_div_sq_div_speed hcInf hiInf hq.2 k q.1).symm
+  have hh := (ContinuousMultilinearMap.piFieldEquiv ℝ (Fin k) ℝ).isometry.uniformContinuous.comp_tendstoUniformlyOn hscalar
+  simpa only [iteratedFDeriv_eq_equiv_comp, Function.comp_def] using hh
+
+end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening.CurveMap
+
+end
+
+noncomputable section
+
+open Filter Set Manifold
+open DifferentialGeometry.Geometry.Curvature
+open scoped ContDiff Manifold Topology
+
+namespace DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E] {H : Type*} [TopologicalSpace H]
+  {I : ModelWithCorners ℝ E H}
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+
+theorem exists_diffeomorph_flow_lift_iteratedFDeriv_tendstoUniformlyOn
+    {ι : Type*} {l : Filter ι}
+    {D : ι → RealTimeInterval} {DInf : RealTimeInterval}
+    {g : ι → ℝ → SmoothRiemannianMetric I M} {gInf : ℝ → SmoothRiemannianMetric I M}
+    (hG : ∀ i, MetricFamilySmoothOn (I := I) (M := M) (D i) (g i))
+    (hGInf : MetricFamilySmoothOn (I := I) (M := M) DInf gInf)
+    {a b : ℝ} (hab : a < b)
+    (hJ : ∀ i, Icc a b ⊆ (D i).regular) (hJInf : Icc a b ⊆ DInf.regular)
+    {c : ι → CurveMap M} {cInf : CurveMap M}
+    {α : ι → ℝ → ℝ → ℝ} {αInf : ℝ → ℝ → ℝ}
+    (hc : ∀ i, (c i).IsGeometricSolutionOn (g i) (Icc a b) (α i))
+    (hcInf : cInf.IsGeometricSolutionOn gInf (Icc a b) αInf)
+    (hconv : ∀ k : ℕ, TendstoUniformlyOn
+      (fun i (q : ℝ × ℝ) => iteratedFDeriv ℝ k
+        (fun x : ℝ => -(α i x q.2) / (c i).speed (g i) x q.2) q.1)
+      (fun q : ℝ × ℝ => iteratedFDeriv ℝ k
+        (fun x : ℝ => -(αInf x q.2) / cInf.speed gInf x q.2) q.1)
+      l (Icc (0 : ℝ) 1 ×ˢ Icc a b)) :
+    ∃ (F : ι → ℝ → (AddCircle (1 : ℝ) ≃ₘ⟮𝓘(ℝ, ℝ), 𝓘(ℝ, ℝ)⟯ AddCircle (1 : ℝ)))
+      (FInf : ℝ → (AddCircle (1 : ℝ) ≃ₘ⟮𝓘(ℝ, ℝ), 𝓘(ℝ, ℝ)⟯ AddCircle (1 : ℝ)))
+      (γ : ι → ℝ → ℝ → ℝ) (γInf : ℝ → ℝ → ℝ),
+      (∀ i, CurveMap.IsSolutionOn (I := I) (fun z t => c i (F i t z) t) (g i) (Icc a b)) ∧
+      CurveMap.IsSolutionOn (I := I) (fun z t => cInf (FInf t z) t) gInf (Icc a b) ∧
+      (∀ i z, F i a z = z) ∧ (∀ z, FInf a z = z) ∧
+      (∀ i, ContDiffOn ℝ ∞ (Function.uncurry (γ i)) (univ ×ˢ Icc a b)) ∧
+      ContDiffOn ℝ ∞ (Function.uncurry γInf) (univ ×ˢ Icc a b) ∧
+      (∀ i x t, t ∈ Icc a b →
+        (γ i x t : AddCircle (1 : ℝ)) = F i t (x : AddCircle (1 : ℝ))) ∧
+      (∀ x t, t ∈ Icc a b →
+        (γInf x t : AddCircle (1 : ℝ)) = FInf t (x : AddCircle (1 : ℝ))) ∧
+      (∀ i x t, t ∈ Icc a b → γ i (x + 1) t = γ i x t + 1) ∧
+      (∀ x t, t ∈ Icc a b → γInf (x + 1) t = γInf x t + 1) ∧
+      (∀ i x, γ i x a = x) ∧ (∀ x, γInf x a = x) ∧
+      (∀ i x, IsIntegralCurveOn (γ i x)
+        (fun t y => -(α i y t) / (c i).speed (g i) y t) (Icc a b)) ∧
+      (∀ x, IsIntegralCurveOn (γInf x)
+        (fun t y => -(αInf y t) / cInf.speed gInf y t) (Icc a b)) ∧
+      ∀ K : Set ℝ, IsCompact K → ∀ k : ℕ, TendstoUniformlyOn
+        (fun i (q : ℝ × ℝ) => iteratedFDeriv ℝ k (fun x => γ i x q.2) q.1)
+        (fun q : ℝ × ℝ => iteratedFDeriv ℝ k (fun x => γInf x q.2) q.1)
+        l (K ×ˢ Icc a b) := by
+  classical
+  choose β F hβ hβeq hF0 hFsm hGsm hFode hsol using
+    fun i => (hc i).exists_diffeomorph_flow_isSolutionOn (hG i) hab (hJ i)
+  obtain ⟨βInf, FInf, hβInf, hβInfEq, hFInf0, hFInfSm, hGInfSm, hFInfOde, hsolInf⟩ :=
+    hcInf.exists_diffeomorph_flow_isSolutionOn hGInf hab hJInf
+  have hvEq (i : ι) (t : ℝ) (ht : t ∈ Icc a b) :
+      (fun x : ℝ => β i t (x : AddCircle (1 : ℝ))) =
+        fun x => -(α i x t) / (c i).speed (g i) x t :=
+    funext (hβeq i t ht)
+  have hvInfEq (t : ℝ) (ht : t ∈ Icc a b) :
+      (fun x : ℝ => βInf t (x : AddCircle (1 : ℝ))) =
+        fun x => -(αInf x t) / cInf.speed gInf x t :=
+    funext (hβInfEq t ht)
+  have hconvβ : ∀ k : ℕ, TendstoUniformlyOn
+      (fun i (q : ℝ × ℝ) => iteratedFDeriv ℝ k
+        (fun x : ℝ => β i q.2 (x : AddCircle (1 : ℝ))) q.1)
+      (fun q : ℝ × ℝ => iteratedFDeriv ℝ k
+        (fun x : ℝ => βInf q.2 (x : AddCircle (1 : ℝ))) q.1)
+      l (Icc (0 : ℝ) 1 ×ˢ Icc a b) := by
+    intro k
+    apply ((hconv k).congr (Eventually.of_forall fun i q hq => ?_)).congr_right
+      (fun q hq => ?_)
+    · rw [hvEq i q.2 hq.2]
+    · rw [hvInfEq q.2 hq.2]
+  obtain ⟨γ, γInf, hγsm, hγInfSm, hγcoe, hγInfCoe, hγper, hγInfPer,
+      hγ0, hγInf0, hγode, hγInfOde, hconv⟩ :=
+    AddCircle.exists_affine_periodic_integralCurve_lift_iteratedFDeriv_tendstoUniformlyOn
+      (F := fun i t z => F i t z) (FInf := fun t z => FInf t z)
+      hab.le hFsm hFInfSm hF0 hFInf0 (fun i => (hβ i).contMDiffOn)
+      hβInf.contMDiffOn hFode hFInfOde hconvβ
+  refine ⟨F, FInf, γ, γInf, hsol, hsolInf, hF0, hFInf0, hγsm, hγInfSm,
+    hγcoe, hγInfCoe, hγper, hγInfPer, hγ0, hγInf0, ?_, ?_, hconv⟩
+  · intro i x t ht
+    have hh := hγode i x t ht
+    dsimp only at hh
+    rw [hβeq i t ht] at hh
+    exact hh
+  · intro x t ht
+    have hh := hγInfOde x t ht
+    dsimp only at hh
+    rw [hβInfEq t ht] at hh
+    exact hh
+
+end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening
+
+end

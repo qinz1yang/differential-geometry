@@ -1,3 +1,4 @@
+import Mathlib.Topology.UniformSpace.HeineCantor
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Parametric.AddCircleLocalComposition
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Embedding.ScalarContinuousInjective
 
@@ -164,5 +165,83 @@ theorem tendsto_scalarHs_composition
     (by norm_num : (1 : ℝ) ≤ (k : ℝ) + 1)
   apply scalarH1ToContinuous_injective g
   exact ContinuousMap.ext (fun x => (hNeval ⟨u z, hz⟩ x).trans (hez x).symm)
+
+end AddCircle
+
+noncomputable section
+
+open Set Filter
+open scoped Manifold ContDiff Topology
+
+namespace AddCircle
+
+open DifferentialGeometry
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
+
+private local instance : NeZero (Module.finrank ℝ ℝ) := ⟨by simp⟩
+
+theorem tendstoUniformlyOn_scalarHs_composition_of_isCompact_image
+    {ι X A : Type*} [Fintype ι] {l : Filter X} {s : Set A}
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) (k : ℕ)
+    (F : (ι → ℝ) → ℝ) {U : Set (ι → ℝ)}
+    (hF : ContDiffOn ℝ ∞ F U) (hU : IsOpen U)
+    (u : X → A → PiLp 2 (fun _ : ι => TensorHs g 0 0 ((k : ℝ) + 1)))
+    (u₀ : A → PiLp 2 (fun _ : ι => TensorHs g 0 0 ((k : ℝ) + 1)))
+    (v : X → A → TensorHs g 0 0 ((k : ℝ) + 1))
+    (v₀ : A → TensorHs g 0 0 ((k : ℝ) + 1))
+    (hK : IsCompact (u₀ '' s))
+    (hu : TendstoUniformlyOn u u₀ l s) :
+    let J := tensorHsInclusion (g := g) (r := 0) (s := 0)
+      (by norm_num : (1 : ℝ) ≤ (k : ℝ) + 1)
+    let P := ContinuousLinearMap.piLpMap 2 (fun _ : ι => J)
+    (∀ t ∈ s, range (scalarH1PiToContinuous g (P (u₀ t))) ⊆ U) →
+    (∀ᶠ x in l, ∀ t ∈ s, ∀ z, scalarH1ToContinuous g (J (v x t)) z =
+      F (scalarH1PiToContinuous g (P (u x t)) z)) →
+    (∀ t ∈ s, ∀ z, scalarH1ToContinuous g (J (v₀ t)) z =
+      F (scalarH1PiToContinuous g (P (u₀ t)) z)) →
+    TendstoUniformlyOn v v₀ l s := by
+  classical
+  intro J P hRange hEval hEval₀
+  let E := PiLp 2 (fun _ : ι => TensorHs g 0 0 ((k : ℝ) + 1))
+  let H := TensorHs g 0 0 ((k : ℝ) + 1)
+  let Rel : E → H → Prop := fun w y =>
+    ∀ z, scalarH1ToContinuous g (J y) z = F (scalarH1PiToContinuous g (P w) z)
+  let N : E → H := fun w => if hw : ∃ y, Rel w y then Classical.choose hw else 0
+  have hN_eq (w : E) (y : H) (hy : Rel w y) : N w = y := by
+    have hex : ∃ y, Rel w y := ⟨y, hy⟩
+    change (if hw : ∃ y, Rel w y then Classical.choose hw else 0) = y
+    rw [dif_pos hex]
+    apply tensorHsInclusion_injective (g := g) (r := 0) (s := 0)
+      (by norm_num : (1 : ℝ) ≤ (k : ℝ) + 1)
+    apply scalarH1ToContinuous_injective g
+    exact ContinuousMap.ext (fun z => (Classical.choose_spec hex z).trans (hy z).symm)
+  have hN_eval (w : E) (hw : range (scalarH1PiToContinuous g (P w)) ⊆ U) :
+      Rel w (N w) := by
+    obtain ⟨r, hr, C, M, _, _, hM, _⟩ :=
+      exists_scalarHs_composition_on_ball g k F hF hU w hw
+    have hMw : Rel w (M ⟨w, Metric.mem_ball_self hr⟩) := hM _
+    rw [hN_eq w _ hMw]
+    exact hMw
+  have hN_cont (w : E) (hw : range (scalarH1PiToContinuous g (P w)) ⊆ U) :
+      ContinuousAt N w := by
+    obtain ⟨r, hr, C, M, _, _, hM, _⟩ :=
+      exists_scalarHs_composition_on_ball g k F hF hU w hw
+    change Tendsto N (𝓝 w) (𝓝 (N w))
+    apply tendsto_scalarHs_composition g k F hF hU id w N (N w) tendsto_id hw
+      _ (hN_eval w hw)
+    filter_upwards [Metric.ball_mem_nhds w hr] with w' hw'
+    have hMw : Rel w' (M ⟨w', hw'⟩) := hM _
+    rw [hN_eq w' _ hMw]
+    exact hMw
+  intro V hV
+  have hUV := hK.uniformContinuousAt_of_continuousAt N
+    (by
+      rintro w ⟨t, ht, rfl⟩
+      exact hN_cont (u₀ t) (hRange t ht)) hV
+  filter_upwards [hu _ hUV, hEval] with x hx hEx t ht
+  have hpair := hx t ht (mem_image_of_mem u₀ ht)
+  rw [hN_eq (u₀ t) (v₀ t) (hEval₀ t ht), hN_eq (u x t) (v x t) (hEx t ht)] at hpair
+  exact hpair
 
 end AddCircle

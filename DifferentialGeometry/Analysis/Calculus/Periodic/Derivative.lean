@@ -1,3 +1,4 @@
+import Mathlib.Analysis.Calculus.ContDiff.FTaylorSeries
 import DifferentialGeometry.Analysis.Calculus.Periodic.Affine
 import Mathlib.Algebra.Field.Periodic
 import Mathlib.Analysis.Calculus.ContDiff.Deriv
@@ -58,5 +59,19 @@ theorem lipschitzWith_of_norm_fderiv_le_Icc
   obtain ⟨y, hy, hxy⟩ := (hp.fderiv (𝕜 := ℝ)).exists_mem_Ico₀ hc x
   rw [hxy]
   exact_mod_cast hbound y ⟨hy.1, hy.2.le⟩
+
+end Function.Periodic
+
+namespace Function.Periodic
+
+theorem iteratedFDeriv
+    {𝕜 E F : Type*} [NontriviallyNormedField 𝕜]
+    [NormedAddCommGroup E] [NormedSpace 𝕜 E]
+    [NormedAddCommGroup F] [NormedSpace 𝕜 F]
+    {f : E → F} {c : E} (hf : Function.Periodic f c) (n : ℕ) :
+    Function.Periodic (_root_.iteratedFDeriv 𝕜 n f) c := by
+  intro x
+  rw [← iteratedFDeriv_comp_add_right n c x]
+  exact congrArg (fun g : E → F => _root_.iteratedFDeriv 𝕜 n g x) (funext hf)
 
 end Function.Periodic
