@@ -756,3 +756,8 @@
   但两侧性本身仍需由分层通用位置或目标骨架横截各自生产，详见 HANDOFF §19.142。
 - 2026-09-17（F 车道新 F-M2 / F6.4）：`LocallyPolyhedral.lean` 交付允许非紧开胞腔的局部多面体谓词、与旧紧致多面体的等价、紧集有限片邻域、正确条件下的闭子集/有限并/交接口及局部有限复形桥接。
   最终 check exit=0、零 warning，AuditF252 共 22 项仅标准三公理。§32 Q.1 可用 `IsLocallyPolyhedral (U \ P)` 陈述非紧部分；未捆绑全局无限三角剖分，范围说明见 HANDOFF §19.103。
+
+- 2026-09-18（30.5 核查，取代 2026-09-17 的 H-M3 评估）：Theorem 30.5 全书只在 §34 Lemma 3 被引用，交来的胞腔是开集上嵌入
+  `h` 下多面体胞腔的像，`frontier C₂'` 双领口；双领口情形已由 `TubularExcision.lean:170` + `SphereH1.lean:189` +
+  `JordanBrouwer.lean:28` 无条件证出（纯拓扑，已 `#print axioms` 核实）。H-M3 漏查了这一支。决定：以 `Moise305Tame`
+  （加 `IsBicollared (frontier C₂)`）替代，估约 1k–2k 行；不实现 wild 球面的 Alexander 对偶。详见 `MOISE_CHAIN.md` 同名条目。

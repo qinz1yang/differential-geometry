@@ -862,3 +862,43 @@ E3 的 `LuneCell.lean`（`exists_lune_base_off_graphArc`）证明：月牙在参
 - **`Moise264` 的结论少了 "Bd Δ 在 M² 中不可缩"**：按现有陈述，一张推离 `S` 的小盘（26.3 的双领域里取
   在 `∂σ` 上为零的 PL 高度函数的图）就满足它，30.4 无法消费。它尚未被消费，改陈述即可。
 细节与 26.4 仍缺的四件事见 HANDOFF_CODEX_F §19.144。
+### 2026-09-18 晚：30.5 不需要 wild 球面的 Alexander 对偶（只读核查结论）
+
+书中 Theorem 30.5 全书**只被引用一次**：§34 Lemma 3（p. 240）。那里交给 30.5 的胞腔是 `C₁' = h(C₁)`、`C₂' = h(C₂)`，
+`C₁, C₂ ⊆ U` 是 2-单形 `σ` 的**多面体** 3-胞腔邻域、`h : U → ℝ³` 是**开集**上的嵌入（§34 开头的归约 = 计划 A.1），
+所以 `frontier C₂'` 是双领口的，wild 情形从不出现。30.5 的证明重构（本文件"更正：30.5 ← 30.4"一节）只需 `C₂` tame，
+`C₁` 可保持任意拓扑胞腔。
+
+而**双领口情形在树里已是无条件定理**：`TubularExcision.lean:170 hasAlexanderDualityH0Certificate_of_openBicollar_of_sphereH1`
++ `SphereH1.lean:189 isZero_integerSingularHomology_sphereTwo_one`（无假设，Mayer–Vietoris）+ `JordanBrouwer.lean:28`，
+纯拓扑、不要光滑性；核查者用一个 scratch 文件实际编译并审计（只含三条标准公理）。另有
+`VanKampen/TwoSidedCollarSeparation.lean:246` 给"补集至多两个分支"、不要同调，且避免了树里没有的 `SphereTwo ≃ₜ frontier C` 参数化。
+**H-M3 评估已过时**：它只查了 `DualityAssembly`/`SpecializedDuality` 那支（确需光滑 + 循环），漏了 `TubularExcision → BicollarCertificates`。
+
+拟定受限陈述（不改 `MoiseChain.lean`）：`IsBicollared S := ∃ Φ : S × ℝ → ℝ³, IsOpenEmbedding Φ ∧ ∀ x, Φ (x,0) = x`；
+`BicollaredCellComplementConnected`；`Moise305Tame` 在 30.5 的假设上加 `IsBicollared (frontier C₂)`。
+§34 L3 侧要生产的每一步材料都在（`PolyhedralSurfaceComplement.lean:29`、`BicollarManifold.lean:135`、
+`InvarianceOfDomain.lean:346/508`），只缺"拓扑胞腔在同胚下的 `frontier`/`interior` 桥"（H-M3 原也列为 0.5k–1k）。
+修正估计 **约 1k–2k 行**（未原型化），原 10k–18k 作废。30.5 仍等 30.4（I.4，4k–6k，等 26.4）；本核查只移除了较大的那个阻塞。
+一般（wild）版 `TopologicalCellComplementConnected` 仍在原成本之外，但 Moise 链不需要它。
+
+### 2026-09-18 晚：L₁ 早已存在；边界分支的整条滑动链无实例；L₂ 改走"交叉重贴 + 横向楔推"（决定）
+
+E3 核对后三条事实（`HANDOFF_CODEX_L.md` §80–§81）：
+
+1. **`A ∪ B` 就是 `L₁`，且早已完整交付**：`CutAndPaste.lean:1373 exists_boundary_surgery_cell_of_boundaryBranch`
+   （`Bd D₁ ⊆ Bd M`、双点集等式、`Nonempty (NormalSingularCellData G BdM B)` 五字段、边界字 `σ.trans ω`）与
+   `:2425 …_with_simplicialComplexity_lt`（严格下降）。§43 所记"重贴保留分支"的构造是把三块并成一个带两条缝的胞腔
+   （`:1214`），那是关于像的真陈述，与 `A ∪ B` 无关。本文件上一条要 E3"重新审视经典切贴"的指示是多余的——它已经在树里。
+2. **§46–§73 的滑动链对边界分支无实例**：由 `map_boundary`，边界分支是两端点都在 `BdM` 的多面体 1-球；
+   `hSK + hA + hB + hinjP + hinjQ + hPcQ + hW` 把每个分支点放到图卡轴上，`hBdE/hBd₁` 又令 `BdM = {p.1 = 0}`，
+   轴与之只交于一点，故两端点重合。那些定理是正确的条件式，但**路线为空**。根源是一端的边界模型 `{x = 0}`
+   被当成了整条分支的边界模型；两端都在 `BdM` 的弧不可能落在横截 `BdM` 的直线上。
+3. **`L₂` 的真正路线**（书上第二个半步）：交叉重贴（已有 `:1214`）后，把两条缝各自**横向楔推**进开象限
+   `(0, ε, ε)` / 反向，推移**无 `p.1` 分量**，故 `Bd M` 逐点保持——这就是边界环的"8 字"光滑化，不需要任何边界修复。
+   形状是 `P'.piecewise (ψ₊ ∘ G) (ψ₋ ∘ G)`；新义务是楔推版的 `doublePointSet G' = doublePointSet G \ branchCarrier`。
+   §19.107 的反例（两张**平**带无法横推分离）不适用：重贴后每条缝两侧是一张**折**片、占两个相邻象限，楔推可分。
+
+决定：采纳 3。阻塞接口改为**板状图卡**：沿整条分支的乘积邻域中两张片是坐标平面、`M` 是板 `{0 ≤ x ≤ c} × ℝ²`、
+`Bd M` 是两个端面 `{x = 0}` 与 `{x = c}`（F 的 `TransversePlaneNormalForm` 在两端各用一次 + F 的链 + H 的球对）。
+滑动机制（`ModelSlide*`、`ChartSlide*`、`BranchSlide*`）保留为已证基础设施，但不在主链路径上。
