@@ -1972,3 +1972,40 @@ step 2 只做了 grep 与接口陈述，没有动工（月牙是一个项目，�
   （11.7 / 12.2 / 11.0 / 10.5 / 10.8 / 11.6 / 10.8 / 11.4 秒）；
   `.lake/scratch/AuditE3BranchDisplacement.lean` 的 5 条 `#print axioms` 全部只含
   `propext`、`Classical.choice`、`Quot.sound`，无 `sorryAx`。
+
+## 65. 2026-09-18 E3-M3：法向双点交叉的**源侧**搬运（月牙的第一块，独立可复用）
+
+状态：done。新模块 `SingularCrossingPrecomp.lean`（模块名与 6 条声明名在四条车道分支上都不存在）。
+
+- **先答主人的问题：目标侧的证明骨架不转移，源侧确实不一样。**
+  `SingularGeneralPosition.lean:3438` 的 `HasPLDoubleCrossingAt.postcomp_openPartialHomeomorph`
+  **完全不动源侧的见证** `a, b, A, B`，只把目标侧的数据推过 `e`，
+  所以它只需要现成的 `IsPLHomeomorphOn.postcomp_openPartialHomeomorph` 与
+  `HasPLCrossingAt.image_openPartialHomeomorph`。
+  源侧必须**把见证拉回**：`a' = invFunOn φ Q a`、`A' = Q ∩ φ ⁻¹' A`（`B` 同）。
+- **一度以为的障碍，以及它为什么不是障碍（记下免得重走）。**
+  拉回后要 `IsPLHomeomorphOn (f ∘ φ) A' ((f ∘ φ) '' A')`。若先把 `φ` 限制到 `A'` 再复合，
+  就需要 `IsPiecewiseAffineOn φ A'`，而 `IsPiecewiseAffineOn` 的限制只对**多面体或开集**成立
+  （`mono_of_isPolyhedron` / `mono`），偏偏定义里的 `A` 只是 `𝓝[P] a` 里的一个邻域，
+  既不开也不是多面体。定义无法记录这条正则性，改定义又要动 `SingularGeneralPosition.lean`。
+  **不必走那条路**：直接对复合用 `IsPiecewiseAffineOn.comp`，
+  `hfA.isPiecewiseAffineOn.comp hφ.isPiecewiseAffineOn` 的定义域正好是 `Q ∩ φ ⁻¹' A = A'`，
+  根本不需要限制 `φ`。逆映射同理：`invFunOn (f ∘ φ) A'` 在 `f '' A` 上等于
+  `invFunOn φ Q ∘ invFunOn f A`（两边都落在 `A'` 里且被 `f ∘ φ` 送到同一点，用 `A'` 上的单射性），
+  而后者由两条 `isPiecewiseAffineOn_invFunOn` 复合得到。所以**不需要收缩见证，也不需要多面体性**。
+- 交付的三条（外加三条可复用的辅助）：
+  - `image_inter_preimage_of_bijOn`：`BijOn φ Q P`、`A ⊆ P` ⟹ `φ '' (Q ∩ φ ⁻¹' A) = A`。
+  - `isPLHomeomorphOn_comp_inter_preimage`：上面那条复合引理。
+  - `mem_nhdsWithin_inter_preimage`：`A ∈ 𝓝[P] a` ⟹ `Q ∩ φ ⁻¹' A ∈ 𝓝[Q] (invFunOn φ Q a)`
+    （用 `ContinuousWithinAt.tendsto_nhdsWithin`，`ContinuousOn φ Q` 来自分片仿射）。
+  - `HasPLDoubleCrossingAt.precomp_isPLHomeomorphOn`、
+    `HasPLBoundaryDoubleCrossingAt.precomp_isPLHomeomorphOn`、
+    `HasPLNormalDoubleCrossingAt.precomp_isPLHomeomorphOn`：
+    `IsPLHomeomorphOn φ Q P` ⟹ 交叉性质从 `(f, P)` 搬到 `(f ∘ φ, Q)`，
+    **目标侧的 `y`、`Bd`、`f '' A`、`f '' B` 全部不变**，所以交叉子句原样保留。
+    纤维覆盖子句也原样：`x ∈ Q`、`f (φ x) = z` ⟹ `φ x ∈ P ∩ f ⁻¹' {z} ⊆ A ∪ B` ⟹ `x ∈ A' ∪ B'`。
+  三条都是 `φ : G → E` 的一般形式（源可以换空间），不含任何月牙专有内容。
+- 验证：`SingularCrossingPrecomp` 聚焦检查 exit=0（10.5 秒）、零 warning；
+  `.lake/scratch/AuditE3CrossingPrecomp.lean` 的 6 条 `#print axioms` 全部只含
+  `propext`、`Classical.choice`、`Quot.sound`（`image_inter_preimage_of_bijOn` 连
+  `Classical.choice` 都不用），无 `sorryAx`。
