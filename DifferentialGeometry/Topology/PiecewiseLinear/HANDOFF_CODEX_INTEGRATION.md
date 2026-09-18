@@ -432,3 +432,55 @@ and marked-sheet extension obligations therefore remain open. The new local
 chart theorem must not be described as the completed global slab construction.
 HW remains unmerged under the original gate; tame 30.5 still depends explicitly
 on `Moise304`. The owner choices in section 6 remain unchanged.
+
+## 13. Second four-task delivery and delivery-only coordination (2026-09-18)
+
+The owner clarified the coordination rule: do not intervene frequently during a
+lane run. Hand off at delivered results or when an urgent stop/restart is required;
+do not send routine status requests, repeated acknowledgements, or mid-run task
+additions. A source-ready report reserves a queue position without interrupting
+the active checker. A lease expiry alone does not authorize killing or taking an
+active compiler. The four task identities, model choices, and exclusive lanes in
+section 11 remain unchanged.
+
+The second batch was merged at this delivery boundary:
+
+| Task | Published checkpoint | Integration merge | Exact completed layer |
+| --- | --- | --- | --- |
+| S | `6f43fde68` | `d08358768` | Affine PL charts for all five triangles and compatibility across ordinary overlaps and the flip seam. This layer does not yet construct the global quotient embedding. |
+| h | `89cc18610` | `526de7e6a` | A single non-endpoint derived-neighborhood cell with its arc trace is `IsPLBallPair 2 1`. This is not the trimmed union induction. |
+| E3 | `3b142c900` | `7f326baf3` | Tagged disjoint source sheets give an exact image-intersection formula for double points; the closed model has precisely the two fixed endpoints, while the open model has no double points. |
+| F | `7302186ab` | `79a63a784` | Actual boundary double-point germs have a bidirectional half-axis chart with full fiber coverage; the constructed local carrier has the stated local frontier. Boundary crossing sheets cannot have equal germs. |
+
+After merging, the coordinator strictly recompiled `MobiusSquareMap`,
+`ArcCellBallPair`, `SlabWedgeDoublePoint`, and `BoundaryDoubleCrossingChart`.
+All four returned exit 0 and zero diagnostics with explicit header/long-line
+checks. The combined silent audit dynamically selected all nonautomatic
+declarations, including private declarations: 15 + 1 + 12 + 4 = 32. Every
+transitive axiom is in `{propext, Classical.choice, Quot.sound}`; all 13 default
+applicable environment linters passed, excluding only the two documentation
+presence linters. `git diff --check` passed.
+
+Receipts, exact integration source hashes, newline-normalized correspondence to
+the delivered lane sources, committed blob identities, and the full declaration
+census are retained under
+`C:\Users\liao9\AppData\Local\Temp\codex-integration-second-batch-20260918`.
+The three required upstream private objects were reused only after exact current
+source-hash checks. Other imported project objects remain shared, so this local
+acceptance is not the independent full-source closure gate.
+
+The full-root build was briefly restarted once at this batch boundary, preserving
+its private outputs, on source checkpoint
+`79a63a78483b400b18447e9bc4061d21d8ea40fd`. It continues with one worker. The final
+handoff-only commit has identical Lean source; root success is still unclaimed.
+Its live state remains `.lake/root-build-final-status.json`.
+
+S now owns the private compilation window for its source-ready global PL gluing
+layer in `MobiusSquareMap`; h's `ArcCellGluing` and E3's
+`SlabWedgeConjugation` follow in that order. These drafts are not certified by the
+32-declaration audit above. F continues its source-side lane on coherent labels
+for actual branch sheets and matching adjacent cell traces. The missing real
+carrier/boundary compatibility and the complete injective double-end arc-chain
+chart remain explicit obligations. Full trimmed-union gluing and the mapping-torus
+embedding also remain open. No task's local conditional layer is counted as any
+of these endpoints.
