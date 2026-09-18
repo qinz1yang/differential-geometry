@@ -11175,3 +11175,4 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Metric.TimeJets
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.TimeJetConvergence
 import DifferentialGeometry.Analysis.Calculus.MapConvergence.UniformParameter
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.UniformTimeJetConvergence
+import DifferentialGeometry.Geometry.Metric.Convergence.Coordinates.UniformParameter
