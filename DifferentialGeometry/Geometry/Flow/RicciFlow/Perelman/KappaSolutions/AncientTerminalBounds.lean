@@ -17,19 +17,19 @@ open scoped Manifold ContDiff _root_.Topology ENNReal
 universe u uE uH
 
 variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace ℝ E]
-  [FiniteDimensional ℝ E] [CompleteSpace E]
+  [FiniteDimensional ℝ E]
   {H : Type uH} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
-  (F : PointedFlowData.{u, uE, uH} (I := I) ancientTimeInterval)
+  {D : RealTimeInterval} (F : PointedFlowData.{u, uE, uH} (I := I) D)
 
-local instance routeBSourceTopology : TopologicalSpace F.M := F.topology
-local instance routeBSourceCharted : ChartedSpace H F.M := F.charted
-local instance routeBSourceSmooth : IsManifold I ∞ F.M := F.smooth
-local instance routeBSourceC1 : IsManifold I 1 F.M :=
+private local instance ancientBoundsTopology : TopologicalSpace F.M := F.topology
+private local instance ancientBoundsCharted : ChartedSpace H F.M := F.charted
+private local instance ancientBoundsSmooth : IsManifold I ∞ F.M := F.smooth
+private local instance ancientBoundsC1 : IsManifold I 1 F.M :=
   IsManifold.of_le (I := I) (M := F.M) (n := (∞ : WithTop ℕ∞))
     (by decide : (1 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞))
-local instance routeBSourceT2 : T2Space F.M := F.t2
-local instance routeBSourceTangentT2 : T2Space (TangentBundle I F.M) := F.t2TangentBundle
-local instance routeBSourceSigma : SigmaCompactSpace F.M := F.sigmaCompact
+private local instance ancientBoundsT2 : T2Space F.M := F.t2
+private local instance ancientBoundsTangentT2 : T2Space (TangentBundle I F.M) := F.t2TangentBundle
+private local instance ancientBoundsSigma : SigmaCompactSpace F.M := F.sigmaCompact
 
 theorem terminalTime_not_mem_regular
     (D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval)
@@ -83,7 +83,7 @@ theorem ancientKappa_rmNormLeScalar_finrank {kappa : ℝ}
 omit [I.Boundaryless] in
 theorem ancientKappa_rmNormSqBounded_finrank {kappa : ℝ}
     (hF : IsAncientKappaSolution kappa F) :
-    ∃ K : ℝ, ∀ t ∈ ancientTimeInterval.carrier, ∀ x : F.M,
+    ∃ K : ℝ, ∀ t ∈ D.carrier, ∀ x : F.M,
       normSq0S (I := I) (F.S.base.metric t) x 4 (F.S.base.rm04 t x) ≤ K := by
   obtain ⟨C, hC⟩ := hF.globalScalarBound
   refine ⟨((Module.finrank ℝ E : ℝ) ^ 2 * C) ^ 2, ?_⟩
@@ -107,11 +107,11 @@ theorem ancientKappa_rmNormSqBounded_finrank {kappa : ℝ}
 omit [I.Boundaryless] in
 theorem ancientKappa_regularSlabBound_finrank {kappa : ℝ}
     (hF : IsAncientKappaSolution kappa F) (a b : ℝ)
-    (hslab : Set.Icc a b ⊆ ancientTimeInterval.regular) :
+    (hslab : Set.Icc a b ⊆ D.regular) :
     ∃ K : ℝ, ∀ t ∈ Set.Icc a b, ∀ z : F.M,
       normSq0S (I := I) (F.S.base.metric t) z 4 (F.S.base.rm04 t z) ≤ K := by
   obtain ⟨K, hK⟩ := ancientKappa_rmNormSqBounded_finrank (I := I) F hF
-  exact ⟨K, fun t ht z => hK t (ancientTimeInterval.regular_subset (hslab ht)) z⟩
+  exact ⟨K, fun t ht z => hK t (D.regular_subset (hslab ht)) z⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 

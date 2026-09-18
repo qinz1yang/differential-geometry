@@ -93,64 +93,6 @@ private theorem surfaceAncient_regularSlabBound (hdim : Module.finrank ℝ E = 2
   intro t ht x
   exact hC t (D.regular_subset (hslab ht)) x
 
-private theorem surfaceAncient_scalar_two_time_negative
-    (hdim : Module.finrank ℝ E = 2) (hF : IsAncientKappaSolution kappa F)
-    {s t : ℝ} (hst : s ≤ t) (ht : t < 0) (x : F.M) :
-    F.S.scalar s x ≤ F.S.scalar t x := by
-  let _ : NeZero (Module.finrank ℝ E) := ⟨by omega⟩
-  apply hamilton_ancient_scalar_two_time (I := I) F.S F.isSolution
-    (fun r hr => surfaceAncient_complete F hF hr)
-    (surfaceAncient_regularSlabBound F hdim hF)
-    (fun r hr y => surfaceAncient_operator_nonnegative F hF (D.regular_subset hr) y)
-    hst
-  intro r hr
-  simpa only [hF.regular_eq, Set.mem_Iio] using hr.trans_lt ht
-
-omit [I.Boundaryless] in
-private theorem surfaceAncient_scalar_continuousOn
-    (hF : IsAncientKappaSolution kappa F) (x : F.M) :
-    ContinuousOn (fun t : ℝ => F.S.scalar t x) (Set.Iic 0) := by
-  have hmap : Continuous (fun t : ℝ => (t, x)) := continuous_id.prodMk continuous_const
-  have hcomp := F.isSolution.scalarCont.comp hmap.continuousOn
-    (fun t (ht : t ∈ Set.Iic (0 : ℝ)) =>
-      ⟨by simpa only [hF.carrier_eq] using ht, Set.mem_univ x⟩)
-  simpa only [Function.comp_def] using hcomp
-
-theorem ancientKappaSurface_scalar_monotoneOn (hdim : Module.finrank ℝ E = 2)
-    (hF : IsAncientKappaSolution kappa F) (x : F.M) :
-    MonotoneOn (fun t : ℝ => F.S.scalar t x) (Set.Iic 0) := by
-  intro s hs t ht hst
-  by_cases ht0 : t = 0
-  · subst t
-    by_cases hs0 : s = 0
-    · subst s
-      exact le_rfl
-    have hsneg : s < 0 := lt_of_le_of_ne hs hs0
-    let tau : ℕ → ℝ := fun n => s * (1 / (n + 1 : ℝ))
-    have htau : ∀ n, s ≤ tau n ∧ tau n < 0 := by
-      intro n
-      have hn : 0 < (n + 1 : ℝ) := by positivity
-      have hfpos : 0 < 1 / (n + 1 : ℝ) := one_div_pos.mpr hn
-      have hfle : 1 / (n + 1 : ℝ) ≤ 1 := (div_le_one hn).mpr (by
-        have hn0 : 0 ≤ (n : ℝ) := Nat.cast_nonneg n
-        linarith)
-      dsimp only [tau]
-      exact ⟨by nlinarith, mul_neg_of_neg_of_pos hsneg hfpos⟩
-    have htaulim : Tendsto tau atTop (nhds 0) := by
-      simpa only [tau, mul_zero] using
-        (tendsto_const_nhds.mul (tendsto_one_div_add_atTop_nhds_zero_nat (𝕜 := ℝ)))
-    have hwithin : Tendsto tau atTop (nhdsWithin 0 (Set.Iic 0)) :=
-      tendsto_nhdsWithin_iff.mpr
-        ⟨htaulim, Eventually.of_forall (fun n => (htau n).2.le)⟩
-    have hscalarLimit : Tendsto (fun n : ℕ => F.S.scalar (tau n) x)
-        atTop (nhds (F.S.scalar 0 x)) := by
-      simpa only [Function.comp_def] using
-        (surfaceAncient_scalar_continuousOn F hF x 0 (by simp)).tendsto.comp hwithin
-    exact ge_of_tendsto hscalarLimit (Eventually.of_forall fun n =>
-      surfaceAncient_scalar_two_time_negative F hdim hF (htau n).1 (htau n).2 x)
-  · exact surfaceAncient_scalar_two_time_negative F hdim hF hst
-      (lt_of_le_of_ne ht ht0) x
-
 omit [I.Boundaryless] in
 theorem pointedSurface_rmNormSq_eq_zero_of_scalar_eq_zero
     (hdim : Module.finrank ℝ E = 2) {t : ℝ} (x : F.M) (hx : F.S.scalar t x = 0) :
@@ -167,7 +109,7 @@ theorem ancientKappaSurface_past_flat_of_scalar_eq_zero
   have hsm : s < m := by dsimp only [m]; linarith
   have hmt : m < t := by dsimp only [m]; linarith
   have hm : m < 0 := hmt.trans_le ht
-  have hmonotone := ancientKappaSurface_scalar_monotoneOn F hdim hF x hm.le ht hmt.le
+  have hmonotone := ancientKappa_scalar_monotoneOn F hF x hm.le ht hmt.le
   change F.S.scalar m x ≤ F.S.scalar t x at hmonotone
   have hmx : F.S.scalar m x = 0 := by
     rw [hx] at hmonotone

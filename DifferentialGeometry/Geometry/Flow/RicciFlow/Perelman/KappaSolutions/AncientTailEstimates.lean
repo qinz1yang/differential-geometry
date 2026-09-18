@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.ScalarPositive
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientScalarMonotonicity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.TerminalMetricLowerBound
 import DifferentialGeometry.Geometry.Curvature.Bounds.RicciUpper
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientEndpoint
@@ -13,7 +13,7 @@ open DifferentialGeometry.CheegerGromovCompactness CanonicalNeighborhood
 open DifferentialGeometry.Geometry.Curvature
 open scoped Manifold ContDiff
 universe u uE uH
-variable {E : Type uE} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] {H : Type uH} [TopologicalSpace H]
   {I : ModelWithCorners ℝ E H} [I.Boundaryless]
   (F : PointedFlowData.{u, uE, uH} (I := I) ancientTimeInterval)
@@ -24,7 +24,6 @@ private local instance t2 : T2Space F.M := F.t2
 private local instance sigma : SigmaCompactSpace F.M := F.sigmaCompact
 
 theorem metric_inner_le_exp_scalar_bound_of_ancient
-    (hdim : Module.finrank ℝ E = 3)
     {kappa : ℝ} (hF : IsAncientKappaSolution kappa F)
     {a b C : ℝ} (hab : a ≤ b) (hb : b ≤ 0)
     (x : F.M) (hC : F.S.scalar b x ≤ C) (v : TangentSpace I x) :
@@ -40,7 +39,7 @@ theorem metric_inner_le_exp_scalar_bound_of_ancient
     subst y
     have ht0 : t ≤ 0 := ht.2.le.trans hb
     have hR : F.S.scalar t x ≤ C :=
-      (ancientKappa_scalar_monotoneOn F hdim hF x ht0 hb ht.2.le).trans hC
+      (ancientKappa_scalar_monotoneOn F hF x ht0 hb ht.2.le).trans hC
     have hcone : metricAlgebraicCurvatureTensorAt (I := I) (F.S.base.metric t) x ∈
         algebraicCurvatureOperatorNonnegativeCone (I := I) (M := F.M) := by
       apply (metricAlgebraicCurvatureTensorAt_mem_curvatureOperatorNonnegativeCone_iff
@@ -67,7 +66,6 @@ theorem metric_inner_le_exp_scalar_bound_of_ancient
       mul_le_mul_of_nonneg_left hraw (Real.exp_pos _).le
 
 theorem metric_inner_le_exp_redLength_on_half_tail_of_ancient
-    (hdim : Module.finrank ℝ E = 3)
     {kappa : ℝ} (hF : IsAncientKappaSolution kappa F)
     (alpha : ℝ → F.M) (halpha : ContMDiff 𝓘(ℝ, ℝ) I 1 alpha)
     (p : F.M) {tau s A : ℝ} (htau : 0 < tau)
@@ -95,7 +93,7 @@ theorem metric_inner_le_exp_redLength_on_half_tail_of_ancient
   have hA : 0 ≤ A := by
     have hnum := (le_div_iff₀ htau).mp (hscalarNonneg.trans hscalarA)
     linarith
-  have hcomp := metric_inner_le_exp_scalar_bound_of_ancient F hdim hF
+  have hcomp := metric_inner_le_exp_scalar_bound_of_ancient F hF
     (neg_le_neg hsq) (neg_nonpos.mpr (sq_nonneg s)) (alpha s) hscalarA v
   apply hcomp.trans
   apply mul_le_mul_of_nonneg_right _ (metric_inner_self_nonneg _ _ _)
@@ -108,7 +106,6 @@ theorem metric_inner_le_exp_redLength_on_half_tail_of_ancient
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 theorem curveEnergy_endpoint_le_exp_redLength_on_half_tail_of_ancient
-    (hdim : Module.finrank ℝ E = 3)
     {kappa : ℝ} (hF : IsAncientKappaSolution kappa F)
     (alpha : ℝ → F.M) (halpha : ContMDiff 𝓘(ℝ, ℝ) I 1 alpha)
     (p : F.M) {tau A : ℝ} (htau : 0 < tau)
@@ -156,7 +153,7 @@ theorem curveEnergy_endpoint_le_exp_redLength_on_half_tail_of_ancient
       (2 * Real.exp (24 * A)) * lRegularizedLagrangian F.S 0 alpha r := by
     intro r hr
     have hm := metric_inner_le_exp_redLength_on_half_tail_of_ancient
-      F hdim hF alpha halpha p htau hr hgeo hcost hlength
+      F hF alpha halpha p htau hr hgeo hcost hlength
       (lVelocity (I := I) alpha r)
     have hpot := mul_nonneg (sq_nonneg r) (hscalar r)
     have hspeed : lRegularizedSpeedSq F.S 0 alpha r ≤
@@ -197,7 +194,6 @@ theorem curveEnergy_endpoint_le_exp_redLength_on_half_tail_of_ancient
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 theorem riemannianEDist_endpoint_le_exp_redLength_on_half_tail_of_ancient
-    (hdim : Module.finrank ℝ E = 3)
     {kappa : ℝ} (hF : IsAncientKappaSolution kappa F)
     (alpha : ℝ → F.M) (halpha : ContMDiff 𝓘(ℝ, ℝ) I 1 alpha)
     (p : F.M) {tau s A : ℝ} (htau : 0 < tau)
@@ -216,7 +212,7 @@ theorem riemannianEDist_endpoint_le_exp_redLength_on_half_tail_of_ancient
   have hE := integrableOn_riemannianMetric_inner_lVelocity_self_of_contMDiff_one
     (F.S.base.metric (-tau)) alpha halpha c b
   have henergy := curveEnergy_endpoint_le_exp_redLength_on_half_tail_of_ancient
-    F hdim hF alpha halpha p htau hgeo hcost hlength
+    F hF alpha halpha p htau hgeo hcost hlength
   have hdist := edistOf_le_budget (F.S.base.metric (-tau)) hs.2 halpha.contMDiffOn
     (hE.mono_set (Icc_subset_Icc hs.1 le_rfl))
     ((curveEnergy_mono (F.S.base.metric (-tau)) hs.1 hs.2 le_rfl hE).trans henergy)
@@ -238,7 +234,6 @@ theorem riemannianEDist_endpoint_le_exp_redLength_on_half_tail_of_ancient
       rw [Real.sqrt_mul (sq_nonneg b), Real.sqrt_sq hb]
 
 theorem riemannianEDist_scaled_endpoint_le_exp_redLength_on_half_tail_of_ancient
-    (hdim : Module.finrank ℝ E = 3)
     {kappa : ℝ} (hF : IsAncientKappaSolution kappa F)
     (alpha : ℝ → F.M) (halpha : ContMDiff 𝓘(ℝ, ℝ) I 1 alpha)
     (p : F.M) {tau s A : ℝ} (htau : 0 < tau)
@@ -254,7 +249,7 @@ theorem riemannianEDist_scaled_endpoint_le_exp_redLength_on_half_tail_of_ancient
   let _ : CompleteSpace E := FiniteDimensional.complete ℝ E
   let _ : T2Space (TangentBundle I F.M) := F.t2TangentBundle
   have hdist := riemannianEDist_endpoint_le_exp_redLength_on_half_tail_of_ancient
-    F hdim hF alpha halpha p htau hs hgeo hcost hlength
+    F hF alpha halpha p htau hs hgeo hcost hlength
   have hb : 0 < Real.sqrt tau := Real.sqrt_pos.mpr htau
   rw [edistOf_scale, Real.sqrt_inv, ENNReal.ofReal_inv_of_pos hb]
   calc

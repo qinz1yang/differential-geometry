@@ -32,7 +32,6 @@ private local instance limitSigma : SigmaCompactSpace L.M := L.sigmaCompact
 private local instance limitTangentT2 : T2Space (TangentBundle I L.M) := L.t2TangentBundle
 
 theorem exists_compact_inverse_capture_on_half_tail_of_ancient
-    (hdim : Module.finrank ℝ E = 3)
     {kappa : ℝ} (hF : IsAncientKappaSolution kappa F)
     (tau : ℕ → ℝ) (htau : ∀ i, 0 < tau i) (q : ℕ → F.M)
     (alpha : ℕ → ℝ → F.M) (halpha : ∀ i, ContMDiff 𝓘(ℝ, ℝ) I 1 (alpha i))
@@ -60,7 +59,10 @@ theorem exists_compact_inverse_capture_on_half_tail_of_ancient
             (2 * (D + Real.sqrt (2 * Real.exp (24 * A) * A))) ∧
         Phi.partialDiffeomorph k
           ((Phi.partialDiffeomorph k).symm (alpha (phi k) s)) = alpha (phi k) s := by
-  let _ : NeZero (Module.finrank ℝ E) := ⟨by omega⟩
+  let _ : NeZero (Module.finrank ℝ E) := by
+    obtain ⟨t, _ht, x, hx⟩ := hF.notFlat
+    exact ⟨Tensor0SBundle.finrank_ne_zero_of_normSq0S_ne_zero
+      (F.S.base.metric t) x (by decide : 0 < 4) (F.S.base.rm04 t x) hx⟩
   have hrho : 0 ≤ D + Real.sqrt (2 * Real.exp (24 * A) * A) :=
     add_nonneg hD (Real.sqrt_nonneg _)
   obtain ⟨hcompact, k0, hk0⟩ := exists_pointed_inverse_distance_control
@@ -68,7 +70,7 @@ theorem exists_compact_inverse_capture_on_half_tail_of_ancient
   refine ⟨by simpa only [one_add_one_eq_two] using hcompact, k0, ?_⟩
   intro k hk s hs
   have htail := riemannianEDist_scaled_endpoint_le_exp_redLength_on_half_tail_of_ancient
-    F hdim hF (alpha (phi k)) (halpha (phi k)) p (htau (phi k)) hs
+    F hF (alpha (phi k)) (halpha (phi k)) p (htau (phi k)) hs
     (hgeo (phi k)) (hcost (phi k)) (hlength (phi k))
   have hball : alpha (phi k) s ∈ riemannianClosedBallOf
       ((backwardSliceSequence F tau htau q).obj (phi k)).metric (q (phi k))
