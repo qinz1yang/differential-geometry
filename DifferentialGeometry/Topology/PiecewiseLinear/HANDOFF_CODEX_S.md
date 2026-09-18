@@ -3224,3 +3224,137 @@ Item 2 of the earlier list, localization, is closed by
    those, and the contraction enters as the topological hypothesis
    `(walkPath ...).Homotopic (Path.refl ...)` or, in the purely combinatorial
    variant, as `SimplicialHomotopic K gamma Walk.nil`.
+
+## Cyclic/walk translation and the reduction of the generation hypothesis, 2026-09-18
+
+Item 2 of the previous list is closed, and the generation hypothesis of item 1 is
+reduced from a monodromy statement to a purely topological (or purely simplicial)
+statement about the loops of the subcomplex. The generation hypothesis itself is
+still an explicit hypothesis, not a `sorry`, and the exact missing producer is
+recorded below.
+
+### Delivered modules
+
+`CocycleCycleWalk.lean` translates the two presentations of the monodromy in both
+directions. From a cyclic family `c : Fin m -> E` with `[NeZero m]`, consecutive
+pairs in `K.faces` and consecutive entries distinct, `cycleWalk` builds a closed
+edge walk at `c 0` and `walkMonodromy_cycleWalk` says its `walkMonodromy` is
+`eps.loopMonodromy c`; the walk is assembled from `natChainWalk`, a chain walk
+along an arbitrary `d : Nat -> E`, whose monodromy is the `Finset.range` sum
+(`walkMonodromy_natChainWalk`), closed up with `Walk.copy` and
+`walkMonodromy_copy`. In the other direction `walkChain p : Fin (p.length + 1) -> E`
+is the support of a walk read as a cyclic family, `walkChain_mem_faces` says every
+consecutive pair is a face (the wrap-around pair is the degenerate singleton), and
+`loopMonodromy_walkChain` says its `loopMonodromy` is `eps.walkMonodromy p`. The
+bridge is `chainMonodromy`, the open-chain sum, with
+`loopMonodromy_eq_chainMonodromy_add` and `chainMonodromy_walkChain`. Helper
+lemmas `ofNat_fin_zero/self/val/add_one/last` and `last_add_one_eq_zero` avoid the
+scoped `Fin.NatCast` instance, which is deliberately not global in core.
+
+`WalkMonodromyHomotopy.lean` is the homotopy invariance of the monodromy.
+`walkParity_eq_of_homotopic` lifts both walks to the orientation double cover from
+the same point and compares the endpoints, so `walkMonodromy_eq_of_homotopic`
+says `eps.walkMonodromy` depends only on the homotopy class of `walkPath`. This is
+the general form of the existing `walkMonodromy_eq_zero_of_homotopic_refl`.
+`closedWalkPow` is the k-fold concatenation of a closed walk,
+`walkMonodromy_closedWalkPow` computes its monodromy as `(k : ZMod 2) * ...`, and
+`walkMonodromy_conjugate` kills a conjugating walk. Together:
+`walkMonodromy_eq_zero_or_eq_of_homotopic_conjugate_pow`.
+
+`PolygonGeneratedOrientation.lean` replaces the old `hgen`.
+`IsGeneratedByPolygon gamma` says every closed edge walk of
+`barycentricSubdivision L` has `walkPath` homotopic to `walkPath` of a conjugate
+power of `gamma`; `IsSimpliciallyGeneratedByPolygon gamma` says the same with
+`SimplicialHomotopic` instead. `isOrientable_of_ambient_nullHomotopic_generated_polygon`
+and `isOrientable_of_ambient_nullHomotopic_simplicially_generated_polygon` deduce
+`IsOrientable n L` from either one together with the ambient contraction of the
+polygon. Neither hypothesis mentions the orientation cocycle or orientability.
+The simplicial variant goes through
+`walkMonodromy_eq_zero_or_eq_of_simplicialHomotopic_conjugate_pow`, which reuses
+the existing `walkMonodromy_eq_of_simplicialHomotopic`.
+
+`DeformationRetractPath.lean` and `DerivedNeighborhoodLoop.lean` are the
+topological half of route (b). For a `StrongDeformationRetract A`,
+`retractLoop` pushes a loop based in `A` into `A`, `homotopic_retractLoop` says
+the loop is homotopic to it rel endpoints (the homotopy is `H (t, l s)`, which is
+constant at the base point because the retract is strong), and `retractLoop_mem`
+says the new loop stays in `A`. Specialised through
+`derivedNeighborhoodStrongDeformationRetract`:
+`homotopic_derivedNeighborhoodRetractLoop` says every loop of the derived
+neighbourhood based in the subcomplex is homotopic rel endpoints to its
+barycentric projection, `derivedNeighborhoodRetractLoop_mem_space` says that
+projection lies in `L.space`, and `derivedNeighborhoodRetractLoop_apply` names it
+as `subcomplexBarycentricProjection`.
+
+Each of the five modules checks exit 0 with zero warnings (6.5--9.7 s).
+The audits `.lake/scratch/AuditSCocycleCycleWalk.lean` (25 declarations),
+`AuditSWalkMonodromyHomotopy.lean` (6), `AuditSPolygonGeneratedOrientation.lean`
+(5) and `AuditSDerivedNeighborhoodLoop.lean` (9) report only `propext`,
+`Classical.choice`, `Quot.sound`, except `closedWalkPow`, which depends on no
+axiom at all.
+
+### Why the old generation hypothesis had to be reformulated
+
+The monodromy takes values in `ZMod 2`, so `m p = 0 or m p = m gamma` is vacuous
+as soon as `m gamma = 1`, and the endpoint's null-homotopy hypothesis forces
+`m gamma = 0`. Under that hypothesis the old `hgen` is therefore logically
+equivalent to `forall p, m p = 0`, that is, to the conclusion `IsCoboundary`
+itself: it was carrying the whole mathematical content. The new hypotheses are
+strictly weaker in content: they are statements about the loops of `L` only, with
+no cocycle in sight, and the endpoint derives the monodromy disjunction from them.
+
+### The exact remaining obligation
+
+Both remaining routes reduce to one classical fact that this tree does not have:
+
+  For a connected closed one-dimensional combinatorial manifold P (a polygon),
+  the class of `walkPath gamma` of its fundamental cycle gamma generates
+  the fundamental group of `P.space` at the base point; equivalently every loop
+  of `P.space` at that point is homotopic rel endpoints to `walkPath` of a
+  conjugate power of gamma.
+
+Without it the chain stops, because the monodromy homomorphism from the
+fundamental group of the neighbourhood to `ZMod 2` is trivial exactly when it is
+trivial on a generator, and the ambient contraction only gives its vanishing on
+the class of `walkPath gamma`. If that class were an even power of a generator
+the conclusion would be false, so the statement really is needed; it is not a
+technicality.
+
+What exists and what does not:
+
+- `DerivedNeighborhoodRetraction.lean` already has the strong deformation retract
+  of the derived neighbourhood onto the subcomplex and the fundamental group
+  isomorphism induced by the inclusion, and this round turns the retract into the
+  loop statement above. Route (b) is therefore complete down to the polygon.
+- `DifferentialGeometry/Topology/FundamentalGroup/Circle.lean` already proves
+  `FundamentalGroup Circle 1 =* Multiplicative Int` through
+  `AddCircle.isAddQuotientCoveringMap_coe`. What is missing is a homeomorphism
+  from a polygon's space to `Circle` under which `walkPath gamma` becomes a
+  generator, i.e. the degree-one computation for the fundamental cycle. Estimated
+  cost: an explicit monotone PL parametrisation of the polygon by `AddCircle 1`
+  built from the cyclic vertex order of `exists_cyclic_face_order`, plus the
+  transport of `walkPath gamma` through it; 600--1200 lines, and the
+  reparametrisation bookkeeping is the expensive part.
+- There is no collapse theory in the tree: no `isCollapsible`, no elementary
+  collapse, no free-face reduction of a derived neighbourhood. Grep finds only
+  `FreeDiskCell`/`PlanarFreeFace`-style planar helpers. Route (a) as stated in the
+  task would have to build elementary collapses, the collapse of a derived
+  neighbourhood onto its core, and the transfer of a collapse to
+  `SimplicialHomotopic`; 1500--2500 lines, and the last step still needs the
+  cycle-graph reduction below.
+- Route (a) also needs simplicial approximation of paths rel endpoints, i.e. the
+  edge-path group theorem, to convert loops into edge walks.
+  `SimplicialApproximation.lean` only has the free-loop, piecewise-affine
+  statement `exists_isPiecewiseAffineOn_freeLoop_homotopic`, not a based
+  edge-walk statement; there is no `edgePathGroup` anywhere in the tree.
+- The purely combinatorial residue, that in a graph isomorphic to
+  `SimpleGraph.cycleGraph n` every closed walk reduces by backtrack cancellation
+  to a conjugate power of the fundamental cycle, is elementary but unwritten;
+  200--400 lines. With it, `IsSimpliciallyGeneratedByPolygon` becomes available
+  for the polygon itself.
+
+Recommended next step: the cheapest honest completion is the cycle-graph
+reduction plus the degree-one computation on the polygon, feeding
+`isOrientable_of_ambient_nullHomotopic_generated_polygon` through the loop
+retraction delivered here. Obligation 2 of C.6, the untwisted disk-bundle
+classification, was deliberately not started.
