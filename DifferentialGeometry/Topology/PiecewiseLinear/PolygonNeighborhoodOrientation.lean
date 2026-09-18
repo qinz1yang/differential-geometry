@@ -9,7 +9,8 @@ open SimpleGraph
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
   {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces] {n : ℕ}
 
-local instance (L : Geometry.SimplicialComplex ℝ E) [Finite L.faces] (s : Finset E) :
+local instance finite_faceStarComplex_faces_polygonNeighborhood
+    (L : Geometry.SimplicialComplex ℝ E) [Finite L.faces] (s : Finset E) :
     Finite (faceStarComplex L s).faces := (faceStarComplex_faces_finite L s).to_subtype
 
 open Classical in
