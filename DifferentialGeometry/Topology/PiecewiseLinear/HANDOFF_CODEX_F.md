@@ -2892,3 +2892,61 @@ import ...StarPair failed, environment already contains
 
 检查 `VertexBranchChart` exit=0（10.2 秒）、零 warning；`AuditF265.lean` 两项仅
 `propext`、`Classical.choice`、`Quot.sound`。下一审计文件 `AuditF266.lean`。
+
+### 19.123 `hzero`/`hab` 已闭合；`hpos`/`hneg` 归约到星上——以及对 §19.122 估计的更正
+
+**先更正自己**：§19.122 里把"连接圆与超平面恰交于两点"估成缺失定理、150–400 行，**估错了**。
+按协调者要求先做侦察 grep，结果它**早就在树里**：
+`encard_geometricLink_fiber_of_isPLSphere_one`（`HeightLevelLink.lean:75`）——
+若 `K.space ∩ {x | ℓ x = ℓ p}` 是 PL 1-球面，则
+`((geometricLink K {p}).space ∩ {x | ℓ x = ℓ p}).encard = 2`。
+实际代价：该条 1 行（配 `Set.encard_eq_two`），加上星→连接的归约约 45 行。
+教训与 `important_lesson` 里那条一致：**先 grep 陈述形状，再估成本**。
+
+**关于 `hside`（协调者第 1 点，确认）**：`encard_geometricLink_fiber_of_isPLSphere_one`
+**不把 `hside` 当假设**，它在证明内部用
+`exists_triangulation_union_with_halfSpace_faces`（`HeightSubdivision.lean:10`）
+自己造出来（`HeightLevelLink.lean:37-38`，再经 `restrict` 传到 `L`、`F`）。
+
+**本轮闭合（新模块 `VertexBranchSection.lean`，六条）**：
+- `closedStar_eq_coneSet_geometricLink`：`closedStar K p = coneSet p (geometricLink K {p}).space`。
+  重建 H 原先在 `ConePairExtension` 里、这次整理时删掉的那条，由
+  `closedStar_eq_coneComplex_space` 与 `coneComplex_space_eq_coneSet` 拼成。
+- `exists_mem_geometricLink_smul_of_mem_closedStar`：星上任一非顶点都写成 `p + s • (z - p)`，
+  `z` 在连接上、`0 < s`。
+- `exists_mem_geometricLink_apply_lt_of_mem_closedStar` /
+  `exists_mem_geometricLink_lt_apply_of_mem_closedStar`：**把 `hneg`/`hpos` 从连接归约到闭星**。
+  关键是 `ℓ` 仿射：`ℓ (p + s • (z - p)) = ℓ p + s * (ℓ z - ℓ p)`，`s > 0` 时同号。
+  于是消费者只需在**片上**给出 `p` 附近上下各一点，不必直接谈连接圆。
+- `exists_pair_geometricLink_fiber_of_isPLSphere_one`：`encard = 2` 经 `Set.encard_eq_two`
+  变成 `∃ a b, a ≠ b ∧ (geometricLink M {p}).space ∩ {x | ℓ x = ℓ p} = {a, b}`，
+  即 **`hzero` 与 `hab` 完全消掉**。
+- `exists_linearEquiv_normalForm_of_isPLSphere_one_fiber`：打包版。假设改成几何自然形式后，
+  产出与 §19.122 同样的单顶点图卡
+  `∀ᶠ y in 𝓝 p, (y ∈ M.space → (L (h y)).2.2 = 0) ∧ (ℓ y = ℓ p → (L (h y)).2.1 = 0)`。
+
+**必须明说：还假设了什么**
+1. `hfiber : IsPLSphere 1 (M.space ∩ {x | ℓ x = ℓ p})`——"两张片在 `p` 附近交成一个圆"。
+   这是横截相交的 PL 写法，是**真输入**，不是可省的技术条件。
+2. `hpos`/`hneg` 仍需消费者给（现在以星上两点的形式给）。它**不能**由 `encard = 2` 推出：
+   连接是 PL 圆，`ℓ` 在其上的水平集恰两点时，两条开弧上 `ℓ - ℓ p` 各自定号，
+   但两条弧**可以同号**（同一水平上的两个孤立极小）。所以"两侧都有点"是独立的横截性输入。
+3. `hside`（对外层 `K`）仍是假设：它喂给 `hasPLCrossingAt_fiber_of_geometricLink_section_at`。
+   由 `HeightSubdivision.lean:10` 可造，但要连带把 `M` 相容细分并沿 PL 同胚搬运
+   `hlevel`/`hpos`/`hneg`——`VertexSectionSubdivision.lean:73-105` 正是这套搬运的现成写法。
+   本轮未接，属于纯 bookkeeping。
+4. `hlink` 仍是假设，生产者已知：`IsCombinatorialManifold.isPLSphere_link`（`VertexChart.lean:247`），
+   即 `IsCombinatorialManifold 2 M` 时每个顶点的连接是 PL 1-球面。
+
+**确切剩余义务（两张片都不平坦的对称情形，如 §19.122 预告）**：
+上面一切仍要求第二张片**就是** `{ℓ = ℓ p}`（`LinkPair` 只处理"一个圆 + 一条赤道"）。
+两张真 PL 曲面相交时，得先用本轮的图卡把其中一张拉直成超平面，再对第二张重复。
+缺的是**把图卡搬成复形层的转写**：图卡是 `IsPLHomeomorphOn h U V`，
+要把 `K`、`M` 沿 `h` 变成新的单纯复形并保持 `Finite`、`faces ⊆`、`{p} ∈ faces`，
+才能第二次喂给 `hasPLCrossingAt_fiber_of_geometricLink_section_at`。
+树里 `affineImage`（`VertexCrossingLevel.lean:10-55`）只做仿射搬运，PL 搬运没有对应物。
+**估计 200–500 行，未验证**；鉴于本轮估计已错过一次，先 grep
+`IsPLHomeomorphOn` 与 `SimplicialComplex` 的像/三角剖分转写再动手。
+
+检查 `VertexBranchSection` exit=0（10.4 秒）、零 warning；`AuditF266.lean` 六项仅
+`propext`、`Classical.choice`、`Quot.sound`。下一审计文件 `AuditF267.lean`。
