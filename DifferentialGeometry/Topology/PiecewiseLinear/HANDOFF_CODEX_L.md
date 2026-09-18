@@ -2393,3 +2393,49 @@ step 2 只做了 grep 与接口陈述，没有动工（月牙是一个项目，�
   树里没有这条（`git grep "IsPLBall 2 ({" 等 44 处命中全是别的形状）。
   它比直接造 `D₂` 小得多，而且是纯平面的，**建议下一轮先做它**。
 - 本节未动 Lean，按 `AGENTS.md` §1 的文档例外单独提交。
+
+## 75. 2026-09-18 E3-M3：图像下方区域的确切构造计划（工具全部找到，剩下是平面多胞形管道）
+
+状态：**未动工**。本节交付确切的砖块清单与代价判断；两条关键工具已找到，
+剩下的全是平面多胞形的管道活，不是 PL 几何。无 Lean 改动。
+
+- **检索规则的补充（主人要求记的）。** "按内容搜，不要按词汇搜"**同样适用于文件名与路径**：
+  §66 我按 `PiecewiseLinear/CutAndPaste.lean` 一层找不到就断言"不存在"，
+  而它在 `LoopTheorem/CutAndPaste.lean`（64 条声明）。**目录层级也是词汇**。
+  今天四条检索规则的完整形式应是：非零退出是无信息而不是不存在；按内容搜不按词汇搜
+  （**词汇包括文件名与目录**）；查构造不查标识符；先数命中再读，截断的结果不是结果。
+- **两条关键工具（本轮找到，之前不知道）。**
+  - `ConvexPolytope.lean:40` **`IsHPolytope.isPLBall`**：
+    `IsHPolytope C` 加 `(interior C).Nonempty` ⟹ `IsPLBall (finrank ℝ E) C`。**一行**。
+    于是每个梯形/三角形片是 PL 2-球，不必手工造同胚。
+  - `PlanarDiskUnion.lean:14` **`isPLBall_union_and_finite_frontier_inter`**：
+    平面两个 PL 2-球，交是 PL 1-球且含于两者的 frontier ⟹ 并是 PL 2-球。
+  - 另有 `isPLBall_two_of_isTriangle`（`DiskInteriorMove`、`PlanarDiskSubdivision` 在用），
+    三角形一行就是 PL 2-球。
+- **砖块清单（按依赖顺序，都是平面的，与月牙无关）。**
+  1. `a : ℝ → ℝ` 在 `Icc 0 1` 上分片仿射 ⟹ 取 `exists_partition_affineOn`（`PrismInterval` 一族已有）
+     得 `0 = s₀ < … < s_n = 1`，`a` 在每段上仿射。
+  2. 单片 `Λ_i := {w | w 1 ∈ Icc (s i) (s (i+1)) ∧ 0 ≤ w 0 ∧ w 0 ≤ a (w 1)}`
+     是 `IsHPolytope`（四条线性不等式 + 有界），内部非空（`a > 0` 在 `Ioo 0 1` 上），
+     由 `IsHPolytope.isPLBall` 得 `IsPLBall 2 Λ_i`。
+     **这一步是主要代价**：`IsHPolytope` 的半空间表示要手写
+     （`Polyhedra.lean` 的定义是紧致 + 有限个线性泛函的上水平集），
+     在 `EuclideanSpace ℝ (Fin 2)` 里没有现成的"盒子是 H-多胞形"的入口，
+     `isHPolytope_Icc` 只是 `ℝ` 上的。可走 `IsHPolytope.inter_preimage`
+     （`Polytope.lean:47`，§69 的证明里用过）从一个基础盒子逐次切，但基础盒子本身要造。
+  3. 相邻两片的交是竖直线段 `{s i} ×ˢ Icc 0 (a (s i))`，是 `IsPLBall 1`（`isPLBall_segment`），
+     且含于两片的 frontier（两片分别在 `w 1 ≤ s i` 与 `w 1 ≥ s i` 一侧）。
+  4. 对 `i` 归纳，用 `isPLBall_union_and_finite_frontier_inter` 得 `IsPLBall 2 Λ`。
+  5. 端点片是三角形（`a` 在 `0` 与 `1` 处为零），仍满足 2 的内部非空条件，
+     因为 `a` 在相邻分割点处 `> 0`。
+- **代价判断（主人要的"是不是比直接造 `D₂` 小"）。** 是更小，但**不是小很多**：
+  估计 200–350 行，其中一半是砖块 2 的 `IsHPolytope` 管道。
+  它**完全是平面 PL 的通用内容**，与月牙、与 Moise 的其余部分都无关，
+  所以适合作为独立模块交给任何一条车道做，不必由本车道排队。
+- **本轮没有动 Lean 的理由（如实记下）。** 连续第二轮只出报告。
+  但两轮的性质不同：§74 是搜索改变了计划；本轮是**计划已经确定、工具已经找齐**，
+  剩下的是可机械执行的管道，而本任务段已经很长，开工有做一半的风险。
+  按主人多次确认的规矩（半成品比报告差），停在这里并把砖块列全。
+- 下一轮的正确顺序仍是：砖块 1–5 → `Λ` 与 `D₂` 的映射（`(t₁,t₂) ↦ E.symm (e.symm (t₁, u, v))`，
+  线性于 `t₁`，§74 记的高度参数化）→ `hD₂bd / hluneW / hD₂inj` → **最后**逐点验 `hD₂disj`
+  （§74 记的共面问题，必须在坐标里验而不是想当然）。
