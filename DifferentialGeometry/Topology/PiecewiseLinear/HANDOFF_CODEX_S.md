@@ -4257,3 +4257,109 @@ exit=0, zero warnings, 11.4 s. `.lake/scratch/AuditSCircleAnnulusIsotopy.lean` n
 audits all twenty-four declarations; every one depends only on `propext`,
 `Classical.choice`, `Quot.sound`, with no `sorryAx`. `fresh.py`: 0 forbidden hits,
 0 stale, 0 missing.
+
+
+## Correction: statement (M) was largely an artifact
+
+The coordinator asked for an artifact check on (M) before building it. The check
+came back positive. Two separate errors on my side:
+
+1. I claimed "uniqueness of the `loopZPow` exponent is the covering-space half of
+   `π₁(S¹) ≅ ℤ`, absent from this tree and from Mathlib". Both halves of that are
+   wrong. `Topology/FundamentalGroup/Circle.lean` has
+   `fundamentalGroupCircleEquivInt : FundamentalGroup Circle 1 ≃* Multiplicative ℤ`,
+   and `Topology/FundamentalGroup/CircleLoopGenerator.lean` pins the generator's
+   image: `fundamentalGroupToMulOpposite_circleGeneratorPath` computes it as
+   `op (ofAdd 1)` in `zmultiples (1 : ℝ)`, next to
+   `fundamentalGroupToMulOpposite_injective`. Uniqueness of the exponent follows by
+   applying that injective homomorphism and comparing `1 • k` with `1 • m` in the
+   reals. My Mathlib grep for the circle's fundamental group had in fact **exited
+   with an error code and printed nothing**, and I read the empty output as
+   evidence of absence. That is the direct cause of the wrong claim.
+2. More importantly, the *lift* form of the invariant was already fully proved in
+   this tree. `Topology/LoopSpace/HomeomorphismOrientation.lean` has
+   `circleHomeomorph_affineLift_or_neg`: every homeomorphism of `loopCircle` is
+   either `affineCircleMap F` or `-affineCircleMap F` for a strictly increasing
+   lift `F` with `F (t + 1) = F t + 1`. That is exactly the orientation dichotomy,
+   with the degree-one periodic lift already constructed
+   (`increasing_homeomorphism_lift_affinePeriodic`,
+   `exists_real_homeomorphism_lift`). I had described building this as a new layer.
+
+So (M) was not a new layer. What was genuinely missing was one counting lemma on
+top of the existing dichotomy, and it is now proved.
+
+## The circle orientation layer, delivered
+
+`Topology/LoopSpace/CircleLiftOrientation.lean` (new).
+
+`HasIncreasingCircleLift ψ` -- there is `F : ℝ → ℝ` strictly monotone with
+`F (t + 1) = F t + 1` descending to `ψ`. This is orientation-preservation, and it
+is **multiplicative by construction**:
+
+- `hasIncreasingCircleLift_id`;
+- `HasIncreasingCircleLift.comp` -- compose the two lifts; strict monotonicity and
+  the period relation both compose, so the composite is again positive. This is the
+  multiplicativity that step 2 of the previous round could not get from the
+  fixed-pair predicate, and here it is three lines.
+
+`hasIncreasingCircleLift_of_three_fixed` -- a homeomorphism of `loopCircle` with
+three distinct fixed points has an increasing lift. This is the Lefschetz count,
+proved directly from the lift: in the reversing case `ψ` descends from `-F`, so a
+fixed point at parameter `t` means `G t := t + F t` is an integer; `G` is strictly
+increasing with `G (t + 1) = G t + 2`, so on a single period its values lie in an
+interval of length two and can hit at most two integers. Three distinct fixed
+points give three distinct integers in `[⌈G 0⌉, ⌈G 0⌉ + 1]`, which `omega` refutes.
+
+Supporting: `loopCircle_coe_eq_coe_iff`, `exists_lift_mem_Ico`.
+
+### Why this closes the multiplicativity gap in principle
+
+The correction maps produced by C1-a are the identity on a whole arc, hence have
+infinitely many fixed points, hence are orientation-preserving by
+`hasIncreasingCircleLift_of_three_fixed`; orientation-preservation is preserved
+under composition by `HasIncreasingCircleLift.comp`; so if the end map is assumed
+orientation-preserving, so is the corrected map. Note that with the hypothesis
+stated as orientation-preservation rather than as `PreservesArcsAtFixedPairs`, the
+Lefschetz direction "at most one fixed point implies orientation-preserving" is
+**not needed at all** -- only the direction proved here.
+
+### What is still missing, precisely
+
+Three items, all now bounded and none of them a new theory:
+
+1. **Transport.** A homeomorphism `loopCircle ≃ₜ ↥S` for a PL 1-sphere `S`, built
+   from an arc decomposition. All the parts exist: `pathToCircle` of
+   `(arc γ).trans (arc δ).symm`, injectivity by `pathToCircle_trans_injective`,
+   surjectivity by `pathToCircle_surjective`, then
+   `Continuous.homeoOfEquivCompactToT2`. The template is
+   `PolygonCircleParametrization.pathToCircle_arcPath_bijective`, which does exactly
+   this for a simplicial polygon. The point of doing it from an arc decomposition is
+   that the two arcs are then *explicitly* the images of the parameter intervals
+   `[0, 1/2]` and `[1/2, 1]`, so no separate arc-uniqueness lemma is needed.
+2. **Arc preservation from a positive lift.** With the transport in hand: `ψ` fixes
+   the images of `0` and `1/2`; normalise the lift so `F 0 = 0`; then `F (1/2)` is
+   congruent to `1/2` and lies strictly between `F 0 = 0` and `F 1 = 1`, so it is
+   `1/2`; an increasing `F` fixing `0` and `1/2` maps `[0, 1/2]` onto itself, which
+   is `u '' A = A`.
+3. **(C1-a2)**, the second fixed point, unchanged from the earlier sketch.
+
+With 1--3 the chain closes: push to one fixed point, push to a second, transport,
+the corrections are positive by `hasIncreasingCircleLift_of_three_fixed`, the
+composite is positive by `HasIncreasingCircleLift.comp`, hence no swap, hence
+`isPLPseudoIsotopicToId_of_arc_decomposition`. C1 then holds with the hypothesis
+"the end map is orientation-preserving" in the lift sense, which is the standard
+formulation and strictly better than the fixed-pair predicate.
+
+### Verification
+
+`check-f.ps1 -Module DifferentialGeometry.Topology.LoopSpace.CircleLiftOrientation`
+exit=0, zero warnings, 10.1 s. `.lake/scratch/AuditSCircleLiftOrientation.lean`
+audits all six declarations; every one depends only on `propext`,
+`Classical.choice`, `Quot.sound`, with no `sorryAx`.
+
+### Lesson
+
+Do not read an empty result from a command that returned a non-zero exit code as
+evidence of absence, and before declaring a layer missing, grep the tree for the
+*mathematical content* under other names -- here `affineLift`, `periodic`,
+`HomeomorphismOrientation` -- not only for the vocabulary the current file uses.
