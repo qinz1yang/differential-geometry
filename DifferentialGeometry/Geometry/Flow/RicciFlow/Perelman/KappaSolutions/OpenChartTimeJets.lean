@@ -1,3 +1,4 @@
+import DifferentialGeometry.Analysis.Calculus.IteratedDerivative.WithinTower
 import DifferentialGeometry.Geometry.Geodesic.Naturality.OpenSubtype
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.OrdinaryMetricTimeJets
 import DifferentialGeometry.Tensor.RSTensor.Functoriality.Pullback
@@ -22,14 +23,10 @@ theorem scalar_time_towers_eq {J : Set ℝ} (hJ : UniqueDiffOn ℝ J)
     (hf : ∀ q t, t ∈ J → HasDerivWithinAt (f q) (f (q + 1) t) J t)
     (hg : ∀ q t, t ∈ J → HasDerivWithinAt (g q) (g (q + 1) t) J t)
     (hzero : ∀ t ∈ J, f 0 t = g 0 t) : ∀ q t, t ∈ J → f q t = g q t := by
-  intro q
-  induction q with
-  | zero => exact hzero
-  | succ q ih =>
-    intro t ht
-    have hd := (hg q t ht).congr_of_eventuallyEq
-      (Filter.eventuallyEq_of_mem self_mem_nhdsWithin (fun s hs => ih s hs)) (ih t ht)
-    exact ((hf q t ht).derivWithin (hJ t ht)).symm.trans (hd.derivWithin (hJ t ht))
+  exact DifferentialGeometry.Analysis.derivWithin_tower_eq f g
+    (fun q t ht => ((hf q t ht).derivWithin (hJ t ht)).symm)
+    (fun q t ht => ((hg q t ht).derivWithin (hJ t ht)).symm) hzero
+
 
 section Charts
 
