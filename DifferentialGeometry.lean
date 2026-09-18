@@ -11142,6 +11142,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborho
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NeckImageRadius
 
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedNeckRadius
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedNeckCanonical
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.StrongNeckPartialDiffeomorph
 import DifferentialGeometry.Geometry.Metric.Construction.TensorOpenExtension
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Norm.Locality
