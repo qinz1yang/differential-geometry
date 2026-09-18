@@ -1360,3 +1360,59 @@ IsPLHomeomorphOn.image_stdSimplexBoundary` 的写法，把 `g '' stdSimplexBound
 
 聚焦检查 `BallStarring` exit=0（9.7 秒）、零 warning；审计八项仅
 `propext`、`Classical.choice`、`Quot.sound`。
+
+## 13. 2026-09-18 带标记点的 Alexander 技巧（`BallMarkedExtension.lean`）— M2 的新砖
+
+M2 的路线是：先把 `g` 从子盘 `D` 延到整个边界球面并把弧的第二个端点送对，再锥化进球内。
+第二步用第 10 节的 `exists_isPLHomeomorphOn_coneSet_pair`；第一步缺的那块就是本节。
+
+- `exists_isPLHomeomorphOn_extension_marked`：设 `f`、`f'` 分别是 `A`、`A'`（任意维、任意余维的 PL 球）
+  的标准单形参数化，`φ` 是两球**边界球面之间**的 PL 同胚（写成
+  `f '' (simplexBoundary (stdVertices m) _).space → f' '' (…).space`），则存在 `G` 使
+  `IsPLHomeomorphOn G A A'`、`EqOn G φ` 在边界球面上，且 **`G (f (stdCenter m)) = f' (stdCenter m)`**。
+  即：**边界同胚锥化延拓时，可以额外要求把一个指定的内点送到指定的内点**——
+  只要这两个内点分别是给定参数化的重心像。配合第 12 节的 M1（重心可以送到任意内点／开胞腔中的点），
+  这就等于"带一个标记内点的 Alexander 技巧"。
+  证明：把 `φ` 经两侧参数化拉回成边界球面模型 `(simplexBoundary (stdVertices m) _).space` 上的自同胚 `ψ`，
+  用 `ConeExtension.lean:70 exists_isPLHomeomorphOn_coneComplex` 锥化成 `Φ`（锥顶送锥顶，
+  这正是 `g p = q` 那一条），再 `f' ∘ Φ ∘ invFunOn f` 搬回去。
+  `coneComplex_std_space` 把锥的空间换成 `stdSimplex`。
+- `IsPLHomeomorphOn.image_stdSimplexBoundary_congr`：同一个球的**两个参数化**给出同一个边界球面，
+  `f₁ '' stdSimplexBoundary (m+1) = f₂ '' stdSimplexBoundary (m+1)`。
+  由本节上面那条参数化无关性经任一三角剖分两边夹出。这条是 M2 组装必需的：
+  M1 造出来的参数化与树里既有盘引理（`inter_closure_sdiff_eq_image_stdSimplexBoundary`）
+  用的参数化不是同一个，必须先认同它们的边界圆。
+
+聚焦检查 `BallMarkedExtension` exit=0（10.2 秒）、零 warning；
+`.lake/scratch/AuditHBallMarked.lean`（同时导入 `SphericalDiskExtension` 与 `BallPairModel`）
+两项仅 `propext`、`Classical.choice`、`Quot.sound`。
+
+坑：第二条里 `boundaryComplex` 只出现在证明中，所以要用证明内 `classical` 而不是
+`[DecidableEq E]` 参数（与第 12 节末尾那条相反，那里它出现在陈述里）。
+
+### M2 本体 — 未闭合，剩余组装已定尺
+
+树里 `SphericalDiskExtension.lean:11 exists_isPLHomeomorphOn_eqOn_disk_of_isPLSphere_two`
+**确实**给了球面层的延拓（`D ⊆ S` 上的 `g` 延到 `S → S'`），但它**不带标记点**：
+补盘上的延拓是拼接产生的，无法指定第二个端点去哪。所以不能直接复用，
+但它的证明骨架可以照抄——它内部已经用了
+`IsPLSphere.isPLBall_closure_sdiff`（球面里盘的补是盘）与
+`IsPLSphere.inter_closure_sdiff_eq_image_stdSimplexBoundary`（两盘恰交于圆周），这两条都现成。
+
+剩余两步：
+
+1. **带标记点的球面延拓**：`A := closure (S \ D)`、`A' := closure (S' \ D')` 是 2-球；
+   由 M1 取 `A` 的参数化把重心送到第二个端点 `y`（`A'` 同理送到 `y'`），
+   由 `image_stdSimplexBoundary_congr` 把该参数化的边界圆认同成 `D ∩ A`，
+   于是 `g` 限制到圆周后可喂给本节的 `exists_isPLHomeomorphOn_extension_marked`，
+   得补盘上的延拓且 `y ↦ y'`；再用 `PLPiece.lean:83 IsPLHomeomorphOn.piecewise`
+   沿圆周与 `D` 上的 `g` 拼起来。约 100–180 行，**未验证**。
+2. **锥化进球内**：把 `IsPLBallPair 2 1 K.space A` 展开取锥数据（本谓词按定义就给锥结构，
+   不需要再 star 一次），用第 1 步的球面同胚喂
+   `exists_isPLHomeomorphOn_coneSet_pair`，其 `hfJ` 就是"两个端点送对"。约 80–150 行，**未验证**。
+
+合计约 **180–330 行，未验证**。
+
+需要在 M2 陈述里显式写出、否则不成立的条件：**弧的两个端点必须一个在 `D` 的开胞腔里、
+一个在补盘 `A` 的开胞腔里**（不能落在公共圆周 `D ∩ A` 上），否则 M1 对补盘不适用。
+这不是技术限制而是几何前提：子盘 `D` 必须把两个端点分开。
