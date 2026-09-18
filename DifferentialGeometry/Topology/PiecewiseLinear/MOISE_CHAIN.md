@@ -915,6 +915,11 @@ F 局部板图卡（2026-09-18，**局部生产层 done；完整链 partial**）
 `HasPLBoundaryCrossingAt.not_eventuallyEq` 排除两片 germ 重合。聚焦检查与 `AuditF287`
 均 exit=0、零诊断，四项声明仅标准三公理，默认适用环境 linters 通过。
 任意 `NormalSingularCellData` 尚不能恢复真实载体；相邻胞腔两片匹配和全局单射图卡仍未闭合。
+`BoundaryBranchSheets.lean` 的源片邻域生产层 **done**（§19.148）：从触边分支的实际两条源弧构造不交多面体
+源片邻域，各片嵌入且保留 PL 映射，并在含整条分支的开集内覆盖全纤维、精确刻画双点集。
+一致源侧标签由生产者给出；相邻环境胞腔片迹匹配及全局图卡仍 partial。
+聚焦检查和 `AuditF288` 均 exit=0、零诊断；2 项本模块声明与 3 项复用端点仅标准三公理，
+13 项适用环境 linters 全通过。端点为 `NormalSingularCellData.exists_polyhedral_sheet_neighborhoods_of_boundaryBranch`。
 
 ## 2026-09-18 Codex: essential boundary in the extended loop theorem
 
