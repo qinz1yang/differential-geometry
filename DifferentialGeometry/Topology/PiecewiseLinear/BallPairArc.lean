@@ -153,4 +153,24 @@ theorem isRadiallyInjective_pair_of_mem_openSegment {z d q : E} (hzd : z ≠ d)
     nlinarith [mul_pos ht ha]
   · rfl
 
+theorem isRadiallyInjective_pair_of_linearIndependent {p x y : E}
+    (h : LinearIndependent ℝ ![x - p, y - p]) : IsRadiallyInjective p ({x, y} : Set E) := by
+  have hswap : ∀ {u v : E}, LinearIndependent ℝ ![u, v] → LinearIndependent ℝ ![v, u] := by
+    intro u v hind
+    rw [LinearIndependent.pair_iff] at hind ⊢
+    intro sc tc hst
+    obtain ⟨h1, h2⟩ := hind tc sc (by rw [← hst]; abel)
+    exact ⟨h2, h1⟩
+  have hcross : ∀ {u v : E}, LinearIndependent ℝ ![u, v] → ∀ t : ℝ, v ≠ t • u := by
+    intro u v hind t hv
+    have h0 : (-t) • u + (1 : ℝ) • v = 0 := by rw [hv]; module
+    exact one_ne_zero (LinearIndependent.pair_iff.mp hind (-t) 1 h0).2
+  rintro a ha b hb t ht hab
+  simp only [Set.mem_insert_iff, Set.mem_singleton_iff] at ha hb
+  rcases ha with rfl | rfl <;> rcases hb with rfl | rfl
+  · rfl
+  · exact absurd (by rw [hab]; abel : b - p = t • (a - p)) (hcross h t)
+  · exact absurd (by rw [hab]; abel : b - p = t • (a - p)) (hcross (hswap h) t)
+  · rfl
+
 end DifferentialGeometry.Topology.PiecewiseLinear
