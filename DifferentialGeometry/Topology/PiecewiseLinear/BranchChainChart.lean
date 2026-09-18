@@ -1,3 +1,4 @@
+import DifferentialGeometry.Topology.PiecewiseLinear.PLHomeomorphOpen
 import DifferentialGeometry.Topology.PiecewiseLinear.VertexBranchChartPair
 
 open Set Topology
@@ -52,6 +53,32 @@ theorem exists_chart_branch_chain {ι : Type*} {U : ι → Set E} {V : ι → Se
   refine ⟨⋃ i, U i, isOpen_iUnion hU, hSU, hUW, ?_,
     isPLHomeomorphOn_iUnion_of_forall hU hV hPL hinj, ?_, ?_⟩
   · rw [iUnion_inter]
+    exact iUnion_eq_empty.mpr hthird
+  · intro y hy hyA
+    obtain ⟨i, hi⟩ := mem_iUnion.mp hy
+    exact hA i y hi hyA
+  · intro y hy hyB
+    obtain ⟨i, hi⟩ := mem_iUnion.mp hy
+    exact hB i y hi hyB
+
+theorem exists_openPartialHomeomorph_branch_chain {ι : Type*} {U : ι → Set E}
+    {V : ι → Set (ℝ × ℝ × ℝ)} {Φ : E → ℝ × ℝ × ℝ} {A B S T W : Set E}
+    (hU : ∀ i, IsOpen (U i)) (hV : ∀ i, IsOpen (V i))
+    (hPL : ∀ i, IsPLHomeomorphOn Φ (U i) (V i)) (hinj : InjOn Φ (⋃ i, U i))
+    (hA : ∀ i, ∀ y ∈ U i, y ∈ A → (Φ y).2.2 = 0)
+    (hB : ∀ i, ∀ y ∈ U i, y ∈ B → (Φ y).2.1 = 0)
+    (hthird : ∀ i, U i ∩ T = ∅)
+    (hSU : S ⊆ ⋃ i, U i) (hUW : (⋃ i, U i) ⊆ W) :
+    ∃ e : OpenPartialHomeomorph E (ℝ × ℝ × ℝ), S ⊆ e.source ∧ e.source ⊆ W ∧
+      e.source ∩ T = ∅ ∧ IsPiecewiseAffineOn e e.source ∧
+        IsPiecewiseAffineOn e.symm e.target ∧
+          (∀ y ∈ e.source, y ∈ A → (e y).2.2 = 0) ∧
+            (∀ y ∈ e.source, y ∈ B → (e y).2.1 = 0) := by
+  have hglue := isPLHomeomorphOn_iUnion_of_forall hU hV hPL hinj
+  refine ⟨hglue.toOpenPartialHomeomorph (isOpen_iUnion hU) (isOpen_iUnion hV), hSU, hUW, ?_,
+    hglue.isPiecewiseAffineOn, hglue.isPiecewiseAffineOn_invFunOn, ?_, ?_⟩
+  · change (⋃ i, U i) ∩ T = ∅
+    rw [iUnion_inter]
     exact iUnion_eq_empty.mpr hthird
   · intro y hy hyA
     obtain ⟨i, hi⟩ := mem_iUnion.mp hy

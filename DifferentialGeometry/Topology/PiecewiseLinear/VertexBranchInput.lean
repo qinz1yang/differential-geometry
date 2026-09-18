@@ -134,4 +134,27 @@ theorem exists_linearEquiv_normalForm_two_sheets
     ((ContinuousLinearMap.snd ℝ ℝ ℝ).comp (ContinuousLinearMap.snd ℝ ℝ (ℝ × ℝ))) hℓne hlinkN hab
     hlevel hpos hneg
 
+theorem exists_linearEquiv_normalForm_two_sheets_of_arc_section
+    (K₁ N₁ : Geometry.SimplicialComplex ℝ (ℝ × ℝ × ℝ))
+    [Finite K₁.faces] [Finite N₁.faces] (hN : N₁.faces ⊆ K₁.faces)
+    {q : ℝ × ℝ × ℝ} (hq : {q} ∈ N₁.faces) (hK : K₁.space ∈ 𝓝 q)
+    (hlinkN : IsPLSphere 1 (SimplicialComplex.geometricLink N₁ {q}).space)
+    (harc : IsPLBall 1 (N₁.space ∩ {x : ℝ × ℝ × ℝ | x.2.2 = q.2.2}))
+    {a b : ℝ × ℝ × ℝ} (hab : a ≠ b)
+    (ha : a ∈ (SimplicialComplex.geometricLink N₁ {q}).space ∩
+      {x : ℝ × ℝ × ℝ | x.2.2 = q.2.2})
+    (hb : b ∈ (SimplicialComplex.geometricLink N₁ {q}).space ∩
+      {x : ℝ × ℝ × ℝ | x.2.2 = q.2.2})
+    (hpos : ∃ x ∈ (SimplicialComplex.geometricLink N₁ {q}).space, q.2.2 < x.2.2)
+    (hneg : ∃ x ∈ (SimplicialComplex.geometricLink N₁ {q}).space, x.2.2 < q.2.2) :
+    ∃ (U V : Set (ℝ × ℝ × ℝ)) (h : (ℝ × ℝ × ℝ) → ℝ × ℝ × ℝ)
+      (L : (ℝ × ℝ × ℝ) ≃ₗ[ℝ] ℝ × ℝ × ℝ),
+      IsOpen U ∧ IsOpen V ∧ q ∈ U ∧ IsPLHomeomorphOn h U V ∧ h q = 0 ∧
+        ∀ᶠ y in 𝓝 q, (y ∈ N₁.space → (L (h y)).2.2 = 0) ∧
+          (y.2.2 = q.2.2 → (L (h y)).2.1 = 0) := by
+  classical
+  have hlevel := geometricLink_fiber_eq_pair_of_isPLBall_one N₁ hq
+    ((LinearMap.snd ℝ ℝ ℝ).comp (LinearMap.snd ℝ ℝ (ℝ × ℝ))) harc hab ha hb
+  exact exists_linearEquiv_normalForm_two_sheets K₁ N₁ hN hq hK hlinkN hab hlevel hpos hneg
+
 end DifferentialGeometry.Topology.PiecewiseLinear

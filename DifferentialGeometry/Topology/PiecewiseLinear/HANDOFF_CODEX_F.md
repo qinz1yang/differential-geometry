@@ -3644,3 +3644,43 @@ germ 沿 `φ` 可搬，像侧第一张片是真平面、半径无关。搬过去
 检查 `VertexBranchSection` exit=0（11.3 秒）、`VertexBranchInput` exit=0（11.1 秒）、
 `VertexBranchChartPair` exit=0（11.3 秒）、`BranchChainChart` exit=0（10.9 秒），均零 warning；
 `AuditF279.lean` 两项仅 `propext`、`Classical.choice`、`Quot.sound`。下一审计文件 `AuditF280.lean`。
+
+### 19.138 成对 germ 入口与 `OpenPartialHomeomorph` 包装；并记一次**我自己违反 grep 规则**
+
+**先记自己的错。** 写 `OpenPartialHomeomorph` 包装时我**没有先 grep 新名字**就直接定义了
+`IsPLHomeomorphOn.toOpenPartialHomeomorph`，编译报"已声明"。
+树里早有一条，在 `PLHomeomorphOpen.lean:10`，**逐字段与我写的一模一样，而且更一般**
+（异型 `E → F`，我写的是 `E → ℝ × ℝ × ℝ`）。已删掉重复、改为 import 那个模块。
+这正是本车道从 §19.126 起一直在提醒别人的那条规则，今天自己破了一次；
+教训是**规则对新写的 `def` 同样适用，不只是对"以为缺失的定理"**。
+
+**本轮闭合两条**
+- `exists_linearEquiv_normalForm_two_sheets_of_arc_section`（`VertexBranchInput.lean`）：
+  **成对 germ 入口**。把像侧契约里的集合等式 `link ∩ 平面 = {a, b}` 换成
+  **一条弧条件 + 两个不同的交点**：
+  `harc : IsPLBall 1 (N₁.space ∩ {x | x.2.2 = q.2.2})`（第二张片被第一张片截成一条弧）、
+  `hab`、`ha`、`hb`（连接与平面的两个不同交点），再加原有的 `hpos`/`hneg`。
+  由 §19.137 的 `geometricLink_fiber_eq_pair_of_isPLBall_one` 造出 `hlevel`，
+  再喂 `exists_linearEquiv_normalForm_two_sheets`。
+- `exists_openPartialHomeomorph_branch_chain`（`BranchChainChart.lean`）：
+  把 §19.136 链层定理的输出包装成 `OpenPartialHomeomorph E (ℝ × ℝ × ℝ)`，
+  交付 `S ⊆ e.source`、`e.source ⊆ W`、`e.source ∩ T = ∅`、
+  `IsPiecewiseAffineOn e e.source`、`IsPiecewiseAffineOn e.symm e.target`、
+  两条片条款。**这就是 §19.115 结论的原始形状**，与 §44 的输出条款对齐。
+  用现成的 `IsPLHomeomorphOn.toOpenPartialHomeomorph`，一行；
+  唯一要注意的是 `e.source ∩ T = ∅` 那条要先 `change (⋃ i, U i) ∩ T = ∅`
+  才能 `rw [iUnion_inter]`（`.source` 是定义相等但不是语法相等）。
+
+**必须显式记下的独立性（协调者要求，防止以后被默认掉）**
+"两张片交成一条弧"**不蕴含**"第二张片在第一张片两侧都有点"。
+前者只说交集的形状，后者说 `N` 真的穿过 `M`；`N` 完全落在 `M` 一侧、
+只沿一条弧贴着它，同样满足弧条件。所以 germ 入口**必须是两条**：
+`harc`（弧）与 `hpos`/`hneg`（两侧）。
+这与 §19.123 判定的"`hpos`/`hneg` 不能由计数推出"是同一条独立性，只是升了一层：
+那里是单片相对平面，这里是两片相对彼此。
+同理，`ha`/`hb`（连接与平面的两个交点）也**不能**由 `hpos`/`hneg` 直接得到——
+从"两侧各有一点"到"中间穿过平面两次"需要连接上的连通性论证（IVT 型），
+本轮未做，故 `ha`/`hb` 仍是入口的显式输入。
+
+检查 `VertexBranchInput` exit=0（11.4 秒）、`BranchChainChart` exit=0（11.2 秒），均零 warning；
+`AuditF280.lean` 两项仅 `propext`、`Classical.choice`、`Quot.sound`。下一审计文件 `AuditF281.lean`。
