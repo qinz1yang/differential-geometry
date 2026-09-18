@@ -926,3 +926,89 @@ H-A1/H-A2 把其中"锥化/球对"那一块消掉了，它原本是唯一没有�
 关于上面"仍未闭合的确切义务"：H-A3 不改变那三件（弧的正则邻域是球、塌陷理论、正则邻域唯一性）
 的缺失状态，但把**逐点比较**这一步从"缺定理"变成"缺输入"：现在沿弧相邻两点之间要的不再是新定理，
 而是两点链对之间的一个 PL 同胚 `f`。产生这个 `f` 仍需沿弧的正则邻域结构，即上述第 1、3 件。
+
+## 10. 2026-09-18 H-A4：弧的正则邻域是三维球（`ArcDerivedNeighborhood.lean`，done）
+
+上一节"仍未闭合的三件"里的**第 1 件已闭合**，成本比 §9 的估计低一个数量级：
+估计 1k–2k 行，实际 **210 行**。原估计错在假设要自建折叠/塌陷归纳；实际上树里已经有
+现成的链式黏合定理与逐格引理，弧的情形只是把它们接起来。**更正后的成本：0.2k 行。**
+
+### 为什么这么便宜——测绘更正
+
+§9 说"`derivedNeighborhood` 的球定理只到单纯形与边界二维盘"，这条**仍然正确**，但漏了两件关键事实：
+
+1. `BallChain.lean:10 isPLBall_iUnion_of_chain` **已经把沿链归纳做完了**。它吃
+   `C : Fin (n+1) → Set E`、每个 `IsPLBall 3`、相邻交是 `IsPLBall 2`、非相邻不交，
+   直接吐 `IsPLBall 3 (⋃ i, C i)`。不需要任何新的归纳。
+2. `DerivedNeighborhoodCells.lean:227 isPLBall_derivedNeighborhoodCell_inter` 已经给出
+   **相邻交是二维球**：`IsCombinatorialManifoldWithBoundary (n+2) K` ⟹ 对 `s ≠ t` 且
+   `s ⊆ t ∨ t ⊆ s` 有 `IsPLBall (n+1) (cell s ∩ cell t)`。取 `n := 1` 正是 `IsPLBall 2`。
+   配 `:147 isPLBall_derivedNeighborhoodCell`（`n := 2`，每格是三维球）与
+   `:236 disjoint_derivedNeighborhoodCell_space`（不可比较的面 ⟹ 格不交），链的四个前提全部现成。
+
+即：`isPLBall_triangle_cells`（`SimplexDerivedNeighborhood.lean:41`）里那套"逐格黏"的套路
+本来就是一般的，只是之前只被用在单个单纯形的面上。
+
+另有一条相关但**不能直接用**的东西：`SurfaceTreeNeighborhood.lean:80`
+`isPLBall_embeddedGraphDerivedNeighborhood_of_isTree` 是**树**的版本，但它是
+`IsCombinatorialManifold 2`（闭曲面、二维）出 `IsPLBall 2`，走的是叶子归纳。
+三维弧的情形走链式归纳更短，不必推广它。
+
+### 交付的定理
+
+- `IsCombinatorialManifoldWithBoundary.isPLBall_iUnion_derivedNeighborhoodCell_of_chain`：
+  **抽象的面链黏合**。设 `F : Fin (m+1) → Finset E` 的每项是 `K` 的面，相邻两项互不相等且可比较
+  （一个含于另一个），指标距离 ≥ 2 的两项互不可比较，则
+  `IsPLBall 3 (⋃ j, (derivedNeighborhoodCell K (F j)).space)`。
+  证明是 `isPLBall_iUnion_of_chain` 的一次直接喂参，无归纳。**这是本节真正可复用的那条**：
+  任何"沿一串面串起来的对偶格"都能用，不限于弧。
+- `arcChainFace v j := {v (j / 2), v ((j + 1) / 2)}`：交替的顶点／边面。
+  **无 if-then-else 的统一公式**：`j = 2k` 时两个下标相等，Finset 自动塌成单点 `{v k}`；
+  `j = 2k+1` 时得边 `{v k, v (k+1)}`。这一条是全节的关键技巧——把奇偶讨论从项层面
+  推到了 `omega` 能处理的算术层面。配 `arcChainFace_two_mul`、`arcChainFace_two_mul_add_one`。
+- `arcChainFace_subset_iff`：设 `v` 在 `[0,n]` 上单射，则对 `i, j ≤ 2n`
+  `arcChainFace v i ⊆ arcChainFace v j` **当且仅当**
+  `(i/2 = j/2 ∨ i/2 = (j+1)/2) ∧ ((i+1)/2 = j/2 ∨ (i+1)/2 = (j+1)/2)`。
+  有了它，链的三个组合前提（互不相等、可比较、远处不可比较）**全部退化成 `omega`**。
+- `IsCombinatorialManifoldWithBoundary.isPLBall_iUnion_arcChainFace`：弧的定理，格并形式。
+  输入 `hvert : ∀ i ≤ n, {v i} ∈ K.faces`、`hedge : ∀ i < n, {v i, v (i+1)} ∈ K.faces`、
+  `hinj`（`v` 在 `[0,n]` 上单射），输出
+  `IsPLBall 3 (⋃ j : Fin (2n+1), (derivedNeighborhoodCell K (arcChainFace v j.val)).space)`。
+- `arcComplexIn K v n`：弧作为 `K` 的**子复形**，按 `regularNeighborhoodIn` 的模式定义
+  （`faces := {s ∈ K.faces | ∃ j ≤ 2n, s = arcChainFace v j}`），因此 `indep` 与
+  `inter_subset_convexHull` 由 `K` 继承，不需要几何论证。`isRelLowerSet_faces` 由
+  `exists_eq_arcChainFace_of_subset` 给出，后者靠 `eq_of_subset_pair`
+  （对子的非空子集只有三种：两个单点与整对；Finset 版 Mathlib 没有，只有 `Set.subset_pair_iff_eq`）。
+  附 `Finite (arcComplexIn K v n).faces` instance 与 `arcComplexIn_faces_subset`。
+- `iUnion_derivedNeighborhoodCell_arcChainFace_eq`：格并 = `(derivedNeighborhood K (arcComplexIn K v n)).space`，
+  由 `iUnion_derivedNeighborhoodCell_space` 加两向包含。
+- `IsCombinatorialManifoldWithBoundary.isPLBall_derivedNeighborhood_arcComplexIn`：**成品端点**。
+  `IsPLBall 3 (derivedNeighborhood K (arcComplexIn K v n)).space`。
+  这是与 `DiskDerivedNeighborhood.lean:74`（边界二维盘）同形状的陈述，
+  因而 `derivedNeighborhood_space_subset`、`closedStar_subset_derivedNeighborhood`、
+  `DerivedNeighborhoodHomology` 的既有引理可以直接接上。
+
+聚焦检查 `ArcDerivedNeighborhood` exit=0（10.5 秒）、零 warning；
+`.lake/scratch/AuditHArcDerivedNeighborhood.lean` 十二项仅 `propext`、`Classical.choice`、`Quot.sound`。
+
+### 坑
+
+- `Fin` 的 `castSucc`/`succ` 取 `val` 后，`simp only [Fin.coe_castSucc, Fin.val_succ]`
+  **不会把所有位置都改写**（`Fin.castSucc` 本身以 `↑` 显示，漏掉的位置在 `omega` 眼里成了
+  另一个原子，于是 `omega` 报出一个看似合理的反例而失败）。改用先 `have hc : j.castSucc.val = j.val`、
+  `have hs : j.succ.val = j.val + 1`，再把它们放进 `rw` 链尾部，一次性统一改写。
+  另：`Fin.coe_castSucc` 已废弃，用 `Fin.val_castSucc`。
+- `eq_of_subset_pair` 作用在 `t ⊆ arcChainFace v j` 上时，`arcChainFace` 是普通 `def`，
+  合一**不会**自动把它展开成 `{?a, ?b}`。先写 `have ht' : t ⊆ ({v (j/2), v ((j+1)/2)} : Finset E) := ht`
+  （类型标注走 delta 归约）再用。
+- 纯 `Finset`/算术的引理放在只有 `variable {E : Type*}` 的 section 里，
+  否则 `unusedSectionVars` linter 报 warning；跨不掉的地方用 `omit [FiniteDimensional ℝ E] in`。
+
+### 三件义务的当前状态
+
+1. **弧的正则邻域是球** —— **已闭合**（本节）。仍未做的是"球**对**标准"那半句：
+   即 `(N(arc), arc)` 作为球对与标准模型球对 PL 同胚。本节只给了 `N(arc)` 是球。
+2. **塌陷理论** —— 仍不存在，但**本条已证明对第 1 件不是必需的**：链式归纳绕开了它。
+   除非第 3 件确实需要，否则不建议再投入（§9 估的 2k–4k 行可以先不花）。
+3. **正则邻域唯一性 / 环境同痕** —— 仍不存在，且仍是 F §19.115 的真正瓶颈。
+   现在沿弧相邻两点之间要的输入（H-A3 的链对同胚 `f`）依然缺少生产者。
