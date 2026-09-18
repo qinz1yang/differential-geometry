@@ -484,3 +484,53 @@ carrier/boundary compatibility and the complete injective double-end arc-chain
 chart remain explicit obligations. Full trimmed-union gluing and the mapping-torus
 embedding also remain open. No task's local conditional layer is counted as any
 of these endpoints.
+
+## 14. Third delivery: square gluing, cell interfaces, and coherent sheets (2026-09-18)
+
+The third batch was integrated at the next four-task delivery boundary:
+
+| Task | Published checkpoint | Integration merge | Exact completed layer |
+| --- | --- | --- | --- |
+| S | `f17036dd1` | `8ebe5c9ac` | A PWA square map with the complete flip seam and exactly the specified flip-only fibers produces a PL homeomorphism from `mobiusComplex.space` onto its image. This is a model bridge; an arbitrary reversing-disk mapping-torus still needs the actual compatible strip. |
+| h | `3840d85cd` | `4e071d655` | Adjacent arc cells have the exact cone intersection, sphere bases, interface inclusion on both boundaries, marked crossing conditions, and the normalized arc trace. The full trimmed union is still open. |
+| E3 | `c0aa574b3` | `0db91d236` | Wedge pushes transport through PL charts to injective PL maps with compact common support, identity off support, support preservation, and disjoint images of actual subsets of the two open folds. |
+| F | `f774beb3e` | `0e7ba393d` | A genuine boundary branch produces two fixed disjoint polyhedral source neighborhoods, each embedded by the singular cell map, and an open neighborhood of the whole branch with full two-sheet fiber coverage and an exact double-point image-intersection formula. No PL two-ball neighborhood is claimed. |
+
+The coordinator recompiled all four touched integration leaves with the strict
+syntax set and explicit header/long-line checks: `MobiusSquareMap`,
+`ArcCellGluing`, `SlabWedgeConjugation`, and `BoundaryBranchSheets`. All checks
+returned exit 0 and zero diagnostics. The combined silent audit dynamically
+selected all 27 + 20 + 7 + 2 = 56 nonautomatic declarations, including private
+declarations. Their transitive axiom closures contain only the three standard
+foundational axioms, and all 13 applicable default environment linters passed.
+Only `docBlame` and `docBlameThm` were excluded. `git diff --check` passed.
+
+Private receipts, source and committed-blob identities, and the declaration
+census are under
+`C:\Users\liao9\AppData\Local\Temp\codex-integration-third-batch-20260918`.
+Three private prerequisite objects were reused after exact source-hash checks;
+other imported project objects remain shared. The independent full-root build
+was restarted once for this delivered batch, preserving its outputs, at source
+checkpoint `0e7ba393dca87d8390d956cd0dba446b2cb046f3`. It remains running and is not
+certified complete. The subsequent handoff-only commit has identical Lean source.
+
+F reported and the coordinator reproduced a compiler-lease clock bug: PowerShell
+can deserialize a JSON UTC timestamp directly as `DateTime` with `Kind=Utc`.
+Parsing that object again through its local display string loses the kind and
+can move the apparent expiry seven hours later. The external private checker
+now preserves `DateTime.Kind`, uses `DateTimeOffset.UtcDateTime` when applicable,
+and parses only strings with invariant culture and `RoundtripKind`. Tests of all
+three input representations and the expiry boundary passed; the receipt is
+`.lake/compiler-expiry-utc-fix.json`. The delivered lane checks completed within
+their real UTC windows. The delivery-only coordination rule remains in force.
+
+The next private window belongs to h for its source-ready marked-extension
+output `G y = y'` and the two updated consumers in `BallPairRelativeGluing`.
+S follows with `CircleLiftOrientation` and `CirclePrismComparison`, which aim to
+produce a compatible cylinder/arc strip using existing circle pseudo-isotopy.
+These drafts are unverified. F continues matching its fixed source sheets with
+crossing germs, before the ambient cell-trace and real-boundary compatibility
+steps. E3 retains its lane and waits for those actual geometric inputs rather
+than adding more conditional wrappers. `exists_separated_along_branch`, Case 3/4
+L2 and its complexity drop, the complete double-end chart, the trimmed union,
+and the arbitrary-monodromy mapping-torus endpoint are still not delivered.
