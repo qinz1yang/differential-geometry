@@ -7,18 +7,97 @@ open scoped Topology ContDiff Manifold
 
 namespace DifferentialGeometry.Topology
 
-variable {X E M : Type*} [NormedAddCommGroup X] [NormedSpace ℝ X]
-  [FiniteDimensional ℝ X] [NormedAddCommGroup E] [NormedSpace ℝ E]
-  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
-  [TopologicalSpace M] [ChartedSpace H M] {n : ℕ∞} [IsManifold I n M]
+section ManifoldSource
+
+variable {F G X E H M : Type*}
+  [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
+  [TopologicalSpace G] {J : ModelWithCorners ℝ F G}
+  [TopologicalSpace X] [ChartedSpace G X] [T2Space X]
+  [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  [TopologicalSpace M] [ChartedSpace H M] {n : ℕ∞}
+  [IsManifold J n X] [IsManifold I n M]
+
+omit [IsManifold I n M] in
+private theorem smoothBump_contMDiff {x : X} (f : SmoothBumpFunction J x) :
+    ContMDiff J 𝓘(ℝ, ℝ) n f := by
+  refine contMDiff_of_tsupport fun y hy => ?_
+  have hs : y ∈ (chartAt G x).source := f.tsupport_subset_chartAt_source hy
+  apply ContMDiffAt.congr_of_eventuallyEq ?_ (f.eqOn_source.eventuallyEq_of_mem
+    ((chartAt G x).open_source.mem_nhds hs))
+  exact f.contDiffAt.contMDiffAt.comp _ (contMDiffAt_extChartAt' hs)
+
+omit [IsManifold I n M] in
+private theorem compact_cutoff {C W : Set X} (hC : IsCompact C)
+    (hW : IsOpen W) (hCW : C ⊆ W) :
+    ∃ β : X → ℝ, ContMDiff J 𝓘(ℝ, ℝ) n β ∧
+      (∀ x, β x ∈ Icc 0 1) ∧
+      (∀ᶠ x in 𝓝ˢ Wᶜ, β x = 0) ∧ (∀ᶠ x in 𝓝ˢ C, β x = 1) := by
+  classical
+  have hlocal (x : C) : ∃ f : SmoothBumpFunction J x.val, tsupport f ⊆ W := by
+    obtain ⟨f, _, hf⟩ := (SmoothBumpFunction.nhds_basis_tsupport (I := J) x.val).mem_iff.mp
+      (hW.mem_nhds (hCW x.property))
+    exact ⟨f, hf⟩
+  choose f hf using hlocal
+  let V : C → Set X := fun x => interior {y | f x y = 1}
+  have hV (x : C) : x.val ∈ V x :=
+    mem_interior_iff_mem_nhds.mpr (f x).eventuallyEq_one
+  obtain ⟨t, ht⟩ := hC.elim_finite_subcover V (fun _ => isOpen_interior)
+    (fun x hx => mem_iUnion.mpr ⟨⟨x, hx⟩, hV ⟨x, hx⟩⟩)
+  have hind : ∀ t : Finset C, ∃ β : X → ℝ, ContMDiff J 𝓘(ℝ, ℝ) n β ∧
+      (∀ x, β x ∈ Icc 0 1) ∧
+      (∀ᶠ x in 𝓝ˢ Wᶜ, β x = 0) ∧
+      ∀ a ∈ t, ∀ x ∈ V a, ∀ᶠ y in 𝓝 x, β y = 1 := by
+    intro t
+    induction t using Finset.induction with
+    | empty =>
+      exact ⟨fun _ => 0, contMDiff_const, fun _ => ⟨le_rfl, zero_le_one⟩,
+        Filter.Eventually.of_forall (fun _ => rfl), by simp⟩
+    | @insert a t _ ih =>
+      obtain ⟨β, hβ, hβrange, hβzero, hβone⟩ := ih
+      let γ : X → ℝ := fun x => 1 - (1 - β x) * (1 - f a x)
+      have hfa : ∀ᶠ x in 𝓝ˢ Wᶜ, f a x = 0 := by
+        apply eventually_nhdsSet_iff_forall.mpr
+        intro x hx
+        have hx' : x ∉ tsupport (f a) := fun h => hx (hf a h)
+        filter_upwards [(isClosed_tsupport (f a)).isOpen_compl.mem_nhds hx'] with y hy
+        by_contra hne
+        exact hy (subset_closure hne)
+      refine ⟨γ, contMDiff_const.sub ((contMDiff_const.sub hβ).mul
+        (contMDiff_const.sub (smoothBump_contMDiff (f a)))), ?_, ?_, ?_⟩
+      · intro x
+        have hb := hβrange x
+        have ha := (f a).mem_Icc (x := x)
+        have hp := mul_nonneg (sub_nonneg.mpr hb.2) (sub_nonneg.mpr ha.2)
+        have hq := mul_nonneg hb.1 (sub_nonneg.mpr ha.2)
+        change 0 ≤ 1 - (1 - β x) * (1 - f a x) ∧
+          1 - (1 - β x) * (1 - f a x) ≤ 1
+        constructor <;> nlinarith [ha.1, ha.2, hb.1, hb.2]
+      · filter_upwards [hβzero, hfa] with x hx hx'
+        simp only [γ, hx, hx', sub_zero, mul_one, sub_self]
+      · intro b hb x hx
+        rcases Finset.mem_insert.mp hb with hba | hbt
+        · subst b
+          have hfx : ∀ᶠ y in 𝓝 x, f a y = 1 := by
+            filter_upwards [isOpen_interior.mem_nhds hx] with y hy
+            exact interior_subset (s := {z : X | f a z = 1}) hy
+          filter_upwards [hfx] with y hy
+          simp only [γ, hy, sub_self, mul_zero, sub_zero]
+        · filter_upwards [hβone b hbt x hx] with y hy
+          simp only [γ, hy, sub_self, zero_mul, sub_zero]
+  obtain ⟨β, hβ, hβrange, hβzero, hβone⟩ := hind t
+  refine ⟨β, hβ, hβrange, hβzero, eventually_nhdsSet_iff_forall.mpr ?_⟩
+  intro x hx
+  obtain ⟨a, hat, hxa⟩ := mem_iUnion₂.mp (ht hx)
+  exact hβone a hat x hxa
 
 omit [IsManifold I n M] in
 private theorem correction
     (f U : X → M) (hf : Continuous f) (K C A S : Set X)
-    (hC : IsClosed C) (hCK : C ⊆ K) (hCA : C ⊆ A)
+    (hC : IsCompact C) (hCK : C ⊆ K) (hCA : C ⊆ A)
     (hA : IsOpen A) (hS : IsOpen S)
-    (hfS : ContMDiffOn 𝓘(ℝ, X) I n f S)
-    (hU : ContMDiffOn 𝓘(ℝ, X) I n U A)
+    (hfS : ContMDiffOn J I n f S)
+    (hU : ContMDiffOn J I n U A)
     (heq : EqOn U f (K ∩ A))
     (e : OpenPartialHomeomorph M E)
     (he : ContMDiffOn I 𝓘(ℝ, E) n e e.source)
@@ -27,7 +106,7 @@ private theorem correction
     (hUe : MapsTo U A (e.source ∩ e ⁻¹' B)) :
     ∃ g : X → M, Continuous g ∧ EqOn g f K ∧
       ∃ T : Set X, IsOpen T ∧ C ⊆ T ∧
-        ContMDiffOn 𝓘(ℝ, X) I n g (S ∪ T) := by
+        ContMDiffOn J I n g (S ∪ T) := by
   classical
   let O := e.source ∩ e ⁻¹' B
   have hO : IsOpen O := e.continuousOn.isOpen_inter_preimage e.open_source hB
@@ -39,9 +118,7 @@ private theorem correction
     change f x ∈ O
     rw [← heq ⟨hCK hx, hCA hx⟩]
     exact hUe (hCA hx)
-  obtain ⟨β, hβ0, hβ1, hβ⟩ := exists_contMDiffMap_zero_one_nhds_of_isClosed
-    𝓘(ℝ, X) hW.isClosed_compl hC (disjoint_compl_left_iff_subset.mpr hCW)
-    (n := n)
+  obtain ⟨β, hβsmooth, hβ, hβ0, hβ1⟩ := compact_cutoff (J := J) (n := n) hC hW hCW
   let v : X → E := fun x => (1 - β x) • e (f x) + β x • e (U x)
   have hvB {x : X} (hx : x ∈ W) : v x ∈ B :=
     hBc hx.2.2 (hUe hx.1).2 (sub_nonneg.mpr (hβ x).2) (hβ x).1 (sub_add_cancel 1 _)
@@ -67,8 +144,8 @@ private theorem correction
       e.continuousOn.comp (hU.continuousOn.mono inter_subset_left)
       (fun x hx => (hUe hx.1).1)
     have hv : ContinuousOn v W :=
-      (continuous_const.continuousOn.sub β.contMDiff.continuous.continuousOn).smul hf' |>.add
-        (β.contMDiff.continuous.continuousOn.smul hU')
+      (continuous_const.continuousOn.sub hβsmooth.continuous.continuousOn).smul hf' |>.add
+        (hβsmooth.continuous.continuousOn.smul hU')
     exact (e.symm.continuousOn.comp hv (fun x hx => hBt (hvB hx))).congr hgW
   have hcont : Continuous g := by
     rw [continuous_iff_continuousAt]
@@ -99,9 +176,9 @@ private theorem correction
         (hfS.contMDiffAt (hS.mem_nhds hxS))
       have hU' := (he.contMDiffAt (e.open_source.mem_nhds (hUe hxW.1).1)).comp x
         (hU.contMDiffAt (hA.mem_nhds hxW.1))
-      have hv : ContMDiffAt 𝓘(ℝ, X) 𝓘(ℝ, E) n v x :=
-        (contMDiffAt_const.sub β.contMDiff.contMDiffAt).smul hf' |>.add
-          (β.contMDiff.contMDiffAt.smul hU')
+      have hv : ContMDiffAt J 𝓘(ℝ, E) n v x :=
+        (contMDiffAt_const.sub hβsmooth.contMDiffAt).smul hf' |>.add
+          (hβsmooth.contMDiffAt.smul hU')
       have hcomp := (heinv.contMDiffAt (e.open_target.mem_nhds (hBt (hvB hxW)))).comp x hv
       exact hcomp.congr_of_eventuallyEq (hgW.eventuallyEq_of_mem (hW.mem_nhds hxW))
     · exact (hfS.contMDiffAt (hS.mem_nhds hxS)).congr_of_eventuallyEq (hgoutside hxW)
@@ -110,14 +187,14 @@ private theorem correction
         filter_upwards [hT.mem_nhds hxT] with y hy
         exact hg1 hy.1 (interior_subset (s := {x : X | β x = 1}) hy.2))
 
-omit [FiniteDimensional ℝ X] in
+omit [IsManifold J n X] in
 private theorem local_chart_data [I.Boundaryless]
     (f U : X → M) (K V : Set X) (x : X) (hxV : x ∈ V)
-    (hV : IsOpen V) (hU : ContMDiffOn 𝓘(ℝ, X) I n U V)
+    (hV : IsOpen V) (hU : ContMDiffOn J I n U V)
     (heq : EqOn U f (K ∩ V)) :
     ∃ P : Set X, P ∈ 𝓝 x ∧ IsClosed P ∧
       ∃ A : Set X, IsOpen A ∧ P ⊆ A ∧
-        ContMDiffOn 𝓘(ℝ, X) I n U A ∧ EqOn U f (K ∩ A) ∧
+        ContMDiffOn J I n U A ∧ EqOn U f (K ∩ A) ∧
         ∃ e : OpenPartialHomeomorph M E,
           ContMDiffOn I 𝓘(ℝ, E) n e e.source ∧
           ContMDiffOn 𝓘(ℝ, E) I n e.symm e.target ∧
@@ -137,6 +214,8 @@ private theorem local_chart_data [I.Boundaryless]
   let A := V ∩ U ⁻¹' O
   have hA : IsOpen A := hU.continuousOn.isOpen_inter_preimage hV hO
   have hxA : x ∈ A := ⟨hxV, hxe, Metric.mem_ball_self hr⟩
+  let _ : LocallyCompactSpace G := J.locallyCompactSpace
+  let _ : LocallyCompactSpace X := ChartedSpace.locallyCompactSpace G X
   obtain ⟨P, hPn, hPc, hPA⟩ := exists_mem_nhds_isClosed_subset (hA.mem_nhds hxA)
   refine ⟨P, hPn, hPc, A, hA, hPA, hU.mono inter_subset_left,
     heq.mono (inter_subset_inter_right _ inter_subset_left), e, ?_, ?_,
@@ -149,14 +228,14 @@ private theorem local_chart_data [I.Boundaryless]
 theorem exists_contMDiffOn_eqOn_of_locally_extendable [I.Boundaryless]
     {f : X → M} (hf : Continuous f) {K : Set X} (hK : IsCompact K)
     (hloc : ∀ x ∈ K, ∃ U : X → M, ∃ V : Set X,
-      IsOpen V ∧ x ∈ V ∧ ContMDiffOn 𝓘(ℝ, X) I n U V ∧ EqOn U f (K ∩ V)) :
+      IsOpen V ∧ x ∈ V ∧ ContMDiffOn J I n U V ∧ EqOn U f (K ∩ V)) :
     ∃ g : X → M, Continuous g ∧ EqOn g f K ∧
-      ∃ N : Set X, IsOpen N ∧ K ⊆ N ∧ ContMDiffOn 𝓘(ℝ, X) I n g N := by
+      ∃ N : Set X, IsOpen N ∧ K ⊆ N ∧ ContMDiffOn J I n g N := by
   classical
   have hd : ∀ x : K, ∃ U : X → M, ∃ P : Set X,
       P ∈ 𝓝 (x : X) ∧ IsClosed P ∧
       ∃ A : Set X, IsOpen A ∧ P ⊆ A ∧
-        ContMDiffOn 𝓘(ℝ, X) I n U A ∧ EqOn U f (K ∩ A) ∧
+        ContMDiffOn J I n U A ∧ EqOn U f (K ∩ A) ∧
         ∃ e : OpenPartialHomeomorph M E,
           ContMDiffOn I 𝓘(ℝ, E) n e e.source ∧
           ContMDiffOn 𝓘(ℝ, E) I n e.symm e.target ∧
@@ -168,7 +247,7 @@ theorem exists_contMDiffOn_eqOn_of_locally_extendable [I.Boundaryless]
   choose U P hPn hPc A hAo hPA hUs hEq e hes hei B hBo hBc hBt hUe using hd
   have hind : ∀ t : Finset K, ∃ g : X → M, Continuous g ∧ EqOn g f K ∧
       ∃ N : Set X, IsOpen N ∧ (∀ x ∈ t, K ∩ P x ⊆ N) ∧
-        ContMDiffOn 𝓘(ℝ, X) I n g N := by
+        ContMDiffOn J I n g N := by
     intro t
     induction t using Finset.induction with
     | empty =>
@@ -179,7 +258,7 @@ theorem exists_contMDiffOn_eqOn_of_locally_extendable [I.Boundaryless]
         intro y hy
         exact (hEq x hy).trans (hgf hy.1).symm
       obtain ⟨G, hG, hGg, T, hT, hCT, hGNT⟩ := correction g (U x) hg K
-        (K ∩ P x) (A x) N (hK.isClosed.inter (hPc x)) inter_subset_left
+        (K ∩ P x) (A x) N (hK.inter_right (hPc x)) inter_subset_left
         (fun y hy => hPA x hy.2) (hAo x) hN hgN (hUs x) hUg
         (e x) (hes x) (hei x) (B x) (hBo x) (hBc x) (hBt x) (hUe x)
       refine ⟨G, hG, hGg.trans hgf, N ∪ T, hN.union hT, ?_, hGNT⟩
@@ -195,6 +274,13 @@ theorem exists_contMDiffOn_eqOn_of_locally_extendable [I.Boundaryless]
   intro x hx
   obtain ⟨y, hyt, hy⟩ := mem_iUnion₂.mp (ht hx)
   exact hcov y hyt ⟨hx, interior_subset hy⟩
+
+end ManifoldSource
+
+variable {X E M : Type*} [NormedAddCommGroup X] [NormedSpace ℝ X]
+  [FiniteDimensional ℝ X] [NormedAddCommGroup E] [NormedSpace ℝ E]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  [TopologicalSpace M] [ChartedSpace H M] {n : ℕ∞} [IsManifold I n M]
 
 theorem exists_contMDiffOn_extension_closedBall [I.Boundaryless]
     (a : X) {r : ℝ} (hr : 0 ≤ r) (u : Metric.closedBall a r → M)
