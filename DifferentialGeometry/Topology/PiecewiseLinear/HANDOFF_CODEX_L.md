@@ -1831,3 +1831,69 @@ theorem eq_top_of_boundaryLoops_mem_normal
   三个聚焦检查全部 exit=0（10.3 / 11.1 / 9.8 秒）、零 warning；
   `.lake/scratch/AuditE3CollarPrismLevel.lean` 的 30 条 `#print axioms` 全部只含
   `propext`、`Classical.choice`、`Quot.sound`，无 `sorryAx`。全程无其它 `lean.exe`。
+
+## 63. 2026-09-18 E3-M3：被推离弧确实是一条弧（`IsPLBall 1 J` 在本层可证），剩下的只有"被推离集连通"
+
+状态：done（`IsPLHomeomorphOn θ (Icc 0 1) J` 不再是假设，由 `IsConnected W` 加两条平凡条件推出）。
+新模块 `DisplacedArcConnected.lean`（模块名与 6 条声明名在四条车道分支上都不存在）。
+
+- **先做核对，结论：圆层已经把需要的东西都给了，不必新证任何弧识别定理的核心。**
+  `ArcSubset.lean` 有两条正好接得上的：
+  - `IsPLSphere.exists_isPLBall_one_superset_of_ssubset`：PL 1-球面的**闭真子集**被某条弧包住；
+  - `IsPLBall.isPLBall_one_of_isCompact_of_isConnected`：弧里的**紧致、连通、非平凡**子集**本身就是弧**
+    （不要求该子集是多面体）。
+  两条串起来即 `IsPLSphere.isPLBall_one_of_isClosed_of_isConnected_of_ssubset`：
+  **PL 1-球面里闭、连通、非平凡的真子集是一条弧**。`CircleIntersection.lean` 与
+  `ArcDecomposition.lean` 是另一类问题（自交点、不交弧覆盖），本处用不上。
+- **取 `J := closure W`，其中 `W` 是被推离集 `{z ∈ frontier D.domain | g z ∉ Bd M}`。**
+  `IsPLSphere.isPLBall_one_closure_of_isConnected_of_ssubset` 与
+  `IsPLSphere.exists_isPLHomeomorphOn_Icc_closure_of_isConnected_of_ssubset` 由
+  `IsConnected W`、`W.Nontrivial`、`closure W ⊂ frontier D.domain` 直接给出 `θ`。
+  `frontier D.domain` 是 PL 1-球面用 `IsPLBall.isPLSphere_frontier`。
+  取闭包是必须的：`W` 由"滑移量 ≠ 0"切出来，是相对开集，不闭。
+- **`sdiff_subset_endpoints_of_isConnected_of_closure_eq`：`closure W \ W ⊆ {θ 0, θ 1}`。**
+  证明不走同胚搬运，直接在 `E` 里做：设 `z ∈ J \ W` 且 `z ≠ θ 0, θ 1`，记 `t = invFunOn θ _ z`。
+  `invFunOn θ _` 在 `J` 上连续且单射，所以 `invFunOn θ _ '' W` 连通且不含 `t`，
+  由 `IsPreconnected.subset_or_subset`（`Iio t`、`Ioi t`）落进一侧；
+  那一侧的闭包 `J ∩ invFunOn θ _ ⁻¹' Iic t` 是闭集（`ContinuousOn.preimage_isClosed_of_isClosed`），
+  于是 `J = closure W` 落进去，与 `invFunOn θ _ (θ 1) = 1 > t` 矛盾（另一侧对称）。
+  这条把端点 `hends` 从"θ 相关"化成"θ 无关"：
+  `hends z hz h = hJW ⟨hz, (hWdisp z hz).mp h⟩`。
+- **`exists_isPLHomeomorphOn_Icc_displacedArc_of_isConnected`**（胞腔版）与
+  **`exists_collarExtension_image_inter_boundary_of_displacedArc`**（接上 §62 端点）：
+  后者只保留 `hconn : IsConnected W` 与 `hθ`（由前者产生），把 §62 的
+  `hends` 完全消掉，`hend0 / hend1` 化成 `θ 0 ∉ W`、`θ 1 ∉ W`
+  （经 `hWdisp : ∀ z ∈ closure W, ℓ (ec (g z)) = 0 ↔ z ∉ W`）。
+- **确切剩余义务与它所属的层。** 只剩 **`IsConnected W`**，即
+  `IsConnected (frontier D.domain ∩ {z | P.piecewise (h ∘ D) D z ∉ BdM})`，
+  通俗说"胞腔边界圆与该分支的滑移支撑交成一段区间"。
+  **本层证不出来**：`W` 是 `frontier D.domain ∩ P ∩ (e ∘ E ∘ D) ⁻¹' {p | |p.2.1| + |p.2.2| < 1}`，
+  即边界圆与一个开凸区域的交，圆可以反复进出支撑，连通性不是拓扑必然。
+  它属于**选取 `U`、`P`、`h` 的分支分离层**：
+  `BranchSeparationBoundary.lean:175` 的 `exists_separated_cell_along_boundary_branch`
+  与 `BranchBoundaryCollar.lean` 里的边界包装
+  `exists_separated_cell_boundary_preimage_along_boundary_branch`，
+  应作为它们输出条款里的一条新结论加进去（那里有 `hA : D '' P ∩ support ⊆ … slideBandA c`
+  与 `hinjP : InjOn D P`，但两条都只是包含关系，不蕴含连通）。
+  其余两条 `W.Nontrivial`、`closure W ⊂ frontier D.domain` 同层，且是"该分支非空且不吞掉整条边界圆"，
+  在分支分离的构造里显然。`θ 0 ∉ W`、`θ 1 ∉ W` 是"滑移在弧端渐变为零"，同层同理。
+- **`NormalSingularCellData` 六条字段对当前状态的准确清单**（主人要的目标重述）：
+  - `image_inter_boundary`：**已恢复**。就是本链端点的结论
+    `G '' G.domain ∩ BdM = Set.range G.boundary`（§56 → §60 → §62 → §63）。
+  - `boundary_image_subset`：**已恢复**（`Set.range G.boundary ⊆ BdM`，再用 `BdM ⊆ B` 经
+    `range_boundary_subset_of_collarExtension`）。
+  - `locallyInjective`、`fiber_le_two`：**不可能由领环延拓恢复**，§59 的负结论：
+    对已在 `Bd M` 上的边界点 `z`，`Φ (g z) s = g z` 对一切 `s`，整条径向线段压成一点，纤维无限。
+    只有**月牙**（只沿被推离弧贴一个圆盘）能恢复它们。（本轮范围外。）
+  - `singularSet`：**同样被领环破坏**。`doublePointSet G G.domain` 除了原有的还包含整段
+    `g '' (frontier D.domain \ closure W)`（上一条的压缩造成），所以
+    `map_space : piece.map '' complex.space = doublePointSet G G.domain` 对 `G` 不成立。
+    它也只能在月牙版本上谈。
+  - `crossing`：**未触及且非边界专有**。它是双点集上的局部法向交叉标准形，与本链无关；
+    在月牙版本上要重新给。
+  - 结论：**领环延拓的作用就是给出边界条款那两条**，它与单射性三条互斥；
+    下一轮的正确目标是月牙（沿 `closure W` 贴 2-胞腔），不是继续加强领环。
+- 本轮**按主人指定的范围未做**：月牙、`L₂` 的重贴胞腔、Case 1/2。
+- 验证：`DisplacedArcConnected` 聚焦检查 exit=0（10.7 秒）、零 warning；
+  `.lake/scratch/AuditE3DisplacedArc.lean` 的 6 条 `#print axioms` 全部只含
+  `propext`、`Classical.choice`、`Quot.sound`，无 `sorryAx`。全程无其它属于本车道的 `lean.exe`。
