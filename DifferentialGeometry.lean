@@ -11172,3 +11172,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Open.Term
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Limits.TerminalWindow
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Limits.ExpandingIntervals
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Limits.PointedGeometry
+import DifferentialGeometry.Geometry.Curvature.Algebraic.SectionalLowerBound
+import DifferentialGeometry.Geometry.Curvature.SectionalPerturbation
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedSectionalComparison
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedDistanceTransfer

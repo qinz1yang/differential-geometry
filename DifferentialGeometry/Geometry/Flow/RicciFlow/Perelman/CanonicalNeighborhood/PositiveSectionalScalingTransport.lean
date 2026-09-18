@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Curvature.Naturality.Pullback.Local
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CanonicalAlternativeTransport
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.PositiveComponentModels
 
@@ -85,5 +86,63 @@ theorem one_le_leastCurvatureOperatorEigenvalueAt_roundMetricSphereThree :
   fun y => (secLower_iff_eigenvalue_lower_bound
       (roundMetric (E := EuclideanSpace ℝ (Fin 4)) (n := 3)) 1 Set.univ).mp
     secLower_roundMetricSphereThree y (Set.mem_univ y)
+
+end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
+
+set_option autoImplicit false
+
+noncomputable section
+
+namespace DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
+
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+open scoped _root_.DifferentialGeometry.Manifold ContDiff
+
+universe u
+
+variable {M N : Type u}
+  [TopologicalSpace M] [ChartedSpace ThreeSpace M] [IsManifold I3 ∞ M] [T2Space M]
+  [TopologicalSpace N] [ChartedSpace ThreeSpace N] [IsManifold I3 ∞ N] [T2Space N]
+
+theorem secLower_image_of_openPullbackMetric
+    (F : PartialDiffeomorph I3 I3 N M ∞) {U : Set N} (hU : U ⊆ F.source)
+    (g : SmoothRiemannianMetric I3 M) {c : ℝ}
+    (h : SecLower (openPullbackMetric F (sourceOpen F) (sourceOpen_subset F) g) c
+      (Subtype.val ⁻¹' U)) :
+    SecLower g c (F '' U) := by
+  rintro z ⟨y, hy, rfl⟩ v w
+  let Ω := sourceOpen F
+  let V : TopologicalSpace.Opens M :=
+    ⟨F '' (Ω : Set N), image_opens_isOpen F (sourceOpen_subset F)⟩
+  let Φ : Ω ≃ₘ⟮I3, I3⟯ V := PartialDiffeomorph.toOpensDiffeo F (sourceOpen_subset F)
+  let y' : Ω := ⟨y, hU hy⟩
+  have hderiv (a : TangentSpace I3 y') :
+      Φ.mfderivToContinuousLinearEquiv (by simp) y' a = mfderiv I3 I3 F y a := by
+    have he := congrArg (fun L : TangentSpace I3 y' →L[ℝ] TangentSpace I3 (Φ y') => L a)
+      (Diffeomorph.mfderivToContinuousLinearEquiv_coe Φ (by simp) (x := y'))
+    exact he.trans (PartialDiffeomorph.mfderiv_toOpensDiffeo F (sourceOpen_subset F) y' a)
+  obtain ⟨a, ha⟩ := (Φ.mfderivToContinuousLinearEquiv (by simp) y').surjective v
+  obtain ⟨b, hb⟩ := (Φ.mfderivToContinuousLinearEquiv (by simp) y').surjective w
+  rw [hderiv] at ha hb
+  have hab := h y' hy a b
+  rw [openPullbackMetric_inner, openPullbackMetric_inner, openPullbackMetric_inner,
+    ha, hb] at hab
+  have hcurv := metricRm04StandardAt_pullback_localDiffeo g V Ω Φ y' a b b a
+  dsimp only [Φ] at hcurv
+  erw [PartialDiffeomorph.mfderiv_toOpensDiffeo F (sourceOpen_subset F) y' a,
+    PartialDiffeomorph.mfderiv_toOpensDiffeo F (sourceOpen_subset F) y' b] at hcurv
+  change metricRm04StandardAt (openPullbackMetric F Ω (sourceOpen_subset F) g) y' a b b a =
+    metricRm04StandardAt g (F y) (mfderiv I3 I3 F y a) (mfderiv I3 I3 F y b)
+      (mfderiv I3 I3 F y b) (mfderiv I3 I3 F y a) at hcurv
+  rw [ha, hb] at hcurv
+  have htuple {P : Type u} [TopologicalSpace P] [ChartedSpace ThreeSpace P]
+      (p : P) (a b : TangentSpace I3 p) :
+      vec4 (I := I3) (x := p) a b b a = (fun i : Fin 4 => ![a, b, b, a] i) := by
+    ext i
+    fin_cases i <;> rfl
+  simp only [metricRm04StandardAt_apply] at hcurv
+  erw [htuple, htuple] at hcurv
+  exact hcurv ▸ hab
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
