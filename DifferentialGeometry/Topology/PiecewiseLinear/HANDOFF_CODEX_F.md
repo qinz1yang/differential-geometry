@@ -2421,3 +2421,42 @@ E3 §45 的 `ZMod 2` 循环障碍仍然成立并且有用（它是沿分支相�
 
 检查 `ChartSlide` exit=0（9.6 秒）、零 warning；`AuditF256.lean` 五项无 `sorryAx`。下一审计文件 `AuditF257.lean`。
 
+### 19.110 任意长度的滑动：锥度必须是滑距的两倍
+
+`ModelSlideLong.lean` 把 §19.108 的模型按滑距 `d` 与锥度半径 `R` 参数化，因为 §19.108 的固定滑距 1
+只能清掉长度 1 以内的 crossing 区段，而一条触边分支的长度事先不受控。
+
+- `slideWidthScaled d p = d * (1 - |y| - |z|)`、`slideTaperRad R p = (R - |x|) / 2`、
+  `slideAmountLong d R = max 0 (min · ·)`、`slideMapLong d R p = (x - slideAmountLong d R p, y, z)`。
+- 单射性的机制不变且与 `d` 无关：宽度因子不含 `x`，锥度对 `x` 是 (1/2)-Lipschitz，故
+  `slideAmountLong_le_add` 给出 `a(q) ≤ a(p) + (q.1 - p.1)/2`，代入 `x - a(x)` 相等即得 `p.1 = q.1`。
+  锥度斜率 1/2 < 1 是这里唯一用到的定量事实，所以滑距可以任意大，**代价全在锥度半径**。
+- 分离的定量条件写成 `disjoint_slideMapLong_image_slideBandA`：对
+  `slideBandA c = {z = 0, |y| ≤ 1, x ∈ [0, c]}` 与 `slideBandQ a b = {y = 0, |z| ≤ 1, x ∈ [a, b]}`，
+  只要 `0 ≤ d`、`c + 2 * d ≤ R`、`c - d < a`，就有
+  `Disjoint (slideMapLong d R '' slideBandA c) (slideBandQ a b)`。
+  第二个条件就是本条的几何内容：**要滑动 `d`，锥度半径必须至少是 `c + 2d`**；否则锥度在带 `A` 的远端
+  把滑距压到不足 `d`。证明只需注意 `slideBandQ` 要求 `y = 0`，而 `slideMapLong` 不动 `y`，
+  所以只有 `y = 0` 的点参与，那里宽度恰好取满 `d`。
+- `surjective_slideMapLong`（`0 ≤ R` 时用 `[-R, R]` 上的介值定理）、`bijective_slideMapLong`、
+  `isPiecewiseAffineOn_slideMapLong`（新增 `scaleMap` 把常数倍写成仿射映射）、
+  `isCompact_slideSupportLong`、`eqOn_slideMapLong_id_compl`、`mapsTo_slideMapLong_of_subset`。
+- 端点的半空间版本不必另造模型：`slideMapLong` 只改第一坐标，故
+  `slideMapLong_snd`、`mapsTo_slideMapLong_prod` 与 `bijOn_slideMapLong_prod` 给出
+  对任意 `T ⊆ ℝ × ℝ`，`{p | p.2 ∈ T}` 被双射地保持。取 `T = {q | q.2 = 0}` 或 `{q | 0 ≤ q.2}`
+  即得滑动与模型边界相切、并保持半空间——§19.109 里列为待办的"端点换半空间模型"由此消解。
+
+检查 `ModelSlideLong` exit=0（10.0 秒）、零 warning。
+
+### 19.111 长滑动的图卡版本
+
+`ChartSlideLong.lean` 把 §19.110 的模型经 PL 图卡共轭，结论与 §19.109 同形但带定量条件：
+`isPiecewiseAffineOn_chartSlideLong`（`e.conjugateMap (slideMapLong d R)` 在整个 `M` 上逐片仿射）、
+`injective_chartSlideLong`（整体单射）、`disjoint_chartSlideLong_image`（在 `0 ≤ d`、`c + 2d ≤ R`、
+`c - d < a` 下分离两条带的像）。证明与 §19.109 逐行对应，只是把模型引理换成带参数的版本。
+
+于是 E3 §44 输出条款中"单张图卡内、滑距任意"的一层 done。仍未闭合的是把有限多张图卡沿分支排成链并合成
+一个整体自映射：注意 §19.110 说明滑距可以任意大，所以**如果分支有单张乘积邻域（沿弧的相容平凡化），
+就不需要串接，一次滑动即可**；因此下一步的正确目标是沿弧的乘积邻域，而不是逐张图卡的插值。
+
+检查 `ChartSlideLong` exit=0（8.9 秒）、零 warning；`AuditF257.lean` 九项无 `sorryAx`。下一审计文件 `AuditF258.lean`。
