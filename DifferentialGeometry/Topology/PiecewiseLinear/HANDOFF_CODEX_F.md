@@ -3358,3 +3358,52 @@ import ...StarPair failed, environment already contains
 
 检查 `VertexChartTransport` exit=0（10 秒）、`VertexBranchInput` exit=0（10.7 秒），均零 warning；
 `AuditF274.lean` 三项仅 `propext`、`Classical.choice`、`Quot.sound`。下一审计文件 `AuditF275.lean`。
+
+### 19.132 接线的两块砖已闭合；并判定假设 6、7 无法由 germ 数据推出（会循环）
+
+**本轮闭合两条**（`VertexChartTransport.lean`）
+- `IsPLHomeomorphOn.restrict_isOpen`：把 PL 同胚限制到**开**子集。
+  树里原有的 `IsPLHomeomorphOn.restrict`（`PLImage.lean:168`）要求限制到**多面体**，
+  图卡定义域是开集不是多面体，所以那条用不上。新写的三条分量各自成立：
+  `BijOn` 用 `InjOn.bijOn_image`，正向 PL 用 `IsPiecewiseAffineOn.mono`（`PiecewiseAffine.lean:208`，
+  它收的正是 `IsOpen`），逆向 PL 用同一个 `mono` 再 `congr`——
+  因为 `Function.invFunOn f P₀` 与 `Function.invFunOn f P` 在 `f '' P₀` 上逐点相等
+  （两边都由 `InjOn.leftInvOn_invFunOn` 送回同一个原像）。
+- `isPiecewiseAffineOn_injOn_linearEquiv_comp`：由 `IsPLHomeomorphOn h U V` 与线性同构 `L`
+  给出 `IsPiecewiseAffineOn (fun y => L (h y)) U` 与 `InjOn (fun y => L (h y)) U`，
+  即**第一张图卡 `φ₁ = L₁ ∘ h₁` 可以喂给 T1** 了。
+
+**坑（第三次同一形状）**：本来想用 `IsPiecewiseAffineOn.affine_comp`（`GeneralPosition.lean:25`），
+报错 `The environment does not contain 'Function.affine_comp'`——
+`IsPiecewiseAffineOn` 是 `def`，展开成 `∀ x ∈ u, …`，**名字找不到时点记号就去展开后的类型上找**。
+根因是 `VertexChartTransport` 没 import `GeneralPosition`（很重，不值得为一条引理引进来）。
+改用底层的 `IsPiecewiseAffineOn.comp`（`PiecewiseAffine.lean:226`）配
+`isPiecewiseAffineOn_of_affine`（`:173`）与 `rw [preimage_univ, inter_univ]` 即可。
+**与 §19.124 的 `IsSubdivision.singleton_mem` 是同一个诊断：点记号失败先查 import，不是先查名字。**
+
+**判定：假设 6、7 不能由 germ 数据消掉，会循环。**
+协调者要求试试从 `HasPLCrossingAt` 直接推出 6、7。**推不出，且理由是结构性的。**
+6、7 的源侧版本是"`link N {p}` 与 `M.space` 恰交于两点"和"`link N {p}` 在 `M` 两侧都有点"，
+即**第二张片相对第一张片的横截性**。手上可用的 germ 数据只有第一张图卡，
+而它来自 `HasPLCrossingAt M.space {x | ℓ x = ℓ p} p`——**整条陈述里没有 `N`**。
+能给出 6、7 的 germ 陈述是 `HasPLCrossingAt N.space M.space p`，
+但那正是本条链要构造的结论，拿它当假设就是循环。
+所以 6、7 是**真正的新几何输入**，必须由消费者（弧链）在每个顶点供给。这与 §19.123
+证过的"`hpos`/`hneg` 不能由计数推出"是同一类独立性，只是换到了两片之间。
+
+**弧链在每个顶点要供给的，确切就是两条**（第一张片的数据由弧链自己的 `ℓ` 给）：
+- `(SimplicialComplex.geometricLink N {p}).space ∩ M.space = {a, b}` 且 `a ≠ b`；
+- `link N {p}` 在 `M` 的两侧各有一点。
+其余（`Finite`、面包含、`{q} ∈ N₁.faces`、`K₁.space ∈ 𝓝 q`、`hlinkN`）全部由 T1 与
+§19.127 的邻域引理交付，**不是几何债**。
+
+**最后一步（未写）**：把 T2 的结论沿 `φ₁` 拉回 `E`，还差一条
+`isPLHomeomorphOn_linearEquiv`（`L` 在开集上本身是 PL 同胚），
+再用 `IsPLHomeomorphOn.trans` 与本轮的 `restrict_isOpen` 把
+`Φ = L₂ ∘ h₂ ∘ φ₁` 装成开集上的 PL 同胚；germ 条款用
+`Filter.Tendsto.eventually` 沿 `φ₁` 拉回，`y ∈ N.space → φ₁ y ∈ N₁.space` 用
+`closedStar_mem_nhdsWithin`（`Star.lean:15`）加 T1 的空间等式。
+`L` 的开映射性质要走 `LinearEquiv.toContinuousLinearEquiv`（有限维），**本轮未验证该名字是否存在**。
+
+检查 `VertexChartTransport` exit=0（9.6 秒）、`VertexBranchInput` exit=0（10.3 秒），均零 warning；
+`AuditF275.lean` 两项仅 `propext`、`Classical.choice`、`Quot.sound`。下一审计文件 `AuditF276.lean`。

@@ -119,4 +119,26 @@ theorem image_closedStar_mem_nhds_of_isPLHomeomorphOn
   rintro y ⟨hyW, hyS⟩
   exact ⟨Function.invFunOn h U y, hyS, hh.bijOn.invOn_invFunOn.2 hyW⟩
 
+theorem IsPLHomeomorphOn.restrict_isOpen {f : E → F} {P : Set E} {Q : Set F}
+    (h : IsPLHomeomorphOn f P Q) {P₀ : Set E} (hP₀ : IsOpen P₀) (hsub : P₀ ⊆ P)
+    (hQ₀ : IsOpen (f '' P₀)) : IsPLHomeomorphOn f P₀ (f '' P₀) := by
+  have hinj : InjOn f P₀ := h.bijOn.injOn.mono hsub
+  have himg : f '' P₀ ⊆ Q := (image_mono hsub).trans h.image_eq.subset
+  refine ⟨hinj.bijOn_image, h.isPiecewiseAffineOn.mono hP₀ hsub, ?_⟩
+  refine (h.isPiecewiseAffineOn_invFunOn.mono hQ₀ himg).congr fun y hy => ?_
+  obtain ⟨x, hx, rfl⟩ := hy
+  have h1 : Function.invFunOn f P₀ (f x) = x := hinj.leftInvOn_invFunOn hx
+  have h2 : Function.invFunOn f P (f x) = x := h.bijOn.injOn.leftInvOn_invFunOn (hsub hx)
+  rw [h1, h2]
+
+theorem isPiecewiseAffineOn_injOn_linearEquiv_comp {h : E → E} {U V : Set E}
+    (hh : IsPLHomeomorphOn h U V) (L : E ≃ₗ[ℝ] ℝ × ℝ × ℝ) :
+    IsPiecewiseAffineOn (fun y => L (h y)) U ∧ InjOn (fun y => L (h y)) U := by
+  refine ⟨?_, fun y hy z hz hyz => hh.bijOn.injOn hy hz (L.injective hyz)⟩
+  have hL : IsPiecewiseAffineOn (fun q : E => (L q : ℝ × ℝ × ℝ)) univ :=
+    (isPiecewiseAffineOn_of_affine L.toLinearMap.toAffineMap isOpen_univ).congr fun _ _ => rfl
+  have hcomp := hL.comp (IsPLHomeomorphOn.isPiecewiseAffineOn hh)
+  rw [preimage_univ, inter_univ] at hcomp
+  exact hcomp.congr fun _ _ => rfl
+
 end DifferentialGeometry.Topology.PiecewiseLinear
