@@ -180,6 +180,8 @@ F5.2 保持 partial（被已证定理 `ArrangementConstraints.lean:58` 挡着；
 
 ## 9. Codex intake and first verified layers (2026-09-18)
 
+This section records the first checkpoint. Section 10 supersedes its pending-item list.
+
 The live integration head on entry was `1cd35cf8b`, which already included the final
 HW and S reports after `672246b1c`. All seven handoff worktrees were clean and had
 zero ahead/behind counts against their own remote branches. The unrelated dirty
@@ -253,3 +255,110 @@ the final dedicated-branch integration obligations at this checkpoint.
 Owner steering for future agents: difficult proof work uses `gpt-6-astra` with
 `max`; routine verification and organization may use `gpt-5.6-sol`. The prior
 Case 3/4 ordering is retained while the choices in section 6 remain unanswered.
+
+## 10. Verified delivery and continuing root build (2026-09-18)
+
+The owner chose to deliver the verified commits now and leave the independent
+full-library rebuild running. No full-root success is claimed.
+
+| Lane | Published checkpoint | Integration status | Exact result |
+| --- | --- | --- | --- |
+| H | `0f5830fc2` | `770a8bbff` | Exposes `G '' Lc.space = Lc'.space` in the marked cone extension; both consumers updated. ArcChainCells remains integrated. |
+| S | `6443a72e8` | `67e2575f5` | Five nondegenerate triangles cover the closed square, with exact membership inequalities. No quotient map or mapping-torus embedding yet. |
+| T | `30fcc09c0` | `378237373` | All four local bricks complete: named complement connectivity, boundary/interior transport, `Moise304 -> Moise305Tame`, and the section-34 bicollar producer. |
+| HW | `bfb389190` | Not merged | The three planar conflict leaves and their isolated dependency gates are verified; the full Hurewicz/PL gates remain open. |
+
+All twelve changed integration leaves have been compiled locally after their
+final source edits, with the standard syntax linter set and explicit header and
+long-line checks. After the S/T merges, their eight leaves were recompiled on
+integration. The final silent combined audit imported the lanes together and
+checked 65 selected declarations; every transitive axiom belongs to
+`{propext, Classical.choice, Quot.sound}`, and default environment linters passed
+with only `docBlame` and `docBlameThm` excluded. The tetrahedron/identity producer
+and concentric closed-ball shell/bicollar instances also passed. These commands
+returned exit 0 with no warnings, info messages, or tactic suggestions. Local
+checks reused shared imported project objects; only the independent root build
+can finish the current integration source-closure gate.
+
+T consists of seven leaves and 709 source lines including required headers.
+`Moise304` remains an explicit, unproved predecessor of the tame implication.
+The general wild version `Moise305` is still open. The earlier H-M3 10k-18k
+estimate is superseded for the section-34 consumer, not for wild spheres.
+The S tube must still use seam-compatible boundary parametrizations; its own
+handoff now corrects the earlier endpoint-interpolation assertion.
+
+HW receipts are under
+`D:\differential-geometry-moise-hw\.lake\verified-innermost-20260918`.
+The Innermost gate freshly compiled 78 modules. The Regions/ArcCollar union
+covered 165 modules: 76 exact-source-hash private reuses and 89 fresh native
+compiles. The three conflict leaves then received required headers and passed
+strict header/long-line recompilation; the combined 20-endpoint axiom audit and
+13 applicable environment linters passed. The full Hurewicz seed closure, PL
+consumers, cross-lane audit, and HW integration are not certified by this result.
+
+The owner also supplied the current E: copies of `AGENT.md`, `AGENTS.md`,
+`CLAUDE.md`, `dictionary.md`, `convention.md`, `BOOK24_LEAN_STATUS.md`, `lessons.md`,
+and `important_lesson.md`. `AGENT.md` is a pointer. AGENTS and CLAUDE are currently
+different; compatible coordination guidance is used without replacing the current
+AGENTS soundness and delivery rules or the owner's explicit header/model choices.
+The dictionary and conventions are mathematical/search references, and the
+2026-09-05 book audit and historical lesson reports are not current theorem status
+or authorization to begin unrelated work. No reference tree was imported or edited.
+
+The D: integration checkout has no copy of `scripts/lake-locked.ps1`. The final
+background build uses the E: script by absolute path with the D: working directory,
+so its claims, locks, and project artifacts stay in D:. It starts with
+`LEAN_NUM_THREADS=2`; the coordinator checks actual process and memory usage.
+Lane tasks initially perform source work and request a compiler window. The output directory is the existing
+independent `.lake/build`; third-party packages are shared by junction, but the
+mixed E: project output is excluded. No unrelated claim or worker is removed.
+
+Final build receipts are `.lake/root-build-final.log` and
+`.lake/root-build-final-status.json`. The latter records completion and exit code
+when the build ends. Its current status must be read before quoting root success.
+The aggregate claim is released automatically by the build wrapper on exit.
+The previous interrupted attempts remain recorded separately; completed private
+outputs are retained and Lake refreshes the changed source graph.
+
+Next mathematical work retains the prior order: H's combined cut-model cone data
+and trimmed arc induction; S's pairwise intersections and model gluing; E3's wedge
+push and F's compatible slab chart; and the remaining HW verification gates.
+Section 6 choices remain unanswered. Difficult agents use `gpt-6-astra` at `max`;
+routine checks may use `gpt-5.6-sol`.
+## 11. Existing-task lane coordination (owner request, 2026-09-18)
+
+After the verified layer in section 10, resume the four existing Codex tasks;
+create no new subagents for these lanes. Task titles and identities were checked
+in the app. Their displayed checkout can be stale: every command must use the
+lane checkout below explicitly and inspect branch, dirty state, and claims first.
+
+| Existing task | Task ID | Model | Exclusive lane and first obligation |
+| --- | --- | --- | --- |
+| F | `01a0a0d6-99b1-7b50-bd70-afdc79cd389b` | `gpt-6-astra`, max | Highest-priority slab chart for E3: adapt the arc-chain construction to the top-level image contract and produce both slab/boundary iff clauses. F owns `ArcChartChain.lean` for this assignment. |
+| S | `01a0a30e-466e-7df3-8e27-2532d72b7231` | `gpt-6-astra`, max | Mobius model: exact pairwise triangle intersections and compatible affine gluing, building on `MobiusSquare.lean`. |
+| h | `01a0a572-4fd9-7d20-b838-676721eb92a7` | `gpt-5.6-sol`, high | H section 42 step 2: combined cut-model cone data and the outer-boundary inclusion; then the trimmed arc-chain ball-pair induction. No edits to F-owned `ArcChartChain.lean`. |
+| E3 | `01a0a34a-7a6d-7051-b189-a7da550049ec` | `gpt-5.6-sol`, high | Explicit wedge model and a nonvacuous hat-function instance; check endpoint compatibility before claiming separation or double-point deletion. |
+
+The respective checkouts are `D:\differential-geometry-moise-plan`,
+`D:\differential-geometry-moise-s`, `D:\differential-geometry-moise-h`, and
+`D:\differential-geometry-moise-e3`. Merge the published integration checkpoint
+into each clean lane branch without rewriting history. Do not modify integration
+source while its full build runs. The user-owned E: mathematics remains untouched.
+
+Each task owns one lane at a time, continues to a dependency-closed result or a
+precise blocker, and reports to coordinator task
+`01a0b610-ad94-7210-b343-acfee6920a27` using the app task-message tool. Report the
+actual checkout/HEAD, changed files, exact declarations, proof/compile/axiom/lint
+status, and remaining obligation. Keep durable mathematics in its own HANDOFF.
+The coordinator grants compiler windows; no task starts Lean or Lake, updates the
+shared project objects, or runs a full build without a current window. A verified
+layer is committed and pushed with its matching documentation; an uncompiled
+attempt is not called done. Newly added leaves still require flat-root registration
+in the lane branch and subsequent integration verification.
+
+The existing source/style rules in sections 9-10 supersede older task prompts:
+required file/module headers are allowed, inline comments and declaration docs
+are not; standard applicable linters and axiom checks remain mandatory. Scratch
+probes stay outside the project tree. HW remains separate until section 5 passes.
+The tame 30.5 layer is complete only as the explicit `Moise304` implication.
+No F5.2 redesign, Case 1/2, or section 31/32 expansion is assigned here.
