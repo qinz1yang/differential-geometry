@@ -1,4 +1,5 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryWordFourArcs
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopClassReparametrization
 
 open Set Topology
 
@@ -81,9 +82,7 @@ theorem NormalSystem.exists_boundary_word_loop_dichotomy_of_four_arcs
     (hev : ∀ θ, ev θ = pathToCircle (σ₀.trans (τ₀.trans (υ₀.trans φ₀))) θ)
     (hpair : (D u = D p ∧ D v = D q) ∨ (D u = D q ∧ D v = D p))
     (hfactor : ∀ z ∈ frontier D.domain, ∀ w ∈ frontier D.domain,
-      D z = D w → S.singularMap z = S.singularMap w)
-    (hparam : ∀ θ, ((S.boundaryParam θ : EuclideanSpace ℝ (Fin 2))) =
-      ((ev θ : EuclideanSpace ℝ (Fin 2)))) :
+      D z = D w → S.singularMap z = S.singularMap w) :
     (∃ (a b : S.boundaryNeighborhoodSpace) (σ υ : Path a b) (τ φ : Path b a),
         (∀ t, (σ t : E) = S.singularMap (σ₀ t)) ∧ (∀ t, (τ t : E) = S.singularMap (τ₀ t)) ∧
         (∀ t, (υ t : E) = S.singularMap (υ₀ t)) ∧ (∀ t, (φ t : E) = S.singularMap (φ₀ t)) ∧
@@ -118,11 +117,26 @@ theorem NormalSystem.exists_boundary_word_loop_dichotomy_of_four_arcs
   have hfeq : ∀ z w : frontier D.domain, D z = D w → f z = f w := by
     intro z w hzw
     exact Subtype.ext (hfactor z z.2 w w.2 hzw)
-  have hγ : ∀ θ, S.boundaryLoop θ = f (ev θ) := by
-    intro θ
-    refine Subtype.ext ?_
+  have hfrontier : frontier D.domain = frontier S.sourceComplex.space := congrArg frontier hdom
+  set tr : ↥(frontier S.sourceComplex.space) ≃ₜ ↥(frontier D.domain) :=
+    Homeomorph.setCongr hfrontier.symm with htrdef
+  set ψ : loopCircle ≃ₜ loopCircle := (S.boundaryParam.trans tr).trans ev.symm with hψdef
+  set γ₀ : freeLoop S.boundaryNeighborhoodSpace := ⟨fun θ => f (ev θ), hf.comp ev.continuous⟩
+    with hγ₀def
+  have hcomp : S.boundaryLoop = γ₀.comp ⟨ψ, ψ.continuous⟩ := by
+    ext θ
     rw [S.boundaryLoop_eq θ]
-    exact congrArg S.singularMap (hparam θ)
+    refine congrArg S.singularMap ?_
+    change ((S.boundaryParam θ : EuclideanSpace ℝ (Fin 2))) = ((ev (ψ θ) : _))
+    rw [hψdef]
+    simp only [Homeomorph.trans_apply, Homeomorph.apply_symm_apply]
+    rfl
+  have hL : ¬loopClassMeets γ₀ S.basepoint S.normalSubgroup := by
+    intro hmeet
+    refine S.not_loopClassMeets_boundaryLoop ?_
+    rw [hcomp]
+    exact (loopClassMeets_comp_circleHomeomorph_iff γ₀ ψ S.basepoint S.normalSubgroup).mpr hmeet
+  have hγ : ∀ θ, γ₀ θ = f (ev θ) := fun _ => rfl
   have hpair' : (f u' = f p' ∧ f v' = f q') ∨ (f u' = f q' ∧ f v' = f p') := by
     rcases hpair with ⟨h1, h2⟩ | ⟨h1, h2⟩
     · exact Or.inl ⟨hfeq u' p' (by rw [hu', hp']; exact h1),
@@ -130,7 +144,7 @@ theorem NormalSystem.exists_boundary_word_loop_dichotomy_of_four_arcs
     · exact Or.inr ⟨hfeq u' q' (by rw [hu', hq']; exact h1),
         hfeq v' p' (by rw [hv', hp']; exact h2)⟩
   rcases not_loopClassMeets_or_not_loopClassMeets_of_four_boundary_arcs_image σ₀ τ₀ υ₀ φ₀
-    (fun θ => ev θ) hev hf S.boundaryLoop hγ S.normalSubgroup S.not_loopClassMeets_boundaryLoop
+    (fun θ => ev θ) hev hf γ₀ hγ S.normalSubgroup hL
     hpair' with ⟨a, b, σ, υ, τ, φ, hσ, hτ, hυ, hφ, hdich⟩ |
       ⟨a, b, σ, τ, υ, φ, hσ, hτ, hυ, hφ, hdich⟩
   · exact Or.inl ⟨a, b, σ, υ, τ, φ, fun t => congrArg Subtype.val (hσ t),
@@ -139,5 +153,53 @@ theorem NormalSystem.exists_boundary_word_loop_dichotomy_of_four_arcs
   · exact Or.inr ⟨a, b, σ, τ, υ, φ, fun t => congrArg Subtype.val (hσ t),
       fun t => congrArg Subtype.val (hτ t), fun t => congrArg Subtype.val (hυ t),
       fun t => congrArg Subtype.val (hφ t), hdich⟩
+
+theorem range_eq_image_of_forall_eq {ι α β : Type*} {w : ι → β} {z : ι → α} {g : α → β}
+    {A : Set α} (hw : ∀ t, w t = g (z t)) (hz : Set.range z = A) :
+    Set.range w = g '' A := by
+  have hfun : w = g ∘ z := funext hw
+  rw [hfun, Set.range_comp, hz]
+
+theorem NormalSystem.exists_boundary_word_loop_dichotomy_of_boundaryBranch
+    {E : Type u} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    (S : NormalSystem E) [PathConnectedSpace S.boundaryNeighborhoodSpace]
+    {M : Type u} [TopologicalSpace M] [T2Space M] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
+    {D : SingularTwoCell M} {BdM B : Set M} (hD : NormalSingularCellData D BdM B)
+    {c : hD.singularSet.Branch} (hc : hD.singularSet.IsBoundaryBranch c)
+    (hdom : D.domain = S.sourceComplex.space)
+    (hfactor : ∀ z ∈ frontier D.domain, ∀ w ∈ frontier D.domain,
+      D z = D w → S.singularMap z = S.singularMap w) :
+    ∃ A₁ A₂ A₃ A₄ : Set (EuclideanSpace ℝ (Fin 2)),
+      frontier D.domain = A₁ ∪ (A₂ ∪ (A₃ ∪ A₄)) ∧
+      ((∃ (a b : S.boundaryNeighborhoodSpace) (σ υ : Path a b) (τ φ : Path b a),
+          Set.range (fun t => (σ t : E)) = S.singularMap '' A₁ ∧
+          Set.range (fun t => (τ t : E)) = S.singularMap '' A₂ ∧
+          Set.range (fun t => (υ t : E)) = S.singularMap '' A₃ ∧
+          Set.range (fun t => (φ t : E)) = S.singularMap '' A₄ ∧
+          (¬loopClassMeets (pathToCircle (σ.trans υ.symm)) S.basepoint S.normalSubgroup ∨
+            ¬loopClassMeets (pathToCircle (σ.trans (φ.trans (υ.trans τ)))) S.basepoint
+              S.normalSubgroup)) ∨
+        (∃ (a b : S.boundaryNeighborhoodSpace) (σ : Path a b) (τ : Path b b) (υ : Path b a)
+            (φ : Path a a),
+          Set.range (fun t => (σ t : E)) = S.singularMap '' A₁ ∧
+          Set.range (fun t => (τ t : E)) = S.singularMap '' A₂ ∧
+          Set.range (fun t => (υ t : E)) = S.singularMap '' A₃ ∧
+          Set.range (fun t => (φ t : E)) = S.singularMap '' A₄ ∧
+          (¬loopClassMeets (pathToCircle (σ.trans υ)) S.basepoint S.normalSubgroup ∨
+            ¬loopClassMeets (pathToCircle (σ.trans (τ.symm.trans (υ.trans φ.symm)))) S.basepoint
+              S.normalSubgroup))) := by
+  obtain ⟨-, -, A₁, A₂, A₃, A₄, p, q, u, v, p', q', u', v', σ₀, τ₀, υ₀, φ₀, ev, -, -, -, -, -, -,
+    hp', hq', hu', hv', hr₁, hr₂, hr₃, hr₄, hJ, hev, hpair⟩ :=
+    hD.exists_boundary_four_arc_word_of_boundaryBranch hc
+  refine ⟨A₁, A₂, A₃, A₄, hJ, ?_⟩
+  rcases S.exists_boundary_word_loop_dichotomy_of_four_arcs hdom hp' hq' hu' hv' σ₀ τ₀ υ₀ φ₀ ev
+    hev hpair hfactor with ⟨a, b, σ, υ, τ, φ, hσ, hτ, hυ, hφ, hdich⟩ |
+      ⟨a, b, σ, τ, υ, φ, hσ, hτ, hυ, hφ, hdich⟩
+  · exact Or.inl ⟨a, b, σ, υ, τ, φ, range_eq_image_of_forall_eq hσ hr₁,
+      range_eq_image_of_forall_eq hτ hr₂, range_eq_image_of_forall_eq hυ hr₃,
+      range_eq_image_of_forall_eq hφ hr₄, hdich⟩
+  · exact Or.inr ⟨a, b, σ, τ, υ, φ, range_eq_image_of_forall_eq hσ hr₁,
+      range_eq_image_of_forall_eq hτ hr₂, range_eq_image_of_forall_eq hυ hr₃,
+      range_eq_image_of_forall_eq hφ hr₄, hdich⟩
 
 end DifferentialGeometry.Topology.PiecewiseLinear
