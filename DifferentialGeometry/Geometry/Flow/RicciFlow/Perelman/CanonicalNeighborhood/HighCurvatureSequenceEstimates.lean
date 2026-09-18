@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.BlowupConvergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.MaximalPointSlabReduction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Derivatives.TerminalFromJets
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.MixedCurvatureTerminal
@@ -216,7 +217,8 @@ attribute [local instance] PointedFlowData.topology PointedFlowData.charted
   PointedFlowData.smooth PointedFlowData.t2 PointedFlowData.sigmaCompact
   PointedFlowData.t2TangentBundle
 
-theorem exists_highCurvatureFlowSequence_mixedCurvatureNorm_bound_through_order_on_closed_window (N : ℕ) :
+theorem exists_highCurvatureFlowSequence_mixedCurvatureNorm_bound_through_order_on_closed_window
+    (N : ℕ) :
     ∃ C : ℝ, 0 < C ∧
       ∀ {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
         [IsManifold I3 ∞ M] [T2Space M] [CompactSpace M]
@@ -262,4 +264,47 @@ theorem exists_highCurvatureFlowSequence_mixedCurvatureNorm_bound_through_order_
   exact ⟨hv.1, hv.2.trans (hCK p q hp hq)⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
+end
+
+noncomputable section
+open Filter Set
+open scoped Topology Manifold ContDiff ENNReal
+
+namespace DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
+
+open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.CheegerGromovCompactness
+open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+open DifferentialGeometry.Integral.Measure
+
+universe u
+
+attribute [local instance] PointedFlowData.topology PointedFlowData.charted
+  PointedFlowData.smooth PointedFlowData.t2 PointedFlowData.sigmaCompact
+  PointedFlowData.t2TangentBundle PointedRiemannianManifold.topology
+  PointedRiemannianManifold.charted PointedRiemannianManifold.smooth
+  PointedRiemannianManifold.t2 PointedRiemannianManifold.sigmaCompact
+  PointedRiemannianManifold.t2TangentBundle
+
+theorem highCurvatureFlowSequence_metricNoncollapsed
+    {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
+    [IsManifold I3 ∞ M] [T2Space M] [SigmaCompactSpace M]
+    {T kappa radius : ℝ} (hT : 0 < T)
+    (S : SolutionOn (I := I3) (M := M) (RealTimeInterval.closedOpen 0 T hT))
+    (hS : IsSolutionOn S) (x : ℕ → M) (t : ℕ → ℝ)
+    (htmem : ∀ i, t i ∈ Ico (0 : ℝ) T) (htpos : ∀ i, 0 < t i)
+    (hpos : ∀ i, 0 < S.scalar (t i) (x i))
+    (hbelow : SpatiallyKappaNoncollapsedBelowScale S kappa radius)
+    (i : ℕ) (s : ℝ) (hs : s ∈ (highCurvatureInterval hT S x t htpos hpos i).carrier) :
+    MetricNoncollapsed
+      (((highCurvatureFlowSequence hT S hS x t htmem htpos hpos).atTime s).obj i)
+      kappa (Ioc 0 (Real.sqrt (S.scalar (t i) (x i)) * radius)) := by
+  apply metricNoncollapsed_atTime_of_spatiallyKappaNoncollapsedBelowScale
+    ((highCurvatureFlowSequence hT S hS x t htmem htpos hpos).term i) _ hs
+  exact spatiallyKappaNoncollapsed_timeRestrict
+    (highCurvatureInterval_carrier_subset hT S x t htpos hpos htmem i)
+    (parabolic_spatial_noncollapse S (t i) (S.scalar (t i) (x i)) (hpos i) (htmem i)
+      kappa radius hbelow)
+
+end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
+
 end

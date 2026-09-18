@@ -1,4 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.OrdinaryMetricTimeJets
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.MixedCurvatureFields
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.MetricComparison
 
 
 set_option autoImplicit false
@@ -119,6 +121,70 @@ theorem ordinary_metric_time_jet_component_eq_polynomial
         SolutionOn.ricciAt, SolutionFamily.ricciAt,
         eval_curvatureTimeRicciPolynomial S.base.metric (fun q s => A q s x) basis (hzero t ht x)]
         using ancient_metric_hasDerivWithinAt S hS hcarrier hregular ht x (basis (slots 0)) (basis (slots 1))
+  have hh := (hdata x basis q t ht).1 slots
+  have heq : curvatureTimePolynomialValues S.base.metric (fun r s => A r s x) basis t =
+      curvatureTimePolynomialValues S.base.metric
+        (fun r s => mixedCurvatureTensor S 0 r s x) basis t := by
+    funext v
+    cases v with
+    | inl ij => rfl
+    | inr rs =>
+      simp only [curvatureTimePolynomialValues]
+      rw [(hA rs.1 t ht x).1]
+  exact hh.trans (congrArg
+    (fun v => MvPolynomial.eval v (ordinaryMetricJetPolynomial q slots)) heq)
+
+theorem closedWindow_metric_time_jet_component_eq_polynomial
+    {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S)
+    {a c b t : ℝ} (hac : a < c) (hcb : c < b)
+    (hcarrier : D.carrier = Set.Icc a b) (hregular : Set.Ioo a b ⊆ D.regular)
+    (ht : t ∈ Set.Icc c b) (x : M) {n : ℕ}
+    (basis : Module.Basis (Fin n) ℝ (TangentSpace I x)) (q : ℕ) (slots : Fin 2 → Fin n) :
+    component0S (I := I) basis
+      (iteratedDerivWithin (q + 1) (fun s => metricTensorField (S.base.metric s) x) (Set.Icc c b) t) slots =
+    MvPolynomial.eval
+      (curvatureTimePolynomialValues S.base.metric
+        (fun r s => mixedCurvatureTensor S 0 r s x) basis t)
+      (ordinaryMetricJetPolynomial q slots) := by
+  classical
+  obtain ⟨A, hA⟩ := exists_closedWindow_mixed_curvature_fields S hS hac hcb hcarrier hregular 0
+  have hzero (t : ℝ) (ht : t ∈ Set.Icc c b) (x : M) : A 0 t x = metricRm04At (S.base.metric t) x := by
+    calc
+      A 0 t x = mixedCurvatureTensor S 0 0 t x := (hA 0 t ht x).1
+      _ = metricRm04 (S.base.metric t) x := rfl
+      _ = metricRm04At (S.base.metric t) x := metricRm04_apply (S.base.metric t) x
+  have hmetric (t : ℝ) (ht : t ∈ Set.Icc c b) (x : M) (v w : TangentSpace I x) :
+      HasDerivWithinAt (fun s => (S.base.metric s).inner x v w)
+        (-2 * S.ricciAt t x (vec2 v w)) (Set.Icc c b) t := by
+    have hslab : Set.Icc c b ⊆ D.carrier := by
+      rw [hcarrier]
+      exact Set.Icc_subset_Icc hac.le le_rfl
+    have hreg : Set.Ioo c b ⊆ D.regular :=
+      (Set.Ioo_subset_Ioo hac.le le_rfl).trans hregular
+    simpa only [SolutionOn.ricciAt, SolutionFamily.ricciAt,
+      metricRicciAt_apply_eq_ricciTensor] using metricPDE_Icc S hS hslab hreg t ht x v w
+  have hdata (x : M) {n : ℕ} (basis : Module.Basis (Fin n) ℝ (TangentSpace I x)) :
+      ∀ q, ∀ t, t ∈ Set.Icc c b →
+        (∀ slots, component0S (I := I) basis
+          (iteratedDerivWithin (q + 1) (fun s => metricTensorField (S.base.metric s) x) (Set.Icc c b) t) slots =
+          MvPolynomial.eval (curvatureTimePolynomialValues S.base.metric (fun q s => A q s x) basis t)
+            (ordinaryMetricJetPolynomial q slots)) ∧
+        HasDerivWithinAt (iteratedDerivWithin q (fun s => metricTensorField (S.base.metric s) x) (Set.Icc c b))
+          (iteratedDerivWithin (q + 1) (fun s => metricTensorField (S.base.metric s) x) (Set.Icc c b) t)
+          (Set.Icc c b) t := by
+    apply tensor_time_jets_of_polynomial_evolution basis (curvatureTimeEvolution n)
+      (curvatureTimePolynomialValues S.base.metric (fun q s => A q s x) basis)
+      (fun s => metricTensorField (S.base.metric s) x)
+      (fun slots => -2 * curvatureTimeRicciPolynomial (slots 0) (slots 1)) (uniqueDiffOn_Icc hcb)
+    · intro t ht v
+      exact curvatureTimePolynomialValues_hasDerivWithinAt S.base.metric (fun q s => A q s x) basis
+        (hzero t ht x) (fun i j => hmetric t ht x
+          (basis i) (basis j)) (fun q => (hA q t ht x).2) v
+    · intro t ht slots
+      simpa only [component0S_apply, metricTensorField_apply, map_mul, map_neg, map_ofNat,
+        SolutionOn.ricciAt, SolutionFamily.ricciAt,
+        eval_curvatureTimeRicciPolynomial S.base.metric (fun q s => A q s x) basis (hzero t ht x)]
+        using hmetric t ht x (basis (slots 0)) (basis (slots 1))
   have hh := (hdata x basis q t ht).1 slots
   have heq : curvatureTimePolynomialValues S.base.metric (fun r s => A r s x) basis t =
       curvatureTimePolynomialValues S.base.metric

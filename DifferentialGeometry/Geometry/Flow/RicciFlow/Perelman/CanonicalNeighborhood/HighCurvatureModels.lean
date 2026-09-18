@@ -283,17 +283,6 @@ structure BlowupLimit (S : SolutionOn (I := I3) (M := M) D)
         (rescaledMetric S (t (subseq i)) (S.scalar (t (subseq i)) (x (subseq i))) (scale_pos i))
         (map i) K (Set.Icc (-A) 0) order eta)
 
-theorem maximal_point_singularity_model [CompactSpace M] [ConnectedSpace M]
-    [T2Space (TangentBundle I3 M)] {T : ℝ} (hT : 0 < T)
-    (S : SolutionOn (I := I3) (M := M) (RealTimeInterval.closedOpen 0 T hT))
-    (hS : IsSolutionOn S) (o : TangentOrientationSection M) :
-    ∃ kappa : ℝ, 0 < kappa ∧ ∀ theta : ℝ, 0 < theta →
-      ∀ (x : ℕ → M) (t : ℕ → ℝ), (∀ i, t i ∈ Set.Ico theta T) →
-        (∀ i s, s ∈ Set.Icc 0 (t i) → ∀ y, S.scalar s y ≤ S.scalar (t i) (x i)) →
-        Filter.Tendsto (fun i => S.scalar (t i) (x i)) Filter.atTop Filter.atTop →
-        ∃ L : BlowupLimit S o kappa x t, PointedFlowScalarBounded L.model 1 := by
-  sorry
-
 
 theorem closed_flow_models [CompactSpace M] [ConnectedSpace M]
     [T2Space (TangentBundle I3 M)] {T : ℝ} (hT : 0 < T)

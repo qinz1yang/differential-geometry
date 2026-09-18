@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.LocalExtensionUniformTimeJets
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.PointedUniformSpatialJets
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Solutions.LocalPullback
 
 
 set_option autoImplicit false
@@ -118,3 +119,111 @@ theorem pointed_time_jets_uniform_on_closed_time
   simpa only [Nat.sub_add_cancel (by omega : N₀ ≤ n)] using hh
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
+
+end
+
+noncomputable section
+
+namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
+
+open Bundle Filter Set
+open DifferentialGeometry.Tensor.Coordinates DifferentialGeometry.Tensor0SBundle
+open DifferentialGeometry.CheegerGromovCompactness DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Operator DifferentialGeometry.Integral.Measure
+open scoped _root_.Manifold ContDiff _root_.Topology
+
+universe u uE uH
+
+variable {E : Type uE} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+  [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)]
+  {H : Type uH} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+
+attribute [local instance] PointedFlowData.topology PointedFlowData.charted
+  PointedFlowData.smooth PointedFlowData.t2 PointedFlowData.sigmaCompact
+  PointedRiemannianManifold.topology PointedRiemannianManifold.charted
+  PointedRiemannianManifold.smooth PointedRiemannianManifold.t2
+  PointedRiemannianManifold.sigmaCompact
+
+theorem pointed_time_jets_uniform_on_compact_closedWindow
+    {X : PointedFlowSeq.{u, uE, uH} (I := I)}
+    {P : PointedRiemannianManifold.{u, uE, uH} (I := I)} {phi : ℕ → ℕ}
+    (Phi : PointedCGHMaps (I := I) X P phi)
+    {D₀ : RealTimeInterval} (L : SolutionOn (I := I) (M := P.M) D₀) (hL : IsSolutionOn L)
+    {a c b : ℝ} (hac : a < c) (hcb : c < b)
+    (hslab : Icc a b ⊆ X.D.carrier) (hregular : Ioo a b ⊆ X.D.regular)
+    (hslab₀ : Icc a b ⊆ D₀.carrier) (hregular₀ : Ioo a b ⊆ D₀.regular)
+    (G : ℕ → ℝ → SmoothRiemannianMetric I P.M)
+    (hG : ∀ K : Set P.M, IsCompact K → ∀ᶠ i in atTop,
+      ∃ U : Set P.M, IsOpen U ∧ K ⊆ U ∧ U ⊆ Phi.source i ∧
+      ∀ t : ℝ, ∀ x ∈ U, ∀ v w : TangentSpace I x,
+        (G i t).inner x v w = ((X.term (phi i)).S.base.metric t).inner (Phi.map i x)
+          (mfderiv I I (Phi.map i) x v) (mfderiv I I (Phi.map i) x w))
+    (B : ℕ → ℕ → ℝ → Tensor0SField (I := I) (M := P.M) (n := ∞) 2)
+    (C : ℕ → ℝ → Tensor0SField (I := I) (M := P.M) (n := ∞) 2)
+    (hBzero : ∀ n s, B n 0 s = metricTensorField (G n s))
+    (hCzero : ∀ s, C 0 s = metricTensorField (L.base.metric s))
+    (hB : ∀ n q s, s ∈ Icc c b → ∀ x : P.M,
+      HasDerivWithinAt (fun t => B n q t x) (B n (q + 1) s x) (Icc c b) s)
+    (hC : ∀ q s, s ∈ Icc c b → ∀ x : P.M,
+      HasDerivWithinAt (fun t => C q t x) (C (q + 1) s x) (Icc c b) s)
+    {J : Set ℝ} (hJ : IsCompact J) (hJb : J ⊆ Icc c b)
+    (hgram : ∀ (p : P.M) (i j : Fin (Module.finrank ℝ E)), ∀ Q : Set E,
+      IsCompact Q → Q ⊆ (extChartAt I p).target → ∀ r : ℕ, ∀ ε : ℝ, 0 < ε →
+      ∃ N : ℕ, ∀ n ≥ N, ∀ t ∈ J, ∀ y ∈ Q,
+        ‖iteratedFDeriv ℝ r (chartGramOnE (I := I) (G n t) p i j) y -
+          iteratedFDeriv ℝ r (chartGramOnE (I := I) (L.base.metric t) p i j) y‖ ≤ ε)
+    (V : TopologicalSpace.Opens P.M) (hV : IsCompact (closure (V : Set P.M)))
+    (p : V) {U : Set E} (hU : IsOpen U) (hUt : U ⊆ (extChartAt I p).target)
+    {K : Set E} (hK : IsCompact K) (hKU : K ⊆ U) (r q : ℕ)
+    (slots : Fin 2 → Fin (Module.finrank ℝ E)) :
+    ∀ ε : ℝ, 0 < ε → ∃ N : ℕ, ∀ n ≥ N, ∀ t ∈ J, ∀ y ∈ K,
+      ‖iteratedFDeriv ℝ r (fun z => B n q t ((extChartAt I (p : P.M)).symm z)
+          (fun j => chartBasisVecFiber (I := I) (p : P.M) (slots j)
+            ((extChartAt I (p : P.M)).symm z))) y -
+        iteratedFDeriv ℝ r (fun z => C q t ((extChartAt I (p : P.M)).symm z)
+          (fun j => chartBasisVecFiber (I := I) (p : P.M) (slots j)
+            ((extChartAt I (p : P.M)).symm z))) y‖ ≤ ε := by
+  classical
+  let : SigmaCompactSpace V := isSigmaCompact_iff_sigmaCompactSpace.mp
+    (DifferentialGeometry.Geometry.isSigmaCompact_of_isOpen I V.isOpen)
+  obtain ⟨N₀, hN₀⟩ := eventually_atTop.1 (hG (closure (V : Set P.M)) hV)
+  let G' : ℕ → ℝ → SmoothRiemannianMetric I P.M := fun n => G (n + N₀)
+  have hVsource (n : ℕ) : (V : Set P.M) ⊆ Phi.source (n + N₀) := by
+    obtain ⟨W, _hW, hVW, hWs, _hpair⟩ := hN₀ (n + N₀) (by omega)
+    exact subset_closure.trans (hVW.trans hWs)
+  have hpair (n : ℕ) (t : ℝ) (x : P.M) (hx : x ∈ V) (v w : TangentSpace I x) :
+      (G' n t).inner x v w = ((X.term (phi (n + N₀))).S.base.metric t).inner
+        (Phi.map (n + N₀) x) (mfderiv I I (Phi.map (n + N₀)) x v)
+        (mfderiv I I (Phi.map (n + N₀)) x w) := by
+    obtain ⟨W, _hW, hVW, _hWs, hp⟩ := hN₀ (n + N₀) (by omega)
+    exact hp t x (hVW (subset_closure hx)) v w
+  have hflow (n : ℕ) : ∃ T : SolutionOn (I := I) (M := V) X.D,
+      IsSolutionOn T ∧ ∀ t, T.base.metric t = (G' n t).restrictOpen (I := I) V :=
+    @exists_local_solution_of_pullback E _ _ _ _ H _ I _
+      P.M P.topology P.charted P.smooth P.t2 (X.term (phi (n + N₀))).M
+      (X.term (phi (n + N₀))).topology (X.term (phi (n + N₀))).charted
+      (X.term (phi (n + N₀))).smooth (X.term (phi (n + N₀))).t2
+      (X.term (phi (n + N₀))).sigmaCompact X.D (X.term (phi (n + N₀))).S
+      (X.term (phi (n + N₀))).isSolution (Phi.partialDiffeomorph (n + N₀)) V
+      inferInstance (hVsource n) (G' n) (hpair n)
+  choose T hT hmetric using hflow
+  have hgram' (i j : Fin (Module.finrank ℝ E)) (Q : Set E) (hQ : IsCompact Q)
+      (hQU : Q ⊆ U) (m : ℕ) (ε : ℝ) (hε : 0 < ε) :
+      ∃ N : ℕ, ∀ n ≥ N, ∀ t ∈ J, ∀ y ∈ Q,
+        ‖iteratedFDeriv ℝ m (chartGramOnE (I := I) (G' n t) (p : P.M) i j) y -
+          iteratedFDeriv ℝ m (chartGramOnE (I := I) (L.base.metric t) (p : P.M) i j) y‖ ≤ ε := by
+    obtain ⟨N, hN⟩ := hgram p i j Q hQ
+      (hQU.trans (hUt.trans (extChartAt_opens_target_subset V p))) m ε hε
+    exact ⟨N, fun n hn t ht y hy => hN (n + N₀) (by omega) t ht y hy⟩
+  intro ε hε
+  obtain ⟨N, hN⟩ := local_extensions_uniform_mixed_coordinate_jets_on_closedWindow V T hT L hL
+    hac hcb (fun _ => hslab) (fun _ => hregular) hslab₀ hregular₀ G' hmetric
+    (fun n => B (n + N₀)) C (fun n => hBzero (n + N₀)) hCzero
+    (fun n => hB (n + N₀)) hC hJ hJb p hU hUt hgram' hK hKU r q slots ε hε
+  refine ⟨N + N₀, fun n hn t ht y hy => ?_⟩
+  have hh := hN (n - N₀) (by omega) t ht y hy
+  simpa only [Nat.sub_add_cancel (by omega : N₀ ≤ n)] using hh
+
+end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
+
+end

@@ -175,3 +175,111 @@ theorem exists_pointed_uniform_error_jets
       ha (fun t ht => hconv t ht.2) K hK r q
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
+
+end
+
+noncomputable section
+
+namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
+
+open Bundle Filter Set
+open DifferentialGeometry.Tensor.Coordinates DifferentialGeometry.Tensor0SBundle
+open DifferentialGeometry.CheegerGromovCompactness DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Operator DifferentialGeometry.Integral.Measure
+open scoped _root_.Manifold ContDiff _root_.Topology
+
+universe u uE uH
+
+variable {E : Type uE} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+  [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)]
+  {H : Type uH} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+
+attribute [local instance] PointedFlowData.topology PointedFlowData.charted
+  PointedFlowData.smooth PointedFlowData.t2 PointedFlowData.sigmaCompact
+  PointedRiemannianManifold.topology PointedRiemannianManifold.charted
+  PointedRiemannianManifold.smooth PointedRiemannianManifold.t2
+  PointedRiemannianManifold.sigmaCompact
+
+theorem pointed_error_jets_uniform_on_compact_closedWindow
+    {X : PointedFlowSeq.{u, uE, uH} (I := I)}
+    {P : PointedRiemannianManifold.{u, uE, uH} (I := I)} {phi : ℕ → ℕ}
+    (Phi : PointedCGHMaps (I := I) X P phi)
+    {D₀ : RealTimeInterval} (L : SolutionOn (I := I) (M := P.M) D₀) (hL : IsSolutionOn L)
+    {a c b : ℝ} (hac : a < c) (hcb : c < b)
+    (hslab : Icc a b ⊆ X.D.carrier) (hregular : Ioo a b ⊆ X.D.regular)
+    (hslab₀ : Icc a b ⊆ D₀.carrier) (hregular₀ : Ioo a b ⊆ D₀.regular)
+    (G : ℕ → ℝ → SmoothRiemannianMetric I P.M)
+    (hG : ∀ K : Set P.M, IsCompact K → ∀ᶠ i in atTop,
+      ∃ U : Set P.M, IsOpen U ∧ K ⊆ U ∧ U ⊆ Phi.source i ∧
+      ∀ t : ℝ, ∀ x ∈ U, ∀ v w : TangentSpace I x,
+        (G i t).inner x v w = ((X.term (phi i)).S.base.metric t).inner (Phi.map i x)
+          (mfderiv I I (Phi.map i) x v) (mfderiv I I (Phi.map i) x w))
+    (B : ℕ → ℕ → ℝ → Tensor0SField (I := I) (M := P.M) (n := ∞) 2)
+    (C : ℕ → ℝ → Tensor0SField (I := I) (M := P.M) (n := ∞) 2)
+    (hBzero : ∀ n s, B n 0 s = metricTensorField (G n s))
+    (hCzero : ∀ s, C 0 s = metricTensorField (L.base.metric s))
+    (hB : ∀ n q s, s ∈ Icc c b → ∀ x : P.M,
+      HasDerivWithinAt (fun t => B n q t x) (B n (q + 1) s x) (Icc c b) s)
+    (hC : ∀ q s, s ∈ Icc c b → ∀ x : P.M,
+      HasDerivWithinAt (fun t => C q t x) (C (q + 1) s x) (Icc c b) s)
+    {J : Set ℝ} (hJ : IsCompact J) (hJb : J ⊆ Icc c b)
+    (hgram : ∀ (p : P.M) (i j : Fin (Module.finrank ℝ E)), ∀ Q : Set E,
+      IsCompact Q → Q ⊆ (extChartAt I p).target → ∀ r : ℕ, ∀ ε : ℝ, 0 < ε →
+      ∃ N : ℕ, ∀ n ≥ N, ∀ t ∈ J, ∀ y ∈ Q,
+        ‖iteratedFDeriv ℝ r (chartGramOnE (I := I) (G n t) p i j) y -
+          iteratedFDeriv ℝ r (chartGramOnE (I := I) (L.base.metric t) p i j) y‖ ≤ ε)
+    (K : Set P.M) (hK : IsCompact K) (r q : ℕ) :
+    ∀ ε : ℝ, 0 < ε → ∃ N : ℕ, ∀ n ≥ N, ∀ t ∈ J, ∀ x ∈ K,
+      tensor02CovDerivNormWith (I := I) r (B n q t - C q t)
+        (L.base.metric t) (L.base.metric t) x ≤ ε := by
+  classical
+  let : LocallyCompactSpace H := I.locallyCompactSpace
+  let : LocallyCompactSpace P.M := ChartedSpace.locallyCompactSpace H P.M
+  obtain ⟨W, hW, hKW, _hWU, hWc⟩ :=
+    exists_open_between_and_isCompact_closure hK isOpen_univ (subset_univ K)
+  let V : TopologicalSpace.Opens P.M := ⟨W, hW⟩
+  let F : ℕ → ℝ → Tensor0SField (I := I) (M := P.M) (n := ∞) 2 :=
+    fun n t => B n q t - C q t
+  apply uniform_on_compact_of_restricted_chart_bounds (I := I) V hK hKW
+    (fun n t x => tensor02CovDerivNormWith (I := I) r (F n t)
+      (L.base.metric t) (L.base.metric t) x) J
+  intro p Q hQ hQt
+  have hU := isOpen_extChartAt_target (I := I) p
+  have hUt := extChartAt_opens_target_subset (I := I) V p
+  have hcoord (slots : Fin 2 → Fin (Module.finrank ℝ E))
+      (Q' : Set E) (hQ' : IsCompact Q') (hQ't : Q' ⊆ (extChartAt I p).target)
+      (m : ℕ) (ε : ℝ) (hε : 0 < ε) :
+      ∃ N : ℕ, ∀ n ≥ N, ∀ t ∈ J, ∀ y ∈ Q',
+        ‖iteratedFDeriv ℝ m (fun z => F n t ((extChartAt I (p : P.M)).symm z)
+          (fun j => chartBasisVecFiber (I := I) (p : P.M) (slots j)
+            ((extChartAt I (p : P.M)).symm z))) y‖ ≤ ε := by
+    obtain ⟨N, hN⟩ := pointed_time_jets_uniform_on_compact_closedWindow Phi L hL
+      hac hcb hslab hregular hslab₀ hregular₀ G hG B C hBzero hCzero hB hC
+      hJ hJb hgram V hWc p hU Subset.rfl hQ' hQ't m q slots ε hε
+    refine ⟨N, fun n hn t ht y hy => ?_⟩
+    have hBc := tensor_field_chart_components_contDiffOn (B n q t) (p : P.M) hUt slots
+    have hCc := tensor_field_chart_components_contDiffOn (C q t) (p : P.M) hUt slots
+    have heq : (fun z => F n t ((extChartAt I (p : P.M)).symm z)
+        (fun j => chartBasisVecFiber (I := I) (p : P.M) (slots j)
+          ((extChartAt I (p : P.M)).symm z))) =
+        (fun z => B n q t ((extChartAt I (p : P.M)).symm z)
+          (fun j => chartBasisVecFiber (I := I) (p : P.M) (slots j)
+            ((extChartAt I (p : P.M)).symm z)) -
+        C q t ((extChartAt I (p : P.M)).symm z)
+          (fun j => chartBasisVecFiber (I := I) (p : P.M) (slots j)
+            ((extChartAt I (p : P.M)).symm z))) := by
+      funext z
+      rfl
+    have hsub := iteratedFDeriv_sub_apply (i := m)
+      ((hBc.contDiffAt (hU.mem_nhds (hQ't hy))).of_le (by exact_mod_cast le_top))
+      ((hCc.contDiffAt (hU.mem_nhds (hQ't hy))).of_le (by exact_mod_cast le_top))
+    rw [heq]
+    have hh := hN n hn t ht y hy
+    rw [← hsub] at hh
+    exact hh
+  exact uniform_tensor02_covariant_norm_on_compact_closedWindow L hL
+    hac hcb hslab₀ hregular₀ hJ hJb F (p : P.M) hU hUt hcoord hQ hQt r
+
+end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
+
+end

@@ -309,3 +309,45 @@ structure BackwardExtension {eps kappa sigma : ℝ} {Phi : ℝ → ℝ}
     ∃ C : ℝ, ∀ t ∈ Set.Icc a b, ∀ x, FlowMetricBall.rmNormSq solution t x ≤ C
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
+
+end
+
+noncomputable section
+open Filter Set
+open scoped Topology Manifold ContDiff ENNReal
+
+namespace DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
+
+open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.CheegerGromovCompactness
+open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+open DifferentialGeometry.Integral.Measure
+
+universe u
+
+attribute [local instance] PointedFlowData.topology PointedFlowData.charted
+  PointedFlowData.smooth PointedFlowData.t2 PointedFlowData.sigmaCompact
+  PointedFlowData.t2TangentBundle PointedRiemannianManifold.topology
+  PointedRiemannianManifold.charted PointedRiemannianManifold.smooth
+  PointedRiemannianManifold.t2 PointedRiemannianManifold.sigmaCompact
+  PointedRiemannianManifold.t2TangentBundle
+
+theorem metricNoncollapsed_atTime_of_spatiallyKappaNoncollapsedBelowScale
+    {D : RealTimeInterval} (F : PointedFlowData.{u, 0, 0} I3 D)
+    {kappa radius : ℝ}
+    (h : SpatiallyKappaNoncollapsedBelowScale F.S kappa radius)
+    {s : ℝ} (hs : s ∈ D.carrier) :
+    MetricNoncollapsed (F.atTime s) kappa (Ioc 0 radius) := by
+  intro y r hr hrpos hcurv
+  let B : FlowMetricBall F.S ⟨s, hs⟩ := ⟨y, r, hrpos⟩
+  have hB : B.IsSpatiallyRmControlled := hcurv
+  have hvol := (h.2 ⟨s, hs⟩ B hr.2 hB).2
+  rw [ENNReal.ofReal_mul' (pow_nonneg hrpos.le 3), ENNReal.ofReal_pow hrpos.le]
+  have hdim : Module.finrank ℝ ThreeSpace = 3 := by simp [ThreeSpace]
+  simp only [hdim, B, FlowMetricBall.volume, FlowMetricBall.set, FlowMetricBall.setAt,
+    volumeMeasureOn_eq_metric, SolutionOn.family_metric, PointedFlowData.atTime,
+    riemannianBallOf] at hvol ⊢
+  with_unfolding_all exact hvol
+
+end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
+
+end

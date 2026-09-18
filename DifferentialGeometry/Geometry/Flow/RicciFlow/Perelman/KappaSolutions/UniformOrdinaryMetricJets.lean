@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.LocalSmoothConvergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.OrdinaryMetricJetConvergence
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Restriction
 
 
 set_option autoImplicit false
@@ -154,6 +155,129 @@ theorem uniform_ordinary_metric_jets_on_compact_time {D : RealTimeInterval}
       _ < ε / 2 + ε / 2 := add_lt_add (by simpa only [dist_comm] using hsclose) hlclose
       _ = ε := by ring
   exact (not_lt_of_ge hclose.le) (hbad (σ n))
+
+private theorem uniform_closedWindow_metric_jets_on_compact_time {D : RealTimeInterval}
+    (S : ℕ → SolutionOn (I := I) (M := M) D) (hS : ∀ n, IsSolutionOn (S n))
+    (S₀ : SolutionOn (I := I) (M := M) D) (hS₀ : IsSolutionOn S₀)
+    {a c b : ℝ} (hac : a < c) (hcb : c < b)
+    (hcarrier : D.carrier = Icc a b) (hregular : Ioo a b ⊆ D.regular)
+    {J : Set ℝ} (hJ : IsCompact J) (hJb : J ⊆ Icc c b) (p : M)
+    {U : Set E} (hU : IsOpen U) (hUt : U ⊆ (extChartAt I p).target)
+    (hgram : ∀ i j : Fin (Module.finrank ℝ E), ∀ K : Set E, IsCompact K → K ⊆ U →
+      ∀ r : ℕ, ∀ ε : ℝ, 0 < ε → ∃ N : ℕ, ∀ n ≥ N, ∀ t ∈ J, ∀ y ∈ K,
+        ‖iteratedFDeriv ℝ r (chartGramOnE (I := I) ((S n).base.metric t) p i j) y -
+          iteratedFDeriv ℝ r (chartGramOnE (I := I) (S₀.base.metric t) p i j) y‖ ≤ ε)
+    {K : Set E} (hK : IsCompact K) (hKU : K ⊆ U) (r q : ℕ)
+    (slots : Fin 2 → Fin (Module.finrank ℝ E)) :
+    ∀ ε : ℝ, 0 < ε → ∃ N : ℕ, ∀ n ≥ N, ∀ t ∈ J, ∀ y ∈ K,
+      ‖iteratedFDeriv ℝ r (fun z =>
+          (iteratedDerivWithin q
+            (fun s => metricTensorField ((S n).base.metric s) ((extChartAt I p).symm z)) (Icc c b) t)
+            (fun j => chartBasisVecFiber (I := I) p (slots j) ((extChartAt I p).symm z))) y -
+        iteratedFDeriv ℝ r (fun z =>
+          (iteratedDerivWithin q
+            (fun s => metricTensorField (S₀.base.metric s) ((extChartAt I p).symm z)) (Icc c b) t)
+            (fun j => chartBasisVecFiber (I := I) p (slots j) ((extChartAt I p).symm z))) y‖ ≤ ε := by
+  classical
+  let F (T : SolutionOn (I := I) (M := M) D) (t : ℝ) (y : E) : ℝ :=
+    (iteratedDerivWithin q
+      (fun s => metricTensorField (T.base.metric s) ((extChartAt I p).symm y)) (Icc c b) t)
+      (fun j => chartBasisVecFiber (I := I) p (slots j) ((extChartAt I p).symm y))
+  change ∀ ε : ℝ, 0 < ε → ∃ N : ℕ, ∀ n ≥ N, ∀ t ∈ J, ∀ y ∈ K,
+    ‖iteratedFDeriv ℝ r (F (S n) t) y - iteratedFDeriv ℝ r (F S₀ t) y‖ ≤ ε
+  intro ε hε
+  by_contra hbad
+  push Not at hbad
+  choose k hk τ hτ y hy hbad using hbad
+  have hkTop : Tendsto k atTop atTop := tendsto_atTop_mono hk tendsto_id
+  obtain ⟨t, ht, σ, hσ, htime⟩ := hJ.tendsto_subseq hτ
+  have hindex : Tendsto (fun n => k (σ n)) atTop atTop := hkTop.comp hσ.tendsto_atTop
+  have htimes : ∀ n, τ (σ n) ∈ Icc c b := fun n => hJb (hτ (σ n))
+  have hlimitGram (i j : Fin (Module.finrank ℝ E)) : MapCInfConvergenceOnCompacts U
+      (fun n => chartGramOnE (I := I) (S₀.base.metric (τ (σ n))) p i j)
+      (chartGramOnE (I := I) (S₀.base.metric t) p i j) := by
+    intro Q hQ hQU m
+    exact solution_chartGram_mapCInf_of_closedWindow_time_sequence S₀ hS₀ hac hcb
+      (by rw [hcarrier]) hregular
+      (hJb ht) p (fun n => τ (σ n)) htimes htime i j Q hQ (hQU.trans hUt) m
+  have hsourceGram (i j : Fin (Module.finrank ℝ E)) : MapCInfConvergenceOnCompacts U
+      (fun n => chartGramOnE (I := I) ((S (k (σ n))).base.metric (τ (σ n))) p i j)
+      (chartGramOnE (I := I) (S₀.base.metric t) p i j) :=
+    sampled_mapCInf_of_uniform_spatial_jets hU
+      (fun n t => chartGramOnE (I := I) ((S n).base.metric t) p i j)
+      (fun t => chartGramOnE (I := I) (S₀.base.metric t) p i j)
+      (fun n t _ => (chartGramOnE_contDiffOn (I := I) ((S n).base.metric t) p i j).mono hUt)
+      (fun t _ => (chartGramOnE_contDiffOn (I := I) (S₀.base.metric t) p i j).mono hUt)
+      (hgram i j) (fun n => k (σ n)) hindex (fun n => τ (σ n)) (fun n => hτ (σ n)) ht
+      (hlimitGram i j)
+  have hsourceConv : MapCInfConvergenceOnCompacts U
+      (fun n => F (S (k (σ n))) (τ (σ n))) (F S₀ t) :=
+    closedWindow_metric_time_jet_components_mapCInf_of_gram
+      (fun n => S (k (σ n))) (fun n => hS (k (σ n))) S₀ hS₀
+      hac hcb hac hcb hcarrier hregular hcarrier hregular (fun n => τ (σ n)) htimes t (hJb ht) p
+      hU hUt hsourceGram q slots
+  have hlimitConv : MapCInfConvergenceOnCompacts U
+      (fun n => F S₀ (τ (σ n))) (F S₀ t) :=
+    closedWindow_metric_time_jet_components_mapCInf_of_gram
+      (fun _ => S₀) (fun _ => hS₀) S₀ hS₀
+      hac hcb hac hcb hcarrier hregular hcarrier hregular (fun n => τ (σ n)) htimes t (hJb ht) p
+      hU hUt hlimitGram q slots
+  have hsourceJets := hsourceConv.tendstoUniformlyOn_iteratedFDeriv hU hK hKU
+    (fun n => closedWindow_metric_time_jet_components_contDiffOn (S (k (σ n))) (hS (k (σ n)))
+      hac hcb hcarrier hregular (htimes n) q p hUt slots)
+    (closedWindow_metric_time_jet_components_contDiffOn S₀ hS₀ hac hcb hcarrier hregular (hJb ht) q p hUt slots) r
+  have hlimitJets := hlimitConv.tendstoUniformlyOn_iteratedFDeriv hU hK hKU
+    (fun n => closedWindow_metric_time_jet_components_contDiffOn S₀ hS₀
+      hac hcb hcarrier hregular (htimes n) q p hUt slots)
+    (closedWindow_metric_time_jet_components_contDiffOn S₀ hS₀ hac hcb hcarrier hregular (hJb ht) q p hUt slots) r
+  rw [Metric.tendstoUniformlyOn_iff] at hsourceJets hlimitJets
+  obtain ⟨n, hsn, hln⟩ :=
+    ((hsourceJets (ε / 2) (by positivity)).and (hlimitJets (ε / 2) (by positivity))).exists
+  have hsclose := hsn (y (σ n)) (hy (σ n))
+  have hlclose := hln (y (σ n)) (hy (σ n))
+  have hclose : ‖iteratedFDeriv ℝ r (F (S (k (σ n))) (τ (σ n))) (y (σ n)) -
+      iteratedFDeriv ℝ r (F S₀ (τ (σ n))) (y (σ n))‖ < ε := by
+    calc
+      _ = dist (iteratedFDeriv ℝ r (F (S (k (σ n))) (τ (σ n))) (y (σ n)))
+          (iteratedFDeriv ℝ r (F S₀ (τ (σ n))) (y (σ n))) := (dist_eq_norm _ _).symm
+      _ ≤ dist (iteratedFDeriv ℝ r (F (S (k (σ n))) (τ (σ n))) (y (σ n)))
+          (iteratedFDeriv ℝ r (F S₀ t) (y (σ n))) +
+          dist (iteratedFDeriv ℝ r (F S₀ t) (y (σ n)))
+            (iteratedFDeriv ℝ r (F S₀ (τ (σ n))) (y (σ n))) := dist_triangle _ _ _
+      _ < ε / 2 + ε / 2 := add_lt_add (by simpa only [dist_comm] using hsclose) hlclose
+      _ = ε := by ring
+  exact (not_lt_of_ge hclose.le) (hbad (σ n))
+
+theorem uniform_metric_time_jets_on_compact_closedWindow
+    {D : ℕ → RealTimeInterval} {D₀ : RealTimeInterval}
+    (S : (n : ℕ) → SolutionOn (I := I) (M := M) (D n)) (hS : ∀ n, IsSolutionOn (S n))
+    (S₀ : SolutionOn (I := I) (M := M) D₀) (hS₀ : IsSolutionOn S₀)
+    {a c b : ℝ} (hac : a < c) (hcb : c < b)
+    (hslab : ∀ n, Icc a b ⊆ (D n).carrier) (hregular : ∀ n, Ioo a b ⊆ (D n).regular)
+    (hslab₀ : Icc a b ⊆ D₀.carrier) (hregular₀ : Ioo a b ⊆ D₀.regular)
+    {J : Set ℝ} (hJ : IsCompact J) (hJb : J ⊆ Icc c b) (p : M)
+    {U : Set E} (hU : IsOpen U) (hUt : U ⊆ (extChartAt I p).target)
+    (hgram : ∀ i j : Fin (Module.finrank ℝ E), ∀ K : Set E, IsCompact K → K ⊆ U →
+      ∀ r : ℕ, ∀ ε : ℝ, 0 < ε → ∃ N : ℕ, ∀ n ≥ N, ∀ t ∈ J, ∀ y ∈ K,
+        ‖iteratedFDeriv ℝ r (chartGramOnE (I := I) ((S n).base.metric t) p i j) y -
+          iteratedFDeriv ℝ r (chartGramOnE (I := I) (S₀.base.metric t) p i j) y‖ ≤ ε)
+    {K : Set E} (hK : IsCompact K) (hKU : K ⊆ U) (r q : ℕ)
+    (slots : Fin 2 → Fin (Module.finrank ℝ E)) :
+    ∀ ε : ℝ, 0 < ε → ∃ N : ℕ, ∀ n ≥ N, ∀ t ∈ J, ∀ y ∈ K,
+      ‖iteratedFDeriv ℝ r (fun z =>
+          (iteratedDerivWithin q
+            (fun s => metricTensorField ((S n).base.metric s) ((extChartAt I p).symm z)) (Icc c b) t)
+            (fun j => chartBasisVecFiber (I := I) p (slots j) ((extChartAt I p).symm z))) y -
+        iteratedFDeriv ℝ r (fun z =>
+          (iteratedDerivWithin q
+            (fun s => metricTensorField (S₀.base.metric s) ((extChartAt I p).symm z)) (Icc c b) t)
+            (fun j => chartBasisVecFiber (I := I) p (slots j) ((extChartAt I p).symm z))) y‖ ≤ ε := by
+  let D' := RealTimeInterval.closed a b (hac.trans hcb).le
+  exact uniform_closedWindow_metric_jets_on_compact_time
+    (fun n => (S n).timeRestrict D')
+    (fun n => isSolutionOn_timeRestrict (hS n) (hslab n) (hregular n))
+    (S₀.timeRestrict D') (isSolutionOn_timeRestrict hS₀ hslab₀ hregular₀)
+    hac hcb rfl Subset.rfl hJ hJb p hU hUt hgram hK hKU r q slots
 
 end Geometry
 end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions

@@ -8,7 +8,7 @@ namespace DifferentialGeometry.PDE.RicciFlow
 
 open Filter Set
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.CheegerGromovCompactness
-open scoped Manifold ContDiff Topology BigOperators
+open scoped Manifold ContDiff _root_.Topology BigOperators
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]

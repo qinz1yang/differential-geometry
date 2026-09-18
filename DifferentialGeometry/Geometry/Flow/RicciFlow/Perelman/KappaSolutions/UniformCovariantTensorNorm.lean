@@ -101,4 +101,56 @@ theorem uniform_tensor02_covariant_norm_on_compact_time {D : RealTimeInterval}
   obtain ⟨n, hsmall⟩ := (hn.eventually (Iio_mem_nhds hε)).exists
   exact (not_lt_of_ge hsmall.le) (hbad (σ n))
 
+theorem uniform_tensor02_covariant_norm_on_compact_closedWindow {D : RealTimeInterval}
+    (L : SolutionOn (I := I) (M := M) D) (hL : IsSolutionOn L)
+    {a c b : ℝ} (hac : a < c) (hcb : c < b)
+    (hslab : Icc a b ⊆ D.carrier) (hregular : Ioo a b ⊆ D.regular)
+    {J : Set ℝ} (hJ : IsCompact J) (hJb : J ⊆ Icc c b)
+    (A : ℕ → ℝ → Tensor0SField (I := I) (M := M) (n := ∞) 2) (p : M)
+    {U : Set E} (hU : IsOpen U) (hUt : U ⊆ (extChartAt I p).target)
+    (hcoord : ∀ slots : Fin 2 → CoordinateIdx (𝕜 := ℝ) E,
+      ∀ K : Set E, IsCompact K → K ⊆ U → ∀ r : ℕ, ∀ ε : ℝ, 0 < ε →
+      ∃ N : ℕ, ∀ n ≥ N, ∀ t ∈ J, ∀ y ∈ K,
+        ‖iteratedFDeriv ℝ r (fun z => A n t ((extChartAt I p).symm z)
+          (fun j => chartBasisVecFiber (I := I) p (slots j) ((extChartAt I p).symm z))) y‖ ≤ ε)
+    {K : Set E} (hK : IsCompact K) (hKU : K ⊆ U) (r : ℕ) :
+    ∀ ε : ℝ, 0 < ε → ∃ N : ℕ, ∀ n ≥ N, ∀ t ∈ J, ∀ y ∈ K,
+      tensor02CovDerivNormWith (I := I) r (A n t) (L.base.metric t) (L.base.metric t)
+        ((extChartAt I p).symm y) ≤ ε := by
+  classical
+  intro ε hε
+  by_contra hbad
+  push Not at hbad
+  choose k hk τ hτ y hy hbad using hbad
+  have hkTop : Tendsto k atTop atTop := tendsto_atTop_mono hk tendsto_id
+  obtain ⟨w, hw, σ, hσ, hlim⟩ := (hJ.prod hK).tendsto_subseq
+    (x := fun n => (τ n, y n)) (fun n => ⟨hτ n, hy n⟩)
+  have htime : Tendsto (fun n => τ (σ n)) atTop (𝓝 w.1) := by
+    simpa only [Function.comp_def] using (continuous_fst.tendsto w).comp hlim
+  have hspace : Tendsto (fun n => y (σ n)) atTop (𝓝 w.2) := by
+    simpa only [Function.comp_def] using (continuous_snd.tendsto w).comp hlim
+  have hindex : Tendsto (fun n => k (σ n)) atTop atTop := hkTop.comp hσ.tendsto_atTop
+  have htimes : ∀ n, τ (σ n) ∈ Icc c b := fun n => hJb (hτ (σ n))
+  have hgram (i j : CoordinateIdx (𝕜 := ℝ) E) : MapCInfConvergenceOnCompacts U
+      (fun n => chartGramOnE (I := I) (L.base.metric (τ (σ n))) p i j)
+      (chartGramOnE (I := I) (L.base.metric w.1) p i j) := by
+    intro Q hQ hQU m
+    exact solution_chartGram_mapCInf_of_closedWindow_time_sequence L hL hac hcb hslab hregular
+      (hJb hw.1) p (fun n => τ (σ n)) htimes htime i j Q hQ (hQU.trans hUt) m
+  have hA (slots : Fin 2 → CoordinateIdx (𝕜 := ℝ) E) : MapCInfConvergenceOnCompacts U
+      (fun n z => A (k (σ n)) (τ (σ n)) ((extChartAt I p).symm z)
+        (fun j => chartBasisVecFiber (I := I) p (slots j) ((extChartAt I p).symm z)))
+      (fun _ => 0) :=
+    sampled_mapCInf_zero_of_uniform_jets hU
+      (fun n t z => A n t ((extChartAt I p).symm z)
+        (fun j => chartBasisVecFiber (I := I) p (slots j) ((extChartAt I p).symm z)))
+      (fun n t _ => tensor_field_chart_components_contDiffOn (A n t) p hUt slots)
+      (hcoord slots) (fun n => k (σ n)) hindex (fun n => τ (σ n)) (fun n => hτ (σ n))
+  have hn := tensor02_covariant_norm_tendsto_zero_of_smooth_chart_convergence
+    (fun n => L.base.metric (τ (σ n))) (L.base.metric w.1)
+    (fun n => A (k (σ n)) (τ (σ n))) p hU hUt hgram hA hK hKU
+    (fun n => y (σ n)) (fun n => hy (σ n)) hw.2 hspace r
+  obtain ⟨n, hsmall⟩ := (hn.eventually (Iio_mem_nhds hε)).exists
+  exact (not_lt_of_ge hsmall.le) (hbad (σ n))
+
 end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions

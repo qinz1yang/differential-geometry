@@ -5,6 +5,7 @@ import DifferentialGeometry.Geometry.Curvature.Metric.Scaling
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CanonicalStrictBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHornGeometry
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.Bounds
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.RmNormFromEigenvalues
 
 set_option autoImplicit false
 noncomputable section
@@ -297,5 +298,57 @@ theorem secLower_of_ricci_lower_bound_of_scalar_upper
     metricRm04StandardAt (I := I3) (M := M) g y v w w v
   rw [hRm]
   nlinarith [hspart, hgram, mul_nonneg (sub_nonneg.mpr hR) hgram]
+
+end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
+
+namespace DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
+
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+open scoped Manifold ContDiff
+
+universe u
+
+variable {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
+  [IsManifold I3 ∞ M] [T2Space M] [SigmaCompactSpace M]
+
+omit [SigmaCompactSpace M] in
+theorem scalar_nonneg_of_secLower_zero
+    {D : RealTimeInterval} (S : SolutionOn (I := I3) (M := M) D)
+    {t : ℝ} {U : Set M} (hsec : SecLower (S.base.metric t) 0 U)
+    {x : M} (hx : x ∈ U) :
+    0 ≤ S.scalar t x := by
+  have hdim : Module.finrank ℝ ThreeSpace = 3 := by simp [ThreeSpace]
+  have hnonnegative : curvatureOperatorLowerBoundAt (I := I3) (S.base.metric t) x
+      ⟨S.base.rm04 t x, metricRm04At_mem_algebraicCurvatureTensorSubmodule
+        (I := I3) (S.base.metric t) x⟩ 0 := by
+    simpa only [neg_zero, metricAlgebraicCurvatureTensorAt, SolutionFamily.rm04,
+      metricRm04_apply] using
+      (secLower_iff_curvatureOperatorLowerBoundAt (S.base.metric t) hdim 0 U).mp hsec x hx
+  have hroot := sqrt_rmNormSq_le_sqrt_three_mul_scalar_of_curvatureOperatorNonneg
+    (I := I3) S hdim t x hnonnegative
+  have hproduct : 0 ≤ Real.sqrt 3 * S.scalar t x := (Real.sqrt_nonneg _).trans hroot
+  exact nonneg_of_mul_nonneg_right hproduct (Real.sqrt_pos.mpr (by norm_num))
+
+omit [SigmaCompactSpace M] in
+theorem rmNormSq_le_of_secLower_zero_of_scalar_le
+    {D : RealTimeInterval} (S : SolutionOn (I := I3) (M := M) D)
+    {t B : ℝ} {U : Set M} (hsec : SecLower (S.base.metric t) 0 U)
+    {x : M} (hx : x ∈ U) (hscalar : S.scalar t x ≤ B) :
+    FlowMetricBall.rmNormSq (I := I3) S t x ≤ 3 * B ^ 2 := by
+  have hdim : Module.finrank ℝ ThreeSpace = 3 := by simp [ThreeSpace]
+  have hnonnegative : curvatureOperatorLowerBoundAt (I := I3) (S.base.metric t) x
+      ⟨S.base.rm04 t x, metricRm04At_mem_algebraicCurvatureTensorSubmodule
+        (I := I3) (S.base.metric t) x⟩ 0 := by
+    simpa only [neg_zero, metricAlgebraicCurvatureTensorAt, SolutionFamily.rm04,
+      metricRm04_apply] using
+      (secLower_iff_curvatureOperatorLowerBoundAt (S.base.metric t) hdim 0 U).mp hsec x hx
+  have hroot := (sqrt_rmNormSq_le_sqrt_three_mul_scalar_of_curvatureOperatorNonneg
+    (I := I3) S hdim t x hnonnegative).trans
+    (mul_le_mul_of_nonneg_left hscalar (Real.sqrt_nonneg 3))
+  calc
+    _ ≤ (Real.sqrt 3 * B) ^ 2 := (Real.sqrt_le_iff.mp hroot).2
+    _ = 3 * B ^ 2 := by
+      rw [mul_pow, Real.sq_sqrt (by norm_num : (0 : ℝ) ≤ 3)]
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
