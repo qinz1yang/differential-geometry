@@ -3147,3 +3147,37 @@ a coherent orientation. Three things are still missing for the book's 24.12.
    `walkMonodromy` are not yet translated into each other, so a polygon delivered
    as a cyclic family `Fin m -> E`, as in `NeighborhoodCycle`, has to be turned
    into a closed walk by hand.
+
+## C.6 obligation 3, step five: the orientation cocycle of a subcomplex
+
+`SubcomplexOrientationCocycle.lean` closes the localization gap recorded in the
+previous section, and does so entirely through public API; the two `private`
+lemmas of `OrientationCocycle.lean` are not needed and nothing was made public
+there.
+
+The missing producer was `carrierFace_eq_of_faces_subset`: for a subcomplex
+`L.faces` inside `K.faces` and a point of `L.space`, the carrier in L and the
+carrier in K coincide. Both are faces of K whose open simplex contains the
+point, and the existing
+`face_subset_of_mem_openSimplex_of_mem_convexHull` applied in both directions
+gives mutual inclusion. `faceStarComplex_mono` is the corresponding statement
+for face stars and is immediate from the definition.
+
+`orientationOfLe` restricts the ambient face-star orientations to L using the
+existing `CoherentOrientation.restrict`, and since that restriction keeps both
+the vertex order and the sign function unchanged,
+`localOrientationSign_orientationOfLe` holds by reduction once the face
+membership is fixed. Feeding the carrier identity into it gives
+`localSubdivisionOrientationSign_orientationOfLe`, and then
+`orientationCocycle_parity_of_faces_subset` proves that the orientation cocycle
+of L, for the restricted orientations, has exactly the ambient parities on every
+edge of `barycentricSubdivision L`. The top-dimensional simplex needed by
+`orientationCocycle_parity_eq_localSubdivisionOrientationSign` is produced in L
+itself, by `exists_face_superset_card_eq` for the subdivided manifold, and is a
+simplex of the ambient subdivision by `barycentricSubdivision_faces_subset`.
+
+`isOrientable_of_isCoboundary_ofLe` is the consequence: if the ambient
+orientation cocycle restricted to `barycentricSubdivision L` is a coboundary,
+then L is orientable. The coboundary function is reused verbatim.
+
+`SubcomplexOrientationCocycle` checks exit 0 (9.1 s) with zero warnings.
