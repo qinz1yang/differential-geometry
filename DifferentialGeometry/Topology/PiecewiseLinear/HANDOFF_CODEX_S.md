@@ -3358,3 +3358,238 @@ reduction plus the degree-one computation on the polygon, feeding
 `isOrientable_of_ambient_nullHomotopic_generated_polygon` through the loop
 retraction delivered here. Obligation 2 of C.6, the untwisted disk-bundle
 classification, was deliberately not started.
+
+## The degree-one computation on the circle, 2026-09-18
+
+The abstract half of the missing fact is closed. Two new modules under
+`DifferentialGeometry/Topology/FundamentalGroup/`.
+
+`LoopPower.lean` gives the integer powers of a loop as honest paths.
+`loopPow p k` is the k-fold right-nested `Path.trans`, `loopZPow p k` is
+`loopPow p k` for `k ≥ 0` and `loopPow p.symm (-k)` otherwise.
+`loopPow_map`/`loopZPow_map` push a continuous map through a power (stated with a
+bare `Continuous f`, not a bundled `C(X, Y)`, so `rw` matches `Homeomorph`
+continuity proofs), `loopPow_cast`/`loopZPow_cast` push `Path.cast` through.
+`fromPath_loopZPow` identifies the class of `loopZPow p k` with the k-th power of
+the class of `p` in `FundamentalGroup X x`; the multiplication order convention of
+`FundamentalGroup.mul_def` is irrelevant because all factors are equal.
+`exists_homotopic_loopZPow_of_forall_exists_zpow` converts "the class of p
+generates" into "every loop is homotopic to `loopZPow p k`".
+
+`CircleLoopGenerator.lean` is the degree computation.
+`circleGeneratorPath : Path (0 : loopCircle) 0` is `t ↦ ↑(t : ℝ)`.
+`monodromy_circleGeneratorPath` says the lift of `circleGeneratorPath` through
+`ℝ → loopCircle` starting at `0` ends at `1`; the proof is
+`IsCoveringMap.monodromy_eq_of_map_eq` applied to the identity path
+`unitRealPath : Path (0 : ℝ) 1`, and the required equation is `rfl`.
+`fundamentalGroupToMulOpposite_circleGeneratorPath` turns that into
+`φ ⟦circleGeneratorPath⟧ = op (ofAdd ⟨1, _⟩)` for
+`φ = (AddCircle.isAddQuotientCoveringMap_coe 1).fundamentalGroupToMulOpposite ⟨0, rfl⟩`.
+Since `ℝ` is simply connected (`RealTopologicalVectorSpace.contractibleSpace` then
+`SimplyConnectedSpace.ofContractible`), `φ` is injective, and every element of
+`zmultiples (1 : ℝ)` is `k • 1`, so
+`exists_zpow_fundamentalGroup_loopCircle` says every element of
+`FundamentalGroup loopCircle 0` is a power of the class of `circleGeneratorPath`,
+and `exists_homotopic_loopZPow_circleGeneratorPath` is the path form.
+
+`exists_homotopic_loopZPow_of_bijective` is the transport. For `Q` a `T2Space`,
+`G : C(loopCircle, Q)` bijective with `G 0 = q`, and a loop `ℓ : Path q q` with
+`ℓ t = G ↑(t : ℝ)` for all `t`, every loop at `q` is homotopic to `loopZPow ℓ k`
+for some `k : ℤ`. `loopCircle` is compact and `Q` is Hausdorff, so `G` is a
+homeomorphism (`Continuous.homeoOfEquivCompactToT2`); the loop is transported
+through it with `Path.Homotopic.map` and `Path.Homotopic.pathCast`. This is the
+interface the polygon feeds: `pathToCircle ℓ` satisfies the two hypotheses on `G`
+by `pathToCircle_zero` and `pathToCircle_coe`, so only bijectivity of
+`pathToCircle ℓ` is left to the geometry.
+
+Both modules check exit 0 with zero warnings (6.8 s, 7.3 s).
+`.lake/scratch/AuditSCircleLoopGenerator.lean` audits fifteen declarations, all
+only `propext`, `Classical.choice`, `Quot.sound`.
+
+## The polygon is parametrised by the circle by its own fundamental cycle, 2026-09-18
+
+The classical fact the previous entry named as the whole remaining content of
+obligation 3 is now proved. Three new modules.
+
+`DifferentialGeometry/Topology/LoopSpace/InjectiveLoop.lean` is the abstract
+criterion. `injective_trans` says `p.trans q` is injective when `p` and `q` are
+and `range p ∩ range q ⊆ {p 1}`. `pathToCircle_trans_injective` is the loop
+version: for `p : Path a b`, `q : Path b a` injective with
+`range p ∩ range q ⊆ {a, b}`, the induced map `pathToCircle (p.trans q)` on
+`loopCircle` is injective, because the only way two parameters can collide is
+`s = 0`, `t = 1`, which `AddCircle.coe_period` identifies.
+`pathToCircle_surjective` is the trivial converse direction.
+
+`WalkArcPath.lean` runs the edge walk as an injective path.
+`arcPath` is `walkPath` without the trailing `Path.refl`: it is defined by the
+three-way recursion `nil`, `cons h nil`, `cons h (cons h' p)`, and
+`homotopic_walkPath_arcPath` compares it with `walkPath` using
+`Path.Homotopy.transRefl`. This is the only change needed: `walkPath` itself is
+constant on a terminal subinterval, so it can never be injective, while
+`arcPath` of an edge walk with distinct vertices is.
+`pathCarrier` is the image of a path in `E`, `arcCarrier p = pathCarrier (arcPath p)`,
+`arcCarrier_cons` peels one segment, and everything geometric is done through
+`faceHull_inter_subset`, the restatement of
+`Geometry.SimplicialComplex.convexHull_inter_convexHull` as
+"if every common vertex of two faces lies in a convex set `S`, the hulls meet
+inside `S`". With it: `segment_inter_arcCarrier_eq_empty` (the walk avoids both
+endpoints of the edge), `segment_inter_arcCarrier_subset_singleton` (the walk
+starts at one endpoint and avoids the other), and
+`segment_inter_arcCarrier_subset_pair` (the edge is not an edge of the walk;
+this is the one the cycle needs, since the closing edge of a cycle meets the rest
+of the cycle in both of its endpoints). `arcPath_injective` is the induction:
+an edge walk that `IsPath` and has positive length has injective `arcPath`.
+`exists_edge_of_mem_arcCarrier`, `mem_arcCarrier_of_mem_edges` and
+`mem_arcCarrier_of_mem_support` are the two directions of the description of the
+carrier by the edge and support lists.
+
+`PolygonCircleParametrization.lean` is the endpoint.
+`ncard_neighborSet_edgeGraph_eq_two` restates the 1-manifold condition as a
+degree, so `mem_edges_of_adj_of_spanning_cycle` can apply Mathlib's
+`Walk.IsCycle.adj_toSubgraph_iff_of_isCycles`: in a 2-regular graph a spanning
+cycle already contains every edge. That plus `mem_arcCarrier_of_mem_support` for
+the vertex faces gives `space_subset_arcCarrier`, hence surjectivity.
+`pathToCircle_arcPath_bijective` splits the cycle as its first edge followed by
+the complementary path and feeds `pathToCircle_trans_injective`.
+`exists_homotopic_loopZPow_walkPath` is the target:
+
+  for a finite one-dimensional combinatorial manifold `K` and a spanning cycle
+  `γ` of its edge graph, every loop of `K.space` at `vertexPoint K v₀` is
+  homotopic rel endpoints to `loopZPow (walkPath γ) k` for some `k : ℤ`.
+
+`exists_spanning_cycle_of_isCombinatorialManifold_one` produces the cycle from
+connectedness, and `exists_cycle_generating_loops` packages both. Note that the
+integer exponent is genuinely an integer: the class of `walkPath γ` generates an
+infinite cyclic group, so a statement with `k : ℕ` would be false for
+`γ.reverse`, which is what the next entry has to repair in
+`IsGeneratedByPolygon`.
+
+The four modules check exit 0 with zero warnings (7.4--12.3 s).
+`.lake/scratch/AuditSPolygonCircle.lean` audits twenty-three declarations, all
+only `propext`, `Classical.choice`, `Quot.sound`.
+
+## Integer powers repair the generation hypothesis, and loops feed it, 2026-09-18
+
+### A correction to `IsGeneratedByPolygon`
+
+As it stood, `IsGeneratedByPolygon γ` asked for a natural number `k` and
+`closedWalkPow γ k`. That predicate is unsatisfiable for a genuine polygon:
+the previous entry proves that the class of `walkPath γ` generates an infinite
+cyclic group, so `walkPath γ.reverse` has degree `-1`, and conjugation inside an
+abelian group does not change the degree, so no `k : ℕ` can match it. The
+hypothesis was therefore vacuously unusable, not merely awkward.
+
+`WalkMonodromyHomotopy.lean` now carries `closedWalkZPow γ k` for `k : ℤ`
+(`closedWalkPow γ k` for `k ≥ 0` and `closedWalkPow γ.reverse (-k)` otherwise),
+with `walkMonodromy_closedWalkZPow : ε.walkMonodromy (closedWalkZPow γ k) =
+(k : ZMod 2) * ε.walkMonodromy γ` — the negative case is `CharTwo.sub_eq_add`
+together with `walkMonodromy_reverse` — and the disjunction
+`walkMonodromy_eq_zero_or_eq_of_homotopic_conjugate_zpow`.
+`PolygonGeneratedOrientation.lean` states `IsGeneratedByPolygon` and
+`IsSimpliciallyGeneratedByPolygon` with `k : ℤ` and `closedWalkZPow`, with the
+matching simplicial disjunction, and the two orientability endpoints are
+unchanged in statement and conclusion. Nothing else in the tree referred to the
+old spelling.
+
+### Walk paths under concatenation, reversal and powers
+
+`WalkPathConcatenation.lean`. `edgePath_symm` says the edge path of the reversed
+adjacency is the reverse path (the two affine parametrisations agree).
+`walkPath_append : (walkPath (p.append q)).Homotopic ((walkPath p).trans (walkPath q))`
+and `walkPath_reverse : (walkPath p.reverse).Homotopic (walkPath p).symm` are the
+two structural homotopies; the second uses `Walk.reverse_cons` and
+`Path.trans_symm`, so no reversal of the recursion is needed.
+`walkPath_closedWalkZPow` identifies `walkPath (closedWalkZPow γ k)` with
+`loopZPow (walkPath γ) k`. `quotient_conjugate` is the groupoid identity
+`R ∘ (R⁻¹ ∘ P ∘ R) ∘ R⁻¹ = P` in `Path.Homotopic.Quotient`, and
+`homotopic_conjugate` is its path form.
+
+`exists_zpow_conjugate_homotopic_walkPath` is the bridge: for a preconnected edge
+graph and a closed walk `γ` at `v₀` whose path generates the loops at `v₀` in the
+sense of the previous entry, every closed edge walk `p` at any vertex `u` admits
+`q : Walk u v₀` and `k : ℤ` with `walkPath p` homotopic to
+`walkPath (q.append ((closedWalkZPow γ k).append q.reverse))`. The conjugating
+walk comes from preconnectedness and the exponent from the generation hypothesis
+applied to `(walkPath q).symm.trans ((walkPath p).trans (walkPath q))`.
+
+`PolygonGeneratedFromLoops.lean` instantiates it:
+`isGeneratedByPolygon_of_forall_exists_homotopic_loopZPow` turns the purely
+topological generation statement for `barycentricSubdivision L` into
+`IsGeneratedByPolygon γ`, and
+`isOrientable_of_ambient_nullHomotopic_loop_generated_polygon` is the
+orientability endpoint with the topological generation hypothesis in place of the
+combinatorial one.
+
+All four touched or new modules check exit 0 with zero warnings (9.3--10.1 s).
+`.lake/scratch/AuditSWalkPathConcat.lean` audits seventeen declarations; none
+mentions `sorryAx`, and `closedWalkZPow` depends on no axiom at all.
+
+### The generation hypothesis is unconditional for a polygon
+
+`exists_isGeneratedByPolygon_of_isCombinatorialManifold_one` in
+`PolygonGeneratedFromLoops.lean`: for a finite connected closed one-dimensional
+combinatorial manifold `L` there are a vertex `v₀` of `barycentricSubdivision L`
+and a spanning cycle `γ` at it with `IsGeneratedByPolygon γ`. Nothing is
+hypothetical here: `barycentricSubdivision L` is again a connected closed
+one-dimensional combinatorial manifold, so `exists_cycle_generating_loops`
+applies to it, and `isGeneratedByPolygon_of_forall_exists_homotopic_loopZPow`
+converts the loop statement. The audit
+`.lake/scratch/AuditSPolygonGenerated.lean` reports only `propext`,
+`Classical.choice`, `Quot.sound`.
+
+### Two bridges towards the derived neighbourhood
+
+`exists_homotopic_loopZPow_of_homeomorph` in `LoopPower.lean` transports the
+generation statement across a homeomorphism: if every loop at `x` is homotopic to
+`loopZPow p k`, then every loop at `h x` is homotopic to
+`loopZPow (p.map h.continuous) k`. `walkPath_map` in `WalkPathConcatenation.lean`
+(with `spaceInclusion` and `edgePath_map`) says that the walk path of a walk
+pushed along `edgeGraphHom hLK` is literally the walk path pushed along the
+inclusion `L.space → K.space`; this is the walk-path analogue of the existing
+`walkMonodromy_ofLe`, and it is what lets a cycle of a subcomplex be read as a
+cycle of the ambient complex without recomputing its class.
+
+### Exact remaining obligation
+
+Delivered: the classical fact of the previous list (steps 1 and 2 of the task),
+the correction of `IsGeneratedByPolygon` to integer exponents, the general bridge
+from topological generation to `IsGeneratedByPolygon`, and the unconditional
+instance for a polygon. About 995 new lines plus 61 changed, against the earlier
+estimate of 600--1200 for the circle route alone; the estimate held.
+
+What is still open is only step 3 for a **derived neighbourhood**, and it is
+plumbing, not mathematics. For `N = derivedNeighborhood K P` with `P` a polygon:
+
+1. `(secondDerived P).faces ⊆ (derivedNeighborhood K P).faces` is not in the tree.
+   Note that the naive `(barycentricSubdivision P).faces ⊆ N.faces` is the wrong
+   statement and is false: `derivedNeighborhood_faces_subset` puts `N` inside
+   `secondDerived K`, so only the second derived complex of `P` can sit inside it.
+   The correct statement is the argument already inlined at
+   `DerivedNeighborhood.lean:141--153`: unfold a face as `D.image centroid` with
+   `IsFlag (barycentricSubdivision P) D`, raise the flag by
+   `IsFlag.of_le (barycentricSubdivision_faces_subset hPK)`, and discharge the
+   side condition with `exists_mem_image_centroid_of_mem_barycentricSubdivision`.
+   About five lines.
+2. With it, `barycentricSubdivision_faces_subset` puts
+   `barycentricSubdivision (secondDerived P)` inside `barycentricSubdivision N`,
+   and that complex is again a connected closed one-dimensional combinatorial
+   manifold with the same space as `P`, so `exists_cycle_generating_loops` gives
+   its spanning cycle and `walkPath_map` transports the cycle's path. That is the
+   `γ` the endpoint needs.
+3. The `hgen` hypothesis then needs three transports, all available:
+   `(barycentricSubdivision N).space = N.space` (`IsSubdivision.space_eq`, so a
+   `Homeomorph.setCongr` on paths), `homotopic_derivedNeighborhoodRetractLoop`
+   into `derivedNeighborhoodSubcomplex K P`, and
+   `exists_homotopic_loopZPow_of_homeomorph` across
+   `derivedNeighborhoodSubcomplex K P ≃ₜ P.space`. That last homeomorphism exists
+   only as an anonymous `let` inside the proof of `derivedNeighborhoodHomotopyEquiv`
+   (`DerivedNeighborhoodHomology.lean:19`); it has to be exported as a named
+   declaration first, six lines, with `left_inv` and `right_inv` both `rfl`.
+
+Corrected cost for the remainder: 300--500 lines, no new mathematics, dominated by
+set-equality and subtype transport. The ambient hypotheses of the endpoint are
+already available, since `IsCombinatorialManifoldWithBoundary.derivedNeighborhood`
+(`DerivedNeighborhoodManifold.lean:97`) makes `N` a manifold with boundary of the
+same dimension and `IsCombinatorialManifoldWithBoundary.secondDerived` does the
+same for the ambient `secondDerived K`, which is the complex `N` is a subcomplex
+of. Obligation 2 of C.6 was again deliberately not started.
