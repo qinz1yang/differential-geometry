@@ -66,7 +66,7 @@ theorem isGaussianGradientRicciSoliton_lintegral_exp_neg_of_hamiltonNormalized
     {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; ℝ⟯}
     (hGaussian : isGaussianGradientRicciSoliton (E := E) g f 1)
     (hnormal : hamiltonNormalized g f 1) :
-    ∫⁻ x, ENNReal.ofReal (Real.exp (-f x)) 
+    ∫⁻ x, ENNReal.ofReal (Real.exp (-f x))
       ∂DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure (I := I) (M := M) g =
       ENNReal.ofReal ((4 * Real.pi) ^ ((Module.finrank ℝ E : ℝ) / 2)) := by
   obtain ⟨e, hg, hf⟩ :=
@@ -100,7 +100,7 @@ theorem normalizedGradientRicciSoliton_lintegral_exp_neg_of_scalar_eq_zero
     {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; ℝ⟯}
     (h : normalizedGradientRicciSoliton g f)
     {x : M} (hx : metricScalarAt g x = 0) :
-    ∫⁻ y, ENNReal.ofReal (Real.exp (-f y)) 
+    ∫⁻ y, ENNReal.ofReal (Real.exp (-f y))
       ∂DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure (I := I) (M := M) g =
       ENNReal.ofReal ((4 * Real.pi) ^ ((Module.finrank ℝ E : ℝ) / 2)) :=
   isGaussianGradientRicciSoliton_lintegral_exp_neg_of_hamiltonNormalized
