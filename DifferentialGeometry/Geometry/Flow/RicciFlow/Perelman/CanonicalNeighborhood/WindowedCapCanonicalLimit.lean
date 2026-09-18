@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CapDepthDeformation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedCapLimit
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedCanonicalDomainLimit
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedCanonicalBoundsLimit
@@ -25,7 +26,7 @@ attribute [local instance] PointedFlowData.topology PointedFlowData.charted
 variable {M : ℕ → Type u} [∀ i, TopologicalSpace (M i)] [∀ i, ChartedSpace ThreeSpace (M i)]
   [∀ i, IsManifold I3 ∞ (M i)] [∀ i, T2Space (M i)] [∀ i, SigmaCompactSpace (M i)]
 
-theorem CanonicalWitness.eventually_image_of_windowed_models_of_cap
+theorem CanonicalWitness.eventually_image_of_windowed_models_of_cap_with_strict_depth
     {D : ℕ → RealTimeInterval} {S : ∀ i, SolutionOn (I := I3) (M := M i) (D i)}
     (hS : ∀ i, IsSolutionOn (S i)) {delta : ℕ → ℝ} {kappa : ℝ}
     {x : ∀ i, M i} {t : ℕ → ℝ}
@@ -149,6 +150,57 @@ theorem CanonicalWitness.eventually_image_of_windowed_models_of_cap
           (Real.sqrt_nonneg _)) (Real.sqrt_nonneg _))
     time_derivative := (hderiv.2).trans (mul_le_mul_of_nonneg_right hCtime (sq_nonneg _)) }
   exact ⟨K', rfl, cap', hdepth, rfl, htube, hcore, hmap⟩
+
+theorem CanonicalWitness.eventually_image_of_windowed_models_of_cap
+    {D : ℕ → RealTimeInterval} {S : ∀ i, SolutionOn (I := I3) (M := M i) (D i)}
+    (hS : ∀ i, IsSolutionOn (S i)) {delta : ℕ → ℝ} {kappa : ℝ}
+    {x : ∀ i, M i} {t : ℕ → ℝ}
+    (W : ∀ i, WindowedModelWitness (delta i) kappa (S i) (x i) (t i))
+    (hdelta : Tendsto delta atTop (𝓝 0))
+    (hreg : ∀ i, Ioo (t i - (delta i * (S i).scalar (t i) (x i))⁻¹) (t i) ⊆ (D i).regular)
+    (L : PointedFlowData.{u, 0, 0} I3 ancientTimeInterval)
+    [PreconnectedSpace L.M] (hcomplete : MetricComplete (L.atTime 0))
+    {phi : ℕ → ℕ} (hphi : Tendsto phi atTop atTop)
+    (F : PointedRiemannianConvergenceMaps ⟨fun i => (W i).model.atTime 0⟩
+      (L.atTime 0) phi)
+    (hcmp : ∀ K : Set L.M, IsCompact K → ∀ A : ℝ, 0 < A → ∀ order : ℕ,
+      ∀ eta : ℝ, 0 < eta → ∀ᶠ i in atTop,
+        Nonempty (MetricComparisonOn L.S.base.metric (W (phi i)).model.S.base.metric
+          (F.map i) K (Icc (-A) 0) order eta))
+    {eps alpha C1 C2 : ℝ} (K : CanonicalWitness L.S eps C1 C2 L.basepoint 0)
+    (hscalar : L.S.scalar 0 L.basepoint = 1)
+    (cap : LocalCap L.S eps L.basepoint 0 K.domain.carrier)
+    (hcap : ∃ depth, K.alternative = CanonicalAlternative.cap cap depth)
+    (ha : 0 < alpha) (hsmall : 2 * alpha < 1 / 11)
+    (heps : eps < neckModelTolerance (neckModelTolerance alpha / 4)) :
+    ∀ᶠ i in atTop, ∃ K' : CanonicalWitness (S (phi i)) (2 * alpha) (max C1 2)
+        (max (sourceCurvatureBound 3 C2)
+          (max (4 * C2) (2 * windowedGoodPointConstant (18 * sourceCurvatureBound 3 C2))))
+        (x (phi i)) (t (phi i)),
+      K'.domain.carrier =
+        (partialDiffeomorphTransMixed (F.partialDiffeomorph i) (W (phi i)).embedding) ''
+          K.domain.carrier ∧
+      ∃ cap' depth, K'.alternative = CanonicalAlternative.cap cap' depth := by
+  let beta := neckModelTolerance alpha / 4
+  have hb : 0 < beta := div_pos (neckModelTolerance_pos ha) (by norm_num)
+  have hbsmall : 2 * beta < 1 / 11 := by
+    have hba := neckModelTolerance_le alpha
+    dsimp only [beta]
+    linarith
+  obtain ⟨K₀, hdomain, _hradius, cap₀, depth₀, hcap₀, hstrict⟩ :=
+    K.exists_cap_with_strict_depth L.isSolution cap hcap hb hbsmall heps
+  have htol : 2 * beta < neckModelTolerance alpha := by
+    dsimp only [beta]
+    linarith [neckModelTolerance_pos ha]
+  have hfar : ∀ y ∈ cap₀.tube, 10000 < metricDistance (L.S.base.metric 0) L.basepoint y := by
+    intro y hy
+    simpa only [hscalar, Real.sqrt_one, div_one] using hstrict y hy
+  have hh := K₀.eventually_image_of_windowed_models_of_cap_with_strict_depth hS W hdelta hreg L hcomplete
+    hphi F hcmp hscalar cap₀ ⟨depth₀, hcap₀⟩ ha hsmall htol hfar
+  filter_upwards [hh] with i hi
+  obtain ⟨K', himage, cap', depth, halt, _⟩ := hi
+  exact ⟨K', by simpa only [hdomain] using himage, cap', depth, halt⟩
+
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
 
