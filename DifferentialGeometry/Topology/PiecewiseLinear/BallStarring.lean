@@ -93,4 +93,30 @@ theorem IsPLHomeomorphOn.exists_stdCenter_eq_of_mem_image_openSimplex {E : Type*
   change g (Function.invFunOn u (stdSimplex ℝ (Fin (m + 2))) (f₀ (stdCenter m))) = g y
   rw [hf₀c, hu.bijOn.invOn_invFunOn.1 hyS]
 
+theorem IsPLHomeomorphOn.image_stdSimplexBoundary_eq_boundaryComplex {E : Type*}
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E] [DecidableEq E] {m : ℕ}
+    {P : Set E} {g : (Fin (m + 2) → ℝ) → E} (hg : IsPLHomeomorphOn g (stdSimplex ℝ (Fin (m + 2))) P)
+    (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces] (hK : K.space = P) :
+    g '' stdSimplexBoundary (m + 1) = (boundaryComplex (m + 1) K).space := by
+  have hgK : IsPLHomeomorphOn g (stdSimplex ℝ (Fin (m + 2))) K.space := hK.symm ▸ hg
+  rw [boundaryComplex_space_of_isPLHomeomorphOn_stdSimplex K hgK, simplexBoundary_stdVertices_space]
+
+theorem IsPLHomeomorphOn.image_openSimplex_eq_sdiff_boundaryComplex {E : Type*}
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E] [DecidableEq E] {m : ℕ}
+    {P : Set E} {g : (Fin (m + 2) → ℝ) → E} (hg : IsPLHomeomorphOn g (stdSimplex ℝ (Fin (m + 2))) P)
+    (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces] (hK : K.space = P) :
+    g '' openSimplex (stdVertices m) = P \ (boundaryComplex (m + 1) K).space := by
+  rw [hg.image_openSimplex_stdVertices, hg.image_stdSimplexBoundary_eq_boundaryComplex K hK]
+
+theorem IsPLBall.exists_isPLHomeomorphOn_stdSimplex_stdCenter_eq_of_notMem_boundaryComplex
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E] [DecidableEq E]
+    {m : ℕ} {P : Set E} (hP : IsPLBall (m + 1) P) (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
+    (hK : K.space = P) {x : E} (hx : x ∈ P \ (boundaryComplex (m + 1) K).space) :
+    ∃ f : (Fin (m + 2) → ℝ) → E,
+      IsPLHomeomorphOn f (stdSimplex ℝ (Fin (m + 2))) P ∧ f (stdCenter m) = x := by
+  obtain ⟨g, hg⟩ := hP
+  refine hg.exists_stdCenter_eq_of_mem_image_openSimplex ?_
+  rw [hg.image_openSimplex_eq_sdiff_boundaryComplex K hK]
+  exact hx
+
 end DifferentialGeometry.Topology.PiecewiseLinear
