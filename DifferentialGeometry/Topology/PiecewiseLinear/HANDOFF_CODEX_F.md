@@ -2950,3 +2950,63 @@ import ...StarPair failed, environment already contains
 
 检查 `VertexBranchSection` exit=0（10.4 秒）、零 warning；`AuditF266.lean` 六项仅
 `propext`、`Classical.choice`、`Quot.sound`。下一审计文件 `AuditF267.lean`。
+
+### 19.124 PL 转写已在树里；单顶点图卡的假设现在全是几何输入
+
+**grep 先行的结果（协调者三条都问到了点上，答案是"已有"）**：
+- 沿 PL 同胚搬运复形：`exists_simplicialComplex_image_of_affineOn_faces`（`PLImage.lean:113`）。
+  它不只给 `L.space = f '' K.space` 和 `IsPLHomeomorphOn f K.space L.space`，**还给面的刻画**
+  `∀ t, t ∈ L.faces ↔ ∃ s ∈ K.faces, t = s.image f`——这一条正是保住 `M.faces ⊆ K.faces`
+  与 `{p} ∈ M.faces` 的关键。`exists_isPLHomeomorphOn_image`（`:140`）是 PL 版但**丢掉了面的刻画**
+  （`:150` 处用 `-` 吃掉），所以对本任务不够，要用 `_of_affineOn_faces` 版并自己走细分那一步。
+- 细分到 `h` 在每个面上仿射：`IsPiecewiseAffineOn.exists_isSubdivision_affineOn_faces`（`PLImage.lean:147` 使用）。
+- 把子复形一起细分：`IsSubdivision.restrict`（`Subcomplex.lean:108`）——
+  `IsSubdivision R K → L.faces ⊆ K.faces → IsSubdivision (restrict R L.space) L`。
+- `simplicialMap` 层：`simplicialImage`（`SimplicialImage.lean:89`）是上面那条的底层构造，不必重做。
+
+**本轮闭合一：PL 转写**（新模块 `SimplicialPairImage.lean`）
+`exists_simplicialComplex_pair_image_of_isPiecewiseAffineOn`：给 `IsPiecewiseAffineOn h K.space`、
+`InjOn h K.space`、`M.faces ⊆ K.faces`、`{p} ∈ M.faces`，产出 `K₁ M₁ : SimplicialComplex ℝ F`，
+满足 `K₁.faces.Finite`、`M₁.faces.Finite`、`M₁.faces ⊆ K₁.faces`、`{h p} ∈ M₁.faces`、
+`K₁.space = h '' K.space`、`M₁.space = h '' M.space`、
+`IsPLHomeomorphOn h K.space K₁.space`、`IsPLHomeomorphOn h M.space M₁.space`。
+做法：先 `exists_isSubdivision_affineOn_faces` 得 `K'`，再 `M' := restrict K' M.space`
+（`IsSubdivision.restrict` 保证 `M'.space = M.space`），然后对 `K'` 与 `M'` **用同一个 `h`**
+各做一次 `exists_simplicialComplex_image_of_affineOn_faces`；
+`M₁.faces ⊆ K₁.faces` 直接由两边的面刻画加 `M'.faces ⊆ K'.faces` 得到，不需要额外几何。
+这正是 §19.123 末尾估的 200–500 行那一条，**实际 40 行**——估计又偏高，原因同上：没先 grep 就估。
+
+**本轮闭合二：两条 bookkeeping 债**（新模块 `VertexBranchInput.lean`）
+`exists_linearEquiv_normalForm_of_isCombinatorialManifold` 同时消掉 `hside` 与 `hlink`：
+- `hlink` ← `IsCombinatorialManifold 2 M`，直接按定义 `hMan p hp`
+  （`Polyhedron.lean:60` 的定义就是 `∀ v, {v} ∈ K.faces → IsPLSphere n (link K {v}).space`，
+  不必 import `VertexChart`）。**坑**：该定义带 `open Classical in`，用的是 `Classical.propDecidable`，
+  与 section 里的 `[DecidableEq E]` 不是同一个实例，报 type mismatch。
+  解法是**去掉 `[DecidableEq E]` 绑定、证明里用 `classical`**，两边实例就字面相同；
+  linter 本来也提示该绑定在类型里没用到。
+- `hside` ← `exists_triangulation_union_with_halfSpace_faces K (isPolyhedron_space K)
+  ℓ.toLinearMap.toAffineMap (ℓ p)` 取 `D := K.space`，得 `K₂ := restrict R K.space`；
+  `M₂ := restrict K₂ M.space` 由 `IsSubdivision.restrict` 得 `M₂.space = M.space`。
+  细分后连接变了，用
+  `exists_isPLHomeomorphOn_geometricLink_of_isSubdivision_preserving_height_sign`
+  （`LinkHeightSubdivision.lean:126`）把 `link M₂ {p}` 与 `link M {p}` 对上：
+  它同时给 `= ℓ p`、`< ℓ p`、`ℓ p <` 三条像等式，于是
+  `hlink₂ = hlinkM.of_isPLHomeomorphOn hf.symm`（`IsPLHomeomorphOn.symm` 在 `PLHomeomorph.lean:65`），
+  `hpos₂`/`hneg₂` 按 `VertexSectionSubdivision.lean:94-105` 的写法沿严格号像等式拉回。
+消费者现在只需给：`IsCombinatorialManifold 2 M`、
+`IsPLSphere 1 (M.space ∩ {x | ℓ x = ℓ p})`（两张片交成圆）、
+以及 `closedStar M p` 里上下各一点。**全部是真几何输入，没有 bookkeeping 债。**
+
+**确切剩余义务（对称情形本身，仍未闭合）**：转写砖有了，但把它接成"两张都不平坦"的论证还缺一步：
+要把第一次拉直得到的 germ 图卡 `IsPLHomeomorphOn h U V` 变成能喂给转写的形式，
+需要 `IsPiecewiseAffineOn h K.space` 与 `InjOn h K.space`，而
+`exists_linearEquiv_normalForm_of_*` 交付的是**开集 `U` 上**的图卡，
+`K.space ⊆ U` 并不自动成立——`U` 只保证含 `p`。所以还要一步
+"把复形收缩到图卡定义域内"（取 `closedStar` 或在 `U` 内取一个含 `p` 的子复形）。
+`IsPLHomeomorphOn.restrict`（`PLImage.lean:168`）要求限制到**多面体**，闭星正是多面体，
+所以路线是：先换成 `closedStar K p ⊆ U`，再转写。**估计 60–150 行，未验证**；
+这一次的估计基于已经核对过的三个接口（`restrict`、`closedStar` 是多面体、转写砖），
+但仍未写，按前两次的记录应当当作上界不可靠。
+
+检查 `SimplicialPairImage` exit=0（8.9 秒）、`VertexBranchInput` exit=0（10.2 秒），均零 warning；
+`AuditF267.lean` 两项仅 `propext`、`Classical.choice`、`Quot.sound`。下一审计文件 `AuditF268.lean`。
