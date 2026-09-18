@@ -2560,3 +2560,73 @@ M2 的 `hy : y ∈ closure (S \ D) \ D` **不必算闭包**：`y ∈ S \ D` 经 
 ### 剩余
 
 第 4 步（沿弧的链归纳）。给 F 的输出形状见下一节。
+
+## 39. 2026-09-18 第 4 步的图卡链层 — done（`ArcChartChain.lean`），并报告 F 的一处接口缺陷
+
+协调者已确认：**源侧 ⟹ 像侧为假**，像侧契约是最终形状。按此实现。
+
+    exists_arcChartChain_of_imageContract (M N : SimplicialComplex ℝ E) (v : Fin (n+1) → E)
+      (hvertex : ∀ i, ∃ N₁ φ a₁ b₁ U₀ V₀ Ψ,
+          a₁ ≠ b₁ ∧
+          (geometricLink N₁ {φ (v i)}).space ∩ {x | x.2.2 = (φ (v i)).2.2} = {a₁, b₁} ∧
+          (两侧性两条) ∧
+          IsOpen U₀ ∧ v i ∈ U₀ ∧ IsPLHomeomorphOn Ψ U₀ V₀ ∧ Ψ (v i) = 0 ∧
+          ∀ᶠ y in 𝓝 (v i), (y ∈ M.space → (Ψ y).2.1 = 0) ∧ (y ∈ N.space → (Ψ y).2.2 = 0))
+      (τ : Fin n → ZMod 2) :
+      ∃ N₁ φ a₁ b₁ side U V Ψ ε, (逐顶点契约) ∧
+        (∀ i, side i = if ε i = 0 then a₁ i else b₁ i) ∧
+        (∀ i, side i ∈ (geometricLink (N₁ i) {φ i (v i)}).space ∩ {x | x.2.2 = …}) ∧
+        (逐顶点图卡四条) ∧ (∀ i : Fin n, ε i.succ = ε i.castSucc + τ i)
+
+即：沿分支的每个顶点带**像侧契约**与它产出的图卡，则整条链上存在**相容的侧选择** `ε`，
+并由它在每个顶点的两点 `{a₁ i, b₁ i}` 里**选定一点** `side i`，选中的点确实落在
+连接与平面的交里。`ε` 的跳变正是给定的过渡符号 `τ`（`exists_sideChoice_of_chain`，
+`BranchSignChain.lean:13`，E3 的文件，只消费不修改）。
+
+输出形状：**不是** `OpenPartialHomeomorph M (ℝ × ℝ × ℝ)`，也不是纯 germ。
+是**星形（逐顶点的开集图卡族）＋ 沿链的相容侧选择**：每个 `i` 给
+`IsOpen (U i)`、`v i ∈ U i`、`IsPLHomeomorphOn (Ψ i) (U i) (V i)`、`Ψ i (v i) = 0`
+与两片的 `∀ᶠ` 条款。把这族黏成单张 `OpenPartialHomeomorph` 需要 F 的
+§19.134 第 4、5 条（覆盖级条款与 `S ⊆ ⋃ Φ_i.source ⊆ W`），那不在本车道。
+
+### 给 F 的接口缺陷报告（必须改，否则链层用不上顶点定理）
+
+我最初把 `hvertex` 写成"源侧数据 ＋ 一个契约供应器
+`∀ K₁ N₁ φ, (F 的结构条款) → ∃ a₁ b₁, 契约`"，好让链层直接调用
+`exists_chart_two_sheets_of_transverse_vertex`。**这个写法是空的**：
+结构条款只说 `N₁` 有限、`N₁ ⊆ K₁`、`φ (v i) = 0`、`{φ (v i)} ∈ N₁.faces`、
+`K₁.space ∈ 𝓝 (φ (v i))`、`link N₁` 是 1-球面——取 `link N₁ {0}` 为平面
+`{x.2.2 = 0}` 内的一个三角形边界即满足全部结构条款，而它与该平面的交是整条 1-球面，
+不是两点。于是契约供应器**无解**，整条定理空转。已弃用，改成现在的形状。
+
+根因：`exists_chart_two_sheets_of_transverse_vertex` 的结论是
+`∃ K₁ N₁ φ, … ∧ (∀ a₁ b₁, 契约 → … → ∃ 图卡)`，契约位于**存在量词内部的蕴含前件**。
+消费者要用它就必须对 F 交付的**那一个** `N₁` 证契约，但 `N₁` 被存在量词藏住了；
+任何在定理外部写得出的契约假设，要么与那个 `N₁` 无关（于是无用），
+要么对所有 `N₁` 全称（于是为假）。**这是形状问题，不是强度问题。**
+
+两条修法，任选其一即可让链层直接调用顶点定理：
+- (α) 把 `(K₁, N₁, φ)` 从存在量词里提出来：做成一个具名定义（或让顶点定理接受它们作为输入
+  并附带"它们是 `K, M, N, p` 的转写"这一条），契约就能对它们陈述；
+- (β) 把像侧契约（`a₁ ≠ b₁`、交等于 `{a₁,b₁}`、两侧性两条）直接提升为
+  `exists_chart_two_sheets_of_transverse_vertex` 的**顶层假设**，结论只留图卡。
+  (β) 改动最小，且与"契约不可由源侧导出"的结论一致——不可导出的东西本来就该是假设。
+
+在 F 采纳 (α) 或 (β) 之前，链层按本节的 `hvertex` 形状消费：
+F 在每个顶点自己把顶点定理与该顶点的横截性合成，交出打包好的
+"契约 ＋ 图卡"，链层负责 `choose` 与侧选择。**本节的输出不因 F 选哪条修法而改变。**
+
+坑：`choose` 不接受 `-` 占位，要用 `_hpos`、`_hneg` 这样的下划线名；
+`refine` 里用 `fun i => if … then … else …` 作见证后，目标里是未 β 归约的
+`(fun i => …) i`，`rw [if_pos]` 不匹配，`by_cases … <;> simp [hεi]` 最稳。
+
+聚焦检查 `ArcChartChain` exit=0（10.4 秒）、零 warning；
+`.lake/scratch/AuditHArcChartChain.lean` 一项仅 `propext`、`Classical.choice`、`Quot.sound`。
+
+### 第 4 步的另一半（球对方向）仍未开始
+
+`ArcDerivedNeighborhood.lean` 已有**绝对**版本（弧的导出邻域是 3-球）。
+**相对**版本（导出邻域与弧构成球对）要把第 38 节的
+`isPLBallPair_union_of_coneSet_disk` 沿 `arcChainFace` 归纳，
+前置是把 `derivedNeighborhoodCell K (arcChainFace v j)` 认成**原位锥形球对**
+（锥顶、边界 2-球面、弧在其中的那一段）。这一条尚未测绘，**未开始，不报区间**。
