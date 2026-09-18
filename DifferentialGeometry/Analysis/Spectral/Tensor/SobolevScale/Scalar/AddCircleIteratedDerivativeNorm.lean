@@ -1,5 +1,7 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Scalar.AddCircleIteratedDerivativeLift
 import DifferentialGeometry.Analysis.FunctionalAnalysis.ContinuousLinearMap.ClosedRange
+import DifferentialGeometry.Analysis.FunctionalAnalysis.ContinuousLinearMap.Perturbation
+import Mathlib.Topology.MetricSpace.Pseudo.Basic
 
 noncomputable section
 
@@ -200,6 +202,94 @@ theorem exists_norm_timeL2_le_max_of_iteratedParameterDerivativeHs
   exact ContinuousLinearMap.exists_norm_le_max_of_lifting J QH QL K
     (inclusionPi_compLpL_injective g _ T) (derivativePi_compLpL_inclusionPi g n m T)
     (exists_derivativePi_timeL2_lift g n m T)
+open scoped Topology
+
+private theorem tendsto_of_fixed_graph_estimate
+    {X Y Z P : Type*} [NormedAddCommGroup X] [NormedSpace ℝ X]
+    [NormedAddCommGroup Y] [NormedSpace ℝ Y] [NormedAddCommGroup Z] [NormedSpace ℝ Z]
+    {l : Filter P} (J : X →L[ℝ] Y) (D : X →L[ℝ] Z)
+    (x₀ : X) (x : P → X) {C : ℝ} (hC : 0 ≤ C)
+    (hb : ∀ v, ‖v‖ ≤ C * max ‖J v‖ ‖D v‖)
+    (hJ : Tendsto (fun p => J (x p)) l (𝓝 (J x₀)))
+    (hD : Tendsto (fun p => D (x p)) l (𝓝 (D x₀))) : Tendsto x l (𝓝 x₀) :=
+  ContinuousLinearMap.tendsto_of_tendsto_apply_of_norm_le_max
+    J D (fun _ : P => D) x₀ x hC hb tendsto_const_nhds hJ hD
+
+theorem tendsto_timeL2_of_tensorHsInclusion_of_iteratedParameterDerivativeHs
+    {ι P : Type*} [Fintype ι] {l : Filter P}
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) (n m : ℕ) (T : ℝ)
+    (W₀ : timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 ((n + 2 + m : ℕ) : ℝ))) T)
+    (W : P → timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 ((n + 2 + m : ℕ) : ℝ))) T) :
+    let J := (ContinuousLinearMap.piLpMap 2 (fun _ : ι =>
+      tensorHsInclusion (g := g) (r := 0) (s := 0)
+        (by exact_mod_cast (show n + 1 + m ≤ n + 2 + m by omega) :
+          ((n + 1 + m : ℕ) : ℝ) ≤ ((n + 2 + m : ℕ) : ℝ)))).compLpL 2 (timeMeasure T)
+    let D := (ContinuousLinearMap.piLpMap 2 (fun _ : ι =>
+      iteratedParameterDerivativeHs g (n + 2) m)).compLpL 2 (timeMeasure T)
+    Tendsto (fun p => J (W p)) l (𝓝 (J W₀)) →
+    Tendsto (fun p => D (W p)) l (𝓝 (D W₀)) →
+    Tendsto W l (𝓝 W₀) := by
+  intro J D hJ hD
+  obtain ⟨C, hC, hbound⟩ :=
+    exists_norm_timeL2_le_max_of_iteratedParameterDerivativeHs (ι := ι) g n m T
+  change ∀ x, ‖x‖ ≤ C * max ‖J x‖ ‖D x‖ at hbound
+  exact tendsto_of_fixed_graph_estimate J D W₀ W hC hbound hJ hD
+
+theorem tendstoUniformlyOn_of_tensorHsInclusion_of_iteratedParameterDerivativeHs
+    {ι P X : Type*} [Finite ι] {l : Filter P} {s : Set X}
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) (n m : ℕ)
+    (W₀ : X → PiLp 2 (fun _ : ι => TensorHs g 0 0 ((n + 2 + m : ℕ) : ℝ)))
+    (W : P → X → PiLp 2 (fun _ : ι => TensorHs g 0 0 ((n + 2 + m : ℕ) : ℝ)))
+    (hJ : TendstoUniformlyOn (fun p x =>
+      (ContinuousLinearMap.piLpMap 2 (fun _ : ι =>
+        tensorHsInclusion (g := g) (r := 0) (s := 0)
+          (by exact_mod_cast (show n + 1 + m ≤ n + 2 + m by omega) :
+            ((n + 1 + m : ℕ) : ℝ) ≤ ((n + 2 + m : ℕ) : ℝ)))) (W p x))
+      (fun x => (ContinuousLinearMap.piLpMap 2 (fun _ : ι =>
+        tensorHsInclusion (g := g) (r := 0) (s := 0)
+          (by exact_mod_cast (show n + 1 + m ≤ n + 2 + m by omega) :
+            ((n + 1 + m : ℕ) : ℝ) ≤ ((n + 2 + m : ℕ) : ℝ)))) (W₀ x)) l s)
+    (hD : TendstoUniformlyOn (fun p x =>
+      (ContinuousLinearMap.piLpMap 2 (fun _ : ι =>
+        iteratedParameterDerivativeHs g (n + 2) m)) (W p x))
+      (fun x => (ContinuousLinearMap.piLpMap 2 (fun _ : ι =>
+        iteratedParameterDerivativeHs g (n + 2) m)) (W₀ x)) l s) :
+    TendstoUniformlyOn W W₀ l s := by
+  let _ := Fintype.ofFinite ι
+  let J := ContinuousLinearMap.piLpMap 2 (fun _ : ι =>
+    tensorHsInclusion (g := g) (r := 0) (s := 0)
+      (by exact_mod_cast (show n + 1 + m ≤ n + 2 + m by omega) :
+        ((n + 1 + m : ℕ) : ℝ) ≤ ((n + 2 + m : ℕ) : ℝ)))
+  let D := ContinuousLinearMap.piLpMap 2 (fun _ : ι =>
+    iteratedParameterDerivativeHs g (n + 2) m)
+  obtain ⟨C, hC, hbound⟩ :=
+    exists_norm_piLp_le_max_of_iteratedParameterDerivativeHs (ι := ι) g n m
+  change TendstoUniformlyOn (fun p x => J (W p x)) (fun x => J (W₀ x)) l s at hJ
+  change TendstoUniformlyOn (fun p x => D (W p x)) (fun x => D (W₀ x)) l s at hD
+  apply Metric.tendstoUniformlyOn_iff.mpr
+  intro ε hε
+  have hC1 : 0 < C + 1 := by linarith
+  have hδ : 0 < ε / (C + 1) := div_pos hε hC1
+  filter_upwards [Metric.tendstoUniformlyOn_iff.mp hJ _ hδ,
+    Metric.tendstoUniformlyOn_iff.mp hD _ hδ] with p hp hq
+  intro x hx
+  have hj : ‖J (W₀ x - W p x)‖ < ε / (C + 1) := by
+    simpa only [map_sub, dist_eq_norm] using hp x hx
+  have hd : ‖D (W₀ x - W p x)‖ < ε / (C + 1) := by
+    simpa only [map_sub, dist_eq_norm] using hq x hx
+  have hmax : max ‖J (W₀ x - W p x)‖ ‖D (W₀ x - W p x)‖ < ε / (C + 1) :=
+    max_lt hj hd
+  have hnonneg : 0 ≤ max ‖J (W₀ x - W p x)‖ ‖D (W₀ x - W p x)‖ :=
+    le_trans (norm_nonneg _) (le_max_left _ _)
+  have hsmall :
+      (C + 1) * max ‖J (W₀ x - W p x)‖ ‖D (W₀ x - W p x)‖ < ε := by
+    calc
+      _ < (C + 1) * (ε / (C + 1)) := mul_lt_mul_of_pos_left hmax hC1
+      _ = ε := mul_div_cancel₀ ε hC1.ne'
+  rw [dist_eq_norm]
+  exact (hbound (W₀ x - W p x)).trans_lt
+    ((mul_le_mul_of_nonneg_right (by linarith : C ≤ C + 1) hnonneg).trans_lt hsmall)
+
 
 end AddCircle
 

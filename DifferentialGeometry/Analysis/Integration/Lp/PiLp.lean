@@ -143,3 +143,33 @@ theorem piLpEquiv_symm_piLpMap (L : ∀ i, X i →L[𝕜] Y i)
     LinearIsometryEquiv.apply_symm_apply]
 
 end MeasureTheory.Lp
+
+open Filter MeasureTheory
+open scoped Topology ENNReal
+
+namespace MeasureTheory.Lp
+
+theorem tendsto_piLp_iff
+    {𝕜 : Type*} [NontriviallyNormedField 𝕜]
+    {Ω X ι : Type*} [MeasurableSpace Ω] [Fintype ι]
+    {E : ι → Type*} [∀ i, NormedAddCommGroup (E i)] [∀ i, NormedSpace 𝕜 (E i)]
+    (μ : Measure Ω) {l : Filter X} {f : X → Lp (PiLp 2 E) 2 μ}
+    {f0 : Lp (PiLp 2 E) 2 μ} :
+    Tendsto f l (𝓝 f0) ↔ ∀ i,
+      Tendsto (fun x => (PiLp.proj (𝕜 := 𝕜) 2 E i).compLpL 2 μ (f x)) l
+        (𝓝 ((PiLp.proj (𝕜 := 𝕜) 2 E i).compLpL 2 μ f0)) := by
+  constructor
+  · intro hf i
+    exact ((PiLp.proj (𝕜 := 𝕜) 2 E i).compLpL 2 μ).continuous.tendsto f0 |>.comp hf
+  · intro hf
+    let e := piLpEquiv (𝕜 := 𝕜) (X := E) μ
+    have hc (i : ι) : Tendsto (fun x => e (f x) i) l (𝓝 (e f0 i)) := hf i
+    have hp : Tendsto (fun x i => e (f x) i) l (𝓝 (fun i => e f0 i)) :=
+      tendsto_pi_nhds.mpr hc
+    have he : Tendsto (fun x => e (f x)) l (𝓝 (e f0)) :=
+      (PiLp.continuous_toLp (p := 2) (β := fun i => Lp (E i) 2 μ)).tendsto _ |>.comp hp
+    have hi : Tendsto (fun x => e.symm (e (f x))) l (𝓝 (e.symm (e f0))) :=
+      (e.symm.continuous.tendsto (e f0)).comp he
+    simpa only [e.symm_apply_apply] using hi
+
+end MeasureTheory.Lp

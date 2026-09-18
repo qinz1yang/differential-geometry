@@ -60,44 +60,45 @@ private theorem exists_norm_ccTensorToHs_add_two_le_parameter_derivatives
         ((hmul _ _).trans (mul_le_mul_of_nonneg_left h1 (norm_nonneg D))))
     _ = _ := by ring
 
-private theorem exists_norm_ccTensorToHs_three_le_parameter_derivatives
-    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) :
+private theorem exists_norm_ccTensorToHs_even_le_parameter_derivatives
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) (n : ℕ) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ (S : SmoothCcTensor g 0 0) (B : ℝ),
       0 ≤ B →
-      (∀ j ≤ 4, ‖(parameterDerivativeCcTensor g)^[j] S‖ ≤ B) →
-      ‖ccTensorToHs g 0 3 S‖ ≤ C * B := by
-  have hn {a b : ℝ} (h : a = b) (W : SmoothCcTensor g 0 0) :
-      ‖ccTensorToHs g 0 a W‖ = ‖ccTensorToHs g 0 b W‖ :=
-    congrArg (fun t : ℝ => ‖ccTensorToHs g 0 t W‖) h
-  obtain ⟨C₀, hC₀, hzero⟩ := hs_le_jet g 0 0
-  simp_rw [hn (show ((0 : ℕ) : ℝ) = 0 by norm_num)] at hzero
-  have hzero' (W : SmoothCcTensor g 0 0) :
-      ‖ccTensorToHs g 0 0 W‖ ≤ C₀ * ‖W‖ := by
-    simpa only [Nat.cast_zero, zero_add, Finset.sum_range_one,
-      iteratedCovGrad_zero] using hzero W
-  obtain ⟨C₂, hC₂, htwo⟩ := exists_norm_ccTensorToHs_add_two_le_parameter_derivatives g 0
-  obtain ⟨C₄, hC₄, hfour⟩ := exists_norm_ccTensorToHs_add_two_le_parameter_derivatives g 2
-  simp_rw [hn (show ((0 : ℕ) : ℝ) = 0 by norm_num),
-    hn (show ((0 : ℕ) : ℝ) + 2 = 2 by norm_num)] at htwo
-  simp_rw [hn (show ((2 : ℕ) : ℝ) = 2 by norm_num),
-    hn (show ((2 : ℕ) : ℝ) + 2 = 4 by norm_num)] at hfour
-  refine ⟨C₄ * C₂ * C₀, by positivity, ?_⟩
-  intro S B hB hbound
-  have htwo' (j : ℕ) (hj : j ≤ 2) :
-      ‖ccTensorToHs g 0 2 ((parameterDerivativeCcTensor g)^[j] S)‖ ≤
-        C₂ * (C₀ * B) := by
-    apply htwo _ _ (mul_nonneg hC₀ hB)
-    intro k hk
-    rw [← Function.iterate_add_apply]
-    exact (hzero' _).trans (mul_le_mul_of_nonneg_left (hbound (k + j) (by omega)) hC₀)
-  have hfour' : ‖ccTensorToHs g 0 4 S‖ ≤ C₄ * (C₂ * (C₀ * B)) := by
-    apply hfour _ _ (by positivity)
-    exact htwo'
-  calc
-    ‖ccTensorToHs g 0 3 S‖ ≤ ‖ccTensorToHs g 0 4 S‖ :=
-      ccToHs_norm_mono g 0 (by norm_num) S
-    _ ≤ C₄ * (C₂ * (C₀ * B)) := hfour'
-    _ = _ := by ring
+      (∀ j ≤ 2 * n, ‖(parameterDerivativeCcTensor g)^[j] S‖ ≤ B) →
+      ‖ccTensorToHs g 0 ((2 * n : ℕ) : ℝ) S‖ ≤ C * B := by
+  induction n with
+  | zero =>
+      obtain ⟨C, hC, hzero⟩ := hs_le_jet g 0 0
+      refine ⟨C, hC, ?_⟩
+      intro S B hB hbound
+      have hS : ‖S‖ ≤ B := by simpa using hbound 0 (by omega)
+      have hz : ‖ccTensorToHs g 0 ((0 : ℕ) : ℝ) S‖ ≤ C * ‖S‖ := by
+        simpa only [zero_add, Finset.sum_range_one,
+          iteratedCovGrad_zero] using hzero S
+      exact hz.trans (mul_le_mul_of_nonneg_left hS hC)
+  | succ n ih =>
+      obtain ⟨C, hC, hnorm⟩ := ih
+      obtain ⟨A, hA, hstep⟩ :=
+        exists_norm_ccTensorToHs_add_two_le_parameter_derivatives g (2 * n)
+      refine ⟨A * C, mul_nonneg hA hC, ?_⟩
+      intro S B hB hbound
+      have hhigh : ‖ccTensorToHs g 0 (((2 * n : ℕ) : ℝ) + 2) S‖ ≤
+          A * (C * B) := by
+        apply hstep S (C * B) (mul_nonneg hC hB)
+        intro j hj
+        apply hnorm _ B hB
+        intro k hk
+        rw [← Function.iterate_add_apply]
+        exact hbound (k + j) (by omega)
+      have hexp : ((2 * (n + 1) : ℕ) : ℝ) = ((2 * n : ℕ) : ℝ) + 2 := by
+        push_cast
+        ring
+      calc
+        ‖ccTensorToHs g 0 ((2 * (n + 1) : ℕ) : ℝ) S‖ =
+            ‖ccTensorToHs g 0 (((2 * n : ℕ) : ℝ) + 2) S‖ :=
+          congrArg (fun t : ℝ => ‖ccTensorToHs g 0 t S‖) hexp
+        _ ≤ A * (C * B) := hhigh
+        _ = (A * C) * B := by ring
 
 private theorem scalar0_iterate_parameterDerivativeCcTensor_coe
     (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ)))
@@ -113,19 +114,20 @@ private theorem scalar0_iterate_parameterDerivativeCcTensor_coe
         iteratedDeriv_succ]
       simp_rw [ih]
 
-theorem exists_norm_ccTensorToHs_three_le_iteratedDeriv
-    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) :
+private theorem exists_norm_ccTensorToHs_le_iteratedDeriv_of_le_even
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ)))
+    {σ : ℝ} (n : ℕ) (hσ : σ ≤ ((2 * n : ℕ) : ℝ)) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ (S : SmoothCcTensor g 0 0) (B : ℝ),
       0 ≤ B →
-      (∀ j ≤ 4, ∀ x ∈ Set.Icc (0 : ℝ) 1,
+      (∀ j ≤ 2 * n, ∀ x ∈ Set.Icc (0 : ℝ) 1,
         |iteratedDeriv j (fun y : ℝ => TensorRSField.scalar0 S.toSection
           (y : AddCircle (1 : ℝ))) x| ≤ B) →
-      ‖ccTensorToHs g 0 3 S‖ ≤ C * B := by
-  obtain ⟨C₁, hC₁, hspec⟩ := exists_norm_ccTensorToHs_three_le_parameter_derivatives g
+      ‖ccTensorToHs g 0 σ S‖ ≤ C * B := by
+  obtain ⟨C₁, hC₁, hspec⟩ := exists_norm_ccTensorToHs_even_le_parameter_derivatives g n
   obtain ⟨C₂, hC₂, hL2⟩ := SmoothCcTensor.exists_norm_le_mul_of_scalar0_bound g
   refine ⟨C₁ * C₂, mul_nonneg hC₁ hC₂, ?_⟩
   intro S B hB hbound
-  have hnorm (j : ℕ) (hj : j ≤ 4) :
+  have hnorm (j : ℕ) (hj : j ≤ 2 * n) :
       ‖(parameterDerivativeCcTensor g)^[j] S‖ ≤ C₂ * B := by
     apply hL2 _ _ hB
     intro z
@@ -137,26 +139,28 @@ theorem exists_norm_ccTensorToHs_three_le_iteratedDeriv
     rw [scalar0_iterate_parameterDerivativeCcTensor_coe]
     exact hbound j hj x ⟨hx.1.le, hx.2⟩
   calc
-    ‖ccTensorToHs g 0 3 S‖ ≤ C₁ * (C₂ * B) :=
-      hspec S (C₂ * B) (mul_nonneg hC₂ hB) hnorm
+    ‖ccTensorToHs g 0 σ S‖ ≤ ‖ccTensorToHs g 0 ((2 * n : ℕ) : ℝ) S‖ :=
+      ccToHs_norm_mono g 0 hσ S
+    _ ≤ C₁ * (C₂ * B) := hspec S (C₂ * B) (mul_nonneg hC₂ hB) hnorm
     _ = _ := by ring
 
-theorem exists_norm_sub_ccTensorToHs_three_le_iteratedDeriv
-    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) :
+private theorem exists_norm_sub_ccTensorToHs_le_iteratedDeriv_of_le_even
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ)))
+    {σ : ℝ} (n : ℕ) (hσ : σ ≤ ((2 * n : ℕ) : ℝ)) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ (S T : SmoothCcTensor g 0 0) (B : ℝ),
       0 ≤ B →
-      (∀ j ≤ 4, ∀ x ∈ Set.Icc (0 : ℝ) 1,
+      (∀ j ≤ 2 * n, ∀ x ∈ Set.Icc (0 : ℝ) 1,
         |iteratedDeriv j (fun y : ℝ => TensorRSField.scalar0 S.toSection
           (y : AddCircle (1 : ℝ))) x -
           iteratedDeriv j (fun y : ℝ => TensorRSField.scalar0 T.toSection
             (y : AddCircle (1 : ℝ))) x| ≤ B) →
-      ‖ccTensorToHs g 0 3 S - ccTensorToHs g 0 3 T‖ ≤ C * B := by
-  obtain ⟨C, hC, hbound⟩ := exists_norm_ccTensorToHs_three_le_iteratedDeriv g
+      ‖ccTensorToHs g 0 σ S - ccTensorToHs g 0 σ T‖ ≤ C * B := by
+  obtain ⟨C, hC, hbound⟩ := exists_norm_ccTensorToHs_le_iteratedDeriv_of_le_even g n hσ
   refine ⟨C, hC, ?_⟩
   intro S T B hB hST
-  have hsub : ccTensorToHs g 0 3 (S - T) =
-      ccTensorToHs g 0 3 S - ccTensorToHs g 0 3 T :=
-    (ccToHsLin g 0 3).map_sub S T
+  have hsub : ccTensorToHs g 0 σ (S - T) =
+      ccTensorToHs g 0 σ S - ccTensorToHs g 0 σ T :=
+    (ccToHsLin g 0 σ).map_sub S T
   rw [← hsub]
   apply hbound _ _ hB
   intro j hj x hx
@@ -170,6 +174,61 @@ theorem exists_norm_sub_ccTensorToHs_three_le_iteratedDeriv
   rw [iteratedDeriv_fun_sub (hS.of_le (by exact_mod_cast le_top)).contDiffAt
     (hT.of_le (by exact_mod_cast le_top)).contDiffAt]
   exact hST j hj x hx
+
+theorem exists_norm_ccTensorToHs_le_iteratedDeriv
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) (σ : ℝ) :
+    ∃ m : ℕ, ∃ C : ℝ, 0 ≤ C ∧ ∀ (S : SmoothCcTensor g 0 0) (B : ℝ),
+      0 ≤ B →
+      (∀ j ≤ m, ∀ x ∈ Set.Icc (0 : ℝ) 1,
+        |iteratedDeriv j (fun y : ℝ => TensorRSField.scalar0 S.toSection
+          (y : AddCircle (1 : ℝ))) x| ≤ B) →
+      ‖ccTensorToHs g 0 σ S‖ ≤ C * B := by
+  obtain ⟨n, hn⟩ := exists_nat_ge (σ / 2)
+  have hσ : σ ≤ ((2 * n : ℕ) : ℝ) := by
+    push_cast
+    linarith
+  exact ⟨2 * n, exists_norm_ccTensorToHs_le_iteratedDeriv_of_le_even g n hσ⟩
+
+theorem exists_norm_sub_ccTensorToHs_le_iteratedDeriv
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) (σ : ℝ) :
+    ∃ m : ℕ, ∃ C : ℝ, 0 ≤ C ∧ ∀ (S T : SmoothCcTensor g 0 0) (B : ℝ),
+      0 ≤ B →
+      (∀ j ≤ m, ∀ x ∈ Set.Icc (0 : ℝ) 1,
+        |iteratedDeriv j (fun y : ℝ => TensorRSField.scalar0 S.toSection
+          (y : AddCircle (1 : ℝ))) x -
+          iteratedDeriv j (fun y : ℝ => TensorRSField.scalar0 T.toSection
+            (y : AddCircle (1 : ℝ))) x| ≤ B) →
+      ‖ccTensorToHs g 0 σ S - ccTensorToHs g 0 σ T‖ ≤ C * B := by
+  obtain ⟨n, hn⟩ := exists_nat_ge (σ / 2)
+  have hσ : σ ≤ ((2 * n : ℕ) : ℝ) := by
+    push_cast
+    linarith
+  exact ⟨2 * n, exists_norm_sub_ccTensorToHs_le_iteratedDeriv_of_le_even g n hσ⟩
+
+theorem exists_norm_ccTensorToHs_three_le_iteratedDeriv
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ (S : SmoothCcTensor g 0 0) (B : ℝ),
+      0 ≤ B →
+      (∀ j ≤ 4, ∀ x ∈ Set.Icc (0 : ℝ) 1,
+        |iteratedDeriv j (fun y : ℝ => TensorRSField.scalar0 S.toSection
+          (y : AddCircle (1 : ℝ))) x| ≤ B) →
+      ‖ccTensorToHs g 0 3 S‖ ≤ C * B := by
+  simpa only [show 2 * (2 : ℕ) = 4 by norm_num] using
+    exists_norm_ccTensorToHs_le_iteratedDeriv_of_le_even g 2 (by norm_num : (3 : ℝ) ≤ 4)
+
+theorem exists_norm_sub_ccTensorToHs_three_le_iteratedDeriv
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ (S T : SmoothCcTensor g 0 0) (B : ℝ),
+      0 ≤ B →
+      (∀ j ≤ 4, ∀ x ∈ Set.Icc (0 : ℝ) 1,
+        |iteratedDeriv j (fun y : ℝ => TensorRSField.scalar0 S.toSection
+          (y : AddCircle (1 : ℝ))) x -
+          iteratedDeriv j (fun y : ℝ => TensorRSField.scalar0 T.toSection
+            (y : AddCircle (1 : ℝ))) x| ≤ B) →
+      ‖ccTensorToHs g 0 3 S - ccTensorToHs g 0 3 T‖ ≤ C * B := by
+  simpa only [show 2 * (2 : ℕ) = 4 by norm_num] using
+    exists_norm_sub_ccTensorToHs_le_iteratedDeriv_of_le_even g 2
+      (by norm_num : (3 : ℝ) ≤ 4)
 
 end AddCircle
 

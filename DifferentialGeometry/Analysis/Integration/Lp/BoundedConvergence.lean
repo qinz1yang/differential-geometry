@@ -1,3 +1,4 @@
+import Mathlib.Topology.MetricSpace.Pseudo.Basic
 import Mathlib.MeasureTheory.Function.UniformIntegrable
 import Mathlib.MeasureTheory.Function.LpSpace.Complete
 
@@ -66,5 +67,36 @@ theorem tendsto_of_tendstoInMeasure_of_ae_norm_le
   apply (Lp.tendsto_Lp_iff_tendsto_eLpNorm' f f0).mpr
   exact tendsto_Lp_finite_of_tendstoInMeasure Fact.out hp
     (fun n => Lp.aestronglyMeasurable (f n)) (Lp.memLp f0) huf hf
+
+end MeasureTheory.Lp
+
+open Filter MeasureTheory
+open scoped Topology ENNReal
+
+namespace MeasureTheory.Lp
+
+theorem tendsto_top_of_tendstoUniformlyOn
+    {Ω X E : Type*} [MeasurableSpace Ω] [NormedAddCommGroup E]
+    {μ : Measure Ω} {l : Filter X} {s : Set Ω}
+    (hs : ∀ᵐ t ∂μ, t ∈ s)
+    (f : X → Lp E ∞ μ) (f0 : Lp E ∞ μ)
+    (u : X → Ω → E) (u0 : Ω → E)
+    (hf : ∀ x, f x =ᵐ[μ] u x) (hf0 : f0 =ᵐ[μ] u0)
+    (hu : TendstoUniformlyOn u u0 l s) :
+    Tendsto f l (𝓝 f0) := by
+  apply Metric.tendsto_nhds.mpr
+  intro ε hε
+  filter_upwards [Metric.tendstoUniformlyOn_iff.mp hu (ε / 2) (half_pos hε)] with x hx
+  have hbound : ∀ᵐ t ∂μ, ‖(f x - f0) t‖ ≤ ε / 2 := by
+    filter_upwards [hs, hf x, hf0, Lp.coeFn_sub (f x) f0] with t ht hft hf0t hsub
+    rw [hsub, Pi.sub_apply, hft, hf0t, ← dist_eq_norm_sub, dist_comm]
+    exact (hx t ht).le
+  have hnorm : ‖f x - f0‖ ≤ ε / 2 := by
+    rw [Lp.norm_def, eLpNorm_exponent_top]
+    exact (ENNReal.toReal_mono ENNReal.ofReal_ne_top
+      (eLpNormEssSup_le_of_ae_bound hbound)).trans_eq
+        (ENNReal.toReal_ofReal (half_pos hε).le)
+  rw [dist_eq_norm_sub]
+  exact hnorm.trans_lt (half_lt_self hε)
 
 end MeasureTheory.Lp
