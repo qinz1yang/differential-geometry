@@ -1177,3 +1177,80 @@ M1 在本树**不存在**：`exists_coneComplex_inter_slab`（`ConeSlab.lean:123
 合计约 **1.9k–5.1k 行，未验证**。这比第 9 节末尾给的 7k–14k 低，原因是 H-A/H-B 已经把锥化与球对
 那一块消掉，且 M1 找到了经 PL 齐性的便宜路线，不再需要塌陷理论与正则邻域唯一性的一般形式。
 第 9 节里"塌陷理论"与"正则邻域唯一性"两项在这条路线上**不再是前置条件**。
+
+## 11. 2026-09-18 更正：H-A2／H-A3 与既有 `StarPair`／`VertexCrossing` 重复，已删除
+
+### 事故与原因
+
+`ConePairExtension.lean` 曾声明 `exists_isPLHomeomorphOn_closedStar_pair`，与
+`StarPair.lean:78` **同名同命名空间**。本模块只导入 `ConeExtension`，所以自身聚焦检查通过，
+但任何同时导入 `StarPair` 的模块直接报
+
+    import ...StarPair failed, environment already contains
+    '...exists_isPLHomeomorphOn_closedStar_pair' from ...ConePairExtension
+
+F 车道因此被迫绕开本模块。原因是我的操作失误：第一次写文件前确实按规则 11 grep 过当时用到的名字，
+但 H-A2 的定理是在**后续一次 Edit 里新起的名字**，没有重新 grep。教训：**每新增一个名字就要重新
+grep，不能只在建文件时 grep 一次**；而且导入面窄会让本地检查对撞名完全失明。
+
+### 全量复查结果（按名字与按陈述形状各做一遍）
+
+对本次新增的全部 22 个名字做了逐个 tree-wide grep（排除自己的四个文件）：**只有
+`exists_isPLHomeomorphOn_closedStar_pair` 一个撞名**，其余名字唯一。按形状复查的结论如下。
+
+**删除（被既有结果覆盖）：**
+
+- `exists_isPLHomeomorphOn_closedStar_pair`：`StarPair.lean:78` 已有，且**严格更强**——
+  它在我的三条结论之外还给 `g '' (closedStar K p ∩ {x | ℓ x = 0}) = closedStar K' q ∩ {x | ℓ' x = 0}`，
+  即赤道条款，而这正是分支情形真正需要的那条（它携带第二张片）。
+- `exists_isPLHomeomorphOn_closedStar_of_geometricLink_subcomplex`：可由 `StarPair.lean:78`
+  取 `ℓ = ℓ' = 0` 得到（此时 `{x | 0 = 0} = univ`，赤道条款退化为 `hf.bijOn`），故冗余。
+- `closedStar_eq_coneSet`、`geometricLink_singleton_faces_subset`、
+  `geometricLink_singleton_space_subset`：前者是 `ConeComplex.lean:262` 的换写；
+  后两者与 `StarPair.lean:71` 的 private 引理、`VertexCrossing.lean:110-114` 的内联代码重复。
+  消费者随上面两条一起删除后已无用户。
+- **整个 `ConePairCrossing.lean` 删除**。H-A3 声称"树里有消费者没有生产者"是**错的**：
+  链条 `LinkPair.lean:53 exists_isPLHomeomorphOn_geometricLink_pair` →
+  `StarPair.lean:78` → `CrossingNeighborhood.lean:71 HasPLCrossingAt.of_closedStar_pair`
+  早已端到端接好，就在 `VertexCrossing.lean:12 hasPLCrossingAt_fiber_of_geometricLink_section`
+  内部（接线在 `:115-121`），`VertexCrossingLevel.lean:57` 是更一般的变体。
+  我的 `HasPLCrossingAt.of_geometricLink_pair` 是同一个合成，但第二张片取抽象集合 `B` 加锥假设，
+  比既有的赤道版本弱，且无消费者。
+
+**保留（经形状复查确认不重复）：**
+
+- `coneSet` 及其基本 API（`mem_coneSet_iff`、`apex_mem_coneSet`、`subset_coneSet`、
+  `coneSet_mono`、`coneComplex_space_eq_coneSet`、`coneSet_subset_coneComplex_space`）。
+  全树没有集合层的锥算子，这一条测绘结论仍然成立。`BallPair`／`BallPairModel` 在用。
+- `image_coneSet_of_radial`：**必须诚实说明**——它是 `StarPair.lean:11
+  image_coneComplex_of_radial_eq` 的推广，不是全新内容。既有版本要求两边都是**子复形**
+  并把目标子复形作为输入；我的版本对**任意子集** `X` 成立并直接算出像
+  `coneSet q (f '' X)`，不需要先给目标。球对层用的是任意子集版本（第二张片是裸集合），
+  所以推广有用，但功劳应记在既有引理上。
+- `eqOn_id_coneSet_of_radial`：`StarPair` 无对应物；`ConeAmbientExtension.lean:40-49`
+  在证明内部证过但未导出。保留。
+- `exists_isPLHomeomorphOn_coneComplex_pair`／`_sheets`／`_fixing`：锥层（不是闭星层）的
+  全称／双片／相对版本，`StarPair` 直接跳到闭星，没有这一层。`BallPair` 在用。保留。
+- `BallPair.lean`／`BallPairModel.lean` 全部保留：`IsPLBallPair` 等名字全树唯一，
+  球对概念确认不存在（协调者已据此授权）。
+
+### 验证
+
+跨导入证明（这才是能证明修好了的检查，单模块聚焦检查做不到）：
+`.lake/scratch/AuditHCrossImport.lean` 同时导入 `StarPair`、`VertexCrossing`、
+`ConePairExtension`、`BallPairModel` 并 `#check` 两侧的声明，**exit=0**；
+`exists_isPLHomeomorphOn_closedStar_pair` 解析到 `StarPair` 的带赤道条款版本。
+
+聚焦检查：`ConePairExtension` exit=0（9.4 秒）、`BallPair` exit=0（8.4 秒）、
+`BallPairModel` exit=0（9.4 秒），均零 warning。
+`.lake/scratch/AuditHConePairExtension.lean` 七项、`AuditHBallPair.lean` 十项，
+仅 `propext`、`Classical.choice`、`Quot.sound`。
+
+### 对第 10 节 H-B3 的影响
+
+不变。M1（starring）与 M2（相对球对延拓）仍然缺失，`StarPair`／`VertexCrossing` 这条链是
+**逐点**的横截性质，不提供沿弧黏合所需的球对延拓。但第 10 节里"经 PL 齐性做 starring"的估计
+需要下修信心：`AmbientPointMove.lean:35` 要求 `IsOpen U`，对余维零的三维球成立，
+对 `∂K` 里的二维盘**不成立**（它在环境里没有内点），所以补盘那一步不能直接用 PL 齐性，
+需要内蕴齐性或三角剖分论证。第 10 节的 1.9k–5.1k 行区间因此偏低，**未验证**，
+补盘那一步可能单独再加 0.5k–1.5k 行。
