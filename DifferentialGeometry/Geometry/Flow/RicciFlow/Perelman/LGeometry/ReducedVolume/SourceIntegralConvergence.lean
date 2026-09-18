@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.IntegralConvergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedVolume.IntegralConvergence
 
 noncomputable section
@@ -40,82 +41,6 @@ private theorem chart_weighted_integral (g : SmoothRiemannianMetric I M) (alpha 
 
 end Chart
 
-section Source
-
-variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
-variable {H : Type uH} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
-variable {X : PointedFlowSeq.{u, uE, uH} (I := I)}
-variable {P : PointedRiemannianManifold.{u, uE, uH} (I := I)} {subseq : ℕ → ℕ}
-
-private local instance : MeasurableSpace E := borel E
-private local instance : BorelSpace E := ⟨rfl⟩
-
-private theorem eventually_source_weighted_integral
-    (Phi : PointedCGHMaps (I := I) X P subseq)
-    (R : let : TopologicalSpace P.M := P.topology
-      let : ChartedSpace H P.M := P.charted
-      let : IsManifold I ∞ P.M := P.smooth
-      SmoothRiemannianMetric I P.M)
-    (bf : BumpFamily (I := I) Phi) (hSrc : SourceIsSigmaCompact Phi)
-    (hTgt : TargetIsSigmaCompact Phi) (φ : ℕ → ℕ) (hφ : StrictMono φ)
-    (t : ℝ) (alpha : P.M) {B : Set E} (hBc : IsCompact B)
-    (hBt : let : TopologicalSpace P.M := P.topology
-      let : ChartedSpace H P.M := P.charted
-      B ⊆ (extChartAt I alpha).target)
-    (w : E → ENNReal) (F : ∀ k, (X.term (subseq (φ k))).M → ENNReal) :
-    let : TopologicalSpace P.M := P.topology
-    let : ChartedSpace H P.M := P.charted
-    let : IsManifold I ∞ P.M := P.smooth
-    ∀ᶠ k in atTop,
-      let : TopologicalSpace (X.term (subseq (φ k))).M := (X.term (subseq (φ k))).topology
-      let : ChartedSpace H (X.term (subseq (φ k))).M := (X.term (subseq (φ k))).charted
-      let : IsManifold I ∞ (X.term (subseq (φ k))).M := (X.term (subseq (φ k))).smooth
-      let : T2Space (X.term (subseq (φ k))).M := (X.term (subseq (φ k))).t2
-      let : SigmaCompactSpace (X.term (subseq (φ k))).M := (X.term (subseq (φ k))).sigmaCompact
-      ∫⁻ y in (Phi.chartParametrization (φ k) alpha) '' B,
-        w ((Phi.chartParametrization (φ k) alpha).symm y) * F k y
-          ∂riemannianVolumeMeasure (I := I) (M := (X.term (subseq (φ k))).M)
-            ((X.term (subseq (φ k))).S.base.metric t) =
-        ∫⁻ z in B, w z * (ENNReal.ofReal (chartDensity
-          (gSeqExt Phi R bf hSrc hTgt (φ k) t) alpha ((extChartAt I alpha).symm z)) *
-          F k (Phi.map (φ k) ((extChartAt I alpha).symm z))) ∂(modelHaar (E := E)) := by
-  let : TopologicalSpace P.M := P.topology
-  let : ChartedSpace H P.M := P.charted
-  let : IsManifold I ∞ P.M := P.smooth
-  let : T2Space P.M := P.t2
-  let : SigmaCompactSpace P.M := P.sigmaCompact
-  have hK : IsCompact ((extChartAt I alpha).symm '' B) :=
-    hBc.image_of_continuousOn ((continuousOn_extChartAt_symm (I := I) alpha).mono hBt)
-  obtain ⟨k₀, hk₀⟩ := bf.grow_cover _ hK
-  filter_upwards [eventually_ge_atTop k₀] with k hk
-  let : TopologicalSpace (X.term (subseq (φ k))).M := (X.term (subseq (φ k))).topology
-  let : ChartedSpace H (X.term (subseq (φ k))).M := (X.term (subseq (φ k))).charted
-  let : IsManifold I ∞ (X.term (subseq (φ k))).M := (X.term (subseq (φ k))).smooth
-  let : T2Space (X.term (subseq (φ k))).M := (X.term (subseq (φ k))).t2
-  let : SigmaCompactSpace (X.term (subseq (φ k))).M := (X.term (subseq (φ k))).sigmaCompact
-  have hGrow : ∀ z ∈ B, (extChartAt I alpha).symm z ∈ bf.grow (φ k) :=
-    fun z hz => hk₀ (φ k) (hk.trans (hφ.id_le k)) ⟨z, hz, rfl⟩
-  have hSource : B ⊆ (Phi.chartParametrization (φ k) alpha).source := by
-    intro z hz
-    change z ∈ (extChartAt I alpha).target ∩
-      (extChartAt I alpha).symm ⁻¹' Phi.source (φ k)
-    exact ⟨hBt hz, bf.grow_subset (φ k) (hGrow z hz)⟩
-  obtain ⟨W, _, hGrowW, hOne⟩ := bf.chi_one (φ k)
-  have h := riemVol_param_lint ((X.term (subseq (φ k))).S.base.metric t)
-    (Phi.chartParametrization (φ k) alpha)
-    (fun y => w ((Phi.chartParametrization (φ k) alpha).symm y) * F k y)
-    hBc.measurableSet hSource
-  refine h.trans (setLIntegral_congr_fun hBc.measurableSet fun z hz => ?_)
-  have hleft : (Phi.chartParametrization (φ k) alpha).symm.toPartialEquiv
-      ((Phi.chartParametrization (φ k) alpha).toPartialEquiv z) = z :=
-    (Phi.chartParametrization (φ k) alpha).left_inv (hSource hz)
-  rw [hleft]
-  rw [paramDensity_chartParametrization Phi R bf hSrc hTgt (φ k) t alpha
-    (hSource hz) (hOne _ (hGrowW (hGrow z hz)))]
-  change _ * (w z * F k (Phi.map (φ k) ((extChartAt I alpha).symm z))) = _
-  ac_rfl
-
-end Source
 
 
 variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
@@ -208,29 +133,21 @@ theorem FlowMetricConvergenceData.tendsto_lintegral_mul_redDensity_chartParametr
       atTop (nhds (∫⁻ y in (extChartAt I alpha).symm '' B,
         w (extChartAt I alpha y) * ENNReal.ofReal (redDensity L.S T x y tau)
           ∂riemannianVolumeMeasure (I := I) (M := L.M) (co.gInf (T - tau)))) := by
-  let : TopologicalSpace (L.atTime 0).M := (L.atTime 0).topology
-  let : ChartedSpace H (L.atTime 0).M := (L.atTime 0).charted
-  let : IsManifold I ∞ (L.atTime 0).M := (L.atTime 0).smooth
   let : TopologicalSpace L.M := L.topology
   let : ChartedSpace H L.M := L.charted
   let : IsManifold I ∞ L.M := L.smooth
-  let : T2Space L.M := L.t2
-  let : SigmaCompactSpace L.M := L.sigmaCompact
-  have hCommon := co.tendsto_lintegral_mul_chartDensity_mul_redDensity Phi R bf hSrc hTgt
-    beta psi T tau x alpha hTime hBChart hBc w hw hwInt hRedMeas hRedLim Cred hRedBd
-  let F : ∀ k, (X.term (subseq (co.φ k))).M → ENNReal := fun k =>
-    let : TopologicalSpace (X.term (subseq (co.φ k))).M := (X.term (subseq (co.φ k))).topology
-    let : ChartedSpace H (X.term (subseq (co.φ k))).M := (X.term (subseq (co.φ k))).charted
-    let : IsManifold I ∞ (X.term (subseq (co.φ k))).M := (X.term (subseq (co.φ k))).smooth
-    fun y => ENNReal.ofReal (redDensity (X.term (subseq (co.φ k))).S T (Phi.map (co.φ k) x) y tau)
-  have hTerm := eventually_source_weighted_integral Phi R bf hSrc hTgt
-    co.φ co.strictMono (T - tau) alpha hBc hBChart w F
-  let gLim : SmoothRiemannianMetric I L.M := co.gInf (T - tau)
-  have hLimit := chart_weighted_integral gLim alpha
-    (fun y => ENNReal.ofReal (redDensity L.S T x y tau)) w hBc.measurableSet hBChart
-  have hResult := Filter.Tendsto.congr' (Filter.EventuallyEq.symm hTerm) hCommon
-  convert hResult using 1
-  exact congrArg nhds hLimit
+  exact co.tendsto_lintegral_mul_density_chartParametrization Phi R bf hSrc hTgt
+    beta psi (T - tau) alpha
+    (fun k =>
+      let : TopologicalSpace (X.term (subseq (co.φ k))).M :=
+        (X.term (subseq (co.φ k))).topology
+      let : ChartedSpace H (X.term (subseq (co.φ k))).M :=
+        (X.term (subseq (co.φ k))).charted
+      let : IsManifold I ∞ (X.term (subseq (co.φ k))).M :=
+        (X.term (subseq (co.φ k))).smooth
+      fun y => redDensity (X.term (subseq (co.φ k))).S T (Phi.map (co.φ k) x) y tau)
+    (fun y => redDensity L.S T x y tau)
+    hTime hBChart hBc w hw hwInt hRedMeas hRedLim Cred hRedBd
 
 theorem FlowMetricConvergenceData.lintegral_mul_redDensity_lt_top
     {X : PointedFlowSeq.{u, uE, uH} (I := I)}

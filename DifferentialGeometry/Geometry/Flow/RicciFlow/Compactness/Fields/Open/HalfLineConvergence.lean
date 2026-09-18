@@ -1,5 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Open.Convergence
 
+section
+
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
 
@@ -103,3 +105,61 @@ theorem nonempty_halfLineMetricConvergenceData
 
 end CheegerGromovCompactness
 end DifferentialGeometry
+
+end
+
+end
+
+section
+
+set_option autoImplicit false
+
+noncomputable section
+
+namespace DifferentialGeometry.CheegerGromovCompactness
+
+open scoped ContDiff
+
+universe u uE uH
+
+variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E]
+  {H : Type uH} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  {X : PointedFlowSeq.{u, uE, uH} (I := I)}
+  {P : PointedRiemannianManifold.{u, uE, uH} (I := I)} {phi : ℕ → ℕ}
+
+attribute [local instance] PointedRiemannianManifold.topology
+  PointedRiemannianManifold.charted PointedRiemannianManifold.smooth
+
+def HalfLineMetricConvergenceData.compSubseq
+    (Phi : PointedCGHMaps X P phi) {R : SmoothRiemannianMetric I P.M}
+    {bf : BumpFamily Phi} {hsrc : SourceIsSigmaCompact Phi} {htgt : TargetIsSigmaCompact Phi}
+    (co : HalfLineMetricConvergenceData Phi R bf hsrc htgt)
+    (psi : ℕ → ℕ) (hpsi : StrictMono psi) :
+    HalfLineMetricConvergenceData Phi R bf hsrc htgt where
+  φ := co.φ ∘ psi
+  strictMono := co.strictMono.comp hpsi
+  gInf := co.gInf
+  convergenceOn n := BumpMetricConvergence.comp (Φ := Phi) (co.convergenceOn n) psi hpsi
+
+@[simp]
+theorem HalfLineMetricConvergenceData.compSubseq_φ
+    (Phi : PointedCGHMaps X P phi) {R : SmoothRiemannianMetric I P.M}
+    {bf : BumpFamily Phi} {hsrc : SourceIsSigmaCompact Phi} {htgt : TargetIsSigmaCompact Phi}
+    (co : HalfLineMetricConvergenceData Phi R bf hsrc htgt)
+    (psi : ℕ → ℕ) (hpsi : StrictMono psi) :
+    (co.compSubseq Phi psi hpsi).φ = co.φ ∘ psi := rfl
+
+@[simp]
+theorem HalfLineMetricConvergenceData.compSubseq_gInf
+    (Phi : PointedCGHMaps X P phi) {R : SmoothRiemannianMetric I P.M}
+    {bf : BumpFamily Phi} {hsrc : SourceIsSigmaCompact Phi} {htgt : TargetIsSigmaCompact Phi}
+    (co : HalfLineMetricConvergenceData Phi R bf hsrc htgt)
+    (psi : ℕ → ℕ) (hpsi : StrictMono psi) :
+    (co.compSubseq Phi psi hpsi).gInf = co.gInf := rfl
+
+end DifferentialGeometry.CheegerGromovCompactness
+
+end
+
+end
