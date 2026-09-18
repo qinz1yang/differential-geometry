@@ -2841,3 +2841,39 @@ linters other than `docBlame` and `docBlameThm`.
 This closes only the one-cell input.  The induction proving an `IsPLBallPair 2 1`
 for the union of all non-endpoint cells `1 ≤ j ≤ 2 * n - 1` remains open; the
 false full-chain statement including the endpoint cells remains forbidden.
+
+## 46. 2026-09-18 Adjacent arc-cell gluing data — done
+
+`ArcCellGluing.lean` supplies the geometric input for the trimmed-union
+induction without assuming any union is already a ball pair.  It introduces the
+natural objects `arcCellApex`, `arcCellCrossing`, `arcCellBase`, and
+`arcCellInterfaceBase`, then proves:
+
+- each cell and each adjacent-cell intersection has its exact conical form;
+- cell bases are PL 2-spheres and interface bases are PL 1-spheres, with the
+  required cone-base and finiteness data;
+- the conical interface disk lies in both cell bases;
+- the preceding and following crossing points lie in the corresponding
+  `closure (base \ interface) \ interface`, as required by the marked relative
+  extension theorem;
+- the arc trace in an interior cell is exactly the cone on its preceding and
+  following crossing points.
+
+The nonmembership part is not a generic-position assumption.  A preceding
+crossing belongs to cell `j - 1`; if it also belonged to the `j,j+1` interface,
+it would lie in the disjoint nonadjacent cells `j - 1` and `j + 1`.  The following
+crossing is treated symmetrically.  The hypotheses `1 ≤ j` and
+`j + 2 ≤ 2 * n` are precisely the index conditions needed for these arguments.
+
+The module is registered directly in `DifferentialGeometry.lean`.  Strict private
+verification used token `H-ArcCellGluing-20260918` and output root
+`C:\Users\liao9\AppData\Local\Temp\codex-h-cutmodel-private`.  The module check
+and external silent audit both exited 0 with zero diagnostics and unchanged
+shared outputs.  The audit dynamically enumerated all twenty non-automatic
+declarations, also checked sixteen direct reused declarations, found only
+`{propext, Classical.choice, Quot.sound}`, and passed all default environment
+linters other than `docBlame` and `docBlameThm`.
+
+The remaining obligation is to use these data with
+`exists_isPLHomeomorphOn_coneSet_pair_of_disk_marked` and the combined cut model
+to carry out the normalized induction over cells `1` through `2 * n - 1`.
