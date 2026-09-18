@@ -2110,3 +2110,59 @@ step 2 只做了 grep 与接口陈述，没有动工（月牙是一个项目，�
   `x ∈ Q \ P` 时用 `P` 是 PL 2-球故闭，取 `U = Q \ P`，单射性全由 `hD₂inj` 给出。
   `injOn_of_subset_second_piece` 是 `Q` 的任意子集上单射性的公共出口。
 - 验证：`GluedCellInjectivity` 聚焦检查 exit=0（10.5 秒）、零 warning。
+
+## 69. 2026-09-18 E3-M3：粘合胞腔的 `singularSet`（第五条字段）与 `crossing` 的确切障碍
+
+状态：partial（`singularSet` 闭合；**`crossing` 不闭合**，原因不是证明缺口而是缺一条
+我无法当场验证可满足性的几何输入，按主人的规矩停在这里不弱化字段）。
+`GluedCellInjectivity.lean` 新增 3 条声明（名字在四条车道分支上都不存在）。
+
+- `mem_first_piece_of_glue_boundary_arc`：`P ∪ Q` 里两个不同点取同一值时，两点**都在 `P` 里**。
+  （落在 `Q \ P` 的点与 `P` 的点由 `hD₂disj` 不可能同值；两点都在 `Q \ P` 时由 `hD₂inj` 推出相等。）
+- `doublePointSet_of_glue_boundary_arc`：`doublePointSet D D.domain = doublePointSet D₁ D₁.domain`。
+  `⊆` 用上一条把见证拉到 `P` 里再经 `f₁`；`⊇` 把 `D₁` 的见证经 `f₁` 的满射拉回 `P`。
+- `normalSingularSetTriangulation_congr`：`NormalSingularSetTriangulation` 的八个字段里
+  只有 `map_space` 与 `map_boundary` 提到 `D`，而且**只通过 `doublePointSet D D.domain`**，
+  所以双点集相等时整份三角剖分可以原样搬过去。于是 `singularSet` 由上一条直接得到。
+- **`crossing` 的确切障碍（记下，不要重走）。** 想法是用 §65 的
+  `HasPLNormalDoubleCrossingAt.precomp_isPLHomeomorphOn` 沿 `f₁` 把 `D₁` 的交叉搬到 `D`。
+  搬运本身没问题，**卡在定义域上**：`crossing` 的集合参数是 `D.domain ∩ D ⁻¹' e.source`，
+  它含有 `Q` 一侧的点，而 `f₁` 只是 `P ≃ D₁.domain`，不是这两个集合之间的 PL 同胚。
+  `HasPLDoubleCrossingAt` 的纤维覆盖子句 `∀ᶠ z in 𝓝 y, P ∩ f ⁻¹' {z} ⊆ A ∪ B`
+  要求 **`y` 附近的纤维完全避开 `Q \ P`**。这不是自动的：缝隙点 `s ∈ P ∩ Q` 是 `Q \ P` 的极限点，
+  所以 `y` 附近的 `z` 的纤维可以含 `Q \ P` 的点，除非 `y` 与月牙有正距离。
+  兑现它需要一条形如
+  `hD₂far : ∀ y ∈ doublePointSet D₁ D₁.domain, y ∉ closure (D₂ '' D₂.domain)`
+  的**新几何输入**。在目标构型里它**大概率成立**（被推离弧在边界圆上，而 `g` 的双点集是
+  §50/§52 的分支割除后的内部集合），但我**没有当场验证它的可满足性**——
+  而今天正好有两个"看着可满足其实不成立"的例子（F 车道的盘状片、本车道 §61 的 `hJoff`），
+  所以按主人的规矩不写进去。下一轮应先在分支分离层确认
+  `doublePointSet (P.piecewise (h ∘ D) D) D.domain` 与 `closure W` 的位置关系，
+  再决定 `hD₂far` 的正确形状（可能是"双点集与 `closure W` 有正距离"，
+  也可能要把月牙做得足够细，使 `D₂ '' D₂.domain` 落在 `Bd M` 的一个不含双点的邻域里）。
+- **当前 `NormalSingularCellData` 五条字段的状态与假设清单（主人要的表）。**
+  已闭合 5 条中的 5 条里的 4 条字段 + 1 条结构：
+  `boundary_image_subset`（§66）、`image_inter_boundary`（§67）、
+  `fiber_le_two`、`locallyInjective`（§68）、`singularSet`（本节）；未闭合：`crossing`。
+  假设逐条标注（**几何输入** = 生产者必须去验的；**构造产物** = 粘合定理自己给出的）：
+  - `hPball / hQball / hf₁ / hf₂ / hDP / hDQ / hcutP / hcutQ / hdom / hfrontier / hA / hB`
+    ——全部是**构造产物**，`exists_glue_of_isPLHomeomorphOn_boundary_arc` 的输出原样，
+    可满足性不用验（它们就是那条定理的结论）。
+  - `hD₁bd`（旧边界圆去掉弧后落在 `Bd M`）——**几何输入**，即 §62 的 `hfr`，
+    可满足：`D '' frontier D.domain ⊆ BdM` 加滑移只动 `closure W`。
+  - `hend₁ / hend₂`（弧端在 `Bd M`）——**几何输入**，即 §62 的 `hend0/hend1`，
+    可满足：滑移量在弧端渐变为零（§64 的位移判据给出等价刻画）。
+  - `hD₂bd`（月牙外弧落在 `Bd M`）——**几何输入**，由月牙的构造保证。
+  - `hAoff / hBoff`（弧只在两端碰 `Bd M`）——**几何输入**，即 §63 的 `hends`，
+    可满足性与 §63 同；§67 记了它与割点像的认同只差 `maps_arc_endpoints` 一步。
+  - `hD₁img / hD₁fib / hD₁loc`——**几何输入但已经有产者**：分别是 `D₁` 自己的
+    `image_inter_boundary`（§60 的领环链给出）、`fiber_le_two`、`locallyInjective`
+    （分支分离 `exists_separated_cell_along_boundary_branch` 直接输出）。
+  - `hD₂inj / hD₂disj`——**几何输入**，§66 step 3 的写法。
+    可满足性检查：两者**不互相矛盾也不强制空集**（与 §61 的 `hJoff` 不同）：
+    `hD₂disj` 只约束 `D₂.domain \ B` 上的点，而 `B = f₂ '' (P ∩ Q)` 是 `frontier Q` 的一条弧，
+    `D₂.domain \ B` 非空且其像可以整体落在 `Bd M` 的另一侧；缝隙上两支公式一致，
+    §68 的三条证明里没有任何一条要求 `A ∩ B = ∅` 这类会逼出空集的条件。
+- 验证：`GluedCellInjectivity` 聚焦检查 exit=0（10.9 秒）、零 warning；
+  `.lake/scratch/AuditE3GluedFields.lean` 的 11 条 `#print axioms` 全部只含
+  `propext`、`Classical.choice`、`Quot.sound`，无 `sorryAx`。

@@ -1,5 +1,6 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.GluedCellBoundaryImage
 import DifferentialGeometry.Topology.PiecewiseLinear.SingularCrossingPrecomp
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.NormalCell
 
 open Set Topology
 
@@ -161,5 +162,73 @@ theorem locallyInjective_of_glue_boundary_arc {D D₁ D₂ : SingularTwoCell M}
       rintro z ⟨hzP, hzPQ | hzQ⟩
       · exact absurd hzPQ hzP
       · exact ⟨hzQ, hzP⟩
+
+theorem mem_first_piece_of_glue_boundary_arc {D D₁ D₂ : SingularTwoCell M}
+    {P Q B : Set (EuclideanSpace ℝ (Fin 2))}
+    {f₁ f₂ : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 2)}
+    (hf₁ : IsPLHomeomorphOn f₁ P D₁.domain) (hf₂ : IsPLHomeomorphOn f₂ Q D₂.domain)
+    (hDP : EqOn D (D₁ ∘ f₁) P) (hDQ : EqOn D (D₂ ∘ f₂) Q) (hB : f₂ '' (P ∩ Q) = B)
+    (hD₂inj : InjOn D₂ D₂.domain)
+    (hD₂disj : ∀ x ∈ D₂.domain, x ∉ B → ∀ z ∈ D₁.domain, D₂ x ≠ D₁ z)
+    {a b : EuclideanSpace ℝ (Fin 2)} (ha : a ∈ P ∪ Q) (hb : b ∈ P ∪ Q)
+    (hab : D a = D b) (hne : a ≠ b) : a ∈ P ∧ b ∈ P := by
+  have hcross : ∀ u ∈ P, ∀ v ∈ Q, v ∉ P → D u ≠ D v := by
+    intro u huP v hvQ hvP huv
+    have hvB : f₂ v ∉ B := fun hmem =>
+      hvP (mem_seam_of_image_mem_of_injOn hf₂.bijOn.injOn inter_subset_right hB hvQ hmem).1
+    refine hD₂disj (f₂ v) (hf₂.bijOn.mapsTo hvQ) hvB (f₁ u) (hf₁.bijOn.mapsTo huP) ?_
+    exact ((hDQ hvQ).symm.trans huv.symm).trans (hDP huP)
+  have key : ∀ u ∈ P ∪ Q, ∀ v ∈ P ∪ Q, D u = D v → u ≠ v → u ∈ P := by
+    intro u hu v hv huv hne'
+    by_contra huP
+    have huQ : u ∈ Q := hu.resolve_left huP
+    rcases hv with hvP | hvQ
+    · exact hcross v hvP u huQ huP huv.symm
+    · by_cases hvP : v ∈ P
+      · exact hcross v hvP u huQ huP huv.symm
+      · exact hne' (injOn_of_subset_second_piece (U := Q \ P) hf₂ hDQ hD₂inj
+          (fun z hz => hz.1) ⟨huQ, huP⟩ ⟨hvQ, hvP⟩ huv)
+  exact ⟨key a ha b hb hab hne, key b hb a ha hab.symm hne.symm⟩
+
+theorem doublePointSet_of_glue_boundary_arc {D D₁ D₂ : SingularTwoCell M}
+    {P Q B : Set (EuclideanSpace ℝ (Fin 2))}
+    {f₁ f₂ : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 2)}
+    (hf₁ : IsPLHomeomorphOn f₁ P D₁.domain) (hf₂ : IsPLHomeomorphOn f₂ Q D₂.domain)
+    (hDP : EqOn D (D₁ ∘ f₁) P) (hDQ : EqOn D (D₂ ∘ f₂) Q)
+    (hdom : D.domain = P ∪ Q) (hB : f₂ '' (P ∩ Q) = B)
+    (hD₂inj : InjOn D₂ D₂.domain)
+    (hD₂disj : ∀ x ∈ D₂.domain, x ∉ B → ∀ z ∈ D₁.domain, D₂ x ≠ D₁ z) :
+    doublePointSet D D.domain = doublePointSet D₁ D₁.domain := by
+  apply Subset.antisymm
+  · rintro y ⟨a, ha, b, hb, hne, hay, hby⟩
+    rw [hdom] at ha hb
+    obtain ⟨haP, hbP⟩ := mem_first_piece_of_glue_boundary_arc hf₁ hf₂ hDP hDQ hB hD₂inj
+      hD₂disj ha hb (hay.trans hby.symm) hne
+    refine ⟨f₁ a, hf₁.bijOn.mapsTo haP, f₁ b, hf₁.bijOn.mapsTo hbP, ?_, ?_, ?_⟩
+    · exact fun h => hne (hf₁.bijOn.injOn haP hbP h)
+    · exact (hDP haP).symm.trans hay
+    · exact (hDP hbP).symm.trans hby
+  · rintro y ⟨w₁, hw₁, w₂, hw₂, hne, hw₁y, hw₂y⟩
+    obtain ⟨z₁, hz₁P, rfl⟩ := hf₁.bijOn.surjOn hw₁
+    obtain ⟨z₂, hz₂P, rfl⟩ := hf₁.bijOn.surjOn hw₂
+    refine ⟨z₁, ?_, z₂, ?_, ?_, ?_, ?_⟩
+    · rw [hdom]; exact Or.inl hz₁P
+    · rw [hdom]; exact Or.inl hz₂P
+    · exact fun h => hne (by rw [h])
+    · exact (hDP hz₁P).trans hw₁y
+    · exact (hDP hz₂P).trans hw₂y
+
+def normalSingularSetTriangulation_congr {D D' : SingularTwoCell M} {BdM : Set M}
+    (T : NormalSingularSetTriangulation D' BdM)
+    (heq : doublePointSet D D.domain = doublePointSet D' D'.domain) :
+    NormalSingularSetTriangulation D BdM where
+  carrier := T.carrier
+  piece := T.piece
+  complex := T.complex
+  finite_faces := T.finite_faces
+  faces_subset := T.faces_subset
+  isManifoldWithBoundary := T.isManifoldWithBoundary
+  map_space := by rw [heq]; exact T.map_space
+  map_boundary := by rw [heq]; exact T.map_boundary
 
 end DifferentialGeometry.Topology.PiecewiseLinear
