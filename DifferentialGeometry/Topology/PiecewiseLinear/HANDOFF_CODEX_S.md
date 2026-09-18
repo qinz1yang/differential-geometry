@@ -3523,3 +3523,16 @@ combinatorial one.
 All four touched or new modules check exit 0 with zero warnings (9.3--10.1 s).
 `.lake/scratch/AuditSWalkPathConcat.lean` audits seventeen declarations; none
 mentions `sorryAx`, and `closedWalkZPow` depends on no axiom at all.
+
+### The generation hypothesis is unconditional for a polygon
+
+`exists_isGeneratedByPolygon_of_isCombinatorialManifold_one` in
+`PolygonGeneratedFromLoops.lean`: for a finite connected closed one-dimensional
+combinatorial manifold `L` there are a vertex `v₀` of `barycentricSubdivision L`
+and a spanning cycle `γ` at it with `IsGeneratedByPolygon γ`. Nothing is
+hypothetical here: `barycentricSubdivision L` is again a connected closed
+one-dimensional combinatorial manifold, so `exists_cycle_generating_loops`
+applies to it, and `isGeneratedByPolygon_of_forall_exists_homotopic_loopZPow`
+converts the loop statement. The audit
+`.lake/scratch/AuditSPolygonGenerated.lean` reports only `propext`,
+`Classical.choice`, `Quot.sound`.

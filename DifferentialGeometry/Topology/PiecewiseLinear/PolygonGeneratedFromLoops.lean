@@ -1,3 +1,4 @@
+import DifferentialGeometry.Topology.PiecewiseLinear.PolygonCircleParametrization
 import DifferentialGeometry.Topology.PiecewiseLinear.PolygonGeneratedOrientation
 import DifferentialGeometry.Topology.PiecewiseLinear.WalkPathConcatenation
 
@@ -42,5 +43,19 @@ theorem isOrientable_of_ambient_nullHomotopic_loop_generated_polygon
     IsOrientable n L :=
   isOrientable_of_ambient_nullHomotopic_generated_polygon hLK hK hL o hconn γ
     (isGeneratedByPolygon_of_forall_exists_homotopic_loopZPow hconn γ hgen) hnull
+
+open Classical in
+theorem exists_isGeneratedByPolygon_of_isCombinatorialManifold_one
+    (hL : IsCombinatorialManifold 1 L) (hconn : IsConnected L.space) :
+    ∃ (v₀ : (barycentricSubdivision L).vertices)
+      (γ : (SimplicialComplex.edgeGraph (barycentricSubdivision L)).Walk v₀ v₀),
+      γ.IsCycle ∧ γ.toSubgraph.verts = Set.univ ∧ IsGeneratedByPolygon γ := by
+  have hB : IsCombinatorialManifold 1 (barycentricSubdivision L) := hL.barycentricSubdivision
+  have hBconn : IsConnected (barycentricSubdivision L).space :=
+    (barycentricSubdivision_isSubdivision L).space_eq.symm ▸ hconn
+  obtain ⟨v₀, γ, hcyc, hspan, hgen⟩ := exists_cycle_generating_loops hB hBconn
+  exact ⟨v₀, γ, hcyc, hspan,
+    isGeneratedByPolygon_of_forall_exists_homotopic_loopZPow
+      (edgeGraph_connected_of_isConnected_space _ hBconn).preconnected γ hgen⟩
 
 end DifferentialGeometry.Topology.PiecewiseLinear
