@@ -2564,3 +2564,20 @@ E3 §45 的 `ZMod 2` 循环障碍仍然成立并且有用（它是沿分支相�
 
 检查 `TransversePlaneCoordinates` exit=0（7.5 秒）、零 warning；`AuditF259.lean` 三项仅
 `propext`、`Classical.choice`、`Quot.sound`。下一审计文件 `AuditF260.lean`。
+
+### 19.116 环境类型的转写义务（§19.112–19.115 的适用范围）
+
+§19.112–19.114 与 §19.108–19.111 一样，环境 `M` 是有限维实赋范空间，图卡取
+`OpenPartialHomeomorph M (ℝ × ℝ × ℝ)`，结论里的 PL 性是 `IsPiecewiseAffineOn h univ`。
+E3 §44 的 `M` 是带 `ChartedSpace (EuclideanSpace ℝ (Fin 3))` 的拓扑 3-流形，结论要求 `IsPL 3 3 h`。
+两者之间还差一次转写，且这不是记号问题：
+
+- `ChartConjugate.lean` 已有流形版的 `isPL_conjugateHomeomorph`，但它要求 `h` 是
+  `EuclideanSpace ℝ (Fin 3) ≃ₜ EuclideanSpace ℝ (Fin 3)` 的同胚，模型空间是 `EuclideanSpace`
+  而不是 `ℝ × ℝ × ℝ`，并且要 `Homeomorph` 而不是裸函数。
+- 因此还需要：把 `slideMapLong d R` 经 `ℝ × ℝ × ℝ ≃ EuclideanSpace ℝ (Fin 3)` 的线性同胚搬过去
+  （逐片仿射性经仿射同构保持，见 `AffineImageTransport.lean`），并用
+  `bijective_slideMapLong`（`0 ≤ R`）把它升级成 `Homeomorph`（连续性由
+  `continuous_slideMapLong` 给出，逆的连续性由紧支撑加双射得到）。
+  然后 `isPL_conjugateHomeomorph` 直接给 `IsPL 3 3`，`disjoint`/边界两条不受影响。
+- 这一步不难但不是零工作量，交付给下一次；在它完成前，§19.113/19.114 的端点只对赋范空间环境成立。
