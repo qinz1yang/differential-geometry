@@ -2979,3 +2979,46 @@ disk-bundle classification) and 3 (the 24.12 contraction and orientation-cover
 descent) are unchanged and still open. No hypothesis was added to any existing
 statement.
 
+
+## C.6 obligation 3, step one: the edge-path monodromy of a Bool cocycle
+
+`CocycleMonodromy.lean` builds the `ZMod 2` monodromy of a `SimplicialBoolCocycle`
+along edge paths of the one-skeleton and characterizes coboundaries by it. The
+one-skeleton is the existing `SimplicialComplex.edgeGraph K` on `K.vertices`; no
+new graph was introduced, and `SimpleGraph.Walk` supplies concatenation and
+reversal. `SimplicialBoolCocycle.walkMonodromy` is the sum of the edge jumps
+over the darts of a walk, `walkMonodromy_append` and `walkMonodromy_reverse`
+record its behaviour under the two walk operations, and `parity_symm_of_adj`
+is the only place where the cocycle's symmetry axiom is used.
+
+The two directions are `walkMonodromy_eq_of_coboundary`, which evaluates the
+monodromy of any walk as the sum of the coboundary function at the two ends,
+hence `walkMonodromy_eq_zero_of_isCoboundary` for closed walks, and
+`isCoboundary_of_forall_walkMonodromy_eq_zero`, which reconstructs the
+coboundary function from a base vertex: the value at a vertex is the monodromy
+of a chosen walk from the base, and the defining identity on an edge comes from
+the closed walk obtained by going out along one chosen walk, crossing the edge
+and returning along the reverse of the other. `isCoboundary_of_preconnected`
+packages this with the existing `edgeGraph` preconnectedness (the empty-vertex
+case is separate), and `isCoboundary_iff_forall_walkMonodromy_eq_zero` is the
+equivalence. `isCoboundary_of_walkMonodromy_generated` is the polygon form used
+downstream: if every closed walk has monodromy either zero or that of a fixed
+closed walk, and that fixed walk has vanishing monodromy, the cocycle is a
+coboundary. The generation hypothesis is a statement about the loops of the
+complex only; it asserts nothing about orientability.
+
+Lane E3's `BranchSignChain` is reused rather than re-proved.
+`loopMonodromy_eq_zero_of_isCoboundary` is `sum_sideJump_eq_zero_of_cycle`
+applied to a cyclically indexed polygon `c : Fin m -> E`,
+`not_isCoboundary_of_loopMonodromy_ne_zero` is `not_exists_sideChoice_of_cycle`,
+and `exists_sideChain` is `exists_sideChoice_of_chain` normalized to a
+prescribed initial side, which is the combinatorial shadow of lifting a chain to
+the double cover. The `Fin`-cyclic `loopMonodromy` and the `Walk`-indexed
+`walkMonodromy` are two presentations of the same invariant; the translation
+between a cyclic vertex family and a closed walk is not built here.
+`SimplicialBoolCocycle.ofLe` restricts a cocycle to a subcomplex, which is
+immediate since every axiom is quantified over faces.
+
+`CocycleMonodromy` checks exit 0 (9.2 s) with zero warnings, and
+`.lake/scratch/AuditSCocycleMonodromy.lean` audits eighteen declarations, all
+only `propext`, `Classical.choice`, `Quot.sound`.
