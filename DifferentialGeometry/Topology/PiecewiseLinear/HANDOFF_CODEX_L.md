@@ -2060,3 +2060,29 @@ step 2 只做了 grep 与接口陈述，没有动工（月牙是一个项目，�
 - 验证：`GluedCellBoundaryImage` 聚焦检查 exit=0（10.0 秒）、零 warning；
   `.lake/scratch/AuditE3GluedBoundary.lean` 的 2 条 `#print axioms` 只含
   `propext`、`Classical.choice`、`Quot.sound`，无 `sorryAx`。
+
+## 67. 2026-09-18 E3-M3：粘合胞腔的 `image_inter_boundary`（四条字段里的第二条）
+
+状态：done。`GluedCellBoundaryImage.lean` 新增 2 条声明（名字在四条车道分支上都不存在）。
+
+- **`mem_range_boundary_of_mem_frontier_glue`**：`w ∈ frontier D₁.domain` 且 `D₁ w ∈ BdM` ⟹
+  `D₁ w ∈ Set.range D.boundary`。关键是**不需要** `f₁ x ∈ frontier D₁.domain`
+  （`D₁` 是奇异胞腔，不单射，所以 `D₁ '' D₁.domain ∩ BdM ⊆ D₁ '' frontier D₁.domain`
+  只给"某个边界点取到同一个值"，不给原像在边界上）。
+  用 `image_frontier` 把 `w` 写成 `f₁ z`（`z ∈ frontier P = S ∪ R`），
+  `z ∈ R` 直接完；`z ∈ S` 时 `f₁ z ∈ A` 且 `D₁ (f₁ z) ∈ BdM`，由 `hAoff` 得 `z ∈ {p, q}`，
+  而 `p, q ∈ S ∩ R ⊆ R` 也在 `frontier D.domain` 里。
+  形参把缝隙集写成一般的 `S`（不是 `P ∩ Q`），于是 `T` 侧原样复用，不必 `inter_comm`。
+- **`image_inter_boundary_of_glue_boundary_arc`**：`D '' D.domain ∩ BdM = Set.range D.boundary`。
+  `⊇` 由 §66 的 `range_boundary_subset_of_glue_boundary_arc` 加
+  `frontier D.domain ⊆ D.domain`；`⊆` 按 §66 末尾写的论证，两片各用一次上面那条。
+- **`hAoff` 的来历（主人问的"能不能不是新假设"）。**
+  `hAoff : ∀ z ∈ A, D₁ z ∈ BdM → z = f₁ p ∨ z = f₁ q` 与 §63 的
+  `hends : ∀ z ∈ closure W, ℓ (ec (g z)) = 0 → z = θ 0 ∨ z = θ 1` 是同一条，
+  只差把弧的参数化端点 `θ 0, θ 1` 与割点的像 `f₁ p, f₁ q` 认同。
+  `CellGluing.lean:305` 的 `IsPLHomeomorphOn.maps_arc_endpoints` 正是做这件事的
+  （两条 `IsArcBetween` 加一个 PL 同胚 ⟹ 端点成对对应，可能交换），
+  所以**它不是新缺口**；但要真正消掉这个形参，还差一步
+  "`IsPLHomeomorphOn θ (Icc 0 1) A` ⟹ `IsArcBetween A (θ 0) (θ 1)`"。
+  本轮按割点 `f₁ p, f₁ q` 的形式留作形参（调用者用上面两条一行兑现），没有引入新的数学缺口。
+- 验证：`GluedCellBoundaryImage` 聚焦检查 exit=0（11.1 秒）、零 warning。
