@@ -106,10 +106,10 @@ theorem traceNormalizedCurvatureEndomorphism_pullback_continuousOn
     (fun q => riemann_pullback_isAlgCurvForm S q.1 q.2 (ι q.1 q.2))
     (hTpull p hp)).continuousWithinAt
 
-theorem exists_traceNormalizedCurvatureEndomorphism_pullback_sections
+theorem exists_traceNormalizedCurvatureEndomorphism_pullback_sections_on_carrier
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S)
     (ι : ℝ → ∀ x, V x ≃L[ℝ] TangentSpace I x)
-    {J : Set ℝ} (hJD : J ⊆ D.regular)
+    {J K : Set ℝ} (hJD : J ⊆ D.carrier) (hKJ : K ⊆ J) (hKD : K ⊆ D.regular)
     (hι : ContMDiffOn (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, F →L[ℝ] E)) ∞
       (fun p : ℝ × M => TotalSpace.mk' (F →L[ℝ] E) p.2
         (E := fun x => V x →L[ℝ] TangentSpace I x)
@@ -128,7 +128,7 @@ theorem exists_traceNormalizedCurvatureEndomorphism_pullback_sections
       (∀ t x, (A t x).toLinearMap.IsSymmetric) ∧
       ContMDiffOnSpacetimeEndomorphism (I := I) (F := ⋀[ℝ]^2 F)
         (V := fun x => ⋀[ℝ]^2 (V x)) (n := ∞) (fun t x => A t x)
-        (J ×ˢ (Set.univ : Set M)) ∧
+        (K ×ˢ (Set.univ : Set M)) ∧
       ContinuousOn (fun p : ℝ × M =>
         TotalSpace.mk' ((⋀[ℝ]^2 F) →L[ℝ] ⋀[ℝ]^2 F)
           (E := fun x => (⋀[ℝ]^2 (V x)) →L[ℝ] ⋀[ℝ]^2 (V x)) p.2 (A p.1 p.2))
@@ -163,12 +163,42 @@ theorem exists_traceNormalizedCurvatureEndomorphism_pullback_sections
     · simp only [A, dif_neg ht, ContMDiffSection.coe_zero, Pi.zero_apply]
       exact LinearMap.IsSymmetric.zero
   have hRspace := traceNormalizedCurvatureEndomorphism_pullback_contMDiffOnSpacetimeEndomorphism
-    S hS ι hJD hι
+    S hS ι hKD (hι.mono (Set.prod_mono hKJ Set.Subset.rfl))
   have hRcont := traceNormalizedCurvatureEndomorphism_pullback_continuousOn
-    S hS ι (fun t ht => D.regular_subset (hJD ht)) hι.continuousOn
+    S hS ι hJD hι.continuousOn
   refine ⟨A, hAeq, hAsym, ?_, ?_⟩
-  · exact hRspace.congr (fun p hp => hAeq p.1 hp.1 p.2)
+  · exact hRspace.congr (fun p hp => hAeq p.1 (hKJ hp.1) p.2)
   · exact hRcont.congr (fun p hp => congrArg
       (TotalSpace.mk' ((⋀[ℝ]^2 F) →L[ℝ] ⋀[ℝ]^2 F) p.2) (hAeq p.1 hp.1 p.2))
+
+theorem exists_traceNormalizedCurvatureEndomorphism_pullback_sections
+    {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S)
+    (ι : ℝ → ∀ x, V x ≃L[ℝ] TangentSpace I x)
+    {J : Set ℝ} (hJD : J ⊆ D.regular)
+    (hι : ContMDiffOn (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, F →L[ℝ] E)) ∞
+      (fun p : ℝ × M => TotalSpace.mk' (F →L[ℝ] E) p.2
+        (E := fun x => V x →L[ℝ] TangentSpace I x)
+        (ι p.1 p.2).toContinuousLinearMap) (J ×ˢ (Set.univ : Set M))) :
+    letI : ∀ x, FiniteDimensional ℝ (V x) := fun x => VectorBundle.finiteDimensional ℝ F V x
+    letI := Bundle.ExteriorPower.totalSpaceTopology F V 2
+    letI := Bundle.ExteriorPower.fiberBundle F V 2
+    letI := Bundle.ExteriorPower.vector_bundle F V 2
+    letI := Bundle.ExteriorPower.contMDiffVectorBundle (IB := I) (n := ∞) F V 2
+    let R := fun t x => exteriorPower.traceNormalizedCurvatureEndomorphism
+      ((S.base.rm04 t x).compContinuousLinearMap (fun _ => (ι t x).toContinuousLinearMap))
+      (riemann_pullback_isAlgCurvForm S t x (ι t x))
+    ∃ A : ℝ → Cₛ^∞⟮I; (⋀[ℝ]^2 F) →L[ℝ] ⋀[ℝ]^2 F,
+        (fun x : M => (⋀[ℝ]^2 (V x)) →L[ℝ] ⋀[ℝ]^2 (V x))⟯,
+      (∀ t ∈ J, ∀ x, A t x = R t x) ∧
+      (∀ t x, (A t x).toLinearMap.IsSymmetric) ∧
+      ContMDiffOnSpacetimeEndomorphism (I := I) (F := ⋀[ℝ]^2 F)
+        (V := fun x => ⋀[ℝ]^2 (V x)) (n := ∞) (fun t x => A t x)
+        (J ×ˢ (Set.univ : Set M)) ∧
+      ContinuousOn (fun p : ℝ × M =>
+        TotalSpace.mk' ((⋀[ℝ]^2 F) →L[ℝ] ⋀[ℝ]^2 F)
+          (E := fun x => (⋀[ℝ]^2 (V x)) →L[ℝ] ⋀[ℝ]^2 (V x)) p.2 (A p.1 p.2))
+        (J ×ˢ (Set.univ : Set M)) := by
+  exact exists_traceNormalizedCurvatureEndomorphism_pullback_sections_on_carrier S hS ι
+    (fun t ht => D.regular_subset (hJD ht)) Set.Subset.rfl hJD hι
 
 end DifferentialGeometry.PDE.RicciFlow
