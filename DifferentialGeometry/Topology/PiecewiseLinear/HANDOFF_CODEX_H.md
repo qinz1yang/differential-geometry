@@ -558,3 +558,21 @@ Reduced/MayerVietorisCoefficients, Reduced/PointClasses}`（`REUSE_AUDIT.md` §2
 `inter_subset_convexHull` 要用末坐标论证：`A'` 的面落在 `{q.2 = 0}` 内，过锥顶的面与该超平面的交恰是底面），
 以及删盘识别；还有不经 `Homology/HurewiczLowDegrees.lean` 的一维 Hurewicz 桥。
 
+### G.5 封盘复形：构造与 Euler 记账（`CapComplex.lean`）— done
+
+- `capComplex A L h hA hLA`：把平放的曲面复形 `A`（所有点末坐标为零）与它的边界圆子复形 `L` 上、
+  锥顶 `(x₀, 1)` 的锥拼成一个**真正的几何单纯复形**，面集恰是 `A.faces ∪ (coneComplex h).faces`
+  （`capComplex_faces` 是 `rfl`）。三条结构条件都实际验证：下闭性用 `IsRelLowerSet.union`；
+  仿射无关性分别来自 `A` 与 `coneFaces_indep`；交条件的跨对情形是本条的几何内容
+  （`capFaces_inter_cross`）：`A` 的面落在末坐标零的超平面里，而过锥顶的面与该超平面的交恰是底面，
+  所以交点的 `join` 参数必为 1，从而落在 `hull σ` 内，再用 `A` 自己的交条件。
+- `capComplex_faces_finite`：有限性。
+- `intersectionComplex_capComplex_faces`：`A` 与该锥的交复形的面集**恰是** `L.faces`
+  （`{p}` 与 `insert p σ` 都含锥顶，而锥顶不在 `A.space` 内）。
+- `eulerChar_capComplex`：若 `L.space` 是 PL 1-球面，则 `χ(capComplex) = χ(A) + 1`。
+  它把上一条与 `ConeEuler.lean` 的两条接起来，是 §33 Lemma 12 里"逐分支封 PL 盘"的现成记账。
+
+于是 G.5 的"封盘复形"这一半 done（构造 + Euler）。仍未闭合：删盘识别（`Â` 是 PL 2-球面时
+去掉封盘内部得到盘或带孔盘）与不经 `Homology/HurewiczLowDegrees.lean` 的一维 Hurewicz 桥。
+`CapComplex` 检查 exit=0（9.4 秒）、零 warning；`.lake/scratch/AuditHCapComplex.lean` 六项无 `sorryAx`。
+
