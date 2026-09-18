@@ -3593,3 +3593,131 @@ already available, since `IsCombinatorialManifoldWithBoundary.derivedNeighborhoo
 same dimension and `IsCombinatorialManifoldWithBoundary.secondDerived` does the
 same for the ambient `secondDerived K`, which is the complex `N` is a subcomplex
 of. Obligation 2 of C.6 was again deliberately not started.
+
+## C.6 obligation 3 closed: the derived neighbourhood of a contractible polygon is orientable, 2026-09-18
+
+Obligation 3 is closed. The endpoint carries no generation hypothesis and no
+orientability input at all.
+
+### The endpoint and its exact hypotheses
+
+`DerivedNeighborhoodPolygon.lean`:
+
+  `isOrientable_derivedNeighborhood_of_ambient_nullHomotopic_polygon`
+    `{E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]`
+    `{K P : Geometry.SimplicialComplex ℝ E} [Finite K.faces] [Finite P.faces] {n : ℕ}`
+    `(hPK : P.faces ⊆ K.faces)`
+    `(hK : IsCombinatorialManifoldWithBoundary (n + 1) K)`
+    `(hP : IsCombinatorialManifold 1 P)`
+    `(hconn : IsConnected P.space)`
+    `(hnull : ∀ (y : P.space) (ℓ : Path y y),`
+      `(ℓ.map (spaceInclusion hPK).continuous).Homotopic (Path.refl (spaceInclusion hPK y)))`
+    `: IsOrientable (n + 1) (derivedNeighborhood K P)`
+
+Hypothesis by hypothesis, so that a reader can check that none of them carries
+the conclusion:
+
+1. `hPK`: `P` is a subcomplex of `K`. No content beyond the setting.
+2. `hK`: the ambient complex is a combinatorial `(n+1)`-manifold with boundary.
+   It is *not* assumed orientable, and no local orientation family is assumed
+   either: the earlier `o : ∀ s ∈ K.faces, CoherentOrientation n (faceStarComplex K s)`
+   argument of `isOrientable_of_ambient_nullHomotopic_generated_polygon` is
+   discharged here by `Classical.choice (isOrientable_faceStarComplex hK.secondDerived hs)`,
+   since every closed face star of a combinatorial manifold is a ball. This is
+   the one place where the previous list overcounted the inputs.
+3. `hP`: `P` is a closed one-dimensional combinatorial manifold.
+4. `hconn`: `P.space` is connected, so `P` is a single polygon.
+5. `hnull`: every loop of `P.space` dies in `K.space`, i.e. `P` is contractible
+   in the ambient manifold. This is exactly the hypothesis 24.12 supplies; it
+   mentions only `P` and `K`, never the neighbourhood, a cocycle or an
+   orientation, so it cannot carry the conclusion. The hypotheses are jointly
+   satisfiable with a non-trivial conclusion: take `K` a triangulated 3-ball and
+   `P` the boundary of a triangle in it.
+
+No generation hypothesis survives. `hnull` is stated for all loops at all
+basepoints; a consumer holding only the null-homotopy of one core loop can
+recover it from `exists_cycle_generating_loops` together with
+`loopZPow_homotopic` and `homotopic_conjugate`, but that reduction is not needed
+by any present consumer and was not written.
+
+### The three plumbing steps, and one statement that must never be written
+
+1. `secondDerived_faces_subset_derivedNeighborhood : (secondDerived P).faces ⊆
+   (derivedNeighborhood K P).faces`, four lines, exactly the inlined argument of
+   `DerivedNeighborhood.lean:141--153`: raise the flag by
+   `IsFlag.of_le (barycentricSubdivision_faces_subset hPK)` and discharge the side
+   condition with `exists_mem_image_centroid_of_mem_barycentricSubdivision`.
+
+   **Warning, do not re-derive the false variant.** `(barycentricSubdivision P).faces ⊆
+   (derivedNeighborhood K P).faces` is the wrong statement and it is false:
+   `derivedNeighborhood_faces_subset` puts `N` inside `secondDerived K`, whose
+   faces are images of flags of `barycentricSubdivision K` under the centroid map,
+   so only the *second* derived complex of `P` can sit inside `N`. Anyone who
+   starts from the first barycentric subdivision of `P` will be trying to prove
+   something untrue.
+
+2. `exists_isGeneratedByPolygon_derivedNeighborhood` produces, for a polygon `P`
+   in `K`, a vertex `v₀` and a spanning cycle `γ₀` of
+   `barycentricSubdivision (secondDerived P)` (the third derived complex of `P`,
+   which is again a connected closed one-dimensional combinatorial manifold with
+   `P`'s space) such that the image walk
+   `γ₀.map (edgeGraphHom (barycentricSubdivision_faces_subset
+   (secondDerived_faces_subset_derivedNeighborhood hPK)))`
+   satisfies `IsGeneratedByPolygon`. `exists_cycle_generating_loops` supplies the
+   cycle and the loop generation in `(barycentricSubdivision (secondDerived P)).space`.
+
+3. The generation statement is carried to `(barycentricSubdivision N).space` by
+   four transports, in this order:
+   `exists_homotopic_loopZPow_of_homeomorph` across
+   `Homeomorph.setCongr` for `(barycentricSubdivision (secondDerived P)).space = P.space`;
+   the same lemma across `(derivedNeighborhoodSubcomplexHomeomorph hPK).symm`;
+   the new `exists_homotopic_loopZPow_of_strongDeformationRetract` for
+   `derivedNeighborhoodStrongDeformationRetract hPK`; and the same homeomorphism
+   lemma across `Homeomorph.setCongr` for
+   `(barycentricSubdivision N).space = N.space`.
+
+   Every map in that chain is `⟨value, proof⟩ ↦ ⟨same value, proof⟩`, so with
+   definitional proof irrelevance the four basepoints and the four pushed loops
+   are *definitionally* equal to `vertexPoint (barycentricSubdivision N) (edgeGraphHom … v₀)`
+   and to `walkPath γ₀` pushed along `spaceInclusion`. The only propositional step
+   is `walkPath_map`; the composite-of-maps identity is
+   `Path.ext (funext fun t => Subtype.ext rfl)`. Budgeting subtype transport as
+   real work would have been wrong here.
+
+### New declarations
+
+`Topology/Homotopy/DeformationRetractLoopPower.lean` (new, general topology):
+`StrongDeformationRetract.retractLoopSubtype` lifts `retractLoop` to a loop of
+the subspace, `map_retractLoopSubtype` says pushing it forward is `retractLoop`
+(`rfl`), and `exists_homotopic_loopZPow_of_strongDeformationRetract` transports
+"every loop is an integer power of `p`" from a strong deformation retract to the
+ambient space.
+
+`Topology/PiecewiseLinear/DerivedNeighborhoodPolygon.lean` (new):
+`secondDerived_faces_subset_derivedNeighborhood`;
+`derivedNeighborhoodSubcomplexHomeomorph`, the named export of the homeomorphism
+`derivedNeighborhoodSubcomplex K P ≃ₜ P.space` that previously existed only as an
+anonymous `let` in the proof of `derivedNeighborhoodHomotopyEquiv`
+(`DerivedNeighborhoodHomology.lean:19`); that inline `let` was left alone, so a
+later cleanup can replace it by this declaration;
+`joinedIn_derivedNeighborhood_subcomplexBarycentricProjection`, the straight-line
+path `t ↦ (1-t)x + t·proj x` inside `N.space`, which gives
+`isPathConnected_derivedNeighborhood_space`, `isConnected_derivedNeighborhood_space`
+and `isConnected_barycentricSubdivision_derivedNeighborhood_space` — the
+`Preconnected` input of the endpoint is therefore proved, not assumed;
+`exists_isGeneratedByPolygon_derivedNeighborhood`; and the endpoint above.
+
+### Verification
+
+Both modules check exit 0 with zero warnings (6.6 s and 11.5 s).
+`.lake/scratch/AuditSDerivedNeighborhoodPolygon.lean` audits eleven declarations,
+all only `propext`, `Classical.choice`, `Quot.sound`. About 150 new lines against
+the 300--500 estimate; the four transports collapsing to definitional equality is
+where the estimate was wrong.
+
+### Exact remaining obligation
+
+C.6 obligation 3 is closed. Obligation 2, the untwisted disk-bundle
+classification of a CST (the ball chain alone still permits the twisted bundle),
+is unchanged and still open; it was not started, and a plan for it is owed before
+any code.
