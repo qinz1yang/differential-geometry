@@ -2479,3 +2479,21 @@ E3 §45 的 `ZMod 2` 循环障碍仍然成立并且有用（它是沿分支相�
 
 检查 `BranchSlideSeparation` exit=0（9.0 秒）、零 warning；`AuditF258.lean` 八项仅
 `propext`、`Classical.choice`、`Quot.sound`。
+
+### 19.113 谓词直接给出 E3 §44 的分离数据
+
+`exists_supported_separation_of_isBranchSlideChart`：设 `IsBranchSlideChart R c a b P Q e`，
+`0 ≤ d`、`c + 2 * d ≤ R`、`c - d < a`，则存在 `h : M → M` 同时满足
+
+- `IsPiecewiseAffineOn h univ`（§19.111 的 `isPiecewiseAffineOn_chartSlideLong`）；
+- `Function.Injective h`（`injective_chartSlideLong`）；
+- `EqOn h id (e.symm '' slideSupportLong R)ᶜ`；
+- `Disjoint (h '' P) Q`（`disjoint_chartSlideLong_image`）。
+
+见证就是 `e.conjugateMap (slideMapLong d R)`，没有选择也没有黏合。第三条是新的一块：
+`eqOn_chartSlideLong_id_compl` 由 `OpenPartialHomeomorph.conjugateMap_eqOn_compl` 与
+`eqOn_slideMapLong_id_compl` 直接合成，支撑集取图卡里紧致 `slideSupportLong R` 的原像。
+三个数值条件之间没有冲突：给定 `c` 与 `a`（`c < a` 时取 `d` 小、`a ≤ c` 时取 `d > c - a`），
+再把 `R` 取到至少 `c + 2 * d` 即可，这正是 §19.110 说的"代价全在锥度半径"。
+
+检查 `BranchSlideSeparation` exit=0（9.6 秒）、零 warning；`AuditF258.lean` 十项无 `sorryAx`。
