@@ -1972,3 +1972,91 @@ step 2 只做了 grep 与接口陈述，没有动工（月牙是一个项目，�
   （11.7 / 12.2 / 11.0 / 10.5 / 10.8 / 11.6 / 10.8 / 11.4 秒）；
   `.lake/scratch/AuditE3BranchDisplacement.lean` 的 5 条 `#print axioms` 全部只含
   `propext`、`Classical.choice`、`Quot.sound`，无 `sorryAx`。
+
+## 65. 2026-09-18 E3-M3：法向双点交叉的**源侧**搬运（月牙的第一块，独立可复用）
+
+状态：done。新模块 `SingularCrossingPrecomp.lean`（模块名与 6 条声明名在四条车道分支上都不存在）。
+
+- **先答主人的问题：目标侧的证明骨架不转移，源侧确实不一样。**
+  `SingularGeneralPosition.lean:3438` 的 `HasPLDoubleCrossingAt.postcomp_openPartialHomeomorph`
+  **完全不动源侧的见证** `a, b, A, B`，只把目标侧的数据推过 `e`，
+  所以它只需要现成的 `IsPLHomeomorphOn.postcomp_openPartialHomeomorph` 与
+  `HasPLCrossingAt.image_openPartialHomeomorph`。
+  源侧必须**把见证拉回**：`a' = invFunOn φ Q a`、`A' = Q ∩ φ ⁻¹' A`（`B` 同）。
+- **一度以为的障碍，以及它为什么不是障碍（记下免得重走）。**
+  拉回后要 `IsPLHomeomorphOn (f ∘ φ) A' ((f ∘ φ) '' A')`。若先把 `φ` 限制到 `A'` 再复合，
+  就需要 `IsPiecewiseAffineOn φ A'`，而 `IsPiecewiseAffineOn` 的限制只对**多面体或开集**成立
+  （`mono_of_isPolyhedron` / `mono`），偏偏定义里的 `A` 只是 `𝓝[P] a` 里的一个邻域，
+  既不开也不是多面体。定义无法记录这条正则性，改定义又要动 `SingularGeneralPosition.lean`。
+  **不必走那条路**：直接对复合用 `IsPiecewiseAffineOn.comp`，
+  `hfA.isPiecewiseAffineOn.comp hφ.isPiecewiseAffineOn` 的定义域正好是 `Q ∩ φ ⁻¹' A = A'`，
+  根本不需要限制 `φ`。逆映射同理：`invFunOn (f ∘ φ) A'` 在 `f '' A` 上等于
+  `invFunOn φ Q ∘ invFunOn f A`（两边都落在 `A'` 里且被 `f ∘ φ` 送到同一点，用 `A'` 上的单射性），
+  而后者由两条 `isPiecewiseAffineOn_invFunOn` 复合得到。所以**不需要收缩见证，也不需要多面体性**。
+- 交付的三条（外加三条可复用的辅助）：
+  - `image_inter_preimage_of_bijOn`：`BijOn φ Q P`、`A ⊆ P` ⟹ `φ '' (Q ∩ φ ⁻¹' A) = A`。
+  - `isPLHomeomorphOn_comp_inter_preimage`：上面那条复合引理。
+  - `mem_nhdsWithin_inter_preimage`：`A ∈ 𝓝[P] a` ⟹ `Q ∩ φ ⁻¹' A ∈ 𝓝[Q] (invFunOn φ Q a)`
+    （用 `ContinuousWithinAt.tendsto_nhdsWithin`，`ContinuousOn φ Q` 来自分片仿射）。
+  - `HasPLDoubleCrossingAt.precomp_isPLHomeomorphOn`、
+    `HasPLBoundaryDoubleCrossingAt.precomp_isPLHomeomorphOn`、
+    `HasPLNormalDoubleCrossingAt.precomp_isPLHomeomorphOn`：
+    `IsPLHomeomorphOn φ Q P` ⟹ 交叉性质从 `(f, P)` 搬到 `(f ∘ φ, Q)`，
+    **目标侧的 `y`、`Bd`、`f '' A`、`f '' B` 全部不变**，所以交叉子句原样保留。
+    纤维覆盖子句也原样：`x ∈ Q`、`f (φ x) = z` ⟹ `φ x ∈ P ∩ f ⁻¹' {z} ⊆ A ∪ B` ⟹ `x ∈ A' ∪ B'`。
+  三条都是 `φ : G → E` 的一般形式（源可以换空间），不含任何月牙专有内容。
+- 验证：`SingularCrossingPrecomp` 聚焦检查 exit=0（10.5 秒）、零 warning；
+  `.lake/scratch/AuditE3CrossingPrecomp.lean` 的 6 条 `#print axioms` 全部只含
+  `propext`、`Classical.choice`、`Quot.sound`（`image_inter_preimage_of_bijOn` 连
+  `Classical.choice` 都不用），无 `sorryAx`。
+
+## 66. 2026-09-18 E3-M3：月牙第二块——粘合胞腔的 `boundary_image_subset`，以及嵌入输入的确切写法
+
+状态：partial（四条字段里第一条 `boundary_image_subset` 闭合；停在第二条
+`image_inter_boundary` 的 `⊆` 半边，见末尾"确切下一步"）。
+新模块 `GluedCellBoundaryImage.lean`（模块名与 2 条声明名在四条车道分支上都不存在）。
+
+- **`image_sdiff_subset_of_cutPair`**：`IsPLHomeomorphOn f P C`（`P`、`C` 闭）加
+  `IsCutPair (frontier P) p q A₁ A₂` ⟹ `A₂ ⊆ frontier P`、`f '' A₂ ⊆ frontier C`，
+  并且 `A₂` 上只有 `p`、`q` 两点的像落进 `f '' A₁`。
+  用 `PLHomeomorphTopology.lean` 的 `IsPLHomeomorphOn.image_frontier`（同维、两端闭）
+  与 `IsCutPair` 的 `union_eq / inter_eq`，加 `f` 在 `P` 上的单射性。
+- **`range_boundary_subset_of_glue_boundary_arc`**（第一条字段）：
+  输入是 `exists_glue_of_isPLHomeomorphOn_boundary_arc` 的输出原样
+  （`IsPLBall 2 P/Q`、`IsPLHomeomorphOn f₁ P D₁.domain`、`f₂`、`EqOn D (D₁ ∘ f₁) P`、
+  `EqOn D (D₂ ∘ f₂) Q`、两个 `IsCutPair`、`frontier D.domain = R ∪ T`、
+  `f₁ '' (P ∩ Q) = A`、`f₂ '' (P ∩ Q) = B`），加四条几何输入
+  `hD₁bd`（旧边界圆去掉被推离弧后落在 `Bd M`）、`hD₂bd`（月牙外弧落在 `Bd M`）、
+  `hend₁`、`hend₂`（弧的两个端点在 `Bd M`）；结论 `Set.range D.boundary ⊆ BdM`。
+  证法：`frontier D.domain = R ∪ T`，`R ⊆ frontier P ⊆ P` 上 `D = D₁ ∘ f₁`，
+  `f₁ '' R ⊆ frontier D₁.domain`；若 `f₁ z ∈ A` 则由割对的 `inter_eq` 得 `z ∈ {p, q}`，
+  走端点条款，否则走 `hD₁bd`。`T` 侧对称。
+  配合 `BranchBoundaryCollar.lean` 已有的 `range_boundary_subset_of_collarExtension`
+  （`BdM ⊆ B'`），`NormalSingularCellData.boundary_image_subset` 即得。
+- **嵌入输入的确切写法（主人要的 step 3，按 `hconnA` 的风格，生产者能兑现的形式）。**
+  不写成抽象的"月牙嵌入"，而写成两条可检查的条款：
+  - `hD₂inj : InjOn D₂ D₂.domain`（月牙本身是嵌入的 2-胞腔，不是奇异的）；
+  - `hD₂disj : ∀ x ∈ D₂.domain, x ∉ B → ∀ y ∈ D₁.domain, D₂ x ≠ D₁ y`
+    （月牙除了粘合弧 `B` 以外不碰旧胞腔的像；写成逐点不等式而不是集合不交，
+    是为了让生产者直接用月牙所在的图卡坐标去验，与 `hconnA` 同风格）。
+  这两条正是 `locallyInjective` 与 `fiber_le_two` 在两片之间唯一缺的东西：
+  片内的单射性与纤维界由 `D₁`（已交付）与 `hD₂inj` 给出，
+  跨片纤维由 `hD₂disj` 排除；`singularSet` 的
+  `doublePointSet D D.domain = doublePointSet D₁ D₁.domain` 经 `f₁` 搬运也只用这两条。
+- **确切下一步（停在这里的理由）。** 第二条字段 `image_inter_boundary` 的 `⊇` 半边由上面这条
+  加 `range D.boundary ⊆ D '' D.domain` 直接得到；`⊆` 半边还差一条几何输入：
+  **被推离弧的像只在两个端点碰 `Bd M`**，写成
+  `hAoff : ∀ z ∈ A, D₁ z ∈ BdM → z = f₁ p ∨ z = f₁ q`。
+  这与 §63 的 `hWdisp`（`ℓ (ec (g z)) = 0 ↔ z ∉ W`）是同一件事，只是换到 `A = closure W` 的坐标里，
+  所以它不是新缺口，但要把 §63 的形式搬过来。
+  有了它，`⊆` 半边的论证是：`P` 的内点经 `D₁` 落进 `Bd M` 时，由 `D₁` 自己的
+  `image_inter_boundary` 得它在 `frontier D₁.domain` 上，于是它的 `f₁` 原像在
+  `frontier P = (P ∩ Q) ∪ R` 里；`R` 已在 `frontier D.domain` 里，
+  `P ∩ Q` 的点由 `hAoff` 只能是 `p`、`q`，而 `p, q ∈ (P ∩ Q) ∩ R ⊆ R` 也在 `frontier D.domain` 里。
+  `Q` 侧对称，另需月牙自己的 `D₂ '' D₂.domain ∩ BdM ⊆ D₂ '' frontier D₂.domain`。
+  这一条与其后的 `locallyInjective / fiber_le_two / singularSet / crossing`
+  （后者用 §65 的 `HasPLNormalDoubleCrossingAt.precomp_isPLHomeomorphOn` 沿 `f₁` 搬运）
+  是下一轮的内容。
+- 验证：`GluedCellBoundaryImage` 聚焦检查 exit=0（10.0 秒）、零 warning；
+  `.lake/scratch/AuditE3GluedBoundary.lean` 的 2 条 `#print axioms` 只含
+  `propext`、`Classical.choice`、`Quot.sound`，无 `sorryAx`。
