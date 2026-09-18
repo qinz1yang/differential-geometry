@@ -238,7 +238,7 @@ theorem maximal_point_singularity_model_of_atPastMaximum
         SolutionOn.family_metric, SolutionOn.scalar, SolutionFamily.scalar] using
         hsource k t' ⟨hk, ht0⟩ z
   let L' : BlowupLimit S o kappa (fun i => x (i + N)) (fun i => t (i + N)) :=
-    blowupLimit_of_slab_compactness hT htheta S hS o (fun i => x (i + N)) (fun i => t (i + N))
+    blowupLimitOfSlabCompactness hT htheta S hS o (fun i => x (i + N)) (fun i => t (i + N))
       htposN htmem0N (fun i => (htmem (i + N)).1) hscalarN hposN
       L hanc hbase ori phi hphi F hcmp hcap hor
   let L'' : BlowupLimit S o kappa x t :=

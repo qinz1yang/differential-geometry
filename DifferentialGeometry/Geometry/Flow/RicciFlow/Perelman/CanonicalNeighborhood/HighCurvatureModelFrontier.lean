@@ -1,4 +1,5 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.HighCurvatureModels
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.CurvatureBounds
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.BlowupLimit
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CanonicalToleranceMonotone
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CanonicalClassificationNormalization
 
@@ -165,7 +166,7 @@ theorem arbitrary_high_curvature_blowup_of_maximalPointSlabCompactness
       (fun i => htmem (i + N)) hposN
       (fun i => (hN1 (i + N) (le_trans hN1le (Nat.le_add_left N i))).le) hscalarN
   let L' : BlowupLimit S o kappa (fun i => x (i + N)) (fun i => t (i + N)) :=
-    blowupLimit_of_slab_compactness hT hT2 S hS o (fun i => x (i + N)) (fun i => t (i + N))
+    blowupLimitOfSlabCompactness hT hT2 S hS o (fun i => x (i + N)) (fun i => t (i + N))
       htposN (fun i => htmem (i + N))
       (fun i => (hN1 (i + N) (le_trans hN1le (Nat.le_add_left N i))).le) hscalarN hposN
       L hanc hnorm ori phi hphi F hcmp hcap hor
