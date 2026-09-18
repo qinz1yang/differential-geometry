@@ -326,4 +326,153 @@ theorem isPLPseudoIsotopicToId_of_isPLCirclePositive [FiniteDimensional ℝ E]
   exact isPLPseudoIsotopicToId_of_comp_left hu hr₁ hr₁id
     (isPLPseudoIsotopicToId_of_comp_left hw₁ hr₂ hr₂id hw₂iso)
 
+open Classical in
+theorem isPLPseudoIsotopicToId_of_boundary_isPLCirclePositive [FiniteDimensional ℝ E]
+    (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces] (hK : IsPLBall 2 K.space)
+    {u : E → E} (hu : IsPLHomeomorphOn u K.space K.space)
+    (hpos : IsPLCirclePositive (boundaryComplex 2 K).space u) :
+    IsPLPseudoIsotopicToId u K.space := by
+  classical
+  let _ : Finite (boundaryComplex 2 K).faces := (boundaryComplex_faces_finite 2 K).to_subtype
+  have hDsub : (boundaryComplex 2 K).space ⊆ K.space := boundaryComplex_space_subset 2 K
+  have hDimg : (boundaryComplex 2 K).space = u '' (boundaryComplex 2 K).space :=
+    boundaryComplex_space_of_isPLHomeomorphOn K K hK.isCombinatorialManifoldWithBoundary hu
+  have huD : IsPLHomeomorphOn u (boundaryComplex 2 K).space (boundaryComplex 2 K).space := by
+    have h := hu.restrict (isPolyhedron_space _) hDsub
+    rwa [← hDimg] at h
+  obtain ⟨Φ, hΦ, hΦ0, hΦ1⟩ := isPLPseudoIsotopicToId_of_isPLCirclePositive
+    (isPLSphere_boundaryComplex_space_of_isPLBall K hK) huD hpos
+  have hQ : IsPLBall 3 (K.space ×ˢ Icc (0 : ℝ) 1) :=
+    isPLBall_three_prod hK (isPLBall_Icc zero_lt_one)
+  obtain ⟨A, hAfin, hAspace⟩ := hQ.isPolyhedron.exists_simplicialComplex
+  let _ : Finite A.faces := hAfin.to_subtype
+  have hAball : IsPLBall 3 A.space := hAspace ▸ hQ
+  have hbdA : (boundaryComplex 3 A).space =
+      K.space ×ˢ ({1} : Set ℝ) ∪
+        (K.space ×ˢ ({0} : Set ℝ) ∪ (boundaryComplex 2 K).space ×ˢ Icc (0 : ℝ) 1) := by
+    rw [boundaryComplex_space_prism K hK zero_lt_one A hAspace]
+    ext z
+    simp only [mem_union, mem_prod, mem_insert_iff, mem_singleton_iff]
+    tauto
+  set θ : E × ℝ → E × ℝ :=
+    fun z => if z.2 = 1 then (u z.1, z.2) else if z.2 = 0 then z else Φ z with hθdef
+  have hsing1 : IsPolyhedron ({1} : Set ℝ) := by
+    rw [← Icc_self (1 : ℝ)]
+    exact isHPolytope_Icc.isPolyhedron
+  have hW1poly : IsPolyhedron (K.space ×ˢ ({1} : Set ℝ)) :=
+    isPolyhedron_prod_singleton hK.isPolyhedron 1
+  have hW00poly : IsPolyhedron (K.space ×ˢ ({0} : Set ℝ)) :=
+    isPolyhedron_prod_singleton hK.isPolyhedron 0
+  have hWDpoly : IsPolyhedron ((boundaryComplex 2 K).space ×ˢ Icc (0 : ℝ) 1) :=
+    (isPolyhedron_space _).prod isHPolytope_Icc.isPolyhedron
+  have hθ1 : IsPLHomeomorphOn θ (K.space ×ˢ ({1} : Set ℝ)) (K.space ×ˢ ({1} : Set ℝ)) := by
+    refine (hu.prodMap hsing1.isPLHomeomorphOn_id).congr ?_
+    rintro z ⟨-, hz2⟩
+    have hz2' : z.2 = 1 := hz2
+    simp only [hθdef, if_pos hz2']
+    rfl
+  have hθ00 : IsPLHomeomorphOn θ (K.space ×ˢ ({0} : Set ℝ)) (K.space ×ˢ ({0} : Set ℝ)) := by
+    refine hW00poly.isPLHomeomorphOn_id.congr ?_
+    rintro z ⟨-, hz2⟩
+    have hz2' : z.2 = 0 := hz2
+    have hz1 : z.2 ≠ 1 := by rw [hz2']; norm_num
+    simp only [hθdef, if_neg hz1, if_pos hz2']
+    rfl
+  have hθD : IsPLHomeomorphOn θ ((boundaryComplex 2 K).space ×ˢ Icc (0 : ℝ) 1)
+      ((boundaryComplex 2 K).space ×ˢ Icc (0 : ℝ) 1) := by
+    refine hΦ.congr ?_
+    rintro z ⟨hz1, hz2⟩
+    by_cases h1 : z.2 = 1
+    · have hz : z = (z.1, (1 : ℝ)) := Prod.ext rfl h1
+      simp only [hθdef, if_pos h1]
+      rw [hz, hΦ1 z.1 hz1, ← h1]
+    · by_cases h0 : z.2 = 0
+      · have hz : z = (z.1, (0 : ℝ)) := Prod.ext rfl h0
+        simp only [hθdef, if_neg h1, if_pos h0]
+        rw [hz, hΦ0 z.1 hz1]
+      · simp only [hθdef, if_neg h1, if_neg h0]
+  have hmeet0 : (K.space ×ˢ ({0} : Set ℝ)) ∩ ((boundaryComplex 2 K).space ×ˢ Icc (0 : ℝ) 1) =
+      (boundaryComplex 2 K).space ×ˢ ({0} : Set ℝ) := by
+    ext z
+    simp only [mem_inter_iff, mem_prod, mem_singleton_iff, mem_Icc]
+    constructor
+    · rintro ⟨⟨-, hz2⟩, hz1, -⟩
+      exact ⟨hz1, hz2⟩
+    · rintro ⟨hz1, hz2⟩
+      exact ⟨⟨hDsub hz1, hz2⟩, hz1, by norm_num [hz2], by norm_num [hz2]⟩
+  have hidD0 : ∀ z ∈ (boundaryComplex 2 K).space ×ˢ ({0} : Set ℝ), θ z = z := by
+    rintro z ⟨-, hz2⟩
+    have hz2' : z.2 = 0 := hz2
+    have hz1 : z.2 ≠ 1 := by rw [hz2']; norm_num
+    simp only [hθdef, if_neg hz1, if_pos hz2']
+  have hθ0 : IsPLHomeomorphOn θ
+      (K.space ×ˢ ({0} : Set ℝ) ∪ (boundaryComplex 2 K).space ×ˢ Icc (0 : ℝ) 1)
+      (K.space ×ˢ ({0} : Set ℝ) ∪ (boundaryComplex 2 K).space ×ˢ Icc (0 : ℝ) 1) := by
+    refine hθ00.union hθD hW00poly hWDpoly ?_
+    rw [hmeet0]
+    exact (image_congr hidD0).trans (image_id _)
+  have hmeet1 : (K.space ×ˢ ({1} : Set ℝ)) ∩
+      (K.space ×ˢ ({0} : Set ℝ) ∪ (boundaryComplex 2 K).space ×ˢ Icc (0 : ℝ) 1) =
+      (boundaryComplex 2 K).space ×ˢ ({1} : Set ℝ) := by
+    ext z
+    simp only [mem_inter_iff, mem_union, mem_prod, mem_singleton_iff, mem_Icc]
+    constructor
+    · rintro ⟨⟨-, hz2⟩, hcase⟩
+      rcases hcase with ⟨-, hz0⟩ | ⟨hz1, -⟩
+      · exact absurd (hz2.symm.trans hz0) (by norm_num)
+      · exact ⟨hz1, hz2⟩
+    · rintro ⟨hz1, hz2⟩
+      exact ⟨⟨hDsub hz1, hz2⟩, Or.inr ⟨hz1, by norm_num [hz2], by norm_num [hz2]⟩⟩
+  have himD1 : θ '' ((boundaryComplex 2 K).space ×ˢ ({1} : Set ℝ)) =
+      (boundaryComplex 2 K).space ×ˢ ({1} : Set ℝ) := by
+    have hval : ∀ z ∈ (boundaryComplex 2 K).space ×ˢ ({1} : Set ℝ), θ z = (u z.1, z.2) := by
+      rintro z ⟨-, hz2⟩
+      have hz2' : z.2 = 1 := hz2
+      simp only [hθdef, if_pos hz2']
+    rw [image_congr hval]
+    ext w
+    constructor
+    · rintro ⟨z, ⟨hz1, hz2⟩, rfl⟩
+      exact ⟨huD.bijOn.mapsTo hz1, hz2⟩
+    · rintro ⟨hw1, hw2⟩
+      obtain ⟨x, hx, hxu⟩ := huD.bijOn.surjOn hw1
+      exact ⟨(x, w.2), ⟨hx, hw2⟩, Prod.ext hxu rfl⟩
+  have hθbd := hθ1.union hθ0 hW1poly
+    (hW00poly.union hWDpoly) (by rw [hmeet1]; exact himD1)
+  rw [← hbdA] at hθbd
+  obtain ⟨Ψ, hΨ, hΨbd⟩ :=
+    exists_isPLHomeomorphOn_of_boundaryComplex (n := 2) A A hAball hAball hθbd
+  refine ⟨Ψ, hAspace ▸ hΨ, fun x hx => ?_, fun x hx => ?_⟩
+  · have hmem : (x, (0 : ℝ)) ∈ (boundaryComplex 3 A).space := by
+      rw [hbdA]
+      exact Or.inr (Or.inl ⟨hx, rfl⟩)
+    rw [hΨbd hmem]
+    simp [hθdef]
+  · have hmem : (x, (1 : ℝ)) ∈ (boundaryComplex 3 A).space := by
+      rw [hbdA]
+      exact Or.inl ⟨hx, rfl⟩
+    rw [hΨbd hmem]
+    simp [hθdef]
+
+open Classical in
+theorem exists_isPLHomeomorphOn_of_endMaps_boundary_isPLCirclePositive
+    {E₂ F G : Type*} [NormedAddCommGroup E₂] [NormedSpace ℝ E₂] [FiniteDimensional ℝ E₂]
+    [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
+    [NormedAddCommGroup G] [NormedSpace ℝ G] [FiniteDimensional ℝ G] [FiniteDimensional ℝ E]
+    (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces] (hK : IsPLBall 2 K.space)
+    (K' : Geometry.SimplicialComplex ℝ E₂) [Finite K'.faces] (hK' : IsPLBall 2 K'.space)
+    {S : Set F} {T : Set G} {f : E × ℝ → F} {g : E₂ × ℝ → G}
+    (hf : IsCylindricalDiagram f K.space S) (hg : IsCylindricalDiagram g K'.space T)
+    {uf : E → E} {ug : E₂ → E₂} (huf : IsPLHomeomorphOn uf K.space K.space)
+    (hug : IsPLHomeomorphOn ug K'.space K'.space)
+    (hfuf : ∀ x ∈ K.space, f (x, 0) = f (uf x, 1))
+    (hgug : ∀ x ∈ K'.space, g (x, 0) = g (ug x, 1))
+    (hposf : IsPLCirclePositive (boundaryComplex 2 K).space uf)
+    (hposg : IsPLCirclePositive (boundaryComplex 2 K').space ug)
+    {w : E₂ → E} (hw : IsPLHomeomorphOn w K'.space K.space) :
+    ∃ H : F → G, IsPLHomeomorphOn H S T :=
+  exists_isPLHomeomorphOn_of_endMaps_pseudoIsotopicToId hf hg hK'.isPolyhedron huf hug hfuf hgug
+    (isPLPseudoIsotopicToId_of_boundary_isPLCirclePositive K hK huf hposf)
+    (isPLPseudoIsotopicToId_of_boundary_isPLCirclePositive K' hK' hug hposg) hw
+
 end DifferentialGeometry.Topology.PiecewiseLinear

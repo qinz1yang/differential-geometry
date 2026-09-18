@@ -4439,3 +4439,70 @@ that a correction has three fixed points.
 11.8 s). Audits: `AuditSCircleLiftOrientation` 10 declarations,
 `AuditSCircleAnnulusIsotopy` 27, `AuditSCircleAnnulusOrientation` 22; all 59
 depend only on `propext`, `Classical.choice`, `Quot.sound`, none on `sorryAx`.
+
+
+## The untwisted case of obligation 2
+
+`isPLPseudoIsotopicToId_of_boundary_isPLCirclePositive`: for a PL 2-ball presented
+as a finite complex `K` and a PL self-homeomorphism `u` of `K.space` whose
+restriction to `(boundaryComplex 2 K).space` is orientation-preserving, `u` is PL
+pseudo-isotopic to the identity.
+
+**C2 turned out not to be needed.** The recorded route was to cone `u` over the
+boundary to get `v`, build a pseudo-isotopy from the identity to `v`, then apply
+C2 to `v` inverse composed with `u`. That detour is unnecessary: the annulus map
+from C1 glues straight into the prism boundary next to the identity on the bottom
+face and `u` on the top face. The three pieces agree because the annulus map is the
+identity at level 0 and `u` at level 1, so one cone gives the pseudo-isotopy
+directly. The glue is a single three-branch `if` on the height coordinate, matching
+the two-branch one used for C2, and two applications of `IsPLHomeomorphOn.union`.
+
+`exists_isPLHomeomorphOn_of_endMaps_boundary_isPLCirclePositive` then feeds this to
+D: two cylindrical diagrams over PL 2-balls whose end maps are orientation-preserving
+on the boundary circles have PL homeomorphic images.
+
+### Hypothesis audit of the endpoint
+
+- `K`, `K'` with `Finite faces` and `IsPLBall 2` -- geometric input (the two model
+  disks), except that presenting them as *complexes* rather than as sets is an
+  artifact: it is needed only so that `boundaryComplex 2 K` is nameable.
+- `hf`, `hg` -- geometric input: the two cylindrical diagrams. This is 24.10's
+  hypothesis.
+- `huf`, `hug`, `hfuf`, `hgug` -- artifacts of the interface, not extra
+  assumptions. They are exactly the output of step A, which derives the end map and
+  its defining property from the diagram itself.
+- `hposf`, `hposg` -- geometric input, and the only real one. This is the content
+  that step B has to supply.
+- `hw` -- artifact: any two PL 2-balls are PL homeomorphic, so this is derivable
+  from `hK` and `hK'`; D was written to take the comparison map as input.
+
+No hypothesis carries the conclusion. The conclusion is a PL homeomorphism between
+the two diagram *images*; the orientation hypotheses speak only about the end maps
+on the boundary circles of the model disks, and `hw` relates the model disks, not
+the images.
+
+Two caveats recorded rather than glossed:
+
+1. `IsPLCirclePositive` quantifies over **all** continuous bijections from
+   `loopCircle` onto the circle, not over one. The family is provably nonempty --
+   `exists_loopCircle_param_of_arc_decomposition` produces a member -- so the
+   hypothesis is not vacuous, and `isPLCirclePositive_id` shows it is satisfiable.
+   The universal and existential forms are equivalent, because conjugating a
+   positive map by any self-homeomorphism of the circle stays positive, but that
+   invariance lemma is **not formalised**, so as stated the hypothesis is the
+   stronger one. Upgrading it needs: a lift of a positive map is surjective, hence
+   invertible, giving `HasIncreasingCircleLift` for the inverse; and, for the
+   reversing branch of `circleHomeomorph_affineLift_or_neg`, that conjugating by
+   negation sends the lift `F` to `t` mapsto `-F (-t)`, which is again increasing.
+2. I have **not** proved in Lean that `IsPLCirclePositive` ever fails. Its
+   non-triviality is inherited from the mathematics: an orientation-reversing
+   self-homeomorphism of a circle is not pseudo-isotopic to the identity, so if the
+   predicate held always, C1 would be false. A Lean witness would need a concrete
+   reversing map and the exclusivity of the two branches of the lift dichotomy.
+
+### Verification
+
+`check-f.ps1 -Module DifferentialGeometry.Topology.PiecewiseLinear.CircleAnnulusOrientation`
+exit=0, zero warnings, 13.0 s. `AuditSCircleAnnulusOrientation` now covers 24
+declarations, all depending only on `propext`, `Classical.choice`, `Quot.sound`,
+including the endpoint.
