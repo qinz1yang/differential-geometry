@@ -315,6 +315,25 @@ theorem disjoint_slideMapFwd_image_slideBandA {d R a b c : ℝ} (hd : 0 ≤ d)
   rw [hfirst] at hw2
   linarith
 
+theorem not_disjoint_image_slideBandA_of_origin_fixed {a b c : ℝ}
+    {h : ℝ × ℝ × ℝ → ℝ × ℝ × ℝ} (hc : 0 ≤ c) (ha : a ≤ 0) (hb : 0 ≤ b)
+    (hfix : h ((0 : ℝ), (0 : ℝ), (0 : ℝ)) = ((0 : ℝ), (0 : ℝ), (0 : ℝ))) :
+    ¬Disjoint (h '' slideBandA c) (slideBandQ a b) := by
+  intro hdisj
+  have hA : ((0 : ℝ), (0 : ℝ), (0 : ℝ)) ∈ slideBandA c := by
+    refine ⟨rfl, ?_, ?_⟩
+    · simp only [abs_zero]
+      exact zero_le_one
+    · rw [Set.mem_Icc]
+      exact ⟨le_rfl, hc⟩
+  have hQ : ((0 : ℝ), (0 : ℝ), (0 : ℝ)) ∈ slideBandQ a b := by
+    refine ⟨rfl, ?_, ?_⟩
+    · simp only [abs_zero]
+      exact zero_le_one
+    · rw [Set.mem_Icc]
+      exact ⟨ha, hb⟩
+  exact Set.disjoint_left.mp hdisj ⟨_, hA, hfix⟩ hQ
+
 theorem exists_slideMapFwd_parameters (b c : ℝ) :
     ∃ d R : ℝ, 0 < d ∧ b < d ∧ c + 2 * d ≤ R :=
   ⟨max (b + 1) 1, c + 2 * max (b + 1) 1,

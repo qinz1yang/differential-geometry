@@ -2695,3 +2695,22 @@ E3 的两层共轭（外层流形图卡 `E`、内层模型拉直 `e`）绕开了
 
 检查 `BranchSlideEndpoint` exit=0（9.3 秒）、零 warning；`AuditF261.lean` 十项仅
 `propext`、`Classical.choice`、`Quot.sound`。下一审计文件 `AuditF262.lean`。
+
+### 19.119 E3 §48 第一条出路的判决：与 `Bd M` 相切的收尾模型不可能
+
+`not_disjoint_image_slideBandA_of_origin_fixed`（`ModelSlideFwd.lean`）：对**任意**
+`h : ℝ × ℝ × ℝ → ℝ × ℝ × ℝ`，只要 `0 ≤ c`、`a ≤ 0 ≤ b` 且 `h (0,0,0) = (0,0,0)`，就有
+`¬ Disjoint (h '' slideBandA c) (slideBandQ a b)`。原点同时落在两条带里，被固定的原点就仍是双点。
+
+E3 §48 给了两条出路：(1) 给端点一个锥度在 `Bd M` 处归零、与 `Bd M` 相切的收尾模型；
+(2) 先把端点挪开的两步构造。本条把 (1) **排除**：在端点模型里 `Bd M = {x = 0}`，
+分支端点就是原点，而"锥度在 `Bd M` 处归零"正是 `h (0,0,0) = (0,0,0)`；
+于是分离在原点处直接失效。这与滑动方向、滑距、锥度的具体形状都无关，
+所以任何逐点固定 `Bd M` 的支撑滑动都不行。
+
+结论：触边端点只剩两种走法——(2) 两步构造（先用别的机制把端点移进 `int M`，再用 §19.113 的内部滑动），
+或者消费者接受 `h` 只保 `M`（`MapsTo h N N`，§19.118）而不保 `∂M`。后者已经可用，
+且 E3 §47 的双点集等式只需要 `MapsTo`、`Injective`、支撑外恒等与 `MapsTo h U U` 四条。
+
+检查 `ModelSlideFwd` exit=0（9.7 秒）、`BranchSlideEndpoint` exit=0（9.4 秒），均零 warning；
+`AuditF260.lean` 二十一项、`AuditF261.lean` 十项仅 `propext`、`Classical.choice`、`Quot.sound`。
