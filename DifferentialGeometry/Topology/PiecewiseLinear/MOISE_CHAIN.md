@@ -611,12 +611,27 @@ Moise 每一章开头"不妨设某映射是 PL 的"都是这一条。分三个�
 `< δ` 的分划（径向 `σ`、角向 `u`）与任何在分划点处与 `f` 相差 `≤ ε`、且在三个顶点处彼此相容的边界数据，
 都能扩成 `stdCone` 上的 PA 映射，在三条边上恰是指定的折线，且处处与 `f` 相差 `≤ 2ε`。
 
+`ConeFanCarrier.lean` 与 `ConeStarCover.lean` 把这条结论搬进了 `|L|`：
+- `exists_isPiecewiseAffineOn_stdCone_fan_carrierFace`：若每个格的四个顶点值都取在"承载该格像的开星"里，
+  则拼出的映射把每点送进 `convexHull (carrierFace L (f z))`，从而映进 `|L|`；
+- `exists_pos_forall_exists_vertex_image_subset_openStar`：`stdCone` 上的 Lebesgue 数（照
+  `SimplicialApproximation.lean` 里的同一套 `continuousOn_iff'` + `lebesgue_number_lemma_of_metric`）；
+- `eq_of_mem_openStar_of_vertex`：若 `y` 是 `L` 的顶点且 `y ∈ openStar L v`，则 `v = y`。
+  这条是关键：它保证**在边界上 Lebesgue 选出的顶点就是 `f` 自己的值**，于是边界格与内部格的顶点值自动相容；
+- `exists_pos_forall_exists_isPiecewiseAffineOn_stdCone_mapsTo_of_vertex_boundary`：
+  **边界为单纯映射时的相对 PL 逼近**。`f` 在 `stdCone` 上连续且映进 `|L|`，先给出 `δ > 0`；
+  此后任何网距 `< δ`、且在边界分划点处 `f` 取 `L` 顶点值的两个分划，都给出 `stdCone` 上的 PA 映射：
+  三条边上是 `f` 在边界分划点处取值的折线（故当 `f|∂` 对该分划已是仿射时即 `Ψ = f`），
+  每点的像落在 `convexHull (carrierFace L (f z))` 里，整体映进 `|L|`。
+
 **之后还缺的**（按代价排序）：
 1. **盘相对整条边界**（循环版）：把上面的扇形换成平面多边形绕内点的扇形 `hull{0, p_j, p_{j+1}}`，
    构造与相容性论证逐字相同（`sectorCoord` 换成 2×2 逆矩阵），只是"相邻扇形只交于公共射线"
    要作为假设由调用方验证。角度归纳的最后一步还要把扇形 `M` 与扇形 `0` 粘回去。
-2. **顶点值的来源**：要把 `|L|` 版真正用起来，需要造出满足"每格四点共面"的顶点值网格，
-   即逐层的单纯逼近序列且相邻层 contiguous。这是 M3 原计划里的"环路序列"一步。
+2. **一般边界数据（非单纯）的 `|L|` 版**：上面那条要求边界分划点处 `f` 取顶点值。
+   若只假设 `f|∂` 是 PA 而非单纯，混合格（两角是给定的边界点、两角是选出的顶点）就没有公共单形，
+   这正是 Zeeman 1964 相对单纯逼近定理的难点，标准解法是先取 `K₀` 的导出邻域再在领口上插值。
+   目前的 M1（乘积相对一端）加上述结论应该够走这条路，但需要把导出邻域的柱形结构接上。
 3. **搬到任意 PL 三角形：已证。** `TriangleRelBoundary.lean` 的
    `exists_pos_forall_exists_isPiecewiseAffineOn_triangle_eqOn_boundary`：对任意仿射无关的
    `v : Fin 3 → E`，在 `convexHull ℝ (range v)` 上给出同一条结论，三条边写成
