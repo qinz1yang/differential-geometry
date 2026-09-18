@@ -3061,3 +3061,51 @@ import ...StarPair failed, environment already contains
 
 检查 `VertexChartTransport` exit=0（9.4 秒）、零 warning；`AuditF268.lean` 一项仅
 `propext`、`Classical.choice`、`Quot.sound`。下一审计文件 `AuditF269.lean`。
+
+### 19.126 常驻提醒：包装缺一半时先找兄弟包装；连接球面已能过转写
+
+**常驻提醒（今天第三次踩同一形状，写成规则）**：**某个包装的结论看起来"少一半"时，
+先去找同一构造上的兄弟包装，再下"树里没有"的结论。** 今天三例：
+`exists_isPLHomeomorphOn_image`（`PLImage.lean:140`）在 `:150` 丢掉面刻画；
+`exists_simplicialComplex_image_of_affineOn_faces`（`:113`）保面刻画但不给 glue-iso；
+`exists_isGlueIso_of_affineOn_faces`（`AffineImageTransport.lean:13`）给 glue-iso 但在 `:20-28` 丢面刻画。
+三者是同一个 `simplicialImage` 构造的三个包装。
+
+**本轮改动一：加强 `exists_isGlueIso_of_affineOn_faces`**（`AffineImageTransport.lean`，无车道归属）
+结论末尾加上 `∀ t, t ∈ L.faces ↔ ∃ s ∈ K.faces, t = s.image f`，证明里 `hfaces` 本来就在手，
+只需写进 `refine`。**注意：协调者说"加合取项不会破坏消费者"这一条不成立**——
+`obtain ⟨…⟩` 的匿名构造子模式是定长右嵌套的，多一个合取项会让最后一个绑定变成
+`(第n项 ∧ 新项)`。两个消费者都要补一个 `-`：
+`PlanarChartDeletion.lean:36`（第 7 位 `hsm` 当 `EqOn` 用，**会真报错**）与
+`SimplexDiskStraightening.lean:154`（第 7 位本就是 `-`，会静默吸收两项，不报错但应补齐）。
+两处都不属 H/E3。重编结果：`AffineImageTransport` exit=0（9.1 秒）、
+`PlanarChartDeletion` exit=0（11.9 秒）、`SimplexDiskStraightening` exit=0（11.1 秒），均零 warning。
+
+**本轮改动二：连接球面现在能过转写**
+`exists_simplicialComplex_pair_image_of_isPiecewiseAffineOn`（`SimplicialPairImage.lean`）
+新增末条 `∀ n, IsPLSphere n (link M {p}).space → IsPLSphere n (link M₁ {h p}).space`。
+证明把 `M₁` 那一次调用换成加强后的 glue-iso 版（同时拿到面刻画与 glue-iso），
+再走 `exists_isPLHomeomorphOn_geometricLink_of_isSubdivision`（`LinkSubdivision.lean:45`）
+加 `IsPLHomeomorphOn.symm` 下到细分，最后
+`IsGlueIso.geometricLink`（`StarComplex.lean:79`）+ `IsGlueIso.isPLHomeomorphOn`（`:64`）过像。
+`exists_simplicialComplex_pair_image_closedStar_of_isPiecewiseAffineOn`
+（`VertexChartTransport.lean`）把同一条propagate 出来：中间那步
+`link (starComplex M' p) {p} = link M' {p}` 由 `geometricLink_starComplex` 直接相等。
+两条都因为类型里出现 `geometricLink` 而必须带回 `[DecidableEq E] [DecidableEq F]`。
+
+**对称情形：装配还差两条，都已定位**
+`IsPiecewiseAffineOn.affine_comp`（`BranchCollarPrism.lean:57` 在用）给出 `L ∘ h` 仍分片仿射，
+所以"复合线性同构"不是障碍。剩下：
+1. `K₁.space ∈ 𝓝 (h p)`（第二次喂图卡机器要）。现有 `K₁.space = h '' closedStar R p`，
+   要它是 `h p` 的邻域，得用 `IsPLHomeomorphOn h U V` 诱导的同胚 `U ≃ₜ V`
+   （`PLBallSphere.lean:14`）加上 `IsOpen U`、`IsOpen V`。图卡本来就给这两个开性，
+   所以是可做的一步，但要把 `≃ₜ` 的开映射性质接出来。
+2. 第二次的 `hfiber`：`IsPLSphere 1 (M₁.space ∩ {q | q.2.2 = c})`，即**第二张片被已拉直的第一张片
+   截成圆**。这和 §19.123 里第一次的 `hfiber` 同性质，是**真几何输入**，不是 bookkeeping。
+另外第一次拉直要取 `HasPLCrossingAt.exists_linearEquiv_normalForm` 的 **iff** 形
+（`exists_linearEquiv_normalForm_of_geometricLink_section` 为统一三分支弱化成了 `→`），
+这一步在源头取即可，不必反推。
+
+检查 `SimplicialPairImage` exit=0（9.1 秒）、`VertexChartTransport` exit=0（10.9 秒）、
+`VertexBranchInput` exit=0（11.1 秒），均零 warning；`AuditF269.lean` 三项仅
+`propext`、`Classical.choice`、`Quot.sound`。下一审计文件 `AuditF270.lean`。
