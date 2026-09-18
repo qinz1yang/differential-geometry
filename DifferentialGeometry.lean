@@ -5349,6 +5349,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborho
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CanonicalToleranceMonotone
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CapChainCoOrientation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CapChainTransition
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CapCollarDepth
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CapRegionStructure
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ClosedBadPointSelection
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ClosedOpenPropagation
@@ -7490,6 +7491,7 @@ import DifferentialGeometry.Geometry.Metric.DirectLimit.Distance
 import DifferentialGeometry.Geometry.Metric.DirectLimit.Properness
 import DifferentialGeometry.Geometry.Metric.Distance.Ball
 import DifferentialGeometry.Geometry.Metric.Distance.Basic
+import DifferentialGeometry.Geometry.Metric.Distance.Boundary
 import DifferentialGeometry.Geometry.Metric.Distance.Finiteness
 import DifferentialGeometry.Geometry.Metric.Distance.Topology
 import DifferentialGeometry.Geometry.Metric.DistancePullback
