@@ -1897,3 +1897,78 @@ theorem eq_top_of_boundaryLoops_mem_normal
 - 验证：`DisplacedArcConnected` 聚焦检查 exit=0（10.7 秒）、零 warning；
   `.lake/scratch/AuditE3DisplacedArc.lean` 的 6 条 `#print axioms` 全部只含
   `propext`、`Classical.choice`、`Quot.sound`，无 `sorryAx`。全程无其它属于本车道的 `lean.exe`。
+
+## 64. 2026-09-18 E3-M3：`IsConnected W` 归位到分支分离层（位移判据在生产者处被证出来），月牙的接口
+
+状态：step 1 done（`IsConnected W` 不再悬在两层之间；位移判据是**已证的输出条款**，
+连通性本身是**分离层的显式假设**，且写成 `h` 出现之前的图卡形式）；
+step 2 只做了 grep 与接口陈述，没有动工（月牙是一个项目，不是一轮，见末尾）。
+改动文件：`BranchSeparationBoundary.lean`、`BranchBoundaryCollar.lean`、`BranchComplexityDrop.lean`
+（三个都是本车道的）。无新模块。
+
+- **位移判据（新输出条款，已证，不是假设）。** `exists_separated_slide_fwd` 的结论末尾加一条：
+  给定边界模型 `hBdE / hBd₁` 与 `0 < d`、`0 < R`，对一切 `x ∈ Bd`，
+  `h x ∉ Bd ↔ x ∈ E.source ∧ E x ∈ e.source ∧ |(e (E x)).2.1| + |(e (E x)).2.2| < 1`。
+  证明是直接计算：`h = E.conjugateMap (e.conjugateMap (slideMapFwd d R))`，
+  在两层图卡里 `e (E (h x)) = slideMapFwd d R (e (E x))`，第一坐标是
+  `(e (E x)).1 + slideAmountLong d R (e (E x))`，而 `x ∈ Bd` 给 `(e (E x)).1 = 0`，
+  于是 `h x ∈ Bd ↔ slideAmountLong d R (e (E x)) = 0`；再把 `slideAmountLong` 展开成
+  `max 0 (min (d * (1 - |p.2.1| - |p.2.2|)) ((R - |p.1|)/2))`，`|p.1| = 0` 使 taper 项为 `R/2 > 0`，
+  所以它为零当且仅当 `1 ≤ |p.2.1| + |p.2.2|`。两个退化情形（`x ∉ E.source`、`E x ∉ e.source`）
+  都给 `h x = x ∈ Bd`，与右边同时为假。
+  这条顺着 `exists_separated_along_boundary_branch`（term-mode 转发）与
+  `exists_separated_cell_along_boundary_branch` 传下去；`BranchComplexityDrop` 的 obtain 多一个 `-`。
+- **连通性归位。** `exists_separated_cell_boundary_preimage_along_boundary_branch` 新增
+  `hdpos : 0 < d`、`hRpos : 0 < R` 与
+  `hconnA : IsConnected (frontier D.domain ∩ P ∩ {z | D z ∈ E.source ∧ E (D z) ∈ e.source ∧
+    |(e (E (D z))).2.1| + |(e (E (D z))).2.2| < 1})`，
+  新增输出条款 `IsConnected {z | z ∈ frontier D.domain ∧ P.piecewise (h ∘ D) D z ∉ BdM}`。
+  两者之间的集合等式由位移判据加"边界圆整体落在 `Bd M` 上"
+  （`hD.image_inter_boundary` ⟹ `range D.boundary ⊆ BdM`）逐点得出：
+  `z ∉ P` 时 `piecewise = D z ∈ BdM`，不在左边也不在右边；`z ∈ P` 时两边由判据互推。
+  **一句话说生产者还要证什么**：边界圆 `frontier D.domain` 与该分支滑移截面的开 ℓ¹-球
+  `{|p.2.1| + |p.2.2| < 1}` 的交（先经 `D`、`E`、`e` 拉回，再交上 `P`）是**连通的**，
+  即"边界圆与滑移支撑交成一段区间"。它不是拓扑必然（圆可以反复进出支撑），
+  只能由分支的具体选取给出，所以留在分离层作显式假设是正确的归位，而不是缺口下沉。
+- **月牙的 grep 结果（动工前的核对，主人要求）。**
+  - **引擎已经有了**：`LoopTheorem/CellGluing.lean:375`
+    `exists_glue_of_isPLHomeomorphOn_boundary_arc`：两个 `SingularTwoCell` `D₁`、`D₂`，
+    一条 `IsPLBall 1 A ⊆ frontier D₁.domain`、`IsArcBetween A a₀ a₁`、
+    `IsPLHomeomorphOn g A B`、`B ⊆ frontier D₂.domain`、`EqOn D₁ (D₂ ∘ g) A`，
+    输出单个 `SingularTwoCell D`，`D.domain = P ∪ Q` 是 `IsPLBall 2`，
+    `IsPLHomeomorphOn f₁ P D₁.domain`、`IsPLHomeomorphOn f₂ Q D₂.domain`、
+    `EqOn D (D₁ ∘ f₁) P`、`EqOn D (D₂ ∘ f₂) Q`，并给出新边界的割对结构
+    `frontier D.domain = R ∪ T` 与四个端点的对应。**正好是"沿一条边界弧贴一个 2-胞腔"。**
+    `BallGluingTwo.lean` 的 `isPLBall_union_of_boundary_arc_of_ambient` 与
+    `IsCombinatorialManifoldWithBoundary.isPLBall_union_of_inter_isPLBall_one` 是它的平面粘合底层。
+    `CrosscutExtension.lean`、`BoundaryDiskExtension.lean`、`DiskCrosscutExtension.lean`
+    是割线/边界片的 PL 同胚延拓，属于 `D₂` 的构造工具，不是粘合本身。
+    `CutAndPaste.lean` 不存在。
+  - **引擎不给的**：`exists_glue_of_isPLHomeomorphOn_boundary_arc` 只给域层与 `EqOn`，
+    `NormalSingularCellData` 的四条都要另证。
+  - **月牙的确切接口（下一轮的目标陈述）。**
+    消费：(i) 分离后的盘映射 `g = P.piecewise (h ∘ D) D`，连同已交付的
+    `IsPLOn`、`IsLocallyInjective`、`fiber_le_two`、`doublePointSet` 下降；
+    (ii) 被推离弧 `closure W ⊆ frontier D.domain`（§63 已产出，`IsPLBall 1` 且有参数化）；
+    (iii) 一个**月牙胞腔** `D₂`：`IsPLBall 2 D₂.domain`，其边界分成弧 `B`（经 `γ` 与
+    `closure W` 匹配且 `EqOn g (D₂ ∘ γ) (closure W)`）与互补弧（像落在 `Bd M` 里）；
+    (iv) **新的几何假设：月牙是嵌入的且只沿该弧碰旧胞腔**，即
+    `D₂ '' (D₂.domain \ B) ∩ g '' D.domain = ∅` 与 `InjOn D₂ D₂.domain`。
+    恢复：`image_inter_boundary` 与 `boundary_image_subset`（新边界 `R ∪ T`：
+    `R` 来自旧边界去掉 `closure W` 的部分，已在 `Bd M` 里；`T` 是月牙外弧，按 (iii) 在 `Bd M` 里）；
+    `locallyInjective` 与 `fiber_le_two`（两片各自成立，交叉纤维由 (iv) 排除）；
+    `singularSet`（由 (iv) 得 `doublePointSet D' D'.domain = doublePointSet g D.domain`
+    经 `f₁` 搬运，后者已等于 `doublePointSet D D.domain \ branchCarrier cb`）。
+  - **唯一缺的通用引理**：`crossing` 的**源侧**搬运。
+    `SingularNormalForm.lean` 只有 `HasPLNormalDoubleCrossingAt.postcomp_openPartialHomeomorph`
+    （目标侧后复合），没有沿源侧 PL 同胚 `f₁ : P ≃ D.domain` 的前复合版本，
+    而 `crossing` 的陈述是关于 `e ∘ D` 在**源平面子集**上的，所以必须新证一条
+    `HasPLNormalDoubleCrossingAt.precomp_isPLHomeomorphOn`。这是月牙里唯一的通用层新引理。
+  - **结论：月牙是一个项目而不是一轮**（域层引擎已有，但四条字段的恢复加上源侧搬运引理
+    与 (iv) 的几何输入，是完整的一轮以上）。按主人给的回退条款，本轮交付 step 1 与本接口，停在此处。
+- 验证：`BranchSeparationBoundary`、`BranchComplexityDrop`、`BranchBoundaryCollar` 以及全部下游
+  `BranchBoundarySweep`、`BranchCollarPrism`、`BranchCollarPrismLevel`、`DisplacedArcConnected`、
+  `BranchCaseThreeFour` 共 8 个聚焦检查全部 exit=0、零 warning
+  （11.7 / 12.2 / 11.0 / 10.5 / 10.8 / 11.6 / 10.8 / 11.4 秒）；
+  `.lake/scratch/AuditE3BranchDisplacement.lean` 的 5 条 `#print axioms` 全部只含
+  `propext`、`Classical.choice`、`Quot.sound`，无 `sorryAx`。
