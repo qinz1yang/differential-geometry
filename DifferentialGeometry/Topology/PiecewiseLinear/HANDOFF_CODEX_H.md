@@ -2771,3 +2771,35 @@ local checks; the separate integration source rebuild remains pending.
 The next mathematical obligation is still section 42 step 2: expose the combined
 cut model's cone data and the second base sphere's containment in the outer sphere
 union the gluing disk. The trimmed arc-chain ball-pair induction is not complete.
+
+## 44. 2026-09-18 Combined cut-model cone data — done
+
+`exists_cutModel_data` now also returns the boundary complex `L` of the outer
+tetrahedron together with all eight facts required by section 42 step 2:
+
+- `L.faces.Finite`, `IsConeBase p₁ L`, and `IsPLSphere 2 L.space`;
+- `coneSet p₁ L.space = coneSet p₁ L₁.space ∪ coneSet p₂ L₂.space`;
+- `coneSet p₁ {y₁, y₂} = coneSet p₁ {z, y₁} ∪ coneSet p₂ {z, y₂}`;
+- `y₁ ∈ L.space`, `y₂ ∈ L.space`, and
+  `L₂.space ⊆ L.space ∪ coneSet z L₀.space`.
+
+The witness is `simplexBoundary {c, d, A, B} hTout`.  The cone and marked-ray
+equalities reuse the already proved convex-hull cut and arc equalities.  The last
+containment is proved facewise from `simplexBoundary_space`: deleting `d` gives
+the gluing face, deleting `m` gives the opposite outer face, and the two remaining
+faces map into outer faces because `m ∈ segment ℝ c d`.  No additional hypothesis
+was added.  Both consumers of `exists_cutModel_data` were synchronized, and
+`BallPairCutConfig` is now registered directly in the flat root aggregate.
+
+Strict private checks used token `H-CutModel-Strict-20260918` and output root
+`C:\Users\liao9\AppData\Local\Temp\codex-h-cutmodel-private`.  In dependency
+order, `BallPairCutConfig` and `BallPairRelativeGluing` both compiled with exit 0,
+zero diagnostics, source-stable receipts, the standard linter set, and explicit
+header and long-line checks.  An external silent audit covered all twelve
+non-automatic declarations in the two modules; every axiom is in
+`{propext, Classical.choice, Quot.sound}`, and all environment linters other than
+`docBlame` and `docBlameThm` passed.  The strict checks wrote no shared artifact.
+
+The remaining section 42 obligation is the trimmed arc-chain ball-pair induction
+over the non-endpoint cells.  The old full-chain statement remains false and must
+not be reinstated.
