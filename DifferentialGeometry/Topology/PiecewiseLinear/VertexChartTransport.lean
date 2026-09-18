@@ -141,4 +141,83 @@ theorem isPiecewiseAffineOn_injOn_linearEquiv_comp {h : E → E} {U V : Set E}
   rw [preimage_univ, inter_univ] at hcomp
   exact hcomp.congr fun _ _ => rfl
 
+omit [FiniteDimensional ℝ E] in
+theorem IsPLHomeomorphOn.isOpen_image_of_isOpen {f : E → F} {P : Set E} {Q : Set F}
+    (h : IsPLHomeomorphOn f P Q) (hQ : IsOpen Q) {P₀ : Set E} (hP₀ : IsOpen P₀)
+    (hsub : P₀ ⊆ P) : IsOpen (f '' P₀) := by
+  have heq : f '' P₀ = Q ∩ Function.invFunOn f P ⁻¹' P₀ := by
+    ext y
+    constructor
+    · rintro ⟨x, hx, rfl⟩
+      refine ⟨h.bijOn.mapsTo (hsub hx), ?_⟩
+      change Function.invFunOn f P (f x) ∈ P₀
+      rw [h.bijOn.injOn.leftInvOn_invFunOn (hsub hx)]
+      exact hx
+    · rintro ⟨hyQ, hyP⟩
+      exact ⟨Function.invFunOn f P y, hyP, h.bijOn.invOn_invFunOn.2 hyQ⟩
+  rw [heq]
+  exact h.isPiecewiseAffineOn_invFunOn.continuousOn.isOpen_inter_preimage hQ hP₀
+
+theorem isPLHomeomorphOn_linearEquiv (L : E ≃ₗ[ℝ] ℝ × ℝ × ℝ) {V : Set E} (hV : IsOpen V) :
+    IsPLHomeomorphOn (fun y => L y) V ((fun y => L y) '' V) := by
+  have hopen : IsOpen ((fun y => L y) '' V) := by
+    have h := L.toContinuousLinearEquiv.toHomeomorph.isOpenMap V hV
+    simpa using h
+  have hinj : InjOn (fun y => L y) V := L.injective.injOn
+  refine ⟨hinj.bijOn_image,
+    (isPiecewiseAffineOn_of_affine L.toLinearMap.toAffineMap hV).congr fun _ _ => rfl, ?_⟩
+  refine (isPiecewiseAffineOn_of_affine L.symm.toLinearMap.toAffineMap hopen).congr fun y hy => ?_
+  obtain ⟨x, hx, rfl⟩ := hy
+  change Function.invFunOn (fun y => L y) V (L x) = L.symm (L x)
+  rw [hinj.leftInvOn_invFunOn hx, L.symm_apply_apply]
+
+theorem exists_isPLHomeomorphOn_comp_two_sheets
+    {U : Set E} (hU : IsOpen U) {p : E} (hpU : p ∈ U)
+    {φ : E → ℝ × ℝ × ℝ} {W : Set (ℝ × ℝ × ℝ)} (hW : IsOpen W)
+    (hφ : IsPLHomeomorphOn φ U W) (hφp : φ p = 0)
+    {U₂ V₂ : Set (ℝ × ℝ × ℝ)} (hU₂ : IsOpen U₂) (hV₂ : IsOpen V₂)
+    (h0 : (0 : ℝ × ℝ × ℝ) ∈ U₂)
+    {h₂ : (ℝ × ℝ × ℝ) → ℝ × ℝ × ℝ} (hh₂ : IsPLHomeomorphOn h₂ U₂ V₂) (hh₂0 : h₂ 0 = 0)
+    (L₂ : (ℝ × ℝ × ℝ) ≃ₗ[ℝ] ℝ × ℝ × ℝ)
+    {A B : Set E} {S : Set (ℝ × ℝ × ℝ)}
+    (hA : ∀ᶠ y in 𝓝 p, y ∈ A → (φ y).2.2 = 0)
+    (hB : ∀ᶠ y in 𝓝 p, y ∈ B → φ y ∈ S)
+    (hS : ∀ᶠ z in 𝓝 (0 : ℝ × ℝ × ℝ), (z ∈ S → (L₂ (h₂ z)).2.2 = 0) ∧
+      (z.2.2 = 0 → (L₂ (h₂ z)).2.1 = 0)) :
+    ∃ (U₀ : Set E) (V₀ : Set (ℝ × ℝ × ℝ)), IsOpen U₀ ∧ p ∈ U₀ ∧
+      IsPLHomeomorphOn (fun y => L₂ (h₂ (φ y))) U₀ V₀ ∧ L₂ (h₂ (φ p)) = 0 ∧
+      ∀ᶠ y in 𝓝 p, (y ∈ A → (L₂ (h₂ (φ y))).2.1 = 0) ∧
+        (y ∈ B → (L₂ (h₂ (φ y))).2.2 = 0) := by
+  have hcont : ContinuousOn φ U := hφ.isPiecewiseAffineOn.continuousOn
+  have hU₀ : IsOpen (U ∩ φ ⁻¹' U₂) := hcont.isOpen_inter_preimage hU hU₂
+  have hpU₀ : p ∈ U ∩ φ ⁻¹' U₂ := ⟨hpU, by change φ p ∈ U₂; rw [hφp]; exact h0⟩
+  have hsub : U ∩ φ ⁻¹' U₂ ⊆ U := inter_subset_left
+  have himgU : IsOpen (φ '' (U ∩ φ ⁻¹' U₂)) := hφ.isOpen_image_of_isOpen hW hU₀ hsub
+  have himgsub : φ '' (U ∩ φ ⁻¹' U₂) ⊆ U₂ := by
+    rintro z ⟨y, hy, rfl⟩
+    exact hy.2
+  have hφ₀ : IsPLHomeomorphOn φ (U ∩ φ ⁻¹' U₂) (φ '' (U ∩ φ ⁻¹' U₂)) :=
+    hφ.restrict_isOpen hU₀ hsub himgU
+  have himg2 : IsOpen (h₂ '' (φ '' (U ∩ φ ⁻¹' U₂))) :=
+    hh₂.isOpen_image_of_isOpen hV₂ himgU himgsub
+  have hh₂₀ : IsPLHomeomorphOn h₂ (φ '' (U ∩ φ ⁻¹' U₂)) (h₂ '' (φ '' (U ∩ φ ⁻¹' U₂))) :=
+    hh₂.restrict_isOpen himgU himgsub himg2
+  have hcomp := (hφ₀.trans hh₂₀).trans (isPLHomeomorphOn_linearEquiv L₂ himg2)
+  have hcontAt : ContinuousAt φ p := hcont.continuousAt (hU.mem_nhds hpU)
+  have htend : Filter.Tendsto φ (𝓝 p) (𝓝 (0 : ℝ × ℝ × ℝ)) := by
+    rw [← hφp]
+    exact hcontAt
+  refine ⟨U ∩ φ ⁻¹' U₂, _, hU₀, hpU₀, hcomp, by rw [hφp, hh₂0, map_zero], ?_⟩
+  filter_upwards [hA, hB, htend.eventually hS] with y hAy hBy hSy
+  exact ⟨fun hy => hSy.2 (hAy hy), fun hy => hSy.1 (hBy hy)⟩
+
+omit [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ E] in
+theorem eventually_mem_image_closedStar_of_mem_space
+    (N : Geometry.SimplicialComplex ℝ E) [Finite N.faces] (p : E) (φ : E → F) :
+    ∀ᶠ y in 𝓝 p, y ∈ N.space → φ y ∈ φ '' closedStar N p := by
+  obtain ⟨W, hW, hWsub⟩ :=
+    mem_nhdsWithin_iff_exists_mem_nhds_inter.mp (closedStar_mem_nhdsWithin N p)
+  filter_upwards [hW] with y hy hyN
+  exact ⟨y, hWsub ⟨hy, hyN⟩, rfl⟩
+
 end DifferentialGeometry.Topology.PiecewiseLinear
