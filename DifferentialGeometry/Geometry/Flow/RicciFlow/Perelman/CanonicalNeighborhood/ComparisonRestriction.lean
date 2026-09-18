@@ -54,4 +54,33 @@ def MetricComparisonOn.restrictTimeSingleton
           MetricFiberData.inner, map_zero, Real.sqrt_zero]
       exact hz.le.trans heps
 
+def MetricComparisonOn.freezeTime
+    {h : ℝ → SmoothRiemannianMetric I N} {g : ℝ → SmoothRiemannianMetric I3 M}
+    {F : N → M} {U : Set N} {times : Set ℝ} {order : ℕ} {eps : ℝ}
+    (C : MetricComparisonOn h g F U times order eps) {t : ℝ} (ht : t ∈ times)
+    (heps : 0 ≤ eps) (T : Set ℝ) :
+    MetricComparisonOn (fun _ => h t) (fun _ => g t) F U T order eps where
+  pullback := fun _ => C.pullback t
+  pullback_eq := fun _ => C.pullback_eq t
+  jet := fun b _ => if b = 0 then C.jet 0 t else 0
+  jet_zero := by
+    intro s y v
+    exact C.jet_zero t y v
+  jet_succ := by
+    intro b s _ y _ v
+    simp only [Nat.add_eq_zero_iff, one_ne_zero, and_false, ↓reduceIte]
+    simp
+  equivalence := fun _ _ => C.equivalence t ht
+  close := by
+    intro a b hab _ _ y hy
+    split_ifs with hb
+    · subst b
+      exact C.close a 0 hab t ht y hy
+    · have hz : tensor02CovDerivNormWith (I := I) a 0 (h t) (h t) y = 0 := by
+        rw [tensor02CovDerivNormWith, tensor02_cov_deriv_eq_cov_deriv_of_field,
+          covDerivOfField_zero_tensor]
+        simp only [ContMDiffSection.coe_zero, Pi.zero_apply, normSq0S, inner0S,
+          MetricFiberData.inner, map_zero, Real.sqrt_zero]
+      exact hz.le.trans heps
+
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn

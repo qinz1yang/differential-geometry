@@ -11162,6 +11162,7 @@ import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.H1.Lifting
 import DifferentialGeometry.Analysis.Integration.Lp.BoundedConvergence
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.CylinderExclusion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedComponentImage
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedRoundComponent
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.RegularPoleCenters
 import DifferentialGeometry.Topology.Covering.BoolCocyclePullback
 import DifferentialGeometry.Topology.Manifold.AmbientNormalOrientation
