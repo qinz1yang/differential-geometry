@@ -46,4 +46,62 @@ theorem segment_union_segment_of_mem_segment {E : Type*} [AddCommGroup E] [Modul
           have hc' : (1 : ℝ) - d ≠ 0 := ne_of_gt hc0
           match_scalars <;> (field_simp; try ring)
 
+variable {E : Type*} [AddCommGroup E] [Module ℝ E]
+
+theorem segment_inter_le_eq_singleton {z w : E} {ℓ : E →ₗ[ℝ] ℝ} {r : ℝ} (hz : ℓ z = r)
+    (hw : r < ℓ w) : segment ℝ z w ∩ {x | ℓ x ≤ r} = {z} := by
+  apply Subset.antisymm
+  · rintro x ⟨⟨a, b, ha, hb, hab, rfl⟩, hx⟩
+    simp only [Set.mem_ofPred_eq, map_add, map_smul, hz, smul_eq_mul] at hx
+    have hb0 : b = 0 := by
+      rcases eq_or_lt_of_le hb with h | h
+      · exact h.symm
+      · exfalso
+        have ha' : a = 1 - b := by linarith
+        rw [ha'] at hx
+        nlinarith [mul_pos h (sub_pos.mpr hw)]
+    have ha1 : a = 1 := by linarith
+    rw [hb0, ha1, one_smul, zero_smul, add_zero]
+    rfl
+  · rintro x hx
+    rw [Set.mem_singleton_iff] at hx
+    subst hx
+    exact ⟨left_mem_segment ℝ x w, by simp [hz]⟩
+
+theorem segment_inter_ge_eq_singleton {z p : E} {ℓ : E →ₗ[ℝ] ℝ} {r : ℝ} (hz : ℓ z = r)
+    (hp : ℓ p < r) : segment ℝ z p ∩ {x | r ≤ ℓ x} = {z} := by
+  have h := segment_inter_le_eq_singleton (z := z) (w := p) (ℓ := -ℓ) (r := -r)
+    (by simp [hz]) (by simp only [LinearMap.neg_apply]; linarith)
+  simpa only [LinearMap.neg_apply, neg_le_neg_iff] using h
+
+theorem segment_inter_le_eq_segment {p w z : E} {ℓ : E →ₗ[ℝ] ℝ} {r : ℝ}
+    (hzs : z ∈ segment ℝ p w) (hz : ℓ z = r) (hp : ℓ p ≤ r) (hw : r < ℓ w) :
+    segment ℝ p w ∩ {x | ℓ x ≤ r} = segment ℝ p z := by
+  rw [← segment_union_segment_of_mem_segment hzs, Set.union_inter_distrib_right,
+    segment_inter_le_eq_singleton hz hw]
+  have h1 : segment ℝ z p ∩ {x : E | ℓ x ≤ r} = segment ℝ z p := by
+    rw [Set.inter_eq_left]
+    exact (convex_halfSpace_le ℓ.isLinear r).segment_subset (by simp [hz]) hp
+  rw [h1, Set.union_eq_left.mpr (Set.singleton_subset_iff.mpr (left_mem_segment ℝ z p)),
+    segment_symm]
+
+theorem segment_inter_ge_eq_segment {p w z : E} {ℓ : E →ₗ[ℝ] ℝ} {r : ℝ}
+    (hzs : z ∈ segment ℝ p w) (hz : ℓ z = r) (hp : ℓ p < r) (hw : r ≤ ℓ w) :
+    segment ℝ p w ∩ {x | r ≤ ℓ x} = segment ℝ z w := by
+  have hzs' : z ∈ segment ℝ w p := by rwa [segment_symm]
+  have h := segment_inter_le_eq_segment (p := w) (w := p) (z := z) (ℓ := -ℓ) (r := -r) hzs'
+    (by simp [hz]) (by simp only [LinearMap.neg_apply]; linarith)
+    (by simp only [LinearMap.neg_apply]; linarith)
+  rw [segment_symm ℝ w p] at h
+  simpa only [LinearMap.neg_apply, neg_le_neg_iff, segment_symm ℝ w z] using h
+
+theorem segment_inter_eq_singleton {p w z : E} {ℓ : E →ₗ[ℝ] ℝ} {r : ℝ}
+    (hzs : z ∈ segment ℝ p w) (hz : ℓ z = r) (hp : ℓ p < r) (hw : r < ℓ w) :
+    segment ℝ p w ∩ {x | ℓ x = r} = {z} := by
+  have hset : {x : E | ℓ x = r} = {x : E | ℓ x ≤ r} ∩ {x : E | r ≤ ℓ x} := by
+    ext x
+    exact ⟨fun h => ⟨h.le, h.ge⟩, fun h => le_antisymm h.1 h.2⟩
+  rw [hset, ← Set.inter_assoc, segment_inter_le_eq_segment hzs hz hp.le hw, segment_symm,
+    segment_inter_ge_eq_singleton hz hp]
+
 end DifferentialGeometry.Topology.PiecewiseLinear
