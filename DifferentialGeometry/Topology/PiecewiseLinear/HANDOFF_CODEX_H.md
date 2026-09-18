@@ -1697,3 +1697,69 @@ M1 只给"PL 同胚于一个锥"，不给"是一个锥"，所以绕不过去。
 4. 第 2 项**不要求** `insert a F` 仿射无关而第 16 节**要求**，拼装时要单独提供（上一节已记）。
 
 以上都未在 Lean 里试过，按规则不报行数区间。第 3、4 步同样未开始。
+
+## 19. 2026-09-18 模型子项 1 — done：线段在中间点处劈分（`SegmentSplit.lean`）
+
+`segment_union_segment_of_mem_segment`：设 `q ∈ segment ℝ z w`，则
+
+    segment ℝ q z ∪ segment ℝ q w = segment ℝ z w
+
+**独立模块、无 PL 内容**，只要 `[AddCommGroup E] [Module ℝ E]`（不要有限维、不要范数），
+端点情形也成立（`q = z` 时左边是 `{z} ∪ segment z w`）。上一节查到 Mathlib 的
+`Analysis/Convex/Segment.lean` 没有这条，故按协调者要求放在自己的文件里而不是埋进模型文件。
+
+证明：`⊆` 由 `(convex_segment z w).segment_subset` 两次；`⊇` 把 `x = a•z + b•w`、`q = c•z + d•w`
+按 `b ≤ d` 与 `d ≤ b` 分两支，分别取权 `b/d` 与 `(1-b)/(1-d)`，退化支 `d = 0`／`d = 1` 单独处理。
+
+坑（都是本文件不导入 PL 模块造成的，记下来免得再踩）：
+- 只 `import Mathlib.Analysis.Convex.*` 时 **`ℝ` 不可用**（`autoImplicit=false` 下直接报未知标识符），
+  要显式 `import Mathlib.Data.Real.Basic`。
+- `match_scalars`、`linarith`、`field_simp`、`ring` 各自要导入
+  `Mathlib.Tactic.Module`、`Mathlib.Tactic.Linarith`、`Mathlib.Tactic.FieldSimp`、`Mathlib.Tactic.Ring`。
+  平时写在 PL 模块里不用管，是因为 PL 那边传递导入了全套。
+- 树里惯用的 `match_scalars <;> field_simp <;> ring` 在这里会被
+  `linter.unnecessarySeqFocus` 报 warning（第二个 `<;>` 可以是 `;`），但改成 `;` 之后
+  `field_simp` 已把部分目标解掉，`ring` 报 "No goals"。可用的写法是
+  `match_scalars <;> (field_simp; try ring)`。
+
+聚焦检查 `SegmentSplit` exit=0（7.4 秒）、零 warning；
+`.lake/scratch/AuditHSegmentSplit.lean` 一项仅 `propext`、`Classical.choice`、`Quot.sound`。
+
+按协调者提醒，这条同时供模型的两处使用：`C₂` 一侧的单段 `[z,w]` 要写成
+`coneSet q {z,w} = [q,z] ∪ [q,w] = [z,w]`，以及并这一对的弧分解，不要手写两遍。
+
+## 20. 2026-09-18 模型子项 2 — done：中点切开的并等式（`BallPairTwoSimplices.lean`）
+
+`convexHull_insert_union_convexHull_insert_of_midpoint`：设 `c + d = m + m`（即 `m` 是 `c`、`d` 的中点，
+写成加法式避免 `midpoint` API），`c, d, m ∉ F` 且两两不同，则
+
+    convexHull ℝ (insert c (insert m F)) ∪ convexHull ℝ (insert d (insert m F))
+      = convexHull ℝ (insert c (insert d F))
+
+与子项 1 一样**不需要有限维**（`omit [FiniteDimensional ℝ E]` 通过），也不需要仿射无关。
+
+- `⊆` 是单调性：两边的生成点都落在右边的包里，`m` 用 `m = (1/2)•c + (1/2)•d` 加凸性。
+  两侧对称，抽成一条 `hside` 参数化的辅助断言，不写两遍。
+- `⊇` 是内容：由 `Barycentric.lean:9 mem_convexHull_iff_exists_weights` 取权 `w`，
+  按 `w d ≤ w c` 与 `w c ≤ w d` 分支，新权取
+  `c ↦ w c - w d`、`m ↦ 2 * w d`、其余不变（另一支对称）。
+  向量恒等式由 `h2 : (2 * t) • m = t • c + t • d`（从 `hm` 得）加 `module` 收尾。
+
+坑（Finset 权重改写的通用教训）：
+- 新权写成 `fun v => if v = c then _ else if v = m then _ else w v` 之后，
+  `simp only [hvc, if_pos rfl]` **不работает**：`simp` 会把条件化成 `True` 但不消 `ite`，
+  留下 `if True then _ else _`。正确写法是 `dsimp only` 之后 `split_ifs with h1 h2`，三支分别处理。
+- `rw [Finset.sum_insert ...]` 之后项仍是未 β 归约的 lambda 应用，
+  `rw [if_pos rfl]` 会找不到模式。**向量**求和那一支要先 `dsimp only`；
+  但**标量**求和那一支 `rw` 完就已经归约好了，再写 `dsimp only` 会报
+  "dsimp made no progress"。两支不一样，别照抄。
+- `Finset.sum_congr rfl hcongr` 里 `hcongr : ∀ v ∈ F, (if ...) = w v` 可直接用于标量和；
+  向量和要包一层 `fun v hv => by rw [hcongr v hv]`（目标是 `(if ...) • v = w v • v`，
+  改写后 `rfl` 自动收）。
+
+聚焦检查 `BallPairTwoSimplices` exit=0（10.5 秒）、零 warning；
+`.lake/scratch/AuditHTwoSimplices.lean`（同时导入 `SegmentSplit`）五项仅
+`propext`、`Classical.choice`、`Quot.sound`。
+
+子项 3（三组仿射无关、三处 `openSimplex` 成员、三条弧与各块的交）与子项 4
+（第 16 节要而第 2 项不给的仿射无关）**未开始，不报区间**；第 3、4 步同样未开始。
