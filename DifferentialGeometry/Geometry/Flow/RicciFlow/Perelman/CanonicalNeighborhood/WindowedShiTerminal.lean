@@ -42,7 +42,7 @@ omit [T2Space M] [SigmaCompactSpace M] in
 theorem WindowedModelWitness.normalized_window
     {eps kappa : ℝ} {x : M} {t : ℝ}
     (W : WindowedModelWitness eps kappa S x t)
-    (hregular : interior D.carrier ⊆ D.regular) :
+    (hregular : Ioo (t - (eps * S.scalar t x)⁻¹) t ⊆ D.regular) :
     Icc (-modelDepth eps) 0 ⊆ (parabolicInterval D t (S.scalar t x) W.time_mem).carrier ∧
       Ioo (-modelDepth eps) 0 ⊆ (parabolicInterval D t (S.scalar t x) W.time_mem).regular := by
   have hmaps : MapsTo (parabolicTime t (S.scalar t x)) (Icc (-modelDepth eps) 0)
@@ -57,8 +57,6 @@ theorem WindowedModelWitness.normalized_window
     exact W.window_mem (hmaps hs)
   · intro s hs
     apply hregular
-    apply interior_mono W.window_mem
-    rw [interior_Icc]
     constructor
     · simpa only [parabolicTime, modelDepth, div_eq_mul_inv, mul_inv, neg_mul, sub_eq_add_neg, add_comm]
         using add_lt_add_right (div_lt_div_of_pos_right hs.1 W.scalar_pos) t
@@ -71,7 +69,7 @@ omit [T2Space M] [SigmaCompactSpace M] in
 theorem WindowedModelWitness.normalized_fixed_window
     {eps kappa : ℝ} {x : M} {t : ℝ}
     (W : WindowedModelWitness eps kappa S x t) (heps4 : eps ≤ 1 / 4)
-    (hregular : interior D.carrier ⊆ D.regular) :
+    (hregular : Ioo (t - (eps * S.scalar t x)⁻¹) t ⊆ D.regular) :
     Icc (-(4 : ℝ)) 0 ⊆ (parabolicInterval D t (S.scalar t x) W.time_mem).carrier ∧
       Ioo (-(4 : ℝ)) 0 ⊆ (parabolicInterval D t (S.scalar t x) W.time_mem).regular := by
   have hdepth : 4 ≤ modelDepth eps := by
@@ -87,7 +85,7 @@ theorem WindowedModelWitness.normalized_curvDerivNorm_bound_on_model_ball
     (hS : IsSolutionOn S) {eps kappa K R a b : ℝ} {x : M} {t : ℝ}
     (W : WindowedModelWitness eps kappa S x t) (heps4 : eps ≤ 1 / 4) (hK : 0 ≤ K)
     (hR : 0 ≤ R) (hbuffer : R + 1 ≤ modelRadius eps)
-    (hregular : interior D.carrier ⊆ D.regular)
+    (hregular : Ioo (t - (eps * S.scalar t x)⁻¹) t ⊆ D.regular)
     (ha : -modelDepth eps < a) (hab : a < b) (hb : b ≤ 0)
     (hmodel : ∀ s ∈ Icc a b, ∀ y ∈
       riemannianClosedBallOf (W.model.S.base.metric 0) W.model.basepoint (R + 1),
@@ -155,7 +153,7 @@ theorem WindowedModelWitness.normalized_curvDerivNorm_bound_on_model_ball
 theorem WindowedModelWitness.normalized_interior_curvature_derivative_bound
     (hS : IsSolutionOn S) {eps kappa K : ℝ} {x : M} {t : ℝ}
     (W : WindowedModelWitness eps kappa S x t) (heps4 : eps ≤ 1 / 4) (hK : 0 ≤ K)
-    (hregular : interior D.carrier ⊆ D.regular)
+    (hregular : Ioo (t - (eps * S.scalar t x)⁻¹) t ⊆ D.regular)
     (hmodel : ∀ s ∈ Icc (-(4 : ℝ)) 0, ∀ y ∈
       riemannianClosedBallOf (W.model.S.base.metric 0) W.model.basepoint 2,
         W.model.rmNormSq s y ≤ K ^ 2) (m : ℕ) {r : ℝ} (hr : r ∈ Ioo (-1 : ℝ) 0) :
@@ -201,7 +199,7 @@ theorem WindowedModelWitness.normalized_interior_curvature_derivative_bound
 theorem WindowedModelWitness.normalized_terminal_curvature_derivative_bound
     (hS : IsSolutionOn S) {eps kappa K : ℝ} {x : M} {t : ℝ}
     (W : WindowedModelWitness eps kappa S x t) (heps4 : eps ≤ 1 / 4) (hK : 0 ≤ K)
-    (hregular : interior D.carrier ⊆ D.regular)
+    (hregular : Ioo (t - (eps * S.scalar t x)⁻¹) t ⊆ D.regular)
     (hmodel : ∀ s ∈ Icc (-(4 : ℝ)) 0, ∀ y ∈
       riemannianClosedBallOf (W.model.S.base.metric 0) W.model.basepoint 2,
         W.model.rmNormSq s y ≤ K ^ 2) (m : ℕ) :
@@ -222,7 +220,7 @@ theorem WindowedModelWitness.normalized_terminal_curvature_derivative_bound
 theorem WindowedModelWitness.terminal_curvature_derivative_bound
     (hS : IsSolutionOn S) {eps kappa K : ℝ} {x : M} {t : ℝ}
     (W : WindowedModelWitness eps kappa S x t) (heps4 : eps ≤ 1 / 4) (hK : 0 ≤ K)
-    (hregular : interior D.carrier ⊆ D.regular)
+    (hregular : Ioo (t - (eps * S.scalar t x)⁻¹) t ⊆ D.regular)
     (hmodel : ∀ s ∈ Icc (-(4 : ℝ)) 0, ∀ y ∈
       riemannianClosedBallOf (W.model.S.base.metric 0) W.model.basepoint 2,
         W.model.rmNormSq s y ≤ K ^ 2) (m : ℕ) :
@@ -266,7 +264,7 @@ variable {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
 theorem WindowedModelWitness.terminal_ball_isCompact_subset_inner_ball
     (hS : IsSolutionOn S) {eps kappa K : ℝ} {x : M} {t : ℝ}
     (W : WindowedModelWitness eps kappa S x t) (heps : eps ≤ 1 / 4) (hK : 0 ≤ K)
-    (hregular : interior D.carrier ⊆ D.regular)
+    (hregular : Ioo (t - (eps * S.scalar t x)⁻¹) t ⊆ D.regular)
     (hmodel : ∀ s ∈ Icc (-(4 : ℝ)) 0, ∀ y ∈
       riemannianClosedBallOf (W.model.S.base.metric 0) W.model.basepoint 2,
         W.model.rmNormSq s y ≤ K ^ 2) :
@@ -351,7 +349,7 @@ variable {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
 theorem WindowedModelWitness.normalized_terminal_curvDerivNorm_bound_on_inner_ball
     (hS : IsSolutionOn S) {eps kappa K : ℝ} {x : M} {t : ℝ}
     (W : WindowedModelWitness eps kappa S x t) (heps : eps ≤ 1 / 4) (hK : 0 ≤ K)
-    (hregular : interior D.carrier ⊆ D.regular)
+    (hregular : Ioo (t - (eps * S.scalar t x)⁻¹) t ⊆ D.regular)
     (hmodel : ∀ s ∈ Icc (-(4 : ℝ)) 0, ∀ y ∈
       riemannianClosedBallOf (W.model.S.base.metric 0) W.model.basepoint 2,
         W.model.rmNormSq s y ≤ K ^ 2)
@@ -398,7 +396,7 @@ theorem WindowedModelWitness.normalized_terminal_curvDerivNorm_bound_on_inner_ba
 theorem WindowedModelWitness.normalized_terminal_scalar_gradient_bound_on_inner_ball
     (hS : IsSolutionOn S) {eps kappa K : ℝ} {x : M} {t : ℝ}
     (W : WindowedModelWitness eps kappa S x t) (heps : eps ≤ 1 / 4) (hK : 0 ≤ K)
-    (hregular : interior D.carrier ⊆ D.regular)
+    (hregular : Ioo (t - (eps * S.scalar t x)⁻¹) t ⊆ D.regular)
     (hmodel : ∀ s ∈ Icc (-(4 : ℝ)) 0, ∀ y ∈
       riemannianClosedBallOf (W.model.S.base.metric 0) W.model.basepoint 2,
         W.model.rmNormSq s y ≤ K ^ 2)
@@ -451,7 +449,7 @@ theorem exists_windowedModelWitness_normalized_terminal_scalar_lower_bound
         {D : RealTimeInterval} {S : SolutionOn (I := I3) (M := M) D},
         IsSolutionOn S → ∀ {eps kappa : ℝ} {x : M} {t : ℝ}
         (W : WindowedModelWitness eps kappa S x t), eps ≤ 1 / 4 →
-        interior D.carrier ⊆ D.regular →
+        Ioo (t - (eps * S.scalar t x)⁻¹) t ⊆ D.regular →
         (∀ s ∈ Icc (-(4 : ℝ)) 0, ∀ y ∈
           riemannianClosedBallOf (W.model.S.base.metric 0) W.model.basepoint 2,
             W.model.rmNormSq s y ≤ K ^ 2) →

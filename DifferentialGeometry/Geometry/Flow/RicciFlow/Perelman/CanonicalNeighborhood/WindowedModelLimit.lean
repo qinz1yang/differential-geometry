@@ -50,7 +50,9 @@ theorem WindowedModelWitness.exists_blowup_limit
   have hreg : ∀ i s, s ∈ Ioo (-modelDepth (delta i)) 0 →
       parabolicTime (t i) (S.scalar (t i) (x i)) s ∈ D.regular := by
     intro i s hs
-    exact ((W i).normalized_window hregular).2 hs
+    exact ((W i).normalized_window (by
+      simpa only [interior_Icc] using
+        (interior_mono (W i).window_mem).trans hregular)).2 hs
   let Psi : ∀ i, PartialDiffeomorph I3 I3 L.M M ∞ := fun i =>
     partialDiffeomorphTransMixed (F.partialDiffeomorph i) (W (phi i)).embedding
   have hcomp : ∀ K : Set L.M, IsCompact K → ∀ A : ℝ, 0 < A → ∀ order : ℕ,

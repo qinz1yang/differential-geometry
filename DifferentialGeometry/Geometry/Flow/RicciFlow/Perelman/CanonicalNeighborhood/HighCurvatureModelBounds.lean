@@ -579,8 +579,8 @@ theorem high_curvature_derivatives (a b : ℕ) :
   refine ⟨Q0, hQ0, fun x t ht hQ y hy => ?_⟩
   obtain ⟨W, _orientation, _horiented⟩ := hwitness x t ⟨ht.1.le, ht.2⟩ hQ
   apply hbound hS W le_rfl (by
-      simp only [RealTimeInterval.closedOpen, interior_Ico]
-      exact Set.Subset.rfl) ht
+      simpa only [RealTimeInterval.closedOpen, interior_Icc, interior_Ico] using
+        interior_mono W.window_mem) ht
   · intro s hs z hz
     rw [Real.sq_sqrt (hB 2).le]
     exact hmodel kappa W.model W.model_ancient W.model_scalar_base 2 z hz s hs.2

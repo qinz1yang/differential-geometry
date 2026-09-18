@@ -69,15 +69,18 @@ theorem exists_high_curvature_rescaled_curvature_derivative_bounds :
   refine ⟨Q0, hQ0, ?_⟩
   intro x t ht hQ
   obtain ⟨W, _oN, _horient⟩ := hQmodel x t ht hQ
+  have hwindowReg : Ioo (t - (eps * S.scalar t x)⁻¹) t ⊆
+      (RealTimeInterval.closedOpen 0 T hT).regular := by
+    simpa only [interior_Icc] using (interior_mono W.window_mem).trans hregular
   constructor
   · intro s hs
-    exact (W.normalized_window hregular).1 (hwindow hs)
+    exact (W.normalized_window hwindowReg).1 (hwindow hs)
   · intro a ha s hs y hy m
     obtain ⟨_, hcapture⟩ := W.source_closedBall_compact_subset (by positivity : 0 < 2 * r)
       (by linarith : 2 * r ≤ modelRadius eps) hradius (hwindow ha)
     obtain ⟨z, hz, rfl⟩ := hcapture hy
     have h := W.normalized_curvDerivNorm_bound_on_model_ball (K := K r) hS heps4 (Real.sqrt_nonneg _)
-      (by positivity : 0 ≤ 2 * r) hbuffer hregular
+      (by positivity : 0 ≤ 2 * r) hbuffer hwindowReg
       (a := s - 1) (b := s) (by linarith [hs.1]) (by linarith) hs.2
       (by
         intro v hv q hq
