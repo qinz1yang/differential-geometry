@@ -3205,3 +3205,48 @@ import ...StarPair failed, environment already contains
 
 检查 `VertexBranchInput` exit=0（11.1 秒）、零 warning；`AuditF271.lean` 三项仅
 `propext`、`Classical.choice`、`Quot.sound`。下一审计文件 `AuditF272.lean`。
+
+### 19.129 转写现在交付连接同胚；但"它等于 h"不成立，装配还差两块
+
+**常驻提醒补一条（接 §19.126）**：**解构模式里的 `-` 是信息死掉的地方，每写一个都值得回头看一眼。**
+本车道今天自己踩了两次：§19.124 用 `-` 丢掉 `hfeq`，§19.128 为了搬 `hab`/`hlevel` 又回去捡；
+§19.126 用 `-` 丢掉 `hsm`，本轮又回去看。两次都不是别人的包装，是自己刚写的。
+
+**本轮闭合：两个转写包装改为交付连接同胚**
+`exists_simplicialComplex_pair_image_of_isPiecewiseAffineOn`（`SimplicialPairImage.lean`）与
+`exists_simplicialComplex_pair_image_closedStar_of_isPiecewiseAffineOn`（`VertexChartTransport.lean`）
+的末条由
+`∀ n, IsPLSphere n (link M {p}).space → IsPLSphere n (link M₁ {h p}).space`
+换成
+`∃ g : E → F, IsPLHomeomorphOn g (link M {p}).space (link M₁ {h p}).space`。
+球面性质现在是它的一行推论（`.of_isPLHomeomorphOn`），不必单列。
+证明用 `IsPLHomeomorphOn.trans`（`PLHomeomorph.lean:78`）把两跳接起来。
+消费者重编：`SimplicialPairImage` exit=0（9 秒）、`VertexChartTransport` exit=0（9.7 秒）、
+`VertexBranchInput` exit=0（11.7 秒），均零 warning。两个包装各只有一个消费者，
+`-` 的位置检查过，没有需要补的。
+
+**必须更正任务前提："g 在连接上等于 h"不成立。**
+转写到 `M₁` 是**两跳**，不是一跳：
+`link M {p}` --(细分)--> `link M' {p}` --(glue-iso)--> `link M₁ {h p}`。
+第二跳的映射确实是 `h`（那正是我丢掉的 `hsm` 分量）。
+但第一跳是 `exists_isPLHomeomorphOn_geometricLink_of_isSubdivision`，其内部是
+`exists_isPLHomeomorphOn_of_radial`（`LinkSubdivision.lean:50`），即
+`simplicialMap L' (radialProj p L.space)`——**沿 `p` 出发的射线做径向投影**，不是恒等，更不是 `h`。
+细分是把 `h` 变成逐面仿射所必需的，这一跳去不掉。所以复合 `g = h ∘ (径向)⁻¹`，
+只能说"第二跳等于 `h`"，不能说"`g` 等于 `h`"。
+
+**装配的确切剩余义务（两块，都已定位）**
+1. **三元转写**。要搬 `(link N {p}).space ∩ M.space = {a, b}`，得同时知道 `N` 和 `M` 各自搬到哪里，
+   而且必须用**同一个细分 `K'`**——现有包装一次只带一个子复形，分两次调用得到的 `K'` 不保证相同。
+   所以需要 `(K, M, N)` 的三元版本。证明与现有二元版逐字同构（对第三个子复形再做一次像构造，
+   面刻画同样给出 `N₁.faces ⊆ K₁.faces`），不是新数学。
+2. **径向跳与锥的相容性**。复合 `g` 要把 `M.space` 那一侧对上，需要第一跳的径向投影保持
+   `closedStar M p`。它确实是 `p` 处的锥（§19.125 的 `closedStar_eq_coneSet_geometricLink`），
+   而径向投影沿射线走，所以保锥是对的；树里 `image_coneSet_of_radial`
+   （`ConePairExtension.lean:38`，H 的模块，只读）是同一形状的引理。
+   要把它接上，得让 `exists_isPLHomeomorphOn_geometricLink_of_isSubdivision` 交出"该映射是径向的"
+   这一事实——**又是包装不交付内部已有信息**，和本节开头那条提醒同一形状，这次在别人的包装里。
+**不估行数。**
+
+检查见上；`AuditF272.lean` 两项仅 `propext`、`Classical.choice`、`Quot.sound`。
+下一审计文件 `AuditF273.lean`。

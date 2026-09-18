@@ -21,8 +21,8 @@ theorem exists_simplicialComplex_pair_image_of_isPiecewiseAffineOn [DecidableEq 
       M₁.faces ⊆ K₁.faces ∧ {h p} ∈ M₁.faces ∧
       K₁.space = h '' K.space ∧ M₁.space = h '' M.space ∧
       IsPLHomeomorphOn h K.space K₁.space ∧ IsPLHomeomorphOn h M.space M₁.space ∧
-      ∀ n : ℕ, IsPLSphere n (SimplicialComplex.geometricLink M {p}).space →
-        IsPLSphere n (SimplicialComplex.geometricLink M₁ {h p}).space := by
+      ∃ g : E → F, IsPLHomeomorphOn g (SimplicialComplex.geometricLink M {p}).space
+        (SimplicialComplex.geometricLink M₁ {h p}).space := by
   classical
   obtain ⟨K', hK', hK'fin, hAff⟩ := hpl.exists_isSubdivision_affineOn_faces K
   let _ : Finite K'.faces := hK'fin.to_subtype
@@ -50,16 +50,12 @@ theorem exists_simplicialComplex_pair_image_of_isPiecewiseAffineOn [DecidableEq 
     exact hK₁pl
   · rw [← hM'space]
     exact hM₁pl
-  · intro n hlink
-    obtain ⟨g, hg⟩ := exists_isPLHomeomorphOn_geometricLink_of_isSubdivision hM' hp
+  · obtain ⟨g, hg⟩ := exists_isPLHomeomorphOn_geometricLink_of_isSubdivision hM' hp
     let _ : Finite (SimplicialComplex.geometricLink (restrict K' M.space) {p}).faces :=
       (((restrict_faces_finite K' M.space).subset
         (geometricLink_faces_subset (restrict K' M.space) {p}))).to_subtype
     let _ : Finite (SimplicialComplex.geometricLink M₁ {h p}).faces :=
       (hM₁fin.subset (geometricLink_faces_subset M₁ {h p})).to_subtype
-    have hlinkM' : IsPLSphere n
-        (SimplicialComplex.geometricLink (restrict K' M.space) {p}).space :=
-      hlink.of_isPLHomeomorphOn hg.symm
-    exact hlinkM'.of_isPLHomeomorphOn (hM₁iso.geometricLink hpM').isPLHomeomorphOn
+    exact ⟨_, hg.symm.trans (hM₁iso.geometricLink hpM').isPLHomeomorphOn⟩
 
 end DifferentialGeometry.Topology.PiecewiseLinear
