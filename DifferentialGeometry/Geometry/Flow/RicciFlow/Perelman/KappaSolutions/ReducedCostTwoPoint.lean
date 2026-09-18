@@ -1,4 +1,5 @@
 import DifferentialGeometry.Analysis.Integration.Gaussian.DistanceCoercivity
+import DifferentialGeometry.Geometry.Curvature.DimensionOne.Flat
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Distance.EndpointRicci
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientDistanceContinuity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientCostContinuity
@@ -99,8 +100,10 @@ private theorem exists_reduced_minimizing_curves_with_endpoint_controls
           (mfderiv 𝓘(ℝ, ℝ) I gamma₂ s 1) (mfderiv 𝓘(ℝ, ℝ) I gamma₂ s 1)) ≤
           Real.sqrt 3 * tau ^ ((1 / 4) : ℝ) * s ^ (-(3 / 4) : ℝ) * Real.sqrt L₂) ∧
       (∀ s ∈ Ioc 0 tau, ∀ z : F.M, ∀ w : TangentSpace I z,
-        (riemannianEDistOf (F.S.base.metric (-s)) (gamma₁ s) z < ENNReal.ofReal (Real.sqrt s / B s) ∨
-          riemannianEDistOf (F.S.base.metric (-s)) (gamma₂ s) z < ENNReal.ofReal (Real.sqrt s / B s)) →
+        (riemannianEDistOf (F.S.base.metric (-s)) (gamma₁ s) z <
+            ENNReal.ofReal (Real.sqrt s / B s) ∨
+          riemannianEDistOf (F.S.base.metric (-s)) (gamma₂ s) z <
+            ENNReal.ofReal (Real.sqrt s / B s)) →
         ricciTensor (F.S.base.metric (-s)) z w w ≤
           3 * (B s) ^ 2 / s * (F.S.base.metric (-s)).inner z w w) := by
   obtain ⟨alpha₁, ha₁, h0₁, ht₁, hg₁, hc₁⟩ :=
@@ -115,8 +118,10 @@ private theorem exists_reduced_minimizing_curves_with_endpoint_controls
   have hsmooth₂ : ∀ s ∈ Ioc 0 tau, ContMDiffAt 𝓘(ℝ, ℝ) I 1 gamma₂ s := by
     intro s hs
     exact ha₂.contMDiffAt.comp s (Real.contDiffAt_sqrt hs.1.ne').contMDiffAt
-  have hgamma₁0 : gamma₁ 0 = p := by simp only [gamma₁, squareRootReparametrization, Real.sqrt_zero, h0₁]
-  have hgamma₂0 : gamma₂ 0 = p := by simp only [gamma₂, squareRootReparametrization, Real.sqrt_zero, h0₂]
+  have hgamma₁0 : gamma₁ 0 = p := by
+    simp only [gamma₁, squareRootReparametrization, Real.sqrt_zero, h0₁]
+  have hgamma₂0 : gamma₂ 0 = p := by
+    simp only [gamma₂, squareRootReparametrization, Real.sqrt_zero, h0₂]
   refine ⟨gamma₁, gamma₂, hgamma₁0, hgamma₂0, ht₁, ht₂, ?_, ?_, ?_, ?_, ?_⟩
   · apply continuousOn_moving_distance_from_common_initial_point F hF gamma₁ gamma₂
       (ha₁.continuous.comp Real.continuous_sqrt).continuousAt
@@ -143,16 +148,27 @@ private theorem exists_reduced_minimizing_curves_with_endpoint_controls
         exact ⟨Tensor0SBundle.finrank_ne_zero_of_normSq0S_ne_zero
           (F.S.base.metric t) z (by norm_num : 0 < 4) _ hz⟩
       exact fun x y => sqrt_redLength_sub_le_distance_of_continuous_and_minimizers F hF p x y hs.1
-        (continuous_redLength_of_ancient F hF p hs.1) (fun z => exists_lRegularized_minimizer_of_ancient F hF p z hs.1)
+        (continuous_redLength_of_ancient F hF p hs.1)
+        (fun z => exists_lRegularized_minimizer_of_ancient F hF p z hs.1)
 
 
-theorem ancientKappaThree_reducedCost_two_point_between
-    {kappa : ℝ} (hF : IsAncientKappaSolution kappa F) (hdim : Module.finrank ℝ E = 3)
+theorem ancientKappa_reducedCost_two_point_between
+    {kappa : ℝ} (hF : IsAncientKappaSolution kappa F)
     (p q₁ q₂ : F.M) {tau : ℝ} (htau : 0 < tau) :
-    collapsedVolumeChi *
+    (1 / (576 * ((Module.finrank ℝ E : ℝ) + 1) ^ 2)) *
         ((riemannianEDistOf (F.S.base.metric (-tau)) q₁ q₂).toReal) ^ 2 / tau - 1 -
       lCost F.S 0 p q₁ tau / (2 * Real.sqrt tau) ≤
         lCost F.S 0 p q₂ tau / (2 * Real.sqrt tau) := by
+  have hdim : 2 ≤ Module.finrank ℝ E := by
+    by_contra hdim
+    have hsmall : Module.finrank ℝ E ≤ 1 := by omega
+    obtain ⟨t, _, x, hx⟩ := hF.notFlat
+    apply hx
+    change Tensor0SBundle.normSq0S (F.S.base.metric t) x 4
+      (metricRm04At (F.S.base.metric t) x) = 0
+    rw [metricRm04At_eq_zero_of_finrank_le_one _ hsmall]
+    exact ((Tensor0SBundle.tensor0SMetricData (F.S.base.metric t) x 4).inner_self_eq_zero_iff
+      0).2 rfl
   let _ : ConnectedSpace F.M := hF.connected
   let L₁ := redLength F.S 0 p q₁ tau
   let L₂ := redLength F.S 0 p q₂ tau
@@ -163,14 +179,15 @@ theorem ancientKappaThree_reducedCost_two_point_between
   let d := fun s : ℝ => (riemannianEDistOf (F.S.base.metric (-s)) (gamma₁ s) (gamma₂ s)).toReal
   have hac : ∀ c ∈ Ioc (0 : ℝ) tau, AbsolutelyContinuousOnInterval d c tau := by
     intro c hc
-    exact KappaSolutions.IsAncientKappaSolution.absolutelyContinuousOnInterval_moving_distance F hF hc.1 hc.2 gamma₁ gamma₂
+    exact KappaSolutions.IsAncientKappaSolution.absolutelyContinuousOnInterval_moving_distance
+      F hF hc.1 hc.2 gamma₁ gamma₂
       (fun s hs => (hsmooth s ⟨hc.1.trans_le hs.1, hs.2⟩).1.contMDiffWithinAt)
       (fun s hs => (hsmooth s ⟨hc.1.trans_le hs.1, hs.2⟩).2.contMDiffWithinAt)
   have hzero : d 0 = 0 := by simp [d, h0₁, h0₂, riemannianEDistOf_self]
   have hnonneg : 0 ≤ d tau := ENNReal.toReal_nonneg
   have hdini : ∀ t ∈ Ioo (0 : ℝ) tau, ∀ ε > 0, ∀ᶠ s in 𝓝[>] t,
-      slope d t s ≤ 8 * t ^ (-(1 / 2) : ℝ) +
-        (8 + Real.sqrt 3) * (Real.sqrt L₁ + Real.sqrt L₂) *
+      slope d t s ≤ (2 * ((Module.finrank ℝ E : ℝ) + 1)) * t ^ (-(1 / 2) : ℝ) +
+        (2 * ((Module.finrank ℝ E : ℝ) + 1) + Real.sqrt 3) * (Real.sqrt L₁ + Real.sqrt L₂) *
           tau ^ ((1 / 4) : ℝ) * t ^ (-(3 / 4) : ℝ) + ε := by
     intro t ht
     let B := 1 + tau ^ ((1 / 4) : ℝ) * t ^ (-(1 / 4) : ℝ) *
@@ -184,7 +201,8 @@ theorem ancientKappaThree_reducedCost_two_point_between
       simpa only [ancientTimeInterval_regular, mem_Iio, zero_sub] using neg_neg_of_pos ht.1
     have hcomplete : RiemannianMetricComplete (F.S.base.metric (0 - t)) :=
       ⟨hF.complete (0 - t) (ancientTimeInterval.regular_subset htreg)⟩
-    have hh := upperRightDiniLE_moving_distance_of_endpoint_ricci_bounds F.S F.isSolution hdim
+    have hh := upperRightDiniLE_moving_distance_of_endpoint_ricci_bounds_of_two_le_finrank
+      F.S F.isSolution hdim
       ht.1 hB htreg hcomplete gamma₁ gamma₂ (hsmooth t ⟨ht.1, ht.2.le⟩).1
       (hsmooth t ⟨ht.1, ht.2.le⟩).2 (by simpa only [zero_sub] using hspeed₁ t ⟨ht.1, ht.2.le⟩)
       (by simpa only [zero_sub] using hspeed₂ t ⟨ht.1, ht.2.le⟩)
@@ -194,24 +212,49 @@ theorem ancientKappaThree_reducedCost_two_point_between
       norm_num
     have hinv : 1 / Real.sqrt t = t ^ (-(1 / 2) : ℝ) := by
       rw [Real.sqrt_eq_rpow, one_div, Real.rpow_neg ht.1.le]
-    have hcoef : 8 * B / Real.sqrt t +
+    have hcoef : 2 * ((Module.finrank ℝ E : ℝ) + 1) * B / Real.sqrt t +
         Real.sqrt 3 * tau ^ ((1 / 4) : ℝ) * t ^ (-(3 / 4) : ℝ) * Real.sqrt L₁ +
         Real.sqrt 3 * tau ^ ((1 / 4) : ℝ) * t ^ (-(3 / 4) : ℝ) * Real.sqrt L₂ =
-        8 * t ^ (-(1 / 2) : ℝ) + (8 + Real.sqrt 3) *
+        (2 * ((Module.finrank ℝ E : ℝ) + 1)) * t ^ (-(1 / 2) : ℝ) +
+          (2 * ((Module.finrank ℝ E : ℝ) + 1) + Real.sqrt 3) *
           (Real.sqrt L₁ + Real.sqrt L₂) * tau ^ ((1 / 4) : ℝ) * t ^ (-(3 / 4) : ℝ) := by
       dsimp only [B]
       calc
-        _ = 8 * (1 / Real.sqrt t) + 8 * tau ^ ((1 / 4) : ℝ) *
+        _ = 2 * ((Module.finrank ℝ E : ℝ) + 1) * (1 / Real.sqrt t) +
+            2 * ((Module.finrank ℝ E : ℝ) + 1) * tau ^ ((1 / 4) : ℝ) *
             (Real.sqrt L₁ + Real.sqrt L₂) * (t ^ (-(1 / 4) : ℝ) / Real.sqrt t) +
             Real.sqrt 3 * tau ^ ((1 / 4) : ℝ) * t ^ (-(3 / 4) : ℝ) * Real.sqrt L₁ +
             Real.sqrt 3 * tau ^ ((1 / 4) : ℝ) * t ^ (-(3 / 4) : ℝ) * Real.sqrt L₂ := by ring
         _ = _ := by rw [hrpow, hinv]; ring
     simpa only [UpperRightDiniLE, zero_sub, hcoef, L₁, L₂, d] using hh
-  have hh := two_point_coercivity_of_upper_dini_sum_bound_interval htau hL₁ hL₂
+  have ha : Real.sqrt 3 ≤ (Module.finrank ℝ E : ℝ) + 1 := by
+    have hn : (2 : ℝ) ≤ (Module.finrank ℝ E : ℝ) := by exact_mod_cast hdim
+    have hs : Real.sqrt 3 ≤ 2 := Real.sqrt_le_iff.mpr ⟨by norm_num, by norm_num⟩
+    linarith
+  have hh := two_point_coercivity_of_upper_dini_sum_bound_interval_scaled ha htau hL₁ hL₂
     hcont hac hzero hnonneg hdini
   dsimp only [d, L₁, L₂, redLength] at hh
   rw [ht₁, ht₂] at hh
   linarith
+
+theorem ancientKappa_reducedCost_two_point
+    {kappa : ℝ} (hF : IsAncientKappaSolution kappa F)
+    (p q : F.M) {tau : ℝ} (htau : 0 < tau) :
+    (1 / (576 * ((Module.finrank ℝ E : ℝ) + 1) ^ 2)) *
+        ((riemannianEDistOf (F.S.base.metric (-tau)) p q).toReal) ^ 2 / tau - 1 -
+      lCost F.S 0 p p tau / (2 * Real.sqrt tau) ≤
+        lCost F.S 0 p q tau / (2 * Real.sqrt tau) := by
+  exact ancientKappa_reducedCost_two_point_between F hF p p q htau
+
+theorem ancientKappaThree_reducedCost_two_point_between
+    {kappa : ℝ} (hF : IsAncientKappaSolution kappa F) (hdim : Module.finrank ℝ E = 3)
+    (p q₁ q₂ : F.M) {tau : ℝ} (htau : 0 < tau) :
+    collapsedVolumeChi *
+        ((riemannianEDistOf (F.S.base.metric (-tau)) q₁ q₂).toReal) ^ 2 / tau - 1 -
+      lCost F.S 0 p q₁ tau / (2 * Real.sqrt tau) ≤
+        lCost F.S 0 p q₂ tau / (2 * Real.sqrt tau) := by
+  simpa only [hdim, Nat.cast_ofNat, collapsedVolumeChi] using
+    ancientKappa_reducedCost_two_point_between F hF p q₁ q₂ htau
 
 theorem ancientKappaThree_reducedCost_two_point
     {kappa : ℝ} (hF : IsAncientKappaSolution kappa F) (hdim : Module.finrank ℝ E = 3)

@@ -1,3 +1,4 @@
+import Mathlib.MeasureTheory.Function.LpSeminorm.LpNorm
 import DifferentialGeometry.Analysis.FunctionalAnalysis.ContinuousLinearMap.Perturbation
 import DifferentialGeometry.Analysis.FunctionalAnalysis.ContinuousLinearMap.ClosedRange
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Solution.Inclusion
@@ -530,6 +531,72 @@ theorem heatVectorForcingResidualL_eq_iff_tensorHsInclusion
   rw [hcomm]
   exact ⟨congrArg J, fun h => hJ h⟩
 
+
+end DifferentialGeometry.Analysis.Parabolic.QuasiLinear
+
+end
+
+noncomputable section
+
+open Filter MeasureTheory
+open scoped Manifold ContDiff Topology ENNReal NNReal
+
+namespace DifferentialGeometry.Analysis.Parabolic.QuasiLinear
+
+open TensorHeatEquation TensorSpectral TimeSobolev MaximalRegularity
+
+variable {ι : Type*} [Fintype ι]
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
+variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+variable {g : SmoothRiemannianMetric I M} {r s : ℕ} {a T : ℝ}
+
+private theorem ae_norm_le_lpTop_norm
+    {Ω Y : Type*} [MeasurableSpace Ω] {μ : Measure Ω} [NormedAddCommGroup Y]
+    (f : Lp Y ∞ μ) : ∀ᵐ t ∂μ, ‖f t‖ ≤ ‖f‖ := by
+  simpa only [← toReal_eLpNorm (Lp.memLp f).aestronglyMeasurable, Lp.norm_def] using
+    ae_le_lpNorm_exponent_top (Lp.memLp f)
+
+theorem tendsto_heatVectorForcingResidualL_of_tendsto_lp
+    {P : Type*} {l : Filter P} (hT : 0 < T)
+    (A2 : ℝ → PiLp 2 (fun _ : ι => TensorHs g r s (a + 2)) →L[ℝ]
+      PiLp 2 (fun _ : ι => TensorHs g r s a))
+    (hA2 : AEStronglyMeasurable A2 (timeMeasure T))
+    (CA : ℝ≥0) (hCA : ∀ᵐ t ∂timeMeasure T, ‖A2 t‖ ≤ CA)
+    (A1 : ℝ → PiLp 2 (fun _ : ι => TensorHs g r s (a + 1)) →L[ℝ]
+      PiLp 2 (fun _ : ι => TensorHs g r s a))
+    (hA1 : MemLp A1 2 (timeMeasure T))
+    (B2 : P → ℝ → PiLp 2 (fun _ : ι => TensorHs g r s (a + 2)) →L[ℝ]
+      PiLp 2 (fun _ : ι => TensorHs g r s a))
+    (hB2 : ∀ p, AEStronglyMeasurable (B2 p) (timeMeasure T))
+    (CB : P → ℝ≥0)
+    (hCB : ∀ p, ∀ᵐ t ∂timeMeasure T, ‖B2 p t‖ ≤ CB p)
+    (B1 : P → ℝ → PiLp 2 (fun _ : ι => TensorHs g r s (a + 1)) →L[ℝ]
+      PiLp 2 (fun _ : ι => TensorHs g r s a))
+    (hB1 : ∀ p, MemLp (B1 p) 2 (timeMeasure T))
+    (Q : P → Lp ((PiLp 2 (fun _ : ι => TensorHs g r s (a + 2))) →L[ℝ]
+      PiLp 2 (fun _ : ι => TensorHs g r s a)) ∞ (timeMeasure T))
+    (Q0 : Lp ((PiLp 2 (fun _ : ι => TensorHs g r s (a + 2))) →L[ℝ]
+      PiLp 2 (fun _ : ι => TensorHs g r s a)) ∞ (timeMeasure T))
+    (hQ : ∀ p, Q p =ᵐ[timeMeasure T] B2 p)
+    (hQ0 : Q0 =ᵐ[timeMeasure T] A2)
+    (hQlim : Tendsto Q l (𝓝 Q0))
+    (hB1lim : Tendsto (fun p => (hB1 p).toLp (B1 p)) l (𝓝 (hA1.toLp A1))) :
+    Tendsto (fun p => heatVectorForcingResidualL hT (B2 p) (hB2 p) (CB p)
+      (hCB p) (B1 p) (hB1 p)) l
+      (𝓝 (heatVectorForcingResidualL hT A2 hA2 CA hCA A1 hA1)) := by
+  let D : P → ℝ≥0 := fun p => ‖Q p - Q0‖₊
+  apply tendsto_heatVectorForcingResidualL hT A2 hA2 CA hCA A1 hA1
+    B2 hB2 CB D hCB _ _ B1 hB1 hB1lim
+  · apply Eventually.of_forall
+    intro p
+    filter_upwards [hQ p, hQ0, Lp.coeFn_sub (Q p) Q0,
+      ae_norm_le_lpTop_norm (Q p - Q0)] with t ht ht0 hsub hbound
+    rw [hsub] at hbound
+    simpa only [Pi.sub_apply, ht, ht0, D, coe_nnnorm] using hbound
+  · exact tendsto_iff_norm_sub_tendsto_zero.mp hQlim
 
 end DifferentialGeometry.Analysis.Parabolic.QuasiLinear
 

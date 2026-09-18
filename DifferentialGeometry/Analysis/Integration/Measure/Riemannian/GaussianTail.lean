@@ -3,6 +3,8 @@ import DifferentialGeometry.Bundle.FiberBundleHausdorff
 import DifferentialGeometry.Geometry.Comparison.HopfRinow.Proper
 import DifferentialGeometry.Geometry.Comparison.Volume.Bishop.CompactBall
 
+section
+
 noncomputable section
 
 open Bundle Manifold MeasureTheory Set
@@ -131,3 +133,100 @@ theorem lintegral_gaussian_riemannianEDistOf_le [ConnectedSpace M]
   simpa only [hdist, C, n] using hgauss
 
 end DifferentialGeometry.Integral.Measure
+
+end
+
+end
+
+section
+
+noncomputable section
+
+open Filter MeasureTheory Set
+open scoped ContDiff ENNReal Manifold Topology
+
+namespace DifferentialGeometry.Integral.Measure
+
+open DifferentialGeometry.Analysis.Measure
+open DifferentialGeometry.Geometry.Riemannian.BonnetMyers
+
+universe u uE uH
+
+variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
+  {H : Type uH} [TopologicalSpace H]
+  {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+  {M : Type u} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+  [T2Space M] [SigmaCompactSpace M] [ConnectedSpace M]
+
+private local instance : MeasurableSpace M := borel M
+private local instance : BorelSpace M := ⟨rfl⟩
+
+theorem lintegral_exp_neg_le_gaussianTail_of_quadratic_lower_bound
+    (g : SmoothRiemannianMetric I M)
+    (hcomplete : RiemannianMetricComplete (I := I) g)
+    (hRic : RicciBoundedBelow (I := I) g 0) (p : M)
+    {ell : M → ℝ} {decay B A : ℝ} (hdecay : 0 < decay) (hA : 0 ≤ A)
+    (hlower : ∀ x, decay * (riemannianEDistOf (I := I) g p x).toReal ^ 2 - B ≤ ell x)
+    (N : ℕ) :
+    (∫⁻ x in {x : M | (N : ℝ) ≤ (riemannianEDistOf (I := I) g p x).toReal},
+      ENNReal.ofReal (A * Real.exp (-ell x)) ∂riemannianVolumeMeasure (I := I) (M := M) g) ≤
+    ENNReal.ofReal (A * Real.exp B) *
+      (((volume : Measure (EuclideanSpace ℝ (Fin (Module.finrank ℝ E)))).toSphere univ *
+        ENNReal.ofReal ((Module.finrank ℝ E : ℝ)⁻¹)) *
+        gaussianTail (Module.finrank ℝ E) decay N) := by
+  have hpoint (x : M) : ENNReal.ofReal (A * Real.exp (-ell x)) ≤
+      ENNReal.ofReal (A * Real.exp B) * ENNReal.ofReal (Real.exp
+        (-decay * (riemannianEDistOf (I := I) g p x).toReal ^ 2)) := by
+    rw [← ENNReal.ofReal_mul (mul_nonneg hA (Real.exp_pos B).le)]
+    apply ENNReal.ofReal_le_ofReal
+    rw [mul_assoc, ← Real.exp_add]
+    apply mul_le_mul_of_nonneg_left _ hA
+    exact Real.exp_le_exp.mpr (by linarith [hlower x])
+  calc
+    _ ≤ ∫⁻ x in {x : M | (N : ℝ) ≤ (riemannianEDistOf (I := I) g p x).toReal},
+        ENNReal.ofReal (A * Real.exp B) * ENNReal.ofReal (Real.exp
+          (-decay * (riemannianEDistOf (I := I) g p x).toReal ^ 2))
+          ∂riemannianVolumeMeasure (I := I) (M := M) g := lintegral_mono hpoint
+    _ = ENNReal.ofReal (A * Real.exp B) *
+        ∫⁻ x in {x : M | (N : ℝ) ≤ (riemannianEDistOf (I := I) g p x).toReal},
+          ENNReal.ofReal (Real.exp
+            (-decay * (riemannianEDistOf (I := I) g p x).toReal ^ 2))
+            ∂riemannianVolumeMeasure (I := I) (M := M) g :=
+      lintegral_const_mul' _ _ ENNReal.ofReal_ne_top
+    _ ≤ _ := mul_le_mul_right
+      (lintegral_gaussian_riemannianEDistOf_le g hcomplete p hdecay hRic N) _
+
+theorem exists_uniform_exp_neg_tail_bound_of_quadratic_lower_bound
+    {decay B A : ℝ} (hdecay : 0 < decay) (hA : 0 ≤ A)
+    {ε : ℝ≥0∞} (hε : 0 < ε) :
+    ∃ N : ℕ, ∀ (g : SmoothRiemannianMetric I M),
+      RiemannianMetricComplete (I := I) g → RicciBoundedBelow (I := I) g 0 →
+      ∀ (p : M) (ell : M → ℝ),
+        (∀ x, decay * (riemannianEDistOf (I := I) g p x).toReal ^ 2 - B ≤ ell x) →
+      (∫⁻ x in {x : M | (N : ℝ) ≤ (riemannianEDistOf (I := I) g p x).toReal},
+        ENNReal.ofReal (A * Real.exp (-ell x))
+          ∂riemannianVolumeMeasure (I := I) (M := M) g) < ε := by
+  let C : ℝ≥0∞ := ENNReal.ofReal (A * Real.exp B) *
+    ((volume : Measure (EuclideanSpace ℝ (Fin (Module.finrank ℝ E)))).toSphere univ *
+      ENNReal.ofReal ((Module.finrank ℝ E : ℝ)⁻¹))
+  have hC : C ≠ (⊤ : ℝ≥0∞) := ENNReal.mul_ne_top ENNReal.ofReal_ne_top
+    (ENNReal.mul_ne_top (measure_ne_top (volume.toSphere) univ) ENNReal.ofReal_ne_top)
+  have hlim : Tendsto (fun N => C * gaussianTail (Module.finrank ℝ E) decay N)
+      atTop (𝓝 0) := by
+    simpa only [mul_zero] using
+      ENNReal.Tendsto.const_mul
+        (tendsto_gaussianTail (Module.finrank ℝ E) hdecay) (Or.inr hC)
+  obtain ⟨N, hN⟩ := (hlim.eventually (Iio_mem_nhds hε)).exists
+  refine ⟨N, ?_⟩
+  intro g hcomplete hRic p ell hlower
+  apply lt_of_le_of_lt
+    (lintegral_exp_neg_le_gaussianTail_of_quadratic_lower_bound g hcomplete hRic p
+      hdecay hA hlower N)
+  simpa only [C, mul_assoc] using hN
+
+end DifferentialGeometry.Integral.Measure
+
+end
+
+end

@@ -259,3 +259,123 @@ theorem paramTangentVF_tendstoUniformlyOn_fderiv_of_periodic
       (fun p t => (z p t).1)
 
 end DifferentialGeometry.Analysis.ODE.Flow
+
+namespace DifferentialGeometry.Analysis.ODE.Flow
+
+open Filter Metric Set
+open scoped ContDiff NNReal
+
+theorem paramTangentCurve_tendstoUniformlyOn_of_periodic
+    {ι : Type*} {l : Filter ι} {a b : ℝ} (hab : a ≤ b)
+    {K : Set ℝ} (hK : IsCompact K)
+    {v : ι → ℝ → ℝ → ℝ} {vInf : ℝ → ℝ → ℝ}
+    (hvjoint : ∀ i, ContDiffOn ℝ ∞ (Function.uncurry (v i)) (Icc a b ×ˢ univ))
+    (hvInfJoint : ContDiffOn ℝ ∞ (Function.uncurry vInf) (Icc a b ×ˢ univ))
+    (hper : ∀ i t, t ∈ Icc a b → Function.Periodic (v i t) 1)
+    (hperInf : ∀ t ∈ Icc a b, Function.Periodic (vInf t) 1)
+    {γ : ι → ℝ → ℝ → ℝ} {γInf : ℝ → ℝ → ℝ}
+    (hγjoint : ∀ i, ContDiffOn ℝ ∞ (Function.uncurry (γ i)) (univ ×ˢ Icc a b))
+    (hγInfJoint : ContDiffOn ℝ ∞ (Function.uncurry γInf) (univ ×ˢ Icc a b))
+    (hγ : ∀ i x, γ i x a = x ∧ IsIntegralCurveOn (γ i x) (v i) (Icc a b))
+    (hγInf : ∀ x, γInf x a = x ∧ IsIntegralCurveOn (γInf x) vInf (Icc a b))
+    (hv : TendstoUniformlyOn (fun i (q : ℝ × ℝ) => v i q.2 q.1)
+      (fun q : ℝ × ℝ => vInf q.2 q.1) l (Icc (0 : ℝ) 1 ×ˢ Icc a b))
+    (hDv : TendstoUniformlyOn (fun i (q : ℝ × ℝ) => fderiv ℝ (v i q.2) q.1)
+      (fun q : ℝ × ℝ => fderiv ℝ (vInf q.2) q.1) l (Icc (0 : ℝ) 1 ×ˢ Icc a b))
+    (hD₂v : TendstoUniformlyOn
+      (fun i (q : ℝ × ℝ) => fderiv ℝ (fderiv ℝ (v i q.2)) q.1)
+      (fun q : ℝ × ℝ => fderiv ℝ (fderiv ℝ (vInf q.2)) q.1)
+      l (Icc (0 : ℝ) 1 ×ˢ Icc a b)) :
+    TendstoUniformlyOn
+      (fun i (q : ℝ × ℝ) => paramTangentCurve (γ i) q.1 q.2)
+      (fun q : ℝ × ℝ => paramTangentCurve γInf q.1 q.2) l (K ×ˢ Icc a b) := by
+  have hslice (i : ι) (t : ℝ) (ht : t ∈ Icc a b) : ContDiff ℝ ∞ (v i t) := by
+    apply contDiffOn_univ.mp
+    exact (hvjoint i).comp (contDiff_const.prodMk contDiff_id).contDiffOn
+      (fun x _ => ⟨ht, mem_univ x⟩)
+  have hsliceInf (t : ℝ) (ht : t ∈ Icc a b) : ContDiff ℝ ∞ (vInf t) := by
+    apply contDiffOn_univ.mp
+    exact hvInfJoint.comp (contDiff_const.prodMk contDiff_id).contDiffOn
+      (fun x _ => ⟨ht, mem_univ x⟩)
+  have htan (i : ι) := paramTangentCurve_initial_isIntegralCurveOn_of_contDiffOn
+    isOpen_univ isOpen_univ hab
+    (fun t ht => (hslice i t ht).differentiable (by simp) |>.differentiableOn)
+    (hγjoint i) (fun x _ => hγ i x) (fun _ _ _ _ => mem_univ _)
+  have htanInf := paramTangentCurve_initial_isIntegralCurveOn_of_contDiffOn
+    isOpen_univ isOpen_univ hab
+    (fun t ht => (hsliceInf t ht).differentiable (by simp) |>.differentiableOn)
+    hγInfJoint (fun x _ => hγInf x) (fun _ _ _ _ => mem_univ _)
+  rcases hab.eq_or_lt with rfl | hab
+  · rw [Metric.tendstoUniformlyOn_iff]
+    intro ε hε
+    filter_upwards [] with i
+    intro q hq
+    have ht : q.2 = a := by simpa only [Icc_self, mem_singleton_iff] using hq.2
+    rw [ht, (htan i q.1 (mem_univ _)).1, (htanInf q.1 (mem_univ _)).1, dist_self]
+    exact hε
+  · have hJ : UniqueDiffOn ℝ (Icc a b) := uniqueDiffOn_Icc hab
+    obtain ⟨B, hB, hbound⟩ := exists_pos_bound_paramTangentCurve isOpen_univ hK
+      (subset_univ K) hJ isCompact_Icc hγInfJoint
+    have hZ : ∀ x ∈ K, ∀ t ∈ Icc a b,
+        ‖(paramTangentCurve γInf x t).2‖ ≤ B := by
+      intro x hx t ht
+      exact (norm_snd_le _).trans (hbound x hx t ht)
+    have hDInf := DifferentialGeometry.Analysis.spatialFDeriv_contDiffOn
+      hJ isOpen_univ hvInfJoint
+    have hD₂Inf := DifferentialGeometry.Analysis.spatialFDeriv_contDiffOn
+      hJ isOpen_univ hDInf
+    have hDcont : ContinuousOn (fun q : ℝ × ℝ => fderiv ℝ (vInf q.2) q.1)
+        (Icc (0 : ℝ) 1 ×ˢ Icc a b) :=
+      hDInf.continuousOn.comp (continuous_snd.prodMk continuous_fst).continuousOn
+        (fun q hq => ⟨hq.2, mem_univ _⟩)
+    have hD₂cont : ContinuousOn
+        (fun q : ℝ × ℝ => fderiv ℝ (fderiv ℝ (vInf q.2)) q.1)
+        (Icc (0 : ℝ) 1 ×ˢ Icc a b) :=
+      hD₂Inf.continuousOn.comp (continuous_snd.prodMk continuous_fst).continuousOn
+        (fun q hq => ⟨hq.2, mem_univ _⟩)
+    obtain ⟨C₀, hC₀⟩ := (isCompact_Icc.prod isCompact_Icc).exists_bound_of_continuousOn hDcont
+    obtain ⟨C₁, hC₁⟩ := (isCompact_Icc.prod isCompact_Icc).exists_bound_of_continuousOn hD₂cont
+    let L₀ : ℝ≥0 := ⟨max C₀ 0 + 1, by positivity⟩
+    let L₁ : ℝ≥0 := ⟨max C₁ 0 + 1, by positivity⟩
+    have hcoeff : ∀ᶠ i in l, ∀ t ∈ Icc a b, ∀ x ∈ Icc (0 : ℝ) 1,
+        ‖fderiv ℝ (v i t) x‖ ≤ (L₀ : ℝ) ∧
+          ‖fderiv ℝ (fderiv ℝ (v i t)) x‖ ≤ (L₁ : ℝ) := by
+      filter_upwards [Metric.tendstoUniformlyOn_iff.mp hDv 1 zero_lt_one,
+        Metric.tendstoUniformlyOn_iff.mp hD₂v 1 zero_lt_one] with i hi hi₂
+      intro t ht x hx
+      constructor
+      · have hd : dist (fderiv ℝ (v i t) x) (fderiv ℝ (vInf t) x) ≤ 1 :=
+          (dist_comm _ _).trans_le (hi (x, t) ⟨hx, ht⟩).le
+        exact (norm_le_norm_add_const_of_dist_le hd).trans
+          (add_le_add ((hC₀ (x, t) ⟨hx, ht⟩).trans (le_max_left C₀ 0)) le_rfl)
+      · have hd : dist (fderiv ℝ (fderiv ℝ (v i t)) x)
+            (fderiv ℝ (fderiv ℝ (vInf t)) x) ≤ 1 :=
+          (dist_comm _ _).trans_le (hi₂ (x, t) ⟨hx, ht⟩).le
+        exact (norm_le_norm_add_const_of_dist_le hd).trans
+          (add_le_add ((hC₁ (x, t) ⟨hx, ht⟩).trans (le_max_left C₁ 0)) le_rfl)
+    have hLip := paramTangentVF_eventually_lipschitzOnWith_closedBall_of_periodic
+      (paramTangentCurve γInf) 1 (⟨B, hB.le⟩ : ℝ≥0) L₀ L₁ zero_lt_one
+      (Eventually.of_forall hper)
+      (Eventually.of_forall fun i t ht =>
+        (show ContDiff ℝ 2 (v i t) from (hslice i t ht).of_le
+          (WithTop.coe_le_coe.mpr le_top))) hcoeff hZ
+    have hfield := paramTangentVF_tendstoUniformlyOn_of_periodic zero_lt_one
+      hper hperInf hv hDv (paramTangentCurve γInf) hB.le hZ
+    have hinit : TendstoUniformlyOn
+        (fun i x => paramTangentCurve (γ i) x a)
+        (fun x => paramTangentCurve γInf x a) l K := by
+      rw [Metric.tendstoUniformlyOn_iff]
+      intro ε hε
+      filter_upwards [] with i
+      intro x _
+      rw [(htan i x (mem_univ _)).1, (htanInf x (mem_univ _)).1, dist_self]
+      exact hε
+    apply integralCurve_tendstoUniformlyOn_of_limit_tube hab.le zero_lt_one
+      (fun i x _ => (htan i x (mem_univ _)).2)
+      (fun x _ => (htanInf x (mem_univ _)).2) hinit hfield
+    refine ⟨max L₀ (L₁ * (⟨B, hB.le⟩ + 1) + L₀), ?_⟩
+    filter_upwards [hLip] with i hi
+    intro x hx t ht
+    exact hi x hx t ⟨ht.1, ht.2.le⟩
+
+end DifferentialGeometry.Analysis.ODE.Flow

@@ -299,3 +299,218 @@ theorem exists_continuousOn_representative_of_iteratedParameterDerivative_forcin
       ← tensorHsInclusion_trans_apply] using hi
 
 end DifferentialGeometry.Analysis.Parabolic.QuasiLinear
+
+noncomputable section
+
+open Filter MeasureTheory
+open scoped Manifold ContDiff
+
+namespace DifferentialGeometry.Analysis.Parabolic.QuasiLinear
+
+open TensorHeatEquation TensorSpectral TimeSobolev MaximalRegularity
+open DifferentialGeometry.Analysis.Spectral
+
+private local instance : NeZero (Module.finrank ℝ ℝ) := ⟨by simp⟩
+
+private local instance vectorTensorHsNormedSpace
+    {ι : Type*} [Fintype ι]
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) (a : ℝ) :
+    NormedSpace ℝ (PiLp 2 (fun _ : ι => TensorHs g 0 0 a)) := inferInstance
+
+private def stateInclusion {ι : Type*}
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) (m : ℕ) :=
+  ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion
+  (g := g) (r := 0) (s := 0)
+    (by linarith : (m : ℝ) + 2 ≤ (m : ℝ) + 3))
+
+private def derivativeInclusion {ι : Type*}
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) :=
+  ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion
+  (g := g) (r := 0) (s := 0) (by norm_num : ((0 : ℕ) : ℝ) + 2 ≤ (1 : ℝ) + 2))
+
+private def highDerivative {ι : Type*}
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) (m : ℕ) :=
+  ContinuousLinearMap.piLpMap 2 (fun _ : ι =>
+  (tensorHsInclusion (g := g) (r := 0) (s := 0)
+    (by norm_num : (1 : ℝ) + 2 ≤ ((3 : ℕ) : ℝ))).comp
+      ((AddCircle.iteratedParameterDerivativeHs g 3 m).comp
+        (tensorHsInclusion (g := g) (r := 0) (s := 0)
+          (by push_cast; linarith : ((3 + m : ℕ) : ℝ) ≤ (m : ℝ) + 3))))
+
+private def lowDerivative {ι : Type*}
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) (m : ℕ) :=
+  ContinuousLinearMap.piLpMap 2 (fun _ : ι =>
+  (tensorHsInclusion (g := g) (r := 0) (s := 0)
+    (by norm_num : ((0 : ℕ) : ℝ) + 2 ≤ ((2 : ℕ) : ℝ))).comp
+      ((AddCircle.iteratedParameterDerivativeHs g 2 m).comp
+        (tensorHsInclusion (g := g) (r := 0) (s := 0)
+          (by push_cast; linarith : ((2 + m : ℕ) : ℝ) ≤ (m : ℝ) + 2))))
+
+private theorem iteratedDerivative_duhamel_field_projection
+    {ι : Type*} [Fintype ι]
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) (m : ℕ)
+    {T : ℝ} (hT : 0 < T)
+    (F : timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 (m : ℝ))) T)
+    (FH : timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 (1 : ℝ))) T)
+    (hlift : iteratedParameterDerivativeDuhamelForcing g 0 m hT F =
+      (ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion
+        (g := g) (r := 0) (s := 0) (by norm_num : ((0 : ℕ) : ℝ) ≤ 1))).compLpL
+          2 (timeMeasure T) FH) :
+    (lowDerivative (ι := ι) g m).compLpL 2 (timeMeasure T)
+        (maximalRegularityDuhamelVectorField hT 0 F) =
+      (derivativeInclusion (ι := ι) g).compLpL 2 (timeMeasure T)
+        (maximalRegularityDuhamelVectorField hT 0 FH) := by
+  let D := lowDerivative (ι := ι) g m
+  let J := derivativeInclusion (ι := ι) g
+  have hderiv := (iteratedParameterDerivative_duhamel_vector_eq g 0 m hT F).1
+  change D.compLpL 2 (timeMeasure T) (maximalRegularityDuhamelVectorField hT 0 F) =
+    maximalRegularityDuhamelVectorField hT 0
+      (iteratedParameterDerivativeDuhamelForcing g 0 m hT F) at hderiv
+  have hnat : J.compLpL 2 (timeMeasure T)
+      (maximalRegularityDuhamelVectorField hT 0 FH) =
+    maximalRegularityDuhamelVectorField hT 0
+      (iteratedParameterDerivativeDuhamelForcing g 0 m hT F) := by
+    rw [hlift]
+    simpa only [map_zero, J, derivativeInclusion] using
+      maximalRegularityDuhamelVectorField_compLpL_tensorHsInclusion
+        (g := g) (r := 0) (s := 0) (by norm_num : ((0 : ℕ) : ℝ) ≤ 1) hT
+        (tensorResolventL2_isCompactOperator g 0 0) 0 FH
+  exact hderiv.trans hnat.symm
+
+private theorem derivative_comp_stateInclusion
+    {ι : Type*} (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) (m : ℕ) :
+    (lowDerivative (ι := ι) g m).comp (stateInclusion g m) =
+      (derivativeInclusion g).comp (highDerivative g m) := by
+  apply ContinuousLinearMap.ext
+  intro x
+  apply PiLp.ext
+  intro i
+  have hn := AddCircle.iteratedParameterDerivativeHs_tensorHsInclusion g
+    (by decide : 2 ≤ 3) m
+    (tensorHsInclusion (g := g) (r := 0) (s := 0)
+      (by push_cast; linarith : ((3 + m : ℕ) : ℝ) ≤ (m : ℝ) + 3) (x i))
+  have hn' := congrArg (tensorHsInclusion (g := g) (r := 0) (s := 0)
+    (by norm_num : ((0 : ℕ) : ℝ) + 2 ≤ ((2 : ℕ) : ℝ))) hn
+  simpa only [lowDerivative, stateInclusion, derivativeInclusion, highDerivative,
+    ContinuousLinearMap.comp_apply, ContinuousLinearMap.piLpMap_apply,
+    ← tensorHsInclusion_trans_apply,
+    tensorHsInclusion_refl_apply] using hn'
+
+private theorem derivativeInclusion_injective
+    {ι : Type*} (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) :
+    Function.Injective (derivativeInclusion (ι := ι) g) := by
+  intro x y hxy
+  apply PiLp.ext
+  intro i
+  exact tensorHsInclusion_injective
+    (by norm_num : ((0 : ℕ) : ℝ) + 2 ≤ (1 : ℝ) + 2) (congrArg (fun v => v i) hxy)
+
+private theorem compLpL_eq_of_injective_commutation
+    {X Y Z Q : Type*} [NormedAddCommGroup X] [NormedSpace ℝ X]
+    [NormedAddCommGroup Y] [NormedSpace ℝ Y]
+    [NormedAddCommGroup Z] [NormedSpace ℝ Z]
+    [NormedAddCommGroup Q] [NormedSpace ℝ Q]
+    {T : ℝ} (K : X →L[ℝ] Y) (D : Y →L[ℝ] Q) (J : Z →L[ℝ] Q) (H : X →L[ℝ] Z)
+    (hJ : Function.Injective J) (hcomm : D.comp K = J.comp H)
+    (V : timeL2 X T) (U : timeL2 Z T)
+    (hfield : D.compLpL 2 (timeMeasure T) (K.compLpL 2 (timeMeasure T) V) =
+      J.compLpL 2 (timeMeasure T) U) : H.compLpL 2 (timeMeasure T) V = U := by
+  apply Lp.ext
+  filter_upwards [H.coeFn_compLpL V,
+    D.coeFn_compLpL (K.compLpL 2 (timeMeasure T) V), K.coeFn_compLpL V,
+    J.coeFn_compLpL U] with t hH hD hK hJU
+  rw [hH]
+  apply hJ
+  have heq : D (K (V t)) = J (U t) := by
+    rw [← hK, ← hD, hfield, hJU]
+  have hc := DFunLike.congr_fun hcomm (V t)
+  exact hc.symm.trans heq
+
+private theorem iteratedDerivative_high_field_eq
+    {ι : Type*} [Fintype ι]
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) (m : ℕ)
+    {T : ℝ} (hT : 0 < T)
+    (F : timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 (m : ℝ))) T)
+    (FH : timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 (1 : ℝ))) T)
+    (V : timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 ((m : ℝ) + 3))) T)
+    (hlift : iteratedParameterDerivativeDuhamelForcing g 0 m hT F =
+      (ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion
+        (g := g) (r := 0) (s := 0) (by norm_num : ((0 : ℕ) : ℝ) ≤ 1))).compLpL
+          2 (timeMeasure T) FH)
+    (hV : (stateInclusion (ι := ι) g m).compLpL 2 (timeMeasure T) V =
+      maximalRegularityDuhamelVectorField hT 0 F) :
+    (highDerivative (ι := ι) g m).compLpL 2 (timeMeasure T) V =
+      maximalRegularityDuhamelVectorField hT 0 FH := by
+  exact compLpL_eq_of_injective_commutation
+    (stateInclusion (ι := ι) g m) (lowDerivative g m) (derivativeInclusion g)
+    (highDerivative g m) (derivativeInclusion_injective g)
+    (derivative_comp_stateInclusion g m) V (maximalRegularityDuhamelVectorField hT 0 FH)
+    ((congrArg ((lowDerivative (ι := ι) g m).compLpL 2 (timeMeasure T)) hV).trans
+      (iteratedDerivative_duhamel_field_projection g m hT F FH hlift))
+
+theorem iteratedParameterDerivativeHs_duhamel_field_of_lift
+    {ι : Type*} [Fintype ι]
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) (m : ℕ)
+    {T : ℝ} (hT : 0 < T)
+    (F : timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 (m : ℝ))) T)
+    (FH : timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 (1 : ℝ))) T)
+    (V : timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 ((m : ℝ) + 3))) T)
+    (hlift : iteratedParameterDerivativeDuhamelForcing g 0 m hT F =
+      (ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion
+        (g := g) (r := 0) (s := 0) (by norm_num : ((0 : ℕ) : ℝ) ≤ 1))).compLpL
+          2 (timeMeasure T) FH)
+    (hV : (ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion
+      (g := g) (r := 0) (s := 0)
+        (by linarith : (m : ℝ) + 2 ≤ (m : ℝ) + 3))).compLpL
+          2 (timeMeasure T) V = maximalRegularityDuhamelVectorField hT 0 F) :
+    (ContinuousLinearMap.piLpMap 2 (fun _ : ι =>
+      (tensorHsInclusion (g := g) (r := 0) (s := 0)
+        (by norm_num : (1 : ℝ) + 2 ≤ ((3 : ℕ) : ℝ))).comp
+          ((AddCircle.iteratedParameterDerivativeHs g 3 m).comp
+            (tensorHsInclusion (g := g) (r := 0) (s := 0)
+              (by push_cast; linarith : ((3 + m : ℕ) : ℝ) ≤ (m : ℝ) + 3))))).compLpL
+                2 (timeMeasure T) V = maximalRegularityDuhamelVectorField hT 0 FH := by
+  exact iteratedDerivative_high_field_eq g m hT F FH V hlift hV
+
+theorem iteratedParameterDerivativeHs_duhamel_representative_ae_of_lift
+    {ι : Type*} [Fintype ι]
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) (m : ℕ)
+    {T : ℝ} (hT : 0 < T)
+    (F : timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 (m : ℝ))) T)
+    (FH : timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 (1 : ℝ))) T)
+    (W : ℝ → PiLp 2 (fun _ : ι => TensorHs g 0 0 ((m : ℝ) + 2)))
+    (hlift : iteratedParameterDerivativeDuhamelForcing g 0 m hT F =
+      (ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion
+        (g := g) (r := 0) (s := 0) (by norm_num : ((0 : ℕ) : ℝ) ≤ 1))).compLpL
+          2 (timeMeasure T) FH)
+    (hW : W =ᵐ[timeMeasure T] maximalRegularityDuhamelVectorField hT 0 F) :
+    (fun t => (ContinuousLinearMap.piLpMap 2 (fun _ : ι =>
+      (tensorHsInclusion (g := g) (r := 0) (s := 0)
+        (by norm_num : ((0 : ℕ) : ℝ) + 2 ≤ ((2 : ℕ) : ℝ))).comp
+          ((AddCircle.iteratedParameterDerivativeHs g 2 m).comp
+            (tensorHsInclusion (g := g) (r := 0) (s := 0)
+              (by push_cast; linarith : ((2 + m : ℕ) : ℝ) ≤ (m : ℝ) + 2))))) (W t))
+      =ᵐ[timeMeasure T] fun t =>
+        (ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion
+          (g := g) (r := 0) (s := 0)
+            (by norm_num : ((0 : ℕ) : ℝ) + 2 ≤ (1 : ℝ) + 2)))
+              (maximalRegularityDuhamelVectorField hT 0 FH t) := by
+  let D := ContinuousLinearMap.piLpMap 2 (fun _ : ι =>
+    (tensorHsInclusion (g := g) (r := 0) (s := 0)
+      (by norm_num : ((0 : ℕ) : ℝ) + 2 ≤ ((2 : ℕ) : ℝ))).comp
+        ((AddCircle.iteratedParameterDerivativeHs g 2 m).comp
+          (tensorHsInclusion (g := g) (r := 0) (s := 0)
+            (by push_cast; linarith : ((2 + m : ℕ) : ℝ) ≤ (m : ℝ) + 2))))
+  let J := ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion
+    (g := g) (r := 0) (s := 0) (by norm_num : ((0 : ℕ) : ℝ) + 2 ≤ (1 : ℝ) + 2))
+  have hfield := iteratedDerivative_duhamel_field_projection g m hT F FH hlift
+  change D.compLpL 2 (timeMeasure T) (maximalRegularityDuhamelVectorField hT 0 F) =
+    J.compLpL 2 (timeMeasure T) (maximalRegularityDuhamelVectorField hT 0 FH) at hfield
+  filter_upwards [hW, D.coeFn_compLpL (maximalRegularityDuhamelVectorField hT 0 F),
+    J.coeFn_compLpL (maximalRegularityDuhamelVectorField hT 0 FH)] with t ht hD hJ
+  change D (W t) = J (maximalRegularityDuhamelVectorField hT 0 FH t)
+  rw [ht, ← hD, hfield, hJ]
+
+end DifferentialGeometry.Analysis.Parabolic.QuasiLinear
+
+end

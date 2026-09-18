@@ -1,3 +1,4 @@
+import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Parametric.AddCircleTimeCompositionContinuity
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Solution.ClassicalEquation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ParametricEquationNaturality
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Bochner.PairedSmallness
@@ -15441,6 +15442,97 @@ private theorem reference_curve_initial_eq
   have hbase := scalarH1PiToContinuous_fixedAmbientSobolev e g₀ initial z
   change scalarH1PiToContinuous g₀ (B f) z = fun i => e.map (initial.map z) i at hbase
   rw [hbase]
+
+end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening.SmoothImmersion
+
+end
+
+noncomputable section
+
+open Set Filter MeasureTheory
+open scoped Manifold ContDiff Topology
+
+namespace DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening.SmoothImmersion
+
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
+open DifferentialGeometry.Analysis.Parabolic.TimeSobolev
+
+private local instance : NeZero (Module.finrank ℝ ℝ) := ⟨by simp⟩
+
+private theorem reference_successor_coefficients_tendsto
+    {E H M X : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+    [TopologicalSpace M] [ChartedSpace H M] {n : ℕ} {l : Filter X}
+    (e : Width.SmoothLoopEmbedding (I := I) (Q := M) n)
+    (g₀ : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) (k : ℕ) (T : ℝ)
+    (d : X → SmoothImmersion (I := I) (M := M))
+    (d₀ : SmoothImmersion (I := I) (M := M))
+    (hd : Tendsto d l (@nhds _ (smoothImmersionTopology e) d₀))
+    (F : (Option (Fin n ⊕ Fin n) → ℝ) → ℝ)
+    (G : (Option (Fin n ⊕ Fin n) → ℝ) → Fin n → ℝ)
+    {U K : Set (Option (Fin n ⊕ Fin n) → ℝ)}
+    (hF : ContDiffOn ℝ ∞ F U) (hG : ContDiffOn ℝ ∞ G U)
+    (hU : IsOpen U) (hK : IsCompact K) (hKU : K ⊆ U)
+    (V : X → timeL2
+      (PiLp 2 (fun _ : Fin n => TensorHs g₀ 0 0 (((k + 1 + 2 : ℕ) : ℝ) + 1))) T)
+    (V₀ : timeL2
+      (PiLp 2 (fun _ : Fin n => TensorHs g₀ 0 0 (((k + 1 + 2 : ℕ) : ℝ) + 1))) T)
+    (W : X → ℝ →
+      PiLp 2 (fun _ : Fin n => TensorHs g₀ 0 0 (((k + 1 + 1 : ℕ) : ℝ) + 1)))
+    (W₀ : ℝ → PiLp 2 (fun _ : Fin n => TensorHs g₀ 0 0 (((k + 1 + 1 : ℕ) : ℝ) + 1)))
+    (a : X → timeL2 (TensorHs g₀ 0 0 (((k + 1 : ℕ) : ℝ) + 2)) T)
+    (a₀ : timeL2 (TensorHs g₀ 0 0 (((k + 1 : ℕ) : ℝ) + 2)) T)
+    (b : X → timeL2
+      (PiLp 2 (fun _ : Fin n => TensorHs g₀ 0 0 (((k + 1 : ℕ) : ℝ) + 2))) T)
+    (b₀ : timeL2
+      (PiLp 2 (fun _ : Fin n => TensorHs g₀ 0 0 (((k + 1 : ℕ) : ℝ) + 2))) T)
+    (hV : Tendsto V l (𝓝 V₀)) (hW₀ : ContinuousOn W₀ (Icc 0 T))
+    (hW : TendstoUniformlyOn W W₀ l (Icc 0 T)) :
+    let f := fun x =>
+      fixedAmbientSobolevExponent e g₀ (((k + 1 + 2 : ℕ) : ℝ) + 1) (d x)
+    let f₀ := fixedAmbientSobolevExponent e g₀ (((k + 1 + 2 : ℕ) : ℝ) + 1) d₀
+    let P := ContinuousLinearMap.piLpMap 2 (fun _ : Option (Fin n ⊕ Fin n) =>
+      tensorHsInclusion (g := g₀) (r := 0) (s := 0)
+        (by push_cast; rfl :
+          ((k + 1 : ℕ) : ℝ) + 2 ≤ ((k + 1 + 2 : ℕ) : ℝ)))
+    let Hjet := P.comp (AddCircle.scalarHsTimeFirstJet (ι := Fin n) g₀ (k + 1 + 2))
+    let J := tensorHsInclusion (g := g₀) (r := 0) (s := 0)
+      (by have := Nat.cast_nonneg (α := ℝ) k; push_cast; linarith :
+        (1 : ℝ) ≤ ((k + 1 : ℕ) : ℝ) + 2)
+    let Q := ContinuousLinearMap.piLpMap 2 (fun _ : Option (Fin n ⊕ Fin n) => J)
+    let B := ContinuousLinearMap.piLpMap 2 (fun _ : Fin n =>
+      tensorHsInclusion (g := g₀) (r := 0) (s := 0)
+        (by push_cast; linarith :
+          ((k + 1 + 1 : ℕ) : ℝ) + 1 ≤ ((k + 1 + 2 : ℕ) : ℝ) + 1))
+    (∀ x, W x =ᵐ[timeMeasure T] fun t => B (V x t)) →
+    W₀ =ᵐ[timeMeasure T] (fun t => B (V₀ t)) →
+    (∀ᶠ x in l, ∀ᵐ t ∂timeMeasure T,
+      range (scalarH1PiToContinuous g₀ (Q (Hjet (t, f x + V x t)))) ⊆ K) →
+    (∀ᵐ t ∂timeMeasure T,
+      range (scalarH1PiToContinuous g₀ (Q (Hjet (t, f₀ + V₀ t)))) ⊆ K) →
+    (∀ᶠ x in l, ∀ᵐ t ∂timeMeasure T, ∀ z, scalarH1ToContinuous g₀ (J (a x t)) z =
+      F (scalarH1PiToContinuous g₀ (Q (Hjet (t, f x + V x t))) z)) →
+    (∀ᵐ t ∂timeMeasure T, ∀ z, scalarH1ToContinuous g₀ (J (a₀ t)) z =
+      F (scalarH1PiToContinuous g₀ (Q (Hjet (t, f₀ + V₀ t))) z)) →
+    (∀ᶠ x in l, ∀ᵐ t ∂timeMeasure T, ∀ z j,
+      scalarH1ToContinuous g₀ (J (b x t j)) z =
+        G (scalarH1PiToContinuous g₀ (Q (Hjet (t, f x + V x t))) z) j) →
+    (∀ᵐ t ∂timeMeasure T, ∀ z j, scalarH1ToContinuous g₀ (J (b₀ t j)) z =
+      G (scalarH1PiToContinuous g₀ (Q (Hjet (t, f₀ + V₀ t))) z) j) →
+    Tendsto (fun x => (a x, b x)) l (𝓝 (a₀, b₀)) := by
+  intro f f₀ P Hjet J Q B hWV hWV₀ hRange hRange₀ ha ha₀ hb hb₀
+  let : TopologicalSpace (SmoothImmersion (I := I) (M := M)) := smoothImmersionTopology e
+  have hf : Tendsto f l (𝓝 f₀) := by
+    exact (continuous_fixedAmbientSobolevExponent e g₀
+      (((k + 1 + 2 : ℕ) : ℝ) + 1)).continuousAt.tendsto.comp hd
+  have haT := AddCircle.tendsto_timeL2_scalarHs_composition_firstJet_of_tendstoUniformlyOn
+    g₀ (k + 1) T F hF hU hK hKU f f₀ V V₀ a a₀ W W₀ hf hV hW₀ hW
+    hWV hWV₀ hRange hRange₀ ha ha₀
+  have hbT := AddCircle.tendsto_timeL2_vectorHs_composition_firstJet_of_tendstoUniformlyOn
+    g₀ (k + 1) T G hG hU hK hKU f f₀ V V₀ b b₀ W W₀ hf hV hW₀ hW
+    hWV hWV₀ hRange hRange₀ hb hb₀
+  exact haT.prodMk_nhds hbT
 
 end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening.SmoothImmersion
 

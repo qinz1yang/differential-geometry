@@ -3,6 +3,8 @@ import Mathlib.MeasureTheory.Function.L1Space.Integrable
 import Mathlib.Algebra.Order.Floor.Semiring
 import Mathlib.MeasureTheory.Integral.Lebesgue.Add
 
+section
+
 noncomputable section
 
 open Filter MeasureTheory Set
@@ -248,6 +250,28 @@ theorem integrable_mul_gaussian_of_exponential_ball_growth
   rw [norm_mul, norm_mul]
   apply mul_le_mul_of_nonneg_right _ (norm_nonneg _)
   exact hx.trans (by simpa only [Real.norm_eq_abs] using le_abs_self K)
+
+end DifferentialGeometry.Analysis.Measure
+
+end
+
+end
+
+section
+
+namespace DifferentialGeometry.Analysis.Measure
+
+theorem antitone_gaussianTail_decay (d N : ℕ) :
+    Antitone (fun decay : ℝ => gaussianTail d decay N) := by
+  intro a b hab
+  unfold gaussianTail
+  apply ENNReal.tsum_le_tsum
+  intro k
+  apply ENNReal.ofReal_le_ofReal
+  unfold gaussianShell
+  apply mul_le_mul_of_nonneg_left _ (by positivity)
+  exact Real.exp_le_exp.mpr
+    (mul_le_mul_of_nonneg_right (neg_le_neg hab) (sq_nonneg _))
 
 end DifferentialGeometry.Analysis.Measure
 

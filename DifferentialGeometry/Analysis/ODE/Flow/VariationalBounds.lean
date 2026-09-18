@@ -1,3 +1,4 @@
+import Mathlib.Analysis.Normed.Group.Bounded
 import DifferentialGeometry.Analysis.ODE.Flow.ParamTangent
 import DifferentialGeometry.Analysis.Calculus.Periodic.Derivative
 
@@ -197,5 +198,51 @@ theorem paramTangentVF_eventually_lipschitzOnWith_closedBall_of_periodic
   apply hflow.weaken
   have hz' : ‖(z p t).2‖₊ ≤ B := by exact_mod_cast hz p hp t ht
   gcongr
+
+end DifferentialGeometry.Analysis.ODE.Flow
+
+namespace DifferentialGeometry.Analysis.ODE.Flow
+
+open Set
+open scoped ContDiff
+
+theorem paramTangentCurve_contDiffOn
+    {P X : Type*}
+    [NormedAddCommGroup P] [NormedSpace ℝ P]
+    [NormedAddCommGroup X] [NormedSpace ℝ X]
+    {A : Set P} (hA : IsOpen A) {J : Set ℝ} (hJ : UniqueDiffOn ℝ J)
+    {γ : P → ℝ → X}
+    (hγ : ContDiffOn ℝ ∞ (Function.uncurry γ) (A ×ˢ J)) :
+    ContDiffOn ℝ ∞ (Function.uncurry (paramTangentCurve γ)) (A ×ˢ J) := by
+  let G : ℝ → P → X := fun t p => γ p t
+  have hG : ContDiffOn ℝ ∞ (Function.uncurry G) (J ×ˢ A) :=
+    hγ.comp (contDiff_snd.prodMk contDiff_fst).contDiffOn
+      (fun q hq => ⟨hq.2, hq.1⟩)
+  have hD : ContDiffOn ℝ ∞
+      (Function.uncurry (fun t p => fderiv ℝ (G t) p)) (J ×ˢ A) :=
+    DifferentialGeometry.Analysis.spatialFDeriv_contDiffOn hJ hA hG
+  have hD' : ContDiffOn ℝ ∞
+      (fun q : P × ℝ => fderiv ℝ (fun p => γ p q.2) q.1) (A ×ˢ J) :=
+    hD.comp (contDiff_snd.prodMk contDiff_fst).contDiffOn
+      (fun q hq => ⟨hq.2, hq.1⟩)
+  exact hγ.prodMk hD'
+
+theorem exists_pos_bound_paramTangentCurve
+    {P X : Type*}
+    [NormedAddCommGroup P] [NormedSpace ℝ P]
+    [NormedAddCommGroup X] [NormedSpace ℝ X]
+    {A K : Set P} (hA : IsOpen A) (hK : IsCompact K) (hKA : K ⊆ A)
+    {J : Set ℝ} (hJ : UniqueDiffOn ℝ J) (hJcompact : IsCompact J)
+    {γ : P → ℝ → X}
+    (hγ : ContDiffOn ℝ ∞ (Function.uncurry γ) (A ×ˢ J)) :
+    ∃ B : ℝ, 0 < B ∧ ∀ p ∈ K, ∀ t ∈ J, ‖paramTangentCurve γ p t‖ ≤ B := by
+  have hcont : ContinuousOn (Function.uncurry (paramTangentCurve γ)) (K ×ˢ J) :=
+    (paramTangentCurve_contDiffOn hA hJ hγ).continuousOn.mono
+      (fun q hq => ⟨hKA hq.1, hq.2⟩)
+  obtain ⟨C, hC⟩ := (hK.prod hJcompact).exists_bound_of_continuousOn hcont
+  refine ⟨max C 0 + 1, lt_of_le_of_lt (le_max_right C 0) (lt_add_one _), ?_⟩
+  intro p hp t ht
+  exact (hC (p, t) ⟨hp, ht⟩).trans
+    ((le_max_left C 0).trans (le_add_of_nonneg_right zero_le_one))
 
 end DifferentialGeometry.Analysis.ODE.Flow
