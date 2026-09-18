@@ -2045,3 +2045,44 @@ M1 只给"PL 同胚于一个锥"，不给"是一个锥"，所以绕不过去。
 **未确认**，不作为"缺失"记录，只标为待查。
 
 本节未写 Lean，未开始三对的拼装，不报区间。
+
+## 27. 2026-09-18 一个生产者覆盖三对弧（`BallPairArc.lean`）— done
+
+第 26 节说三对形状相同、可共用一个生产者。现已建成，六条：
+
+- `affineIndependent_coe_pair_set` / `affineIndependent_coe_pair`：两个不同点仿射无关，
+  集合版与 `Finset` 版。上一节标为"待查"的那条**存在**：
+  Mathlib `LinearAlgebra/AffineSpace/Independent.lean:795 affineIndependent_of_ne`
+  （给 `![p₁, p₂]`），经 `.range` 与 `Set.range ![a,b] = {a,b}` 桥到 coe 版本。
+- `simplexBoundary_pair_space`：`(simplexBoundary {v,z} _).space = {v, z}`。
+  二元 `Finset` 的边界面就是两个顶点。
+- `isConeBase_simplexBoundary_pair`：`v ≠ z`、`p ≠ v`、`p ≠ z`、
+  `IsRadiallyInjective p {v,z}` ⟹ `IsConeBase p (simplexBoundary {v,z} _)`。
+  三个字段分别由空间等式、两个二元集的仿射无关（面只能是两个单点，用 `Finset.card_eq_one`
+  从"真非空子集"推出）、以及径向单射给出。
+- `isPLBall_one_coneSet_pair`：`IsPLBall 1 (coneSet p {v, z})`。即**从一点对 0-球面的锥是 1-球**。
+- `isPLBallPair_coneSet_arc_of_radial`：**三对共用的生产者**。设 `IsConeBase p L`、
+  `IsPLSphere m L.space`、`{v,z} ⊆ L.space`，加第 26 节那四条非退化条件，则
+
+      IsPLBallPair m 1 (coneSet p L.space) (segment ℝ p v ∪ segment ℝ p z)
+
+  子链取**集合** `{v,z}`，不要求是 `L` 的顶点——这正是第 25 节弱化换来的，
+  于是 `C₁`（`z` 在公共面内部）与 `C₂`（顶点 `q` 与两端点共线）都能套同一条。
+
+坑：`Set.range ![a,b]` 经 `simp` 归一成 `{b,a}`，与 `{a,b}` 差一个 `Set.pair_comm`，
+直接 `by simp` 不收；用 `ext` 加 `fin_cases i <;> simp` 与 `⟨0, rfl⟩`／`⟨1, rfl⟩` 最稳。
+`Finset.erase_insert_of_ne` 的方向容易搞反（`(insert a s).erase b` 要 `a ≠ b`），
+`{v,z}.erase z = {v}` 用 `ext` 加 `Finset.mem_erase` 手写反而省事；
+`{v,z}.erase v = {z}` 则是现成的 `Finset.erase_insert`。
+最后两条的 `[DecidableEq E]` 只在证明里用到，要用证明内 `classical`。
+
+聚焦检查 `BallPairArc` exit=0（10.1 秒）、零 warning；
+`.lake/scratch/AuditHBallPairArc.lean` 六项仅 `propext`、`Classical.choice`、`Quot.sound`。
+
+### 下一步与一个待定
+
+三对与并对的拼装现在只差"选点并验证第 26 节那张表"。其中一条仍**未定**：
+`p ∈ openSimplex T₁` 不蕴含 `p ∈ openSimplex T`（`C₁ ⊆ conv T` 只给包含）。
+两种处理：(a) 在构型里把 `p ∈ openSimplex T` 与 `p ∈ openSimplex T₁` **都**写成假设；
+(b) 证一条"切开后小单纯形的开胞腔含于大单纯形的开胞腔"。
+(a) 是老实且够用的，建议先取 (a)，需要时再补 (b)。**未开始，不报区间。**
