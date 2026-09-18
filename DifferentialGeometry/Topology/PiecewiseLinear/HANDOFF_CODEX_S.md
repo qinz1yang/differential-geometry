@@ -5250,3 +5250,73 @@ homeomorphism for the flip-square model. These require the stated fiber
 condition in addition to the seam equality. The arbitrary reversing
 mapping-torus tube and orientability bridge also remain open; this compatibility
 layer is not a mapping-torus embedding or completion of C.7.
+
+## Flip-square model gluing delivered (2026-09-18)
+
+On top of the verified `6f43fde68` chart layer, `MobiusSquareMap.lean` closes
+all remaining gluing obligations for the prescribed flip-square model. Twelve
+declarations were added, bringing the file to nine public and eighteen private
+declarations. The four new public statements are:
+
+- `injOn_mobiusSquareTriangle`: the prescribed flip-only fiber condition forces
+  injectivity on each of the five planar triangles.
+- `isPLHomeomorphOn_comp_mobiusSquareChart`: piecewise affinity and that fiber
+  condition make each chart composite a PL homeomorphism onto its image.
+- `mobiusSquareChart_comp_image_inter`: the common source face maps exactly
+  onto the intersection of the two image pieces, using both the seam equality
+  and the fiber condition. The codomain is an arbitrary type.
+- `exists_isPLHomeomorphOn_mobiusComplex_of_square`: constructs a PL
+  homeomorphism from `mobiusComplex.space` to the image of the closed unit
+  square in any finite-dimensional real normed space. Its geometric inputs are
+  piecewise affinity of `g` on the square, the full equality
+  `g (s, 1) = g (1 - s, 0)` for every `s` in the unit interval, and the exact
+  fiber restriction allowing only equality or the prescribed flip across the
+  top and bottom edges.
+
+The proof first locates any bottom-edge point in triangles 0 or 1, and any
+upper-edge point in triangles 3 or 4. This excludes both identifications inside
+one triangle and reversed seam identifications for an ordered triangle pair.
+Affine images of common source faces reduce to their common vertex index sets;
+the seven ordinary pairs use the checked planar intersection formulas, and the
+three wrap pairs give two endpoint singletons and the full bottom segment.
+The forward seam classification excludes pair (1,3), leaving exactly (0,3),
+(0,4), and (1,4). Full-face compatibility and the exact image intersections
+supply the hypotheses of `exists_isPLHomeomorphOn_iUnion`. The union of the
+source triangles is the actual `mobiusComplex.space`; the union of their
+square images uses the checked square coverage.
+
+Verification used the coordinator's `codex-moise-lane-check.ps1` under window
+`S-MobiusGluing-20260918`, with one S Lean process and private output under
+`C:/Users/liao9/AppData/Local/Temp/codex-s-mobius-square-20260918/lib`.
+Exact checked import artifacts were selected by `--setup importArts`; shared
+artifacts were neither deleted nor replaced. The module check returned exit 0
+with zero diagnostics. Its source SHA256 remained
+`3CA82BA566E966C647535349B60D2920ED3D985CD80101A5C372204A721DCEDB`.
+Standard syntax linters and explicit header/long-line checks were enabled.
+
+The external silent audit re-elaborated the current source and dynamically
+enumerated the current module with `getDeclsInCurrModule`, excluding only
+`env.isAutoDecl`. All 27 nonautomatic declarations, including all 18 private
+declarations, were checked. Every transitive axiom closure is contained in
+`propext`, `Classical.choice`, and `Quot.sound`. All 13 applicable default
+environment linters passed; only the short names `docBlame` and `docBlameThm`
+were excluded. Audit exit 0, zero diagnostics; both final log files are empty.
+The exact declaration/axiom inventory and linter names are retained in
+`MobiusSquareGluing-audit.tsv`, with a compact combined receipt in
+`MobiusSquareGluing-verification.json` in the external temporary directory.
+The temporary audit probe is removed after retaining these receipts.
+
+`git diff --check` passes. The flat root already imports this module from the
+previous chart-layer commit; no further registration or vendor change is
+needed. Source, this record, and the C.7 plan row belong to one mathematical
+commit. The independent integration root build remains the coordinator's
+separate verification gate.
+
+Status: the flip-square model bridge is done. C.7 remains partial. The remaining
+producer must construct a seam-compatible piecewise affine variable-arc tube
+for an arbitrary reversing disk mapping torus, with the required flip-only
+fibers, then connect the resulting embedded Moebius model to orientability.
+In particular its endpoint parametrizations must satisfy
+`alpha1(s) = v^-1(alpha0(1-s))`; matching just the endpoints or using bilinear
+interpolation does not supply this piecewise affine tube. No invariant arc or
+new conclusion-shaped assumption has been added.
