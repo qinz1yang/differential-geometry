@@ -2289,3 +2289,49 @@ exists_affineIndependent_openSimplex_subset` 取四面体，取 `c`、`d` 为两
 
 这是一件**独立且不小**的构造，与第 3 步的黏合逻辑无关。**未开始，不报区间。**
 第 4 步同样未开始；给 F 的输出形状仍未定。
+
+## 33. 2026-09-18 补上第 26 节声称"自动成立"却没证的那一条
+
+第 26 节说 `C₂` 那一对的径向单射"由 `q` 在 `z`、`d` 之间自动成立"。
+**当时只是论证，没有证明。** 现已补上：
+
+`isRadiallyInjective_pair_of_mem_openSegment`（`BallPairArc.lean`）：
+`z ≠ d`、`q ∈ openSegment ℝ z d` ⟹ `IsRadiallyInjective q ({z, d} : Set E)`。
+
+证明把两个交叉情形都化到 `d - z` 的倍数上：写 `q = a • z + b • d`（`a, b > 0`、`a + b = 1`），
+则 `d - q = a • (d - z)`、`z - q = (-b) • (d - z)`；
+由 `hxy` 经 `sub_eq_iff_eq_add'` 得 `d - q = t • (z - q)`，两边都是 `d - z` 的倍数，
+用 `d - z ≠ 0` 与 `smul_eq_zero` 消去得 `a = t * (-b)`，与 `a, t, b > 0` 矛盾（`nlinarith`）。
+另一支对称得 `-b = t * a`。
+
+坑：`rw [hxy]` 在这里**不能用**——目标两边都含 `d`，改写会把 `d` 自身也换掉。
+`sub_eq_iff_eq_add'.mpr hxy` 直接给出要的等式，不碰目标里的其他 `d`。
+另：`omit [FiniteDimensional ℝ E]` 在本模块会报"did not match any variables"，
+因为该实例是逐定理给的，不在 section 变量里。
+
+聚焦检查 `BallPairArc` exit=0（10.6 秒）、零 warning；
+`.lake/scratch/AuditHRadial.lean` 三项仅 `propext`、`Classical.choice`、`Quot.sound`。
+
+### 构型存在性：分解与评估（未开始，不报区间）
+
+第 32 节列的存在性实例是一件**独立的大构造**。按已核对的 API 分成四层：
+
+1. **中点的仿射无关三条**：设 `T = {A,B,c,d}` 仿射无关、`m = (c+d)/2`，要
+   `{A,B,m}`、`{A,B,m,c}`、`{A,B,m,d}` 仿射无关。可用
+   Mathlib `AffineSpace/FiniteDimensional.lean:205
+   affineIndependent_iff_finrank_vectorSpan_eq`（是 iff，可反用）：
+   card 与 `finrank (vectorSpan)` 对上即可。`{A,B,m,c}` 的 vectorSpan 含
+   `{A,B,c,d}` 的（因 `d = 2m - c`），故 finrank = 3。
+2. **泛函 `ℓ`**：`Submodule.exists_dual_map_eq_bot_of_lt_top` 杀掉 `{A,B,m}` 的二维方向空间，
+   `r := ℓ A`；`ℓ m = r` 自动（`m` 在该仿射平面上），`ℓ c ≠ r` 由第 1 层的仿射无关推出，
+   `ℓ c + ℓ d = 2r` 故两者关于 `r` 对称，必要时交换 `c`、`d`。
+3. **选点 `p`、`q`、`z`**：协调者建议用重心坐标显式取。`z` 取 `Fm` 的重心（在 `openSimplex` 里）；
+   `p` 取 `T₁` 的重心；`q` 由本节的新引理从 `q ∈ openSegment z d` 直接得径向单射。
+   但 `z ∈ segment ℝ p d` 是一条**耦合条件**（`z` 必须在 `p`、`d` 的连线上），
+   所以 `p`、`z` 不能各自独立取重心——这一条要先解，是第 3 层的关键。
+4. **两条 `IsRadiallyInjective p {c,d}`、`p {c,z}`**：这两个顶点不在两端点之间，
+   本节的引理用不上，要另证（`p` 在 `T₁` 内部、`c` 与 `d` 分居两侧，几何上显然）。
+
+第 3 层的耦合（`z` 同时要在 `openSimplex Fm` 里和在 `segment p d` 上）是整件事里
+唯一不是例行公事的地方：它把 `p` 与 `z` 绑在一起，应当**先解它再定其余的点**，
+理由与第 29 节相同——早发现的约束会变成简化。

@@ -121,4 +121,36 @@ theorem isPLBallPair_convexHull_arc_of_radial [FiniteDimensional ℝ E] {n : ℕ
   have h := isPLBallPair_coneSet_arc_of_radial hL hsph hvzL hvz hpv hpz hrad
   rwa [← coneComplex_space_eq_coneSet hL, coneComplex_simplexBoundary_space hT h2 hp] at h
 
+theorem isRadiallyInjective_pair_of_mem_openSegment {z d q : E} (hzd : z ≠ d)
+    (hq : q ∈ openSegment ℝ z d) : IsRadiallyInjective q ({z, d} : Set E) := by
+  obtain ⟨a, b, ha, hb, hab, rfl⟩ := hq
+  have hsub : d - z ≠ 0 := sub_ne_zero.mpr (Ne.symm hzd)
+  have hdq : d - (a • z + b • d) = a • (d - z) := by
+    rw [smul_sub]
+    match_scalars <;> linarith
+  have hzq : z - (a • z + b • d) = (-b) • (d - z) := by
+    rw [smul_sub]
+    match_scalars <;> linarith
+  have hcancel : ∀ α β : ℝ, α • (d - z) = β • (d - z) → α = β := by
+    intro α β h
+    have h0 : (α - β) • (d - z) = 0 := by rw [sub_smul, h]; abel
+    rcases smul_eq_zero.mp h0 with h' | h'
+    · exact sub_eq_zero.mp h'
+    · exact absurd h' hsub
+  rintro x hx y hy t ht hxy
+  simp only [Set.mem_insert_iff, Set.mem_singleton_iff] at hx hy
+  rcases hx with rfl | rfl <;> rcases hy with rfl | rfl
+  · rfl
+  · exfalso
+    have hstep : y - (a • x + b • y) = t • (x - (a • x + b • y)) := sub_eq_iff_eq_add'.mpr hxy
+    rw [hdq, hzq, ← mul_smul] at hstep
+    have hcoef : a = t * -b := hcancel _ _ hstep
+    nlinarith [mul_pos ht hb]
+  · exfalso
+    have hstep : y - (a • y + b • x) = t • (x - (a • y + b • x)) := sub_eq_iff_eq_add'.mpr hxy
+    rw [hzq, hdq, ← mul_smul] at hstep
+    have hcoef : -b = t * a := hcancel _ _ hstep
+    nlinarith [mul_pos ht ha]
+  · rfl
+
 end DifferentialGeometry.Topology.PiecewiseLinear
