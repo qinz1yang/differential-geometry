@@ -2460,3 +2460,22 @@ E3 §45 的 `ZMod 2` 循环障碍仍然成立并且有用（它是沿分支相�
 就不需要串接，一次滑动即可**；因此下一步的正确目标是沿弧的乘积邻域，而不是逐张图卡的插值。
 
 检查 `ChartSlideLong` exit=0（8.9 秒）、零 warning；`AuditF257.lean` 九项无 `sorryAx`。下一审计文件 `AuditF258.lean`。
+
+### 19.112 沿整条分支的滑动图卡：谓词层
+
+`BranchSlideSeparation.lean` 按 §19.111 的结论把"单张乘积图卡即可"写成谓词。E3 §44 要的生产者从此分成
+两段：谓词的**生产**（几何，尚未闭合，见 §19.115）与谓词的**消费**（分离数据，已闭合，见 §19.113/19.114）。
+
+- `IsBranchSlideChart R c a b P Q e`：`e : OpenPartialHomeomorph M (ℝ × ℝ × ℝ)` 两向逐片仿射，
+  `slideSupportLong R`、`slideBandA c`、`slideBandQ a b` 三者都落在 `e.target` 内，且两张片正好是
+  `P = e.symm '' slideBandA c`、`Q = e.symm '' slideBandQ a b`。
+  常数分工：`c` 是分支（A 片与 Q 片的交线）在图卡里的长度上界，`[a,b]` 是 Q 片沿分支方向的区间，
+  `R` 是锥度半径。§19.110 的定量条件 `c + 2 * d ≤ R` 因此是对 `R` 的要求而非对滑距 `d` 的要求——
+  谓词本身不含 `d`，滑距在消费定理里取。
+- `HasBranchSlideChart R c a b P Q` 是它的存在版本，也就是 §19.115 里生产者的确切目标。
+- 附带 `symm_image_subset_source`、`isCompact_symm_image_slideSupportLong` 与四条访问器
+  （`sheet_subset_source`、`crossing_subset_source`、`support_subset_source`、`isCompact_support`）。
+  支撑 `e.symm '' slideSupportLong R` 紧致这一条给出 E3 §44 输出条款里"支撑外恒等"所需的闭集。
+
+检查 `BranchSlideSeparation` exit=0（9.0 秒）、零 warning；`AuditF258.lean` 八项仅
+`propext`、`Classical.choice`、`Quot.sound`。
