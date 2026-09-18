@@ -893,3 +893,36 @@ H-A1/H-A2 交付的是**锥/星层**的球对与相对 Alexander 技巧。F §19
 `e.source` 不碰第三张片）1k–2k 行。合计约 7k–14k 行。
 H-A1/H-A2 把其中"锥化/球对"那一块消掉了，它原本是唯一没有现成套路的一块；
 剩下三件都是标准 PL 拓扑，路线明确但工作量实在。
+
+### H-A3 — done，链对相符即可搬运 crossing（新模块 `ConePairCrossing.lean`）
+
+测绘时发现树里**已经有一个正好吃 H-A2 输出的消费者**，此前没有生产者：
+`CrossingNeighborhood.lean:71 HasPLCrossingAt.of_closedStar_pair`，它要的三条
+（`IsPLHomeomorphOn g (closedStar K p) (closedStar K' q)`、`g p = q`、
+`g '' closedStar M p = closedStar M' q`）逐字就是 H-A2 的结论。
+
+- `HasPLCrossingAt.of_geometricLink_pair`：设 `M ⊆ K`、`M' ⊆ K'` 为子复形，
+  `p`、`q` 分别是它们的顶点，`K.space ∈ 𝓝 p`；设链同胚 `f` 满足
+  `f '' (geometricLink M {p}).space = (geometricLink M' {q}).space`（片的链对相符），
+  第二张片 `B`、`B'` 在各自星里是锥
+  （`closedStar K p ∩ B = coneSet p ((geometricLink K {p}).space ∩ B)`，`q` 侧同）
+  且 `f` 把它们的链迹互相搬过去；则由 `HasPLCrossingAt M'.space B' q` 得
+  `HasPLCrossingAt M.space B p`。
+  读作：**某点的横截 crossing 性质完全由链上的数据决定**——链对相符加第二张片的链迹相符，
+  就能把标准模型处的 crossing 搬到任意顶点。这是 §19.115 里"把两张局部平凡化对接"所缺的比较步骤。
+- 证明只有四行：`exists_isPLHomeomorphOn_closedStar_pair` 给 `g` 与全称锥条款，
+  两条 `rw` 分别用 `closedStar_eq_coneSet`（片）与假设 `hB`/`hB'`（第二张片）把两个像条款算掉。
+  这里必须用 `exists_isPLHomeomorphOn_closedStar_pair` 而不是 H-A2 的子复形版本：
+  后者丢掉了 `∀ X` 条款，而第二张片 `B` 是裸集合不是子复形，只能走全称版本。
+- 第二张片"在星里是锥"写成显式假设而非内部推导，是因为 `B` 是 `Set E`；
+  若 `B` 也是过 `p` 的子复形，该假设由 `closedStar_eq_coneSet` 给出，不是额外负担。
+- 新模块单独放，不并进 `ConePairExtension.lean`：后者只导入 `ConeExtension`，很轻；
+  `CrossingNeighborhood` 拉进 `SingularGeneralPosition`／`GeneralPosition` 的大锥体，
+  不应让只需要锥引理的消费者付这个代价。
+
+聚焦检查 `ConePairCrossing` exit=0（9.5 秒）、零 warning；
+`.lake/scratch/AuditHConePairCrossing.lean` 一项仅 `propext`、`Classical.choice`、`Quot.sound`。
+
+关于上面"仍未闭合的确切义务"：H-A3 不改变那三件（弧的正则邻域是球、塌陷理论、正则邻域唯一性）
+的缺失状态，但把**逐点比较**这一步从"缺定理"变成"缺输入"：现在沿弧相邻两点之间要的不再是新定理，
+而是两点链对之间的一个 PL 同胚 `f`。产生这个 `f` 仍需沿弧的正则邻域结构，即上述第 1、3 件。
