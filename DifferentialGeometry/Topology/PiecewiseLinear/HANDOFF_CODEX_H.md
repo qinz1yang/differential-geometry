@@ -2663,3 +2663,34 @@ F 在每个顶点自己把顶点定理与该顶点的横截性合成，交出打
 
 聚焦检查 `DerivedCellCone` exit=0（9.8 秒）、零 warning；
 `.lake/scratch/AuditHDerivedCellCone.lean` 八项仅 `propext`、`Classical.choice`、`Quot.sound`。
+
+## 41. 2026-09-18 第 4 步球对方向的前置 1 — done（`ArcCellTrace.lean`）：弧在胞腔里的迹是锥
+
+按内容而不是按名字搜到了关键件：`StarIntersection.lean:10
+closedStar_barycentricSubdivision_inter_space_eq (hL : L ⊆ K) (hxL : {x} ∈ L.faces) :
+closedStar K' x ∩ L.space = closedStar L' x`——子复形的迹就是子复形自己的闭星。
+对 `(K', L')` 用一次，胞腔 `closedStar K'' ĉ_s ∩ L.space` 就化成 `closedStar L'' ĉ_s`，
+而 `closedStar L'' ĉ_s = (dualCell L' {ĉ_s}).space`（`DualCells.lean:163`）按定义是锥。
+剩下的只是"一维复形的 `upperLink` 是有限个点"这一条组合事实：
+
+- `IsFlag.card_le_two`：面的顶点数都 ≤ 2 时旗最多两层（`Finset.card_le_card_of_injOn` 打进 `{1,2}`）；
+  `barycentricSubdivision_card_le_two`：一维复形的重心细分仍一维。
+- `upperLink_singleton_space_of_card_le_two`：`(upperLink G {x}).space = {重心 e | e ∈ G, {x} ⊂ e}`。
+- `closedStar_barycentricSubdivision_eq_coneSet_of_card_le_two`：
+  `closedStar G' x = coneSet x {重心 e | e ∋ x 的边}`。
+- `mem_barycentricSubdivision_ssubset_singleton_centroid_iff`：`G'` 里严格含 `{ĉ_s}` 的面恰是
+  `{ĉ_s, ĉ_t}`，`t ≠ s` 与 `s` 可比。
+- **`derivedNeighborhoodCell_inter_space_eq_coneSet`**（`L ⊆ K` 一维，`s ∈ L`）：
+
+      cell s ∩ L.space = coneSet ĉ_s {centroid {ĉ_s, ĉ_t} | t ∈ L.faces, t ≠ s, s ⊆ t ∨ t ⊆ s}
+
+  链接点**正是**第 40 节相接盘的锥顶 `centroid {ĉ_s, ĉ_t}`，不需要任何中点算术。
+
+对弧复形 `arcComplexIn K v n` 与 `s = arcChainFace v j`（`1 ≤ j ≤ 2n−1`），可比的 `t` 恰是
+`arcChainFace v (j∓1)`（`arcChainFace_subset_iff`），于是迹是两条线段 `coneSet ĉ_j {z_{j−1}, z_j}`。
+两端的顶点胞腔（`j = 0, 2n`）只有一个链接点，迹是从锥顶出发的一条线段——
+**弧的端点在胞腔内部**，`IsPLBallPair 2 1` 的子链必须碰到基球面，所以端点胞腔要排除在外：
+第 4 步的球对陈述取 `N' = ⋃_{j=1}^{2n−1} cell_j`（去掉两端的顶点胞腔）与缩短的弧 `A ∩ N'`。
+
+聚焦检查 `ArcCellTrace` exit=0（11.0 秒）、零 warning（`Set.mem_setOf_eq` 已弃用，改 `Set.mem_ofPred_eq`）；
+`.lake/scratch/AuditHArcCellTrace.lean` 六项仅 `propext`、`Classical.choice`、`Quot.sound`。
