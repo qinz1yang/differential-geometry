@@ -7255,6 +7255,8 @@ import DifferentialGeometry.Topology.Attachment.Defs
 import DifferentialGeometry.Topology.Attachment.MappingCylinder
 import DifferentialGeometry.Topology.Attachment.MappingCylinderGluing
 import DifferentialGeometry.Topology.Attachment.Union
+import DifferentialGeometry.Topology.BicollarNeighborhood
+import DifferentialGeometry.Topology.BicollaredComplement
 import DifferentialGeometry.Topology.Category.TopCat.Adjunction
 import DifferentialGeometry.Topology.Category.TopCat.ClosedCover
 import DifferentialGeometry.Topology.Category.TopCat.PushoutClosedEmbedding
@@ -7266,6 +7268,7 @@ import DifferentialGeometry.Topology.Circle.Logarithm
 import DifferentialGeometry.Topology.ClosedBall.ClosedAnnulus
 import DifferentialGeometry.Topology.ClosedBall.Extension
 import DifferentialGeometry.Topology.ClosedBall.Retraction
+import DifferentialGeometry.Topology.ClosedBallImage
 import DifferentialGeometry.Topology.ClosureSupremum
 import DifferentialGeometry.Topology.Collar.Attachment
 import DifferentialGeometry.Topology.Collar.AttachmentRescaling
@@ -8263,6 +8266,7 @@ import DifferentialGeometry.Topology.Morse.SublevelRestriction
 import DifferentialGeometry.Topology.Morse.SublevelTangentSection
 import DifferentialGeometry.Topology.NearIdentity
 import DifferentialGeometry.Topology.OpenCover.Disjoint
+import DifferentialGeometry.Topology.OpenEmbeddingFrontier
 import DifferentialGeometry.Topology.Order.FiniteSeparation
 import DifferentialGeometry.Topology.Order.Interval
 import DifferentialGeometry.Topology.Order.IntervalPush
@@ -8273,9 +8277,12 @@ import DifferentialGeometry.Topology.PartitionOfUnity.CompactSupport
 import DifferentialGeometry.Topology.PartitionOfUnity.Locality
 import DifferentialGeometry.Topology.PiecewiseLinear.ArcChainCells
 import DifferentialGeometry.Topology.PiecewiseLinear.BallPairRelativeGluing
+import DifferentialGeometry.Topology.PiecewiseLinear.BicollarEmbedding
 import DifferentialGeometry.Topology.PiecewiseLinear.ConeDiskPairExtension
 import DifferentialGeometry.Topology.PiecewiseLinear.MobiusSquare
 import DifferentialGeometry.Topology.PiecewiseLinear.MoiseChain
+import DifferentialGeometry.Topology.PiecewiseLinear.SphereNesting
+import DifferentialGeometry.Topology.PiecewiseLinear.TameNestedCells
 import DifferentialGeometry.Topology.PlanarJordan.AmbientExtension
 import DifferentialGeometry.Topology.PlanarJordan.ArcAndSegment
 import DifferentialGeometry.Topology.PlanarJordan.ClosedInterior
