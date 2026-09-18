@@ -3109,3 +3109,53 @@ import ...StarPair failed, environment already contains
 检查 `SimplicialPairImage` exit=0（9.1 秒）、`VertexChartTransport` exit=0（10.9 秒）、
 `VertexBranchInput` exit=0（11.1 秒），均零 warning；`AuditF269.lean` 三项仅
 `propext`、`Classical.choice`、`Quot.sound`。下一审计文件 `AuditF270.lean`。
+
+### 19.127 邻域条款已闭合；自查发现 `hfiber` 的可满足域被限死，装配路线要改
+
+**本轮闭合两条**
+- `image_closedStar_mem_nhds_of_isPLHomeomorphOn`（`VertexChartTransport.lean`）：
+  `K.space ∈ 𝓝 p`、`IsOpen W`、`IsPLHomeomorphOn h U W`、`p ∈ U` ⟹ `h '' closedStar K p ∈ 𝓝 (h p)`。
+  不走 `≃ₜ` 的子类型：直接用 `IsPiecewiseAffineOn.continuousOn`（`PiecewiseAffine.lean:218`）
+  给 `Function.invFunOn h U` 在 `W` 上的 `ContinuousAt`，再用
+  `ContinuousAt.preimage_mem_nhds`，最后
+  `W ∩ invFunOn h U ⁻¹' closedStar K p ⊆ h '' closedStar K p`。
+  **写完发现 `closedStar K p ⊆ U` 这条假设用不到**（对 `y ∈ W`，`invFunOn h U y` 自动落在 `U` 里），
+  已删除；linter 的 unused-variable 警告是这么被发现的。
+- `exists_linearEquiv_normalForm_of_isPLSphere_link`（`VertexBranchInput.lean`）：
+  把 §19.124 的 `IsCombinatorialManifold 2 M` 换成直接的
+  `IsPLSphere 1 (link M {p}).space`，`_of_isCombinatorialManifold` 退化成一行推论。
+  这样转写之后拿到的连接球面（§19.126 的新条款）可以直接喂进去。
+  **注意实例坑的另一面**：泛化版的类型里出现 `geometricLink`，所以必须带 `[DecidableEq E]`
+  并去掉 `classical`；推论版反过来不带绑定、用 `classical`，两边才对得上
+  `IsCombinatorialManifold` 的 `Classical.propDecidable`。
+
+**自查发现（按协调者要求逐条检查假设，确实查出一条）**
+`exists_linearEquiv_normalForm_of_isPLSphere_link` 的假设逐条判定：
+1. `hn : finrank ℝ E = 3` —— 几何输入（环境是 3 维）。
+2. `[Finite K.faces] [Finite M.faces]` —— 构造性副产品（机器需要有限性）。
+3. `hM : M.faces ⊆ K.faces` —— 几何输入（片是子复形）。
+4. `hp : {p} ∈ M.faces` —— 几何输入（`p` 是片的顶点）。
+5. `hK : K.space ∈ 𝓝 p` —— 几何输入（`p` 是 3-流形内点）。
+6. `ℓ ≠ 0` —— 几何输入，**并且是平坦性限制**：第二张片必须就是超平面。
+7. `hlinkM : IsPLSphere 1 (link M {p}).space` —— 几何输入（`M` 在 `p` 处是曲面）。不涉及 `ℓ`，不夹带结论。
+8. `hfiber : IsPLSphere 1 (M.space ∩ {x | ℓ x = ℓ p})` —— 几何输入，但**可满足域被限死**。
+9. `hu hv hult hvlt` —— 几何输入（片在平面两侧都有点），§19.123 已证不能由计数推出。
+没有一条夹带结论。但**第 8 条有实质问题**：它要求"片被平面截出的截线是**闭曲线**"。
+`encard_geometricLink_fiber_of_isPLSphere_one`（`HeightLevelLink.lean:75`）内部先把
+`K.space ∩ {ℓ = ℓ p}` 做成复形 `F`，再用 `isPLSphere_geometricLink_of_isPLSphere`
+（`BallSphereLink.lean:20`）取 `p` 处连接，所以确实需要 1-球面而不是 1-球体。
+于是：**若 `M` 取成 `p` 的闭星（圆盘），截线是弧不是圆，第 8 条为假**，定理在那种取法下空转。
+它只在片是闭曲面（截线成圆）时可用。
+
+**这条直接改掉了装配路线。** 原计划第二次应用是对 `N₁`——而 `N₁` 是**闭星的像**，即圆盘，
+其平面截线必然是弧，所以 `hfiber` 对 `N₁` 恒假，**不能**用 `_of_isPLSphere_link` 那层包装做第二次。
+第二次必须直接用 `exists_linearEquiv_normalForm_of_geometricLink_section`
+（它收 `hab`/`hlevel`/`hpos`/`hneg`，没有 `hfiber` 那条全局限制），把这四条**随转写一起搬过去**：
+`hlevel` 与 `hab` 要沿 §19.126 的 glue-iso 连接同胚搬（连接是有限点集，像仍是两点），
+`hpos`/`hneg` 用 §19.123 的星→连接归约在像一侧重新给。
+可能的替代是给 `encard_geometricLink_fiber_of_*` 补一个 **1-球体 + `p` 为内点**的版本；
+树里有 `isPLSphere_or_isPLBall_geometricLink_of_isPLBall`（`BallSphereLink.lean:151`），
+但它给的是析取，要另外排除边界点情形。**不估行数**。
+
+检查 `VertexChartTransport` exit=0（9.7 秒）、`VertexBranchInput` exit=0（11 秒），均零 warning；
+`AuditF270.lean` 三项仅 `propext`、`Classical.choice`、`Quot.sound`。下一审计文件 `AuditF271.lean`。

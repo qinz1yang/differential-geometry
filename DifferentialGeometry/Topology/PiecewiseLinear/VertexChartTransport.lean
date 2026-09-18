@@ -61,4 +61,21 @@ theorem exists_simplicialComplex_pair_image_closedStar_of_isPiecewiseAffineOn
     rw [geometricLink_starComplex]
     exact h1
 
+omit [FiniteDimensional ℝ E] in
+theorem image_closedStar_mem_nhds_of_isPLHomeomorphOn
+    (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces] {p : E} (hK : K.space ∈ 𝓝 p)
+    {U : Set E} {W : Set F} {h : E → F} (hW : IsOpen W) (hh : IsPLHomeomorphOn h U W)
+    (hpU : p ∈ U) :
+    h '' closedStar K p ∈ 𝓝 (h p) := by
+  have hstarNhds : closedStar K p ∈ 𝓝 p := closedStar_mem_nhds K hK
+  have hhpW : h p ∈ W := hh.bijOn.mapsTo hpU
+  have hinvhp : Function.invFunOn h U (h p) = p := hh.bijOn.invOn_invFunOn.1 hpU
+  have hcont : ContinuousAt (Function.invFunOn h U) (h p) :=
+    hh.isPiecewiseAffineOn_invFunOn.continuousOn.continuousAt (hW.mem_nhds hhpW)
+  have hpre : Function.invFunOn h U ⁻¹' closedStar K p ∈ 𝓝 (h p) :=
+    hcont.preimage_mem_nhds (by rw [hinvhp]; exact hstarNhds)
+  refine Filter.mem_of_superset (Filter.inter_mem (hW.mem_nhds hhpW) hpre) ?_
+  rintro y ⟨hyW, hyS⟩
+  exact ⟨Function.invFunOn h U y, hyS, hh.bijOn.invOn_invFunOn.2 hyW⟩
+
 end DifferentialGeometry.Topology.PiecewiseLinear
