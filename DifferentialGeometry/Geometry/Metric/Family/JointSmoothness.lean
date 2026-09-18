@@ -8,6 +8,7 @@ noncomputable section
 open Bundle
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Tensor.Coordinates
+open DifferentialGeometry.Geometry.Operator (chartGramOnE)
 open scoped Manifold ContDiff
 
 namespace DifferentialGeometry.Geometry.Curvature
@@ -16,29 +17,73 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimension
   {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
   {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 
-theorem chartGramMatrix_joint_contMDiffOn
-    (g : ℝ → SmoothRiemannianMetric I M) (J : Set ℝ)
-    (hg : ContMDiffOn (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ)) ∞
-      (fun p : ℝ × M => (⟨p.2, (g p.1).inner p.2⟩ : TotalSpace (E →L[ℝ] E →L[ℝ] ℝ)
+section Parameter
+
+variable {EP : Type*} [NormedAddCommGroup EP] [NormedSpace ℝ EP]
+  {HP : Type*} [TopologicalSpace HP] {IP : ModelWithCorners ℝ EP HP}
+  {P : Type*} [TopologicalSpace P] [ChartedSpace HP P]
+
+theorem chartGramMatrix_joint_contMDiffOn {n : ℕ∞}
+    (g : P → SmoothRiemannianMetric I M) (J : Set P)
+    (hg : ContMDiffOn (IP.prod I) (I.prod 𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ)) n
+      (fun p : P × M => (⟨p.2, (g p.1).inner p.2⟩ : TotalSpace (E →L[ℝ] E →L[ℝ] ℝ)
         (fun x => TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ)))
       (J ×ˢ (Set.univ : Set M)))
     (x₀ : M) (i j : Fin (Module.finrank ℝ E)) :
-    ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
-      (fun p : ℝ × M => chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
+    ContMDiffOn (IP.prod I) 𝓘(ℝ) n
+      (fun p : P × M => chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
       (J ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) := by
   have hmetric := hg.mono (fun p hp => ⟨hp.1, Set.mem_univ p.2⟩ :
     J ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet ⊆ J ×ˢ Set.univ)
-  have hsnd : ContMDiffOn (𝓘(ℝ, ℝ).prod I) I ∞ (Prod.snd : ℝ × M → M)
+  have hsnd : ContMDiffOn (IP.prod I) I n (Prod.snd : P × M → M)
       (J ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) := contMDiffOn_snd
-  have hv := (chartBasisVec_contMDiffOn (I := I) x₀ i).comp hsnd (fun p hp => hp.2)
-  have hw := (chartBasisVec_contMDiffOn (I := I) x₀ j).comp hsnd (fun p hp => hp.2)
+  have hv := ((chartBasisVec_contMDiffOn (I := I) x₀ i).of_le (WithTop.coe_le_coe.mpr le_top)).comp hsnd (fun p hp => hp.2)
+  have hw := ((chartBasisVec_contMDiffOn (I := I) x₀ j).of_le (WithTop.coe_le_coe.mpr le_top)).comp hsnd (fun p hp => hp.2)
   have happ := ContMDiffOn.clm_bundle_apply₂ (F₁ := E) (F₂ := E) (F₃ := ℝ)
     (E₁ := TangentSpace I (M := M)) (E₂ := TangentSpace I (M := M))
-    (E₃ := Bundle.Trivial M ℝ) (b := fun p : ℝ × M => p.2) hmetric hv hw
+    (E₃ := Bundle.Trivial M ℝ) (b := fun p : P × M => p.2) hmetric hv hw
   intro p hp
   have h := happ p hp
   rw [Bundle.contMDiffWithinAt_totalSpace] at h
   exact h.2
+
+end Parameter
+
+section NormedParameter
+
+variable {P : Type*} [NormedAddCommGroup P] [NormedSpace ℝ P]
+
+private theorem chartGramOnE_contDiffOn_of_chartGram {n : ℕ∞}
+    (g : P → SmoothRiemannianMetric I M) (A : Set P) (x : M)
+    (i j : Fin (Module.finrank ℝ E))
+    (hgram : ContMDiffOn (𝓘(ℝ, P).prod I) 𝓘(ℝ) n
+      (fun p : P × M => chartGramMatrix (g p.1) x p.2 i j)
+      (A ×ˢ (trivializationAt E (TangentSpace I) x).baseSet)) :
+    ContDiffOn ℝ n (fun p : P × E => chartGramOnE (g p.1) x i j p.2)
+      (A ×ˢ (extChartAt I x).target) := by
+  have harg : ContMDiffOn (𝓘(ℝ, P).prod 𝓘(ℝ, E)) (𝓘(ℝ, P).prod I) n
+      (fun p : P × E => (p.1, (extChartAt I x).symm p.2))
+      (A ×ˢ (extChartAt I x).target) :=
+    contMDiffOn_fst.prodMk ((contMDiffOn_extChartAt_symm x).comp contMDiffOn_snd
+      (fun p hp => hp.2))
+  have hh := hgram.comp harg (fun p hp =>
+    ⟨hp.1, extChartAt_symm_mem_trivializationAt_baseSet x hp.2⟩)
+  rw [← modelWithCornersSelf_prod, chartedSpaceSelf_prod] at hh
+  exact hh.contDiffOn
+
+theorem chartGramOnE_joint_contDiffOn {n : ℕ∞}
+    (g : P → SmoothRiemannianMetric I M) (A : Set P)
+    (hg : ContMDiffOn (𝓘(ℝ, P).prod I) (I.prod 𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ)) n
+      (fun p : P × M => (⟨p.2, (g p.1).inner p.2⟩ : TotalSpace (E →L[ℝ] E →L[ℝ] ℝ)
+        (fun x => TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ)))
+      (A ×ˢ (Set.univ : Set M)))
+    (x : M) (i j : Fin (Module.finrank ℝ E)) :
+    ContDiffOn ℝ n (fun p : P × E => chartGramOnE (g p.1) x i j p.2)
+      (A ×ˢ (extChartAt I x).target) :=
+  chartGramOnE_contDiffOn_of_chartGram g A x i j
+    (chartGramMatrix_joint_contMDiffOn g A hg x i j)
+
+end NormedParameter
 
 omit [FiniteDimensional ℝ E] in
 private theorem metric_coeff_contDiffOn
@@ -202,6 +247,31 @@ theorem chartGramMatrix_pullback_joint_contMDiffOn [T2Space N] {n : ℕ∞}
     (fun t _ x u v => Diffeomorph.pullbackMetricCross_inner (g t) (Y t) x u v) x₀ i j
 
 end Parametric
+section NormedParameterPullback
+
+variable {P : Type*} [NormedAddCommGroup P] [NormedSpace ℝ P]
+
+omit [FiniteDimensional ℝ E] in
+theorem chartGramOnE_pullback_joint_contDiffOn [T2Space N] {n : ℕ∞}
+    (g : P → SmoothRiemannianMetric I M) (A : Set P)
+    (hg : ContMDiffOn (𝓘(ℝ, P).prod I) (I.prod 𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ)) n
+      (fun p : P × M => (⟨p.2, (g p.1).inner p.2⟩ :
+        TotalSpace (E →L[ℝ] E →L[ℝ] ℝ)
+          (fun x => TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ)))
+      (A ×ˢ (Set.univ : Set M)))
+    (Y : P → N ≃ₘ⟮J, I⟯ M)
+    (hY : ContMDiff (𝓘(ℝ, P).prod J) I ((n : ℕ∞ω) + 1) (fun p : P × N => Y p.1 p.2))
+    (x₀ : N) (i j : Fin (Module.finrank ℝ F)) :
+    ContDiffOn ℝ n
+      (fun p : P × F => chartGramOnE (I := J)
+        (Diffeomorph.pullbackMetricCross (g p.1) (Y p.1)) x₀ i j p.2)
+      (A ×ˢ (extChartAt J x₀).target) :=
+  chartGramOnE_contDiffOn_of_chartGram
+    (fun p => Diffeomorph.pullbackMetricCross (g p) (Y p)) A x₀ i j
+    (chartGramMatrix_pullback_joint_contMDiffOn g A hg Y hY x₀ i j)
+
+end NormedParameterPullback
+
 
 omit [FiniteDimensional ℝ E] in
 theorem chartGramMatrix_joint_contMDiffOn_of_pullback

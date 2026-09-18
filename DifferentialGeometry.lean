@@ -7447,6 +7447,7 @@ import DifferentialGeometry.Geometry.Metric.Convergence.Metric.Compactness
 import DifferentialGeometry.Geometry.Metric.Convergence.Metric.Evaluation
 import DifferentialGeometry.Geometry.Metric.Convergence.Metric.TensorError
 import DifferentialGeometry.Geometry.Metric.Convergence.Metric.Parameter
+import DifferentialGeometry.Geometry.Metric.Convergence.Metric.PullbackParameter
 import DifferentialGeometry.Geometry.Metric.Convergence.Metric.Tower
 import DifferentialGeometry.Geometry.Metric.Convergence.Metric.UniformEquivalence
 import DifferentialGeometry.Geometry.Metric.Convergence.Naturality.CrossTensorCovariantDerivative

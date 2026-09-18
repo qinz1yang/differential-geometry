@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Metric.Family.JointSmoothness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.SlabJetBootstrap
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.TerminalJointSpatialJets
 import DifferentialGeometry.Geometry.Curvature.Coordinates.MetricJet.ChartBridge
@@ -135,6 +136,50 @@ theorem chartGram_contDiffOn_of_spatialJets
   exact contDiffOn_of_closed_jet_pde hab hV hΩ (fun t _ => hstatic t) hΦ hmap
     (fun r => chartGramPi_jets_continuousOn g p hVt r (hjets r)) htime
 
+theorem solution_metricCLMSection_contMDiffOn_closed
+    [SigmaCompactSpace M] [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M]
+    {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S)
+    {a c b : ℝ} (hac : a < c) (hcb : c < b)
+    (hslab : Icc a b ⊆ D.carrier) (hreg : Ioo a b ⊆ D.regular) :
+    ContMDiffOn (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ)) ∞
+      (fun p : ℝ × M => (⟨p.2, (S.base.metric p.1).inner p.2⟩ :
+        TotalSpace (E →L[ℝ] E →L[ℝ] ℝ)
+          (fun x => TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ)))
+      (Icc c b ×ˢ (Set.univ : Set M)) := by
+  apply metricCLMSection_jointContMDiffOn_of_chartGram_on (I := I) S.base.metric (Icc c b)
+  intro x i j
+  have hjets := solution_chartGram_jets_continuousOn_closed S hS hac hcb hslab hreg x
+  have hmetric : ∀ t ∈ Ioo c b, ∀ y : M, ∀ v w : TangentSpace I y,
+      HasDerivAt (fun s => (S.base.metric s).inner y v w)
+        (-2 * ricciTensor (I := I) (S.base.metric t) y v w) t := by
+    intro t ht y v w
+    have hd := metricDerivAt S hS ⟨t, hreg ⟨hac.trans ht.1, ht.2⟩⟩ y v w
+    have hr := metricRicciAt_apply_eq_ricciTensor (I := I) (S.base.metric t) y v w
+    dsimp only [SolutionOn.ricciAt, SolutionFamily.ricciAt] at hd
+    erw [hr] at hd
+    exact hd
+  have hG := chartGram_contDiffOn_of_spatialJets S.base.metric x hcb
+    (isOpen_extChartAt_target x) Subset.rfl hjets hmetric
+  have hentry := contDiffOn_pi.mp (contDiffOn_pi.mp hG i) j
+  have hsource {y : M} (hy : y ∈ (trivializationAt E (TangentSpace I) x).baseSet) :
+      y ∈ (extChartAt I x).source := by
+    rwa [extChartAt_source_eq_chartAt_source, ← trivializationAt_baseSet_eq_chartAt_source (I := I)]
+  have harg : ContMDiffOn (𝓘(ℝ, ℝ).prod I) (𝓘(ℝ, ℝ × E)) ∞
+      (fun p : ℝ × M => (p.1, extChartAt I x p.2))
+      (Icc c b ×ˢ (trivializationAt E (TangentSpace I) x).baseSet) := by
+    rw [modelWithCornersSelf_prod, ← chartedSpaceSelf_prod]
+    exact contMDiffOn_fst.prodMk ((contMDiffOn_extChartAt (I := I) (x := x)).comp contMDiffOn_snd
+      (fun p hp => by
+        simpa only [Set.mem_preimage, trivializationAt_baseSet_eq_chartAt_source] using hp.2))
+  have hh := hentry.contMDiffOn.comp harg (fun p hp => ⟨hp.1,
+    (extChartAt I x).map_source (hsource hp.2)⟩)
+  apply hh.congr
+  intro p hp
+  change chartGramMatrix (S.base.metric p.1) x p.2 i j =
+    chartGramMatrix (S.base.metric p.1) x ((extChartAt I x).symm (extChartAt I x p.2)) i j
+  rw [(extChartAt I x).left_inv (hsource hp.2)]
+
+
 theorem solution_chartGram_contDiffOn_closed
     [SigmaCompactSpace M] [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M]
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S)
@@ -144,20 +189,9 @@ theorem solution_chartGram_contDiffOn_closed
       ∀ i j : Fin (Module.finrank ℝ E), ContDiffOn ℝ ∞
         (fun q : ℝ × E => chartGramOnE (I := I) (S.base.metric q.1) p i j q.2)
         (Icc c b ×ˢ W) := by
-  let W := (extChartAt I p).target
-  have hW : IsOpen W := isOpen_extChartAt_target (I := I) p
-  have hpW : extChartAt I p p ∈ W := (extChartAt I p).map_source (mem_extChartAt_source p)
-  have hjets := solution_chartGram_jets_continuousOn_closed S hS hac hcb hslab hreg p
-  have hmetric : ∀ t ∈ Ioo c b, ∀ x : M, ∀ v w : TangentSpace I x,
-      HasDerivAt (fun s => (S.base.metric s).inner x v w)
-        (-2 * ricciTensor (I := I) (S.base.metric t) x v w) t := by
-    intro t ht x v w
-    have hd := metricDerivAt S hS ⟨t, hreg ⟨hac.trans ht.1, ht.2⟩⟩ x v w
-    have hr := metricRicciAt_apply_eq_ricciTensor (I := I) (S.base.metric t) x v w
-    dsimp only [SolutionOn.ricciAt, SolutionFamily.ricciAt] at hd
-    erw [hr] at hd
-    exact hd
-  have h := chartGram_contDiffOn_of_spatialJets (fun t => S.base.metric t) p hcb hW Subset.rfl hjets hmetric
-  exact ⟨W, hW, hpW, Subset.rfl, fun i j => (contDiffOn_pi.mp (contDiffOn_pi.mp h i)) j⟩
+  refine ⟨(extChartAt I p).target, isOpen_extChartAt_target p,
+    (extChartAt I p).map_source (mem_extChartAt_source p), Subset.rfl, ?_⟩
+  exact fun i j => chartGramOnE_joint_contDiffOn S.base.metric (Icc c b)
+    (solution_metricCLMSection_contMDiffOn_closed S hS hac hcb hslab hreg) p i j
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
