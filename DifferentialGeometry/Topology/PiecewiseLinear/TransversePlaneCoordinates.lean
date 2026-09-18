@@ -286,6 +286,13 @@ theorem exists_mem_apply_eq_one_iff_not_le_ker {S : Submodule ℝ E} {ℓ : E �
       rw [map_smul, smul_eq_mul, inv_mul_cancel₀ hne]⟩
 
 omit [FiniteDimensional ℝ E] in
+theorem exists_mem_apply_eq_one_of_exists_mem_apply_ne_zero {S : Submodule ℝ E} {ℓ : E →ₗ[ℝ] ℝ}
+    (h : ∃ u ∈ S, ℓ u ≠ 0) : ∃ u ∈ S, ℓ u = 1 := by
+  obtain ⟨u, hu, hne⟩ := h
+  exact ⟨(ℓ u)⁻¹ • u, S.smul_mem _ hu, by
+    rw [map_smul, smul_eq_mul, inv_mul_cancel₀ hne]⟩
+
+omit [FiniteDimensional ℝ E] in
 theorem image_eq_of_mem_iff {S : Set E} {T : Set (ℝ × ℝ × ℝ)} (L : E ≃ₗ[ℝ] ℝ × ℝ × ℝ)
     (h : ∀ y : E, y ∈ S ↔ L y ∈ T) : L '' S = T := by
   ext q
