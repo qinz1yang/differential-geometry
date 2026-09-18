@@ -2824,3 +2824,71 @@ import `SingularGeneralPosition` 与 `TransversePlaneCoordinates`）：
 检查 `TransversePlaneCoordinates` exit=0（7.7 秒）、`TransversePlaneNormalForm` exit=0（9.1 秒），
 均零 warning；`AuditF264.lean` 三项仅 `propext`、`Classical.choice`、`Quot.sound`。
 下一审计文件 `AuditF265.lean`。
+
+### 19.122 单顶点星形图卡：链条早已在树里，H 的 `ConePairExtension` 与 `StarPair` 撞名
+
+**必须先报的缺陷（属于 H，本车道不改）**：`ConePairExtension.lean:125` 声明的
+`exists_isPLHomeomorphOn_closedStar_pair` 与 `StarPair.lean:78` **同名同命名空间**。
+`ConePairExtension` 只 import `ConeExtension`（`:1`），够不到 `StarPair`，所以 H 自己的聚焦检查看不见冲突；
+但**任何同时 import 两者的模块都无法 elaborate**。本车道实测到这条硬错误：
+
+```
+import ...StarPair failed, environment already contains
+'...exists_isPLHomeomorphOn_closedStar_pair' from ...ConePairExtension
+```
+
+而且 `StarPair.lean:78` 的版本**严格更强**：除了
+`IsPLHomeomorphOn g (closedStar K p) (closedStar K' q)`、`g p = q`、
+`g '' closedStar M p = closedStar M' q`（这三条 H 的版本也有）之外，还多一条
+`g '' (closedStar K p ∩ {x | ℓ x = 0}) = closedStar K' q ∩ {x | ℓ' x = 0}`，
+即赤道（第二张片）的星也被带过去——那正是分支情形真正要用的一条。
+所以 H 的 `exists_isPLHomeomorphOn_closedStar_pair` 是**冗余且更弱**的重复声明，
+建议 H 删掉它并改 import `StarPair`；`ConePairCrossing` 因 import 了 `ConePairExtension` 也带着这个毒性。
+本车道绕开：不 import `ConePairExtension`，`geometricLink` 的空间单调性按
+`VertexCrossing.lean:103-114` 的既有写法在证明内部用 `have` 就地做掉，不新增公共名字。
+
+**协调者要求的链条 `LinkPair → ConePairExtension → ConePairCrossing` 其实早已存在**，
+形式是 `LinkPair.lean:53 → StarPair.lean:78 → HasPLCrossingAt.of_closedStar_pair`，
+整条写在 `hasPLCrossingAt_fiber_of_geometricLink_section`（`VertexCrossing.lean:12`，
+串联在 `:115-121`）里，早于 H 的工作。`VertexCrossingLevel.lean:57` 的 `_at` 版本更通用
+（不要求 `ℓ p = 0`，在水平面 `ℓ p` 上工作）。
+
+**关于 `hside`：正规形式并不能消掉它，两者不在一个层次。** `hside` 是**单纯复形 K 的性质**
+（每个面整个落在超平面一侧），而 `TransversePlaneNormalForm` 给的是 PL 同胚加线性同构的 germ 条款，
+不谈任何复形，所以无法蕴含 `hside`。但 `hside` **也不是新工作**：
+`exists_triangulation_union_with_halfSpace_faces`（`HeightSubdivision.lean:10`）
+对任意 `K`、任意仿射映射 `a` 与水平 `r` 产出 `R`，满足 `R.space = K.space ∪ D`、
+`IsSubdivision (restrict R K.space) K`，以及正是 `hside` 那一条；
+`VertexCrossing.lean:72-73` 就是这样给模型造出 `hRside` 的。所以 `hside` 由相容细分供给。
+
+**本轮闭合的两条**（新模块 `VertexBranchChart.lean`）：
+- `exists_isPLHomeomorphOn_closedStar_pair_of_geometricLink_section`：把 `LinkPair.lean:53`
+  与 `StarPair.lean:78` 显式串成一条可复用的定理。输入是两侧的连接数据
+  （`IsPLSphere 1 (link M {p}).space`、`(link M {p}).space ∩ {ℓ = 0} = {a, b}`、`a ≠ b`、两侧非空、
+  `hside`），输出是**星对**：`IsPLHomeomorphOn g (closedStar K p) (closedStar K' p')`、`g p = p'`、
+  `g '' closedStar M p = closedStar M' p'`、
+  `g '' (closedStar K p ∩ {ℓ = 0}) = closedStar K' p' ∩ {ℓ' = 0}`。
+  这就是单顶点的星形（subcomplex）图卡，且第四条给出第二张片。
+- `exists_linearEquiv_normalForm_of_geometricLink_section`：把
+  `hasPLCrossingAt_fiber_of_geometricLink_section_at`（`VertexCrossingLevel.lean:57`）
+  与 §19.121 的 `HasPLCrossingAt.exists_linearEquiv_normalForm` 复合，
+  **从纯组合输入无条件**产出 `U V h L`，`IsPLHomeomorphOn h U V`、`h p = 0`，且
+  `∀ᶠ y in 𝓝 p, (y ∈ M.space → (L (h y)).2.2 = 0) ∧ (ℓ y = ℓ p → (L (h y)).2.1 = 0)`。
+  这正是 §19.115 图卡条款（那里本来就写成 `⊆`）在单顶点的形式，且 `HasPLCrossingAt`
+  不再是假设。三分支（两片皆整平面／其一为半平面）取 `→` 方向后合并，所以结论对三种情形一致。
+
+**剩余义务（item 1 的真正内容，未闭合）**：上面两条的输入里，
+`hlink : IsPLSphere 1 (link M {p}).space` 已有生产者——`IsCombinatorialManifold.isPLSphere_link`
+（`VertexChart.lean:247`），即 `M` 是组合 2-流形时每个顶点的连接是 PL 1-球面。
+真正缺的是 `hzero`/`hab`/`hpos`/`hneg`：**第二张片把第一张片的连接圆恰好截成两点**。
+树里只有平坦情形的生产者 `exists_pair_geometricLink_fiber_of_eventually_plane`
+（`VertexCrossing.lean:90-92` 使用），它要求 `hlocal : ∀ᶠ x in 𝓝 0, x ∈ N.space ↔ x - 0 ∈ P`，
+即该片在 `p` 附近**就是**一张平面——只覆盖模型侧，覆盖不了一般的 PL 曲面片。
+缺的是一条一般位置定理：两张横截相交的 PL 2-片在分支点处，一张的连接圆与另一张的
+零集恰交于两点。**估计 150–400 行**（需要连接圆与超平面的一般位置 + 计数，
+可能要先做一次相容细分把交点变成顶点）；**此估计未经验证**，只是按树里同类定理的规模推断。
+两张片都非平坦的对称情形还要额外一步：`LinkPair` 只处理"一个圆 + 一条赤道"，
+所以必须先用本轮第一条把其中一张片拉直成 `{ℓ = 0}`，再对第二张片重复。
+
+检查 `VertexBranchChart` exit=0（10.2 秒）、零 warning；`AuditF265.lean` 两项仅
+`propext`、`Classical.choice`、`Quot.sound`。下一审计文件 `AuditF266.lean`。
