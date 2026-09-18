@@ -17,7 +17,7 @@ theorem exists_simplicialComplex_triple_image_closedStar_of_isPiecewiseAffineOn
     {U : Set E} (hU : U ∈ 𝓝 p) {h : E → F}
     (hpl : IsPiecewiseAffineOn h U) (hinj : InjOn h U) :
     ∃ (R : Geometry.SimplicialComplex ℝ E) (K₁ M₁ N₁ : Geometry.SimplicialComplex ℝ F),
-      IsSubdivision R K ∧ ({p} : Finset E) ∈ R.faces ∧ closedStar R p ⊆ U ∧
+      IsSubdivision R K ∧ R.faces.Finite ∧ ({p} : Finset E) ∈ R.faces ∧ closedStar R p ⊆ U ∧
         K₁.faces.Finite ∧ M₁.faces.Finite ∧ N₁.faces.Finite ∧
         M₁.faces ⊆ K₁.faces ∧ N₁.faces ⊆ K₁.faces ∧
         ({h p} : Finset F) ∈ M₁.faces ∧ ({h p} : Finset F) ∈ N₁.faces ∧
@@ -68,8 +68,8 @@ theorem exists_simplicialComplex_triple_image_closedStar_of_isPiecewiseAffineOn
     exists_simplicialComplex_triple_image_of_isPiecewiseAffineOn (starComplex R p)
       (starComplex (restrict R M.space) p) (starComplex (restrict R N.space) p) hMSfaces hNSfaces
       hpMS hpNS (hpl.mono_of_isPolyhedron (isPolyhedron_space _) hKSU) (hinj.mono hKSU)
-  refine ⟨R, K₁, M₁, N₁, hRK, hpR, hstarU, hK₁fin, hM₁fin, hN₁fin, hMK₁, hNK₁, hpM₁, hpN₁,
-    ?_, ?_, ?_, ?_, ?_⟩
+  refine ⟨R, K₁, M₁, N₁, hRK, hRfin, hpR, hstarU, hK₁fin, hM₁fin, hN₁fin, hMK₁, hNK₁, hpM₁,
+    hpN₁, ?_, ?_, ?_, ?_, ?_⟩
   · rw [hK₁space, hKSspace]
   · rw [hM₁space, hMSspace]
   · rw [hN₁space, hNSspace]
@@ -89,18 +89,19 @@ theorem exists_simplicialComplex_pair_image_closedStar_of_isPiecewiseAffineOn
     {U : Set E} (hU : U ∈ 𝓝 p) {h : E → F}
     (hpl : IsPiecewiseAffineOn h U) (hinj : InjOn h U) :
     ∃ (R : Geometry.SimplicialComplex ℝ E) (K₁ M₁ : Geometry.SimplicialComplex ℝ F),
-      IsSubdivision R K ∧ ({p} : Finset E) ∈ R.faces ∧ closedStar R p ⊆ U ∧
+      IsSubdivision R K ∧ R.faces.Finite ∧ ({p} : Finset E) ∈ R.faces ∧ closedStar R p ⊆ U ∧
         K₁.faces.Finite ∧ M₁.faces.Finite ∧ M₁.faces ⊆ K₁.faces ∧
           ({h p} : Finset F) ∈ M₁.faces ∧
             K₁.space = h '' closedStar R p ∧
               M₁.space = h '' closedStar (restrict R M.space) p ∧
                 ∃ g : E → F, IsPLHomeomorphOn g (SimplicialComplex.geometricLink M {p}).space
                   (SimplicialComplex.geometricLink M₁ {h p}).space := by
-  obtain ⟨R, K₁, M₁, -, hRK, hpR, hstarU, hK₁fin, hM₁fin, -, hMK₁, -, hpM₁, -, hK₁space,
+  obtain ⟨R, K₁, M₁, -, hRK, hRfin, hpR, hstarU, hK₁fin, hM₁fin, -, hMK₁, -, hpM₁, -, hK₁space,
     hM₁space, -, hlinkM, -⟩ :=
     exists_simplicialComplex_triple_image_closedStar_of_isPiecewiseAffineOn K M M hM hM hp hp hU
       hpl hinj
-  exact ⟨R, K₁, M₁, hRK, hpR, hstarU, hK₁fin, hM₁fin, hMK₁, hpM₁, hK₁space, hM₁space, hlinkM⟩
+  exact ⟨R, K₁, M₁, hRK, hRfin, hpR, hstarU, hK₁fin, hM₁fin, hMK₁, hpM₁, hK₁space, hM₁space,
+    hlinkM⟩
 
 omit [FiniteDimensional ℝ E] in
 theorem image_closedStar_mem_nhds_of_isPLHomeomorphOn
