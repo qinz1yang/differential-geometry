@@ -4056,20 +4056,56 @@ The dichotomy is proved with `isPreconnected_closed_iff` against the two closed
 arcs: the image of an open arc is connected, avoids the two cut points because
 `u` is injective and fixes them, hence cannot meet both `A` and `B`.
 
+### C1-a, the push to a prescribed fixed point: delivered
+
+`exists_isPLPseudoIsotopicToId_map_eq_of_isPLSphere_one`: for a PL 1-sphere `S`
+and any two of its points `p`, `p'` there is a PL self-homeomorphism `r` of `S`
+with `r p' = p` that is pseudo-isotopic to the identity. With
+`isPLPseudoIsotopicToId_of_comp_left` -- if `r` and `r` composed with `u` are
+both pseudo-isotopic to the identity then so is `u` -- this converts an arbitrary
+end map into one with a prescribed fixed point at no cost. So the fixed-point-free
+case of C1 is not an obstruction.
+
+Supporting, all unconditional and reusable:
+
+- `isPLPseudoIsotopicToId_of_arc_support`: a PL self-homeomorphism of `S`
+  supported in one arc `A`, i.e. fixing the two endpoints of `A` and equal to the
+  identity on the complementary set `B`, is pseudo-isotopic to the identity. Only
+  `A` needs a parametrisation; `B` needs only `IsPolyhedron`. The annulus map is
+  the arc square over `A` glued to the identity over `B`.
+- `exists_arc_pair_interior_of_isPLSphere_one`: for `p` distinct from `p'` in `S`
+  there is an arc `A` containing both in its interior together with a
+  complementary arc closing up the sphere. Cut `S` at `p`, `p'`; take the two new
+  cut points at parameters one quarter and three quarters along the second arc;
+  the first arc is connected and misses both, so `isPreconnected_closed_iff`
+  places it inside one arc of the new decomposition, and that arc is the one
+  wanted.
+- `exists_isPLHomeomorphOn_arc_fixing_endpoints_of_parametrization`: the general
+  ambient-space form of `exists_isPLHomeomorphOn_arc_fixing_endpoints`, which
+  `Homogeneity.lean` states only for `EuclideanSpace R (Fin 2)`. Since the
+  parametrisation is supplied it just conjugates
+  `exists_isPLHomeomorphOn_Icc_fixing_endpoints`.
+- `IsPLPseudoIsotopicToId.congr`.
+
 ### Exact remaining obligation for C1 in full generality
 
 Two statements, in this order.
 
-(C1-a) **Push.** Every PL self-homeomorphism of a PL 1-sphere is
-`r` composed with a map having two fixed points, for some `r` that is itself
-pseudo-isotopic to the identity. Concretely: given `p` and `p' = u p`, an arc
-`A_1` containing both in its interior whose complementary arc closes up the
-sphere, and a PL self-homeo of `A_1` fixing its endpoints and sending `p` to
-`p'`. Then `IsPLPseudoIsotopicToId.of_leftInverse` and `.comp` finish. This is
-buildable with what is in the tree -- arc decomposition at two points of the
-complementary arc, reparametrisation of subintervals, two applications of
-`exists_isPLHomeomorphOn_union` -- but it is interval surgery that does not yet
-exist, and it is useless on its own, see (C1-b).
+(C1-a2) **The second fixed point.** The push above delivers one fixed point. The
+arc-decomposition theorem needs two, so what is still missing is the version of
+`exists_arc_pair_interior_of_isPLSphere_one` that additionally keeps a third given
+point `p` out of the arc `A`, so that the resulting `r` fixes `p` while moving the
+second point. The construction is known: with `p` in the second arc `B_0` at
+parameter `sigma`, take the new cut points at `sigma/2` and `(sigma+1)/2`, and
+show that the arc containing `A_0` is not the one containing `p` by observing that
+an arc equals the closure of its interior
+(`IsPLHomeomorphOn.closure_sdiff_endpoints`), so an arc whose interior lands in
+`delta '' Ioo 0 (sigma/2)` would be contained in `delta '' Icc 0 (sigma/2)` and
+could not contain its own endpoint at parameter `(sigma+1)/2`. This is bounded,
+purely unconditional interval work. It was not built here because it does not
+produce a statable endpoint on its own, see (C1-b): after two corrections the
+no-swap hypothesis would be a hypothesis about the corrected map rather than about
+the given `u`, and nothing transfers it back without an orientation invariant.
 
 (C1-b) **The orientation invariant, still missing.** Nothing rules out
 `u '' A = B`. The arc swap is realised by genuine orientation-reversing maps
@@ -4106,7 +4142,7 @@ multiplicative under composition -- is the smaller and sufficient statement.
 ### Verification
 
 `check-f.ps1 -Module DifferentialGeometry.Topology.PiecewiseLinear.CircleAnnulusIsotopy`
-exit=0, zero warnings, 18 s. `.lake/scratch/AuditSCircleAnnulusIsotopy.lean`
-audits all eight declarations; every one depends only on `propext`,
+exit=0, zero warnings, 11.7 s. `.lake/scratch/AuditSCircleAnnulusIsotopy.lean`
+audits all fifteen declarations; every one depends only on `propext`,
 `Classical.choice`, `Quot.sound`. `fresh.py`: 0 forbidden hits, 0 stale,
 0 missing.
