@@ -11146,3 +11146,4 @@ import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakDerivative.LinearOper
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.H1.Lifting
 import DifferentialGeometry.Analysis.Integration.Lp.BoundedConvergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedComponentImage
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.RegularPoleCenters
