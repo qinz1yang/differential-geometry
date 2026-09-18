@@ -659,3 +659,26 @@ Moise 每一章开头"不妨设某映射是 PL 的"都是这一条。分三个�
 四条车道都先合入了整合分支的相对逼近层（`ConeAssembly` → `ConeFan` → `DiskRelBoundary` →
 `TriangleRelBoundary`、`ConeFanCarrier`、`ConeStarCover`）。
 
+### 细分使有限多个点成为顶点（以及为什么它不直接去掉顶点假设）
+
+`SubdivisionVertices.lean` 的 `exists_isSubdivision_forall_singleton_mem`：对有限复形 `K` 与
+`K.space` 中任意有限多个点，存在 `K` 的细分 `K'`，`K'.space = K.space`，且每个点都是 `K'` 的顶点。
+证明把 `exists_isSubdivision_subcomplexes` 用在单点多面体族上，再由"面落在单点集里且非空"推出该面就是该单点。
+
+它**不能**直接去掉 `ConeStarCover` 那条端点里的"边界分划点处 `f` 取 `L` 顶点值"假设：那条定理的 `δ`
+由 `L` 的开星覆盖的 Lebesgue 数给出，而细分 `L → L'` 会让开星变细、`δ` 变小；新的分划又产生新的边界值，
+于是又要再细分 `L`。这个循环没有单调性保证收敛。真正的困难仍是混合格（两角是给定边界值、两角是选出顶点）
+不一定张成同一个单形，即 Zeeman 1964 的那一步；标准解法是先取子复形的导出邻域再在领口上插值。
+
+### 任意三角形相对整条边界、映进 `|L|` 的相对逼近
+
+`TriangleComplexBoundary.lean` 的
+`exists_pos_forall_exists_isPiecewiseAffineOn_triangle_mapsTo_of_vertex_boundary`
+把 `ConeStarCover` 的 `stdCone` 版本经 `triangleAffineMap` 搬到任意仿射无关三点张成的三角形上：
+`f` 在三角形上连续且映进 `|L|`，先给出 `δ > 0`；此后任何两个网距 `< δ` 的分划、且在三条边的分划点处
+`f` 取 `L` 顶点值，就给出三角形上的 PA 映射 `Ψ`，三条边上是 `f` 在那些点取值的折线
+（故 `f|∂` 对该分划仿射时 `Ψ = f`），且处处 `Ψ x ∈ convexHull (carrierFace L (f x))`，
+从而 `MapsTo Ψ T L.space`，并且 `Ψ` 到 `f` 的直线同伦整个落在 `|L|` 里。
+
+这条是"不妨设某映射是 PL 的"在二维带边界情形的实际生产者（边界已是单纯映射时）。
+
