@@ -53,7 +53,13 @@ theorem exists_separated_slide_fwd {M : Type u} [TopologicalSpace M] [T2Space M]
         (∀ x ∈ E.source, x ∈ Bd ↔ E x ∈ Bd₁) →
         (∀ y ∈ e.source, y ∈ Bd₁ ↔ (e y).1 = 0) →
         ∀ x ∈ N, h x ∈ Bd → x ∈ Bd) ∧
-      Disjoint (h '' A) B := by
+      Disjoint (h '' A) B ∧
+      (∀ (Bd : Set M) (Bd₁ : Set (EuclideanSpace ℝ (Fin 3))),
+        (∀ x ∈ E.source, x ∈ Bd ↔ E x ∈ Bd₁) →
+        (∀ y ∈ e.source, y ∈ Bd₁ ↔ (e y).1 = 0) →
+        0 < d → 0 < R → ∀ x ∈ Bd,
+          (h x ∉ Bd ↔ x ∈ E.source ∧ E x ∈ e.source ∧
+            |(e (E x)).2.1| + |(e (E x)).2.2| < 1)) := by
   have hslidemap : MapsTo (slideMapFwd d R) e.target e.target :=
     mapsTo_slideMapFwd_of_subset hd hsupp
   have hCsub : e.symm '' slideSupportLong R ⊆ e.source := by
@@ -93,7 +99,7 @@ theorem exists_separated_slide_fwd {M : Type u} [TopologicalSpace M] [T2Space M]
   obtain ⟨U, hUopen, hKU, hUW⟩ := hKcompact.exists_isOpen_closure_subset hW
   refine ⟨U, E.conjugateMap (e.conjugateMap (slideMapFwd d R)), hUopen, hSK.trans hKU, hUW,
     isPL_conjugateMap E hE hkpl hkmap hCcompact hCE hkfix,
-    E.injective_conjugateMap hkinj hkmap, ?_, ?_, ?_, ?_, ?_⟩
+    E.injective_conjugateMap hkinj hkmap, ?_, ?_, ?_, ?_, ?_, ?_⟩
   · intro x hx
     exact E.conjugateMap_eqOn_compl hkfix fun hxK => hx (hKU hxK)
   · intro x hx
@@ -132,6 +138,54 @@ theorem exists_separated_slide_fwd {M : Type u} [TopologicalSpace M] [T2Space M]
     · have hp : E.conjugateMap (e.conjugateMap (slideMapFwd d R)) p = p :=
         E.conjugateMap_eqOn_compl hkfix hpK
       exact hpK (hAB ⟨hpA, hp ▸ hyB⟩)
+  · intro Bd Bd₁ hBdE hBd₁ hdpos hRpos x hx
+    by_cases hxs : x ∈ E.source
+    · by_cases hxe : E x ∈ e.source
+      · have hp1 : (e (E x)).1 = 0 := (hBd₁ _ hxe).mp ((hBdE x hxs).mp hx)
+        have hqt : slideMapFwd d R (e (E x)) ∈ e.target := hslidemap (e.map_source hxe)
+        have hqs : e.symm (slideMapFwd d R (e (E x))) ∈ e.source := e.map_target hqt
+        have hqE : e.symm (slideMapFwd d R (e (E x))) ∈ E.target := hesrc hqs
+        have hval : E.conjugateMap (e.conjugateMap (slideMapFwd d R)) x
+            = E.symm (e.symm (slideMapFwd d R (e (E x)))) := by
+          rw [E.conjugateMap_of_mem _ hxs, e.conjugateMap_of_mem _ hxe]
+        have hiff : E.conjugateMap (e.conjugateMap (slideMapFwd d R)) x ∈ Bd ↔
+            slideAmountLong d R (e (E x)) = 0 := by
+          rw [hval, hBdE _ (E.map_target hqE), E.right_inv hqE, hBd₁ _ hqs, e.right_inv hqt,
+            slideMapFwd_fst, hp1, zero_add]
+        rw [hiff]
+        have hamt : ¬ slideAmountLong d R (e (E x)) = 0 ↔
+            |(e (E x)).2.1| + |(e (E x)).2.2| < 1 := by
+          have habs : |(e (E x)).1| = 0 := by rw [hp1, abs_zero]
+          constructor
+          · intro hne
+            by_contra hge
+            rw [not_lt] at hge
+            refine hne ?_
+            have hw : d * (1 - |(e (E x)).2.1| - |(e (E x)).2.2|) ≤ 0 := by
+              have := mul_le_mul_of_nonneg_left
+                (show (1 : ℝ) - |(e (E x)).2.1| - |(e (E x)).2.2| ≤ 0 by linarith) hdpos.le
+              simpa using this
+            have hmin : min (slideWidthScaled d (e (E x))) (slideTaperRad R (e (E x))) ≤ 0 :=
+              (min_le_left _ _).trans (by simpa [slideWidthScaled] using hw)
+            simpa [slideAmountLong] using max_eq_left hmin
+          · intro hlt hzero
+            have hw : 0 < d * (1 - |(e (E x)).2.1| - |(e (E x)).2.2|) :=
+              mul_pos hdpos (by linarith)
+            have ht : 0 < (R - |(e (E x)).1|) / 2 := by rw [habs]; linarith
+            have hmin : 0 < min (slideWidthScaled d (e (E x))) (slideTaperRad R (e (E x))) :=
+              lt_min (by simpa [slideWidthScaled] using hw) (by simpa [slideTaperRad] using ht)
+            rw [slideAmountLong, max_eq_right hmin.le] at hzero
+            exact absurd hzero hmin.ne'
+        rw [hamt]
+        simp only [hxs, hxe, true_and]
+      · have hval : E.conjugateMap (e.conjugateMap (slideMapFwd d R)) x = x := by
+          rw [E.conjugateMap_of_mem _ hxs, e.conjugateMap_of_notMem _ hxe, E.left_inv hxs]
+        rw [hval]
+        simp only [hx, not_true_eq_false, hxe, false_and, and_false]
+    · have hval : E.conjugateMap (e.conjugateMap (slideMapFwd d R)) x = x :=
+        E.conjugateMap_of_notMem _ hxs
+      rw [hval]
+      simp only [hx, not_true_eq_false, hxs, false_and]
 
 namespace NormalSingularCellData
 
@@ -168,7 +222,13 @@ theorem exists_separated_along_boundary_branch (hD : NormalSingularCellData D Bd
         (∀ x ∈ E.source, x ∈ Bd ↔ E x ∈ Bd₁) →
         (∀ y ∈ e.source, y ∈ Bd₁ ↔ (e y).1 = 0) →
         ∀ x ∈ N, h x ∈ Bd → x ∈ Bd) ∧
-      Disjoint (h '' (D '' P)) (D '' Q) :=
+      Disjoint (h '' (D '' P)) (D '' Q) ∧
+      (∀ (Bd : Set M) (Bd₁ : Set (EuclideanSpace ℝ (Fin 3))),
+        (∀ x ∈ E.source, x ∈ Bd ↔ E x ∈ Bd₁) →
+        (∀ y ∈ e.source, y ∈ Bd₁ ↔ (e y).1 = 0) →
+        0 < d → 0 < R → ∀ x ∈ Bd,
+          (h x ∉ Bd ↔ x ∈ E.source ∧ E x ∈ e.source ∧
+            |(e (E x)).2.1| + |(e (E x)).2.2| < 1)) :=
   exists_separated_slide_fwd E hE e he hei hesrc hd hcR hbd hsupp hAt hBt hSK hW hA hB hAB
 
 open Classical in
@@ -211,8 +271,14 @@ theorem exists_separated_cell_along_boundary_branch (hD : NormalSingularCellData
       (∀ y, (D.domain ∩ P.piecewise (h ∘ D) D ⁻¹' {y}).encard ≤ 2) ∧
       (∀ y ∉ U, P.piecewise (h ∘ D) D ⁻¹' {y} = D ⁻¹' {y}) ∧
       doublePointSet (P.piecewise (h ∘ D) D) D.domain =
-        doublePointSet D D.domain \ hD.singularSet.branchCarrier cb := by
-  obtain ⟨U, h, hUopen, hSU, hUW, hhpl, hhinj, hhfix, hhmap, hhN, hhrefl, hdisj⟩ :=
+        doublePointSet D D.domain \ hD.singularSet.branchCarrier cb ∧
+      (∀ (Bd : Set M) (Bd₁ : Set (EuclideanSpace ℝ (Fin 3))),
+        (∀ x ∈ E.source, x ∈ Bd ↔ E x ∈ Bd₁) →
+        (∀ y ∈ e.source, y ∈ Bd₁ ↔ (e y).1 = 0) →
+        0 < d → 0 < R → ∀ x ∈ Bd,
+          (h x ∉ Bd ↔ x ∈ E.source ∧ E x ∈ e.source ∧
+            |(e (E x)).2.1| + |(e (E x)).2.2| < 1)) := by
+  obtain ⟨U, h, hUopen, hSU, hUW, hhpl, hhinj, hhfix, hhmap, hhN, hhrefl, hdisj, hhdisp⟩ :=
     hD.exists_separated_along_boundary_branch cb E hE e he hei hesrc hd hcR hbd hsupp hAt hBt
       hSK hW hA hB hAB
   have hUsub : U ⊆ W := subset_closure.trans hUW
@@ -232,7 +298,7 @@ theorem exists_separated_cell_along_boundary_branch (hD : NormalSingularCellData
       hhfix hseamU hinjPcU
   rw [hdom] at hgpl hgloc hgcard
   refine ⟨U, h, hUopen, hSU, hUW, hhpl, hhinj, hhfix, hhmap, hhN, hhrefl, hdisj, hgpl, hgloc,
-    hgcard, hgfib, ?_⟩
+    hgcard, hgfib, ?_, hhdisp⟩
   refine doublePointSet_piecewise_postcomp hdom hhinj hhfix hhmap hinjP hinjQU hPcQU hdisj
     hSU ?_
   intro y hy

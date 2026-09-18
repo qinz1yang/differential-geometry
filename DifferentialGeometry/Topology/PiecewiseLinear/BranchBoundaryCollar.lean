@@ -98,7 +98,11 @@ theorem exists_separated_cell_boundary_preimage_along_boundary_branch
     (hBdE : ∀ x ∈ E.source, x ∈ BdM ↔ E x ∈ Bd₁)
     (hBd₁ : ∀ y ∈ e.source, y ∈ Bd₁ ↔ (e y).1 = 0)
     (hDN : MapsTo D D.domain N)
-    (hbdpre : D.domain ∩ D ⁻¹' BdM ⊆ frontier D.domain) :
+    (hbdpre : D.domain ∩ D ⁻¹' BdM ⊆ frontier D.domain)
+    (hdpos : 0 < d) (hRpos : 0 < R)
+    (hconnA : IsConnected (frontier D.domain ∩ P ∩
+      {z | D z ∈ E.source ∧ E (D z) ∈ e.source ∧
+        |(e (E (D z))).2.1| + |(e (E (D z))).2.2| < 1})) :
     ∃ (U : Set M) (h : M → M), IsOpen U ∧ hD.singularSet.branchCarrier cb ⊆ U ∧
       closure U ⊆ W ∧ IsPL 3 3 h ∧ Function.Injective h ∧ EqOn h id Uᶜ ∧ MapsTo h U U ∧
       Disjoint (h '' (D '' P)) (D '' Q) ∧
@@ -110,16 +114,40 @@ theorem exists_separated_cell_boundary_preimage_along_boundary_branch
         doublePointSet D D.domain \ hD.singularSet.branchCarrier cb ∧
       D.domain ∩ P.piecewise (h ∘ D) D ⁻¹' BdM ⊆ frontier D.domain ∧
       P.piecewise (h ∘ D) D '' D.domain ∩ BdM ⊆
-        P.piecewise (h ∘ D) D '' frontier D.domain := by
+        P.piecewise (h ∘ D) D '' frontier D.domain ∧
+      IsConnected {z | z ∈ frontier D.domain ∧ P.piecewise (h ∘ D) D z ∉ BdM} := by
   obtain ⟨U, h, hUopen, hSU, hUW, hhpl, hhinj, hhfix, hhmap, hhN, hhrefl, hdisj, hgpl, hgloc,
-    hgcard, hgfib, hgdouble⟩ :=
+    hgcard, hgfib, hgdouble, hhdisp⟩ :=
     hD.exists_separated_cell_along_boundary_branch cb E hE e he hei hesrc hd hcR hbd hsupp
       hAt hBt hSK hW hA hB hAB hdom hPpoly hPcpoly hinjP hinjQ hPcQ hseam hclean
   have hreflM : ∀ x ∈ N, h x ∈ BdM → x ∈ BdM := hhrefl N BdM N₁ Bd₁ hNE hN₁ hBdE hBd₁
+  have hbdfr : ∀ z ∈ frontier D.domain, D z ∈ BdM := by
+    intro z hz
+    have hmem : D z ∈ Set.range D.boundary := ⟨⟨z, hz⟩, D.boundary_apply ⟨z, hz⟩⟩
+    rw [← hD.image_inter_boundary] at hmem
+    exact hmem.2
+  have hsets : {z | z ∈ frontier D.domain ∧ P.piecewise (h ∘ D) D z ∉ BdM}
+      = frontier D.domain ∩ P ∩
+        {z | D z ∈ E.source ∧ E (D z) ∈ e.source ∧
+          |(e (E (D z))).2.1| + |(e (E (D z))).2.2| < 1} := by
+    ext z
+    constructor
+    · rintro ⟨hzfr, hznot⟩
+      by_cases hzP : z ∈ P
+      · rw [Set.piecewise_eq_of_mem _ _ _ hzP] at hznot
+        exact ⟨⟨hzfr, hzP⟩,
+          (hhdisp BdM Bd₁ hBdE hBd₁ hdpos hRpos (D z) (hbdfr z hzfr)).mp hznot⟩
+      · rw [Set.piecewise_eq_of_notMem _ _ _ hzP] at hznot
+        exact absurd (hbdfr z hzfr) hznot
+    · rintro ⟨⟨hzfr, hzP⟩, hzc⟩
+      refine ⟨hzfr, ?_⟩
+      rw [Set.piecewise_eq_of_mem _ _ _ hzP]
+      exact (hhdisp BdM Bd₁ hBdE hBd₁ hdpos hRpos (D z) (hbdfr z hzfr)).mpr hzc
   exact ⟨U, h, hUopen, hSU, hUW, hhpl, hhinj, hhfix, hhmap, hdisj, hgpl, hgloc, hgcard,
     hgfib, hgdouble,
     preimage_boundary_subset_frontier_piecewise_postcomp hbdpre hDN hreflM,
-    image_inter_boundary_subset_image_frontier_piecewise_postcomp hbdpre hDN hreflM⟩
+    image_inter_boundary_subset_image_frontier_piecewise_postcomp hbdpre hDN hreflM,
+    hsets ▸ hconnA⟩
 
 end NormalSingularCellData
 

@@ -188,7 +188,7 @@ theorem exists_separated_cell_simplicialComplexity_lt_along_boundary_branch
       K.space = D.domain ∧
       simplicialComplexity K (P.piecewise (h ∘ D) D) < simplicialComplexity K D := by
   obtain ⟨U, h, hUopen, hSU, hUW, hhpl, hhinj, hhfix, hhmap, hhN, hhrefl, hdisj, hgpl, hgloc,
-    hgcard, hgfib, hgdouble⟩ :=
+    hgcard, hgfib, hgdouble, -⟩ :=
     hD.exists_separated_cell_along_boundary_branch cb E hE e he hei hesrc hd hcR hbd hsupp
       hAt hBt hSK hW hA hB hAB hdom hPpoly hPcpoly hinjP hinjQ hPcQ hseam hclean
   have hUsub : U ⊆ W := subset_closure.trans hUW
