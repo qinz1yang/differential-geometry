@@ -42,6 +42,18 @@ theorem loopZPow_map (p : Path x x) {f : X → Y} (hf : Continuous f) (k : ℤ) 
   | ofNat k => exact loopPow_map p hf k
   | negSucc k => rw [loopZPow_negSucc, loopPow_map, symm_map, loopZPow_negSucc]
 
+theorem loopPow_homotopic {p q : Path x x} (h : p.Homotopic q) (k : ℕ) :
+    (loopPow p k).Homotopic (loopPow q k) := by
+  induction k with
+  | zero => exact Path.Homotopic.refl _
+  | succ k ih => exact h.hcomp ih
+
+theorem loopZPow_homotopic {p q : Path x x} (h : p.Homotopic q) (k : ℤ) :
+    (loopZPow p k).Homotopic (loopZPow q k) := by
+  cases k with
+  | ofNat k => exact loopPow_homotopic h k
+  | negSucc k => exact loopPow_homotopic h.symm₂ (k + 1)
+
 theorem cast_rfl (p : Path x x) : p.cast rfl rfl = p := rfl
 
 theorem loopPow_cast {y : X} (p : Path x x) (hx : y = x) (k : ℕ) :

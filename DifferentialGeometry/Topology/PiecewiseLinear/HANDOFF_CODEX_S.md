@@ -3405,3 +3405,65 @@ by `pathToCircle_zero` and `pathToCircle_coe`, so only bijectivity of
 Both modules check exit 0 with zero warnings (6.8 s, 7.3 s).
 `.lake/scratch/AuditSCircleLoopGenerator.lean` audits fifteen declarations, all
 only `propext`, `Classical.choice`, `Quot.sound`.
+
+## The polygon is parametrised by the circle by its own fundamental cycle, 2026-09-18
+
+The classical fact the previous entry named as the whole remaining content of
+obligation 3 is now proved. Three new modules.
+
+`DifferentialGeometry/Topology/LoopSpace/InjectiveLoop.lean` is the abstract
+criterion. `injective_trans` says `p.trans q` is injective when `p` and `q` are
+and `range p ∩ range q ⊆ {p 1}`. `pathToCircle_trans_injective` is the loop
+version: for `p : Path a b`, `q : Path b a` injective with
+`range p ∩ range q ⊆ {a, b}`, the induced map `pathToCircle (p.trans q)` on
+`loopCircle` is injective, because the only way two parameters can collide is
+`s = 0`, `t = 1`, which `AddCircle.coe_period` identifies.
+`pathToCircle_surjective` is the trivial converse direction.
+
+`WalkArcPath.lean` runs the edge walk as an injective path.
+`arcPath` is `walkPath` without the trailing `Path.refl`: it is defined by the
+three-way recursion `nil`, `cons h nil`, `cons h (cons h' p)`, and
+`homotopic_walkPath_arcPath` compares it with `walkPath` using
+`Path.Homotopy.transRefl`. This is the only change needed: `walkPath` itself is
+constant on a terminal subinterval, so it can never be injective, while
+`arcPath` of an edge walk with distinct vertices is.
+`pathCarrier` is the image of a path in `E`, `arcCarrier p = pathCarrier (arcPath p)`,
+`arcCarrier_cons` peels one segment, and everything geometric is done through
+`faceHull_inter_subset`, the restatement of
+`Geometry.SimplicialComplex.convexHull_inter_convexHull` as
+"if every common vertex of two faces lies in a convex set `S`, the hulls meet
+inside `S`". With it: `segment_inter_arcCarrier_eq_empty` (the walk avoids both
+endpoints of the edge), `segment_inter_arcCarrier_subset_singleton` (the walk
+starts at one endpoint and avoids the other), and
+`segment_inter_arcCarrier_subset_pair` (the edge is not an edge of the walk;
+this is the one the cycle needs, since the closing edge of a cycle meets the rest
+of the cycle in both of its endpoints). `arcPath_injective` is the induction:
+an edge walk that `IsPath` and has positive length has injective `arcPath`.
+`exists_edge_of_mem_arcCarrier`, `mem_arcCarrier_of_mem_edges` and
+`mem_arcCarrier_of_mem_support` are the two directions of the description of the
+carrier by the edge and support lists.
+
+`PolygonCircleParametrization.lean` is the endpoint.
+`ncard_neighborSet_edgeGraph_eq_two` restates the 1-manifold condition as a
+degree, so `mem_edges_of_adj_of_spanning_cycle` can apply Mathlib's
+`Walk.IsCycle.adj_toSubgraph_iff_of_isCycles`: in a 2-regular graph a spanning
+cycle already contains every edge. That plus `mem_arcCarrier_of_mem_support` for
+the vertex faces gives `space_subset_arcCarrier`, hence surjectivity.
+`pathToCircle_arcPath_bijective` splits the cycle as its first edge followed by
+the complementary path and feeds `pathToCircle_trans_injective`.
+`exists_homotopic_loopZPow_walkPath` is the target:
+
+  for a finite one-dimensional combinatorial manifold `K` and a spanning cycle
+  `γ` of its edge graph, every loop of `K.space` at `vertexPoint K v₀` is
+  homotopic rel endpoints to `loopZPow (walkPath γ) k` for some `k : ℤ`.
+
+`exists_spanning_cycle_of_isCombinatorialManifold_one` produces the cycle from
+connectedness, and `exists_cycle_generating_loops` packages both. Note that the
+integer exponent is genuinely an integer: the class of `walkPath γ` generates an
+infinite cyclic group, so a statement with `k : ℕ` would be false for
+`γ.reverse`, which is what the next entry has to repair in
+`IsGeneratedByPolygon`.
+
+The four modules check exit 0 with zero warnings (7.4--12.3 s).
+`.lake/scratch/AuditSPolygonCircle.lean` audits twenty-three declarations, all
+only `propext`, `Classical.choice`, `Quot.sound`.
