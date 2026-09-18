@@ -93,6 +93,23 @@ theorem fromPath_loopZPow (p : Path x x) (k : ℤ) :
   | negSucc k =>
       rw [loopZPow_negSucc, fromPath_loopPow, fromPath_symm, zpow_negSucc, inv_pow]
 
+theorem exists_homotopic_loopZPow_of_homeomorph (h : X ≃ₜ Y) {p : Path x x}
+    (hgen : ∀ ℓ : Path x x, ∃ k : ℤ, ℓ.Homotopic (loopZPow p k))
+    (m : Path (h x) (h x)) :
+    ∃ k : ℤ, m.Homotopic (loopZPow (p.map h.continuous) k) := by
+  have hx : x = h.symm (h x) := (h.symm_apply_apply x).symm
+  obtain ⟨k, hk⟩ := hgen ((m.map h.symm.continuous).cast hx hx)
+  refine ⟨k, ?_⟩
+  have hmap := hk.map (h : C(X, Y))
+  have hleft : (((m.map h.symm.continuous).cast hx hx).map (h : C(X, Y)).continuous) = m := by
+    refine Path.ext (funext fun t => ?_)
+    change h (h.symm (m t)) = m t
+    exact h.apply_symm_apply _
+  have hright : ((loopZPow p k).map (h : C(X, Y)).continuous) =
+      loopZPow (p.map h.continuous) k := loopZPow_map p (h : C(X, Y)).continuous k
+  rw [hleft, hright] at hmap
+  exact hmap
+
 theorem exists_homotopic_loopZPow_of_forall_exists_zpow
     {p : Path x x}
     (h : ∀ a : FundamentalGroup X x,

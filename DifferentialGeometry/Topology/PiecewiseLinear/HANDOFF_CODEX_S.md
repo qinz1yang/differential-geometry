@@ -3536,3 +3536,60 @@ applies to it, and `isGeneratedByPolygon_of_forall_exists_homotopic_loopZPow`
 converts the loop statement. The audit
 `.lake/scratch/AuditSPolygonGenerated.lean` reports only `propext`,
 `Classical.choice`, `Quot.sound`.
+
+### Two bridges towards the derived neighbourhood
+
+`exists_homotopic_loopZPow_of_homeomorph` in `LoopPower.lean` transports the
+generation statement across a homeomorphism: if every loop at `x` is homotopic to
+`loopZPow p k`, then every loop at `h x` is homotopic to
+`loopZPow (p.map h.continuous) k`. `walkPath_map` in `WalkPathConcatenation.lean`
+(with `spaceInclusion` and `edgePath_map`) says that the walk path of a walk
+pushed along `edgeGraphHom hLK` is literally the walk path pushed along the
+inclusion `L.space → K.space`; this is the walk-path analogue of the existing
+`walkMonodromy_ofLe`, and it is what lets a cycle of a subcomplex be read as a
+cycle of the ambient complex without recomputing its class.
+
+### Exact remaining obligation
+
+Delivered: the classical fact of the previous list (steps 1 and 2 of the task),
+the correction of `IsGeneratedByPolygon` to integer exponents, the general bridge
+from topological generation to `IsGeneratedByPolygon`, and the unconditional
+instance for a polygon. About 995 new lines plus 61 changed, against the earlier
+estimate of 600--1200 for the circle route alone; the estimate held.
+
+What is still open is only step 3 for a **derived neighbourhood**, and it is
+plumbing, not mathematics. For `N = derivedNeighborhood K P` with `P` a polygon:
+
+1. `(secondDerived P).faces ⊆ (derivedNeighborhood K P).faces` is not in the tree.
+   Note that the naive `(barycentricSubdivision P).faces ⊆ N.faces` is the wrong
+   statement and is false: `derivedNeighborhood_faces_subset` puts `N` inside
+   `secondDerived K`, so only the second derived complex of `P` can sit inside it.
+   The correct statement is the argument already inlined at
+   `DerivedNeighborhood.lean:141--153`: unfold a face as `D.image centroid` with
+   `IsFlag (barycentricSubdivision P) D`, raise the flag by
+   `IsFlag.of_le (barycentricSubdivision_faces_subset hPK)`, and discharge the
+   side condition with `exists_mem_image_centroid_of_mem_barycentricSubdivision`.
+   About five lines.
+2. With it, `barycentricSubdivision_faces_subset` puts
+   `barycentricSubdivision (secondDerived P)` inside `barycentricSubdivision N`,
+   and that complex is again a connected closed one-dimensional combinatorial
+   manifold with the same space as `P`, so `exists_cycle_generating_loops` gives
+   its spanning cycle and `walkPath_map` transports the cycle's path. That is the
+   `γ` the endpoint needs.
+3. The `hgen` hypothesis then needs three transports, all available:
+   `(barycentricSubdivision N).space = N.space` (`IsSubdivision.space_eq`, so a
+   `Homeomorph.setCongr` on paths), `homotopic_derivedNeighborhoodRetractLoop`
+   into `derivedNeighborhoodSubcomplex K P`, and
+   `exists_homotopic_loopZPow_of_homeomorph` across
+   `derivedNeighborhoodSubcomplex K P ≃ₜ P.space`. That last homeomorphism exists
+   only as an anonymous `let` inside the proof of `derivedNeighborhoodHomotopyEquiv`
+   (`DerivedNeighborhoodHomology.lean:19`); it has to be exported as a named
+   declaration first, six lines, with `left_inv` and `right_inv` both `rfl`.
+
+Corrected cost for the remainder: 300--500 lines, no new mathematics, dominated by
+set-equality and subtype transport. The ambient hypotheses of the endpoint are
+already available, since `IsCombinatorialManifoldWithBoundary.derivedNeighborhood`
+(`DerivedNeighborhoodManifold.lean:97`) makes `N` a manifold with boundary of the
+same dimension and `IsCombinatorialManifoldWithBoundary.secondDerived` does the
+same for the ambient `secondDerived K`, which is the complex `N` is a subcomplex
+of. Obligation 2 of C.6 was again deliberately not started.

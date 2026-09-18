@@ -1,4 +1,5 @@
 import DifferentialGeometry.Topology.FundamentalGroup.LoopPower
+import DifferentialGeometry.Topology.PiecewiseLinear.AmbientPolygonOrientation
 import DifferentialGeometry.Topology.PiecewiseLinear.WalkArcPath
 import DifferentialGeometry.Topology.PiecewiseLinear.WalkMonodromyHomotopy
 
@@ -105,5 +106,33 @@ theorem exists_zpow_conjugate_homotopic_walkPath
     ((Path.Homotopic.refl (walkPath q)).hcomp
       ((walkPath_append (closedWalkZPow γ k) q.reverse).trans
         ((Path.Homotopic.refl (walkPath (closedWalkZPow γ k))).hcomp (walkPath_reverse q))))
+
+theorem space_subset_space_of_faces_subset {L : Geometry.SimplicialComplex ℝ E}
+    (hLK : L.faces ⊆ K.faces) : L.space ⊆ K.space := by
+  intro x hx
+  obtain ⟨s, hs, hxs⟩ := Geometry.SimplicialComplex.mem_space_iff.mp hx
+  exact Geometry.SimplicialComplex.convexHull_subset_space (hLK hs) hxs
+
+def spaceInclusion {L : Geometry.SimplicialComplex ℝ E} (hLK : L.faces ⊆ K.faces) :
+    C(L.space, K.space) :=
+  ⟨fun x => ⟨(x : E), space_subset_space_of_faces_subset hLK x.2⟩,
+    continuous_subtype_val.subtype_mk _⟩
+
+open Classical in
+theorem edgePath_map {L : Geometry.SimplicialComplex ℝ E} (hLK : L.faces ⊆ K.faces)
+    {a b : L.vertices} (hab : (SimplicialComplex.edgeGraph L).Adj a b) :
+    edgePath ((edgeGraphHom hLK).map_adj hab) =
+      (edgePath hab).map (spaceInclusion hLK).continuous := rfl
+
+open Classical in
+theorem walkPath_map {L : Geometry.SimplicialComplex ℝ E} (hLK : L.faces ⊆ K.faces) :
+    ∀ {u w : L.vertices} (p : (SimplicialComplex.edgeGraph L).Walk u w),
+      walkPath (p.map (edgeGraphHom hLK)) = (walkPath p).map (spaceInclusion hLK).continuous := by
+  intro u w p
+  induction p with
+  | nil => rfl
+  | @cons u v w h q ih =>
+      rw [Walk.map_cons, walkPath_cons, ih, walkPath_cons, Path.map_trans, edgePath_map hLK h]
+      rfl
 
 end DifferentialGeometry.Topology.PiecewiseLinear
