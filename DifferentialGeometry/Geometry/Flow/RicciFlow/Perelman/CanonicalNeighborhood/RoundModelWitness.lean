@@ -1,4 +1,3 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NeckCapMainFrontier
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.RoundSpaceFormWitness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.RoundModelCoveringBall
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.ScalarProfile
@@ -21,13 +20,13 @@ attribute [local instance] PointedFlowData.topology PointedFlowData.charted
   PointedFlowData.smooth PointedFlowData.t2 PointedFlowData.sigmaCompact
   PointedFlowData.t2TangentBundle
 
-theorem exists_canonicalWitness_of_shrinkingSphericalSpaceFormFlow
+theorem exists_canonicalWitness_univ_of_shrinkingSphericalSpaceFormFlow
     (P : PointedFlowData.{u, 0, 0} I3 ancientTimeInterval)
     (hround : IsShrinkingSphericalSpaceFormFlow (I := I3) P)
     (hbase : PointedFlowScalarAtBase (I := I3) P 1)
     {eps : ℝ} (heps : 0 < eps) (heps1 : eps < 1) :
-    Nonempty (CanonicalWitness P.S eps
-      (2 * (Real.pi / Real.sqrt (1 / 6)) + 1) 2 P.basepoint 0) := by
+    ∃ W : CanonicalWitness P.S eps
+      (2 * (Real.pi / Real.sqrt (1 / 6)) + 1) 2 P.basepoint 0, W.domain.carrier = Set.univ := by
   let Dia : ℝ := Real.pi / Real.sqrt (1 / 6)
   have hDia : 0 ≤ Dia := by dsimp [Dia]; positivity
   let C1 : ℝ := 2 * Dia + 1
@@ -124,7 +123,7 @@ theorem exists_canonicalWitness_of_shrinkingSphericalSpaceFormFlow
       (PreconnectedSpace.connectedComponent_eq_univ P.basepoint).symm RC
     volume := by intro hv; cases hv
     gradient := ?_
-    time_derivative := ?_ }⟩
+    time_derivative := ?_ }, rfl⟩
   · simpa only [hscalar P.basepoint, Real.sqrt_one, inv_one] using hC1
   · rw [hscalar P.basepoint, Real.sqrt_one, div_one]
   · intro y _
@@ -144,13 +143,15 @@ theorem exists_canonicalWitness_of_shrinkingSphericalSpaceFormFlow
       P hround hbase P.basepoint, hscalar P.basepoint]
     norm_num
 
-theorem round_model_canonical_witness : RoundModelCanonicalWitness.{u} := by
-  intro eps heps hsmall
-  refine ⟨2 * (Real.pi / Real.sqrt (1 / 6)) + 1, 2, ?_, by norm_num, ?_⟩
-  · have hDia : 0 ≤ Real.pi / Real.sqrt (1 / 6) := by positivity
-    linarith
-  · intro P hround hbase
-    exact exists_canonicalWitness_of_shrinkingSphericalSpaceFormFlow P hround hbase
-      (by linarith) (by linarith)
+theorem exists_canonicalWitness_of_shrinkingSphericalSpaceFormFlow
+    (P : PointedFlowData.{u, 0, 0} I3 ancientTimeInterval)
+    (hround : IsShrinkingSphericalSpaceFormFlow (I := I3) P)
+    (hbase : PointedFlowScalarAtBase (I := I3) P 1)
+    {eps : ℝ} (heps : 0 < eps) (heps1 : eps < 1) :
+    Nonempty (CanonicalWitness P.S eps
+      (2 * (Real.pi / Real.sqrt (1 / 6)) + 1) 2 P.basepoint 0) := by
+  obtain ⟨W, _⟩ := exists_canonicalWitness_univ_of_shrinkingSphericalSpaceFormFlow
+    P hround hbase heps heps1
+  exact ⟨W⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn

@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.RoundModelWitness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.AncientCanonicalNeighborhood
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CanonicalClassificationNormalization
 
@@ -32,6 +33,15 @@ def RoundModelCanonicalWitness : Prop :=
         IsShrinkingSphericalSpaceFormFlow (I := I3) P →
           PointedFlowScalarAtBase (I := I3) P 1 →
             Nonempty (CanonicalWitness P.S (eps / 2) C1 C2 P.basepoint 0)
+
+theorem round_model_canonical_witness : RoundModelCanonicalWitness.{u} := by
+  intro eps heps hsmall
+  refine ⟨2 * (Real.pi / Real.sqrt (1 / 6)) + 1, 2, ?_, by norm_num, ?_⟩
+  · have hDia : 0 ≤ Real.pi / Real.sqrt (1 / 6) := by positivity
+    linarith
+  · intro P hround hbase
+    exact exists_canonicalWitness_of_shrinkingSphericalSpaceFormFlow P hround hbase
+      (by linarith) (by linarith)
 
 def UniversalKappaModelCanonicalWitness : Prop :=
   ∀ eps : ℝ, 0 < eps → eps ≤ 1 / 44 →
