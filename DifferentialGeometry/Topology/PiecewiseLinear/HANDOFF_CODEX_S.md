@@ -3985,3 +3985,128 @@ the reduction of 24.10 to pseudo-isotopy of the two end maps. Open: C1 as stated
 above, and with it the map-level PL orientation layer that step B would need.
 Nothing downstream may treat
 `exists_isPLHomeomorphOn_of_endMaps_pseudoIsotopicToId` as unconditional 24.10.
+
+## C1, the annulus twist: delivered in the two-fixed-point form
+
+`CircleAnnulusIsotopy.lean` (new). All of C1 except one named statement.
+
+### What is proved
+
+`isPLPseudoIsotopicToId_of_arc_decomposition`: let `S = A union B` be a PL
+1-sphere cut into two arcs meeting exactly in the two points `gamma 0`,
+`gamma 1`, and let `u` be a PL self-homeomorphism of `S` fixing both of those
+points and carrying each arc onto itself. Then `IsPLPseudoIsotopicToId u S`,
+i.e. there is a PL self-homeomorphism of the annulus `S x Icc 0 1` that is the
+identity at level 0 and `u` at level 1.
+
+`image_arc_eq_self_or_eq_other`: for the same decomposition and `u` fixing the
+two cut points, either `u '' A = A` and `u '' B = B`, or `u '' A = B`. There is
+no third possibility. So the arc-preservation hypothesis above is exactly "`u`
+is not the arc swap".
+
+`isPLPseudoIsotopicToId_of_arc_decomposition_of_ne`: the same conclusion from
+the single hypothesis `u '' A /= B`.
+
+Supporting, reusable:
+
+- `exists_isPLHomeomorphOn_unitSquare_of_fixed_endpoints`: for a PL self-homeo
+  `w` of `Icc 0 1` fixing `0` and `1`, a PL self-homeo of the unit square that
+  is the identity on the bottom edge and both vertical edges and `w x id` on the
+  top edge.
+- `exists_isPLHomeomorphOn_arc_prod_of_fixed_endpoints`: the same over an
+  arbitrary PL 1-ball `A` in place of `Icc 0 1`, conjugated through the
+  parametrisation.
+- `IsPLPseudoIsotopicToId.comp`, `IsPLPseudoIsotopicToId.of_leftInverse`:
+  pseudo-isotopy to the identity is closed under composition and under passing
+  to a two-sided inverse. Needed for any reduction that strings twists together.
+- `isPolyhedron_zero_one_pair`.
+
+### The route, and why the suggested one does not work
+
+The suggested shape -- conjugate to a parameter circle so the twist becomes
+`theta |-> theta + t * s(theta)` -- is **not PL**. `t * s(theta)` is bilinear in
+`(t, theta)`, so on each linearity piece of `s` it is `t*(a*theta + b)`, which
+carries a `t*theta` term. This is the same quadratic trap already recorded for
+this lane for the straight-line homotopy, and conjugating through a
+parametrisation does not remove it: it only moves the same product into the
+parameter coordinates. A PL twist cannot be built as an interpolation, in the
+ambient or in the parameter.
+
+`PolygonCircleParametrization.lean` and `WalkArcPath.lean` are also not usable
+here. `arcPath`/`pathToCircle` are `Path` objects, i.e. continuous maps out of
+`unitInterval`, and `pathToCircle_arcPath_bijective` is a statement about a
+topological circle; nothing in that file produces an `IsPLHomeomorphOn`, and
+`loopCircle` is not a polyhedron. The monotone structure that would be needed is
+not there either.
+
+What does work is coning, twice, exactly as in C2:
+
+1. Cut each arc's prism `A x Icc 0 1` -- a PL 2-ball -- and prescribe the map on
+   its whole boundary circle: identity on the bottom edge, `u` on the top edge,
+   identity on the two vertical edges. The corner values agree because `u` fixes
+   the two cut points. The boundary of the model square is available as a genuine
+   frontier, since `Module.finrank R (R x R) = 2`, so
+   `frontier_space_eq_boundaryComplex_space_of_finrank` plus `frontier_prod_eq`
+   gives it with no new prism-boundary lemma; then
+   `exists_isPLHomeomorphOn_of_boundaryComplex (n := 1)` cones it.
+2. The two resulting maps agree on `{gamma 0, gamma 1} x Icc 0 1`, where both are
+   the identity, so `exists_isPLHomeomorphOn_union` glues them over the annulus.
+
+The dichotomy is proved with `isPreconnected_closed_iff` against the two closed
+arcs: the image of an open arc is connected, avoids the two cut points because
+`u` is injective and fixes them, hence cannot meet both `A` and `B`.
+
+### Exact remaining obligation for C1 in full generality
+
+Two statements, in this order.
+
+(C1-a) **Push.** Every PL self-homeomorphism of a PL 1-sphere is
+`r` composed with a map having two fixed points, for some `r` that is itself
+pseudo-isotopic to the identity. Concretely: given `p` and `p' = u p`, an arc
+`A_1` containing both in its interior whose complementary arc closes up the
+sphere, and a PL self-homeo of `A_1` fixing its endpoints and sending `p` to
+`p'`. Then `IsPLPseudoIsotopicToId.of_leftInverse` and `.comp` finish. This is
+buildable with what is in the tree -- arc decomposition at two points of the
+complementary arc, reparametrisation of subintervals, two applications of
+`exists_isPLHomeomorphOn_union` -- but it is interval surgery that does not yet
+exist, and it is useless on its own, see (C1-b).
+
+(C1-b) **The orientation invariant, still missing.** Nothing rules out
+`u '' A = B`. The arc swap is realised by genuine orientation-reversing maps
+(reflections), which are not pseudo-isotopic to the identity, so the hypothesis
+cannot be dropped -- only discharged from orientation-preservation. The needed
+statement is:
+
+> for a PL 1-sphere `S` cut by `p /= q` into arcs `A`, `B`, and an
+> orientation-preserving PL self-homeomorphism `u` of `S` fixing `p` and `q`,
+> `u '' A = A`.
+
+and it presupposes a definition of "orientation-preserving" for a PL map, which
+the tree does not have. The earlier finding stands and is now sharper: the
+missing layer is exactly this one statement, and everything else in C1 is closed.
+
+### Why the `CoherentOrientation` transport does not supply it cheaply
+
+`CoherentOrientation n K` (`Orientation.lean:424`) is simplicial data: a
+`vertexOrder : LinearOrder E` on the whole ambient space together with a sign
+function on `Finset E`, constrained by `orientedBoundary ... = 0` on codimension
+one faces. Transporting it along a PL homeomorphism `f : K.space -> L.space` is
+not a relabelling: `f` is only piecewise affine, so it is simplicial only after
+subdividing both sides, and the transported sign function has to be shown
+independent of the subdivision and of the choice of vertex order on the target.
+That is a subdivision-invariance theory for orientations, not an operation on the
+existing structure. `isOrientable_iff_of_isPLHomeomorphOn` (`Orientation.lean:8474`)
+remains the only PL-homeomorphism statement and is still data-free. For a
+1-sphere the invariant wanted is far weaker than a general transport, so building
+the general transport is the wrong first move; a dedicated orientation invariant
+for PL self-homeomorphisms of a PL 1-sphere -- e.g. the arc-swap alternative of
+`image_arc_eq_self_or_eq_other` shown to be independent of the cut pair and
+multiplicative under composition -- is the smaller and sufficient statement.
+
+### Verification
+
+`check-f.ps1 -Module DifferentialGeometry.Topology.PiecewiseLinear.CircleAnnulusIsotopy`
+exit=0, zero warnings, 18 s. `.lake/scratch/AuditSCircleAnnulusIsotopy.lean`
+audits all eight declarations; every one depends only on `propext`,
+`Classical.choice`, `Quot.sound`. `fresh.py`: 0 forbidden hits, 0 stale,
+0 missing.
