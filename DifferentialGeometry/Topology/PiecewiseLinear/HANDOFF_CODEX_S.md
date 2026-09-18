@@ -3022,3 +3022,33 @@ immediate since every axiom is quantified over faces.
 `CocycleMonodromy` checks exit 0 (9.2 s) with zero warnings, and
 `.lake/scratch/AuditSCocycleMonodromy.lean` audits eighteen declarations, all
 only `propext`, `Classical.choice`, `Quot.sound`.
+
+## C.6 obligation 3, step two: orientability from the monodromy of the orientation cocycle
+
+`PolygonNeighborhoodOrientation.lean` feeds the walk monodromy into the
+integrated orientation cocycle. `isOrientable_iff_forall_walkMonodromy_eq_zero`
+says a finite combinatorial manifold with boundary, whose barycentric
+one-skeleton is preconnected, is orientable exactly when the monodromy of
+`orientationCocycle` vanishes on every closed edge walk of the barycentric
+subdivision; the two directions are `isOrientable_of_forall_walkMonodromy_eq_zero`
+and `walkMonodromy_orientationCocycle_eq_zero_of_isOrientable`, both through the
+existing `orientationCocycle_isCoboundary_iff`. The contrapositive
+`exists_walkMonodromy_ne_zero_of_not_isOrientable` produces an actual
+orientation-reversing edge loop for a non-orientable complex, with the
+face-star orientations chosen by `isOrientable_faceStarComplex`.
+
+`isOrientable_of_polygon_walkMonodromy_eq_zero` is the form intended for 24.12.
+Its hypotheses are that every closed edge walk has monodromy either zero or that
+of one distinguished closed walk, and that the distinguished walk's monodromy is
+zero. Instantiating the complex with the neighbourhood of a polygon, the first
+hypothesis is the statement that the polygon generates the loops of that
+neighbourhood and the second is the vanishing monodromy of the polygon; the
+conclusion is that the neighbourhood is orientable. Nothing about orientability
+is assumed. `edgeGraph_barycentricSubdivision_preconnected` supplies the
+connectivity hypothesis from `IsPreconnected K.space` through the existing
+`edgeGraph_preconnected_iff_isPreconnected_space` and the subdivision's space
+equality.
+
+`PolygonNeighborhoodOrientation` checks exit 0 (10.5 s) with zero warnings, and
+`.lake/scratch/AuditSPolygonNeighborhoodOrientation.lean` audits six
+declarations, all only `propext`, `Classical.choice`, `Quot.sound`.
