@@ -19,24 +19,6 @@ open DifferentialGeometry.Geometry.Metric (metricDerivNorm_scaleMetric_self)
 open DifferentialGeometry.Geometry.Curvature
 open scoped Manifold ContDiff Topology
 
-namespace DifferentialGeometry.CheegerGromovCompactness
-
-theorem metricDerivNormSupOn_self
-    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
-    [CompleteSpace E] {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
-    {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [T2Space M] [IsManifold I ∞ M]
-    (K : Set M) (p : ℕ) (g gRef : SmoothRiemannianMetric I M) :
-    metricDerivNormSupOn (I := I) K p g g gRef = 0 := by
-  refine le_antisymm ?_ ?_
-  · refine Real.sSup_le (fun r hr => ?_) le_rfl
-    obtain ⟨a, _ha, x, _hx, rfl⟩ := hr
-    exact le_of_eq (metricDerivNorm_self (I := I) a g gRef x)
-  · exact Real.sSup_nonneg (fun r hr => by
-      obtain ⟨a, _ha, x, _hx, rfl⟩ := hr
-      rw [metricDerivNorm_self])
-
-end DifferentialGeometry.CheegerGromovCompactness
-
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 
 def flatBallRadius (i : ℕ) : ℝ := (i : ℝ) + 1

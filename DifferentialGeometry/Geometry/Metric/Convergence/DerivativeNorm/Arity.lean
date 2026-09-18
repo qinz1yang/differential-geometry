@@ -148,5 +148,18 @@ theorem metricDerivNorm_self
   rw [Tensor0SBundle.normSq0S_identity_eq_sum_sq (I := I) gRef x (a + 2) basis hinv 0]
   simp
 
+omit [I.Boundaryless] [IsManifold I 1 M] [IsManifold I 2 M] [SigmaCompactSpace M] in
+theorem metricDerivNormSupOn_self
+    (K : Set M) (p : ℕ) (g gRef : SmoothRiemannianMetric I M) :
+    metricDerivNormSupOn (I := I) K p g g gRef = 0 := by
+  refine le_antisymm ?_ ?_
+  · refine Real.sSup_le (fun r hr => ?_) le_rfl
+    obtain ⟨a, _ha, x, _hx, rfl⟩ := hr
+    exact le_of_eq (metricDerivNorm_self (I := I) a g gRef x)
+  · exact Real.sSup_nonneg (fun r hr => by
+      obtain ⟨a, _ha, x, _hx, rfl⟩ := hr
+      rw [metricDerivNorm_self])
+
+
 end CheegerGromovCompactness
 end DifferentialGeometry
