@@ -575,4 +575,201 @@ theorem isPLPseudoIsotopicToId_of_comp_left [FiniteDimensional ℝ E] {S : Set E
   intro x hx
   exact (hr.bijOn.invOn_invFunOn.1 (hu.bijOn.mapsTo hx)).symm
 
+def PreservesArcsAtFixedPairs (S : Set E) (u : E → E) : Prop :=
+  ∀ A B : Set E, ∀ γ δ : ℝ → E, IsPLHomeomorphOn γ (Icc 0 1) A →
+    IsPLHomeomorphOn δ (Icc 0 1) B → δ 0 = γ 0 → δ 1 = γ 1 → A ∪ B = S →
+      A ∩ B = {γ 0, γ 1} → u (γ 0) = γ 0 → u (γ 1) = γ 1 → u '' A = A
+
+theorem image_arc_eq_self_of_third_fixed [FiniteDimensional ℝ E]
+    {S A B : Set E} {γ δ : ℝ → E} (hγ : IsPLHomeomorphOn γ (Icc 0 1) A)
+    (hδ : IsPLHomeomorphOn δ (Icc 0 1) B) (hδ0 : δ 0 = γ 0) (hδ1 : δ 1 = γ 1)
+    (hunion : A ∪ B = S) (hinter : A ∩ B = {γ 0, γ 1})
+    {u : E → E} (hu : IsPLHomeomorphOn u S S) (hu0 : u (γ 0) = γ 0) (hu1 : u (γ 1) = γ 1)
+    {z : E} (hz : z ∈ S) (huz : u z = z) (hz0 : z ≠ γ 0) (hz1 : z ≠ γ 1) :
+    u '' A = A := by
+  rcases image_arc_eq_self_or_eq_other hγ hδ hδ0 hδ1 hunion hinter hu hu0 hu1 with ⟨h, -⟩ | hswap
+  · exact h
+  · exfalso
+    have hAS : A ⊆ S := hunion ▸ subset_union_left
+    have hzn : z ∉ ({γ 0, γ 1} : Set E) := by
+      rintro (h | h)
+      · exact hz0 h
+      · exact hz1 h
+    have hzAB : z ∈ A ∪ B := by rwa [hunion]
+    rcases hzAB with hzA | hzB
+    · have hzB : z ∈ B := hswap ▸ ⟨z, hzA, huz⟩
+      exact hzn (hinter ▸ mem_inter hzA hzB)
+    · have huzA : u z ∈ A := by
+        have hzS : z ∈ S := hunion ▸ Or.inr hzB
+        have huzS : u z ∈ S := hu.bijOn.mapsTo hzS
+        have huzAB : u z ∈ A ∪ B := by rwa [hunion]
+        rcases huzAB with h1 | h1
+        · exact h1
+        · obtain ⟨y, hyA, hy⟩ : u z ∈ u '' A := hswap.symm ▸ h1
+          have hyz : y = z := hu.bijOn.injOn (hAS hyA) hzS hy
+          exact absurd (hinter ▸ mem_inter (hyz ▸ hyA) hzB) hzn
+      exact hzn (hinter ▸ mem_inter (huz ▸ huzA) hzB)
+
+theorem preservesArcsAtFixedPairs_of_three_fixed [FiniteDimensional ℝ E]
+    {S : Set E} {u : E → E} (hu : IsPLHomeomorphOn u S S)
+    {x y z : E} (hx : x ∈ S) (hy : y ∈ S) (hz : z ∈ S)
+    (hxy : x ≠ y) (hxz : x ≠ z) (hyz : y ≠ z)
+    (hux : u x = x) (huy : u y = y) (huz : u z = z) :
+    PreservesArcsAtFixedPairs S u := by
+  intro A B γ δ hγ hδ hδ0 hδ1 hunion hinter hu0 hu1
+  have hpick : ∃ w ∈ S, u w = w ∧ w ≠ γ 0 ∧ w ≠ γ 1 := by
+    by_cases hx0 : x = γ 0
+    · by_cases hy1 : y = γ 1
+      · exact ⟨z, hz, huz, fun h => hxz (hx0.trans h.symm), fun h => hyz (hy1.trans h.symm)⟩
+      · by_cases hy0 : y = γ 0
+        · exact absurd (hx0.trans hy0.symm) hxy
+        · exact ⟨y, hy, huy, hy0, hy1⟩
+    · by_cases hx1 : x = γ 1
+      · by_cases hy0 : y = γ 0
+        · exact ⟨z, hz, huz, fun h => hyz (hy0.trans h.symm), fun h => hxz (hx1.trans h.symm)⟩
+        · by_cases hy1 : y = γ 1
+          · exact absurd (hx1.trans hy1.symm) hxy
+          · exact ⟨y, hy, huy, hy0, hy1⟩
+      · exact ⟨x, hx, hux, hx0, hx1⟩
+  obtain ⟨w, hwS, huw, hw0, hw1⟩ := hpick
+  exact image_arc_eq_self_of_third_fixed hγ hδ hδ0 hδ1 hunion hinter hu hu0 hu1 hwS huw hw0 hw1
+
+theorem preservesArcsAtFixedPairs_of_eqOn_arc [FiniteDimensional ℝ E]
+    {S B : Set E} {δ : ℝ → E} (hδ : IsPLHomeomorphOn δ (Icc 0 1) B) (hBS : B ⊆ S)
+    {u : E → E} (hu : IsPLHomeomorphOn u S S) (huB : EqOn u id B) :
+    PreservesArcsAtFixedPairs S u := by
+  have hm0 : δ 0 ∈ B := hδ.bijOn.mapsTo (by norm_num)
+  have hmh : δ (1 / 2) ∈ B := hδ.bijOn.mapsTo (by norm_num)
+  have hm1 : δ 1 ∈ B := hδ.bijOn.mapsTo (by norm_num)
+  refine preservesArcsAtFixedPairs_of_three_fixed hu (hBS hm0) (hBS hmh) (hBS hm1)
+    (fun h => ?_) (fun h => ?_) (fun h => ?_) (huB hm0) (huB hmh) (huB hm1)
+  · have := hδ.bijOn.injOn (show (0 : ℝ) ∈ Icc 0 1 by norm_num)
+      (show (1 / 2 : ℝ) ∈ Icc 0 1 by norm_num) h
+    norm_num at this
+  · have := hδ.bijOn.injOn (show (0 : ℝ) ∈ Icc 0 1 by norm_num)
+      (show (1 : ℝ) ∈ Icc 0 1 by norm_num) h
+    norm_num at this
+  · have := hδ.bijOn.injOn (show (1 / 2 : ℝ) ∈ Icc 0 1 by norm_num)
+      (show (1 : ℝ) ∈ Icc 0 1 by norm_num) h
+    norm_num at this
+
+theorem isPLPseudoIsotopicToId_of_preservesArcsAtFixedPairs [FiniteDimensional ℝ E]
+    {S A B : Set E} {γ δ : ℝ → E} (hγ : IsPLHomeomorphOn γ (Icc 0 1) A)
+    (hδ : IsPLHomeomorphOn δ (Icc 0 1) B) (hδ0 : δ 0 = γ 0) (hδ1 : δ 1 = γ 1)
+    (hunion : A ∪ B = S) (hinter : A ∩ B = {γ 0, γ 1})
+    {u : E → E} (hu : IsPLHomeomorphOn u S S) (hu0 : u (γ 0) = γ 0) (hu1 : u (γ 1) = γ 1)
+    (hpres : PreservesArcsAtFixedPairs S u) : IsPLPseudoIsotopicToId u S := by
+  rcases image_arc_eq_self_or_eq_other hγ hδ hδ0 hδ1 hunion hinter hu hu0 hu1 with
+    ⟨hIA, hIB⟩ | hswap
+  · exact isPLPseudoIsotopicToId_of_arc_decomposition hγ hδ hδ0 hδ1 hunion hinter hu hIA hIB
+      hu0 hu1
+  · exfalso
+    have hIA := hpres A B γ δ hγ hδ hδ0 hδ1 hunion hinter hu0 hu1
+    have hAB : A = B := hIA.symm.trans hswap
+    have hmid : γ (1 / 2) ∈ A := hγ.bijOn.mapsTo (by norm_num)
+    have hmem : γ (1 / 2) ∈ ({γ 0, γ 1} : Set E) := hinter ▸ mem_inter hmid (hAB ▸ hmid)
+    rcases hmem with h | h
+    · have := hγ.bijOn.injOn (show (1 / 2 : ℝ) ∈ Icc 0 1 by norm_num)
+        (show (0 : ℝ) ∈ Icc 0 1 by norm_num) h
+      norm_num at this
+    · have h' : γ (1 / 2) = γ 1 := h
+      have := hγ.bijOn.injOn (show (1 / 2 : ℝ) ∈ Icc 0 1 by norm_num)
+        (show (1 : ℝ) ∈ Icc 0 1 by norm_num) h'
+      norm_num at this
+
+theorem strictMonoOn_arcLift_of_fixed_endpoints [FiniteDimensional ℝ E]
+    {A : Set E} {γ : ℝ → E} (hγ : IsPLHomeomorphOn γ (Icc 0 1) A)
+    {u : E → E} (hu : IsPLHomeomorphOn u A A) (hu0 : u (γ 0) = γ 0) (hu1 : u (γ 1) = γ 1) :
+    StrictMonoOn (Function.invFunOn γ (Icc 0 1) ∘ (u ∘ γ)) (Icc 0 1) := by
+  have hlift : IsPLHomeomorphOn (Function.invFunOn γ (Icc 0 1) ∘ (u ∘ γ))
+      (Icc (0 : ℝ) 1) (Icc (0 : ℝ) 1) := (hγ.trans hu).trans hγ.symm
+  have h0 : (Function.invFunOn γ (Icc 0 1) ∘ (u ∘ γ)) 0 = 0 := by
+    change Function.invFunOn γ (Icc 0 1) (u (γ 0)) = 0
+    rw [hu0, hγ.bijOn.invOn_invFunOn.1 (show (0 : ℝ) ∈ Icc 0 1 by norm_num)]
+  have h1 : (Function.invFunOn γ (Icc 0 1) ∘ (u ∘ γ)) 1 = 1 := by
+    change Function.invFunOn γ (Icc 0 1) (u (γ 1)) = 1
+    rw [hu1, hγ.bijOn.invOn_invFunOn.1 (show (1 : ℝ) ∈ Icc 0 1 by norm_num)]
+  refine ContinuousOn.strictMonoOn_of_injOn_Icc zero_le_one ?_
+    hlift.isPiecewiseAffineOn.continuousOn hlift.bijOn.injOn
+  rw [h0, h1]
+  norm_num
+
+theorem image_arcSegment_eq_of_fixed [FiniteDimensional ℝ E]
+    {A : Set E} {γ : ℝ → E} (hγ : IsPLHomeomorphOn γ (Icc 0 1) A)
+    {u : E → E} (hu : IsPLHomeomorphOn u A A) (hu0 : u (γ 0) = γ 0) (hu1 : u (γ 1) = γ 1)
+    {a b : ℝ} (ha : a ∈ Icc (0 : ℝ) 1) (hb : b ∈ Icc (0 : ℝ) 1)
+    (hua : u (γ a) = γ a) (hub : u (γ b) = γ b) :
+    u '' (γ '' Icc a b) = γ '' Icc a b := by
+  set h : ℝ → ℝ := Function.invFunOn γ (Icc 0 1) ∘ (u ∘ γ) with hdef
+  have hlift : IsPLHomeomorphOn h (Icc (0 : ℝ) 1) (Icc (0 : ℝ) 1) := (hγ.trans hu).trans hγ.symm
+  have hmono : StrictMonoOn h (Icc (0 : ℝ) 1) :=
+    strictMonoOn_arcLift_of_fixed_endpoints hγ hu hu0 hu1
+  have hval : ∀ t ∈ Icc (0 : ℝ) 1, γ (h t) = u (γ t) := by
+    intro t ht
+    change γ (Function.invFunOn γ (Icc 0 1) (u (γ t))) = u (γ t)
+    exact hγ.bijOn.invOn_invFunOn.2 (hu.bijOn.mapsTo (hγ.bijOn.mapsTo ht))
+  have hfix : ∀ {c : ℝ}, c ∈ Icc (0 : ℝ) 1 → u (γ c) = γ c → h c = c := by
+    intro c hc hc'
+    change Function.invFunOn γ (Icc 0 1) (u (γ c)) = c
+    rw [hc', hγ.bijOn.invOn_invFunOn.1 hc]
+  have hha : h a = a := hfix ha hua
+  have hhb : h b = b := hfix hb hub
+  have hsub : Icc a b ⊆ Icc (0 : ℝ) 1 := Icc_subset_Icc ha.1 hb.2
+  have himg : h '' Icc a b = Icc a b := by
+    refine Subset.antisymm ?_ ?_
+    · rintro _ ⟨t, ht, rfl⟩
+      refine ⟨?_, ?_⟩
+      · rw [← hha]
+        exact hmono.monotoneOn ha (hsub ht) ht.1
+      · rw [← hhb]
+        exact hmono.monotoneOn (hsub ht) hb ht.2
+    · intro s hs
+      obtain ⟨t, ht, hts⟩ := hlift.bijOn.surjOn (hsub hs)
+      refine ⟨t, ⟨?_, ?_⟩, hts⟩
+      · by_contra hcon
+        have hlt := hmono ht ha (not_le.mp hcon)
+        rw [hts, hha] at hlt
+        exact absurd hs.1 (not_le.mpr hlt)
+      · by_contra hcon
+        have hlt := hmono hb ht (not_le.mp hcon)
+        rw [hts, hhb] at hlt
+        exact absurd hs.2 (not_le.mpr hlt)
+  calc u '' (γ '' Icc a b) = (fun t => u (γ t)) '' Icc a b := by rw [image_image]
+    _ = (fun t => γ (h t)) '' Icc a b := by
+        refine image_congr fun t ht => (hval t (hsub ht)).symm
+    _ = γ '' (h '' Icc a b) := by rw [image_image]
+    _ = γ '' Icc a b := by rw [himg]
+
+theorem isPLPseudoIsotopicToId_of_three_fixed [FiniteDimensional ℝ E]
+    {S : Set E} (hS : IsPLSphere 1 S) {u : E → E} (hu : IsPLHomeomorphOn u S S)
+    {x y z : E} (hx : x ∈ S) (hy : y ∈ S) (hz : z ∈ S)
+    (hxy : x ≠ y) (hxz : x ≠ z) (hyz : y ≠ z)
+    (hux : u x = x) (huy : u y = y) (huz : u z = z) :
+    IsPLPseudoIsotopicToId u S := by
+  obtain ⟨A, B, γ, δ, hγ, hδ, hγ0, hγ1, hδ0, hδ1, hunion, hinter⟩ :=
+    exists_arc_decomposition_of_isPLSphere_one hS hx hy hxy
+  refine isPLPseudoIsotopicToId_of_preservesArcsAtFixedPairs hγ hδ (hδ0.trans hγ0.symm)
+    (hδ1.trans hγ1.symm) hunion ?_ hu (hγ0.symm ▸ hux) (hγ1.symm ▸ huy)
+    (preservesArcsAtFixedPairs_of_three_fixed hu hx hy hz hxy hxz hyz hux huy huz)
+  rw [hinter, hγ0, hγ1]
+
+theorem isPLPseudoIsotopicToId_of_eqOn_arc [FiniteDimensional ℝ E]
+    {S B : Set E} {δ : ℝ → E} (hδ : IsPLHomeomorphOn δ (Icc 0 1) B) (hBS : B ⊆ S)
+    (hS : IsPLSphere 1 S) {u : E → E} (hu : IsPLHomeomorphOn u S S) (huB : EqOn u id B) :
+    IsPLPseudoIsotopicToId u S := by
+  have hm0 : δ 0 ∈ B := hδ.bijOn.mapsTo (by norm_num)
+  have hmh : δ (1 / 2) ∈ B := hδ.bijOn.mapsTo (by norm_num)
+  have hm1 : δ 1 ∈ B := hδ.bijOn.mapsTo (by norm_num)
+  refine isPLPseudoIsotopicToId_of_three_fixed hS hu (hBS hm0) (hBS hmh) (hBS hm1)
+    (fun h => ?_) (fun h => ?_) (fun h => ?_) (huB hm0) (huB hmh) (huB hm1)
+  · have hq := hδ.bijOn.injOn (show (0 : ℝ) ∈ Icc 0 1 by norm_num)
+      (show (1 / 2 : ℝ) ∈ Icc 0 1 by norm_num) h
+    norm_num at hq
+  · have hq := hδ.bijOn.injOn (show (0 : ℝ) ∈ Icc 0 1 by norm_num)
+      (show (1 : ℝ) ∈ Icc 0 1 by norm_num) h
+    norm_num at hq
+  · have hq := hδ.bijOn.injOn (show (1 / 2 : ℝ) ∈ Icc 0 1 by norm_num)
+      (show (1 : ℝ) ∈ Icc 0 1 by norm_num) h
+    norm_num at hq
+
 end DifferentialGeometry.Topology.PiecewiseLinear

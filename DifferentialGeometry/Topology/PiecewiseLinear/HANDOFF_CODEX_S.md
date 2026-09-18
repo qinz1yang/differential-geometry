@@ -4146,3 +4146,114 @@ exit=0, zero warnings, 11.7 s. `.lake/scratch/AuditSCircleAnnulusIsotopy.lean`
 audits all fifteen declarations; every one depends only on `propext`,
 `Classical.choice`, `Quot.sound`. `fresh.py`: 0 forbidden hits, 0 stale,
 0 missing.
+
+
+## The arc-preservation predicate, and why multiplicativity is blocked
+
+### Step 1, delivered
+
+`PreservesArcsAtFixedPairs S u` is defined as: for every arc decomposition of `S`
+into `A`, `B` meeting exactly in `γ 0`, `γ 1`, if `u` fixes both of those points
+then `u '' A = A`. By `image_arc_eq_self_or_eq_other` the only alternative at a
+fixed pair is the swap, so this says exactly that `u` never reverses the circle at
+a pair of its own fixed points.
+
+Well-behavedness, in the strongest form the tree supports, is proved:
+
+- `image_arc_eq_self_of_third_fixed`: if `u` fixes a third point besides the two
+  cut points, it cannot swap. A swap sends `A` onto `B`, so every fixed point
+  lands in `A ∩ B`, which is just the two cut points.
+- `preservesArcsAtFixedPairs_of_three_fixed`: three distinct fixed points imply
+  the predicate at *every* fixed pair, since at any pair at least one of the three
+  is a genuine third point.
+
+These two settle the independence question completely. A PL self-homeomorphism of
+a PL 1-sphere with at least three fixed points satisfies the predicate everywhere;
+with exactly two fixed points there is only one fixed pair, so there is nothing to
+compare; with fewer the predicate is vacuous. This is the combinatorial form of
+"an orientation-reversing circle homeomorphism has at most two fixed points".
+
+Two unconditional consequences, which are the real payoff of step 1:
+
+- `isPLPseudoIsotopicToId_of_three_fixed`: a PL self-homeomorphism of a PL
+  1-sphere with three distinct fixed points is pseudo-isotopic to the identity.
+  No orientation hypothesis at all.
+- `isPLPseudoIsotopicToId_of_eqOn_arc`: a PL self-homeomorphism that is the
+  identity on some arc of `S` is pseudo-isotopic to the identity.
+
+Also delivered, for the eventual finer independence statements:
+
+- `strictMonoOn_arcLift_of_fixed_endpoints`: the lift of `u` through an arc
+  parametrisation, when `u` preserves the arc and fixes its endpoints, is strictly
+  increasing. Via `ContinuousOn.strictMonoOn_of_injOn_Icc`.
+- `image_arcSegment_eq_of_fixed`: consequently `u` maps every subarc cut off by two
+  further fixed points onto itself.
+- `preservesArcsAtFixedPairs_of_eqOn_arc`,
+  `isPLPseudoIsotopicToId_of_preservesArcsAtFixedPairs`.
+
+### Step 2, multiplicativity: blocked, and the blocker named
+
+The statement wanted is: if `u` satisfies the predicate and `r` is pseudo-isotopic
+to the identity, then `r` composed with `u` satisfies the predicate. It is **true**
+but not provable from anything in the tree, for a reason that the step 1 analysis
+makes exact.
+
+The predicate is semantically equivalent to orientation-preservation, but it is
+*syntactically inert* precisely when the map has at most one fixed point, because
+then it quantifies over an empty set of fixed pairs. And that is exactly the case
+the correction step produces: after the push, the corrected map has one fixed
+point, and the given `u` typically has none. So a proof would have to derive
+content from a vacuous hypothesis, i.e. it would have to prove separately that
+
+> **(M)** a PL self-homeomorphism of a PL 1-sphere with at most one fixed point is
+> orientation-preserving, equivalently: composing a map with at most one fixed
+> point with a map pseudo-isotopic to the identity never yields a map that swaps
+> the arcs at a pair of its fixed points.
+
+(M) is the Lefschetz count for the circle and cannot be obtained from fixed-point
+combinatorics; it needs a *total* invariant, defined for every PL circle
+self-homeomorphism and not only at its fixed pairs. Two constructions would do it:
+
+1. a degree: the exponent `k` with a loop homotopic to `loopZPow γ k`. The tree has
+   only the surjective half -- `exists_homotopic_loopZPow_of_bijective`,
+   `PolygonCircleParametrization.exists_homotopic_loopZPow_walkPath`,
+   `LoopPower.exists_homotopic_loopZPow_of_homeomorph` all produce *some* `k` and
+   none of them shows `k` is unique. Uniqueness is the covering-space half of
+   `π₁(S¹) ≅ ℤ`, which is in neither this tree nor Mathlib (Mathlib has
+   `circleDeg1Lift` only inside `Dynamics/Circle/RotationNumber`, for the standard
+   circle);
+2. a cyclic order: fix one decomposition, build the parameter map `S → Ico 0 1`
+   from the two arc parametrisations, define betweenness from it and require `u` to
+   preserve it. This is multiplicative by construction, but it needs the
+   monotonicity of every subarc parametrisation against that parameter map, which
+   is new work of its own.
+
+Size, against the `CoherentOrientation` transport that was ruled out: **smaller**.
+It is one-dimensional and map-level -- a degree or a cyclic order on a single
+circle -- whereas the transport is an `n`-dimensional subdivision-invariance theory
+for simplicial sign functions carrying a `LinearOrder` on the ambient space. But it
+is still a genuine new layer, not a corollary of anything present, and it is a
+*different* layer from the one step B ultimately needs: B has to pass from the
+orientability of a three-dimensional derived neighbourhood to a property of the end
+map, which is not a circle statement.
+
+### Consequence for steps 3 and 4
+
+(C1-a2) and the unconditional C1 were not built. They were explicitly conditioned
+on step 2: with multiplicativity unavailable, the no-swap hypothesis after two
+corrections is a hypothesis about the corrected map, and nothing transfers it back
+to the given `u`. Building (C1-a2) now would add unconditional interval surgery
+with no statable consumer. The sketch for it stays on record above.
+
+What *is* usable downstream today, unconditionally: `isPLPseudoIsotopicToId_of_three_fixed`
+and `isPLPseudoIsotopicToId_of_eqOn_arc` for end maps with enough fixed points, and
+`isPLPseudoIsotopicToId_of_arc_decomposition_of_ne` whenever the caller can supply
+the single inequation `u '' A ≠ B`.
+
+### Verification, second pass
+
+`check-f.ps1 -Module DifferentialGeometry.Topology.PiecewiseLinear.CircleAnnulusIsotopy`
+exit=0, zero warnings, 11.4 s. `.lake/scratch/AuditSCircleAnnulusIsotopy.lean` now
+audits all twenty-four declarations; every one depends only on `propext`,
+`Classical.choice`, `Quot.sound`, with no `sorryAx`. `fresh.py`: 0 forbidden hits,
+0 stale, 0 missing.
