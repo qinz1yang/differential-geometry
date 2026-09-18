@@ -168,7 +168,7 @@ E.3 取 `U = univ`、`h` 为同胚（`hopen` 由 E.0 或 `h` 满射给出）；`
 
 - 端点 `NormalSingularCellData.exists_separated_along_branch` 与
   `NormalSingularCellData.exists_separated_cell_along_branch` 已闭合，模块
-  `BranchSlideSeparation.lean`、`BranchSeparation.lean`；割开后的双点集等式
+  `BranchSlideConjugation.lean`、`BranchSeparation.lean`；割开后的双点集等式
   `doublePointSet g D.domain = doublePointSet D D.domain \ branchCarrier cb` 两个包含都证了。
 - 前提是 §44 的乘积图卡数据，写成显式假设（不是 `sorry`），生产者归 F。细节、已排除的两条错误写法与
   确切剩余义务见 `HANDOFF_CODEX_L.md` §46、§47。

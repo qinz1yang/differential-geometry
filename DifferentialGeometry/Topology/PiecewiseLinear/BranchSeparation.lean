@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.BranchSlideSeparation
+import DifferentialGeometry.Topology.PiecewiseLinear.BranchSlideConjugation
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BranchCarrier
 
 open Set Topology

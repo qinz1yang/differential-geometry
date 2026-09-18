@@ -978,7 +978,7 @@ theorem eq_top_of_boundaryLoops_mem_normal
 
 ## 46. 2026-09-18 E3-M2：单张乘积图卡上的长滑移分离（chart 层）
 
-状态：done。新模块 `BranchSlideSeparation.lean`。
+状态：done。新模块 `BranchSlideConjugation.lean`（原名 `BranchSlideSeparation.lean`，与 F 车道同日推送的同名模块在整合分支上 add/add 冲突，本车道让路改名；F 的同名文件保持原名）。
 
 - F 车道的 `ModelSlideLong`/`ChartSlideLong` 把滑移长度 `d` 放成无界参数，于是 §44/§45 里"沿分支把有限图卡排成链、
   用 `ε` 定向、在重叠上线性插值"的整条路线**不再需要**：一张含整条分支的乘积图卡就够。本节把它落到三维流形上。
@@ -1017,7 +1017,7 @@ theorem eq_top_of_boundaryLoops_mem_normal
   的存在量词消掉（由 `EqOn g (h ∘ F) P` 与 `EqOn g F Pᶜ` 逐点认出 `g = P.piecewise (h ∘ F) F`），
   直接给出逐片映射的 PL 性、局部单射、纤维至多二与支撑外纤维不变。
 - `doublePointSet_piecewise_postcomp`：抽象层的双点集等式，两个包含都证了，见 §47。
-- 聚焦检查 `BranchSlideSeparation` exit=0（10.0 秒）、零 warning。
+- 聚焦检查 `BranchSlideConjugation` exit=0（10.0 秒）、零 warning。
 
 ## 47. 2026-09-18 E3-M2：`exists_separated_along_branch` 与割开后的双点集精确等式
 
@@ -1049,7 +1049,7 @@ theorem eq_top_of_boundaryLoops_mem_normal
     则两点同属 `Q ∩ D ⁻¹' U`，被 `InjOn D (Q ∩ D ⁻¹' U)` 否掉。
   - `⊇`：`y` 是旧双点且 `y ∉ branchCarrier cb`，由 `doublePointSet ∩ U ⊆ branchCarrier cb` 得 `y ∉ U`，
     故 `h y = y`，于是两个原像在 `g` 下仍同取 `y`（在 `P` 里的那个经 `h y = y`）。
-- 验证：`BranchSlideSeparation` 与 `BranchSeparation` 聚焦检查均 exit=0（10.0 / 10.4 秒）、零 warning；
+- 验证：`BranchSlideConjugation` 与 `BranchSeparation` 聚焦检查均 exit=0（10.0 / 10.4 秒）、零 warning；
   `fresh.py` 报 2 个改动模块全部 fresh，forbidden=0、stale=0、missing=0；
   `.lake/scratch/AuditE3BranchSeparation.lean` 的 9 条 `#print axioms` 全部只含
   `propext`、`Classical.choice`、`Quot.sound`。
@@ -1083,6 +1083,6 @@ theorem eq_top_of_boundaryLoops_mem_normal
   `x = -slideAmount < 0`，直接出 `M`）。所以 §44 的"边界端点处 `h (U ∩ BdM) ⊆ BdM`"在触边分支端点
   仍未真正解决：要么给端点一个另外的、与 `Bd M` 相切的收尾模型（锥度在 `Bd M` 处归零），
   要么把分离改成先把端点挪开的两步构造。这条是本次交付**没有**闭合的部分，不要当成已完成。
-- 两条模块的聚焦检查在改动后重跑：`BranchSlideSeparation` exit=0（9.2 秒）、
+- 两条模块的聚焦检查在改动后重跑：`BranchSlideConjugation` exit=0（9.2 秒）、
   `BranchSeparation` exit=0（10.3 秒），均零 warning；审计 9 条依旧只含标准三公理；
   `fresh.py` forbidden=0、stale=0、missing=0。
