@@ -1,4 +1,5 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.BallPairModel
+import DifferentialGeometry.Topology.PiecewiseLinear.BallPairSimplex
 
 open Set
 
@@ -103,5 +104,21 @@ theorem isPLBallPair_coneSet_arc_of_radial [FiniteDimensional ℝ E] {m : ℕ}
   classical
   have h := isPLBallPair_coneSet hL hvzL hsph (isPLBall_one_coneSet_pair hvz hpv hpz hrad)
   rwa [coneSet_pair_eq_union_segment] at h
+
+theorem isPLBallPair_convexHull_arc_of_radial [FiniteDimensional ℝ E] {n : ℕ} {T : Finset E}
+    (hT : AffineIndependent ℝ ((↑) : T → E)) (hcard : T.card = n + 2) {p v z : E}
+    (hp : p ∈ openSimplex T) (hvzL : ({v, z} : Set E) ⊆ (simplexBoundary T hT).space)
+    (hvz : v ≠ z) (hpv : p ≠ v) (hpz : p ≠ z)
+    (hrad : IsRadiallyInjective p ({v, z} : Set E)) :
+    IsPLBallPair n 1 (convexHull ℝ (T : Set E)) (segment ℝ p v ∪ segment ℝ p z) := by
+  classical
+  have h2 : 2 ≤ T.card := by omega
+  have hfin : Finite (simplexBoundary T hT).faces := (simplexBoundary_faces_finite T hT).to_subtype
+  have hL : IsConeBase p (simplexBoundary T hT) := isConeBase_simplexBoundary hT h2 hp
+  have hsph : IsPLSphere n (simplexBoundary T hT).space := by
+    rw [simplexBoundary_space T hT h2]
+    exact isPLSphere_biUnion_erase T hT hcard
+  have h := isPLBallPair_coneSet_arc_of_radial hL hsph hvzL hvz hpv hpz hrad
+  rwa [← coneComplex_space_eq_coneSet hL, coneComplex_simplexBoundary_space hT h2 hp] at h
 
 end DifferentialGeometry.Topology.PiecewiseLinear

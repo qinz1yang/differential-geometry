@@ -2086,3 +2086,41 @@ M1 只给"PL 同胚于一个锥"，不给"是一个锥"，所以绕不过去。
 两种处理：(a) 在构型里把 `p ∈ openSimplex T` 与 `p ∈ openSimplex T₁` **都**写成假设；
 (b) 证一条"切开后小单纯形的开胞腔含于大单纯形的开胞腔"。
 (a) 是老实且够用的，建议先取 (a)，需要时再补 (b)。**未开始，不报区间。**
+
+## 28. 2026-09-18 四对的生产者全部到位（`BallPairArc.lean`）
+
+`isPLBallPair_convexHull_arc_of_radial`：设 `T` 仿射无关、`T.card = n + 2`、`p ∈ openSimplex T`、
+`{v, z} ⊆ (simplexBoundary T hT).space`，加第 26 节的四条非退化条件，则
+
+    IsPLBallPair n 1 (convexHull ℝ T) (segment ℝ p v ∪ segment ℝ p z)
+
+证明与第 16 节同构：拼出 `IsConeBase`、`IsPLSphere`，喂上一节的
+`isPLBallPair_coneSet_arc_of_radial`，再用 `coneComplex_simplexBoundary_space` 把锥换成 `convexHull`。
+与第 16 节的差别只有一处，但是关键：子链是**集合** `{v,z}` 而不是子复形，
+所以 `v`、`z` 不必是 `T` 的顶点。
+
+**这一条把四对全部覆盖：**
+
+| 对 | 用法 |
+|---|---|
+| 并 `(conv T, 弧)` | 本条，取 `T`、顶点 `p`、端点 `{v, w}` |
+| `(C₁, C₁∩弧)` | 本条，取 `T₁ = insert c (insert m F)`、顶点 `p`、端点 `{v, z}` |
+| `(C₂, C₂∩弧)` | 本条，取 `T₂ = insert d (insert m F)`、顶点 `q`、端点 `{z, w}` |
+| `(conv Fm, {z})` | 第 17 节 `isPLBallPair_convexHull_singleton_of_mem_openSimplex` |
+
+聚焦检查 `BallPairArc` exit=0（9.4 秒）、零 warning；
+`.lake/scratch/AuditHBallPairArc.lean`（同时导入 `BallPairTwoSimplices`，四个生产者共存）
+七项仅 `propext`、`Classical.choice`、`Quot.sound`。
+
+审计文件本身踩了一次：`isPLBallPair_convexHull_singleton_of_mem_openSimplex` 在
+`BallPairTwoSimplices` 里，`BallPairArc` 不导入它，于是 `#print axioms` 报 unknown constant。
+**审计文件报 unknown constant 是导入不全，不是声明不存在**，别误判成代码问题。
+
+### 组装还剩两件（未开始，不报区间）
+
+1. **选点并核验**：给出满足第 26 节那张表的具体构型（`T`、`c`、`d`、`m`、`F`、`p`、`q`、`z`、`v`、`w`），
+   四对即刻由上表得到。按第 27 节的决定，`p ∈ openSimplex T` 与 `p ∈ openSimplex T₁` 都写成假设。
+2. **弧与各块的交**：还要证 `conv T₁ ∩ 弧 = segment p v ∪ segment p z` 等三条，
+   才算"三对确实是 `(C, C∩A)` 那三对"。零件齐了：
+   `conv T₁ ⊆ {ℓ ≤ r}`（第 23 节半空间）、`conv T₂ ∩ {ℓ = r} = conv Fm`（第 23 节截痕）、
+   第 22 节五条线段交引理。第 3 步要的是这一件。
