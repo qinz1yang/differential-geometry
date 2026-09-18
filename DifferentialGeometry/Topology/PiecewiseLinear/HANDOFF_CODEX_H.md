@@ -2124,3 +2124,47 @@ M1 只给"PL 同胚于一个锥"，不给"是一个锥"，所以绕不过去。
    才算"三对确实是 `(C, C∩A)` 那三对"。零件齐了：
    `conv T₁ ⊆ {ℓ ≤ r}`（第 23 节半空间）、`conv T₂ ∩ {ℓ = r} = conv Fm`（第 23 节截痕）、
    第 22 节五条线段交引理。第 3 步要的是这一件。
+
+## 29. 2026-09-18 弧与三块的交 — done（`SegmentSplit.lean`），并发现一条构型条件
+
+协调者要求"先做第 2 件，再选点"。做对了：**这三条恒等式逼出一条构型条件，而且它排除了一类选点。**
+
+### 交付（六条，全部只要 `[AddCommGroup E] [Module ℝ E]`）
+
+弧写成 `segment ℝ p c ∪ segment ℝ p d`（从顶点 `p` 出发到两个远端点），`z` 是 `segment p d` 与
+`{ℓ = r}` 的交点。
+
+- `segment_subset_of_mem_segment` / `segment_right_subset_of_mem_segment`：
+  `z ∈ segment p d` ⟹ `segment p z ⊆ segment p d`、`segment z d ⊆ segment p d`。
+- `segment_subset_halfSpace_lt`：两端 `ℓ < r` ⟹ 整段 `ℓ < r`。
+- `inter_arc_of_subset_halfSpace_le`：`P ⊆ {ℓ ≤ r}`、`segment p c ⊆ P`、`segment p z ⊆ P` ⟹
+  `P ∩ 弧 = segment ℝ p c ∪ segment ℝ p z`。（`C₁` 那一块）
+- `inter_arc_of_subset_halfSpace_ge`：`P ⊆ {r ≤ ℓ}`、`segment z d ⊆ P` ⟹
+  `P ∩ 弧 = segment ℝ z d`。（`C₂` 那一块）
+- `inter_arc_of_subset_hyperplane`：`P ⊆ {ℓ = r}`、`z ∈ P` ⟹ `P ∩ 弧 = {z}`。（公共面那一块）
+
+三条都靠第 22 节的线段交引理，再加"`P ∩ segment p c` 为空"（`ℓ` 在该段上恒 `< r`，而 `P` 在 `{r ≤ ℓ}` 或 `{ℓ = r}` 里）。
+
+### 逼出来的构型条件：**远端点必须严格在各自一侧**
+
+后两条都要 **`ℓ c < r` 严格**（不是 `≤`）。这直接排除了一类选点：
+公共面 `Fm = insert m F` 的顶点上 `ℓ = r`，所以**远端点不能取 `F` 里的那两个顶点**。
+取 `c` 与 `d`（被切开的那条棱的两个端点）就正好：`ℓ c < r < ℓ d` 已经是第 21 节分离条件的一部分。
+
+于是构型里的 `v`、`w` 不再自由：**`v := c`、`w := d`**，弧就是 `c → p → z → d` 的折线。
+这也让第 26 节表里"`{v,w} ⊆ (simplexBoundary T).space`"变得平凡（`c`、`d` 是 `T` 的顶点）。
+
+三条恒等式所需的其余包含关系都能从构型直接给出：
+`segment p c ⊆ conv T₁`（两端都在，凸）、`segment p z ⊆ conv T₁`（`z ∈ conv Fm ⊆ conv T₁`）、
+`segment z d ⊆ conv T₂`、`z ∈ conv Fm`；`P` 的三个半空间／超平面包含由第 23 节给。
+
+聚焦检查 `SegmentSplit` exit=0（7.6 秒）、零 warning；
+`.lake/scratch/AuditHArcInter.lean` 六项仅 `propext`、`Classical.choice`、`Quot.sound`。
+
+坑：`P ⊆ {x | r ≤ ℓ x}` 应用后得到的是 `x ∈ {x | r ≤ ℓ x}`，
+直接喂给 `not_le.mpr`／`ne_of_lt` 会类型不匹配（setOf 不自动展开）。
+写成带类型标注的 `have h1 : r ≤ ℓ x := hP hxP` 再 `linarith` 即可。
+
+### 下一步
+
+第 1 件（选点并核验第 26 节的表，现在 `v`、`w` 已被钉成 `c`、`d`）与第 3 步。**未开始，不报区间。**

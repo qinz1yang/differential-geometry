@@ -104,4 +104,65 @@ theorem segment_inter_eq_singleton {p w z : E} {ℓ : E →ₗ[ℝ] ℝ} {r : �
   rw [hset, ← Set.inter_assoc, segment_inter_le_eq_segment hzs hz hp.le hw, segment_symm,
     segment_inter_ge_eq_singleton hz hp]
 
+theorem segment_subset_of_mem_segment {p d z : E} (hzs : z ∈ segment ℝ p d) :
+    segment ℝ p z ⊆ segment ℝ p d :=
+  (convex_segment p d).segment_subset (left_mem_segment ℝ p d) hzs
+
+theorem segment_right_subset_of_mem_segment {p d z : E} (hzs : z ∈ segment ℝ p d) :
+    segment ℝ z d ⊆ segment ℝ p d :=
+  (convex_segment p d).segment_subset hzs (right_mem_segment ℝ p d)
+
+theorem segment_subset_halfSpace_lt {p c : E} {ℓ : E →ₗ[ℝ] ℝ} {r : ℝ} (hp : ℓ p < r)
+    (hc : ℓ c < r) : segment ℝ p c ⊆ {x : E | ℓ x < r} :=
+  (convex_halfSpace_lt ℓ.isLinear r).segment_subset hp hc
+
+theorem inter_arc_of_subset_halfSpace_le {P : Set E} {ℓ : E →ₗ[ℝ] ℝ} {r : ℝ} {p c d z : E}
+    (hP : P ⊆ {x : E | ℓ x ≤ r}) (hpc : segment ℝ p c ⊆ P) (hpzP : segment ℝ p z ⊆ P)
+    (hzs : z ∈ segment ℝ p d) (hz : ℓ z = r) (hp : ℓ p ≤ r) (hd : r < ℓ d) :
+    P ∩ (segment ℝ p c ∪ segment ℝ p d) = segment ℝ p c ∪ segment ℝ p z := by
+  rw [Set.inter_union_distrib_left, Set.inter_eq_right.mpr hpc]
+  congr 1
+  apply Subset.antisymm
+  · rintro x ⟨hxP, hxd⟩
+    have hx : x ∈ segment ℝ p d ∩ {y : E | ℓ y ≤ r} := ⟨hxd, hP hxP⟩
+    rwa [segment_inter_le_eq_segment hzs hz hp hd] at hx
+  · exact fun x hx => ⟨hpzP hx, segment_subset_of_mem_segment hzs hx⟩
+
+theorem inter_arc_of_subset_halfSpace_ge {P : Set E} {ℓ : E →ₗ[ℝ] ℝ} {r : ℝ} {p c d z : E}
+    (hP : P ⊆ {x : E | r ≤ ℓ x}) (hzdP : segment ℝ z d ⊆ P) (hzs : z ∈ segment ℝ p d)
+    (hz : ℓ z = r) (hp : ℓ p < r) (hc : ℓ c < r) (hd : r ≤ ℓ d) :
+    P ∩ (segment ℝ p c ∪ segment ℝ p d) = segment ℝ z d := by
+  have hempty : P ∩ segment ℝ p c = ∅ := by
+    rw [Set.eq_empty_iff_forall_notMem]
+    rintro x ⟨hxP, hxc⟩
+    have h1 : r ≤ ℓ x := hP hxP
+    have h2 : ℓ x < r := segment_subset_halfSpace_lt hp hc hxc
+    linarith
+  rw [Set.inter_union_distrib_left, hempty, Set.empty_union]
+  apply Subset.antisymm
+  · rintro x ⟨hxP, hxd⟩
+    have hx : x ∈ segment ℝ p d ∩ {y : E | r ≤ ℓ y} := ⟨hxd, hP hxP⟩
+    rwa [segment_inter_ge_eq_segment hzs hz hp hd] at hx
+  · exact fun x hx => ⟨hzdP hx, segment_right_subset_of_mem_segment hzs hx⟩
+
+theorem inter_arc_of_subset_hyperplane {P : Set E} {ℓ : E →ₗ[ℝ] ℝ} {r : ℝ} {p c d z : E}
+    (hP : P ⊆ {x : E | ℓ x = r}) (hzP : z ∈ P) (hzs : z ∈ segment ℝ p d) (hz : ℓ z = r)
+    (hp : ℓ p < r) (hc : ℓ c < r) (hd : r < ℓ d) :
+    P ∩ (segment ℝ p c ∪ segment ℝ p d) = {z} := by
+  have hempty : P ∩ segment ℝ p c = ∅ := by
+    rw [Set.eq_empty_iff_forall_notMem]
+    rintro x ⟨hxP, hxc⟩
+    have h1 : ℓ x = r := hP hxP
+    have h2 : ℓ x < r := segment_subset_halfSpace_lt hp hc hxc
+    linarith
+  rw [Set.inter_union_distrib_left, hempty, Set.empty_union]
+  apply Subset.antisymm
+  · rintro x ⟨hxP, hxd⟩
+    have hx : x ∈ segment ℝ p d ∩ {y : E | ℓ y = r} := ⟨hxd, hP hxP⟩
+    rwa [segment_inter_eq_singleton hzs hz hp hd] at hx
+  · rintro x hx
+    rw [Set.mem_singleton_iff] at hx
+    subst hx
+    exact ⟨hzP, hzs⟩
+
 end DifferentialGeometry.Topology.PiecewiseLinear
