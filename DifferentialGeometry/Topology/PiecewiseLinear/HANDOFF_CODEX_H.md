@@ -2800,6 +2800,14 @@ non-automatic declarations in the two modules; every axiom is in
 `{propext, Classical.choice, Quot.sound}`, and all environment linters other than
 `docBlame` and `docBlameThm` passed.  The strict checks wrote no shared artifact.
 
+Before the strict run, the inherited `check-f.ps1` was mistakenly invoked three
+times.  That obsolete helper disables the header and long-line checks and deletes
+the shared target object before compiling; all three attempts failed, leaving the
+shared `BallPairCutConfig.olean` and `.ilean` absent.  The coordinator rebuilt the
+unchanged integration version with the strict flags and restored those two shared
+objects before the final H checks.  The verified H objects and their receipts
+remain private and were not copied into the shared library.
+
 The remaining section 42 obligation is the trimmed arc-chain ball-pair induction
 over the non-endpoint cells.  The old full-chain statement remains false and must
 not be reinstated.
