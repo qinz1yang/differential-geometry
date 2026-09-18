@@ -1118,3 +1118,36 @@ theorem eq_top_of_boundaryLoops_mem_normal
   当前是本车道改名前编译的产物（06:09:26，427584 字节），而该路径的源码已换成 F 的文件（6395 字节，06:14:26）。
   现在 `import ...BranchSlideSeparation` 拿到的是本车道的旧内容而不是 F 的声明。需要由该模块的属主重编一次。
   本车道没有删除它，因为 S 车道正在运行，不擅自动别人的共享产物。
+
+## 50. 2026-09-18 E3-M2：割开后单纯复杂度的严格下降（Case 3/4 的下降来源）
+
+状态：done。新模块 `BranchComplexityDrop.lean`（`BranchSeparation.lean` 的直接下游，模块名在四条车道分支上都不存在，无重名）。
+
+- §43 记录的障碍是：顺序交叉贴合**保留**了所选分支（`branchCarrier c ⊆ doublePointSet G G.domain`），
+  因此不可能有复杂度下降。本节走的是 §47 的路线而不是 §42/§43 的源侧重贴：`g := P.piecewise (h ∘ D) D`
+  的双点集精确等式 `doublePointSet g D.domain = doublePointSet D D.domain \ branchCarrier cb`
+  **真的删掉了**被选分支，下降就是从这条等式直接出来的，没有把分支留在新奇点集里。
+- 抽象层（同一源盘、同一有限复形、顶点映射取恒等，因此不能用 §32 的跨复形比较层，
+  那一层要求新拉回像遗漏一个旧碰撞顶点，而这里新旧源盘完全相同）：
+  - `eq_of_separated_fiber`：若 `v ≠ w` 都在 `Δ` 里且 `g v = g w`，则 `g v ∉ U`，且 `D v = D w = g v`。
+    证明先由 `g v ∈ doublePointSet g Δ ⊆ doublePointSet D Δ \ S` 得 `g v ∉ S`，
+    再由 `doublePointSet D Δ ∩ U ⊆ S` 得 `g v ∉ U`，最后用支撑外的纤维等式 `g ⁻¹' {y} = D ⁻¹' {y}` 把两个原像搬回 `D`。
+  - `vertexCollisionPairs_subset_of_doublePointSet_subset_sdiff`：`vertexCollisionPairs K g ⊆ vertexCollisionPairs K D`。
+  - `simplicialComplexity_lt_of_doublePointSet_subset_sdiff`：再给一对不同顶点 `v ≠ w` 满足
+    `D v = D w ∈ S`（`S ⊆ U`），则 `{v,w}` 是 `D` 的碰撞对而不是 `g` 的碰撞对，于是
+    `simplicialComplexity K g < simplicialComplexity K D`。`g v ≠ g w` 的理由正是上一条：
+    若 `g v = g w` 则 `g v ∉ U`，但 `D v = g v ∈ S ⊆ U`。
+- 生产者 `exists_simplicialComplexity_lt_of_doublePointSet_subset_sdiff`：只要
+  `S ∩ doublePointSet D D.domain` 非空，就从 `D.domain` 的多面体性取有限复形，再用
+  `exists_isSubdivision_singleton_mem` 两次把该双点的两个不同原像细分成顶点，交付
+  `K.space = D.domain` 与严格下降。适配三角剖分因此不是假设。
+- 端点 `NormalSingularCellData.exists_separated_cell_simplicialComplexity_lt_along_branch`：
+  沿用 §47/§48 的乘积图卡数据（仍是显式假设，属 F 的义务，未被伪造），输出 §47 的全部条款
+  （`U`、`h`、`IsPL`、单射、支撑外恒等、边界蕴含、不交、逐片映射的 PL/局部单射/纤维≤2/纤维不变、双点集等式）
+  再加上有限复形 `K`、`K.space = D.domain` 与
+  `simplicialComplexity K (P.piecewise (h ∘ D) D) < simplicialComplexity K D`。
+  分支非空由 `branchCarrier_isConnected` 给，双点性由 `branchCarrier_subset_doublePointSet` 给，
+  两者都不是新假设。
+- 验证：`BranchComplexityDrop` 聚焦检查 exit=0（9.9 秒）、零 warning；
+  `.lake/scratch/AuditE3ComplexityDrop.lean` 的 5 条 `#print axioms` 全部只含
+  `propext`、`Classical.choice`、`Quot.sound`。
