@@ -25,7 +25,7 @@ attribute [local instance] PointedFlowData.topology PointedFlowData.charted
   PointedFlowData.smooth PointedFlowData.t2 PointedFlowData.sigmaCompact
   PointedFlowData.t2TangentBundle
 
-theorem exists_windowedModelWitness_canonicalWitness_of_model_neck
+theorem exists_windowedModelWitness_canonicalWitness_of_model_neck_of_radial_reserve
     {C1 C2 : ℝ} (hC1 : 1 ≤ C1) (hC2 : 1 ≤ C2) :
     ∃ C : ℝ, 1 ≤ C ∧ ∀ eps : ℝ, 0 < eps → eps < 1 / 16 →
       ∀ a b margin : ℝ, 5 / 4 < a → a ≤ max C1 2 → 0 < margin →
@@ -151,5 +151,53 @@ theorem exists_windowedModelWitness_canonicalWitness_of_model_neck
       (mul_le_mul_of_nonneg_right hCgrad W.scalar_pos.le) (Real.sqrt_nonneg _)) (Real.sqrt_nonneg _))
   · exact (W.scalar_left_derivative_bound hS hd4 (by positivity : 0 ≤ 2 * C2) hregular hmodel).trans
       (mul_le_mul_of_nonneg_right hCtime (sq_nonneg _))
+
+theorem exists_windowedModelWitness_canonicalWitness_of_model_neck
+    {C2 : ℝ} (hC2 : 1 ≤ C2) :
+    ∃ C : ℝ, 1 ≤ C ∧ ∀ eps : ℝ, 0 < eps → eps < 1 / 16 →
+      ∃ delta0 : ℝ, 0 < delta0 ∧
+        ∀ {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
+          [IsManifold I3 ∞ M] [T2Space M] [SigmaCompactSpace M]
+          {D : RealTimeInterval} {S : SolutionOn (I := I3) (M := M) D}
+          {delta kappa C1 : ℝ} {x : M} {t : ℝ}
+          (W : WindowedModelWitness delta kappa S x t), delta ≤ delta0 →
+          IsSolutionOn S → Ioo (t - (delta * S.scalar t x)⁻¹) t ⊆ D.regular →
+          ∀ K : CanonicalWitness W.model.S (neckModelTolerance (eps / 2))
+            C1 C2 W.model.basepoint 0,
+          (∃ N, K.alternative = CanonicalAlternative.neck N) →
+          Nonempty (CanonicalWitness S eps 9 C x t) := by
+  obtain ⟨C, hC, htransfer⟩ :=
+    exists_windowedModelWitness_canonicalWitness_of_model_neck_of_radial_reserve.{u}
+      (C1 := 9) (by norm_num) hC2
+  refine ⟨C, hC, ?_⟩
+  intro eps heps hsmall
+  obtain ⟨delta0, hdelta0, hdelta⟩ := htransfer eps heps hsmall 9 17 (1 / 10)
+    (by norm_num) (by norm_num) (by norm_num) (by norm_num)
+  refine ⟨delta0, hdelta0, ?_⟩
+  intro M _ _ _ _ _ D S delta kappa C1 x t W hd hS hregular K hneck
+  obtain ⟨N, hN⟩ := hneck
+  have hscalar : W.model.S.scalar 0 W.model.basepoint = 1 := W.model_scalar_base
+  have hinner := K.closedBall_nine_subset_of_scalar_one hscalar
+  have houter : K.domain.carrier ⊆
+      riemannianBallOf (W.model.S.base.metric 0) W.model.basepoint 17 := by
+    simpa only [StrongNeck.region, ← N.region_eq, hscalar, Real.sqrt_one, div_one] using
+      N.strong.region_subset_ball
+  let K' : CanonicalWitness W.model.S (neckModelTolerance (eps / 2))
+      9 C2 W.model.basepoint 0 := {
+    K with
+    radius := 9
+    radius_lower := by simp only [hscalar, Real.sqrt_one, inv_one]; norm_num
+    radius_upper := by simp only [hscalar, Real.sqrt_one, div_one, le_refl]
+    ball_inside := by
+      intro y hy
+      apply hinner
+      change riemannianEDistOf (W.model.S.base.metric 0) W.model.basepoint y <
+        ENNReal.ofReal (9 : ℝ) at hy
+      exact hy.le
+    inside_ball := houter.trans (riemannianBallOf_mono _ _ (by norm_num : (17 : ℝ) ≤ 2 * 9)) }
+  have hneck' : ∃ N, K'.alternative = CanonicalAlternative.neck N := ⟨N, hN⟩
+  have hh := hdelta W hd hS hregular K' hneck' hinner houter
+  norm_num only [max_eq_left (by norm_num : (2 : ℝ) ≤ 9)] at hh
+  exact hh
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
