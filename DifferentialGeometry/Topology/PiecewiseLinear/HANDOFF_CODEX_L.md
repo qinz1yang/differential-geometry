@@ -1221,3 +1221,63 @@ theorem eq_top_of_boundaryLoops_mem_normal
   3. `L₁`、`L₂` 各自的实际正规奇异胞腔（`L₁` 由 §41 的
      `exists_boundary_surgery_cell_of_boundaryBranch` 已给；`L₂` 仍缺，§43 排除了顺序交叉重贴）。
   按主人指定的顺序，Case 1/2 未开始。
+
+## 53. 2026-09-18 E3-M2：触边分支的前推分离（§48 的开放项被 F 的负结果否定地关掉）
+
+状态：done（相对 §47 的乘积图卡显式假设）。新模块 `BranchSeparationBoundary.lean`
+（模块名在四条车道分支上都不存在，无重名）。
+
+- **§48 的开放项已关闭，且是被否定地关闭的。** F 车道 `ModelSlideFwd.lean` 的
+  `not_disjoint_image_slideBandA_of_origin_fixed`：对**任意**映射 `h`，只要 `0 ≤ c`、`a ≤ 0`、`0 ≤ b`
+  且 `h (0,0,0) = (0,0,0)`，就有 `¬Disjoint (h '' slideBandA c) (slideBandQ a b)`。原点是模型里的分支端点，
+  它本身就是一个双点（两张标准 band 都含它）；"锥度在 `Bd M` 处归零"恰恰就是把这个端点钉死。
+  于是 §48 设想的"与 `Bd M` 相切的收尾模型"**不存在**——任何方向、任何距离、任何锥度都不行。
+  §48 所列的两条备选路线中，第一条（相切收尾模型）因此作废；只剩"先把端点挪开"，而这正是 F 的前推模型做的事。
+- **双条件条款在触边分支上是可证不可得的，不是尚未证明。** 除上一条外，F 还直接证明了前推模型不保持边界平面：
+  `not_mapsTo_chartSlideFwd_boundaryPlane`（对 `hd : 0 < d`、`hR : 0 < R`，`{p | p.1 = 0}` 不被保持）与
+  它的打包版 `not_mapsTo_boundary_of_isBranchSlideChart_endpoint`。所以
+  `∀ x, h x ∈ BdM ↔ x ∈ BdM` 与更弱的 `h (U ∩ BdM) ⊆ BdM` 在触边分支端点处都不可能成立。
+  **能成立并且无附加假设的是闭半空间的保持**：`mapsTo_chartSlideFwd_halfSpace` 给出
+  `MapsTo (e.conjugateMap (slideMapFwd d R)) N N`，其中模型侧是
+  `slideEndpointHalfSpace = {p | 0 ≤ p.1}`。本节把边界条款换成 `MapsTo h N N`。
+- 消费 F 的前向端点包（全部来自 `BranchSlideEndpoint.lean` / `ModelSlideFwd.lean`）：
+  `injective_chartSlideFwd`、`eqOn_chartSlideFwd_id_compl`、`disjoint_chartSlideFwd_image`、
+  `isPiecewiseAffineOn_chartSlideFwd`、`mapsTo_chartSlideFwd_halfSpace`、
+  `OpenPartialHomeomorph.mapsTo_conjugateMap`、`mapsTo_slideMapFwd_of_subset`、
+  `mapsTo_slideMapFwd_slideSupportLong`。分离常数从 §47 的 `c - d < a` 换成 `b < d`（远端越过 band Q）。
+- 交付的三条：
+  - `exists_separated_slide_fwd`：§46 `exists_separated_slide` 的前推版，外层流形 PL 图卡 `E`、
+    内层模型拉直 `e` 的两层共轭 `h := E.conjugateMap (e.conjugateMap (slideMapFwd d R))`。
+    输出 `IsOpen U`、`S ⊆ U`、`closure U ⊆ W`、`IsPL 3 3 h`、单射、`EqOn h id Uᶜ`、`MapsTo h U U`、
+    `Disjoint (h '' A) B`，加上半空间条款
+    `∀ N N₁, (∀ x ∈ E.source, x ∈ N ↔ E x ∈ N₁) → (∀ y ∈ e.source, y ∈ N₁ ↔ 0 ≤ (e y).1) →
+     MapsTo h N N`。数据 `N`、`N₁` 与 §48 一样放在结论里，所以主结论对触边分支非空。
+  - `NormalSingularCellData.exists_separated_along_boundary_branch`
+  - `NormalSingularCellData.exists_separated_cell_along_boundary_branch`：与 §47 的两条逐条对应，
+    只把边界条款换成上面的 `MapsTo`，并额外把 `MapsTo h U U` 也放进胞腔版的输出（§47 的胞腔版只在证明内部用它）。
+    逐片映射的 `IsPLOn`、局部单射、纤维 ≤ 2、支撑外纤维不变与双点集精确等式
+    `doublePointSet (P.piecewise (h ∘ D) D) D.domain = doublePointSet D D.domain \ branchCarrier cb`
+    全部不变。
+- **为什么 `MapsTo` 就够：逐条核对了双点集等式实际用到的假设。**
+  `doublePointSet_piecewise_postcomp` 只用 `hhinj`（`h` 单射）、`hhfix`（`EqOn h id Uᶜ`）、
+  `hhmap`（`MapsTo h U U`）、`hinjP`、`hinjQU`、`hPcQU`、`hdisj`、`hSU`、`hclean`；
+  `isPLOn_piecewise_postcomp_of_separated` 只用 `hF`、两块多面体性、`hloc`、`hcard`、`hinjP`、
+  `hhpl`、`hhinj`、`hhfix`、`hseamU`、`hinjPcU`。**两条都不碰边界条款。**
+  在 `BranchComplexityDrop.lean` 与 `BranchCaseThreeFour.lean` 里，§48 的双条件条款也只是被原样转出，
+  从未被消费（已 grep 核对：`hhbd` 只出现在 `obtain` 与 `exact` 的转出位置）。
+- **确实需要比 `MapsTo` 更强的那一步，以及为什么：** 把割开后的 `g := P.piecewise (h ∘ D) D`
+  重新认成同一对 `(BdM, B)` 上的 `NormalSingularCellData`。该结构的
+  `image_inter_boundary : g '' g.domain ∩ BdM = Set.range g.boundary` 是一条**等式**，
+  只有 `MapsTo h B B` 推不出来；而按上面两条负结果，在触边分支端点处它对前推模型是假的——
+  端点被推离 `Bd M`，新胞腔的边界圆不再整条落在 `Bd M` 上。
+  因此正确的下一步不是去找更强的条款，而是承认新胞腔的边界圆被推进了内部，
+  按 Moise 的做法在 `Bd M` 的双领环里把它拉回（或改用"在 `Bd M` 上不动、只在内部推开"的两步构造）。
+  这条现在是**明确的新义务**，不再是 §48 那条已被证伪的"相切收尾模型"。
+  本次交付的三条结论都不依赖它。
+- 未做（保持 §52 的分工）：`BranchComplexityDrop` 与 `BranchCaseThreeFour` 仍带 §48 的双条件形式，
+  没有改成前推形式；改法是机械的（把两处的 `hhbd` 条款换成本节的 `MapsTo` 条款并改调本节的两条），
+  但会动到已进整合分支的两个模块，按本轮范围未做。
+- 验证：`BranchSeparationBoundary` 聚焦检查 exit=0（10.2 秒）、零 warning；
+  `.lake/scratch/AuditE3BoundarySeparation.lean` 的 3 条 `#print axioms` 全部只含
+  `propext`、`Classical.choice`、`Quot.sound`。合并 `origin/codex/moise-integration`（`e624b650b`）后
+  `fresh.py` 报 forbidden=0、stale=0、missing=0；全程无其它 `lean.exe`。
