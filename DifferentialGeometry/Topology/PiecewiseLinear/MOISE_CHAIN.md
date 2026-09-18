@@ -682,3 +682,31 @@ Moise 每一章开头"不妨设某映射是 PL 的"都是这一条。分三个�
 
 这条是"不妨设某映射是 PL 的"在二维带边界情形的实际生产者（边界已是单纯映射时）。
 
+## 2026-09-18 第二轮：滑距不受限，于是分支只需一张乘积邻域
+
+### F：`ModelSlideLong.lean` / `ChartSlideLong.lean`
+
+把前一轮固定滑距 1 的模型按滑距 `d` 与锥度半径 `R` 参数化：
+`slideAmountLong d R = max 0 (min (d * (1 - |y| - |z|)) ((R - |x|)/2))`，
+`slideMapLong d R p = (p.1 - slideAmountLong d R p, p.2.1, p.2.2)`。
+
+- 单射性只用到"锥度对 `x` 是 (1/2)-Lipschitz 而宽度因子不含 `x`"，与 `d` 无关；
+  故**滑距可以任意大，代价全在锥度半径**：`disjoint_slideMapLong_image_slideBandA` 的定量条件是
+  `0 ≤ d`、`c + 2*d ≤ R`、`c - d < a`。
+- `slideMapLong` 只动第一坐标，所以 `bijOn_slideMapLong_prod` 给出：任意
+  `T ⊆ ℝ × ℝ` 对应的 `{p | p.2 ∈ T}` 被双射保持。取半空间或其边界平面即得端点处
+  "滑动与 `Bd M` 相切"，不必另造半空间模型。
+- `ChartSlideLong.lean` 把它经 PL 图卡共轭：整体逐片仿射、整体单射、支撑外恒等、分离两条带的像。
+
+**这改变了 E3 §44 的计划**：既然滑距无上界，就不需要把有限多张 crossing 图卡沿分支排成链、
+再在重叠上插值；只要分支有**一张沿弧的乘积邻域**，一次滑动即可清掉整条触边分支。
+下一步的正确目标因此是乘积邻域（沿弧的相容平凡化），而不是逐张图卡的同向推移。
+
+### H：`CapDeletion.lean`
+
+把封盘复形的面集等式翻成载体等式（`capComplex_space`、`space_inter_coneComplex_space`、
+`capComplex_space_sdiff_coneComplex_space`），再消费 `SphericalDiskComplement.lean` 现成的
+`IsPLSphere.isPLBall_closure_sdiff`，得到删盘识别
+`isPLBall_space_of_isPLSphere_capComplex`：封盘后是 PL 2-球面时，原曲面是 PL 2-球（盘）。
+唯一额外前提是 `A.space ⊆ closure (A.space \ L.space)`（曲面是它去掉边界圆后的闭包），
+按车道规矩写成显式前提；它的组合 2-流形版生产者尚未写。
