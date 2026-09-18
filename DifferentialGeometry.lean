@@ -3368,6 +3368,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergen
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.DomainMetric
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.FixedDomain
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.Maps
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.Exhaustion
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.MetricSource
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.Restriction
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Defs
@@ -5588,6 +5589,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborho
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedGoodPointBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedMixedCurvature
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedComparisonComposition
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedModelConvergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedModelComparisonBridge
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedShiTerminal
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedSourceCurvature
@@ -8395,6 +8397,7 @@ import DifferentialGeometry.Topology.Ends.EscapingComponent
 import DifferentialGeometry.Topology.Ends.FiniteEnds
 import DifferentialGeometry.Topology.Ends.ProductLineEnds
 import DifferentialGeometry.Topology.Exhaustion
+import DifferentialGeometry.Topology.ConnectedExhaustion
 import DifferentialGeometry.Topology.FiberBundle.Compact
 import DifferentialGeometry.Topology.FiberBundle.FiniteClosed
 import DifferentialGeometry.Topology.FiberBundle.Separation

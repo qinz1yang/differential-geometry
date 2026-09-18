@@ -12,7 +12,7 @@ namespace DifferentialGeometry.CheegerGromovCompactness
 open Filter Set
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
-open scoped Manifold ContDiff
+open scoped _root_.Manifold ContDiff
 
 universe u uE uH
 
@@ -85,12 +85,17 @@ theorem PointedRiemannianConvergenceMaps.eventually_image_closed_ball_subset
     _ = ENNReal.ofReal (L * A) := (ENNReal.ofReal_mul (by linarith : 0 ≤ L)).symm
 
 
-theorem PointedRiemannianConvergenceMaps.exists_eventually_image_compact_subset_ball
+omit [CompleteSpace E] in
+theorem PointedRiemannianConvergenceMaps.exists_eventually_image_compact_subset_ball_of_metric_upper
     [PreconnectedSpace P.M]
     (F : PointedRiemannianConvergenceMaps X P phi)
-    (C : MetricConvergenceData F)
-    (href : ∀ i, (C.domain i).referenceMetric = (C.domain i).limitMetric)
-    (hcomplete : MetricComplete P) {K : Set P.M} (hK : IsCompact K) :
+    (hcomplete : MetricComplete P) {L : ℝ} (hL : 0 < L)
+    (hupper : ∀ K : Set P.M, IsCompact K → ∀ᶠ i in atTop,
+      ∀ z ∈ K, ∀ v : TangentSpace I z,
+        (X.obj (phi i)).metric.inner (F.map i z)
+          (mfderiv I I (F.map i) z v) (mfderiv I I (F.map i) z v) ≤
+          L ^ 2 * P.metric.inner z v v)
+    {K : Set P.M} (hK : IsCompact K) :
     ∃ A : ℝ, 0 < A ∧ ∀ᶠ i in atTop, K ⊆ F.source i ∧
       F.map i '' K ⊆
         riemannianClosedBallOf (X.obj (phi i)).metric (X.obj (phi i)).basepoint A := by
@@ -110,12 +115,45 @@ theorem PointedRiemannianConvergenceMaps.exists_eventually_image_compact_subset_
       ENNReal.ofReal_ne_top).mp
     rw [ENNReal.toReal_ofReal hR.le]
     exact (hB ⟨x, hx, rfl⟩).trans (by dsimp only [R]; linarith [le_max_left B 0])
-  refine ⟨2 * R, by positivity, ?_⟩
-  filter_upwards [F.eventually_image_closed_ball_subset C href hcomplete P.basepoint
-    hR.le (by norm_num : (1 : ℝ) < 2)] with i hi
-  refine ⟨hKR.trans hi.1, ?_⟩
-  have hbase : F.map i P.basepoint = (X.obj (phi i)).basepoint := F.basepoint_map i
-  rw [← hbase]
-  exact (Set.image_mono hKR).trans hi.2
+  have hc : RiemannianMetricComplete (I := I) P.metric :=
+    ⟨MetricComplete.complete P hcomplete⟩
+  let B := riemannianClosedBallOf P.metric P.basepoint (3 * R + 1)
+  have hBcompact : IsCompact B := hc.closedEBall_isCompact _ _
+  obtain ⟨N, hN⟩ := F.source_exhausts.subset B hBcompact
+  refine ⟨L * R, mul_pos hL hR, ?_⟩
+  filter_upwards [hupper B hBcompact, eventually_ge_atTop N] with i hi hNi
+  have hin : K ⊆ B := hKR.trans (riemannianClosedBallOf_mono _ _ (by linarith))
+  refine ⟨hin.trans (hN i hNi), ?_⟩
+  rintro _ ⟨y, hy, rfl⟩
+  have hp : P.basepoint ∈ riemannianClosedBallOf P.metric P.basepoint R := by
+    change riemannianEDistOf P.metric P.basepoint P.basepoint ≤ ENNReal.ofReal R
+    rw [riemannianEDistOf_self]
+    exact bot_le
+  have hdist := edistOf_map_le_of_metric_upper_on_buffered_ball
+    P.metric (X.obj (phi i)).metric (F.partialDiffeomorph i) P.basepoint
+    P.basepoint y hR.le (by linarith : 3 * R < 3 * R + 1) hL (hN i hNi) hi hp (hKR hy)
+  change riemannianEDistOf (X.obj (phi i)).metric (X.obj (phi i)).basepoint (F.map i y) ≤ _
+  rw [← F.basepoint_map i]
+  exact hdist.trans ((mul_le_mul' le_rfl (hKR hy)).trans_eq
+    (ENNReal.ofReal_mul hL.le).symm)
+
+theorem PointedRiemannianConvergenceMaps.exists_eventually_image_compact_subset_ball
+    [PreconnectedSpace P.M]
+    (F : PointedRiemannianConvergenceMaps X P phi)
+    (C : MetricConvergenceData F)
+    (href : ∀ i, (C.domain i).referenceMetric = (C.domain i).limitMetric)
+    (hcomplete : MetricComplete P) {K : Set P.M} (hK : IsCompact K) :
+    ∃ A : ℝ, 0 < A ∧ ∀ᶠ i in atTop, K ⊆ F.source i ∧
+      F.map i '' K ⊆
+        riemannianClosedBallOf (X.obj (phi i)).metric (X.obj (phi i)).basepoint A := by
+  apply F.exists_eventually_image_compact_subset_ball_of_metric_upper hcomplete
+    (by norm_num : (0 : ℝ) < 2) ?_ hK
+  intro K' hK'
+  obtain ⟨N, hN⟩ := exists_pointed_full_ambient_quadratic_control C href K' hK'
+    3 (by norm_num)
+  filter_upwards [eventually_ge_atTop N] with i hi
+  intro z hz v
+  have herr := (abs_le.mp ((hN i hi).2 z hz v)).2
+  nlinarith
 
 end DifferentialGeometry.CheegerGromovCompactness
