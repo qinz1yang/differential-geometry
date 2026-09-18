@@ -2335,3 +2335,47 @@ exists_affineIndependent_openSimplex_subset` 取四面体，取 `c`、`d` 为两
 第 3 层的耦合（`z` 同时要在 `openSimplex Fm` 里和在 `segment p d` 上）是整件事里
 唯一不是例行公事的地方：它把 `p` 与 `z` 绑在一起，应当**先解它再定其余的点**，
 理由与第 29 节相同——早发现的约束会变成简化。
+
+## 34. 2026-09-18 耦合已解：先定 `z` 再沿射线取 `p`（验算＋第二条径向判据）
+
+### 协调者的参数化是对的，且区间可显式算出
+
+在 `T₁ = {c, m, A, B}` 的重心坐标里验算（`Fm = {m,A,B}` 是 `c` 的对面，`d = 2m - c`）：
+
+- `d` 的 `T₁` 重心坐标是 `(-1, 2, 0, 0)`（和为 1，`λ_c = -1 < 0`，故 `d` 在面 `λ_c = 0` 的另一侧）；
+- `z ∈ openSimplex Fm` 写成 `(0, μ_m, μ_A, μ_B)`，三个 `μ` 全正；
+- `p = d + t • (z - d)` 的坐标是 `(t - 1, 2 + t(μ_m - 2), t μ_A, t μ_B)`。
+
+于是 `p ∈ openSimplex T₁` **当且仅当** `t ∈ (1, 2/(2 - μ_m))`，
+区间非空等价于 `μ_m > 0`，而这正是 `z` 在**相对内部**给的。
+所以耦合确实化成"先选 `z`（面内二参数），再在一个非空开区间里选 `t`（一参数）"。
+
+两条附带结论，都是自动的，不必另设条件：
+
+- `ℓ p = r + (t - 1)(ℓ c - r) < r`（重心坐标上 `ℓ` 是仿射的，`λ_c = t - 1 > 0`、`ℓ c - r < 0`），
+  即第 31 节新加的 `hℓp` 自动成立，不是额外选点条件；
+- `z ∈ segment ℝ p d`：由 `z - d = (1/t) • (p - d)` 且 `1/t ∈ (0,1)` 得，也是自动的。
+
+两条径向条件 `IsRadiallyInjective p {c,d}` 与 `p {c,z}` **同时**归结为一件事：
+**`c` 不在过 `p`、`d` 的直线上**。因为那条直线上 `λ_A = t μ_A`（`μ_A > 0`、`t > 0` 故非零），
+而 `λ_A(c) = 0`。`z` 也在这条直线上，所以两条用同一个理由。
+
+### 交付：第二条径向判据
+
+`isRadiallyInjective_pair_of_linearIndependent`（`BallPairArc.lean`）：
+`LinearIndependent ℝ ![x - p, y - p]` ⟹ `IsRadiallyInjective p ({x, y} : Set E)`。
+与第 33 节的"顶点在两点之间"合起来，覆盖构型里全部三条径向条件：
+`p {c,d}`、`p {c,z}` 用本条（`c` 与 `d`／`z` 对 `p` 不共线），`q {z,d}` 用第 33 节。
+
+证明：交叉情形给出 `y - p = t • (x - p)`，即 `(-t) • (x-p) + 1 • (y-p) = 0`，
+由 `LinearIndependent.pair_iff`（Mathlib `LinearIndependent/Lemmas.lean:270`）得 `1 = 0`。
+需要两侧对称，故先自证一条 `hswap`：`LinearIndependent ℝ ![u,v] → LinearIndependent ℝ ![v,u]`
+（Mathlib 无 `pair_symm`，用 `pair_iff` 两行即可）。
+
+聚焦检查 `BallPairArc` exit=0（10.9 秒）、零 warning；
+`.lake/scratch/AuditHRadial.lean` 两项仅 `propext`、`Classical.choice`、`Quot.sound`。
+
+### 剩余（未开始，不报区间）
+
+存在性实例的第 1、2 层（中点仿射无关三条；泛函 `ℓ`，路线均已核对），
+以及把本节的验算写成 Lean（重心坐标那一段是主要工作量）。之后是第 3 步黏合与第 4 步链归纳。
