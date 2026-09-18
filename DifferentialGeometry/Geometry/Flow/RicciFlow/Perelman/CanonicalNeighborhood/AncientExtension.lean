@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.TerminalBackwardSlabConstruction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.BlowupConvergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.RemotePointTriangle
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ClosedOpenPropagation
@@ -218,7 +219,9 @@ theorem first_backward_slab {kappa sigma : ℝ} {Phi : ℝ → ℝ}
       ∀ (X : NormalizedSequence.{u} eps kappa sigma Phi) (L : TerminalLimit X),
         ∃ delta : ℝ, ∃ hd : 0 < delta,
           Nonempty (BackwardExtension L (RealTimeInterval.closed (-delta) 0 (by linarith))) := by
-  sorry
+  exact exists_backward_extension_of_model_curvature_bound
+    (KappaSolutions.ancientKappa_modelCurvatureBoundNearBase
+      (I := I3) (by simp [ThreeSpace]) hkappa) hsigma hPhi
 
 theorem recentered_source_bound {kappa sigma : ℝ} {Phi : ℝ → ℝ}
     (hkappa : 0 < kappa) (hsigma : 0 < sigma) (hPhi : AdmissiblePinchingFunction Phi) :

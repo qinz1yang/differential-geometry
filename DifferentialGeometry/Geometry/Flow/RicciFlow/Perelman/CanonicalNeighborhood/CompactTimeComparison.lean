@@ -17,7 +17,8 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
   {N : Type*} [TopologicalSpace N] [ChartedSpace H N] [IsManifold I ∞ N]
   [T2Space N] [SigmaCompactSpace N] [BoundarylessManifold I N]
-  {M : Type*} [TopologicalSpace M] [ChartedSpace ThreeSpace M] [IsManifold I3 ∞ M]
+  {M : ℕ → Type*} [∀ n, TopologicalSpace (M n)] [∀ n, ChartedSpace ThreeSpace (M n)]
+  [∀ n, IsManifold I3 ∞ (M n)]
 
 theorem eventually_metricComparisonOn_of_local_flow_convergence
     (U : TopologicalSpace.Opens N) {D : RealTimeInterval}
@@ -30,7 +31,7 @@ theorem eventually_metricComparisonOn_of_local_flow_convergence
       ∃ N : ℕ, ∀ n ≥ N, ∀ t ∈ Icc c b,
         metricDerivNormSupOn K r ((S n).base.metric t)
           ((G.base.metric t).restrictOpen U) R < epsilon)
-    (g : ℕ → ℝ → SmoothRiemannianMetric I3 M) (F : ℕ → N → M)
+    (g : ∀ n, ℝ → SmoothRiemannianMetric I3 (M n)) (F : ∀ n, N → M n)
     (hpair : ∀ n t, ∀ x : U, ∀ v w : TangentSpace I x,
       ((S n).base.metric t).inner x v w =
         (g n t).inner (F n x) (mfderiv I I3 (F n) (x : N) v) (mfderiv I I3 (F n) (x : N) w))

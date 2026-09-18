@@ -1,5 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.TerminalCompatibleBackwardFlow
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.OpenCover
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.TerminalNonnegativeCurvature
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.MetricComparison
 
 set_option autoImplicit false
 noncomputable section
@@ -49,6 +51,8 @@ theorem exists_backward_metric_limit_of_terminal_scalar_bound
                         IsSolutionOn ({ base.metric := G } :
                           SolutionOn (I := I3) (M := P.limit.M)
                             (RealTimeInterval.closed (-delta / 2) 0 (by linarith))) ∧
+                        (∀ t ∈ Icc (-delta / 2) 0, SecLower (G t) 0 univ) ∧
+                        (∀ t ∈ Icc (-delta / 2) 0, RiemannianMetricComplete (G t)) ∧
                         ∀ n, ∀ K : Set (U n), IsCompact K → ∀ p : ℕ,
                           ∀ epsilon : ℝ, 0 < epsilon → ∃ j : ℕ, ∀ i ≥ j,
                             ∀ t ∈ Icc (-delta / 2) 0,
@@ -109,13 +113,56 @@ theorem exists_backward_metric_limit_of_terminal_scalar_bound
     exact mem_iUnion.mp hy
   obtain ⟨G, hGsol, hG⟩ := exists_solution_of_compatible_open_cover U hUcover g hgsol
     (fun n m t ht => hoverlap n m (U n ⊓ U m) inf_le_left inf_le_right t ht)
-  refine ⟨U, fun _ => rfl, hexhausts, hcompact,
-    N, S, hS, hsource, hmetric, rho, hrho, G, ?_, hGsol, ?_⟩
-  · apply SmoothRiemannianMetric.ext_inner
+  have hG0 : G 0 = P.limit.metric := by
+    apply SmoothRiemannianMetric.ext_inner
     intro y v w
     obtain ⟨n, hyn⟩ := hUcover y
     have heq := (hG n 0 ⟨by linarith, le_rfl⟩).trans (hg0 n)
     exact congrArg (fun k : SmoothRiemannianMetric I3 (U n) => k.inner ⟨y, hyn⟩ v w) heq
+  have hsectional : ∀ t ∈ Icc (-delta / 2) 0, ∀ y : P.limit.M,
+      ∀ v w : TangentSpace I3 y, 0 ≤ metricRm04StandardAt (G t) y v w w v := by
+    intro t ht y v w
+    obtain ⟨n, hyn⟩ := hUcover y
+    have hn := secLower_zero_of_normalized_pullback_metric_convergence X hPhi P
+      (U n) (hbase n) (N n) rho hrho t ht.2
+      (fun i => (S n i).base.metric t) (g n t) (P.limit.metric.restrictOpen (U n))
+      (hsource n) (fun i => hmetric n i t) (by
+        intro K hK p epsilon hepsilon
+        obtain ⟨j, hj⟩ := hconv n K hK p epsilon hepsilon
+        exact ⟨j, fun i hi => hj i hi t ht⟩)
+    have hn' (x : U n) (v w : TangentSpace I3 x) :
+        0 ≤ metricRm04StandardAt (g n t) x v w w v := by
+      have hvec : (fun i => ![v, w, w, v] i) = vec4 (I := I3) v w w v := by
+        funext i
+        fin_cases i <;> simp [vec4]
+      simpa only [zero_mul, metricRm04StandardAt_apply, hvec] using hn x (mem_univ _) v w
+    have hh' := hn' ⟨y, hyn⟩ v w
+    rw [← hG n t ht, metricRm04StandardAt_restrictOpen (I := I3) (G t) (U n)
+      (⟨y, hyn⟩ : U n) v w w v,
+      mfderiv_subtype_val (I := I3) (U n) (⟨y, hyn⟩ : U n)] at hh'
+    exact hh'
+  refine ⟨U, fun _ => rfl, hexhausts, hcompact,
+    N, S, hS, hsource, hmetric, rho, hrho, G, hG0, hGsol, ?_, ?_, ?_⟩
+  · intro t ht y _hy v w
+    have hvec : (fun i => ![v, w, w, v] i) = vec4 (I := I3) v w w v := by
+      funext i
+      fin_cases i <;> simp [vec4]
+    simpa only [zero_mul, metricRm04StandardAt_apply, hvec] using hsectional t ht y v w
+  · intro t ht
+    apply complete_at_earlier_time_of_ricci_nonnegative
+      ({ base.metric := G } : SolutionOn (I := I3) (M := P.limit.M)
+        (RealTimeInterval.closed (-delta / 2) 0 (by linarith))) hGsol
+      (a := -delta / 2) (b := 0) (fun _ h => h) (fun _ h => h)
+    · intro r hr y v
+      change 0 ≤ metricRicciAt (G r) y (vec2 v v)
+      rw [metricRicciAt_apply_eq_ricciTensor (I := I3) (G r) y v v]
+      exact DifferentialGeometry.Geometry.Riemannian.BonnetMyers.ricci_nonneg_of_sec
+        (G r) y ((metricRm04At_mem_tensor04SectionalNonnegativeCone_iff (G r) y).mpr
+          (hsectional r ⟨hr.1.le, hr.2.le⟩ y)) v
+    · change RiemannianMetricComplete (G 0)
+      rw [hG0]
+      exact hcomplete
+    · exact ht
   · intro n K hK p epsilon hepsilon
     obtain ⟨j, hj⟩ := hconv n K hK p epsilon hepsilon
     refine ⟨j, fun i hi t ht => ?_⟩
