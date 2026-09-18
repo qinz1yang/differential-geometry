@@ -1531,3 +1531,69 @@ M1 只给"PL 同胚于一个锥"，不给"是一个锥"，所以绕不过去。
 给两个交于 2-盘的 3-球但**不带弧**，需要再造一条贯穿两球、与该盘交于一个内点的标准弧。
 `coneSet_pair_eq_union_segment`（第 10 节）把标准弧写成从锥顶出发的两条直线段，
 所以"两个锥、线段在公共盘上对接"的模型有望显式构造而非存在性给出。未开始，未估成本。
+
+## 16. 2026-09-18 第 3 步模型：三项中的第 1 项已闭合，第 2、3 项给证据不给估计
+
+### 第 1 项 — done：单纯形是从任意内点出发、对其边界球面的锥（`BallPairSimplex.lean`）
+
+`isPLBallPair_convexHull_of_mem_openSimplex`：设 `T` 仿射无关、`T.card = n + 2`、
+`p ∈ openSimplex T`、`J.faces ⊆ (simplexBoundary T hT).faces`、`J.space = {a, b}`、`a ≠ b`，则
+
+    IsPLBallPair n 1 (convexHull ℝ T) (segment ℝ p a ∪ segment ℝ p b)
+
+取 `n = 2`（`T.card = 4`，四面体）就是**三维球带一条标准正常嵌入弧**，完全显式：
+弧是从内点 `p` 到边界球面上两个不同点的两条直线段。
+
+三条使能事实**全部已在树中**，不需要新造：
+
+- `SimplexPush.lean:13 coneComplex_simplexBoundary_space hT hcard hp`：**任意顶点**版本
+  （不是只有 `stdCenter`），`(coneComplex (isConeBase_simplexBoundary hT hcard hp)).space = convexHull ℝ T`。
+  之前第 12 节猜这条可能只有标准版，是错的；它在 `Homogeneity.lean:23`、`SimplexCornerChart.lean:75` 已被使用。
+- `SimplexBoundary.lean:288 isPLSphere_biUnion_erase T hT (hcard : T.card = n + 2)` 加
+  `SimplexBoundary.lean:159 simplexBoundary_space`：一般 `T` 的边界是 `IsPLSphere n`，
+  不限于 `stdVertices`。
+- `ConeBase.lean:89 isConeBase_simplexBoundary`：`p ∈ openSimplex T` 即锥基。
+
+证明四行：拼出 `IsConeBase`、`IsPLSphere`，喂第 10 节的 `isPLBallPair_coneSet_arc`，
+再用上面第一条把 `coneSet p (simplexBoundary T hT).space` 改写成 `convexHull ℝ T`。
+
+聚焦检查 `BallPairSimplex` exit=0（10.4 秒）、零 warning；
+`.lake/scratch/AuditHBallPairSimplex.lean`（同时导入 `SimplexBallPair`）一项仅
+`propext`、`Classical.choice`、`Quot.sound`。
+
+### 第 2 项 — 证据，未测试，**不给估计**
+
+目标：两个四面体沿一张三角面相接，交恰为该面。
+
+- 树里**有**一个"两球交恰为 2-盘"的完整构造：`SimplexBallPair.lean:46
+  exists_isPLBall_pair_with_disk_inter`，其交由
+  `coneComplex_simplexAvoiding_inter_convexHull` 精确给出。但它的两个球是
+  **`P` = 从重心对 `simplexAvoiding`（去掉一张面的边界，是 2-**盘**）的锥**、
+  **`Q` = `convexHull (insert p F)`（四面体）**。
+  `Q` 满足第 1 项，`P` **不满足**：它的锥基是盘不是球面，故不满足 `IsPLBallPair` 的
+  `IsPLSphere m L.space` 条款。所以这条现成构造不能直接复用。
+- 两个四面体共面的版本：grep 未找到现成引理（搜 `convexHull ... ∩ convexHull ... = convexHull`
+  与 `inter_convexHull` 只命中 `IsGlueIso` 的边界迹与 `ConeFreeFace` 的锥交，都不是）。
+- 数学论证是清楚的：取在公共面上为零、在两个对顶点上异号的线性泛函 `ℓ`，
+  则两球分别落在 `{ℓ ≤ 0}`、`{ℓ ≥ 0}`，交落在 `{ℓ = 0}`；再用重心坐标证
+  `convexHull T₁ ∩ {ℓ = 0} = convexHull F`（`x = Σλᵢvᵢ + λ₄a`，`ℓ x = λ₄ ℓ a = 0` 且 `ℓ a ≠ 0` 故 `λ₄ = 0`）。
+  **未在 Lean 里试过**，故按要求不报行数区间。
+
+### 第 3 项 — 证据，未测试，**不给估计**
+
+目标：两段弧在公共面上恰好接在同一个内点 `z`。
+
+- 需要 `coneSet p₁ {z, v} ∩ F = {z}`，即从 `p₁` 出发的两条线段只在 `z` 碰 `F`。
+  这要求远端点 `v ∈ ∂T₁ \ F`，是对模型选点的约束，不是额外定理。
+- 另外 `(C∩D, C∩D∩A)` 这一对是 `IsPLBallPair 1 0 F {z}`：`F` 是三角形（2-盘），`z` 内点，
+  由第 1 项的 `n = 1` 情形给 `F = coneSet z (∂F)`；但子对要 `coneSet z J.space = {z}`，
+  即 `J` 取**空复形**（`J.space = ∅`），且要 `IsPLBall 0 {z}`（单点是 0-球）。
+  空复形与单点这两条细节**未查证**树中是否现成。
+- 同样**未在 Lean 里试过**，不报区间。
+
+### 关于弧的形状：确认是"一个穿越点"
+
+协调者问模型该取一个穿越点还是两个。按第 3 步的三对来看：
+`(C∩D, C∩D∩A)` 里 `C∩D` 是 2-球、`C∩D∩A` 必须是 `IsPLBall 0`，即**一个点**。
+所以是**一个穿越点**：弧在公共盘上只穿一次，`A` 是 `v → p₁ → z → p₂ → w` 的折线。
+两个穿越点的版本不是这里要的。
