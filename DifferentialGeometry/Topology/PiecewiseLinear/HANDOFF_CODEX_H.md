@@ -2503,3 +2503,60 @@ exists_affineIndependent_openSimplex_subset` 取四面体，取 `c`、`d` 为两
 ### 剩余
 
 第 3 步（相对黏合）与第 4 步（沿弧的链归纳）。第 3 步的输入现在齐了。
+
+## 38. 2026-09-18 第 3 步（相对球对黏合）— done（`BallPairRelativeGluing.lean`）
+
+    isPLBallPair_union_of_coneSet_disk (hn : finrank ℝ E = 3)
+      (hfin₁ hfin₂ hfin₀) (hL₁ : IsConeBase p₁ L₁) (hL₂ : IsConeBase p₂ L₂) (hL₀ : IsConeBase z L₀)
+      (hS₁ hS₂ : IsPLSphere 2 …) (hS₀ : IsPLSphere 1 L₀.space)
+      (hD₁ : coneSet z L₀.space ⊆ L₁.space) (hD₂ : … ⊆ L₂.space)
+      (hy₁ : y₁ ∈ L₁.space) (hy₁D : y₁ ∉ coneSet z L₀.space) (hy₂ hy₂D 同)
+      (hmeet : coneSet p₁ L₁.space ∩ coneSet p₂ L₂.space = coneSet z L₀.space) :
+      IsPLBallPair 2 1 (coneSet p₁ L₁.space ∪ coneSet p₂ L₂.space)
+        (coneSet p₁ {z, y₁} ∪ coneSet p₂ {z, y₂})
+
+即：两块**锥形**球对沿公共边界盘黏合，盘的锥顶 `z` 就是弧的穿越点，两条弧的远端点各自落在自己那块的
+边界球面上、盘外——则并仍是球对。非空：模型自身（第 37 节）恰好满足全部假设。
+
+### 设计更正（这一条值得记下来）
+
+原计划把第 3 步写成"给 `IsPLBallPair 2 1 C₁ (C₁ ∩ A)` 两份加黏合条件"。**不行**：
+`IsPLBallPair` 只说 `C₁` 与**某个**锥对 PL 同胚，锥不在 `C₁` 里；而 M2
+（`exists_isPLHomeomorphOn_coneSet_pair_of_disk_marked`）要的是 `D ⊆ Lc.space`、
+`coneSet p Lc.space` 就是那一块——**原位**锥数据。两边都要原位。
+所以第 3 步的源侧假设必须写成原位锥数据（对消费者不是负担：Moise 那边的块本来就是单纯形／星）。
+同理模型侧也必须原位，因此第 37 节的打包结论不够用，本轮把模型加强成
+`exists_cutModel_data`（23 条），`exists_isPLBallPair_cut_model` 退化成它的推论。
+**早暴露的接口形状差异会变成一次加强，晚暴露会变成重写。**
+
+### 证明骨架（六步，全部现成件）
+
+1. `IsPLSphere.exists_isPLHomeomorphOn`（新，三行）：同维 PL 球面之间必有 PL 同胚——
+   `IsPLSphere n S` 按定义就是"与 `stdSimplexBoundary (n+1)` PL 同胚"，两边复合即可。
+   跨空间（`E → F`）也成立。
+2. `exists_isPLHomeomorphOn_coneSet_pair hL₀ … hf₀`：把 1-球面的同胚锥化成盘的同胚 `g`，
+   **且把锥顶送锥顶**，即 `g z = w`。这就是"盘上带标记点的同胚"，不需要另造
+   Alexander 技巧或 `stdCenter` 参数化。
+3. M2 两次，**都以同一个 `g` 为起点**：得 `G₁`、`G₂`，`EqOn Gᵢ g D` 是构造给出的，
+   于是 `EqOn G₁ G₂ (C₁ ∩ C₂)` 免费（第 14 节已经预告过这一点）。
+4. `IsPLHomeomorphOn.piecewise`：还要 `G₁ '' (C₁ ∩ C₂) = M₁ ∩ M₂`，由 `hmeet`＋模型的
+   `hmeetM`＋`hg.image_eq` 得到。
+5. 弧的像：`Φ '' (A₁ ∪ A₂) = Φ''A₁ ∪ Φ''A₂`，各用 `EqOn Φ Gᵢ Cᵢ` 化成 M2 的结论。
+6. `IsPLBallPair.of_isPLHomeomorphOn hpairM hΦ.symm`：方向是**模型 → 源**，
+   所需的 `invFunOn Φ '' 模型弧 = 源弧` 用 `BijOn.invOn_invFunOn.1.mono harcsub |>.image_image`。
+
+两条小工具一并交付：`pair_inter_coneSet`（`{z,y} ∩ coneSet z X = {z}`，只要 `y ∉ coneSet z X`）
+与 `pair_eq_inter_coneSet_union`（M2 的 `hJsplit` 形状）。
+M2 的 `hy : y ∈ closure (S \ D) \ D` **不必算闭包**：`y ∈ S \ D` 经 `subset_closure` 即可。
+
+坑：`rintro ⟨hx | hx, hxc⟩` 与 `rintro x (rfl | hx)` 在 `x = z`（`z` 是定理变量、`x` 是局部变量）
+这一支会把 **`z` 消掉**，随后 `apex_mem_coneSet z X` 报 `unknown identifier z`。
+改成 `rcases Set.mem_insert_iff.mp hx` ＋ 显式 `rw` 即可。
+
+聚焦检查 `BallPairCutConfig` exit=0（14.7 秒）、`BallPairRelativeGluing` exit=0（11.0 秒），
+均零 warning；`.lake/scratch/AuditHRelGluing.lean` 六项仅
+`propext`、`Classical.choice`、`Quot.sound`。
+
+### 剩余
+
+第 4 步（沿弧的链归纳）。给 F 的输出形状见下一节。

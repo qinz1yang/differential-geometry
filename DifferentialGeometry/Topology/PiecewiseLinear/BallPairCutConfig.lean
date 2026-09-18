@@ -81,13 +81,33 @@ theorem mem_openSimplex_quadruple [DecidableEq E] {a b c e x : E} (hab : a ≠ b
     rw [← hx]
     abel
 
-theorem exists_isPLBallPair_cut_model [FiniteDimensional ℝ E] (hn : Module.finrank ℝ E = 3) :
-    ∃ (C₁ C₂ arc : Set E) (z : E),
-      IsPLBallPair 2 1 (C₁ ∪ C₂) arc ∧
-      IsPLBallPair 2 1 C₁ (C₁ ∩ arc) ∧
-      IsPLBallPair 2 1 C₂ (C₂ ∩ arc) ∧
-      IsPLBallPair 1 0 (C₁ ∩ C₂) {z} ∧
-      C₁ ∩ C₂ ∩ arc = {z} := by
+theorem coneSet_simplexBoundary_space {T : Finset E}
+    (hT : AffineIndependent ℝ ((↑) : T → E)) (hcard : 2 ≤ T.card) {p : E}
+    (hp : p ∈ openSimplex T) :
+    coneSet p (simplexBoundary T hT).space = convexHull ℝ (T : Set E) := by
+  classical
+  rw [← coneComplex_space_eq_coneSet (isConeBase_simplexBoundary hT hcard hp),
+    coneComplex_simplexBoundary_space hT hcard hp]
+
+theorem exists_cutModel_data [FiniteDimensional ℝ E] (hn : Module.finrank ℝ E = 3) :
+    ∃ (p₁ p₂ z y₁ y₂ : E) (L₁ L₂ L₀ : Geometry.SimplicialComplex ℝ E),
+      L₁.faces.Finite ∧ L₂.faces.Finite ∧ L₀.faces.Finite ∧
+      IsConeBase p₁ L₁ ∧ IsConeBase p₂ L₂ ∧ IsConeBase z L₀ ∧
+      IsPLSphere 2 L₁.space ∧ IsPLSphere 2 L₂.space ∧ IsPLSphere 1 L₀.space ∧
+      coneSet z L₀.space ⊆ L₁.space ∧ coneSet z L₀.space ⊆ L₂.space ∧
+      y₁ ∈ L₁.space ∧ y₁ ∉ coneSet z L₀.space ∧
+      y₂ ∈ L₂.space ∧ y₂ ∉ coneSet z L₀.space ∧
+      coneSet p₁ L₁.space ∩ coneSet p₂ L₂.space = coneSet z L₀.space ∧
+      coneSet p₁ L₁.space ∩ (coneSet p₁ ({z, y₁} : Set E) ∪ coneSet p₂ ({z, y₂} : Set E)) =
+        coneSet p₁ ({z, y₁} : Set E) ∧
+      coneSet p₂ L₂.space ∩ (coneSet p₁ ({z, y₁} : Set E) ∪ coneSet p₂ ({z, y₂} : Set E)) =
+        coneSet p₂ ({z, y₂} : Set E) ∧
+      coneSet z L₀.space ∩ (coneSet p₁ ({z, y₁} : Set E) ∪ coneSet p₂ ({z, y₂} : Set E)) = {z} ∧
+      IsPLBallPair 2 1 (coneSet p₁ L₁.space) (coneSet p₁ ({z, y₁} : Set E)) ∧
+      IsPLBallPair 2 1 (coneSet p₂ L₂.space) (coneSet p₂ ({z, y₂} : Set E)) ∧
+      IsPLBallPair 1 0 (coneSet z L₀.space) {z} ∧
+      IsPLBallPair 2 1 (coneSet p₁ L₁.space ∪ coneSet p₂ L₂.space)
+        (coneSet p₁ ({z, y₁} : Set E) ∪ coneSet p₂ ({z, y₂} : Set E)) := by
   classical
   obtain ⟨T, hT, hTcard, -, -, -⟩ :=
     exists_affineIndependent_openSimplex_subset (E := E) (n := 2) (by rw [hn]) (0 : E)
@@ -221,12 +241,105 @@ theorem exists_isPLBallPair_cut_model [FiniteDimensional ℝ E] (hn : Module.fin
       convexHull ℝ ((({d, m, A, B} : Finset E)) : Set E) =
       convexHull ℝ ((({m, A, B} : Finset E)) : Set E) :=
     convexHull_cut_inter hℓS hℓclt hℓdgt
-  refine ⟨convexHull ℝ ((({c, m, A, B} : Finset E)) : Set E),
-    convexHull ℝ ((({d, m, A, B} : Finset E)) : Set E), segment ℝ p c ∪ segment ℝ p d, z,
-    by rw [hcut]; exact hunion, ?_, ?_, ?_, ?_⟩
-  · rw [hleft.2]; exact hleft.1
-  · rw [hright.2]; exact hright.1
-  · rw [hinter]; exact hface.1
-  · rw [hinter]; exact hface.2
+  have hcard₁ : ({c, m, A, B} : Finset E).card = 2 + 2 := by
+    rw [Finset.card_insert_of_notMem hcmF, Finset.card_insert_of_notMem hmF, hFcard]
+  have hcard₂ : ({d, m, A, B} : Finset E).card = 2 + 2 := by
+    rw [Finset.card_insert_of_notMem hdmF, Finset.card_insert_of_notMem hmF, hFcard]
+  have hcard₀ : ({m, A, B} : Finset E).card = 1 + 2 := by
+    rw [Finset.card_insert_of_notMem hmF, hFcard]
+  have h2₁ : 2 ≤ ({c, m, A, B} : Finset E).card := by omega
+  have h2₂ : 2 ≤ ({d, m, A, B} : Finset E).card := by omega
+  have h2₀ : 2 ≤ ({m, A, B} : Finset E).card := by omega
+  have hcone₁ := coneSet_simplexBoundary_space hT h2₁ hp₁
+  have hcone₂ := coneSet_simplexBoundary_space hTin h2₂ hq
+  have hcone₀ := coneSet_simplexBoundary_space hFm h2₀ hz
+  have hA₁ : coneSet p ({z, c} : Set E) = segment ℝ p c ∪ segment ℝ p z := by
+    rw [coneSet_pair_eq_union_segment, Set.union_comm]
+  have hA₂ : coneSet q ({z, d} : Set E) = segment ℝ z d := by
+    rw [coneSet_pair_eq_union_segment, segment_union_segment_of_mem_segment hqs]
+  have harc : coneSet p ({z, c} : Set E) ∪ coneSet q ({z, d} : Set E) =
+      segment ℝ p c ∪ segment ℝ p d := by
+    rw [hA₁, hA₂, ← hleft.2, ← hright.2, ← Set.union_inter_distrib_right, hcut,
+      Set.inter_eq_right.mpr hunion.subset]
+  have hFmplane : convexHull ℝ ((({m, A, B} : Finset E)) : Set E) ⊆ {x : E | ℓ x = r} :=
+    convexHull_min (fun v hv => hℓS v (Finset.mem_coe.mp hv)) (convex_hyperplane ℓ.isLinear r)
+  have hcFm : c ∉ convexHull ℝ ((({m, A, B} : Finset E)) : Set E) := by
+    intro hmem
+    have hval : ℓ c = r := hFmplane hmem
+    rw [hℓc] at hval
+    linarith
+  have hdFm : d ∉ convexHull ℝ ((({m, A, B} : Finset E)) : Set E) := by
+    intro hmem
+    have hval : ℓ d = r := hFmplane hmem
+    rw [hℓd] at hval
+    linarith
+  have hFmsub₁ : convexHull ℝ ((({m, A, B} : Finset E)) : Set E) ⊆
+      (simplexBoundary ({c, m, A, B} : Finset E) hT).space := fun x hx =>
+    (simplexBoundary _ hT).convexHull_subset_space
+      (mem_simplexBoundary_faces_iff.mpr ⟨Finset.subset_insert c _,
+        ⟨m, Finset.mem_insert_self m _⟩, fun h => hcmF (h ▸ Finset.mem_insert_self c _)⟩) hx
+  have hFmsub₂ : convexHull ℝ ((({m, A, B} : Finset E)) : Set E) ⊆
+      (simplexBoundary ({d, m, A, B} : Finset E) hTin).space := fun x hx =>
+    (simplexBoundary _ hTin).convexHull_subset_space
+      (mem_simplexBoundary_faces_iff.mpr ⟨Finset.subset_insert d _,
+        ⟨m, Finset.mem_insert_self m _⟩, fun h => hdmF (h ▸ Finset.mem_insert_self d _)⟩) hx
+  refine ⟨p, q, z, c, d, simplexBoundary ({c, m, A, B} : Finset E) hT,
+    simplexBoundary ({d, m, A, B} : Finset E) hTin, simplexBoundary ({m, A, B} : Finset E) hFm,
+    simplexBoundary_faces_finite _ hT, simplexBoundary_faces_finite _ hTin,
+    simplexBoundary_faces_finite _ hFm, isConeBase_simplexBoundary hT h2₁ hp₁,
+    isConeBase_simplexBoundary hTin h2₂ hq, isConeBase_simplexBoundary hFm h2₀ hz, ?_, ?_, ?_,
+    ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · rw [simplexBoundary_space _ hT h2₁]
+    exact isPLSphere_biUnion_erase _ hT hcard₁
+  · rw [simplexBoundary_space _ hTin h2₂]
+    exact isPLSphere_biUnion_erase _ hTin hcard₂
+  · rw [simplexBoundary_space _ hFm h2₀]
+    exact isPLSphere_biUnion_erase _ hFm hcard₀
+  · rw [hcone₀]
+    exact hFmsub₁
+  · rw [hcone₀]
+    exact hFmsub₂
+  · exact vertex_mem_simplexBoundary_space hT (by simp) h2₁
+  · rw [hcone₀]
+    exact hcFm
+  · exact vertex_mem_simplexBoundary_space hTin (by simp) h2₂
+  · rw [hcone₀]
+    exact hdFm
+  · rw [hcone₁, hcone₂, hcone₀]
+    exact hinter
+  · rw [hcone₁, harc, hA₁]
+    exact hleft.2
+  · rw [hcone₂, harc, hA₂]
+    exact hright.2
+  · rw [hcone₀, harc]
+    exact hface.2
+  · rw [hcone₁, hA₁]
+    exact hleft.1
+  · rw [hcone₂, hA₂]
+    exact hright.1
+  · rw [hcone₀]
+    exact hface.1
+  · rw [hcone₁, hcone₂, harc, hcut]
+    exact hunion
+
+theorem exists_isPLBallPair_cut_model [FiniteDimensional ℝ E] (hn : Module.finrank ℝ E = 3) :
+    ∃ (C₁ C₂ arc : Set E) (z : E),
+      IsPLBallPair 2 1 (C₁ ∪ C₂) arc ∧
+      IsPLBallPair 2 1 C₁ (C₁ ∩ arc) ∧
+      IsPLBallPair 2 1 C₂ (C₂ ∩ arc) ∧
+      IsPLBallPair 1 0 (C₁ ∩ C₂) {z} ∧
+      C₁ ∩ C₂ ∩ arc = {z} := by
+  obtain ⟨p₁, p₂, z, y₁, y₂, L₁, L₂, L₀, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -,
+    hmeet, hI₁, hI₂, hI₀, hpair₁, hpair₂, hpair₀, hpair⟩ := exists_cutModel_data hn
+  refine ⟨coneSet p₁ L₁.space, coneSet p₂ L₂.space,
+    coneSet p₁ ({z, y₁} : Set E) ∪ coneSet p₂ ({z, y₂} : Set E), z, hpair, ?_, ?_, ?_, ?_⟩
+  · rw [hI₁]
+    exact hpair₁
+  · rw [hI₂]
+    exact hpair₂
+  · rw [hmeet]
+    exact hpair₀
+  · rw [hmeet]
+    exact hI₀
 
 end DifferentialGeometry.Topology.PiecewiseLinear
