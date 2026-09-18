@@ -3796,3 +3796,86 @@ D 的两条是真横截性，其余（`Finite`、面包含、`{q} ∈ N₁.faces
 
 **结论：本车道当前没有既未阻塞又属于有界引理的条目。**
 可做的只有 F5.2 的两条备选路线，那是开放式设计，不是本轮该起头的东西。
+
+### 19.142 F5.2 共享前置已闭合：“曲面各支跨越目标公共面”的确切陈述与生产者
+
+#### A. 陈述定案（先定陈述，再证）
+
+§19.102 / §19.141 说两条备选路线都先要“曲面各支跨越目标公共面”。把它写成 Lean 命题时，
+**“目标公共面”= 目标里那张公共面所在的仿射超平面**，即一个在该面上取零的仿射泛函 `ℓ : E →ᵃ[ℝ] ℝ`
+的零集；**“支”= 曲面沿折边 `s` 的那张片**，也就是 `s` 的两张余面（`s.card = 2` 时是两个三角形）之并；
+**“跨越”= 在双点 `x` 附近该支在 `{ℓ > 0}` 与 `{ℓ < 0}` 两侧都有点**，写成本树已有的写法
+（`HeightFiberClosure.lean:14` 的 `x ∈ closure (K.space ∩ {y | ℓ y < ℓ x})`）：
+
+```
+hpos : x ∈ closure (K.space ∩ {y | 0 < ℓ y})
+hneg : x ∈ closure (K.space ∩ {y | ℓ y < 0})
+```
+
+要产出的正是 `IsArrangementGeneralFoldPair`（`RelativeNormalForm.lean:180`）里的四条符号条款
+`0 < l k aPos`、`l k aNeg < 0`、`0 < l k bPos`、`l k bNeg < 0`，因为
+`hasPLCrossingAt_of_two_fold_faces`（`RelativeNormalForm.lean:140`）只吃这个形状。
+所以本前置的确切内容是：**“支的两侧性”⟺“该支两个对顶点在 `ℓ` 下异号”**，即
+`ℓ a * ℓ b < 0`，并把它打包成 `IsArrangementGeneralFoldPair` 与 `HasPLCrossingAt`。
+
+**为什么不能沿用 §19.100/19.101 的满维结论。** `linearMap_mul_neg_of_distinct_cofaces`
+（`CofaceSeparation.lean:10`）要 `vectorSpan ℝ (s : Set E) = LinearMap.ker ℓ`（等号）。
+三维中二维曲面的折边 `s.card = 2`，`vectorSpan s` 是直线而 `ker ℓ.linear` 是平面，等号不可能成立；
+`exists_linearMap_separating_cofaces`（`AffineOrientation.lean:184`）只给“存在某张含 `s` 的超平面分开两余面”，
+与指定的 `ℓ` 不成比例，推不出符号。这正是 §19.100 末句“不能把满维条件直接套在三维中的二维曲面上”。
+
+**陈述不能再弱。** 去掉两侧性假设后结论为假：§16.2 的坐标反例（`z = |x|` 与 `z = 2|x|` 沿 y 轴折叠）
+中取 `ℓ = z`，两个对顶点都有 `ℓ > 0`，`ℓ a * ℓ b > 0`，而该支确实不跨越 `{z = 0}`。
+本层同时证了反方向，所以两侧性正好是充要条件，两条路线都不可能需要比它更弱或更强的输入。
+
+#### B. 已闭合的声明（`FoldPlaneCrossing.lean`，新文件）
+
+- `exists_nonneg_apply_eq_of_mem_linearHalfSpace`、`pos_or_pos_of_mem_foldedPlane`、
+  `neg_or_neg_of_mem_foldedPlane`、`mul_neg_of_mem_foldedPlane_of_pos_of_neg`：
+  `ℓ` 在 `linearHalfSpace S u` 上的值恰为 `r * ℓ u`（`r ≥ 0`），故 `foldedPlane S u v` 上同时出现正负值
+  当且仅当 `ℓ u * ℓ v < 0`。只要 `S ≤ ker ℓ`，不要有限维、不要复形。
+- `apply_eq_linear_sub_of_eqOn_zero`、`mem_affineSpan_of_mem_openSimplex`：`ℓ` 在 `A` 上为零且
+  `x ∈ affineSpan ℝ A` 时 `ℓ.linear (z - x) = ℓ z`。按 `omit` 纪律已把 `openSimplex`、`Finset` 弱化掉。
+- `mem_closure_inter_pos_of_coface_pos` / `..._neg_of_coface_neg`：**反方向**。只要 `insert a s ∈ K.faces`、
+  `x ∈ openSimplex s`、`ℓ` 在 `s` 上为零、`0 < ℓ a`（resp. `ℓ a < 0`），从 `openSegment ℝ x a` 得两侧性。
+  不需要有限维、`Finite K.faces`、流形条件，也不需要 `s ∈ K.faces`。
+- `mul_neg_of_mem_closure_inter_pos_of_mem_closure_inter_neg`：**主方向**。
+  输入 `hs`、`hbound : ∀ u ∈ K.faces, s ⊆ u → u.card ≤ s.card + 1`、`hx : x ∈ openSimplex s`、
+  `hpair : {w | w ∉ s ∧ insert w s ∈ K.faces} = {a, b}`、`ℓ` 在 `s` 上为零与上面的 `hpos`/`hneg`，
+  输出 `ℓ a * ℓ b < 0`。证明用 `eventually_mem_space_iff_mem_coface_pair_foldedPlane`
+  （`RelativeNormalForm.lean:107`）把 `K.space` 的局部换成 `foldedPlane`，再用 A 的符号引理。
+  `a = b`（只有一张余面）时假设自相矛盾，结论自动成立，无需另加 `a ≠ b`。
+- `exists_coface_pair_pos_neg_of_mem_closure_inter`：定序版，给出 `0 < ℓ aPos ∧ ℓ aNeg < 0`。
+- `IsCombinatorialManifoldWithBoundary.exists_cofaces_pos_neg_of_mem_closure_inter`：
+  `(n+1)` 维组合带边流形的非边界余维一面版本，`hbound` 与余面对由
+  `codimension_one_cofaces_of_notMem_boundary` 自动交付。
+- `isArrangementGeneralFoldPair_of_mem_closure_inter`：两张 `IsCombinatorialManifoldWithBoundary 2` 的
+  曲面在 `x` 处各沿 `s`、`t` 折叠，给定 `l k` 在 `s`、`t` 上为零、
+  `vectorSpan s ⊔ vectorSpan t = ker (l k).linear` 与两张支各自的两侧性，产出
+  `IsArrangementGeneralFoldPair l K L s t x`。`l k x = 0` 由假设推出，不另作参数。
+- `hasPLCrossingAt_of_mem_closure_inter_two_folds`：加 `finrank ℝ E = 3` 后直接得
+  `HasPLCrossingAt K.space L.space x`。这是共面双折情形现在缺的唯一几何输入被隔离出来的形式。
+
+#### C. §19.141 的“共享”判断成立，但要点明边界
+
+本层的陈述里没有 `hcomplete`、没有 `IsVertexMapGeneralInArrangement`、没有目标骨架横截性，
+所以对 (a)、(b) 中立，两条路线都消费同一个生产者。**共享的是这条翻译**：
+“支的两侧性 ⟺ 对顶点异号 ⟹ crossing”。**不共享的是怎么生产两侧性**，两条路线各自负责：
+
+- 路线 (a)（分层通用位置）之后要做：用尊重受迫子层秩的条件替换 `hcomplete` 并重证存在性
+  （`exists_small_vertexMap_generalInArrangement`，`RelativeNormalForm.lean:299` 的分层版），
+  再由开胞腔保持得到 `sign (l k (φ v)) = sign (l k (φ₀ v))`，把 `φ₀` 的两侧性搬到 `φ`；
+  两侧性本身在 (a) 里是**被保持**而不是**被造出**的，所以 (a) 还欠一条“原构型即已跨越”的输入，
+  以及在不跨越时对该双点的处理（§16.2 的排布说明这时确实不是 crossing）。
+- 路线 (b)（先对目标骨架横截）之后要做：由横截性给出折边所在片与目标 2-面的实际相交，
+  从而产出同一对 `hpos`/`hneg`；`not_isVertexMapGeneralInArrangement_of_complete_hyperplane`
+  的受迫共面前提在 (b) 下不再出现，但要重做 §19.61 的公共细分与图卡搬运。
+
+两条都仍是开放式设计；本轮没有起头，也没有对它们作任何代价估计。
+
+#### D. 验证
+
+`FoldPlaneCrossing` check exit=0（10.6 秒）、零 warning；`AuditF282.lean` 全部 13 个声明仅
+`propext`、`Classical.choice`、`Quot.sound`。零注释、无 `sorry` / `axiom` / `nolint` /
+`maxHeartbeats` / `set_option`；`fresh.py` forbidden hits 0、无 stale/missing olean；
+未登记根聚合，未跑 `lake build`。下一个审计文件 `AuditF283.lean`。
