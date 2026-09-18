@@ -117,3 +117,18 @@ F5.2 保持 partial（被已证定理 `ArrangementConstraints.lean:58` 挡着；
 
 整合分支自 `0ec8fc1a4` 起约 210+ 提交、80+ 新模块、1.4 万行以上（含专用分支前）；每个新模块在原车道与整合分支各编译一次，全部 exit=0 零 warning；
 每个端点 `#print axioms` 只含 `propext`、`Classical.choice`、`Quot.sound`。各车道自我更正约十余次，其中被查出为空或不可满足并撤回的陈述四个，均已记录。
+
+## 8. 交接后补记（F、E3 按中断协议停下时的交付，已合入整合分支并重编译）
+
+- **F**（`HANDOFF_CODEX_F.md` §19.142–§19.145 与末尾"中断时状态"）：(β) 已落地——`exists_chart_two_sheets_of_transverse_vertex` 的像侧契约
+  现为顶层假设，生产者拆成 `exists_transcription_of_transverse_vertex`；板状链图卡已加两端边界条款且**实例审计通过**
+  （`exists_slab_branch_chain_instance`）；26.4 的相对细分是 **restrict 形式，且早已存在**，打包为
+  `exists_isSubdivision_diam_lt_restrict_isSubdivision`（`SubcomplexMesh.lean`），而记录里的"保持 `L` 不动"形式
+  被 `not_exists_isSubdivision_faces_subset_forall_diam_lt` **证明为假**。
+  **`Moise264` 的 Lean 陈述有缺陷**（`MoiseChain.lean:43`）：漏了"Bd Δ 在 M² 中不可缩"，现状可被沿双领口推离 `S` 的小盘满足，
+  30.4 无法消费；尚无消费者，链文件负责人应尽早补上（改动要回写 `MOISE_CHAIN.md` 结点表与 `PHASE3_APPROXIMATION_PLAN.md` §4）。
+  F 的下一步：H 把 `ArcChartChain` 切到顶层图卡形式并产出两条板 iff；E3 消费板的像等式做楔推；26.4 继续棱柱插值引理（§19.144 C.1）。
+  署名：F 最后四条提交的 `Co-Authored-By` 写的是 Fable 5.1（harness 提示所致），实际生成模型为 Opus 5。
+- **E3**（`HANDOFF_CODEX_L.md` §82–§83）：§81.3 已成 Lean 定理 `not_boundary_slide_chart_of_isBoundaryBranch`
+  （`BoundarySlideVacuity.lean`），且审计出矛盾只用到片的放置假设与一平面边界模型；
+  `.lake/scratch/AuditE3Vacuity.lean` 已写未跑，进入后先跑它。楔推模型（任务 2、3）未开始。
