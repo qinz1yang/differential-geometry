@@ -4021,3 +4021,58 @@ E3（HANDOFF_CODEX_L §81.3）证明单平面边界模型对触边分支无实�
 - 链主人：给 `Moise264` 补结论条款（`MoiseChain.lean:43`，尚无消费者）。
 - F（26.4）：棱柱插值引理（§19.144 C.1），然后环带与盘的粘接（C.2）。
 - F5.2 两条路线仍开放，各自欠的东西见 §19.142 C。
+
+### 19.146 边界 crossing 的局部板图卡生产者（2026-09-18）
+
+本轮仅接双端板图卡生产链；不恢复 F5.2、Case 1/2 或 §31/32。
+`ArcChartChain.lean` 的所有权由协调者转给 F，但本层尚未修改其旧的条件式。
+整合基线 `8808a5c0f` 已合入，合并提交 `5572fbdcf`。
+
+**done：`BoundaryCrossingChart.lean` 的局部生产层。** 四个端点：
+
+- `HasPLBoundaryCrossingAt.exists_openPartialHomeomorph_halfSpace`：从已有的边界 crossing
+  在任意指定邻域内生产开部分同胚，正逆皆逐片仿射，中心送到零；`M`、`frontier M` 和
+  两片分别具有半空间、边界平面、两个坐标半平面的双向像契约；`A ∩ B` 映为坐标半轴。
+- `HasPLBoundaryCrossingAt.exists_openPartialHomeomorph_slab_left`：任意 `c > 0`，
+  缩开源域至第一坐标小于 `c`，中心送到 `(0,0,0)`；实际生产
+  `M ↔ 0 ≤ x₁ ≤ c`、`frontier M ↔ x₁ = 0 ∨ x₁ = c`，两片仍为相应坐标平面与板的交。
+- `HasPLBoundaryCrossingAt.exists_openPartialHomeomorph_slab_right`：再作
+  `(x₁,x₂,x₃) ↦ (c-x₁,x₂,x₃)`，中心送到 `(c,0,0)`，源域第一坐标严格为正；
+  板、端面、两片以及分支 `A ∩ B` 的双向像契约全部保留。
+- `HasPLCrossingAt.exists_openPartialHomeomorph_slab_interior`：在 `x ∈ interior M`、
+  `0 < r < c` 下，生产中心为 `(r,0,0)`、全像落在开板内的局部图卡，并生产同样的
+  `M` 与 `frontier M` 双向契约。**这里对两片只输出单向平面包含**：原 crossing
+  定义允许其中一片为半平面；本结果没有把该包含提升成完整两片像等式。
+
+这些 `OpenPartialHomeomorph.IsImage` 条款按定义是源域上的逐点 iff，可用 `.image_eq`
+得到 `e '' (e.source ∩ M) = e.target ∩ slab` 等等式。边界不是额外假设：先缩小开域使
+半空间 iff 处处成立，然后用 Mathlib 的 `OpenPartialHomeomorph.IsImage.frontier` 与
+`frontier_Ici` 推出。若消费者使用 `BdM`，沿 `BdM = frontier M` 改写；有限组合三维
+流形的该等式来自 `frontier_space_eq_boundaryComplex_space_of_finrank`。
+
+**完整链仍 partial，确切缺口如下。**
+
+1. `exists_transcription_of_transverse_vertex` 的输入没有 `M` 与 `N` 的相交/异侧条件，
+   允许 `M = N`。例如令两者均为同一个平面凸圆盘的含中心锥剖分，`ℓ` 在该平面上的限制非零：
+   两个 link 均为圆周，`M` 的 link 截面是两点且有正负两侧，全部源侧类型相容。
+   将 `M` 压到平面后，同一个 `N` 不会变成横穿该平面的另一片。因而不能仅从该转写
+   的现有输入推出其具体 `N₁` 的两点截面与正负两侧。这里是对实际输入的退化检查，
+   不是本层新增的 Lean 反例定理。
+2. 当前 `ArcChartChain.exists_arcChartChain_of_imageContract` 仍直接假设各顶点所需的
+   像侧契约和最终局部图卡。未生产实际弧链到具体 `N₁` 契约的层，也未把逐点图卡
+   拼成同一个单射 `Φ`；侧选择的 `ZMod 2` 递推并不等于过渡映射相容。
+3. H 的未标记 `IsPLBallPair 2 1` 仅标记环境球与弧，不标记两张片；不能用它直接
+   声称已保持两片并闭合板图卡。还需实际两片交弧、跨片异侧与片保持的过渡数据。
+
+验证：在协调者 `F-BoundaryCrossing-20260918` 窗口内，用统一私有输出脚本检查本模块，
+2026-09-18 21:50:01 UTC 的回执为 exit=0、diagnosticLines=0、sourceStable=true。
+显式启用标准语法 linter 集、header 和 longLine；没有关闭 linter 或增加资源预算。
+外部静默 `AuditF286.lean` 于 21:52:10 UTC 完成：四个公开端点与一个私有边界引理，
+共五项非自动声明的传递公理全部属于 `propext`、`Classical.choice`、`Quot.sound`；
+默认环境 linter 集仅排除 `docBlame`、`docBlameThm`，exit=0、零诊断。
+源码 SHA256 为 `14A3391385E7714F837B2BE7FEC178F8F7D16FC020F2808277613310B4DC2DC5`。
+回执、空日志和私有产物保存在
+`C:\Users\liao9\AppData\Local\Temp\codex-f-boundary-private`；共享产物未改写。
+本轮复用了导入模块的既有对象，不能据此宣称当前全部源码依赖已重编；独立根重编仍由协调者负责。
+窗口已释放，无 F 编译进程。源码、本记录、`MOISE_CHAIN.md` 与根聚合登记随本数学提交一并交付。
+下一审计编号为 `AuditF287.lean`。
