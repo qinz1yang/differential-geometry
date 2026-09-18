@@ -92,8 +92,7 @@ theorem isPL_conjugateMap {n : ℕ} {X : Type*} [TopologicalSpace X] [T2Space X]
 
 theorem exists_separated_slide {M : Type u} [TopologicalSpace M] [T2Space M]
     [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] [HasGroupoid M (plGroupoid 3)]
-    {BdM S W A B : Set M} {Bd₁ : Set (EuclideanSpace ℝ (Fin 3))} {T : Set (ℝ × ℝ)}
-    {d R a b c : ℝ}
+    {BdM S W A B : Set M} {d R a b c : ℝ}
     (E : OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin 3)))
     (hE : E ∈ (plGroupoid 3).maximalAtlas M)
     (e : OpenPartialHomeomorph (EuclideanSpace ℝ (Fin 3)) (ℝ × ℝ × ℝ))
@@ -106,12 +105,13 @@ theorem exists_separated_slide {M : Type u} [TopologicalSpace M] [T2Space M]
     (hW : W ∈ 𝓝ˢ (E.symm '' (e.symm '' slideSupportLong R)))
     (hA : A ∩ E.symm '' (e.symm '' slideSupportLong R) ⊆ E.symm '' (e.symm '' slideBandA c))
     (hB : B ∩ E.symm '' (e.symm '' slideSupportLong R) ⊆ E.symm '' (e.symm '' slideBandQ a b))
-    (hAB : A ∩ B ⊆ E.symm '' (e.symm '' slideSupportLong R))
-    (hbdE : ∀ x ∈ E.source, x ∈ BdM ↔ E x ∈ Bd₁)
-    (hbde : ∀ y ∈ e.source, y ∈ Bd₁ ↔ (e y).2 ∈ T) :
+    (hAB : A ∩ B ⊆ E.symm '' (e.symm '' slideSupportLong R)) :
     ∃ (U : Set M) (h : M → M), IsOpen U ∧ S ⊆ U ∧ closure U ⊆ W ∧
       IsPL 3 3 h ∧ Function.Injective h ∧ EqOn h id Uᶜ ∧ MapsTo h U U ∧
-      (∀ x, h x ∈ BdM ↔ x ∈ BdM) ∧ Disjoint (h '' A) B := by
+      (∀ (Bd₁ : Set (EuclideanSpace ℝ (Fin 3))) (T : Set (ℝ × ℝ)),
+        (∀ x ∈ E.source, x ∈ BdM ↔ E x ∈ Bd₁) →
+        (∀ y ∈ e.source, y ∈ Bd₁ ↔ (e y).2 ∈ T) → ∀ x, h x ∈ BdM ↔ x ∈ BdM) ∧
+      Disjoint (h '' A) B := by
   have hslidemap : MapsTo (slideMapLong d R) e.target e.target :=
     mapsTo_slideMapLong_of_subset hd hsupp
   have hCsub : e.symm '' slideSupportLong R ⊆ e.source := by
@@ -159,7 +159,7 @@ theorem exists_separated_slide {M : Type u} [TopologicalSpace M] [T2Space M]
     · exact hKU (hhK hxK)
     · rw [E.conjugateMap_eqOn_compl hkfix hxK]
       exact hx
-  · intro x
+  · intro Bd₁ T hbdE hbde x
     refine E.conjugateMap_mem_iff hkmap hbdE ?_ x
     intro y _
     refine e.conjugateMap_mem_iff (B := {p : ℝ × ℝ × ℝ | p.2 ∈ T}) hslidemap hbde ?_ y

@@ -16,7 +16,7 @@ variable {M : Type u} [TopologicalSpace M] [T2Space M]
 
 theorem exists_separated_along_branch (hD : NormalSingularCellData D BdM B)
     (cb : hD.singularSet.Branch) {W : Set M} {P Q : Set (EuclideanSpace ℝ (Fin 2))}
-    {Bd₁ : Set (EuclideanSpace ℝ (Fin 3))} {T : Set (ℝ × ℝ)} {d R a b c : ℝ}
+    {d R a b c : ℝ}
     (E : OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin 3)))
     (hE : E ∈ (plGroupoid 3).maximalAtlas M)
     (e : OpenPartialHomeomorph (EuclideanSpace ℝ (Fin 3)) (ℝ × ℝ × ℝ))
@@ -31,13 +31,14 @@ theorem exists_separated_along_branch (hD : NormalSingularCellData D BdM B)
       E.symm '' (e.symm '' slideBandA c))
     (hB : D '' Q ∩ E.symm '' (e.symm '' slideSupportLong R) ⊆
       E.symm '' (e.symm '' slideBandQ a b))
-    (hAB : D '' P ∩ D '' Q ⊆ E.symm '' (e.symm '' slideSupportLong R))
-    (hbdE : ∀ x ∈ E.source, x ∈ BdM ↔ E x ∈ Bd₁)
-    (hbde : ∀ y ∈ e.source, y ∈ Bd₁ ↔ (e y).2 ∈ T) :
+    (hAB : D '' P ∩ D '' Q ⊆ E.symm '' (e.symm '' slideSupportLong R)) :
     ∃ (U : Set M) (h : M → M), IsOpen U ∧ hD.singularSet.branchCarrier cb ⊆ U ∧
       closure U ⊆ W ∧ IsPL 3 3 h ∧ Function.Injective h ∧ EqOn h id Uᶜ ∧ MapsTo h U U ∧
-      (∀ x, h x ∈ BdM ↔ x ∈ BdM) ∧ Disjoint (h '' (D '' P)) (D '' Q) :=
-  exists_separated_slide E hE e he hei hesrc hd hcR hca hsupp hAt hBt hSK hW hA hB hAB hbdE hbde
+      (∀ (Bd₁ : Set (EuclideanSpace ℝ (Fin 3))) (T : Set (ℝ × ℝ)),
+        (∀ x ∈ E.source, x ∈ BdM ↔ E x ∈ Bd₁) →
+        (∀ y ∈ e.source, y ∈ Bd₁ ↔ (e y).2 ∈ T) → ∀ x, h x ∈ BdM ↔ x ∈ BdM) ∧
+      Disjoint (h '' (D '' P)) (D '' Q) :=
+  exists_separated_slide E hE e he hei hesrc hd hcR hca hsupp hAt hBt hSK hW hA hB hAB
 
 omit [T2Space M] [HasGroupoid M (plGroupoid 3)] in
 theorem isLocallyInjective_domRestrict (hD : NormalSingularCellData D BdM B) :
@@ -53,7 +54,7 @@ theorem isLocallyInjective_domRestrict (hD : NormalSingularCellData D BdM B) :
 open Classical in
 theorem exists_separated_cell_along_branch (hD : NormalSingularCellData D BdM B)
     (cb : hD.singularSet.Branch) {W : Set M} {P Pc Q : Set (EuclideanSpace ℝ (Fin 2))}
-    {Bd₁ : Set (EuclideanSpace ℝ (Fin 3))} {T : Set (ℝ × ℝ)} {d R a b c : ℝ}
+    {d R a b c : ℝ}
     (E : OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin 3)))
     (hE : E ∈ (plGroupoid 3).maximalAtlas M)
     (e : OpenPartialHomeomorph (EuclideanSpace ℝ (Fin 3)) (ℝ × ℝ × ℝ))
@@ -69,15 +70,16 @@ theorem exists_separated_cell_along_branch (hD : NormalSingularCellData D BdM B)
     (hB : D '' Q ∩ E.symm '' (e.symm '' slideSupportLong R) ⊆
       E.symm '' (e.symm '' slideBandQ a b))
     (hAB : D '' P ∩ D '' Q ⊆ E.symm '' (e.symm '' slideSupportLong R))
-    (hbdE : ∀ x ∈ E.source, x ∈ BdM ↔ E x ∈ Bd₁)
-    (hbde : ∀ y ∈ e.source, y ∈ Bd₁ ↔ (e y).2 ∈ T)
     (hdom : P ∪ Pc = D.domain) (hPpoly : IsPolyhedron P) (hPcpoly : IsPolyhedron Pc)
     (hinjP : InjOn D P) (hinjQ : InjOn D (Q ∩ D ⁻¹' W)) (hPcQ : Pc ∩ D ⁻¹' W ⊆ Q)
     (hseam : ∀ x ∈ P ∩ Pc, D x ∉ W)
     (hclean : doublePointSet D D.domain ∩ W ⊆ hD.singularSet.branchCarrier cb) :
     ∃ (U : Set M) (h : M → M), IsOpen U ∧ hD.singularSet.branchCarrier cb ⊆ U ∧
       closure U ⊆ W ∧ IsPL 3 3 h ∧ Function.Injective h ∧ EqOn h id Uᶜ ∧
-      (∀ x, h x ∈ BdM ↔ x ∈ BdM) ∧ Disjoint (h '' (D '' P)) (D '' Q) ∧
+      (∀ (Bd₁ : Set (EuclideanSpace ℝ (Fin 3))) (T : Set (ℝ × ℝ)),
+        (∀ x ∈ E.source, x ∈ BdM ↔ E x ∈ Bd₁) →
+        (∀ y ∈ e.source, y ∈ Bd₁ ↔ (e y).2 ∈ T) → ∀ x, h x ∈ BdM ↔ x ∈ BdM) ∧
+      Disjoint (h '' (D '' P)) (D '' Q) ∧
       IsPLOn 2 3 (P.piecewise (h ∘ D) D) D.domain ∧
       IsLocallyInjective (D.domain.domRestrict (P.piecewise (h ∘ D) D)) ∧
       (∀ y, (D.domain ∩ P.piecewise (h ∘ D) D ⁻¹' {y}).encard ≤ 2) ∧
@@ -86,7 +88,7 @@ theorem exists_separated_cell_along_branch (hD : NormalSingularCellData D BdM B)
         doublePointSet D D.domain \ hD.singularSet.branchCarrier cb := by
   obtain ⟨U, h, hUopen, hSU, hUW, hhpl, hhinj, hhfix, hhmap, hhbd, hdisj⟩ :=
     hD.exists_separated_along_branch cb E hE e he hei hesrc hd hcR hca hsupp hAt hBt hSK hW
-      hA hB hAB hbdE hbde
+      hA hB hAB
   have hUsub : U ⊆ W := subset_closure.trans hUW
   have hinjQU : InjOn D (Q ∩ D ⁻¹' U) :=
     hinjQ.mono (inter_subset_inter_right _ (preimage_mono hUsub))
