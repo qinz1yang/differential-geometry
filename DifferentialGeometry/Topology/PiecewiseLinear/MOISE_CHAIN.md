@@ -847,3 +847,23 @@ E3 的 `LuneCell.lean`（`exists_lune_base_off_graphArc`）证明：月牙在参
 分支不再是双线、无需环境映射。粘合引擎为 `LoopTheorem/CellGluing.lean:375`。
 待核：§43 所记"顺序交叉贴合保留分支"的构造取的是"第一次缝与第二次缝各一个原像"（`HANDOFF_CODEX_L.md` §43），
 即把三块并成**一个**带两条缝的胞腔；若确认，则该障碍是输出形状造成，`A ∪ B` 与 `C` 分开即可通。
+
+### 2026-09-18 晚：30.5 不需要 wild 球面的 Alexander 对偶（只读核查结论）
+
+书中 Theorem 30.5 全书**只被引用一次**：§34 Lemma 3（p. 240）。那里交给 30.5 的胞腔是 `C₁' = h(C₁)`、`C₂' = h(C₂)`，
+`C₁, C₂ ⊆ U` 是 2-单形 `σ` 的**多面体** 3-胞腔邻域、`h : U → ℝ³` 是**开集**上的嵌入（§34 开头的归约 = 计划 A.1），
+所以 `frontier C₂'` 是双领口的，wild 情形从不出现。30.5 的证明重构（本文件"更正：30.5 ← 30.4"一节）只需 `C₂` tame，
+`C₁` 可保持任意拓扑胞腔。
+
+而**双领口情形在树里已是无条件定理**：`TubularExcision.lean:170 hasAlexanderDualityH0Certificate_of_openBicollar_of_sphereH1`
++ `SphereH1.lean:189 isZero_integerSingularHomology_sphereTwo_one`（无假设，Mayer–Vietoris）+ `JordanBrouwer.lean:28`，
+纯拓扑、不要光滑性；核查者用一个 scratch 文件实际编译并审计（只含三条标准公理）。另有
+`VanKampen/TwoSidedCollarSeparation.lean:246` 给"补集至多两个分支"、不要同调，且避免了树里没有的 `SphereTwo ≃ₜ frontier C` 参数化。
+**H-M3 评估已过时**：它只查了 `DualityAssembly`/`SpecializedDuality` 那支（确需光滑 + 循环），漏了 `TubularExcision → BicollarCertificates`。
+
+拟定受限陈述（不改 `MoiseChain.lean`）：`IsBicollared S := ∃ Φ : S × ℝ → ℝ³, IsOpenEmbedding Φ ∧ ∀ x, Φ (x,0) = x`；
+`BicollaredCellComplementConnected`；`Moise305Tame` 在 30.5 的假设上加 `IsBicollared (frontier C₂)`。
+§34 L3 侧要生产的每一步材料都在（`PolyhedralSurfaceComplement.lean:29`、`BicollarManifold.lean:135`、
+`InvarianceOfDomain.lean:346/508`），只缺"拓扑胞腔在同胚下的 `frontier`/`interior` 桥"（H-M3 原也列为 0.5k–1k）。
+修正估计 **约 1k–2k 行**（未原型化），原 10k–18k 作废。30.5 仍等 30.4（I.4，4k–6k，等 26.4）；本核查只移除了较大的那个阻塞。
+一般（wild）版 `TopologicalCellComplementConnected` 仍在原成本之外，但 Moise 链不需要它。
