@@ -749,5 +749,8 @@
   check exit=0、零 warning，AuditF250 两项仅标准三公理。分层约束族的实例化、曲面支归属与有限图卡拼接仍待闭合，见 HANDOFF §19.101。
 - 2026-09-17（F 车道 F5.2 分层维数障碍）：`ArrangementConstraints.lean` 已证明原完整仿射无关约束不能容纳全维包络中的四个受迫共平面顶点，故不能直接实例化处理共面双折；检查 exit=0、AuditF251 三项标准三公理。
   F5.2 保持 partial；精确陈述、受影响路线与替代证明方向见 HANDOFF §19.102。按常驻规则转做新 F-M2 非紧多面体接口。
+- 2026-09-18（F 车道 F5.2 支跨公共面）：`FoldPlaneCrossing.lean` 把“曲面各支跨越目标公共面”定案为“该支在双点附近于指定平面两侧都有点”，并证明它与该支两个对顶点在该仿射泛函下异号等价；
+  由此产出 `IsArrangementGeneralFoldPair` 与共面双折的 `HasPLCrossingAt`。check exit=0、零 warning，AuditF282 共 13 项仅标准三公理。F5.2 仍 partial：这条翻译对两条备选路线中立，
+  但两侧性本身仍需由分层通用位置或目标骨架横截各自生产，详见 HANDOFF §19.142。
 - 2026-09-17（F 车道新 F-M2 / F6.4）：`LocallyPolyhedral.lean` 交付允许非紧开胞腔的局部多面体谓词、与旧紧致多面体的等价、紧集有限片邻域、正确条件下的闭子集/有限并/交接口及局部有限复形桥接。
   最终 check exit=0、零 warning，AuditF252 共 22 项仅标准三公理。§32 Q.1 可用 `IsLocallyPolyhedral (U \ P)` 陈述非紧部分；未捆绑全局无限三角剖分，范围说明见 HANDOFF §19.103。
