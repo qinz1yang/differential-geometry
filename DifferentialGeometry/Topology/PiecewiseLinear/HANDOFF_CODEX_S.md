@@ -2947,3 +2947,35 @@ No CST endpoint or full 24.9--24.12 completion is claimed. None of these local
 mathematical obligations is introduced as an extra theorem hypothesis.
 I.1 remains complete: its plan now states the full book assumptions, and the
 stronger checked primary theorem retains explicit preconnectedness of H and K.
+
+## C.6 obligation 1 delivered: a general cyclic decomposition gives the two-ball data
+
+`BallCyclePair.lean` closes the first of the three remaining obligations above.
+`IsCombinatorialManifoldWithBoundary.exists_isPLBall_pair_cover_of_cycle` takes an
+arbitrary cyclic decomposition -- any family `C : Fin (n + 3) -> Set E` of PL three
+balls inside a three-manifold-with-boundary, with a PL two-disk intersection for
+each cycle-adjacent pair, disjointness for every non-adjacent pair, and empty
+triple intersections -- and produces the actual sets `A`, `B`, `D0`, `D1` of the
+two-ball criterion: `A` and `B` are PL three-balls, `D0` and `D1` are disjoint PL
+two-disks, `A` union `B` is the whole union, and `A` intersection `B` equals
+`D0` union `D1`. The split is the first cell against the rest:
+`A = C 0` and `B` is the union over `i.succ`, which is a linear chain, so the new
+`isPLBall_iUnion_succ_of_cycle` (the rotation of the existing
+`isPLBall_iUnion_castSucc_of_cycle`) gives it through
+`isPLBall_iUnion_of_chain`. The two disks are `C 0 cap C 1` and
+`C 0 cap C (Fin.last (n + 2))`, their disjointness is exactly the empty triple
+intersection, and every other cross pair is non-adjacent, hence disjoint.
+
+This no longer restricts the decomposition to the derived neighborhood of a
+circle: `exists_isPLBall_pair_cover_derivedNeighborhood_circle` is now the
+special case of a general cyclic decomposition. Helper lemmas
+`cycleGraph_adj_zero_one`, `cycleGraph_adj_zero_last` and
+`not_cycleGraph_adj_zero` record the three cycle-graph adjacency facts.
+
+`BallCyclePair` checks exit 0 (10.2 s) with zero warnings;
+`.lake/scratch/AuditSBallCyclePair.lean` audits four declarations, all only
+`propext`, `Classical.choice`, `Quot.sound`. Obligations 2 (the untwisted
+disk-bundle classification) and 3 (the 24.12 contraction and orientation-cover
+descent) are unchanged and still open. No hypothesis was added to any existing
+statement.
+
