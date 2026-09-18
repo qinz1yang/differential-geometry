@@ -4644,3 +4644,109 @@ has no Möbius band yet -- `grep -rl "obius\|Moebius"` over
 Not built this round: the instruction was to check first and report, and the check
 changed the target enough (dimension three to two, and no data transport) that the
 route should be confirmed before the build.
+
+
+## Two ingredients of (B-bridge), delivered
+
+### The order-independent parity core
+
+`OrientationParity.lean` (new). `prod_incidenceSign`: for any linear order `r` on
+the ambient space and any face `s`, the product of the incidence signs over all
+vertices of `s` is `(-1)` to the power `s.card.choose 2`, by induction on `s`
+adding the largest element. `prod_incidenceSign_triple` is the case that the
+Moebius computation needs: for a triangle the three incidence signs multiply to
+`-1`, whatever the vertex order.
+
+This is what makes the Moebius holonomy a computation rather than an argument.
+`CoherentOrientation` carries its own `vertexOrder : LinearOrder E` on the whole
+ambient space, chosen existentially, so no proof may fix a convenient order;
+`prod_incidenceSign_triple` is exactly the order-independent fact that lets the
+five coherence relations be multiplied together. With it, the holonomy around the
+five triangles of the minimal band reduces to the parity of
+`sum over i of the rank of the middle vertex of the i-th triangle`, and that sum is
+`5` for **every** order, by the cancellation
+`rank(i) + rank(i+2) = 3 - rank(i+1)` together with
+`[i < i+1] + (1 - [i+1 < i+2])` telescoping around the cycle.
+
+### The fixed point of a reversing circle map
+
+`exists_fixed_of_not_hasIncreasingCircleLift`: a self-homeomorphism of
+`loopCircle` with no increasing periodic lift has a fixed point. In the reversing
+branch the map descends from `-F` with `F` a homeomorphism of the line, so
+`G := F + id` is continuous, strictly increasing and satisfies `G (t+1) = G t + 2`;
+hence `ceil (G 0)` lies in `Icc (G 0) (G 1)` and the intermediate value theorem
+supplies `t` in `Icc 0 1` with `G t` an integer, which is exactly a fixed point.
+
+### Verification
+
+`check-f.ps1` exit=0, zero warnings on both modules (10.5 s, 11.2 s).
+`AuditSOrientationParity` 4 declarations, `AuditSCircleLiftOrientation` 19; all
+depend only on `propext`, `Classical.choice`, `Quot.sound`.
+
+
+## The Moebius band is built and is not orientable
+
+`MobiusBand.lean` (new, 20 declarations). `not_isOrientable_mobiusComplex`:
+`¬ IsOrientable 2 mobiusComplex`.
+
+### The complex
+
+The five-vertex triangulation, explicitly: vertices `mobiusVertex i = Pi.single i 1`
+for `i : Fin 5`, triangles `mobiusTri i` the image of `{i, i+1, i+2}`. Since all
+five vertices are affinely independent (`stdVertices_affineIndependent 3`), every
+face is a subset of an affinely independent set, so the geometric conditions of
+`Geometry.SimplicialComplex` are inherited exactly as in `simplexComplex` -- no
+coordinate geometry is needed. `facesOfCard mobiusComplex 3` is the five triangles,
+because a three-element subset of a three-element face is that face.
+
+### The computation
+
+The holonomy around the five triangles. Each of the five interior edges
+`mobiusEdge i` lies in exactly `mobiusTri i` and `mobiusTri (i+1)`, so
+`orientedBoundary_mobiusEdge` evaluates the coherence condition to a two-term
+relation; the other three triangles contribute nothing because none of their
+two-element faces is that edge. Multiplying the five relations and cancelling the
+signs of the triangles leaves the product of the incidence signs of the middle
+vertices, and that product is `(-1)` to the power of the total middle rank, which
+is **5 for every vertex order**: `mobiusHighPair r i + mobiusLowPair r (i+1) = 1`
+telescopes around the cycle. The `-1` this forces contradicts the `+1` the
+relations give.
+
+### Two things that had to be routed around, both about instances not size
+
+1. `CoherentOrientation` carries `vertexOrder : LinearOrder E` as a **plain
+   argument, not an instance**. So a statement may not mention `<`: on
+   `Fin 5 → ℝ` the ambient `<` is the pointwise order from `Pi`, which is not even
+   decidable, and `letI := r` does not displace it. Every count is therefore
+   phrased with `incidenceIndex` applied to explicit finite sets and never with an
+   `if` or a `<` of my own: `incidenceIndex_union` and
+   `incidenceIndex_singleton_self` do the splitting, and `sum_incidenceIndex` gives
+   `incidenceIndex_pair_sum`. This is why the middle rank is decomposed into two
+   *pair* indices rather than into two indicator functions.
+2. `decide` carries the complex easily at the level of `Fin 5` -- all the
+   combinatorics is done there and transported by `mobiusVertex`, which is
+   injective -- but not through `Finset (Fin 5 → ℝ)`. Face equalities are compared
+   through `erase_mobiusTri_eq_mobiusEdge_iff`, which turns them into `Fin 5`
+   statements.
+
+Also added to `OrientationParity.lean`: `sum_incidenceIndex` (the sum form of the
+parity lemma), `incidenceIndex_union`, `incidenceIndex_singleton_self`.
+
+### What (B-bridge) still needs
+
+1. `IsCombinatorialManifoldWithBoundary 2 mobiusComplex`, which `IsOrientable.of_le`
+   requires of the subcomplex. Every vertex of this band is on the boundary and its
+   link is a three-edge path, so this is five instances of "a polygonal arc is a PL
+   1-ball" -- routine but not written.
+2. The band **inside** the mapping torus: a subcomplex of a subdivision of the
+   mapping torus whose space is a Moebius band around the fixed point of the
+   reversing map. `exists_fixed_of_not_hasIncreasingCircleLift` supplies the fixed
+   point and `isOrientable_iff_of_isSubdivision` lets the subdivision be chosen
+   freely, so what is missing is the relative triangulation step: a subdivision in
+   which the band is a subcomplex.
+
+### Verification
+
+`check-f.ps1` exit=0, zero warnings on both modules (9.6 s, 11.4 s).
+`AuditSOrientationParity` 7 declarations, `AuditSMobiusBand` 20; all depend only on
+`propext`, `Classical.choice`, `Quot.sound`.

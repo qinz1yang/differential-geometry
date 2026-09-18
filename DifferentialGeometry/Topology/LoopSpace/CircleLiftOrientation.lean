@@ -356,4 +356,38 @@ theorem not_hasIncreasingCircleLift_neg :
   not_hasIncreasingCircleLift_of_neg_lift strictMono_id (fun _ => rfl)
     fun t => by rw [← QuotientAddGroup.mk_neg]; rfl
 
+theorem exists_fixed_of_not_hasIncreasingCircleLift (ψ : loopCircle ≃ₜ loopCircle)
+    (h : ¬ HasIncreasingCircleLift ψ) : ∃ θ : loopCircle, ψ θ = θ := by
+  rcases circleHomeomorph_affineLift_or_neg ψ with ⟨F, hp, hm, hval⟩ | ⟨F, hp, hm, hval⟩
+  · exact absurd (show HasIncreasingCircleLift ψ from ⟨F, hm, hp, fun t => by simp [hval]⟩) h
+  · set G : ℝ → ℝ := fun t => F t + t with hGdef
+    have hGc : Continuous G := F.continuous.add continuous_id
+    have hGm : StrictMono G := by
+      intro x y hxy
+      have hlt := hm hxy
+      simp only [hGdef]
+      linarith
+    have hG1 : G 1 = G 0 + 2 := by
+      have h1 := hp 0
+      rw [zero_add] at h1
+      simp only [hGdef]
+      rw [h1]
+      ring
+    have hlow : G 0 ≤ ((⌈G 0⌉ : ℤ) : ℝ) := Int.le_ceil _
+    have hhigh : ((⌈G 0⌉ : ℤ) : ℝ) ≤ G 1 := by
+      have hlt : ((⌈G 0⌉ : ℤ) : ℝ) < G 0 + 1 := Int.ceil_lt_add_one _
+      rw [hG1]
+      linarith
+    obtain ⟨t, ht, hGt⟩ := intermediate_value_Icc (by norm_num : (0 : ℝ) ≤ 1)
+      hGc.continuousOn ⟨hlow, hhigh⟩
+    refine ⟨((t : ℝ) : loopCircle), ?_⟩
+    have hcoe : ψ ((t : ℝ) : loopCircle) = ((-F t : ℝ) : loopCircle) := by
+      rw [hval ((t : ℝ) : loopCircle)]
+      simp [QuotientAddGroup.mk_neg]
+    rw [hcoe]
+    refine (loopCircle_coe_eq_coe_iff _ _).mpr ⟨-⌈G 0⌉, ?_⟩
+    simp only [hGdef] at hGt
+    push_cast
+    linarith
+
 end DifferentialGeometry.Topology
