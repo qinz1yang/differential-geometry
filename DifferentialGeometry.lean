@@ -7401,6 +7401,7 @@ import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Comp
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Continuity
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Coordinates
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.CovariantTwoTensor
+import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Scaling
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.EuclideanComponents
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Frame
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.IteratedComponents
@@ -11129,6 +11130,7 @@ import DifferentialGeometry.Geometry.Metric.Construction.TensorBumpTimeJets
 import DifferentialGeometry.Geometry.Metric.Convergence.Naturality.PartialTensorPullback
 
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ComparisonJetDerivative
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ComparisonParabolicScaling
 
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.PartialJetBound
 
@@ -11152,6 +11154,7 @@ import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Norm
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.StrongNeckModel
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.StrongNeckSides
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedScalarComparison
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedParabolicComparison
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.PointedCylinderNecks
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedCanonicalBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedDistanceComparison
