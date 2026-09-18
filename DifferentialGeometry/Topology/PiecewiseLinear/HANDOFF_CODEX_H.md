@@ -1859,3 +1859,37 @@ M1 只给"PL 同胚于一个锥"，不给"是一个锥"，所以绕不过去。
 它其实是第 17 节 `convexHull_insert_inter_convexHull_insert_of_separating` 证明**内部**已经做出来的那一步，
 只是没单独导出；把它抽出来之后，分离定理本身也应当由它加两条半空间包含直接得到。
 建议下次先做这个重构，再拼三对与并对。第 3、4 步仍未开始。
+
+## 23. 2026-09-18 重构：把超平面截痕从分离定理里抽出来
+
+第 22 节末尾定位的那一步现已导出。四条，全部 `omit [FiniteDimensional ℝ E]`：
+
+- `convexHull_insert_inter_hyperplane`（`ℓ` 在 `F` 上为 `r`、`ℓ a ≠ r`）：
+  `convexHull ℝ (insert a F) ∩ {ℓ = r} = convexHull ℝ F`。
+  **这才是内容**：把 `x` 写成 `a + s • (z - a)`，`ℓ x = (1-s) * ℓ a + s * r = r` 经
+  `linear_combination` 得 `(1-s)(ℓ a - r) = 0`，由 `ℓ a ≠ r` 得 `s = 1`。
+  注意假设只要 `ℓ a ≠ r`（不分上下侧），比分离定理的 `ℓ a < r` 弱。
+- `convexHull_insert_subset_halfSpace_le` / `_ge`：两条半空间包含，也单独导出。
+- `convexHull_insert_inter_convexHull_insert_of_separating` 现在**由上面三条合成**，正文只剩六行：
+  交点两侧夹出 `ℓ x = r`，再落进截痕引理。
+
+### 常驻检查之二（协调者要求与第 21 节的假设表并列记录）
+
+**证明内部做了实事而陈述没有暴露时，先抽出来再往上盖。**
+今天三个车道共四例：本条（分离定理内部的截痕）、
+`ConeAmbientExtension.lean:40-49`（内部证出"锥上恒等"却不写进结论，见第 9 节）、
+以及 F 车道的两对包装（`PLImage.lean:113` 对 `:140`，`PLImage.lean:113` 对
+`AffineImageTransport.lean:13`）。这条的收益仅次于 artifact 检查。
+识别信号：证明里出现一个与结论形状不同的中间 `have`，且它本身是个可陈述的等式或包含关系。
+
+聚焦检查 `BallPairTwoSimplices` exit=0（10.9 秒）、零 warning；
+`.lake/scratch/AuditHTwoSimplices.lean` 六项仅 `propext`、`Classical.choice`、`Quot.sound`。
+
+### 组装状态
+
+三对与并对**未开始**。手上已齐的零件：
+第 16 节 `isPLBallPair_convexHull_of_mem_openSimplex`（单纯形＋内点＋两个边界点 ⟹ 标准对）、
+第 17 节 `isPLBallPair_convexHull_singleton_of_mem_openSimplex`（`(F, {z})` 那一对）、
+第 20 节并等式、第 21 节任意水平的分离、本节截痕与两条半空间、
+第 19/22 节五条线段引理。缺的只是把它们按第 18 节的构型接起来（选点＋三对＋并对），
+以及之后的第 3、4 步。**未开始，不报区间。**
