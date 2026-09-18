@@ -2738,3 +2738,29 @@ step 2 只做了 grep 与接口陈述，没有动工（月牙是一个项目，�
   已把片送到坐标平面，缺的只是边界模型的双端形式）。`ModelSlide* / ChartSlide*` 归 F，本车道不动。
   在此之前本车道能做且不依赖设计决定的只有模型层：楔形推移的定义、`Bd` 保持、两张折片推后不交。
 - 未做：任何新的 Lean 构造（等主人对 81.3/81.4 表态）。Case 1/2 未动。
+
+## 82. 2026-09-18 E3-M3：§81.3 写成 Lean 的 `False` 定理——边界滑移图卡假设对触边分支不可满足（任务 1）
+
+状态：**已闭合**，新模块 `BoundarySlideVacuity.lean`（模块名与 3 条声明名在四条车道分支上都不存在），
+`check-f.ps1` exit=0 零警告。审计文件 `.lake/scratch/AuditE3Vacuity.lean` 已写好，**因主人会话中断尚未运行**
+（下一步第一件事）。三条定理：
+
+- `NormalSingularCellData.branchCarrier_inter_boundary_nontrivial_of_isBoundaryBranch`（正面、可复用）：
+  `IsBoundaryBranch c ⟹ (branchCarrier c ∩ BdM).Nontrivial`。由
+  `exists_two_isCrosscuts_branchPreimage_of_boundaryBranch_with_coordinate` 的 crosscut 端点 `p ≠ q`
+  （`IsCrosscut.arc` 的单射参数化）、`InjOn D A`（`branchPieceIn_map_branchCoordinate` + 两级 `bijOn.injOn`，
+  照 `CutAndPaste.lean:1631`）与"边界圆映进 `BdM`"（`image_inter_boundary`）得两个**不同**的载体边界点 `D p ≠ D q`。
+- `NormalSingularCellData.branchCarrier_inter_boundary_subsingleton_of_slide_chart`（图卡论证）：
+  `hesrc hAt hBt hSK hW hA hB hdom hinjP hinjQ hPcQ hBdE hBd₁ ⟹ (branchCarrier cb ∩ BdM).Subsingleton`。
+  每个载体点是双点，恰一个原像在 `P`、另一个在 `Q ∩ D ⁻¹' W`（`hinjP`/`hinjQ`/`hPcQ`/`hdom`/`hW`），
+  于是其图卡坐标同时在 `slideBandA c` 与 `slideBandQ a b` 里（轴上），落在 `BdM` 时第一坐标为零
+  （`hBdE`/`hBd₁`），所以等于 `E.symm (e.symm (0,0,0))`。
+- `NormalSingularCellData.not_boundary_slide_chart_of_isBoundaryBranch : … → False`，前两条合成。
+- **假设逐条审计（主人要求的常备审计）。** 用到的全部是分离层的**图卡放置假设**（人工产物）：
+  `hSK, hA, hB, hdom, hinjP, hinjQ, hPcQ, hW, hesrc, hAt, hBt` 加边界包装的 `hBdE, hBd₁`；
+  几何输入只有 `hc : IsBoundaryBranch cb` 与 `hD` 本身。**没有用到**
+  `hsupp, he, hei, hd, hcR, hbd, hAB, hPpoly, hPcpoly, hseam, hclean, hNE, hN₁, hDN, hbdpre, hdpos, hRpos, hconnA`——
+  矛盾只来自"两张片在图卡里是坐标带 + 边界是平面 `p.1 = 0`"，与滑移量、连通性、多面体性无关。
+  "实例检查"：本定理本身就是"该假设集没有实例"的证明；正面可复用的是第一条。
+- 主人来信提到 F 记录里的 §19.107 及"折片占两个相邻象限"的说明：这条说明由主人提出并归到本车道名下，
+  本车道此前并未写过它；F 的 `HANDOFF_CODEX_F.md` 不是本车道文件，未编辑；楔形推移与两张折片的集合描述在 §81.4。
