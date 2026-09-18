@@ -540,3 +540,21 @@ Reduced/MayerVietorisCoefficients, Reduced/PointClasses}`（`REUSE_AUDIT.md` §2
   且交恰为该边界圆）、删盘识别，以及不经 `Homology/HurewiczLowDegrees.lean` 的一维 Hurewicz 桥。
   本条只交付 Euler 记账层。
 
+### G.5 封盘复形：锥顶条件（`ConeBaseFlat.lean`）
+
+封盘复形的几何困难是锥顶不能放在原环境里（锥可能穿过 `A`）。标准做法是把曲面平放进 `E × ℝ`
+的超平面 `{q.2 = 0}`，锥顶取 `(x₀, 1)`。这一层现在有了：
+
+- `convex_snd_eq_zero`、`snd_eq_zero_of_mem_space`：若复形每个面的顶点末坐标为零，则整个载体末坐标为零。
+- `isConeBase_of_snd_eq_zero (L) (hL : ∀ q ∈ L.space, q.2 = 0) (x₀) : IsConeBase (x₀, 1) L`：
+  三条要求都实际验证。`notMem_space` 与 `indep` 用末坐标：仿射组合的末坐标是零，不可能等于 1
+  （`affineIndependent_insert_iff` 正是"锥顶不是底面的仿射组合"）。`radial` 也用末坐标：
+  `y = p + t (x - p)` 取末坐标给 `0 = 1 - t`，故 `t = 1`、`y = x`。
+
+于是 `coneComplex (isConeBase_of_snd_eq_zero L hL x₀)` 是实际可用的封盘，配合 §G.5 的
+`eulerChar_coneComplex` 与 `eulerChar_eq_add_one_of_faces_union_coneComplex` 即得 Euler 记账。
+
+仍未闭合：把平放后的 `A'` 与该锥的面集之并**构造成**一个几何单纯复形（跨对的
+`inter_subset_convexHull` 要用末坐标论证：`A'` 的面落在 `{q.2 = 0}` 内，过锥顶的面与该超平面的交恰是底面），
+以及删盘识别；还有不经 `Homology/HurewiczLowDegrees.lean` 的一维 Hurewicz 桥。
+
