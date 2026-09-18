@@ -2439,3 +2439,49 @@ step 2 只做了 grep 与接口陈述，没有动工（月牙是一个项目，�
 - 下一轮的正确顺序仍是：砖块 1–5 → `Λ` 与 `D₂` 的映射（`(t₁,t₂) ↦ E.symm (e.symm (t₁, u, v))`，
   线性于 `t₁`，§74 记的高度参数化）→ `hD₂bd / hluneW / hD₂inj` → **最后**逐点验 `hD₂disj`
   （§74 记的共面问题，必须在坐标里验而不是想当然）。
+
+## 76. 2026-09-18 E3-M3：分片仿射图像下方的平面区域是 PL 2-球（§75 砖块 1–5 全部做完）
+
+状态：**已闭合**，模块 `PiecewiseLinear/PlanarGraphRegion.lean`，
+`check-f.ps1` exit=0 零警告，`AuditE3GraphRegion.lean` 12 条全部只依赖
+`propext / Classical.choice / Quot.sound`。本节是纯平面 PL 内容，**没有月牙**，可独立复用。
+
+- **端点定理**
+  `isPLBall_two_and_closure_inside_frontier_graphRegion`：设 `σ 0 = 0`、`σ (N+1) = 1`、
+  `∀ k ≤ N, σ k < σ (k+1)`，`a` 在每段 `Icc (σ k) (σ (k+1))` 上与某个 `p * u + q` 相等，
+  且 `∀ u ∈ Ioo 0 1, 0 < a u`，则
+  `IsPLBall 2 (graphRegion a 0 1) ∧ closure (Schoenflies.inside (frontier (graphRegion a 0 1))) = graphRegion a 0 1`。
+  其中 `graphRegion a s t = {w | w 1 ∈ Icc s t ∧ 0 ≤ w 0 ∧ w 0 ≤ a (w 1)}`。
+- **假设的确切取舍（按"用 `omit` 核过再写"的规矩记）。**
+  - `a 0 = 0` 与 `a 1 = 0` **不需要**：端片是梯形还是三角形对结论无影响，
+    `a ≡ 1` 给出单位正方形，同样是 PL 2-球。任务口径里的"两端为零"是月牙那边的事实，不是本定理的前提。
+  - `a ≥ 0` 在 `Icc 0 1` 上**也不需要**：`a (σ 0) < 0` 时首片只是一个顶点落在
+    `w 1 = -q/p` 的三角形，仍是有内点的紧凸多胞形。
+  - `∀ u ∈ Ioo 0 1, 0 < a u` **是必需的**，不是方便性假设：若 `a` 在某个子区间上恒为零，
+    `Λ` 就带一根线段"胡须"，根本不是 2-球（`a ≡ 0` 时 `Λ` 就是一条线段）。
+    月牙那边若滑移量在弧的某一段上恒为零，必须先把该段从参数区间里去掉，否则这条定理用不上。
+- **实现要点（§75 砖块表的实际代价）。**
+  - 砖块 2 的 `IsHPolytope` 管道确实是主要代价，但比 §75 估的小：
+    `isHPolytope_coordBox` 用 `IsHPolytope.preimage_affineMap_of_injective`
+    （`PolytopeSection.lean:13`）把 `ℝ × ℝ` 上的 `Icc ×ˢ Icc` 拉回到 `EuclideanSpace ℝ (Fin 2)`，
+    **紧致性由该引理内部的闭嵌入给出，不必手工造有界集**；再用 `IsHPolytope.inter_affine_le`
+    （`GeneralPosition.lean:59`）切一刀 `w 0 - p * w 1 ≤ q`。基础盒子共 15 行。
+  - 坐标线性泛函用 `EuclideanSpace.projₗ`；坐标相等推点相等用 `PiLp.ext` + `Fin.forall_fin_two`。
+  - 相邻片的交是竖直线段，写成 `segment ℝ (planePoint 0 t) (planePoint (a t) t)`，
+    由 `isPLBall_segment` 得 `IsPLBall 1`；`0 < a t` 同时给出两端点不等与该等式成立
+    （`a t < 0` 时交为空而 `segment` 非空，等式会假，所以这条假设不能弱化成 `0 ≤ a t`）。
+  - `C ∩ D ⊆ frontier C` 用新的 `notMem_interior_of_forall_le / _ge`：
+    内点处沿 `PiLp.single 2 i (±ε/2)` 推一步就越界。通用于 `EuclideanSpace ℝ (Fin 2)` 的任意坐标。
+  - 归纳用 `isPLBall_union_and_finite_frontier_inter`（`PlanarDiskUnion.lean:14`），
+    对 `N` 结构归纳，每步在右端接一片。
+  - "闭内部"半边是 `IsPLBall.closure_inside_frontier`（本模块新增的三行推论，
+    调 `PlanarJordan.closure_inside_frontier_eq_of_isCompact`），树里之前只在
+    `LoopTheorem/BranchPreimage.lean:327` 内联过，没有具名引理。
+- **本轮踩到的三条工具层事实（下轮直接用，别再试错）。**
+  - 本树 Mathlib 里 `le_or_lt` 不存在，用 `le_or_gt (a b) : a ≤ b ∨ b < a`。
+  - `Set.mem_setOf_eq` 不存在，`{x | p x}` 的成员引理叫 `Set.mem_ofPred_eq`；
+    多数场合直接靠定义相等用 `rintro/exact` 更稳。
+  - 风格 linter 禁止用 `show` 改写目标（哪怕只差定义相等），必须用 `change`。
+    `EuclideanSpace.single_apply / norm_single` 已弃用，用 `PiLp.single_eq_same / PiLp.norm_single`。
+- 下一步仍按 §75 的顺序：`Λ` 上的映射 `(t₁, t₂) ↦ E.symm (e.symm (t₁, u (θ t₂), v (θ t₂)))`
+  → `hD₂bd / hluneW / hD₂inj` → 最后在坐标里逐点验 `hD₂disj`（§74 记的共面问题）。
