@@ -1,5 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedWitnessTransport
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.GoodPointDerivatives
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ComparisonCurvatureBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WitnessBallCapture
 
 
@@ -23,26 +22,11 @@ attribute [local instance] PointedFlowData.topology PointedFlowData.charted
   PointedFlowData.t2TangentBundle
 
 variable {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
-  [IsManifold I3 ∞ M] [T2Space M] [SigmaCompactSpace M]
+  [IsManifold I3 ∞ M] [T2Space M]
   {D : RealTimeInterval} {S : SolutionOn (I := I3) (M := M) D}
 
 private local instance sourceCurvatureC1 : IsManifold I3 1 M :=
   IsManifold.of_le (n := ∞) (by decide)
-
-private theorem comparison_constant_le {eps K : ℝ} (heps : 0 ≤ eps)
-    (heps4 : eps ≤ 1 / 4) (hK : 0 ≤ K) :
-    witnessLambda eps ^ 2 * (witnessRiemannC eps + Real.sqrt (K ^ 2)) ≤ 10 + 2 * K := by
-  have hL1 := one_le_witnessLambda heps (by linarith : eps < 1)
-  have hL := witnessLambda_le heps4
-  have hR := witnessRiemannC_le heps heps4
-  have hR0 := witnessRiemannC_nonneg heps (by linarith : eps < 1)
-  have hLsq : witnessLambda eps ^ 2 ≤ 16 / 9 := by nlinarith
-  have hsum : witnessRiemannC eps + K ≤ 5 + K := by linarith
-  have hsum0 : 0 ≤ witnessRiemannC eps + K := add_nonneg hR0 hK
-  have hstep := mul_le_mul hLsq hsum hsum0 (by norm_num : (0 : ℝ) ≤ 16 / 9)
-  rw [Real.sqrt_sq hK]
-  linarith
-
 
 theorem WindowedModelWitness.source_curvature_bound_at_of_model
     {eps kappa K : ℝ} {x : M} {t : ℝ}
@@ -53,69 +37,15 @@ theorem WindowedModelWitness.source_curvature_bound_at_of_model
     normSq0S (rescaledMetric S t (S.scalar t x) W.scalar_pos s) (W.embedding y) 4
       (metricRm04At (rescaledMetric S t (S.scalar t x) W.scalar_pos s) (W.embedding y)) ≤
       sourceCurvatureBound 3 K ^ 2 := by
-  classical
-  let : NeZero (Module.finrank ℝ ThreeSpace) := ⟨by simp [ThreeSpace]⟩
-  let F := W.embedding
-  let h := fun r => W.model.S.base.metric r
-  let ghat := rescaledMetric S t (S.scalar t x) W.scalar_pos
-  have hR : 0 < modelRadius eps := inv_pos.mpr (Real.sqrt_pos.mpr W.eps_pos)
-  have hyfull : y ∈ riemannianClosedBallOf (h 0) W.model.basepoint (modelRadius eps) := hy
-  have hysrc : y ∈ F.source :=
-    W.buffered_ball (riemannianClosedBallOf_mono (h 0) W.model.basepoint
-      (le_add_of_nonneg_right zero_le_one) hyfull)
-  let y' : sourceOpen F := ⟨y, hysrc⟩
-  let : SigmaCompactSpace (sourceOpen F) := isSigmaCompact_iff_sigmaCompactSpace.mp
-    (DifferentialGeometry.Geometry.isSigmaCompact_of_isOpen I3 (sourceOpen F).isOpen)
-  let : SigmaCompactSpace
-      (⟨F '' (sourceOpen F : Set W.model.M), image_opens_isOpen F (sourceOpen_subset F)⟩ :
-        TopologicalSpace.Opens M) := isSigmaCompact_iff_sigmaCompactSpace.mp
-    (DifferentialGeometry.Geometry.isSigmaCompact_of_isOpen I3
-      (image_opens_isOpen F (sourceOpen_subset F)))
-  have hcomplete : RiemannianMetricComplete (h 0) := by
-    refine ⟨?_⟩
-    exact MetricComplete.complete (W.model.atTime 0)
-      (W.model_ancient.complete 0 (by change (0 : ℝ) ≤ 0; exact le_rfl))
-  have hmodelnorm : normSq0S (witnessModelMetric F h s) y' 4
-      (metricRm04At (witnessModelMetric F h s) y') ≤ K ^ 2 := by
-    rw [witnessModelMetric, rmNormSq_restrictOpen (h s) (sourceOpen F) y']
-    exact hrm
-  have hKb : ∀ a b c : TangentSpace I3 y',
-      (witnessModelMetric F h s).inner y'
-        (riemannOp (cov := LeviCivita (witnessModelMetric F h s)) y' a b c)
-        (riemannOp (cov := LeviCivita (witnessModelMetric F h s)) y' a b c) ≤
-        K ^ 2 * (witnessModelMetric F h s).inner y' a a *
-          (witnessModelMetric F h s).inner y' b b * (witnessModelMetric F h s).inner y' c c :=
-    fun a b c => riemannOp_normSq_le_of_rmNormSq_le (witnessModelMetric F h s) y' hmodelnorm a b c
-  let Cop := witnessLambda eps ^ 2 * (witnessRiemannC eps + Real.sqrt (K ^ 2))
-  have hT2 : ∀ a b c : TangentSpace I3 y',
-      Real.sqrt ((witnessPullbackMetric F ghat s).inner y'
-        (riemannOp (cov := LeviCivita (witnessPullbackMetric F ghat s)) y' a b c)
-        (riemannOp (cov := LeviCivita (witnessPullbackMetric F ghat s)) y' a b c)) ≤
-        Cop * Real.sqrt ((witnessPullbackMetric F ghat s).inner y' a a) *
-          Real.sqrt ((witnessPullbackMetric F ghat s).inner y' b b) *
-          Real.sqrt ((witnessPullbackMetric F ghat s).inner y' c c) := by
-    intro a b c
-    exact W.comparison.riemannOp_norm_le (h 0) hcomplete W.model.basepoint hR
-      W.eps_pos.le W.eps_lt_one (by have hh := five_le_modelOrder W.eps_pos heps4; omega)
-      hs hyfull (sq_nonneg K) hKb a b c
-  have hCop0 : 0 ≤ Cop := mul_nonneg (sq_nonneg _)
-    (add_nonneg (witnessRiemannC_nonneg W.eps_pos.le W.eps_lt_one) (Real.sqrt_nonneg _))
-  have hCople : Cop ≤ 10 + 2 * K := comparison_constant_le W.eps_pos.le heps4 hK
-  have hpull := rmNormSq_le_of_riemannOp_norm_le (witnessPullbackMetric F ghat s) y' hCop0 hT2
-  have hnat : normSq0S (witnessPullbackMetric F ghat s) y' 4
-      (metricRm04At (witnessPullbackMetric F ghat s) y') =
-      normSq0S (ghat s) (F y) 4 (metricRm04At (ghat s) (F y)) := by
-    rw [witnessPullbackMetric, rmNormSq_openPullbackMetric F (sourceOpen F)
-      (sourceOpen_subset F) (ghat s) y']
-  rw [hnat] at hpull
-  have hdim : Module.finrank ℝ ThreeSpace = 3 := by simp [ThreeSpace]
-  rw [hdim] at hpull
-  have hsq : Cop ^ 2 ≤ (10 + 2 * K) ^ 2 := by nlinarith
-  have hscale := mul_le_mul_of_nonneg_left hsq (by norm_num : (0 : ℝ) ≤ (3 : ℝ) ^ 4)
-  change normSq0S (ghat s) (F y) 4 (metricRm04At (ghat s) (F y)) ≤ _
-  unfold sourceCurvatureBound
-  norm_num at hpull hscale ⊢
-  nlinarith
+  have hcomplete : RiemannianMetricComplete (W.model.S.base.metric 0) :=
+    ⟨MetricComplete.complete (W.model.atTime 0)
+      (W.model_ancient.complete 0 (by change (0 : ℝ) ≤ 0; exact le_rfl))⟩
+  exact W.comparison.rmNormSq_le_on_closedBall (W.model.S.base.metric 0) hcomplete
+    W.model.basepoint (inv_pos.mpr (Real.sqrt_pos.mpr W.eps_pos)) W.eps_pos.le heps4
+    (by have hh := five_le_modelOrder W.eps_pos heps4; omega) hK hs
+    (W.buffered_ball (riemannianClosedBallOf_mono (W.model.S.base.metric 0)
+      W.model.basepoint (le_add_of_nonneg_right zero_le_one) hy)) hy hrm
+
 
 theorem WindowedModelWitness.source_curvature_bound_of_model
     {eps kappa K : ℝ} {x : M} {t : ℝ}
@@ -140,7 +70,6 @@ theorem WindowedModelWitness.source_curvature_bound_of_model
   exact W.source_curvature_bound_at_of_model heps4 hK ⟨by linarith [hs.1], hs.2⟩
     (riemannianClosedBallOf_mono _ _ hRtwo hy) (hmodel s hs y hy)
 
-omit [SigmaCompactSpace M] in
 theorem WindowedModelWitness.source_closedBall_compact_subset_image
     {eps kappa R r : ℝ} {x : M} {t : ℝ}
     (W : WindowedModelWitness eps kappa S x t) (p : W.model.M)
@@ -190,7 +119,6 @@ theorem WindowedModelWitness.source_closedBall_compact_subset_image
     (isClosed_le (continuous_riemannianEDist (ghat s) (W.embedding p)) continuous_const) hcapture, hcapture⟩
 
 
-omit [SigmaCompactSpace M] in
 theorem WindowedModelWitness.source_closedBall_compact_subset
     {eps kappa R r : ℝ} {x : M} {t : ℝ}
     (W : WindowedModelWitness eps kappa S x t)
@@ -205,7 +133,6 @@ theorem WindowedModelWitness.source_closedBall_compact_subset
   simpa only [W.base_map] using h
 
 
-omit [SigmaCompactSpace M] in
 theorem WindowedModelWitness.source_unitBall_compact_subset
     {eps kappa : ℝ} {x : M} {t : ℝ}
     (W : WindowedModelWitness eps kappa S x t) (heps4 : eps ≤ 1 / 4)

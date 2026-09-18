@@ -27,12 +27,12 @@ private theorem gramPi_full (x₀ : M) :
   refine contDiffOn_pi.mpr fun i => contDiffOn_pi.mpr fun j => ?_
   exact chartGramOnE_set g J x₀ hgram i j
 
-include hJ hgram in
+include hgram in
 theorem chartMetricJets_contDiffOn (x₀ : M) (a : ℕ) :
     ContDiffOn ℝ ∞ (fun p : ℝ × E => iteratedFDeriv ℝ a (chartGramPi (g p.1) x₀) p.2)
       (J ×ˢ interior (extChartAt I x₀).target) :=
   DifferentialGeometry.Analysis.spatial_iteratedFDeriv_contDiffOn
-    (G := fun t y => chartGramPi (g t) x₀ y) hJ isOpen_interior (gramPi_full g J hgram x₀) a
+    (G := fun t y => chartGramPi (g t) x₀ y) isOpen_interior (gramPi_full g J hgram x₀) a
 
 include hJ hgram in
 private theorem gramJet2_full (x₀ : M) :

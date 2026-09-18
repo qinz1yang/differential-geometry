@@ -21,16 +21,17 @@ attribute [local instance] PointedFlowData.topology PointedFlowData.charted
   PointedRiemannianManifold.t2 PointedRiemannianManifold.sigmaCompact
   PointedRiemannianManifold.t2TangentBundle
 
-variable {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
-  [IsManifold I3 ∞ M] [T2Space M] [SigmaCompactSpace M]
+variable {M : ℕ → Type u} [∀ i, TopologicalSpace (M i)] [∀ i, ChartedSpace ThreeSpace (M i)]
+  [∀ i, IsManifold I3 ∞ (M i)] [∀ i, T2Space (M i)] [∀ i, SigmaCompactSpace (M i)]
 
 theorem WindowedModelWitness.eventually_composed_comparison
-    {D : RealTimeInterval} {S : SolutionOn (I := I3) (M := M) D}
-    (hS : IsSolutionOn S) {delta : ℕ → ℝ} {kappa : ℝ} {x : ℕ → M} {t : ℕ → ℝ}
-    (W : ∀ i, WindowedModelWitness (delta i) kappa S (x i) (t i))
+    {D : ℕ → RealTimeInterval} {S : ∀ i, SolutionOn (I := I3) (M := M i) (D i)}
+    (hS : ∀ i, IsSolutionOn (S i)) {delta : ℕ → ℝ} {kappa : ℝ}
+    {x : ∀ i, M i} {t : ℕ → ℝ}
+    (W : ∀ i, WindowedModelWitness (delta i) kappa (S i) (x i) (t i))
     (hdelta : Tendsto delta atTop (𝓝 0))
     (hreg : ∀ i s, s ∈ Ioo (-modelDepth (delta i)) 0 →
-      parabolicTime (t i) (S.scalar (t i) (x i)) s ∈ D.regular)
+      parabolicTime (t i) ((S i).scalar (t i) (x i)) s ∈ (D i).regular)
     (L : PointedFlowData.{u, 0, 0} I3 ancientTimeInterval)
     [PreconnectedSpace L.M] (hcomplete : MetricComplete (L.atTime 0))
     {phi : ℕ → ℕ} (hphi : Tendsto phi atTop atTop)
@@ -46,7 +47,7 @@ theorem WindowedModelWitness.eventually_composed_comparison
       K ⊆ (partialDiffeomorphTransMixed (F.partialDiffeomorph i)
         (W (phi i)).embedding).source ∧
       Nonempty (MetricComparisonOn L.S.base.metric
-        (rescaledMetric S (t (phi i)) (S.scalar (t (phi i)) (x (phi i)))
+        (rescaledMetric (S (phi i)) (t (phi i)) ((S (phi i)).scalar (t (phi i)) (x (phi i)))
           (W (phi i)).scalar_pos)
         (fun y => (W (phi i)).embedding (F.map i y)) K (Icc (-A) 0) order eta) := by
   let _ : PreconnectedSpace (L.atTime 0).M := ‹PreconnectedSpace L.M›
@@ -103,7 +104,7 @@ theorem WindowedModelWitness.eventually_composed_comparison
     exact_mod_cast horder.trans (Nat.le_ceil ((delta (phi i))⁻¹))
   have horder' : order ≤ modelOrder (delta (phi i)) := hceil.trans (Nat.le_succ _)
   obtain ⟨C⟩ := hiCmp
-  obtain ⟨C'⟩ := (W (phi i)).exists_composed_comparison hS (hreg (phi i)) L
+  obtain ⟨C'⟩ := (W (phi i)).exists_composed_comparison (hS (phi i)) (hreg (phi i)) L
     Phi U' hsource him hA hdepth horder' halpha halphasmall
     (C.mono subset_closure le_rfl le_rfl) hK hKU
   refine ⟨?_, ⟨C'.mono subset_rfl le_rfl (by linarith)⟩⟩

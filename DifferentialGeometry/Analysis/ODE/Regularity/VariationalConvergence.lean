@@ -754,7 +754,7 @@ theorem iteratedFDeriv_integralCurve_tendstoUniformlyOn_of_periodic
     have hcInf (k : ℕ) : ContinuousOn
         (fun q : ℝ × ℝ => iteratedFDeriv ℝ k (vInf q.2) q.1) (univ ×ˢ Icc a b) :=
       (DifferentialGeometry.Analysis.spatial_iteratedFDeriv_contDiffOn
-        (uniqueDiffOn_Icc hab) isOpen_univ hvInfJoint k).continuousOn.comp
+        isOpen_univ hvInfJoint k).continuousOn.comp
           (continuous_snd.prodMk continuous_fst).continuousOn (fun q hq => ⟨hq.2, hq.1⟩)
     have hconvAll (C : Set ℝ) (k : ℕ) : TendstoUniformlyOn
         (fun i (q : ℝ × ℝ) => iteratedFDeriv ℝ k (v i q.2) q.1)

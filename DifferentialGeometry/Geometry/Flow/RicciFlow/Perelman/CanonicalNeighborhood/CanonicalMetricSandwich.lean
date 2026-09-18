@@ -90,6 +90,45 @@ theorem CompactDomain.map_strict_ball_sandwich
     field_simp [hr.ne']
   exact ⟨margin, hm, by nlinarith, hcapture, hmap⟩
 
+theorem MetricComparisonOn.map_strict_ball_sandwich
+    [SigmaCompactSpace N]
+    {h : ℝ → SmoothRiemannianMetric I3 N} {g : ℝ → SmoothRiemannianMetric I3 M}
+    {F : PartialDiffeomorph I3 I3 N M ∞} {V : Set N} {times : Set ℝ}
+    {order : ℕ} {eps s : ℝ} (cmp : MetricComparisonOn h g F V times order eps)
+    (hs : s ∈ times) (U : CompactDomain N) (p : N) {a b A L : ℝ}
+    (ha : 0 < a) (hA : 0 < A) (hL : 0 < L)
+    (hinner : riemannianClosedBallOf (h s) p a ⊆ U.carrier)
+    (houter : U.carrier ⊆ riemannianBallOf (h s) p b)
+    (hsource : riemannianBallOf (h s) p b ⊆ F.source)
+    (hcompare : riemannianBallOf (h s) p b ⊆ V)
+    (hreserve : L * b < 2 * (a / A))
+    (hAcomp : 1 ≤ (1 - eps) * A ^ 2) (hLcomp : 1 + eps ≤ L ^ 2) :
+    ∃ margin : ℝ, 0 < margin ∧ L * b < (2 - margin) * (a / A) ∧
+      riemannianBallOf (g s) (F p) (a / A) ⊆ F '' U.carrier ∧
+      F '' U.carrier ⊆ riemannianBallOf (g s) (F p) (L * b) := by
+  have hlow : ∀ y ∈ riemannianClosedBallOf (h s) p a, ∀ v : TangentSpace I3 y,
+      (h s).inner y v v ≤ A ^ 2 *
+        (g s).inner (F y) (mfderiv I3 I3 F y v) (mfderiv I3 I3 F y v) := by
+    intro y hy v
+    have hmem := hcompare (houter (hinner hy))
+    have he := (cmp.equivalence s hs y hmem v).1
+    rw [cmp.pullback_eq s y hmem (fun _ => v)] at he
+    calc
+      _ = 1 * (h s).inner y v v := by ring
+      _ ≤ ((1 - eps) * A ^ 2) * (h s).inner y v v :=
+        mul_le_mul_of_nonneg_right hAcomp (inner_self_nonneg (h s) y v)
+      _ = A ^ 2 * ((1 - eps) * (h s).inner y v v) := by ring
+      _ ≤ _ := mul_le_mul_of_nonneg_left he (sq_nonneg A)
+  have hupp : ∀ y ∈ riemannianBallOf (h s) p b, ∀ v : TangentSpace I3 y,
+      (g s).inner (F y) (mfderiv I3 I3 F y v) (mfderiv I3 I3 F y v) ≤
+        L ^ 2 * (h s).inner y v v := by
+    intro y hy v
+    have he := (cmp.equivalence s hs y (hcompare hy) v).2
+    rw [cmp.pullback_eq s y (hcompare hy) (fun _ => v)] at he
+    exact he.trans (mul_le_mul_of_nonneg_right hLcomp (inner_self_nonneg (h s) y v))
+  exact U.map_strict_ball_sandwich (h s) (g s) F p (houter.trans hsource)
+    ha hA hL hinner houter hsource hlow hupp hreserve
+
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
 
 end

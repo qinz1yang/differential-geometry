@@ -108,9 +108,11 @@ import DifferentialGeometry.Analysis.Calculus.IteratedDerivative.SpaceJets
 import DifferentialGeometry.Analysis.Calculus.LevelPreservation
 import DifferentialGeometry.Analysis.Calculus.LocalExtrema
 import DifferentialGeometry.Analysis.Calculus.Manifold.AbsolutelyContinuous
+import DifferentialGeometry.Analysis.Calculus.MapConvergence.Jet
 import DifferentialGeometry.Analysis.Calculus.MapConvergence.Algebra
 import DifferentialGeometry.Analysis.Calculus.MapConvergence.Basic
 import DifferentialGeometry.Analysis.Calculus.MapConvergence.Composition
+import DifferentialGeometry.Analysis.Calculus.MapConvergence.Parameter
 import DifferentialGeometry.Analysis.Calculus.MapConvergence.Derivative
 import DifferentialGeometry.Analysis.Calculus.MapConvergence.QuadraticEvaluation
 import DifferentialGeometry.Analysis.Calculus.MapConvergence.SmoothInverse
@@ -123,6 +125,7 @@ import DifferentialGeometry.Analysis.Calculus.Multilinear
 import DifferentialGeometry.Analysis.Calculus.MultilinearPullback
 import DifferentialGeometry.Analysis.Calculus.MultilinearZero
 import DifferentialGeometry.Analysis.Calculus.PartialDerivative.Iterated
+import DifferentialGeometry.Analysis.Calculus.PartialDerivative.Parameter
 import DifferentialGeometry.Analysis.Calculus.Periodic.Affine
 import DifferentialGeometry.Analysis.Calculus.Periodic.Derivative
 import DifferentialGeometry.Analysis.Calculus.Periodic.MonotoneConvolution
@@ -3827,6 +3830,7 @@ import DifferentialGeometry.Geometry.Connection.AlongCurveAlternating
 import DifferentialGeometry.Geometry.Connection.AlongCurveHom
 import DifferentialGeometry.Geometry.Connection.AlongCurveRegularity
 import DifferentialGeometry.Geometry.Connection.Associated
+import DifferentialGeometry.Geometry.Connection.ChartBridge.TensorDerivative
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Connection.Christoffel
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Connection.Frame
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Curvature.BasisBracket
@@ -5350,6 +5354,8 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborho
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CanonicalToleranceMonotone
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CapChainCoOrientation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CapChainTransition
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CapCollarDepth
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CapCollarIsotopy
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CapRegionStructure
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ClosedBadPointSelection
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ClosedOpenPropagation
@@ -5594,6 +5600,9 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborho
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedMixedCurvature
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedComparisonComposition
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedModelConvergence
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedNeckLimit
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedCapLimit
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedCapCanonicalLimit
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedModelLimit
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedModelComparisonBridge
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedShiTerminal
@@ -7387,6 +7396,7 @@ import DifferentialGeometry.Geometry.Metric.Convergence.Compactness.ComponentSub
 import DifferentialGeometry.Geometry.Metric.Convergence.Compactness.Components
 import DifferentialGeometry.Geometry.Metric.Convergence.Compactness.Diagonal
 import DifferentialGeometry.Geometry.Metric.Convergence.Compactness.Precompactness
+import DifferentialGeometry.Geometry.Metric.Convergence.Coordinates.JetOperators
 import DifferentialGeometry.Geometry.Metric.Convergence.Coordinates.ConnectionComparison
 import DifferentialGeometry.Geometry.Metric.Convergence.Coordinates.ConnectionEvaluation
 import DifferentialGeometry.Geometry.Metric.Convergence.Coordinates.ConnectionLimits
@@ -7394,6 +7404,7 @@ import DifferentialGeometry.Geometry.Metric.Convergence.Coordinates.Control
 import DifferentialGeometry.Geometry.Metric.Convergence.Coordinates.GoodFrame
 import DifferentialGeometry.Geometry.Metric.Convergence.Coordinates.InverseGram
 import DifferentialGeometry.Geometry.Metric.Convergence.Coordinates.JetBounds
+import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.ChartConvergence
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Addition
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Algebra
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Basic
@@ -7407,6 +7418,7 @@ import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Eucl
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Frame
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.IteratedComponents
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.MapConvergence
+import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Norm.ChartConvergence
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Norm.Bridge
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Norm.Comparison
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Norm.Continuity
@@ -7435,6 +7447,7 @@ import DifferentialGeometry.Geometry.Metric.Convergence.Metric.Closeness
 import DifferentialGeometry.Geometry.Metric.Convergence.Metric.Compactness
 import DifferentialGeometry.Geometry.Metric.Convergence.Metric.Evaluation
 import DifferentialGeometry.Geometry.Metric.Convergence.Metric.TensorError
+import DifferentialGeometry.Geometry.Metric.Convergence.Metric.Parameter
 import DifferentialGeometry.Geometry.Metric.Convergence.Metric.Tower
 import DifferentialGeometry.Geometry.Metric.Convergence.Metric.UniformEquivalence
 import DifferentialGeometry.Geometry.Metric.Convergence.Naturality.CrossTensorCovariantDerivative
@@ -7488,6 +7501,7 @@ import DifferentialGeometry.Geometry.Metric.DirectLimit.Distance
 import DifferentialGeometry.Geometry.Metric.DirectLimit.Properness
 import DifferentialGeometry.Geometry.Metric.Distance.Ball
 import DifferentialGeometry.Geometry.Metric.Distance.Basic
+import DifferentialGeometry.Geometry.Metric.Distance.Boundary
 import DifferentialGeometry.Geometry.Metric.Distance.Finiteness
 import DifferentialGeometry.Geometry.Metric.Distance.Topology
 import DifferentialGeometry.Geometry.Metric.DistancePullback
@@ -8112,6 +8126,7 @@ import DifferentialGeometry.Tensor.Alternating.Shuffle.Split
 import DifferentialGeometry.Tensor.Alternating.Trace
 import DifferentialGeometry.Tensor.Alternating.Wedge
 import DifferentialGeometry.Tensor.BilinearForm
+import DifferentialGeometry.Tensor.Coordinates.Field
 import DifferentialGeometry.Tensor.Coordinates.ModelBasis
 import DifferentialGeometry.Tensor.Coordinates.PartialDerivative
 import DifferentialGeometry.Tensor.Exterior.Basic
@@ -9021,6 +9036,7 @@ import DifferentialGeometry.Topology.Manifold.Collar.Rescaling
 import DifferentialGeometry.Topology.Manifold.Collar.SeamDiffeomorph
 import DifferentialGeometry.Topology.Manifold.CollarPartitionError
 import DifferentialGeometry.Topology.Manifold.CollarPartitionPatch
+import DifferentialGeometry.Topology.Manifold.CollarReparametrization
 import DifferentialGeometry.Topology.Manifold.CollarStep
 import DifferentialGeometry.Topology.Manifold.CollarStraighteningProducer
 import DifferentialGeometry.Topology.Manifold.CompactBicollar
@@ -9191,6 +9207,7 @@ import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Chart
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Composition
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Opens
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.SmoothInverse
+import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.SupportedExtension
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorphTrans
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Tangent
 import DifferentialGeometry.Topology.Manifold.PartitionDerivative
@@ -11092,6 +11109,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Anci
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.CoerciveMassUniqueness
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.VariableMassUniqueness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedCanonicalDomain
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedCanonicalDomainLimit
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.TerminalKernel
 import DifferentialGeometry.Topology.SphereSeparation.BicollarSliceEmbedding
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NeckCompactSides
@@ -11129,8 +11147,11 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborho
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ParabolicComparisonStability
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NeckScaleStability
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NeckLimitTransport
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NeckParabolicTransport
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ComparisonTimeRegularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ComparisonScalarCurvature
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ComparisonCurvatureBounds
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ComparisonDistanceConvergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.LocalComparisonComposition
 
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.PartialJetBound
@@ -11161,6 +11182,8 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborho
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedCapNeckTransport
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.PointedCylinderNecks
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedCanonicalBounds
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CanonicalModelLimitCurvature
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedCanonicalBoundsLimit
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedDistanceComparison
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedCapTransport
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CanonicalInnerRadius

@@ -16,7 +16,7 @@ open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.CheegerGromovC
 open DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 open DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
-open scoped Manifold ContDiff ENNReal
+open scoped _root_.DifferentialGeometry.Manifold ContDiff ENNReal
 
 universe u
 
@@ -173,6 +173,7 @@ private theorem curvatureNormScale (g : SmoothRiemannianMetric I3 M) (h : ℝ) (
     iterCov_metricRm04_zero g x] at hmain
   simpa only [Nat.add_zero, pow_two, ← mul_inv] using hmain
 
+omit [SigmaCompactSpace M] in
 theorem mixedCurvatureNorm_zero_zero_le_of_windowedModelWitness {eps kappa K eta : ℝ} {x : M}
     {t : ℝ} (W : WindowedModelWitness eps kappa S x t) (heps4 : eps ≤ 1 / 4)
     (hK : 0 ≤ K)
@@ -226,6 +227,7 @@ theorem mixedCurvatureNorm_zero_zero_le_of_windowedModelWitness {eps kappa K eta
   rw [← mul_assoc, mul_inv_cancel₀ (ne_of_gt hpos2), one_mul] at hmul
   simpa only [hsq, mul_comm] using hmul
 
+omit [SigmaCompactSpace M] in
 theorem exists_sourceCurvatureBound_of_modelCurvatureBound {eps kappa eta : ℝ} {x : M} {t : ℝ}
     (hmod : ModelCurvatureBoundNearBase.{u, 0, 0} I3 kappa)
     (W : WindowedModelWitness eps kappa S x t) (heps4 : eps ≤ 1 / 4) (heta : eta ≤ 1)
@@ -241,6 +243,7 @@ theorem exists_sourceCurvatureBound_of_modelCurvatureBound {eps kappa eta : ℝ}
     (DifferentialGeometry.riemannianClosedBallOf_mono (I := I3) (W.model.S.base.metric 0)
       W.model.basepoint (by norm_num : (2 : ℝ) ≤ 3) hy)
 
+omit [SigmaCompactSpace M] in
 theorem exists_sourceCurvatureBound_of_harnackCollapseBound {eps kappa eta : ℝ} {x : M} {t : ℝ}
     (hcollapse : KLimHarnackCollapseBound.{u, 0, 0} (I := I3) kappa)
     (W : WindowedModelWitness eps kappa S x t) (heps4 : eps ≤ 1 / 4) (heta : eta ≤ 1)

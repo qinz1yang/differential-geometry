@@ -15,9 +15,6 @@ open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 
 universe u
 
-variable {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
-  [IsManifold I3 ∞ M] [T2Space M] [SigmaCompactSpace M]
-
 def cylinderAxialReflectionShift (c : ℝ) : PartialDiffeomorph IC IC Cylinder Cylinder ∞ :=
   cylinderAxialReflection.trans (cylinderAxialShift c)
 
@@ -96,13 +93,6 @@ theorem cylinderAxialReflectionShift_zero (y : Cylinder) :
   rw [cylinderAxialReflectionShift_apply, cylinderAxialReflection_apply]
   simp
 
-omit [T2Space M] [SigmaCompactSpace M] in
-theorem LocalCap.isCompact_tube {D : RealTimeInterval}
-    {S : SolutionOn (I := I3) (M := M) D} {eps : ℝ} {x : M} {t : ℝ} {U : Set M}
-    (L : LocalCap S eps x t U) : IsCompact L.tube := by
-  rw [← L.tube_eq]
-  exact (isCompact_univ.prod isCompact_Icc).image_of_continuousOn
-    (L.tube_map.contMDiffOn_toFun.continuousOn.mono L.tube_domain)
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
 

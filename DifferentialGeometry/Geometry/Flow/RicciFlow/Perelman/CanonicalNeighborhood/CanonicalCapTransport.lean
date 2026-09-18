@@ -106,7 +106,7 @@ theorem StrongNeck.axial_fderiv_eq_of_right_trans
     simp only [partialDiffeomorph_trans_apply, PartialDiffeomorph.trans_symm_apply, ha.2]
   rw [hev.fderiv_eq]
 
-def orderedNeckChain_transport_of_map_eq_trans
+def orderedNeckChainTransport
     {Dm : RealTimeInterval} {Sm : SolutionOn (I := I3) (M := P) Dm}
     {D : RealTimeInterval} {S : SolutionOn (I := I3) (M := Mm) D}
     {eps t : ℝ} {V : Set P}
@@ -155,7 +155,7 @@ def orderedNeckChain_transport_of_map_eq_trans
     rw [StrongNeck.axial_fderiv_eq_of_right_trans e (hmap j) (hmap i) hz hzs]
     exact hsrc
 
-def localCap_transport_of_partialDiffeomorph
+def LocalCap.map
     {Dm : RealTimeInterval} {Sm : SolutionOn (I := I3) (M := P) Dm}
     {D : RealTimeInterval} {S : SolutionOn (I := I3) (M := Mm) D}
     {eps t : ℝ} {ym : P} {Um : Set P}
@@ -167,12 +167,9 @@ def localCap_transport_of_partialDiffeomorph
   have htubeU : L.tube ⊆ Um := Set.subset_union_right.trans L.union_eq.ge
   have hcore : L.core.carrier ⊆ e.source := hcoreU.trans hU
   have htube : L.tube ⊆ e.source := htubeU.trans hU
-  have htube_cpt : IsCompact L.tube := by
-    rw [← L.tube_eq]
-    exact (isCompact_univ.prod isCompact_Icc).image_of_continuousOn
-      (L.tube_map.contMDiffOn_toFun.continuousOn.mono L.tube_domain)
+  have htube_cpt : IsCompact L.tube := L.isCompact_tube
   have hcore_cpt : IsCompact L.core.carrier := L.core.compact
-  have hU_cpt : IsCompact Um := L.union_eq ▸ hcore_cpt.union htube_cpt
+  have hU_cpt : IsCompact Um := L.isCompact_carrier
   have hcore_closed : IsClosed L.core.carrier := hcore_cpt.isClosed
   have htube_closed : IsClosed L.tube := htube_cpt.isClosed
   have hU_closed : IsClosed Um := hU_cpt.isClosed
@@ -240,23 +237,23 @@ def localCap_transport_of_partialDiffeomorph
   · intro z
     rw [partialDiffeomorph_trans_apply, L.core_boundary_eq]
 
-@[simp] theorem localCap_transport_tube
+@[simp] theorem LocalCap.map_tube
     {Dm : RealTimeInterval} {Sm : SolutionOn (I := I3) (M := P) Dm}
     {D : RealTimeInterval} {S : SolutionOn (I := I3) (M := Mm) D}
     {eps t : ℝ} {ym : P} {Um : Set P}
     (L : LocalCap (M := P) Sm eps ym 0 Um)
     (e : PartialDiffeomorph I3 I3 P Mm ∞) (hU : Um ⊆ e.source)
     (chain : OrderedNeckChain S eps t (e '' L.tube)) :
-    (localCap_transport_of_partialDiffeomorph L e hU chain).tube = e '' L.tube := rfl
+    (LocalCap.map L e hU chain).tube = e '' L.tube := rfl
 
-@[simp] theorem localCap_transport_core_carrier
+@[simp] theorem LocalCap.map_core_carrier
     {Dm : RealTimeInterval} {Sm : SolutionOn (I := I3) (M := P) Dm}
     {D : RealTimeInterval} {S : SolutionOn (I := I3) (M := Mm) D}
     {eps t : ℝ} {ym : P} {Um : Set P}
     (L : LocalCap (M := P) Sm eps ym 0 Um)
     (e : PartialDiffeomorph I3 I3 P Mm ∞) (hU : Um ⊆ e.source)
     (chain : OrderedNeckChain S eps t (e '' L.tube)) :
-    (localCap_transport_of_partialDiffeomorph L e hU chain).core.carrier =
+    (LocalCap.map L e hU chain).core.carrier =
       e '' L.core.carrier := rfl
 
 omit [T2Space Mm] [SigmaCompactSpace Mm] in
@@ -266,7 +263,7 @@ theorem nonempty_orderedNeckChain_of_swept_eq {D : RealTimeInterval}
     Nonempty (OrderedNeckChain S eps t V) :=
   ⟨hV.symm ▸ OrderedNeckChain.single nt⟩
 
-def localCap_transport_of_neck_family
+def LocalCap.mapOfNeckFamily
     {Dm : RealTimeInterval} {Sm : SolutionOn (I := I3) (M := P) Dm}
     {D : RealTimeInterval} {S : SolutionOn (I := I3) (M := Mm) D}
     {eps t : ℝ} {ym : P} {Um : Set P}
@@ -275,8 +272,8 @@ def localCap_transport_of_neck_family
     (necks : ∀ i, StrongNeck S eps (e (L.chain.centers i)) t)
     (hmap : ∀ i, (necks i).map = (L.chain.necks i).map.trans e) :
     LocalCap (M := Mm) S eps (e ym) t (e '' Um) :=
-  localCap_transport_of_partialDiffeomorph L e hU
-    (orderedNeckChain_transport_of_map_eq_trans L.chain e
+  LocalCap.map L e hU
+    (orderedNeckChainTransport L.chain e
       (Set.subset_union_right.trans L.union_eq.ge |>.trans hU) necks hmap)
 
 theorem canonicalAlternative_transport_cap {Dm : RealTimeInterval}
@@ -291,7 +288,7 @@ theorem canonicalAlternative_transport_cap {Dm : RealTimeInterval}
     Nonempty (CanonicalAlternative S eps C x t (e '' Um)) := by
   subst hbase
   exact ⟨CanonicalAlternative.cap
-    (localCap_transport_of_partialDiffeomorph L e hU chain) deep⟩
+    (LocalCap.map L e hU chain) deep⟩
 
 theorem canonicalAlternative_transport_cap_of_necks {Dm : RealTimeInterval}
     {Sm : SolutionOn (I := I3) (M := P) Dm}
@@ -305,7 +302,7 @@ theorem canonicalAlternative_transport_cap_of_necks {Dm : RealTimeInterval}
       10000 / Real.sqrt (S.scalar t x) ≤ metricDistance (S.base.metric t) x y) :
     Nonempty (CanonicalAlternative S eps C x t (e '' Um)) :=
   canonicalAlternative_transport_cap L e hU
-    (orderedNeckChain_transport_of_map_eq_trans L.chain e
+    (orderedNeckChainTransport L.chain e
       (Set.subset_union_right.trans L.union_eq.ge |>.trans hU) necks hmap) hbase deep
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn

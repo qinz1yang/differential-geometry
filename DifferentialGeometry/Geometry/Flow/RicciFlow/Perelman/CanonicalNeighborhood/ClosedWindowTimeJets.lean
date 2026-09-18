@@ -66,48 +66,6 @@ theorem hasDerivWithinAt_iteratedDerivWithin_time
   rw [iteratedDerivWithin_succ]
   exact h.congr_deriv heq.symm
 
-omit [NormedSpace ℝ E] [NormedSpace ℝ F] in
-private theorem tendstoUniformlyOn_of_joint_continuous
-    {P : Type*} [TopologicalSpace P] {f : P → E → F}
-    {J : Set P} {K : Set E} (hK : IsCompact K)
-    (hf : ContinuousOn (Function.uncurry f) (J ×ˢ K)) {p : P} (hp : p ∈ J) :
-    TendstoUniformlyOn f (f p) (𝓝[J] p) K := by
-  rw [Metric.tendstoUniformlyOn_iff]
-  intro eps heps
-  obtain ⟨V, hV, hsmall⟩ := hK.mem_uniformity_of_prod hf hp (Metric.dist_mem_uniformity heps)
-  filter_upwards [hV] with q hq
-  intro x hx
-  have hh : dist (f q x) (f p x) < eps := hsmall q hq x hx
-  simpa only [dist_comm] using hh
-
-
-theorem mapCInf_of_joint_smooth_on_closed
-    {G : ℝ → E → F} {J : Set ℝ} {V : Set E}
-    (hJ : UniqueDiffOn ℝ J) (hV : IsOpen V)
-    (hG : ContDiffOn ℝ ∞ (Function.uncurry G) (J ×ˢ V))
-    (tau : ℕ → ℝ) (htau : ∀ n, tau n ∈ J) {t : ℝ} (ht : t ∈ J)
-    (htend : Tendsto tau atTop (𝓝 t)) :
-    DifferentialGeometry.CheegerGromovCompactness.MapCInfConvergenceOnCompacts V
-      (fun n => G (tau n)) (G t) := by
-  intro K hK hKV m
-  have hf (s : ℝ) (hs : s ∈ J) : ContDiffOn ℝ ∞ (G s) V :=
-    hG.comp (contDiffOn_const.prodMk contDiffOn_id) (fun _ hy => ⟨hs, hy⟩)
-  have hm : (m : WithTop ℕ∞) ≤ ∞ := WithTop.coe_le_coe.mpr le_top
-  apply DifferentialGeometry.CheegerGromovCompactness.mapCPConvergenceOn_of_tendstoUniformlyOn hV hKV
-    (fun n => (hf (tau n) (htau n)).of_le hm)
-    ((hf t ht).of_le hm)
-  intro r _hr
-  let : NormedAddCommGroup (ContinuousMultilinearMap ℝ (fun _ : Fin r => E) F) :=
-    ContinuousMultilinearMap.normedAddCommGroup
-  let : NormedSpace ℝ (ContinuousMultilinearMap ℝ (fun _ : Fin r => E) F) :=
-    ContinuousMultilinearMap.normedSpace
-  have hjoint := (KappaSolutions.spatial_iteratedFDeriv_contDiffOn
-    (G := G) hJ hV hG r).continuousOn
-  have hu := tendstoUniformlyOn_of_joint_continuous hK
-    (hjoint.mono (Set.prod_mono Subset.rfl hKV)) ht
-  exact hu.seq_tendstoUniformlyOn tau
-    (tendsto_nhdsWithin_iff.mpr ⟨htend, Filter.Eventually.of_forall htau⟩)
-
 end Calculus
 
 open DifferentialGeometry.Integral.Measure DifferentialGeometry.Geometry.Curvature
@@ -152,7 +110,7 @@ theorem solution_chartGram_mixedJets_contDiffOn_closed
     KappaSolutions.spatial_iteratedFDeriv_contDiffOn
       (G := fun s y => iteratedDerivWithin k
         (fun u => chartGramOnE (I := I) (S.base.metric u) p i j y) (Icc c b) s)
-      (uniqueDiffOn_Icc hcb) hV (hjets k i j) r⟩
+      hV (hjets k i j) r⟩
 
 
 theorem solution_chartGram_timeJets_mapCInf_of_time_sequence
@@ -171,10 +129,10 @@ theorem solution_chartGram_timeJets_mapCInf_of_time_sequence
     solution_chartGram_timeJets_contDiffOn_closed S hS hac hcb hslab hreg p
   refine ⟨V, hV, hpV, hVt, ?_⟩
   intro tau htau t ht htend k i j
-  exact mapCInf_of_joint_smooth_on_closed
+  exact DifferentialGeometry.CheegerGromovCompactness.mapCInfConvergenceOnCompacts_of_tendsto_parameter
     (G := fun s y => iteratedDerivWithin k
       (fun u => chartGramOnE (I := I) (S.base.metric u) p i j y) (Icc c b) s)
-    (uniqueDiffOn_Icc hcb) hV (htime k i j) tau htau ht htend
+    hV (htime k i j) tau htau ht htend
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
 

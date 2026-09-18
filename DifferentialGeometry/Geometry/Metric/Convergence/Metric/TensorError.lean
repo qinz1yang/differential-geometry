@@ -91,6 +91,23 @@ theorem metricTensorErrorNorm_eq_metricDerivNorm_zero
   rfl
 
 omit [SigmaCompactSpace M] in
+theorem tensor02CovDerivNormWith_metricTensorField_sub_eq_metricDerivNorm
+    (G g R : SmoothRiemannianMetric I M) (a : ℕ) (x : M) :
+    tensor02CovDerivNormWith (I := I) a
+        (Tensor0SBundle.metricTensorField (I := I) G - Tensor0SBundle.metricTensorField (I := I) g)
+        R R x = metricDerivNorm (I := I) a G g R x := by
+  classical
+  obtain ⟨basis, hON⟩ := Tensor0SBundle.exists_orthonormal_basis (I := I) R x
+  have hinv : Tensor0SBundle.MetricInverseInBasis (I := I) R x basis
+      (Tensor0SBundle.identityInvMetric
+        (Idx := Fin (Module.finrank ℝ (TangentSpace I x)))) :=
+    Tensor0SBundle.metricInverseInBasis_of_orthonormal (I := I) R basis hON
+  rw [tensor02CovDerivNormWith_eq_iterCov (I := I)
+      (Tensor0SBundle.metricTensorField (I := I) G - Tensor0SBundle.metricTensorField (I := I) g)
+      R a basis hinv,
+    metricDerivNorm_eq_iterCov (I := I) G g R a basis hinv]
+
+omit [SigmaCompactSpace M] in
 theorem tensor02CovDerivNormWith_metricTensorField_eq_metricDerivNorm
     (G g : SmoothRiemannianMetric I M) (a : ℕ) (ha : 1 ≤ a) (x : M) :
     tensor02CovDerivNormWith (I := I) a
