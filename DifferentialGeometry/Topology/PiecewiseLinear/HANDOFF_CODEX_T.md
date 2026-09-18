@@ -96,7 +96,7 @@
 | 1 | `IsBicollared` + 双领口边界补集连通 | **done**（T.1 + T.3）。命名端点 `BicollaredCellComplementConnected` 尚未写成 `MoiseChain` 词汇的那一行包装 |
 | 2 | 拓扑不变域桥（开集嵌入的 interior/frontier/closure） | **done**（T.2） |
 | 3 | `Moise305Tame` | **未开始** |
-| 4 | §34 侧的 `IsBicollared (frontier (h '' C₂))` 生产者 | **未开始** |
+| 4 | §34 PL 球像前沿的双领口生产者 | **done**（T.4a/T.4b；11 条声明；整合根构建尚待） |
 
 无 `git stash`：工作区干净，三个模块全部 exit=0、零 warning、审计干净（5 + 7 + 8 = 20 项）。
 没有留下任何不编译的编辑。
@@ -135,16 +135,8 @@
    拿到 `D`，令 `C := closure`（含 `C₁` 的 `Bᶜ` 分支）；唯一缺的输入
    "`ℝ³ ∖ C₂` 连通"现在由第 1 步提供。
 
-3. 第四块砖（§34 侧生产者）：`frontier C₂` 是 PL 2-球面 ⟹
-   `PolyhedralSurfaceComplement.lean:29 IsPolyhedralManifold.isTwoSided` 给两侧性，
-   `BicollarManifold.lean:135 IsPolyhedralManifold.exists_bicollar` 给闭双领口
-   `ρ : S × Icc (-1) 1 ≃ₜ W`；限制到 `Ioo (-1) 1` 后用 T.2 的
-   `isOpen_range_of_isOpen_subtype` 升成 `IsOpenEmbedding`，再用 `h` 推前
-   （`h` 在开集 `U` 上是嵌入，同样由 T.2 得开映射），配合 T.2 的
-   `frontier_image_eq_image_frontier` 得到 `IsBicollared (frontier (h '' C₂))`。
-   注意 `IsBicollared` 的领口参数是 `S × ℝ`（`TwoSidedCollar` 的形状），
-   而 `exists_bicollar` 给的是 `S × Icc (-1) 1`，需要一次 `Ioo (-1) 1 ≃ₜ ℝ` 的重参数化；
-   树中 `VanKampen/TwoSidedCollarRescale.lean` 可能已有可复用的重参数化，动手前先 grep 它。
+3. 第四块砖已经完成，见 T.4a/T.4b。闭双领口先用紧致性一致收缩，
+   再升为开双领口并推前；不再需要原先拟定的 PL 图卡重建。
 
 ## 结论（只读核查阶段的判决，已被协调者接受并记入 MOISE_CHAIN.md / MOISE_PLAN.md §7）
 
@@ -167,9 +159,8 @@
 漏掉了 `TubularExcision → BicollarCertificates` 这条拓扑路线，也没有注意到消费者
 从不递交非双领口的胞腔。本车道实际选用的是更省的 `TwoSidedCollar` 路线（连同调都不需要）。
 
-**尚未测量**：本车道只完成四块砖中的两块，因此不修正先前 1k–2k 行的估计。
-已落地的三个模块共 358 行（`BicollaredComplement` 105 + `OpenEmbeddingFrontier` 128 +
-`ClosedBallImage` 125），剩余第 3、4 块砖未写，无测量值。
+**当前计量**：先前三个模块为 358 行；第四砖新增 200 行（通用桥 106，PL 生产者 94，含 18 行必需文件头）。
+第 3 砖仍未实现；这些计量不表示整个 Moise 30.5 已经完成。
 
 ## T.4a — Compact closed bicollars give open bicollars (2026-09-18)
 
@@ -200,3 +191,57 @@ aggregate, which remains the integration lane's responsibility. These checks use
 the currently imported shared artifacts and do not certify freshness of their
 entire source dependency closure. The PL/image-frontier producer remains the
 next dependency-closed layer.
+
+## T.4b — PL ball image frontiers are bicollared (2026-09-18)
+
+The generic layer was committed and pushed as `39e444622`.
+`PiecewiseLinear/BicollarEmbedding.lean` now supplies the fourth brick:
+
+```lean
+theorem IsPLBall.isBicollared_frontier_image
+    {P U : Set (EuclideanSpace ℝ (Fin 3))} (hP : IsPLBall 3 P)
+    (hU : IsOpen U) {f : EuclideanSpace ℝ (Fin 3) → EuclideanSpace ℝ (Fin 3)}
+    (hf : ContinuousOn f U) (hinj : InjOn f U) (hPU : P ⊆ U) :
+    IsBicollared (frontier (f '' P))
+```
+
+The reusable primary PL theorem is
+`IsPolyhedralManifold.exists_twoSidedCollar`: in any Hausdorff PL 3-manifold,
+any two-sided finite polyhedral 2-manifold has an actual `TwoSidedCollar` inside
+every prescribed neighborhood. It needs no connectedness or ambient compactness.
+`IsPolyhedralManifold.isBicollared_image` transports this through any open embedding
+on that neighborhood. The Euclidean corollaries are `IsPLSphere.isBicollared_image`,
+`IsPLSphere.isBicollared`, `IsPLBall.isBicollared_frontier_image`, and
+`IsPLBall.isBicollared_frontier`.
+
+Proof chain: the native PL closed bicollar producer, the compact uniform shrinking
+bridge, invariance of domain for the continuous injection on the open neighborhood,
+and the existing exact image-frontier equation. The full closed bicollar need not
+have open image; the shrinking step explicitly puts its smaller band inside the
+ambient interior. No conclusion-equivalent hypothesis is added.
+
+Validation: both new modules compiled under the repository's configured focused
+Lean options. All eleven declarations passed the standard environment-linter audit
+excluding `docBlame` and `docBlameThm`, and their transitive axioms were contained in
+`propext`, `Classical.choice`, and `Quot.sound`. A concrete endpoint application
+using `f = id`, `U = univ`, and `P = stdProj 2 '' stdSimplex Real (Fin 4)` compiled.
+The new source files contain no comments, docstrings, diagnostics, axioms, sorrys,
+resource overrides, or linter suppressions. `git diff --check` passed.
+
+After the owner clarified the mandatory-header exception, both new modules were
+checked with `linter.style.header=true` and `linter.style.longLine=true`, in addition
+to the standard environment checks. The header linter activation depends on root
+import registration (`isInLibraryRoot`), not on a Lake manifest. T root and PL
+`AGENTS.md` and `NAMING.md` now record the owner-approved exception. The shared imported artifacts were used; their entire source dependency closure
+was not rebuilt. No shared upstream object was refreshed by this layer.
+
+The coordinator authorized flat-root registration in T: both new leaves and the
+three prior T leaves (`BicollaredComplement`, `OpenEmbeddingFrontier`, and
+`ClosedBallImage`) are now imported by `DifferentialGeometry.lean`. The integration
+root was not changed. Per coordination, no concurrent full T root build was started;
+`lake build DifferentialGeometry` and full-branch integration remain outstanding.
+
+Remaining work is exactly the named `BicollaredCellComplementConnected` wrapper
+and the third brick `Moise304 -> Moise305Tame`, followed by the integration gates.
+`MoiseChain.lean`, the fourth brick's existing consumers, and all other source trees
+were left unchanged. Completing this producer does not complete Moise 30.5.

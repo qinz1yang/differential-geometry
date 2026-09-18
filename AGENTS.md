@@ -74,9 +74,11 @@ For variants, follow the conclusion:
 
 ## Source discipline
 
-- Write zero comments and zero docstrings in non-vendored Lean source. Preserve required existing
-  Apache Copyright/Authors headers; add no new per-file copyright headers.
-- New source files begin with imports. There is no module docstring after them.
+- Non-vendored Lean source has no inline comments or declaration docstrings. Required Apache
+  Copyright/Authors headers and the module docstring required by the standard header linter are
+  permitted. Preserve existing attribution and use truthful attribution in new headers.
+- New source files begin with the required copyright header, followed by imports and a concise
+  module docstring. Do not add other comments.
 - On-disk identifiers and code are English. User-facing discussion may be Chinese.
 - Preserve exact `variable`, `open`, `omit`, `include`, `attribute`, `noncomputable`, and local-instance
   scopes when moving code. A wider or reconstructed scope can silently change an elaborated signature.
@@ -116,7 +118,7 @@ A green build is necessary but not sufficient.
 
 - The Mathlib standard linter set, excluding the documentation-presence linters `docBlame` and
   `docBlameThm`, is a delivery gate. Those two linters are inapplicable because this repository
-  requires zero docstrings in non-vendored Lean source; do not suppress them in source.
+  requires no declaration docstrings in non-vendored Lean source; do not suppress them in source.
 - Never add `@[nolint ...]`, `attribute [nolint ...]`, or any global, file-local, or
   declaration-scoped linter disable. Repair the declaration or proof instead.
 - Resolve `unusedSectionVars` first with `omit`, a smaller variable block, or a more general statement.

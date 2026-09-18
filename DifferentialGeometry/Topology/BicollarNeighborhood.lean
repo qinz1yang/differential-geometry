@@ -1,6 +1,15 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.BicollaredComplement
 import DifferentialGeometry.Topology.VanKampen.TwoSidedCollarRescale
 import Mathlib.Topology.Order.Compact
+
+/-!
+# Open bicollars from compact closed collar neighborhoods
+-/
 
 open Set Filter Topology
 

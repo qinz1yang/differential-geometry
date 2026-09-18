@@ -102,8 +102,9 @@ Do not expose:
 
 ## 7. Source text
 
-Non-vendored Lean source contains no comments and no docstrings. Names and signatures must therefore be
-especially honest and searchable. On-disk identifiers are English.
+Non-vendored Lean source contains only the required Apache Copyright/Authors header and the module
+docstring required by the standard header linter; inline comments and declaration docstrings remain
+prohibited. Names and signatures must be honest and searchable. On-disk identifiers are English.
 
 ## 8. Review checklist
 
