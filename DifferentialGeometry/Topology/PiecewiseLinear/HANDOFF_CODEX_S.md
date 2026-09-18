@@ -3733,3 +3733,60 @@ C.6 obligation 3 is closed. Obligation 2, the untwisted disk-bundle
 classification of a CST (the ball chain alone still permits the twisted bundle),
 is unchanged and still open; it was not started, and a plan for it is owed before
 any code.
+
+## C.6 obligation 2, step A: the end map of a cylindrical diagram, 2026-09-18
+
+### What a cylindrical diagram's two ends actually record
+
+`IsCylindricalDiagram f P S` (`CylindricalDiagram.lean:10`) says `f` is injective
+on `P ×ˢ Icc 0 1` except that a bottom point may be identified with a top point,
+and that `f '' (P ×ˢ {1}) = f '' (P ×ˢ {0})`. So `S` is the mapping torus of a
+single self-map of the model disk `P`, and that self-map is what distinguishes
+the untwisted from the twisted disk bundle. Before this module the self-map was
+never named; `exists_isPLHomeomorphOn_of_end_identification`
+(`CylinderComparison.lean:29`) consumed the *agreement* of two such maps in the
+unnamed form `∀ x ∈ P, ∀ y ∈ P, f (x, 0) = f (y, 1) ↔ g (x, 0) = g (y, 1)`.
+
+### New module `CylinderEndMap.lean`
+
+`IsCylindricalDiagram.exists_isPLHomeomorphOn_endMap` produces, for any
+cylindrical diagram over a polyhedral `P`, a `u : E → E` with
+`IsPLHomeomorphOn u P P` and `∀ x ∈ P, f (x, 0) = f (u x, 1)`.
+`u` is the four-fold composite
+`P → P ×ˢ {0} → f '' (P ×ˢ {0}) = f '' (P ×ˢ {1}) → P ×ˢ {1} → P`,
+so PL-ness is four `IsPLHomeomorphOn.trans` steps and no new geometry: the two
+end slices are PL homeomorphisms by `isPLHomeomorphOn_strip` restricted to a
+level (`isPLHomeomorphOn_bottom`, `isPLHomeomorphOn_top`), and the middle
+equality is exactly the `image_top_eq_bottom` field.
+
+`IsCylindricalDiagram.endMap_eq_iff` upgrades the defining property to
+`f (x, 0) = f (y, 1) ↔ y = u x` for `x y ∈ P`; the forward direction is
+`eq_of_eq_top`, which is `eq_or_endpoints` at two top points with the two
+endpoint branches killed by `1 ≠ 0`.
+
+`exists_isPLHomeomorphOn_of_eq_endMap` is the intended consumer form: two
+cylindrical diagrams over the same `P` that share **one** end map `u` have PL
+homeomorphic images, with the homeomorphism compatible with both diagrams. This
+is `exists_isPLHomeomorphOn_of_end_identification` with its `he` hypothesis
+discharged by `endMap_eq_iff` on both sides, and it is the exact interface the
+remaining steps of C.6 obligation 2 have to feed.
+
+### What this reduces obligation 2 to
+
+24.10 now needs only: every cylindrical diagram can be reparametrised so that its
+end map becomes the identity. Given `Φ : E × ℝ → E × ℝ` with
+`IsPLHomeomorphOn Φ (P ×ˢ Icc 0 1) (P ×ˢ Icc 0 1)`, `Φ (x, 0) = (x, 0)` and
+`Φ (x, 1) = (u x, 1)` on `P`, the diagram `f ∘ Φ` is again cylindrical with end
+map the identity. Note this is a *pseudo*-isotopy: level preservation is needed
+only at the two ends, and there it already follows from the two endpoint
+conditions plus injectivity, so the `eq_or_endpoints` field transports. A
+level-preserving isotopy is therefore more than step D requires, but a merely
+continuous family of PL homeomorphisms is strictly less: the transported
+`isPiecewiseAffineOn` field needs `Φ` itself to be piecewise affine on the whole
+product, not just levelwise.
+
+### Verification
+
+`check-f.ps1 -Module ...CylinderEndMap` exit=0, zero warnings, 10.1 s.
+`.lake/scratch/AuditSCylinderEndMap.lean` audits all seven declarations; every
+one depends only on `propext`, `Classical.choice`, `Quot.sound`.
