@@ -4506,3 +4506,58 @@ Two caveats recorded rather than glossed:
 exit=0, zero warnings, 13.0 s. `AuditSCircleAnnulusOrientation` now covers 24
 declarations, all depending only on `propext`, `Classical.choice`, `Quot.sound`,
 including the endpoint.
+
+
+## Both caveats on the orientation predicate are now closed
+
+### 1. `IsPLCirclePositive` is now the existential form
+
+`IsPLCirclePositive S u` now reads: **there is** a continuous bijection `g` from
+`loopCircle` onto `S` whose conjugate `circleConj g u` has a strictly increasing
+periodic lift. That is the weaker hypothesis, so every consumer of the endpoint now
+has less to supply. `IsPLCirclePositive.forall_param` recovers the universal form
+for whichever parametrisation a proof happens to need, which is what the C1
+assembly uses internally.
+
+The bridge is conjugation-invariance, `HasIncreasingCircleLift.conj`: for any
+self-homeomorphism `φ` of `loopCircle`, if `ψ` is positive then so is
+`φ.symm ∘ ψ ∘ φ`. Both branches of `circleHomeomorph_affineLift_or_neg` are handled:
+
+- `φ` positive: its lift is a homeomorphism of the line, so `φ.symm` is positive by
+  `HasIncreasingCircleLift.inv`. That needs the lift to be surjective, which
+  `lift_surjective_of_surjective` gets from surjectivity of `ψ` together with
+  `lift_add_intCast` (`F (t + n) = F t + n` for integer `n`, by induction).
+- `φ` reversing: then `η := -φ` is positive, `φ = -η` and `φ.symm = η.symm ∘ neg`,
+  and `HasIncreasingCircleLift.negConj` says `neg ∘ ψ ∘ neg` is positive with lift
+  `t` mapsto `-F (-t)`. Three positives compose.
+
+Two parametrisations of the same `S` differ by such a `φ` -- the transition
+`paramHomeomorph`s composed -- so positivity does not depend on the choice.
+
+### 2. Non-triviality is now proved in Lean, not inherited
+
+`exists_not_isPLCirclePositive_of_isPLSphere_one`: **every** PL 1-sphere carries a
+PL self-homeomorphism that is not `IsPLCirclePositive`. The witness is the arc
+swap: cut `S` into `A` and `B`, and glue the parametrisation transfers
+`δ ∘ γ⁻¹ : A → B` and `γ ∘ δ⁻¹ : B → A`, which agree at the two cut points. The
+result fixes both cut points and carries `A` onto `B`; if it were positive,
+`image_arc_eq_of_isPLCirclePositive` would force `A = B`, which fails because the
+midpoint of `A` is not a cut point.
+
+At the lift level, `not_hasIncreasingCircleLift_neg` shows the negation map of
+`loopCircle` has no increasing periodic lift, and
+`not_hasIncreasingCircleLift_of_neg_lift` gives the exclusivity of the two branches
+in general: if `ψ` descended both from an increasing `F` and from `-G` with `G`
+increasing, then `F + G` would be strictly increasing, integer-valued and grow by
+two per period, so it would have to take three distinct integer values on
+`[0, 1]` with the outer two differing by two -- impossible, by looking at the
+quarter point.
+
+So the endpoint is no longer consistent with the predicate being vacuously
+universal, and a reader can see that from the file.
+
+### Verification
+
+`check-f.ps1` exit=0 with zero warnings on both modules (10.4 s, 14.0 s). Audits:
+`AuditSCircleLiftOrientation` 18 declarations, `AuditSCircleAnnulusOrientation` 31;
+all depend only on `propext`, `Classical.choice`, `Quot.sound`.
