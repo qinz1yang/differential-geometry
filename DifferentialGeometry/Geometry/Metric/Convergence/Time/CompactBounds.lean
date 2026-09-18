@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Continuity
 import DifferentialGeometry.Geometry.Metric.Family.Regularity.Pair
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.TimeRegularity
 import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.Coordinates
@@ -134,3 +135,62 @@ theorem exists_metric_time_lipschitz_constant_on_compact_regular
     (abs_nonneg _))
 
 end DifferentialGeometry.CheegerGromovCompactness
+
+end
+
+section
+
+set_option autoImplicit false
+
+noncomputable section
+
+namespace DifferentialGeometry.CheegerGromovCompactness
+
+open Set
+open Geometry.Curvature
+open scoped Manifold ContDiff
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
+  [IsManifold I ∞ M] [T2Space M]
+
+theorem exists_metricCovDerivNorm_bound_on_compact_regular
+    {D : RealTimeInterval} (G : ℝ → SmoothRiemannianMetric I M)
+    (hG : MetricFamilySmoothOn D G)
+    {a b : ℝ} (hreg : Icc a b ⊆ D.regular)
+    (R : SmoothRiemannianMetric I M) {K : Set M} (hK : IsCompact K) (p : ℕ) :
+    ∃ C : ℝ, 0 < C ∧ ∀ q ≤ p, ∀ t ∈ Icc a b, ∀ x ∈ K,
+      metricCovDerivNorm q (G t) R x ≤ C := by
+  classical
+  let _ : CompleteSpace E := FiniteDimensional.complete ℝ E
+  by_cases hab : a ≤ b
+  · obtain ⟨L, hL, hlip⟩ :=
+      exists_metric_time_lipschitz_constant_on_compact_regular G hG hreg R hK p
+    have hbase (q : ℕ) : ∃ C : ℝ, ∀ x ∈ K,
+        metricCovDerivNorm q (G a) R x ≤ C :=
+      metricCovDerivNorm_bddOn hK q (G a) R
+    choose C hC using hbase
+    let B : ℝ := ∑ q ∈ Finset.range (p + 1), max (C q) 0
+    have hB : 0 ≤ B := Finset.sum_nonneg fun q _ => le_max_right _ _
+    refine ⟨B + L * |b - a| + 1, by positivity, ?_⟩
+    intro q hq t ht x hx
+    have hqb : C q ≤ B := (le_max_left _ _).trans
+      (Finset.single_le_sum (fun i _ => le_max_right (C i) 0)
+        (Finset.mem_range.mpr (by omega)))
+    have htime : |t - a| ≤ |b - a| := by
+      rw [abs_of_nonneg (sub_nonneg.mpr ht.1), abs_of_nonneg (sub_nonneg.mpr hab)]
+      exact sub_le_sub_right ht.2 a
+    have hd := hlip q hq t ht a ⟨le_rfl, hab⟩ x hx
+    have hc := covNorm_le_add q (G t) (G a) R x
+    have hb := (hC q x hx).trans hqb
+    have he := hd.trans (mul_le_mul_of_nonneg_left htime hL)
+    linarith
+  · exact ⟨1, zero_lt_one, fun _ _ _ ht _ _ => False.elim (hab (ht.1.trans ht.2))⟩
+
+end DifferentialGeometry.CheegerGromovCompactness
+
+end
+
+end
