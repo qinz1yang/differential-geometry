@@ -1480,3 +1480,29 @@ theorem eq_top_of_boundaryLoops_mem_normal
   这条排除了"再加一条更强的分离条款"和"在领环里做第二次滑动"两种想法。
 - 验证：`BranchSeparationBoundary` 聚焦检查 exit=0（10.4 秒）、`BranchBoundaryCollar` exit=0（10.6 秒），
   均零 warning；审计见 §57 末尾（两节的声明放在同一个审计文件里）。全程无其它 `lean.exe`。
+
+## 57. 2026-09-18 E3-M3：Case 3/4 整条链改走触边分支端点（§52 第 2 条未做项清掉）
+
+状态：done。改动 `BranchComplexityDrop.lean` 与 `BranchCaseThreeFour.lean`，即 §53 里列为"本轮范围未做"的那条。
+
+- `NormalSingularCellData.exists_separated_cell_simplicialComplexity_lt_along_branch`
+  改名为 `..._along_boundary_branch`，并改调 §53 的
+  `exists_separated_cell_along_boundary_branch`：参数 `hca : c - d < a` 换成 `hbd : b < d`
+  （前推滑动把 A 带推过 Q 带，而不是把 A 带拉到 Q 带之前），输出里 §48 的双条件条款
+  `∀ x, h x ∈ BdM ↔ x ∈ BdM` 换成三条前推形式：`MapsTo h U U`、半空间条款
+  `MapsTo h N N` 与 §56 的反向条款。复杂度下降的证明**一行没改**——
+  `exists_simplicialComplexity_lt_of_doublePointSet_subset_sdiff` 只吃
+  `hgfib`、`hgdouble`、`hclean`、`hSU`，从不碰边界条款，这与 §53 里逐条核对的结论一致。
+- `NormalSingularCellData.exists_four_arc_word_and_simplicialComplexity_lt_of_boundaryBranch`
+  同样换参数与条款。它现在**在参数层就只对触边分支成立**（`hbd : b < d` 是触边分支的正规形），
+  四段边界字那一支（`exists_boundary_four_arc_word_of_boundaryBranch hc`）原样转出。
+  于是 Case 3/4 的整条链——四段字 + 分离胞腔 + 复杂度严格下降——跑在同一个触边分支端点上。
+- `BranchComplexityDrop.lean` 的 import 由 `BranchSeparation` 改为 `BranchSeparationBoundary`
+  （后者 import 前者，内部分支版本仍可用）。内部分支（Case 1/2）的
+  `exists_separated_cell_along_branch` 与 `exists_separated_along_branch` 留在
+  `BranchSeparation.lean` 里没动。
+- 验证：`BranchComplexityDrop` 聚焦检查 exit=0（10.6 秒）、`BranchCaseThreeFour` exit=0（10.4 秒），
+  均零 warning。`.lake/scratch/AuditE3BoundaryCollar.lean`（同时 import
+  `BranchBoundaryCollar` 与 `BranchCaseThreeFour`，因此也顺带验证这两支没有重名声明）
+  的 11 条 `#print axioms` 全部只含 `propext`、`Classical.choice`、`Quot.sound`。
+  全程无其它 `lean.exe`。

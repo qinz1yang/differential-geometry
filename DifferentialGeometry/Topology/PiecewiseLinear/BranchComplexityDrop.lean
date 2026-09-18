@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.BranchSeparation
+import DifferentialGeometry.Topology.PiecewiseLinear.BranchSeparationBoundary
 import DifferentialGeometry.Topology.PiecewiseLinear.IsomorphicSubdivision
 import DifferentialGeometry.Topology.PiecewiseLinear.Triangulation
 
@@ -140,7 +140,7 @@ variable [TopologicalSpace M] [T2Space M]
   {D : SingularTwoCell M} {BdM B : Set M}
 
 open Classical in
-theorem exists_separated_cell_simplicialComplexity_lt_along_branch
+theorem exists_separated_cell_simplicialComplexity_lt_along_boundary_branch
     (hD : NormalSingularCellData D BdM B)
     (cb : hD.singularSet.Branch) {W : Set M} {P Pc Q : Set (EuclideanSpace ℝ (Fin 2))}
     {d R a b c : ℝ}
@@ -149,7 +149,7 @@ theorem exists_separated_cell_simplicialComplexity_lt_along_branch
     (e : OpenPartialHomeomorph (EuclideanSpace ℝ (Fin 3)) (ℝ × ℝ × ℝ))
     (he : IsPiecewiseAffineOn e e.source) (hei : IsPiecewiseAffineOn e.symm e.target)
     (hesrc : e.source ⊆ E.target)
-    (hd : 0 ≤ d) (hcR : c + 2 * d ≤ R) (hca : c - d < a)
+    (hd : 0 ≤ d) (hcR : c + 2 * d ≤ R) (hbd : b < d)
     (hsupp : slideSupportLong R ⊆ e.target)
     (hAt : slideBandA c ⊆ e.target) (hBt : slideBandQ a b ⊆ e.target)
     (hSK : hD.singularSet.branchCarrier cb ⊆ E.symm '' (e.symm '' slideSupportLong R))
@@ -168,10 +168,16 @@ theorem exists_separated_cell_simplicialComplexity_lt_along_branch
         (hKfinite : K.faces.Finite),
       let _ : Finite K.faces := hKfinite.to_subtype
       IsOpen U ∧ hD.singularSet.branchCarrier cb ⊆ U ∧
-      closure U ⊆ W ∧ IsPL 3 3 h ∧ Function.Injective h ∧ EqOn h id Uᶜ ∧
-      (∀ (Bd₁ : Set (EuclideanSpace ℝ (Fin 3))) (T : Set (ℝ × ℝ)),
-        (∀ x ∈ E.source, x ∈ BdM ↔ E x ∈ Bd₁) →
-        (∀ y ∈ e.source, y ∈ Bd₁ ↔ (e y).2 ∈ T) → ∀ x, h x ∈ BdM ↔ x ∈ BdM) ∧
+      closure U ⊆ W ∧ IsPL 3 3 h ∧ Function.Injective h ∧ EqOn h id Uᶜ ∧ MapsTo h U U ∧
+      (∀ (N : Set M) (N₁ : Set (EuclideanSpace ℝ (Fin 3))),
+        (∀ x ∈ E.source, x ∈ N ↔ E x ∈ N₁) →
+        (∀ y ∈ e.source, y ∈ N₁ ↔ 0 ≤ (e y).1) → MapsTo h N N) ∧
+      (∀ (N Bd : Set M) (N₁ Bd₁ : Set (EuclideanSpace ℝ (Fin 3))),
+        (∀ x ∈ E.source, x ∈ N ↔ E x ∈ N₁) →
+        (∀ y ∈ e.source, y ∈ N₁ ↔ 0 ≤ (e y).1) →
+        (∀ x ∈ E.source, x ∈ Bd ↔ E x ∈ Bd₁) →
+        (∀ y ∈ e.source, y ∈ Bd₁ ↔ (e y).1 = 0) →
+        ∀ x ∈ N, h x ∈ Bd → x ∈ Bd) ∧
       Disjoint (h '' (D '' P)) (D '' Q) ∧
       IsPLOn 2 3 (P.piecewise (h ∘ D) D) D.domain ∧
       IsLocallyInjective (D.domain.domRestrict (P.piecewise (h ∘ D) D)) ∧
@@ -181,10 +187,10 @@ theorem exists_separated_cell_simplicialComplexity_lt_along_branch
         doublePointSet D D.domain \ hD.singularSet.branchCarrier cb ∧
       K.space = D.domain ∧
       simplicialComplexity K (P.piecewise (h ∘ D) D) < simplicialComplexity K D := by
-  obtain ⟨U, h, hUopen, hSU, hUW, hhpl, hhinj, hhfix, hhbd, hdisj, hgpl, hgloc, hgcard,
-    hgfib, hgdouble⟩ :=
-    hD.exists_separated_cell_along_branch cb E hE e he hei hesrc hd hcR hca hsupp hAt hBt
-      hSK hW hA hB hAB hdom hPpoly hPcpoly hinjP hinjQ hPcQ hseam hclean
+  obtain ⟨U, h, hUopen, hSU, hUW, hhpl, hhinj, hhfix, hhmap, hhN, hhrefl, hdisj, hgpl, hgloc,
+    hgcard, hgfib, hgdouble⟩ :=
+    hD.exists_separated_cell_along_boundary_branch cb E hE e he hei hesrc hd hcR hbd hsupp
+      hAt hBt hSK hW hA hB hAB hdom hPpoly hPcpoly hinjP hinjQ hPcQ hseam hclean
   have hUsub : U ⊆ W := subset_closure.trans hUW
   have hSne :
       (hD.singularSet.branchCarrier cb ∩ doublePointSet D D.domain).Nonempty := by
@@ -194,8 +200,8 @@ theorem exists_separated_cell_simplicialComplexity_lt_along_branch
     exists_simplicialComplexity_lt_of_doublePointSet_subset_sdiff D
       (P.piecewise (h ∘ D) D) hgfib hgdouble.subset
       (fun y hy => hclean ⟨hy.1, hUsub hy.2⟩) hSU hSne
-  exact ⟨U, h, K, hKfinite, hUopen, hSU, hUW, hhpl, hhinj, hhfix, hhbd, hdisj, hgpl,
-    hgloc, hgcard, hgfib, hgdouble, hKspace, hlt⟩
+  exact ⟨U, h, K, hKfinite, hUopen, hSU, hUW, hhpl, hhinj, hhfix, hhmap, hhN, hhrefl, hdisj,
+    hgpl, hgloc, hgcard, hgfib, hgdouble, hKspace, hlt⟩
 
 end NormalSingularCellData
 
