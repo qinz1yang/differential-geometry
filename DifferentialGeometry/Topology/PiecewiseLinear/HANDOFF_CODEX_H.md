@@ -2440,3 +2440,66 @@ exists_affineIndependent_openSimplex_subset` 取四面体，取 `c`、`d` 为两
 
 聚焦检查 `MidpointIndependence` exit=0（9.2 秒）、零 warning；
 `.lake/scratch/AuditHMidpoint.lean` 六项仅 `propext`、`Classical.choice`、`Quot.sound`。
+
+## 37. 2026-09-18 构型存在性 — done（`BallPairCutConfig.lean`）：第 3 步的模型数据已是无条件定理
+
+第 32 节要的"模型的存在性"已闭合。交付的**不是**第 26/31 节那张三十余条的构型清单
+（作为 `∃` 写出来无人能消费），而是直接把四对喂完之后的结论打包：
+
+    exists_isPLBallPair_cut_model (hn : finrank ℝ E = 3) :
+      ∃ (C₁ C₂ arc : Set E) (z : E),
+        IsPLBallPair 2 1 (C₁ ∪ C₂) arc ∧
+        IsPLBallPair 2 1 C₁ (C₁ ∩ arc) ∧
+        IsPLBallPair 2 1 C₂ (C₂ ∩ arc) ∧
+        IsPLBallPair 1 0 (C₁ ∩ C₂) {z} ∧
+        C₁ ∩ C₂ ∩ arc = {z}
+
+`C₁ = conv{c,m,A,B}`、`C₂ = conv{d,m,A,B}`、`C₁ ∪ C₂ = conv{c,d,A,B}`、`C₁ ∩ C₂ = conv{m,A,B}`、
+`arc = segment p c ∪ segment p d`。**没有假设、没有 section 变量**，第 3 步可以直接 `obtain`。
+
+### 具体取点（第 34 节参数化的一个显式实例）
+
+从 `SimplexBoundary.lean:400` 取四点仿射无关的 `T`，用 `Finset.card_eq_four` 命名成
+`{c, m, A, B}`——注意**是 `T₁` 不是 `T`**（第 35 节的方向更正），再令
+
+    d := m + m - c,  z := (1/3)(m + A + B),
+    p := (1/10)c + (1/6)m + (11/30)A + (11/30)B,  q := (1/2)(z + d)
+
+即第 34 节的 `μ_m = μ_A = μ_B = 1/3`、`t = 11/10`（区间是 `(1, 6/5)`）。核对过的坐标：
+
+| 点 | `{c,m,A,B}` 重心坐标 | `{c,d,A,B}` | `{d,m,A,B}` | `ℓ` | `ν` |
+|---|---|---|---|---|---|
+| `p` | `(1/10, 1/6, 11/30, 11/30)` | `(11/60, 1/12, 11/30, 11/30)` | — | `r − 1/10` | `s + 11/30` |
+| `z` | `(0, 1/3, 1/3, 1/3)` | — | `(0, 1/3, 1/3, 1/3)` | `r` | `s + 1/3` |
+| `q` | — | — | `(1/2, 1/6, 1/6, 1/6)` | `r + 1/2` | `s + 1/6` |
+| `c` | — | — | — | `r − 1` | `s` |
+| `d` | — | — | — | `r + 1` | `s` |
+
+`z ∈ segment p d` 的系数是 `(10/11, 1/11)`；`q ∈ openSegment z d` 的是 `(1/2, 1/2)`。
+
+### 两个把工作量砍掉一半的做法
+
+1. **互异性全部由 `ℓ` 读出**。八条 `c≠d`、`p≠c`、`p≠d`、`c≠z`、`p≠z`、`z≠d`、`q≠z`、`q≠d`
+   以及 `d ∉ {m,A,B}` 等五条 `Finset` 不属于，都用同一条
+   `hne : ℓ x ≠ ℓ y → x ≠ y` 加上表里的 `ℓ` 值，`linarith` 收尾。
+   不必对任何一对做几何论证。
+2. **两条径向条件用行列式判据**，不用手算线性无关：
+   `linearIndependent_pair_of_det_ne_zero (φ ψ : E →ₗ[ℝ] ℝ) (φ u * ψ v - φ v * ψ u ≠ 0)`。
+   取 `φ = ℓ`（第 36 节那条）、`ψ = ν`（同一条引理再用一次，`q v = if v = A then 1 else 0`）。
+   两个行列式分别是 `11/15` 与 `1/15`，算出来就是 `norm_num`。
+   第 34 节说"两条归结为同一件事（`c` 不在 `p`、`d` 的直线上）"是对的，
+   但在 Lean 里**两条各写一个行列式比共用一个几何理由短**。
+
+配套的两条组合引理 `mem_openSimplex_triple` / `mem_openSimplex_quadruple`
+（给三点／四点的正权重与组合式即得开单纯形成员）与
+`sum_triple_insert` / `sum_quadruple_insert` 一并交付，后面再选点可直接用。
+权重函数用 `obtain ⟨w, wa, wb, wc, we⟩ : ∃ w : E → ℝ, w a = w₁ ∧ …` 造成**不透明但取值已知**的形式，
+比 `set` 一个嵌套 `if` 再反复 `simp` 稳得多。
+
+聚焦检查 `BallPairCutConfig` exit=0（14.4 秒）、零 warning
+（`sum_*_insert` 两条要逐条 `omit [NormedAddCommGroup E] [NormedSpace ℝ E]`）；
+`.lake/scratch/AuditHCutConfig.lean` 四项仅 `propext`、`Classical.choice`、`Quot.sound`。
+
+### 剩余
+
+第 3 步（相对黏合）与第 4 步（沿弧的链归纳）。第 3 步的输入现在齐了。
