@@ -2714,3 +2714,113 @@ E3 §48 给了两条出路：(1) 给端点一个锥度在 `Bd M` 处归零、与
 
 检查 `ModelSlideFwd` exit=0（9.7 秒）、`BranchSlideEndpoint` exit=0（9.4 秒），均零 warning；
 `AuditF260.lean` 二十一项、`AuditF261.lean` 十项仅 `propext`、`Classical.choice`、`Quot.sound`。
+
+### 19.120 端点图卡的最后一条代数条款：横截于分支线的边界平面可正规化成 `{p.1 = 0}`
+
+§19.115 末尾留下的那步（"`exists_linearEquiv_of_transverse_planes` 之后剩下的自由度恰是
+`(x,y,z) ↦ (αx+βy+γz, δy, εz)`，横截于 x 轴的平面可正规化成 `{x = 0}`"）已形式化，
+`TransversePlaneCoordinates.lean` 新增十六条，`TransversePlaneNormalForm.lean` 新增一条。
+
+**三角群就是正确的群**（不是随手选的子群）：`mapsTo_planes_iff_exists_coeff` 给出等价
+`(MapsTo T {p.2.2 = 0} {p.2.2 = 0} ∧ MapsTo T {p.2.1 = 0} {p.2.1 = 0}) ↔
+∃ a b c d e, ∀ p, T p = (a p.1 + b p.2.1 + c p.2.2, d p.2.1, e p.2.2)`，对任意
+`T : (ℝ×ℝ×ℝ) →ₗ[ℝ] ℝ×ℝ×ℝ`。正向由 `T e₁` 落在两张片上、`T e₂` 落在第一张、`T e₃` 落在第二张
+读出五个系数（`exists_coeff_of_mapsTo_planes`）。`ne_zero_of_surjective_triangular`：三角映射满射
+⟹ `a ≠ 0 ∧ d ≠ 0 ∧ e ≠ 0`（先用 `(0,1,0)`、`(0,0,1)` 取出 `d`、`e` 非零，再用 `(1,0,0)` 取 `a`）。
+`noncomputable def triangularEquiv α β γ δ ε hα hδ hε` 是显式的线性自同构（逆映射手写，
+`inv_mul_cancel_left₀` / `mul_inv_cancel_left₀` 验证两侧），`exists_coeff_triangularEquiv_symm`
+给出逆仍是三角的系数 `(α⁻¹, -α⁻¹βδ⁻¹, -α⁻¹γε⁻¹, δ⁻¹, ε⁻¹)`，
+`image_triangularEquiv_setOf_snd_snd_eq_zero` / `..._snd_fst_...` 是两张片平面被**逐集固定**。
+
+**`a ≠ 0` 需要的横截性假设就是 `HasPLBoundaryCrossingAt` 已经带着的那一条**：定义里的
+`(∃ u ∈ P ⊓ Q, ℓ u = 1)`。不需要任何新假设。`exists_mem_apply_eq_one_iff_not_le_ker` 把它等价改写成
+`¬ (P ⊓ Q ≤ LinearMap.ker ℓ)`，即**分支线不落在边界平面里**。用 `u` 时 `(L u).2 = 0`，于是
+`1 = ℓ u = a (L u).1`，立刻得 `a ≠ 0`。反之若分支线落在 `ker ℓ` 内则 `a = 0`，正规化确实失效——
+这不是可以省掉的技术条件。
+
+端点定理（均在 `TransversePlaneCoordinates.lean`）：
+- `exists_triangularEquiv_normalizing`：给定已满足两张片条款的 `L`，存在 `α β γ`、`α ≠ 0`，使
+  `T = triangularEquiv α β γ 1 1` 满足 `ℓ y = (T (L y)).1` 且 `(T (L y)).2 = (L y).2`
+  （`δ = ε = 1`，所以两张片的坐标**原封不动**，只有第一坐标被换成 `ℓ`）。系数取
+  `α = ℓ (L.symm (1,0,0))`、`β = ℓ (L.symm (0,1,0))`、`γ = ℓ (L.symm (0,0,1))`。
+- `exists_linearEquiv_of_transverse_planes_of_transverse_functional`：打包版，产出 `L` 同时满足
+  `y ∈ P ↔ (L y).2.2 = 0`、`y ∈ Q ↔ (L y).2.1 = 0`、`y ∈ P ⊓ Q ↔ (L y).2 = 0`、`ℓ y = (L y).1`。
+- `exists_linearEquiv_boundaryCrossing_normalForm`：集合像形式的五条款，
+  `{0 ≤ ℓ} ↦ {0 ≤ p.1}`、`{ℓ = 0} ↦ {p.1 = 0}`、
+  `P ∩ {0 ≤ ℓ} ↦ {p.2.2 = 0 ∧ 0 ≤ p.1}`、`Q ∩ {0 ≤ ℓ} ↦ {p.2.1 = 0 ∧ 0 ≤ p.1}`、
+  `(P ⊓ Q) ∩ {0 ≤ ℓ} ↦ {p.2 = 0 ∧ 0 ≤ p.1}`。最后一条就是"分支从 `x = 0` 伸向 `x > 0`"。
+
+**直接消费 `HasPLBoundaryCrossingAt` 的桥**（新模块 `TransversePlaneNormalForm.lean`，
+import `SingularGeneralPosition` 与 `TransversePlaneCoordinates`）：
+`HasPLBoundaryCrossingAt.exists_linearEquiv_normalForm`，由 `HasPLBoundaryCrossingAt M A B x`
+产出 `U V h L`，`IsPLHomeomorphOn h U V`、`h x = 0`，且 `∀ᶠ y in 𝓝 x` 四条款
+`y ∈ M ↔ 0 ≤ (L (h y)).1`、`y ∈ A ↔ (L (h y)).2.2 = 0 ∧ 0 ≤ (L (h y)).1`、
+`y ∈ B ↔ (L (h y)).2.1 = 0 ∧ 0 ≤ (L (h y)).1`、
+`y ∈ A ∩ B ↔ (L (h y)).2 = 0 ∧ 0 ≤ (L (h y)).1`。
+`h` 仍是 `E → E`，只有读坐标那一层后接 `L`，所以 `IsPLHomeomorphOn` 不需要异型版本，
+§19.116 判断的"不需要线性桥"在这里同样成立。
+
+**§19.115 生产者的剩余义务因此只剩几何一半**：紧致触边分支的单张 PL 乘积图卡（正则邻域唯一性），
+由 H 车道负责。代数一半（把两张片拉直成坐标平面、把边界平面拉直成 `{p.1 = 0}`、
+把闭半空间拉直成 `{0 ≤ p.1}`、分支落在非负 x 轴上）现在**全部闭合**。
+
+检查 `TransversePlaneCoordinates` exit=0（7.9 秒）、`TransversePlaneNormalForm` exit=0（8.8 秒），
+均零 warning；`AuditF262.lean` 十九项、`AuditF263.lean` 一项，仅 `propext`、`Classical.choice`、
+`Quot.sound`。下一审计文件 `AuditF264.lean`。
+
+### 19.121 单顶点的图卡条款：germ 形式已闭合，且它不需要 H 的锥对机器
+
+**结论先说**：分支上**单个顶点**处的图卡陈述现在是定理，
+`HasPLCrossingAt.exists_linearEquiv_normalForm` 与
+`HasPLBoundaryCrossingAt.exists_linearEquiv_normalForm`（均在 `TransversePlaneNormalForm.lean`）。
+但它**不是**由 H 的 `ConePairExtension` / `ConePairCrossing` 得到的——那两个模块与单顶点情形无关，
+它们解决的是弧情形的归纳步。核对如下。
+
+`HasPLCrossingAt`（`GeneralPosition.lean:2342`）与 `HasPLBoundaryCrossingAt`
+（`SingularGeneralPosition.lean:1717`）的定义**本身就携带**一张单点图卡：`U V h`、`IsOpen U`、
+`x ∈ U`、`IsPLHomeomorphOn h U V`、`h x = 0`，外加 `∀ᶠ y in 𝓝 x` 把两片认同成 `P`、`Q` 的锥模型。
+所以单顶点处缺的从来不是"存在图卡"，而是"把那个锥模型放进标准坐标"。这一步就是 §19.120 的线性正规化，
+于是：
+
+- `HasPLCrossingAt.exists_linearEquiv_normalForm`：产出 `U V h L`，并按定义里
+  `α = 0 ∨ β = 0` 那一条给出三分支——两片都是整平面
+  （`y ∈ A ↔ (L (h y)).2.2 = 0`、`y ∈ B ↔ (L (h y)).2.1 = 0`），
+  或 `A` 整片而 `B` 是半平面（多一条 `0 ≤ (L (h y)).1`），或对称的另一支。
+  `α`、`β` 的横截性条款在定义里写成 `∃ u ∈ P ⊓ Q, α u ≠ 0`，由
+  `exists_mem_apply_eq_one_of_exists_mem_apply_ne_zero` 归一成 §19.120 需要的 `α u = 1`。
+- `HasPLBoundaryCrossingAt.exists_linearEquiv_normalForm`（§19.120）：四条款，多出
+  `y ∈ A ∩ B ↔ (L (h y)).2 = 0 ∧ 0 ≤ (L (h y)).1`，即分支落在非负 x 轴上。
+
+**H 的两条新定理是什么**（逐条读过）：
+- `exists_isPLHomeomorphOn_closedStar_of_geometricLink_subcomplex`
+  （`ConePairExtension.lean:142`）把**已经给定**的连接同胚
+  `hf : IsPLHomeomorphOn f (geometricLink K {p}).space (geometricLink K' {p'}).space`
+  （`:148-149`）与 `hfJ : f '' (geometricLink J {p}).space = (geometricLink J' {p'}).space`
+  （`:150-151`）锥化成闭星同胚，并保 `closedStar J p ↦ closedStar J' p'`。
+  它是**延拓**，不产生 `f`。
+- `HasPLCrossingAt.of_geometricLink_pair`（`ConePairCrossing.lean:10`）把**模型点处已知的**
+  `hcross : HasPLCrossingAt M'.space B' q`（`:24`）沿同一个 `f` 搬回 `p`，
+  还要求两侧的集合确实是自己连接迹的锥（`hB`、`hB'`，`:20-21`）。它是**搬运**，同样不产生 crossing。
+
+所以两条都是"连接层已匹配 ⟹ 星层已匹配"，正是弧情形归纳步需要的方向；
+对单顶点没有增量，因为单顶点的模型已经在 `HasPLCrossingAt` 的假设里。
+
+**真正的连接层生产者已经在树里，但配置不够**：`exists_isPLHomeomorphOn_geometricLink_pair`
+（`LinkPair.lean:53`）确实**产出** `f`，并同时给出 `f '' J = J'` 与
+`f '' (link ∩ {ℓ = 0}) = link' ∩ {ℓ' = 0}`——即一对圆（PL 1-球面 `J` 与 ℓ-赤道）在连接 2-球面里的匹配，
+这正是 H 的两条定理缺的输入。它要求：`finrank = 3`、`K.space ∈ 𝓝 p`、`ℓ ≠ 0`、`ℓ p = 0`、
+`J` 是 PL 1-球面且 `J ∩ {ℓ = 0}` 恰好是两点 `{a, b}`、`J` 两侧都非空，
+以及 `hside : ∀ s ∈ K.faces, conv s ⊆ {ℓ ≤ 0} ∨ conv s ⊆ {0 ≤ ℓ}`。
+
+**因此把单顶点从 germ 形式升级到星（subcomplex）形式的确切义务只剩两条**：
+1. 把 `p` 附近的两张片实现成子复形，使 `link(A, p)`、`link(B, p)` 是 `link(K, p)` 里的 PL 1-球面，
+   且恰交于分支的两个方向 `{a, b}`；
+2. 供上 `hside` 那条相容细分：其中一张片要被某个线性泛函的零集承载
+   （`LinkPair` 只处理"一个圆 + 一条赤道"，不是任意两个圆）。
+满足这两条后，`LinkPair.lean:53` → `ConePairExtension.lean:142` 就把单顶点的星对闭合，
+`ConePairCrossing.lean:10` 再把 crossing 搬过去。**弧情形**（§19.115 真正的缺口）还要在此之上
+沿分支做归纳，并要求相邻星在公共连接上已匹配；那仍是 H 的正则邻域唯一性工作。
+
+检查 `TransversePlaneCoordinates` exit=0（7.7 秒）、`TransversePlaneNormalForm` exit=0（9.1 秒），
+均零 warning；`AuditF264.lean` 三项仅 `propext`、`Classical.choice`、`Quot.sound`。
+下一审计文件 `AuditF265.lean`。
