@@ -2877,3 +2877,27 @@ linters other than `docBlame` and `docBlameThm`.
 The remaining obligation is to use these data with
 `exists_isPLHomeomorphOn_coneSet_pair_of_disk_marked` and the combined cut model
 to carry out the normalized induction over cells `1` through `2 * n - 1`.
+
+## 47. 2026-09-18 Marked-point equality from the relative cone extension — done
+
+`exists_isPLHomeomorphOn_coneSet_pair_of_disk_marked` now also returns
+`G y = y'`.  The sphere-level marked extension already supplied this equality;
+the cone extension agrees with that sphere map on the base.  The only extra
+proof step observes that `y ∈ closure (Lc.space \ D)` lies in `Lc.space`, because
+the PL sphere `Lc.space` is closed.  No hypothesis was added.
+
+The two consumers in `BallPairRelativeGluing.lean` were synchronized with the
+stronger result.  Strict private verification used token
+`H-MarkedPoint-20260918` and output root
+`C:\Users\liao9\AppData\Local\Temp\codex-h-cutmodel-private`.
+`ConeDiskPairExtension` and `BallPairRelativeGluing` compiled in dependency
+order, and the external silent audit also passed; all three checks exited 0 with
+zero diagnostics and unchanged shared outputs.  The audit dynamically enumerated
+all five non-automatic declarations across the two modules, checked the two
+direct extension producers, found only `{propext, Classical.choice, Quot.sound}`,
+and passed all default environment linters other than `docBlame` and
+`docBlameThm`.
+
+This equality is the missing invariant field needed to keep the near endpoint of
+the marked arc fixed while the trimmed-union induction repeatedly normalizes the
+new outer interface.
