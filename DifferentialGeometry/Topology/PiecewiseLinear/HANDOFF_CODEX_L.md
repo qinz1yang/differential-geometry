@@ -1221,3 +1221,191 @@ theorem eq_top_of_boundaryLoops_mem_normal
   3. `L₁`、`L₂` 各自的实际正规奇异胞腔（`L₁` 由 §41 的
      `exists_boundary_surgery_cell_of_boundaryBranch` 已给；`L₂` 仍缺，§43 排除了顺序交叉重贴）。
   按主人指定的顺序，Case 1/2 未开始。
+
+## 53. 2026-09-18 E3-M2：触边分支的前推分离（§48 的开放项被 F 的负结果否定地关掉）
+
+状态：done（相对 §47 的乘积图卡显式假设）。新模块 `BranchSeparationBoundary.lean`
+（模块名在四条车道分支上都不存在，无重名）。
+
+- **§48 的开放项已关闭，且是被否定地关闭的。** F 车道 `ModelSlideFwd.lean` 的
+  `not_disjoint_image_slideBandA_of_origin_fixed`：对**任意**映射 `h`，只要 `0 ≤ c`、`a ≤ 0`、`0 ≤ b`
+  且 `h (0,0,0) = (0,0,0)`，就有 `¬Disjoint (h '' slideBandA c) (slideBandQ a b)`。原点是模型里的分支端点，
+  它本身就是一个双点（两张标准 band 都含它）；"锥度在 `Bd M` 处归零"恰恰就是把这个端点钉死。
+  于是 §48 设想的"与 `Bd M` 相切的收尾模型"**不存在**——任何方向、任何距离、任何锥度都不行。
+  §48 所列的两条备选路线中，第一条（相切收尾模型）因此作废；只剩"先把端点挪开"，而这正是 F 的前推模型做的事。
+- **双条件条款在触边分支上是可证不可得的，不是尚未证明。** 除上一条外，F 还直接证明了前推模型不保持边界平面：
+  `not_mapsTo_chartSlideFwd_boundaryPlane`（对 `hd : 0 < d`、`hR : 0 < R`，`{p | p.1 = 0}` 不被保持）与
+  它的打包版 `not_mapsTo_boundary_of_isBranchSlideChart_endpoint`。所以
+  `∀ x, h x ∈ BdM ↔ x ∈ BdM` 与更弱的 `h (U ∩ BdM) ⊆ BdM` 在触边分支端点处都不可能成立。
+  **能成立并且无附加假设的是闭半空间的保持**：`mapsTo_chartSlideFwd_halfSpace` 给出
+  `MapsTo (e.conjugateMap (slideMapFwd d R)) N N`，其中模型侧是
+  `slideEndpointHalfSpace = {p | 0 ≤ p.1}`。本节把边界条款换成 `MapsTo h N N`。
+- 消费 F 的前向端点包（全部来自 `BranchSlideEndpoint.lean` / `ModelSlideFwd.lean`）：
+  `injective_chartSlideFwd`、`eqOn_chartSlideFwd_id_compl`、`disjoint_chartSlideFwd_image`、
+  `isPiecewiseAffineOn_chartSlideFwd`、`mapsTo_chartSlideFwd_halfSpace`、
+  `OpenPartialHomeomorph.mapsTo_conjugateMap`、`mapsTo_slideMapFwd_of_subset`、
+  `mapsTo_slideMapFwd_slideSupportLong`。分离常数从 §47 的 `c - d < a` 换成 `b < d`（远端越过 band Q）。
+- 交付的三条：
+  - `exists_separated_slide_fwd`：§46 `exists_separated_slide` 的前推版，外层流形 PL 图卡 `E`、
+    内层模型拉直 `e` 的两层共轭 `h := E.conjugateMap (e.conjugateMap (slideMapFwd d R))`。
+    输出 `IsOpen U`、`S ⊆ U`、`closure U ⊆ W`、`IsPL 3 3 h`、单射、`EqOn h id Uᶜ`、`MapsTo h U U`、
+    `Disjoint (h '' A) B`，加上半空间条款
+    `∀ N N₁, (∀ x ∈ E.source, x ∈ N ↔ E x ∈ N₁) → (∀ y ∈ e.source, y ∈ N₁ ↔ 0 ≤ (e y).1) →
+     MapsTo h N N`。数据 `N`、`N₁` 与 §48 一样放在结论里，所以主结论对触边分支非空。
+  - `NormalSingularCellData.exists_separated_along_boundary_branch`
+  - `NormalSingularCellData.exists_separated_cell_along_boundary_branch`：与 §47 的两条逐条对应，
+    只把边界条款换成上面的 `MapsTo`，并额外把 `MapsTo h U U` 也放进胞腔版的输出（§47 的胞腔版只在证明内部用它）。
+    逐片映射的 `IsPLOn`、局部单射、纤维 ≤ 2、支撑外纤维不变与双点集精确等式
+    `doublePointSet (P.piecewise (h ∘ D) D) D.domain = doublePointSet D D.domain \ branchCarrier cb`
+    全部不变。
+- **为什么 `MapsTo` 就够：逐条核对了双点集等式实际用到的假设。**
+  `doublePointSet_piecewise_postcomp` 只用 `hhinj`（`h` 单射）、`hhfix`（`EqOn h id Uᶜ`）、
+  `hhmap`（`MapsTo h U U`）、`hinjP`、`hinjQU`、`hPcQU`、`hdisj`、`hSU`、`hclean`；
+  `isPLOn_piecewise_postcomp_of_separated` 只用 `hF`、两块多面体性、`hloc`、`hcard`、`hinjP`、
+  `hhpl`、`hhinj`、`hhfix`、`hseamU`、`hinjPcU`。**两条都不碰边界条款。**
+  在 `BranchComplexityDrop.lean` 与 `BranchCaseThreeFour.lean` 里，§48 的双条件条款也只是被原样转出，
+  从未被消费（已 grep 核对：`hhbd` 只出现在 `obtain` 与 `exact` 的转出位置）。
+- **确实需要比 `MapsTo` 更强的那一步，以及为什么：** 把割开后的 `g := P.piecewise (h ∘ D) D`
+  重新认成同一对 `(BdM, B)` 上的 `NormalSingularCellData`。该结构的
+  `image_inter_boundary : g '' g.domain ∩ BdM = Set.range g.boundary` 是一条**等式**，
+  只有 `MapsTo h B B` 推不出来；而按上面两条负结果，在触边分支端点处它对前推模型是假的——
+  端点被推离 `Bd M`，新胞腔的边界圆不再整条落在 `Bd M` 上。
+  因此正确的下一步不是去找更强的条款，而是承认新胞腔的边界圆被推进了内部，
+  按 Moise 的做法在 `Bd M` 的双领环里把它拉回（或改用"在 `Bd M` 上不动、只在内部推开"的两步构造）。
+  这条现在是**明确的新义务**，不再是 §48 那条已被证伪的"相切收尾模型"。
+  本次交付的三条结论都不依赖它。
+- 未做（保持 §52 的分工）：`BranchComplexityDrop` 与 `BranchCaseThreeFour` 仍带 §48 的双条件形式，
+  没有改成前推形式；改法是机械的（把两处的 `hhbd` 条款换成本节的 `MapsTo` 条款并改调本节的两条），
+  但会动到已进整合分支的两个模块，按本轮范围未做。
+- 验证：`BranchSeparationBoundary` 聚焦检查 exit=0（10.2 秒）、零 warning；
+  `.lake/scratch/AuditE3BoundarySeparation.lean` 的 3 条 `#print axioms` 全部只含
+  `propext`、`Classical.choice`、`Quot.sound`。合并 `origin/codex/moise-integration`（`e624b650b`）后
+  `fresh.py` 报 forbidden=0、stale=0、missing=0；全程无其它 `lean.exe`。
+
+## 54. 2026-09-18 E3-M2：四段字进入 `π₁`（`f`、`γ`、`hγ` 已接上，剩 `boundaryParam` 与 `ev` 的比较）
+
+状态：done（相对一条显式的参数化比较假设 `hparam`）。新模块 `BoundaryWordLoopClass.lean`
+（模块名在四条车道分支上都不存在，无重名）。这是 §52 第 2 条未做项的主体。
+
+- `not_loopClassMeets_or_not_loopClassMeets_of_four_boundary_arcs_image`：把 §51 的两条消费接口
+  合成一条，并且**自动构造**它们要的连接道路。输入是四段弧的道路 `σ₀ τ₀ υ₀ φ₀`、参数化 `ev` 与 `hev`、
+  连续的 `f : Q → X`、`γ` 与 `hγ : ∀ θ, γ θ = f (ev θ)`、正规子群 `N` 与 `hL : ¬loopClassMeets γ x N`，
+  外加**端点配对二分的像侧形式** `(f u' = f p' ∧ f v' = f q') ∨ (f u' = f q' ∧ f v' = f p')`。
+  输出是两支并列的存在命题，Case 3（reversing）给 `σ υ : Path a b`、`τ φ : Path b a` 与
+  `¬meets (συ⁻¹) ∨ ¬meets (σφυτ)`；Case 4（preserving）给 `σ : Path a b`、`τ : Path b b`、
+  `υ : Path b a`、`φ : Path a a` 与 `¬meets (συ) ∨ ¬meets (στ⁻¹υφ⁻¹)`。两支都带
+  `∀ t, σ t = f (σ₀ t)` 等四条逐点等式，所以这两个字确实是四段边界弧的像，不是另取的道路。
+  - 实现要点：四条道路用 `Path.map σ₀ hf` 造，再用 `Path.cast` 沿 `f u' = f p'` 一类的等式调端点类型；
+    `Path.map` 与 `Path.cast` 都不改 `toFun`，因此四条逐点等式全是 `rfl`。
+    `qq : Path x a`、`cc : Path a b` 由 `PathConnectedSpace.somePath` 给，不必再当参数传。
+  - 端点配对的**两支正好对应两条消费接口要求的端点类型**：Case 3 里 `f u' = f p'`、`f v' = f q'`
+    使 `τ₀`、`φ₀` 的像成为 `Path b a`；Case 4 里 `f u' = f q'`、`f v' = f p'` 使 `τ₀` 的像成为
+    `Path b b`、`φ₀` 的像成为 `Path a a`。这不是凑出来的，是书页 186/187 两种情形的类型层体现。
+- `NormalSystem.singularMap_mem_boundaryNeighborhood`：`z ∈ frontier sourceComplex.space` ⟹
+  `S.singularMap z` 落在 `boundaryNeighborhood` 的空间里。证明用 `boundaryParam` 的满射性取 `θ`，
+  再由 `boundaryLoop_eq` 与 `(S.boundaryLoop θ).2` 得到。**这正是 §28 要求的"用参数化相容性而不是像集相等"**。
+- `NormalSystem.not_loopClassMeets_boundaryLoop`：把结构字段 `loopClass_avoids_normal`
+  （用 `normalSystemLoopConjugacyClass` 写的）翻成 `¬loopClassMeets S.boundaryLoop S.basepoint S.normalSubgroup`，
+  桥是 `FreeLoop.conjugacyClass_eq_mk_loopRepresentativeAlong S.connector S.boundaryBasedLoop`。
+  需要 `[PathConnectedSpace S.boundaryNeighborhoodSpace]`（`loopClassMeets` 的类型类要求）。
+- `NormalSystem.exists_boundary_word_loop_dichotomy_of_four_arcs`：实际的接线端点。
+  取 `X := S.boundaryNeighborhoodSpace`、`x := S.basepoint`、`N := S.normalSubgroup`、
+  `γ := S.boundaryLoop`，并**构造** `f : frontier D.domain → S.boundaryNeighborhoodSpace`，
+  `f z = ⟨S.singularMap z, _⟩`；连续性由 `isPiecewiseAffineOn_simplicialMap` 的 `continuousOn`
+  限制到 `frontier D.domain ⊆ D.domain = S.sourceComplex.space` 得到（`D.isPLBall_domain` 给闭性）。
+  结论里的四条逐点等式写成 `(σ t : E) = S.singularMap (σ₀ t)`，所以两个字完全由 `S.singularMap`
+  与四段弧决定，不引用内部的 `f`。
+  - `hγ : ∀ θ, S.boundaryLoop θ = f (ev θ)` 由 `Subtype.ext` + `boundaryLoop_eq` + `hparam` 给出。
+  - 端点配对从源侧 `(D u = D p ∧ D v = D q) ∨ (D u = D q ∧ D v = D p)`（§51 的输出）
+    经 `hfactor` 搬到像侧。
+- **两条显式假设，逐条说明它们是什么、为什么不是结论型假设：**
+  1. `hfactor : ∀ z ∈ frontier D.domain, ∀ w ∈ frontier D.domain, D z = D w →
+     S.singularMap z = S.singularMap w`。这是 `D`（`M` 里的奇异胞腔）与 `S.singularMap`（`E` 里的
+     正规系统映射）在边界圆上的**相容性**，不是待证结论。§38 的
+     `LemmaTwo.NormalSystem.exists_singular_two_cell_in_double` 给出的 `D` 满足
+     `EqOn (fun x => (D x : E × E × ℝ)) (ι ∘ S.singularMap) S.sourceComplex.space`，其中
+     `ι` 在 `K.space` 上是 PL 同胚（故单射），于是 `hfactor` 在那个实现里可直接消掉。
+     本模块没有引入 double 机器，是为了不让接线依赖那一层。
+  2. `hparam : ∀ θ, (S.boundaryParam θ : EuclideanSpace ℝ (Fin 2)) = (ev θ : _)`。
+     这是**本节唯一真正未闭合的数学缺口**，见下条。
+- **确切的未闭合义务（`hparam`）及其可行路线。** `S.boundaryParam` 与 §51 构造的 `ev` 都是
+  `loopCircle ≃ₜ frontier D.domain`，但 `ev` 的起点是四段弧的切点 `p`，而 `S.boundaryParam 0`
+  是生产者任选的点；两者相差一个圆自同胚 `ρ := ev.symm ∘ S.boundaryParam`。要消掉 `hparam`，
+  必须证明 `loopClassMeets` 在圆的重参数化下不变。本树已有全部原料，**缺的是把它们拼起来**：
+  - `Topology/LoopSpace/HomeomorphismOrientation.lean` 的 `circleHomeomorph_affineLift_or_neg`：
+    任一 `ψ : loopCircle ≃ₜ loopCircle` 要么是 `affineCircleMap F`、要么是 `-affineCircleMap F`，
+    其中 `F : ℝ ≃ₜ ℝ` 严格单调且 `F (t+1) = F t + 1`。
+  - 保定向一支：`F_s t := (1-s) * F t + s * t` 仍满足 `F_s (t+1) = F_s t + 1`，给出
+    `affineCircleMap F ≃ id`，故 `γ ∘ ψ` 与 `γ` 自由同伦；再用 `SingularCell.lean` 的
+    `FreeLoop.conjugacyClass_eq_of_homotopic` 把 `loopClassMeets` 搬过去。
+    要补的是 `G : C(I × loopCircle, loopCircle)` 的联合连续性；按
+    `QuotientAddGroup.isOpenMap_coe` 与 `IsOpenMap.prodMap` 把它化到 `I × ℝ` 上即可。
+  - 反定向一支：`γ ∘ (neg)` 的共轭类是原共轭类的逆，而 `N` 是子群（对逆封闭），
+    所以 `conjugacyClassMeets` 仍不变；要补的是 `circleToPath (γ ∘ neg)` 与 `(circleToPath γ).symm`
+    的同伦，以及 `ConjClasses.mk g⁻¹` 与 `N` 的相遇性等价。
+  - `Topology/LoopSpace/Rotation.lean` 的 `pathToCircle_trans_homotopic_comm` 只处理"在已有拼接点处
+    旋转半圈"，不足以处理 `boundaryParam 0` 落在某段弧**内部**的情形，所以不能替代上面的一般结论。
+    这一点已试过并排除，记下免得重走。
+- 【后补】上面那条 `hparam` 已在同一夜由 §55 完全消掉，不再是未闭合义务；本节描述的路线就是 §55 实际走的路线。
+- 未做（保持主人指定的范围）：§43 的障碍仍在，`L₂` 的实际重贴胞腔没做；Case 1/2 未开始。
+- 验证：`BoundaryWordLoopClass` 聚焦检查 exit=0（10.3 秒）、零 warning；
+  `.lake/scratch/AuditE3BoundaryWordLoopClass.lean` 的 4 条 `#print axioms` 全部只含
+  `propext`、`Classical.choice`、`Quot.sound`。全程无其它 `lean.exe`。
+
+## 55. 2026-09-18 E3-M2：圆重参数化下 `loopClassMeets` 不变，§54 的 `hparam` 被消掉
+
+状态：done。新模块 `LoopClassReparametrization.lean`（纯自由环/共轭类内容，暂放在
+`PiecewiseLinear/` 下，因为它的终点要用 `LoopTheorem/SingularCell.lean` 的 `loopClassMeets`；
+路线稳定后可以下沉到 `Topology/LoopSpace/`）。`BoundaryWordLoopClass.lean` 据此去掉 `hparam`，
+并补上真正的装配端点。
+
+- `loopClassMeets_comp_circleHomeomorph_iff`：对任意 `ψ : loopCircle ≃ₜ loopCircle`、
+  `γ : freeLoop X`（`X` 道路连通）、`x : X` 与**任意子群** `N`（不需要正规性），
+  `loopClassMeets (γ.comp ⟨ψ, ψ.continuous⟩) x N ↔ loopClassMeets γ x N`。
+  这条正是 §54 缺的那块：`ev` 与 `S.boundaryParam` 相差一个圆自同胚，现在这个差别对结论没有影响。
+- 证明分两支，用 `HomeomorphismOrientation.lean` 的 `circleHomeomorph_affineLift_or_neg`：
+  - 保定向：`ψ = affineCircleMap F`，`F : ℝ ≃ₜ ℝ` 严格单调、`F (t+1) = F t + 1`。
+    直线同伦 `F_s t := (1-s) * F t + s * t` **仍然**满足 `F_s (t+1) = F_s t + 1`（`affineInterpolate_periodic`），
+    于是 `freeLoop_comp_affineCircleMap_homotopic` 给出 `γ.comp (affineCircleMap F) ≃ γ`。
+    同伦的联合连续性用 `BasedCircle.lean` 的 `unitInterval_to_loopCircle_prod_quotient unitInterval`
+    把 `I × loopCircle` 上的连续性化到 `I × I` 上，再用 `AddCircle.continuous_mk'`。
+    自由同伦到共轭类相等走 `FreeLoop.conjugacyClass_eq_of_homotopic`。
+  - 反定向：`ψ = -affineCircleMap F`，于是
+    `γ.comp ⟨ψ,_⟩ = (γ.comp negLoopCircle).comp (affineCircleMap F)`，先用上一支消掉 `affineCircleMap F`，
+    再证 `loopClassMeets (γ.comp negLoopCircle) x N ↔ loopClassMeets γ x N`：
+    - `circleToPath_comp_negLoopCircle`：`circleToPath ⟨γ.comp negLoopCircle, _⟩` **逐点等于**
+      `(circleToPath ⟨γ, rfl⟩).symm`，因为 `-(t : loopCircle) = ((1 - t : ℝ) : loopCircle)`
+      （`1 - t = -t + 1` 加 `AddCircle.coe_period`）。不是同伦，是等号，省掉一层 rel 端点同伦。
+    - `conjugacyClass_comp_negLoopCircle`：再用 `fundamentalGroupChangeBasepoint` 是 `≃*`（`map_inv`）
+      与 `FundamentalGroup.inv_def`，得到共轭类是原代表元的**逆**的共轭类。
+    - `conjugacyClassMeets_mk_inv_iff`：`N` 是子群就够（对逆封闭）；`IsConj r⁻¹ g⁻¹` 的见证是 `c⁻¹`
+      而不是 `c`（第一次写成 `c`，`group` 留下 `c*c*g⁻¹*c⁻²=g⁻¹` 的假目标，记下免得重犯）。
+- `NormalSystem.exists_boundary_word_loop_dichotomy_of_four_arcs` 因此**去掉了 `hparam`**。
+  新证法：令 `γ₀ : freeLoop S.boundaryNeighborhoodSpace := ⟨fun θ => f (ev θ), _⟩`，
+  `ψ := (S.boundaryParam.trans (Homeomorph.setCongr _)).trans ev.symm`，
+  用 `boundaryLoop_eq` 逐点证 `S.boundaryLoop = γ₀.comp ⟨ψ, ψ.continuous⟩`，
+  再用上面的不变性把 `¬loopClassMeets S.boundaryLoop` 搬成 `¬loopClassMeets γ₀`；
+  这时 `hγ : ∀ θ, γ₀ θ = f (ev θ)` 是 `rfl`。两个 frontier 子类型的类型差由
+  `Homeomorph.setCongr (congrArg frontier hdom)` 搬运，`(setCongr h z : _) = (z : _)` 是 `rfl`。
+- `NormalSystem.exists_boundary_word_loop_dichotomy_of_boundaryBranch`：**装配端点**。
+  输入只剩 `hD : NormalSingularCellData D BdM B`、`hc : IsBoundaryBranch c`、
+  `hdom : D.domain = S.sourceComplex.space`、`hfactor`（`D` 与 `S.singularMap` 在边界圆上的相容性）
+  与 `[PathConnectedSpace S.boundaryNeighborhoodSpace]`。输出四条边界弧 `A₁ A₂ A₃ A₄`、
+  `frontier D.domain = A₁ ∪ (A₂ ∪ (A₃ ∪ A₄))`，以及 Case 3 / Case 4 两支的二分，
+  每支都带四条**像集等式** `Set.range (fun t => (σ t : E)) = S.singularMap '' A₁` 等
+  （辅助 `range_eq_image_of_forall_eq`），所以两个字确实由四段边界弧的像决定。
+  Case 3 给 `¬meets (συ⁻¹) ∨ ¬meets (σφυτ)`，Case 4 给 `¬meets (συ) ∨ ¬meets (στ⁻¹υφ⁻¹)`，
+  全部是 `π₁(S.boundaryNeighborhoodSpace, S.basepoint)` 里关于 `S.normalSubgroup` 的实际命题。
+- **现在的确切剩余义务（只剩两条，都不是本层的缺口）：**
+  1. `hdom` 与 `hfactor`：由 §38 的 `LemmaTwo.NormalSystem.exists_singular_two_cell_in_double`
+     提供（它给 `D.domain = S.sourceComplex.space` 与
+     `EqOn (fun x => (D x : E × E × ℝ)) (ι ∘ S.singularMap) S.sourceComplex.space`，`ι` 在 `K.space` 上单射）。
+     接上去只需要在 `double 3 K` 环境里实例化，本轮没做是为了不把 double 机器拖进这一层。
+  2. `L₁`、`L₂` 各自的实际正规奇异胞腔：`L₁` 由 §41 已给；`L₂` 仍缺，§43 排除了顺序交叉重贴。
+     这是 §52 第 3 条，未变。
+- 验证：`LoopClassReparametrization` 聚焦检查 exit=0（9.8 秒）、
+  `BoundaryWordLoopClass` exit=0（11.5 秒），均零 warning；
+  `.lake/scratch/AuditE3BoundaryWordLoopClass.lean` 的 16 条 `#print axioms` 全部只含
+  `propext`、`Classical.choice`、`Quot.sound`（其中 `conjugacyClassMeets_mk_inv_of`、
+  `conjugacyClassMeets_mk_inv_iff`、`range_eq_image_of_forall_eq` 只用到 `propext`、`Quot.sound`）。
+  `fresh.py` 报 3 个改动模块全部 fresh，forbidden=0、stale=0、missing=0；全程无其它 `lean.exe`。
