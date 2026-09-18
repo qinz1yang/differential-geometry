@@ -248,4 +248,58 @@ theorem parameterDriftOperatorH0Pi_smul_apply
   rw [map_smul, C.map_sub, C.map_smul, hd, hder]
   rfl
 
+theorem lipschitzWith_parameterPrincipalOperatorHsPi
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) :
+    LipschitzWith (‖scalarHsMul g 1 (by norm_num)‖₊ * ‖parameterSecondDerivativeHs g 1‖₊)
+      (parameterPrincipalOperatorHsPi (ι := ι) g) := by
+  let m := scalarHsMul g 1 (by norm_num)
+  let Q := parameterSecondDerivativeHs g 1
+  let L := (ContinuousLinearMap.piLpMapL 2).comp
+    (ContinuousLinearMap.pi fun _ : ι => (Q.precomp _).comp m)
+  let c := ccTensorToHs g 0 ((1 : ℕ) : ℝ) (scalarCc g (laplacianPrincipalCoefficient g))
+  apply LipschitzWith.of_dist_le_mul
+  intro a b
+  have heq : parameterPrincipalOperatorHsPi (ι := ι) g a -
+      parameterPrincipalOperatorHsPi (ι := ι) g b = L (a - b) := by
+    change L (a - c) - L (b - c) = L (a - b)
+    rw [← map_sub]
+    congr 1
+    abel
+  have hnorm : ‖L (a - b)‖ ≤ ‖m‖ * ‖a - b‖ * ‖Q‖ := by
+    apply ContinuousLinearMap.norm_piLpMap_le _ (by positivity)
+    intro i
+    exact (ContinuousLinearMap.opNorm_comp_le _ _).trans
+      (mul_le_mul_of_nonneg_right (m.le_opNorm _) (norm_nonneg _))
+  rw [dist_eq_norm, heq, dist_eq_norm, NNReal.coe_mul, coe_nnnorm, coe_nnnorm]
+  exact hnorm.trans_eq (by ring)
+
+theorem lipschitzWith_parameterDriftOperatorHsPi
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) :
+    LipschitzWith (‖scalarHsMul g 1 (by norm_num)‖₊ * ‖parameterDerivativeHs g 1‖₊ ^ 2)
+      (parameterDriftOperatorHsPi (ι := ι) g) := by
+  let m := scalarHsMul g 1 (by norm_num)
+  let D := parameterDerivativeHs g 1
+  let L := (ContinuousLinearMap.piLpMapL 2).comp
+    (ContinuousLinearMap.pi fun _ : ι => (D.precomp _).comp m)
+  let c := ccTensorToHs g 0 ((1 : ℕ) : ℝ) (scalarCc g (laplacianDriftCoefficient g))
+  apply LipschitzWith.of_dist_le_mul
+  intro a b
+  have heq : parameterDriftOperatorHsPi (ι := ι) g a -
+      parameterDriftOperatorHsPi (ι := ι) g b = L (D (a - b)) := by
+    change L (D a - c) - L (D b - c) = L (D (a - b))
+    calc
+      _ = L ((D a - c) - (D b - c)) := (map_sub L _ _).symm
+      _ = L (D a - D b) := congrArg L (by abel)
+      _ = L (D (a - b)) := congrArg L (map_sub D a b).symm
+  have hnorm' : ‖L (D (a - b))‖ ≤ ‖m‖ * ‖D (a - b)‖ * ‖D‖ := by
+    apply ContinuousLinearMap.norm_piLpMap_le _ (by positivity)
+    intro i
+    exact (ContinuousLinearMap.opNorm_comp_le _ _).trans
+      (mul_le_mul_of_nonneg_right (m.le_opNorm _) (norm_nonneg _))
+  have hnorm : ‖L (D (a - b))‖ ≤ ‖m‖ * (‖D‖ * ‖a - b‖) * ‖D‖ :=
+    hnorm'.trans (mul_le_mul_of_nonneg_right
+      (mul_le_mul_of_nonneg_left (D.le_opNorm _) (norm_nonneg m)) (norm_nonneg D))
+  rw [dist_eq_norm, heq, dist_eq_norm, NNReal.coe_mul, NNReal.coe_pow, coe_nnnorm, coe_nnnorm]
+  exact hnorm.trans_eq (by ring)
+
 end AddCircle

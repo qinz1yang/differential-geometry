@@ -109,4 +109,60 @@ theorem exists_continuousOn_scalarH2_composition
         F (scalarH1PiToContinuous g (P (u t)) x) := by
   exact exists_continuousOn_scalar_composition_of_order g 1 (by norm_num) F hF hU u hu
 
+theorem tendsto_scalarHs_composition
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) (k : ℕ)
+    (F : (ι → ℝ) → ℝ) {U : Set (ι → ℝ)}
+    (hF : ContDiffOn ℝ ∞ F U) (hU : IsOpen U)
+    {X : Type*} {l : Filter X}
+    (u : X → PiLp 2 (fun _ : ι => TensorHs g 0 0 ((k : ℝ) + 1)))
+    (u0 : PiLp 2 (fun _ : ι => TensorHs g 0 0 ((k : ℝ) + 1)))
+    (v : X → TensorHs g 0 0 ((k : ℝ) + 1)) (v0 : TensorHs g 0 0 ((k : ℝ) + 1))
+    (hu : Tendsto u l (𝓝 u0)) :
+    let J := tensorHsInclusion (g := g) (r := 0) (s := 0)
+      (by norm_num : (1 : ℝ) ≤ (k : ℝ) + 1)
+    let P := ContinuousLinearMap.piLpMap 2 (fun _ : ι => J)
+    range (scalarH1PiToContinuous g (P u0)) ⊆ U →
+    (∀ᶠ z in l, ∀ x, scalarH1ToContinuous g (J (v z)) x =
+      F (scalarH1PiToContinuous g (P (u z)) x)) →
+    (∀ x, scalarH1ToContinuous g (J v0) x =
+      F (scalarH1PiToContinuous g (P u0) x)) →
+    Tendsto v l (𝓝 v0) := by
+  classical
+  intro J P hRange hEval hEval0
+  obtain ⟨r, hr, C, N, hN, _, hNeval, _⟩ :=
+    exists_scalarHs_composition_on_ball g k F hF hU u0 hRange
+  let f : PiLp 2 (fun _ : ι => TensorHs g 0 0 ((k : ℝ) + 1)) →
+      TensorHs g 0 0 ((k : ℝ) + 1) := fun w =>
+    if hw : w ∈ Metric.ball u0 r then N ⟨w, hw⟩ else 0
+  have hf : ContinuousOn f (Metric.ball u0 r) := by
+    apply continuousOn_iff_continuous_domRestrict.mpr
+    have heq : (Metric.ball u0 r).domRestrict f = N := by
+      funext w
+      change (if hw : (w : PiLp 2 (fun _ : ι => TensorHs g 0 0 ((k : ℝ) + 1))) ∈
+        Metric.ball u0 r then N ⟨w, hw⟩ else 0) = N w
+      rw [dif_pos w.property]
+    rw [heq]
+    exact hN.continuous
+  have hfc : ContinuousAt f u0 :=
+    (hf u0 (Metric.mem_ball_self hr)).continuousAt (Metric.ball_mem_nhds u0 hr)
+  have hfu : Tendsto (fun z => f (u z)) l (𝓝 (f u0)) := hfc.tendsto.comp hu
+  have heq0 : f u0 = v0 := by
+    change (if hw : u0 ∈ Metric.ball u0 r then N ⟨u0, hw⟩ else 0) = v0
+    rw [dif_pos (Metric.mem_ball_self hr)]
+    apply tensorHsInclusion_injective (g := g) (r := 0) (s := 0)
+      (by norm_num : (1 : ℝ) ≤ (k : ℝ) + 1)
+    apply scalarH1ToContinuous_injective g
+    exact ContinuousMap.ext (fun x =>
+      (hNeval ⟨u0, Metric.mem_ball_self hr⟩ x).trans (hEval0 x).symm)
+  rw [heq0] at hfu
+  apply hfu.congr'
+  filter_upwards [hu.eventually (Metric.ball_mem_nhds u0 hr), hEval] with z hz hez
+  change u z ∈ Metric.ball u0 r at hz
+  change (if hw : u z ∈ Metric.ball u0 r then N ⟨u z, hw⟩ else 0) = v z
+  rw [dif_pos hz]
+  apply tensorHsInclusion_injective (g := g) (r := 0) (s := 0)
+    (by norm_num : (1 : ℝ) ≤ (k : ℝ) + 1)
+  apply scalarH1ToContinuous_injective g
+  exact ContinuousMap.ext (fun x => (hNeval ⟨u z, hz⟩ x).trans (hez x).symm)
+
 end AddCircle

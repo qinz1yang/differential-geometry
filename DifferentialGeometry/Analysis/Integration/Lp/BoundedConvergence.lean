@@ -31,3 +31,40 @@ theorem tendsto_of_ae_tendsto_of_ae_norm_le
     (fun n => Lp.aestronglyMeasurable (F n)) (Lp.memLp f) hui hlim
 
 end MeasureTheory.Lp
+
+open Filter
+open scoped Topology ENNReal
+
+namespace MeasureTheory.Lp
+
+variable {α E F : Type*} [MeasurableSpace α]
+  [NormedAddCommGroup E] [NormedAddCommGroup F]
+  {μ : Measure α} [IsFiniteMeasure μ] {p : ℝ≥0∞} [Fact (1 ≤ p)]
+
+theorem tendsto_of_tendstoInMeasure_of_ae_norm_le
+    (hp : p ≠ ∞) (f : ℕ → Lp E p μ) (f0 : Lp E p μ)
+    (b : ℕ → Lp F p μ) (b0 : Lp F p μ)
+    (hb : Tendsto b atTop (𝓝 b0))
+    (hbound : ∀ n, ∀ᵐ x ∂μ, ‖f n x‖ ≤ ‖b n x‖)
+    (hf : TendstoInMeasure μ (fun n => f n) atTop f0) :
+    Tendsto f atTop (𝓝 f0) := by
+  have hub : UnifIntegrable (fun n => (b n : α → F)) p μ :=
+    unifIntegrable_of_tendsto_Lp Fact.out hp (fun n => Lp.memLp (b n))
+      (Lp.memLp b0) ((Lp.tendsto_Lp_iff_tendsto_eLpNorm' b b0).mp hb)
+  have huf : UnifIntegrable (fun n => (f n : α → E)) p μ := by
+    intro ε hε
+    obtain ⟨δ, hδ, hsmall⟩ := hub hε
+    refine ⟨δ, hδ, ?_⟩
+    intro n s hs hμs
+    refine le_trans ?_ (hsmall n s hs hμs)
+    apply eLpNorm_mono_ae
+    filter_upwards [hbound n] with x hx
+    by_cases hxs : x ∈ s
+    · simpa only [Set.indicator_of_mem hxs] using hx
+    · simpa only [Set.indicator_of_notMem hxs] using
+        (show ‖(0 : E)‖ ≤ ‖(0 : F)‖ by simp)
+  apply (Lp.tendsto_Lp_iff_tendsto_eLpNorm' f f0).mpr
+  exact tendsto_Lp_finite_of_tendstoInMeasure Fact.out hp
+    (fun n => Lp.aestronglyMeasurable (f n)) (Lp.memLp f0) huf hf
+
+end MeasureTheory.Lp

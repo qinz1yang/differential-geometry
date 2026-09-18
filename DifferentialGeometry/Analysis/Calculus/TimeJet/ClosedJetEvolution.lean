@@ -108,3 +108,71 @@ theorem contDiffOn_and_equation_Icc_of_spatial_jets
     (hΦ.comp contDiffOn_snd (fun _ hp => hp)) hmap hGs hjets hpde
 
 end DifferentialGeometry.Analysis
+
+namespace DifferentialGeometry.Analysis
+
+variable {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F] [CompleteSpace F]
+
+theorem contDiffOn_of_scalar_jet_equation
+    {G : ℝ → ℝ → F} {a b σ : ℝ} {V : Set ℝ}
+    {Φ : (ℝ × ℝ × (Fin 3 → F)) → F} {Ω : Set (ℝ × ℝ × (Fin 3 → F))}
+    (hab : a < b) (hV : IsOpen V) (hΩ : IsOpen Ω)
+    (hΦ : ContDiffOn ℝ ∞ Φ Ω)
+    (hGs : ∀ t ∈ Icc a b, ContDiffOn ℝ ∞ (G t) V)
+    (hjets : ∀ r : ℕ, ContinuousOn
+      (fun p : ℝ × ℝ => iteratedDeriv r (G p.1) p.2) (Icc a b ×ˢ V))
+    (hmap : ∀ t ∈ Icc a b, ∀ x ∈ V,
+      (σ + t, x, fun i : Fin 3 => iteratedDeriv i.val (G t) x) ∈ Ω)
+    (hpde : ∀ t ∈ Ioo a b, ∀ x ∈ V,
+      HasDerivAt (fun s => G s x)
+        (Φ (σ + t, x, fun i : Fin 3 => iteratedDeriv i.val (G t) x)) t) :
+    ContDiffOn ℝ ∞ (Function.uncurry G) (Icc a b ×ˢ V) := by
+  let Q := (ℝ × ℝ) × F × (ℝ →L[ℝ] F) × (ℝ →L[ℝ] (ℝ →L[ℝ] F))
+  let A : Q → ℝ × ℝ × (Fin 3 → F) := fun q =>
+    (σ + q.1.1, q.1.2, ![q.2.1, q.2.2.1 1, q.2.2.2 1 1])
+  have hA : ContDiff ℝ ∞ A := by
+    apply ContDiff.prodMk
+    · fun_prop
+    apply ContDiff.prodMk
+    · fun_prop
+    apply contDiff_pi.mpr
+    intro i
+    fin_cases i
+    · change ContDiff ℝ ∞ (fun q : Q => q.2.1)
+      fun_prop
+    · change ContDiff ℝ ∞ (fun q : Q => q.2.2.1 1)
+      fun_prop
+    · change ContDiff ℝ ∞ (fun q : Q => q.2.2.2 1 1)
+      fun_prop
+  have hactual (t x : ℝ) :
+      A ((t, x), jet2 (G t) x) =
+        (σ + t, x, fun i : Fin 3 => iteratedDeriv i.val (G t) x) := by
+    dsimp only [A]
+    congr 2
+    funext i
+    fin_cases i
+    · rfl
+    · change fderiv ℝ (G t) x 1 = iteratedDeriv 1 (G t) x
+      simp only [iteratedDeriv_one, fderiv_apply_one_eq_deriv]
+    · change fderiv ℝ (fderiv ℝ (G t)) x 1 1 = iteratedDeriv 2 (G t) x
+      simp only [iteratedDeriv_eq_iteratedFDeriv, iteratedFDeriv_two_apply]
+  have hjetsF (r : ℕ) : ContinuousOn
+      (fun p : ℝ × ℝ => iteratedFDeriv ℝ r (G p.1) p.2) (Icc a b ×ˢ V) := by
+    simp_rw [iteratedFDeriv_eq_equiv_comp, Function.comp_apply]
+    exact (ContinuousMultilinearMap.piFieldEquiv ℝ (Fin r) F).continuous.comp_continuousOn
+      (hjets r)
+  have hmapA : MapsTo (fun p : ℝ × ℝ => (p, jet2 (G p.1) p.2))
+      (Icc a b ×ˢ V) (A ⁻¹' Ω) := by
+    intro p hp
+    change A ((p.1, p.2), jet2 (G p.1) p.2) ∈ Ω
+    rw [hactual]
+    exact hmap p.1 hp.1 p.2 hp.2
+  have hpdeA : ∀ t ∈ Ioo a b, ∀ x ∈ V,
+      HasDerivAt (fun s => G s x) ((Φ ∘ A) ((t, x), jet2 (G t) x)) t := by
+    intro t ht x hx
+    simpa only [Function.comp_apply, hactual] using hpde t ht x hx
+  exact (contDiffOn_and_equation_Icc_of_time_dependent_spatial_jets G a b hab V hV
+    (Φ ∘ A) (A ⁻¹' Ω) (hΩ.preimage hA.continuous)
+    (hΦ.comp hA.contDiffOn (fun _ h => h)) hmapA hGs hjetsF hpdeA).1
+
+end DifferentialGeometry.Analysis
