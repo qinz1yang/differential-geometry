@@ -1473,3 +1473,61 @@ M2 的路线是：先把 `g` 从子盘 `D` 延到整个边界球面并把弧的�
 用 `ArcDerivedNeighborhood.lean:73 arcChainFace_subset_iff`）本次未开始，未估成本。
 M2 已经把 `IsPLHomeomorphOn.piecewise` 所需的"两个同胚在重叠上逐点相等"这一条备好：
 第二个同胚由 M2 延拓第一个而来，重叠上相等是构造给出的，不是额外义务。
+
+## 15. 2026-09-18 `IsPLBallPair` 定义修正（锥形 ⟹ 与锥对 PL 同胚）
+
+### 原定义错在哪里（**不要改回去**）
+
+第 10 节的原定义要求 `P = coneSet p L.space`，即 `P` 在环境里**字面上就是一个锥**。
+`coneSet p X` 的每个点都在从 `p` 出发的线段上，所以它必然**关于 `p` 星形**。
+而一般的 PL 3-球对任何点都不星形（例如弯成香蕉形的球）。
+因此原谓词严格强于"标准球对"，名不副实：它不是"较弱但够用"的版本，而是**另一个、错的**概念。
+
+后果是第 3 步（相对球黏合）的结论 `(C ∪ D, A)` 是标准对**无法表达**——`C ∪ D` 一般不是字面的锥。
+M1 只给"PL 同胚于一个锥"，不给"是一个锥"，所以绕不过去。
+这个缺陷此前没暴露，是因为 M2 直接以锥数据为输入，从不经过谓词。
+
+修正后的定义（协调者已批准；该谓词当时只有本车道自己的消费者）：
+
+    IsPLBallPair m k P Q := ∃ p L J (_ : IsConeBase p L) (f : E → E),
+      L.faces.Finite ∧ J.faces ⊆ L.faces ∧ IsPLSphere m L.space ∧ IsPLBall k Q ∧
+      IsPLHomeomorphOn f (coneSet p L.space) P ∧ f '' coneSet p J.space = Q
+
+即"**与**锥对 PL 同胚"。
+
+### 改动
+
+- `IsPLBallPair.subset`、`.isPLBall_sub`、`.isPLBall` 经共轭重证：
+  `.subset` 用 `hf.image_eq` 加 `image_mono`；`.isPLBall` 先证锥是球再 `IsPLBall.of_isPLHomeomorphOn`。
+- 两个生产者 `isPLBallPair_coneSet`、`isPLBallPair_coneSet_of_isPLSphere` 取 `f = id`，
+  用 `IsPolyhedron.isPLHomeomorphOn_id` 与 `Set.image_id`；因此它们现在需要
+  `[FiniteDimensional ℝ E]`（`isPolyhedron_space` 要），并且要手工给
+  `Finite (coneComplex hL).faces := (coneComplex_faces_finite hL (Set.toFinite L.faces)).to_subtype`。
+- 新增 `IsPLBallPair.of_isPLHomeomorphOn`：谓词在 PL 同胚下传递
+  （`(hg : IsPLHomeomorphOn g P P')`、`g '' Q = Q'` ⟹ `IsPLBallPair m k P' Q'`）。
+  这条是第 3 步必需的：黏合的结论要靠把模型沿 PL 同胚搬过去得到。旧定义下它不成立。
+- `BallPairModel`、`ConeDiskPairExtension` **未改一行**即通过（它们只用生产者，不拆谓词）。
+
+聚焦检查 `BallPair` exit=0（8.3 秒）、`BallPairModel` exit=0（9.0 秒）、
+`ConeDiskPairExtension` exit=0（10.6 秒），均零 warning；
+`.lake/scratch/AuditHBallPair.lean` 十项仅 `propext`、`Classical.choice`、`Quot.sound`。
+
+### 两条不要被"优化"掉的记录
+
+1. **`hJsplit` 是对的弱形式，别强化回"两个端点"。**
+   M2（第 14 节）的端点分离假设写成 `J.space = J.space ∩ D ∪ {y}` 而不是 `IsPLSphere 0 J.space`，
+   是因为 `IsPLBallPair 2 1` 只保证 `IsPLBall 1 A`，**不蕴含**链是两个点。
+   假设链是两点比谓词能提供的更强，会让 M2 在真实消费点用不上。
+2. **动手前先查"障碍是不是环境／引理形状的假象"，这是常规动作不是偶发。**
+   本任务内已命中三次：(a) 补盘 starring 说要内蕴齐性，实际只需把构造搬到维数相符的环境里（约 20 行，
+   不是 0.5k–1.5k）；(b) M2 说要先比较两个参数化，实际
+   `SphericalDiskComplement.lean:160` 对任意参数化都成立，`image_stdSimplexBoundary_congr` 白造；
+   (c) 反向的一次：`ConePairCrossing` 以为"有消费者没生产者"，实际整条链已在
+   `VertexCrossing.lean:115-121` 接好。报成本之前先做这一查。
+
+### 第 3、4 步仍未开始
+
+第 3 步缺的模型仍缺：`SimplexBallPair.lean:46 exists_isPLBall_pair_with_disk_inter`
+给两个交于 2-盘的 3-球但**不带弧**，需要再造一条贯穿两球、与该盘交于一个内点的标准弧。
+`coneSet_pair_eq_union_segment`（第 10 节）把标准弧写成从锥顶出发的两条直线段，
+所以"两个锥、线段在公共盘上对接"的模型有望显式构造而非存在性给出。未开始，未估成本。

@@ -11,32 +11,55 @@ variable {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [NormedAddCommGroup F] [NormedSpace ℝ F]
 
 def IsPLBallPair (m k : ℕ) (P Q : Set E) : Prop :=
-  ∃ (p : E) (L J : Geometry.SimplicialComplex ℝ E) (_ : IsConeBase p L),
+  ∃ (p : E) (L J : Geometry.SimplicialComplex ℝ E) (_ : IsConeBase p L) (f : E → E),
     L.faces.Finite ∧ J.faces ⊆ L.faces ∧ IsPLSphere m L.space ∧ IsPLBall k Q ∧
-      P = coneSet p L.space ∧ Q = coneSet p J.space
+      IsPLHomeomorphOn f (coneSet p L.space) P ∧ f '' coneSet p J.space = Q
 
 theorem IsPLBallPair.subset {m k : ℕ} {P Q : Set E} (h : IsPLBallPair m k P Q) : Q ⊆ P := by
-  obtain ⟨p, L, J, -, -, hJL, -, -, rfl, rfl⟩ := h
-  exact coneSet_mono p (space_mono_of_faces_subset hJL)
+  obtain ⟨p, L, J, -, f, -, hJL, -, -, hf, rfl⟩ := h
+  rw [← hf.image_eq]
+  exact image_mono (coneSet_mono p (space_mono_of_faces_subset hJL))
 
 theorem IsPLBallPair.isPLBall_sub {m k : ℕ} {P Q : Set E} (h : IsPLBallPair m k P Q) :
     IsPLBall k Q := by
-  obtain ⟨-, -, -, -, -, -, -, hball, -, -⟩ := h
+  obtain ⟨-, -, -, -, -, -, -, -, hball, -, -⟩ := h
   exact hball
 
 theorem IsPLBallPair.isPLBall [FiniteDimensional ℝ E] {m k : ℕ} {P Q : Set E}
     (h : IsPLBallPair m k P Q) : IsPLBall (m + 1) P := by
   classical
-  obtain ⟨p, L, J, hL, hfin, -, hsph, -, rfl, -⟩ := h
+  obtain ⟨p, L, J, hL, f, hfin, -, hsph, -, hf, -⟩ := h
   have : Finite L.faces := hfin.to_subtype
-  rw [← coneComplex_space_eq_coneSet hL]
-  exact hL.isPLBall_of_isPLSphere hsph
+  have hcone : IsPLBall (m + 1) (coneSet p L.space) := by
+    rw [← coneComplex_space_eq_coneSet hL]
+    exact hL.isPLBall_of_isPLSphere hsph
+  exact hcone.of_isPLHomeomorphOn hf
 
-theorem isPLBallPair_coneSet {m k : ℕ} {p : E} {L J : Geometry.SimplicialComplex ℝ E}
-    [Finite L.faces] (hL : IsConeBase p L) (hJL : J.faces ⊆ L.faces) (hsph : IsPLSphere m L.space)
+theorem IsPLBallPair.of_isPLHomeomorphOn [FiniteDimensional ℝ E] {m k : ℕ} {P Q P' Q' : Set E}
+    (h : IsPLBallPair m k P Q) {g : E → E} (hg : IsPLHomeomorphOn g P P') (hgQ : g '' Q = Q') :
+    IsPLBallPair m k P' Q' := by
+  have hsub := h.subset
+  have hQ := h.isPLBall_sub
+  obtain ⟨p, L, J, hL, f, hfin, hJL, hsph, -, hf, hfJ⟩ := h
+  refine ⟨p, L, J, hL, g ∘ f, hfin, hJL, hsph, ?_, hf.trans hg, ?_⟩
+  · have hres := hg.restrict hQ.isPolyhedron hsub
+    rw [hgQ] at hres
+    exact hQ.of_isPLHomeomorphOn hres
+  · rw [image_comp, hfJ, hgQ]
+
+theorem isPLBallPair_coneSet [FiniteDimensional ℝ E] {m k : ℕ} {p : E}
+    {L J : Geometry.SimplicialComplex ℝ E} [Finite L.faces] (hL : IsConeBase p L)
+    (hJL : J.faces ⊆ L.faces) (hsph : IsPLSphere m L.space)
     (hball : IsPLBall k (coneSet p J.space)) :
-    IsPLBallPair m k (coneSet p L.space) (coneSet p J.space) :=
-  ⟨p, L, J, hL, Set.toFinite L.faces, hJL, hsph, hball, rfl, rfl⟩
+    IsPLBallPair m k (coneSet p L.space) (coneSet p J.space) := by
+  classical
+  have hcfin : Finite (coneComplex hL).faces :=
+    (coneComplex_faces_finite hL (Set.toFinite L.faces)).to_subtype
+  have hpoly : IsPolyhedron (coneSet p L.space) := by
+    rw [← coneComplex_space_eq_coneSet hL]
+    exact isPolyhedron_space _
+  exact ⟨p, L, J, hL, id, Set.toFinite L.faces, hJL, hsph, hball,
+    hpoly.isPLHomeomorphOn_id, Set.image_id _⟩
 
 theorem isPLBallPair_coneSet_of_isPLSphere [FiniteDimensional ℝ E] {m k : ℕ} {p : E}
     {L J : Geometry.SimplicialComplex ℝ E} [Finite L.faces] (hL : IsConeBase p L)
