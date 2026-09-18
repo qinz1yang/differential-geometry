@@ -3358,3 +3358,50 @@ reduction plus the degree-one computation on the polygon, feeding
 `isOrientable_of_ambient_nullHomotopic_generated_polygon` through the loop
 retraction delivered here. Obligation 2 of C.6, the untwisted disk-bundle
 classification, was deliberately not started.
+
+## The degree-one computation on the circle, 2026-09-18
+
+The abstract half of the missing fact is closed. Two new modules under
+`DifferentialGeometry/Topology/FundamentalGroup/`.
+
+`LoopPower.lean` gives the integer powers of a loop as honest paths.
+`loopPow p k` is the k-fold right-nested `Path.trans`, `loopZPow p k` is
+`loopPow p k` for `k ≥ 0` and `loopPow p.symm (-k)` otherwise.
+`loopPow_map`/`loopZPow_map` push a continuous map through a power (stated with a
+bare `Continuous f`, not a bundled `C(X, Y)`, so `rw` matches `Homeomorph`
+continuity proofs), `loopPow_cast`/`loopZPow_cast` push `Path.cast` through.
+`fromPath_loopZPow` identifies the class of `loopZPow p k` with the k-th power of
+the class of `p` in `FundamentalGroup X x`; the multiplication order convention of
+`FundamentalGroup.mul_def` is irrelevant because all factors are equal.
+`exists_homotopic_loopZPow_of_forall_exists_zpow` converts "the class of p
+generates" into "every loop is homotopic to `loopZPow p k`".
+
+`CircleLoopGenerator.lean` is the degree computation.
+`circleGeneratorPath : Path (0 : loopCircle) 0` is `t ↦ ↑(t : ℝ)`.
+`monodromy_circleGeneratorPath` says the lift of `circleGeneratorPath` through
+`ℝ → loopCircle` starting at `0` ends at `1`; the proof is
+`IsCoveringMap.monodromy_eq_of_map_eq` applied to the identity path
+`unitRealPath : Path (0 : ℝ) 1`, and the required equation is `rfl`.
+`fundamentalGroupToMulOpposite_circleGeneratorPath` turns that into
+`φ ⟦circleGeneratorPath⟧ = op (ofAdd ⟨1, _⟩)` for
+`φ = (AddCircle.isAddQuotientCoveringMap_coe 1).fundamentalGroupToMulOpposite ⟨0, rfl⟩`.
+Since `ℝ` is simply connected (`RealTopologicalVectorSpace.contractibleSpace` then
+`SimplyConnectedSpace.ofContractible`), `φ` is injective, and every element of
+`zmultiples (1 : ℝ)` is `k • 1`, so
+`exists_zpow_fundamentalGroup_loopCircle` says every element of
+`FundamentalGroup loopCircle 0` is a power of the class of `circleGeneratorPath`,
+and `exists_homotopic_loopZPow_circleGeneratorPath` is the path form.
+
+`exists_homotopic_loopZPow_of_bijective` is the transport. For `Q` a `T2Space`,
+`G : C(loopCircle, Q)` bijective with `G 0 = q`, and a loop `ℓ : Path q q` with
+`ℓ t = G ↑(t : ℝ)` for all `t`, every loop at `q` is homotopic to `loopZPow ℓ k`
+for some `k : ℤ`. `loopCircle` is compact and `Q` is Hausdorff, so `G` is a
+homeomorphism (`Continuous.homeoOfEquivCompactToT2`); the loop is transported
+through it with `Path.Homotopic.map` and `Path.Homotopic.pathCast`. This is the
+interface the polygon feeds: `pathToCircle ℓ` satisfies the two hypotheses on `G`
+by `pathToCircle_zero` and `pathToCircle_coe`, so only bijectivity of
+`pathToCircle ℓ` is left to the geometry.
+
+Both modules check exit 0 with zero warnings (6.8 s, 7.3 s).
+`.lake/scratch/AuditSCircleLoopGenerator.lean` audits fifteen declarations, all
+only `propext`, `Classical.choice`, `Quot.sound`.
