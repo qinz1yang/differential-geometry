@@ -25,6 +25,25 @@ private local instance mixedFieldC2 : IsManifold I 2 M :=
   IsManifold.of_le (I := I) (M := M) (n := ∞) (by decide)
 
 
+theorem mixed_curvature_polynomial_on_Ioc
+    {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S)
+    {a b t : ℝ} (hcarrier : D.carrier = Icc a b) (hregular : Ioo a b ⊆ D.regular)
+    (ht : t ∈ Ioc a b) (p q : ℕ) (x : M) {n : ℕ}
+    (basis : Module.Basis (Fin n) ℝ (TangentSpace I x)) :
+    DifferentiableWithinAt ℝ (fun s => mixedCurvatureTensor S p q s x) D.carrier t ∧
+      ∀ slots, component0S (I := I) basis (mixedCurvatureTensor S p q t x) slots =
+        MvPolynomial.eval (curvatureJetPolynomialValues S (p + 2 * q) t basis)
+          (mixedJetPolynomial n p q slots) := by
+  have hP (q : ℕ) (s : ℝ) (hs : s ∈ Ioo a b) :=
+    mixedJetPolynomial_hasDerivWithinAt n p S hS q s (hregular hs) x basis
+  rcases ht.2.lt_or_eq with htb | rfl
+  · exact ⟨(hP q t ⟨ht.1, htb⟩).1.differentiableWithinAt, (hP q t ⟨ht.1, htb⟩).2⟩
+  · simpa only [hcarrier] using
+      mixedCurvature_polynomial_terminal_of_regular_Icc S hS p
+        le_rfl ht.1 hcarrier hregular (mixedJetPolynomial n p) x basis
+        (fun q t ht => ⟨((hP q t ht).1.hasDerivAt
+          (D.regular_mem_nhds (hregular ht))).differentiableAt, (hP q t ht).2⟩) q
+
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private theorem exists_mixed_curvature_fields_of_polynomial
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)

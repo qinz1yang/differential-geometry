@@ -11172,3 +11172,4 @@ import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperator.
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.HighCurvatureAncientKappaLimit
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.TimeJetFields
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Metric.TimeJets
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.TimeJetConvergence
