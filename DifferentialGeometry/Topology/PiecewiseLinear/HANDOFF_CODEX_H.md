@@ -596,3 +596,193 @@ Reduced/MayerVietorisCoefficients, Reduced/PointClasses}`（`REUSE_AUDIT.md` §2
 `CapDeletion` 检查 exit=0（10.3 秒）、零 warning；`.lake/scratch/AuditHCapDeletion.lean` 五项仅
 `propext`、`Classical.choice`、`Quot.sound`。G.5 剩下的是不经 `Homology/HurewiczLowDegrees.lean`
 的一维 Hurewicz 桥，以及上面那条密度前提的组合流形版生产者。
+
+### G.5 删盘识别的密度前提：组合 2-流形生产者（`ManifoldInteriorDensity.lean`）— done
+
+上一条 `CapDeletion.lean` 留下的唯一额外前提 `A.space ⊆ closure (A.space \ L.space)` 现在有了生产者，
+而且不需要新的几何内容：树里已经有组合带边流形的纯性，缺的只是把它接到闭包上。
+
+- 纯性不必重证。`ManifoldConnectivity.lean` 的
+  `IsCombinatorialManifoldWithBoundary.exists_face_superset_card_eq` 已经给出：有限面、有限维下，
+  `n` 维组合带边流形的每个面都含在一个基数 `n+1` 的面里。它对顶点链接是 PL 球或 PL 球面两种情形一起归纳，
+  正是"每个面都是某个顶维单形的面"。
+- `card_le_of_mem_boundaryComplex_faces`：`boundaryFaces n K` 的定义里就写着 `∃ t ∈ K.faces, s ⊆ t ∧ t.card ≤ n`，
+  所以边界复形的面基数都 `≤ n`。纯组合，不用流形假设，也不用 `mem_boundaryComplex_iff_unique_coface`。
+- `IsCombinatorialManifoldWithBoundary.space_subset_closure_sdiff_space`（一般 `n`，本条的数学内容）：
+  设 `L.faces ⊆ K.faces` 且 `L` 的面基数都 `≤ n`，则 `K.space ⊆ closure (K.space \ L.space)`。
+  取 `x ∈ K.space`，`exists_face_mem_openSimplex` 给出 `x ∈ openSimplex s`；纯性给 `t ⊇ s`、`t.card = n+1`。
+  基数条件使 `t ∉ L.faces`（`n+1 ≤ n` 不成立），于是 `notMem_space_of_notMem_faces`（`RelativeDerived.lean`）
+  给 `openSimplex t ∩ L.space = ∅`，即 `openSimplex t ⊆ K.space \ L.space`；再用
+  `convexHull_subset_closure_openSimplex`（`LinkDimension.lean`）把 `x ∈ hull s ⊆ hull t` 送进
+  `closure (openSimplex t) ⊆ closure (K.space \ L.space)`。
+- `IsCombinatorialManifoldWithBoundary.space_subset_closure_sdiff_boundaryComplex_space`：
+  `L = boundaryComplex n K` 时两条假设自动满足，`K.space ⊆ closure (K.space \ (boundaryComplex n K).space)`。
+- 端点重述 `isPLBall_space_of_isPLSphere_capComplex_of_isCombinatorialManifoldWithBoundary`：
+  假设 = `CapDeletion` 原端点的假设减去 `hdense`，加上 `IsCombinatorialManifoldWithBoundary 2 A`，**没有别的新前提**。
+  关键的一点是 `L` 的基数条件不必另写：端点本来就带 `hL : IsPLSphere 1 L.space`，
+  `card_le_of_isPLSphere`（`LinkDimension.lean`）直接给 `s.card ≤ 2`，正好是 `n = 2` 需要的。
+  另有 `isPLBall_space_of_isPLSphere_capComplex_boundaryComplex`，把 `L` 固定成 `boundaryComplex 2 A`。
+- 查过但用不上的路线：`ManifoldSubcomplexBoundary.lean` 的
+  `boundaryComplex_space_subset_closure_sdiff_of_isCombinatorialManifold` 是
+  `(boundaryComplex (n+1) A).space ⊆ closure (K.space \ A.space)`，说的是边界落在**外侧**补集的闭包里，
+  方向与这里要的"内部在 `A` 里稠密"相反，不能改写成本条；也不需要它那条导出邻域机器。
+- `ManifoldInteriorDensity` 检查 exit=0（9.9 秒）、零 warning；
+  `.lake/scratch/AuditHManifoldInteriorDensity.lean` 五项仅 `propext`、`Classical.choice`、`Quot.sound`。
+
+G.5 至此只剩不经 `Homology/HurewiczLowDegrees.lean` 的一维 Hurewicz／基本群阿贝尔化桥。
+
+### G.5 一维 Hurewicz／阿贝尔化桥 — assessed，按 H-M3 先例给成本分解，未启动
+
+G.5 的最后一块。先说三条把结论定死的核对结果，再给分解。
+
+**(1) 禁止导入的那个文件与本题无关。** `Topology/Homology/HurewiczLowDegrees.lean` 全文 46 行，只有
+`hurewicz_two_isomorphism` 与 `hurewicz_three_isomorphism` 两条（二维、三维），两条都是 `sorry`。
+一维 Hurewicz 根本不在里面。所以"不经过该文件"这条限制的实际成本为零，不构成障碍。
+
+**(2) 需要的是难的那一半，不能只用容易的一半。** L10 给的是 `i_* : π₁(Bd X) → π₁(N'−K')` 同构，
+而 `Bd N × (0,1) ≅ Int N'−K'` 给 `j : Bd N ≃ N'−K'` 的同伦等价。`bettiNumber_eq_of_homotopyEquiv`
+（`BettiNumber.lean:20`）免费给 `b₁(Bd N) = b₁(N'−K')`。剩下的一步方向必须核对清楚：
+- Hurewicz 的**容易一半**（`π₁ → H₁` 满）配 `π₁(i)` 满，只能得到 `H₁(i)` 满，即 `b₁(Bd N) ≤ b₁(Bd X)`。
+  代入 L12 的 `b₁(Bd X) = b₁(Bd N) + ∑v b₁(Â'_v)` 后是恒真式，**没有用**。
+- 要迫使 `∑v b₁(Â'_v) = 0` 必须有 `b₁(Bd X) ≤ b₁(Bd N)`，也就是 `H₁(i)` **单**，
+  它来自 `π₁(i)` 单只能经 `ker(π₁ → H₁) = 换位子群`，即 Hurewicz 的**难一半**。
+  结论：不能用弱化版本绕开，必须做完整的一维 Hurewicz。
+
+**(3) 【本条已于 2026-09-18 撤回，见本节末"更正"条；搜索范围漏掉了 `origin/codex/pc-sorry-free`，
+该分支已有万有系数与一维 Hurewicz 层。下面的 HB1–HB6 分解随之作废，勿据以施工。】**
+没有万有系数定理可用，必须直接在域系数上做。两棵树都查过：本库 `DifferentialGeometry/` 与 Mathlib
+都没有 UCT、没有链复形的平坦基变换、没有 `H_n(X;ℤ) ⊗ ℚ ≅ H_n(X;ℚ)`。`ChangeOfRings.lean` 只做
+`restrictScalars`（方向相反，且只对约化同调），`Coefficients.lean` 只在固定基环内换系数模。
+所以不能"先证 ℤ 版再张量到 ℚ"。好消息是本库已有先例：`FieldPathCones.lean`（214 行）就是把整个
+`PathChains` + `PathCones` 的 ℤ 论证在任意域 `k` 上重做一遍，并给出 `fieldSingularChainBasis`
+（`Basis (integralSingularSimplex n X) k`）。一维 Hurewicz 照此在 `k` 上直接做即可，目标写成
+`H₁(X;k) ≅ Abelianization (π₁ X x) ⊗_ℤ k`。
+
+#### 现成材料（都已核对签名）
+
+- 路径与 1-单形的**双向字典**，无任何附加假设：`PathChains.lean` 的 `integralPathSimplex`、
+  `integralPathChain`、`integralPathChain_boundary`、`integralSimplexPath`、
+  `integralPathSimplex_simplexPath`。域系数版 `fieldPathChain`、`fieldPathChain_simplexPath` 在
+  `FieldPathCones.lean:85,89`。
+- **自由基**：`fieldSingularChainBasis`（`FieldPathCones.lean:27`）、`fieldSimplexChain_boundary_one/_two`。
+  `Basis.constr` 正是定义逆映射 `Λ` 的工具。
+- **模板**：`fieldSingularConeOne`（`constr` 定义链级算子）、`fieldSingularConeTriangle_boundary`、
+  `fieldSingularConeOne_equation`、`fieldSingularHomology_one_vanishing_iff` 这一串，形状与要写的
+  `Λ`、`Λ∘∂=0`、下降到 `H₁` 完全一致，只是把"总能填三角形"换成"填得动当且仅当回路零伦"。
+- **方块 ⟹ 道路同伦**：`Homotopy/SquareBoundary.lean:16` 的 `square_boundary_homotopic`，无 `SimplyConnectedSpace`
+  假设，正是难一半要用的方向。
+- **圆盘填充**：`LoopSpace/ContinuousFilling.lean:81` 的 `exists_continuous_disk_of_nullhomotopic`
+  以"自由回路零伦"为输入，**本身不带单连通假设**。`SimplyConnectedSpace` 只在
+  `LoopSpace/SimplyConnectedTarget.lean:21` 的 `circleLoop_nullhomotopic`（18 行）里出现一次，
+  再经 `ConvexPlaneExtension.lean:19` 传到 `TriangleFilling.lean:22`。
+- **∂Δ² 的三边拼装**：`TrianglePathBoundary.lean` 的 `triangleBoundaryPaths`、`triangleBoundaryMap`、
+  `triangleBoundaryMap_edge`，`TriangleFaces.lean:14` 的 `simplexTriangleHomeomorph_face`，都无附加假设。
+- **群论层**：Mathlib `GroupTheory/Abelianization/Defs.lean` 完整（`of`、`lift`、`lift_unique`、`hom_ext`、
+  `map`、`MulEquiv.abelianizationCongr`）。本库 `Abelianization` 出现次数为 **0**，是全新依赖。
+  π₁ 用 Mathlib `FundamentalGroup`，道路同伦商的群律（`trans_assoc`、`refl_trans`、`trans_symm` 等）
+  在 `FundamentalGroupoid/Basic.lean` 全部现成。**坑**：`FundamentalGroup.mul_def : p * q = q.trans p` 是反序的。
+
+#### 成本分解（六砖，域系数 `k`，取 `k = ℚ`）
+
+| 砖 | 内容 | 行数 | 风险 |
+|---|---|---|---|
+| HB1 | 以同伦为前提的三角形填充：`(p.trans q).Homotopic r ⟹ ∃ σ : Δ²` 三个面为 `q, r, p`。把 `circleLoop_nullhomotopic`、`exists_convex_plane_boundary_extension`、`exists_integralPathTriangle` 的 `[SimplyConnectedSpace]` 换成显式零伦前提 | 0.4k–0.8k | 中 |
+| HB2 | 逆向：`σ : Δ² ⟹ (face₂ ⬝ face₀).Homotopic face₁`。经 `I×I → Δ²` 的塌缩仿射映射接 `square_boundary_homotopic` | 0.4k–0.8k | 中 |
+| HB3 | 串联的**典范**填充（无前提）：`Δ² → I`（顶点 ↦ `0, 1/2, 1`）复合 `p.trans q`，三个面按 `Path.trans` 的分段定义当场对上。可先试从 HB1 取 `Homotopic.refl` 免费得到 | 0.2k–0.4k | 低 |
+| HB4 | Hurewicz 同态 `h : Abelianization (π₁ X x) →+ H₁(X;k)`：HB1 给良定义，HB3 给可加性（注意 `mul_def` 反序），退化 2-单形给 `h 1 = 0`，`Abelianization.lift` 收尾 | 0.3k–0.5k | 低 |
+| HB5 | 逆映射 `Λ : C₁(X;k) → Abelianization(π₁) ⊗_ℤ k`，用 `fieldSingularChainBasis.constr`、`λ(σ) = [α_{σ0} ⬝ σ ⬝ α_{σ1}⁻¹]`（`α` 取 `PathConnectedSpace.somePath`）；`Λ∘∂₂ = 0`（HB2）、下降到 `H₁`、两侧互逆（cycle 的修正项因 `∂c = 0` 相消） | 0.6k–1.1k | 中 |
+| HB6 | 秩层与消费者：`H₁(X;k) ≅ Abelianization(π₁ X x) ⊗_ℤ k`；`bettiOne X = finrank ℚ (Abelianization (FundamentalGroup X x) ⊗_ℤ ℚ)`；端点 `bettiOne_eq_of_mulEquiv_fundamentalGroup`，用 `MulEquiv.abelianizationCongr`。乘法群 `Abelianization` 与 `Additive` 之间的搬运是小摩擦 | 0.3k–0.6k | 低 |
+
+合计 **2.2k–4.2k 行**。真正新的几何只有 HB1 与 HB2 两个填充方向（0.8k–1.6k），其余都是对着
+`FieldPathCones.lean` 现成模板的记账。与 PHASE3 行 G.5 原估 3k–5k 相容：那个数字含封盘复形，
+而封盘那半已由 `ConeEuler`/`ConeBaseFlat`/`CapComplex`/`CapDeletion`/`ManifoldInteriorDensity` 闭合。
+
+#### 查过但不可用的捷径
+
+- `SphereHurewicz.lean:60` 的 `sphereHurewicz n x c` 在 `n = 0` 处**确实**给出映射
+  `HomotopyGroup (Fin 1) X x → integralSingularHomology 1 X`，且有 `_one`、`_transport`、`_natural`。
+  但没有任何 `map_mul`，也没有任何一维的双射陈述；而且它落在 ℤ 系数
+  （`ModuleCat.of ℤ (ULift ℤ)`），与 `bettiNumber` 的 `ModuleCat.of k k` 不是同一个系数对象。
+  它不能省掉上面任何一砖。
+- `homotopyGroupToFreeSphere_injective` 要 `[SimplyConnectedSpace X]`，在一维是平凡的，无用。
+- 若哪条车道能把 L10 升级成 `Bd X` 与 `N'−K'` **同伦等价**（而不只是 π₁ 同构），
+  `bettiNumber_eq_of_homotopyEquiv` 零成本闭合 L12 的 Betti 等式，上面 2.2k–4.2k 全部省掉。
+  但书页 236 的 L10 只给 π₁ 同构；把 `Bd N × (0,1)` 里一张诱导 π₁ 同构的闭曲面升级成水平面
+  是不可压缩曲面的同痕定理，比 Hurewicz 更贵。记录备查，不建议走。
+
+结论：按 H-M3 先例，在用户另行批准前不启动。启动时建议顺序 HB3 → HB1 → HB4 → HB2 → HB5 → HB6，
+先把无前提的那块（HB3）打通以验证面计算的写法，再动两个填充方向。
+
+### G.5 一维 Hurewicz 桥 — 更正（2026-09-18）：`origin/codex/pc-sorry-free` 已有该层，改为分支收敛问题
+
+上一条的核对有一处范围错误，现更正。**撤回**"本库与 Mathlib 都没有万有系数材料、一维 Hurewicz 须从零实现"
+这一判断：我只搜了本工作树与 Mathlib，没有搜同一仓库的兄弟分支 `origin/codex/pc-sorry-free`。
+该分支上有以下七个文件，我已在本工作树用 `git show`／`git grep`（只读，未合并）逐一核对：
+
+| 文件（均在 `DifferentialGeometry/Topology/Homology/`） | 行数 |
+|---|---|
+| `UniversalCoefficientsOne.lean` | 293 |
+| `UniversalCoefficientsOneLinearEquiv.lean` | 365 |
+| `HurewiczOneAbelianization.lean` | 746 |
+| `HurewiczOneKernel.lean` | 453 |
+| `HurewiczOnePathLoopBridge.lean` | 336 |
+| `HurewiczOneVertexPairing.lean` | 241 |
+| `RationalHurewiczOne.lean` | 195 |
+| 合计 | 2629 |
+
+七个文件在本车道各分支上全部不存在；`git grep -c sorry` 在该分支的 `Topology/Homology` 下无输出，该层无 `sorry`。
+
+#### 已核对的实际内容
+
+- `HurewiczOneAbelianization.lean:695,700` 把缺口收成两个 `Prop`：`HurewiczOneMultiplicative`（`sphereHurewicz 0` 可加）
+  与 `HurewiczOneKernel`（核含于换位子群）。`:712` 的 `abelianization_equiv_of_surjective_ker_eq_commutator`
+  与 `:727` 的 `abelianizationHomotopyGroupOne_equiv_of_hurewiczOne` 由"可加 + 满 + 核 ⊆ 换位子"给出
+  `Abelianization (π₁) ≃* Multiplicative (H₁(X;ℤ))`。
+- `RationalHurewiczOne.lean:128` 的 `tensorRational_abelianizationFundamentalGroup_equiv_of_hurewiczOne`
+  给出正是 G.5 消费端要的形状 `ℚ ⊗[ℤ] Additive (Abelianization (FundamentalGroup X x)) ≃ₗ[ℚ] ℚ ⊗[ℤ] H₁(X;ℤ)`，
+  条件恰是上述三条。
+- **容易一半在那边已证**：`RationalHurewiczOne.lean:114` 的
+  `hurewiczOneLoopGeneration_of_hurewiczOneVertexPairing`，配 `integralPathLoopClassMap_mem_span`。
+- **难一半在那边同样未闭合**，但已收得更窄：`HurewiczOneVertexPairing.lean:190`
+  `hurewiczOneKernel_of_spherePairing` 把 `HurewiczOneKernel` 归到 `HurewiczOneSpherePairing`；
+  后者的生产者只有 `_of_subsingleton`（π₁ 平凡，对我们平凡无用）与 `:214`
+  `hurewiczOneSpherePairing_of_loopBridge_of_loopClassPairing`，它把难一半再拆成两条具名子事实
+  （球面到回路的桥、回路类配对恒等式）。所以上一条"难一半不可避免"的结论**成立**，
+  但"须从零实现"的结论**不成立**。
+- `HurewiczOnePathLoopBridge.lean:196` 的
+  `hurewiczOneMultiplicative_of_circleSphereFundamentalClass_isSphereHomologyGenerator`
+  把可加性整条归约到一个**与空间无关**的全局事实：圆周基本类是球面同调生成元。
+
+#### 两条上一条没提、但施工前必须知道的限定
+
+1. **ℤ → ℚ 的换系数在那边也还是条件，不是定理。** `RationalHurewiczOne.lean:22`
+   `rationalSingularHomologyOneCoefficientChange` 的生产者只有全不连通空间（`:37`）与 `PUnit`（`:51`）；
+   `:151,163,174,188` 四个下游端点全部把它当显式假设 `hC` 携带。所以 HB6 **没有**被完全消掉。
+2. **右端是 `ℚ ⊗ H₁(X;ℤ)`，不是本库 `bettiNumber ℚ _ 1` 的那个对象。** 接到 `bettiOne` 还要上面第 1 条
+   加一步 `finrank` 胶水。两边都在 universe 0（`TopCat.{0}` 对我们的 `bettiOne : (X : Type) → _`），无宇宙冲突。
+
+#### HB1–HB6 的修订
+
+| 砖 | 修订后状态 |
+|---|---|
+| HB1、HB2、HB3（两个方向的三角形填充、典范串联单形） | **作废，不是该走的路**。那边根本不走三角形填充，而是用 `sphereHurewicz 0` 加路径-回路链映射。不要按原分解施工 |
+| HB4（Hurewicz 同态与 `Abelianization.lift`） | **已交付**：`hurewiczSphereMonoidHom` + `abelianization_equiv_of_surjective_ker_eq_commutator`。可加性另归约到一条全局圆周事实 |
+| HB5（逆映射、容易一半） | **大部分已交付**：回路生成已证；`sphereHurewicz 0` 的满性仍是显式假设 |
+| HB6（秩层与消费者） | **部分交付**：张量与 `LinearEquiv.baseChange` 胶水在，但 `rationalSingularHomologyOneCoefficientChange` 的一般生产者仍缺，接到 `bettiOne` 的最后一步仍要写 |
+
+#### 修订后的剩余义务
+
+对 G.5 实际需要的空间（`Bd X`、`Bd N`、各 `Â'_v`，都是道路连通的闭三角剖分曲面）生产：
+`HurewiczOneMultiplicative`、`HurewiczOneKernel`、`Function.Surjective (sphereHurewicz 0 x c)`，
+外加 `rationalSingularHomologyOneCoefficientChange` 与接到 `bettiOne` 的 `finrank` 收尾。
+其中 `HurewiczOneKernel` 是难一半，可经 `hurewiczOneSpherePairing_of_loopBridge_of_loopClassPairing`
+的两条子事实进攻；`HurewiczOneMultiplicative` 只差那条全局圆周生成元事实。
+
+#### 交付路线：分支收敛，不是在本车道重写
+
+那七个文件的**传递导入闭包**有 163 个文件、约 45600 行不在本车道各分支上。所以这不是 cherry-pick 能解决的，
+是 `codex/pc-sorry-free` 与 Moise 各分支的**收敛**问题，需由协调者安排。在本车道按原 HB1–HB6 重新实现
+一维 Hurewicz 属于**重复劳动**，明确不做。本次只做只读核对，未合并该分支，未改动任何 Lean 文件。
+
+附带核对：该分支的 `DifferentialGeometry/Topology/PiecewiseLinear` 文件数为 **0**，其 Alexander 对偶／
+紧支撑材料与本车道同源（我们 16 个文件、它 17 个，多出的是射影空间不可嵌入），故上文 H-M3 的评估不受影响。

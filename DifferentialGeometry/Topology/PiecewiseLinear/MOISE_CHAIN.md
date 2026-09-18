@@ -682,3 +682,74 @@ Moise 每一章开头"不妨设某映射是 PL 的"都是这一条。分三个�
 
 这条是"不妨设某映射是 PL 的"在二维带边界情形的实际生产者（边界已是单纯映射时）。
 
+## 2026-09-18 第二轮：滑距不受限，于是分支只需一张乘积邻域
+
+### F：`ModelSlideLong.lean` / `ChartSlideLong.lean`
+
+把前一轮固定滑距 1 的模型按滑距 `d` 与锥度半径 `R` 参数化：
+`slideAmountLong d R = max 0 (min (d * (1 - |y| - |z|)) ((R - |x|)/2))`，
+`slideMapLong d R p = (p.1 - slideAmountLong d R p, p.2.1, p.2.2)`。
+
+- 单射性只用到"锥度对 `x` 是 (1/2)-Lipschitz 而宽度因子不含 `x`"，与 `d` 无关；
+  故**滑距可以任意大，代价全在锥度半径**：`disjoint_slideMapLong_image_slideBandA` 的定量条件是
+  `0 ≤ d`、`c + 2*d ≤ R`、`c - d < a`。
+- `slideMapLong` 只动第一坐标，所以 `bijOn_slideMapLong_prod` 给出：任意
+  `T ⊆ ℝ × ℝ` 对应的 `{p | p.2 ∈ T}` 被双射保持。取半空间或其边界平面即得端点处
+  "滑动与 `Bd M` 相切"，不必另造半空间模型。
+- `ChartSlideLong.lean` 把它经 PL 图卡共轭：整体逐片仿射、整体单射、支撑外恒等、分离两条带的像。
+
+**这改变了 E3 §44 的计划**：既然滑距无上界，就不需要把有限多张 crossing 图卡沿分支排成链、
+再在重叠上插值；只要分支有**一张沿弧的乘积邻域**，一次滑动即可清掉整条触边分支。
+下一步的正确目标因此是乘积邻域（沿弧的相容平凡化），而不是逐张图卡的同向推移。
+
+### H：`CapDeletion.lean`
+
+把封盘复形的面集等式翻成载体等式（`capComplex_space`、`space_inter_coneComplex_space`、
+`capComplex_space_sdiff_coneComplex_space`），再消费 `SphericalDiskComplement.lean` 现成的
+`IsPLSphere.isPLBall_closure_sdiff`，得到删盘识别
+`isPLBall_space_of_isPLSphere_capComplex`：封盘后是 PL 2-球面时，原曲面是 PL 2-球（盘）。
+唯一额外前提是 `A.space ⊆ closure (A.space \ L.space)`（曲面是它去掉边界圆后的闭包），
+按车道规矩写成显式前提；它的组合 2-流形版生产者尚未写。
+
+### H：`ManifoldInteriorDensity.lean`（去掉上面那条密度前提）
+
+`IsCombinatorialManifoldWithBoundary.space_subset_closure_sdiff_space`：若 `L.faces ⊆ K.faces`
+且 `L` 的每个面至多 `n` 个顶点，则 `K.space ⊆ closure (K.space \ L.space)`。
+证明用既有的**纯性** `exists_face_superset_card_eq`：任意点落在某面的开单形里，把该面扩成
+`n+1` 顶点的顶面 `t`，由顶点数 `t ∉ L.faces`，于是 `openSimplex t ⊆ K.space \ L.space`，
+再用 `convexHull t ⊆ closure (openSimplex t)`。对一般 `n` 成立。
+
+于是 `isPLBall_space_of_isPLSphere_capComplex_of_isCombinatorialManifoldWithBoundary`
+把删盘识别的假设换成 `IsCombinatorialManifoldWithBoundary 2 A`，不引入其他新假设；
+`L` 的顶点数界由已有的 `IsPLSphere 1 L.space` 免费给出。G.5 的封盘—删盘这一整段因此闭合，
+只剩不经 `HurewiczLowDegrees` 的一维 Hurewicz 桥（H 已给出 HB1–HB6 的成本分解，未启动）。
+
+### F：`BranchSlideSeparation.lean` / `TransversePlaneCoordinates.lean`
+
+`IsBranchSlideChart R c a b P Q e`（七个字段：两向逐片仿射、`slideSupportLong R` 与两条带都含于
+`e.target`、两张片分别等于 `e.symm '' slideBandA c` 与 `e.symm '' slideBandQ a b`）把"一张沿整条分支
+平凡化 crossing 的 PL 图卡"打包成谓词。谓词里**不含滑距 `d`**——滑距由消费者按 §19.110 的定量条件选。
+
+- `exists_supported_separation_of_isBranchSlideChart`：在 `0 ≤ d`、`c + 2*d ≤ R`、`c - d < a` 下给出
+  §44 要的 `h`（整体逐片仿射、单射、支撑外恒等、`Disjoint (h '' P) Q`），见证就是
+  `e.conjugateMap (slideMapLong d R)`。
+- `exists_supported_separation_of_isBranchSlideChart_boundary` 追加 `h '' (U ∩ B) ⊆ B`，
+  即 §44 的 `h (U ∩ BdM) ⊆ BdM`；走更一般的 `mapsTo_chartSlideLong_of_forall_mem_iff`
+  （任何在图卡里由两个横向坐标条件切出的集合都被保持）。
+- `TransversePlaneCoordinates.lean`：从 `HasPLCrossingAt` 实际携带的数据（两张平面 `finrank = 2`、
+  交线 `finrank = 1`、张成全空间）造出 `E ≃ₗ[ℝ] ℝ × ℝ × ℝ`，把两张平面送到两个坐标平面、
+  交线送到第一坐标轴（滑动方向）。
+
+**剩下的确切输入**（缺的是定理，不是装配）：紧 PL 弧 `S`、沿 `S` 横截相交的两张 PL 面片 `A`、`B`、
+`W ∈ 𝓝ˢ S`，要一张 `e : OpenPartialHomeomorph M (ℝ × ℝ × ℝ)`，满足 `S ⊆ e.source ⊆ W`、两向 PL、
+`e '' (A ∩ e.source) ⊆ {p.2.2 = 0}`、`e '' (B ∩ e.source) ⊆ {p.2.1 = 0}`，并且 `e.source` 不碰第三张片
+（最后这条正是 §44 那句"不产生邻近的新交线"的来源，属于生产者而非滑动）。
+把两张相邻的逐点平凡化粘成一张需要 **PL 球对的正则邻域唯一性（相对 Alexander trick）**；
+本树只有单复形、非相对、非配对的版本（`ConeExtension`、`ConeAmbientExtension`）。
+`exists_subordinate_chain_of_isPLBall_one` 不关联任意两张图卡，`exists_sideChoice_of_chain` 是
+`ZMod 2` 陈述、产不出 PL 同胚，二者都不足以补这个缺口。
+
+另有一条小义务：上述三条活在有限维赋范环境、结论是 `IsPiecewiseAffineOn h univ`，
+而 E3 的消费者要带图卡的 3-流形与 `IsPL 3 3 h`；路线机械（经
+`ℝ × ℝ × ℝ ≃ EuclideanSpace ℝ (Fin 3)`、用 `bijective_slideMapLong` 升成 `Homeomorph`、
+再用既有的 `isPL_conjugateHomeomorph`）但未做。

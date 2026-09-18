@@ -685,6 +685,34 @@
   2-球面的 `HasAlexanderDualityH0Certificate`。现有 `SpecializedAlexanderDuality` 是未生产的条件，且其从两分支反推的
   定理与目标循环；wild sphere 不能用 smooth/open-bicollar，树中无 Čech或紧支撑理论。最窄专门实现估 10k–18k 行，
   完整可复用 Alexander 对偶估 20k–35k；在用户另行批准前暂缓，不把 30.5 报成只差 30.4 的 1k 收尾。
+- 2026-09-18（G.5 密度前提，done）：`CapDeletion.lean` 端点 `isPLBall_space_of_isPLSphere_capComplex` 原带的
+  `A.space ⊆ closure (A.space \ L.space)` 已有生产者。`ManifoldInteriorDensity.lean` 用树中现成的组合带边流形纯性
+  `IsCombinatorialManifoldWithBoundary.exists_face_superset_card_eq` 证明：面基数都 `≤ n` 的子复形（特别是
+  `boundaryComplex n K`）在 `K.space` 里的补是稠密的。重述端点
+  `isPLBall_space_of_isPLSphere_capComplex_of_isCombinatorialManifoldWithBoundary` 只把密度前提换成
+  `IsCombinatorialManifoldWithBoundary 2 A`，无其它新前提：`L` 的基数界由端点已有的 `IsPLSphere 1 L.space` 经
+  `card_le_of_isPLSphere` 免费给出。至此 G.5 只剩一维 Hurewicz 桥。
+- 2026-09-18（G.5 一维 Hurewicz 桥，评估）：禁止导入的 `HurewiczLowDegrees.lean` 只含二维、三维两条 `sorry`，
+  与本题无关，该限制成本为零。方向核对的结论是必须做**难的一半**：Hurewicz 容易一半只给
+  `b₁(Bd N) ≤ b₁(Bd X)`，代入 L12 的 `b₁(Bd X) = b₁(Bd N) + ∑v b₁(Â'_v)` 是恒真式；迫使各项为零要
+  `b₁(Bd X) ≤ b₁(Bd N)`，即 `H₁(i)` 单，只能经 `ker(π₁→H₁) = 换位子群`。【该条后半段"本库与 Mathlib 均无
+  万有系数定理，须从零重做"已于同日撤回，见下一条；HB1–HB6 分解作废。】
+- 2026-09-18（G.5 一维 Hurewicz 桥，更正）：**撤回**上一条"无万有系数材料、须在本车道从零实现"的判断。
+  搜索范围漏掉了同仓库的兄弟分支 `origin/codex/pc-sorry-free`。该分支有七个本车道完全没有、且无 `sorry` 的文件
+  （`UniversalCoefficientsOne` 293、`UniversalCoefficientsOneLinearEquiv` 365、`HurewiczOneAbelianization` 746、
+  `HurewiczOneKernel` 453、`HurewiczOnePathLoopBridge` 336、`HurewiczOneVertexPairing` 241、
+  `RationalHurewiczOne` 195，合计 2629 行），已用 `git show`／`git grep` 只读核对。
+  `tensorRational_abelianizationFundamentalGroup_equiv_of_hurewiczOne` 给出消费端要的
+  `ℚ ⊗ Additive (Abelianization (FundamentalGroup X x)) ≃ₗ ℚ ⊗ H₁(X;ℤ)`，条件是可加性、`sphereHurewicz 0` 满、
+  核 ⊆ 换位子；容易一半已证，难一半在那边同样未闭合但已收窄到两条具名子事实。
+  "难一半不可避免"的结论成立，"须从零实现"的结论不成立。两条限定：ℤ→ℚ 换系数
+  （`rationalSingularHomologyOneCoefficientChange`）在那边也只对全不连通空间生产，四个下游端点都把它当显式假设；
+  右端是 `ℚ ⊗ H₁(X;ℤ)` 而非本库 `bettiNumber ℚ _ 1` 的对象，接到 `bettiOne` 还要一步 `finrank` 胶水。
+  剩余义务改述为：对 `Bd X`、`Bd N`、各 `Â'_v` 生产 `HurewiczOneMultiplicative`、`HurewiczOneKernel`、
+  `sphereHurewicz 0` 的满性，加上换系数与 `bettiOne` 收尾。交付路线是**分支收敛**：那七个文件的传递导入闭包有
+  163 个文件、约 45600 行不在 Moise 各分支上，不是 cherry-pick，需协调者安排；在本车道重写属重复劳动，不做。
+  该分支的 `PiecewiseLinear` 文件数为 0，Alexander 对偶材料与我们同源，故 H-M3 评估不受影响。
+  详见 `HANDOFF_CODEX_H.md` 同名更正条目。
 - 不采用 Bing 定理 7 的“保留单形”强形式，只用 Moise §8/§35 的紧致图卡归纳（书中 `chap:two-set-gluing` 的方案）。
 - 不变域定理不进入 Phase 1（`f(O) = O` 由接口 A 给出，与 Moise 36.1 一致）。
 - `PLApproximation`/`PLSmoothing` 以 `Prop` 假设而非 `sorry` 出现：公理审计干净，但**报告时必须说明条件性**。
