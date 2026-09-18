@@ -11213,6 +11213,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborho
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedRoundCanonical
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedRoundCanonicalLimit
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.RegularPoleCenters
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.TerminalPoleCenters
 import DifferentialGeometry.Topology.Covering.BoolCocyclePullback
 import DifferentialGeometry.Topology.Manifold.AmbientNormalOrientation
 import DifferentialGeometry.Topology.Manifold.NormalSideParity
