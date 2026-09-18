@@ -3181,3 +3181,46 @@ orientation cocycle restricted to `barycentricSubdivision L` is a coboundary,
 then L is orientable. The coboundary function is reused verbatim.
 
 `SubcomplexOrientationCocycle` checks exit 0 (9.1 s) with zero warnings.
+
+## C.6 obligation 3 assembled: an ambient contraction orients the neighbourhood
+
+`AmbientPolygonOrientation.lean` is the endpoint.
+`isOrientable_of_ambient_nullHomotopic_polygon` takes a subcomplex L of an
+ambient finite combinatorial manifold with boundary K, both of the same
+dimension, a closed edge walk of `barycentricSubdivision L` whose polygonal path
+is null-homotopic in the ambient `K.space`, and the hypothesis that every closed
+edge walk of `barycentricSubdivision L` has the same ambient monodromy as either
+the constant walk or that polygon, and concludes `IsOrientable n L`.
+
+The two new pieces are `edgeGraphHom`, the inclusion of one-skeletons induced by
+an inclusion of complexes, and `walkMonodromy_ofLe`, which says the monodromy of
+the restricted cocycle along a walk of the subcomplex equals the ambient
+monodromy along the image walk; both are immediate since the parities of the
+restricted cocycle are the ambient parities by definition. The rest is the chain
+already recorded: the ambient contraction kills the ambient monodromy of the
+image walk, the generation hypothesis then kills the monodromy of every closed
+walk of the subcomplex, the restricted cocycle is therefore a coboundary, and the
+subcomplex orientation comparison turns that into orientability of L.
+
+`AmbientPolygonOrientation` checks exit 0 (9.5 s) with zero warnings, and
+`.lake/scratch/AuditSAmbientPolygon.lean` audits nine declarations across the two
+newest modules, all only `propext`, `Classical.choice`, `Quot.sound`.
+
+### Revised statement of what obligation 3 still lacks
+
+Item 2 of the earlier list, localization, is closed by
+`SubcomplexOrientationCocycle.lean`; that paragraph is superseded. What remains is
+
+1. The generation hypothesis. For a regular neighbourhood of a polygon it says
+   that the polygon generates the loops of the neighbourhood, and needs the
+   deformation retraction of a regular neighbourhood onto its core. It stays an
+   explicit hypothesis of the endpoint, never a `sorry`, and it asserts nothing
+   about orientability.
+2. The `Fin`-cyclic `loopMonodromy` and the `Walk`-indexed `walkMonodromy` are
+   still not translated into each other, so a polygon delivered as a cyclic
+   family `Fin m -> E`, as in `NeighborhoodCycle`, has to be turned into a closed
+   walk by hand.
+3. Nothing here produces the polygon or its ambient contraction; 24.12 supplies
+   those, and the contraction enters as the topological hypothesis
+   `(walkPath ...).Homotopic (Path.refl ...)` or, in the purely combinatorial
+   variant, as `SimplicialHomotopic K gamma Walk.nil`.
