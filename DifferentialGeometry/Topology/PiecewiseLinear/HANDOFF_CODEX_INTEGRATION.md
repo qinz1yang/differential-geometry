@@ -150,7 +150,22 @@ F5.2 保持 partial（被已证定理 `ArrangementConstraints.lean:58` 挡着；
   剩：`BicollaredCellComplementConnected` 的具名包装（约十行，新文件 `PiecewiseLinear/TameNestedCells.lean`）、
   `Moise305Tame`（显式 `Moise304 →`）、§34 侧生产者（注意 `exists_bicollar` 给 `S × Icc (-1) 1` 而 `TwoSidedCollar` 要 `S × ℝ`，先 grep
   `VanKampen/TwoSidedCollarRescale.lean`）。1k–2k 估计未修订。
-- **hw**（`codex/moise-hurewicz-merge`）：交接时 agent 仍在跑，未收到最终报告；进入后按 §0 与 §5 处理。
+- **hw**（`HANDOFF_CODEX_HW.md`，分支 `codex/moise-hurewicz-merge`，**未合入**整合分支，验证未完成）：
+  合并提交 `3b3115608`（整合 `96987679a` + `pc-sorry-free` `f787fc196`），两个冲突均按**并集**解决，因两侧声明各有活消费者：
+  `ArcCollar.lean` 是同路径两个不同文件（ours `namespace Schoenflies` 供 `EndpointCollarChain`，theirs 供 `SaddleCutoffRegion`），各置一 `section`；
+  `Innermost.lean` 两侧引理不可比，均保留；`Regions.lean` 自动合并经人工核对为忠实并集（`frontier_closure_inside` 以两个不同全名各存一份，无歧义用点）。
+  **验证只做了 87/809**：全部 exit=0 零 warning，722 个未尝试，`Topology/` 下**一个都没到**（三个 `PlanarJordan`、Hurewicz 种子、`PLSchoenflies` 均未编），
+  跨车道审计文件 `.lake/scratch/AuditHurewiczMerge.lean` 已写**未跑**。
+  **为何是 809 而非 163**：`Topology/Homology/{SphereRank,SpherePuncture,OneDimensionalSphere}.lean` 的类型类假设被上游**削弱**
+  （`[InnerProductSpace ℝ E] [FiniteDimensional ℝ E]` → `[NormedSpace ℝ E]`），刷新它们的 olean 后其上约 200 个 PL 模块的旧 olean 变得不一致而
+  Lean 不会察觉——**这些必须重编，之后关于合并树的任何 PL 断言才有意义**。
+  **工具缺陷**：继承的 `check-f.ps1`/`audit-f.ps1` 拼的 `LEAN_PATH` 缺工具链 lib，凡触及 `Lake.*` 的模块在 import 解析处死；工具链路径须**前置**
+  （后置无效）。hw 工作树的两个脚本已修（`.lake/` 被 gitignore，其他工作树若遇同症状照此修）。
+  其他：`Topology/` 下无 `sorry`（18 个 `sorry` 文件全在 theirs 的 `RicciFlow/{Extinction,Perelman}` 与 `MinimalSurface/Plateau`）；
+  **`HurewiczLowDegrees.lean` 在 `pc-sorry-free` 上已无 `sorry`**（3 条声明全证），合入后"不得 import"的限制可解除，但须先 `#print axioms` 复核；
+  全树重名扫描 7 处均早于本次合并且不在 Hurewicz/PL 种子可达范围。
+  续做路径在其 HANDOFF §6：先应用 LEAN_PATH 修复，`order-all.txt` 从第 88 项续跑，再 `order-followup.txt`（19 个，含 `EndpointCollarChain`、`Band`），再跑审计；
+  全部通过后才满足 §5 的合入条件。
 - **S**（`HANDOFF_CODEX_S.md` 末两节，分支 `codex/moise-s` 头 `96b0c4a45`，已合入整合分支，重编 `exit=0 time=10.7s module=DifferentialGeometry.Topology.PiecewiseLinear.MobiusManifold`）：
   **(A) 已闭**——`MobiusManifold.lean` 30 条声明，端点 `isCombinatorialManifoldWithBoundary_mobiusComplex`，审计 30/30 干净。
   工具层发现：`DecidableEq (Fin 5 → ℝ)` 有真实实例 `Fintype.decidablePiFintype`，与库中 `Finset` 面对陈述里烘进去的
