@@ -3010,3 +3010,54 @@ import ...StarPair failed, environment already contains
 
 检查 `SimplicialPairImage` exit=0（8.9 秒）、`VertexBranchInput` exit=0（10.2 秒），均零 warning；
 `AuditF267.lean` 两项仅 `propext`、`Classical.choice`、`Quot.sound`。下一审计文件 `AuditF268.lean`。
+
+### 19.125 图卡定义域内的收缩已闭合；对称情形卡在"面刻画与 glue-iso 只能二选一"
+
+**grep 先行（协调者两问，都已有）**：
+- **有没有"空间恰是闭星"的复形**：有，`starComplex`（`StarComplex.lean:15`）。
+  `starComplex_space`（`:32`）给 `(starComplex K v).space = closedStar K v`，
+  `starComplex_faces_subset`（`:27`）、`starComplex_faces_finite`（`:29`）、
+  `singleton_mem_starComplex`（`:52`）齐全。**意外之喜**：
+  `geometricLink_starComplex`（`:45`）给出 `link (starComplex K v) {v} = link K {v}`——
+  取星**完全不改连接**，所以 `hlink` 这一条过收缩是免费的。
+- **`closedStar K p ⊆ U` 是否要细分**：要，且现成：
+  `exists_isSubdivision_closedStar_subset_of_mem_nhds`（`ClosedStarNeighborhood.lean:10`），
+  由 `U ∈ 𝓝 p` 给出细分 `R`、`{p} ∈ R.faces` 与 `closedStar R p ⊆ U`。
+- 另外两条为后面准备的：`exists_isPLHomeomorphOn_geometricLink_of_isSubdivision`
+  （`LinkSubdivision.lean:45`，细分下连接的 PL 同胚，不需要 `hside`），
+  `IsGlueIso.geometricLink`（`StarComplex.lean:79`）与 `IsGlueIso.isPLHomeomorphOn`（`:64`）。
+
+**本轮闭合（新模块 `VertexChartTransport.lean`）**
+`exists_simplicialComplex_pair_image_closedStar_of_isPiecewiseAffineOn`：给 `M.faces ⊆ K.faces`、
+`{p} ∈ M.faces`、`U ∈ 𝓝 p`、`IsPiecewiseAffineOn h U`、`InjOn h U`，产出细分 `R` 与
+`K₁ M₁ : SimplicialComplex ℝ F`，满足 `IsSubdivision R K`、`{p} ∈ R.faces`、
+`closedStar R p ⊆ U`、`K₁.faces.Finite`、`M₁.faces.Finite`、`M₁.faces ⊆ K₁.faces`、
+`{h p} ∈ M₁.faces`、`K₁.space = h '' closedStar R p`、
+`M₁.space = h '' closedStar (restrict R M.space) p`。
+做法：`ClosedStarNeighborhood` 把星缩进 `U`，`starComplex` 把闭星变成复形，
+闭星是多面体所以 `IsPiecewiseAffineOn.mono_of_isPolyhedron`（`PLHomeomorph.lean:39`）
+把 `h` 的分片仿射性限制过去，再喂 §19.124 的转写砖。
+`(starComplex M' p).faces ⊆ (starComplex R p).faces` 由 `mem_starComplex_faces_iff` 一行得到。
+
+**卡点（确切，属于本轮的真实发现）**：把对称情形拼完还差一条
+`IsPLSphere 1 (link M₁ {h p}).space`（第二次喂图卡机器要它）。三段链条里两段是免费的：
+`link M {p} → link M' {p}` 用 `LinkSubdivision.lean:45` 加 `IsPLHomeomorphOn.symm`；
+`link (starComplex M' p) {p} = link M' {p}` 由 `geometricLink_starComplex` 直接相等。
+**第三段过不去**：要把连接搬过像复形，得有 `IsGlueIso`，然后用
+`IsGlueIso.geometricLink` + `IsGlueIso.isPLHomeomorphOn`。但树里两个接口**互补而不重叠**：
+- `exists_simplicialComplex_image_of_affineOn_faces`（`PLImage.lean:113`）给**面刻画**，不给 glue-iso；
+- `exists_isGlueIso_of_affineOn_faces`（`AffineImageTransport.lean:13`）给 **glue-iso**，
+  但在 `:20-28` 处把 `hfaces` 吃掉了，不往外给。
+
+而 §19.124 的转写**必须**用面刻画（那是 `M₁.faces ⊆ K₁.faces` 的唯一来源），
+所以一次调用拿不到 glue-iso。形状与上一轮 `exists_isPLHomeomorphOn_image` 丢掉面刻画
+（`PLImage.lean:150`）是同一类：同一构造的两个包装各丢一半。
+**最小修法**：在 `AffineImageTransport` 的输出里把 `hfaces` 一并带出（该模块不属 H/E3，可改），
+或在本车道写一个同时返回两者的版本。改完之后对称情形只剩装配：
+第一次拉直把片 A 送进 `{q.2.2 = 0}`（要用 `HasPLCrossingAt` 的 **iff** 形而非
+`exists_linearEquiv_normalForm_of_geometricLink_section` 的 `→` 形，后者为了三分支统一弱化过），
+转写到 `ℝ × ℝ × ℝ`，再对片 B 以 `ℓ' := (· .2.2)` 走第二遍。
+**不再给行数估计**：前两轮的估计各错一次（偏高 5–10 倍），本条的规模取决于上面那个包装改得多干净。
+
+检查 `VertexChartTransport` exit=0（9.4 秒）、零 warning；`AuditF268.lean` 一项仅
+`propext`、`Classical.choice`、`Quot.sound`。下一审计文件 `AuditF269.lean`。
