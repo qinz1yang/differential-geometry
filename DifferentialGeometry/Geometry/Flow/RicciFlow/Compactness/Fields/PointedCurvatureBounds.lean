@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Bounds.ClosedInterval
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.PointedAmbientMetricControl
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.LocalMetricDistance
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.AmbientQuadraticControl
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.BallImage
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Derivatives.LocalPullback
 
 noncomputable section
@@ -36,45 +36,15 @@ private theorem eventually_pointed_image_in_ball
       ∀ x ∈ riemannianClosedBallOf P.metric P.basepoint A,
         riemannianEDistOf (X.obj (phi i)).metric (X.obj (phi i)).basepoint (F.map i x) ≤
           ENNReal.ofReal (2 * A) := by
-  have hmetricComplete : RiemannianMetricComplete (I := I) P.metric :=
-    ⟨MetricComplete.complete P hcomplete⟩
-  let K := riemannianClosedBallOf (I := I) P.metric P.basepoint (A + 1)
-  have hK : IsCompact K := hmetricComplete.closedEBall_isCompact P.basepoint (A + 1)
-  obtain ⟨N, hN⟩ := exists_pointed_full_ambient_quadratic_control C href K hK 1 zero_lt_one
-  filter_upwards [eventually_ge_atTop N] with i hi
-  let _ : TopologicalSpace (X.obj (phi i)).M := (X.obj (phi i)).topology
-  let _ : ChartedSpace H (X.obj (phi i)).M := (X.obj (phi i)).charted
-  let _ : IsManifold I ∞ (X.obj (phi i)).M := (X.obj (phi i)).smooth
-  have hin : riemannianClosedBallOf (I := I) P.metric P.basepoint A ⊆ K :=
-    fun _ hx => hx.trans (ENNReal.ofReal_le_ofReal (by linarith))
-  refine ⟨fun _ hx => (hN i hi).1 (hin hx), fun x hx => ?_⟩
-  have hupper : ∀ y ∈ K, ∀ v : TangentSpace I y,
-      (X.obj (phi i)).metric.inner (F.map i y)
-          (mfderiv I I (F.map i) y v) (mfderiv I I (F.map i) y v) ≤
-        (2 : ℝ) ^ 2 * P.metric.inner y v v := by
-    intro y hy v
-    have herr := (abs_le.mp ((hN i hi).2 y hy v)).2
-    have hnonneg : 0 ≤ P.metric.inner y v v := by
-      by_cases hv : v = 0
-      · simp [hv]
-      · exact (P.metric.pos y v hv).le
-    nlinarith
-  have hxR : riemannianEDistOf (I := I) P.metric P.basepoint x <
-      ENNReal.ofReal (A + 1) :=
-    hx.trans_lt ((ENNReal.ofReal_lt_ofReal_iff (by linarith : 0 < A + 1)).mpr (by linarith))
-  have hdist := edistOf_map_le_of_metric_upper_on_ball P.metric (X.obj (phi i)).metric
-    (F.partialDiffeomorph i) P.basepoint x (by linarith : 0 < A + 1)
-    (by norm_num : (0 : ℝ) < 2) (hN i hi).1 hupper hxR
-  change riemannianEDistOf (I := I) (X.obj (phi i)).metric
-    (F.map i P.basepoint) (F.map i x) ≤
-      ENNReal.ofReal 2 * riemannianEDistOf (I := I) P.metric P.basepoint x at hdist
+  filter_upwards [F.eventually_image_closed_ball_subset C href hcomplete P.basepoint
+    hA (by norm_num : (1 : ℝ) < 2)] with i hi
+  refine ⟨hi.1, fun x hx => ?_⟩
+  have h := hi.2 ⟨x, hx, rfl⟩
   have hbase : F.map i P.basepoint = (X.obj (phi i)).basepoint := F.basepoint_map i
-  rw [hbase] at hdist
-  calc
-    _ ≤ ENNReal.ofReal 2 * riemannianEDistOf (I := I) P.metric P.basepoint x := hdist
-    _ ≤ ENNReal.ofReal 2 * ENNReal.ofReal A := mul_le_mul' le_rfl hx
-    _ = ENNReal.ofReal (2 * A) :=
-      (ENNReal.ofReal_mul (by norm_num : (0 : ℝ) ≤ 2)).symm
+  change riemannianEDistOf (X.obj (phi i)).metric (F.map i P.basepoint)
+    (F.map i x) ≤ ENNReal.ofReal (2 * A) at h
+  rwa [hbase] at h
+
 
 theorem exists_eventually_pointed_extension_curvature_bound
     {X : PointedFlowSeq.{u, uE, uH} (I := I)}

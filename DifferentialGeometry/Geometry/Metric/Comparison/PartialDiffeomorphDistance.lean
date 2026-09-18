@@ -1,4 +1,5 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WitnessBallCapture
+import DifferentialGeometry.Geometry.Comparison.DistanceHessianLocal
+import DifferentialGeometry.Geometry.Metric.Distance.Ball
 
 set_option autoImplicit false
 
@@ -10,7 +11,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 
-open CanonicalNeighborhood
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
