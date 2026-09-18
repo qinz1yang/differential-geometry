@@ -2060,3 +2060,109 @@ step 2 只做了 grep 与接口陈述，没有动工（月牙是一个项目，�
 - 验证：`GluedCellBoundaryImage` 聚焦检查 exit=0（10.0 秒）、零 warning；
   `.lake/scratch/AuditE3GluedBoundary.lean` 的 2 条 `#print axioms` 只含
   `propext`、`Classical.choice`、`Quot.sound`，无 `sorryAx`。
+
+## 67. 2026-09-18 E3-M3：粘合胞腔的 `image_inter_boundary`（四条字段里的第二条）
+
+状态：done。`GluedCellBoundaryImage.lean` 新增 2 条声明（名字在四条车道分支上都不存在）。
+
+- **`mem_range_boundary_of_mem_frontier_glue`**：`w ∈ frontier D₁.domain` 且 `D₁ w ∈ BdM` ⟹
+  `D₁ w ∈ Set.range D.boundary`。关键是**不需要** `f₁ x ∈ frontier D₁.domain`
+  （`D₁` 是奇异胞腔，不单射，所以 `D₁ '' D₁.domain ∩ BdM ⊆ D₁ '' frontier D₁.domain`
+  只给"某个边界点取到同一个值"，不给原像在边界上）。
+  用 `image_frontier` 把 `w` 写成 `f₁ z`（`z ∈ frontier P = S ∪ R`），
+  `z ∈ R` 直接完；`z ∈ S` 时 `f₁ z ∈ A` 且 `D₁ (f₁ z) ∈ BdM`，由 `hAoff` 得 `z ∈ {p, q}`，
+  而 `p, q ∈ S ∩ R ⊆ R` 也在 `frontier D.domain` 里。
+  形参把缝隙集写成一般的 `S`（不是 `P ∩ Q`），于是 `T` 侧原样复用，不必 `inter_comm`。
+- **`image_inter_boundary_of_glue_boundary_arc`**：`D '' D.domain ∩ BdM = Set.range D.boundary`。
+  `⊇` 由 §66 的 `range_boundary_subset_of_glue_boundary_arc` 加
+  `frontier D.domain ⊆ D.domain`；`⊆` 按 §66 末尾写的论证，两片各用一次上面那条。
+- **`hAoff` 的来历（主人问的"能不能不是新假设"）。**
+  `hAoff : ∀ z ∈ A, D₁ z ∈ BdM → z = f₁ p ∨ z = f₁ q` 与 §63 的
+  `hends : ∀ z ∈ closure W, ℓ (ec (g z)) = 0 → z = θ 0 ∨ z = θ 1` 是同一条，
+  只差把弧的参数化端点 `θ 0, θ 1` 与割点的像 `f₁ p, f₁ q` 认同。
+  `CellGluing.lean:305` 的 `IsPLHomeomorphOn.maps_arc_endpoints` 正是做这件事的
+  （两条 `IsArcBetween` 加一个 PL 同胚 ⟹ 端点成对对应，可能交换），
+  所以**它不是新缺口**；但要真正消掉这个形参，还差一步
+  "`IsPLHomeomorphOn θ (Icc 0 1) A` ⟹ `IsArcBetween A (θ 0) (θ 1)`"。
+  本轮按割点 `f₁ p, f₁ q` 的形式留作形参（调用者用上面两条一行兑现），没有引入新的数学缺口。
+- 验证：`GluedCellBoundaryImage` 聚焦检查 exit=0（11.1 秒）、零 warning。
+
+## 68. 2026-09-18 E3-M3：粘合胞腔的 `fiber_le_two` 与 `locallyInjective`（第三、四条字段）
+
+状态：done。新模块 `GluedCellInjectivity.lean`（模块名与 4 条声明名在四条车道分支上都不存在）。
+
+- **嵌入输入按 §66 step 3 的写法用上了**：`hD₂inj : InjOn D₂ D₂.domain` 与
+  `hD₂disj : ∀ x ∈ D₂.domain, x ∉ B → ∀ z ∈ D₁.domain, D₂ x ≠ D₁ z`。
+- `mem_seam_of_image_mem_of_injOn`：`f₂` 在 `Q` 上单射、`f₂ '' S = B` ⟹
+  `x ∈ Q` 且 `f₂ x ∈ B` ⟹ `x ∈ S`。这条把"月牙点落在粘合弧上"翻译成"它在缝隙里"，
+  是 `hD₂disj` 能用的前提。
+- **`fiber_le_two_of_glue_boundary_arc`**：对每个 `y` 分两种情形。
+  若某个 `x ∈ Q` 满足 `D x = y` 且 `f₂ x ∉ B`，则 `hD₂disj` 把 `P` 一侧的纤维清空，
+  剩下的落在 `Q` 里，由 `hD₂inj` 与 `f₂` 的单射性得**纤维至多一点**（`encard_le_one_iff`）。
+  否则 `Q` 一侧的纤维点的 `f₂` 像都在 `B` 里，由上一条它们都落在缝隙 `P ∩ Q ⊆ P` 里，
+  于是整条纤维落在 `P` 中，经 `f₁` 的单射像等于 `D₁.domain ∩ D₁ ⁻¹' {y}`，用 `D₁` 的界。
+- **`locallyInjective_of_glue_boundary_arc`**：`x ∈ P`（含缝隙点）时取
+  `U = (P ∩ W) ∪ (Q \ P)`，其中 `W` 是把 `D₁` 的单射邻域 `V` 拉回的开集
+  （拉回用 §65 的 `mem_nhdsWithin_inter_preimage`，再用 `invFunOn f₁ P (f₁ x) = x`）。
+  `U ∈ 𝓝[P ∪ Q] x` 因为 `W ∩ (P ∪ Q) ⊆ U`。`U` 上的单射性分三种：
+  两点都在 `P ∩ W` 用 `V` 上的 `D₁` 单射加 `f₁` 单射；两点都在 `Q \ P` 用 `hD₂inj`；
+  一点在 `P`、一点在 `Q \ P` 由 `hD₂disj` 直接排除（`hcross`）。
+  `x ∈ Q \ P` 时用 `P` 是 PL 2-球故闭，取 `U = Q \ P`，单射性全由 `hD₂inj` 给出。
+  `injOn_of_subset_second_piece` 是 `Q` 的任意子集上单射性的公共出口。
+- 验证：`GluedCellInjectivity` 聚焦检查 exit=0（10.5 秒）、零 warning。
+
+## 69. 2026-09-18 E3-M3：粘合胞腔的 `singularSet`（第五条字段）与 `crossing` 的确切障碍
+
+状态：partial（`singularSet` 闭合；**`crossing` 不闭合**，原因不是证明缺口而是缺一条
+我无法当场验证可满足性的几何输入，按主人的规矩停在这里不弱化字段）。
+`GluedCellInjectivity.lean` 新增 3 条声明（名字在四条车道分支上都不存在）。
+
+- `mem_first_piece_of_glue_boundary_arc`：`P ∪ Q` 里两个不同点取同一值时，两点**都在 `P` 里**。
+  （落在 `Q \ P` 的点与 `P` 的点由 `hD₂disj` 不可能同值；两点都在 `Q \ P` 时由 `hD₂inj` 推出相等。）
+- `doublePointSet_of_glue_boundary_arc`：`doublePointSet D D.domain = doublePointSet D₁ D₁.domain`。
+  `⊆` 用上一条把见证拉到 `P` 里再经 `f₁`；`⊇` 把 `D₁` 的见证经 `f₁` 的满射拉回 `P`。
+- `normalSingularSetTriangulation_congr`：`NormalSingularSetTriangulation` 的八个字段里
+  只有 `map_space` 与 `map_boundary` 提到 `D`，而且**只通过 `doublePointSet D D.domain`**，
+  所以双点集相等时整份三角剖分可以原样搬过去。于是 `singularSet` 由上一条直接得到。
+- **`crossing` 的确切障碍（记下，不要重走）。** 想法是用 §65 的
+  `HasPLNormalDoubleCrossingAt.precomp_isPLHomeomorphOn` 沿 `f₁` 把 `D₁` 的交叉搬到 `D`。
+  搬运本身没问题，**卡在定义域上**：`crossing` 的集合参数是 `D.domain ∩ D ⁻¹' e.source`，
+  它含有 `Q` 一侧的点，而 `f₁` 只是 `P ≃ D₁.domain`，不是这两个集合之间的 PL 同胚。
+  `HasPLDoubleCrossingAt` 的纤维覆盖子句 `∀ᶠ z in 𝓝 y, P ∩ f ⁻¹' {z} ⊆ A ∪ B`
+  要求 **`y` 附近的纤维完全避开 `Q \ P`**。这不是自动的：缝隙点 `s ∈ P ∩ Q` 是 `Q \ P` 的极限点，
+  所以 `y` 附近的 `z` 的纤维可以含 `Q \ P` 的点，除非 `y` 与月牙有正距离。
+  兑现它需要一条形如
+  `hD₂far : ∀ y ∈ doublePointSet D₁ D₁.domain, y ∉ closure (D₂ '' D₂.domain)`
+  的**新几何输入**。在目标构型里它**大概率成立**（被推离弧在边界圆上，而 `g` 的双点集是
+  §50/§52 的分支割除后的内部集合），但我**没有当场验证它的可满足性**——
+  而今天正好有两个"看着可满足其实不成立"的例子（F 车道的盘状片、本车道 §61 的 `hJoff`），
+  所以按主人的规矩不写进去。下一轮应先在分支分离层确认
+  `doublePointSet (P.piecewise (h ∘ D) D) D.domain` 与 `closure W` 的位置关系，
+  再决定 `hD₂far` 的正确形状（可能是"双点集与 `closure W` 有正距离"，
+  也可能要把月牙做得足够细，使 `D₂ '' D₂.domain` 落在 `Bd M` 的一个不含双点的邻域里）。
+- **当前 `NormalSingularCellData` 五条字段的状态与假设清单（主人要的表）。**
+  已闭合 5 条中的 5 条里的 4 条字段 + 1 条结构：
+  `boundary_image_subset`（§66）、`image_inter_boundary`（§67）、
+  `fiber_le_two`、`locallyInjective`（§68）、`singularSet`（本节）；未闭合：`crossing`。
+  假设逐条标注（**几何输入** = 生产者必须去验的；**构造产物** = 粘合定理自己给出的）：
+  - `hPball / hQball / hf₁ / hf₂ / hDP / hDQ / hcutP / hcutQ / hdom / hfrontier / hA / hB`
+    ——全部是**构造产物**，`exists_glue_of_isPLHomeomorphOn_boundary_arc` 的输出原样，
+    可满足性不用验（它们就是那条定理的结论）。
+  - `hD₁bd`（旧边界圆去掉弧后落在 `Bd M`）——**几何输入**，即 §62 的 `hfr`，
+    可满足：`D '' frontier D.domain ⊆ BdM` 加滑移只动 `closure W`。
+  - `hend₁ / hend₂`（弧端在 `Bd M`）——**几何输入**，即 §62 的 `hend0/hend1`，
+    可满足：滑移量在弧端渐变为零（§64 的位移判据给出等价刻画）。
+  - `hD₂bd`（月牙外弧落在 `Bd M`）——**几何输入**，由月牙的构造保证。
+  - `hAoff / hBoff`（弧只在两端碰 `Bd M`）——**几何输入**，即 §63 的 `hends`，
+    可满足性与 §63 同；§67 记了它与割点像的认同只差 `maps_arc_endpoints` 一步。
+  - `hD₁img / hD₁fib / hD₁loc`——**几何输入但已经有产者**：分别是 `D₁` 自己的
+    `image_inter_boundary`（§60 的领环链给出）、`fiber_le_two`、`locallyInjective`
+    （分支分离 `exists_separated_cell_along_boundary_branch` 直接输出）。
+  - `hD₂inj / hD₂disj`——**几何输入**，§66 step 3 的写法。
+    可满足性检查：两者**不互相矛盾也不强制空集**（与 §61 的 `hJoff` 不同）：
+    `hD₂disj` 只约束 `D₂.domain \ B` 上的点，而 `B = f₂ '' (P ∩ Q)` 是 `frontier Q` 的一条弧，
+    `D₂.domain \ B` 非空且其像可以整体落在 `Bd M` 的另一侧；缝隙上两支公式一致，
+    §68 的三条证明里没有任何一条要求 `A ∩ B = ∅` 这类会逼出空集的条件。
+- 验证：`GluedCellInjectivity` 聚焦检查 exit=0（10.9 秒）、零 warning；
+  `.lake/scratch/AuditE3GluedFields.lean` 的 11 条 `#print axioms` 全部只含
+  `propext`、`Classical.choice`、`Quot.sound`，无 `sorryAx`。
