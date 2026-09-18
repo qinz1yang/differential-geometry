@@ -1197,3 +1197,27 @@ theorem eq_top_of_boundaryLoops_mem_normal
   `S.loopComplex.space` 里并与 `S.boundaryLoop` 逐点对齐（即为上面两条消费接口提供 `f`、`γ` 与
   `hγ : γ θ = f (ev θ)`），需要 `NormalSystem.boundaryParam` 与本节 `ev` 的比较，尚未接。
   这一步不改变本节结论，也没有被写成结论型假设。
+
+## 52. 2026-09-18 E3-M2：Case 3/4 的合并端点（同一条分支同时给四段字与复杂度下降）
+
+状态：done（相对于 §47/§48 的乘积图卡显式假设）。新模块 `BranchCaseThreeFour.lean`。
+
+- `NormalSingularCellData.exists_four_arc_word_and_simplicialComplexity_lt_of_boundaryBranch`
+  对**同一条**触边分支 `cb` 同时交付 §51 的四段边界字（含 Case 3/Case 4 的端点配对二分）与 §50 的
+  分离胞腔 `g := P.piecewise (h ∘ D) D`，后者带 `doublePointSet g = doublePointSet D \ branchCarrier cb`
+  与 `simplicialComplexity K g < simplicialComplexity K D`。这正是 §25.1 Case 3/4 一步所需的两半：
+  被切掉的分支就是产生 `σ τ υ φ` 四段字的那条，也是使复杂度严格下降的那条。
+- §43 的教训在这里是决定性的：顺序交叉重贴给的 `L₂` 保留了分支，所以不能用；本端点的降复杂度一侧走
+  §47 的环境分离（真的把两片推开），双点集等式两个包含都证过，因此"分支被删掉"不是断言而是结论。
+- 验证：`BranchCaseThreeFour` 聚焦检查 exit=0（10.6 秒）、零 warning；
+  `.lake/scratch/AuditE3CaseThreeFour.lean` 的 1 条 `#print axioms` 只含
+  `propext`、`Classical.choice`、`Quot.sound`。`fresh.py`（相对 `7fcbcdd44`）报 3 个改动 Lean 模块全部
+  fresh，forbidden=0、stale=0、missing=0；三次聚焦检查与两次审计前后全局都没有其它 `lean.exe`。
+- **本轮没有做、归属明确的三条**：
+  1. 乘积图卡数据本身（F 的义务，§47 已给出确切形状），以及 §48 记的触边分支端点处
+     `Bd M` 与滑动方向横截的收尾模型。
+  2. 把四段字搬进 `NormalSystem.boundaryNeighborhoodSpace` 的基本群（需要 `boundaryParam` 与 §51 的
+     `ev` 的比较），从而真正调用 §51 的两条消费接口得到 `¬meets L₁ ∨ ¬meets L₂`。
+  3. `L₁`、`L₂` 各自的实际正规奇异胞腔（`L₁` 由 §41 的
+     `exists_boundary_surgery_cell_of_boundaryBranch` 已给；`L₂` 仍缺，§43 排除了顺序交叉重贴）。
+  按主人指定的顺序，Case 1/2 未开始。
