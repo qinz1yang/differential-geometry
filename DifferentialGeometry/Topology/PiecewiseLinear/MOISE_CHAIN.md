@@ -617,6 +617,9 @@ Moise 每一章开头"不妨设某映射是 PL 的"都是这一条。分三个�
    要作为假设由调用方验证。角度归纳的最后一步还要把扇形 `M` 与扇形 `0` 粘回去。
 2. **顶点值的来源**：要把 `|L|` 版真正用起来，需要造出满足"每格四点共面"的顶点值网格，
    即逐层的单纯逼近序列且相邻层 contiguous。这是 M3 原计划里的"环路序列"一步。
-3. **搬到任意 PL 三角形**：`TriangleCoordinates.lean` 的 `triangleAffineMap` 与
-   `isPLHomeomorphOn_of_isPiecewiseAffineOn_of_bijOn` 已经够用，属机械工作。
+3. **搬到任意 PL 三角形：已证。** `TriangleRelBoundary.lean` 的
+   `exists_pos_forall_exists_isPiecewiseAffineOn_triangle_eqOn_boundary`：对任意仿射无关的
+   `v : Fin 3 → E`，在 `convexHull ℝ (range v)` 上给出同一条结论，三条边写成
+   `AffineMap.lineMap (v 0) (v 2)`、`lineMap (v 0) (v 1)`、`lineMap (v 2) (v 1)` 的参数化。
+   证明用 `triangleAffineMap` 与 `IsPLHomeomorphOn` 的 `invFunOn` 分支把 `stdCone` 版本搬过去。
 
