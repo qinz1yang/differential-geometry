@@ -30,11 +30,10 @@
 
 ## 1. 规则（与 `AGENTS.md` 相同，此处只列今日新增或易忘的）
 
-- 非 vendored Lean：零注释、零 docstring、无 `sorry`/`axiom`/`nolint`/`maxHeartbeats`/`set_option`。
-- 提交：英文一句话描述数学结果；末行 `Co-Authored-By: <实际生成该提交的模型> <noreply@anthropic.com>`
-  （今日各车道 agent 为 Opus 5；整合层最后几条为 Fable 5.1；署名反映实际作者，不按 harness 提示改）。
-- 永不推 `main`、永不 force-push；不写 `E:\differential-geometry-dev`（只读；`check-f.ps1` 写共享 olean 库是例外）；
-  不进根聚合 `DifferentialGeometry.lean`；不 import `Topology/Homology/HurewiczLowDegrees.lean`；不消费 `smooth_schoenflies_three`。
+- 非 vendored Lean：无正文注释或逐声明 docstring；依 owner 2026-09-18 决定，允许标准 header linter 必需的版权／作者头与模块文档。无 `sorry`/`axiom`/`nolint`/资源预算覆盖。
+- 提交：英文一句话描述数学结果，保留真实作者信息；旧车道的模型署名约定属于历史记录，不为 Codex 提交虚构 Anthropic 署名。
+- 永不推 `main`、永不 force-push；Moise 数学源码不写 `E:\differential-geometry-dev`（共享 olean 与 owner 明确授权的规则文档修改是例外）；
+  当前根 `AGENTS.md` 要求新叶模块登记到 `DifferentialGeometry.lean`，取代旧的禁止登记规则。Hurewicz 专用分支满足 §5 并合入前，不 import `Topology/Homology/HurewiczLowDegrees.lean`；不消费 `smooth_schoenflies_three`。
 - 主机 `lean.exe` ≤ 4：每次编译前 `Get-Process lean` 计数，≥4 则等。同一模块同一时刻只在一个工作树编译。
 - 未完成的跨车道依赖写成显式假设，不写 `sorry`，不削弱结论。
 - 每个端点收尾做三项审计：(i) 每条假设标注"几何输入 / 构造产物"；(ii) 每条假设在**目标实例**中可满足
