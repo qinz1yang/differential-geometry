@@ -2801,9 +2801,32 @@ step 2 只做了 grep 与接口陈述，没有动工（月牙是一个项目，�
   `disjoint_positive_negative_wedge_push_on_slabInterior` 得到真正不交。
 - 隔离严格检查：exit `0`、零诊断、共享产物未改动；收据
   `C:\Users\liao9\AppData\Local\Temp\codex-e3-slab-private\DifferentialGeometry\Topology\PiecewiseLinear\SlabWedgePush.json`。
-  外部静默审计覆盖本模块全部 51 个公开声明及复用的
-  `isPLHomeomorphOn_id_add_of_lipschitz`，exit `0`、零诊断；每条传递公理闭包均为
-  `propext / Classical.choice / Quot.sound` 的子集。审计收据
+  初始外部静默审计覆盖显式公开声明及复用的 `isPLHomeomorphOn_id_add_of_lipschitz`；整合分支
+  `22e845e90` 随后补做精确 census，覆盖本模块全部 52 个非自动声明（含两条 private）及该复用声明，
+  并运行 13 个适用环境 linter，exit `0`、零诊断；每条传递公理闭包均为
+  `propext / Classical.choice / Quot.sound` 的子集。初始审计收据
   `C:\Users\liao9\AppData\Local\Temp\codex-e3-slab-private\external-audit.json`。
 - 未闭合：把两张折片标记成不交的源片后，显式计算模型映射的 `doublePointSet`；随后才由 F 的双端分支图卡
   与 `Pasting/SingularPasting` 接口提升回一般环境。
+
+## 85. 2026-09-18 E3-M3：楔形模型的精确双点集
+
+状态：**已闭合**。新模块 `SlabWedgeDoublePoint.lean` 把正、负折片放入 Bool 标记的互不相交源片，
+从而把同一片内的单射性与跨片碰撞完全分开。
+
+- `doublePointSet_slabWedgeTaggedMap`：对任意两组源点 `A B`，标记模型映射在
+  `slabWedgeTaggedSource A B` 上的双点集精确等于
+  `positiveWedgePush c '' A ∩ negativeWedgePush c '' B`。证明直接复用
+  `mem_doublePointSet_iff_mem_image_inter_of_injOn`，两片内的单射性来自 §84 的两个全局同胚。
+- `doublePointSet_slabWedgeTaggedMap_closed`：当 `0 ≤ c` 时，闭折片模型的双点集恰为
+  `{(0, 0, 0), (c, 0, 0)}`。
+- `doublePointSet_slabWedgeTaggedMap_open`：限制到 `0 < p.1 < c` 后双点集严格为空。
+- 隔离严格检查：exit `0`、零诊断、共享产物未改动；收据
+  `C:\Users\liao9\AppData\Local\Temp\codex-e3-slab-private\DifferentialGeometry\Topology\PiecewiseLinear\SlabWedgeDoublePoint.json`。
+  外部静默审计动态核对本模块恰有 12 条非自动声明，另审计 3 条关键复用声明；全部公理闭包只含
+  `propext / Classical.choice / Quot.sound`，13 个适用环境 linter（只排除 `docBlame`、`docBlameThm`）
+  零诊断。审计收据
+  `C:\Users\liao9\AppData\Local\Temp\codex-e3-slab-private\external-audit.json`。
+- 未闭合：由 F 的双端边界交叉图卡把此模型共轭回一般分支，再用 `Pasting/SingularPasting` 粘回源盘。
+  局部 crossing 搬运优先复用 `CutAndPaste.lean` 中现有的
+  `exists_crossing_patches_of_source_changes` 及两条 `transport_*_of_source_changes`，不另造双原像标签交换。

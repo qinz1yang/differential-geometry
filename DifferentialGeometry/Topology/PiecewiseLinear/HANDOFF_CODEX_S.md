@@ -5192,3 +5192,61 @@ Still open: affine charts from `mobiusTri` to the square triangles, compatibilit
 on the three wrap pairs, the bijective piecewise-affine flip-square model map,
 the seam-compatible variable arc tube, and the orientability bridge. The ten
 intersection formulas close a planar geometric layer; C.7 remains partial.
+
+## Affine model charts and flip-seam compatibility delivered (2026-09-18)
+
+`MobiusSquareMap.lean` closes the affine chart and common-face compatibility
+layer. It is registered in the flat root aggregate and has five public and ten
+private declarations. The five public declarations are:
+
+- `exists_isPLHomeomorphOn_mobiusSquareTriangle_affine`: for each index, an
+  ambient affine map is a PL homeomorphism from the convex hull of `mobiusTri i`
+  to `mobiusSquareTriangle i`, and sends each of the three indexed vertices to
+  the corresponding square vertex.
+- `mobiusSquareChart`: chooses those affine maps with their proved vertex data.
+- `isPLHomeomorphOn_mobiusSquareChart`: the chosen maps retain their PL
+  homeomorphism property on the specified triangles.
+- `mobiusSquareChart_apply`: the exact cyclic-source/noncyclic-square vertex law.
+- `mobiusSquareChart_comp_eqOn_inter`: for any type `F` and function
+  `g : real plane -> F` satisfying the top/bottom flip equality on the unit
+  interval, all five composites agree on every common source face. This
+  compatibility statement needs no topology or algebraic structure on `F`.
+
+The chart producer uses `exists_isPLHomeomorphOn_affine_of_equiv` with explicit
+vertex equivalences. Common source faces are the convex hulls of their common
+vertices; equality of affine maps therefore extends from those vertices by
+`AffineMap.eqOn_affineSpan`. Two finite index lemmas classify the ordinary
+common-vertex incidences and the wrap incidences. For the three wrap pairs
+`(0,3)`, `(0,4)`, and `(1,4)`, the upper chart equals `(x,y) -> (1-x,1-y)` applied
+to the lower chart, and the lower chart has height zero. The assumed seam
+identity for `g` then gives compatibility on the full common face, including
+both endpoints of the common edge for `(0,4)`.
+
+Verification used the exclusive lane window `S-MobiusMap-20260918` and the
+coordinator's `codex-moise-lane-check.ps1`, with one Lean process and exact
+`--setup importArts` reuse of the previously checked private `MobiusSquare`
+objects. The final module check returned exit 0 with zero diagnostics and a
+stable source SHA256 of
+`31C56D45FBB1235D1FA49A953F1319F6425EAA77790C93207185A433FE483BF8`.
+Standard syntax linters and explicit header/long-line checks were enabled.
+The external silent audit re-elaborated that source and checked all fifteen
+non-generated declarations, including all ten private declarations. Their
+transitive axiom closures contain only `propext`, `Classical.choice`, and
+`Quot.sound`. Default environment linters from `getChecks true none none`, with
+only the short names `docBlame` and `docBlameThm` excluded, also passed. Audit
+exit 0; zero diagnostics. Both final log files are empty. `git diff --check`
+passed. No vendor source changed.
+
+The compact receipt is `MobiusSquareMap-verification.json` in the external
+`codex-s-mobius-square-20260918` temporary directory; per-module and audit
+receipts are under its `lib` directory. The temporary audit probe is removed
+after retaining these receipts. The compiler window was explicitly released;
+no shared object was deleted or replaced. The independent integration root
+build remains the coordinator's separate verification gate.
+
+Still open: the exact intersections of the images under `g`, injectivity of
+`g` restricted to each planar triangle, and the resulting global PL
+homeomorphism for the flip-square model. These require the stated fiber
+condition in addition to the seam equality. The arbitrary reversing
+mapping-torus tube and orientability bridge also remain open; this compatibility
+layer is not a mapping-torus embedding or completion of C.7.

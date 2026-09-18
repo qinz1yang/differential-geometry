@@ -4076,3 +4076,51 @@ E3（HANDOFF_CODEX_L §81.3）证明单平面边界模型对触边分支无实�
 本轮复用了导入模块的既有对象，不能据此宣称当前全部源码依赖已重编；独立根重编仍由协调者负责。
 窗口已释放，无 F 编译进程。源码、本记录、`MOISE_CHAIN.md` 与根聚合登记随本数学提交一并交付。
 下一审计编号为 `AuditF287.lean`。
+
+### 19.147 边界双点集的双向半轴图卡与真实载体追踪（2026-09-18）
+
+§19.146 的局部板图卡已在 `1fbdc358f` 推送。本层继续实际双点集的生产，
+不从允许两片重合的 `exists_transcription_of_transverse_vertex` 输入推导横截性。
+
+生产链核对：`SingularGeneralPosition.exists_small_simplicialMap_doublePointSet_with_boundary_in_halfSpace`
+实际输出相对于指定 `{ℓ ≥ 0}` 的 `HasPLBoundaryDoubleCrossingAt`。
+`SingularChart.exists_small_map_doublePointSet_normal_form_in_halfSpace_chart` 搬运后指定
+`Mloc = e.symm '' (e.target ∩ {ℓ ≥ 0})`、`Bloc = e.symm '' (e.target ∩ {ℓ = 0})`。
+其 `exists_small_map_doublePointSet_normal_form_in_boundary_chart` 在输入真实载体 `M`
+和边界 `Bd` 的半空间图卡后，利用 `hMimage`、`hBdimage` 与 `congr_target`
+实际产出 `HasPLBoundaryDoubleCrossingAt g K.space M y`；这里真实 `M` 没有丢失。
+但是多图卡的 `IsNormalSingularCell` 总生产者尚未闭合，不能据此从任意 `NormalSingularCellData`
+恢复真实载体。`HasPLNormalDoubleCrossingAt` 的边界分支仅有 `y ∈ Bd` 和一个存在量化的
+`Mloc`，没有 `frontier Mloc` 与 `Bd` 的局部等式；此义务与两片/过渡相容性分开保留。
+
+**局部生产层 done：`BoundaryDoubleCrossingChart.lean`。** 三个公开端点：
+
+- `HasPLBoundaryCrossingAt.not_eventuallyEq`：真正的边界 crossing 排除两张片在交点附近的
+  germ 相等。证明在开目标域内取 `(t,0,t)`、`t > 0` 的小点，再用双向像契约拉回，
+  得到它属于第二片而不属于第一片；这正是弱 transcription 输入没有的实际排除条件。
+- `HasPLBoundaryDoubleCrossingAt.exists_openPartialHomeomorph_doublePointSet`：从指定载体 `M`
+  的实际 boundary-double-crossing，产出两个不交源片 `A, B ⊆ P`、它们各自的 PL 嵌入，
+  以及任意指定邻域内的同一开部分同胚。`M`、`frontier M`、`f '' A`、`f '' B`
+  分别与半空间、边界平面、两坐标半平面双向对应；**`doublePointSet f P` 双向对应坐标半轴**。
+  同时保留该源域上的全纤维包含 `P ∩ f ⁻¹' {z} ⊆ A ∪ B`，没有第三张片被忽略。
+  证明复用 `mem_doublePointSet_iff_mem_image_inter_of_injOn`，先按实际纤维覆盖缩小邻域，
+  再调用 §19.146 的边界图卡；没有另造 crossing 或有限图卡覆盖。
+- `HasPLBoundaryDoubleCrossingAt.exists_openPartialHomeomorph_doublePointSet_of_halfSpace_chart`：
+  消费上述 `halfSpace_chart` 构造的明确 `Mloc`，从非零连续线性泛函和开部分同胚
+  **证明** `frontier Mloc ↔ Bloc` 在原图卡源域成立，再把第二个像契约改成构造的 `Bloc`。
+  没有假设最终半轴或板的像等式，也没有把未标记球对当成两片相容数据。
+
+验证：统一私有检查脚本在 `F-BoundaryDouble-20260918` 窗口内于
+2026-09-18 22:39:06 UTC 完成模块检查，exit=0、diagnosticLines=0、sourceStable=true。
+显式启用标准语法 linter 集、header 与 longLine；没有关闭 linter 或增加资源预算。
+外部静默 `AuditF287.lean` 于 22:40:01 UTC 完成：三个公开定理与一个私有边界引理，
+共四项非自动声明的传递公理全部属于 `propext`、`Classical.choice`、`Quot.sound`；
+默认环境 linter 集仅排除 `docBlame`、`docBlameThm`，exit=0、零诊断。
+当前源码 SHA256 为 `B457B1D7A65503704498A2925A92B20FE14A0A989C5C23A25C826B4559655E6B`。
+回执、空日志、importArts 映射和私有对象保存在
+`C:\Users\liao9\AppData\Local\Temp\codex-f-boundary-private`；共享对象未改写。
+检查复用已推送且源 hash 匹配的 `BoundaryCrossingChart` 私有对象与其它既有导入对象，
+不据此宣称当前源码的完整传递依赖已重编；独立根重编仍由协调者负责。
+F 检查进程已结束；源码、根登记、本记录与 `MOISE_CHAIN.md` 状态随同一数学提交交付。
+完整弧链仍 partial：尚缺实际分支上两片的统一标记、相邻胞腔片迹匹配及单射全局图卡。
+下一审计编号为 `AuditF288.lean`。
