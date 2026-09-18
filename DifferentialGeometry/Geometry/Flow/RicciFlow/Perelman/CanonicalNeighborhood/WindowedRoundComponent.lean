@@ -109,15 +109,15 @@ private theorem WindowedModelWitness.round_component_of_round_model
     Phi (fun _ => rfl)
   exact ⟨himage ▸ R'⟩
 
-theorem exists_windowedModelWitness_round_component {eps : ℝ}
+theorem exists_windowedModelWitness_round_component_of_model_round_component {eps : ℝ}
     (heps : 0 < eps) (hepshalf : eps ≤ 1 / 2) :
-    ∃ delta0 : ℝ, 0 < delta0 ∧
+    ∃ eta : ℝ, 0 < eta ∧ eta < 1 ∧ ∃ delta0 : ℝ, 0 < delta0 ∧
       ∀ {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
         [IsManifold I3 ∞ M] [T2Space M] [SigmaCompactSpace M]
         {D : RealTimeInterval} {S : SolutionOn (I := I3) (M := M) D}
         {delta kappa : ℝ} {x : M} {t : ℝ}
         (W : WindowedModelWitness delta kappa S x t), delta ≤ delta0 →
-        KappaSolutions.IsShrinkingSphericalSpaceFormFlow (I := I3) W.model →
+        RoundComponent W.model.S eta W.model.basepoint 0 univ →
         Nonempty (RoundComponent S eps x t (connectedComponent x)) := by
   let order := ⌈eps⁻¹⌉₊
   let epsR := min (eps / 2) (backgroundJetSmallness ThreeSpace order)
@@ -129,15 +129,13 @@ theorem exists_windowedModelWitness_round_component {eps : ℝ}
   have hB : 0 < B := by dsimp [B]; positivity
   have hK : 0 < K := mul_pos (backgroundJetConstant_pos ThreeSpace order) (by positivity)
   have hgap : 0 < eps - epsR := by linarith
-  refine ⟨min eps (min ((eps - epsR) / K) (B⁻¹ ^ 2)),
+  refine ⟨epsR, hR, (by linarith), min eps (min ((eps - epsR) / K) (B⁻¹ ^ 2)),
     lt_min heps (lt_min (div_pos hgap hK) (sq_pos_of_pos (inv_pos.mpr hB))), ?_⟩
-  intro M _ _ _ _ _ D S delta kappa x t W hdelta hround
+  intro M _ _ _ _ _ D S delta kappa x t W hdelta R
   have hdeps : delta ≤ eps := hdelta.trans (min_le_left _ _)
   have hdrest := hdelta.trans (min_le_right _ _)
   have hderror : delta ≤ (eps - epsR) / K := hdrest.trans (min_le_left _ _)
   have hdradius : delta ≤ B⁻¹ ^ 2 := hdrest.trans (min_le_right _ _)
-  obtain ⟨R⟩ := roundComponent_of_shrinkingSphericalSpaceFormFlow W.model hround le_rfl
-    W.model.basepoint hR
   apply W.round_component_of_round_model R order
   · exact Nat.ceil_mono (inv_anti₀ hR (by linarith))
   · exact hR
@@ -150,5 +148,23 @@ theorem exists_windowedModelWitness_round_component {eps : ℝ}
   · calc
       B = modelRadius (B⁻¹ ^ 2) := by rw [modelRadius, Real.sqrt_sq (inv_nonneg.mpr hB.le), inv_inv]
       _ ≤ modelRadius delta := modelRadius_anti W.eps_pos hdradius
+
+theorem exists_windowedModelWitness_round_component {eps : ℝ}
+    (heps : 0 < eps) (hepshalf : eps ≤ 1 / 2) :
+    ∃ delta0 : ℝ, 0 < delta0 ∧
+      ∀ {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
+        [IsManifold I3 ∞ M] [T2Space M] [SigmaCompactSpace M]
+        {D : RealTimeInterval} {S : SolutionOn (I := I3) (M := M) D}
+        {delta kappa : ℝ} {x : M} {t : ℝ}
+        (W : WindowedModelWitness delta kappa S x t), delta ≤ delta0 →
+        KappaSolutions.IsShrinkingSphericalSpaceFormFlow (I := I3) W.model →
+        Nonempty (RoundComponent S eps x t (connectedComponent x)) := by
+  obtain ⟨eta, heta, _, delta0, hdelta0, htransfer⟩ :=
+    exists_windowedModelWitness_round_component_of_model_round_component.{u} heps hepshalf
+  refine ⟨delta0, hdelta0, ?_⟩
+  intro M _ _ _ _ _ D S delta kappa x t W hdelta hround
+  obtain ⟨R⟩ := roundComponent_of_shrinkingSphericalSpaceFormFlow W.model hround le_rfl
+    W.model.basepoint heta
+  exact htransfer W hdelta R
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
