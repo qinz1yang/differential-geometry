@@ -576,3 +576,23 @@ Reduced/MayerVietorisCoefficients, Reduced/PointClasses}`（`REUSE_AUDIT.md` §2
 去掉封盘内部得到盘或带孔盘）与不经 `Homology/HurewiczLowDegrees.lean` 的一维 Hurewicz 桥。
 `CapComplex` 检查 exit=0（9.4 秒）、零 warning；`.lake/scratch/AuditHCapComplex.lean` 六项无 `sorryAx`。
 
+### G.5 删盘识别（`CapDeletion.lean`）— done（带一条密度前提）
+
+- 载体层把 `capComplex` 的面集等式翻成集合等式：`capComplex_space`（载体 = `A.space ∪ 锥的载体`）、
+  `space_inter_coneComplex_space`（`A.space ∩ 锥的载体 = L.space`，跨对论证与 `capFaces_inter_cross`
+  同样用末坐标：过锥顶的面上的点若末坐标为零，则 join 参数必为 1，故落在底面）、
+  `capComplex_space_sdiff_coneComplex_space`（`Ŝ \ 封盘 = A.space \ L.space`）。
+- `isPLBall_coneComplex_space_of_isPLSphere_one`：`L.space` 是 PL 1-球面时封盘本身是 PL 2-球
+  （直接是 `IsConeBase.isPLBall_of_isPLSphere`，此处只是把维数与锥顶固定下来）。
+- 删盘识别 `isPLBall_space_of_isPLSphere_capComplex`：若封盘后的载体是 PL 2-球面，
+  则 `A.space` 是 PL 2-球（盘）。证明消费 `SphericalDiskComplement.lean` 现成的
+  `IsPLSphere.isPLBall_closure_sdiff`（2-球面挖掉一个 PL 2-球后的闭包仍是 PL 2-球），
+  再用上面的差集等式把 `closure (Ŝ \ 封盘)` 换成 `closure (A.space \ L.space)`。
+- 唯一的额外前提是 `A.space ⊆ closure (A.space \ L.space)`，即"曲面是它去掉边界圆后的闭包"。
+  它不能从现有接口免费得到：`IsPLBall.closure_sdiff_eq_of_isPLBall` 要求外层已经是 PL 球，正是待证结论。
+  对 `A` 是以 `L` 为边界的组合 2-流形的情形它显然成立，但该生产者尚未写；这里按车道规矩写成显式前提，
+  没有 `sorry`，也没有削弱结论。
+
+`CapDeletion` 检查 exit=0（10.3 秒）、零 warning；`.lake/scratch/AuditHCapDeletion.lean` 五项仅
+`propext`、`Classical.choice`、`Quot.sound`。G.5 剩下的是不经 `Homology/HurewiczLowDegrees.lean`
+的一维 Hurewicz 桥，以及上面那条密度前提的组合流形版生产者。
