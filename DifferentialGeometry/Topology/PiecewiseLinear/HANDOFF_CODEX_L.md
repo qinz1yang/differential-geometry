@@ -2505,3 +2505,45 @@ step 2 只做了 grep 与接口陈述，没有动工（月牙是一个项目，�
   对 `N` 归纳 + `ContinuousOn.union_of_isClosed` + `Icc_union_Icc_eq_Icc`）。
 - 工具层事实：本树 Mathlib 的 `push_neg` 已弃用（改 `push Not`，或像这里直接手写两条 `≠`）；
   `ContinuousAt.comp` 在 `fun x => a (x 1)` 这种形状上高阶合一会选错，必须显式给 `(g := ) (f := )`。
+
+## 78. 2026-09-18 E3-M3：月牙胞腔 `D₂` 被构造出来，`hD₂inj`、`hluneW`、`hD₂bd` 三条同时给出
+
+状态：**已闭合**，新模块 `LuneCell.lean`（模块名与 5 条声明名在四条车道分支上都不存在）。
+`check-f.ps1` exit=0 零警告；`.lake/scratch/AuditE3LuneCell.lean` 的 5 条 `#print axioms`
+全部只含 `propext`、`Classical.choice`、`Quot.sound`。
+§73 第 7 条"四条输入一个产者都没有"，现在只剩 `hD₂disj` 一条。
+
+- **端点定理 `exists_lune_singularTwoCell`。** 输入：边界图卡 `E`（`plGroupoid 3` 的 maximalAtlas）、
+  模型图卡 `e`（`hei : IsPiecewiseAffineOn e.symm e.target`、`hesrc : e.source ⊆ E.target`、
+  `hsupp : slideSupportLong R ⊆ e.target`）、边界刻画 `hBdE / hBd₁`（与分离层同一对），
+  以及沿弧的三个实函数 `α`（滑移高度）、`μ`、`ν`（弧的两条横坐标）：
+  `α` 有细分 `σ` 且分片仿射、`0 < α` 在 `Ioo 0 1` 上、`α 0 = α 1 = 0`、`α ≤ R`；
+  `μ`、`ν` 在 `Icc 0 1` 上分片仿射、`|μ| + |ν| ≤ 1`、`InjOn (fun u => (μ u, ν u)) (Icc 0 1)`。
+  输出一个 `D₂ : SingularTwoCell M`，`D₂.domain = graphRegion α 0 1`，
+  `D₂ w = E.symm (e.symm (w 0, μ (w 1), ν (w 1)))`，并附三条：
+  - `InjOn D₂ D₂.domain`（= `hD₂inj`）：由 `E.symm`、`e.symm` 在各自 target 上单射
+    加 `InjOn (fun u => (μ u, ν u))`，`w 0` 那一维是**恒等**，所以不需要任何额外条件。
+  - `D₂ '' D₂.domain ⊆ E.symm '' (e.symm '' slideSupportLong R)`（= `hluneW` 的前半；
+    再由 `hW : W ∈ 𝓝ˢ (E.symm '' (e.symm '' slideSupportLong R))` 的 `subset_of_mem_nhdsSet`
+    接到 `⊆ W`）。
+  - `∀ z ∈ frontier D₂.domain, z ∉ graphArc α 0 1 → D₂ z ∈ BdM`（= `hD₂bd`），
+    粘合弧取 `graphArc α 0 1 = {w | w 1 ∈ Icc 0 1 ∧ w 0 = α (w 1)}`。
+- **为什么"按高度参数化"是对的（§74 的要点在 Lean 里兑现）。**
+  第一坐标就是 `w 0` 本身，所以 `luneModelMap μ ν w = (w 0, μ (w 1), ν (w 1))`
+  的分片仿射性只需要 `μ`、`ν` 分片仿射与两个坐标投影仿射，**没有乘积项**，
+  §60/§62 的"两个非常值分片仿射函数之积不分片仿射"的障碍确实不出现。
+- **`IsPLOn` 的入口。** `isPLOn_chart_comp_of_isPiecewiseAffineOn`（本模块新增、通用）：
+  `b` 在 `A` 上分片仿射且 `MapsTo b A ec.target` ⟹ `IsPLOn 2 3 (fun x => ec.symm (b x)) A`。
+  是 `BranchCollarPrism.lean:69` 那条棱柱版的去掉棱柱的形式，直接走
+  `isPLOn_iff_isPiecewiseAffineOn_comp_chart`（`PLMap.lean:101`）。
+- **接口对齐说明。** 本节的 `α`、`μ`、`ν` 是"沿弧参数"的实函数；在消费处它们是
+  `α t = slideAmountLong d R (e (E (D (θ t))))`、`(μ t, ν t) = (e (E (D (θ t)))).2`，
+  其中 `θ` 是 §63 的弧参数化。把它们接上还需要两件事，都属于 PL 闭包管道而不是新数学：
+  (a) `e ∘ E ∘ D ∘ θ` 在 `Icc 0 1` 上分片仿射（`IsPiecewiseAffineOn.comp` 逐段合成），
+      从而 `μ`、`ν` 分片仿射、`α` 分片仿射；
+  (b) `α` 的显式细分由 `exists_partition_affineOn_two`（`BrokenLine.lean:37`，
+      **确实存在**，§75 的猜测得到证实）给出：它输出 `s 0 = 0`、`s n = 1`、
+      `∀ i < n, s i < s (i+1)` 与每段上的插值公式，转成本节要的 `p * u + q` 只差一步代数；
+      `n = 0` 与 `s 0 = 0 = s n = 1` 矛盾，所以 `n` 必为 `N + 1`。
+  `InjOn (fun u => (μ u, ν u)) (Icc 0 1)` 由 `hinjP : InjOn D P` 加 `θ` 单射得到
+  （`e`、`E` 在各自 source 上单射，第一坐标在弧上恒为 0 所以 `(μ, ν)` 与整点互相决定）。
