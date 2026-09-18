@@ -685,6 +685,22 @@
   2-球面的 `HasAlexanderDualityH0Certificate`。现有 `SpecializedAlexanderDuality` 是未生产的条件，且其从两分支反推的
   定理与目标循环；wild sphere 不能用 smooth/open-bicollar，树中无 Čech或紧支撑理论。最窄专门实现估 10k–18k 行，
   完整可复用 Alexander 对偶估 20k–35k；在用户另行批准前暂缓，不把 30.5 报成只差 30.4 的 1k 收尾。
+- 2026-09-18（G.5 密度前提，done）：`CapDeletion.lean` 端点 `isPLBall_space_of_isPLSphere_capComplex` 原带的
+  `A.space ⊆ closure (A.space \ L.space)` 已有生产者。`ManifoldInteriorDensity.lean` 用树中现成的组合带边流形纯性
+  `IsCombinatorialManifoldWithBoundary.exists_face_superset_card_eq` 证明：面基数都 `≤ n` 的子复形（特别是
+  `boundaryComplex n K`）在 `K.space` 里的补是稠密的。重述端点
+  `isPLBall_space_of_isPLSphere_capComplex_of_isCombinatorialManifoldWithBoundary` 只把密度前提换成
+  `IsCombinatorialManifoldWithBoundary 2 A`，无其它新前提：`L` 的基数界由端点已有的 `IsPLSphere 1 L.space` 经
+  `card_le_of_isPLSphere` 免费给出。至此 G.5 只剩一维 Hurewicz 桥。
+- 2026-09-18（G.5 一维 Hurewicz 桥，评估）：禁止导入的 `HurewiczLowDegrees.lean` 只含二维、三维两条 `sorry`，
+  与本题无关，该限制成本为零。方向核对的结论是必须做**难的一半**：Hurewicz 容易一半只给
+  `b₁(Bd N) ≤ b₁(Bd X)`，代入 L12 的 `b₁(Bd X) = b₁(Bd N) + ∑v b₁(Â'_v)` 是恒真式；迫使各项为零要
+  `b₁(Bd X) ≤ b₁(Bd N)`，即 `H₁(i)` 单，只能经 `ker(π₁→H₁) = 换位子群`。本库与 Mathlib 均无万有系数定理、
+  无链复形平坦基变换，故不能先证 ℤ 版再张量，须照 `FieldPathCones.lean` 的先例直接在域系数上做
+  `H₁(X;k) ≅ Abelianization(π₁ X x) ⊗_ℤ k`。六砖分解 HB1–HB6 合计 2.2k–4.2k 行，真正新的几何只有两个
+  三角形填充方向（HB1 同伦⟹填充、HB2 填充⟹同伦）共 0.8k–1.6k，其余是对 `fieldSingularChainBasis`、
+  `fieldSingularConeOne_equation` 模板的记账。详细分解与已核对的现成材料见 `HANDOFF_CODEX_H.md` 同名条目。
+  按 H-M3 先例，在用户另行批准前不启动。
 - 不采用 Bing 定理 7 的“保留单形”强形式，只用 Moise §8/§35 的紧致图卡归纳（书中 `chap:two-set-gluing` 的方案）。
 - 不变域定理不进入 Phase 1（`f(O) = O` 由接口 A 给出，与 Moise 36.1 一致）。
 - `PLApproximation`/`PLSmoothing` 以 `Prop` 假设而非 `sorry` 出现：公理审计干净，但**报告时必须说明条件性**。
