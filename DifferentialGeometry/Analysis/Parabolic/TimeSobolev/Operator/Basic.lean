@@ -146,6 +146,41 @@ theorem timeOp_norm_le
   exact LinearMap.mkContinuous_norm_le (timeOpLin A hA C hC) C.coe_nonneg
     (timeOpFun_norm_le A hA C hC)
 
+omit [CompleteSpace X] [CompleteSpace Y] in
+theorem timeOp_sub
+    (A B : ℝ → X →L[ℝ] Y)
+    (hA : AEStronglyMeasurable A (timeMeasure T))
+    (hB : AEStronglyMeasurable B (timeMeasure T))
+    (CA CB C : NNReal)
+    (hCA : ∀ᵐ t ∂timeMeasure T, ‖A t‖ ≤ (CA : ℝ))
+    (hCB : ∀ᵐ t ∂timeMeasure T, ‖B t‖ ≤ (CB : ℝ))
+    (hC : ∀ᵐ t ∂timeMeasure T, ‖A t - B t‖ ≤ (C : ℝ)) :
+    timeOp A hA CA hCA - timeOp B hB CB hCB =
+      timeOp (fun t ↦ A t - B t) (hA.sub hB) C hC := by
+  apply ContinuousLinearMap.ext
+  intro f
+  apply Lp.ext
+  filter_upwards [Lp.coeFn_sub (timeOp A hA CA hCA f) (timeOp B hB CB hCB f),
+    timeOp_apply_ae A hA CA hCA f, timeOp_apply_ae B hB CB hCB f,
+    timeOp_apply_ae (fun t ↦ A t - B t) (hA.sub hB) C hC f]
+    with t hsub hAf hBf hDf
+  change ((timeOp A hA CA hCA f - timeOp B hB CB hCB f : timeL2 Y T) : ℝ → Y) t = _
+  rw [hsub, Pi.sub_apply, hAf, hBf, hDf, sub_apply]
+
+omit [CompleteSpace X] [CompleteSpace Y] in
+theorem timeOp_sub_norm_le
+    (A B : ℝ → X →L[ℝ] Y)
+    (hA : AEStronglyMeasurable A (timeMeasure T))
+    (hB : AEStronglyMeasurable B (timeMeasure T))
+    (CA CB C : NNReal)
+    (hCA : ∀ᵐ t ∂timeMeasure T, ‖A t‖ ≤ (CA : ℝ))
+    (hCB : ∀ᵐ t ∂timeMeasure T, ‖B t‖ ≤ (CB : ℝ))
+    (hC : ∀ᵐ t ∂timeMeasure T, ‖A t - B t‖ ≤ (C : ℝ)) :
+    ‖timeOp A hA CA hCA - timeOp B hB CB hCB‖ ≤ (C : ℝ) := by
+  rw [timeOp_sub A B hA hB CA CB C hCA hCB hC]
+  exact timeOp_norm_le _ _ C hC
+
+
 end DifferentialGeometry.Analysis.Parabolic.TimeSobolev
 
 end

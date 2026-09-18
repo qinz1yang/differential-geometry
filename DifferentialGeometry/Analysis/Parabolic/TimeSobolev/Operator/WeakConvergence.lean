@@ -17,32 +17,6 @@ variable [NormedAddCommGroup X] [InnerProductSpace ℝ X] [CompleteSpace X]
 variable [NormedAddCommGroup Y] [InnerProductSpace ℝ Y] [CompleteSpace Y]
 variable {T : ℝ}
 
-omit [CompleteSpace X] [CompleteSpace Y] in
-private theorem timeOp_sub
-    (A B : ℝ → X →L[ℝ] Y)
-    (hA : AEStronglyMeasurable A (timeMeasure T))
-    (hB : AEStronglyMeasurable B (timeMeasure T))
-    (CA CB C : NNReal)
-    (hCA : ∀ᵐ t ∂timeMeasure T, ‖A t‖ ≤ (CA : ℝ))
-    (hCB : ∀ᵐ t ∂timeMeasure T, ‖B t‖ ≤ (CB : ℝ))
-    (hC : ∀ᵐ t ∂timeMeasure T, ‖A t - B t‖ ≤ (C : ℝ)) :
-    timeOp A hA CA hCA - timeOp B hB CB hCB =
-      timeOp (fun t ↦ A t - B t) (hA.sub hB) C hC := by
-  ext f
-  simp only [sub_apply]
-  filter_upwards [Lp.coeFn_sub (timeOp A hA CA hCA f) (timeOp B hB CB hCB f),
-    timeOp_apply_ae A hA CA hCA f, timeOp_apply_ae B hB CB hCB f,
-    timeOp_apply_ae (fun t ↦ A t - B t) (hA.sub hB) C hC f]
-    with t hsub hAf hBf hDf
-  exact calc
-    ((timeOp A hA CA hCA f - timeOp B hB CB hCB f : timeL2 Y T) : ℝ → Y) t
-        = ((timeOp A hA CA hCA f : ℝ → Y) -
-          (timeOp B hB CB hCB f : ℝ → Y)) t := hsub
-    _ = A t (f t) - B t (f t) := by rw [Pi.sub_apply, hAf, hBf]
-    _ = (A t - B t) (f t) :=
-      (sub_apply (A t) (B t) (f t)).symm
-    _ = (timeOp (fun t ↦ A t - B t) (hA.sub hB) C hC f : ℝ → Y) t := hDf.symm
-
 theorem timeOp_weak_lim
     (A : ℕ → ℝ → X →L[ℝ] Y) (A_lim : ℝ → X →L[ℝ] Y)
     (hA : ∀ n, AEStronglyMeasurable (A n) (timeMeasure T))
