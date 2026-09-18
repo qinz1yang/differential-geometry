@@ -2216,3 +2216,46 @@ step 2 只做了 grep 与接口陈述，没有动工（月牙是一个项目，�
   `∀ a ∈ Pd, f a = y → ∃ V ∈ 𝓝 a, Pd' ∩ V ⊆ Pd` 与
   `∀ᶠ z in 𝓝 y, Pd' ∩ f ⁻¹' {z} ⊆ Pd`，第 (1)、(4) 步各兑现一次。
 - 验证：`BranchDoublePointSeparation` 聚焦检查 exit=0（10.1 秒）、零 warning。
+
+## 71. 2026-09-18 E3-M3：交叉谓词的**源侧集合放大**与**源侧函数 congr**（通用层，无月牙内容）
+
+状态：三族里的两族 done（放大、函数 congr）；**第三族"源侧集合缩小"在通用形式下不成立**，
+原因见下，而且**应用不需要它**（链条改成三步，见末尾）。
+新模块 `SingularCrossingSource.lean`（模块名与 7 条声明名在四条车道分支上都不存在）。
+
+- **放大 `mono_of_subset`。** 结论直接给**夹在中间**的集合：
+  `P ⊆ P'' ⊆ P'`，两条边条件只对**大的** `P'` 陈述（更好验），结论落在 `P''` 上：
+  `hloc : ∀ a ∈ P, f a = y → ∃ V ∈ 𝓝 a, P' ∩ V ⊆ P` 与
+  `hcover : ∀ᶠ z in 𝓝 y, P' ∩ f ⁻¹' {z} ⊆ P`。
+  见证 `a, b, A, B` **完全不动**：`A ⊆ P ⊆ P''` 自动；
+  `A ∈ 𝓝[P''] a` 由 `mem_nhdsWithin_of_subset_of_inter`（取 `V ∩ V₁`）；
+  纤维覆盖由两条 `∀ᶠ` 相交。交叉子句与两条 `IsPLHomeomorphOn` 原样保留。
+- **函数 congr `congr_source`。** `EqOn f g P` ⟹ 交叉从 `f` 搬到 `g`。
+  `g '' A = f '' A`（`Set.image_congr`），`IsPLHomeomorphOn g A (g '' A)` 由
+  `PLImage.lean` 的 `IsPLHomeomorphOn.congr`（**本来就有，`git grep` 计数命中 1 条**），
+  纤维子句由 `EqOn` 逐点换。三个谓词各一条，法向版是分情形。
+- **"源侧缩小"为什么在通用形式下做不出来（记下免得重走）。**
+  缩小 `P' ⊆ P` 时，`A ∈ 𝓝[P'] a`（滤子变细，免费）与纤维覆盖（免费）都没问题，
+  **唯一的障碍是 `A ⊆ P'`**：见证是存在量词绑定的，外部无法假设它落在 `P'` 里。
+  想把见证换成 `A ∩ f ⁻¹' O` 也不行——那需要把 `IsPLHomeomorphOn f A (f '' A)`
+  **限制**到 `A ∩ f ⁻¹' O`，而 `IsPiecewiseAffineOn` 的限制只对多面体或开集成立，
+  `A ∩ f ⁻¹' O` 两者都不是（`f` 只在 `A` 上连续，`f ⁻¹' O` 不是环境开集）。
+  这与 §65 的障碍同源，但那里可以"复合代替限制"，**这里没有可复合的映射，见证本身要缩**，
+  所以那个办法不适用。结论：通用缩小引理不写。
+- **`crossing` 的链条因此改成三步（不再需要缩小）。**
+  (1) 用 §65 的 `precomp_isPLHomeomorphOn` 的**推广版**沿 `f₁` 一步落到
+      `P ∩ D ⁻¹' e.source`：推广是把 `IsPLHomeomorphOn φ Q P` 换成
+      `IsPLHomeomorphOn φ QBig PBig` 加 `BijOn φ Q P`、`Q ⊆ QBig`、`P ⊆ PBig`、
+      `hback : ∀ x ∈ QBig, φ x ∈ P → x ∈ Q`；证明里 `QBig ∩ φ ⁻¹' A = Q ∩ φ ⁻¹' A`
+      （由 `hback` 与 `A ⊆ P`），于是**仍然不需要限制 `φ`**，§65 的复合技巧原样适用。
+      取 `QBig = P`（粘合区域）、`PBig = D₁.domain`、`Q = P ∩ D ⁻¹' e.source`、
+      `P = D₁.domain ∩ D₁ ⁻¹' e.source`，`hback` 成立因为 `D x = D₁ (f₁ x)`。
+  (2) 用本节的 `congr_source` 把 `e ∘ D₁ ∘ f₁` 换成 `e ∘ D`（`EqOn D (D₁ ∘ f₁) P`）。
+  (3) 用本节的 `mono_of_subset` 从 `P ∩ D ⁻¹' e.source` 放大到 `D.domain ∩ D ⁻¹' e.source`
+      （取 `P' = P'' = D.domain ∩ D ⁻¹' e.source`），两条边条件由 §70 的
+      `Disjoint (doublePointSet g D.domain) (D₂ '' D₂.domain)` 加
+      "`D₂ '' D₂.domain` 紧故闭"给出。
+  **只差 (1) 的推广版**（约 70 行，§65 的证明加四个形参），下一轮先做它再收 `crossing`。
+- 验证：`SingularCrossingSource` 聚焦检查 exit=0（11.0 秒）、零 warning；
+  `.lake/scratch/AuditE3CrossingSource.lean` 的 7 条 `#print axioms` 全部只含
+  `propext`、`Classical.choice`、`Quot.sound`，无 `sorryAx`。
