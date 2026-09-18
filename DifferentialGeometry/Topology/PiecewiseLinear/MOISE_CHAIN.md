@@ -781,3 +781,29 @@ Moise 每一章开头"不妨设某映射是 PL 的"都是这一条。分三个�
 边界成立（`{p | p.2 ∈ T}` 是平行于滑动方向的直线之并）。而 `HasPLBoundaryCrossingAt` 在端点把双点线放成
 **横截于 `Bd M`**：取 `Bd M = {x = 0}`、`M = {x ≥ 0}`，`slideMapLong d R (0, y, 0)` 的第一坐标是
 `-max 0 (min (d(1-|y|)) (R/2)) < 0`（`|y| < 1`），点被推出 `M`。需要端点处锥度降到零的模型，或两步构造。
+
+### S：从多边形的收缩到邻域的相容定向（义务 3）
+
+七个模块把 24.12 需要的"收缩 ⟹ 邻域可定向"搭成一条完整证明链，剩下的都是显式假设：
+
+- `CocycleMonodromy.lean`：`SimplicialBoolCocycle.walkMonodromy` 定义在**既有的**
+  `SimplicialComplex.edgeGraph` 上（没有新造图），带 `_cons`/`_append`/`_reverse`，
+  并给出双向刻画 `isCoboundary_iff_forall_walkMonodromy_eq_zero`。
+  E3 的 `BranchSignChain` 是被复用而非重证：`loopMonodromy_eq_zero_of_isCoboundary` 即
+  `sum_sideJump_eq_zero_of_cycle`，`not_isCoboundary_of_loopMonodromy_ne_zero` 即
+  `not_exists_sideChoice_of_cycle`。
+- `PolygonNeighborhoodOrientation.lean`：`isOrientable_iff_forall_walkMonodromy_eq_zero`，双向。
+- `SimplicialWalkHomotopy.lean`：边路同伦（回溯与二维单形移动）；三角形那一步恰是上圈条件本身。
+- `CocycleWalkLift.lean`：真正的提升。`walkPath` 把走化成折线路径，`exists_walkLift` 用既有的
+  `coveringEdgeLift`、`coveringNeighbor_side` 拼接，再用 Mathlib 的 `eq_liftPath_iff'` 与
+  `liftPath_apply_one_eq_of_homotopicRel` 得到 `walkMonodromy_eq_zero_of_homotopic_refl`：
+  在 `K.space` 中零伦的闭边路单值为零。
+- `SubcomplexOrientationCocycle.lean`：局部化桥，完全用公开 API 补上（关键是
+  `carrierFace_eq_of_faces_subset`），未动 `OrientationCocycle.lean` 的私有引理。
+- `AmbientPolygonOrientation.lean`：端点 `isOrientable_of_ambient_nullHomotopic_polygon`——
+  `L` 是环境 `K` 的子复形，`barycentricSubdivision L` 的闭边路在**环境空间**里零伦，
+  加生成假设，给出 `IsOrientable n L`。
+
+剩余义务：生成假设 `hgen`（多边形生成邻域的单值）要正则邻域向核的形变收缩；
+`Fin` 循环族与 `Walk` 两种表示未互译（`NeighborhoodCycle` 交来的多边形需手工转成闭走）；
+多边形与其收缩本身由 24.12 提供。义务 2（无扭盘丛分类）未动。
