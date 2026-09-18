@@ -7123,6 +7123,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TowerInduct
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SupportRegion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SupportRegionNeck
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.StaticNeckChildCore
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.DiscardedCoreGeometry
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SurgeryContinuationTowerProducer
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalCurvatureBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalMetricUnique
@@ -10108,6 +10109,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.P
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProductBernstein
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProductEmbedding
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProductIntegralBounds
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProjectedAreaBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProductSliceSmoothness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProductSolution
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.TensorDerivatives

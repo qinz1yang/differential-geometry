@@ -90,14 +90,15 @@ theorem subsingleton_fundamentalGroup_discardedComponent
   exact subsingleton_fundamentalGroup_factor_of_subsingleton_finiteConnectedSum (L ++ K) _
     (List.mem_append_left _ hFmem) (fun _ => Classical.choice inferInstance) y hsumSub q
 
-theorem isPoincareStandard_discardedComponent_of_simplyConnected
-    (h : simplyConnectedPoincareStandard.{u}) (hsum : E.componentConnectedSumDecomposition)
+theorem isPoincareStandard_discardedComponent_of_smoothPoincareConjecture
+    (h : DifferentialGeometry.PDE.RicciFlow.Surgery.smoothPoincareConjecture.{u})
+    (hsum : E.componentConnectedSumDecomposition)
     (C : ConnectedComponents M.Carrier) {p : (M.component C).Carrier}
     (hsc : Subsingleton (FundamentalGroup (M.component C).Carrier p))
     (x : E.tubes.core) (d : E.discarded.Carrier) (hxC : ConnectedComponents.mk x.1 = C)
     (hd : E.presentation (E.capping.coreInclusion x) = Sum.inr d) :
     isPoincareStandard (E.outgoingFactor (Sum.inr d)).Carrier := by
-  refine @h _ _ _ _ _ _ _ ?_
+  refine @simplyConnectedPoincareStandard_of_smoothPoincareConjecture.{u} h _ _ _ _ _ _ _ ?_
   refine simply_connected_iff_loops_nullhomotopic.mpr ⟨inferInstance, fun q γ => ?_⟩
   refine Quotient.exact
     (@Subsingleton.elim _

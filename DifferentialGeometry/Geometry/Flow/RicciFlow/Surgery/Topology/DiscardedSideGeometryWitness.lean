@@ -1,7 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.DiscardedSideGeometry
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SmoothCutCapTransitionInstance
 import DifferentialGeometry.Geometry.Metric.Sphere.Quotient.SpaceFormCovering
-import DifferentialGeometry.Topology.ThreeManifold.PoincareStandardComponentwise
 
 set_option autoImplicit false
 
@@ -192,42 +191,6 @@ theorem discardedComponentsRoundOrSphereProduct_sphereStage :
 theorem nonempty_connectedComponents_sphereStage :
     Nonempty (ConnectedComponents sphereStage.toClosedOrientedManifold.Carrier) :=
   ⟨ConnectedComponents.mk (⟨EuclideanSpace.single 0 1, by simp⟩ : Sphere 3)⟩
-
-theorem componentwiseStandardFactor_of_forall_discardedComponentsRoundOrSphereProduct
-    (h : ∀ D : OrientedThreeStage.{u},
-      DiscardedComponentsRoundOrSphereProduct D.toClosedOrientedManifold)
-    (D : ClosedOrientedManifold.{u} 3) : D.componentwiseStandardFactor := by
-  intro C
-  have hstage := h (OrientedThreeStage.ofClosedOrientedManifold D)
-  rw [OrientedThreeStage.ofClosedOrientedManifold_toClosedOrientedManifold] at hstage
-  rcases hstage C with hp | hs
-  · exact ⟨D.component C,
-      isStandardFactor_of_isPositiveSpaceFormModel sphericalSpaceFormCovering_holds hp,
-      ⟨ClosedOrientedManifold.OrientedDiffeomorph.refl _⟩⟩
-  · exact ⟨D.component C, isStandardFactor_of_isSphereTwoTimesCircleFactor hs,
-      ⟨ClosedOrientedManifold.OrientedDiffeomorph.refl _⟩⟩
-
-theorem isPoincareStandard_of_forall_discardedComponentsRoundOrSphereProduct
-    (h : ∀ D : OrientedThreeStage.{u},
-      DiscardedComponentsRoundOrSphereProduct D.toClosedOrientedManifold)
-    (D : ClosedOrientedManifold.{u} 3) (C : ConnectedComponents D.Carrier) :
-    isPoincareStandard (D.component C).Carrier :=
-  componentwise_isPoincareStandard_of_componentwiseStandardFactor D
-    (componentwiseStandardFactor_of_forall_discardedComponentsRoundOrSphereProduct h D) C
-
-theorem smoothPoincareConjecture_of_forall_discardedComponentsRoundOrSphereProduct
-    (h : ∀ D : OrientedThreeStage.{u},
-      DiscardedComponentsRoundOrSphereProduct D.toClosedOrientedManifold) :
-    DifferentialGeometry.PDE.RicciFlow.Surgery.smoothPoincareConjecture.{u} := by
-  intro M _ _ _ _ _ _ _
-  obtain ⟨o⟩ := Manifold.exists_manifoldOrientation_of_simply_connected
-    (E := EuclideanSpace ℝ (Fin 3)) (M := M) (n := 3) (by simp)
-  let D : ClosedOrientedManifold.{u} 3 := { Carrier := M, orientation := o }
-  exact exists_diffeomorph_standardThreeSphere_of_isPoincareStandard
-    (ClosedOrientedManifold.isPoincareStandard_of_component D
-      (ConnectedComponents.mk (Classical.choice (inferInstance : Nonempty M)))
-      (isPoincareStandard_of_forall_discardedComponentsRoundOrSphereProduct h D
-        (ConnectedComponents.mk (Classical.choice (inferInstance : Nonempty M)))))
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 
