@@ -85,9 +85,9 @@ theorem exists_compatible_local_backward_flows_of_terminal_scalar_bound
       (RealTimeInterval.closed (-delta) 0 (by linarith)).regular := by
     intro t ht
     exact ⟨by linarith [ht.1], ht.2⟩
-  obtain ⟨rho, hrho, g, hg0, hconv, hoverlap⟩ :=
-    exists_common_metric_subsequence_on_terminal_maps_of_terminal_convergence
-      X.toFlowSequence P U
+  obtain ⟨rho, hrho, g, hg0, hgsol, hconv, hoverlap⟩ :=
+    exists_common_solution_subsequence_on_terminal_maps_of_terminal_convergence
+      X.toFlowSequence P U hpU
       (fun _ => RealTimeInterval.closed (-delta) 0 (by linarith))
       S hS (fun n => P.limit.metric.restrictOpen (U n))
       (fun _ => -delta / 2) (fun _ => 0) (fun _ => by linarith)
@@ -96,31 +96,8 @@ theorem exists_compatible_local_backward_flows_of_terminal_scalar_bound
         exact ⟨C n q, hC n q, Eventually.of_forall fun i t ht x _ =>
           hjet n i q t ⟨by linarith [ht.1], ht.2⟩ x⟩)
       N hsource (fun n i t x v w _ht _hx => hmetric n i t x v w)
-  refine ⟨N, S, hS, hsource, hmetric, rho, hrho, g, hg0, ?_, hconv,
+  exact ⟨N, S, hS, hsource, hmetric, rho, hrho, g, hg0, hgsol, hconv,
     fun n m W hn hm t ht => hoverlap n m W hn hm t ht ht⟩
-  intro n
-  let Q : PointedRiemannianManifold (I := I3) := {
-    M := U n
-    topology := inferInstance
-    charted := inferInstance
-    smooth := inferInstance
-    sigmaCompact := inferInstance
-    t2 := inferInstance
-    t2TangentBundle := inferInstance
-    basepoint := ⟨P.limit.basepoint, hpU n⟩
-    metric := P.limit.metric.restrictOpen (U n) }
-  exact isSolutionOn_of_fixed_domain_metric_convergence Q
-    (fun i => S n (rho i - N n)) (fun i => hS n (rho i - N n))
-    (show -delta / 2 < 0 by linarith)
-    hslab (Ioo_subset_Ico_self.trans hreg) id strictMono_id (g n)
-    (hconv n) (by
-      intro K hK p
-      exact Eventually.of_forall fun i => by
-        obtain ⟨L, _hL, hb⟩ := exists_metric_time_lipschitz_constant_on_compact_of_solution
-          (S n (rho i - N n)) (hS n (rho i - N n))
-          (show -delta / 2 < 0 by linarith)
-          hslab hreg Q.metric hK p
-        exact ⟨L, fun s hs t ht q hq x hx => hb q hq s hs t ht x hx⟩)
 
 private theorem compatible_backward_flows_on_bounded_open_sets
     {kappa : ℝ} (hmod : ModelCurvatureBoundNearBase.{u, 0, 0} I3 kappa) :
@@ -182,9 +159,9 @@ private theorem compatible_backward_flows_on_bounded_open_sets
       (RealTimeInterval.closed (-delta n) 0 (by have := hd n; linarith)).regular := by
     intro t ht
     exact ⟨by have := hd n; linarith [ht.1], ht.2⟩
-  obtain ⟨rho, hrho, g, hg0, hconv, hoverlap⟩ :=
-    exists_common_metric_subsequence_on_terminal_maps_of_terminal_convergence
-      X.toFlowSequence P U
+  obtain ⟨rho, hrho, g, hg0, hgsol, hconv, hoverlap⟩ :=
+    exists_common_solution_subsequence_on_terminal_maps_of_terminal_convergence
+      X.toFlowSequence P U hpU
       (fun n => RealTimeInterval.closed (-delta n) 0 (by have := hd n; linarith))
       S hS (fun n => P.limit.metric.restrictOpen (U n))
       (fun n => -delta n / 2) (fun _ => 0) (fun n => by have := hd n; linarith)
@@ -193,30 +170,7 @@ private theorem compatible_backward_flows_on_bounded_open_sets
         exact ⟨C n q, hC n q, Eventually.of_forall fun i t ht x _ =>
           hjet n i q t ⟨by have := hd n; linarith [ht.1], ht.2⟩ x⟩)
       N hsource (fun n i t x v w _ht _hx => hmetric n i t x v w)
-  refine ⟨delta, hd, N, S, hS, hsource, hmetric, rho, hrho, g, hg0, ?_, hconv, hoverlap⟩
-  intro n
-  let Q : PointedRiemannianManifold (I := I3) := {
-    M := U n
-    topology := inferInstance
-    charted := inferInstance
-    smooth := inferInstance
-    sigmaCompact := inferInstance
-    t2 := inferInstance
-    t2TangentBundle := inferInstance
-    basepoint := ⟨P.limit.basepoint, hpU n⟩
-    metric := P.limit.metric.restrictOpen (U n) }
-  exact isSolutionOn_of_fixed_domain_metric_convergence Q
-    (fun i => S n (rho i - N n)) (fun i => hS n (rho i - N n))
-    (show -delta n / 2 < 0 by have := hd n; linarith)
-    (hslab n) (Ioo_subset_Ico_self.trans (hreg n)) id strictMono_id (g n)
-    (hconv n) (by
-      intro K hK p
-      exact Eventually.of_forall fun i => by
-        obtain ⟨L, _hL, hb⟩ := exists_metric_time_lipschitz_constant_on_compact_of_solution
-          (S n (rho i - N n)) (hS n (rho i - N n))
-          (show -delta n / 2 < 0 by have := hd n; linarith)
-          (hslab n) (hreg n) Q.metric hK p
-        exact ⟨L, fun s hs t ht q hq x hx => hb q hq s hs t ht x hx⟩)
+  exact ⟨delta, hd, N, S, hS, hsource, hmetric, rho, hrho, g, hg0, hgsol, hconv, hoverlap⟩
 
 theorem exists_compatible_local_backward_flows_on_exhaustion_of_terminal_metric_convergence
     {kappa : ℝ} (hmod : ModelCurvatureBoundNearBase.{u, 0, 0} I3 kappa) :
