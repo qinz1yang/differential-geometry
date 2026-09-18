@@ -516,6 +516,18 @@ theorem IsCombinatorialManifold.eulerChar_eq_two_sub_bettiOne_of_isOrientable
   omega
 
 open Classical in
+theorem IsCombinatorialManifold.bettiOne_pos_of_isOrientable_of_eulerChar_ne_two
+    [FiniteDimensional ℝ E]
+    (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
+    (hK : IsCombinatorialManifold 2 K) (hconn : _root_.IsConnected K.space)
+    (ho : IsOrientable 2 K) (hEuler : eulerChar K ≠ 2) :
+    0 < Homology.bettiOne K.space := by
+  have hformula := hK.eulerChar_eq_two_sub_bettiOne_of_isOrientable K hconn ho
+  by_contra hpos
+  have hb : Homology.bettiOne K.space = 0 := Nat.eq_zero_of_not_pos hpos
+  exact hEuler (by omega)
+
+open Classical in
 theorem IsCombinatorialManifold.eulerChar_eq_one_sub_bettiOne_of_not_isOrientable
     [FiniteDimensional ℝ E]
     (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]

@@ -1931,3 +1931,313 @@ F-M5 状态为 partial。唯一未闭合的生产步骤是：给定 F-M6 的公�
 F-M6 状态为 partial。剩余的首个数学义务是一个真实的余面异侧定理：在上述同一星图卡内，若 `q` 是 `K*` 的内部二维面且恰有两个三维余面，则两个余面的对顶点在 `affineSpan ℝ (e(T(q)))` 的严格相反两侧；边界二维面唯一余面的对顶点须位于所选内部严格一侧。现有组合流形 API 给出余面个数，公共细分给出图卡内的仿射性与单射性，但库中尚无把这两项合成为严格符号的定理。缺少该结论时，不能从 `IsVertexMapGeneralInArrangement` 生产 `IsArrangementGeneralFoldPair` 或 `IsBoundaryArrangementGeneralPair`，因此不能证明每个实际双点的 crossing，也不能启动保持该不变量的有限图卡归纳。该严格异侧性必须从 `K*` 的实际相邻三胞腔、图卡同胚性和单形内部不交推出，不能作为 `exists_small_isNormalSingularCell` 的假设。`Ξ = K*` 的二维骨架、图卡归纳和最终端点均留在此义务之后；本次未声明 `exists_small_isNormalSingularCell`。
 
 聚焦检查：`PiecewiseAffineSimplicial` exit=0（9.5 秒）、`SingularNormalForm` exit=0（12.2 秒），均零 warning。`AuditF208.lean` 十八项全部只依赖 `propext`、`Classical.choice`、`Quot.sound`。F-M6 partial；下一审计文件 `AuditF209.lean`。
+
+### 19.62 F-M1：小 Lipschitz 扰动下的三角形截面为 PL 弧
+
+`TriangleFiber.lean` 从三角域的水平切片严格递增、左边严格递增、右边严格递减，实际构造每条非极值等高纤维到一个非退化闭区间的第二坐标双射。`exists_isPLHomeomorphOn_snd_triangle_fiber` 用纤维的紧致多面体性将该双射升级为 PL 同胚，`isPLBall_triangle_fiber_of_monotone` 给出 PL 一维球。证明允许函数在原三角形内部任意有限分段，不要求凸化后的函数在整个旧三角形上仿射。
+
+定量端点 `exists_isPLHomeomorphOn_snd_triangle_fiber_of_lipschitz` 与 `isPLBall_triangle_fiber_of_lipschitz` 从实际误差控制生产上述三方向单调性：若 `b(x,y) - (a*x+c*y+d)` 的 Lipschitz 常数 `k` 同时小于 `c` 和 `a-c`，则任意严格介于两个底角值之间的纤维都是 PL 弧。不存在把弧性、纤维对应或层圆周计数加入假设的做法。
+
+聚焦检查 exit=0（10.8 秒），零 warning；`AuditF211.lean` 七个公开端点全都只依赖 `propext`、`Classical.choice`、`Quot.sound`。此前已推送的 `59c52ce24`、`bce61a695` 提供 `RelativeLevelCircleDeletion.lean` 的精确纤维删除消费者及固定子复形外的逐面符号控制，后者由 `AuditF210.lean` 审计；这些仍不是相对删除的生产者。
+
+F-M1 仍为 partial。下一步把凸化映射在紧致旧三角形上的 PL Lipschitz 延拓与新高度的算子范数小量接入本定量端点，然后构造沿旧三角形公共边相容的纤维同胚，并证明它在保留盘上删去指定圆周 `J`。§19.56 的单射、严格降指标、S.4 M2/M3 及 I1 尚未交付。下一审计文件 `AuditF212.lean`。
+
+### 19.63 F-M1：保高度凸化后的旧三角形小转轴截面
+
+`HeightTriangleStability.lean` 已把 §19.62 的定量判据接到实际 PL 映射。`eventually_exists_isPLHomeomorphOn_triangle_fiber_of_affine_height` 对在紧致三角形上具有仿射旧高度的逐片仿射映射，先构造全域 PL Lipschitz 延拓，再把扰动写成旧仿射高度加 `(f-ℓ) ∘ G`；算子范数邻域统一控制全部中间层。输出每条这样的实际纤维到非退化区间的 PL 同胚。`eventually_isPLBall_image_triangle_fiber_of_affine_height` 在映射单射时把弧性送到像截面。
+
+主端点 `eventually_isPLBall_affine_triangle_image_fiber` 已直接用于环境同胚：只要求 `H` 是保 `ℓ` 的全域 PL 同胚，仿射三角形的三个旧顶点高度严格排序，就证明充分小的每个新高度 `f` 在 `H` 的三角形像内、严格介于两底角值之间的截面是 PL 一维球。没有要求 `H` 在旧三角形上仿射，也没有假设凸化后旧高度在新顶点上单射。故同高折点已经不再阻挡单个旧面的纤维稳定性。
+
+聚焦检查 exit=0（13.3 秒）、零 warning；`AuditF212.lean` 三个公开端点全部仅依赖 `propext`、`Classical.choice`、`Quot.sound`。F-M1 仍为 partial；下一步补弧端点与旧边的精确对应、极值层的单点/空集分类，然后沿公共边拼接各旧面的纤维映射，接入 `Q` 的侧芽以得到 §19.56 的相对删除。S.4 M2/M3、I1 尚未交付。下一审计文件 `AuditF213.lean`。
+
+### 19.64 F-M1：逐边保持的三角形纤维 PL 对应
+
+`TriangleFiberBoundary.lean` 证明中间层截面恰在区间参数的两个端点碰三角形边界，并精确识别退出边：左边当且仅当参数为上端点且目标层不高于上角值，右边当且仅当参数为上端点且目标层不低于上角值。最低、最高纤维分别精确等于对应单点；高度范围外的纤维为空。端点分类由实际单调性和介值性推出。
+
+`TriangleFiberEquivalence.lean` 的 `exists_isPLHomeomorphOn_triangle_fibers_preserving_edges` 以两个纤维的区间参数和正比例缩放构造 PL 同胚。只要两个目标高度相对中间角点的大小/相等情形一致，所得对应逐点保持三条旧边的成员关系，包含经过上角的情形；边兼容不是输入。该结论是随后沿旧三角形公共边拼接的局部数据。
+
+聚焦检查：`TriangleFiberBoundary` exit=0（11.7 秒），`TriangleFiberEquivalence` exit=0（11.7 秒），均零 warning；`AuditF213.lean` 七项全都仅依赖 `propext`、`Classical.choice`、`Quot.sound`。F-M1 仍为 partial。下一步从 §19.63 的 Lipschitz 误差生产三方向单调性和顶点符号稳定性，实际得到每个小转轴的逐边保持对应；再进行有限复形拼接和保留盘侧芽分析。§19.56 的相对层圆周删除、S.4 M2/M3 与 I1 尚未交付。下一审计文件 `AuditF214.lean`。
+
+### 19.65 F-M1：小转轴实际生产逐边保持的全部三角形纤维对应
+
+`TriangleFiber.lean` 将既有定量证明抽出为 `strictMonoOn_triangle_slices_of_lipschitz_sub_affine`，旧端点签名保持。`HeightTriangleStability.lean` 的 `eventually_strictMonoOn_triangle_height` 通过 PL Lipschitz 延拓实际生产小转轴后高度的三个单调方向，旧区间参数化和像截面弧性端点现在直接消费该结果。
+
+新端点 `eventually_exists_isPLHomeomorphOn_triangle_fiber_preserving_edges` 对任意指定点高度同时处理全部情形：介于底角值之间时，用有限顶点严格次序稳定性确定退出边，再构造逐边保持的 PL 同胚；最低/最高值层用同高角点等于指定点这一真实唯一性条件固定相应单点；高度范围外两纤维均为空。因此结论从实际小高度邻域生产新旧层对应，不要求调用者输入单调性、边对应或层圆周计数，也不需要排除经过旧顶点的临界层。
+
+聚焦检查：`TriangleFiber` exit=0（15 秒），`HeightTriangleStability` exit=0（12.9 秒），均零 warning；`AuditF214.lean` 八项全部只依赖 `propext`、`Classical.choice`、`Quot.sound`。在本工作树没有 Lean 进程时运行 `fresh.py`，5 个改动模块的 olean 均新鲜、禁用模式 0；脚本同时提示系统另有一个 Lean 进程，故最终验收依上述聚焦检查与审计。
+
+F-M1 仍为 partial。单个旧三角形的全部纤维及逐边对应已闭合；下一步把有限原面族的局部映射按公共边唯一交点拼成整体 PL 对应，并从保留盘的相反半空间芽证明指定 `J` 的相对删除。§19.56 的全局单射、严格降指标、S.4 M2/M3 与 I1 尚未交付。下一审计文件 `AuditF215.lean`。
+
+### 19.66 F-M1：有限 PL 拼接与二维复形的层纤维拼接
+
+`FiniteGluing.lean` 构造有限多面体闭覆盖上的实际全局映射：局部 PL 同胚在交上相容且交像精确时，拼接为并集之间的 PL 同胚，并逐片保持给定函数。`exists_isPLHomeomorphOn_iUnion_of_subsingleton_inter` 进一步从目标两片交至多一点、局部映射保持其他片成员关系，推导相容性及交像等式。
+
+`HeightFiberGluing.lean` 的纯代数引理证明至多两顶点凸包的一般高度纤维至多一点，并由复形面交性质与顶点高度单射，证明不同二维面在目标层的交至多一点。`exists_isPLHomeomorphOn_height_fiber_of_face_maps` 因而把二维有限复形逐面的 PL 纤维映射实际拼成整个 `K.space` 层截面的 PL 同胚。输入的源片多面体性不再单独假设，而是从到旧面线性纤维的局部 PL 同胚反推出。公共交上的相容和全局单射均在证明中推出。
+
+聚焦检查：`FiniteGluing` exit=0（9.2 秒），`HeightFiberGluing` exit=0（11.6 秒），均零 warning；`AuditF215.lean` 五项全部仅依赖 `propext`、`Classical.choice`、`Quot.sound`。F-M1 仍为 partial。下一步用实际仿射三角形坐标把 §19.65 的逐边对应搬为这里所需的逐原面成员关系，并统一有限个小高度邻域；保留盘侧芽到指定圆周删除仍在其后。尚未交付 §19.56 的相对单射、S.4 M2/M3 或 I1。下一审计文件 `AuditF216.lean`。
+
+### 19.67 F-M1：三角形坐标与任意子面的精确搬运
+
+`TriangleCoordinates.lean` 定义按最低、中间、最高角点排列的仿射三角形坐标及三个重心系数，证明坐标像恰为三个顶点的凸包，并由仿射无关性证明坐标映射单射。`triangleAffineMap_mem_convexHull_image_iff` 把属于任意顶点子集凸包精确刻画为其余重心系数为零；`triangleAffineMap_mem_convexHull_image_iff_of_preserving_edges` 因而从三条边的成员关系保持推出每个子面的成员关系保持。全部证明只用实模的代数结构，没有加入范数或有限维假设。
+
+聚焦检查 exit=0（10.6 秒）、零 warning；`AuditF216.lean` 十个定义和公开定理全部仅依赖 `propext`、`Classical.choice`、`Quot.sound`。F-M1 仍为 partial。下一步按原高度排列各旧三角形顶点，把 §19.65 的局部对应搬到实际面并统一有限个小高度邻域，再证明保留盘的相对层圆周删除。§19.56、S.4 M2/M3 与 I1 尚未交付。下一审计文件 `AuditF217.lean`。
+
+### 19.68 F-M1：保高度 PL 变换后的整体层纤维稳定性
+
+`HeightFaceStability.lean` 从旧高度在三顶点上的单射性实际构造有序仿射坐标，调用 §19.65 的小转轴生产者，再经 §19.67 的重心系数判据搬回原面。`eventually_exists_isPLHomeomorphOn_face_fiber_preserving_subfaces` 对该面的每个子面同时保持成员关系，包含临界层、单点和空层。
+
+`HeightComplexStability.lean` 的 `eventually_exists_isPLHomeomorphOn_height_fiber_preserving_faces` 在有限纯二维复形上统一全部三角形的小高度邻域，由复形的精确面交把逐子面保持升级为任意其他原面的成员关系保持，然后实际拼出整个新旧层的 PL 同胚。源层是 `K.space ∩ {x | f (H x) = f (H p)}`，目标是原直线复形的 `K.space ∩ {x | ℓ x = ℓ p}`；`H` 只要求全域 PL 且保持旧高度，不要求它在旧面上仿射。带边组合二维流形版本直接从已经证明的纯维性得到该生产者，没有把纤维对应作为假设。
+
+聚焦检查：`HeightTriangleStability` exit=0（12.7 秒）、`HeightFaceStability` exit=0（12.9 秒）、`HeightComplexStability` exit=0（12.5 秒），均零 warning。前一模块仅公开现有标准三角域多面体引理供复用；`AuditF217.lean` 四个端点全部仅依赖 `propext`、`Classical.choice`、`Quot.sound`。F-M1 仍为 partial；§19.56 的首个剩余义务现为保留盘相对性：从沿 `J` 的半空间芽及转轴将 `J \ {p}` 推至同侧，证明整体对应把保留盘新层的圆周送到旧保留盘圆周且避开 `J`。不能把本整体纤维稳定性误报为相对删除或 I1。下一审计文件 `AuditF218.lean`。
+
+### 19.69 F-M1 检查点：§19.56 相对层圆周删除已闭合
+
+`FaceLevelPolygons.lean` 证明保持全部原面成员关系的映射也保持最小开面；同一开面内的旧水平截面一旦碰到某条旧圆周，就全部属于该圆周。后者使用截面的凸连通性及非例外点处的真实层圆周集合芽，不要求圆周预先是旧复形的子复形。
+
+`HeightFiberWitness.lean` 在任意小的原开面邻域内，通过保高度连续映射的射线介值构造实际新层点；单侧版本在指定旧层点被推到上侧时，实际给出旧高度严格在下侧的新层点。正高度方向由原顶点的唯一层条件生产。
+
+`RelativeHeightDeletion.lean` 的 `eventually_exists_isPLHomeomorphOn_fiber_deleting_levelPolygon_of_upper_side` 已构造整体层 PL 同胚，其圆周像把保留盘的新层圆周送入旧保留盘圆周族且避开 `J`。证明对每条不属于保留盘的旧圆周选取盘外开面见证，再用旧圆周族有限性统一邻域；对指定 `J` 则用同侧推离和旧半空间芽选取反侧新层见证。映射在实际新层上单射，因此确实给出圆周族单射，而非把单射或计数作为输入。
+
+封帽端点 `eventually_encard_levelPolygons_cap_add_one_le_of_upper_side` 与 `_of_lower_side` 直接证明 `(levelPolygons (H '' (Q ∪ D)) f (f (H p))).encard + 1 ≤ (levelPolygons Q ℓ (ℓ p)).encard`。只需要 `Q` 闭且包含于原球面、`J` 是旧保留盘层圆周、`J ⊆ D`、沿 `J` 的相应半空间芽，以及 `H` 保旧高度和新高度把 `H '' D` 除帽尖外严格推至同侧；允许 `p ∉ J`。§19.56 的数学缺口至此关闭，没有增加 `SchoenfliesInput` 字段。
+
+聚焦检查：`FaceLevelPolygons` exit=0（10.8 秒）、`HeightFiberWitness` exit=0（11.3 秒）、`RelativeHeightDeletion` exit=0（13.1 秒），均零 warning。`AuditF218.lean` 九项全部仅依赖 `propext`、`Classical.choice`、`Quot.sound`；fresh 自检 13/13 新鲜、禁用模式 0。下一步将相对删除邻域并入两方向三角封帽生产者，构造两个严格降指标球面，再做 Lemma 1 归约和 S.4 M2/M3。F-M1 整体与 I1 仍未交付。下一审计文件 `AuditF219.lean`。
+
+### 19.70 F-M1：两封帽球面严格降指标
+
+`OppositeTriangleCapPerturbation.lean` 的新端点 `exists_small_opposite_triangle_cap_pair_with_level_comparison` 已把相对删除的小高度邻域并入两方向通用转轴生产者；它实际返回两张封帽球面在帽尖层的圆周数加一不超过各自旧保留盘圆周数，并保留其他奇异点比较、环境同胚在指定凸开邻域外恒同、公共帽盘和恢复原球面的精确等式。旧的 singular comparison 接口保持不变。
+
+`HeightIndexReduction.lean` 的 `heightIndex_lt_of_singular_comparison` 将实际奇异点嵌入和逐层比较合成为严格指标不等式：帽尖仍是奇异点时该项严格下降，否则正贡献的原点从嵌入像中消失。`exists_cap_pair_heightIndex_lt_of_pos` 从正的原指标实际选出正贡献点，生产两个指标均严格较小的有限 PL 球面、各自一般位置高度，以及可供 17.11 消费的平面公共盘与精确恢复式；同时环境同胚保持原球面的像位于给定凸开邻域内。没有增加结论型假设。
+
+聚焦检查：`OppositeTriangleCapPerturbation` exit=0（19.7 秒）、`HeightIndexReduction` exit=0（14 秒），均零 warning。`AuditF219.lean` 四端点全部仅依赖 `propext`、`Classical.choice`、`Quot.sound`。§19.56 与严格降指标已闭合，下一步做 Lemma 1 的良基归纳，把 S.4 归约到零指标球面，再闭合 M2 的零指标情形。F-M1 整体和 I1 尚未交付；下一审计文件 `AuditF220.lean`。
+
+### 19.71 S.4 M1 检查点：Lemma 1 的零指标归约闭合
+
+`SchoenfliesReduction.lean` 的 `isSimplyEmbedded_of_heightIndex_zero_case` 已对有限自然数指标作强归纳。正指标分支使用 §19.70 的实际两封帽生产者，分别由归纳假设得到两球面单嵌入，再由 `SchoenfliesInput` 的 17.11 字段拼合；最后复合指定凸开邻域外恒同的环境同胚，恢复原球面的单嵌入，完整保留 `IsSimplyEmbedded` 对每个凸开邻域的量词。任意 PL 球面的有限剖分和非零一般位置高度均由现有生产者选出。
+
+这里的零指标情形是 Lemma 1 要归约到的明确子问题，尚未作为新的 `SchoenfliesInput` 字段，也不是最终 17.12 端点。主定理实际完成从零指标子类到任意球面的归纳论证；S.4 的旧 M1 至此闭合。聚焦检查 exit=0（11.9 秒）、零 warning；`AuditF220.lean` 主端点仅依赖 `propext`、`Classical.choice`、`Quot.sound`。
+
+下一步进入 M2：先证明零指标时不存在高度奇异点，再证明中间水平截面为一条 PL 圆周及相邻层薄片边界单嵌入。M2/M3 与 I1 尚未交付，S.4 和夜间 F-M1 整体仍为 partial；下一审计文件 `AuditF221.lean`。
+
+### 19.72 S.4 M2：零指标恰为无高度奇异点
+
+`HeightLevelLink.lean` 先证明半空间适配复形的水平限制确实覆盖整个水平纤维，再由水平 PL 圆周的顶点链环为零维球，结合保高度符号的径向细分对应，证明原链环水平截面恰有两个点。`notMem_heightSingularPoints_of_isPLSphere_one_fiber` 因而由已经核验的 crossing 判据排除该层上的候选奇异点。
+
+`HeightRegularity.lean` 的 `one_lt_encard_levelPolygons_of_mem_heightSingularPoints` 证明每个高度奇异点所在层至少有两个 PL 圆周：若至多一个，已有临界层覆盖与奇异点属于圆周并的定理迫使整层为一条圆周，违反前述局部判据。`heightIndex_eq_zero_iff_heightSingularPoints_eq_empty` 随后由有限非负指标和闭合零指标与无奇异点的精确等价。这排除了定义中出现贡献为零的实际奇异点，并未将局部正规性加作假设。
+
+聚焦检查：`HeightLevelLink` exit=0（11.4 秒）、`HeightRegularity` exit=0（11.6 秒），均零 warning。`AuditF221.lean` 六项全部仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步从 crossing 的实际局部模型控制水平图的分支，并证明零指标下中间水平层连通；Lemma 4–6 的薄片及 I1 仍在其后，M2/M3 尚未完成。下一审计文件 `AuditF222.lean`。
+
+### 19.73 S.4 M2：crossing 的实际分支上界与两侧链环连通性
+
+`RadialEmbedding.lean` 证明径向单射点族若各初始径向线段可连续单射映入实直线，则点族至多有两个元素。证明用介值性排除同号的两条不同径向分支，再将方向注入二元类型；无需有限性假设。`CrossingFiber.lean` 从真实 `HasPLCrossingAt` 图卡投影到一维交子空间，实际构造交集的连续实坐标单射，因此任何包含于该交集芽的复形链环至多二点。孤立水平点的链环水平截面则由小径向线段直接证明为空。
+
+`HeightLevelLink.lean` 将既有适配细分构造提取为 `exists_isPLHomeomorphOn_geometricLink_fiber`：实际给出水平纤维剖分，并将其顶点链环 PL 同胚到原链环的水平截面；原圆周纤维端点签名保留。`CrossingFiber.encard_geometricLink_fiber_le_two_of_notMem_heightSingularPoints`（实际全名不含文件前缀）由 crossing/孤立分类证明每个非奇异顶点的该截面至多二点。
+
+`LinkHeightConnected.lean` 使用 PL 圆周的二点截弧参数化，证明避开链环顶点且至多二点的水平截面，其严格上下两部分各自连通（允许空集）。`isPreconnected_geometricLink_halfSpaces_of_heightIndex_eq_zero` 直接从零指标、原顶点一般位置和球面性生产每个顶点的这两项连通性；没有假设分支上界或两侧连通性。
+
+聚焦检查：`RadialEmbedding` exit=0（9.9 秒）、`HeightLevelLink` exit=0（11.3 秒）、`CrossingFiber` exit=0（11.3 秒）、依赖模块 `HeightRegularity` exit=0（10.4 秒）、`LinkHeightConnected` exit=0（10.6 秒），全部零 warning。`AuditF222.lean` 十四项仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步将连续严格半空间截面的连通性送到低顶点子复形，再按有限顶点高度排序排除下层分量的合并，从而证明中间层连通。M2/M3、薄片边界及 I1 尚未完成；下一审计文件 `AuditF223.lean`。
+
+### 19.74 S.4 M2：零指标球面的严格上下半空间整体连通
+
+`HeightSubcomplex.lean` 实际构造严格子水平集到低顶点子复形的重心投影：证明低顶点权重和严格为正、投影连续且像恰为该子复形，并保留子复形上的恒同。`SimplicialComplex/EdgeConnectivity.lean` 由有限个闭的图分量复形证明空间连通与边图连通等价；此对应不要求环境有限维。
+
+`Combinatorics/HeightConnectivity.lean` 先逐路径证明：新顶点的原有邻点若可在原图内互达，删去该顶点保连通；再按有限顶点高度最大值归纳，证明所有严格子水平诱导图连通。一般图论端点只用有限顶点、线序高度的单射性以及每个顶点较低邻点在较低部分互达，不预设任何整体子水平连通性。
+
+`HeightSublevelConnected.lean` 用 §19.73 的真实下链环连通性、上述重心收缩和边图对应生产图论前提，再用低顶点闭星与严格半空间的交集拼回原空间。`isPreconnected_halfSpaces_of_heightIndex_eq_zero` 因而直接从有限 PL 二维球面、三维环境、非零一般位置高度及零指标，证明任意高度的严格上下两部分各自连通（允许空集）；没有新增结论型假设。
+
+聚焦检查：`HeightSubcomplex` exit=0（9.7 秒）、`EdgeConnectivity` exit=0（10.4 秒）、`HeightConnectivity` exit=0（5.9 秒）、`HeightSublevelConnected` exit=0（11.1 秒），均零 warning。`AuditF223.lean` 十五项均仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步结合球面上 PL 圆周的两侧分离，证明中间水平层恰是一条 PL 圆周；随后推进 Lemma 4–6 的薄片边界。S.4 M2/M3、夜间 F-M1 整体和 I1 尚未完成；下一审计文件 `AuditF224.lean`。
+
+### 19.75 S.4 M2：Lemma 3 的全部中间水平层为 PL 圆周
+
+`Connected/CompactIntersection.lean` 证明 Hausdorff 空间中向下有向的紧致连通集族之交连通，并把严格子水平集的连通性传到闭子水平集。`HeightFiberClosure.lean` 证明一般位置高度的每个非顶点点可由同一面的低高度线段逼近；结合有限顶点删除的稠密性，得到零指标球面在每个严格中间高度的闭上下半空间恰为严格两侧的闭包。这一步覆盖孤立候选顶点，不只处理避开顶点的水平面。
+
+`SimplicialComplex/PuncturedConnected.lean` 从既有流形图卡定理证明维数至少二的连通有限组合流形去掉一点仍连通。`HeightFiberCircle.lean` 的 `exists_levelPolygon_of_between_heights` 因而在经过唯一顶点的层也实际生产一个层圆周；非顶点层使用已有圆周分解。`fiber_eq_levelPolygon_of_heightIndex_eq_zero` 再由球面上的两盘分解、严格两侧连通性及上述闭包公式，证明该圆周等于整个层。最终端点 `isPLSphere_one_fiber_of_heightIndex_eq_zero` 对所有严格位于最高与最低高度之间的 r 成立，没有避开顶点的附加条件。
+
+聚焦检查：`CompactIntersection` exit=0（7.4 秒）、`HeightFiberClosure` exit=0（11 秒）、`PuncturedConnected` exit=0（8.8 秒）、`HeightFiberCircle` exit=0（11.1 秒），均零 warning。`AuditF224.lean` 十项仅依赖 `propext`、`Classical.choice`、`Quot.sound`。Lemma 3 已闭合；下一步提取水平两侧盘及有界填充的层结构，进入 Lemma 4–6 的薄片边界单嵌入。S.4 M2/M3、夜间 F-M1 整体及 I1 尚未完成；下一审计文件 `AuditF225.lean`。
+
+### 19.76 S.4 M2：中间水平圆周两侧的精确曲面盘
+
+`Connected/LevelSet.lean` 对任意具闭序拓扑的线序值连续函数证明：连通的严格子水平集（或上水平集）恰是删去该水平纤维后包含其任一点的连通分支，不需要欧氏、紧致或流形假设。`SphericalComponents.lean` 新 API 从球面切圆周的两分支分解中实际选择任意指定分支闭包的 PL 盘参数化，并保留精确的参数边界像。
+
+`HeightHalfDisk.lean` 的 `exists_isPLHomeomorphOn_halfSpaces_of_heightIndex_eq_zero` 结合 §19.74–19.75 的连通性、闭包公式和整层圆周性，实际生产闭上、下半空间截面的两个 PL 盘参数化，两者参数边界均恰为整个水平纤维。`isPLBall_halfSpaces_of_heightIndex_eq_zero` 给出球性 API。仍覆盖顶点高度；没有引入结论型假设，也没有扩充 `SchoenfliesInput`。
+
+聚焦检查：`LevelSet` exit=0（6.3 秒）、`SphericalComponents` exit=0（10.5 秒）、`HeightHalfDisk` exit=0（10.8 秒），均零 warning。`AuditF225.lean` 五项仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步构造水平平面张成盘与封帽/薄片，继续 Lemma 4–6；S.4 M2/M3、夜间 F-M1 整体及 I1 尚未完成。下一审计文件 `AuditF226.lean`。
+
+### 19.77 S.4 M2：水平张成盘及上下封帽球面的精确拼接
+
+`PlanarSpanningDisk.lean` 的 `IsPLSphere.exists_isPLHomeomorphOn_disk_of_subset_fiber` 将任意三维实范数空间中的平面 PL 圆周送入实际二维仿射坐标，使用已经证明的平面 Schoenflies 生产张成 PL 盘并搬回；盘位于原水平面，且位于包含该圆周的任意指定凸开邻域。参数边界像严格等于原圆周。
+
+`HeightCaps.lean` 的 `exists_isPLSphere_pair_of_heightIndex_eq_zero` 使用 §19.76 的两侧曲面盘，实际生产共同平面盘 D，并证明下、上半球各与 D 的并都是 PL 二维球面、两封帽球面的交恰为 D、删去公共盘参数内部后恰好恢复原球面。没有把封帽球性或拼接等式作为输入。此处只交付 PL 球性；封帽边界的单嵌入性仍需后续锥形首尾薄片及中间薄片论证。
+
+聚焦检查：`PlanarSpanningDisk` exit=0（10.1 秒）、`HeightCaps` exit=0（10.8 秒），均零 warning。`AuditF226.lean` 两项仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步证明最低/最高顶点附近的截半球确实是水平圆周的几何锥，以 17.10 处理首尾薄片；S.4 M2/M3、夜间 F-M1 整体及 I1 尚未完成。下一审计文件 `AuditF227.lean`。
+
+### 19.78 S.4 M2：首尾封帽的锥表示与单嵌入生产者
+
+`HeightCone.lean` 对任意实范数空间、任意单纯复形和仿射实值高度证明：若 p 低于 r、其余全部顶点严格高于 r，则每个高度不超过 r 的点所在的面都含 p；沿该面的射线实际构造高度 r 的点，得到闭下截面恰等于 p 与水平纤维的几何锥。这里不需要有限复形、三维环境、零指标或球面性。
+
+`HeightCapCone.lean` 取水平张成盘的实际有限剖分，以其边界复形和上述锥等式证明封帽球面恰为该盘锥的 frontier。`isSimplyEmbedded_lower_cap_of_lt_other_vertices` / `isSimplyEmbedded_upper_cap_of_other_vertices_lt` 因而直接使用固定的 17.10 字段证明首尾封帽单嵌入，没有新增接口字段。
+
+`ExtremeHeightCaps.lean` 的 `exists_height_between_lowest_vertices` 在任意正维有限 PL 球面上实际选出最低两顶点之间的高度；`exists_isSimplyEmbedded_lower_cap_of_heightIndex_eq_zero` / `exists_isSimplyEmbedded_upper_cap_of_heightIndex_eq_zero` 从零指标球面和给定凸开邻域实际生产首尾高度、平面张成盘及单嵌入封帽。两高度都严格位于球面的极端高度之间，且参数边界等于整层圆周。这闭合 Lemma 4/5 的首尾锥形封帽几何论证；未把中间薄片当作已证明。
+
+聚焦检查：`HeightCone` exit=0（8.9 秒）、`HeightCapCone` exit=0（10.6 秒）、`ExtremeHeightCaps` exit=0（10.8 秒），均零 warning。`AuditF227.lean` 九项仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步为中间两层的封口薄片球性、实际三维薄片胞腔分解及 Lemma 6 的自由胞腔删除；S.4 M2/M3、夜间 F-M1 整体及 I1 尚未完成。下一审计文件 `AuditF228.lean`。
+
+### 19.79 S.4 M2：任意两中间高度的双封口薄片是 PL 球面
+
+`HeightSlab.lean` 的 `isPLSphere_slab_of_heightIndex_eq_zero` 从两个实际水平张成盘证明 `(S ∩ {a ≤ ℓ ≤ b}) ∪ D₀ ∪ D₁` 为 PL 二维球面。证明先以 D₀ 替换下半球，再以 D₁ 替换上半球；每次替换的公共圆周、并集和盘参数化均由既有两侧盘定理和高度不等式验证。`exists_isPLSphere_slab_of_heightIndex_eq_zero` 同时在给定凸开邻域内实际生产两张水平盘。端点允许中间高度经过顶点，不附加避顶点条件。
+
+聚焦检查 `HeightSlab` exit=0（10.2 秒）、零 warning；`AuditF228.lean` 两项仅依赖 `propext`、`Classical.choice`、`Quot.sound`。此结果是薄片边界的 PL 球性，尚非单嵌入性。下一步提取只依赖球面与凸胞腔相交盘的实际推移，避免调用要求整体及删除后整体已为 PL 三维球的 `TetrahedronDeletion` 形成循环；随后生产薄片胞腔分解与自由盘相交条件。S.4 M2/M3、夜间 F-M1 整体及 I1 尚未完成。下一审计文件 `AuditF229.lean`。
+
+### 19.80 S.4 M2：不预设整体三维球性的相对凸胞腔推移
+
+`SphereCellPush.lean` 的 `HasPushProperty.exists_isPLHomeomorphOn_sphere_surgery` 从实际 PL 二维球面 S、具有推移性质的胞腔 C、盘 S∩C 及其位于 frontier C 的条件，构造全空间 PL 自同胚，将 S 送到 `closure (S \ C) ∪ closure (frontier C \ S)`，同时固定 `closure (S \ C)` 和给定开邻域外部。`exists_isPLHomeomorphOn_sphere_surgery_of_convex` 用固定的 17.9 字段生产凸 PL 三维胞腔的推移性质。没有假设薄片整体或删除后的整体已是三维球。
+
+`HasPushProperty.isSimplyEmbedded_of_sphere_surgery` 在 C 位于 S 的凸包内时，将手术后球面的单嵌入传回 S；证明对定义中的每个凸开邻域构造上述相对推移并复合，保留邻域外逐点固定。此处是删除归纳的传递引理，尚未生产薄片胞腔及可删相交盘，未将这些条件当作 I1 的结论。
+
+聚焦检查 `SphereCellPush` exit=0（9.8 秒）、零 warning；`AuditF229.lean` 三项仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步为实际薄片胞腔分解、自由盘相交条件与 Lemma 6；S.4 M2/M3、夜间 F-M1 整体及 I1 尚未完成。下一审计文件 `AuditF230.lean`。
+
+### 19.81 S.4 M2：凸多胞体的实际 PL 球性
+
+`PolytopeBoundary.lean` 的 `IsHPolytope.isPolyhedron_frontier` 从有限线性不等式表示证明边界是非零约束等号截面的有限并，从而是多面体；允许空集、低维退化集和零约束，没有附加内部非空条件。
+
+`ConvexPolytope.lean` 的 `isPLSphere_frontier_and_isPLBall_of_convex` 对任意有限维实范数空间，假设紧凸集有非空内部且边界为多面体，以内部点为顶点将边界剖分作锥；锥空间恰为原凸集，其顶点链环由欧氏邻域定理是 PL 球面，链环又恰为原边界剖分。由此同时生产边界 PL 球面和整体 PL 球。`IsHPolytope.isPLSphere_frontier` 与 `IsHPolytope.isPLBall` 应用于紧凸多胞体；后者维数为环境 finrank，并包含零维情形。证明没有使用三维 Schoenflies，也没有假设胞体已是 PL 球。
+
+聚焦检查：`PolytopeBoundary` exit=0（11.9 秒）、`ConvexPolytope` exit=0（9.6 秒），均零 warning。`AuditF230.lean` 四项均仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步将球性生产者应用到水平截面和薄片胞腔，再完成自由胞腔的球面相交盘与删除归纳；S.4 M2/M3、夜间 F-M1 整体及 I1 尚未完成。下一审计文件 `AuditF231.lean`。
+
+### 19.82 S.4 M2：水平截面和薄片胞腔的非退化球性生产者
+
+`Topology/ConvexLevelSet.lean` 的 `exists_mem_interior_fiber_of_convex` 对任意实范数空间中的凸集、非空内部及连续实值函数，从集合上严格位于 r 两侧的两个点，实际生产内部的 r 层点。证明用凸集内部稠密性及介值性；不要求有限维、紧致或函数仿射。
+
+`PolytopeSection.lean` 先证明紧凸多胞体在有限维定义域的单射仿射映射下的原像仍为紧凸多胞体。`IsHPolytope.isPLBall_inter_fiber` 通过真实仿射纤维坐标和 §19.81 的球性定理，生产横截于内部的余维一 PL 球；`isPLBall_inter_slab` 生产实际穿过内部的闭薄片 PL 球。随后以顶点/点的高度不等式生产内部条件，得到 `isPLBall_convexHull_inter_fiber` 和 `isPLBall_convexHull_inter_slab`。在三维环境中，前者覆盖四面体的三角形与四边形截面，后者覆盖截断四面体；不把截面/胞腔球性藏入假设。
+
+聚焦检查：`ConvexLevelSet` exit=0（7.9 秒）、`PolytopeSection` exit=0（13.9 秒），均零 warning。`AuditF231.lean` 八项仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步保留所有原面上的截面控制并构造有限胞腔分解，再生产自由胞腔与薄片球面的相交盘。S.4 M2/M3、夜间 F-M1 整体及 I1 尚未完成。下一审计文件 `AuditF232.lean`。
+
+### 19.83 S.4 M2：有界补分支与实际三维流形填充
+
+已通过合并整合分支取得 `2abc555f9`（合并提交 `df3228eaa`），使用 S 车道已证明且不带 Schoenflies 假设的闭曲面补集两分支定理。整合版 `Topology/Connected/BallComplement.lean` 提供更强的道路连通性，保留其原源码与接口；此前本地同名草稿已撤除，并恢复对应共享产物。
+
+`BoundedSurfaceComponent.lean` 从补集两分支与大球外连通性实际选出有界分支，证明其闭包是多面体、内部恰为该分支、闭包边界恰为原曲面且外部连通。`SurfaceFilling.lean` 的 `isCombinatorialManifoldWithBoundary_of_space_eq_closure_connectedComponentIn_compl` 将 S 的局部两侧 PL 球与补分支闭包配对，证明任意有限剖分的顶点链环均满足三维流形条件。端点 `IsCombinatorialManifold.exists_isCombinatorialManifoldWithBoundary_boundaryComplex` 从有限连通闭组合二维流形实际生产有限三维带边界流形 R，组合边界及拓扑边界均恰为原曲面；R 是内部的闭包，内部与外部都连通。适用于任意三维实范数空间，不预设原曲面为球面，也未把填充宣称为 PL 三维球。
+
+聚焦检查：`BoundedSurfaceComponent` exit=0（10.3 秒）、`SurfaceFilling` exit=0（10.0 秒），均零 warning；整合版 `BallComplement` 产物恢复检查 exit=0（7.8 秒）。`AuditF232.lean` 六项（含两项整合输入）仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步在实际填充顶点上选择保零指标的一般位置高度，确定水平填充盘和薄片胞腔分解，再做 Lemma 6 自由胞腔删除。S.4 M2/M3、夜间 F-M1 整体及 I1 尚未完成。下一审计文件 `AuditF233.lean`。
+
+### 19.84 S.4 M2：保零指标的填充高度与每个中间层的实际 PL 盘
+
+`PlanarJordan/RegionRecognition.lean` 在不预设开集连通的条件下证明：非空有界开集避开 Jordan 曲线且边界包含于该曲线时，它恰为曲线内部。`FiberFilling.lean` 的 `exists_isPLHomeomorphOn_closure_inter_fiber` 将三维有界开集的水平截面搬到真实仿射平面坐标，以此识别截面并生产闭截面的 PL 盘参数化，参数边界恰为原边界的水平圆周。只需截面非空和边界截面为 PL 圆周；无需假设截面连通、截面是盘或其闭包交换公式。
+
+`exists_isPLHomeomorphOn_filling_fiber_of_heightIndex_eq_zero` 从零指标与实际填充内部的连通性，通过介值性生产非空条件，覆盖全部严格中间高度，包含顶点高度。`HeightFilling.lean` 的 `exists_continuousLinearMap_injOn_heightIndex_eq` 在任意给定有限点集上选择任意小的一般位置高度，保持原球面指标。端点 `exists_filling_injOn_vertices_of_heightIndex_eq_zero` 实际生产有限三维填充 R、全部 R 顶点上单射的非零高度 f、零指标，以及每个严格中间高度的填充 PL 盘和精确参数边界。边界使用 R 自带的边界复形，原球面与边界复形的空间相等，未假设两份剖分的顶点一致。
+
+聚焦检查：`RegionRecognition` exit=0（8.1 秒）、`FiberFilling` exit=0（10.5 秒）、`HeightFilling` exit=0（10.2 秒），均零 warning。`AuditF233.lean` 五项仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步从填充的单形水平截面实际构造有限盘胞腔分解，包含截面公共面与自由盘相交条件，再完成 Lemma 6 的有限删除及 M3 拼装。S.4 M2/M3、夜间 F-M1 整体及 I1 尚未完成。下一审计文件 `AuditF234.lean`。
+
+### 19.85 S.4 M2：实际四面体截面的有限盘胞腔分解
+
+`SimplexSection.lean` 将截面球性推广到单形自身的维数：仿射独立的 n+2 个顶点跨越给定仿射高度时，截面为 PL n-球，不要求单形满维于环境。一般位置下，任何非空截面要么恰为一个极值顶点，要么跨越高度两侧。因此两个不同至多四顶点的单形的非空截面交，实际为 PL 零维球或 PL 一维球，包含经过顶点的高度层。
+
+`DiskCover.lean` 从有限 PL 二维盘覆盖及点/弧公共部分，实际构造共同剖分并证明 `IsPLDiskDecomposition`。公共部分位于胞腔边界并未作为假设：先用低维 PL 球的稠密补集，再用子流形边界定理导出。
+
+`HeightSectionDecomposition.lean` 定义 `heightSectionCells` 为实际四面体的非退化水平截面。`biUnion_heightSectionCells_eq_fiber` 用填充的正规闭性与盘删去有限顶点后的稠密性，证明这些二维胞腔覆盖整个水平盘，故经过顶点时的单点截面也已覆盖。`exists_isPLDiskDecomposition_fiber_of_heightIndex_eq_zero` 从 §19.84 所生产的零指标填充数据实际构造每个中间层的有限盘胞腔分解及参数化边界；无需另加截面球性、共同剖分或胞腔边界相交假设。
+
+聚焦检查：`SimplexSection` exit=0（10.6 秒）、`DiskCover` exit=0（10.3 秒）、`HeightSectionDecomposition` exit=0（10.3 秒），均零 warning。`AuditF234.lean` 十五项仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步证明指定层顶点的闭星截面 d0 是上述胞腔中的子盘，再将相对自由盘提升为三维薄片中与边界相交为盘的凸胞腔，执行有限删除及 M3 拼装。S.4 M2/M3、夜间 F-M1 整体及 I1 尚未完成。下一审计文件 `AuditF235.lean`。
+
+### 19.86 S.4 M2：闭星截面子盘及其外部自由胞腔的实际选择
+
+`ConeFiber.lean` 证明过锥顶的线性水平截面仍是锥，并实际构造有限底复形。`ClosedStarFiber.lean` 的 `isPLBall_closedStar_inter_fiber` 从整层为正维 PL 球推出顶点闭星的同层截面为同维 PL 球：先将原链环的水平截面与整层剖分的顶点链环作 PL 对应，再分别对球面链环和球链环作锥。结论适用于任意有限维实范数空间，不需要三维、顶点高度单射或预设闭星截面球性。
+
+`HeightStarDecomposition.lean` 从正规闭填充的纯三维性及盘删去有限顶点后的稠密性，证明 d0 恰为实际截面胞腔中包含于闭星者的并。`exists_free_heightSectionCell_outside_closedStar` 因而从整层盘、一般位置高度及 d0 不等于整层，实际生产共同剖分和 d0 外的一块自由截面盘；没有把 d0 球性、子胞腔覆盖或自由胞腔作为额外输入。
+
+聚焦检查：`ConeFiber` exit=0（8.9 秒）、`ClosedStarFiber` exit=0（10.4 秒）、`HeightStarDecomposition` exit=0（10.4 秒），均零 warning。`AuditF235.lean` 七项（含链环搬运输入）仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步将所选自由盘提升为三维薄片凸胞腔，证明其与当前边界的交为盘并闭合有限删除，再做 M3。S.4 M2/M3、夜间 F-M1 整体及 I1 尚未完成。下一审计文件 `AuditF236.lean`。
+
+### 19.87 S.4 M2：无顶点单形薄片的逐子面 PL 棱柱模型
+
+`CellEquivalence.lean` 对两个有限仿射超平面配置，从出现的符号向量族相同构造导出剖分的同构及 PL 同胚，并证明每一点的全部定义符号保持。`SimplexHeightInterpolation.lean` 从高度闭区间避开全部顶点，实际生产各层上具有相同零坐标集合的标准单形点；不假设层的面对应。
+
+`SimplexSlabPrism.lean` 因而实际生产标准单形闭薄片到其下端截面乘闭区间的 PL 同胚，保留全部零坐标及上下端面。`SimplexCoordinates.lean` 提取标准线性组合的 PL 坐标、任意子面由坐标零集确定的纯代数 API。`SimplexSlab.lean` 的 `exists_isPLHomeomorphOn_convexHull_slab_prism` 将模型搬回任意有限维实范数空间中的仿射独立单形，保留每个原子面的成员关系及两端截面；不要求单形满维、不要求恰四个顶点，也不假设一个棱柱参数化。该结果用于 d0 外非关联顶点胞腔的侧面带与可删边界盘。
+
+聚焦检查：`CellEquivalence` exit=0（8.2 秒）、`SimplexHeightInterpolation` exit=0（8.1 秒）、`SimplexSlabPrism` exit=0（9.3 秒）、`SimplexCoordinates` exit=0（8.4 秒）、`SimplexSlab` exit=0（9.2 秒），均零 warning。`AuditF236.lean` 十项仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步生产自由截面盘对应的三维侧面带，证明其与当前薄片边界的交为 PL 盘，随后有限删除及 M3。S.4 M2/M3、夜间 F-M1 整体及 I1 尚未完成。下一审计文件 `AuditF237.lean`。
+
+### 19.88 S.4 M2：自由截面胞腔的实际侧面带与两端相交盘
+
+`SimplexSlabPrism.lean` 与 `SimplexSlab.lean` 将既有棱柱模型推广到闭区间内任意参考高度 r，仍保持所有原子面和上下端截面；参考截面可取层内唯一顶点的高度。`SlabFaceTransport.lean` 从单形交为公共面的性质，将逐子面控制提升为对原复形每个子复形的成员关系保持，不假设各侧面带已经存在。
+
+`PrismArcPatch.lean` 的 `isPLBall_prism_ends_union_arc` 用实际棱柱边界上的两次沿弧粘盘，证明两端盘与一条边界弧上方的侧面带之并是 PL 二维盘。`FreeCellSlab.lean` 的 `isPLBall_slab_patch_of_isFreeDiskCell` 从实际截面盘分解中的自由胞腔及精确截面边界等式，生产原薄片中对应的相交盘。自由弧等于胞腔与整层边界之交由子流形边界单调性导出，棱柱模型沿原边界子复形保持此交；没有增添相交盘球性或侧面带参数化假设。
+
+聚焦检查：`SimplexSlabPrism` exit=0（8.8 秒）、`SimplexSlab` exit=0（9.3 秒）、`SlabFaceTransport` exit=0（8.4 秒）、`PrismArcPatch` exit=0（11.3 秒）、`FreeCellSlab` exit=0（9.8 秒），均零 warning。`AuditF237.lean` 六项仅依赖 `propext`、`Classical.choice`、`Quot.sound`。下一步把此相交盘生产者接入 d0 外自由胞腔的实际选择，证明凸胞腔及可推移条件并执行有限删除，再做 M3。S.4 M2/M3、夜间 F-M1 整体及 I1 尚未完成。下一审计文件 `AuditF238.lean`。
+
+### 19.89 S.4 M2：闭星外实际凸胞腔的选择与单步相对环境删除
+
+`Topology/SlabBoundary.lean` 证明闭集交的精确边界公式，以及任意实范数空间中非零连续线性高度的闭薄片边界公式。`HeightFreeSlab.lean` 的 `exists_convex_slab_cell_of_ne_closedStar` 从实际填充、精确参数边界的水平盘和层内唯一顶点 p，在 d0 不等于整层时实际选出不含 p 的四面体 T。其闭薄片胞腔 C 是凸 PL 三维球，与整体薄片边界的交是 PL 二维盘，且此交包含于 frontier C；未把自由胞腔、三维球性或可删相交盘作为额外输入。
+
+`HeightSlabSurgery.lean` 先从零指标生产整体填充薄片边界的 PL 二维球性。`exists_isPLHomeomorphOn_delete_slab_cell` 随后消费上述实际胞腔与固定 17.9 输入，构造环境 PL 自同胚，将 S 送到 `closure (S \ C) ∪ closure (frontier C \ S)`，固定 `closure (S \ C)` 及给定凸开邻域 W 外。C 位于 W 的条件由薄片紧致性和 `Topology/ConvexFrontier.lean` 的边界包含定理证明，不要求 W 预先包含三维填充，也不假设整体薄片为 PL 三维球。
+
+聚焦检查：`SlabBoundary` exit=0（7.9 秒）、`HeightFreeSlab` exit=0（10.2 秒）、`HeightSlabSurgery` exit=0（10.8 秒），均零 warning。`AuditF238.lean` 五项仅依赖 `propext`、`Classical.choice`、`Quot.sound`。已闭合实际单步删除；下一步证明删除后的区域与截面分解保留归纳条件，有限迭代到残余闭星锥，再做 M3。S.4 M2/M3、夜间 F-M1 整体及 I1 尚未完成。下一审计文件 `AuditF239.lean`。
+
+### 19.90 S.4 M2：截面上保留 d0 的实际有限自由胞腔删除序列
+
+`DiskCellDeletion.lean` 证明删除一块原胞腔 C 后的闭包恰为其余原胞腔之并；证明使用两两点/弧交的低维稠密补集，没有将覆盖余项的等式作为假设。自由胞腔与整层边界的交是弧，由此证明删除后仍是 PL 盘，并在原共同剖分的限制上保留全部剩余胞腔，得到新的 `IsPLDiskDecomposition`。
+
+`IsFreeDiskCellDeletion D` 精确记录一轮删除：源盘分解、所选自由胞腔 C、C 不包含于固定子盘 D，以及目标复形和胞腔族恰为闭差限制与 erase。`IsPLDiskDecomposition.exists_free_disk_cell_deletion_sequence` 以胞腔族的严格子集归纳，实际构造有限轮删除到 D，保留组成 D 的所有原胞腔。`HeightStarDeletion.lean` 的 `exists_free_disk_cell_deletion_sequence_to_closedStar` 将此序列接到实际四面体水平截面；终点恰为闭星截面 d0，剩余胞腔恰为最初包含于闭星者。
+
+聚焦检查：`DiskCellDeletion` exit=0（9.7 秒）、`HeightStarDeletion` exit=0（9.9 秒），均零 warning。`AuditF239.lean` 六项仅依赖 `propext`、`Classical.choice`、`Quot.sound`。二维有限删除及准确终点已闭合；下一步把序列的每一步提升到三维剩余薄片，证明更新后的相交盘与区域边界公式，拼接环境推移并识别残余闭星锥。现有 §19.89 环境删除定理直接适用于初始零指标填充，尚未把它宣称为整个三维迭代。S.4 M2/M3、夜间 F-M1 整体及 I1 尚未完成。下一审计文件 `AuditF240.lean`。
+
+### 19.91 S.4 M2：任意剩余子复形的截面边界与自由胞腔相交盘
+
+`FaceProjection.lean` 证明：在原单形的相对内部，沿该面方向的小投影保持任意有限子复形的成员关系；由此将环境内部点与水平截面的相对内部点精确对应。`FiberBoundary.lean` 用真实仿射平面坐标把 PL 盘的相对内部与参数边界互补对应，得到任意剩余子复形在非顶点处的环境边界与其水平盘组合边界的等价，不要求剩余子复形预先为三维流形。
+
+`FaceInterior.lean` 证明任意有限子复形的内部/边界成员关系在每个原开单形上恒定，因此其拓扑边界实际为原复形的限制子复形。`FreeCellSlab.lean` 将既有相交盘生产者的边界等式减弱为所选胞腔上的局部交等式，唯一旧消费者已同步。`SubcomplexSlab.lean` 的 `isPLBall_frontier_slab_inter_cell_of_isFreeDiskCell` 因而直接从当前水平盘分解及其自由胞腔，生产对应三维薄片胞腔与当前薄片边界的 PL 二维相交盘。避开胞腔全部顶点的高度区间排除了该胞腔截面上的原顶点，局部边界等价遂覆盖整块自由胞腔；没有新增整体边界等式或相交盘假设。
+
+聚焦检查：`FaceProjection` exit=0（9.5 秒）、`FiberBoundary` exit=0（9.8 秒）、`FaceInterior` exit=0（9.3 秒）、`FreeCellSlab` exit=0（9.7 秒）、`SubcomplexSlab` exit=0（9.8 秒）；旧消费者 `HeightFreeSlab` exit=0（10.4 秒）、`HeightSlabSurgery` exit=0（10.8 秒），全部零 warning。`AuditF240.lean` 十三项仅依赖 `propext`、`Classical.choice`、`Quot.sound`；无 Lean 进程时 `fresh.py` 为 71/71 fresh、零 stale/missing、零禁用项。下一步连接现有三维流形补集定理，识别每轮剩余薄片与原胞腔删除，迭代环境推移到闭星锥并做 M3。S.4 M2/M3、夜间 F-M1 整体及 I1 尚未完成。下一审计文件 `AuditF241.lean`。
+
+### 19.92 S.4 M2：真实闭差区域的边界、原胞腔和水平盘同步删除
+
+`Topology/Connected/CompactRegion.lean` 证明非紧 Hausdorff 空间中紧致正规闭区域的边界唯一性，参照区域的内部与外部连通。`SurfaceRegion.lean` 将它接到已证的有界补分支生产者，从实际正规闭区域及连通闭组合曲面边界证明该区域是三维带边界组合流形；球面特例不消费 Schoenflies。`RegionCellPush.lean` 因而先用已有三维流形补集定理证明 `frontier (closure (P \ C))` 的精确换盘公式，再构造环境 PL 同胚，将旧边界实际送到这个闭差区域的边界，固定未删部分和给定凸开邻域外。
+
+`Topology/RegularClosed.lean` 证明正规闭集删去闭集后的闭包仍正规闭，并给出在正规闭条件下闭差与闭集裁剪的交换公式。`ConvexLevelSet.lean` 新 API 由凸集的两端严格不等式生产其内部落在开区间的点；`SimplexSlabInterior.lean` 从端面避开原顶点生产满维单形薄片的非空内部，并证明任意有限正规闭复形的这种薄片仍正规闭。`SimplexSlabDeletion.lean` 的 `closure_sdiff_slab_eq_subcomplexGeneratedBy_inter` 将薄片中删去一块原满维单形的闭差，准确识别为 `subcomplexGeneratedBy K {s | ¬s ⊆ T}` 的薄片。
+
+`HeightCellDeletion.lean` 的 `fiber_subcomplexGeneratedBy_eq_closure_sdiff` 证明同一生成子复形的水平截面恰为旧水平截面删去该胞腔后的闭包。证明在被删单形上排除原顶点，在剩余满维原面上利用点/弧相交的低维稠密补集；不预设余截面为盘。`heightSectionCells_erase_subset_subcomplexGeneratedBy` 同时保证其余每一块原截面胞腔仍由剩余原面生产，且此结果无需有限维假设。下一步把 §19.91 的自由相交盘与这些等式组合为完整删除步骤，对 §19.90 的有限序列归纳，直到闭星锥后做 M3。
+
+聚焦检查：`CompactRegion` exit=0（5.5 秒）、`SurfaceRegion` exit=0（9.5 秒）、`RegularClosed` exit=0（5.2 秒）、`RegionCellPush` exit=0（9.6 秒）、`ConvexLevelSet` exit=0（7.4 秒）、`SimplexSlabInterior` exit=0（9.1 秒）、`SimplexSlabDeletion` exit=0（9.5 秒）、`HeightCellDeletion` exit=0（10.2 秒），均零 warning。`AuditF241.lean` 十七项仅依赖 `propext`、`Classical.choice`、`Quot.sound`；无 Lean 进程时 `fresh.py` 为 78/78 fresh、零 stale/missing、零禁用项。三维有限迭代和残余锥识别尚未拼装；S.4 M2/M3、夜间 F-M1 整体及 I1 尚未完成。下一审计文件 `AuditF242.lean`。
+
+### 19.93 S.4 M2：完整三维有限环境删除及闭星薄片精确终点
+
+`SlabCellDeletion.lean` 的 `exists_isPLHomeomorphOn_slab_of_free_disk_cell_deletion` 消费一轮实际二维自由胞腔删除，从当前原子复形中选择对应四面体，证明其不含固定顶点 p，并实际构造下一原子复形。输出同时保留正规闭性、所有含 p 的原面、二维删除后的精确水平盘和其余原截面胞腔，且构造环境 PL 同胚把当前薄片边界送到真实下一薄片边界。未追加余截面盘性、相交盘球性、余区域流形性或额外环境推移输入。
+
+`SlabDeletionSequence.lean` 的 `exists_isPLHomeomorphOn_slab_of_free_disk_cell_deletion_sequence` 对 §19.90 的有限序列作头部归纳，实际复合全部环境同胚。每轮新边界的球性由前一轮环境像传递；给定凸开邻域 W 外始终固定，故新边界仍在 W 内。`ClosedStarSlab.lean` 通过保持全部原子复形的单形棱柱模型，将最终水平盘包含于 d0 的条件提升为整个剩余薄片恰等于闭星薄片，无需额外纯维性或胞腔计数。端点 `exists_isPLHomeomorphOn_frontier_slab_closedStar` 从原零指标填充实际生产环境 PL 同胚，将整个薄片边界送到 `frontier (closedStar K p ∩ ℓ ⁻¹' Icc a b)`，固定 W 外。
+
+当前完整删除端点使用 `a < ℓ p < b`，这是 §19.91–19.92 的端面避开全部顶点版本。书页 124–125 的最终锥论证把 p 放在一端平面，故下一步应将正规闭裁剪和删除步骤推广到 `a = ℓ p` 或 `b = ℓ p`（保持 p 层为真实 PL 盘，删除胞腔仍避开 p），再识别单侧残余闭星为盘与点的 join，消费 17.10，最后按 17.11 做 M3。不能把当前双侧闭星薄片直接冒充 17.10 的盘锥。
+
+聚焦检查：`SlabCellDeletion` exit=0（10.6 秒）、`ClosedStarSlab` exit=0（8.2 秒）、`SlabDeletionSequence` exit=0（9.9 秒），全部零 warning。`AuditF242.lean` 四项仅依赖 `propext`、`Classical.choice`、`Quot.sound`；无 Lean 进程时 `fresh.py` 为 81/81 fresh、零 stale/missing、零禁用项。三维有限删除及闭星精确终点已闭合，单侧锥识别和 M3 尚未完成；S.4 M2/M3、夜间 F-M1 整体及 I1 仍为 partial。下一审计文件 `AuditF243.lean`。
+
+### 19.94 S.4 M2：参考顶点可在端面的完整薄片删除
+
+`SlabFiberInterior.lean` 从凸包中分别严格低于上端和高于下端的点生产满维单形薄片的非空内部，不再要求端面避开全部顶点。`closure_interior_space_inter_slab_of_isPLBall_fiber` 从有限正规闭复形、顶点高度一般位置、闭区间内至多一个顶点 p 及 p 层的正维 PL 球性，证明整个闭薄片正规闭；p 可在任一端面。证明对非顶点使用跨越高度的满维面，对 p 使用水平 PL 球删去有限顶点后的稠密性；适用于任意有限维实范数空间，不要求三维。
+
+`SlabCellDeletion.lean` 与 `SlabDeletionSequence.lean` 的三项删除端点已同步采用 `a < b`、`ℓ p ∈ Icc a b`。被删四面体仍不含 p，故其自身端面继续避开全部顶点；剩余区域的正规闭裁剪由新定理实际生产，闭差交换公式随之成立。书中一端经过 p 的薄片现已纳入完整有限环境删除，未增添剩余区域正规闭性或相交盘假设。
+
+聚焦检查：`SlabFiberInterior` exit=0（9.6 秒）、`SlabCellDeletion` exit=0（10.7 秒）、`SlabDeletionSequence` exit=0（10.1 秒），全部零 warning。`AuditF243.lean` 五项仅依赖 `propext`、`Classical.choice`、`Quot.sound`；无 Lean 进程时 `fresh.py` 为 82/82 fresh、零 stale/missing、零禁用项。下一步构造单侧闭星薄片的实际锥底并证明其 PL 二维盘性，消费 17.10，再按 17.11 做 M3。S.4 M2/M3、夜间 F-M1 整体及 I1 仍为 partial。下一审计文件 `AuditF244.lean`。
+
+### 19.95 S.4 M2：单侧裁剪锥的实际有限底复形
+
+`RadialIndependence.lean` 证明：仿射独立单形的凸包不含 p，且每条以 p 为起点的正射线至多交它一点，则插入 p 后仍仿射独立。若存在将 p 表为该面顶点仿射组合的系数，就从重心沿此仿射组合取足够小的位移，得到同一射线上的两个不同凸包点，矛盾。`isConeBase_of_isRadiallyInjective` 因而从不含锥顶及径向单射实际生产任意给定复形的 `IsConeBase`；两项结果均不要求有限维或复形有限。
+
+`ConeSlab.lean` 的 `IsConeBase.exists_coneComplex_inter_slab` 对任意有限锥、任意仿射高度 ℓ 和 `ℓ p < b`，实际构造有限底复形 L 及 `IsConeBase p L`。其空间恰为旧底中高度落在 `[ℓ p, b]` 的部分与原锥的上端截面之并；新锥空间恰为原锥的整个闭薄片。径向唯一性、插顶独立性、底面多面体性和空间双向等式均已证明，不预设新的锥表示，也不要求三维、顶点高度一般位置或原底为球。应用于原顶点链环即可得到单侧闭星薄片的真实锥表示；该底的二维盘性尚待接入实际边界球性和锥顶链环分类。
+
+聚焦检查：`RadialIndependence` exit=0（66.2 秒）、`ConeSlab` exit=0（14.0 秒），全部零 warning。`AuditF244.lean` 六项仅依赖 `propext`、`Classical.choice`、`Quot.sound`；无 Lean 进程时 `fresh.py` 为 84/84 fresh、零 stale/missing、零禁用项。按用户要求在当前文件闭环后返回，未继续后续证明。下一步从实际残余球面边界与正规闭区域生产三维流形，用位于边界的锥顶识别锥底为 PL 二维盘并消费 17.10，再做 M3。`ConeManifold` 的未验证草稿保存于本工作树 `.lake/scratch/ConeManifold.pending.lean`，未放入源码或提交，不能当作已证输入。S.4 M2/M3、夜间 F-M1 整体及 I1 仍为 partial。下一审计文件 `AuditF245.lean`。
+
+### 19.96 S.4 M2 done：中间薄片的实际盘锥与单嵌入
+
+已合并整合分支 `a8f07c475` 并读取本目录 `AGENTS.md`；本结果的源码、交接及计划记录一起暂存提交。`BallRegularClosed.lean` 将满维 PL 球的正规闭性搬到任意同维有限维实范数空间。`ConeManifold.lean` 由锥顶位于实际拓扑边界及组合流形的链环分类识别锥底为 PL 球；三维特例先从正规闭区域及实际球面边界生产三维带边界流形，再识别锥底为 PL 二维盘，不消费 Schoenflies。
+
+`ClosedStarCone.lean` 证明带边界组合流形的顶点闭星为同维 PL 球，并将 §19.95 的真实裁剪锥接到 §19.94 的端面正规闭性。`exists_isPLBall_coneComplex_eq_closedStar_slab` 实际构造单侧闭星薄片的有限盘锥：底面盘性来自锥顶边界的链环，锥顶在边界由端面边界公式证明。该辅助结果所用残余边界球性，在最终消费者中由完整有限环境删除的实际像生产。
+
+`SlabEmbedding.lean` 的 `isSimplyEmbedded_frontier_slab_of_heightIndex_eq_zero_of_vertex_lower` 与 `isSimplyEmbedded_frontier_slab_of_heightIndex_eq_zero_of_vertex_upper` 从原零指标填充、一般位置高度和区间内唯一端点顶点，实际证明薄片边界单嵌入。先按 §19.93–19.94 的有限删除送到闭星薄片，再消费原 `SchoenfliesInput` 的 17.10，将其送到单形边界；完整复合仍固定任意给定凸开邻域外。上端版本通过高度反射，逐一对应全部奇异点及层圆周数。未增加锥底盘性、删除后边界球性、区域流形性或额外推移接口等最终假设。
+
+状态：M2（Lemma 2–6）done；M3、I1 与夜间 F-M1 整体仍为 partial。四模块聚焦检查依次为 `ConeManifold` exit=0（11.9 秒）、`BallRegularClosed` exit=0（11.6 秒）、`ClosedStarCone` exit=0（12.1 秒）、`SlabEmbedding` exit=0（14.2 秒），全部零 warning。`AuditF245.lean` 七项仅依赖 `propext`、`Classical.choice`、`Quot.sound`；无 Lean 进程时 `fresh.py` 为 88/88 fresh、零 stale/missing、零禁用项。下一步 M3：证明相邻薄片与下截区域的精确平面公共盘和删盘恢复式，按有限顶点高度归纳消费 17.11，接回零指标归约及 I1 两端点。下一审计文件 `AuditF246.lean`。
+
+### 19.97 S.4 M3 done：有限水平盘拼装与 I1 两端点
+
+`Topology/SlabBoundary.lean` 给出闭区域与上下半空间相交的边界公式，以及相邻薄片/下截区域的平面公共盘和删盘恢复式；纯拓扑结果适用于任意实范数空间。`Topology/HeightRange.lean` 证明非平凡实范数空间中紧致区域的严格高度见证可在其边界找到，无需高度非零或有限维。`SublevelGluing.lean` 据此精确消费原 17.11，沿实际参数化水平盘拼接相邻边界。
+
+`SublevelEmbedding.lean` 的 `isSimplyEmbedded_frontier_sublevel_of_heightIndex_eq_zero` 按不高于截面高度的原顶点数作强归纳。最底部由真实盘锥及 17.10 生产；归纳步在最高已越过顶点之前选择新高度，使用 M2 的上端、下端顶点薄片，再沿各层实际水平盘连续消费 17.11。归纳计数的严格下降由有限顶点集合的真包含给出；没有把有限薄片序列、公共盘或各步单嵌入作为最终假设。
+
+`Schoenflies.lean` 在最大顶点之前选取最后一层，与顶端盘锥拼合，得到 `isSimplyEmbedded_frontier_of_heightIndex_eq_zero`。`HeightFilling` 实际生产所需带边界三维流形填充及顶点一般高度，得到 `isSimplyEmbedded_of_heightIndex_eq_zero`，再接回已证的降指标归约。I1 已交付：`isSimplyEmbedded_of_isPLSphere_two (I : SchoenfliesInput) (hS : IsPLSphere 2 S) : IsSimplyEmbedded S` 与 `exists_isPLBall_of_isPLSphere_two (I : SchoenfliesInput) (hS : IsPLSphere 2 S) : ∃ B, IsPLBall 3 B ∧ frontier B = S ∧ Bornology.IsBounded B`，其中 `S : Set (EuclideanSpace ℝ (Fin 3))`。接口仍是原四字段，未增加结论型假设；S 车道可用已整合的 `schoenflies_input` 实例化，解除其消费者参数。
+
+状态：S.4 的 M1、M2、M3 及夜间 F-M1 done；I1 已交付，无剩余数学义务。最终五模块检查为 `SlabBoundary` exit=0（12.5 秒）、`HeightRange` exit=0（10.0 秒）、`SublevelGluing` exit=0（12.1 秒）、`SublevelEmbedding` exit=0（13.0 秒）、`Schoenflies` exit=0（11.0 秒），全部零 warning。`AuditF246.lean` 对十七项新声明及原 `schoenflies_input` 共十八项审计，全部仅依赖 `propext`、`Classical.choice`、`Quot.sound`。无 Lean 进程时 `fresh.py` 为 92/92 fresh、零 stale/missing、零禁用项；`git diff --check` 通过。源码、交接与两个计划记录同次提交。恢复后下一步按 NIGHT_PLAN §6.2 做 F-M5 的实际双点分类，并生产 F-M6 的余面严格异侧性；这两项及最终 `exists_small_isNormalSingularCell` 仍为 partial。下一审计文件 `AuditF247.lean`。
+
+按用户要求，本结果整理、同次提交并推送后暂停。未开始新的 F-M5/F-M6 证明；本车道无运行中的 Lean 进程。
