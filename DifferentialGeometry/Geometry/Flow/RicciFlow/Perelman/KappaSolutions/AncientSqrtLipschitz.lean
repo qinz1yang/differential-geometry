@@ -173,4 +173,37 @@ theorem scalar_le_of_rescaled_distance_le
   have hlength := redLength_le_of_rescaled_distance_le F hF p q x htau hD hbase hdist
   nlinarith
 
+theorem rmNorm_le_of_rescaled_distance_le
+    {kappa : ℝ} (hF : IsAncientKappaSolution kappa F)
+    (p q x : F.M) {tau A D : ℝ} (htau : 0 < tau) (hD : 0 ≤ D)
+    (hbase : redLength F.S 0 p q tau ≤ A)
+    (hdist : riemannianEDistOf
+      (scaleMetric tau⁻¹ (inv_pos.mpr htau) (F.S.base.metric (-tau))) q x ≤
+      ENNReal.ofReal D) :
+    let g := scaleMetric tau⁻¹ (inv_pos.mpr htau) (F.S.base.metric (-tau))
+    Real.sqrt (Tensor0SBundle.normSq0S (I := I) g x 4 (metricRm04At (I := I) g x)) ≤
+      (Module.finrank ℝ E : ℝ) ^ 2 *
+        (3 * (Real.sqrt A + Real.sqrt 3 / 2 * D) ^ 2) := by
+  let _ : CompleteSpace E := FiniteDimensional.complete ℝ E
+  let g := scaleMetric tau⁻¹ (inv_pos.mpr htau) (F.S.base.metric (-tau))
+  change Real.sqrt (Tensor0SBundle.normSq0S (I := I) g x 4 (metricRm04At (I := I) g x)) ≤ _
+  have hop : metricAlgebraicCurvatureTensorAt (I := I) g x ∈
+      algebraicCurvatureOperatorNonnegativeCone (I := I) (M := F.M) := by
+    dsimp only [g]
+    rw [metricAlgebraicCurvatureTensorAt_scaleMetric]
+    apply algebraicCurvatureOperatorNonnegativeCone.smul_mem ?_ (inv_pos.mpr htau).le
+    apply (metricAlgebraicCurvatureTensorAt_mem_curvatureOperatorNonnegativeCone_iff
+      (I := I) (F.S.base.metric (-tau)) x).mpr
+    intro n c v w
+    simpa only [SolutionFamily.rm04, metricRm04StandardAt_apply, metricRm04_apply] using
+      hF.nonnegativeCurvatureOperator (-tau) (neg_nonpos.mpr htau.le) x n c v w
+  have hscalar : metricScalarAt (I := I) g x ≤
+      3 * (Real.sqrt A + Real.sqrt 3 / 2 * D) ^ 2 := by
+    dsimp only [g]
+    rw [metricScalarAt_scaleMetric, inv_inv]
+    exact scalar_le_of_rescaled_distance_le F hF p q x htau hD hbase hdist
+  exact (sqrt_metricRm_normSq_le_finrank_sq_mul_scalar g x hop).trans
+    (mul_le_mul_of_nonneg_left hscalar (sq_nonneg _))
+
+
 end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
