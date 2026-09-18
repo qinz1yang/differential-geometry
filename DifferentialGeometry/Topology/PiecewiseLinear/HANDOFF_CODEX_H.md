@@ -2744,3 +2744,28 @@ closedStar K' x ∩ L.space = closedStar L' x`——子复形的迹就是子复�
 
 给 F 的端到端交付（截至本次中断）：`ArcChartChain.lean` 的星形图卡族＋相容侧选择（第 39 节），
 以及第 39 节报告的接口缺陷（协调者已把修法 (β) 派给 F）。球对方向未闭合，未估行数。
+
+## 43. 2026-09-18 Codex verified continuation
+
+The ArcChainCells stash was recovered without dropping the stash, repaired with
+three narrow `omit` scopes, and pushed as `ae58cf850`. Integration added its
+required headers and root import in `f6a0b2dda`.
+
+Step 1 of section 42 is now implemented: the conclusion of
+`exists_isPLHomeomorphOn_coneSet_pair_of_disk_marked` also exposes
+`G '' Lc.space = Lc'.space`. This follows from the existing boundary agreement
+and the sphere homeomorphism's image equality; no hypothesis was added. Both
+consumers in `BallPairRelativeGluing.lean` were updated.
+
+The two leaves are registered in the flat root and have the required copyright
+and module headers, as explicitly authorized by the owner on 2026-09-18.
+Both compiled with the standard syntax linter set, `style.header=true` and
+`style.longLine=true`, exit 0 with no diagnostics. A silent external audit checked
+all five declarations in the two leaves: every axiom lies in
+`{propext, Classical.choice, Quot.sound}`, and all default environment linters
+except `docBlame` and `docBlameThm` passed. Imported objects were reused for these
+local checks; the separate integration source rebuild remains pending.
+
+The next mathematical obligation is still section 42 step 2: expose the combined
+cut model's cone data and the second base sphere's containment in the outer sphere
+union the gluing disk. The trimmed arc-chain ball-pair induction is not complete.
