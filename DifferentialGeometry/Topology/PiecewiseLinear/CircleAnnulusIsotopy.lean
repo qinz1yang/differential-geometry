@@ -452,7 +452,8 @@ theorem exists_isPLPseudoIsotopicToId_map_eq_of_arc [FiniteDimensional ℝ E]
     {S A B : Set E} {ε : ℝ → E} (hε : IsPLHomeomorphOn ε (Icc 0 1) A)
     (hBpoly : IsPolyhedron B) (hunion : A ∪ B = S) (hinter : A ∩ B = {ε 0, ε 1})
     {p p' : E} (hp : p ∈ A \ ({ε 0, ε 1} : Set E)) (hp' : p' ∈ A \ ({ε 0, ε 1} : Set E)) :
-    ∃ r : E → E, IsPLHomeomorphOn r S S ∧ IsPLPseudoIsotopicToId r S ∧ r p' = p := by
+    ∃ r : E → E, IsPLHomeomorphOn r S S ∧ IsPLPseudoIsotopicToId r S ∧ r p' = p ∧
+      EqOn r id B := by
   have hA : IsPLBall 1 A := (isPLBall_Icc zero_lt_one).of_isPLHomeomorphOn hε
   obtain ⟨f, hf, hf0, hf1, hfp⟩ :=
     exists_isPLHomeomorphOn_arc_fixing_endpoints_of_parametrization hε hp' hp
@@ -470,7 +471,7 @@ theorem exists_isPLPseudoIsotopicToId_map_eq_of_arc [FiniteDimensional ℝ E]
     hBpoly.isPLHomeomorphOn_id heq hsurj
   rw [hunion] at hr
   have hrAA : IsPLHomeomorphOn r A A := hf.congr hrA
-  refine ⟨r, hr, ?_, ?_⟩
+  refine ⟨r, hr, ?_, ?_, hrB⟩
   · refine isPLPseudoIsotopicToId_of_arc_support hε hBpoly hunion hinter hrAA ?_ ?_ hrB
     · rw [hrA (hε.bijOn.mapsTo (show (0 : ℝ) ∈ Icc 0 1 by norm_num))]
       exact hf0
@@ -481,7 +482,8 @@ theorem exists_isPLPseudoIsotopicToId_map_eq_of_arc [FiniteDimensional ℝ E]
 
 theorem exists_arc_pair_interior_of_isPLSphere_one [FiniteDimensional ℝ E]
     {S : Set E} (hS : IsPLSphere 1 S) {p p' : E} (hp : p ∈ S) (hp' : p' ∈ S) (hne : p ≠ p') :
-    ∃ (A B : Set E) (ε : ℝ → E), IsPLHomeomorphOn ε (Icc 0 1) A ∧ IsPolyhedron B ∧
+    ∃ (A B : Set E) (ε ξ : ℝ → E), IsPLHomeomorphOn ε (Icc 0 1) A ∧
+      IsPLHomeomorphOn ξ (Icc 0 1) B ∧
       A ∪ B = S ∧ A ∩ B = {ε 0, ε 1} ∧ p ∈ A \ ({ε 0, ε 1} : Set E) ∧
         p' ∈ A \ ({ε 0, ε 1} : Set E) := by
   obtain ⟨A₀, B₀, γ, δ, hγ, hδ, hγ0, hγ1, hδ0, hδ1, hun, hin⟩ :=
@@ -539,13 +541,13 @@ theorem exists_arc_pair_interior_of_isPLSphere_one [FiniteDimensional ℝ E]
     · have h' : x = δ (3 / 4) := h
       exact hz₂A (h' ▸ hx)
   rcases hsplit with hcase | hcase
-  · refine ⟨A₁, B₁, ε, hε, hB₁.isPolyhedron, hun1, ?_, ⟨hcase hpA₀, ?_⟩, ⟨hcase hp'A₀, ?_⟩⟩
+  · refine ⟨A₁, B₁, ε, ζ, hε, hζ, hun1, ?_, ⟨hcase hpA₀, ?_⟩, ⟨hcase hp'A₀, ?_⟩⟩
     · rw [hin1, hε0, hε1]
     · rw [hε0, hε1]
       exact hout p hpA₀
     · rw [hε0, hε1]
       exact hout p' hp'A₀
-  · refine ⟨B₁, A₁, ζ, hζ, hA₁.isPolyhedron, ?_, ?_, ⟨hcase hpA₀, ?_⟩, ⟨hcase hp'A₀, ?_⟩⟩
+  · refine ⟨B₁, A₁, ζ, ε, hζ, hε, ?_, ?_, ⟨hcase hpA₀, ?_⟩, ⟨hcase hp'A₀, ?_⟩⟩
     · rw [union_comm]
       exact hun1
     · rw [inter_comm, hin1, hζ0, hζ1]
@@ -560,9 +562,11 @@ theorem exists_isPLPseudoIsotopicToId_map_eq_of_isPLSphere_one [FiniteDimensiona
   by_cases hpp : p = p'
   · exact ⟨id, hS.isPolyhedron.isPLHomeomorphOn_id,
       isPLPseudoIsotopicToId_id hS.isPolyhedron, hpp.symm⟩
-  · obtain ⟨A, B, ε, hε, hBpoly, hunion, hinter, hpA, hp'A⟩ :=
+  · obtain ⟨A, B, ε, ξ, hε, hξ, hunion, hinter, hpA, hp'A⟩ :=
       exists_arc_pair_interior_of_isPLSphere_one hS hp hp' hpp
-    exact exists_isPLPseudoIsotopicToId_map_eq_of_arc hε hBpoly hunion hinter hpA hp'A
+    obtain ⟨r, hr, hrid, hrp, -⟩ := exists_isPLPseudoIsotopicToId_map_eq_of_arc hε
+      ((isPLBall_Icc zero_lt_one).of_isPLHomeomorphOn hξ).isPolyhedron hunion hinter hpA hp'A
+    exact ⟨r, hr, hrid, hrp⟩
 
 theorem isPLPseudoIsotopicToId_of_comp_left [FiniteDimensional ℝ E] {S : Set E} {u r : E → E}
     (hu : IsPLHomeomorphOn u S S) (hr : IsPLHomeomorphOn r S S)
@@ -771,5 +775,124 @@ theorem isPLPseudoIsotopicToId_of_eqOn_arc [FiniteDimensional ℝ E]
   · have hq := hδ.bijOn.injOn (show (1 / 2 : ℝ) ∈ Icc 0 1 by norm_num)
       (show (1 : ℝ) ∈ Icc 0 1 by norm_num) h
     norm_num at hq
+
+theorem image_Ioc_eq_sdiff_source [FiniteDimensional ℝ E]
+    {A : Set E} {γ : ℝ → E} (hγ : IsPLHomeomorphOn γ (Icc 0 1) A) :
+    γ '' Ioc (0 : ℝ) 1 = A \ ({γ 0} : Set E) := by
+  ext x
+  constructor
+  · rintro ⟨t, ht, rfl⟩
+    refine ⟨hγ.bijOn.mapsTo ⟨ht.1.le, ht.2⟩, fun h => ?_⟩
+    exact ht.1.ne' (hγ.bijOn.injOn ⟨ht.1.le, ht.2⟩ (by norm_num) h)
+  · rintro ⟨hx, hxn⟩
+    obtain ⟨t, ht, rfl⟩ := hγ.bijOn.surjOn hx
+    refine ⟨t, ⟨?_, ht.2⟩, rfl⟩
+    rcases lt_or_eq_of_le ht.1 with h | h
+    · exact h
+    · exact absurd (congrArg γ h.symm) hxn
+
+theorem isConnected_sdiff_source [FiniteDimensional ℝ E]
+    {A : Set E} {γ : ℝ → E} (hγ : IsPLHomeomorphOn γ (Icc 0 1) A) :
+    IsConnected (A \ ({γ 0} : Set E)) := by
+  rw [← image_Ioc_eq_sdiff_source hγ]
+  refine IsConnected.image ⟨⟨1, by norm_num⟩, isPreconnected_Ioc⟩ γ
+    (hγ.isPiecewiseAffineOn.continuousOn.mono fun t ht => ⟨ht.1.le, ht.2⟩)
+
+theorem exists_arc_endpoint_pair_interior [FiniteDimensional ℝ E]
+    {S : Set E} (hS : IsPLSphere 1 S) {p z z' : E} (hp : p ∈ S) (hz : z ∈ S) (hz' : z' ∈ S)
+    (hzp : z ≠ p) (hz'p : z' ≠ p) :
+    ∃ (A B : Set E) (ε ξ : ℝ → E), IsPLHomeomorphOn ε (Icc 0 1) A ∧
+      IsPLHomeomorphOn ξ (Icc 0 1) B ∧
+      A ∪ B = S ∧ A ∩ B = {ε 0, ε 1} ∧ ε 0 = p ∧
+        z ∈ A \ ({ε 0, ε 1} : Set E) ∧ z' ∈ A \ ({ε 0, ε 1} : Set E) := by
+  obtain ⟨A₀, B₀, γ, δ, hγ, hδ, hγ0, hγ1, hδ0, hδ1, hun, hin⟩ :=
+    exists_arc_decomposition_of_isPLSphere_one hS hp hz fun h => hzp h.symm
+  have hmid : ∀ {C : Set E} {ζ : ℝ → E}, IsPLHomeomorphOn ζ (Icc 0 1) C →
+      ζ ((1 : ℝ) / 2) ≠ ζ 0 := by
+    intro C ζ hζ h
+    have := hζ.bijOn.injOn (show ((1 : ℝ) / 2) ∈ Icc (0 : ℝ) 1 by norm_num)
+      (show (0 : ℝ) ∈ Icc (0 : ℝ) 1 by norm_num) h
+    norm_num at this
+  have hnotother : ∀ {C D : Set E} {ζ : ℝ → E}, IsPLHomeomorphOn ζ (Icc 0 1) C →
+      C ∩ D = {ζ 0, ζ 1} → ζ ((1 : ℝ) / 2) ∉ D := by
+    intro C D ζ hζ hCD hmem
+    have hmemC : ζ ((1 : ℝ) / 2) ∈ C :=
+      hζ.bijOn.mapsTo (show ((1 : ℝ) / 2) ∈ Icc (0 : ℝ) 1 by norm_num)
+    have hpair : ζ ((1 : ℝ) / 2) ∈ ({ζ 0, ζ 1} : Set E) := hCD ▸ mem_inter hmemC hmem
+    rcases hpair with h | h
+    · have := hζ.bijOn.injOn (show ((1 : ℝ) / 2) ∈ Icc (0 : ℝ) 1 by norm_num)
+        (show (0 : ℝ) ∈ Icc (0 : ℝ) 1 by norm_num) h
+      norm_num at this
+    · have h' : ζ ((1 : ℝ) / 2) = ζ 1 := h
+      have := hζ.bijOn.injOn (show ((1 : ℝ) / 2) ∈ Icc (0 : ℝ) 1 by norm_num)
+        (show (1 : ℝ) ∈ Icc (0 : ℝ) 1 by norm_num) h'
+      norm_num at this
+  have hzAB : z' ∈ A₀ ∪ B₀ := by rwa [hun]
+  have hmain : ∀ {C D : Set E} {ζ ξ : ℝ → E}, IsPLHomeomorphOn ζ (Icc 0 1) C →
+      IsPLHomeomorphOn ξ (Icc 0 1) D → ζ 0 = p → ξ 0 = p → C ∪ D = S → C ∩ D = {p, z} →
+      ζ 1 = z → ξ 1 = z → z' ∈ C →
+      ∃ (A B : Set E) (ε ξ : ℝ → E), IsPLHomeomorphOn ε (Icc 0 1) A ∧
+        IsPLHomeomorphOn ξ (Icc 0 1) B ∧
+        A ∪ B = S ∧ A ∩ B = {ε 0, ε 1} ∧ ε 0 = p ∧
+          z ∈ A \ ({ε 0, ε 1} : Set E) ∧ z' ∈ A \ ({ε 0, ε 1} : Set E) := by
+    intro C D ζ ξ hζ hξ hζ0 hξ0 hCD hCDin hζ1 hξ1 hz'C
+    set x : E := ξ ((1 : ℝ) / 2) with hxdef
+    have hxS : x ∈ S := hCD ▸ Or.inr (hξ.bijOn.mapsTo
+      (show ((1 : ℝ) / 2) ∈ Icc (0 : ℝ) 1 by norm_num))
+    have hxp : x ≠ p := by
+      rw [← hξ0]
+      exact hmid hξ
+    have hxC : x ∉ C := by
+      refine hnotother hξ ?_
+      rw [inter_comm, hCDin, hξ0, hξ1]
+    obtain ⟨A₁, B₁, ε, ζ', hε, hζ', hε0, hε1, hζ'0, hζ'1, hun1, hin1⟩ :=
+      exists_arc_decomposition_of_isPLSphere_one hS hp hxS fun h => hxp h.symm
+    have hconn : IsConnected (C \ ({p} : Set E)) := by
+      rw [← hζ0]
+      exact isConnected_sdiff_source hζ
+    have hCS : C ⊆ S := hCD ▸ subset_union_left
+    have hsub : C \ ({p} : Set E) ⊆ A₁ ∪ B₁ := by
+      rw [hun1]
+      exact fun y hy => hCS hy.1
+    have havoid : ∀ y ∈ C \ ({p} : Set E), y ∉ ({ε 0, ε 1} : Set E) := by
+      intro y hy hmem
+      rcases hmem with h | h
+      · exact hy.2 (h.trans hε0)
+      · have h' : y = ε 1 := h
+        exact hxC (by rw [← hε1, ← h']; exact hy.1)
+    have hsplit : C \ ({p} : Set E) ⊆ A₁ ∨ C \ ({p} : Set E) ⊆ B₁ := by
+      by_cases hmA : ((C \ ({p} : Set E)) ∩ A₁).Nonempty
+      · by_cases hmB : ((C \ ({p} : Set E)) ∩ B₁).Nonempty
+        · obtain ⟨y, hy⟩ := isPreconnected_closed_iff.mp hconn.isPreconnected A₁ B₁
+            ((isPLBall_Icc zero_lt_one).of_isPLHomeomorphOn hε).isPolyhedron.isClosed
+            ((isPLBall_Icc zero_lt_one).of_isPLHomeomorphOn hζ').isPolyhedron.isClosed
+            hsub hmA hmB
+          refine absurd ?_ (havoid y hy.1)
+          rw [hε0, hε1]
+          exact hin1 ▸ hy.2
+        · refine Or.inl fun y hy => ?_
+          rcases hsub hy with h | h
+          · exact h
+          · exact absurd ⟨y, hy, h⟩ hmB
+      · refine Or.inr fun y hy => ?_
+        rcases hsub hy with h | h
+        · exact absurd ⟨y, hy, h⟩ hmA
+        · exact h
+    have hzC : z ∈ C \ ({p} : Set E) := ⟨hζ1 ▸ hζ.bijOn.mapsTo (by norm_num), hzp⟩
+    have hz'Cp : z' ∈ C \ ({p} : Set E) := ⟨hz'C, hz'p⟩
+    have hpair1 : A₁ ∩ B₁ = {ε 0, ε 1} := by rw [hin1, hε0, hε1]
+    rcases hsplit with hcase | hcase
+    · exact ⟨A₁, B₁, ε, ζ', hε, hζ', hun1, hpair1, hε0,
+        ⟨hcase hzC, havoid z hzC⟩, ⟨hcase hz'Cp, havoid z' hz'Cp⟩⟩
+    · refine ⟨B₁, A₁, ζ', ε, hζ', hε, ?_, ?_, hζ'0,
+        ⟨hcase hzC, ?_⟩, ⟨hcase hz'Cp, ?_⟩⟩
+      · rw [union_comm]; exact hun1
+      · rw [inter_comm, hin1, hζ'0, hζ'1]
+      · rw [hζ'0, hζ'1, ← hε0, ← hε1]; exact havoid z hzC
+      · rw [hζ'0, hζ'1, ← hε0, ← hε1]; exact havoid z' hz'Cp
+  rcases hzAB with hcase | hcase
+  · exact hmain hγ hδ hγ0 hδ0 hun hin hγ1 hδ1 hcase
+  · exact hmain hδ hγ hδ0 hγ0 (by rw [union_comm]; exact hun)
+      (by rw [inter_comm]; exact hin) hδ1 hγ1 hcase
 
 end DifferentialGeometry.Topology.PiecewiseLinear

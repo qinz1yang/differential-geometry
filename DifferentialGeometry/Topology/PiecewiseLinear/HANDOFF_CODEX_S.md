@@ -4363,3 +4363,79 @@ Do not read an empty result from a command that returned a non-zero exit code as
 evidence of absence, and before declaring a layer missing, grep the tree for the
 *mathematical content* under other names -- here `affineLift`, `periodic`,
 `HomeomorphismOrientation` -- not only for the vocabulary the current file uses.
+
+
+## C1 closed unconditionally
+
+`CircleAnnulusOrientation.lean` (new, 22 declarations) together with additions to
+`CircleLiftOrientation.lean` and `CircleAnnulusIsotopy.lean`.
+
+**Endpoint.** `isPLPseudoIsotopicToId_of_isPLCirclePositive`: for a PL 1-sphere `S`
+and a PL self-homeomorphism `u` of `S` that is orientation-preserving, `u` is PL
+pseudo-isotopic to the identity. No fixed-point hypothesis, no arc hypothesis, no
+no-swap hypothesis.
+
+`IsPLCirclePositive S u` is the orientation predicate: for every continuous
+bijection `g` from `loopCircle` onto `S`, the conjugate `circleConj g u` has a
+strictly increasing periodic lift.
+
+### The three assembly items
+
+1. **Transport.** `exists_loopCircle_param_of_arc_decomposition`: an arc
+   decomposition of `S` yields `g : loopCircle -> E`, continuous and bijective onto
+   `S`, with the first arc `A` equal to the image of the parameter interval
+   `[0, 1/2]`, sending `0` to one cut point and `1/2` to the other. Built as
+   `pathToCircle` of the forward arc path followed by the reversed one;
+   injectivity from `pathToCircle_trans_injective`, surjectivity onto `S` directly
+   from the range of the loop. Because the arcs are literally parameter intervals,
+   no arc-uniqueness lemma is needed, exactly as suggested.
+2. **Arc preservation from a positive lift.**
+   `image_coe_Icc_zero_half_eq_of_hasIncreasingCircleLift`: a positive
+   self-homeomorphism of `loopCircle` fixing the classes of `0` and `1/2` carries
+   the image of `[0, 1/2]` onto itself. Normalise with
+   `hasIncreasingCircleLift_normalized` so `F 0 = 0`, hence `F 1 = 1`; then
+   `F (1/2)` is congruent to `1/2` and lies strictly between, so it equals `1/2`;
+   monotonicity gives both inclusions, the second using only surjectivity of the
+   map, not invertibility of the lift.
+3. **(C1-a2).** `exists_arc_endpoint_pair_interior`: for `p` and two further points
+   `z`, `z'` of `S`, an arc with `p` as an endpoint containing `z` and `z'` in its
+   interior. Cut at `p` and `z`; take the midpoint `x` of whichever arc does not
+   contain `z'`; the punctured arc `C \ {p}` is connected, misses `p` and `x`, so
+   `isPreconnected_closed_iff` puts it inside one arc of the decomposition at
+   `(p, x)`, and that arc has `p` as an endpoint. This is simpler than the
+   `sigma/2, (sigma+1)/2` straddling route recorded earlier, and needs no closure
+   argument.
+
+### The chain
+
+`exists_pair_ne_of_isPLSphere_one` gives two distinct points `p`, `q` fixed at the
+start. `exists_positive_map_eq_of_isPLSphere_one` corrects `u` so that `p` is
+fixed; `exists_arc_endpoint_pair_interior` plus
+`exists_isPLPseudoIsotopicToId_map_eq_of_arc` corrects again, fixing `q`, and the
+second correction keeps `p` fixed because `p` is an endpoint of the supporting arc.
+Both corrections are the identity on a whole arc, so each has three fixed points
+and is positive by `isPLCirclePositive_of_eqOn_arc`; positivity composes by
+`IsPLCirclePositive.comp`, so the corrected map is positive. It fixes `p` and `q`,
+so `image_arc_eq_of_isPLCirclePositive` rules out the swap, and
+`isPLPseudoIsotopicToId_of_arc_decomposition_of_ne` applies. Finally
+`isPLPseudoIsotopicToId_of_comp_left` twice removes the two corrections.
+
+Because `p` and `q` are fixed before any correction, the parametrisation used in
+the final step is determined by the decomposition at `(p, q)` and not by the
+corrections, which is what makes the orientation hypothesis statable about `u`
+itself.
+
+### Strengthened conclusions in `CircleAnnulusIsotopy.lean`
+
+`exists_isPLPseudoIsotopicToId_map_eq_of_arc` now also returns `EqOn r id B`, and
+`exists_arc_pair_interior_of_isPLSphere_one` and
+`exists_arc_endpoint_pair_interior` now return a parametrisation of the
+complementary arc rather than only its polyhedrality. All three are needed to see
+that a correction has three fixed points.
+
+### Verification
+
+`check-f.ps1` exit=0 with zero warnings on all three modules (12.0 s, 12.4 s,
+11.8 s). Audits: `AuditSCircleLiftOrientation` 10 declarations,
+`AuditSCircleAnnulusIsotopy` 27, `AuditSCircleAnnulusOrientation` 22; all 59
+depend only on `propext`, `Classical.choice`, `Quot.sound`, none on `sorryAx`.
