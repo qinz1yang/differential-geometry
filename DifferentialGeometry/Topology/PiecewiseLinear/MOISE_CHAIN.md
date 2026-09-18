@@ -753,3 +753,31 @@ Moise 每一章开头"不妨设某映射是 PL 的"都是这一条。分三个�
 而 E3 的消费者要带图卡的 3-流形与 `IsPL 3 3 h`；路线机械（经
 `ℝ × ℝ × ℝ ≃ EuclideanSpace ℝ (Fin 3)`、用 `bijective_slideMapLong` 升成 `Homeomorph`、
 再用既有的 `isPL_conjugateHomeomorph`）但未做。
+
+### E3：`BranchSlideConjugation.lean` / `BranchSeparation.lean`
+
+`NormalSingularCellData.exists_separated_along_branch` 以乘积图卡为显式前提，给出 §44 的输出条款
+（`IsOpen U`、`branchCarrier cb ⊆ U`、`closure U ⊆ W`、`IsPL 3 3 h`、单射、`EqOn h id Uᶜ`、
+`MapsTo h U U`、边界条款、`Disjoint (h '' (D '' P)) (D '' Q)`）。走**两步共轭**：
+外层是流形图卡 `M → EuclideanSpace ℝ (Fin 3)`，内层是矫直到 `ℝ × ℝ × ℝ`，因此不需要两个模型之间的线性桥。
+为此把 `isPL_conjugateHomeomorph` 推广成 `isPL_conjugateMap`（任意逐片仿射自映射，不要求 `Homeomorph`——
+`slideMapLong` 只知是连续双射），并把 F 的两条图卡引理推广到任意拓扑源
+（`OpenPartialHomeomorph.injective_conjugateMap`、`disjoint_conjugateMap_image`）。
+
+`exists_separated_cell_along_branch` 给出 `IsPLOn 2 3 g D.domain`、局部单射、纤维至多二、
+支撑外纤维不变，以及**双点集等式的两个方向**
+`doublePointSet g D.domain = doublePointSet D D.domain \ branchCarrier cb`，其中
+`g = P.piecewise (h ∘ D) D`。"不产生邻近的新交线"那一半由分离条款加 `MapsTo h U U` 得到。
+
+**§44 的两处陈述错误被查出并改正**：
+1. 分离条款里的 `Q` 必须是第二条细带而非贴合余片；取余片时结论恒假，因为缝 `P ∩ Pc` 被 `h` 固定、
+   同时落在两个像里。贴合改用 `P` 与另设的 `Pc`，`P ∪ Pc = D.domain`。
+2. 把定位写成 `D '' P ⊆ E.symm '' (e.symm '' slideBandA c)` 使假设自相矛盾：由 `0 ≤ d`、`c + 2*d ≤ R`
+   得 `slideBandA c ⊆ slideSupportLong R`，于是 `D '' P ⊆ W`，与"缝的像避开 `W`"合起来强迫
+   `P ∩ Pc = ∅`。定位只能约束支撑上方的部分。同理，消费 F 的 `IsBranchSlideChart` 时要注意
+   `sheet_eq` 是等式，不能把那个 `P` 当作贴合条带。
+
+**边界端点的保持性未解决（更正前一条记录）**：F 的 `mapsTo_chartSlideLong_boundary` 只对**平行于分支**的
+边界成立（`{p | p.2 ∈ T}` 是平行于滑动方向的直线之并）。而 `HasPLBoundaryCrossingAt` 在端点把双点线放成
+**横截于 `Bd M`**：取 `Bd M = {x = 0}`、`M = {x ≥ 0}`，`slideMapLong d R (0, y, 0)` 的第一坐标是
+`-max 0 (min (d(1-|y|)) (R/2)) < 0`（`|y| < 1`），点被推出 `M`。需要端点处锥度降到零的模型，或两步构造。
