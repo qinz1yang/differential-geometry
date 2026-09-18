@@ -2333,3 +2333,20 @@ E3 §44 把 `exists_supported_separation_along_compact_crossing_arc` 交给 F。
 建议把生产者重述为两条：(i) 弧情形无条件（先沿弧的有限图卡链按次序传播正向，再插值）；
 (ii) 圆情形以双侧性为显式假设。E3 §44 列出的输出条款其余部分不变。本条只是分析，没有 Lean 端点。
 
+### 19.106 分离生产者的链骨架：紧致 PL 弧的从属链覆盖
+
+`ArcChainCover.lean` 的 `exists_subordinate_chain_of_isPLBall_one`：设 `S` 是紧致 PL 1-球（弧），
+`U : ι → Set E` 是开集族且覆盖 `S`，则存在 `n` 与 PL 同胚 `γ : Icc 0 1 → S`，使得均匀分划的每一小段
+`γ '' Icc (j/(n+1)) ((j+1)/(n+1))`（`j ≤ n`）整体落在某个 `U i` 内，且这些小段的并恰好是 `S`。
+证明用 `exists_isPLHomeomorphOn_Icc_of_isPLBall_one` 取参数化，用 `continuousOn_iff'` 把图卡拉回成
+`[0,1]` 的环境开覆盖，再用 `lebesgue_number_lemma_of_metric` 与 `exists_nat_one_div_lt` 选网距小于 Lebesgue 数的
+均匀分划；`mem_Icc_uniform_partition` 用 `Nat.floor` 给出覆盖性（`x = 1` 落在最后一段）。
+
+这条与 E3 §45 的 `exists_sideChoice_of_chain` 合起来就是 §44 缺口的骨架：小段按 `j` 天然沿弧排序，
+相邻小段只交于一个端点，侧选择 `ε` 在该端点两侧一致，因此横向方向场在整条弧上连续；
+余下的义务是在单张 crossing 图卡内写出线性推移，并用该方向场把它们拼成全局单射 PL 自映射
+（幅度取 `S` 邻域上的一个正函数即可，不需要小段重叠）。
+
+检查 `ArcChainCover` exit=0（10.5 秒）、零 warning；`AuditF254.lean` 两项仅
+`propext`、`Classical.choice`、`Quot.sound`。下一审计文件 `AuditF255.lean`。
+
