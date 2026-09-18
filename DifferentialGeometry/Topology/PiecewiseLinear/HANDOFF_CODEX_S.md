@@ -5150,3 +5150,45 @@ be tied to the bottom one, for example
 The five-triangle coverage proved here does not discharge that boundary extension
 or the mapping-torus embedding. This corrects the earlier claimed seam equality;
 no tube construction has been committed.
+
+## Closed pairwise intersections of the square triangles (2026-09-18)
+
+The ten unordered pairs of the five `mobiusSquareTriangle` sets now have exact
+intersection formulas in `MobiusSquare.lean`:
+
+- `mobiusSquareTriangle_zero_inter_one`, `mobiusSquareTriangle_one_inter_two`,
+  `mobiusSquareTriangle_two_inter_three`, and
+  `mobiusSquareTriangle_three_inter_four` give the four closed common segments.
+- `mobiusSquareTriangle_zero_inter_two`, `mobiusSquareTriangle_one_inter_three`,
+  and `mobiusSquareTriangle_two_inter_four` give the three common vertices.
+- `mobiusSquareTriangle_zero_inter_three`, `mobiusSquareTriangle_zero_inter_four`,
+  and `mobiusSquareTriangle_one_inter_four` give the three empty intersections.
+
+The proofs use the checked exact membership inequalities. Segment containment in
+one direction follows from convexity and the two common endpoints; the other
+direction gives an explicit line-map parameter. Singleton and empty intersections
+follow from the same inequalities. All boundary points are included.
+
+Verification used the coordinator's exclusive `S-MobiusSquare-20260918` window,
+with one Lean process and independent temporary outputs. The final module check
+returned exit 0 with no errors, warnings, informational diagnostics, or tactic
+suggestions. Standard syntax linters and explicit header/long-line checks were
+enabled. An external temporary audit re-elaborated the final source and checked
+all 25 local declarations, including the four private declarations, with
+`Lean.collectAxioms`; every axiom belongs to `propext`, `Classical.choice`, or
+`Quot.sound`. The applicable default environment linters from
+`getChecks true none none`, excluding only `docBlame` and `docBlameThm`, also
+passed with exit 0 and no diagnostics. `git diff --check` passed. The module was
+already registered in the flat root aggregate. No vendor source changed.
+
+The window was explicitly released after all S Lean processes finished. The new
+objects remain private: no shared object was deleted or replaced. As in the
+previous layer, these checks use shared imported dependencies and do not certify
+the independent integration root build. Receipts are in the external temporary
+directory `codex-s-mobius-square-20260918`; earlier warning logs are distinguished
+from the successful final invocation in its verification receipt.
+
+Still open: affine charts from `mobiusTri` to the square triangles, compatibility
+on the three wrap pairs, the bijective piecewise-affine flip-square model map,
+the seam-compatible variable arc tube, and the orientability bridge. The ten
+intersection formulas close a planar geometric layer; C.7 remains partial.
