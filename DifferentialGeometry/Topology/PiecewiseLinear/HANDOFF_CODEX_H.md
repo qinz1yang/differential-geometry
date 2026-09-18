@@ -1992,3 +1992,56 @@ M1 只给"PL 同胚于一个锥"，不给"是一个锥"，所以绕不过去。
 （二元 `Finset` 的边界面就是两个顶点），于是 `isPLBallPair_coneSet_of_isPLSphere` 可用，
 但要 `IsConeBase p (simplexBoundary {v,z})`，这需要 `p`、`v`、`z` **不共线**——
 是构型上的真非退化条件，拼装时必须显式给出，不能省。
+
+## 26. 2026-09-18 构型的非退化条件：一次列全（诊断，无 Lean 改动）
+
+协调者要求"这一轮把兄弟条件一次查全，不要一轮一条"。查全了，并且**纠正了我自己上一节的提法**。
+
+### 更正：不是"不共线"，是"径向单射"
+
+上一节末尾我说 `C₁` 那一对要 `p`、`v`、`z` **不共线**。**这是错的**，而且如果照此施工，
+`C₂` 那一对会直接做不下去。
+
+`Cone.lean:10` 的定义是
+
+    IsRadiallyInjective p S := ∀ x ∈ S, ∀ y ∈ S, ∀ t, 0 < t → y = p + t • (x - p) → y = x
+
+对 `S = {v, z}`（`v ≠ z`）展开就是：**`v` 与 `z` 不在从 `p` 出发的同一条射线上**。
+
+- `C₁`：顶点 `p` 在 `C₁` 内部，`v`、`z` 在 `∂C₁` 上。此时不共线蕴含径向单射，两者都行。
+- `C₂`：顶点 `q` 取在线段 `(z, w)` **内部**，于是 `q`、`z`、`w` **恰恰共线**。
+  "不共线"在这里是**假的**；但径向单射**成立**，因为 `z` 与 `w` 落在从 `q` 出发的**相反**两条射线上。
+
+所以三对共用的非退化条件只有一条，就是 `IsRadiallyInjective p {v, z}`（外加 `p ∉ {v, z}`）。
+它同时覆盖"顶点在外、两端点张开"与"顶点在两端点之间"两种情形，而"不共线"只覆盖前者。
+按协调者的判据，这属于**限定模型覆盖哪些构型**而不是让定理不可陈述，故继续。
+
+### 四对所需条件的完整清单
+
+设大四面体 `T = {A,B,C,D}`、`M` 为 `C`、`D` 中点、`F = {A,B,M}`、`T₁ = insert C F`、`T₂ = insert D F`。
+
+| 对 | 顶点 | 子链 | 所需条件 |
+|---|---|---|---|
+| 并 `(conv T, 弧)` | `p ∈ openSimplex T` | `{v, w} ⊆ ∂(conv T)` | `v ≠ w`；`IsRadiallyInjective p {v,w}`；`p ∉ {v,w}` |
+| `(C₁, C₁∩弧)` | `p ∈ openSimplex T₁` | `{v, z} ⊆ ∂C₁` | `v ≠ z`；`IsRadiallyInjective p {v,z}`；`p ∉ {v,z}` |
+| `(C₂, C₂∩弧)` | `q ∈ openSimplex T₂`，`q` 在 `(z,w)` 内 | `{z, w} ⊆ ∂C₂` | `z ≠ w`；径向单射由"`q` 在两点之间"**自动成立**；`q ∉ {z,w}` |
+| `(conv F, {z})` | `z ∈ openSimplex F` | `∅` | 无额外条件（第 17 节已闭合） |
+
+注意 `p ∈ openSimplex T₁` 蕴含 `p ∈ openSimplex T`？**不**自动，要分别给或单独证；
+`C₁ ⊆ conv T` 只给包含，开胞腔的包含要另说。这一条也要在构型里写清楚。
+
+### 一个生产者可覆盖前三对
+
+三者形状相同：`IsPLBallPair m 1 (coneSet p L.space) (segment ℝ p v ∪ segment ℝ p z)`，
+其中 `{v,z} ⊆ L.space`、`IsPLSphere m L.space`、`IsConeBase p L`。
+经第 25 节弱化后子链可取**集合** `{v,z}`，不必是 `L` 的顶点，所以不需要细分。
+缺的只是 `IsPLBall 1 (coneSet p {v,z})` 这一张证书，路线是
+`{v,z} = (simplexBoundary ({v,z} : Finset E) _).space`（二元 Finset 的边界面就是两个顶点），
+再 `isPLBallPair_coneSet_of_isPLSphere`，其 `IsConeBase p (simplexBoundary {v,z})` 的三个字段分别由
+`p ∉ {v,z}`、两个二元集的仿射无关、以及上面的径向单射给出。
+
+**未验证的一点**：`AffineIndependent ℝ ((↑) : ({v,z} : Finset E) → E)`（两个不同点仿射无关）
+在本树里搜不到（只找到 `affineIndependent_of_subsingleton` 的单点版）。Mathlib 可能有成对版本，
+**未确认**，不作为"缺失"记录，只标为待查。
+
+本节未写 Lean，未开始三对的拼装，不报区间。
