@@ -2629,3 +2629,69 @@ E3 §48 指出 §19.114 的边界条款只覆盖**平行于分支**的 `Bd M`。
 
 检查 `ModelSlideFwd` exit=0（9.9 秒）、零 warning；`AuditF260.lean` 二十项仅
 `propext`、`Classical.choice`、`Quot.sound`。
+
+### 19.118 端点滑动的图卡版本与打包端点；`MapsTo` 型共轭转写（E3 §48 的回应）
+
+`BranchSlideEndpoint.lean` 把 §19.117 的模型经 PL 图卡共轭，结论与 §19.111/19.113 同形，
+但边界条款按 §19.117 的真实情况重写。
+
+- `OpenPartialHomeomorph.mapsTo_conjugateMap`（抽象层，任意拓扑空间、任意 `k`）：设
+  `MapsTo k e.target e.target`、`∀ x ∈ e.source, x ∈ A ↔ e x ∈ B`、`MapsTo k (e.target ∩ B) B`，
+  则 `MapsTo (e.conjugateMap k) A A`。这条是**真缺的一块**：`Homeomorph/Conjugate.lean` 的
+  `conjugateMap_mem_iff` 要求双向的 `∀ y ∈ e.target, k y ∈ B ↔ y ∈ B`，而半空间只有单向
+  （`slideMapFwd d R p ∈ {0 ≤ x}` 推不出 `p ∈ {0 ≤ x}`，把 `p.1` 取成小负数即是反例），
+  所以两层共轭时半空间条款不能走 iff 版本。写在本模块的 `OpenPartialHomeomorph` 命名空间里，
+  与 E3 `BranchSlideConjugation.lean` 的 `injective_conjugateMap`、`disjoint_conjugateMap_image`
+  同层、不同名、不重叠。
+- `isPiecewiseAffineOn_chartSlideFwd`、`injective_chartSlideFwd`、`eqOn_chartSlideFwd_id_compl`、
+  `disjoint_chartSlideFwd_image`（定量条件 `0 ≤ d`、`c + 2 * d ≤ R`、`b < d`）、
+  `mapsTo_chartSlideFwd_of_forall_mem_iff`（横向水平集，用于**平行于分支**的那部分 `Bd M`）、
+  `mapsTo_chartSlideFwd_halfSpace`（`N` 在图卡里是 `0 ≤ (e x).1`）。后两条都由上面的抽象引理给出。
+  除 `isPiecewiseAffineOn_chartSlideFwd` 外都只要 `[TopologicalSpace X]`，所以外层可以直接用
+  流形图卡作共轭，不必再放宽一次。
+- `exists_supported_separation_of_isBranchSlideChart_endpoint`：复用 §19.112 的 `IsBranchSlideChart`
+  （不另立谓词），在 `0 ≤ d`、`c + 2 * d ≤ R`、`b < d` 与 `hN : ∀ x ∈ e.source, x ∈ N ↔ 0 ≤ (e x).1`
+  下给出 `h`，满足 `IsPiecewiseAffineOn h univ`、`Function.Injective h`、
+  `EqOn h id (e.symm '' slideSupportLong R)ᶜ`、`Disjoint (h '' P) Q`、`MapsTo h N N`。
+  与 §19.113/19.114 的差别只有两处：分离条件由 `c - d < a` 换成 `b < d`，
+  边界条款由 `h '' (支撑 ∩ B) ⊆ B` 换成 `MapsTo h N N`（保流形而不是保边界）。
+- `not_mapsTo_chartSlideFwd_boundaryPlane` 与
+  `not_mapsTo_boundary_of_isBranchSlideChart_endpoint`：`0 < d`、`0 < R` 时，
+  对图卡内由 `(e x).1 = 0` 刻画的 `B`，`¬ MapsTo (e.conjugateMap (slideMapFwd d R)) B B`。
+  见证点是 `e.symm (0,0,0)`。**这是定理，不是未做的部分**：横截于分支的流形边界在这个模型里
+  确实保不住，写成否定命题以免下游误以为还能补出来。
+
+**环境类型转写（§19.116 的结论）**：E3 的 `BranchSlideConjugation.lean` 已经把转写做完了，
+本车道不重复。逐条核对：`isPL_conjugateMap` 对**任意** `k : EuclideanSpace ℝ (Fin n) → EuclideanSpace ℝ (Fin n)`
+成立（只要 `IsPiecewiseAffineOn k univ`、`MapsTo k e.target e.target`、紧 `C ⊆ e.target`、`EqOn k id Cᶜ`），
+`OpenPartialHomeomorph.injective_conjugateMap` 与 `disjoint_conjugateMap_image` 对任意拓扑空间成立，
+三条都与滑动方向无关，所以对 `slideMapFwd` 逐字适用。§19.116 里设想的
+「经 `ℝ × ℝ × ℝ ≃ EuclideanSpace ℝ (Fin 3)` 的线性桥 + `Homeomorph` 升级」**不需要**：
+E3 的两层共轭（外层流形图卡 `E`、内层模型拉直 `e`）绕开了线性桥，且 `isPL_conjugateMap` 收裸函数，
+不需要逆的连续性。本模块给出的
+`isPiecewiseAffineOn_chartSlideFwd` / `injective_chartSlideFwd` / `eqOn_chartSlideFwd_id_compl` /
+`disjoint_chartSlideFwd_image` 正好是 `isPL_conjugateMap` 那四个前提的前向版本，
+另加 `OpenPartialHomeomorph.mapsTo_conjugateMap` 供半空间条款两层串用。
+**未做**：`exists_separated_slide` 的前向版本（把这些拼成 `IsPL 3 3` 层的打包定理）。它属于 E3 的消费者模块，
+且需要 `import ...BranchSlideConjugation`；该模块的共享 olean 当前不新鲜（源 06:29:15、olean 06:18:09），
+按 `AGENTS.md` §3 不由本车道重编，故本轮不接线。
+
+**归 F 的确切剩余义务（更新 §19.115、替换 E3 §48 的问号）**：
+1. 生产者仍缺几何一半：紧致触边分支的单张 PL 乘积图卡（§19.115 末尾那段陈述不变）。
+   端点情形还要多一条：该图卡把 `Bd M` 拉直成 `{p | p.1 = 0}`、把 `M` 拉直成 `{p | 0 ≤ p.1}`，
+   并且分支从 `x = 0` 伸向 `x > 0`。代数上这一条**可达**：`TransversePlaneCoordinates` 的
+   `exists_linearEquiv_of_transverse_planes` 之后还剩的自由度恰是
+   `(x,y,z) ↦ (αx + βy + γz, δy, εz)`（保住两张片的坐标平面描述），而横截于 x 轴的任何平面都是
+   `{ax + by + cz = 0}` 且 `a ≠ 0`，故可正规化成 `{x = 0}`；这一步尚未形式化。
+2. 若下游确实需要「`h` 是 `M` 的自同胚、保 `∂M`」，前向滑动给不出来，
+   `not_surjOn_slideMapFwd_slideEndpointHalfSpace`（§19.117）说它把半空间真包含地映进自己。
+   E3 §47 的消费者只用 `MapsTo`、`Injective`、支撑外恒等与 `MapsTo h U U`，这四条都有；
+   真正被放弃的只有 `∀ x, h x ∈ BdM ↔ x ∈ BdM` 那一条，且 §48 已经把它改成带数据的蕴含。
+   要恢复它只能换模型：把端点处的锥度改成在 `Bd M` 处归零，但那样 `(0,0,0)` 不动、
+   而它正是一个双点，分支端点清不掉——所以**保边界与清端点在单个支撑滑动里不可兼得**，
+   真正的出路是两步构造（先把端点沿 `Bd M` 的一个双领作用挪进内部，再用 §19.113 的内部滑动），
+   或由消费者接受「`h` 只保 `M`、不保 `∂M`」。本条是对 E3 §48 那句「要么…要么…」的判决：
+   第一条路（与 `Bd M` 相切的收尾模型）走不通，剩下的是第二条路或放宽消费者条款。
+
+检查 `BranchSlideEndpoint` exit=0（9.3 秒）、零 warning；`AuditF261.lean` 十项仅
+`propext`、`Classical.choice`、`Quot.sound`。下一审计文件 `AuditF262.lean`。
