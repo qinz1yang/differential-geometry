@@ -75,4 +75,36 @@ theorem affineIndependent_insert_midpoint_inner [FiniteDimensional ℝ E] [Decid
     module
   rwa [he] at h
 
+theorem exists_linearMap_eq_add_const [FiniteDimensional ℝ E] {S : Finset E}
+    (hS : AffineIndependent ℝ ((↑) : S → E)) (q : E → ℝ) :
+    ∃ (ℓ : E →ₗ[ℝ] ℝ) (s : ℝ), ∀ v ∈ S, ℓ v = s + q v := by
+  obtain ⟨g, hg⟩ := exists_affineMap_eqOn hS q
+  refine ⟨g.linear, -g 0, fun v hv => ?_⟩
+  have h := g.linearMap_vsub v 0
+  simp only [vsub_eq_sub, sub_zero, hg v hv] at h
+  rw [h]
+  ring
+
+theorem exists_linearMap_separating_midpoint [FiniteDimensional ℝ E] [DecidableEq E]
+    {S : Finset E} {c d m : E} (hS : AffineIndependent ℝ ((↑) : ↥(insert c S) → E))
+    (hc : c ∉ S) (hmS : m ∈ S) (hm : c + d = m + m) :
+    ∃ (ℓ : E →ₗ[ℝ] ℝ) (r : ℝ), (∀ v ∈ S, ℓ v = r) ∧ ℓ c = r - 1 ∧ ℓ d = r + 1 := by
+  obtain ⟨ℓ, s, hℓ⟩ :=
+    exists_linearMap_eq_add_const hS (fun v => if v = c then (-1 : ℝ) else 0)
+  have hS' : ∀ v ∈ S, ℓ v = s := by
+    intro v hv
+    have hvc : v ≠ c := by
+      rintro rfl
+      exact hc hv
+    rw [hℓ v (Finset.mem_insert_of_mem hv), if_neg hvc]
+    ring
+  have hcval : ℓ c = s - 1 := by
+    rw [hℓ c (Finset.mem_insert_self c S), if_pos rfl]
+    ring
+  have hdval : ℓ d = s + 1 := by
+    have hd : d = m + m - c := by rw [← hm]; abel
+    rw [hd, map_sub, map_add, hS' m hmS, hcval]
+    ring
+  exact ⟨ℓ, s, hS', hcval, hdval⟩
+
 end DifferentialGeometry.Topology.PiecewiseLinear

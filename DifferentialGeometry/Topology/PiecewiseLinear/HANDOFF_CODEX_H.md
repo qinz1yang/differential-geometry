@@ -2416,3 +2416,27 @@ exists_affineIndependent_openSimplex_subset` 取四面体，取 `c`、`d` 为两
 
 聚焦检查 `MidpointIndependence` exit=0（9.5 秒）、零 warning；
 `.lake/scratch/AuditHMidpoint.lean` 四项仅 `propext`、`Classical.choice`、`Quot.sound`。
+
+## 36. 2026-09-18 构型存在性第 2 层 — done（同模块）：泛函不必走对偶空间
+
+第 33 节给的路线是 `Submodule.exists_dual_map_eq_bot_of_lt_top` 杀掉 `{A,B,m}` 的方向空间，
+再另证 `ℓ c ≠ r`。**本树已有更短的东西**：`Star.lean:57 exists_affineMap_eqOn`
+（仿射无关 `Finset` 上可任意规定仿射映射的取值）。于是
+
+- `exists_linearMap_eq_add_const`：`S` 仿射无关、`q : E → ℝ` 任意 ⟹
+  `∃ ℓ : E →ₗ[ℝ] ℝ, ∃ s, ∀ v ∈ S, ℓ v = s + q v`。
+  证明取 `ℓ := g.linear`、`s := -g 0`，用 `AffineMap.linearMap_vsub g v 0`
+  把 `g.linear v` 换成 `g v - g 0`。**线性泛函在仿射无关集上可以差一个常数地任意规定**。
+- `exists_linearMap_separating_midpoint`：`insert c S` 仿射无关、`c ∉ S`、`m ∈ S`、`c + d = m + m`
+  ⟹ `∃ ℓ r, (∀ v ∈ S, ℓ v = r) ∧ ℓ c = r - 1 ∧ ℓ d = r + 1`。
+  取 `q v = if v = c then -1 else 0`；`ℓ d = ℓ m + ℓ m - ℓ c` 由线性直接给出。
+
+这一条**一次给齐**第 31 节构型里的 `hℓ`、`hℓc`、`hℓd`，并且把归一化定死成 `r∓1`，
+后面所有点的 `ℓ` 值都成了有理数算术。走对偶空间则还要额外证 `ker ℓ = vectorSpan {m,A,B}`
+才能得到 `ℓ c ≠ r`，长且没有额外收益。
+
+同一条还可以再用一次造第二个泛函 `ν`（取 `q v = if v = A then 1 else 0`），
+第 34 节两条径向条件要的就是它——见下一节。
+
+聚焦检查 `MidpointIndependence` exit=0（9.2 秒）、零 warning；
+`.lake/scratch/AuditHMidpoint.lean` 六项仅 `propext`、`Classical.choice`、`Quot.sound`。
