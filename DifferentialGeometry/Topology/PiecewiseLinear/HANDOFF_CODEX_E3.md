@@ -163,3 +163,13 @@ E.3 取 `U = univ`、`h` 为同胚（`hopen` 由 E.0 或 `h` 满射给出）；`
   写 `PiecewiseLinear.secondDerived K`；`theorem PLPieceIn.foo` 内部裸写 `isPolyhedron_space` 同理。
 - `open Classical` 下 `not_imp` 有歧义，用 `Classical.not_imp`；Git Bash 无 `grep -P`，用 `sed`。
 - `Finite (joinComplex K L).faces` 之类实例要在使用前显式 `have`，并给显式复形参数。
+
+## 7. 同车道另一线：§25.1 沿分支的片分离（2026-09-18）
+
+- 端点 `NormalSingularCellData.exists_separated_along_branch` 与
+  `NormalSingularCellData.exists_separated_cell_along_branch` 已闭合，模块
+  `BranchSlideSeparation.lean`、`BranchSeparation.lean`；割开后的双点集等式
+  `doublePointSet g D.domain = doublePointSet D D.domain \ branchCarrier cb` 两个包含都证了。
+- 前提是 §44 的乘积图卡数据，写成显式假设（不是 `sorry`），生产者归 F。细节、已排除的两条错误写法与
+  确切剩余义务见 `HANDOFF_CODEX_L.md` §46、§47。
+- 审计文件 `.lake/scratch/AuditE3BranchSeparation.lean`，9 条全部只含标准三公理。

@@ -1018,3 +1018,45 @@ theorem eq_top_of_boundaryLoops_mem_normal
   直接给出逐片映射的 PL 性、局部单射、纤维至多二与支撑外纤维不变。
 - `doublePointSet_piecewise_postcomp`：抽象层的双点集等式，两个包含都证了，见 §47。
 - 聚焦检查 `BranchSlideSeparation` exit=0（10.0 秒）、零 warning。
+
+## 47. 2026-09-18 E3-M2：`exists_separated_along_branch` 与割开后的双点集精确等式
+
+状态：done，相对于 §44 的乘积图卡数据（该数据是 F 的义务，这里写成**显式假设**，全文无 `sorry`）。
+新模块 `BranchSeparation.lean`。
+
+- `NormalSingularCellData.exists_separated_along_branch`：对 `hD : NormalSingularCellData D BdM B`、
+  分支 `cb : hD.singularSet.Branch`、`W`、两张细条带 `P Q ⊆ D.domain`，在乘积图卡数据下输出 `U` 与 `h`，满足
+  `IsOpen U`、`branchCarrier cb ⊆ U`、`closure U ⊆ W`、`IsPL 3 3 h`、`Function.Injective h`、
+  `EqOn h id Uᶜ`、`MapsTo h U U`、`∀ x, h x ∈ BdM ↔ x ∈ BdM`、`Disjoint (h '' (D '' P)) (D '' Q)`。
+  §44 列的八条全部给出，边界一条给的是双向 iff，强于所要求的 `h (U ∩ BdM) ⊆ BdM`。
+- 乘积图卡数据（显式假设，逐条都是"位置/尺度"陈述，没有结论型假设）：PL 图卡 `E` 与模型拉直 `e`、
+  `e.source ⊆ E.target`、`0 ≤ d`、`c + 2*d ≤ R`、`c - d < a`、三个 band 落在 `e.target` 里、
+  `branchCarrier cb ⊆ K`（`K := E.symm '' (e.symm '' slideSupportLong R)`）、`W ∈ 𝓝ˢ K`、
+  `D '' P ∩ K ⊆ A₀`、`D '' Q ∩ K ⊆ B₀`、`D '' P ∩ D '' Q ⊆ K`、边界的两层乘积表示 `Bd₁`/`T`。
+- `NormalSingularCellData.exists_separated_cell_along_branch`：再加贴合数据
+  `P ∪ Pc = D.domain`、`IsPolyhedron P`、`IsPolyhedron Pc`、`InjOn D P`、`InjOn D (Q ∩ D ⁻¹' W)`、
+  `Pc ∩ D ⁻¹' W ⊆ Q`（`W` 上方的余片只有第二张条带）、`∀ x ∈ P ∩ Pc, D x ∉ W`（缝像避开 `W`）、
+  `doublePointSet D D.domain ∩ W ⊆ branchCarrier cb`（`W` 避开其余分支）。这些都写在 `W` 上而不是输出的 `U` 上，
+  再由 `U ⊆ closure U ⊆ W` 降下来，避免自指。输出除上面的条款外还给 `g := P.piecewise (h ∘ D) D` 的
+  `IsPLOn 2 3 g D.domain`、`IsLocallyInjective (D.domain.domRestrict g)`、纤维至多二、
+  `∀ y ∉ U, g ⁻¹' {y} = D ⁻¹' {y}`，以及
+  `doublePointSet g D.domain = doublePointSet D D.domain \ branchCarrier cb`。
+- 双点集等式**两个包含都证了**，"不产生邻近的新交线"那一半就在 `⊆` 里：
+  - `⊆`：取 `x ≠ z ∈ D.domain` 且 `g x = g z = y`。两点都在 `P`：`h` 单射加 `InjOn D P` 直接矛盾。
+    一点在 `P` 一点不在：若 `D x ∈ U`，由 `MapsTo h U U` 得 `y ∈ U`，于是另一点落进 `Pc ∩ D ⁻¹' U ⊆ Q`，
+    与 `Disjoint (h '' (D '' P)) (D '' Q)` 矛盾——**这正是"没有新交线"**；若 `D x ∉ U` 则 `h` 在该点恒等，
+    `y` 是旧双点且 `y ∉ U ⊇ branchCarrier cb`。两点都不在 `P`：是旧双点，且若 `y ∈ branchCarrier cb ⊆ U`
+    则两点同属 `Q ∩ D ⁻¹' U`，被 `InjOn D (Q ∩ D ⁻¹' U)` 否掉。
+  - `⊇`：`y` 是旧双点且 `y ∉ branchCarrier cb`，由 `doublePointSet ∩ U ⊆ branchCarrier cb` 得 `y ∉ U`，
+    故 `h y = y`，于是两个原像在 `g` 下仍同取 `y`（在 `P` 里的那个经 `h y = y`）。
+- 验证：`BranchSlideSeparation` 与 `BranchSeparation` 聚焦检查均 exit=0（10.0 / 10.4 秒）、零 warning；
+  `fresh.py` 报 2 个改动模块全部 fresh，forbidden=0、stale=0、missing=0；
+  `.lake/scratch/AuditE3BranchSeparation.lean` 的 9 条 `#print axioms` 全部只含
+  `propext`、`Classical.choice`、`Quot.sound`。
+- **仍未闭合的确切义务**（归 F，§44 的生产者，现在形状比 §44/§45 设想的简单得多）：给出上面那组乘积图卡数据本身，
+  即对紧致触边分支 `branchCarrier cb` 造出单张 PL 图卡 `E` 与模型拉直 `e`，使分支拉直成
+  `{p | p.2 = 0}` 上的一段，两张片在支撑内分别成为 `slideBandA c` 与 `slideBandQ a b`，边界呈
+  `{p | p.2 ∈ T}` 形，且 `slideSupportLong R ⊆ e.target` 时 `R` 仍大到满足 `c + 2*d ≤ R`、`c - d < a`。
+  §45 的 `BranchSignChain` 只在需要多张图卡时才用；单图卡路线用不到它，但若 F 改走多图卡，链版本仍然可用。
+- 另外未做：§44 把两张细条带 `P, Q` 列为**输出**，这里它们是输入（属于图卡数据的一部分：条带在支撑内必须正好是两条标准 band）。
+  由这条结果接 Case 3/4 的 `D₁`、`D₂`、`L₁`、`L₂` 字等式与复杂度严格下降尚未接线；按主人指定的顺序，Case 1/2 未开始。
