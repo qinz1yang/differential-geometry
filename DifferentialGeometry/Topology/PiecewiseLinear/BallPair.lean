@@ -71,16 +71,16 @@ theorem isPLBallPair_coneSet_of_isPLSphere [FiniteDimensional ℝ E] {m k : ℕ}
   exact (hL.of_faces_subset hJL).isPLBall_of_isPLSphere hJsph
 
 theorem exists_isPLHomeomorphOn_coneSet_pair [FiniteDimensional ℝ E] [FiniteDimensional ℝ F]
-    {p : E} {q : F} {L J : Geometry.SimplicialComplex ℝ E} [Finite L.faces] (hL : IsConeBase p L)
-    (hJL : J.faces ⊆ L.faces) {L' J' : Geometry.SimplicialComplex ℝ F} [Finite L'.faces]
-    (hL' : IsConeBase q L') {f : E → F} (hf : IsPLHomeomorphOn f L.space L'.space)
-    (hfJ : f '' J.space = J'.space) :
+    {p : E} {q : F} {L : Geometry.SimplicialComplex ℝ E} [Finite L.faces] (hL : IsConeBase p L)
+    {X : Set E} (hXL : X ⊆ L.space) {L' : Geometry.SimplicialComplex ℝ F} [Finite L'.faces]
+    (hL' : IsConeBase q L') {f : E → F} (hf : IsPLHomeomorphOn f L.space L'.space) {X' : Set F}
+    (hfX : f '' X = X') :
     ∃ g : E → F, IsPLHomeomorphOn g (coneSet p L.space) (coneSet q L'.space) ∧
-      EqOn g f L.space ∧ g p = q ∧ g '' coneSet p J.space = coneSet q J'.space := by
+      EqOn g f L.space ∧ g p = q ∧ g '' coneSet p X = coneSet q X' := by
   classical
   obtain ⟨g, hg, hgf, hgp, -, hpair⟩ := exists_isPLHomeomorphOn_coneComplex_pair hL hL' hf
   rw [coneComplex_space_eq_coneSet hL, coneComplex_space_eq_coneSet hL'] at hg
-  exact ⟨g, hg, hgf, hgp, by rw [hpair _ (space_mono_of_faces_subset hJL), hfJ]⟩
+  exact ⟨g, hg, hgf, hgp, by rw [hpair _ hXL, hfX]⟩
 
 theorem exists_isPLHomeomorphOn_of_isPLSphere_pair [FiniteDimensional ℝ E] [FiniteDimensional ℝ F]
     {m k : ℕ} {p : E} {q : F} {L J : Geometry.SimplicialComplex ℝ E} [Finite L.faces]
@@ -93,7 +93,8 @@ theorem exists_isPLHomeomorphOn_of_isPLSphere_pair [FiniteDimensional ℝ E] [Fi
       EqOn g f L.space ∧ g p = q ∧ g '' coneSet p J.space = coneSet q J'.space ∧
       IsPLBallPair m (k + 1) (coneSet p L.space) (coneSet p J.space) ∧
       IsPLBallPair m (k + 1) (coneSet q L'.space) (coneSet q J'.space) := by
-  obtain ⟨g, hg, hgf, hgp, hgJ⟩ := exists_isPLHomeomorphOn_coneSet_pair hL hJL hL' hf hfJ
+  obtain ⟨g, hg, hgf, hgp, hgJ⟩ :=
+    exists_isPLHomeomorphOn_coneSet_pair hL (space_mono_of_faces_subset hJL) hL' hf hfJ
   exact ⟨g, hg, hgf, hgp, hgJ, isPLBallPair_coneSet_of_isPLSphere hL hJL hsph hJsph,
     isPLBallPair_coneSet_of_isPLSphere hL' hJL' hsph' hJsph'⟩
 
