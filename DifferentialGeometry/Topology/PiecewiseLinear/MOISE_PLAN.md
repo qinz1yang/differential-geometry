@@ -749,8 +749,15 @@
   check exit=0、零 warning，AuditF250 两项仅标准三公理。分层约束族的实例化、曲面支归属与有限图卡拼接仍待闭合，见 HANDOFF §19.101。
 - 2026-09-17（F 车道 F5.2 分层维数障碍）：`ArrangementConstraints.lean` 已证明原完整仿射无关约束不能容纳全维包络中的四个受迫共平面顶点，故不能直接实例化处理共面双折；检查 exit=0、AuditF251 三项标准三公理。
   F5.2 保持 partial；精确陈述、受影响路线与替代证明方向见 HANDOFF §19.102。按常驻规则转做新 F-M2 非紧多面体接口。
+- 2026-09-18（F 车道 26.4 相对子复形细分）：`SubcomplexMesh.lean` 定案 26.4 消费的是限制形细分并打包`exists_isSubdivision_diam_lt_restrict_isSubdivision`；把 MOISE_CHAIN 出路 (a) 的固定形反证为假
+  （`not_exists_isSubdivision_faces_subset_forall_diam_lt`）；查出 `Moise264` 结论缺 "Bd Δ 在 M² 中不可缩"。check exit=0、零 warning，AuditF284 三项仅标准三公理；见 HANDOFF_CODEX_F §19.144。
 - 2026-09-18（F 车道 F5.2 支跨公共面）：`FoldPlaneCrossing.lean` 把“曲面各支跨越目标公共面”定案为“该支在双点附近于指定平面两侧都有点”，并证明它与该支两个对顶点在该仿射泛函下异号等价；
   由此产出 `IsArrangementGeneralFoldPair` 与共面双折的 `HasPLCrossingAt`。check exit=0、零 warning，AuditF282 共 13 项仅标准三公理。F5.2 仍 partial：这条翻译对两条备选路线中立，
   但两侧性本身仍需由分层通用位置或目标骨架横截各自生产，详见 HANDOFF §19.142。
 - 2026-09-17（F 车道新 F-M2 / F6.4）：`LocallyPolyhedral.lean` 交付允许非紧开胞腔的局部多面体谓词、与旧紧致多面体的等价、紧集有限片邻域、正确条件下的闭子集/有限并/交接口及局部有限复形桥接。
   最终 check exit=0、零 warning，AuditF252 共 22 项仅标准三公理。§32 Q.1 可用 `IsLocallyPolyhedral (U \ P)` 陈述非紧部分；未捆绑全局无限三角剖分，范围说明见 HANDOFF §19.103。
+
+- 2026-09-18（30.5 核查，取代 2026-09-17 的 H-M3 评估）：Theorem 30.5 全书只在 §34 Lemma 3 被引用，交来的胞腔是开集上嵌入
+  `h` 下多面体胞腔的像，`frontier C₂'` 双领口；双领口情形已由 `TubularExcision.lean:170` + `SphereH1.lean:189` +
+  `JordanBrouwer.lean:28` 无条件证出（纯拓扑，已 `#print axioms` 核实）。H-M3 漏查了这一支。决定：以 `Moise305Tame`
+  （加 `IsBicollared (frontier C₂)`）替代，估约 1k–2k 行；不实现 wild 球面的 Alexander 对偶。详见 `MOISE_CHAIN.md` 同名条目。

@@ -5140,3 +5140,13 @@ arc tube in the reversing mapping torus; and the orientability bridge. None of
 these follows merely from square coverage, and no embedding bridge is claimed.
 The five membership equivalences give exact linear constraints for the next
 intersection proofs.
+
+### Integration clarification of the tube obligation (2026-09-18)
+
+The earlier endpoint-interpolation description does not by itself establish the
+flip seam for a general reversing PL map. The top boundary parametrization must
+be tied to the bottom one, for example
+`alpha1(s) = v^-1(alpha0(1-s))`, before extending them by a compatible PL map.
+The five-triangle coverage proved here does not discharge that boundary extension
+or the mapping-torus embedding. This corrects the earlier claimed seam equality;
+no tube construction has been committed.
