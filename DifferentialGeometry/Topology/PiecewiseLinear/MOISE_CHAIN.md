@@ -867,3 +867,24 @@ E3 的 `LuneCell.lean`（`exists_lune_base_off_graphArc`）证明：月牙在参
 `InvarianceOfDomain.lean:346/508`），只缺"拓扑胞腔在同胚下的 `frontier`/`interior` 桥"（H-M3 原也列为 0.5k–1k）。
 修正估计 **约 1k–2k 行**（未原型化），原 10k–18k 作废。30.5 仍等 30.4（I.4，4k–6k，等 26.4）；本核查只移除了较大的那个阻塞。
 一般（wild）版 `TopologicalCellComplementConnected` 仍在原成本之外，但 Moise 链不需要它。
+
+### 2026-09-18 晚：L₁ 早已存在；边界分支的整条滑动链无实例；L₂ 改走"交叉重贴 + 横向楔推"（决定）
+
+E3 核对后三条事实（`HANDOFF_CODEX_L.md` §80–§81）：
+
+1. **`A ∪ B` 就是 `L₁`，且早已完整交付**：`CutAndPaste.lean:1373 exists_boundary_surgery_cell_of_boundaryBranch`
+   （`Bd D₁ ⊆ Bd M`、双点集等式、`Nonempty (NormalSingularCellData G BdM B)` 五字段、边界字 `σ.trans ω`）与
+   `:2425 …_with_simplicialComplexity_lt`（严格下降）。§43 所记"重贴保留分支"的构造是把三块并成一个带两条缝的胞腔
+   （`:1214`），那是关于像的真陈述，与 `A ∪ B` 无关。本文件上一条要 E3"重新审视经典切贴"的指示是多余的——它已经在树里。
+2. **§46–§73 的滑动链对边界分支无实例**：由 `map_boundary`，边界分支是两端点都在 `BdM` 的多面体 1-球；
+   `hSK + hA + hB + hinjP + hinjQ + hPcQ + hW` 把每个分支点放到图卡轴上，`hBdE/hBd₁` 又令 `BdM = {p.1 = 0}`，
+   轴与之只交于一点，故两端点重合。那些定理是正确的条件式，但**路线为空**。根源是一端的边界模型 `{x = 0}`
+   被当成了整条分支的边界模型；两端都在 `BdM` 的弧不可能落在横截 `BdM` 的直线上。
+3. **`L₂` 的真正路线**（书上第二个半步）：交叉重贴（已有 `:1214`）后，把两条缝各自**横向楔推**进开象限
+   `(0, ε, ε)` / 反向，推移**无 `p.1` 分量**，故 `Bd M` 逐点保持——这就是边界环的"8 字"光滑化，不需要任何边界修复。
+   形状是 `P'.piecewise (ψ₊ ∘ G) (ψ₋ ∘ G)`；新义务是楔推版的 `doublePointSet G' = doublePointSet G \ branchCarrier`。
+   §19.107 的反例（两张**平**带无法横推分离）不适用：重贴后每条缝两侧是一张**折**片、占两个相邻象限，楔推可分。
+
+决定：采纳 3。阻塞接口改为**板状图卡**：沿整条分支的乘积邻域中两张片是坐标平面、`M` 是板 `{0 ≤ x ≤ c} × ℝ²`、
+`Bd M` 是两个端面 `{x = 0}` 与 `{x = c}`（F 的 `TransversePlaneNormalForm` 在两端各用一次 + F 的链 + H 的球对）。
+滑动机制（`ModelSlide*`、`ChartSlide*`、`BranchSlide*`）保留为已证基础设施，但不在主链路径上。
