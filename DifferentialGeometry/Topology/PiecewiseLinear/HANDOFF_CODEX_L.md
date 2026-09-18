@@ -1086,3 +1086,35 @@ theorem eq_top_of_boundaryLoops_mem_normal
 - 两条模块的聚焦检查在改动后重跑：`BranchSlideConjugation` exit=0（9.2 秒）、
   `BranchSeparation` exit=0（10.3 秒），均零 warning；审计 9 条依旧只含标准三公理；
   `fresh.py` forbidden=0、stale=0、missing=0。
+
+## 49. 2026-09-18 E3-M2：与 F 同名模块的分工（重名已让路，无重复声明）
+
+- F 在同一天把 `BranchSlideSeparation.lean` 推到同一路径，整合分支上 add/add 冲突。本车道的模块改名为
+  `BranchSlideConjugation.lean`，F 的文件保持原名。两者内容不重叠：
+- F 的文件全程带 `variable {M : Type*} [NormedAddCommGroup M] [NormedSpace ℝ M]`（几条 `omit` 只去掉
+  `NormedSpace`，`NormedAddCommGroup` 留着），所以只能用在**赋范模型**上，不能以三维流形作源。
+  本车道补的三条正是为了跨过这一层，逐条对应：
+  - `OpenPartialHomeomorph.injective_conjugateMap` ← `ChartSlideLong.injective_chartSlideLong`；
+  - `OpenPartialHomeomorph.disjoint_conjugateMap_image` ← `ChartSlideLong.disjoint_chartSlideLong_image`；
+  - `isPL_conjugateMap` ← `ChartConjugate.isPL_conjugateHomeomorph`（后者只收 `Homeomorph`）。
+  前两条把 `M` 放宽到任意拓扑空间，因此外层可以用流形图卡 `E : OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin 3))`
+  作共轭；第三条把待共轭映射放宽到任意逐片仿射映射，因为 `slideMapLong` 只有双射、没有逆的连续性。
+- 逐条对照结论：**本车道没有任何声明因 F 的文件而变成多余，无可删项。**
+  - F 的 `eqOn_chartSlideLong_id_compl`、`mapsTo_chartSlideLong_of_forall_mem_iff`、
+    `mapsTo_chartSlideLong_boundary`、`mapsTo_chartSlideLong_halfSpace`：本车道没有同名/同形的独立声明，
+    对应位置直接用了已有的 `Homeomorph/Conjugate.lean` 的 `conjugateMap_eqOn_compl`、`conjugateMap_mem_iff`
+    （后者给的是 iff、且对任意拓扑空间成立，比 `MapsTo` 版强，并可两层串用）。
+  - F 的 `isCompact_symm_image_slideSupportLong`、`symm_image_subset_source`：本车道只在证明内部有两行同内容的
+    `have`，没有独立声明；它们对本车道**内层**的 `e`（源是 `EuclideanSpace ℝ (Fin 3)`，赋范）确实适用，
+    将来可以改成消费 F 的版本，但那会让本模块依赖 F 的模块，本轮按协调者要求不做。
+  - F 的 `exists_supported_separation_of_isBranchSlideChart`：赋范层的打包版，结论是
+    `IsPiecewiseAffineOn h univ` 而非 `IsPL 3 3 h`，也不给 `U`、`closure U ⊆ W`、`MapsTo h U U`。
+    与本车道的 `exists_separated_slide` 不是同一条。
+- **给未来消费者的警告**：F 的 `IsBranchSlideChart` 里 `sheet_eq : P = e.symm '' slideBandA c` 是**等号**。
+  若把这个 `P` 直接当成逐片贴合用的条带，就会撞上 §46 记的第二条矛盾（`slideBandA c ⊆ slideSupportLong R`，
+  于是条带整个落进 `W`，与"缝像避开 `W`"冲突）。F 的 `P` 是模型带本身，贴合用的条带必须另取，
+  位置条件只能写成支撑内的包含。
+- **共享 olean 隐患（需要 F 或协调者处理，本车道未动）**：`E:\...\lib\lean\...\BranchSlideSeparation.olean`
+  当前是本车道改名前编译的产物（06:09:26，427584 字节），而该路径的源码已换成 F 的文件（6395 字节，06:14:26）。
+  现在 `import ...BranchSlideSeparation` 拿到的是本车道的旧内容而不是 F 的声明。需要由该模块的属主重编一次。
+  本车道没有删除它，因为 S 车道正在运行，不擅自动别人的共享产物。
