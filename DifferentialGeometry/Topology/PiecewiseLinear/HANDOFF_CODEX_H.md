@@ -2694,3 +2694,53 @@ closedStar K' x ∩ L.space = closedStar L' x`——子复形的迹就是子复�
 
 聚焦检查 `ArcCellTrace` exit=0（11.0 秒）、零 warning（`Set.mem_setOf_eq` 已弃用，改 `Set.mem_ofPred_eq`）；
 `.lake/scratch/AuditHArcCellTrace.lean` 六项仅 `propext`、`Classical.choice`、`Quot.sound`。
+
+## 42. 2026-09-18 中断时的状态（协调者要求：owner 会话结束）
+
+**已落地（均 exit=0、零 warning、审计仅三公理，已提交并推送）：**
+第 35–41 节全部：`MidpointIndependence`、`BallPairCutConfig`（含 `exists_cutModel_data`）、
+`BallPairRelativeGluing`（`isPLBallPair_union_of_coneSet_disk`）、`ArcChartChain`、
+`DerivedCellCone`（前置 2 测试通过）、`ArcCellTrace`（前置 1 闭合）。
+
+**stash 里的一件**（`git stash list` 首条，untracked 文件 `ArcChainCells.lean`）：
+弧链胞腔的专化层——`arcChainFace_card_le_two`、`arcChainFace_injective`、
+`arcChainFace_comparable_iff`（可比 ⟺ `|i−j| ≤ 1`）、`arcChainFace_mem_arcComplexIn_faces`、
+`disjoint_derivedNeighborhoodCell_arcChainFace`（`i+1 < j` 的胞腔不交）、
+`derivedNeighborhoodCell_inter_arcComplexIn_space`（`1 ≤ j`、`j+1 ≤ 2n` 时
+`cell_j ∩ A.space = coneSet ĉ_j {z_{j−1}, z_j}`，`z_j = centroid {ĉ_j, ĉ_{j+1}}`）。
+聚焦检查 **exit=0，但前三条各报一个 `unusedSectionVars` warning**
+（要在这三条前各加 `omit [NormedAddCommGroup E] [NormedSpace ℝ E] in`），未审计。
+因为不是零 warning，按指令 stash 而不提交。`git stash pop` 后补三行 `omit`、复查、审计即可提交。
+
+**中飞（未写 Lean）——第 4 步球对方向的施工方案，已定型，按此接：**
+1. M2（`ConeDiskPairExtension.lean:11`，本车道文件）结论**追加** `G '' Lc.space = Lc'.space`
+   （证明里已有 `hGeq.image_eq.trans hGs.image_eq`），并给 `BallPairRelativeGluing.lean`
+   两处 `obtain ⟨G₁, hG₁, hG₁eq, -, hG₁X⟩` 各补一个 `-`。
+2. `exists_cutModel_data` 追加并集的原位锥数据：`(L : SC)`，`L.faces.Finite`、`IsConeBase p₁ L`、
+   `IsPLSphere 2 L.space`、`coneSet p₁ L.space = C₁ ∪ C₂`、
+   `coneSet p₁ {y₁,y₂} = A₁ ∪ A₂`、`y₁ y₂ ∈ L.space`、
+   **`L₂.space ⊆ L.space ∪ coneSet z L₀.space`**（`∂T₂ ⊆ ∂T ∪ conv Fm`，
+   用 `simplexBoundary_space` 逐面：`T₂.erase d = Fm`，`T₂.erase m = T.erase c`，
+   `conv (T₂.erase A) ⊆ conv (T.erase A)` 因 `m ∈ segment c d`，`B` 同）。
+   见证 `L := simplexBoundary {c,d,A,B} hTout`，`hp : p ∈ openSimplex T` 已在构造里。
+   两个消费者的 `obtain` 模式各加 `L` 与八个 `-`。
+3. **归纳不变量**（模型固定，不需要边界保持引理，也不需要拓扑）：
+   `Inv(k)`: `∃ Φ, IsPLHomeomorphOn Φ B_k (coneSet p₁ L₁.space) ∧ Φ '' A_k = coneSet p₁ {z,y₁}
+   ∧ Φ '' D_k = coneSet z L₀.space ∧ Φ z_k = z ∧ Φ y₀ = y₁`，
+   其中 `B_k = ⋃_{j=1}^{k} cell_j`，`A_k = B_k ∩ A.space`，`D_k = cell_k ∩ cell_{k+1}`，
+   `z_k` 其锥顶，`y₀ = z_0` 弧的近端（第一个穿越点，在 `cell_1` 的基球面上）。
+   一步 = M2 两次：(a) 源 `cell_{k+1}`（原位锥，第 40 节）→ 模型 `C₂`，以 `Φ|D_k` 为 `g`，
+   得 `Φ'`，`piecewise Φ Φ' : B_{k+1} → coneSet p₁ L.space`；
+   `Φ'(D_{k+1}) ⊆ L₂.space \ coneSet z L₀.space ⊆ L.space`（用 2 的最后一条与 `D_{k+1} ∩ D_k = ∅`）。
+   (b) 再归一化：M2 源 `(p₁, L)`、`X = {y₁,y₂}`、`D = Φ'(D_{k+1})`、`y = y₁`，目标 `(p₁, L₁)`、
+   `X' = {z,y₁}`、`D' = coneSet z L₀.space`，`g := g₀ ∘ Φ'⁻¹`，`g₀ : D_{k+1} → coneSet z L₀.space`
+   由 `D_{k+1}` 的原位锥数据（第 40 节）锥化 1-球面同胚得到（锥顶送锥顶）。
+   基例 `k = 1`：M2 一次（源 `cell_1`，目标 `C₁`，`X = {z_1, y₀}`）。
+   终点：`Inv(2n−1)` 与模型的 `hpair₁` 经 `IsPLBallPair.of_isPLHomeomorphOn` 给
+   `IsPLBallPair 2 1 (⋃_{j=1}^{2n−1} cell_j) (弧 ∩ 该并)`。**弧端点的顶点胞腔必须排除**（第 41 节）。
+4. 需要的胞腔事实全部在第 40、41 节与 stash 里：原位锥、2-球面基、相接盘锥顶＝穿越点、
+   盘在两基球面里、迹＝两条线段、远胞腔不交。假设用 `IsCombinatorialManifold 3 K`（闭），
+   经 `IsCombinatorialManifold.isCombinatorialManifoldWithBoundary` 复用 `ArcDerivedNeighborhood`。
+
+给 F 的端到端交付（截至本次中断）：`ArcChartChain.lean` 的星形图卡族＋相容侧选择（第 39 节），
+以及第 39 节报告的接口缺陷（协调者已把修法 (β) 派给 F）。球对方向未闭合，未估行数。
