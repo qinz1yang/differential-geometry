@@ -1597,3 +1597,54 @@ M1 只给"PL 同胚于一个锥"，不给"是一个锥"，所以绕不过去。
 `(C∩D, C∩D∩A)` 里 `C∩D` 是 2-球、`C∩D∩A` 必须是 `IsPLBall 0`，即**一个点**。
 所以是**一个穿越点**：弧在公共盘上只穿一次，`A` 是 `v → p₁ → z → p₂ → w` 的折线。
 两个穿越点的版本不是这里要的。
+
+## 17. 2026-09-18 第 3 步模型：第 2、3 项已闭合（`BallPairTwoSimplices.lean`，全模块 88 行）
+
+### 第 2 项 — done：两个单纯形被分离泛函切开后交恰为公共面
+
+`convexHull_insert_inter_convexHull_insert_of_separating`：设 `ℓ : E →ₗ[ℝ] ℝ` 在 `F` 上恒零、
+`ℓ a < 0 < ℓ b`，则
+
+    convexHull ℝ (insert a F) ∩ convexHull ℝ (insert b F) = convexHull ℝ F
+
+**实测 37 行**（上一轮按要求拒绝报区间，实际远小于任何我会猜的数）。两点比预期弱：
+
+- **不需要仿射无关**。原以为要 `hT₁`、`hT₂` 两个 `AffineIndependent`，实际证明里一次都没用到。
+- **不需要有限维**。`omit [FiniteDimensional ℝ E]` 通过。
+
+证明就是原计划：`convexHull_min` 加 `convex_halfSpace_le/ge`（注意是**大写 S**，
+且树里的用法是 `ℓ.isLinear` 而不是 `LinearMap.isLinear ℓ`）把两侧夹进半空间得 `ℓ x = 0`；
+再用 `ConeComplex.lean:13 exists_combo_of_mem_convexHull_insert` 把 `x` 写成
+`a + s • (z - a)`，算出 `ℓ x = (1 - s) * ℓ a`，由 `ℓ a ≠ 0` 得 `s = 1`，故 `x = z ∈ convexHull F`。
+
+### 第 3 项 — done：公共面与穿越点这一对
+
+上一轮列为"未查证"的两条**都在树里现成**（第五、六次 artifact 命中）：
+
+- 空复形：`(⊥ : Geometry.SimplicialComplex ℝ E)` 加 `Geometry.SimplicialComplex.space_bot`
+  （用例见 `ChartGlue.lean:194`、`LocallyFinitePieceTowerExistence.lean:53`）。
+- 单点是 0-球：`affineIndependent_of_subsingleton ℝ _` 加
+  `isPLBall_convexHull_of_affineIndependent` 取 `card = 0 + 1`，再 `convexHull_singleton`。
+  这正是协调者猜的路线，`ConvexPolytope.lean:52` 已有同样写法。
+
+交付三条：`coneSet_empty : coneSet p ∅ = {p}`（不需要有限维）、
+`isPLBall_zero_singleton : IsPLBall 0 {z}`、
+`isPLBallPair_convexHull_singleton_of_mem_openSimplex`：
+`T` 仿射无关、`T.card = n + 2`、`p ∈ openSimplex T` ⟹ `IsPLBallPair n 0 (convexHull ℝ T) {p}`。
+取 `n = 1`（三角形）即第 3 步要的 `(F, {z})` 这一对。子复形取 `⊥`，
+`coneSet p ⊥.space = coneSet p ∅ = {p}`。
+
+聚焦检查 `BallPairTwoSimplices` exit=0（9.5 秒）、零 warning；
+`.lake/scratch/AuditHTwoSimplices.lean`（同时导入 `SimplexBallPair`）四项仅
+`propext`、`Classical.choice`、`Quot.sound`。
+
+### 模型三项合计
+
+第 1 项（`BallPairSimplex.lean`，第 16 节）+ 第 2、3 项（本节）= 两个文件、约 110 行，
+三项全部闭合。剩下的是把它们拼成"两个四面体沿一张面相接、一条折线弧穿过"的具体模型
+（选点、验证三对同时成立），以及第 3 步本身。**未开始，不报区间。**
+
+拼装时要注意的一条：第 2 项给的是 `convexHull (insert a F) ∩ convexHull (insert b F) = convexHull F`，
+而模型需要的是两个**四面体**（`card = 4`），所以 `F` 要取 `card = 3` 的三角形，
+`insert a F`、`insert b F` 各自 `card = 4`，且各自仿射无关——后者不是第 2 项的假设，
+但**是**第 1 项（`isPLBallPair_convexHull_of_mem_openSimplex`）的假设，拼装时要单独提供。
