@@ -8277,6 +8277,7 @@ import DifferentialGeometry.Topology.PartitionOfUnity.CompactSupport
 import DifferentialGeometry.Topology.PartitionOfUnity.Locality
 import DifferentialGeometry.Topology.PiecewiseLinear.ArcCellBallPair
 import DifferentialGeometry.Topology.PiecewiseLinear.ArcCellGluing
+import DifferentialGeometry.Topology.PiecewiseLinear.ArcCellUnion
 import DifferentialGeometry.Topology.PiecewiseLinear.ArcChainCells
 import DifferentialGeometry.Topology.PiecewiseLinear.BallPairCutConfig
 import DifferentialGeometry.Topology.PiecewiseLinear.BallPairRelativeGluing

@@ -2901,3 +2901,37 @@ and passed all default environment linters other than `docBlame` and
 This equality is the missing invariant field needed to keep the near endpoint of
 the marked arc fixed while the trimmed-union induction repeatedly normalizes the
 new outer interface.
+
+## 48. 2026-09-18 Trimmed arc-cell union bookkeeping — done
+
+`ArcCellUnion.lean` defines
+`trimmedArcCellUnion K v k = ⋃ i : Fin k, cell (i + 1)`, so it contains exactly
+the first `k` non-endpoint cells.  Its API proves the set identities and
+disjointness facts needed by the normalized induction:
+
+- the successor union is the previous union plus cell `k + 1`;
+- for `1 ≤ k`, the previous union meets cell `k + 1` exactly in the standard
+  interface cone at `arcCellCrossing v k`;
+- the previous union is disjoint from the following interface between cells
+  `k + 1` and `k + 2`;
+- intersection with the arc complex distributes across the successor step;
+- the fixed near crossing `arcCellCrossing v 0` and the current outgoing
+  crossing `arcCellCrossing v k` lie in the appropriate trimmed union.
+
+All far-intersection exclusions use
+`disjoint_derivedNeighborhoodCell_arcChainFace`; no ball-pair conclusion or
+hidden nondegeneracy assumption is used.  The module is registered directly in
+`DifferentialGeometry.lean`.
+
+Strict private verification used token `H-ArcCellUnion-20260918` and output root
+`C:\Users\liao9\AppData\Local\Temp\codex-h-cutmodel-private`.  The module check
+and external silent audit both exited 0 with zero diagnostics and unchanged
+shared outputs.  The audit dynamically enumerated all nine non-automatic
+declarations, checked the three direct arc-cell intersection producers, found
+only `{propext, Classical.choice, Quot.sound}`, and passed all default
+environment linters other than `docBlame` and `docBlameThm`.
+
+The remaining proof layer is now purely the relative-extension construction:
+build the base normalized state at `k = 1`, advance it with the two marked cone
+extensions at each successor, and extract the ball-pair conclusion at
+`k = 2 * n - 1`.
