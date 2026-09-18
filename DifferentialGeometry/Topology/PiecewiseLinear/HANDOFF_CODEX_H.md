@@ -2249,3 +2249,43 @@ M1 只给"PL 同胚于一个锥"，不给"是一个锥"，所以绕不过去。
 `(C ∪ D, A)`，用 M2 `exists_isPLHomeomorphOn_coneSet_pair_of_disk_marked` 提供
 `PLPiece.lean:83` 要的逐点相等）与第 4 步（沿弧的链归纳，`arcChainFace_subset_iff`）
 **未开始，不报区间**。给 F 的输出形状仍未定。
+
+## 32. 2026-09-18 第 3 步的前置：M2 与锥对延拓也要把子链改成集合
+
+动手拼第 3 步前先核对 M2 的形状，发现**同一个毛病还在上一层**：
+`ConeDiskPairExtension.lean` 的 `exists_isPLHomeomorphOn_coneSet_pair_of_disk_marked` 与
+`BallPair.lean` 的 `exists_isPLHomeomorphOn_coneSet_pair` 仍带
+`hJLc : J.faces ⊆ Lc.faces`，即第 25 节从 `IsPLBallPair` 里拿掉的那个子复形条件。
+
+查证：两者的证明里 `J` **只**经 `J.space` 出现（`hJsplit`、`hgJ`、结论的像等式），
+而 `exists_isPLHomeomorphOn_coneSet_pair` 用 `hJL` 的唯一方式是
+`space_mono_of_faces_subset hJL`。所以两者都可以直接换成集合 `X ⊆ Lc.space`。
+
+这对第 3 步是**必需**的，不是整洁问题：第 3 步里 M2 的子链是弧与 `∂C` 的两个交点，
+它们没有理由是 `∂C` 任何三角剖分的顶点——和第 24 节在 `C₁` 上遇到的完全同一件事。
+
+改动：两条的 `{J J' : SimplicialComplex}` ＋ 面包含换成 `{X : Set E} {X' : Set F}` ＋
+`X ⊆ Lc.space`；`exists_isPLHomeomorphOn_of_isPLSphere_pair` 内部补
+`space_mono_of_faces_subset hJL` 转换，签名不变。
+
+七个模块全部 exit=0、零 warning：`BallPair`（9.2 秒）、`ConeDiskPairExtension`（10.2 秒）、
+`BallPairModel`（9.0 秒）、`BallPairSimplex`（9.6 秒）、`BallPairTwoSimplices`（11.7 秒）、
+`BallPairArc`（10.0 秒）、`BallPairCutModel`（10.7 秒）。
+`.lake/scratch/AuditHRouteB.lean` 十项仅 `propext`、`Classical.choice`、`Quot.sound`。
+
+### 第 3 步剩下的前置：模型的**存在性**
+
+第 3 步照 `BallGluing.lean:11` 的模板，需要一个**存在性**的模型
+（那里是 `exists_isPLBall_pair_with_disk_inter`），而第 31 节交付的四对是**参数化**的
+（构型以 `section` 变量给出）。所以还差一条：
+
+    ∃ (F : Finset E) (c d m p q z : E) (ℓ : E →ₗ[ℝ] ℝ) (r : ℝ), <第 26/31 节的全部条件>
+
+在 `finrank E = 3` 的空间里构造：由 `SimplexBoundary.lean:400
+exists_affineIndependent_openSimplex_subset` 取四面体，取 `c`、`d` 为两个顶点、`m` 为中点、
+`F` 为另两个顶点；`ℓ` 由 `Submodule.exists_dual_map_eq_bot_of_lt_top` 取（杀掉 `{A,B,m}` 的
+二维方向空间），`r := ℓ A`；再选 `p`、`q`、`z` 并逐条验证第 26 节的表
+（含三条 `IsRadiallyInjective` 与 `ℓ p < r`）。
+
+这是一件**独立且不小**的构造，与第 3 步的黏合逻辑无关。**未开始，不报区间。**
+第 4 步同样未开始；给 F 的输出形状仍未定。
