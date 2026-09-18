@@ -4561,3 +4561,86 @@ universal, and a reader can see that from the file.
 `check-f.ps1` exit=0 with zero warnings on both modules (10.4 s, 14.0 s). Audits:
 `AuditSCircleLiftOrientation` 18 declarations, `AuditSCircleAnnulusOrientation` 31;
 all depend only on `propext`, `Classical.choice`, `Quot.sound`.
+
+
+## B: what the check found, and the smallest sufficient bridge
+
+I was asked to check, before building, whether the circle-level orientation data
+can reach `CoherentOrientation` on the derived neighbourhood without the
+subdivision-invariance transport. The answer is **yes for all but one step**, and
+the step that remains is one dimension lower than I had assumed and needs no
+data-level transport at all.
+
+### What is already in the tree
+
+More than I credited. Searching for the content rather than the vocabulary again
+paid:
+
+- `IsOrientable.boundary` (`Orientation.lean:3105`): the boundary of an orientable
+  manifold-with-boundary is orientable. So the problem drops from dimension three
+  to a closed surface immediately.
+- `orientationCocycle_isCoboundary_iff` (`OrientationCocycle.lean:431`):
+  orientability is **equivalent** to the orientation cocycle being a coboundary,
+  in both directions.
+- `walkMonodromy_eq_zero_of_isCoboundary` and
+  `isCoboundary_of_forall_walkMonodromy_eq_zero` (`CocycleMonodromy.lean:85, 91`):
+  coboundary is equivalent to vanishing monodromy along every loop.
+- `isOrientable_iff_of_isPLHomeomorphOn` (`Orientation.lean:8474`): orientability
+  transports along a PL homeomorphism at the `Prop` level. Earlier I recorded this
+  as useless because it carries no data; for this argument it is exactly enough,
+  because the whole chain below only ever needs orientabilit**y**, never a chosen
+  orientation.
+- `IsOrientable.of_le` (`Orientation.lean:3153`): a submanifold-complex of an
+  orientable manifold is orientable.
+- `isOrientable_coveringComplex_orientationCocycle` and the rest of
+  `CoveringOrientation.lean`: the orientation double cover, built.
+
+### The chain, with the one gap marked
+
+Let `N` be the derived neighbourhood, `D` the model disk of the cylindrical
+diagram and `u` the end map.
+
+1. `IsOrientable 3 N` -- obligation 3, merged.
+2. `IsOrientable 2 (boundaryComplex 3 N)` -- `IsOrientable.boundary`.
+3. `(boundaryComplex 3 N).space` **is** the mapping torus of `u` restricted to
+   `∂D`: the images of the two end disks are glued to each other and become an
+   interior meridian disk, so only the image of `∂D × I` survives in the boundary.
+   Extracting this from `IsCylindricalDiagram` is bookkeeping, not new theory.
+4. Orientability transfers to the abstract mapping torus of `u` restricted to `∂D`
+   by `isOrientable_iff_of_isPLHomeomorphOn` -- `Prop` level, no transport of data.
+5. **GAP.**
+
+> **(B-bridge)** For a PL 1-sphere `C` and a PL self-homeomorphism `v` of `C` with
+> `¬ IsPLCirclePositive C v`, the mapping torus of `v` -- the quotient of
+> `C × Icc 0 1` by `(x, 0) ~ (v x, 1)` -- is not orientable as a two-dimensional
+> complex.
+
+That is the whole of what is missing. It is a statement about a **surface built
+from a circle**, not about a three-manifold, and it does **not** require
+transporting a `CoherentOrientation` along a PL map, which is the layer ruled out
+earlier and is still correctly ruled out.
+
+### Two routes to (B-bridge), with the smaller one identified
+
+- **Monodromy.** Triangulate the mapping torus and compute the `walkMonodromy` of
+  its orientation cocycle around the core loop, showing it is `1` when `v`
+  reverses. This is direct but needs an explicit simplicial model of the mapping
+  torus and a computation of `localSubdivisionOrientationSign` across the gluing.
+- **Möbius.** A reversing `v` has a fixed point -- provable now from the lift
+  dichotomy, since in the reversing branch `v` descends from `-G` with `G`
+  strictly increasing and continuous, so `G + id` is continuous, strictly
+  increasing and grows by two per period, hence meets `ℤ` by the intermediate value
+  theorem, exactly twice. Around such a fixed point the mapping torus contains a
+  Möbius band, and `IsOrientable.of_le` then reduces (B-bridge) to **the single
+  fact that the Möbius band is not orientable**, which is one computation on one
+  small fixed complex, independent of `v`, `C` and the diagram.
+
+The Möbius route is the smaller one and I would take it: its only genuinely new
+content is a fixed finite complex with a fixed non-orientability proof, whereas
+the monodromy route re-does that computation inside a parametrised model. The tree
+has no Möbius band yet -- `grep -rl "obius\|Moebius"` over
+`DifferentialGeometry/` returns nothing.
+
+Not built this round: the instruction was to check first and report, and the check
+changed the target enough (dimension three to two, and no data transport) that the
+route should be confirmed before the build.
