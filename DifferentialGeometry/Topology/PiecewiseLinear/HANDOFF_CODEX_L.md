@@ -1539,3 +1539,60 @@ theorem eq_top_of_boundaryLoops_mem_normal
   `.lake/scratch/AuditE3BoundaryCollar.lean`（同时 import `BranchBoundaryCollar`、
   `BranchCaseThreeFour` 与 `BoundaryWordDoubleCell`）的 12 条 `#print axioms` 全部只含
   `propext`、`Classical.choice`、`Quot.sound`。全程无其它 `lean.exe`。
+
+## 59. 2026-09-18 E3-M3：平面 PL 2-球的外部延拓（§56 两条缺口里的第 1 条）
+
+状态：done。新模块 `PlanarBallExterior.lean`（模块名与全部声明名在四条车道分支上都不存在）。
+这是 §56 末尾"确切剩余义务"里的 (i)：**平面里 PL 2-球的外领环**。本节把它闭掉，
+但交付的形状不是乘积领环 `Δ' \ int Δ ≅ frontier Δ × [0,1]`，而是**外部延拓 + PL 坍缩**，
+理由见下面"为什么不是乘积领环"。
+
+- **入口（本树里此前没有找到的那一条）：`PlanarSchoenflies.lean` 的环境化直化定理**
+  `exists_isPLHomeomorphOn_straighten_of_isPLBall_two`：任意 `IsPLBall 2 D ⊆ Plane` 都有
+  平面自身的 PL 同胚 `h : Plane ≃ₜ Plane`（`IsPLHomeomorphOn h univ univ`）把 `D` 送成一个
+  **三角形** `C`，并且 `h '' frontier D = frontier C`、`EqOn h id Uᶜ`。
+  §56 记的"本树没有任何形式接近它"对领环本身成立，但**对这条直化定理不成立**——
+  有了它，平面外部延拓只需要对三角形做，而三角形上的一切都能显式写出来。
+- `exists_exteriorCollapse_of_isPLBall_two`（端点）：对任意 `IsPLBall 2 D ⊆ Plane` 给出
+  `D' ⊇ D`、`r : Plane → Plane`、`t : Plane → ℝ`，满足
+  `IsPLBall 2 D'`、`D ⊆ interior D'`、`IsPiecewiseAffineOn r D'`、`IsPiecewiseAffineOn t D'`、
+  `MapsTo r D' D`、`EqOn r id D`、`MapsTo r (D' \ D) (frontier D)`、
+  `frontier D ⊆ r '' frontier D'`、`EqOn t 0 D`、`EqOn t 1 (frontier D')`、
+  `∀ z ∈ D', t z ∈ Icc 0 1`。
+  `exists_exteriorCollapse_of_isTriangle` 是三角形情形，端点由它经 `h` 搬运得到。
+- **三角形模型（显式，无任何单纯复形构造）。** 取仿射基 `b : AffineBasis (Fin 3) ℝ Plane`
+  （由 `AffineIndependent` 加 `Fintype.card (Fin 3) = finrank ℝ Plane + 1` 得 `affineSpan = ⊤`），
+  重心坐标 `b.coord i` 是仿射映射，`C = {∀ i, 0 ≤ b.coord i}`、`interior C = {∀ i, 0 < b.coord i}`
+  （Mathlib 的 `AffineBasis.convexHull_eq_nonneg_coord` 与 `AffineBasis.interior_convexHull`）。
+  - `D' := ` 以重心为中心的 4 倍位似像，`exists_isPLBall_two_exteriorBall_of_affineBasis` 证明它
+    等于 `{∀ i, -1 ≤ b.coord i}`，内部是 `{∀ i, -1 < b.coord i}`，边界是
+    `{∀ i, -1 ≤ b.coord i} ∩ {∃ i, b.coord i = -1}`。关键计算是
+    `b.coord i (homothety c 4 z) = 4 * b.coord i z - 1`（`c` 是重心，`b.coord i c = 1/3`）。
+  - `planarRetract b z := b 0 + planarClamp (b.coord 1 z) • (b 1 - b 0)
+      + min (planarClamp (b.coord 2 z)) (1 - planarClamp (b.coord 1 z)) • (b 2 - b 0)`，
+    其中 `planarClamp x = min (max x 0) 1`。这是"先截断第一坐标、再用剩余额度截断第二坐标"的
+    **顺序截断**，不是径向投影。
+  - `planarSweepParam x y z := planarClamp (-(min x (min y z)))`，即 `t = clamp(-min_i λ_i)`。
+  - PL 性完全由 `GeneralPosition.lean` 的 `IsPiecewiseAffineOn.max / .min / .add / .affine_comp`
+    组合出来，不需要任何显式的 H-多胞形分片。
+- **为什么不是乘积领环（记下免得重走）。** 平面里三角形 `C` 与它的位似放大 `C'` 之间的
+  "径向投影"**不是 PL**：仿射映射在有内点的片上纤维必须平行，而从重心出发的射线不平行，
+  所以任何有限分片都做不出径向收缩。真正的乘积领环要手工三角剖分环带（每条边两个三角形，
+  共 6 片）并逐片给仿射映射，代价远高于本节的顺序截断，而且
+  **下游 `image_inter_boundary` 根本不需要单射性**：它只用到
+  `MapsTo r (D' \ D) (frontier D)` 与 `frontier D ⊆ r '' frontier D'`。
+  因此本节交付坍缩形；若将来需要真正的乘积领环（例如为了 `fiber_le_two`），
+  那是另一件事，见下面一条。
+- **一条必须记下的负结论：任何"环带 + 沿领环线扫掠"的延拓都不可能保住 `fiber_le_two`。**
+  设 `Φ` 是 `Bd M` 的领环扫掠，`G` 在环带上取 `(z, s) ↦ Φ (g z) s`。对已经落在 `Bd M` 上的
+  边界点 `z`（即没有被前推滑动推离的那一段，占 `frontier Δ` 的绝大部分），
+  `Φ (g z) s = g z` 对一切 `s` 成立，于是整条领环线段 `{z} × [0,1]` 被压成一个点，
+  纤维是无限的。**这与领环是否单射无关**，换成真正的乘积领环也一样。
+  所以 `NormalSingularCellData` 的 `locallyInjective` 与 `fiber_le_two` 不可能由环带延拓恢复；
+  能恢复它们的只有**只贴在被推离弧上的"月牙"（沿弧贴一个圆盘）**，
+  `IsPLBall 1 (C ∩ D) → IsPLBall 2 (C ∪ D)`（`BallGluingTwo.lean` / `PlanarDiskUnion.lean`）
+  正是月牙的粘合工具。这一条不影响 `image_inter_boundary`（它不要求单射），
+  但决定了 §56 第 (ii) 条"缝隙转移"的正确形状。
+- 验证：`PlanarBallExterior` 聚焦检查 exit=0（13.2 秒）、零 warning；
+  `.lake/scratch/AuditE3PlanarExterior.lean` 的 32 条 `#print axioms` 全部只含
+  `propext`、`Classical.choice`、`Quot.sound`，无 `sorryAx`。全程无其它 `lean.exe`。
