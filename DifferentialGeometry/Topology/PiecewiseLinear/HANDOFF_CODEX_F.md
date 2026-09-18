@@ -3407,3 +3407,51 @@ import ...StarPair failed, environment already contains
 
 检查 `VertexChartTransport` exit=0（9.6 秒）、`VertexBranchInput` exit=0（10.3 秒），均零 warning；
 `AuditF275.lean` 两项仅 `propext`、`Classical.choice`、`Quot.sound`。下一审计文件 `AuditF276.lean`。
+
+### 19.133 拉回已闭合；单顶点层的五条链条齐备，接口契约只剩两条
+
+**验证了协调者给的名字**：`LinearEquiv.toContinuousLinearEquiv` 在本树可直接用
+（`VertexChartTransport` 现有 import 就够，不必显式加），
+`L.toContinuousLinearEquiv.toHomeomorph.isOpenMap` 给出线性同构的开映射性质。
+
+**本轮闭合四条**（全在 `VertexChartTransport.lean`）
+- `IsPLHomeomorphOn.isOpen_image_of_isOpen`：`Q` 开、`P₀ ⊆ P` 开 ⟹ `f '' P₀` 开。
+  证法与 §19.127 同一招：`f '' P₀ = Q ∩ Function.invFunOn f P ⁻¹' P₀`，再用逆的
+  `ContinuousOn` 与 `ContinuousOn.isOpen_inter_preimage`。
+- `isPLHomeomorphOn_linearEquiv`：开集上线性同构本身是 PL 同胚。
+  正向用 `isPiecewiseAffineOn_of_affine`，逆向用 `L.symm` 的仿射性加 `congr`
+  （`Function.invFunOn (⇑L) V (L x) = L.symm (L x)`），像开用上面的
+  `toContinuousLinearEquiv`。
+- `exists_isPLHomeomorphOn_comp_two_sheets`：**本轮的正主**。取
+  `U₀ = U ∩ φ ⁻¹' U₂`（开，用 `ContinuousOn.isOpen_inter_preimage`），
+  用 `restrict_isOpen` 把 `φ`、`h₂` 各自限制到该开集及其像，
+  `IsPLHomeomorphOn.trans` 两次接上 `L₂`，得到
+  `IsPLHomeomorphOn (fun y => L₂ (h₂ (φ y))) U₀ V₀`；`Φ p = 0` 由 `hφp`、`hh₂0`、`map_zero`；
+  germ 条款由 `Filter.Tendsto.eventually`（`htend : Tendsto φ (𝓝 p) (𝓝 0)`，来自
+  `ContinuousOn.continuousAt` 加 `← hφp` 改写）沿 `φ` 拉回，再与 `hA`、`hB` 用
+  `filter_upwards` 合并。结论两条：
+  `y ∈ A → (Φ y).2.1 = 0` 与 `y ∈ B → (Φ y).2.2 = 0`——**两张片同时落在两张坐标平面上**。
+- `eventually_mem_image_closedStar_of_mem_space`：`∀ᶠ y in 𝓝 p, y ∈ N.space → φ y ∈ φ '' closedStar N p`。
+  由 `closedStar_mem_nhdsWithin`（`Star.lean:15`）加
+  `mem_nhdsWithin_iff_exists_mem_nhds_inter`。这条正是上面 `hB` 的生产者，
+  配 T1 的 `N₁.space = φ '' closedStar (restrict R N.space) p` 与
+  `(restrict R N.space).space = N.space` 即可消掉。
+
+**单顶点层的完整链条（五步，全部已证）**
+1. `exists_linearEquiv_normalForm_of_geometricLink_pair`（§19.128）：拉直第一张片 `M`，
+   给出 `h₁`、`L₁`、`U`、`V` 与 `y ∈ M.space → (L₁ (h₁ y)).2.2 = 0`。
+2. `isPLHomeomorphOn_linearEquiv` + `IsPLHomeomorphOn.trans`：`φ₁ = L₁ ∘ h₁` 是开集上的 PL 同胚；
+   若只要 T1 所需的 `IsPiecewiseAffineOn` 与 `InjOn`，用 §19.132 的
+   `isPiecewiseAffineOn_injOn_linearEquiv_comp`。
+3. `exists_simplicialComplex_triple_image_closedStar_of_isPiecewiseAffineOn`（§19.131 T1）：
+   把 `(K, M, N)` 缩进 `U` 再一起搬到 `ℝ × ℝ × ℝ`。
+4. `exists_linearEquiv_normalForm_two_sheets`（§19.131 T2）：在像一侧拉直第二张片与第一张片所在平面。
+5. `exists_isPLHomeomorphOn_comp_two_sheets`（本轮）：把 4 的结论沿 `φ₁` 拉回 `E`。
+
+**接口契约（弧链在每个顶点必须供给的，只有两条，其余全由链条内部交付）**
+- `(SimplicialComplex.geometricLink N {p}).space ∩ M.space = {a, b}` 且 `a ≠ b`；
+- `link N {p}` 在 `M` 的两侧各有一点。
+§19.132 已判定这两条**不能**由 germ 数据推出（会循环），它们是第二张片相对第一张片的横截性。
+
+检查 `VertexChartTransport` exit=0（10.5 秒）、`VertexBranchInput` exit=0（11.6 秒），均零 warning；
+`AuditF276.lean` 四项仅 `propext`、`Classical.choice`、`Quot.sound`。下一审计文件 `AuditF277.lean`。
