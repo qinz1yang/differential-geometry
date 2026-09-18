@@ -3250,3 +3250,50 @@ import ...StarPair failed, environment already contains
 
 检查见上；`AuditF272.lean` 两项仅 `propext`、`Classical.choice`、`Quot.sound`。
 下一审计文件 `AuditF273.lean`。
+
+### 19.130 三元转写已闭合；第二件事不用改（已有显式版）；并更正 §19.129 自己的"径向保锥"论证
+
+**闭合：三元转写**（`SimplicialPairImage.lean`）
+`exists_simplicialComplex_triple_image_of_isPiecewiseAffineOn`：对 `(K, M, N)`，
+`M.faces ⊆ K.faces`、`N.faces ⊆ K.faces`、`{p} ∈ M.faces ∩ N.faces`，
+用**同一个细分 `K'`** 产出 `K₁ M₁ N₁`，交付 `Finite` 三条、
+`M₁.faces ⊆ K₁.faces`、`N₁.faces ⊆ K₁.faces`、`{h p}` 在两者的面里、三条空间等式、
+三条 `IsPLHomeomorphOn`，以及 `M`、`N` 各自的连接同胚。
+二元版 `exists_simplicialComplex_pair_image_of_isPiecewiseAffineOn` 现在是它的推论
+（取 `N := M` 再丢掉 `N₁` 那一半），**证明不重复**。
+消费者重编：`SimplicialPairImage` exit=0（9.7 秒）、`VertexChartTransport` exit=0（9.1 秒）、
+`VertexBranchInput` exit=0（10.5 秒），均零 warning。
+
+**第二件事不必做：显式径向版早已存在**
+授权是去加强 `exists_isPLHomeomorphOn_geometricLink_of_isSubdivision`（9 个消费者，改了必炸）。
+先 grep，结果树里**已经有**显式映射版：
+`isPLHomeomorphOn_simplicialMap_radialProj_geometricLink_of_isSubdivision`
+（`LinkHeightSubdivision.lean:83`），直接给出
+`IsPLHomeomorphOn (simplicialMap (link K' {p}) (radialProj p (link K {p}).space))
+ (link K' {p}).space (link K {p}).space`。
+底层的 `exists_isPLHomeomorphOn_of_radial`（`RadialProjection.lean:315`）确实把映射藏在 `∃ f` 里
+（`:323` 处 `refine ⟨simplicialMap L' (radialProj p L.space), ?_⟩`），
+但 `LinkHeightSubdivision` 已经把它接出来了。**一个消费者都不用动。**
+
+**更正 §19.129 自己的论证：径向并不逐点径向。**
+§19.129 我写"第一跳是径向投影，沿 `p` 出发的射线走，所以保锥"。**读了构造之后，这是错的。**
+实际映射是 `simplicialMap (link K' {p}) (radialProj p …)`，即 radialProj 在**顶点处**取值、
+再在每个面上**仿射插值**。`radialProj p S w = p + radialRatio p S w • (w - p)`（`Cone.lean:77`）
+对**顶点**确实沿射线，但面内一点的像是若干"已径向投影的顶点"的凸组合，
+一般**不在**过原像的那条射线上。所以"射线保锥"这条对该映射不成立，
+§19.129 里"第 2 块砖 = 接上 `image_coneSet_of_radial`"的路线**按原样走不通**。
+锥不是凸集，仿射插值也救不回来。这一条与 §19.127 同类：不是夹带结论，是论证本身基于名字而非构造。
+
+**因此装配的剩余义务要重写**：第二次应用所需的
+`(link N₁ {0}).space ∩ {q | q.2.2 = 0} = {a₁, b₁}` 与两侧性，
+既不能靠"径向保锥"从源侧搬（上面已否），也不能靠 `hfiber` 造（§19.127 已否）。
+剩下的诚实选项有两条，都还没验证：
+(a) 把第二次应用所需的四条**直接写成关于转写后对象的假设**，
+    定理拆成 T1（产出 `K₁ M₁ N₁ φ₁` 与结构性质）与 T2（由配置加四条产出双片图卡）。
+    代价是 T2 的假设谈的是构造出来的对象，可检查性差一些，但不夹带结论也不空转。
+(b) 找一条"连接同胚把一个片的连接交线送到另一个片的连接交线"的定理，
+    即 LinkPair 那一层的配对陈述——回到 §19.122 说过的"两个圆的连接配对"，树里没有。
+**不估行数。**
+
+检查见上；`AuditF273.lean` 三项仅 `propext`、`Classical.choice`、`Quot.sound`。
+下一审计文件 `AuditF274.lean`。
