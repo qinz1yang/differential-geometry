@@ -170,3 +170,33 @@
 **尚未测量**：本车道只完成四块砖中的两块，因此不修正先前 1k–2k 行的估计。
 已落地的三个模块共 358 行（`BicollaredComplement` 105 + `OpenEmbeddingFrontier` 128 +
 `ClosedBallImage` 125），剩余第 3、4 块砖未写，无测量值。
+
+## T.4a — Compact closed bicollars give open bicollars (2026-09-18)
+
+`Topology/BicollarNeighborhood.lean` supplies a reusable bridge independent of PL
+charts and invariance of domain:
+
+- `ThreeManifold.TwoSidedCollar.isEmbedding_e` and `.isBicollared_range` identify
+  the embedded central slice and reparameterize it by its actual image.
+- `exists_twoSidedCollar_of_closedInterval` assumes a compact parameter space,
+  `a > 0`, an embedding `rho : S x Icc (-a) a -> X`, its central-slice equation,
+  and that its range is a neighborhood of the central image. It produces an
+  actual `TwoSidedCollar e` whose range stays inside the given closed collar.
+  The proof uses compactness to choose one smaller interval inside the ambient
+  interior, then `TwoSidedCollar.ofOpenInterval`. No Hausdorff or manifold
+  assumption is needed for this bridge.
+- `ThreeManifold.TwoSidedCollar.isBicollared_image` transports a collar through
+  an open embedding on any set containing its full range.
+
+Before implementation, a temporary probe compiled the concrete PL 3-ball
+`stdProj 2 '' stdSimplex Real (Fin 4)` together with the identity map on all of
+Euclidean 3-space. The five imported bicollar, frontier, and reparameterization
+interfaces had only `propext`, `Classical.choice`, and `Quot.sound`.
+
+All four new declarations passed a focused compile and the full environment
+linter set excluding `docBlame` and `docBlameThm`; a silent axiom check allowed
+only the same three foundational axioms. No new leaf was registered in the root
+aggregate, which remains the integration lane's responsibility. These checks use
+the currently imported shared artifacts and do not certify freshness of their
+entire source dependency closure. The PL/image-frontier producer remains the
+next dependency-closed layer.
