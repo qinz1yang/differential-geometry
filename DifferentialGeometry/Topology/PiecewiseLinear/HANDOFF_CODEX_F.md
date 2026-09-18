@@ -2581,3 +2581,51 @@ E3 §44 的 `M` 是带 `ChartedSpace (EuclideanSpace ℝ (Fin 3))` 的拓扑 3-�
   `continuous_slideMapLong` 给出，逆的连续性由紧支撑加双射得到）。
   然后 `isPL_conjugateHomeomorph` 直接给 `IsPL 3 3`，`disjoint`/边界两条不受影响。
 - 这一步不难但不是零工作量，交付给下一次；在它完成前，§19.113/19.114 的端点只对赋范空间环境成立。
+
+### 19.117 触边端点的前向滑动模型：半空间保持，边界平面不保持
+
+E3 §48 指出 §19.114 的边界条款只覆盖**平行于分支**的 `Bd M`。在 `HasPLBoundaryCrossingAt` 的触边端点，
+双点线与 `Bd M` 横截：把 `Bd M = {x = 0}`、`M = {x ≥ 0}` 代进模型，`slideMapLong` 把 `(0, y, 0)` 推到
+`x = -slideAmountLong < 0`，直接出 `M`。`ModelSlideFwd.lean` 按"向前滑（越过第二条带的远端）而不是
+向后滑（退出它的近端）"给出端点模型，全部是符号翻转，机制与 §19.110 相同：
+
+- `slideMapFwd d R p = (p.1 + slideAmountLong d R p, p.2.1, p.2.2)`；锥度与宽度函数原封不动复用
+  `slideWidthScaled`、`slideTaperRad`、`slideAmountLong`，所以支撑仍是 `slideSupportLong R`。
+- 单射性的机制不变，但需要**反向**的 Lipschitz 界：`slideAmountLong_le_add'`
+  （`p.2 = q.2`、`p.1 ≤ q.1` 时 `a p ≤ a q + (q.1 - p.1)/2`）。§19.110 的 `slideAmountLong_le_add`
+  只给 `a q ≤ a p + (q.1 - p.1)/2`，对 `x + a(x)` 严格增没有用。两条合起来就是
+  `|a p - a q| ≤ |p.1 - q.1|/2`，锥度斜率 1/2 < 1 仍是唯一的定量事实。
+- `isPiecewiseAffineOn_slideAmountLong` 把 §19.110 证明内部的 `hamount` 提成独立引理，
+  于是 `isPiecewiseAffineOn_slideMapFwd` 只有一行 `(hx.add ·).prod_mk (hy.prod_mk hz)`。
+- `surjective_slideMapFwd`（`0 ≤ R`）、`bijective_slideMapFwd`、`eqOn_slideMapFwd_id_compl`、
+  `mapsTo_slideMapFwd_slideSupportLong`、`mapsTo_slideMapFwd_of_subset`、
+  `mapsTo_slideMapFwd_prod`、`bijOn_slideMapFwd_prod` 与 §19.110 逐条对应。
+
+**半空间与边界平面的确切事实**（`slideEndpointHalfSpace = {p | 0 ≤ p.1}`、
+`slideEndpointPlane = {p | p.1 = 0}`）：
+
+- `mapsTo_slideMapFwd_slideEndpointHalfSpace`：闭半空间被保持，**无任何假设**（`a ≥ 0` 即可）。
+  这是端点模型相对 `slideMapLong` 唯一真正的改进：滑动不再把 `M` 的点推出 `M`。
+- 边界平面**不被保持**，这是定理而不是遗漏：`not_mapsTo_slideMapFwd_slideEndpointPlane`
+  （`0 < d`、`0 < R` 时 `¬ MapsTo (slideMapFwd d R) slideEndpointPlane slideEndpointPlane`），
+  见证点是 `(0,0,0)`，像的第一坐标是 `min d (R/2) > 0`。
+- 被固定的边界点刻画完全：`slideAmountLong_eq_zero_iff_of_fst_eq_zero` 与
+  `slideMapFwd_eq_self_iff_of_fst_eq_zero` 说，`0 < d`、`0 < R`、`p.1 = 0` 时
+  `slideMapFwd d R p = p ↔ 1 ≤ |p.2.1| + |p.2.2|`，即**恰好是宽度带之外的那部分边界**不动。
+- 反过来一条是好的：`slideMapFwd_mem_slideEndpointPlane_iff` 说在半空间内
+  `slideMapFwd d R p ∈ slideEndpointPlane ↔ p ∈ slideEndpointPlane ∧ slideMapFwd d R p = p`，
+  即滑动**不会把内点推到边界上**，留在边界上的恰是不动的那些点。
+- `not_surjOn_slideMapFwd_slideEndpointHalfSpace`（`0 < d`、`0 < R`）：半空间被真包含地映进自己，
+  由 `le_slideMapFwd_fst_of_mem_axis`（轴上 `0 ≤ p.1` 时 `min d (R/2) ≤ (slideMapFwd d R p).1`）给出。
+  所以 `slideMapFwd` 限制在 `M` 上是单射自映射而**不是** `M` 的自同胚；`MapsTo`、`Injective`、
+  支撑外恒等这三条仍然成立，E3 §47 的消费者只用到这三条与 `MapsTo h U U`。
+
+**分离的定量条件**（`disjoint_slideMapFwd_image_slideBandA`）：`0 ≤ d`、`c + 2 * d ≤ R`、`b < d` 时
+`Disjoint (slideMapFwd d R '' slideBandA c) (slideBandQ a b)`。两条带只在 `y = z = 0` 处可能相交，
+那里宽度取满，滑动量恰是 `d`（用到 `c + 2 * d ≤ R` 让锥度在 `[0, c]` 上不压制滑距），
+于是 A 的 x 区间由 `[0, c]` 变成 `[d, c + d]`，`b < d` 就把它整体推过 Q 的远端。
+注意与 §19.110 的区别：向后滑的条件是 `c - d < a`（越过 Q 的**近**端），向前滑是 `b < d`（越过**远**端）。
+`exists_slideMapFwd_parameters` 给出三条件非空（取 `d = max (b+1) 1`、`R = c + 2d`），防止端点被空假设架空。
+
+检查 `ModelSlideFwd` exit=0（9.9 秒）、零 warning；`AuditF260.lean` 二十项仅
+`propext`、`Classical.choice`、`Quot.sound`。
