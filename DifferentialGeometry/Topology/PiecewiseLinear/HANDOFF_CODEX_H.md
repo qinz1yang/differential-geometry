@@ -1254,3 +1254,55 @@ grep，不能只在建文件时 grep 一次**；而且导入面窄会让本地�
 对 `∂K` 里的二维盘**不成立**（它在环境里没有内点），所以补盘那一步不能直接用 PL 齐性，
 需要内蕴齐性或三角剖分论证。第 10 节的 1.9k–5.1k 行区间因此偏低，**未验证**，
 补盘那一步可能单独再加 0.5k–1.5k 行。
+
+## 12. 2026-09-18 M1（starring）余维零情形 — done（`BallStarring.lean`）
+
+第 10/11 节把整条栈的底部定位为 M1。余维零情形现已闭合，且**独立于球对应用**可复用。
+
+### 交付
+
+- `IsPLHomeomorphOn.image_openSimplex_eq_interior`：设
+  `hf : IsPLHomeomorphOn f (stdSimplex ℝ (Fin (n+2))) P`，`P ⊆ EuclideanSpace ℝ (Fin (n+1))`（余维零），
+  则 `f '' openSimplex (stdVertices n) = interior P`。
+  由 `BallInterior.lean:11 image_openSimplex_stdVertices`（给 `P \ f '' stdSimplexBoundary`）
+  与 `BallFrontier.lean:38 image_stdSimplexBoundary_eq_frontier`（给 `f '' stdSimplexBoundary = frontier P`）
+  合成，再用 `IsClosed.frontier_eq` 与 `Set.sdiff_sdiff_cancel_left` 把 `P \ (P \ interior P)` 约掉。
+- `isConnected_interior_of_isPLBall`：`IsPLBall (n+1) P → IsConnected (interior P)`，**任意维数**。
+  注意 `DiskCrosscut.lean:17` 已有 `IsPLBall.isConnected_interior`，但只对二维且**经过 Jordan 曲线定理**；
+  本条改名避让（名字不同，已跨导入验证二者共存），走的是
+  `BallInterior.lean:32 isConnected_sdiff_image_stdSimplexBoundary`（开单形凸⟹连通，再取连续像），
+  代价低得多，且覆盖全维数。二维那条可由本条取代，但 `DiskCrosscut` 不属本车道，未改。
+- `IsPLBall.exists_isPLHomeomorphOn_stdSimplex_stdCenter_eq`：**M1 本体**。
+  设 `IsPLBall (n+1) P`（`P ⊆ EuclideanSpace ℝ (Fin (n+1))`）、`p ∈ interior P`，则存在
+  `f : (Fin (n+2) → ℝ) → EuclideanSpace ℝ (Fin (n+1))`，`IsPLHomeomorphOn f (stdSimplex ℝ (Fin (n+2))) P`
+  且 `f (stdCenter n) = p`。即**PL 球总能用标准单形参数化，并把重心送到任意指定内点**。
+- `IsPLBall.exists_isPLHomeomorphOn_coneSet_of_mem_interior`：锥语言的等价形式。
+  因为 `stdSimplex = coneSet (stdCenter n) (simplexBoundary (stdVertices n) _).space`
+  （`StdSimplexCone.lean:83 coneComplex_std_space` 加第 9 节的 `coneComplex_space_eq_coneSet`），
+  所以上一条就是"球 PL 同胚于它自己边界球面上的锥，锥顶落在指定内点"。
+
+### 证明要点（供复用）
+
+路线是 §10 说的 PL 齐性，但**不能**在标准单形自己的环境里做（`Fin (n+2) → ℝ` 里单形余维一，
+`interior` 为空）。必须在 `P` 所在的余维零环境里做：
+
+1. `f (stdCenter n) ∈ interior P`（由上面的像等式）。
+2. `exists_isPLHomeomorphOn_map_point_eqOn_compl`（`AmbientPointMove.lean:35`）取
+   `U = interior P`：`IsOpen` 免费，`IsPreconnected` 由 `isConnected_interior_of_isPLBall` 给。
+   得 `h : E ≃ₜ E`，`IsPLHomeomorphOn h univ univ`、`EqOn h id (interior P)ᶜ`、
+   `h (f (stdCenter n)) = p`。
+3. `h '' interior P = interior P`。**这一步的论证值得记**：不用开映射，只用单射加"补集上恒等"。
+   若 `h x ∉ interior P`，则 `hfix` 给 `h (h x) = h x`，单射得 `h x = x`，于是 `x ∉ interior P`，
+   与 `x ∈ interior P` 矛盾；反向对 `h.symm y` 同样两行。
+4. `h '' P = P`：由 `IsPLBall.closure_interior`（`BallFrontier.lean:60`）与 `Homeomorph.image_closure`
+   夹出，`calc` 四步。
+5. `IsPLHomeomorphOn h P P` 由 `PLImage.lean:168 IsPLHomeomorphOn.restrict` 加 `h '' P = P` 得；
+   末尾 `PLHomeomorph.lean:78 IsPLHomeomorphOn.trans` 复合。
+
+坑：`Set.diff_diff_cancel_left` 已废弃，用 `Set.sdiff_sdiff_cancel_left`；
+`hfix hx` 的结论带 `id`，`rw [h.apply_symm_apply, id_eq] at h1` 才化得掉；
+两处不要用 `▸`，方向会反，写 `by rw [...]; exact ...`。
+
+聚焦检查 `BallStarring` exit=0（9.6 秒）、零 warning；
+`.lake/scratch/AuditHBallStarring.lean` 同时导入 `DiskCrosscut` 与 `BallPairModel`
+（撞名回归检查）exit=0，四项仅 `propext`、`Classical.choice`、`Quot.sound`。
