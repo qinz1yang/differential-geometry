@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedModelConvergence
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedShiTerminal
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedGoodPointBounds
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CanonicalModelLimitCurvature
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ComparisonScalarCurvature
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CanonicalStrictBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.VolumeTransport
@@ -279,6 +280,53 @@ theorem CanonicalWitness.eventually_curvature_bound_of_windowed_models
   rw [hmap] at hh
   simpa only [mul_comm] using hh
 
+theorem CanonicalWitness.eventually_scalar_derivative_bounds_of_windowed_models
+    {D : ℕ → RealTimeInterval} {S : ∀ i, SolutionOn (I := I3) (M := M i) (D i)}
+    (hS : ∀ i, IsSolutionOn (S i)) {delta : ℕ → ℝ} {kappa : ℝ}
+    {x : ∀ i, M i} {t : ℕ → ℝ}
+    (W : ∀ i, WindowedModelWitness (delta i) kappa (S i) (x i) (t i))
+    (hdelta : Tendsto delta atTop (𝓝 0))
+    (hreg : ∀ i, Ioo (t i - (delta i * (S i).scalar (t i) (x i))⁻¹) (t i) ⊆ (D i).regular)
+    (L : PointedFlowData.{u, 0, 0} I3 ancientTimeInterval)
+    (hcomplete : MetricComplete (L.atTime 0))
+    {phi : ℕ → ℕ} (hphi : Tendsto phi atTop atTop)
+    (F : PointedRiemannianConvergenceMaps ⟨fun i => (W i).model.atTime 0⟩
+      (L.atTime 0) phi)
+    (hcmp : ∀ K : Set L.M, IsCompact K → ∀ A : ℝ, 0 < A → ∀ order : ℕ,
+      ∀ eta : ℝ, 0 < eta → ∀ᶠ i in atTop,
+        Nonempty (MetricComparisonOn L.S.base.metric (W (phi i)).model.S.base.metric
+          (F.map i) K (Icc (-A) 0) order eta))
+    {eps C1 C2 : ℝ} (K : CanonicalWitness L.S eps C1 C2 L.basepoint 0)
+    (hscalar : L.S.scalar 0 L.basepoint = 1) :
+    ∀ᶠ i in atTop,
+      (∀ v : TangentSpace I3 (x (phi i)),
+        |scalarDifferential (S (phi i)) (t (phi i)) (x (phi i)) v| ≤
+          2 * windowedGoodPointConstant (18 * sourceCurvatureBound 3 C2) *
+            (S (phi i)).scalar (t (phi i)) (x (phi i)) *
+              Real.sqrt ((S (phi i)).scalar (t (phi i)) (x (phi i))) *
+                Real.sqrt (((S (phi i)).base.metric (t (phi i))).inner (x (phi i)) v v)) ∧
+      |derivWithin (fun s => (S (phi i)).scalar s (x (phi i))) (Iic (t (phi i))) (t (phi i))| ≤
+        windowedGoodPointConstant (18 * sourceCurvatureBound 3 C2) *
+          (S (phi i)).scalar (t (phi i)) (x (phi i)) ^ 2 := by
+  have hmodel := K.eventually_ancient_curvature_bounds_of_comparisons
+    (fun i => (W i).model) (fun i => (W i).model_ancient) L hcomplete F (by
+      intro A hA
+      filter_upwards [hcmp A hA 1 zero_lt_one 2 (1 / 4) (by norm_num : (0 : ℝ) < 1 / 4)] with i hi
+      obtain ⟨cmp⟩ := hi
+      exact ⟨cmp.restrictTimeSingleton (by norm_num : (0 : ℝ) ∈ Icc (-1 : ℝ) 0)
+        (by norm_num)⟩) hscalar
+  have hsmall : ∀ᶠ i in atTop, delta (phi i) < 1 / 4 :=
+    (hdelta.comp hphi).eventually (gt_mem_nhds (by norm_num : (0 : ℝ) < 1 / 4))
+  have hK : 0 ≤ 18 * sourceCurvatureBound 3 C2 := by
+    have hh := sourceCurvatureBound_pos 3 (zero_le_one.trans K.one_le_comparison_constant)
+    positivity
+  filter_upwards [hmodel, hsmall] with i hi hd
+  have hb : ∀ s ∈ Icc (-4 : ℝ) 0, ∀ y ∈
+      riemannianClosedBallOf ((W (phi i)).model.S.base.metric 0) (W (phi i)).model.basepoint 2,
+      (W (phi i)).model.rmNormSq s y ≤ (18 * sourceCurvatureBound 3 C2) ^ 2 :=
+    fun s hs y hy => hi s hs.2 y hy
+  exact ⟨fun v => (W (phi i)).scalar_gradient_bound (hS (phi i)) hd.le hK (hreg (phi i)) hb v,
+    (W (phi i)).scalar_left_derivative_bound (hS (phi i)) hd.le hK (hreg (phi i)) hb⟩
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
 
 end
