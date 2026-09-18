@@ -107,6 +107,7 @@ import DifferentialGeometry.Analysis.Calculus.IteratedDerivative.SpaceJets
 import DifferentialGeometry.Analysis.Calculus.LevelPreservation
 import DifferentialGeometry.Analysis.Calculus.LocalExtrema
 import DifferentialGeometry.Analysis.Calculus.Manifold.AbsolutelyContinuous
+import DifferentialGeometry.Analysis.Calculus.MapConvergence.Jet
 import DifferentialGeometry.Analysis.Calculus.MapConvergence.Algebra
 import DifferentialGeometry.Analysis.Calculus.MapConvergence.Basic
 import DifferentialGeometry.Analysis.Calculus.MapConvergence.Composition
@@ -3828,6 +3829,7 @@ import DifferentialGeometry.Geometry.Connection.AlongCurveAlternating
 import DifferentialGeometry.Geometry.Connection.AlongCurveHom
 import DifferentialGeometry.Geometry.Connection.AlongCurveRegularity
 import DifferentialGeometry.Geometry.Connection.Associated
+import DifferentialGeometry.Geometry.Connection.ChartBridge.TensorDerivative
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Connection.Christoffel
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Connection.Frame
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Curvature.BasisBracket
@@ -7393,6 +7395,7 @@ import DifferentialGeometry.Geometry.Metric.Convergence.Compactness.ComponentSub
 import DifferentialGeometry.Geometry.Metric.Convergence.Compactness.Components
 import DifferentialGeometry.Geometry.Metric.Convergence.Compactness.Diagonal
 import DifferentialGeometry.Geometry.Metric.Convergence.Compactness.Precompactness
+import DifferentialGeometry.Geometry.Metric.Convergence.Coordinates.JetOperators
 import DifferentialGeometry.Geometry.Metric.Convergence.Coordinates.ConnectionComparison
 import DifferentialGeometry.Geometry.Metric.Convergence.Coordinates.ConnectionEvaluation
 import DifferentialGeometry.Geometry.Metric.Convergence.Coordinates.ConnectionLimits
@@ -7400,6 +7403,7 @@ import DifferentialGeometry.Geometry.Metric.Convergence.Coordinates.Control
 import DifferentialGeometry.Geometry.Metric.Convergence.Coordinates.GoodFrame
 import DifferentialGeometry.Geometry.Metric.Convergence.Coordinates.InverseGram
 import DifferentialGeometry.Geometry.Metric.Convergence.Coordinates.JetBounds
+import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.ChartConvergence
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Addition
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Algebra
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Basic
@@ -7413,6 +7417,7 @@ import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Eucl
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Frame
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.IteratedComponents
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.MapConvergence
+import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Norm.ChartConvergence
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Norm.Bridge
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Norm.Comparison
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Norm.Continuity
@@ -7441,6 +7446,7 @@ import DifferentialGeometry.Geometry.Metric.Convergence.Metric.Closeness
 import DifferentialGeometry.Geometry.Metric.Convergence.Metric.Compactness
 import DifferentialGeometry.Geometry.Metric.Convergence.Metric.Evaluation
 import DifferentialGeometry.Geometry.Metric.Convergence.Metric.TensorError
+import DifferentialGeometry.Geometry.Metric.Convergence.Metric.Parameter
 import DifferentialGeometry.Geometry.Metric.Convergence.Metric.Tower
 import DifferentialGeometry.Geometry.Metric.Convergence.Metric.UniformEquivalence
 import DifferentialGeometry.Geometry.Metric.Convergence.Naturality.CrossTensorCovariantDerivative
@@ -8119,6 +8125,7 @@ import DifferentialGeometry.Tensor.Alternating.Shuffle.Split
 import DifferentialGeometry.Tensor.Alternating.Trace
 import DifferentialGeometry.Tensor.Alternating.Wedge
 import DifferentialGeometry.Tensor.BilinearForm
+import DifferentialGeometry.Tensor.Coordinates.Field
 import DifferentialGeometry.Tensor.Coordinates.ModelBasis
 import DifferentialGeometry.Tensor.Coordinates.PartialDerivative
 import DifferentialGeometry.Tensor.Exterior.Basic
