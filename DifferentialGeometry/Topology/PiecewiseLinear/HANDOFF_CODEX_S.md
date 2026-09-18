@@ -4644,3 +4644,41 @@ has no Möbius band yet -- `grep -rl "obius\|Moebius"` over
 Not built this round: the instruction was to check first and report, and the check
 changed the target enough (dimension three to two, and no data transport) that the
 route should be confirmed before the build.
+
+
+## Two ingredients of (B-bridge), delivered
+
+### The order-independent parity core
+
+`OrientationParity.lean` (new). `prod_incidenceSign`: for any linear order `r` on
+the ambient space and any face `s`, the product of the incidence signs over all
+vertices of `s` is `(-1)` to the power `s.card.choose 2`, by induction on `s`
+adding the largest element. `prod_incidenceSign_triple` is the case that the
+Moebius computation needs: for a triangle the three incidence signs multiply to
+`-1`, whatever the vertex order.
+
+This is what makes the Moebius holonomy a computation rather than an argument.
+`CoherentOrientation` carries its own `vertexOrder : LinearOrder E` on the whole
+ambient space, chosen existentially, so no proof may fix a convenient order;
+`prod_incidenceSign_triple` is exactly the order-independent fact that lets the
+five coherence relations be multiplied together. With it, the holonomy around the
+five triangles of the minimal band reduces to the parity of
+`sum over i of the rank of the middle vertex of the i-th triangle`, and that sum is
+`5` for **every** order, by the cancellation
+`rank(i) + rank(i+2) = 3 - rank(i+1)` together with
+`[i < i+1] + (1 - [i+1 < i+2])` telescoping around the cycle.
+
+### The fixed point of a reversing circle map
+
+`exists_fixed_of_not_hasIncreasingCircleLift`: a self-homeomorphism of
+`loopCircle` with no increasing periodic lift has a fixed point. In the reversing
+branch the map descends from `-F` with `F` a homeomorphism of the line, so
+`G := F + id` is continuous, strictly increasing and satisfies `G (t+1) = G t + 2`;
+hence `ceil (G 0)` lies in `Icc (G 0) (G 1)` and the intermediate value theorem
+supplies `t` in `Icc 0 1` with `G t` an integer, which is exactly a fixed point.
+
+### Verification
+
+`check-f.ps1` exit=0, zero warnings on both modules (10.5 s, 11.2 s).
+`AuditSOrientationParity` 4 declarations, `AuditSCircleLiftOrientation` 19; all
+depend only on `propext`, `Classical.choice`, `Quot.sound`.
