@@ -1,3 +1,6 @@
+import DifferentialGeometry.Topology.ThreeManifold.Surgery.FiniteCap.CutCoreSmoothEmbedding
+import DifferentialGeometry.Topology.ThreeManifold.Surgery.FiniteCap.CutCoreCollarLocalDiffeomorph
+import DifferentialGeometry.Topology.ThreeManifold.Surgery.FiniteCap.CutCoreComponents
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.StaticNeckChildCore
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.NeckCylindricalChartBridge
 import DifferentialGeometry.Topology.ThreeManifold.Surgery.FiniteCap.CutCoreCollarSmooth
@@ -143,5 +146,169 @@ theorem coreCollar_not_mem_retainedCore_of_capDiscarded
   G.coreCollar_not_mem_retainedCore b y
     (CutCapTopology.capDiscarded_coreBoundarySphere_not_mem_retainedCore
       (H.event i).transition.trace b hb y) q
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.GeometricCutoffRecord
+
+
+noncomputable section
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.GeometricCutoffRecord
+
+universe u
+
+variable {H : ObservedHistory.{u}} {i : Fin H.eventCount} {parameters : CutoffParameters}
+  (G : GeometricCutoffRecord H i parameters)
+
+def coreCollarRegion : Set (H.event i).transition.trace.tubes.core :=
+  ⋃ b, range (G.coreCollar b)
+
+theorem isOpen_coreCollarRegion : IsOpen G.coreCollarRegion :=
+  isOpen_iUnion fun b => (G.coreCollar_isOpenEmbedding b).isOpen_range
+
+theorem core_boundary_subset_coreCollarRegion :
+    let : ChartedSpace (EuclideanHalfSpace 3) (H.event i).transition.trace.tubes.core :=
+      (H.event i).transition.coreCharts
+    (𝓡∂ 3).boundary (H.event i).transition.trace.tubes.core ⊆ G.coreCollarRegion := by
+  let : ChartedSpace (EuclideanHalfSpace 3) (H.event i).transition.trace.tubes.core :=
+    (H.event i).transition.coreCharts
+  dsimp only
+  rw [(H.event i).transition.core_boundary]
+  rintro x hx
+  obtain ⟨b, y, rfl⟩ := mem_iUnion.mp hx
+  exact mem_iUnion.mpr ⟨b, ⟨(y, ⟨0, le_rfl, cuttingCollarWidth_pos (G.delta_pos b.1)⟩),
+    G.coreCollar_zero b y⟩⟩
+
+theorem pairwise_disjoint_coreCollars :
+    Pairwise fun b c : (H.event i).transition.trace.tubes.Boundary =>
+      Disjoint (range (G.coreCollar b)) (range (G.coreCollar c)) := by
+  intro b c hbc
+  apply disjoint_left.mpr
+  rintro p ⟨q, rfl⟩ ⟨r, hr⟩
+  have hg := pairwise_disjoint_cuttingCollars G.delta_pos G.ambientNeckMap
+    G.ambientNeckMap_injective G.pairwise_disjoint_ambientNeckMap hbc
+  apply disjoint_left.mp hg (mem_range_self q)
+  refine ⟨r, ?_⟩
+  apply Subtype.ext
+  exact congrArg (fun z : (H.event i).transition.trace.tubes.core => z.val) hr
+
+theorem coreCollarRegion_compl_subset_interior :
+    (Subtype.val : (H.event i).transition.trace.tubes.core → (H.stage i.castSucc).Carrier) ''
+      G.coreCollarRegionᶜ ⊆ interior (H.event i).transition.trace.tubes.core := by
+  rintro p ⟨x, hx, rfl⟩
+  by_contra hnot
+  have hxcore : x.1 ∈ cutCore G.ambientNeckMap := G.cutCore_ambientNeckMap.symm ▸ x.property
+  have hxnot : x.1 ∉ interior (cutCore G.ambientNeckMap) := by
+    rwa [G.cutCore_ambientNeckMap]
+  have hf : x.1 ∈ frontier (cutCore G.ambientNeckMap) := ⟨subset_closure hxcore, hxnot⟩
+  rw [frontier_cutCore G.delta_pos G.ambientNeckMap G.ambientNeckMap_isOpenEmbedding
+    G.pairwise_disjoint_ambientNeckMap, ← range_cuttingSphereMap G.delta_pos G.ambientNeckMap] at hf
+  obtain ⟨⟨b, y⟩, hy⟩ := hf
+  apply hx
+  refine mem_iUnion.mpr ⟨b, ⟨(y, ⟨0, le_rfl, cuttingCollarWidth_pos (G.delta_pos b.1)⟩), ?_⟩⟩
+  apply Subtype.ext
+  change G.ambientNeckMap b.1 (cuttingCollarCylinderMap (G.delta_pos b.1) b.2 _) = _
+  have hz := congrArg Subtype.val (cuttingCollarMap_zero G.delta_pos G.ambientNeckMap
+    G.ambientNeckMap_injective G.pairwise_disjoint_ambientNeckMap b y)
+  exact hz.trans hy
+
+theorem isCompact_coreCollarRegion_compl : IsCompact G.coreCollarRegionᶜ := by
+  have hc : IsCompact (H.event i).transition.trace.tubes.core := by
+    rw [← G.cutCore_ambientNeckMap]
+    exact isCompact_cutCore G.ambientNeckMap G.ambientNeckMap_isOpenEmbedding
+  let : CompactSpace (H.event i).transition.trace.tubes.core := isCompact_iff_compactSpace.mp hc
+  exact G.isOpen_coreCollarRegion.isClosed_compl.isCompact
+
+theorem isCompact_component_without_coreCollars
+    (x : (H.event i).transition.trace.tubes.core) :
+    IsCompact (connectedComponent x \ G.coreCollarRegion) := by
+  have h := G.isCompact_coreCollarRegion_compl.inter_right
+    (isClosed_connectedComponent : IsClosed (connectedComponent x))
+  simpa [sdiff_eq, inter_comm] using h
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.GeometricCutoffRecord
+
+
+noncomputable section
+
+open DifferentialGeometry.Topology.Manifold
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.GeometricCutoffRecord
+
+universe u
+
+private local instance : Fact (Module.finrank ℝ ThreeSpace = 2 + 1) := ⟨by simp [ThreeSpace]⟩
+
+variable {H : ObservedHistory.{u}} {i : Fin H.eventCount} {parameters : CutoffParameters}
+  (G : GeometricCutoffRecord H i parameters)
+
+theorem ambientNeckMap_isLocalDiffeomorph (α : (H.event i).transition.trace.tubes.Index) :
+    IsLocalDiffeomorph NeckCylinderModel ThreeModel ∞ (G.ambientNeckMap α) := by
+  apply isLocalDiffeomorph_of_injective_mfderiv _
+    (contMDiff_subtype_val.comp (G.neck α).chart_smooth.contMDiff)
+  · intro z
+    have he : mfderiv NeckCylinderModel ThreeModel (G.ambientNeckMap α) z =
+        mfderiv NeckCylinderModel ThreeModel (G.neck α).chart z := by
+      change mfderiv NeckCylinderModel ThreeModel
+        (Subtype.val ∘ (G.neck α).chart) z = _
+      rw [mfderiv_comp z ((contMDiff_subtype_val (n := ∞)).mdifferentiableAt (by simp))
+        ((G.neck α).chart_smooth.contMDiff.mdifferentiableAt (by simp)), mfderiv_subtype_val]
+      rfl
+    change Injective (mfderiv NeckCylinderModel ThreeModel (G.ambientNeckMap α) z)
+    rw [he]
+    exact injective_mfderiv_of_isImmersionAt NeckCylinderModel ThreeModel
+      (G.neck α).chart z ((G.neck α).chart_smooth.isImmersion.isImmersionAt z)
+  · simp [ThreeSpace]
+
+def cutCoreDiffeomorph :
+    let : ChartedSpace (ModelProd (EuclideanSpace ℝ (Fin 2)) (EuclideanHalfSpace 1))
+        (cutCore G.ambientNeckMap) :=
+      cutCoreBoundaryChartedSpace ThreeModel (by simp [ThreeSpace]) G.delta_pos
+        G.ambientNeckMap G.ambientNeckMap_isOpenEmbedding G.pairwise_disjoint_ambientNeckMap
+    let : ChartedSpace (EuclideanHalfSpace 3) (H.event i).transition.trace.tubes.core :=
+      (H.event i).transition.coreCharts
+    cutCore G.ambientNeckMap ≃ₘ⟮(𝓡 2).prod (𝓡∂ 1), 𝓡∂ 3⟯
+      (H.event i).transition.trace.tubes.core := by
+  let : ChartedSpace (ModelProd (EuclideanSpace ℝ (Fin 2)) (EuclideanHalfSpace 1))
+      (cutCore G.ambientNeckMap) :=
+    cutCoreBoundaryChartedSpace ThreeModel (by simp [ThreeSpace]) G.delta_pos
+      G.ambientNeckMap G.ambientNeckMap_isOpenEmbedding G.pairwise_disjoint_ambientNeckMap
+  let : ChartedSpace (EuclideanHalfSpace 3) (H.event i).transition.trace.tubes.core :=
+    (H.event i).transition.coreCharts
+  let D := Homeomorph.setCongr G.cutCore_ambientNeckMap
+  have hgeneric := cutCore_ambientInclusion_isSmoothEmbedding ThreeModel (by simp [ThreeSpace])
+    G.delta_pos G.ambientNeckMap G.ambientNeckMap_isOpenEmbedding
+    G.pairwise_disjoint_ambientNeckMap G.ambientNeckMap_isLocalDiffeomorph
+  exact {
+    toEquiv := D.toEquiv
+    contMDiff_toFun :=
+      (ContMDiff.iff_comp_isImmersion (H.event i).transition.core_induced.isImmersion).mpr
+        ⟨D.continuous, hgeneric.contMDiff⟩
+    contMDiff_invFun := (ContMDiff.iff_comp_isImmersion hgeneric.isImmersion).mpr
+      ⟨D.symm.continuous, (H.event i).transition.core_induced.contMDiff⟩ }
+
+theorem coreCollar_isLocalDiffeomorph (b : (H.event i).transition.trace.tubes.Boundary) :
+    let : ChartedSpace (EuclideanHalfSpace 1)
+        (Ico (0 : ℝ) (cuttingCollarWidth (G.delta b.1))) :=
+      halfClosedIntervalChartedSpace (cuttingCollarWidth_pos (G.delta_pos b.1))
+    let : ChartedSpace (EuclideanHalfSpace 3) (H.event i).transition.trace.tubes.core :=
+      (H.event i).transition.coreCharts
+    IsLocalDiffeomorph ((𝓡 2).prod (𝓡∂ 1)) (𝓡∂ 3) ∞ (G.coreCollar b) := by
+  let : ChartedSpace (EuclideanHalfSpace 1)
+      (Ico (0 : ℝ) (cuttingCollarWidth (G.delta b.1))) :=
+    halfClosedIntervalChartedSpace (cuttingCollarWidth_pos (G.delta_pos b.1))
+  let : ChartedSpace (EuclideanHalfSpace 3) (H.event i).transition.trace.tubes.core :=
+    (H.event i).transition.coreCharts
+  let : ChartedSpace (ModelProd (EuclideanSpace ℝ (Fin 2)) (EuclideanHalfSpace 1))
+      (cutCore G.ambientNeckMap) :=
+    cutCoreBoundaryChartedSpace ThreeModel (by simp [ThreeSpace]) G.delta_pos
+      G.ambientNeckMap G.ambientNeckMap_isOpenEmbedding G.pairwise_disjoint_ambientNeckMap
+  have hc := cuttingCollarMap_isLocalDiffeomorph ThreeModel (by simp [ThreeSpace]) G.delta_pos
+    G.ambientNeckMap G.ambientNeckMap_isOpenEmbedding G.pairwise_disjoint_ambientNeckMap
+    G.ambientNeckMap_isLocalDiffeomorph b
+  dsimp only at hc ⊢
+  intro q
+  exact IsLocalDiffeomorphAt.comp (I := (𝓡 2).prod (𝓡∂ 1))
+    (J := (𝓡 2).prod (𝓡∂ 1)) (K := 𝓡∂ 3) _ (hc q)
+    (G.cutCoreDiffeomorph.isLocalDiffeomorph _)
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.GeometricCutoffRecord
