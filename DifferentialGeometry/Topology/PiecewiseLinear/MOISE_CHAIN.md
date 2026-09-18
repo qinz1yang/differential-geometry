@@ -710,3 +710,16 @@ Moise 每一章开头"不妨设某映射是 PL 的"都是这一条。分三个�
 `isPLBall_space_of_isPLSphere_capComplex`：封盘后是 PL 2-球面时，原曲面是 PL 2-球（盘）。
 唯一额外前提是 `A.space ⊆ closure (A.space \ L.space)`（曲面是它去掉边界圆后的闭包），
 按车道规矩写成显式前提；它的组合 2-流形版生产者尚未写。
+
+### H：`ManifoldInteriorDensity.lean`（去掉上面那条密度前提）
+
+`IsCombinatorialManifoldWithBoundary.space_subset_closure_sdiff_space`：若 `L.faces ⊆ K.faces`
+且 `L` 的每个面至多 `n` 个顶点，则 `K.space ⊆ closure (K.space \ L.space)`。
+证明用既有的**纯性** `exists_face_superset_card_eq`：任意点落在某面的开单形里，把该面扩成
+`n+1` 顶点的顶面 `t`，由顶点数 `t ∉ L.faces`，于是 `openSimplex t ⊆ K.space \ L.space`，
+再用 `convexHull t ⊆ closure (openSimplex t)`。对一般 `n` 成立。
+
+于是 `isPLBall_space_of_isPLSphere_capComplex_of_isCombinatorialManifoldWithBoundary`
+把删盘识别的假设换成 `IsCombinatorialManifoldWithBoundary 2 A`，不引入其他新假设；
+`L` 的顶点数界由已有的 `IsPLSphere 1 L.space` 免费给出。G.5 的封盘—删盘这一整段因此闭合，
+只剩不经 `HurewiczLowDegrees` 的一维 Hurewicz 桥（H 已给出 HB1–HB6 的成本分解，未启动）。
