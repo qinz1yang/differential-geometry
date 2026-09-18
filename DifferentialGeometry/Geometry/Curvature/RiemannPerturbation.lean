@@ -2,12 +2,15 @@ import DifferentialGeometry.Geometry.Connection.Convergence.DifferenceDerivative
 import DifferentialGeometry.Geometry.Metric.Coordinates.InnerExpansion
 import DifferentialGeometry.Geometry.Metric.Convergence.Metric.UniformEquivalence
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Self
+import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Pullback
+import DifferentialGeometry.Geometry.Metric.PointwiseInner.Bounds
 
 noncomputable section
 open scoped Manifold ContDiff
 open DifferentialGeometry DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Geometry.Connection DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Integral.Measure
+open DifferentialGeometry.Geometry.Riemannian DifferentialGeometry.Analysis.Laplacian
 
 namespace DifferentialGeometry.Geometry.Curvature
 
@@ -117,5 +120,57 @@ theorem riemann_difference_bound_of_small_metric_derivatives
   convert h using 1
   dsimp only [N]
   ring
+
+variable {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E] [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
+  [BoundarylessManifold I M]
+
+theorem abs_metricRm04_sub_le_of_small_metric_derivatives
+    (g G : SmoothRiemannianMetric I M) (x : M) {eps : ℝ}
+    (heps : eps ≤ 1 / 2)
+    (hsmall : ∀ k : ℕ, k ≤ 2 → metricDerivNorm k g G G x ≤ eps)
+    (u v w z : TangentSpace I x) :
+    |metricRm04StandardAt g x u v w z - metricRm04StandardAt G x u v w z| ≤
+      eps * (360 * Real.sqrt (G.inner x u u) * Real.sqrt (G.inner x v v) *
+        Real.sqrt (G.inner x w w) +
+        Real.sqrt (G.inner x (riemannOp (LeviCivita G) x u v w)
+          (riemannOp (LeviCivita G) x u v w))) * Real.sqrt (G.inner x z z) := by
+  have heps0 : 0 ≤ eps := (Real.sqrt_nonneg _).trans (hsmall 0 (by norm_num))
+  let N (a : TangentSpace I x) := Real.sqrt (G.inner x a a)
+  let Rg := riemannOp (LeviCivita g) x u v w
+  let RG := riemannOp (LeviCivita G) x u v w
+  let d := Rg - RG
+  let P := N u * N v * N w
+  have hP : 0 ≤ P := by dsimp [P, N]; positivity
+  have hd : N d ≤ 240 * eps * P := by
+    simpa only [N, d, Rg, RG, P, mul_assoc] using
+      riemann_difference_bound_of_small_metric_derivatives g G x eps heps hsmall u v w
+  have hRg : N Rg ≤ 240 * eps * P + N RG := by
+    calc
+      N Rg = N (d + RG) := congrArg N (by dsimp only [d]; abel)
+      _ ≤ N d + N RG := sqrt_inner_add_le G x d RG
+      _ ≤ _ := add_le_add hd le_rfl
+  have hmetric : |g.inner x z Rg - G.inner x z Rg| ≤
+      eps * N z * (240 * eps * P + N RG) := by
+    apply (metricDifference_abs_le g G G x z Rg).trans
+    change metricDerivNorm 0 g G G x * N z * N Rg ≤ _
+    gcongr
+    exact hsmall 0 (by norm_num)
+  have hcurv : |G.inner x z Rg - G.inner x z RG| ≤ N z * (240 * eps * P) := by
+    rw [← map_sub]
+    exact (abs_metric_inner_le_sqrt_metric_quadratic G x z d).trans
+      (mul_le_mul_of_nonneg_left hd (Real.sqrt_nonneg _))
+  rw [metricRm04StandardAt_eq_inner_riemannOp, metricRm04StandardAt_eq_inner_riemannOp]
+  change |g.inner x z Rg - G.inner x z RG| ≤ _
+  calc
+    _ ≤ |g.inner x z Rg - G.inner x z Rg| + |G.inner x z Rg - G.inner x z RG| :=
+      abs_sub_le _ _ _
+    _ ≤ eps * N z * (240 * eps * P + N RG) + N z * (240 * eps * P) :=
+      add_le_add hmetric hcurv
+    _ = eps * ((240 * eps + 240) * P + N RG) * N z := by ring
+    _ ≤ eps * (360 * P + N RG) * N z := by gcongr; linarith
+    _ = _ := by dsimp only [P, N, RG]; ring
+
 
 end DifferentialGeometry.Geometry.Curvature

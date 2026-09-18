@@ -4547,6 +4547,7 @@ import DifferentialGeometry.Geometry.Curvature.SectionalContraction
 import DifferentialGeometry.Geometry.Curvature.SectionalHomogeneity
 import DifferentialGeometry.Geometry.Curvature.SectionalOperator
 import DifferentialGeometry.Geometry.Curvature.SectionalOrthonormalization
+import DifferentialGeometry.Geometry.Curvature.SectionalPerturbation
 import DifferentialGeometry.Geometry.Curvature.SectionalRicciBound
 import DifferentialGeometry.Geometry.Curvature.Sections.Connection
 import DifferentialGeometry.Geometry.Curvature.Sections.Trace
