@@ -1,3 +1,6 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.UniversalCurvatureBounds
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.MixedCurvatureTimeDerivative
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedMixedCurvature
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.AncientExtension
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHornStructure
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.EntropyBounds
@@ -564,12 +567,31 @@ theorem high_curvature_derivatives (a b : ℕ) :
         [IsManifold I3 ∞ M] [T2Space M] [CompactSpace M] [ConnectedSpace M]
         [T2Space (TangentBundle I3 M)] (T : ℝ) (hT : 0 < T)
         (S : SolutionOn (I := I3) (M := M) (RealTimeInterval.closedOpen 0 T hT))
-        (hS : IsSolutionOn S) (o : TangentOrientationSection M),
+        (_hS : IsSolutionOn S) (_o : TangentOrientationSection M),
         ∃ Q0 : ℝ, 0 < Q0 ∧ ∀ J : MixedCurvatureJet S, ∀ x t,
           t ∈ Set.Ioo 0 T → Q0 ≤ S.scalar t x →
           ∀ y ∈ riemannianBallOf (I := I3) (S.base.metric t) x (eta / Real.sqrt (S.scalar t x)),
             0 < S.scalar t y ∧ J.norm a b t y ≤
               C * Real.rpow (S.scalar t y) (1 + (a : ℝ) / 2 + b) := by
-  sorry
+  obtain ⟨B, hB, hmodel⟩ :=
+    KappaSolutions.exists_universal_normalized_ancient_curvature_bounds.{u}
+  obtain ⟨C, eta, hC, heta, hbound⟩ :=
+    exists_windowedModelWitness_scalar_weighted_mixedCurvatureNorm_bound
+      (Real.sqrt (B 2)) (Real.sqrt_nonneg _) a b
+  apply high_curvature_derivatives_of_mixedCurvatureNorm_bound a b
+  refine ⟨C, eta, hC, heta, ?_⟩
+  intro M _ _ _ _ _ _ _ T hT S hS o
+  obtain ⟨kappa, _hkappa, hmodels⟩ := closed_flow_models hT S hS o
+  obtain ⟨Q0, hQ0, hwitness⟩ := hmodels (1 / 4) (by norm_num) (by norm_num)
+  refine ⟨Q0, hQ0, fun x t ht hQ y hy => ?_⟩
+  obtain ⟨W, _orientation, _horiented⟩ := hwitness x t ⟨ht.1.le, ht.2⟩ hQ
+  apply hbound hS W le_rfl (by
+      simp only [RealTimeInterval.closedOpen, interior_Ico]
+      exact Set.Subset.rfl) ht
+  · intro s hs z hz
+    rw [Real.sq_sqrt (hB 2).le]
+    exact hmodel kappa W.model W.model_ancient W.model_scalar_base 2 z hz s hs.2
+  · exact (show riemannianEDistOf (I := I3) (S.base.metric t) x y <
+      ENNReal.ofReal (eta / Real.sqrt (S.scalar t x)) from hy).le
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
