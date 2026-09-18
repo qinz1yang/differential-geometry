@@ -33,7 +33,7 @@ theorem exists_windowedModelWitness_normalized_mixedCurvatureNorm_bound
         {D : RealTimeInterval} {S : SolutionOn (I := I3) (M := M) D},
         IsSolutionOn S → ∀ {eps kappa : ℝ} {x : M} {t : ℝ}
         (W : WindowedModelWitness eps kappa S x t), eps ≤ 1 / 4 →
-        interior D.carrier ⊆ D.regular → t ∈ D.regular →
+        Ioo (t - (eps * S.scalar t x)⁻¹) t ⊆ D.regular → t ∈ D.regular →
         (∀ s ∈ Icc (-(4 : ℝ)) 0, ∀ y ∈
           riemannianClosedBallOf (W.model.S.base.metric 0) W.model.basepoint 2,
             W.model.rmNormSq s y ≤ K ^ 2) →
@@ -77,7 +77,7 @@ theorem exists_windowedModelWitness_mixedCurvatureNorm_bound
         {D : RealTimeInterval} {S : SolutionOn (I := I3) (M := M) D},
         IsSolutionOn S → ∀ {eps kappa : ℝ} {x : M} {t : ℝ}
         (W : WindowedModelWitness eps kappa S x t), eps ≤ 1 / 4 →
-        interior D.carrier ⊆ D.regular → t ∈ D.regular →
+        Ioo (t - (eps * S.scalar t x)⁻¹) t ⊆ D.regular → t ∈ D.regular →
         (∀ s ∈ Icc (-(4 : ℝ)) 0, ∀ y ∈
           riemannianClosedBallOf (W.model.S.base.metric 0) W.model.basepoint 2,
             W.model.rmNormSq s y ≤ K ^ 2) →
@@ -130,7 +130,7 @@ theorem exists_windowedModelWitness_normalized_mixedCurvatureNorm_bound_on_inner
         {D : RealTimeInterval} {S : SolutionOn (I := I3) (M := M) D},
         IsSolutionOn S → ∀ {eps kappa : ℝ} {x : M} {t : ℝ}
         (W : WindowedModelWitness eps kappa S x t), eps ≤ 1 / 4 →
-        interior D.carrier ⊆ D.regular → t ∈ D.regular →
+        Ioo (t - (eps * S.scalar t x)⁻¹) t ⊆ D.regular → t ∈ D.regular →
         (∀ s ∈ Icc (-(4 : ℝ)) 0, ∀ y ∈
           riemannianClosedBallOf (W.model.S.base.metric 0) W.model.basepoint 2,
             W.model.rmNormSq s y ≤ K ^ 2) →
@@ -187,7 +187,7 @@ theorem exists_windowedModelWitness_mixedCurvatureNorm_bound_on_inner_ball
         {D : RealTimeInterval} {S : SolutionOn (I := I3) (M := M) D},
         IsSolutionOn S → ∀ {eps kappa : ℝ} {x : M} {t : ℝ}
         (W : WindowedModelWitness eps kappa S x t), eps ≤ 1 / 4 →
-        interior D.carrier ⊆ D.regular → t ∈ D.regular →
+        Ioo (t - (eps * S.scalar t x)⁻¹) t ⊆ D.regular → t ∈ D.regular →
         (∀ s ∈ Icc (-(4 : ℝ)) 0, ∀ y ∈
           riemannianClosedBallOf (W.model.S.base.metric 0) W.model.basepoint 2,
             W.model.rmNormSq s y ≤ K ^ 2) →
@@ -242,7 +242,7 @@ theorem exists_windowedModelWitness_mixedCurvatureNorm_bound_on_terminal_ball
         {D : RealTimeInterval} {S : SolutionOn (I := I3) (M := M) D},
         IsSolutionOn S → ∀ {eps kappa : ℝ} {x : M} {t : ℝ}
         (W : WindowedModelWitness eps kappa S x t), eps ≤ 1 / 4 →
-        interior D.carrier ⊆ D.regular → t ∈ D.regular →
+        Ioo (t - (eps * S.scalar t x)⁻¹) t ⊆ D.regular → t ∈ D.regular →
         (∀ s ∈ Icc (-(4 : ℝ)) 0, ∀ z ∈
           riemannianClosedBallOf (W.model.S.base.metric 0) W.model.basepoint 2,
             W.model.rmNormSq s z ≤ K ^ 2) →
@@ -296,7 +296,7 @@ theorem exists_windowedModelWitness_scalar_weighted_mixedCurvatureNorm_bound
         {D : RealTimeInterval} {S : SolutionOn (I := I3) (M := M) D},
         IsSolutionOn S → ∀ {eps kappa : ℝ} {x : M} {t : ℝ}
         (W : WindowedModelWitness eps kappa S x t), eps ≤ 1 / 4 →
-        interior D.carrier ⊆ D.regular → t ∈ D.regular →
+        Ioo (t - (eps * S.scalar t x)⁻¹) t ⊆ D.regular → t ∈ D.regular →
         (∀ s ∈ Icc (-(4 : ℝ)) 0, ∀ z ∈
           riemannianClosedBallOf (W.model.S.base.metric 0) W.model.basepoint 2,
             W.model.rmNormSq s z ≤ K ^ 2) →

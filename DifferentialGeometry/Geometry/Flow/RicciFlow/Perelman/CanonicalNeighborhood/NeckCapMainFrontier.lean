@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.RoundModelWitness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.AncientCanonicalNeighborhood
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CanonicalClassificationNormalization
 
@@ -32,6 +33,15 @@ def RoundModelCanonicalWitness : Prop :=
         IsShrinkingSphericalSpaceFormFlow (I := I3) P →
           PointedFlowScalarAtBase (I := I3) P 1 →
             Nonempty (CanonicalWitness P.S (eps / 2) C1 C2 P.basepoint 0)
+
+theorem round_model_canonical_witness : RoundModelCanonicalWitness.{u} := by
+  intro eps heps hsmall
+  refine ⟨2 * (Real.pi / Real.sqrt (1 / 6)) + 1, 2, ?_, by norm_num, ?_⟩
+  · have hDia : 0 ≤ Real.pi / Real.sqrt (1 / 6) := by positivity
+    linarith
+  · intro P hround hbase
+    exact exists_canonicalWitness_of_shrinkingSphericalSpaceFormFlow P hround hbase
+      (by linarith) (by linarith)
 
 def UniversalKappaModelCanonicalWitness : Prop :=
   ∀ eps : ℝ, 0 < eps → eps ≤ 1 / 44 →
@@ -71,8 +81,9 @@ theorem kappaUniformCanonicalClassification_of_modelBranches
     (htransfer : ∀ (eps C1 C2 kappa : ℝ)
       (M : Type u) [TopologicalSpace M] [ChartedSpace ThreeSpace M]
       [IsManifold I3 ∞ M] [T2Space M] [SigmaCompactSpace M]
-      (D : RealTimeInterval) (S : SolutionOn (I := I3) (M := M) D)
-      (x : M) (t : ℝ) (W : WindowedModelWitness (1 / 2) kappa S x t),
+      (D : RealTimeInterval) (S : SolutionOn (I := I3) (M := M) D),
+      IsSolutionOn S → ∀ (x : M) (t : ℝ),
+      Set.Ioo (t - ((1 / 2) * S.scalar t x)⁻¹) t ⊆ D.regular → ∀ (W : WindowedModelWitness (1 / 2) kappa S x t),
       Nonempty (CanonicalWitness W.model.S (eps / 2) C1 C2 W.model.basepoint 0) →
         Nonempty (CanonicalWitness S (eps / 2) C1 C2 x t)) :
     kappaUniformCanonicalClassification.{u} :=
@@ -85,8 +96,9 @@ theorem ancientCanonicalNeighborhood_of_modelBranches
     (htransfer : ∀ (eps C1 C2 kappa : ℝ)
       (M : Type u) [TopologicalSpace M] [ChartedSpace ThreeSpace M]
       [IsManifold I3 ∞ M] [T2Space M] [SigmaCompactSpace M]
-      (D : RealTimeInterval) (S : SolutionOn (I := I3) (M := M) D)
-      (x : M) (t : ℝ) (W : WindowedModelWitness (1 / 2) kappa S x t),
+      (D : RealTimeInterval) (S : SolutionOn (I := I3) (M := M) D),
+      IsSolutionOn S → ∀ (x : M) (t : ℝ),
+      Set.Ioo (t - ((1 / 2) * S.scalar t x)⁻¹) t ⊆ D.regular → ∀ (W : WindowedModelWitness (1 / 2) kappa S x t),
       Nonempty (CanonicalWitness W.model.S (eps / 2) C1 C2 W.model.basepoint 0) →
         Nonempty (CanonicalWitness S (eps / 2) C1 C2 x t)) :
     ∃ epsCan : ℝ, 0 < epsCan ∧ ∀ eps : ℝ, 0 < eps → eps ≤ epsCan →
@@ -103,7 +115,8 @@ theorem ancientCanonicalNeighborhood_of_modelBranches
   obtain ⟨C1, C2, hC1, hC2, hmain⟩ := hpullback eps heps hsmall
   refine ⟨C1, C2, hC1, hC2, fun kappa hkappa P hanc hbase o => ?_⟩
   obtain ⟨delta, hdelta, hdelta1, htransfer'⟩ := hmain kappa hkappa
-  exact htransfer' (M := P.M) (D := ancientTimeInterval) (S := P.S) (o := o)
-    (x := P.basepoint) (t := 0) (orientedWitness_self P hanc hbase o hdelta hdelta1)
+  exact htransfer' (M := P.M) (D := ancientTimeInterval) (S := P.S) P.isSolution
+    (o := o) (x := P.basepoint) (t := 0) (fun _ hs => hs.2)
+    (orientedWitness_self P hanc hbase o hdelta hdelta1)
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn

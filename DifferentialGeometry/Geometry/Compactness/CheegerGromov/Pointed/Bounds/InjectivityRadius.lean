@@ -80,6 +80,54 @@ theorem hasInjRadiusAt_of_le
     HasInjRadiusAt (I := I) X x rho :=
   ⟨hpos, h⟩
 
+section
+
+attribute [local instance] PointedRiemannianManifold.topology PointedRiemannianManifold.charted
+  PointedRiemannianManifold.smooth PointedRiemannianManifold.t2
+  PointedRiemannianManifold.sigmaCompact PointedRiemannianManifold.t2TangentBundle
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+omit [CompleteSpace E] in
+theorem hasInjRadiusAt_of_expMap_injOn
+    (X : PointedRiemannianManifold.{u, uE, uH} (I := I)) (p : X.M)
+    {rho : ℝ} (hpos : 0 < rho)
+    (hinj : Set.InjOn (fun v : TangentSpace I p =>
+      DifferentialGeometry.Geometry.Riemannian.Exponential.expMap (I := I) X.metric p v)
+      {v | Real.sqrt (X.metric.inner p v v) < rho}) :
+    HasInjRadiusAt X p rho := by
+  refine ⟨hpos, fun hcomplete => ?_⟩
+  let _ : IsManifold I 1 X.M :=
+    IsManifold.of_le (I := I) (M := X.M) (n := ∞) (by decide)
+  let _ : Bundle.RiemannianBundle (fun y : X.M => TangentSpace I y) := X.riemBundle
+  let _ : (y : X.M) → InnerProductSpace ℝ (TangentSpace I y) := X.riemInner
+  let _ : IsContinuousRiemannianBundle E
+      (fun y : X.M => TangentSpace I y) := X.riemBundle_cont
+  let _ : EMetricSpace X.M := X.emetricSpace
+  let _ : CompleteSpace X.M := MetricComplete.complete X hcomplete
+  let hEnorm : ∀ (y : X.M) (w : TangentSpace I y),
+      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (X.metric.inner y w w)) := by
+    intro y w
+    with_unfolding_all
+      exact Geometry.Riemannian.tensor0SBundle_enorm_eq_riemannianBundle_enorm
+        (I := I) X.metric y w
+  change ENNReal.ofReal rho ≤ intrinsicInjRadius X.metric hEnorm p
+  apply le_intrInjRadius
+  change Set.InjOn (intrinsicFramedExp X.metric hEnorm p) (Metric.eball 0 (ENNReal.ofReal rho))
+  rw [Metric.eball_ofReal]
+  intro v hv w hw heq
+  apply (normalFrame X.metric p).injective
+  apply hinj
+  · simp only [Set.mem_ofPred_eq, normalFrame_sqrt]
+    simpa only [Metric.mem_ball, dist_zero_right] using hv
+  · simp only [Set.mem_ofPred_eq, normalFrame_sqrt]
+    simpa only [Metric.mem_ball, dist_zero_right] using hw
+  · simpa only [intrinsicFrame_apply,
+      ← Geometry.Riemannian.Exponential.expMap_eq_expMapIntrinsic (I := I) X.metric hEnorm p]
+      using heq
+
+end
+
 omit [CompleteSpace E] in
 theorem HasInjRadiusAt.le_intr
     {X : PointedRiemannianManifold.{u, uE, uH} (I := I)} {x : X.M}

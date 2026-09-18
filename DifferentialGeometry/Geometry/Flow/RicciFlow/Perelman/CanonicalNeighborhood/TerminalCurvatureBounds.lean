@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Poin
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.BlowupConvergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Bounds.ClosedInterval
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Ricci.QuadraticForm
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.PointedAmbientMetricControl
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.AmbientQuadraticControl
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.TerminalLocalBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.TerminalBackwardExtension
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.TerminalParabolicScalarBallProducer
@@ -116,6 +116,92 @@ attribute [local instance] PointedFlowData.topology PointedFlowData.charted
   PointedRiemannianManifold.smooth PointedRiemannianManifold.t2
   PointedRiemannianManifold.sigmaCompact
 
+theorem exists_eventually_curvature_bound_of_terminal_metric_scalar_le
+    {kappa : ℝ} (hmod : ModelCurvatureBoundNearBase.{u, 0, 0} I3 kappa) :
+    ∃ epsStar : ℝ, 0 < epsStar ∧ ∀ eps : ℝ, 0 < eps → eps ≤ epsStar →
+      ∀ sigma : ℝ, 0 < sigma → ∀ Phi : ℝ → ℝ, AdmissiblePinchingFunction Phi →
+        ∀ A : ℝ, ∃ delta B : ℝ, 0 < delta ∧ 0 < B ∧
+          ∀ X : NormalizedSequence.{u} eps kappa sigma Phi,
+            ∀ (L : PointedRiemannianManifold.{u, 0, 0} I3) (f : ℕ → ℕ), StrictMono f →
+              ∀ (F : PointedRiemannianConvergenceMaps (X.toFlowSequence.atTime 0) L f)
+                (C : MetricConvergenceData F),
+                (∀ i, C.domain i = CanonicalMetricCompactness.canonicalSourceData F i) →
+                  ∀ K : Set L.M, IsCompact K →
+                    (∀ x ∈ K, metricScalarAt L.metric x ≤ A) → ∀ᶠ i in atTop,
+                      K ⊆ (F.partialDiffeomorph i).source ∧
+                      Icc (-delta) 0 ⊆ (X.interval (f i)).carrier ∧
+                      Ioo (-delta) 0 ⊆ (X.interval (f i)).regular ∧
+                      ∀ t ∈ Icc (-delta) 0, ∀ x ∈ K,
+                        curvDerivNormSq (I := I3) 0 ((X.term (f i)).S.base.metric t)
+                          (F.partialDiffeomorph i x) ≤ B := by
+  obtain ⟨epsStar, hepsStar, hprop⟩ :=
+    exists_eventually_curvature_bound_of_terminal_scalar_le hmod
+  refine ⟨epsStar, hepsStar, ?_⟩
+  intro eps heps hle sigma hsigma Phi hPhi A
+  obtain ⟨delta, B, hdelta, hB, hcurv⟩ :=
+    hprop eps heps hle sigma hsigma Phi hPhi (A + 1)
+  refine ⟨delta, B, hdelta, hB, ?_⟩
+  intro X L f hf F C hcanonical K hK hlimit
+  obtain ⟨N, hN⟩ := KappaSolutions.pointedScalar_uniform_on_compact_of_canonical_domains
+    C hcanonical K hK 1 one_pos
+  have hcurvSubseq := hf.tendsto_atTop.eventually (hcurv X)
+  have hdepth := (X.depth_tendsto.comp hf.tendsto_atTop).eventually
+    (eventually_ge_atTop delta)
+  filter_upwards [eventually_ge_atTop N, hcurvSubseq, hdepth] with i hi hci hdi
+  change delta ≤ X.depth (f i) at hdi
+  refine ⟨(hN i hi).1, ?_, ?_, ?_⟩
+  · intro t ht
+    rw [X.carrier_eq (f i)]
+    exact ⟨by linarith [ht.1], ht.2⟩
+  · intro t ht
+    rw [X.regular_eq (f i)]
+    exact ⟨by linarith [ht.1], ht.2⟩
+  · intro t ht x hx
+    have herr := (abs_lt.mp ((hN i hi).2 x hx)).2
+    have hscalarSource : (X.term (f i)).S.scalar 0 (F.partialDiffeomorph i x) ≤ A + 1 := by
+      change metricScalarAt ((X.term (f i)).S.base.metric 0) (F.partialDiffeomorph i x) ≤ _
+      have hlim := hlimit x hx
+      change metricScalarAt ((X.term (f i)).S.base.metric 0) (F.partialDiffeomorph i x) -
+        metricScalarAt L.metric x < 1 at herr
+      linarith
+    exact (hci (F.partialDiffeomorph i x) hscalarSource).2 t ht
+
+
+theorem exists_terminal_slab_curvature_bound
+    {kappa : ℝ} (hmod : ModelCurvatureBoundNearBase.{u, 0, 0} I3 kappa) :
+    ∃ epsStar : ℝ, 0 < epsStar ∧ ∀ eps : ℝ, 0 < eps → eps ≤ epsStar →
+      ∀ sigma : ℝ, 0 < sigma → ∀ Phi : ℝ → ℝ, AdmissiblePinchingFunction Phi →
+        ∀ (X : NormalizedSequence.{u} eps kappa sigma Phi) (L : TerminalLimit X),
+          ∃ delta B : ℝ, 0 < delta ∧ 0 < B ∧ delta ≤ 2 * modelDepth eps ∧
+            ∀ K : Set L.space.M, IsCompact K → ∀ᶠ i in atTop,
+              K ⊆ (L.maps.partialDiffeomorph i).source ∧
+              Icc (-delta) 0 ⊆ (X.interval (L.subseq i)).carrier ∧
+              Ioo (-delta) 0 ⊆ (X.interval (L.subseq i)).regular ∧
+              ∀ t ∈ Icc (-delta) 0, ∀ x ∈ K,
+                PointedFlowData.rmNormSq (X.term (L.subseq i)) t
+                  (L.maps.partialDiffeomorph i x) ≤ B := by
+  obtain ⟨epsStar, hepsStar, hbound⟩ :=
+    exists_eventually_curvature_bound_of_terminal_metric_scalar_le hmod
+  refine ⟨epsStar, hepsStar, ?_⟩
+  intro eps heps hle sigma hsigma Phi hPhi X L
+  obtain ⟨A, hA⟩ := L.scalar_bound
+  obtain ⟨delta, B, hdelta, hB, hcurv⟩ := hbound eps heps hle sigma hsigma Phi hPhi A
+  have hdepth : 0 < 2 * modelDepth eps := by
+    apply mul_pos (by norm_num)
+    exact inv_pos.mpr heps
+  refine ⟨min delta (2 * modelDepth eps), B, lt_min hdelta hdepth, hB,
+    min_le_right _ _, ?_⟩
+  intro K hK
+  filter_upwards [hcurv X L.space L.subseq L.strictMono L.maps L.converges
+    L.canonical_domains K hK (fun x _ => hA x)] with i hi
+  have hsub : Icc (-min delta (2 * modelDepth eps)) 0 ⊆ Icc (-delta) 0 :=
+    Icc_subset_Icc (neg_le_neg (min_le_left _ _)) le_rfl
+  refine ⟨hi.1, hsub.trans hi.2.1,
+    (Ioo_subset_Ioo (neg_le_neg (min_le_left _ _)) le_rfl).trans hi.2.2.1, ?_⟩
+  intro t ht x hx
+  exact (rmNormSq_eq_curvDerivNormSq X (L.subseq i) t
+    (L.maps.partialDiffeomorph i x)).le.trans (hi.2.2.2 t (hsub ht) x hx)
+
 theorem exists_eventually_curvature_bound_on_compact_of_terminal_metric_convergence
     {kappa : ℝ} (hmod : ModelCurvatureBoundNearBase.{u, 0, 0} I3 kappa) :
     ∃ epsStar : ℝ, 0 < epsStar ∧ ∀ eps : ℝ, 0 < eps → eps ≤ epsStar →
@@ -133,31 +219,14 @@ theorem exists_eventually_curvature_bound_on_compact_of_terminal_metric_converge
                     ∀ t ∈ Icc (-delta) 0, ∀ x ∈ K,
                       curvDerivNormSq (I := I3) 0 ((X.term (f i)).S.base.metric t)
                         (F.partialDiffeomorph i x) ≤ B := by
-  obtain ⟨epsStar, hepsStar, hprop⟩ :=
-    exists_eventually_curvature_bound_of_terminal_scalar_le hmod
+  obtain ⟨epsStar, hepsStar, hbound⟩ :=
+    exists_eventually_curvature_bound_of_terminal_metric_scalar_le hmod
   refine ⟨epsStar, hepsStar, ?_⟩
   intro eps heps hle sigma hsigma Phi hPhi X L f hf F C hcanonical K hK
-  obtain ⟨A, _hA, hscalar⟩ :=
-    KappaSolutions.exists_pointed_scalar_bound_on_compact C hcanonical K hK
-  obtain ⟨delta, B, hdelta, hB, hcurv⟩ :=
-    hprop eps heps hle sigma hsigma Phi hPhi A
-  have hcurvSubseq := hf.tendsto_atTop.eventually (hcurv X)
-  have hdepth := (X.depth_tendsto.comp hf.tendsto_atTop).eventually
-    (eventually_ge_atTop delta)
-  refine ⟨delta, B, hdelta, hB, ?_⟩
-  filter_upwards [hscalar, hcurvSubseq, hdepth] with i hi hci hdi
-  change delta ≤ X.depth (f i) at hdi
-  refine ⟨hi.1, ?_, ?_, ?_⟩
-  · intro t ht
-    rw [X.carrier_eq (f i)]
-    exact ⟨by linarith [ht.1], ht.2⟩
-  · intro t ht
-    rw [X.regular_eq (f i)]
-    exact ⟨by linarith [ht.1], ht.2⟩
-  · intro t ht x hx
-    have hscalarSource : (X.term (f i)).S.scalar 0 (F.partialDiffeomorph i x) ≤ A :=
-      (le_abs_self _).trans (hi.2 x hx)
-    exact (hci (F.partialDiffeomorph i x) hscalarSource).2 t ht
+  obtain ⟨A, hA⟩ := (hK.image (metricScalar_smooth L.metric).continuous).bddAbove
+  obtain ⟨delta, B, hdelta, hB, hcurv⟩ := hbound eps heps hle sigma hsigma Phi hPhi A
+  exact ⟨delta, B, hdelta, hB,
+    hcurv X L f hf F C hcanonical K hK (fun x hx => hA ⟨x, hx, rfl⟩)⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
 

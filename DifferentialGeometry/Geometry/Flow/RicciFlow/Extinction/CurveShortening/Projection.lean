@@ -984,64 +984,6 @@ theorem rfs_csf_swept_annulus (B : RicciBackground (I := I) (M := M) D a b)
     exact add_le_add le_rfl hfinal
   exact hstep1.trans hstep2
 
-omit hCompact hNonempty in
-theorem projected_sweptDensity_le_totalCurvature
-    (B : RicciBackground (I := I) (M := M) D a b) (lambda : ℝ) (hlambda : 0 < lambda)
-    (c : ProductCurve M) (hc : c.IsSolutionOn B.family.metric lambda (Icc a b))
-    (hi : c.projection.ImmersedOn (I := I) (Icc a b))
-    (t : ℝ) (ht : t ∈ Icc a b) :
-    c.projection.sweptDensity B.family.metric (Icc a b) t ≤
-      c.totalCurvature B.family.metric lambda t := by
-  have hpoint : ∀ x, Real.sqrt (c.projection.normSq B.family.metric
-        (c.projection.velocity (I := I) (Icc a b)) x t) *
-          c.projection.speed B.family.metric x t ≤
-      c.curvature B.family.metric lambda x t * c.speed B.family.metric lambda x t := by
-    intro x
-    have hvel : c.projection.velocity (I := I) (Icc a b) x t =
-        (c.curvatureVector B.family.metric lambda x t).1 := by
-      rw [← hc.equation x t ht]
-      rfl
-    have hnorm : c.projection.normSq B.family.metric
-        (c.projection.velocity (I := I) (Icc a b)) x t =
-        (B.family.metric t).inner (c.projection.lift x t)
-          (c.curvatureVector B.family.metric lambda x t).1
-          (c.curvatureVector B.family.metric lambda x t).1 := by
-      simp only [CurveMap.normSq, hvel]
-    have hle : c.projection.normSq B.family.metric
-        (c.projection.velocity (I := I) (Icc a b)) x t ≤
-        c.curvatureSq B.family.metric lambda x t := by
-      rw [hnorm, ProductCurve.curvatureSq, ProductCurve.normSq, ProductCurve.inner]
-      nlinarith [sq_nonneg (lambda * (c.curvatureVector B.family.metric lambda x t).2)]
-    have hcurv : Real.sqrt (c.projection.normSq B.family.metric
-        (c.projection.velocity (I := I) (Icc a b)) x t) ≤
-        c.curvature B.family.metric lambda x t := by
-      simpa only [ProductCurve.curvature] using Real.sqrt_le_sqrt hle
-    have hspeed : c.projection.speed B.family.metric x t ≤
-        c.speed B.family.metric lambda x t := by
-      have h2 : c.projection.speed B.family.metric x t ^ 2 ≤
-          c.speed B.family.metric lambda x t ^ 2 := by
-        rw [ProductCurve.speed_sq_add c B.family.metric lambda x t]
-        nlinarith [sq_nonneg (lambda * deriv (fun z => c.y z t) x)]
-      simpa only [Real.sqrt_sq (c.projection.speed_nonneg B.family.metric x t),
-        Real.sqrt_sq (c.speed_nonneg B.family.metric lambda x t)] using
-        Real.sqrt_le_sqrt h2
-    exact mul_le_mul hcurv hspeed (c.projection.speed_nonneg B.family.metric x t)
-      (ProductCurve.curvature_nonneg c B.family.metric lambda x t)
-  have hint : IntegrableOn (fun x => c.curvature B.family.metric lambda x t *
-      c.speed B.family.metric lambda x t) (Ioc (0 : ℝ) 1) volume :=
-    (ProductCurve.curvature_mul_speed_integrable c B.family.metric lambda hlambda
-      hc hi t ht).1
-  have hnn : 0 ≤ᵐ[volume.restrict (Ioc (0 : ℝ) 1)]
-      (fun x => Real.sqrt (c.projection.normSq B.family.metric
-        (c.projection.velocity (I := I) (Icc a b)) x t) *
-        c.projection.speed B.family.metric x t) :=
-    ae_of_all _ (fun x => mul_nonneg (Real.sqrt_nonneg _)
-      (c.projection.speed_nonneg B.family.metric x t))
-  have hle := MeasureTheory.integral_mono_of_nonneg hnn hint (ae_of_all _ hpoint)
-  simpa only [CurveMap.sweptDensity, CurveMap.integral, ProductCurve.totalCurvature,
-    ProductCurve.integral,
-    intervalIntegral.integral_of_le zero_le_one] using hle
-
 omit hT2 hCompact hNonempty hBoundary in
 theorem exp_increment_le (k h delta : ℝ) (hk : 0 ≤ k) (hh : 0 ≤ h) (hdelta : h ≤ delta) :
     Real.exp (k * h) - 1 ≤ k * Real.exp (k * delta) * h := by

@@ -1,7 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.PointedPinchingLimit
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.TerminalCompatibleBackwardFlow
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Compactness.MetricExtension
-import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Norm.ReferenceChange
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.OpenPullback
 
 set_option autoImplicit false
 noncomputable section
@@ -55,35 +54,11 @@ theorem secLower_zero_of_normalized_pullback_metric_convergence
     metric := g }
   let f : ℕ → ℕ := fun i => P.subseq (rho i - N + N)
   let F (i : ℕ) := P.maps.partialDiffeomorph (rho i - N + N)
-  let V (i : ℕ) : TopologicalSpace.Opens (X.term (f i)).M :=
-    ⟨F i '' (U : Set P.limit.M), image_opens_isOpen (F i) (hsource (rho i - N))⟩
-  let e (i : ℕ) : U ≃ₘ⟮I3, I3⟯ V i :=
-    PartialDiffeomorph.toOpensDiffeo (F i) (hsource (rho i - N))
-  let _ (i : ℕ) : Nonempty (V i) := ⟨e i ⟨P.limit.basepoint, hpU⟩⟩
-  let Psi : PointedRiemannianConvergenceMaps (X.toFlowSequence.atTime t) Q f := {
-    partialDiffeomorph := fun i =>
-      @PartialDiffeomorph.liftTargetOpen ThreeSpace _ _ ThreeSpace _ I3
-        ThreeSpace _ _ ThreeSpace _ I3 U _ _ (X.term (f i)).M _ _ (V i)
-        ⟨e i ⟨P.limit.basepoint, hpU⟩⟩ (e i).toPartialDiffeomorph rfl
-    source_exhausts := ⟨fun _ => isOpen_univ, fun _ => subset_univ _,
-      fun _ _ => ⟨0, fun _ _ => subset_univ _⟩⟩
-    base_mem := fun _ => mem_univ _
-    basepoint_map := fun i => P.maps.basepoint_map (rho i - N + N) }
-  have hderiv (i : ℕ) (x : U) (v : TangentSpace I3 x) :
-      mfderiv I3 I3 (Psi.map i) x v = mfderiv I3 I3 (F i) (x : P.limit.M) v := by
-    have h := PartialDiffeomorph.mfderiv_liftTargetOpen
-      (e i).toPartialDiffeomorph rfl (x := x) (mem_univ _) v
-    exact h.trans (PartialDiffeomorph.mfderiv_toOpensDiffeo
-      (F i) (hsource (rho i - N)) x v)
-  obtain ⟨C, hcanonical, _href⟩ := exists_canonicalMetricConvergenceData_of_metric_extension
-    Psi (fun i => G (rho i - N)) (hconv.change_reference g) (by
-      intro K _hK
-      exact Eventually.of_forall fun i => ⟨univ, isOpen_univ, subset_univ _,
-        subset_univ _, fun x _ v w => by
-          have h := hmetric (rho i - N) x v w
-          exact h.trans (congrArg₂ (fun a b =>
-            ((X.term (f i)).S.base.metric t).inner (F i x) a b)
-            (hderiv i x v).symm (hderiv i x w).symm)⟩)
+  obtain ⟨Psi, _hPsi, C, hcanonical⟩ :=
+    exists_pointed_metric_convergence_of_pullback_on_open
+      (X.toFlowSequence.atTime t) P.limit f F U hpU
+      (fun i => hsource (rho i - N)) (fun i => P.maps.basepoint_map (rho i - N + N))
+      (fun i => G (rho i - N)) g r (fun i => hmetric (rho i - N)) hconv
   have hf : Tendsto f atTop atTop := by
     have heq : f =ᶠ[atTop] fun i => P.subseq (rho i) := by
       filter_upwards [eventually_ge_atTop N] with i hi

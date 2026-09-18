@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.CylinderTimeErrorJets
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.BackwardForwardNeck
+import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Scaling
 
 
 set_option autoImplicit false
@@ -11,17 +12,6 @@ open Bundle Manifold Set
 open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Tensor0SBundle
 open scoped Manifold ContDiff
-
-private theorem bufferedJetNorm_smul (epsilon : ℝ)
-    (gCov gNorm : SmoothRiemannianMetric SpatialNeckCylinderModel (spatialNeckBuffer epsilon))
-    (c : ℝ) (A : Tensor0SField (I := SpatialNeckCylinderModel)
-      (M := spatialNeckBuffer epsilon) (n := ∞) 2)
-    (a : ℕ) (x : spatialNeckBuffer epsilon) :
-    tensor02CovDerivNormWith a (c • A) gCov gNorm x =
-      |c| * tensor02CovDerivNormWith a A gCov gNorm x := by
-  simp only [tensor02CovDerivNormWith, tensor02_cov_deriv_eq_cov_deriv_of_field, covDerivOfField_smul,
-    ContMDiffSection.coe_smul, Pi.smul_apply]
-  exact sqrt_normSq0S_smul gNorm x (a + 2) c _
 
 private theorem bufferedJetNorm_add_le (epsilon : ℝ)
     (gCov gNorm : SmoothRiemannianMetric SpatialNeckCylinderModel (spatialNeckBuffer epsilon))
@@ -104,7 +94,7 @@ theorem backwardForwardErrorJet_covNorm_le
   have hsum := bufferedJetNorm_add_le epsilon (strongNeckBackgroundMetric epsilon s)
     (strongNeckBackgroundMetric epsilon s) ((c * (-c⁻¹) ^ q) • J q (1 - s / c))
     (cylinderTimeErrorJet epsilon c q s) a x
-  rw [bufferedJetNorm_smul] at hsum
+  rw [tensor02CovDerivNormWith_smul] at hsum
   have hscale := mul_le_mul_of_nonneg_left hreference (abs_nonneg (c * (-c⁻¹) ^ q))
   exact hsum.trans ((add_le_add hscale hmodel).trans_eq (by ring))
 

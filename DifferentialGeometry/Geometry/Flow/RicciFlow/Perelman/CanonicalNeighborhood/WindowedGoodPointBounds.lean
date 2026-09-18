@@ -1,7 +1,8 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedShiTerminal
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Scalar.TerminalSlope
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ScalarLaplacianJet
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientKappaModelCurvatureWindow
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.GoodPointDerivatives
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.UniversalCurvatureBounds
 
 
 set_option autoImplicit false
@@ -47,7 +48,7 @@ private local instance goodPointC1 : IsManifold I3 1 M :=
 theorem WindowedModelWitness.scalar_gradient_bound
     (hS : IsSolutionOn S) {eps kappa K : ℝ} {x : M} {t : ℝ}
     (W : WindowedModelWitness eps kappa S x t) (heps4 : eps ≤ 1 / 4) (hK : 0 ≤ K)
-    (hregular : interior D.carrier ⊆ D.regular)
+    (hregular : Ioo (t - (eps * S.scalar t x)⁻¹) t ⊆ D.regular)
     (hmodel : ∀ s ∈ Icc (-(4 : ℝ)) 0, ∀ y ∈
       riemannianClosedBallOf (W.model.S.base.metric 0) W.model.basepoint 2,
         W.model.rmNormSq s y ≤ K ^ 2) (v : TangentSpace I3 x) :
@@ -92,7 +93,7 @@ theorem WindowedModelWitness.scalar_gradient_bound
 theorem WindowedModelWitness.normalized_interior_scalar_derivative_bound
     (hS : IsSolutionOn S) {eps kappa K : ℝ} {x : M} {t : ℝ}
     (W : WindowedModelWitness eps kappa S x t) (heps4 : eps ≤ 1 / 4) (hK : 0 ≤ K)
-    (hregular : interior D.carrier ⊆ D.regular)
+    (hregular : Ioo (t - (eps * S.scalar t x)⁻¹) t ⊆ D.regular)
     (hmodel : ∀ s ∈ Icc (-(4 : ℝ)) 0, ∀ y ∈
       riemannianClosedBallOf (W.model.S.base.metric 0) W.model.basepoint 2,
         W.model.rmNormSq s y ≤ K ^ 2) {r : ℝ} (hr : r ∈ Ioo (-1 : ℝ) 0) :
@@ -136,7 +137,7 @@ theorem WindowedModelWitness.normalized_interior_scalar_derivative_bound
 theorem WindowedModelWitness.scalar_left_derivative_bound
     (hS : IsSolutionOn S) {eps kappa K : ℝ} {x : M} {t : ℝ}
     (W : WindowedModelWitness eps kappa S x t) (heps4 : eps ≤ 1 / 4) (hK : 0 ≤ K)
-    (hregular : interior D.carrier ⊆ D.regular)
+    (hregular : Ioo (t - (eps * S.scalar t x)⁻¹) t ⊆ D.regular)
     (hmodel : ∀ s ∈ Icc (-(4 : ℝ)) 0, ∀ y ∈
       riemannianClosedBallOf (W.model.S.base.metric 0) W.model.basepoint 2,
         W.model.rmNormSq s y ≤ K ^ 2) :
@@ -200,6 +201,8 @@ theorem good_point_derivatives_of_modelCurvatureBound
     windowedGoodPointConstant_pos K, ?_⟩
   intro M _ _ _ _ _ D S hS hregular eps _ heps x t hW
   obtain ⟨W⟩ := hW
+  have hwindow : Ioo (t - (eps * S.scalar t x)⁻¹) t ⊆ D.regular := by
+    simpa only [interior_Icc] using (interior_mono W.window_mem).trans hregular
   have hmodel' : ∀ s ∈ Icc (-(4 : ℝ)) 0, ∀ y ∈
       riemannianClosedBallOf (W.model.S.base.metric 0) W.model.basepoint 2,
         W.model.rmNormSq s y ≤ K ^ 2 := by
@@ -207,8 +210,8 @@ theorem good_point_derivatives_of_modelCurvatureBound
     exact hmodel W.model W.model_ancient W.model_scalar_base s hs y
       (riemannianClosedBallOf_mono (W.model.S.base.metric 0) W.model.basepoint
         (by norm_num : (2 : ℝ) ≤ 3) hy)
-  exact ⟨fun v => W.scalar_gradient_bound hS heps hK hregular hmodel' v,
-    W.scalar_left_derivative_bound hS heps hK hregular hmodel'⟩
+  exact ⟨fun v => W.scalar_gradient_bound hS heps hK hwindow hmodel' v,
+    W.scalar_left_derivative_bound hS heps hK hwindow hmodel'⟩
 
 
 theorem good_point_derivatives_closed_interval
@@ -231,7 +234,34 @@ theorem good_point_derivatives_closed_interval
     (by simp only [RealTimeInterval.closed, interior_Icc, Subset.rfl])
 
 
-theorem canonical_neighborhood_good_point_derivatives {kappa : ℝ} (hkappa : 0 < kappa) :
+theorem exists_windowedModelWitness_scalar_derivative_bounds :
+    ∃ C : ℝ, 0 < C ∧
+      ∀ {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
+        [IsManifold I3 ∞ M] [T2Space M] [SigmaCompactSpace M]
+        {D : RealTimeInterval} {S : SolutionOn (I := I3) (M := M) D},
+        IsSolutionOn S → ∀ {eps kappa : ℝ} {x : M} {t : ℝ},
+        WindowedModelWitness eps kappa S x t → eps ≤ 1 / 4 →
+        Ioo (t - (eps * S.scalar t x)⁻¹) t ⊆ D.regular →
+          (∀ v : TangentSpace I3 x, |scalarDifferential S t x v| ≤
+            2 * C * S.scalar t x * Real.sqrt (S.scalar t x) *
+              Real.sqrt ((S.base.metric t).inner x v v)) ∧
+          |derivWithin (fun s => S.scalar s x) (Iic t) t| ≤ C * S.scalar t x ^ 2 := by
+  obtain ⟨B, hB, hmodel⟩ := KappaSolutions.exists_universal_normalized_ancient_curvature_bounds.{u}
+  let K := Real.sqrt (B 2)
+  refine ⟨windowedGoodPointConstant K, windowedGoodPointConstant_pos K, ?_⟩
+  intro M _ _ _ _ _ D S hS eps kappa x t W heps hregular
+  have hbound : ∀ s ∈ Icc (-(4 : ℝ)) 0, ∀ y ∈
+      riemannianClosedBallOf (W.model.S.base.metric 0) W.model.basepoint 2,
+        W.model.rmNormSq s y ≤ K ^ 2 := by
+    intro s hs y hy
+    dsimp only [K]
+    rw [Real.sq_sqrt (hB 2).le]
+    exact hmodel kappa W.model W.model_ancient W.model_scalar_base 2 y hy s hs.2
+  exact ⟨fun v => W.scalar_gradient_bound hS heps (Real.sqrt_nonneg _) hregular hbound v,
+    W.scalar_left_derivative_bound hS heps (Real.sqrt_nonneg _) hregular hbound⟩
+
+
+theorem canonical_neighborhood_good_point_derivatives {kappa : ℝ} :
     ∃ epsStar C : ℝ, 0 < epsStar ∧ 0 < C ∧
       ∀ (M : Type u) [TopologicalSpace M] [ChartedSpace ThreeSpace M]
         [IsManifold I3 ∞ M] [T2Space M] [SigmaCompactSpace M]
@@ -243,9 +273,12 @@ theorem canonical_neighborhood_good_point_derivatives {kappa : ℝ} (hkappa : 0 
               2 * C * S.scalar t x * Real.sqrt (S.scalar t x) *
                 Real.sqrt ((S.base.metric t).inner x v v)) ∧
             |derivWithin (fun s => S.scalar s x) (Iic t) t| ≤ C * S.scalar t x ^ 2 := by
-  exact good_point_derivatives_closed_interval
-    (KappaSolutions.ancientKappa_modelCurvatureBoundNearBase
-      (I := I3) (by simp [ThreeSpace]) hkappa)
+  obtain ⟨C, hC, hbound⟩ := exists_windowedModelWitness_scalar_derivative_bounds.{u}
+  refine ⟨1 / 4, C, by norm_num, hC, ?_⟩
+  intro M _ _ _ _ _ a b hab S hS eps _ heps x t hW
+  obtain ⟨W⟩ := hW
+  apply hbound hS W heps
+  simpa only [RealTimeInterval.closed, interior_Icc] using interior_mono W.window_mem
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
 

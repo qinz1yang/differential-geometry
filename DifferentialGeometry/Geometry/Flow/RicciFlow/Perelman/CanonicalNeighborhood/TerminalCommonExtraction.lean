@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Solution.CountableTerminalConvergence
 import DifferentialGeometry.Geometry.Metric.Convergence.Restriction
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Limits.FixedDomain
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.BlowupConvergence
 
 set_option autoImplicit false
@@ -104,5 +105,79 @@ theorem exists_common_metric_subsequence_on_terminal_maps_of_terminal_convergenc
     exact hn.trans hm.symm
   exact metricCInf_unique_restrictOpenOfSubset_of_eventuallyEq
     hWn hWm hconvN hconvM heq
+
+theorem exists_common_solution_subsequence_on_terminal_maps_of_terminal_convergence
+    (X : FlowSequence.{u})
+    (P : MetricCompactLimit (X.atTime 0))
+    (U : ℕ → TopologicalSpace.Opens P.limit.M)
+    (hpU : ∀ n, P.limit.basepoint ∈ U n)
+    (D : ℕ → RealTimeInterval)
+    (S : ∀ n : ℕ, ℕ → SolutionOn (I := I3) (M := U n) (D n))
+    (hS : ∀ n i, IsSolutionOn (S n i))
+    (R : ∀ n : ℕ, SmoothRiemannianMetric I3 (U n))
+    (a b : ℕ → ℝ) (hab : ∀ n, a n < b n)
+    (hslab : ∀ n, Set.Icc (a n) (b n) ⊆ (D n).carrier)
+    (hreg : ∀ n, Set.Ico (a n) (b n) ⊆ (D n).regular)
+    (hterminal : ∀ n, MetricCInfConvergenceOnCompacts
+      (fun i => (S n i).base.metric (b n)) (R n) (R n))
+    (hcurv : ∀ n, ∀ K : Set (U n), IsCompact K → ∀ q : ℕ,
+      ∃ C : ℝ, 0 ≤ C ∧ ∀ᶠ i in atTop,
+        ∀ t ∈ Set.Icc (a n) (b n), ∀ x ∈ K,
+          curvDerivNorm q ((S n i).base.metric t) x ≤ C)
+    (N : ℕ → ℕ)
+    (hsource : ∀ n i, (U n : Set P.limit.M) ⊆
+      (P.maps.partialDiffeomorph (i + N n)).source)
+    (hmetric : ∀ n j t (x : U n) (v w : TangentSpace I3 x),
+      t ∈ Icc (a n) (b n) →
+      (x : P.limit.M) ∈
+        (P.maps.partialDiffeomorph (j + N n)).source →
+      ((S n j).base.metric t).inner x v w =
+        ((X.term (P.subseq (j + N n))).S.base.metric t).inner
+          (P.maps.partialDiffeomorph (j + N n) x)
+          (mfderiv I3 I3 (P.maps.partialDiffeomorph (j + N n)) x v)
+          (mfderiv I3 I3 (P.maps.partialDiffeomorph (j + N n)) x w)) :
+    ∃ rho : ℕ → ℕ, StrictMono rho ∧
+      ∃ g : ∀ n : ℕ, ℝ → SmoothRiemannianMetric I3 (U n),
+        (∀ n, g n (b n) = R n) ∧
+        (∀ n, IsSolutionOn ({ base.metric := g n } : SolutionOn (I := I3) (M := U n)
+          (RealTimeInterval.closed (a n) (b n) (hab n).le))) ∧
+        (∀ n, ∀ K : Set (U n), IsCompact K → ∀ p : ℕ, ∀ epsilon : ℝ, 0 < epsilon →
+          ∃ j : ℕ, ∀ i ≥ j, ∀ t ∈ Set.Icc (a n) (b n),
+            metricDerivNormSupOn K p ((S n (rho i - N n)).base.metric t)
+              (g n t) (R n) < epsilon) ∧
+        (∀ n m : ℕ, ∀ W : TopologicalSpace.Opens P.limit.M,
+          (hWn : W ≤ U n) → (hWm : W ≤ U m) →
+          ∀ t, t ∈ Set.Icc (a n) (b n) → t ∈ Set.Icc (a m) (b m) →
+            (g n t).restrictOpenOfSubset hWn =
+              (g m t).restrictOpenOfSubset hWm) := by
+  let _ (n : ℕ) : SigmaCompactSpace (U n) := isSigmaCompact_iff_sigmaCompactSpace.mp
+    (DifferentialGeometry.Geometry.isSigmaCompact_of_isOpen I3 (U n).isOpen)
+  let _ : T2Space (TangentBundle I3 P.limit.M) := P.limit.t2TangentBundle
+  obtain ⟨rho, hrho, g, hg0, hconv, hoverlap⟩ :=
+    exists_common_metric_subsequence_on_terminal_maps_of_terminal_convergence
+      X P U D S hS R a b hab hslab hreg hterminal hcurv N hsource hmetric
+  refine ⟨rho, hrho, g, hg0, ?_, hconv, hoverlap⟩
+  intro n
+  let Q : PointedRiemannianManifold (I := I3) := {
+    M := U n
+    topology := inferInstance
+    charted := inferInstance
+    smooth := inferInstance
+    sigmaCompact := inferInstance
+    t2 := inferInstance
+    t2TangentBundle := inferInstance
+    basepoint := ⟨P.limit.basepoint, hpU n⟩
+    metric := R n }
+  exact isSolutionOn_of_fixed_domain_metric_convergence Q
+    (fun i => S n (rho i - N n)) (fun i => hS n (rho i - N n))
+    (hab n) (hslab n) (Ioo_subset_Ico_self.trans (hreg n))
+    id strictMono_id (g n) (hconv n) (by
+      intro K hK p
+      exact Eventually.of_forall fun i => by
+        obtain ⟨L, _hL, hb⟩ := exists_metric_time_lipschitz_constant_on_compact_of_solution
+          (S n (rho i - N n)) (hS n (rho i - N n)) (hab n)
+          (hslab n) (hreg n) Q.metric hK p
+        exact ⟨L, fun s hs t ht q hq x hx => hb q hq s hs t ht x hx⟩)
+
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn

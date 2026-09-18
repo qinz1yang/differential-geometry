@@ -32,7 +32,7 @@ def hasPositiveSectionalCurvature
       0 < metricRm04StandardAt (I := I) (M := M) g x W T T W
 
 omit [I.Boundaryless] [SigmaCompactSpace M] [BoundarylessManifold I M] in
-private theorem metricRm04StandardAt_eq_zero_of_not_linearIndependent
+theorem metricRm04StandardAt_eq_zero_of_not_linearIndependent
     (g : SmoothRiemannianMetric I M) (x : M)
     (W T : TangentSpace I x) (hdep : ¬ LinearIndependent ℝ ![W, T]) :
     metricRm04StandardAt (I := I) (M := M) g x W T T W = 0 := by

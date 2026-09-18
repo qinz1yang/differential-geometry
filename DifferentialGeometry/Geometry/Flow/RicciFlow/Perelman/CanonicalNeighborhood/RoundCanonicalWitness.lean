@@ -4,7 +4,7 @@ import DifferentialGeometry.Geometry.Curvature.Sphere.ConstCurvature
 import DifferentialGeometry.Geometry.Curvature.ScalarSectional
 import DifferentialGeometry.Geometry.Curvature.Metric.Scaling
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.RmNormFromEigenvalues
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.AncientCanonicalNeighborhood
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ComparisonReflexive
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.PositiveSectionalLowerBound
 
 set_option autoImplicit false

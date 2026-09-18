@@ -95,15 +95,14 @@ theorem WindowedModelWitness.scalar_sub_le_of_model_curvature_bound
   simpa only [show Module.finrank ℝ ThreeSpace = 3 from by simp [ThreeSpace], Nat.cast_ofNat,
     scalarComparisonC, witnessRiemannC, F, h, ghat, y', SolutionOn.scalar, SolutionFamily.scalar] using hmain
 
-theorem WindowedModelWitness.scalar_bounds_on_canonical_domain
+theorem WindowedModelWitness.scalar_ratio_sub_one_le_on_canonical_domain
     {delta kappa eps C1 C2 : ℝ} {x : M} {t : ℝ}
     (W : WindowedModelWitness delta kappa S x t)
     (K : CanonicalWitness W.model.S eps C1 C2 W.model.basepoint 0)
     (hdelta : delta ≤ 1 / 4) (hbuffer : 2 * C1 ≤ modelRadius delta)
-    (hsmall : 486 * C2 * (1 + 3 * C2) * delta ≤ 1)
     {y : W.model.M} (hy : y ∈ K.domain.carrier) :
-    (2 * C2)⁻¹ * S.scalar t x ≤ S.scalar t (W.embedding y) ∧
-      S.scalar t (W.embedding y) ≤ (2 * C2) * S.scalar t x := by
+    |S.scalar t (W.embedding y) / (S.scalar t x * W.model.S.scalar 0 y) - 1| ≤
+      243 * C2 * (1 + 3 * C2) * delta := by
   have hC2 : 0 < C2 := zero_lt_one.trans_le K.one_le_comparison_constant
   have hbase : W.model.S.scalar 0 W.model.basepoint = 1 := W.model_scalar_base
   have hrm : W.model.rmNormSq 0 y ≤ C2 ^ 2 := by
@@ -124,32 +123,56 @@ theorem WindowedModelWitness.scalar_bounds_on_canonical_domain
   have hc := scalarComparisonC_le (n := 3) W.eps_pos.le hdelta
     (mul_nonneg (by norm_num : (0 : ℝ) ≤ 3) hC2.le)
   norm_num only [Nat.cast_ofNat, Nat.cast_pow, Nat.cast_mul, Nat.cast_add] at hc
-  have hi : (2 * C2) * (2 * C2)⁻¹ = 1 := mul_inv_cancel₀ (by positivity)
-  have he : scalarComparisonC 3 delta (3 * C2) ≤ (2 * C2)⁻¹ := by
-    have hm := mul_le_mul_of_nonneg_left hc (by positivity : 0 ≤ 2 * C2)
-    nlinarith
   have hmod := K.scalar_bounds y hy
   rw [hbase, mul_one, mul_one] at hmod
-  have hinv : C2⁻¹ = 2 * (2 * C2)⁻¹ := by
-    field_simp
-  have hinvle : (2 * C2)⁻¹ ≤ C2 := by
-    have hh := inv_anti₀ (by norm_num : (0 : ℝ) < 1)
-      (by linarith [K.one_le_comparison_constant] : (1 : ℝ) ≤ 2 * C2)
-    norm_num only [inv_one] at hh
-    exact hh.trans K.one_le_comparison_constant
-  obtain ⟨hneg, hpos⟩ := abs_le.mp (hcomp.trans he)
-  have hlow : (2 * C2)⁻¹ ≤ (S.scalar t x)⁻¹ * S.scalar t (W.embedding y) := by
-    rw [hinv] at hmod
+  have hmodel : 0 < W.model.S.scalar 0 y := (inv_pos.mpr hC2).trans_le hmod.1
+  have hprod : 1 ≤ C2 * W.model.S.scalar 0 y := by
+    have hh := mul_le_mul_of_nonneg_left hmod.1 hC2.le
+    rwa [mul_inv_cancel₀ hC2.ne'] at hh
+  have herror : |(S.scalar t x)⁻¹ * S.scalar t (W.embedding y) - W.model.S.scalar 0 y| ≤
+      243 * (1 + 3 * C2) * delta := by
+    exact hcomp.trans (by nlinarith [hc])
+  have heq : S.scalar t (W.embedding y) / (S.scalar t x * W.model.S.scalar 0 y) - 1 =
+      ((S.scalar t x)⁻¹ * S.scalar t (W.embedding y) - W.model.S.scalar 0 y) /
+        W.model.S.scalar 0 y := by
+    field_simp [W.scalar_pos.ne', hmodel.ne']
+  rw [heq, abs_div, abs_of_pos hmodel]
+  apply (div_le_iff₀ hmodel).mpr
+  calc
+    _ ≤ 243 * (1 + 3 * C2) * delta := herror
+    _ ≤ (243 * (1 + 3 * C2) * delta) * (C2 * W.model.S.scalar 0 y) :=
+      le_mul_of_one_le_right (mul_nonneg (by positivity) W.eps_pos.le) hprod
+    _ = _ := by ring
+
+theorem WindowedModelWitness.scalar_bounds_on_canonical_domain
+    {delta kappa eps C1 C2 : ℝ} {x : M} {t : ℝ}
+    (W : WindowedModelWitness delta kappa S x t)
+    (K : CanonicalWitness W.model.S eps C1 C2 W.model.basepoint 0)
+    (hdelta : delta ≤ 1 / 4) (hbuffer : 2 * C1 ≤ modelRadius delta)
+    (hsmall : 486 * C2 * (1 + 3 * C2) * delta ≤ 1)
+    {y : W.model.M} (hy : y ∈ K.domain.carrier) :
+    (2 * C2)⁻¹ * S.scalar t x ≤ S.scalar t (W.embedding y) ∧
+      S.scalar t (W.embedding y) ≤ (2 * C2) * S.scalar t x := by
+  have hC2 : 0 < C2 := zero_lt_one.trans_le K.one_le_comparison_constant
+  have hbase : W.model.S.scalar 0 W.model.basepoint = 1 := W.model_scalar_base
+  have hmod := K.scalar_bounds y hy
+  rw [hbase, mul_one, mul_one] at hmod
+  have hmodel : 0 < W.model.S.scalar 0 y := (inv_pos.mpr hC2).trans_le hmod.1
+  have hden : 0 < S.scalar t x * W.model.S.scalar 0 y := mul_pos W.scalar_pos hmodel
+  have hratio := W.scalar_ratio_sub_one_le_on_canonical_domain K hdelta hbuffer hy
+  have hhalf : |S.scalar t (W.embedding y) / (S.scalar t x * W.model.S.scalar 0 y) - 1| ≤
+      1 / 2 := hratio.trans (by nlinarith [hsmall])
+  have habs := abs_le.mp hhalf
+  have hlo : (1 : ℝ) / 2 ≤ S.scalar t (W.embedding y) /
+      (S.scalar t x * W.model.S.scalar 0 y) := by linarith
+  have hhi : S.scalar t (W.embedding y) / (S.scalar t x * W.model.S.scalar 0 y) ≤ 2 := by
     linarith
-  have hupp : (S.scalar t x)⁻¹ * S.scalar t (W.embedding y) ≤ 2 * C2 := by linarith
-  have hscale : S.scalar t x * ((S.scalar t x)⁻¹ * S.scalar t (W.embedding y)) =
-      S.scalar t (W.embedding y) := by rw [← mul_assoc, mul_inv_cancel₀ W.scalar_pos.ne', one_mul]
-  constructor
-  · have hh := mul_le_mul_of_nonneg_left hlow W.scalar_pos.le
-    rw [hscale] at hh
-    simpa only [mul_comm] using hh
-  · have hh := mul_le_mul_of_nonneg_left hupp W.scalar_pos.le
-    rw [hscale] at hh
-    simpa only [mul_comm] using hh
+  have hlower := (le_div_iff₀ hden).mp hlo
+  have hupper := (div_le_iff₀ hden).mp hhi
+  have hmodelLower := mul_le_mul_of_nonneg_left hmod.1 W.scalar_pos.le
+  have hmodelUpper := mul_le_mul_of_nonneg_left hmod.2 W.scalar_pos.le
+  have hinv : C2⁻¹ = 2 * (2 * C2)⁻¹ := by field_simp
+  rw [hinv] at hmodelLower
+  constructor <;> nlinarith
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn

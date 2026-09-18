@@ -12,7 +12,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.Fini
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
-open scoped Manifold ContDiff ENNReal
+open scoped _root_.DifferentialGeometry.Manifold ContDiff ENNReal
 
 universe u
 
@@ -32,8 +32,9 @@ def WindowedCanonicalPullbackAt (eps : ℝ) : Prop :=
     ∃ delta : ℝ, 0 < delta ∧ delta < 1 ∧
       ∀ (M : Type u) [TopologicalSpace M] [ChartedSpace ThreeSpace M]
         [IsManifold I3 ∞ M] [T2Space M] [SigmaCompactSpace M]
-        (D : RealTimeInterval) (S : SolutionOn (I := I3) (M := M) D)
-        (x : M) (t : ℝ),
+        (D : RealTimeInterval) (S : SolutionOn (I := I3) (M := M) D),
+        IsSolutionOn S → ∀ (x : M) (t : ℝ),
+        Set.Ioo (t - (delta * S.scalar t x)⁻¹) t ⊆ D.regular →
         WindowedModelWitness delta kappa S x t → Nonempty (CanonicalWitness S eps C1 C2 x t)
 
 def OrientedCanonicalPullbackAt (eps : ℝ) : Prop :=
@@ -41,8 +42,9 @@ def OrientedCanonicalPullbackAt (eps : ℝ) : Prop :=
     ∃ delta : ℝ, 0 < delta ∧ delta < 1 ∧
       ∀ (M : Type u) [TopologicalSpace M] [ChartedSpace ThreeSpace M]
         [IsManifold I3 ∞ M] [T2Space M] [SigmaCompactSpace M]
-        (D : RealTimeInterval) (S : SolutionOn (I := I3) (M := M) D)
-        (o : TangentOrientationSection M) (x : M) (t : ℝ),
+        (D : RealTimeInterval) (S : SolutionOn (I := I3) (M := M) D),
+        IsSolutionOn S → ∀ (o : TangentOrientationSection M) (x : M) (t : ℝ),
+        Set.Ioo (t - (delta * S.scalar t x)⁻¹) t ⊆ D.regular →
         OrientedWitness S o delta kappa x t → Nonempty (CanonicalWitness S eps C1 C2 x t)
 
 omit [T2Space M] [SigmaCompactSpace M] in
@@ -65,8 +67,8 @@ theorem windowedCanonicalPullbackAt_mono {eps eps' : ℝ}
   obtain ⟨C1, C2, hC1, hC2, hmain⟩ := h
   refine ⟨C1, C2, hC1, hC2, fun kappa hkappa => ?_⟩
   obtain ⟨delta, hd, hd1, himp⟩ := hmain kappa hkappa
-  refine ⟨delta, hd, hd1, fun M _ _ _ _ _ D S x t hw => ?_⟩
-  obtain ⟨W⟩ := himp M D S x t hw
+  refine ⟨delta, hd, hd1, fun M _ _ _ _ _ D S hS x t hreg hw => ?_⟩
+  obtain ⟨W⟩ := himp M D S hS x t hreg hw
   exact ⟨W.mono_eps hle hsmall⟩
 
 theorem orientedCanonicalPullbackAt_mono {eps eps' : ℝ}
@@ -75,8 +77,8 @@ theorem orientedCanonicalPullbackAt_mono {eps eps' : ℝ}
   obtain ⟨C1, C2, hC1, hC2, hmain⟩ := h
   refine ⟨C1, C2, hC1, hC2, fun kappa hkappa => ?_⟩
   obtain ⟨delta, hd, hd1, himp⟩ := hmain kappa hkappa
-  refine ⟨delta, hd, hd1, fun M _ _ _ _ _ D S o x t hw => ?_⟩
-  obtain ⟨W⟩ := himp M D S o x t hw
+  refine ⟨delta, hd, hd1, fun M _ _ _ _ _ D S hS o x t hreg hw => ?_⟩
+  obtain ⟨W⟩ := himp M D S hS o x t hreg hw
   exact ⟨W.mono_eps hle hsmall⟩
 
 omit [T2Space M] [SigmaCompactSpace M] in
@@ -85,9 +87,9 @@ theorem orientedCanonicalPullbackAt_of_windowedCanonicalPullbackAt {eps : ℝ}
   obtain ⟨C1, C2, hC1, hC2, hmain⟩ := h
   refine ⟨C1, C2, hC1, hC2, fun kappa hkappa => ?_⟩
   obtain ⟨delta, hd, hd1, himp⟩ := hmain kappa hkappa
-  refine ⟨delta, hd, hd1, fun M _ _ _ _ _ D S o x t hw => ?_⟩
+  refine ⟨delta, hd, hd1, fun M _ _ _ _ _ D S hS o x t hreg hw => ?_⟩
   obtain ⟨W, _, _⟩ := hw
-  exact himp M D S x t W
+  exact himp M D S hS x t hreg W
 
 omit [T2Space M] [SigmaCompactSpace M] in
 theorem windowedCanonicalPullbackAt_iff_kappa_le_one {eps : ℝ} :
@@ -96,8 +98,9 @@ theorem windowedCanonicalPullbackAt_iff_kappa_le_one {eps : ℝ} :
         ∃ delta : ℝ, 0 < delta ∧ delta < 1 ∧
           ∀ (M : Type u) [TopologicalSpace M] [ChartedSpace ThreeSpace M]
             [IsManifold I3 ∞ M] [T2Space M] [SigmaCompactSpace M]
-            (D : RealTimeInterval) (S : SolutionOn (I := I3) (M := M) D)
-            (x : M) (t : ℝ),
+            (D : RealTimeInterval) (S : SolutionOn (I := I3) (M := M) D),
+            IsSolutionOn S → ∀ (x : M) (t : ℝ),
+            Set.Ioo (t - (delta * S.scalar t x)⁻¹) t ⊆ D.regular →
             WindowedModelWitness delta kappa S x t →
               Nonempty (CanonicalWitness S eps C1 C2 x t) := by
   constructor
@@ -109,8 +112,8 @@ theorem windowedCanonicalPullbackAt_iff_kappa_le_one {eps : ℝ} :
     by_cases hkappa1 : kappa ≤ 1
     · exact hmain kappa hkappa hkappa1
     · obtain ⟨delta, hd, hd1, himp⟩ := hmain 1 one_pos le_rfl
-      exact ⟨delta, hd, hd1, fun M _ _ _ _ _ D S x t hw =>
-        himp M D S x t (hw.mono_kappa one_pos (not_le.mp hkappa1).le)⟩
+      exact ⟨delta, hd, hd1, fun M _ _ _ _ _ D S hS x t hreg hw =>
+        himp M D S hS x t hreg (hw.mono_kappa one_pos (not_le.mp hkappa1).le)⟩
 
 omit [T2Space M] [SigmaCompactSpace M] in
 theorem orientedCanonicalPullbackAt_iff_kappa_le_one {eps : ℝ} :
@@ -119,8 +122,9 @@ theorem orientedCanonicalPullbackAt_iff_kappa_le_one {eps : ℝ} :
         ∃ delta : ℝ, 0 < delta ∧ delta < 1 ∧
           ∀ (M : Type u) [TopologicalSpace M] [ChartedSpace ThreeSpace M]
             [IsManifold I3 ∞ M] [T2Space M] [SigmaCompactSpace M]
-            (D : RealTimeInterval) (S : SolutionOn (I := I3) (M := M) D)
-            (o : TangentOrientationSection M) (x : M) (t : ℝ),
+            (D : RealTimeInterval) (S : SolutionOn (I := I3) (M := M) D),
+            IsSolutionOn S → ∀ (o : TangentOrientationSection M) (x : M) (t : ℝ),
+            Set.Ioo (t - (delta * S.scalar t x)⁻¹) t ⊆ D.regular →
             OrientedWitness S o delta kappa x t →
               Nonempty (CanonicalWitness S eps C1 C2 x t) := by
   constructor
@@ -132,8 +136,8 @@ theorem orientedCanonicalPullbackAt_iff_kappa_le_one {eps : ℝ} :
     by_cases hkappa1 : kappa ≤ 1
     · exact hmain kappa hkappa hkappa1
     · obtain ⟨delta, hd, hd1, himp⟩ := hmain 1 one_pos le_rfl
-      exact ⟨delta, hd, hd1, fun M _ _ _ _ _ D S o x t hw =>
-        himp M D S o x t (hw.mono_kappa one_pos (not_le.mp hkappa1).le)⟩
+      exact ⟨delta, hd, hd1, fun M _ _ _ _ _ D S hS o x t hreg hw =>
+        himp M D S hS o x t hreg (hw.mono_kappa one_pos (not_le.mp hkappa1).le)⟩
 
 theorem windowedCanonicalPullback_iff_forall_eps_le :
     windowedCanonicalPullback.{u} ↔
@@ -193,7 +197,7 @@ theorem not_windowedCanonicalPullbackAt_of_one_le {kappa : ℝ}
   obtain ⟨C1, C2, _hC1, _hC2, hmain⟩ := h
   obtain ⟨delta, hd, hd1, himp⟩ := hmain kappa hanc.kappa_pos
   obtain ⟨W, _, _⟩ := orientedWitness_self P hanc hbase o hd hd1
-  obtain ⟨Wc⟩ := himp P.M ancientTimeInterval P.S P.basepoint 0 W
+  obtain ⟨Wc⟩ := himp P.M ancientTimeInterval P.S P.isSolution P.basepoint 0 (fun _ hs => hs.2) W
   exact (isEmpty_canonicalWitness_of_one_le (S := P.S) (x := P.basepoint) (t := 0)
     (eps := eps) (C1 := C1) (C2 := C2) heps).false Wc
 
@@ -206,7 +210,7 @@ theorem not_orientedCanonicalPullbackAt_of_one_le {kappa : ℝ}
   intro h
   obtain ⟨C1, C2, _hC1, _hC2, hmain⟩ := h
   obtain ⟨delta, hd, hd1, himp⟩ := hmain kappa hanc.kappa_pos
-  obtain ⟨Wc⟩ := himp P.M ancientTimeInterval P.S o P.basepoint 0
+  obtain ⟨Wc⟩ := himp P.M ancientTimeInterval P.S P.isSolution o P.basepoint 0 (fun _ hs => hs.2)
     (orientedWitness_self P hanc hbase o hd hd1)
   exact (isEmpty_canonicalWitness_of_one_le (S := P.S) (x := P.basepoint) (t := 0)
     (eps := eps) (C1 := C1) (C2 := C2) heps).false Wc
@@ -225,7 +229,7 @@ theorem kappa_canonical_neighborhood_of_windowedCanonicalPullback
   refine ⟨C1, C2, hC1, hC2, fun kappa hkappa P hanc hbase o => ?_⟩
   obtain ⟨delta, hd, hd1, himp⟩ := hmain' kappa hkappa
   obtain ⟨W, _, _⟩ := orientedWitness_self P hanc hbase o hd hd1
-  exact himp P.M ancientTimeInterval P.S P.basepoint 0 W
+  exact himp P.M ancientTimeInterval P.S P.isSolution P.basepoint 0 (fun _ hs => hs.2) W
 
 theorem windowedCanonicalPullback_of_ancientModelClassification_halfWindow
     (hgap : ∀ (kappa : ℝ), 0 < kappa →
@@ -243,16 +247,17 @@ theorem windowedCanonicalPullback_of_ancientModelClassification_halfWindow
     (htransfer : ∀ (eps C1 C2 kappa : ℝ)
       (M : Type u) [TopologicalSpace M] [ChartedSpace ThreeSpace M]
       [IsManifold I3 ∞ M] [T2Space M] [SigmaCompactSpace M]
-      (D : RealTimeInterval) (S : SolutionOn (I := I3) (M := M) D)
-      (x : M) (t : ℝ) (W : WindowedModelWitness (1 / 2) kappa S x t),
+      (D : RealTimeInterval) (S : SolutionOn (I := I3) (M := M) D),
+      IsSolutionOn S → ∀ (x : M) (t : ℝ),
+      Set.Ioo (t - ((1 / 2) * S.scalar t x)⁻¹) t ⊆ D.regular → ∀ (W : WindowedModelWitness (1 / 2) kappa S x t),
       Nonempty (CanonicalWitness W.model.S (eps / 2) C1 C2 W.model.basepoint 0) →
         Nonempty (CanonicalWitness S (eps / 2) C1 C2 x t)) :
     windowedCanonicalPullback.{u} := by
   refine ⟨1 / 88, by norm_num, fun eps heps heps88 => ?_⟩
   obtain ⟨C1, C2, hC1, hC2, hmain⟩ := hclass (2 * eps) (by linarith) (by linarith)
   refine ⟨C1, C2, hC1, hC2, fun kappa hkappa => ?_⟩
-  refine ⟨1 / 2, by norm_num, by norm_num, fun M _ _ _ _ _ D S x t hw => ?_⟩
-  have htransfer' := htransfer (2 * eps) C1 C2 kappa M D S x t hw
+  refine ⟨1 / 2, by norm_num, by norm_num, fun M _ _ _ _ _ D S hS x t hreg hw => ?_⟩
+  have htransfer' := htransfer (2 * eps) C1 C2 kappa M D S hS x t hreg hw
     (hmain hw.model (hgap kappa hkappa hw.model hw.model_ancient) hw.model_scalar_base)
   have hcancel : 2 * eps / 2 = eps := by ring
   rwa [hcancel] at htransfer'

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CanonicalRadialReserve
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CylinderBallCapture
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NeckRegionBall
 import DifferentialGeometry.Geometry.Metric.ConnectedComponentDistance
 
 set_option autoImplicit false
@@ -18,39 +18,26 @@ variable {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
   [IsManifold I3 ∞ M] [T2Space M] [SigmaCompactSpace M]
   {D : RealTimeInterval} {S : SolutionOn (I := I3) (M := M) D}
 
-theorem CanonicalWitness.closedBall_two_subset_of_scalar_one
+theorem CanonicalWitness.closedBall_nine_subset_of_scalar_one
     {eps C1 C2 : ℝ} {x : M} {t : ℝ}
     (K : CanonicalWitness S eps C1 C2 x t) (hscalar : S.scalar t x = 1) :
-    riemannianClosedBallOf (I := I3) (S.base.metric t) x 2 ⊆ K.domain.carrier := by
-  have hcomponent : riemannianClosedBallOf (I := I3) (S.base.metric t) x 2 ⊆
+    riemannianClosedBallOf (I := I3) (S.base.metric t) x 9 ⊆ K.domain.carrier := by
+  have hcomponent : riemannianClosedBallOf (I := I3) (S.base.metric t) x 9 ⊆
       connectedComponent x := by
     intro y hy
     apply DifferentialGeometry.Geometry.Metric.edistOf_ball_subset_connCompOpen
-      (S.base.metric t) x 3
-    exact hy.trans_lt (by norm_num : ENNReal.ofReal (2 : ℝ) < ENNReal.ofReal (3 : ℝ))
+      (S.base.metric t) x 10
+    exact hy.trans_lt (by norm_num : ENNReal.ofReal (9 : ℝ) < ENNReal.ofReal (10 : ℝ))
   cases K.alternative with
   | neck L =>
-    have he : (10 : ℝ) < eps⁻¹ :=
-      (lt_inv_comm₀ (by norm_num) L.strong.eps_pos).mpr (by
-        norm_num
-        linarith [L.strong.eps_small])
-    have hslab : (univ : Set (Sphere 2)) ×ˢ Icc (-10 : ℝ) 10 ⊆
-        (univ : Set (Sphere 2)) ×ˢ Ioo (-eps⁻¹) eps⁻¹ := by
-      rintro ⟨z, r⟩ ⟨-, hr⟩
-      exact ⟨mem_univ _, by constructor <;> linarith [hr.1, hr.2]⟩
-    have hcap := collar_ball_subset_image L.strong.cylinder
-      (rescaledMetric S t (S.scalar t x) L.strong.Q_pos) L.strong.map L.strong.comparison rfl
-      (by linarith [L.strong.eps_small] : eps ≤ 1 / 2)
-      (by norm_num : (0 : ℝ) ∈ Icc (-1 : ℝ) 0) (by norm_num : (0 : ℝ) < 10)
-      L.strong.domain hslab L.strong.center
-    have hmetric : rescaledMetric S t (S.scalar t x) L.strong.Q_pos 0 = S.base.metric t := by
-      apply SmoothRiemannianMetric.ext_inner
-      intro z v w
-      simp only [rescaledMetric, parabolicTime_zero, scaleMetric_inner, hscalar, one_mul]
-    rw [hmetric, L.strong.center_eq, ← L.region_eq] at hcap
-    intro y hy
-    apply hcap
-    exact hy.trans_lt (by norm_num : ENNReal.ofReal (2 : ℝ) < ENNReal.ofReal ((10 : ℝ) / 2))
+    have hsmall : 0 < 1 - eps := by linarith [L.strong.eps_small]
+    have hsquare := Real.sq_sqrt hsmall.le
+    have hroot := Real.sqrt_nonneg (1 - eps)
+    have hr : (9 : ℝ) < 10 * Real.sqrt (1 - eps) := by
+      nlinarith [L.strong.eps_small]
+    have hsub := L.strong.closedBall_subset_region
+      (by simpa only [hscalar, Real.sqrt_one, div_one] using hr)
+    simpa only [StrongNeck.region, ← L.region_eq] using hsub
   | cap cap deep =>
     let p : Sphere 2 := ⟨EuclideanSpace.single 0 1, by simp⟩
     let v := cap.tube_map (p, 0)
@@ -67,18 +54,25 @@ theorem CanonicalWitness.closedBall_two_subset_of_scalar_one
     have hreal : (riemannianEDistOf (S.base.metric t) x v).toReal < 2 * K.radius := by
       rw [← ENNReal.toReal_ofReal (by linarith : (0 : ℝ) ≤ 2 * K.radius)]
       exact (ENNReal.toReal_lt_toReal hfinite ENNReal.ofReal_ne_top).mpr hball
-    have htwo : (2 : ℝ) < K.radius := by
+    have hnine : (9 : ℝ) < K.radius := by
       change 10000 ≤ (riemannianEDistOf (S.base.metric t) x v).toReal at hdeep
       linarith
     intro y hy
     apply K.ball_inside
-    exact hy.trans_lt ((ENNReal.ofReal_lt_ofReal_iff (by linarith : 0 < K.radius)).mpr htwo)
+    exact hy.trans_lt ((ENNReal.ofReal_lt_ofReal_iff (by linarith : 0 < K.radius)).mpr hnine)
   | positive whole _ _ =>
     rw [whole]
     exact hcomponent
   | round whole _ =>
     rw [whole]
     exact hcomponent
+
+theorem CanonicalWitness.closedBall_two_subset_of_scalar_one
+    {eps C1 C2 : ℝ} {x : M} {t : ℝ}
+    (K : CanonicalWitness S eps C1 C2 x t) (hscalar : S.scalar t x = 1) :
+    riemannianClosedBallOf (I := I3) (S.base.metric t) x 2 ⊆ K.domain.carrier :=
+  (riemannianClosedBallOf_mono _ _ (by norm_num : (2 : ℝ) ≤ 9)).trans
+    (K.closedBall_nine_subset_of_scalar_one hscalar)
 
 theorem CanonicalWitness.exists_normalized_radial_reserve
     {eps C1 C2 : ℝ} {x : M} {t : ℝ}

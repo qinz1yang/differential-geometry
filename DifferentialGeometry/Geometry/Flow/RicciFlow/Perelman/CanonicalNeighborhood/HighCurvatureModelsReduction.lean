@@ -10,7 +10,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.Fini
 
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology DifferentialGeometry.Tensor0SBundle
-open scoped Manifold ContDiff ENNReal
+open scoped _root_.DifferentialGeometry.Manifold ContDiff ENNReal
 
 universe u
 
@@ -48,8 +48,9 @@ def BufferedCanonicalPullbackFrontier : Prop :=
       ∃ delta : ℝ, 0 < delta ∧ delta < 1 ∧
         ∀ (M : Type u) [TopologicalSpace M] [ChartedSpace ThreeSpace M]
           [IsManifold I3 ∞ M] [T2Space M] [SigmaCompactSpace M]
-          (D : RealTimeInterval) (S : SolutionOn (I := I3) (M := M) D)
-          (o : TangentOrientationSection M) (x : M) (t : ℝ),
+          (D : RealTimeInterval) (S : SolutionOn (I := I3) (M := M) D),
+          IsSolutionOn S → ∀ (o : TangentOrientationSection M) (x : M) (t : ℝ),
+          Set.Ioo (t - (delta * S.scalar t x)⁻¹) t ⊆ D.regular →
           OrientedWitness S o delta kappa x t →
             Nonempty (CanonicalWitness S eps C1 C2 x t)
 

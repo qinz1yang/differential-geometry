@@ -1,4 +1,5 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.LocalMetricDistance
+import DifferentialGeometry.Geometry.Metric.Comparison.PartialDiffeomorphDistance
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WitnessBallCapture
 
 set_option autoImplicit false
 

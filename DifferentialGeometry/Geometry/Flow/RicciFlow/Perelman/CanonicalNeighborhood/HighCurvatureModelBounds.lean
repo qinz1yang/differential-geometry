@@ -1,3 +1,6 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.UniversalCurvatureBounds
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.MixedCurvatureTimeDerivative
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedMixedCurvature
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.AncientExtension
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHornStructure
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.EntropyBounds
@@ -11,6 +14,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborho
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.CurvatureBounds
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorBounds
 
+
 set_option autoImplicit false
 noncomputable section
 open scoped Topology
@@ -20,7 +24,6 @@ namespace DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.Fini
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology DifferentialGeometry.Tensor0SBundle
-open DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions (SphereAntipodalQuotient)
 open scoped _root_.DifferentialGeometry.Manifold ContDiff ENNReal
 
 universe u
@@ -254,35 +257,6 @@ theorem abstract_model_theorem {eps kappa sigma : ℝ} {Phi : ℝ → ℝ}
   exact hno (min eps e) hsmall ((min_le_left _ _).trans_lt heps1) (min_le_right _ _)
     (selected_countersequence_of_radius_failure heps heps1 hsmall (min_le_left _ _)
       failure)
-
-structure BlowupLimit (S : SolutionOn (I := I3) (M := M) D)
-    (o : TangentOrientationSection M) (kappa : ℝ) (x : ℕ → M) (t : ℕ → ℝ) where
-  model : PointedFlowData.{u, 0, 0} I3 ancientTimeInterval
-  ancient : IsAncientKappaSolution kappa model
-  normalized : PointedFlowScalarAtBase model 1
-  orientation : TangentOrientationSection model.M
-  subseq : ℕ → ℕ
-  strictMono : StrictMono subseq
-  scale_pos : ∀ i, 0 < S.scalar (t (subseq i)) (x (subseq i))
-  map : ℕ → PartialDiffeomorph I3 I3 model.M M ∞
-  exhaustion : ExhaustsByOpen (fun i => (map i).source)
-  base_mem : ∀ i, model.basepoint ∈ (map i).source
-  base_eq : ∀ i, map i model.basepoint = x (subseq i)
-  oriented : ∀ i y, y ∈ (map i).source →
-    ∃ hf : Function.Bijective (mfderiv I3 I3 (map i) y),
-      PreservesTangentOrientationAt orientation o (map i) y hf
-  capture : ∀ r : ℝ, 0 < r → ∀ᶠ i in Filter.atTop,
-    riemannianBallOf (I := I3)
-      (rescaledMetric S (t (subseq i)) (S.scalar (t (subseq i)) (x (subseq i)))
-        (scale_pos i) 0) (x (subseq i)) r ⊆ (map i) '' (map i).source
-  convergence : ∀ K : Set model.M, IsCompact K → ∀ A : ℝ, 0 < A →
-    ∀ order : ℕ, ∀ eta : ℝ, 0 < eta → ∀ᶠ i in Filter.atTop,
-      Set.Icc (t (subseq i) - A / S.scalar (t (subseq i)) (x (subseq i))) (t (subseq i)) ⊆
-        D.carrier ∧ K ⊆ (map i).source ∧
-      Nonempty (MetricComparisonOn (fun s => model.S.base.metric s)
-        (rescaledMetric S (t (subseq i)) (S.scalar (t (subseq i)) (x (subseq i))) (scale_pos i))
-        (map i) K (Set.Icc (-A) 0) order eta)
-
 
 theorem closed_flow_models [CompactSpace M] [ConnectedSpace M]
     [T2Space (TangentBundle I3 M)] {T : ℝ} (hT : 0 < T)
@@ -521,24 +495,15 @@ theorem closed_flow_models [CompactSpace M] [ConnectedSpace M]
   rw [htime] at hwit2
   exact hwit2
 
-theorem arbitrary_high_curvature_blowup [CompactSpace M] [ConnectedSpace M]
-    [T2Space (TangentBundle I3 M)] {T : ℝ} (hT : 0 < T)
-    (S : SolutionOn (I := I3) (M := M) (RealTimeInterval.closedOpen 0 T hT))
-    (hS : IsSolutionOn S) (o : TangentOrientationSection M) :
-    ∃ kappa : ℝ, 0 < kappa ∧ ∀ (x : ℕ → M) (t : ℕ → ℝ),
-      (∀ i, t i ∈ Set.Ico 0 T) →
-      Filter.Tendsto (fun i => S.scalar (t i) (x i)) Filter.atTop Filter.atTop →
-        Nonempty (BlowupLimit S o kappa x t) := by
-  sorry
-
 theorem buffered_canonical_pullback :
     ∃ epsCan : ℝ, 0 < epsCan ∧ ∀ eps : ℝ, 0 < eps → eps ≤ epsCan →
       ∃ C1 C2 : ℝ, 1 ≤ C1 ∧ 1 ≤ C2 ∧ ∀ kappa : ℝ, 0 < kappa →
         ∃ delta : ℝ, 0 < delta ∧ delta < 1 ∧
           ∀ (M : Type u) [TopologicalSpace M] [ChartedSpace ThreeSpace M]
             [IsManifold I3 ∞ M] [T2Space M] [SigmaCompactSpace M]
-            (D : RealTimeInterval) (S : SolutionOn (I := I3) (M := M) D)
-            (o : TangentOrientationSection M) (x : M) (t : ℝ),
+            (D : RealTimeInterval) (S : SolutionOn (I := I3) (M := M) D),
+            IsSolutionOn S → ∀ (o : TangentOrientationSection M) (x : M) (t : ℝ),
+            Set.Ioo (t - (delta * S.scalar t x)⁻¹) t ⊆ D.regular →
             OrientedWitness S o delta kappa x t → Nonempty (CanonicalWitness S eps C1 C2 x t) := by
   sorry
 
@@ -561,14 +526,18 @@ theorem smooth_canonical_neighborhood :
   obtain ⟨kappa, hkappa, hm⟩ := closed_flow_models hT S hS o
   obtain ⟨delta, hd, hd1, hdelta⟩ := htransfer kappa hkappa
   obtain ⟨Q, hQ, hmodel⟩ := hm delta hd hd1
-  exact ⟨Q, hQ, fun x t ht hR => hdelta M _ S o x t (hmodel x t ht hR)⟩
+  refine ⟨Q, hQ, ?_⟩
+  intro x t ht hR
+  have hw := hmodel x t ht hR
+  apply hdelta M _ S hS o x t ?_ hw
+  obtain ⟨W, _⟩ := hw
+  simpa only [RealTimeInterval.closedOpen, interior_Icc, interior_Ico] using
+    interior_mono W.window_mem
 
 theorem fixed_kappa_compactness {kappa : ℝ} (hkappa : 0 < kappa)
     (X : ℕ → PointedFlowData.{u, 0, 0} I3 ancientTimeInterval)
     (hX : ∀ i, IsAncientKappaSolution kappa (X i))
-    (hbase : ∀ i, PointedFlowScalarAtBase (X i) 1)
-    (hnoEmbedding : ∀ f : SphereAntipodalQuotient → EuclideanSpace ℝ (Fin 3),
-      ¬ _root_.Topology.IsEmbedding f) :
+    (hbase : ∀ i, PointedFlowScalarAtBase (X i) 1) :
     ∃ (L : PointedFlowData.{u, 0, 0} I3 ancientTimeInterval)
       (f : ℕ → ℕ), StrictMono f ∧ IsAncientKappaSolution kappa L ∧
         PointedFlowScalarAtBase L 1 ∧
@@ -576,7 +545,7 @@ theorem fixed_kappa_compactness {kappa : ℝ} (hkappa : 0 < kappa)
           (({ interval := fun _ => ancientTimeInterval, term := X } : FlowSequence).atTime 0)
           (L.atTime 0) f, MetricSourceCapture F ∧ ConvergesOn F L.S := by
   exact DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions.exists_ancientKappa_fixed_kappa_compactness_captured
-    hkappa X hX hbase hnoEmbedding
+    hkappa X hX hbase
 
 theorem kappa_universal_derivatives (a b : ℕ) :
     ∃ C : ℝ, 0 < C ∧ ∀ kappa : ℝ, 0 < kappa →
@@ -591,338 +560,31 @@ theorem high_curvature_derivatives (a b : ℕ) :
         [IsManifold I3 ∞ M] [T2Space M] [CompactSpace M] [ConnectedSpace M]
         [T2Space (TangentBundle I3 M)] (T : ℝ) (hT : 0 < T)
         (S : SolutionOn (I := I3) (M := M) (RealTimeInterval.closedOpen 0 T hT))
-        (hS : IsSolutionOn S) (o : TangentOrientationSection M),
+        (_hS : IsSolutionOn S) (_o : TangentOrientationSection M),
         ∃ Q0 : ℝ, 0 < Q0 ∧ ∀ J : MixedCurvatureJet S, ∀ x t,
           t ∈ Set.Ioo 0 T → Q0 ≤ S.scalar t x →
           ∀ y ∈ riemannianBallOf (I := I3) (S.base.metric t) x (eta / Real.sqrt (S.scalar t x)),
             0 < S.scalar t y ∧ J.norm a b t y ≤
               C * Real.rpow (S.scalar t y) (1 + (a : ℝ) / 2 + b) := by
-  sorry
-
-noncomputable def highCurvatureInterval {T : ℝ} (hT : 0 < T)
-    (S : SolutionOn (I := I3) (M := M) (RealTimeInterval.closedOpen 0 T hT))
-    (x : ℕ → M) (t : ℕ → ℝ) (htpos : ∀ i, 0 < t i)
-    (hpos : ∀ i, 0 < S.scalar (t i) (x i)) (i : ℕ) : RealTimeInterval :=
-  RealTimeInterval.closed (-(t i * S.scalar (t i) (x i))) 0
-    (by
-      have h1 : 0 < t i * S.scalar (t i) (x i) := mul_pos (htpos i) (hpos i)
-      linarith)
-
-omit [T2Space M] [SigmaCompactSpace M] in
-@[simp] theorem highCurvatureInterval_carrier {T : ℝ} (hT : 0 < T)
-    (S : SolutionOn (I := I3) (M := M) (RealTimeInterval.closedOpen 0 T hT))
-    (x : ℕ → M) (t : ℕ → ℝ) (htpos : ∀ i, 0 < t i)
-    (hpos : ∀ i, 0 < S.scalar (t i) (x i)) (i : ℕ) :
-    (highCurvatureInterval hT S x t htpos hpos i).carrier =
-      Set.Icc (-(t i * S.scalar (t i) (x i))) 0 :=
-  rfl
-
-omit [T2Space M] [SigmaCompactSpace M] in
-@[simp] theorem highCurvatureInterval_regular {T : ℝ} (hT : 0 < T)
-    (S : SolutionOn (I := I3) (M := M) (RealTimeInterval.closedOpen 0 T hT))
-    (x : ℕ → M) (t : ℕ → ℝ) (htpos : ∀ i, 0 < t i)
-    (hpos : ∀ i, 0 < S.scalar (t i) (x i)) (i : ℕ) :
-    (highCurvatureInterval hT S x t htpos hpos i).regular =
-      Set.Ioo (-(t i * S.scalar (t i) (x i))) 0 :=
-  rfl
-
-omit [T2Space M] [SigmaCompactSpace M] in
-theorem highCurvatureInterval_carrier_subset {T : ℝ} (hT : 0 < T)
-    (S : SolutionOn (I := I3) (M := M) (RealTimeInterval.closedOpen 0 T hT))
-    (x : ℕ → M) (t : ℕ → ℝ) (htpos : ∀ i, 0 < t i)
-    (hpos : ∀ i, 0 < S.scalar (t i) (x i))
-    (htmem : ∀ i, t i ∈ Set.Ico (0 : ℝ) T) (i : ℕ) :
-    (highCurvatureInterval hT S x t htpos hpos i).carrier ⊆
-      (parabolicInterval (RealTimeInterval.closedOpen 0 T hT) (t i)
-        (S.scalar (t i) (x i)) (htmem i)).carrier := by
-  intro s hs
-  have hQ : 0 < S.scalar (t i) (x i) := hpos i
-  have htT : t i < T := (htmem i).2
-  have hlow : 0 ≤ t i + s / S.scalar (t i) (x i) := by
-    have h1 : -(t i * S.scalar (t i) (x i)) ≤ s := hs.1
-    have h2 : -t i ≤ s / S.scalar (t i) (x i) := by
-      rw [le_div_iff₀ hQ]
-      nlinarith [h1]
-    linarith
-  have hhigh : t i + s / S.scalar (t i) (x i) < T := by
-    have h1 : s ≤ 0 := hs.2
-    have h2 : s / S.scalar (t i) (x i) ≤ 0 := div_nonpos_of_nonpos_of_nonneg h1 hQ.le
-    linarith
-  simpa only [parabolicInterval_carrier, parabolicTime, Set.mem_ofPred_eq,
-    Set.mem_Ico] using ⟨hlow, hhigh⟩
-
-omit [T2Space M] [SigmaCompactSpace M] in
-theorem highCurvatureInterval_regular_subset {T : ℝ} (hT : 0 < T)
-    (S : SolutionOn (I := I3) (M := M) (RealTimeInterval.closedOpen 0 T hT))
-    (x : ℕ → M) (t : ℕ → ℝ) (htpos : ∀ i, 0 < t i)
-    (hpos : ∀ i, 0 < S.scalar (t i) (x i))
-    (htmem : ∀ i, t i ∈ Set.Ico (0 : ℝ) T) (i : ℕ) :
-    (highCurvatureInterval hT S x t htpos hpos i).regular ⊆
-      (parabolicInterval (RealTimeInterval.closedOpen 0 T hT) (t i)
-        (S.scalar (t i) (x i)) (htmem i)).regular := by
-  intro s hs
-  have hQ : 0 < S.scalar (t i) (x i) := hpos i
-  have htT : t i < T := (htmem i).2
-  have hlow : 0 < t i + s / S.scalar (t i) (x i) := by
-    have h1 : -(t i * S.scalar (t i) (x i)) < s := hs.1
-    have h2 : -t i < s / S.scalar (t i) (x i) := by
-      rw [lt_div_iff₀ hQ]
-      nlinarith [h1]
-    linarith
-  have hhigh : t i + s / S.scalar (t i) (x i) < T := by
-    have h1 : s < 0 := hs.2
-    have h2 : s / S.scalar (t i) (x i) < 0 := div_neg_of_neg_of_pos h1 hQ
-    linarith
-  simpa only [parabolicInterval_regular, parabolicTime, Set.mem_ofPred_eq,
-    Set.mem_Ioo] using ⟨hlow, hhigh⟩
-
-noncomputable def highCurvatureFlowSequence {T : ℝ} (hT : 0 < T)
-    (S : SolutionOn (I := I3) (M := M) (RealTimeInterval.closedOpen 0 T hT))
-    (hS : IsSolutionOn S) (x : ℕ → M) (t : ℕ → ℝ)
-    (htmem : ∀ i, t i ∈ Set.Ico (0 : ℝ) T) (htpos : ∀ i, 0 < t i)
-    (hpos : ∀ i, 0 < S.scalar (t i) (x i)) : FlowSequence.{u} where
-  interval i := highCurvatureInterval hT S x t htpos hpos i
-  term i :=
-    { M := M
-      basepoint := x i
-      S := (parabolicSolution (I := I3) (M := M) S (t i)
-        (S.scalar (t i) (x i)) (hpos i) (htmem i)).timeRestrict
-          (highCurvatureInterval hT S x t htpos hpos i)
-      isSolution := isSolutionOn_timeRestrict (I := I3) (M := M)
-        (parabolicSolution_isSolutionOn (I := I3) (M := M) S hS (t i)
-          (S.scalar (t i) (x i)) (hpos i) (htmem i))
-        (highCurvatureInterval_carrier_subset hT S x t htpos hpos htmem i)
-        (highCurvatureInterval_regular_subset hT S x t htpos hpos htmem i) }
-
-@[simp] theorem highCurvatureFlowSequence_interval {T : ℝ} (hT : 0 < T)
-    (S : SolutionOn (I := I3) (M := M) (RealTimeInterval.closedOpen 0 T hT))
-    (hS : IsSolutionOn S) (x : ℕ → M) (t : ℕ → ℝ)
-    (htmem : ∀ i, t i ∈ Set.Ico (0 : ℝ) T) (htpos : ∀ i, 0 < t i)
-    (hpos : ∀ i, 0 < S.scalar (t i) (x i)) (i : ℕ) :
-    (highCurvatureFlowSequence hT S hS x t htmem htpos hpos).interval i =
-      highCurvatureInterval hT S x t htpos hpos i :=
-  rfl
-
-@[simp] theorem highCurvatureFlowSequence_basepoint {T : ℝ} (hT : 0 < T)
-    (S : SolutionOn (I := I3) (M := M) (RealTimeInterval.closedOpen 0 T hT))
-    (hS : IsSolutionOn S) (x : ℕ → M) (t : ℕ → ℝ)
-    (htmem : ∀ i, t i ∈ Set.Ico (0 : ℝ) T) (htpos : ∀ i, 0 < t i)
-    (hpos : ∀ i, 0 < S.scalar (t i) (x i)) (i : ℕ) :
-    ((highCurvatureFlowSequence hT S hS x t htmem htpos hpos).term i).basepoint =
-      x i :=
-  rfl
-
-@[simp] theorem highCurvatureFlowSequence_metric {T : ℝ} (hT : 0 < T)
-    (S : SolutionOn (I := I3) (M := M) (RealTimeInterval.closedOpen 0 T hT))
-    (hS : IsSolutionOn S) (x : ℕ → M) (t : ℕ → ℝ)
-    (htmem : ∀ i, t i ∈ Set.Ico (0 : ℝ) T) (htpos : ∀ i, 0 < t i)
-    (hpos : ∀ i, 0 < S.scalar (t i) (x i)) (i : ℕ) :
-    ((highCurvatureFlowSequence hT S hS x t htmem htpos hpos).term i).S.base.metric =
-      rescaledMetric (I := I3) S (t i) (S.scalar (t i) (x i)) (hpos i) :=
-  rfl
-
-noncomputable def blowupLimit_of_slab_compactness
-    {T theta : ℝ} (hT : 0 < T) (htheta : 0 < theta)
-    (S : SolutionOn (I := I3) (M := M) (RealTimeInterval.closedOpen 0 T hT))
-    (hS : IsSolutionOn S) (o : TangentOrientationSection M)
-    {kappa : ℝ} (x : ℕ → M) (t : ℕ → ℝ)
-    (htpos : ∀ i, 0 < t i) (htmem : ∀ i, t i ∈ Set.Ico (0 : ℝ) T)
-    (httheta : ∀ i, theta ≤ t i)
-    (hscalar : Filter.Tendsto (fun i => S.scalar (t i) (x i)) Filter.atTop Filter.atTop)
-    (hpos : ∀ i, 0 < S.scalar (t i) (x i))
-    (L : PointedFlowData.{u, 0, 0} (I := I3) ancientTimeInterval)
-    (hanc : IsAncientKappaSolution (I := I3) kappa L)
-    (hnorm : PointedFlowScalarAtBase (I := I3) L 1)
-    (hori : TangentOrientationSection L.M)
-    (phi : ℕ → ℕ) (hphi : StrictMono phi)
-    (F : PointedRiemannianConvergenceMaps (I := I3)
-      ((highCurvatureFlowSequence hT S hS x t htmem htpos hpos).atTime 0)
-      (L.atTime (I := I3) 0) phi)
-    (hcompact : ∀ K : Set L.M, IsCompact K → ∀ A : ℝ, 0 < A →
-      ∀ order : ℕ, ∀ eta : ℝ, 0 < eta → ∀ᶠ i in Filter.atTop,
-        K ⊆ (F.partialDiffeomorph i).source ∧
-        Nonempty (MetricComparisonOn (fun s => L.S.base.metric s)
-          (fun s =>
-            ((highCurvatureFlowSequence hT S hS x t htmem htpos hpos).term (phi i)).S.base.metric s)
-          (F.partialDiffeomorph i) K (Set.Icc (-A) 0) order eta))
-    (hcap : ∀ r : ℝ, 0 < r → ∀ᶠ i in Filter.atTop,
-      riemannianBallOf (I := I3)
-          (rescaledMetric S (t (phi i)) (S.scalar (t (phi i)) (x (phi i)))
-            (hpos (phi i)) 0) (x (phi i)) r ⊆
-        (fun a => F.partialDiffeomorph i a) '' (F.partialDiffeomorph i).source)
-    (hor : ∀ i y, y ∈ (F.partialDiffeomorph i).source →
-      ∃ hf : Function.Bijective (mfderiv I3 I3 (F.partialDiffeomorph i) y),
-        PreservesTangentOrientationAt hori o (F.partialDiffeomorph i) y hf) :
-    BlowupLimit S o kappa x t := by
-  exact { model := L
-          ancient := hanc
-          normalized := hnorm
-          orientation := hori
-          subseq := phi
-          strictMono := hphi
-          scale_pos := fun i => hpos (phi i)
-          map := fun i => F.partialDiffeomorph i
-          exhaustion := F.source_exhausts
-          base_mem := fun i => F.base_mem i
-          base_eq := fun i => F.basepoint_map i
-          oriented := fun i y hy => hor i y hy
-          capture := by
-            intro r hr
-            exact hcap r hr
-          convergence := by
-            intro K hK A hA order eta heta
-            have hdeep : ∀ᶠ i in Filter.atTop,
-                A ≤ S.scalar (t (phi i)) (x (phi i)) * t (phi i) := by
-              have htend : Filter.Tendsto (fun i => S.scalar (t (phi i)) (x (phi i)))
-                  Filter.atTop Filter.atTop := hscalar.comp hphi.tendsto_atTop
-              filter_upwards [htend.eventually_ge_atTop (A / theta)] with i hi
-              have h1 : A / theta ≤ S.scalar (t (phi i)) (x (phi i)) := hi
-              have h2 : A ≤ S.scalar (t (phi i)) (x (phi i)) * theta :=
-                (div_le_iff₀ htheta).mp h1
-              have h3 : theta ≤ t (phi i) := httheta (phi i)
-              have h4 : 0 < S.scalar (t (phi i)) (x (phi i)) := hpos (phi i)
-              nlinarith [h2, h3, h4]
-            filter_upwards [hcompact K hK A hA order eta heta, hdeep] with i hi hAd
-            refine ⟨?_, hi.1, hi.2⟩
-            intro s hs
-            have hQ : 0 < S.scalar (t (phi i)) (x (phi i)) := hpos (phi i)
-            have hle : A / S.scalar (t (phi i)) (x (phi i)) ≤ t (phi i) := by
-              rw [div_le_iff₀ hQ]
-              linarith [hAd]
-            exact ⟨by linarith [hs.1, hle], lt_of_le_of_lt hs.2 (htmem (phi i)).2⟩ }
-
-theorem metricScalar_le_one_of_canonical_metric_convergence
-    (X : PointedRiemannianSeq.{u, 0, 0} (I := I3))
-    (L : PointedRiemannianManifold.{u, 0, 0} (I := I3))
-    {phi : ℕ → ℕ}
-    (F : PointedRiemannianConvergenceMaps (I := I3) X L phi)
-    (hphi : StrictMono phi)
-    (hconv : ∀ K : Set L.M, IsCompact K → metricSourceConvergesOn (I := I3) F
-      (CanonicalMetricCompactness.canonicalSourceData (I := I3) F) K 2)
-    (hsource : ∀ᶠ k in Filter.atTop, ∀ y : (X.obj k).M,
-      metricScalarAt (I := I3) (X.obj k).metric y ≤ 1) :
-    ∀ y : L.M, metricScalarAt (I := I3) L.metric y ≤ 1 := by
-  intro y
-  have hlim :=
-    DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions.pointedScalar_tendsto_of_canonical_metric_convergence
-      (I := I3) (Phi := F) hconv y
-  have hev : ∀ᶠ k in Filter.atTop,
-      metricScalarAt (I := I3) (X.obj (phi k)).metric (F.map k y) ≤ 1 := by
-    filter_upwards [hphi.tendsto_atTop.eventually hsource] with k hk
-    exact hk (F.map k y)
-  exact le_of_tendsto_of_tendsto hlim tendsto_const_nhds hev
-
-theorem maximal_point_singularity_model_of_slab_compactness
-    {T : ℝ} (hT : 0 < T)
-    (S : SolutionOn (I := I3) (M := M) (RealTimeInterval.closedOpen 0 T hT))
-    (hS : IsSolutionOn S) (o : TangentOrientationSection M)
-    (hgap : ∃ kappa : ℝ, 0 < kappa ∧ ∀ theta : ℝ, 0 < theta →
-      ∀ (x : ℕ → M) (t : ℕ → ℝ) (htpos : ∀ i, 0 < t i)
-        (htmem0 : ∀ i, t i ∈ Set.Ico (0 : ℝ) T)
-        (hpos : ∀ i, 0 < S.scalar (t i) (x i)),
-      (∀ i, theta ≤ t i) →
-      Filter.Tendsto (fun i => S.scalar (t i) (x i)) Filter.atTop Filter.atTop →
-      ∃ (L : PointedFlowData.{u, 0, 0} (I := I3) ancientTimeInterval) (phi : ℕ → ℕ)
-        (F : PointedRiemannianConvergenceMaps (I := I3)
-          ((highCurvatureFlowSequence hT S hS x t htmem0 htpos hpos).atTime 0)
-          (L.atTime (I := I3) 0) phi),
-        StrictMono phi ∧ IsAncientKappaSolution (I := I3) kappa L ∧
-        PointedFlowScalarAtBase (I := I3) L 1 ∧
-        (∀ t' : ℝ, t' ≤ 0 →
-          ∃ Ft : PointedRiemannianConvergenceMaps (I := I3)
-            ((highCurvatureFlowSequence hT S hS x t htmem0 htpos hpos).atTime t')
-            (L.atTime (I := I3) t') phi,
-            ∀ K : Set L.M, IsCompact K → metricSourceConvergesOn (I := I3) Ft
-              (CanonicalMetricCompactness.canonicalSourceData (I := I3) Ft) K 2) ∧
-        (∀ K : Set L.M, IsCompact K → ∀ A : ℝ, 0 < A →
-          ∀ order : ℕ, ∀ eta : ℝ, 0 < eta → ∀ᶠ i in Filter.atTop,
-            K ⊆ (F.partialDiffeomorph i).source ∧
-            Nonempty (MetricComparisonOn (fun s => L.S.base.metric s)
-              (fun s =>
-                ((highCurvatureFlowSequence hT S hS x t htmem0 htpos hpos).term
-                  (phi i)).S.base.metric s)
-              (F.partialDiffeomorph i) K (Set.Icc (-A) 0) order eta)) ∧
-        (∀ r : ℝ, 0 < r → ∀ᶠ i in Filter.atTop,
-          riemannianBallOf (I := I3)
-              (rescaledMetric S (t (phi i)) (S.scalar (t (phi i)) (x (phi i)))
-                (hpos (phi i)) 0) (x (phi i)) r ⊆
-            (fun a => F.partialDiffeomorph i a) '' (F.partialDiffeomorph i).source) ∧
-        (∃ ori : TangentOrientationSection L.M, ∀ i y,
-          y ∈ (F.partialDiffeomorph i).source →
-          ∃ hf : Function.Bijective (mfderiv I3 I3 (F.partialDiffeomorph i) y),
-            PreservesTangentOrientationAt ori o (F.partialDiffeomorph i) y hf)) :
-    ∃ kappa : ℝ, 0 < kappa ∧ ∀ theta : ℝ, 0 < theta →
-      ∀ (x : ℕ → M) (t : ℕ → ℝ), (∀ i, t i ∈ Set.Ico theta T) →
-        (∀ i s, s ∈ Set.Icc 0 (t i) → ∀ y, S.scalar s y ≤ S.scalar (t i) (x i)) →
-        (∀ i, 0 < S.scalar (t i) (x i)) →
-        Filter.Tendsto (fun i => S.scalar (t i) (x i)) Filter.atTop Filter.atTop →
-        ∃ L : BlowupLimit S o kappa x t, PointedFlowScalarBounded L.model 1 := by
-  obtain ⟨kappa, hkpos, hmain⟩ := hgap
-  refine ⟨kappa, hkpos, fun theta htheta x t htmem hmax hpos hscalar => ?_⟩
-  have htthe : ∀ i, theta ≤ t i := fun i => (htmem i).1
-  have htpos : ∀ i, 0 < t i := fun i => lt_of_lt_of_le htheta (htthe i)
-  have htmem0 : ∀ i, t i ∈ Set.Ico (0 : ℝ) T :=
-    fun i => ⟨le_trans htheta.le (htthe i), (htmem i).2⟩
-  obtain ⟨L, phi, F, hphi, hanc, hnorm, hconvT, hcmp, hcap, ori, hor⟩ :=
-    hmain theta htheta x t htpos htmem0 hpos htthe hscalar
-  have hsource : ∀ (k : ℕ) (s : ℝ), s ∈ Set.Icc (-(t k * S.scalar (t k) (x k))) 0 →
-      ∀ y : ((highCurvatureFlowSequence hT S hS x t htmem0 htpos hpos).term k).M,
-        ((highCurvatureFlowSequence hT S hS x t htmem0 htpos hpos).term k).S.scalar s y ≤ 1 := by
-    intro k s hs y
-    have hQ : 0 < S.scalar (t k) (x k) := hpos k
-    have htime : parabolicTime (t k) (S.scalar (t k) (x k)) s ∈ Set.Icc 0 (t k) := by
-      refine ⟨?_, ?_⟩
-      · have h1 : -(t k * S.scalar (t k) (x k)) ≤ s := hs.1
-        have h2 : -t k ≤ s / S.scalar (t k) (x k) := by
-          rw [le_div_iff₀ hQ]
-          nlinarith [h1]
-        simp only [parabolicTime]
-        linarith
-      · have h1 : s ≤ 0 := hs.2
-        have h2 : s / S.scalar (t k) (x k) ≤ 0 :=
-          div_nonpos_of_nonpos_of_nonneg h1 hQ.le
-        simp only [parabolicTime]
-        linarith
-    change metricScalarAt (I := I3)
-      (scaleMetric (I := I3) (S.scalar (t k) (x k)) (hpos k)
-        (S.base.metric (parabolicTime (t k) (S.scalar (t k) (x k)) s))) y ≤ 1
-    have hscale := DifferentialGeometry.Geometry.Curvature.metricScalarAt_scaleMetric
-      (I := I3) (M := M) (S.scalar (t k) (x k)) (hpos k)
-      (S.base.metric (parabolicTime (t k) (S.scalar (t k) (x k)) s)) y
-    rw [hscale]
-    refine (mul_le_mul_of_nonneg_left ?_ (inv_nonneg.mpr hQ.le)).trans_eq (inv_mul_cancel₀ hQ.ne')
-    simpa only [SolutionOn.scalar, SolutionFamily.scalar, SolutionOn.family_metric] using
-      hmax k (parabolicTime (t k) (S.scalar (t k) (x k)) s) htime y
-  have hlim : PointedFlowScalarBounded (I := I3) L 1 := by
-    intro t' ht' y
-    refine ⟨?_, ?_⟩
-    · have ht0 : t' ≤ 0 := by simpa only [hanc.carrier_eq, Set.mem_Iic] using ht'
-      exact DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions.ancientKappa_scalar_nonneg
-        (I := I3) L hanc ht0 y
-    · have ht0 : t' ≤ 0 := by simpa only [hanc.carrier_eq, Set.mem_Iic] using ht'
-      obtain ⟨Ft, hFt⟩ := hconvT t' ht0
-      refine metricScalar_le_one_of_canonical_metric_convergence
-        ((highCurvatureFlowSequence hT S hS x t htmem0 htpos hpos).atTime t')
-        (L.atTime (I := I3) t') Ft hphi hFt ?_ y
-      have hdeep' : ∀ᶠ k in Filter.atTop,
-          -(t k * S.scalar (t k) (x k)) ≤ t' := by
-        have htend : Filter.Tendsto (fun k => S.scalar (t k) (x k))
-            Filter.atTop Filter.atTop := hscalar
-        filter_upwards [htend.eventually_ge_atTop (-t' / theta)] with k hk
-        have h1 : -t' / theta ≤ S.scalar (t k) (x k) := hk
-        have h2 : -t' ≤ S.scalar (t k) (x k) * theta :=
-          (div_le_iff₀ htheta).mp h1
-        have h3 : theta ≤ t k := htthe k
-        have h4 : 0 < S.scalar (t k) (x k) := hpos k
-        nlinarith [h2, h3, h4]
-      filter_upwards [hdeep'] with k hk
-      intro z
-      simpa only [FlowSequence.atTime, PointedFlowData.atTime, highCurvatureFlowSequence,
-        SolutionOn.family_metric, SolutionOn.scalar, SolutionFamily.scalar] using
-        hsource k t' ⟨hk, ht0⟩ z
-  refine ⟨blowupLimit_of_slab_compactness hT htheta S hS o
-    x t htpos htmem0 htthe hscalar hpos L hanc hnorm ori phi hphi F hcmp hcap hor, ?_⟩
-  unfold blowupLimit_of_slab_compactness
-  exact hlim
+  obtain ⟨B, hB, hmodel⟩ :=
+    KappaSolutions.exists_universal_normalized_ancient_curvature_bounds.{u}
+  obtain ⟨C, eta, hC, heta, hbound⟩ :=
+    exists_windowedModelWitness_scalar_weighted_mixedCurvatureNorm_bound
+      (Real.sqrt (B 2)) (Real.sqrt_nonneg _) a b
+  apply high_curvature_derivatives_of_mixedCurvatureNorm_bound a b
+  refine ⟨C, eta, hC, heta, ?_⟩
+  intro M _ _ _ _ _ _ _ T hT S hS o
+  obtain ⟨kappa, _hkappa, hmodels⟩ := closed_flow_models hT S hS o
+  obtain ⟨Q0, hQ0, hwitness⟩ := hmodels (1 / 4) (by norm_num) (by norm_num)
+  refine ⟨Q0, hQ0, fun x t ht hQ y hy => ?_⟩
+  obtain ⟨W, _orientation, _horiented⟩ := hwitness x t ⟨ht.1.le, ht.2⟩ hQ
+  apply hbound hS W le_rfl (by
+      simpa only [RealTimeInterval.closedOpen, interior_Icc, interior_Ico] using
+        interior_mono W.window_mem) ht
+  · intro s hs z hz
+    rw [Real.sq_sqrt (hB 2).le]
+    exact hmodel kappa W.model W.model_ancient W.model_scalar_base 2 z hz s hs.2
+  · exact (show riemannianEDistOf (I := I3) (S.base.metric t) x y <
+      ENNReal.ofReal (eta / Real.sqrt (S.scalar t x)) from hy).le
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn

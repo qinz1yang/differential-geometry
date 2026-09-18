@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Compactness.Construction
-import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.Locality
+import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.Flat
 
 section
 
@@ -118,6 +118,68 @@ attribute [local instance] PointedRiemannianManifold.topology
   PointedRiemannianManifold.charted PointedRiemannianManifold.smooth
   PointedRiemannianManifold.t2 PointedRiemannianManifold.sigmaCompact
 
+theorem canonicalSourceData_derivNormSupOn_eq_of_open_pullback
+    {X : PointedRiemannianSeq.{u, uE, uH} I}
+    {P : PointedRiemannianManifold.{u, uE, uH} I} {f : ℕ → ℕ}
+    (Psi : PointedRiemannianConvergenceMaps X P f) (i : ℕ)
+    (U : TopologicalSpace.Opens P.M) (hUsrc : (U : Set P.M) ⊆ Psi.source i)
+    (G : SmoothRiemannianMetric I U) (K : Set P.M) (hKU : K ⊆ U) (p : ℕ)
+    (hG : ∀ (x : U) (v w : TangentSpace I x),
+      G.inner x v w = (X.obj (f i)).metric.inner (Psi.map i x)
+        (mfderiv I I (Psi.map i) x v) (mfderiv I I (Psi.map i) x w)) :
+    (CanonicalMetricCompactness.canonicalSourceData Psi i).derivNormSupOn K p =
+      metricDerivNormSupOn (Subtype.val ⁻¹' K) p G
+        (P.metric.restrictOpen U) (P.metric.restrictOpen U) := by
+  let : CompleteSpace E := FiniteDimensional.complete ℝ E
+  let D := CanonicalMetricCompactness.canonicalSourceData Psi i
+  let V : TopologicalSpace.Opens P.M := metricSourceOpenSubset Psi i
+  let : SigmaCompactSpace V := isSigmaCompact_iff_sigmaCompactSpace.mp
+    (DifferentialGeometry.Geometry.isSigmaCompact_of_isOpen I V.isOpen)
+  let A : SmoothRiemannianMetric I V := D.pullbackMetric
+  have hA : A.restrictOpenOfSubset hUsrc = G := by
+    apply SmoothRiemannianMetric.ext_inner
+    intro y v w
+    have hpull := D.pullback_inner (⟨y, hUsrc y.property⟩ : V) v w
+    have hval : MDifferentiableAt I I (fun z : V => (z : P.M))
+        (⟨y, hUsrc y.property⟩ : V) :=
+      ((contMDiff_subtype_val (I := I) (U := V) (n := ∞)).contMDiffAt).mdifferentiableAt
+        (by simp)
+    have hPsi : MDifferentiableAt I I (Psi.map i) (y : P.M) :=
+      (Psi.partialDiffeomorph i).mdifferentiableAt (by simp) (hUsrc y.property)
+    have hderiv (z : TangentSpace I y) :
+        mfderiv I I (fun q : V => Psi.map i (q : P.M))
+          (⟨y, hUsrc y.property⟩ : V) z = mfderiv I I (Psi.map i) (y : P.M) z := by
+      exact (mfderiv_comp_apply (⟨y, hUsrc y.property⟩ : V) hPsi hval z).trans
+        (congrArg (mfderiv I I (Psi.map i) (y : P.M))
+          (mfderiv_subtype_val_apply (I := I) V (⟨y, hUsrc y.property⟩ : V) z))
+    exact hpull.trans ((congrArg₂
+      (fun v' w' => (X.obj (f i)).metric.inner (Psi.map i (y : P.M)) v' w')
+      (hderiv v) (hderiv w)).trans (hG y v w).symm)
+  have hreference : (P.metric.restrictOpen V).restrictOpenOfSubset hUsrc =
+      P.metric.restrictOpen U := by
+    apply SmoothRiemannianMetric.ext_inner
+    intro y v w
+    rfl
+  have hpt (y : U) (a : ℕ) :
+      metricDerivNorm a A (P.metric.restrictOpen V) (P.metric.restrictOpen V)
+          (⟨y, hUsrc y.property⟩ : V) =
+        metricDerivNorm a G (P.metric.restrictOpen U) (P.metric.restrictOpen U) y := by
+    have h := metricDerivNorm_flat hUsrc A (P.metric.restrictOpen V)
+      (P.metric.restrictOpen V) a y
+    rw [hA, hreference] at h
+    exact h.symm
+  change metricDerivNormSupOn (Subtype.val ⁻¹' K : Set V) p
+    A (P.metric.restrictOpen V) (P.metric.restrictOpen V) = _
+  unfold metricDerivNormSupOn
+  congr 1
+  ext r
+  constructor
+  · rintro ⟨a, ha, y, hy, hr⟩
+    let z : U := ⟨y, hKU hy⟩
+    exact ⟨a, ha, z, hy, (hpt z a).symm.trans hr⟩
+  · rintro ⟨a, ha, y, hy, hr⟩
+    exact ⟨a, ha, (⟨y, hUsrc y.property⟩ : V), hy, (hpt y a).trans hr⟩
+
 theorem canonicalSourceData_derivNormSupOn_eq_of_pullback
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {P : PointedRiemannianManifold.{u, uE, uH} (I := I)} {phi : ℕ → ℕ}
@@ -129,58 +191,21 @@ theorem canonicalSourceData_derivNormSupOn_eq_of_pullback
         (mfderiv I I (Psi.map k) x v) (mfderiv I I (Psi.map k) x w)) :
     (CanonicalMetricCompactness.canonicalSourceData Psi k).derivNormSupOn K p =
       metricDerivNormSupOn K p G P.metric P.metric := by
-  let _ : CompleteSpace E := FiniteDimensional.complete ℝ E
-  let D := CanonicalMetricCompactness.canonicalSourceData Psi k
-  let V : TopologicalSpace.Opens P.M := metricSourceOpenSubset Psi k
-  let : ChartedSpace H V := TopologicalSpace.Opens.instChartedSpace (H := H) (M := P.M)
-    (s := V)
-  let : IsManifold I ∞ V := { V.instHasGroupoid (contDiffGroupoid ∞ I) with }
+  let : CompleteSpace E := FiniteDimensional.complete ℝ E
+  let V : TopologicalSpace.Opens P.M := ⟨U, hU⟩
   let : SigmaCompactSpace V := isSigmaCompact_iff_sigmaCompactSpace.mp
     (DifferentialGeometry.Geometry.isSigmaCompact_of_isOpen I V.isOpen)
-  let A : SmoothRiemannianMetric I V := D.pullbackMetric
-  have hpt (x : V) (hx : (x : P.M) ∈ K) (a : ℕ) :
-      metricDerivNorm a A (P.metric.restrictOpen V) (P.metric.restrictOpen V) x =
-        metricDerivNorm a G P.metric P.metric (x : P.M) := by
-    have hlocal : ∀ᶠ y in 𝓝 x, ∀ v w : TangentSpace I y,
-        A.inner y v w = (G.restrictOpen V).inner y v w := by
-      have hmem : ∀ᶠ y : V in 𝓝 x, (y : P.M) ∈ U :=
-        (hU.preimage continuous_subtype_val).mem_nhds (hKU hx)
-      filter_upwards [hmem] with y hy
-      intro v w
-      rw [SmoothRiemannianMetric.restrictOpen_inner]
-      have hval : MDifferentiableAt I I (fun z : V => (z : P.M)) y :=
-        ((contMDiff_subtype_val (I := I) (U := V) (n := ∞)).contMDiffAt).mdifferentiableAt
-          (by simp)
-      have hPsi : MDifferentiableAt I I (Psi.map k) (y : P.M) :=
-        (Psi.partialDiffeomorph k).mdifferentiableAt (by simp) y.property
-      have hderiv (z : TangentSpace I y) :
-          mfderiv I I (fun w : V => Psi.map k (w : P.M)) y z =
-            mfderiv I I (Psi.map k) (y : P.M) z := by
-        exact (mfderiv_comp_apply y hPsi hval z).trans
-          (congrArg (mfderiv I I (Psi.map k) (y : P.M))
-            (mfderiv_subtype_val_apply (I := I) V y z))
-      have hpull := D.pullback_inner y v w
-      exact hpull.trans ((congrArg₂
-        (fun v' w' => (X.obj (phi k)).metric.inner (Psi.map k (y : P.M)) v' w')
-        (hderiv v) (hderiv w)).trans (hG y hy v w).symm)
-    calc
-      metricDerivNorm a A (P.metric.restrictOpen V) (P.metric.restrictOpen V) x =
-          metricDerivNorm a (G.restrictOpen V)
-            (P.metric.restrictOpen V) (P.metric.restrictOpen V) x :=
-        metricDerivNorm_eq_of_metric_eventuallyEq a _ _ _ _ x hlocal
-      _ = metricDerivNorm a G P.metric P.metric (x : P.M) :=
-        metricDerivNorm_restrictOpen G P.metric P.metric V a x
-  change metricDerivNormSupOn (Subtype.val ⁻¹' K : Set V) p
-    A (P.metric.restrictOpen V) (P.metric.restrictOpen V) = _
-  unfold metricDerivNormSupOn
-  congr 1
-  ext r
-  constructor
-  · rintro ⟨a, ha, x, hx, hr⟩
-    exact ⟨a, ha, (x : P.M), hx, (hpt x hx a).symm.trans hr⟩
-  · rintro ⟨a, ha, x, hx, hr⟩
-    let y : V := ⟨x, hUsrc (hKU hx)⟩
-    exact ⟨a, ha, y, hx, (hpt y hx a).trans hr⟩
+  rw [canonicalSourceData_derivNormSupOn_eq_of_open_pullback Psi k V hUsrc
+    (G.restrictOpen V) K hKU p (fun x v w => hG x x.property v w),
+    metricDerivNormSupOn_restrictOpen]
+  have himage : (Subtype.val : V → P.M) '' (Subtype.val ⁻¹' K) = K := by
+    ext x
+    constructor
+    · rintro ⟨y, hy, rfl⟩
+      exact hy
+    · intro hx
+      exact ⟨⟨x, hKU hx⟩, hx, rfl⟩
+  rw [himage]
 
 
 theorem exists_canonicalMetricConvergenceData_of_metric_extension
@@ -212,6 +237,36 @@ theorem exists_canonicalMetricConvergenceData_of_metric_extension
   rw [canonicalSourceData_derivNormSupOn_eq_of_pullback Psi k (G k) K U p
     hU hKU hUsrc hGk]
   exact hN k ((le_max_left N J).trans hk)
+
+theorem exists_canonicalMetricConvergenceData_of_local_pullback
+    {X : PointedRiemannianSeq.{u, uE, uH} I}
+    {P : PointedRiemannianManifold.{u, uE, uH} I} {f : ℕ → ℕ}
+    (Psi : PointedRiemannianConvergenceMaps X P f)
+    (hlocal : ∀ K : Set P.M, IsCompact K →
+      ∃ U : TopologicalSpace.Opens P.M, K ⊆ U ∧
+        ∃ G : ℕ → SmoothRiemannianMetric I U,
+          MetricCInfConvergenceOnCompacts G (P.metric.restrictOpen U) (P.metric.restrictOpen U) ∧
+          ∀ᶠ i in atTop, (U : Set P.M) ⊆ Psi.source i ∧
+            ∀ (x : U) (v w : TangentSpace I x),
+              (G i).inner x v w = (X.obj (f i)).metric.inner (Psi.map i x)
+                (mfderiv I I (Psi.map i) x v) (mfderiv I I (Psi.map i) x w)) :
+    ∃ C : MetricConvergenceData Psi,
+      ∀ i, C.domain i = CanonicalMetricCompactness.canonicalSourceData Psi i := by
+  let : CompleteSpace E := FiniteDimensional.complete ℝ E
+  obtain ⟨C, hC, _href⟩ := exists_metricConvergenceData_canonicalSourceData Psi (by
+    intro K hK p epsilon hepsilon
+    obtain ⟨U, hKU, G, hconv, hG⟩ := hlocal K hK
+    have hK' : IsCompact ((Subtype.val : U → P.M) ⁻¹' K) :=
+      Topology.IsInducing.subtypeVal.isCompact_preimage' hK
+        (by simpa only [Subtype.range_coe_subtype, Set.ofPred_mem_eq] using hKU)
+    obtain ⟨N, hN⟩ := hconv _ hK' p epsilon hepsilon
+    obtain ⟨J, hJ⟩ := eventually_atTop.mp hG
+    refine ⟨max N J, fun i hi => ?_⟩
+    have hJi := hJ i ((le_max_right _ _).trans hi)
+    rw [canonicalSourceData_derivNormSupOn_eq_of_open_pullback
+      Psi i U hJi.1 (G i) K hKU p hJi.2]
+    exact hN i ((le_max_left _ _).trans hi))
+  exact ⟨C, hC⟩
 
 end DifferentialGeometry.CheegerGromovCompactness
 

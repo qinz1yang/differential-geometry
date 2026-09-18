@@ -1,6 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.CovariantTwoTensor
-import DifferentialGeometry.Geometry.Connection.LeviCivita.Scaling
-import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Scaling
+import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Scaling
 
 set_option autoImplicit false
 noncomputable section
@@ -14,24 +12,6 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E]
   {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
   {N : Type*} [TopologicalSpace N] [ChartedSpace H N] [IsManifold I ∞ N] [T2Space N]
-
-theorem tensor02CovDeriv_scaleMetric (c : ℝ) (hc : 0 < c)
-    (g : SmoothRiemannianMetric I N)
-    (A : Tensor0SField (I := I) (M := N) (n := ∞) 2) (a : ℕ) :
-    tensor02CovDeriv A (scaleMetric c hc g) a = tensor02CovDeriv A g a := by
-  induction a with
-  | zero => rfl
-  | succ a ih =>
-    change metricCovDerivStep (scaleMetric c hc g) a
-      (tensor02CovDeriv A (scaleMetric c hc g) a) = _
-    rw [ih]
-    apply DFunLike.ext
-    intro y
-    rw [metricCovDerivStep_apply]
-    change totalNabla0SFun (a + 2) (LeviCivita (scaleMetric c hc g)) _ y = _
-    have hconn : LeviCivita (scaleMetric c hc g) = LeviCivita g := lcConn_scaleMetric c hc g
-    rw [hconn]
-    rfl
 
 theorem tensor02CovDerivNormWith_smul_scaleMetric (c : ℝ) (hc : 0 < c)
     (g : SmoothRiemannianMetric I N)
