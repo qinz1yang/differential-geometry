@@ -11161,3 +11161,6 @@ import DifferentialGeometry.Topology.Manifold.ContMDiff.OpenCover
 import DifferentialGeometry.Geometry.Metric.Family.OpenCover
 import DifferentialGeometry.Geometry.Metric.Family.TimeGluing
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.OpenCover
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Congruence
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.AncientGluing
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.HighCurvatureAncientLimit
