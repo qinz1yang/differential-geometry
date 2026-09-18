@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.HighCurvatureModelBounds
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ComparisonReflexive
 
 set_option autoImplicit false
 noncomputable section
@@ -53,39 +54,6 @@ theorem tensor02CovDerivNormWith_zero_le {eps : ℝ} (heps : 0 ≤ eps)
       (0 : Tensor0SField (I := I3) (M := M) (n := ∞) 2) g a x)) ≤ eps
   rw [hzd, hnz]
   exact heps
-
-def metricComparisonOnSelf (g : ℝ → SmoothRiemannianMetric I3 M)
-    (U : Set M) (times : Set ℝ) (order : ℕ) {eps : ℝ} (heps : 0 < eps) :
-    MetricComparisonOn g g (id : M → M) U times order eps where
-  pullback s := metricTensorField (I := I3) (g s)
-  pullback_eq := by
-    intro s y hy v
-    rw [metricTensorField_apply, mfderiv_id]
-    rfl
-  jet _ _ := 0
-  jet_zero := by
-    intro s y v
-    simp [metricTensorField_apply, sub_self]
-  jet_succ := by
-    intro b s hs y hy v
-    simp
-  equivalence := by
-    intro s hs y hy v
-    have hnn := inner_self_nonneg (g s) y v
-    simp only [metricTensorField_apply]
-    constructor <;> nlinarith
-  close := by
-    intro a b hab s hs y hy
-    exact tensor02CovDerivNormWith_zero_le heps.le (g s) a y
-
-def metricComparisonOnRefl (g : ℝ → SmoothRiemannianMetric I3 M)
-    (U : Set M) (times : Set ℝ) (order : ℕ) {eps : ℝ} (heps : 0 < eps) :
-    MetricComparisonOn g g (PartialDiffeomorph.refl (I := I3) M : M → M) U times order eps := by
-  have hid : (↑(PartialDiffeomorph.refl (I := I3) M) : M → M) = id := by
-    funext x
-    rfl
-  rw [hid]
-  exact metricComparisonOnSelf g U times order heps
 
 omit [T2Space M] [SigmaCompactSpace M] in
 theorem preservesTangentOrientationAt_refl (o : TangentOrientationSection M) (y : M)
