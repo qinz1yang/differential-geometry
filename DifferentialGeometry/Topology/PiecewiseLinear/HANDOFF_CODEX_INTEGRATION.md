@@ -132,3 +132,23 @@ F5.2 保持 partial（被已证定理 `ArrangementConstraints.lean:58` 挡着；
 - **E3**（`HANDOFF_CODEX_L.md` §82–§83）：§81.3 已成 Lean 定理 `not_boundary_slide_chart_of_isBoundaryBranch`
   （`BoundarySlideVacuity.lean`），且审计出矛盾只用到片的放置假设与一平面边界模型；
   `.lake/scratch/AuditE3Vacuity.lean` 已写未跑，进入后先跑它。楔推模型（任务 2、3）未开始。
+
+- **H**（`HANDOFF_CODEX_H.md` §40–§42）：弧链球对一半的两个前置都已落地并合入整合分支（整合分支重编 `DerivedCellCone` exit=0、`ArcCellTrace` exit=0，零 warning）——
+  `DerivedCellCone.lean`：相接盘 `cell_s ∩ cell_t` 原位就是从 `centroid {ĉ_s, ĉ_t}` 出发、以 `upperLink K' {ĉ_s, ĉ_t}`（PL 1-球面）为底的锥，
+  `hmeet` 形状不变；`ArcCellTrace.lean`：`cell_s ∩ L.space = coneSet ĉ_s {相接盘的锥顶}`（`StarIntersection.lean:10` 按内容找到）。
+  **改变目标陈述的发现**：弧两端顶点胞腔内痕迹只是从锥顶出发的一条线段（弧端点是内点），`IsPLBallPair 2 1` 要求子链到达底球面，
+  故弧情形的球对须在 `N' = ⋃_{j=1}^{2n−1} cell_j`（去掉两端顶点胞腔）上陈述、弧缩为 `A ∩ N'`。
+  **stash@{0}**（`h` 工作树）：`ArcChainCells.lean`，编译通过但有三条 `unusedSectionVars` warning——`git stash pop`，加三行
+  `omit [NormedAddCommGroup E] [NormedSpace ℝ E] in`，重检、审计、提交。§42 记有一条不需边界保持引理、不需拓扑的固定模型归纳，
+  前提是先在 M2（H 自己的文件）暴露 `G '' Lc.space = Lc'.space`、并给 `exists_cutModel_data` 加并集的原位锥数据与边界包含。
+- **t**（`HANDOFF_CODEX_T.md`，分支 `codex/moise-tame305`，**未合入**整合分支，四块砖完成两块，358 行已测）：
+  `Topology/BicollaredComplement.lean`（`IsBicollared S := Nonempty (TwoSidedCollar Subtype.val)`、`isConnected_compl_of_isBicollared_frontier`，
+  只用 `TwoSidedCollarSeparation.lean:434`，无同调）、`Topology/OpenEmbeddingFrontier.lean`（开嵌入下 `interior`/`frontier`/`closure ∘ interior` 桥，
+  光滑版 `Geometry/Boundary/EmbeddingFrontier.lean` 的拓扑对应）、`Topology/ClosedBallImage.lean`（端点
+  `isConnected_compl_of_homeomorphClosedBall_of_isBicollared`）；三模块 exit=0 零 warning，审计 5/7/8 项干净。
+  发现：`IsTopologicalCell n C` 定义上就是 `Nonempty (C ≃ₜ closedBall 0 1)`，故不必 import `MoiseChain.lean`。
+  剩：`BicollaredCellComplementConnected` 的具名包装（约十行，新文件 `PiecewiseLinear/TameNestedCells.lean`）、
+  `Moise305Tame`（显式 `Moise304 →`）、§34 侧生产者（注意 `exists_bicollar` 给 `S × Icc (-1) 1` 而 `TwoSidedCollar` 要 `S × ℝ`，先 grep
+  `VanKampen/TwoSidedCollarRescale.lean`）。1k–2k 估计未修订。
+- **hw**（`codex/moise-hurewicz-merge`）：交接时 agent 仍在跑，未收到最终报告；进入后按 §0 与 §5 处理。
+- **S**（`codex/moise-s`）：交接时 S2 仍在跑，未收到最终报告；以 `HANDOFF_CODEX_S.md` 末节与分支提交为准。
