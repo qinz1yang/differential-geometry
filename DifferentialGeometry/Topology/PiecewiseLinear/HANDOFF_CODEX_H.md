@@ -1073,3 +1073,107 @@ H-A1/H-A2 把其中"锥化/球对"那一块消掉了，它原本是唯一没有�
 **明确的未闭合义务（交回 F）**：上面框出的那条相对球黏合，外加"带标准弧的三维球模型"的构造。
 本次**没有**为它引入任何谓词或条件定理——引入 `IsPLBallPair` 会是一个新的基础层级，
 按 CLAUDE.md 需要先与用户确认，故未擅自开工。
+
+## 10. 2026-09-18 H-B：PL 球对谓词、显式标准模型与相对黏合的确切缺口
+
+协调者授权引入 `IsPLBallPair`（理由：全树 `IsPLBallPair`/`BallPair`/`unknot` 零命中，
+是标准 PL 词汇且只有一个消费者，属普通局部定义，不改任何既有谓词）。
+
+### H-B1 — done，`IsPLBallPair` 与锥形球对（`BallPair.lean`）
+
+命名对齐既有 `IsPLBall`/`IsPLSphere`（`Polyhedron.lean:41,44`）。定义取**锥形式**：
+
+    IsPLBallPair m k P Q := ∃ p L J (_ : IsConeBase p L),
+      L.faces.Finite ∧ J.faces ⊆ L.faces ∧ IsPLSphere m L.space ∧ IsPLBall k Q ∧
+      P = coneSet p L.space ∧ Q = coneSet p J.space
+
+即"(P,Q) 是球面对上的锥"。取锥形式而非"与标准模型 PL 同胚"的理由：锥本来就是**非纽结**的
+（从一点锥出去的弧必是平凡弧），所以锥形式已经把 standard 这一条捕获，同时让
+H-A1 的球对定理可以直接消费，不必先反解模型。`IsPLBall k Q` 单列一条，使 `k = 0`
+（球里一个内点）与 `k = 1`（球里一条正常嵌入弧）统一处理，不必给空复形开特例。
+
+- `IsPLBallPair.subset`、`IsPLBallPair.isPLBall_sub`、`IsPLBallPair.isPLBall`（`IsPLBall (m+1) P`）。
+- `isPLBallPair_coneSet`、`isPLBallPair_coneSet_of_isPLSphere`：后者是主生产者——
+  **球面对 (S^m, S^k) 上的锥是球对 (B^{m+1}, B^{k+1})**。
+- `exists_isPLHomeomorphOn_coneSet_pair`：**球对的 Alexander 技巧**。链球面之间的 PL 同胚 `f`
+  若把子链搬到子链，则锥延拓 `g` 是球对之间的 PL 同胚、在链上等于 `f`、`g p = q`，
+  且 `g '' coneSet p J.space = coneSet q J'.space`。直接由 H-A1 的
+  `exists_isPLHomeomorphOn_coneComplex_pair` 加两次 `coneComplex_space_eq_coneSet` 得到。
+- `exists_isPLHomeomorphOn_of_isPLSphere_pair`：同上并附带两侧的 `IsPLBallPair` 结论。
+
+坑：`[DecidableEq E]` 只在证明里用到（`coneComplex`），不出现在陈述里，
+`linter.unusedDecidableInType` 会报 warning；改成证明内 `classical` 即可，别保留该实例参数。
+
+### H-B2 — done，显式标准模型（`BallPairModel.lean`）
+
+- `coneSet_eq_iUnion_segment (hX : X.Nonempty) : coneSet p X = ⋃ z ∈ X, segment ℝ p z`。
+  把集合层的锥写成线段并，锥顶对应 `s = 0`，用 `segment_eq_image` 与 `add_smul_sub_eq_combo`。
+- `coneSet_pair_eq_union_segment : coneSet p {a, b} = segment ℝ p a ∪ segment ℝ p b`。
+- `isPLBallPair_coneSet_arc`：**标准模型**。设 `hsph : IsPLSphere m L.space`、
+  `J.space = {a, b}`、`a ≠ b`，则
+  `IsPLBallPair m 1 (coneSet p L.space) (segment ℝ p a ∪ segment ℝ p b)`。
+  `m = 2` 即"三维球里一条标准正常嵌入弧"：弧就是从锥顶到链上两个不同点的**两条直线段**，
+  完全显式，不是存在性的。`IsPLSphere 0` 由 `GeneralPosition.lean:711 isPLSphere_zero_iff`
+  （`IsPLSphere 0 P ↔ ∃ a b, a ≠ b ∧ P = {a,b}`）给出，所以模型模块单独放，
+  不让 `BallPair.lean` 背上 `GeneralPosition` 的大锥体。
+
+检查 `BallPair` exit=0（8.0 秒）、`BallPairModel` exit=0（8.8 秒），均零 warning；
+`.lake/scratch/AuditHBallPair.lean` 十项仅 `propext`、`Classical.choice`、`Quot.sound`。
+
+### H-B3 — 相对球对黏合：**未闭合**，缺的定理已定位到一条
+
+按 `BallGluing.lean:11 isPLBall_union_of_boundary_disk` 的模板走：它之所以能取到在重叠上
+**已经相同**的两个同胚，是因为 `SphericalDiskExtension.lean:59`
+`exists_isPLHomeomorphOn_eqOn_disk_of_boundaryComplex` 把**同一个** `g` 分别延拓到两个球上，
+于是 `EqOn f₁ f₂` 是免费的。`PLPiece.lean:83 IsPLHomeomorphOn.piecewise` 要的
+`EqOn f g (P ∩ Q)` 因此不是障碍，障碍在于**带弧的版本不存在**。
+
+确切缺失的定理（记作 M2，是 `SphericalDiskExtension.lean:59` 的球对版）：
+
+    theorem exists_isPLHomeomorphOn_eqOn_disk_of_boundaryComplex_pair
+        (K : SimplicialComplex ℝ E) [Finite K.faces] (L : SimplicialComplex ℝ F) [Finite L.faces]
+        (hK : IsPLBall 3 K.space) (hL : IsPLBall 3 L.space)
+        {A : Set E} {A' : Set F}
+        (hKA : IsPLBallPair 2 1 K.space A) (hLA : IsPLBallPair 2 1 L.space A')
+        {D : Set E} {D' : Set F} (hD : IsPLBall 2 D)
+        (hDK : D ⊆ (boundaryComplex 3 K).space) (hD'L : D' ⊆ (boundaryComplex 3 L).space)
+        {g : E → F} (hg : IsPLHomeomorphOn g D D') (hgA : g '' (D ∩ A) = D' ∩ A') :
+        ∃ G : E → F, IsPLHomeomorphOn G K.space L.space ∧ EqOn G g D ∧ G '' A = A'
+
+协调者问 H-A1 的 `exists_isPLHomeomorphOn_coneComplex_fixing` 是否给出这条延拓：**不给**。
+该定理延拓的是**整条链**（边界球面）上的同胚，而 M2 给的只是边界球面上**一张子盘** `D` 上的同胚。
+差的是"把 `g` 从 `D` 先延到整个 `∂K`，且把弧的第二个端点送对"。
+
+这一步可以归约，归约后只缺一条（记作 M1）：
+
+    M1（starring）：PL 球是从它**指定内点**出发、对其边界球面的锥。
+
+有了 M1：`closure (∂K \ D)` 是含第二个端点 `y` 于内部的 2-球，由 M1 它是从 `y` 锥出的，
+于是 `g` 在 `∂D` 上的限制经 `exists_isPLHomeomorphOn_coneComplex`（锥顶送锥顶）延到该补盘并把 `y ↦ y'`；
+与 `g` 在 `D` 上拼起来得 `∂K → ∂L` 把两个端点送对；再由 M1 把 `K` 本身写成从弧上一内点出发的锥
+（此时弧恰是该锥顶对两个端点的锥，正是 `IsPLBallPair`），用 H-B1 的
+`exists_isPLHomeomorphOn_coneSet_pair` 锥化即得 M2。
+
+M1 在本树**不存在**：`exists_coneComplex_inter_slab`（`ConeSlab.lean:123`）、
+`exists_coneComplex_inter_fiber`（`ConeFiber.lean:39`）、
+`exists_isConeBase_simplexAvoiding_*`（`SimplexCorner.lean:134,304`）都不是它；
+`ClosedStarCone` 只把**闭星**写成锥，不把任意球从任意内点写成锥。
+但 M1 有一条便宜的路线，不必重新三角剖分：标准单纯形本来就是从 `stdCenter` 出发的锥
+（`StdSimplexCone.lean:78 isConeBase_std`、`:83 coneComplex_std_space`），
+而 `AmbientPointMove.lean:35 exists_isPLHomeomorphOn_map_point_eqOn_compl`
+（开集连通即可把任一点移到另一点、开集外恒等）可把内点移到 `stdCenter`，
+取 `U = interior (stdSimplex ...)`（凸故连通、开），所得同胚在边界上恒等、把单纯形映到自身。
+复合球的参数化即得 M1。
+
+### 成本估计（未验证，区间；上次估计偏高约 8 倍，本次按已定位的现成工具给）
+
+- M1（经 `exists_isPLHomeomorphOn_map_point_eqOn_compl` 的 starring）：0.3k–0.8k 行。
+  主要成本是 interior/frontier 与"参数化把内点送到内点"的记账。
+- M2（相对球对延拓）：0.8k–2k 行。需要 `closure (∂K \ D)` 是 2-球且与 `D` 交于圆周
+  （`SphericalDiskExtension` 内部应已有可复用的分解），加两次锥化与一次 `piecewise`。
+- 相对球对黏合本身（按 `BallGluing` 模板）：0.3k–0.8k 行。
+- 沿弧的链归纳（用 `ArcDerivedNeighborhood.lean:73 arcChainFace_subset_iff` 记账）：0.5k–1.5k 行。
+
+合计约 **1.9k–5.1k 行，未验证**。这比第 9 节末尾给的 7k–14k 低，原因是 H-A/H-B 已经把锥化与球对
+那一块消掉，且 M1 找到了经 PL 齐性的便宜路线，不再需要塌陷理论与正则邻域唯一性的一般形式。
+第 9 节里"塌陷理论"与"正则邻域唯一性"两项在这条路线上**不再是前置条件**。
