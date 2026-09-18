@@ -8,6 +8,24 @@ namespace DifferentialGeometry.Topology.PiecewiseLinear
 
 universe u
 
+theorem mem_boundaryPlane_of_chartSlideFwd {X : Type*} [TopologicalSpace X] {d R : ℝ}
+    (hd : 0 ≤ d) (e : OpenPartialHomeomorph X (ℝ × ℝ × ℝ))
+    (hsub : slideSupportLong R ⊆ e.target)
+    {N Bd : Set X} (hN : ∀ x ∈ e.source, x ∈ N ↔ 0 ≤ (e x).1)
+    (hBd : ∀ x ∈ e.source, x ∈ Bd ↔ (e x).1 = 0)
+    {x : X} (hx : x ∈ N) (hmem : e.conjugateMap (slideMapFwd d R) x ∈ Bd) : x ∈ Bd := by
+  by_cases hxs : x ∈ e.source
+  · have hq : slideMapFwd d R (e x) ∈ e.target :=
+      mapsTo_slideMapFwd_of_subset hd hsub (e.map_source hxs)
+    rw [e.conjugateMap_of_mem _ hxs] at hmem
+    have hzero := (hBd _ (e.map_target hq)).mp hmem
+    rw [e.right_inv hq, slideMapFwd_fst] at hzero
+    have hnn : 0 ≤ (e x).1 := (hN x hxs).mp hx
+    have hamt : 0 ≤ slideAmountLong d R (e x) := slideAmountLong_nonneg d R (e x)
+    exact (hBd x hxs).mpr (by linarith)
+  · rw [e.conjugateMap_of_notMem _ hxs] at hmem
+    exact hmem
+
 theorem exists_separated_slide_fwd {M : Type u} [TopologicalSpace M] [T2Space M]
     [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] [HasGroupoid M (plGroupoid 3)]
     {S W A B : Set M} {d R a b c : ℝ}
@@ -29,6 +47,12 @@ theorem exists_separated_slide_fwd {M : Type u} [TopologicalSpace M] [T2Space M]
       (∀ (N : Set M) (N₁ : Set (EuclideanSpace ℝ (Fin 3))),
         (∀ x ∈ E.source, x ∈ N ↔ E x ∈ N₁) →
         (∀ y ∈ e.source, y ∈ N₁ ↔ 0 ≤ (e y).1) → MapsTo h N N) ∧
+      (∀ (N Bd : Set M) (N₁ Bd₁ : Set (EuclideanSpace ℝ (Fin 3))),
+        (∀ x ∈ E.source, x ∈ N ↔ E x ∈ N₁) →
+        (∀ y ∈ e.source, y ∈ N₁ ↔ 0 ≤ (e y).1) →
+        (∀ x ∈ E.source, x ∈ Bd ↔ E x ∈ Bd₁) →
+        (∀ y ∈ e.source, y ∈ Bd₁ ↔ (e y).1 = 0) →
+        ∀ x ∈ N, h x ∈ Bd → x ∈ Bd) ∧
       Disjoint (h '' A) B := by
   have hslidemap : MapsTo (slideMapFwd d R) e.target e.target :=
     mapsTo_slideMapFwd_of_subset hd hsupp
@@ -69,7 +93,7 @@ theorem exists_separated_slide_fwd {M : Type u} [TopologicalSpace M] [T2Space M]
   obtain ⟨U, hUopen, hKU, hUW⟩ := hKcompact.exists_isOpen_closure_subset hW
   refine ⟨U, E.conjugateMap (e.conjugateMap (slideMapFwd d R)), hUopen, hSK.trans hKU, hUW,
     isPL_conjugateMap E hE hkpl hkmap hCcompact hCE hkfix,
-    E.injective_conjugateMap hkinj hkmap, ?_, ?_, ?_, ?_⟩
+    E.injective_conjugateMap hkinj hkmap, ?_, ?_, ?_, ?_, ?_⟩
   · intro x hx
     exact E.conjugateMap_eqOn_compl hkfix fun hxK => hx (hKU hxK)
   · intro x hx
@@ -82,6 +106,17 @@ theorem exists_separated_slide_fwd {M : Type u} [TopologicalSpace M] [T2Space M]
     have hinner : MapsTo (e.conjugateMap (slideMapFwd d R)) N₁ N₁ :=
       mapsTo_chartSlideFwd_halfSpace hd e hsupp hN₁
     exact fun y hy => hinner hy.2
+  · intro N Bd N₁ Bd₁ hNE hN₁ hBdE hBd₁ x hx hhx
+    by_cases hxs : x ∈ E.source
+    · have hq : e.conjugateMap (slideMapFwd d R) (E x) ∈ E.target :=
+        hkmap (E.map_source hxs)
+      rw [E.conjugateMap_of_mem _ hxs] at hhx
+      have h1 := (hBdE _ (E.map_target hq)).mp hhx
+      rw [E.right_inv hq] at h1
+      exact (hBdE x hxs).mpr
+        (mem_boundaryPlane_of_chartSlideFwd hd e hsupp hN₁ hBd₁ ((hNE x hxs).mp hx) h1)
+    · rw [E.conjugateMap_of_notMem _ hxs] at hhx
+      exact hhx
   · have hAE : e.symm '' slideBandA c ⊆ E.target := by
       rintro _ ⟨p, hp, rfl⟩
       exact hesrc (e.map_target (hAt hp))
@@ -127,6 +162,12 @@ theorem exists_separated_along_boundary_branch (hD : NormalSingularCellData D Bd
       (∀ (N : Set M) (N₁ : Set (EuclideanSpace ℝ (Fin 3))),
         (∀ x ∈ E.source, x ∈ N ↔ E x ∈ N₁) →
         (∀ y ∈ e.source, y ∈ N₁ ↔ 0 ≤ (e y).1) → MapsTo h N N) ∧
+      (∀ (N Bd : Set M) (N₁ Bd₁ : Set (EuclideanSpace ℝ (Fin 3))),
+        (∀ x ∈ E.source, x ∈ N ↔ E x ∈ N₁) →
+        (∀ y ∈ e.source, y ∈ N₁ ↔ 0 ≤ (e y).1) →
+        (∀ x ∈ E.source, x ∈ Bd ↔ E x ∈ Bd₁) →
+        (∀ y ∈ e.source, y ∈ Bd₁ ↔ (e y).1 = 0) →
+        ∀ x ∈ N, h x ∈ Bd → x ∈ Bd) ∧
       Disjoint (h '' (D '' P)) (D '' Q) :=
   exists_separated_slide_fwd E hE e he hei hesrc hd hcR hbd hsupp hAt hBt hSK hW hA hB hAB
 
@@ -158,6 +199,12 @@ theorem exists_separated_cell_along_boundary_branch (hD : NormalSingularCellData
       (∀ (N : Set M) (N₁ : Set (EuclideanSpace ℝ (Fin 3))),
         (∀ x ∈ E.source, x ∈ N ↔ E x ∈ N₁) →
         (∀ y ∈ e.source, y ∈ N₁ ↔ 0 ≤ (e y).1) → MapsTo h N N) ∧
+      (∀ (N Bd : Set M) (N₁ Bd₁ : Set (EuclideanSpace ℝ (Fin 3))),
+        (∀ x ∈ E.source, x ∈ N ↔ E x ∈ N₁) →
+        (∀ y ∈ e.source, y ∈ N₁ ↔ 0 ≤ (e y).1) →
+        (∀ x ∈ E.source, x ∈ Bd ↔ E x ∈ Bd₁) →
+        (∀ y ∈ e.source, y ∈ Bd₁ ↔ (e y).1 = 0) →
+        ∀ x ∈ N, h x ∈ Bd → x ∈ Bd) ∧
       Disjoint (h '' (D '' P)) (D '' Q) ∧
       IsPLOn 2 3 (P.piecewise (h ∘ D) D) D.domain ∧
       IsLocallyInjective (D.domain.domRestrict (P.piecewise (h ∘ D) D)) ∧
@@ -165,7 +212,7 @@ theorem exists_separated_cell_along_boundary_branch (hD : NormalSingularCellData
       (∀ y ∉ U, P.piecewise (h ∘ D) D ⁻¹' {y} = D ⁻¹' {y}) ∧
       doublePointSet (P.piecewise (h ∘ D) D) D.domain =
         doublePointSet D D.domain \ hD.singularSet.branchCarrier cb := by
-  obtain ⟨U, h, hUopen, hSU, hUW, hhpl, hhinj, hhfix, hhmap, hhN, hdisj⟩ :=
+  obtain ⟨U, h, hUopen, hSU, hUW, hhpl, hhinj, hhfix, hhmap, hhN, hhrefl, hdisj⟩ :=
     hD.exists_separated_along_boundary_branch cb E hE e he hei hesrc hd hcR hbd hsupp hAt hBt
       hSK hW hA hB hAB
   have hUsub : U ⊆ W := subset_closure.trans hUW
@@ -184,8 +231,8 @@ theorem exists_separated_cell_along_boundary_branch (hD : NormalSingularCellData
     isPLOn_piecewise_postcomp_of_separated hF hPpoly hPcpoly hloc hcard hinjP hhpl hhinj
       hhfix hseamU hinjPcU
   rw [hdom] at hgpl hgloc hgcard
-  refine ⟨U, h, hUopen, hSU, hUW, hhpl, hhinj, hhfix, hhmap, hhN, hdisj, hgpl, hgloc, hgcard,
-    hgfib, ?_⟩
+  refine ⟨U, h, hUopen, hSU, hUW, hhpl, hhinj, hhfix, hhmap, hhN, hhrefl, hdisj, hgpl, hgloc,
+    hgcard, hgfib, ?_⟩
   refine doublePointSet_piecewise_postcomp hdom hhinj hhfix hhmap hinjP hinjQU hPcQU hdisj
     hSU ?_
   intro y hy

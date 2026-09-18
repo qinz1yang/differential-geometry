@@ -1409,3 +1409,133 @@ theorem eq_top_of_boundaryLoops_mem_normal
   `propext`、`Classical.choice`、`Quot.sound`（其中 `conjugacyClassMeets_mk_inv_of`、
   `conjugacyClassMeets_mk_inv_iff`、`range_eq_image_of_forall_eq` 只用到 `propext`、`Quot.sound`）。
   `fresh.py` 报 3 个改动模块全部 fresh，forbidden=0、stale=0、missing=0；全程无其它 `lean.exe`。
+
+## 56. 2026-09-18 E3-M3：前推滑动不会把内点拉回 `Bd M`，边界分支分离胞腔的 `image_inter_boundary` 的 `⊆` 半边无条件闭合
+
+状态：done（`⊆` 半边无条件闭合；`⊇` 半边给出确切的领环输入，并证明"有领环延拓即得等式"）。
+改动 `BranchSeparationBoundary.lean`，新模块 `BranchBoundaryCollar.lean`（模块名在四条车道分支上都不存在）。
+这一节回答 §53 末尾留下的那条新义务。
+
+- **先把几何结论说清楚：`image_inter_boundary` 的两个包含方向命运不同。**
+  §53 已证 `⊇`（即 `Set.range g.boundary ⊆ BdM`）对前推模型是**假**的：触边分支端点被推离 `Bd M`。
+  本节证明另一半 `⊆` 是**真**的，而且不需要任何领环：**前推滑动只会把边界推进内部，
+  绝不会把内点拉到 `Bd M` 上。** 这不与 §48/§53 的两条负结果冲突——负结果说的是
+  `MapsTo h BdM BdM` 不成立，本节说的是 `h ⁻¹' BdM ∩ N ⊆ BdM`，方向相反。
+- `mem_boundaryPlane_of_chartSlideFwd`：模型层的全部内容。
+  `slideMapFwd d R p = (p.1 + slideAmountLong d R p, p.2)`，`slideAmountLong ≥ 0`；
+  若 `0 ≤ (e x).1` 且 `(slideMapFwd d R (e x)).1 = 0`，则 `(e x).1 = 0`。一句 `linarith`。
+  **半空间假设是必需的**：没有 `0 ≤ (e x).1` 时 `(e p).1 = -amount < 0` 是可能的
+  （只要 `3|x| ≤ R`），所以这条与"保持闭半空间"那条用的是同一份坐标数据。
+- `exists_separated_slide_fwd`、`NormalSingularCellData.exists_separated_along_boundary_branch`、
+  `NormalSingularCellData.exists_separated_cell_along_boundary_branch` 三条各多出一条输出条款：
+  `∀ (N Bd : Set M) (N₁ Bd₁ : Set (EuclideanSpace ℝ (Fin 3))),
+   (∀ x ∈ E.source, x ∈ N ↔ E x ∈ N₁) → (∀ y ∈ e.source, y ∈ N₁ ↔ 0 ≤ (e y).1) →
+   (∀ x ∈ E.source, x ∈ Bd ↔ E x ∈ Bd₁) → (∀ y ∈ e.source, y ∈ Bd₁ ↔ (e y).1 = 0) →
+   ∀ x ∈ N, h x ∈ Bd → x ∈ Bd`。
+  `Bd` 是泛的，用时取 `Bd := BdM`；`Bd₁` 用的是 `slideEndpointPlane` 的坐标形式
+  `(e y).1 = 0`，正是 §53 的 `not_mapsTo_chartSlideFwd_boundaryPlane` 里那个平面。
+- `preimage_boundary_subset_frontier_piecewise_postcomp`：**这条是本节的关键不变量。**
+  若输入胞腔满足 `D.domain ∩ D ⁻¹' BdM ⊆ frontier D.domain`（"圆盘只在边界圆上碰 `Bd M`"，
+  Moise 的对映射 `(Δ,∂Δ) → (M,Bd M)` 的标准正规性条件，比结构字段 `image_inter_boundary`
+  的像集等式强，且是关于**输入** `D` 的假设，不是结论型假设），再加 `MapsTo D D.domain N` 与上面那条
+  反向条款，则割开后的 `g := P.piecewise (h ∘ D) D` **仍然**满足
+  `D.domain ∩ g ⁻¹' BdM ⊆ frontier D.domain`。证明是两支 `piecewise` 拆分：
+  `x ∈ P` 支用反向条款把 `h (D x) ∈ BdM` 拉回 `D x ∈ BdM`，`x ∉ P` 支直接用 `hbdpre`。
+  换句话说，**原像形式的边界条件在边界分支割开下是封闭的**，等式形式不是。
+- `image_inter_boundary_subset_image_frontier_piecewise_postcomp`：上一条的直接推论，
+  `g '' D.domain ∩ BdM ⊆ g '' frontier D.domain`。
+- `image_inter_boundary_of_collarExtension`：**领环修正的成品。** 设 `G : SingularTwoCell M`
+  在 `D.domain` 上与 `g` 相等（`hext`），并满足三条只与"新加的环带"有关的条款
+  1. `houter : Set.range G.boundary ⊆ BdM`（外圈落到 `Bd M` 上）；
+  2. `hannulus : G '' (G.domain \ D.domain) ∩ BdM ⊆ Set.range G.boundary`（环带只在外圈碰 `Bd M`）；
+  3. `hseam : g '' frontier D.domain ∩ BdM ⊆ Set.range G.boundary`（老边界圆上没被推动的那段被带到外圈），
+  则 `G '' G.domain ∩ BdM = Set.range G.boundary`，即 `image_inter_boundary` **被恢复**。
+  盘面那一半（"圆盘内部不会碰 `Bd M`"）由上面两条提供，是本节真正证出来的部分；
+  三条假设全部是环带自身的局部性质，没有一条是结论本身。
+  `range_boundary_subset_of_collarExtension` 顺带给出结构字段 `boundary_image_subset`
+  （只要 `BdM ⊆ B`）。
+- `NormalSingularCellData.exists_separated_cell_boundary_preimage_along_boundary_branch`：
+  把上面接到实际的边界分支分离上。输入除 §53 的全部数据外，多要
+  `hNE/hN₁/hBdE/hBd₁`（`N` 是闭半空间、`BdM` 是边界平面的图册相容性）、`hDN : MapsTo D D.domain N`
+  与 `hbdpre`；输出是 §53 的全部条款，再加上面两条新结论。
+- **确切的剩余义务（领环那一条到底缺什么）。** 需要的不是本树已有的任何一条 collar：
+  `IsCombinatorialManifoldWithBoundary.exists_collar`（`CollarNeighborhood.lean`）、
+  `exists_collar_of_boundary_subset`（`CollarRestriction.lean`）、
+  `exists_collar_of_boundary_disk`（`DiskCollar.lean`）与 `BicollarManifold.lean` 的四条
+  全部是 `E` 里单纯复形层面的，或者是内部二维子流形的双领环；
+  **缺的是下面这个"环带扫掠"**，本树没有任何形式接近它：
+  设 `Δ' ⊇ Δ` 是平面里的 PL 2-球，`Δ' \ int Δ ≅ frontier Δ × [0,1]`（**`Δ` 的外领环**，
+  本树也没有；`DiskCollar.lean` 给的是 `Bd K` 里的圆盘在 `K` 中的领环，不是平面里球的外领环），
+  并设 `Φ` 是 `BdM` 的领环里沿领环线的 PL 扫掠，把被推离的边界弧 `g '' (frontier Δ ∩ P ∩ D ⁻¹' U)`
+  拉回 `BdM`；把 `g` 用 `Φ` 沿外领环延拓成 `G`，就得到上面三条 `houter / hannulus / hseam`。
+  在本轮的坐标设定下 `Φ` 其实可以就取图册里的直线收缩
+  `E.symm (e.symm ((1-t) * (e (E y)).1, (e (E y)).2))`——因为 `BdM` 在图册里就是 `{p.1 = 0}`，
+  领环线就是第一坐标线——所以真正缺的只有：(i) 平面 PL 2-球的**外领环**；
+  (ii) 把 `g` 与该扫掠沿缝隙粘起来后的 `IsPLOn`、局部单射与纤维 ≤ 2 的转移。
+  这两条都是标准 PL 内容，但本树现在一条都没有。
+- **一条不能走的路（记下免得重走）：不存在把新边界圆拉回去的环境同胚。**
+  `h : M → M` 是 PL 嵌入但**不满**（前推把一块咬掉），所以它可以把 `Bd M` 的点送进内部而不与
+  边界不变性矛盾；但任何 `M` 到自身的同胚都保持 `Bd M`，因此**不可能**用后复合一个环境同胚
+  把被推进内部的边界弧送回 `Bd M`。修正必须改映射（沿外领环延拓），不能只改 `h`。
+  这条排除了"再加一条更强的分离条款"和"在领环里做第二次滑动"两种想法。
+- 验证：`BranchSeparationBoundary` 聚焦检查 exit=0（10.4 秒）、`BranchBoundaryCollar` exit=0（10.6 秒），
+  均零 warning；审计见 §57 末尾（两节的声明放在同一个审计文件里）。全程无其它 `lean.exe`。
+
+## 57. 2026-09-18 E3-M3：Case 3/4 整条链改走触边分支端点（§52 第 2 条未做项清掉）
+
+状态：done。改动 `BranchComplexityDrop.lean` 与 `BranchCaseThreeFour.lean`，即 §53 里列为"本轮范围未做"的那条。
+
+- `NormalSingularCellData.exists_separated_cell_simplicialComplexity_lt_along_branch`
+  改名为 `..._along_boundary_branch`，并改调 §53 的
+  `exists_separated_cell_along_boundary_branch`：参数 `hca : c - d < a` 换成 `hbd : b < d`
+  （前推滑动把 A 带推过 Q 带，而不是把 A 带拉到 Q 带之前），输出里 §48 的双条件条款
+  `∀ x, h x ∈ BdM ↔ x ∈ BdM` 换成三条前推形式：`MapsTo h U U`、半空间条款
+  `MapsTo h N N` 与 §56 的反向条款。复杂度下降的证明**一行没改**——
+  `exists_simplicialComplexity_lt_of_doublePointSet_subset_sdiff` 只吃
+  `hgfib`、`hgdouble`、`hclean`、`hSU`，从不碰边界条款，这与 §53 里逐条核对的结论一致。
+- `NormalSingularCellData.exists_four_arc_word_and_simplicialComplexity_lt_of_boundaryBranch`
+  同样换参数与条款。它现在**在参数层就只对触边分支成立**（`hbd : b < d` 是触边分支的正规形），
+  四段边界字那一支（`exists_boundary_four_arc_word_of_boundaryBranch hc`）原样转出。
+  于是 Case 3/4 的整条链——四段字 + 分离胞腔 + 复杂度严格下降——跑在同一个触边分支端点上。
+- `BranchComplexityDrop.lean` 的 import 由 `BranchSeparation` 改为 `BranchSeparationBoundary`
+  （后者 import 前者，内部分支版本仍可用）。内部分支（Case 1/2）的
+  `exists_separated_cell_along_branch` 与 `exists_separated_along_branch` 留在
+  `BranchSeparation.lean` 里没动。
+- 验证：`BranchComplexityDrop` 聚焦检查 exit=0（10.6 秒）、`BranchCaseThreeFour` exit=0（10.4 秒），
+  均零 warning。`.lake/scratch/AuditE3BoundaryCollar.lean`（同时 import
+  `BranchBoundaryCollar` 与 `BranchCaseThreeFour`，因此也顺带验证这两支没有重名声明）
+  的 11 条 `#print axioms` 全部只含 `propext`、`Classical.choice`、`Quot.sound`。
+  全程无其它 `lean.exe`。
+
+## 58. 2026-09-18 E3-M3：§55 的 `hdom` 与 `hfactor` 被 §38 的 double 生产者消掉
+
+状态：done。新模块 `BoundaryWordDoubleCell.lean`（模块名在四条车道分支上都不存在）。
+这是 §55 末尾列出的"确切剩余义务"里的第 1 条。
+
+- `NormalSystem.exists_boundary_word_loop_dichotomy_in_double`：在
+  `double 3 S.manifoldComplex` 的 charted space 里**取出** §38 的
+  `NormalSystem.exists_singular_two_cell_in_double` 给的那个 `D`，于是
+  `hdom : D.domain = S.sourceComplex.space` 直接是它的第一条输出；
+  `hfactor` 由它的第二条输出 `EqOn (fun x => (D x : E × E × ℝ)) (ι ∘ S.singularMap)
+  S.sourceComplex.space` 加上 `ι` 在 `K.space` 上的单射性得到，其中
+  `ι := simplicialMap K (glueEmbed₂ (boundaryComplex 3 K) id)`，单射性由
+  `isPLHomeomorphOn_embedComplex K (glueEmbed₂ B id) (glueSnd E E) (fun _ _ _ _ => rfl)`
+  的 `.bijOn.injOn` 给出（与 `LemmaTwo.lean` 内部用的是同一条），
+  `frontier D.domain ⊆ D.domain = S.sourceComplex.space` 由 `SingularTwoCell.frontier_subset_domain`
+  加 `hdom` 给出，两个点都落在 `K.space` 里靠 `S.singularMap_mapsTo_manifoldComplex`。
+- 输出形状：`∃ D, D.domain = S.sourceComplex.space ∧ ∀ BdM Bn (hD : NormalSingularCellData D BdM Bn)
+  (c : hD.singularSet.Branch), IsBoundaryBranch c → <§55 的四段弧二分>`。
+  也就是说 §55 的端点在这两个输入上**已经无条件**；还需要的只有该 `D` 上的
+  `NormalSingularCellData`（正规化数据）与一个触边分支，这是另一层的义务，不是本节的缺口。
+- 实现上的两个坑（记下免得重走）：
+  1. §38 的陈述以 `let K := …; letI : Finite K.faces := …; letI := combinatorialChartedSpace …`
+     开头，但两条 `letI` 的实例在 elaboration 时被 zeta 约简掉，目标里**只剩 `K` 一个 `let`**。
+     证明里要写 `intro K`（不是 `intro K _ _`），再自己用 `let _ : Finite K.faces := …`
+     与 `let _ := combinatorialChartedSpace …` 把两个实例放回局部上下文，否则
+     `Finite K.faces` 与 `ChartedSpace (EuclideanSpace ℝ (Fin 3)) ↑(double 3 K).space` 都合成不出来。
+  2. 这两条要写 `let _ :=` 而不是 `letI :=`：目标是命题时 `linter.style.haveILetI` 会对 `letI` 报警。
+- 未做（保持主人指定的范围）：§43 的障碍仍在，`L₂` 的实际重贴胞腔没做；Case 1/2 未开始。
+- 验证：`BoundaryWordDoubleCell` 聚焦检查 exit=0（11.0 秒）、零 warning；
+  `.lake/scratch/AuditE3BoundaryCollar.lean`（同时 import `BranchBoundaryCollar`、
+  `BranchCaseThreeFour` 与 `BoundaryWordDoubleCell`）的 12 条 `#print axioms` 全部只含
+  `propext`、`Classical.choice`、`Quot.sound`。全程无其它 `lean.exe`。
