@@ -2714,3 +2714,56 @@ E3 §48 给了两条出路：(1) 给端点一个锥度在 `Bd M` 处归零、与
 
 检查 `ModelSlideFwd` exit=0（9.7 秒）、`BranchSlideEndpoint` exit=0（9.4 秒），均零 warning；
 `AuditF260.lean` 二十一项、`AuditF261.lean` 十项仅 `propext`、`Classical.choice`、`Quot.sound`。
+
+### 19.120 端点图卡的最后一条代数条款：横截于分支线的边界平面可正规化成 `{p.1 = 0}`
+
+§19.115 末尾留下的那步（"`exists_linearEquiv_of_transverse_planes` 之后剩下的自由度恰是
+`(x,y,z) ↦ (αx+βy+γz, δy, εz)`，横截于 x 轴的平面可正规化成 `{x = 0}`"）已形式化，
+`TransversePlaneCoordinates.lean` 新增十六条，`TransversePlaneNormalForm.lean` 新增一条。
+
+**三角群就是正确的群**（不是随手选的子群）：`mapsTo_planes_iff_exists_coeff` 给出等价
+`(MapsTo T {p.2.2 = 0} {p.2.2 = 0} ∧ MapsTo T {p.2.1 = 0} {p.2.1 = 0}) ↔
+∃ a b c d e, ∀ p, T p = (a p.1 + b p.2.1 + c p.2.2, d p.2.1, e p.2.2)`，对任意
+`T : (ℝ×ℝ×ℝ) →ₗ[ℝ] ℝ×ℝ×ℝ`。正向由 `T e₁` 落在两张片上、`T e₂` 落在第一张、`T e₃` 落在第二张
+读出五个系数（`exists_coeff_of_mapsTo_planes`）。`ne_zero_of_surjective_triangular`：三角映射满射
+⟹ `a ≠ 0 ∧ d ≠ 0 ∧ e ≠ 0`（先用 `(0,1,0)`、`(0,0,1)` 取出 `d`、`e` 非零，再用 `(1,0,0)` 取 `a`）。
+`noncomputable def triangularEquiv α β γ δ ε hα hδ hε` 是显式的线性自同构（逆映射手写，
+`inv_mul_cancel_left₀` / `mul_inv_cancel_left₀` 验证两侧），`exists_coeff_triangularEquiv_symm`
+给出逆仍是三角的系数 `(α⁻¹, -α⁻¹βδ⁻¹, -α⁻¹γε⁻¹, δ⁻¹, ε⁻¹)`，
+`image_triangularEquiv_setOf_snd_snd_eq_zero` / `..._snd_fst_...` 是两张片平面被**逐集固定**。
+
+**`a ≠ 0` 需要的横截性假设就是 `HasPLBoundaryCrossingAt` 已经带着的那一条**：定义里的
+`(∃ u ∈ P ⊓ Q, ℓ u = 1)`。不需要任何新假设。`exists_mem_apply_eq_one_iff_not_le_ker` 把它等价改写成
+`¬ (P ⊓ Q ≤ LinearMap.ker ℓ)`，即**分支线不落在边界平面里**。用 `u` 时 `(L u).2 = 0`，于是
+`1 = ℓ u = a (L u).1`，立刻得 `a ≠ 0`。反之若分支线落在 `ker ℓ` 内则 `a = 0`，正规化确实失效——
+这不是可以省掉的技术条件。
+
+端点定理（均在 `TransversePlaneCoordinates.lean`）：
+- `exists_triangularEquiv_normalizing`：给定已满足两张片条款的 `L`，存在 `α β γ`、`α ≠ 0`，使
+  `T = triangularEquiv α β γ 1 1` 满足 `ℓ y = (T (L y)).1` 且 `(T (L y)).2 = (L y).2`
+  （`δ = ε = 1`，所以两张片的坐标**原封不动**，只有第一坐标被换成 `ℓ`）。系数取
+  `α = ℓ (L.symm (1,0,0))`、`β = ℓ (L.symm (0,1,0))`、`γ = ℓ (L.symm (0,0,1))`。
+- `exists_linearEquiv_of_transverse_planes_of_transverse_functional`：打包版，产出 `L` 同时满足
+  `y ∈ P ↔ (L y).2.2 = 0`、`y ∈ Q ↔ (L y).2.1 = 0`、`y ∈ P ⊓ Q ↔ (L y).2 = 0`、`ℓ y = (L y).1`。
+- `exists_linearEquiv_boundaryCrossing_normalForm`：集合像形式的五条款，
+  `{0 ≤ ℓ} ↦ {0 ≤ p.1}`、`{ℓ = 0} ↦ {p.1 = 0}`、
+  `P ∩ {0 ≤ ℓ} ↦ {p.2.2 = 0 ∧ 0 ≤ p.1}`、`Q ∩ {0 ≤ ℓ} ↦ {p.2.1 = 0 ∧ 0 ≤ p.1}`、
+  `(P ⊓ Q) ∩ {0 ≤ ℓ} ↦ {p.2 = 0 ∧ 0 ≤ p.1}`。最后一条就是"分支从 `x = 0` 伸向 `x > 0`"。
+
+**直接消费 `HasPLBoundaryCrossingAt` 的桥**（新模块 `TransversePlaneNormalForm.lean`，
+import `SingularGeneralPosition` 与 `TransversePlaneCoordinates`）：
+`HasPLBoundaryCrossingAt.exists_linearEquiv_normalForm`，由 `HasPLBoundaryCrossingAt M A B x`
+产出 `U V h L`，`IsPLHomeomorphOn h U V`、`h x = 0`，且 `∀ᶠ y in 𝓝 x` 四条款
+`y ∈ M ↔ 0 ≤ (L (h y)).1`、`y ∈ A ↔ (L (h y)).2.2 = 0 ∧ 0 ≤ (L (h y)).1`、
+`y ∈ B ↔ (L (h y)).2.1 = 0 ∧ 0 ≤ (L (h y)).1`、
+`y ∈ A ∩ B ↔ (L (h y)).2 = 0 ∧ 0 ≤ (L (h y)).1`。
+`h` 仍是 `E → E`，只有读坐标那一层后接 `L`，所以 `IsPLHomeomorphOn` 不需要异型版本，
+§19.116 判断的"不需要线性桥"在这里同样成立。
+
+**§19.115 生产者的剩余义务因此只剩几何一半**：紧致触边分支的单张 PL 乘积图卡（正则邻域唯一性），
+由 H 车道负责。代数一半（把两张片拉直成坐标平面、把边界平面拉直成 `{p.1 = 0}`、
+把闭半空间拉直成 `{0 ≤ p.1}`、分支落在非负 x 轴上）现在**全部闭合**。
+
+检查 `TransversePlaneCoordinates` exit=0（7.9 秒）、`TransversePlaneNormalForm` exit=0（8.8 秒），
+均零 warning；`AuditF262.lean` 十九项、`AuditF263.lean` 一项，仅 `propext`、`Classical.choice`、
+`Quot.sound`。下一审计文件 `AuditF264.lean`。
