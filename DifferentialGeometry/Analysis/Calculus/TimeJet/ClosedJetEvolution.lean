@@ -45,8 +45,9 @@ theorem contDiffOn_and_equation_Icc_of_time_dependent_spatial_jets
       SpaceJetDiff q R (Icc a b) V := by
     have hcoord : SpaceJetDiff q (fun t (x : E) => (t, x)) (Icc a b) V := by
       intro r
-      have h := spatial_iteratedFDeriv_contDiffOn (G := fun t (x : E) => (t, x))
-        (uniqueDiffOn_Icc hab) hV contDiffOn_id r
+      have h := spatial_iteratedFDeriv_contDiffOn (𝕜 := ℝ) (J := Icc a b)
+        (G := fun (t : ℝ) (x : E) => (t, x))
+        hV contDiffOn_id r
       exact h.of_le (by exact_mod_cast le_top)
     exact spaceJet_comp_Icc hV hΩ hmap hΦ
       (fun t ht => (contDiffOn_const.prodMk contDiffOn_id).prodMk (hJetSlices t ht))

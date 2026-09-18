@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Calculus.TimeJet.EndpointJets
+import DifferentialGeometry.Analysis.Calculus.PartialDerivative.Parameter
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Christoffel.Bounds
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Christoffel.Product
 import DifferentialGeometry.Geometry.Metric.Comparison.CompactLowerBound
@@ -24,7 +24,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimension
 theorem exists_chartGram_jet_bound_on_compact
     {D : RealTimeInterval} {g : ℝ → SmoothRiemannianMetric I M}
     (hg : MetricFamilySmoothOn D g) {J : Set ℝ}
-    (hJreg : J ⊆ D.regular) (hJ : UniqueDiffOn ℝ J) (hJc : IsCompact J)
+    (hJreg : J ⊆ D.regular) (hJc : IsCompact J)
     {ι : Type*} [Finite ι] (α : ι → M) (K : ι → Set E)
     (hK : ∀ i, IsCompact (K i)) (hKt : ∀ i, K i ⊆ interior (extChartAt I (α i)).target)
     (k : ℕ) :
@@ -34,8 +34,9 @@ theorem exists_chartGram_jet_bound_on_compact
     (G := fun (b : ι × Fin (Module.finrank ℝ E) × Fin (Module.finrank ℝ E)) t x =>
       chartGramOnE (g t) (α b.1) b.2.1 b.2.2 x)
     (V := fun b => interior (extChartAt I (α b.1)).target) (K := fun b => K b.1)
-    hJ (fun _ => isOpen_interior) hJc (fun b => hK b.1) (fun b => hKt b.1)
+    (fun _ => isOpen_interior) hJc (fun b => hK b.1) (fun b => hKt b.1)
     (fun b => chartGramOnE_contDiffOn hg hJreg (α b.1) b.2.1 b.2.2) k
+    (by exact_mod_cast le_top)
   exact ⟨C, hC, fun b i j t ht x hx => hbound (b, i, j) t ht x hx⟩
 
 theorem exists_chartChristoffel_jet_bound_on_compact
@@ -52,8 +53,9 @@ theorem exists_chartChristoffel_jet_bound_on_compact
         Fin (Module.finrank ℝ E)) t x =>
       chartChristoffel (g t) (α b.1) b.2.1 b.2.2.1 b.2.2.2 x)
     (V := fun b => interior (extChartAt I (α b.1)).target) (K := fun b => K b.1)
-    hJ (fun _ => isOpen_interior) hJc (fun b => hK b.1) (fun b => hKt b.1)
+    (fun _ => isOpen_interior) hJc (fun b => hK b.1) (fun b => hKt b.1)
     (fun b => chartChristoffelOnE_contDiffOn hg hJreg hJ (α b.1) b.2.1 b.2.2.1 b.2.2.2) k
+    (by exact_mod_cast le_top)
   exact ⟨C, hC, fun b i j l t ht x hx => hbound (b, i, j, l) t ht x hx⟩
 
 theorem exists_finite_extChartAt_jet_bounds [I.Boundaryless] [CompactSpace M]
@@ -75,7 +77,7 @@ theorem exists_finite_extChartAt_jet_bounds [I.Boundaryless] [CompactSpace M]
     rw [(isOpen_extChartAt_target (I := I) (p : M)).interior_eq]
     exact (hK p p.property).2
   refine ⟨ρ, hρ, S, K, hK, hcover, fun k => ?_⟩
-  obtain ⟨C₁, hC₁, hb₁⟩ := exists_chartGram_jet_bound_on_compact hg hJreg hJ hJc
+  obtain ⟨C₁, hC₁, hb₁⟩ := exists_chartGram_jet_bound_on_compact hg hJreg hJc
     (fun p : S => (p : M)) (fun p => K p) (fun p => (hK p p.property).1) hKt k
   obtain ⟨C₂, _, hb₂⟩ := exists_chartChristoffel_jet_bound_on_compact hg hJreg hJ hJc
     (fun p : S => (p : M)) (fun p => K p) (fun p => (hK p p.property).1) hKt k

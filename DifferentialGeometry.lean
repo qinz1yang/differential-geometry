@@ -110,6 +110,7 @@ import DifferentialGeometry.Analysis.Calculus.Manifold.AbsolutelyContinuous
 import DifferentialGeometry.Analysis.Calculus.MapConvergence.Algebra
 import DifferentialGeometry.Analysis.Calculus.MapConvergence.Basic
 import DifferentialGeometry.Analysis.Calculus.MapConvergence.Composition
+import DifferentialGeometry.Analysis.Calculus.MapConvergence.Parameter
 import DifferentialGeometry.Analysis.Calculus.MapConvergence.Derivative
 import DifferentialGeometry.Analysis.Calculus.MapConvergence.QuadraticEvaluation
 import DifferentialGeometry.Analysis.Calculus.MapConvergence.SmoothInverse
@@ -122,6 +123,7 @@ import DifferentialGeometry.Analysis.Calculus.Multilinear
 import DifferentialGeometry.Analysis.Calculus.MultilinearPullback
 import DifferentialGeometry.Analysis.Calculus.MultilinearZero
 import DifferentialGeometry.Analysis.Calculus.PartialDerivative.Iterated
+import DifferentialGeometry.Analysis.Calculus.PartialDerivative.Parameter
 import DifferentialGeometry.Analysis.Calculus.Periodic.Affine
 import DifferentialGeometry.Analysis.Calculus.Periodic.Derivative
 import DifferentialGeometry.Analysis.Calculus.Periodic.MonotoneConvolution

@@ -38,7 +38,6 @@ theorem eventually_rescaledMetric_comparison_on_compact
   have has : a < start := by dsimp only [start]; linarith
   have hstart : start < t - depth / Q := by dsimp only [start]; linarith
   have hst : start < t := lt_trans hstart (sub_lt_self _ (div_pos hdepth hQ))
-  have hJ : UniqueDiffOn ℝ (Icc start t) := uniqueDiffOn_Icc hst
   have htime (c : ℝ) (hc : 0 < c) (hsc : start < t - depth / c) :
       MapsTo (parabolicTime t c) (Icc (-depth) 0) (Icc start t) := by
     intro s hs
@@ -114,7 +113,7 @@ theorem eventually_rescaledMetric_comparison_on_compact
       solution_chartGram_contDiffOn_closed S hS has hst hslab hreg w.2
     have hnorm := weighted_error_covariant_norm_tendsto_at_point
       S.base.metric (B j) (B j) w.2 (hV₁.inter hV₂) ⟨hp₁, hp₂⟩
-      (fun z hz => ht₁ hz.1) hJ hJ
+      (fun z hz => ht₁ hz.1)
       (fun r s => (hgc r s).mono (Set.prod_mono Subset.rfl (fun z hz => hz.2)))
       (fun slots => (hBc j slots).mono (Set.prod_mono Subset.rfl (fun z hz => hz.1)))
       (fun slots => (hBc j slots).mono (Set.prod_mono Subset.rfl (fun z hz => hz.1)))

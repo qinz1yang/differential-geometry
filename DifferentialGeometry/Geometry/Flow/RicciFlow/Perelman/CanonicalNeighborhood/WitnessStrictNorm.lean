@@ -70,7 +70,7 @@ theorem eventually_strict_weighted_error_norm_on_scaled_ball
     (g : ℝ → SmoothRiemannianMetric I M)
     (A B : ℝ → Tensor0SField (I := I) (M := M) (n := ∞) 2)
     (p : M) (R : ℝ) {K : Set M} (hK : IsCompact K)
-    {J L : Set ℝ} (hJ : UniqueDiffOn ℝ J) (hL : UniqueDiffOn ℝ L)
+    {J L : Set ℝ}
     (hregular : ∀ y ∈ K, ∃ V : Set E, IsOpen V ∧ extChartAt I y y ∈ V ∧
       V ⊆ (extChartAt I y).target ∧
       (∀ i j : Fin (Module.finrank ℝ E), ContDiffOn ℝ ∞
@@ -141,7 +141,7 @@ theorem eventually_strict_weighted_error_norm_on_scaled_ball
   have hmodellim : Tendsto (fun n => s (phi n) / c (pick n)) atTop (𝓝 (w.1 / c₀)) :=
     hslim.div (hclim.comp hpick) hc₀.ne'
   have hnorm := weighted_error_covariant_norm_tendsto_at_point g A B w.2 hV hwV hVt
-    hJ hL hgram hA hB (fun n => t (pick n) + s (phi n) / Q (pick n))
+    hgram hA hB (fun n => t (pick n) + s (phi n) / Q (pick n))
     (fun n => s (phi n) / c (pick n))
     (fun n => hsource (pick n) (s (phi n)) (hs (phi n)))
     (fun n => hmodel (pick n) (s (phi n)) (hs (phi n)))
