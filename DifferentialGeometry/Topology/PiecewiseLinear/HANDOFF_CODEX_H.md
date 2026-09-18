@@ -1012,3 +1012,64 @@ H-A1/H-A2 把其中"锥化/球对"那一块消掉了，它原本是唯一没有�
    除非第 3 件确实需要，否则不建议再投入（§9 估的 2k–4k 行可以先不花）。
 3. **正则邻域唯一性 / 环境同痕** —— 仍不存在，且仍是 F §19.115 的真正瓶颈。
    现在沿弧相邻两点之间要的输入（H-A3 的链对同胚 `f`）依然缺少生产者。
+
+### H-A4 附加：直接可用的消费形状
+
+- `IsCombinatorialManifoldWithBoundary.exists_isPLBall_containing_arcComplexIn`：
+  `∃ C, IsPLBall 3 C ∧ C ⊆ K.space ∧ (arcComplexIn K v n).space ⊆ C`。
+  与 `DiskDerivedNeighborhood.lean:92 exists_isPLBall_containing_boundary_disk`（边界二维盘的版本）
+  **完全同形状**，所以已经消费后者的地方可以照抄接法。
+  用 `DerivedNeighborhoodAttachments.lean:56 space_subset_iUnion_derivedNeighborhoodCell_space`
+  给包含关系；该模块的两个 import 本来就在闭包里，**加它不引入新的依赖锥**。
+
+聚焦检查 exit=0（10.3 秒）、零 warning；审计十三项仅三条标准公理。
+
+## 11. 2026-09-18 第 2、3 件的复核结论（在合并后的当前树上重新测绘，非沿用 §9）
+
+### 第 2 件（抽象塌陷）：仍不存在，且**已证明第 1 件不需要它**
+
+`freeFace`／`FreeFace`／`collaps` 在全树**文件内容**中仍然零命中——
+只有三个**文件名**含 "FreeFace"（`ConeFreeFace.lean`、`PlanarFreeFace.lean`、`FreeFaceTransport.lean`），
+内容里出现该词的行**全部是 import 行**。`FreeFaceTransport.lean` 只有一条定理
+`exists_isPLBall_eraseTriangleComplex_of_isGlueIso_planar`，是二维平面情形"去掉一个自由三角形"的
+具体步骤，不是抽象的初等塌陷。（§9 写的是"无标识符"，与此一致；此处补记文件名的存在，免得后来者误判。）
+
+**结论：不要按 §9 估的 2k–4k 行去投抽象塌陷层。** 弧的球性质由链式归纳绕开了它；
+是否需要塌陷，取决于第 3 件走哪条路线（见下）。
+
+### 第 3 件（正则邻域唯一性 / 球对标准）：**仍然阻塞**，障碍已定位到一条具名引理
+
+复核了三点，都在当前合并后的树上重新 grep 过：
+
+1. **没有球对谓词**。`IsPLBallPair`／`BallPair`／`ballPair`／`unknot` 全树零命中。
+   `SimplexBallPair.lean` 只有两条，其中 `exists_isPLBall_pair_with_disk_inter` 是
+   "两个标准球交于一个盘"，仍然不是"子多面体嵌在球里"。
+2. **没有同痕**。`ConeIsotopy.lean` 只有一条 `exists_isPLHomeomorphOn_coneComplex_of_continuous`，
+   产出**单个**同胚，全文件没有时间参数（`Icc (0:ℝ) 1`／`unitInterval`／`I →` 零命中）。
+   全树再无别的同痕材料。
+3. **黏合定理对子多面体没有控制**。`PLPiece.lean:83 IsPLHomeomorphOn.piecewise` 要求
+   `EqOn f g (P ∩ Q)`——两张同胚必须在重叠上**逐点相等**。而
+   `BallGluing.lean:12 isPLBall_union_of_boundary_disk` 是先用
+   `exists_isPLBall_pair_with_disk_inter` 取一对**任意的**标准球 `P, Q`，再用
+   `exists_isPLHomeomorphOn_eqOn_disk_of_boundaryComplex` 只在**盘上**对齐；
+   盘之外没有任何控制，因此它**不能**搬运"弧落在哪里"。
+
+于是第 3 件的障碍不是"缺很多定理"，而是**缺一条**：
+
+> **相对球黏合**：设 `C`、`D` 是 `K` 中的三维球、`C ∩ D` 是二维球，`A ⊆ C ∪ D` 是多面体，
+> 且 `(C, C ∩ A)`、`(D, D ∩ A)`、`(C ∩ D, C ∩ D ∩ A)` 都是标准对，
+> 则 `(C ∪ D, A)` 是标准对。
+
+有了它，**沿弧的归纳已经现成**：H-A4 的 `arcChainFace_subset_iff` 给出链的全部相交／不交簿记，
+`isPLBall_iUnion_of_chain` 给出球的部分，逐格的对标准性由 H-A1
+（`exists_isPLHomeomorphOn_coneComplex_sheets`／`_fixing`，对偶格本身就是锥）给出。
+所以剩下的工作量集中在这一条，加上一个标准模型（带标准弧的三维球）的构造——
+后者全树也不存在。
+
+**修订估计**：第 3 件从 §9 的 3k–6k 行修订为 **1k–2.5k 行**（球对词汇 + 相对黏合 + 模型构造 + 归纳装配），
+前提是走"逐格锥化 + 相对黏合"这条路，而不是经典的塌陷 + 正则邻域唯一性那条路。
+这个修订**没有验证**，只是基于 H-A4 实际耗时（估 1k–2k、实际 0.21k）与上述障碍定位的重新估计。
+
+**明确的未闭合义务（交回 F）**：上面框出的那条相对球黏合，外加"带标准弧的三维球模型"的构造。
+本次**没有**为它引入任何谓词或条件定理——引入 `IsPLBallPair` 会是一个新的基础层级，
+按 CLAUDE.md 需要先与用户确认，故未擅自开工。

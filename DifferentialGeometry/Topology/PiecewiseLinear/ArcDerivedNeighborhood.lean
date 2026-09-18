@@ -1,4 +1,5 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.BallChain
+import DifferentialGeometry.Topology.PiecewiseLinear.DerivedNeighborhoodAttachments
 import DifferentialGeometry.Topology.PiecewiseLinear.DerivedNeighborhoodCells
 
 open Set
@@ -206,5 +207,21 @@ theorem IsCombinatorialManifoldWithBoundary.isPLBall_derivedNeighborhood_arcComp
     IsPLBall 3 (PiecewiseLinear.derivedNeighborhood K (arcComplexIn K v n)).space := by
   rw [← iUnion_derivedNeighborhoodCell_arcChainFace_eq hvert hedge]
   exact hK.isPLBall_iUnion_arcChainFace hvert hedge hinj
+
+open Classical in
+theorem IsCombinatorialManifoldWithBoundary.exists_isPLBall_containing_arcComplexIn
+    {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces]
+    (hK : IsCombinatorialManifoldWithBoundary 3 K) {n : ℕ} {v : ℕ → E}
+    (hvert : ∀ i ≤ n, ({v i} : Finset E) ∈ K.faces)
+    (hedge : ∀ i < n, ({v i, v (i + 1)} : Finset E) ∈ K.faces)
+    (hinj : ∀ i ≤ n, ∀ j ≤ n, v i = v j → i = j) :
+    ∃ C : Set E, IsPLBall 3 C ∧ C ⊆ K.space ∧ (arcComplexIn K v n).space ⊆ C := by
+  refine ⟨(PiecewiseLinear.derivedNeighborhood K (arcComplexIn K v n)).space,
+    hK.isPLBall_derivedNeighborhood_arcComplexIn hvert hedge hinj,
+    derivedNeighborhood_space_subset K (arcComplexIn K v n), ?_⟩
+  rw [← iUnion_derivedNeighborhoodCell_space K (arcComplexIn K v n)
+    (arcComplexIn_faces_subset K v n)]
+  exact space_subset_iUnion_derivedNeighborhoodCell_space K (arcComplexIn K v n)
+    (arcComplexIn_faces_subset K v n)
 
 end DifferentialGeometry.Topology.PiecewiseLinear
