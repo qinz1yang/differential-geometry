@@ -976,3 +976,45 @@ theorem eq_top_of_boundaryLoops_mem_normal
   （需要 §16/§17 的 PL 区间分类给出沿弧的次序，以及重叠连通），再把每张图卡里的线性推移用 `ε` 定向、
   在重叠上线性插值成全局单射 PL 自映射。`exists_separated_along_branch` 仍未声明；Case 1/2 未开始。
 
+## 46. 2026-09-18 E3-M2：单张乘积图卡上的长滑移分离（chart 层）
+
+状态：done。新模块 `BranchSlideSeparation.lean`。
+
+- F 车道的 `ModelSlideLong`/`ChartSlideLong` 把滑移长度 `d` 放成无界参数，于是 §44/§45 里"沿分支把有限图卡排成链、
+  用 `ε` 定向、在重叠上线性插值"的整条路线**不再需要**：一张含整条分支的乘积图卡就够。本节把它落到三维流形上。
+- 通用引理（`OpenPartialHomeomorph` 命名空间，任意拓扑空间，不要求赋范结构，故可直接用于流形）：
+  - `injective_conjugateMap`：`k` 单射且 `MapsTo k e.target e.target` ⟹ `e.conjugateMap k` 单射。
+  - `disjoint_conjugateMap_image`：`A, B ⊆ e.target` 且 `Disjoint (k '' A) B` ⟹
+    `Disjoint (e.conjugateMap k '' (e.symm '' A)) (e.symm '' B)`。
+  两条是 `ChartSlide`/`ChartSlideLong` 中对 `slideMap`/`slideMapLong` 逐点重复的证明的一般化。F 的两条同名结果
+  因变量块里的 `[NormedAddCommGroup M]` 不能直接用在流形 `M` 上，这是必须一般化的原因。
+- `isPL_conjugateMap`：把 `ChartConjugate.isPL_conjugateHomeomorph` 从 `Homeomorph` 推广到**任意映射** `k`，
+  只要 `IsPiecewiseAffineOn k univ`、`MapsTo k e.target e.target`、紧 `C ⊆ e.target` 与 `EqOn k id Cᶜ`。
+  这条是必需的：`slideMapLong d R` 只证到双射（`bijective_slideMapLong`），逆的连续性没有，构造不出 `≃ₜ`。
+- `exists_separated_slide`：**两层共轭**。外层是流形的 PL 图卡
+  `E : OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin 3))`（`E ∈ (plGroupoid 3).maximalAtlas M`），
+  内层是模型上的 PL 拉直 `e : OpenPartialHomeomorph (EuclideanSpace ℝ (Fin 3)) (ℝ × ℝ × ℝ)`，
+  `h := E.conjugateMap (e.conjugateMap (slideMapLong d R))`。这样既不需要 `E ≫ₕ e`，也不需要
+  `EuclideanSpace ℝ (Fin 3) ≃L[ℝ] ℝ × ℝ × ℝ` 的线性桥（本仓库没有，造它是无谓开销）。
+  - `U` 由 `IsCompact.exists_isOpen_closure_subset` 给出；`RegularSpace M` 不是自动的，要显式
+    `have : LocallyCompactSpace M := ChartedSpace.locallyCompactSpace (H := EuclideanSpace ℝ (Fin 3)) M`
+    （Mathlib 里它是定理不是实例），再由 `T2Space` 走 `WeaklyLocallyCompactSpace + R1Space ⟹ RegularSpace`。
+  - 边界条款用 `Homeomorph/Conjugate.lean` 的 `conjugateMap_mem_iff` 连做两层，得到比 §44 要求的
+    `h (U ∩ BdM) ⊆ BdM` 更强的 `∀ x, h x ∈ BdM ↔ x ∈ BdM`；内层的侧条件就是 `slideMapLong_snd`
+    （滑移只动第一坐标），数据是 `Bd₁ ⊆ EuclideanSpace ℝ (Fin 3)` 与 `T ⊆ ℝ × ℝ`。
+  - 另外输出 `MapsTo h U U`（`slideMapLong` 保 `slideSupportLong`，两层共轭后保 `K`，`U` 外恒等），
+    §47 的双点集等式要用它。
+- 两条**已经排掉的写法**，记下来免得重犯：
+  1. 不交条款里的 `P, Q` 若有一个取成"贴合用的源余片"，`Disjoint (h '' (D '' P)) (D '' Q)` 恒假——
+     缝 `P ∩ Pc` 的像在 `h` 下不动，且同时落在两边的像里。§44 的 `P, Q` 必须是**两条原像弧的两张细条带**，
+     逐片贴合用的第二块是另取的余片 `Pc`（`P ∪ Pc = D.domain`）。
+  2. 把位置条件写成 `D '' P ⊆ E.symm '' (e.symm '' slideBandA c)` 会让假设集**自相矛盾**：由 `0 ≤ d`、
+     `c + 2*d ≤ R` 可得 `slideBandA c ⊆ slideSupportLong R`，于是 `D '' P ⊆ K ⊆ W`，与"缝像避开 `W`"
+     一起逼出 `P ∩ Pc = ∅`，定理变空。正确的写法只约束**支撑内**的部分：
+     `D '' P ∩ K ⊆ A₀`、`D '' Q ∩ K ⊆ B₀`，再加 `D '' P ∩ D '' Q ⊆ K`（两张条带只在支撑内相交）。
+     不交性按 `p ∈ K` / `p ∉ K` 两种情形证：支撑外 `h` 恒等，交点会被第三条假设逼进 `K`。
+- `isPLOn_piecewise_postcomp_of_separated`：把 `Pasting.exists_isPLOn_postcomp_on_polyhedron_of_locallyInjective`
+  的存在量词消掉（由 `EqOn g (h ∘ F) P` 与 `EqOn g F Pᶜ` 逐点认出 `g = P.piecewise (h ∘ F) F`），
+  直接给出逐片映射的 PL 性、局部单射、纤维至多二与支撑外纤维不变。
+- `doublePointSet_piecewise_postcomp`：抽象层的双点集等式，两个包含都证了，见 §47。
+- 聚焦检查 `BranchSlideSeparation` exit=0（10.0 秒）、零 warning。
