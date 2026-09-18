@@ -1749,3 +1749,85 @@ theorem eq_top_of_boundaryLoops_mem_normal
 - 验证：`BranchCollarPrism` 聚焦检查 exit=0（10.6 秒）、零 warning；
   `.lake/scratch/AuditE3CollarPrism.lean` 的 11 条 `#print axioms` 全部只含
   `propext`、`Classical.choice`、`Quot.sound`，无 `sorryAx`。全程无其它 `lean.exe`。
+
+## 62. 2026-09-18 E3-M3：`hmeet` 用"对既有棱柱做水平校正"闭掉，环带扇区的多面体分解补齐，§61 的一处真空假设修好
+
+状态：done（`hmeet` 不再是假设；端点 `exists_collarExtension_image_inter_boundary_of_levelPrism_over_arc`
+只剩几何输入）。新模块 `BranchCollarPrismLevel.lean`、`CollarSectorPolyhedron.lean`
+（模块名与 19 条新声明名在四条车道分支上都不存在）。
+
+- **主人要求的第 1 步（谁丢掉了 witness）。** `PrismMap.lean` 是**定义层**：`prismSquareMap`、
+  `prismStripMap`、`verticalPrismAffine` 与它们的 `*_mem_convexHull` 都是可加引理的对象。
+  **第一个丢掉 witness 的层是 `PrismInterval.lean:44` 的
+  `exists_isPiecewiseAffineOn_prism_of_partition`**：它内部的 `key : ∀ k ≤ n, ∃ Φ, …` 是
+  **存在量词上的归纳**，每一步从 `ih` 取出一个 witness 再用 `Set.piecewise` 粘，
+  所以拼好的棱柱在任何地方都不是一个具名函数。它上面的
+  `PrismHomotopy.lean:13`、`PrismArc.lean:12/70`、`PrismProdCollar.lean:34` 只是转发这个存在量词。
+  因此"关于那张棱柱映射的分级胞腔引理"在 `PrismInterval` 及以上都写不出来，
+  对那个文件的最小改动是把 `key` 与定理的结论多加一条
+  `(Φ z, z.2) ∈ convexHull {(f (s i), 0), (f (s (i+1)), 0), (g (s i), 1), (g (s (i+1)), 1)}`
+  （保留原 `himg`，投影即得，故不破坏任何 consumer）。**但本轮不需要它，见下。**
+- **进一步的负结论：就算加了分级子句，也推不出 `hmeet`。** 端胞腔是退化的：
+  弧的端点落在边界平面上（`ℓ a = 0`），而 `π` 固定它，于是 `c = π a = a`，
+  `prismSquareMap` 的上三角 `a + t(c-a) + l(d-c) = a + l(d-a)` **与 `t` 无关且整片落在 `{ℓ = 0}`**。
+  所以对端胞腔内部的底点（`q z ∉ Bd M`）存在 `s < 1` 使 `Ψ (z,s) ∈ Bd M`，`hΦmem` 对
+  三角剖分棱柱**本身就是假的**。分级子句只把界改进到 `ℓ ≤ (1 - z.2) · max (ℓ a) (ℓ b)`，
+  在 `ℓ a = 0` 的端胞腔上仍然只给 `≤ 0`。
+- **真正的可加解法（本轮走的）：对既有棱柱做一次水平校正，全部写在自己的模块里。**
+  取图卡里割出 `Bd M` 的线性泛函 `ℓ` 与 `ℓ n = 1` 的向量 `n`：
+  - `boundaryDrop ℓ n := (LinearMap.id - ℓ.smulRight n).toAffineMap`，即 `w ↦ w - ℓ w • n`，
+    这就是"落到边界平面"的仿射映射，`ℓ (boundaryDrop w) = 0`，且在 `ℓ w = 0` 处是恒等。
+    §61 的 (b) 里那个抽象的 `π` 现在有了显式取法。
+  - `arcLevel ℓ c b (z,s) := min (c * |1 - s|) (-(ℓ (b z)))`，
+    `levelPrism ℓ n c b Φ (z,s) := Φ (z, planarClamp s) + (-(ℓ (Φ (z, planarClamp s)) + arcLevel …)) • n`。
+    `planarClamp` 来自 §59。**校正后 `ℓ (levelPrism … (z,s)) = -(arcLevel … (z,s))` 是恒等式**
+    （`apply_levelPrism`），于是
+    `ℓ (Ψ (z,s)) = 0 ↔ c|1-s| = 0 ∨ ℓ (b z) = 0 ↔ s = 1 ∨ q z ∈ Bd M`，**对一切实数 `s`**。
+    这正是 `hΦmem`。`|1 - s|`（不是 `1 - s`）保证 `s > 1` 一侧也不碰边界；
+    `planarClamp` 保证底面那一侧只用到棱柱在 `[0,1]` 上的已知子句，
+    于是**两条竖边对一切实数 `s` 都是常值**，`hΦfix` 也随之成立。
+    这两处正是 §61 里直接用 `min (…) 0` 或 `-(1-s)c` 会互相冲突的地方。
+  - 底/顶不变：`s = 0` 时 `arcLevel = -ℓ (b z)`（要 `-ℓ (b z) ≤ c`，即弧的深度有上界 `c`），
+    校正量为 0，`Ψ (z,0) = b z`；`s = 1` 时 `arcLevel = 0`，`Ψ (z,1) = boundaryDrop (b z)`。
+  - `MapsTo` 由 `levelPrism_eq_boundaryDrop_sub`（`Ψ = boundaryDrop (Φ …) - arcLevel • n`）
+    加 `arcLevel ∈ [0, c]` 给出，而且**对一切实数 `s` 都成立**（clamp 把底点留在棱柱里），
+    所以 `hΦmem` 里那个"对一切 `s`"的量词不再有漏洞。
+  - 分片仿射性只用 `GeneralPosition.lean` 的 `.min / .abs / .add / .affine_comp / .prod_mk`
+    与 `PLHomeomorph.lean` 的 `.mono_of_isPolyhedron`，**没有碰任何 `Prism*` 文件**。
+  端点 `exists_collarExtension_image_inter_boundary_of_levelPrism_over_arc` 输出与 §60/§61 相同的
+  `∃ G, G.domain = Δ' ∧ EqOn G g D.domain ∧ range G.boundary ⊆ BdM ∧ G '' G.domain ∩ BdM = range G.boundary`，
+  **既不带 `hann` 也不带 `hmeet`**。
+- **修好 §61 的一处真空假设（必须记下）。** §61 的 `exists_boundarySweep_of_prism_over_arc` 里
+  `hJoff : ∀ z ∈ J, q z ∉ BdM` 与 `hBbd`、`hmapA` 合起来**强迫 `A ∩ B = ∅`**，
+  而 `A`、`B` 是覆盖环带的两个闭多面体，环带连通 ⟹ 必有一个是空的，
+  在目标构型（`J` 是真子弧）里假设集不可满足。
+  原因是几何上**弧的两个端点必然落在 `Bd M` 上**（滑移在弧端渐变为零）。
+  现改成 `hfixJ : ∀ z ∈ J, q z ∈ BdM → ∀ s, ec.symm (Ψ (z,s)) = q z`，
+  并把 `hmeet` 的结论改成 `q z ∈ BdM ∨ s = 1`（与 `hΦmem` 逐字一致）。
+  两条都由 §62 的水平校正棱柱的竖边子句兑现。
+- **环带扇区的多面体分解（§61 列为"输入"的第 2 条，本轮补齐）。**
+  `CollarSectorPolyhedron.lean`：
+  - `IsPiecewiseAffineOn.isPolyhedron_inter_preimage_of_isPolyhedron`：`f` 在多面体 `P` 上分片仿射、
+    `Q` 是多面体 ⟹ `P ∩ f ⁻¹' Q` 是多面体。证明用
+    `PiecewiseAffineSimplicial.lean` 的 `exists_isSubdivision_affineOn_faces` 取出**有限**的
+    单纯剖分（每个闭面上 `f` 等于一个仿射映射），再用 `Polytope.lean` 的
+    `IsHPolytope.inter_preimage` 逐面逐块。（`ChartPolyhedron.lean` 的
+    `isPolyhedron_of_isCompact_of_eventuallyEq` 是 `private`，本轮没走那条路。）
+  - `exists_polyhedral_sectors_of_isPiecewiseAffineOn`：`Δ'`、`D` 是 PL 2-球、`ρ` 在环带上分片仿射、
+    `J ∪ Jc` 盖住 `ρ` 的像 ⟹ 给出 `A = 环带 ∩ ρ ⁻¹' J`、`B = 环带 ∩ ρ ⁻¹' Jc`，
+    两个多面体、并等于环带、`MapsTo` 与 `IsPiecewiseAffineOn` 齐全。
+    环带本身的多面体性直接用树里已有的 `IsPolyhedron.sdiff_interior_of_isPLBall`（`BallComplement.lean`），
+    不需要 §59 的三角形模型，比 §61 里估计的路线短。
+- **`hJ : IsPolyhedron J` 也消掉了**：由 `hθ` 经 `(isPLBall_Icc _).of_isPLHomeomorphOn hθ` 得到。
+  于是 §61 列的两条输入里只剩一条真正的几何输入：**被推离弧是一条弧**（`IsPLHomeomorphOn θ (Icc 0 1) J`），
+  它取决于 `frontier Δ ∩ P ∩ D ⁻¹' U` 的连通性，不是本层能证的。
+- 其余几何输入（都在端点的假设里，都是滑移模型的直接性质）：
+  `hBd`（图卡里 `Bd M ↔ ℓ = 0`）、`hle/hge`（弧在边界平面下方、深度 ≤ c）、
+  `hend0/hend1`（弧端在边界平面上）、`hends`（弧上只有两个端点在边界平面上）、
+  `hS/hbS/hdS/hslab`（滑移图卡的凸区域与它到边界平面的板状邻域落在 `ec.target` 里）。
+- 本轮**按主人指定的范围未做**：割开胞腔的 `singularSet` / `crossing`、月牙构造、`L₂` 的重贴胞腔、
+  Case 1/2。
+- 验证：`BranchCollarPrism`（改后）、`BranchCollarPrismLevel`、`CollarSectorPolyhedron`
+  三个聚焦检查全部 exit=0（10.3 / 11.1 / 9.8 秒）、零 warning；
+  `.lake/scratch/AuditE3CollarPrismLevel.lean` 的 30 条 `#print axioms` 全部只含
+  `propext`、`Classical.choice`、`Quot.sound`，无 `sorryAx`。全程无其它 `lean.exe`。

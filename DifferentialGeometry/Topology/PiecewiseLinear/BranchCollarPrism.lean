@@ -197,7 +197,7 @@ theorem exists_boundarySweep_of_prism_over_arc [HasGroupoid M (plGroupoid 3)]
     (hec : ec ∈ (plGroupoid 3).maximalAtlas M)
     (hq : IsPLOn 2 3 q (frontier D.domain))
     (hinj : InjOn q J) (hqsrc : MapsTo q J ec.source)
-    (hJoff : ∀ z ∈ J, q z ∉ BdM)
+    (hfixJ : ∀ z ∈ J, q z ∈ BdM → ∀ s : ℝ, ec.symm (Ψ (z, s)) = q z)
     (hfr : ∀ z ∈ frontier D.domain, z ∉ J → q z ∈ BdM)
     (hApoly : IsPolyhedron A) (hBpoly : IsPolyhedron B)
     (hunion : A ∪ B = Δ' \ interior D.domain)
@@ -210,16 +210,20 @@ theorem exists_boundarySweep_of_prism_over_arc [HasGroupoid M (plGroupoid 3)]
     (hΨmaps : MapsTo Ψ (J ×ˢ Icc (0 : ℝ) 1) ec.target)
     (hbot : ∀ z ∈ J, Ψ (z, 0) = ec (q z))
     (htop : ∀ z ∈ J, ec.symm (Ψ (z, 1)) ∈ BdM)
-    (hmeet : ∀ z ∈ J, ∀ s : ℝ, ec.symm (Ψ (z, s)) ∈ BdM → s = 1) :
+    (hmeet : ∀ z ∈ J, ∀ s : ℝ, ec.symm (Ψ (z, s)) ∈ BdM → q z ∈ BdM ∨ s = 1) :
     ∃ Φ : M → ℝ → M, (∀ y : M, Φ y 0 = y) ∧
       (∀ z ∈ frontier D.domain, Φ (q z) 1 ∈ BdM) ∧
       (∀ y ∈ BdM, ∀ s : ℝ, Φ y s = y) ∧
       (∀ z ∈ frontier D.domain, ∀ s : ℝ, Φ (q z) s ∈ BdM → q z ∈ BdM ∨ s = 1) ∧
       IsPLOn 2 3 (fun x => Φ (q (ρ x)) (τ x)) (Δ' \ interior D.domain) := by
   classical
-  have hnot : ∀ y ∈ BdM, y ∉ q '' J := by
-    rintro y hy ⟨z, hz, rfl⟩
-    exact hJoff z hz hy
+  have hfixall : ∀ y ∈ BdM, ∀ s : ℝ, prismSweep q J ec Ψ y s = y := by
+    intro y hy s
+    by_cases hmem : y ∈ q '' J
+    · obtain ⟨z, hz, rfl⟩ := hmem
+      rw [prismSweep_of_mem hinj hz]
+      exact hfixJ z hz hy s
+    · exact prismSweep_of_notMem hmem s
   refine ⟨prismSweep q J ec Ψ, ?_, ?_, ?_, ?_, ?_⟩
   · intro y
     by_cases hy : y ∈ q '' J
@@ -230,19 +234,19 @@ theorem exists_boundarySweep_of_prism_over_arc [HasGroupoid M (plGroupoid 3)]
     by_cases hzJ : z ∈ J
     · rw [prismSweep_of_mem hinj hzJ]
       exact htop z hzJ
-    · rw [prismSweep_of_notMem (hnot _ (hfr z hz hzJ))]
+    · rw [hfixall _ (hfr z hz hzJ)]
       exact hfr z hz hzJ
-  · exact fun y hy s => prismSweep_of_notMem (hnot y hy) s
+  · exact hfixall
   · intro z hz s hmem
     by_cases hzJ : z ∈ J
     · rw [prismSweep_of_mem hinj hzJ] at hmem
-      exact Or.inr (hmeet z hzJ s hmem)
+      exact hmeet z hzJ s hmem
     · exact Or.inl (hfr z hz hzJ)
   · rw [← hunion]
     refine isPLOn_collarSweep_of_prism_over_arc ec hec hq hApoly hBpoly hρA hτA hρB hmapA
       hmapB hΨ hΨmaps (fun x hx => ?_) (fun x hx => ?_)
     · exact prismSweep_of_mem hinj (hmapA hx).1 (τ x)
-    · exact prismSweep_of_notMem (hnot _ (hBbd x hx)) (τ x)
+    · exact hfixall _ (hBbd x hx) (τ x)
 
 open Classical in
 theorem exists_collarExtension_image_inter_boundary_of_prism_over_arc
@@ -265,7 +269,8 @@ theorem exists_collarExtension_image_inter_boundary_of_prism_over_arc
     (hτ0 : ∀ x ∈ D.domain, τ x = 0) (hτ1 : ∀ x ∈ frontier Δ', τ x = 1)
     (hinj : InjOn (P.piecewise (hslide ∘ D) D) J)
     (hqsrc : MapsTo (P.piecewise (hslide ∘ D) D) J ec.source)
-    (hJoff : ∀ z ∈ J, P.piecewise (hslide ∘ D) D z ∉ BdM)
+    (hfixJ : ∀ z ∈ J, P.piecewise (hslide ∘ D) D z ∈ BdM → ∀ s : ℝ,
+      ec.symm (Ψ (z, s)) = P.piecewise (hslide ∘ D) D z)
     (hfr : ∀ z ∈ frontier D.domain, z ∉ J → P.piecewise (hslide ∘ D) D z ∈ BdM)
     (hApoly : IsPolyhedron A) (hBpoly : IsPolyhedron B)
     (hunion : A ∪ B = Δ' \ interior D.domain)
@@ -278,7 +283,8 @@ theorem exists_collarExtension_image_inter_boundary_of_prism_over_arc
     (hΨmaps : MapsTo Ψ (J ×ˢ Icc (0 : ℝ) 1) ec.target)
     (hbot : ∀ z ∈ J, Ψ (z, 0) = ec (P.piecewise (hslide ∘ D) D z))
     (htop : ∀ z ∈ J, ec.symm (Ψ (z, 1)) ∈ BdM)
-    (hmeet : ∀ z ∈ J, ∀ s : ℝ, ec.symm (Ψ (z, s)) ∈ BdM → s = 1) :
+    (hmeet : ∀ z ∈ J, ∀ s : ℝ, ec.symm (Ψ (z, s)) ∈ BdM →
+      P.piecewise (hslide ∘ D) D z ∈ BdM ∨ s = 1) :
     ∃ G : SingularTwoCell M, G.domain = Δ' ∧
       EqOn G (P.piecewise (hslide ∘ D) D) D.domain ∧
       Set.range G.boundary ⊆ BdM ∧
@@ -288,7 +294,7 @@ theorem exists_collarExtension_image_inter_boundary_of_prism_over_arc
   have hqfr : IsPLOn 2 3 (P.piecewise (hslide ∘ D) D) (frontier D.domain) :=
     hgpl.mono_of_isPolyhedron hfrpoly D.frontier_subset_domain
   obtain ⟨Φ, hΦ0, hΦ1, hΦfix, hΦmem, hann⟩ :=
-    exists_boundarySweep_of_prism_over_arc (D := D) (BdM := BdM) ec hec hqfr hinj hqsrc hJoff
+    exists_boundarySweep_of_prism_over_arc (D := D) (BdM := BdM) ec hec hqfr hinj hqsrc hfixJ
       hfr hApoly hBpoly hunion hρA hτA hρB hmapA hmapB hBbd hΨ hΨmaps hbot htop hmeet
   exact exists_collarExtension_image_inter_boundary_of_exteriorCollapse hbdpre hDN hrefl hgpl
     hΔ'ball hsubint hρid hρfr hρsurj hτ0 hτ1 hΦ0 hΦ1 hΦfix hΦmem hann
