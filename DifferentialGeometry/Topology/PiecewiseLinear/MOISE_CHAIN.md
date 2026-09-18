@@ -579,17 +579,62 @@ Moise 每一章开头"不妨设某映射是 PL 的"都是这一条。分三个�
   （`PrismProdCollar.lean` 的 `exists_isPiecewiseAffineOn_prod_eqOn_bottom_of_arcs`，`J` 为嵌入的 PL 圆周，
   取两条弧的分解作输入）。配套工具：`heightRescaleProd`（棱柱高度任意）、
   `exists_isPiecewiseAffineOn_glue_collar_prod`（任意多面体底上的领口拼接）。
-- **M2 盘的径向分层：进行中。** `ConeLayers.lean`：`hull{0,a,b}` 等于 `{αa+βb : α,β ≥ 0, α+β ≤ 1}`
-  （`convexHull_zero_pair`）；按 `α+β` 切出的层等于四个缩放顶点的凸包（`coneCoeffSet_eq_convexHull`）；
-  层可以重新拼成整个锥（`coneCoeffSet_union`、`coneCoeffSet_biUnion`）。
-  `StdConeLayers.lean`：在标准三角形 `stdCone` 上，层是 `z.1 + z.2` 的切片，层内的对角线
-  `σ' z.1 + σ z.2 = σ'σ` 把它切成两个三角形；三者都是 H-多胞形，且层的并是整个三角形
-  （`stdConeLayer_union`、`isHPolytope_stdConeLayerLow/High`）。
-  **剩下的**：把每条边上的锥 `hull{0, y_i, y_{i+1}}` 看成 `stdCone` 的仿射像（`y_i, y_{i+1}` 线性无关），
-  在每个小三角形上按三个顶点值定仿射映射，用 `PiecewiseAffineCover.lean` 的
-  `exists_isPiecewiseAffineOn_of_affine_cover` 拼起来；相邻块的相容性由
-  `eqOn_of_affineMap_eq_of_mem_segment`（两个仿射映射在线段两端相等则沿线段相等）给出。
-- **M3 盘相对整条边界。** 层 `k` 的顶点值取第 `k` 层环路的值；相邻层的环路相邻（contiguous）保证每个小三角形
-  的像落在一张面里，于是整体映进 `|L|`；最外层给出指定的边界环路。环路序列来自零伦的逐层逼近。
+- **M2 锥的径向分层：已证。** `ConeLayers.lean`：`hull{0,a,b}` 等于 `{αa+βb : α,β ≥ 0, α+β ≤ 1}`
+  （`convexHull_zero_pair`）；按 `α+β` 切出的层等于四个缩放顶点的凸包（`coneCoeffSet_eq_convexHull`）。
+  `StdConeLayers.lean`：在标准三角形 `stdCone` 上层是 `z.1 + z.2` 的切片，层内对角线 `σ' z.1 + σ z.2 = σ'σ`
+  把它切成两个三角形，三者都是 H-多胞形，连续两层的并仍是一层（`stdConeLayer_union_consecutive`）。
+  `LayerAffineMap.lean` 给出 `layerLowMap`、`layerHighMap`、`centralConeMap` 三族仿射映射及其顶点值；
+  `ConeLayerMap.lean` 把一层的两块拼成一张 PA 映射并界定每块的像；
+  `ConeAssembly.lean` 的 `exists_isPiecewiseAffineOn_stdCone_of_layers` 对层归纳拼出整锥上的 PA 映射：
+  锥顶取指定值，外边按最外一对顶点值的仿射映射，两条径向边上等于顶点值在层参数处的折线，
+  且每点的像落在所在层四个顶点值的凸包里。
+
+- **M3 三角形相对一条边：已证。** `StdConeSector.lean` 把 `stdCone` 按过斜边的射线切成扇形
+  `stdConeSector u u'`（五条线性不等式，H-多胞形），并给出把扇形线性地搬到 `stdCone` 的坐标
+  `sectorCoord`（它保持 `z.1 + z.2`，故径向分层在扇形之间自动对齐），两条边界射线分别对应两条直角边。
+  `ConeFan.lean`：
+  - `exists_isPiecewiseAffineOn_stdConeSector`：把 M2 的锥映射搬到一个扇形上；
+  - `exists_isPiecewiseAffineOn_stdCone_fan`：对扇形归纳拼接（相邻扇形只交于公共射线，
+    两侧在射线上都等于同一条折线，故相容），得到整个三角形上的 PA 映射，斜边上恰是
+    指定顶点值 `w (N+1) j` 的折线，每点的像落在所在格四个顶点值的凸包里，并记录该点所在的层与扇形；
+  - `exists_isPiecewiseAffineOn_stdCone_fan_mapsTo`：若每个格的四个顶点值落在 `L` 的同一个闭单形里，
+    则整张映射映进 `|L|`；
+  - `exists_pos_forall_exists_isPiecewiseAffineOn_stdCone_dist_le`：**度量版相对逼近**。给定 `stdCone` 上
+    的连续 `f` 与 `ε > 0`，先给出 `δ > 0`；此后任何网距 `< δ` 的角度分划与任何在分划点处与 `f` 相差 `≤ ε`
+    的边界数据，都能扩成 `stdCone` 上的 PA 映射，在斜边上恰是指定折线，且处处与 `f` 相差 `≤ 2ε`。
 
 这条路线**不需要**方形环带的径向参数化（那不是 PL 的），因为分层是按 `α+β` 的线性切片做的。
+
+`DiskRelBoundary.lean` 的 `exists_pos_forall_exists_isPiecewiseAffineOn_stdCone_eqOn_boundary`
+是**盘相对整条边界**的度量版：锥顶取三角形的直角顶点后，两条直角边就是径向边、斜边是角向边，
+于是整条边界都由数据给定。给定 `stdCone` 上的连续 `f` 与 `ε > 0`，先给出 `δ > 0`；此后任何两个网距
+`< δ` 的分划（径向 `σ`、角向 `u`）与任何在分划点处与 `f` 相差 `≤ ε`、且在三个顶点处彼此相容的边界数据，
+都能扩成 `stdCone` 上的 PA 映射，在三条边上恰是指定的折线，且处处与 `f` 相差 `≤ 2ε`。
+
+`ConeFanCarrier.lean` 与 `ConeStarCover.lean` 把这条结论搬进了 `|L|`：
+- `exists_isPiecewiseAffineOn_stdCone_fan_carrierFace`：若每个格的四个顶点值都取在"承载该格像的开星"里，
+  则拼出的映射把每点送进 `convexHull (carrierFace L (f z))`，从而映进 `|L|`；
+- `exists_pos_forall_exists_vertex_image_subset_openStar`：`stdCone` 上的 Lebesgue 数（照
+  `SimplicialApproximation.lean` 里的同一套 `continuousOn_iff'` + `lebesgue_number_lemma_of_metric`）；
+- `eq_of_mem_openStar_of_vertex`：若 `y` 是 `L` 的顶点且 `y ∈ openStar L v`，则 `v = y`。
+  这条是关键：它保证**在边界上 Lebesgue 选出的顶点就是 `f` 自己的值**，于是边界格与内部格的顶点值自动相容；
+- `exists_pos_forall_exists_isPiecewiseAffineOn_stdCone_mapsTo_of_vertex_boundary`：
+  **边界为单纯映射时的相对 PL 逼近**。`f` 在 `stdCone` 上连续且映进 `|L|`，先给出 `δ > 0`；
+  此后任何网距 `< δ`、且在边界分划点处 `f` 取 `L` 顶点值的两个分划，都给出 `stdCone` 上的 PA 映射：
+  三条边上是 `f` 在边界分划点处取值的折线（故当 `f|∂` 对该分划已是仿射时即 `Ψ = f`），
+  每点的像落在 `convexHull (carrierFace L (f z))` 里，整体映进 `|L|`。
+
+**之后还缺的**（按代价排序）：
+1. **盘相对整条边界**（循环版）：把上面的扇形换成平面多边形绕内点的扇形 `hull{0, p_j, p_{j+1}}`，
+   构造与相容性论证逐字相同（`sectorCoord` 换成 2×2 逆矩阵），只是"相邻扇形只交于公共射线"
+   要作为假设由调用方验证。角度归纳的最后一步还要把扇形 `M` 与扇形 `0` 粘回去。
+2. **一般边界数据（非单纯）的 `|L|` 版**：上面那条要求边界分划点处 `f` 取顶点值。
+   若只假设 `f|∂` 是 PA 而非单纯，混合格（两角是给定的边界点、两角是选出的顶点）就没有公共单形，
+   这正是 Zeeman 1964 相对单纯逼近定理的难点，标准解法是先取 `K₀` 的导出邻域再在领口上插值。
+   目前的 M1（乘积相对一端）加上述结论应该够走这条路，但需要把导出邻域的柱形结构接上。
+3. **搬到任意 PL 三角形：已证。** `TriangleRelBoundary.lean` 的
+   `exists_pos_forall_exists_isPiecewiseAffineOn_triangle_eqOn_boundary`：对任意仿射无关的
+   `v : Fin 3 → E`，在 `convexHull ℝ (range v)` 上给出同一条结论，三条边写成
+   `AffineMap.lineMap (v 0) (v 2)`、`lineMap (v 0) (v 1)`、`lineMap (v 2) (v 1)` 的参数化。
+   证明用 `triangleAffineMap` 与 `IsPLHomeomorphOn` 的 `invFunOn` 分支把 `stdCone` 版本搬过去。
+
