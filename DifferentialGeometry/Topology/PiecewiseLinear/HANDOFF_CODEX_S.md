@@ -2979,3 +2979,248 @@ disk-bundle classification) and 3 (the 24.12 contraction and orientation-cover
 descent) are unchanged and still open. No hypothesis was added to any existing
 statement.
 
+
+## C.6 obligation 3, step one: the edge-path monodromy of a Bool cocycle
+
+`CocycleMonodromy.lean` builds the `ZMod 2` monodromy of a `SimplicialBoolCocycle`
+along edge paths of the one-skeleton and characterizes coboundaries by it. The
+one-skeleton is the existing `SimplicialComplex.edgeGraph K` on `K.vertices`; no
+new graph was introduced, and `SimpleGraph.Walk` supplies concatenation and
+reversal. `SimplicialBoolCocycle.walkMonodromy` is the sum of the edge jumps
+over the darts of a walk, `walkMonodromy_append` and `walkMonodromy_reverse`
+record its behaviour under the two walk operations, and `parity_symm_of_adj`
+is the only place where the cocycle's symmetry axiom is used.
+
+The two directions are `walkMonodromy_eq_of_coboundary`, which evaluates the
+monodromy of any walk as the sum of the coboundary function at the two ends,
+hence `walkMonodromy_eq_zero_of_isCoboundary` for closed walks, and
+`isCoboundary_of_forall_walkMonodromy_eq_zero`, which reconstructs the
+coboundary function from a base vertex: the value at a vertex is the monodromy
+of a chosen walk from the base, and the defining identity on an edge comes from
+the closed walk obtained by going out along one chosen walk, crossing the edge
+and returning along the reverse of the other. `isCoboundary_of_preconnected`
+packages this with the existing `edgeGraph` preconnectedness (the empty-vertex
+case is separate), and `isCoboundary_iff_forall_walkMonodromy_eq_zero` is the
+equivalence. `isCoboundary_of_walkMonodromy_generated` is the polygon form used
+downstream: if every closed walk has monodromy either zero or that of a fixed
+closed walk, and that fixed walk has vanishing monodromy, the cocycle is a
+coboundary. The generation hypothesis is a statement about the loops of the
+complex only; it asserts nothing about orientability.
+
+Lane E3's `BranchSignChain` is reused rather than re-proved.
+`loopMonodromy_eq_zero_of_isCoboundary` is `sum_sideJump_eq_zero_of_cycle`
+applied to a cyclically indexed polygon `c : Fin m -> E`,
+`not_isCoboundary_of_loopMonodromy_ne_zero` is `not_exists_sideChoice_of_cycle`,
+and `exists_sideChain` is `exists_sideChoice_of_chain` normalized to a
+prescribed initial side, which is the combinatorial shadow of lifting a chain to
+the double cover. The `Fin`-cyclic `loopMonodromy` and the `Walk`-indexed
+`walkMonodromy` are two presentations of the same invariant; the translation
+between a cyclic vertex family and a closed walk is not built here.
+`SimplicialBoolCocycle.ofLe` restricts a cocycle to a subcomplex, which is
+immediate since every axiom is quantified over faces.
+
+`CocycleMonodromy` checks exit 0 (9.2 s) with zero warnings, and
+`.lake/scratch/AuditSCocycleMonodromy.lean` audits eighteen declarations, all
+only `propext`, `Classical.choice`, `Quot.sound`.
+
+## C.6 obligation 3, step two: orientability from the monodromy of the orientation cocycle
+
+`PolygonNeighborhoodOrientation.lean` feeds the walk monodromy into the
+integrated orientation cocycle. `isOrientable_iff_forall_walkMonodromy_eq_zero`
+says a finite combinatorial manifold with boundary, whose barycentric
+one-skeleton is preconnected, is orientable exactly when the monodromy of
+`orientationCocycle` vanishes on every closed edge walk of the barycentric
+subdivision; the two directions are `isOrientable_of_forall_walkMonodromy_eq_zero`
+and `walkMonodromy_orientationCocycle_eq_zero_of_isOrientable`, both through the
+existing `orientationCocycle_isCoboundary_iff`. The contrapositive
+`exists_walkMonodromy_ne_zero_of_not_isOrientable` produces an actual
+orientation-reversing edge loop for a non-orientable complex, with the
+face-star orientations chosen by `isOrientable_faceStarComplex`.
+
+`isOrientable_of_polygon_walkMonodromy_eq_zero` is the form intended for 24.12.
+Its hypotheses are that every closed edge walk has monodromy either zero or that
+of one distinguished closed walk, and that the distinguished walk's monodromy is
+zero. Instantiating the complex with the neighbourhood of a polygon, the first
+hypothesis is the statement that the polygon generates the loops of that
+neighbourhood and the second is the vanishing monodromy of the polygon; the
+conclusion is that the neighbourhood is orientable. Nothing about orientability
+is assumed. `edgeGraph_barycentricSubdivision_preconnected` supplies the
+connectivity hypothesis from `IsPreconnected K.space` through the existing
+`edgeGraph_preconnected_iff_isPreconnected_space` and the subdivision's space
+equality.
+
+`PolygonNeighborhoodOrientation` checks exit 0 (10.5 s) with zero warnings, and
+`.lake/scratch/AuditSPolygonNeighborhoodOrientation.lean` audits six
+declarations, all only `propext`, `Classical.choice`, `Quot.sound`.
+
+## C.6 obligation 3, step three: a simplicially contracted polygon has vanishing monodromy
+
+`SimplicialWalkHomotopy.lean` introduces the edge-path homotopy relation
+`SimplicialHomotopic K` on walks of the one-skeleton. It is the usual edge-path
+group presentation: an equivalence relation, congruent under `cons`, generated by
+cancelling a backtrack and by replacing two sides of a two-simplex of K by the
+third. The two-simplex move carries the actual face hypothesis
+`{u, v, w} in K.faces`, so it is available exactly across the triangles of the
+complex; the three adjacency hypotheses force the three vertices to be distinct.
+
+`walkMonodromy_eq_of_simplicialHomotopic` shows the monodromy is invariant. The
+backtrack case is the symmetry of the parity plus `x + x = 0` in `ZMod 2`, and the
+two-simplex case is exactly the cocycle axiom of `SimplicialBoolCocycle`
+transported along `boolZMod2`; no new geometric input is used.
+`walkMonodromy_eq_zero_of_simplicialHomotopic_nil` is the polygon form, and
+`isCoboundary_of_polygon_contraction` and `isOrientable_of_polygon_contraction`
+chain it with the generation hypothesis: a polygon that contracts across the
+triangles of the complex and generates its loops makes the complex orientable.
+
+`SimplicialWalkHomotopy` checks exit 0 (9.8 s) with zero warnings.
+
+## C.6 obligation 3, step four: the topological contraction, through the double cover
+
+`CocycleWalkLift.lean` is the actual lift to the orientation double cover.
+`vertexPoint`, `edgePath` and `walkPath` turn a walk of the one-skeleton into a
+genuine path in `K.space`: each edge contributes the affine segment inside the
+convex hull of that face, composed with `faceInclusion`, and the walk contributes
+the iterated `Path.trans`.
+
+`exists_edgeLift` lifts one edge. It does not redo the chart computation: the
+integrated `coveringEdgeLift` is by construction the unique continuous lift of
+the inclusion of that one-simplex which starts at a prescribed point of the
+total space, and the integrated `SimplicialBoolCocycle.coveringNeighbor_side`
+already says that the other end of that lift has side the exclusive or of the
+starting side with the parity of the edge. Composing the affine segment with the
+lift, and reading the endpoint off `coveringNeighbor`, gives a path in the total
+space from the point with side s over the first vertex to the point with side
+`s xor parity` over the second, lying over the edge path. `exists_walkLift` is
+the induction over the walk, concatenating these paths, so the end of a lift of
+the whole walk has side the starting side exclusive or the walk parity, which is
+the `ZMod 2` monodromy read back through `zmod2Bool`.
+
+`walkParity_eq_false_of_homotopic_refl` is the payoff. The constructed lift is
+identified with Mathlib's `liftPath` by the uniqueness characterization
+`eq_liftPath_iff'`, the constant lift is identified with the lift of the constant
+path the same way, and `liftPath_apply_one_eq_of_homotopicRel` says the two lifts
+end at the same point once the two paths are homotopic relative to the
+endpoints, which is what `Path.Homotopic` unfolds to. Hence
+`walkMonodromy_eq_zero_of_homotopic_refl`: a closed edge walk whose polygonal
+path is null-homotopic in `K.space` has vanishing monodromy. No local
+triviality, chart change or star section is re-proved here.
+
+`ContractiblePolygonOrientation.lean` closes the chain.
+`isOrientable_of_nullHomotopic_polygon` states that a finite combinatorial
+manifold with boundary, with preconnected barycentric one-skeleton, whose loops
+are generated by a polygon whose path is null-homotopic in the space, is
+orientable. `isOrientable_of_forall_nullHomotopic_walk` is the simply connected
+case, where the generation hypothesis is not needed.
+
+`CocycleWalkLift` (9.5 s) and `ContractiblePolygonOrientation` (9.9 s) check exit
+0 with zero warnings, as do the two earlier modules after a rename of their
+local `faceStarComplex` finiteness instances, which previously collided with the
+unnamed one in `CoveringOrientation` when both were imported.
+`.lake/scratch/AuditSContractiblePolygon.lean` audits eighteen declarations
+across the two new modules and `SimplicialWalkHomotopy`, all only `propext`,
+`Classical.choice`, `Quot.sound`.
+
+### What obligation 3 still lacks
+
+The chain proved here is: contraction of the polygon (either simplicially across
+the triangles, or topologically as a null-homotopy in the space) gives vanishing
+monodromy of the orientation cocycle, and vanishing monodromy on all loops gives
+a coherent orientation. Three things are still missing for the book's 24.12.
+
+1. The generation hypothesis `hgen`. For a regular neighbourhood of a polygon it
+   says the polygon generates the loops of the neighbourhood, which needs the
+   deformation retraction of a regular neighbourhood onto its core. It is stated
+   as an explicit hypothesis, never as a `sorry`, and it says nothing about
+   orientability.
+2. Localization. Every endpoint above is stated for one complex and is meant to
+   be instantiated with the neighbourhood N, so its contraction hypothesis is a
+   contraction inside N. Deducing it from a contraction in the ambient manifold M
+   needs the comparison of `orientationCocycle` for N with the one for M, that
+   is, `localOrientationParity` for a subcomplex, whose supporting lemmas
+   `localOrientationParity` and `localOrientationParity_eq` are `private` in
+   `OrientationCocycle.lean`. The public route would go through
+   `orientationCocycle_parity_eq_localSubdivisionOrientationSign` and would need
+   `carrierFace L x = carrierFace K x` for `x` in `L.space`, which is not in the
+   tree. Estimated cost: one module of roughly 150 to 250 lines, plus either
+   making two private lemmas public or reproving them.
+3. The `Fin`-cyclic presentation `loopMonodromy` and the `Walk` presentation
+   `walkMonodromy` are not yet translated into each other, so a polygon delivered
+   as a cyclic family `Fin m -> E`, as in `NeighborhoodCycle`, has to be turned
+   into a closed walk by hand.
+
+## C.6 obligation 3, step five: the orientation cocycle of a subcomplex
+
+`SubcomplexOrientationCocycle.lean` closes the localization gap recorded in the
+previous section, and does so entirely through public API; the two `private`
+lemmas of `OrientationCocycle.lean` are not needed and nothing was made public
+there.
+
+The missing producer was `carrierFace_eq_of_faces_subset`: for a subcomplex
+`L.faces` inside `K.faces` and a point of `L.space`, the carrier in L and the
+carrier in K coincide. Both are faces of K whose open simplex contains the
+point, and the existing
+`face_subset_of_mem_openSimplex_of_mem_convexHull` applied in both directions
+gives mutual inclusion. `faceStarComplex_mono` is the corresponding statement
+for face stars and is immediate from the definition.
+
+`orientationOfLe` restricts the ambient face-star orientations to L using the
+existing `CoherentOrientation.restrict`, and since that restriction keeps both
+the vertex order and the sign function unchanged,
+`localOrientationSign_orientationOfLe` holds by reduction once the face
+membership is fixed. Feeding the carrier identity into it gives
+`localSubdivisionOrientationSign_orientationOfLe`, and then
+`orientationCocycle_parity_of_faces_subset` proves that the orientation cocycle
+of L, for the restricted orientations, has exactly the ambient parities on every
+edge of `barycentricSubdivision L`. The top-dimensional simplex needed by
+`orientationCocycle_parity_eq_localSubdivisionOrientationSign` is produced in L
+itself, by `exists_face_superset_card_eq` for the subdivided manifold, and is a
+simplex of the ambient subdivision by `barycentricSubdivision_faces_subset`.
+
+`isOrientable_of_isCoboundary_ofLe` is the consequence: if the ambient
+orientation cocycle restricted to `barycentricSubdivision L` is a coboundary,
+then L is orientable. The coboundary function is reused verbatim.
+
+`SubcomplexOrientationCocycle` checks exit 0 (9.1 s) with zero warnings.
+
+## C.6 obligation 3 assembled: an ambient contraction orients the neighbourhood
+
+`AmbientPolygonOrientation.lean` is the endpoint.
+`isOrientable_of_ambient_nullHomotopic_polygon` takes a subcomplex L of an
+ambient finite combinatorial manifold with boundary K, both of the same
+dimension, a closed edge walk of `barycentricSubdivision L` whose polygonal path
+is null-homotopic in the ambient `K.space`, and the hypothesis that every closed
+edge walk of `barycentricSubdivision L` has the same ambient monodromy as either
+the constant walk or that polygon, and concludes `IsOrientable n L`.
+
+The two new pieces are `edgeGraphHom`, the inclusion of one-skeletons induced by
+an inclusion of complexes, and `walkMonodromy_ofLe`, which says the monodromy of
+the restricted cocycle along a walk of the subcomplex equals the ambient
+monodromy along the image walk; both are immediate since the parities of the
+restricted cocycle are the ambient parities by definition. The rest is the chain
+already recorded: the ambient contraction kills the ambient monodromy of the
+image walk, the generation hypothesis then kills the monodromy of every closed
+walk of the subcomplex, the restricted cocycle is therefore a coboundary, and the
+subcomplex orientation comparison turns that into orientability of L.
+
+`AmbientPolygonOrientation` checks exit 0 (9.5 s) with zero warnings, and
+`.lake/scratch/AuditSAmbientPolygon.lean` audits nine declarations across the two
+newest modules, all only `propext`, `Classical.choice`, `Quot.sound`.
+
+### Revised statement of what obligation 3 still lacks
+
+Item 2 of the earlier list, localization, is closed by
+`SubcomplexOrientationCocycle.lean`; that paragraph is superseded. What remains is
+
+1. The generation hypothesis. For a regular neighbourhood of a polygon it says
+   that the polygon generates the loops of the neighbourhood, and needs the
+   deformation retraction of a regular neighbourhood onto its core. It stays an
+   explicit hypothesis of the endpoint, never a `sorry`, and it asserts nothing
+   about orientability.
+2. The `Fin`-cyclic `loopMonodromy` and the `Walk`-indexed `walkMonodromy` are
+   still not translated into each other, so a polygon delivered as a cyclic
+   family `Fin m -> E`, as in `NeighborhoodCycle`, has to be turned into a closed
+   walk by hand.
+3. Nothing here produces the polygon or its ambient contraction; 24.12 supplies
+   those, and the contraction enters as the topological hypothesis
+   `(walkPath ...).Homotopic (Path.refl ...)` or, in the purely combinatorial
+   variant, as `SimplicialHomotopic K gamma Walk.nil`.
