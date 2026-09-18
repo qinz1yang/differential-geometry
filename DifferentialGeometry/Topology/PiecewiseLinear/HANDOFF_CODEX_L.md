@@ -2830,3 +2830,30 @@ step 2 只做了 grep 与接口陈述，没有动工（月牙是一个项目，�
 - 未闭合：由 F 的双端边界交叉图卡把此模型共轭回一般分支，再用 `Pasting/SingularPasting` 粘回源盘。
   局部 crossing 搬运优先复用 `CutAndPaste.lean` 中现有的
   `exists_crossing_patches_of_source_changes` 及两条 `transport_*_of_source_changes`，不另造双原像标签交换。
+
+## 86. 2026-09-18 E3-M3：楔形推移的实际图卡共轭与紧支撑兼容
+
+状态：**已闭合**。新模块 `SlabWedgeConjugation.lean` 完成不依赖完整弧链图卡的实际环境转运层。
+
+- `OpenPartialHomeomorph.disjoint_conjugateMap_images`：两张不同映射经同一开偏同胚共轭后，像的不交性从
+  坐标目标精确搬回源空间；这补足原 `disjoint_conjugateMap_image` 只处理“一张推移、一张不动”的限制。
+- `mapsTo_of_injective_eqOn_compl`：单射且在 `Cᶜ` 上恒等的自映射保持 `C`，用于把模型紧支撑逐层穿过
+  内、外两张图卡。
+- `slab_wedge_conjugate_properties`：对内图卡 `e` 与实际 PL 图卡 `E`，只假设帽函数支撑落在
+  `e.target`，并允许实际两片 `A B` 是正、负开折片的**任意子集**。结论给出正、负两张嵌套共轭均为
+  全局 PL 单射、共享拉回后的紧支撑、支撑外逐点恒等、各自保持该支撑，且
+  `positiveSlabWedgeConjugate E e c '' slabWedgeChartSet E e A` 与
+  `negativeSlabWedgeConjugate E e c '' slabWedgeChartSet E e B` 不交。
+  此陈述没有要求整张无界折片进入局部图卡，也没有假设最终 carrier 分离结论。
+- 隔离严格检查：exit `0`、零诊断、共享产物未改动；收据
+  `C:\Users\liao9\AppData\Local\Temp\codex-e3-slab-private\DifferentialGeometry\Topology\PiecewiseLinear\SlabWedgeConjugation.json`。
+  外部静默审计动态核对本模块恰有 7 条非自动声明，另审计 6 条关键复用声明；全部公理闭包只含
+  `propext / Classical.choice / Quot.sound`，13 个适用环境 linter（只排除 `docBlame`、`docBlameThm`）
+  零诊断。审计收据
+  `C:\Users\liao9\AppData\Local\Temp\codex-e3-slab-private\external-audit.json`。
+- **确切未闭合接口**：对完整边界分支 `cb`，仍需一个双端弧链图卡，给出同一组 `E,e,c,A,B` 使两张实际胞腔片
+  的迹分别落入 `slabWedgeChartSet E e A/B`，整条 branch fiber 由这两片覆盖，并把 `BdM` 在两个端点
+  同时识别为平板端面 `p.1 = 0` 与 `p.1 = c`。F 当前的局部 boundary-double 图卡与
+  `BoundaryBranchSheets` 只交付局部交叉图卡、带一致标签的多面体源片邻域及分支纤维覆盖；尚缺
+  **实际胞腔迹落入坐标折片**以及**两个端点的边界相容**。缺少这两项时不能陈述最终
+  `exists_separated_along_branch`，也不能把 Case 3/4 的 `L₂` 与复杂度下降宣称闭合。
