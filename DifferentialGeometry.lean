@@ -5952,7 +5952,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Shri
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.ShrinkerSplittingFrontierReduction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.ShrinkingCylinderMetric
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.ShrinkingCylinderTimeChange
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.SimplyConnectedBicollar
+import DifferentialGeometry.Topology.SphereSeparation.BicollarHomotopy
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.SmallBallEuclideanRatio
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.SmoothBallVolumeContinuity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.SmoothSmallBallBounds
@@ -11219,3 +11219,11 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Parametric.Add
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedSpatialNeckRadius
 import DifferentialGeometry.Geometry.Comparison.Splitting.TwoEndsScalarBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientReducedDensityTails
+import DifferentialGeometry.Analysis.Integration.Fatou
+import DifferentialGeometry.Analysis.Calculus.SecondDifference
+import DifferentialGeometry.Analysis.Integration.Convolution.Derivative
+import DifferentialGeometry.Analysis.Integration.Convolution.SecondDifference
+import DifferentialGeometry.Analysis.Convex.Distribution
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientNegativeScalar
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.RegularPoleRescalings
+import DifferentialGeometry.Analysis.Calculus.Compactness.LinearHessianLimits

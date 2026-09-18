@@ -240,10 +240,34 @@ theorem curvatureNormalizedFlow_scalarBounded
   exact ⟨mul_nonneg (inv_nonneg.mpr hQ.le) h.1,
     mul_le_mul_of_nonneg_left h.2 (inv_nonneg.mpr hQ.le)⟩
 
-theorem isAncientKappaSolution_curvatureNormalizedFlow
+end Pointed
+
+section RetainedEvent
+
+variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E]
+  {H : Type uH} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  {D : RealTimeInterval}
+  (F : PointedFlowData.{u, uE, uH} (I := I) D)
+
+private local instance retainedNormalizationTopology : TopologicalSpace F.M := F.topology
+private local instance retainedNormalizationCharted : ChartedSpace H F.M := F.charted
+private local instance retainedNormalizationSmooth : IsManifold I ∞ F.M := F.smooth
+private local instance retainedNormalizationC1 : IsManifold I 1 F.M :=
+  IsManifold.of_le (n := ∞) (by decide)
+private local instance retainedNormalizationSigmaCompact : SigmaCompactSpace F.M := F.sigmaCompact
+private local instance retainedNormalizationT2 : T2Space F.M := F.t2
+private local instance retainedNormalizationTangentT2 : T2Space (TangentBundle I F.M) :=
+  F.t2TangentBundle
+
+private local instance retainedEventComplete : CompleteSpace E :=
+  FiniteDimensional.complete ℝ E
+
+theorem isAncientKappaSolution_curvatureNormalizedFlow_of_rmNormSq_ne_zero
     {kappa : ℝ} (hF : IsAncientKappaSolution (I := I) kappa F)
     (t0 Q : ℝ) (hQ : 0 < Q) (ht0 : t0 ∈ D.carrier)
-    (x0 : F.M) (hvalue : F.S.scalar t0 x0 = Q) :
+    (x0 : F.M) {t : ℝ} (ht : t ≤ t0) (x : F.M)
+    (hx : normSq0S (F.S.base.metric t) x 4 (F.S.base.rm04 t x) ≠ 0) :
     IsAncientKappaSolution (I := I) kappa
       (curvatureNormalizedFlow F hF.carrier_eq hF.regular_eq t0 Q hQ ht0 x0) := by
   have ht0le : t0 ≤ 0 := by
@@ -276,12 +300,43 @@ theorem isAncientKappaSolution_curvatureNormalizedFlow
       F hF.carrier_eq hF.regular_eq t0 Q hQ ht0 x0 C hC⟩
   · exact curvatureNormalizedSolution_noncollapsed
       F.S hF.carrier_eq t0 Q hQ ht0 kappa hF.noncollapsed
-  · apply pointedFlowNotFlat_of_scalar_ne_zero
-      (curvatureNormalizedFlow F hF.carrier_eq hF.regular_eq t0 Q hQ ht0 x0)
-      (t := 0) (by simp) x0
-    change (curvatureNormalizedSolution F.S t0 Q hQ ht0).scalar 0 x0 ≠ 0
-    rw [curvatureNormalizedSolution_scalar_base F.S t0 Q hQ ht0 x0 hvalue]
-    exact one_ne_zero
+  · have htime : parabolicTime t0 Q (Q * (t - t0)) = t := by
+      simp only [parabolicTime, mul_div_cancel_left₀ _ hQ.ne']
+      ring
+    refine ⟨Q * (t - t0), mul_nonpos_of_nonneg_of_nonpos hQ.le (sub_nonpos.mpr ht), x, ?_⟩
+    change normSq0S
+      ((curvatureNormalizedSolution F.S t0 Q hQ ht0).base.metric (Q * (t - t0))) x 4
+      ((curvatureNormalizedSolution F.S t0 Q hQ ht0).base.rm04 (Q * (t - t0)) x) ≠ 0
+    rw [curvatureNormalizedSolution_rmNormSq, htime]
+    exact mul_ne_zero (pow_ne_zero _ (inv_ne_zero hQ.ne')) hx
+
+end RetainedEvent
+
+section Pointed
+
+variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E] [CompleteSpace E]
+  {H : Type uH} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  {D : RealTimeInterval}
+  (F : PointedFlowData.{u, uE, uH} (I := I) D)
+
+attribute [local instance] normalizationTopology normalizationCharted normalizationSmooth
+  normalizationC1 normalizationSigmaCompact normalizationT2 normalizationTangentT2
+
+theorem isAncientKappaSolution_curvatureNormalizedFlow
+    {kappa : ℝ} (hF : IsAncientKappaSolution (I := I) kappa F)
+    (t0 Q : ℝ) (hQ : 0 < Q) (ht0 : t0 ∈ D.carrier)
+    (x0 : F.M) (hvalue : F.S.scalar t0 x0 = Q) :
+    IsAncientKappaSolution (I := I) kappa
+      (curvatureNormalizedFlow F hF.carrier_eq hF.regular_eq t0 Q hQ ht0 x0) := by
+  apply isAncientKappaSolution_curvatureNormalizedFlow_of_rmNormSq_ne_zero
+    F hF t0 Q hQ ht0 x0 (t := t0) le_rfl x0
+  intro hzero
+  have hbound := scalar_abs_le_rm (I := I) (M := F.M) (F.S.base.metric t0) x0
+  change |F.S.scalar t0 x0| ≤ _ * Real.sqrt
+    (normSq0S (F.S.base.metric t0) x0 4 (F.S.base.rm04 t0 x0)) at hbound
+  rw [hzero, Real.sqrt_zero, mul_zero, hvalue] at hbound
+  exact hQ.not_ge ((le_abs_self Q).trans hbound)
 
 end Pointed
 

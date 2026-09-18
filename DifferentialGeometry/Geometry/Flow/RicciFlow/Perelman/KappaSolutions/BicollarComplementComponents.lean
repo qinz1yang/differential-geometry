@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.SimplyConnectedBicollar
+import DifferentialGeometry.Topology.SphereSeparation.BicollarHomotopy
 import Mathlib.Topology.Connected.LocallyConnected
 
 noncomputable section
