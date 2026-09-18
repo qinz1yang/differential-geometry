@@ -8280,6 +8280,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.BallPairRelativeGluing
 import DifferentialGeometry.Topology.PiecewiseLinear.BicollarEmbedding
 import DifferentialGeometry.Topology.PiecewiseLinear.ConeDiskPairExtension
 import DifferentialGeometry.Topology.PiecewiseLinear.MobiusSquare
+import DifferentialGeometry.Topology.PiecewiseLinear.MobiusSquareMap
 import DifferentialGeometry.Topology.PiecewiseLinear.MoiseChain
 import DifferentialGeometry.Topology.PiecewiseLinear.SphereNesting
 import DifferentialGeometry.Topology.PiecewiseLinear.TameNestedCells
