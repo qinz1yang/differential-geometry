@@ -85,4 +85,98 @@ theorem convexHull_insert_inter_convexHull_insert_of_separating [DecidableEq E] 
   · exact subset_inter (convexHull_mono (Finset.coe_subset.mpr (Finset.subset_insert a F)))
       (convexHull_mono (Finset.coe_subset.mpr (Finset.subset_insert b F)))
 
+omit [FiniteDimensional ℝ E] in
+theorem convexHull_insert_union_convexHull_insert_of_midpoint [DecidableEq E] {F : Finset E}
+    {c d m : E} (hm : c + d = m + m) (hcF : c ∉ F) (hdF : d ∉ F) (hmF : m ∉ F) (hcm : c ≠ m)
+    (hdm : d ≠ m) (hcd : c ≠ d) :
+    convexHull ℝ ((insert c (insert m F) : Finset E) : Set E) ∪
+        convexHull ℝ ((insert d (insert m F) : Finset E) : Set E) =
+      convexHull ℝ ((insert c (insert d F) : Finset E) : Set E) := by
+  have hhalf : (1 / 2 : ℝ) • c + (1 / 2 : ℝ) • d = m := by
+    rw [← smul_add, hm, ← two_smul ℝ m, smul_smul]
+    norm_num
+  have hmseg : m ∈ convexHull ℝ ((insert c (insert d F) : Finset E) : Set E) := by
+    rw [← hhalf]
+    exact (convex_convexHull ℝ _) (subset_convexHull ℝ _ (by simp))
+      (subset_convexHull ℝ _ (by simp)) (by norm_num) (by norm_num) (by norm_num)
+  have h2 : ∀ t : ℝ, (2 * t) • m = t • c + t • d := by
+    intro t
+    rw [mul_comm, mul_smul, two_smul, ← hm, smul_add]
+  have hside : ∀ e : E, e = c ∨ e = d →
+      convexHull ℝ ((insert e (insert m F) : Finset E) : Set E) ⊆
+        convexHull ℝ ((insert c (insert d F) : Finset E) : Set E) := by
+    intro e he
+    refine convexHull_min ?_ (convex_convexHull ℝ _)
+    intro v hv
+    rw [Finset.coe_insert, Finset.coe_insert, Set.mem_insert_iff, Set.mem_insert_iff] at hv
+    rcases hv with rfl | rfl | hv
+    · refine subset_convexHull ℝ _ ?_
+      simp only [Finset.coe_insert, Set.mem_insert_iff]
+      rcases he with rfl | rfl
+      · exact Or.inl rfl
+      · exact Or.inr (Or.inl rfl)
+    · exact hmseg
+    · refine subset_convexHull ℝ _ ?_
+      simp only [Finset.coe_insert, Set.mem_insert_iff]
+      exact Or.inr (Or.inr hv)
+  refine Subset.antisymm (union_subset (hside c (Or.inl rfl)) (hside d (Or.inr rfl))) ?_
+  intro x hx
+  obtain ⟨w, hw0, hw1, hwx⟩ := mem_convexHull_iff_exists_weights.mp hx
+  have hcni : c ∉ insert d F := by simp [hcd, hcF]
+  rw [Finset.sum_insert hcni, Finset.sum_insert hdF] at hw1 hwx
+  have hcmi : c ∉ insert m F := by simp [hcm, hcF]
+  have hdmi : d ∉ insert m F := by simp [hdm, hdF]
+  have hwc : 0 ≤ w c := hw0 c (by simp)
+  have hwd : 0 ≤ w d := hw0 d (by simp)
+  have hwF : ∀ v ∈ F, 0 ≤ w v := fun v hv => hw0 v (by simp [hv])
+  rcases le_total (w d) (w c) with h | h
+  · have hcongr : ∀ v ∈ F,
+        (if v = c then w c - w d else if v = m then 2 * w d else w v) = w v := by
+      intro v hv
+      rw [if_neg (fun hh : v = c => hcF (hh ▸ hv)), if_neg (fun hh : v = m => hmF (hh ▸ hv))]
+    refine Or.inl (mem_convexHull_iff_exists_weights.mpr
+      ⟨fun v => if v = c then w c - w d else if v = m then 2 * w d else w v, ?_, ?_, ?_⟩)
+    · intro v hv
+      dsimp only
+      split_ifs with h1 h2
+      · linarith
+      · linarith
+      · rw [Finset.mem_insert, Finset.mem_insert] at hv
+        rcases hv with rfl | rfl | hv
+        · exact absurd rfl h1
+        · exact absurd rfl h2
+        · exact hwF v hv
+    · rw [Finset.sum_insert hcmi, Finset.sum_insert hmF, if_pos rfl, if_neg (Ne.symm hcm),
+        if_pos rfl, Finset.sum_congr rfl hcongr]
+      linarith
+    · rw [Finset.sum_insert hcmi, Finset.sum_insert hmF]
+      dsimp only
+      rw [if_pos rfl, if_neg (Ne.symm hcm), if_pos rfl,
+        Finset.sum_congr rfl (fun v hv => by rw [hcongr v hv]), h2 (w d), ← hwx]
+      module
+  · have hcongr : ∀ v ∈ F,
+        (if v = d then w d - w c else if v = m then 2 * w c else w v) = w v := by
+      intro v hv
+      rw [if_neg (fun hh : v = d => hdF (hh ▸ hv)), if_neg (fun hh : v = m => hmF (hh ▸ hv))]
+    refine Or.inr (mem_convexHull_iff_exists_weights.mpr
+      ⟨fun v => if v = d then w d - w c else if v = m then 2 * w c else w v, ?_, ?_, ?_⟩)
+    · intro v hv
+      dsimp only
+      split_ifs with h1 h2
+      · linarith
+      · linarith
+      · rw [Finset.mem_insert, Finset.mem_insert] at hv
+        rcases hv with rfl | rfl | hv
+        · exact absurd rfl h1
+        · exact absurd rfl h2
+        · exact hwF v hv
+    · rw [Finset.sum_insert hdmi, Finset.sum_insert hmF, if_pos rfl, if_neg (Ne.symm hdm),
+        if_pos rfl, Finset.sum_congr rfl hcongr]
+      linarith
+    · rw [Finset.sum_insert hdmi, Finset.sum_insert hmF]
+      dsimp only
+      rw [if_pos rfl, if_neg (Ne.symm hdm), if_pos rfl,
+        Finset.sum_congr rfl (fun v hv => by rw [hcongr v hv]), h2 (w c), ← hwx]
+      module
+
 end DifferentialGeometry.Topology.PiecewiseLinear

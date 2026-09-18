@@ -1727,3 +1727,39 @@ M1 只给"PL 同胚于一个锥"，不给"是一个锥"，所以绕不过去。
 
 按协调者提醒，这条同时供模型的两处使用：`C₂` 一侧的单段 `[z,w]` 要写成
 `coneSet q {z,w} = [q,z] ∪ [q,w] = [z,w]`，以及并这一对的弧分解，不要手写两遍。
+
+## 20. 2026-09-18 模型子项 2 — done：中点切开的并等式（`BallPairTwoSimplices.lean`）
+
+`convexHull_insert_union_convexHull_insert_of_midpoint`：设 `c + d = m + m`（即 `m` 是 `c`、`d` 的中点，
+写成加法式避免 `midpoint` API），`c, d, m ∉ F` 且两两不同，则
+
+    convexHull ℝ (insert c (insert m F)) ∪ convexHull ℝ (insert d (insert m F))
+      = convexHull ℝ (insert c (insert d F))
+
+与子项 1 一样**不需要有限维**（`omit [FiniteDimensional ℝ E]` 通过），也不需要仿射无关。
+
+- `⊆` 是单调性：两边的生成点都落在右边的包里，`m` 用 `m = (1/2)•c + (1/2)•d` 加凸性。
+  两侧对称，抽成一条 `hside` 参数化的辅助断言，不写两遍。
+- `⊇` 是内容：由 `Barycentric.lean:9 mem_convexHull_iff_exists_weights` 取权 `w`，
+  按 `w d ≤ w c` 与 `w c ≤ w d` 分支，新权取
+  `c ↦ w c - w d`、`m ↦ 2 * w d`、其余不变（另一支对称）。
+  向量恒等式由 `h2 : (2 * t) • m = t • c + t • d`（从 `hm` 得）加 `module` 收尾。
+
+坑（Finset 权重改写的通用教训）：
+- 新权写成 `fun v => if v = c then _ else if v = m then _ else w v` 之后，
+  `simp only [hvc, if_pos rfl]` **不работает**：`simp` 会把条件化成 `True` 但不消 `ite`，
+  留下 `if True then _ else _`。正确写法是 `dsimp only` 之后 `split_ifs with h1 h2`，三支分别处理。
+- `rw [Finset.sum_insert ...]` 之后项仍是未 β 归约的 lambda 应用，
+  `rw [if_pos rfl]` 会找不到模式。**向量**求和那一支要先 `dsimp only`；
+  但**标量**求和那一支 `rw` 完就已经归约好了，再写 `dsimp only` 会报
+  "dsimp made no progress"。两支不一样，别照抄。
+- `Finset.sum_congr rfl hcongr` 里 `hcongr : ∀ v ∈ F, (if ...) = w v` 可直接用于标量和；
+  向量和要包一层 `fun v hv => by rw [hcongr v hv]`（目标是 `(if ...) • v = w v • v`，
+  改写后 `rfl` 自动收）。
+
+聚焦检查 `BallPairTwoSimplices` exit=0（10.5 秒）、零 warning；
+`.lake/scratch/AuditHTwoSimplices.lean`（同时导入 `SegmentSplit`）五项仅
+`propext`、`Classical.choice`、`Quot.sound`。
+
+子项 3（三组仿射无关、三处 `openSimplex` 成员、三条弧与各块的交）与子项 4
+（第 16 节要而第 2 项不给的仿射无关）**未开始，不报区间**；第 3、4 步同样未开始。
