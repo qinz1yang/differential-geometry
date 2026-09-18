@@ -2,6 +2,7 @@ import DifferentialGeometry.Topology.Homotopy.DeformationRetractLoopPower
 import DifferentialGeometry.Topology.PiecewiseLinear.DerivedNeighborhoodHomology
 import DifferentialGeometry.Topology.PiecewiseLinear.DerivedNeighborhoodLoop
 import DifferentialGeometry.Topology.PiecewiseLinear.DerivedNeighborhoodManifold
+import DifferentialGeometry.Topology.PiecewiseLinear.NeighborhoodCylinder
 import DifferentialGeometry.Topology.PiecewiseLinear.PolygonGeneratedFromLoops
 import DifferentialGeometry.Topology.SimplicialComplex.GeometricConnectivity
 
@@ -145,5 +146,18 @@ theorem isOrientable_derivedNeighborhood_of_ambient_nullHomotopic_polygon
       (c₃ : C(K.space, (barycentricSubdivision (secondDerived K)).space))
   rw [walkPath_map, walkPath_map]
   exact hnull'
+
+open Classical in
+theorem exists_cylindricalDiagram_isOrientable_derivedNeighborhood_of_nullHomotopic_polygon
+    (hPK : P.faces ⊆ K.faces) (hK : IsCombinatorialManifoldWithBoundary 3 K)
+    (hP : IsCombinatorialManifold 1 P) (hconn : IsConnected P.space)
+    (hnull : ∀ (y : P.space) (ℓ : Path y y),
+      (ℓ.map (spaceInclusion hPK).continuous).Homotopic
+        (Path.refl (spaceInclusion hPK y))) :
+    IsOrientable 3 (derivedNeighborhood K P) ∧
+      ∃ φ : (Fin 3 → ℝ) × ℝ → E,
+        IsCylindricalDiagram φ (stdSimplex ℝ (Fin 3)) (derivedNeighborhood K P).space :=
+  ⟨isOrientable_derivedNeighborhood_of_ambient_nullHomotopic_polygon hPK hK hP hconn hnull,
+    exists_cylindricalDiagram_derivedNeighborhood_circle K P hK hPK hP hconn⟩
 
 end DifferentialGeometry.Topology.PiecewiseLinear

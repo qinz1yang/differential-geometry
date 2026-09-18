@@ -3709,11 +3709,23 @@ and `isConnected_barycentricSubdivision_derivedNeighborhood_space` — the
 
 ### Verification
 
-Both modules check exit 0 with zero warnings (6.6 s and 11.5 s).
-`.lake/scratch/AuditSDerivedNeighborhoodPolygon.lean` audits eleven declarations,
-all only `propext`, `Classical.choice`, `Quot.sound`. About 150 new lines against
+Both modules check exit 0 with zero warnings (6.6 s and 11.7 s).
+`.lake/scratch/AuditSDerivedNeighborhoodPolygon.lean` audits twelve declarations,
+all only `propext`, `Classical.choice`, `Quot.sound`. About 165 new lines against
 the 300--500 estimate; the four transports collapsing to definitional equality is
 where the estimate was wrong.
+
+### The immediate consumer: 24.11 upgraded to 24.12
+
+`exists_cylindricalDiagram_isOrientable_derivedNeighborhood_of_nullHomotopic_polygon`
+is the same conclusion as the existing
+`exists_cylindricalDiagram_isOrientable_derivedNeighborhood_circle`
+(`NeighborhoodCylinder.lean:68`) — the derived neighbourhood of a polygon in a
+three-dimensional ambient complex is orientable and carries a cylindrical
+diagram — but with `hor : IsOrientable 3 K` replaced by the contraction `hnull`.
+That is exactly the book's step from 24.11 to 24.12: the ambient manifold need
+not be orientable. `NeighborhoodCylinder.lean` itself was not touched, so nothing
+downstream of it needs a rebuild; the variant lives in the new module.
 
 ### Exact remaining obligation
 
