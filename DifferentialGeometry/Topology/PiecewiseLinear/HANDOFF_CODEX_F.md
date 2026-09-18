@@ -2497,3 +2497,25 @@ E3 §45 的 `ZMod 2` 循环障碍仍然成立并且有用（它是沿分支相�
 再把 `R` 取到至少 `c + 2 * d` 即可，这正是 §19.110 说的"代价全在锥度半径"。
 
 检查 `BranchSlideSeparation` exit=0（9.6 秒）、零 warning；`AuditF258.lean` 十项无 `sorryAx`。
+
+### 19.114 滑动保持流形边界：E3 §44 的端点条款
+
+`slideMapLong` 只改第一坐标（`slideMapLong_snd`），所以 `bijOn_slideMapLong_prod` 说任何
+`{p | p.2 ∈ T}` 被双射保持。把它经图卡共轭就得到本条：
+
+- `mapsTo_chartSlideLong_of_forall_mem_iff`：设 `slideSupportLong R ⊆ e.target`、`0 ≤ d`，
+  并设 `B : Set M` 在图卡内由横向条件刻画，即 `∀ x ∈ e.source, x ∈ B ↔ (e x).2 ∈ T`，
+  则 `MapsTo (e.conjugateMap (slideMapLong d R)) B B`。图卡外共轭是恒等，图卡内用
+  `mapsTo_slideMapLong_prod`（即 `bijOn_slideMapLong_prod` 的 `MapsTo` 分量，
+  不需要 `0 ≤ R`，故按最少假设取这一半）。双向 `↔` 是必需的：正向把 `x ∈ B` 搬进模型，
+  反向把滑动后的点搬回 `B`。
+- `mapsTo_chartSlideLong_boundary`（`T = {q | q.2 = 0}`，即模型边界平面）与
+  `mapsTo_chartSlideLong_halfSpace`（`T = {q | 0 ≤ q.2}`，即模型半空间）是两个特例。
+  于是 §19.109 遗留的"端点处要把模型换成半空间版本使滑动与 `Bd M` 相切"彻底消解：
+  不需要第二个模型，滑动方向本来就与所有横向水平集相切。
+- `exists_supported_separation_of_isBranchSlideChart_boundary` 是把 §19.113 的四条与边界条款
+  `h '' (e.symm '' slideSupportLong R ∩ B) ⊆ B` 合并后的完整包，对应 E3 §44 的
+  `h (U ∩ BdM) ⊆ BdM`。这里的 `B` 是显式参数而不是 `Bd M` 的内置概念：生产者交付图卡时
+  必须同时交付"该图卡把流形边界拉直成 `{p.2.2 = 0}`"这一条，形式就是上面的 `hB`。
+
+检查 `BranchSlideSeparation` exit=0（9.3 秒）、零 warning；`AuditF258.lean` 十四项无 `sorryAx`。

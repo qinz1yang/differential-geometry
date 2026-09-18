@@ -60,6 +60,36 @@ theorem eqOn_chartSlideLong_id_compl {d R : ℝ} (hd : 0 ≤ d)
     EqOn (e.conjugateMap (slideMapLong d R)) id (e.symm '' slideSupportLong R)ᶜ :=
   e.conjugateMap_eqOn_compl (eqOn_slideMapLong_id_compl hd)
 
+omit [NormedSpace ℝ M] in
+theorem mapsTo_chartSlideLong_of_forall_mem_iff {d R : ℝ} (hd : 0 ≤ d)
+    (e : OpenPartialHomeomorph M (ℝ × ℝ × ℝ)) (hsub : slideSupportLong R ⊆ e.target)
+    {T : Set (ℝ × ℝ)} {B : Set M} (hB : ∀ x ∈ e.source, x ∈ B ↔ (e x).2 ∈ T) :
+    MapsTo (e.conjugateMap (slideMapLong d R)) B B := by
+  intro x hx
+  by_cases hxs : x ∈ e.source
+  · rw [e.conjugateMap_of_mem _ hxs]
+    have hmem : slideMapLong d R (e x) ∈ e.target :=
+      mapsTo_slideMapLong_of_subset hd hsub (e.map_source hxs)
+    refine (hB _ (e.map_target hmem)).mpr ?_
+    rw [e.right_inv hmem]
+    exact mapsTo_slideMapLong_prod (d := d) (R := R) T ((hB x hxs).mp hx)
+  · rw [e.conjugateMap_of_notMem _ hxs]
+    exact hx
+
+omit [NormedSpace ℝ M] in
+theorem mapsTo_chartSlideLong_boundary {d R : ℝ} (hd : 0 ≤ d)
+    (e : OpenPartialHomeomorph M (ℝ × ℝ × ℝ)) (hsub : slideSupportLong R ⊆ e.target)
+    {B : Set M} (hB : ∀ x ∈ e.source, x ∈ B ↔ (e x).2.2 = 0) :
+    MapsTo (e.conjugateMap (slideMapLong d R)) B B :=
+  mapsTo_chartSlideLong_of_forall_mem_iff hd e hsub (T := {q : ℝ × ℝ | q.2 = 0}) hB
+
+omit [NormedSpace ℝ M] in
+theorem mapsTo_chartSlideLong_halfSpace {d R : ℝ} (hd : 0 ≤ d)
+    (e : OpenPartialHomeomorph M (ℝ × ℝ × ℝ)) (hsub : slideSupportLong R ⊆ e.target)
+    {N : Set M} (hN : ∀ x ∈ e.source, x ∈ N ↔ 0 ≤ (e x).2.2) :
+    MapsTo (e.conjugateMap (slideMapLong d R)) N N :=
+  mapsTo_chartSlideLong_of_forall_mem_iff hd e hsub (T := {q : ℝ × ℝ | 0 ≤ q.2}) hN
+
 variable [FiniteDimensional ℝ M]
 
 theorem exists_supported_separation_of_isBranchSlideChart {R c a b d : ℝ} {P Q : Set M}
@@ -74,5 +104,23 @@ theorem exists_supported_separation_of_isBranchSlideChart {R c a b d : ℝ} {P Q
   rw [hchart.sheet_eq, hchart.crossing_eq]
   exact disjoint_chartSlideLong_image hd hR hca e hchart.slideSupportLong_subset
     hchart.slideBandA_subset hchart.slideBandQ_subset
+
+theorem exists_supported_separation_of_isBranchSlideChart_boundary {R c a b d : ℝ}
+    {P Q B : Set M} {e : OpenPartialHomeomorph M (ℝ × ℝ × ℝ)}
+    (hchart : IsBranchSlideChart R c a b P Q e) (hd : 0 ≤ d) (hR : c + 2 * d ≤ R)
+    (hca : c - d < a) (hB : ∀ x ∈ e.source, x ∈ B ↔ (e x).2.2 = 0) :
+    ∃ h : M → M, IsPiecewiseAffineOn h univ ∧ Function.Injective h ∧
+      EqOn h id (e.symm '' slideSupportLong R)ᶜ ∧ Disjoint (h '' P) Q ∧
+      h '' (e.symm '' slideSupportLong R ∩ B) ⊆ B := by
+  have hmaps := mapsTo_chartSlideLong_boundary (d := d) hd e hchart.slideSupportLong_subset hB
+  refine ⟨e.conjugateMap (slideMapLong d R), isPiecewiseAffineOn_chartSlideLong hd e
+    hchart.isPiecewiseAffineOn_chart hchart.isPiecewiseAffineOn_symm
+    hchart.slideSupportLong_subset, injective_chartSlideLong hd e hchart.slideSupportLong_subset,
+    eqOn_chartSlideLong_id_compl hd e, ?_, ?_⟩
+  · rw [hchart.sheet_eq, hchart.crossing_eq]
+    exact disjoint_chartSlideLong_image hd hR hca e hchart.slideSupportLong_subset
+      hchart.slideBandA_subset hchart.slideBandQ_subset
+  · rintro y ⟨x, hx, rfl⟩
+    exact hmaps hx.2
 
 end DifferentialGeometry.Topology.PiecewiseLinear
