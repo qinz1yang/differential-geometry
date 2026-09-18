@@ -648,7 +648,9 @@ G.5 的最后一块。先说三条把结论定死的核对结果，再给分解�
   它来自 `π₁(i)` 单只能经 `ker(π₁ → H₁) = 换位子群`，即 Hurewicz 的**难一半**。
   结论：不能用弱化版本绕开，必须做完整的一维 Hurewicz。
 
-**(3) 没有万有系数定理可用，必须直接在域系数上做。** 两棵树都查过：本库 `DifferentialGeometry/` 与 Mathlib
+**(3) 【本条已于 2026-09-18 撤回，见本节末"更正"条；搜索范围漏掉了 `origin/codex/pc-sorry-free`，
+该分支已有万有系数与一维 Hurewicz 层。下面的 HB1–HB6 分解随之作废，勿据以施工。】**
+没有万有系数定理可用，必须直接在域系数上做。两棵树都查过：本库 `DifferentialGeometry/` 与 Mathlib
 都没有 UCT、没有链复形的平坦基变换、没有 `H_n(X;ℤ) ⊗ ℚ ≅ H_n(X;ℚ)`。`ChangeOfRings.lean` 只做
 `restrictScalars`（方向相反，且只对约化同调），`Coefficients.lean` 只在固定基环内换系数模。
 所以不能"先证 ℤ 版再张量到 ℚ"。好消息是本库已有先例：`FieldPathCones.lean`（214 行）就是把整个
@@ -710,3 +712,77 @@ G.5 的最后一块。先说三条把结论定死的核对结果，再给分解�
 
 结论：按 H-M3 先例，在用户另行批准前不启动。启动时建议顺序 HB3 → HB1 → HB4 → HB2 → HB5 → HB6，
 先把无前提的那块（HB3）打通以验证面计算的写法，再动两个填充方向。
+
+### G.5 一维 Hurewicz 桥 — 更正（2026-09-18）：`origin/codex/pc-sorry-free` 已有该层，改为分支收敛问题
+
+上一条的核对有一处范围错误，现更正。**撤回**"本库与 Mathlib 都没有万有系数材料、一维 Hurewicz 须从零实现"
+这一判断：我只搜了本工作树与 Mathlib，没有搜同一仓库的兄弟分支 `origin/codex/pc-sorry-free`。
+该分支上有以下七个文件，我已在本工作树用 `git show`／`git grep`（只读，未合并）逐一核对：
+
+| 文件（均在 `DifferentialGeometry/Topology/Homology/`） | 行数 |
+|---|---|
+| `UniversalCoefficientsOne.lean` | 293 |
+| `UniversalCoefficientsOneLinearEquiv.lean` | 365 |
+| `HurewiczOneAbelianization.lean` | 746 |
+| `HurewiczOneKernel.lean` | 453 |
+| `HurewiczOnePathLoopBridge.lean` | 336 |
+| `HurewiczOneVertexPairing.lean` | 241 |
+| `RationalHurewiczOne.lean` | 195 |
+| 合计 | 2629 |
+
+七个文件在本车道各分支上全部不存在；`git grep -c sorry` 在该分支的 `Topology/Homology` 下无输出，该层无 `sorry`。
+
+#### 已核对的实际内容
+
+- `HurewiczOneAbelianization.lean:695,700` 把缺口收成两个 `Prop`：`HurewiczOneMultiplicative`（`sphereHurewicz 0` 可加）
+  与 `HurewiczOneKernel`（核含于换位子群）。`:712` 的 `abelianization_equiv_of_surjective_ker_eq_commutator`
+  与 `:727` 的 `abelianizationHomotopyGroupOne_equiv_of_hurewiczOne` 由"可加 + 满 + 核 ⊆ 换位子"给出
+  `Abelianization (π₁) ≃* Multiplicative (H₁(X;ℤ))`。
+- `RationalHurewiczOne.lean:128` 的 `tensorRational_abelianizationFundamentalGroup_equiv_of_hurewiczOne`
+  给出正是 G.5 消费端要的形状 `ℚ ⊗[ℤ] Additive (Abelianization (FundamentalGroup X x)) ≃ₗ[ℚ] ℚ ⊗[ℤ] H₁(X;ℤ)`，
+  条件恰是上述三条。
+- **容易一半在那边已证**：`RationalHurewiczOne.lean:114` 的
+  `hurewiczOneLoopGeneration_of_hurewiczOneVertexPairing`，配 `integralPathLoopClassMap_mem_span`。
+- **难一半在那边同样未闭合**，但已收得更窄：`HurewiczOneVertexPairing.lean:190`
+  `hurewiczOneKernel_of_spherePairing` 把 `HurewiczOneKernel` 归到 `HurewiczOneSpherePairing`；
+  后者的生产者只有 `_of_subsingleton`（π₁ 平凡，对我们平凡无用）与 `:214`
+  `hurewiczOneSpherePairing_of_loopBridge_of_loopClassPairing`，它把难一半再拆成两条具名子事实
+  （球面到回路的桥、回路类配对恒等式）。所以上一条"难一半不可避免"的结论**成立**，
+  但"须从零实现"的结论**不成立**。
+- `HurewiczOnePathLoopBridge.lean:196` 的
+  `hurewiczOneMultiplicative_of_circleSphereFundamentalClass_isSphereHomologyGenerator`
+  把可加性整条归约到一个**与空间无关**的全局事实：圆周基本类是球面同调生成元。
+
+#### 两条上一条没提、但施工前必须知道的限定
+
+1. **ℤ → ℚ 的换系数在那边也还是条件，不是定理。** `RationalHurewiczOne.lean:22`
+   `rationalSingularHomologyOneCoefficientChange` 的生产者只有全不连通空间（`:37`）与 `PUnit`（`:51`）；
+   `:151,163,174,188` 四个下游端点全部把它当显式假设 `hC` 携带。所以 HB6 **没有**被完全消掉。
+2. **右端是 `ℚ ⊗ H₁(X;ℤ)`，不是本库 `bettiNumber ℚ _ 1` 的那个对象。** 接到 `bettiOne` 还要上面第 1 条
+   加一步 `finrank` 胶水。两边都在 universe 0（`TopCat.{0}` 对我们的 `bettiOne : (X : Type) → _`），无宇宙冲突。
+
+#### HB1–HB6 的修订
+
+| 砖 | 修订后状态 |
+|---|---|
+| HB1、HB2、HB3（两个方向的三角形填充、典范串联单形） | **作废，不是该走的路**。那边根本不走三角形填充，而是用 `sphereHurewicz 0` 加路径-回路链映射。不要按原分解施工 |
+| HB4（Hurewicz 同态与 `Abelianization.lift`） | **已交付**：`hurewiczSphereMonoidHom` + `abelianization_equiv_of_surjective_ker_eq_commutator`。可加性另归约到一条全局圆周事实 |
+| HB5（逆映射、容易一半） | **大部分已交付**：回路生成已证；`sphereHurewicz 0` 的满性仍是显式假设 |
+| HB6（秩层与消费者） | **部分交付**：张量与 `LinearEquiv.baseChange` 胶水在，但 `rationalSingularHomologyOneCoefficientChange` 的一般生产者仍缺，接到 `bettiOne` 的最后一步仍要写 |
+
+#### 修订后的剩余义务
+
+对 G.5 实际需要的空间（`Bd X`、`Bd N`、各 `Â'_v`，都是道路连通的闭三角剖分曲面）生产：
+`HurewiczOneMultiplicative`、`HurewiczOneKernel`、`Function.Surjective (sphereHurewicz 0 x c)`，
+外加 `rationalSingularHomologyOneCoefficientChange` 与接到 `bettiOne` 的 `finrank` 收尾。
+其中 `HurewiczOneKernel` 是难一半，可经 `hurewiczOneSpherePairing_of_loopBridge_of_loopClassPairing`
+的两条子事实进攻；`HurewiczOneMultiplicative` 只差那条全局圆周生成元事实。
+
+#### 交付路线：分支收敛，不是在本车道重写
+
+那七个文件的**传递导入闭包**有 163 个文件、约 45600 行不在本车道各分支上。所以这不是 cherry-pick 能解决的，
+是 `codex/pc-sorry-free` 与 Moise 各分支的**收敛**问题，需由协调者安排。在本车道按原 HB1–HB6 重新实现
+一维 Hurewicz 属于**重复劳动**，明确不做。本次只做只读核对，未合并该分支，未改动任何 Lean 文件。
+
+附带核对：该分支的 `DifferentialGeometry/Topology/PiecewiseLinear` 文件数为 **0**，其 Alexander 对偶／
+紧支撑材料与本车道同源（我们 16 个文件、它 17 个，多出的是射影空间不可嵌入），故上文 H-M3 的评估不受影响。
