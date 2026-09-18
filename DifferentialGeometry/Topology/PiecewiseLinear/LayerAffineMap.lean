@@ -107,4 +107,80 @@ theorem eqOn_layerMaps {σ' σ : ℝ} (hσ' : 0 < σ') (hσ : σ' < σ) (v₀ v�
     ((layerLowMap_vertex₂ hσ' hσ v₀ v₁ v₂).trans (layerHighMap_vertex₂ hσ' hσ v₁ v₂ v₃).symm)
     (inter_layer_subset_segment hσ' hσ hz)
 
+noncomputable def centralConeMap (σ : ℝ) (vc v₁ v₂ : F) : (ℝ × ℝ) →ᵃ[ℝ] F :=
+  affineOfCoeffs (coeffLin (1 / σ) 0) (coeffLin 0 (1 / σ)) vc (v₁ - vc) (v₂ - vc)
+
+theorem centralConeMap_apex (σ : ℝ) (vc v₁ v₂ : F) : centralConeMap σ vc v₁ v₂ (0, 0) = vc := by
+  rw [centralConeMap, affineOfCoeffs_apply, coeffLin_apply, coeffLin_apply]
+  simp
+
+theorem centralConeMap_vertex₁ {σ : ℝ} (hσ : 0 < σ) (vc v₁ v₂ : F) :
+    centralConeMap σ vc v₁ v₂ (σ, 0) = v₁ := by
+  have hs : σ ≠ 0 := ne_of_gt hσ
+  rw [centralConeMap, affineOfCoeffs_apply, coeffLin_apply, coeffLin_apply]
+  match_scalars <;> field_simp <;> ring
+
+theorem centralConeMap_vertex₂ {σ : ℝ} (hσ : 0 < σ) (vc v₁ v₂ : F) :
+    centralConeMap σ vc v₁ v₂ (0, σ) = v₂ := by
+  have hs : σ ≠ 0 := ne_of_gt hσ
+  rw [centralConeMap, affineOfCoeffs_apply, coeffLin_apply, coeffLin_apply]
+  match_scalars <;> field_simp <;> ring
+
+theorem sum_eq_subset_segment {σ : ℝ} (hσ : 0 < σ) :
+    {z : ℝ × ℝ | 0 ≤ z.1 ∧ 0 ≤ z.2 ∧ z.1 + z.2 = σ} ⊆
+      segment ℝ ((σ, 0) : ℝ × ℝ) ((0, σ) : ℝ × ℝ) := by
+  rintro ⟨x, y⟩ ⟨h1, h2, h3⟩
+  refine ⟨x / σ, y / σ, by positivity, by positivity, ?_, ?_⟩
+  · field_simp
+    simp only at h3
+    linarith
+  · rw [Prod.ext_iff]
+    constructor
+    · simp only [Prod.fst_add, Prod.smul_fst, smul_eq_mul]
+      field_simp
+      linarith
+    · simp only [Prod.snd_add, Prod.smul_snd, smul_eq_mul]
+      field_simp
+      linarith
+
+theorem eqOn_central_low {σ₁ σ₂ : ℝ} (hσ₁ : 0 < σ₁) (hσ : σ₁ < σ₂) (vc v₁ v₂ v₃ : F) :
+    EqOn (centralConeMap σ₁ vc v₁ v₂) (layerLowMap σ₁ σ₂ v₁ v₂ v₃)
+      {z : ℝ × ℝ | 0 ≤ z.1 ∧ 0 ≤ z.2 ∧ z.1 + z.2 = σ₁} :=
+  fun _ hz => eqOn_of_affineMap_eq_of_mem_segment
+    ((centralConeMap_vertex₁ hσ₁ vc v₁ v₂).trans (layerLowMap_vertex₀ hσ₁ hσ v₁ v₂ v₃).symm)
+    ((centralConeMap_vertex₂ hσ₁ vc v₁ v₂).trans (layerLowMap_vertex₁ hσ₁ hσ v₁ v₂ v₃).symm)
+    (sum_eq_subset_segment hσ₁ hz)
+
+theorem eqOn_high_low {σ₀ σ₁ σ₂ : ℝ} (hσ₀ : 0 < σ₀) (h01 : σ₀ < σ₁) (h12 : σ₁ < σ₂)
+    (v₀ v₁ v₂ v₃ : F) :
+    EqOn (layerHighMap σ₀ σ₁ v₀ v₁ v₂) (layerLowMap σ₁ σ₂ v₁ v₂ v₃)
+      {z : ℝ × ℝ | 0 ≤ z.1 ∧ 0 ≤ z.2 ∧ z.1 + z.2 = σ₁} :=
+  fun _ hz => eqOn_of_affineMap_eq_of_mem_segment
+    ((layerHighMap_vertex₂ hσ₀ h01 v₀ v₁ v₂).trans
+      (layerLowMap_vertex₀ (lt_trans hσ₀ h01) h12 v₁ v₂ v₃).symm)
+    ((layerHighMap_vertex₃ hσ₀ h01 v₀ v₁ v₂).trans
+      (layerLowMap_vertex₁ (lt_trans hσ₀ h01) h12 v₁ v₂ v₃).symm)
+    (sum_eq_subset_segment (lt_trans hσ₀ h01) hz)
+
+theorem layerLowMap_eq_combo {σ' σ : ℝ} (v₀ v₁ v₂ : F) (z : ℝ × ℝ) :
+    layerLowMap σ' σ v₀ v₁ v₂ z =
+      (1 - z.2 / σ' - (z.1 + z.2 - σ') / (σ - σ')) • v₀ + (z.2 / σ') • v₁ +
+        ((z.1 + z.2 - σ') / (σ - σ')) • v₂ := by
+  rw [layerLowMap, affineOfCoeffs_apply, coeffLin_apply, coeffLin_apply]
+  match_scalars <;> ring
+
+theorem layerHighMap_eq_combo {σ' σ : ℝ} (hσ : σ ≠ 0) (hd : σ - σ' ≠ 0)
+    (v₁ v₂ v₃ : F) (z : ℝ × ℝ) :
+    layerHighMap σ' σ v₁ v₂ v₃ z =
+      (1 - z.1 / σ - (σ' * z.1 / σ + z.2 - σ') / (σ - σ')) • v₁ + (z.1 / σ) • v₂ +
+        ((σ' * z.1 / σ + z.2 - σ') / (σ - σ')) • v₃ := by
+  rw [layerHighMap, affineOfCoeffs_apply, coeffLin_apply, coeffLin_apply]
+  match_scalars <;> field_simp <;> ring
+
+theorem centralConeMap_eq_combo {σ : ℝ} (vc v₁ v₂ : F) (z : ℝ × ℝ) :
+    centralConeMap σ vc v₁ v₂ z =
+      (1 - z.1 / σ - z.2 / σ) • vc + (z.1 / σ) • v₁ + (z.2 / σ) • v₂ := by
+  rw [centralConeMap, affineOfCoeffs_apply, coeffLin_apply, coeffLin_apply]
+  match_scalars <;> ring
+
 end DifferentialGeometry.Topology.PiecewiseLinear
