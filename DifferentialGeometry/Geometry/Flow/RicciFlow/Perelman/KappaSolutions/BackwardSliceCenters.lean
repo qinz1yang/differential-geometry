@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientSqrtLipschitz
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientLocalCurvatureDerivatives
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.TerminalPoleCenters
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.BackwardSliceSequence
 
@@ -41,5 +41,27 @@ theorem exists_backward_slice_centers_with_scalar_bound
   intro R hR i x hx
   rw [backwardSliceSequence_scalar]
   exact scalar_le_of_rescaled_distance_le F hF p (q i) x (htau i) hR (hq i) hx
+
+theorem exists_backward_slice_centers_with_curvDerivNorm_bounds
+    {kappa : ℝ} (hF : IsAncientKappaSolution kappa F)
+    (p : F.M) (tau : ℕ → ℝ) (htau : ∀ i, 0 < tau i) :
+    ∃ q : ℕ → F.M,
+      (∀ i, redLength F.S 0 p (q i) (tau i) ≤ (Module.finrank ℝ E : ℝ) / 2) ∧
+      ∀ R : ℝ, 0 ≤ R → ∀ m : ℕ, ∃ C : ℝ, 0 ≤ C ∧
+        ∀ i : ℕ, ∀ x : F.M,
+          riemannianEDistOf ((backwardSliceSequence F tau htau q).obj i).metric (q i) x ≤
+            ENNReal.ofReal R →
+          curvDerivNorm (I := I) m ((backwardSliceSequence F tau htau q).obj i).metric x ≤ C := by
+  classical
+  choose q hq using fun i => exists_redLength_le_half_finrank_of_ancient F hF p (htau i)
+  refine ⟨q, hq, ?_⟩
+  intro R hR m
+  let K := 1 + (Module.finrank ℝ E : ℝ) ^ 2 *
+    (3 * (Real.sqrt ((Module.finrank ℝ E : ℝ) / 2) + Real.sqrt 3 / 2 * (R + 1)) ^ 2)
+  have hK : 0 ≤ K := by dsimp only [K]; positivity
+  refine ⟨shiLocalUniformBound (Module.finrank ℝ E) m K (Real.sqrt K) * K,
+    mul_nonneg (shiLocalUniformBound_nonneg _ _ _ _) hK, ?_⟩
+  intro i x hx
+  exact curvDerivNorm_le_of_rescaled_distance_le F hF p (q i) x (htau i) hR (hq i) hx m
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
