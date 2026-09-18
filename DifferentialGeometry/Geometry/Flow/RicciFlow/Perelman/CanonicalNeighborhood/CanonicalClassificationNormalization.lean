@@ -27,8 +27,9 @@ def windowedCanonicalPullback : Prop :=
       ∃ delta : ℝ, 0 < delta ∧ delta < 1 ∧
         ∀ (M : Type u) [TopologicalSpace M] [ChartedSpace ThreeSpace M]
           [IsManifold I3 ∞ M] [T2Space M] [SigmaCompactSpace M]
-          (D : RealTimeInterval) (S : SolutionOn (I := I3) (M := M) D)
-          (x : M) (t : ℝ),
+          (D : RealTimeInterval) (S : SolutionOn (I := I3) (M := M) D),
+          IsSolutionOn S → ∀ (x : M) (t : ℝ),
+          Set.Ioo (t - (delta * S.scalar t x)⁻¹) t ⊆ D.regular →
           WindowedModelWitness delta kappa S x t →
             Nonempty (CanonicalWitness S eps C1 C2 x t)
 
@@ -41,9 +42,9 @@ theorem kappaUniformCanonicalClassification_of_windowedCanonicalPullback
     hmain (min (eps / 2) epsCan) (lt_min (by linarith) hepsCan) (min_le_right _ _)
   refine ⟨C1, C2, hC1, hC2, fun kappa hkappa => ?_⟩
   obtain ⟨delta, hdelta, hdelta1, himp⟩ := hfinal kappa hkappa
-  refine ⟨delta, hdelta, hdelta1, fun M _ _ _ _ _ D S o x t hw => ?_⟩
+  refine ⟨delta, hdelta, hdelta1, fun M _ _ _ _ _ D S hS o x t hreg hw => ?_⟩
   obtain ⟨W, _oN, _hO⟩ := hw
-  obtain ⟨Wc⟩ := himp M D S x t W
+  obtain ⟨Wc⟩ := himp M D S hS x t hreg W
   exact ⟨Wc.mono_eps (min_le_left _ _) (by linarith)⟩
 
 theorem kappaUniformCanonicalClassification_iff_scaled_tolerance {c : ℝ}
@@ -54,8 +55,9 @@ theorem kappaUniformCanonicalClassification_iff_scaled_tolerance {c : ℝ}
           ∃ delta : ℝ, 0 < delta ∧ delta < 1 ∧
             ∀ (M : Type u) [TopologicalSpace M] [ChartedSpace ThreeSpace M]
               [IsManifold I3 ∞ M] [T2Space M] [SigmaCompactSpace M]
-              (D : RealTimeInterval) (S : SolutionOn (I := I3) (M := M) D)
-              (o : TangentOrientationSection M) (x : M) (t : ℝ),
+              (D : RealTimeInterval) (S : SolutionOn (I := I3) (M := M) D),
+              IsSolutionOn S → ∀ (o : TangentOrientationSection M) (x : M) (t : ℝ),
+              Set.Ioo (t - (delta * S.scalar t x)⁻¹) t ⊆ D.regular →
               OrientedWitness S o delta kappa x t →
                 Nonempty (CanonicalWitness S (c * eps) C1 C2 x t)) := by
   constructor
@@ -65,8 +67,8 @@ theorem kappaUniformCanonicalClassification_iff_scaled_tolerance {c : ℝ}
     obtain ⟨C1, C2, hC1, hC2, hmain⟩ := hclass (min eps (2 * (c * eps))) hpos hbound
     refine ⟨C1, C2, hC1, hC2, fun kappa hkappa => ?_⟩
     obtain ⟨delta, hdelta, hdelta1, himp⟩ := hmain kappa hkappa
-    refine ⟨delta, hdelta, hdelta1, fun M _ _ _ _ _ D S o x t hw => ?_⟩
-    obtain ⟨W⟩ := himp M D S o x t hw
+    refine ⟨delta, hdelta, hdelta1, fun M _ _ _ _ _ D S hS o x t hreg hw => ?_⟩
+    obtain ⟨W⟩ := himp M D S hS o x t hreg hw
     have hle : min eps (2 * (c * eps)) / 2 ≤ c * eps := by
       have h1 : min eps (2 * (c * eps)) / 2 ≤ 2 * (c * eps) / 2 :=
         div_le_div_of_nonneg_right (min_le_right _ _) (by norm_num)
@@ -78,8 +80,8 @@ theorem kappaUniformCanonicalClassification_iff_scaled_tolerance {c : ℝ}
       hscaled (eps / 2) (by linarith) (by linarith)
     refine ⟨C1, C2, hC1, hC2, fun kappa hkappa => ?_⟩
     obtain ⟨delta, hdelta, hdelta1, himp⟩ := hmain kappa hkappa
-    refine ⟨delta, hdelta, hdelta1, fun M _ _ _ _ _ D S o x t hw => ?_⟩
-    obtain ⟨W⟩ := himp M D S o x t hw
+    refine ⟨delta, hdelta, hdelta1, fun M _ _ _ _ _ D S hS o x t hreg hw => ?_⟩
+    obtain ⟨W⟩ := himp M D S hS o x t hreg hw
     have hle : c * (eps / 2) ≤ eps / 2 := by nlinarith [heps.le, hc]
     exact ⟨W.mono_eps hle (by linarith)⟩
 
@@ -90,8 +92,9 @@ theorem kappaUniformCanonicalClassification_iff_lt_two_elevenths :
           ∃ delta : ℝ, 0 < delta ∧ delta < 1 ∧
             ∀ (M : Type u) [TopologicalSpace M] [ChartedSpace ThreeSpace M]
               [IsManifold I3 ∞ M] [T2Space M] [SigmaCompactSpace M]
-              (D : RealTimeInterval) (S : SolutionOn (I := I3) (M := M) D)
-              (o : TangentOrientationSection M) (x : M) (t : ℝ),
+              (D : RealTimeInterval) (S : SolutionOn (I := I3) (M := M) D),
+              IsSolutionOn S → ∀ (o : TangentOrientationSection M) (x : M) (t : ℝ),
+              Set.Ioo (t - (delta * S.scalar t x)⁻¹) t ⊆ D.regular →
               OrientedWitness S o delta kappa x t →
                 Nonempty (CanonicalWitness S (eps / 2) C1 C2 x t)) := by
   constructor
@@ -101,8 +104,8 @@ theorem kappaUniformCanonicalClassification_iff_lt_two_elevenths :
     obtain ⟨C1, C2, hC1, hC2, hmain⟩ := hclass (min eps (1 / 44)) hpos hbound
     refine ⟨C1, C2, hC1, hC2, fun kappa hkappa => ?_⟩
     obtain ⟨delta, hdelta, hdelta1, himp⟩ := hmain kappa hkappa
-    refine ⟨delta, hdelta, hdelta1, fun M _ _ _ _ _ D S o x t hw => ?_⟩
-    obtain ⟨W⟩ := himp M D S o x t hw
+    refine ⟨delta, hdelta, hdelta1, fun M _ _ _ _ _ D S hS o x t hreg hw => ?_⟩
+    obtain ⟨W⟩ := himp M D S hS o x t hreg hw
     exact ⟨W.mono_eps (div_le_div_of_nonneg_right (min_le_left _ _) (by norm_num))
       (by linarith)⟩
   · intro hclass eps heps heps44
@@ -112,17 +115,19 @@ theorem halfWindow_transfer_of_transfer {eps C1 C2 kappa : ℝ}
     (htransfer : ∀ (delta : ℝ)
       (M : Type u) [TopologicalSpace M] [ChartedSpace ThreeSpace M]
       [IsManifold I3 ∞ M] [T2Space M] [SigmaCompactSpace M]
-      (D : RealTimeInterval) (S : SolutionOn (I := I3) (M := M) D)
-      (x : M) (t : ℝ) (W : WindowedModelWitness delta kappa S x t),
+      (D : RealTimeInterval) (S : SolutionOn (I := I3) (M := M) D),
+      IsSolutionOn S → ∀ (x : M) (t : ℝ),
+      Set.Ioo (t - (delta * S.scalar t x)⁻¹) t ⊆ D.regular → ∀ (W : WindowedModelWitness delta kappa S x t),
       Nonempty (CanonicalWitness W.model.S (eps / 2) C1 C2 W.model.basepoint 0) →
         Nonempty (CanonicalWitness S (eps / 2) C1 C2 x t)) :
     ∀ (M : Type u) [TopologicalSpace M] [ChartedSpace ThreeSpace M]
       [IsManifold I3 ∞ M] [T2Space M] [SigmaCompactSpace M]
-      (D : RealTimeInterval) (S : SolutionOn (I := I3) (M := M) D)
-      (x : M) (t : ℝ) (W : WindowedModelWitness (1 / 2) kappa S x t),
+      (D : RealTimeInterval) (S : SolutionOn (I := I3) (M := M) D),
+      IsSolutionOn S → ∀ (x : M) (t : ℝ),
+      Set.Ioo (t - ((1 / 2) * S.scalar t x)⁻¹) t ⊆ D.regular → ∀ (W : WindowedModelWitness (1 / 2) kappa S x t),
       Nonempty (CanonicalWitness W.model.S (eps / 2) C1 C2 W.model.basepoint 0) →
         Nonempty (CanonicalWitness S (eps / 2) C1 C2 x t) :=
-  fun M _ _ _ _ _ D S x t W hw => htransfer (1 / 2) M D S x t W hw
+  fun M _ _ _ _ _ D S hS x t hreg W hw => htransfer (1 / 2) M D S hS x t hreg W hw
 
 theorem kappaUniformCanonicalClassification_of_ancientModelClassification_halfWindow
     (hgap : ∀ (kappa : ℝ), 0 < kappa →
@@ -140,17 +145,18 @@ theorem kappaUniformCanonicalClassification_of_ancientModelClassification_halfWi
     (htransfer : ∀ (eps C1 C2 kappa : ℝ)
       (M : Type u) [TopologicalSpace M] [ChartedSpace ThreeSpace M]
       [IsManifold I3 ∞ M] [T2Space M] [SigmaCompactSpace M]
-      (D : RealTimeInterval) (S : SolutionOn (I := I3) (M := M) D)
-      (x : M) (t : ℝ) (W : WindowedModelWitness (1 / 2) kappa S x t),
+      (D : RealTimeInterval) (S : SolutionOn (I := I3) (M := M) D),
+      IsSolutionOn S → ∀ (x : M) (t : ℝ),
+      Set.Ioo (t - ((1 / 2) * S.scalar t x)⁻¹) t ⊆ D.regular → ∀ (W : WindowedModelWitness (1 / 2) kappa S x t),
       Nonempty (CanonicalWitness W.model.S (eps / 2) C1 C2 W.model.basepoint 0) →
         Nonempty (CanonicalWitness S (eps / 2) C1 C2 x t)) :
     kappaUniformCanonicalClassification.{u} := by
   intro eps heps heps44
   obtain ⟨C1, C2, hC1, hC2, hmain⟩ := hclass eps heps heps44
   refine ⟨C1, C2, hC1, hC2, fun kappa hkappa => ?_⟩
-  refine ⟨1 / 2, by norm_num, by norm_num, fun M _ _ _ _ _ D S o x t hw => ?_⟩
+  refine ⟨1 / 2, by norm_num, by norm_num, fun M _ _ _ _ _ D S hS o x t hreg hw => ?_⟩
   obtain ⟨W, _oN, _hO⟩ := hw
-  exact htransfer eps C1 C2 kappa M D S x t W
+  exact htransfer eps C1 C2 kappa M D S hS x t hreg W
     (hmain W.model (hgap kappa hkappa W.model W.model_ancient) W.model_scalar_base)
 
 theorem buffered_canonical_pullback_of_ancientModelClassification_halfWindow
@@ -169,8 +175,9 @@ theorem buffered_canonical_pullback_of_ancientModelClassification_halfWindow
     (htransfer : ∀ (eps C1 C2 kappa : ℝ)
       (M : Type u) [TopologicalSpace M] [ChartedSpace ThreeSpace M]
       [IsManifold I3 ∞ M] [T2Space M] [SigmaCompactSpace M]
-      (D : RealTimeInterval) (S : SolutionOn (I := I3) (M := M) D)
-      (x : M) (t : ℝ) (W : WindowedModelWitness (1 / 2) kappa S x t),
+      (D : RealTimeInterval) (S : SolutionOn (I := I3) (M := M) D),
+      IsSolutionOn S → ∀ (x : M) (t : ℝ),
+      Set.Ioo (t - ((1 / 2) * S.scalar t x)⁻¹) t ⊆ D.regular → ∀ (W : WindowedModelWitness (1 / 2) kappa S x t),
       Nonempty (CanonicalWitness W.model.S (eps / 2) C1 C2 W.model.basepoint 0) →
         Nonempty (CanonicalWitness S (eps / 2) C1 C2 x t)) :
     ∃ epsCan : ℝ, 0 < epsCan ∧ ∀ eps : ℝ, 0 < eps → eps ≤ epsCan →
@@ -178,8 +185,9 @@ theorem buffered_canonical_pullback_of_ancientModelClassification_halfWindow
         ∃ delta : ℝ, 0 < delta ∧ delta < 1 ∧
           ∀ (M : Type u) [TopologicalSpace M] [ChartedSpace ThreeSpace M]
             [IsManifold I3 ∞ M] [T2Space M] [SigmaCompactSpace M]
-            (D : RealTimeInterval) (S : SolutionOn (I := I3) (M := M) D)
-            (o : TangentOrientationSection M) (x : M) (t : ℝ),
+            (D : RealTimeInterval) (S : SolutionOn (I := I3) (M := M) D),
+            IsSolutionOn S → ∀ (o : TangentOrientationSection M) (x : M) (t : ℝ),
+            Set.Ioo (t - (delta * S.scalar t x)⁻¹) t ⊆ D.regular →
             OrientedWitness S o delta kappa x t →
               Nonempty (CanonicalWitness S eps C1 C2 x t) :=
   buffered_canonical_pullback_of_classification

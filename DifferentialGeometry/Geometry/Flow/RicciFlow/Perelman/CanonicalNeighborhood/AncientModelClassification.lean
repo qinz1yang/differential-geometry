@@ -63,17 +63,18 @@ theorem kappaUniformCanonicalClassification_of_ancientModelClassification
     (htransfer : ∀ (eps C1 C2 kappa delta : ℝ)
       (M : Type u) [TopologicalSpace M] [ChartedSpace ThreeSpace M]
       [IsManifold I3 ∞ M] [T2Space M] [SigmaCompactSpace M]
-      (D : RealTimeInterval) (S : SolutionOn (I := I3) (M := M) D)
-      (x : M) (t : ℝ) (W : WindowedModelWitness delta kappa S x t),
+      (D : RealTimeInterval) (S : SolutionOn (I := I3) (M := M) D),
+      IsSolutionOn S → ∀ (x : M) (t : ℝ),
+      Set.Ioo (t - (delta * S.scalar t x)⁻¹) t ⊆ D.regular → ∀ (W : WindowedModelWitness delta kappa S x t),
       Nonempty (CanonicalWitness W.model.S (eps / 2) C1 C2 W.model.basepoint 0) →
         Nonempty (CanonicalWitness S (eps / 2) C1 C2 x t)) :
     kappaUniformCanonicalClassification.{u} := by
   intro eps heps heps44
   obtain ⟨C1, C2, hC1, hC2, hmain⟩ := hclass eps heps heps44
   refine ⟨C1, C2, hC1, hC2, fun kappa hkappa => ?_⟩
-  refine ⟨1 / 2, by norm_num, by norm_num, fun M _ _ _ _ _ D S o x t hw => ?_⟩
+  refine ⟨1 / 2, by norm_num, by norm_num, fun M _ _ _ _ _ D S hS o x t hreg hw => ?_⟩
   obtain ⟨W, _oN, _hO⟩ := hw
-  exact htransfer eps C1 C2 kappa (1 / 2) M D S x t W
+  exact htransfer eps C1 C2 kappa (1 / 2) M D S hS x t hreg W
     (hmain W.model (hgap kappa hkappa W.model W.model_ancient) W.model_scalar_base)
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn

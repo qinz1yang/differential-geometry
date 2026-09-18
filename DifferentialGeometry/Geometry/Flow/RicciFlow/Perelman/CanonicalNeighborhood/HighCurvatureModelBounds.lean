@@ -501,8 +501,9 @@ theorem buffered_canonical_pullback :
         ∃ delta : ℝ, 0 < delta ∧ delta < 1 ∧
           ∀ (M : Type u) [TopologicalSpace M] [ChartedSpace ThreeSpace M]
             [IsManifold I3 ∞ M] [T2Space M] [SigmaCompactSpace M]
-            (D : RealTimeInterval) (S : SolutionOn (I := I3) (M := M) D)
-            (o : TangentOrientationSection M) (x : M) (t : ℝ),
+            (D : RealTimeInterval) (S : SolutionOn (I := I3) (M := M) D),
+            IsSolutionOn S → ∀ (o : TangentOrientationSection M) (x : M) (t : ℝ),
+            Set.Ioo (t - (delta * S.scalar t x)⁻¹) t ⊆ D.regular →
             OrientedWitness S o delta kappa x t → Nonempty (CanonicalWitness S eps C1 C2 x t) := by
   sorry
 
@@ -525,7 +526,13 @@ theorem smooth_canonical_neighborhood :
   obtain ⟨kappa, hkappa, hm⟩ := closed_flow_models hT S hS o
   obtain ⟨delta, hd, hd1, hdelta⟩ := htransfer kappa hkappa
   obtain ⟨Q, hQ, hmodel⟩ := hm delta hd hd1
-  exact ⟨Q, hQ, fun x t ht hR => hdelta M _ S o x t (hmodel x t ht hR)⟩
+  refine ⟨Q, hQ, ?_⟩
+  intro x t ht hR
+  have hw := hmodel x t ht hR
+  apply hdelta M _ S hS o x t ?_ hw
+  obtain ⟨W, _⟩ := hw
+  simpa only [RealTimeInterval.closedOpen, interior_Icc, interior_Ico] using
+    interior_mono W.window_mem
 
 theorem fixed_kappa_compactness {kappa : ℝ} (hkappa : 0 < kappa)
     (X : ℕ → PointedFlowData.{u, 0, 0} I3 ancientTimeInterval)

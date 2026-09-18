@@ -143,8 +143,9 @@ def kappaUniformCanonicalClassification : Prop :=
       ∃ delta : ℝ, 0 < delta ∧ delta < 1 ∧
         ∀ (M : Type u) [TopologicalSpace M] [ChartedSpace ThreeSpace M]
           [IsManifold I3 ∞ M] [T2Space M] [SigmaCompactSpace M]
-          (D : RealTimeInterval) (S : SolutionOn (I := I3) (M := M) D)
-          (o : TangentOrientationSection M) (x : M) (t : ℝ),
+          (D : RealTimeInterval) (S : SolutionOn (I := I3) (M := M) D),
+          IsSolutionOn S → ∀ (o : TangentOrientationSection M) (x : M) (t : ℝ),
+          Set.Ioo (t - (delta * S.scalar t x)⁻¹) t ⊆ D.regular →
           OrientedWitness S o delta kappa x t →
             Nonempty (CanonicalWitness S (eps / 2) C1 C2 x t)
 
@@ -155,16 +156,17 @@ theorem buffered_canonical_pullback_of_classification
         ∃ delta : ℝ, 0 < delta ∧ delta < 1 ∧
           ∀ (M : Type u) [TopologicalSpace M] [ChartedSpace ThreeSpace M]
             [IsManifold I3 ∞ M] [T2Space M] [SigmaCompactSpace M]
-            (D : RealTimeInterval) (S : SolutionOn (I := I3) (M := M) D)
-            (o : TangentOrientationSection M) (x : M) (t : ℝ),
+            (D : RealTimeInterval) (S : SolutionOn (I := I3) (M := M) D),
+            IsSolutionOn S → ∀ (o : TangentOrientationSection M) (x : M) (t : ℝ),
+            Set.Ioo (t - (delta * S.scalar t x)⁻¹) t ⊆ D.regular →
             OrientedWitness S o delta kappa x t →
               Nonempty (CanonicalWitness S eps C1 C2 x t) := by
   refine ⟨1 / 44, by norm_num, fun eps heps heps44 => ?_⟩
   obtain ⟨C1, C2, h1, h2, hmain⟩ := hclass eps heps heps44
   refine ⟨C1, C2, h1, h2, fun kappa hk => ?_⟩
   obtain ⟨delta, hd, hd1, himp⟩ := hmain kappa hk
-  refine ⟨delta, hd, hd1, fun M _ _ _ _ _ D S o x t hw => ?_⟩
-  obtain ⟨W⟩ := himp M D S o x t hw
+  refine ⟨delta, hd, hd1, fun M _ _ _ _ _ D S hS o x t hreg hw => ?_⟩
+  obtain ⟨W⟩ := himp M D S hS o x t hreg hw
   exact ⟨W.mono_eps (by linarith) (by linarith)⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn

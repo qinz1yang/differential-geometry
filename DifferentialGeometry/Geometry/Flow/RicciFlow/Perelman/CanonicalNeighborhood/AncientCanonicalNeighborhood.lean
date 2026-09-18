@@ -10,7 +10,7 @@ open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.CheegerGromovC
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 open DifferentialGeometry.Tensor0SBundle
-open scoped Manifold ContDiff ENNReal
+open scoped _root_.DifferentialGeometry.Manifold ContDiff ENNReal
 
 universe u
 
@@ -171,8 +171,9 @@ theorem kappa_canonical_neighborhood_of_buffered_canonical_pullback :
   obtain ⟨C1, C2, hC1, hC2, htransfer⟩ := hpb eps heps hle
   refine ⟨C1, C2, hC1, hC2, fun kappa hkappa P hanc hbase o => ?_⟩
   obtain ⟨delta, hd, hd1, hdelta⟩ := htransfer kappa hkappa
-  exact hdelta (M := P.M) (D := ancientTimeInterval) (S := P.S) (o := o) (x := P.basepoint)
-    (t := 0) (orientedWitness_self P hanc hbase o hd hd1)
+  exact hdelta (M := P.M) (D := ancientTimeInterval) (S := P.S) P.isSolution
+    (o := o) (x := P.basepoint) (t := 0) (fun _ hs => hs.2)
+    (orientedWitness_self P hanc hbase o hd hd1)
 
 theorem kappa_canonical_neighborhood :
     ∃ epsCan : ℝ, 0 < epsCan ∧ ∀ eps : ℝ, 0 < eps → eps ≤ epsCan →
