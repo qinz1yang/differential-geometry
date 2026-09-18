@@ -125,6 +125,157 @@ theorem iUnion_mobiusSquareTriangle :
     exact mem_iUnion.mpr ⟨4, (mem_mobiusSquareTriangle_four_iff x).mpr
       ⟨hx₀, hy₁, le_of_not_ge h₃⟩⟩
 
+theorem mobiusSquareTriangle_zero_inter_one :
+    mobiusSquareTriangle 0 ∩ mobiusSquareTriangle 1 =
+      segment ℝ (mobiusSquareVertex 1) (mobiusSquareVertex 2) := by
+  apply Subset.antisymm
+  · rintro x ⟨hx, hy⟩
+    obtain ⟨h₁, h₂, h₃⟩ := (mem_mobiusSquareTriangle_zero_iff x).mp hx
+    obtain ⟨h₄, h₅, h₆⟩ := (mem_mobiusSquareTriangle_one_iff x).mp hy
+    rw [segment_eq_image_lineMap]
+    refine ⟨1 - x.1, ⟨by linarith, by linarith⟩, ?_⟩
+    ext <;> dsimp [mobiusSquareVertex, AffineMap.lineMap_apply] <;> linarith
+  · apply ((convex_convexHull ℝ _).inter (convex_convexHull ℝ _)).segment_subset
+    · change mobiusSquareVertex 1 ∈
+        mobiusSquareTriangle 0 ∩ mobiusSquareTriangle 1
+      simp only [mem_inter_iff, mem_mobiusSquareTriangle_zero_iff,
+        mem_mobiusSquareTriangle_one_iff]
+      dsimp [mobiusSquareVertex]; norm_num
+    · change mobiusSquareVertex 2 ∈
+        mobiusSquareTriangle 0 ∩ mobiusSquareTriangle 1
+      simp only [mem_inter_iff, mem_mobiusSquareTriangle_zero_iff,
+        mem_mobiusSquareTriangle_one_iff]
+      dsimp [mobiusSquareVertex]; norm_num
+
+theorem mobiusSquareTriangle_one_inter_two :
+    mobiusSquareTriangle 1 ∩ mobiusSquareTriangle 2 =
+      segment ℝ (mobiusSquareVertex 2) (mobiusSquareVertex 3) := by
+  apply Subset.antisymm
+  · rintro x ⟨hx, hy⟩
+    obtain ⟨h₁, h₂, h₃⟩ := (mem_mobiusSquareTriangle_one_iff x).mp hx
+    obtain ⟨h₄, h₅, h₆⟩ := (mem_mobiusSquareTriangle_two_iff x).mp hy
+    rw [segment_eq_image_lineMap]
+    refine ⟨x.1, ⟨by linarith, by linarith⟩, ?_⟩
+    ext <;> dsimp [mobiusSquareVertex, AffineMap.lineMap_apply] <;> linarith
+  · apply ((convex_convexHull ℝ _).inter (convex_convexHull ℝ _)).segment_subset
+    · change mobiusSquareVertex 2 ∈
+        mobiusSquareTriangle 1 ∩ mobiusSquareTriangle 2
+      simp only [mem_inter_iff, mem_mobiusSquareTriangle_one_iff,
+        mem_mobiusSquareTriangle_two_iff]
+      dsimp [mobiusSquareVertex]; norm_num
+    · change mobiusSquareVertex 3 ∈
+        mobiusSquareTriangle 1 ∩ mobiusSquareTriangle 2
+      simp only [mem_inter_iff, mem_mobiusSquareTriangle_one_iff,
+        mem_mobiusSquareTriangle_two_iff]
+      dsimp [mobiusSquareVertex]; norm_num
+
+theorem mobiusSquareTriangle_two_inter_three :
+    mobiusSquareTriangle 2 ∩ mobiusSquareTriangle 3 =
+      segment ℝ (mobiusSquareVertex 3) (mobiusSquareVertex 4) := by
+  apply Subset.antisymm
+  · rintro x ⟨hx, hy⟩
+    obtain ⟨h₁, h₂, h₃⟩ := (mem_mobiusSquareTriangle_two_iff x).mp hx
+    obtain ⟨h₄, h₅, h₆⟩ := (mem_mobiusSquareTriangle_three_iff x).mp hy
+    rw [segment_eq_image_lineMap]
+    refine ⟨1 - x.1, ⟨by linarith, by linarith⟩, ?_⟩
+    ext <;> dsimp [mobiusSquareVertex, AffineMap.lineMap_apply] <;> linarith
+  · apply ((convex_convexHull ℝ _).inter (convex_convexHull ℝ _)).segment_subset
+    · change mobiusSquareVertex 3 ∈
+        mobiusSquareTriangle 2 ∩ mobiusSquareTriangle 3
+      simp only [mem_inter_iff, mem_mobiusSquareTriangle_two_iff,
+        mem_mobiusSquareTriangle_three_iff]
+      dsimp [mobiusSquareVertex]; norm_num
+    · change mobiusSquareVertex 4 ∈
+        mobiusSquareTriangle 2 ∩ mobiusSquareTriangle 3
+      simp only [mem_inter_iff, mem_mobiusSquareTriangle_two_iff,
+        mem_mobiusSquareTriangle_three_iff]
+      dsimp [mobiusSquareVertex]; norm_num
+
+theorem mobiusSquareTriangle_three_inter_four :
+    mobiusSquareTriangle 3 ∩ mobiusSquareTriangle 4 =
+      segment ℝ (mobiusSquareVertex 4) (mobiusSquareVertex 5) := by
+  apply Subset.antisymm
+  · rintro x ⟨hx, hy⟩
+    obtain ⟨h₁, h₂, h₃⟩ := (mem_mobiusSquareTriangle_three_iff x).mp hx
+    obtain ⟨h₄, h₅, h₆⟩ := (mem_mobiusSquareTriangle_four_iff x).mp hy
+    rw [segment_eq_image_lineMap]
+    refine ⟨x.1, ⟨by linarith, by linarith⟩, ?_⟩
+    ext <;> dsimp [mobiusSquareVertex, AffineMap.lineMap_apply] <;> linarith
+  · apply ((convex_convexHull ℝ _).inter (convex_convexHull ℝ _)).segment_subset
+    · change mobiusSquareVertex 4 ∈
+        mobiusSquareTriangle 3 ∩ mobiusSquareTriangle 4
+      simp only [mem_inter_iff, mem_mobiusSquareTriangle_three_iff,
+        mem_mobiusSquareTriangle_four_iff]
+      dsimp [mobiusSquareVertex]; norm_num
+    · change mobiusSquareVertex 5 ∈
+        mobiusSquareTriangle 3 ∩ mobiusSquareTriangle 4
+      simp only [mem_inter_iff, mem_mobiusSquareTriangle_three_iff,
+        mem_mobiusSquareTriangle_four_iff]
+      dsimp [mobiusSquareVertex]; norm_num
+
+theorem mobiusSquareTriangle_zero_inter_two :
+    mobiusSquareTriangle 0 ∩ mobiusSquareTriangle 2 = {mobiusSquareVertex 2} := by
+  apply Subset.antisymm
+  · rintro x ⟨hx, hy⟩
+    obtain ⟨h₁, h₂, h₃⟩ := (mem_mobiusSquareTriangle_zero_iff x).mp hx
+    obtain ⟨h₄, h₅, h₆⟩ := (mem_mobiusSquareTriangle_two_iff x).mp hy
+    apply mem_singleton_iff.mpr
+    ext <;> dsimp [mobiusSquareVertex] <;> linarith
+  · rintro x rfl
+    simp only [mem_inter_iff, mem_mobiusSquareTriangle_zero_iff,
+      mem_mobiusSquareTriangle_two_iff]
+    dsimp [mobiusSquareVertex]; norm_num
+
+theorem mobiusSquareTriangle_one_inter_three :
+    mobiusSquareTriangle 1 ∩ mobiusSquareTriangle 3 = {mobiusSquareVertex 3} := by
+  apply Subset.antisymm
+  · rintro x ⟨hx, hy⟩
+    obtain ⟨h₁, h₂, h₃⟩ := (mem_mobiusSquareTriangle_one_iff x).mp hx
+    obtain ⟨h₄, h₅, h₆⟩ := (mem_mobiusSquareTriangle_three_iff x).mp hy
+    apply mem_singleton_iff.mpr
+    ext <;> dsimp [mobiusSquareVertex] <;> linarith
+  · rintro x rfl
+    simp only [mem_inter_iff, mem_mobiusSquareTriangle_one_iff,
+      mem_mobiusSquareTriangle_three_iff]
+    dsimp [mobiusSquareVertex]; norm_num
+
+theorem mobiusSquareTriangle_two_inter_four :
+    mobiusSquareTriangle 2 ∩ mobiusSquareTriangle 4 = {mobiusSquareVertex 4} := by
+  apply Subset.antisymm
+  · rintro x ⟨hx, hy⟩
+    obtain ⟨h₁, h₂, h₃⟩ := (mem_mobiusSquareTriangle_two_iff x).mp hx
+    obtain ⟨h₄, h₅, h₆⟩ := (mem_mobiusSquareTriangle_four_iff x).mp hy
+    apply mem_singleton_iff.mpr
+    ext <;> dsimp [mobiusSquareVertex] <;> linarith
+  · rintro x rfl
+    simp only [mem_inter_iff, mem_mobiusSquareTriangle_two_iff,
+      mem_mobiusSquareTriangle_four_iff]
+    dsimp [mobiusSquareVertex]; norm_num
+
+theorem mobiusSquareTriangle_zero_inter_three :
+    mobiusSquareTriangle 0 ∩ mobiusSquareTriangle 3 = ∅ := by
+  apply eq_empty_iff_forall_notMem.mpr
+  rintro x ⟨hx, hy⟩
+  obtain ⟨h₁, h₂, h₃⟩ := (mem_mobiusSquareTriangle_zero_iff x).mp hx
+  obtain ⟨h₄, h₅, h₆⟩ := (mem_mobiusSquareTriangle_three_iff x).mp hy
+  linarith
+
+theorem mobiusSquareTriangle_zero_inter_four :
+    mobiusSquareTriangle 0 ∩ mobiusSquareTriangle 4 = ∅ := by
+  apply eq_empty_iff_forall_notMem.mpr
+  rintro x ⟨hx, hy⟩
+  obtain ⟨h₁, h₂, h₃⟩ := (mem_mobiusSquareTriangle_zero_iff x).mp hx
+  obtain ⟨h₄, h₅, h₆⟩ := (mem_mobiusSquareTriangle_four_iff x).mp hy
+  linarith
+
+theorem mobiusSquareTriangle_one_inter_four :
+    mobiusSquareTriangle 1 ∩ mobiusSquareTriangle 4 = ∅ := by
+  apply eq_empty_iff_forall_notMem.mpr
+  rintro x ⟨hx, hy⟩
+  obtain ⟨h₁, h₂, h₃⟩ := (mem_mobiusSquareTriangle_one_iff x).mp hx
+  obtain ⟨h₄, h₅, h₆⟩ := (mem_mobiusSquareTriangle_four_iff x).mp hy
+  linarith
+
 end
 
 end DifferentialGeometry.Topology.PiecewiseLinear

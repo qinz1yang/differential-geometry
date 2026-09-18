@@ -8283,6 +8283,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.BicollarEmbedding
 import DifferentialGeometry.Topology.PiecewiseLinear.ConeDiskPairExtension
 import DifferentialGeometry.Topology.PiecewiseLinear.MobiusSquare
 import DifferentialGeometry.Topology.PiecewiseLinear.MoiseChain
+import DifferentialGeometry.Topology.PiecewiseLinear.SlabWedgePush
 import DifferentialGeometry.Topology.PiecewiseLinear.SphereNesting
 import DifferentialGeometry.Topology.PiecewiseLinear.TameNestedCells
 import DifferentialGeometry.Topology.PlanarJordan.AmbientExtension
@@ -8703,3 +8704,4 @@ import DifferentialGeometry.Topology.VectorField.RiemannianGradientLinearization
 import DifferentialGeometry.Topology.VectorField.Spanning
 import DifferentialGeometry.Topology.VectorField.Transport
 import DifferentialGeometry.Topology.VectorField.VerticalLinearization
+import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryCrossingChart

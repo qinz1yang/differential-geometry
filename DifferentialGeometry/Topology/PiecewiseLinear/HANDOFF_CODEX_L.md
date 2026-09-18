@@ -2780,3 +2780,30 @@ step 2 只做了 grep 与接口陈述，没有动工（月牙是一个项目，�
   3. 任务 3：`doublePointSet G' = doublePointSet G \ branchCarrier` 的模型层版本，再写分支层所需陈述；
      图卡共轭等 F 的双端平板图卡（`Bd₁ = {p.1 = 0} ∪ {p.1 = c'}`）交付后再做。
   4. 主人的交接文件在整合分支的 `HANDOFF_CODEX_INTEGRATION.md`。
+
+## 84. 2026-09-18 E3-M3：紧支撑平板楔形推移模型
+
+状态：**已闭合**。新模块 `SlabWedgePush.lean` 给出显式帽函数
+`slabWedgeHat c p = max 0 (min p.1 (c - p.1) - |p.2.1| - |p.2.2|) / 4`，以及沿
+`(0, 1, 1)` 和 `(0, -1, -1)` 的两张推移。
+
+- `hasCompactSupport_slabWedgeHat`、`isPiecewiseAffineOn_slabWedgeHat`、
+  `lipschitzWith_slabWedgeHat`：帽函数有紧支撑、分片仿射，Lipschitz 常数为 `3 / 4 < 1`。
+- `isPLHomeomorphOn_positiveWedgePush`、`isPLHomeomorphOn_negativeWedgePush` 与
+  `positiveWedgePushHomeomorph`、`negativeWedgePushHomeomorph`：由
+  `isPLHomeomorphOn_id_add_of_lipschitz` 得到全局 PL 同胚及其逆。
+- `eqOn_*_compl_support`、`eqOn_*_slabBoundary`、`mapsTo_*_wedgeSlab` 与
+  `mapsTo_*_wedgeSlabInterior`：支撑外恒等，两个端面逐点不动，闭平板与开平板均保持。
+- 端点障碍已按正确数学形式钉死：任何逐点固定左端点的两张推移都不可能让闭折片像不交
+  （`not_disjoint_image_positive_negative_slabFold_of_fix_left_endpoint`）。本模型满足精确等式
+  `image_positiveSlabFold_inter_image_negativeSlabFold`：闭折片像的交恰为
+  `{(0, 0, 0), (c, 0, 0)}`；去掉两端面后由
+  `disjoint_positive_negative_wedge_push_on_slabInterior` 得到真正不交。
+- 隔离严格检查：exit `0`、零诊断、共享产物未改动；收据
+  `C:\Users\liao9\AppData\Local\Temp\codex-e3-slab-private\DifferentialGeometry\Topology\PiecewiseLinear\SlabWedgePush.json`。
+  外部静默审计覆盖本模块全部 51 个公开声明及复用的
+  `isPLHomeomorphOn_id_add_of_lipschitz`，exit `0`、零诊断；每条传递公理闭包均为
+  `propext / Classical.choice / Quot.sound` 的子集。审计收据
+  `C:\Users\liao9\AppData\Local\Temp\codex-e3-slab-private\external-audit.json`。
+- 未闭合：把两张折片标记成不交的源片后，显式计算模型映射的 `doublePointSet`；随后才由 F 的双端分支图卡
+  与 `Pasting/SingularPasting` 接口提升回一般环境。
