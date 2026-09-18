@@ -1151,3 +1151,49 @@ theorem eq_top_of_boundaryLoops_mem_normal
 - 验证：`BranchComplexityDrop` 聚焦检查 exit=0（9.9 秒）、零 warning；
   `.lake/scratch/AuditE3ComplexityDrop.lean` 的 5 条 `#print axioms` 全部只含
   `propext`、`Classical.choice`、`Quot.sound`。
+
+## 51. 2026-09-18 E3-M2：Case 3/4 的四段边界字（书页 186–187 的 `σ τ υ φ`）
+
+状态：done（源盘边界一侧的四段字、两端点配对二分与两条群论消费接口已闭合；把该字搬到
+`NormalSystem.boundaryNeighborhoodSpace` 的基本群里仍未接线，见末条）。新模块 `BoundaryWordFourArcs.lean`
+（模块名在四条车道分支上都不存在）。
+
+- `exists_homeomorph_loopCircle_of_isLoop`：把 `CellGluing.exists_boundaryParam_paths_of_isCutPair_union`
+  证明的后半段抽出来——只要给一条 `Path a' a'`（值在 `frontier P` 里）、一条 `Schoenflies.IsLoop`，
+  以及两者的逐点等式与满射性，就得到 `ev : loopCircle ≃ₜ frontier P` 且 `ev θ = pathToCircle pth θ`。
+- `exists_boundaryParam_four_paths`：**四段版**的边界参数化。输入是循环次序的四条弧
+  `A₁ (p→q), A₂ (q→r), A₃ (r→s), A₄ (s→p)`、三条相遇条件与 `frontier P = A₁ ∪ (A₂ ∪ (A₃ ∪ A₄))`；
+  输出四条道路 `σ τ υ φ`、它们的像集恰为四条弧，以及逐点等式
+  `ev θ = pathToCircle (σ.trans (τ.trans (υ.trans φ))) θ`。
+  关键是 `Path.trans` 不结合，所以模型侧必须用同样右嵌套的
+  `concatenate f₁ (concatenate f₂ (concatenate f₃ f₄))`；`IsLoop` 由 `IsLoop.concatenate` 加两层
+  `injOn_concatenate`/`continuousOn_concatenate`/`image_concatenate` 给出，逐点等式按 `t ≤ 1/2` 三次分叉对齐。
+- `exists_four_arcs_of_two_disjoint_subarcs`：PL 1-球面 `J` 内两条不交子弧 `S₁ (p..q)`、`S₃ (r..s)`
+  把 `J` 切成四段。证明先用 `exists_isCutPair_of_isArcBetween_subset_isPLSphere` 取 `S₁` 的补弧 `G`，
+  再用 `IsArcBetween.exists_split` 在 `r` 处切 `G`，按 `s` 落在哪一半分两种情形第二次切，
+  最后用 `IsArcBetween.eq_of_subset_arc` 证明中段恰是 `S₃`（不是另取的弧）。输出带
+  `(u,v) = (r,s)` 或 `(s,r)` 的二分，正好是四段循环次序里 `S₃` 的走向。
+- `NormalSingularCellData.exists_boundary_four_arc_word_of_boundaryBranch`：把上面两条接到实际触边分支。
+  由 `exists_three_cells_of_boundaryBranch` 取三盘分解与两条 crosscut，`D₁ ∩ frontier D.domain` 与
+  `D₃ ∩ frontier D.domain` 是两条不交的边界弧（不交性来自 `Disjoint D₁.domain D₃.domain`），
+  于是得到 `frontier D.domain` 的四段字与 `ev`。同时由
+  `IsPLHomeomorphOn.maps_arc_endpoints` 与 `EqOn D (D ∘ g) Ab` 得到端点配对的确切二分
+  `(D u = D p ∧ D v = D q) ∨ (D u = D q ∧ D v = D p)`：前者是书页 186 的 Case 3（endpoint-reversing），
+  后者是书页 187 的 Case 4（endpoint-preserving）。四种组合（弧次序二分 × `g` 的定向二分）都验算过，
+  每一种都落进且只落进其中一支。
+- 两条消费接口把四段字接到 §33 已证的群论引理，没有把道路字改写成假设：
+  - `not_loopClassMeets_or_not_loopClassMeets_of_four_boundary_arcs_reversing`：给出 `X` 中的四条道路
+    `σ υ : Path a b`、`τ φ : Path b a`（它们的端点类型本身就强制了 reversing 配对）、逐点等式
+    `σ t = f (σ₀ t)` 等、以及 `γ θ = f (ev θ)`，则由 `¬loopClassMeets γ` 得
+    `¬loopClassMeets (συ⁻¹) ∨ ¬loopClassMeets (σφυτ)`。
+  - `..._preserving` 同理给 `¬loopClassMeets (συ) ∨ ¬loopClassMeets (στ⁻¹υφ⁻¹)`。
+  - 辅助 `trans_apply_eq_map`、`pathToCircle_eq_of_forall` 把 `f` 穿过 `Path.trans` 与 `pathToCircle`；
+    `freeLoop X = C(loopCircle, X)`，所以母字等式用 `ext` 逐点即可。
+- 验证：`BoundaryWordFourArcs` 聚焦检查 exit=0（11.0 秒）、零 warning；
+  `.lake/scratch/AuditE3BoundaryWord.lean` 的 8 条 `#print axioms` 全部只含
+  `propext`、`Classical.choice`、`Quot.sound`。
+- **确切的未闭合部分**：四段字目前是 `frontier D.domain → M` 一侧的；Moise 的 `L`、`L₁`、`L₂` 是
+  `NormalSystem.boundaryNeighborhoodSpace` 里的自由环类。把 `D` 限制到 `frontier D.domain` 的像落在
+  `S.loopComplex.space` 里并与 `S.boundaryLoop` 逐点对齐（即为上面两条消费接口提供 `f`、`γ` 与
+  `hγ : γ θ = f (ev θ)`），需要 `NormalSystem.boundaryParam` 与本节 `ev` 的比较，尚未接。
+  这一步不改变本节结论，也没有被写成结论型假设。
