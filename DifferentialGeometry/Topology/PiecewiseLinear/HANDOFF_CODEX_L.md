@@ -2259,3 +2259,80 @@ step 2 只做了 grep 与接口陈述，没有动工（月牙是一个项目，�
 - 验证：`SingularCrossingSource` 聚焦检查 exit=0（11.0 秒）、零 warning；
   `.lake/scratch/AuditE3CrossingSource.lean` 的 7 条 `#print axioms` 全部只含
   `propext`、`Classical.choice`、`Quot.sound`，无 `sorryAx`。
+
+## 72. 2026-09-18 E3-M3：§65 源侧搬运的推广版（落到任意 `BijOn` 的小集合上）
+
+状态：done。`SingularCrossingPrecomp.lean` 新增 5 条声明（名字在四条车道分支上都不存在）；
+§65 的特化版保留（`GluedCellInjectivity` 的 `locallyInjective` 在用 `mem_nhdsWithin_inter_preimage`）。
+
+- `precomp_bijOn_of_isPLHomeomorphOn`（三个谓词各一条）：把 §65 的
+  `IsPLHomeomorphOn φ Q P` 拆成 `IsPLHomeomorphOn φ QBig PBig` 加 `BijOn φ Q P`、
+  `Q ⊆ QBig`、`P ⊆ PBig`、`hback : ∀ x ∈ QBig, φ x ∈ P → x ∈ Q`，结论落在**小的** `Q` 上。
+  关键是 `inter_preimage_eq_of_mapsTo_back`：由 `hback` 与 `A ⊆ P` 得
+  `QBig ∩ φ ⁻¹' A = Q ∩ φ ⁻¹' A`，于是 §65 的"复合代替限制"原样适用——
+  `isPLHomeomorphOn_comp_inter_preimage` 在 `QBig` 上复合，结果的定义域自动就是 `Q ∩ φ ⁻¹' A`。
+  `mem_nhdsWithin_inter_preimage_of_bijOn` 是邻域拉回的 `BijOn` + `ContinuousOn` 版
+  （连续性可以自由限制，分片仿射性不行，所以这里换成 `ContinuousOn φ Q`）。
+- 验证：`SingularCrossingPrecomp` 聚焦检查 exit=0（11.1 秒）、零 warning。
+
+## 73. 2026-09-18 E3-M3：`crossing` 闭合，月牙版 `NormalSingularCellData` 五条字段全部到位（完整假设表）
+
+状态：done。新模块 `GluedCellCrossing.lean`（模块名与 1 条声明名在四条车道分支上都不存在）。
+
+- **三步链条（§71 定的）跑通。** `crossing_of_glue_boundary_arc`：
+  (1) `precomp_bijOn_of_isPLHomeomorphOn`（§72）沿 `f₁` 一步落到 `P ∩ D ⁻¹' e.source`，
+      `BijOn f₁ (P ∩ D ⁻¹' e.source) (D₁.domain ∩ D₁ ⁻¹' e.source)` 与 `hback` 都由
+      `D x = D₁ (f₁ x)` 直接得；
+  (2) `congr_source`（§71）把 `(e ∘ D₁) ∘ f₁` 换成 `e ∘ D`；
+  (3) `mono_of_subset`（§71）放大到 `D.domain ∩ D ⁻¹' e.source`，两条边条件由
+      `Disjoint (doublePointSet D₁ D₁.domain) (D₂ '' D₂.domain)` 给出：
+      局部条件用 `D` 在 `D.domain` 上连续把 `(D₂ '' D₂.domain)ᶜ` 拉回；
+      纤维条件用开集 `e.target ∩ e.symm ⁻¹' (D₂ '' D₂.domain)ᶜ`（`e` 的对称连续性），
+      落在里面的 `z` 的纤维点 `x` 满足 `D x = e.symm z ∉ D₂ '' D₂.domain`，故 `x ∈ P`。
+      `D₂ '' D₂.domain` 闭是因为 `D₂.domain` 紧、`D₂` 连续、`M` 是 T2（§70 的观察）。
+- **月牙版 `NormalSingularCellData D BdM B` 的完整假设表。**
+  五条字段与产者：
+  `locallyInjective` = `locallyInjective_of_glue_boundary_arc`（§68）；
+  `fiber_le_two` = `fiber_le_two_of_glue_boundary_arc`（§68）；
+  `boundary_image_subset` = `range_boundary_subset_of_glue_boundary_arc`（§66）加 `BdM ⊆ B`；
+  `image_inter_boundary` = `image_inter_boundary_of_glue_boundary_arc`（§67）；
+  `singularSet` = `normalSingularSetTriangulation_congr`（§69）加
+  `doublePointSet_of_glue_boundary_arc`；
+  `crossing` = `crossing_of_glue_boundary_arc`（本节）。
+  假设逐条：
+  1. `hPball, hQball, hf₁, hf₂, hDP, hDQ, hcutP, hcutQ, hdom, hfrontier, hA, hB`
+     ——**构造产物**，`exists_glue_of_isPLHomeomorphOn_boundary_arc`（`CellGluing.lean:375`）
+     的输出原样；可满足性即那条定理的结论，不需另验。
+  2. `hD₁bd`（旧边界圆去掉弧后落在 `Bd M`）——**几何输入，有产者**：§62 的 `hfr`，
+     由 `Set.range D.boundary ⊆ BdM` 加"滑移只动 `closure W`"。
+  3. `hend₁, hend₂`（弧端在 `Bd M`）——**几何输入，有产者**：§62 的 `hend0/hend1`，
+     等价刻画见 §64 的位移判据（滑移量在弧端为零）。
+  4. `hAoff, hBoff`（弧只在两端碰 `Bd M`）——**几何输入，有产者**：§63 的 `hends`
+     （`hWdisp` 的推论）；与割点像的认同差 `maps_arc_endpoints` 一步，见 §67。
+  5. `hD₁img, hD₁fib, hD₁loc, hD₁cross`（`D₁` 自己的四条）——**几何输入，有产者**：
+     分支分离 `exists_separated_cell_along_boundary_branch` 直接输出前三条；
+     `hD₁cross` 由 `hD.crossing` 加 `hgdouble` 的双点集包含关系给出。
+  6. `hdisj`（`Disjoint (doublePointSet D₁ D₁.domain) (D₂ '' D₂.domain)`）
+     ——**几何输入，有产者**：§70 的
+     `NormalSingularCellData.disjoint_doublePointSet_separated_of_subset_nbhd`
+     加 `hluneW : D₂ '' D₂.domain ⊆ W`；前者无需新输入（§70），后者见下。
+  7. `hD₂bd`（月牙外弧落在 `Bd M`）、`hD₂inj`（月牙嵌入）、
+     `hD₂disj`（月牙除粘合弧外不碰旧胞腔）、`hluneW`（月牙建在 `W` 里）
+     ——**四条都是几何输入，都还没有产者**：它们是对**月牙本身**的要求，
+     而**树里还没有任何构造月牙 `D₂` 的定理**。这是整条链现在唯一缺产者的地方。
+     可满足性：四条互不矛盾（`hD₂disj` 只约束 `D₂.domain \ B`，
+     `B` 是 `frontier Q` 的一条弧故 `D₂.domain \ B` 非空；§68 的三条证明不要求
+     `A ∩ B = ∅` 这类会逼出空集的条件，§61 的失败模式不重现），
+     且都是"沿被推离弧贴一个嵌入圆盘、贴在滑移支撑邻域里、外弧落在 `Bd M`"的直接翻译。
+  8. 另有 `IsPLHomeomorphOn θ (Icc 0 1) (closure W)` 一路的输入
+     （§63 的 `IsConnected W` 等）——**几何输入，产者在分支分离层**，
+     §64 已把它归位成 `hconnA` 并给出图卡形式的判据。
+  **结论：月牙版 `NormalSingularCellData` 的五条字段全部有 Lean 产者；
+  唯一没有产者的是月牙 `D₂` 的构造本身（第 7 条的四条输入）。**
+  下一轮的正确目标是构造 `D₂`：沿 `closure W` 的像贴一个嵌入 PL 2-胞腔，
+  落在 `W` 内、外弧在 `Bd M` 上；`CrosscutExtension.lean`、`BoundaryDiskExtension.lean`、
+  `DiskCrosscutExtension.lean` 是候选工具（§66 已记）。
+- 验证：`GluedCellCrossing` 聚焦检查 exit=0（10.5 秒）、零 warning；
+  `GluedCellInjectivity` 因 `SingularCrossingPrecomp` 变更重编 exit=0（11.2 秒）；
+  `.lake/scratch/AuditE3LuneComplete.lean` 的 12 条 `#print axioms` 全部只含
+  `propext`、`Classical.choice`、`Quot.sound`，无 `sorryAx`。
