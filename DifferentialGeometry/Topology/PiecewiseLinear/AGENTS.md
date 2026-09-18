@@ -40,7 +40,7 @@
 ## 5. 数学纪律
 
 不得为绕开缺口而弱化端点，不得把缺口写成结论型假设，不得引入 `sorry`、顶层 `axiom`、`nolint`、`maxHeartbeats`、
-`set_option` 或注释。`Topology/Homology/HurewiczLowDegrees.lean` 含 `sorry`，任何车道不得导入。
+`set_option` 或正文注释。依 owner 2026-09-18 的决定，允许标准 header linter 必需的版权头和模块文档。`Topology/Homology/HurewiczLowDegrees.lean` 含 `sorry`，任何车道不得导入。
 遇到真实的数学障碍：在本车道的 `HANDOFF_CODEX_*.md` 末尾写清确切义务、已证到哪一层、可选路线，然后转下一个里程碑。
 
 ## 6. 汇报

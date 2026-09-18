@@ -913,8 +913,10 @@ produced boundary, without requiring that it represent the particular input `g`.
 The theorem itself remains unproved. There were no source importers or consumers
 of `Moise264` at the time of this correction.
 
-The changed module compiled with the standard syntax linters, without diagnostic
-output. Its exported definition was inspected, and the default environment linters
+After root registration and the owner-authorized required headers were added, the
+changed module compiled with the standard syntax linter set, explicit header and
+long-line checks, and no diagnostic output. Its exported definition was inspected,
+and the default environment linters
 were checked with only `docBlame` and `docBlameThm` excluded. These are local checks
 against the current imported objects, not a fresh certification of the entire
 integration source dependency graph.

@@ -8271,6 +8271,8 @@ import DifferentialGeometry.Topology.OrderedSeparatingCollars
 import DifferentialGeometry.Topology.PartitionOfUnity
 import DifferentialGeometry.Topology.PartitionOfUnity.CompactSupport
 import DifferentialGeometry.Topology.PartitionOfUnity.Locality
+import DifferentialGeometry.Topology.PiecewiseLinear.ArcChainCells
+import DifferentialGeometry.Topology.PiecewiseLinear.MoiseChain
 import DifferentialGeometry.Topology.PlanarJordan.AmbientExtension
 import DifferentialGeometry.Topology.PlanarJordan.ArcAndSegment
 import DifferentialGeometry.Topology.PlanarJordan.ClosedInterior

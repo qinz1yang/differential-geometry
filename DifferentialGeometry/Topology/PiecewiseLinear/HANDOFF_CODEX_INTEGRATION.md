@@ -178,3 +178,79 @@ F5.2 保持 partial（被已证定理 `ArrangementConstraints.lean:58` 挡着；
   (B-glue)、(B-bridge)、B、义务 2 未开始；下一步 `MobiusSquare.lean`（显式 `W₀…W₆`、十个两两一致性、经
   `isPLHomeomorphOn_of_isPiecewiseAffineOn_of_bijOn` 装配而非嵌套 `piecewise`）与三个平面子义务均在 S 的 HANDOFF。
   另记：3 维环境中不存在五个仿射无关点，故细分的五顶点莫比乌斯子复形不可能，PL 同胚搬运不可避免。
+
+## 9. Codex intake and first verified layers (2026-09-18)
+
+The live integration head on entry was `1cd35cf8b`, which already included the final
+HW and S reports after `672246b1c`. All seven handoff worktrees were clean and had
+zero ahead/behind counts against their own remote branches. The unrelated dirty
+mathematical files in `E:\differential-geometry-dev` were not changed. The owner-authorized
+header policy was also committed there as `d4b09024d`, touching only `AGENTS.md` and `NAMING.md`.
+
+- `e03f6c58b` corrects `Moise264`: the inclusion of the produced disk boundary into
+  the surface is required to be non-nullhomotopic. This is a statement correction,
+  not a proof of 26.4. The main node table and the phase plan were updated.
+- H stash `deff8738024f4d29a22864ad3910ea5a97c026d8` was applied, the three unused
+  instance scopes were omitted, and one long line was wrapped. Six theorems in
+  `ArcChainCells.lean` were committed and pushed as `ae58cf850`, then integrated
+  by `60a6c0d48`. The stash remains preserved. The trace theorem still excludes
+  both endpoint vertex cells through `1 <= j` and `j + 1 <= 2 * n`.
+- Both changed modules were given the required copyright and module headers, then
+  recompiled with the standard syntax linter set and explicit `style.header=true`
+  and `style.longLine=true`: exit 0, no warnings. An external, silent combined audit
+  checked all six H declarations, the `Moise264` definition, and E3's
+  `NormalSingularCellData.not_boundary_slide_chart_of_isBoundaryBranch`.
+  Every transitive axiom belongs to `{propext, Classical.choice, Quot.sound}`;
+  default environment linters passed with only `docBlame` and `docBlameThm`
+  excluded. These local checks use existing imported objects; they do not certify
+  the entire current source dependency graph.
+- Current AGENTS requires flat-root registration. `ArcChainCells` and
+  `MoiseChain` are now registered. A full `lake build DifferentialGeometry` was
+  started with one Lean worker and an independent D: project output directory;
+  `.lake/root-build-codex.log` records that attempt. It was stopped before the
+  owner-authorized header edits; completed private outputs were preserved.
+  Root verification must resume after the final source edits and is not complete.
+
+HW remains unmerged. Its old 87 successful logs exist, but index 88
+`Geometry.Exponential.ChartFlow.Orbit.UniformExistence` has an empty log and its
+shared `.olean` and `.ilean` are absent. Thus the old claim that interruption left
+no deleted-but-unbuilt object is incorrect. The scripts delete and replace public
+objects without updating Lake traces, so neither those objects nor a blind cache
+copy followed by `--rehash` establishes source provenance. New HW verification
+uses `.lake/verified-innermost-20260918`, which excludes the shared project object
+root entirely. The independently enumerated first conflict closure has 78 source
+modules, all freshly compiled with zero warnings. Seven Innermost endpoints passed
+the silent axiom and applicable environment-linter checks. The next conflict gates
+are Regions and ArcCollar. This is not the Hurewicz merge gate; the historical
+native files in that closure still need a separate header-policy review.
+
+S remains open at the corrected mapping-torus bridge. Its concrete Mobius manifold
+endpoint is present, but `MobiusSquare.lean` is not. The corrected tube route also
+needs seam-compatible boundary parametrizations: interpolating only arc endpoints
+does not prove the required flip equality for an arbitrary reversing PL map.
+One may choose `alpha1(s) = v^-1(alpha0(1-s))` and then construct a compatible PL
+extension. This is a further obligation, not a completed construction.
+
+Linter detail: environment `NamedLinter.name` values are the short names `docBlame`
+and `docBlameThm`. Filtering their fully qualified declaration names does not
+exclude them. The header linter checks direct imports of the flat library root
+(`Mathlib/Tactic/Linter/Header.lean`, `isInLibraryRoot`); it can skip an unregistered
+leaf even when explicitly enabled. The earlier apparent correlation with the Lake
+manifest was incorrect. Both changed leaves are now registered and their explicit
+header and long-line checks pass. The owner resolved the source-policy conflict:
+required copyright headers and module docstrings are allowed; inline comments and
+declaration docstrings remain forbidden. The root, naming, and PL policy documents
+now agree. The existing lakefile still disables `style.header` and `style.longLine`
+globally; no new suppression was added, and explicit checks override both settings
+for touched source modules. This is not a mass migration of unrelated source files.
+
+The tame lane has now produced the compact closed-collar to open-collar conversion
+and the PL 3-ball boundary-image bicollar: `39e444622` and `3fd396389` are pushed
+on the dedicated branch. Eleven declarations passed axiom and environment-linter
+checks; a standard projected simplex with identity map instantiated the producer.
+The named complement wrapper and explicit `Moise304 -> Moise305Tame` arrow remain
+the final dedicated-branch integration obligations at this checkpoint.
+
+Owner steering for future agents: difficult proof work uses `gpt-6-astra` with
+`max`; routine verification and organization may use `gpt-5.6-sol`. The prior
+Case 3/4 ordering is retained while the choices in section 6 remain unanswered.
