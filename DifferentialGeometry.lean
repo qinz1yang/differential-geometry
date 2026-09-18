@@ -11185,3 +11185,4 @@ import DifferentialGeometry.Analysis.Parabolic.CurvatureOperatorRank.ClosedInter
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.CurvatureOperatorClosedIntervalRank
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.ClosedIntervalRank
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.TerminalRank
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.DiscardedSideRelativeCollar
