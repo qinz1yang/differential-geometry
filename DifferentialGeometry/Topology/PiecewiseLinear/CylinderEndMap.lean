@@ -7,14 +7,14 @@ namespace DifferentialGeometry.Topology.PiecewiseLinear
 variable {E F G : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [NormedAddCommGroup F] [NormedSpace ℝ F] [NormedAddCommGroup G] [NormedSpace ℝ G]
 
-namespace IsCylindricalDiagram
-
-variable {f : E × ℝ → F} {P : Set E} {S : Set F}
-
-theorem isPolyhedron_prod_singleton (hP : IsPolyhedron P) (a : ℝ) :
+theorem isPolyhedron_prod_singleton {P : Set E} (hP : IsPolyhedron P) (a : ℝ) :
     IsPolyhedron (P ×ˢ ({a} : Set ℝ)) := by
   rw [← Icc_self a]
   exact hP.prod isHPolytope_Icc.isPolyhedron
+
+namespace IsCylindricalDiagram
+
+variable {f : E × ℝ → F} {P : Set E} {S : Set F}
 
 theorem isPLHomeomorphOn_bottom [FiniteDimensional ℝ E] [FiniteDimensional ℝ F]
     (h : IsCylindricalDiagram f P S) (hP : IsPolyhedron P) :

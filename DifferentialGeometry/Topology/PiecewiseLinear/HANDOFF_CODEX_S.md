@@ -3790,3 +3790,198 @@ product, not just levelwise.
 `check-f.ps1 -Module ...CylinderEndMap` exit=0, zero warnings, 10.1 s.
 `.lake/scratch/AuditSCylinderEndMap.lean` audits all seven declarations; every
 one depends only on `propext`, `Classical.choice`, `Quot.sound`.
+
+## C.6 obligation 2, steps B--D: the Alexander trick lands, the circle case does not, 2026-09-18
+
+### Correction to an earlier survey line
+
+An earlier instruction to this lane said the string `isotop` occurs nowhere in
+the tree's Lean sources and that there is no isotopy material anywhere. That is
+wrong and must not be relied on. Scoped correctly, re-checked here with
+`grep -rliE isotop --include=*.lean DifferentialGeometry/`:
+
+- The **PL layer** genuinely has none. Before this session the only occurrence
+  under `Topology/PiecewiseLinear/` was the `import ...ConeIsotopy` line at
+  `SimplexPush.lean:1`, and `ConeIsotopy.lean` is still a connectedness argument
+  over a preconnected parameter space with no time parameter.
+- **Tree-wide there are 43 files**, essentially all in the smooth layer:
+  `Topology/Manifold/{ChartSupportedIsotopy, RelativeSquareIsotopy,
+  Sphere*Isotopy, CompactPlanarIsotopy, PlanarChartGermIsotopy,
+  SquareFlowIsotopy}.lean`, `Topology/Morse/{BoundaryIsotopy, HandleIsotopy}`,
+  `Topology/Diffeomorph/Perturbation.lean`.
+
+`exists_relative_square_isotopy` (`RelativeSquareIsotopy.lean:13`) is the smooth
+analogue of C2 and its house shape was worth copying: a family indexed by `R`,
+regularity of the total map **in both directions**, prescribed endpoints, and
+support control. Its *proof* does not transfer. It builds a nowhere-vanishing
+vector field `W = Diffeomorph.pushforward f 1`, cuts it off, and flows
+(`SquareFlowIsotopy`, `RectangleFieldDeformation`, `ConstantPushforward`). There
+is no PL flow, so none of that skeleton is reusable; the PL route has to be
+coning, and coning is what is used below.
+
+### The notion actually needed, and why it is weaker than an isotopy
+
+`IsPLPseudoIsotopicToId u P` asks for a single map with
+`IsPLHomeomorphOn` on `P` times the unit interval onto itself, restricting to the
+identity at level 0 and to `u` at level 1. `IsPLHomeomorphOn` already carries
+piecewise affineness of the map **and** of its inverse, the PL counterpart of the
+two `ContDiff` conjuncts in the smooth shape; the two endpoint conditions are the
+counterpart of `H 0 = f`, `H 1 = refl`.
+
+Level preservation is deliberately **not** imposed. Step D never uses it: the
+transported `eq_or_endpoints` field only needs the map to preserve the two end
+faces, and that already follows from the two endpoint conditions plus injectivity
+(`snd_eq_of_map_level`). Conversely the weaker "continuous family of PL
+homeomorphisms" is **not** enough: the transported `isPiecewiseAffineOn` field
+needs the total map piecewise affine on the whole product, not levelwise. So
+pseudo-isotopy is exactly the right strength here, and it is also what coning
+produces -- the cone of a boundary homeomorphism over a prism is not
+level-preserving.
+
+### C2, the Alexander trick, delivered unconditionally
+
+`isPLPseudoIsotopicToId_of_eqOn_boundaryComplex`: for a PL 2-ball given as a
+complex `K`, a PL self-homeomorphism `u` of `K.space` that is the identity on
+`(boundaryComplex 2 K).space` is PL pseudo-isotopic to the identity.
+
+The route is coning, and the cone already existed -- this was the check that paid
+off. `exists_isPLHomeomorphOn_of_boundaryComplex` (`BoundaryExtension.lean:13`)
+extends any PL homeomorphism of the boundary sphere of a PL `(n+1)`-ball over the
+ball, in every dimension. So:
+
+1. `K.space` times `Icc 0 1` is a PL 3-ball by `isPLBall_three_prod hK
+   (isPLBall_Icc zero_lt_one)`; triangulate it as `A`.
+2. `boundaryComplex_space_prism` (`PrismBoundary.lean:65`) gives the boundary as
+   `K.space` times `{0,1}` union `(boundaryComplex 2 K).space` times `Icc 0 1`,
+   resplit as the top face together with bottom-plus-sides.
+3. `theta z = if z.2 = 1 then (u z.1, z.2) else z` is a PL self-homeomorphism of
+   that 2-sphere: `Prod.map u id` on the top face, the identity on
+   bottom-plus-sides because `u` is the identity on the boundary circle. Glued
+   with `IsPLHomeomorphOn.union`.
+4. Cone it with `exists_isPLHomeomorphOn_of_boundaryComplex (n := 2)`.
+
+Note the `if`-form of `theta` rather than `Set.piecewise`. `Set.piecewise`
+carries a `Decidable` instance argument, and under `classical` the term built by
+`IsPLHomeomorphOn.piecewise` came out with `propDecidable` while
+`Set.piecewise_eq_of_notMem` synthesised `decidableMemProd`, so both endpoint
+computations failed with "synthesized type class instance is not definitionally
+equal". A plain `if` on `z.2 = 1` plus `IsPLHomeomorphOn.union` and
+`IsPLHomeomorphOn.congr` avoids the instance entirely. Worth remembering for any
+other boundary map assembled from two pieces.
+
+### D, the reduction of 24.10, delivered conditionally
+
+`IsCylindricalDiagram.comp_of_ends`: if a PL homeomorphism of `P'` times the
+interval onto `P` times the interval carries each end face to the corresponding
+end face by PL homeomorphisms `u0, u1 : P' -> P`, then the precomposite is again
+a cylindrical diagram, over `P'`, with the same image. All four fields
+transport; only `eq_or_endpoints` has content, via `snd_eq_of_map_level`.
+
+`IsCylindricalDiagram.exists_endMap_id_of_pseudoIsotopicToId`: if the end map `u`
+of a diagram (step A) is pseudo-isotopic to the identity, then for **any** PL
+homeomorphism `w : P' -> P` of model disks there is a cylindrical diagram over
+`P'` with the same image whose end map is the identity. This is the
+reparametrisation `end map â†¦ u1â»Â¹ âˆ˜ u âˆ˜ u0` with `u0 = w`, `u1 = u âˆ˜ w`.
+
+`exists_isPLHomeomorphOn_of_endMaps_pseudoIsotopicToId` is 24.10 modulo exactly
+one hypothesis: two cylindrical diagrams, over model disks in possibly different
+ambient spaces, whose end maps are each pseudo-isotopic to the identity, have PL
+homeomorphic images. Both are pushed onto the second model disk with end map the
+identity and compared by step A's `exists_isPLHomeomorphOn_of_eq_endMap`.
+
+The pseudo-isotopy hypotheses are attached to the **actual end maps of the given
+diagrams**, not asserted for all self-homeomorphisms of a disk. That is not
+cosmetic: the blanket form would be **false**, since an orientation-reversing
+self-homeomorphism of a 2-disk is not pseudo-isotopic to the identity (the
+mapping torus is the solid Klein bottle). A conditional theorem in the blanket
+form would have been vacuous.
+
+### B and C1: the one genuine obstruction, with evidence
+
+Step B as posed -- "`IsOrientable` of the image forces the end map orientation
+preserving" -- cannot be stated in this tree, let alone proved:
+
+- `grep -rniE "orientationpreserving|orientation_preserving|preservesorientation"
+  --include=*.lean DifferentialGeometry/Topology/PiecewiseLinear/` returns **0**.
+  The only `preservesOrientation` in the tree is for smooth `Diffeomorph`
+  (`Topology/Manifold/Orientation.lean:102`), unusable for a PL map.
+- `IsOrientable n K` (`Orientation.lean:434`) is `Nonempty (CoherentOrientation n K)`,
+  a property of a **complex**. `CoherentOrientation` is never transported along a
+  PL map: the only PL-homeomorphism lemma is `isOrientable_iff_of_isPLHomeomorphOn`
+  (`Orientation.lean:8474`), a bare `Prop`-level iff carrying no data, so it
+  cannot say that a given map preserves a given orientation. `IsGlueIso`
+  transport exists but applies to simplicial isomorphisms, not general PL maps.
+
+So the missing content is not
+`isOrientable_derivedNeighborhood_of_ambient_nullHomotopic_polygon`, which is
+available and is a complex-level statement; it is the map-level orientation layer
+that would let it be consumed.
+
+Reduced precisely, the single open step is:
+
+> **(C1)** for a PL self-homeomorphism `u` of a PL 2-ball `P`, a PL
+> self-homeomorphism of the annulus `âˆ‚P` times `Icc 0 1` restricting to the
+> identity at level 0 and to `u` restricted to `âˆ‚P` at level 1.
+
+With C1 the rest closes with what is now in the tree, in three steps and no new
+ideas: cone `u` restricted to `âˆ‚P` over `P` with
+`exists_isPLHomeomorphOn_of_boundaryComplex (n := 1)` to get an extension `v`;
+assemble identity, the annulus map, and `v` into a self-homeomorphism of the
+prism boundary and cone it, giving a pseudo-isotopy from the identity to `v`;
+then `vâ»Â¹ âˆ˜ u` is the identity on `âˆ‚P`, so C2 applies, and the composite has end
+map `u`.
+
+C1 is genuinely open and is not an artifact of the ambient space or of a
+wrong-shaped lemma:
+
+- The obstruction is real and forced, not merely sufficient. Any such `Î¦` carries
+  the prism boundary to itself (`BoundaryInvariance.lean:125`) and fixes the two
+  end disks, hence restricts to exactly such an annulus map.
+- What exists for PL circles is 2-point transitivity
+  (`CirclePair.lean:21 exists_isPLHomeomorphOn_pair_of_isPLSphere_one`) and
+  rel-arc extension (`BallGluingTwo.lean:26`), both pure existence with no
+  orientation bookkeeping. `PolygonCircleParametrization.lean` has the cyclic
+  `ZMod n` vertex order and spanning cycles: raw material for an orientation, not
+  the definition.
+- Two shortcuts were considered and rejected. Reducing to "`u` fixes two points
+  of `âˆ‚P` and preserves each arc between them" would make C1 immediate -- each
+  arc times the interval is a square, prescribe the map on its whole boundary and
+  cone -- but an orientation-preserving circle homeomorphism need not fix any
+  point, and moving a point back is the same problem again. The straight-line
+  homotopy is quadratic in the pair of variables and is not PL, the trap already
+  recorded for this lane.
+
+Closing C1 means building a map-level PL orientation layer, or a dedicated
+orientation invariant for PL circle self-homeomorphisms via the `ZMod n` cyclic
+order, and then the annulus construction. No cost figure is quoted: it was not
+tested, and this lane's two estimates today were off by 2x and 8x in opposite
+directions.
+
+### New declarations
+
+`CylinderEndMap.lean`: `isPolyhedron_prod_singleton` moved out of the
+`IsCylindricalDiagram` namespace, where it did not belong; nothing else changed.
+
+`DiskPseudoIsotopy.lean` (new): `IsPLPseudoIsotopicToId`,
+`isPLPseudoIsotopicToId_id`, `isPLPseudoIsotopicToId_of_eqOn_boundaryComplex`,
+`image_prod_singleton_of_map_level`, `snd_eq_of_map_level`,
+`IsCylindricalDiagram.comp_of_ends`,
+`IsCylindricalDiagram.exists_endMap_id_of_pseudoIsotopicToId`,
+`exists_isPLHomeomorphOn_of_endMaps_pseudoIsotopicToId`.
+
+### Verification
+
+`check-f.ps1` exit=0 with zero warnings on both modules (9.7 s and 10.3 s).
+`.lake/scratch/AuditSDiskPseudoIsotopy.lean` audits all eight declarations and
+`.lake/scratch/AuditSCylinderEndMap.lean` all seven; every one depends only on
+`propext`, `Classical.choice`, `Quot.sound`. `fresh.py`: 0 forbidden hits, 0
+stale, 0 missing.
+
+### Exact remaining obligation
+
+C.6 obligation 2 is partial. Closed: step A (the end map), C2 (the Alexander
+trick for a self-homeomorphism that is the identity on the boundary circle), and
+the reduction of 24.10 to pseudo-isotopy of the two end maps. Open: C1 as stated
+above, and with it the map-level PL orientation layer that step B would need.
+Nothing downstream may treat
+`exists_isPLHomeomorphOn_of_endMaps_pseudoIsotopicToId` as unconditional 24.10.
