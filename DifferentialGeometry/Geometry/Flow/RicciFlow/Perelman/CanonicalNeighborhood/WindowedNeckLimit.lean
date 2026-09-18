@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NeckRegionBoundary
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedModelConvergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NeckLimitTransport
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NeckParabolicTransport
@@ -113,6 +114,52 @@ theorem StrongNeck.eventually_transport_of_windowed_models
     exact hmap
   rw [parabolicTime_zero] at hh
   exact hh
+
+theorem LocalNeck.eventually_transport_of_windowed_models
+    {D : ℕ → RealTimeInterval} {S : ∀ i, SolutionOn (I := I3) (M := M i) (D i)}
+    (hS : ∀ i, IsSolutionOn (S i)) {delta : ℕ → ℝ} {kappa : ℝ}
+    {x : ∀ i, M i} {t : ℕ → ℝ}
+    (W : ∀ i, WindowedModelWitness (delta i) kappa (S i) (x i) (t i))
+    (hdelta : Tendsto delta atTop (𝓝 0))
+    (hreg : ∀ i, Ioo (t i - (delta i * (S i).scalar (t i) (x i))⁻¹) (t i) ⊆ (D i).regular)
+    (L : PointedFlowData.{u, 0, 0} I3 ancientTimeInterval)
+    [PreconnectedSpace L.M] (hcomplete : MetricComplete (L.atTime 0))
+    {phi : ℕ → ℕ} (hphi : Tendsto phi atTop atTop)
+    (F : PointedRiemannianConvergenceMaps ⟨fun i => (W i).model.atTime 0⟩
+      (L.atTime 0) phi)
+    (hcmp : ∀ K : Set L.M, IsCompact K → ∀ A : ℝ, 0 < A → ∀ order : ℕ,
+      ∀ eta : ℝ, 0 < eta → ∀ᶠ i in atTop,
+        Nonempty (MetricComparisonOn L.S.base.metric (W (phi i)).model.S.base.metric
+          (F.map i) K (Icc (-A) 0) order eta))
+    {eps alpha : ℝ} {p : L.M} {U : Set L.M} (nk : LocalNeck L.S eps p 0 U)
+    (ha : 0 < alpha) (hsmall : 2 * alpha < 1 / 11)
+    (heps : eps < neckModelTolerance alpha) :
+    ∀ᶠ i in atTop, ∃ nk' : LocalNeck (S (phi i)) (2 * alpha)
+        ((W (phi i)).embedding (F.map i p)) (t (phi i))
+        ((partialDiffeomorphTransMixed (F.partialDiffeomorph i) (W (phi i)).embedding) '' U),
+      nk'.strong.map = partialDiffeomorphTransMixed nk.strong.map
+        (partialDiffeomorphTransMixed (F.partialDiffeomorph i) (W (phi i)).embedding) := by
+  have hh := nk.strong.eventually_transport_of_windowed_models hS W hdelta hreg
+    L hcomplete hphi F hcmp ha hsmall heps
+  filter_upwards [hh] with i hi
+  obtain ⟨nk', hmap⟩ := hi
+  let Psi : PartialDiffeomorph I3 I3 L.M (M (phi i)) ∞ :=
+    partialDiffeomorphTransMixed (F.partialDiffeomorph i) (W (phi i)).embedding
+  have hregion : nk'.region = Psi '' U := by
+    change nk'.map '' (univ ×ˢ Icc (-10 : ℝ) 10) = Psi '' U
+    calc
+      nk'.map '' (univ ×ˢ Icc (-10 : ℝ) 10) =
+          Psi '' (nk.strong.map '' (univ ×ˢ Icc (-10 : ℝ) 10)) := by
+        rw [hmap]
+        exact (Set.image_image (fun y : L.M => Psi y) nk.strong.map
+          (univ ×ˢ Icc (-10 : ℝ) 10)).symm
+      _ = Psi '' U := congrArg (fun V : Set L.M => Psi '' V) nk.region_eq.symm
+  have hout : ∃ out : LocalNeck (S (phi i)) (2 * alpha)
+      ((W (phi i)).embedding (F.map i p)) (t (phi i)) nk'.region,
+      out.strong.map = partialDiffeomorphTransMixed nk.strong.map Psi :=
+    ⟨nk'.toLocalNeck, hmap⟩
+  rwa [hregion] at hout
+
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
 
