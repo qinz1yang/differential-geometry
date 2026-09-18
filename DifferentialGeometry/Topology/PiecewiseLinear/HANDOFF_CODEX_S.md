@@ -4937,3 +4937,143 @@ arithmetic step below it uses `Nat.le_of_succ_le_succ` instead of `omega`.
 exit=0, zero warnings, 10.0 s. `.lake/scratch/AuditSMobiusManifold.lean` audits all
 30 declarations; every one depends only on `propext`, `Classical.choice`,
 `Quot.sound`, none on `sorryAx`.
+
+## State at interruption (lane S, after (A))
+
+### Landed
+
+`MobiusManifold.lean`, commit "The five-triangle Moebius band is a combinatorial
+two-manifold with boundary". `check-f.ps1` exit=0, zero warnings, 10.0 s; audit of
+all 30 declarations clean. Endpoint
+`isCombinatorialManifoldWithBoundary_mobiusComplex`. That is item (A) of the
+previous spec, and it is the hypothesis `IsOrientable.of_le` needs of the
+subcomplex.
+
+Also checked against the sources, so the next agent need not re-derive them: the
+three transport steps of the recorded chain are usable exactly as written.
+`IsOrientable.of_le` (`Orientation.lean:3153`) wants `L ≤ K` plus
+`IsCombinatorialManifoldWithBoundary n` of both complexes;
+`isOrientable_iff_of_isPLHomeomorphOn` (`Orientation.lean:8474`) wants
+`IsCombinatorialManifoldWithBoundary n K` and `IsPLHomeomorphOn f K.space L.space`;
+`IsOrientable.boundary` (`Orientation.lean:3105`) wants
+`IsCombinatorialManifoldWithBoundary (n+1) K`. Nothing there needs
+`CoherentOrientation` data transport, as recorded.
+
+### Mid-flight
+
+Nothing. No uncommitted edits, nothing stashed.
+
+### (B-geometry): the recorded route is wrong, and here is why
+
+The previous spec said: "Around the fixed point `p`, take an arc `A` of the circle
+on which `v` reverses and maps `A` onto itself fixing its endpoints (the reversing
+branch of the lift dichotomy gives this locally)". Both halves fail.
+
+No endpoint fixing. If `A` is a proper closed arc with `v` carrying `A` onto `A`,
+then `v` permutes the two endpoints of `A`. If it fixed both, `v` would be an
+orientation-preserving homeomorphism of `A`, and likewise of the complementary arc,
+hence positive on the whole circle, contradicting that `v` reverses. So `v` swaps
+the endpoints of any invariant arc. `image_arc_eq_self_or_eq_other`
+(`CircleAnnulusIsotopy.lean:264`) is about the decomposition at two fixed points
+and gives exactly this: for a reversing `v` the branch taken is the swap, not
+the self-image.
+
+No invariant arc at all, in general. Swapped endpoints force `v` applied twice to
+fix an endpoint, so an invariant proper arc exists only if the square of `v` has a
+fixed point outside the fixed set of `v`. Write `r` for the reflection of the
+circle and `v = s . r` with `s` an increasing PL homeomorphism of the circle
+fixing `0` and `1/2`, with `s` above the identity on `(0,1/2)` and below it on
+`(1/2,1)` -- for instance the PL `s` through `(0,0), (1/4,3/8), (1/2,1/2),
+(3/4,5/8), (1,1)`. Then `v` is PL and reversing, its fixed set is exactly
+`{0,1/2}`, and on `(0,1/2)` the square of `v` is strictly above the identity
+(mirror inequality on `(1/2,1)`), so the square of `v` has the same fixed set as
+`v`. Hence the only candidates for the endpoints of an invariant arc are `0` and
+`1/2` themselves, and the arc between them is swapped, not preserved. This `v` has
+no proper invariant arc whatsoever, so the image of `A` times `Icc 0 1` is never a
+Moebius band for it, and the band must be built differently.
+
+### The corrected construction, with the one new geometric object named
+
+The band is a neighbourhood of the section over the fixed point, not a product.
+Choose an arc `A0` around `p` and put `A1` equal to the `v`-preimage of `A0`, also
+an arc around `p`; the band is the tube of the `A_t` interpolating from `A0` at
+`t = 0` to `A1` at `t = 1`, and then its `f`-image closes up because
+`f (x,1) = f (v x, 0)` carries `A1` at level one exactly onto `A0` at level zero.
+Concretely: take one big arc `A` of `C` containing the union of `A0` and `A1` with
+`p` in its interior, parametrised by a PL `c : Icc 0 1 -> C`; in the `c`-coordinate
+the tube is the convex quadrilateral `conv {(a0,0), (b0,0), (b1,1), (a1,1)}` in
+`ℝ × ℝ`, where `A_i` is the `c`-image of `Icc a_i b_i`. The naive interpolation
+`(s,t) ↦ ((1-s) a_t + s b_t, t)` is bilinear and therefore not piecewise affine --
+that is the trap -- but the quadrilateral splits into two triangles and two affine
+maps give a PL parametrisation of it by `Icc 0 1 ×ˢ Icc 0 1`. Composing,
+`g (s,t) := f (c (lam (s,t)), t)` satisfies `g (s,1) = g (1-s,0)`, which is the
+flip-glued square.
+
+So (B-geometry) splits into two independent pieces, and they can be done in either
+order:
+
+1. The tube. From `¬ IsPLCirclePositive C v`, transport
+   `exists_fixed_of_not_hasIncreasingCircleLift` along `paramHomeomorph` to a fixed
+   point `p` of `C`; produce `A0`, `A1` the `v`-preimage of `A0`, the containing
+   arc `A` and its parametrisation `c`; split the quadrilateral; conclude with a
+   `g : ℝ × ℝ → F` that is piecewise affine on `Icc 0 1 ×ˢ Icc 0 1`, satisfies
+   `g (s,1) = g (1-s,0)`, and is injective apart from that identification.
+2. The model (B-model). For any such `g`, exhibit a PL homeomorphism from
+   `mobiusComplex.space` onto the `g`-image of `Icc 0 1 ×ˢ Icc 0 1`.
+
+For (2) the design is settled and only the plane geometry is open. Put
+`W0 = (0,0), W1 = (1,0), W2 = (0,1/4), W3 = (1,1/2), W4 = (0,3/4), W5 = (1,1),
+W6 = (0,1)`; the five triangles `conv {W k, W (k+1), W (k+2)}`, `k = 0..4`, form a
+zigzag strip that tiles the square, with the bottom edge `W0 W1` and the top edge
+`W5 W6` as its two ends. Send `mobiusTri i` to the `i`-th strip triangle by the
+affine map of `exists_isPLHomeomorphOn_affine_of_equiv` (`SimplexAffine.lean:10`)
+determined by `V j ↦ W j` with `W5` corresponding to `V0` and `W6` to `V1`, and set
+`Phi = g . A i` on the `i`-th model triangle. All ten pairwise agreements check:
+the seven ordinary pairs because the two affine maps already agree on the shared
+vertices, and the three wrap pairs `(4,0)`, `(0,3)`, `(1,4)` exactly because
+`g (s,1) = g (1-s,0)`. Assemble with
+`isPLHomeomorphOn_of_isPiecewiseAffineOn_of_bijOn`, not with nested
+`IsPLHomeomorphOn.piecewise`: it only asks for `IsPolyhedron mobiusComplex.space`,
+piecewise affineness, and `BijOn`, so the inverse never has to be handled.
+
+Open sub-obligations of (2), all planar and all unstarted: affine independence of
+the five `W`-triples in `ℝ × ℝ`; that the five triangles cover
+`Icc 0 1 ×ˢ Icc 0 1`; and that `T i` meets `T j` in the hull of the shared
+vertices for the ten pairs, with the three wrap pairs being genuinely disjoint in
+the square, which is what makes the flip the only source of non-injectivity.
+
+One design constraint worth recording, because it rules out the obvious shortcut:
+the transport through `isOrientable_iff_of_isPLHomeomorphOn` is unavoidable. One
+cannot instead look for a five-vertex Moebius subcomplex of the subdivision,
+because a `Geometry.SimplicialComplex` face must be affinely independent and the
+ambient space of the derived neighbourhood is three-dimensional, so it has no five
+affinely independent points. That is exactly why `mobiusComplex` was built in
+`Fin 5 → ℝ` in the first place.
+
+### Exact next step
+
+Do (2) first: it is self-contained, it does not depend on how the tube is built,
+and its statement is the interface between the two pieces. State it as: for
+`g : ℝ × ℝ → F` with `IsPiecewiseAffineOn g (Icc 0 1 ×ˢ Icc 0 1)`, with
+`g (s,1) = g (1-s,0)` for `s` in `Icc 0 1`, and with `g x = g y` on the square
+implying `x = y` or `(x.2 = 0 ∧ y.2 = 1 ∧ x.1 = 1 - y.1)` or the symmetric clause,
+there is a `Phi` with
+`IsPLHomeomorphOn Phi mobiusComplex.space (g '' (Icc 0 1 ×ˢ Icc 0 1))`. Prove it in
+a new `MobiusSquare.lean` importing `MobiusManifold.lean`.
+
+### One tooling fact that will bite anyone touching this file
+
+`MobiusManifold.lean` carries `attribute [local instance 10000]
+Classical.propDecidable` from the point where `geometricLink` first appears,
+because `DecidableEq (Fin 5 → ℝ)` has a real instance
+(`fun a b => Fintype.decidablePiFintype a b`) that does not match the
+`Classical.propDecidable` baked into every library statement about `Finset` pairs
+of complex faces; `Decidable` is data, so the two are not defeq and every interface
+application fails with an application type mismatch. Taking `[DecidableEq (Fin 5 →
+ℝ)]` as a lemma parameter does not help, because synthesis at the use site still
+finds the `Fintype` instance, and plain `attribute [local instance]` without the
+priority does not help either. Below that attribute line `decide` and `omega` no
+longer produce kernel-checkable certificates -- `omega` fails with
+`id (Eq.refl true)` against a `decide (... .isImpossible = true) = true` goal --
+so all `decide` lemmas must stay above it. Keep the same layout in
+`MobiusSquare.lean`.
