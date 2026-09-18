@@ -2086,3 +2086,27 @@ step 2 只做了 grep 与接口陈述，没有动工（月牙是一个项目，�
   "`IsPLHomeomorphOn θ (Icc 0 1) A` ⟹ `IsArcBetween A (θ 0) (θ 1)`"。
   本轮按割点 `f₁ p, f₁ q` 的形式留作形参（调用者用上面两条一行兑现），没有引入新的数学缺口。
 - 验证：`GluedCellBoundaryImage` 聚焦检查 exit=0（11.1 秒）、零 warning。
+
+## 68. 2026-09-18 E3-M3：粘合胞腔的 `fiber_le_two` 与 `locallyInjective`（第三、四条字段）
+
+状态：done。新模块 `GluedCellInjectivity.lean`（模块名与 4 条声明名在四条车道分支上都不存在）。
+
+- **嵌入输入按 §66 step 3 的写法用上了**：`hD₂inj : InjOn D₂ D₂.domain` 与
+  `hD₂disj : ∀ x ∈ D₂.domain, x ∉ B → ∀ z ∈ D₁.domain, D₂ x ≠ D₁ z`。
+- `mem_seam_of_image_mem_of_injOn`：`f₂` 在 `Q` 上单射、`f₂ '' S = B` ⟹
+  `x ∈ Q` 且 `f₂ x ∈ B` ⟹ `x ∈ S`。这条把"月牙点落在粘合弧上"翻译成"它在缝隙里"，
+  是 `hD₂disj` 能用的前提。
+- **`fiber_le_two_of_glue_boundary_arc`**：对每个 `y` 分两种情形。
+  若某个 `x ∈ Q` 满足 `D x = y` 且 `f₂ x ∉ B`，则 `hD₂disj` 把 `P` 一侧的纤维清空，
+  剩下的落在 `Q` 里，由 `hD₂inj` 与 `f₂` 的单射性得**纤维至多一点**（`encard_le_one_iff`）。
+  否则 `Q` 一侧的纤维点的 `f₂` 像都在 `B` 里，由上一条它们都落在缝隙 `P ∩ Q ⊆ P` 里，
+  于是整条纤维落在 `P` 中，经 `f₁` 的单射像等于 `D₁.domain ∩ D₁ ⁻¹' {y}`，用 `D₁` 的界。
+- **`locallyInjective_of_glue_boundary_arc`**：`x ∈ P`（含缝隙点）时取
+  `U = (P ∩ W) ∪ (Q \ P)`，其中 `W` 是把 `D₁` 的单射邻域 `V` 拉回的开集
+  （拉回用 §65 的 `mem_nhdsWithin_inter_preimage`，再用 `invFunOn f₁ P (f₁ x) = x`）。
+  `U ∈ 𝓝[P ∪ Q] x` 因为 `W ∩ (P ∪ Q) ⊆ U`。`U` 上的单射性分三种：
+  两点都在 `P ∩ W` 用 `V` 上的 `D₁` 单射加 `f₁` 单射；两点都在 `Q \ P` 用 `hD₂inj`；
+  一点在 `P`、一点在 `Q \ P` 由 `hD₂disj` 直接排除（`hcross`）。
+  `x ∈ Q \ P` 时用 `P` 是 PL 2-球故闭，取 `U = Q \ P`，单射性全由 `hD₂inj` 给出。
+  `injOn_of_subset_second_piece` 是 `Q` 的任意子集上单射性的公共出口。
+- 验证：`GluedCellInjectivity` 聚焦检查 exit=0（10.5 秒）、零 warning。
