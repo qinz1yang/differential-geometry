@@ -13,9 +13,9 @@ Phase 3 的终点已经归约成一句话：`plApproximationManifold_three_of_mo
 |---|---|---|---|
 | 25.1 | Stallings 形式的环定理（183） | `Moise251` ✔已陈述 | 开。L1 已有条件版（E3 `SphereCase`）；L2 卡在"沿分支切开并分离"（`NIGHT_PLAN` §11）；L3 未开始 |
 | 25.2 | 环定理第一形式（183） | `Moise252` ✔已陈述 | 开。**箭头便宜**：书上从 25.1 推出只用"把 `Int|D₁|` 推离 `Bd M`"，即 S 已交付的 I2 |
-| 26.4 | 扩展环定理（193） | `Moise264` ✔已陈述 | 开。用 25.2 与 26.3 双领（S 已交付） |
+| 26.4 | 扩展环定理（193） | `Moise264` ✔已修正陈述 | 开。结论已补盘边界包含映射在曲面中非零伦；用 25.2 与 26.3 双领（S 已交付） |
 | 30.4 | 球壳定理（216） | `Moise304` ✔已陈述 | 开。用 26.4、23.8、26.1（S 已证）、28.19、28.20（H 已证）、30.3 |
-| 30.5 | 嵌套拓扑 3-胞腔（216） | `Moise305` ✔已陈述 | blocked：除 30.4 外还缺 `TopologicalCellComplementConnected`；H-M3 评估最窄 Alexander 对偶路线约 10k–18k 行 |
+| 30.5 | 嵌套拓扑 3-胞腔（216） | `Moise305` 已陈述；`moise305_tame_of_moise304` 已证 | §34 的 tame 条件箭头及双领口生产者已合入；30.4 仍是显式未证输入。一般 wild 版仍开，旧 10k–18k 前置不适用于 tame 路线 |
 | 30.6 | 环壳定理（216–217） | `Moise306` ✔已陈述 | 开。用 30.7、van Kampen、§22 |
 | 30.7 | 拓扑实心环面之间有 CST（217） | `Moise307` ✔已陈述 | 开。用 30.6、28.1、24.9–24.12（S 正在做） |
 | 30.8 | 脊生成 `π(S)`（218） | `Moise308` | 开。用 §31 |
@@ -902,3 +902,21 @@ E3 核对后三条事实（`HANDOFF_CODEX_L.md` §80–§81）：
 决定：采纳 3。阻塞接口改为**板状图卡**：沿整条分支的乘积邻域中两张片是坐标平面、`M` 是板 `{0 ≤ x ≤ c} × ℝ²`、
 `Bd M` 是两个端面 `{x = 0}` 与 `{x = c}`（F 的 `TransversePlaneNormalForm` 在两端各用一次 + F 的链 + H 的球对）。
 滑动机制（`ModelSlide*`、`ChartSlide*`、`BranchSlide*`）保留为已证基础设施，但不在主链路径上。
+
+## 2026-09-18 Codex: essential boundary in the extended loop theorem
+
+`Moise264` now requires that the inclusion of `r '' stdSimplexBoundary 2` into
+`S` is not `ContinuousMap.Nullhomotopic`. The boundary inclusion proof is an
+existential typing witness already implied by the preceding intersection equality;
+it is not an additional geometric hypothesis. This records essentiality of the
+produced boundary, without requiring that it represent the particular input `g`.
+The theorem itself remains unproved. There were no source importers or consumers
+of `Moise264` at the time of this correction.
+
+After root registration and the owner-authorized required headers were added, the
+changed module compiled with the standard syntax linter set, explicit header and
+long-line checks, and no diagnostic output. Its exported definition was inspected,
+and the default environment linters
+were checked with only `docBlame` and `docBlameThm` excluded. These are local checks
+against the current imported objects, not a fresh certification of the entire
+integration source dependency graph.

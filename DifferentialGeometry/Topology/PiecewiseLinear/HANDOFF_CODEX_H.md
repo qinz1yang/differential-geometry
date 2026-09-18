@@ -509,7 +509,9 @@ Reduced/MayerVietorisCoefficients, Reduced/PointClasses}`（`REUSE_AUDIT.md` §2
   `Homology/HurewiczLowDegrees.lean` 的一维 Hurewicz/基本群阿贝尔化桥，以及有限个边界分支的封盘复形与删盘识别；
   预计合计 3k–5k 行，归 G.5，而不是 H.4 分类。
 
-### H-M3 — assessed，`TopologicalCellComplementConnected` 暂缓
+### H-M3 — 原 wild 评估保留；§34 的 tame 路线已取代此前置
+
+2026-09-18 更新：`TameNestedCells.lean` 的 `moise305_tame_of_moise304` 已证明，并保留 `Moise304` 为显式输入；`BicollarEmbedding.lean` 生产开集嵌入下 PL 3-胞腔边界的双领口。七模块 709 行，局部检查通过。以下 10k–18k 的一般 wild 估计不再阻塞 §34；它不是一般 `Moise305` 已证的声明。
 
 - `JordanBrouwer.lean` 实际已有不要求光滑性的末端：
   `hasTwoComplementComponents_of_isCompact_of_alexanderDualityH0Certificate` 只要嵌入像紧致与
@@ -2630,3 +2632,142 @@ F 在每个顶点自己把顶点定理与该顶点的横截性合成，交出打
 `isPLBallPair_union_of_coneSet_disk` 沿 `arcChainFace` 归纳，
 前置是把 `derivedNeighborhoodCell K (arcChainFace v j)` 认成**原位锥形球对**
 （锥顶、边界 2-球面、弧在其中的那一段）。这一条尚未测绘，**未开始，不报区间**。
+
+## 40. 2026-09-18 第 4 步球对方向的前置 2 — **测试通过**（`DerivedCellCone.lean`）
+
+协调者要求先测再建。测了：**相接盘的锥顶正是弧的穿越点，且全部原位**，不必换顶点，
+`hmeet` 的形状不变。零新几何，八条全是既有引理的换写：
+
+- `derivedNeighborhoodCell_space_eq_coneSet`：`cell s = coneSet ĉ_s (upperLink K' {ĉ_s}).space`
+  （`derivedNeighborhoodCell_eq_dualCell` ＋ `dualCell` 按定义就是 `coneComplex` ＋
+  `coneComplex_space_eq_coneSet` ＋ `Finset.centroid_singleton`）。
+- `isConeBase_centroid_upperLink`：其锥基证书；
+  `IsCombinatorialManifold.isPLSphere_upperLink_centroid`：闭组合 3-流形时基是 2-球面
+  （`isPLSphere_upperLink` 取 `k = 0`，经 `hK.barycentricSubdivision`）。
+- `derivedNeighborhoodCell_inter_eq_coneSet`：`cell s ∩ cell t =
+  coneSet (centroid {ĉ_s, ĉ_t}) (upperLink K' {ĉ_s, ĉ_t}).space`——
+  `derivedNeighborhoodCell_space_inter` 早就把交写成 `dualCell K' {ĉ_s, ĉ_t}`，它按定义是锥。
+- `IsCombinatorialManifold.isPLSphere_upperLink_pair_centroid`：该基是 1-球面（`k = 1`）。
+- `coneSet_pair_centroid_subset_upperLink` / `_right`：相接盘落在两块各自的基球面里
+  （`dualCell_faces_subset_upperLink`，`BoundaryDerivedNeighborhood.lean:16`，已有）。
+- `centroid_ne_centroid_of_ne`：不同面的重心不同（`injOn_faces_of_mem_openSimplex`）。
+
+所以第 38 节 `isPLBallPair_union_of_coneSet_disk` 要的 `hL₀ : IsConeBase z L₀`、`hS₀`、`hD₁`、`hD₂`、
+`hmeet` 在导出邻域胞腔上**全部现成**，`z = centroid {ĉ_s, ĉ_t}`。
+
+坑：定理名以 `IsCombinatorialManifold.` 开头时，陈述里裸写 `barycentricSubdivision K`
+会解析成 `IsCombinatorialManifold.barycentricSubdivision`（命名空间被打开），报
+"argument K expected to have type IsCombinatorialManifold"。写 `PiecewiseLinear.barycentricSubdivision K`。
+另：`rw [Finset.centroid_singleton]` 留下 `id x`，`rw` 收尾的 `rfl` 不展开 `id`，要补一行 `rfl`。
+
+合并后 `fresh.py` 报六个模块 STALE，但 `git diff` 显示只有 `VertexBranchSection.lean` 内容变了
+（F 的文件，本车道不导入它）；其余只是 mtime 被合并碰过，olean 仍对应当前源码。
+
+聚焦检查 `DerivedCellCone` exit=0（9.8 秒）、零 warning；
+`.lake/scratch/AuditHDerivedCellCone.lean` 八项仅 `propext`、`Classical.choice`、`Quot.sound`。
+
+## 41. 2026-09-18 第 4 步球对方向的前置 1 — done（`ArcCellTrace.lean`）：弧在胞腔里的迹是锥
+
+按内容而不是按名字搜到了关键件：`StarIntersection.lean:10
+closedStar_barycentricSubdivision_inter_space_eq (hL : L ⊆ K) (hxL : {x} ∈ L.faces) :
+closedStar K' x ∩ L.space = closedStar L' x`——子复形的迹就是子复形自己的闭星。
+对 `(K', L')` 用一次，胞腔 `closedStar K'' ĉ_s ∩ L.space` 就化成 `closedStar L'' ĉ_s`，
+而 `closedStar L'' ĉ_s = (dualCell L' {ĉ_s}).space`（`DualCells.lean:163`）按定义是锥。
+剩下的只是"一维复形的 `upperLink` 是有限个点"这一条组合事实：
+
+- `IsFlag.card_le_two`：面的顶点数都 ≤ 2 时旗最多两层（`Finset.card_le_card_of_injOn` 打进 `{1,2}`）；
+  `barycentricSubdivision_card_le_two`：一维复形的重心细分仍一维。
+- `upperLink_singleton_space_of_card_le_two`：`(upperLink G {x}).space = {重心 e | e ∈ G, {x} ⊂ e}`。
+- `closedStar_barycentricSubdivision_eq_coneSet_of_card_le_two`：
+  `closedStar G' x = coneSet x {重心 e | e ∋ x 的边}`。
+- `mem_barycentricSubdivision_ssubset_singleton_centroid_iff`：`G'` 里严格含 `{ĉ_s}` 的面恰是
+  `{ĉ_s, ĉ_t}`，`t ≠ s` 与 `s` 可比。
+- **`derivedNeighborhoodCell_inter_space_eq_coneSet`**（`L ⊆ K` 一维，`s ∈ L`）：
+
+      cell s ∩ L.space = coneSet ĉ_s {centroid {ĉ_s, ĉ_t} | t ∈ L.faces, t ≠ s, s ⊆ t ∨ t ⊆ s}
+
+  链接点**正是**第 40 节相接盘的锥顶 `centroid {ĉ_s, ĉ_t}`，不需要任何中点算术。
+
+对弧复形 `arcComplexIn K v n` 与 `s = arcChainFace v j`（`1 ≤ j ≤ 2n−1`），可比的 `t` 恰是
+`arcChainFace v (j∓1)`（`arcChainFace_subset_iff`），于是迹是两条线段 `coneSet ĉ_j {z_{j−1}, z_j}`。
+两端的顶点胞腔（`j = 0, 2n`）只有一个链接点，迹是从锥顶出发的一条线段——
+**弧的端点在胞腔内部**，`IsPLBallPair 2 1` 的子链必须碰到基球面，所以端点胞腔要排除在外：
+第 4 步的球对陈述取 `N' = ⋃_{j=1}^{2n−1} cell_j`（去掉两端的顶点胞腔）与缩短的弧 `A ∩ N'`。
+
+聚焦检查 `ArcCellTrace` exit=0（11.0 秒）、零 warning（`Set.mem_setOf_eq` 已弃用，改 `Set.mem_ofPred_eq`）；
+`.lake/scratch/AuditHArcCellTrace.lean` 六项仅 `propext`、`Classical.choice`、`Quot.sound`。
+
+## 42. 2026-09-18 中断时的状态（协调者要求：owner 会话结束）
+
+**已落地（均 exit=0、零 warning、审计仅三公理，已提交并推送）：**
+第 35–41 节全部：`MidpointIndependence`、`BallPairCutConfig`（含 `exists_cutModel_data`）、
+`BallPairRelativeGluing`（`isPLBallPair_union_of_coneSet_disk`）、`ArcChartChain`、
+`DerivedCellCone`（前置 2 测试通过）、`ArcCellTrace`（前置 1 闭合）。
+
+**stash 里的一件**（`git stash list` 首条，untracked 文件 `ArcChainCells.lean`）：
+弧链胞腔的专化层——`arcChainFace_card_le_two`、`arcChainFace_injective`、
+`arcChainFace_comparable_iff`（可比 ⟺ `|i−j| ≤ 1`）、`arcChainFace_mem_arcComplexIn_faces`、
+`disjoint_derivedNeighborhoodCell_arcChainFace`（`i+1 < j` 的胞腔不交）、
+`derivedNeighborhoodCell_inter_arcComplexIn_space`（`1 ≤ j`、`j+1 ≤ 2n` 时
+`cell_j ∩ A.space = coneSet ĉ_j {z_{j−1}, z_j}`，`z_j = centroid {ĉ_j, ĉ_{j+1}}`）。
+聚焦检查 **exit=0，但前三条各报一个 `unusedSectionVars` warning**
+（要在这三条前各加 `omit [NormedAddCommGroup E] [NormedSpace ℝ E] in`），未审计。
+因为不是零 warning，按指令 stash 而不提交。`git stash pop` 后补三行 `omit`、复查、审计即可提交。
+
+**中飞（未写 Lean）——第 4 步球对方向的施工方案，已定型，按此接：**
+1. M2（`ConeDiskPairExtension.lean:11`，本车道文件）结论**追加** `G '' Lc.space = Lc'.space`
+   （证明里已有 `hGeq.image_eq.trans hGs.image_eq`），并给 `BallPairRelativeGluing.lean`
+   两处 `obtain ⟨G₁, hG₁, hG₁eq, -, hG₁X⟩` 各补一个 `-`。
+2. `exists_cutModel_data` 追加并集的原位锥数据：`(L : SC)`，`L.faces.Finite`、`IsConeBase p₁ L`、
+   `IsPLSphere 2 L.space`、`coneSet p₁ L.space = C₁ ∪ C₂`、
+   `coneSet p₁ {y₁,y₂} = A₁ ∪ A₂`、`y₁ y₂ ∈ L.space`、
+   **`L₂.space ⊆ L.space ∪ coneSet z L₀.space`**（`∂T₂ ⊆ ∂T ∪ conv Fm`，
+   用 `simplexBoundary_space` 逐面：`T₂.erase d = Fm`，`T₂.erase m = T.erase c`，
+   `conv (T₂.erase A) ⊆ conv (T.erase A)` 因 `m ∈ segment c d`，`B` 同）。
+   见证 `L := simplexBoundary {c,d,A,B} hTout`，`hp : p ∈ openSimplex T` 已在构造里。
+   两个消费者的 `obtain` 模式各加 `L` 与八个 `-`。
+3. **归纳不变量**（模型固定，不需要边界保持引理，也不需要拓扑）：
+   `Inv(k)`: `∃ Φ, IsPLHomeomorphOn Φ B_k (coneSet p₁ L₁.space) ∧ Φ '' A_k = coneSet p₁ {z,y₁}
+   ∧ Φ '' D_k = coneSet z L₀.space ∧ Φ z_k = z ∧ Φ y₀ = y₁`，
+   其中 `B_k = ⋃_{j=1}^{k} cell_j`，`A_k = B_k ∩ A.space`，`D_k = cell_k ∩ cell_{k+1}`，
+   `z_k` 其锥顶，`y₀ = z_0` 弧的近端（第一个穿越点，在 `cell_1` 的基球面上）。
+   一步 = M2 两次：(a) 源 `cell_{k+1}`（原位锥，第 40 节）→ 模型 `C₂`，以 `Φ|D_k` 为 `g`，
+   得 `Φ'`，`piecewise Φ Φ' : B_{k+1} → coneSet p₁ L.space`；
+   `Φ'(D_{k+1}) ⊆ L₂.space \ coneSet z L₀.space ⊆ L.space`（用 2 的最后一条与 `D_{k+1} ∩ D_k = ∅`）。
+   (b) 再归一化：M2 源 `(p₁, L)`、`X = {y₁,y₂}`、`D = Φ'(D_{k+1})`、`y = y₁`，目标 `(p₁, L₁)`、
+   `X' = {z,y₁}`、`D' = coneSet z L₀.space`，`g := g₀ ∘ Φ'⁻¹`，`g₀ : D_{k+1} → coneSet z L₀.space`
+   由 `D_{k+1}` 的原位锥数据（第 40 节）锥化 1-球面同胚得到（锥顶送锥顶）。
+   基例 `k = 1`：M2 一次（源 `cell_1`，目标 `C₁`，`X = {z_1, y₀}`）。
+   终点：`Inv(2n−1)` 与模型的 `hpair₁` 经 `IsPLBallPair.of_isPLHomeomorphOn` 给
+   `IsPLBallPair 2 1 (⋃_{j=1}^{2n−1} cell_j) (弧 ∩ 该并)`。**弧端点的顶点胞腔必须排除**（第 41 节）。
+4. 需要的胞腔事实全部在第 40、41 节与 stash 里：原位锥、2-球面基、相接盘锥顶＝穿越点、
+   盘在两基球面里、迹＝两条线段、远胞腔不交。假设用 `IsCombinatorialManifold 3 K`（闭），
+   经 `IsCombinatorialManifold.isCombinatorialManifoldWithBoundary` 复用 `ArcDerivedNeighborhood`。
+
+给 F 的端到端交付（截至本次中断）：`ArcChartChain.lean` 的星形图卡族＋相容侧选择（第 39 节），
+以及第 39 节报告的接口缺陷（协调者已把修法 (β) 派给 F）。球对方向未闭合，未估行数。
+
+## 43. 2026-09-18 Codex verified continuation
+
+The ArcChainCells stash was recovered without dropping the stash, repaired with
+three narrow `omit` scopes, and pushed as `ae58cf850`. Integration added its
+required headers and root import in `f6a0b2dda`.
+
+Step 1 of section 42 is now implemented: the conclusion of
+`exists_isPLHomeomorphOn_coneSet_pair_of_disk_marked` also exposes
+`G '' Lc.space = Lc'.space`. This follows from the existing boundary agreement
+and the sphere homeomorphism's image equality; no hypothesis was added. Both
+consumers in `BallPairRelativeGluing.lean` were updated.
+
+The two leaves are registered in the flat root and have the required copyright
+and module headers, as explicitly authorized by the owner on 2026-09-18.
+Both compiled with the standard syntax linter set, `style.header=true` and
+`style.longLine=true`, exit 0 with no diagnostics. A silent external audit checked
+all five declarations in the two leaves: every axiom lies in
+`{propext, Classical.choice, Quot.sound}`, and all default environment linters
+except `docBlame` and `docBlameThm` passed. Imported objects were reused for these
+local checks; the separate integration source rebuild remains pending.
+
+The next mathematical obligation is still section 42 step 2: expose the combined
+cut model's cone data and the second base sphere's containment in the outer sphere
+union the gluing disk. The trimmed arc-chain ball-pair induction is not complete.
