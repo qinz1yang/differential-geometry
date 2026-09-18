@@ -139,4 +139,119 @@ theorem HasPLNormalDoubleCrossingAt.precomp_isPLHomeomorphOn {f : E → F} {P : 
   · exact Or.inl ⟨hyB, Mb, hcross.precomp_isPLHomeomorphOn hφ⟩
   · exact Or.inr ⟨hyB, hcross.precomp_isPLHomeomorphOn hφ⟩
 
+omit [NormedSpace ℝ G] [FiniteDimensional ℝ G] [NormedSpace ℝ E] [NormedAddCommGroup F]
+  [NormedSpace ℝ F] [FiniteDimensional ℝ F] in
+theorem mem_nhdsWithin_inter_preimage_of_bijOn {φ : G → E} {Q : Set G} {P A : Set E}
+    (hbij : BijOn φ Q P) (hcont : ContinuousOn φ Q) {a : E} (haP : a ∈ P)
+    (hA : A ∈ 𝓝[P] a) : Q ∩ φ ⁻¹' A ∈ 𝓝[Q] Function.invFunOn φ Q a := by
+  have hmem : Function.invFunOn φ Q a ∈ Q := hbij.surjOn.mapsTo_invFunOn haP
+  have hval : φ (Function.invFunOn φ Q a) = a := hbij.invOn_invFunOn.2 haP
+  have htend := (hcont _ hmem).tendsto_nhdsWithin (t := P) hbij.mapsTo
+  rw [hval] at htend
+  exact Filter.inter_mem self_mem_nhdsWithin (htend hA)
+
+omit [NormedAddCommGroup G] [NormedSpace ℝ G] [FiniteDimensional ℝ G] [NormedAddCommGroup E]
+  [NormedSpace ℝ E] [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F] in
+theorem inter_preimage_eq_of_mapsTo_back {φ : G → E} {Q QBig : Set G} {P A : Set E}
+    (hQ : Q ⊆ QBig) (hAP : A ⊆ P) (hback : ∀ x ∈ QBig, φ x ∈ P → x ∈ Q) :
+    QBig ∩ φ ⁻¹' A = Q ∩ φ ⁻¹' A := by
+  apply Subset.antisymm
+  · rintro x ⟨hxB, hxA⟩
+    exact ⟨hback x hxB (hAP hxA), hxA⟩
+  · rintro x ⟨hxQ, hxA⟩
+    exact ⟨hQ hxQ, hxA⟩
+
+theorem HasPLDoubleCrossingAt.precomp_bijOn_of_isPLHomeomorphOn {f : E → F} {P PBig : Set E}
+    {y : F} {φ : G → E} {Q QBig : Set G} (hD : HasPLDoubleCrossingAt f P y)
+    (hφ : IsPLHomeomorphOn φ QBig PBig) (hbij : BijOn φ Q P) (hQ : Q ⊆ QBig) (hP : P ⊆ PBig)
+    (hback : ∀ x ∈ QBig, φ x ∈ P → x ∈ Q) :
+    HasPLDoubleCrossingAt (f ∘ φ) Q y := by
+  obtain ⟨a, b, A, B, ha, hb, hfa, hfb, hAP, hBP, hdis, hA, hB, hfA, hfB, hcross, hcover⟩ := hD
+  have hcont : ContinuousOn φ Q := hφ.isPiecewiseAffineOn.continuousOn.mono hQ
+  have hsetA : QBig ∩ φ ⁻¹' A = Q ∩ φ ⁻¹' A := inter_preimage_eq_of_mapsTo_back hQ hAP hback
+  have hsetB : QBig ∩ φ ⁻¹' B = Q ∩ φ ⁻¹' B := inter_preimage_eq_of_mapsTo_back hQ hBP hback
+  have himgA : (f ∘ φ) '' (Q ∩ φ ⁻¹' A) = f '' A := by
+    rw [image_comp, image_inter_preimage_of_bijOn hbij hAP]
+  have himgB : (f ∘ φ) '' (Q ∩ φ ⁻¹' B) = f '' B := by
+    rw [image_comp, image_inter_preimage_of_bijOn hbij hBP]
+  refine ⟨Function.invFunOn φ Q a, Function.invFunOn φ Q b, Q ∩ φ ⁻¹' A, Q ∩ φ ⁻¹' B, ?_, ?_,
+    ?_, ?_, inter_subset_left, inter_subset_left, ?_,
+    mem_nhdsWithin_inter_preimage_of_bijOn hbij hcont (hAP ha) hA,
+    mem_nhdsWithin_inter_preimage_of_bijOn hbij hcont (hBP hb) hB, ?_, ?_, ?_, ?_⟩
+  · exact ⟨hbij.surjOn.mapsTo_invFunOn (hAP ha),
+      by rw [mem_preimage, hbij.invOn_invFunOn.2 (hAP ha)]; exact ha⟩
+  · exact ⟨hbij.surjOn.mapsTo_invFunOn (hBP hb),
+      by rw [mem_preimage, hbij.invOn_invFunOn.2 (hBP hb)]; exact hb⟩
+  · change f (φ (Function.invFunOn φ Q a)) = y
+    rw [hbij.invOn_invFunOn.2 (hAP ha)]
+    exact hfa
+  · change f (φ (Function.invFunOn φ Q b)) = y
+    rw [hbij.invOn_invFunOn.2 (hBP hb)]
+    exact hfb
+  · exact Disjoint.mono inter_subset_right inter_subset_right (hdis.preimage φ)
+  · rw [himgA, ← hsetA]
+    exact isPLHomeomorphOn_comp_inter_preimage hφ (hAP.trans hP) hfA
+  · rw [himgB, ← hsetB]
+    exact isPLHomeomorphOn_comp_inter_preimage hφ (hBP.trans hP) hfB
+  · rw [himgA, himgB]
+    exact hcross
+  · filter_upwards [hcover] with z hz x hx
+    have hxQ : x ∈ Q := hx.1
+    have hφx : φ x ∈ P ∩ f ⁻¹' {z} := ⟨hbij.mapsTo hxQ, hx.2⟩
+    rcases hz hφx with hmem | hmem
+    · exact Or.inl ⟨hxQ, hmem⟩
+    · exact Or.inr ⟨hxQ, hmem⟩
+
+theorem HasPLBoundaryDoubleCrossingAt.precomp_bijOn_of_isPLHomeomorphOn {f : E → F}
+    {P PBig : Set E} {Mb : Set F} {y : F} {φ : G → E} {Q QBig : Set G}
+    (hD : HasPLBoundaryDoubleCrossingAt f P Mb y)
+    (hφ : IsPLHomeomorphOn φ QBig PBig) (hbij : BijOn φ Q P) (hQ : Q ⊆ QBig) (hP : P ⊆ PBig)
+    (hback : ∀ x ∈ QBig, φ x ∈ P → x ∈ Q) :
+    HasPLBoundaryDoubleCrossingAt (f ∘ φ) Q Mb y := by
+  obtain ⟨a, b, A, B, ha, hb, hfa, hfb, hAP, hBP, hdis, hA, hB, hfA, hfB, hcross, hcover⟩ := hD
+  have hcont : ContinuousOn φ Q := hφ.isPiecewiseAffineOn.continuousOn.mono hQ
+  have hsetA : QBig ∩ φ ⁻¹' A = Q ∩ φ ⁻¹' A := inter_preimage_eq_of_mapsTo_back hQ hAP hback
+  have hsetB : QBig ∩ φ ⁻¹' B = Q ∩ φ ⁻¹' B := inter_preimage_eq_of_mapsTo_back hQ hBP hback
+  have himgA : (f ∘ φ) '' (Q ∩ φ ⁻¹' A) = f '' A := by
+    rw [image_comp, image_inter_preimage_of_bijOn hbij hAP]
+  have himgB : (f ∘ φ) '' (Q ∩ φ ⁻¹' B) = f '' B := by
+    rw [image_comp, image_inter_preimage_of_bijOn hbij hBP]
+  refine ⟨Function.invFunOn φ Q a, Function.invFunOn φ Q b, Q ∩ φ ⁻¹' A, Q ∩ φ ⁻¹' B, ?_, ?_,
+    ?_, ?_, inter_subset_left, inter_subset_left, ?_,
+    mem_nhdsWithin_inter_preimage_of_bijOn hbij hcont (hAP ha) hA,
+    mem_nhdsWithin_inter_preimage_of_bijOn hbij hcont (hBP hb) hB, ?_, ?_, ?_, ?_⟩
+  · exact ⟨hbij.surjOn.mapsTo_invFunOn (hAP ha),
+      by rw [mem_preimage, hbij.invOn_invFunOn.2 (hAP ha)]; exact ha⟩
+  · exact ⟨hbij.surjOn.mapsTo_invFunOn (hBP hb),
+      by rw [mem_preimage, hbij.invOn_invFunOn.2 (hBP hb)]; exact hb⟩
+  · change f (φ (Function.invFunOn φ Q a)) = y
+    rw [hbij.invOn_invFunOn.2 (hAP ha)]
+    exact hfa
+  · change f (φ (Function.invFunOn φ Q b)) = y
+    rw [hbij.invOn_invFunOn.2 (hBP hb)]
+    exact hfb
+  · exact Disjoint.mono inter_subset_right inter_subset_right (hdis.preimage φ)
+  · rw [himgA, ← hsetA]
+    exact isPLHomeomorphOn_comp_inter_preimage hφ (hAP.trans hP) hfA
+  · rw [himgB, ← hsetB]
+    exact isPLHomeomorphOn_comp_inter_preimage hφ (hBP.trans hP) hfB
+  · rw [himgA, himgB]
+    exact hcross
+  · filter_upwards [hcover] with z hz x hx
+    have hxQ : x ∈ Q := hx.1
+    have hφx : φ x ∈ P ∩ f ⁻¹' {z} := ⟨hbij.mapsTo hxQ, hx.2⟩
+    rcases hz hφx with hmem | hmem
+    · exact Or.inl ⟨hxQ, hmem⟩
+    · exact Or.inr ⟨hxQ, hmem⟩
+
+theorem HasPLNormalDoubleCrossingAt.precomp_bijOn_of_isPLHomeomorphOn {f : E → F}
+    {P PBig : Set E} {Bd : Set F} {y : F} {φ : G → E} {Q QBig : Set G}
+    (hD : HasPLNormalDoubleCrossingAt f P Bd y)
+    (hφ : IsPLHomeomorphOn φ QBig PBig) (hbij : BijOn φ Q P) (hQ : Q ⊆ QBig) (hP : P ⊆ PBig)
+    (hback : ∀ x ∈ QBig, φ x ∈ P → x ∈ Q) :
+    HasPLNormalDoubleCrossingAt (f ∘ φ) Q Bd y := by
+  rcases hD with ⟨hyB, Mb, hcross⟩ | ⟨hyB, hcross⟩
+  · exact Or.inl ⟨hyB, Mb, hcross.precomp_bijOn_of_isPLHomeomorphOn hφ hbij hQ hP hback⟩
+  · exact Or.inr ⟨hyB, hcross.precomp_bijOn_of_isPLHomeomorphOn hφ hbij hQ hP hback⟩
+
 end DifferentialGeometry.Topology.PiecewiseLinear

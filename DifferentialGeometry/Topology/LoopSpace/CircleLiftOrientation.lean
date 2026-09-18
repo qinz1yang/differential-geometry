@@ -217,4 +217,177 @@ theorem hasIncreasingCircleLift_of_three_fixed_of_continuous {ψ : loopCircle �
     (Continuous.homeoOfEquivCompactToT2 (f := Equiv.ofBijective ψ hbij) hcont)
     hab hac hbc ha hb hc
 
+theorem lift_sub_one {F : ℝ → ℝ} (hFp : ∀ t : ℝ, F (t + 1) = F t + 1) (s : ℝ) :
+    F (s - 1) = F s - 1 := by
+  have h := hFp (s - 1)
+  rw [show s - 1 + 1 = s by ring] at h
+  linarith
+
+theorem lift_add_intCast {F : ℝ → ℝ} (hFp : ∀ t : ℝ, F (t + 1) = F t + 1) (n : ℤ) (t : ℝ) :
+    F (t + (n : ℝ)) = F t + (n : ℝ) := by
+  induction n using Int.induction_on with
+  | zero => simp
+  | succ k ih =>
+      push_cast at ih ⊢
+      rw [show t + ((k : ℝ) + 1) = t + (k : ℝ) + 1 by ring, hFp, ih]
+      ring
+  | pred k ih =>
+      push_cast at ih ⊢
+      rw [show t + (-(k : ℝ) - 1) = t + -(k : ℝ) - 1 by ring, lift_sub_one hFp, ih]
+      ring
+
+theorem lift_surjective_of_surjective {ψ : loopCircle → loopCircle} {F : ℝ → ℝ}
+    (hFp : ∀ t : ℝ, F (t + 1) = F t + 1)
+    (hFl : ∀ t : ℝ, ((F t : ℝ) : loopCircle) = ψ ((t : ℝ) : loopCircle))
+    (hψ : Function.Surjective ψ) : Function.Surjective F := by
+  intro y
+  obtain ⟨θ, hθ⟩ := hψ ((y : ℝ) : loopCircle)
+  obtain ⟨t, -, htθ⟩ := exists_lift_mem_Ico θ
+  have hc : ((F t : ℝ) : loopCircle) = ((y : ℝ) : loopCircle) := by rw [hFl t, htθ, hθ]
+  obtain ⟨k, hk⟩ := (loopCircle_coe_eq_coe_iff _ _).mp hc
+  refine ⟨t + ((-k : ℤ) : ℝ), ?_⟩
+  rw [lift_add_intCast hFp]
+  push_cast
+  linarith
+
+theorem HasIncreasingCircleLift.inv {ψ χ : loopCircle → loopCircle}
+    (h : HasIncreasingCircleLift ψ) (hψ : Function.Surjective ψ)
+    (hχ : ∀ θ, χ (ψ θ) = θ) : HasIncreasingCircleLift χ := by
+  obtain ⟨F, hFm, hFp, hFl⟩ := h
+  have hFs : Function.Surjective F := lift_surjective_of_surjective hFp hFl hψ
+  have hFr : ∀ t, F (Function.invFun F t) = t := Function.rightInverse_invFun hFs
+  have hFli : ∀ t, Function.invFun F (F t) = t := Function.leftInverse_invFun hFm.injective
+  refine ⟨Function.invFun F, ?_, ?_, ?_⟩
+  · intro x y hxy
+    by_contra hcon
+    have hle : Function.invFun F y ≤ Function.invFun F x := not_lt.mp hcon
+    have := hFm.monotone hle
+    rw [hFr, hFr] at this
+    exact absurd hxy (not_lt.mpr this)
+  · intro t
+    have hval : F (Function.invFun F t + 1) = t + 1 := by rw [hFp, hFr]
+    have h2 := congrArg (Function.invFun F) hval
+    rw [hFli] at h2
+    exact h2.symm
+  · intro t
+    have hval : ψ (((Function.invFun F t : ℝ)) : loopCircle) = ((t : ℝ) : loopCircle) := by
+      rw [← hFl, hFr]
+    rw [← hχ (((Function.invFun F t : ℝ)) : loopCircle), hval]
+
+theorem HasIncreasingCircleLift.negConj {ψ : loopCircle → loopCircle}
+    (h : HasIncreasingCircleLift ψ) :
+    HasIncreasingCircleLift (fun θ => -ψ (-θ)) := by
+  obtain ⟨F, hFm, hFp, hFl⟩ := h
+  refine ⟨fun t => -F (-t), ?_, ?_, ?_⟩
+  · intro x y hxy
+    simpa using hFm (neg_lt_neg hxy)
+  · intro t
+    change -F (-(t + 1)) = -F (-t) + 1
+    rw [show -(t + 1) = -t - 1 by ring, lift_sub_one hFp]
+    ring
+  · intro t
+    change ((-F (-t) : ℝ) : loopCircle) = -ψ (-((t : ℝ) : loopCircle))
+    rw [QuotientAddGroup.mk_neg, hFl (-t), ← QuotientAddGroup.mk_neg]
+
+theorem HasIncreasingCircleLift.conj {ψ : loopCircle → loopCircle}
+    (h : HasIncreasingCircleLift ψ) (φ : loopCircle ≃ₜ loopCircle) :
+    HasIncreasingCircleLift fun θ => φ.symm (ψ (φ θ)) := by
+  rcases circleHomeomorph_affineLift_or_neg φ with ⟨F, hp, hm, hval⟩ | ⟨F, hp, hm, hval⟩
+  · have hφ : HasIncreasingCircleLift φ := ⟨F, hm, hp, fun t => by simp [hval]⟩
+    have hφs : HasIncreasingCircleLift φ.symm :=
+      hφ.inv φ.surjective fun θ => φ.symm_apply_apply θ
+    exact (hφs.comp h).comp hφ
+  · set η : loopCircle ≃ₜ loopCircle := φ.trans (Homeomorph.neg loopCircle) with hηdef
+    have hηval : ∀ θ, η θ = -φ θ := fun _ => rfl
+    have hη : HasIncreasingCircleLift η := by
+      refine ⟨F, hm, hp, fun t => ?_⟩
+      simp [hηval, hval]
+    have hηs : HasIncreasingCircleLift η.symm :=
+      hη.inv η.surjective fun θ => η.symm_apply_apply θ
+    have hsymm : ∀ θ, φ.symm θ = η.symm (-θ) := by
+      intro θ
+      refine φ.injective ?_
+      rw [φ.apply_symm_apply]
+      have hval2 : φ (η.symm (-θ)) = -(η (η.symm (-θ))) := by rw [hηval]; rw [neg_neg]
+      rw [hval2, η.apply_symm_apply, neg_neg]
+    refine ((hηs.comp h.negConj).comp hη).congr fun θ => ?_
+    change φ.symm (ψ (φ θ)) = η.symm (-ψ (-η θ))
+    rw [hsymm, hηval, neg_neg]
+
+theorem not_hasIncreasingCircleLift_of_neg_lift {ψ : loopCircle → loopCircle} {G : ℝ → ℝ}
+    (hGm : StrictMono G) (hGp : ∀ t : ℝ, G (t + 1) = G t + 1)
+    (hGl : ∀ t : ℝ, ψ ((t : ℝ) : loopCircle) = ((-G t : ℝ) : loopCircle)) :
+    ¬ HasIncreasingCircleLift ψ := by
+  rintro ⟨F, hFm, hFp, hFl⟩
+  set H : ℝ → ℝ := fun t => F t + G t with hHdef
+  have hHm : StrictMono H := by
+    intro x y hxy
+    have h1 := hFm hxy
+    have h2 := hGm hxy
+    simp only [hHdef]
+    linarith
+  have hHint : ∀ t : ℝ, ∃ n : ℤ, H t = (n : ℝ) := by
+    intro t
+    have hc : ((F t : ℝ) : loopCircle) = ((-G t : ℝ) : loopCircle) := by rw [hFl t, hGl t]
+    obtain ⟨n, hn⟩ := (loopCircle_coe_eq_coe_iff _ _).mp hc
+    exact ⟨n, by simp only [hHdef]; linarith⟩
+  have hHstep : H 1 = H 0 + 2 := by
+    have h1 := hFp 0
+    have h2 := hGp 0
+    rw [zero_add] at h1 h2
+    simp only [hHdef]
+    linarith
+  obtain ⟨n0, hn0⟩ := hHint 0
+  obtain ⟨n1, hn1⟩ := hHint ((1 : ℝ) / 4)
+  obtain ⟨n2, hn2⟩ := hHint ((1 : ℝ) / 2)
+  obtain ⟨n3, hn3⟩ := hHint 1
+  have h01 : (n0 : ℝ) < (n1 : ℝ) := by rw [← hn0, ← hn1]; exact hHm (by norm_num)
+  have h12 : (n1 : ℝ) < (n2 : ℝ) := by rw [← hn1, ← hn2]; exact hHm (by norm_num)
+  have h23 : (n2 : ℝ) < (n3 : ℝ) := by rw [← hn2, ← hn3]; exact hHm (by norm_num)
+  have h03 : (n3 : ℝ) = (n0 : ℝ) + 2 := by rw [← hn0, ← hn3]; exact hHstep
+  have h01' : n0 < n1 := by exact_mod_cast h01
+  have h12' : n1 < n2 := by exact_mod_cast h12
+  have h23' : n2 < n3 := by exact_mod_cast h23
+  have h03' : n3 = n0 + 2 := by exact_mod_cast h03
+  omega
+
+theorem not_hasIncreasingCircleLift_neg :
+    ¬ HasIncreasingCircleLift (fun θ : loopCircle => -θ) :=
+  not_hasIncreasingCircleLift_of_neg_lift strictMono_id (fun _ => rfl)
+    fun t => by rw [← QuotientAddGroup.mk_neg]; rfl
+
+theorem exists_fixed_of_not_hasIncreasingCircleLift (ψ : loopCircle ≃ₜ loopCircle)
+    (h : ¬ HasIncreasingCircleLift ψ) : ∃ θ : loopCircle, ψ θ = θ := by
+  rcases circleHomeomorph_affineLift_or_neg ψ with ⟨F, hp, hm, hval⟩ | ⟨F, hp, hm, hval⟩
+  · exact absurd (show HasIncreasingCircleLift ψ from ⟨F, hm, hp, fun t => by simp [hval]⟩) h
+  · set G : ℝ → ℝ := fun t => F t + t with hGdef
+    have hGc : Continuous G := F.continuous.add continuous_id
+    have hGm : StrictMono G := by
+      intro x y hxy
+      have hlt := hm hxy
+      simp only [hGdef]
+      linarith
+    have hG1 : G 1 = G 0 + 2 := by
+      have h1 := hp 0
+      rw [zero_add] at h1
+      simp only [hGdef]
+      rw [h1]
+      ring
+    have hlow : G 0 ≤ ((⌈G 0⌉ : ℤ) : ℝ) := Int.le_ceil _
+    have hhigh : ((⌈G 0⌉ : ℤ) : ℝ) ≤ G 1 := by
+      have hlt : ((⌈G 0⌉ : ℤ) : ℝ) < G 0 + 1 := Int.ceil_lt_add_one _
+      rw [hG1]
+      linarith
+    obtain ⟨t, ht, hGt⟩ := intermediate_value_Icc (by norm_num : (0 : ℝ) ≤ 1)
+      hGc.continuousOn ⟨hlow, hhigh⟩
+    refine ⟨((t : ℝ) : loopCircle), ?_⟩
+    have hcoe : ψ ((t : ℝ) : loopCircle) = ((-F t : ℝ) : loopCircle) := by
+      rw [hval ((t : ℝ) : loopCircle)]
+      simp [QuotientAddGroup.mk_neg]
+    rw [hcoe]
+    refine (loopCircle_coe_eq_coe_iff _ _).mpr ⟨-⌈G 0⌉, ?_⟩
+    simp only [hGdef] at hGt
+    push_cast
+    linarith
+
 end DifferentialGeometry.Topology

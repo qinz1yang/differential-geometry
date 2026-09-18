@@ -2259,3 +2259,359 @@ step 2 只做了 grep 与接口陈述，没有动工（月牙是一个项目，�
 - 验证：`SingularCrossingSource` 聚焦检查 exit=0（11.0 秒）、零 warning；
   `.lake/scratch/AuditE3CrossingSource.lean` 的 7 条 `#print axioms` 全部只含
   `propext`、`Classical.choice`、`Quot.sound`，无 `sorryAx`。
+
+## 72. 2026-09-18 E3-M3：§65 源侧搬运的推广版（落到任意 `BijOn` 的小集合上）
+
+状态：done。`SingularCrossingPrecomp.lean` 新增 5 条声明（名字在四条车道分支上都不存在）；
+§65 的特化版保留（`GluedCellInjectivity` 的 `locallyInjective` 在用 `mem_nhdsWithin_inter_preimage`）。
+
+- `precomp_bijOn_of_isPLHomeomorphOn`（三个谓词各一条）：把 §65 的
+  `IsPLHomeomorphOn φ Q P` 拆成 `IsPLHomeomorphOn φ QBig PBig` 加 `BijOn φ Q P`、
+  `Q ⊆ QBig`、`P ⊆ PBig`、`hback : ∀ x ∈ QBig, φ x ∈ P → x ∈ Q`，结论落在**小的** `Q` 上。
+  关键是 `inter_preimage_eq_of_mapsTo_back`：由 `hback` 与 `A ⊆ P` 得
+  `QBig ∩ φ ⁻¹' A = Q ∩ φ ⁻¹' A`，于是 §65 的"复合代替限制"原样适用——
+  `isPLHomeomorphOn_comp_inter_preimage` 在 `QBig` 上复合，结果的定义域自动就是 `Q ∩ φ ⁻¹' A`。
+  `mem_nhdsWithin_inter_preimage_of_bijOn` 是邻域拉回的 `BijOn` + `ContinuousOn` 版
+  （连续性可以自由限制，分片仿射性不行，所以这里换成 `ContinuousOn φ Q`）。
+- 验证：`SingularCrossingPrecomp` 聚焦检查 exit=0（11.1 秒）、零 warning。
+
+## 73. 2026-09-18 E3-M3：`crossing` 闭合，月牙版 `NormalSingularCellData` 五条字段全部到位（完整假设表）
+
+状态：done。新模块 `GluedCellCrossing.lean`（模块名与 1 条声明名在四条车道分支上都不存在）。
+
+- **三步链条（§71 定的）跑通。** `crossing_of_glue_boundary_arc`：
+  (1) `precomp_bijOn_of_isPLHomeomorphOn`（§72）沿 `f₁` 一步落到 `P ∩ D ⁻¹' e.source`，
+      `BijOn f₁ (P ∩ D ⁻¹' e.source) (D₁.domain ∩ D₁ ⁻¹' e.source)` 与 `hback` 都由
+      `D x = D₁ (f₁ x)` 直接得；
+  (2) `congr_source`（§71）把 `(e ∘ D₁) ∘ f₁` 换成 `e ∘ D`；
+  (3) `mono_of_subset`（§71）放大到 `D.domain ∩ D ⁻¹' e.source`，两条边条件由
+      `Disjoint (doublePointSet D₁ D₁.domain) (D₂ '' D₂.domain)` 给出：
+      局部条件用 `D` 在 `D.domain` 上连续把 `(D₂ '' D₂.domain)ᶜ` 拉回；
+      纤维条件用开集 `e.target ∩ e.symm ⁻¹' (D₂ '' D₂.domain)ᶜ`（`e` 的对称连续性），
+      落在里面的 `z` 的纤维点 `x` 满足 `D x = e.symm z ∉ D₂ '' D₂.domain`，故 `x ∈ P`。
+      `D₂ '' D₂.domain` 闭是因为 `D₂.domain` 紧、`D₂` 连续、`M` 是 T2（§70 的观察）。
+- **月牙版 `NormalSingularCellData D BdM B` 的完整假设表。**
+  五条字段与产者：
+  `locallyInjective` = `locallyInjective_of_glue_boundary_arc`（§68）；
+  `fiber_le_two` = `fiber_le_two_of_glue_boundary_arc`（§68）；
+  `boundary_image_subset` = `range_boundary_subset_of_glue_boundary_arc`（§66）加 `BdM ⊆ B`；
+  `image_inter_boundary` = `image_inter_boundary_of_glue_boundary_arc`（§67）；
+  `singularSet` = `normalSingularSetTriangulation_congr`（§69）加
+  `doublePointSet_of_glue_boundary_arc`；
+  `crossing` = `crossing_of_glue_boundary_arc`（本节）。
+  假设逐条：
+  1. `hPball, hQball, hf₁, hf₂, hDP, hDQ, hcutP, hcutQ, hdom, hfrontier, hA, hB`
+     ——**构造产物**，`exists_glue_of_isPLHomeomorphOn_boundary_arc`（`CellGluing.lean:375`）
+     的输出原样；可满足性即那条定理的结论，不需另验。
+  2. `hD₁bd`（旧边界圆去掉弧后落在 `Bd M`）——**几何输入，有产者**：§62 的 `hfr`，
+     由 `Set.range D.boundary ⊆ BdM` 加"滑移只动 `closure W`"。
+  3. `hend₁, hend₂`（弧端在 `Bd M`）——**几何输入，有产者**：§62 的 `hend0/hend1`，
+     等价刻画见 §64 的位移判据（滑移量在弧端为零）。
+  4. `hAoff, hBoff`（弧只在两端碰 `Bd M`）——**几何输入，有产者**：§63 的 `hends`
+     （`hWdisp` 的推论）；与割点像的认同差 `maps_arc_endpoints` 一步，见 §67。
+  5. `hD₁img, hD₁fib, hD₁loc, hD₁cross`（`D₁` 自己的四条）——**几何输入，有产者**：
+     分支分离 `exists_separated_cell_along_boundary_branch` 直接输出前三条；
+     `hD₁cross` 由 `hD.crossing` 加 `hgdouble` 的双点集包含关系给出。
+  6. `hdisj`（`Disjoint (doublePointSet D₁ D₁.domain) (D₂ '' D₂.domain)`）
+     ——**几何输入，有产者**：§70 的
+     `NormalSingularCellData.disjoint_doublePointSet_separated_of_subset_nbhd`
+     加 `hluneW : D₂ '' D₂.domain ⊆ W`；前者无需新输入（§70），后者见下。
+  7. `hD₂bd`（月牙外弧落在 `Bd M`）、`hD₂inj`（月牙嵌入）、
+     `hD₂disj`（月牙除粘合弧外不碰旧胞腔）、`hluneW`（月牙建在 `W` 里）
+     ——**四条都是几何输入，都还没有产者**：它们是对**月牙本身**的要求，
+     而**树里还没有任何构造月牙 `D₂` 的定理**。这是整条链现在唯一缺产者的地方。
+     可满足性：四条互不矛盾（`hD₂disj` 只约束 `D₂.domain \ B`，
+     `B` 是 `frontier Q` 的一条弧故 `D₂.domain \ B` 非空；§68 的三条证明不要求
+     `A ∩ B = ∅` 这类会逼出空集的条件，§61 的失败模式不重现），
+     且都是"沿被推离弧贴一个嵌入圆盘、贴在滑移支撑邻域里、外弧落在 `Bd M`"的直接翻译。
+  8. 另有 `IsPLHomeomorphOn θ (Icc 0 1) (closure W)` 一路的输入
+     （§63 的 `IsConnected W` 等）——**几何输入，产者在分支分离层**，
+     §64 已把它归位成 `hconnA` 并给出图卡形式的判据。
+  **结论：月牙版 `NormalSingularCellData` 的五条字段全部有 Lean 产者；
+  唯一没有产者的是月牙 `D₂` 的构造本身（第 7 条的四条输入）。**
+  下一轮的正确目标是构造 `D₂`：沿 `closure W` 的像贴一个嵌入 PL 2-胞腔，
+  落在 `W` 内、外弧在 `Bd M` 上；`CrosscutExtension.lean`、`BoundaryDiskExtension.lean`、
+  `DiskCrosscutExtension.lean` 是候选工具（§66 已记）。
+- 验证：`GluedCellCrossing` 聚焦检查 exit=0（10.5 秒）、零 warning；
+  `GluedCellInjectivity` 因 `SingularCrossingPrecomp` 变更重编 exit=0（11.2 秒）；
+  `.lake/scratch/AuditE3LuneComplete.lean` 的 12 条 `#print axioms` 全部只含
+  `propext`、`Classical.choice`、`Quot.sound`，无 `sorryAx`。
+
+## 74. 2026-09-18 E3-M3：构造 `D₂` 的搜索报告与确切构造计划（含一条检索纠错）
+
+状态：**未动工**，本节只交付搜索结果、构造形状与唯一缺口（按主人"先报告再建"的规矩）。
+无 Lean 改动。
+
+- **检索纠错（先记下）。** §66 我写过"`CutAndPaste.lean` 不存在"——**错了**，
+  它在 `LoopTheorem/CutAndPaste.lean`，64 条声明，含
+  `exists_two_cells_of_isCrosscut`、`exists_three_cells_of_two_disjoint_crosscuts` 等。
+  当时按名字在 `PiecewiseLinear/` 一层找，没往子目录找，属于"按词汇搜而不是按内容搜"。
+- **按内容搜的结果：平面一侧的工具**全部齐备，**`M` 里贴盘的定理一条也没有**。
+  - `DiskCrosscut.lean:99` `exists_isPLBall_pair_with_boundary_arcs_of_isCrosscut`：
+    平面 PL 2-球被一条 crosscut 切成两个 PL 2-球，并给出各自的边界弧。**纯平面**。
+  - `PolygonalSchoenflies.lean:774` `isPLSphere_one_union_of_isCrosscut`、
+    `:1288` `isPLBall_closure_inside_of_isPLSphere_one`（PL 1-球面的内部闭包是 PL 2-球）、
+    `:444` `isPLBall_union_of_isArcBetween`。
+  - `CellGluing.lean:278` 用的 **`isPLSphere_one_of_isCutPair`**：
+    **两条弧在两个端点粘起来就是 PL 1-球面**——正是造月牙区域的边界所需，已经有了。
+  - `CrosscutExtension / BoundaryDiskExtension / DiskCrosscutExtension`：都是
+    **PL 同胚的延拓**（把给定的割线/边界片延拓成整盘的同胚），不是"造一张新盘"。
+  - 产出 `SingularTwoCell` 的定理共 8 个文件，全部是**已有胞腔的改造**
+    （粘合、割开、领环延拓、double），没有一个从零构造一张贴在给定弧上的胞腔。
+- **确切构造计划（图卡坐标里，`hluneW` 与 `hD₂bd` 会自动成立）。**
+  在边界图卡里 `Bd M ↔ {p.1 = 0}`、`N ↔ {0 ≤ p.1}`，而 `slideMapFwd d R p = (p.1 + amount, p.2.1, p.2.2)`
+  **只动第一坐标**。于是对 `z ∈ closure W`，`e (E (g z)) = (a z, u z, v z)`，
+  其中 `(0, u z, v z) = e (E (D z))` 是原边界弧（落在 `{p.1 = 0}` 里），`a z = ` 滑移量 `≥ 0`。
+  月牙就是这条弧与它在 `{p.1 = 0}` 上的投影之间的"帘子"：
+  - **定义域**：`Λ := {(t₁, t₂) | t₂ ∈ Icc 0 1, 0 ≤ t₁ ≤ a (θ t₂)}`（`θ` 是 §63 的弧参数化）。
+    `frontier Λ` 是图像弧与底边线段，两条弧只在两个端点相交（因为 `a` 在弧端为零，§64 的位移判据），
+    所以 `IsCutPair` ⟹ `isPLSphere_one_of_isCutPair` ⟹ `IsPLSphere 1 (frontier Λ)`
+    ⟹ `isPLBall_closure_inside_of_isPLSphere_one` ⟹ `IsPLBall 2 Λ`。
+  - **映射**：`D₂ (t₁, t₂) := E.symm (e.symm (t₁, u (θ t₂), v (θ t₂)))`。
+    第一坐标是 `t₁` 本身（**线性**，不是 `t · a(z)`），所以**分片仿射**——
+    这正是 §60/§62 那个"乘积不是分片仿射"的障碍在这里不出现的原因：
+    把参数从"比例"换成"高度"，帘子就变成线性的了。
+  - `hD₂bd`：`t₁ = 0` 的那条边界弧的像落在 `{p.1 = 0}` 即 `Bd M` ✓（由定义）。
+  - `hD₂inj`：`(t₁, t₂) ↦ (t₁, u(θ t₂), v(θ t₂))` 单射 ⟸ `t₂ ↦ (u, v)` 单射
+    ⟸ `InjOn D (frontier D.domain ∩ P)`（由 `hinjP : InjOn D P` 得）✓。
+  - `hluneW`：像落在 `e.symm '' slideSupportLong R` 里 ⟸ `|u| + |v| ≤ 1`（弧在支撑里）
+    与 `|t₁| ≤ a ≤ R`（滑移量的上界）✓，再由 `K ⊆ U ⊆ W` ✓。
+  - **`hD₂disj` 是要盯的那条**（主人点名的）：月牙内部不碰旧胞腔的像。
+    在坐标里月牙是 `{(t, u(z), v(z)) : 0 < t < a(z)}`，而旧胞腔 `g '' D.domain` 在支撑里
+    的部分由 `hA` 落在 `slideBandA c = {p.2.2 = 0, |p.2.1| ≤ 1, p.1 ∈ Icc 0 c}` 里。
+    **若被推离弧不在 `{p.2.2 = 0}` 上，月牙内部与 `slideBandA c` 自动不交**；
+    但弧本身正是从 `D '' P` 推出来的，所以它**就在**那条带子里（`v ≡ 0`），
+    于是月牙落在 `{p.2.2 = 0}` 的那张平面里，与 `slideBandA c` **同平面**，`hD₂disj` 不是自动的。
+    这是构造里唯一真正需要几何论证的地方：要么把月牙沿 `p.2.2` 方向推离
+    （代价是它不再贴在弧上），要么用"滑移把 `D '' P` 推到 `p.1 ≥ amount`，
+    而月牙在 `p.1 < amount`"这类**严格不等式**论证。后者看起来对：
+    月牙的内部点高度 `t < a(z)`，而 `g '' D.domain` 在该纤维上的点高度恰是 `a(z)`（被滑移抬到那里）
+    ——但这需要"滑移后的胞腔在该纤维上只有一个点"，即 `InjOn D P` 加纤维分析。
+    **这条必须先在坐标里验证再写进去**，不能想当然。
+- **唯一缺的通用输入**：把 `Λ = closure (Schoenflies.inside (frontier Λ))` 与
+  显式的 `{(t₁,t₂) | 0 ≤ t₁ ≤ a (θ t₂)}` 认同，即"PA 正函数图像下方的区域就是该曲线的内部闭包"。
+  树里没有这条（`git grep "IsPLBall 2 ({" 等 44 处命中全是别的形状）。
+  它比直接造 `D₂` 小得多，而且是纯平面的，**建议下一轮先做它**。
+- 本节未动 Lean，按 `AGENTS.md` §1 的文档例外单独提交。
+
+## 75. 2026-09-18 E3-M3：图像下方区域的确切构造计划（工具全部找到，剩下是平面多胞形管道）
+
+状态：**未动工**。本节交付确切的砖块清单与代价判断；两条关键工具已找到，
+剩下的全是平面多胞形的管道活，不是 PL 几何。无 Lean 改动。
+
+- **检索规则的补充（主人要求记的）。** "按内容搜，不要按词汇搜"**同样适用于文件名与路径**：
+  §66 我按 `PiecewiseLinear/CutAndPaste.lean` 一层找不到就断言"不存在"，
+  而它在 `LoopTheorem/CutAndPaste.lean`（64 条声明）。**目录层级也是词汇**。
+  今天四条检索规则的完整形式应是：非零退出是无信息而不是不存在；按内容搜不按词汇搜
+  （**词汇包括文件名与目录**）；查构造不查标识符；先数命中再读，截断的结果不是结果。
+- **两条关键工具（本轮找到，之前不知道）。**
+  - `ConvexPolytope.lean:40` **`IsHPolytope.isPLBall`**：
+    `IsHPolytope C` 加 `(interior C).Nonempty` ⟹ `IsPLBall (finrank ℝ E) C`。**一行**。
+    于是每个梯形/三角形片是 PL 2-球，不必手工造同胚。
+  - `PlanarDiskUnion.lean:14` **`isPLBall_union_and_finite_frontier_inter`**：
+    平面两个 PL 2-球，交是 PL 1-球且含于两者的 frontier ⟹ 并是 PL 2-球。
+  - 另有 `isPLBall_two_of_isTriangle`（`DiskInteriorMove`、`PlanarDiskSubdivision` 在用），
+    三角形一行就是 PL 2-球。
+- **砖块清单（按依赖顺序，都是平面的，与月牙无关）。**
+  1. `a : ℝ → ℝ` 在 `Icc 0 1` 上分片仿射 ⟹ 取 `exists_partition_affineOn`（`PrismInterval` 一族已有）
+     得 `0 = s₀ < … < s_n = 1`，`a` 在每段上仿射。
+  2. 单片 `Λ_i := {w | w 1 ∈ Icc (s i) (s (i+1)) ∧ 0 ≤ w 0 ∧ w 0 ≤ a (w 1)}`
+     是 `IsHPolytope`（四条线性不等式 + 有界），内部非空（`a > 0` 在 `Ioo 0 1` 上），
+     由 `IsHPolytope.isPLBall` 得 `IsPLBall 2 Λ_i`。
+     **这一步是主要代价**：`IsHPolytope` 的半空间表示要手写
+     （`Polyhedra.lean` 的定义是紧致 + 有限个线性泛函的上水平集），
+     在 `EuclideanSpace ℝ (Fin 2)` 里没有现成的"盒子是 H-多胞形"的入口，
+     `isHPolytope_Icc` 只是 `ℝ` 上的。可走 `IsHPolytope.inter_preimage`
+     （`Polytope.lean:47`，§69 的证明里用过）从一个基础盒子逐次切，但基础盒子本身要造。
+  3. 相邻两片的交是竖直线段 `{s i} ×ˢ Icc 0 (a (s i))`，是 `IsPLBall 1`（`isPLBall_segment`），
+     且含于两片的 frontier（两片分别在 `w 1 ≤ s i` 与 `w 1 ≥ s i` 一侧）。
+  4. 对 `i` 归纳，用 `isPLBall_union_and_finite_frontier_inter` 得 `IsPLBall 2 Λ`。
+  5. 端点片是三角形（`a` 在 `0` 与 `1` 处为零），仍满足 2 的内部非空条件，
+     因为 `a` 在相邻分割点处 `> 0`。
+- **代价判断（主人要的"是不是比直接造 `D₂` 小"）。** 是更小，但**不是小很多**：
+  估计 200–350 行，其中一半是砖块 2 的 `IsHPolytope` 管道。
+  它**完全是平面 PL 的通用内容**，与月牙、与 Moise 的其余部分都无关，
+  所以适合作为独立模块交给任何一条车道做，不必由本车道排队。
+- **本轮没有动 Lean 的理由（如实记下）。** 连续第二轮只出报告。
+  但两轮的性质不同：§74 是搜索改变了计划；本轮是**计划已经确定、工具已经找齐**，
+  剩下的是可机械执行的管道，而本任务段已经很长，开工有做一半的风险。
+  按主人多次确认的规矩（半成品比报告差），停在这里并把砖块列全。
+- 下一轮的正确顺序仍是：砖块 1–5 → `Λ` 与 `D₂` 的映射（`(t₁,t₂) ↦ E.symm (e.symm (t₁, u, v))`，
+  线性于 `t₁`，§74 记的高度参数化）→ `hD₂bd / hluneW / hD₂inj` → **最后**逐点验 `hD₂disj`
+  （§74 记的共面问题，必须在坐标里验而不是想当然）。
+
+## 76. 2026-09-18 E3-M3：分片仿射图像下方的平面区域是 PL 2-球（§75 砖块 1–5 全部做完）
+
+状态：**已闭合**，模块 `PiecewiseLinear/PlanarGraphRegion.lean`，
+`check-f.ps1` exit=0 零警告，`AuditE3GraphRegion.lean` 12 条全部只依赖
+`propext / Classical.choice / Quot.sound`。本节是纯平面 PL 内容，**没有月牙**，可独立复用。
+
+- **端点定理**
+  `isPLBall_two_and_closure_inside_frontier_graphRegion`：设 `σ 0 = 0`、`σ (N+1) = 1`、
+  `∀ k ≤ N, σ k < σ (k+1)`，`a` 在每段 `Icc (σ k) (σ (k+1))` 上与某个 `p * u + q` 相等，
+  且 `∀ u ∈ Ioo 0 1, 0 < a u`，则
+  `IsPLBall 2 (graphRegion a 0 1) ∧ closure (Schoenflies.inside (frontier (graphRegion a 0 1))) = graphRegion a 0 1`。
+  其中 `graphRegion a s t = {w | w 1 ∈ Icc s t ∧ 0 ≤ w 0 ∧ w 0 ≤ a (w 1)}`。
+- **假设的确切取舍（按"用 `omit` 核过再写"的规矩记）。**
+  - `a 0 = 0` 与 `a 1 = 0` **不需要**：端片是梯形还是三角形对结论无影响，
+    `a ≡ 1` 给出单位正方形，同样是 PL 2-球。任务口径里的"两端为零"是月牙那边的事实，不是本定理的前提。
+  - `a ≥ 0` 在 `Icc 0 1` 上**也不需要**：`a (σ 0) < 0` 时首片只是一个顶点落在
+    `w 1 = -q/p` 的三角形，仍是有内点的紧凸多胞形。
+  - `∀ u ∈ Ioo 0 1, 0 < a u` **是必需的**，不是方便性假设：若 `a` 在某个子区间上恒为零，
+    `Λ` 就带一根线段"胡须"，根本不是 2-球（`a ≡ 0` 时 `Λ` 就是一条线段）。
+    月牙那边若滑移量在弧的某一段上恒为零，必须先把该段从参数区间里去掉，否则这条定理用不上。
+- **实现要点（§75 砖块表的实际代价）。**
+  - 砖块 2 的 `IsHPolytope` 管道确实是主要代价，但比 §75 估的小：
+    `isHPolytope_coordBox` 用 `IsHPolytope.preimage_affineMap_of_injective`
+    （`PolytopeSection.lean:13`）把 `ℝ × ℝ` 上的 `Icc ×ˢ Icc` 拉回到 `EuclideanSpace ℝ (Fin 2)`，
+    **紧致性由该引理内部的闭嵌入给出，不必手工造有界集**；再用 `IsHPolytope.inter_affine_le`
+    （`GeneralPosition.lean:59`）切一刀 `w 0 - p * w 1 ≤ q`。基础盒子共 15 行。
+  - 坐标线性泛函用 `EuclideanSpace.projₗ`；坐标相等推点相等用 `PiLp.ext` + `Fin.forall_fin_two`。
+  - 相邻片的交是竖直线段，写成 `segment ℝ (planePoint 0 t) (planePoint (a t) t)`，
+    由 `isPLBall_segment` 得 `IsPLBall 1`；`0 < a t` 同时给出两端点不等与该等式成立
+    （`a t < 0` 时交为空而 `segment` 非空，等式会假，所以这条假设不能弱化成 `0 ≤ a t`）。
+  - `C ∩ D ⊆ frontier C` 用新的 `notMem_interior_of_forall_le / _ge`：
+    内点处沿 `PiLp.single 2 i (±ε/2)` 推一步就越界。通用于 `EuclideanSpace ℝ (Fin 2)` 的任意坐标。
+  - 归纳用 `isPLBall_union_and_finite_frontier_inter`（`PlanarDiskUnion.lean:14`），
+    对 `N` 结构归纳，每步在右端接一片。
+  - "闭内部"半边是 `IsPLBall.closure_inside_frontier`（本模块新增的三行推论，
+    调 `PlanarJordan.closure_inside_frontier_eq_of_isCompact`），树里之前只在
+    `LoopTheorem/BranchPreimage.lean:327` 内联过，没有具名引理。
+- **本轮踩到的三条工具层事实（下轮直接用，别再试错）。**
+  - 本树 Mathlib 里 `le_or_lt` 不存在，用 `le_or_gt (a b) : a ≤ b ∨ b < a`。
+  - `Set.mem_setOf_eq` 不存在，`{x | p x}` 的成员引理叫 `Set.mem_ofPred_eq`；
+    多数场合直接靠定义相等用 `rintro/exact` 更稳。
+  - 风格 linter 禁止用 `show` 改写目标（哪怕只差定义相等），必须用 `change`。
+    `EuclideanSpace.single_apply / norm_single` 已弃用，用 `PiLp.single_eq_same / PiLp.norm_single`。
+- 下一步仍按 §75 的顺序：`Λ` 上的映射 `(t₁, t₂) ↦ E.symm (e.symm (t₁, u (θ t₂), v (θ t₂)))`
+  → `hD₂bd / hluneW / hD₂inj` → 最后在坐标里逐点验 `hD₂disj`（§74 记的共面问题）。
+
+## 77. 2026-09-18 E3-M3：图像区域的边界只由"底边 + 图像弧"两段组成（月牙 `hD₂bd` 的平面前提）
+
+状态：**已闭合**，并入 `PlanarGraphRegion.lean`，`check-f.ps1` exit=0 零警告，
+`AuditE3GraphRegion.lean` 现 16 条全部只依赖 `propext / Classical.choice / Quot.sound`。
+
+- `frontier_graphRegion_subset`：`a` 在 `Icc s t` 上连续、`a s ≤ 0`、`a t ≤ 0`（区域闭）
+  ⟹ `frontier (graphRegion a s t) ⊆ {w | w 0 = 0} ∪ graphArc a s t`，
+  其中 `graphArc a s t = {w | w 1 ∈ Icc s t ∧ w 0 = a (w 1)}`。
+  **这正是 `hD₂bd` 要的那一步**：边界上不在粘合弧（图像弧）里的点都满足 `w 0 = 0`，
+  于是它们的像第一坐标为零，即落在 `Bd M` 里。
+  `a s ≤ 0`、`a t ≤ 0` 在月牙那边由"滑移量在弧端为零"（§64 的位移判据）给出，
+  也正是任务口径里"两端为零"真正被用到的地方——**它对 2-球性质无用，对 `hD₂bd` 必需**。
+- 中间件：`mem_interior_graphRegion`（`w 1 ∈ Ioo s t`、`0 < w 0 < a (w 1)` ⟹ 内点，
+  用 `ContinuousAt.eventually_lt` + `filter_upwards`，不需要 `a` 分片仿射，只要连续）、
+  `eq_zero_or_eq_of_notMem_interior_graphRegion`、
+  `continuousOn_of_subdivision`（分片仿射的细分 ⟹ `ContinuousOn a (Icc (σ 0) (σ (N+1)))`，
+  对 `N` 归纳 + `ContinuousOn.union_of_isClosed` + `Icc_union_Icc_eq_Icc`）。
+- 工具层事实：本树 Mathlib 的 `push_neg` 已弃用（改 `push Not`，或像这里直接手写两条 `≠`）；
+  `ContinuousAt.comp` 在 `fun x => a (x 1)` 这种形状上高阶合一会选错，必须显式给 `(g := ) (f := )`。
+
+## 78. 2026-09-18 E3-M3：月牙胞腔 `D₂` 被构造出来，`hD₂inj`、`hluneW`、`hD₂bd` 三条同时给出
+
+状态：**已闭合**，新模块 `LuneCell.lean`（模块名与 5 条声明名在四条车道分支上都不存在）。
+`check-f.ps1` exit=0 零警告；`.lake/scratch/AuditE3LuneCell.lean` 的 5 条 `#print axioms`
+全部只含 `propext`、`Classical.choice`、`Quot.sound`。
+§73 第 7 条"四条输入一个产者都没有"，现在只剩 `hD₂disj` 一条。
+
+- **端点定理 `exists_lune_singularTwoCell`。** 输入：边界图卡 `E`（`plGroupoid 3` 的 maximalAtlas）、
+  模型图卡 `e`（`hei : IsPiecewiseAffineOn e.symm e.target`、`hesrc : e.source ⊆ E.target`、
+  `hsupp : slideSupportLong R ⊆ e.target`）、边界刻画 `hBdE / hBd₁`（与分离层同一对），
+  以及沿弧的三个实函数 `α`（滑移高度）、`μ`、`ν`（弧的两条横坐标）：
+  `α` 有细分 `σ` 且分片仿射、`0 < α` 在 `Ioo 0 1` 上、`α 0 = α 1 = 0`、`α ≤ R`；
+  `μ`、`ν` 在 `Icc 0 1` 上分片仿射、`|μ| + |ν| ≤ 1`、`InjOn (fun u => (μ u, ν u)) (Icc 0 1)`。
+  输出一个 `D₂ : SingularTwoCell M`，`D₂.domain = graphRegion α 0 1`，
+  `D₂ w = E.symm (e.symm (w 0, μ (w 1), ν (w 1)))`，并附三条：
+  - `InjOn D₂ D₂.domain`（= `hD₂inj`）：由 `E.symm`、`e.symm` 在各自 target 上单射
+    加 `InjOn (fun u => (μ u, ν u))`，`w 0` 那一维是**恒等**，所以不需要任何额外条件。
+  - `D₂ '' D₂.domain ⊆ E.symm '' (e.symm '' slideSupportLong R)`（= `hluneW` 的前半；
+    再由 `hW : W ∈ 𝓝ˢ (E.symm '' (e.symm '' slideSupportLong R))` 的 `subset_of_mem_nhdsSet`
+    接到 `⊆ W`）。
+  - `∀ z ∈ frontier D₂.domain, z ∉ graphArc α 0 1 → D₂ z ∈ BdM`（= `hD₂bd`），
+    粘合弧取 `graphArc α 0 1 = {w | w 1 ∈ Icc 0 1 ∧ w 0 = α (w 1)}`。
+- **为什么"按高度参数化"是对的（§74 的要点在 Lean 里兑现）。**
+  第一坐标就是 `w 0` 本身，所以 `luneModelMap μ ν w = (w 0, μ (w 1), ν (w 1))`
+  的分片仿射性只需要 `μ`、`ν` 分片仿射与两个坐标投影仿射，**没有乘积项**，
+  §60/§62 的"两个非常值分片仿射函数之积不分片仿射"的障碍确实不出现。
+- **`IsPLOn` 的入口。** `isPLOn_chart_comp_of_isPiecewiseAffineOn`（本模块新增、通用）：
+  `b` 在 `A` 上分片仿射且 `MapsTo b A ec.target` ⟹ `IsPLOn 2 3 (fun x => ec.symm (b x)) A`。
+  是 `BranchCollarPrism.lean:69` 那条棱柱版的去掉棱柱的形式，直接走
+  `isPLOn_iff_isPiecewiseAffineOn_comp_chart`（`PLMap.lean:101`）。
+- **接口对齐说明。** 本节的 `α`、`μ`、`ν` 是"沿弧参数"的实函数；在消费处它们是
+  `α t = slideAmountLong d R (e (E (D (θ t))))`、`(μ t, ν t) = (e (E (D (θ t)))).2`，
+  其中 `θ` 是 §63 的弧参数化。把它们接上还需要两件事，都属于 PL 闭包管道而不是新数学：
+  (a) `e ∘ E ∘ D ∘ θ` 在 `Icc 0 1` 上分片仿射（`IsPiecewiseAffineOn.comp` 逐段合成），
+      从而 `μ`、`ν` 分片仿射、`α` 分片仿射；
+  (b) `α` 的显式细分由 `exists_partition_affineOn_two`（`BrokenLine.lean:37`，
+      **确实存在**，§75 的猜测得到证实）给出：它输出 `s 0 = 0`、`s n = 1`、
+      `∀ i < n, s i < s (i+1)` 与每段上的插值公式，转成本节要的 `p * u + q` 只差一步代数；
+      `n = 0` 与 `s 0 = 0 = s n = 1` 矛盾，所以 `n` 必为 `N + 1`。
+  `InjOn (fun u => (μ u, ν u)) (Icc 0 1)` 由 `hinjP : InjOn D P` 加 `θ` 单射得到
+  （`e`、`E` 在各自 source 上单射，第一坐标在弧上恒为 0 所以 `(μ, ν)` 与整点互相决定）。
+
+## 79. 2026-09-18 E3-M3：`hD₂disj` 的确切归约，以及它对**当前月牙定义**为假的机制（必须改构造）
+
+状态：归约与模型不等式**已闭合**（并入 `LuneCell.lean`，`check-f.ps1` exit=0 零警告，
+`AuditE3LuneCell.lean` 9 条全部只依赖 `propext / Classical.choice / Quot.sound`）；
+`hD₂disj` 本身**不成立**，下面给出确切的反例机制。这是构造的修改点，不是路线的失败。
+
+- **归约（已证）`lune_ne_of_fiber_height`。** 设 `D₂.domain = graphRegion α 0 1`、
+  `E (D₂ x) ∈ e.source ∧ e (E (D₂ x)) = (x 0, μ (x 1), ν (x 1))`（这一条现在是
+  `exists_lune_singularTwoCell` 的第 5 条输出）。若集合 `S ⊆ M` 满足**纤维高度条件**
+  `∀ y ∈ S, E y ∈ e.source → ∀ s ∈ Icc 0 1, (e (E y)).2 = (μ s, ν s) → α s ≤ (e (E y)).1`，
+  则 `∀ x ∈ D₂.domain, x ∉ graphArc α 0 1 → ∀ y ∈ S, D₂ x ≠ y`。
+  取 `S = D₁ '' D₁.domain` 即 `hD₂disj`。**所以 `hD₂disj` 等价于纤维高度条件**，
+  §74 猜的"严格不等式"路线在 Lean 里就是这一条。
+- **被滑移的那一半无条件成立（已证）`slideAmountLong_le_slideMapFwd_fst`：**
+  `0 ≤ p.1 ⟹ slideAmountLong d R (0, p.2) ≤ (slideMapFwd d R p).1`。
+  由 `slideAmountLong_le_add'`（`ModelSlideFwd.lean:37`）加 `p.1 / 2 ≤ p.1` 得。
+  把 `α s` 取成 `slideAmountLong d R (0, μ s, ν s)`（这**就是**弧上的滑移量，因为弧在
+  `Bd M` 上第一坐标为零），并用 `hDN : MapsTo D D.domain N` 与
+  `hN₁ : y ∈ N₁ ↔ 0 ≤ (e y).1` 得 `0 ≤ p.1`，于是
+  **对一切 `z ∈ P`，`g z = h (D z)` 的高度 ≥ `α s`，纤维高度条件成立，不需要 `InjOn D P`，
+  也不需要"滑移后的胞腔在该纤维上只有一个点"**（§74 担心的纤维分析其实不必做）。
+- **不成立的那一半：`z ∉ P` 时 `g z = D z`，纤维高度条件在 Case 3/4 的构型下必然被违反。**
+  取 `t = 0`：`exists_lune_base_off_graphArc`（已证）说，对每个 `α s > 0` 的 `s`，
+  点 `x = planePoint 0 s` 落在 `D₂.domain` 里、**不**在粘合弧 `graphArc α 0 1` 上，且
+  `D₂ x = E.symm (e.symm (0, μ s, ν s))`，而后者正是**滑移前**的弧点 `D (θ s)`。
+  于是 `hD₂disj` 蕴含：**每个被推离的弧点的原始位置都不在 `g '' D.domain` 里**；
+  因为 `g = D` 在 `P` 外，它蕴含 `D (θ s) ∉ D '' (D.domain \ P)`，
+  即"被推离弧上没有与互补片的双点"。在触边分支端点处这条被违反，逐条理由：
+  1. 触边分支给出 `y₀ ∈ D '' D.domain ∩ BdM`，两个原像 `z_P`、`z_Q`；由 `hinjP : InjOn D P`
+     两者不能都在 `P` 里，故（重排后）`z_Q ∈ Pc \ P`，`g z_Q = D z_Q = y₀`。
+  2. `y₀ ∈ BdM` 加 `hBd₁` 给 `(e (E y₀)).1 = 0`；`hA` 给 `(e (E y₀)).2.2 = 0`（band A）；
+     `D z_Q ∈ W` 加 `hPcQ` 给 `z_Q ∈ Q`，再由 `hB` 给 `(e (E y₀)).2.1 = 0`（band Q）。
+     所以 `e (E y₀) = (0, 0, 0)`，并顺带得到 `0 ∈ Icc a b`。
+  3. `|0| + |0| = 0 < 1`，由 §64 的位移判据 `z_P` 被推离，故 `z_P ∈ W`（被推离集），
+     即存在 `s₀` 使 `θ s₀ = z_P`，且 `(μ s₀, ν s₀) = (0, 0)`。
+  4. `α s₀ = slideAmountLong d R (0,0,0) = max 0 (min d (R/2)) = d > 0`
+     （用 `0 < d`、`c + 2 * d ≤ R`、`0 ≤ c`）。
+  5. 于是 `x = planePoint 0 s₀` 满足 `x ∈ D₂.domain`、`x ∉ graphArc α 0 1`、
+     `D₂ x = E.symm (e.symm (0,0,0)) = y₀ = g z_Q`，`hD₂disj` 给出矛盾。
+  **一句话：月牙的底边就是弧的原始位置，而弧的原始位置在触边分支端点处与互补片重合。**
+- **这不是路线失败，是构造要改。** 三条候选，按可行性排：
+  1. **把月牙的底边挖掉**：域取 `{w | w 1 ∈ Icc 0 1 ∧ 0 < w 0 ≤ α (w 1)}` 的闭包不行
+     （闭包又把底边带回来）；正确做法是**把粘合弧改到底边**、外弧改成图像弧，
+     即把 `B` 取成 `{w | w 0 = 0}` 而不是 `graphArc`——但那样 `hD₂bd` 要求图像弧落在 `Bd M`，
+     而图像弧是滑移后的位置，不在 `Bd M` 上，`hD₂bd` 反而坏掉。**此路不通。**
+  2. **抬高底边**：把域改成 `{w | 0 < ε (w 1) ≤ w 0 ≤ α (w 1)}`，其中 `ε` 分片仿射、
+     在弧端为零。这保持 `hD₂bd`（`w 0 = ε (w 1)` 的那条边不再在 `Bd M` 上，需要重证）——
+     同样破坏 `hD₂bd`。**也不通。**
+  3. **缩短弧**：把被推离弧 `closure W` 换成**去掉触边分支端点的那一段**，
+     即只在 `α > 0` 且弧点不是双点的部分贴月牙。这不改月牙的形状，只改 `θ` 的定义域，
+     代价是新的粘合弧不再是整条 `closure W`，`image_inter_boundary` 一侧要重算。
+     **这条看起来是对的**：几何上正确的说法是"月牙扫过的帘子确实要穿过互补片，
+     `hD₂disj` 这条字段本身对触边分支太强"。
+  4. **改 `hD₂disj` 的陈述**：把它弱化成"月牙内部（`0 < w 0 < α (w 1)`）不碰旧胞腔"，
+     把底边上的碰撞交给 `singularSet` / `crossing` 去描述（它本来就是一个双点）。
+     由上面的归约，弱化版只需要纤维高度条件的**严格**形式，而第二条已经把 `z ∈ P` 那一半
+     无条件证完；剩下的是 `z ∈ Pc \ P` 那一半，在 `0 < w 0` 下要求
+     `D '' (D.domain \ P)` 在该纤维上的高度不落在 `(0, α s)` 内——
+     这在触边分支下**同样不成立**，但理由要说准：`hB` 只给**包含**
+     `D '' Q ∩ support ⊆ slideBandQ a b`，不能由它推出 `D '' Q` 填满带子；
+     真正的理由是**分支本身**——`branchCarrier cb ⊆ D '' P ∩ D '' Q` 是一条从 `y₀` 伸进
+     `p.1 > 0` 的非退化弧，其上的点 `(t, 0, 0)`（`t` 充分小、`0 < t < d = α s₀`）落在
+     `D '' Q` 里，其 `Q` 侧原像不在 `P` 里（否则与 `hinjP` 冲突），故 `g` 的像里有它，
+     而它正在月牙**内部**那条纤维上。**所以弱化陈述也不够，必须动构造。**
+  结论：**下一轮必须先和主人确认走哪一条**（3 最可能），因为它改的是 `NormalSingularCellData`
+  的粘合数据形状，属于"改变公开语义"的决定。在确认之前不要硬写 `hD₂disj`。
+- 本轮未做：`L₂` 的重贴胞腔、Case 1/2（按任务范围）。

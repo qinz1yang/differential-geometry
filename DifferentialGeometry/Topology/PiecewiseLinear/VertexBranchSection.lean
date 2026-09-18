@@ -78,4 +78,35 @@ theorem exists_linearEquiv_normalForm_of_isPLSphere_one_fiber [DecidableEq E]
     hab hlevel (exists_mem_geometricLink_lt_apply_of_mem_closedStar M hp ℓ.toLinearMap hv hvlt)
     (exists_mem_geometricLink_apply_lt_of_mem_closedStar M hp ℓ.toLinearMap hu hult)
 
+theorem encard_geometricLink_fiber_le_two_of_isPLBall_one [DecidableEq E]
+    (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces] {p : E} (hp : {p} ∈ K.faces)
+    (ℓ : E →ₗ[ℝ] ℝ) (hfiber : IsPLBall 1 (K.space ∩ {x | ℓ x = ℓ p})) :
+    ((SimplicialComplex.geometricLink K {p}).space ∩ {x | ℓ x = ℓ p}).encard ≤ 2 := by
+  obtain ⟨F, f, hFfin, hFspace, hpF, hf⟩ := exists_isPLHomeomorphOn_geometricLink_fiber K hp ℓ
+  let _ : Finite F.faces := hFfin.to_subtype
+  have hF : IsPLBall 1 F.space := hFspace.symm ▸ hfiber
+  rcases isPLSphere_or_isPLBall_geometricLink_of_isPLBall F hF hpF with h | h
+  · obtain ⟨a, b, hab, hpair⟩ := isPLSphere_zero_iff.mp (h.of_isPLHomeomorphOn hf)
+    rw [hpair, Set.encard_pair hab]
+  · obtain ⟨z, hz⟩ := isPLBall_zero_iff.mp (h.of_isPLHomeomorphOn hf)
+    rw [hz, Set.encard_singleton]
+    norm_num
+
+theorem geometricLink_fiber_eq_pair_of_isPLBall_one [DecidableEq E]
+    (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces] {p : E} (hp : {p} ∈ K.faces)
+    (ℓ : E →ₗ[ℝ] ℝ) (hfiber : IsPLBall 1 (K.space ∩ {x | ℓ x = ℓ p})) {a b : E} (hab : a ≠ b)
+    (ha : a ∈ (SimplicialComplex.geometricLink K {p}).space ∩ {x | ℓ x = ℓ p})
+    (hb : b ∈ (SimplicialComplex.geometricLink K {p}).space ∩ {x | ℓ x = ℓ p}) :
+    (SimplicialComplex.geometricLink K {p}).space ∩ {x | ℓ x = ℓ p} = {a, b} := by
+  have hsub : ({a, b} : Set E) ⊆
+      (SimplicialComplex.geometricLink K {p}).space ∩ {x | ℓ x = ℓ p} := by
+    rintro x (rfl | rfl)
+    · exact ha
+    · exact hb
+  have hcard : ((SimplicialComplex.geometricLink K {p}).space ∩ {x | ℓ x = ℓ p}).encard ≤
+      ({a, b} : Set E).encard := by
+    rw [Set.encard_pair hab]
+    exact encard_geometricLink_fiber_le_two_of_isPLBall_one K hp ℓ hfiber
+  exact (((Set.finite_singleton b).insert a).eq_of_subset_of_encard_le hsub hcard).symm
+
 end DifferentialGeometry.Topology.PiecewiseLinear

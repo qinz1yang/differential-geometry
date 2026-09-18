@@ -158,52 +158,97 @@ theorem bijective_circleConj {S : Set E} {g : loopCircle → E} (hgb : BijOn g u
       rw [circleConj_spec hgb hbu.mapsTo θ, hθ, hxu]
     exact hgb.injOn (mem_univ _) (mem_univ _) h
 
+noncomputable def paramHomeomorph {S : Set E} {g : loopCircle → E} (hgc : Continuous g)
+    (hgb : BijOn g univ S) : loopCircle ≃ₜ ↥S :=
+  Continuous.homeoOfEquivCompactToT2
+    (f := Equiv.ofBijective (fun θ => (⟨g θ, hgb.mapsTo (mem_univ θ)⟩ : ↥S))
+      ⟨fun a b hab => hgb.injOn (mem_univ a) (mem_univ b) (congrArg Subtype.val hab), by
+        rintro ⟨y, hy⟩
+        obtain ⟨θ, -, hθ⟩ := hgb.surjOn hy
+        exact ⟨θ, Subtype.ext hθ⟩⟩)
+    (hgc.subtype_mk _)
+
+omit [NormedSpace ℝ E] in
+theorem paramHomeomorph_coe {S : Set E} {g : loopCircle → E} (hgc : Continuous g)
+    (hgb : BijOn g univ S) (θ : loopCircle) :
+    ((paramHomeomorph hgc hgb θ : ↥S) : E) = g θ := rfl
+
+omit [NormedSpace ℝ E] in
+theorem paramHomeomorph_symm {S : Set E} {g : loopCircle → E} (hgc : Continuous g)
+    (hgb : BijOn g univ S) (y : ↥S) :
+    (paramHomeomorph hgc hgb).symm y = Function.invFunOn g univ (y : E) := by
+  have h1 : g ((paramHomeomorph hgc hgb).symm y) = (y : E) :=
+    congrArg Subtype.val ((paramHomeomorph hgc hgb).apply_symm_apply y)
+  have h2 : Function.invFunOn g univ (g ((paramHomeomorph hgc hgb).symm y)) =
+      (paramHomeomorph hgc hgb).symm y := hgb.injOn.leftInvOn_invFunOn (mem_univ _)
+  rw [← h1, h2]
+
 omit [NormedSpace ℝ E] in
 theorem continuous_circleConj {S : Set E} {g : loopCircle → E} (hgc : Continuous g)
     (hgb : BijOn g univ S) {u : E → E} (hcu : ContinuousOn u S) (hmu : MapsTo u S S) :
     Continuous (circleConj g u) := by
   have hmaps : ∀ θ : loopCircle, g θ ∈ S := fun θ => hgb.mapsTo (mem_univ θ)
-  set e : loopCircle → ↥S := fun θ => ⟨g θ, hmaps θ⟩ with hedef
-  have hec : Continuous e := hgc.subtype_mk _
-  have hebij : Function.Bijective e := by
-    constructor
-    · intro a b hab
-      exact hgb.injOn (mem_univ a) (mem_univ b) (congrArg Subtype.val hab)
-    · rintro ⟨y, hy⟩
-      obtain ⟨θ, -, hθ⟩ := hgb.surjOn hy
-      exact ⟨θ, Subtype.ext hθ⟩
-  set he : loopCircle ≃ₜ ↥S :=
-    Continuous.homeoOfEquivCompactToT2 (f := Equiv.ofBijective e hebij) hec with hhedef
-  have hinvval : ∀ y : ↥S, Function.invFunOn g univ (y : E) = he.symm y := by
-    intro y
-    have h1 : g (he.symm y) = (y : E) := congrArg Subtype.val (he.apply_symm_apply y)
-    have h2 : Function.invFunOn g univ (g (he.symm y)) = he.symm y :=
-      hgb.injOn.leftInvOn_invFunOn (mem_univ _)
-    rw [← h1, h2]
-  have hcomp : circleConj g u = fun θ => he.symm ⟨u (g θ), hmu (hmaps θ)⟩ := by
+  have hcomp : circleConj g u =
+      fun θ => (paramHomeomorph hgc hgb).symm ⟨u (g θ), hmu (hmaps θ)⟩ := by
     funext θ
-    exact hinvval ⟨u (g θ), hmu (hmaps θ)⟩
+    exact (paramHomeomorph_symm hgc hgb ⟨u (g θ), hmu (hmaps θ)⟩).symm
   rw [hcomp]
-  exact he.continuous_symm.comp ((hcu.comp_continuous hgc hmaps).subtype_mk _)
+  exact (paramHomeomorph hgc hgb).continuous_symm.comp
+    ((hcu.comp_continuous hgc hmaps).subtype_mk _)
 
 def IsPLCirclePositive (S : Set E) (u : E → E) : Prop :=
-  ∀ g : loopCircle → E, Continuous g → BijOn g univ S → HasIncreasingCircleLift (circleConj g u)
+  ∃ g : loopCircle → E, Continuous g ∧ BijOn g univ S ∧ HasIncreasingCircleLift (circleConj g u)
 
 omit [NormedSpace ℝ E] in
-theorem isPLCirclePositive_id {S : Set E} : IsPLCirclePositive S (id : E → E) :=
-  fun _ _ hgb => hasIncreasingCircleLift_id.congr fun θ => circleConj_id hgb θ
+theorem IsPLCirclePositive.forall_param {S : Set E} {u : E → E} (hu : IsPLCirclePositive S u)
+    (hmu : MapsTo u S S) {g : loopCircle → E} (hgc : Continuous g) (hgb : BijOn g univ S) :
+    HasIncreasingCircleLift (circleConj g u) := by
+  obtain ⟨g₀, hg₀c, hg₀b, h₀⟩ := hu
+  set φ : loopCircle ≃ₜ loopCircle :=
+    (paramHomeomorph hgc hgb).trans (paramHomeomorph hg₀c hg₀b).symm with hφdef
+  have hφval : ∀ θ, φ θ = Function.invFunOn g₀ univ (g θ) := fun θ =>
+    paramHomeomorph_symm hg₀c hg₀b _
+  have hφsymval : ∀ η, φ.symm η = Function.invFunOn g univ (g₀ η) := by
+    intro η
+    change (paramHomeomorph hgc hgb).symm ((paramHomeomorph hg₀c hg₀b) η) = _
+    rw [paramHomeomorph_symm hgc hgb]
+    rfl
+  refine (h₀.conj φ).congr fun θ => ?_
+  have h1 : g₀ (φ θ) = g θ := by
+    rw [hφval]
+    exact hg₀b.invOn_invFunOn.2 (hgb.mapsTo (mem_univ θ))
+  change circleConj g u θ = φ.symm (circleConj g₀ u (φ θ))
+  rw [hφsymval, circleConj_spec hg₀b hmu (φ θ), h1]
+  rfl
+
+theorem exists_loopCircle_param_of_isPLSphere_one [FiniteDimensional ℝ E] {S : Set E}
+    (hS : IsPLSphere 1 S) : ∃ g : loopCircle → E, Continuous g ∧ BijOn g univ S := by
+  obtain ⟨p, hp, q, hq, hpq⟩ := exists_pair_ne_of_isPLSphere_one hS
+  obtain ⟨A, B, γ, δ, hγ, hδ, hγ0, hγ1, hδ0, hδ1, hunion, hinter⟩ :=
+    exists_arc_decomposition_of_isPLSphere_one hS hp hq hpq
+  obtain ⟨g, hgc, hgb, -, -, -⟩ := exists_loopCircle_param_of_arc_decomposition hγ hδ
+    (hδ0.trans hγ0.symm) (hδ1.trans hγ1.symm) hunion (by rw [hinter, hγ0, hγ1])
+  exact ⟨g, hgc, hgb⟩
+
+theorem isPLCirclePositive_id [FiniteDimensional ℝ E] {S : Set E} (hS : IsPLSphere 1 S) :
+    IsPLCirclePositive S (id : E → E) := by
+  obtain ⟨g, hgc, hgb⟩ := exists_loopCircle_param_of_isPLSphere_one hS
+  exact ⟨g, hgc, hgb, hasIncreasingCircleLift_id.congr fun θ => circleConj_id hgb θ⟩
 
 omit [NormedSpace ℝ E] in
 theorem IsPLCirclePositive.comp {S : Set E} {u v : E → E} (hu : IsPLCirclePositive S u)
-    (hv : IsPLCirclePositive S v) (hmv : MapsTo v S S) :
-    IsPLCirclePositive S (u ∘ v) := fun g hgc hgb =>
-  ((hu g hgc hgb).comp (hv g hgc hgb)).congr fun θ => circleConj_comp hgb hmv θ
+    (hv : IsPLCirclePositive S v) (hmv : MapsTo v S S) : IsPLCirclePositive S (u ∘ v) := by
+  obtain ⟨g, hgc, hgb, hgu⟩ := hu
+  exact ⟨g, hgc, hgb,
+    (hgu.comp (hv.forall_param hmv hgc hgb)).congr fun θ => circleConj_comp hgb hmv θ⟩
 
-theorem isPLCirclePositive_of_three_fixed [FiniteDimensional ℝ E] {S : Set E} {u : E → E}
+theorem isPLCirclePositive_of_three_fixed [FiniteDimensional ℝ E] {S : Set E}
+    (hS : IsPLSphere 1 S) {u : E → E}
     (hcu : ContinuousOn u S) (hbu : BijOn u S S) {x y z : E} (hx : x ∈ S) (hy : y ∈ S) (hz : z ∈ S)
     (hxy : x ≠ y) (hxz : x ≠ z) (hyz : y ≠ z)
     (hux : u x = x) (huy : u y = y) (huz : u z = z) : IsPLCirclePositive S u := by
-  intro g hgc hgb
+  obtain ⟨g, hgc, hgb⟩ := exists_loopCircle_param_of_isPLSphere_one hS
+  refine ⟨g, hgc, hgb, ?_⟩
   have hfix : ∀ {w : E}, w ∈ S → u w = w →
       circleConj g u (Function.invFunOn g univ w) = Function.invFunOn g univ w := by
     intro w hw hwu
@@ -220,12 +265,12 @@ theorem isPLCirclePositive_of_three_fixed [FiniteDimensional ℝ E] {S : Set E} 
     (hne hx hy hxy) (hne hx hz hxz) (hne hy hz hyz) (hfix hx hux) (hfix hy huy) (hfix hz huz)
 
 theorem isPLCirclePositive_of_eqOn_arc [FiniteDimensional ℝ E] {S B : Set E} {ξ : ℝ → E}
-    (hξ : IsPLHomeomorphOn ξ (Icc 0 1) B) (hBS : B ⊆ S) {r : E → E}
+    (hS : IsPLSphere 1 S) (hξ : IsPLHomeomorphOn ξ (Icc 0 1) B) (hBS : B ⊆ S) {r : E → E}
     (hr : IsPLHomeomorphOn r S S) (hrB : EqOn r id B) : IsPLCirclePositive S r := by
   have hm0 : ξ 0 ∈ B := hξ.bijOn.mapsTo (by norm_num)
   have hmh : ξ ((1 : ℝ) / 2) ∈ B := hξ.bijOn.mapsTo (by norm_num)
   have hm1 : ξ 1 ∈ B := hξ.bijOn.mapsTo (by norm_num)
-  refine isPLCirclePositive_of_three_fixed hr.isPiecewiseAffineOn.continuousOn hr.bijOn
+  refine isPLCirclePositive_of_three_fixed hS hr.isPiecewiseAffineOn.continuousOn hr.bijOn
     (hBS hm0) (hBS hmh) (hBS hm1) (fun h => ?_) (fun h => ?_) (fun h => ?_)
     (hrB hm0) (hrB hmh) (hrB hm1)
   · have hq := hξ.bijOn.injOn (show (0 : ℝ) ∈ Icc 0 1 by norm_num)
@@ -244,13 +289,13 @@ theorem exists_positive_map_eq_of_isPLSphere_one [FiniteDimensional ℝ E]
       IsPLCirclePositive S r := by
   by_cases hpp : p = p'
   · exact ⟨id, hS.isPolyhedron.isPLHomeomorphOn_id, isPLPseudoIsotopicToId_id hS.isPolyhedron,
-      hpp.symm, isPLCirclePositive_id⟩
+      hpp.symm, isPLCirclePositive_id hS⟩
   · obtain ⟨A, B, ε, ξ, hε, hξ, hunion, hinter, hpA, hp'A⟩ :=
       exists_arc_pair_interior_of_isPLSphere_one hS hp hp' hpp
     obtain ⟨r, hr, hrid, hrp, hrB⟩ := exists_isPLPseudoIsotopicToId_map_eq_of_arc hε
       ((isPLBall_Icc zero_lt_one).of_isPLHomeomorphOn hξ).isPolyhedron hunion hinter hpA hp'A
     exact ⟨r, hr, hrid, hrp,
-      isPLCirclePositive_of_eqOn_arc hξ (hunion ▸ subset_union_right) hr hrB⟩
+      isPLCirclePositive_of_eqOn_arc hS hξ (hunion ▸ subset_union_right) hr hrB⟩
 
 theorem image_arc_eq_of_isPLCirclePositive [FiniteDimensional ℝ E]
     {S A B : Set E} {γ δ : ℝ → E} (hγ : IsPLHomeomorphOn γ (Icc 0 1) A)
@@ -266,7 +311,8 @@ theorem image_arc_eq_of_isPLCirclePositive [FiniteDimensional ℝ E]
     have hval : g (circleConj g u θ) = g θ := by
       rw [circleConj_spec hgb hbu.mapsTo θ, hgθ, hwu]
     exact hgb.injOn (mem_univ _) (mem_univ _) hval
-  have himg := image_coe_Icc_zero_half_eq_of_hasIncreasingCircleLift (hpos g hgc hgb)
+  have himg := image_coe_Icc_zero_half_eq_of_hasIncreasingCircleLift
+    (hpos.forall_param hbu.mapsTo hgc hgb)
     (bijective_circleConj hgb hbu).2 (hfix hg0 hu0) (hfix hghalf hu1)
   have hkey : ∀ X : Set loopCircle, u '' (g '' X) = g '' (circleConj g u '' X) := by
     intro X
@@ -291,7 +337,7 @@ theorem isPLPseudoIsotopicToId_of_isPLCirclePositive [FiniteDimensional ℝ E]
   obtain ⟨r₂, hr₂, hr₂id, hr₂q, hr₂B⟩ := exists_isPLPseudoIsotopicToId_map_eq_of_arc hε₂
     ((isPLBall_Icc zero_lt_one).of_isPLHomeomorphOn hξ₂).isPolyhedron hun₂ hin₂ hqA₂ hwqA₂
   have hr₂pos : IsPLCirclePositive S r₂ :=
-    isPLCirclePositive_of_eqOn_arc hξ₂ (hun₂ ▸ subset_union_right) hr₂ hr₂B
+    isPLCirclePositive_of_eqOn_arc hS hξ₂ (hun₂ ▸ subset_union_right) hr₂ hr₂B
   have hε₂0B : ε₂ 0 ∈ B₂ := (hin₂.symm.subset (Or.inl rfl)).2
   have hw₂ : IsPLHomeomorphOn (r₂ ∘ (r₁ ∘ u)) S S := hw₁.trans hr₂
   have hw₂p : (r₂ ∘ (r₁ ∘ u)) p = p := by
@@ -474,5 +520,87 @@ theorem exists_isPLHomeomorphOn_of_endMaps_boundary_isPLCirclePositive
   exists_isPLHomeomorphOn_of_endMaps_pseudoIsotopicToId hf hg hK'.isPolyhedron huf hug hfuf hgug
     (isPLPseudoIsotopicToId_of_boundary_isPLCirclePositive K hK huf hposf)
     (isPLPseudoIsotopicToId_of_boundary_isPLCirclePositive K' hK' hug hposg) hw
+
+theorem exists_not_isPLCirclePositive_of_arc_decomposition [FiniteDimensional ℝ E]
+    {S A B : Set E} {γ δ : ℝ → E} (hγ : IsPLHomeomorphOn γ (Icc 0 1) A)
+    (hδ : IsPLHomeomorphOn δ (Icc 0 1) B) (hδ0 : δ 0 = γ 0) (hδ1 : δ 1 = γ 1)
+    (hunion : A ∪ B = S) (hinter : A ∩ B = {γ 0, γ 1}) :
+    ∃ u : E → E, IsPLHomeomorphOn u S S ∧ ¬ IsPLCirclePositive S u := by
+  have hzero : (0 : ℝ) ∈ Icc (0 : ℝ) 1 := by norm_num
+  have hone : (1 : ℝ) ∈ Icc (0 : ℝ) 1 := by norm_num
+  have hhalf : ((1 : ℝ) / 2) ∈ Icc (0 : ℝ) 1 := by norm_num
+  have hAB : A ≠ B := by
+    intro h
+    have hmid : γ ((1 : ℝ) / 2) ∈ A := hγ.bijOn.mapsTo hhalf
+    have hmem : γ ((1 : ℝ) / 2) ∈ ({γ 0, γ 1} : Set E) := hinter ▸ mem_inter hmid (h ▸ hmid)
+    rcases hmem with hh | hh
+    · have hq := hγ.bijOn.injOn hhalf hzero hh
+      norm_num at hq
+    · have hh' : γ ((1 : ℝ) / 2) = γ 1 := hh
+      have hq := hγ.bijOn.injOn hhalf hone hh'
+      norm_num at hq
+  have hAball : IsPLBall 1 A := (isPLBall_Icc zero_lt_one).of_isPLHomeomorphOn hγ
+  have hBball : IsPLBall 1 B := (isPLBall_Icc zero_lt_one).of_isPLHomeomorphOn hδ
+  have hf : IsPLHomeomorphOn (δ ∘ Function.invFunOn γ (Icc 0 1)) A B := hγ.symm.trans hδ
+  have hf' : IsPLHomeomorphOn (γ ∘ Function.invFunOn δ (Icc 0 1)) B A := hδ.symm.trans hγ
+  have hf0 : (δ ∘ Function.invFunOn γ (Icc 0 1)) (γ 0) = γ 0 := by
+    change δ (Function.invFunOn γ (Icc 0 1) (γ 0)) = γ 0
+    rw [hγ.bijOn.invOn_invFunOn.1 hzero, hδ0]
+  have hf1 : (δ ∘ Function.invFunOn γ (Icc 0 1)) (γ 1) = γ 1 := by
+    change δ (Function.invFunOn γ (Icc 0 1) (γ 1)) = γ 1
+    rw [hγ.bijOn.invOn_invFunOn.1 hone, hδ1]
+  have hf'0 : (γ ∘ Function.invFunOn δ (Icc 0 1)) (γ 0) = γ 0 := by
+    change γ (Function.invFunOn δ (Icc 0 1) (γ 0)) = γ 0
+    have h : Function.invFunOn δ (Icc 0 1) (γ 0) = 0 := by
+      rw [← hδ0]
+      exact hδ.bijOn.invOn_invFunOn.1 hzero
+    rw [h]
+  have hf'1 : (γ ∘ Function.invFunOn δ (Icc 0 1)) (γ 1) = γ 1 := by
+    change γ (Function.invFunOn δ (Icc 0 1) (γ 1)) = γ 1
+    have h : Function.invFunOn δ (Icc 0 1) (γ 1) = 1 := by
+      rw [← hδ1]
+      exact hδ.bijOn.invOn_invFunOn.1 hone
+    rw [h]
+  have heq : EqOn (δ ∘ Function.invFunOn γ (Icc 0 1)) (γ ∘ Function.invFunOn δ (Icc 0 1))
+      (A ∩ B) := by
+    rw [hinter]
+    rintro x hx
+    rcases hx with hx | hx
+    · rw [show x = γ 0 from hx, hf0, hf'0]
+    · have hx' : x = γ 1 := hx
+      rw [hx', hf1, hf'1]
+  have hsurj : SurjOn (δ ∘ Function.invFunOn γ (Icc 0 1)) (A ∩ B) (B ∩ A) := by
+    have hBA : B ∩ A = ({γ 0, γ 1} : Set E) := by rw [inter_comm]; exact hinter
+    rw [hBA]
+    rintro x hx
+    rcases hx with hx | hx
+    · exact ⟨γ 0, by rw [hinter]; exact Or.inl rfl, by rw [hf0]; exact (show x = γ 0 from hx).symm⟩
+    · have hx' : x = γ 1 := hx
+      exact ⟨γ 1, by rw [hinter]; exact Or.inr rfl, by rw [hf1]; exact hx'.symm⟩
+  obtain ⟨u, hu, huA, -⟩ := exists_isPLHomeomorphOn_union hAball.isPolyhedron hBball.isPolyhedron
+    hf hf' heq hsurj
+  have huS : IsPLHomeomorphOn u S S := by
+    rw [hunion, show B ∪ A = S by rw [union_comm]; exact hunion] at hu
+    exact hu
+  refine ⟨u, huS, fun hpos => ?_⟩
+  have huimg : u '' A = B := by
+    rw [image_congr huA]
+    exact hf.image_eq
+  have hu0 : u (γ 0) = γ 0 := by
+    rw [huA (hγ.bijOn.mapsTo hzero)]
+    exact hf0
+  have hu1 : u (γ 1) = γ 1 := by
+    rw [huA (hγ.bijOn.mapsTo hone)]
+    exact hf1
+  exact hAB ((huimg.symm.trans
+    (image_arc_eq_of_isPLCirclePositive hγ hδ hδ0 hδ1 hunion hinter huS hpos hu0 hu1)).symm)
+
+theorem exists_not_isPLCirclePositive_of_isPLSphere_one [FiniteDimensional ℝ E] {S : Set E}
+    (hS : IsPLSphere 1 S) : ∃ u : E → E, IsPLHomeomorphOn u S S ∧ ¬ IsPLCirclePositive S u := by
+  obtain ⟨p, hp, q, hq, hpq⟩ := exists_pair_ne_of_isPLSphere_one hS
+  obtain ⟨A, B, γ, δ, hγ, hδ, hγ0, hγ1, hδ0, hδ1, hunion, hinter⟩ :=
+    exists_arc_decomposition_of_isPLSphere_one hS hp hq hpq
+  exact exists_not_isPLCirclePositive_of_arc_decomposition hγ hδ (hδ0.trans hγ0.symm)
+    (hδ1.trans hγ1.symm) hunion (by rw [hinter, hγ0, hγ1])
 
 end DifferentialGeometry.Topology.PiecewiseLinear

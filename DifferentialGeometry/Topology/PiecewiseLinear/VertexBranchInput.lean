@@ -1,3 +1,5 @@
+import DifferentialGeometry.Topology.PiecewiseLinear.CircleIntersection
+import DifferentialGeometry.Topology.PiecewiseLinear.CurveInclusion
 import DifferentialGeometry.Topology.PiecewiseLinear.SimplicialPairImage
 import DifferentialGeometry.Topology.PiecewiseLinear.VertexBranchSection
 
@@ -133,5 +135,45 @@ theorem exists_linearEquiv_normalForm_two_sheets
   exact exists_linearEquiv_normalForm_of_geometricLink_pair hn K₁ N₁ hN hq hK
     ((ContinuousLinearMap.snd ℝ ℝ ℝ).comp (ContinuousLinearMap.snd ℝ ℝ (ℝ × ℝ))) hℓne hlinkN hab
     hlevel hpos hneg
+
+theorem exists_pair_height_section_of_isPLSphere_one {S : Set (ℝ × ℝ × ℝ)}
+    (hS : IsPLSphere 1 S) (ℓ : (ℝ × ℝ × ℝ) →L[ℝ] ℝ) (r : ℝ)
+    (hneg : ∃ x ∈ S, ℓ x < r) (hpos : ∃ x ∈ S, r < ℓ x) :
+    ∃ a b : ℝ × ℝ × ℝ, a ≠ b ∧ a ∈ S ∩ {x : ℝ × ℝ × ℝ | ℓ x = r} ∧
+      b ∈ S ∩ {x : ℝ × ℝ × ℝ | ℓ x = r} := by
+  obtain ⟨x, hxS, hx⟩ := hneg
+  obtain ⟨y, hyS, hy⟩ := hpos
+  obtain ⟨z, hzS, hz⟩ := hS.isConnected_one.isPreconnected.intermediate_value hxS hyS
+    ℓ.continuous.continuousOn ⟨hx.le, hy.le⟩
+  have hxz : x ≠ z := by
+    rintro rfl
+    exact hx.ne hz
+  have hyz : y ≠ z := by
+    rintro rfl
+    exact hy.ne' hz
+  obtain ⟨w, hw, hwlevel⟩ :=
+    (hS.isConnected_sdiff_singleton_one z).isPreconnected.intermediate_value ⟨hxS, hxz⟩
+      ⟨hyS, hyz⟩ ℓ.continuous.continuousOn ⟨hx.le, hy.le⟩
+  exact ⟨z, w, fun h => hw.2 h.symm, ⟨hzS, hz⟩, ⟨hw.1, hwlevel⟩⟩
+
+theorem exists_linearEquiv_normalForm_two_sheets_of_arc_section
+    (K₁ N₁ : Geometry.SimplicialComplex ℝ (ℝ × ℝ × ℝ))
+    [Finite K₁.faces] [Finite N₁.faces] (hN : N₁.faces ⊆ K₁.faces)
+    {q : ℝ × ℝ × ℝ} (hq : {q} ∈ N₁.faces) (hK : K₁.space ∈ 𝓝 q)
+    (hlinkN : IsPLSphere 1 (SimplicialComplex.geometricLink N₁ {q}).space)
+    (harc : IsPLBall 1 (N₁.space ∩ {x : ℝ × ℝ × ℝ | x.2.2 = q.2.2}))
+    (hpos : ∃ x ∈ (SimplicialComplex.geometricLink N₁ {q}).space, q.2.2 < x.2.2)
+    (hneg : ∃ x ∈ (SimplicialComplex.geometricLink N₁ {q}).space, x.2.2 < q.2.2) :
+    ∃ (U V : Set (ℝ × ℝ × ℝ)) (h : (ℝ × ℝ × ℝ) → ℝ × ℝ × ℝ)
+      (L : (ℝ × ℝ × ℝ) ≃ₗ[ℝ] ℝ × ℝ × ℝ),
+      IsOpen U ∧ IsOpen V ∧ q ∈ U ∧ IsPLHomeomorphOn h U V ∧ h q = 0 ∧
+        ∀ᶠ y in 𝓝 q, (y ∈ N₁.space → (L (h y)).2.2 = 0) ∧
+          (y.2.2 = q.2.2 → (L (h y)).2.1 = 0) := by
+  classical
+  obtain ⟨a, b, hab, ha, hb⟩ := exists_pair_height_section_of_isPLSphere_one hlinkN
+    ((ContinuousLinearMap.snd ℝ ℝ ℝ).comp (ContinuousLinearMap.snd ℝ ℝ (ℝ × ℝ))) q.2.2 hneg hpos
+  have hlevel := geometricLink_fiber_eq_pair_of_isPLBall_one N₁ hq
+    ((LinearMap.snd ℝ ℝ ℝ).comp (LinearMap.snd ℝ ℝ (ℝ × ℝ))) harc hab ha hb
+  exact exists_linearEquiv_normalForm_two_sheets K₁ N₁ hN hq hK hlinkN hab hlevel hpos hneg
 
 end DifferentialGeometry.Topology.PiecewiseLinear

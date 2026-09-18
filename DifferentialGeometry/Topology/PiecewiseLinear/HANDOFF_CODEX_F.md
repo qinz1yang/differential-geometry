@@ -3510,3 +3510,372 @@ import ...StarPair failed, environment already contains
 
 检查 `VertexChartTransport` exit=0（10.1 秒）、`VertexBranchChartPair` exit=0（11.6 秒），均零 warning；
 `AuditF277.lean` 两项仅 `propext`、`Classical.choice`、`Quot.sound`。下一审计文件 `AuditF278.lean`。
+
+### 19.135 (ii) 的旁路失败，原因比预期更靠前：源侧契约的**形状**就不对
+
+**结论**：`radialProj` 旁路不能闭合 (ii)，而且失败点**不在映射的形式**上
+（§19.130 与本轮任务都假定问题是"单纯映射插值、不逐点径向"）。真正的问题是
+**源侧契约本身是"半径相关"的陈述**，换半径就不成立，任何双射都救不了。
+
+**诊断**
+- 源侧 `(link N {p}).space ∩ M.space = {a, b}`：`M.space` 缩成闭星之后是 `p` 处的
+  **有界**锥（`closedStar M p = coneSet p (link M {p})`，§19.125）。
+  一个 `link N {p}` 上的点落不落在 `M.space` 里，取决于 `M` 沿那条射线伸多远——
+  即方向 `d` 上要 `r_N(d) ≤ r_M(d)`。细分把连接挪到**另一个半径**，
+  这个条件就可能翻转，两边的交集**基数都可能不同**。所以不是"找不到双射"，
+  而是**两个集合本来就未必等势**。
+- 像侧 `(link N₁ {q}).space ∩ {x | x.2.2 = q.2.2} = {a₁, b₁}`：
+  `{x.2.2 = 0}` 是线性平面，即 `0` 处的**无界**锥。
+  连接上的点落不落在里面**只取决于方向**，与半径无关，径向重参数化下保持。
+
+于是：**像侧形式不只是"我能证的那个"，它是内在正确的形状；
+§19.133 的源侧形式是形状错了，不只是未证。** 这比 §19.134 的更正更强一层。
+
+**核对过的工具，确认都不适用**（无需向 H 索要变体）
+- `radialProj_mem`（`Cone.lean:86`）只保证"射线与 `S` 相交则投影落在 `S` 内"，
+  对"是否仍在另一个有界锥 `M.space` 内"一无所知。
+- `IsRadiallyInjective.radialProj_eq_self`（`:114`）只在点已在 `S` 内时为恒等。
+- H 的 `image_coneSet_of_radial`（`ConePairExtension.lean:38`）的前提 `hrad` 要求
+  `g (p + s • (z - p)) = q + s • (f z - q)` 对 `s ∈ [0,1]`，
+  说的是**锥映到锥**，不是"换半径后仍在同一个有界锥内"。**不需要 H 提供变体。**
+
+**因此接口定论**
+- **像侧契约是首要接口**，即 §19.134 打包定理里那两条，H 按它准备。
+- 源侧若要有一个形式，正确的写法是**半径无关的 germ 条件**：
+  `∀ᶠ y in 𝓝 p, y ∈ M.space ∩ N.space ↔ y ∈ A`，`A` 是过 `p` 的弧，
+  即"两张片在 `p` 附近交成一条弧"。germ 条件沿 `φ`（`p` 附近的同胚）**可以搬**，
+  而像侧第一张片已是真平面，链接条件在那边是半径无关的，可以从 germ 条件推出。
+  这条路线**未验证**，但它是唯一形状正确的候选；**不估行数**。
+
+**未做**：链层的五条假设尚未写成 Lean。它依赖上面接口形状的最终决定
+（若改用 germ 形式的源侧契约，顶点定理的假设列表要跟着改），
+所以本轮不写，等接口定下来再一次成型，避免写两遍。
+
+本轮无 Lean 改动，按 `AGENTS.md` §1 作纯文档提交。下一审计文件 `AuditF278.lean`。
+
+### 19.136 链层陈述已闭合（§19.115 的图卡条款）；germ 入口的确切缺口
+
+**本轮闭合两条**（新模块 `BranchChainChart.lean`）
+- `isPLHomeomorphOn_iUnion_of_forall`：若 `Φ` 在每个开集 `U i` 上是到 `V i` 的 PL 同胚，
+  且 `Φ` 在 `⋃ U i` 上单射，则 `IsPLHomeomorphOn Φ (⋃ i, U i) (⋃ i, V i)`。
+  正、逆两向都用 `isPiecewiseAffineOn_of_locally`（`PiecewiseAffine.lean:197`）局部化：
+  正向取 `v := U i`，逆向取 `v := V i`（关键是目标写成 `⋃ V i` 而不是像集，
+  这样 `(⋃ V) ∩ V i = V i` 是开的，`mono` 才能用）；
+  逆向还要证 `Function.invFunOn Φ (⋃ U) = Function.invFunOn Φ (U i)` 在 `V i` 上逐点相等，
+  由两边都是 `w` 在 `⋃ U` 中的原像加 `hinj` 得到。
+- `exists_chart_branch_chain`：**§19.115 的图卡条款**。产出开集 `O = ⋃ U i` 与
+  `IsPLHomeomorphOn Φ O (⋃ i, V i)`，满足 `S ⊆ O ⊆ W`、`O ∩ T = ∅`（无第三张片）、
+  `∀ y ∈ O, y ∈ A → (Φ y).2.2 = 0`、`∀ y ∈ O, y ∈ B → (Φ y).2.1 = 0`。
+
+**五条假设如何落在这条定理里（供 H 对照）**
+1. 顶点族 → `U : ι → Set E` 与每个 `hPL i`。
+2. 相邻在公共连接上一致 → **抽象成"存在单一的 `Φ`"**。连接一致是生产者拼出同一个 `Φ` 的手段；
+   在本层正确的写法就是一个函数在每片上都是 PL 同胚，不必把拼接过程写进假设。
+3. 相容侧选择 → 落在 `hA`、`hB` 上：**每个 `i` 都把 `A` 送进同一张平面**。
+   若侧选择不相容，就无法对所有 `i` 同时给出这两条，正是 §19.134 算出的
+   `ZMod 2 × ZMod 2` 自由度被固定下来的地方。
+4. 覆盖级无第三片 → `hthird : ∀ i, U i ∩ T = ∅`，结论里 `O ∩ T = ∅` 由 `iUnion_inter` 得到。
+5. `S ⊆ ⋃ U i ⊆ W` → `hSU`、`hUW` 直接进出。
+**外加一条必须明说的假设**：`hinj : InjOn Φ (⋃ i, U i)`。
+逐片单射**不蕴含**整体单射（两个相距很远的片可以撞在一起），
+所以这是生产者要另外交付的一条，不是 bookkeeping。它正是"这一族图卡真的拼成一张图卡"的实质内容。
+
+**输出形式**：交付的是 `IsPLHomeomorphOn`，不是 `OpenPartialHomeomorph`。
+本树的下游（§19.113/19.114 的滑动层）收的就是 `IsPLHomeomorphOn` 与 germ 条款，
+所以这是可直接消费的形式；要 `OpenPartialHomeomorph` 需另加一层打包（两向连续 + 源/靶开），
+**本轮未做**，按需再说。
+
+**第 2 项（germ 入口）未做，确切缺口如下**
+候选 `∀ᶠ y in 𝓝 p, y ∈ M.space ∩ N.space ↔ y ∈ A`（`A` 是过 `p` 的弧）形状正确：
+germ 沿 `φ` 可搬，像侧第一张片是真平面、半径无关。搬过去得到
+`∀ᶠ z in 𝓝 0, z ∈ M₁.space ∩ N₁.space ↔ z ∈ φ '' A`。
+**剩下的一步**是从"`M₁ ∩ N₁` 在 `q` 附近是一条弧"推出
+`(link N₁ {q}).space ∩ {x | x.2.2 = 0}` 恰两点：
+先用第一张图卡的 iff 把平面换成 `M₁.space`，于是该集合落在弧上；
+再需要"PL 1-球体内点处的连接是 0-球面（两点）"。
+树里最接近的是 `isPLSphere_or_isPLBall_geometricLink_of_isPLBall`（`BallSphereLink.lean:151`），
+**但它给的是析取**，要额外排除"`q` 是弧的端点"那一支——
+而 `q` 是分支内点，这一支应当可排除，只是要写。**不估行数。**
+
+检查 `BranchChainChart` exit=0（10.9 秒）、零 warning；`AuditF278.lean` 两项仅
+`propext`、`Classical.choice`、`Quot.sound`。下一审计文件 `AuditF279.lean`。
+
+### 19.137 1-球体版链接截面已闭合；"排除端点"这一步是**免费的**，不需要内点论证
+
+**grep 先行的收获**（协调者要求查"树里有没有区分 1-球体的内点与端点"）
+不需要那种区分。真正有用的是两条把低维球/球面**完全刻画**的引理：
+`isPLBall_zero_iff`（`GeneralPosition.lean:655`）：`IsPLBall 0 P ↔ ∃ p, P = {p}`；
+`isPLSphere_zero_iff`（`:710`）：`IsPLSphere 0 P ↔ ∃ a b, a ≠ b ∧ P = {a, b}`。
+于是 `isPLSphere_or_isPLBall_geometricLink_of_isPLBall`（`BallSphereLink.lean:151`）的析取
+两支都给出**具体的集合**：两点或一点。
+
+**因此"排除球体那一支"根本不必做。** 两支的 `encard` 分别是 2 与 1，都 `≤ 2`；
+而一旦另外知道该集合含有两个**不同**的点，单点那一支自动矛盾。
+所以协调者设想的"`q` 是弧的内点 ⟹ 排除端点情形"这条论证**不需要写**——
+是否内点这件事根本不用谈。
+
+**本轮闭合两条**（`VertexBranchSection.lean`）
+- `encard_geometricLink_fiber_le_two_of_isPLBall_one`：若 `K.space ∩ {x | ℓ x = ℓ p}`
+  是 PL **1-球体**（弧），则 `((link K {p}).space ∩ {x | ℓ x = ℓ p}).encard ≤ 2`。
+  证法与 `encard_geometricLink_fiber_of_isPLSphere_one`（`HeightLevelLink.lean:75`）同构，
+  只是把结尾的 `isPLSphere_geometricLink_of_isPLSphere` 换成上面的析取，两支分别算 encard。
+- `geometricLink_fiber_eq_pair_of_isPLBall_one`：再给两个不同的成员 `a`、`b`，
+  得 `(link K {p}).space ∩ {x | ℓ x = ℓ p} = {a, b}`。
+  用 `Set.Finite.eq_of_subset_of_encard_le`（树里的写法见 `BoundaryLinkGerm.lean:77`）。
+
+**这补上了 §19.127 的那个洞。** §19.127 发现 `hfiber : IsPLSphere 1 (…)` 对圆盘状的片恒假；
+现在有了 1-**球体**版，弧状截面（正是闭星被平面截出来的形状）可以直接用。
+消费者要给的从"整片截线是闭曲线"降成"整片截线是一条弧 + 两个不同的交点"，后者真实可满足。
+
+**germ 入口的剩余部分（未做）**
+`∀ᶠ y in 𝓝 p, y ∈ M.space ∩ N.space ↔ y ∈ A` 现在离像侧契约只差把
+`link N₁ {q} ∩ {x.2.2 = 0}` 的两个成员找出来：由上面的定理，只要
+`M₁.space ∩ N₁.space ∩ {x.2.2 = 0}` 是弧（即 germ 条件搬过去）并给出弧与连接的两个交点即可。
+"两个交点"就是弧在 `q` 两侧各穿出连接一次，属于**第二条 germ 条件**（`N` 在 `M` 两侧都有点）
+的内容，与 §19.123 判定的独立性一致——**germ 入口需要两条 germ 条件，不是一条**。
+这一点值得记下：单靠"两片交成一条弧"给不出两侧性。**不估行数。**
+
+**`OpenPartialHomeomorph` 包装：不短，未做。**
+要造结构体需要两向连续（可由 `IsPiecewiseAffineOn.continuousOn` 给）、
+`source`/`target` 开、`toFun`/`invFun` 互逆并且 `map_source`/`map_target` 齐全，
+还要把 `Function.invFunOn` 换成结构体要求的 `invFun` 形式。不是一两行。
+下游滑动层（§19.113/19.114）收 `IsPLHomeomorphOn` 加 germ 条款，不需要它，故按协调者的话略过。
+
+检查 `VertexBranchSection` exit=0（11.3 秒）、`VertexBranchInput` exit=0（11.1 秒）、
+`VertexBranchChartPair` exit=0（11.3 秒）、`BranchChainChart` exit=0（10.9 秒），均零 warning；
+`AuditF279.lean` 两项仅 `propext`、`Classical.choice`、`Quot.sound`。下一审计文件 `AuditF280.lean`。
+
+### 19.138 成对 germ 入口与 `OpenPartialHomeomorph` 包装；并记一次**我自己违反 grep 规则**
+
+**先记自己的错。** 写 `OpenPartialHomeomorph` 包装时我**没有先 grep 新名字**就直接定义了
+`IsPLHomeomorphOn.toOpenPartialHomeomorph`，编译报"已声明"。
+树里早有一条，在 `PLHomeomorphOpen.lean:10`，**逐字段与我写的一模一样，而且更一般**
+（异型 `E → F`，我写的是 `E → ℝ × ℝ × ℝ`）。已删掉重复、改为 import 那个模块。
+这正是本车道从 §19.126 起一直在提醒别人的那条规则，今天自己破了一次；
+教训是**规则对新写的 `def` 同样适用，不只是对"以为缺失的定理"**。
+
+**本轮闭合两条**
+- `exists_linearEquiv_normalForm_two_sheets_of_arc_section`（`VertexBranchInput.lean`）：
+  **成对 germ 入口**。把像侧契约里的集合等式 `link ∩ 平面 = {a, b}` 换成
+  **一条弧条件 + 两个不同的交点**：
+  `harc : IsPLBall 1 (N₁.space ∩ {x | x.2.2 = q.2.2})`（第二张片被第一张片截成一条弧）、
+  `hab`、`ha`、`hb`（连接与平面的两个不同交点），再加原有的 `hpos`/`hneg`。
+  由 §19.137 的 `geometricLink_fiber_eq_pair_of_isPLBall_one` 造出 `hlevel`，
+  再喂 `exists_linearEquiv_normalForm_two_sheets`。
+- `exists_openPartialHomeomorph_branch_chain`（`BranchChainChart.lean`）：
+  把 §19.136 链层定理的输出包装成 `OpenPartialHomeomorph E (ℝ × ℝ × ℝ)`，
+  交付 `S ⊆ e.source`、`e.source ⊆ W`、`e.source ∩ T = ∅`、
+  `IsPiecewiseAffineOn e e.source`、`IsPiecewiseAffineOn e.symm e.target`、
+  两条片条款。**这就是 §19.115 结论的原始形状**，与 §44 的输出条款对齐。
+  用现成的 `IsPLHomeomorphOn.toOpenPartialHomeomorph`，一行；
+  唯一要注意的是 `e.source ∩ T = ∅` 那条要先 `change (⋃ i, U i) ∩ T = ∅`
+  才能 `rw [iUnion_inter]`（`.source` 是定义相等但不是语法相等）。
+
+**必须显式记下的独立性（协调者要求，防止以后被默认掉）**
+"两张片交成一条弧"**不蕴含**"第二张片在第一张片两侧都有点"。
+前者只说交集的形状，后者说 `N` 真的穿过 `M`；`N` 完全落在 `M` 一侧、
+只沿一条弧贴着它，同样满足弧条件。所以 germ 入口**必须是两条**：
+`harc`（弧）与 `hpos`/`hneg`（两侧）。
+这与 §19.123 判定的"`hpos`/`hneg` 不能由计数推出"是同一条独立性，只是升了一层：
+那里是单片相对平面，这里是两片相对彼此。
+同理，`ha`/`hb`（连接与平面的两个交点）也**不能**由 `hpos`/`hneg` 直接得到——
+从"两侧各有一点"到"中间穿过平面两次"需要连接上的连通性论证（IVT 型），
+本轮未做，故 `ha`/`hb` 仍是入口的显式输入。
+
+检查 `VertexBranchInput` exit=0（11.4 秒）、`BranchChainChart` exit=0（11.2 秒），均零 warning；
+`AuditF280.lean` 两项仅 `propext`、`Classical.choice`、`Quot.sound`。下一审计文件 `AuditF281.lean`。
+
+### 19.139 第二条独立性闭合：两侧性现在**蕴含**两个交点；germ 入口由四条降到两条
+
+**grep 先行：两个圈层各出一半**
+- `CircleHeightSection.lean` 的 `isPLSphere_one_height_section_ne_singleton`（`:41`）
+  已经把"圆与水平面不只交一点"的论证写好了，用的是
+  `IsPLSphere.isConnected_sdiff_singleton_one`（`CircleIntersection.lean:12`）加
+  `IsPreconnected.intermediate_value`。**但它带一条 `havoid`（没有顶点恰好落在水平面上）**，
+  因为它要先从一个截点反推出两侧的点。
+- 我的情形反过来：**两侧的点是已知的**，所以 `havoid` 那一步整个不需要。
+- 缺的另一半是"PL 1-球面的空间连通"，在 `IsPLSphere.isConnected_one`
+  （`CurveInclusion.lean:129`）。
+
+**本轮闭合两条**（`VertexBranchInput.lean`）
+- `exists_pair_height_section_of_isPLSphere_one`：`S` 是 PL 1-球面、`ℓ` 连续、
+  `S` 上有 `ℓ < r` 与 `ℓ > r` 的点 ⟹ `S ∩ {ℓ = r}` 含**两个不同的点**。
+  两次 IVT：第一次在 `S` 上（`isConnected_one`）得一点 `z`；
+  第二次在 `S \ {z}` 上（`isConnected_sdiff_singleton_one`）得第二点 `w ≠ z`，
+  两次都用同一对两侧点。**不需要 `havoid`。**
+- `exists_linearEquiv_normalForm_two_sheets_of_arc_section` 重写：
+  假设由 §19.138 的 `harc, hab, ha, hb, hpos, hneg` **六条降为 `harc, hpos, hneg` 三条**
+  （`hab`/`ha`/`hb` 由上面的引理造出）。
+  加上结构性的 `hlinkN`，**真正的几何输入只剩两条**：
+  `harc`（两片交成一条弧）与 `hpos`/`hneg`（第二片在第一片两侧都有点）。
+
+**两条独立性的最终状态（更新 §19.138）**
+1. 弧条件 **不蕴含** 两侧性——仍然独立，仍是两条输入。§19.138 的判定不变。
+2. 两侧性 **蕴含** 两个交点——**本轮闭合**，不再是独立输入。
+   §19.138 里说"需要连通性/IVT 论证，未做"的那一条现在做完了。
+所以 germ 入口的最终形状是**两条几何条件**，正是消费者能直接交付的粒度。
+
+检查 `VertexBranchInput` exit=0（11.8 秒）、`VertexBranchChartPair` exit=0（11.3 秒）、
+`BranchChainChart` exit=0（10.8 秒），均零 warning；`AuditF281.lean` 两项仅
+`propext`、`Classical.choice`、`Quot.sound`。下一审计文件 `AuditF282.lean`。
+
+### 19.140 §19.115 图卡生产者的完整状态（单节；读这一节即可，不必回溯 §19.112–19.139）
+
+#### A. 顶层交付物
+`exists_openPartialHomeomorph_branch_chain`（`BranchChainChart.lean`）产出
+`e : OpenPartialHomeomorph E (ℝ × ℝ × ℝ)`，交付 §44 的输出条款：
+`S ⊆ e.source`、`e.source ⊆ W`、`e.source ∩ T = ∅`、
+`IsPiecewiseAffineOn e e.source`、`IsPiecewiseAffineOn e.symm e.target`、
+`∀ y ∈ e.source, y ∈ A → (e y).2.2 = 0`、`∀ y ∈ e.source, y ∈ B → (e y).2.1 = 0`。
+其内核 `exists_chart_branch_chain` 交付同样条款但用 `IsPLHomeomorphOn`，
+下游滑动层（§19.113/19.114）直接收这一形式。
+
+#### B. 链层要求（`exists_openPartialHomeomorph_branch_chain` 的假设）
+1. `U : ι → Set E` 开、`V : ι → Set (ℝ × ℝ × ℝ)` 开；
+2. **单一函数** `Φ`，对每个 `i` 有 `IsPLHomeomorphOn Φ (U i) (V i)`。
+   "相邻图卡在公共连接上一致"是生产者拼出这个 `Φ` 的手段，不是本层的假设形式。
+3. `hinj : InjOn Φ (⋃ i, U i)`。**逐片单射不蕴含整体单射**（远处两片可以撞上），
+   这是生产者要另外交付的实质条款。
+4. `hA`/`hB` 对**每个 `i` 同时成立**。这就是相容侧选择：
+   §19.134 算出重叠上的过渡是三角形 `(αx+βy+γz, δy, εz)`、`δ` `ε` 符号自由，
+   一族 `ZMod 2 × ZMod 2`；能对所有 `i` 同时写出这两条，等价于侧选择已相容。
+   弧上总可解（`exists_sideChoice_of_chain`，`BranchSignChain.lean:13`）。
+5. `hthird : ∀ i, U i ∩ T = ∅`（覆盖级，非单张图卡的性质）；
+6. `hSU : S ⊆ ⋃ U i`、`hUW : ⋃ U i ⊆ W`。
+
+#### C. 每个顶点要什么（`exists_chart_two_sheets_of_transverse_vertex`，`VertexBranchChartPair.lean`）
+输入第一张片的数据：`finrank ℝ E = 3`、`M.faces ⊆ K.faces`、`N.faces ⊆ K.faces`、
+`{p} ∈ M.faces`、`{p} ∈ N.faces`、`K.space ∈ 𝓝 p`、`ℓ ≠ 0`、
+`IsPLSphere 1 (link M {p}).space`、`IsPLSphere 1 (link N {p}).space`、
+`M` 的连接截面对 `{ℓ = ℓ p}` 的两点与两侧性。
+产出转写配置 `(K₁, N₁, φ)` 与全部结构性条款，外加一条蕴含：
+给了**像侧契约**就产出图卡。
+
+#### D. 像侧契约（**最终接口**，两种等价给法）
+- 原始：`(link N₁ {q}).space ∩ {x | x.2.2 = q.2.2} = {a₁, b₁}`、`a₁ ≠ b₁`、两侧性。
+- 推荐（`exists_linearEquiv_normalForm_two_sheets_of_arc_section`，`VertexBranchInput.lean`）：
+  **两条几何条件**
+  1. `harc : IsPLBall 1 (N₁.space ∩ {x | x.2.2 = q.2.2})`——两片交成一条**弧**；
+  2. `hpos`/`hneg`——第二片在第一片两侧都有点。
+  两个交点由 §19.139 的 `exists_pair_height_section_of_isPLSphere_one` 自动给出。
+
+**为什么契约在像侧而不是源侧**（§19.135，数学结论非工程结论）：
+源侧要问"`link N {p}` 上的点是否落在 `closedStar M p`"，那是**有界**锥，
+答案依赖 `r_N(d) ≤ r_M(d)`，细分换半径可能翻转，两个交集**未必等势**；
+像侧问的是对 `{x.2.2 = 0}`，**无界**线性锥，只依赖方向，径向重参数化下不变。
+
+#### E. 两条独立性（终态）
+- 弧条件 **⇏** 两侧性：贴着 `M` 一侧沿弧相切也满足弧条件。仍是两条独立输入。
+- 两侧性 **⇒** 两个交点：§19.139 闭合（PL 1-球面连通 + 去一点仍连通，两次 IVT）。
+
+#### F. 还欠谁
+**只剩 H 的链构造**：造出满足 B 全部六条的 `(U, V, Φ)`，其中 3.（整体单射）与
+4.（相容侧选择）是实质的。顶点层无几何债：C 的输入是标准分支点数据，
+D 的两条是真横截性，其余（`Finite`、面包含、`{q} ∈ N₁.faces`、`K₁.space ∈ 𝓝 q`、
+`hlinkN₁`）全部由 T1（`exists_simplicialComplex_triple_image_closedStar_of_isPiecewiseAffineOn`）
+与 `image_closedStar_mem_nhds_of_isPLHomeomorphOn` 交付。
+
+### 19.141 本车道其余条目的状态（逐条附证据，非凭记忆）
+
+- **`IsPL 3 3` 环境转写：closed，由 E3 完成。**
+  `isPL_conjugateMap` 在 `BranchSlideConjugation.lean:57`（E3 模块）。§19.116 的判断成立，
+  本车道不欠。
+- **前向滑动的打包（§19.118 记为"未做"）：closed，由 E3 完成。**
+  `exists_separated_slide_fwd` 在 `BranchSeparationBoundary.lean:29`（E3 模块）。
+- **F5.2：仍 blocked，且障碍是已证定理而非缺口。**
+  `not_isVertexMapGeneralInArrangement_of_complete_hyperplane`
+  （`ArrangementConstraints.lean:58`）证明：在当前 `hcomplete` 下，
+  共面双折情形任何在 B 上固定的 `φ` 都不可能满足通用位置谓词。
+  §19.102 列的两条备选路线**都没试过**：
+  (a) 用尊重每个受迫子层秩的**分层**通用位置条件替换 `hcomplete`，重证存在性与双点分类；
+  (b) 先在图卡中让曲面对目标骨架横截，再对骨架截出的折边用相容的相对移动。
+  两条都要先证"曲面各支跨越目标公共面"，**都不是小任务**，属于开放式设计工作而非有界引理。
+- **新 F-M2（非紧局部多面体）：done。** `LocallyPolyhedral.lean` 与
+  `LocallyPolyhedralImage.lean`（§19.103/19.104），审计干净。
+- **§19.115 图卡生产者：顶点层与链层 done，等 H 的链构造**（见 §19.140 F）。
+
+**结论：本车道当前没有既未阻塞又属于有界引理的条目。**
+可做的只有 F5.2 的两条备选路线，那是开放式设计，不是本轮该起头的东西。
+
+### 19.142 F5.2 共享前置已闭合：“曲面各支跨越目标公共面”的确切陈述与生产者
+
+#### A. 陈述定案（先定陈述，再证）
+
+§19.102 / §19.141 说两条备选路线都先要“曲面各支跨越目标公共面”。把它写成 Lean 命题时，
+**“目标公共面”= 目标里那张公共面所在的仿射超平面**，即一个在该面上取零的仿射泛函 `ℓ : E →ᵃ[ℝ] ℝ`
+的零集；**“支”= 曲面沿折边 `s` 的那张片**，也就是 `s` 的两张余面（`s.card = 2` 时是两个三角形）之并；
+**“跨越”= 在双点 `x` 附近该支在 `{ℓ > 0}` 与 `{ℓ < 0}` 两侧都有点**，写成本树已有的写法
+（`HeightFiberClosure.lean:14` 的 `x ∈ closure (K.space ∩ {y | ℓ y < ℓ x})`）：
+
+```
+hpos : x ∈ closure (K.space ∩ {y | 0 < ℓ y})
+hneg : x ∈ closure (K.space ∩ {y | ℓ y < 0})
+```
+
+要产出的正是 `IsArrangementGeneralFoldPair`（`RelativeNormalForm.lean:180`）里的四条符号条款
+`0 < l k aPos`、`l k aNeg < 0`、`0 < l k bPos`、`l k bNeg < 0`，因为
+`hasPLCrossingAt_of_two_fold_faces`（`RelativeNormalForm.lean:140`）只吃这个形状。
+所以本前置的确切内容是：**“支的两侧性”⟺“该支两个对顶点在 `ℓ` 下异号”**，即
+`ℓ a * ℓ b < 0`，并把它打包成 `IsArrangementGeneralFoldPair` 与 `HasPLCrossingAt`。
+
+**为什么不能沿用 §19.100/19.101 的满维结论。** `linearMap_mul_neg_of_distinct_cofaces`
+（`CofaceSeparation.lean:10`）要 `vectorSpan ℝ (s : Set E) = LinearMap.ker ℓ`（等号）。
+三维中二维曲面的折边 `s.card = 2`，`vectorSpan s` 是直线而 `ker ℓ.linear` 是平面，等号不可能成立；
+`exists_linearMap_separating_cofaces`（`AffineOrientation.lean:184`）只给“存在某张含 `s` 的超平面分开两余面”，
+与指定的 `ℓ` 不成比例，推不出符号。这正是 §19.100 末句“不能把满维条件直接套在三维中的二维曲面上”。
+
+**陈述不能再弱。** 去掉两侧性假设后结论为假：§16.2 的坐标反例（`z = |x|` 与 `z = 2|x|` 沿 y 轴折叠）
+中取 `ℓ = z`，两个对顶点都有 `ℓ > 0`，`ℓ a * ℓ b > 0`，而该支确实不跨越 `{z = 0}`。
+本层同时证了反方向，所以两侧性正好是充要条件，两条路线都不可能需要比它更弱或更强的输入。
+
+#### B. 已闭合的声明（`FoldPlaneCrossing.lean`，新文件）
+
+- `exists_nonneg_apply_eq_of_mem_linearHalfSpace`、`pos_or_pos_of_mem_foldedPlane`、
+  `neg_or_neg_of_mem_foldedPlane`、`mul_neg_of_mem_foldedPlane_of_pos_of_neg`：
+  `ℓ` 在 `linearHalfSpace S u` 上的值恰为 `r * ℓ u`（`r ≥ 0`），故 `foldedPlane S u v` 上同时出现正负值
+  当且仅当 `ℓ u * ℓ v < 0`。只要 `S ≤ ker ℓ`，不要有限维、不要复形。
+- `apply_eq_linear_sub_of_eqOn_zero`、`mem_affineSpan_of_mem_openSimplex`：`ℓ` 在 `A` 上为零且
+  `x ∈ affineSpan ℝ A` 时 `ℓ.linear (z - x) = ℓ z`。按 `omit` 纪律已把 `openSimplex`、`Finset` 弱化掉。
+- `mem_closure_inter_pos_of_coface_pos` / `..._neg_of_coface_neg`：**反方向**。只要 `insert a s ∈ K.faces`、
+  `x ∈ openSimplex s`、`ℓ` 在 `s` 上为零、`0 < ℓ a`（resp. `ℓ a < 0`），从 `openSegment ℝ x a` 得两侧性。
+  不需要有限维、`Finite K.faces`、流形条件，也不需要 `s ∈ K.faces`。
+- `mul_neg_of_mem_closure_inter_pos_of_mem_closure_inter_neg`：**主方向**。
+  输入 `hs`、`hbound : ∀ u ∈ K.faces, s ⊆ u → u.card ≤ s.card + 1`、`hx : x ∈ openSimplex s`、
+  `hpair : {w | w ∉ s ∧ insert w s ∈ K.faces} = {a, b}`、`ℓ` 在 `s` 上为零与上面的 `hpos`/`hneg`，
+  输出 `ℓ a * ℓ b < 0`。证明用 `eventually_mem_space_iff_mem_coface_pair_foldedPlane`
+  （`RelativeNormalForm.lean:107`）把 `K.space` 的局部换成 `foldedPlane`，再用 A 的符号引理。
+  `a = b`（只有一张余面）时假设自相矛盾，结论自动成立，无需另加 `a ≠ b`。
+- `exists_coface_pair_pos_neg_of_mem_closure_inter`：定序版，给出 `0 < ℓ aPos ∧ ℓ aNeg < 0`。
+- `IsCombinatorialManifoldWithBoundary.exists_cofaces_pos_neg_of_mem_closure_inter`：
+  `(n+1)` 维组合带边流形的非边界余维一面版本，`hbound` 与余面对由
+  `codimension_one_cofaces_of_notMem_boundary` 自动交付。
+- `isArrangementGeneralFoldPair_of_mem_closure_inter`：两张 `IsCombinatorialManifoldWithBoundary 2` 的
+  曲面在 `x` 处各沿 `s`、`t` 折叠，给定 `l k` 在 `s`、`t` 上为零、
+  `vectorSpan s ⊔ vectorSpan t = ker (l k).linear` 与两张支各自的两侧性，产出
+  `IsArrangementGeneralFoldPair l K L s t x`。`l k x = 0` 由假设推出，不另作参数。
+- `hasPLCrossingAt_of_mem_closure_inter_two_folds`：加 `finrank ℝ E = 3` 后直接得
+  `HasPLCrossingAt K.space L.space x`。这是共面双折情形现在缺的唯一几何输入被隔离出来的形式。
+
+#### C. §19.141 的“共享”判断成立，但要点明边界
+
+本层的陈述里没有 `hcomplete`、没有 `IsVertexMapGeneralInArrangement`、没有目标骨架横截性，
+所以对 (a)、(b) 中立，两条路线都消费同一个生产者。**共享的是这条翻译**：
+“支的两侧性 ⟺ 对顶点异号 ⟹ crossing”。**不共享的是怎么生产两侧性**，两条路线各自负责：
+
+- 路线 (a)（分层通用位置）之后要做：用尊重受迫子层秩的条件替换 `hcomplete` 并重证存在性
+  （`exists_small_vertexMap_generalInArrangement`，`RelativeNormalForm.lean:299` 的分层版），
+  再由开胞腔保持得到 `sign (l k (φ v)) = sign (l k (φ₀ v))`，把 `φ₀` 的两侧性搬到 `φ`；
+  两侧性本身在 (a) 里是**被保持**而不是**被造出**的，所以 (a) 还欠一条“原构型即已跨越”的输入，
+  以及在不跨越时对该双点的处理（§16.2 的排布说明这时确实不是 crossing）。
+- 路线 (b)（先对目标骨架横截）之后要做：由横截性给出折边所在片与目标 2-面的实际相交，
+  从而产出同一对 `hpos`/`hneg`；`not_isVertexMapGeneralInArrangement_of_complete_hyperplane`
+  的受迫共面前提在 (b) 下不再出现，但要重做 §19.61 的公共细分与图卡搬运。
+
+两条都仍是开放式设计；本轮没有起头，也没有对它们作任何代价估计。
+
+#### D. 验证
+
+`FoldPlaneCrossing` check exit=0（10.6 秒）、零 warning；`AuditF282.lean` 全部 13 个声明仅
+`propext`、`Classical.choice`、`Quot.sound`。零注释、无 `sorry` / `axiom` / `nolint` /
+`maxHeartbeats` / `set_option`；`fresh.py` forbidden hits 0、无 stale/missing olean；
+未登记根聚合，未跑 `lake build`。下一个审计文件 `AuditF283.lean`。

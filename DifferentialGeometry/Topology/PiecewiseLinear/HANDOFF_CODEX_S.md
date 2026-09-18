@@ -4506,3 +4506,373 @@ Two caveats recorded rather than glossed:
 exit=0, zero warnings, 13.0 s. `AuditSCircleAnnulusOrientation` now covers 24
 declarations, all depending only on `propext`, `Classical.choice`, `Quot.sound`,
 including the endpoint.
+
+
+## Both caveats on the orientation predicate are now closed
+
+### 1. `IsPLCirclePositive` is now the existential form
+
+`IsPLCirclePositive S u` now reads: **there is** a continuous bijection `g` from
+`loopCircle` onto `S` whose conjugate `circleConj g u` has a strictly increasing
+periodic lift. That is the weaker hypothesis, so every consumer of the endpoint now
+has less to supply. `IsPLCirclePositive.forall_param` recovers the universal form
+for whichever parametrisation a proof happens to need, which is what the C1
+assembly uses internally.
+
+The bridge is conjugation-invariance, `HasIncreasingCircleLift.conj`: for any
+self-homeomorphism `φ` of `loopCircle`, if `ψ` is positive then so is
+`φ.symm ∘ ψ ∘ φ`. Both branches of `circleHomeomorph_affineLift_or_neg` are handled:
+
+- `φ` positive: its lift is a homeomorphism of the line, so `φ.symm` is positive by
+  `HasIncreasingCircleLift.inv`. That needs the lift to be surjective, which
+  `lift_surjective_of_surjective` gets from surjectivity of `ψ` together with
+  `lift_add_intCast` (`F (t + n) = F t + n` for integer `n`, by induction).
+- `φ` reversing: then `η := -φ` is positive, `φ = -η` and `φ.symm = η.symm ∘ neg`,
+  and `HasIncreasingCircleLift.negConj` says `neg ∘ ψ ∘ neg` is positive with lift
+  `t` mapsto `-F (-t)`. Three positives compose.
+
+Two parametrisations of the same `S` differ by such a `φ` -- the transition
+`paramHomeomorph`s composed -- so positivity does not depend on the choice.
+
+### 2. Non-triviality is now proved in Lean, not inherited
+
+`exists_not_isPLCirclePositive_of_isPLSphere_one`: **every** PL 1-sphere carries a
+PL self-homeomorphism that is not `IsPLCirclePositive`. The witness is the arc
+swap: cut `S` into `A` and `B`, and glue the parametrisation transfers
+`δ ∘ γ⁻¹ : A → B` and `γ ∘ δ⁻¹ : B → A`, which agree at the two cut points. The
+result fixes both cut points and carries `A` onto `B`; if it were positive,
+`image_arc_eq_of_isPLCirclePositive` would force `A = B`, which fails because the
+midpoint of `A` is not a cut point.
+
+At the lift level, `not_hasIncreasingCircleLift_neg` shows the negation map of
+`loopCircle` has no increasing periodic lift, and
+`not_hasIncreasingCircleLift_of_neg_lift` gives the exclusivity of the two branches
+in general: if `ψ` descended both from an increasing `F` and from `-G` with `G`
+increasing, then `F + G` would be strictly increasing, integer-valued and grow by
+two per period, so it would have to take three distinct integer values on
+`[0, 1]` with the outer two differing by two -- impossible, by looking at the
+quarter point.
+
+So the endpoint is no longer consistent with the predicate being vacuously
+universal, and a reader can see that from the file.
+
+### Verification
+
+`check-f.ps1` exit=0 with zero warnings on both modules (10.4 s, 14.0 s). Audits:
+`AuditSCircleLiftOrientation` 18 declarations, `AuditSCircleAnnulusOrientation` 31;
+all depend only on `propext`, `Classical.choice`, `Quot.sound`.
+
+
+## B: what the check found, and the smallest sufficient bridge
+
+I was asked to check, before building, whether the circle-level orientation data
+can reach `CoherentOrientation` on the derived neighbourhood without the
+subdivision-invariance transport. The answer is **yes for all but one step**, and
+the step that remains is one dimension lower than I had assumed and needs no
+data-level transport at all.
+
+### What is already in the tree
+
+More than I credited. Searching for the content rather than the vocabulary again
+paid:
+
+- `IsOrientable.boundary` (`Orientation.lean:3105`): the boundary of an orientable
+  manifold-with-boundary is orientable. So the problem drops from dimension three
+  to a closed surface immediately.
+- `orientationCocycle_isCoboundary_iff` (`OrientationCocycle.lean:431`):
+  orientability is **equivalent** to the orientation cocycle being a coboundary,
+  in both directions.
+- `walkMonodromy_eq_zero_of_isCoboundary` and
+  `isCoboundary_of_forall_walkMonodromy_eq_zero` (`CocycleMonodromy.lean:85, 91`):
+  coboundary is equivalent to vanishing monodromy along every loop.
+- `isOrientable_iff_of_isPLHomeomorphOn` (`Orientation.lean:8474`): orientability
+  transports along a PL homeomorphism at the `Prop` level. Earlier I recorded this
+  as useless because it carries no data; for this argument it is exactly enough,
+  because the whole chain below only ever needs orientabilit**y**, never a chosen
+  orientation.
+- `IsOrientable.of_le` (`Orientation.lean:3153`): a submanifold-complex of an
+  orientable manifold is orientable.
+- `isOrientable_coveringComplex_orientationCocycle` and the rest of
+  `CoveringOrientation.lean`: the orientation double cover, built.
+
+### The chain, with the one gap marked
+
+Let `N` be the derived neighbourhood, `D` the model disk of the cylindrical
+diagram and `u` the end map.
+
+1. `IsOrientable 3 N` -- obligation 3, merged.
+2. `IsOrientable 2 (boundaryComplex 3 N)` -- `IsOrientable.boundary`.
+3. `(boundaryComplex 3 N).space` **is** the mapping torus of `u` restricted to
+   `∂D`: the images of the two end disks are glued to each other and become an
+   interior meridian disk, so only the image of `∂D × I` survives in the boundary.
+   Extracting this from `IsCylindricalDiagram` is bookkeeping, not new theory.
+4. Orientability transfers to the abstract mapping torus of `u` restricted to `∂D`
+   by `isOrientable_iff_of_isPLHomeomorphOn` -- `Prop` level, no transport of data.
+5. **GAP.**
+
+> **(B-bridge)** For a PL 1-sphere `C` and a PL self-homeomorphism `v` of `C` with
+> `¬ IsPLCirclePositive C v`, the mapping torus of `v` -- the quotient of
+> `C × Icc 0 1` by `(x, 0) ~ (v x, 1)` -- is not orientable as a two-dimensional
+> complex.
+
+That is the whole of what is missing. It is a statement about a **surface built
+from a circle**, not about a three-manifold, and it does **not** require
+transporting a `CoherentOrientation` along a PL map, which is the layer ruled out
+earlier and is still correctly ruled out.
+
+### Two routes to (B-bridge), with the smaller one identified
+
+- **Monodromy.** Triangulate the mapping torus and compute the `walkMonodromy` of
+  its orientation cocycle around the core loop, showing it is `1` when `v`
+  reverses. This is direct but needs an explicit simplicial model of the mapping
+  torus and a computation of `localSubdivisionOrientationSign` across the gluing.
+- **Möbius.** A reversing `v` has a fixed point -- provable now from the lift
+  dichotomy, since in the reversing branch `v` descends from `-G` with `G`
+  strictly increasing and continuous, so `G + id` is continuous, strictly
+  increasing and grows by two per period, hence meets `ℤ` by the intermediate value
+  theorem, exactly twice. Around such a fixed point the mapping torus contains a
+  Möbius band, and `IsOrientable.of_le` then reduces (B-bridge) to **the single
+  fact that the Möbius band is not orientable**, which is one computation on one
+  small fixed complex, independent of `v`, `C` and the diagram.
+
+The Möbius route is the smaller one and I would take it: its only genuinely new
+content is a fixed finite complex with a fixed non-orientability proof, whereas
+the monodromy route re-does that computation inside a parametrised model. The tree
+has no Möbius band yet -- `grep -rl "obius\|Moebius"` over
+`DifferentialGeometry/` returns nothing.
+
+Not built this round: the instruction was to check first and report, and the check
+changed the target enough (dimension three to two, and no data transport) that the
+route should be confirmed before the build.
+
+
+## Two ingredients of (B-bridge), delivered
+
+### The order-independent parity core
+
+`OrientationParity.lean` (new). `prod_incidenceSign`: for any linear order `r` on
+the ambient space and any face `s`, the product of the incidence signs over all
+vertices of `s` is `(-1)` to the power `s.card.choose 2`, by induction on `s`
+adding the largest element. `prod_incidenceSign_triple` is the case that the
+Moebius computation needs: for a triangle the three incidence signs multiply to
+`-1`, whatever the vertex order.
+
+This is what makes the Moebius holonomy a computation rather than an argument.
+`CoherentOrientation` carries its own `vertexOrder : LinearOrder E` on the whole
+ambient space, chosen existentially, so no proof may fix a convenient order;
+`prod_incidenceSign_triple` is exactly the order-independent fact that lets the
+five coherence relations be multiplied together. With it, the holonomy around the
+five triangles of the minimal band reduces to the parity of
+`sum over i of the rank of the middle vertex of the i-th triangle`, and that sum is
+`5` for **every** order, by the cancellation
+`rank(i) + rank(i+2) = 3 - rank(i+1)` together with
+`[i < i+1] + (1 - [i+1 < i+2])` telescoping around the cycle.
+
+### The fixed point of a reversing circle map
+
+`exists_fixed_of_not_hasIncreasingCircleLift`: a self-homeomorphism of
+`loopCircle` with no increasing periodic lift has a fixed point. In the reversing
+branch the map descends from `-F` with `F` a homeomorphism of the line, so
+`G := F + id` is continuous, strictly increasing and satisfies `G (t+1) = G t + 2`;
+hence `ceil (G 0)` lies in `Icc (G 0) (G 1)` and the intermediate value theorem
+supplies `t` in `Icc 0 1` with `G t` an integer, which is exactly a fixed point.
+
+### Verification
+
+`check-f.ps1` exit=0, zero warnings on both modules (10.5 s, 11.2 s).
+`AuditSOrientationParity` 4 declarations, `AuditSCircleLiftOrientation` 19; all
+depend only on `propext`, `Classical.choice`, `Quot.sound`.
+
+
+## The Moebius band is built and is not orientable
+
+`MobiusBand.lean` (new, 20 declarations). `not_isOrientable_mobiusComplex`:
+`¬ IsOrientable 2 mobiusComplex`.
+
+### The complex
+
+The five-vertex triangulation, explicitly: vertices `mobiusVertex i = Pi.single i 1`
+for `i : Fin 5`, triangles `mobiusTri i` the image of `{i, i+1, i+2}`. Since all
+five vertices are affinely independent (`stdVertices_affineIndependent 3`), every
+face is a subset of an affinely independent set, so the geometric conditions of
+`Geometry.SimplicialComplex` are inherited exactly as in `simplexComplex` -- no
+coordinate geometry is needed. `facesOfCard mobiusComplex 3` is the five triangles,
+because a three-element subset of a three-element face is that face.
+
+### The computation
+
+The holonomy around the five triangles. Each of the five interior edges
+`mobiusEdge i` lies in exactly `mobiusTri i` and `mobiusTri (i+1)`, so
+`orientedBoundary_mobiusEdge` evaluates the coherence condition to a two-term
+relation; the other three triangles contribute nothing because none of their
+two-element faces is that edge. Multiplying the five relations and cancelling the
+signs of the triangles leaves the product of the incidence signs of the middle
+vertices, and that product is `(-1)` to the power of the total middle rank, which
+is **5 for every vertex order**: `mobiusHighPair r i + mobiusLowPair r (i+1) = 1`
+telescopes around the cycle. The `-1` this forces contradicts the `+1` the
+relations give.
+
+### Two things that had to be routed around, both about instances not size
+
+1. `CoherentOrientation` carries `vertexOrder : LinearOrder E` as a **plain
+   argument, not an instance**. So a statement may not mention `<`: on
+   `Fin 5 → ℝ` the ambient `<` is the pointwise order from `Pi`, which is not even
+   decidable, and `letI := r` does not displace it. Every count is therefore
+   phrased with `incidenceIndex` applied to explicit finite sets and never with an
+   `if` or a `<` of my own: `incidenceIndex_union` and
+   `incidenceIndex_singleton_self` do the splitting, and `sum_incidenceIndex` gives
+   `incidenceIndex_pair_sum`. This is why the middle rank is decomposed into two
+   *pair* indices rather than into two indicator functions.
+2. `decide` carries the complex easily at the level of `Fin 5` -- all the
+   combinatorics is done there and transported by `mobiusVertex`, which is
+   injective -- but not through `Finset (Fin 5 → ℝ)`. Face equalities are compared
+   through `erase_mobiusTri_eq_mobiusEdge_iff`, which turns them into `Fin 5`
+   statements.
+
+Also added to `OrientationParity.lean`: `sum_incidenceIndex` (the sum form of the
+parity lemma), `incidenceIndex_union`, `incidenceIndex_singleton_self`.
+
+### What (B-bridge) still needs
+
+1. `IsCombinatorialManifoldWithBoundary 2 mobiusComplex`, which `IsOrientable.of_le`
+   requires of the subcomplex. Every vertex of this band is on the boundary and its
+   link is a three-edge path, so this is five instances of "a polygonal arc is a PL
+   1-ball" -- routine but not written.
+2. The band **inside** the mapping torus: a subcomplex of a subdivision of the
+   mapping torus whose space is a Moebius band around the fixed point of the
+   reversing map. `exists_fixed_of_not_hasIncreasingCircleLift` supplies the fixed
+   point and `isOrientable_iff_of_isSubdivision` lets the subdivision be chosen
+   freely, so what is missing is the relative triangulation step: a subdivision in
+   which the band is a subcomplex.
+
+### Verification
+
+`check-f.ps1` exit=0, zero warnings on both modules (9.6 s, 11.4 s).
+`AuditSOrientationParity` 7 declarations, `AuditSMobiusBand` 20; all depend only on
+`propext`, `Classical.choice`, `Quot.sound`.
+
+
+## FIRST-ACTION RULE for anyone touching orientation
+
+**Never write `<`, `≤` or an `if` on a comparison in any statement that involves a
+`CoherentOrientation`. Use `incidenceIndex` and `incidenceSign` on explicit finite
+sets instead.** `CoherentOrientation.vertexOrder : LinearOrder E` is a *plain
+argument*, not an instance. A `<` you write resolves against the ambient order of
+`E` -- on `Fin 5 → ℝ` that is the pointwise `Pi` order, which is not even
+decidable -- and `letI := r` does not displace it. Every lemma in
+`Orientation.lean` bakes in one instance path from `r`; any statement of your own
+picks another, and the two are not syntactically equal, so `rw` fails and
+`decide` cannot synthesise. The counting toolkit that avoids this entirely is in
+`OrientationParity.lean`: `sum_incidenceIndex`, `prod_incidenceSign`,
+`incidenceIndex_union`, `incidenceIndex_singleton_self`,
+`prod_incidenceSign_triple`. When a lemma of yours needs a `DecidableEq E` for
+`∪` or `erase`, take it as an instance-implicit parameter of the lemma so the
+caller's instance is used (`incidenceIndex_union` is the model). Compare face
+equalities through membership (`erase_mobiusTri_eq_mobiusEdge_iff`), not through
+`Finset` equality of vectors. Do all `decide` work on `Fin n`, never on
+`Finset (Fin n → ℝ)`.
+
+## Spec for the successor: (B-bridge), then B, then obligation 2
+
+State of play: `not_isOrientable_mobiusComplex` is proved;
+`exists_fixed_of_not_hasIncreasingCircleLift` is proved; C1 and the untwisted
+case of obligation 2 are proved with `IsPLCirclePositive` (existential form) as
+the one geometric hypothesis. Everything below was located by grep this round; the
+lemma names are exact.
+
+### The routed chain for (B-bridge)
+
+Let `T` be the mapping torus of a reversing PL circle map `v`, presented as a
+finite complex with `IsCombinatorialManifoldWithBoundary 2 T`, and suppose
+`IsOrientable 2 T`. Derive `False`:
+
+1. Let `p` be a fixed point of `v` (`exists_fixed_of_not_hasIncreasingCircleLift`,
+   after transporting `v` to `loopCircle` with `paramHomeomorph`).
+2. Produce a polyhedron `Q ⊆ T.space`, the band around `p`, and a PL homeomorphism
+   `mobiusComplex.space → Q`. **This is the only genuinely new geometry.**
+3. `exists_isSubdivision_subcomplexes_closedStars_subset_openStar T (J := Unit)
+   (fun _ => Q)` gives a subdivision `R` of `T` with `(restrict R Q).space = Q`.
+   `restrict_faces_subset` is literally `restrict R Q ≤ R` (the order on
+   `Geometry.SimplicialComplex` is `faces ⊆ faces`).
+4. `IsOrientable 2 R` from `isOrientable_iff_of_isSubdivision`.
+5. `IsCombinatorialManifoldWithBoundary 2 R`: `ManifoldSubdivision.lean:123`
+   (`IsCombinatorialManifoldWithBoundary.of_isSubdivision`) is the direction
+   coarse-to-fine; `ManifoldInvariance.lean:12`
+   (`isCombinatorialManifoldWithBoundary_of_isSubdivision`) is fine-to-coarse. Use
+   the former.
+6. `IsCombinatorialManifoldWithBoundary 2 (restrict R Q)`: from item (A) below via
+   `IsCombinatorialManifoldWithBoundary.of_isPLHomeomorphOn` (it transports from the
+   model to the image, which is the direction needed).
+7. `IsOrientable 2 (restrict R Q)` by `IsOrientable.of_le` (needs 3, 5, 6).
+8. `IsOrientable 2 mobiusComplex` by `isOrientable_iff_of_isPLHomeomorphOn` --
+   contradiction with `not_isOrientable_mobiusComplex`.
+
+Only data-free `Prop`-level transport is used anywhere; the `CoherentOrientation`
+transport stays ruled out.
+
+### (A) `IsCombinatorialManifoldWithBoundary 2 mobiusComplex`
+
+Not five hand constructions. Unfold: for each vertex `mobiusVertex i` the link
+`SimplicialComplex.geometricLink mobiusComplex {mobiusVertex i}` is a three-edge
+path (at index level: edges `{i+1,i+2}`, `{i-2,i-1}` and `{i-1,i+1}`, on vertices
+`{i-2, i-1, i+1, i+2}`). Feed it to
+`isPLBall_one_of_edgeGraph_connected_of_exists_degree_one`
+(`OneManifoldClassification.lean:829`), whose three hypotheses are graph facts:
+`IsCombinatorialManifoldWithBoundary 1 (link)` via
+`isCombinatorialManifoldWithBoundary_one_iff` (`GeneralPosition.lean:778`: faces of
+card ≤ 2, and each vertex's neighbour set is a singleton or a pair, stated as set
+equalities), `(edgeGraph link).Connected`, and one vertex of degree one. Do it once
+over the cyclic index `i : Fin 5` and instantiate; the link's faces are
+`{t | t ∪ {v} ∈ faces ∧ v ∉ t}` up to the tree's exact `link` definition
+(`GeometricLink.lean:13`), so compute them through `mem_mobiusComplex_faces_iff`
+and the `Fin 5` transport, never through `Finset (Fin 5 → ℝ)` equality.
+
+### (B-geometry) The band inside the mapping torus
+
+Around the fixed point `p`, take an arc `A` of the circle on which `v` reverses and
+maps `A` onto itself fixing its endpoints (the reversing branch of the lift
+dichotomy gives this locally; `image_arc_eq_self_or_eq_other` is the
+arc-level dichotomy). The image of `A × Icc 0 1` in `T` under the identification
+is a Moebius band. Needed: an explicit PL homeomorphism from `mobiusComplex.space`
+(in `Fin 5 → ℝ`) onto that image. The model's five triangles are
+`{i, i+1, i+2}`; the natural parametrisation sends the square `A × I` cut into five
+strips to the five triangles with the twist realised by the identification of the
+ends under `v`. Expect the same instance discipline as above for the
+`Finset`-level bookkeeping; the PL-map side can reuse
+`exists_isPLHomeomorphOn_union` and `IsPLHomeomorphOn.union` as in
+`CircleAnnulusIsotopy.lean`.
+
+### B itself, after (B-bridge)
+
+`exists_cylindricalDiagram_isOrientable_derivedNeighborhood_of_nullHomotopic_polygon`
+(`DerivedNeighborhoodPolygon.lean:151`) hands over `IsOrientable 3 N` and a
+diagram `φ` over `stdSimplex ℝ (Fin 3)`. Chain: `IsOrientable.boundary` gives
+`IsOrientable 2 (boundaryComplex 3 N)`; the missing glue is that
+`(boundaryComplex 3 N).space` is the image of `∂D × Icc 0 1` under `φ` with the
+ends identified by the end map `u` restricted to `∂D` -- **no mapping-torus notion
+exists in the tree**; the nearest existing statement is
+`IsCylindricalDiagram.exists_ball_pair_with_boundary` (`CylinderCut.lean:118`).
+Then `isOrientable_iff_of_isPLHomeomorphOn` transports orientability to whatever
+complex (B-bridge) is stated on, and (B-bridge) contrapositively yields
+`IsPLCirclePositive (boundaryComplex 2 K).space u`, which is `hposf`/`hposg`.
+
+### Obligation 2, final form once B closes
+
+`exists_isPLHomeomorphOn_of_endMaps_boundary_isPLCirclePositive` with `hposf`,
+`hposg` discharged by B leaves: the two diagrams (geometric input, 24.10's
+hypothesis); the model disks as complexes (artifact of `boundaryComplex` being
+nameable); `huf`/`hug`/`hfuf`/`hgug` (artifacts, step A's output); `hw` (artifact,
+any two PL 2-balls are PL homeomorphic); and `IsOrientable 3` of each derived
+neighbourhood, which obligation 3 supplies from null-homotopy of the polygon.
+Satisfiability in the intended instantiation: the diagrams and orientability come
+from obligation 3's endpoint directly, and `IsPLCirclePositive` is satisfiable
+(`isPLCirclePositive_id`) and not universal
+(`exists_not_isPLCirclePositive_of_isPLSphere_one`), so the hypothesis neither
+carries the conclusion nor is vacuous.
+
+### Process note
+
+This handoff was written instead of starting (A) and (B-geometry), on the judgment
+that a fresh agent with these lemma names will execute the concrete plumbing
+faster than this lane can now. Lean process count observed at 2 when checked; no
+compile was run this round.
