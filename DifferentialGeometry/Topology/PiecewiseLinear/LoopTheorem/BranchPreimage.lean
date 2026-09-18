@@ -38,6 +38,29 @@ variable {M : Type u} [TopologicalSpace M]
   [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
   {D : SingularTwoCell M} {BdM B : Set M}
 
+open Classical in
+theorem exists_finite_crossing_chart_cover
+    (hD : NormalSingularCellData D BdM B) (c : hD.singularSet.Branch) :
+    ∃ (e : hD.singularSet.branchCarrier c →
+        OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin 3)))
+      (t : Finset (hD.singularSet.branchCarrier c)),
+      (∀ y, e y ∈ atlas (EuclideanSpace ℝ (Fin 3)) M ∧
+        (y : M) ∈ (e y).source ∧
+          HasPLNormalDoubleCrossingAt ((e y) ∘ D)
+            (D.domain ∩ D ⁻¹' (e y).source)
+            ((e y) '' ((e y).source ∩ BdM)) ((e y) y)) ∧
+        hD.singularSet.branchCarrier c ⊆ ⋃ y ∈ t, (e y).source := by
+  choose e he using fun y : hD.singularSet.branchCarrier c =>
+    hD.crossing (y : M) (hD.singularSet.branchCarrier_subset_doublePointSet c y.property)
+  have hcover : hD.singularSet.branchCarrier c ⊆
+      ⋃ y : hD.singularSet.branchCarrier c, (e y).source := by
+    intro y hy
+    exact mem_iUnion.mpr ⟨⟨y, hy⟩, (he ⟨y, hy⟩).2.1⟩
+  obtain ⟨t, ht⟩ := (hD.singularSet.branchCarrier_isCompact c).elim_finite_subcover
+    (fun y : hD.singularSet.branchCarrier c => (e y).source)
+    (fun y => (e y).open_source) hcover
+  exact ⟨e, t, he, ht⟩
+
 private noncomputable def euclideanBoundaryComplexModel (n : ℕ)
     (K : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin n))) :=
   boundaryComplex 1 K

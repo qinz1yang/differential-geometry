@@ -638,3 +638,24 @@ Moise 每一章开头"不妨设某映射是 PL 的"都是这一条。分三个�
    `AffineMap.lineMap (v 0) (v 2)`、`lineMap (v 0) (v 1)`、`lineMap (v 2) (v 1)` 的参数化。
    证明用 `triangleAffineMap` 与 `IsPLHomeomorphOn` 的 `invFunOn` 分支把 `stdCone` 版本搬过去。
 
+## 四条车道 2026-09-17 的交付（整合分支已合入并逐模块重编）
+
+- **F（`codex/moise-smoothing`）**
+  - `LocallyPolyhedralImage.lean`：局部多面体性经 PL 同胚搬运（§32 要把 `IsLocallyPolyhedral (U \ P)`
+    在图卡间搬运）。
+  - `ArcChainCover.lean`：紧致 PL 弧的从属链覆盖（参数化 + Lebesgue 数 + 均匀分划）。
+  - `ModelSlide.lean`：标准模型里沿分支滑出的显式 PL 自同构（`slideMap`），双射、支撑在盒内、
+    实际把一条模型带滑离另一条。
+  - `ChartSlide.lean`：经图卡共轭成环境自映射，保持逐片仿射、单射、支撑外恒等与分离。
+  - 更正了一条早先的分析：**横向推移不能分开两条相交的带**（显式反例），触边分支靠沿分支滑出，
+    圆分支在书里本来就不走分离而走内盘替换。
+- **S（`codex/moise-s`）** `BallCyclePair.lean`：一般循环分解（任意 ≥3 个 PL 三球，循环相邻交为二维盘、
+  非相邻不交、无三重交）给出两球判据的实际数据 `A, B, D₀, D₁`。这闭合了 C.6 三项遗留义务的第一项。
+- **H（`codex/moise-h`）** `ConeEuler.lean`：锥的组合 Euler 数恒为 1；沿 PL 圆封盘使 Euler 数加一。
+  这是 §33 Lemma 12 里"逐分支封 PL 盘"的 Euler 记账层（G.5 的窄生产者之一）。
+- **E3（`codex/moise-e3`）** `BranchSignChain.lean`：沿图卡链的横向侧选择恒可解（`ZMod 2` 部分和），
+  循环情形的障碍恰是 `∑ τ ≠ 0`。配合 F 的更正，这给出触边弧情形可行、圆情形不走这条路的确切理由。
+
+四条车道都先合入了整合分支的相对逼近层（`ConeAssembly` → `ConeFan` → `DiskRelBoundary` →
+`TriangleRelBoundary`、`ConeFanCarrier`、`ConeStarCover`）。
+
