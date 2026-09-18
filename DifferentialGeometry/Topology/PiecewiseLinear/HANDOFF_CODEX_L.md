@@ -1596,3 +1596,75 @@ theorem eq_top_of_boundaryLoops_mem_normal
 - 验证：`PlanarBallExterior` 聚焦检查 exit=0（13.2 秒）、零 warning；
   `.lake/scratch/AuditE3PlanarExterior.lean` 的 32 条 `#print axioms` 全部只含
   `propext`、`Classical.choice`、`Quot.sound`，无 `sorryAx`。全程无其它 `lean.exe`。
+
+## 60. 2026-09-18 E3-M3：`houter / hannulus / hseam` 三条全部由扫掠的点态性质推出（§56 第 (ii) 条的可做部分）
+
+状态：partial（三条结论型假设全部消掉；剩下的唯一义务是**扫掠在环带上的 `IsPLOn`**，
+它不是结论型假设，见末尾"确切剩余义务"）。新模块 `BranchBoundarySweep.lean`
+（模块名与全部声明名在四条车道分支上都不存在）。
+
+- **本节做掉的事。** §56 的 `image_inter_boundary_of_collarExtension` 要三条关于 `G` 的假设
+  `houter`（外圈落进 `Bd M`）、`hannulus`（环带只在外圈碰 `Bd M`）、`hseam`（老边界圆上的
+  `Bd M` 点被带到外圈）。这三条都是**关于结论的**，所以 §56 只是"有领环修正即得等式"。
+  本节把它们全部换成扫掠 `Φ : M → ℝ → M` 的**四条点态性质**：
+  `hΦ0 : ∀ y, Φ y 0 = y`、`hΦ1 : ∀ z ∈ frontier D.domain, Φ (g z) 1 ∈ BdM`、
+  `hΦfix : ∀ y ∈ BdM, ∀ s, Φ y s = y`、
+  `hΦmem : ∀ z ∈ frontier D.domain, ∀ s, Φ (g z) s ∈ BdM → g z ∈ BdM ∨ s = 1`，
+  再加 §59 的平面外部延拓数据（`exists_exteriorCollapse_of_isPLBall_two` 无条件给出）。
+  四条都是领环收缩的真实局部性质：在图册模型 `Φ y s` 的第一坐标是 `(1-s) * (e (E y)).1`，
+  四条逐条成立，且没有一条是"环带只在外圈碰 `Bd M`"这种结论。
+- 三条推导（`range_boundary_subset_boundary_of_boundarySweep`、
+  `image_sdiff_inter_boundary_subset_of_boundarySweep`、
+  `image_frontier_inter_boundary_subset_of_boundarySweep`）的共同机制是
+  **`frontier D.domain ⊆ ρ '' frontier Δ'`**：环带上任何落进 `Bd M` 的点 `G x`，
+  都能在外圈找到 `x'` 使 `ρ x' = ρ x`，再用 `hΦmem`/`hΦfix` 把 `Φ y (τ x)` 化成 `Φ y 1 = G x'`。
+  所以 §59 交付"坍缩形"而不是乘积领环是够用的：**只用到 `ρ` 在外圈上满射到 `frontier D.domain`，
+  完全不用单射**。
+- `exists_singularTwoCell_of_boundarySweep`：由 `IsPLOn 2 3 g D.domain` 与环带上的
+  `IsPLOn 2 3 (fun x => Φ (g (ρ x)) (τ x)) (Δ' \ interior D.domain)` 拼出 `G : SingularTwoCell M`，
+  `G.domain = Δ'`，盘上等于 `g`，环带上等于扫掠公式。
+- `exists_collarExtension_image_inter_boundary_of_exteriorCollapse`（显式传入 `Δ' ρ τ`）与
+  `exists_collarExtension_image_inter_boundary_of_boundarySweep`（`Δ' ρ τ` 由 §59 内部产生）
+  是两个成品：输出 `∃ G, D.domain ⊆ G.domain ∧ EqOn G g D.domain ∧
+  Set.range G.boundary ⊆ BdM ∧ G '' G.domain ∩ BdM = Set.range G.boundary`。
+- **`Pasting` / `SingularPasting` 各自承担了什么（主人问的那一条）。**
+  - **承担：缝隙上的 `IsPLOn`。** `Pasting.lean` 的 `IsPLOn.piecewise_of_isClosed`
+    正好是缝隙转移：`D.domain`（闭）与 `Δ' \ interior D.domain`（闭）的并是 `Δ'`，
+    交是 `frontier D.domain`，两支在交上相等（因为 `ρ = id`、`τ = 0`、`hΦ0`），
+    于是 `Set.piecewise` 的 `IsPLOn` 直接得到。本节 `exists_singularTwoCell_of_boundarySweep`
+    就是这一行。`PLMap.lean` 的 `IsPLOn.piecewise_postcomp_of_isClosed` 是同一族的后复合版本。
+  - **不承担：环带映射自身的 `IsPLOn`。** `SingularPasting.lean` 全部是
+    "在二重点附近取 `IsPLBall` 补片"，与扫掠无关。把 `IsPLOn` 与平面上的
+    `IsPiecewiseAffineOn` 复合的引理确实存在，但是
+    `LoopTheorem/CellGluing.lean:181` 的 `IsPLOn.comp_isPiecewiseAffineOn` 是 **`private`**，
+    外部模块用不了；需要时要在本车道重证一份（约 20 行，证明见该处）。
+  - **不承担：局部单射与纤维 ≤ 2。** 见 §59 的负结论——环带延拓根本不可能保住 `fiber_le_two`，
+    所以这两条不该由缝隙转移来提供，只能靠"月牙"式延拓。本节因此不碰它们，
+    也没有把它们写进任何输出条款。
+- **一条不能走的路（本轮新发现，覆盖 §56 末尾对 `Φ` 的建议）。**
+  §56 建议 `Φ` 取图册里的直线收缩
+  `Φ y s = E.symm (e.symm ((1-s) * (e (E y)).1, (e (E y)).2))`。
+  作为**逐点定义**它没问题，四条点态性质都成立；但把它代进环带映射后，
+  图册坐标的第一分量是 `(1 - τ x) * a x`，其中 `a x = (e (E (g (ρ x)))).1` 与 `τ x`
+  都是 `x` 的分片仿射函数——**两个非常值分片仿射函数的乘积，在有内点的片上不是仿射的**，
+  所以 `fun x => Φ (g (ρ x)) (τ x)` 在环带上**不是 PL**。
+  这与 §59 里"径向投影不是 PL"是同一个现象（仿射映射在有内点的片上纤维必须平行 /
+  双线性不是仿射）。因此 `hann` 不能靠直线收缩兑现，必须换成
+  **沿被推离弧的棱柱（prism）构造**：把 `ᾱ × [0,1]` 三角剖分，逐片给仿射映射。
+  本树已有的 `Prism.lean`、`PrismArc.lean`、`PrismArcPatch.lean`、`PrismProdCollar.lean`
+  （特别是 `exists_isPiecewiseAffineOn_prism_of_arcs_height` 与
+  `exists_isPiecewiseAffineOn_glue_collar_prod`）是这条路的起点，本轮没有走。
+- **确切剩余义务。** 只剩一条，形状是
+  `IsPLOn 2 3 (fun x => Φ (P.piecewise (h ∘ D) D (ρ x)) (τ x)) (Δ' \ interior D.domain)`，
+  即"扫掠在环带上是 PL"。兑现它需要：(a) 被推离弧 `g '' (frontier Δ ∩ P ∩ D ⁻¹' U)`
+  的一个 PL 弧参数化；(b) 该弧与它在 `Bd M` 上的落点之间的棱柱的分片仿射实现
+  （`PrismArc*` 一族）；(c) `IsPLOn` 与平面 `IsPiecewiseAffineOn` 复合的公开版引理
+  （`CellGluing.lean` 里那条的非 private 副本）。
+  未经验证的代价估计：约 400–900 行、2–4 个工作段；其中 (c) 约 20 行，(a) 中等，
+  (b) 是主要部分且取决于 `PrismArc*` 现有引理与本处形状的匹配程度（本轮没有逐条核对）。
+- 本轮**按主人指定的范围未做**：割开胞腔的 `singularSet` / `crossing`、`L₂` 的重贴胞腔、
+  Case 1/2。
+- 验证：`BranchBoundarySweep` 聚焦检查 exit=0（10.2 秒）、零 warning；
+  `.lake/scratch/AuditE3PlanarSweep.lean`（同时 import `PlanarBallExterior` 与
+  `BranchBoundarySweep`，因此也顺带验证两支没有重名声明）的 39 条 `#print axioms`
+  全部只含 `propext`、`Classical.choice`、`Quot.sound`，无 `sorryAx`。全程无其它 `lean.exe`。
