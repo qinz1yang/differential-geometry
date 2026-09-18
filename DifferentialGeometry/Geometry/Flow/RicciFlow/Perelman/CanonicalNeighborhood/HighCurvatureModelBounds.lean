@@ -25,7 +25,6 @@ namespace DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.Fini
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology DifferentialGeometry.Tensor0SBundle
-open DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions (SphereAntipodalQuotient)
 open scoped _root_.DifferentialGeometry.Manifold ContDiff ENNReal
 
 universe u
@@ -542,9 +541,7 @@ theorem smooth_canonical_neighborhood :
 theorem fixed_kappa_compactness {kappa : ℝ} (hkappa : 0 < kappa)
     (X : ℕ → PointedFlowData.{u, 0, 0} I3 ancientTimeInterval)
     (hX : ∀ i, IsAncientKappaSolution kappa (X i))
-    (hbase : ∀ i, PointedFlowScalarAtBase (X i) 1)
-    (hnoEmbedding : ∀ f : SphereAntipodalQuotient → EuclideanSpace ℝ (Fin 3),
-      ¬ _root_.Topology.IsEmbedding f) :
+    (hbase : ∀ i, PointedFlowScalarAtBase (X i) 1) :
     ∃ (L : PointedFlowData.{u, 0, 0} I3 ancientTimeInterval)
       (f : ℕ → ℕ), StrictMono f ∧ IsAncientKappaSolution kappa L ∧
         PointedFlowScalarAtBase L 1 ∧
@@ -552,7 +549,7 @@ theorem fixed_kappa_compactness {kappa : ℝ} (hkappa : 0 < kappa)
           (({ interval := fun _ => ancientTimeInterval, term := X } : FlowSequence).atTime 0)
           (L.atTime 0) f, MetricSourceCapture F ∧ ConvergesOn F L.S := by
   exact DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions.exists_ancientKappa_fixed_kappa_compactness_captured
-    hkappa X hX hbase hnoEmbedding
+    hkappa X hX hbase
 
 theorem kappa_universal_derivatives (a b : ℕ) :
     ∃ C : ℝ, 0 < C ∧ ∀ kappa : ℝ, 0 < kappa →

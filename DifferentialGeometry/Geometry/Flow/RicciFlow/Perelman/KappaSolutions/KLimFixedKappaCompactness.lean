@@ -37,9 +37,7 @@ theorem exists_fixed_kappa_compactness_of_rankOne
     (X : PointedFlowSeq.{u, 0, 0} (I := I3))
     (hD : X.D = ancientTimeInterval) {κ : ℝ}
     (hsource : ∀ i, KLim (I := I3) κ (X.term i))
-    (hbase : ∀ i, PointedFlowScalarAtBase (I := I3) (X.term i) 1)
-    (hnoEmbedding : ∀ f : SphereAntipodalQuotient → EuclideanSpace ℝ (Fin 3),
-      ¬ _root_.Topology.IsEmbedding f) :
+    (hbase : ∀ i, PointedFlowScalarAtBase (I := I3) (X.term i) 1) :
     ∃ (L : PointedFlowData.{u, 0, 0} (I := I3) X.D) (phi : ℕ → ℕ),
       StrictMono phi ∧
       ∃ Phi : PointedCGHMaps (I := I3) X (L.atTime (I := I3) 0) phi,
@@ -60,7 +58,7 @@ theorem exists_fixed_kappa_compactness_of_rankOne
     exists_preliminary_klim_compactness X hD hsource hbase
   refine ⟨L, phi, hphi, Phi, hL, hbaseL, hcanonical, hmixed, fun hrankOne => ?_⟩
   have hdim : Module.finrank ℝ ThreeSpace = 3 := by simp [ThreeSpace]
-  exact hL.isAncientKappaSolution_of_rankOne L hdim hnoEmbedding hrankOne
+  exact hL.isAncientKappaSolution_of_rankOne L hdim hrankOne
 
 
 theorem klim_pointedLimit_noncompact {X : PointedFlowSeq.{u, 0, 0} (I := I3)}

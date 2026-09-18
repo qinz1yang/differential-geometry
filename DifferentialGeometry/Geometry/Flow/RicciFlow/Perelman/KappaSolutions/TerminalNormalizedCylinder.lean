@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientCylinderSmoothModels
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.TerminalNormalizedLine
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.PointedCylinderExclusion
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.CylinderExclusion
 
 set_option autoImplicit false
 
@@ -13,7 +13,7 @@ open DifferentialGeometry.Geometry
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.CheegerGromovCompactness
 open CanonicalNeighborhood
-open scoped Manifold ContDiff _root_.Topology
+open scoped _root_.Manifold ContDiff _root_.Topology
 
 local notation "SphereAmbient" => EuclideanSpace ℝ (Fin 3)
 local notation "SphereTwo" => Metric.sphere (0 : SphereAmbient) 1
@@ -55,9 +55,7 @@ theorem exists_cylinder_of_terminalCurvatureNormalizedFlowSeq_limit
     (C : MetricConvergenceData (I := I) Phi)
     (hcanonical : ∀ k, C.domain k =
       CanonicalMetricCompactness.canonicalSourceData (I := I) Phi k)
-    (hEuclidean : Nonempty (F.M ≃ₜ EuclideanSpace ℝ (Fin 3)))
-    (hnoEmbedding : ∀ f : SphereAntipodalQuotient → EuclideanSpace ℝ (Fin 3),
-      ¬ Topology.IsEmbedding f) :
+    (hEuclidean : Nonempty (F.M ≃ₘ⟮I, 𝓡 3⟯ EuclideanSpace ℝ (Fin 3))) :
     ∃ T : ℝ, 0 < T ∧ ∃ d : Cylinder ≃ₘ⟮CylinderI, I⟯ G.M,
       ∀ t : ℝ, t ≤ 0 → ∀ (y : SphereTwo) (s : ℝ)
         (v w : TangentSpace (𝓡 2) y) (a b : ℝ),
@@ -80,19 +78,16 @@ theorem exists_cylinder_of_terminalCurvatureNormalizedFlowSeq_limit
   obtain ⟨T, hT, pi, _, _, hmetric, hcases⟩ :=
     ancientKappa_null_plane_cylinder_smooth_models G hG hdim 0 le_rfl G.basepoint v w
       hplane hnull'
-  have hsource : ∀ i : ℕ,
-      let X := (terminalCurvatureNormalizedFlowSeq F hK x hQ).atZero (I := I)
-      let _ : TopologicalSpace (X.obj i).M := (X.obj i).topology
-      Nonempty ((((terminalCurvatureNormalizedFlowSeq F hK x hQ).atZero (I := I)).obj i).M
-        ≃ₜ EuclideanSpace ℝ (Fin 3)) := fun _ => hEuclidean
-  have hexclude := pointedLimit_not_nontrivialCylinderQuotient Phi hsource hnoEmbedding
+  obtain ⟨eSource⟩ := hEuclidean
+  have hexclude := pointedLimit_not_nontrivialCylinderQuotient_diffeomorph
+    Phi (fun _ => eSource)
   rcases hcases with ⟨d, hd⟩ | ⟨d, _⟩ | ⟨d, _⟩
   · refine ⟨T, hT, d, ?_⟩
     have hfun : (d : Cylinder → G.M) = pi := funext hd
     rw [hfun]
     exact hmetric
-  · exact False.elim (hexclude.1 ⟨d.toHomeomorph⟩)
-  · exact False.elim (hexclude.2 ⟨d.toHomeomorph⟩)
+  · exact False.elim (hexclude.1 ⟨d⟩)
+  · exact False.elim (hexclude.2 ⟨d⟩)
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 

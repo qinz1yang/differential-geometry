@@ -42,9 +42,7 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
 theorem KLim.three_terminal_bddAbove_of_positive
     {kappa : ℝ} (hK : KLim kappa F) (hdim : Module.finrank ℝ E = 3)
     (hsec : DifferentialGeometry.Geometry.HasPositiveSectionalCurvature (I := I)
-      (F.S.base.metric 0))
-    (hnoEmbedding : ∀ f : SphereAntipodalQuotient → EuclideanSpace ℝ (Fin 3),
-      ¬ Topology.IsEmbedding f) : BddAbove (Set.range (F.S.scalar 0)) := by
+      (F.S.base.metric 0)) : BddAbove (Set.range (F.S.scalar 0)) := by
   classical
   by_contra hunbounded
   let _ : NeZero (Module.finrank ℝ E) := ⟨by omega⟩
@@ -71,8 +69,8 @@ theorem KLim.three_terminal_bddAbove_of_positive
   obtain ⟨_soul, eSource, _⟩ :=
     DifferentialGeometry.Geometry.Topology.exists_diffeomorph_euclidean_three_of_positiveSectionalCurvature
       g hEnorm hsec hdim
-  have hEuclidean : Nonempty (F.M ≃ₜ EuclideanSpace ℝ (Fin 3)) :=
-    ⟨eSource.toHomeomorph⟩
+  have hEuclidean : Nonempty (F.M ≃ₘ⟮I, 𝓡 3⟯ EuclideanSpace ℝ (Fin 3)) :=
+    ⟨eSource⟩
   obtain ⟨x, r, hQ, _hr, hQescape, _hQr, hexpand, hescape, hscaled,
       _hratio, hlocal, _hbackward, _hlocalAll⟩ :=
     exists_harnack_terminal_blowup_sequence F hK hunbounded F.basepoint
@@ -112,7 +110,7 @@ theorem KLim.three_terminal_bddAbove_of_positive
       F L hK hL hdim F.basepoint x' hQ'
       (hescape.comp hshift.tendsto_atTop) (hscaled.comp hshift.tendsto_atTop)
       hphi (Phi.atTime (X := terminalCurvatureNormalizedFlowSeq F hK x' hQ')
-        (L := L) (phi := phi) 0) C0 hC0 hEuclidean hnoEmbedding
+        (L := L) (phi := phi) 0) C0 hC0 hEuclidean
   obtain ⟨k0, hk0⟩ := hnecks spatialNeckControlEpsilon spatialNeckControlEpsilon_pos
   have hwitness (j : ℕ) :
       Nonempty (SpatialNeckWitness g mark (x' (phi (k0 + j))) spatialNeckControlEpsilon) := by

@@ -36,38 +36,32 @@ attribute [local instance] terminalTrichotomyInhabited
 
 theorem KLim.three_terminal_scalar_bddAbove_of_rankOne {kappa : ℝ}
     (hK : KLim (I := I) kappa F) (hdim : Module.finrank ℝ E = 3)
-    (hnoEmbedding : ∀ f : SphereAntipodalQuotient → EuclideanSpace ℝ (Fin 3),
-      ¬ _root_.Topology.IsEmbedding f)
     (hrankOne : ∀ _P : TerminalSurfaceProduct (I := I) (F.S.base.metric 0),
       BddAbove (Set.range (F.S.scalar 0))) :
     BddAbove (Set.range (F.S.scalar 0)) := by
   rcases klim_terminal_curvature_trichotomy F hK hdim with hpos | hflat | hprod
-  · exact hK.three_terminal_bddAbove_of_positive F hdim hpos hnoEmbedding
+  · exact hK.three_terminal_bddAbove_of_positive F hdim hpos
   · exact absurd hflat (hK.not_terminal_flat F hdim)
   · exact hprod.elim hrankOne
 
 
 theorem KLim.scalar_bounded_of_rankOne {kappa : ℝ}
     (hK : KLim (I := I) kappa F) (hdim : Module.finrank ℝ E = 3)
-    (hnoEmbedding : ∀ f : SphereAntipodalQuotient → EuclideanSpace ℝ (Fin 3),
-      ¬ _root_.Topology.IsEmbedding f)
     (hrankOne : ∀ _P : TerminalSurfaceProduct (I := I) (F.S.base.metric 0),
       BddAbove (Set.range (F.S.scalar 0))) :
     ∃ C : ℝ, PointedFlowScalarBounded (I := I) F C := by
   obtain ⟨C, hC⟩ :=
-    hK.three_terminal_scalar_bddAbove_of_rankOne F hdim hnoEmbedding hrankOne
+    hK.three_terminal_scalar_bddAbove_of_rankOne F hdim hrankOne
   exact ⟨C, hK.scalarBounded_of_terminal_bound fun x => hC (Set.mem_range_self x)⟩
 
 
 theorem KLim.isAncientKappaSolution_of_rankOne {kappa : ℝ}
     (hK : KLim (I := I) kappa F) (hdim : Module.finrank ℝ E = 3)
-    (hnoEmbedding : ∀ f : SphereAntipodalQuotient → EuclideanSpace ℝ (Fin 3),
-      ¬ _root_.Topology.IsEmbedding f)
     (hrankOne : ∀ _P : TerminalSurfaceProduct (I := I) (F.S.base.metric 0),
       BddAbove (Set.range (F.S.scalar 0))) :
     IsAncientKappaSolution (I := I) kappa F := by
   obtain ⟨C, hC⟩ :=
-    hK.three_terminal_scalar_bddAbove_of_rankOne F hdim hnoEmbedding hrankOne
+    hK.three_terminal_scalar_bddAbove_of_rankOne F hdim hrankOne
   exact hK.toIsAncientKappaSolution fun x => hC (Set.mem_range_self x)
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions

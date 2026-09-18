@@ -15,7 +15,7 @@ open DifferentialGeometry.Geometry
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.CheegerGromovCompactness
 open CanonicalNeighborhood
-open scoped Manifold ContDiff _root_.Topology
+open scoped _root_.Manifold ContDiff _root_.Topology
 
 universe u uE uH
 
@@ -51,9 +51,7 @@ theorem terminalCurvatureNormalizedFlowSeq_limit_eventually_spatialNeckWitness
     (C : MetricConvergenceData (I := I) Phi)
     (hcanonical : ∀ k, C.domain k =
       CanonicalMetricCompactness.canonicalSourceData (I := I) Phi k)
-    (hEuclidean : Nonempty (F.M ≃ₜ EuclideanSpace ℝ (Fin 3)))
-    (hnoEmbedding : ∀ f : SphereAntipodalQuotient → EuclideanSpace ℝ (Fin 3),
-      ¬ Topology.IsEmbedding f) :
+    (hEuclidean : Nonempty (F.M ≃ₘ⟮I, 𝓡 3⟯ EuclideanSpace ℝ (Fin 3))) :
     ∃ (yStar : SpatialNeckSphere)
       (e : SpatialNeckCylinder ≃ₘ⟮SpatialNeckCylinderModel, I⟯ G.M),
       e (yStar, 0) = G.basepoint ∧
@@ -66,7 +64,7 @@ theorem terminalCurvatureNormalizedFlowSeq_limit_eventually_spatialNeckWitness
                 (z : SpatialNeckCylinder))) := by
   obtain ⟨T, hT, d, hproduct⟩ :=
     exists_cylinder_of_terminalCurvatureNormalizedFlowSeq_limit
-      F G hK hG hdim p x hQ hescape hscaled hpsi Phi C hcanonical hEuclidean hnoEmbedding
+      F G hK hG hdim p x hQ hescape hscaled hpsi Phi C hcanonical hEuclidean
   have hscalar :=
     terminalCurvatureNormalizedFlowSeq_limit_scalar_base_one F hK x hQ Phi C hcanonical
   change metricScalarAt (I := I) (G.S.family.metric 0) G.basepoint = 1 at hscalar
