@@ -14,7 +14,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborho
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.CurvatureBounds
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorBounds
 
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.BlowupLimit
 
 set_option autoImplicit false
 noncomputable section
@@ -495,16 +494,6 @@ theorem closed_flow_models [CompactSpace M] [ConnectedSpace M]
     ring
   rw [htime] at hwit2
   exact hwit2
-
-theorem arbitrary_high_curvature_blowup [CompactSpace M] [ConnectedSpace M]
-    [T2Space (TangentBundle I3 M)] {T : ℝ} (hT : 0 < T)
-    (S : SolutionOn (I := I3) (M := M) (RealTimeInterval.closedOpen 0 T hT))
-    (hS : IsSolutionOn S) (o : TangentOrientationSection M) :
-    ∃ kappa : ℝ, 0 < kappa ∧ ∀ (x : ℕ → M) (t : ℕ → ℝ),
-      (∀ i, t i ∈ Set.Ico 0 T) →
-      Filter.Tendsto (fun i => S.scalar (t i) (x i)) Filter.atTop Filter.atTop →
-        Nonempty (BlowupLimit S o kappa x t) := by
-  sorry
 
 theorem buffered_canonical_pullback :
     ∃ epsCan : ℝ, 0 < epsCan ∧ ∀ eps : ℝ, 0 < eps → eps ≤ epsCan →

@@ -54,6 +54,13 @@ structure BlowupLimit (S : SolutionOn (I := I3) (M := M) D)
         (rescaledMetric S (t (subseq i)) (S.scalar (t (subseq i)) (x (subseq i))) (scale_pos i))
         (map i) K (Set.Icc (-A) 0) order eta)
 
+def BlowupLimit.ofSubsequence {S : SolutionOn (I := I3) (M := M) D}
+    {o : TangentOrientationSection M} {kappa : ℝ} {x : ℕ → M} {t : ℕ → ℝ}
+    (phi : ℕ → ℕ) (hphi : StrictMono phi)
+    (L : BlowupLimit S o kappa (x ∘ phi) (t ∘ phi)) : BlowupLimit S o kappa x t :=
+  { L with subseq := phi ∘ L.subseq, strictMono := hphi.comp L.strictMono }
+
+
 noncomputable def blowupLimitOfSlabCompactness
     {T theta : ℝ} (hT : 0 < T) (htheta : 0 < theta)
     (S : SolutionOn (I := I3) (M := M) (RealTimeInterval.closedOpen 0 T hT))
