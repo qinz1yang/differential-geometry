@@ -4876,3 +4876,64 @@ This handoff was written instead of starting (A) and (B-geometry), on the judgme
 that a fresh agent with these lemma names will execute the concrete plumbing
 faster than this lane can now. Lean process count observed at 2 when checked; no
 compile was run this round.
+
+## (A) delivered: the Moebius band is a combinatorial 2-manifold with boundary
+
+`MobiusManifold.lean` (new, 30 declarations).
+`isCombinatorialManifoldWithBoundary_mobiusComplex : IsCombinatorialManifoldWithBoundary 2
+mobiusComplex`.
+
+### The route, as the spec predicted
+
+Every vertex link is the three-edge path `v+2 — v+1 — v+4 — v+3` on the four other
+vertices: the triangles through `v` are `mobiusTriIdx v`, `mobiusTriIdx (v+3)` and
+`mobiusTriIdx (v+4)`, so the link edges are `{v+1,v+2}`, `{v+4,v+1}` and
+`{v+3,v+4}`. The proof is done once over the cyclic index and the five instances
+come from `isCombinatorialManifoldWithBoundary_mobiusComplex` itself, which only
+has to turn `{x} ∈ mobiusComplex.faces` into `x = mobiusVertex c`.
+
+Three graph facts feed `isPLBall_one_of_edgeGraph_connected_of_exists_degree_one`:
+`isCombinatorialManifoldWithBoundary_one_geometricLink_mobiusComplex` (through
+`isCombinatorialManifoldWithBoundary_one_iff`, with the four neighbour sets
+computed by `geometricLink_mobiusComplex_neighborSet_eq_singleton` and
+`..._eq_pair`), `edgeGraph_geometricLink_mobiusComplex_connected` (everything is
+reachable from `mobiusVertex (v+1)` in at most two steps) and
+`exists_degree_one_edgeGraph_geometricLink_mobiusComplex` (`mobiusVertex (v+2)` is
+a leaf).
+
+All `Fin 5` combinatorics is isolated in eighteen `decide` lemmas at the top of the
+file; nothing below them decides anything.
+
+### The instance trap, and why the file is laid out the way it is
+
+`DecidableEq (Fin 5 → ℝ)` **does** have a real instance,
+`fun a b => Fintype.decidablePiFintype a b`, so `{a, b} : Finset (Fin 5 → ℝ)`
+written in a fresh file does *not* agree with the `Finset` pair inside
+`isCombinatorialManifoldWithBoundary_one_iff`, `edgeGraph`,
+`ncard_neighborSet_edgeGraph` or the definition of
+`IsCombinatorialManifoldWithBoundary`: those were elaborated with `E` a variable,
+hence with `fun a b => Classical.propDecidable (a = b)`. `Decidable` is data, not a
+`Prop`, so the two are not defeq and every interface application fails with
+"application type mismatch". Taking `[DecidableEq (Fin 5 → ℝ)]` as a lemma
+parameter does **not** fix it, because synthesis at the use site still finds the
+`Fintype` instance.
+
+What fixes it is `attribute [local instance 10000] Classical.propDecidable`, which
+makes this file's own `Finset` pairs and `geometricLink` carry exactly the
+library's term. Plain `attribute [local instance] Classical.propDecidable` is
+**not** enough: at default priority the `Fintype` instance still wins.
+
+Consequence, and the reason for the file order: after that attribute, `decide` and
+`omega` are broken — their certificates are `decide _ = true` proofs, and the
+`Decidable` instance they pick is now the classical one, which does not reduce, so
+the kernel rejects the term (`omega` fails with
+`id (Eq.refl true) : decide ({lowerBound := some 3, upperBound := some 2}.isImpossible = true) = true`).
+Every `decide` lemma therefore sits above the attribute line, and the one
+arithmetic step below it uses `Nat.le_of_succ_le_succ` instead of `omega`.
+
+### Verification
+
+`check-f.ps1 -Module DifferentialGeometry.Topology.PiecewiseLinear.MobiusManifold`
+exit=0, zero warnings, 10.0 s. `.lake/scratch/AuditSMobiusManifold.lean` audits all
+30 declarations; every one depends only on `propext`, `Classical.choice`,
+`Quot.sound`, none on `sorryAx`.
