@@ -957,3 +957,22 @@ theorem eq_top_of_boundaryLoops_mem_normal
   `g`、三盘分解与 `IsGlueIso` 完成 Figure 25.3/25.5 的源盘重连及 Figure 25.4/25.6 的两张胞腔。
 - 在该生产者交付前，不能诚实声明 `exists_separated_along_branch`，也不能继续 Case 3/4 的实际 `L₂` 或复杂度下降接线；
   Case 1/2 按用户指定顺序保持未开始。本次没有把缺口改写成显式结论型假设。
+
+## 45. 2026-09-17 E3-M2：横向侧选择的形式核心（弧可行、圆的障碍确切）
+
+- §44 列出的两项缺失里，第一项（哪张平面对应固定源片 `A`）经 F 车道 §19.105 的分析取消：两张片只沿 `S` 相交，
+  所以"含 `D(A)` 的那张平面"在每个 crossing 图卡里唯一确定，可直接作为定义，不需要沿分支作相容选择。
+- 第二项（横向商线的正向）的形式核心现在在 `BranchSignChain.lean` 里：
+  - `exists_sideChoice_of_chain (τ : Fin n → ZMod 2) : ∃ ε : Fin (n+1) → ZMod 2,
+    ∀ i, ε i.succ = ε i.castSucc + τ i`。把 `τ i` 读作第 `i` 与第 `i+1` 张图卡在重叠上是否交换两侧，
+    `ε` 就是沿链的相容正向选择。链（弧）情形因此**无条件可解**，构造是逐段部分和 `sidePartialSum`。
+  - `sum_sideJump_eq_zero_of_cycle`：若在循环指标上存在这样的 `ε`，则 `∑ i, τ i = 0`；
+    `not_exists_sideChoice_of_cycle` 是其逆否。这就是圆分支的确切障碍：总单值性非零时不存在相容正向，
+    与 F §19.105 的"`Q` 沿 `S` 必须双侧"是同一件事的组合形式。
+- 对 §25.1 实际需要的 Case 3/4，`A_j` 是触边分支即弧，故上面的链版本适用。
+- `BranchSignChain` 聚焦检查 exit=0（5.7 秒）、零 warning；`.lake/scratch/AuditE3SignChain.lean` 三项仅
+  `propext`、`Classical.choice`、`Quot.sound`（第一条甚至不用选择公理）。
+- 仍未闭合、按 §44 归 F：把 `exists_finite_crossing_chart_cover` 的有限图卡集**按分支排成链**
+  （需要 §16/§17 的 PL 区间分类给出沿弧的次序，以及重叠连通），再把每张图卡里的线性推移用 `ε` 定向、
+  在重叠上线性插值成全局单射 PL 自映射。`exists_separated_along_branch` 仍未声明；Case 1/2 未开始。
+
