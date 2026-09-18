@@ -200,4 +200,33 @@ theorem exists_collarExtension_image_inter_boundary_of_boundarySweep
       (hann Δ' ρ τ hΔ'ball hsubint hρpl hτpl hρmaps hρid' hρfr hρsurj hτ0' hτ1')
   exact ⟨G, by rw [hGdomeq]; exact hsubint.trans interior_subset, hGdisk, houter, himage⟩
 
+theorem isPLOn_comp_isPiecewiseAffineOn_of_mapsTo {n m p : ℕ} {N : Type u} [TopologicalSpace N]
+    [ChartedSpace (EuclideanSpace ℝ (Fin m)) N]
+    {f : EuclideanSpace ℝ (Fin n) → N}
+    {μ : EuclideanSpace ℝ (Fin p) → EuclideanSpace ℝ (Fin n)}
+    {R : Set (EuclideanSpace ℝ (Fin n))} {S : Set (EuclideanSpace ℝ (Fin p))}
+    (hf : IsPLOn n m f R) (hμ : IsPiecewiseAffineOn μ S) (hmap : MapsTo μ S R) :
+    IsPLOn p m (f ∘ μ) S := by
+  intro x hx
+  have hfx :=
+    (StructureGroupoid.liftPropWithinAt_self_source).mp (hf (μ x) (hmap hx))
+  apply (StructureGroupoid.liftPropWithinAt_self_source).mpr
+  refine ⟨hfx.1.comp (hμ x hx).continuousWithinAt hmap, ?_⟩
+  have hcomp := hfx.2.comp (hμ x hx)
+  have hSR : S ∩ μ ⁻¹' R = S := inter_eq_left.mpr hmap
+  rw [hSR] at hcomp
+  exact IsPiecewiseAffineWithinAt.congr hcomp fun _ _ => rfl
+
+theorem isPLOn_of_isPiecewiseAffineOn_factorization {n m p : ℕ} {N : Type u} [TopologicalSpace N]
+    [ChartedSpace (EuclideanSpace ℝ (Fin m)) N]
+    {f : EuclideanSpace ℝ (Fin n) → N}
+    {μ : EuclideanSpace ℝ (Fin p) → EuclideanSpace ℝ (Fin n)}
+    {F : EuclideanSpace ℝ (Fin p) → N}
+    {R : Set (EuclideanSpace ℝ (Fin n))} {S : Set (EuclideanSpace ℝ (Fin p))}
+    (hf : IsPLOn n m f R) (hμ : IsPiecewiseAffineOn μ S) (hmap : MapsTo μ S R)
+    (hF : ∀ x ∈ S, F x = f (μ x)) : IsPLOn p m F S := by
+  intro x hx
+  exact piecewiseAffineProperty_localInvariantProp.liftPropWithinAt_congr_of_mem
+    (isPLOn_comp_isPiecewiseAffineOn_of_mapsTo hf hμ hmap x hx) (fun y hy => hF y hy) hx
+
 end DifferentialGeometry.Topology.PiecewiseLinear

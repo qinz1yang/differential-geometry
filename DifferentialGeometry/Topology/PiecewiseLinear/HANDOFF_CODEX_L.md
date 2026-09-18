@@ -1660,11 +1660,16 @@ theorem eq_top_of_boundaryLoops_mem_normal
   的一个 PL 弧参数化；(b) 该弧与它在 `Bd M` 上的落点之间的棱柱的分片仿射实现
   （`PrismArc*` 一族）；(c) `IsPLOn` 与平面 `IsPiecewiseAffineOn` 复合的公开版引理
   （`CellGluing.lean` 里那条的非 private 副本）。
-  未经验证的代价估计：约 400–900 行、2–4 个工作段；其中 (c) 约 20 行，(a) 中等，
+  其中 **(c) 本节已经做了**：`isPLOn_comp_isPiecewiseAffineOn_of_mapsTo` 与
+  `isPLOn_of_isPiecewiseAffineOn_factorization`（后者直接把 `hann` 化成
+  “找到平面棱柱区域 `R`、分片仿射的 `μ : Plane → Plane` 与 `IsPLOn 2 3 Ψ R`，
+  使 `Ψ ∘ μ` 在环带上等于扫掠公式”），证明照抄 `CellGluing.lean` 那条 private 引理；
+  待有独占刷新窗口时应下沉到 `PLMap.lean`。
+  未经验证的代价估计：剩下的 (a)+(b) 约 400–900 行、2–4 个工作段；(a) 中等，
   (b) 是主要部分且取决于 `PrismArc*` 现有引理与本处形状的匹配程度（本轮没有逐条核对）。
 - 本轮**按主人指定的范围未做**：割开胞腔的 `singularSet` / `crossing`、`L₂` 的重贴胞腔、
   Case 1/2。
 - 验证：`BranchBoundarySweep` 聚焦检查 exit=0（10.2 秒）、零 warning；
   `.lake/scratch/AuditE3PlanarSweep.lean`（同时 import `PlanarBallExterior` 与
-  `BranchBoundarySweep`，因此也顺带验证两支没有重名声明）的 39 条 `#print axioms`
+  `BranchBoundarySweep`，因此也顺带验证两支没有重名声明）的 41 条 `#print axioms`
   全部只含 `propext`、`Classical.choice`、`Quot.sound`，无 `sorryAx`。全程无其它 `lean.exe`。
