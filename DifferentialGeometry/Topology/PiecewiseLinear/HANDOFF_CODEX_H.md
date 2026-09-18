@@ -1823,3 +1823,39 @@ M1 只给"PL 同胚于一个锥"，不给"是一个锥"，所以绕不过去。
 顺带记录：树里**没有**显式点集仿射无关的写法（全部走
 `exists_affineIndependent_openSimplex_subset` 或 `affineIndependent_of_subset`），
 所以真要显式坐标的话是结构性摩擦而非 `norm_num` 级——这也是应当避开它的理由之一。
+
+## 22. 2026-09-18 弧与各块的交 — done，作为可复用的线段引理（`SegmentSplit.lean`）
+
+上一节把显式坐标消掉之后，"三条弧与各块的交"不再是坐标计算，而是**线段与半空间／超平面求交**。
+交付五条，全部只要 `[AddCommGroup E] [Module ℝ E]`（承接第 21 节的常驻提示：不要加几何假设）：
+
+- `segment_inter_le_eq_singleton`（`ℓ z = r`、`r < ℓ w`）：`segment ℝ z w ∩ {ℓ ≤ r} = {z}`。
+- `segment_inter_ge_eq_singleton`（`ℓ z = r`、`ℓ p < r`）：`segment ℝ z p ∩ {r ≤ ℓ} = {z}`。
+  由上一条对 `-ℓ`、`-r` 取负得到，不重证。
+- `segment_inter_le_eq_segment`（`z ∈ segment p w`、`ℓ z = r`、`ℓ p ≤ r`、`r < ℓ w`）：
+  `segment ℝ p w ∩ {ℓ ≤ r} = segment ℝ p z`。
+  **证明复用第 19 节的劈分**：先 `← segment_union_segment_of_mem_segment` 把 `segment p w`
+  拆成 `segment z p ∪ segment z w`，分配交，前半整个落在半空间（凸性），后半由第一条退成 `{z}`，
+  并回去即得。这正是协调者提醒的"劈分只证一次、两处都用"。
+- `segment_inter_ge_eq_segment`：同上取负，得 `segment ℝ p w ∩ {r ≤ ℓ} = segment ℝ z w`。
+- `segment_inter_eq_singleton`（两侧严格）：`segment ℝ p w ∩ {ℓ = r} = {z}`，
+  由 `{ℓ = r} = {ℓ ≤ r} ∩ {r ≤ ℓ}` 接前两条。
+
+这三条恰好对应模型要的三处：`C₁ ∩ 弧`（le 版）、`C₂ ∩ 弧`（ge 版）、`公共面 ∩ 弧`（eq 版）。
+
+坑：`segment ℝ z w ∩ {ℓ ≤ r} = {z}` 里的 `b = 0` 不能直接 `nlinarith`——
+`a * r` 是两个变量的积，linarith 当原子，`hab` 代不进去。要先
+`have ha' : a = 1 - b := by linarith; rw [ha'] at hx`，再
+`nlinarith [mul_pos h (sub_pos.mpr hw)]`。另外 `Set.mem_setOf_eq` 已废弃，用 `Set.mem_ofPred_eq`。
+
+聚焦检查 `SegmentSplit` exit=0（7.5 秒）、零 warning；
+`.lake/scratch/AuditHSegmentSplit.lean` 六项仅 `propext`、`Classical.choice`、`Quot.sound`。
+
+### 组装还缺的一步（已定位，未开始，不报区间）
+
+把上面三条接到模型上，还差一条"超平面截痕"引理：`C₂ ⊆ {r ≤ ℓ}` 只给单向，
+要得到 `C₁ ∩ segment p w = segment p z` 还需要
+**`convexHull (insert a F) ∩ {ℓ = r} = convexHull F`**（`ℓ` 在 `F` 上为 `r`、`ℓ a ≠ r`）。
+它其实是第 17 节 `convexHull_insert_inter_convexHull_insert_of_separating` 证明**内部**已经做出来的那一步，
+只是没单独导出；把它抽出来之后，分离定理本身也应当由它加两条半空间包含直接得到。
+建议下次先做这个重构，再拼三对与并对。第 3、4 步仍未开始。
