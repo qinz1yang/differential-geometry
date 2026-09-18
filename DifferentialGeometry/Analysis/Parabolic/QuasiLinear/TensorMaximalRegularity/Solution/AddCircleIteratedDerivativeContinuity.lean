@@ -1,3 +1,5 @@
+import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Solution.RepresentativeDependence
+import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Scalar.AddCircleIteratedDerivativeNorm
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Scalar.AddCircleIteratedDerivativeLift
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Duhamel.AddCircleIteratedDifferentiation
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Solution.Inclusion
@@ -510,6 +512,150 @@ theorem iteratedParameterDerivativeHs_duhamel_representative_ae_of_lift
     J.coeFn_compLpL (maximalRegularityDuhamelVectorField hT 0 FH)] with t ht hD hJ
   change D (W t) = J (maximalRegularityDuhamelVectorField hT 0 FH t)
   rw [ht, ← hD, hfield, hJ]
+
+open scoped _root_.Topology
+
+private theorem tendstoUniformlyOn_iterated_graph
+    {ι P : Type*} [Finite ι] {l : Filter P}
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) (m : ℕ) (T : ℝ)
+    (W₀ : ℝ → PiLp 2 (fun _ : ι => TensorHs g 0 0 ((m : ℝ) + 2)))
+    (W : P → ℝ → PiLp 2 (fun _ : ι => TensorHs g 0 0 ((m : ℝ) + 2))) :
+  let J := ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion
+    (g := g) (r := 0) (s := 0)
+      (by linarith : (m : ℝ) + 1 ≤ (m : ℝ) + 2))
+  let D := ContinuousLinearMap.piLpMap 2 (fun _ : ι =>
+    (tensorHsInclusion (g := g) (r := 0) (s := 0)
+      (by norm_num : (1 : ℝ) + 1 ≤ ((2 : ℕ) : ℝ))).comp
+        ((AddCircle.iteratedParameterDerivativeHs g 2 m).comp
+          (tensorHsInclusion (g := g) (r := 0) (s := 0)
+            (by push_cast; linarith : ((2 + m : ℕ) : ℝ) ≤ (m : ℝ) + 2))))
+  TendstoUniformlyOn (fun p t => J (W p t)) (fun t => J (W₀ t))
+    l (Set.Icc (0 : ℝ) T) →
+  TendstoUniformlyOn (fun p t => D (W p t)) (fun t => D (W₀ t))
+    l (Set.Icc (0 : ℝ) T) →
+  TendstoUniformlyOn W W₀ l (Set.Icc (0 : ℝ) T) := by
+  let _ := Fintype.ofFinite ι
+  intro J D hJ hD
+  let A := ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion
+    (g := g) (r := 0) (s := 0)
+      (by push_cast; linarith : ((0 + 2 + m : ℕ) : ℝ) ≤ (m : ℝ) + 2))
+  let B := ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion
+    (g := g) (r := 0) (s := 0)
+      (by push_cast; linarith : (m : ℝ) + 2 ≤ ((0 + 2 + m : ℕ) : ℝ)))
+  let L := ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion
+    (g := g) (r := 0) (s := 0)
+      (by push_cast; linarith : ((0 + 1 + m : ℕ) : ℝ) ≤ (m : ℝ) + 1))
+  let E := ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion
+    (g := g) (r := 0) (s := 0)
+      (by norm_num : ((0 + 2 : ℕ) : ℝ) ≤ (1 : ℝ) + 1))
+  let JN := ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion
+    (g := g) (r := 0) (s := 0)
+      (by exact_mod_cast (show 0 + 1 + m ≤ 0 + 2 + m by omega) :
+        ((0 + 1 + m : ℕ) : ℝ) ≤ ((0 + 2 + m : ℕ) : ℝ)))
+  let DN := ContinuousLinearMap.piLpMap 2 (fun _ : ι =>
+    AddCircle.iteratedParameterDerivativeHs g (0 + 2) m)
+  have hJNorm (x : PiLp 2 (fun _ : ι => TensorHs g 0 0 ((m : ℝ) + 2))) :
+      JN (A x) = L (J x) := by
+    apply PiLp.ext
+    intro i
+    simp only [JN, A, L, J, ContinuousLinearMap.piLpMap_apply,
+      ← tensorHsInclusion_trans_apply]
+  have hDNorm (x : PiLp 2 (fun _ : ι => TensorHs g 0 0 ((m : ℝ) + 2))) :
+      DN (A x) = E (D x) := by
+    apply PiLp.ext
+    intro i
+    simp only [DN, A, E, D, ContinuousLinearMap.piLpMap_apply,
+      ContinuousLinearMap.comp_apply, ← tensorHsInclusion_trans_apply,
+      tensorHsInclusion_refl_apply]
+  have hJ' := L.uniformContinuous.comp_tendstoUniformlyOn hJ
+  have hD' := E.uniformContinuous.comp_tendstoUniformlyOn hD
+  have hA : TendstoUniformlyOn (fun p t => A (W p t)) (fun t => A (W₀ t))
+      l (Set.Icc (0 : ℝ) T) := by
+    apply AddCircle.tendstoUniformlyOn_of_tensorHsInclusion_of_iteratedParameterDerivativeHs
+      g 0 m (fun t => A (W₀ t)) (fun p t => A (W p t))
+    · change TendstoUniformlyOn (fun p t => JN (A (W p t)))
+        (fun t => JN (A (W₀ t))) l (Set.Icc (0 : ℝ) T)
+      simpa only [Function.comp_def, hJNorm] using hJ'
+    · change TendstoUniformlyOn (fun p t => DN (A (W p t)))
+        (fun t => DN (A (W₀ t))) l (Set.Icc (0 : ℝ) T)
+      simpa only [Function.comp_def, hDNorm] using hD'
+  have hBA (x : PiLp 2 (fun _ : ι => TensorHs g 0 0 ((m : ℝ) + 2))) :
+      B (A x) = x := by
+    apply PiLp.ext
+    intro i
+    simp only [A, B, ContinuousLinearMap.piLpMap_apply,
+      ← tensorHsInclusion_trans_apply, tensorHsInclusion_refl_apply]
+  simpa only [Function.comp_def, hBA] using B.uniformContinuous.comp_tendstoUniformlyOn hA
+
+theorem tendstoUniformlyOn_duhamel_representatives_of_iterated_forcing_lift
+    {ι P : Type*} [Fintype ι] {l : Filter P}
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) (m : ℕ)
+    {T : ℝ} (hT : 0 < T)
+    (F₀ : timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 (m : ℝ))) T)
+    (F : P → timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 (m : ℝ))) T)
+    (FH₀ : timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 (1 : ℝ))) T)
+    (FH : P → timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 (1 : ℝ))) T)
+    (W₀ : ℝ → PiLp 2 (fun _ : ι => TensorHs g 0 0 ((m : ℝ) + 2)))
+    (W : P → ℝ → PiLp 2 (fun _ : ι => TensorHs g 0 0 ((m : ℝ) + 2)))
+    (hW₀ : ContinuousOn W₀ (Set.Icc (0 : ℝ) T))
+    (hW : ∀ p, ContinuousOn (W p) (Set.Icc (0 : ℝ) T))
+    (hlift₀ : iteratedParameterDerivativeDuhamelForcing g 0 m hT F₀ =
+      (ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion
+        (g := g) (r := 0) (s := 0) (by norm_num : ((0 : ℕ) : ℝ) ≤ 1))).compLpL
+          2 (timeMeasure T) FH₀)
+    (hlift : ∀ p, iteratedParameterDerivativeDuhamelForcing g 0 m hT (F p) =
+      (ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion
+        (g := g) (r := 0) (s := 0) (by norm_num : ((0 : ℕ) : ℝ) ≤ 1))).compLpL
+          2 (timeMeasure T) (FH p))
+    (hpin₀ : W₀ =ᵐ[timeMeasure T] maximalRegularityDuhamelVectorField hT 0 F₀)
+    (hpin : ∀ p, W p =ᵐ[timeMeasure T]
+      maximalRegularityDuhamelVectorField hT 0 (F p))
+    (hJ : TendstoUniformlyOn (fun p t =>
+      (ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion
+        (g := g) (r := 0) (s := 0)
+          (by linarith : (m : ℝ) + 1 ≤ (m : ℝ) + 2))) (W p t))
+      (fun t => (ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion
+        (g := g) (r := 0) (s := 0)
+          (by linarith : (m : ℝ) + 1 ≤ (m : ℝ) + 2))) (W₀ t))
+      l (Set.Icc (0 : ℝ) T))
+    (hFH : Tendsto FH l (𝓝 FH₀)) :
+    TendstoUniformlyOn W W₀ l (Set.Icc (0 : ℝ) T) := by
+  let D := ContinuousLinearMap.piLpMap 2 (fun _ : ι =>
+    (tensorHsInclusion (g := g) (r := 0) (s := 0)
+      (by norm_num : (1 : ℝ) + 1 ≤ ((2 : ℕ) : ℝ))).comp
+        ((AddCircle.iteratedParameterDerivativeHs g 2 m).comp
+          (tensorHsInclusion (g := g) (r := 0) (s := 0)
+            (by push_cast; linarith : ((2 + m : ℕ) : ℝ) ≤ (m : ℝ) + 2))))
+  have hpinD (f : timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 (m : ℝ))) T)
+      (fh : timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 (1 : ℝ))) T)
+      (w : ℝ → PiLp 2 (fun _ : ι => TensorHs g 0 0 ((m : ℝ) + 2)))
+      (hliftf : iteratedParameterDerivativeDuhamelForcing g 0 m hT f =
+        (ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion
+          (g := g) (r := 0) (s := 0) (by norm_num : ((0 : ℕ) : ℝ) ≤ 1))).compLpL
+            2 (timeMeasure T) fh)
+      (hpinw : w =ᵐ[timeMeasure T] maximalRegularityDuhamelVectorField hT 0 f) :
+      (fun t => D (w t)) =ᵐ[timeMeasure T] fun t =>
+        (ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion
+          (g := g) (r := 0) (s := 0)
+            (by linarith : (1 : ℝ) + 1 ≤ (1 : ℝ) + 2)))
+              (maximalRegularityDuhamelVectorField hT 0 fh t) := by
+    filter_upwards [iteratedParameterDerivativeHs_duhamel_representative_ae_of_lift
+      g m hT f fh w hliftf hpinw] with t ht
+    apply PiLp.ext
+    intro i
+    apply tensorHsInclusion_injective
+      (by norm_num : ((0 : ℕ) : ℝ) + 2 ≤ (1 : ℝ) + 1)
+    simpa only [D, ContinuousLinearMap.piLpMap_apply, ContinuousLinearMap.comp_apply,
+      ← tensorHsInclusion_trans_apply] using congrArg (fun v => v i) ht
+  have hD : TendstoUniformlyOn (fun p t => D (W p t)) (fun t => D (W₀ t))
+      l (Set.Icc (0 : ℝ) T) :=
+    tendstoUniformlyOn_continuousOn_duhamel_representatives hT FH₀ FH
+      (fun t => D (W₀ t)) (fun p t => D (W p t))
+      (D.continuous.comp_continuousOn hW₀)
+      (fun p => D.continuous.comp_continuousOn (hW p))
+      (hpinD F₀ FH₀ W₀ hlift₀ hpin₀)
+      (fun p => hpinD (F p) (FH p) (W p) (hlift p) (hpin p)) hFH
+  exact tendstoUniformlyOn_iterated_graph g m T W₀ W hJ hD
 
 end DifferentialGeometry.Analysis.Parabolic.QuasiLinear
 

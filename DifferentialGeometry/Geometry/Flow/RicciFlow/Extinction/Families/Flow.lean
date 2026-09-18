@@ -1,3 +1,7 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProjectedAreaBounds
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.SweptAnnulus
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.LoopFamilyContinuity
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProductLengthEvolution
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.Preparation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Projection
 
@@ -45,33 +49,6 @@ theorem rfs_prepared_family_flow (B : RicciBackground (I := I) (M := Q) D a b)
             FreeHomotopyClass.mk (contractibleRegularLoopInclusion.comp prepared) := by
   sorry
 
-theorem rfs_ramp_uniform_bounds (B : RicciBackground (I := I) (M := Q) D a b)
-    (L₀ Theta₀ Ainit : ℝ) (hL₀ : 0 ≤ L₀) (hTheta₀ : 0 ≤ Theta₀) (hAinit : 0 ≤ Ainit) :
-    let delta := b - a
-    let Lbar := Real.exp (B.B₀ * delta) * L₀
-    let Thetabar := (Theta₀ + L₀) * Real.exp ((B.C + B.B₀) * delta)
-    let Abar := Real.exp (2 * B.B₀ * delta) * (Ainit + delta * Thetabar)
-    let Cup := Real.exp (2 * B.B₀ * delta) * (2 * B.B₀ * Abar + Thetabar)
-    ∀ lambda : ℝ, 0 < lambda → lambda ≤ 1 → ∀ c : ProductCurve Q,
-      c.IsSolutionOn B.family.metric lambda (Icc a b) →
-      c.IsRampOn B.family.metric lambda (Icc a b) → c.degree = 1 →
-      ∀ γ : ℝ → ContinuousFreeLoop Q,
-        (∀ t ∈ Icc a b, ∀ z, γ t z = c.projection z t) →
-        (∀ t ∈ Icc a b, IsContractibleLoop (γ t)) →
-        c.length B.family.metric lambda a ≤ L₀ →
-        c.totalCurvature B.family.metric lambda a ≤ Theta₀ →
-        loopFamilyLeastArea B.family.metric γ a ≤ Ainit →
-        ContinuousOn (loopFamilyLeastArea B.family.metric γ) (Icc a b) ∧
-        (∀ t ∈ Icc a b,
-          c.length B.family.metric lambda t ≤ Lbar ∧
-          c.totalCurvature B.family.metric lambda t ≤ Thetabar ∧
-          0 ≤ loopFamilyLeastArea B.family.metric γ t ∧
-          loopFamilyLeastArea B.family.metric γ t ≤ Abar) ∧
-        (∫ t in a..b, c.energy B.family.metric lambda t) ≤ Lbar ∧
-        ∀ s ∈ Icc a b, ∀ t ∈ Icc s b,
-          loopFamilyLeastArea B.family.metric γ t - loopFamilyLeastArea B.family.metric γ s ≤
-            Cup * (t - s) := by
-  sorry
 
 private def rampThetabar (B₀ C L₀ Θ₀ a b : ℝ) : ℝ :=
   (Θ₀ + L₀) * Real.exp ((C + B₀) * (b - a))
@@ -559,5 +536,58 @@ theorem rfs_prepared_family_flow_of_frontier (B : RicciBackground (I := I) (M :=
   obtain ⟨solutions, hcont, hdata⟩ := hsolutions
   obtain ⟨projected, hproj, hat, hjets, hclass⟩ := hprojected solutions hcont hdata
   exact ⟨solutions, projected, hcont, hdata, hproj, hat, hjets, hclass⟩
+
+theorem rfs_ramp_uniform_bounds (B : RicciBackground (I := I) (M := Q) D a b)
+    (L₀ Theta₀ Ainit : ℝ) (hL₀ : 0 ≤ L₀) (hTheta₀ : 0 ≤ Theta₀) (hAinit : 0 ≤ Ainit) :
+    let delta := b - a
+    let Lbar := Real.exp (B.B₀ * delta) * L₀
+    let Thetabar := (Theta₀ + L₀) * Real.exp ((B.C + B.B₀) * delta)
+    let Abar := Real.exp (2 * B.B₀ * delta) * (Ainit + delta * Thetabar)
+    let Cup := Real.exp (2 * B.B₀ * delta) * (2 * B.B₀ * Abar + Thetabar)
+    ∀ lambda : ℝ, 0 < lambda → lambda ≤ 1 → ∀ c : ProductCurve Q,
+      c.IsSolutionOn B.family.metric lambda (Icc a b) →
+      c.IsRampOn B.family.metric lambda (Icc a b) → c.degree = 1 →
+      ∀ γ : ℝ → ContinuousFreeLoop Q,
+        (∀ t ∈ Icc a b, ∀ z, γ t z = c.projection z t) →
+        (∀ t ∈ Icc a b, IsContractibleLoop (γ t)) →
+        c.length B.family.metric lambda a ≤ L₀ →
+        c.totalCurvature B.family.metric lambda a ≤ Theta₀ →
+        loopFamilyLeastArea B.family.metric γ a ≤ Ainit →
+        ContinuousOn (loopFamilyLeastArea B.family.metric γ) (Icc a b) ∧
+        (∀ t ∈ Icc a b,
+          c.length B.family.metric lambda t ≤ Lbar ∧
+          c.totalCurvature B.family.metric lambda t ≤ Thetabar ∧
+          0 ≤ loopFamilyLeastArea B.family.metric γ t ∧
+          loopFamilyLeastArea B.family.metric γ t ≤ Abar) ∧
+        (∫ t in a..b, c.energy B.family.metric lambda t) ≤ Lbar ∧
+        ∀ s ∈ Icc a b, ∀ t ∈ Icc s b,
+          loopFamilyLeastArea B.family.metric γ t - loopFamilyLeastArea B.family.metric γ s ≤
+            Cup * (t - s) := by
+  have hcurv : curveShorteningTotalCurvatureBound (I := I) (M := Q) B := by
+    intro lambda hlambda _ c hc t ht
+    exact c.totalCurvature_add_length_le_exp B lambda hlambda
+      (uniqueDiffOn_Icc B.lt) hc B.lt Subset.rfl Subset.rfl a t
+      ⟨le_rfl, B.lt.le⟩ ht
+  refine rfs_ramp_uniform_bounds_of_product_bounds B L₀ Theta₀ Ainit hL₀ hTheta₀ hAinit
+    (fun lambda hlambda _ c hsol hlen htot t ht => ?_)
+    (fun lambda hlambda hlambda_one c hsol γ hγ hctr hlen htot hA => ?_)
+  · have hbounds := (c.length_energy_bounds B lambda hlambda (uniqueDiffOn_Icc B.lt)
+      hsol B.lt Subset.rfl Subset.rfl).2.2 a ⟨le_rfl, B.lt.le⟩ t ht
+    refine ⟨hbounds.1.trans (mul_le_mul_of_nonneg_left hlen (Real.exp_nonneg _)),
+      hbounds.2.trans (mul_le_mul_of_nonneg_left hlen (Real.exp_nonneg _)), ?_⟩
+    exact (hcurv lambda hlambda (by assumption) c hsol t ht).trans
+      (mul_le_mul_of_nonneg_left (add_le_add htot hlen) (Real.exp_nonneg _))
+  · have hagree : ∀ z t, t ∈ Icc a b → γ t z = c.projection z t :=
+      fun z t ht => hγ t ht z
+    have hγsmooth : (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a b) := by
+      rw [CurveMap.SmoothOn]
+      refine hsol.smooth.1.congr ?_
+      intro p hp
+      exact hagree (p.1 : AddCircle (1 : ℝ)) p.2 hp.2
+    have hcont := continuousOn_loopFamilyLeastArea_of_contractible B γ hγsmooth hctr
+    obtain ⟨hrange, hslope⟩ := rfs_csf_projection_upper_control B
+      B.curveShorteningLeastAreaSlope hcurv L₀ Theta₀ Ainit hL₀ hTheta₀ hAinit
+      lambda hlambda hlambda_one c hsol γ hagree hctr hcont hlen htot hA
+    exact ⟨hcont, hrange, hslope⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Extinction.Families

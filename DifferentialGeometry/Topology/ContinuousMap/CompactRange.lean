@@ -1,3 +1,4 @@
+import DifferentialGeometry.Topology.UniformConvergence
 import Mathlib.Topology.MetricSpace.Thickening
 import Mathlib.Topology.ContinuousMap.Compact
 
@@ -40,3 +41,43 @@ theorem ContinuousAt.exists_isCompact_range_subset
   exact (hF.eventually
     (ContinuousMap.eventually_range_subset isOpen_interior hzK)).mono
       fun w hw => hw.trans interior_subset
+
+open Filter Set
+
+namespace TendstoUniformlyOn
+
+variable {X S A E : Type*} [TopologicalSpace A] [CompactSpace A]
+  [PseudoMetricSpace E] {l : Filter X} {K : Set S}
+  {q : X → S → C(A, E)} {q₀ : S → C(A, E)}
+
+theorem continuousMap_eval (hq : TendstoUniformlyOn q q₀ l K) :
+    TendstoUniformlyOn (fun x (p : S × A) => q x p.1 p.2)
+      (fun p : S × A => q₀ p.1 p.2) l (K ×ˢ univ) := by
+  apply Metric.tendstoUniformlyOn_iff.mpr
+  intro ε hε
+  filter_upwards [Metric.tendstoUniformlyOn_iff.mp hq ε hε] with x hx p hp
+  exact (ContinuousMap.dist_apply_le_dist p.2).trans_lt (hx p.1 hp.1)
+
+variable [TopologicalSpace S] [LocallyCompactSpace E]
+
+theorem exists_isCompact_eventually_forall_eval_mem
+    (hq : TendstoUniformlyOn q q₀ l K) (hK : IsCompact K)
+    (hq₀ : ContinuousOn q₀ K) {U : Set E} (hU : IsOpen U)
+    (hmap : ∀ s ∈ K, ∀ a, q₀ s a ∈ U) :
+    ∃ L : Set E, IsCompact L ∧ L ⊆ U ∧
+      (∀ s ∈ K, ∀ a, q₀ s a ∈ interior L) ∧
+      ∀ᶠ x in l, ∀ s ∈ K, ∀ a, q x s a ∈ L := by
+  have hq₀eval : ContinuousOn (fun p : S × A => q₀ p.1 p.2) (K ×ˢ univ) :=
+    continuous_eval.comp_continuousOn (hq₀.prodMap continuousOn_id)
+  have hq₀U : MapsTo (fun p : S × A => q₀ p.1 p.2) (K ×ˢ univ) U :=
+    fun p hp => hmap p.1 hp.1 p.2
+  obtain ⟨L, hL, hLU, hq₀L, hqL⟩ :=
+    hq.continuousMap_eval.exists_isCompact_eventually_mapsTo_of_isCompact
+      (hK.prod isCompact_univ) hq₀eval hU hq₀U
+  refine ⟨L, hL, hLU, ?_, ?_⟩
+  · intro s hs a
+    exact hq₀L (x := (s, a)) ⟨hs, mem_univ a⟩
+  · filter_upwards [hqL] with x hx s hs a
+    exact hx (x := (s, a)) ⟨hs, mem_univ a⟩
+
+end TendstoUniformlyOn

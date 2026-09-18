@@ -1,3 +1,4 @@
+import Mathlib.Topology.Compactness.LocallyCompact
 import Mathlib.Topology.UniformSpace.UniformApproximation
 import Mathlib.Topology.Maps.Basic
 import Mathlib.Topology.ContinuousMap.Basic
@@ -152,3 +153,54 @@ theorem TendstoUniformlyOn.comp_of_eventually_mapsTo
     exact hk x.property
   · intro x
     exact hmapInf x.property
+
+namespace TendstoUniformlyOn
+
+variable {A E N : Type*} [UniformSpace E] [LocallyCompactSpace E]
+  {K : Set A} {X : N → A → E} {v : A → E} {l : Filter N}
+
+theorem exists_isCompact_eventually_mapsTo_of_isCompact_image
+    (hX : TendstoUniformlyOn X v l K) (hK : IsCompact (v '' K))
+    {U : Set E} (hU : IsOpen U) (hv : MapsTo v K U) :
+    ∃ L : Set E, IsCompact L ∧ L ⊆ U ∧ MapsTo v K (interior L) ∧
+      ∀ᶠ n in l, MapsTo (X n) K L := by
+  obtain ⟨L, hL, hKL, hLU⟩ :=
+    exists_compact_between hK hU (mapsTo_iff_image_subset.mp hv)
+  have hvL : MapsTo v K (interior L) := mapsTo_iff_image_subset.mpr hKL
+  refine ⟨L, hL, hLU, hvL, ?_⟩
+  exact (hX.eventually_mapsTo_of_isCompact_image hK isOpen_interior hvL).mono
+    fun n hn x hx => interior_subset (hn hx)
+
+theorem exists_isCompact_eventually_mapsTo_of_isCompact [TopologicalSpace A]
+    (hX : TendstoUniformlyOn X v l K) (hK : IsCompact K)
+    (hv : ContinuousOn v K) {U : Set E} (hU : IsOpen U) (hmap : MapsTo v K U) :
+    ∃ L : Set E, IsCompact L ∧ L ⊆ U ∧ MapsTo v K (interior L) ∧
+      ∀ᶠ n in l, MapsTo (X n) K L :=
+  hX.exists_isCompact_eventually_mapsTo_of_isCompact_image
+    (hK.image_of_continuousOn hv) hU hmap
+
+end TendstoUniformlyOn
+
+namespace TendstoUniformly
+
+variable {A E N : Type*} [TopologicalSpace A] [CompactSpace A]
+  [UniformSpace E] [LocallyCompactSpace E]
+  {X : N → A → E} {v : A → E} {l : Filter N}
+
+theorem exists_isCompact_eventually_range_subset
+    (hX : TendstoUniformly X v l) (hv : Continuous v)
+    {U : Set E} (hU : IsOpen U) (hmap : range v ⊆ U) :
+    ∃ L : Set E, IsCompact L ∧ L ⊆ U ∧ range v ⊆ interior L ∧
+      ∀ᶠ n in l, range (X n) ⊆ L := by
+  have hvU : MapsTo v univ U := fun x _ => hmap (mem_range_self x)
+  obtain ⟨L, hL, hLU, hvL, hXL⟩ :=
+    hX.tendstoUniformlyOn.exists_isCompact_eventually_mapsTo_of_isCompact
+      isCompact_univ hv.continuousOn hU hvU
+  refine ⟨L, hL, hLU, ?_, ?_⟩
+  · rintro _ ⟨x, rfl⟩
+    exact hvL (mem_univ x)
+  · filter_upwards [hXL] with n hn
+    rintro _ ⟨x, rfl⟩
+    exact hn (mem_univ x)
+
+end TendstoUniformly

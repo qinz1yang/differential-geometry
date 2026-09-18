@@ -124,6 +124,73 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace ℝ M]
   [BoundarylessManifold 𝓘(ℝ, ℝ) M]
 private local instance : NeZero (Module.finrank ℝ ℝ) := ⟨by norm_num⟩
 
+theorem exists_scalarH1_time_composition_on_symmetric_time_interval
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) M)
+    (F : (Option ι → ℝ) → ℝ) {U : Set (Option ι → ℝ)}
+    (hF : ContDiffOn ℝ ∞ F U) (hU : IsOpen U)
+    (t₀ : ℝ) (u₀ : PiLp 2 (fun _ : ι => TensorHs g 0 0 1))
+    (hu₀ : Set.range (scalarH1PiToContinuous g (scalarH1TimeCoordinate g (t₀, u₀))) ⊆ U) :
+    ∃ R : ℝ, 0 < R ∧ ∃ C : ℝ≥0,
+      ∃ N : ℝ → Metric.closedBall (0 : PiLp 2 (fun _ : ι => TensorHs g 0 0 1)) R →
+        TensorHs g 0 0 1,
+      LipschitzWith C (fun p : ℝ × Metric.closedBall
+        (0 : PiLp 2 (fun _ : ι => TensorHs g 0 0 1)) R => N p.1 p.2) ∧
+      (∀ t ∈ Set.Icc (-R) R,
+        ∀ u ∈ Metric.closedBall (0 : PiLp 2 (fun _ : ι => TensorHs g 0 0 1)) R,
+        Set.range (scalarH1PiToContinuous g (scalarH1TimeCoordinate g (t₀ + t, u₀ + u))) ⊆ U) ∧
+      ∀ t ∈ Set.Icc (-R) R, ∀ u x,
+        scalarH1ToContinuous g (N t u) x = F (fun j => match j with
+          | none => t₀ + t
+          | some i => scalarH1ToContinuous g (u₀ i + u.1 i) x) := by
+  obtain ⟨δ, hδ, C, N, hN, hRange, hNe⟩ :=
+    exists_scalarH1_time_composition_on_ball g F hF hU t₀ u₀ hu₀
+  let R := δ / 2
+  have hR : 0 < R := half_pos hδ
+  have hRR : -R ≤ R := by linarith
+  let S := Metric.closedBall (0 : PiLp 2 (fun _ : ι => TensorHs g 0 0 1)) R
+  have hmap (p : ℝ × S) :
+      (t₀ + (Set.projIcc (-R) R hRR p.1 : ℝ), u₀ + p.2.1) ∈
+        Metric.ball (t₀, u₀) δ := by
+    rw [Metric.mem_ball, Prod.dist_eq, max_lt_iff]
+    constructor
+    · have hc := (Set.projIcc (-R) R hRR p.1).2
+      rw [Real.dist_eq, add_sub_cancel_left]
+      exact (abs_le.mpr hc).trans_lt (half_lt_self hδ)
+    · have hu := p.2.2
+      rw [Metric.mem_closedBall, dist_zero_right] at hu
+      rw [dist_eq_norm, add_sub_cancel_left]
+      exact hu.trans_lt (half_lt_self hδ)
+  let A : ℝ × S → Metric.ball (t₀, u₀) δ := fun p => ⟨_, hmap p⟩
+  have hA : LipschitzWith 1 A := by
+    apply LipschitzWith.of_dist_le_mul
+    intro p q
+    change dist (t₀ + (Set.projIcc (-R) R hRR p.1 : ℝ), u₀ + p.2.1)
+      (t₀ + (Set.projIcc (-R) R hRR q.1 : ℝ), u₀ + q.2.1) ≤ (1 : ℝ) * dist p q
+    rw [one_mul, Prod.dist_eq, Prod.dist_eq, dist_add_left, dist_add_left]
+    apply max_le_max
+    · simpa only [NNReal.coe_one, one_mul, Subtype.dist_eq] using
+        (LipschitzWith.projIcc hRR).dist_le_mul p.1 q.1
+    · exact le_rfl
+  refine ⟨R, hR, C, fun t u => N (A (t, u)), ?_, ?_, ?_⟩
+  · apply LipschitzWith.of_dist_le_mul
+    intro p q
+    exact (hN.dist_le_mul (A p) (A q)).trans
+      (mul_le_mul_of_nonneg_left
+        (by simpa only [NNReal.coe_one, one_mul] using hA.dist_le_mul p q) C.coe_nonneg)
+  · intro t ht u hu
+    have h := hRange _ (hmap (t, ⟨u, hu⟩))
+    simpa only [Set.projIcc_of_mem hRR ht] using h
+  · intro t ht u x
+    rw [hNe]
+    congr 1
+    funext j
+    cases j with
+    | none =>
+        change t₀ + (Set.projIcc (-R) R hRR t : ℝ) = t₀ + t
+        rw [Set.projIcc_of_mem hRR ht]
+    | some i => rfl
+
+
 theorem exists_scalarH1_time_composition_on_closedBall
     (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) M)
     (F : (Option ι → ℝ) → ℝ) {U : Set (Option ι → ℝ)}

@@ -1,3 +1,4 @@
+import Mathlib.Analysis.Calculus.IteratedDeriv.Lemmas
 import DifferentialGeometry.Geometry.Submanifold.Gauss
 import DifferentialGeometry.Geometry.Submanifold.SecondFundamentalForm.OpenImmersion
 import DifferentialGeometry.Analysis.Calculus.Sard
@@ -655,3 +656,54 @@ end CurveMap
 
 
 end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening
+
+noncomputable section
+
+open Set Filter
+open DifferentialGeometry.Geometry.Curvature
+open scoped ContDiff Manifold Topology
+
+namespace DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening.CurveMap
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E] {H : Type*} [TopologicalSpace H]
+  {I : ModelWithCorners ℝ E H}
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+omit [FiniteDimensional ℝ E] in
+theorem neg_deriv_speed_div_sq_div_speed_eq
+    {g : ℝ → SmoothRiemannianMetric I M} {c : CurveMap M} {J : Set ℝ}
+    (hc : c.SmoothOn (I := I) J) (hi : c.ImmersedOn (I := I) J)
+    {t : ℝ} (ht : t ∈ J) (x : ℝ) :
+    -(deriv (fun y => c.speed g y t) x / c.speed g x t ^ 2) / c.speed g x t =
+      (1 / 2 : ℝ) * deriv (fun y => c.speed g y t ^ (-2 : ℤ)) x := by
+  have hs := ((c.speed_contDiff g J hc hi t ht).differentiable (by simp) x).hasDerivAt
+  have hn : c.speed g x t ≠ 0 := (c.speed_pos g hi x t ht).ne'
+  have hd := ((hs.pow 2).inv (pow_ne_zero 2 hn)).deriv
+  change deriv (fun y => (c.speed g y t ^ 2)⁻¹) x =
+    -(2 * c.speed g x t ^ (2 - 1) * deriv (fun y => c.speed g y t) x) /
+      (c.speed g x t ^ 2) ^ 2 at hd
+  have heq : (fun y => c.speed g y t ^ (-2 : ℤ)) =
+      fun y => (c.speed g y t ^ 2)⁻¹ := by
+    funext y
+    simp only [zpow_neg, zpow_ofNat]
+  rw [heq, hd]
+  simp only [Nat.reduceSub, pow_one]
+  field_simp [hn]
+
+omit [FiniteDimensional ℝ E] in
+theorem iteratedDeriv_neg_deriv_speed_div_sq_div_speed
+    {g : ℝ → SmoothRiemannianMetric I M} {c : CurveMap M} {J : Set ℝ}
+    (hc : c.SmoothOn (I := I) J) (hi : c.ImmersedOn (I := I) J)
+    {t : ℝ} (ht : t ∈ J) (k : ℕ) (x : ℝ) :
+    iteratedDeriv k (fun y =>
+      -(deriv (fun z => c.speed g z t) y / c.speed g y t ^ 2) / c.speed g y t) x =
+      (1 / 2 : ℝ) * iteratedDeriv (k + 1) (fun y => c.speed g y t ^ (-2 : ℤ)) x := by
+  have heq : (fun y =>
+      -(deriv (fun z => c.speed g z t) y / c.speed g y t ^ 2) / c.speed g y t) =
+      fun y => (1 / 2 : ℝ) * deriv (fun z => c.speed g z t ^ (-2 : ℤ)) y :=
+    funext (neg_deriv_speed_div_sq_div_speed_eq hc hi ht)
+  rw [heq, iteratedDeriv_const_mul_field, iteratedDeriv_succ']
+
+end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening.CurveMap
+
+end

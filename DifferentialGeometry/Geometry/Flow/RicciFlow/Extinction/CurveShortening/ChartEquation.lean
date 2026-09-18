@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.CalculusGeometry
 import DifferentialGeometry.Analysis.Calculus.TimeJet.ClosedJetEvolution
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Basic
 import DifferentialGeometry.Geometry.Comparison.Variation.FirstVariation.Basic
@@ -815,5 +816,45 @@ theorem contDiffOn_of_parametric_chart_equation_spatial_jets
     G a b hab V hV Φ Ω hΩ hΦ hmap hGs hjets hpde').1
 
 end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening
+
+end
+
+noncomputable section
+
+open Set Filter
+open DifferentialGeometry.Geometry.Curvature
+open scoped ContDiff Manifold Topology
+
+namespace DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening.CurveMap
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E] {H : Type*} [TopologicalSpace H]
+  {I : ModelWithCorners ℝ E H}
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+theorem neg_deriv_speed_div_sq_div_speed_eq_half_deriv_chartDiffusionCoefficient
+    [I.Boundaryless]
+    {g : ℝ → SmoothRiemannianMetric I M} {c : CurveMap M} {J : Set ℝ}
+    (hc : c.SmoothOn (I := I) J) (hi : c.ImmersedOn (I := I) J)
+    (β : M) {t : ℝ} (ht : t ∈ J)
+    {x : ℝ} (hchart : c.lift x t ∈ (extChartAt I β).source) :
+    -(deriv (fun y => c.speed g y t) x / c.speed g x t ^ 2) / c.speed g x t =
+      (1 / 2 : ℝ) * deriv (fun y => curveShorteningChartDiffusionCoefficient g β
+        (t, extChartAt I β (c.lift y t),
+          deriv (fun z => extChartAt I β (c.lift z t)) y)) x := by
+  have hslice := contMDiffOn_univ.mp (c.space_slice_contMDiffOn J hc t ht)
+  have hmem : ∀ᶠ y in 𝓝 x, c.lift y t ∈ (extChartAt I β).source :=
+    hslice.continuous.continuousAt.preimage_mem_nhds
+      ((isOpen_extChartAt_source β).mem_nhds hchart)
+  have heq : (fun y => curveShorteningChartDiffusionCoefficient g β
+      (t, extChartAt I β (c.lift y t), deriv (fun z => extChartAt I β (c.lift z t)) y))
+      =ᶠ[𝓝 x] fun y => c.speed g y t ^ (-2 : ℤ) := by
+    filter_upwards [hmem] with y hy
+    exact chartDiffusionCoefficient_eq_speed_inv_sq g c β y t
+      (hslice.mdifferentiableAt (by simp)) hy
+  rw [heq.deriv_eq]
+  exact neg_deriv_speed_div_sq_div_speed_eq hc hi ht x
+
+
+end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening.CurveMap
 
 end
