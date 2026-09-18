@@ -10,6 +10,7 @@ variable {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ E] [FiniteDimensional ℝ F]
 
 theorem exists_simplicialComplex_pair_image_closedStar_of_isPiecewiseAffineOn
+    [DecidableEq E] [DecidableEq F]
     (K M : Geometry.SimplicialComplex ℝ E) [Finite K.faces] [Finite M.faces]
     (hM : M.faces ⊆ K.faces) {p : E} (hp : {p} ∈ M.faces)
     {U : Set E} (hU : U ∈ 𝓝 p) {h : E → F}
@@ -19,7 +20,9 @@ theorem exists_simplicialComplex_pair_image_closedStar_of_isPiecewiseAffineOn
         K₁.faces.Finite ∧ M₁.faces.Finite ∧ M₁.faces ⊆ K₁.faces ∧
           ({h p} : Finset F) ∈ M₁.faces ∧
             K₁.space = h '' closedStar R p ∧
-              M₁.space = h '' closedStar (restrict R M.space) p := by
+              M₁.space = h '' closedStar (restrict R M.space) p ∧
+                ∀ n : ℕ, IsPLSphere n (SimplicialComplex.geometricLink M {p}).space →
+                  IsPLSphere n (SimplicialComplex.geometricLink M₁ {h p}).space := by
   classical
   have hpK : p ∈ K.space :=
     K.convexHull_subset_space (hM hp) (subset_convexHull ℝ _ (by simp))
@@ -43,12 +46,19 @@ theorem exists_simplicialComplex_pair_image_closedStar_of_isPiecewiseAffineOn
   have hKSU : (starComplex R p).space ⊆ U := by
     rw [hKSspace]
     exact hstarU
-  obtain ⟨K₁, M₁, hK₁fin, hM₁fin, hfaces, hpM₁, hK₁space, hM₁space, -, -⟩ :=
+  obtain ⟨K₁, M₁, hK₁fin, hM₁fin, hfaces, hpM₁, hK₁space, hM₁space, -, -, hlinkMap⟩ :=
     exists_simplicialComplex_pair_image_of_isPiecewiseAffineOn (starComplex R p)
       (starComplex (restrict R M.space) p) hMSfaces hpMS
       (hpl.mono_of_isPolyhedron (isPolyhedron_space _) hKSU) (hinj.mono hKSU)
-  refine ⟨R, K₁, M₁, hRK, hpR, hstarU, hK₁fin, hM₁fin, hfaces, hpM₁, ?_, ?_⟩
+  refine ⟨R, K₁, M₁, hRK, hpR, hstarU, hK₁fin, hM₁fin, hfaces, hpM₁, ?_, ?_, ?_⟩
   · rw [hK₁space, hKSspace]
   · rw [hM₁space, hMSspace]
+  · intro n hlink
+    obtain ⟨g, hg⟩ := exists_isPLHomeomorphOn_geometricLink_of_isSubdivision hM' hp
+    have h1 : IsPLSphere n (SimplicialComplex.geometricLink (restrict R M.space) {p}).space :=
+      hlink.of_isPLHomeomorphOn hg.symm
+    refine hlinkMap n ?_
+    rw [geometricLink_starComplex]
+    exact h1
 
 end DifferentialGeometry.Topology.PiecewiseLinear

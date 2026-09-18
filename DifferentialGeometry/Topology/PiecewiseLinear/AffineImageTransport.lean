@@ -15,7 +15,8 @@ theorem exists_isGlueIso_of_affineOn_faces
     (hinj : InjOn f K.space) :
     ∃ (L : Geometry.SimplicialComplex ℝ F) (ψ : F → E), L.faces.Finite ∧
       L.space = f '' K.space ∧ IsGlueIso K L f ψ ∧ IsPLHomeomorphOn f K.space L.space ∧
-      EqOn (simplicialMap K f) f K.space := by
+      EqOn (simplicialMap K f) f K.space ∧
+      (∀ t : Finset F, t ∈ L.faces ↔ ∃ s ∈ K.faces, t = s.image f) := by
   classical
   obtain ⟨L, hfin, hspace, hfaces, hpl⟩ :=
     exists_simplicialComplex_image_of_affineOn_faces K hAff hinj
@@ -25,7 +26,7 @@ theorem exists_isGlueIso_of_affineOn_faces
   have hback (s : Finset E) (hs : s ∈ K.faces) (v : E) (hv : v ∈ s) : ψ (f v) = v :=
     (hinj.mono hvertices).leftInvOn_invFunOn
       (K.down_closed hs (Finset.singleton_subset_iff.mpr hv) (Finset.singleton_nonempty v))
-  refine ⟨L, ψ, hfin, hspace, ?_, hpl, simplicialMap_eq_of_forall_affineOn K f hAff⟩
+  refine ⟨L, ψ, hfin, hspace, ?_, hpl, simplicialMap_eq_of_forall_affineOn K f hAff, hfaces⟩
   refine ⟨fun s hs => (hfaces _).mpr ⟨s, hs, rfl⟩, ?_, hback, ?_⟩
   · intro t ht
     obtain ⟨s, hs, rfl⟩ := (hfaces _).mp ht
