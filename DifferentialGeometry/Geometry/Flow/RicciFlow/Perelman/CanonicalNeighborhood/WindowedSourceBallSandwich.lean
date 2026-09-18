@@ -57,49 +57,8 @@ private theorem source_ball_sandwich_of_reserve
       W.model.basepoint (le_add_of_nonneg_right zero_le_one)).trans W.buffered_ball)
   have ht0 : (0 : ℝ) ∈ Icc (-modelDepth delta) 0 :=
     ⟨neg_nonpos.mpr (inv_nonneg.mpr W.eps_pos.le), le_rfl⟩
-  have hlow : ∀ y ∈ riemannianClosedBallOf (I := I3)
-      (W.model.S.base.metric 0) W.model.basepoint a, ∀ v : TangentSpace I3 y,
-      (W.model.S.base.metric 0).inner y v v ≤ A ^ 2 *
-        (rescaledMetric S t (S.scalar t x) W.scalar_pos 0).inner
-          (W.embedding y) (mfderiv I3 I3 W.embedding y v)
-            (mfderiv I3 I3 W.embedding y v) := by
-    intro y hy v
-    have heq := W.comparison.pullback_eq 0 y
-      (hball (houter (hinner hy))) (fun _ => v)
-    have he := W.comparison.equivalence 0 ht0 y
-      (hball (houter (hinner hy))) v
-    rw [heq] at he
-    have hnonneg := inner_self_nonneg (W.model.S.base.metric 0) y v
-    calc
-      _ = 1 * (W.model.S.base.metric 0).inner y v v := by ring
-      _ ≤ ((1 - delta) * A ^ 2) *
-          (W.model.S.base.metric 0).inner y v v :=
-        mul_le_mul_of_nonneg_right hAcomp hnonneg
-      _ = A ^ 2 * ((1 - delta) * (W.model.S.base.metric 0).inner y v v) := by ring
-      _ ≤ A ^ 2 *
-          (rescaledMetric S t (S.scalar t x) W.scalar_pos 0).inner
-            (W.embedding y) (mfderiv I3 I3 W.embedding y v)
-              (mfderiv I3 I3 W.embedding y v) :=
-        mul_le_mul_of_nonneg_left he.1 (sq_nonneg A)
-  have hupp : ∀ y ∈ riemannianBallOf (I := I3)
-      (W.model.S.base.metric 0) W.model.basepoint b, ∀ v : TangentSpace I3 y,
-      (rescaledMetric S t (S.scalar t x) W.scalar_pos 0).inner
-          (W.embedding y) (mfderiv I3 I3 W.embedding y v)
-            (mfderiv I3 I3 W.embedding y v) ≤ L ^ 2 *
-        (W.model.S.base.metric 0).inner y v v := by
-    intro y hy v
-    have heq := W.comparison.pullback_eq 0 y
-      (hball hy) (fun _ => v)
-    have he := W.comparison.equivalence 0 ht0 y
-      (hball hy) v
-    rw [heq] at he
-    have hnonneg := inner_self_nonneg (W.model.S.base.metric 0) y v
-    exact (he.2.trans (mul_le_mul_of_nonneg_right hLcomp hnonneg))
-  have hresult := CompactDomain.map_strict_ball_sandwich K.domain
-    (W.model.S.base.metric 0)
-    (rescaledMetric S t (S.scalar t x) W.scalar_pos 0) W.embedding W.model.basepoint
-    (houter.trans hsource)
-    ha hA hL hinner houter hsource hlow hupp hreserve
+  have hresult := W.comparison.map_strict_ball_sandwich ht0 K.domain
+    W.model.basepoint ha hA hL hinner houter hsource hball hreserve hAcomp hLcomp
   simpa only [CompactDomain.map_carrier, W.base_map] using hresult
 
 omit [SigmaCompactSpace M] in
