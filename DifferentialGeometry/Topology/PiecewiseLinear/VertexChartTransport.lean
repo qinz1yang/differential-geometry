@@ -21,8 +21,8 @@ theorem exists_simplicialComplex_pair_image_closedStar_of_isPiecewiseAffineOn
           ({h p} : Finset F) ∈ M₁.faces ∧
             K₁.space = h '' closedStar R p ∧
               M₁.space = h '' closedStar (restrict R M.space) p ∧
-                ∀ n : ℕ, IsPLSphere n (SimplicialComplex.geometricLink M {p}).space →
-                  IsPLSphere n (SimplicialComplex.geometricLink M₁ {h p}).space := by
+                ∃ g : E → F, IsPLHomeomorphOn g (SimplicialComplex.geometricLink M {p}).space
+                  (SimplicialComplex.geometricLink M₁ {h p}).space := by
   classical
   have hpK : p ∈ K.space :=
     K.convexHull_subset_space (hM hp) (subset_convexHull ℝ _ (by simp))
@@ -53,13 +53,10 @@ theorem exists_simplicialComplex_pair_image_closedStar_of_isPiecewiseAffineOn
   refine ⟨R, K₁, M₁, hRK, hpR, hstarU, hK₁fin, hM₁fin, hfaces, hpM₁, ?_, ?_, ?_⟩
   · rw [hK₁space, hKSspace]
   · rw [hM₁space, hMSspace]
-  · intro n hlink
-    obtain ⟨g, hg⟩ := exists_isPLHomeomorphOn_geometricLink_of_isSubdivision hM' hp
-    have h1 : IsPLSphere n (SimplicialComplex.geometricLink (restrict R M.space) {p}).space :=
-      hlink.of_isPLHomeomorphOn hg.symm
-    refine hlinkMap n ?_
-    rw [geometricLink_starComplex]
-    exact h1
+  · obtain ⟨g, hg⟩ := exists_isPLHomeomorphOn_geometricLink_of_isSubdivision hM' hp
+    obtain ⟨g₁, hg₁⟩ := hlinkMap
+    rw [geometricLink_starComplex] at hg₁
+    exact ⟨_, hg.symm.trans hg₁⟩
 
 omit [FiniteDimensional ℝ E] in
 theorem image_closedStar_mem_nhds_of_isPLHomeomorphOn
