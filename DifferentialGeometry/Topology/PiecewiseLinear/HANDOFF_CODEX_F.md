@@ -2398,3 +2398,26 @@ E3 §45 的 `ZMod 2` 循环障碍仍然成立并且有用（它是沿分支相�
 可用 `Topology/Pasting.lean` 的支撑外恒等接口拼接），并按 `ArcChainCover` 的链与 E3 §45 的侧选择
 沿整条触边弧串起来；端点处要把模型换成半空间版本使滑动与 `Bd M` 相切。下一审计文件 `AuditF256.lean`。
 
+### 19.109 滑动经图卡共轭成环境自映射
+
+`ChartSlide.lean` 把 §19.108 的模型滑动搬进图卡：
+
+- `slideSupport = {|y| + |z| ≤ 1, |x| ≤ 3}`，`isCompact_slideSupport`（闭且含于 `closedBall 0 3`）、
+  `eqOn_slideMap_id_compl`（支撑外恒等）、`mapsTo_slideMap_slideSupport` 与
+  `mapsTo_slideMap_of_subset`（任何含支撑的集合被 `slideMap` 映回自身）。
+- `isPiecewiseAffineOn_chartSlide`：对任意 PL 图卡 `e : OpenPartialHomeomorph M (ℝ × ℝ × ℝ)`
+  （两向逐片仿射）与 `slideSupport ⊆ e.target`，共轭映射 `e.conjugateMap slideMap` 在整个 `M` 上逐片仿射。
+  直接消费既有的 `isPiecewiseAffineOn_conjugateMap`，`slideMap` 在开集 `e.target` 上的逐片仿射性由
+  `IsPiecewiseAffineOn.mono` 从 univ 版本取得。
+- `injective_chartSlide`：共轭映射整体单射（图卡内用 `slideMap` 的单射性与 `right_inv`/`left_inv`，
+  图卡外恒等；混合情形用"像落在 `e.source` 内"排除）。
+- `disjoint_chartSlide_image`：若两条模型带都落在 `e.target` 内，则
+  `e.conjugateMap slideMap '' (e.symm '' modelBandA)` 与 `e.symm '' modelBandQ` 不相交。
+
+于是"单张 crossing 图卡内的支撑滑动"这一层 done：它给出 E3 §44 输出条款里的 `IsPL`（逐片仿射）、
+`Function.Injective`、`EqOn h id Uᶜ` 与一张带的分离。剩下的义务是沿 `ArcChainCover` 的链把逐张图卡的滑动
+串成一个整体自映射（用 E3 §45 的侧选择定向，相邻段在公共端点处方向一致），并在触边端点换成半空间模型
+使滑动与 `Bd M` 相切；另外需要把这里的欧氏环境 `M` 换成流形图卡下的版本（`Manifold.lean` 的 `IsPLOn` 接口）。
+
+检查 `ChartSlide` exit=0（9.6 秒）、零 warning；`AuditF256.lean` 五项无 `sorryAx`。下一审计文件 `AuditF257.lean`。
+
