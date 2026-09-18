@@ -3684,3 +3684,37 @@ germ 沿 `φ` 可搬，像侧第一张片是真平面、半径无关。搬过去
 
 检查 `VertexBranchInput` exit=0（11.4 秒）、`BranchChainChart` exit=0（11.2 秒），均零 warning；
 `AuditF280.lean` 两项仅 `propext`、`Classical.choice`、`Quot.sound`。下一审计文件 `AuditF281.lean`。
+
+### 19.139 第二条独立性闭合：两侧性现在**蕴含**两个交点；germ 入口由四条降到两条
+
+**grep 先行：两个圈层各出一半**
+- `CircleHeightSection.lean` 的 `isPLSphere_one_height_section_ne_singleton`（`:41`）
+  已经把"圆与水平面不只交一点"的论证写好了，用的是
+  `IsPLSphere.isConnected_sdiff_singleton_one`（`CircleIntersection.lean:12`）加
+  `IsPreconnected.intermediate_value`。**但它带一条 `havoid`（没有顶点恰好落在水平面上）**，
+  因为它要先从一个截点反推出两侧的点。
+- 我的情形反过来：**两侧的点是已知的**，所以 `havoid` 那一步整个不需要。
+- 缺的另一半是"PL 1-球面的空间连通"，在 `IsPLSphere.isConnected_one`
+  （`CurveInclusion.lean:129`）。
+
+**本轮闭合两条**（`VertexBranchInput.lean`）
+- `exists_pair_height_section_of_isPLSphere_one`：`S` 是 PL 1-球面、`ℓ` 连续、
+  `S` 上有 `ℓ < r` 与 `ℓ > r` 的点 ⟹ `S ∩ {ℓ = r}` 含**两个不同的点**。
+  两次 IVT：第一次在 `S` 上（`isConnected_one`）得一点 `z`；
+  第二次在 `S \ {z}` 上（`isConnected_sdiff_singleton_one`）得第二点 `w ≠ z`，
+  两次都用同一对两侧点。**不需要 `havoid`。**
+- `exists_linearEquiv_normalForm_two_sheets_of_arc_section` 重写：
+  假设由 §19.138 的 `harc, hab, ha, hb, hpos, hneg` **六条降为 `harc, hpos, hneg` 三条**
+  （`hab`/`ha`/`hb` 由上面的引理造出）。
+  加上结构性的 `hlinkN`，**真正的几何输入只剩两条**：
+  `harc`（两片交成一条弧）与 `hpos`/`hneg`（第二片在第一片两侧都有点）。
+
+**两条独立性的最终状态（更新 §19.138）**
+1. 弧条件 **不蕴含** 两侧性——仍然独立，仍是两条输入。§19.138 的判定不变。
+2. 两侧性 **蕴含** 两个交点——**本轮闭合**，不再是独立输入。
+   §19.138 里说"需要连通性/IVT 论证，未做"的那一条现在做完了。
+所以 germ 入口的最终形状是**两条几何条件**，正是消费者能直接交付的粒度。
+
+检查 `VertexBranchInput` exit=0（11.8 秒）、`VertexBranchChartPair` exit=0（11.3 秒）、
+`BranchChainChart` exit=0（10.8 秒），均零 warning；`AuditF281.lean` 两项仅
+`propext`、`Classical.choice`、`Quot.sound`。下一审计文件 `AuditF282.lean`。
