@@ -2168,3 +2168,46 @@ M1 只给"PL 同胚于一个锥"，不给"是一个锥"，所以绕不过去。
 ### 下一步
 
 第 1 件（选点并核验第 26 节的表，现在 `v`、`w` 已被钉成 `c`、`d`）与第 3 步。**未开始，不报区间。**
+
+## 30. 2026-09-18 模型拼装：并对与 `C₁` 对已接通（`BallPairCutModel.lean`）
+
+构型以 `section` 变量给出：`F` 两点、`c`、`d`、`m`（`c`、`d` 中点）、线性 `ℓ` 在 `insert m F` 上为 `r`、
+`ℓ c < r < ℓ d`、`z ∈ openSimplex (insert m F)`、`z ∈ segment ℝ p d`，以及各 `Finset` 的仿射无关与不属于关系。
+按第 29 节的结论，远端点已被钉成 `c` 与 `d`，弧就是 `segment ℝ p c ∪ segment ℝ p d`。
+
+- `vertex_mem_simplexBoundary_space`：`v ∈ T`、`2 ≤ T.card` ⟹ `v ∈ (simplexBoundary T hT).space`。
+  即"顶点在边界球面上"，反复要用。不需要 `DecidableEq`，也不需要有限维。
+- `isPLBallPair_cut_union`：**并对**
+  `IsPLBallPair 2 1 (convexHull (insert c (insert d F))) (segment ℝ p c ∪ segment ℝ p d)`。
+- `isPLBallPair_cut_left`：**`C₁` 对加它的交恒等式**，一次给两条：
+
+      IsPLBallPair 2 1 (convexHull (insert c (insert m F))) (segment ℝ p c ∪ segment ℝ p z)
+      convexHull (insert c (insert m F)) ∩ 弧 = segment ℝ p c ∪ segment ℝ p z
+
+  两条分别由第 28 节的生产者与第 29 节的 `inter_arc_of_subset_halfSpace_le` 给出；
+  所需的 `ℓ z = r`、`ℓ p ≤ r`、两条线段落在 `conv T₁` 里，都由构型直接算出
+  （`insert m F` 是 `T₁` 的真面，故 `z` 既在超平面上又在 `∂C₁` 上）。
+
+聚焦检查 `BallPairCutModel` exit=0（10.5 秒）、零 warning；
+`.lake/scratch/AuditHCutModel.lean` 三项仅 `propext`、`Classical.choice`、`Quot.sound`。
+
+坑：`inter_arc_of_subset_halfSpace_le` 在 `SegmentSplit.lean`，而 `BallPairArc` 那条链不导入它，
+于是报 `unknown identifier`。这正是第 28 节记下的那条——**未知标识符是导入不全，不是声明不存在**，
+本轮自己撞了一次，补 `import ...SegmentSplit` 即解决。
+另外 `include` 写成整节通用会让不用某假设的定理报 `unusedSectionVars`，要**逐定理** `include`。
+
+### 为什么"先做交恒等式再选点"应当作为规则（协调者要求把理由而不只是规则写下来）
+
+第 29 节的三条恒等式需要 `ℓ c < r` **严格**；公共面的两个顶点上 `ℓ = r` **恰好相等**。
+如果先选点，很可能把弧的远端点选在公共面的顶点上——那样三条恒等式全部不成立，
+而且要到拼装时才发现，届时坐标已经钉死、构型已经写满。
+先做恒等式则相反：这条条件**直接把远端点定成 `c` 与 `d`**，构型少两个自由参数，
+第 26 节表里"`{v,w} ⊆ (simplexBoundary T).space`"那一行也随之平凡化。
+**早发现的约束会变成简化，晚发现的同一约束会变成返工。**
+
+### 剩余
+
+`C₂` 对（用第 28 节生产者取顶点 `q ∈ openSimplex T₂ ∩ segment ℝ z d`，再用第 19 节把
+`segment q z ∪ segment q d` 并成 `segment z d`）与公共面对（第 17 节）尚未接，
+两者与 `isPLBallPair_cut_left` 同型，属机械重复；
+另外第 20/21 节的并等式与交等式尚未并入本模块的结论。第 3、4 步未开始。**不报区间。**
