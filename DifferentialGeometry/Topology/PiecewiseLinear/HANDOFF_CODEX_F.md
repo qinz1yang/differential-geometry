@@ -3743,13 +3743,19 @@ germ 沿 `φ` 可搬，像侧第一张片是真平面、半径无关。搬过去
 5. `hthird : ∀ i, U i ∩ T = ∅`（覆盖级，非单张图卡的性质）；
 6. `hSU : S ⊆ ⋃ U i`、`hUW : ⋃ U i ⊆ W`。
 
-#### C. 每个顶点要什么（`exists_chart_two_sheets_of_transverse_vertex`，`VertexBranchChartPair.lean`）
-输入第一张片的数据：`finrank ℝ E = 3`、`M.faces ⊆ K.faces`、`N.faces ⊆ K.faces`、
-`{p} ∈ M.faces`、`{p} ∈ N.faces`、`K.space ∈ 𝓝 p`、`ℓ ≠ 0`、
-`IsPLSphere 1 (link M {p}).space`、`IsPLSphere 1 (link N {p}).space`、
-`M` 的连接截面对 `{ℓ = ℓ p}` 的两点与两侧性。
-产出转写配置 `(K₁, N₁, φ)` 与全部结构性条款，外加一条蕴含：
-给了**像侧契约**就产出图卡。
+#### C. 每个顶点要什么（`VertexBranchChartPair.lean`，**2026-09-18 按 §19.143 改成两条**）
+- `exists_transcription_of_transverse_vertex`（生产者）：输入第一张片的数据
+  `finrank ℝ E = 3`、`M.faces ⊆ K.faces`、`N.faces ⊆ K.faces`、`{p} ∈ M.faces`、`{p} ∈ N.faces`、
+  `K.space ∈ 𝓝 p`、`ℓ ≠ 0`、`IsPLSphere 1 (link M {p}).space`、`IsPLSphere 1 (link N {p}).space`、
+  `M` 的连接截面对 `{ℓ = ℓ p}` 的两点与两侧性。产出 `∃ K₁ N₁ φ U W`，带全部结构条款
+  （有限、`N₁ ⊆ K₁`、`φ p = 0`、`{φ p} ∈ N₁.faces`、`K₁.space ∈ 𝓝 (φ p)`、`link N₁` 是 1-球面）
+  以及图卡半边实际要吃的三条：`IsOpen U ∧ p ∈ U ∧ IsOpen W ∧ IsPLHomeomorphOn φ U W`、
+  `∀ᶠ y in 𝓝 p, y ∈ M.space → (φ y).2.2 = 0`、`∀ᶠ y in 𝓝 p, y ∈ N.space → φ y ∈ N₁.space`。
+- `exists_chart_two_sheets_of_transverse_vertex`（图卡）：`K₁ N₁ φ U W` 是**参数**，上面每一条与
+  像侧契约 D 都是**顶层假设**，结论只有图卡
+  `∃ U₀ V₀ Ψ, IsOpen U₀ ∧ p ∈ U₀ ∧ IsPLHomeomorphOn Ψ U₀ V₀ ∧ Ψ p = 0 ∧ ∀ᶠ …`。
+  两张片只以集合 `A B : Set E` 出现，不要 `DecidableEq`、不要源侧复形。
+消费者的用法：先 `obtain` 生产者，再对**拿到手的那个** `N₁` 证 D，最后调图卡定理。
 
 #### D. 像侧契约（**最终接口**，两种等价给法）
 - 原始：`(link N₁ {q}).space ∩ {x | x.2.2 = q.2.2} = {a₁, b₁}`、`a₁ ≠ b₁`、两侧性。
@@ -3770,10 +3776,11 @@ germ 沿 `φ` 可搬，像侧第一张片是真平面、半径无关。搬过去
 
 #### F. 还欠谁
 **只剩 H 的链构造**：造出满足 B 全部六条的 `(U, V, Φ)`，其中 3.（整体单射）与
-4.（相容侧选择）是实质的。顶点层无几何债：C 的输入是标准分支点数据，
-D 的两条是真横截性，其余（`Finite`、面包含、`{q} ∈ N₁.faces`、`K₁.space ∈ 𝓝 q`、
-`hlinkN₁`）全部由 T1（`exists_simplicialComplex_triple_image_closedStar_of_isPiecewiseAffineOn`）
-与 `image_closedStar_mem_nhds_of_isPLHomeomorphOn` 交付。
+4.（相容侧选择）是实质的。顶点层无几何债：C 的生产者输入是标准分支点数据，
+D 的两条是真横截性，须由消费者对生产者交出的 `N₁` 证明（H 的星形链已按这个形状消费）；
+其余结构条款现在直接写在生产者的结论里，由 T1
+（`exists_simplicialComplex_triple_image_closedStar_of_isPiecewiseAffineOn`）与
+`image_closedStar_mem_nhds_of_isPLHomeomorphOn` 交付。
 
 ### 19.141 本车道其余条目的状态（逐条附证据，非凭记忆）
 
@@ -3879,3 +3886,35 @@ hneg : x ∈ closure (K.space ∩ {y | ℓ y < 0})
 `propext`、`Classical.choice`、`Quot.sound`。零注释、无 `sorry` / `axiom` / `nolint` /
 `maxHeartbeats` / `set_option`；`fresh.py` forbidden hits 0、无 stale/missing olean；
 未登记根聚合，未跑 `lake build`。下一个审计文件 `AuditF283.lean`。
+
+### 19.143 顶点定理的量词形状缺陷（H 查出）已按 (β) 修：契约提到顶层，`(K₁, N₁, φ)` 变成参数
+
+**缺陷。** 旧的 `exists_chart_two_sheets_of_transverse_vertex` 结论是
+`∃ K₁ N₁ φ, 结构条款 ∧ (∀ a₁ b₁, 契约 → … → ∃ 图卡)`。像侧契约位于存在量词内部的蕴含前件，
+消费者要用它就得对定理藏起来的那个 `N₁` 证契约，而外部写得出的任何契约假设要么与该 `N₁` 无关、
+要么对所有 `N₁` 全称而为假（H 的反例：`link N₁ {0}` 取平面 `{x.2.2 = 0}` 内的三角形边界，
+满足全部结构条款，但与该平面的交是整条圆周）。H 据此弃掉了自己的链定理（HANDOFF_CODEX_H
+"给 F 的接口缺陷报告"）。这与 `hgen`、`hfiber` 同类：编译与审计都干净、但按预期实例化不了。
+我 §19.140 的假设审计只查了每条假设可否满足，没查结论的量词结构，故漏过。
+
+**修法 (β)。** 拆成两条（`VertexBranchChartPair.lean`，新形状见 §19.140 C）：
+- `exists_transcription_of_transverse_vertex`：旧定理的存在部分，另外把图卡半边实际消费的三条
+  （`IsPLHomeomorphOn φ U W` 连同 `U`、`W` 开与 `p ∈ U`；`M` 送进 `{x.2.2 = 0}` 的 `∀ᶠ`；
+  `N` 送进 `N₁.space` 的 `∀ᶠ`）写进结论。这三条原先只活在证明内部，不暴露就没人能重建图卡。
+- `exists_chart_two_sheets_of_transverse_vertex`：`K₁ N₁ φ U W` 为参数，结构条款与
+  `a₁ ≠ b₁`、`link N₁ ∩ {x.2.2 = (φ p).2.2} = {a₁, b₁}`、两侧性两条为顶层假设，结论只留图卡。
+  按 `omit` 纪律：不需要 `DecidableEq E`，源侧只留 `A B : Set E`（消费者传 `M.space`、`N.space`），
+  有限性写成显式 `Set.Finite` 假设以便直接接生产者的 `obtain` 输出。
+H 的 `exists_arcChartChain_of_imageContract` 不受影响（它按 `hvertex` 打包形状消费）；
+它换到顶层形状时的调用顺序是：`obtain` 生产者 → 对该 `N₁` 证 D → 调图卡定理。
+
+**标准审计追加第三项**（已写进 `MOISE_CHAIN.md` 可行性复盘段）：结论形如
+`∃ x, … ∧ (hyp x → …)` 时，检查消费者能否对被藏住的 `x` 实际供给 `hyp x`；供不了就提到顶层。
+
+**验证。** 消费者计数：定理名在树中只有定义处 1 处命中；导入 `VertexBranchChartPair` 的模块 2 个
+（`BranchChainChart`（本车道，未用该名）、`ArcChartChain`（H，只读）），无二级导入者。
+`VertexBranchChartPair` exit=0（10.3 秒）、`BranchChainChart` exit=0（10.7 秒）、
+`ArcChartChain` exit=0（10.6 秒），均零 warning；`AuditF283.lean` 五项（两条新定理、
+`exists_chart_branch_chain`、`exists_openPartialHomeomorph_branch_chain`、
+`exists_arcChartChain_of_imageContract`）仅 `propext`、`Classical.choice`、`Quot.sound`。
+下一个审计文件 `AuditF284.lean`。
