@@ -1,7 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.Continuity.BaseTimeSemicontinuity
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.AncientScalarTimeControl
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.MetricComparison
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientTerminalBounds
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientCostBaseTime
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedVolume.Defs
 
 set_option autoImplicit false
@@ -9,7 +6,7 @@ noncomputable section
 
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 
-open Set
+open Set Filter
 open CanonicalNeighborhood
 open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Geometry.Curvature
@@ -34,50 +31,17 @@ theorem ancient_lCost_lowerSemicontinuousWithinAt_terminal
     {kappa : ℝ} (hF : IsAncientKappaSolution kappa F)
     {tau : ℝ} (htau : 0 < tau) (p q : F.M) :
     LowerSemicontinuousWithinAt (fun T => lCost F.S T p q tau) (Iic 0) 0 := by
-  let _ : ConnectedSpace F.M := hF.connected
-  have hdim : Module.finrank ℝ E ≠ 0 := by
-    intro hzero
-    obtain ⟨t, ht, x, hx⟩ := hF.notFlat
-    have hb := ancientKappa_rmNormLeScalar_finrank F hF t ht x
-    rw [hzero, Nat.cast_zero] at hb
-    norm_num at hb
-    have hn : 0 ≤ F.rmNormSq (I := I) t x := by
-      simpa only [PointedFlowData.rmNormSq, SolutionOn.family] using
-        DifferentialGeometry.Tensor0SBundle.normSq0S_nonneg
-          (I := I) (F.S.base.metric t) x 4 (F.S.base.rm04 t x)
-    have hz : Real.sqrt (F.rmNormSq (I := I) t x) = 0 :=
-      le_antisymm hb (Real.sqrt_nonneg _)
-    exact hx ((Real.sqrt_eq_zero hn).mp hz)
-  have : NeZero (Module.finrank ℝ E) := ⟨hdim⟩
-  obtain ⟨B, hB⟩ := ancientKappa_rmNormSqBounded_finrank F hF
-  let K := |B| + 1
-  have hK : 0 < K := by dsimp only [K]; positivity
-  have hBK : B ≤ K ^ 2 := by
-    dsimp only [K]
-    nlinarith [le_abs_self B, abs_nonneg B, sq_nonneg (|B|)]
-  obtain ⟨C, hC, hscalarTime⟩ :=
-    DifferentialGeometry.PDE.RicciFlow.exists_scalar_time_lipschitz_bound_of_complete_ancient_bounded_curvature
-      F.S F.isSolution hF.carrier_eq hF.regular_eq hK
-      (fun t ht => ⟨hF.complete t ht⟩) (fun t ht x => (hB t ht x).trans hBK)
-  have hmetric (x : F.M) (v : TangentSpace I x) :
-      AntitoneOn (fun t => (F.S.base.metric t).inner x v v) (Iic 0) := by
-    intro s hs t ht hst
-    have hRic : ∀ r ∈ Ioo s t, ∀ y : F.M, ∀ w : TangentSpace I y,
-        0 ≤ F.S.ricciAt r y (vec2 w w) := by
-      intro r hr y w
-      apply metricRicciAt_nonnegative_of_curvatureOperator_nonnegative
-      apply (metricAlgebraicCurvatureTensorAt_mem_curvatureOperatorNonnegativeCone_iff
-        (I := I) (F.S.base.metric r) y).mpr
-      intro n c a b
-      simpa only [SolutionFamily.rm04, metricRm04StandardAt_apply, metricRm04_apply] using
-        hF.nonnegativeCurvatureOperator r (hr.2.le.trans ht) y n c a b
-    exact CanonicalNeighborhood.metric_inner_antitoneOn_of_ricci_nonnegative_interior F.S F.isSolution
-      (fun _ hr => hr.2.trans ht) (fun _ hr => hr.2.trans_le ht) hRic x v
-      ⟨le_rfl, hst⟩ ⟨hst, le_rfl⟩ hst
-  obtain ⟨Bscalar, hBscalar⟩ := hF.globalScalarBound
-  exact lCost_lowerSemicontinuousWithinAt_of_metric_antitone_of_scalar_time_lipschitz
-    F.S F.isSolution hF.carrier_eq hC hmetric hscalarTime
-    (fun t ht x => (hBscalar t ht x).1) le_rfl htau p q
+  obtain ⟨C, _hC, hbound⟩ := exists_lCost_base_time_bound_of_ancient F hF
+  intro A hA
+  have hcont : Continuous (fun R : ℝ =>
+      lCost F.S 0 p q tau - 2 * Real.sqrt tau ^ 3 * C * (0 - R)) := by fun_prop
+  have hevent : ∀ᶠ R in nhdsWithin 0 (Iic 0),
+      A < lCost F.S 0 p q tau - 2 * Real.sqrt tau ^ 3 * C * (0 - R) :=
+    (hcont.continuousAt.eventually (Ioi_mem_nhds (by simpa using hA))).filter_mono
+      nhdsWithin_le_nhds
+  filter_upwards [self_mem_nhdsWithin, hevent] with R hR hRA
+  have hle := hbound hR le_rfl htau p q
+  linarith
 
 theorem ancient_lCost_continuousWithinAt_terminal
     {kappa : ℝ} (hF : IsAncientKappaSolution kappa F)
