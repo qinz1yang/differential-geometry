@@ -1673,3 +1673,79 @@ theorem eq_top_of_boundaryLoops_mem_normal
   `.lake/scratch/AuditE3PlanarSweep.lean`（同时 import `PlanarBallExterior` 与
   `BranchBoundarySweep`，因此也顺带验证两支没有重名声明）的 41 条 `#print axioms`
   全部只含 `propext`、`Classical.choice`、`Quot.sound`，无 `sorryAx`。全程无其它 `lean.exe`。
+
+## 61. 2026-09-18 E3-M3：§60 的 `hann` 化到弧上棱柱（(a)(b) 两条做掉，`hΦmem` 的棱柱高度分级是唯一剩项）
+
+状态：partial（`hann` 本身已不再是假设：`exists_collarExtension_image_inter_boundary_of_prism_over_arc`
+输出与 §60 同一个结论，且不带 `hann`；剩下的唯一未闭合项是棱柱的"只在顶面碰 `Bd M`"，见末尾）。
+新模块 `BranchCollarPrism.lean`（模块名与 11 条声明名在四条车道分支上都不存在）。
+
+- **先做主人要求的逐条核对，结论：§60 点名的 `exists_isPiecewiseAffineOn_prism_of_arcs_height`
+  不匹配，同一文件里它的祖先 `exists_isPiecewiseAffineOn_prism_of_isPLHomeomorphOn` 完全匹配。**
+  `..._of_arcs_height`（`PrismProdCollar.lean:34`）有三条子句对不上本处形状：
+  1. `hunion : A ∪ B = J` 与 `hinter : A ∩ B = {p, q}` 要求底面是**圆**（两条弧在两个端点粘起来）。
+     本处底面是**一条弧**（被推离弧 `frontier Δ ∩ P ∩ D ⁻¹' U`），无法退化成两弧并。
+  2. `(L : SimplicialComplex ℝ F)` 与 `hfaceγ / hfaceκ`：要求一个目标单纯复形，并且每段短子弧的
+     四个点 `f (γ a), f (γ b), g (γ a), g (γ b)` 落进**同一个闭面**。本处根本没有这样的 `L`
+     （要有就得先把滑移带三角剖分），而真正需要的目标约束只是"留在滑移图卡的凸区域里"。
+  3. 结论只有底/顶两条 `Φ (y,0) = f y`、`Φ (y,h) = g y`，**没有端点竖边的控制**。
+     把棱柱扇区与常值扇区沿 `ρ ⁻¹ {p,q}` 粘起来恰恰需要竖边子句。
+  `exists_isPiecewiseAffineOn_prism_of_isPLHomeomorphOn`（`PrismArc.lean:12`）三条全中：
+  单弧 `IsPLHomeomorphOn θ (Icc 0 1) J`；无 `L`、目标约束是**任意凸集**的 `MapsTo` 子句；
+  并且给出 `Φ (θ 0, t) = f (θ 0) + t • (g (θ 0) - f (θ 0))`（`θ 1` 同）。
+  因此 §60 末尾"400–900 行、2–4 个工作段"的估计（当时明说未核对）被推翻：实际 296 行、一个工作段。
+- (a) **被推离弧的 PL 弧参数化。** `isPLBall_one_image_chart_of_isPLOn`：平面弧 `J` 是 `IsPLBall 1`、
+  `q` 在 `J` 上 `IsPLOn 2 3`、在 `J` 上单射、像落在图卡 `ec` 的 source 里 ⟹ `IsPLBall 1 ((ec ∘ q) '' J)`；
+  `exists_isPLHomeomorphOn_Icc_image_chart_of_isPLOn` 给出 `γ` 与 `IsPLHomeomorphOn γ (Icc 0 1) ((ec ∘ q) '' J)`。
+  关键入口是 `PLMap.lean` 的 `isPLOn_iff_isPiecewiseAffineOn_comp_chart`（把 `IsPLOn 2 3` 换成
+  图卡坐标里的 `IsPiecewiseAffineOn`，要 `HasGroupoid M (plGroupoid 3)` 与 `MapsTo q J ec.source`）
+  加 `PolygonalSchoenflies.lean` 的 `isPLBall_image_Icc_of_isPiecewiseAffineOn` 与
+  `exists_isPLHomeomorphOn_Icc_of_isPLBall_one`。**弧本身是弧（`IsPLBall 1 J`）不是可证的，是输入。**
+- (b) **弧与它在 `Bd M` 上落点之间的棱柱。** `exists_isPiecewiseAffineOn_prism_arc_landing`：
+  底面 `b`（= `ec ∘ q`）在 `J` 上分片仿射、落点用一个仿射映射 `π`（图卡里到边界平面的投影），
+  在两个端点上 `π (b (θ i)) = b (θ i)`，则得 `Ψ` 在 `J ×ˢ Icc 0 1` 上分片仿射，
+  底 `Ψ (z,0) = b z`、顶 `Ψ (z,1) = π (b z)`、**两条竖边是常值** `Ψ (θ i, t) = b (θ i)`，
+  以及对任意凸集的 `MapsTo`。竖边常值正是靠端点固定把 `f + t • (g - f)` 里的差压成 0。
+- **环带装配（`hann` 的形状）。** `isPLOn_prism_comp_of_mapsTo_chart`：
+  `(ρ, τ)` 在扇区 `A` 上分片仿射且 `MapsTo` 到 `J ×ˢ Icc 0 1`，`Ψ` 落在 `ec.target` 里 ⟹
+  `IsPLOn 2 3 (fun x => ec.symm (Ψ (ρ x, τ x))) A`。
+  `isPLOn_collarSweep_of_prism_over_arc`：环带切成两个多面体扇区 `A`（在弧上）与 `B`（不在弧上），
+  `A` 上等于上式、`B` 上等于 `q ∘ ρ`（由 `isPLOn_of_isPiecewiseAffineOn_factorization`，即 §60 的 (c)），
+  用 `IsPLOn.piecewise_of_isClosed` 粘起来。
+  **缝隙上的 `EqOn` 是免费的**：两支都写成同一个 `F x` 的等式，交上两条同时成立，直接得相等——
+  这就省掉了"棱柱竖边 = 常值"的单独核对（那条仍由 (b) 提供，供调用者兑现 `hΦprism`）。
+  `isPLOn_boundarySweep_annulus_of_prism` 把它写成 §60 `hann` 的**逐字形状**
+  `IsPLOn 2 3 (fun x => Φ (P.piecewise (h ∘ D) D (ρ x)) (τ x)) (Δ' \ interior D.domain)`。
+- **扫掠的生产者（`Φ` 不再是参数）。** `prismSweep q J ec Ψ y s :=`
+  `if y ∈ q '' J then ec.symm (Ψ (invFunOn q J y, s)) else y`（`InjOn q J` 给 `prismSweep_of_mem`）。
+  `exists_boundarySweep_of_prism_over_arc` 一次给出 §60 的四条点态性质加 `hann`：
+  `hΦ0` 用棱柱底 `Ψ (z,0) = ec (q z)` 与 `ec.left_inv`；`hΦfix` 用"弧像不碰 `Bd M`"；
+  `hΦ1` 弧上用棱柱顶、弧外用 `q z ∈ Bd M`；`hΦmem` 弧外走左析取、弧上走 `hmeet`。
+  `exists_collarExtension_image_inter_boundary_of_prism_over_arc` 接上 §60 的
+  `exists_collarExtension_image_inter_boundary_of_exteriorCollapse`，输出
+  `∃ G, G.domain = Δ' ∧ EqOn G g D.domain ∧ range G.boundary ⊆ BdM ∧ G '' G.domain ∩ BdM = range G.boundary`，
+  **不再带 `hann`**。`frontier D.domain` 的多面体性由 `IsPLBall.isPLSphere_frontier` 得到。
+- **确切剩余义务（唯一一条）。** `hmeet : ∀ z ∈ J, ∀ s : ℝ, ec.symm (Ψ (z, s)) ∈ BdM → s = 1`，
+  即"棱柱只在顶面碰 `Bd M`"。它**在几何上对现有棱柱构造成立**，算式是显式的：
+  `PrismMap.lean` 的 `prismSquareMap` 在上三角是 `(1-t) a + (t-l) c + l d`、
+  下三角是 `(1-l) a + (l-t) b + t d`，顶面两点 `c, d` 的权重之和恰好是 `t`；
+  取图卡里割出 `Bd M` 的线性泛函 `ℓ`（`ℓ c = ℓ d = 0`、`ℓ a, ℓ b < 0`）得
+  `ℓ (prismSquareMap _ z) ≤ (1 - z.2) * max (ℓ a) (ℓ b) ≤ 0`，等号迫使 `z.2 = 1`。
+  **但现有 API 取不到它**：`PrismHomotopy.lean` 的 `exists_isPiecewiseAffineOn_prism` 的胞腔子句是
+  `Φ z ∈ convexHull {f (s i), f (s (i+1)), g (s i), g (s (i+1))}`，**内部高度信息被丢掉**，
+  只能推出 `ℓ (Φ z) ≤ 0`，推不出 `< 0`。本轮试过三条绕路（把凸集换成 `F × ℝ` 里的半空间、
+  把高度塞进第二分量、把 `ℓ` 塞进第二分量），都因为 `Φ` 的第二分量与 `z.2` 没有联系而失败。
+  **正确的下一步是把胞腔子句升级成分级形式**：
+  `(Φ z, z.2) ∈ convexHull {(f (s i), 0), (f (s (i+1)), 0), (g (s i), 1), (g (s (i+1)), 1)}`
+  （`PrismInterval.lean` 的 `exists_isPiecewiseAffineOn_prism_of_partition` 一路到
+  `PrismHomotopy.lean` 与 `PrismArc.lean`）。这三个文件不是本车道的，按 `AGENTS.md` §4
+  应该协调后改，不单方面动。
+- 另外两条**输入而非缺口**（调用者提供，不是本节欠的）：`IsPLBall 1 J`（被推离弧确实是一条弧，
+  取决于 `frontier Δ ∩ P ∩ D ⁻¹' U` 的连通性）与环带的多面体扇区分解 `A ∪ B = Δ' \ interior D.domain`
+  （§59 的显式三角形模型里可以直接写出来）。
+- 本轮**按主人指定的范围未做**：割开胞腔的 `singularSet` / `crossing`、月牙构造、`L₂` 的重贴胞腔、
+  Case 1/2。§60 的两条负结论（直线收缩不是分片仿射；环带延拓保不住 `fiber_le_two` /
+  `locallyInjective`）已在案，本轮未重走。
+- 验证：`BranchCollarPrism` 聚焦检查 exit=0（10.6 秒）、零 warning；
+  `.lake/scratch/AuditE3CollarPrism.lean` 的 11 条 `#print axioms` 全部只含
+  `propext`、`Classical.choice`、`Quot.sound`，无 `sorryAx`。全程无其它 `lean.exe`。
