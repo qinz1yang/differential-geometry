@@ -40,26 +40,6 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 private local instance modelMassMeasurableM : MeasurableSpace M := borel M
 private local instance modelMassBorelM : BorelSpace M := ⟨rfl⟩
 
-theorem normalizedShrinkerMass_eq_const_mul_lintegral
-    (g : SmoothRiemannianMetric I M) (f : M → ℝ) :
-    normalizedShrinkerMass (I := I) (M := M) g f =
-      ENNReal.ofReal ((4 * Real.pi) ^ (-(Module.finrank ℝ E : ℝ) / 2)) *
-        ∫⁻ x, ENNReal.ofReal (Real.exp (-f x)) ∂riemannianVolumeMeasure (I := I) (M := M) g := by
-  unfold normalizedShrinkerMass
-  have hrpow : (4 * Real.pi) ^ (-(Module.finrank ℝ E : ℝ) / 2) =
-      Real.exp (-((Module.finrank ℝ E : ℝ) / 2 * Real.log (4 * Real.pi))) := by
-    rw [Real.rpow_def_of_pos (by positivity : (0 : ℝ) < 4 * Real.pi)]
-    congr 1
-    ring_nf
-  rw [← lintegral_const_mul' _ _ ENNReal.ofReal_ne_top]
-  apply lintegral_congr
-  intro x
-  rw [← ENNReal.ofReal_mul (Real.rpow_nonneg (by positivity : (0:ℝ) ≤ 4 * Real.pi) _)]
-  congr 1
-  rw [hrpow, ← Real.exp_add]
-  congr 1
-  ring_nf
-
 private theorem lintegral_cast_measurableSpace {X : Type*} {m₁ m₂ : MeasurableSpace X}
     (hm : m₁ = m₂) (μ : @Measure X m₁) (f : X → ℝ≥0∞) :
     ∫⁻ x, f x ∂(cast (congrArg (fun m : MeasurableSpace X => @Measure X m) hm) μ) =

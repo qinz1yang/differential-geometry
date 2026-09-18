@@ -5980,6 +5980,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Shri
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.ShrinkerFrontierConsolidation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.ShrinkerMassAlternatives
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.ShrinkerMassClassification
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.ShrinkerMassNonflat
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.ShrinkerMassClassificationBridge
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.ShrinkerMassClassificationReduction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.ShrinkerModelMasses
@@ -7699,6 +7700,7 @@ import DifferentialGeometry.Geometry.Metric.RicciSoliton.CylinderQuotients
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.Defs
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.GaussianModelCover
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.GaussianRigidity
+import DifferentialGeometry.Geometry.Metric.RicciSoliton.GaussianMass
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.Identities
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.ModelCover
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.ModelCoverCurvatureRank
