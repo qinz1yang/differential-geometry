@@ -902,6 +902,13 @@ E3 核对后三条事实（`HANDOFF_CODEX_L.md` §80–§81）：
 决定：采纳 3。阻塞接口改为**板状图卡**：沿整条分支的乘积邻域中两张片是坐标平面、`M` 是板 `{0 ≤ x ≤ c} × ℝ²`、
 `Bd M` 是两个端面 `{x = 0}` 与 `{x = c}`（F 的 `TransversePlaneNormalForm` 在两端各用一次 + F 的链 + H 的球对）。
 滑动机制（`ModelSlide*`、`ChartSlide*`、`BranchSlide*`）保留为已证基础设施，但不在主链路径上。
+F 局部板图卡（2026-09-18，**局部生产层 done；完整链 partial**）：`BoundaryCrossingChart.lean`
+从已有 `HasPLBoundaryCrossingAt` 生产近端/远端的板与端面 iff，两片在这些端点图卡中
+有双向像契约，分支映为板中坐标轴；内部图卡缩到开板，但对两片仅保留单向平面包含。
+实际弧链到具体转写复形 `N₁` 的两点截面/异侧性、以及整条链的片保持过渡仍未闭合。
+转写输入允许 `M = N`，不能独自产生这些契约；未标记球对也不等于两片保持。
+聚焦检查与 `AuditF286` 均 exit=0、零诊断，五项声明仅标准三公理，默认适用环境 linters 通过。
+确切声明、输入退化检查和验证边界见 `HANDOFF_CODEX_F.md` §19.146；独立根重编仍待协调者完成。
 
 ## 2026-09-18 Codex: essential boundary in the extended loop theorem
 
