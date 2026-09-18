@@ -3297,3 +3297,64 @@ import ...StarPair failed, environment already contains
 
 检查见上；`AuditF273.lean` 三项仅 `propext`、`Classical.choice`、`Quot.sound`。
 下一审计文件 `AuditF274.lean`。
+
+### 19.131 T1 与 T2 都已闭合；并附 T2 四条假设的生产者义务
+
+**先补一条自查**：本轮差点发出一条**错误的更正**。我用
+`grep -rn "affine_comp" … | head -4` 看到四条全是 Ricci flow 的 `rfs_width_affine_comparison`
+（子串匹配），就准备宣布"`affine_comp` 在 PL 树里不存在、§19.126 的说法有误"。
+去掉 `head` 重查：**57 条命中**，`IsPiecewiseAffineOn.affine_comp` 就在
+`GeneralPosition.lean:25`，§19.126 的说法是对的。
+**教训：截断过的搜索结果不是搜索结果。** 与协调者"非零退出当作没信息"同一条，
+再加一句：`| head -n` 也会把信息截没，先数命中数再看内容。
+
+**T1（`VertexChartTransport.lean`）**
+`exists_simplicialComplex_triple_image_closedStar_of_isPiecewiseAffineOn`：
+由 `U ∈ 𝓝 p` 的图卡把 `(K, M, N)` 缩进图卡定义域再一起搬过去，产出
+`R`（`K` 的细分，`closedStar R p ⊆ U`）与 `K₁ M₁ N₁`，交付三条 `Finite`、
+`M₁.faces ⊆ K₁.faces`、`N₁.faces ⊆ K₁.faces`、`{h p}` 在两者面里、三条空间等式、
+以及 `M`、`N` 各自的连接同胚。二元版现在是它的推论，证明不重复。
+
+**T2（`VertexBranchInput.lean`）**
+`exists_linearEquiv_normalForm_two_sheets`：在 `ℝ × ℝ × ℝ` 里，取第三坐标泛函
+`(ContinuousLinearMap.snd ℝ ℝ ℝ).comp (ContinuousLinearMap.snd ℝ ℝ (ℝ × ℝ))`，
+由转写后的 `(K₁, N₁, q)` 加四条连接层数据产出图卡，结论两条：
+`y ∈ N₁.space → (L (h y)).2.2 = 0` 与 `y.2.2 = q.2.2 → (L (h y)).2.1 = 0`，
+即**第二张片与第一张片被拉直后所在的平面同时被送到两张坐标平面**。
+`{x | ℓ x = ℓ q}` 与 `{x | x.2.2 = q.2.2}` 定义相等，`exact` 直接过。
+
+**T2 的假设逐条判定（标注 + 可满足性 + 是否夹带结论）**
+1. `[Finite K₁.faces] [Finite N₁.faces]` —— 构造性副产品；T1 交付；可满足。
+2. `hN : N₁.faces ⊆ K₁.faces` —— 构造性副产品；T1 交付；可满足。
+3. `hq : {q} ∈ N₁.faces` —— 构造性副产品；T1 交付（`q = φ₁ p`）；可满足。
+4. `hK : K₁.space ∈ 𝓝 q` —— 构造性副产品；§19.127 的
+   `image_closedStar_mem_nhds_of_isPLHomeomorphOn` 加 T1 的 `K₁.space = φ₁ '' closedStar R p`
+   即可；可满足。
+5. `hlinkN : IsPLSphere 1 (link N₁ {q}).space` —— 几何输入，但**可由源侧搬**：
+   T1 给出连接同胚，配 `IsPLSphere.of_isPLHomeomorphOn`；对圆盘状的片可满足。
+6. `hab` + `hlevel : (link N₁ {q}).space ∩ {x | x.2.2 = q.2.2} = {a, b}` —— **几何输入**。
+   对真横截的分支可满足：两张片沿一条过 `p` 的弧相交，该弧在 `p` 处的连接正是两点。
+7. `hpos`/`hneg` —— **几何输入**（第二张片的连接在第一张片的平面两侧都有点）；
+   §19.123 已证与第 6 条独立；对真横截的分支可满足。
+没有一条夹带结论：结论是 PL 图卡，假设只谈连接、截面与有限性。
+第 1–4 条是构造性的，第 5 条可搬，**真正要由几何生产的只有第 6、7 两条**。
+
+**生产者义务（每条一行，供后续车道直接执行）**
+- 第 5 条：给出源侧 `IsPLSphere 1 (link N {p}).space`，沿 T1 的连接同胚用
+  `IsPLSphere.of_isPLHomeomorphOn` 推过去。
+- 第 6 条：给出 `link N₁ {q}` 上第三坐标等于 `q.2.2` 的两个不同点，并证明再无其它；
+  等价地证 `encard = 2`，为此只需给出源侧集合 `(link N {p}).space ∩ M.space`
+  （分支的两个方向）到它的一个双射。
+- 第 7 条：给出 `link N₁ {q}` 上第三坐标分别大于、小于 `q.2.2` 的各一点；
+  由 §19.123 的星→连接归约，只需给出 `closedStar N₁ q` 在平面两侧的各一点。
+- 第 4 条：把 §19.127 的 `image_closedStar_mem_nhds_of_isPLHomeomorphOn` 用在第一张图卡上
+  （`U` 取其定义域），再用 T1 的 `K₁.space = φ₁ '' closedStar R p` 改写。
+
+**尚未接线的一步**：T1 与 T2 之间要把第一张图卡 `φ₁ = L₁ ∘ h₁` 交给 T1，
+需要 `IsPiecewiseAffineOn φ₁ U`（`IsPiecewiseAffineOn.affine_comp`，`GeneralPosition.lean:25`）
+与 `InjOn φ₁ U`（`h₁` 单射加 `L₁` 单射）；两条都有现成工具，**但本轮未写**。
+把 T2 的结论沿 `φ₁` 拉回 `E` 还要一次复合（`IsPLHomeomorphOn.trans`、
+`IsPiecewiseAffineOn.mono` 对开集，`PiecewiseAffine.lean:208`）。**不估行数。**
+
+检查 `VertexChartTransport` exit=0（10 秒）、`VertexBranchInput` exit=0（10.7 秒），均零 warning；
+`AuditF274.lean` 三项仅 `propext`、`Classical.choice`、`Quot.sound`。下一审计文件 `AuditF275.lean`。

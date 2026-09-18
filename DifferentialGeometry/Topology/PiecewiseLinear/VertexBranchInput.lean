@@ -106,4 +106,32 @@ theorem exists_linearEquiv_normalForm_of_isCombinatorialManifold
   exact exists_linearEquiv_normalForm_of_isPLSphere_link hn K M hM hp hK ℓ hℓ (hMan p hp) hfiber
     hu hv hult hvlt
 
+theorem exists_linearEquiv_normalForm_two_sheets
+    (K₁ N₁ : Geometry.SimplicialComplex ℝ (ℝ × ℝ × ℝ))
+    [Finite K₁.faces] [Finite N₁.faces] (hN : N₁.faces ⊆ K₁.faces)
+    {q : ℝ × ℝ × ℝ} (hq : {q} ∈ N₁.faces) (hK : K₁.space ∈ 𝓝 q)
+    (hlinkN : IsPLSphere 1 (SimplicialComplex.geometricLink N₁ {q}).space)
+    {a b : ℝ × ℝ × ℝ} (hab : a ≠ b)
+    (hlevel : (SimplicialComplex.geometricLink N₁ {q}).space ∩ {x | x.2.2 = q.2.2} = {a, b})
+    (hpos : ∃ x ∈ (SimplicialComplex.geometricLink N₁ {q}).space, q.2.2 < x.2.2)
+    (hneg : ∃ x ∈ (SimplicialComplex.geometricLink N₁ {q}).space, x.2.2 < q.2.2) :
+    ∃ (U V : Set (ℝ × ℝ × ℝ)) (h : (ℝ × ℝ × ℝ) → ℝ × ℝ × ℝ)
+      (L : (ℝ × ℝ × ℝ) ≃ₗ[ℝ] ℝ × ℝ × ℝ),
+      IsOpen U ∧ IsOpen V ∧ q ∈ U ∧ IsPLHomeomorphOn h U V ∧ h q = 0 ∧
+        ∀ᶠ y in 𝓝 q, (y ∈ N₁.space → (L (h y)).2.2 = 0) ∧
+          (y.2.2 = q.2.2 → (L (h y)).2.1 = 0) := by
+  classical
+  have hn : Module.finrank ℝ (ℝ × ℝ × ℝ) = 3 := by
+    rw [Module.finrank_prod, Module.finrank_prod, Module.finrank_self]
+  have hℓne : (ContinuousLinearMap.snd ℝ ℝ ℝ).comp (ContinuousLinearMap.snd ℝ ℝ (ℝ × ℝ)) ≠ 0 := by
+    intro h0
+    have h1 : ((ContinuousLinearMap.snd ℝ ℝ ℝ).comp
+        (ContinuousLinearMap.snd ℝ ℝ (ℝ × ℝ))) ((0 : ℝ), (0 : ℝ), (1 : ℝ)) = 0 := by
+      rw [h0]
+      rfl
+    exact one_ne_zero h1
+  exact exists_linearEquiv_normalForm_of_geometricLink_pair hn K₁ N₁ hN hq hK
+    ((ContinuousLinearMap.snd ℝ ℝ ℝ).comp (ContinuousLinearMap.snd ℝ ℝ (ℝ × ℝ))) hℓne hlinkN hab
+    hlevel hpos hneg
+
 end DifferentialGeometry.Topology.PiecewiseLinear
