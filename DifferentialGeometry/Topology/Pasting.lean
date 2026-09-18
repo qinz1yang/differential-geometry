@@ -8,6 +8,17 @@ namespace DifferentialGeometry.Topology
 
 variable {X Y : Type*}
 
+theorem mapsTo_of_preimage_singleton_eq_off {f g : X → Y} {S : Set X} {P U : Set Y}
+    (hf : MapsTo f S P) (hUP : U ⊆ P)
+    (hgfiber : ∀ y ∉ U, g ⁻¹' {y} = f ⁻¹' {y}) : MapsTo g S P := by
+  intro x hx
+  by_cases hgx : g x ∈ U
+  · exact hUP hgx
+  · have hfx : f x = g x := by
+      have hxg : x ∈ g ⁻¹' {g x} := rfl
+      rwa [hgfiber (g x) hgx] at hxg
+    exact hfx ▸ hf hx
+
 open Classical in
 theorem piecewise_postcomp_preimage_singleton_of_eqOn_compl
     (P : Set X) (f : X → Y) {h : Y → Y} (hh : Function.Injective h)
