@@ -29,6 +29,7 @@ variable {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
 private local instance canonicalBoundsSourceC1 : IsManifold I3 1 M :=
   IsManifold.of_le (n := ∞) (by decide)
 
+omit [SigmaCompactSpace M] in
 theorem WindowedModelWitness.curvature_bound_on_canonical_domain
     {delta kappa eps C1 C2 : ℝ} {x : M} {t : ℝ}
     (W : WindowedModelWitness delta kappa S x t)

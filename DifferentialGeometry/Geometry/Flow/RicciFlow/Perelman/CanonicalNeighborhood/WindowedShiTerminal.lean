@@ -261,6 +261,7 @@ variable {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
   [IsManifold I3 ∞ M] [T2Space M] [SigmaCompactSpace M]
   {D : RealTimeInterval} {S : SolutionOn (I := I3) (M := M) D}
 
+omit [SigmaCompactSpace M] in
 theorem WindowedModelWitness.terminal_ball_isCompact_subset_inner_ball
     (hS : IsSolutionOn S) {eps kappa K : ℝ} {x : M} {t : ℝ}
     (W : WindowedModelWitness eps kappa S x t) (heps : eps ≤ 1 / 4) (hK : 0 ≤ K)

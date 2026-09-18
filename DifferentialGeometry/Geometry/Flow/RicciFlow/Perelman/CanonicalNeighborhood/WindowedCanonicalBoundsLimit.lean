@@ -206,6 +206,79 @@ theorem CanonicalWitness.eventually_volume_lower_bound_of_windowed_models
   exact (ENNReal.ofReal_le_ofReal (div_le_div_of_nonneg_right hconst
     (mul_nonneg (W (phi i)).scalar_pos.le (Real.sqrt_nonneg _)))).trans hge
 
+theorem CanonicalWitness.eventually_curvature_bound_of_windowed_models
+    {D : ℕ → RealTimeInterval} {S : ∀ i, SolutionOn (I := I3) (M := M i) (D i)}
+    (hS : ∀ i, IsSolutionOn (S i)) {delta : ℕ → ℝ} {kappa : ℝ}
+    {x : ∀ i, M i} {t : ℕ → ℝ}
+    (W : ∀ i, WindowedModelWitness (delta i) kappa (S i) (x i) (t i))
+    (hdelta : Tendsto delta atTop (𝓝 0))
+    (hreg : ∀ i, Ioo (t i - (delta i * (S i).scalar (t i) (x i))⁻¹) (t i) ⊆ (D i).regular)
+    (L : PointedFlowData.{u, 0, 0} I3 ancientTimeInterval)
+    [PreconnectedSpace L.M] (hcomplete : MetricComplete (L.atTime 0))
+    {phi : ℕ → ℕ} (hphi : Tendsto phi atTop atTop)
+    (F : PointedRiemannianConvergenceMaps ⟨fun i => (W i).model.atTime 0⟩
+      (L.atTime 0) phi)
+    (hcmp : ∀ K : Set L.M, IsCompact K → ∀ A : ℝ, 0 < A → ∀ order : ℕ,
+      ∀ eta : ℝ, 0 < eta → ∀ᶠ i in atTop,
+        Nonempty (MetricComparisonOn L.S.base.metric (W (phi i)).model.S.base.metric
+          (F.map i) K (Icc (-A) 0) order eta))
+    {eps C1 C2 : ℝ} (K : CanonicalWitness L.S eps C1 C2 L.basepoint 0)
+    (hscalar : L.S.scalar 0 L.basepoint = 1) :
+    ∀ᶠ i in atTop, ∀ y ∈ K.domain.carrier,
+      Real.sqrt (FlowMetricBall.rmNormSq (S (phi i)) (t (phi i))
+        ((W (phi i)).embedding (F.map i y))) ≤
+        sourceCurvatureBound 3 C2 * (S (phi i)).scalar (t (phi i)) (x (phi i)) := by
+  let _ : TopologicalSpace L.M := L.topology
+  let _ : ChartedSpace ThreeSpace L.M := L.charted
+  let _ : IsManifold I3 ∞ L.M := L.smooth
+  let _ : T2Space L.M := L.t2
+  let _ : SigmaCompactSpace L.M := L.sigmaCompact
+  let _ : IsManifold I3 1 L.M := IsManifold.of_le (n := ∞) (by decide)
+  have hC2 : 0 < C2 := zero_lt_one.trans_le K.one_le_comparison_constant
+  have hrad : 1 ≤ K.radius := by simpa only [hscalar, Real.sqrt_one, inv_one] using K.radius_lower
+  let R := 2 * K.radius + 1
+  have hR : 0 < R := by dsimp only [R]; linarith
+  have hKR : K.domain.carrier ⊆ riemannianClosedBallOf (L.S.base.metric 0) L.basepoint R := by
+    intro y hy
+    exact (K.inside_ball hy).le.trans (ENNReal.ofReal_le_ofReal (by dsimp only [R]; linarith))
+  have hc : RiemannianMetricComplete (L.S.base.metric 0) :=
+    ⟨MetricComplete.complete (L.atTime 0) hcomplete⟩
+  let Psi := fun i => partialDiffeomorphTransMixed (F.partialDiffeomorph i) (W (phi i)).embedding
+  let g := fun i => rescaledMetric (S (phi i)) (t (phi i))
+    ((S (phi i)).scalar (t (phi i)) (x (phi i))) (W (phi i)).scalar_pos
+  have hcompare := WindowedModelWitness.eventually_composed_comparison hS W hdelta
+    (fun i s hs => ((W i).normalized_window (hreg i)).2 hs) L hcomplete hphi F hcmp
+    (hc.closedEBall_isCompact L.basepoint R) zero_lt_one 2 (by norm_num : (0 : ℝ) < 1 / 4)
+  filter_upwards [hcompare] with i hi
+  obtain ⟨hsource, ⟨cmp⟩⟩ := hi
+  let _ : IsManifold I3 1 (M (phi i)) := IsManifold.of_le (n := ∞) (by decide)
+  intro y hy
+  have hrm : normSq0S (L.S.base.metric 0) y 4 (metricRm04At (L.S.base.metric 0) y) ≤ C2 ^ 2 := by
+    have hh := K.rm_bound y hy
+    rw [hscalar, mul_one] at hh
+    exact le_sq_of_sqrt_le (normSq0S_nonneg _ _ _ _) hh
+  have hnorm := MetricComparisonOn.rmNormSq_le_on_closedBall
+    (N := L.M) (M := M (phi i)) (L.S.base.metric 0) hc L.basepoint hR
+    (h := L.S.base.metric) (g := g i) (F := Psi i) cmp (by norm_num) le_rfl le_rfl hC2.le
+    (show (0 : ℝ) ∈ Icc (-1 : ℝ) 0 by norm_num) (hsource (hKR hy)) (hKR hy) hrm
+  have hscale := parabolicRmNormSq (S (phi i)) (t (phi i))
+    ((S (phi i)).scalar (t (phi i)) (x (phi i))) (W (phi i)).scalar_pos
+    (W (phi i)).time_mem 0 (Psi i y)
+  change normSq0S (g i 0) (Psi i y) 4 (metricRm04At (g i 0) (Psi i y)) =
+    ((S (phi i)).scalar (t (phi i)) (x (phi i)))⁻¹ ^ 2 *
+      FlowMetricBall.rmNormSq (S (phi i))
+        (parabolicTime (t (phi i)) ((S (phi i)).scalar (t (phi i)) (x (phi i))) 0)
+        (Psi i y) at hscale
+  rw [hscale, parabolicTime_zero] at hnorm
+  have hroot := Real.sqrt_le_sqrt hnorm
+  rw [Real.sqrt_mul (sq_nonneg _), Real.sqrt_sq (inv_nonneg.mpr (W (phi i)).scalar_pos.le),
+    Real.sqrt_sq (sourceCurvatureBound_pos 3 hC2.le).le] at hroot
+  have hh := mul_le_mul_of_nonneg_left hroot (W (phi i)).scalar_pos.le
+  rw [← mul_assoc, mul_inv_cancel₀ (W (phi i)).scalar_pos.ne', one_mul] at hh
+  have hmap : Psi i y = (W (phi i)).embedding (F.map i y) := rfl
+  rw [hmap] at hh
+  simpa only [mul_comm] using hh
+
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
 
 end
