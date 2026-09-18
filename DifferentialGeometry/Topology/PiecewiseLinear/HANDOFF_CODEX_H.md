@@ -2379,3 +2379,40 @@ exists_affineIndependent_openSimplex_subset` 取四面体，取 `c`、`d` 为两
 
 存在性实例的第 1、2 层（中点仿射无关三条；泛函 `ℓ`，路线均已核对），
 以及把本节的验算写成 Lean（重心坐标那一段是主要工作量）。之后是第 3 步黏合与第 4 步链归纳。
+
+## 35. 2026-09-18 构型存在性第 1 层 — done（`MidpointIndependence.lean`）
+
+第 33 节列的"中点仿射无关三条"已闭合，但**路线与那里写的不同，且更短**：不必对每条分别算
+`vectorSpan` 的 `finrank`，一条"沿直线换顶点"的引理就覆盖全部。
+
+- `affineIndependent_of_card_eq_of_subset_affineSpan`：`T` 仿射无关、`S.card = T.card = n+1`、
+  `↑T ⊆ affineSpan ℝ ↑S` ⟹ `S` 仿射无关。用 Mathlib
+  `affineIndependent_iff_finrank_vectorSpan_eq`（正用）与
+  `affineIndependent_iff_le_finrank_vectorSpan`（反用，只要 `n ≤ finrank`），
+  中间经 `affineSpan_le` ＋ `AffineSubspace.direction_le` ＋ `direction_affineSpan`
+  把包含关系转成 `vectorSpan` 的包含，再 `Submodule.finrank_mono`。
+- `affineIndependent_insert_of_mem_affineSpan_pair`：`insert a S` 仿射无关、`a ∉ S`、`b ∉ S`、
+  `u ∈ S`、`a ∈ line[ℝ, u, b]` ⟹ `insert b S` 仿射无关。**换顶点引理**，上一条的直接推论。
+- `affineIndependent_insert_midpoint_outer`：从 `T₁ = insert c (insert m F)` 得
+  `T = insert c (insert d F)`（`m` 换成 `d`，用 `m ∈ line[ℝ, c, d]`）。
+- `affineIndependent_insert_midpoint_inner`：从 `T₁` 得 `T₂ = insert d (insert m F)`
+  （`c` 换成 `d`，用 `c ∈ line[ℝ, m, d]`）。
+- `Fm = insert m F` 不必另证：它是 `T₁` 的子集，`affineIndependent_of_subset` 即可。
+
+**方向更正**：第 33 节假定从 `T = {A,B,c,d}` 出发造 `m`。实际施工应当**反过来**：
+先取仿射无关的 `T₁ = {c,m,A,B}`，再令 `d := m + m - c`。理由是层 2 的泛函 `ℓ` 也由 `T₁` 造，
+于是 `d` 与 `c`、`m`、`A`、`B` 的互异性**全部由 `ℓ` 的取值读出**
+（`ℓ d = r+1`，而 `ℓ c = r-1`、`ℓ m = ℓ A = ℓ B = r`），
+不必用 `eq_on_of_sum_smul_eq` 逐条排除"`m` 恰好落在某个顶点上"。
+按正向做则要单独证 `m ∉ {A,B}`，那才需要权重论证。
+
+`line[ℝ, u, b]` 的成员用 `smul_vsub_vadd_mem_affineSpan_pair` 与
+`smul_vsub_rev_vadd_mem_affineSpan_pair`，把 `2⁻¹ • (d -ᵥ c) +ᵥ c = m`、
+`2 • (m -ᵥ d) +ᵥ d = c` 用 `simp only [vsub_eq_sub, vadd_eq_add]` 加 `module` 收掉。
+
+坑：`Finset` 的插入交换是 `Finset.insert_comm`，不是 `Finset.Insert.comm`（后者不存在）；
+`rintro y (rfl | rfl)` 在第二支会把 `b` 消掉再报 `unknown identifier b`，
+改成 `Set.mem_singleton_iff.mp` 显式改写即可。
+
+聚焦检查 `MidpointIndependence` exit=0（9.5 秒）、零 warning；
+`.lake/scratch/AuditHMidpoint.lean` 四项仅 `propext`、`Classical.choice`、`Quot.sound`。
