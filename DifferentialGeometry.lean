@@ -8707,3 +8707,4 @@ import DifferentialGeometry.Topology.VectorField.Spanning
 import DifferentialGeometry.Topology.VectorField.Transport
 import DifferentialGeometry.Topology.VectorField.VerticalLinearization
 import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryCrossingChart
+import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryDoubleCrossingChart
