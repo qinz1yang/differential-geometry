@@ -1,5 +1,6 @@
 import DifferentialGeometry.Topology.SphereSeparation.BicollarHomotopy
 import Mathlib.Topology.Connected.LocallyConnected
+import Mathlib.Topology.Algebra.Group.Basic
 
 noncomputable section
 
@@ -38,10 +39,13 @@ private theorem bicollar_noncentral_mem_compl
   rintro ⟨y', hy'⟩
   exact hz (congrArg Prod.snd (hφ hy')).symm
 
-theorem bicollar_complement_components
-    {A M : Type*} [TopologicalSpace A] [T2Space A] [CompactSpace A] [ConnectedSpace A]
-    [TopologicalSpace M] [T2Space M] [SimplyConnectedSpace M] [LocallyPathConnectedSpace M]
-    (φ : A × ℝ → M) (hφ : IsOpenEmbedding φ) :
+private theorem bicollar_complement_components_of_separating_function
+    {A M : Type*} [TopologicalSpace A] [CompactSpace A] [ConnectedSpace A]
+    [TopologicalSpace M] [T2Space M] [ConnectedSpace M] [LocallyConnectedSpace M]
+    (φ : A × ℝ → M) (hφ : IsOpenEmbedding φ)
+    (f : C(M, ℝ))
+    (hfφ : ∀ y z, f (φ (y, z)) = min 1 (max 0 ((z + 1) / 2)) - 1 / 2)
+    (hfzero : ∀ x, f x = 0 ↔ x ∈ range (fun y => φ (y, 0))) :
     ∃ B E : Set M,
       IsConnected B ∧ IsConnected E ∧ IsOpen B ∧ IsOpen E ∧ Disjoint B E ∧
       B ∪ E = (range (fun y => φ (y, 0)))ᶜ ∧
@@ -90,7 +94,6 @@ theorem bicollar_complement_components
     have heq : B = E := (connectedComponentIn_eq hxB).trans
       (connectedComponentIn_eq hxE).symm
     have hpos : φ (a₀, 1) ∈ B := by rw [heq]; exact hPE hPbase
-    obtain ⟨f, hfφ, hfzero⟩ := exists_bicollar_separating_function φ hφ
     obtain ⟨y, hyB, hyzero⟩ := hBconn.isPreconnected.intermediate_value
       (hNB hNbase) hpos f.continuous.continuousOn
       (by constructor <;> rw [hfφ] <;> norm_num : (0 : ℝ) ∈ Icc (f (φ (a₀, -1))) (f (φ (a₀, 1))))
@@ -177,5 +180,87 @@ theorem bicollar_complement_components
   rcases hxBE with hxB | hxE
   · exact Or.inl (connectedComponentIn_eq hxB).symm
   · exact Or.inr (connectedComponentIn_eq hxE).symm
+
+theorem bicollar_complement_components
+    {A M : Type*} [TopologicalSpace A] [T2Space A] [CompactSpace A] [ConnectedSpace A]
+    [TopologicalSpace M] [T2Space M] [SimplyConnectedSpace M] [LocallyPathConnectedSpace M]
+    (φ : A × ℝ → M) (hφ : IsOpenEmbedding φ) :
+    ∃ B E : Set M,
+      IsConnected B ∧ IsConnected E ∧ IsOpen B ∧ IsOpen E ∧ Disjoint B E ∧
+      B ∪ E = (range (fun y => φ (y, 0)))ᶜ ∧
+      frontier B = range (fun y => φ (y, 0)) ∧
+      frontier E = range (fun y => φ (y, 0)) ∧
+      closure B = B ∪ range (fun y => φ (y, 0)) ∧
+      closure E = E ∪ range (fun y => φ (y, 0)) ∧
+      (∀ x ∈ (range (fun y => φ (y, 0)))ᶜ,
+        connectedComponentIn (range (fun y => φ (y, 0)))ᶜ x = B ∨
+        connectedComponentIn (range (fun y => φ (y, 0)))ᶜ x = E) ∧
+      (∀ y z, z < 0 → φ (y, z) ∈ B) ∧
+      (∀ y z, 0 < z → φ (y, z) ∈ E) := by
+  obtain ⟨f, hfφ, hfzero⟩ := exists_bicollar_separating_function φ hφ
+  exact bicollar_complement_components_of_separating_function φ hφ f hfφ hfzero
+
+theorem bicollar_complement_components_of_homotopic_disjoint
+    {A M : Type*} [TopologicalSpace A] [T2Space A] [CompactSpace A] [ConnectedSpace A]
+    [TopologicalSpace M] [T2Space M] [ConnectedSpace M] [LocallyConnectedSpace M]
+    (φ : A × ℝ → M) (hφ : IsOpenEmbedding φ)
+    (r : C(M, M)) (hr : ContinuousMap.Homotopic r (ContinuousMap.id M))
+    (hdisjoint : Disjoint (range r) (range (fun y => φ (y, 0)))) :
+    ∃ B E : Set M,
+      IsConnected B ∧ IsConnected E ∧ IsOpen B ∧ IsOpen E ∧ Disjoint B E ∧
+      B ∪ E = (range (fun y => φ (y, 0)))ᶜ ∧
+      frontier B = range (fun y => φ (y, 0)) ∧
+      frontier E = range (fun y => φ (y, 0)) ∧
+      closure B = B ∪ range (fun y => φ (y, 0)) ∧
+      closure E = E ∪ range (fun y => φ (y, 0)) ∧
+      (∀ x ∈ (range (fun y => φ (y, 0)))ᶜ,
+        connectedComponentIn (range (fun y => φ (y, 0)))ᶜ x = B ∨
+        connectedComponentIn (range (fun y => φ (y, 0)))ᶜ x = E) ∧
+      (∀ y z, z < 0 → φ (y, z) ∈ B) ∧
+      (∀ y z, 0 < z → φ (y, z) ∈ E) := by
+  obtain ⟨f, hfφ, hfzero⟩ :=
+    exists_bicollar_separating_function_of_homotopic_disjoint φ hφ r hr hdisjoint
+  exact bicollar_complement_components_of_separating_function φ hφ f hfφ hfzero
+
+theorem bicollar_slice_complement_components_of_homotopic_disjoint
+    {A M : Type*} [TopologicalSpace A] [T2Space A] [CompactSpace A] [ConnectedSpace A]
+    [TopologicalSpace M] [T2Space M] [ConnectedSpace M] [LocallyConnectedSpace M]
+    (φ : A × ℝ → M) (hφ : IsOpenEmbedding φ)
+    (r : C(M, M)) (hr : ContinuousMap.Homotopic r (ContinuousMap.id M))
+    (hdisjoint : Disjoint (range r) (range (fun y => φ (y, 0)))) (c : ℝ) :
+    ∃ B E : Set M,
+      IsConnected B ∧ IsConnected E ∧ IsOpen B ∧ IsOpen E ∧ Disjoint B E ∧
+      B ∪ E = (range (fun y => φ (y, c)))ᶜ ∧
+      frontier B = range (fun y => φ (y, c)) ∧
+      frontier E = range (fun y => φ (y, c)) ∧
+      closure B = B ∪ range (fun y => φ (y, c)) ∧
+      closure E = E ∪ range (fun y => φ (y, c)) ∧
+      (∀ x ∈ (range (fun y => φ (y, c)))ᶜ,
+        connectedComponentIn (range (fun y => φ (y, c)))ᶜ x = B ∨
+        connectedComponentIn (range (fun y => φ (y, c)))ᶜ x = E) ∧
+      (∀ y z, z < c → φ (y, z) ∈ B) ∧
+      (∀ y z, c < z → φ (y, z) ∈ E) := by
+  let τ : A × ℝ ≃ₜ A × ℝ := (Homeomorph.refl A).prodCongr (Homeomorph.addRight c)
+  let ψ : A × ℝ → M := fun p => φ (p.1, p.2 + c)
+  have hψ : IsOpenEmbedding ψ := hφ.comp τ.isOpenEmbedding
+  obtain ⟨f, hf, hfzero⟩ :=
+    exists_bicollar_slice_separating_function_of_homotopic_disjoint φ hφ r hr hdisjoint c
+  have hfψ (y : A) (z : ℝ) :
+      f (ψ (y, z)) = min 1 (max 0 ((z + 1) / 2)) - 1 / 2 := by
+    simpa only [ψ, add_sub_cancel_right] using hf y (z + c)
+  have hzψ (x : M) : f x = 0 ↔ x ∈ range (fun y => ψ (y, 0)) := by
+    simpa only [ψ, zero_add] using hfzero x
+  obtain ⟨B, E, hB, hE, hBop, hEop, hBE, hcover, hBfr, hEfr, hBcl, hEcl,
+    hcomponents, hneg, hpos⟩ :=
+      bicollar_complement_components_of_separating_function ψ hψ f hfψ hzψ
+  have hcenter : range (fun y => ψ (y, 0)) = range (fun y => φ (y, c)) := by
+    simp only [ψ, zero_add]
+  rw [hcenter] at hcover hBfr hEfr hBcl hEcl hcomponents
+  refine ⟨B, E, hB, hE, hBop, hEop, hBE, hcover, hBfr, hEfr, hBcl, hEcl,
+    hcomponents, ?_, ?_⟩
+  · intro y z hz
+    simpa only [ψ, sub_add_cancel] using hneg y (z - c) (sub_neg.mpr hz)
+  · intro y z hz
+    simpa only [ψ, sub_add_cancel] using hpos y (z - c) (sub_pos.mpr hz)
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions

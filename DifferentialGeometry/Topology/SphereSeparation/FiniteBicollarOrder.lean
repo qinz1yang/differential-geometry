@@ -1,5 +1,5 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.BicollarAxialOrder
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.BicollarOrder
+import DifferentialGeometry.Topology.SphereSeparation.BicollarAxialOrder
+import DifferentialGeometry.Topology.SphereSeparation.BicollarSliceOrder
 
 set_option autoImplicit false
 
@@ -8,6 +8,8 @@ noncomputable section
 open Set Metric Topology
 
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
+
+section SimplyConnected
 
 variable {A M : Type*} [TopologicalSpace A] [T2Space A] [CompactSpace A] [ConnectedSpace A]
   [TopologicalSpace M] [T2Space M] [SimplyConnectedSpace M] [LocallyPathConnectedSpace M]
@@ -60,5 +62,49 @@ theorem finite_bicollar_path_crosses_slice (s : ℝ) (hs : -r < s ∧ s < r)
   refine ⟨u, z, ?_⟩
   change φ (bicollarLineHomeomorph r hr (z, σ s)) = γ u at hz
   rwa [bicollarLineHomeomorph_slice r hr s hs z] at hz
+
+end SimplyConnected
+
+section HomotopicDisjoint
+
+variable {A M : Type*} [TopologicalSpace A] [T2Space A] [CompactSpace A] [ConnectedSpace A]
+  [TopologicalSpace M] [T2Space M] [ConnectedSpace M] [LocallyConnectedSpace M]
+  (r : ℝ) (hr : 0 < r)
+  (φ : {p : A × ℝ // -r < p.2 ∧ p.2 < r} → M) (hφ : IsOpenEmbedding φ) (a : A)
+
+local notation "Φ" => φ ∘ bicollarLineHomeomorph r hr
+local notation "σ" => OpenPartialHomeomorph.symm (OpenPartialHomeomorph.univBall (0 : ℝ) r)
+
+include hφ in
+theorem finite_bicollar_ordered_band_of_homotopic_disjoint
+    (ρ : C(M, M)) (hρ : ContinuousMap.Homotopic ρ (ContinuousMap.id M))
+    (hdisjoint : Disjoint (range ρ)
+      (range (fun y => φ ⟨(y, 0), by constructor <;> linarith⟩)))
+    (hzero : IsCompact (closure (bicollarLowerSide Φ a 0)))
+    (s t : ℝ) (hs : -r < s ∧ s < r) (ht : -r < t ∧ t < r) (hst : s < t) :
+    closure (bicollarLowerSide Φ a (σ s)) ⊆ bicollarLowerSide Φ a (σ t) ∧
+      closure (bicollarLowerSide Φ a (σ t)) =
+        closure (bicollarLowerSide Φ a (σ s)) ∪ φ '' {q | s ≤ q.val.2 ∧ q.val.2 ≤ t} ∧
+      (φ '' {q | s ≤ q.val.2 ∧ q.val.2 ≤ t})ᶜ =
+        bicollarLowerSide Φ a (σ s) ∪ bicollarUpperSide Φ a (σ t) := by
+  have hΦ : IsOpenEmbedding Φ := hφ.comp (bicollarLineHomeomorph r hr).isOpenEmbedding
+  have hcenter : range (fun y => Φ (y, 0)) =
+      range (fun y => φ ⟨(y, 0), by constructor <;> linarith⟩) := by
+    congr 1
+    funext y
+    apply congrArg φ
+    exact Subtype.ext (bicollarLineHomeomorph_center r hr y)
+  have hdisjointΦ : Disjoint (range ρ) (range (fun y => Φ (y, 0))) := by
+    rwa [hcenter]
+  have hστ := (bicollar_axial_inverse_lt_iff r hr s t hs ht).mpr hst
+  have hband : Φ '' ((univ : Set A) ×ˢ Icc (σ s) (σ t)) =
+      φ '' {q | s ≤ q.val.2 ∧ q.val.2 ≤ t} := by
+    rw [image_comp, bicollarLineHomeomorph_image_band r hr s t hs ht]
+  obtain ⟨hnested, hclosure, hcompl⟩ :=
+    bicollar_ordered_band_of_homotopic_disjoint Φ hΦ ρ hρ hdisjointΦ a hzero hστ
+  rw [hband] at hclosure hcompl
+  exact ⟨hnested, hclosure, hcompl⟩
+
+end HomotopicDisjoint
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions

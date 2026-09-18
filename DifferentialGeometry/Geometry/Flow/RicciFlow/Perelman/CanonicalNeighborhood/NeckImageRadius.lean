@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CylinderReferenceModel
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.SpatialNeckLocalTransport
 import DifferentialGeometry.Geometry.Metric.DistancePullback
 import DifferentialGeometry.Geometry.Metric.Distance.Topology
 import DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.Open
@@ -18,15 +19,14 @@ open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 
 universe u
 
-theorem exists_uniform_neck_image_radius {beta alpha : ℝ}
+theorem exists_uniform_spatial_neck_image_radius {beta alpha : ℝ}
     (hbeta : 0 < beta) (hba : beta < alpha) :
     ∃ R : ℝ, 0 < R ∧
       ∀ (M : Type u) [TopologicalSpace M] [ChartedSpace ThreeSpace M] [IsManifold I3 ∞ M]
-        (D : RealTimeInterval) (S : SolutionOn (I := I3) (M := M) D)
-        (x : M) (t : ℝ) (nk : StrongNeck S beta x t),
+        (gm : SmoothRiemannianMetric I3 M) (x : M) (nk : SpatialNeck gm beta x),
         ∀ y ∈ univ ×ˢ Ioo (-alpha⁻¹) alpha⁻¹,
           riemannianEDistOf (I := I3)
-            (rescaledMetric S t (S.scalar t x) nk.Q_pos 0) x (nk.map y) ≤ ENNReal.ofReal R := by
+            (scaleMetric (metricScalarAt gm x) nk.Q_pos gm) x (nk.map y) ≤ ENNReal.ofReal R := by
   let U : TopologicalSpace.Opens Cylinder :=
     ⟨univ ×ˢ Ioo (-beta⁻¹) beta⁻¹, isOpen_univ.prod isOpen_Ioo⟩
   let K : Set Cylinder := univ ×ˢ Icc (-alpha⁻¹) alpha⁻¹
@@ -36,7 +36,8 @@ theorem exists_uniform_neck_image_radius {beta alpha : ℝ}
     intro y hy
     exact ⟨hy.1, (neg_lt_neg hrad).trans_le hy.2.1, hy.2.2.trans_lt hrad⟩
   let : PreconnectedSpace (Sphere 2) := Subtype.preconnectedSpace
-    (isPreconnected_sphere (Module.one_lt_rank_of_one_lt_finrank (by simp [ThreeSpace])) (0 : ThreeSpace) 1)
+    (isPreconnected_sphere (Module.one_lt_rank_of_one_lt_finrank (by simp [ThreeSpace]))
+      (0 : ThreeSpace) 1)
   have hpre : IsPreconnected (U : Set Cylinder) := isPreconnected_univ.prod isPreconnected_Ioo
   let : PreconnectedSpace U := Subtype.preconnectedSpace hpre
   let g := (cylinderReferenceMetric 0).restrictOpen U
@@ -51,7 +52,7 @@ theorem exists_uniform_neck_image_radius {beta alpha : ℝ}
   have hCB : C ≤ B := by dsimp only [B]; linarith [le_max_left C 0]
   have hc : 0 < 1 + beta := by linarith
   refine ⟨Real.sqrt (1 + beta) * B, mul_pos (Real.sqrt_pos.mpr hc) hB, ?_⟩
-  intro M _ _ _ D S x t nk y hy
+  intro M _ _ _ gm x nk y hy
   have hU : (U : Set Cylinder) ⊆ nk.map.source := nk.domain
   let f : U → M := fun z => nk.map (z : Cylinder)
   have hf : IsLocalDiffeomorph IC I3 ∞ f :=
@@ -60,13 +61,15 @@ theorem exists_uniform_neck_image_radius {beta alpha : ℝ}
   have hdf (z : U) (v : TangentSpace IC z) :
       mfderiv IC I3 f z v = mfderiv IC I3 nk.map (z : Cylinder) v := by
     have hmap : MDifferentiableAt IC I3 nk.map (z : Cylinder) :=
-      (nk.map.contMDiffOn_toFun.contMDiffAt (nk.map.open_source.mem_nhds (hU z.property))).mdifferentiableAt
+      (nk.map.contMDiffOn_toFun.contMDiffAt
+        (nk.map.open_source.mem_nhds (hU z.property))).mdifferentiableAt
         (by simp)
-    have hh := mfderiv_comp_apply z hmap (hasMFDerivAt_subtype_val (I := IC) U z).mdifferentiableAt v
+    have hh := mfderiv_comp_apply z hmap
+      (hasMFDerivAt_subtype_val (I := IC) U z).mdifferentiableAt v
     rw [mfderiv_subtype_val_apply] at hh
     exact hh
   have hquad (z : U) (v : TangentSpace IC z) :
-      (rescaledMetric S t (S.scalar t x) nk.Q_pos 0).inner (f z)
+      (scaleMetric (metricScalarAt gm x) nk.Q_pos gm).inner (f z)
         (mfderiv IC I3 f z v) (mfderiv IC I3 f z v) ≤ (1 + beta) * g.inner z v v := by
     have hh := (nk.comparison.equivalence 0 (by norm_num) (z : Cylinder) z.property v).2
     rw [nk.comparison.pullback_eq 0 (z : Cylinder) z.property (fun _ => v)] at hh
@@ -85,14 +88,32 @@ theorem exists_uniform_neck_image_radius {beta alpha : ℝ}
   have href : riemannianEDistOf (I := IC) g p q ≤ ENNReal.ofReal B := by
     rw [← SmoothRiemannianMetric.toPseudoMetricSpace_edist g]
     rw [edist_dist]
-    exact ENNReal.ofReal_le_ofReal ((hC (show p ∈ Subtype.val ⁻¹' K from hpK) (show q ∈ Subtype.val ⁻¹' K from hyK)).trans hCB)
+    exact ENNReal.ofReal_le_ofReal
+      ((hC (show p ∈ Subtype.val ⁻¹' K from hpK)
+        (show q ∈ Subtype.val ⁻¹' K from hyK)).trans hCB)
   have hh := edistOf_le_of_quad_of_localDiffeomorph g
-    (rescaledMetric S t (S.scalar t x) nk.Q_pos 0) f hf hc hquad p q
-  change riemannianEDistOf (rescaledMetric S t (S.scalar t x) nk.Q_pos 0)
+    (scaleMetric (metricScalarAt gm x) nk.Q_pos gm) f hf hc hquad p q
+  change riemannianEDistOf (scaleMetric (metricScalarAt gm x) nk.Q_pos gm)
     (nk.map (nk.center, 0)) (nk.map y) ≤ _ at hh
   rw [nk.center_eq] at hh
   apply hh.trans
   rw [ENNReal.ofReal_mul (Real.sqrt_nonneg _)]
   exact mul_le_mul_of_nonneg_left href bot_le
+
+theorem exists_uniform_neck_image_radius {beta alpha : ℝ}
+    (hbeta : 0 < beta) (hba : beta < alpha) :
+    ∃ R : ℝ, 0 < R ∧
+      ∀ (M : Type u) [TopologicalSpace M] [ChartedSpace ThreeSpace M] [IsManifold I3 ∞ M]
+        (D : RealTimeInterval) (S : SolutionOn (I := I3) (M := M) D)
+        (x : M) (t : ℝ) (nk : StrongNeck S beta x t),
+        ∀ y ∈ univ ×ˢ Ioo (-alpha⁻¹) alpha⁻¹,
+          riemannianEDistOf (I := I3)
+            (rescaledMetric S t (S.scalar t x) nk.Q_pos 0) x (nk.map y) ≤ ENNReal.ofReal R := by
+  obtain ⟨R, hR, hbound⟩ := exists_uniform_spatial_neck_image_radius hbeta hba
+  refine ⟨R, hR, ?_⟩
+  intro M _ _ _ D S x t nk y hy
+  have hscale : S.scalar t x = metricScalarAt (S.base.metric t) x := rfl
+  simpa only [rescaledMetric, parabolicTime_zero, StrongNeck.toSpatialNeck_map, hscale] using
+    hbound M (S.base.metric t) x nk.toSpatialNeck y hy
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn

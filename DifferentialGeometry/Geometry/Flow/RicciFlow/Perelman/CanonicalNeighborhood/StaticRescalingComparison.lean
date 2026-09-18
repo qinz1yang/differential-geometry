@@ -96,3 +96,58 @@ def MetricComparisonOn.staticRescale
         MetricFiberData.inner, map_zero, Real.sqrt_zero] using hdelta
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
+
+end
+
+set_option autoImplicit false
+noncomputable section
+open scoped Manifold ContDiff
+
+namespace DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
+
+open DifferentialGeometry.CheegerGromovCompactness
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E] [CompleteSpace E]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  {N : Type*} [TopologicalSpace N] [ChartedSpace H N] [IsManifold I ∞ N]
+  [T2Space N] [SigmaCompactSpace N]
+  {M : Type*} [TopologicalSpace M]
+  [ChartedSpace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ThreeSpace M]
+  [IsManifold I3 ∞ M]
+
+def MetricComparisonOn.staticRescaleOfOneLe
+    {h : ℝ → SmoothRiemannianMetric I N} {g : ℝ → SmoothRiemannianMetric I3 M}
+    {F : N → M} {U : Set N} {J : Set ℝ} {order : ℕ} {eps eta delta : ℝ}
+    (C : MetricComparisonOn h g F U J order eps) {t : ℝ} (ht : t ∈ J)
+    (q c : ℝ) (hq : 1 ≤ q) (hc : 0 < c) (heps : 0 ≤ eps)
+    (hratio : |c / q - 1| ≤ eta)
+    (hbudget : (1 + eta) * eps + eta * Real.sqrt (Module.finrank ℝ E : ℝ) ≤ delta) :
+    MetricComparisonOn (fun _ => scaleMetric q (zero_lt_one.trans_le hq) (h t))
+      (fun _ => scaleMetric c hc (g t)) F U {0} order delta := by
+  have hqpos : 0 < q := zero_lt_one.trans_le hq
+  have heta : 0 ≤ eta := (abs_nonneg _).trans hratio
+  have hdelta : 0 ≤ delta := (add_nonneg
+    (mul_nonneg (by linarith : 0 ≤ 1 + eta) heps)
+    (mul_nonneg heta (Real.sqrt_nonneg _))).trans hbudget
+  have hratio' : c / q ≤ 1 + eta := by linarith [(abs_le.mp hratio).2]
+  refine C.staticRescale ht q c hqpos hc hdelta ?_
+  intro a _ha
+  have hinv : q⁻¹ ≤ 1 := inv_le_one_of_one_le₀ hq
+  have hpower : Real.sqrt (q⁻¹ ^ a) ≤ 1 := by
+    apply Real.sqrt_le_one.mpr
+    exact pow_le_one₀ (inv_nonneg.mpr hqpos.le) hinv
+  have hroot : Real.sqrt (q⁻¹ ^ (a + 2)) ≤ q⁻¹ := by
+    rw [pow_add, Real.sqrt_mul (pow_nonneg (inv_nonneg.mpr hqpos.le) a),
+      Real.sqrt_sq (inv_nonneg.mpr hqpos.le)]
+    exact (mul_le_mul_of_nonneg_right hpower (inv_nonneg.mpr hqpos.le)).trans_eq
+      (one_mul _)
+  have hfactor : Real.sqrt (q⁻¹ ^ (a + 2)) * c ≤ 1 + eta := by
+    calc
+      _ ≤ q⁻¹ * c := mul_le_mul_of_nonneg_right hroot hc.le
+      _ = c / q := by rw [div_eq_mul_inv, mul_comm]
+      _ ≤ _ := hratio'
+  exact (add_le_add (mul_le_mul_of_nonneg_right hfactor heps)
+    (mul_le_mul_of_nonneg_right hratio (Real.sqrt_nonneg _))).trans hbudget
+
+end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn

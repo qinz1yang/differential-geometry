@@ -271,6 +271,95 @@ theorem exists_bicollar_separating_function_of_homotopic_disjoint
   exact exists_bicollar_separating_function_of_lift φ hφ.continuous q hq hq_out
     a₀ θ' hθ'_base hθ'q
 
+private theorem bicollar_phase_difference_hasCompactSupport
+    {A : Type*} [TopologicalSpace A] [T2Space A] [CompactSpace A] (c : ℝ) :
+    HasCompactSupport (fun p : A × ℝ => bicollarPhase (p.2 - c) - bicollarPhase p.2) := by
+  apply HasCompactSupport.of_support_subset_isCompact
+    ((isCompact_univ : IsCompact (univ : Set A)).prod
+      (isCompact_Icc : IsCompact (Icc (min 0 c - 1) (max 0 c + 1))))
+  intro p hp
+  refine ⟨mem_univ _, ?_⟩
+  by_contra h
+  have hne : bicollarPhase (p.2 - c) - bicollarPhase p.2 ≠ 0 := hp
+  rcases not_and_or.mp h with h | h
+  · have hz : p.2 < min 0 c - 1 := lt_of_not_ge h
+    rw [bicollarPhase_zero (p.2 - c) (by linarith [min_le_right (0 : ℝ) c]),
+      bicollarPhase_zero p.2 (by linarith [min_le_left (0 : ℝ) c]), sub_self] at hne
+    exact hne rfl
+  · have hz : max 0 c + 1 < p.2 := lt_of_not_ge h
+    rw [bicollarPhase_one (p.2 - c) (by linarith [le_max_right (0 : ℝ) c]),
+      bicollarPhase_one p.2 (by linarith [le_max_left (0 : ℝ) c]), sub_self] at hne
+    exact hne rfl
+
+private theorem exists_bicollar_phase_difference
+    {A M : Type*} [TopologicalSpace A] [T2Space A] [CompactSpace A]
+    [TopologicalSpace M] [T2Space M]
+    (φ : A × ℝ → M) (hφ : IsOpenEmbedding φ) (c : ℝ) :
+    ∃ d : C(M, ℝ),
+      (∀ p, d (φ p) = bicollarPhase (p.2 - c) - bicollarPhase p.2) ∧
+      ∀ x, x ∉ range φ → d x = 0 := by
+  classical
+  let e := hφ.isEmbedding.toHomeomorph
+  let f : range φ → ℝ :=
+    fun x => bicollarPhase ((e.symm x).2 - c) - bicollarPhase (e.symm x).2
+  have hf : Continuous f :=
+    (bicollarPhase_continuous.comp
+      ((continuous_snd.comp e.symm.continuous).sub continuous_const)).sub
+      (bicollarPhase_continuous.comp (continuous_snd.comp e.symm.continuous))
+  have hs : HasCompactSupport f :=
+    (bicollar_phase_difference_hasCompactSupport c).comp_homeomorph e.symm
+  let d : C(M, ℝ) :=
+    ⟨Subtype.val.extend f 0, HasCompactSupport.continuous_extend_zero hφ.isOpen_range hf hs⟩
+  refine ⟨d, ?_, ?_⟩
+  · intro p
+    change Subtype.val.extend f 0 ((⟨φ p, ⟨p, rfl⟩⟩ : range φ) : M) = _
+    rw [Subtype.val_injective.extend_apply]
+    simp [f, e]
+  · intro x hx
+    change Subtype.val.extend f 0 x = 0
+    exact Function.extend_apply' (f := (Subtype.val : range φ → M)) f (fun _ : M => 0) x (by
+      rintro ⟨y, rfl⟩
+      exact hx y.property)
+
+theorem exists_bicollar_slice_separating_function_of_homotopic_disjoint
+    {A M : Type*} [TopologicalSpace A] [T2Space A] [CompactSpace A] [ConnectedSpace A]
+    [TopologicalSpace M] [T2Space M]
+    (φ : A × ℝ → M) (hφ : IsOpenEmbedding φ)
+    (r : C(M, M)) (hr : ContinuousMap.Homotopic r (ContinuousMap.id M))
+    (hdisjoint : Disjoint (range r) (range (fun y => φ (y, 0)))) (c : ℝ) :
+    ∃ f : C(M, ℝ),
+      (∀ y z, f (φ (y, z)) = min 1 (max 0 ((z - c + 1) / 2)) - 1 / 2) ∧
+      ∀ x, f x = 0 ↔ x ∈ range (fun y => φ (y, c)) := by
+  classical
+  obtain ⟨f₀, hf₀, hz₀⟩ :=
+    exists_bicollar_separating_function_of_homotopic_disjoint φ hφ r hr hdisjoint
+  obtain ⟨d, hd, hdout⟩ := exists_bicollar_phase_difference φ hφ c
+  let f : C(M, ℝ) := ⟨fun x => f₀ x + d x, f₀.continuous.add d.continuous⟩
+  have hvalue (y : A) (z : ℝ) : f (φ (y, z)) = bicollarPhase (z - c) - 1 / 2 := by
+    change f₀ (φ (y, z)) + d (φ (y, z)) = _
+    rw [hf₀, hd]
+    dsimp only [bicollarPhase]
+    ring
+  refine ⟨f, hvalue, ?_⟩
+  intro x
+  constructor
+  · intro hx
+    by_cases hxr : x ∈ range φ
+    · obtain ⟨⟨y, z⟩, rfl⟩ := hxr
+      have hphase : bicollarPhase (z - c) = 1 / 2 := by
+        rw [hvalue] at hx
+        exact sub_eq_zero.mp hx
+      have hzc : z = c := sub_eq_zero.mp ((bicollarPhase_eq_half_iff (z - c)).mp hphase)
+      exact ⟨y, by rw [hzc]⟩
+    · have hx₀ : f₀ x = 0 := by
+        change f₀ x + d x = 0 at hx
+        rwa [hdout x hxr, add_zero] at hx
+      obtain ⟨y, hy⟩ := (hz₀ x).mp hx₀
+      exact False.elim (hxr ⟨(y, 0), hy⟩)
+  · rintro ⟨y, rfl⟩
+    rw [hvalue]
+    norm_num [bicollarPhase]
+
 theorem path_meets_bicollar_center
     {A M : Type*} [TopologicalSpace A] [T2Space A] [CompactSpace A] [ConnectedSpace A]
     [TopologicalSpace M] [T2Space M] [SimplyConnectedSpace M] [LocallyPathConnectedSpace M]

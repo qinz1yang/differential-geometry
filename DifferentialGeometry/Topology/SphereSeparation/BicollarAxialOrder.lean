@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.BicollarLineReparametrization
+import DifferentialGeometry.Topology.SphereSeparation.BicollarLineReparametrization
 import Mathlib.Topology.Order.IntermediateValue
 
 set_option autoImplicit false

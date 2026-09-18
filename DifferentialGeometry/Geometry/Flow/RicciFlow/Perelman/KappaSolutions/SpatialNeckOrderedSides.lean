@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.SpatialNeckOrientedSides
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.SpatialNeckAmbientTopology
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.FiniteBicollarOrder
+import DifferentialGeometry.Topology.SphereSeparation.FiniteBicollarOrder
 
 set_option autoImplicit false
 
@@ -124,9 +124,11 @@ end SpatialNeckSideData
 namespace SpatialNeckWitness
 
 private theorem side_data_of_oriented [I.Boundaryless]
-    [SimplyConnectedSpace N] [LocallyPathConnectedSpace N] [NoncompactSpace N]
+    [ConnectedSpace N] [LocallyConnectedSpace N] [NoncompactSpace N]
     {h : SmoothRiemannianMetric I N} {yStar : SpatialNeckSphere}
     {p : N} {epsilon : ℝ} (W : SpatialNeckWitness h yStar p epsilon)
+    (ρ : C(N, N)) (hρ : ContinuousMap.Homotopic ρ (ContinuousMap.id N))
+    (hdisjoint : Disjoint (range ρ) W.centralSphere)
     (B0 : Set N) (hB0 : IsConnected B0) (hB0op : IsOpen B0)
     (hB0c : IsCompact (closure B0)) (hB0fr : frontier B0 = W.centralSphere)
     (hn0 : ∀ x : spatialNeckBuffer epsilon, x.val.2 < 0 → W.embedding x ∈ B0) :
@@ -155,6 +157,15 @@ private theorem side_data_of_oriented [I.Boundaryless]
     apply congrArg W.embedding
     apply Subtype.ext
     exact bicollarLineHomeomorph_center r hr y
+  have hdisjointφ : Disjoint (range ρ) (range (fun y => φ (y, 0))) := by
+    rwa [hcenter]
+  have hdisjointφ0 : Disjoint (range ρ)
+      (range (fun y => φ0 ⟨(y, 0), by constructor <;> linarith⟩)) := by
+    have hcenter0 : range (fun y => φ0 ⟨(y, 0), by constructor <;> linarith⟩) =
+        W.centralSphere := by
+      rw [W.centralSphere_eq_range]
+      rfl
+    rwa [hcenter0]
   have hpoint : φ (yStar, 0 - 1) ∈ B0 := by
     apply hn0
     exact (bicollarLineHomeomorph_negative_iff r hr yStar (0 - 1)).mpr (by norm_num)
@@ -189,15 +200,20 @@ private theorem side_data_of_oriented [I.Boundaryless]
   refine ⟨⟨B, U, ?_, ?_, ?_, ?_⟩⟩
   · intro s hs
     obtain ⟨hB, hU, hBop, hUop, hBU, hcover, hBfr, hUfr, hBcl, _hUcl, _hn, _hp⟩ :=
-      bicollar_slice_components φ hφ yStar (σ s)
+      bicollar_slice_components_of_homotopic_disjoint
+        φ hφ ρ hρ hdisjointφ yStar (σ s)
     rw [hslice s hs] at hcover hBfr hUfr hBcl
     exact ⟨hB, hU, hBop, hUop, hBU, hcover,
-      bicollar_lower_compact_of_zero φ hφ yStar hzero (σ s),
-      bicollar_upper_noncompact φ hφ yStar hzero (σ s), hBcl,
-      bicollar_lower_regular_open φ hφ yStar (σ s), hBfr, hUfr⟩
+      bicollar_lower_compact_of_zero_of_homotopic_disjoint
+        φ hφ ρ hρ hdisjointφ yStar hzero (σ s),
+      bicollar_upper_noncompact_of_homotopic_disjoint
+        φ hφ ρ hρ hdisjointφ yStar hzero (σ s), hBcl,
+      bicollar_lower_regular_open_of_homotopic_disjoint
+        φ hφ ρ hρ hdisjointφ yStar (σ s), hBfr, hUfr⟩
   · intro s hs x hx
     obtain ⟨_hB, _hU, _hBop, _hUop, _hBU, _hcover, _hBfr, _hUfr, _hBcl, _hUcl, hn, _hp⟩ :=
-      bicollar_slice_components φ hφ yStar (σ s)
+      bicollar_slice_components_of_homotopic_disjoint
+        φ hφ ρ hρ hdisjointφ yStar (σ s)
     have hrecover : f (η.symm x).2 = x.val.2 :=
       congrArg (fun q : spatialNeckBuffer epsilon => q.val.2) (η.apply_symm_apply x)
     have hfs : f (σ s) = s := bicollar_axial_apply_inverse r hr s (abs_lt.mp hs)
@@ -210,7 +226,8 @@ private theorem side_data_of_oriented [I.Boundaryless]
     rwa [η.apply_symm_apply] at hmem
   · intro s hs x hx
     obtain ⟨_hB, _hU, _hBop, _hUop, _hBU, _hcover, _hBfr, _hUfr, _hBcl, _hUcl, _hn, hp⟩ :=
-      bicollar_slice_components φ hφ yStar (σ s)
+      bicollar_slice_components_of_homotopic_disjoint
+        φ hφ ρ hρ hdisjointφ yStar (σ s)
     have hrecover : f (η.symm x).2 = x.val.2 :=
       congrArg (fun q : spatialNeckBuffer epsilon => q.val.2) (η.apply_symm_apply x)
     have hfs : f (σ s) = s := bicollar_axial_apply_inverse r hr s (abs_lt.mp hs)
@@ -222,8 +239,9 @@ private theorem side_data_of_oriented [I.Boundaryless]
     change W.embedding (η (η.symm x)) ∈ U s at hmem
     rwa [η.apply_symm_apply] at hmem
   · intro s t hs ht hst
-    obtain ⟨hnest, hcl, hcompl⟩ := finite_bicollar_ordered_band r hr φ0 hφ0 yStar
-      hzero s t (abs_lt.mp hs) (abs_lt.mp ht) hst
+    obtain ⟨hnest, hcl, hcompl⟩ :=
+      finite_bicollar_ordered_band_of_homotopic_disjoint r hr φ0 hφ0 yStar
+      ρ hρ hdisjointφ0 hzero s t (abs_lt.mp hs) (abs_lt.mp ht) hst
     have hband : φ0 '' {q | s ≤ q.val.2 ∧ q.val.2 ≤ t} =
         W.embedding '' {q : spatialNeckBuffer epsilon | s ≤ q.val.2 ∧ q.val.2 ≤ t} := by
       change (W.embedding ∘ ξ) '' _ = _
@@ -238,18 +256,61 @@ theorem exists_ordered_compact_end_sides [I.Boundaryless] [ConnectedSpace N] [No
     ∃ W' : SpatialNeckWitness h yStar p epsilon,
       (W' = W ∨ W' = W.reflect) ∧ W'.centralSphere = W.centralSphere ∧
       W'.core = W.core ∧ W'.image = W.image ∧ Nonempty (SpatialNeckSideData W') := by
-  obtain ⟨W', hchoice, hsphere, hcore, himage, B, U, hB, _hU, hBop, _hUop, _hBU,
-    _hcover, hBc, _hUnc, _hcl, hint, hfr, _hUfr, hn, _hp⟩ :=
+  obtain ⟨W', hchoice, hsphere, hcore, himage, B, U, hB, hU, hBop, _hUop, _hBU,
+    hcover, hBc, _hUnc, _hcl, hint, hfr, _hUfr, hn, _hp⟩ :=
       W.exists_oriented_compact_end_sides hsec
   obtain ⟨e⟩ := W'.nonempty_ambient_homeomorph hsec
-  let _ : SimplyConnectedSpace N := e.toHomotopyEquiv.simplyConnectedSpace
   let _ : LocallyPathConnectedSpace N := e.isOpenEmbedding.locallyPathConnectedSpace
+  obtain ⟨q, hqU⟩ := hU.nonempty
+  let ρ : C(N, N) := ContinuousMap.const N q
+  have hρ : ContinuousMap.Homotopic ρ (ContinuousMap.id N) := by
+    refine ⟨{
+      toFun := fun z => e.symm ((1 - (z.1 : ℝ)) • e q + (z.1 : ℝ) • e z.2)
+      continuous_toFun := e.symm.continuous.comp
+        (((continuous_const.sub (continuous_subtype_val.comp continuous_fst)).smul
+          continuous_const).add
+          ((continuous_subtype_val.comp continuous_fst).smul
+            (e.continuous.comp continuous_snd)))
+      map_zero_left := ?_
+      map_one_left := ?_ }⟩
+    · intro x
+      simp [ρ]
+    · intro x
+      simp
+  have hdisjoint : Disjoint (range ρ) W'.centralSphere := by
+    rw [Set.disjoint_left]
+    rintro x ⟨y, rfl⟩ hx
+    have hq : q ∈ B ∪ U := Or.inr hqU
+    rw [hcover] at hq
+    exact hq (hsphere ▸ hx)
   have hfront : frontier B = W'.centralSphere := by
     have hsame : frontier B = frontier (closure B) := by
       rw [frontier, frontier, closure_closure, hBop.interior_eq, hint]
     exact hsame.trans (hfr.trans hsphere.symm)
   exact ⟨W', hchoice, hsphere, hcore, himage,
-    side_data_of_oriented W' B hB hBop hBc hfront hn⟩
+    side_data_of_oriented W' ρ hρ hdisjoint B hB hBop hBc hfront hn⟩
+
+
+theorem exists_ordered_compact_end_sides_of_homotopic_disjoint [I.Boundaryless]
+    [ConnectedSpace N] [LocallyConnectedSpace N] [NoncompactSpace N]
+    {h : SmoothRiemannianMetric I N} {yStar : SpatialNeckSphere}
+    {p : N} {epsilon : ℝ} (W : SpatialNeckWitness h yStar p epsilon)
+    (ρ : C(N, N)) (hρ : ContinuousMap.Homotopic ρ (ContinuousMap.id N))
+    (hdisjoint : Disjoint (range ρ) W.centralSphere)
+    (hends : ¬ DifferentialGeometry.Geometry.Topology.HasAtLeastEnds N 2) :
+    ∃ W' : SpatialNeckWitness h yStar p epsilon,
+      (W' = W ∨ W' = W.reflect) ∧ W'.centralSphere = W.centralSphere ∧
+      W'.core = W.core ∧ W'.image = W.image ∧ Nonempty (SpatialNeckSideData W') := by
+  obtain ⟨W', hchoice, hsphere, hcore, himage, B, U, hB, _hU, hBop, _hUop, _hBU,
+    _hcover, hBc, _hUnc, _hcl, hint, hfr, _hUfr, hn, _hp⟩ :=
+      W.exists_oriented_compact_end_sides_of_homotopic_disjoint ρ hρ hdisjoint hends
+  have hfront : frontier B = W'.centralSphere := by
+    have hsame : frontier B = frontier (closure B) := by
+      rw [frontier, frontier, closure_closure, hBop.interior_eq, hint]
+    exact hsame.trans (hfr.trans hsphere.symm)
+  have hdisjoint' : Disjoint (range ρ) W'.centralSphere := by rwa [hsphere]
+  exact ⟨W', hchoice, hsphere, hcore, himage,
+    side_data_of_oriented W' ρ hρ hdisjoint' B hB hBop hBc hfront hn⟩
 
 end SpatialNeckWitness
 

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.BicollarCompactBand
+import DifferentialGeometry.Topology.SphereSeparation.BicollarCompactBand
 import Mathlib.Tactic.Linarith
 
 set_option autoImplicit false

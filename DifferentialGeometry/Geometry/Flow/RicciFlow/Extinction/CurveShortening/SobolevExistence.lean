@@ -1,3 +1,4 @@
+import DifferentialGeometry.Topology.ContinuousMap.CompactRange
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Parametric.AddCircleTimeCompositionContinuity
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Solution.ClassicalEquation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ParametricEquationNaturality
@@ -15535,5 +15536,2224 @@ private theorem reference_successor_coefficients_tendsto
   exact haT.prodMk_nhds hbT
 
 end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening.SmoothImmersion
+
+end
+
+noncomputable section
+open scoped Manifold ContDiff NNReal
+namespace DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening.SmoothImmersion
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Parabolic (circleFirstJet)
+open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
+open DifferentialGeometry.Geometry.Curvature
+variable {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E] [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
+  {n : ℕ}
+
+attribute [local instance] DifferentialGeometry.Analysis.Parabolic.vectorTensorHsNormedSpace
+
+private theorem ambient_reference_symmetric_composition
+    (c₀ : SmoothImmersion (I := I) (M := M))
+    (g : ℝ → SmoothRiemannianMetric I M) {D : RealTimeInterval} (ht : 0 ∈ D.regular)
+    {e : M → EuclideanSpace ℝ (Fin n)} (he : ContMDiff I 𝓘(ℝ, EuclideanSpace ℝ (Fin n)) ∞ e)
+    {r : EuclideanSpace ℝ (Fin n) → M} {U : TopologicalSpace.Opens (EuclideanSpace ℝ (Fin n))}
+    (hr : ContMDiffOn 𝓘(ℝ, EuclideanSpace ℝ (Fin n)) I ∞ r U)
+    (hEU : Set.range e ⊆ U) (hleft : ∀ p, r (e p) = p) (β : U)
+    (hG : MetricFamilySmoothOn D (fun t => Geometry.Riemannian.retractionMetric (g t) he hr))
+    {ε : ℝ} (hε : 0 < ε) :
+    let g₀ := c₀.pullbackMetric (g 0)
+    let f₀ : PiLp 2 (fun _ : Fin n => TensorHs g₀ 0 0 (((1 : ℕ) : ℝ) + 2)) :=
+      ambientSobolev c₀ (g 0) e he (((1 : ℕ) : ℝ) + 2)
+    let J : PiLp 2 (fun _ : Fin n => TensorHs g₀ 0 0 (1 + 1)) →L[ℝ]
+      PiLp 2 (fun _ : Fin n ⊕ Fin n => TensorHs g₀ 0 0 1) := circleFirstJet (ι := Fin n) g₀
+    let K : PiLp 2 (fun _ : Fin n => TensorHs g₀ 0 0 (((1 : ℕ) : ℝ) + 2)) →L[ℝ]
+      PiLp 2 (fun _ : Fin n => TensorHs g₀ 0 0 (1 + 1)) :=
+        ContinuousLinearMap.piLpMap 2 (fun _ : Fin n =>
+      tensorHsInclusion (g := g₀) (r := 0) (s := 0)
+        (show (1 : ℝ) + 1 ≤ ((1 : ℕ) : ℝ) + 2 by norm_num))
+    let P : PiLp 2 (fun _ : Fin n => TensorHs g₀ 0 0 (((1 : ℕ) : ℝ) + 2)) →L[ℝ]
+      PiLp 2 (fun _ : Fin n ⊕ Fin n => TensorHs g₀ 0 0 1) := J.comp K
+    let F := curveShorteningChartDiffusionCoefficient
+      (fun t => Geometry.Riemannian.retractionMetric (g t) he hr) β ∘ firstJetCoordinates n
+    let G := fun z j => curveShorteningParametricChartReaction
+      (fun t => Geometry.Riemannian.retractionMetric (g t) he hr) β (firstJetCoordinates n z) j
+    let S := firstJetCoordinates n ⁻¹' curveShorteningChartFirstJetDomain D
+      (fun t => Geometry.Riemannian.retractionMetric (g t) he hr) β
+    ∃ (R δ : ℝ) (hR : 0 < R) (hδ : 0 < δ), ‖P‖ * δ ≤ R ∧
+      ∃ Ca Cb : ℝ≥0,
+      R ≤ ε ∧ (Ca : ℝ) * R ≤ ε ∧ (Cb : ℝ) * R ≤ ε ∧
+      ∃ alpha : Metric.closedBall f₀ δ → ℝ →
+        Metric.closedBall (0 : PiLp 2 (fun _ : Fin n ⊕ Fin n => TensorHs g₀ 0 0 1)) R →
+          TensorHs g₀ 0 0 1,
+      ∃ reaction : Metric.closedBall f₀ δ → ℝ →
+        Metric.closedBall (0 : PiLp 2 (fun _ : Fin n ⊕ Fin n => TensorHs g₀ 0 0 1)) R →
+          PiLp 2 (fun _ : Fin n => TensorHs g₀ 0 0 1),
+      (∀ f, LipschitzWith Ca (fun p : ℝ × Metric.closedBall
+        (0 : PiLp 2 (fun _ : Fin n ⊕ Fin n => TensorHs g₀ 0 0 1)) R => alpha f p.1 p.2)) ∧
+      (∀ f, LipschitzWith Cb (fun p : ℝ × Metric.closedBall
+        (0 : PiLp 2 (fun _ : Fin n ⊕ Fin n => TensorHs g₀ 0 0 1)) R => reaction f p.1 p.2)) ∧
+      (∀ f t, t ∈ Set.Icc (-R) R → ∀ v,
+        ‖alpha f t v - alpha ⟨f₀, Metric.mem_closedBall_self hδ.le⟩ 0
+          ⟨0, Metric.mem_closedBall_self hR.le⟩‖ ≤ (Ca : ℝ) * (2 * R)) ∧
+      (∀ f t, t ∈ Set.Icc (-R) R → ∀ v,
+        ‖reaction f t v - reaction ⟨f₀, Metric.mem_closedBall_self hδ.le⟩ 0
+          ⟨0, Metric.mem_closedBall_self hR.le⟩‖ ≤ (Cb : ℝ) * (2 * R)) ∧
+      (∀ f k t s v, ‖alpha f t v - alpha k s v‖ ≤
+        (Ca : ℝ) * max |t - s| ‖P (f.val - k.val)‖) ∧
+      (∀ f k t s v, ‖reaction f t v - reaction k s v‖ ≤
+        (Cb : ℝ) * max |t - s| ‖P (f.val - k.val)‖) ∧
+      (∀ (f : Metric.closedBall f₀ δ) t
+        (v : Metric.closedBall (0 : PiLp 2 (fun _ : Fin n ⊕ Fin n => TensorHs g₀ 0 0 1)) R),
+        t ∈ Set.Icc (-R) R →
+        Set.range (scalarH1PiToContinuous g₀
+          (scalarH1TimeCoordinate g₀ (0 + t, P f.val + v.val))) ⊆ S) ∧
+      (∀ f t, t ∈ Set.Icc (-R) R → ∀ v x,
+        scalarH1ToContinuous g₀ (alpha f t v) x =
+          F (fun i => match i with
+            | none => 0 + t
+            | some i => scalarH1ToContinuous g₀ ((P f) i + v.val i) x)) ∧
+      (∀ f t, t ∈ Set.Icc (-R) R → ∀ v x j,
+        scalarH1ToContinuous g₀ (reaction f t v j) x =
+          G (fun i => match i with
+            | none => 0 + t
+            | some i => scalarH1ToContinuous g₀ ((P f) i + v.val i) x) j) := by
+  intro g₀ f₀ J K P F G S
+  obtain ⟨hS, hF, hG'⟩ := geometric_coefficients_contDiffOn hG β
+  have hjet : ambientFirstJet c₀ (g 0) e he = P f₀ := by
+    change circleFirstJet g₀ _ = circleFirstJet g₀ _
+    congr 1
+  have hreference : Set.range (scalarH1PiToContinuous g₀
+      (scalarH1TimeCoordinate g₀ (0, P f₀))) ⊆ S := by
+    rw [← hjet]
+    exact ambientFirstJet_range c₀ g ht he hr hEU hleft β
+  exact exists_scalar_vectorH1_time_composition_on_symmetric_translated_closedBall
+    g₀ n P 0 f₀ F G hF hG' hS hreference hε
+
+end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening.SmoothImmersion
+
+end
+
+noncomputable section
+open scoped Manifold ContDiff NNReal
+open MeasureTheory Set Filter
+namespace DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening.SmoothImmersion
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Parabolic
+open DifferentialGeometry.Analysis.Parabolic.QuasiLinear
+open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
+open DifferentialGeometry.Analysis.Parabolic.TimeSobolev
+open DifferentialGeometry.Analysis.Parabolic.MaximalRegularity
+open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
+
+private theorem precomposed_symmetric_reference_coefficient_bounds
+    {P X V A : Type*} [NormedAddCommGroup X] [NormedSpace ℝ X]
+    [NormedAddCommGroup V] [NormedSpace ℝ V] [NormedAddCommGroup A]
+    (J : X →L[ℝ] V) {R : ℝ} (hR : 0 < R)
+    (a : P → ℝ → Metric.closedBall (0 : V) R → A) (q : A) (Ca : ℝ≥0)
+    (ha : ∀ p, LipschitzWith Ca (fun z : ℝ × Metric.closedBall (0 : V) R => a p z.1 z.2))
+    (hclose : ∀ p t, t ∈ Set.Icc (-R) R → ∀ z, ‖a p t z - q‖ ≤ (Ca : ℝ) * (2 * R)) :
+    ∃ (ρ : ℝ) (hρ : 0 < ρ) (hJρ : ‖J‖ * ρ ≤ R),
+      ρ = R / (1 + ‖J‖) ∧ ρ ≤ R ∧
+      let alpha := fun p => extendClosedBall hρ.le
+        (fun t z => a p t (J.closedBallMap hJρ z))
+      (∀ p t, t ∈ Set.Icc (-ρ) ρ → ∀ z, ‖z‖ ≤ ρ → ∀ w, ‖w‖ ≤ ρ →
+        ‖alpha p t z - alpha p t w‖ ≤ ((Ca : ℝ) * ‖J‖) * ‖z - w‖) ∧
+      (∀ p t, t ∈ Set.Icc (-ρ) ρ → ∀ z, ‖z‖ ≤ ρ →
+        ‖alpha p t z - q‖ ≤ (2 * (Ca : ℝ) * (1 + ‖J‖)) * ρ) ∧
+      (∀ p, Continuous (fun z : Set.Icc (-ρ) ρ × Metric.closedBall (0 : X) ρ =>
+        alpha p z.1 z.2)) ∧
+      (∀ p t (z : Metric.closedBall (0 : X) ρ), alpha p t z = a p t (J.closedBallMap hJρ z)) := by
+  let ρ := R / (1 + ‖J‖)
+  have hden : 0 < 1 + ‖J‖ := by positivity
+  have hρ : 0 < ρ := div_pos hR hden
+  have hρeq : (1 + ‖J‖) * ρ = R := by
+    dsimp only [ρ]
+    field_simp
+  have hρR : ρ ≤ R := by nlinarith [norm_nonneg J]
+  have hJρ : ‖J‖ * ρ ≤ R := by nlinarith
+  refine ⟨ρ, hρ, hJρ, rfl, hρR, ?_, ?_, ?_, ?_⟩
+  · intro p t _ z hz w hw
+    dsimp only
+    have hz' : z ∈ Metric.closedBall (0 : X) ρ := by
+      simpa only [Metric.mem_closedBall, dist_zero_right] using hz
+    have hw' : w ∈ Metric.closedBall (0 : X) ρ := by
+      simpa only [Metric.mem_closedBall, dist_zero_right] using hw
+    rw [extendClosedBall_apply hρ.le _ t z hz', extendClosedBall_apply hρ.le _ t w hw']
+    exact ((ha p).norm_sub_time_precomp_closedBall J hJρ t ⟨z, hz'⟩ ⟨w, hw'⟩).trans
+      (by simpa only [mul_assoc] using
+        mul_le_mul_of_nonneg_left (J.le_opNorm (z - w)) Ca.coe_nonneg)
+  · intro p t htt z hz
+    dsimp only
+    have hz' : z ∈ Metric.closedBall (0 : X) ρ := by
+      simpa only [Metric.mem_closedBall, dist_zero_right] using hz
+    rw [extendClosedBall_apply hρ.le _ t z hz']
+    calc
+      _ ≤ (Ca : ℝ) * (2 * R) := hclose p t ⟨(neg_le_neg hρR).trans htt.1, htt.2.trans hρR⟩ _
+      _ = (2 * (Ca : ℝ) * (1 + ‖J‖)) * ρ := by rw [← hρeq]; ring
+  · intro p
+    have hc : Continuous (fun z : Set.Icc (-ρ) ρ × Metric.closedBall (0 : X) ρ =>
+        a p z.1 (J.closedBallMap hJρ z.2)) :=
+      ((ha p).prod_precomp_closedBall J hJρ).continuous.comp
+        ((continuous_subtype_val.comp continuous_fst).prodMk continuous_snd)
+    apply hc.congr
+    intro z
+    exact (extendClosedBall_apply hρ.le
+      (fun t v => a p t (J.closedBallMap hJρ v)) z.1 z.2.val z.2.property).symm
+  · intro p t z
+    exact extendClosedBall_apply hρ.le _ t z.val z.property
+
+end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening.SmoothImmersion
+
+end
+
+noncomputable section
+open private vectorTensorHsNormedSpace from
+  DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Existence.ShiftedCoefficients
+attribute [local instance] vectorTensorHsNormedSpace
+open MeasureTheory Filter
+open scoped Manifold ContDiff NNReal
+namespace DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening.SmoothImmersion
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Parabolic
+open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
+open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
+open DifferentialGeometry.Analysis.Parabolic.TimeSobolev
+open DifferentialGeometry.Analysis.Parabolic.MaximalRegularity
+open DifferentialGeometry.Analysis.Parabolic.QuasiLinear
+private local instance : NeZero (Module.finrank ℝ ℝ) := ⟨by norm_num⟩
+
+private theorem precomposed_translated_uniform_time_lipschitz
+    {ι A V : Type*} [Fintype ι]
+    [NormedAddCommGroup A] [NormedSpace ℝ A]
+    [NormedAddCommGroup V] [NormedSpace ℝ V]
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ)))
+    (m : A →L[ℝ] CircleHsPi g ι ((1 : ℕ) : ℝ) →L[ℝ] CircleHsPi g ι ((1 : ℕ) : ℝ))
+    (Q : CircleHsPi g ι (((1 : ℕ) : ℝ) + 2) →L[ℝ] CircleHsPi g ι ((1 : ℕ) : ℝ))
+    (D : CircleHsPi g ι (((1 : ℕ) : ℝ) + 1) →L[ℝ] CircleHsPi g ι ((1 : ℕ) : ℝ))
+    (d : CircleHsPi g ι ((1 : ℕ) : ℝ) →L[ℝ] CircleHsPi g ι ((1 : ℕ) : ℝ))
+    (P : CircleHsPi g ι (((1 : ℕ) : ℝ) + 2) →L[ℝ] V)
+    (J : CircleHsPi g ι (((1 : ℕ) : ℝ) + 1) →L[ℝ] V)
+    (q : A) (b₀ : CircleHsPi g ι ((1 : ℕ) : ℝ)) (f₀ : CircleHsPi g ι (((1 : ℕ) : ℝ) + 2))
+    {δ R : ℝ} (hδ : 0 ≤ δ) (hR : 0 < R)
+    (a : Metric.closedBall f₀ δ → ℝ → Metric.closedBall (0 : V) R → A)
+    (b : Metric.closedBall f₀ δ → ℝ → Metric.closedBall (0 : V) R → CircleHsPi g ι ((1 : ℕ) : ℝ))
+    (Ca Cb : ℝ≥0)
+    (ha : ∀ f, LipschitzWith Ca (fun z : ℝ × Metric.closedBall (0 : V) R => a f z.1 z.2))
+    (hb : ∀ f, LipschitzWith Cb (fun z : ℝ × Metric.closedBall (0 : V) R => b f z.1 z.2))
+    (haclose : ∀ f t, t ∈ Set.Icc (-R) R → ∀ z,
+      ‖a f t z - q‖ ≤ (Ca : ℝ) * (2 * R))
+    (hbclose : ∀ f t, t ∈ Set.Icc (-R) R → ∀ z,
+      ‖b f t z - b₀‖ ≤ (Cb : ℝ) * (2 * R))
+    (haparam : ∀ f k t s z, ‖a f t z - a k s z‖ ≤
+      (Ca : ℝ) * max |t - s| ‖P (f.val - k.val)‖)
+    (hbparam : ∀ f k t s z, ‖b f t z - b k s z‖ ≤
+      (Cb : ℝ) * max |t - s| ‖P (f.val - k.val)‖)
+    (hCa : (Ca : ℝ) * R ≤ 1 / (32 * (‖m‖ * ‖Q‖ + 1))) :
+    ∃ (ρ : ℝ) (hρ : 0 < ρ) (hJρ : ‖J‖ * ρ ≤ R),
+      ρ = R / (1 + ‖J‖) ∧ ρ ≤ R ∧
+      let alpha := fun f => extendClosedBall hρ.le
+        (fun t z => a f t (J.closedBallMap hJρ z))
+      let reaction := fun f => extendClosedBall hρ.le
+        (fun t z => b f t (J.closedBallMap hJρ z))
+      let K := circleHsPiInclusion g ι
+        (show ((1 : ℕ) : ℝ) + 1 ≤ ((1 : ℕ) : ℝ) + 2 by linarith)
+      let Params := Set.Icc (-ρ / 4) (ρ / 4) × Metric.closedBall f₀ δ
+      let N := fun (p : Params) t
+        (v : {v : CircleHsPi g ι (((1 : ℕ) : ℝ) + 2) | ‖K v‖ ≤ ρ}) =>
+        shiftedRemainder m Q K D d q
+          (fun t z => alpha p.2 ((p.1 : ℝ) + t) z)
+          (fun t z => reaction p.2 ((p.1 : ℝ) + t) z) p.2 t v
+      ∃ T₀ : ℝ, 0 < T₀ ∧ T₀ ≤ ρ / 4 ∧
+        ∀ {T : ℝ} (hT : 0 < T), T ≤ T₀ →
+        ∃ (Lip : ℝ≥0) (u : Params → timeH1 (CircleHsPi g ι ((1 : ℕ) : ℝ)) T)
+          (gforce : Params → timeL2 (CircleHsPi g ι ((1 : ℕ) : ℝ)) T),
+          LipschitzWith Lip gforce ∧ LipschitzWith (2 * Lip) u ∧
+          ∀ f,
+          let field := maximalRegularityDuhamelVectorField
+            (I := 𝓘(ℝ, ℝ)) (M := AddCircle (1 : ℝ)) (g := g) (r := 0) (s := 0)
+            (a := ((1 : ℕ) : ℝ)) (ι := ι) hT
+            (0 : CircleHsPi g ι (((1 : ℕ) : ℝ) + 2)) (gforce f)
+          u f = maximalRegularityDuhamelVectorMap
+            (I := 𝓘(ℝ, ℝ)) (M := AddCircle (1 : ℝ)) (g := g) (r := 0) (s := 0)
+            (a := ((1 : ℕ) : ℝ)) (ι := ι) hT (0 : CircleHsPi g ι (((1 : ℕ) : ℝ) + 2)) (gforce f) ∧
+            (∀ᵐ t ∂(timeMeasure T), field t ∈ {v | ‖K v‖ ≤ ρ}) ∧
+            gforce f =ᵐ[timeMeasure T] (fun t => N f t (aeSetLift
+              (show (0 : CircleHsPi g ι (((1 : ℕ) : ℝ) + 2)) ∈ {v | ‖K v‖ ≤ ρ} by
+                simpa only [Set.mem_ofPred_eq, map_zero, norm_zero] using hρ.le) field t)) ∧
+            (u f).toFunL2 =
+              (circleHsPiInclusion g ι
+                (show ((1 : ℕ) : ℝ) ≤ ((1 : ℕ) : ℝ) + 2 by linarith)).compLpL
+                  2 (timeMeasure T) field ∧
+            timeH1.trace0 _ T (u f) = 0 ∧
+            timeH1.timeDeriv _ T (u f) =
+              (ContinuousLinearMap.piLpMap 2 (fun _ : ι =>
+                tensorScaleLaplacian (I := 𝓘(ℝ, ℝ)) (M := AddCircle (1 : ℝ)) (g := g) (r := 0) (s
+                  := 0) ((1 : ℕ) : ℝ))).compLpL
+                  2 (timeMeasure T) field + gforce f ∧
+            ‖gforce f‖ ≤ ρ / 4 := by
+  obtain ⟨ρ, hρ, hJρ, hρeq, hρR, halip, haclose', hacont, _⟩ :=
+    precomposed_symmetric_reference_coefficient_bounds
+      (P := Metric.closedBall f₀ δ) (X := CircleHsPi g ι (((1 : ℕ) : ℝ) + 1))
+      (V := V) (A := A) J hR a q Ca ha haclose
+  obtain ⟨ρb, hρb, hJρb, hρbeq, _, hblip, hbclose', hbcont, _⟩ :=
+    precomposed_symmetric_reference_coefficient_bounds
+      (P := Metric.closedBall f₀ δ) (X := CircleHsPi g ι (((1 : ℕ) : ℝ) + 1))
+      (V := V) (A := CircleHsPi g ι ((1 : ℕ) : ℝ)) J hR b b₀ Cb hb hbclose
+  have hρbρ : ρb = ρ := hρbeq.trans hρeq.symm
+  clear hρbeq
+  subst ρb
+  refine ⟨ρ, hρ, hJρ, hρeq, hρR, ?_⟩
+  intro alpha reaction K Params N
+  have hsmall := scaled_coefficient_radius_bounds ‖m‖₊ ‖Q‖₊ ‖J‖₊ Ca hR hCa
+  simp only [coe_nnnorm] at hsmall
+  rw [← hρeq] at hsmall
+  have halip' : ∀ f t, t ∈ Set.Icc (-ρ) ρ →
+      LipschitzOnWith (Ca * ‖J‖₊) (alpha f t) (Metric.closedBall 0 ρ) := by
+    intro f t ht
+    apply LipschitzOnWith.of_dist_le_mul
+    intro z hz w hw
+    simpa only [NNReal.coe_mul, coe_nnnorm, dist_eq_norm] using
+      halip f t ht z (by simpa only [Metric.mem_closedBall, dist_zero_right] using hz)
+        w (by simpa only [Metric.mem_closedBall, dist_zero_right] using hw)
+  have hblip' : ∀ f t, t ∈ Set.Icc (-ρ) ρ →
+      LipschitzOnWith (Cb * ‖J‖₊) (reaction f t) (Metric.closedBall 0 ρ) := by
+    intro f t ht
+    apply LipschitzOnWith.of_dist_le_mul
+    intro z hz w hw
+    simpa only [NNReal.coe_mul, coe_nnnorm, dist_eq_norm] using
+      hblip f t ht z (by simpa only [Metric.mem_closedBall, dist_zero_right] using hz)
+        w (by simpa only [Metric.mem_closedBall, dist_zero_right] using hw)
+  have haparam' : ∀ f k t, t ∈ Set.Icc (-ρ) ρ →
+      ∀ t', t' ∈ Set.Icc (-ρ) ρ → ∀ z, ‖z‖ ≤ ρ →
+      ‖alpha f t z - alpha k t' z‖ ≤
+        (Ca : ℝ) * max |t - t'| ‖P (f.val - k.val)‖ := by
+    intro f k t _ t' _ z hz
+    have hz' : z ∈ Metric.closedBall (0 : CircleHsPi g ι (((1 : ℕ) : ℝ) + 1)) ρ := by
+      simpa only [Metric.mem_closedBall, dist_zero_right] using hz
+    change ‖extendClosedBall hρ.le _ t z - extendClosedBall hρ.le _ t' z‖ ≤ _
+    rw [extendClosedBall_apply hρ.le _ t z hz', extendClosedBall_apply hρ.le _ t' z hz']
+    exact haparam f k t t' _
+  have hbparam' : ∀ f k t, t ∈ Set.Icc (-ρ) ρ →
+      ∀ t', t' ∈ Set.Icc (-ρ) ρ → ∀ z, ‖z‖ ≤ ρ →
+      ‖reaction f t z - reaction k t' z‖ ≤
+        (Cb : ℝ) * max |t - t'| ‖P (f.val - k.val)‖ := by
+    intro f k t _ t' _ z hz
+    have hz' : z ∈ Metric.closedBall (0 : CircleHsPi g ι (((1 : ℕ) : ℝ) + 1)) ρ := by
+      simpa only [Metric.mem_closedBall, dist_zero_right] using hz
+    change ‖extendClosedBall hρ.le _ t z - extendClosedBall hρ.le _ t' z‖ ≤ _
+    rw [extendClosedBall_apply hρ.le _ t z hz', extendClosedBall_apply hρ.le _ t' z hz']
+    exact hbparam f k t t' _
+  obtain ⟨T₀, hT₀eq, hT₀, hsol⟩ :=
+    exists_uniform_time_translated_vector_lipschitz (I := 𝓘(ℝ, ℝ)) (M := AddCircle (1 : ℝ)) g 0 0
+      ((1 : ℕ) : ℝ) m Q D d q b₀ f₀ hδ hρ hρ
+      alpha reaction P (2 * Ca * (1 + ‖J‖₊)) (Ca * ‖J‖₊) (Cb * ‖J‖₊)
+      (2 * Cb * (1 + ‖J‖₊)) Ca Cb halip'
+      (by simpa only [NNReal.coe_mul, NNReal.coe_add, NNReal.coe_ofNat, NNReal.coe_one,
+        coe_nnnorm] using haclose') hblip'
+      (fun f t ht => by
+        simpa only [NNReal.coe_mul, NNReal.coe_add, NNReal.coe_ofNat, NNReal.coe_one,
+          coe_nnnorm] using hbclose' f t ht 0 (by simpa using hρ.le))
+      (by simpa only [NNReal.coe_mul, NNReal.coe_add, NNReal.coe_ofNat, NNReal.coe_one,
+        coe_nnnorm] using hsmall.2.2.2.1)
+      (by simpa only [NNReal.coe_mul, coe_nnnorm] using hsmall.2.2.2.2) hacont hbcont haparam'
+        hbparam'
+  refine ⟨T₀, hT₀, ?_, ?_⟩
+  · rw [hT₀eq]
+    exact min_le_left _ _
+  intro T hT hTT₀
+  obtain ⟨u, gforce, hFLip, huLip, hfacts⟩ := hsol hT hTT₀
+  refine ⟨_, u, gforce, hFLip, huLip, ?_⟩
+  exact hfacts
+
+end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening.SmoothImmersion
+
+end
+
+noncomputable section
+open private vectorTensorHsNormedSpace from
+  DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Existence.ShiftedCoefficients
+attribute [local instance] vectorTensorHsNormedSpace
+open scoped Manifold ContDiff NNReal
+namespace DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening.SmoothImmersion
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.Analysis.Parabolic
+open DifferentialGeometry.Analysis.Parabolic.QuasiLinear
+  (CircleHsPi maximalRegularityDuhamelVectorField)
+open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
+open DifferentialGeometry.Analysis.Parabolic.TimeSobolev
+open DifferentialGeometry.Analysis.Parabolic.MaximalRegularity
+open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
+private local instance : NeZero (Module.finrank ℝ ℝ) := ⟨by norm_num⟩
+variable {n : ℕ}
+
+private theorem precomposed_circle_translated_lipschitz_solutions
+    {V : Type*} [NormedAddCommGroup V] [NormedSpace ℝ V]
+    (g₀ : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ)))
+    (f₀ : CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 2))
+    (P : CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 2) →L[ℝ] V)
+    (J : CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 1) →L[ℝ] V)
+    {δ R : ℝ} (hδ : 0 ≤ δ) (hR : 0 < R)
+    (a : Metric.closedBall f₀ δ → ℝ → Metric.closedBall (0 : V) R → TensorHs g₀ 0 0 1)
+    (b : Metric.closedBall f₀ δ → ℝ → Metric.closedBall (0 : V) R → CircleHsPi g₀ (Fin n) 1)
+    (Ca Cb : ℝ≥0)
+    (halip : ∀ f, LipschitzWith Ca (fun z : ℝ × Metric.closedBall (0 : V) R => a f z.1 z.2))
+    (hblip : ∀ f, LipschitzWith Cb (fun z : ℝ × Metric.closedBall (0 : V) R => b f z.1 z.2))
+    (hbaseline : a ⟨f₀, Metric.mem_closedBall_self hδ⟩ 0 ⟨0, Metric.mem_closedBall_self hR.le⟩ =
+      ccTensorToHs g₀ 0 1 (scalarCc g₀ (AddCircle.laplacianPrincipalCoefficient g₀)))
+    (haclose : ∀ f t, t ∈ Set.Icc (-R) R → ∀ z,
+      ‖a f t z - a ⟨f₀, Metric.mem_closedBall_self hδ⟩ 0
+        ⟨0, Metric.mem_closedBall_self hR.le⟩‖ ≤ (Ca : ℝ) * (2 * R))
+    (hbclose : ∀ f t, t ∈ Set.Icc (-R) R → ∀ z,
+      ‖b f t z - b ⟨f₀, Metric.mem_closedBall_self hδ⟩ 0
+        ⟨0, Metric.mem_closedBall_self hR.le⟩‖ ≤ (Cb : ℝ) * (2 * R))
+    (haparam : ∀ f k t s z, ‖a f t z - a k s z‖ ≤
+      (Ca : ℝ) * max |t - s| ‖P (f.val - k.val)‖)
+    (hbparam : ∀ f k t s z, ‖b f t z - b k s z‖ ≤
+      (Cb : ℝ) * max |t - s| ‖P (f.val - k.val)‖)
+    (hCa : let m := coordinateMultiplication (ι := Fin n) (scalarHsMul g₀ 1 (by norm_num))
+      let Q := AddCircle.parameterSecondDerivativeHsPi (ι := Fin n) g₀ 1
+      (Ca : ℝ) * R ≤ 1 / (32 * (‖m‖ * ‖Q‖ + 1))) :
+    ∃ (ρ : ℝ) (hρ : 0 < ρ) (hJρ : ‖J‖ * ρ ≤ R),
+      ρ = R / (1 + ‖J‖) ∧ ρ ≤ R ∧
+      let alpha := fun f => extendClosedBall hρ.le
+        (fun t z => a f t (J.closedBallMap hJρ z))
+      let reaction := fun f => extendClosedBall hρ.le
+        (fun t z => b f t (J.closedBallMap hJρ z))
+      let Params := Set.Icc (-ρ / 4) (ρ / 4) × Metric.closedBall f₀ δ
+      ∃ T₀ : ℝ, 0 < T₀ ∧ T₀ ≤ ρ / 4 ∧
+        ∀ {T : ℝ} (hT : 0 < T), T ≤ T₀ →
+        ∃ (Lip : ℝ≥0) (u : Params → timeH1 (CircleHsPi g₀ (Fin n) ((1 : ℕ) : ℝ)) T)
+          (gforce : Params → timeL2 (CircleHsPi g₀ (Fin n) ((1 : ℕ) : ℝ)) T),
+          LipschitzWith Lip gforce ∧ LipschitzWith (2 * Lip) u ∧
+          ∀ p, referenceCircleSolutionFacts g₀ p.2.val
+            (fun t z => alpha p.2 ((p.1 : ℝ) + t) z)
+            (fun t z => reaction p.2 ((p.1 : ℝ) + t) z) ρ hT (u p) (gforce p) := by
+  let C := tensorHsCongrL g₀ 0 0 (Nat.cast_one.symm : (1 : ℝ) = ((1 : ℕ) : ℝ))
+  let Cpi := circleHsPiCongr g₀ (Fin n) (Nat.cast_one.symm : (1 : ℝ) = ((1 : ℕ) : ℝ))
+  let m : TensorHs g₀ 0 0 ((1 : ℕ) : ℝ) →L[ℝ]
+      CircleHsPi g₀ (Fin n) ((1 : ℕ) : ℝ) →L[ℝ]
+        CircleHsPi g₀ (Fin n) ((1 : ℕ) : ℝ) := coordinateMultiplication (ι := Fin n) (scalarHsMul
+          g₀ 1 (by norm_num))
+  let q := ccTensorToHs g₀ 0 1 (scalarCc g₀ (AddCircle.laplacianPrincipalCoefficient g₀))
+  let d : CircleHsPi g₀ (Fin n) ((1 : ℕ) : ℝ) →L[ℝ]
+      CircleHsPi g₀ (Fin n) ((1 : ℕ) : ℝ) := ContinuousLinearMap.piLpMap 2 (fun _ : Fin n =>
+      appHs g₀ 0 0 1 (scalarCc g₀ (AddCircle.laplacianDriftCoefficient g₀)))
+  let Q := AddCircle.parameterSecondDerivativeHsPi (ι := Fin n) g₀ 1
+  let D₁ := AddCircle.parameterDerivativeHsPi (ι := Fin n) g₀ 1
+  let fref : Metric.closedBall f₀ δ := ⟨f₀, Metric.mem_closedBall_self hδ⟩
+  let zref : Metric.closedBall (0 : V) R := ⟨0, Metric.mem_closedBall_self hR.le⟩
+  change a fref 0 zref = q at hbaseline
+  have haclose' : ∀ f t, t ∈ Set.Icc (-R) R → ∀ z,
+      ‖a f t z - q‖ ≤ (Ca : ℝ) * (2 * R) := by
+    intro f t htt z
+    rw [← hbaseline]
+    exact haclose f t htt z
+  let a' := fun f t z => C (a f t z)
+  let b' := fun f t z => Cpi (b f t z)
+  have halip' : ∀ f, LipschitzWith Ca
+      (fun z : ℝ × Metric.closedBall
+        (0 : V) R => a' f z.1 z.2) := by
+    intro f
+    apply LipschitzWith.of_dist_le_mul
+    intro z w
+    simpa only [a', dist_eq_norm, ← map_sub, C, tensorHsCongrL_apply, norm_tensorHsCongr]
+      using (halip f).dist_le_mul z w
+  have hblip' : ∀ f, LipschitzWith Cb
+      (fun z : ℝ × Metric.closedBall
+        (0 : V) R => b' f z.1 z.2) := by
+    intro f
+    apply LipschitzWith.of_dist_le_mul
+    intro z w
+    simpa only [b', dist_eq_norm, ← map_sub, Cpi.norm_map]
+      using (hblip f).dist_le_mul z w
+  have haclose'' : ∀ f t, t ∈ Set.Icc (-R) R → ∀ z,
+      ‖a' f t z - C q‖ ≤ (Ca : ℝ) * (2 * R) := by
+    intro f t htt z
+    simpa only [a', ← map_sub, C, tensorHsCongrL_apply, norm_tensorHsCongr] using haclose' f t htt z
+  have hbclose' : ∀ f t, t ∈ Set.Icc (-R) R → ∀ z,
+      ‖b' f t z - Cpi (b fref 0 zref)‖ ≤ (Cb : ℝ) * (2 * R) := by
+    intro f t htt z
+    simpa only [b', ← map_sub, Cpi.norm_map] using hbclose f t htt z
+  have haparam' : ∀ f k t s z, ‖a' f t z - a' k s z‖ ≤
+      (Ca : ℝ) * max |t - s| ‖P (f.val - k.val)‖ := by
+    intro f k t s z
+    simpa only [a', ← map_sub, C, tensorHsCongrL_apply, norm_tensorHsCongr]
+      using haparam f k t s z
+  have hbparam' : ∀ f k t s z, ‖b' f t z - b' k s z‖ ≤
+      (Cb : ℝ) * max |t - s| ‖P (f.val - k.val)‖ := by
+    intro f k t s z
+    simpa only [b', ← map_sub, Cpi.norm_map] using hbparam f k t s z
+  obtain ⟨ρ, hρ, hJρ, hρeq, hρR, T₀, hT₀, hT₀ρ, hsol⟩ :=
+    precomposed_translated_uniform_time_lipschitz g₀ m Q D₁ d P J (C q) (Cpi (b fref 0 zref)) f₀
+      hδ hR a' b' Ca Cb halip' hblip' haclose'' hbclose' haparam' hbparam' hCa
+  let alpha := fun f => extendClosedBall hρ.le (fun t z => a f t (J.closedBallMap hJρ z))
+  let reaction := fun f => extendClosedBall hρ.le (fun t z => b f t (J.closedBallMap hJρ z))
+  have halpha : (fun f => extendClosedBall hρ.le (fun t z => a' f t (J.closedBallMap hJρ z))) =
+      fun f t z => C (alpha f t z) := by
+    funext f t z
+    simp only [a', alpha, extendClosedBall]
+    split_ifs <;> rfl
+  have hreaction : (fun f => extendClosedBall hρ.le (fun t z => b' f t (J.closedBallMap hJρ z))) =
+      fun f t z => Cpi (reaction f t z) := by
+    funext f t z
+    simp only [b', reaction, extendClosedBall]
+    split_ifs <;> rfl
+  refine ⟨ρ, hρ, hJρ, hρeq, hρR, T₀, hT₀, hT₀ρ, ?_⟩
+  intro T hT hTT₀
+  obtain ⟨Lip, u, gforce, hFLip, huLip, hfacts⟩ := hsol hT hTT₀
+  refine ⟨Lip, u, gforce, hFLip, huLip, ?_⟩
+  intro p
+  obtain ⟨hu, hstate, hforce, hreal, htrace, hderiv, hnorm⟩ := hfacts p
+  unfold referenceCircleSolutionFacts
+  refine ⟨hu, hstate, hreal, htrace, hderiv, hnorm, ?_⟩
+  apply circle_shifted_equation_ae g₀ p.2.val
+    (fun t z => C (alpha p.2 ((p.1 : ℝ) + t) z))
+    (fun t z => Cpi (reaction p.2 ((p.1 : ℝ) + t) z)) hρ.le
+    (maximalRegularityDuhamelVectorField
+      (I := 𝓘(ℝ, ℝ)) (M := AddCircle (1 : ℝ)) (ι := Fin n)
+      (g := g₀) (r := 0) (s := 0) (a := ((1 : ℕ) : ℝ)) hT 0 (gforce p)) (gforce p) hstate
+  have hq : C q = ccTensorToHs g₀ 0 ((1 : ℕ) : ℝ)
+      (scalarCc g₀ (AddCircle.laplacianPrincipalCoefficient g₀)) := by
+    exact
+      tensorHsCongrL_ccTensorToHs
+      g₀ _ _
+  rw [halpha, hreaction, hq] at hforce
+  exact hforce
+
+end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening.SmoothImmersion
+
+end
+
+noncomputable section
+open private vectorTensorHsNormedSpace from
+  DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Existence.ShiftedCoefficients
+attribute [local instance] vectorTensorHsNormedSpace
+open scoped Manifold ContDiff NNReal
+namespace DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening.SmoothImmersion
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.Analysis.Parabolic
+open DifferentialGeometry.Analysis.Parabolic.QuasiLinear (CircleHsPi)
+open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
+open DifferentialGeometry.Analysis.Parabolic.TimeSobolev
+open DifferentialGeometry.Analysis.Parabolic.MaximalRegularity
+open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
+private local instance : NeZero (Module.finrank ℝ ℝ) := ⟨by norm_num⟩
+variable {n : ℕ}
+
+private def referenceCircleSymmetricCoefficientFacts
+    (g₀ : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ)))
+    (f₀ : CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 2))
+    (P : CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 2) →L[ℝ] CircleHsPi g₀ (Fin n ⊕ Fin n) 1)
+    (J : CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 1) →L[ℝ] CircleHsPi g₀ (Fin n ⊕ Fin n) 1)
+    (F : (Option (Fin n ⊕ Fin n) → ℝ) → ℝ)
+    (G : (Option (Fin n ⊕ Fin n) → ℝ) → Fin n → ℝ)
+    (S : Set (Option (Fin n ⊕ Fin n) → ℝ))
+    (δ ρ : ℝ)
+    (alpha : Metric.closedBall f₀ δ → ℝ → CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 1) → TensorHs g₀
+      0 0 1)
+    (reaction : Metric.closedBall f₀ δ → ℝ → CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 1) →
+      CircleHsPi g₀ (Fin n) 1) : Prop :=
+  (∀ (f : Metric.closedBall f₀ δ) t, t ∈ Set.Icc (-ρ) ρ → ∀ z, ‖z‖ ≤ ρ →
+    Set.range (scalarH1PiToContinuous g₀
+      (scalarH1TimeCoordinate g₀ (t, P f.val + J z))) ⊆ S) ∧
+  (∀ f t, t ∈ Set.Icc (-ρ) ρ → ∀ z, ‖z‖ ≤ ρ → ∀ x,
+    scalarH1ToContinuous g₀ (alpha f t z) x =
+      F (fun i => match i with
+        | none => t
+        | some i => scalarH1ToContinuous g₀ ((P f) i + (J z) i) x)) ∧
+  (∀ f t, t ∈ Set.Icc (-ρ) ρ → ∀ z, ‖z‖ ≤ ρ → ∀ x j,
+    scalarH1ToContinuous g₀ (reaction f t z j) x =
+      G (fun i => match i with
+        | none => t
+        | some i => scalarH1ToContinuous g₀ ((P f) i + (J z) i) x) j)
+
+private theorem referenceCircleSymmetricCoefficientFacts_precomposed
+    (g₀ : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ)))
+    (f₀ : CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 2))
+    (P : CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 2) →L[ℝ] CircleHsPi g₀ (Fin n ⊕ Fin n) 1)
+    (J : CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 1) →L[ℝ] CircleHsPi g₀ (Fin n ⊕ Fin n) 1)
+    (F : (Option (Fin n ⊕ Fin n) → ℝ) → ℝ)
+    (G : (Option (Fin n ⊕ Fin n) → ℝ) → Fin n → ℝ)
+    (S : Set (Option (Fin n ⊕ Fin n) → ℝ))
+    {δ R ρ : ℝ} (hρ : 0 < ρ) (hJρ : ‖J‖ * ρ ≤ R) (hρR : ρ ≤ R)
+    (a : Metric.closedBall f₀ δ → ℝ → Metric.closedBall (0 : CircleHsPi g₀ (Fin n ⊕ Fin n) 1) R →
+      TensorHs g₀ 0 0 1)
+    (b : Metric.closedBall f₀ δ → ℝ → Metric.closedBall (0 : CircleHsPi g₀ (Fin n ⊕ Fin n) 1) R →
+      CircleHsPi g₀ (Fin n) 1)
+    (hrange : ∀ (f : Metric.closedBall f₀ δ) t
+      (v : Metric.closedBall (0 : CircleHsPi g₀ (Fin n ⊕ Fin n) 1) R),
+      t ∈ Set.Icc (-R) R →
+      Set.range (scalarH1PiToContinuous g₀
+        (scalarH1TimeCoordinate g₀ (t, P f.val + v.val))) ⊆ S)
+    (haeval : ∀ f t, t ∈ Set.Icc (-R) R → ∀ v x,
+      scalarH1ToContinuous g₀ (a f t v) x =
+        F (fun i => match i with
+          | none => t
+          | some i => scalarH1ToContinuous g₀ ((P f) i + v.val i) x))
+    (hbeval : ∀ f t, t ∈ Set.Icc (-R) R → ∀ v x j,
+      scalarH1ToContinuous g₀ (b f t v j) x =
+        G (fun i => match i with
+          | none => t
+          | some i => scalarH1ToContinuous g₀ ((P f) i + v.val i) x) j) :
+    let alpha := fun f => extendClosedBall hρ.le
+      (fun t z => a f t (J.closedBallMap hJρ z))
+    let reaction := fun f => extendClosedBall hρ.le
+      (fun t z => b f t (J.closedBallMap hJρ z))
+    referenceCircleSymmetricCoefficientFacts g₀ f₀ P J F G S δ ρ alpha reaction := by
+  intro alpha reaction
+  refine ⟨?_, ?_, ?_⟩
+  · intro f t htt z hz
+    have hz' : z ∈ Metric.closedBall (0 : CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 1)) ρ := by
+      simpa only [Metric.mem_closedBall, dist_zero_right] using hz
+    exact hrange f t (J.closedBallMap hJρ ⟨z, hz'⟩) ⟨(neg_le_neg hρR).trans htt.1, htt.2.trans hρR⟩
+  · intro f t htt z hz x
+    have hz' : z ∈ Metric.closedBall (0 : CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 1)) ρ := by
+      simpa only [Metric.mem_closedBall, dist_zero_right] using hz
+    dsimp only [alpha]
+    rw [extendClosedBall_apply hρ.le _ t z hz']
+    exact haeval f t ⟨(neg_le_neg hρR).trans htt.1, htt.2.trans hρR⟩ (J.closedBallMap hJρ ⟨z,
+      hz'⟩) x
+  · intro f t htt z hz x j
+    have hz' : z ∈ Metric.closedBall (0 : CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 1)) ρ := by
+      simpa only [Metric.mem_closedBall, dist_zero_right] using hz
+    dsimp only [reaction]
+    rw [extendClosedBall_apply hρ.le _ t z hz']
+    exact hbeval f t ⟨(neg_le_neg hρR).trans htt.1, htt.2.trans hρR⟩ (J.closedBallMap hJρ ⟨z,
+      hz'⟩) x j
+
+private theorem reference_circle_translated_lipschitz_solutions_of_coefficients
+    (g₀ : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ)))
+    (f₀ : CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 2))
+    (J : CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 1) →L[ℝ] CircleHsPi g₀ (Fin n ⊕ Fin n) 1)
+    (P : CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 2) →L[ℝ]
+      CircleHsPi g₀ (Fin n ⊕ Fin n) 1)
+    (F : (Option (Fin n ⊕ Fin n) → ℝ) → ℝ)
+    (G : (Option (Fin n ⊕ Fin n) → ℝ) → Fin n → ℝ)
+    (S : Set (Option (Fin n ⊕ Fin n) → ℝ))
+    {δ R : ℝ} (hδ : 0 ≤ δ) (hR : 0 < R)
+    (a : Metric.closedBall f₀ δ → ℝ → Metric.closedBall (0 : CircleHsPi g₀ (Fin n ⊕ Fin n) 1) R →
+      TensorHs g₀ 0 0 1)
+    (b : Metric.closedBall f₀ δ → ℝ → Metric.closedBall (0 : CircleHsPi g₀ (Fin n ⊕ Fin n) 1) R →
+      CircleHsPi g₀ (Fin n) 1)
+    (Ca Cb : ℝ≥0)
+    (halip : ∀ f, LipschitzWith Ca (fun z : ℝ × Metric.closedBall (0 : CircleHsPi g₀ (Fin n ⊕ Fin
+      n) 1) R => a f z.1 z.2))
+    (hblip : ∀ f, LipschitzWith Cb (fun z : ℝ × Metric.closedBall (0 : CircleHsPi g₀ (Fin n ⊕ Fin
+      n) 1) R => b f z.1 z.2))
+    (hbaseline : a ⟨f₀, Metric.mem_closedBall_self hδ⟩ 0 ⟨0, Metric.mem_closedBall_self hR.le⟩ =
+      ccTensorToHs g₀ 0 1 (scalarCc g₀ (AddCircle.laplacianPrincipalCoefficient g₀)))
+    (haclose : ∀ f t, t ∈ Set.Icc (-R) R → ∀ z,
+      ‖a f t z - a ⟨f₀, Metric.mem_closedBall_self hδ⟩ 0
+        ⟨0, Metric.mem_closedBall_self hR.le⟩‖ ≤ (Ca : ℝ) * (2 * R))
+    (hbclose : ∀ f t, t ∈ Set.Icc (-R) R → ∀ z,
+      ‖b f t z - b ⟨f₀, Metric.mem_closedBall_self hδ⟩ 0
+        ⟨0, Metric.mem_closedBall_self hR.le⟩‖ ≤ (Cb : ℝ) * (2 * R))
+    (haparam : ∀ f k t s z, ‖a f t z - a k s z‖ ≤
+      (Ca : ℝ) * max |t - s| ‖P (f.val - k.val)‖)
+    (hbparam : ∀ f k t s z, ‖b f t z - b k s z‖ ≤
+      (Cb : ℝ) * max |t - s| ‖P (f.val - k.val)‖)
+    (hCa : let m := coordinateMultiplication (ι := Fin n) (scalarHsMul g₀ 1 (by norm_num))
+      let Q := AddCircle.parameterSecondDerivativeHsPi (ι := Fin n) g₀ 1
+      (Ca : ℝ) * R ≤ 1 / (32 * (‖m‖ * ‖Q‖ + 1)))
+    (hrange : ∀ (f : Metric.closedBall f₀ δ) t
+      (v : Metric.closedBall (0 : CircleHsPi g₀ (Fin n ⊕ Fin n) 1) R),
+      t ∈ Set.Icc (-R) R →
+      Set.range (scalarH1PiToContinuous g₀
+        (scalarH1TimeCoordinate g₀ (t, P f.val + v.val))) ⊆ S)
+    (haeval : ∀ f t, t ∈ Set.Icc (-R) R → ∀ v x,
+      scalarH1ToContinuous g₀ (a f t v) x =
+        F (fun i => match i with
+          | none => t
+          | some i => scalarH1ToContinuous g₀ ((P f) i + v.val i) x))
+    (hbeval : ∀ f t, t ∈ Set.Icc (-R) R → ∀ v x j,
+      scalarH1ToContinuous g₀ (b f t v j) x =
+        G (fun i => match i with
+          | none => t
+          | some i => scalarH1ToContinuous g₀ ((P f) i + v.val i) x) j) :
+    ∃ (ρ : ℝ), 0 < ρ ∧
+      ∃ alpha : Metric.closedBall f₀ δ → ℝ →
+        CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 1) → TensorHs g₀ 0 0 1,
+      ∃ reaction : Metric.closedBall f₀ δ → ℝ →
+        CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 1) → CircleHsPi g₀ (Fin n) 1,
+      referenceCircleSymmetricCoefficientFacts g₀ f₀ P J F G S δ ρ alpha reaction ∧
+      let Params := Set.Icc (-ρ / 4) (ρ / 4) × Metric.closedBall f₀ δ
+      ∃ T₀ : ℝ, 0 < T₀ ∧ T₀ ≤ ρ / 4 ∧
+        ∀ {T : ℝ} (hT : 0 < T), T ≤ T₀ →
+        ∃ (Lip : ℝ≥0) (u : Params → timeH1 (CircleHsPi g₀ (Fin n) ((1 : ℕ) : ℝ)) T)
+          (gforce : Params → timeL2 (CircleHsPi g₀ (Fin n) ((1 : ℕ) : ℝ)) T),
+          LipschitzWith Lip gforce ∧ LipschitzWith (2 * Lip) u ∧
+          ∀ p, referenceCircleSolutionFacts g₀ p.2.val
+            (fun t z => alpha p.2 ((p.1 : ℝ) + t) z)
+            (fun t z => reaction p.2 ((p.1 : ℝ) + t) z) ρ hT (u p) (gforce p) := by
+  obtain ⟨ρ, hρ, hJρ, _, hρR, hsol⟩ :=
+    precomposed_circle_translated_lipschitz_solutions (n := n)
+      (V := CircleHsPi g₀ (Fin n ⊕ Fin n) 1) g₀ f₀ P J hδ hR a b Ca Cb halip hblip
+      hbaseline haclose hbclose haparam hbparam hCa
+  let alpha := fun f => extendClosedBall hρ.le (fun t z => a f t (J.closedBallMap hJρ z))
+  let reaction := fun f => extendClosedBall hρ.le (fun t z => b f t (J.closedBallMap hJρ z))
+  refine ⟨ρ, hρ, alpha, reaction, ?_, hsol⟩
+  exact referenceCircleSymmetricCoefficientFacts_precomposed g₀ f₀ P J F G S hρ hJρ hρR
+    a b hrange haeval hbeval
+
+end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening.SmoothImmersion
+
+end
+
+noncomputable section
+open private vectorTensorHsNormedSpace from
+  DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Existence.ShiftedCoefficients
+attribute [local instance] vectorTensorHsNormedSpace
+open scoped Manifold ContDiff NNReal
+open MeasureTheory Set Filter
+namespace DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening.SmoothImmersion
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Parabolic
+open DifferentialGeometry.Analysis.Parabolic.QuasiLinear
+open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
+open DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Analysis.Parabolic.TimeSobolev
+open DifferentialGeometry.Analysis.Parabolic.MaximalRegularity
+open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
+variable {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E] [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
+  {n : ℕ}
+private local instance : NeZero (Module.finrank ℝ ℝ) := ⟨by norm_num⟩
+
+private theorem ambient_reference_translated_lipschitz_solutions
+    (c₀ : SmoothImmersion (I := I) (M := M))
+    (g : ℝ → SmoothRiemannianMetric I M) {D : RealTimeInterval} (ht : 0 ∈ D.regular)
+    {e : M → EuclideanSpace ℝ (Fin n)} (he : ContMDiff I 𝓘(ℝ, EuclideanSpace ℝ (Fin n)) ∞ e)
+    {r : EuclideanSpace ℝ (Fin n) → M} {U : TopologicalSpace.Opens (EuclideanSpace ℝ (Fin n))}
+    (hr : ContMDiffOn 𝓘(ℝ, EuclideanSpace ℝ (Fin n)) I ∞ r U)
+    (hEU : Set.range e ⊆ U) (hleft : ∀ p, r (e p) = p) (β : U)
+    (hG : MetricFamilySmoothOn D (fun t => Geometry.Riemannian.retractionMetric (g t) he hr)) :
+    let f₀ : CircleHsPi (c₀.pullbackMetric (g 0)) (Fin n) (((1 : ℕ) : ℝ) + 2) := ambientSobolev c₀
+      (g 0) e he (((1 : ℕ) : ℝ) + 2)
+    let J₀ : CircleHsPi (c₀.pullbackMetric (g 0)) (Fin n) (1 + 1) →L[ℝ]
+      CircleHsPi (c₀.pullbackMetric (g 0)) (Fin n ⊕ Fin n) 1 := circleFirstJet (ι := Fin n)
+        (c₀.pullbackMetric (g 0))
+    let K₀ : CircleHsPi (c₀.pullbackMetric (g 0)) (Fin n) (((1 : ℕ) : ℝ) + 2) →L[ℝ]
+      CircleHsPi (c₀.pullbackMetric (g 0)) (Fin n) (1 + 1) := ContinuousLinearMap.piLpMap 2 (fun _
+        : Fin n =>
+      tensorHsInclusion (g := (c₀.pullbackMetric (g 0))) (r := 0) (s := 0)
+        (show (1 : ℝ) + 1 ≤ ((1 : ℕ) : ℝ) + 2 by norm_num))
+    let P : CircleHsPi (c₀.pullbackMetric (g 0)) (Fin n) (((1 : ℕ) : ℝ) + 2) →L[ℝ]
+      CircleHsPi (c₀.pullbackMetric (g 0)) (Fin n ⊕ Fin n) 1  := J₀.comp K₀
+    let J := J₀.comp (circleHsPiCongr (c₀.pullbackMetric (g 0)) (Fin n)
+      (by norm_num : ((1 : ℕ) : ℝ) + 1 = (1 : ℝ) + 1)).toLinearIsometry.toContinuousLinearMap
+    let K := circleHsPiInclusion (c₀.pullbackMetric (g 0)) (Fin n)
+      (show ((1 : ℕ) : ℝ) + 1 ≤ ((1 : ℕ) : ℝ) + 2 by norm_num)
+    let F := curveShorteningChartDiffusionCoefficient
+      (fun t => Geometry.Riemannian.retractionMetric (g t) he hr) β ∘ firstJetCoordinates n
+    let G := fun z j => curveShorteningParametricChartReaction
+      (fun t => Geometry.Riemannian.retractionMetric (g t) he hr) β (firstJetCoordinates n z) j
+    let S := firstJetCoordinates n ⁻¹' curveShorteningChartFirstJetDomain D
+      (fun t => Geometry.Riemannian.retractionMetric (g t) he hr) β
+    (∀ f v, P f + J (K v) = P (f + v)) ∧
+    ∃ δ ρ : ℝ, 0 < δ ∧ 0 < ρ ∧
+      ∃ alpha : Metric.closedBall f₀ δ → ℝ →
+        CircleHsPi (c₀.pullbackMetric (g 0)) (Fin n) (((1 : ℕ) : ℝ) + 1) → TensorHs
+          (c₀.pullbackMetric (g 0)) 0 0 1,
+      ∃ reaction : Metric.closedBall f₀ δ → ℝ →
+        CircleHsPi (c₀.pullbackMetric (g 0)) (Fin n) (((1 : ℕ) : ℝ) + 1) →
+          CircleHsPi (c₀.pullbackMetric (g 0)) (Fin n) 1,
+      referenceCircleSymmetricCoefficientFacts (c₀.pullbackMetric (g 0)) f₀ P J F G S δ ρ alpha
+        reaction ∧
+      let Params := Set.Icc (-ρ / 4) (ρ / 4) × Metric.closedBall f₀ δ
+      ∃ T₀ : ℝ, 0 < T₀ ∧ T₀ ≤ ρ / 4 ∧
+        ∀ {T : ℝ} (hT : 0 < T), T ≤ T₀ →
+        ∃ (Lip : ℝ≥0)
+          (u : Params → timeH1 (CircleHsPi (c₀.pullbackMetric (g 0)) (Fin n) ((1 : ℕ) : ℝ)) T)
+          (gforce : Params → timeL2 (CircleHsPi (c₀.pullbackMetric (g 0)) (Fin n) ((1 : ℕ) : ℝ)) T),
+          LipschitzWith Lip gforce ∧ LipschitzWith (2 * Lip) u ∧
+          ∀ p, referenceCircleSolutionFacts (c₀.pullbackMetric (g 0)) p.2.val
+            (fun t z => alpha p.2 ((p.1 : ℝ) + t) z)
+            (fun t z => reaction p.2 ((p.1 : ℝ) + t) z) ρ hT (u p) (gforce p) := by
+  intro f₀ J₀ K₀ P J K F G S
+  refine ⟨fun f v => reference_jet_add_correction_eq (c₀.pullbackMetric (g 0)) f v, ?_⟩
+  have hε := circle_coefficient_threshold_pos (n := n) (c₀.pullbackMetric (g 0))
+  obtain ⟨R, δ, hR, hδ, _, Ca, Cb, _, hCa, _,
+      a, b, halip, hblip, haclose, hbclose, haparam, hbparam, hrange, haeval, hbeval⟩ :=
+    ambient_reference_symmetric_composition c₀ g ht he hr hEU hleft β hG hε
+  let fref := (⟨ambientSobolev c₀ (g 0) e he (((1 : ℕ) : ℝ) + 2),
+    Metric.mem_closedBall_self hδ.le⟩ :
+      Metric.closedBall (ambientSobolev c₀ (g 0) e he (((1 : ℕ) : ℝ) + 2)) δ)
+  let zref := (⟨0, Metric.mem_closedBall_self hR.le⟩ :
+    Metric.closedBall (0 : CircleHsPi (c₀.pullbackMetric (g 0)) (Fin n ⊕ Fin n) 1) R)
+  have ha0 := haeval fref 0 ⟨neg_nonpos.mpr hR.le, hR.le⟩ zref
+  have hbaseline :=
+    reference_diffusion_at_sobolev_jet
+      (E := E) (H := H) (M := M) (I := I) (n := n)
+      c₀ g (e := e) he (r := r) (U := U) hr hEU hleft β
+      (a fref 0 zref) (by
+        intro x
+        rw [ha0 x]
+        congr 2
+        funext i
+        cases i <;> simp only [fref, zref, WithLp.ofLp_zero, Pi.zero_apply, zero_add])
+  have hs0 := reference_circle_translated_lipschitz_solutions_of_coefficients (n := n)
+    (c₀.pullbackMetric (g 0)) (ambientSobolev c₀ (g 0) e he (((1 : ℕ) : ℝ) + 2))
+  have hs1 := hs0 J P F G S hδ.le hR
+  have hs2 := hs1 a b Ca Cb
+  have hs3 := hs2 halip hblip hbaseline
+  have hs4 := hs3 haclose hbclose haparam hbparam hCa
+  dsimp only [P, J₀, K₀, F, G, S] at hs4
+  have hs5a := hs4 (by simpa only [zero_add] using hrange)
+  have hs5b := hs5a (by
+    intro f t ht' v x
+    rw [haeval f t ht' v x]
+    congr 1
+    funext i
+    cases i <;> simp only [zero_add])
+  have hs5 := hs5b (by
+    intro f t ht' v x j
+    rw [hbeval f t ht' v x j]
+    congr 2
+    funext i
+    cases i <;> simp only [zero_add])
+  obtain ⟨ρ, hρ, alpha, reaction, hcoeff, hsol⟩ := hs5
+  exact ⟨δ, ρ, hδ, hρ, alpha, reaction, hcoeff, hsol⟩
+
+end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening.SmoothImmersion
+
+end
+
+noncomputable section
+open private vectorTensorHsNormedSpace from
+  DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Existence.ShiftedCoefficients
+attribute [local instance] vectorTensorHsNormedSpace
+open scoped Manifold ContDiff NNReal
+open MeasureTheory Set Filter
+namespace DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening.SmoothImmersion
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Parabolic
+open DifferentialGeometry.Analysis.Parabolic.QuasiLinear
+open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
+open DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Analysis.Parabolic.TimeSobolev
+open DifferentialGeometry.Analysis.Parabolic.MaximalRegularity
+open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
+variable {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E] [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
+  {n : ℕ}
+private local instance : NeZero (Module.finrank ℝ ℝ) := ⟨by norm_num⟩
+
+private theorem ambient_reference_translated_solutions_on_smooth_neighborhood
+    (c₀ : SmoothImmersion (I := I) (M := M))
+    (g : ℝ → SmoothRiemannianMetric I M) {D : RealTimeInterval} (ht : 0 ∈ D.regular)
+    (e : Width.SmoothLoopEmbedding (I := I) (Q := M) n)
+    {r : EuclideanSpace ℝ (Fin n) → M} {U : TopologicalSpace.Opens (EuclideanSpace ℝ (Fin n))}
+    (hr : ContMDiffOn 𝓘(ℝ, EuclideanSpace ℝ (Fin n)) I ∞ r U)
+    (hEU : Set.range e.map ⊆ U) (hleft : ∀ p, r (e.map p) = p) (β : U)
+    (hG : MetricFamilySmoothOn D (fun t => Geometry.Riemannian.retractionMetric (g t) e.smooth
+      hr)) :
+    let _ := smoothImmersionTopology e
+    let f₀ : CircleHsPi (c₀.pullbackMetric (g 0)) (Fin n) (((1 : ℕ) : ℝ) + 2) := ambientSobolev c₀
+      (g 0) e.map e.smooth (((1 : ℕ) : ℝ) + 2)
+    let J₀ : CircleHsPi (c₀.pullbackMetric (g 0)) (Fin n) (1 + 1) →L[ℝ]
+      CircleHsPi (c₀.pullbackMetric (g 0)) (Fin n ⊕ Fin n) 1 := circleFirstJet (ι := Fin n)
+        (c₀.pullbackMetric (g 0))
+    let K₀ : CircleHsPi (c₀.pullbackMetric (g 0)) (Fin n) (((1 : ℕ) : ℝ) + 2) →L[ℝ]
+      CircleHsPi (c₀.pullbackMetric (g 0)) (Fin n) (1 + 1) := ContinuousLinearMap.piLpMap 2 (fun _
+        : Fin n =>
+      tensorHsInclusion (g := (c₀.pullbackMetric (g 0))) (r := 0) (s := 0)
+        (show (1 : ℝ) + 1 ≤ ((1 : ℕ) : ℝ) + 2 by norm_num))
+    let P : CircleHsPi (c₀.pullbackMetric (g 0)) (Fin n) (((1 : ℕ) : ℝ) + 2) →L[ℝ]
+      CircleHsPi (c₀.pullbackMetric (g 0)) (Fin n ⊕ Fin n) 1  := J₀.comp K₀
+    let J := J₀.comp (circleHsPiCongr (c₀.pullbackMetric (g 0)) (Fin n)
+      (by norm_num : ((1 : ℕ) : ℝ) + 1 = (1 : ℝ) + 1)).toLinearIsometry.toContinuousLinearMap
+    let K := circleHsPiInclusion (c₀.pullbackMetric (g 0)) (Fin n)
+      (show ((1 : ℕ) : ℝ) + 1 ≤ ((1 : ℕ) : ℝ) + 2 by norm_num)
+    let F := curveShorteningChartDiffusionCoefficient
+      (fun t => Geometry.Riemannian.retractionMetric (g t) e.smooth hr) β ∘ firstJetCoordinates n
+    let G := fun z j => curveShorteningParametricChartReaction
+      (fun t => Geometry.Riemannian.retractionMetric (g t) e.smooth hr) β (firstJetCoordinates n
+        z) j
+    let S := firstJetCoordinates n ⁻¹' curveShorteningChartFirstJetDomain D
+      (fun t => Geometry.Riemannian.retractionMetric (g t) e.smooth hr) β
+    (∀ f v, P f + J (K v) = P (f + v)) ∧
+    ∃ δ ρ : ℝ, 0 < δ ∧ 0 < ρ ∧
+      ∃ alpha : Metric.closedBall f₀ δ → ℝ →
+        CircleHsPi (c₀.pullbackMetric (g 0)) (Fin n) (((1 : ℕ) : ℝ) + 1) → TensorHs
+          (c₀.pullbackMetric (g 0)) 0 0 1,
+      ∃ reaction : Metric.closedBall f₀ δ → ℝ →
+        CircleHsPi (c₀.pullbackMetric (g 0)) (Fin n) (((1 : ℕ) : ℝ) + 1) →
+          CircleHsPi (c₀.pullbackMetric (g 0)) (Fin n) 1,
+      referenceCircleSymmetricCoefficientFacts (c₀.pullbackMetric (g 0)) f₀ P J F G S δ ρ alpha
+        reaction ∧
+      ∃ V : Set (SmoothImmersion (I := I) (M := M)),
+        IsOpen V ∧ c₀ ∈ V ∧
+        ∃ hV : ∀ d ∈ V,
+          fixedAmbientSobolev e (c₀.pullbackMetric (g 0)) d ∈ Metric.closedBall f₀ δ,
+        let Params := Set.Ioo (-ρ / 4) (ρ / 4) × V
+        ∃ T₀ : ℝ, 0 < T₀ ∧ T₀ ≤ ρ / 4 ∧
+          ∀ {T : ℝ} (hT : 0 < T), T ≤ T₀ →
+          ∃ (u : Params →
+              timeH1 (CircleHsPi (c₀.pullbackMetric (g 0)) (Fin n) ((1 : ℕ) : ℝ)) T)
+            (gforce : Params →
+              timeL2 (CircleHsPi (c₀.pullbackMetric (g 0)) (Fin n) ((1 : ℕ) : ℝ)) T),
+            Continuous u ∧ Continuous gforce ∧
+            ∀ (p : Params), referenceCircleSolutionFacts (c₀.pullbackMetric (g 0))
+              (fixedAmbientSobolev e (c₀.pullbackMetric (g 0)) p.2.val)
+              (fun t z => alpha
+                (⟨fixedAmbientSobolev e (c₀.pullbackMetric (g 0)) p.2.val,
+                  hV p.2.val p.2.property⟩)
+                ((p.1 : ℝ) + t) z)
+              (fun t z => reaction
+                (⟨fixedAmbientSobolev e (c₀.pullbackMetric (g 0)) p.2.val,
+                  hV p.2.val p.2.property⟩)
+                ((p.1 : ℝ) + t) z) ρ hT (u p) (gforce p) := by
+  let _ := smoothImmersionTopology e
+  intro _ f₀ J₀ K₀ P J K F G S
+  obtain ⟨hadd, δ, ρ, hδ, hρ, alpha, reaction, hcoeff, T₀, hT₀, hT₀ρ, hfamily⟩ :=
+    ambient_reference_translated_lipschitz_solutions c₀ g ht e.smooth hr hEU hleft β hG
+  obtain ⟨V, hVopen, hc₀, hV⟩ :=
+    exists_isOpen_fixedAmbientSobolev_mem_closedBall e c₀ (g 0) hδ
+  refine ⟨hadd, δ, ρ, hδ, hρ, alpha, reaction, hcoeff,
+    V, hVopen, hc₀, hV, T₀, hT₀, hT₀ρ, ?_⟩
+  intro T hT hTT₀
+  obtain ⟨Lip, u, gforce, hFLip, huLip, hfacts⟩ := hfamily hT hTT₀
+  let pull : Set.Ioo (-ρ / 4) (ρ / 4) × V →
+      Set.Icc (-ρ / 4) (ρ / 4) × Metric.closedBall f₀ δ := fun p =>
+    (⟨p.1.val, p.1.property.1.le, p.1.property.2.le⟩,
+      ⟨fixedAmbientSobolev e (c₀.pullbackMetric (g 0)) p.2.val, hV p.2.val p.2.property⟩)
+  have hpull : Continuous pull := by
+    apply Continuous.prodMk
+    · exact (continuous_subtype_val.comp continuous_fst).subtype_mk _
+    · exact ((continuous_fixedAmbientSobolev e (c₀.pullbackMetric (g 0))).comp
+        (continuous_subtype_val.comp continuous_snd)).subtype_mk _
+  exact ⟨u ∘ pull, gforce ∘ pull, huLip.continuous.comp hpull,
+    hFLip.continuous.comp hpull, fun p => hfacts (pull p)⟩
+
+end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening.SmoothImmersion
+
+end
+
+noncomputable section
+open private vectorTensorHsNormedSpace from
+  DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Existence.ShiftedCoefficients
+attribute [local instance] vectorTensorHsNormedSpace
+open scoped Manifold ContDiff NNReal
+open MeasureTheory Set Filter
+namespace DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening.SmoothImmersion
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Parabolic
+open DifferentialGeometry.Analysis.Parabolic.QuasiLinear
+open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
+open DifferentialGeometry.Analysis.Sobolev
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Analysis.Parabolic.TimeSobolev
+open DifferentialGeometry.Analysis.Parabolic.MaximalRegularity
+open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
+variable {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E] [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
+  {n : ℕ}
+private local instance : NeZero (Module.finrank ℝ ℝ) := ⟨by norm_num⟩
+
+private theorem ambient_reference_joint_start_time_solutions
+    (c₀ : SmoothImmersion (I := I) (M := M))
+    (g : ℝ → SmoothRiemannianMetric I M) {D : RealTimeInterval}
+    (t₀ : ℝ) (ht : t₀ ∈ D.regular)
+    (e : Width.SmoothLoopEmbedding (I := I) (Q := M) n)
+    {r : EuclideanSpace ℝ (Fin n) → M} {U : TopologicalSpace.Opens (EuclideanSpace ℝ (Fin n))}
+    (hr : ContMDiffOn 𝓘(ℝ, EuclideanSpace ℝ (Fin n)) I ∞ r U)
+    (hEU : Set.range e.map ⊆ U) (hleft : ∀ p, r (e.map p) = p) (β : U)
+    (hG : MetricFamilySmoothOn D (fun t => Geometry.Riemannian.retractionMetric (g t) e.smooth
+      hr)) :
+    let gshift : ℝ → SmoothRiemannianMetric I M := fun s => g (t₀ + s)
+    let _ := smoothImmersionTopology e
+    let f₀ : CircleHsPi (c₀.pullbackMetric (gshift 0)) (Fin n) (((1 : ℕ) : ℝ) + 2) :=
+      ambientSobolev c₀ (gshift 0) e.map e.smooth (((1 : ℕ) : ℝ) + 2)
+    let J₀ : CircleHsPi (c₀.pullbackMetric (gshift 0)) (Fin n) (1 + 1) →L[ℝ]
+      CircleHsPi (c₀.pullbackMetric (gshift 0)) (Fin n ⊕ Fin n) 1 := circleFirstJet (ι := Fin n)
+        (c₀.pullbackMetric (gshift 0))
+    let K₀ : CircleHsPi (c₀.pullbackMetric (gshift 0)) (Fin n) (((1 : ℕ) : ℝ) + 2) →L[ℝ]
+      CircleHsPi (c₀.pullbackMetric (gshift 0)) (Fin n) (1 + 1) := ContinuousLinearMap.piLpMap 2
+        (fun _ : Fin n =>
+      tensorHsInclusion (g := (c₀.pullbackMetric (gshift 0))) (r := 0) (s := 0)
+        (show (1 : ℝ) + 1 ≤ ((1 : ℕ) : ℝ) + 2 by norm_num))
+    let P : CircleHsPi (c₀.pullbackMetric (gshift 0)) (Fin n) (((1 : ℕ) : ℝ) + 2) →L[ℝ]
+      CircleHsPi (c₀.pullbackMetric (gshift 0)) (Fin n ⊕ Fin n) 1  := J₀.comp K₀
+    let J := J₀.comp (circleHsPiCongr (c₀.pullbackMetric (gshift 0)) (Fin n)
+      (by norm_num : ((1 : ℕ) : ℝ) + 1 = (1 : ℝ) + 1)).toLinearIsometry.toContinuousLinearMap
+    let K := circleHsPiInclusion (c₀.pullbackMetric (gshift 0)) (Fin n)
+      (show ((1 : ℕ) : ℝ) + 1 ≤ ((1 : ℕ) : ℝ) + 2 by norm_num)
+    let F := curveShorteningChartDiffusionCoefficient
+      (fun t => Geometry.Riemannian.retractionMetric (gshift t) e.smooth hr) β ∘
+        firstJetCoordinates n
+    let G := fun z j => curveShorteningParametricChartReaction
+      (fun t => Geometry.Riemannian.retractionMetric (gshift t) e.smooth hr) β
+        (firstJetCoordinates n z) j
+    let S := firstJetCoordinates n ⁻¹' curveShorteningChartFirstJetDomain (D.timeShift t₀)
+      (fun t => Geometry.Riemannian.retractionMetric (gshift t) e.smooth hr) β
+    (∀ f v, P f + J (K v) = P (f + v)) ∧
+    ∃ δ ρ : ℝ, 0 < δ ∧ 0 < ρ ∧
+      ∃ alpha : Metric.closedBall f₀ δ → ℝ →
+        CircleHsPi (c₀.pullbackMetric (gshift 0)) (Fin n) (((1 : ℕ) : ℝ) + 1) → TensorHs
+          (c₀.pullbackMetric (gshift 0)) 0 0 1,
+      ∃ reaction : Metric.closedBall f₀ δ → ℝ →
+        CircleHsPi (c₀.pullbackMetric (gshift 0)) (Fin n) (((1 : ℕ) : ℝ) + 1) →
+          CircleHsPi (c₀.pullbackMetric (gshift 0)) (Fin n) 1,
+      referenceCircleSymmetricCoefficientFacts (c₀.pullbackMetric (gshift 0)) f₀ P J F G S δ ρ
+        alpha reaction ∧
+      ∃ V : Set (SmoothImmersion (I := I) (M := M)),
+        IsOpen V ∧ c₀ ∈ V ∧
+        ∃ hV : ∀ d ∈ V,
+          fixedAmbientSobolev e (c₀.pullbackMetric (gshift 0)) d ∈ Metric.closedBall f₀ δ,
+        let Params := Set.Ioo (-ρ / 4) (ρ / 4) × V
+        ∃ T₀ : ℝ, 0 < T₀ ∧ T₀ ≤ ρ / 4 ∧
+          ∀ {T : ℝ} (hT : 0 < T), T ≤ T₀ →
+          ∃ (u : Params →
+              timeH1 (CircleHsPi (c₀.pullbackMetric (gshift 0)) (Fin n) ((1 : ℕ) : ℝ)) T)
+            (gforce : Params →
+              timeL2 (CircleHsPi (c₀.pullbackMetric (gshift 0)) (Fin n) ((1 : ℕ) : ℝ)) T),
+            Continuous u ∧ Continuous gforce ∧
+            ∀ (p : Params), referenceCircleSolutionFacts (c₀.pullbackMetric (gshift 0))
+              (fixedAmbientSobolev e (c₀.pullbackMetric (gshift 0)) p.2.val)
+              (fun t z => alpha
+                ⟨fixedAmbientSobolev e (c₀.pullbackMetric (gshift 0)) p.2.val,
+                  hV p.2.val p.2.property⟩ ((p.1 : ℝ) + t) z)
+              (fun t z => reaction
+                ⟨fixedAmbientSobolev e (c₀.pullbackMetric (gshift 0)) p.2.val,
+                  hV p.2.val p.2.property⟩ ((p.1 : ℝ) + t) z) ρ hT (u p) (gforce p) := by
+  intro gshift
+  have hzero : (0 : ℝ) ∈ (D.timeShift t₀).regular := by
+    change 0 + t₀ ∈ D.regular
+    simpa only [zero_add] using ht
+  have hshift : MetricFamilySmoothOn (D.timeShift t₀)
+      (fun t => Geometry.Riemannian.retractionMetric (gshift t) e.smooth hr) := by
+    simpa only [gshift, add_comm] using hG.timeShift t₀
+  exact ambient_reference_translated_solutions_on_smooth_neighborhood
+    c₀ gshift hzero e hr hEU hleft β hshift
+
+end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening.SmoothImmersion
+
+end
+
+noncomputable section
+
+open Set Filter
+open scoped Manifold ContDiff Topology
+
+namespace DifferentialGeometry.Analysis.Parabolic
+
+open DifferentialGeometry.Analysis.Spectral
+open TensorHeatEquation QuasiLinear
+
+private local instance : NeZero (Module.finrank ℝ ℝ) := ⟨by norm_num⟩
+
+private theorem reference_firstJet_tendstoUniformlyOn
+    {X : Type*} {n : ℕ} {l : Filter X}
+    (g₀ : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) (T : ℝ)
+    (P : CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 2) →L[ℝ]
+      CircleHsPi g₀ (Fin n ⊕ Fin n) 1)
+    (J : CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 1) →L[ℝ]
+      CircleHsPi g₀ (Fin n ⊕ Fin n) 1)
+    (f : X → CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 2))
+    (f₀ : CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 2))
+    (w : X → ℝ → CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 1))
+    (w₀ : ℝ → CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 1))
+    (hf : Tendsto f l (𝓝 f₀))
+    (hw₀ : ContinuousOn w₀ (Icc 0 T))
+    (hw : TendstoUniformlyOn w w₀ l (Icc 0 T)) :
+    let q := fun x t => scalarH1PiToContinuous g₀
+      (scalarH1TimeCoordinate g₀ (t, P (f x) + J (w x t)))
+    let q₀ := fun t => scalarH1PiToContinuous g₀
+      (scalarH1TimeCoordinate g₀ (t, P f₀ + J (w₀ t)))
+    ContinuousOn q₀ (Icc 0 T) ∧ TendstoUniformlyOn q q₀ l (Icc 0 T) := by
+  intro q q₀
+  let A := (scalarH1PiToContinuous (ι := Option (Fin n ⊕ Fin n)) g₀).comp
+    (scalarH1TimeCoordinate (ι := Fin n ⊕ Fin n) g₀)
+  let B := A.comp (ContinuousLinearMap.inr ℝ ℝ _)
+  have hstate : TendstoUniformlyOn
+      (fun x t => P (f x) + J (w x t))
+      (fun t => P f₀ + J (w₀ t)) l (Icc 0 T) :=
+    (((P.continuous.tendsto f₀).comp hf).tendstoUniformlyOn_const (Icc 0 T)).add
+      (J.uniformContinuous.comp_tendstoUniformlyOn hw)
+  have htime : TendstoUniformlyOn (fun (_ : X) t => A (t, 0))
+      (fun t => A (t, 0)) l (Icc 0 T) := by
+    apply Metric.tendstoUniformlyOn_iff.mpr
+    intro ε hε
+    exact Eventually.of_forall fun _ _ _ => by simpa only [dist_self] using hε
+  have heq (t : ℝ) (v : CircleHsPi g₀ (Fin n ⊕ Fin n) 1) :
+      A (t, 0) + B v = A (t, v) := by
+    change A (t, 0) + A (0, v) = A (t, v)
+    rw [← map_add]
+    simp only [Prod.mk_add_mk, add_zero, zero_add]
+  refine ⟨?_, ?_⟩
+  · exact A.continuous.comp_continuousOn
+      (continuousOn_id.prodMk
+        (continuousOn_const.add (J.continuous.comp_continuousOn hw₀)))
+  · have h := htime.add (B.uniformContinuous.comp_tendstoUniformlyOn hstate)
+    change TendstoUniformlyOn
+      (fun x t => A (t, 0) + B (P (f x) + J (w x t)))
+      (fun t => A (t, 0) + B (P f₀ + J (w₀ t))) l (Icc 0 T) at h
+    simp only [heq] at h
+    change TendstoUniformlyOn (fun x t => A (t, P (f x) + J (w x t)))
+      (fun t => A (t, P f₀ + J (w₀ t))) l (Icc 0 T)
+    exact h
+
+private theorem reference_firstJet_exists_compact_range
+    {X : Type*} {n : ℕ} {l : Filter X}
+    (g₀ : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) (T : ℝ)
+    (fcenter : CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 2))
+    (P : CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 2) →L[ℝ]
+      CircleHsPi g₀ (Fin n ⊕ Fin n) 1)
+    (J : CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 1) →L[ℝ]
+      CircleHsPi g₀ (Fin n ⊕ Fin n) 1)
+    (F : (Option (Fin n ⊕ Fin n) → ℝ) → ℝ)
+    (G : (Option (Fin n ⊕ Fin n) → ℝ) → Fin n → ℝ)
+    {S : Set (Option (Fin n ⊕ Fin n) → ℝ)} (hS : IsOpen S)
+    {δ ρ : ℝ} (hTρ : T ≤ ρ)
+    (alpha : Metric.closedBall fcenter δ → ℝ →
+      CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 1) → TensorHs g₀ 0 0 1)
+    (reaction : Metric.closedBall fcenter δ → ℝ →
+      CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 1) → CircleHsPi g₀ (Fin n) 1)
+    (hcoeff : referenceCircleCoefficientFacts g₀ fcenter P J F G S δ ρ alpha reaction)
+    (f : X → Metric.closedBall fcenter δ) (f₀ : Metric.closedBall fcenter δ)
+    (w : X → ℝ → CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 1))
+    (w₀ : ℝ → CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 1))
+    (hf : Tendsto (fun x => (f x).val) l (𝓝 f₀.val))
+    (hw₀ : ContinuousOn w₀ (Icc 0 T))
+    (hw : TendstoUniformlyOn w w₀ l (Icc 0 T))
+    (hbound : ∀ t ∈ Icc 0 T, ‖w₀ t‖ ≤ ρ) :
+    let q := fun x t => scalarH1PiToContinuous g₀
+      (scalarH1TimeCoordinate g₀ (t, P (f x).val + J (w x t)))
+    let q₀ := fun t => scalarH1PiToContinuous g₀
+      (scalarH1TimeCoordinate g₀ (t, P f₀.val + J (w₀ t)))
+    ∃ K : Set (Option (Fin n ⊕ Fin n) → ℝ), IsCompact K ∧ K ⊆ S ∧
+      (∀ t ∈ Icc 0 T, range (q₀ t) ⊆ K) ∧
+      ∀ᶠ x in l, ∀ t ∈ Icc 0 T, range (q x t) ⊆ K := by
+  intro q q₀
+  obtain ⟨hq₀, hq⟩ := reference_firstJet_tendstoUniformlyOn g₀ T P J
+    (fun x => (f x).val) f₀.val w w₀ hf hw₀ hw
+  have hmap : ∀ t ∈ Icc 0 T, ∀ z, q₀ t z ∈ S := by
+    intro t ht z
+    exact hcoeff.1 f₀ t ⟨ht.1, ht.2.trans hTρ⟩ (w₀ t) (hbound t ht)
+      (mem_range_self z)
+  obtain ⟨K, hK, hKS, hlim, hevent⟩ :=
+    hq.exists_isCompact_eventually_forall_eval_mem isCompact_Icc hq₀ hS hmap
+  refine ⟨K, hK, hKS, ?_, ?_⟩
+  · intro t ht z hz
+    obtain ⟨a, rfl⟩ := hz
+    exact interior_subset (hlim t ht a)
+  · filter_upwards [hevent] with x hx
+    intro t ht z hz
+    obtain ⟨a, rfl⟩ := hz
+    exact hx t ht a
+
+end DifferentialGeometry.Analysis.Parabolic
+
+end
+
+noncomputable section
+
+open MeasureTheory Set Filter
+open scoped Manifold ContDiff NNReal
+
+namespace DifferentialGeometry.Analysis.Parabolic
+
+open DifferentialGeometry.Analysis.Spectral
+open TensorHeatEquation TimeSobolev QuasiLinear
+
+private local instance : NeZero (Module.finrank ℝ ℝ) := ⟨by norm_num⟩
+
+private theorem reference_timeFirstJet_projection_ae
+    {n : ℕ}
+    (g₀ : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) (k : ℕ) (T : ℝ)
+    (fHigh : CircleHsPi g₀ (Fin n) (((k + 1 + 2 : ℕ) : ℝ) + 1))
+    (f : CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 2))
+    (V : timeL2 (CircleHsPi g₀ (Fin n) (((k + 1 + 2 : ℕ) : ℝ) + 1)) T)
+    (w : ℝ → CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 1)) :
+    let R := circleHsPiInclusion g₀ (Fin n)
+      (by have := Nat.cast_nonneg (α := ℝ) k; push_cast; linarith :
+        ((1 : ℕ) : ℝ) + 2 ≤ ((k + 1 + 2 : ℕ) : ℝ) + 1)
+    let KHigh := ContinuousLinearMap.piLpMap 2 (fun _ : Fin n =>
+      tensorHsInclusion (g := g₀) (r := 0) (s := 0)
+        (by have := Nat.cast_nonneg (α := ℝ) k; push_cast; linarith :
+          ((1 : ℕ) : ℝ) + 1 ≤ ((k + 1 + 2 : ℕ) : ℝ) + 1))
+    let J₀ := circleFirstJet (ι := Fin n) g₀
+    let K₀ := circleHsPiInclusion g₀ (Fin n)
+      (by norm_num : (1 : ℝ) + 1 ≤ ((1 : ℕ) : ℝ) + 2)
+    let P := J₀.comp K₀
+    let C := circleHsPiCongr g₀ (Fin n)
+      (by norm_num : ((1 : ℕ) : ℝ) + 1 = (1 : ℝ) + 1)
+    let J := J₀.comp C.toLinearIsometry.toContinuousLinearMap
+    let PH := ContinuousLinearMap.piLpMap 2 (fun _ : Option (Fin n ⊕ Fin n) =>
+      tensorHsInclusion (g := g₀) (r := 0) (s := 0)
+        (by push_cast; rfl :
+          ((k + 1 : ℕ) : ℝ) + 2 ≤ ((k + 1 + 2 : ℕ) : ℝ)))
+    let Hjet := PH.comp (AddCircle.scalarHsTimeFirstJet (ι := Fin n) g₀ (k + 1 + 2))
+    let AH := tensorHsInclusion (g := g₀) (r := 0) (s := 0)
+      (by have := Nat.cast_nonneg (α := ℝ) k; push_cast; linarith :
+        (1 : ℝ) ≤ ((k + 1 : ℕ) : ℝ) + 2)
+    let QH := ContinuousLinearMap.piLpMap 2 (fun _ : Option (Fin n ⊕ Fin n) => AH)
+    R fHigh = f →
+    w =ᵐ[timeMeasure T] (fun t => KHigh (V t)) →
+    (fun t => QH (Hjet (t, fHigh + V t))) =ᵐ[timeMeasure T]
+      (fun t => scalarH1TimeCoordinate g₀ (t, P f + J (w t))) := by
+  intro R KHigh J₀ K₀ P C J PH Hjet AH QH hf hw
+  have hraw := AddCircle.scalarHsTimeCoordinate_firstJetHs_ae_eq
+    (ι := Fin n) g₀ (show 1 ≤ k + 1 + 2 by omega) T fHigh V w hw
+  have hcongr {a b : ℝ} (h : a = b) (v : TensorHs g₀ 0 0 a) :
+      (tensorHsCongrL g₀ 0 0 h v).coeff = v.coeff := by
+    cases h
+    rfl
+  have hbase : C (KHigh fHigh) = K₀ f := by
+    rw [← hf]
+    apply PiLp.ext
+    intro i
+    apply TensorHs.ext
+    rw [circleHsPiCongr_apply, hcongr]
+    rfl
+  filter_upwards [hraw] with t ht
+  have hnormalize : QH (Hjet (t, fHigh + V t)) =
+      ContinuousLinearMap.piLpMap 2 (fun _ : Option (Fin n ⊕ Fin n) =>
+        tensorHsInclusion (g := g₀) (r := 0) (s := 0)
+          (by exact_mod_cast (show 1 ≤ k + 1 + 2 by omega) :
+            (1 : ℝ) ≤ ((k + 1 + 2 : ℕ) : ℝ)))
+        (AddCircle.scalarHsTimeCoordinate g₀ ((k + 1 + 2 : ℕ) : ℝ)
+          (t, AddCircle.firstJetHs g₀ (k + 1 + 2) (fHigh + V t))) := by
+    apply PiLp.ext
+    intro i
+    apply TensorHs.ext
+    rfl
+  rw [hnormalize, ht]
+  have hnormalized := circle_firstJetHs_normalized g₀ (KHigh fHigh + w t)
+  rw [← hnormalized]
+  change scalarH1TimeCoordinate g₀ (t, J₀ (C (KHigh fHigh + w t))) = _
+  rw [map_add, hbase, map_add]
+  rfl
+
+private theorem reference_high_coefficients_eval_ae
+    {n : ℕ}
+    (g₀ : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) (k : ℕ) (T : ℝ)
+    (f₀ : CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 2))
+    (F : (Option (Fin n ⊕ Fin n) → ℝ) → ℝ)
+    (G : (Option (Fin n ⊕ Fin n) → ℝ) → Fin n → ℝ)
+    (S : Set (Option (Fin n ⊕ Fin n) → ℝ))
+    {δ ρ : ℝ} (f : Metric.closedBall f₀ δ)
+    (alpha : Metric.closedBall f₀ δ → ℝ →
+      CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 1) → TensorHs g₀ 0 0 1)
+    (reaction : Metric.closedBall f₀ δ → ℝ →
+      CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 1) → CircleHsPi g₀ (Fin n) 1)
+    (fHigh : CircleHsPi g₀ (Fin n) (((k + 1 + 2 : ℕ) : ℝ) + 1))
+    (V : timeL2 (CircleHsPi g₀ (Fin n) (((k + 1 + 2 : ℕ) : ℝ) + 1)) T)
+    (w : ℝ → CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 1))
+    (a : timeL2 (TensorHs g₀ 0 0 (((k + 1 : ℕ) : ℝ) + 2)) T)
+    (b : timeL2 (CircleHsPi g₀ (Fin n) (((k + 1 : ℕ) : ℝ) + 2)) T) :
+    let R := circleHsPiInclusion g₀ (Fin n)
+      (by have := Nat.cast_nonneg (α := ℝ) k; push_cast; linarith :
+        ((1 : ℕ) : ℝ) + 2 ≤ ((k + 1 + 2 : ℕ) : ℝ) + 1)
+    let KHigh := ContinuousLinearMap.piLpMap 2 (fun _ : Fin n =>
+      tensorHsInclusion (g := g₀) (r := 0) (s := 0)
+        (by have := Nat.cast_nonneg (α := ℝ) k; push_cast; linarith :
+          ((1 : ℕ) : ℝ) + 1 ≤ ((k + 1 + 2 : ℕ) : ℝ) + 1))
+    let J₀ := circleFirstJet (ι := Fin n) g₀
+    let K₀ := circleHsPiInclusion g₀ (Fin n)
+      (by norm_num : (1 : ℝ) + 1 ≤ ((1 : ℕ) : ℝ) + 2)
+    let P := J₀.comp K₀
+    let J := J₀.comp (circleHsPiCongr g₀ (Fin n)
+      (by norm_num : ((1 : ℕ) : ℝ) + 1 = (1 : ℝ) + 1)).toLinearIsometry.toContinuousLinearMap
+    let PH := ContinuousLinearMap.piLpMap 2 (fun _ : Option (Fin n ⊕ Fin n) =>
+      tensorHsInclusion (g := g₀) (r := 0) (s := 0)
+        (by push_cast; rfl :
+          ((k + 1 : ℕ) : ℝ) + 2 ≤ ((k + 1 + 2 : ℕ) : ℝ)))
+    let Hjet := PH.comp (AddCircle.scalarHsTimeFirstJet (ι := Fin n) g₀ (k + 1 + 2))
+    let AH := tensorHsInclusion (g := g₀) (r := 0) (s := 0)
+      (by have := Nat.cast_nonneg (α := ℝ) k; push_cast; linarith :
+        (1 : ℝ) ≤ ((k + 1 : ℕ) : ℝ) + 2)
+    let QH := ContinuousLinearMap.piLpMap 2 (fun _ : Option (Fin n ⊕ Fin n) => AH)
+    referenceCircleCoefficientFacts g₀ f₀ P J F G S δ ρ alpha reaction →
+    R fHigh = f.val →
+    w =ᵐ[timeMeasure T] (fun t => KHigh (V t)) →
+    (∀ᵐ t ∂timeMeasure T, t ∈ Icc 0 ρ ∧ ‖w t‖ ≤ ρ) →
+    (fun t => AH (a t)) =ᵐ[timeMeasure T] (fun t => alpha f t (w t)) →
+    (fun t => ContinuousLinearMap.piLpMap 2 (fun _ : Fin n => AH) (b t))
+      =ᵐ[timeMeasure T] (fun t => reaction f t (w t)) →
+    (∀ᵐ t ∂timeMeasure T, ∀ z,
+      scalarH1ToContinuous g₀ (AH (a t)) z =
+        F (scalarH1PiToContinuous g₀ (QH (Hjet (t, fHigh + V t))) z)) ∧
+    (∀ᵐ t ∂timeMeasure T, ∀ z j,
+      scalarH1ToContinuous g₀ (AH (b t j)) z =
+        G (scalarH1PiToContinuous g₀ (QH (Hjet (t, fHigh + V t))) z) j) := by
+  intro R KHigh J₀ K₀ P J PH Hjet AH QH hcoeff hf hw hbound ha hb
+  have hjet := reference_timeFirstJet_projection_ae g₀ k T fHigh f.val V w hf hw
+  have hcoord (t : ℝ) (z : AddCircle (1 : ℝ)) :
+      scalarH1PiToContinuous g₀ (scalarH1TimeCoordinate g₀ (t, P f.val + J (w t))) z =
+        (fun i => match i with
+          | none => t
+          | some i => scalarH1ToContinuous g₀ ((P f.val) i + (J (w t)) i) z) := by
+    funext i
+    cases i with
+    | none => exact scalarH1TimeCoordinate_eval_none g₀ _ _
+    | some i => exact scalarH1TimeCoordinate_eval_some g₀ _ _ i
+  constructor
+  · filter_upwards [ha, hjet, hbound] with t hat hjt hbt
+    intro z
+    rw [hat, hjt, hcoord]
+    exact hcoeff.2.1 f t hbt.1 (w t) hbt.2 z
+  · filter_upwards [hb, hjet, hbound] with t hbt hjt hboundt
+    intro z j
+    have hbj := congrArg (fun v => v j) hbt
+    change AH (b t j) = reaction f t (w t) j at hbj
+    rw [hbj, hjt, hcoord]
+    exact hcoeff.2.2 f t hboundt.1 (w t) hboundt.2 z j
+
+end DifferentialGeometry.Analysis.Parabolic
+
+end
+
+noncomputable section
+
+open MeasureTheory Set Filter
+open scoped Manifold ContDiff Topology
+
+namespace DifferentialGeometry.Analysis.Parabolic
+
+open DifferentialGeometry.Analysis.Spectral
+open TensorHeatEquation TimeSobolev QuasiLinear
+
+private local instance : NeZero (Module.finrank ℝ ℝ) := ⟨by norm_num⟩
+
+private theorem reference_timeFirstJet_exists_compact_range
+    {X : Type*} {n : ℕ} {l : Filter X}
+    (g₀ : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) (k : ℕ) (T : ℝ)
+    (fcenter : CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 2))
+    (F : (Option (Fin n ⊕ Fin n) → ℝ) → ℝ)
+    (G : (Option (Fin n ⊕ Fin n) → ℝ) → Fin n → ℝ)
+    {S : Set (Option (Fin n ⊕ Fin n) → ℝ)} (hS : IsOpen S)
+    {δ ρ : ℝ} (hTρ : T ≤ ρ)
+    (alpha : Metric.closedBall fcenter δ → ℝ →
+      CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 1) → TensorHs g₀ 0 0 1)
+    (reaction : Metric.closedBall fcenter δ → ℝ →
+      CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 1) → CircleHsPi g₀ (Fin n) 1)
+    (f : X → Metric.closedBall fcenter δ) (f₀ : Metric.closedBall fcenter δ)
+    (fHigh : X → CircleHsPi g₀ (Fin n) (((k + 1 + 2 : ℕ) : ℝ) + 1))
+    (fHigh₀ : CircleHsPi g₀ (Fin n) (((k + 1 + 2 : ℕ) : ℝ) + 1))
+    (V : X → timeL2 (CircleHsPi g₀ (Fin n) (((k + 1 + 2 : ℕ) : ℝ) + 1)) T)
+    (V₀ : timeL2 (CircleHsPi g₀ (Fin n) (((k + 1 + 2 : ℕ) : ℝ) + 1)) T)
+    (w : X → ℝ → CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 1))
+    (w₀ : ℝ → CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 1))
+    (hf : Tendsto (fun x => (f x).val) l (𝓝 f₀.val))
+    (hw₀ : ContinuousOn w₀ (Icc 0 T))
+    (hw : TendstoUniformlyOn w w₀ l (Icc 0 T)) :
+    let R := circleHsPiInclusion g₀ (Fin n)
+      (by have := Nat.cast_nonneg (α := ℝ) k; push_cast; linarith :
+        ((1 : ℕ) : ℝ) + 2 ≤ ((k + 1 + 2 : ℕ) : ℝ) + 1)
+    let KHigh := ContinuousLinearMap.piLpMap 2 (fun _ : Fin n =>
+      tensorHsInclusion (g := g₀) (r := 0) (s := 0)
+        (by have := Nat.cast_nonneg (α := ℝ) k; push_cast; linarith :
+          ((1 : ℕ) : ℝ) + 1 ≤ ((k + 1 + 2 : ℕ) : ℝ) + 1))
+    let J₀ := circleFirstJet (ι := Fin n) g₀
+    let K₀ := circleHsPiInclusion g₀ (Fin n)
+      (by norm_num : (1 : ℝ) + 1 ≤ ((1 : ℕ) : ℝ) + 2)
+    let P := J₀.comp K₀
+    let J := J₀.comp (circleHsPiCongr g₀ (Fin n)
+      (by norm_num : ((1 : ℕ) : ℝ) + 1 = (1 : ℝ) + 1)).toLinearIsometry.toContinuousLinearMap
+    let PH := ContinuousLinearMap.piLpMap 2 (fun _ : Option (Fin n ⊕ Fin n) =>
+      tensorHsInclusion (g := g₀) (r := 0) (s := 0)
+        (by push_cast; rfl :
+          ((k + 1 : ℕ) : ℝ) + 2 ≤ ((k + 1 + 2 : ℕ) : ℝ)))
+    let Hjet := PH.comp (AddCircle.scalarHsTimeFirstJet (ι := Fin n) g₀ (k + 1 + 2))
+    let AH := tensorHsInclusion (g := g₀) (r := 0) (s := 0)
+      (by have := Nat.cast_nonneg (α := ℝ) k; push_cast; linarith :
+        (1 : ℝ) ≤ ((k + 1 : ℕ) : ℝ) + 2)
+    let QH := ContinuousLinearMap.piLpMap 2 (fun _ : Option (Fin n ⊕ Fin n) => AH)
+    referenceCircleCoefficientFacts g₀ fcenter P J F G S δ ρ alpha reaction →
+    (∀ x, R (fHigh x) = (f x).val) →
+    R fHigh₀ = f₀.val →
+    (∀ x, w x =ᵐ[timeMeasure T] fun t => KHigh (V x t)) →
+    w₀ =ᵐ[timeMeasure T] (fun t => KHigh (V₀ t)) →
+    (∀ t ∈ Icc 0 T, ‖w₀ t‖ ≤ ρ) →
+    ∃ K : Set (Option (Fin n ⊕ Fin n) → ℝ), IsCompact K ∧ K ⊆ S ∧
+      (∀ᶠ x in l, ∀ᵐ t ∂timeMeasure T,
+        range (scalarH1PiToContinuous g₀ (QH (Hjet (t, fHigh x + V x t)))) ⊆ K) ∧
+      ∀ᵐ t ∂timeMeasure T,
+        range (scalarH1PiToContinuous g₀ (QH (Hjet (t, fHigh₀ + V₀ t)))) ⊆ K := by
+  intro R KHigh J₀ K₀ P J PH Hjet AH QH hcoeff hfHigh hfHigh₀ hwV hwV₀ hbound
+  obtain ⟨K, hK, hKS, hlim, hevent⟩ :=
+    reference_firstJet_exists_compact_range g₀ T fcenter P J F G hS hTρ
+      alpha reaction hcoeff f f₀ w w₀ hf hw₀ hw hbound
+  refine ⟨K, hK, hKS, ?_, ?_⟩
+  · filter_upwards [hevent] with x hx
+    have hjet := reference_timeFirstJet_projection_ae g₀ k T
+      (fHigh x) (f x).val (V x) (w x) (hfHigh x) (hwV x)
+    filter_upwards [hjet, ae_restrict_mem measurableSet_Icc] with t hjt htt
+    rw [hjt]
+    exact hx t htt
+  · have hjet := reference_timeFirstJet_projection_ae g₀ k T
+      fHigh₀ f₀.val V₀ w₀ hfHigh₀ hwV₀
+    filter_upwards [hjet, ae_restrict_mem measurableSet_Icc] with t hjt htt
+    rw [hjt]
+    exact hlim t htt
+
+end DifferentialGeometry.Analysis.Parabolic
+
+end
+
+noncomputable section
+
+open MeasureTheory Set Filter
+open scoped Manifold ContDiff Topology
+
+namespace DifferentialGeometry.Analysis.Parabolic
+
+open DifferentialGeometry.Analysis.Spectral
+open TensorHeatEquation TimeSobolev QuasiLinear
+
+private local instance : NeZero (Module.finrank ℝ ℝ) := ⟨by norm_num⟩
+
+private theorem reference_translated_high_state
+    {n : ℕ}
+    (g₀ : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) (k : ℕ) (T : ℝ)
+    (fcenter f : CircleHsPi g₀ (Fin n) ((k : ℝ) + 4))
+    (V : timeL2 (CircleHsPi g₀ (Fin n) ((k : ℝ) + 4)) T)
+    (W : ℝ → CircleHsPi g₀ (Fin n) ((k : ℝ) + 3))
+    (hW : ContinuousOn W (Icc 0 T)) :
+    let B := circleHsPiInclusion g₀ (Fin n)
+      (by linarith : (k : ℝ) + 3 ≤ (k : ℝ) + 4)
+    let C : CircleHsPi g₀ (Fin n) ((k : ℝ) + 4) →L[ℝ]
+        timeL2 (CircleHsPi g₀ (Fin n) ((k : ℝ) + 4)) T :=
+      Lp.constL 2 (timeMeasure T) ℝ
+    let Z := C (f - fcenter) + V
+    let Y := fun t => B (f - fcenter) + W t
+    W =ᵐ[timeMeasure T] (fun t => B (V t)) →
+    ContinuousOn Y (Icc 0 T) ∧
+      Y =ᵐ[timeMeasure T] (fun t => B (Z t)) ∧
+      (∀ᵐ t ∂timeMeasure T, fcenter + Z t = f + V t) ∧
+      ∀ t, B fcenter + Y t = B f + W t := by
+  intro B C Z Y hWV
+  have hconst : C (f - fcenter) =ᵐ[timeMeasure T] fun _ => f - fcenter :=
+    Lp.coeFn_const _ _ _
+  have hZ : Z =ᵐ[timeMeasure T] fun t => f - fcenter + V t := by
+    filter_upwards [Lp.coeFn_add (C (f - fcenter)) V, hconst] with t ht hc
+    change Z t = _ at ht
+    simpa only [Pi.add_apply, hc] using ht
+  refine ⟨continuousOn_const.add hW, ?_, ?_, ?_⟩
+  · filter_upwards [hZ, hWV] with t hz hw
+    change B (f - fcenter) + W t = B (Z t)
+    rw [hz, map_add, hw]
+  · filter_upwards [hZ] with t ht
+    rw [ht]
+    abel
+  · intro t
+    change B fcenter + (B (f - fcenter) + W t) = B f + W t
+    rw [map_sub]
+    abel
+
+end DifferentialGeometry.Analysis.Parabolic
+
+end
+
+noncomputable section
+
+open MeasureTheory Set Filter
+open scoped Manifold ContDiff NNReal
+
+namespace DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening.SmoothImmersion
+
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Parabolic
+open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
+open DifferentialGeometry.Analysis.Parabolic.TimeSobolev
+open DifferentialGeometry.Analysis.Parabolic.QuasiLinear
+
+private local instance : NeZero (Module.finrank ℝ ℝ) := ⟨by norm_num⟩
+
+private theorem reference_successor_coefficient_projection_ae
+    {n : ℕ}
+    (g₀ : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) (k : ℕ) (T : ℝ)
+    (f₀ : CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 2))
+    (P : CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 2) →L[ℝ]
+      CircleHsPi g₀ (Fin n ⊕ Fin n) 1)
+    (J : CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 1) →L[ℝ]
+      CircleHsPi g₀ (Fin n ⊕ Fin n) 1)
+    (K : CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 2) →L[ℝ]
+      CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 1))
+    (F : (Option (Fin n ⊕ Fin n) → ℝ) → ℝ)
+    (G : (Option (Fin n ⊕ Fin n) → ℝ) → Fin n → ℝ)
+    (S : Set (Option (Fin n ⊕ Fin n) → ℝ))
+    (u₀ : CircleHsPi g₀ (Fin n ⊕ Fin n) 1)
+    (C : ScalarVectorTimeCoefficients g₀ F G S u₀)
+    (hbase : u₀ = P f₀) (hJK : ∀ v, J (K v) = P v)
+    {δ ρ : ℝ} (f : Metric.closedBall f₀ δ)
+    (alpha : Metric.closedBall f₀ δ → ℝ →
+      CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 1) → TensorHs g₀ 0 0 1)
+    (reaction : Metric.closedBall f₀ δ → ℝ →
+      CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 1) → CircleHsPi g₀ (Fin n) 1)
+    (hcoeff : referenceCircleCoefficientFacts g₀ f₀ P J F G S δ ρ alpha reaction)
+    (w : ℝ → CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 1))
+    (a₂ : ℝ → TensorHs g₀ 0 0 2)
+    (b₂ : ℝ → CircleHsPi g₀ (Fin n) 2)
+    (aHigh : timeL2 (TensorHs g₀ 0 0 ((k : ℝ) + 3)) T)
+    (bHigh : timeL2 (CircleHsPi g₀ (Fin n) ((k : ℝ) + 3)) T) :
+    let Q := tensorHsInclusion (g := g₀) (r := 0) (s := 0)
+      (by linarith : (k : ℝ) + 2 ≤ (k : ℝ) + 3)
+    let P₂ := tensorHsInclusion (g := g₀) (r := 0) (s := 0)
+      (by have := Nat.cast_nonneg (α := ℝ) k; linarith : (2 : ℝ) ≤ (k : ℝ) + 2)
+    let A₂ := tensorHsInclusion (g := g₀) (r := 0) (s := 0)
+      (by norm_num : (1 : ℝ) ≤ 2)
+    let AH := tensorHsInclusion (g := g₀) (r := 0) (s := 0)
+      (by have := Nat.cast_nonneg (α := ℝ) k; linarith : (1 : ℝ) ≤ (k : ℝ) + 3)
+    (fun t => P₂ (Q (aHigh t))) =ᵐ[timeMeasure T] a₂ →
+    (fun t => ContinuousLinearMap.piLpMap 2 (fun _ : Fin n => P₂)
+      (ContinuousLinearMap.piLpMap 2 (fun _ : Fin n => Q) (bHigh t)))
+        =ᵐ[timeMeasure T] b₂ →
+    (∀ t ∈ Icc 0 T, A₂ (a₂ t) =
+      extendClosedBall (ScalarVectorTimeCoefficients.radius_pos C).le
+        (ScalarVectorTimeCoefficients.diffusion C) t (J (K (f.val - f₀) + w t))) →
+    (∀ t ∈ Icc 0 T, ContinuousLinearMap.piLpMap 2 (fun _ : Fin n => A₂) (b₂ t) =
+      extendClosedBall (ScalarVectorTimeCoefficients.radius_pos C).le
+        (ScalarVectorTimeCoefficients.reaction C) t (J (K (f.val - f₀) + w t))) →
+    T ≤ ρ → T ≤ ScalarVectorTimeCoefficients.radius C →
+    (∀ t ∈ Icc 0 T, ‖w t‖ ≤ ρ) →
+    (∀ t ∈ Icc 0 T,
+      ‖J (K (f.val - f₀) + w t)‖ ≤ ScalarVectorTimeCoefficients.radius C) →
+    (fun t => AH (aHigh t)) =ᵐ[timeMeasure T] (fun t => alpha f t (w t)) ∧
+    (fun t => ContinuousLinearMap.piLpMap 2 (fun _ : Fin n => AH) (bHigh t))
+      =ᵐ[timeMeasure T] (fun t => reaction f t (w t)) := by
+  intro Q P₂ A₂ AH haHigh hbHigh ha₂ hb₂ hTρ hTC hw hJ
+  have htime : ∀ᵐ t ∂timeMeasure T, t ∈ Icc 0 T :=
+    ae_restrict_mem measurableSet_Icc
+  have heq (t : ℝ) (htt : t ∈ Icc 0 T) :=
+    reference_coefficients_eq_at_translated_state g₀ f₀ P J K F G S u₀ C hbase hJK
+      alpha reaction hcoeff f (w t) t ⟨htt.1, htt.2.trans hTρ⟩
+      ⟨htt.1, htt.2.trans hTC⟩ (hw t htt) (hJ t htt)
+  constructor
+  · filter_upwards [haHigh, htime] with t ht htt
+    calc
+      AH (aHigh t) = A₂ (P₂ (Q (aHigh t))) := by
+        apply TensorHs.ext
+        rfl
+      _ = A₂ (a₂ t) := congrArg A₂ ht
+      _ = _ := (ha₂ t htt).trans (heq t htt).1.symm
+  · filter_upwards [hbHigh, htime] with t ht htt
+    have hinclusion : ContinuousLinearMap.piLpMap 2 (fun _ : Fin n => AH) (bHigh t) =
+        ContinuousLinearMap.piLpMap 2 (fun _ : Fin n => A₂)
+          (ContinuousLinearMap.piLpMap 2 (fun _ : Fin n => P₂)
+            (ContinuousLinearMap.piLpMap 2 (fun _ : Fin n => Q) (bHigh t))) := by
+      apply PiLp.ext
+      intro i
+      apply TensorHs.ext
+      rfl
+    rw [hinclusion, ht]
+    exact (hb₂ t htt).trans (heq t htt).2.symm
+
+end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening.SmoothImmersion
+
+end
+
+noncomputable section
+
+open Filter Set
+open scoped Manifold ContDiff Topology
+
+namespace DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening.SmoothImmersion
+
+open DifferentialGeometry.Analysis.Parabolic.QuasiLinear
+open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
+open DifferentialGeometry.Analysis.Spectral
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
+
+private local instance : NeZero (Module.finrank ℝ ℝ) := ⟨by simp⟩
+
+private theorem reference_firstJet_tendstoUniformlyOn_of_tendsto_immersion
+    {X : Type*} {N : ℕ} {l : Filter X}
+    (e : Width.SmoothLoopEmbedding (I := I) (Q := M) N)
+    (g₀ : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) (T : ℝ)
+    (P : CircleHsPi g₀ (Fin N) (((1 : ℕ) : ℝ) + 2) →L[ℝ]
+      CircleHsPi g₀ (Fin N ⊕ Fin N) 1)
+    (J : CircleHsPi g₀ (Fin N) (((1 : ℕ) : ℝ) + 1) →L[ℝ]
+      CircleHsPi g₀ (Fin N ⊕ Fin N) 1)
+    (d : X → SmoothImmersion (I := I) (M := M))
+    (d₀ : SmoothImmersion (I := I) (M := M))
+    (hd : Tendsto d l (@nhds _ (smoothImmersionTopology e) d₀))
+    {σ : ℝ} (hσ : ((1 : ℕ) : ℝ) + 1 ≤ σ)
+    (W : X → ℝ → CircleHsPi g₀ (Fin N) σ)
+    (W₀ : ℝ → CircleHsPi g₀ (Fin N) σ)
+    (hW₀ : ContinuousOn W₀ (Icc 0 T))
+    (hW : TendstoUniformlyOn W W₀ l (Icc 0 T)) :
+    let K := circleHsPiInclusion g₀ (Fin N) hσ
+    let q := fun x t => scalarH1PiToContinuous g₀
+      (scalarH1TimeCoordinate g₀
+        (t, P (fixedAmbientSobolev e g₀ (d x)) + J (K (W x t))))
+    let q₀ := fun t => scalarH1PiToContinuous g₀
+      (scalarH1TimeCoordinate g₀
+        (t, P (fixedAmbientSobolev e g₀ d₀) + J (K (W₀ t))))
+    ContinuousOn q₀ (Icc 0 T) ∧ TendstoUniformlyOn q q₀ l (Icc 0 T) := by
+  let := smoothImmersionTopology e
+  intro K q q₀
+  have hf : Tendsto (fun x => fixedAmbientSobolev e g₀ (d x)) l
+      (𝓝 (fixedAmbientSobolev e g₀ d₀)) :=
+    ((continuous_fixedAmbientSobolev e g₀).tendsto d₀).comp hd
+  have hw₀ : ContinuousOn (fun t => K (W₀ t)) (Icc 0 T) :=
+    K.continuous.comp_continuousOn hW₀
+  have hw : TendstoUniformlyOn (fun x t => K (W x t))
+      (fun t => K (W₀ t)) l (Icc 0 T) :=
+    K.uniformContinuous.comp_tendstoUniformlyOn hW
+  exact DifferentialGeometry.Analysis.Parabolic.reference_firstJet_tendstoUniformlyOn
+    g₀ T P J (fun x => fixedAmbientSobolev e g₀ (d x))
+    (fixedAmbientSobolev e g₀ d₀) (fun x t => K (W x t))
+    (fun t => K (W₀ t)) hf hw₀ hw
+
+end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening.SmoothImmersion
+
+end
+
+noncomputable section
+
+open MeasureTheory Set Filter
+open scoped Manifold ContDiff NNReal
+
+namespace DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening.SmoothImmersion
+
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Parabolic
+open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
+open DifferentialGeometry.Analysis.Parabolic.TimeSobolev
+open DifferentialGeometry.Analysis.Parabolic.QuasiLinear
+
+private local instance : NeZero (Module.finrank ℝ ℝ) := ⟨by norm_num⟩
+
+private theorem reference_exists_successor_coefficients
+    {n : ℕ}
+    (g₀ : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) (k : ℕ) (T : ℝ)
+    (f₀ : CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 2))
+    (fcenter fHigh : CircleHsPi g₀ (Fin n) ((k : ℝ) + 4))
+    (V : timeL2 (CircleHsPi g₀ (Fin n) ((k : ℝ) + 4)) T)
+    (W : ℝ → CircleHsPi g₀ (Fin n) ((k : ℝ) + 3))
+    (F : (Option (Fin n ⊕ Fin n) → ℝ) → ℝ)
+    (G : (Option (Fin n ⊕ Fin n) → ℝ) → Fin n → ℝ)
+    (S : Set (Option (Fin n ⊕ Fin n) → ℝ))
+    (hF : ContDiffOn ℝ ∞ F S) (hG : ContDiffOn ℝ ∞ G S) (hS : IsOpen S)
+    (u₀ : CircleHsPi g₀ (Fin n ⊕ Fin n) 1)
+    (C : ScalarVectorTimeCoefficients g₀ F G S u₀)
+    {δ ρ : ℝ} (f : Metric.closedBall f₀ δ)
+    (alpha : Metric.closedBall f₀ δ → ℝ →
+      CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 1) → TensorHs g₀ 0 0 1)
+    (reaction : Metric.closedBall f₀ δ → ℝ →
+      CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 1) → CircleHsPi g₀ (Fin n) 1)
+    (a₂ : ℝ → TensorHs g₀ 0 0 2)
+    (b₂ : ℝ → CircleHsPi g₀ (Fin n) 2) :
+    let R₄ := circleHsPiInclusion g₀ (Fin n)
+      (by have := Nat.cast_nonneg (α := ℝ) k; push_cast; linarith :
+        ((1 : ℕ) : ℝ) + 2 ≤ (k : ℝ) + 4)
+    let R₃ := circleHsPiInclusion g₀ (Fin n)
+      (by have := Nat.cast_nonneg (α := ℝ) k; push_cast; linarith :
+        ((1 : ℕ) : ℝ) + 2 ≤ (k : ℝ) + 3)
+    let B := circleHsPiInclusion g₀ (Fin n)
+      (by linarith : (k : ℝ) + 3 ≤ (k : ℝ) + 4)
+    let K₀ := circleHsPiInclusion g₀ (Fin n)
+      (by norm_num : (1 : ℝ) + 1 ≤ ((1 : ℕ) : ℝ) + 2)
+    let P := (circleFirstJet (ι := Fin n) g₀).comp K₀
+    let K := circleHsPiInclusion g₀ (Fin n)
+      (by norm_num : ((1 : ℕ) : ℝ) + 1 ≤ ((1 : ℕ) : ℝ) + 2)
+    let J := (circleFirstJet (ι := Fin n) g₀).comp (circleHsPiCongr g₀ (Fin n)
+      (by norm_num : ((1 : ℕ) : ℝ) + 1 = (1 : ℝ) + 1)).toLinearIsometry.toContinuousLinearMap
+    let w := fun t => K (R₃ (W t))
+    let A₂ := tensorHsInclusion (g := g₀) (r := 0) (s := 0)
+      (by norm_num : (1 : ℝ) ≤ 2)
+    let AH := tensorHsInclusion (g := g₀) (r := 0) (s := 0)
+      (by have := Nat.cast_nonneg (α := ℝ) k; linarith : (1 : ℝ) ≤ (k : ℝ) + 3)
+    let Q := tensorHsInclusion (g := g₀) (r := 0) (s := 0)
+      (by linarith : (k : ℝ) + 2 ≤ (k : ℝ) + 3)
+    let P₂ := tensorHsInclusion (g := g₀) (r := 0) (s := 0)
+      (by have := Nat.cast_nonneg (α := ℝ) k; linarith : (2 : ℝ) ≤ (k : ℝ) + 2)
+    u₀ = P f₀ → R₄ fcenter = f₀ → R₄ fHigh = f.val →
+    referenceCircleCoefficientFacts g₀ f₀ P J F G S δ ρ alpha reaction →
+    ContinuousOn W (Icc 0 T) → W =ᵐ[timeMeasure T] (fun t => B (V t)) →
+    T ≤ ρ → T ≤ ScalarVectorTimeCoefficients.radius C →
+    (∀ t ∈ Icc 0 T, ‖w t‖ ≤ ρ) →
+    (∀ t ∈ Icc 0 T,
+      ‖J (K (f.val - f₀) + w t)‖ ≤ ScalarVectorTimeCoefficients.radius C) →
+    (∀ t ∈ Icc 0 T, A₂ (a₂ t) = alpha f t (w t)) →
+    (∀ t ∈ Icc 0 T,
+      ContinuousLinearMap.piLpMap 2 (fun _ : Fin n => A₂) (b₂ t) = reaction f t (w t)) →
+    ∃ (aHigh : timeL2 (TensorHs g₀ 0 0 ((k : ℝ) + 3)) T)
+      (bHigh : timeL2 (CircleHsPi g₀ (Fin n) ((k : ℝ) + 3)) T),
+      (fun t => P₂ (Q (aHigh t))) =ᵐ[timeMeasure T] a₂ ∧
+      (fun t => ContinuousLinearMap.piLpMap 2 (fun _ : Fin n => P₂)
+        (ContinuousLinearMap.piLpMap 2 (fun _ : Fin n => Q) (bHigh t)))
+          =ᵐ[timeMeasure T] b₂ ∧
+      (fun t => AH (aHigh t)) =ᵐ[timeMeasure T] (fun t => alpha f t (w t)) ∧
+      (fun t => ContinuousLinearMap.piLpMap 2 (fun _ : Fin n => AH) (bHigh t))
+        =ᵐ[timeMeasure T] (fun t => reaction f t (w t)) := by
+  intro R₄ R₃ B K₀ P K J w A₂ AH Q P₂ hbase hcenter hf hcoeff hW hWV
+    hTρ hTC hw hJ ha₂ hb₂
+  let Cconst : CircleHsPi g₀ (Fin n) ((k : ℝ) + 4) →L[ℝ]
+      timeL2 (CircleHsPi g₀ (Fin n) ((k : ℝ) + 4)) T := Lp.constL 2 (timeMeasure T) ℝ
+  let Z := Cconst (fHigh - fcenter) + V
+  let Y := fun t => B (fHigh - fcenter) + W t
+  obtain ⟨hY, hYZ, _, _⟩ := reference_translated_high_state g₀ k T fcenter fHigh V W hW hWV
+  let E := ContinuousLinearMap.piLpMap 2 (fun _ : Fin n =>
+    tensorHsInclusion (g := g₀) (r := 0) (s := 0)
+      (by push_cast; linarith : ((k + 2 : ℕ) : ℝ) + 1 ≤ (k : ℝ) + 3))
+  let L := ContinuousLinearMap.piLpMap 2 (fun _ : Fin n ⊕ Fin n =>
+    tensorHsInclusion (g := g₀) (r := 0) (s := 0)
+      (by have := Nat.cast_nonneg (α := ℝ) k; push_cast; linarith :
+        (1 : ℝ) ≤ ((k + 2 : ℕ) : ℝ)))
+  let JHigh := L.comp ((AddCircle.firstJetHs g₀ (k + 2)).comp E)
+  have hRB (v : CircleHsPi g₀ (Fin n) ((k : ℝ) + 4)) : R₃ (B v) = R₄ v := by
+    apply PiLp.ext
+    intro i
+    apply TensorHs.ext
+    rfl
+  have hJK (v : CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 2)) : J (K v) = P v := by
+    have h := reference_jet_add_correction_eq g₀ 0 v
+    change P 0 + J (K v) = P (0 + v) at h
+    simpa only [map_zero, zero_add] using h
+  have hJHigh (v : CircleHsPi g₀ (Fin n) ((k : ℝ) + 3)) : JHigh v = P (R₃ v) := by
+    let Rnat := circleHsPiInclusion g₀ (Fin n)
+      (by have := Nat.cast_nonneg (α := ℝ) k; linarith : (3 : ℝ) ≤ (k : ℝ) + 3)
+    have hnat := circle_firstJetHs_eq_of_projection g₀ k v (Rnat v) rfl
+    change JHigh v = circleFirstJet g₀
+      (circleHsPiInclusion g₀ (Fin n) (by norm_num : (1 : ℝ) + 1 ≤ 3) (Rnat v)) at hnat
+    refine hnat.trans ?_
+    change circleFirstJet g₀
+      (circleHsPiInclusion g₀ (Fin n) (by norm_num : (1 : ℝ) + 1 ≤ 3) (Rnat v)) =
+        circleFirstJet g₀ (K₀ (R₃ v))
+    apply congrArg (circleFirstJet (ι := Fin n) g₀)
+    apply PiLp.ext
+    intro i
+    apply TensorHs.ext
+    rfl
+  have hjet (t : ℝ) : JHigh (Y t) = J (K (f.val - f₀) + w t) := by
+    rw [hJHigh]
+    change P (R₃ (B (fHigh - fcenter) + W t)) = _
+    rw [map_add, hRB, map_sub, hf, hcenter, map_add, map_add, hJK]
+    change P (f.val - f₀) + P (R₃ (W t)) = P (f.val - f₀) + J (K (R₃ (W t)))
+    rw [hJK]
+  have heq (t : ℝ) (htt : t ∈ Icc 0 T) :=
+    reference_coefficients_eq_at_translated_state g₀ f₀ P J K F G S u₀ C hbase hJK
+      alpha reaction hcoeff f (w t) t ⟨htt.1, htt.2.trans hTρ⟩
+      ⟨htt.1, htt.2.trans hTC⟩ (hw t htt) (hJ t htt)
+  have haC (t : ℝ) (htt : t ∈ Icc 0 T) : A₂ (a₂ t) =
+      extendClosedBall (ScalarVectorTimeCoefficients.radius_pos C).le
+        (ScalarVectorTimeCoefficients.diffusion C) t (J (K (f.val - f₀) + w t)) :=
+    (ha₂ t htt).trans (heq t htt).1
+  have hbC (t : ℝ) (htt : t ∈ Icc 0 T) :
+      ContinuousLinearMap.piLpMap 2 (fun _ : Fin n => A₂) (b₂ t) =
+        extendClosedBall (ScalarVectorTimeCoefficients.radius_pos C).le
+          (ScalarVectorTimeCoefficients.reaction C) t (J (K (f.val - f₀) + w t)) :=
+    (hb₂ t htt).trans (heq t htt).2
+  let E₄ := circleHsPiInclusion g₀ (Fin n)
+    (by push_cast; linarith : ((k + 1 + 2 : ℕ) : ℝ) + 1 ≤ (k : ℝ) + 4)
+  let fcRaw := E₄ fcenter
+  let Kraw := ContinuousLinearMap.piLpMap 2 (fun _ : Fin n =>
+    tensorHsInclusion (g := g₀) (r := 0) (s := 0)
+      (by push_cast; linarith :
+        ((k + 1 + 1 : ℕ) : ℝ) + 1 ≤ ((k + 1 + 2 : ℕ) : ℝ) + 1))
+  have hKraw : Kraw fcRaw = E (B fcenter) := by
+    apply PiLp.ext
+    intro i
+    apply TensorHs.ext
+    rfl
+  have hcenterRaw : u₀ = L (AddCircle.firstJetHs g₀ (k + 2) (Kraw fcRaw)) := by
+    rw [hKraw]
+    change u₀ = JHigh (B fcenter)
+    rw [hJHigh, hRB, hcenter]
+    exact hbase
+  obtain ⟨a, b, aHigh, bHigh, hresult⟩ :=
+    scalarVectorTimeCoefficients_successor_order g₀ F G S u₀ C hF hG hS k fcRaw
+      hcenterRaw T hTC Z Y hY hYZ
+      (fun t htt => by rw [hjet]; exact hJ t htt) a₂ b₂
+      (fun t htt => by rw [hjet]; exact haC t htt)
+      (fun t htt => by rw [hjet]; exact hbC t htt)
+  have haHigh := hresult.2.2.2.2.2.2.2.2.1
+  have hbHigh := hresult.2.2.2.2.2.2.2.2.2
+  obtain ⟨haActual, hbActual⟩ := reference_successor_coefficient_projection_ae
+    g₀ k T f₀ P J K F G S u₀ C hbase hJK f alpha reaction hcoeff w a₂ b₂
+      aHigh bHigh haHigh hbHigh haC hbC hTρ hTC hw hJ
+  exact ⟨aHigh, bHigh, haHigh, hbHigh, haActual, hbActual⟩
+
+end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening.SmoothImmersion
+
+end
+
+noncomputable section
+
+open scoped Manifold ContDiff
+
+namespace DifferentialGeometry.Analysis.Parabolic
+
+open DifferentialGeometry.Analysis.Spectral
+open TensorHeatEquation QuasiLinear
+
+private local instance : NeZero (Module.finrank ℝ ℝ) := ⟨by norm_num⟩
+
+private theorem reference_scalarHsTimeFirstJet_projection
+    {n : ℕ}
+    (g₀ : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ)))
+    (m : ℕ) (hm : 2 ≤ m) (t : ℝ)
+    (fHigh v : CircleHsPi g₀ (Fin n) ((m : ℝ) + 1))
+    (f : CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 2))
+    (w : CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 1)) :
+    let R := circleHsPiInclusion g₀ (Fin n)
+      (by have hm' : (2 : ℝ) ≤ m := by exact_mod_cast hm
+          norm_num; linarith : ((1 : ℕ) : ℝ) + 2 ≤ (m : ℝ) + 1)
+    let K := circleHsPiInclusion g₀ (Fin n)
+      (by have hm' : (2 : ℝ) ≤ m := by exact_mod_cast hm
+          norm_num; linarith : ((1 : ℕ) : ℝ) + 1 ≤ (m : ℝ) + 1)
+    let Q := ContinuousLinearMap.piLpMap 2 (fun _ : Option (Fin n ⊕ Fin n) =>
+      tensorHsInclusion (g := g₀) (r := 0) (s := 0)
+        (by have hm' : (2 : ℝ) ≤ m := by exact_mod_cast hm
+            linarith : (1 : ℝ) ≤ (m : ℝ)))
+    let K₀ := circleHsPiInclusion g₀ (Fin n)
+      (by norm_num : (1 : ℝ) + 1 ≤ ((1 : ℕ) : ℝ) + 2)
+    let P := (circleFirstJet (ι := Fin n) g₀).comp K₀
+    let C := circleHsPiCongr g₀ (Fin n)
+      (by norm_num : ((1 : ℕ) : ℝ) + 1 = (1 : ℝ) + 1)
+    let J := (circleFirstJet (ι := Fin n) g₀).comp C.toLinearIsometry.toContinuousLinearMap
+    R fHigh = f → K v = w →
+    Q (AddCircle.scalarHsTimeFirstJet g₀ m (t, fHigh + v)) =
+      scalarH1TimeCoordinate g₀ (t, P f + J w) := by
+  intro R K Q K₀ P C J hf hv
+  have hcongr {a b : ℝ} (h : a = b) (u : TensorHs g₀ 0 0 a) :
+      (tensorHsCongrL g₀ 0 0 h u).coeff = u.coeff := by
+    cases h
+    rfl
+  have hbase : C (K fHigh) = K₀ f := by
+    rw [← hf]
+    apply PiLp.ext
+    intro i
+    apply TensorHs.ext
+    rw [circleHsPiCongr_apply, hcongr]
+    rfl
+  let Qjet := ContinuousLinearMap.piLpMap 2 (fun _ : Fin n ⊕ Fin n =>
+    tensorHsInclusion (g := g₀) (r := 0) (s := 0)
+      (by have hm' : (2 : ℝ) ≤ m := by exact_mod_cast hm
+          linarith : (1 : ℝ) ≤ (m : ℝ)))
+  have hj : Qjet (AddCircle.firstJetHs g₀ m (fHigh + v)) = P f + J w := by
+    let Qone := ContinuousLinearMap.piLpMap 2 (fun _ : Fin n ⊕ Fin n =>
+      tensorHsInclusion (g := g₀) (r := 0) (s := 0)
+        (by norm_num : (1 : ℝ) ≤ ((1 : ℕ) : ℝ)))
+    have hjet := congrArg (fun A => A (fHigh + v))
+      (AddCircle.firstJetHs_comp_tensorHsInclusion (ι := Fin n) g₀
+        (show 1 ≤ m by omega))
+    change AddCircle.firstJetHs g₀ 1 (K (fHigh + v)) = _ at hjet
+    have hnormalized := circle_firstJetHs_normalized g₀ (K (fHigh + v))
+    have hraw : Qjet (AddCircle.firstJetHs g₀ m (fHigh + v)) =
+        Qone (AddCircle.firstJetHs g₀ 1 (K (fHigh + v))) := by
+      rw [hjet]
+      apply PiLp.ext
+      intro i
+      apply TensorHs.ext
+      rfl
+    rw [hraw, ← hnormalized, map_add, hv, map_add, hbase, map_add]
+    rfl
+  change Q (AddCircle.scalarHsTimeCoordinate g₀ (m : ℝ)
+    (t, AddCircle.firstJetHs g₀ m (fHigh + v))) = _
+  rw [AddCircle.tensorHsInclusion_scalarHsTimeCoordinate]
+  exact congrArg (fun u => scalarH1TimeCoordinate g₀ (t, u)) hj
+
+end DifferentialGeometry.Analysis.Parabolic
+
+end
+
+noncomputable section
+
+open MeasureTheory Set
+open scoped Manifold ContDiff Topology
+
+namespace DifferentialGeometry.Analysis.Parabolic
+
+open DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening.SmoothImmersion
+  (referenceCircleSymmetricCoefficientFacts)
+
+open DifferentialGeometry.Analysis.Spectral
+open TensorHeatEquation TimeSobolev QuasiLinear
+
+private local instance : NeZero (Module.finrank ℝ ℝ) := ⟨by norm_num⟩
+
+private theorem reference_shifted_coefficients_continuousOn
+    {n : ℕ}
+    (g₀ : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) (T σ : ℝ)
+    (fref : CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 2))
+    {δ ρ : ℝ} (f : Metric.closedBall fref δ)
+    (P : CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 2) →L[ℝ]
+      CircleHsPi g₀ (Fin n ⊕ Fin n) 1)
+    (J : CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 1) →L[ℝ]
+      CircleHsPi g₀ (Fin n ⊕ Fin n) 1)
+    (W : ℝ → CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 1))
+    (hW : ContinuousOn W (Icc 0 T))
+    (F : (Option (Fin n ⊕ Fin n) → ℝ) → ℝ)
+    (G : (Option (Fin n ⊕ Fin n) → ℝ) → Fin n → ℝ)
+    {S : Set (Option (Fin n ⊕ Fin n) → ℝ)}
+    (hF : ContDiffOn ℝ ∞ F S) (hG : ContDiffOn ℝ ∞ G S) (hS : IsOpen S)
+    (alpha : Metric.closedBall fref δ → ℝ →
+      CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 1) → TensorHs g₀ 0 0 1)
+    (reaction : Metric.closedBall fref δ → ℝ →
+      CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 1) → CircleHsPi g₀ (Fin n) 1)
+    (hcoeff : referenceCircleSymmetricCoefficientFacts g₀ fref P J F G S δ ρ alpha reaction)
+    (hσlo : -ρ ≤ σ) (hσhi : σ + T ≤ ρ) (hbound : ∀ t ∈ Icc 0 T, ‖W t‖ ≤ ρ) :
+    ContinuousOn (fun t => alpha f (σ + t) (W t)) (Icc 0 T) ∧
+      ContinuousOn (fun t => reaction f (σ + t) (W t)) (Icc 0 T) := by
+  classical
+  let A := tensorHsInclusion (g := g₀) (r := 0) (s := 0)
+    (by norm_num : (1 : ℝ) ≤ ((0 : ℕ) : ℝ) + 1)
+  let U := tensorHsInclusion (g := g₀) (r := 0) (s := 0)
+    (by norm_num : ((0 : ℕ) : ℝ) + 1 ≤ (1 : ℝ))
+  let Q := ContinuousLinearMap.piLpMap 2 (fun _ : Option (Fin n ⊕ Fin n) => A)
+  let E := ContinuousLinearMap.piLpMap 2 (fun _ : Option (Fin n ⊕ Fin n) => U)
+  let q := fun t => scalarH1TimeCoordinate g₀ (σ + t, P f.val + J (W t))
+  let qraw := fun t => E (q t)
+  have hq : ContinuousOn q (Icc 0 T) :=
+    (scalarH1TimeCoordinate g₀).continuous.comp_continuousOn
+      ((continuousOn_const.add continuousOn_id).prodMk
+        (continuousOn_const.add (J.continuous.comp_continuousOn hW)))
+  have hqraw : ContinuousOn qraw (Icc 0 T) := E.continuous.comp_continuousOn hq
+  have hproject (t : ℝ) : Q (qraw t) = q t := by
+    apply PiLp.ext
+    intro i
+    apply TensorHs.ext
+    rfl
+  have htime (t : ℝ) (ht : t ∈ Icc 0 T) : σ + t ∈ Icc (-ρ) ρ :=
+    by constructor <;> linarith [ht.1, ht.2]
+  have hRange : ∀ t ∈ Icc 0 T,
+      range (scalarH1PiToContinuous g₀ (Q (qraw t))) ⊆ S := by
+    intro t ht
+    rw [hproject]
+    exact hcoeff.1 f (σ + t) (htime t ht) (W t) (hbound t ht)
+  obtain ⟨araw, haraw, haeval⟩ := AddCircle.exists_continuousOn_scalarHs_composition
+    g₀ 0 F hF hS qraw hqraw hRange
+  choose braw hbraw hbeval using fun j : Fin n =>
+    AddCircle.exists_continuousOn_scalarHs_composition
+      g₀ 0 (fun z => G z j) (contDiffOn_pi.mp hG j) hS qraw hqraw hRange
+  have hcoords (t : ℝ) (z : AddCircle (1 : ℝ)) :
+      scalarH1PiToContinuous g₀ (q t) z =
+        (fun i => match i with
+          | none => σ + t
+          | some i => scalarH1ToContinuous g₀ ((P f.val) i + (J (W t)) i) z) := by
+    funext i
+    cases i with
+    | none => exact scalarH1TimeCoordinate_eval_none g₀ _ _
+    | some i => rfl
+  have hae (t : ℝ) (ht : t ∈ Icc 0 T) :
+      alpha f (σ + t) (W t) = A (araw t) := by
+    apply scalarH1ToContinuous_injective g₀
+    apply ContinuousMap.ext
+    intro z
+    rw [haeval t ht z, hproject, hcoords]
+    exact hcoeff.2.1 f (σ + t) (htime t ht) (W t) (hbound t ht) z
+  have hbe (j : Fin n) (t : ℝ) (ht : t ∈ Icc 0 T) :
+      reaction f (σ + t) (W t) j = A (braw j t) := by
+    apply scalarH1ToContinuous_injective g₀
+    apply ContinuousMap.ext
+    intro z
+    rw [hbeval j t ht z, hproject, hcoords]
+    exact hcoeff.2.2 f (σ + t) (htime t ht) (W t) (hbound t ht) z j
+  refine ⟨(A.continuous.comp_continuousOn haraw).congr hae, ?_⟩
+  have hb : ContinuousOn (fun t => WithLp.toLp 2 (fun j => A (braw j t))) (Icc 0 T) :=
+    (PiLp.continuous_toLp 2 _).comp_continuousOn
+      (continuousOn_pi.mpr (fun j => A.continuous.comp_continuousOn (hbraw j)))
+  apply hb.congr
+  intro t ht
+  exact PiLp.ext (fun j => hbe j t ht)
+
+end DifferentialGeometry.Analysis.Parabolic
+
+end
+
+noncomputable section
+
+open MeasureTheory Set Filter
+open scoped Manifold ContDiff Topology BigOperators
+
+namespace DifferentialGeometry.Analysis.Parabolic
+
+open DifferentialGeometry.Analysis.Spectral
+open TensorHeatEquation TimeSobolev QuasiLinear
+
+private local instance : NeZero (Module.finrank ℝ ℝ) := ⟨by norm_num⟩
+
+private theorem reference_shifted_timeFirstJet_h2
+    {n : ℕ}
+    (g₀ : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) (T σ : ℝ)
+    (f : CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 2))
+    (V : timeL2 (CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 2)) T)
+    (W : ℝ → CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 1)) :
+    let B := circleHsPiInclusion g₀ (Fin n)
+      (by norm_num : ((1 : ℕ) : ℝ) + 1 ≤ ((1 : ℕ) : ℝ) + 2)
+    let K₀ := circleHsPiInclusion g₀ (Fin n)
+      (by norm_num : (1 : ℝ) + 1 ≤ ((1 : ℕ) : ℝ) + 2)
+    let P := (circleFirstJet (ι := Fin n) g₀).comp K₀
+    let J := (circleFirstJet (ι := Fin n) g₀).comp (circleHsPiCongr g₀ (Fin n)
+      (by norm_num : ((1 : ℕ) : ℝ) + 1 = (1 : ℝ) + 1)).toLinearIsometry.toContinuousLinearMap
+    let A₂ := tensorHsInclusion (g := g₀) (r := 0) (s := 0)
+      (by norm_num : (1 : ℝ) ≤ 2)
+    let E := circleHsPiInclusion g₀ (Fin n)
+      (by norm_num : ((2 : ℕ) : ℝ) + 1 ≤ ((1 : ℕ) : ℝ) + 2)
+    let PH := ContinuousLinearMap.piLpMap 2 (fun _ : Option (Fin n ⊕ Fin n) =>
+      tensorHsInclusion (g := g₀) (r := 0) (s := 0)
+        (by norm_num : (2 : ℝ) ≤ ((2 : ℕ) : ℝ)))
+    let Hjet := PH.comp ((AddCircle.scalarHsTimeFirstJet g₀ 2).comp
+      ((ContinuousLinearMap.fst ℝ ℝ _).prod
+        (E.comp (ContinuousLinearMap.snd ℝ ℝ _))))
+    let qHigh := fun t => Hjet (σ + t, f + V t)
+    let QH := ContinuousLinearMap.piLpMap 2 (fun _ : Option (Fin n ⊕ Fin n) => A₂)
+    let q := fun t => scalarH1TimeCoordinate g₀ (σ + t, P f + J (W t))
+    W =ᵐ[timeMeasure T] (fun t => B (V t)) →
+    MemLp qHigh 2 (timeMeasure T) ∧ (fun t => QH (qHigh t)) =ᵐ[timeMeasure T] q := by
+  intro B K₀ P J A₂ E PH Hjet qHigh QH q hWV
+  have hmemHigh : MemLp qHigh 2 (timeMeasure T) := by
+    have htime : MemLp (fun t : ℝ => (σ + t, (0 : CircleHsPi g₀ (Fin n)
+        (((1 : ℕ) : ℝ) + 2)))) 2 (timeMeasure T) :=
+      memLp_of_continuousOn ((continuousOn_const.add continuousOn_id).prodMk continuousOn_const)
+    have hstate : MemLp (fun t => f + V t) 2 (timeMeasure T) :=
+      (memLp_const f).add (Lp.memLp V)
+    have hpair := htime.add ((ContinuousLinearMap.inr ℝ ℝ _).comp_memLp' hstate)
+    have hp : MemLp (fun t => (σ + t, f + V t)) 2 (timeMeasure T) := by
+      apply hpair.ae_eq
+      filter_upwards [] with t
+      simp only [Function.comp_apply, Pi.add_apply, ContinuousLinearMap.inr_apply,
+        Prod.mk_add_mk, add_zero, zero_add]
+    exact Hjet.comp_memLp' hp
+  have hproject : (fun t => QH (qHigh t)) =ᵐ[timeMeasure T] q := by
+    filter_upwards [hWV] with t hwt
+    have hf : circleHsPiInclusion g₀ (Fin n)
+        (by norm_num : ((1 : ℕ) : ℝ) + 2 ≤ ((2 : ℕ) : ℝ) + 1) (E f) = f := by
+      apply PiLp.ext
+      intro i
+      apply TensorHs.ext
+      rfl
+    have hw : circleHsPiInclusion g₀ (Fin n)
+        (by norm_num : ((1 : ℕ) : ℝ) + 1 ≤ ((2 : ℕ) : ℝ) + 1) (E (V t)) = W t := by
+      rw [hwt]
+      apply PiLp.ext
+      intro i
+      apply TensorHs.ext
+      rfl
+    have hj := reference_scalarHsTimeFirstJet_projection g₀ 2 (by omega) (σ + t)
+      (E f) (E (V t)) f (W t) hf hw
+    refine Eq.trans ?_ hj
+    change QH (PH (AddCircle.scalarHsTimeFirstJet g₀ 2 (σ + t, E (f + V t)))) = _
+    rw [map_add]
+    apply PiLp.ext
+    intro i
+    apply TensorHs.ext
+    rfl
+  exact ⟨hmemHigh, hproject⟩
+
+end DifferentialGeometry.Analysis.Parabolic
+
+end
+
+noncomputable section
+
+open MeasureTheory Set Filter
+open scoped Manifold ContDiff Topology BigOperators
+
+namespace DifferentialGeometry.Analysis.Parabolic
+
+open DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening.SmoothImmersion
+  (referenceCircleSymmetricCoefficientFacts)
+
+open DifferentialGeometry.Analysis.Spectral
+open TensorHeatEquation TimeSobolev QuasiLinear
+
+private local instance : NeZero (Module.finrank ℝ ℝ) := ⟨by norm_num⟩
+
+private theorem reference_exists_h2_coefficients_of_timeFirstJet
+    {n : ℕ}
+    (g₀ : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) (T σ : ℝ)
+    (fref : CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 2))
+    {δ ρ : ℝ} (f : Metric.closedBall fref δ)
+    (W : ℝ → CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 1))
+    (hW : ContinuousOn W (Icc 0 T))
+    (F : (Option (Fin n ⊕ Fin n) → ℝ) → ℝ)
+    (G : (Option (Fin n ⊕ Fin n) → ℝ) → Fin n → ℝ)
+    {S : Set (Option (Fin n ⊕ Fin n) → ℝ)}
+    (hF : ContDiffOn ℝ ∞ F S) (hG : ContDiffOn ℝ ∞ G S) (hS : IsOpen S)
+    (alpha : Metric.closedBall fref δ → ℝ →
+      CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 1) → TensorHs g₀ 0 0 1)
+    (reaction : Metric.closedBall fref δ → ℝ →
+      CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 1) → CircleHsPi g₀ (Fin n) 1)
+    (qHigh : ℝ → PiLp 2 (fun _ : Option (Fin n ⊕ Fin n) => TensorHs g₀ 0 0 2))
+    (hmemHigh : MemLp qHigh 2 (timeMeasure T)) :
+    let K₀ := circleHsPiInclusion g₀ (Fin n)
+      (by norm_num : (1 : ℝ) + 1 ≤ ((1 : ℕ) : ℝ) + 2)
+    let P := (circleFirstJet (ι := Fin n) g₀).comp K₀
+    let J := (circleFirstJet (ι := Fin n) g₀).comp (circleHsPiCongr g₀ (Fin n)
+      (by norm_num : ((1 : ℕ) : ℝ) + 1 = (1 : ℝ) + 1)).toLinearIsometry.toContinuousLinearMap
+    let A₂ := tensorHsInclusion (g := g₀) (r := 0) (s := 0)
+      (by norm_num : (1 : ℝ) ≤ 2)
+    let QH := ContinuousLinearMap.piLpMap 2 (fun _ : Option (Fin n ⊕ Fin n) => A₂)
+    referenceCircleSymmetricCoefficientFacts g₀ fref P J F G S δ ρ alpha reaction →
+    (fun t => QH (qHigh t)) =ᵐ[timeMeasure T]
+      (fun t => scalarH1TimeCoordinate g₀ (σ + t, P f.val + J (W t))) →
+    -ρ ≤ σ → σ + T ≤ ρ → (∀ t ∈ Icc 0 T, ‖W t‖ ≤ ρ) →
+    ∃ (a₂ : timeL2 (TensorHs g₀ 0 0 2) T)
+      (b₂ : timeL2 (CircleHsPi g₀ (Fin n) 2) T),
+      (fun t => A₂ (a₂ t)) =ᵐ[timeMeasure T] (fun t => alpha f (σ + t) (W t)) ∧
+      (fun t => ContinuousLinearMap.piLpMap 2 (fun _ : Fin n => A₂) (b₂ t))
+        =ᵐ[timeMeasure T] (fun t => reaction f (σ + t) (W t)) := by
+  classical
+  intro K₀ P J A₂ QH hcoeff hproject hσlo hσhi hbound
+  obtain ⟨hac, hbc⟩ := reference_shifted_coefficients_continuousOn
+    g₀ T σ fref f P J W hW F G hF hG hS alpha reaction hcoeff hσlo hσhi hbound
+  have ha := (memLp_of_continuousOn hac).aestronglyMeasurable
+  have hb := (memLp_of_continuousOn hbc).aestronglyMeasurable
+  let q := fun t => scalarH1TimeCoordinate g₀ (σ + t, P f.val + J (W t))
+  change (fun t => QH (qHigh t)) =ᵐ[timeMeasure T] q at hproject
+  have hq : ContinuousOn q (Icc 0 T) :=
+    (scalarH1TimeCoordinate g₀).continuous.comp_continuousOn
+      ((continuousOn_const.add continuousOn_id).prodMk
+        (continuousOn_const.add (J.continuous.comp_continuousOn hW)))
+  let e : Icc (0 : ℝ) T × AddCircle (1 : ℝ) → (Option (Fin n ⊕ Fin n) → ℝ) :=
+    fun p => scalarH1PiToContinuous g₀ (q p.1) p.2
+  have he : Continuous e := by
+    have hqr : Continuous (fun t : Icc (0 : ℝ) T => q t) :=
+      continuousOn_iff_continuous_domRestrict.mp hq
+    exact continuous_eval.comp
+      (((scalarH1PiToContinuous g₀).continuous.comp (hqr.comp continuous_fst)).prodMk
+        continuous_snd)
+  have hK : IsCompact (range e) := isCompact_range he
+  have htime (t : ℝ) (ht : t ∈ Icc 0 T) : σ + t ∈ Icc (-ρ) ρ :=
+    by constructor <;> linarith [ht.1, ht.2]
+  have hKS : range e ⊆ S := by
+    rintro z ⟨⟨t, x⟩, rfl⟩
+    exact hcoeff.1 f (σ + t) (htime t t.2) (W t) (hbound t t.2) (mem_range_self x)
+  obtain ⟨D, hD⟩ := isCompact_Icc.exists_bound_of_continuousOn hq
+  let Rbound := (Fintype.card (Option (Fin n ⊕ Fin n)) : ℝ) * D
+  have hmem : ∀ᵐ t ∂timeMeasure T, t ∈ Icc 0 T := ae_restrict_mem measurableSet_Icc
+  have hRange : ∀ᵐ t ∂timeMeasure T,
+      range (scalarH1PiToContinuous g₀ (QH (qHigh t))) ⊆ range e := by
+    filter_upwards [hproject, hmem] with t ht htt
+    rw [ht]
+    rintro z ⟨x, rfl⟩
+    exact ⟨(⟨t, htt⟩, x), rfl⟩
+  have hBound : ∀ᵐ t ∂timeMeasure T, (∑ i, ‖A₂ (qHigh t i)‖) ≤ Rbound := by
+    filter_upwards [hproject, hmem] with t ht htt
+    change (∑ i, ‖QH (qHigh t) i‖) ≤ _
+    rw [ht]
+    calc
+      _ ≤ ∑ _i : Option (Fin n ⊕ Fin n), ‖q t‖ :=
+        Finset.sum_le_sum (fun i _ => PiLp.norm_apply_le _ i)
+      _ = (Fintype.card (Option (Fin n ⊕ Fin n)) : ℝ) * ‖q t‖ := by simp
+      _ ≤ Rbound := mul_le_mul_of_nonneg_left (hD t htt) (by positivity)
+  have hcoords (t : ℝ) (z : AddCircle (1 : ℝ)) :
+      scalarH1PiToContinuous g₀ (q t) z =
+        (fun i => match i with
+          | none => σ + t
+          | some i => scalarH1ToContinuous g₀ ((P f.val) i + (J (W t)) i) z) := by
+    funext i
+    cases i with
+    | none => exact scalarH1TimeCoordinate_eval_none g₀ _ _
+    | some i => rfl
+  have hEval : ∀ᵐ t ∂timeMeasure T,
+      (∀ z, scalarH1ToContinuous g₀ (alpha f (σ + t) (W t)) z =
+        F (scalarH1PiToContinuous g₀ (QH (qHigh t)) z)) ∧
+      (∀ z j, scalarH1ToContinuous g₀ (reaction f (σ + t) (W t) j) z =
+        G (scalarH1PiToContinuous g₀ (QH (qHigh t)) z) j) := by
+    filter_upwards [hproject, hmem] with t ht htt
+    constructor
+    · intro z
+      rw [ht, hcoords]
+      exact hcoeff.2.1 f (σ + t) (htime t htt) (W t) (hbound t htt) z
+    · intro z j
+      rw [ht, hcoords]
+      exact hcoeff.2.2 f (σ + t) (htime t htt) (W t) (hbound t htt) z j
+  obtain ⟨a₂, ha₂⟩ := AddCircle.exists_lp_scalarH2_composition_of_h1_bound
+    (timeMeasure T) g₀ F hF hS hK hKS hmemHigh ha hRange hBound
+      (hEval.mono fun _ ht => ht.1)
+  have hbcoord (j : Fin n) := AddCircle.exists_lp_scalarH2_composition_of_h1_bound
+    (timeMeasure T) g₀ (fun z => G z j) (contDiffOn_pi.mp hG j) hS hK hKS hmemHigh
+      ((PiLp.continuous_apply 2 (fun _ : Fin n => TensorHs g₀ 0 0 1) j).comp_aestronglyMeasurable
+        hb)
+      hRange hBound (hEval.mono fun _ ht => fun z => ht.2 z j)
+  choose bcoord hbcoord using hbcoord
+  let E₂ := Lp.piLpEquiv (𝕜 := ℝ) (X := fun _ : Fin n => TensorHs g₀ 0 0 2) (timeMeasure T)
+  let bpi : PiLp 2 (fun _ : Fin n => timeL2 (TensorHs g₀ 0 0 2) T) := WithLp.toLp 2 bcoord
+  let b₂ := E₂.symm bpi
+  refine ⟨a₂, b₂, ha₂, ?_⟩
+  filter_upwards [Lp.piLpEquiv_symm_apply (𝕜 := ℝ) (timeMeasure T) bpi,
+    Filter.eventually_all.mpr hbcoord] with t ht hc
+  apply PiLp.ext
+  intro j
+  have hj := congrArg (fun v => v j) ht
+  change b₂ t j = bcoord j t at hj
+  change A₂ (b₂ t j) = reaction f (σ + t) (W t) j
+  rw [hj]
+  exact hc j
+
+end DifferentialGeometry.Analysis.Parabolic
+
+end
+
+noncomputable section
+
+open MeasureTheory Set Filter
+open scoped Manifold ContDiff Topology BigOperators
+
+namespace DifferentialGeometry.Analysis.Parabolic
+
+open DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening.SmoothImmersion
+  (referenceCircleSymmetricCoefficientFacts)
+
+open DifferentialGeometry.Analysis.Spectral
+open TensorHeatEquation TimeSobolev QuasiLinear
+
+private local instance : NeZero (Module.finrank ℝ ℝ) := ⟨by norm_num⟩
+
+private theorem reference_exists_h2_coefficients_timeShift
+    {n : ℕ}
+    (g₀ : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) (T σ : ℝ)
+    (fref : CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 2))
+    {δ ρ : ℝ} (f : Metric.closedBall fref δ)
+    (V : timeL2 (CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 2)) T)
+    (W : ℝ → CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 1))
+    (hW : ContinuousOn W (Icc 0 T))
+    (F : (Option (Fin n ⊕ Fin n) → ℝ) → ℝ)
+    (G : (Option (Fin n ⊕ Fin n) → ℝ) → Fin n → ℝ)
+    {S : Set (Option (Fin n ⊕ Fin n) → ℝ)}
+    (hF : ContDiffOn ℝ ∞ F S) (hG : ContDiffOn ℝ ∞ G S) (hS : IsOpen S)
+    (alpha : Metric.closedBall fref δ → ℝ →
+      CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 1) → TensorHs g₀ 0 0 1)
+    (reaction : Metric.closedBall fref δ → ℝ →
+      CircleHsPi g₀ (Fin n) (((1 : ℕ) : ℝ) + 1) → CircleHsPi g₀ (Fin n) 1) :
+    let B := circleHsPiInclusion g₀ (Fin n)
+      (by norm_num : ((1 : ℕ) : ℝ) + 1 ≤ ((1 : ℕ) : ℝ) + 2)
+    let K₀ := circleHsPiInclusion g₀ (Fin n)
+      (by norm_num : (1 : ℝ) + 1 ≤ ((1 : ℕ) : ℝ) + 2)
+    let P := (circleFirstJet (ι := Fin n) g₀).comp K₀
+    let J := (circleFirstJet (ι := Fin n) g₀).comp (circleHsPiCongr g₀ (Fin n)
+      (by norm_num : ((1 : ℕ) : ℝ) + 1 = (1 : ℝ) + 1)).toLinearIsometry.toContinuousLinearMap
+    let A₂ := tensorHsInclusion (g := g₀) (r := 0) (s := 0)
+      (by norm_num : (1 : ℝ) ≤ 2)
+    referenceCircleSymmetricCoefficientFacts g₀ fref P J F G S δ ρ alpha reaction →
+    W =ᵐ[timeMeasure T] (fun t => B (V t)) →
+    -ρ ≤ σ → σ + T ≤ ρ → (∀ t ∈ Icc 0 T, ‖W t‖ ≤ ρ) →
+    ∃ (a₂ : timeL2 (TensorHs g₀ 0 0 2) T)
+      (b₂ : timeL2 (CircleHsPi g₀ (Fin n) 2) T),
+      (fun t => A₂ (a₂ t)) =ᵐ[timeMeasure T] (fun t => alpha f (σ + t) (W t)) ∧
+      (fun t => ContinuousLinearMap.piLpMap 2 (fun _ : Fin n => A₂) (b₂ t))
+        =ᵐ[timeMeasure T] (fun t => reaction f (σ + t) (W t)) := by
+  intro B K₀ P J A₂ hcoeff hWV hσlo hσhi hbound
+  let E := circleHsPiInclusion g₀ (Fin n)
+    (by norm_num : ((2 : ℕ) : ℝ) + 1 ≤ ((1 : ℕ) : ℝ) + 2)
+  let PH := ContinuousLinearMap.piLpMap 2 (fun _ : Option (Fin n ⊕ Fin n) =>
+    tensorHsInclusion (g := g₀) (r := 0) (s := 0)
+      (by norm_num : (2 : ℝ) ≤ ((2 : ℕ) : ℝ)))
+  let Hjet := PH.comp ((AddCircle.scalarHsTimeFirstJet g₀ 2).comp
+    ((ContinuousLinearMap.fst ℝ ℝ _).prod
+      (E.comp (ContinuousLinearMap.snd ℝ ℝ _))))
+  let qHigh := fun t => Hjet (σ + t, f.val + V t)
+  obtain ⟨hmemHigh, hproject⟩ := reference_shifted_timeFirstJet_h2 g₀ T σ f.val V W hWV
+  exact reference_exists_h2_coefficients_of_timeFirstJet g₀ T σ fref f W hW
+    F G hF hG hS alpha reaction qHigh hmemHigh hcoeff hproject hσlo hσhi hbound
+
+end DifferentialGeometry.Analysis.Parabolic
 
 end

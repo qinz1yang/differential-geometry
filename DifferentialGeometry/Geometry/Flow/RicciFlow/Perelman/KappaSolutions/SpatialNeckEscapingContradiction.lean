@@ -28,13 +28,14 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 private local instance escapingNeckC1 : IsManifold I 1 N :=
   IsManifold.of_le (n := ∞) (by decide)
 
-theorem exists_scalarBounded_spatialNeck_subsequence
+theorem SpatialNeckSideData.exists_scalar_bounded_subsequence
     {h : SmoothRiemannianMetric I N} {marks : ℕ → SpatialNeckSphere}
     {centers : ℕ → N} {epsilon : ℝ}
     (W : ∀ i : ℕ, SpatialNeckWitness h (marks i) (centers i) epsilon)
+    (D : ∀ i : ℕ, SpatialNeckSideData (W i))
     (hEnorm : IsMetricNorm (I := I) h)
     (hsmall : epsilon ≤ spatialNeckControlEpsilon)
-    (hsec : DifferentialGeometry.Geometry.HasPositiveSectionalCurvature (I := I) h)
+    (hsec : DifferentialGeometry.Geometry.HasNonnegativeSectionalCurvature (I := I) h)
     (hcores : Pairwise (fun i j : ℕ => Disjoint (W i).core (W j).core))
     (hescape : Tendsto centers atTop (cocompact N)) :
     ∃ phi : ℕ → ℕ, StrictMono phi ∧ ∀ n : ℕ,
@@ -43,15 +44,9 @@ theorem exists_scalarBounded_spatialNeck_subsequence
   classical
   let _ : NeZero (Module.finrank ℝ E) := ⟨by rw [(W 0).dimension_three]; norm_num⟩
   let _ : CompleteSpace N := completeMetric_compatible_completeSpace h hEnorm (W 0).complete
-  choose W' _hchoice _hsphere hcore _himage hside using
-    fun i : ℕ => (W i).exists_ordered_compact_end_sides hsec
-  let D : ∀ i : ℕ, SpatialNeckSideData (W' i) := fun i => Classical.choice (hside i)
-  have hcores' : Pairwise (fun i j : ℕ => Disjoint (W' i).core (W' j).core) := by
-    intro i j hij
-    simpa only [hcore i, hcore j] using hcores hij
   have hray : ∃ c : ℝ≥0 → N, Isometry c := by
     by_contra! hno
-    have hcompact := isCompact_rayBusemannSublevel h hEnorm hsec.toNonnegative
+    have hcompact := isCompact_rayBusemannSublevel h hEnorm hsec
       (centers 0) (k := 0)
     have heq : rayBusemannSublevel (centers 0) 0 = univ := by
       apply eq_univ_of_forall
@@ -60,9 +55,9 @@ theorem exists_scalarBounded_spatialNeck_subsequence
     rw [heq] at hcompact
     exact noncompact_univ N hcompact
   obtain ⟨c, hc⟩ := hray
-  obtain ⟨q, _hvalue, hmin⟩ := (D 0).exists_busemann_minimum hEnorm hsmall hsec.toNonnegative hc
-  obtain ⟨phi, hphi, _havoid, hnested⟩ := exists_outward_spatialNeck_subsequence W' D
-    hEnorm hsmall hsec.toNonnegative hc q hmin hcores' hescape
+  obtain ⟨q, _hvalue, hmin⟩ := (D 0).exists_busemann_minimum hEnorm hsmall hsec hc
+  obtain ⟨phi, hphi, _havoid, hnested⟩ := exists_outward_spatialNeck_subsequence W D
+    hEnorm hsmall hsec hc q hmin hcores hescape
   have horder (n : ℕ) :
       closure ((D (phi 0)).lower 0) ⊆ (D (phi (n + 1))).lower 0 := by
     induction n with
@@ -77,8 +72,31 @@ theorem exists_scalarBounded_spatialNeck_subsequence
     have hpos := (W (phi 0)).scalar_pos
     linarith
   | succ n =>
-    exact (D (phi 0)).outward_scalar_le (D (phi (n + 1))) hEnorm hsmall hsec.toNonnegative
-      (hcores' (hphi (Nat.succ_pos n)).ne) (horder n)
+    exact (D (phi 0)).outward_scalar_le (D (phi (n + 1))) hEnorm hsmall hsec
+      (hcores (hphi (Nat.succ_pos n)).ne) (horder n)
+
+
+theorem exists_scalarBounded_spatialNeck_subsequence
+    {h : SmoothRiemannianMetric I N} {marks : ℕ → SpatialNeckSphere}
+    {centers : ℕ → N} {epsilon : ℝ}
+    (W : ∀ i : ℕ, SpatialNeckWitness h (marks i) (centers i) epsilon)
+    (hEnorm : IsMetricNorm (I := I) h)
+    (hsmall : epsilon ≤ spatialNeckControlEpsilon)
+    (hsec : DifferentialGeometry.Geometry.HasPositiveSectionalCurvature (I := I) h)
+    (hcores : Pairwise (fun i j : ℕ => Disjoint (W i).core (W j).core))
+    (hescape : Tendsto centers atTop (cocompact N)) :
+    ∃ phi : ℕ → ℕ, StrictMono phi ∧ ∀ n : ℕ,
+      metricScalarAt (I := I) h (centers (phi n)) ≤
+        144 * metricScalarAt (I := I) h (centers (phi 0)) := by
+  classical
+  choose W' _hchoice _hsphere hcore _himage hside using
+    fun i : ℕ => (W i).exists_ordered_compact_end_sides hsec
+  let D : ∀ i : ℕ, SpatialNeckSideData (W' i) := fun i => Classical.choice (hside i)
+  have hcores' : Pairwise (fun i j : ℕ => Disjoint (W' i).core (W' j).core) := by
+    intro i j hij
+    simpa only [hcore i, hcore j] using hcores hij
+  exact SpatialNeckSideData.exists_scalar_bounded_subsequence W' D hEnorm hsmall
+    hsec.toNonnegative hcores' hescape
 
 theorem not_tendsto_scalar_of_disjoint_escaping_necks
     {h : SmoothRiemannianMetric I N} {marks : ℕ → SpatialNeckSphere}
