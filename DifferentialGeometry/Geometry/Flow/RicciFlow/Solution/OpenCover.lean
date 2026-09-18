@@ -1,3 +1,5 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Congruence
+import DifferentialGeometry.Geometry.Metric.Family.TimeGluing
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Solutions.OpenRestriction
 import DifferentialGeometry.Geometry.Metric.Family.OpenCover
 import DifferentialGeometry.Topology.OpenCover.ProductContinuity
@@ -70,6 +72,27 @@ theorem isSolutionOn_of_open_cover
     exact (metricRm04_restrictOpen_eval (g t) (U i) x slots).trans (by
       simp only [mfderiv_subtype_val_apply]
       rfl)
+
+theorem exists_solution_of_compatible_open_cover
+    {D : RealTimeInterval} {ι : Type*} (U : ι → Opens M)
+    (hcover : ∀ x : M, ∃ i, x ∈ U i)
+    (g : ∀ i, ℝ → SmoothRiemannianMetric I (U i))
+    (hg : ∀ i, IsSolutionOn ({ base.metric := g i } : SolutionOn (I := I) (M := U i) D))
+    (hcompat : ∀ i j t, t ∈ D.carrier →
+      (g i t).restrictOpenOfSubset (inf_le_left : U i ⊓ U j ≤ U i) =
+        (g j t).restrictOpenOfSubset (inf_le_right : U i ⊓ U j ≤ U j)) :
+    ∃ G : ℝ → SmoothRiemannianMetric I M,
+      IsSolutionOn ({ base.metric := G } : SolutionOn (I := I) (M := M) D) ∧
+      ∀ i t, t ∈ D.carrier → (G t).restrictOpen (U i) = g i t := by
+  obtain ⟨G, hG⟩ := DifferentialGeometry.Geometry.Metric.exists_metric_family_of_compatible_open_covers U
+    (fun _ => D.carrier) D.carrier ⟨D.initial, D.initial_mem⟩ g
+    (fun t ht x => by
+      obtain ⟨i, hi⟩ := hcover x
+      exact ⟨i, ht, hi⟩)
+    (fun i j t ht _ _ => hcompat i j t ht)
+  refine ⟨G, isSolutionOn_of_open_cover G U hcover (fun i => ?_),
+    fun i t ht => hG i t ht ht⟩
+  exact (hg i).congr_metric (fun t ht => (hG i t ht ht).symm)
 
 end DifferentialGeometry.PDE.RicciFlow
 end

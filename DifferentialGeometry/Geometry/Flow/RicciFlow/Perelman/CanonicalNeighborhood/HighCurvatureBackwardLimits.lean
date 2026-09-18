@@ -80,27 +80,12 @@ private theorem exists_highCurvatureFlowSequence_local_pullbacks
             (P.maps.partialDiffeomorph (i + N) y)
             (mfderiv I3 I3 (P.maps.partialDiffeomorph (i + N)) y v)
             (mfderiv I3 I3 (P.maps.partialDiffeomorph (i + N)) y w) := by
-    let f := P.maps.partialDiffeomorph (i + N)
-    let V : TopologicalSpace.Opens (X.term (P.subseq (i + N))).M :=
-      ⟨f '' (U : Set P.limit.M), image_opens_isOpen f (hsource i)⟩
-    let _ : SigmaCompactSpace V := isSigmaCompact_iff_sigmaCompactSpace.mp
-      (DifferentialGeometry.Geometry.isSigmaCompact_of_isOpen I3 V.isOpen)
-    let e : U ≃ₘ⟮I3, I3⟯ V := PartialDiffeomorph.toOpensDiffeo f (hsource i)
-    let F := solutionOnPullback
-      (solutionOnRestrictOpen (X.term (P.subseq (i + N))).S V) e
-    have hF : IsSolutionOn F := isSolutionOn_pullback _
-      (isSolutionOn_restrictOpen _ (X.term (P.subseq (i + N))).isSolution V) e
-    refine ⟨F.timeRestrict D,
-      isSolutionOn_timeRestrict hF (hN (i + N) (by omega)).1.1.1
-        (hN (i + N) (by omega)).1.1.2, ?_⟩
-    intro s y v w
-    change (Diffeomorph.pullbackMetric
-      (((X.term (P.subseq (i + N))).S.base.metric s).restrictOpen V) e).inner y v w = _
-    rw [Diffeomorph.pullbackMetric_inner, SmoothRiemannianMetric.restrictOpen_inner]
-    exact congrArg₂
-      (fun v' w' => ((X.term (P.subseq (i + N))).S.base.metric s).inner (f y) v' w')
-      (PartialDiffeomorph.mfderiv_toOpensDiffeo f (hsource i) y v)
-      (PartialDiffeomorph.mfderiv_toOpensDiffeo f (hsource i) y w)
+    obtain ⟨S', hS', hmetric⟩ := KappaSolutions.exists_local_solution_of_partialDiffeomorph
+      (X.term (P.subseq (i + N))).S (X.term (P.subseq (i + N))).isSolution
+      (P.maps.partialDiffeomorph (i + N)) U (hsource i)
+    exact ⟨S'.timeRestrict D, isSolutionOn_timeRestrict hS'
+      (hN (i + N) (by omega)).1.1.1
+        (hN (i + N) (by omega)).1.1.2, hmetric⟩
   choose F hF hmetric using hpull
   refine ⟨N, F, hF, hsource, hmetric, ?_, ?_⟩
   · exact metricCInfConvergenceOnCompacts_of_pointed_pullback
