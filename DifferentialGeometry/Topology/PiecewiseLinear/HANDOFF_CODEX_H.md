@@ -1944,3 +1944,51 @@ M1 只给"PL 同胚于一个锥"，不给"是一个锥"，所以绕不过去。
   不依赖任何尚不存在的细分引理。
 
 两条都**未开始，不报区间**。第 3、4 步同样未开始，因此还没有能告诉 F 的输出形状。
+
+## 25. 2026-09-18 路线 B — done：`IsPLBallPair` 的子链改成集合层
+
+### 改动
+
+定义里 `J : SimplicialComplex` ＋ `J.faces ⊆ L.faces` 换成 `X : Set E` ＋ `X ⊆ L.space`：
+
+    IsPLBallPair m k P Q := ∃ p L (_ : IsConeBase p L) f (X : Set E),
+      L.faces.Finite ∧ X ⊆ L.space ∧ IsPLSphere m L.space ∧ IsPLBall k Q ∧
+      IsPLHomeomorphOn f (coneSet p L.space) P ∧ f '' coneSet p X = Q
+
+**依据**（协调者要求以此形式记录）：查了 `hJL` 在 `BallPair.lean` 里的全部三处用法，
+两处（`IsPLBallPair.subset`、`of_isPLHomeomorphOn`）只用到 `J.space ⊆ L.space`，
+第三处 `isPLBallPair_coneSet_of_isPLSphere` 是**生产者**，是面包含的唯一消费者。
+**定义携带一个只有某个生产者需要的条件，不是更强的定义，而是假设放错了位置**，并且会挡住下游构造。
+本次会话第三次同类：第 15 节的锥形式、第 23 节分离定理多带的 `ℓ a < r`、以及这条。
+三者是同一课的三个角度：**假设要放在用到它的地方，不是放在写起来顺手的地方。**
+
+- `isPLBallPair_coneSet` 现在是集合层的原语（`{X : Set E} (hXL : X ⊆ L.space)`）；
+  `isPLBallPair_coneSet_of_isPLSphere` 保持原签名，内部用
+  `space_mono_of_faces_subset hJL` 转成集合包含。因此
+  `isPLBallPair_coneSet_arc`、`isPLBallPair_convexHull_of_mem_openSimplex`、
+  `exists_isPLHomeomorphOn_coneSet_pair(_of_disk_marked)`、`exists_isPLHomeomorphOn_of_isPLSphere_pair`
+  **签名全部不变**，下游零改动。
+- 副产品：`isPLBallPair_convexHull_singleton_of_mem_openSimplex` 不再需要空复形 `⊥`
+  与 `space_bot`，直接取 `X := (∅ : Set E)`，`Set.empty_subset` 加 `coneSet_empty` 即可。
+  第 17 节记的"空复形"那条依赖消失了。
+
+五个模块全部 exit=0、零 warning：`BallPair`（8.6 秒）、`BallPairModel`（14.6 秒）、
+`BallPairSimplex`（10.2 秒）、`BallPairTwoSimplices`（11.0 秒）、`ConeDiskPairExtension`（10.8 秒）。
+`.lake/scratch/AuditHRouteB.lean` 十项仅 `propext`、`Classical.choice`、`Quot.sound`。
+
+### 路线 A 的缺口（留给可能需要星形细分的车道）
+
+路线 A（细分链）数学上更好，但缺一条：树里**有** `StellarSphere.lean:144 stellarComplex`
+与 `:159 stellarComplex_space`（细分后空间等于 `simplexBoundary (T.erase a)` 的空间，
+且 `c ∈ openSimplex (T \ σ₀)` 成为顶点），**没有**
+`IsSubdivision (stellarComplex …) (simplexBoundary …)`（已 grep 确认）。
+`ConeBase.lean:56 IsConeBase.of_isSubdivision` 正等着它。
+**这一条是本树与"一般星形细分论证"之间唯一的距离**，别的车道若要用星形细分，先补它。
+
+### 组装还缺的一件（未开始，不报区间）
+
+弱化之后 `C₁` 那一对的子链可以取集合 `{v, z}`（不必是顶点），但还需要
+`IsPLBall 1 (coneSet p {v, z})` 的证书。现成路线：`{v,z}` 恰是 `simplexBoundary {v,z}` 的空间
+（二元 `Finset` 的边界面就是两个顶点），于是 `isPLBallPair_coneSet_of_isPLSphere` 可用，
+但要 `IsConeBase p (simplexBoundary {v,z})`，这需要 `p`、`v`、`z` **不共线**——
+是构型上的真非退化条件，拼装时必须显式给出，不能省。

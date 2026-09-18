@@ -35,13 +35,11 @@ theorem isPLBallPair_convexHull_singleton_of_mem_openSimplex {n : ℕ} {T : Fins
   have hsph : IsPLSphere n (simplexBoundary T hT).space := by
     rw [simplexBoundary_space T hT h2]
     exact isPLSphere_biUnion_erase T hT hcard
-  have hbotspace : (⊥ : Geometry.SimplicialComplex ℝ E).space = ∅ :=
-    Geometry.SimplicialComplex.space_bot
-  have hball : IsPLBall 0 (coneSet p (⊥ : Geometry.SimplicialComplex ℝ E).space) := by
-    rw [hbotspace, coneSet_empty]
+  have hball : IsPLBall 0 (coneSet p (∅ : Set E)) := by
+    rw [coneSet_empty]
     exact isPLBall_zero_singleton p
-  have hpair := isPLBallPair_coneSet hL bot_le hsph hball
-  rwa [hbotspace, coneSet_empty, ← coneComplex_space_eq_coneSet hL,
+  have hpair := isPLBallPair_coneSet hL (Set.empty_subset _) hsph hball
+  rwa [coneSet_empty, ← coneComplex_space_eq_coneSet hL,
     coneComplex_simplexBoundary_space hT h2 hp] at hpair
 
 omit [FiniteDimensional ℝ E] in
