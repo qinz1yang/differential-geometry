@@ -45,33 +45,19 @@ theorem isPLBallPair_convexHull_singleton_of_mem_openSimplex {n : ℕ} {T : Fins
     coneComplex_simplexBoundary_space hT h2 hp] at hpair
 
 omit [FiniteDimensional ℝ E] in
-theorem convexHull_insert_inter_convexHull_insert_of_separating [DecidableEq E] {F : Finset E}
-    {a b : E} {r : ℝ} (ℓ : E →ₗ[ℝ] ℝ) (hF : ∀ v ∈ F, ℓ v = r) (ha : ℓ a < r) (hb : r < ℓ b) :
-    convexHull ℝ ((insert a F : Finset E) : Set E) ∩
-        convexHull ℝ ((insert b F : Finset E) : Set E) = convexHull ℝ (F : Set E) := by
-  have haF : a ∉ F := fun h => absurd (hF a h) (ne_of_lt ha)
-  have hFzero : convexHull ℝ (F : Set E) ⊆ {x : E | ℓ x = r} :=
+theorem convexHull_insert_inter_hyperplane [DecidableEq E] {F : Finset E} {a : E} {r : ℝ}
+    (ℓ : E →ₗ[ℝ] ℝ) (hF : ∀ v ∈ F, ℓ v = r) (ha : ℓ a ≠ r) :
+    convexHull ℝ ((insert a F : Finset E) : Set E) ∩ {x : E | ℓ x = r} =
+      convexHull ℝ (F : Set E) := by
+  have haF : a ∉ F := fun h => ha (hF a h)
+  have hFr : convexHull ℝ (F : Set E) ⊆ {x : E | ℓ x = r} :=
     convexHull_min (fun v hv => hF v hv) (convex_hyperplane ℓ.isLinear r)
-  have hAle : convexHull ℝ ((insert a F : Finset E) : Set E) ⊆ {x : E | ℓ x ≤ r} := by
-    refine convexHull_min ?_ (convex_halfSpace_le ℓ.isLinear r)
-    intro v hv
-    rw [Finset.coe_insert, Set.mem_insert_iff] at hv
-    rcases hv with rfl | hv
-    · exact ha.le
-    · exact (hF v hv).le
-  have hBge : convexHull ℝ ((insert b F : Finset E) : Set E) ⊆ {x : E | r ≤ ℓ x} := by
-    refine convexHull_min ?_ (convex_halfSpace_ge ℓ.isLinear r)
-    intro v hv
-    rw [Finset.coe_insert, Set.mem_insert_iff] at hv
-    rcases hv with rfl | hv
-    · exact hb.le
-    · exact (hF v hv).ge
   apply Subset.antisymm
-  · rintro x ⟨hxa, hxb⟩
-    have hx0 : ℓ x = r := le_antisymm (hAle hxa) (hBge hxb)
+  · rintro x ⟨hxa, hx0⟩
+    simp only [Set.mem_ofPred_eq] at hx0
     rcases exists_combo_of_mem_convexHull_insert haF hxa with rfl | ⟨z, hz, s, hs, hs1, rfl⟩
-    · exact absurd hx0 (ne_of_lt ha)
-    · have hz0 : ℓ z = r := hFzero hz
+    · exact absurd hx0 ha
+    · have hz0 : ℓ z = r := hFr hz
       have hval : ℓ (a + s • (z - a)) = (1 - s) * ℓ a + s * r := by
         rw [map_add, map_smul, map_sub, hz0, smul_eq_mul]
         ring
@@ -82,7 +68,42 @@ theorem convexHull_insert_inter_convexHull_insert_of_separating [DecidableEq E] 
         subst hs'
         rw [one_smul, add_sub_cancel]
         exact hz
-      · exact absurd (by linarith : ℓ a = r) (ne_of_lt ha)
+      · exact absurd (by linarith : ℓ a = r) ha
+  · exact subset_inter (convexHull_mono (Finset.coe_subset.mpr (Finset.subset_insert a F))) hFr
+
+omit [FiniteDimensional ℝ E] in
+theorem convexHull_insert_subset_halfSpace_le [DecidableEq E] {F : Finset E} {a : E} {r : ℝ}
+    (ℓ : E →ₗ[ℝ] ℝ) (hF : ∀ v ∈ F, ℓ v = r) (ha : ℓ a ≤ r) :
+    convexHull ℝ ((insert a F : Finset E) : Set E) ⊆ {x : E | ℓ x ≤ r} := by
+  refine convexHull_min ?_ (convex_halfSpace_le ℓ.isLinear r)
+  intro v hv
+  rw [Finset.coe_insert, Set.mem_insert_iff] at hv
+  rcases hv with rfl | hv
+  · exact ha
+  · exact (hF v hv).le
+
+omit [FiniteDimensional ℝ E] in
+theorem convexHull_insert_subset_halfSpace_ge [DecidableEq E] {F : Finset E} {b : E} {r : ℝ}
+    (ℓ : E →ₗ[ℝ] ℝ) (hF : ∀ v ∈ F, ℓ v = r) (hb : r ≤ ℓ b) :
+    convexHull ℝ ((insert b F : Finset E) : Set E) ⊆ {x : E | r ≤ ℓ x} := by
+  refine convexHull_min ?_ (convex_halfSpace_ge ℓ.isLinear r)
+  intro v hv
+  rw [Finset.coe_insert, Set.mem_insert_iff] at hv
+  rcases hv with rfl | hv
+  · exact hb
+  · exact (hF v hv).ge
+
+omit [FiniteDimensional ℝ E] in
+theorem convexHull_insert_inter_convexHull_insert_of_separating [DecidableEq E] {F : Finset E}
+    {a b : E} {r : ℝ} (ℓ : E →ₗ[ℝ] ℝ) (hF : ∀ v ∈ F, ℓ v = r) (ha : ℓ a < r) (hb : r < ℓ b) :
+    convexHull ℝ ((insert a F : Finset E) : Set E) ∩
+        convexHull ℝ ((insert b F : Finset E) : Set E) = convexHull ℝ (F : Set E) := by
+  apply Subset.antisymm
+  · rintro x ⟨hxa, hxb⟩
+    have hx0 : ℓ x = r :=
+      le_antisymm (convexHull_insert_subset_halfSpace_le ℓ hF ha.le hxa)
+        (convexHull_insert_subset_halfSpace_ge ℓ hF hb.le hxb)
+    exact (convexHull_insert_inter_hyperplane ℓ hF (ne_of_lt ha)).subset ⟨hxa, hx0⟩
   · exact subset_inter (convexHull_mono (Finset.coe_subset.mpr (Finset.subset_insert a F)))
       (convexHull_mono (Finset.coe_subset.mpr (Finset.subset_insert b F)))
 
