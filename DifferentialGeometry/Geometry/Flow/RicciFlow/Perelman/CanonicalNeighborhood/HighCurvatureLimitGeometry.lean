@@ -1,8 +1,10 @@
 import DifferentialGeometry.Geometry.Metric.Product.ScalarCurvature
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.HighCurvatureSequenceEstimates
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.HighCurvatureLimitConvergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.PointedPinchingLimit
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.OpenPullback
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.MetricComparison
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.ScalarBlowup
 
 set_option autoImplicit false
 noncomputable section
@@ -25,6 +27,39 @@ attribute [local instance] PointedFlowData.topology PointedFlowData.charted
 
 variable {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
   [IsManifold I3 ∞ M] [T2Space M] [CompactSpace M]
+
+theorem highCurvatureFlowSequence_sectional_nonnegative_of_metric_convergence
+    {T : ℝ} (hT : 0 < T)
+    (S : SolutionOn (I := I3) (M := M) (RealTimeInterval.closedOpen 0 T hT))
+    (hS : IsSolutionOn S) (x : ℕ → M) (t : ℕ → ℝ)
+    (htmem : ∀ i, t i ∈ Ico (0 : ℝ) T) (htpos : ∀ i, 0 < t i)
+    (hpos : ∀ i, 0 < S.scalar (t i) (x i))
+    (hscalar : Tendsto (fun i => S.scalar (t i) (x i)) atTop atTop)
+    (s : ℝ) (f : ℕ → ℕ) (hf : Tendsto f atTop atTop)
+    (L : PointedRiemannianManifold.{u, 0, 0} (I := I3))
+    (Psi : PointedRiemannianConvergenceMaps
+      ((highCurvatureFlowSequence hT S hS x t htmem htpos hpos).atTime s) L f)
+    (C : MetricConvergenceData Psi)
+    (hcanonical : ∀ i, C.domain i = CanonicalMetricCompactness.canonicalSourceData Psi i)
+    (htime : ∀ᶠ i in atTop, s ∈
+      ((highCurvatureFlowSequence hT S hS x t htmem htpos hpos).interval (f i)).carrier) :
+    ∀ (y : L.M) (v w : TangentSpace I3 y),
+      0 ≤ metricRm04StandardAt L.metric y v w w v := by
+  let X := highCurvatureFlowSequence hT S hS x t htmem htpos hpos
+  have hdim : Module.finrank ℝ ThreeSpace = 3 := by simp [ThreeSpace]
+  obtain ⟨Phi, hPhi, hpinching⟩ :=
+    exists_admissiblePinchingFunction_phiAlmostNonnegative_closedOpen hT S hS hdim
+  have hpin : ∀ᶠ i in atTop, ∀ y : (X.term (f i)).M,
+      curvatureOperatorLowerBoundAt ((X.term (f i)).S.base.metric s) y
+        (metricAlgebraicCurvatureTensorAt ((X.term (f i)).S.base.metric s) y)
+        (rescalePinchingFunction (S.scalar (t (f i)) (x (f i))) Phi
+          (metricScalarAt ((X.term (f i)).S.base.metric s) y)) := by
+    filter_upwards [htime] with i hi
+    intro y
+    exact phiAlmostNonnegative_paraSolution S (hpos (f i)) (htmem (f i)) hpinching s
+      (highCurvatureInterval_carrier_subset hT S x t htpos hpos htmem (f i) hi) y
+  exact sectional_nonnegative_of_pointed_admissible_pinching_eventually
+    C hcanonical hPhi (fun i => S.scalar (t i) (x i)) hpos (hscalar.comp hf) hpin
 
 theorem highCurvatureFlowSequence_pullback_limit_curvature
     {T theta : ℝ} (hT : 0 < T)
@@ -74,20 +109,8 @@ theorem highCurvatureFlowSequence_pullback_limit_curvature
       hT S x t htpos hpos htheta htlower hscalar (-s)
     filter_upwards [hf.eventually hw] with i hi
     exact hi.1 ⟨by simp, hs⟩
-  have hdim : Module.finrank ℝ ThreeSpace = 3 := by simp [ThreeSpace]
-  obtain ⟨Phi, hPhi, hpinching⟩ :=
-    exists_admissiblePinchingFunction_phiAlmostNonnegative_closedOpen hT S hS hdim
-  have hpin : ∀ᶠ i in atTop, ∀ y : (X.term (f i)).M,
-      curvatureOperatorLowerBoundAt ((X.term (f i)).S.base.metric s) y
-        (metricAlgebraicCurvatureTensorAt ((X.term (f i)).S.base.metric s) y)
-        (rescalePinchingFunction (S.scalar (t (f i)) (x (f i))) Phi
-          (metricScalarAt ((X.term (f i)).S.base.metric s) y)) := by
-    filter_upwards [htime] with i hi
-    intro y
-    exact phiAlmostNonnegative_paraSolution S (hpos (f i)) (htmem (f i)) hpinching s
-      (highCurvatureInterval_carrier_subset hT S x t htpos hpos htmem (f i) hi) y
-  have hsec := sectional_nonnegative_of_pointed_admissible_pinching_eventually
-    C hcanonical hPhi (fun i => S.scalar (t i) (x i)) hpos (hscalar.comp hf) hpin
+  have hsec := highCurvatureFlowSequence_sectional_nonnegative_of_metric_convergence
+    hT S hS x t htmem htpos hpos hscalar s f hf _ Psi C hcanonical htime
   refine ⟨hsec, fun y => ⟨?_, ?_⟩⟩
   · classical
     obtain ⟨b, hb⟩ := Tensor0SBundle.exists_orthonormal_basis g y
@@ -98,6 +121,78 @@ theorem highCurvatureFlowSequence_pullback_limit_curvature
     filter_upwards [htime] with i hi
     exact highCurvatureFlowSequence_scalar_le_one_of_pastMaximum
       hT S hS x t htmem htpos hpos hmax (f i) s hi (Psi.map i y)
+
+theorem highCurvatureFlowSequence_ancient_limit_nonnegative_complete
+    {T : ℝ} (hT : 0 < T)
+    (S : SolutionOn (I := I3) (M := M) (RealTimeInterval.closedOpen 0 T hT))
+    (hS : IsSolutionOn S) (x : ℕ → M) (t : ℕ → ℝ)
+    (htmem : ∀ i, t i ∈ Ico (0 : ℝ) T) (htpos : ∀ i, 0 < t i)
+    (hpos : ∀ i, 0 < S.scalar (t i) (x i))
+    (hscalar : Tendsto (fun i => S.scalar (t i) (x i)) atTop atTop)
+    (P : MetricCompactLimit
+      ((highCurvatureFlowSequence hT S hS x t htmem htpos hpos).atTime 0))
+    (N : ℕ → ℕ)
+    (F : ∀ n, ℕ → ℝ → SmoothRiemannianMetric I3 (metricSourceOpenSubset P.maps n))
+    (hsource : ∀ n i, (metricSourceOpenSubset P.maps n : Set P.limit.M) ⊆
+      (P.maps.partialDiffeomorph (i + N n)).source)
+    (hmetric : ∀ n i s (y : metricSourceOpenSubset P.maps n) (v w : TangentSpace I3 y),
+      (F n i s).inner y v w =
+        (((highCurvatureFlowSequence hT S hS x t htmem htpos hpos).term
+          (P.subseq (i + N n))).S.base.metric s).inner
+          (P.maps.partialDiffeomorph (i + N n) y)
+          (mfderiv I3 I3 (P.maps.partialDiffeomorph (i + N n)) y v)
+          (mfderiv I3 I3 (P.maps.partialDiffeomorph (i + N n)) y w))
+    (rho : ℕ → ℕ) (hrho : StrictMono rho)
+    (G : ℝ → SmoothRiemannianMetric I3 P.limit.M)
+    (hG0 : G 0 = P.limit.metric)
+    (hGsol : IsSolutionOn ({ base.metric := G } : SolutionOn (I := I3) (M := P.limit.M)
+      (RealTimeInterval.infiniteClosed 0 0 le_rfl)))
+    (hconv : ∀ n, ∀ K : Set (metricSourceOpenSubset P.maps n), IsCompact K →
+      ∀ p : ℕ, ∀ epsilon : ℝ, 0 < epsilon → ∃ j : ℕ, ∀ i ≥ j,
+        ∀ s ∈ Icc (-((n + 1 : ℕ) : ℝ)) 0,
+          metricDerivNormSupOn K p (F n (rho i - N n) s)
+            ((G s).restrictOpen (metricSourceOpenSubset P.maps n))
+            (P.limit.metric.restrictOpen (metricSourceOpenSubset P.maps n)) < epsilon) :
+    ∀ s ≤ 0,
+      (∀ (y : P.limit.M) (v w : TangentSpace I3 y),
+        0 ≤ metricRm04StandardAt (G s) y v w w v) ∧
+      RiemannianMetricComplete (G s) := by
+  let X := highCurvatureFlowSequence hT S hS x t htmem htpos hpos
+  have htlower : ∀ᶠ i in atTop, T / 2 ≤ t i :=
+    (hS.eventually_lt_time_of_scalar_tendsto_atTop
+      (Eventually.of_forall htmem) hscalar (half_lt_self hT)).mono fun _ hi => hi.le
+  have hf : Tendsto (P.subseq ∘ rho) atTop atTop :=
+    P.strictMono.tendsto_atTop.comp hrho.tendsto_atTop
+  have hsec : ∀ s ≤ 0, ∀ (y : P.limit.M) (v w : TangentSpace I3 y),
+      0 ≤ metricRm04StandardAt (G s) y v w w v := by
+    intro s hs
+    obtain ⟨Psi, _hPsi, C, hcanonical⟩ :=
+      highCurvatureFlowSequence_ancient_limit_pointed_convergence
+        hT S hS x t htmem htpos hpos P N F hsource hmetric rho hrho G hconv s hs
+    have hw := high_curvature_interval_eventually_contains_closed_window
+      hT S x t htpos hpos (half_pos hT) htlower hscalar (-s)
+    have htime : ∀ᶠ i in atTop, s ∈ (X.interval ((P.subseq ∘ rho) i)).carrier := by
+      filter_upwards [hf.eventually hw] with i hi
+      exact hi.1 ⟨by simp, hs⟩
+    exact highCurvatureFlowSequence_sectional_nonnegative_of_metric_convergence
+      hT S hS x t htmem htpos hpos hscalar s (P.subseq ∘ rho) hf
+      { P.limit with metric := G s } Psi C hcanonical htime
+  intro s hs
+  refine ⟨hsec s hs, ?_⟩
+  apply complete_at_earlier_time_of_ricci_nonnegative
+    ({ base.metric := G } : SolutionOn (I := I3) (M := P.limit.M)
+      (RealTimeInterval.infiniteClosed 0 0 le_rfl)) hGsol
+    (a := s) (b := 0) (fun _ ht => ht.2) (fun _ ht => ht.2)
+  · intro r hr y v
+    change 0 ≤ metricRicciAt (G r) y (vec2 v v)
+    rw [metricRicciAt_apply_eq_ricciTensor (I := I3) (G r) y v v]
+    exact DifferentialGeometry.Geometry.Riemannian.BonnetMyers.ricci_nonneg_of_sec
+      (G r) y ((metricRm04At_mem_tensor04SectionalNonnegativeCone_iff (G r) y).mpr
+        (hsec r hr.2.le y)) v
+  · change RiemannianMetricComplete (G 0)
+    rw [hG0]
+    exact ⟨P.limit_complete.complete⟩
+  · exact ⟨le_rfl, hs⟩
 
 theorem highCurvatureFlowSequence_ancient_limit_geometry
     {T theta : ℝ} (hT : 0 < T)
@@ -139,9 +234,8 @@ theorem highCurvatureFlowSequence_ancient_limit_geometry
       (∀ y : P.limit.M, metricScalarAt (G s) y ∈ Icc (0 : ℝ) 1) ∧
       RiemannianMetricComplete (G s) := by
   let U := metricSourceOpenSubset P.maps
-  have hcurv : ∀ s ≤ 0, ∀ y : P.limit.M,
-      (∀ v w : TangentSpace I3 y, 0 ≤ metricRm04StandardAt (G s) y v w w v) ∧
-        metricScalarAt (G s) y ∈ Icc (0 : ℝ) 1 := by
+  have hscalarLimit : ∀ s ≤ 0, ∀ y : P.limit.M,
+      metricScalarAt (G s) y ∈ Icc (0 : ℝ) 1 := by
     intro s hs y
     obtain ⟨ny, hny⟩ := P.maps.source_exhausts.subset {y} isCompact_singleton
     obtain ⟨nt, hnt⟩ := exists_nat_ge (-s)
@@ -158,29 +252,11 @@ theorem highCurvatureFlowSequence_ancient_limit_geometry
         intro K hK p epsilon hepsilon
         obtain ⟨j, hj⟩ := hconv n K hK p epsilon hepsilon
         exact ⟨j, fun i hi => hj i hi s hsn⟩)
-    constructor
-    · intro v w
-      have hc' := hc.1 (⟨y, hyn⟩ : U n) v w
-      rw [metricRm04StandardAt_restrictOpen (I := I3) (G s) (U n)
-        (⟨y, hyn⟩ : U n) v w w v, mfderiv_subtype_val (I := I3) (U n) (⟨y, hyn⟩ : U n)] at hc'
-      exact hc'
-    · simpa only [metricScalarAt_restrictOpen] using hc.2 (⟨y, hyn⟩ : U n)
-  intro s hs
-  refine ⟨fun y => (hcurv s hs y).1, fun y => (hcurv s hs y).2, ?_⟩
-  apply complete_at_earlier_time_of_ricci_nonnegative
-    ({ base.metric := G } : SolutionOn (I := I3) (M := P.limit.M)
-      (RealTimeInterval.infiniteClosed 0 0 le_rfl)) hGsol
-    (a := s) (b := 0) (fun _ ht => ht.2) (fun _ ht => ht.2)
-  · intro r hr y v
-    change 0 ≤ metricRicciAt (G r) y (vec2 v v)
-    rw [metricRicciAt_apply_eq_ricciTensor (I := I3) (G r) y v v]
-    exact DifferentialGeometry.Geometry.Riemannian.BonnetMyers.ricci_nonneg_of_sec
-      (G r) y ((metricRm04At_mem_tensor04SectionalNonnegativeCone_iff (G r) y).mpr
-        (hcurv r hr.2.le y).1) v
-  · change RiemannianMetricComplete (G 0)
-    rw [hG0]
-    exact ⟨P.limit_complete.complete⟩
-  · exact ⟨le_rfl, hs⟩
+    simpa only [metricScalarAt_restrictOpen] using hc.2 (⟨y, hyn⟩ : U n)
+  have hgeometry := highCurvatureFlowSequence_ancient_limit_nonnegative_complete
+    hT S hS x t htmem htpos hpos hscalar P N F hsource hmetric
+    rho hrho G hG0 hGsol hconv
+  exact fun s hs => ⟨(hgeometry s hs).1, hscalarLimit s hs, (hgeometry s hs).2⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
 

@@ -6767,6 +6767,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Soliton.Volume
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Basic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Components
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.CurvatureBounds
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.ScalarBlowup
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Defs
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Descent
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.IntervalTransport
