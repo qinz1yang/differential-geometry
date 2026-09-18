@@ -2336,3 +2336,60 @@ step 2 只做了 grep 与接口陈述，没有动工（月牙是一个项目，�
   `GluedCellInjectivity` 因 `SingularCrossingPrecomp` 变更重编 exit=0（11.2 秒）；
   `.lake/scratch/AuditE3LuneComplete.lean` 的 12 条 `#print axioms` 全部只含
   `propext`、`Classical.choice`、`Quot.sound`，无 `sorryAx`。
+
+## 74. 2026-09-18 E3-M3：构造 `D₂` 的搜索报告与确切构造计划（含一条检索纠错）
+
+状态：**未动工**，本节只交付搜索结果、构造形状与唯一缺口（按主人"先报告再建"的规矩）。
+无 Lean 改动。
+
+- **检索纠错（先记下）。** §66 我写过"`CutAndPaste.lean` 不存在"——**错了**，
+  它在 `LoopTheorem/CutAndPaste.lean`，64 条声明，含
+  `exists_two_cells_of_isCrosscut`、`exists_three_cells_of_two_disjoint_crosscuts` 等。
+  当时按名字在 `PiecewiseLinear/` 一层找，没往子目录找，属于"按词汇搜而不是按内容搜"。
+- **按内容搜的结果：平面一侧的工具**全部齐备，**`M` 里贴盘的定理一条也没有**。
+  - `DiskCrosscut.lean:99` `exists_isPLBall_pair_with_boundary_arcs_of_isCrosscut`：
+    平面 PL 2-球被一条 crosscut 切成两个 PL 2-球，并给出各自的边界弧。**纯平面**。
+  - `PolygonalSchoenflies.lean:774` `isPLSphere_one_union_of_isCrosscut`、
+    `:1288` `isPLBall_closure_inside_of_isPLSphere_one`（PL 1-球面的内部闭包是 PL 2-球）、
+    `:444` `isPLBall_union_of_isArcBetween`。
+  - `CellGluing.lean:278` 用的 **`isPLSphere_one_of_isCutPair`**：
+    **两条弧在两个端点粘起来就是 PL 1-球面**——正是造月牙区域的边界所需，已经有了。
+  - `CrosscutExtension / BoundaryDiskExtension / DiskCrosscutExtension`：都是
+    **PL 同胚的延拓**（把给定的割线/边界片延拓成整盘的同胚），不是"造一张新盘"。
+  - 产出 `SingularTwoCell` 的定理共 8 个文件，全部是**已有胞腔的改造**
+    （粘合、割开、领环延拓、double），没有一个从零构造一张贴在给定弧上的胞腔。
+- **确切构造计划（图卡坐标里，`hluneW` 与 `hD₂bd` 会自动成立）。**
+  在边界图卡里 `Bd M ↔ {p.1 = 0}`、`N ↔ {0 ≤ p.1}`，而 `slideMapFwd d R p = (p.1 + amount, p.2.1, p.2.2)`
+  **只动第一坐标**。于是对 `z ∈ closure W`，`e (E (g z)) = (a z, u z, v z)`，
+  其中 `(0, u z, v z) = e (E (D z))` 是原边界弧（落在 `{p.1 = 0}` 里），`a z = ` 滑移量 `≥ 0`。
+  月牙就是这条弧与它在 `{p.1 = 0}` 上的投影之间的"帘子"：
+  - **定义域**：`Λ := {(t₁, t₂) | t₂ ∈ Icc 0 1, 0 ≤ t₁ ≤ a (θ t₂)}`（`θ` 是 §63 的弧参数化）。
+    `frontier Λ` 是图像弧与底边线段，两条弧只在两个端点相交（因为 `a` 在弧端为零，§64 的位移判据），
+    所以 `IsCutPair` ⟹ `isPLSphere_one_of_isCutPair` ⟹ `IsPLSphere 1 (frontier Λ)`
+    ⟹ `isPLBall_closure_inside_of_isPLSphere_one` ⟹ `IsPLBall 2 Λ`。
+  - **映射**：`D₂ (t₁, t₂) := E.symm (e.symm (t₁, u (θ t₂), v (θ t₂)))`。
+    第一坐标是 `t₁` 本身（**线性**，不是 `t · a(z)`），所以**分片仿射**——
+    这正是 §60/§62 那个"乘积不是分片仿射"的障碍在这里不出现的原因：
+    把参数从"比例"换成"高度"，帘子就变成线性的了。
+  - `hD₂bd`：`t₁ = 0` 的那条边界弧的像落在 `{p.1 = 0}` 即 `Bd M` ✓（由定义）。
+  - `hD₂inj`：`(t₁, t₂) ↦ (t₁, u(θ t₂), v(θ t₂))` 单射 ⟸ `t₂ ↦ (u, v)` 单射
+    ⟸ `InjOn D (frontier D.domain ∩ P)`（由 `hinjP : InjOn D P` 得）✓。
+  - `hluneW`：像落在 `e.symm '' slideSupportLong R` 里 ⟸ `|u| + |v| ≤ 1`（弧在支撑里）
+    与 `|t₁| ≤ a ≤ R`（滑移量的上界）✓，再由 `K ⊆ U ⊆ W` ✓。
+  - **`hD₂disj` 是要盯的那条**（主人点名的）：月牙内部不碰旧胞腔的像。
+    在坐标里月牙是 `{(t, u(z), v(z)) : 0 < t < a(z)}`，而旧胞腔 `g '' D.domain` 在支撑里
+    的部分由 `hA` 落在 `slideBandA c = {p.2.2 = 0, |p.2.1| ≤ 1, p.1 ∈ Icc 0 c}` 里。
+    **若被推离弧不在 `{p.2.2 = 0}` 上，月牙内部与 `slideBandA c` 自动不交**；
+    但弧本身正是从 `D '' P` 推出来的，所以它**就在**那条带子里（`v ≡ 0`），
+    于是月牙落在 `{p.2.2 = 0}` 的那张平面里，与 `slideBandA c` **同平面**，`hD₂disj` 不是自动的。
+    这是构造里唯一真正需要几何论证的地方：要么把月牙沿 `p.2.2` 方向推离
+    （代价是它不再贴在弧上），要么用"滑移把 `D '' P` 推到 `p.1 ≥ amount`，
+    而月牙在 `p.1 < amount`"这类**严格不等式**论证。后者看起来对：
+    月牙的内部点高度 `t < a(z)`，而 `g '' D.domain` 在该纤维上的点高度恰是 `a(z)`（被滑移抬到那里）
+    ——但这需要"滑移后的胞腔在该纤维上只有一个点"，即 `InjOn D P` 加纤维分析。
+    **这条必须先在坐标里验证再写进去**，不能想当然。
+- **唯一缺的通用输入**：把 `Λ = closure (Schoenflies.inside (frontier Λ))` 与
+  显式的 `{(t₁,t₂) | 0 ≤ t₁ ≤ a (θ t₂)}` 认同，即"PA 正函数图像下方的区域就是该曲线的内部闭包"。
+  树里没有这条（`git grep "IsPLBall 2 ({" 等 44 处命中全是别的形状）。
+  它比直接造 `D₂` 小得多，而且是纯平面的，**建议下一轮先做它**。
+- 本节未动 Lean，按 `AGENTS.md` §1 的文档例外单独提交。
