@@ -3455,3 +3455,58 @@ import ...StarPair failed, environment already contains
 
 检查 `VertexChartTransport` exit=0（10.5 秒）、`VertexBranchInput` exit=0（11.6 秒），均零 warning；
 `AuditF276.lean` 四项仅 `propext`、`Classical.choice`、`Quot.sound`。下一审计文件 `AuditF277.lean`。
+
+### 19.134 单顶点定理已打包；**更正 §19.133 的契约位置**；链层需要 ZMod 2 相容选择
+
+**必须先更正一条我自己发给协调者、并已转给 H 的说法。**
+§19.133 写"契约是源侧两条：`(link N {p}).space ∩ M.space = {a, b}` 与 `link N {p}` 在 `M` 两侧有点"。
+**这条没有被证实。** 打包定理里契约实际落在**像侧**：
+`(link N₁ {φ p}).space ∩ {x | x.2.2 = (φ p).2.2} = {a₁, b₁}` 与像侧的两侧性。
+源侧 ⟹ 像侧的转换需要两步：
+(i) 用第一张图卡的 **iff** 形把 `{x.2.2 = 0}` 与 `M₁.space` 在小邻域上认同——这一步可做；
+(ii) 用 T1 的连接同胚把 `link N {p} ∩ M.space` 送到 `link N₁ {φ p} ∩ M₁.space`——
+**这一步是 §19.130 留下的未决问题**：转写的第一跳是
+`simplicialMap (link N' {p}) (radialProj p …)`，只在顶点处径向，面内是插值，
+所以"径向保锥"的论证不成立；我**没有**证明它为假，只是没有证明它为真。
+可能的修法是绕开那个单纯映射、直接用 `radialProj` 本身在两个交集上建双射
+（`M.space` 收缩成闭星之后是 `p` 处的锥），**未验证**。
+在此之前，**H 应按像侧契约准备**，即在 T1 交付的 `N₁` 上给两条；
+若 (ii) 后来落地，源侧形式再作为推论提供。抱歉给出过早的接口形状。
+
+**闭合：单顶点定理已打包成一条**（新模块 `VertexBranchChartPair.lean`）
+`exists_chart_two_sheets_of_transverse_vertex`：输入第一张片的几何数据
+（`hn`、`hM`、`hN`、`hpM`、`hpN`、`hK`、`ℓ`、`hℓ`、`hlinkM`、`hlinkN`、`hab`、`hlevel`、
+`hposM`、`hnegM`），产出转写后的配置 `(K₁, N₁, φ)` 与全部结构性条款
+（`Finite` 两条、`N₁.faces ⊆ K₁.faces`、`φ p = 0`、`{φ p} ∈ N₁.faces`、
+`K₁.space ∈ 𝓝 (φ p)`、`IsPLSphere 1 (link N₁ {φ p}).space`），
+再加一条蕴含：给了像侧两条契约就产出
+`IsPLHomeomorphOn Ψ U₀ V₀`、`Ψ p = 0` 与
+`∀ᶠ y in 𝓝 p, (y ∈ M.space → (Ψ y).2.1 = 0) ∧ (y ∈ N.space → (Ψ y).2.2 = 0)`。
+**H 现在只需实例化这一条**，不必再走五步。
+（顺带给 T1 的结论补上 `R.faces.Finite`，`image_closedStar_mem_nhds_of_isPLHomeomorphOn` 要它。）
+
+**链层的判定：仅有"相邻在公共连接上一致"不够，ZMod 2 侧选择会回来。**
+设相邻顶点 `p_i`、`p_{i+1}` 的图卡为 `Φ_i`、`Φ_{i+1}`。重叠上过渡映射
+`Φ_{i+1} ∘ Φ_i⁻¹` 是把 `{z = 0}` 与 `{y = 0}` 各自保住的 PL 同胚；
+在线性层，§19.120 的 `mapsTo_planes_iff_exists_coeff` 已经算清楚：这样的映射恰是三角形
+`(αx + βy + γz, δy, εz)`，而 **`δ`、`ε` 的正负是自由的**——
+`δ < 0` 翻转第一张片的两半，`ε < 0` 翻转第二张片的两半。
+于是每条重叠带一个 `ZMod 2 × ZMod 2` 的符号，沿分支弧走一圈的乘积就是一个单值性类；
+它非零时**不存在**统一的单张图卡。所以链层假设必须包含**相容的侧选择**，
+不能只要求连接一致。树里已有对应机器：`exists_sideChoice_of_chain`（`BranchSignChain.lean:13`），
+消费点在 `CocycleMonodromy.lean:197`。
+**结论：§45 的 ZMod 2 侧选择确实回来了，而且落在"图卡黏合"这一层，不只是 E3 最初放的位置。**
+
+**链层陈述所需的假设（供 H 的链归纳对照，尚未写成 Lean）**
+1. 有限顶点族 `p_i`，每个带一张本节的顶点图卡；
+2. 相邻图卡在公共连接上一致；
+3. **相容的侧选择**（第 2 条不蕴含它，见上）；
+4. **覆盖级条款**：每张 `Φ_i.source` 不碰第三张片——这是**族**的性质不是单张图卡的性质，
+   §19.115 里写成 `doublePointSet g D.domain = doublePointSet D D.domain \ S`，
+   必须作为族假设给出；
+5. `S ⊆ ⋃ Φ_i.source ⊆ W`。
+产出 `OpenPartialHomeomorph M (ℝ × ℝ × ℝ)`，两向 PL，两片分别进
+`{p.2.2 = 0}` 与 `{p.2.1 = 0}`。**不估行数。**
+
+检查 `VertexChartTransport` exit=0（10.1 秒）、`VertexBranchChartPair` exit=0（11.6 秒），均零 warning；
+`AuditF277.lean` 两项仅 `propext`、`Classical.choice`、`Quot.sound`。下一审计文件 `AuditF278.lean`。
