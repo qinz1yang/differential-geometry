@@ -5350,6 +5350,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborho
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CapChainCoOrientation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CapChainTransition
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CapCollarDepth
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CapCollarIsotopy
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CapRegionStructure
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ClosedBadPointSelection
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ClosedOpenPropagation
@@ -9025,6 +9026,7 @@ import DifferentialGeometry.Topology.Manifold.Collar.Rescaling
 import DifferentialGeometry.Topology.Manifold.Collar.SeamDiffeomorph
 import DifferentialGeometry.Topology.Manifold.CollarPartitionError
 import DifferentialGeometry.Topology.Manifold.CollarPartitionPatch
+import DifferentialGeometry.Topology.Manifold.CollarReparametrization
 import DifferentialGeometry.Topology.Manifold.CollarStep
 import DifferentialGeometry.Topology.Manifold.CollarStraighteningProducer
 import DifferentialGeometry.Topology.Manifold.CompactBicollar
@@ -9195,6 +9197,7 @@ import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Chart
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Composition
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Opens
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.SmoothInverse
+import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.SupportedExtension
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorphTrans
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Tangent
 import DifferentialGeometry.Topology.Manifold.PartitionDerivative
