@@ -8284,6 +8284,7 @@ import DifferentialGeometry.Topology.Connected.FiniteCollarOrder
 import DifferentialGeometry.Topology.Connected.FiniteEDistance
 import DifferentialGeometry.Topology.Connected.Frontier
 import DifferentialGeometry.Topology.Connected.FrontierCover
+import DifferentialGeometry.Topology.Connected.OpenPartialHomeomorph
 import DifferentialGeometry.Topology.Connected.RectangleComplement
 import DifferentialGeometry.Topology.Connected.SeparatingCollarStrip
 import DifferentialGeometry.Topology.Connected.TwoComponentPartition
