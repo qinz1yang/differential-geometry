@@ -3159,3 +3159,49 @@ import ...StarPair failed, environment already contains
 
 检查 `VertexChartTransport` exit=0（9.7 秒）、`VertexBranchInput` exit=0（11 秒），均零 warning；
 `AuditF270.lean` 三项仅 `propext`、`Classical.choice`、`Quot.sound`。下一审计文件 `AuditF271.lean`。
+
+### 19.128 第二次应用的入口已建好（假设可满足）；装配还缺连接同胚本身
+
+**本轮闭合：`exists_linearEquiv_normalForm_of_geometricLink_pair`**（`VertexBranchInput.lean`）
+它就是 §19.127 说的"正确入口"：收 `hlinkM`、`hab`、`hlevel`、`hpos`、`hneg` 四条连接层数据，
+**内部照旧用 `HeightSubdivision.lean:10` 消掉 `hside`**，结论与 §19.124 相同。
+关键技术点：细分后要把 `hab`/`hlevel` 从 `M` 搬到 `M₂`，用
+`exists_isPLHomeomorphOn_geometricLink_of_isSubdivision_preserving_height_sign` 的
+**第二个返回值 `hfeq`**（`= ℓ p` 的像等式，§19.124 里被我用 `-` 丢掉了），再走计数：
+`hf.bijOn.injOn.mono inter_subset_left` 给单射，`Set.InjOn.encard_image` 把
+`encard` 搬过去，`hlevel`、`Set.encard_pair hab` 化成 2，最后 `Set.encard_eq_two` 取回一对。
+`ℓ : E →L[ℝ] ℝ` 与 `ℓ.toLinearMap` 的形状差异统一用
+`simp only [ContinuousLinearMap.coe_coe] at hfeq hflt hfgt` 抹平。
+`_of_isPLSphere_link` 现在退化成它的推论（用 `hfiber` 造 `hab`/`hlevel`，用星→连接造 `hpos`/`hneg`），
+`_of_isCombinatorialManifold` 再退化成那个的推论。三层，无重复证明。
+
+**新入口的假设逐条判定（含可满足性，按 §19.127 的教训两种失效模式都查）**
+1. `hn : finrank ℝ E = 3` —— 几何输入；可满足。
+2. `[Finite K.faces] [Finite M.faces]` —— 构造性副产品；可满足。
+3. `hM : M.faces ⊆ K.faces` —— 几何输入（片是子复形）；可满足。
+4. `hp : {p} ∈ M.faces` —— 几何输入；可满足。
+5. `hK : K.space ∈ 𝓝 p` —— 几何输入（`p` 是 3-流形内点）；可满足。
+6. `hℓ : ℓ ≠ 0` —— 几何输入，**仍是平坦性限制**（第二张片必须是超平面）；可满足。
+7. `hlinkM : IsPLSphere 1 (link M {p}).space` —— 几何输入（`M` 在 `p` 处是曲面）；
+   **对圆盘状的片可满足**（闭星的连接就是圆）。
+8. `hab` + `hlevel : (link M {p}).space ∩ {x | ℓ x = ℓ p} = {a, b}` —— 几何输入
+   （连接圆与平面恰交于两点）。**这一条正是 §19.127 的修复**：
+   旧的 `hfiber` 要求**整片**的截线是闭曲线，对圆盘恒假；
+   新的只要求**连接圆**与平面交两点，圆盘状的片完全满足。可满足性已恢复。
+9. `hpos`/`hneg` —— 几何输入（片在平面两侧都有点）；§19.123 已证不能由计数推出；可满足。
+没有一条夹带结论（结论是 PL 图卡，假设都只谈连接与截面）。
+
+**装配的确切剩余义务（比 §19.127 更具体）**
+第二次应用要在像一侧给 `hab`/`hlevel`/`hpos`/`hneg`。源侧对应的几何陈述是
+`(link N {p}).space ∩ M.space = {a, b}`（分支的两个方向）与"`link N {p}` 在 `M` 两侧都有点"，
+两条都可满足。**但搬不过去**：§19.126 给转写加的那一条只输出
+`IsPLSphere n (link M {p}).space → IsPLSphere n (link M₁ {h p}).space`，
+即只交付**球面性质**，不交付**连接同胚本身**，而 `hab`/`hlevel` 是集合等式，必须有映射才能搬。
+所以下一块砖是把 §19.126 那条再加强一次：除球面性质外，把
+`IsGlueIso.geometricLink` 得到的连接同胚（以及它在 `link M' {p}` 上等于 `h` 这一点——
+`exists_isGlueIso_of_affineOn_faces` 的 `hsm` 分量，我在 `SimplicialPairImage` 里用 `-` 丢掉了）
+一并输出。**又是"包装丢掉自己内部已有的东西"那个形状**，和 §19.126 的常驻提醒同类，
+只不过这次丢的是我自己写的包装。**不估行数。**
+
+检查 `VertexBranchInput` exit=0（11.1 秒）、零 warning；`AuditF271.lean` 三项仅
+`propext`、`Classical.choice`、`Quot.sound`。下一审计文件 `AuditF272.lean`。
