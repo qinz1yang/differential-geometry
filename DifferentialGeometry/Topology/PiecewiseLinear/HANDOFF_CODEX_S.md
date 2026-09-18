@@ -5077,3 +5077,66 @@ longer produce kernel-checkable certificates -- `omega` fails with
 `id (Eq.refl true)` against a `decide (... .isImpossible = true) = true` goal --
 so all `decide` lemmas must stay above it. Keep the same layout in
 `MobiusSquare.lean`.
+
+## Planar square geometry delivered (2026-09-18)
+
+`MobiusSquare.lean` now supplies the first geometric layer of (B-model), with
+11 public and 4 private declarations. Its only library import is the existing
+`TriangleCoordinates.lean`; no manifold or orientation assumptions enter this
+planar layer. The leaf is registered in the flat `DifferentialGeometry.lean`.
+The required Apache header and concise module docstring follow the owner's
+current header-linter override; there are no inline or declaration comments.
+
+The concrete vertices are `mobiusSquareVertex : Fin 7 -> real plane`, in precisely
+the order W0 through W6 specified above. `mobiusSquareTriangleVertex i j` is
+W(i+j), for `i : Fin 5` and `j : Fin 3`, with ordinary natural addition before
+constructing the `Fin 7` index. In particular, these are not cyclic square
+indices. `mobiusSquareTriangle i` is the convex hull of that indexed triple.
+
+Closed endpoints:
+
+- `mobiusSquareTriangleVertex_affineIndependent`: all five triples are affinely
+  independent over the reals.
+- `mem_mobiusSquareTriangle_zero_iff` through
+  `mem_mobiusSquareTriangle_four_iff`: exact membership by three affine
+  inequalities, with equality included.
+- `mobiusSquareTriangle_subset_square`: each triangle lies in the closed square.
+- `iUnion_mobiusSquareTriangle`: the union over `Fin 5` is exactly
+  `Icc 0 1 product Icc 0 1`.
+
+Writing a point as `(x,y)`, the five membership descriptions are, respectively:
+
+| Triangle | Exact inequalities |
+| --- | --- |
+| 0 | `0 <= x`, `0 <= y`, `x + 4y <= 1` |
+| 1 | `x <= 1`, `1 <= x + 4y`, `4y <= x + 1` |
+| 2 | `0 <= x`, `x + 1 <= 4y`, `x + 4y <= 3` |
+| 3 | `x <= 1`, `3 <= x + 4y`, `4y <= x + 3` |
+| 4 | `0 <= x`, `y <= 1`, `x + 3 <= 4y` |
+
+The coordinate proof reuses `triangleAffineMap_image` and explicit inverse
+coordinates, then partitions the square along the four internal diagonal edges.
+All inequalities are non-strict, so the common edges, their endpoints, and all
+four outer corners are included. The bottom side belongs to triangle 0 and the
+top side to triangle 4; no endpoint is discarded by an open-interval argument.
+
+Verification: the named leaf was compiled to the shared E-library with one Lean
+worker, `weak.linter.mathlibStandardSet=true`, and explicit `style.header=true`
+and `style.longLine=true`, after root registration. Exit 0; zero errors, warnings,
+or informational diagnostics. An external temporary audit re-elaborated the
+source, audited all 15 local declarations and 4 canonical dependency declarations
+with `Lean.collectAxioms`, and ran the applicable environment linters returned by
+`getChecks true none none`, excluding only `docBlame` and `docBlameThm`. Exit 0,
+no diagnostics; each axiom list is a subset of `propext`, `Classical.choice`,
+`Quot.sound`. `git diff --check` passed. The shared import artifacts can be mixed
+between worktrees: this is a checked local leaf, not certification of the whole
+S dependency tree or a fresh root build. The integration owner retains the final
+full-root build gate.
+
+Still open: the ten pairwise triangle intersection formulas; the affine charts
+from `mobiusTri` to these triangles; compatibility across the three wrap pairs;
+the bijective piecewise-affine model map for the flip-glued square; the variable
+arc tube in the reversing mapping torus; and the orientability bridge. None of
+these follows merely from square coverage, and no embedding bridge is claimed.
+The five membership equivalences give exact linear constraints for the next
+intersection proofs.

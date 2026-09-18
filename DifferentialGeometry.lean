@@ -8274,6 +8274,7 @@ import DifferentialGeometry.Topology.PartitionOfUnity.Locality
 import DifferentialGeometry.Topology.PiecewiseLinear.ArcChainCells
 import DifferentialGeometry.Topology.PiecewiseLinear.BallPairRelativeGluing
 import DifferentialGeometry.Topology.PiecewiseLinear.ConeDiskPairExtension
+import DifferentialGeometry.Topology.PiecewiseLinear.MobiusSquare
 import DifferentialGeometry.Topology.PiecewiseLinear.MoiseChain
 import DifferentialGeometry.Topology.PlanarJordan.AmbientExtension
 import DifferentialGeometry.Topology.PlanarJordan.ArcAndSegment
