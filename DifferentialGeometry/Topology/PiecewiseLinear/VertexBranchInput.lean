@@ -7,19 +7,18 @@ namespace DifferentialGeometry.Topology.PiecewiseLinear
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
 
-theorem exists_linearEquiv_normalForm_of_isPLSphere_link [DecidableEq E]
+theorem exists_linearEquiv_normalForm_of_geometricLink_pair [DecidableEq E]
     (hn : Module.finrank ℝ E = 3) (K M : Geometry.SimplicialComplex ℝ E)
     [Finite K.faces] [Finite M.faces] (hM : M.faces ⊆ K.faces) {p : E} (hp : {p} ∈ M.faces)
     (hK : K.space ∈ 𝓝 p) (ℓ : E →L[ℝ] ℝ) (hℓ : ℓ ≠ 0)
     (hlinkM : IsPLSphere 1 (SimplicialComplex.geometricLink M {p}).space)
-    (hfiber : IsPLSphere 1 (M.space ∩ {x | ℓ x = ℓ p}))
-    {u v : E} (hu : u ∈ closedStar M p) (hv : v ∈ closedStar M p)
-    (hult : ℓ u < ℓ p) (hvlt : ℓ p < ℓ v) :
+    {a b : E} (hab : a ≠ b)
+    (hlevel : (SimplicialComplex.geometricLink M {p}).space ∩ {x | ℓ x = ℓ p} = {a, b})
+    (hpos : ∃ x ∈ (SimplicialComplex.geometricLink M {p}).space, ℓ p < ℓ x)
+    (hneg : ∃ x ∈ (SimplicialComplex.geometricLink M {p}).space, ℓ x < ℓ p) :
     ∃ (U V : Set E) (h : E → E) (L : E ≃ₗ[ℝ] ℝ × ℝ × ℝ),
       IsOpen U ∧ IsOpen V ∧ p ∈ U ∧ IsPLHomeomorphOn h U V ∧ h p = 0 ∧
         ∀ᶠ y in 𝓝 p, (y ∈ M.space → (L (h y)).2.2 = 0) ∧ (ℓ y = ℓ p → (L (h y)).2.1 = 0) := by
-  have hnegM := exists_mem_geometricLink_apply_lt_of_mem_closedStar M hp ℓ.toLinearMap hu hult
-  have hposM := exists_mem_geometricLink_lt_apply_of_mem_closedStar M hp ℓ.toLinearMap hv hvlt
   obtain ⟨R, hRfin, -, hRK, -, hRside⟩ := exists_triangulation_union_with_halfSpace_faces K
     (isPolyhedron_space K) ℓ.toLinearMap.toAffineMap (ℓ p)
   let _ : Finite R.faces := hRfin.to_subtype
@@ -42,27 +41,55 @@ theorem exists_linearEquiv_normalForm_of_isPLSphere_link [DecidableEq E]
       ∨ convexHull ℝ (s : Set E) ⊆ {x | ℓ.toLinearMap p ≤ ℓ.toLinearMap x} := by
     intro s hs
     simpa only [ContinuousLinearMap.coe_coe] using hside₂ s (hM₂faces hs)
-  obtain ⟨f, hf, -, hflt, hfgt⟩ :=
+  obtain ⟨f, hf, hfeq, hflt, hfgt⟩ :=
     exists_isPLHomeomorphOn_geometricLink_of_isSubdivision_preserving_height_sign hM₂ hp
       ℓ.toLinearMap hsideM₂
+  simp only [ContinuousLinearMap.coe_coe] at hfeq hflt hfgt
   have hlink₂ : IsPLSphere 1 (SimplicialComplex.geometricLink M₂ {p}).space :=
     hlinkM.of_isPLHomeomorphOn hf.symm
   have hneg₂ : ∃ x ∈ (SimplicialComplex.geometricLink M₂ {p}).space, ℓ x < ℓ p := by
-    obtain ⟨x, hx, hlt⟩ := hnegM
+    obtain ⟨x, hx, hlt⟩ := hneg
     obtain ⟨y, hy, -⟩ := hflt.symm.subset ⟨hx, hlt⟩
     exact ⟨y, hy.1, hy.2⟩
   have hpos₂ : ∃ x ∈ (SimplicialComplex.geometricLink M₂ {p}).space, ℓ p < ℓ x := by
-    obtain ⟨x, hx, hlt⟩ := hposM
+    obtain ⟨x, hx, hlt⟩ := hpos
     obtain ⟨y, hy, -⟩ := hfgt.symm.subset ⟨hx, hlt⟩
     exact ⟨y, hy.1, hy.2⟩
-  obtain ⟨a, b, hab, hlevel⟩ := exists_pair_geometricLink_fiber_of_isPLSphere_one M₂ hpM₂
-    ℓ.toLinearMap (by rw [hM₂space]; exact hfiber)
+  have hinjf : Set.InjOn f
+      ((SimplicialComplex.geometricLink M₂ {p}).space ∩ {x | ℓ x = ℓ p}) :=
+    hf.bijOn.injOn.mono Set.inter_subset_left
+  have hcard : ((SimplicialComplex.geometricLink M₂ {p}).space ∩
+      {x | ℓ x = ℓ p}).encard = 2 := by
+    rw [← hinjf.encard_image, hfeq, hlevel, Set.encard_pair hab]
+  obtain ⟨a₂, b₂, hab₂, hlevel₂⟩ := Set.encard_eq_two.mp hcard
   obtain ⟨U, V, h, L, hU, hV, hpU, hPLh, hhp, hnear⟩ :=
     exists_linearEquiv_normalForm_of_geometricLink_section hn K₂ M₂ hM₂faces hpM₂
-      (by rw [hK₂space]; exact hK) ℓ hℓ hside₂ hlink₂ hab hlevel hpos₂ hneg₂
+      (by rw [hK₂space]; exact hK) ℓ hℓ hside₂ hlink₂ hab₂ hlevel₂ hpos₂ hneg₂
   refine ⟨U, V, h, L, hU, hV, hpU, hPLh, hhp, ?_⟩
   rw [← hM₂space]
   exact hnear
+
+theorem exists_linearEquiv_normalForm_of_isPLSphere_link [DecidableEq E]
+    (hn : Module.finrank ℝ E = 3) (K M : Geometry.SimplicialComplex ℝ E)
+    [Finite K.faces] [Finite M.faces] (hM : M.faces ⊆ K.faces) {p : E} (hp : {p} ∈ M.faces)
+    (hK : K.space ∈ 𝓝 p) (ℓ : E →L[ℝ] ℝ) (hℓ : ℓ ≠ 0)
+    (hlinkM : IsPLSphere 1 (SimplicialComplex.geometricLink M {p}).space)
+    (hfiber : IsPLSphere 1 (M.space ∩ {x | ℓ x = ℓ p}))
+    {u v : E} (hu : u ∈ closedStar M p) (hv : v ∈ closedStar M p)
+    (hult : ℓ u < ℓ p) (hvlt : ℓ p < ℓ v) :
+    ∃ (U V : Set E) (h : E → E) (L : E ≃ₗ[ℝ] ℝ × ℝ × ℝ),
+      IsOpen U ∧ IsOpen V ∧ p ∈ U ∧ IsPLHomeomorphOn h U V ∧ h p = 0 ∧
+        ∀ᶠ y in 𝓝 p, (y ∈ M.space → (L (h y)).2.2 = 0) ∧ (ℓ y = ℓ p → (L (h y)).2.1 = 0) := by
+  obtain ⟨a, b, hab, hlevel⟩ :=
+    exists_pair_geometricLink_fiber_of_isPLSphere_one M hp ℓ.toLinearMap hfiber
+  refine exists_linearEquiv_normalForm_of_geometricLink_pair hn K M hM hp hK ℓ hℓ hlinkM hab
+    (by simpa only [ContinuousLinearMap.coe_coe] using hlevel)
+    (by
+      simpa only [ContinuousLinearMap.coe_coe] using
+        exists_mem_geometricLink_lt_apply_of_mem_closedStar M hp ℓ.toLinearMap hv hvlt)
+    (by
+      simpa only [ContinuousLinearMap.coe_coe] using
+        exists_mem_geometricLink_apply_lt_of_mem_closedStar M hp ℓ.toLinearMap hu hult)
 
 theorem exists_linearEquiv_normalForm_of_isCombinatorialManifold
     (hn : Module.finrank ℝ E = 3) (K M : Geometry.SimplicialComplex ℝ E)
