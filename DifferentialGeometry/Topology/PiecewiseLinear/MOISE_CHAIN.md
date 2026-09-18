@@ -848,3 +848,17 @@ E3 的 `LuneCell.lean`（`exists_lune_base_off_graphArc`）证明：月牙在参
 分支不再是双线、无需环境映射。粘合引擎为 `LoopTheorem/CellGluing.lean:375`。
 待核：§43 所记"顺序交叉贴合保留分支"的构造取的是"第一次缝与第二次缝各一个原像"（`HANDOFF_CODEX_L.md` §43），
 即把三块并成**一个**带两条缝的胞腔；若确认，则该障碍是输出形状造成，`A ∪ B` 与 `C` 分开即可通。
+
+## 2026-09-18（F）：26.4 的相对子复形细分——定案、反证、`Moise264` 结论缺一条
+
+- 26.4 消费的是**限制形**（`K'` 细分 `K` 且 `restrict K' L.space` 细分 `L`，网格任意小）：
+  `IsSubdivision.restrict` + `exists_isSubdivision_diam_lt`，现打包为 `SubcomplexMesh.lean` 的
+  `exists_isSubdivision_diam_lt_restrict_isSubdivision`。理由：`Moise264` 的假设是基本群元，边界环路由我们选，
+  只须留在 `|L|` 里且同伦于代表，所以上面第 314 行要求的"逐点相等"不必要；环带路线 (b) 的棱柱格子四顶点值
+  同在 `L` 的一个闭单形里，靠的正是"细边落在粗边里"这条限制形。
+- 上面第 327 行的出路 (a)（`L` 固定、`L` 外的面全小）**为假**：只要 `L` 有一个面在 `K` 里有真余面，
+  `ε ≤ diam τ` 时不存在这样的细分——`not_exists_isSubdivision_faces_subset_forall_diam_lt`。
+  第 362 行"迭代 `relDerived` 不会变小"由此升级为"任何构造都不行"。
+- **`Moise264` 的结论少了 "Bd Δ 在 M² 中不可缩"**：按现有陈述，一张推离 `S` 的小盘（26.3 的双领域里取
+  在 `∂σ` 上为零的 PL 高度函数的图）就满足它，30.4 无法消费。它尚未被消费，改陈述即可。
+细节与 26.4 仍缺的四件事见 HANDOFF_CODEX_F §19.144。

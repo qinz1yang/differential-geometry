@@ -3918,3 +3918,60 @@ H 的 `exists_arcChartChain_of_imageContract` 不受影响（它按 `hvertex` �
 `exists_chart_branch_chain`、`exists_openPartialHomeomorph_branch_chain`、
 `exists_arcChartChain_of_imageContract`）仅 `propext`、`Classical.choice`、`Quot.sound`。
 下一个审计文件 `AuditF284.lean`。
+
+### 19.144 26.4 的"相对子复形细分"：定案为限制形、把记录里的固定形反证掉、指出 `Moise264` 结论缺一条
+
+#### A. 陈述定案（先定后证）
+
+"相对子复形的细分"有两种不同的定理：
+- **(i) 限制形**：`∃ K', IsSubdivision K' K ∧ K'.faces.Finite ∧ (∀ s ∈ K'.faces, diam < ε) ∧
+  IsSubdivision (restrict K' L.space) L`——`L` 被相容地一起细分，`K'` 落在 `|L|` 内的每个面都在 `L` 的某个面里
+  （`IsSubdivision.exists_face_subset`）。
+- **(ii) 固定形**（MOISE_CHAIN 第 327 行的出路 (a)）：`L.faces ⊆ K'.faces ∧ ∀ s ∉ L.faces, diam < ε`。
+
+**26.4 需要的是 (i)，而且它已经在树上**（`IsSubdivision.restrict`，`Subcomplex.lean:109`，
+配 `exists_isSubdivision_diam_lt`，`Mesh.lean:184`）。理由：26.4 全程只在一处用逼近——把所选环路的连续零伦
+`f : Δ → |K|` 换成边界落在 `|L|` 里的 PL 奇异盘。`Moise264` 的假设是基本群元 `g`，不是固定的环路，
+所以边界环路由我们选，只须留在 `|L|` 内且在 `|L|` 中自由同伦于 `g` 的代表；记录里之所以要"逐点相等"
+（从而要 (ii)），是照抄书上 "Let D … with Bd D = L" 的字面，而 MOISE_CHAIN 第 397 行已经指出
+`IsNullHomotopic` 换成 PL 环路后不变——同一个观察。按记录推荐的环带路线 (b)：在边界复形 `K₀` 上把环路
+取成单纯映射（`exists_isPiecewiseAffineOn_freeLoop_homotopic`），对 `Δ` 的三角剖分 `K ⊇ K₀` 取细网格细分
+`K'` 并做绝对单纯逼近 `g`（`exists_isSubdivision_simplicialApproximation`，`SimplicialApproximation.lean:20`），
+再在棱柱 `∂Δ × [0,1]` 上以粗环路为顶、`g|∂Δ` 为底插值。棱柱每个格子的四个顶点值都落在同一个闭单形
+`σ_e ∈ L` 里：粗边 `e` 上 `f` 仿射且 `f(e) = σ_e`（单纯），细顶点 `m ∈ e` 有
+`g m ∈ conv (carrierFace L (f m)) ⊆ σ_e`（逼近定理的载体条款），而"细边落在某条粗边里"正是 (i)。
+没有混合格问题，于是不需要 (ii)。
+
+**(ii) 是假的**，只要 `L` 有一个面 `τ` 在 `K` 里有真余面 `σ`，且 `ε ≤ diam τ`：
+`not_exists_isSubdivision_faces_subset_forall_diam_lt`。证明：`K' ⊇ L` 含 `τ`，`conv σ` 被 `K'` 的面覆盖，
+`τ` 的重心在 `openSimplex σ` 的闭包里，有限并的闭包给出一个面 `s` 同时含重心且与 `openSimplex σ` 相交；
+前者经 `face_subset_of_mem_openSimplex_of_mem_convexHull` 得 `τ ⊆ s`，后者经
+`notMem_space_of_notMem_faces` 得 `s ∉ L`，于是 `diam τ ≤ diam s`。这把记录里"迭代 `relDerived` 不会变小"
+从"这个构造不行"升级为"任何构造都不行"。(ii) 的最弱真形式是 `RelativeMesh.lean:9`（远离 `L` 在 `K` 中的闭星才小），
+最强真形式是 join/扇形（`L` 固定、无 `L`-顶点的面全小、星内面 = `L` 的面 ∪ 一个小的 link 面），
+后者才是 Zeeman 式逐点相等相对逼近要的东西；26.4 不需要它，本轮没做，也不给代价范围。
+
+#### B. 模块 `SubcomplexMesh.lean`（新，三条）
+
+- `exists_isSubdivision_diam_lt_restrict_isSubdivision`：(i)。按 `omit` 纪律不要面基数上界 `N`（由有限性内部导出）。
+- `exists_face_notMem_diam_ge_of_isSubdivision_of_faces_subset`：上面证明的可复用中间件，
+  给出 `s ∈ K'`, `s ∉ L`, `τ ⊆ s`, `diam τ ≤ diam s`。只要 `[Finite K'.faces]`、`L ⊆ K`、`L ⊆ K'`；不要有限维。
+- `not_exists_isSubdivision_faces_subset_forall_diam_lt`：¬(ii)，逐字否定记录里的写法（含 `K'.faces.Finite`）。
+
+检查 `SubcomplexMesh` exit=0（9.1 秒）、零 warning；`AuditF284.lean` 三项仅 `propext`、`Classical.choice`、
+`Quot.sound`。零注释、无 `sorry`/`axiom`/`nolint`/`maxHeartbeats`/`set_option`。下一个审计文件 `AuditF285.lean`。
+
+#### C. 26.4 在此之外还缺什么（未起头，不给代价范围）
+
+1. 棱柱插值引理：`K₀' × [0,1]`（`K₀'` 是边界多边形的细分）上的 PA 映射，顶是粗单纯环路、底是细逼近的
+   `simplicialMap`，格子四顶点值同在一个闭单形里故映进 `|L|`。`PrismProdCollar.lean` 的"乘积相对一端"
+   是相近工具，是否能直接给两端插值要核对。
+2. 把环带与缩小的盘沿圆周粘起来并重参数化成 PL 盘（`Gluing.lean` / `PlanarDiskUnion.lean`）。
+3. 盘相对 `Bd W` 的一般位置且保持边界与像落在 `|K|` 内：`exists_small_simplicialMap_transverse_on_subcomplex`
+   与 `GeneralPositionWithin.lean` 的 `_mapsTo` 版。
+4. 双领域 `ρ` 的消费、沿最内多边形把盘推过双领域（Case 1/2）、Case 3 = 25.2 用于 `Cl(M³ − W)` 再补环带。
+5. **`Moise264` 的结论缺一条**（`MoiseChain.lean:43`）：书上 26.4 的结论含 "Bd Δ 在 M² 中不可缩"，
+   Lean 陈述只有 `Δ ∩ S = r '' stdSimplexBoundary 2`。按现状它可由一张推离 `S` 的小盘平凡满足
+   （取 `L` 的一个 2-单形 `σ`，在双领域里取在 `∂σ` 上恰为零的 PL 高度函数的图；26.3 已交付），
+   于是 30.4 无法从它得到任何东西。缺的条款用链条词汇写是：`r` 限制到 `stdSimplexBoundary 2` 的环路在
+   `S` 中不 `IsNullHomotopic`。`Moise264` 尚未被任何定理消费，可以直接改；我没有动共享的 `MoiseChain.lean`。
