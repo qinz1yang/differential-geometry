@@ -723,3 +723,33 @@ Moise 每一章开头"不妨设某映射是 PL 的"都是这一条。分三个�
 把删盘识别的假设换成 `IsCombinatorialManifoldWithBoundary 2 A`，不引入其他新假设；
 `L` 的顶点数界由已有的 `IsPLSphere 1 L.space` 免费给出。G.5 的封盘—删盘这一整段因此闭合，
 只剩不经 `HurewiczLowDegrees` 的一维 Hurewicz 桥（H 已给出 HB1–HB6 的成本分解，未启动）。
+
+### F：`BranchSlideSeparation.lean` / `TransversePlaneCoordinates.lean`
+
+`IsBranchSlideChart R c a b P Q e`（七个字段：两向逐片仿射、`slideSupportLong R` 与两条带都含于
+`e.target`、两张片分别等于 `e.symm '' slideBandA c` 与 `e.symm '' slideBandQ a b`）把"一张沿整条分支
+平凡化 crossing 的 PL 图卡"打包成谓词。谓词里**不含滑距 `d`**——滑距由消费者按 §19.110 的定量条件选。
+
+- `exists_supported_separation_of_isBranchSlideChart`：在 `0 ≤ d`、`c + 2*d ≤ R`、`c - d < a` 下给出
+  §44 要的 `h`（整体逐片仿射、单射、支撑外恒等、`Disjoint (h '' P) Q`），见证就是
+  `e.conjugateMap (slideMapLong d R)`。
+- `exists_supported_separation_of_isBranchSlideChart_boundary` 追加 `h '' (U ∩ B) ⊆ B`，
+  即 §44 的 `h (U ∩ BdM) ⊆ BdM`；走更一般的 `mapsTo_chartSlideLong_of_forall_mem_iff`
+  （任何在图卡里由两个横向坐标条件切出的集合都被保持）。
+- `TransversePlaneCoordinates.lean`：从 `HasPLCrossingAt` 实际携带的数据（两张平面 `finrank = 2`、
+  交线 `finrank = 1`、张成全空间）造出 `E ≃ₗ[ℝ] ℝ × ℝ × ℝ`，把两张平面送到两个坐标平面、
+  交线送到第一坐标轴（滑动方向）。
+
+**剩下的确切输入**（缺的是定理，不是装配）：紧 PL 弧 `S`、沿 `S` 横截相交的两张 PL 面片 `A`、`B`、
+`W ∈ 𝓝ˢ S`，要一张 `e : OpenPartialHomeomorph M (ℝ × ℝ × ℝ)`，满足 `S ⊆ e.source ⊆ W`、两向 PL、
+`e '' (A ∩ e.source) ⊆ {p.2.2 = 0}`、`e '' (B ∩ e.source) ⊆ {p.2.1 = 0}`，并且 `e.source` 不碰第三张片
+（最后这条正是 §44 那句"不产生邻近的新交线"的来源，属于生产者而非滑动）。
+把两张相邻的逐点平凡化粘成一张需要 **PL 球对的正则邻域唯一性（相对 Alexander trick）**；
+本树只有单复形、非相对、非配对的版本（`ConeExtension`、`ConeAmbientExtension`）。
+`exists_subordinate_chain_of_isPLBall_one` 不关联任意两张图卡，`exists_sideChoice_of_chain` 是
+`ZMod 2` 陈述、产不出 PL 同胚，二者都不足以补这个缺口。
+
+另有一条小义务：上述三条活在有限维赋范环境、结论是 `IsPiecewiseAffineOn h univ`，
+而 E3 的消费者要带图卡的 3-流形与 `IsPL 3 3 h`；路线机械（经
+`ℝ × ℝ × ℝ ≃ EuclideanSpace ℝ (Fin 3)`、用 `bijective_slideMapLong` 升成 `Homeomorph`、
+再用既有的 `isPL_conjugateHomeomorph`）但未做。
