@@ -1893,3 +1893,54 @@ M1 只给"PL 同胚于一个锥"，不给"是一个锥"，所以绕不过去。
 第 20 节并等式、第 21 节任意水平的分离、本节截痕与两条半空间、
 第 19/22 节五条线段引理。缺的只是把它们按第 18 节的构型接起来（选点＋三对＋并对），
 以及之后的第 3、4 步。**未开始，不报区间。**
+
+## 24. 2026-09-18 组装受阻：`IsPLBallPair` 的子链条件过强（诊断，无 Lean 改动）
+
+按第 18 节构型接线时撞上一个**真障碍**，不是工作量问题。记清楚，免得下次照着接。
+
+### 矛盾
+
+第 16 节 `isPLBallPair_convexHull_of_mem_openSimplex` 经 `isPLBallPair_coneSet_arc` 要求
+子链 `J` 满足 `J.faces ⊆ L.faces`（`IsPLBallPair` 定义里的字段）。取 `L = simplexBoundary T₁` 时，
+`SimplexBoundary.lean:37 simplexBoundaryFaces T = {τ | τ ⊆ T ∧ τ.Nonempty ∧ τ ≠ T}`，
+所以 `J` 的面都是 `T₁` 的子集，`J.space` 只能是 `T₁` 若干面的并。
+要 `J.space = {v, z}`（两点），就必须 **`v`、`z` 都是 `T₁` 的顶点**。
+
+但 `z` 是弧穿过公共面 `F` 的点，而 `(C₁∩C₂, C₁∩C₂∩A) = (conv F, {z})` 这一对要成立，
+第 17 节 `isPLBallPair_convexHull_singleton_of_mem_openSimplex` 要求 **`z ∈ openSimplex F`**，
+即 `z` 在三角形 `F` 的**相对内部**，绝不是顶点。两条要求直接冲突。
+
+`z` 不能改成顶点：若 `z` 是 `F` 的顶点，则 `conv F` 作为从 `z` 出发的锥，其底是对边——
+是 1-**球**不是 1-**球面**，`IsPLBallPair 1 0` 的 `IsPLSphere m L.space` 条款就不成立。
+所以 `z` 必须内部，矛盾是实的。
+
+### 诊断：定义里的条件比内容强
+
+查了 `BallPair.lean` 里 `hJL` 的全部三处用法：
+
+- `IsPLBallPair.subset`（:21）只用 `space_mono_of_faces_subset hJL`，即**只要 `J.space ⊆ L.space`**；
+- `IsPLBallPair.of_isPLHomeomorphOn`（:44）只是原样传递；
+- `isPLBallPair_coneSet_of_isPLSphere`（:69–71）真用到面包含，用来导出
+  `Finite J.faces` 与 `hL.of_faces_subset hJL : IsConeBase p J`。
+
+所以**定义**里的 `J.faces ⊆ L.faces` 可以弱化成 `J.space ⊆ L.space`（甚至直接换成集合 `X ⊆ L.space`），
+只有**生产者**需要把 `IsConeBase p J` 与 `Finite J.faces` 改成显式假设。
+这与第 15 节"锥形 ⟹ 与锥对 PL 同胚"是同一类毛病：定义携带了比它的内容更强的条件，
+下游构造因此被挡住。
+
+### 两条出路（推荐 B）
+
+- **A：细分链。** artifact 检查这次是**正命中**——树里**有**星形细分：
+  `StellarSphere.lean:144 stellarComplex`，且 `:159 stellarComplex_space` 给
+  `(stellarComplex …).space = (simplexBoundary (T.erase a) hT').space`，
+  即细分后空间不变、而 `c ∈ openSimplex (T \ σ₀)` 成了顶点。正合所需。
+  但还要 `IsConeBase p₁ (stellarComplex …)`，正确工具是
+  `ConeBase.lean:56 IsConeBase.of_isSubdivision`，它要
+  `IsSubdivision (stellarComplex …) (simplexBoundary …)`——**树里没有**（已 grep 确认）。
+- **B：弱化定义**（推荐）。把 `IsPLBallPair` 的 `J.faces ⊆ L.faces` 换成集合层的
+  `X ⊆ L.space`，生产者 `isPLBallPair_coneSet_of_isPLSphere` 补 `IsConeBase p J`、`Finite J.faces`
+  两个显式假设。改动局限在 `BallPair.lean` 与四个消费者
+  （`BallPairModel`、`BallPairSimplex`、`BallPairTwoSimplices`、`ConeDiskPairExtension`），
+  不依赖任何尚不存在的细分引理。
+
+两条都**未开始，不报区间**。第 3、4 步同样未开始，因此还没有能告诉 F 的输出形状。
