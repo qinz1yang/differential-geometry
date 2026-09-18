@@ -8285,6 +8285,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.ConeDiskPairExtension
 import DifferentialGeometry.Topology.PiecewiseLinear.MobiusSquare
 import DifferentialGeometry.Topology.PiecewiseLinear.MobiusSquareMap
 import DifferentialGeometry.Topology.PiecewiseLinear.MoiseChain
+import DifferentialGeometry.Topology.PiecewiseLinear.SlabWedgeConjugation
 import DifferentialGeometry.Topology.PiecewiseLinear.SlabWedgeDoublePoint
 import DifferentialGeometry.Topology.PiecewiseLinear.SlabWedgePush
 import DifferentialGeometry.Topology.PiecewiseLinear.SphereNesting
