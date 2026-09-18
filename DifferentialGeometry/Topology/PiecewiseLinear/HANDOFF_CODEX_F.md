@@ -2372,3 +2372,29 @@ E3 §44 把 `exists_supported_separation_along_compact_crossing_arc` 交给 F。
 E3 §45 的 `ZMod 2` 循环障碍仍然成立并且有用（它是沿分支相容定向的障碍），但它不是这里的分离障碍，
 两者的联系应按本条更正理解。
 
+### 19.108 沿分支滑出的标准模型：显式 PL 自同构与实际分离
+
+`ModelSlide.lean` 按 §19.107 的更正给出标准模型里的滑动，全部是显式公式：
+
+- `slideAmount p = max 0 (min (1 - |y| - |z|) ((3 - |x|)/2))`，`slideMap p = (x - slideAmount p, y, z)`；
+  沿 x 方向按到 x 轴的距离滑动，横向宽度 1，纵向锥度 3。
+- `isPiecewiseAffineOn_slideMap`：`slideMap` 在整个 `ℝ × ℝ × ℝ` 上逐片仿射。证明只用既有的
+  `IsPiecewiseAffineOn` 代数（`abs`、`max`、`min`、`add`、`prod_mk`、`affine_comp`）与
+  `IsLocallyPolyhedral.of_isOpen isOpen_univ` 给出的 `id` 的逐片仿射性；锥度里的 `/2` 用
+  `halfMap`（`(2:ℝ)⁻¹ • LinearMap.id` 的仿射化）搬进来。
+- `bijective_slideMap`：单射由"锥度斜率 1/2 ⟹ `x ↦ x - slideAmount` 严格增"给出
+  （`slideAmount_le_add`：固定 `(y,z)` 时 `slideAmount` 对 `x` 是 (1/2)-Lipschitz）；满射由
+  `|x| ≥ 3` 处是恒等加中值定理给出。
+- `slideMap_eq_self_of_width`（`1 ≤ |y| + |z|`）与 `slideMap_eq_self_of_taper`（`3 ≤ |x|`）：
+  支撑落在盒 `{|y| + |z| ≤ 1, |x| ≤ 3}` 内，故可以在图卡里用恒等延拓。
+- `modelBandA = {z = 0, |y| ≤ 1, x ∈ [0,1]}`，`modelBandQ = {y = 0, |z| ≤ 1, x ∈ [1/2,2]}`：
+  `inter_modelBandA_modelBandQ` 说明滑动前两条带沿 `x ∈ [1/2,1]` 的弧横截相交（非平凡），
+  `disjoint_slideMap_image_modelBandA` 说明滑动后 `slideMap '' modelBandA` 与 `modelBandQ` 不相交
+  （在 `y = z = 0` 处滑动量恰为 1，把 A 的 x 区间移到 `[-1,0]`）。
+
+这就是 §19.107 里"沿分支滑出"的局部实现，并且证明了横向推移做不到的事它能做到。
+检查 `ModelSlide` exit=0（9.7 秒）、零 warning；`AuditF255.lean` 六项无 `sorryAx`。
+剩下的义务：把这个模型经 crossing 图卡搬到流形里（图卡是 PL 同胚，`slideMap` 的支撑在盒内，
+可用 `Topology/Pasting.lean` 的支撑外恒等接口拼接），并按 `ArcChainCover` 的链与 E3 §45 的侧选择
+沿整条触边弧串起来；端点处要把模型换成半空间版本使滑动与 `Bd M` 相切。下一审计文件 `AuditF256.lean`。
+
