@@ -151,4 +151,15 @@ F5.2 保持 partial（被已证定理 `ArrangementConstraints.lean:58` 挡着；
   `Moise305Tame`（显式 `Moise304 →`）、§34 侧生产者（注意 `exists_bicollar` 给 `S × Icc (-1) 1` 而 `TwoSidedCollar` 要 `S × ℝ`，先 grep
   `VanKampen/TwoSidedCollarRescale.lean`）。1k–2k 估计未修订。
 - **hw**（`codex/moise-hurewicz-merge`）：交接时 agent 仍在跑，未收到最终报告；进入后按 §0 与 §5 处理。
-- **S**（`codex/moise-s`）：交接时 S2 仍在跑，未收到最终报告；以 `HANDOFF_CODEX_S.md` 末节与分支提交为准。
+- **S**（`HANDOFF_CODEX_S.md` 末两节，分支 `codex/moise-s` 头 `96b0c4a45`，已合入整合分支，重编 `exit=0 time=10.7s module=DifferentialGeometry.Topology.PiecewiseLinear.MobiusManifold`）：
+  **(A) 已闭**——`MobiusManifold.lean` 30 条声明，端点 `isCombinatorialManifoldWithBoundary_mobiusComplex`，审计 30/30 干净。
+  工具层发现：`DecidableEq (Fin 5 → ℝ)` 有真实实例 `Fintype.decidablePiFintype`，与库中 `Finset` 面对陈述里烘进去的
+  `Classical.propDecidable` 不 defeq；修法 `attribute [local instance 10000] Classical.propDecidable`，其后 `decide`/`omega`
+  失去核可检证书，故所有 `decide` 引理放在该行之上。
+  **(B-geometry) 的规格前提为假**：反向的 `v` **交换**任何不变弧的端点（固定端点则 `v` 正向），且不变真弧**未必存在**
+  （反例 `v = s ∘ r`，`Fix(v) = Fix(v²) = (0, 0.5)`），所以 `f '' (A ×ˢ Icc 0 1)` 永远不是莫比乌斯带。
+  正确对象是**不动点截面附近的管**：`A₁ = v⁻¹(A₀)` 并插值；弧坐标下管是凸四边形，朴素插值是双线性的（**不是**逐片仿射——
+  这是陷阱），须拆成两个三角形，得到翻转粘合的方块 `g(s,1) = g(1−s,0)`，正是五三角形模型消费的东西。
+  (B-glue)、(B-bridge)、B、义务 2 未开始；下一步 `MobiusSquare.lean`（显式 `W₀…W₆`、十个两两一致性、经
+  `isPLHomeomorphOn_of_isPiecewiseAffineOn_of_bijOn` 装配而非嵌套 `piecewise`）与三个平面子义务均在 S 的 HANDOFF。
+  另记：3 维环境中不存在五个仿射无关点，故细分的五顶点莫比乌斯子复形不可能，PL 同胚搬运不可避免。
