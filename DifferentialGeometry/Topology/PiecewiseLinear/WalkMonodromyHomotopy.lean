@@ -9,6 +9,16 @@ def closedWalkPow {V : Type*} {G : SimpleGraph V} {u : V} (γ : G.Walk u u) :
   | 0 => Walk.nil
   | k + 1 => γ.append (closedWalkPow γ k)
 
+def closedWalkZPow {V : Type*} {G : SimpleGraph V} {u : V} (γ : G.Walk u u) : ℤ → G.Walk u u
+  | Int.ofNat k => closedWalkPow γ k
+  | Int.negSucc k => closedWalkPow γ.reverse (k + 1)
+
+theorem closedWalkZPow_natCast {V : Type*} {G : SimpleGraph V} {u : V} (γ : G.Walk u u) (k : ℕ) :
+    closedWalkZPow γ (k : ℤ) = closedWalkPow γ k := rfl
+
+theorem closedWalkZPow_negSucc {V : Type*} {G : SimpleGraph V} {u : V} (γ : G.Walk u u) (k : ℕ) :
+    closedWalkZPow γ (Int.negSucc k) = closedWalkPow γ.reverse (k + 1) := rfl
+
 variable {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E]
   {K : Geometry.SimplicialComplex ℝ E}
 
@@ -24,6 +34,21 @@ theorem walkMonodromy_closedWalkPow {u : K.vertices}
   | succ k ih =>
       rw [closedWalkPow, ε.walkMonodromy_append, ih, Nat.cast_add, Nat.cast_one, add_mul, one_mul,
         add_comm]
+
+theorem walkMonodromy_closedWalkZPow {u : K.vertices}
+    (γ : (SimplicialComplex.edgeGraph K).Walk u u) (k : ℤ) :
+    ε.walkMonodromy (closedWalkZPow γ k) = (k : ZMod 2) * ε.walkMonodromy γ := by
+  cases k with
+  | ofNat k =>
+      have hk : (Int.ofNat k) = (k : ℤ) := rfl
+      rw [hk, closedWalkZPow_natCast, ε.walkMonodromy_closedWalkPow, Int.cast_natCast]
+  | negSucc k =>
+      rw [closedWalkZPow_negSucc, ε.walkMonodromy_closedWalkPow, ε.walkMonodromy_reverse]
+      rw [show ((Int.negSucc k : ℤ) : ZMod 2) = ((k + 1 : ℕ) : ZMod 2) by
+        rw [Int.negSucc_eq]
+        push_cast
+        ring_nf
+        exact CharTwo.sub_eq_add _ _]
 
 theorem walkMonodromy_conjugate {u v : K.vertices}
     (q : (SimplicialComplex.edgeGraph K).Walk u v)
@@ -72,6 +97,21 @@ theorem walkMonodromy_eq_of_homotopic {u w : K.vertices}
     ε.walkMonodromy p = ε.walkMonodromy q := by
   rw [← ε.boolZMod2_walkParity p, ← ε.boolZMod2_walkParity q,
     ε.walkParity_eq_of_homotopic p q hpq]
+
+open Classical in
+theorem walkMonodromy_eq_zero_or_eq_of_homotopic_conjugate_zpow {v₀ u : K.vertices}
+    (γ : (SimplicialComplex.edgeGraph K).Walk v₀ v₀)
+    (p : (SimplicialComplex.edgeGraph K).Walk u u)
+    (q : (SimplicialComplex.edgeGraph K).Walk u v₀) (k : ℤ)
+    (hp : (walkPath p).Homotopic
+      (walkPath (q.append ((closedWalkZPow γ k).append q.reverse)))) :
+    ε.walkMonodromy p = 0 ∨ ε.walkMonodromy p = ε.walkMonodromy γ := by
+  have hx : ∀ x : ZMod 2, x = 0 ∨ x = 1 := by decide
+  rw [ε.walkMonodromy_eq_of_homotopic p _ hp, ε.walkMonodromy_conjugate,
+    ε.walkMonodromy_closedWalkZPow]
+  rcases hx ((k : ZMod 2)) with hk | hk
+  · exact Or.inl (by rw [hk, zero_mul])
+  · exact Or.inr (by rw [hk, one_mul])
 
 open Classical in
 theorem walkMonodromy_eq_zero_or_eq_of_homotopic_conjugate_pow {v₀ u : K.vertices}

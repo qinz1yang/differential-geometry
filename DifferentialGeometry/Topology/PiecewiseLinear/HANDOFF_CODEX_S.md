@@ -3467,3 +3467,59 @@ infinite cyclic group, so a statement with `k : ℕ` would be false for
 The four modules check exit 0 with zero warnings (7.4--12.3 s).
 `.lake/scratch/AuditSPolygonCircle.lean` audits twenty-three declarations, all
 only `propext`, `Classical.choice`, `Quot.sound`.
+
+## Integer powers repair the generation hypothesis, and loops feed it, 2026-09-18
+
+### A correction to `IsGeneratedByPolygon`
+
+As it stood, `IsGeneratedByPolygon γ` asked for a natural number `k` and
+`closedWalkPow γ k`. That predicate is unsatisfiable for a genuine polygon:
+the previous entry proves that the class of `walkPath γ` generates an infinite
+cyclic group, so `walkPath γ.reverse` has degree `-1`, and conjugation inside an
+abelian group does not change the degree, so no `k : ℕ` can match it. The
+hypothesis was therefore vacuously unusable, not merely awkward.
+
+`WalkMonodromyHomotopy.lean` now carries `closedWalkZPow γ k` for `k : ℤ`
+(`closedWalkPow γ k` for `k ≥ 0` and `closedWalkPow γ.reverse (-k)` otherwise),
+with `walkMonodromy_closedWalkZPow : ε.walkMonodromy (closedWalkZPow γ k) =
+(k : ZMod 2) * ε.walkMonodromy γ` — the negative case is `CharTwo.sub_eq_add`
+together with `walkMonodromy_reverse` — and the disjunction
+`walkMonodromy_eq_zero_or_eq_of_homotopic_conjugate_zpow`.
+`PolygonGeneratedOrientation.lean` states `IsGeneratedByPolygon` and
+`IsSimpliciallyGeneratedByPolygon` with `k : ℤ` and `closedWalkZPow`, with the
+matching simplicial disjunction, and the two orientability endpoints are
+unchanged in statement and conclusion. Nothing else in the tree referred to the
+old spelling.
+
+### Walk paths under concatenation, reversal and powers
+
+`WalkPathConcatenation.lean`. `edgePath_symm` says the edge path of the reversed
+adjacency is the reverse path (the two affine parametrisations agree).
+`walkPath_append : (walkPath (p.append q)).Homotopic ((walkPath p).trans (walkPath q))`
+and `walkPath_reverse : (walkPath p.reverse).Homotopic (walkPath p).symm` are the
+two structural homotopies; the second uses `Walk.reverse_cons` and
+`Path.trans_symm`, so no reversal of the recursion is needed.
+`walkPath_closedWalkZPow` identifies `walkPath (closedWalkZPow γ k)` with
+`loopZPow (walkPath γ) k`. `quotient_conjugate` is the groupoid identity
+`R ∘ (R⁻¹ ∘ P ∘ R) ∘ R⁻¹ = P` in `Path.Homotopic.Quotient`, and
+`homotopic_conjugate` is its path form.
+
+`exists_zpow_conjugate_homotopic_walkPath` is the bridge: for a preconnected edge
+graph and a closed walk `γ` at `v₀` whose path generates the loops at `v₀` in the
+sense of the previous entry, every closed edge walk `p` at any vertex `u` admits
+`q : Walk u v₀` and `k : ℤ` with `walkPath p` homotopic to
+`walkPath (q.append ((closedWalkZPow γ k).append q.reverse))`. The conjugating
+walk comes from preconnectedness and the exponent from the generation hypothesis
+applied to `(walkPath q).symm.trans ((walkPath p).trans (walkPath q))`.
+
+`PolygonGeneratedFromLoops.lean` instantiates it:
+`isGeneratedByPolygon_of_forall_exists_homotopic_loopZPow` turns the purely
+topological generation statement for `barycentricSubdivision L` into
+`IsGeneratedByPolygon γ`, and
+`isOrientable_of_ambient_nullHomotopic_loop_generated_polygon` is the
+orientability endpoint with the topological generation hypothesis in place of the
+combinatorial one.
+
+All four touched or new modules check exit 0 with zero warnings (9.3--10.1 s).
+`.lake/scratch/AuditSWalkPathConcat.lean` audits seventeen declarations; none
+mentions `sorryAx`, and `closedWalkZPow` depends on no axiom at all.
