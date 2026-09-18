@@ -11155,3 +11155,9 @@ import DifferentialGeometry.Topology.Covering.BoolCocyclePullback
 import DifferentialGeometry.Topology.Manifold.AmbientNormalOrientation
 import DifferentialGeometry.Topology.Manifold.NormalSideParity
 import DifferentialGeometry.Topology.ProjectiveSpace.SmoothNonembedding
+import DifferentialGeometry.Bundle.LocalFrameOpenRestriction
+import DifferentialGeometry.Topology.OpenCover.ProductContinuity
+import DifferentialGeometry.Topology.Manifold.ContMDiff.OpenCover
+import DifferentialGeometry.Geometry.Metric.Family.OpenCover
+import DifferentialGeometry.Geometry.Metric.Family.TimeGluing
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.OpenCover
