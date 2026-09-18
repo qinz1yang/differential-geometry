@@ -24,28 +24,6 @@ private theorem periodic_lift_continuous {f : ℝ → ℝ}
   change Continuous (fun x : ℝ => hf.lift (x : loopCircle))
   simpa only [Function.Periodic.lift_coe] using hc
 
-private theorem exists_short_circle_lifts (x y : loopCircle) :
-    ∃ a d : ℝ, 0 ≤ a ∧ a ≤ 1 ∧ -(1 / 2 : ℝ) ≤ d ∧ d ≤ 1 / 2 ∧
-      (a : loopCircle) = y ∧ ((a + d : ℝ) : loopCircle) = x ∧
-      dist x y = |d| := by
-  let a := AddCircle.equivIco (1 : ℝ) 0 y
-  let d := AddCircle.equivIco (1 : ℝ) (-(1 / 2 : ℝ)) (x - y)
-  have ha : 0 ≤ a.1 ∧ a.1 < 1 := by simpa using a.2
-  have hd : -(1 / 2 : ℝ) ≤ d.1 ∧ d.1 < 1 / 2 := by convert d.2 using 1; norm_num
-  have haq : (a.1 : loopCircle) = y := AddCircle.coe_equivIco
-  have hdq : (d.1 : loopCircle) = x - y := AddCircle.coe_equivIco
-  have hadq : ((a.1 + d.1 : ℝ) : loopCircle) = x := by
-    rw [AddCircle.coe_add, haq, hdq]
-    abel
-  have hdabs : |d.1| ≤ |(1 : ℝ)| / 2 := by
-    rw [abs_one, abs_le]
-    exact ⟨hd.1, hd.2.le⟩
-  have hnorm : ‖(d.1 : loopCircle)‖ = |d.1| :=
-    (AddCircle.norm_coe_eq_abs_iff (1 : ℝ) one_ne_zero).mpr hdabs
-  refine ⟨a.1, d.1, ha.1, ha.2.le, hd.1, hd.2.le, haq, hadq, ?_⟩
-  rw [dist_eq_norm, ← hdq]
-  exact hnorm
-
 private theorem periodic_smooth_lift_lipschitz {f : ℝ → ℝ}
     (hf : ContDiff ℝ ∞ f) (hp : Function.Periodic f 1) :
     ∃ L : ℝ≥0, LipschitzWith L hp.lift := by
@@ -55,7 +33,8 @@ private theorem periodic_smooth_lift_lipschitz {f : ℝ → ℝ}
   refine ⟨NNReal.mk (max 0 C) (le_max_left _ _), ?_⟩
   apply LipschitzWith.of_dist_le_mul
   intro x y
-  obtain ⟨a, d, ha0, ha1, hd0, hd1, hay, hadx, hdist⟩ := exists_short_circle_lifts x y
+  obtain ⟨a, d, ha0, ha1, hd0, hd1, hay, hadx, hdist⟩ :=
+    DifferentialGeometry.Topology.exists_short_circle_lifts x y
   have ha : a ∈ Icc (-1 : ℝ) 2 := by constructor <;> linarith
   have had : a + d ∈ Icc (-1 : ℝ) 2 := by constructor <;> linarith
   have hconv : Convex ℝ (Icc (-1 : ℝ) 2) := convex_Icc _ _
@@ -233,7 +212,8 @@ theorem tracePhaseAnnulus_lipschitzOn_strip (g : SmoothRiemannianMetric 𝓘(ℝ
         (q.2 + (((1 - q.1) * δ q.2 : ℝ) : loopCircle)) ≤
         ((1 + Lδ + Mδ : ℝ≥0) : ℝ) * dist p q := by
     intro p q hp hq
-    obtain ⟨a, d, ha0, ha1, hd0, hd1, haq, had, hdist⟩ := exists_short_circle_lifts p.2 q.2
+    obtain ⟨a, d, ha0, ha1, hd0, hd1, haq, had, hdist⟩ :=
+      DifferentialGeometry.Topology.exists_short_circle_lifts p.2 q.2
     have hpp : p.2 + (((1 - p.1) * δ p.2 : ℝ) : loopCircle) =
         (((a + d) + (1 - p.1) * δ p.2 : ℝ) : loopCircle) := by
       rw [← had, ← AddCircle.coe_add]

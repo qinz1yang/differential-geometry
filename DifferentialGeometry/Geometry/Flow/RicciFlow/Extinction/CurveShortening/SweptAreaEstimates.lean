@@ -82,42 +82,48 @@ variable [SigmaCompactSpace M] [T2Space M] [CompactSpace M] [Nonempty M] [I.Boun
 variable {D : RealTimeInterval} {a b : ℝ}
 
 omit [SigmaCompactSpace M] [CompactSpace M] [Nonempty M] [I.Boundaryless] in
+theorem CurveMap.continuousOn_sweptIntegrand
+    (B : RicciBackground (I := I) (M := M) D a b)
+    (c : CurveMap M) (hc : c.SmoothOn (I := I) (Icc a b)) :
+    ContinuousOn (fun p : ℝ × ℝ =>
+      Real.sqrt (c.normSq B.family.metric (c.velocity (I := I) (Icc a b)) p.1 p.2) *
+        c.speed B.family.metric p.1 p.2) (univ ×ˢ Icc a b) := by
+  have hJ : UniqueDiffOn ℝ (Icc a b) := uniqueDiffOn_Icc B.lt
+  have hV : CurveMap.Field.SmoothOn (I := I)
+      (c.velocity (I := I) (Icc a b)) (Icc a b) :=
+    CurveMap.Field.smoothOn_velocity c hc hJ
+  have hnorm : ContDiffOn ℝ ∞ (fun p : ℝ × ℝ =>
+      (c).normSq B.family.metric
+        (c.velocity (I := I) (Icc a b)) p.1 p.2) (univ ×ˢ Icc a b) :=
+    CurveMap.Field.smoothOn_inner B.family.metric B.smooth B.regular c hc
+      _ _ hV hV
+  have hX : CurveMap.Field.SmoothOn (I := I) (c.X) (Icc a b) :=
+    CurveMap.Field.smoothOn_X c (Icc a b) hc
+  have hinnerX : ContDiffOn ℝ ∞ (fun p : ℝ × ℝ =>
+      (B.family.metric p.2).inner (c.lift p.1 p.2)
+        (c.X (I := I) p.1 p.2)
+        (c.X (I := I) p.1 p.2)) (univ ×ˢ Icc a b) :=
+    CurveMap.Field.smoothOn_inner B.family.metric B.smooth B.regular c hc
+      _ _ hX hX
+  have hspeed : ContinuousOn (fun p : ℝ × ℝ =>
+      c.speed B.family.metric p.1 p.2) (univ ×ˢ Icc a b) :=
+    Real.continuous_sqrt.comp_continuousOn hinnerX.continuousOn
+  have hsqrt : ContinuousOn (fun p : ℝ × ℝ =>
+      Real.sqrt ((c).normSq B.family.metric
+        (c.velocity (I := I) (Icc a b)) p.1 p.2)) (univ ×ˢ Icc a b) :=
+    Real.continuous_sqrt.comp_continuousOn hnorm.continuousOn
+  exact hsqrt.mul hspeed
+
+
+omit [SigmaCompactSpace M] [CompactSpace M] [Nonempty M] [I.Boundaryless] in
 theorem continuousOn_sweptDensity (B : RicciBackground (I := I) (M := M) D a b)
     (γ : ℝ → ContinuousFreeLoop M)
     (hγ : (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a b)) :
     ContinuousOn (fun t => (curveOfLoopFamily γ).sweptDensity B.family.metric (Icc a b) t)
       (Icc a b) := by
-  have hJ : UniqueDiffOn ℝ (Icc a b) := uniqueDiffOn_Icc B.lt
-  have hV : CurveMap.Field.SmoothOn (I := I)
-      ((curveOfLoopFamily γ).velocity (I := I) (Icc a b)) (Icc a b) :=
-    CurveMap.Field.smoothOn_velocity (curveOfLoopFamily γ) hγ hJ
-  have hnorm : ContDiffOn ℝ ∞ (fun p : ℝ × ℝ =>
-      ((curveOfLoopFamily γ)).normSq B.family.metric
-        ((curveOfLoopFamily γ).velocity (I := I) (Icc a b)) p.1 p.2) (univ ×ˢ Icc a b) :=
-    CurveMap.Field.smoothOn_inner B.family.metric B.smooth B.regular (curveOfLoopFamily γ) hγ
-      _ _ hV hV
-  have hX : CurveMap.Field.SmoothOn (I := I) ((curveOfLoopFamily γ).X) (Icc a b) :=
-    CurveMap.Field.smoothOn_X (curveOfLoopFamily γ) (Icc a b) hγ
-  have hinnerX : ContDiffOn ℝ ∞ (fun p : ℝ × ℝ =>
-      (B.family.metric p.2).inner ((curveOfLoopFamily γ).lift p.1 p.2)
-        ((curveOfLoopFamily γ).X (I := I) p.1 p.2)
-        ((curveOfLoopFamily γ).X (I := I) p.1 p.2)) (univ ×ˢ Icc a b) :=
-    CurveMap.Field.smoothOn_inner B.family.metric B.smooth B.regular (curveOfLoopFamily γ) hγ
-      _ _ hX hX
-  have hspeed : ContinuousOn (fun p : ℝ × ℝ =>
-      (curveOfLoopFamily γ).speed B.family.metric p.1 p.2) (univ ×ˢ Icc a b) :=
-    Real.continuous_sqrt.comp_continuousOn hinnerX.continuousOn
-  have hsqrt : ContinuousOn (fun p : ℝ × ℝ =>
-      Real.sqrt (((curveOfLoopFamily γ)).normSq B.family.metric
-        ((curveOfLoopFamily γ).velocity (I := I) (Icc a b)) p.1 p.2)) (univ ×ˢ Icc a b) :=
-    Real.continuous_sqrt.comp_continuousOn hnorm.continuousOn
-  have hrect : ContinuousOn (fun p : ℝ × ℝ =>
-      Real.sqrt (((curveOfLoopFamily γ)).normSq B.family.metric
-        ((curveOfLoopFamily γ).velocity (I := I) (Icc a b)) p.1 p.2) *
-        (curveOfLoopFamily γ).speed B.family.metric p.1 p.2)
-      (Icc (0 : ℝ) 1 ×ˢ Icc a b) :=
-    (hsqrt.mul hspeed).mono (Set.prod_mono (subset_univ _) subset_rfl)
-  exact continuousOn_intervalIntegral_of_continuousOn_rectangle B.lt.le hrect
+  exact continuousOn_intervalIntegral_of_continuousOn_rectangle B.lt.le
+    (((curveOfLoopFamily γ).continuousOn_sweptIntegrand B hγ).mono
+      (Set.prod_mono (subset_univ _) subset_rfl))
 
 end
 

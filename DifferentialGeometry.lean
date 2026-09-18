@@ -11186,3 +11186,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.Curvatur
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.ClosedIntervalRank
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.TerminalRank
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.DiscardedSideRelativeCollar
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.MetricComparison
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.SweptAnnulus
+import DifferentialGeometry.Geometry.Metric.CompactConvexSourceLipschitz

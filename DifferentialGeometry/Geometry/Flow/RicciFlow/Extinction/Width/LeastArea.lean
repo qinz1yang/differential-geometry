@@ -33,6 +33,20 @@ theorem competitorAreas_bddBelow (g : SmoothRiemannianMetric I Q)
   rintro _ ⟨u, rfl⟩
   exact diskArea_nonneg g u.1.map
 
+theorem competitorAreas_eq_empty_of_not_isContractibleLoop
+    (g : SmoothRiemannianMetric I Q) (γ : Surgery.Topology.ContinuousFreeLoop Q)
+    (hγ : ¬ Surgery.Topology.IsContractibleLoop γ) : competitorAreas g γ = ∅ := by
+  apply Set.eq_empty_iff_forall_notMem.mpr
+  rintro _ ⟨u, rfl⟩
+  apply hγ
+  have htrace : DifferentialGeometry.Topology.diskTrace u.1.map = γ := by
+    ext θ
+    exact u.2 θ
+  have h := DifferentialGeometry.Topology.diskTrace_nullhomotopic u.1.map
+  rw [htrace] at h
+  exact h
+
+
 variable [finiteDimensionalE : FiniteDimensional ℝ E] [boundarylessI : I.Boundaryless]
   [t2Q : T2Space Q] [compactQ : CompactSpace Q]
 

@@ -294,28 +294,6 @@ private theorem periodic_lift_continuous {f : ℝ → ℝ}
   simpa only [Function.Periodic.lift_coe] using! hc
 
 
-private theorem exists_short_circle_lifts (x y : Surgery.Topology.Circle) :
-    ∃ a d : ℝ, 0 ≤ a ∧ a ≤ 1 ∧ -(1 / 2 : ℝ) ≤ d ∧ d ≤ 1 / 2 ∧
-      (a : Surgery.Topology.Circle) = y ∧ ((a + d : ℝ) : Surgery.Topology.Circle) = x ∧
-      dist x y = |d| := by
-  let a := AddCircle.equivIco (1 : ℝ) 0 y
-  let d := AddCircle.equivIco (1 : ℝ) (-(1 / 2 : ℝ)) (x - y)
-  have ha : 0 ≤ a.1 ∧ a.1 < 1 := by simpa using a.2
-  have hd : -(1 / 2 : ℝ) ≤ d.1 ∧ d.1 < 1 / 2 := by convert! d.2 using 1; norm_num
-  have haq : (a.1 : Surgery.Topology.Circle) = y := AddCircle.coe_equivIco
-  have hdq : (d.1 : Surgery.Topology.Circle) = x - y := AddCircle.coe_equivIco
-  have hadq : ((a.1 + d.1 : ℝ) : Surgery.Topology.Circle) = x := by
-    rw [AddCircle.coe_add, haq, hdq]
-    abel
-  have hdabs : |d.1| ≤ |(1 : ℝ)| / 2 := by
-    rw [abs_one, abs_le]
-    exact ⟨hd.1, hd.2.le⟩
-  have hnorm : ‖(d.1 : Surgery.Topology.Circle)‖ = |d.1| :=
-    (AddCircle.norm_coe_eq_abs_iff (1 : ℝ) one_ne_zero).mpr hdabs
-  refine ⟨a.1, d.1, ha.1, ha.2.le, hd.1, hd.2.le, haq, hadq, ?_⟩
-  rw [dist_eq_norm, ← hdq]
-  exact hnorm
-
 private theorem periodic_smooth_lift_lipschitz {f : ℝ → ℝ}
     (hf : ContDiff ℝ ∞ f) (hp : Function.Periodic f 1) :
     ∃ L : ℝ≥0, LipschitzWith L hp.lift := by
@@ -325,7 +303,8 @@ private theorem periodic_smooth_lift_lipschitz {f : ℝ → ℝ}
   refine ⟨NNReal.mk (max 0 C) (le_max_left _ _), ?_⟩
   apply LipschitzWith.of_dist_le_mul
   intro x y
-  obtain ⟨a, d, ha0, ha1, hd0, hd1, hay, hadx, hdist⟩ := exists_short_circle_lifts x y
+  obtain ⟨a, d, ha0, ha1, hd0, hd1, hay, hadx, hdist⟩ :=
+    DifferentialGeometry.Topology.exists_short_circle_lifts x y
   have ha : a ∈ Icc (-1 : ℝ) 2 := by constructor <;> linarith
   have had : a + d ∈ Icc (-1 : ℝ) 2 := by constructor <;> linarith
   have hconv : Convex ℝ (Icc (-1 : ℝ) 2) := convex_Icc _ _

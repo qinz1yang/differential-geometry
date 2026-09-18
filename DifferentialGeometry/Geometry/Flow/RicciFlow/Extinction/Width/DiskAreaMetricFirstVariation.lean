@@ -41,32 +41,6 @@ private theorem SmoothDisk.differential_eq_mfderiv_extension
   exact congrArg (fun (L : ℂ →L[ℝ] E) => L v) (h1.trans h2)
 
 omit [FiniteDimensional ℝ E] [T2Space Q] hBoundary in
-private theorem parametricJacobian_eq_riemannianAreaDensity_of_mem_nhds
-    (g : SmoothRiemannianMetric I Q) (U : ℂ → Q) {s : Set ℂ} {z : ℂ} (hs : s ∈ 𝓝 z) :
-    parametricJacobian g U s z = DifferentialGeometry.Geometry.riemannianAreaDensity g U z := by
-  by_cases hd : MDifferentiableAt 𝓘(ℝ, ℂ) I U z
-  · rw [parametricJacobian, if_pos hd.mdifferentiableWithinAt,
-      mfderivWithin_of_mem_nhds (f := U) hs]
-    rw [DifferentialGeometry.Geometry.riemannianAreaDensity,
-      DifferentialGeometry.Geometry.tangentTwoJacobian]
-    refine congrArg Real.sqrt ?_
-    have hmat : (fun i j : Fin 2 => (g.inner (U z))
-          (mfderiv 𝓘(ℝ, ℂ) I U z (diskBasis i))
-          (mfderiv 𝓘(ℝ, ℂ) I U z (diskBasis j)))
-        = Matrix.of (fun i j : Fin 2 => (g.inner (U z))
-          (mfderiv 𝓘(ℝ, ℂ) I U z (diskBasis i))
-          (mfderiv 𝓘(ℝ, ℂ) I U z (diskBasis j))) := rfl
-    rw [hmat, Matrix.det_fin_two]
-    simp only [Matrix.of_apply]
-    have h0 : diskBasis (0 : Fin 2) = (1 : ℂ) := by simp [diskBasis]
-    have h1 : diskBasis (1 : Fin 2) = Complex.I := by simp [diskBasis]
-    rw [h0, h1]
-    rw [g.symm (U z) (mfderiv 𝓘(ℝ, ℂ) I U z Complex.I) (mfderiv 𝓘(ℝ, ℂ) I U z (1 : ℂ))]
-    ring
-  · rw [parametricJacobian, if_neg (fun h => hd (h.mdifferentiableAt hs)),
-      DifferentialGeometry.Geometry.riemannianAreaDensity_eq_zero_of_not_mdifferentiableAt g hd]
-
-omit [FiniteDimensional ℝ E] [T2Space Q] hBoundary in
 private theorem diskArea_eq_integral_riemannianAreaDensity_extension
     (g : SmoothRiemannianMetric I Q) (u : Disk → Q) :
     diskArea g u = ∫ z in Metric.closedBall (0 : ℂ) 1,

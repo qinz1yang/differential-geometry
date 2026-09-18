@@ -1791,7 +1791,7 @@ theorem loopUniformDistance_comm (g : SmoothRiemannianMetric I Q)
   exact congrArg sSup (congrArg Set.range (funext fun θ => congrArg ENNReal.toReal (hd _ _)))
 
 omit finiteDimensionalE boundarylessI t2Q compactQ connectedQ in
-private theorem parametricJacobian_eq_riemannianAreaDensity_of_mem_nhds
+theorem parametricJacobian_eq_riemannianAreaDensity_of_mem_nhds
     (g : SmoothRiemannianMetric I Q) (U : ℂ → Q) {s : Set ℂ} {z : ℂ} (hs : s ∈ 𝓝 z) :
     parametricJacobian g U s z = Geometry.riemannianAreaDensity g U z := by
   by_cases hd : MDifferentiableAt 𝓘(ℝ, ℂ) I U z
@@ -1814,6 +1814,25 @@ private theorem parametricJacobian_eq_riemannianAreaDensity_of_mem_nhds
     ring
   · rw [parametricJacobian, if_neg (fun h => hd (h.mdifferentiableAt hs)),
       Geometry.riemannianAreaDensity_eq_zero_of_not_mdifferentiableAt g hd]
+
+omit finiteDimensionalE boundarylessI t2Q compactQ connectedQ in
+theorem parametricJacobian_ae_eq_riemannianAreaDensity_of_convex
+    (g : SmoothRiemannianMetric I Q) (U : ℂ → Q)
+    {s : Set ℂ} (hs : Convex ℝ s) :
+    parametricJacobian g U s =ᵐ[volume.restrict s]
+      Geometry.riemannianAreaDensity g U := by
+  have hrestrict : volume.restrict s = volume.restrict (interior s) := by
+    apply Measure.restrict_congr_set
+    apply ae_eq_set.mpr
+    constructor
+    · apply measure_mono_null _ (hs.addHaar_frontier volume)
+      exact fun z hz => ⟨subset_closure hz.1, hz.2⟩
+    · rw [sdiff_eq_empty.mpr interior_subset, measure_empty]
+  rw [hrestrict]
+  filter_upwards [ae_restrict_mem isOpen_interior.measurableSet] with z hz
+  exact parametricJacobian_eq_riemannianAreaDensity_of_mem_nhds g U
+    (Filter.mem_of_superset (isOpen_interior.mem_nhds hz) interior_subset)
+
 
 omit [NormedAddCommGroup E] [NormedSpace ℝ E] [TopologicalSpace H] [TopologicalSpace Q]
   [ChartedSpace H Q] [IsManifold I ∞ Q] finiteDimensionalE boundarylessI t2Q compactQ connectedQ in
