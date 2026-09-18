@@ -11090,3 +11090,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.PullbackC
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.Derivative.NormComparison
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.Derivative.GeodesicAcceleration
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.ReferenceGeodesicBounds
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ParabolicReparametrizationExistence
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ParabolicUniqueness
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Terminal
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.TerminalEvolution

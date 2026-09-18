@@ -19,6 +19,60 @@ variable {I : ModelWithCorners ℝ E H} [I.Boundaryless]
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [T2Space M]
 
+theorem riemann_pullback_hasDerivWithinAt_of_evolution
+    {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
+    (t : ℝ) (x : M)
+    {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
+    (ι : ℝ → F ≃L[ℝ] TangentSpace I x) {J : Set ℝ}
+    (hRm : HasDerivWithinAt (fun s => S.base.rm04 s x)
+      (roughLap0SField (S.family.metric t) (S.base.rm04 t) x -
+        (2 : ℝ) • curvatureQuadraticCombination (S.family.metric t) (S.base.rm04 t) x -
+        ricciDrift04 (S.family.metric t) x) J t)
+    (hι : ∀ v, HasDerivWithinAt (fun s => ι s v)
+      (ricciSharp (I := I) (S.family.metric t) x (ι t v)) J t)
+    (v : Fin 4 → F) :
+    HasDerivWithinAt (fun s => S.base.rm04 s x (fun q => ι s (v q)))
+      (roughLap0SField (S.family.metric t) (S.base.rm04 t) x (fun q => ι t (v q)) -
+        2 * curvatureQuadraticCombination (S.family.metric t) (S.base.rm04 t) x
+          (fun q => ι t (v q))) J t := by
+  let e := tensor0SSpaceFiberContinuousLinearEquiv (I := I) 4 x
+  have hCml := e.toContinuousLinearMap.hasFDerivAt.comp_hasDerivWithinAt t hRm
+  have hd := hCml.continuousMultilinearMap_apply (fun q : Fin 4 => hι (v q))
+  let w := fun q => ι t (v q)
+  let R := ricciSharp (I := I) (S.family.metric t) x
+  have hw : vec4 (w 0) (w 1) (w 2) (w 3) = w := by
+    funext q
+    fin_cases q <;> rfl
+  have hu0 : Function.update w (0 : Fin 4) (R (w 0)) =
+      vec4 (R (w 0)) (w 1) (w 2) (w 3) := by
+    funext q
+    fin_cases q <;> rfl
+  have hu1 : Function.update w (1 : Fin 4) (R (w 1)) =
+      vec4 (w 0) (R (w 1)) (w 2) (w 3) := by
+    funext q
+    fin_cases q <;> rfl
+  have hu2 : Function.update w (2 : Fin 4) (R (w 2)) =
+      vec4 (w 0) (w 1) (R (w 2)) (w 3) := by
+    funext q
+    fin_cases q <;> rfl
+  have hu3 : Function.update w (3 : Fin 4) (R (w 3)) =
+      vec4 (w 0) (w 1) (w 2) (R (w 3)) := by
+    funext q
+    fin_cases q <;> rfl
+  have hsum : (∑ q : Fin 4, S.base.rm04 t x (Function.update w q (R (w q)))) =
+      ricciDrift04 (S.family.metric t) x w := by
+    rw [Fin.sum_univ_four, hu0, hu1, hu2, hu3]
+    rw [← hw, ricciDrift04_apply]
+    rfl
+  apply hd.congr_deriv
+  change ((roughLap0SField (S.family.metric t) (S.base.rm04 t) x -
+      (2 : ℝ) • curvatureQuadraticCombination (S.family.metric t) (S.base.rm04 t) x -
+      ricciDrift04 (S.family.metric t) x) w +
+      ∑ q : Fin 4, S.base.rm04 t x (Function.update w q (R (w q)))) = _
+  rw [hsum]
+  simp only [Tensor0SSpace.sub_apply, Tensor0SSpace.smul_apply, smul_eq_mul]
+  ring
+
 theorem riemann_pullback_hasDerivWithinAt_of_ricci_ode
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn S) (t : D.RegularTime) (x : M)
@@ -30,23 +84,9 @@ theorem riemann_pullback_hasDerivWithinAt_of_ricci_ode
     HasDerivWithinAt (fun s => S.base.rm04 s x (fun q => ι s (v q)))
       (roughLap0SField (S.family.metric t) (S.base.rm04 t) x (fun q => ι t (v q)) -
         2 * curvatureQuadraticCombination (S.family.metric t) (S.base.rm04 t) x
-          (fun q => ι t (v q))) J t := by
-  have h := riemann_pullback_four_slots_hasDerivWithinAt S hS t x ι hι
-    (v 0) (v 1) (v 2) (v 3)
-  have hv (s : ℝ) : vec4 (ι s (v 0)) (ι s (v 1)) (ι s (v 2)) (ι s (v 3)) =
-      fun q => ι s (v q) := by
-    funext q
-    fin_cases q <;> rfl
-  rw [show deriv (fun s => S.base.rm04 s x) (t : ℝ) =
-      roughLap0SField (S.family.metric t) (S.base.rm04 t) x -
-        (2 : ℝ) • curvatureQuadraticCombination (S.family.metric t) (S.base.rm04 t) x -
-        ricciDrift04 (S.family.metric t) x from
-      (riemann_tensor_hasDerivAt_of_solution S hS t x).deriv] at h
-  simp only [Tensor0SSpace.sub_apply, Tensor0SSpace.smul_apply, smul_eq_mul,
-    ricciDrift04_apply] at h
-  simp only [SolutionFamily.rm04, metricRm04_apply, SolutionOn.family_metric] at h ⊢
-  simp only [hv] at h
-  exact h.congr_deriv (by ring)
+          (fun q => ι t (v q))) J t :=
+  riemann_pullback_hasDerivWithinAt_of_evolution S t x ι
+    (riemann_tensor_hasDerivAt_of_solution S hS t x).hasDerivWithinAt hι v
 
 theorem riemann_pullback_components_hasDerivWithinAt_of_ricci_ode
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
@@ -84,6 +124,33 @@ theorem riemann_pullback_components_hasDerivWithinAt_of_ricci_ode
     (ι t) h hmetric b hInv hinv] at hderiv
   exact hderiv.congr_deriv (by ring)
 
+theorem riemann_pullback_tensor_hasDerivWithinAt_of_evolution
+    {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
+    (t : ℝ) (x : M)
+    {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
+    (ι : ℝ → F ≃L[ℝ] TangentSpace I x) {J : Set ℝ}
+    (hRm : HasDerivWithinAt (fun s => S.base.rm04 s x)
+      (roughLap0SField (S.family.metric t) (S.base.rm04 t) x -
+        (2 : ℝ) • curvatureQuadraticCombination (S.family.metric t) (S.base.rm04 t) x -
+        ricciDrift04 (S.family.metric t) x) J t)
+    (hι : ∀ v, HasDerivWithinAt (fun s => ι s v)
+      (ricciSharp (I := I) (S.family.metric t) x (ι t v)) J t) :
+    HasDerivWithinAt
+      (fun s => (tensor0SSpaceFiberContinuousLinearEquiv (I := I) 4 x (S.base.rm04 s x)).compContinuousLinearMap
+        (fun _ => (ι s).toContinuousLinearMap))
+      ((tensor0SSpaceFiberContinuousLinearEquiv (I := I) 4 x
+        (roughLap0SField (S.family.metric t) (S.base.rm04 t) x -
+          (2 : ℝ) • curvatureQuadraticCombination (S.family.metric t) (S.base.rm04 t) x)).compContinuousLinearMap
+        (fun _ => (ι t).toContinuousLinearMap)) J t := by
+  let b := (coordBasisAt (I := I) x).map (ι t).symm.toLinearEquiv
+  apply ContinuousMultilinearMap.hasDerivWithinAt_of_basis_eval b
+  intro m
+  have hd := riemann_pullback_hasDerivWithinAt_of_evolution S t x ι hRm hι
+    (fun q => b (m q))
+  simpa only [ContinuousMultilinearMap.compContinuousLinearMap_apply,
+    ContinuousLinearEquiv.coe_coe, tensor0SSpaceFiberContinuousLinearEquiv_apply_apply,
+    Tensor0SSpace.sub_apply, Tensor0SSpace.smul_apply, smul_eq_mul] using hd
+
 theorem riemann_pullback_tensor_hasDerivWithinAt_of_ricci_ode
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn S) (t : D.RegularTime) (x : M)
@@ -97,15 +164,9 @@ theorem riemann_pullback_tensor_hasDerivWithinAt_of_ricci_ode
       ((tensor0SSpaceFiberContinuousLinearEquiv (I := I) 4 x
         (roughLap0SField (S.family.metric t) (S.base.rm04 t) x -
           (2 : ℝ) • curvatureQuadraticCombination (S.family.metric t) (S.base.rm04 t) x)).compContinuousLinearMap
-        (fun _ => (ι t).toContinuousLinearMap)) J t := by
-  let b := (coordBasisAt (I := I) x).map (ι t).symm.toLinearEquiv
-  apply ContinuousMultilinearMap.hasDerivWithinAt_of_basis_eval b
-  intro m
-  have hd := riemann_pullback_hasDerivWithinAt_of_ricci_ode S hS t x ι hι
-    (fun q => b (m q))
-  simpa only [ContinuousMultilinearMap.compContinuousLinearMap_apply,
-    ContinuousLinearEquiv.coe_coe, tensor0SSpaceFiberContinuousLinearEquiv_apply_apply,
-    Tensor0SSpace.sub_apply, Tensor0SSpace.smul_apply, smul_eq_mul] using hd
+        (fun _ => (ι t).toContinuousLinearMap)) J t :=
+  riemann_pullback_tensor_hasDerivWithinAt_of_evolution S t x ι
+    (riemann_tensor_hasDerivAt_of_solution S hS t x).hasDerivWithinAt hι
 
 end DifferentialGeometry.PDE.RicciFlow
 
@@ -149,6 +210,39 @@ private theorem rawBundleConnLap_pullback_riemann
   exact ((S.base.rm04 t).contMDiff x).of_le
     (show (2 : ℕ∞ω) ≤ ∞ from WithTop.coe_le_coe.mpr le_top)
 
+theorem riemann_pullback_tensor_hasDerivWithinAt_laplacian_of_evolution
+    {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
+    (t : ℝ)
+    (ι : ℝ → ∀ x, V x ≃L[ℝ] TangentSpace I x) {J : Set ℝ}
+    (hι : ContMDiff I (I.prod 𝓘(ℝ, F →L[ℝ] E)) 1
+      (fun x => TotalSpace.mk' (F →L[ℝ] E) x (ι t x).toContinuousLinearMap))
+    (x : M)
+    (hRm : HasDerivWithinAt (fun s => S.base.rm04 s x)
+      (roughLap0SField (S.family.metric t) (S.base.rm04 t) x -
+        (2 : ℝ) • curvatureQuadraticCombination (S.family.metric t) (S.base.rm04 t) x -
+        ricciDrift04 (S.family.metric t) x) J t)
+    (hode : ∀ v, HasDerivWithinAt (fun s => ι s x v)
+      (ricciSharp (I := I) (S.family.metric t) x (ι t x v)) J t) :
+    HasDerivWithinAt
+      (fun s => (S.base.rm04 s x).compContinuousLinearMap
+        (fun _ => (ι s x).toContinuousLinearMap))
+      (rawBundleConnLap (S.family.metric t)
+        (CovariantDerivative.multilinear
+          (CovariantDerivative.pullbackFiberwiseLinearEquiv
+            (fun y => (ι t y).toLinearEquiv) hι.clm_bundle_map
+            (LeviCivita (S.family.metric t))) 4)
+        (fun y => (S.base.rm04 t y).compContinuousLinearMap
+          (fun _ => (ι t y).toContinuousLinearMap)) x -
+        (2 : ℝ) • (curvatureQuadraticCombination (S.family.metric t)
+          (S.base.rm04 t) x).compContinuousLinearMap
+            (fun _ => (ι t x).toContinuousLinearMap)) J t := by
+  have hd := riemann_pullback_tensor_hasDerivWithinAt_of_evolution S t x
+    (fun s => ι s x) hRm hode
+  apply hd.congr_deriv
+  rw [rawBundleConnLap_pullback_riemann S t (ι t) hι x,
+    rawBundleConnLap_multilinear_eq_roughLap0SField]
+  rfl
+
 theorem riemann_pullback_tensor_hasDerivWithinAt_laplacian_of_ricci_ode
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn S) (t : D.RegularTime)
@@ -169,13 +263,9 @@ theorem riemann_pullback_tensor_hasDerivWithinAt_laplacian_of_ricci_ode
           (fun _ => (ι t y).toContinuousLinearMap)) x -
         (2 : ℝ) • (curvatureQuadraticCombination (S.family.metric t)
           (S.base.rm04 t) x).compContinuousLinearMap
-            (fun _ => (ι t x).toContinuousLinearMap)) J t := by
-  have hd := riemann_pullback_tensor_hasDerivWithinAt_of_ricci_ode S hS t x
-    (fun s => ι s x) hode
-  apply hd.congr_deriv
-  rw [rawBundleConnLap_pullback_riemann S t (ι t) hι x,
-    rawBundleConnLap_multilinear_eq_roughLap0SField]
-  rfl
+            (fun _ => (ι t x).toContinuousLinearMap)) J t :=
+  riemann_pullback_tensor_hasDerivWithinAt_laplacian_of_evolution S t ι hι x
+    (riemann_tensor_hasDerivAt_of_solution S hS t x).hasDerivWithinAt hode
 
 theorem riemann_pullback_components_hasDerivWithinAt_laplacian_of_ricci_ode
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)

@@ -67,14 +67,18 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimension
   [FiberBundle F V] [VectorBundle ℝ F V] [ContMDiffVectorBundle ∞ F V I]
   [IsContMDiffRiemannianBundle I ∞ F V]
 
-theorem traceNormalizedCurvatureEndomorphism_pullback_hasDerivWithinAt_of_ricci_ode
+theorem traceNormalizedCurvatureEndomorphism_pullback_hasDerivWithinAt_of_evolution
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
-    (hS : IsSolutionOn S) (t : D.RegularTime)
+    (t : ℝ)
     (ι : ℝ → ∀ x, V x ≃L[ℝ] TangentSpace I x) {J : Set ℝ}
     (hι : ContMDiff I (I.prod 𝓘(ℝ, F →L[ℝ] E)) ∞
       (fun x => TotalSpace.mk' (F →L[ℝ] E) x (ι t x).toContinuousLinearMap))
     (hmetric : ∀ x v w, (S.family.metric t).inner x (ι t x v) (ι t x w) = ⟪v, w⟫)
     (x : M) (hdim : Module.finrank ℝ (V x) = 3)
+    (hRm : HasDerivWithinAt (fun s => S.base.rm04 s x)
+      (roughLap0SField (S.family.metric t) (S.base.rm04 t) x -
+        (2 : ℝ) • curvatureQuadraticCombination (S.family.metric t) (S.base.rm04 t) x -
+        ricciDrift04 (S.family.metric t) x) J t)
     (hode : ∀ v, HasDerivWithinAt (fun s => ι s x v)
       (ricciSharp (I := I) (S.family.metric t) x (ι t x v)) J t) :
     letI : ∀ y, FiniteDimensional ℝ (V y) := fun y => VectorBundle.finiteDimensional ℝ F V y
@@ -122,8 +126,8 @@ theorem traceNormalizedCurvatureEndomorphism_pullback_hasDerivWithinAt_of_ricci_
       (S.family.metric t) (ι t) hι₁ hmetric
   let L := (exteriorPower.endomorphismTensorLinear (E := V x) 2).toContinuousLinearMap
   apply L.hasDerivWithinAt_of_injective (exteriorPower.endomorphismTensor_injective 2)
-  have hd := riemann_pullback_tensor_hasDerivWithinAt_laplacian_of_ricci_ode
-    S hS t ι hι₁ x hode
+  have hd := riemann_pullback_tensor_hasDerivWithinAt_laplacian_of_evolution
+    S t ι hι₁ x hRm hode
   have hrep : (fun y => exteriorPower.endomorphismTensor 2 (R t y)) =
       (fun y => (-2 : ℝ) • T t y) := by
     funext y
@@ -152,6 +156,33 @@ theorem traceNormalizedCurvatureEndomorphism_pullback_hasDerivWithinAt_of_ricci_
           (curvatureOperatorReactionEndomorphism3 (R t x).toLinearMap).toContinuousLinearMap = _
     erw [rawBundleEndomorphismConnLap_def, ← hlap, hreaction]
     module
+
+theorem traceNormalizedCurvatureEndomorphism_pullback_hasDerivWithinAt_of_ricci_ode
+    {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
+    (hS : IsSolutionOn S) (t : D.RegularTime)
+    (ι : ℝ → ∀ x, V x ≃L[ℝ] TangentSpace I x) {J : Set ℝ}
+    (hι : ContMDiff I (I.prod 𝓘(ℝ, F →L[ℝ] E)) ∞
+      (fun x => TotalSpace.mk' (F →L[ℝ] E) x (ι t x).toContinuousLinearMap))
+    (hmetric : ∀ x v w, (S.family.metric t).inner x (ι t x v) (ι t x w) = ⟪v, w⟫)
+    (x : M) (hdim : Module.finrank ℝ (V x) = 3)
+    (hode : ∀ v, HasDerivWithinAt (fun s => ι s x v)
+      (ricciSharp (I := I) (S.family.metric t) x (ι t x v)) J t) :
+    letI : ∀ y, FiniteDimensional ℝ (V y) := fun y => VectorBundle.finiteDimensional ℝ F V y
+    letI := Bundle.ExteriorPower.totalSpaceTopology F V 2
+    letI := Bundle.ExteriorPower.fiberBundle F V 2
+    letI := Bundle.ExteriorPower.vector_bundle F V 2
+    letI := Bundle.ExteriorPower.contMDiffVectorBundle (IB := I) (n := ∞) F V 2
+    let hι₁ := hι.of_le (show (1 : ℕ∞ω) ≤ ∞ from by simp)
+    let cov := CovariantDerivative.pullbackFiberwiseLinearEquiv
+      (fun y => (ι t y).toLinearEquiv) hι₁.clm_bundle_map (LeviCivita (S.family.metric t))
+    let R := fun s y => exteriorPower.traceNormalizedCurvatureEndomorphism
+      ((S.base.rm04 s y).compContinuousLinearMap (fun _ => (ι s y).toContinuousLinearMap))
+      (riemann_pullback_isAlgCurvForm S s y (ι s y))
+    HasDerivWithinAt (fun s => R s x)
+      (rawBundleEndomorphismConnLap (S.family.metric t) (cov.exteriorPower 2) (R t) x +
+        (curvatureOperatorReactionEndomorphism3 (R t x).toLinearMap).toContinuousLinearMap) J t :=
+  traceNormalizedCurvatureEndomorphism_pullback_hasDerivWithinAt_of_evolution S t ι hι hmetric x hdim
+    (riemann_tensor_hasDerivAt_of_solution S hS t x).hasDerivWithinAt hode
 
 end DifferentialGeometry.PDE.RicciFlow
 
@@ -221,14 +252,18 @@ theorem exists_uhlenbeck_isometry_with_traceNormalizedCurvatureEndomorphism_evol
     (F := F) (V := V) S hS ⟨t, hJD ht⟩ ι hιt (hmetric t ht) x
     ((VectorBundle.finrank_eq ℝ F V x).trans hdim) (fun v => hderiv x v t ht)
 
-theorem traceNormalizedCurvatureSelfAdjoint_pullback_hasDerivWithinAt_of_ricci_ode
+theorem traceNormalizedCurvatureSelfAdjoint_pullback_hasDerivWithinAt_of_evolution
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
-    (hS : IsSolutionOn S) (t : D.RegularTime)
+    (t : ℝ)
     (ι : ℝ → ∀ x, V x ≃L[ℝ] TangentSpace I x) {J : Set ℝ}
     (hι : ContMDiff I (I.prod 𝓘(ℝ, F →L[ℝ] E)) ∞
       (fun x => TotalSpace.mk' (F →L[ℝ] E) x (ι t x).toContinuousLinearMap))
     (hmetric : ∀ x v w, (S.family.metric t).inner x (ι t x v) (ι t x w) = ⟪v, w⟫)
     (x : M) (hdim : Module.finrank ℝ (V x) = 3)
+    (hRm : HasDerivWithinAt (fun s => S.base.rm04 s x)
+      (roughLap0SField (S.family.metric t) (S.base.rm04 t) x -
+        (2 : ℝ) • curvatureQuadraticCombination (S.family.metric t) (S.base.rm04 t) x -
+        ricciDrift04 (S.family.metric t) x) J t)
     (hode : ∀ v, HasDerivWithinAt (fun s => ι s x v)
       (ricciSharp (I := I) (S.family.metric t) x (ι t x v)) J t) :
     letI : ∀ y, FiniteDimensional ℝ (V y) := fun y => VectorBundle.finiteDimensional ℝ F V y
@@ -287,10 +322,50 @@ theorem traceNormalizedCurvatureSelfAdjoint_pullback_hasDerivWithinAt_of_ricci_o
   let T := fun s y => (S.base.rm04 s y).compContinuousLinearMap
     (fun _ => (ι s y).toContinuousLinearMap)
   let hT := fun s y => riemann_pullback_isAlgCurvForm S s y (ι s y)
-  have h := traceNormalizedCurvatureEndomorphism_pullback_hasDerivWithinAt_of_ricci_ode
-    (F := F) (V := V) S hS t ι hι hmetric x hdim hode
+  have h := traceNormalizedCurvatureEndomorphism_pullback_hasDerivWithinAt_of_evolution
+    (F := F) (V := V) S t ι hι hmetric x hdim hRm hode
   exact hc.hasDerivWithinAt_traceNormalizedCurvatureSelfAdjoint (F := F) (V := V)
     (S.family.metric t) T hT t (riemann_pullback_contMDiff S t (ι t) hι) x J h
+
+theorem traceNormalizedCurvatureSelfAdjoint_pullback_hasDerivWithinAt_of_ricci_ode
+    {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
+    (hS : IsSolutionOn S) (t : D.RegularTime)
+    (ι : ℝ → ∀ x, V x ≃L[ℝ] TangentSpace I x) {J : Set ℝ}
+    (hι : ContMDiff I (I.prod 𝓘(ℝ, F →L[ℝ] E)) ∞
+      (fun x => TotalSpace.mk' (F →L[ℝ] E) x (ι t x).toContinuousLinearMap))
+    (hmetric : ∀ x v w, (S.family.metric t).inner x (ι t x v) (ι t x w) = ⟪v, w⟫)
+    (x : M) (hdim : Module.finrank ℝ (V x) = 3)
+    (hode : ∀ v, HasDerivWithinAt (fun s => ι s x v)
+      (ricciSharp (I := I) (S.family.metric t) x (ι t x v)) J t) :
+    letI : ∀ y, FiniteDimensional ℝ (V y) := fun y => VectorBundle.finiteDimensional ℝ F V y
+    letI := Bundle.ExteriorPower.totalSpaceTopology F V 2
+    letI := Bundle.ExteriorPower.fiberBundle F V 2
+    letI := Bundle.ExteriorPower.vector_bundle F V 2
+    letI := Bundle.ExteriorPower.contMDiffVectorBundle (IB := I) (n := ∞) F V 2
+    letI := Bundle.ExteriorPower.isContMDiffRiemannianBundle (IB := I) (n := ∞) F V 2
+    let P := selfAdjointSubbundle (I := I) (F := ⋀[ℝ]^2 F)
+      (V := fun y => ⋀[ℝ]^2 (V y)) (n := ∞)
+    letI := P.totalSpaceTopology
+    letI := P.fiberBundle
+    let hι₁ := hι.of_le (show (1 : ℕ∞ω) ≤ ∞ from by simp)
+    let cov := CovariantDerivative.pullbackFiberwiseLinearEquiv
+      (fun y => (ι t y).toLinearEquiv) hι₁.clm_bundle_map (LeviCivita (S.family.metric t))
+    let hc := CovariantDerivative.isMetricCompatible_pullback_leviCivita
+      (S.family.metric t) (ι t) hι₁ hmetric
+    let T := fun s y => (S.base.rm04 s y).compContinuousLinearMap
+      (fun _ => (ι s y).toContinuousLinearMap)
+    let hT := fun s y => riemann_pullback_isAlgCurvForm S s y (ι s y)
+    let R : ℝ → ∀ y, P.fiber y := fun s y =>
+      exteriorPower.traceNormalizedCurvatureSelfAdjoint (T s y) (hT s y)
+    let Q : P.fiber x := curvatureOperatorReactionSelfAdjoint3 (R t x)
+    HasDerivWithinAt (fun s => R s x)
+      (rawBundleConnLap (F := Fin P.rank → ℝ) (V := fun y => P.fiber y)
+        (S.family.metric t)
+        ((cov.exteriorPower 2).selfAdjoint
+          (F := ⋀[ℝ]^2 F) (V := fun y => ⋀[ℝ]^2 (V y))
+          (hc.exteriorPower 2)) (R t) x + Q) J t :=
+  traceNormalizedCurvatureSelfAdjoint_pullback_hasDerivWithinAt_of_evolution S t ι hι hmetric x hdim
+    (riemann_tensor_hasDerivAt_of_solution S hS t x).hasDerivWithinAt hode
 
 theorem exists_uhlenbeck_isometry_with_traceNormalizedCurvatureSelfAdjoint_evolution
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)

@@ -12995,3 +12995,95 @@ private theorem reference_parameterDerivative_forcing_lift_norm_le_for_selected_
 
 end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening.SmoothImmersion
 end
+
+noncomputable section
+open MeasureTheory Filter Set
+open scoped Manifold ContDiff NNReal
+namespace DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening.SmoothImmersion
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Parabolic
+open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
+open DifferentialGeometry.Analysis.Parabolic.TimeSobolev
+open DifferentialGeometry.Analysis.Parabolic.QuasiLinear
+open DifferentialGeometry.Analysis.Parabolic.MaximalRegularity
+open DifferentialGeometry.Geometry.Curvature
+open AddCircle (parameterPrincipalOperatorHsPi parameterPrincipalOperatorH0Pi)
+variable {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E] [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
+  {n : ℕ}
+private local instance : NeZero (Module.finrank ℝ ℝ) := ⟨by norm_num⟩
+
+variable (c₀ : SmoothImmersion (I := I) (M := M))
+variable (g : ℝ → SmoothRiemannianMetric I M) {D : RealTimeInterval} (ht : 0 ∈ D.regular)
+    {e : M → EuclideanSpace ℝ (Fin n)} (he : ContMDiff I 𝓘(ℝ, EuclideanSpace ℝ (Fin n)) ∞ e)
+    {r : EuclideanSpace ℝ (Fin n) → M} {U : TopologicalSpace.Opens (EuclideanSpace ℝ (Fin n))}
+variable (hr : ContMDiffOn 𝓘(ℝ, EuclideanSpace ℝ (Fin n)) I ∞ r U)
+variable (hEU : Set.range e ⊆ U) (hleft : ∀ p, r (e p) = p) (β : U)
+variable (hG : MetricFamilySmoothOn D (fun t => Geometry.Riemannian.retractionMetric (g t) he hr))
+
+include ht he hr hEU hleft β hG in
+private theorem exists_parametric_solution_of_smooth_retraction [I.Boundaryless] :
+    ∃ T : ℝ, 0 < T ∧ ∃ c : CurveMap M,
+      c.SmoothOn (I := I) (Icc 0 T) ∧ c.ImmersedOn (I := I) (Icc 0 T) ∧
+      (∀ z, c z 0 = c₀.map z) ∧
+      ∀ x t, t ∈ Icc 0 T → c.velocity (I := I) (Icc 0 T) x t =
+        c.speed g x t ^ (-2 : ℤ) • c.Dx g c.X x t := by
+  obtain ⟨ρ, hρ, hρC, hρ1, T, hT, hTρ, u, gforce, hfacts, hlift, hsmooth⟩ :=
+    ambient_sobolev_solution_exists_with_smooth_chart c₀ g ht he hr hEU hleft β hG
+  let g₀ := c₀.pullbackMetric (g 0)
+  let f₀ := ambientSobolev c₀ (g 0) e he (((1 : ℕ) : ℝ) + 2)
+  let P := circleHsPiInclusion g₀ (Fin n)
+    (show (1 : ℝ) ≤ ((1 : ℕ) : ℝ) + 2 by norm_num)
+  let S := circleHsPiInclusion g₀ (Fin n)
+    (show (1 : ℝ) ≤ ((1 : ℕ) : ℝ) by norm_num)
+  let d : CurveMap (EuclideanSpace ℝ (Fin n)) := fun z t => WithLp.toLp 2
+    (scalarH1PiToContinuous g₀ (P f₀ + S (u.toFun t)) z)
+  let c : CurveMap M := fun z t => r (d z t)
+  have hfinite := ambient_retraction_contMDiff_two_and_immersed_of_parameterDerivative_lift
+    c₀ g ht he hr hEU hleft β hG hT hTρ hρC u gforce hfacts hlift
+  have hcsm : c.SmoothOn (I := I) (Icc 0 T) :=
+    ambient_retraction_smooth_of_contDiffOn
+      c₀ g ht he hr hEU hleft β hG hT hTρ hρC u gforce hfacts hsmooth
+  have hparam := ambient_retraction_parametric_equation_of_parameterDerivative_lift
+    c₀ g ht he hr hEU hleft β hG hT hTρ hρC u gforce hfacts hlift
+  exact ⟨T, hT, c, hcsm, hfinite.2.2.2, hfinite.1, hparam⟩
+
+end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening.SmoothImmersion
+end
+
+noncomputable section
+open Set
+open scoped Manifold ContDiff
+
+namespace DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening.SmoothImmersion
+open DifferentialGeometry.Geometry.Curvature
+
+theorem exists_parametric_solution_of_compact
+    {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [FiniteDimensional ℝ E] [TopologicalSpace H]
+    {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+    [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+    [T2Space M] [CompactSpace M]
+    (c₀ : SmoothImmersion (I := I) (M := M))
+    (g : ℝ → SmoothRiemannianMetric I M) {D : RealTimeInterval}
+    (ht : 0 ∈ D.regular) (hg : MetricFamilySmoothOn D g) :
+    ∃ T : ℝ, 0 < T ∧ ∃ c : CurveMap M,
+      c.SmoothOn (I := I) (Icc 0 T) ∧ c.ImmersedOn (I := I) (Icc 0 T) ∧
+      (∀ z, c z 0 = c₀.map z) ∧
+      ∀ x t, t ∈ Icc 0 T → c.velocity (I := I) (Icc 0 T) x t =
+        c.speed g x t ^ (-2 : ℤ) • c.Dx g c.X x t := by
+  let : Nonempty M := ⟨c₀.map 0⟩
+  obtain ⟨n, e, he, hemb, hi⟩ :=
+    exists_embedding_euclidean_of_compact (I := I) (M := M)
+  obtain ⟨r, V, hV, heV, hr, hleft⟩ :=
+    DifferentialGeometry.Geometry.exists_smooth_neighborhood_retraction
+      he hemb.isEmbedding hi
+  let U : TopologicalSpace.Opens (EuclideanSpace ℝ (Fin n)) := ⟨V, hV⟩
+  have hrU : ContMDiffOn 𝓘(ℝ, EuclideanSpace ℝ (Fin n)) I ∞ r U := hr
+  let β : U := ⟨e (c₀.map 0), heV (mem_range_self _)⟩
+  have hG := metricFamilySmoothOn_retractionMetric g hg he hrU
+  exact exists_parametric_solution_of_smooth_retraction c₀ g ht he hrU heV hleft β hG
+
+end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening.SmoothImmersion
+end
