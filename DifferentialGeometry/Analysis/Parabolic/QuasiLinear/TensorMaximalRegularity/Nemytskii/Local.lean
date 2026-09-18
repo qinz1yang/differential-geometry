@@ -319,3 +319,40 @@ theorem nemytskiiTameOn_coeFn {S : Set X} (hzero : (0 : X) ∈ S) {R : ℝ}
 end DifferentialGeometry.Analysis.Parabolic.QuasiLinear
 
 end
+
+section
+noncomputable section
+
+open MeasureTheory Set Filter
+open DifferentialGeometry.Analysis.Parabolic.TimeSobolev
+
+namespace DifferentialGeometry.Analysis.Parabolic.QuasiLinear
+
+theorem ae_residual_lift_of_ball_imp
+    {X Y Z : Type*} [NormedAddCommGroup X] [NormedSpace ℝ X]
+    [NormedAddCommGroup Y]
+    [SeminormedAddCommGroup Z] [NormedSpace ℝ Z]
+    {T r outer : ℝ} (K : X →L[ℝ] Z)
+    (hzero : (0 : X) ∈ {v | ‖K v‖ ≤ r}) (N : ℝ → {v : X | ‖K v‖ ≤ r} → Y)
+    (field : timeL2 X T) (force : timeL2 Y T) (W : ℝ → X) (f₀ : X)
+    (F : ℝ → X → Y) (hrOuter : r ≤ outer)
+    (hfield : field =ᵐ[timeMeasure T] (fun t => W t - f₀))
+    (hstate : ∀ᵐ t ∂(timeMeasure T), field t ∈ {v | ‖K v‖ ≤ r})
+    (hforce : ∀ᵐ t ∂(timeMeasure T), ‖K (W t - f₀)‖ ≤ outer → force t = F t (W t))
+    (hN : ∀ t (hW : ‖K (W t - f₀)‖ ≤ r), F t (W t) = N t ⟨W t - f₀, hW⟩) :
+    force =ᵐ[timeMeasure T] (fun t => N t (aeSetLift hzero field t)) := by
+  filter_upwards [hforce, hfield, hstate, aeSetLift_coe_ae hzero field hstate] with
+    t hf hfieldt hstatet hlift
+  have hW : ‖K (W t - f₀)‖ ≤ r := by
+    rw [← hfieldt]
+    exact hstatet
+  have houter : ‖K (W t - f₀)‖ ≤ outer := hW.trans hrOuter
+  have hNval := hN t hW
+  have heqLift : aeSetLift hzero field t = ⟨W t - f₀, hW⟩ := by
+    apply Subtype.ext
+    exact hlift.trans hfieldt
+  rw [hf houter, hNval, heqLift]
+
+end DifferentialGeometry.Analysis.Parabolic.QuasiLinear
+end
+end

@@ -188,3 +188,115 @@ theorem time_partial_tame_vector
         (I := I) (M := M) g₀ r s) _ F
 
 end DifferentialGeometry.Analysis.Parabolic.QuasiLinear
+
+end
+
+section
+open MeasureTheory Filter
+open scoped Manifold ContDiff ENNReal NNReal
+
+namespace DifferentialGeometry.Analysis.Parabolic.QuasiLinear
+
+open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
+open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
+open DifferentialGeometry.Analysis.Parabolic.TimeSobolev
+open DifferentialGeometry.Analysis.Parabolic.MaximalRegularity
+
+variable {ι : Type*} [Fintype ι]
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
+variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+  [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+variable {g : SmoothRiemannianMetric I M} {r s : ℕ} {a T : ℝ}
+
+theorem strongPair_eq_of_tame_vector
+    (hT : 0 < T) {R : ℝ} (hR : 0 ≤ R)
+    {S : Set (PiLp 2 (fun _ : ι => TensorHs g r s (a + 2)))}
+    (hzero : (0 : PiLp 2 (fun _ : ι => TensorHs g r s (a + 2))) ∈ S)
+    (N : ℝ → S → PiLp 2 (fun _ : ι => TensorHs g r s a))
+    (A B C : ℝ≥0)
+    (htame : ∀ᵐ t ∂(timeMeasure T), ∀ v w : S,
+      ‖N t v - N t w‖ ≤
+        (A : ℝ) * R * ‖(v : PiLp 2 (fun _ : ι => TensorHs g r s (a + 2))) - w‖ +
+          (B : ℝ) * ‖ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion
+            (g := g) (r := r) (s := s) (show a + 1 ≤ a + 2 by linarith))
+              ((v : PiLp 2 (fun _ : ι => TensorHs g r s (a + 2))) - w)‖ +
+          (C : ℝ) * (‖(v : PiLp 2 (fun _ : ι => TensorHs g r s (a + 2)))‖ +
+            ‖(w : PiLp 2 (fun _ : ι => TensorHs g r s (a + 2)))‖) *
+            ‖ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion
+              (g := g) (r := r) (s := s) (show a + 1 ≤ a + 2 by linarith))
+                ((v : PiLp 2 (fun _ : ι => TensorHs g r s (a + 2))) - w)‖)
+    (force₁ force₂ : timeL2 (PiLp 2 (fun _ : ι => TensorHs g r s a)) T)
+    (u₁ u₂ : timeH1 (PiLp 2 (fun _ : ι => TensorHs g r s a)) T)
+    (field₁ field₂ : timeL2 (PiLp 2 (fun _ : ι => TensorHs g r s (a + 2))) T)
+    (htrace : timeH1.trace0 _ T u₁ = timeH1.trace0 _ T u₂)
+    (hlink₁ : (ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion
+        (g := g) (r := r) (s := s) (show a ≤ a + 2 by linarith))).compLpL
+          2 (timeMeasure T) field₁ = u₁.toFunL2)
+    (hlink₂ : (ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion
+        (g := g) (r := r) (s := s) (show a ≤ a + 2 by linarith))).compLpL
+          2 (timeMeasure T) field₂ = u₂.toFunL2)
+    (heq₁ : timeH1.timeDeriv _ T u₁ =
+      (ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorScaleLaplacian
+        (g := g) (r := r) (s := s) a)).compLpL 2 (timeMeasure T) field₁ + force₁)
+    (heq₂ : timeH1.timeDeriv _ T u₂ =
+      (ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorScaleLaplacian
+        (g := g) (r := r) (s := s) a)).compLpL 2 (timeMeasure T) field₂ + force₂)
+    (hstate₁ : ∀ᵐ t ∂(timeMeasure T), field₁ t ∈ S)
+    (hstate₂ : ∀ᵐ t ∂(timeMeasure T), field₂ t ∈ S)
+    (hforce₁ : force₁ =ᵐ[timeMeasure T] fun t => N t (aeSetLift hzero field₁ t))
+    (hforce₂ : force₂ =ᵐ[timeMeasure T] fun t => N t (aeSetLift hzero field₂ t))
+    (hsmall : (A : ℝ) * R * (1 + T) +
+      (B : ℝ) * Real.sqrt T * Real.sqrt (1 + T) +
+        (C : ℝ) * Real.sqrt (1 + T) * (‖field₁‖ + ‖field₂‖) < 1) :
+    force₁ = force₂ ∧ field₁ = field₂ ∧ u₁ = u₂ := by
+  let hc := DifferentialGeometry.Analysis.Spectral.tensorResolventL2_isCompactOperator
+    (I := I) (M := M) g r s
+  let J := ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion
+    (g := g) (r := r) (s := s) (show a + 1 ≤ a + 2 by linarith))
+  let L := maximalRegularityVectorFieldL (ι := ι) (g := g) (r := r) (s := s) a hT.le
+  have hL (F) : ‖L F‖ ≤ (1 + T) * ‖F‖ :=
+    (L.le_opNorm F).trans (mul_le_mul_of_nonneg_right
+      (maximalRegularityVectorFieldL_norm_le hT) (norm_nonneg F))
+  have hp (F) : ∀ᵐ t ∂(timeMeasure T),
+      ‖J (L F t)‖ ≤ Real.sqrt (1 + T) * ‖F‖ := by
+    dsimp only [L]
+    rw [maximalRegularityVectorFieldL_eq_duhamel hT F]
+    exact maximalRegularityDuhamelVectorField_Ha1_ae_pointwise_le hT F
+  have htrace0 : timeH1.trace0 _ T (u₁ - u₂) =
+      ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion
+        (g := g) (r := r) (s := s) (show a ≤ a + 2 by linarith))
+          (0 : PiLp 2 (fun _ : ι => TensorHs g r s (a + 2))) := by
+    rw [map_sub, htrace, sub_self, map_zero]
+  have hlink : (ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion
+      (g := g) (r := r) (s := s) (show a ≤ a + 2 by linarith))).compLpL
+        2 (timeMeasure T) (field₁ - field₂) = (u₁ - u₂).toFunL2 := by
+    change _ = timeH1.toTimeL2 _ T (u₁ - u₂)
+    rw [map_sub, map_sub, hlink₁, hlink₂]
+    rfl
+  have heq : timeH1.timeDeriv _ T (u₁ - u₂) =
+      (ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorScaleLaplacian
+        (g := g) (r := r) (s := s) a)).compLpL 2 (timeMeasure T)
+          (field₁ - field₂) + (force₁ - force₂) := by
+    rw [map_sub, heq₁, heq₂, map_sub]
+    abel
+  obtain ⟨hfield, _⟩ := strongPair_eq_duhamel_vector hT hc 0
+    (force₁ - force₂) (u₁ - u₂) (field₁ - field₂) htrace0 hlink heq
+  have hresponse : field₁ - field₂ = L (force₁ - force₂) :=
+    hfield.trans (maximalRegularityVectorFieldL_eq_duhamel hT (force₁ - force₂)).symm
+  have hforce : force₁ = force₂ := forcing_eq_of_tame hzero hR
+    (Real.sqrt_nonneg _) J L hL hp N A B C htame force₁ force₂ field₁ field₂
+      hresponse hstate₁ hstate₂ hforce₁ hforce₂ hsmall
+  have hfields : field₁ = field₂ := by
+    apply sub_eq_zero.mp
+    rw [hresponse, hforce, sub_self, map_zero]
+  have hu : u₁ = u₂ := by
+    apply timeH1.ext
+    · exact htrace
+    · change timeH1.timeDeriv _ T u₁ = timeH1.timeDeriv _ T u₂
+      rw [heq₁, heq₂, hfields, hforce]
+  exact ⟨hforce, hfields, hu⟩
+
+end DifferentialGeometry.Analysis.Parabolic.QuasiLinear
+end

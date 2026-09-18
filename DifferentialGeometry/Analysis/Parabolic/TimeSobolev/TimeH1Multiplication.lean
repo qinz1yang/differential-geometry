@@ -233,3 +233,55 @@ theorem exists_timeH1_smul (z : timeH1 ℝ T) (u : timeH1 X T) :
     exists_timeH1_bilin (ContinuousLinearMap.lsmul ℝ ℝ) z u
 
 end DifferentialGeometry.Analysis.Parabolic.TimeSobolev
+
+end
+
+section
+noncomputable section
+
+open MeasureTheory Set
+
+namespace DifferentialGeometry.Analysis.Parabolic.TimeSobolev
+
+private theorem exists_timeH1_strongPair_comp
+    {X Y Z : Type*} [NormedAddCommGroup X] [NormedSpace ℝ X]
+    [NormedAddCommGroup Y] [NormedSpace ℝ Y] [CompleteSpace Y]
+    [NormedAddCommGroup Z] [NormedSpace ℝ Z] [CompleteSpace Z]
+    (P L : X →L[ℝ] Y) (P' L' : X →L[ℝ] Z) (R : Y →L[ℝ] Z)
+    (hP : ∀ x, R (P x) = P' x) (hL : ∀ x, R (L x) = L' x)
+    {T : ℝ} (u : timeH1 Y T) (field : timeL2 X T) (force : timeL2 Y T)
+    (hzero : timeH1.trace0 Y T u = 0)
+    (hlink : P.compLpL 2 (timeMeasure T) field = u.toFunL2)
+    (hpde : timeH1.timeDeriv Y T u = L.compLpL 2 (timeMeasure T) field + force) :
+    ∃ v : timeH1 Z T, timeH1.trace0 Z T v = 0 ∧
+      EqOn v.toFun (fun t => R (u.toFun t)) (Icc 0 T) ∧
+      P'.compLpL 2 (timeMeasure T) field = v.toFunL2 ∧
+      timeH1.timeDeriv Z T v = L'.compLpL 2 (timeMeasure T) field +
+        R.compLpL 2 (timeMeasure T) force := by
+  obtain ⟨v, hv0, hvt, hvd⟩ := exists_timeH1_comp_clm R u
+  refine ⟨v, ?_, fun t ht => hvt t ht, ?_, ?_⟩
+  · change v.initial = 0
+    rw [hv0, show u.initial = 0 from hzero, map_zero]
+  · apply Lp.ext
+    filter_upwards [P'.coeFn_compLpL field, P.coeFn_compLpL field,
+      coeFn_ofContinuousOn u.continuousOn_toFun,
+      coeFn_ofContinuousOn v.continuousOn_toFun,
+      ae_restrict_mem measurableSet_Icc] with t hP' htP hu hv ht
+    change u.toFunL2 t = u.toFun t at hu
+    change v.toFunL2 t = v.toFun t at hv
+    rw [hP', hv, hvt t ht, ← hu, ← hlink, htP, hP]
+  · change v.deriv = _
+    apply Lp.ext
+    filter_upwards [hvd, L.coeFn_compLpL field, L'.coeFn_compLpL field,
+      R.coeFn_compLpL force,
+      Lp.coeFn_add (L.compLpL 2 (timeMeasure T) field) force,
+      Lp.coeFn_add (L'.compLpL 2 (timeMeasure T) field)
+        (R.compLpL 2 (timeMeasure T) force)] with t hd hLt hL't hRt hsum hsum'
+    change u.deriv = _ at hpde
+    rw [hd, hpde, hsum, hsum']
+    simp only [Pi.add_apply, map_add, hLt, hL, hL't, hRt]
+
+end DifferentialGeometry.Analysis.Parabolic.TimeSobolev
+
+end
+end

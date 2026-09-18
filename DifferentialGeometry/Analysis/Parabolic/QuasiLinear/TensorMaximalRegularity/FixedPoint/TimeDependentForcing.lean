@@ -208,3 +208,100 @@ theorem exists_fixed_forcing_of_tame
     exact (Filter.EventuallyEq.of_eq (congrArg (fun w : timeL2 Y T => (w : ℝ → Y)) hfix'.symm)).trans hcoe
 
 end DifferentialGeometry.Analysis.Parabolic.QuasiLinear
+
+end
+
+section
+open MeasureTheory Filter
+open scoped ENNReal NNReal
+
+namespace DifferentialGeometry.Analysis.Parabolic.QuasiLinear
+
+open DifferentialGeometry.Analysis.Parabolic.TimeSobolev
+
+variable {X Y Z : Type*}
+  [NormedAddCommGroup X] [NormedSpace ℝ X]
+  [NormedAddCommGroup Y] [NormedSpace ℝ Y]
+  [NormedAddCommGroup Z] [NormedSpace ℝ Z]
+
+theorem forcing_eq_of_tame
+    {T R H P : ℝ} {S : Set X} (hzero : (0 : X) ∈ S)
+    (hR : 0 ≤ R) (hP : 0 ≤ P)
+    (J : X →L[ℝ] Z) (L : timeL2 Y T →L[ℝ] timeL2 X T)
+    (hL : ∀ F, ‖L F‖ ≤ H * ‖F‖)
+    (hpoint : ∀ F, ∀ᵐ t ∂(timeMeasure T), ‖J (L F t)‖ ≤ P * ‖F‖)
+    (N : ℝ → S → Y) (A B C : ℝ≥0)
+    (htame : ∀ᵐ t ∂(timeMeasure T), ∀ u v : S,
+      ‖N t u - N t v‖ ≤
+        (A : ℝ) * R * ‖(u : X) - (v : X)‖ +
+          (B : ℝ) * ‖J ((u : X) - (v : X))‖ +
+          (C : ℝ) * (‖(u : X)‖ + ‖(v : X)‖) *
+            ‖J ((u : X) - (v : X))‖)
+    (F G : timeL2 Y T) (f g : timeL2 X T)
+    (hresponse : f - g = L (F - G))
+    (hFstate : ∀ᵐ t ∂(timeMeasure T), f t ∈ S)
+    (hGstate : ∀ᵐ t ∂(timeMeasure T), g t ∈ S)
+    (hF : F =ᵐ[timeMeasure T] fun t => N t (aeSetLift hzero f t))
+    (hG : G =ᵐ[timeMeasure T] fun t => N t (aeSetLift hzero g t))
+    (hsmall : (A : ℝ) * R * H + (B : ℝ) * Real.sqrt T * P +
+      (C : ℝ) * P * (‖f‖ + ‖g‖) < 1) : F = G := by
+  let Q : ℝ := P * ‖F - G‖
+  let j := J.compLpL 2 (timeMeasure T) (f - g)
+  have hQ : 0 ≤ Q := mul_nonneg hP (norm_nonneg _)
+  have hpt : ∀ᵐ t ∂(timeMeasure T), ‖J ((f - g) t)‖ ≤ Q := by
+    rw [hresponse]
+    exact hpoint (F - G)
+  have hjnorm : ‖j‖ ≤ Real.sqrt T * Q := by
+    apply timeL2_norm_le_of_ae_bound j hQ
+    filter_upwards [J.coeFn_compLpL (p := 2) (μ := timeMeasure T) (f - g), hpt]
+      with t ht hp
+    rw [ht]
+    exact hp
+  have hnorm : ‖f - g‖ ≤ H * ‖F - G‖ := by
+    rw [hresponse]
+    exact hL (F - G)
+  have hbound : ∀ᵐ t ∂(timeMeasure T),
+      ‖(F - G) t‖ ≤ (A : ℝ) * R * ‖(f - g) t‖ +
+        (B : ℝ) * ‖j t‖ + (C : ℝ) * Q * ‖f t‖ +
+          (C : ℝ) * Q * ‖g t‖ := by
+    filter_upwards [Lp.coeFn_sub F G, hF, hG, hFstate, hGstate, htame,
+      Lp.coeFn_sub f g,
+      J.coeFn_compLpL (p := 2) (μ := timeMeasure T) (f - g), hpt]
+      with t hFG hFt hGt hft hgt hNt hfg hj hp
+    rw [hFG, Pi.sub_apply, hFt, hGt]
+    simp only [aeSetLift, dif_pos hft, dif_pos hgt]
+    have hraw := hNt ⟨f t, hft⟩ ⟨g t, hgt⟩
+    have hfg' : f t - g t = (f - g) t := hfg.symm
+    have hj' : J ((f - g) t) = j t := hj.symm
+    simp only [hfg', hj'] at hraw
+    rw [hj'] at hp
+    calc
+      _ ≤ (A : ℝ) * R * ‖(f - g) t‖ + (B : ℝ) * ‖j t‖ +
+          (C : ℝ) * (‖f t‖ + ‖g t‖) * ‖j t‖ := hraw
+      _ ≤ (A : ℝ) * R * ‖(f - g) t‖ + (B : ℝ) * ‖j t‖ +
+          (C : ℝ) * (‖f t‖ + ‖g t‖) * Q :=
+        add_le_add_right (mul_le_mul_of_nonneg_left hp (by positivity)) _
+      _ = _ := by ring
+  have hmain := timeL2_norm_le_four (F - G) (f - g) j f g
+    (mul_nonneg A.coe_nonneg hR) B.coe_nonneg
+    (mul_nonneg C.coe_nonneg hQ) (mul_nonneg C.coe_nonneg hQ) hbound
+  have hcontr : ‖F - G‖ ≤
+      ((A : ℝ) * R * H + (B : ℝ) * Real.sqrt T * P +
+        (C : ℝ) * P * (‖f‖ + ‖g‖)) * ‖F - G‖ := by
+    refine hmain.trans ?_
+    calc
+      _ ≤ (A : ℝ) * R * (H * ‖F - G‖) +
+          (B : ℝ) * (Real.sqrt T * Q) +
+          (C : ℝ) * Q * ‖f‖ + (C : ℝ) * Q * ‖g‖ := by
+        gcongr
+      _ = _ := by dsimp only [Q]; ring
+  apply sub_eq_zero.mp
+  apply norm_eq_zero.mp
+  by_contra hne
+  have hpos : 0 < ‖F - G‖ := lt_of_le_of_ne (norm_nonneg _) (Ne.symm hne)
+  have hlt := mul_lt_mul_of_pos_right hsmall hpos
+  rw [one_mul] at hlt
+  exact (not_lt_of_ge hcontr) hlt
+
+end DifferentialGeometry.Analysis.Parabolic.QuasiLinear
+end

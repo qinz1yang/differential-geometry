@@ -194,3 +194,73 @@ theorem timeL2.toLp_add_eq_slice
   exact ht.trans (hf'.symm.trans hs.symm)
 
 end DifferentialGeometry.Analysis.Parabolic.TimeSobolev
+
+end
+
+section
+noncomputable section
+
+namespace DifferentialGeometry.Analysis.Parabolic.TimeSobolev.timeH1
+
+theorem slice_compLpL_eq_and_timeDeriv_eq
+    {X Y : Type*} [NormedAddCommGroup X] [NormedSpace ℝ X]
+    [NormedAddCommGroup Y] [NormedSpace ℝ Y]
+    (P L : X →L[ℝ] Y) {T a b : ℝ}
+    (u : timeH1 Y T) (field : timeL2 X T) (force : timeL2 Y T)
+    (ha : 0 ≤ a) (hbT : b ≤ T)
+    (hlink : P.compLpL 2 (timeMeasure T) field = u.toFunL2)
+    (heq : timeDeriv Y T u = L.compLpL 2 (timeMeasure T) field + force) :
+    P.compLpL 2 (timeMeasure (b - a)) (timeL2.slice field a b ha hbT) =
+        (u.slice a b ha hbT).toFunL2 ∧
+      timeDeriv Y (b - a) (u.slice a b ha hbT) =
+        L.compLpL 2 (timeMeasure (b - a)) (timeL2.slice field a b ha hbT) +
+          timeL2.slice force a b ha hbT := by
+  constructor
+  · calc
+      P.compLpL 2 (timeMeasure (b - a)) (timeL2.slice field a b ha hbT) =
+          timeL2.slice (P.compLpL 2 (timeMeasure T) field) a b ha hbT :=
+        (timeL2.slice_compLpL P field a b ha hbT).symm
+      _ = timeL2.slice u.toFunL2 a b ha hbT :=
+        congrArg (fun f => timeL2.slice f a b ha hbT) hlink
+      _ = (u.slice a b ha hbT).toFunL2 :=
+        (slice_toFunL2 u a b ha hbT).symm
+  · change timeL2.slice (timeDeriv Y T u) a b ha hbT = _
+    calc
+      timeL2.slice (timeDeriv Y T u) a b ha hbT =
+          timeL2.slice (L.compLpL 2 (timeMeasure T) field + force) a b ha hbT :=
+        congrArg (fun f => timeL2.slice f a b ha hbT) heq
+      _ = timeL2.slice (L.compLpL 2 (timeMeasure T) field) a b ha hbT +
+          timeL2.slice force a b ha hbT :=
+        timeL2.slice_add (L.compLpL 2 (timeMeasure T) field) force a b ha hbT
+      _ = L.compLpL 2 (timeMeasure (b - a)) (timeL2.slice field a b ha hbT) +
+          timeL2.slice force a b ha hbT :=
+        congrArg (fun f => f + timeL2.slice force a b ha hbT)
+          (timeL2.slice_compLpL L field a b ha hbT)
+
+end DifferentialGeometry.Analysis.Parabolic.TimeSobolev.timeH1
+
+namespace DifferentialGeometry.Analysis.Parabolic.TimeSobolev.timeL2
+
+theorem slice_zero_ae_imp_eq
+    {X : Type*} [NormedAddCommGroup X] {T δ : ℝ}
+    (f : timeL2 X T) {F : ℝ → X} {p : ℝ → Prop} (hδT : δ ≤ T)
+    (h : ∀ᵐ t ∂timeMeasure T, p t → f t = F t) :
+    ∀ᵐ t ∂timeMeasure (δ - 0), p t → slice f 0 δ le_rfl hδT t = F t := by
+  filter_upwards [slice_coe f 0 δ le_rfl hδT,
+    ae_add_right_timeMeasure (a := 0) (b := δ) le_rfl hδT h] with t hs hf
+  simp only [add_zero] at hs hf
+  exact fun hp => hs.trans (hf hp)
+
+theorem slice_zero_ae_eq
+    {X : Type*} [NormedAddCommGroup X] {T δ : ℝ}
+    (f : timeL2 X T) {F : ℝ → X} (hδT : δ ≤ T)
+    (h : f =ᵐ[timeMeasure T] F) :
+    slice f 0 δ le_rfl hδT =ᵐ[timeMeasure (δ - 0)] F := by
+  filter_upwards [slice_coe f 0 δ le_rfl hδT,
+    ae_add_right_timeMeasure (a := 0) (b := δ) le_rfl hδT h] with t hs hf
+  simpa only [add_zero] using hs.trans hf
+
+end DifferentialGeometry.Analysis.Parabolic.TimeSobolev.timeL2
+
+end
+end

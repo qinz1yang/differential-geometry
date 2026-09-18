@@ -1,8 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ClosedWindowMetricFields
-import DifferentialGeometry.Geometry.Metric.Convergence.Naturality.CrossTensorPullback
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.OpenTensorJets
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.TensorBumpTimeJets
-import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Opens
+import DifferentialGeometry.Geometry.Metric.Convergence.Naturality.PartialTensorPullback
 
 
 set_option autoImplicit false
@@ -40,43 +37,9 @@ theorem exists_partial_pullback_time_tower
       (∀ q t, ∀ y : N, y ∉ Phi.source → B q t y = 0) ∧
       ∀ q t, t ∈ J → ∀ y : N,
         HasDerivWithinAt (fun s => B q s y) (B (q + 1) t y) J t := by
-  let U : TopologicalSpace.Opens N := ⟨Phi.source, Phi.open_source⟩
-  have hU : (U : Set N) ⊆ Phi.source := Subset.rfl
-  let V : TopologicalSpace.Opens M := ⟨Phi '' (U : Set N), image_opens_isOpen Phi hU⟩
-  let psi : Diffeomorph I I U V ∞ :=
-    DifferentialGeometry.PartialDiffeomorph.toOpensDiffeo Phi hU
-  let C : ℕ → ℝ → Tensor0SField (I := I) (M := U) (n := ∞) 2 :=
-    fun q t => pullbackTensor02FieldCross psi (restrictOpen0S (I := I) 2 (V := V) (A q t))
-  have hC (q : ℕ) (t : ℝ) (ht : t ∈ J) (y : U) :
-      HasDerivWithinAt (fun s => C q s y) (C (q + 1) t y) J t := by
-    apply hasDerivWithinAt_pullbackTensor02FieldCross psi
-      (fun s => restrictOpen0S (I := I) 2 (V := V) (A q s))
-      (restrictOpen0S (I := I) 2 (V := V) (A (q + 1) t)) y
-    let basis := Module.finBasis ℝ (TangentSpace I (psi y))
-    apply tensor0S_hasDerivWithinAt_of_components basis
-    intro slots
-    apply hasDerivWithinAt_restrictOpenTensor02Field V (fun s => A q s) (A (q + 1) t)
-      (psi y) (fun j => basis (slots j))
-    exact (tensor0SEvalCLM (I := I) (M := M) (x := (psi y : M))
-      (fun j => basis (slots j))).hasFDerivAt.comp_hasDerivWithinAt t (hA q t ht (psi y : M))
-  obtain ⟨B, hvalue, hout, hderiv⟩ :=
-    exists_tensor_bump_time_tower U 2 C chi hchi hsupp J hC
-  refine ⟨B, ?_, hout, hderiv⟩
-  intro q t y hy v
-  have hc : C q t ⟨y, hy⟩ v =
-      A q t (Phi y) (fun j => mfderiv I I Phi y (v j)) := by
-    change pullbackTensor02FieldCross psi
-      (restrictOpen0S (I := I) 2 (V := V) (A q t)) ⟨y, hy⟩ v = _
-    refine (pullbackTensor02FieldCross_apply psi
-      (restrictOpen0S (I := I) 2 (V := V) (A q t)) (⟨y, hy⟩ : U) v).trans ?_
-    refine (restrictOpenTensor02Field_apply V (A q t) (psi (⟨y, hy⟩ : U))
-      (fun j => mfderiv I I psi (⟨y, hy⟩ : U) (v j))).trans ?_
-    change A q t (Phi y) (fun j => mfderiv I I psi (⟨y, hy⟩ : U) (v j)) = _
-    congr 1
-    funext j
-    exact DifferentialGeometry.PartialDiffeomorph.mfderiv_toOpensDiffeo
-      Phi hU (⟨y, hy⟩ : U) (v j)
-  exact (hvalue q t y hy v).trans (congrArg (fun z => chi y * z) hc)
+  exact DifferentialGeometry.exists_partial_pullback_tensor_time_tower Phi
+    ⟨Phi.source, Phi.open_source⟩ Subset.rfl A chi hchi hsupp J
+    (fun q t ht x _hx => hA q t ht x)
 
 
 theorem exists_closedWindow_pullback_metric_time_tower

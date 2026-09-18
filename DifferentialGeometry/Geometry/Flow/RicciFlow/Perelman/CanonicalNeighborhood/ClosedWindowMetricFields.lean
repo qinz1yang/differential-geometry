@@ -24,7 +24,7 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
 private local instance closedMetricFieldC1 : IsManifold I 1 M :=
   IsManifold.of_le (I := I) (M := M) (n := ∞) (by decide)
 
-private theorem metricTensor_contDiffOn_time
+theorem metricTensor_contDiffOn_time
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S)
     {a c b : ℝ} (hac : a < c) (hcb : c < b)
     (hslab : Icc a b ⊆ D.carrier) (hreg : Ioo a b ⊆ D.regular) (x : M) :

@@ -1,3 +1,7 @@
+import DifferentialGeometry.Geometry.Metric.Construction.OpenExtension
+import DifferentialGeometry.Geometry.Metric.Pullback.Cross
+import DifferentialGeometry.Geometry.Metric.Pullback.PartialDiffeomorph.OpenSubtype
+import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Opens
 import DifferentialGeometry.Geometry.Metric.Construction.Existence
 import DifferentialGeometry.Geometry.Metric.Pullback.PartialDiffeomorph.Basic
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Tensor.Metric
@@ -109,3 +113,96 @@ theorem exists_metric_tensor_field_eq_pullback_on_compact
 
 end CheegerGromovCompactness
 end DifferentialGeometry
+
+end
+
+noncomputable section
+
+namespace DifferentialGeometry
+
+open Filter Set TopologicalSpace
+open scoped Manifold ContDiff Topology
+
+variable {E F H G M N : Type*}
+  [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+  [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
+  [TopologicalSpace H] [TopologicalSpace G]
+  {I : ModelWithCorners ℝ E H} {J : ModelWithCorners ℝ F G}
+  [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
+  [TopologicalSpace N] [ChartedSpace G N] [IsManifold J ∞ N] [T2Space N]
+  [SigmaCompactSpace N]
+
+theorem PartialDiffeomorph.exists_metric_preserving_on_neighborhood_of_is_compact
+    (Φ : PartialDiffeomorph I J M N (∞ : WithTop ℕ∞))
+    (g : SmoothRiemannianMetric I M) (R : SmoothRiemannianMetric J N)
+    {K : Set M} (hK : IsCompact K) (hKs : K ⊆ Φ.source) :
+    ∃ (h : SmoothRiemannianMetric J N) (U : Opens M),
+      K ⊆ (U : Set M) ∧ (U : Set M) ⊆ Φ.source ∧
+      (∀ (x : M), x ∈ U → ∀ v w : TangentSpace I x,
+        g.inner x v w = h.inner (Φ x)
+          (mfderiv I J (Φ : M → N) x v) (mfderiv I J (Φ : M → N) x w)) ∧
+      (∀ (y : N), y ∉ Φ.target → ∀ v w : TangentSpace J y,
+        h.inner y v w = R.inner y v w) := by
+  let V : Opens N := ⟨Φ.target, Φ.open_target⟩
+  let A : Opens M := ⟨(Φ.symm : N → M) '' (V : Set N),
+    image_opens_isOpen Φ.symm (fun _ hy ↦ hy)⟩
+  let Ψ : Diffeomorph J I V A ∞ :=
+    PartialDiffeomorph.toOpensDiffeo Φ.symm (fun _ hy ↦ hy)
+  let gV := Diffeomorph.pullbackMetricCross (g.restrictOpen A) Ψ
+  have hpush (y : V) (v w : TangentSpace J y) :
+      gV.inner y v w = g.inner (Φ.symm y)
+        (mfderiv J I (Φ.symm : N → M) y v) (mfderiv J I (Φ.symm : N → M) y w) := by
+    have hd (z : TangentSpace J y) :
+        mfderiv J I Ψ y z = mfderiv J I (Φ.symm : N → M) y z :=
+      PartialDiffeomorph.mfderiv_toOpensDiffeo Φ.symm (fun _ hy ↦ hy) y z
+    calc
+      gV.inner y v w = (g.restrictOpen A).inner (Ψ y)
+          (mfderiv J I Ψ y v) (mfderiv J I Ψ y w) :=
+        Diffeomorph.pullbackMetricCross_inner (g.restrictOpen A) Ψ y v w
+      _ = g.inner (Φ.symm y)
+          (mfderiv J I (Φ.symm : N → M) y v) (mfderiv J I (Φ.symm : N → M) y w) := by
+        change g.inner (Φ.symm y) (mfderiv J I Ψ y v) (mfderiv J I Ψ y w) = _
+        rw [hd v, hd w]
+  have himage : IsCompact ((Φ : M → N) '' K) :=
+    hK.image_of_continuousOn (Φ.contMDiffOn_toFun.continuousOn.mono hKs)
+  have htarget : (Φ : M → N) '' K ⊆ (V : Set N) := by
+    rintro y ⟨x, hx, rfl⟩
+    exact Φ.map_source' (hKs hx)
+  obtain ⟨h, W, hKW, hWV, hmetric, hout⟩ :=
+    exists_smooth_metric_agrees_on_neighborhood_of_is_compact R V gV himage htarget
+  let U : Opens M := ⟨Φ.source ∩ (Φ : M → N) ⁻¹' W,
+    Φ.toOpenPartialHomeomorph.isOpen_inter_preimage W.isOpen⟩
+  refine ⟨h, U, ?_, fun _ hx ↦ hx.1, ?_, hout⟩
+  · intro x hx
+    exact ⟨hKs hx, hKW (mem_image_of_mem Φ hx)⟩
+  · intro x hx v w
+    have hxsource : x ∈ Φ.source := hx.1
+    have hxdiff : MDifferentiableAt I J (Φ : M → N) x :=
+      (Φ.contMDiffOn_toFun.contMDiffAt (Φ.open_source.mem_nhds hxsource)).mdifferentiableAt
+        (by simp)
+    have hydiff : MDifferentiableAt J I (Φ.symm : N → M) (Φ x) :=
+      (Φ.symm.contMDiffOn_toFun.contMDiffAt
+        (Φ.open_target.mem_nhds (Φ.map_source' hxsource))).mdifferentiableAt (by simp)
+    have heq : (Φ.symm : N → M) ∘ (Φ : M → N) =ᶠ[𝓝 x] id := by
+      filter_upwards [Φ.open_source.mem_nhds hxsource] with y hy
+      exact Φ.left_inv' hy
+    have hinverse (z : TangentSpace I x) :
+        mfderiv J I (Φ.symm : N → M) (Φ x) (mfderiv I J (Φ : M → N) x z) = z := by
+      have hc := mfderiv_comp_apply x hydiff hxdiff z
+      rw [heq.mfderiv_eq, mfderiv_id] at hc
+      exact hc.symm
+    have hp := (hmetric (Φ x) hx.2
+      (mfderiv I J (Φ : M → N) x v) (mfderiv I J (Φ : M → N) x w)).trans
+        (hpush ⟨Φ x, hWV hx.2⟩
+          (mfderiv I J (Φ : M → N) x v) (mfderiv I J (Φ : M → N) x w))
+    change h.inner (Φ x) (mfderiv I J (Φ : M → N) x v)
+      (mfderiv I J (Φ : M → N) x w) =
+      g.inner (Φ.symm (Φ x))
+        (mfderiv J I (Φ.symm : N → M) (Φ x) (mfderiv I J (Φ : M → N) x v))
+        (mfderiv J I (Φ.symm : N → M) (Φ x) (mfderiv I J (Φ : M → N) x w)) at hp
+    rw [hinverse v, hinverse w] at hp
+    exact (congrArg (fun y : M ↦ g.inner y v w) (Φ.left_inv' hxsource)).symm.trans hp.symm
+
+end DifferentialGeometry
+
+end

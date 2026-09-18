@@ -1,3 +1,4 @@
+import DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.Open
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.Naturality.PullbackCross
 import DifferentialGeometry.Geometry.Connection.OpenTarget
 import DifferentialGeometry.Geometry.Metric.Pullback.Local
@@ -280,3 +281,176 @@ theorem covDerivAlong_restrictOpen_witness
   rfl
 
 end DifferentialGeometry.Geometry.Riemannian.CovariantDerivativeAlong
+
+end
+
+noncomputable section
+
+namespace DifferentialGeometry.Geometry.Riemannian.CovariantDerivativeAlong
+
+open Bundle Filter Set TopologicalSpace
+open scoped Manifold ContDiff Topology
+
+variable {E F H G M N : Type*}
+  [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+  [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
+  [TopologicalSpace H] [TopologicalSpace G]
+  {I : ModelWithCorners ℝ E H} {J : ModelWithCorners ℝ F G}
+  [I.Boundaryless] [J.Boundaryless]
+  [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
+  [TopologicalSpace N] [ChartedSpace G N] [IsManifold J ∞ N] [T2Space N]
+
+theorem covDerivAlong_map_of_local_isometry_on
+    (g : SmoothRiemannianMetric I M) (h : SmoothRiemannianMetric J N)
+    {f : M → N} {U : Set M} (hU : IsOpen U)
+    (hf : IsLocalDiffeomorphOn I J ∞ f U)
+    (hmetric : ∀ (x : M), x ∈ U → ∀ v w : TangentSpace I x,
+      g.inner x v w = h.inner (f x) (mfderiv I J f x v) (mfderiv I J f x w))
+    (gamma : ℝ → M) (V : ∀ s, TangentSpace I (gamma s)) {t : ℝ}
+    (ht : gamma t ∈ U) (hgamma : ContMDiffAt 𝓘(ℝ, ℝ) I ∞ gamma t)
+    (hV : DifferentiableAt ℝ (chartRepAt (I := I) gamma V t) t) :
+    mfderiv I J f (gamma t) (covDerivAlong g gamma V t) =
+      covDerivAlong h (fun s ↦ f (gamma s))
+        (fun s ↦ mfderiv I J f (gamma s) (V s)) t := by
+  classical
+  let O : Opens M := ⟨U, hU⟩
+  let gammaO : ℝ → O := fun s ↦
+    if hs : gamma s ∈ U then ⟨gamma s, hs⟩ else ⟨gamma t, ht⟩
+  let VO : ∀ s, TangentSpace I (gammaO s) := fun s ↦ V s
+  have hmem : ∀ᶠ s in 𝓝 t, gamma s ∈ U :=
+    hgamma.continuousAt.preimage_mem_nhds (hU.mem_nhds ht)
+  have heq : (fun s ↦ (gammaO s : M)) =ᶠ[𝓝 t] gamma := by
+    filter_upwards [hmem] with s hs
+    simp only [gammaO, dif_pos hs]
+  have hgammaO : ContMDiffAt 𝓘(ℝ, ℝ) I ∞ gammaO t := by
+    have hamb : ContMDiffAt 𝓘(ℝ, ℝ) I ∞ (fun s ↦ (gammaO s : M)) t :=
+      hgamma.congr_of_eventuallyEq heq
+    simpa only [Subtype.coe_eta] using
+      codRestr_contMDiffAt (I := 𝓘(ℝ, ℝ)) (J := I) (V := O)
+        (fun s ↦ (gammaO s).property) hamb
+  have hfO : IsLocalDiffeomorph I J ∞ (fun x : O ↦ f (x : M)) :=
+    DifferentialGeometry.isLocalDiffeomorph_restrict_open O hf
+  have hmetricO (x : O) (v w : TangentSpace I x) :
+      (g.restrictOpen O).inner x v w =
+        h.inner (f x) (mfderiv I J (fun y : O ↦ f (y : M)) x v)
+          (mfderiv I J (fun y : O ↦ f (y : M)) x w) := by
+    change g.inner (x : M) v w = _
+    rw [DifferentialGeometry.mfderiv_restrict_open (I := I) (J := J) f O x]
+    exact hmetric x x.2 v w
+  have hVO : DifferentiableAt ℝ (chartRepAt (I := I) gammaO VO t) t := by
+    have hchart : chartRepAt (I := I) gammaO VO t =ᶠ[𝓝 t]
+        chartRepAt (I := I) (fun s ↦ (gammaO s : M)) VO t := by
+      have hn : ∀ᶠ s in 𝓝 t,
+          (gammaO s : M) ∈ (chartAt H (gammaO t : M)).source :=
+        (continuous_subtype_val.continuousAt.comp hgammaO.continuousAt).eventually
+          ((chartAt H (gammaO t : M)).open_source.mem_nhds
+            (mem_chart_source H (gammaO t : M)))
+      filter_upwards [hn] with s hs
+      have hsub : gammaO s ∈ (chartAt H (gammaO t)).source := by
+        rw [Opens.chartAt_eq, OpenPartialHomeomorph.subtypeRestr_source]
+        exact hs
+      change (trivializationAt E (TangentSpace I (M := O)) (gammaO t)).continuousLinearMapAt
+          ℝ (gammaO s) (VO s) =
+        (trivializationAt E (TangentSpace I (M := M)) (gammaO t : M)).continuousLinearMapAt
+          ℝ (gammaO s : M) (VO s)
+      rw [TangentBundle.continuousLinearMapAt_trivializationAt_eq_core hsub,
+        TangentBundle.continuousLinearMapAt_trivializationAt_eq_core hs,
+        tangentCoordChange_opens (gammaO s) (gammaO t) (gammaO s)
+          (mem_chart_source H (gammaO s : M))]
+      rfl
+    have hrep := chartRep_congr_curve (I := I)
+      (γ := fun s ↦ (gammaO s : M)) (γ' := gamma) VO V heq
+      (Eventually.of_forall fun _ ↦ rfl)
+    exact ((hchart.trans hrep).differentiableAt_iff).mpr hV
+  have hnat := covDerivAlong_map_localIso (g.restrictOpen O) h hfO hmetricO
+    gammaO VO t hgammaO hVO
+  have hleft : (covDerivAlong (g.restrictOpen O) gammaO VO t : E) =
+      covDerivAlong g gamma V t :=
+    (DifferentialGeometry.Geometry.covDerivAlong_restrictOpen g O gammaO VO t
+      hgammaO.continuousAt).trans
+        (covDerivAlong_congr_curve g VO V heq (Eventually.of_forall fun _ ↦ rfl))
+  have hmf : (mfderiv I J (fun x : O ↦ f (x : M)) (gammaO t) : E →L[ℝ] F) =
+      (mfderiv I J f (gamma t) : E →L[ℝ] F) := by
+    have hrestrict : (mfderiv I J (fun x : O ↦ f (x : M)) (gammaO t) : E →L[ℝ] F) =
+        (mfderiv I J f (gammaO t : M) : E →L[ℝ] F) :=
+      DifferentialGeometry.mfderiv_restrict_open (I := I) (J := J) f O (gammaO t)
+    have hpoint : (mfderiv I J f (gammaO t : M) : E →L[ℝ] F) =
+        (mfderiv I J f (gamma t) : E →L[ℝ] F) := by
+      congr 1
+      exact heq.eq_of_nhds
+    exact hrestrict.trans hpoint
+  have hmap : (fun s ↦ f (gammaO s : M)) =ᶠ[𝓝 t] (fun s ↦ f (gamma s)) := by
+    filter_upwards [heq] with s hs
+    exact congrArg f hs
+  have hfield : ∀ᶠ s in 𝓝 t,
+      (mfderiv I J (fun x : O ↦ f (x : M)) (gammaO s) (VO s) : F) =
+        mfderiv I J f (gamma s) (V s) := by
+    filter_upwards [heq] with s hs
+    rw [DifferentialGeometry.mfderiv_restrict_open]
+    exact congrArg (fun x : M ↦ mfderiv I J f x (V s)) hs
+  have hright := covDerivAlong_congr_curve h
+    (fun s ↦ mfderiv I J (fun x : O ↦ f (x : M)) (gammaO s) (VO s))
+    (fun s ↦ mfderiv I J f (gamma s) (V s)) hmap hfield
+  have hstart : (mfderiv I J f (gamma t) (covDerivAlong g gamma V t) : F) =
+      mfderiv I J (fun x : O ↦ f (x : M)) (gammaO t)
+        (covDerivAlong (g.restrictOpen O) gammaO VO t) := by
+    exact (congrArg (fun z : E ↦ (mfderiv I J f (gamma t) z : F)) hleft.symm).trans
+      (congrArg (fun L : E →L[ℝ] F ↦ L (covDerivAlong (g.restrictOpen O) gammaO VO t))
+        hmf.symm)
+  exact hstart.trans (hnat.trans hright)
+
+theorem covDerivAlong_velocity_map_of_local_isometry_on
+    (g : SmoothRiemannianMetric I M) (h : SmoothRiemannianMetric J N)
+    {f : M → N} {U : Set M} (hU : IsOpen U)
+    (hf : IsLocalDiffeomorphOn I J ∞ f U)
+    (hmetric : ∀ (x : M), x ∈ U → ∀ v w : TangentSpace I x,
+      g.inner x v w = h.inner (f x) (mfderiv I J f x v) (mfderiv I J f x w))
+    (gamma : ℝ → M) {t : ℝ} (ht : gamma t ∈ U)
+    (hgamma : ContMDiffAt 𝓘(ℝ, ℝ) I ∞ gamma t) :
+    mfderiv I J f (gamma t)
+        (covDerivAlong g gamma (fun s ↦ mfderiv 𝓘(ℝ, ℝ) I gamma s 1) t) =
+      covDerivAlong h (fun s ↦ f (gamma s))
+        (fun s ↦ mfderiv 𝓘(ℝ, ℝ) J (fun r ↦ f (gamma r)) s 1) t := by
+  have hgamma₂ : ContMDiffAt 𝓘(ℝ, ℝ) I 2 gamma t := hgamma.of_le
+    (WithTop.coe_le_coe.mpr (le_top : (2 : ℕ∞) ≤ ⊤))
+  have hnat := covDerivAlong_map_of_local_isometry_on g h hU hf hmetric gamma
+    (fun s ↦ mfderiv 𝓘(ℝ, ℝ) I gamma s 1) ht hgamma
+    (differentiableAt_chartRepAt_curveVelocity hgamma₂)
+  have hmem : ∀ᶠ s in 𝓝 t, gamma s ∈ U :=
+    hgamma.continuousAt.preimage_mem_nhds (hU.mem_nhds ht)
+  have hdiff : ∀ᶠ s in 𝓝 t, MDifferentiableAt 𝓘(ℝ, ℝ) I gamma s := by
+    filter_upwards [(contMDiffAt_iff_contMDiffAt_nhds (n := 2) (by decide)).mp hgamma₂]
+      with s hs
+    exact hs.mdifferentiableAt (by decide)
+  have hfield : ∀ᶠ s in 𝓝 t,
+      (mfderiv I J f (gamma s) (mfderiv 𝓘(ℝ, ℝ) I gamma s 1) : F) =
+        mfderiv 𝓘(ℝ, ℝ) J (fun r ↦ f (gamma r)) s 1 := by
+    filter_upwards [hmem, hdiff] with s hs hds
+    exact (mfderiv_comp_apply s ((hf ⟨gamma s, hs⟩).mdifferentiableAt (by simp)) hds 1).symm
+  exact hnat.trans (covDerivAlong_congr_curve h
+    (fun s ↦ mfderiv I J f (gamma s) (mfderiv 𝓘(ℝ, ℝ) I gamma s 1))
+    (fun s ↦ mfderiv 𝓘(ℝ, ℝ) J (fun r ↦ f (gamma r)) s 1)
+    (EventuallyEq.refl _ _) hfield)
+
+theorem covDerivAlong_velocity_norm_map_of_local_isometry_on
+    (g : SmoothRiemannianMetric I M) (h : SmoothRiemannianMetric J N)
+    {f : M → N} {U : Set M} (hU : IsOpen U)
+    (hf : IsLocalDiffeomorphOn I J ∞ f U)
+    (hmetric : ∀ (x : M), x ∈ U → ∀ v w : TangentSpace I x,
+      g.inner x v w = h.inner (f x) (mfderiv I J f x v) (mfderiv I J f x w))
+    (gamma : ℝ → M) {t : ℝ} (ht : gamma t ∈ U)
+    (hgamma : ContMDiffAt 𝓘(ℝ, ℝ) I ∞ gamma t) :
+    Real.sqrt (h.inner (f (gamma t))
+      (covDerivAlong h (fun s ↦ f (gamma s))
+        (fun s ↦ mfderiv 𝓘(ℝ, ℝ) J (fun r ↦ f (gamma r)) s 1) t)
+      (covDerivAlong h (fun s ↦ f (gamma s))
+        (fun s ↦ mfderiv 𝓘(ℝ, ℝ) J (fun r ↦ f (gamma r)) s 1) t)) =
+      Real.sqrt (g.inner (gamma t)
+        (covDerivAlong g gamma (fun s ↦ mfderiv 𝓘(ℝ, ℝ) I gamma s 1) t)
+        (covDerivAlong g gamma (fun s ↦ mfderiv 𝓘(ℝ, ℝ) I gamma s 1) t)) := by
+  have hnat := covDerivAlong_velocity_map_of_local_isometry_on g h hU hf hmetric gamma ht hgamma
+  rw [← hnat, ← hmetric (gamma t) ht]
+
+end DifferentialGeometry.Geometry.Riemannian.CovariantDerivativeAlong
+
+end

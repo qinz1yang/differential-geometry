@@ -193,3 +193,38 @@ private theorem parabolic_short_time_uniqueness_of_zero_start
 end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening
 
 end
+
+section
+noncomputable section
+
+open Set
+open scoped Manifold ContDiff
+open DifferentialGeometry.Geometry.Curvature
+
+namespace DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+  [T2Space M] [CompactSpace M]
+
+theorem curveShorteningLocalUniqueness_of_compact
+    {D : RealTimeInterval} {a b : ℝ}
+    (B : SmoothMetricWindow (I := I) (M := M) D a b) :
+    curveShorteningLocalUniqueness (I := I) (M := M) B := by
+  apply curveShorteningLocalUniqueness_of_parabolic_short_time B
+  intro s T has hsT hTb c₁ c₂ hc₁ hi₁ hc₂ hi₂ heq₁ heq₂ hstart
+  apply parabolic_short_time_uniqueness_of_zero_start (I := I) (M := M) ?_
+    hsT B.smooth ((Icc_subset_Icc has hTb).trans B.regular)
+    c₁ c₂ hc₁ hi₁ hc₂ hi₂ heq₁ heq₂ hstart
+  intro D₀ g₀ T₀ hT₀ hG₀ hJD₀ d₁ d₂ hd₁ hi₁ hd₂ hi₂ hde₁ hde₂ hdstart
+  obtain ⟨δ, hδ, hδT, heq⟩ := exists_initial_interval_eq_of_parametric_curves_of_compact
+    g₀ hT₀ hG₀ hJD₀ hd₁ hd₂ hi₁ hi₂ hde₁ hde₂ hdstart
+  refine ⟨δ, hδ, ?_⟩
+  simpa only [min_eq_right hδT] using heq
+
+end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening
+
+end
+end
