@@ -61,7 +61,7 @@ theorem WindowedModelWitness.exists_blowup_limit
           (rescaledMetric S (t (phi i)) (S.scalar (t (phi i)) (x (phi i)))
             (W (phi i)).scalar_pos) (Psi i) K (Icc (-A) 0) order eta) := by
     intro K hK A hA order eta heta
-    exact WindowedModelWitness.eventually_composed_comparison hS W hdelta hreg L hcomplete hphi.tendsto_atTop F
+    exact WindowedModelWitness.eventually_composed_comparison (fun _ => hS) W hdelta hreg L hcomplete hphi.tendsto_atTop F
       (fun K hK A hA order alpha halpha =>
         hcmp (-A) 0 (by linarith) le_rfl K hK order alpha halpha) hK hA order heta
   let X : PointedRiemannianSeq.{u, 0, 0} I3 := ⟨fun i => {
