@@ -11173,3 +11173,5 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborho
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.TimeJetFields
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Metric.TimeJets
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.TimeJetConvergence
+import DifferentialGeometry.Analysis.Calculus.MapConvergence.UniformParameter
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.UniformTimeJetConvergence
