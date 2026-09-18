@@ -786,3 +786,59 @@ G.5 的最后一块。先说三条把结论定死的核对结果，再给分解�
 
 附带核对：该分支的 `DifferentialGeometry/Topology/PiecewiseLinear` 文件数为 **0**，其 Alexander 对偶／
 紧支撑材料与本车道同源（我们 16 个文件、它 17 个，多出的是射影空间不可嵌入），故上文 H-M3 的评估不受影响。
+
+## 9. 2026-09-18 H 接手 F §19.115 的生产者缺口
+
+### H-A1 — done，锥延拓的球对／相对版本（`ConePairExtension.lean`）
+
+F §19.115 把触边分离的缺口定位到"两张球对平凡化在重叠上相差一个可锥化 PL 同胚"，即 PL 球对的
+相对 Alexander 技巧。本次交付该定理的核心，新模块 `ConePairExtension.lean`（无车道占用）。
+
+先说测绘结论（全树 592 个 PL 模块，`sorry` 计数为 0）：
+
+- **锥的集合层算子不存在**。全树没有 `cone : E → Set E → Set E`；锥只经
+  `Geometry.SimplicialComplex ℝ E` 与 `insert p σ` 表达，`Set E` 图像只能事后由
+  `ConeComplex.lean:199 mem_coneComplex_space_iff` 还原。
+- **球对版本不存在**。没有 `IsPLBallPair`／`BallPair`／unknotted 任何形式；
+  `SimplexBallPair.lean`、`StarPair.lean`、`CirclePair.lean`、`BallCyclePair.lean` 都是"两个球相交"
+  而不是"子多面体嵌在球里"。最接近的 `ConeIntersection.lean:23 coneComplex_space_inter` 只是集合等式。
+- **相对版本未导出**。`ConeAmbientExtension.lean:8` 确实带 `B ⊆ L` 与 `EqOn f id B.space`，
+  并在证明内部第 40–49 行以 `have hconeFixed` 证出了"`h` 在子锥上恒等"，但**结论里没有这一条**，
+  用完即丢。结论只有全悬垂之外的 `EqOn h id (…)ᶜ`。
+- **塌陷（collapsing）整个不存在**：`collaps` 在全树 0 命中；`freeFace`／`FreeFace` 无标识符；
+  `ConeFreeFace.lean` 只有两条 frontier 几何，与自由面无关，文件名是唯一的"自由面"内容。
+  正则邻域唯一性、环境同痕（`ambientIsotop` 0 命中）同样不存在。
+  折叠归纳只在二维／三维以 `htrace`/`hinter` 内联写死（`FreeTriangleNeighborhood.lean:946`），未抽象。
+- 已有的 Alexander 技巧本体是 `ConeExtension.lean:70 exists_isPLHomeomorphOn_coneComplex`，
+  其结论第四条**显式给出锥公式** `g (p + s • (z - p)) = q + s • (f z - q)`。这一条是本次能闭合的原因：
+  球对版本不需要重做锥延拓，只需把锥公式转成像等式。
+
+交付的定理：
+
+- `coneSet p X := {x | x = p ∨ ∃ z ∈ X, ∃ s, 0 < s ∧ s ≤ 1 ∧ x = p + s • (z - p)}`，
+  集合层的锥算子（全树首次）。桥 `coneComplex_space_eq_coneSet : (coneComplex h).space = coneSet p L.space`
+  由 `mem_coneComplex_space_iff` 直接 `Set.ext`，故与既有复形层完全兼容，不引入竞争层级。
+  附 `mem_coneSet_iff`、`apex_mem_coneSet`、`subset_coneSet`、`coneSet_mono`、
+  `coneSet_subset_coneComplex_space`。
+- `image_coneSet_of_radial`：**核心**。设 `g p = q` 且 `g` 在 `S` 上满足锥公式，则对任意 `X ⊆ S` 有
+  `g '' coneSet p X = coneSet q (f '' X)`。纯像计算，不要求 `g` 是同胚、不要求有限性、
+  不要求 `DecidableEq`，故对 `ConeExtension` 与 `ConeAmbientExtension`／`ConeIsotopy` 的锥公式同样可用。
+- `eqOn_id_coneSet_of_radial`：相对版本。`q = p`、`EqOn f id X` ⟹ `EqOn g id (coneSet p X)`。
+  这正是 `ConeAmbientExtension.lean:40–49` 内部丢弃的那一条，现在是公开引理。
+- `exists_isPLHomeomorphOn_coneComplex_pair`：把 `exists_isPLHomeomorphOn_coneComplex` 的四条结论
+  原样保留，再加第五条 `∀ X ⊆ L.space, g '' coneSet p X = coneSet q (f '' X)`。
+  **对 `X` 全称量化**，所以两张片与分支弧一次给全，不需要为每张片各证一次。
+- `exists_isPLHomeomorphOn_coneComplex_sheets`：F 直接消费的形状。输入 `A B ⊆ L.space`、
+  `f '' A = A'`、`f '' B = B'`，输出锥延拓 `g` 同时满足
+  `g '' coneSet p A = coneSet q A'`、`g '' coneSet p B = coneSet q B'` 与
+  `g '' coneSet p (A ∩ B) = coneSet q (A' ∩ B')`。第三条是**球三元组**条款：分支弧 `S = A ∩ B`
+  被送到分支弧，用 `hf.bijOn.injOn.image_inter` 得到 `f '' (A ∩ B) = A' ∩ B'`（需要 `f` 在 `L.space` 上单射，
+  由 `IsPLHomeomorphOn` 自带）。这是 F §19.115 里"沿公共横截盘对相等"那一步的确切内容。
+- `exists_isPLHomeomorphOn_coneComplex_fixing`：相对 Alexander 技巧的成品。`q = p`、`EqOn f id Z` ⟹
+  `EqOn g id (coneSet p Z)`，并同时保留球对条款。沿链归纳时"在已处理的一张面上固定"用这条。
+
+聚焦检查 `ConePairExtension` exit=0（8.5 秒）、零 warning；`.lake/scratch/AuditHConePairExtension.lean`
+七项仅 `propext`、`Classical.choice`、`Quot.sound`，无 `sorryAx`。
+
+坑：`EqOn g id` 的目标是 `g x = id x`，`rw [..., hfix hz, id_eq]` 只改写了 `id z` 而把外层
+`id (p + s • (z - p))` 留下，末尾要显式 `rfl`。
