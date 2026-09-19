@@ -5866,3 +5866,40 @@ diagram) and 24.10 (comparison of arbitrary book CSTs) are still partial.
 24.12 still needs the single-generator ambient-nullhomotopy-to-all-loops
 producer and the final CST application. The existing orientation input is
 now source-reviewed and axiom-verified, not a missing or assumed covering.
+
+## Free and based nullhomotopy of loops (2026-09-19)
+
+Status: done for the general transport layer of the 24.12 round.
+`Topology/Homotopy/FreeLoopNullhomotopy.lean` is its natural home.
+
+`pathToCircle_nullhomotopic_iff` proves that the free circle map of any
+based loop is nullhomotopic exactly when that loop is homotopic, with its
+base point fixed, to the constant loop. The space is arbitrary topological.
+For a free nullhomotopy ending at an arbitrary constant point, its trace at
+the circle base point supplies a path between base points. The existing
+`square_boundary_homotopic` gives the exact commuting square, and composing
+with the reverse trace cancels it in the fundamental groupoid. The reverse
+direction reuses circle-map naturality for homotopies and the existing
+constant-circle identity. No commutativity or path-connectedness of the
+ambient space is needed.
+
+Focused compile 8.566 seconds; complete dynamic audit 8.450 seconds,
+both exit 0 with zero diagnostics. All 1 nonautomatic declarations,
+3 critical reused producers and all 13 applicable environment linters
+pass. Axiom closures contain only the standard three axioms.
+The common finite nonempty input test constructs a spanning simple cycle
+of length at least three around a tetrahedral face, its free nullhomotopy
+in the tetrahedron, and nullhomotopies for all base points via the new
+transport. The test and five critical producers pass the axiom audit,
+exit 0, zero diagnostics, 11.824 seconds. Times include admission.
+This fixes the input contract before assembling the geometric consumer.
+
+Evidence: `C:/Users/liao9/AppData/Local/Temp/codex-s-mobius-torus-20260918/`
+`FreeLoopNullhomotopy-verification.json`, with raw/normalized source and object identities,
+receipts, timings, complete audit/linter censuses and the concrete input.
+Source SHA256: `C25B9CAF2598B63FBAAF3CC18D3CCE13F1943F79BD05A882F0C992ECB308A3F2`.
+Static checks pass; the native import closure excludes HurewiczLowDegrees.
+Source, flat root import, this entry and the C.7 plan update form one commit.
+All verification used private artifacts; the independent integration root gate
+remains separate. The polygon generation and final 24.12 CST application are
+being completed in the same assigned round.

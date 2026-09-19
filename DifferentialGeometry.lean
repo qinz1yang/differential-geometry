@@ -8735,3 +8735,4 @@ import DifferentialGeometry.Topology.PiecewiseLinear.SolidTorus
 import DifferentialGeometry.Topology.PiecewiseLinear.SolidTorusProduct
 import DifferentialGeometry.Topology.PiecewiseLinear.CombinatorialSolidTorus
 import DifferentialGeometry.Topology.PiecewiseLinear.NeighborhoodSolidTorus
+import DifferentialGeometry.Topology.Homotopy.FreeLoopNullhomotopy
