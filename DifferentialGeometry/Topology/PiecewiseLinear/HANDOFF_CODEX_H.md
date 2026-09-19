@@ -3952,3 +3952,37 @@ annular traces, but no available theorem upgrades the ambient derived
 neighborhood itself to a PL solid torus.  The next independent obligations are
 the locally finite simultaneous choice, controlled cellwise modifications, and
 their pointwise-error-compatible gluing in Moise 35.1.
+
+## 79. 2026-09-19 locally finite numerical error control — done
+
+`LocallyFiniteErrorControl.lean` isolates the precise numerical content of the
+sentence on book page 250 that local finiteness permits all vertex errors to be
+chosen simultaneously.  For a `LocallyFinitePLPieceIn`,
+`exists_positive_vertex_scale` takes a positive threshold on every face and
+chooses one positive scale at every vertex which is strictly below every
+threshold on a face incident to that vertex.  The proof uses the point-finite
+consequence of the actual locally finite family of simplex carriers; it does
+not assume global finiteness of the complex.
+
+`exists_positive_face_error_bound` supplies the preceding compactness step.
+For a continuous positive pointwise error function on the realized
+polyhedron, it simultaneously chooses a positive uniform lower bound on each
+closed simplex.  Every such bound is below the pointwise error after applying
+the PL realization map throughout that simplex.  Empty faces require no
+special assumption, and nonempty faces use the compact extreme-value theorem.
+
+The private focused check exited zero with no diagnostics and left shared
+outputs unchanged.  The strict external audit dynamically checked all three
+non-automatic declarations in the module plus five directly reused
+declarations.  Every axiom closure was contained in
+`{propext, Classical.choice, Quot.sound}`, and all thirteen applicable
+environment linters passed.
+
+This closes only the numerical locally finite choice.  Applying it to Moise
+35.1 still requires a positive stability threshold for each local instance of
+Conditions (2)--(8).  In particular, no current theorem turns the open
+separation, containment, general-position, and finite-intersection conditions
+for the cellwise maps into such thresholds, and the cellwise approximation
+producer `Moise341` itself remains an unproved proposition.  These are the
+next mathematical inputs; local finiteness is no longer the numerical choice
+obstruction once they are supplied.
