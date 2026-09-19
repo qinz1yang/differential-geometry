@@ -1145,6 +1145,7 @@ import DifferentialGeometry.Analysis.Parabolic.Dirichlet.GradientTimeDual
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.GradientTimeEquation
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.GradientTimeRegularity
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.HeatEvolution
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.HeatGradientEquation
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.HeatInteriorRegularity
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.HeatNirenbergEnergy
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.HeatTimeRegularity

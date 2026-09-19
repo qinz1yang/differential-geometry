@@ -1,3 +1,4 @@
+import DifferentialGeometry.Analysis.Integration.Integral.Prod
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletWeakFormChart
 import DifferentialGeometry.Analysis.Sobolev.Chart.ChartPullbackLp
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.HeatWeakEquation
@@ -357,5 +358,66 @@ theorem integral_spacetime_test_divergence_of_heat_timeH1
     exact Eventually.of_forall fun p => by dsimp only [R, K, S, L]; ring
   rw [heq] at hzero
   linarith
+
+theorem integral_spacetime_test_divergence_restrict_of_heat_timeH1
+    (q : SmoothRiemannianMetric I_hs M) (g : ℝ → SmoothRiemannianMetric I_hs M)
+    {D : RealTimeInterval} (hG : MetricFamilySmoothOn (I := I_hs) (M := M) D g)
+    {T : ℝ} (hT : 0 ≤ T) (hreg : Icc (0 : ℝ) T ⊆ D.regular)
+    {Cg : ℝ} (hCg : 1 ≤ Cg)
+    (hequiv : ∀ t ∈ Icc (0 : ℝ) T, ∀ x : M, ∀ w : TangentSpace I_hs x,
+      Cg⁻¹ * q.inner x w w ≤ (g t).inner x w w ∧
+        (g t).inner x w w ≤ Cg * q.inner x w w)
+    (Cv : ℝ≥0∞) (hCv0 : Cv ≠ 0) (hCvtop : Cv ≠ ⊤)
+    (hvol : ∀ t ∈ Icc (0 : ℝ) T,
+      riemannianVolumeMeasure (I := I_hs) (M := M) (g t) ≤
+        Cv • riemannianVolumeMeasure (I := I_hs) (M := M) q)
+    (u : timeL2 (H1ComplDirichlet q) T)
+    (f : timeL2 (Lp ℝ 2 (riemannianVolumeMeasure (I := I_hs) (M := M) q)) T)
+    (w : timeH1 (H1ComplDirichlet q →L[ℝ] ℝ) T)
+    (hwmass : ∀ᵐ t ∂timeMeasure T, ∀ z,
+      w.toFun t z = inner ℝ (H1ComplDirichletToLp q (u t)) (H1ComplDirichletToLp q z))
+    (hwderiv : ∀ᵐ t ∂timeMeasure T, ∀ ht : t ∈ Icc (0 : ℝ) T, ∀ z,
+      w.deriv t z = dirichletWeakFormCompl (g t) 0 0 0 (by intro x; simp)
+        hCg (hequiv t ht) Cv hCv0 hCvtop (hvol t ht) (u t)
+        (smoothMulH1ComplDirichlet q (riemannianVolumeDensitySmoothMap (g t) q) z) +
+          inner ℝ (f t) (H1ComplDirichletToLp q z))
+    (α : M) {Ω : Set EuStd} (hΩ : IsOpen Ω) (hΩc : IsCompact (closure Ω))
+    (hΩs : closure Ω ⊆ toEuclidean (E := EuN) '' interior (extChartAt I_hs α).target)
+    {S : Set ℝ} {Ω₀ : Set EuStd} (hΩ₀ : MeasurableSet Ω₀) (hsub : Ω₀ ⊆ Ω)
+    {φ : ℝ × EuStd → ℝ} (hφ : ContDiff ℝ ∞ φ) (hφc : HasCompactSupport φ)
+    (hφi : tsupport φ ⊆ Ioo (0 : ℝ) T ×ˢ Ω)
+    (hφs : tsupport φ ⊆ S ×ˢ Ω₀) :
+    let ρ := fun p : ℝ × EuStd => densityOnEuclid (I := I_hs) (g p.1) α p.2
+    let A := fun i j (p : ℝ × EuStd) => weightedInvGramOnEuclid (I := I_hs) (g p.1) α i j p.2
+    let x := fun z : EuStd => (extChartAt I_hs α).symm ((toEuclidean (E := EuN)).symm z)
+    let U := dirichletLocalSpacetimeLp q α hΩ.measurableSet hΩc
+      (hΩs.trans (image_mono interior_subset)) (timeMeasure T) u
+    let V := fun i => dirichletLocalSpacetimeWeakPartialLp q α hΩ hΩc hΩs (timeMeasure T) i u
+    let F := Lp.uncurry ℝ (by norm_num : (2 : ℝ≥0∞) ≠ ⊤)
+      (((chartRestrictionLp q α hΩ.measurableSet hΩc
+        (hΩs.trans (image_mono interior_subset)) 2).compLpL 2 (timeMeasure T)) f)
+    let ν := ((timeMeasure T).restrict S).prod (volume.restrict Ω₀)
+    (∫ p, ρ p * U p * fderiv ℝ φ p (1, 0) ∂ν) =
+      (∑ i, ∑ j, ∫ p, A i j p * V i p *
+        fderiv ℝ φ p (0, EuclideanSpace.single j 1) ∂ν) -
+      ∫ p, ρ p * ((1 / 2) * traceTimeDerivMetric (I := I_hs) g p.1 (x p.2) * U p + F p) * φ p ∂ν := by
+  intro ρ A x U V F ν
+  have hbase := integral_spacetime_test_divergence_of_heat_timeH1 q g hG hT hreg hCg hequiv
+    Cv hCv0 hCvtop hvol u f w hwmass hwderiv α hΩ hΩc hΩs hφ hφc hφi
+  have hres (v : ℝ × EuStd) (C : ℝ × EuStd → ℝ) :
+      (∫ p, C p * fderiv ℝ φ p v ∂(timeMeasure T).prod (volume.restrict Ω)) =
+        ∫ p, C p * fderiv ℝ φ p v ∂ν := by
+    apply integral_eq_integral_restrict_prod_of_support_subset hΩ₀ hsub
+    intro p hp
+    rw [image_eq_zero_of_notMem_tsupport (f := fun p => fderiv ℝ φ p v)
+      (fun hs => hp (hφs (tsupport_fderiv_apply_subset ℝ v hs))), mul_zero]
+  have hresφ (C : ℝ × EuStd → ℝ) :
+      (∫ p, C p * φ p ∂(timeMeasure T).prod (volume.restrict Ω)) = ∫ p, C p * φ p ∂ν := by
+    apply integral_eq_integral_restrict_prod_of_support_subset hΩ₀ hsub
+    intro p hp
+    rw [image_eq_zero_of_notMem_tsupport (fun hs => hp (hφs hs)), mul_zero]
+  dsimp only at hbase
+  simp_rw [hres, hresφ] at hbase
+  exact hbase
 
 end DifferentialGeometry.Analysis.Parabolic.Dirichlet

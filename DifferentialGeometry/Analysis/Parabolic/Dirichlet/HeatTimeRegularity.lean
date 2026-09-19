@@ -110,28 +110,13 @@ private theorem exists_local_lp_density_time_deriv_of_heat_divergence
   intro φ hφ hφc hφs
   have hφouter : tsupport φ ⊆ Ioo (0 : ℝ) T ×ˢ Ω :=
     hφs.trans (prod_mono (fun _ ht => ⟨ha.trans ht.1, ht.2.trans hb⟩) hsub)
-  have hbase := integral_spacetime_test_divergence_of_heat_timeH1 q g hG hT hreg hCg hequiv
-    Cv hCv0 hCvtop hvol u f w hwmass hwderiv α hΩ hΩc hΩs hφ hφc hφouter
-  have hres (v : ℝ × EuStd) (C : ℝ × EuStd → ℝ) :
-      (∫ p, C p * fderiv ℝ φ p v ∂(timeMeasure T).prod (volume.restrict Ω)) =
-        ∫ p, C p * fderiv ℝ φ p v ∂ν := by
-    apply integral_eq_integral_restrict_prod_of_support_subset hΩ₀.measurableSet hsub
-    intro p hp
-    rw [image_eq_zero_of_notMem_tsupport (f := fun p => fderiv ℝ φ p v) (fun hs =>
-      hp ⟨⟨(hφs (tsupport_fderiv_apply_subset ℝ v hs)).1.1.le,
-        (hφs (tsupport_fderiv_apply_subset ℝ v hs)).1.2.le⟩,
-          (hφs (tsupport_fderiv_apply_subset ℝ v hs)).2⟩), mul_zero]
-  have hresφ : (∫ p, L p * φ p ∂(timeMeasure T).prod (volume.restrict Ω)) =
-      ∫ p, L p * φ p ∂ν := by
-    apply integral_eq_integral_restrict_prod_of_support_subset hΩ₀.measurableSet hsub
-    intro p hp
-    rw [image_eq_zero_of_notMem_tsupport (fun hs =>
-      hp ⟨⟨(hφs hs).1.1.le, (hφs hs).1.2.le⟩, (hφs hs).2⟩), mul_zero]
-  change (∫ p, ρ p * U p * fderiv ℝ φ p (1, 0) ∂(timeMeasure T).prod (volume.restrict Ω)) =
+  have hbase := integral_spacetime_test_divergence_restrict_of_heat_timeH1 q g hG hT hreg hCg hequiv
+    Cv hCv0 hCvtop hvol u f w hwmass hwderiv α hΩ hΩc hΩs hΩ₀.measurableSet hsub
+    hφ hφc hφouter (hφs.trans (prod_mono Ioo_subset_Icc_self Subset.rfl))
+  change (∫ p, ρ p * U p * fderiv ℝ φ p (1, 0) ∂ν) =
     (∑ i, ∑ j, ∫ p, A i j p * V i p * fderiv ℝ φ p (0, EuclideanSpace.single j 1)
-      ∂(timeMeasure T).prod (volume.restrict Ω)) -
-      ∫ p, L p * φ p ∂(timeMeasure T).prod (volume.restrict Ω) at hbase
-  simp_rw [hres, hresφ] at hbase
+      ∂ν) -
+      ∫ p, L p * φ p ∂ν at hbase
   have hdiv := hB φ hφ hφc (hφs.trans (prod_mono (subset_univ _) Subset.rfl))
   have hBφ : Integrable (fun p => B p * φ p) ν :=
     ((Lp.memLp B).locallyIntegrable (by norm_num)).integrable_smul_right_of_hasCompactSupport
