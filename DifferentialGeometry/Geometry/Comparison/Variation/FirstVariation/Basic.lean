@@ -1124,3 +1124,91 @@ end Geometry
 end DifferentialGeometry
 
 end
+
+section
+
+noncomputable section
+
+open Set Function Filter Manifold Bundle
+open scoped Topology Manifold ContDiff
+
+namespace DifferentialGeometry.Geometry.Riemannian.Variation
+
+open DifferentialGeometry.Geometry.Riemannian.AlongCurve
+open DifferentialGeometry.Geometry.Riemannian.Geodesic
+open DifferentialGeometry.Geometry.Riemannian.CovariantDerivativeAlong
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+
+theorem hasDerivWithinAt_inner_of_chart_derivatives
+    (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
+    (V W : ∀ t, TangentSpace I (γ t)) {t : ℝ} {J : Set ℝ} {u' v' w' : E}
+    (hγ : ContinuousWithinAt γ J t)
+    (hu : HasDerivWithinAt (chartCurve (I := I) (γ t) γ) u' J t)
+    (hv : HasDerivWithinAt (chartRepAt (I := I) γ V t) v' J t)
+    (hw : HasDerivWithinAt (chartRepAt (I := I) γ W t) w' J t) :
+    let e := trivializationAt E (TangentSpace I) (γ t)
+    let c := chartCurve (I := I) (γ t) γ t
+    let v := chartRepAt (I := I) γ V t t
+    let w := chartRepAt (I := I) γ W t t
+    HasDerivWithinAt (fun r => g.inner (γ r) (V r) (W r))
+      (g.inner (γ t) (e.symmL ℝ (γ t)
+        (v' + chartChristoffelContraction (I := I) g (γ t) u' v c)) (W t) +
+       g.inner (γ t) (V t) (e.symmL ℝ (γ t)
+        (w' + chartChristoffelContraction (I := I) g (γ t) u' w c))) J t := by
+  let α := γ t
+  let Vr := chartRepAt (I := I) γ V t
+  let Wr := chartRepAt (I := I) γ W t
+  have hbase : γ t ∈ (trivializationAt E (TangentSpace I) α).baseSet :=
+    FiberBundle.mem_baseSet_trivializationAt E (TangentSpace I) (γ t)
+  have hsrc : {r : ℝ | γ r ∈ (trivializationAt E (TangentSpace I) α).baseSet} ∈ 𝓝[J] t :=
+    hγ ((trivializationAt E (TangentSpace I) α).open_baseSet.mem_nhds hbase)
+  have heq (r : ℝ) (hr : γ r ∈ (trivializationAt E (TangentSpace I) α).baseSet) :
+      g.inner (γ r) (V r) (W r) = chartGramAlongCurve (I := I) g α γ Vr Wr r := by
+    have hVr : (trivializationAt E (TangentSpace I) α).symmL ℝ (γ r) (Vr r) = V r := by
+      exact (trivializationAt E (TangentSpace I) α).symmL_continuousLinearMapAt (R := ℝ) hr (V r)
+    have hWr : (trivializationAt E (TangentSpace I) α).symmL ℝ (γ r) (Wr r) = W r := by
+      exact (trivializationAt E (TangentSpace I) α).symmL_continuousLinearMapAt (R := ℝ) hr (W r)
+    rw [← hVr, ← hWr, inner_eq_chartGramOnE_bilinear_on_baseSet (I := I) g α (Vr r) (Wr r)]
+    rw [chartGramAlongCurve_def]
+    refine Finset.sum_congr rfl (fun i _ => Finset.sum_congr rfl (fun j _ => ?_))
+    have hinv : (extChartAt I α).symm (chartCurve (I := I) α γ r) = γ r := by
+      rw [chartCurve_def]
+      apply (extChartAt I α).left_inv
+      simpa only [extChartAt_source, TangentBundle.trivializationAt_baseSet] using hr
+    rw [chartGramOnE_def, hinv]
+  have hmem : chartCurve (I := I) α γ t ∈ interior (extChartAt I α).target :=
+    Integral.DivergenceTheorem.extChartAt_target_subset_interior_of_boundaryless (I := I) α
+      ((extChartAt I α).map_source (mem_extChartAt_source (γ t)))
+  have hd := chartGramAlongCurve_hasDerivWithinAt_covariant (I := I) g α γ Vr Wr
+    (uPrime := fun _ => u') (Vprime := fun _ => v') (Wprime := fun _ => w') hu hmem hv hw
+  have hVr : (trivializationAt E (TangentSpace I) α).symmL ℝ α (Vr t) = V t :=
+    (trivializationAt E (TangentSpace I) α).symmL_continuousLinearMapAt (R := ℝ) hbase (V t)
+  have hWr : (trivializationAt E (TangentSpace I) α).symmL ℝ α (Wr t) = W t :=
+    (trivializationAt E (TangentSpace I) α).symmL_continuousLinearMapAt (R := ℝ) hbase (W t)
+  have hgram (i j : Fin (Module.finrank ℝ E)) :
+      chartGramOnE (I := I) g α i j (chartCurve (I := I) α γ t) =
+        DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α α i j := by
+    rw [chartGramOnE_def, chartCurve_def]
+    rw [(extChartAt I α).left_inv (mem_extChartAt_source α)]
+  have hinner (X Y : E) :
+      g.inner α ((trivializationAt E (TangentSpace I) α).symmL ℝ α X)
+        ((trivializationAt E (TangentSpace I) α).symmL ℝ α Y) =
+      ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
+        chartGramOnE (I := I) g α i j (chartCurve (I := I) α γ t) *
+          chartCoord (E := E) i X * chartCoord (E := E) j Y := by
+    rw [inner_eq_chartGramOnE_bilinear_on_baseSet (I := I) g α X Y]
+    refine Finset.sum_congr rfl (fun i _ => Finset.sum_congr rfl (fun j _ => ?_))
+    rw [hgram]
+  refine (hd.congr_of_eventuallyEq (eventuallyEq_of_mem hsrc heq) (heq t hbase)).congr_deriv ?_
+  rw [← hWr, ← hVr]
+  rw [hinner, hinner]
+
+end DifferentialGeometry.Geometry.Riemannian.Variation
+
+end
+
+end

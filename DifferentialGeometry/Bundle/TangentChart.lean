@@ -1,5 +1,6 @@
 import Mathlib.Geometry.Manifold.MFDeriv.FDeriv
 import Mathlib.Geometry.Manifold.VectorBundle.Tangent
+import Mathlib.Geometry.Manifold.MFDeriv.Atlas
 
 noncomputable section
 
@@ -511,5 +512,36 @@ lemma snd_continuousLinearMapAt_secondaryTriv
   rfl
 
 end DifferentialGeometry.Geometry.Riemannian.Geodesic
+
+end
+
+section
+
+noncomputable section
+
+open Set Function Bundle Manifold
+open scoped Topology ContDiff Bundle Manifold
+
+namespace DifferentialGeometry.Geometry
+
+variable {E V : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [NormedAddCommGroup V] [NormedSpace ℝ V]
+  {M : Type*} [TopologicalSpace M] [ChartedSpace E M] [IsManifold 𝓘(ℝ, E) ∞ M]
+
+set_option backward.isDefEq.respectTransparency false in
+theorem chartCoord_source_mfderivWithin {U : V → M} {z : V} {s : Set V}
+    (hs : UniqueDiffWithinAt ℝ s z)
+    (hU : MDifferentiableWithinAt 𝓘(ℝ, V) 𝓘(ℝ, E) U s z) (p : M)
+    (hp : U z ∈ (chartAt E p).source) :
+    ((trivializationAt E (TangentSpace 𝓘(ℝ, E)) p).continuousLinearMapAt ℝ (U z)).comp
+        (mfderivWithin 𝓘(ℝ, V) 𝓘(ℝ, E) U s z) =
+      fderivWithin ℝ ((extChartAt 𝓘(ℝ, E) p) ∘ U) s z := by
+  rw [TangentBundle.continuousLinearMapAt_trivializationAt hp,
+    ← mfderiv_comp_mfderivWithin z (mdifferentiableAt_extChartAt hp) hU
+      hs.uniqueMDiffWithinAt, mfderivWithin_eq_fderivWithin]
+
+end DifferentialGeometry.Geometry
+
+end
 
 end

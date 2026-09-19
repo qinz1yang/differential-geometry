@@ -1,4 +1,5 @@
 import Mathlib.Geometry.Manifold.ContMDiffMFDeriv
+import DifferentialGeometry.Bundle.TangentMap
 
 noncomputable section
 open scoped Manifold ContDiff
@@ -38,3 +39,56 @@ theorem ContMDiffAt.partial_mfderiv_apply {Φ : P → N → M}
     (ϕ := fun p : P × N => mfderiv J I (Φ p.1) p.2)
     (v := w) hd hw
     (hΦ.of_le ((le_add_of_nonneg_right zero_le_one).trans hmn))
+
+end
+
+section
+
+noncomputable section
+
+open Set Function Bundle Manifold
+open scoped Topology ContDiff Bundle Manifold
+
+namespace DifferentialGeometry.Geometry
+
+variable {E A : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [NormedAddCommGroup A] [NormedSpace ℝ A]
+  {M : Type*} [TopologicalSpace M] [ChartedSpace E M] [IsManifold 𝓘(ℝ, E) ∞ M]
+
+omit [IsManifold 𝓘(ℝ, E) ∞ M] in
+set_option backward.isDefEq.respectTransparency false in
+theorem source_mfderivWithin_spatial {F : ℝ × A → M} {T : Set ℝ} {s : Set A}
+    (hs : IsOpen s) {r : ℝ} (hr : r ∈ T) {q : A} (hq : q ∈ s)
+    (hF : MDifferentiableWithinAt 𝓘(ℝ, ℝ × A) 𝓘(ℝ, E) F (T ×ˢ s) (r, q)) (v : A) :
+    mfderivWithin 𝓘(ℝ, ℝ × A) 𝓘(ℝ, E) F (T ×ˢ s) (r, q) (0, v) =
+      mfderiv 𝓘(ℝ, A) 𝓘(ℝ, E) (fun y => F (r, y)) q v := by
+  have he : MDifferentiableAt 𝓘(ℝ, A) 𝓘(ℝ, ℝ × A) (fun y : A => (r, y)) q :=
+    (differentiableAt_const r |>.prodMk differentiableAt_id).mdifferentiableAt
+  have hc := mfderivWithin_comp q hF he.mdifferentiableWithinAt
+    (show MapsTo (fun y : A => (r, y)) s (T ×ˢ s) from fun y hy => ⟨hr, hy⟩)
+    (hs.uniqueDiffOn q hq).uniqueMDiffWithinAt
+  rw [mfderivWithin_of_mem_nhds (hs.mem_nhds hq)] at hc
+  rw [mfderivWithin_of_mem_nhds (hs.mem_nhds hq), mfderiv_eq_fderiv] at hc
+  have hderiv := ((hasFDerivAt_const (𝕜 := ℝ) r q).prodMk (hasFDerivAt_id (𝕜 := ℝ) q)).fderiv
+  simp only [id_eq] at hderiv
+  rw [hderiv] at hc
+  have hv := congrArg (fun L => L v) hc
+  exact hv.symm
+
+theorem contMDiffOn_source_spatialPartial {F : ℝ × A → M} {T : Set ℝ} {s : Set A}
+    (hT : UniqueDiffOn ℝ T) (hs : IsOpen s)
+    (hF : ContMDiffOn 𝓘(ℝ, ℝ × A) 𝓘(ℝ, E) ∞ F (T ×ˢ s)) (v : A) :
+    ContMDiffOn 𝓘(ℝ, ℝ × A) (𝓘(ℝ, E).prod 𝓘(ℝ, E)) ∞
+      (fun p => TotalSpace.mk' E (F p)
+        (mfderiv 𝓘(ℝ, A) 𝓘(ℝ, E) (fun q => F (p.1, q)) p.2 v)) (T ×ˢ s) := by
+  apply (contMDiffOn_source_partialWithin (hT.prod hs.uniqueDiffOn) hF
+    (m := ∞) (by simp) (0, v)).congr
+  intro p hp
+  rw [source_mfderivWithin_spatial hs hp.1 hp.2
+    ((hF p hp).mdifferentiableWithinAt (by simp)) v]
+
+end DifferentialGeometry.Geometry
+
+end
+
+end
