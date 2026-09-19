@@ -79,7 +79,6 @@ theorem riemannianAreaDensity_comp_le
     (a • (1 : ℂ) + b • Complex.I)
   simpa only [map_add, map_smul] using hb
 
-variable [CompactSpace M] [CompactSpace N]
 
 
 theorem ae_riemannianAreaDensity_comp_le

@@ -32,6 +32,7 @@ def precomposeLipschitzContractibleLoop (g : SmoothRiemannianMetric 𝓘(ℝ, E)
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
+omit [CompactSpace M] in
 theorem exists_competitor_precompose_circle (g : SmoothRiemannianMetric 𝓘(ℝ, E) M)
     (γ : lipschitzContractibleLoop g) (ψ : loopCircle ≃ₜ loopCircle) {K L : ℝ≥0}
     (hψ : LipschitzWith K ψ) (hψ' : LipschitzWith L ψ.symm)

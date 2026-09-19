@@ -14,11 +14,11 @@ namespace DifferentialGeometry.Geometry
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
   {M : Type*} [TopologicalSpace M] [ChartedSpace E M] [IsManifold 𝓘(ℝ, E) ∞ M]
-  [CompactSpace M] [T3Space M] [PreconnectedSpace M]
+  [T3Space M] [PreconnectedSpace M]
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-omit [FiniteDimensional ℝ E] [CompactSpace M] [PreconnectedSpace M] in
+omit [FiniteDimensional ℝ E] [PreconnectedSpace M] in
 theorem attachDiskAnnulus_riemannian_lipschitz
     (g : SmoothRiemannianMetric 𝓘(ℝ, E) M)
     {u : ℂ → M} {H : ℝ × loopCircle → M} {Ku Kh : ℝ≥0}

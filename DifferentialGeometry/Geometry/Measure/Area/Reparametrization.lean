@@ -58,7 +58,7 @@ theorem diskReflection_diskBoundary (θ : loopCircle) :
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
   {M : Type*} [TopologicalSpace M] [ChartedSpace E M] [IsManifold 𝓘(ℝ, E) ∞ M]
-  [T3Space M] [CompactSpace M]
+  [T3Space M]
 
 
 
@@ -121,7 +121,7 @@ theorem riemannianDiskArea_diskReflection (g : SmoothRiemannianMetric 𝓘(ℝ, 
   riemannianDiskArea_reparametrize g hu diskReflection diskReflection_lipschitz
     (by simpa using diskReflection_lipschitz)
 
-omit [FiniteDimensional ℝ E] [T3Space M] [CompactSpace M] in
+omit [FiniteDimensional ℝ E] [T3Space M] in
 theorem riemannianArea_comp_conj_of_contMDiffOn (g : SmoothRiemannianMetric 𝓘(ℝ, E) M)
     {U : ℂ → M} {N : Set ℂ} (hN : IsOpen N) (hDN : Metric.closedBall (0 : ℂ) 1 ⊆ N)
     (hU : ContMDiffOn 𝓘(ℝ, ℂ) 𝓘(ℝ, E) ∞ U N) :
