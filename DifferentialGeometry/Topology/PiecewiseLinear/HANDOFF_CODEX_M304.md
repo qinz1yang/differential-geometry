@@ -210,3 +210,53 @@ are registered in the flat root. Evidence, source snapshots, object hashes,
 receipts and the dependency-reuse manifest are frozen outside the project
 in `moise304-reading/circle-neighborhood-checkpoint/`. The full root build
 remains stopped by the owner's instruction; no shared artifact was written.
+
+## Annular neighborhoods in orientable surfaces (2026-09-19 UTC)
+
+`IntervalMonodromy.lean` classifies the interval end map by its endpoints.
+A reversing end map produces an actual PL homeomorphism from the finite
+Mobius complex onto the cylindrical diagram's entire image. The existing
+non-embedding theorem excludes that case inside an orientable surface.
+The endpoint-fixing case is straightened using an actual PL square
+extension, producing a cylindrical diagram with equal ends.
+
+`AnnulusCylinder.lean` constructs the standard interval cylindrical diagram
+onto `stdSimplexBoundary 2` times `[0,1]`. Its exact fibers and the existing
+diagram comparison produce the annulus PL homeomorphism, with the full
+parameter equation when the given ends agree. The orientable-surface
+corollary obtains this homeomorphism without assuming a trivial end map.
+
+`SurfaceCircleNeighborhood.lean` applies this classification to the actual
+derived neighborhood of a finite polygonal circle. The new
+`exists_annular_neighborhood` also starts with any PL circle S in a finite
+orientable combinatorial surface K and any open U containing S. It refines
+K compatibly with S and uses a sufficiently small mesh to construct a
+finite combinatorial surface N contained in K and U, which is a relative
+neighborhood of every point of S and is PL homeomorphic to the standard
+annulus. Neither a disk-pair decomposition, cylindrical diagram, annulus,
+nor an end-map condition is an input to this neighborhood endpoint.
+
+This is the actual annulus-shape and neighborhood-control result for the
+orientable surfaces used by the spherical-shell argument. It does not yet
+identify S with the central circle under the annular parametrization or
+construct the compatible traces with a spanning disk. Full 28.19 in a
+possibly nonorientable surface, 26.4, E3's 30.3 geometry and the Betti descent
+remain separate obligations; 30.4 is not claimed.
+
+All three modules pass zero-diagnostic focused checks: IntervalMonodromy
+11.795 seconds, AnnulusCylinder 11.550 seconds and the final
+SurfaceCircleNeighborhood 11.191 seconds, including admission. The initial
+small-neighborhood proof needed the explicit finite-face theorem for the
+derived neighborhood; the corrected proof passes. The silent audit took
+69.996 seconds including admission. All 12 nonautomatic declarations in
+the three modules, 12 critical reused entries and three concrete models
+have only standard foundational axioms; all 13 applicable environment
+linters pass. The models check the standard annulus with the parameter
+equation, the derived neighborhood of the unit square's boundary, and an
+annular neighborhood of that boundary in every positive metric thickening.
+
+The two new leaves are registered in the flat root. Exact source snapshots,
+raw and normalized hashes, private objects, receipts and the silent census
+are frozen in `moise304-reading/annular-neighborhood-checkpoint/`. This is
+scoped verification: the owner-stopped root build remains stopped, and no
+shared E: artifact was modified.

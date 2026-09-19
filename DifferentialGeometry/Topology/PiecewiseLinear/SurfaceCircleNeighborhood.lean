@@ -6,12 +6,15 @@ Authors: DifferentialGeometry contributors
 import DifferentialGeometry.Topology.PiecewiseLinear.NeighborhoodCycle
 import DifferentialGeometry.Topology.PiecewiseLinear.BallIntersectionBoundary
 import DifferentialGeometry.Topology.PiecewiseLinear.IntervalCylinder
+import DifferentialGeometry.Topology.PiecewiseLinear.AnnulusCylinder
+import DifferentialGeometry.Topology.PiecewiseLinear.Exhaustion
+import DifferentialGeometry.Topology.PiecewiseLinear.SubcomplexMesh
 
 /-!
 # Cyclic disk neighborhoods of polygonal circles in surfaces
 -/
 
-open Set
+open Set Topology
 
 namespace DifferentialGeometry.Topology.PiecewiseLinear
 
@@ -67,5 +70,57 @@ theorem exists_cylindricalDiagram_Icc_derivedNeighborhood_circle
   obtain ⟨φ, hφ, _⟩ := exists_cylindricalDiagram_of_disk_pair zero_lt_one A B hA hB hD₁ hdis
     hD₀A hD₁A hD₀B hD₁B hinter hg₀
   exact ⟨φ, hcover ▸ hφ⟩
+
+open Classical in
+theorem exists_isPLHomeomorphOn_annulus_derivedNeighborhood_circle
+    (K L : Geometry.SimplicialComplex ℝ E) [Finite K.faces] [Finite L.faces]
+    (hK : IsCombinatorialManifoldWithBoundary 2 K) (hLK : L.faces ⊆ K.faces)
+    (hL : IsCombinatorialManifold 1 L) (hconn : IsConnected L.space) (hor : IsOrientable 2 K) :
+    ∃ H : (Fin 3 → ℝ) × ℝ → E,
+      IsPLHomeomorphOn H (stdSimplexBoundary 2 ×ˢ Icc 0 1) (derivedNeighborhood K L).space := by
+  obtain ⟨φ, hφ⟩ := exists_cylindricalDiagram_Icc_derivedNeighborhood_circle K L hK hLK hL hconn
+  exact hφ.exists_isPLHomeomorphOn_annulus_of_isOrientable K hK hor
+    (derivedNeighborhood_space_subset K L)
+
+theorem exists_annular_neighborhood
+    (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
+    (hK : IsCombinatorialManifoldWithBoundary 2 K) (hor : IsOrientable 2 K)
+    {S U : Set E} (hS : IsPLSphere 1 S) (hSK : S ⊆ K.space) (hU : IsOpen U) (hSU : S ⊆ U) :
+    ∃ N : Geometry.SimplicialComplex ℝ E, N.faces.Finite ∧
+      IsCombinatorialManifoldWithBoundary 2 N ∧ N.space ⊆ K.space ∧ N.space ⊆ U ∧
+      (∀ x ∈ S, N.space ∈ 𝓝[K.space] x) ∧
+      ∃ H : (Fin 3 → ℝ) × ℝ → E, IsPLHomeomorphOn H (stdSimplexBoundary 2 ×ˢ Icc 0 1) N.space := by
+  classical
+  obtain ⟨R₀, hR₀, hR₀fin, hS₀⟩ := exists_isSubdivision_restrict_space K hS.isPolyhedron hSK
+  let _ : Finite R₀.faces := hR₀fin.to_subtype
+  let L₀ := restrict R₀ S
+  obtain ⟨δ, hδ, hthick⟩ := hS.isPolyhedron.isCompact.exists_cthickening_subset_open hU hSU
+  obtain ⟨R, hR, hRfin, hdiam, hLsub⟩ :=
+    exists_isSubdivision_diam_lt_restrict_isSubdivision R₀ L₀ (restrict_faces_subset R₀ S) hδ
+  let _ : Finite R.faces := hRfin.to_subtype
+  let L := restrict R L₀.space
+  let _ : Finite L.faces := (restrict_faces_finite R L₀.space).to_subtype
+  have hLspace : L.space = S := hLsub.space_eq.trans hS₀
+  have hL : IsPLSphere 1 L.space := hLspace.symm ▸ hS
+  have hRK : IsSubdivision R K := hR.trans hR₀
+  have hRman := hK.of_isSubdivision hRK
+  refine ⟨derivedNeighborhood R L, derivedNeighborhood_faces_finite R L,
+    hRman.derivedNeighborhood L,
+    (derivedNeighborhood_space_subset R L).trans hRK.space_eq.subset, ?_, ?_,
+    exists_isPLHomeomorphOn_annulus_derivedNeighborhood_circle R L hRman
+      (restrict_faces_subset R L₀.space) hL.isCombinatorialManifold hL.isConnected
+      (hor.subdivision hK hRK)⟩
+  · apply derivedNeighborhood_space_subset_of_forall_face
+    intro s hs t ht hst z hzt
+    apply hthick
+    apply Metric.mem_cthickening_of_dist_le z (s.centroid ℝ id) δ S
+      (hLspace.subset (L.convexHull_subset_space hs
+        (s.centroid_mem_convexHull (L.nonempty_of_mem_faces hs))))
+    exact ((Metric.dist_le_diam_of_mem (t.finite_toSet.isCompact_convexHull ℝ).isBounded
+      hzt hst).trans_lt (hdiam t ht)).le
+  · intro x hx
+    rw [← hRK.space_eq]
+    exact derivedNeighborhood_mem_nhdsWithin (restrict_faces_subset R L₀.space)
+      (hLspace.symm.subset hx)
 
 end DifferentialGeometry.Topology.PiecewiseLinear

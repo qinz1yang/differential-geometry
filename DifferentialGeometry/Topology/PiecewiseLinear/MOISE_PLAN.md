@@ -101,8 +101,14 @@ prescribed disjoint boundary-arc maps, rectangle parametrizations and the
 actual interval-fiber cylindrical diagram of that neighborhood. All 28
 declarations in seven mathematical modules, ten reused producers, three
 nondegenerate models and 13 applicable linters pass; all five direct old
-consumers compile. The reversing end map is not yet excluded, and full
-28.19 and the spherical-shell endpoint remain open. Exact evidence
+consumers compile. A fifth checked layer constructs the Mobius model of
+the reversing interval end map, excludes it inside an orientable surface,
+and untwists the remaining diagram to produce an actual PL annulus. It also
+constructs an annular neighborhood of any PL circle in an orientable finite
+surface inside every prescribed open neighborhood. Its 12 declarations,
+12 reused entries, three actual models and 13 applicable linters pass.
+Core marking, spanning-disk compatibility, full 28.19 and the spherical-shell
+endpoint remain open. Exact evidence
 and the source route are in HANDOFF_CODEX_M304.md. This explicitly authorized
 addition supersedes the older four-lane count, without authorizing subagents.
 

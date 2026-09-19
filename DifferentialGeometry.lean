@@ -8776,3 +8776,5 @@ import DifferentialGeometry.Topology.PiecewiseLinear.CircleArcPair
 import DifferentialGeometry.Topology.PiecewiseLinear.RectangleArcPair
 import DifferentialGeometry.Topology.PiecewiseLinear.IntervalCylinder
 import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceCircleNeighborhood
+import DifferentialGeometry.Topology.PiecewiseLinear.IntervalMonodromy
+import DifferentialGeometry.Topology.PiecewiseLinear.AnnulusCylinder
