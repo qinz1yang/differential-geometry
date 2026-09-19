@@ -2955,3 +2955,262 @@ and unchanged shared outputs.  The audit dynamically enumerated all twenty
 non-automatic declarations, checked sixteen direct reused declarations, found
 only `{propext, Classical.choice, Quot.sound}`, and passed all thirteen
 applicable environment linters.
+
+## 50. 2026-09-18 Normalized first trimmed arc cell — done
+
+`ArcCellNormalization.lean` proves
+`exists_normalized_trimmedArcCellUnion_one`.  For every nonempty injective
+simplicial arc chain in a finite closed combinatorial 3-manifold, it identifies
+the first non-endpoint derived-neighborhood cell with the first lobe of the
+three-dimensional cut model.  Simultaneously it sends the cell's arc trace to
+the standard two-segment cone, its outgoing interface disk to the standard cut
+disk, the outgoing crossing to the cut-disk apex, and the fixed near crossing
+to the marked point off that disk.
+
+The proof uses the natural `j + 1 ≤ 2 * n` preceding-crossing bound, so the
+construction includes the actual `n = 1` instance.  It constructs the
+interface map from a PL homeomorphism of its link circle and applies
+`exists_isPLHomeomorphOn_coneSet_pair_of_disk_marked`; no normalized state or
+ball-pair conclusion is assumed.  Exact cell and trace identities then replace
+the source cone by `trimmedArcCellUnion K v 1` and its intersection with
+`arcComplexIn K v n`.
+
+The module is registered directly in `DifferentialGeometry.lean`.  Strict
+private verification used round token `h-round-20260919` and output root
+`C:\Users\liao9\AppData\Local\Temp\codex-h-cutmodel-private`.
+The module check and external silent audit both exited 0 with zero diagnostics
+and unchanged shared outputs.  The audit dynamically enumerated the module's
+single non-automatic declaration, checked twenty-three reused declarations,
+found only `{propext, Classical.choice, Quot.sound}`, and passed all thirteen
+applicable environment linters.
+
+The remaining construction is the successor step: map the next cell to the
+second cut-model lobe relative to the current outgoing disk, glue the two maps,
+and normalize the resulting outer ball back to the first lobe while preserving
+the fixed near marked point.
+
+## 51. 2026-09-18 Normalization induction over trimmed arc cells — done
+
+`ArcCellNormalizationInduction.lean` proves
+`exists_normalized_trimmedArcCellUnion_of_cutModel`.  Given the geometric data
+produced by `exists_cutModel_data`, every trimmed union with
+`1 ≤ k` and `k + 1 ≤ 2 * n` admits a PL homeomorphism to the first cut-model
+lobe.  It sends the arc trace to the standard marked arc, sends the outgoing
+interface disk to the fixed cut disk, sends the current crossing to the cut
+apex, and keeps the near crossing at the fixed marked point.
+
+The theorem performs the finite induction internally; no normalized state or
+ball-pair conclusion occurs among its hypotheses.  The base case uses the
+verified `k = 1` normalization and aligns its model with the supplied fixed cut
+model.  Each successor uses exactly two marked cone extensions.  The first
+extends the current interface map across the next cell into the second lobe and
+then glues it to the old map.  The second transports the new outgoing disk in
+the outer sphere back to the fixed cut disk and normalizes the union to the
+first lobe.  Injectivity of the glued homeomorphism proves that the near marked
+point is outside the new outgoing disk, while the cut-model containment
+`L₂.space ⊆ L.space ∪ coneSet z L₀.space` and disjointness from the old
+interface put that disk in the outer sphere.
+
+The module is registered directly in `DifferentialGeometry.lean`.  Strict
+private verification used round token `h-round-20260919` and output root
+`C:\Users\liao9\AppData\Local\Temp\codex-h-cutmodel-private`.
+The module check and external silent audit both exited 0 with zero diagnostics
+and unchanged shared outputs.  The audit dynamically enumerated the module's
+single non-automatic declaration, checked thirty-two reused declarations,
+found only `{propext, Classical.choice, Quot.sound}`, and passed all thirteen
+applicable environment linters.
+
+The remaining layer is to instantiate this theorem with
+`exists_cutModel_data` and extract `IsPLBallPair 2 1` for the final trimmed
+union at `k = 2 * n - 1`.
+
+## 52. 2026-09-18 Trimmed arc-cell union ball pair — done
+
+`ArcCellUnionBallPair.lean` proves
+`IsCombinatorialManifold.isPLBallPair_trimmedArcCellUnion`.  For a nonempty
+injective simplicial arc chain in a finite closed combinatorial 3-manifold of
+ambient dimension three, the union of exactly the non-endpoint cells
+`1 ≤ j ≤ 2 * n - 1`, paired with its trace on `arcComplexIn K v n`, is an
+`IsPLBallPair 2 1`.
+
+The proof obtains the standard cut model, instantiates the verified finite
+normalization induction at `k = 2 * n - 1`, and transports the first cut-model
+lobe's ball-pair structure back along the inverse PL homeomorphism.  The
+`n = 1` case is included: the trimmed union is then the single middle cell.
+Neither endpoint cell is introduced, and no ball-pair or normalized-state
+hypothesis is assumed.
+
+The module is registered directly in `DifferentialGeometry.lean`.  Strict
+private verification used round token `h-round-20260919` and output root
+`C:\Users\liao9\AppData\Local\Temp\codex-h-cutmodel-private`.
+The module check and external silent audit both exited 0 with zero diagnostics
+and unchanged shared outputs.  The audit dynamically enumerated the module's
+single non-automatic declaration, checked the cut-model producer, the finite
+normalization theorem, and ball-pair transport, found only
+`{propext, Classical.choice, Quot.sound}`, and passed all thirteen applicable
+environment linters.
+
+This closes the assigned normalized arc-cell round: the natural preceding
+crossing bound, the `k = 1` base, the two-extension successor induction, and
+the final `IsPLBallPair 2 1` extraction are all source-complete, strictly
+verified, and externally audited.
+
+## 53. 2026-09-18 Interior-face links in manifolds with boundary — done
+
+The realizability review invalidates one applicability claim in §§50–52.  A
+finite closed combinatorial 3-manifold embedded in a three-dimensional normed
+space has no intended geometric instance: its compact underlying space would
+also have to be open.  Thus the three compiled closed-manifold theorems remain
+valid conditional statements, but their hypotheses do not supply the actual
+ambient-dimension-three `n = 1` case claimed there.  Those statements are not
+accepted as the geometric arc-chain endpoint.  They are retained only as
+stronger-hypothesis corollary candidates while the primary APIs are migrated to
+finite combinatorial 3-manifolds with boundary and interior retained faces.
+
+`BoundaryFaces.lean` and `DerivedCellCone.lean` now provide the reusable local
+replacement.  If a face of a finite combinatorial manifold with boundary is not
+a face of its boundary complex, then its geometric link and upper link are PL
+spheres of the expected dimension.  In dimension three this gives a PL
+2-sphere for the upper link of the barycentric vertex of an interior face.  For
+two distinct comparable faces, interiority of the first face gives a PL
+1-sphere for the upper link of their barycentric edge.  The latter proof uses
+downward closure of the boundary complex, so no global closedness assumption is
+introduced.
+
+Strict private verification used round token `h-round-20260919` and output root
+`C:\Users\liao9\AppData\Local\Temp\codex-h-cutmodel-private`.
+`BoundaryFaces` and `DerivedCellCone` compiled in dependency order with zero
+diagnostics and unchanged shared outputs.  The external silent audit dynamically
+enumerated all sixteen non-automatic declarations in the two modules, checked
+six direct reused declarations, found only
+`{propext, Classical.choice, Quot.sound}`, and passed all thirteen applicable
+environment linters.
+
+The next closed result is a concrete nonvacuous `n = 1` chain in the
+barycentric subdivision of a solid affine tetrahedron.  Its middle chain face
+will be proved outside the boundary complex before any normalization theorem is
+migrated.
+
+## 54. 2026-09-18 A genuine one-edge interior arc — done
+
+`ArcCellBoundaryExample.lean` proves
+`exists_simplicialArc_one_with_interior_edge`.  In every finite-dimensional
+real normed space of dimension three it constructs a finite combinatorial
+3-manifold with boundary and an injective simplicial arc with `n = 1` whose
+middle chain face is not in the boundary complex.
+
+The complex is the barycentric subdivision of the simplex complex of an affine
+tetrahedron.  The arc joins the tetrahedron barycenter to one original vertex.
+The barycenter and the vertex are vertices of the subdivision, their pair is a
+subdivision edge, and affine independence makes them distinct.  Boundary
+subdivision invariance transports any hypothetical boundary membership of the
+barycenter back to the original simplex boundary, contradicting that the
+barycenter lies in the open simplex.  Downward closure of the boundary complex
+then proves the whole arc edge is an interior face.
+
+The new leaf is registered in `DifferentialGeometry.lean`.  Strict private
+verification used round token `h-round-20260919` and output root
+`C:\Users\liao9\AppData\Local\Temp\codex-h-cutmodel-private`; the module
+compiled with zero diagnostics and unchanged shared outputs.  The external
+silent audit dynamically enumerated its single non-automatic declaration,
+checked eight direct geometric producers, found only
+`{propext, Classical.choice, Quot.sound}`, and passed all thirteen applicable
+environment linters.
+
+This supplies the required nonvacuity witness before migration of the
+normalization chain.  The primary boundary-manifold base theorem can now use
+interiority of `arcChainFace v 1`; later successor stages use the corresponding
+interiority assumption for every retained face.
+
+## 55. 2026-09-18 Interior arc-cell links — done
+
+`ArcCellGluing.lean` now exposes the boundary-manifold versions needed by the
+normalization chain.  For a retained interior chain face,
+`isPLSphere_arcCellBase_of_interior` proves that its cell base is a PL
+2-sphere.  For two adjacent chain faces,
+`isPLSphere_arcCellInterfaceBase_of_interior_left` proves that their interface
+base is a PL 1-sphere when the left retained face is interior.  Both results
+are direct specializations of the interior barycentric upper-link theorems from
+§53; all conical identities, containments, and marked crossing facts remain
+unchanged and require no manifold hypothesis.
+
+Strict private verification used round token `h-round-20260919` and output root
+`C:\Users\liao9\AppData\Local\Temp\codex-h-cutmodel-private`.  The module
+compiled with zero diagnostics and unchanged shared outputs.  The external
+silent audit dynamically enumerated all twenty-two non-automatic declarations,
+checked the eighteen direct reused declarations, found only
+`{propext, Classical.choice, Quot.sound}`, and passed all thirteen applicable
+environment linters.
+
+The normalization base and successor can therefore replace global closedness
+by `IsCombinatorialManifoldWithBoundary 3 K` plus interiority of the retained
+chain faces.
+
+## 56. 2026-09-18 Boundary-manifold normalization base — done
+
+`ArcCellNormalization.lean` now makes
+`exists_normalized_trimmedArcCellUnion_one_of_interior` the primary base
+construction.  It assumes a finite combinatorial 3-manifold with boundary and
+that `arcChainFace v 1` is outside the boundary complex.  The local results of
+§55 provide exactly the PL 2-sphere cell base and PL 1-sphere outgoing
+interface needed by the unchanged marked relative cone-extension argument.
+
+The original `exists_normalized_trimmedArcCellUnion_one` is retained as a
+stronger-hypothesis corollary.  A closed combinatorial manifold is a manifold
+with boundary whose boundary-complex face set is empty, so the old statement
+now delegates to the realizable primary theorem instead of carrying a separate
+proof.
+
+Strict private verification used round token `h-round-20260919` and output root
+`C:\Users\liao9\AppData\Local\Temp\codex-h-cutmodel-private`.  The module
+compiled with zero diagnostics and unchanged shared outputs.  The external
+silent audit dynamically enumerated both non-automatic declarations, checked
+the twenty-five direct reused declarations, found only
+`{propext, Classical.choice, Quot.sound}`, and passed all thirteen applicable
+environment linters.
+
+The remaining migration is the successor induction, with an interiority
+hypothesis for every retained face `1 ≤ j ≤ 2 * n - 1`, followed by the final
+ball-pair extraction.
+
+## 57. 2026-09-18 Boundary-manifold normalization induction — done
+
+`ArcCellNormalizationInduction.lean` now runs over a finite combinatorial
+3-manifold with boundary under the natural hypothesis that every retained chain
+face `arcChainFace v j`, `1 ≤ j ≤ 2 * n - 1`, is outside the boundary complex.
+The base consumes §56.  At each successor, the new cell base and both incoming
+and outgoing interface bases consume the appropriate local interior-face
+hypothesis through §55.  The two marked cone extensions, piecewise gluing, and
+normalization invariants are otherwise unchanged.
+
+Strict private verification used round token `h-round-20260919` and output root
+`C:\Users\liao9\AppData\Local\Temp\codex-h-cutmodel-private`.  The module
+compiled with zero diagnostics and unchanged shared outputs.  Its external
+silent audit dynamically enumerated the single non-automatic declaration,
+checked thirty-two direct reused declarations, found only
+`{propext, Classical.choice, Quot.sound}`, and passed all thirteen applicable
+environment linters.
+
+## 58. 2026-09-18 Interior trimmed arc union ball pair — done
+
+`ArcCellUnionBallPair.lean` now proves the primary endpoint
+`IsCombinatorialManifoldWithBoundary.isPLBallPair_trimmedArcCellUnion_of_interior`.
+For a nonempty injective simplicial arc in a finite combinatorial 3-manifold
+with boundary, if every retained chain face is outside the boundary complex,
+then the union of exactly the non-endpoint derived-neighborhood cells, paired
+with its arc trace, is an `IsPLBallPair 2 1`.
+
+The proof instantiates the migrated induction of §57 at `k = 2 * n - 1` and
+transports the cut-model ball pair back through the resulting PL homeomorphism.
+The previous closed-manifold endpoint is retained as a corollary by observing
+that its boundary-complex face set is empty.  Unlike the old applicability
+claim corrected in §53, the primary theorem has the concrete `n = 1` instance
+constructed in §54.
+
+Strict private verification used round token `h-round-20260919` and output root
+`C:\Users\liao9\AppData\Local\Temp\codex-h-cutmodel-private`.  The module
+compiled with zero diagnostics and unchanged shared outputs.  Its external
+silent audit dynamically enumerated both non-automatic declarations, checked
+five direct reused declarations, found only
+`{propext, Classical.choice, Quot.sound}`, and passed all thirteen applicable
+environment linters.
