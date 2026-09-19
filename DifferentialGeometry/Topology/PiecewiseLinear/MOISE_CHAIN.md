@@ -1020,3 +1020,20 @@ Actual two-sheet traces, compatible double-end charts, homotopy inside the real
 boundary neighborhood, and source-disk pasting are still needed for the general
 branch-separation and L2 endpoints. See integration handoff section 18 for the
 53-declaration verification and the exact division of subsequent work.
+
+## 2026-09-19 Orientable disk-cylinder untwisting and comparison accepted
+
+At integration source `1016f3435`, S's CylindricalBoundary,
+CylindricalMonodromy, and CylindricalClassification are independently accepted:
+actual side-image containment, actual boundary-diagram positivity in both end
+conventions, internally produced disk pseudo-isotopy and equal-end diagrams,
+and PL comparison of any two orientable disk-diagram targets. The actual
+orientable polygon-neighborhood application also has pointwise equal ends.
+All ten declarations pass the complete axiom and environment-linter audit.
+
+The standard topological disk-times-circle identification and the original
+CST cyclic-cell interface remain to be assembled; C.6/C.7 are not marked done.
+The existing nullhomotopic-polygon orientation declarations in
+DerivedNeighborhoodPolygon must be checked against current source and axiom
+closure before deciding whether 24.12 needs new orientation machinery.
+See integration handoff section 19 for evidence and the next S round.

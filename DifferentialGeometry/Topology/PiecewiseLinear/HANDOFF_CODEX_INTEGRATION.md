@@ -703,3 +703,57 @@ the invalid unchanged-map route and supplies actual source-refinement machinery;
 it does not replace the positive normal-form producer. h remains on its active
 nonvacuity repair and will use Sol max at its next dispatch; S continues its
 active disk-cylinder boundary round. No active task was interrupted for status.
+
+## 19. Sixth delivery: orientable disk-cylinder classification (2026-09-19)
+
+S's three checkpoints `2ff5e3e07`, `a314556b3`, and `02a4f9918` were merged at
+source checkpoint `1016f34351f615fdff0a19467b1121373298b31f`. The three new leaves
+add 339 source lines and three root imports. All direct consumers are among
+these three modules; no existing public signature was changed.
+
+CylindricalBoundary produces side-image containment in the actual target
+boundary from the disk cylindrical diagram and finite three-manifold target.
+It proves an interior strip image is a relative neighborhood, uses local
+boundary invariance there, then uses closure and continuity at the two ends.
+Side containment is not a new caller hypothesis. CylindricalMonodromy constructs
+the actual boundary cylindrical diagram and proves its end map positive in an
+orientable target, with both top-to-bottom and bottom-to-top conventions tied
+to explicit endpoint equations and a verified inverse conversion.
+
+CylindricalClassification produces a PL pseudo-isotopy of the disk end map,
+a new diagram with pointwise equal ends, and a PL homeomorphism between the
+targets of any two orientable disk cylindrical diagrams. Base triangulations,
+end maps, positivity, pseudo-isotopies and base comparison maps are constructed
+inside the proofs. Its final theorem supplies the equal-end diagram for the
+actual derived neighborhood of a connected polygon in an orientable finite
+three-manifold with boundary.
+
+The coordinator read all three proofs, matched the lane receipts to current
+source, and independently recompiled the integration leaves. The combined
+silent census audits all 3 + 3 + 4 = 10 nonautomatic declarations, including the
+private side-image lemma: only standard foundational axioms and all thirteen
+applicable default environment linters. Only docBlame and docBlameThm are
+excluded. All compiles and the audit return exit 0 with zero diagnostics;
+source hygiene, root registration and git diff --check pass. Evidence is under
+`C:/Users/liao9/AppData/Local/Temp/codex-integration-sixth-batch-20260919` and
+`.lake/verified-sixth-lane-delivery-20260919.json`.
+
+Eight unchanged circle/Moebius prerequisites were reused only after source and
+object checks. Other project imports remain shared, so this is not a completed
+full-source gate. The independent one-worker root build was restarted once
+at the delivery boundary on the source checkpoint above, preserving its private
+outputs; it continues through the subsequent documentation-only commit.
+
+C.6/C.7 remain partial at their original book endpoints. S immediately continued
+Astra max on the actual disk-times-circle homeomorphism and faithful CST cyclic
+cell-decomposition assembly. The existing DerivedNeighborhoodPolygon producer
+from `4beaf053a` was located by the coordinator; its current source/dependencies
+and transitive axioms must be checked before reusing its nullhomotopic-polygon
+orientation transfer, rather than reimplementing it or trusting shared objects.
+
+During this delivery, h completed the nonvacuity repair through `76d6c6162` and
+pushed a clean checkpoint. Its repaired endpoint and concrete one-edge witness
+are pending independent integration acceptance; the earlier hold is not silently
+counted as cleared. h has now begun its next round explicitly on Sol max,
+constructing a neighborhood of the full interior arc including endpoint caps.
+E3 is also on Sol max; F and S remain Astra max. No active task was interrupted.
