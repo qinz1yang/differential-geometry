@@ -1,3 +1,5 @@
+import DifferentialGeometry.Analysis.Calculus.PartialDerivative.Parameter
+import DifferentialGeometry.Analysis.Integration.Lp.ContinuousOn
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakPartialTree
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Multiplication.SmoothCoefWeakPartialIBP
 
@@ -349,5 +351,68 @@ theorem ae_memWkp_mul_and_memLp_wkpNorm_of_finite_weak_partial_trees
       (fun _ : Unit => A) (fun _ : Unit => Y)
       (fun _ => hA) (fun _ => hY) (fun _ => hAsmooth) (fun _ => hDA) (fun _ => hYweak)
       (Filter.Eventually.of_forall fun _ => by simp only [Fintype.sum_unique])
+
+theorem exists_lp_weak_partial_tree_of_finite_sum_of_contDiffOn
+    {Z ι : Type*} [NormedAddCommGroup Z] [NormedSpace ℝ Z]
+    [MeasurableSpace Z] [OpensMeasurableSpace Z] [Fintype ι]
+    {μ : Measure Z} {J : Set Z} (hJ : IsCompact J)
+    {W Ω : Set E} (hW : IsOpen W) (hΩ : IsOpen Ω)
+    (hΩc : IsCompact (closure Ω)) (hΩW : closure Ω ⊆ W)
+    {p : ℝ≥0∞} (hp : 1 ≤ p) (K : ℕ)
+    (f : Lp ℝ p ((μ.restrict J).prod (volume.restrict Ω)))
+    (A : ι → Z × E → ℝ)
+    (hA : ∀ j, ContDiffOn ℝ (⊤ : ℕ∞) (A j) (J ×ˢ W))
+    (Y : ι → ∀ n : ℕ, (Fin n → Fin d) → Z × E → ℝ)
+    (hY : ∀ j n, n ≤ K → ∀ α, MemLp (Y j n α) p ((μ.restrict J).prod (volume.restrict Ω)))
+    (hYweak : ∀ j n, n < K → ∀ α i, ∀ᵐ t ∂μ.restrict J,
+      DeGiorgi.HasWeakPartialDeriv i
+        (fun x => Y j (n + 1) (Fin.cons i α) (t, x))
+        (fun x => Y j n α (t, x)) Ω)
+    (hf : f =ᵐ[(μ.restrict J).prod (volume.restrict Ω)] fun q => ∑ j,
+      A j q * Y j 0 (fun i => Fin.elim0 i) q) :
+    ∃ F : ∀ n : ℕ, (Fin n → Fin d) → Lp ℝ p ((μ.restrict J).prod (volume.restrict Ω)),
+      F 0 (fun i => Fin.elim0 i) = f ∧
+        ∀ n < K, ∀ α i, ∀ᵐ t ∂μ.restrict J,
+          DeGiorgi.HasWeakPartialDeriv i
+            (fun x => F (n + 1) (Fin.cons i α) (t, x))
+            (fun x => F n α (t, x)) Ω := by
+  let B := fun j n (α : Fin n → Fin d) (q : Z × E) =>
+    iteratedFDeriv ℝ n (fun x => A j (q.1, x)) q.2 (fun i => EuclideanSpace.single (α i) 1)
+  have hjet (j n) : ContDiffOn ℝ (⊤ : ℕ∞)
+      (fun q : Z × E => iteratedFDeriv ℝ n (fun x => A j (q.1, x)) q.2) (J ×ˢ W) :=
+    spatial_iteratedFDeriv_contDiffOn (𝕜 := ℝ) (G := fun t x => A j (t, x)) hW (hA j) n
+  have hB (j n α) : ContDiffOn ℝ (⊤ : ℕ∞) (B j n α) (J ×ˢ W) :=
+    (ContinuousMultilinearMap.apply ℝ (fun _ : Fin n => E) ℝ
+      (fun i => EuclideanSpace.single (α i) 1)).contDiff.comp_contDiffOn (hjet j n)
+  have hmem : ∀ᵐ q ∂(μ.restrict J).prod (volume.restrict Ω), q ∈ J ×ˢ Ω := by
+    apply (Measure.ae_prod_iff_ae_ae (hJ.measurableSet.prod hΩ.measurableSet)).mpr
+    filter_upwards [ae_restrict_mem hJ.measurableSet] with t ht
+    exact (ae_restrict_mem hΩ.measurableSet).mono fun x hx => ⟨ht, hx⟩
+  have hBmem (j n α) : MemLp (B j n α) ∞ ((μ.restrict J).prod (volume.restrict Ω)) := by
+    have hb := ((hB j n α).continuousOn.mono (prod_mono Subset.rfl hΩW)).memLp_top_of_subset_isCompact
+      (hJ.prod hΩc) (hJ.measurableSet.prod hΩ.measurableSet) (prod_mono Subset.rfl subset_closure)
+      (μ := (μ.restrict J).prod (volume.restrict Ω))
+    rwa [Measure.restrict_eq_self_of_ae_mem hmem] at hb
+  have hBs (j n α) : ∀ᵐ t ∂μ.restrict J,
+      ContDiffOn ℝ (⊤ : ℕ∞) (fun x => B j n α (t, x)) Ω := by
+    filter_upwards [ae_restrict_mem hJ.measurableSet] with t ht
+    exact (hB j n α).comp (contDiffOn_const.prodMk contDiffOn_id)
+      (fun x hx => ⟨ht, hΩW (subset_closure hx)⟩)
+  have hDB (j n α k) :
+      B j (n + 1) (Fin.cons k α) =ᵐ[(μ.restrict J).prod (volume.restrict Ω)]
+        fun q => fderiv ℝ (fun x => B j n α (q.1, x)) q.2 (EuclideanSpace.single k 1) := by
+    filter_upwards [hmem] with q hq
+    have hc : ContDiffOn ℝ (⊤ : ℕ∞)
+        (iteratedFDeriv ℝ n (fun x => A j (q.1, x))) W :=
+      (hjet j n).comp (contDiffOn_const.prodMk contDiffOn_id) (fun x hx => ⟨hq.1, hx⟩)
+    have hd := (hc.differentiableOn (by simp) q.2 (hΩW (subset_closure hq.2))).differentiableAt
+      (hW.mem_nhds (hΩW (subset_closure hq.2)))
+    simpa only [B, Fin.tail_def, Fin.cons_succ, Fin.cons_zero] using
+      (hd.iteratedFDeriv_succ_apply_left'
+        (m := fun i => EuclideanSpace.single (Fin.cons k α i) 1))
+  apply exists_lp_weak_partial_tree_of_finite_sum hp hΩ K f B Y
+    (fun j n _ α => hBmem j n α) hY (fun j n _ α => hBs j n α)
+    (fun j n _ α k => hDB j n α k) hYweak
+  simpa only [B, iteratedFDeriv_zero_apply] using hf
 
 end DifferentialGeometry.Analysis.Sobolev.Euclidean
