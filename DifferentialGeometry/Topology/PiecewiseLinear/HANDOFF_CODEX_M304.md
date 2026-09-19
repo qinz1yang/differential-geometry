@@ -260,3 +260,58 @@ raw and normalized hashes, private objects, receipts and the silent census
 are frozen in `moise304-reading/annular-neighborhood-checkpoint/`. This is
 scoped verification: the owner-stopped root build remains stopped, and no
 shared E: artifact was modified.
+
+## Bicollars fixing the original surface circle (2026-09-19 UTC)
+
+`SphericalCircleExtension.lean` extends any given PL homeomorphism between
+polygonal circles in two PL two-spheres to a PL homeomorphism of the whole
+spheres. The proof uses the actual complementary disk decompositions and
+existing disk-map extensions. `PrismSphere.lean` identifies the boundary
+of a disk prism as an actual PL two-sphere, with the exact end and side sets.
+
+`SphericalCircleBicollar.lean` constructs a PL bicollar of any polygonal
+circle J in a PL two-sphere S, inside any set U that is a relative
+neighborhood of J. It extends the prescribed middle-circle map from a
+standard prism sphere, shrinks the interval by compactness, and proves the
+image is a relative neighborhood. Its parametrization satisfies
+`rho (x, 0) = x` for every x in J.
+
+`NeighborhoodEmbedding.lean` proves that a PL embedding maps a neighborhood
+of an interior point of a finite combinatorial manifold to a neighborhood
+in a same-dimensional finite combinatorial manifold. It constructs a small
+PL ball, uses boundary invariance, and excludes the closure of the target
+complement. The source neighborhood is not required to lie in the source
+manifold. A closed-source corollary removes the boundary exclusion.
+
+`SurfaceCircleBicollar.lean` combines these producers with the previously
+constructed annular neighborhood. For an orientable finite combinatorial
+surface K, a PL circle J in K disjoint from its boundary, and any relative
+neighborhood U of J, it constructs a polyhedron W in the interior of K and
+in U, a relative neighborhood of J, and an actual PL homeomorphism
+`rho : J times [-1,1] -> W` fixing J at height zero. The closed-surface
+corollary needs no boundary hypothesis. The proof transports the original
+circle into the annulus model, proves it has a neighborhood there, collars
+it in the model sphere, and transports back. No preexisting core marking,
+bicollar or spanning disk is assumed.
+
+All five modules compile with zero diagnostics. Final times including
+admission were 16.069 seconds for SphericalCircleExtension, 11.084 for
+PrismSphere, 11.891 for SphericalCircleBicollar, 10.930 for
+NeighborhoodEmbedding and 12.034 for SurfaceCircleBicollar. The final silent
+audit took 47.407 seconds. All seven new declarations, 12 critical reused
+entries and three concrete models have only standard foundational axioms;
+all 13 applicable environment linters pass. The models extend a map between
+two distinct latitude circles in a prism sphere, construct a narrow
+bicollar of its middle circle using the general closed-surface endpoint,
+and collar the boundary of an inner square inside a larger square disk,
+within every positive metric thickening. Initial external-model errors in
+set rewriting were corrected; no source proof debt remains.
+
+All five new leaves are registered in the flat root. Sources, raw and
+normalized hashes, objects, receipts and audit census are frozen in
+`moise304-reading/circle-bicollar-checkpoint/`. The owner-stopped root build
+remains stopped. The next mathematical step is attaching the two halves
+of this bicollar to a given spanning disk to obtain actual larger PL disks.
+Full nonorientable 28.19, the compressing-disk producer 26.4, E3's regular
+neighborhood splitting and strict Betti descent remain open; this is not
+a completion claim for 30.4.

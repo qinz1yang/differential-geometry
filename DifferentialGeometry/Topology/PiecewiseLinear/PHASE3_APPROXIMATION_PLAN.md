@@ -74,10 +74,14 @@ surface by constructing its actual Mobius model, straightens the remaining
 end map, and identifies the neighborhood with a PL annulus. Compatible
 small-mesh subdivisions give such annular neighborhoods inside any specified
 open neighborhood of the circle. All 12 declarations, 12 reused entries,
-three actual models and 13 applicable linters pass. The annular coordinates
-do not yet mark the original circle as the central circle or give spanning-
-disk compatibility.
-E3 retains 30.3. Compression via 26.4, the annular construction 28.19,
+three actual models and 13 applicable linters pass. The next checked layer
+marks the original circle pointwise as the middle circle of a PL bicollar
+contained in any prescribed relative neighborhood and avoiding the surface
+boundary. It uses proved circle-map extension across two-spheres and PL
+preservation of interior neighborhoods. Seven new declarations, 12 reused
+entries, three geometric models and 13 applicable linters pass.
+E3 retains 30.3. Compression via 26.4, spanning-disk compatibility, full
+nonorientable 28.19,
 strict Betti descent and the full PL-sphere endpoint 30.4 remain open.
 See HANDOFF_CODEX_M304.md for exact signatures and evidence.
 

@@ -107,7 +107,13 @@ and untwists the remaining diagram to produce an actual PL annulus. It also
 constructs an annular neighborhood of any PL circle in an orientable finite
 surface inside every prescribed open neighborhood. Its 12 declarations,
 12 reused entries, three actual models and 13 applicable linters pass.
-Core marking, spanning-disk compatibility, full 28.19 and the spherical-shell
+A sixth checked layer fixes the original circle pointwise as the middle
+circle of an arbitrarily small PL bicollar in the surface interior. It
+proves circle-map extension across two-spheres and preservation of interior
+neighborhoods under PL embeddings, then transports a spherical bicollar
+through the constructed annular neighborhood. All seven new declarations,
+12 reused producers, three geometric models and 13 applicable linters pass.
+Spanning-disk compatibility, full nonorientable 28.19 and the spherical-shell
 endpoint remain open. Exact evidence
 and the source route are in HANDOFF_CODEX_M304.md. This explicitly authorized
 addition supersedes the older four-lane count, without authorizing subagents.
