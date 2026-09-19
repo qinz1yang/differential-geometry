@@ -57,7 +57,7 @@ its active 30.3 round without interruption. The private checker limit stays two.
 | F / gpt-6-astra max | Repair the fixed normal-system neighborhood formula through an actual compatible triangulation, then construct the full cover diagram. Proper disks, conditional strict descent ec3b6b063 and finite-cover PL realization 52ead09cc are accepted. | Close the actual normal-system lift and boundary-compatible smaller neighborhood, then Lemma 2 branch separation. |
 | E3 / gpt-5.6-sol max | Actual geometric splitting and separation in 30.3. Path replacement, annulus 18f861c89 and cut-cell layer 1cea2fbe7 are accepted; disk-neighborhood producer ace162dcd is held for duplicated free-triangle proofs; return the generalization correction at E3's next delivery. Next produce the compatible neighborhood from the original disk pair. | Construct the split surface, connected safe boundary and equality outside the local cell; show separation survives. Euler bookkeeping alone is insufficient. |
 | M304 / gpt-6-astra max | Own 30.4 directly: read the original proof and construct an independent actual producer toward the spherical-shell theorem. | Initial separating surface, compression induction or the actual 28.19 annulus construction can proceed beside E3. Keep 26.4 and 30.3 as explicit open dependencies; do not count a conclusion-shaped wrapper as production. |
-| S / gpt-6-astra max | Compact PL three-manifold smoothing, following accepted finite 24.11/24.12 through 434d5352c. | Audit actual triangulation/handle/circle/sphere producers, then construct the first missing mathematical layer. Finite native 24.11/24.12 through 434d5352c are independently accepted; smoothing is independently open. |
+| S / gpt-6-astra max | Compact PL three-manifold smoothing. Finite 24.11/24.12 and actual zero/one/two handles through 9494e59f6 are independently accepted; three-handle checkpoint 78d96386b is queued. | Continue actual finite face order and stage assembly, then smooth attachment/framing/corners and two-sphere classification. Compact smoothing remains open. |
 
 F must distinguish the full two-sheeted ambient cover from the smaller regular
 neighborhood for the next normal system: restriction need not preserve
@@ -114,9 +114,10 @@ addition supersedes the older four-lane count, without authorizing subagents.
    to actual cell-adjunction homeomorphisms with exact lower/cell formulas.
    Actual vertex zero handles and edge one-handle attachments, including
    intrinsic boundary traces and successor-subcomplex homeomorphisms, are now
-   constructed. Higher-index product pairs, the global finite handle sequence,
-   smooth attaching/framing, corner rounding and smooth classification of
-   terminal two-sphere boundaries remain open.
+   constructed. Actual triangle two-handles now have their PL annulus pair,
+   framing and lower-fixing adjunction for finite closed K. Three-handle sphere
+   pairs, the global finite sequence, smooth attaching/framing, corner rounding
+   and smooth classification of terminal two-sphere boundaries remain open.
    The eventual compact assembly does not prove unrestricted PLSmoothing 3.
 5. Only after both inputs are produced, assemble a smooth structure on the
    same carrier and topology and audit its transitive axioms.
@@ -152,7 +153,7 @@ and keep the existing one-root-worker/two-private-checker resource policy.
 
 The six-import root coverage repair is applied: Approximation,
 ApproximationManifold, ChartGluing, Endgame, Smoothing and PLSchoenflies.
-Static traversal reaches all six and 9341 project modules including the root,
+Static traversal reaches all six and 9347 project modules including the root,
 with no missing project source. This is import coverage, not a successful root compilation.
 The first five were unreachable; PLSchoenflies was reachable transitively but
 lacked direct flat-root registration. Seven relevant leaves have fresh focused
@@ -336,6 +337,21 @@ pairs and global finite-stage assembly remain open, followed by the smooth
 attachment/framing/corner and two-sphere classification obligations above.
 The compact smoothing endpoint and unrestricted approximation scope are
 unchanged. Exact statements and evidence are in the final S handoff section.
+
+**S triangle two-handle layer (2026-09-19; independently accepted):**
+Six fresh modules, all eight nonautomatic declarations (one private), 29
+critical reused declarations and nine declarations of the actual
+four-simplex-boundary model pass the independent integration audit with
+13 linters, standard foundational axioms and zero diagnostics. The actual
+triangle cell in finite closed K has its PL disk-prism and exact annulus
+trace, intrinsic boundary embedding, product framing and old-space-fixing
+successor adjunction. Three distinct points are explicitly checked on one
+framing fiber. Lean +548/-0 including six root imports; receipt:
+.lake/verified-nineteenth-lane-delivery-20260919.json. Boundary-triangle caps
+remain open. S's 78d96386b maximal-cell sphere attachments are queued for
+independent acceptance; S continues finite face ordering and actual stage
+assembly. Smooth attachment/framing/corners, smooth sphere classification
+and compact smoothing are not claimed complete.
 
 ### Phase 3：A′ `PLApproximationManifold 3` 的经典链（Moise §17, §21–28, §30–36）
 

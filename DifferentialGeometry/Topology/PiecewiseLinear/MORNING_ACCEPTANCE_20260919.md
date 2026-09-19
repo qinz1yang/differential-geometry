@@ -288,3 +288,39 @@ source is not counted among independently accepted Lean lines. h a598916fd
 provides conditional global SDR gluing plus a finite producer; nonconstant
 geometric compatibility and the full regular-neighborhood relation remain
 under review. Both continue their own existing lanes.
+
+## Actual triangle two-handles independently accepted
+
+S 9494e59f6 is independently accepted. Six modules compiled in 67.571 seconds;
+all eight nonautomatic declarations (one private), 29 distinct critical reused
+declarations, nine concrete model declarations and 13 environment linters
+pass the 47.279-second final audit. Every final check exits 0 with zero
+diagnostics and standard foundational axioms. Seven previously accepted
+private prerequisite modules were reused only after source and object identity
+checks; other upstream artifacts remain shared read-only. This is focused
+verification, not a full-source build.
+
+For a finite closed combinatorial three-manifold, an actual triangle and a
+lower subcomplex containing all its proper faces produce a PL disk-times-interval
+cell. Its entire lateral annulus equals the exact intersection with the old
+neighborhood. The producer gives a closed attaching embedding into the old
+intrinsic boundary and a quotient homeomorphism to the exact successor
+neighborhood, fixing every old point. No annulus pair or handle decomposition
+is assumed. The concrete boundary-of-four-simplex model verifies the complete
+attachment and explicitly places three distinct image points on one product
+framing fiber at parameters 0, 1/2 and 1.
+
+Lean +548/-0 includes six flat-root imports; Markdown and external probes are
+excluded. Receipt: .lake/verified-nineteenth-lane-delivery-20260919.json. Exact
+source/object hashes, audit source, model provenance, timings and logs are
+retained. The initial coordinator probe's long-line warnings were repaired
+and the final probe passed without diagnostics. Static root reachability is
+9347 project modules including the root, with no missing sources or cycles.
+The full-root build remains stopped.
+
+This establishes actual two-handles for closed K. The original-boundary cap
+needed for boundary triangles is still open. S has separately delivered
+78d96386b maximal-cell sphere pairs and three-handle attachments, queued for
+independent acceptance, and continues actual finite face ordering and stage
+assembly. Smooth attaching/framing, corner rounding, smooth two-sphere
+classification and the compact smoothing endpoint remain open.
