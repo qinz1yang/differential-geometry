@@ -1652,3 +1652,32 @@ fifteen critical reuses pass the standard-three-axiom audit and all thirteen
 environment linters. The remaining H obligations are cross-stage locally
 finite compatible modifications, Moise 35.1 Conditions (3)--(8), and the
 assembled `Moise351` endpoint.
+
+
+### Locally finite PL-homeomorphism limit mechanism delivered
+
+The H lane now has the reusable limit half of the cross-stage construction.
+`PLHomeomorphIncrementSystem` starts from actual PL self-homeomorphism
+increments that fix the current exhaustion core and preserve every core. Its
+cumulative maps form a compatible tower, and local finiteness proves that the
+canonical pointwise limit is locally one finite stage. Applying the same
+argument to the inverse tower yields an actual PL self-homeomorphism. Every
+compact subset is eventually fixed at the level of exact equality between the
+finite stages and the limit; neither the compatible family nor its limit is an
+input.
+
+The actual trivalent endpoint consumes the graph-fixed nonidentity carrier
+self-homeomorphism and retains, in the same choice, the compatible source and
+target subdivisions, nested surface traces, pairwise-disjoint families, and
+the three source-target standard solid-torus transports. Its first increment
+is genuinely nonidentity and its limit is exactly the original modification.
+The strict audit covers all forty-four new module declarations and seven key
+reuses with only the standard three axioms and all thirteen linters.
+
+This does not yet produce compatible nontrivial increments on every relevant
+stage of an arbitrary noncompact exhaustion. The remaining H producer must
+choose each supported modification together with its new standard solid-torus
+neighborhoods, compatible subdivisions and surface traces while preserving all
+earlier cores. After that input is constructed, the delivered tower theorem
+supplies the locally finite limit. Moise 35.1 Conditions (3)--(8) and
+`Moise351` therefore remain open.

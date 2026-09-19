@@ -4562,3 +4562,47 @@ This closes the standard PL solid-torus input for the actual finite trivalent
 model.  It does not construct compatible modifications across a locally
 finite exhaustion and does not prove Moise 35.1 Conditions (3)--(8) or the
 final `Moise351` endpoint.
+
+## 95. 2026-09-19 locally finite compatible PL homeomorphism limit — done
+
+`LocallyFiniteHomeomorphTower.lean` separates the local construction from the
+limit argument.  A `PLHomeomorphIncrementSystem` consists of genuine PL
+self-homeomorphisms, each fixing the current core and preserving every core.
+Its cumulative compositions form a `CompatiblePLHomeomorphTower`: consecutive
+stages agree on the old core and every stage preserves that core.  The tower
+has a canonical pointwise limit.  Local finiteness makes this limit locally
+equal to one finite stage, so it is PL; applying the same construction to the
+stagewise inverses gives an actual inverse and hence an actual PL
+self-homeomorphism.  On every compact subset the stages eventually agree
+exactly with the limit.  No final compatible family, limit map, or Moise 35.1
+condition is assumed.
+
+The same module supplies `LocallyFinitePieceTower.prependEmpty` and the
+nondegenerate one-increment constructor `PLHomeomorphIncrementSystem.single`.
+`TrivalentDualCellLocallyFiniteModification.lean` applies it to the real
+graph-fixed nonidentity self-homeomorphism from Section 94.  In the same
+existential choice it retains the source and target compatible subdivisions,
+both nested annular surface-trace families, their pairwise disjointness, and
+all three `IsParametrizedSolidTorusTransport` witnesses.  The first genuine
+increment is the original nonidentity map, its limit equals that map, fixes
+the original graph, moves the chosen piercing point, and stabilizes exactly on
+every compact set.  This is an actual nonempty finite model, not an empty
+indexing substitute.
+
+Both new modules passed their isolated private checks with no diagnostics and
+left shared outputs unchanged.  The strict external audit covered all
+forty-four non-automatic declarations in the two modules together with seven
+critical reused declarations.  Every axiom closure was contained in
+`{propext, Classical.choice, Quot.sound}`, and all thirteen applicable
+environment linters passed.  Both leaves are registered in the flat root
+aggregate; no full-root build was run under the standing owner instruction.
+
+The remaining geometric producer is exact and substantial: for an arbitrary
+nonconstant, possibly noncompact locally finite exhaustion, construct a
+nontrivial supported increment at each relevant stage that preserves all
+cores, fixes every earlier core, keeps the newly selected standard solid-torus
+neighborhoods and surface traces in the same compatible subdivision choice,
+and satisfies the required neighborhood controls.  Once such increments are
+available, the generic theorem above supplies the locally finite limit.  The
+finite trivalent instance does not prove that cross-stage producer, Moise 35.1
+Conditions (3)--(8), or `Moise351`.
