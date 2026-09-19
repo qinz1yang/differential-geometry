@@ -4328,3 +4328,38 @@ self-homeomorphism, followed by an affine-on-faces identification of the
 modified neighborhoods with canonical derived neighborhoods in that common
 structure.  An arbitrary PL map or a later unrelated refinement does not
 preserve the old barycentric-derived set, and no such invariance is asserted.
+
+## 89. 2026-09-19 compatible triangulation of intrinsic PL homeomorphisms — done
+
+`ManifoldHomeomorphTriangulation.lean` proves the reusable coordinate and
+triangulation layer.  For a finite `PLPieceIn`,
+`PLPieceIn.isPLHomeomorphOn_conjugate` pulls an intrinsic PL self-homeomorphism
+back through the piece map and proves that the resulting ambient coordinate
+map is an `IsPLHomeomorphOn` of the original complex carrier.
+`PLPieceIn.map_conjugate_eqOn` proves the exact commuting relation with the
+manifold map, so the coordinate representative is tied to its producer rather
+than introduced as a free map.
+
+`PLPieceIn.exists_compatible_isGlueIso_of_homeomorph` accepts any finite family
+of polyhedra contained in the carrier.  It first applies the simultaneous
+subcomplex subdivision theorem, then simplicializes the coordinate
+homeomorphism on finite source and target subdivisions.  Every named source
+polyhedron is exactly the carrier of its restricted source subcomplex; the
+resulting `IsGlueIso` transports it to a target subcomplex whose carrier is
+exactly the coordinate-map image.  The global simplicial map agrees with the
+coordinate representative on the whole original carrier, hence the desired
+map is affine on every source face.
+
+The module passed the isolated private checker with no diagnostics and left
+shared outputs unchanged.  The strict external audit covered the three target
+declarations and thirteen critical triangulation, PL-coordinate, and subcomplex
+transport dependencies; every closure used only `propext`,
+`Classical.choice`, and `Quot.sound`, and all applicable environment linters
+passed.  The leaf is registered in the flat root aggregate.
+
+This closes the general common-finite-triangulation and affine-on-faces layer.
+The next consumer step is to package the trivalent graph, both surface
+families, and both nested-neighborhood families as the finite polyhedral input.
+After that, one still needs a separate theorem proving exact transport of the
+canonical barycentric derived-neighborhood construction under the produced
+`IsGlueIso`.  No invariance under an unrelated later subdivision is asserted.
