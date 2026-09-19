@@ -1360,3 +1360,7 @@ that real producer at its completed-round boundary. E3's ace162dcd is held
 because its 1206-line disk module duplicates 917 lines of canonical
 FreeTriangleNeighborhood; a generalization with boundary corollary is due at
 the next delivery, without interrupting the current geometric proof.
+
+## Autonomous-window final acceptance (2026-09-19)
+
+The final source checkpoint is 752c572ae822e48b99c3dbd00a8f6a0faaa439be. The morning report records 41 independent acceptances, the exact net Lean delta, pending F/E3/M304 source, and the remaining mathematical gates. No new proof rounds are assigned after 14:19 UTC. Full-root compilation remains unclaimed. See MORNING_ACCEPTANCE_20260919.md for the governing final snapshot; earlier active-round rows are historical.

@@ -3217,3 +3217,21 @@ The metric-free locally finite separation helper still needs its natural
 Topology home and shared finite consumers. Cross-layer compatible changes,
 positive stability radii for conditions 2-8, actual ambient solid-torus inputs
 and Moise351 remain open.
+
+## 69. Autonomous-window cutoff and next-stage handoff
+
+The twelve-hour authorization ended at 14:19 UTC on 2026-09-19. All five
+tasks are now idle, all author worktrees clean and pushed, and no Lean/Lake
+process remains. The moise automation is paused with hourly cadence retained.
+Last accepted source: 752c572ae822e48b99c3dbd00a8f6a0faaa439be.
+41 independent acceptances are documented in MORNING_ACCEPTANCE_20260919.md;
+the exact net Lean diff from the authorization baseline is +31296/-338 and
+includes queued pre-window work. It is not an overnight typing count.
+
+F through f0482b620, E3 through 5877584aa and M304 through 734c87b5f are frozen
+on their own branches; source beyond the accepted frontiers in the morning
+report remains unverified by integration. S and h are accepted through their
+final clean commits. Full-root compilation remains stopped and unclaimed.
+Resume only on a new owner instruction; replay queued public interfaces
+before another broad compatibility gate. All major remaining mathematical
+gates and the five next lanes are listed in the morning report.

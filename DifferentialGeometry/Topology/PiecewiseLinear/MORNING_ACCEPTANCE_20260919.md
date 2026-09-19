@@ -2,7 +2,166 @@
 
 Work window: 2026-09-18 19:19 to 2026-09-19 07:19 America/Los_Angeles.
 Integration baseline: 414fcd23546516150ecdadf6c30f8559a746189c.
-Status: in progress; this is not the final morning report.
+Status: final proof acceptance frozen; all five tasks stopped and automation paused.
+
+<!-- FINAL_CUTOFF_BEGIN -->
+## Morning acceptance snapshot
+
+Recorded at 2026-09-19T14:18:25.231915+00:00; authorization ends at 2026-09-19 14:19 UTC.
+Last independently accepted source commit: `752c572ae822e48b99c3dbd00a8f6a0faaa439be`. The current integration
+branch is `codex/moise-integration`; every accepted source checkpoint is pushed.
+
+There are **41 independently accepted mathematical checkpoints** in this
+window. The actual baseline-to-current Lean diff is **+31296/-338** across
+273 Lean paths, including headers and root imports. This is integration
+progress, not a count of code typed in twelve hours. It includes queued source
+from before the window: the first E3 delivery alone contributes +643/-0;
+the first S delivery contains +400 queued lines and the first F delivery
+contains +856 queued additions. Other mixed deliveries are annotated below.
+Git cannot recover exact typing times, so no unsupported overnight-authorship
+total is reported. Per-lane sums below count accepted commit deltas; repeated
+edits are counted there and are not added to the net diff.
+
+| Lane | Accepted checkpoints | Sum of accepted Lean additions/deletions | Latest accepted author source |
+| --- | ---: | ---: | --- |
+| F | 11 | +7441/-260 | `f5436defe` |
+| S | 10 | +7531/-35 | `f081c3b24` |
+| h | 4 | +4070/-107 | `bbd11df3b` |
+| E3 | 5 | +4824/-96 | `ff304a1b2` |
+| M304 | 11 | +7722/-138 | `e83d02f94` |
+
+The 35 receipts with the current timing schema account for
+3647.416 seconds of focused module checks and 1737.520 seconds of
+combined audits, including admission. Older receipt timings remain in their
+individual entries; this is not total task CPU time or active reasoning time.
+
+### Mathematical result and remaining gates
+
+- h: corrected 25.2/33.1/35.1 contracts, actual nested neighborhoods and
+  locally finite disjoint supports are checked. The final layer proves PL
+  ballness of the original locally finite splitting disk, with an actual
+  noncompact instance. Stability radii, compatible cell changes, ambient
+  solid-torus identification and Moise351 are still open.
+- F: actual covering projection, embedded-disk return, free double-point
+  involution, equivariant triangulation, saturated sheet neighborhoods and
+  true-carrier single-interior-chart normalization are checked. Later boundary
+  collar/chart layers are committed in the author lane but await independent
+  replay. Global overlap-preserving normalization, four-case elimination and
+  the loop-theorem endpoint remain open. Moving to the double alone preserves
+  the old fibers.
+- E3: original ambient separation and actual WB3 interior/prism/local trace
+  producers are checked. The newer disjoint-cap and finite replacement-surface
+  commits await independent replay. Do not mark full 30.3 complete yet.
+- M304: a concrete positive-genus torus compression, actual spherical shell,
+  essential meridian and every closed-interval meridian slice are checked.
+  The later boundary-only/capped-surface generalization awaits replay. The
+  arbitrary prescribed-shell statement Moise304 remains open.
+- S: finite 24.11/24.12, fixed-old-atlas planar smoothing, relative Morse
+  approximation with distinct critical values, and actual compactly supported
+  planar cubic-pair cancellation are checked. Arbitrary-frame surface pairing
+  and model reduction, finite cancellation, whole strip product/isotopy,
+  crossing seams and compact PL3 smoothing remain open.
+
+No proof of Moise352 or unconditional compact PL3 smoothing is claimed.
+Conditional endpoint assembly is separate from producers. Actual instances
+and conditional consumers are classified in the individual receipts; module
+census sizes are not counts of newly proved classical endpoints.
+
+### Verification and build boundary
+
+Accepted module checks and final audits have zero diagnostics and the checked
+axiom closures contain only approved foundational axioms, without sorryAx.
+The applicable thirteen environment linters were run, excluding only the two
+documentation-presence linters. Required file headers are retained. The final
+h acceptance repaired an external audit namespace qualification and added the
+missing UpperLink header; failures and successful reruns are separately frozen.
+
+All new accepted leaves are wired into the flat root. Static root closure
+reaches **9603 project modules including the root**, without missing project
+sources or cycles. The full-source root build remains stopped, with artifacts
+preserved. Focused compilation does not certify a fresh full-root build.
+Before the next broad compatibility gate: freeze and replay queued F/E3/M304
+public API changes, verify private-object source identities, then run one
+root worker under the existing two-private-checker/three-total-Lean ceiling.
+There was useful focused proof work throughout the final period, so no broad
+rebuild was triggered merely by elapsed time.
+
+### Frozen author checkpoints and next stage
+
+| Lane | Live author HEAD | Working tree at this snapshot | Independent acceptance |
+| --- | --- | --- | --- |
+| F | `f0482b620` | clean | through `f5436defe` |
+| S | `f081c3b24` | clean | through `f081c3b24` |
+| h | `bbd11df3b` | clean | through `bbd11df3b` |
+| E3 | `5877584aa` | clean | through `ff304a1b2` |
+| M304 | `734c87b5f` | clean | through `e83d02f94` |
+
+After explicit authorization to resume, first replay the queued E3 physical
+caps/replacement surface and F boundary chart layers, and M304's boundary-only
+compression change. Then continue one lane per task: F on overlap-preserving
+normalization and elimination; E3 on the genuine 30.3 endpoint; M304 on target
+preservation in an arbitrary prescribed shell; h on geometric stability and
+compatible modifications; S on prescribed-frame surface cancellation and strip
+assembly. The metric-free locally finite separation helper should be moved to
+its natural Topology home under an updated module lease, then reused by finite
+consumers, as a separate checked cleanup.
+
+### Accepted source commits
+
+The exact per-checkpoint declaration scope, types, model classification,
+source/object identities, timing and axiom/lint receipts are recorded below and
+in `.lake/final-morning-accounting-20260919.json`. The private receipts remain
+on this machine; source commits and this handoff are pushed.
+
+| Lane | Integration commit | Lean delta | Module declarations checked | Receipt |
+| --- | --- | ---: | ---: | --- |
+| E3 | `029f23adb` | +643/-0 | 35 | `verified-eighth-lane-delivery-20260919.json` |
+| S | `419f84c30` | +503/-4 | 41 | `verified-ninth-lane-delivery-20260919.json` |
+| E3 | `1fefc3d04` | +124/-0 | 2 | `verified-tenth-lane-delivery-20260919.json` |
+| F | `bb4a4c1d6` | +1085/-4 | 92 | `verified-eleventh-lane-delivery-20260919.json` |
+| F | `5bcb19dcf` | +565/-17 | 23 | `verified-twelfth-lane-delivery-20260919.json` |
+| E3 | `936829972` | +195/-0 | 3 | `verified-thirteenth-lane-delivery-20260919.json` |
+| F | `e39cf980e` | +340/-0 | 12 | `verified-fourteenth-lane-delivery-20260919.json` |
+| F | `cbfe4a73f` | +184/-0 | 4 | `verified-fifteenth-lane-delivery-20260919.json` |
+| S | `434a8b524` | +681/-0 | 27 | `verified-sixteenth-lane-delivery-20260919.json` |
+| M304 | `adf9dbef3` | +145/-0 | 5 | `verified-seventeenth-lane-delivery-20260919.json` |
+| F | `6da29f37e` | +304/-0 | 18 | `verified-eighteenth-lane-delivery-20260919.json` |
+| S | `1cba7cbb3` | +548/-0 | 8 | `verified-nineteenth-lane-delivery-20260919.json` |
+| M304 | `cdcea63dd` | +396/-0 | 24 | `verified-twentieth-lane-delivery-20260919.json` |
+| S | `b67a3b5cd` | +156/-0 | 4 | `verified-twentyfirst-lane-delivery-20260919.json` |
+| M304 | `6540d945b` | +167/-0 | 5 | `verified-twentysecond-lane-delivery-20260919.json` |
+| F | `c7c290f19` | +762/-69 | 628 | `verified-twentythird-lane-delivery-20260919.json` |
+| S | `6b89a1c10` | +543/-0 | 32 | `verified-twentyfourth-lane-delivery-20260919.json` |
+| M304 | `1e691da48` | +1651/-38 | 84 | `verified-twentyfifth-lane-delivery-20260919.json` |
+| F | `c74a81205` | +1142/-0 | 41 | `verified-twentysixth-lane-delivery-20260919.json` |
+| S | `326d5a10b` | +1294/-0 | 101 | `verified-twentyseventh-lane-delivery-20260919.json` |
+| F | `5986ba5f7` | +1024/-131 | 145 | `verified-twentyeighth-lane-delivery-20260919.json` |
+| F | `fdb92ceb5` | +64/-5 | 4 | `verified-twentyninth-lane-delivery-20260919.json` |
+| M304 | `dc0bca1db` | +45/-1 | 2 | `verified-thirtieth-lane-delivery-20260919.json` |
+| M304 | `3daf73f25` | +1602/-3 | 49 | `verified-thirtyfirst-lane-delivery-20260919.json` |
+| E3 | `270e3bdf8` | +3333/-43 | 81 | `verified-thirtysecond-lane-delivery-20260919.json` |
+| S | `3c29def94` | +1292/-31 | 152 | `verified-thirtythird-lane-delivery-20260919.json` |
+| h | `17914e51d` | +2161/-29 | 212 | `verified-thirtyfourth-lane-delivery-20260919.json` |
+| F | `9e1ac8288` | +1228/-34 | 62 | `verified-thirtyfifth-lane-delivery-20260919.json` |
+| M304 | `6bf37cb4e` | +1796/-67 | 180 | `verified-thirtysixth-lane-delivery-20260919.json` |
+| h | `77b982ae8` | +1116/-37 | 57 | `verified-thirtyseventh-lane-delivery-20260919.json` |
+| E3 | `2c53634be` | +529/-53 | 25 | `verified-thirtyeighth-lane-delivery-20260919.json` |
+| S | `928866988` | +1719/-0 | 92 | `verified-thirtyninth-lane-delivery-20260919.json` |
+| M304 | `83fb22694` | +1356/-27 | 35 | `verified-fortieth-lane-delivery-20260919.json` |
+| h | `379b637e8` | +452/-5 | 71 | `verified-fortyfirst-lane-delivery-20260919.json` |
+| S | `e028da50b` | +564/-0 | 13 | `verified-fortysecond-lane-delivery-20260919.json` |
+| M304 | `9beeb5a55` | +327/-1 | 31 | `verified-fortythird-lane-delivery-20260919.json` |
+| F | `9dd4d7c74` | +743/-0 | 9 | `verified-fortyfourth-lane-delivery-20260919.json` |
+| M304 | `c7fb8067d` | +114/-0 | 2 | `verified-fortyfifth-lane-delivery-20260919.json` |
+| S | `685bcaa56` | +231/-0 | 6 | `verified-fortysixth-lane-delivery-20260919.json` |
+| M304 | `1e604fd28` | +123/-1 | 12 | `verified-fortyseventh-lane-delivery-20260919.json` |
+| h | `752c572ae` | +341/-36 | 85 | `verified-fortyeighth-lane-delivery-20260919.json` |
+
+<!-- FINAL_CUTOFF_END -->
+
+## Historical acceptance records
+
+The records below are chronological; the snapshot above governs current status.
 
 ## Independently accepted during the window
 
@@ -2143,3 +2302,20 @@ The metric-free locally finite separation helper still needs its natural
 Topology home and shared finite consumers. Cross-layer compatible changes,
 positive stability radii for conditions 2-8, actual ambient solid-torus inputs
 and Moise351 remain open.
+
+## Final stop confirmation
+
+All five tasks are idle, all five author worktrees are clean and synchronized
+with their remotes, and the host has zero Lean/Lake processes at final
+inspection. The moise automation is PAUSED; its hourly cadence is retained.
+No new proof round or compiler starts after 14:19 UTC. Closing activity after
+the deadline only records the state and commits this report.
+
+F is frozen at f0482b620, E3 at 5877584aa and M304 at 734c87b5f. Their source
+after the independently accepted frontiers in the table is archived in the
+author branches and remains explicitly pending integration replay. S at
+f081c3b24 and h at bbd11df3b are fully replayed through those frozen deliveries.
+The three pre-existing shared stashes are preserved.
+
+Machine receipts: .lake/overnight-final-stop-20260919.json and
+.lake/final-task-status-20260919.json. Resume requires a new owner instruction.

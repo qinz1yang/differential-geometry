@@ -118,3 +118,12 @@ remaining obligations. Distinguish newly written source, verified deliveries,
 unverified drafts, and completed headline theorems. Commit counts and module
 counts are not proof-completion percentages. Record decisions, corrections,
 and negative results with enough evidence to avoid repeating a false route.
+
+## 2026-09-19 cutoff
+
+The authorized window ended at 14:19 UTC. All five tasks are idle and the
+heartbeat is PAUSED. The requested cadence is hourly when next authorized;
+this does not authorize a new run. No active compiler leases remain. Preserve
+all source checkpoints and pre-existing stashes. Resume requires a new owner
+instruction and starts from MORNING_ACCEPTANCE_20260919.md, with pending F,
+E3 and M304 source independently replayed before new cross-lane consumption.
