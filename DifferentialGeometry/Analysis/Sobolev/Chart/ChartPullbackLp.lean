@@ -57,6 +57,26 @@ theorem chartPushedRaw_chartPullback (α : M) {f : EuStd → ℝ}
   · rw [chartPushedRaw_apply_of_notMem α _ hz]
     exact (image_eq_zero_of_notMem_tsupport fun hs => hz (hfs hs)).symm
 
+theorem ae_chartInverse_eq_of_chartPullback
+    [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M]
+    (q : SmoothRiemannianMetric I M) (α : M) {Ω : Set EuStd}
+    (hΩ : MeasurableSet Ω) (hΩc : IsCompact (closure Ω))
+    (hΩs : closure Ω ⊆ chartTargetEuclid (I := I) α)
+    {v : M → ℝ} {f : EuStd → ℝ}
+    (hv : v =ᵐ[riemannianVolumeMeasure (I := I) (M := M) q] chartPullback I α f) :
+    (fun z => v ((extChartAt I α).symm ((toEuclidean (E := E)).symm z)))
+      =ᵐ[volume.restrict Ω] f := by
+  have h := ae_chartInverse_of_ae q α hΩ hΩc hΩs hv
+  filter_upwards [h, ae_restrict_mem hΩ] with z hz hzΩ
+  rw [hz]
+  have hy : (toEuclidean (E := E)).symm z ∈ (extChartAt I α).target := by
+    rw [chartTargetEuclid_eq_preimage_symm (I := I) (M := M) α] at hΩs
+    exact hΩs (subset_closure hzΩ)
+  have hx := (extChartAt I α).map_target hy
+  rw [extChartAt_source] at hx
+  rw [chartPullback_apply_of_mem α f hx, (extChartAt I α).right_inv hy,
+    ContinuousLinearEquiv.apply_symm_apply]
+
 theorem exists_eLpNorm_chartPullback_le
     [IsManifold I ∞ M] [T2Space M] [CompactSpace M]
     (q : SmoothRiemannianMetric I M) (α : M) {K : Set EuStd}
