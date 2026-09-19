@@ -1284,3 +1284,47 @@ Receipt: .lake/verified-sixteenth-lane-delivery-20260919.json. Exact audit sourc
 source/object hashes, model provenance, timings and logs are retained there and
 in the private verification directory. Root import coverage is checked
 statically; the full-root build remains stopped.
+
+## 35. Consumer compatibility and M304 continuation (2026-09-19 UTC)
+
+At F's exact-carrier triangulation delivery boundary, the coordinator checked
+the two concrete old-helper uses in BoundaryWordLoopClass and the other active
+worktrees. Their files do not overlap the proposed compatibility edit. F may
+replace those uses with the actual S.boundaryNeighborhood and make the necessary
+meaning-preserving proof adaptations within the existing NormalSystem repair.
+The current 54 transitive SingularCell consumers are authorized for private
+read-only rebuilds. MoiseChain remains owned by h/S for its separate mathematical
+changes. The precise list and decision are in
+.lake/normal-system-consumer-repair-20260919.json. c49f666ab's real closed-star
+shrinking producer is queued; the full NormalSystem repair is not yet accepted.
+
+M304 delivered f0f7bd699 and continues the same spherical-shell proof round.
+Its private compilation scope now includes Topology.ClosedBall so the general
+radial annulus homeomorphism can live in its natural mathematical location.
+This does not add a second lane or increase the compiler resource limits.
+
+
+## 36. Initial connected separating surface accepted (2026-09-19 UTC)
+
+M304 f0f7bd699 is independently accepted. Two modules freshly compiled in
+23.896 seconds; all five nonautomatic declarations, ten critical reused
+producers, a nonempty concentric-ball/sphere model and 13 applicable linters
+pass the 46.231-second silent audit. All checks exit 0, contain zero
+diagnostics and use only standard foundational axioms. Upstream artifacts
+are shared read-only; no private prerequisites were reused.
+
+The actual producer encloses a compact set in an arbitrarily small finite
+combinatorial-manifold neighborhood, then constructs a connected, orientable,
+two-sided polyhedral surface separating a compact connected set from a
+disjoint closed connected set. The model separates the closed unit ball from
+the radius-three sphere inside the open radius-two ball. General location
+lemmas are also proved. This surface is not yet shown to lie in a given
+spherical shell or to have genus zero. Shell localization, 26.4/28.19,
+compression geometry and strict Betti descent remain open. M304 continues
+shell localization; E3 retains actual 30.3 geometry.
+
+Lean +145/-0 includes two flat-root imports. Receipt:
+.lake/verified-seventeenth-lane-delivery-20260919.json. Exact probe source,
+source/object identities, all timings and logs are retained. Static root
+reachability is 9339 project modules including the root; the full-source
+build remains stopped and no Moise304 endpoint completion is claimed.

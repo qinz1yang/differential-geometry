@@ -51,7 +51,7 @@ Handoff only on delivery or urgent stop/restart.
 
 Pending source acceptance is tracked in .lake/pending-lane-checkpoints.json.
 Retain full-root build artifacts; that build is stopped. Six endpoint imports
-are now registered and statically reachable (9334 project modules including the root, no missing
+are now registered and statically reachable (9339 project modules including the root, no missing
 project source). The seven previously audited endpoint leaves retain their
 exact checked Git blobs; no full-root success is claimed. Focused checks do not
 certify a full-source build or the remaining classical input propositions.
@@ -222,3 +222,29 @@ Receipt: .lake/verified-sixteenth-lane-delivery-20260919.json. Exact audit sourc
 source/object hashes, model provenance, timings and logs are retained there and
 in the private verification directory. Root import coverage is checked
 statically; the full-root build remains stopped.
+
+
+## Independent 30.4 lane: actual initial separator
+
+M304 f0f7bd699 is independently accepted. Two modules freshly compiled in
+23.896 seconds; all five nonautomatic declarations, ten critical reused
+producers, a nonempty concentric-ball/sphere model and 13 applicable linters
+pass the 46.231-second silent audit. All checks exit 0, contain zero
+diagnostics and use only standard foundational axioms. Upstream artifacts
+are shared read-only; no private prerequisites were reused.
+
+The actual producer encloses a compact set in an arbitrarily small finite
+combinatorial-manifold neighborhood, then constructs a connected, orientable,
+two-sided polyhedral surface separating a compact connected set from a
+disjoint closed connected set. The model separates the closed unit ball from
+the radius-three sphere inside the open radius-two ball. General location
+lemmas are also proved. This surface is not yet shown to lie in a given
+spherical shell or to have genus zero. Shell localization, 26.4/28.19,
+compression geometry and strict Betti descent remain open. M304 continues
+shell localization; E3 retains actual 30.3 geometry.
+
+Lean +145/-0 includes two flat-root imports. Receipt:
+.lake/verified-seventeenth-lane-delivery-20260919.json. Exact probe source,
+source/object identities, all timings and logs are retained. Static root
+reachability is 9339 project modules including the root; the full-source
+build remains stopped and no Moise304 endpoint completion is claimed.
