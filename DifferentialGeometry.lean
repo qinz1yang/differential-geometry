@@ -1455,6 +1455,7 @@ import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.TraceScalarizati
 import DifferentialGeometry.Analysis.Parabolic.MetricDivergenceGradient
 import DifferentialGeometry.Analysis.Parabolic.MetricDivergenceHigherRegularity
 import DifferentialGeometry.Analysis.Parabolic.MetricDivergenceRegularity
+import DifferentialGeometry.Analysis.Parabolic.MetricDivergenceTimeRegularity
 import DifferentialGeometry.Analysis.Parabolic.Moser.BombieriGiusti.Basic
 import DifferentialGeometry.Analysis.Parabolic.Moser.Core.Cutoff
 import DifferentialGeometry.Analysis.Parabolic.Moser.Core.Iteration
