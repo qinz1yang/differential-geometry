@@ -2334,3 +2334,80 @@ homeomorphism. SurfaceSphereRecognition handles Euler characteristic two,
 not the required Euler-zero orientable case. Betti number two alone has not
 been used as torus recognition. Work toward these obligations continues;
 this checkpoint does not claim Moise306, Moise307 or Moise252 complete.
+
+
+### M304 parity and commutative-cover primitives; exact recognition frontier (2026-09-19 UTC)
+
+The preceding original-shell layer is committed and pushed as
+6f227c0576feb906bb14e8bb693bc8e7d0fdaf72. Its 39 frozen source/receipt sets were
+checked again against working-tree raw bytes, committed normalized bytes,
+and all artifact hashes. This follow-on layer adds two registered leaves,
+three proved declarations and 90 native lines, with zero deletions or
+changes to previous declarations. Across the toroidal round this is
+685 native lines, eight new leaves and 37 source declarations plus
+one generated local-notation constant.
+
+SurfaceEulerParity proves
+IsCombinatorialManifold.even_eulerChar_of_finrank_eq_three and
+IsCombinatorialManifold.even_bettiOne_of_finrank_eq_three for any connected
+finite closed PL2 surface in a three-dimensional real normed space.
+The proof produces its actual bounded PL3 filling with that exact boundary,
+uses the boundary Euler formula, and uses the already proved orientability
+and rational Euler-Betti formula. No handle profile or parity assumption is
+introduced. The added unconditional models check an actual embedded torus
+and the actual minimum separator in the non-simply-connected shell model.
+
+FundamentalGroup.CommutativeCover proves
+simplyConnectedSpace_or_of_open_cover_of_isMulCommutative. For a two-set
+open cover with path-connected sides and simply connected intersection,
+commutativity of the ambient fundamental group forces at least one side
+to be simply connected. The proof applies the native van Kampen free-product
+isomorphism and proves two nonidentity letters from different factors cannot
+commute by uniqueness of reduced words. Ambient simple connectivity is not
+an assumption. This closes the group's free-product obstruction on book
+page 217, but does not yet construct the actual cut cover of the original Y.
+
+The round reaches two explicit geometric frontiers. First, for the ORIGINAL
+IsToroidalShell Y T0 T1, prove that no IsPLSphere 2 S with S inside interior Y
+can satisfy Separates S T0 T1. Required construction: the closures of the
+two components of Y minus S, their path connectivity and regular-closed
+properties, a collar contained in original Y, the corresponding open cover,
+and factorization of the two actual endpoint maps through their own sides.
+The group isomorphisms and commutative-cover obstruction are proved; the
+closed-cover kernel theorem is for actual nontrivial boundary kernels and
+cannot substitute for this sphere case. The older negative/positive collar
+cover intersection API assumes the ambient space simply connected and
+therefore cannot be instantiated at this toroidal Y.
+
+Second, construct a torus homeomorphism for a connected closed orientable
+finite PL2 surface with nontrivial commutative fundamental group (here it
+embeds into Z x Z). The weaker intermediate numerical statements do not
+give that homeomorphism. SurfaceInvariants only starts from a supplied
+handle/crosscap profile; SurfaceSphereRecognition only treats Euler
+characteristic two. A native polygonal presentation/classification or a
+proved orientable Euler-zero torus-recognition construction is missing.
+The PI1-to-integral-H1/abelianization step used by the book is also not
+supplied by the checked path-cone vanishing API. No blocked HurewiczLowDegrees
+import, new axiom, sorry or conclusion-shaped hypothesis has been added.
+
+Moise306 remains PARTIAL at these actual geometric interfaces. Moise307 is
+not started, in accordance with the required 30.6 -> 30.7 order. Neither the
+incompressible separator nor parity is reported as IsPLTorus, and the
+explicit upstream Moise252 input remains unresolved. Independent integration
+acceptance remains pending.
+
+Final cumulative verification: 69 nonautomatic native constants, 112 critical
+reuse entries, fifteen actual models (seven unconditional, eight with h252),
+four model helpers, and all 13 applicable linters. All audited axiom closures
+contain only the approved foundational axioms; changed-module compiles and
+the full audit have zero diagnostics. Five kernel body/type traversals show
+no Moise303 or wide Moise264. The source graph has 940 native modules
+and 2019 edges, with no cycle or HurewiczLowDegrees.
+The owner-stopped root build was not run; shared outputs remain untouched.
+
+Frozen final evidence: C:/Users/liao9/AppData/Local/Temp/moise304-reading/recognition-final-checkpoint
+contains 41 source/receipt sets, the complete audit/census, actual models,
+kernel dependency reports and source/timing review. Manifest SHA256:
+D04395C683F14D90E0886B7F637B0E536E8E7F6DC1F6103CF98120009B7D9F87.
+Final zero-diagnostic audit: 2026-09-19T21:21:28.6825480Z; 2473.167 seconds since the first
+successful changed-module compile, not a measurement of total effort.

@@ -7463,6 +7463,7 @@ import DifferentialGeometry.Topology.FundamentalGroup.Retraction
 import DifferentialGeometry.Topology.FundamentalGroup.SimplyConnectedComponents
 import DifferentialGeometry.Topology.FundamentalGroup.Sphere
 import DifferentialGeometry.Topology.FundamentalGroup.Torus
+import DifferentialGeometry.Topology.FundamentalGroup.CommutativeCover
 import DifferentialGeometry.Topology.FundamentalGroup.SphericalQuotient
 import DifferentialGeometry.Topology.GraphBand
 import DifferentialGeometry.Topology.GraphBandChart
@@ -8333,6 +8334,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceCutting
 import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceCutKernel
 import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceEssentialDisk
 import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceIncompressibility
+import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceEulerParity
 import DifferentialGeometry.Topology.PiecewiseLinear.SphericalShell
 import DifferentialGeometry.Topology.PiecewiseLinear.TameNestedCells
 import DifferentialGeometry.Topology.PlanarJordan.AmbientExtension
