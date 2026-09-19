@@ -4731,3 +4731,27 @@ x∈∂T 当且仅当 x∈∂K；`inter_boundaryComplex_space` 给集合等式 A
 **partial：完整覆盖图的边界兼容。** 本层提供提升像/边界环的边界对应工具；仍须构造实际提升像与
 边界环复形、控制其边界邻域在原边界邻域内的投影，并组装基点、正规子群和覆盖图。
 不能把逐点边界迹当成整个边界邻域的投影包含关系。
+
+### 19.166 保持原源复形的实际单纯覆盖提升（2026-09-19 UTC）
+
+**done：Covering/PLMapLift.lean。** `exists_simplicialMap_lift_of_isPLBall` 从真实覆盖 p:X→|K|、
+有限 PL n-球源复形 A、单纯顶点映射 φ 和相容的指定楼上基点 e₀，实际生产原 A 上的顶点映射 ψ。
+每个原源面直接落在 coveringComplex 的一个面内，无须细分源；基顶点映射逐顶点等于 φ，
+coveringBaseMap∘simplicialMap A ψ 在 A.space 上精确等于 simplicialMap A φ，且实现后的锚点为 e₀。
+这里的连续提升 g 由覆盖在 PL 球上的已有唯一提升定理生产，没有将所求提升作为端点输入。
+
+`exists_simplicialMap_lift_of_continuousMap` 是任意已给连续提升的单纯实现定理：逐目标面唯一提升，
+经凸源面的连通性与覆盖提升唯一性识别原 g；全局投影等式由逐片仿射重心公式验证。
+`coveringVertexPoint_mem_vertices` 与 `coveringSpaceHomeomorph_vertexPoint` 给真实顶点实现 API。
+本层不假设 φ 单射，允许降维单纯映射；源复形和所有既有原面保持不动。
+
+模块检查 exit=0、零诊断；AuditF307 exit=0、零诊断。五项非自动声明、四项关键依赖和一个实际
+非空模型，共十项传递公理闭包仅标准三公理；十三项适用环境 linters 全过。
+模型将标准四面体的三角形面原样提升到四面体乘 Bool 的真实二重覆盖，检查楼上组合三维带边复形、
+纤维恰为二、整个源盘上的投影等式，以及实际提升锚点位于 true 层。
+回执 PLMapLift-checkpoint.json、AuditF307.json；sourceStable=true，共享产物只读。
+源码、根登记与本记录同次提交。AuditF305 的公共接口消费者复验仍在进行。
+
+**partial：完整 NormalSystem 与覆盖归纳。** 源提升已生产，仍需实现提升像及边界环子复形、
+相容小正规邻域与边界邻域，进而提供实际边界投影、基点和正规子群数据。
+严格复杂度下降消费者仍以完整 DoubleCoverDiagram 为输入；本层没有声称已经填好该输入。
