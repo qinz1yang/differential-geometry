@@ -5467,3 +5467,61 @@ Remaining C.7 bridge: identify the boundary of a disk cylindrical diagram with
 its circle mapping torus, make the embedded band a subcomplex after subdivision,
 and transfer orientability to contradict `not_isOrientable_mobiusComplex`.
 The embedded-band producer is complete; the full C.7 headline is not claimed.
+
+## Orientability of PL embedded manifolds and circle mapping tori (2026-09-18)
+
+Status: done for the independent subcomplex and orientation-transfer producer.
+`MobiusEmbedding.lean` contains four declarations:
+
+- `IsOrientable.of_isPLHomeomorphOn_subset`: a PL embedded manifold of the same
+  dimension as an orientable finite combinatorial manifold with boundary is
+  orientable. The source and ambient finite complexes may lie in different
+  finite-dimensional real normed spaces; the dimension is arbitrary.
+- `IsOrientable.of_space_subset`: the identity-map corollary for two complexes
+  in one ambient space. It does not require an existing subcomplex relation.
+- `not_isPLHomeomorphOn_mobiusComplex_of_isOrientable`: the actual Moebius model
+  has no PL homeomorphism onto a subset of an orientable finite PL surface.
+- `isPLCirclePositive_of_isOrientable_cylindricalDiagram`: an actual circle
+  cylindrical diagram whose image is contained in an orientable PL surface has
+  orientation-preserving top-to-bottom monodromy. The image need not equal the
+  ambient surface, and no manifold hypothesis is imposed on the image itself.
+
+The general embedding theorem proves the image is a polyhedron, subdivides the
+ambient complex until the image is the space of an actual restriction
+subcomplex, applies `IsOrientable.of_le`, and transfers orientation back by PL
+invariance. This constructs the required subdivision and subcomplex; neither is
+an additional assumption. The Moebius obstruction consumes the checked model's
+manifold and nonorientability theorems. The monodromy theorem uses the actual
+embedded band from `08a121822` and this obstruction. No new unproved parameter or
+conclusion-shaped hypothesis is introduced.
+
+Verification used `S-round-20260919`, one S Lean process, private outputs and
+read-only shared artifacts. The final module check completed at UTC
+`2026-09-19T00:24:07.2800461Z` and the final dynamic audit at
+`2026-09-19T00:24:19.3088074Z`. All four declarations are public; the
+complete nonautomatic census, standard axiom closure check and all 13 applicable
+environment linters passed with exit 0 and zero diagnostics. The final source
+SHA256 is `2BD2B0BA049ADDFD3A709279800C4DCDD7C09DB939FC6F2503A0126F9DD8F06A`.
+The combined receipt is
+`C:/Users/liao9/AppData/Local/Temp/codex-s-mobius-torus-20260918/MobiusEmbedding-verification.json`;
+the declaration inventory is `MobiusEmbedding-audit.tsv` in the same directory.
+Per-module compile and preserved audit receipts are under `lib`.
+
+Source, flat-root registration, this record and the C.7 row are delivered in one
+mathematical commit. Static hygiene and whitespace checks pass. Native import
+closure excludes `Topology/Homology/HurewiczLowDegrees.lean`. External audit and
+draft probes are removed after preserving the evidence. The integration root
+build remains the coordinator's separate gate.
+
+C.7 is still partial. The next geometric producer is the side-image inclusion
+for an actual disk cylindrical diagram:
+`f '' ((boundaryComplex 2 D).space ×ˢ Icc 0 1) ⊆ (boundaryComplex 3 M).space`,
+from finite `D`, `M`, `IsPLBall 2 D.space`, the actual diagram on `D.space` with
+image `M.space`, and `IsCombinatorialManifoldWithBoundary 3 M`. The restriction
+to the boundary circle also needs its two end images identified using the disk
+monodromy's boundary invariance. The strengthened contained-image endpoint above
+then combines directly with `IsOrientable.boundary`: a full boundary-image
+equality or a separate manifold proof for the circle diagram's image is not
+needed to force positive boundary monodromy. Existing disk pseudo-isotopy and
+cylindrical comparison APIs can consume that result. The full CST endpoints and
+contractible-polygon assembly remain outside this completed layer.

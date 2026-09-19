@@ -8284,6 +8284,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.MobiusSquareMap
 import DifferentialGeometry.Topology.PiecewiseLinear.CirclePrismComparison
 import DifferentialGeometry.Topology.PiecewiseLinear.CircleReflection
 import DifferentialGeometry.Topology.PiecewiseLinear.MobiusMappingTorus
+import DifferentialGeometry.Topology.PiecewiseLinear.MobiusEmbedding
 import DifferentialGeometry.Topology.PiecewiseLinear.MoiseChain
 import DifferentialGeometry.Topology.PiecewiseLinear.SphereNesting
 import DifferentialGeometry.Topology.PiecewiseLinear.TameNestedCells
