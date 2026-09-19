@@ -2947,3 +2947,20 @@ step 2 只做了 grep 与接口陈述，没有动工（月牙是一个项目，�
   与 `C:\Users\liao9\AppData\Local\Temp\codex-e3-slab-private\external-audit.json`。
 - 本层不修改 `NormalSystem` 生产者，也不声称 `exists_separated_along_branch`。下一层必须把正、负两张同伦粘成
   **同一张**改动后的源盘映射，并在现有源片邻域契约上核对重叠相等、边界参数和原边界邻域内的自由同伦。
+
+## 91. 2026-09-19 I.3：30.3 的道路替换核心
+
+状态：**已闭合一个独立基础层；30.3 整体仍为 partial**。
+
+- `Connected/Separation.lean` 新增 `JoinedIn.compl_of_frontier_replacement`。若闭集 `N` 外 `C` 与 `C'`
+  相同，安全边界 `frontier N \ C'` 道路连通且避开 `C`，则任何端点在 `N` 外、避开 `C'` 的道路都可改成
+  避开 `C` 的道路。证明取原道路命中 `N` 的参数闭集的最小值和最大值，证明两个极值像落在
+  `frontier N`，再以安全边界中的道路替换两者之间的整段；这正形式化书页 215 把折线 `PQ` 强制移出
+  `C₁³` 的步骤，不使用并不存在的一般全局收缩。
+- `Separates.of_frontier_replacement` 把上述道路替换与 `joinedIn_compl_of_not_separates` 合成：原 `C` 分离
+  `H,K` 时，局部替换后的 `C'` 仍分离 `H,K`。空端集也由已有分离引理覆盖。
+- 聚焦检查 exit `0`、零诊断、共享产物未改动。外部静默审计覆盖本模块全部 10 个非自动声明；每条传递
+  公理闭包均为 `propext / Classical.choice / Quot.sound` 的子集，13 个适用环境 linter 零诊断。
+- 30.3 尚缺的几何接线是：从实际嵌入分裂盘 `Δ` 及 `D₂ ∩ N(Δ)` 的两 3-胞腔构造书中的
+  `N = C₁³` 与替换面 `C' = (C - Int A₁) ∪ Δ₁`，并证明
+  `frontier N \ C' = Int A' ∪ Int Δ₂` 的道路连通性、其避开 `C` 性以及 `N` 外两面的精确相等。
