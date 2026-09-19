@@ -7,6 +7,39 @@ open Filter Set
 open scoped Topology ContDiff
 namespace DifferentialGeometry.CheegerGromovCompactness
 
+section ContinuousParameter
+variable {P E F : Type*} [TopologicalSpace P]
+  [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [NormedAddCommGroup F] [NormedSpace ℝ F]
+
+theorem mapCInfConvergenceOnCompacts_of_continuous_spatial_jets
+    {G : P → E → F} {A : Set P} {V : Set E} (hV : IsOpen V)
+    (hG : ∀ p ∈ A, ContDiffOn ℝ ∞ (G p) V)
+    (hjets : ∀ r : ℕ, ContinuousOn
+      (fun z : P × E => iteratedFDeriv ℝ r (G z.1) z.2) (A ×ˢ V))
+    (τ : ℕ → P) (hτ : ∀ n, τ n ∈ A) {p : P} (hp : p ∈ A)
+    (htend : Tendsto τ atTop (𝓝 p)) :
+    MapCInfConvergenceOnCompacts V (fun n => G (τ n)) (G p) := by
+  intro K hK hKV m
+  apply mapCPConvergenceOn_of_tendstoUniformlyOn hV hKV
+    (fun n => (hG (τ n) (hτ n)).of_le (by exact_mod_cast le_top))
+    ((hG p hp).of_le (by exact_mod_cast le_top))
+  intro r _hr
+  have ht : Tendsto τ atTop (𝓝[A] p) :=
+    tendsto_nhdsWithin_iff.mpr ⟨htend, Filter.Eventually.of_forall hτ⟩
+  rw [Metric.tendstoUniformlyOn_iff]
+  intro epsilon hepsilon
+  obtain ⟨U, hU, hclose⟩ := hK.mem_uniformity_of_prod
+    (f := fun q x => iteratedFDeriv ℝ r (G q) x)
+    ((hjets r).mono (prod_mono_right hKV)) hp (Metric.dist_mem_uniformity hepsilon)
+  filter_upwards [ht.eventually hU] with n hn
+  intro x hx
+  have hh : dist (iteratedFDeriv ℝ r (G (τ n)) x)
+      (iteratedFDeriv ℝ r (G p) x) < epsilon := hclose (τ n) hn x hx
+  simpa only [dist_comm] using hh
+
+end ContinuousParameter
+
 variable {P E F : Type*} [NormedAddCommGroup P] [NormedSpace ℝ P]
   [NormedAddCommGroup E] [NormedSpace ℝ E]
   [NormedAddCommGroup F] [NormedSpace ℝ F]
@@ -17,17 +50,12 @@ theorem mapCInfConvergenceOnCompacts_of_tendsto_parameter
     (τ : ℕ → P) (hτ : ∀ n, τ n ∈ A) {p : P} (hp : p ∈ A)
     (htend : Tendsto τ atTop (𝓝 p)) :
     MapCInfConvergenceOnCompacts V (fun n => G (τ n)) (G p) := by
-  intro K hK hKV m
-  have hs (q : P) (hq : q ∈ A) : ContDiffOn ℝ ∞ (G q) V :=
-    hG.comp (f := fun x => (q, x)) (contDiffOn_const.prodMk contDiffOn_id)
+  apply mapCInfConvergenceOnCompacts_of_continuous_spatial_jets hV _ _ τ hτ hp htend
+  · intro q hq
+    exact hG.comp (f := fun x => (q, x)) (contDiffOn_const.prodMk contDiffOn_id)
       (fun _ hx => ⟨hq, hx⟩)
-  apply mapCPConvergenceOn_of_tendstoUniformlyOn hV hKV
-    (fun n => (hs (τ n) (hτ n)).of_le (by exact_mod_cast le_top))
-    ((hs p hp).of_le (by exact_mod_cast le_top))
-  intro r _hr
-  exact (hG.tendstoUniformlyOn_iteratedFDeriv_snd hV hK hKV r
-    (by exact_mod_cast le_top) hp).seq_tendstoUniformlyOn τ
-      (tendsto_nhdsWithin_iff.mpr ⟨htend, Filter.Eventually.of_forall hτ⟩)
+  · intro r
+    exact (hG.iteratedFDeriv_snd hV r (m := 0) (by exact_mod_cast le_top)).continuousOn
 
 theorem mapCInfConvergenceOnCompacts_smul_of_tendsto_parameter
     {G : P → E → F} {A : Set P} {V : Set E} (hV : IsOpen V)
