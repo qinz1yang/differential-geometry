@@ -11404,3 +11404,6 @@ import DifferentialGeometry.Geometry.Metric.Distance.ExponentialWeight
 import DifferentialGeometry.Analysis.Integration.Measure.Estimates.DistanceExponential
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.DistanceExponential
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.ExponentialWeight
+import DifferentialGeometry.Topology.Manifold.SublevelCutoff
+import DifferentialGeometry.Geometry.Metric.Distance.Cutoff
+import DifferentialGeometry.Analysis.Calculus.Cutoff.RiemannianExhaustion
