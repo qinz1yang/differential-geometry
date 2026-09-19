@@ -6157,3 +6157,130 @@ together as one closed cell-attachment result; no VENDOR source changed.
   and same-topology transport. No compact or noncompact PLSmoothing 3 theorem
   has been proved in this round; the approximation phase retains its noncompact
   statement. Independent integration replay and the full-root gate are separate.
+
+## Vertex balls and edge handles in derived neighborhoods (2026-09-19)
+
+Status: done for this first geometric layer of the separate compact PL
+smoothing round. Integration was merged at `00ab946ae` from `1fefc3d04`;
+both sides of the two plan conflicts were preserved. The full finite handle
+sequence and the compact smooth-structure theorem remain open.
+
+### Actual constructions and input direction
+
+The producer search found standard smooth handle models and smooth Morse
+attachments, whose input direction starts with an already smooth manifold;
+it found no native finite PL handle-decomposition producer. This layer starts
+with the actual finite combinatorial manifold and constructs its vertex balls,
+edge prisms, attaching embeddings and quotient homeomorphisms. It introduces
+no assumed handle decomposition, PLSmoothing predicate or hSchoenflies input.
+
+`DerivedNeighborhoodEdge.lean`:
+
+- `disjoint_derivedNeighborhoodCell_of_card_eq` proves that distinct faces of
+  equal cardinality have disjoint derived cells.
+- `derivedNeighborhoodCell_edge_inter_iUnion` identifies the intersection of
+  a new edge cell with a finite collection of vertex/edge cells as exactly
+  its two endpoint disk intersections. Both endpoints are already included
+  and the edge itself is excluded; the other cells are actual faces of K.
+- `exists_isPLHomeomorphOn_derivedNeighborhoodCell_edge` constructs a PL
+  homeomorphism from `stdSimplex R (Fin 3) x [0,1]` to the actual edge cell,
+  carrying its two ends precisely onto those two disks. Its only manifold
+  input is `IsCombinatorialManifoldWithBoundary 3 K` with finite K.
+
+`DerivedNeighborhoodVertices.lean`:
+
+- `exists_homeomorph_iUnion_derivedNeighborhoodCell_vertices` gives actual
+  PL ball maps and a homeomorphism from their finite disjoint coproduct onto
+  the union of vertex cells, with its exact evaluation formula. It works
+  in every dimension n+1 and allows an empty chosen vertex set.
+
+`DerivedNeighborhoodCellBoundary.lean`:
+
+- `derivedNeighborhood_space_of_insert_face` identifies the neighborhood of
+  `subcomplexGeneratedBy K (insert s L.faces)` with the old neighborhood
+  union the new cell, provided every nonempty proper subface of s lies in L.
+  This identity needs no manifold, finite-K or finite-dimensional hypothesis.
+- `derivedNeighborhoodCell_inter_subset_boundary_derivedNeighborhood` puts
+  the intersection of any not-yet-included face cell with the neighborhood
+  of L in that neighborhood's intrinsic combinatorial boundary. It works
+  in dimension n+2, in an arbitrary finite-dimensional real normed ambient
+  space, and can be reused at the triangle and tetrahedron stages.
+
+`DerivedNeighborhoodEdgeAttachment.lean`:
+
+- `exists_derivedNeighborhoodCell_edge_attachment` constructs the actual
+  closed attaching embedding of the two prism ends into a finite union of
+  old vertex/edge cells and a homeomorphism from the actual adjunction space
+  onto the enlarged union. It proves that exactly those two ends meet the
+  lower space. The quotient homeomorphism fixes the lower space pointwise
+  and evaluates on the new cell by the constructed PL prism map.
+- `exists_derivedNeighborhood_edge_attachment` specializes this geometry to
+  an actual graph subcomplex L. It also proves that the old neighborhood is
+  a combinatorial three-manifold with boundary, that the attaching image
+  lies in its boundary, and that the target is the derived neighborhood of
+  the explicitly generated next subcomplex. It derives finiteness of L
+  from L being a subcomplex of finite K.
+
+Boundaryless K is not required: the input may be a compact three-manifold
+with boundary. Finite K supplies finite cells and compact PL balls; the
+finite vertex coproduct and finite lower union supply the closedness used
+in the homeomorphism constructions. The prism maps are PL. The quotient
+homeomorphisms have exact lower/cell formulas; no additional smoothness or
+unstated PL structure on an abstract quotient is claimed.
+
+### Verification and nondegenerate application
+
+| Module | Compile seconds | Audit seconds | Nonautomatic declarations | Critical reuse entries |
+|---|---:|---:|---:|---:|
+| `DerivedNeighborhoodEdge` | 11.691 | 10.840 | 3 | 6 |
+| `DerivedNeighborhoodVertices` | 11.150 | 11.762 | 1 | 3 |
+| `DerivedNeighborhoodCellBoundary` | 16.948 | 11.546 | 2 | 6 |
+| `DerivedNeighborhoodEdgeAttachment` | 15.070 | 14.870 | 2 | 8 |
+
+All four final module checks and complete dynamic audits exited 0 with zero
+errors, warnings or info diagnostics. All eight nonautomatic declarations
+(none private), 23 critical reuse entries and all 13 applicable environment
+linters per module passed. Each axiom set is contained in
+propext/Classical.choice/Quot.sound. Times include resource admission.
+
+The concrete fixture is an actual tetrahedron, a three-manifold with boundary.
+It realizes all four vertex balls, then adds the missing edge of an existing
+two-edge path, closing a triangle in the graph. The two attaching ends contain
+points with distinct images. A second formulation constructs the graph
+subcomplex itself and checks the boundary-valued embedding and quotient
+homeomorphism onto its explicit successor neighborhood. The final fixture
+check and its 11 axiom entries passed with exit 0 and zero diagnostics in
+11.842 seconds. It does not assume a finite handle decomposition.
+
+Raw source SHA256 values:
+
+- `DerivedNeighborhoodEdge`: `798FBB047130B59C6DFFF08715D34F7115D92B3859D809B98D6B08E8C401D283`.
+- `DerivedNeighborhoodVertices`: `4A3561D13FA87198B85A97B8DD8519908E2C5E66737C3CA7F3A0255BEF661402`.
+- `DerivedNeighborhoodCellBoundary`: `64FDBE7C75568BFC27D7EC9894D53F17133DD6276ACDC786561DDE7D46DF20F8`.
+- `DerivedNeighborhoodEdgeAttachment`: `47D6C00B280FB0E3F3E9BD2198B213CF1695261CFF52BB9B50B948B1FEBEF794`.
+
+Evidence: `C:/Users/liao9/AppData/Local/Temp/codex-s-mobius-torus-20260918/`
+`GraphNeighborhoodHandles-round-verification.json`. It retains exact module,
+audit and fixture bytes, raw/normalized source hashes, private object hashes,
+compile/audit receipts, setup records, timings and declaration/reuse/linter
+censuses. The audit copies were checked to have exactly the source proof
+bodies. All four native import closures exclude `HurewiczLowDegrees`; the
+new leaves are registered exactly once in the flat root. Shared artifacts
+were not modified. Integration replay and the stopped full-source/root gate
+remain separate coordinator gates. Source, root imports, this handoff and
+MOISE_PLAN are one mathematical commit. No vendored source changed.
+
+### Remaining exact obligations
+
+- Classify the triangle-cell attaching annulus as the standard index-two
+  product pair, with actual parametrization and its framing data.
+- Construct the index-three sphere-pair parametrizations and account for
+  boundary simplices without assuming the desired attaching description.
+- Choose and assemble the actual finite order of all stages, composing the
+  compatible lower-space homeomorphisms to reach the whole K.
+- Complete general smooth handle attachment and corner rounding, framed
+  circle/annulus smoothing, smooth standardization of topological two-sphere
+  boundary components, and the final compact smooth-atlas assembly.
+
+No compact or unrestricted PLSmoothing 3 theorem is claimed by this layer.
+The noncompact statement of the approximation phase is unchanged.

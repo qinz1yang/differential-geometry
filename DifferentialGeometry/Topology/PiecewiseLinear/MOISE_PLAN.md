@@ -77,8 +77,11 @@ no acceptance of these contracts is claimed.
    finite triangulation, handle/collar, sphere-isotopy and interior-atlas
    inputs have been audited. Prescribed sphere reparametrizations now extend
    to actual cell-adjunction homeomorphisms with exact lower/cell formulas.
-   Finite PL handle production, smooth attaching/framing, corner rounding and
-   smooth classification of terminal two-sphere boundaries remain open.
+   Actual vertex zero handles and edge one-handle attachments, including
+   intrinsic boundary traces and successor-subcomplex homeomorphisms, are now
+   constructed. Higher-index product pairs, the global finite handle sequence,
+   smooth attaching/framing, corner rounding and smooth classification of
+   terminal two-sphere boundaries remain open.
    The eventual compact assembly does not prove unrestricted PLSmoothing 3.
 4. S now runs compact PL smoothing as a separate phase, after its reported
    finite 24.12 delivery through 434d5352c.
@@ -277,6 +280,21 @@ inline comments and declaration docstrings remain disallowed.
 本层只完成拓扑封口比较；有限 PL 柄分解、一般光滑柄附着与角光滑化、PL 附着圆/环带及框架光滑化、
 任意光滑拓扑二球面的微分标准化及有限归纳装配仍是明确义务。未新增结论型假设或 PLSmoothing 接口，
 未证明紧致光滑化端点，也未改动逼近阶段的非紧陈述。完整证据与逐项签名见 HANDOFF_CODEX_S.md 最末节。
+
+**S vertex/edge geometric layer (2026-09-19; integration replay pending):**
+The four new derived-neighborhood modules construct finite disjoint vertex
+balls, actual PL edge prisms with exact attaching end disks, the intrinsic
+boundary trace of every new face cell, and the actual adjunction-space
+homeomorphism onto the next graph-subcomplex neighborhood, fixing the lower
+space. The input is a finite combinatorial three-manifold with boundary;
+no hSchoenflies or assumed handle decomposition is used. Eight declarations,
+23 critical reuse entries and all 13 environment linters per module passed;
+all checks and the nondegenerate tetrahedron graph-cycle fixture exited 0
+with zero diagnostics and only standard axioms. Index-two/index-three product
+pairs and global finite-stage assembly remain open, followed by the smooth
+attachment/framing/corner and two-sphere classification obligations above.
+The compact smoothing endpoint and unrestricted approximation scope are
+unchanged. Exact statements and evidence are in the final S handoff section.
 
 ### Phase 3：A′ `PLApproximationManifold 3` 的经典链（Moise §17, §21–28, §30–36）
 
