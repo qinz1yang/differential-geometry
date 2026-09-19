@@ -2081,3 +2081,39 @@ See HANDOFF_CODEX_M304.md for exact statements and maps. Full Moise264
 component/ambient generality, nonseparating cuts, the actual Moise252 proof
 and embedded essential disks remain open. No full-root build or independent
 acceptance is claimed; arbitrary-shell Moise304 is not complete.
+
+
+### M304 essential disks conditional on Moise252 (2026-09-19 UTC)
+
+`SurfaceEssentialDisk` now consumes the explicit `h252 : Moise252` on the
+actual boundary-component kernel produced in the original K. For finite
+connected closed PL2 L in a finite preconnected WB3 K in ambient dimension
+three, it produces an embedded essential disk in K minus the old boundary,
+with exact intersection with the original L and nonnullhomotopic boundary
+inclusion into L. It retains the prescribed-neighborhood collar. Avoidance
+of the old boundary and transport from the actual boundary label are proved.
+
+The connected nullhomotopy-neighborhood API produces a finite connected
+ambient neighborhood containing the same actual nullhomotopy. It gives the
+new disk producer in any prescribed simply connected open neighborhood.
+The original-shell specialization retains X, S, B0 and B1, produces the
+essential disk/circle and centered annulus, and connects those same objects
+to the existing target-preserving compression theorem. The actual ball,
+wall, caps and their trace equations remain explicit geometric inputs;
+their general producer is not claimed.
+
+Seven existing public signatures are preserved. All 15 declarations across
+the three changed/new modules and unchanged actual consumer, 74 critical
+reuse entries, two unconditional actual geometric models, two explicitly
+h252-conditional models and three helpers have standard transitive axioms.
+All 13 applicable linters and the final private audit pass with zero
+diagnostics. The registered source graph has 698 modules and 1427 edges
+without cycles or HurewiczLowDegrees.
+
+23 source-matching private receipt sets are frozen at
+`moise304-reading/essential-disk-checkpoint/`, manifest SHA256
+`4C0794FAAC0C53E13EF333D6FCE8388E3AD08F80CC44A4379A7F6757CA7266B9`.
+See HANDOFF_CODEX_M304.md for exact APIs, actual-model scope and receipt
+time. No full-root build or independent acceptance is claimed. The actual
+Moise252 proof, full Moise264 generality, general compression-ball geometry
+and arbitrary-shell Moise304 remain open.

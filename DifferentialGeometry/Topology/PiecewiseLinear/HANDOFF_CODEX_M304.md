@@ -1981,3 +1981,92 @@ upstream. This checkpoint does not assert Moise252, Moise264 or arbitrary-
 shell Moise304. The existing based-kernel-to-free-loop theorem continues
 to provide the exact input shape for a later explicitly conditional Moise252
 consumer on the produced boundary.
+
+
+### M304 essential disks from the boundary Loop Theorem (2026-09-19 UTC)
+
+The new registered leaf `SurfaceEssentialDisk.lean` takes the explicit
+parameter `h252 : Moise252`. It proves the connected-surface,
+three-dimensional ambient case needed by the original-shell argument.
+It does not assert the Loop Theorem or the full Moise264 statement.
+
+`IsCombinatorialManifoldWithBoundary.exists_essential_disk_of_loop_theorem`
+starts with the original finite WB3 K, finite connected closed PL2 L,
+ambient dimension three, preconnected K, an actual nontrivial kernel of
+the literal inclusion L to K, and the specified relative neighborhood U.
+The existing `exists_boundary_component_kernel_of_interior_inclusion`
+produces the orientable cut piece R, its exact boundary trace and its
+actual boundary-component kernel. The native kernel-to-free-loop theorem
+provides the input to h252 on that R and that boundary label. The result is
+an embedded PL disk D in K minus the old boundary, with exact intersection
+`D ∩ L.space = r '' stdSimplexBoundary 2`, and a nonnullhomotopic boundary
+inclusion into the original L. The U-contained collar remains in the
+output. Neither the essential disk nor the final closed-side kernel is an
+additional hypothesis.
+
+Old-boundary avoidance follows from the exact cut-boundary equation:
+a disk point on the old boundary lies on the boundary of R, hence on the
+disk rim and in L, contradicting the original interior hypothesis.
+The actual boundary-component equality transports the nonnullhomotopy to
+the original L. This argument retains all of L under the explicit
+connectedness hypothesis; it does not silently discard other components.
+
+`exists_connected_neighborhood_fundamentalGroup_map_eq_one` strengthens
+the neighborhood API for compact connected S. The union of S with the
+actual nullhomotopy image is compact and connected, since the homotopy
+image meets S at its original loop. The native connected-neighborhood
+theorem gives a finite connected manifold neighborhood containing that
+whole union. The same nullhomotopy is rebuilt in this neighborhood.
+`IsCombinatorialManifold.exists_connected_neighborhood_nontrivial_fundamentalGroup_kernel`
+uses it; the former neighborhood-kernel theorem remains a corollary with
+its original signature. All seven former public signatures in the two
+edited modules are unchanged.
+
+`IsCombinatorialManifold.exists_essential_disk_in_neighborhood_of_loop_theorem`
+therefore produces a proper essential disk inside a prescribed simply
+connected open neighborhood of the entire original connected nonspherical
+surface. `IsSphericalShell.exists_essential_disk_annulus_of_loop_theorem`
+applies this to the interior of the original X with the same S, B0 and B1.
+It produces the disk, proves that D has a point outside S, and supplies its
+essential PL circle and a centered PL annulus in S. For those same objects,
+the existing `SurfaceCompressionSeparation` theorem then produces a
+strictly lower-Betti separating component once supplied with the actual
+compression ball, wall, two caps and exact trace equations. These are
+genuine geometric inputs; this checkpoint does not construct them for an
+arbitrary produced disk. Separation, capping and Betti arguments are reused.
+
+The complete external audit preserves two unconditional actual geometric
+models: the nonempty finite ball with its embedded beta-two torus and
+actual cut-boundary kernel, and the torus compression in its original
+spherical shell with two nonempty targets. Two separate h252-conditional
+models exercise the new API on those original objects. The first retains
+the original K, L, actual source kernel and U = interior K while producing
+the proper essential disk. The second retains the original S, X, B0 and
+B1 and produces the disk/annulus plus the stated geometric-input consumer.
+Neither conditional model is evidence that h252 has been proved.
+
+All 15 nonautomatic declarations across the three changed/new modules and
+the unchanged actual compression consumer, 74 critical reuse entries,
+four models and three private helpers have transitive axiom closures
+contained in propext, Classical.choice and Quot.sound. All 13 applicable
+linters pass. ConnectedNeighborhood, MoiseChain, every changed module and
+the actual compression consumer have zero-diagnostic private receipts;
+the changed chain was rebuilt after the connected-neighborhood refresh.
+The native source graph has 698 modules and 1427 edges, is acyclic and
+avoids HurewiczLowDegrees. The root only adds the one new leaf import.
+
+23 source-matching source/object/receipt sets and the final audit,
+census and source review are frozen at
+`C:/Users/liao9/AppData/Local/Temp/moise304-reading/essential-disk-checkpoint/`.
+Manifest SHA256:
+`4C0794FAAC0C53E13EF333D6FCE8388E3AD08F80CC44A4379A7F6757CA7266B9`.
+Final audit completion: 2026-09-19T19:14:07.3227336Z.
+Individual receipt times distinguish refreshed modules from unchanged
+earlier dependencies. The stopped full-root build was not restarted.
+Shared outputs and F/E3/h/S mathematics are unchanged. Independent
+integration acceptance is not claimed.
+
+The remaining boundaries are the actual Moise252 proof, full arbitrary
+ambient/component/nonseparating Moise264 generality, and production of the
+compression-ball wall/cap geometry for an arbitrary original-shell disk.
+Arbitrary-shell Moise304 is not complete.
