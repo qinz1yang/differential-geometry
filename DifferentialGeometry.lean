@@ -7540,6 +7540,7 @@ import DifferentialGeometry.Topology.Homology.FineAffineImages
 import DifferentialGeometry.Topology.Homology.Homotopy
 import DifferentialGeometry.Topology.Homology.HurewiczEquivalences
 import DifferentialGeometry.Topology.Homology.HurewiczLowDegrees
+import DifferentialGeometry.Topology.Homology.HurewiczOne
 import DifferentialGeometry.Topology.Homology.Integral
 import DifferentialGeometry.Topology.Homology.LiftedFaces
 import DifferentialGeometry.Topology.Homology.LiftedSimplex
@@ -7576,8 +7577,10 @@ import DifferentialGeometry.Topology.Homology.OneDimensionalSphere
 import DifferentialGeometry.Topology.Homology.OpenCover
 import DifferentialGeometry.Topology.Homology.OpenExcision
 import DifferentialGeometry.Topology.Homology.PathChains
+import DifferentialGeometry.Topology.Homology.PathConcatenation
 import DifferentialGeometry.Topology.Homology.PathCones
 import DifferentialGeometry.Topology.Homology.PathEvaluation
+import DifferentialGeometry.Topology.Homology.PathHomotopy
 import DifferentialGeometry.Topology.Homology.RadialHomotopy
 import DifferentialGeometry.Topology.Homology.Reduced
 import DifferentialGeometry.Topology.Homology.Reduced.Comparison

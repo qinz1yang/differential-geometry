@@ -2523,3 +2523,54 @@ Frozen evidence: C:/Users/liao9/AppData/Local/Temp/moise304-reading/sphere-exclu
 45 source/receipt groups. Manifest SHA256: 69B2B74D52D5C659058B905AB9B216AF35F0FAF4CDAB3F5B14EB22E04ABFE701.
 Complete zero-diagnostic audit: 2026-09-19T21:54:51.8379979Z.
 Kernel dependency audit: 2026-09-19T21:57:34.0194709Z.
+
+
+## M304 degree-one Hurewicz homomorphism checkpoint, 2026-09-19
+
+The original toroidal-shell sphere exclusion from 87826c69c remains unchanged.
+A general integral degree-one Hurewicz homomorphism now exists for every
+based topological space. hurewiczOne_surjective proves its surjectivity for
+every PathConnectedSpace, with no simple connectivity, manifold, compactness,
+local path connectivity, or finite complex assumption.
+
+PathConcatenation gives an explicit singular triangle for any composable
+paths; its boundary is q - (p.trans q) + p. PathHomotopy triangulates an
+arbitrary endpoint-fixed path homotopy into two singular triangles, with
+constant-path corrections, and proves that homotopic path chains differ by
+a boundary. HurewiczOne descends the resulting loop class to the actual
+fundamental group, respecting Mathlib's reversed concatenation convention.
+Surjectivity closes every singular edge using chosen basepoint paths; their
+endpoint corrections cancel for every cycle. The proof compares the actual
+linear maps on the singular-chain basis and then uses the cycle quotient.
+
+Three new leaf modules, 384 native source lines, eighteen public and four
+private declarations; all three are registered in the flat root. Every
+changed module compiled with zero diagnostics. The cumulative main audit
+checks 109 native constants, 133 critical reuse entries, twenty models and
+four helpers under all thirteen applicable linters. A separate checked model
+adds two reuse entries and one actual circle model: there exists an actual
+loop whose integral homology coordinate is exactly 1, using the independently
+checked sphere top homology equivalence. The other two new models exercise
+surjectivity on the circle and torus with explicitly nontrivial fundamental
+groups. Thus the cumulative evidence has 135 reuse entries and twenty-one
+models (twelve unconditional, nine retaining h252).
+
+All checked axiom closures contain only a subset of propext,
+Classical.choice and Quot.sound. Twelve actual kernel type/body dependency
+traversals are nonempty and avoid Moise303 and wide Moise264. The native
+source import graph has 954 modules and 2052 edges,
+with no cycle or HurewiczLowDegrees. No shared outputs were changed. The
+explicit owner root-build stop remains in force; integration replay is pending.
+
+This checkpoint proves the map and its surjectivity, not the abelianization
+isomorphism, rational coefficient comparison, Betti-one rank bound, or actual
+surface-to-torus homeomorphism. Those remain the Moise306 recognition frontier.
+Moise307 is not yet started. Moise252 remains an explicit unresolved input.
+The earlier Moise308 original-inner-spine inclusion-transport obligation is
+unchanged; MoiseChain and other lanes were not edited.
+
+Frozen evidence: C:/Users/liao9/AppData/Local/Temp/moise304-reading/hurewicz-one-checkpoint
+48 source/receipt groups. Manifest SHA256: 53E017AC78CAC17877AF7EF20F662CFB3602F1E09405B05B4884F4F01E891D84.
+Main audit: 2026-09-19T22:35:19.9060986Z.
+Circle model audit: 2026-09-19T22:39:46.2922313Z.
+Kernel dependency audit: 2026-09-19T22:33:14.9531106Z.
