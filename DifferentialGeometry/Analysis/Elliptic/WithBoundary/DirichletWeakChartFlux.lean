@@ -66,4 +66,49 @@ theorem ae_cutoff_gradient_flux_eq_density_ratio
       q (g t) α i j z (hΩ₀s.trans (image_mono interior_subset) (subset_closure hzm))
   simpa only [hcoeff] using hz
 
+theorem ae_cutoff_flux_eq_density_ratio
+    {Z : Type*} [MeasurableSpace Z] {μ : Measure Z}
+    (q : SmoothRiemannianMetric I_hs M)
+    (g : Z → SmoothRiemannianMetric I_hs M)
+    (α : M) {Ω : Set EuStd}
+    (hΩ : IsOpen Ω) (hΩc : IsCompact (closure Ω))
+    (hΩs : closure Ω ⊆ toEuclidean (E := EuN) '' interior (extChartAt I_hs α).target)
+    (H : Z × EuStd → ℝ) (K : Fin (Module.finrank ℝ EuN) → Z × EuStd → ℝ)
+    (hH : MemLp H 2 (μ.prod (volume.restrict Ω)))
+    (hK : ∀ i, MemLp (K i) 2 (μ.prod (volume.restrict Ω)))
+    (v : Z → H1ComplDirichlet q) {η : EuStd → ℝ}
+    (hv : ∀ᵐ t ∂μ,
+      (H1ComplDirichletToLp q (v t) : M → ℝ) =ᵐ[riemannianVolumeMeasure (I := I_hs) (M := M) q]
+        chartPullback I_hs α (fun z => η z * H (t, z)))
+    (hweak : ∀ i, ∀ᵐ t ∂μ, DeGiorgi.HasWeakPartialDeriv i
+      (fun z => K i (t, z)) (fun z => H (t, z)) Ω)
+    (hη : ContDiff ℝ (⊤ : ℕ∞) η) :
+    let ρ := fun p : Z × EuStd => MetricExtension.densityOnEuclid (g p.1) α p.2
+    let σ := fun p : Z × EuStd => MetricExtension.densityOnEuclid q α p.2
+    let r := fun p => ρ p / σ p
+    let A := fun i j (p : Z × EuStd) => MetricExtension.weightedInvGramOnEuclid (g p.1) α i j p.2
+    let c := fun i j (p : Z × EuStd) => σ p * MetricExtension.invGramOnEuclid (g p.1) α i j p.2
+    ∀ j, ∀ᵐ t ∂μ, ∀ᵐ z ∂volume.restrict Ω,
+      (∑ i, (η z / r (t, z)) * A i j (t, z) * K i (t, z)) =
+        (∑ i, c i j (t, z) * dirichletLocalWeakPartialLp q α hΩ hΩc hΩs i (v t) z) -
+          ∑ i, c i j (t, z) * fderiv ℝ η z (EuclideanSpace.single i 1) * H (t, z) := by
+  intro ρ σ r A c j
+  classical
+  have hpartial (i) : ∀ᵐ t ∂μ,
+      (dirichletLocalWeakPartialLp q α hΩ hΩc hΩs i (v t) : EuStd → ℝ) =ᵐ[volume.restrict Ω]
+        (fun z => η z * K i (t, z) + fderiv ℝ η z (EuclideanSpace.single i 1) * H (t, z)) :=
+    ae_dirichletLocalWeakPartialLp_eq_of_chartPullback_mul q α hΩ hΩc hΩs v hv
+      hH (hK i) i (hweak i) hη
+  filter_upwards [ae_all_iff.mpr hpartial] with t ht
+  filter_upwards [ae_all_iff.mpr ht, ae_restrict_mem hΩ.measurableSet] with z hz hzm
+  have hcoeff (i) : A i j (t, z) / r (t, z) = c i j (t, z) :=
+    DifferentialGeometry.Analysis.Parabolic.Dirichlet.weightedInvGramOnEuclid_div_density_ratio q (g t) α i j z
+      (hΩs.trans (image_mono interior_subset) (subset_closure hzm))
+  rw [← Finset.sum_sub_distrib]
+  apply Finset.sum_congr rfl
+  intro i _
+  rw [hz i, ← hcoeff i]
+  simp only [div_eq_mul_inv]
+  ring
+
 end DifferentialGeometry.Analysis.Laplacian.WithBoundary.Dirichlet

@@ -1,3 +1,6 @@
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.CutoffForcing
+import DifferentialGeometry.Analysis.Integration.Lp.Pairing
+import DifferentialGeometry.Geometry.Connection.LeviCivita.Characterization.CanonicalConnection
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.DivergenceForm
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.LocalCoefficientRegularity
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletChartSourceIdentification
@@ -261,5 +264,89 @@ theorem exists_lp_scalar_source_of_cutoff_pairing
   refine ⟨hfeq, ?_⟩
   exact integral_chart_source_dual_eq_of_compact_flux_pairing α hΩ hΩc hΩs
     hηc.isCompact hηs f hB hS hE htest β hβ
+
+open DifferentialGeometry.Geometry.Connection in
+theorem exists_lp_scalar_source_of_cutoff_flux
+    (q : SmoothRiemannianMetric I_hs M)
+    {D : RealTimeInterval} {g : ℝ → SmoothRiemannianMetric I_hs M}
+    (hG : MetricFamilySmoothOn (I := I_hs) (M := M) D g)
+    {J : Set ℝ} (hJc : IsCompact J) (hJ : J ⊆ D.regular)
+    (α : M) {Ω : Set EuStd} (hΩ : IsOpen Ω) (hΩc : IsCompact (closure Ω))
+    (hΩs : closure Ω ⊆ toEuclidean (E := EuN) '' interior (extChartAt I_hs α).target)
+    {μ : Measure ℝ} (hμ : μ ≤ volume.restrict J)
+    (H : Lp ℝ 2 (μ.prod (volume.restrict Ω)))
+    (K : Fin (Module.finrank ℝ EuN) → Lp ℝ 2 (μ.prod (volume.restrict Ω)))
+    (v : Lp (H1ComplDirichlet q) 2 μ)
+    (ℓ : Lp (H1ComplDirichlet q →L[ℝ] ℝ) 2 μ)
+    {η : EuStd → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hηs : tsupport η ⊆ Ω)
+    (hweak : ∀ j, ∀ᵐ t ∂μ, DeGiorgi.HasWeakPartialDeriv j
+      (fun z => K j (t, z)) (fun z => H (t, z)) Ω)
+    (Q : Fin (Module.finrank ℝ EuN) → ℝ × EuStd → ℝ) (B : ℝ × EuStd → ℝ)
+    (hQ : ∀ j, MemLp (Q j) 2 (μ.prod (volume.restrict Ω)))
+    (hB : MemLp B 2 (μ.prod (volume.restrict Ω)))
+    (hℓ : ∀ (τ : Lp ℝ 2 μ) (z : H1ComplDirichlet q),
+      (∫ t, τ t * ℓ t z ∂μ) =
+        (∫ p, τ p.1 * B p * H1ComplDirichletToLp q z
+          ((extChartAt I_hs α).symm ((toEuclidean (E := EuN)).symm p.2)) ∂μ.prod (volume.restrict Ω)) -
+          ∑ j, ∫ p, τ p.1 * Q j p * dirichletLocalWeakPartialLp q α hΩ hΩc hΩs j z p.2
+            ∂μ.prod (volume.restrict Ω)) :
+    let c := fun i j (p : ℝ × EuStd) => MetricExtension.densityOnEuclid q α p.2 *
+      MetricExtension.invGramOnEuclid (g p.1) α i j p.2
+    let P := fun i j (p : ℝ × EuStd) => c i j p * fderiv ℝ η p.2 (EuclideanSpace.single i 1)
+    let E := fun j p => ∑ i, P i j p * H p
+    (∀ j, ∀ᵐ t ∂μ, ∀ᵐ x ∂volume.restrict Ω,
+      Q j (t, x) = (∑ i, c i j (t, x) * dirichletLocalWeakPartialLp q α hΩ hΩc hΩs i (v t) x) - E j (t, x)) →
+    ∃ β : Lp (H1ComplDirichlet q →L[ℝ] ℝ) 2 μ,
+      ∃ f : Lp ℝ 2 (μ.prod (volume.restrict Ω)),
+        (∀ (τ : Lp ℝ 2 μ) (z : H1ComplDirichlet q),
+          (∫ t, τ t * β t z ∂μ) =
+            (∫ p, τ p.1 * B p * H1ComplDirichletToLp q z
+              ((extChartAt I_hs α).symm ((toEuclidean (E := EuN)).symm p.2)) ∂μ.prod (volume.restrict Ω)) +
+              ∑ j, ∫ p, τ p.1 * E j p * dirichletLocalWeakPartialLp q α hΩ hΩc hΩs j z p.2
+                ∂μ.prod (volume.restrict Ω)) ∧
+        (∀ z : Lp (H1ComplDirichlet q) 2 μ,
+          (∫ t, ℓ t (z t) ∂μ) = (∫ t, β t (z t) ∂μ) -
+            ∫ t, (∑ i, ∑ j, ∫ y in Ω,
+              dirichletLocalWeakPartialLp q α hΩ hΩc hΩs i (v t) y *
+                c i j (t, y) * dirichletLocalWeakPartialLp q α hΩ hΩc hΩs j (z t) y) ∂μ) ∧
+        (f =ᵐ[μ.prod (volume.restrict Ω)] fun p => B p - ∑ i, ∑ j,
+          (P i j p * K j p +
+            fderiv ℝ (fun x => P i j (p.1, x)) p.2 (EuclideanSpace.single j 1) * H p)) ∧
+        ∀ z : Lp (H1ComplDirichlet q) 2 μ,
+          (∫ t, β t (z t) ∂μ) =
+            ∫ t, (∫ x in Ω, f (t, x) * H1ComplDirichletToLp q (z t)
+              ((extChartAt I_hs α).symm ((toEuclidean (E := EuN)).symm x))) ∂μ := by
+  let : SeminormedAddCommGroup (H1ComplDirichlet q →L[ℝ] H1ComplDirichlet q →L[ℝ] ℝ) :=
+    @ContinuousLinearMap.toSeminormedAddCommGroup ℝ ℝ
+      (H1ComplDirichlet q) (H1ComplDirichlet q →L[ℝ] ℝ)
+      inferInstance inferInstance inferInstance inferInstance inferInstance inferInstance
+      (RingHom.id ℝ) inferInstance
+  let G : MetricConnectionFamilyOn (I := I_hs) (M := M) D :=
+    { metric := g
+      connection := fun t => leviCivitaConnectionOfMetric (g t)
+      metricCompatible := fun t => leviCivitaConnectionOfMetric_isMetricCompatible (g t) }
+  let : IsLocallyFiniteMeasure μ := Measure.isLocallyFiniteMeasure_of_le hμ
+  intro c P E hflux
+  have hexForm := exists_local_dirichlet_bilinear_form_family q (G := G) hG
+    hJc hJ α hΩ hΩc hΩs
+  let form := Classical.choose hexForm
+  have hform := (Classical.choose_spec hexForm).1
+  change ∀ t u z, form t u z = _ at hform
+  obtain ⟨Lm, hβ, hLm⟩ := exists_cutoff_forcing_dual q (G := G) hG hJc hJ
+    α hΩ hΩc hΩs hμ (fun p => H p) (Lp.memLp H) hη v ℓ form hform
+    Q B hQ hℓ hflux
+  have hweak' (j) : ∀ᵐ t ∂μ, DeGiorgi.HasWeakPartialDeriv j
+      (fun x => K j (t, x))
+      (fun x => (Lp.memLp H).toLp H (t, x)) Ω := by
+    simpa only [Lp.toLp_coeFn] using hweak j
+  obtain ⟨f, hf, hfsource⟩ := exists_lp_scalar_source_of_cutoff_pairing q (G := G) hG
+    hJc hJ α hΩ hΩc hΩs hμ hη hηs hB (Lp.memLp H) K hweak' (ℓ + Lm) hβ
+  refine ⟨ℓ + Lm, f, hβ, ?_, hf, hfsource⟩
+  intro z
+  have he := Lp.integral_add_apply ℓ Lm z
+  rw [hLm] at he
+  simp only [hform] at he
+  change _ = _ + _ at he
+  exact eq_sub_of_add_eq he.symm
 
 end DifferentialGeometry.Analysis.Parabolic.Dirichlet
