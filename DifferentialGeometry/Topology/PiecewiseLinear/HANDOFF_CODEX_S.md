@@ -6474,3 +6474,183 @@ curve/annulus smoothing, smooth two-sphere classification and compact atlas
 assembly remain open. The boundary-triangle case is not asserted by this
 closed-manifold development. No compact or unrestricted PLSmoothing 3 endpoint
 is claimed, and noncompact approximation scope is unchanged.
+
+## Finite face order and actual neighborhood filtration (2026-09-19)
+
+Status: closed for the finite ordering and geometric sequence. Assembling the
+index-specific attaching pairs into a single finite handle presentation is
+next; this checkpoint alone does not claim that full presentation or smoothing.
+Previously delivered handle sources through `78d96386b` remain unchanged.
+
+`Topology/SimplicialComplex/FaceFiltration.lean` is the natural metric-free
+home of the new ordering API. The coordinator explicitly added this one module
+to the S private compiler lease before its native check. The producer search
+found single maximal-face pushouts in OrderedCellAttachment, but no finite
+face-cardinality order and prefix-subcomplex producer.
+
+`exists_face_enumeration_monotone_card` constructs a bijective Fin enumeration
+of all faces of any finite PreAbstractSimplicialComplex, with nondecreasing
+cardinality. It sorts an actual finite list and uses the nodup list equivalence;
+no order is assumed. `index_lt_of_face_ssubset` puts every proper face earlier.
+`facePrefix` constructs the actual initial subcomplex, with empty first stage,
+full final stage, monotonicity, absence of the next face, inclusion of all its
+nonempty proper faces, the lower cardinality bound, and the exact singleton
+insertion identity `facePrefix_succ_faces`. `geometricFacePrefix` transports
+the construction to geometric simplicial complexes over an ordered ring
+module. This basic layer uses no normed-space or finite-dimensional hypotheses.
+
+`PiecewiseLinear/DerivedNeighborhoodFiltration.lean` proves the exact generated
+subcomplex identity `geometricFacePrefix_succ` and the zero, last, successor
+and monotonicity formulas for their actual derived neighborhoods.
+`exists_derivedNeighborhood_filtration` starts only with a finite
+combinatorial (n+2)-manifold with boundary and constructs the order and the
+whole sequence. N_0 is empty, N_m is exactly K.space, every N_i is a
+combinatorial manifold with boundary, and every successor adds the actual
+cell belonging to the next face. It supplies the exact proper-face/cardinality
+inputs for handle classification and proves the new cell's lower trace lies
+in the old neighborhood's intrinsic boundary. No hSchoenflies, sorted-order
+hypothesis, arbitrary stage family or handle decomposition is assumed.
+
+| Module | Compile seconds | Audit seconds | Nonautomatic declarations | Critical reuse entries |
+|---|---:|---:|---:|---:|
+| `FaceFiltration` | 13.136 | 7.785 | 16 | 4 |
+| `DerivedNeighborhoodFiltration` | 11.130 | 10.836 | 6 | 8 |
+
+Both final native checks and complete dynamic audits exited 0 with zero
+errors, warnings or info diagnostics. All 22 nonautomatic declarations
+(none private), 12 critical reuse entries and all 13 applicable environment
+linters per module passed. Each axiom set is a subset of
+propext/Classical.choice/Quot.sound. Durations include resource admission.
+
+The concrete input fixture sorts the actual faces of the boundary of a
+four-simplex and proves a vertex precedes a tetrahedron. The complete sequence
+fixture has positive length and an actual tetrahedral stage; it checks the
+empty initial neighborhood, full final carrier, all intermediate manifold
+properties, monotonicity, and the exact cell insertion at every stage. Its
+3 declarations, 5 reuse entries and 13 linters passed
+in 11.215 seconds, exit 0 and zero diagnostics. The preliminary input
+also passed its four named axiom checks. Empty complexes remain allowed in the
+native enumeration and filtration theorems.
+
+Raw source SHA256 values:
+
+- `DifferentialGeometry.Topology.SimplicialComplex.FaceFiltration`: `93E954D146A5E726C3E7102415E5A2F3A8E2279AA9B0CF66F3E7BEDDAF22CB56`.
+- `DifferentialGeometry.Topology.PiecewiseLinear.DerivedNeighborhoodFiltration`: `450B8921354BA5B77C6A3DCA12A1A456B1619C06B4B8BB25AB5DCBD597BA3B50`.
+
+Evidence: `C:/Users/liao9/AppData/Local/Temp/codex-s-mobius-torus-20260918/`
+`NeighborhoodFiltration-round-verification.json`, with exact native/audit/two
+fixture bytes, raw and LF hashes, private olean hashes, receipts, setup records,
+logs, timings and full censuses. The audited bodies equal the native sources.
+Both leaves are registered once in the root; native import closures exclude
+`HurewiczLowDegrees`; shared artifacts were unchanged. Independent integration
+and the stopped root gate remain separate. The two source files, root imports,
+this handoff and plan record form one mathematical commit. No vendor changed.
+
+Remaining: assemble the actual zero/one/two/three attaching maps and compatible
+lower-space homeomorphisms for this produced sequence. Then smooth handle
+attachment, corner rounding, framed curves/annuli, smooth two-sphere
+classification and compact atlas assembly remain to be proved. The compact
+smoothing endpoint and noncompact approximation statement are unchanged.
+
+## Actual finite PL three-handle filtration (2026-09-19)
+
+Status: closed for finite boundaryless combinatorial three-manifolds. This
+checkpoint assembles the actual zero/one/two/three attaching pairs and
+lower-fixing quotient homeomorphisms in the previously constructed finite
+sequence. The smooth attachment and final compact smoothing obligations
+remain open. Earlier published handle sources through `73a6d1984` are unchanged.
+
+### Exact endpoint and constructions
+
+`exists_pl_three_handle_filtration` assumes only a finite simplicial complex
+K in a finite-dimensional real normed space and `IsCombinatorialManifold 3 K`.
+It produces m, a bijective enumeration e : Fin m equiv K.faces ordered by face
+cardinality, and a monotone handle index k : Fin m to Fin 4 satisfying
+(k i).val + 1 = (e i).val.card. For the actual face-prefix subcomplexes L_i and
+actual derived neighborhoods N_i it proves N_0.space is empty, N_m.space is
+exactly K.space, the neighborhoods increase, and every N_i is a combinatorial
+three-manifold with boundary. At every stage the new cell is the actual
+`derivedNeighborhoodCell K (e i).val`, and `IsPLThreeHandleAttachment (k i)`
+relates that cell, N_i and N_(i+1). The order, index, cells, stages and attaching
+maps are produced; no handle decomposition, annulus parametrization,
+hSchoenflies or conclusion-shaped input is assumed. The empty K case remains
+allowed, with an empty indexing set.
+
+`CellAttachment.lean` supplies the reusable PL attachment relation. It records
+an actual PL ball model P, its attaching subset B, a PL homeomorphism g onto
+C, and a PL homeomorphism of B onto exactly C intersect L.space. The resulting
+closed embedding has image in the intrinsic boundary of L. The adjunction
+homeomorphism onto N fixes every point of L.space and agrees with g on the
+whole new cell. Nonemptiness of C and inclusions of both the cell and the
+lower space in N are proved. The four three-dimensional standard pairs are:
+
+- index 0: the standard three-simplex and empty attaching set;
+- index 1: the standard two-simplex times [0,1], attached on both end disks;
+- index 2: the same product, attached on its full lateral annulus;
+- index 3: the standard three-simplex, attached on its entire boundary sphere.
+
+`DerivedNeighborhoodHandleAttachment.lean` produces this relation for actual
+face cells. Its general constructor uses the exact lower trace and previously
+proved adjunction theorem. The vertex case proves the trace is empty; the
+edge case combines both actual end disks and proves they exhaust the lower
+trace. The triangle and maximal-face cases consume the already verified full
+PL pairs. `isPLThreeHandleAttachment_derivedNeighborhoodCell` selects the pair
+from the face cardinality; maximality in index 3 follows from dimension.
+`DerivedNeighborhoodHandleFiltration.lean` applies this actual producer at
+every stage of the constructed finite order. All stages share the original
+ambient carrier, and each quotient map fixes its lower stage, so these are
+compatible actual attachments, not unrelated stage homeomorphisms. The
+statement supplies PL cell and attaching maps; it does not assert a smooth
+structure or construct smooth normal framings.
+
+### Verification and concrete instance
+
+| Module | Compile seconds | Audit seconds | Nonautomatic declarations | Critical reuse entries |
+|---|---:|---:|---:|---:|
+| `CellAttachment` | 11.185 | 10.576 | 5 | 4 |
+| `DerivedNeighborhoodHandleAttachment` | 13.536 | 12.089 | 4 | 8 |
+| `DerivedNeighborhoodHandleFiltration` | 12.602 | 11.080 | 1 | 4 |
+
+All three final native checks and full dynamic audits exited 0 with zero
+errors, warnings or info diagnostics. All 10 nonautomatic declarations
+(none private), 16 critical reuse entries and all 13 applicable environment
+linters per module passed. Every axiom set is a subset of
+propext/Classical.choice/Quot.sound. Durations include resource admission.
+
+The actual input model is the boundary of a four-simplex. The checked fixture
+constructs a positive-length filtration and proves the produced index map is
+surjective onto Fin 4. Thus all four handle indices really occur. It obtains
+the smaller faces from an actual tetrahedron and transports them through the
+produced face equivalence; it does not merely check a vacuous universal stage
+statement. It also retains every endpoint field: the exact initial and final
+sets, monotonicity, manifold property at all stages and all actual attaching
+relations. Its 3 declarations, 5 critical reuse
+entries and 13 linters passed in 10.872 seconds, exit 0 and zero
+diagnostics. Earlier independently specified cell fixtures retain their exact
+point-separation and product-fiber checks in the frozen prior ledgers.
+
+Raw source SHA256 values:
+
+- `CellAttachment`: `F6C1637572AA7BD881A3801C24E381B5A80D807D49A76CC0C7643D1395662EC1`.
+- `DerivedNeighborhoodHandleAttachment`: `D810C116D41894F9AC82DDEB29C6BFE54DD8AE523D3DD3DE6FE94E7360DD7373`.
+- `DerivedNeighborhoodHandleFiltration`: `77B2E9B5672A27DE7E5F770747606439BF8F26DAC5DC5BD885101DFD270594FA`.
+
+Evidence: `C:/Users/liao9/AppData/Local/Temp/codex-s-mobius-torus-20260918/`
+`HandleFiltration-round-verification.json` contains the exact native, audit and
+fixture bytes; raw and LF hashes; private olean identities; receipts, setup
+records, logs, timings and complete declaration/reuse/linter censuses. Audited
+bodies equal native sources. All three leaves are registered once in the root;
+native import closures exclude `HurewiczLowDegrees`; shared artifacts were
+unchanged. Independent integration replay and the stopped full-root gate are
+separate. Source, root imports, this handoff and the plan record form one
+mathematical commit. No vendored source changed.
+
+### Remaining mathematical frontier
+
+The finite actual PL handle presentation for closed K is now delivered.
+Smooth attachment with corner rounding, smoothing the framed attaching
+curves/annuli, smooth two-sphere classification and the compatible final smooth
+atlas remain distinct obligations. These must be produced before claiming
+compact PL three-manifold smoothing. The triangle cap for the original-boundary
+case is also still open. No unrestricted PLSmoothing 3 or noncompact
+approximation result is claimed by this delivery.

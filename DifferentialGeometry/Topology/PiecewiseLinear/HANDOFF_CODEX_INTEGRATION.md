@@ -1591,3 +1591,56 @@ F also reports 3e4695ab3 + d2fa2d933 actual boundary-preserving lifted
 subcomplexes and controlled upstairs neighborhoods. These are queued, while
 compatible triangulation of the general singular PWA map after the initial
 source-relative push remains an explicit gate.
+
+## 44. Complete finite PL handle filtration (2026-09-19 UTC)
+
+S 73a6d1984 + 6690962e1 are independently accepted. Five new modules construct
+face enumeration ordered by dimension, actual prefix subcomplexes and their
+derived neighborhoods, and a complete finite PL handle filtration of every
+finite closed combinatorial three-manifold. The sequence starts with the empty
+carrier and ends at the original carrier. Its handle indices are monotone and
+take values in {0, 1, 2, 3}. Each actual attaching map has the exact old-cell trace,
+lands in the old boundary, and supplies an adjunction homeomorphism fixing the
+old carrier. No preconstructed handle decomposition is an input.
+
+All five source checks and the combined audit exit zero without diagnostics.
+The census checks all 32 nonautomatic declarations (none private), 30 distinct
+critical reused entries and three model declarations against only the standard
+foundational axioms; all thirteen applicable environment linters pass. The
+actual boundary of a four-simplex gives a nonempty finite filtration in which
+all four handle indices occur. This is one concrete geometric scenario, not
+three independent manifold examples. Compilation took 50.140 seconds and the
+audit 47.674 seconds, including admission. Eight previously accepted private
+prerequisites were reused only after source and object identity checks.
+
+The accepted Lean delta is +543/-0: 538 lines in five new mathematical modules
+and five root imports. Exact receipt:
+.lake/verified-twentyfourth-lane-delivery-20260919.json. It preserves raw audit
+bytes, model provenance, the full declaration census, source/object hashes,
+logs and timings. The external Lean probe was removed after freezing.
+The flat root now statically reaches 9412 project modules including itself,
+with no missing project sources or cycles. Full-root compilation stays stopped;
+this focused verification does not certify every shared upstream source.
+
+This closes the finite PL handle-sequence producer. Smooth attaching maps,
+compatible corner charts on the full attachment, framing, smooth two-sphere
+classification and compact PL smoothing remain open. S continues its current
+attaching-band round without a second assignment.
+
+At h's completed round, the coordinator reviewed the single-triangulation
+exhaustion and the noncompact discrete model through 12f8f0727. The latter is
+explicitly n=0; h was continued with Sol max toward actual noncompact
+three-dimensional ambient geometry and a one-dimensional graph, including the
+ambient meaning of the regular-neighborhood relation. Independent acceptance
+of h's corrected contracts and geometry is still pending.
+
+F reports 9e9e78bca actual complete double-cover reduction for an already
+source-proper NormalSystem with a loop basepoint, and 9dda64423 basepoint
+migration with NonsingularCell transport. These remain queued. F requested and
+received the CellComplex/CellMapTriangulation scope for the general singular PL
+triangulation gate; old default-center semantics and signatures must be retained,
+and direct consumers must be rebuilt. No other lane had dirty changes in those
+files when the ownership grant was checked. This adds no task or checker.
+M304 4400e3465 reports the actual spanning-disk/bicollar pair producer, with
+its own nonempty models; E3 consumer instantiation awaits accepted integration
+dependencies. Actual 26.4, actual 30.3 and full 30.4 are still open.

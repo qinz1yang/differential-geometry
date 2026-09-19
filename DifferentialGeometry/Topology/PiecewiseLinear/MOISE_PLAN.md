@@ -77,6 +77,22 @@ conditional consumer. Adding a properness field alone does not close it.
 No counterexample satisfying every NormalSystem field has been certified.
 
 
+The finite global PL handle-filtration producer is now independently accepted
+through S 6690962e1: the actual finite sequence covers the original manifold,
+with exact PL attaching maps and relative adjunction homeomorphisms. All 32
+nonautomatic declarations, thirty critical reuses, three model declarations and
+thirteen applicable linters pass the combined replay. This does not supply the
+smooth attaching/atlas compatibility needed by compact smoothing.
+
+h's completed 12f8f0727 round supplies a one-triangulation exhaustion interface
+and an actual noncompact n=0 sanity model, still awaiting independent acceptance.
+Its next round constructs actual three-dimensional noncompact graph-neighborhood
+geometry and checks the ambient regular-neighborhood semantics. F's source-proper
+cover reduction and basepoint transport are delivered and queued; the initial
+general singular PL map triangulation remains open. F owns the requested
+arbitrary-cell-center generalization in CellComplex, preserving the existing
+default definitions and rebuilding direct consumers.
+
 ### Five tasks: one current lane each
 
 At 2026-09-19 04:24 UTC the owner explicitly authorized a separate 30.4 lane.
@@ -88,8 +104,8 @@ its active 30.3 round without interruption. The private checker limit stays two.
 | h / gpt-5.6-sol max | Repair the three contracts and their genuine geometric witnesses. | Source-faithful statements, nonvacuous instances and rebuilt consumers. Full-arc simultaneous normalization remains deferred. |
 | F / gpt-6-astra max | The compatible NormalSystem migration, exact boundary trace and anchored same-source lift through c98ea5828 are independently accepted. Initial source-relative boundary push and further cover/boundary producers through d2fa2d933 are delivered and queued; initial noninjective PWA triangulation remains open. | Assemble the actual cover diagram and smaller upstairs neighborhood with subgroup avoidance and strict descent, then Lemma 2 branch separation. |
 | E3 / gpt-5.6-sol max | Actual geometric splitting and separation in 30.3. Path replacement, annulus 18f861c89 and cut-cell layer 1cea2fbe7 are accepted; disk-neighborhood producer ace162dcd is held for duplicated free-triangle proofs; return the generalization correction at E3's next delivery. Next produce the compatible neighborhood from the original disk pair. | Construct the split surface, connected safe boundary and equality outside the local cell; show separation survives. Euler bookkeeping alone is insufficient. |
-| M304 / gpt-6-astra max | Own 30.4 directly. Initial separator, exact shell geometry and finite nullhomotopy/kernel production through 7c051baf7 are independently accepted; e39955ff6 actual circle-neighborhood cylinder and 193898ba4 arbitrarily small orientable annular neighborhoods and aea8f27c2 core-fixed bicollars are queued. | Construct the complementary disk-plus-bicollar pair for E3, then continue 28.19 and compression induction. Keep 26.4 and E3 actual 30.3 as open gates; the PL sphere remains unproved. |
-| S / gpt-6-astra max | Compact PL three-manifold smoothing. Local handles through 78d96386b are independently accepted; 73a6d1984 + 6690962e1 actual global PL handle filtration and 2162e20eb local rounded-corner producers await independent acceptance. | Construct the full attaching-band chart family, including polygon vertices, with smooth transitions and compatibility with the existing old atlas, then framing and two-sphere classification. Compact smoothing remains open. |
+| M304 / gpt-6-astra max | Own 30.4 directly. Initial separator, exact shell geometry and finite nullhomotopy/kernel production through 7c051baf7 are independently accepted; e39955ff6 actual circle-neighborhood cylinder and 193898ba4 arbitrarily small orientable annular neighborhoods and aea8f27c2 core-fixed bicollars are queued. | The actual disk-plus-bicollar pair is delivered at 4400e3465 and awaits independent acceptance. Integrate the E3 consumer, then continue essential-circle/capped-sphere obstruction and strict Betti descent. Keep 26.4 and E3 actual 30.3 as open gates; the PL sphere remains unproved. |
+| S / gpt-6-astra max | Compact PL three-manifold smoothing. The complete finite PL handle filtration through 73a6d1984 + 6690962e1 is independently accepted: five modules, all 32 declarations and an actual all-index closed-sphere model. The 2162e20eb local rounded-corner producers await independent acceptance. | Construct the full attaching-band chart family, including polygon vertices, with smooth transitions and compatibility with the existing old atlas, then framing and two-sphere classification. Compact smoothing remains open. |
 
 F must distinguish the full two-sheeted ambient cover from the smaller regular
 neighborhood for the next normal system: restriction need not preserve
