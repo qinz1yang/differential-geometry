@@ -113,7 +113,14 @@ proves circle-map extension across two-spheres and preservation of interior
 neighborhoods under PL embeddings, then transports a spherical bicollar
 through the constructed annular neighborhood. All seven new declarations,
 12 reused producers, three geometric models and 13 applicable linters pass.
-Spanning-disk compatibility, full nonorientable 28.19 and the spherical-shell
+A seventh checked layer adjoins the two halves of the circle bicollar to
+an actual spanning disk. It produces two actual PL disks meeting exactly
+in the original disk, each containing it away from its intrinsic boundary.
+Their union is a relative neighborhood of the disk in the surface-disk
+union, with prescribed neighborhood control on the added parts. All five
+new declarations, ten reused entries, three models and 13 linters pass.
+Instantiation into E3's later disk-pair subdivision endpoint awaits accepted
+downstream artifacts. Full nonorientable 28.19 and the spherical-shell
 endpoint remain open. Exact evidence
 and the source route are in HANDOFF_CODEX_M304.md. This explicitly authorized
 addition supersedes the older four-lane count, without authorizing subagents.

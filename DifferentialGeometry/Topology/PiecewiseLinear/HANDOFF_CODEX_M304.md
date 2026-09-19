@@ -315,3 +315,73 @@ of this bicollar to a given spanning disk to obtain actual larger PL disks.
 Full nonorientable 28.19, the compressing-disk producer 26.4, E3's regular
 neighborhood splitting and strict Betti descent remain open; this is not
 a completion claim for 30.4.
+
+## Actual larger disks from a spanning disk (2026-09-19 UTC)
+
+`PrismDiskBoundary.lean` proves that the intrinsic boundary of the bottom
+and sides of a PL disk prism is exactly its top circle. This is proved for
+every PL disk parametrization by identifying the closure of its complement
+in the prism boundary sphere. `DiskBoundaryCollar.lean` then glues an actual
+boundary collar onto a disk and produces a parametrization of the larger
+PL disk. Its boundary is exactly the far end of the collar, and is disjoint
+from the original disk.
+
+`DiskBoundaryBicollar.lean` applies that construction to both halves of a
+given bicollar, reversing the interval on one side. It proves that the two
+larger disks meet exactly in the original disk and that their union is the
+original disk together with the full bicollar. Both intrinsic boundary
+circles are the corresponding outer-end images. The exact collar-disk
+intersection and the pointwise middle-circle equation are used throughout.
+
+The main producers are the two
+`IsCombinatorialManifoldWithBoundary.exists_disk_pair_of_spanning_disk` and
+`IsCombinatorialManifold.exists_disk_pair_of_spanning_disk` declarations in
+`SurfaceSpanningDisk.lean`. For an orientable finite combinatorial surface K,
+an actual disk parametrization r with `D intersect K.space = r '' boundary`,
+and an arbitrary relative neighborhood U of that circle, they construct
+actual sets D1, D2 and PL disk parametrizations q1, q2. They prove:
+
+- D lies in each Di minus its intrinsic boundary `qi '' stdSimplexBoundary 2`;
+- D1 intersects D2 exactly in D;
+- each Di lies in `D union (K.space intersect U)`;
+- D1 union D2 is a relative neighborhood of D in `K.space union D`.
+
+The version with a surface boundary additionally requires the spanning
+circle to avoid that boundary. Neither version assumes a collar or a pair
+of larger disks. The boundary exclusion is intrinsic; it is not a statement
+about the interior of a two-dimensional disk in a three-dimensional space.
+
+All four modules compile with zero diagnostics. Final times including
+admission were 27.519 seconds for PrismDiskBoundary, 10.996 for
+DiskBoundaryCollar, 28.082 for DiskBoundaryBicollar and 11.024 for
+SurfaceSpanningDisk. The final silent audit took 46.876 seconds. All five
+new declarations, ten critical reused entries and three concrete models
+have only standard foundational axioms; all 13 applicable environment
+linters pass. The models check the exact boundary of a capped standard
+prism, the two explicit halves around its middle disk, and the complete
+surface producer for a spanning disk in a prism sphere within every positive
+height strip. Initial external-model errors in decidable-instance selection
+and image rewriting were corrected. No source proof debt remains.
+
+All four leaves are registered in the flat root. Sources, raw and normalized
+hashes, private objects, receipts and the silent census are frozen in
+`moise304-reading/spanning-disk-checkpoint/`. The full root build remains
+stopped by the owner, and no shared E: artifact was written.
+
+The identified E3 consumer is
+`IsCombinatorialManifoldWithBoundary.exists_isSubdivision_disk_pair_with_derivedNeighborhood_endpoint_disk`
+in `SurfaceSplitEndpointDisk.lean:920` at E3 commit `22ccb6c8d`.
+It takes a three-dimensional ambient complex K3, separate from the
+two-dimensional surface K above. Given `D subset K3.space` and
+`K.space subset K3.space`, our output supplies its two larger PL disks,
+the two inclusions from D, the exact intersection, and both ambient
+inclusions. Its requested relative neighborhood of D in K3 is a separate
+input. This instantiation has been checked against the source signature,
+but has not been compiled: the coordinator confirmed that independently
+accepted artifacts for the E3 leaf and its pending dependency repair are
+not yet available. No E3 source or author-private object was copied.
+
+The next obligations remain the essential-circle obstruction needed in
+Betti descent, the actual compressing-disk producer 26.4, E3's subsequent
+splitting geometry, and the final induction. This checkpoint does not
+claim the full theorem 30.4.

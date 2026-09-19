@@ -80,8 +80,13 @@ contained in any prescribed relative neighborhood and avoiding the surface
 boundary. It uses proved circle-map extension across two-spheres and PL
 preservation of interior neighborhoods. Seven new declarations, 12 reused
 entries, three geometric models and 13 applicable linters pass.
-E3 retains 30.3. Compression via 26.4, spanning-disk compatibility, full
-nonorientable 28.19,
+A further checked layer constructs two actual larger PL disks from the
+spanning disk and the two halves of this bicollar. Their intersection is
+exactly the original disk, which avoids both intrinsic boundary circles;
+their union is a relative neighborhood in the surface-disk union. All five
+new declarations, ten reused entries, three models and 13 linters pass.
+The E3 disk-pair consumer awaits independently accepted downstream artifacts.
+E3 retains 30.3. Compression via 26.4, full nonorientable 28.19,
 strict Betti descent and the full PL-sphere endpoint 30.4 remain open.
 See HANDOFF_CODEX_M304.md for exact signatures and evidence.
 
