@@ -8860,6 +8860,8 @@ import DifferentialGeometry.Topology.PiecewiseLinear.PrismAnnulusChart
 import DifferentialGeometry.Topology.PiecewiseLinear.PrismAnnulusTransport
 import DifferentialGeometry.Topology.PiecewiseLinear.PrismCornerChart
 import DifferentialGeometry.Topology.PiecewiseLinear.PrismCornerTransport
+import DifferentialGeometry.Topology.PiecewiseLinear.CellMapTriangulation
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.SourceNormalSystem
 
 /-!
 # Differential geometry and geometric analysis

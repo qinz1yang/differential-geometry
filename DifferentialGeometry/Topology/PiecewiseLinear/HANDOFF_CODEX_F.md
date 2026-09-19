@@ -4963,3 +4963,80 @@ AuditF315.json；sourceStable=true，共享产物只读。源码、根登记与�
 精确初始单纯资料尚缺兼容三角剖分；球面情形与覆盖后嵌入盘投影的其余端点也不能由本结果自动
 宣布完成。整合端已授权下一步泛化 CellComplex 的合法胞腔中心选择，保留旧语义/API，并在
 CellMapTriangulation 中构造允许塌缩的精确 PL 映射三角剖分；不添加结论型假设。
+
+### 19.177 合法胞腔中心的旗标三角剖分与旧 API 保留（2026-09-19 UTC）
+
+**done：CellComplex.lean。** 新数据 `CellCenters l P` 为每个实际出现的符号胞腔指定一个属于
+P 及该开胞腔的点。`CellCenters.derived`、`space_derived`、`eq_biUnion_derived_faces` 构造
+有限旗标三角剖分、证明精确载体及对胞腔闭子集的适配；仿射独立性、单形相交及覆盖的十七项
+原证明已对任意合法中心一般化复用。旧 cellPt、cellDerivedFaces、cellDerived 的定义体保留，
+其余旧接口以 canonicalCellCenters 为特例；没有改动旧默认选择语义，也没有复制整套旗标证明。
+
+模块检查 exit=0、零诊断；AuditF317 exit=0、零诊断。全部七十九项非自动声明、两项关键依赖与
+一个实际区间模型，共八十二项传递公理闭包仅标准三公理；十三项适用环境 linters 全过。
+审计与改动前的导入环境逐项比对全部四十八个旧声明的类型，结果完全一致，包含隐式实例。
+模型明确指定区间端点 0/1 与内胞腔中心 1/3，实际构造有限复形，验证载体恰为 [0,1] 且 1/3 是顶点。
+回执 AuditF317.json、CellCenters-CellComplex-checkpoint.json；sourceStable=true，共享产物只读。
+
+**消费者验证与格式开销单列：** Triangulation、CellEquivalence、ArrangementGeneralPosition
+逐个完整复编，均 exit=0、零诊断，回执为 CellCenters-<模块>-checkpoint.json。依整合端精确
+授权，三个消费者仅添加规定版权/模块头；另将 Triangulation 的三行及 ArrangementGeneralPosition
+的五行既有长行换行。去除空白后，三个消费者的原声明与证明 token 文本一致；未修改其数学、
+作用域或实例。四个 Lean 源码与本记录同次提交，不另发记录提交。
+
+**partial：精确 PL 映射三角剖分。** 以上仅闭合允许在指定纤维内选择胞腔中心的公共前置。
+继续 CellMapTriangulation：不要求单射的多面体像、源/目标适配的仿射胞腔、中心提升及图像投影。
+最终仍须从原任意奇异 PL 映射实际生产两侧有限复形、载体和精确映射等式，并验证非单射且非恒定模型。
+
+### 19.178 任意 PL 映射的源与目标精确三角剖分（2026-09-19 UTC）
+
+**done：CellMapTriangulation.lean。** `IsPiecewiseAffineOn.exists_isSubdivision_simplicialMap`
+从任意有限复形 K、L、逐片仿射 f 及 MapsTo f K.space L.space，实际构造有限细分 K′、L′，
+每个源面的顶点像是 L′ 的面，且 simplicialMap K′ f 在整个原源载体上逐点等于 f。
+IsSubdivision 同时给出两侧载体完全不变；不要求 f 单射、非塌缩或预先具有兼容单纯结构。
+因此像原本落在目标载体内这一事实，以及已有的边界原像等式，都由精确等式保留。
+
+仿射主引理 `exists_isSubdivision_affineMap` 先用有限超平面族同时适配源面、源闭胞腔的像与
+目标面，再把目标胞腔中心提升到相应源开胞腔；允许旗标像合并重复胞腔。一般 PL 情形先精确
+三角剖分图像 x ↦ (x,f x)，对图像的第二投影用仿射主引理，再以第一投影搬回原源。
+新增 `IsPolyhedron.image_affineMap`、`IsPiecewiseAffineOn.isPolyhedron_image` 均不要求单射。
+
+模块检查 exit=0、零诊断；AuditF318 exit=0、零诊断。全部二十项非自动声明、四项关键依赖、
+实际折叠区间模型与边界原像保持消费者，共二十六项传递公理闭包仅标准三公理；十三项适用
+环境 linters 全过。模型从 x ↦ |x| 实际生产两侧有限复形，载体恰为 [-1,1] 与 [0,1]，
+逐面映射与精确等式成立，同时证明单纯实现非单射、0 与 1 的像不同。消费者验证任意既有
+边界原像等式在精确细分后保持，不冒充独立存在性证明。回执 CellMapTriangulation-checkpoint.json、
+AuditF318.json；sourceStable=true，共享产物只读。源码、根登记与本记录同次提交。
+
+**partial：初始 NormalSystem 与 Stallings 端点。** 一般奇异 PL 映射的兼容三角剖分缺口已闭合。
+下一步将源相对 PL 推入、精确细分、像与边界像子复形、兼容导出邻域及正规子群 comap 拼成实际
+初始系统；本次不把这些尚未拼装的结论或整个 Stallings 端点标为 done。
+
+### 19.179 从原始 PL 盘构造实际初始 NormalSystem（2026-09-19 UTC）
+
+**done：LoopTheorem/SourceNormalSystem.lean。**
+`exists_simplicialMap_derivedNeighborhood_of_isPiecewiseAffineOn` 从有限三维组合流形 K、原始 PL
+二胞腔域 P、任意逐片仿射 f:P→|K| 及边界落在 ∂K 的条件，先相对源边界推入，再调用精确
+映射三角剖分，实际构造 D、K 的有限细分 L、像子复形 A、边界像子复形 C 及兼容导出邻域 T。
+输出 D.space=P、精确边界值、精确边界原像、像与邻域边界的交，并将 C 的边界导出邻域控制在
+给定的相对邻域 V 中。输入不要求局部单射、纤维数界、正规形式、既有源三角剖分或适当性。
+
+`exists_normalSystem_of_isPiecewiseAffineOn` 在此构造上接入原边界参数化 e、原 V 中的环 γ、
+与 f∘e 的逐点等式、原正规子群 N 及原环类避让条件，实际生产完整 NormalSystem S。
+保留域 P、原边界值与参数化，取基点为环上基点；原 N 沿实际边界邻域包含映射 β 取 comap，
+证明新环类仍避让，并输出 β 的逐点包含性质、β.comp S.boundaryLoop=γ 与精确子群等式。
+这不是接受预先给好的 NormalSystem 或把最终正规盘作为假设的包装。
+
+模块检查 exit=0、零诊断；AuditF319 exit=0、零诊断。全部三项非自动声明（含私有实例）、五项
+关键依赖、一个独立几何模型与一个从原始输入开始的覆盖消费者，共十项传递公理闭包仅标准
+三公理；十三项适用环境 linters 全过。几何模型把平面标准三角盘常值映到四面体边界顶点，
+实际生产有限源/目标、像/边界像及兼容邻域，验证精确边界原像并产生一个不落在邻域边界的
+内部像点。该模型不附带环类避让，不称为独立非空完整 NormalSystem 模型。
+覆盖消费者从原 PL 盘、参数化和原环类避让条件出发，生成 S 后得到“可定向且所选边界分量为球面，
+或实际严格二重覆盖下降”的析取；未假设输入 S，也未把消费者的原环类条件省略记账。
+回执 SourceNormalSystem-checkpoint.json、AuditF319.json；sourceStable=true，共享产物只读。
+源码、根登记与本记录同次提交。
+
+**partial：Stallings 最终嵌入盘。** 初始 PL 系统生产义务现已闭合；球面边界的实际嵌入盘生产、
+覆盖后嵌入盘回投与消奇异的剩余端点仍需分别闭合。本结果没有将这些后续结论写入前提，也不把
+整个 Stallings 链或 F5.2 一般正规形式标为 done。

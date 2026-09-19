@@ -1,4 +1,14 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.CellComplex
+
+/-!
+# Compatible triangulations of finite polyhedral families
+-/
+
 
 open Set Topology
 
@@ -12,7 +22,8 @@ theorem isSubdivision_of_forall_convexHull_eq_biUnion (K' K : Geometry.Simplicia
       ⋃ s ∈ {s ∈ K'.faces | convexHull ℝ (s : Set E) ⊆ convexHull ℝ (t : Set E)},
         convexHull ℝ (s : Set E)) : IsSubdivision K' K := by
   refine ⟨hspace, fun f hf => ?_⟩
-  have hx : (f.centroid ℝ id) ∈ openSimplex f := centroid_mem_openSimplex (K'.nonempty_of_mem_faces hf)
+  have hx : (f.centroid ℝ id) ∈ openSimplex f :=
+    centroid_mem_openSimplex (K'.nonempty_of_mem_faces hf)
   have hxK : f.centroid ℝ id ∈ K.space :=
     hspace ▸ K'.convexHull_subset_space hf (openSimplex_subset_convexHull f hx)
   obtain ⟨t, ht, hxt⟩ := K.mem_space_iff.mp hxK
@@ -27,7 +38,8 @@ variable [FiniteDimensional ℝ E]
 theorem exists_simplicialComplex_of_forall_isHPolytope {J : Type*} [Finite J] (C : J → Set E)
     (hC : ∀ j, IsHPolytope (C j)) :
     ∃ K : Geometry.SimplicialComplex ℝ E, K.faces.Finite ∧ K.space = ⋃ j, C j ∧
-      ∀ j, C j = ⋃ s ∈ {s ∈ K.faces | convexHull ℝ (s : Set E) ⊆ C j}, convexHull ℝ (s : Set E) := by
+      ∀ j, C j = ⋃ s ∈ {s ∈ K.faces | convexHull ℝ (s : Set E) ⊆ C j},
+        convexHull ℝ (s : Set E) := by
   classical
   choose κ hκ L c hCeq using fun j => (hC j).2
   have := hκ
@@ -73,7 +85,8 @@ theorem exists_isSubdivision_subcomplexes (K : Geometry.SimplicialComplex ℝ E)
     {J : Type*} [Finite J] (Q : J → Set E) (hQ : ∀ j, IsPolyhedron (Q j))
     (hQK : ∀ j, Q j ⊆ K.space) :
     ∃ K' : Geometry.SimplicialComplex ℝ E, IsSubdivision K' K ∧ K'.faces.Finite ∧
-      ∀ j, Q j = ⋃ s ∈ {s ∈ K'.faces | convexHull ℝ (s : Set E) ⊆ Q j}, convexHull ℝ (s : Set E) := by
+      ∀ j, Q j = ⋃ s ∈ {s ∈ K'.faces | convexHull ℝ (s : Set E) ⊆ Q j},
+        convexHull ℝ (s : Set E) := by
   classical
   choose κ hκ C hC hQeq using hQ
   have := hκ

@@ -51,7 +51,7 @@ Handoff only on delivery or urgent stop/restart.
 
 Pending source acceptance is tracked in .lake/pending-lane-checkpoints.json.
 Retain full-root build artifacts; that build is stopped. Six endpoint imports
-are now registered and statically reachable (9452 project modules including the root, no missing
+are now registered and statically reachable (9454 project modules including the root, no missing
 project source). The seven previously audited endpoint leaves retain their
 exact checked Git blobs; no full-root success is claimed. Focused checks do not
 certify a full-source build or the remaining classical input propositions.
@@ -783,3 +783,88 @@ surfaces 5e695768f are queued with the earlier circle-complement/capping/Betti
 layers; its current capped-surface and essential-circle round continues.
 These author deliveries are not counted as independently accepted mathematics.
 h and E3 remain on their current rounds without a status prompt or interruption.
+
+## Exact singular-map triangulation and initial normal systems (2026-09-19 UTC)
+
+F 921aa49bd, 27cf1c243 and aef1bbb8e are independently accepted.
+The core flag-triangulation arguments now work for arbitrary legal cell centers,
+allowing each source center to lie in the correct target-center fiber. The
+seventeen canonical arguments are generalized and reused, rather than copied.
+All 48 previous CellComplex declaration types, including implicit instances and
+universes, and the bodies of cellPt, cellDerivedFaces and cellDerived are retained.
+Independent old-source elaboration and kernel-expression comparison verify this
+after erasing generated binder macro scopes only. Explicit binder names, binder
+information, Expr structure, constants and universe parameters remain compared.
+
+CellMapTriangulation constructs actual finite subdivisions of the source and
+target of an arbitrary piecewise affine map. The simplicial realization equals
+the given map at every point of the original carrier. It permits collapsed faces
+and noninjective maps; graph triangulation and fiber-compatible centers supply
+the construction. Both carriers remain unchanged.
+
+SourceNormalSystem consumes the original PL disk, original boundary map and
+parameterization, target boundary neighborhood and original normal-subgroup
+avoidance. It constructs the relative inward push, exact triangulations, image
+and boundary-image subcomplexes and compatible derived neighborhood. The full
+NormalSystem retains the source disk, boundary values and parameterization,
+on-loop basepoint, actual inclusion map and exact subgroup comap. Source
+properness, local injectivity, bounded fibers and an existing system are not
+initial hypotheses. The original subgroup-avoidance condition is still explicit.
+
+All six delivered leaves and one actual dependent consumer were freshly compiled.
+Final checks took 75.267 seconds including admission. The combined audit took
+50.463 seconds; all 145 nonautomatic declarations, including one private instance,
+eleven critical reused entries and seven probe declarations have only standard
+foundational axioms. All thirteen applicable environment linters pass and every
+final compile/audit has zero errors, warnings and info diagnostics. Fifty-four
+native declarations are new; the total also includes the retained core and
+43 old consumer declarations. The new leaves are directly registered in the root.
+
+Three real model scenarios use a prescribed interval center 1/3, the nonconstant
+noninjective map abs from [-1,1] onto [0,1], and a constant triangular disk into a
+tetrahedral boundary vertex. The last construction has an actual interior image
+point outside the constructed neighborhood boundary. Two further declarations
+exercise exact boundary-preimage preservation and raw-input-to-cover descent;
+they remain conditional consumers. Two local instances complete the seven-probe
+census. The constant-disk model does not meet subgroup avoidance and is not
+reported as an independent nonempty complete NormalSystem example.
+
+The complete audit found two old unused finiteness assumptions in
+ArrangementGeneralPosition. The integration removes Finite kappa from
+arrangementLayer_not_le_affineSpan_of_affineIndependent and Finite zeta from
+exists_small_vertexMap_transverse_in_arrangement. Its sole external caller,
+RelativeNormalForm.exists_small_vertexMap_generalInArrangement, is generalized
+accordingly and freshly checked with the full 16-declaration census. No proof
+body changes. That existing consumer gains the required nine header lines;
+other author source matches the frozen delivery. Other worktrees were checked
+for ownership before these repairs and were not modified.
+
+Twenty-nine accepted private prerequisites were reused only after exact raw
+source and object identity checks. An initial missing CollarInwardMap artifact
+was resolved from those receipts. Failed audit probes, the raw binder-hygiene
+comparison and the genuine lint findings are retained alongside the final
+successful results; no failed check is counted as acceptance. Shared artifacts
+remain read-only and full-root compilation remains stopped.
+
+Accepted Lean delta is +1024/-131, including two root imports. The frozen author
+delta was +1012/-128; integration contributes three one-line generalizations
+and nine required header lines. Receipt:
+.lake/verified-twentyeighth-lane-delivery-20260919.json. It freezes all probe
+bytes, source/object identities, exact legacy signatures, full axiom/lint
+censuses, attempts, provenance and timing. The root statically reaches 9454
+project modules including itself, with no missing project sources or cycles.
+Static reachability and these scoped checks are not a full-source certificate.
+
+The later 584a5cfa0 preserves containment in the original target boundary and
+returns a supplied nonsingular solution to that target; it is queued separately.
+At F's explicit full-round completion, the next single round was assigned to
+actual sphere-neighborhood and sphere-boundary disk production. Its fixed-target
+face condition remains a genuine packaging obligation. General normalization,
+cover projection/desingularization and the final loop theorem remain open.
+
+S delivered local old-atlas corner/framing smoothing 29fc463ce, queued for
+independent acceptance. At its completed round it continued finite relative
+modifications on the actual annulus, with the old-coordinate straightening
+obligation explicit. M304 delivered actual full-boundary gluing e4a3f74eb and
+continues its capping/essential-circle round. h and E3 were not interrupted.
+No new task, subagent or checker was added.

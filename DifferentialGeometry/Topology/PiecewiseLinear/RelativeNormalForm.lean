@@ -1,6 +1,15 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.ArrangementGeneralPosition
 import DifferentialGeometry.Topology.PiecewiseLinear.SingularGeneralPosition
 import DifferentialGeometry.Topology.PiecewiseLinear.TwoFoldCrossing
+
+/-!
+# Relative general position for simplicial maps
+-/
 
 open Set Filter
 open scoped Topology
@@ -297,7 +306,7 @@ theorem IsVertexMapGeneralInArrangement.transverse {κ ι η ζ : Type*}
 
 open Classical in
 theorem exists_small_vertexMap_generalInArrangement {κ ι η ζ : Type*}
-    [Finite κ] [Finite η] [Finite ζ] [FiniteDimensional ℝ E]
+    [Finite κ] [Finite η] [FiniteDimensional ℝ E]
     (l : κ → E →ᵃ[ℝ] ℝ) (V : List ι) (B : Finset ι) (hV : V.Nodup)
     (hVB : Disjoint V.toFinset B) (φ₀ : ι → E) (c : η → Finset ι)
     (s t : ζ → Finset ι)
