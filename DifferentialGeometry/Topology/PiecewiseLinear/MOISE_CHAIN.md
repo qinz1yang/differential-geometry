@@ -35,7 +35,7 @@ remaining input or final assembly.
 | 25.1 | Moise251 and conditional Stallings induction | Open. F constructs the actual cover and projected embedded disk for Lemma 2; Lemma 1 and whole-branch separation remain obligations. |
 | 25.2 | Moise252 | h repairs non-nullhomotopy of the new disk boundary. The arrow from 25.1 still needs proper boundary push-off and proof. |
 | 26.4 | Moise264 | Boundary non-nullhomotopy is recorded; proof is open. Needs corrected 25.2, relative subdivision and compression, not just a bicollar. |
-| 30.3 | Geometric splitting and separation | E3: connect the actual split cells to the delivered path-replacement lemmas. Euler data alone do not construct the separating surface. |
+| 30.3 | Geometric splitting and separation | E3: annulus connectivity accepted; half-prism cut cells 1cea2fbe7 queued. Produce compatible neighborhoods and trace equations from the original disk pair before separation assembly. |
 | 30.4 | Moise304 | E3 owns assembly; 26.4, 28.19 and 30.3 remain open dependencies. |
 | 30.5 | moise305_tame_of_moise304 | Accepted conditional tame arrow and bicollar producers; Moise304 remains an input. General wild Moise305 is open and is not an extra prerequisite of this tame arrow. |
 | 30.6 | Moise306 | Open; compression/separation, 26.4, van Kampen and surface inputs. It does not depend on 30.7. |
@@ -47,15 +47,17 @@ remaining input or final assembly.
 | 35.1 | Moise351 | h repairs the one-dimensional locally finite polyhedral input and the global regular-neighborhood relation. The latter now constructs a global strong deformation retract from compatible stage contractions and a relative-neighborhood exhaustion. Keep noncompact scope and pointwise error; proof remains open. |
 | 35.2 | Moise352 in Transition361 | Open classical approximation input. |
 | 36.1 / PL atlas | Transition361, Endgame, ChartGluing | Compiled conditional consumers; they do not produce Moise352. |
-| Compact smoothability | Smoothing and a future compact PL smoothing producer | Separate open input, assigned as S's next lane after 24.12. |
+| Compact smoothability | Smoothing and a future compact PL smoothing producer | Separate active S lane after accepted finite 24.11/24.12 through 434d5352c; compact smoothing remains open. |
 
 ## Side inputs and exact distinctions
 
 - Current source has an unconditional three-dimensional PL Schoenflies
   producer, included in the fresh endpoint audit; it is no longer an open lane.
 - S's accepted cylindrical classification constructs equal-end diagrams.
-  The later product and finite 24.11 CST delivery aa6ff83be awaits independent
-  acceptance. S now proves the 24.12 generating-loop bridge. Full 24.9/24.10
+  The later product and finite native 24.11/24.12 through 434d5352c are now
+  independently accepted (41 module declarations, 33 critical reused
+  declarations, 13 clean linters and an actual nonempty instance). S now works
+  on compact PL smoothing. Full 24.9/24.10
   equivalence does not follow merely from that special construction.
 - The accepted trimmed-arc ball pair omits both endpoint vertex cells.
   h's full-arc containment 0a0876425 awaits acceptance; it does not supply
@@ -72,6 +74,12 @@ remaining input or final assembly.
 - Section 33 homology/PL surface-classification inputs remain explicit in the
   detailed plan; old dated estimates do not close them.
 
+## Current contract review hold
+
+h's 585cc71a0 delivery is not accepted: its Moise331 one-manifold hypothesis
+excludes branching graphs, and its 35.1 raw-star tower lacks evidence that it
+is a genuine regular neighborhood. h is correcting both in the same lane.
+
 ## Acceptance and change rules
 
 Repair defective public contracts deliberately and rebuild actual consumers;
@@ -80,8 +88,9 @@ weaken the classical conclusion or package it as a hypothesis.
 A disk's boundary is its parametrized source boundary, not its ambient frontier
 in three-space.
 
-Five endpoint-chain modules lack root coverage. The six-import repair also
-registers PLSchoenflies directly; it is prepared but unapplied. The owner stopped
+The five disconnected endpoint-chain modules and PLSchoenflies now have direct
+root imports. Static traversal reaches all six and 9265 project modules;
+this repairs coverage without certifying root compilation. The owner stopped
 the full-source build on 2026-09-19 at 02:00 UTC; outputs are retained with no
 automatic restart. Seven-leaf/26-declaration focused checks passed, but no
 full-source success is claimed.

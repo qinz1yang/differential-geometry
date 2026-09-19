@@ -1,5 +1,15 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.CellComplex
 import DifferentialGeometry.Topology.PiecewiseLinear.GeneralPosition
+
+/-!
+# General position within affine arrangement layers
+-/
+
 
 open Set Topology Metric
 
@@ -72,7 +82,8 @@ theorem openCell_mem_nhdsWithin_arrangementLayer {κ : Type*} [Finite κ]
   have hUopen : IsOpen U := by
     apply isOpen_iInter_of_finite
     intro k
-    exact (isOpen_setOf_imp _ (isOpen_lt continuous_const (l k).continuous_of_finiteDimensional)).inter
+    exact (isOpen_setOf_imp _
+      (isOpen_lt continuous_const (l k).continuous_of_finiteDimensional)).inter
       (isOpen_setOf_imp _ (isOpen_lt (l k).continuous_of_finiteDimensional continuous_const))
   have hxU : x ∈ U := by
     rw [mem_iInter]
@@ -175,7 +186,8 @@ theorem exists_small_update_affineIndependent_in_arrangement {κ ι η : Type*} 
   let ψ := Function.update φ v p
   refine ⟨ψ, ?_, ?_, ?_, ?_⟩
   · intro w hw
-    exact Function.update_of_ne (by simpa only [Set.mem_compl_iff, Set.mem_singleton_iff] using hw) p φ
+    exact Function.update_of_ne
+      (by simpa only [Set.mem_compl_iff, Set.mem_singleton_iff] using hw) p φ
   · intro w
     by_cases hw : w = v
     · subst w
@@ -186,7 +198,7 @@ theorem exists_small_update_affineIndependent_in_arrangement {κ ι η : Type*} 
     exact affineIndependent_update_insert (hv j) (hs j) (hpavoid j)
 
 open Classical in
-theorem arrangementLayer_not_le_affineSpan_of_affineIndependent {κ ι : Type*} [Finite κ]
+theorem arrangementLayer_not_le_affineSpan_of_affineIndependent {κ ι : Type*}
     [FiniteDimensional ℝ E] (l : κ → E →ᵃ[ℝ] ℝ) (φ : ι → E) (v : ι)
     (s : Finset ι) (hs : AffineIndependent ℝ (fun w : s => φ (w : ι)))
     (hcard : s.card ≤ Module.finrank ℝ (arrangementDirection l (φ v))) :
@@ -340,7 +352,8 @@ theorem exists_small_affineIndependent_constraints_in_arrangement {κ ι η : Ty
       have hVBtail : Disjoint V.toFinset B := by
         apply Finset.disjoint_left.mpr
         intro x hxV hxB
-        exact Finset.disjoint_left.mp hVB (by simp only [List.toFinset_cons, Finset.mem_insert]; exact Or.inr hxV) hxB
+        exact Finset.disjoint_left.mp hVB
+          (by simp only [List.toFinset_cons, Finset.mem_insert]; exact Or.inr hxV) hxB
       have hdimTail : ∀ (V₁ V₂ : List ι) (w : ι), V = V₁ ++ w :: V₂ →
           ∀ j, w ∈ c j →
             (c j ∩ (B ∪ V₂.toFinset)).card ≤
@@ -379,8 +392,10 @@ theorem exists_small_affineIndependent_constraints_in_arrangement {κ ι η : Ty
       refine ⟨ψ, ?_, ?_, ?_, ?_⟩
       · intro x hx
         change x ∉ (v :: V).toFinset at hx
-        have hxv : x ≠ v := fun h => hx (by simp only [List.toFinset_cons, Finset.mem_insert, h, true_or])
-        have hxV : x ∉ V.toFinset := fun h => hx (by simp only [List.toFinset_cons, Finset.mem_insert]; exact Or.inr h)
+        have hxv : x ≠ v := fun h =>
+          hx (by simp only [List.toFinset_cons, Finset.mem_insert, h, true_or])
+        have hxV : x ∉ V.toFinset := fun h =>
+          hx (by simp only [List.toFinset_cons, Finset.mem_insert]; exact Or.inr h)
         exact (hψfix (by simpa only [Set.mem_compl_iff, Set.mem_singleton_iff] using hxv)).trans
           (hφfix (by simpa only [Set.mem_compl_iff, Finset.mem_coe] using hxV))
       · intro x
@@ -441,7 +456,7 @@ theorem exists_small_affineIndependent_constraints_in_arrangement {κ ι η : Ty
 
 open Classical in
 theorem exists_small_vertexMap_transverse_in_arrangement {κ ι η ζ : Type*}
-    [Finite κ] [Finite η] [Finite ζ] [FiniteDimensional ℝ E]
+    [Finite κ] [Finite η] [FiniteDimensional ℝ E]
     (l : κ → E →ᵃ[ℝ] ℝ) (V : List ι) (B : Finset ι) (hV : V.Nodup)
     (hVB : Disjoint V.toFinset B) (φ₀ : ι → E) (c : η → Finset ι)
     (s t : ζ → Finset ι)

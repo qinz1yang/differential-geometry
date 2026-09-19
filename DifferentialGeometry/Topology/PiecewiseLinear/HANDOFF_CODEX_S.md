@@ -5690,3 +5690,1265 @@ and the untwisted orientable polygon-neighborhood diagram are now delivered.
 For 24.12, transfer of orientability for a contractible polygon through the
 already available orientation covering also remains to be connected. These
 are the next mathematical interfaces; no extra conditional wrapper is submitted.
+
+## Compact cylindrical diagrams with equal ends have a circle product (2026-09-19)
+
+Status: done. `CylindricalProduct.lean` proves
+`IsCylindricalDiagram.eq_iff_fst_eq_and_circle_eq` and
+`IsCylindricalDiagram.exists_homeomorph_prod_circle_of_eq_ends`.
+An actual cylindrical diagram on a compact base with pointwise equal ends
+produces a homeomorphism from its target onto `P × loopCircle`, with the exact
+inverse coordinate formula for every base point and interval parameter.
+The fiber lemma needs only real normed spaces; the product theorem needs a
+finite-dimensional source for the diagram's continuous PL map, but no
+finite-dimensional target, disk, manifold or orientability assumption.
+The map is constructed by quotient descent from `P × [0,1]`; equality of
+circle coordinates is proved equivalent to the diagram's actual fibers.
+
+Focused compilation: 19.505 seconds; complete dynamic audit: 28.704 seconds.
+Both exit 0 with zero diagnostics. The two public declarations, six critical
+reused quotient/circle producers and all 13 applicable environment linters
+pass. All axiom closures are within the standard three axioms. The concrete
+triangle circle on a tetrahedral face produces a nonempty derived neighborhood
+and its actual disk-times-circle homeomorphism: exit 0, zero diagnostics,
+27.871 seconds, with its declaration and both applied producers audited.
+Times include resource admission. An initial external probe lacked a final
+newline and failed the whitespace gate; the final corrected probe is clean.
+
+Evidence: `C:/Users/liao9/AppData/Local/Temp/codex-s-mobius-torus-20260918/`
+`CylindricalProduct-verification.json`, with raw/normalized source identity,
+private object hash, receipts, timings, declarations, linters and the concrete
+instance. Source SHA256: `01C5A93D25A406A4D60F13EDBB645A30EC667B7C7F114E06E933AC83221E792F`.
+The native import closure excludes `HurewiczLowDegrees`; static checks pass.
+Source, root import, this handoff and the C.6/C.7 plan updates are one commit.
+Shared artifacts were read-only; the integration root gate remains separate.
+
+Next in this round: convert the disk and circle models to the existing
+`IsTopologicalSolidTorus` definition and assemble the source-faithful CST
+cyclic decomposition of the actual regular neighborhood. Full 24.9/24.10
+and the 24.12 contractible-polygon interface remain distinct obligations.
+
+## Standard solid tori from disk cylinders and orientable neighborhoods (2026-09-19)
+
+Status: done for the standard topological product interface.
+`SolidTorusProduct.lean` proves:
+
+- `IsCylindricalDiagram.isTopologicalSolidTorus_of_eq_ends`: an actual disk
+  diagram with pointwise equal ends has a target homeomorphic to the Euclidean
+  closed 2-ball times the Euclidean unit circle. The target ambient space does
+  not need to be finite dimensional.
+- `IsCylindricalDiagram.isTopologicalSolidTorus_of_isOrientable`: the same
+  standard product for any actual disk diagram onto an orientable finite
+  combinatorial 3-manifold with boundary; the untwisting map is constructed.
+- `isTopologicalSolidTorus_derivedNeighborhood_circle`: the actual derived
+  neighborhood of a connected closed 1-manifold subcomplex in an orientable
+  finite combinatorial 3-manifold with boundary is a topological solid torus.
+
+The product homeomorphism is produced, not assumed. The proof composes the
+compact quotient product with the existing simplex-to-normed-ball homeomorphism
+and the additive-circle/complex-circle homeomorphism and orthonormal coordinates.
+`IsTopologicalSolidTorus` moved verbatim from `MoiseChain.lean` into the lower
+`SolidTorus.lean`: full name, universe, binders and defining expression are
+unchanged. `Moise307` is its only pre-existing direct mathematical consumer, checked
+along with all 25 declarations of `MoiseChain`; no high-level import is added
+back into the construction.
+
+| Module | Declarations | Critical reused producers | Compile seconds | Audit seconds |
+|---|---:|---:|---:|---:|
+| SolidTorus | 1 | 0 | 10.027 | 9.559 |
+| SolidTorusProduct | 3 | 6 | 12.226 | 12.182 |
+| MoiseChain | 25 | 1 | 12.122 | 12.915 |
+
+All checks exit 0 with zero diagnostics; all 29 nonautomatic declarations
+and seven reused-producer entries have only standard foundational axioms.
+Every module passes all 13 applicable environment linters. The nonempty
+triangle circle in a tetrahedral face satisfies the final standard solid-torus
+predicate; this concrete application and its two producers pass the axiom
+audit, exit 0, zero diagnostics, 12.301 seconds. Times include
+resource admission. The first concrete probe missed the retraction-module
+import for neighborhood containment; the corrected final probe passes.
+
+Evidence: `C:/Users/liao9/AppData/Local/Temp/codex-s-mobius-torus-20260918/`
+`SolidTorusProduct-verification.json`, with source/object identities, receipts,
+complete declaration and linter censuses, the verbatim definition-move check
+and concrete application. SolidTorusProduct source SHA256:
+`3F3C28988743975D21E5B37CF628C58F25814A5DF72BFF06FFF070E6B7B37AEB`. Native import closures avoid
+`HurewiczLowDegrees`; static and whitespace checks pass. Source, consumer,
+root imports, this record and the C.6/C.7 rows form one mathematical commit.
+Shared artifacts were read-only; the integration root gate remains separate.
+
+The next layer assembles the book's cyclic 3-cell/2-disk CST conditions.
+This product result does not by itself claim general 24.9/24.10 or 24.12.
+
+## Cyclic regular neighborhoods are combinatorial solid tori (2026-09-19)
+
+Status: done for the assigned actual solid-torus/CST assembly and the finite
+regular-neighborhood form of Moise 24.11.
+
+`CombinatorialSolidTorus.lean` defines `IsCombinatorialSolidTorus` from the
+original definition on book page 178: an actual topological solid torus with
+a cyclic cover by at least three finite combinatorial 3-cells; two distinct
+cells intersect exactly when they are cyclic neighbors, and every neighboring
+intersection is a PL 2-disk in the intrinsic boundary of both cells. This is
+a predicate on the subset, independent of a caller-supplied triangulation.
+Each cell carries its own finite triangulation. The standard product is part
+of the definition and is produced by the neighborhood theorem; a cylindrical
+diagram alone has not been relabeled as a CST.
+
+`NeighborhoodSolidTorus.lean` proves two public endpoints:
+
+- `exists_cyclic_derivedNeighborhoodCell_decomposition_disjoint`: the actual
+  cells `derivedNeighborhoodCell K (e i).val` cover the actual derived
+  neighborhood; each is a 3-ball, each neighboring intersection is a 2-disk
+  in both boundaries, nonneighbors are disjoint, and all intersections of
+  three distinct cells are empty. The last statement is an extra property
+  of this construction; it is not silently added to the book's CST definition.
+  This decomposition does not require orientability.
+- `isCombinatorialSolidTorus_derivedNeighborhood_circle`: for finite `K` and `L`,
+  `IsCombinatorialManifoldWithBoundary 3 K`, `L.faces ⊆ K.faces`, a connected
+  closed combinatorial 1-manifold `L`, and `IsOrientable 3 K`, the actual
+  derived neighborhood is a CST. The proof assembles the actual cyclic pieces,
+  their finite triangulations, intersections and the standard product proved
+  in `10f680db7`. No cylindrical diagram, product map, positive monodromy,
+  pseudo-isotopy or Schoenflies conclusion is assumed.
+
+Book pages 178-179 were read from the local Moise PDF; page 178 was also
+rendered and visually inspected. No vendored source was edited or copied.
+The finite derived-neighborhood statement is the native form of the regular
+neighborhood in a subdivision in which the polygon is a subcomplex.
+
+| Module | Declarations | Critical reused producers | Compile seconds | Audit seconds |
+|---|---:|---:|---:|---:|
+| CombinatorialSolidTorus | 1 | 1 | 10.399 | 10.527 |
+| NeighborhoodSolidTorus | 2 | 3 | 12.376 | 17.378 |
+
+All three nonautomatic declarations, four reused-producer entries and all
+13 applicable environment linters for each module pass, exit 0 and zero
+diagnostics. The concrete triangle circle on a tetrahedral face gives a
+nonempty actual CST. That application, the two new geometric producers and
+three existing polygon-orientation producers pass a combined axiom and
+cross-import audit with `MoiseChain`, exit 0, zero diagnostics,
+11.985 seconds. Every axiom closure uses only the standard three
+axioms. Times include resource admission.
+
+The existing `DerivedNeighborhoodPolygon.lean` input was independently read
+and inspected, including `DerivedNeighborhoodHomology.lean`. Its 490-module
+native import closure excludes `HurewiczLowDegrees`; textual debt candidates
+were documentation only. The critical declarations
+`exists_isGeneratedByPolygon_derivedNeighborhood`,
+`isOrientable_derivedNeighborhood_of_ambient_nullHomotopic_polygon`, and
+`exists_cylindricalDiagram_isOrientable_derivedNeighborhood_of_nullHomotopic_polygon`
+all have clean standard-axiom closures in the combined probe. Their current
+`hnull` quantifies over every based loop in the polygon and every base point.
+They must not be reported as taking only one generator's ambient nullhomotopy.
+No replacement orientation-cover argument was introduced.
+
+Evidence: `C:/Users/liao9/AppData/Local/Temp/codex-s-mobius-torus-20260918/`
+`NeighborhoodSolidTorus-verification.json`, including raw/normalized source
+and private object identities, receipts, timings, all declarations and linters,
+the concrete CST instance, source-page correspondence and existing-producer
+review. NeighborhoodSolidTorus source SHA256:
+`37880F8F42B5A623CC0746F36F7CBC5D1AF9486537ED8400B168BF1EFE2E79A9`.
+Static and whitespace checks pass; new leaves are in the flat root. Source,
+root imports, this handoff and both plan rows are one mathematical commit.
+Shared artifacts remained read-only. The independent integration root build
+and integration replay remain separate coordinator gates.
+
+Round total: five new modules and the unchanged-definition consumer migration,
+six modules checked and audited, 34 nonautomatic declarations (including the
+25 declarations of `MoiseChain`), 17 critical reused-producer entries, and
+all 13 environment linters for every module. Three successive nonempty
+concrete applications check the circle product, standard solid torus and CST.
+Earlier checkpoints are `701d48343` and `10f680db7`.
+
+Remaining: general 24.9 (book CST cyclic decomposition versus cylindrical
+diagram) and 24.10 (comparison of arbitrary book CSTs) are still partial.
+24.12 still needs the single-generator ambient-nullhomotopy-to-all-loops
+producer and the final CST application. The existing orientation input is
+now source-reviewed and axiom-verified, not a missing or assumed covering.
+
+## Free and based nullhomotopy of loops (2026-09-19)
+
+Status: done for the general transport layer of the 24.12 round.
+`Topology/Homotopy/FreeLoopNullhomotopy.lean` is its natural home.
+
+`pathToCircle_nullhomotopic_iff` proves that the free circle map of any
+based loop is nullhomotopic exactly when that loop is homotopic, with its
+base point fixed, to the constant loop. The space is arbitrary topological.
+For a free nullhomotopy ending at an arbitrary constant point, its trace at
+the circle base point supplies a path between base points. The existing
+`square_boundary_homotopic` gives the exact commuting square, and composing
+with the reverse trace cancels it in the fundamental groupoid. The reverse
+direction reuses circle-map naturality for homotopies and the existing
+constant-circle identity. No commutativity or path-connectedness of the
+ambient space is needed.
+
+Focused compile 8.566 seconds; complete dynamic audit 8.450 seconds,
+both exit 0 with zero diagnostics. All 1 nonautomatic declarations,
+3 critical reused producers and all 13 applicable environment linters
+pass. Axiom closures contain only the standard three axioms.
+The common finite nonempty input test constructs a spanning simple cycle
+of length at least three around a tetrahedral face, its free nullhomotopy
+in the tetrahedron, and nullhomotopies for all base points via the new
+transport. The test and five critical producers pass the axiom audit,
+exit 0, zero diagnostics, 11.824 seconds. Times include admission.
+This fixes the input contract before assembling the geometric consumer.
+
+Evidence: `C:/Users/liao9/AppData/Local/Temp/codex-s-mobius-torus-20260918/`
+`FreeLoopNullhomotopy-verification.json`, with raw/normalized source and object identities,
+receipts, timings, complete audit/linter censuses and the concrete input.
+Source SHA256: `C25B9CAF2598B63FBAAF3CC18D3CCE13F1943F79BD05A882F0C992ECB308A3F2`.
+Static checks pass; the native import closure excludes HurewiczLowDegrees.
+Source, flat root import, this entry and the C.7 plan update form one commit.
+All verification used private artifacts; the independent integration root gate
+remains separate. The polygon generation and final 24.12 CST application are
+being completed in the same assigned round.
+
+## Null cyclic generators annihilate loop maps across base points (2026-09-19)
+
+Status: done for the general transport layer of the 24.12 round.
+`Topology/Homotopy/CyclicLoopMap.lean` is its natural home.
+
+`loopZPow_homotopic_refl` proves nullhomotopy of every integer power of
+a null loop, including negative powers, by the existing exact correspondence
+between path powers and fundamental-group powers.
+`map_homotopic_refl_of_generating_loop` takes a continuous map, an actual
+loop generating the homotopy classes at one base point, nullhomotopy of its
+image and a path-connected second base point. It proves nullhomotopy of the
+image of every loop at that second point. The conjugate is formed in the
+source and its image is identified with the existing
+`fundamentalGroupChangeBasepoint` in the target, whose injectivity transports
+the identity back. The reverse-path mapping direction and quotient notation
+are explicit in the proof. Both spaces are arbitrary topological spaces;
+generation is assumed only in this general algebraic/topological lemma and
+will be produced from the actual spanning polygon in the consumer.
+
+Focused compile 9.375 seconds; complete dynamic audit 8.156 seconds,
+both exit 0 with zero diagnostics. All 2 nonautomatic declarations,
+3 critical reused producers and all 13 applicable environment linters
+pass. Axiom closures contain only the standard three axioms.
+The common finite nonempty input test constructs a spanning simple cycle
+of length at least three around a tetrahedral face, its free nullhomotopy
+in the tetrahedron, and nullhomotopies for all base points via the new
+transport. The test and five critical producers pass the axiom audit,
+exit 0, zero diagnostics, 11.824 seconds. Times include admission.
+This fixes the input contract before assembling the geometric consumer.
+
+Evidence: `C:/Users/liao9/AppData/Local/Temp/codex-s-mobius-torus-20260918/`
+`CyclicLoopMap-verification.json`, with raw/normalized source and object identities,
+receipts, timings, complete audit/linter censuses and the concrete input.
+Source SHA256: `C317A5DD6AA487915863DC87311207AB117DC0A368F9F0187044A09228DBF215`.
+Static checks pass; the native import closure excludes HurewiczLowDegrees.
+Source, flat root import, this entry and the C.7 plan update form one commit.
+All verification used private artifacts; the independent integration root gate
+remains separate. The polygon generation and final 24.12 CST application are
+being completed in the same assigned round.
+
+## Nullhomotopic polygons have combinatorial solid-torus neighborhoods (2026-09-19)
+
+Status: done for Moise 24.12 in the finite native setting. Together with the
+preserved 24.11 endpoint, this closes the finite native C.7 forms. The earlier
+transport layers were committed with their records as `f446f4968` and `f54be2f43`.
+
+Endpoint:
+`isCombinatorialSolidTorus_derivedNeighborhood_of_nullhomotopic_cycle`
+in `NeighborhoodContractiblePolygon.lean`. Let K be a finite combinatorial
+3-manifold with boundary and P a finite closed combinatorial 1-manifold
+subcomplex. The input gamma is an actual spanning simple cycle of P's edge
+graph, traversed once. Its precise free-nullhomotopy hypothesis is
+`(pathToCircle (walkPath (gamma.map (edgeGraphHom hPK)))).Nullhomotopic`.
+The conclusion is `IsCombinatorialSolidTorus (derivedNeighborhood K P).space`.
+Ambient orientability, connectedness, cyclic generation and nullhomotopy of
+all loops are not additional hypotheses. No Schoenflies or diagram witness
+is assumed. This entry does not assert the infinite-triangulation form.
+
+`PolygonNullhomotopy.lean` proves path-connectedness from the actual spanning
+cycle, and `map_homotopic_refl_of_nullhomotopic_spanning_cycle` proves triviality
+of every loop map at every base point from that one cycle's free nullhomotopy.
+The existing `exists_homotopic_loopZPow_walkPath` supplies cyclic generation
+from the actual bijective circle parametrization and the homotopy between
+uniform arc and walk parametrizations. The earlier free/based equivalence,
+integer-power lemma and change-of-basepoint isomorphism handle arbitrary
+constant endpoints, reversed orientation, negative powers and conjugation.
+`walkPath_map` identifies the exact ambient inclusion in the final consumer.
+
+`NeighborhoodSolidTorus.lean` now exposes the natural primary
+`isCombinatorialSolidTorus_derivedNeighborhood_of_isOrientable`, requiring
+orientability of the neighborhood itself. Its cylindrical diagram, standard
+product and cyclic cell decomposition are actual existing producers. The
+24.11 theorem retains its exact public signature and is a corollary. The
+24.12 proof obtains the neighborhood orientation from the existing
+`isOrientable_derivedNeighborhood_of_ambient_nullHomotopic_polygon`, supplying
+its all-basepoint/all-loop input internally; the existing generation and
+second-derived-neighborhood inclusion/homeomorphism identities remain intact.
+
+| Module | Compile seconds | Audit seconds | Nonautomatic declarations | Critical reuse entries |
+|---|---:|---:|---:|---:|
+| `PolygonNullhomotopy` | 12.796 | 11.670 | 2 | 4 |
+| `NeighborhoodSolidTorus` | 12.083 | 11.788 | 3 | 5 |
+| `NeighborhoodContractiblePolygon` | 12.011 | 11.715 | 1 | 5 |
+
+All three compile and complete dynamic audit runs exited 0, with zero errors,
+warnings or info diagnostics. Each module passed all 13 applicable environment
+linters; every nonautomatic declaration and every listed critical reused
+producer has only standard foundational axioms. Including the two earlier
+transport modules, the round covers five modules, nine nonautomatic declarations
+and twenty critical reuse entries. Those nine comprise seven new declarations
+and two preserved declarations rechecked after their module changed. Times
+include resource admission; no shared artifact was modified.
+
+The final nonempty finite test reconstructs a tetrahedron, the triangular
+boundary of one of its faces, a spanning simple cycle of length at least three
+and that cycle's free nullhomotopy in the tetrahedron. It applies the final
+24.12 endpoint using only this single-loop input and produces a nonempty actual
+solid-torus neighborhood. The final probe and its eight axiom entries passed
+with exit 0, zero diagnostics in 12.091 seconds. Its fixed concrete
+function-space equality instance is explicitly the same classical instance
+used by the derived-neighborhood endpoint; no resource override was used.
+The earlier input probe passed separately and is retained in the evidence.
+
+Source SHA256 values for this checkpoint:
+
+- `PolygonNullhomotopy`: `94F4115298CB3A2F76E18B695AA9BBB2740BA5EAF19657FC929C425A47E3C811`.
+- `NeighborhoodSolidTorus`: `B1182C0AA1223A5CD64CBF23A044B482468797FA64F78FBFC4CD40C9E3B30223`.
+- `NeighborhoodContractiblePolygon`: `4E994877833628C01EA8D353E32971B344B9143F1BF35C070F28F3CBB328D8AC`.
+
+Complete evidence: `C:/Users/liao9/AppData/Local/Temp/codex-s-mobius-torus-20260918/`
+`NullPolygon-round-verification.json`. It freezes raw and normalized source
+hashes, private object hashes, receipts, timings, all declaration/reuse/linter
+censuses, exact audit and instance sources, the preserved 24.11 signature and
+source-hygiene checks. All five native import closures exclude
+`HurewiczLowDegrees`. New leaves are registered exactly once in the flat root.
+Source, root imports, this entry and the C.7 plan row are one mathematical
+checkpoint. No vendored source changed, so no VENDOR entry is required.
+
+C.6 remains partial: general CST-to-diagram wiring and arbitrary-CST 24.10
+comparison are not closed by this result. Integration replay and the independent
+full-source/root build remain the coordinator's separate gate. The current
+24.12 assignment is complete; compact PL-to-smooth work awaits the next round.
+
+## Cell attachment under prescribed boundary reparametrization (2026-09-19)
+
+Status: done for this topological layer of the separate compact PL smoothing
+round. The compact smooth-structure producer remains open. Integration was
+merged at `cdd1ba16a`; the two sides of the plan conflict were retained under
+the standing rule. This round changes no other lane's mathematical sources.
+
+### Actual inputs and candidate proof chain
+
+`exists_pLTriangulation_isCombinatorialManifold` in `Combinatorial.lean` produces
+an actual finite `PLTriangulation n X` with `IsCombinatorialManifold n T.complex`
+from a nonempty compact T2 PL atlas. The triangulation carries a continuous
+bijection onto X and the two PL chart conditions. No smoothing input occurs.
+The empty-space case must be handled separately by the eventual compact theorem.
+This does not yet supply a finite handle sequence or attaching maps.
+
+`Handle.standardHandleIsManifold` supplies smooth standard handle models, but
+`Morse.ManifoldCellAttachment.exists_contMDiff_isClosedEmbedding_attachingRegion`
+requires an already smooth manifold, a smooth Morse function and its actual
+critical-point data. `BoundaryCollar.exists_boundaryAttachment_smooth_atlas`
+requires an already smooth manifold with compact boundary and attaches its
+collar; it is not a constructor for a general PL handle attachment.
+`sphere_isotopy_iff_positive_radial_derivative` starts with a diffeomorphism
+of the standard smooth two-sphere; it is not a smooth classification of an
+arbitrary surface merely homeomorphic to the two-sphere.
+
+The existing `Manifold.interiorChartedSpace`, `interiorIsManifold` and
+`interiorAtlasDiffeomorph` already convert a boundaryless manifold modeled
+with corners to the vector-space model, with the identity as diffeomorphism.
+The old Phase 2 audit's missing-conversion note is superseded by this source.
+No new PLSmoothing predicate, assumed smoothing model or duplicate model
+transport was introduced. The nine selected input declarations were freshly
+audited with only standard axioms, exit 0 and zero diagnostics, in
+12.453 seconds; their 511-module native import closure excludes
+`HurewiczLowDegrees`.
+
+Candidate chain: actual finite combinatorial triangulation -> finite PL
+handle decomposition -> smoothing the attaching disks/annuli and their
+framings -> general smooth handle attachment with corner rounding -> smooth
+standardization of terminal two-sphere boundaries -> cap comparison -> the
+existing boundaryless interior atlas -> the existing same-topology transport.
+The new result closes the cap-comparison step, without a smooth extension
+at the cone vertex. It does not assert completion of the other arrows.
+
+### Closed mathematical result
+
+`Topology/Homeomorph/SphereExtension.lean` constructs `sphereRadialHomeomorph`
+for any homeomorphism between unit spheres of two real normed spaces. Its
+forward and inverse functions are the existing continuous radial extensions;
+the proof identifies their exact normalized directions and cancels the sphere
+homeomorphism. It preserves norms, fixes zero and restricts to the prescribed
+sphere map. `closedBallHomeomorphExtension` gives the resulting closed-ball
+homeomorphism and its exact boundary formula. No finite-dimensionality,
+compactness, smoothness or extra nonempty hypothesis is needed.
+
+`Topology/Attachment/Homeomorph.lean` constructs `adjunctionHomeomorph` from
+an equivalence of attaching sets, homeomorphisms of the cell and lower spaces,
+and the two commuting attaching squares. It descends the explicit sum map to
+the actual quotient and constructs its inverse; both continuous maps and the
+cell/lower formulas are proved. The attaching set needs no topology. This
+extends the existing handle comparison's fixed-cell situation; it does not
+modify the existing `Handle.adjunctionCongr` or its consumers.
+
+`Topology/Attachment/CellExtension.lean` constructs
+`closedCellHomeomorphExtension`, with
+`closedCellHomeomorphExtension_boundary` giving the exact inclusion equation.
+`cellAdjunctionHomeomorph` takes
+`a : CellBoundary n ≃ₜ CellBoundary m`, `f : X ≃ₜ Y`, and
+`hphi : forall x, f (phi x) = psi (a x)`, and returns
+`CellAdjunctionSpace n phi ≃ₜ CellAdjunctionSpace m psi`.
+Its lower map is precisely f, and its cell map is precisely the radial
+extension of a. The two formulas are public theorems. The conversions between
+norm predicates and sphere predicates use the canonical set-congruence
+homeomorphism locally, keeping this topological layer independent of the
+large smooth-handle module.
+
+### Verification and nondegenerate application
+
+| Module | Compile seconds | Audit seconds | Nonautomatic declarations | Critical reuse entries |
+|---|---:|---:|---:|---:|
+| `SphereExtension` | 14.196 | 9.285 | 8 (1 private) | 6 |
+| `Homeomorph` | 10.119 | 11.185 | 5 (2 private) | 4 |
+| `CellExtension` | 58.714 | 10.048 | 6 (0 private) | 4 |
+
+All three final compile runs and complete dynamic audits exited 0 with zero
+errors, warnings or info diagnostics. All 19 nonautomatic declarations
+(including three private ones), 14 critical reuse entries and all 13 applicable
+environment linters per module pass. Every axiom set is a subset of
+propext/Classical.choice/Quot.sound. Times include resource admission.
+
+The concrete nonempty three-dimensional capping test glues one `ClosedCell 3`
+to another along `CellBoundary 3`. The prescribed boundary map is antipodal.
+The actual quotient homeomorphism fixes the entire lower three-ball and maps
+the cap by the radial extension. A point with norm 1/2 is explicitly sent to
+its negative, a distinct interior point. Thus the tested extension is not
+vacuous or the identity. The test and its seven critical producers (eight
+axiom entries total) passed with exit 0 and zero diagnostics in 21.166
+seconds. The test makes no unproved smoothness claim about the seam or center.
+
+Source SHA256 values:
+
+- `DifferentialGeometry.Topology.Homeomorph.SphereExtension`: `573AA340B9B5F9AF01625A9020314683DDCA77D18211B17CE41CAD406A129DAC`.
+- `DifferentialGeometry.Topology.Attachment.Homeomorph`: `C36F16AE7F48A47E36B2CB4B5786AD550DFF5FD2B91935E2A4DBB9674D9DF95A`.
+- `DifferentialGeometry.Topology.Attachment.CellExtension`: `DEF75D719395AA405195A6BFC16041BBF145D2E5F7783C8244EB33187D452F2F`.
+
+Evidence: `C:/Users/liao9/AppData/Local/Temp/codex-s-mobius-torus-20260918/`
+`CellExtension-round-verification.json`. It retains raw/normalized source
+identities, private object identities, compile/audit receipts and timings,
+complete declaration/reuse/linter censuses, exact audit and test source bytes,
+input-source closure and hygiene/root-registration checks. Shared artifacts
+remain read-only. All new leaves are registered once in the flat root.
+Source, root imports, this handoff and the Phase 2 plan update are committed
+together as one closed cell-attachment result; no VENDOR source changed.
+
+### Remaining exact compact-smoothing obligations
+
+- Produce a finite PL handle decomposition and its actual attaching embeddings
+  from the finite combinatorial three-manifold, preserving the lower-space
+  homeomorphisms needed by induction. No native producer was found.
+- For an already smooth lower manifold with boundary and a general smooth
+  attaching embedding, construct the attached smooth atlas and round corners;
+  the Morse and collar-specific producers do not give this input direction.
+- Smooth the actual PL attaching circles/annuli in the smooth boundary surface
+  with the required framing, retaining a compatible ambient homeomorphism.
+- From an arbitrary smooth closed surface and a homeomorphism to standard S2,
+  produce a diffeomorphism to S2; standard-sphere self-isotopy does not supply it.
+- Assemble compatible finite stages and then use the existing interior atlas
+  and same-topology transport. No compact or noncompact PLSmoothing 3 theorem
+  has been proved in this round; the approximation phase retains its noncompact
+  statement. Independent integration replay and the full-root gate are separate.
+
+## Vertex balls and edge handles in derived neighborhoods (2026-09-19)
+
+Status: done for this first geometric layer of the separate compact PL
+smoothing round. Integration was merged at `00ab946ae` from `1fefc3d04`;
+both sides of the two plan conflicts were preserved. The full finite handle
+sequence and the compact smooth-structure theorem remain open.
+
+### Actual constructions and input direction
+
+The producer search found standard smooth handle models and smooth Morse
+attachments, whose input direction starts with an already smooth manifold;
+it found no native finite PL handle-decomposition producer. This layer starts
+with the actual finite combinatorial manifold and constructs its vertex balls,
+edge prisms, attaching embeddings and quotient homeomorphisms. It introduces
+no assumed handle decomposition, PLSmoothing predicate or hSchoenflies input.
+
+`DerivedNeighborhoodEdge.lean`:
+
+- `disjoint_derivedNeighborhoodCell_of_card_eq` proves that distinct faces of
+  equal cardinality have disjoint derived cells.
+- `derivedNeighborhoodCell_edge_inter_iUnion` identifies the intersection of
+  a new edge cell with a finite collection of vertex/edge cells as exactly
+  its two endpoint disk intersections. Both endpoints are already included
+  and the edge itself is excluded; the other cells are actual faces of K.
+- `exists_isPLHomeomorphOn_derivedNeighborhoodCell_edge` constructs a PL
+  homeomorphism from `stdSimplex R (Fin 3) x [0,1]` to the actual edge cell,
+  carrying its two ends precisely onto those two disks. Its only manifold
+  input is `IsCombinatorialManifoldWithBoundary 3 K` with finite K.
+
+`DerivedNeighborhoodVertices.lean`:
+
+- `exists_homeomorph_iUnion_derivedNeighborhoodCell_vertices` gives actual
+  PL ball maps and a homeomorphism from their finite disjoint coproduct onto
+  the union of vertex cells, with its exact evaluation formula. It works
+  in every dimension n+1 and allows an empty chosen vertex set.
+
+`DerivedNeighborhoodCellBoundary.lean`:
+
+- `derivedNeighborhood_space_of_insert_face` identifies the neighborhood of
+  `subcomplexGeneratedBy K (insert s L.faces)` with the old neighborhood
+  union the new cell, provided every nonempty proper subface of s lies in L.
+  This identity needs no manifold, finite-K or finite-dimensional hypothesis.
+- `derivedNeighborhoodCell_inter_subset_boundary_derivedNeighborhood` puts
+  the intersection of any not-yet-included face cell with the neighborhood
+  of L in that neighborhood's intrinsic combinatorial boundary. It works
+  in dimension n+2, in an arbitrary finite-dimensional real normed ambient
+  space, and can be reused at the triangle and tetrahedron stages.
+
+`DerivedNeighborhoodEdgeAttachment.lean`:
+
+- `exists_derivedNeighborhoodCell_edge_attachment` constructs the actual
+  closed attaching embedding of the two prism ends into a finite union of
+  old vertex/edge cells and a homeomorphism from the actual adjunction space
+  onto the enlarged union. It proves that exactly those two ends meet the
+  lower space. The quotient homeomorphism fixes the lower space pointwise
+  and evaluates on the new cell by the constructed PL prism map.
+- `exists_derivedNeighborhood_edge_attachment` specializes this geometry to
+  an actual graph subcomplex L. It also proves that the old neighborhood is
+  a combinatorial three-manifold with boundary, that the attaching image
+  lies in its boundary, and that the target is the derived neighborhood of
+  the explicitly generated next subcomplex. It derives finiteness of L
+  from L being a subcomplex of finite K.
+
+Boundaryless K is not required: the input may be a compact three-manifold
+with boundary. Finite K supplies finite cells and compact PL balls; the
+finite vertex coproduct and finite lower union supply the closedness used
+in the homeomorphism constructions. The prism maps are PL. The quotient
+homeomorphisms have exact lower/cell formulas; no additional smoothness or
+unstated PL structure on an abstract quotient is claimed.
+
+### Verification and nondegenerate application
+
+| Module | Compile seconds | Audit seconds | Nonautomatic declarations | Critical reuse entries |
+|---|---:|---:|---:|---:|
+| `DerivedNeighborhoodEdge` | 11.691 | 10.840 | 3 | 6 |
+| `DerivedNeighborhoodVertices` | 11.150 | 11.762 | 1 | 3 |
+| `DerivedNeighborhoodCellBoundary` | 16.948 | 11.546 | 2 | 6 |
+| `DerivedNeighborhoodEdgeAttachment` | 15.070 | 14.870 | 2 | 8 |
+
+All four final module checks and complete dynamic audits exited 0 with zero
+errors, warnings or info diagnostics. All eight nonautomatic declarations
+(none private), 23 critical reuse entries and all 13 applicable environment
+linters per module passed. Each axiom set is contained in
+propext/Classical.choice/Quot.sound. Times include resource admission.
+
+The concrete fixture is an actual tetrahedron, a three-manifold with boundary.
+It realizes all four vertex balls, then adds the missing edge of an existing
+two-edge path, closing a triangle in the graph. The two attaching ends contain
+points with distinct images. A second formulation constructs the graph
+subcomplex itself and checks the boundary-valued embedding and quotient
+homeomorphism onto its explicit successor neighborhood. The final fixture
+check and its 11 axiom entries passed with exit 0 and zero diagnostics in
+11.842 seconds. It does not assume a finite handle decomposition.
+
+Raw source SHA256 values:
+
+- `DerivedNeighborhoodEdge`: `798FBB047130B59C6DFFF08715D34F7115D92B3859D809B98D6B08E8C401D283`.
+- `DerivedNeighborhoodVertices`: `4A3561D13FA87198B85A97B8DD8519908E2C5E66737C3CA7F3A0255BEF661402`.
+- `DerivedNeighborhoodCellBoundary`: `64FDBE7C75568BFC27D7EC9894D53F17133DD6276ACDC786561DDE7D46DF20F8`.
+- `DerivedNeighborhoodEdgeAttachment`: `47D6C00B280FB0E3F3E9BD2198B213CF1695261CFF52BB9B50B948B1FEBEF794`.
+
+Evidence: `C:/Users/liao9/AppData/Local/Temp/codex-s-mobius-torus-20260918/`
+`GraphNeighborhoodHandles-round-verification.json`. It retains exact module,
+audit and fixture bytes, raw/normalized source hashes, private object hashes,
+compile/audit receipts, setup records, timings and declaration/reuse/linter
+censuses. The audit copies were checked to have exactly the source proof
+bodies. All four native import closures exclude `HurewiczLowDegrees`; the
+new leaves are registered exactly once in the flat root. Shared artifacts
+were not modified. Integration replay and the stopped full-source/root gate
+remain separate coordinator gates. Source, root imports, this handoff and
+MOISE_PLAN are one mathematical commit. No vendored source changed.
+
+### Remaining exact obligations
+
+- Classify the triangle-cell attaching annulus as the standard index-two
+  product pair, with actual parametrization and its framing data.
+- Construct the index-three sphere-pair parametrizations and account for
+  boundary simplices without assuming the desired attaching description.
+- Choose and assemble the actual finite order of all stages, composing the
+  compatible lower-space homeomorphisms to reach the whole K.
+- Complete general smooth handle attachment and corner rounding, framed
+  circle/annulus smoothing, smooth standardization of topological two-sphere
+  boundary components, and the final compact smooth-atlas assembly.
+
+No compact or unrestricted PLSmoothing 3 theorem is claimed by this layer.
+The noncompact statement of the approximation phase is unchanged.
+
+## Triangle two-handles in closed derived neighborhoods (2026-09-19)
+
+Status: closed for finite boundaryless combinatorial three-manifolds; the
+compact smoothing theorem and global finite handle sequence remain open.
+Integration was merged at `3939937e6` from `e39cf980e6`; both root import blocks
+were preserved. The previous cap-comparison and vertex/edge sources are frozen
+for independent replay. No vendored source changed in this layer.
+
+### Actual constructions and scope
+
+`DerivedNeighborhoodCellFrontier.lean` proves
+`derivedNeighborhoodCell_inter_derivedNeighborhood_eq_iUnion`, identifying
+the lower trace with the union of proper-face traces under the actual face
+order hypotheses, and `boundaryComplex_derivedNeighborhoodCell_space`,
+identifying the whole cell boundary with its intersections with all other
+cells in a finite closed manifold. The first identity needs neither finite K
+nor a finite-dimensional ambient; the second works in every dimension n+2.
+
+`BallIntersectionDensity.lean` proves
+`IsCombinatorialManifoldWithBoundary.subset_closure_sdiff_iUnion_of_isPLBall_inter`:
+if same-dimensional PL balls meet a fixed PL ball in codimension-one balls,
+its points lie in the closure of the complement of their union in the ambient
+manifold. The family is arbitrary, not assumed finite. Each intersection lies
+in the fixed ball's intrinsic boundary, and its interior is dense.
+
+`PrismSide.lean` proves `IsPLHomeomorphOn.image_prism_side`: the lateral side
+of an actual PL disk prism is exactly the closure of the target cell boundary
+minus its two end disks. It derives the intrinsic boundary correspondence.
+
+`DerivedNeighborhoodTriangle.lean` proves
+`exists_isPLHomeomorphOn_derivedNeighborhoodCell_triangle`. Starting from an
+actual new triangular face s of K and lower subcomplex L containing all proper
+faces (and no faces of cardinality above three), it constructs a PL map from
+`stdSimplex R (Fin 3) x [0,1]` onto the actual cell C_s, whose restriction to
+`stdSimplexBoundary 2 x [0,1]` is a PL homeomorphism onto C_s intersect N(K,L).
+The two actual tetrahedral cofaces produce disjoint cap disks. Proper-face
+intersections are dense in the complement of these disks in the cell boundary;
+the actual prism pair map then identifies the attaching annulus. The product
+interval supplies the PL framing. No smooth normal framing is asserted.
+
+`DerivedNeighborhoodCellAttachment.lean` proves
+`exists_derivedNeighborhoodCell_attachment`, a reusable geometric adjunction
+construction for an actual parametrized cell with its exact lower trace. It
+derives compactness of the attaching domain, its closed embedding, its image
+in the lower intrinsic boundary, and the quotient homeomorphism onto the next
+explicitly generated subcomplex neighborhood. It works in dimension n+2 for
+finite combinatorial manifolds with boundary and fixes every lower point.
+
+`DerivedNeighborhoodTriangleAttachment.lean` closes
+`exists_derivedNeighborhood_triangle_attachment`: it constructs the actual
+PL prism pair, attaching annulus embedding, boundary location and quotient
+homeomorphism fixing the lower space, with the precise evaluation on the new
+cell. The target is N(K, subcomplexGeneratedBy K (insert s L.faces)). No handle
+decomposition, standard-annulus equivalence or hSchoenflies is assumed.
+
+The triangle proof uses the two tetrahedral cofaces of a face in a closed
+three-manifold. A boundary triangle has only one such coface; the other cap
+would have to come from the original manifold boundary and is not constructed
+here. Thus this is the natural boundaryless version needed by the final
+compact consumer, not a claim for all manifolds with boundary.
+
+### Verification and actual instance
+
+| Module | Compile seconds | Audit seconds | Nonautomatic declarations | Critical reuse entries |
+|---|---:|---:|---:|---:|
+| `DerivedNeighborhoodCellFrontier` | 12.583 | 11.012 | 2 | 5 |
+| `BallIntersectionDensity` | 12.757 | 10.710 | 1 | 2 |
+| `PrismSide` | 13.000 | 11.073 | 1 | 3 |
+| `DerivedNeighborhoodTriangle` | 12.247 | 12.218 | 2 | 9 |
+| `DerivedNeighborhoodCellAttachment` | 11.135 | 10.958 | 1 | 5 |
+| `DerivedNeighborhoodTriangleAttachment` | 11.609 | 10.667 | 1 | 3 |
+
+All six final native checks and full dynamic declaration audits exited 0 with
+zero errors, warnings or info diagnostics. All eight nonautomatic declarations
+(one private), 27 critical reuse entries and all 13 applicable environment
+linters per module passed. Each axiom set is contained in
+propext/Classical.choice/Quot.sound. Durations include resource admission.
+
+The actual input fixture is a triangle in the boundary of a four-simplex; it
+checks the closed three-manifold and two distinct tetrahedral cofaces. The
+end-to-end fixture attaches its two-handle to the derived neighborhood of its
+boundary cycle. It proves all product-pair, boundary-valued embedding and
+lower-fixing quotient formulas, and distinguishes three points at t=0, 1/2
+and 1 on one framing fiber using injectivity of the actual embedding. The
+final fixture check, its 9 nonautomatic declarations, 5
+critical reuse entries and 13 linters passed in 12.175 seconds.
+Both concrete checks exited 0 with zero diagnostics and standard axioms.
+
+Raw native source SHA256 values:
+
+- `DerivedNeighborhoodCellFrontier`: `E4E2D95382CBDEB9202DC1EB17641E1074723F8B660129C181687D60329E75EB`.
+- `BallIntersectionDensity`: `83A1BE77A277AE9B1751CDEDD07A3B09E8E0CDC6E0DEC81B8B1B3D6C34B928C7`.
+- `PrismSide`: `11614E9DF765706FB5265112DBE5D0CAF3A9D21BB4D79911013BB51E734F716F`.
+- `DerivedNeighborhoodTriangle`: `4B757038EDC0427B9176DE8439BAECA0E12FED70BBE9612D43D8E62425F5F4A8`.
+- `DerivedNeighborhoodCellAttachment`: `1A9601F6B127B988BD88ACA2A7F93BFA4D953F7678A8152EDDF5A72FD25B0506`.
+- `DerivedNeighborhoodTriangleAttachment`: `63F305EE34EE65928EC072CFDB7048D43ADAC70A39CAFB1D2841F8F54C75BC58`.
+
+Evidence: `C:/Users/liao9/AppData/Local/Temp/codex-s-mobius-torus-20260918/`
+`TriangleHandles-round-verification.json`. The ledger freezes exact module,
+audit and both fixture sources, raw and LF hashes, private olean hashes,
+receipts, setup records, logs, timings and full declaration/reuse/linter lists.
+Every audit copy has the same proof body as its native module. All six leaves
+are registered once in the flat root; native import closures exclude
+`HurewiczLowDegrees`. Shared artifacts were unchanged. Independent integration
+replay and the stopped full-root gate remain separate. Source, root imports,
+this handoff and the plan record are committed together as this closed result.
+
+### Next exact obligations
+
+- Actual tetrahedral three-handle sphere pairs and their adjunctions.
+- Finite ordering and compatible assembly of all stages reaching the whole K.
+- Boundary-triangle cap geometry if a with-boundary endpoint is later required.
+- Smooth handle attachment, corner rounding, framed curve/annulus smoothing,
+  smooth two-sphere classification and final compact smooth-atlas assembly.
+
+No compact or unrestricted PLSmoothing 3 endpoint is claimed. The noncompact
+approximation statement is unchanged.
+
+## Maximal-cell sphere pairs and tetrahedral three-handles (2026-09-19)
+
+Status: closed. This extends the actual two-handle layer of `9494e59f6`; the
+previous audited sources remain unchanged for independent replay.
+
+`DerivedNeighborhoodMaximalCell.lean` proves
+`derivedNeighborhoodCell_inter_derivedNeighborhood_eq_boundaryComplex_of_maximal`:
+for a maximal face s of a finite closed combinatorial (n+2)-manifold K, and a
+lower subcomplex L containing every nonempty proper subface but not s, the
+new derived cell intersects N(K,L) in its whole intrinsic boundary. It uses
+the proved cell-boundary cover and actual comparability of intersecting cells.
+No lower-dimension bound on L is needed.
+
+`exists_isPLHomeomorphOn_derivedNeighborhoodCell_maximal` then constructs the
+actual standard (n+2)-simplex ball map with its standard boundary mapped PL
+homeomorphically onto exactly that lower trace. It derives the boundary
+parametrization from the existing PL ball producer and intrinsic boundary
+transport, without assuming a sphere-pair parametrization.
+
+`DerivedNeighborhoodMaximalAttachment.lean` proves
+`exists_derivedNeighborhood_maximal_attachment`: the actual attaching sphere
+has a closed embedding into the old neighborhood's intrinsic boundary, and
+the actual adjunction is homeomorphic to the neighborhood of the explicitly
+generated next subcomplex. The homeomorphism fixes the lower space and has the
+exact constructed cell formula. The dimension is n+2. Its natural corollary
+`exists_derivedNeighborhood_tetrahedron_attachment` starts from an actual
+four-vertex face of a finite closed combinatorial three-manifold and derives
+maximality from the manifold dimension. Neither theorem assumes Schoenflies,
+a handle decomposition or an attaching-sphere equivalence.
+
+| Module | Compile seconds | Audit seconds | Nonautomatic declarations | Critical reuse entries |
+|---|---:|---:|---:|---:|
+| `DerivedNeighborhoodMaximalCell` | 11.409 | 11.048 | 2 | 6 |
+| `DerivedNeighborhoodMaximalAttachment` | 11.330 | 11.273 | 2 | 4 |
+
+Both final native checks and complete dynamic audits exited 0 with zero
+errors, warnings or info diagnostics. All four nonautomatic declarations
+(none private), ten critical reuse entries and all 13 applicable environment
+linters per module passed; their axioms are subsets of
+propext/Classical.choice/Quot.sound. Durations include resource admission.
+
+The input fixture is an actual tetrahedron in the boundary of a four-simplex.
+The complete attachment fixture uses its own boundary subcomplex as the lower
+input, checks the actual PL sphere pair and lower-fixing adjunction formulas,
+distinguishes two boundary images, and proves that the image of the standard
+ball center is outside the old neighborhood. It therefore tests a genuinely
+new cell interior. Its 9 declarations, 5 reused entries
+and 13 linters passed in 11.207 seconds, exit 0 and zero diagnostics.
+The preliminary nonempty input check also passed three named axiom checks.
+
+Raw source SHA256 values:
+
+- `DerivedNeighborhoodMaximalCell`: `8B70F3820C398C4230CD7137B74CF3E34795BA4108946125DDD183829174E8E1`.
+- `DerivedNeighborhoodMaximalAttachment`: `5D7B05B146748CEE639B3227C63901A7C425C4509D3F748A7C60CD63D69BBD64`.
+
+Evidence: `C:/Users/liao9/AppData/Local/Temp/codex-s-mobius-torus-20260918/`
+`MaximalHandles-round-verification.json` freezes exact native/audit/fixture
+bytes, raw and LF source identities, private olean identities, all receipts,
+setup records, logs, timings and declaration/reuse/linter censuses. Audit
+bodies equal the native sources. Both new leaves are registered once in the
+root, their native import closures exclude `HurewiczLowDegrees`, and shared
+artifacts were unchanged. Independent integration replay and the stopped
+full-root gate are separate. Source, root registration, this handoff and the
+plan record form one mathematical commit; no vendored source changed.
+
+The next obligation is the actual finite face order and compatible sequence
+of attachments reaching K. Smooth attachment and corner rounding, framed
+curve/annulus smoothing, smooth two-sphere classification and compact atlas
+assembly remain open. The boundary-triangle case is not asserted by this
+closed-manifold development. No compact or unrestricted PLSmoothing 3 endpoint
+is claimed, and noncompact approximation scope is unchanged.
+
+## Finite face order and actual neighborhood filtration (2026-09-19)
+
+Status: closed for the finite ordering and geometric sequence. Assembling the
+index-specific attaching pairs into a single finite handle presentation is
+next; this checkpoint alone does not claim that full presentation or smoothing.
+Previously delivered handle sources through `78d96386b` remain unchanged.
+
+`Topology/SimplicialComplex/FaceFiltration.lean` is the natural metric-free
+home of the new ordering API. The coordinator explicitly added this one module
+to the S private compiler lease before its native check. The producer search
+found single maximal-face pushouts in OrderedCellAttachment, but no finite
+face-cardinality order and prefix-subcomplex producer.
+
+`exists_face_enumeration_monotone_card` constructs a bijective Fin enumeration
+of all faces of any finite PreAbstractSimplicialComplex, with nondecreasing
+cardinality. It sorts an actual finite list and uses the nodup list equivalence;
+no order is assumed. `index_lt_of_face_ssubset` puts every proper face earlier.
+`facePrefix` constructs the actual initial subcomplex, with empty first stage,
+full final stage, monotonicity, absence of the next face, inclusion of all its
+nonempty proper faces, the lower cardinality bound, and the exact singleton
+insertion identity `facePrefix_succ_faces`. `geometricFacePrefix` transports
+the construction to geometric simplicial complexes over an ordered ring
+module. This basic layer uses no normed-space or finite-dimensional hypotheses.
+
+`PiecewiseLinear/DerivedNeighborhoodFiltration.lean` proves the exact generated
+subcomplex identity `geometricFacePrefix_succ` and the zero, last, successor
+and monotonicity formulas for their actual derived neighborhoods.
+`exists_derivedNeighborhood_filtration` starts only with a finite
+combinatorial (n+2)-manifold with boundary and constructs the order and the
+whole sequence. N_0 is empty, N_m is exactly K.space, every N_i is a
+combinatorial manifold with boundary, and every successor adds the actual
+cell belonging to the next face. It supplies the exact proper-face/cardinality
+inputs for handle classification and proves the new cell's lower trace lies
+in the old neighborhood's intrinsic boundary. No hSchoenflies, sorted-order
+hypothesis, arbitrary stage family or handle decomposition is assumed.
+
+| Module | Compile seconds | Audit seconds | Nonautomatic declarations | Critical reuse entries |
+|---|---:|---:|---:|---:|
+| `FaceFiltration` | 13.136 | 7.785 | 16 | 4 |
+| `DerivedNeighborhoodFiltration` | 11.130 | 10.836 | 6 | 8 |
+
+Both final native checks and complete dynamic audits exited 0 with zero
+errors, warnings or info diagnostics. All 22 nonautomatic declarations
+(none private), 12 critical reuse entries and all 13 applicable environment
+linters per module passed. Each axiom set is a subset of
+propext/Classical.choice/Quot.sound. Durations include resource admission.
+
+The concrete input fixture sorts the actual faces of the boundary of a
+four-simplex and proves a vertex precedes a tetrahedron. The complete sequence
+fixture has positive length and an actual tetrahedral stage; it checks the
+empty initial neighborhood, full final carrier, all intermediate manifold
+properties, monotonicity, and the exact cell insertion at every stage. Its
+3 declarations, 5 reuse entries and 13 linters passed
+in 11.215 seconds, exit 0 and zero diagnostics. The preliminary input
+also passed its four named axiom checks. Empty complexes remain allowed in the
+native enumeration and filtration theorems.
+
+Raw source SHA256 values:
+
+- `DifferentialGeometry.Topology.SimplicialComplex.FaceFiltration`: `93E954D146A5E726C3E7102415E5A2F3A8E2279AA9B0CF66F3E7BEDDAF22CB56`.
+- `DifferentialGeometry.Topology.PiecewiseLinear.DerivedNeighborhoodFiltration`: `450B8921354BA5B77C6A3DCA12A1A456B1619C06B4B8BB25AB5DCBD597BA3B50`.
+
+Evidence: `C:/Users/liao9/AppData/Local/Temp/codex-s-mobius-torus-20260918/`
+`NeighborhoodFiltration-round-verification.json`, with exact native/audit/two
+fixture bytes, raw and LF hashes, private olean hashes, receipts, setup records,
+logs, timings and full censuses. The audited bodies equal the native sources.
+Both leaves are registered once in the root; native import closures exclude
+`HurewiczLowDegrees`; shared artifacts were unchanged. Independent integration
+and the stopped root gate remain separate. The two source files, root imports,
+this handoff and plan record form one mathematical commit. No vendor changed.
+
+Remaining: assemble the actual zero/one/two/three attaching maps and compatible
+lower-space homeomorphisms for this produced sequence. Then smooth handle
+attachment, corner rounding, framed curves/annuli, smooth two-sphere
+classification and compact atlas assembly remain to be proved. The compact
+smoothing endpoint and noncompact approximation statement are unchanged.
+
+## Actual finite PL three-handle filtration (2026-09-19)
+
+Status: closed for finite boundaryless combinatorial three-manifolds. This
+checkpoint assembles the actual zero/one/two/three attaching pairs and
+lower-fixing quotient homeomorphisms in the previously constructed finite
+sequence. The smooth attachment and final compact smoothing obligations
+remain open. Earlier published handle sources through `73a6d1984` are unchanged.
+
+### Exact endpoint and constructions
+
+`exists_pl_three_handle_filtration` assumes only a finite simplicial complex
+K in a finite-dimensional real normed space and `IsCombinatorialManifold 3 K`.
+It produces m, a bijective enumeration e : Fin m equiv K.faces ordered by face
+cardinality, and a monotone handle index k : Fin m to Fin 4 satisfying
+(k i).val + 1 = (e i).val.card. For the actual face-prefix subcomplexes L_i and
+actual derived neighborhoods N_i it proves N_0.space is empty, N_m.space is
+exactly K.space, the neighborhoods increase, and every N_i is a combinatorial
+three-manifold with boundary. At every stage the new cell is the actual
+`derivedNeighborhoodCell K (e i).val`, and `IsPLThreeHandleAttachment (k i)`
+relates that cell, N_i and N_(i+1). The order, index, cells, stages and attaching
+maps are produced; no handle decomposition, annulus parametrization,
+hSchoenflies or conclusion-shaped input is assumed. The empty K case remains
+allowed, with an empty indexing set.
+
+`CellAttachment.lean` supplies the reusable PL attachment relation. It records
+an actual PL ball model P, its attaching subset B, a PL homeomorphism g onto
+C, and a PL homeomorphism of B onto exactly C intersect L.space. The resulting
+closed embedding has image in the intrinsic boundary of L. The adjunction
+homeomorphism onto N fixes every point of L.space and agrees with g on the
+whole new cell. Nonemptiness of C and inclusions of both the cell and the
+lower space in N are proved. The four three-dimensional standard pairs are:
+
+- index 0: the standard three-simplex and empty attaching set;
+- index 1: the standard two-simplex times [0,1], attached on both end disks;
+- index 2: the same product, attached on its full lateral annulus;
+- index 3: the standard three-simplex, attached on its entire boundary sphere.
+
+`DerivedNeighborhoodHandleAttachment.lean` produces this relation for actual
+face cells. Its general constructor uses the exact lower trace and previously
+proved adjunction theorem. The vertex case proves the trace is empty; the
+edge case combines both actual end disks and proves they exhaust the lower
+trace. The triangle and maximal-face cases consume the already verified full
+PL pairs. `isPLThreeHandleAttachment_derivedNeighborhoodCell` selects the pair
+from the face cardinality; maximality in index 3 follows from dimension.
+`DerivedNeighborhoodHandleFiltration.lean` applies this actual producer at
+every stage of the constructed finite order. All stages share the original
+ambient carrier, and each quotient map fixes its lower stage, so these are
+compatible actual attachments, not unrelated stage homeomorphisms. The
+statement supplies PL cell and attaching maps; it does not assert a smooth
+structure or construct smooth normal framings.
+
+### Verification and concrete instance
+
+| Module | Compile seconds | Audit seconds | Nonautomatic declarations | Critical reuse entries |
+|---|---:|---:|---:|---:|
+| `CellAttachment` | 11.185 | 10.576 | 5 | 4 |
+| `DerivedNeighborhoodHandleAttachment` | 13.536 | 12.089 | 4 | 8 |
+| `DerivedNeighborhoodHandleFiltration` | 12.602 | 11.080 | 1 | 4 |
+
+All three final native checks and full dynamic audits exited 0 with zero
+errors, warnings or info diagnostics. All 10 nonautomatic declarations
+(none private), 16 critical reuse entries and all 13 applicable environment
+linters per module passed. Every axiom set is a subset of
+propext/Classical.choice/Quot.sound. Durations include resource admission.
+
+The actual input model is the boundary of a four-simplex. The checked fixture
+constructs a positive-length filtration and proves the produced index map is
+surjective onto Fin 4. Thus all four handle indices really occur. It obtains
+the smaller faces from an actual tetrahedron and transports them through the
+produced face equivalence; it does not merely check a vacuous universal stage
+statement. It also retains every endpoint field: the exact initial and final
+sets, monotonicity, manifold property at all stages and all actual attaching
+relations. Its 3 declarations, 5 critical reuse
+entries and 13 linters passed in 10.872 seconds, exit 0 and zero
+diagnostics. Earlier independently specified cell fixtures retain their exact
+point-separation and product-fiber checks in the frozen prior ledgers.
+
+Raw source SHA256 values:
+
+- `CellAttachment`: `F6C1637572AA7BD881A3801C24E381B5A80D807D49A76CC0C7643D1395662EC1`.
+- `DerivedNeighborhoodHandleAttachment`: `D810C116D41894F9AC82DDEB29C6BFE54DD8AE523D3DD3DE6FE94E7360DD7373`.
+- `DerivedNeighborhoodHandleFiltration`: `77B2E9B5672A27DE7E5F770747606439BF8F26DAC5DC5BD885101DFD270594FA`.
+
+Evidence: `C:/Users/liao9/AppData/Local/Temp/codex-s-mobius-torus-20260918/`
+`HandleFiltration-round-verification.json` contains the exact native, audit and
+fixture bytes; raw and LF hashes; private olean identities; receipts, setup
+records, logs, timings and complete declaration/reuse/linter censuses. Audited
+bodies equal native sources. All three leaves are registered once in the root;
+native import closures exclude `HurewiczLowDegrees`; shared artifacts were
+unchanged. Independent integration replay and the stopped full-root gate are
+separate. Source, root imports, this handoff and the plan record form one
+mathematical commit. No vendored source changed.
+
+### Remaining mathematical frontier
+
+The finite actual PL handle presentation for closed K is now delivered.
+Smooth attachment with corner rounding, smoothing the framed attaching
+curves/annuli, smooth two-sphere classification and the compatible final smooth
+atlas remain distinct obligations. These must be produced before claiming
+compact PL three-manifold smoothing. The triangle cap for the original-boundary
+case is also still open. No unrestricted PLSmoothing 3 or noncompact
+approximation result is claimed by this delivery.
+
+## Rounded local corners on actual PL two-handles (2026-09-19)
+
+Status: closed for the explicit local corner-rounding input. This constructs
+local smooth geometry on an actual cell with its original topology; it does
+not supply an atlas on the attached union or compatibility with an already
+chosen smooth atlas on the old neighborhood. Integration was merged at
+`61f722644` from `b67a3b5cd`; the plan conflict retained both sides. Previously
+published handle and finite-filtration sources remain unchanged.
+
+### Input audit and chosen mathematical step
+
+The live source review confirms that `Handle.standardHandleIsManifold` and
+`attachingRegionInclusion_isSmoothEmbedding` provide standard smooth models.
+The existing Morse attachment needs an already smooth ambient manifold and
+its Morse data, while the boundary-collar attachment extends an existing
+smooth manifold. Neither directly constructs the missing smooth attaching
+map from the produced PL annulus. No general relative smoothing producer or
+general corner-rounding map was found. The nine selected input/model checks
+passed with standard axioms and zero diagnostics before this construction.
+The chosen step constructs the local corner coordinates explicitly instead
+of assuming a smooth attachment, smoothing predicate or sphere classification.
+
+### Explicit rounding and its regularity
+
+`Topology/Manifold/CornerRounding.lean` constructs `cornerSquaring`:
+(x,y) maps to (2xy, x^2-y^2). `quadrantHalfPlaneHomeomorph` proves it is a
+homeomorphism from x,y >= 0 to the half-plane whose first coordinate is >= 0.
+The inverse is explicit: for (b,a), put R = sqrt(b^2+a^2) and return
+(sqrt((R+a)/2), sqrt((R-a)/2)). Both inverse equations and continuity are
+proved. The forward map is polynomial and smooth. The inverse is smooth
+within the half-plane away from (0,0), including its boundary rays; two local
+formulas replace the vanishing square root by b/(2x) or b/(2y). This is not a
+claim that the inverse is smooth at the original corner.
+
+The exact face equations identify x=0 with b=0,a<=0, y=0 with b=0,a>=0,
+and their common corner with b=a=0. Thus no points are identified or collapsed.
+
+`PrismCornerChart.lean` makes this into an actual three-dimensional chart on
+P = stdSimplex(Fin 3) times [0,1]. Its relatively open source is
+u_1>0, u_2>0, t<1. Set r=u_0 and z=u_1-u_2; the chart is
+(2rt, r^2-t^2, z). The inverse recovers r,t by `cornerRoot` and uses
+(u_0,u_1,u_2) = (r,(1-r+z)/2,(1-r-z)/2). Its explicit relatively open target
+in EuclideanHalfSpace 3 is r+abs(z)<1 and t<1. Exact two-sided inverses,
+continuity and all source/target inequalities are proved.
+
+`prismCornerChartedSpace`, `prismCorner_isManifold` and
+`prismCornerDiffeomorph` construct the smooth structure on this same open
+source. `prismCorner_boundary_iff` identifies its intrinsic smooth boundary
+with the union of the simplex-boundary face and t=0.
+`prismCornerHomeomorph_attaching_iff`, `_end_iff` and `_corner_iff` give the
+precise negative-half, positive-half and intersection-line equations. The
+forward coordinates are smooth in the original affine variables, and
+`contDiffOn_prismCornerInv` proves smooth inverse transitions away from the
+corner line. The zero target point has inverse ([0,1/2,1/2],0).
+
+### Actual PL attachment consumer
+
+`PrismCornerTransport.lean` proves
+`IsPLHomeomorphOn.exists_rounded_corner_chart`. Its inputs are the actual PL
+prism map g onto C and the exact image equation for its attaching annulus.
+It constructs an open U in C, a ChartedSpace on U, an IsManifold proof and a
+diffeomorphism to the explicit standard target. The topology of U is the
+original subtype topology. The intersection with the prescribed lower set
+is exactly the coordinate locus b=0,a<=0, and the intrinsic smooth boundary
+of U is exactly b=0. A specified point maps to the coordinate origin and is
+exactly g([0,1/2,1/2],0), so the chart is nonempty.
+
+`DerivedNeighborhoodCorner.lean` supplies the downstream geometric producer
+`exists_rounded_derivedNeighborhood_triangle_corner`. It constructs g and
+the chart from a finite closed combinatorial three-manifold, a triangle,
+and the actual proper-face/old-face conditions supplied by the finite face
+filtration. The lower set is the actual old derived neighborhood and C is
+the actual new triangle cell. No smooth atlas, collar, Schoenflies theorem,
+PLSmoothing predicate or smooth two-sphere classification is an input.
+
+### Verification and nondegenerate actual model
+
+| Module | Compile seconds | Audit seconds | Nonautomatic declarations | Critical reuse entries |
+|---|---:|---:|---:|---:|
+| `CornerRounding` | 52.659 | 26.513 | 16 | 4 |
+| `PrismCornerChart` | 11.045 | 11.672 | 24 | 7 |
+| `PrismCornerTransport` | 10.165 | 11.305 | 1 | 6 |
+| `DerivedNeighborhoodCorner` | 11.302 | 11.283 | 1 | 2 |
+
+All four final native checks and complete dynamic audits exited 0 with zero
+errors, warnings or info diagnostics. All 42 nonautomatic declarations
+(including three private helpers), 19 critical reuse entries and all 13
+applicable environment linters per module passed. Every transitive axiom
+set is a subset of propext/Classical.choice/Quot.sound. Durations include
+resource admission.
+
+The actual model uses a triangle in the boundary of a four-simplex, with
+its own boundary subcomplex as the old input. It retains the full lower
+trace and intrinsic boundary formulas, includes the coordinate origin, and
+constructs three distinct points with coordinates (0,-1/16,0), (0,1/16,0)
+and (1/8,0,0). The first lies in the old neighborhood and the new boundary;
+the second lies in the new boundary but outside the old neighborhood; the
+third is an interior point outside the old neighborhood. This tests both
+boundary faces and the actual new-cell interior. Its 10 declarations,
+6 critical reuse entries and 13 linters passed in 13.141
+seconds with exit 0 and zero diagnostics.
+
+Raw source SHA256 values:
+
+- `CornerRounding`: `57BF94F11C42CFFCFD94661F7C98AA565C9B07D84B8CF30BCA504B5996E960B7`.
+- `PrismCornerChart`: `F60CCD684B05C0A7A94ECFED053298B7376A0DAD5D0203B3831A7B760A74A096`.
+- `PrismCornerTransport`: `C050CBAB329B0E39DF45F5A9576766E7ADDF4BC68DBB0588E4E4B73CAAC7A825`.
+- `DerivedNeighborhoodCorner`: `E85AA6F686BA5AD7DAF41E75C8B3AE2A19FFCCAF0A05FBBE27062243C615DB86`.
+
+Evidence: `C:/Users/liao9/AppData/Local/Temp/codex-s-mobius-torus-20260918/`
+`CornerRounding-round-verification.json`, containing exact native/audit/input/
+actual-model bytes, raw and LF hashes, private olean identities, receipts,
+setup records, logs, timings and full declaration/reuse/linter censuses.
+Audited bodies equal native sources. All four leaves are registered once in
+the root, native import closures exclude `HurewiczLowDegrees`, and shared
+artifacts were unchanged. Independent integration replay and the stopped
+full-root gate remain separate. Source, root imports, this handoff and the
+plan record form one mathematical commit; no vendored source changed.
+
+### Exact remaining frontier
+
+U is relatively open in the new cell C, not asserted to be open in the whole
+attached union. The next obligation is a compatible family of such local
+smooth structures around the attaching annulus, including polygon vertices,
+and compatibility with a chosen smooth atlas on the old neighborhood. The
+actual framed attaching-map smoothing and attached-union atlas must still
+be constructed. Smooth two-sphere classification and final compact atlas
+assembly remain open. Neither compact PL smoothing nor unrestricted
+PLSmoothing 3 is declared complete by this local construction.
+
+## Compatible rounded strip charts (2026-09-19)
+
+Status: the two-dimensional normal strip is closed. This is a genuine smooth
+transition producer for the full annular corner family; the annular product,
+actual-cell transport and compatibility with a fixed old-neighborhood atlas
+remain distinct downstream obligations. Integration was merged at `3de9be6c1`
+from `c7c290f195`; both sides of the plan conflict were retained.
+
+`Topology/Manifold/RoundedStrip.lean` constructs the original-topology strip
+[0,1) times [0,1], with lower chart on t<1 and upper chart on t>0. The lower
+chart applies (r,t) to (2rt,r^2-t^2), and the upper chart first reflects t to
+1-t. Their union covers the full strip, including both corner points.
+`halfOpenStripChart_transition_eq` gives the actual overlap map: recover r,t
+by the explicit square-root inverse, then square (r,1-t).
+`halfOpenStripChart_overlap_root_pos` proves that overlaps avoid the singular
+inverse point. `halfOpenStripChart_transition_contDiffOn` proves every chart
+transition smooth, including both directions of the nontrivial overlap.
+`halfOpenStrip_isManifold` uses these proved transitions to construct one
+compatible smooth structure, rather than assuming chart compatibility.
+
+`halfOpenStripChart_attaching_iff` identifies r=0 precisely with normal
+coordinate zero and tangential coordinate nonpositive in either chart.
+`halfOpenStrip_boundary_iff` identifies the intrinsic boundary with r=0 or
+t=0 or t=1. No pre-existing smooth atlas or smoothing result is assumed.
+
+All 25 nonautomatic declarations (including 2 private helpers),
+8 key reused declarations and 13 applicable environment linters passed.
+Final compile/audit: 10.619/10.536 seconds, both exit 0 and zero diagnostics.
+The external model uses (0,0), (0,1), (0,1/4), (1/2,1/2): it checks exclusive
+lower/upper chart points, a point lying in both charts with distinct images
+(0,-1/16) and (0,-9/16), three boundary points and an interior point. Its
+1 declaration, 4 key reuses and 13 linters passed in 9.711 seconds, exit 0.
+All audited axiom sets are subsets of propext/Classical.choice/Quot.sound.
+
+Frozen evidence: `C:/Users/liao9/AppData/Local/Temp/`
+`codex-s-mobius-torus-20260918/RoundedStrip-round-verification.json` contains
+exact source/audit/model bytes, raw/LF hashes, olean identity, receipts,
+setups, logs, timings and complete declaration/reuse/linter censuses.
+Raw source SHA256: `DC4A2A2ACC916E0F1B3A2A78806F10F88B51F335F09B44402BB77F5A343C65B3`.
+The audited body equals native source. The module is registered once in the
+flat root; its native closure excludes HurewiczLowDegrees. Shared artifacts
+are unchanged. Source, root and both records form one mathematical commit.
+The complete root build and independent integration replay remain separate.
+
+## Full annular corner atlases on actual two-handles (2026-09-19)
+
+Status: done for one compatible smooth atlas on a relatively open neighborhood
+of the entire attaching annulus inside the new cell. The fixed old-neighborhood
+atlas and an open atlas on the attached union remain outside this result.
+This extends the coverage of 2162e20eb; compatibility with that earlier isolated
+edge chart is not asserted or used. The normal-strip producer was published
+with its records in 8ee999276. No h-lane source or previously published handle
+producer was changed.
+
+### Construction and exact overlap equations
+
+`Manifold/RoundedCylinder.lean` constructs a radial homeomorphism from
+S^n times ([0,1) times [0,1]) onto the unit-ball prism with its central axial
+line removed. In source coordinates (theta,r,t), the disk point is
+(1-r)*theta and the height is t. The inverse is normalization together with
+r=1-norm(x). The domain is open in the prism and contains its entire side.
+The topological construction works for every real normed space; the smooth
+construction works for Euclidean balls in every dimension n+1.
+
+The smooth model is (R^n).prod (EuclideanHalfSpace 2), a boundary model of
+dimension n+2. The sphere atlas is the existing stereographic atlas, while
+the normal-strip atlas is the proved lower/upper rounded atlas. These are
+one product atlas. `ballPrismCollarChart_transition_eq` identifies each
+actual change of coordinates with the product of a sphere transition and
+the explicit strip transition. `ballPrismCollarChart_transition_mem` proves
+all such transitions belong to the smooth groupoid. Chart coverage,
+attaching-side equations and the intrinsic boundary are also proved.
+
+`PrismAnnulusChart.lean` uses the existing whole-simplex/round-ball
+homeomorphism and its exact boundary correspondence. Its collar source is
+the inverse image of that radial collar. `mem_prismAnnulusSource_of_boundary`
+proves that every point of the entire polygonal side lies in the source;
+this includes polygon vertices at every height. `prismAnnulusChart_cover`
+covers this full source by the actual angular/lower-upper chart family.
+`prismAnnulusChart_mem_source_iff` identifies angular exclusion of one
+antipode and the explicit conditions t<1 or t>0. The overlap theorem proves
+smoothness in both directions within the single atlas. In every chart the
+attaching annulus is exactly normal coordinate zero and second strip
+coordinate nonpositive. `prismAnnulus_boundary_iff` identifies the intrinsic
+boundary with the side or either end face. No PL-to-smooth transition for an
+arbitrarily chosen old atlas is inferred from the simplex homeomorphism.
+
+### Actual consumer and parameter identity
+
+`IsPLHomeomorphOn.exists_rounded_annulus_atlas` constructs U open in C,
+containing all of C intersect A, from an actual PL prism parameter g and its
+exact attaching-image equation. It provides a ChartedSpace, IsManifold proof
+and diffeomorphism d from U to the standard annular source. Crucially,
+g((d x).val.val)=x.val.val for every x, tying all chart witnesses to that
+original parameterization. It retains the exact lower-trace and intrinsic
+boundary formulas and proves that every pulled angular/end chart belongs
+to this one atlas. Smooth chart compatibility is proved, not assumed.
+
+`exists_rounded_derivedNeighborhood_triangle_annulus` constructs these inputs
+from the actual triangle two-handle producer in a finite closed combinatorial
+three-manifold. Its old set is exactly N(K,L); its new cell is exactly C_s.
+There is no smooth-attachment, compatible-atlas, Schoenflies, PLSmoothing or
+smooth sphere-classification hypothesis.
+
+### Verification and actual four-simplex model
+
+| Module | Compile seconds | Audit seconds | Nonautomatic declarations | Critical reuse entries |
+|---|---:|---:|---:|---:|
+| `RoundedCylinder` | 10.861 | 10.798 | 17 | 9 |
+| `PrismAnnulusChart` | 10.974 | 11.332 | 15 | 8 |
+| `PrismAnnulusTransport` | 10.647 | 10.485 | 1 | 6 |
+| `DerivedNeighborhoodAnnulus` | 11.132 | 10.961 | 1 | 2 |
+
+All four native checks and complete dynamic audits exited 0 with zero errors,
+warnings or info diagnostics. All 34 nonautomatic declarations, including one
+private helper, 25 critical reuse entries and 13 applicable environment linters
+per module passed. All transitive axiom sets are subsets of
+propext/Classical.choice/Quot.sound. Together with 8ee999276 this round supplies
+59 native declarations and 33 critical reuse entries in five modules.
+
+The concrete model is again a triangle in the boundary of a four-simplex,
+with the triangle's boundary subcomplex as the old input. It retains the
+whole-annulus coverage and original-parameter identity. It additionally
+proves that every polygon vertex at every height has an actual point in U.
+North/south angular points test different angular chart blocks and different
+lower/upper end charts. An east angular point at height 1/4 lies in a genuine
+nonempty overlap between the north/lower and south/upper charts; the actual
+pulled transition belongs to the smooth groupoid. Three points lie in the
+old set and intrinsic boundary. A radial-depth 1/2, height 1/2 point lies in
+the interior and outside the old set. Required distinctness is proved.
+The model's 18 declarations, 8 critical reuse entries and 13 linters passed
+in 39.803 seconds with exit 0 and zero diagnostics.
+
+Raw source SHA256 values:
+
+- `RoundedCylinder`: `539B6B47927EFEFDC854BDDACE5B9166428802E88BB059A84E470A4EF4845300`.
+- `PrismAnnulusChart`: `47CB34815901C2BAA1251017DBE174886109AE031FA8F328FBA570B74F4CFADE`.
+- `PrismAnnulusTransport`: `AFC288775E4EB6E5B523CB38A0C856C7B814EBD6ABC6E8D36D8921EACE141C34`.
+- `DerivedNeighborhoodAnnulus`: `720381ECD1066239FE9B9AFD7281EA33216A919642E42D8C8B11FC4BCE775E1E`.
+
+Frozen evidence: `C:/Users/liao9/AppData/Local/Temp/`
+`codex-s-mobius-torus-20260918/Annulus-round-verification.json` contains exact
+native/audit/model bytes, raw/LF hashes, private olean identities, receipts,
+setups, logs, timings and complete declaration/reuse/linter censuses. Audited
+bodies equal native sources. All four leaves are registered once in the flat
+root, their native closures exclude HurewiczLowDegrees, and shared artifacts
+were unchanged. Source, root and both records form one mathematical commit.
+Independent integration replay and the stopped full-root gate remain separate.
+
+### Remaining relative smoothing obligation
+
+U is open in the new cell C. It is not asserted open in the whole attached
+union, and no fixed smooth structure on N(K,L) is changed or manufactured.
+The unresolved producer must smooth the actual annular attaching embedding
+and its PL framing relative to the specified old-neighborhood atlas, then
+construct crossing-seam open charts with smooth transitions to that atlas.
+Separate pullbacks do not establish this: a PL parameterization is not thereby
+smooth in an unrelated existing atlas. The live source audit found standard
+smooth handles, a smooth-open-cover assembly requiring actual transitions,
+and boundary-collar extension of an already smooth manifold; these APIs do
+not produce this missing relative attaching-map smoothing.
+
+The full annular new-cell atlas is therefore delivered; relative old-atlas
+compatibility and the attached-union construction remain an explicit frontier.
+Neither a smooth framed attachment nor compact three-manifold smoothing nor
+unrestricted PLSmoothing 3 is declared complete. Smooth terminal two-sphere
+classification and final compact atlas assembly remain separate obligations.

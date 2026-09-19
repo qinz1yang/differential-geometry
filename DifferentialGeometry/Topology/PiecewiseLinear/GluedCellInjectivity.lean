@@ -1,6 +1,15 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.GluedCellBoundaryImage
 import DifferentialGeometry.Topology.PiecewiseLinear.SingularCrossingPrecomp
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.NormalCell
+
+/-!
+# Glued cell injectivity
+-/
 
 open Set Topology
 
@@ -156,7 +165,8 @@ theorem locallyInjective_of_glue_boundary_arc {D D₁ D₂ : SingularTwoCell M}
         · exact absurd hab.symm (hcross b hbP a haQ haP)
         · exact injOn_of_subset_second_piece (U := Q \ P) hf₂ hDQ hD₂inj
             (fun z hz => hz.1) ⟨haQ, haP⟩ ⟨hbQ, hbP⟩ hab
-    · refine ⟨Q \ P, ?_, injOn_of_subset_second_piece (U := Q \ P) hf₂ hDQ hD₂inj (fun z hz => hz.1)⟩
+    · refine ⟨Q \ P, ?_,
+        injOn_of_subset_second_piece (U := Q \ P) hf₂ hDQ hD₂inj (fun z hz => hz.1)⟩
       rw [hdom]
       refine mem_nhdsWithin.mpr ⟨Pᶜ, hPclosed.isOpen_compl, hxP, ?_⟩
       rintro z ⟨hzP, hzPQ | hzQ⟩
@@ -218,7 +228,7 @@ theorem doublePointSet_of_glue_boundary_arc {D D₁ D₂ : SingularTwoCell M}
     · exact (hDP hz₁P).trans hw₁y
     · exact (hDP hz₂P).trans hw₂y
 
-def normalSingularSetTriangulation_congr {D D' : SingularTwoCell M} {BdM : Set M}
+def normalSingularSetTriangulationCongr {D D' : SingularTwoCell M} {BdM : Set M}
     (T : NormalSingularSetTriangulation D' BdM)
     (heq : doublePointSet D D.domain = doublePointSet D' D'.domain) :
     NormalSingularSetTriangulation D BdM where

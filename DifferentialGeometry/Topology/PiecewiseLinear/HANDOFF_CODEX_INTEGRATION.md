@@ -934,3 +934,1060 @@ acceptance; its requested read-only MoiseChain compilation permission is granted
 Morning accounting is recorded in MORNING_ACCEPTANCE_20260919.md and the local
 overnight campaign ledger. At the deadline stop starting new proof rounds,
 record remaining active work and delivery points, and prepare the final review.
+
+## 24. Contract review hold, root coverage and smoothing handoff (2026-09-19 UTC)
+
+h delivered contracts through 585cc71a0, but source review found two unresolved
+defects before integration. Moise331's one-manifold input excludes branching
+graphs permitted on book p230 and needed for section 34. PolyhedralGraph's
+regular-neighborhood relation uses raw regularNeighborhoodIn stages without
+appropriate derived subdivision/global compatibility evidence. h was handed
+these exact review findings and nonempty-instance requirements at delivery;
+its lane remains contract repair. Do not merge/count this delivery as accepted
+merely because its private compiler/linter checks passed.
+
+The prepared six-import patch is now applied to the flat root. Static traversal
+with nested comments excluded reaches all six and 9265 project modules, with no
+missing project source. The seven endpoint audit modules retain their exact
+previously checked Git blobs. Evidence:
+.lake/root-endpoint-coverage-20260919.json.
+No Lean proof was changed for coverage; no full-root build was started or
+certified. Existing stopped-build outputs remain intact.
+
+S delivered 434d5352c for a finite native 24.12 generating-loop-to-CST endpoint.
+It is queued with the earlier product/CST delivery for independent acceptance.
+At that natural boundary S began the separate compact PL-smoothing lane on
+Astra max: audit actual triangulation/handle/circle/sphere producers, then prove
+a missing mathematical layer rather than add a conclusion-shaped assumption.
+E3 delivered 18f861c89 for path connectedness of a PL sphere minus two disjoint
+PL disks; it is queued and E3 continues the actual local split-cell geometry.
+F continues actual ambient-cover reduction after its projection delivery.
+All four tasks retain one lane each; private checker capacity remains two.
+
+## 25. Finite polygon solid-torus acceptance (2026-09-19 UTC)
+
+S through 434d5352c is merged and independently checked. The actual compact
+cylindrical quotient gives the standard disk-times-circle homeomorphism. The
+original solid-torus definition moves unchanged into SolidTorus; MoiseChain
+retains its 25 statements, including the three still-held contracts.
+NeighborhoodSolidTorus produces a CST from orientable derived neighborhoods;
+NeighborhoodContractiblePolygon proves finite native 24.12 from one actual
+spanning polygon cycle's free nullhomotopy. Integer powers, changes of basepoint,
+all-loop nullhomotopy and neighborhood orientability are derived internally.
+
+All ten changed modules freshly compiled, zero diagnostics. The independent
+census covers 41 nonautomatic declarations (15 new, one unchanged relocation,
+25 unchanged MoiseChain declarations), 33 distinct critical reused declarations,
+standard axioms only and 13 applicable environment linters. A concrete triangle
+in a tetrahedron supplies the actual nullhomotopic generating cycle and a
+nonempty CST conclusion. Eleven unchanged private prerequisites were reused
+with checked receipt/source/object identities; other upstream imports remain
+shared. This is not a full-source build.
+
+Evidence: .lake/verified-ninth-lane-delivery-20260919.json and external
+codex-integration-ninth-batch-20260919. Audit and concrete probe sources are
+preserved in the receipt before removing temporary Lean probes. The root
+registers all nine new leaves; static traversal reaches 9303 local modules with
+no missing source. General 24.9/24.10 classification, infinite triangulations
+and compact PL smoothing are not inferred from this finite acceptance.
+
+Accepted Lean diff against the previous integration is +503/-4. The delta
+since S's window-start f54be2f43 is +103/-4 (including headers and root imports);
+keep these distinct from newly accepted pre-window work. No root build restart.
+F's 51b4ee8ad ambient-cover/projection layer and E3's 18f861c89 annulus remain
+queued. Requested module compile scopes were extended at delivery boundaries
+for F's relative boundary inward push and S's topological sphere/cell gluing.
+Neither extension grants ownership of another lane's files.
+
+## 26. Split-annulus acceptance and next geometric producer (2026-09-19 UTC)
+
+E3 18f861c89 is merged and independently accepted: SurfaceSplitAnnulus freshly
+compiles with zero diagnostics; dynamic census verifies exactly two module
+declarations, five critical reused declarations, standard axioms only and
+13 clean environment linters. The proof transports the actual disk pair to
+prism endpoints and proves the complement is the boundary circle times an open
+interval. Eight unchanged private prerequisites were reused with receipt, source
+and object identity checks. This is focused acceptance, not a full-source build.
+
+Receipt: .lake/verified-tenth-lane-delivery-20260919.json. Source delta +124/-0
+Lean lines (including header/root import), committed after the overnight starting
+head 525a65813. Root static closure now reaches 9304 local modules without missing
+source; all previously audited endpoint leaf blobs remain unchanged.
+
+E3 subsequently delivered 1cea2fbe7: actual half-prism cells, endpoint disks and
+frontier formulas from a supplied PLPieceIn chart. It is pending acceptance.
+At that delivery boundary E3 continued the missing producer from book p215
+original Delta/D1/D2 input: construct a compatible neighborhood and actual
+C/C-prime traces, then apply the accepted separation replacement. Given-prism
+consumers do not produce that compatibility. The full-neighborhood boundary
+formula differs from the safe boundary of the half-cell; preserve this distinction.
+
+No new subagent/task, extra lane, or full-root restart was introduced.
+
+## 27. Covering projection and diagnostic source-collapse acceptance (2026-09-19 UTC)
+
+F through 51b4ee8ad is merged and independently accepted. The seven changed
+modules and MoiseChain/StallingsInduction consumers freshly compiled in
+100.459 seconds, zero diagnostics. A single combined audit checks all 67
+nonautomatic changed-module declarations, 25 unchanged MoiseChain declarations,
+15 critical reuse entries and two nonempty models; standard axioms only and
+all 13 applicable environment linters pass. Audit: 48.614 seconds. Unchanged
+Separation and SolidTorus prerequisites were privately reused with matching
+source, successful receipts and object hashes. Other upstream objects remain
+shared and read-only; the full-source gate is incomplete.
+
+RelativeSimplexSubdivision and SimplexCollapse construct a genuine finite
+boundary-fixed seven-triangle self-surjection with an interior constant
+triangle, infinite fiber and failure of local injectivity. SourceCollapse
+transfers that construction to any supplied NormalSystem while preserving
+ambient/image/loop data and boundary group data and adding six triangles.
+This does not construct an initial NormalSystem and is not a positive normal
+form theorem or a counterexample to Moise251.
+
+EmbeddedProjection and ProjectedCell prove local injectivity and fiber bounds
+for the actual projected embedded disk. DoubleCoverDiagram uses the full
+upstairs ambient cover and records source, boundary and subgroup equations;
+DoubleCoverProjection uses these to construct the projected disk and its
+boundary loop while preserving subgroup avoidance. It proves weak complexity
+monotonicity. Full diagram construction, strict descent and Lemma 2 branch
+separation remain unproved. Proper interior placement is the later F lane.
+
+Receipt: .lake/verified-eleventh-lane-delivery-20260919.json. Accepted Lean
+source +1085/-4 (six root imports included); delta from F's overnight starting
+eefa65bae is +229/-4. The 147 handoff Markdown lines are not Lean code.
+The flat root reaches 9310 project modules including itself, with no missing
+source; this is static coverage, not root compilation.
+
+F 8fc63d263, S 4627710d3, E3 1cea2fbe7 and h's corrected graph-domain 3a48527be5
+remain queued for independent review. h's 35.1 neighborhood relation remains
+under repair. The account-switch pauses preserved source and artifacts; all
+four existing tasks and the heartbeat have resumed, without new subagents.
+The owner authorized discretionary rebuilds for needed compatibility checks or
+prolonged all-lane blockage, while prioritizing proof work and narrow checks.
+No rebuild was started. Keep the original 14:19 UTC deadline.
+
+## 28. Proper projected disks without added boundary hypotheses (2026-09-19 UTC)
+
+F through 3c7d44e19 (including 8fc63d263) is merged and independently accepted.
+Five changed modules freshly compiled in 54.820 seconds, zero diagnostics.
+All 23 nonautomatic declarations (18 new), 13 critical reuse entries, four
+concrete models and 13 applicable environment linters pass the 47.137-second
+silent audit. Only standard axioms occur. Private reuse is limited to the
+accepted EmbeddedProjection and LemmaThree objects with receipt/source/object
+identity checks; other upstream objects remain shared and read-only.
+
+CollarInwardMap supplies an explicit injective PL height change.
+BoundaryInwardPush obtains a thin collar from compactness and glues it to the
+fixed core, then constructs a boundary-relative embedding with exact boundary
+preimage. BoundaryLocalEmbedding proves that a locally injective same-dimensional
+PL map cannot carry an interior point into the target boundary. It constructs
+small PL balls and uses actual boundary monotonicity and local invariance.
+
+ProjectedBoundary applies these producers to NonsingularCell, preserving its
+source boundary pointwise, then projects it through the actual covering map.
+The output includes the upstairs embedding, downstairs PL map, boundary loop
+and connector, exact boundary inverse/image relations, local injectivity,
+fibers of size at most two and normal-subgroup avoidance. No properness field
+or equivalent conclusion hypothesis is added. The old projection signature is
+preserved as a corollary of its generalized embedding form; its actual direct
+consumer is rebuilt.
+
+The standard nonempty simplex and a nonzero collar movement check the geometric
+producers. A complete nonempty NormalSystem/DoubleCoverDiagram is not claimed.
+Full cover construction, strict descent and crossing normalization remain
+separate gaps. F continues its existing strict-descent round without a new
+lane or interruption. E3 and S queued deliveries retain their ownership.
+
+Receipt: .lake/verified-twelfth-lane-delivery-20260919.json. Lean delta +565/-17,
+including four root imports; 65 handoff Markdown lines excluded. Root closure
+is 9314 project modules including itself, no missing source. No full-source
+build or restart was performed.
+
+## 29. Half-prism cut cells and a nonempty Euclidean model (2026-09-19 UTC)
+
+E3 1cea2fbe7 is merged and independently accepted. SurfaceSplitNeighborhood
+freshly compiled in 11.382 seconds including admission, zero diagnostics.
+The 45.730-second silent audit including admission checks all three new
+nonautomatic declarations, seven critical reuse entries, one concrete box
+model and all 13 applicable environment linters. Axiom sets contain only
+propext, Classical.choice and Quot.sound. Nine unchanged accepted prerequisites
+were privately reused with source/receipt/object identities; other upstream
+imports remain shared and read-only.
+
+The actual PLPieceIn prism is restricted to a half-prism. The output records
+a polyhedral 3-ball, two nonempty disjoint boundary 2-balls and exact equality
+of the remaining frontier with the side annulus image, which is path connected.
+The independent box model constructs the chart from a linear coordinate map
+and triangulated unit square times [0,2], then applies the new theorem at
+0 < 1 < 2. This checks a genuinely inhabited input and output.
+
+This remains conditional on a supplied compatible prism chart. E3 continues
+the chart and trace construction from the original splitting disk pair; no
+complete 30.3 or 30.4 is claimed. The first external test attempt used the
+wrong restriction API for a closed polyhedron and was corrected in the probe;
+its failure evidence is retained, and the delivered source was unchanged.
+
+Receipt: .lake/verified-thirteenth-lane-delivery-20260919.json. Lean delta
++195/-0 includes one root import; Markdown excluded. Root closure now reaches
+9316 project modules including itself: SurfaceSplitNeighborhood also brings
+the existing PolyhedralBallTopology into reach. Full-source build remains
+stopped. F ec3b6b063 and h 97d4a948d are newly queued for independent review;
+S 4627710d3 remains queued. No active lane was interrupted for status.
+
+## 30. Strict cover descent and finite-cover PL realization (2026-09-19 UTC)
+
+F ec3b6b063 and 52ead09cc are merged and independently accepted. Four modules
+freshly compiled in 46.673 seconds including admission, zero diagnostics.
+The 76.134-second silent audit including admission covers all 12 new
+nonautomatic declarations, ten critical reuse entries, two concrete models
+and 13 applicable environment linters. Only standard foundational axioms
+occur. Seven accepted private prerequisites have source/receipt/object
+identity evidence; other upstream artifacts remain shared and read-only.
+
+TwoSheetSection proves section obstruction for a connected two-sheeted cover
+and extension of a homotopic lift to a section. LiftedImage constructs a PL
+homeomorphism/section of the singular image from equality of vertex-collision
+complexity. CoverComplexity uses the actual image deformation retract and
+covering homotopy lift to contradict connected double-covering. Strict descent
+now follows from the existing full cover diagram and preconnectedness of its
+upstairs ambient space, without a separated-vertex or strict-descent premise.
+
+Covering/PLTriangulation constructs a Euclidean simplicial realization and
+global piecewise-affine projection of a supplied finite covering. It retains
+the actual commuting projection equation, exact fiber cardinalities,
+connectedness and combinatorial-manifold structure. The nonempty standard
+3-simplex-times-Bool model yields an actual PL double cover with 3-manifold
+structure. This model is disconnected: it checks the finite-cover producer,
+not a full connected DoubleCoverDiagram. A discrete section-lifting model is
+also checked. No complete NormalSystem instance is claimed.
+
+The small boundary-compatible neighborhood and its normal-system lift remain
+open, including the meaning of the fixed relativeDerivedNeighborhood carrier
+equation. F continues that existing round; crossing normalization is still
+separate. h continues global neighborhood compatibility after 97d4a948d;
+E3 continues simultaneous disk subdivisions after ace162dcd; S continues
+compact smoothing's actual handle producer. Their new source remains queued.
+
+Receipt: .lake/verified-fourteenth-lane-delivery-20260919.json. Lean +340/-0,
+including four root imports; 50 handoff Markdown lines excluded. Root closure
+reaches 9320 project modules including itself with no missing source. The
+full-source build remains stopped; focused proof work continues to make
+progress and no broad compatibility failure has required a restart.
+
+## 31. Normal-system carrier obstruction and authorized repair (2026-09-19 UTC)
+
+F reported a genuine fixed-relative-neighborhood obstruction. The coordinator
+read the full RelativeSimplexNeighborhood proof and the SingularCell formula:
+if the preserved image contains a nondegenerate edge with an ambient coface
+outside that image, a concrete barycentric point belongs to the ordinary
+derived neighborhood but is absent from the relative restricted carrier.
+Carrier equality would force every ambient coface of every fixed edge into
+the image. This blocks the ordinary singular-image construction under those
+hypotheses. F's module check passed; its final concrete tetrahedron/facet
+audit and frozen checkpoint were still pending when this decision was made.
+Independent integration replay is not yet claimed.
+
+The owner delegated route decisions for the autonomous work window. The
+coordinator approved F's repair at this reported blocker: first checkpoint
+the counterexample, then actually construct a finite compatible neighborhood
+triangulation preserving image faces, exact ordinary-derived-neighborhood
+carrier and three-manifold/boundary structure. Update NormalSystem coherently
+and rebuild its real consumers. Preserve SDR, source lift, boundary loop and
+strict complexity contracts. Do not add a false hdeep condition, delete the
+carrier equality or declare a newly assumed package to be a producer.
+The separate finite-cover realization and conditional strict-descent proofs
+remain accepted; they do not establish an inhabited NormalSystem interface.
+
+S 3c08c2aba vertex/edge handles is newly queued. At delivery S continued its
+compact-smoothing lane toward actual triangle two-handle product pairs, with
+explicit review of boundary/relative-handle cases. E3 ace162dcd likewise
+continued only at delivery toward simultaneous subdivisions and exact disk
+traces. All four tasks have one active lane with the requested models.
+Decision: .lake/normal-system-neighborhood-repair-decision-20260919.json.
+
+## 32. Independently verified carrier counterexample (2026-09-19 UTC)
+
+F b240763e0 is accepted after independent integration replay. The single
+RelativeSimplexNeighborhood module compiled in 14.916 seconds and the audit
+completed in 51.441 seconds, including admission, with zero diagnostics.
+All four nonautomatic declarations (two public, two private), five critical
+reuse entries, the actual tetrahedron/facet model and a current NormalSystem
+consumer pass the standard-axiom audit and 13 applicable environment linters.
+No private prerequisite object was reused; upstream imports remained shared
+and read-only.
+
+The model has a genuine PL 3-ball and a PL 2-ball face and exhibits a point
+missing from the fixed relative neighborhood. The consumer proves that the
+current NormalSystem carrier equation forces every ambient coface of each
+image edge back into the image. This verifies the interface obstruction under
+its exact hypotheses; it does not prove that every possible NormalSystem is
+empty. The approved repair is to produce a genuine compatible triangulation
+while retaining exact carrier and SDR, not to add a false local-neighborhood
+hypothesis or discard the geometric relation. F continues that same lane.
+
+Receipt: .lake/verified-fifteenth-lane-delivery-20260919.json. Lean +184/-0
+including one root import; 27 handoff Markdown lines excluded. This checkpoint
+records a negative result and repair obligation, not new progress toward an
+unconditional loop theorem. Full-root compilation remains stopped.
+
+
+## 33. Independent 30.4 lane authorized (2026-09-19 04:24 UTC)
+
+The owner explicitly requested an additional lane for Moise 30.4. New task
+`Moise 30.4 球壳定理`, `01a0b7e8-6789-72c2-afe3-522847f439bb`, uses
+`gpt-6-astra max` in `C:/Users/liao9/.codex/worktrees/ef23/differential-geometry-dev`,
+branch `codex/moise-304`, starting at `cbfe4a73f5c5074805cc4db729f8fed5146322ef`.
+The task is active and the M304 private compiler lease is granted to 14:19 UTC.
+
+E3 retains its current actual 30.3 splitting/trace construction. M304 owns the
+30.4 endpoint and independently available geometric inputs: the initial
+separating surface, compression induction, or actual 28.19 annular neighborhood.
+The task must read the original proof and keep 26.4/30.3 dependencies explicit.
+No mid-round interruption of E3 or reassignment of F/h/S was made. The original
+four-task restriction is superseded only by this explicit fifth-task request.
+Two private checkers, one per lane, and three total Lean processes remain the
+resource limits. The heartbeat and persistent ownership ledger now use five
+tasks, retaining the original 14:19 UTC deadline and delivery-only handoffs.
+
+The accepted carrier-obstruction checkpoint is integrated and pushed as
+`cbfe4a73f`. Its independent receipt is
+`.lake/verified-fifteenth-lane-delivery-20260919.json`; its temporary probe was
+removed after preserving the exact source. Static root reachability is now
+9321 project modules including the root, with no missing project sources.
+The full-source build remains stopped; no full-root acceptance is claimed.
+
+
+## 34. Actual graph handles and cap comparison accepted (2026-09-19 UTC)
+
+S 4627710d3 + 3c08c2aba are independently accepted: seven freshly compiled
+modules in 76.403 seconds; all 27 nonautomatic declarations, 34 distinct
+critical reused declarations, two concrete geometric scenarios (six probe
+declarations) and 13 environment linters pass the 46.824-second audit.
+All checks exit 0 with zero diagnostics and standard foundational axioms.
+No private prerequisite objects were reused; upstream shared artifacts remain
+read-only. This is focused verification, not a full-source build.
+
+The general sphere/cell reparametrization produces an actual quotient
+homeomorphism with exact lower-space and cap formulas. The actual tetrahedron
+produces four disjoint vertex balls, a loop-closing edge prism and an attaching
+embedding into the intrinsic boundary of the old graph neighborhood. Its
+adjunction is homeomorphic to the exact successor graph neighborhood and fixes
+the old carrier. The nontrivial cap fixture moves a norm-one-half interior point
+to its negative while fixing the lower ball. No smoothness at the radial center
+or seam is asserted. Higher-index product pairs, global finite handle assembly,
+smooth attaching/framing, corner rounding and smooth two-sphere classification
+remain open; compact smoothing is not complete.
+
+Lean source delta: +681/-0, including seven flat-root imports. The seven modules
+are all new; the three private declarations are included in the total 27.
+Receipt: .lake/verified-sixteenth-lane-delivery-20260919.json. Exact audit source,
+source/object hashes, model provenance, timings and logs are retained there and
+in the private verification directory. Root import coverage is checked
+statically; the full-root build remains stopped.
+
+## 35. Consumer compatibility and M304 continuation (2026-09-19 UTC)
+
+At F's exact-carrier triangulation delivery boundary, the coordinator checked
+the two concrete old-helper uses in BoundaryWordLoopClass and the other active
+worktrees. Their files do not overlap the proposed compatibility edit. F may
+replace those uses with the actual S.boundaryNeighborhood and make the necessary
+meaning-preserving proof adaptations within the existing NormalSystem repair.
+The current 54 transitive SingularCell consumers are authorized for private
+read-only rebuilds. MoiseChain remains owned by h/S for its separate mathematical
+changes. The precise list and decision are in
+.lake/normal-system-consumer-repair-20260919.json. c49f666ab's real closed-star
+shrinking producer is queued; the full NormalSystem repair is not yet accepted.
+
+M304 delivered f0f7bd699 and continues the same spherical-shell proof round.
+Its private compilation scope now includes Topology.ClosedBall so the general
+radial annulus homeomorphism can live in its natural mathematical location.
+This does not add a second lane or increase the compiler resource limits.
+
+
+## 36. Initial connected separating surface accepted (2026-09-19 UTC)
+
+M304 f0f7bd699 is independently accepted. Two modules freshly compiled in
+23.896 seconds; all five nonautomatic declarations, ten critical reused
+producers, a nonempty concentric-ball/sphere model and 13 applicable linters
+pass the 46.231-second silent audit. All checks exit 0, contain zero
+diagnostics and use only standard foundational axioms. Upstream artifacts
+are shared read-only; no private prerequisites were reused.
+
+The actual producer encloses a compact set in an arbitrarily small finite
+combinatorial-manifold neighborhood, then constructs a connected, orientable,
+two-sided polyhedral surface separating a compact connected set from a
+disjoint closed connected set. The model separates the closed unit ball from
+the radius-three sphere inside the open radius-two ball. General location
+lemmas are also proved. This surface is not yet shown to lie in a given
+spherical shell or to have genus zero. Shell localization, 26.4/28.19,
+compression geometry and strict Betti descent remain open. M304 continues
+shell localization; E3 retains actual 30.3 geometry.
+
+Lean +145/-0 includes two flat-root imports. Receipt:
+.lake/verified-seventeenth-lane-delivery-20260919.json. Exact probe source,
+source/object identities, all timings and logs are retained. Static root
+reachability is 9339 project modules including the root; the full-source
+build remains stopped and no Moise304 endpoint completion is claimed.
+
+
+## 37. Actual compatible neighborhood triangulation accepted (2026-09-19 UTC)
+
+F c49f666ab and 8728c1b09 are independently accepted. Two modules compiled
+in 20.563 seconds; all 18 nonautomatic declarations (including two private),
+nine critical reused declarations, two actual tetrahedron/facet models and
+13 environment linters pass the 42.856-second audit. All checks exit 0
+with zero diagnostics and standard foundational axioms. Shared upstream
+objects remain read-only; no private prerequisite objects were reused.
+
+RelativeSimplexRefinement first makes the fixed subcomplex full, then chooses
+relative derived centers near its actual faces. It constructs a finite
+subdivision retaining every original face and shrinking the closed star into
+any prescribed positive thickening or open neighborhood. RelativeSimplexTriangulation
+keeps that star away from the closed complementary polyhedron, performs the
+relative extension there and takes the exact closed complementary carrier.
+The resulting actual finite triangulation retains the original subcomplex,
+has precisely the ordinary derived-neighborhood carrier, is a combinatorial
+manifold and has exactly the original intrinsic boundary. Its strong
+deformation retract fixes the subcomplex. The concrete tests include epsilon
+1/100 and a nonempty triangulated tetrahedral face neighborhood with that SDR.
+
+This closes the geometric construction needed to replace the invalid fixed
+relative formula. NormalSystem's field migration and its 55 affected modules
+are F's current verification round; the full interface repair and ring theorem
+are not yet accepted. Long-line-only repairs in those actual consumers are
+authorized after their warnings were observed, preserving scope and semantics.
+
+Lean +304/-0 includes two root imports; 49 handoff Markdown lines are excluded.
+Receipt: .lake/verified-eighteenth-lane-delivery-20260919.json. Exact audit source,
+source/object hashes, all check times and logs are retained. The static root
+closure now has 9341 project modules including the root. Full-root
+compilation remains stopped.
+
+### Pending source-review gates
+
+h a598916fd adds a compatible stagewise SDR system and a true constant-tower
+producer. Its global gluing theorem is conditional on that system; a geometric
+nonconstant producer and the relation to the book's global regular neighborhood
+are still open. At its completed round, h continued those obligations and the
+natural Homotopy placement of general transport/gluing machinery. No global
+35.1 producer or corrected full relation is accepted here.
+
+E3 ace162dcd remains held at source review: SurfaceSplitDiskNeighborhood has
+917 exact matching lines with the existing 964-line FreeTriangleNeighborhood
+(the new file has 1206 lines). The weaker interior-subcomplex argument should
+generalize the canonical development, with the old boundary case retained as
+a corollary, instead of duplicating the proof. The first copied subface lemma
+already has the identical existing public signature. This is an API/duplication
+gate, not a mathematical counterexample or compiler failure. Return the precise
+correction at E3's next delivery; do not interrupt its active 30.3 geometry round.
+
+## 38. Actual triangle two-handles accepted (2026-09-19 UTC)
+
+S 9494e59f6 is independently accepted. Six modules compiled in 67.571 seconds;
+all eight nonautomatic declarations (one private), 29 distinct critical reused
+declarations, nine concrete model declarations and 13 environment linters
+pass the 47.279-second final audit. Every final check exits 0 with zero
+diagnostics and standard foundational axioms. Seven previously accepted
+private prerequisite modules were reused only after source and object identity
+checks; other upstream artifacts remain shared read-only. This is focused
+verification, not a full-source build.
+
+For a finite closed combinatorial three-manifold, an actual triangle and a
+lower subcomplex containing all its proper faces produce a PL disk-times-interval
+cell. Its entire lateral annulus equals the exact intersection with the old
+neighborhood. The producer gives a closed attaching embedding into the old
+intrinsic boundary and a quotient homeomorphism to the exact successor
+neighborhood, fixing every old point. No annulus pair or handle decomposition
+is assumed. The concrete boundary-of-four-simplex model verifies the complete
+attachment and explicitly places three distinct image points on one product
+framing fiber at parameters 0, 1/2 and 1.
+
+Lean +548/-0 includes six flat-root imports; Markdown and external probes are
+excluded. Receipt: .lake/verified-nineteenth-lane-delivery-20260919.json. Exact
+source/object hashes, audit source, model provenance, timings and logs are
+retained. The initial coordinator probe's long-line warnings were repaired
+and the final probe passed without diagnostics. Static root reachability is
+9347 project modules including the root, with no missing sources or cycles.
+The full-root build remains stopped.
+
+This establishes actual two-handles for closed K. The original-boundary cap
+needed for boundary triangles is still open. S has separately delivered
+78d96386b maximal-cell sphere pairs and three-handle attachments, queued for
+independent acceptance, and continues actual finite face ordering and stage
+assembly. Smooth attaching/framing, corner rounding, smooth two-sphere
+classification and the compact smoothing endpoint remain open.
+
+## 39. Exact shell geometry accepted (2026-09-19 UTC)
+
+M304 0289bdaf4 is independently accepted. Three modules freshly compiled in
+31.455 seconds; all 24 nonautomatic declarations (one private), ten inspected
+supporting declarations, three concrete radial-shell models and 13 environment
+linters pass the 49.261-second silent audit. Every final check exits 0 with
+zero diagnostics and only standard foundational axioms. Four accepted private
+prerequisite objects, including the current MoiseChain, were reused after
+source identity checks; other upstream artifacts are shared read-only.
+
+The radial sphere-times-interval homeomorphism is constructed explicitly.
+Invariance of domain then identifies the exact interior and frontier of an
+embedded spherical cylinder. From IsSphericalShell alone, the new API proves
+frontier X = B0 union B1 and simple connectivity of interior X, and produces
+an actual finite connected orientable two-sided polyhedral surface inside
+interior X separating the two ends. The radial-shell models at radii one and
+two check the actual interior separator, simple connectivity and exact frontier.
+The surface is not yet proved genus zero. The 26.4 compression disk, 28.19
+annular neighborhood, E3's actual 30.3 split and strict Betti descent remain open.
+
+Lean +396/-0 includes three flat-root imports. Receipt:
+.lake/verified-twentieth-lane-delivery-20260919.json. Exact sources, objects,
+audit, model provenance, timings and logs are retained. Static root closure
+contains 9350 project modules including the root, with no missing sources or
+cycles. Full-root compilation remains stopped.
+
+The book-source review corrected an erroneous lane report: rendered printed
+page 216 clearly has p1(M2) <= p1(M1) - 2. PDF text extraction had lost the
+lower stroke. The book is correct here; there is no strict-inequality erratum.
+The formal induction should prove that weak bound and hence strict descent.
+The image, crop and source record are retained with the acceptance receipt.
+M304 has separately delivered 7c051baf7 compact nullhomotopy capture and a
+nontrivial surface kernel element; independent acceptance is queued. It
+continues the actual annular-neighborhood producer within the same 30.4 lane.
+
+## 40. Actual three-handle attachments accepted (2026-09-19 UTC)
+
+S 78d96386b is independently accepted. Two modules freshly compiled in
+22.730 seconds; all four nonautomatic declarations, twelve distinct critical
+reused declarations, nine model declarations and 13 environment linters
+pass the 46.662-second silent audit. Every final check exits 0 with zero
+diagnostics and only standard foundational axioms. Three previously accepted
+private prerequisites were reused after source/object identity checks; other
+upstream objects remain shared read-only. This is focused verification.
+
+For a maximal face in a finite closed combinatorial (n+2)-manifold, the new
+cell meets the lower neighborhood in exactly its whole intrinsic boundary.
+The actual ball/sphere parametrization supplies a closed attaching embedding
+into the old boundary and a quotient homeomorphism to the exact successor
+neighborhood, fixing the old carrier. The lower subcomplex has no unnecessary
+dimension bound. In dimension three, a genuine four-vertex face automatically
+supplies maximality, giving a three-handle. No preconstructed handle pair or
+handle decomposition is assumed. The actual four-simplex-boundary model has
+distinct boundary image points and proves the cell-center image is outside
+the old neighborhood, so the construction adds an actual new interior point.
+
+Lean +156/-0 includes two flat-root imports; Markdown and external models are
+excluded. Receipt: .lake/verified-twentyfirst-lane-delivery-20260919.json.
+Exact source/object identities, model source, full census, timings and logs
+are retained. Static root closure contains 9352 project modules including
+the root, without missing project sources or cycles. Full-root compilation
+remains stopped.
+
+Actual local zero-, one-, two- and three-handle producers are now independently
+accepted. A finite global handle sequence is not yet produced. S continues
+finite face ordering and actual stage assembly; its one added compiler permit
+is the natural metric-free SimplicialComplex.FaceFiltration module. Smooth
+attaching/framing, corner rounding, smooth two-sphere classification and the
+compact smoothing endpoint remain open.
+
+## 41. Finite nullhomotopy capture and surface kernel (2026-09-19 UTC)
+
+M304 7c051baf7 is independently accepted: three fresh modules, five complete
+nonautomatic declarations, nine reused entries and two nontrivial circle-model
+declarations; 13 environment linters, standard axioms, zero final diagnostics.
+Compile/audit times are 29.778/48.397 seconds including admission.
+Lean +167/-0; exact evidence is .lake/verified-twentysecond-lane-delivery-20260919.json.
+The source constructs actual finite neighborhoods containing nullhomotopies and
+nontrivial surface kernel elements. Moise264 and the compression/annular/splitting
+steps remain open. The circle model exercises capture, not a closed surface.
+Root static closure is 9363, including eight previously unreachable existing
+homology/surface-recognition modules reached by the three new imports. Full-root
+compilation remains stopped, with focused accepted prerequisites reused.
+
+## 42. Source-boundary repair and delivery queue (2026-09-19 UTC)
+
+F c98ea5828 reports completion of the genuine NormalSystem neighborhood migration
+and 55 source consumer checks; independent integration remains queued along with
+ff8d66dcf and f2ea6cf4f. The next actual obstruction is source boundary properness,
+which does not follow merely by rewriting image_inter_boundary. The source and
+rendered book pages 187-188 were independently reviewed. F continues an actual
+source-dependent relative PL collar push before the initial complexity choice.
+The existing CutAndPaste normal-data fiber theorem is genuine, but does not
+construct normal data for an arbitrary NormalSystem. Do not make LemmaTwo
+normalization an input to the preceding general covering reduction. No full
+NormalSystem counterexample has been certified. See the persisted source-boundary
+decision for exact evidence and scope.
+
+S 73a6d1984 + 6690962e1 actual global PL handle filtration and M304 e39955ff6
+actual circle-neighborhood cylinder are queued. S was resumed only at its
+completed round, toward a real smooth attachment or corner producer. The
+coordinator supplied twelve identity-checked accepted private prerequisite
+objects for M304's existing neighborhood consumer compatibility
+checks; no shared artifact was written. E3's canonical free-triangle correction
+remains deferred to its next delivery; h continues its global geometric lane.
+
+## 43. Compatible normal-system neighborhoods and anchored lifts (2026-09-19 UTC)
+
+F ff8d66dcf + f2ea6cf4f + c98ea5828 are independently accepted. The NormalSystem
+carrier now uses the actual compatible triangulation, retaining original image
+faces, the ordinary derived-neighborhood carrier, manifold boundary and SDR.
+The new boundary theorem gives the exact intrinsic trace along the original
+subcomplex. The finite-cover theorem constructs a simplicial lift on the same
+source PL-ball complex, with projection and selected-anchor equations; it does
+not assume an already constructed lift or injectivity of the vertex map.
+
+Final focused verification comprises 60 current-source modules: 55 interface
+consumers, two new modules and three pre-existing missing prerequisites.
+Source checks took 696.399 seconds including admission. The
+81.711-second silent audit loads all sixty together and checks all
+628 nonautomatic declarations in 45 modified leaves (64 private),
+fourteen supporting entries, three concrete models and thirteen environment
+linters. Of those declarations, 341 belong to the thirteen
+author-modified modules; the new producer modules contribute eight declarations.
+All final compiler/audit checks exit zero without diagnostics; all checked
+axiom closures are subsets of propext, Classical.choice and Quot.sound.
+
+The actual tetrahedron/facet models validate nonempty compatible neighborhoods,
+exact boundary trace and SDR. The tetrahedron-times-Bool cover model validates
+the selected-sheet lift. These do not instantiate every NormalSystem subgroup
+and avoidance field. General source normalization, full covering induction and
+the ring-theorem endpoint are still unproved.
+
+The accepted Lean diff is +762/-69. F's delivered source accounts for +349/-61;
+378 added lines are required copyright/module headers in 41 existing leaves
+and the root; another 27 lines repair previously missing consumer root imports.
+The header additions themselves preserve the full imports/proof body exactly.
+Seven old API lint findings additionally required one camel-case definition
+rename and seven redundant-instance removals (including a dependent private
+helper), contributing +8/-8 to the diff. All thirteen affected consumers were
+recompiled. No linter was suppressed. Conclusions are unchanged; redundant hypotheses
+are removed.
+Header/import maintenance is not mathematical proof progress. Two preliminary
+source-check failures (a missing old object and a missing required header),
+nineteen superseded pre-header checks and thirteen pre-API-repair checks are
+retained separately. The audit also retains the performance restart and the
+pre-repair lint findings. Its final module-index enumeration is checked equal
+to a full environment census. StallingsInduction is an existing import-only
+compatibility file with zero declarations, explicitly recorded in the census.
+
+The root now reaches 9407 project modules including itself, without missing
+project sources or cycles. The two new producer imports plus 27 old consumer
+imports newly reach 44 modules: two new and 42 existing. Fifteen of those
+existing dependencies are reached through the consumers and are not additional
+fresh source checks. The root build remains stopped; this is targeted source
+and combined-import verification, not a full-source certificate.
+
+Receipt: .lake/verified-twentythird-lane-delivery-20260919.json. Exact audit
+source, full declaration census, source/object identities, all attempts and
+timings are frozen. The external Lean probe is removed after freezing.
+
+Next acceptance queue: S 73a6d1984 + 6690962e1 full finite PL handle filtration;
+M304 e39955ff6 + 193898ba4 actual cylindrical and annular neighborhoods; F
+d0d3d3468 + 451717c77 + 9b8e3c3da + c4b2edb95 boundary-preserving cover/source
+and smaller-neighborhood constructions. S 2162e20eb local rounded-corner producers and M304 aea8f27c2
+core-fixed bicollars are also delivered and queued. S was continued only after
+its complete corner round toward the whole attaching-band atlas and smooth
+transitions relative to the old atlas. Other active rounds continue without
+routine intervention. h and E3 checkpoints remain subject to their pending
+contract/architecture reviews at delivery, not routine mid-round interruption.
+F also reports 3e4695ab3 + d2fa2d933 actual boundary-preserving lifted
+subcomplexes and controlled upstairs neighborhoods. These are queued, while
+compatible triangulation of the general singular PWA map after the initial
+source-relative push remains an explicit gate.
+
+## 44. Complete finite PL handle filtration (2026-09-19 UTC)
+
+S 73a6d1984 + 6690962e1 are independently accepted. Five new modules construct
+face enumeration ordered by dimension, actual prefix subcomplexes and their
+derived neighborhoods, and a complete finite PL handle filtration of every
+finite closed combinatorial three-manifold. The sequence starts with the empty
+carrier and ends at the original carrier. Its handle indices are monotone and
+take values in {0, 1, 2, 3}. Each actual attaching map has the exact old-cell trace,
+lands in the old boundary, and supplies an adjunction homeomorphism fixing the
+old carrier. No preconstructed handle decomposition is an input.
+
+All five source checks and the combined audit exit zero without diagnostics.
+The census checks all 32 nonautomatic declarations (none private), 30 distinct
+critical reused entries and three model declarations against only the standard
+foundational axioms; all thirteen applicable environment linters pass. The
+actual boundary of a four-simplex gives a nonempty finite filtration in which
+all four handle indices occur. This is one concrete geometric scenario, not
+three independent manifold examples. Compilation took 50.140 seconds and the
+audit 47.674 seconds, including admission. Eight previously accepted private
+prerequisites were reused only after source and object identity checks.
+
+The accepted Lean delta is +543/-0: 538 lines in five new mathematical modules
+and five root imports. Exact receipt:
+.lake/verified-twentyfourth-lane-delivery-20260919.json. It preserves raw audit
+bytes, model provenance, the full declaration census, source/object hashes,
+logs and timings. The external Lean probe was removed after freezing.
+The flat root now statically reaches 9412 project modules including itself,
+with no missing project sources or cycles. Full-root compilation stays stopped;
+this focused verification does not certify every shared upstream source.
+
+This closes the finite PL handle-sequence producer. Smooth attaching maps,
+compatible corner charts on the full attachment, framing, smooth two-sphere
+classification and compact PL smoothing remain open. S continues its current
+attaching-band round without a second assignment.
+
+At h's completed round, the coordinator reviewed the single-triangulation
+exhaustion and the noncompact discrete model through 12f8f0727. The latter is
+explicitly n=0; h was continued with Sol max toward actual noncompact
+three-dimensional ambient geometry and a one-dimensional graph, including the
+ambient meaning of the regular-neighborhood relation. Independent acceptance
+of h's corrected contracts and geometry is still pending.
+
+F reports 9e9e78bca actual complete double-cover reduction for an already
+source-proper NormalSystem with a loop basepoint, and 9dda64423 basepoint
+migration with NonsingularCell transport. These remain queued. F requested and
+received the CellComplex/CellMapTriangulation scope for the general singular PL
+triangulation gate; old default-center semantics and signatures must be retained,
+and direct consumers must be rebuilt. No other lane had dirty changes in those
+files when the ownership grant was checked. This adds no task or checker.
+M304 4400e3465 reports the actual spanning-disk/bicollar pair producer, with
+its own nonempty models; E3 consumer instantiation awaits accepted integration
+dependencies. Actual 26.4, actual 30.3 and full 30.4 are still open.
+
+## 45. Annular neighborhoods, fixed-core bicollars and spanning disks (2026-09-19 UTC)
+
+M304 e39955ff6, 193898ba4, aea8f27c2 and 4400e3465 are independently
+accepted as one dependency-closed construction. In a finite orientable
+combinatorial surface, an actual polygonal circle has an arbitrarily small
+annular neighborhood. If the circle avoids the surface boundary, an actual
+bicollar fixes the original circle pointwise. From an actual spanning-disk
+parameterization whose intersection with the surface is exactly its boundary,
+the construction produces two larger PL disks with exact intersection equal
+to that original disk, exact outer boundary circles, prescribed neighborhood
+control, and a union that is a relative neighborhood of the original disk.
+The spanning-disk existence hypothesis remains essential.
+
+The integration check freshly compiled 23 modules: twenty author-changed
+leaves and three additional existing consumers. All 84 nonautomatic module
+declarations, including seven private helpers, 44 distinct critical reused
+entries, and 16 model declarations have only standard foundational axioms.
+The models comprise twelve actual geometric theorems and four local decidable
+instances. They include prescribed opposite arcs of a square, arbitrarily
+small square-boundary annuli, fixed-core prism/inner-square bicollars, the
+exact boundary of a capped prism and the complete two-disk producer for a
+middle disk in a prism sphere. All thirteen applicable environment linters
+pass, and every final compile/audit has zero diagnostics.
+
+The first combined-import audit found a real public-name collision: the new
+interval-fiber and established disk-fiber monodromy theorems both used
+IsCylindricalDiagram.exists_endMap_id_of_isOrientable. The integration repair
+names the new version exists_endMap_id_of_isOrientable_interval and updates
+its annulus consumer, preserving the established disk API. All five affected
+modules were recompiled before the successful combined audit. The failed
+attempt and superseded objects/receipts are retained as evidence. This failure
+was invisible to the author's separate module audits.
+
+Final successful module checks took 261.578 seconds; the five superseded
+checks took another 57.813 seconds, all including admission. The final combined
+audit took 51.235 seconds. Twelve previously accepted ninth-batch private
+prerequisites were reused after object and source identity checks: eight raw
+byte matches and four canonical matches differing only in line endings.
+No author-only object substitutes for a fresh check of the delivered source.
+
+The actual accepted Lean diff is +1651/-38: the flattened author source diff
+is +1609/-38 including sixteen root imports; integration adds 42 required
+header lines to six existing leaves. The namespace repair changes two lines
+inside newly added files and adds no proof. Line counts describe source
+changes, not completed theorem counts. Exact receipt:
+.lake/verified-twentyfifth-lane-delivery-20260919.json. It freezes complete
+audit/model sources, raw bytes and hashes, full census, source/object identities,
+logs, timing and the import-collision repair. External probes are removed only
+after freezing their bytes.
+
+The root statically reaches 9429 project modules including itself, with no
+missing project sources or cycles. This adds sixteen new leaves and reaches
+one existing leaf, SubcomplexMesh. All new leaves are directly registered.
+Full-root compilation remains stopped; this is focused source and combined
+import verification, not a full-source compatibility certificate.
+
+E3's endpoint-disk refinement is a real identified consumer, but its pending
+canonical-generalization repair and independent acceptance still block a
+compiled cross-lane instantiation. No E3 author-private object is used.
+The actual compressing-disk producer 26.4, actual three-dimensional split 30.3,
+compression-branch geometry and final 30.4 induction remain open. M304's later
+26215354f disk-capping/cylinder-homotopy and 2eecb1a86 conditional Betti descent
+are queued separately. The latter assumes an actual SurfaceSplitAndCap;
+it does not construct that geometry or the nonspherical branch condition.
+
+S completed its full-annulus new-cell atlas round at 8ee999276 + ada7fd321,
+with the delivery merge 7f4ecc826. Source review confirms that this is open
+in the new cell only, with no old-atlas compatibility or crossing-seam claim.
+Independent replay is queued. At that completed-round boundary, S was continued
+with Astra max toward actual relative smoothing of the attaching annulus and
+framing, allowing an explicitly constructed controlled isotopy rather than
+requiring an arbitrary nonsmooth PL parameterization to already be smooth.
+F's geometric cover reductions through 9bd8d23a7 are also newly queued; its
+singular PL triangulation round continues. Active E3/h/M304 rounds were not
+interrupted. No new task or checker was created.
+
+## 46. Source-boundary preparation and actual normal-system cover reductions (2026-09-19 UTC)
+
+F d0d3d3468, 451717c77, 9b8e3c3da, c4b2edb95, 3e4695ab3,
+d2fa2d933, 9e9e78bca, 9dda64423 and 9bd8d23a7 are independently accepted
+as one dependency-closed construction. The relative PL source push fixes the
+prescribed source boundary and proves that its full boundary preimage is
+exactly that boundary. Source dependence matters: an ambient map fixing all
+boundary image points would leave collapsed interior points on the boundary.
+The actual model starts with a constant disk map to a boundary vertex and
+produces a map whose interior enters the manifold interior.
+
+The construction also proves covering boundary correspondence, forms exact
+image subcomplexes for possibly collapsing simplicial maps, and lifts a PL
+ball using the same source complex. It constructs upstairs image/boundary
+subcomplexes and a compatible triangulation of the ordinary derived
+neighborhood with controlled boundary projection. For a supplied source-proper
+NormalSystem it fills the complete upstairs NormalSystem and cover diagram,
+including the normal-subgroup avoidance and source projection conditions.
+Basepoint transport changes the connector and subgroup while preserving
+geometry and complexity. The nonorientable and orientable nonspherical-boundary
+cases then construct actual connected double covers and prove strict
+complexity descent. No assumed cover-reduction package replaces that geometry.
+
+All nine delivered leaves match the frozen author commit exactly. They and the
+existing ProjectedBoundary consumer were freshly compiled: ten modules, zero
+diagnostics, 115.279 seconds including admission. The combined audit took
+51.391 seconds and covers all 41 nonautomatic declarations, including four
+private helpers. Thirty-five declarations are new; the author modules contain
+38 total and the unchanged consumer adds three. All 38 distinct critical reused
+entries have only standard foundational axioms. All thirteen applicable
+environment linters pass for the full module census and all probe declarations.
+
+The probe contains seven concrete geometric scenarios, expressed by eight
+theorem declarations: tetrahedral double-cover data and boundary, a
+nonconstant collapsed triangle image, the collapsed source-disk boundary
+push, a controlled tetrahedral boundary neighborhood, actual anchored proper
+lift and neighborhood models, and circle-connector composition. Six further
+declarations exercise supplied NormalSystem data conditionally. They are not
+independent nonempty NormalSystem examples. Nine named local instances bring
+the complete audited probe census to 23 declarations. The first audit passed
+its mathematical assertions but failed the strict delivery gate on five long
+lines introduced when naming those instances. Only probe formatting changed;
+the successful rerun and the failed source/log/receipt are all frozen.
+
+Twenty-one previously accepted private prerequisites were reused only after
+exact raw source and object identity checks. Fresh checks use private import
+overrides; shared artifacts remain read-only. The accepted Lean diff is
++1142/-0: 1134 author source lines and eight root imports. No integration proof
+or source-header edit was needed. These counts measure source changes, not
+classical theorem completion. Receipt:
+.lake/verified-twentysixth-lane-delivery-20260919.json. It retains exact source
+and object hashes, the full declaration/axiom/lint census, both audit attempts,
+eleven frozen external probe sources and their raw bytes, provenance and timing.
+
+The flat root statically reaches 9443 project modules including itself, with
+no missing project sources or cycles. Eight new leaves are directly registered.
+Six older modules are newly reachable through this chain: BallComplement,
+BoundaryEuler, CollarSectorPolyhedron, DoubleCoverExistence, HandleCount and
+HomologyCocycle. That static coverage is not a fresh-source certificate for
+every upstream module. Full-root compilation remains stopped; the new leaves
+and their combined imports have focused verification.
+
+The initial general PL push still needs an exact triangulation that permits
+noninjective maps. General singular-disk normalization, Lemma 2 branch
+separation, and the final Stallings/loop-theorem endpoint remain open. F's later
+arbitrary-cell-center checkpoint 921aa49bd is queued separately; its exact-map
+triangulation round continues without another assignment. S's old-atlas
+relative smoothing and h/E3/M304 current rounds continue without interruption.
+M304 synchronized the accepted interval-monodromy API name at 751f0e925; its
+later capping, conditional Betti and actual circle-complement deliveries remain
+separately queued. No task or checker was added, and no full build was started.
+
+## 47. Compatible local corner and full-annulus atlases on PL two-handles (2026-09-19 UTC)
+
+S 2162e20eb, 8ee999276 and ada7fd321 are independently accepted.
+The local construction gives explicit polynomial quadrant-to-half-plane
+coordinates with a continuous inverse, smooth away from the corner. It
+identifies the attaching side, end and intrinsic boundary, and transports
+the chart to an actual derived-neighborhood triangle two-handle.
+
+The later construction gives one compatible atlas on a relatively open
+neighborhood of the entire attaching annulus in the original new cell.
+Its two normal-strip charts cover both ends and have a proved smooth
+transition on their actual nonempty overlap, away from the inverse-map
+singularity. A radial collar homeomorphism and stereographic angular charts
+produce the product atlas. All polygon vertices at every height are covered.
+The result retains the original parameter equation g((d x).val.val) = x.val.val,
+the exact old-set trace, intrinsic boundary and membership of every pulled
+chart in that single atlas. Smooth compatibility is constructed, not assumed.
+
+All nine source files match the frozen author delivery; no integration proof
+or header modification was needed. Fresh compilation took 98.077 seconds
+including admission, and the combined audit took 49.763 seconds. Every check
+finished with zero errors, warnings or info diagnostics. The full census
+contains 101 new nonautomatic declarations, including six private helpers.
+Fifty distinct critical reused entries and all 29 probe declarations have only
+standard foundational axioms; all thirteen applicable environment linters
+pass for the source and model declarations.
+
+There are three actual geometric test endpoints. The local corner test uses
+a triangle in the boundary of a four-simplex and distinguishes the corner,
+attaching side, end face and interior by exact coordinates. The strip test
+has exclusive lower/upper points and a shared point with distinct chart
+images. The full-annulus test uses the same four-simplex geometry, covers
+every polygon vertex at every height, proves distinct angular/end choices,
+exhibits a genuine overlap and tests its actual smooth transition. Support
+definitions, helper proofs and four local instances are included in the
+29-declaration audit; that is not a count of 29 independent geometric models.
+
+Six accepted private prerequisites were reused after exact raw source and
+object identity checks. Shared artifacts remain read-only. Accepted Lean
+delta: +1294/-0, comprising 1285 new source lines and nine root imports.
+Receipt: .lake/verified-twentyseventh-lane-delivery-20260919.json. It freezes
+the combined probe and three original model sources with exact raw bytes,
+source/object hashes, declaration and axiom/lint census, provenance and timing.
+Only isolated model namespaces and the external audit harness changed.
+
+The root statically reaches 9452 project modules including itself, without
+missing project sources or cycles. All nine new leaves are directly registered;
+no additional existing leaf becomes newly reachable. Full-root compilation
+remains stopped, so this is scoped source and combined-import verification.
+
+U is open in the new cell only. Compatibility with a fixed old-neighborhood
+smooth atlas and openness across the attached union are not conclusions here.
+The earlier explicit single-edge chart and the full-annulus atlas are distinct
+coordinate results; compatibility between those two constructions is not
+asserted. Relative smoothing of the actual annular embedding and framing,
+crossing-seam charts, terminal smooth two-sphere classification and compact
+atlas assembly remain open. S continues the already assigned old-atlas round;
+no new assignment or checker was added.
+
+F's exact noninjective-map triangulation 27cf1c243 is queued with 921aa49bd;
+its current initial-system construction continues. M304's actual branch-closure
+surfaces 5e695768f are queued with the earlier circle-complement/capping/Betti
+layers; its current capped-surface and essential-circle round continues.
+These author deliveries are not counted as independently accepted mathematics.
+h and E3 remain on their current rounds without a status prompt or interruption.
+
+## 48. Exact singular-map triangulation and initial normal systems (2026-09-19 UTC)
+
+F 921aa49bd, 27cf1c243 and aef1bbb8e are independently accepted.
+The core flag-triangulation arguments now work for arbitrary legal cell centers,
+allowing each source center to lie in the correct target-center fiber. The
+seventeen canonical arguments are generalized and reused, rather than copied.
+All 48 previous CellComplex declaration types, including implicit instances and
+universes, and the bodies of cellPt, cellDerivedFaces and cellDerived are retained.
+Independent old-source elaboration and kernel-expression comparison verify this
+after erasing generated binder macro scopes only. Explicit binder names, binder
+information, Expr structure, constants and universe parameters remain compared.
+
+CellMapTriangulation constructs actual finite subdivisions of the source and
+target of an arbitrary piecewise affine map. The simplicial realization equals
+the given map at every point of the original carrier. It permits collapsed faces
+and noninjective maps; graph triangulation and fiber-compatible centers supply
+the construction. Both carriers remain unchanged.
+
+SourceNormalSystem consumes the original PL disk, original boundary map and
+parameterization, target boundary neighborhood and original normal-subgroup
+avoidance. It constructs the relative inward push, exact triangulations, image
+and boundary-image subcomplexes and compatible derived neighborhood. The full
+NormalSystem retains the source disk, boundary values and parameterization,
+on-loop basepoint, actual inclusion map and exact subgroup comap. Source
+properness, local injectivity, bounded fibers and an existing system are not
+initial hypotheses. The original subgroup-avoidance condition is still explicit.
+
+All six delivered leaves and one actual dependent consumer were freshly compiled.
+Final checks took 75.267 seconds including admission. The combined audit took
+50.463 seconds; all 145 nonautomatic declarations, including one private instance,
+eleven critical reused entries and seven probe declarations have only standard
+foundational axioms. All thirteen applicable environment linters pass and every
+final compile/audit has zero errors, warnings and info diagnostics. Fifty-four
+native declarations are new; the total also includes the retained core and
+43 old consumer declarations. The new leaves are directly registered in the root.
+
+Three real model scenarios use a prescribed interval center 1/3, the nonconstant
+noninjective map abs from [-1,1] onto [0,1], and a constant triangular disk into a
+tetrahedral boundary vertex. The last construction has an actual interior image
+point outside the constructed neighborhood boundary. Two further declarations
+exercise exact boundary-preimage preservation and raw-input-to-cover descent;
+they remain conditional consumers. Two local instances complete the seven-probe
+census. The constant-disk model does not meet subgroup avoidance and is not
+reported as an independent nonempty complete NormalSystem example.
+
+The complete audit found two old unused finiteness assumptions in
+ArrangementGeneralPosition. The integration removes Finite kappa from
+arrangementLayer_not_le_affineSpan_of_affineIndependent and Finite zeta from
+exists_small_vertexMap_transverse_in_arrangement. Its sole external caller,
+RelativeNormalForm.exists_small_vertexMap_generalInArrangement, is generalized
+accordingly and freshly checked with the full 16-declaration census. No proof
+body changes. That existing consumer gains the required nine header lines;
+other author source matches the frozen delivery. Other worktrees were checked
+for ownership before these repairs and were not modified.
+
+Twenty-nine accepted private prerequisites were reused only after exact raw
+source and object identity checks. An initial missing CollarInwardMap artifact
+was resolved from those receipts. Failed audit probes, the raw binder-hygiene
+comparison and the genuine lint findings are retained alongside the final
+successful results; no failed check is counted as acceptance. Shared artifacts
+remain read-only and full-root compilation remains stopped.
+
+Accepted Lean delta is +1024/-131, including two root imports. The frozen author
+delta was +1012/-128; integration contributes three one-line generalizations
+and nine required header lines. Receipt:
+.lake/verified-twentyeighth-lane-delivery-20260919.json. It freezes all probe
+bytes, source/object identities, exact legacy signatures, full axiom/lint
+censuses, attempts, provenance and timing. The root statically reaches 9454
+project modules including itself, with no missing project sources or cycles.
+Static reachability and these scoped checks are not a full-source certificate.
+
+The later 584a5cfa0 preserves containment in the original target boundary and
+returns a supplied nonsingular solution to that target; it is queued separately.
+At F's explicit full-round completion, the next single round was assigned to
+actual sphere-neighborhood and sphere-boundary disk production. Its fixed-target
+face condition remains a genuine packaging obligation. General normalization,
+cover projection/desingularization and the final loop theorem remain open.
+
+S delivered local old-atlas corner/framing smoothing 29fc463ce, queued for
+independent acceptance. At its completed round it continued finite relative
+modifications on the actual annulus, with the old-coordinate straightening
+obligation explicit. M304 delivered actual full-boundary gluing e4a3f74eb and
+continues its capping/essential-circle round. h and E3 were not interrupted.
+No new task, subagent or checker was added.
+
+## 49. Original-boundary control and return of normal-system solutions (2026-09-19 UTC)
+
+F 584a5cfa0 is independently accepted. The two initial-system endpoints now
+retain the proved boundary-neighborhood containment in the original target
+boundary intersect V. The previous output retained only containment in V.
+This strengthens the existing conjunction field and preserves the raw inputs,
+boundary values, parameterization and normal-subgroup construction.
+
+NormalSystem.NonsingularCell.exists_isPLHomeomorphOn_boundaryLoop_of_comap
+transports a supplied actual nonsingular cell to a PL embedded disk in the
+original target. The relative inward-embedding producer keeps its source and
+boundary values; boundary monotonicity for nested three-manifolds then proves
+the exact original-boundary preimage and image intersection. The original
+normal subgroup is recovered through the actual inclusion/comap equation.
+Properness in the original target is an output, not an additional input.
+
+The complete modified module matches the author commit and was freshly checked
+in 35.598 seconds including admission. The combined audit took
+45.952 seconds. All four native nonautomatic declarations (one new, one
+private instance), eight critical reuses and all five probe declarations have
+only standard foundational axioms. All thirteen applicable environment linters
+pass; final source and audit checks have zero errors, warnings or info output.
+
+The actual collapsed triangular-disk/tetrahedron model is retested under the
+stronger statement. Two further consumers begin with the original raw inputs:
+one constructs a system and performs actual cover descent, and the other
+transports any actual solution of that constructed system back to the original
+target. The second explicitly requires NonsingularCell; it is not its existence
+producer. Two local instances complete the five-probe census. No independent
+complete subgroup-avoidance model is claimed by the constant-disk example.
+
+Thirty-three accepted private prerequisites were reused with exact current
+source and object identities. No integration source/header edits were required.
+Accepted Lean delta: +64/-5 in the existing leaf. Receipt:
+.lake/verified-twentyninth-lane-delivery-20260919.json, retaining exact probe
+bytes, source/object hashes, full declaration/axiom/lint census, provenance and
+timings. Root coverage remains 9454 project modules including itself, with no
+missing project sources or cycles. Full-root compilation remains stopped.
+
+The initial-input and solved-output interfaces are now both accepted. Actual
+sphere-boundary solution production, compatibility with fixed target faces,
+cover projection/desingularization and the final loop theorem remain open.
+F continues the single sphere-complementary-disk round. Connected-interior
+e50dbf499 is queued separately. M304 has delivered the actual separating-circle
+raw-capping and essential Betti layer afddb98a4, also awaiting independent replay;
+its raw caps share a disk and do not supply E3's disjoint pushed surfaces.
+M304 continues the nonseparating case. Other current rounds are unchanged.

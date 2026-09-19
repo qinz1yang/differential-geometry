@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.ChartPolyhedron
 import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryFacets
 import DifferentialGeometry.Topology.PiecewiseLinear.CirclePartition
@@ -12,6 +17,10 @@ import DifferentialGeometry.Topology.PiecewiseLinear.PieceRestrict
 import DifferentialGeometry.Topology.PiecewiseLinear.PolygonalCycles
 import DifferentialGeometry.Topology.PiecewiseLinear.SingularGeneralPosition
 import DifferentialGeometry.Topology.Covering.SimplyConnectedCover
+
+/-!
+# Branch preimage
+-/
 
 open Set Topology
 
@@ -192,7 +201,7 @@ private theorem isPLSphere_or_exists_two_isPLSpheres_of_component_split
       exact hCsphere T' hT'C
 
 private theorem exists_partition_members_of_two_component_split
-    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {E : Type*} [NormedAddCommGroup E]
     {P : Set E} (hPcompact : IsCompact P) {C : Set (Set E)} (hCfinite : C.Finite)
     (hCconnected : ∀ S ∈ C, IsConnected S) (hCclosed : ∀ S ∈ C, IsClosed S)
     (hCdisjoint : C.PairwiseDisjoint id) (hcover : P = ⋃₀ C)
@@ -1226,7 +1235,8 @@ theorem branchPreimage_isPLSphere_or_exists_two_isPLSpheres_with_coordinate_of_n
     exact Or.inr ⟨A, R, hAsphere, hRsphere, hdisjoint, hARcover.symm, hAPL, hRPL⟩
 
 open Classical in
-theorem branchPreimage_isPLSphere_or_exists_two_isPLSpheres_with_innermost_disk_of_not_boundaryBranch
+theorem
+  branchPreimage_isPLSphere_or_exists_two_isPLSpheres_with_innermost_disk_of_not_boundaryBranch
     [T2Space M] (hD : NormalSingularCellData D BdM B)
     {c : hD.singularSet.Branch} (hc : ¬hD.singularSet.IsBoundaryBranch c) :
     IsPLSphere 1 (hD.branchPreimage c) ∨
@@ -1391,7 +1401,7 @@ theorem exists_innermost_isPLBall_branchPreimage_decomposition_of_exists_not_bou
         hcover.trans ((hJT' ▸ union_comm S T))⟩
 
 open Classical in
-theorem exists_innermost_isPLBall_branchPreimage_decomposition_with_coordinate_of_exists_not_boundaryBranch
+theorem exists_innermost_isPLBall_branchPreimage_decomposition_with_coordinate
     [T2Space M] (hD : NormalSingularCellData D BdM B)
     (hclosed : ∃ c : hD.singularSet.Branch,
       ¬hD.singularSet.IsBoundaryBranch c) :
@@ -1452,7 +1462,8 @@ theorem exists_two_isPLBalls_branchPreimage_of_boundaryBranch_with_coordinate
         ∀ z : connectedComponent y, e z = p z := by
     rcases hD.branchProjection_connected_or_two_components c with hconnected | hsplit
     · let _ : ConnectedSpace P := hconnected
-      have hinj : Function.Injective p := (hD.branchProjection_isCoveringMap c).injective_of_simplyConnected
+      have hinj : Function.Injective p :=
+        (hD.branchProjection_isCoveringMap c).injective_of_simplyConnected
       let q : L.space := Classical.arbitrary L.space
       obtain ⟨a, b, hab, hfiber⟩ := encard_eq_two.mp (hD.branchProjection_fiber_encard_eq_two c q)
       have ha : p a = q := by
@@ -1554,7 +1565,7 @@ theorem exists_isPLHomeomorphOn_eqOn_of_branchCoordinate
 
 open Classical in
 theorem exists_replacement_disk_of_two_branch_sheets
-    [T2Space M] (hD : NormalSingularCellData D BdM B)
+    (hD : NormalSingularCellData D BdM B)
     {c : hD.singularSet.Branch} (hc : ¬hD.singularSet.IsBoundaryBranch c)
     {J T Q : Set (EuclideanSpace ℝ (Fin 2))}
     (hJsub : J ⊆ hD.branchPreimage c) (hTsub : T ⊆ hD.branchPreimage c)
@@ -1607,7 +1618,7 @@ theorem exists_innermost_isPLBall_branchPreimage_with_replacement_of_exists_not_
                   IsPLBall 2 R ∧ R ⊆ D.domain ∧ frontier R = T ∧
                   IsPLHomeomorphOn G R Q ∧ EqOn D (D ∘ G) (frontier R)) := by
   obtain ⟨c, J, Q, hc, hJ, hQ, hQsub, hfrontier, hinter, hsplit⟩ :=
-    hD.exists_innermost_isPLBall_branchPreimage_decomposition_with_coordinate_of_exists_not_boundaryBranch
+    hD.exists_innermost_isPLBall_branchPreimage_decomposition_with_coordinate
       hclosed
   refine ⟨c, J, Q, hc, hJ, hQ, hQsub, hfrontier, hinter, ?_⟩
   rcases hsplit with hsingle | ⟨T, hT, hdisjoint, hcover, hJcoordinate, hTcoordinate⟩

@@ -1,7 +1,14 @@
+/-
+Copyright (c) 2026 Yuan Liao. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Yuan Liao
+-/
 import Mathlib.Combinatorics.SimpleGraph.Matching
 import DifferentialGeometry.Topology.FundamentalGroup.CircleLoopGenerator
 import DifferentialGeometry.Topology.PiecewiseLinear.NeighborhoodCycle
 import DifferentialGeometry.Topology.PiecewiseLinear.WalkArcPath
+
+/-! Polygon Circle Parametrization. -/
 
 namespace DifferentialGeometry.Topology.PiecewiseLinear
 
@@ -40,7 +47,8 @@ theorem space_subset_arcCarrier [FiniteDimensional ℝ E] [Finite K.faces]
   intro x hx
   obtain ⟨s, hs, hxs⟩ := Geometry.SimplicialComplex.mem_space_iff.mp hx
   have hcard : s.card ≤ 2 := ((isCombinatorialManifold_one_iff K).mp hK).1 s hs
-  have hpos : 1 ≤ s.card := Finset.card_pos.mpr (Geometry.SimplicialComplex.nonempty_of_mem_faces hs)
+  have hpos : 1 ≤ s.card :=
+    Finset.card_pos.mpr (Geometry.SimplicialComplex.nonempty_of_mem_faces hs)
   interval_cases hc : s.card
   · obtain ⟨y, rfl⟩ := Finset.card_eq_one.mp hc
     have hy : y ∈ K.vertices := hs

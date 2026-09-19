@@ -1,5 +1,14 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryWordFourArcs
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopClassReparametrization
+
+/-!
+# Boundary word loop class
+-/
 
 open Set Topology
 
@@ -50,8 +59,7 @@ variable {E : Type u} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensio
 omit [FiniteDimensional ℝ E] in
 theorem singularMap_mem_boundaryNeighborhood (S : NormalSystem E)
     {z : EuclideanSpace ℝ (Fin 2)} (hz : z ∈ frontier S.sourceComplex.space) :
-    S.singularMap z ∈ (normalSystemBoundaryNeighborhood S.ambientComplex S.imageComplex
-      S.loopComplex S.image_faces_subset_ambient).space := by
+    S.singularMap z ∈ S.boundaryNeighborhood.space := by
   obtain ⟨θ, hθ⟩ := S.boundaryParam.surjective ⟨z, hz⟩
   have hmem := (S.boundaryLoop θ).2
   rw [S.boundaryLoop_eq θ, hθ] at hmem
@@ -70,7 +78,7 @@ theorem not_loopClassMeets_boundaryLoop (S : NormalSystem E)
 end NormalSystem
 
 theorem NormalSystem.exists_boundary_word_loop_dichotomy_of_four_arcs
-    {E : Type u} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    {E : Type u} [NormedAddCommGroup E] [NormedSpace ℝ E]
     (S : NormalSystem E) [PathConnectedSpace S.boundaryNeighborhoodSpace]
     {M : Type u} [TopologicalSpace M] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
     {D : SingularTwoCell M} (hdom : D.domain = S.sourceComplex.space)
@@ -102,8 +110,7 @@ theorem NormalSystem.exists_boundary_word_loop_dichotomy_of_four_arcs
     rw [← hdom]
     exact D.isPLBall_domain.isPolyhedron.isClosed.frontier_subset
   have hmem : ∀ z : frontier D.domain, S.singularMap z ∈
-      (normalSystemBoundaryNeighborhood S.ambientComplex S.imageComplex S.loopComplex
-        S.image_faces_subset_ambient).space := by
+      S.boundaryNeighborhood.space := by
     intro z
     refine S.singularMap_mem_boundaryNeighborhood ?_
     rw [← hdom]
@@ -161,7 +168,7 @@ theorem range_eq_image_of_forall_eq {ι α β : Type*} {w : ι → β} {z : ι �
   rw [hfun, Set.range_comp, hz]
 
 theorem NormalSystem.exists_boundary_word_loop_dichotomy_of_boundaryBranch
-    {E : Type u} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    {E : Type u} [NormedAddCommGroup E] [NormedSpace ℝ E]
     (S : NormalSystem E) [PathConnectedSpace S.boundaryNeighborhoodSpace]
     {M : Type u} [TopologicalSpace M] [T2Space M] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
     {D : SingularTwoCell M} {BdM B : Set M} (hD : NormalSingularCellData D BdM B)

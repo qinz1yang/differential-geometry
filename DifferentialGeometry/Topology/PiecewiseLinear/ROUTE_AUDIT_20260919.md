@@ -173,3 +173,45 @@ success.
    and repair coverage. Keep the root stopped and artifacts retained.
    Distinguish conditional consumers from completed producers. The project
    remains in core proof construction.
+
+## Subsequent source review and coverage repair (2026-09-19 UTC)
+
+The six-import patch is now applied. Static traversal reaches all six direct
+imports and 9265 project modules, with no missing local source. All seven
+previously compiled endpoint leaves still match the exact audited Git blobs.
+Receipt: .lake/root-endpoint-coverage-20260919.json. This supersedes the earlier
+unapplied-patch status; the full-root build remains stopped.
+
+h's contract delivery through 585cc71a0 is held before integration.
+Moise331 uses IsCombinatorialManifold 1, forcing two neighbors at every vertex;
+book p230 permits finite connected graphs with branch vertices and no endpoints.
+The tetrahedral one-skeleton needed downstream is excluded by that repair.
+h has been asked to use an actual graph/no-endpoint condition and a branched
+nonempty instance.
+
+For 35.1, regularNeighborhoodIn on an arbitrary triangulation is the union
+of simplices meeting the graph, not by itself a genuine derived regular
+neighborhood. The new predicate provides neither the appropriate subdivision
+condition nor enough cross-stage compatibility to justify the global relation.
+Book pp247--248 instead uses a rectilinear triangulation carrying K and its
+usual regular neighborhoods/dual cells. The neighborhood relation needs further
+source-faithful construction and nonempty applications; merely naming raw stars
+regularNeighborhoodIn and taking a monotone union is insufficient evidence.
+No formal Lean counterexample to that new predicate is claimed here.
+
+S reported finite 24.12 at 434d5352c and was assigned the independent compact
+PL-smoothing lane at that delivery boundary. Its CST endpoints await independent
+acceptance. E3's newer sphere-minus-two-disks producer 18f861c89 also awaits
+acceptance and does not complete the actual splitting geometry of 30.3.
+
+## Finite CST acceptance update (2026-09-19 03:00 UTC)
+
+The earlier pending status for S through 434d5352c is superseded: finite native
+24.11/24.12 are independently accepted. Ten changed modules compile cleanly;
+all 41 module declarations and 33 distinct critical reused declarations have
+only standard axioms, all 13 applicable linters pass, and the concrete tetrahedral
+nullhomotopic polygon produces a nonempty CST. Its 521-project-module import
+closure excludes HurewiczLowDegrees. Receipt: .lake/verified-ninth-lane-delivery-20260919.json.
+General CST classification, infinite-triangulation versions and compact smoothability
+remain open. Root static coverage now reaches 9303 project modules; the root
+build remains stopped and this does not certify a full-source build.

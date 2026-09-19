@@ -1,8 +1,15 @@
+/-
+Copyright (c) 2026 Yuan Liao. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Yuan Liao
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.NeighborhoodCycle
 import DifferentialGeometry.Topology.PiecewiseLinear.BallIntersectionBoundary
 import DifferentialGeometry.Topology.PiecewiseLinear.CylindricalDiagram
 import DifferentialGeometry.Topology.PiecewiseLinear.DerivedNeighborhoodManifold
 import DifferentialGeometry.Topology.PiecewiseLinear.Orientation
+
+/-! Neighborhood Cylinder. -/
 
 open Set
 
@@ -69,11 +76,13 @@ theorem exists_cylindricalDiagram_isOrientable_derivedNeighborhood_circle
     (K L : Geometry.SimplicialComplex ℝ E) [Finite K.faces] [Finite L.faces]
     (hK : IsCombinatorialManifoldWithBoundary 3 K) (hLK : L.faces ⊆ K.faces)
     (hL : IsCombinatorialManifold 1 L) (hconn : IsConnected L.space) (hor : IsOrientable 3 K) :
-    let _ : Finite (derivedNeighborhood K L).faces := (derivedNeighborhood_faces_finite K L).to_subtype
+    let _ : Finite (derivedNeighborhood K L).faces :=
+      (derivedNeighborhood_faces_finite K L).to_subtype
     IsOrientable 3 (derivedNeighborhood K L) ∧
       ∃ φ : (Fin 3 → ℝ) × ℝ → E,
         IsCylindricalDiagram φ (stdSimplex ℝ (Fin 3)) (derivedNeighborhood K L).space := by
-  let _ : Finite (derivedNeighborhood K L).faces := (derivedNeighborhood_faces_finite K L).to_subtype
+  let _ : Finite (derivedNeighborhood K L).faces :=
+    (derivedNeighborhood_faces_finite K L).to_subtype
   have hN := IsOrientable.of_le (secondDerived K) (derivedNeighborhood K L)
     (derivedNeighborhood_faces_subset K L) hK.secondDerived (hK.derivedNeighborhood L)
     (hor.barycentricSubdivision hK |>.barycentricSubdivision hK.barycentricSubdivision)

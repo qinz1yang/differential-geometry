@@ -2963,4 +2963,49 @@ step 2 只做了 grep 与接口陈述，没有动工（月牙是一个项目，�
   公理闭包均为 `propext / Classical.choice / Quot.sound` 的子集，13 个适用环境 linter 零诊断。
 - 30.3 尚缺的几何接线是：从实际嵌入分裂盘 `Δ` 及 `D₂ ∩ N(Δ)` 的两 3-胞腔构造书中的
   `N = C₁³` 与替换面 `C' = (C - Int A₁) ∪ Δ₁`，并证明
-  `frontier N \ C' = Int A' ∪ Int Δ₂` 的道路连通性、其避开 `C` 性以及 `N` 外两面的精确相等。
+  `frontier C₁³ \ C' = Int A'` 的道路连通性、其避开 `C` 性以及 `C₁³` 外两面的精确相等。
+  书上的 `Bd N(Δ) \ C' = Int A' ∪ Int Δ₂` 是整个正则邻域边界的公式，不是 `C₁³` 的 frontier 公式。
+
+## 92. 2026-09-19 I.3：PL 2-球面去掉两不交盘的道路连通性
+
+状态：**已闭合一个独立几何层；30.3 整体仍为 partial**。
+
+- 新模块 `SurfaceSplitAnnulus.lean` 的 `IsPLSphere.isPathConnected_one` 证明 PL 1-球面道路连通；
+  `IsPLSphere.isPathConnected_sdiff_union_of_disjoint_isPLBall_two` 证明 PL 2-球面去掉两张互不相交的
+  PL 2-胞腔后道路连通。
+- 证明不使用“环带补集道路连通”的假设：把任意盘对通过
+  `exists_isPLHomeomorphOn_map_disk_pair_eqOn_disk` 搬到实际棱柱 `L.space × [0,1]` 边界上的两个端盘；
+  `boundaryComplex_space_prism` 将其补集精确识别为
+  `(boundaryComplex 2 L).space × (0,1)`，两因子的道路连通性给出结论。这同时提供了一个可满足的
+  非退化具体模型。
+- 私有聚焦检查 exit `0`、零诊断、共享产物未改动。外部静默审计动态核对本模块恰有 2 条
+  非自动声明，并审计 5 条关键复用声明；全部传递公理闭包只含
+  `propext / Classical.choice / Quot.sound` 的子集，13 个适用环境 linter 零诊断。收据在
+  `C:\Users\liao9\AppData\Local\Temp\codex-e3-slab-private\DifferentialGeometry\Topology\PiecewiseLinear\SurfaceSplitAnnulus.json`
+  与 `C:\Users\liao9\AppData\Local\Temp\codex-e3-slab-private\external-audit.json`。
+- 下一层仍须从书中的实际正则邻域分解产出 `C₁³`、其边界上两张不交盘
+  `D₂ ∩ N(Δ)` 与 `Δ₁`，以及替换面与原面在 `C₁³` 外的精确相等；本层没有把这些结论包装为输入。
+
+## 93. 2026-09-19 I.3：实际棱柱图的半胞腔与边界盘对
+
+状态：**已闭合一个真实生产者层；30.3 整体仍为 partial**。
+
+- 新模块 `SurfaceSplitNeighborhood.lean` 的 `PLPieceIn.frontier_image_prism_subinterval` 对一张实际
+  `PLPieceIn (E × ℝ) 3 X N` 棱柱图，把半棱柱像 `C₁³` 的 frontier 精确计算为两端盘与
+  侧环带之并。证明是先把 `PLPieceIn` 真实限制到半棱柱，再用边界复形不变性和
+  `frontier_prod_eq`，没有假定 frontier 公式。
+- `PLPieceIn.exists_prism_cut_cell_with_boundary_disks` 从同一张图实际产出 `C₁³`与两张端盘；
+  三者分别证为多面体 3-胞腔、两张多面体 2-胞腔，两盘实际包含于 `frontier C₁³`
+  且两两不交。安全边界被精确识别为侧环带的像，并直接复用
+  `IsPLSphere.isPathConnected_sdiff_union_of_disjoint_isPLBall_two` 证明道路连通。
+- 私有聚焦检查 exit `0`、零诊断、共享产物未改动。外部静默审计动态核对本模块恰有 3 条
+  非自动声明，并审计 7 条关键复用声明；全部传递公理闭包只含
+  `propext / Classical.choice / Quot.sound` 的子集，13 个适用环境 linter 零诊断。收据在
+  `C:\Users\liao9\AppData\Local\Temp\codex-e3-slab-private\DifferentialGeometry\Topology\PiecewiseLinear\SurfaceSplitNeighborhood.json`
+  与 `C:\Users\liao9\AppData\Local\Temp\codex-e3-slab-private\external-audit.json`。
+- 现有库仍没有从实际嵌入分裂盘 `Δ ⊆ C` 和正则邻域 `N(Δ)` 产生与 `D₂ ∩ N(Δ)`
+  相容的棱柱图的定理。缺的精确接口应同时给出：`N(Δ)` 的盘乘区间 `PLPieceIn`、
+  `D₂ ∩ N(Δ)` 与 `Δ₁` 对应于半棱柱两端盘，以及
+  `C ∩ C₁³ = (D₂ ∩ N(Δ)) ∪ A₁`、`C' ∩ C₁³ = (D₂ ∩ N(Δ)) ∪ Δ₁`的实际迹等式。
+  这一生产者到位后，本层给出的安全环带可直接接上
+  `Separates.of_frontier_replacement`；本模块没有把避开性或邻域外相等伪装成结构字段。

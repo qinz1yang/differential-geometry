@@ -12,7 +12,9 @@ in MoiseChain need repair before use: Moise252 must retain the new boundary's
 non-nullhomotopy; Moise331 must choose a sufficiently small genuine regular
 neighborhood; Moise351 needs a one-dimensional locally finite polyhedral input
 and the actual regular-neighborhood relation. h is running that repair round
-on Sol max; the corrected contracts are not yet accepted.
+on Sol max; its first delivery through 585cc71a0 is held because 33.1 excludes
+branching graphs and 35.1 uses raw-star stages without genuine global
+regular-neighborhood evidence. The corrected contracts are not yet accepted.
 
 The normal-form producer must follow the actual source route. Section 25, Lemma 2 is only
 for locally injective maps with fibers at most two; Section 25, Lemma 3 supplies such a map
@@ -20,23 +22,58 @@ by projecting an embedded disk from a two-sheeted cover after induction. The
 cover, PL projection, smaller normal-system neighborhood, boundary and subgroup
 relations must be constructed. Do not infer those properties for an arbitrary
 original NormalSystem or from DoubleCarrier. F received this priority after
-delivering 495a3e343; no running round was interrupted. E3 owns I.4 through I.3, while S keeps
-24.12: one actual generating polygon's nullhomotopy -> all loops -> actual CST.
-S's product/finite 24.11 delivery aa6ff83be awaits independent acceptance.
-E3 delivered path replacement at b5e36cfe5 and continues the actual geometric
-split-data construction, still within 30.3. The direction is 30.6 -> 30.7.
+delivering 495a3e343; no running round was interrupted. F's actual full-cover
+projection layer through 51b4ee8ad is independently accepted: nine modules,
+92 nonautomatic declarations, 15 critical reuse entries, two nonempty models
+and 13 clean linters. The full cover diagram producer and strict descent remain
+open. Inward embeddings and proper projection through 3c7d44e19 are also
+accepted: five modules, 23 declarations, 13 critical reuse entries, four
+nonempty models and 13 clean linters. The boundary condition is constructed,
+not added as a DoubleCoverDiagram or NonsingularCell hypothesis.
+E3 owns actual I.3 geometry. The owner authorized the separate M304 task on
+Astra max at 04:24 UTC to own I.4; it can construct the initial separating
+surface, compression induction or actual T.8 independently of E3's active round.
+S's product and finite native 24.11/24.12 through
+434d5352c are independently accepted; S now owns compact PL smoothing.
+E3's path replacement and annulus connectivity through 18f861c89 are accepted;
+its half-prism cut-cell construction 1cea2fbe7 is accepted. The compatible local
+neighborhood and exact trace equations from the original disk pair remain open. The direction is 30.6 -> 30.7.
 
 Phase 3 proves only PL approximation and the resulting PL atlas. Compact PL
 smoothing is an independent open phase with its own producer and acceptance.
 The approximation stage must retain noncompact open sets and pointwise shrinking
 error control. Five existing endpoint-chain modules were missing from root
-reachability; the six-import repair is prepared but unapplied. The owner
+reachability; all six planned direct imports are now present and statically
+reachable, with 9363 project modules (including the root) in the root closure. The owner
 stopped the full-source build at 2026-09-19 02:00 UTC, retaining outputs with
-no automatic restart. Seven leaves/26 declarations passed focused checks;
+a discretionary restart only when compatibility verification or prolonged
+all-lane blockage warrants it. Seven leaves/26 declarations passed focused checks;
 full-source acceptance remains incomplete. Current rounds and the acceptance
 queue are in MOISE_PLAN.md.
 
 ## 0. 目标命题与已证消费者
+
+Owner-authorized M304 addition, 2026-09-19 UTC: the first independent layer
+constructs a finite connected orientable two-sided polyhedral separator of
+a compact connected set and a disjoint closed connected set, inside any
+specified neighborhood of the former. `SeparatingSurface.lean` and
+`Connected/SeparatorLocation.lean` pass focused checks, all-declaration
+axiom audit, a nonempty concentric-ball model and 13 environment linters.
+Independent integration replay of the first five declarations and ten
+critical reused producers is accepted; see the seventeenth delivery receipt.
+The independently accepted radial-annulus layer identifies the shell frontier
+and simply connected interior, and locates an actual initial separating
+surface inside that interior. All 24 declarations, ten supporting declarations
+and three radial-shell models pass independent axiom/lint replay.
+The finite-ambient input to compression is source-constructed in 7c051baf7:
+actual nullhomotopies are captured in a finite polyhedral neighborhood inside
+the specified open set, and a connected non-spherical closed surface there
+has a nontrivial fundamental-group element killed by inclusion. All five new
+declarations, nine reused entries, two circle-model declarations and 13 linters
+pass independent replay; this layer is accepted.
+E3 retains 30.3. Compression via 26.4, the annular construction 28.19,
+strict Betti descent and the full PL-sphere endpoint 30.4 remain open.
+See HANDOFF_CODEX_M304.md for exact signatures and evidence.
 
 Phase 3 的唯一终点是一条定理：
 
@@ -385,8 +422,8 @@ AuditS62 的 16 项传递公理闭包均仅 `propext`、`Classical.choice`、`Qu
 | C.3 | 24.6：三角剖分提升到有限覆盖，且组合流形性保持 | `theorem exists_lift_simplicialComplex [FiniteDimensional ℝ E] (K) [Finite K.faces] {p : X' → K.space} (hp : IsCoveringMap p) (hfin : ∀ x, (p ⁻¹' {x}).Finite) : ∃ N (K' : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin N))) (e : K'.space ≃ₜ X'), K'.faces.Finite ∧ (∀ q (hq : q ∈ K'.faces), ∃ t ∈ K.faces, ∃ A, (∀ x (hx : x ∈ convexHull ℝ (q : Set _)), ((p (e ⟨x, K'.convexHull_subset_space hq hx⟩) : K.space) : E) = A x) ∧ A '' convexHull ℝ (q : Set _) = convexHull ℝ (t : Set E)) ∧ ∀ n, IsCombinatorialManifoldWithBoundary n K → IsCombinatorialManifoldWithBoundary n K'` | §25 L3 | done（2026-09-15，`CoveringTriangulation.lean`）：以基复形顶点的纤维为有限顶点集，每个基单形从指定纤维点唯一提升；重叠由提升唯一性粘合。标准基实现给出有限 `coveringComplex`，逐面映射粘为 `coveringSpaceHomeomorph`；顶点 link 的 `coveringVertexLink_isGlueIso` 搬运任意维带边组合流形性。此直接逐单形路线不需要先细分至均匀覆盖闭星。检查 exit=0、零 warning，AuditC3 十六端点及 AuditC3Reuse 三条 D4 复用声明均仅标准三公理，未经过 `HurewiczLowDegrees.lean`；源码提交 `f7e70bc61`。 | 4k–6k |
 | C.4 | 24.7：不可定向连通带边多面体 3-流形有二重覆盖（且覆盖可定向，Problem 24.11） | H.2b 的 `OrientationCocycle.lean`：`exists_orientationCocycle_of_not_isOrientable hK h` 给 `barycentricSubdivision K` 上的 `SimplicialBoolCocycle` 且非上边界；接 C.2 | §25 L3 | new；H.2b 输入已闭合并审计，二重覆盖流形的构造与可定向性仍待 C.4 消费者证明，不能由输入完成推断 C.4 已完成 | 2k–3k |
 | C.5 | 24.8：紧致连通可定向带边、某边界分支非 2-球面 ⟹ 二重覆盖 | H.5 的 `p¹ > 0` ⟹ `H₁(-;ℤ₂) ≠ 0` ⟹ 非上边界 `SimplicialBoolCocycle` ⟹ C.2/C.3 | §25 L3 | done（2026-09-16，`65bd07eb6`、`cb2153a6c`）。`BoundaryHomology.lean`/`HandleCount.lean` 将 I5 的 Betti 系数推广到任意域，原 `bettiOne_pos_of_boundary_component_not_sphere` 的 ℚ 端点保持不变。`HomologyCocycle.lean` 通过有限几何复形的 normalized chain complex 与 realization 同调同构，从非零 `H₁(-;ℤ₂)` 选取非零对偶函子，在边上构造实际 `SimplicialBoolCocycle`，并用对某一循环非零而对所有 2-边界为零证明它不是上边界。`DoubleCoverExistence.lean` 的 `exists_connected_double_cover_complex_of_isOrientable_of_boundary_component_not_sphere` 直接消费 I5，给出连通二重覆盖、有限提升复形及带边组合 3-流形性。两模块检查 exit=0、零 warning；AuditC5 的 17 项新端点/首次复用声明均仅 `propext`、`Classical.choice`、`Quot.sound`；未 import 或传递经过 `Topology/Homology/HurewiczLowDegrees.lean` | 2k–3k |
-| C.6 | 24.9–24.10 CST 与柱形图、CST 两两组合等价 | 原书页 178 的 CST 先要求底空间是拓扑实心环面，再要求循环 PL 3-胞腔分解。`IsCylindricalDiagram` 精确限制纤维：只有两个端面之间允许识别；`exists_cylindricalDiagram_iff_ball_pair` 等价于两个 PL 3-球相交于各自边界上的两个不交 PL 2-盘 | §28, §30.7, §31 | **2026-09-19:** product/CST delivery aa6ff83be awaits acceptance; full 24.9/24.10 equivalence is not claimed. Historical details: **partial（2026-09-18 更新）**。`77345bbef` 完成两个不交边界盘的同时定位，允许指定第一个盘的映射；`3a22c9bc4` 构造柱形图；`1c7986c99` 从柱形图实际切出两个球及边界盘，证明双向判据，并在端面识别相同的条件下构造 PL 同胚（`CylinderComparison.lean`）。首尾识别条件仅属于该比较引理，没有被当作 24.10 的新假设。`CylindricalClassification.lean` 已从实际柱形图和有限可定向 3-流形目标构造恒等端映射的新图，并给出任意两个此类目标间的 PL 同胚；底盘仅要求 `IsPLBall 2`，其三角剖分、端映射、伪同痕和底盘比较映射都在证明内产生。仍需一般原书 CST 循环分解、拓扑实心环面条件与该判据的完整接线；24.9/24.10 尚未标 done。全部聚焦检查 exit=0、零警告；AuditS150–S152 共 25 项（含复用的 `IsOrientable.of_le`）仅标准三公理 | 3k–5k |
-| C.7 | 24.11–24.12：可定向 3-流形中多边形的正则邻域是 CST；可缩多边形的正则邻域是 CST（任意 `M`） | `NeighborhoodCycle.lean` 的实际循环片与 `NeighborhoodCylinder.lean` 的柱形图；定向传递直接使用 `Orientation.lean` 的 `IsOrientable.of_le`，不含 23.17 参数 | §28.19, §31, §34 L1 | **2026-09-19:** S reports actual standard product and finite 24.11 CST at aa6ff83be, pending acceptance. Current lane is 24.12: single generating polygon nullhomotopy -> all loops -> actual CST; do not add all-loop nullhomotopy as a new premise. Historical details: **partial（2026-09-18 更新）**。`3a22c9bc4` 的 `exists_ball_pair_with_boundary_cover_derivedNeighborhood_circle` 给出两个实际有限 3-球复形及同时属于两者边界的两个不交 2-盘；`exists_cylindricalDiagram_derivedNeighborhood_circle` 无需可定向性；`exists_cylindricalDiagram_isOrientable_derivedNeighborhood_circle` 从 `IsOrientable 3 K` 得邻域可定向及柱形图，直接消费已证 23.17。该层已闭合、无未证参数。可定向实际柱形图的无扭转层和正则邻域的恒等端映射柱形图现已交付；24.11 仍需接原书 CST/拓扑实心环面接口，24.12 的可缩回路定向传递尚未接线。已读到整合分支 `CoveringOrientation.lean` 的 `isOrientable_coveringComplex_orientationCocycle`，不得再把覆盖的可定向性当作尚无生产者。检查 exit=0、零警告，AuditS151 十项仅标准三公理（计入 C.6 所列总数）；2026-09-18：`MobiusSquare.lean` 在五个三角形覆盖方形的基础上闭合全部十个两两交集（四条闭边、三个顶点、三对空交集）。聚焦检查及全文件 25 项公理/环境 linter 审计 exit=0、零诊断；输出保留在独立临时目录。`MobiusSquareMap.lean` 已构造五个顶点匹配的仿射 PL 图卡；`mobiusSquareChart_comp_eqOn_inter` 对任意满足上下边翻转等式的 `g : ℝ × ℝ → F` 证明全部复合图卡在共同面上相等，`F` 无额外结构。该图卡层的 15 声明审计已通过。现已证明 `injOn_mobiusSquareTriangle`、`isPLHomeomorphOn_comp_mobiusSquareChart` 和 `mobiusSquareChart_comp_image_inter`，并由有限 PL 粘合得到 `exists_isPLHomeomorphOn_mobiusComplex_of_square`：对方形上的分片仿射 `g`，完整翻转缝等式和只允许翻转缝识别的纤维条件给出 `mobiusComplex.space` 到 `g` 的方形像的 PL 同胚。整体模型桥接已闭合；模块聚焦检查与动态枚举的全部 27 声明（含 18 private）公理审计、13 项环境 linter 均 exit=0、零诊断，公理仅标准三公理。新增 `CirclePrismComparison.lean`：`exists_isPLHomeomorphOn_circle_prod_of_isPLCirclePositive_iff` 从同定向的两个圆周 PL 自同胚生产完整指定上下端映射的 PL 柱体同胚；`exists_isPLHomeomorphOn_arc_prod_of_isPLCirclePositive_iff` 生产单射 PWA 弧带，给出完整上下端参数式及上下端面原像的精确 iff。两反向映射复合保向由 `CircleLiftOrientation.lean` 的 lift 引理证明。两模块聚焦检查和动态全声明审计共 21+4 项、各 13 项环境 linter 均 exit=0、零诊断，仅标准三公理。该 pseudo-isotopy 不要求中间水平截面是一条弧。现已由 `CircleReflection.lean` 生产反向 PL 对合和满足完整 `r(γ(s)) = γ(1-s)` 的参数弧；`MobiusMappingTorus.lean` 用实际反向 monodromy 的逆复合该反射、端面原像 iff 与整体单射证明完整翻转缝和精确纤维，并给出 `exists_isPLHomeomorphOn_mobiusComplex_of_not_isPLCirclePositive`：Möbius 模型到实际柱形图目标子集的 PL 同胚。连同 `CircleAnnulusOrientation.lean` 的反射生产者，三模块聚焦检查、动态全部声明审计共 33+4+2=39 项（含 3 private）及各 13 项环境 linter 均 exit=0、零诊断，仅标准三公理；三个旧圆周辅助定理去掉了不必要的有限维假设。`MobiusEmbedding.lean` 又闭合任意维数的 `IsOrientable.of_isPLHomeomorphOn_subset` 及同环境包含推论：实际细分使嵌入像成为子复形，再由已证 23.17 和 PL 不变性传递定向；据此排除 Möbius 带在可定向曲面中的 PL 嵌入，`isPLCirclePositive_of_isOrientable_cylindricalDiagram` 从圆柱形图的像包含于可定向曲面推出 monodromy 保向，不要求像等于环境曲面或另有流形结构。该模块全部 4 个声明、13 项环境 linter、公理闭包审计均 exit=0、零诊断，仅标准三公理。`CylindricalBoundary.lean` 已证明实际盘柱形图的侧面像包含在目标边界：内层闭条带的像是相对邻域，由棱柱边界和局部边界不变性处理内部高度，再用连续性补两端；不另设侧面包含或可定向假设。全部 3 个声明（含 1 private）、5 个关键复用引理及 13 项环境 linter 审计 exit=0、零诊断，仅标准三公理；编译 12.504 秒、审计 84.222 秒（含准入等待）。非空实例及其有限标准盘复形也已检查并审计。`CylindricalMonodromy.lean` 进一步闭合一般带边基空间的边界柱形图，以及可定向 3-流形中盘柱形图的边界 monodromy 保向；顶到底与底到顶两个约定都有逐点端面等式约束，逆映射转换已证。全部 3 个公共声明、7 个关键复用引理及 13 项环境 linter 审计 exit=0、零诊断，仅标准三公理；非空可定向目标实例也已检查。`CylindricalClassification.lean` 已完成盘端映射的 PL 伪同痕、同目标且端面逐点相同的新柱形图、任意两个可定向实际盘柱形图目标的 PL 同胚，以及 `exists_cylindricalDiagram_derivedNeighborhood_circle_eq_ends` 的正则邻域应用。四个公共声明、六个关键复用引理和 13 项环境 linter 全过；最终具体实例产生非空且两端逐点相等的图，全部 exit=0、零诊断，仅标准三公理。原书 CST 的循环分解/标准拓扑乘积接口，以及可缩多边形的定向覆盖接线仍未完成，C.7 仍为 partial | 3k–5k |
+| C.6 | 24.9–24.10 CST 与柱形图、CST 两两组合等价 | `IsCombinatorialSolidTorus` 按书页 178 定义为标准拓扑实心环面加至少三个有限 PL 3-胞腔的循环覆盖，相邻交集为双方边界上的 PL 2-盘；`IsCylindricalDiagram` 精确限制端面识别纤维 | §28, §30.7, §31 | **partial（2026-09-19）**。`77345bbef`、`3a22c9bc4`、`1c7986c99` 已给两不交边界盘定位、实际柱形图、双球/双盘判据及相同端面识别下的比较。`CylindricalClassification.lean` 已从可定向有限 3-流形上的实际盘柱形图构造恒等端映射图并比较任意两个此类目标；端映射、伪同痕、底盘比较均内部产生。`701d48343` 的紧底商映射给实际 `P × loopCircle` 同胚及坐标公式，`10f680db7` 的 `SolidTorusProduct.lean` 转成标准欧氏闭盘乘圆周模型；已有 `IsTopologicalSolidTorus` 原样下移，`MoiseChain` 全部 25 声明已重检。原书 CST 定义及其实际正则邻域应用现已交付；一般 CST 与柱形图的双向接线、任意 CST 的 24.10 比较仍未闭合，不能由可定向实际图的比较标成 done。逐层源码、记录、根导入一起提交；全声明/13 环境 linter/三公理和非空实例证据见 HANDOFF_CODEX_S.md 最末三节 | 3k–5k |
+| C.7 | 24.11–24.12：可定向 3-流形中多边形的正则邻域是 CST；可缩多边形的正则邻域是 CST（任意 M） | 24.11：`isCombinatorialSolidTorus_derivedNeighborhood_circle`；24.12：`isCombinatorialSolidTorus_derivedNeighborhood_of_nullhomotopic_cycle`，分别在 `NeighborhoodSolidTorus.lean` 与 `NeighborhoodContractiblePolygon.lean` | §28.19, §31, §34 L1 | **24.11/24.12 有限原生形式 done（2026-09-19）**。K 为有限带边组合 3-流形，P 为有限闭组合 1-流形子复形。24.11 从环境可定向与 P 连通得到实际 `(derivedNeighborhood K P).space` 为原书 CST；公开签名保持不变。24.12 只要求 P 上实际遍历一次的 spanning `IsCycle` 经 `walkPath_map` 精确纳入 K 后，其自由圆周映射零伦；生成性、连通性、任意整数幂、任意基点回路零伦、邻域定向均在证明内产生，不再要求环境可定向或 all-loops hnull，也无 Schoenflies/柱形图假设。`PolygonNullhomotopy` 接通 `f446f4968` 的自由/带基点等价、`f54be2f43` 的整数幂与基点转换及已有实际多边形生成定理，再消费 `DerivedNeighborhoodPolygon` 的定向生产者和实际盘图/乘积/循环片。五模块 9 个非自动声明、20 个关键复用条目、每模块 13 环境 linter 全过；聚焦检查和两项非空四面体实例均 exit 0、零诊断、仅标准三公理，导入闭包不经 HurewiczLowDegrees。完整原始/归一化源码身份、审计源、收据、耗时与精确范围见 HANDOFF 最末节及 `NullPolygon-round-verification.json`。无限三角剖分形式未在本轮声称；整合复检已通过：十模块全部 41 声明、33 个独立复用声明、13 linters、非空端点实例均零诊断且仅标准公理；全库构建按用户指示停止。C.6 的一般 24.9/24.10 仍 partial。 | 3k–5k |
 
 ### 4.5 车道 C（3）：§25 Stallings 环定理（`chap:dehn-loop`）
 
@@ -440,8 +477,8 @@ AuditS62 的 16 项传递公理闭包均仅 `propext`、`Classical.choice`、`Qu
 |---|---|---|---|---|---|
 | I.1 | 30.1（书页 214）：X 单连通、局部连通且连通开集道路连通；H、K、C、D 是两两不交的闭集，H、K 连通；C ∪ D 分离 H、K 则 C 或 D 分离 H、K | 书上完整特化签名：`[SimplyConnectedSpace X] [LocallyConnectedSpace X] (hpath : ∀ U : Set X, IsOpen U → IsConnected U → IsPathConnected U) {H K C D : Set X} (hH : IsConnected H) (hK : IsConnected K) (hHclosed : IsClosed H) (hKclosed : IsClosed K) (hC : IsClosed C) (hD : IsClosed D) (hHK : Disjoint H K) (hHC : Disjoint H C) (hHD : Disjoint H D) (hKC : Disjoint K C) (hKD : Disjoint K D) (hCD : Disjoint C D) (hsep : Separates (C ∪ D) H K) : Separates C H K ∨ Separates D H K`；由 `separates_or_separates_of_union hpath hC hD hCD hH.isPreconnected hK.isPreconnected hsep` 直接得到 | I.2, §32 Step 2 | **done**。`6cf85c2d3`；`Connected/PhragmenBrouwer.lean` 的通用端点及局部道路连通版本 `phragmen_brouwer` 保留 H/K 的 `IsPreconnected` 假设，比书上允许更弱条件：无需闭、允许为空。书上 `IsConnected H/K` 蕴含这些假设；`Disjoint C D` 明确保留，其余不交条件由分离前提蕴含。两个模块 exit=0、零警告，AuditS147 九项仅标准三公理 | 3k–5k |
 | I.2 | 30.2：有限分支的闭集分离两个非空连通集 ⟹ 某分支分离 | `Connected/SeparatingComponent.lean`：`exists_separates_of_finite_iUnion`、`exists_separating_connectedComponentIn`、`exists_separating_component` | §30.4, §30.6, §33 L5/L6, §33 L10 | **done**。`bc20b0b45`；从 `[Finite (ConnectedComponents C)]`、`IsClosed C` 和 `Separates C H K` 实际产生 `x ∈ C`，使 `connectedComponentIn C x` 分离 H/K。先对有限个两两不交闭集归纳，再由真实连通分支构造该族。两种空间假设版本同 I.1，无未证参数。模块 exit=0、零警告，AuditS148 三项仅标准三公理 | 0.5k |
-| I.3 | 30.3：分裂运算保持分离性（`N(Δ)`、`Bd A_i`、`C'`） | T.8, T.9 | §30.4, §30.6, §30.7, §32 | E3 active: path replacement b5e36cfe5 independently accepted. Next construct the actual local split cells, connected safe boundary and equality outside the cell. T.9 Euler data alone are insufficient. | 2k–3k |
-| I.4 | **30.4 球壳定理**：ℝ³ 中球壳 `X` 内有多面体 2-球面分离 `B₀` 与 `B₁` | `theorem exists_isPLSphere_separating_of_sphericalShell (X : Set ℝ³) (hX : IsSphericalShell X B₀ B₁) : ∃ S, IsPLSphere 2 S ∧ S ⊆ interior X ∧ Separates S B₀ B₁`；证明：F4.2 的多面体邻域 `N`、M.3、B.1、B.5、T.8、I.3、`p¹` 下降（H.4） | S.6, §34 L3 | E3 owns assembly, beginning with I.3. B.5 (26.4) and T.8 (28.19) remain explicit open gates; endpoint unproved. | 4k–6k |
+| I.3 | 30.3：分裂运算保持分离性（`N(Δ)`、`Bd A_i`、`C'`） | T.8, T.9 | §30.4, §30.6, §30.7, §32 | **partial（2026-09-19）**：`Connected/Separation.lean` 已以 `JoinedIn.compl_of_frontier_replacement` 证明首入/末出参数间的道路可替换到安全边界，并以 `Separates.of_frontier_replacement` 导出局部替换保持分离；模块 exit 0、整模块 10 项审计仅标准三公理、13 linter 零诊断。`SurfaceSplitAnnulus.lean` 又把任意 PL 2-球面上两张不交 PL 2-胞腔搬到棱柱两端，将补集精确识别为 PL 圆与开区间的乘积，因而证明该补集道路连通；2 条新声明与 5 条关键复用声明审计仅标准三公理，13 linter 零诊断。`SurfaceSplitNeighborhood.lean` 现已从真实 `PLPieceIn` 棱柱图限制出半棱柱 3-胞腔与其两张实际边界端盘，证明两盘不交，并把安全 frontier 精确识别为侧环带的像；其道路连通性直接复用前一条球面删双盘定理。3 条新声明与 7 条关键复用声明审计仅标准三公理，13 linter 零诊断。仍缺从实际嵌入分裂盘和正则邻域产生与 `D₂ ∩ N(Δ)` 相容的该棱柱图及局部迹等式；因此邻域外精确相等和安全边界避开原曲面尚未接上，未被包装成输入 | 2k–3k |
+| I.4 | **30.4 球壳定理**：ℝ³ 中球壳 `X` 内有多面体 2-球面分离 `B₀` 与 `B₁` | `theorem exists_isPLSphere_separating_of_sphericalShell (X : Set ℝ³) (hX : IsSphericalShell X B₀ B₁) : ∃ S, IsPLSphere 2 S ∧ S ⊆ interior X ∧ Separates S B₀ B₁`；证明：F4.2 的多面体邻域 `N`、M.3、B.1、B.5、T.8、I.3、`p¹` 下降（H.4） | S.6, §34 L3 | M304 owns I.4 on Astra max, separately authorized at 2026-09-19 04:24 UTC; E3 retains actual I.3 geometry. Construct the initial separating surface, compression induction or actual T.8 in parallel. B.5 (26.4), T.8 (28.19) and I.3 remain explicit open gates; endpoint unproved. | 4k–6k |
 | I.5 | 30.6 环壳定理：ℝ³ 中环壳 `Y` 内有多面体环面分离 `T₀` 与 `T₁` | I.2, I.3, B.5, B.6, van Kampen 最简情形（本库 `VanKampen/FreeProduct.lean`，待审计）、H.4（`π(T)` 交换 ⟹ 环面，避免 26.8） | §30.7 | new | 5k–8k |
 | I.6 | 30.7：拓扑实心环面 `S₁ ⊆ Int S₂`、`Cl(S₂ − S₁)` 环壳 ⟹ 存在 CST `S`，`S₁ ⊆ Int S`，`S ⊆ S₂` | I.5, B.5, I.3, T.1 | §31.1 | new | 3k–4k |
 | I.7 | 30.8：脊 `J` 生成 `π(S)` | `π(S₂) ≅ ℤ` 与收缩核 | §31.2, §34 L1–L2 | new | 1k–2k |
