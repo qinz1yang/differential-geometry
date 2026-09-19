@@ -44,7 +44,7 @@ smoothing is an independent open phase with its own producer and acceptance.
 The approximation stage must retain noncompact open sets and pointwise shrinking
 error control. Five existing endpoint-chain modules were missing from root
 reachability; all six planned direct imports are now present and statically
-reachable, with 9321 project modules (including the root) in the root closure. The owner
+reachable, with 9334 project modules (including the root) in the root closure. The owner
 stopped the full-source build at 2026-09-19 02:00 UTC, retaining outputs with
 a discretionary restart only when compatibility verification or prolonged
 all-lane blockage warrants it. Seven leaves/26 declarations passed focused checks;

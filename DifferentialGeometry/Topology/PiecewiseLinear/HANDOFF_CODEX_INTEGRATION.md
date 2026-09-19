@@ -1255,3 +1255,32 @@ The accepted carrier-obstruction checkpoint is integrated and pushed as
 removed after preserving the exact source. Static root reachability is now
 9321 project modules including the root, with no missing project sources.
 The full-source build remains stopped; no full-root acceptance is claimed.
+
+
+## 34. Actual graph handles and cap comparison accepted (2026-09-19 UTC)
+
+S 4627710d3 + 3c08c2aba are independently accepted: seven freshly compiled
+modules in 76.403 seconds; all 27 nonautomatic declarations, 34 distinct
+critical reused declarations, two concrete geometric scenarios (six probe
+declarations) and 13 environment linters pass the 46.824-second audit.
+All checks exit 0 with zero diagnostics and standard foundational axioms.
+No private prerequisite objects were reused; upstream shared artifacts remain
+read-only. This is focused verification, not a full-source build.
+
+The general sphere/cell reparametrization produces an actual quotient
+homeomorphism with exact lower-space and cap formulas. The actual tetrahedron
+produces four disjoint vertex balls, a loop-closing edge prism and an attaching
+embedding into the intrinsic boundary of the old graph neighborhood. Its
+adjunction is homeomorphic to the exact successor graph neighborhood and fixes
+the old carrier. The nontrivial cap fixture moves a norm-one-half interior point
+to its negative while fixing the lower ball. No smoothness at the radial center
+or seam is asserted. Higher-index product pairs, global finite handle assembly,
+smooth attaching/framing, corner rounding and smooth two-sphere classification
+remain open; compact smoothing is not complete.
+
+Lean source delta: +681/-0, including seven flat-root imports. The seven modules
+are all new; the three private declarations are included in the total 27.
+Receipt: .lake/verified-sixteenth-lane-delivery-20260919.json. Exact audit source,
+source/object hashes, model provenance, timings and logs are retained there and
+in the private verification directory. Root import coverage is checked
+statically; the full-root build remains stopped.

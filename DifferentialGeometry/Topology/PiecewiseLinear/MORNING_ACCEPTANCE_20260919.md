@@ -51,7 +51,7 @@ Handoff only on delivery or urgent stop/restart.
 
 Pending source acceptance is tracked in .lake/pending-lane-checkpoints.json.
 Retain full-root build artifacts; that build is stopped. Six endpoint imports
-are now registered and statically reachable (9321 project modules including the root, no missing
+are now registered and statically reachable (9334 project modules including the root, no missing
 project source). The seven previously audited endpoint leaves retain their
 exact checked Git blobs; no full-root success is claimed. Focused checks do not
 certify a full-source build or the remaining classical input propositions.
@@ -62,7 +62,7 @@ h 585cc71a0 is held: the 33.1 one-manifold hypothesis wrongly excludes
 branching graphs, and the proposed 35.1 raw-star tower does not yet establish
 a genuine global regular-neighborhood relation. h continues corrections.
 F through 3c7d44e19 is accepted, including the inward-push/proper-projection
-layer. S 4627710d3 sphere/cell attachment awaits acceptance.
+layer. S 4627710d3 cap comparison and 3c08c2aba actual graph handles are now accepted.
 E3 1cea2fbe7 half-prism cut cells from a supplied compatible
 chart are now independently accepted. The compatible neighborhood producer from the
 original disk pair remains open and is E3's continuing round.
@@ -193,3 +193,32 @@ diagnostics and only standard axioms. Lean +184/-0 including the root import.
 Receipt: .lake/verified-fifteenth-lane-delivery-20260919.json. This is a proved
 negative interface result with a required producer repair, not completion of
 the loop theorem or a universal proof that all NormalSystems are empty.
+
+
+## Actual graph handles and topological cap comparison
+
+S 4627710d3 + 3c08c2aba are independently accepted: seven freshly compiled
+modules in 76.403 seconds; all 27 nonautomatic declarations, 34 distinct
+critical reused declarations, two concrete geometric scenarios (six probe
+declarations) and 13 environment linters pass the 46.824-second audit.
+All checks exit 0 with zero diagnostics and standard foundational axioms.
+No private prerequisite objects were reused; upstream shared artifacts remain
+read-only. This is focused verification, not a full-source build.
+
+The general sphere/cell reparametrization produces an actual quotient
+homeomorphism with exact lower-space and cap formulas. The actual tetrahedron
+produces four disjoint vertex balls, a loop-closing edge prism and an attaching
+embedding into the intrinsic boundary of the old graph neighborhood. Its
+adjunction is homeomorphic to the exact successor graph neighborhood and fixes
+the old carrier. The nontrivial cap fixture moves a norm-one-half interior point
+to its negative while fixing the lower ball. No smoothness at the radial center
+or seam is asserted. Higher-index product pairs, global finite handle assembly,
+smooth attaching/framing, corner rounding and smooth two-sphere classification
+remain open; compact smoothing is not complete.
+
+Lean source delta: +681/-0, including seven flat-root imports. The seven modules
+are all new; the three private declarations are included in the total 27.
+Receipt: .lake/verified-sixteenth-lane-delivery-20260919.json. Exact audit source,
+source/object hashes, model provenance, timings and logs are retained there and
+in the private verification directory. Root import coverage is checked
+statically; the full-root build remains stopped.

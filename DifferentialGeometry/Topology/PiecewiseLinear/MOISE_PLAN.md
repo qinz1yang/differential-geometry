@@ -93,12 +93,16 @@ no acceptance of these contracts is claimed.
    Alexander duality is not an extra prerequisite of that tame arrow.
 3. Continue 30.6 -> 30.7, 30.8 and sections 31--35 with the open producers
    listed in the detailed Phase 3 table. There is no 30.7 -> 30.6 edge.
-4. S now runs compact PL smoothing as a separate phase, after its reported
-   finite 24.12 delivery through 434d5352c.
-   First audit finite triangulation, handle attachment, circle/framing and
-   sphere-extension producers. This candidate construction remains to be
-   established. Its compact theorem needs a compact assembly theorem and
-   does not prove the unrestricted PLSmoothing 3.
+4. S is working on compact PL smoothing as a separate phase. The actual
+   finite triangulation, handle/collar, sphere-isotopy and interior-atlas
+   inputs have been audited. Prescribed sphere reparametrizations now extend
+   to actual cell-adjunction homeomorphisms with exact lower/cell formulas.
+   Actual vertex zero handles and edge one-handle attachments, including
+   intrinsic boundary traces and successor-subcomplex homeomorphisms, are now
+   constructed. Higher-index product pairs, the global finite handle sequence,
+   smooth attaching/framing, corner rounding and smooth classification of
+   terminal two-sphere boundaries remain open.
+   The eventual compact assembly does not prove unrestricted PLSmoothing 3.
 5. Only after both inputs are produced, assemble a smooth structure on the
    same carrier and topology and audit its transitive axioms.
 
@@ -110,10 +114,12 @@ audit. h 0a0876425 still awaits independent acceptance. F through 51b4ee8ad is
 independently accepted: nine modules, 92 nonautomatic declarations, 15 critical
 reuse entries, two nonempty models and 13 clean environment linters. The
 source-collapse result is conditional on a given NormalSystem. Complete cover
-diagram production and strict descent remain open. F through 3c7d44e19 is
+diagram production remains open; conditional strict descent and finite-cover
+realization are accepted as recorded below. F through 3c7d44e19 is
 subsequently accepted: five modules, 23 declarations (18 new), 13 critical
-reuse entries, four concrete models and 13 clean linters. S 4627710d3
-cap-comparison remains queued for separate acceptance.
+reuse entries, four concrete models and 13 clean linters. S cap comparison 4627710d3 and actual graph handles 3c08c2aba are
+independently accepted: seven modules, 27 declarations, 34 critical reused
+names and two concrete geometric scenarios.
 S's actual disk-times-circle product and
 finite native 24.11/24.12 through 434d5352c are independently accepted: ten
 modules, 41 declarations, 33 critical reused declarations, 13 clean linters
@@ -289,6 +295,32 @@ inline comments and declaration docstrings remain disallowed.
 （`Topology/Handle/*`, `Topology/Morse/Attachment/*`）；0/1-柄直接光滑，2-柄需光滑曲面中 PL 圆周的光滑化与框架，
 3-柄需“同胚于 S² 的光滑闭曲面微分同胚于 S²”（`Γ₂ = 0` 型 2D 输入）。这些 2D 输入是 B 的真实数学成本，须先审计
 本库 `Topology/Manifold/Sphere*`、`ClosedBall`、`Morse` 现有生产者。B 也需要 Phase 3 的“PL 图册 ⇔ 组合三角剖分”桥。
+
+**S 的首层已闭合（2026-09-19，独立整合验收通过）：** `Homeomorph/SphereExtension.lean` 的
+`sphereRadialHomeomorph`/`closedBallHomeomorphExtension` 从任意实赋范空间单位球面间的同胚生产实际保范数的径向同胚；
+`Attachment/Homeomorph.lean` 的 `adjunctionHomeomorph` 证明两个附着交换方块诱导实际商空间同胚；
+`Attachment/CellExtension.lean` 的 `cellAdjunctionHomeomorph` 据此处理指定球面边界重参数化，保留底空间和胞腔的逐点公式。
+三模块 19 个非自动声明（含 3 private）、14 个关键复用条目、每模块 13 环境 linter 全过，检查 exit 0、零诊断，
+公理均在标准三公理内。两个三维闭球沿球面粘合并取反向边界参数的非空实例已通过，内部范数 1/2 的点实际移到其负点。
+九项既有输入另行审计通过；`InteriorAtlas` 已有无边模型转换，旧审计中的该项缺口已过时。
+本层只完成拓扑封口比较；有限 PL 柄分解、一般光滑柄附着与角光滑化、PL 附着圆/环带及框架光滑化、
+任意光滑拓扑二球面的微分标准化及有限归纳装配仍是明确义务。未新增结论型假设或 PLSmoothing 接口，
+未证明紧致光滑化端点，也未改动逼近阶段的非紧陈述。完整证据与逐项签名见 HANDOFF_CODEX_S.md 最末节。
+
+**S vertex/edge geometric layer (2026-09-19; integration replay accepted):**
+The four new derived-neighborhood modules construct finite disjoint vertex
+balls, actual PL edge prisms with exact attaching end disks, the intrinsic
+boundary trace of every new face cell, and the actual adjunction-space
+homeomorphism onto the next graph-subcomplex neighborhood, fixing the lower
+space. The input is a finite combinatorial three-manifold with boundary;
+no hSchoenflies or assumed handle decomposition is used. Eight declarations,
+23 critical reuse entries and all 13 environment linters per module passed;
+all checks and the nondegenerate tetrahedron graph-cycle fixture exited 0
+with zero diagnostics and only standard axioms. Index-two/index-three product
+pairs and global finite-stage assembly remain open, followed by the smooth
+attachment/framing/corner and two-sphere classification obligations above.
+The compact smoothing endpoint and unrestricted approximation scope are
+unchanged. Exact statements and evidence are in the final S handoff section.
 
 ### Phase 3：A′ `PLApproximationManifold 3` 的经典链（Moise §17, §21–28, §30–36）
 
@@ -938,3 +970,20 @@ The actual compatible-triangulation repair is next;
 no universal impossibility theorem for every NormalSystem is claimed. The concrete simplex-times-Bool model tests finite-cover realization,
 not a connected DoubleCoverDiagram. E3 ace162dcd disk-neighborhood production
 is newly queued and E3 continues simultaneous subdivisions and actual traces.
+
+
+### Compact smoothing: cap comparison and actual graph handles accepted
+
+S 4627710d3 and 3c08c2aba passed independent integration replay: seven fresh
+modules, all 27 nonautomatic declarations, 34 distinct critical reused names,
+two concrete geometric scenarios with six probe declarations, and 13 applicable
+linters. All axiom sets are standard and all checks contain zero diagnostics.
+The nontrivial sphere-cap reparametrization fixes the lower ball and moves an
+interior cap point; the tetrahedron model produces four vertex balls and an
+actual loop-closing edge handle attached in the intrinsic boundary of the old
+neighborhood, with the target equal to the next graph neighborhood.
+These are genuine zero/one-handle producers and topological cap comparisons.
+Two/three-handle product pairs, finite global assembly, smooth attachments and
+framings, corner rounding and the smooth two-sphere input remain open. S is
+already continuing the triangle two-handle layer. No smooth radial extension
+at the center or completed compact smoothing theorem is claimed.
