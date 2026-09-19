@@ -5,7 +5,7 @@ Authors: DifferentialGeometry contributors
 -/
 import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryInwardPush
 import DifferentialGeometry.Topology.PiecewiseLinear.CellMapTriangulation
-import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ProjectedBoundary
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.EmbeddedDisk
 import DifferentialGeometry.Topology.PiecewiseLinear.RelativeSimplexBoundaryNeighborhood
 import DifferentialGeometry.Topology.PiecewiseLinear.SimplicialImageIn
 
@@ -257,39 +257,14 @@ theorem NonsingularCell.exists_isPLHomeomorphOn_boundaryLoop_of_comap
         f '' frontier D.sourceComplex.space ∧
       range (fun θ => (γ θ : E)) = f '' frontier D.sourceComplex.space ∧
       ¬conjugacyClassMeets (normalSystemLoopConjugacyClass y γ q) N := by
-  let _ : Finite S.manifoldComplex.faces := S.manifoldComplex_faces_finite.to_subtype
-  obtain ⟨f, hf, hfmap, hfix, hpre, -, hrange⟩ :=
-    D.exists_isPLHomeomorphOn_eqOn_boundary
-  have hpreK : D.sourceComplex.space ∩ f ⁻¹' (PiecewiseLinear.boundaryComplex 3 K).space =
-      frontier D.sourceComplex.space := by
-    apply Subset.antisymm
-    · rintro x ⟨hx, hfx⟩
-      exact hpre.subset ⟨hx,
-        inter_boundaryComplex_space_subset_of_subset K S.manifoldComplex
-          hK S.isManifold hSK ⟨hfmap hx, hfx⟩⟩
-    · intro x hx
-      obtain ⟨θ, hθ⟩ := hrange.symm.subset (mem_image_of_mem f hx)
-      refine ⟨hpre.superset hx |>.1, ?_⟩
-      change f x ∈ (PiecewiseLinear.boundaryComplex 3 K).space
-      rw [← hθ]
-      exact hBK (D.boundaryLoop θ).2
-  have hinter : f '' D.sourceComplex.space ∩ (PiecewiseLinear.boundaryComplex 3 K).space =
-      f '' frontier D.sourceComplex.space := by
-    rw [← image_inter_preimage, hpreK]
-  let γ := β.comp D.boundaryLoop
-  let q : Path y (γ 0) := (D.connector.map β.continuous).cast hb.symm rfl
-  have hγ : range (fun θ => (γ θ : E)) = f '' frontier D.sourceComplex.space := by
-    rw [← hrange]
-    congr 1
-    funext θ
-    exact hβ (D.boundaryLoop θ)
-  have havoid : ¬conjugacyClassMeets
-      (normalSystemLoopConjugacyClass S.basepoint D.boundaryLoop D.connector)
-      (N.comap (FundamentalGroup.mapOfEq β hb)) := by
-    rw [← hN]
-    exact D.loopClass_avoids_normal
-  exact ⟨f, γ, q, hf, hfmap.mono_right hSK, hfix, hpreK, hinter, hγ,
-    normalSystemLoopConjugacyClass_map_avoids β hb D.boundaryLoop D.connector N havoid⟩
+  let A := D.embeddedDisk
+  obtain ⟨γ, r, hrange, havoid⟩ := A.exists_boundaryLoop_of_comap β hβ hb N hN
+  have hpre := A.preimage_boundaryComplex_eq K hK hSK hBK
+  have hinter : A.map '' A.domain ∩ (PiecewiseLinear.boundaryComplex 3 K).space =
+      A.map '' frontier A.domain := by
+    rw [← image_inter_preimage, hpre]
+  exact ⟨A.map, γ, r, A.isPLHomeomorphOn, A.mapsTo.mono_right hSK,
+    D.embeddedDisk_eqOn_boundary, hpre, hinter, hrange, havoid⟩
 
 end NormalSystem
 end DifferentialGeometry.Topology.PiecewiseLinear

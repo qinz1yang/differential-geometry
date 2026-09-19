@@ -5,9 +5,11 @@ Authors: DifferentialGeometry contributors
 -/
 import DifferentialGeometry.Topology.Connected.SeparatingComponent
 import DifferentialGeometry.Topology.Connected.SeparatorLocation
+import DifferentialGeometry.Topology.Homology.BettiNumber
 import DifferentialGeometry.Topology.PiecewiseLinear.ComponentComplex
 import DifferentialGeometry.Topology.PiecewiseLinear.EuclideanSurfaceOrientation
 import DifferentialGeometry.Topology.PiecewiseLinear.Exhaustion
+import Mathlib.Data.Nat.Find
 
 /-!
 # Connected polyhedral surfaces separating compact sets
@@ -86,5 +88,32 @@ theorem exists_connected_separating_surface
   have hxD := connectedComponentIn_subset D.space p (hLspace ▸ hx)
   rw [← hfront] at hxD
   exact (hNU ((isPolyhedron_space N).isClosed.frontier_subset hxD)).1
+
+open Classical in
+theorem exists_connected_separating_surface_bettiOne_min
+    {F : Type} [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
+    (hdim : Module.finrank ℝ F = 3) {A B U : Set F}
+    (hA : IsCompact A) (hAc : IsConnected A) (hB : IsClosed B) (hBc : IsConnected B)
+    (hAB : Disjoint A B) (hU : IsOpen U) (hAU : A ⊆ U) :
+    ∃ (L : Geometry.SimplicialComplex ℝ F) (hLfin : L.faces.Finite),
+      letI := hLfin.to_subtype
+      IsCombinatorialManifold 2 L ∧ IsConnected L.space ∧
+      IsOrientable 2 L ∧ IsTwoSided L.space ∧ L.space ⊆ U ∧ Separates L.space A B ∧
+      ∀ (M : Geometry.SimplicialComplex ℝ F), M.faces.Finite →
+        IsCombinatorialManifold 2 M → IsConnected M.space → M.space ⊆ U →
+        Separates M.space A B → Homology.bettiOne L.space ≤ Homology.bettiOne M.space := by
+  let P : ℕ → Prop := fun n => ∃ L : Geometry.SimplicialComplex ℝ F,
+    L.faces.Finite ∧ IsCombinatorialManifold 2 L ∧ IsConnected L.space ∧
+      L.space ⊆ U ∧ Separates L.space A B ∧ Homology.bettiOne L.space = n
+  obtain ⟨L, hLfin, hL, hLc, -, -, hLU, hLsep⟩ :=
+    exists_connected_separating_surface hdim hA hAc hB hBc hAB hU hAU
+  have hP : ∃ n, P n := ⟨Homology.bettiOne L.space, L, hLfin, hL, hLc, hLU, hLsep, rfl⟩
+  obtain ⟨N, hNfin, hN, hNc, hNU, hNsep, hNβ⟩ := Nat.find_spec hP
+  let _ : Finite N.faces := hNfin.to_subtype
+  refine ⟨N, hNfin, hN, hNc, hN.isOrientable_of_finrank_eq_three N hdim hNc,
+    hN.isTwoSided N hdim hNc, hNU, hNsep, ?_⟩
+  intro M hMfin hM hMc hMU hMsep
+  rw [hNβ]
+  exact Nat.find_min' hP ⟨M, hMfin, hM, hMc, hMU, hMsep, rfl⟩
 
 end DifferentialGeometry.Topology.PiecewiseLinear

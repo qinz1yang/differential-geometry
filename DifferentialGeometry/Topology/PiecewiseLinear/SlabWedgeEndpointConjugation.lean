@@ -3,6 +3,7 @@ Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: DifferentialGeometry contributors
 -/
+import DifferentialGeometry.Topology.Homeomorph.ConjugateFamily
 import DifferentialGeometry.Topology.PiecewiseLinear.SlabWedgeConjugation
 import DifferentialGeometry.Topology.PiecewiseLinear.SlabWedgeEndpointHomotopy
 
@@ -25,37 +26,6 @@ theorem conjugateMap_id (e : _root_.OpenPartialHomeomorph X Y) :
     rfl
   · rw [e.conjugateMap_of_notMem id hx]
     rfl
-
-theorem continuous_conjugateMap_family [T2Space X]
-    (e : _root_.OpenPartialHomeomorph X Y) {H : unitInterval × Y → Y}
-    (hH : Continuous H) (hmap : ∀ t, MapsTo (fun y => H (t, y)) e.target e.target)
-    {C : Set Y} (hC : IsCompact C) (hCt : C ⊆ e.target)
-    (hfix : ∀ t, EqOn (fun y => H (t, y)) id Cᶜ) :
-    Continuous (fun z : unitInterval × X =>
-      e.conjugateMap (fun y => H (z.1, y)) z.2) := by
-  have hclosed : IsClosed (e.symm '' C) :=
-    (hC.image_of_continuousOn (e.continuousOn_symm.mono hCt)).isClosed
-  rw [continuous_iff_continuousAt]
-  intro z
-  by_cases hz : z.2 ∈ e.source
-  · have harg : ContinuousAt (fun w : unitInterval × X => (w.1, e w.2)) z :=
-      continuousAt_fst.prodMk ((e.continuousAt hz).comp continuousAt_snd)
-    have hmid : ContinuousAt (fun w : unitInterval × X => H (w.1, e w.2)) z :=
-      hH.continuousAt.comp' harg
-    have houtComp := ContinuousAt.comp
-      (f := fun w : unitInterval × X => H (w.1, e w.2))
-      (e.continuousAt_symm (hmap z.1 (e.map_source hz))) hmid
-    apply houtComp.congr_of_eventuallyEq
-    filter_upwards [continuousAt_snd.preimage_mem_nhds (e.open_source.mem_nhds hz)] with w hw
-    rw [e.conjugateMap_of_mem _ hw]
-    rfl
-  · have hzC : z.2 ∉ e.symm '' C := by
-      rintro ⟨y, hy, hyeq⟩
-      exact hz (hyeq ▸ e.map_target (hCt hy))
-    apply continuousAt_snd.congr_of_eventuallyEq
-    filter_upwards [continuousAt_snd.preimage_mem_nhds
-      (hclosed.isOpen_compl.mem_nhds hzC)] with w hw
-    exact e.conjugateMap_eqOn_compl (hfix w.1) hw
 
 end OpenPartialHomeomorph
 

@@ -1,11 +1,31 @@
-import Mathlib.Topology.Connected.Basic
-import Mathlib.Topology.NhdsWithin
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
+import DifferentialGeometry.Topology.Connected.LocalSeparation
+
+/-!
+# Relative neighborhoods in closures of complementary components
+-/
 
 open Set Topology
 
 namespace DifferentialGeometry.Topology
 
 variable {X : Type*} [TopologicalSpace X]
+
+theorem closure_connectedComponentIn_sdiff_mem_nhdsWithin {N S : Set X}
+    [LocallyConnectedSpace N] (hS : IsClosed S) {a p : X}
+    (hp : p ∈ closure (connectedComponentIn (N \ S) a)) (hpN : p ∈ N) (hpS : p ∉ S) :
+    closure (connectedComponentIn (N \ S) a) ∈ 𝓝[N] p := by
+  have hpA := (closure_connectedComponentIn_inter (N \ S) a).subset ⟨hp, hpN, hpS⟩
+  have hopen := isOpen_preimage_connectedComponentIn_sdiff (N := N) hS a
+  have hnhds : connectedComponentIn (N \ S) a ∈ 𝓝[N] p :=
+    preimage_coe_mem_nhds_subtype.mp
+      (hopen.mem_nhds (show (⟨p, hpN⟩ : N) ∈ ((↑) : N → X) ⁻¹'
+        connectedComponentIn (N \ S) a from hpA))
+  exact Filter.mem_of_superset hnhds subset_closure
 
 theorem local_component_closure_neighborhood {N S C : Set X} {a b p x y : X}
     (hN : IsClosed N) (hCN : C ⊆ N) (hC : C ∈ 𝓝[N] p) (hp : p ∈ S)
@@ -18,7 +38,8 @@ theorem local_component_closure_neighborhood {N S C : Set X} {a b p x y : X}
     (closure (connectedComponentIn (C \ S) x) ⊆ closure (connectedComponentIn (N \ S) a) ∧
       closure (connectedComponentIn (C \ S) x) ∈ 𝓝[closure (connectedComponentIn (N \ S) a)] p) ∨
     (closure (connectedComponentIn (C \ S) y) ⊆ closure (connectedComponentIn (N \ S) a) ∧
-      closure (connectedComponentIn (C \ S) y) ∈ 𝓝[closure (connectedComponentIn (N \ S) a)] p) := by
+      closure (connectedComponentIn (C \ S) y) ∈
+        𝓝[closure (connectedComponentIn (N \ S) a)] p) := by
   let A := connectedComponentIn (N \ S) a
   let B := connectedComponentIn (N \ S) b
   let D := connectedComponentIn (C \ S) x

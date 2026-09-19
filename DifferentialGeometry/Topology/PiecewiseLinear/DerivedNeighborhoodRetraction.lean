@@ -1,8 +1,17 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.FundamentalGroup.HomotopyEquiv
 import DifferentialGeometry.Topology.Homotopy.DeformationRetract
 import DifferentialGeometry.Topology.PiecewiseLinear.DerivedNeighborhoodManifold
 import DifferentialGeometry.Topology.PiecewiseLinear.DerivedWeights
 import DifferentialGeometry.Topology.PiecewiseLinear.SimplicialMap
+
+/-!
+# Canonical retractions of derived neighborhoods
+-/
 
 open Set Topology
 open unitInterval
