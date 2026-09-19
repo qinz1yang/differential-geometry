@@ -70,7 +70,8 @@ theorem IsCombinatorialManifoldWithBoundary.mem_boundaryComplex_faces_iff {n : �
         obtain ⟨k', hk'⟩ : ∃ k', (t \ s).card = k' + 1 :=
           ⟨(t \ s).card - 1, by have := Finset.card_pos.mpr hne; omega⟩
         have hcardt : t.card = s.card + (t \ s).card := by
-          rw [htu, Finset.card_union_of_disjoint Finset.disjoint_sdiff, Finset.union_sdiff_of_subset hst]
+          rw [htu, Finset.card_union_of_disjoint Finset.disjoint_sdiff,
+            Finset.union_sdiff_of_subset hst]
         obtain ⟨m, hm⟩ : ∃ m, n - k = m + 1 := ⟨n - k - 1, by omega⟩
         rw [hm] at hsph
         have hsub : t \ s ∈ (SimplicialComplex.geometricLink K s).faces :=
@@ -82,6 +83,17 @@ theorem IsCombinatorialManifoldWithBoundary.mem_boundaryComplex_faces_iff {n : �
     · rwa [show n + 1 - s.card = n - k by omega]
   · rintro ⟨hs, hsn, hball⟩
     exact ⟨hs, s, hs, subset_rfl, hsn, hball⟩
+
+open Classical in
+theorem IsCombinatorialManifoldWithBoundary.isPLSphere_geometricLink_of_not_mem_boundaryComplex
+    {n : ℕ} (h : IsCombinatorialManifoldWithBoundary (n + 1) K) {s : Finset E}
+    (hs : s ∈ K.faces) (hsB : s ∉ (boundaryComplex (n + 1) K).faces) {k : ℕ}
+    (hcard : s.card = k + 1) (hk : k ≤ n) :
+    IsPLSphere (n - k) (SimplicialComplex.geometricLink K s).space := by
+  rcases h.isPLSphere_or_isPLBall_geometricLink K hs hcard hk with hS | hB
+  · exact hS
+  · exact (hsB ((h.mem_boundaryComplex_faces_iff K).mpr ⟨hs, by omega, by
+      rwa [hcard, Nat.add_sub_add_right]⟩)).elim
 
 open Classical in
 theorem IsCombinatorialManifold.boundaryComplex_faces_eq_empty {n : ℕ}

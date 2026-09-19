@@ -16,7 +16,7 @@ Phase 3 的终点已经归约成一句话：`plApproximationManifold_three_of_mo
 | 26.4 | 扩展环定理（193） | `Moise264` ✔已修正陈述 | 开。结论已补盘边界包含映射在曲面中非零伦；用 25.2 与 26.3 双领（S 已交付） |
 | 30.4 | 球壳定理（216） | `Moise304` ✔已陈述 | 开。用 26.4、23.8、26.1（S 已证）、28.19、28.20（H 已证）、30.3 |
 | 30.5 | 嵌套拓扑 3-胞腔（216） | `Moise305` 已陈述；`moise305_tame_of_moise304` 已证 | §34 的 tame 条件箭头及双领口生产者已合入；30.4 仍是显式未证输入。一般 wild 版仍开，旧 10k–18k 前置不适用于 tame 路线 |
-| 30.6 | 环壳定理（216–217） | `Moise306` ✔已陈述 | 开。用 30.7、van Kampen、§22 |
+| 30.6 | 环壳定理（216–217） | `Moise306` ✔已陈述 | 开。用压缩/分离、26.4、van Kampen、§22；原书 pp216–217 不依赖 30.7 |
 | 30.7 | 拓扑实心环面之间有 CST（217） | `Moise307` ✔已陈述 | 开。用 30.6、28.1、24.9–24.12（S 正在做） |
 | 30.8 | 脊生成 `π(S)`（218） | `Moise308` | 开。用 §31 |
 | 31.1–31.2 | 典范实心环面构形 | `Moise311` | 开 |
@@ -990,3 +990,74 @@ chain faces, first demonstrated by an actual nonempty n=1 complex and chain.
 Both endpoint vertex cells remain omitted. The closed higher-ambient-dimensional
 local cell-pair API is not invalidated by this finding. See integration handoff
 section 17 for the exact acceptance boundary and ongoing task assignment.
+
+## 2026-09-19 Actual double frontier closed; normal-form starting map remains open
+
+F's BoundaryDouble and LoopTheorem/DoubleCarrier are independently accepted at
+integration source `0351480fd2`. For the genuine second-copy carrier C and
+boundary Bd, frontier C = Bd is proved, including the exact chart-target
+frontier equality and boundary germ. The produced singular two-cell is tied to
+the same NormalSystem and retains all original outputs. Its pointwise fibers
+are exactly those of the original singularMap. Thus the actual frontier/germ
+obligation is closed; the old double construction does not improve fibers.
+
+NormalSystem has no explicit local-injectivity or two-point-fiber field. The
+existing chart/general-position producers require these inputs already.
+F's proposed boundary-fixed inner-triangle collapse explains geometrically why
+the unchanged-map route is inadequate, but the complete refined NormalSystem
+construction is not yet a Lean result. F is now formalizing that construction.
+Do not report an unconditional Lean counterexample from the current delivery.
+The positive obligation remains to produce an appropriately regular changed
+map and an actual boundary-neighborhood homotopy preserving the avoided normal
+subgroup class; ordinary general position does not automatically remove triple
+points. An old EqOn relationship to S.singularMap cannot be reused for a changed
+map without a new proof.
+
+E3's endpoint-moving buffered model, empty tagged double-point set, and continuous
+compactly supported homotopies are independently accepted in the same batch.
+The model permits tangential endpoint motion while preserving the end-face sets.
+Actual two-sheet traces, compatible double-end charts, homotopy inside the real
+boundary neighborhood, and source-disk pasting are still needed for the general
+branch-separation and L2 endpoints. See integration handoff section 18 for the
+53-declaration verification and the exact division of subsequent work.
+
+## 2026-09-19 Orientable disk-cylinder untwisting and comparison accepted
+
+At integration source `1016f3435`, S's CylindricalBoundary,
+CylindricalMonodromy, and CylindricalClassification are independently accepted:
+actual side-image containment, actual boundary-diagram positivity in both end
+conventions, internally produced disk pseudo-isotopy and equal-end diagrams,
+and PL comparison of any two orientable disk-diagram targets. The actual
+orientable polygon-neighborhood application also has pointwise equal ends.
+All ten declarations pass the complete axiom and environment-linter audit.
+
+The standard topological disk-times-circle identification and the original
+CST cyclic-cell interface remain to be assembled; C.6/C.7 are not marked done.
+The existing nullhomotopic-polygon orientation declarations in
+DerivedNeighborhoodPolygon must be checked against current source and axiom
+closure before deciding whether 24.12 needs new orientation machinery.
+See integration handoff section 19 for evidence and the next S round.
+
+## Integration acceptance and ownership update (2026-09-19)
+
+The interior trimmed-arc ball-pair producer through `76d6c6162` is accepted:
+seven independently compiled modules, 44 project declarations plus an actual
+nonempty one-edge application, standard axioms only and 13 clean linters.
+This removes the earlier nonvacuity hold for the repaired final source, not for
+the historical closed-manifold formulation. Whole-arc simultaneous normalization
+and the compatible two-sheet branch chart remain open.
+
+E3 owns 30.4 from the delivery of `b195204ed`, beginning with the actual 30.3
+splitting/separation construction. The 26.4 and 28.19 prerequisites remain open.
+The previous T delivery proves only `Moise304 -> Moise305Tame`.
+
+## Route audit corrections (2026-09-19)
+
+See [ROUTE_AUDIT_20260919.md](ROUTE_AUDIT_20260919.md). Moise252, Moise331 and
+Moise351 are not accepted source-faithful contracts until h's assigned repairs
+land. Normalization should first produce the Lemma 2 input by projecting the
+inductively embedded disk from the actual two-sheeted cover; the arbitrary
+original NormalSystem need not have two-point fibers. The cover and restricted
+regular neighborhood must remain distinct. The verified original-book order is
+30.6 -> 30.7. Compact PL smoothing is independently open, and full-root coverage
+must include the currently disconnected approximation/smoothing consumer chain.

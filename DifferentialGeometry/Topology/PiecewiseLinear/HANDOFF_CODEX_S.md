@@ -5525,3 +5525,168 @@ equality or a separate manifold proof for the circle diagram's image is not
 needed to force positive boundary monodromy. Existing disk pseudo-isotopy and
 cylindrical comparison APIs can consume that result. The full CST endpoints and
 contractible-polygon assembly remain outside this completed layer.
+
+## Boundary side of a disk cylindrical diagram (2026-09-18)
+
+Status: done for the side-image inclusion, with no extra boundary hypothesis.
+`CylindricalBoundary.lean` proves
+`IsCylindricalDiagram.image_side_subset_boundaryComplex`: for finite complexes
+`D`, `M`, a PL 2-ball `D.space`, a combinatorial 3-manifold with boundary `M`,
+and an actual cylindrical diagram `f` on `D.space` with image `M.space`,
+`f '' ((boundaryComplex 2 D).space ×ˢ Icc 0 1)` lies in
+`(boundaryComplex 3 M).space`. The two ambient finite-dimensional real normed
+spaces may differ. Orientability and Schoenflies are not hypotheses.
+
+The public `image_strip_mem_nhdsWithin` proves that a strip around an interior
+height maps to a relative neighborhood in the diagram image. Compact images of
+the two discarded strips form a closed set avoiding the point, since an
+interior-height fiber is a singleton. The private open-height side lemma
+triangulates the strip and its image, uses the prism boundary formula and PL
+boundary invariance, then uses local boundary invariance for the relative
+neighborhood. Continuity and closedness of the target boundary add heights
+zero and one. The whole prism is never assumed injective.
+
+Verification: final focused compile exit 0, zero diagnostics, 12.504 seconds;
+full dynamic audit exit 0, zero diagnostics, 84.222 seconds. These are measured
+outer-helper times, including any resource-admission wait. All three
+nonautomatic declarations (two public and one private), five directly reused
+critical producers, and all 13 applicable environment linters pass. Axiom
+closures contain only `propext`, `Classical.choice`, and `Quot.sound`.
+
+A nonempty actual instance is the derived neighborhood of a triangular circle
+in a tetrahedron. The external probe constructs the finite target manifold and
+its disk cylindrical diagram, and separately constructs a finite complex whose
+space equals that diagram's standard disk. Both declarations and the neighborhood producer pass the axiom audit;
+exit 0, zero diagnostics, 23.431 seconds including admission.
+
+Evidence root:
+`C:/Users/liao9/AppData/Local/Temp/codex-s-mobius-torus-20260918`.
+`CylindricalBoundary-verification.json` records source and object hashes,
+normalized source identity, all compile/audit receipts, timings, declaration
+inventory, and reused producers. The instance audit and its three axiom rows
+are preserved alongside it. Source SHA256:
+`00E7E7158864F226C994BA18E5A0B8101DEF1C07361E5F85631A424CA9C9FA7E`.
+Static checks pass; the native import closure has 425 modules and excludes
+`HurewiczLowDegrees`. New source, flat-root import, this record and the C.7 row
+are one mathematical commit. Shared artifacts stay read-only; the integration
+root build is a separate coordinator gate.
+
+Remaining in this round: restrict to the boundary cylindrical diagram, force
+positive boundary monodromy from target orientability, and connect disk
+pseudo-isotopy and comparison. The full C.7 headline is still partial.
+
+## Positive boundary monodromy of orientable disk diagrams (2026-09-18)
+
+Status: done for the actual boundary diagram and positive monodromy.
+`CylindricalMonodromy.lean` contains three public declarations:
+
+- `IsCylindricalDiagram.boundary`: for any finite combinatorial manifold with
+  boundary of dimension `n + 1`, its actual cylindrical diagram restricts to a
+  cylindrical diagram on its boundary, with image the actual side image. The
+  target set need not be a manifold. A produced PL end map preserves the base
+  boundary, which proves equality of the two boundary end images.
+- `IsCylindricalDiagram.boundary_isPLCirclePositive`: a disk cylindrical diagram
+  whose target is an orientable finite combinatorial 3-manifold with boundary
+  has positive top-to-bottom monodromy on the disk boundary. The proof uses the
+  boundary diagram above, the proved side inclusion, the target boundary's
+  orientability and the actual Moebius-embedding obstruction.
+- `IsCylindricalDiagram.boundary_isPLCirclePositive_of_bottom_eq_top`: the
+  bottom-to-top convention used by the existing end-map producer. It passes to
+  the actual inverse disk map, uses boundary invariance for that inverse, and
+  transfers positivity back using the explicit inverse equations.
+
+No side inclusion, positive monodromy, pseudo-isotopy or Schoenflies statement
+is assumed. The two geometric inputs are the actual disk diagram and an
+orientable manifold target; each end map is tied to its diagram by the full
+pointwise end equation. This closes the geometric bridge left in the preceding
+entry, rather than assuming a boundary-image equality.
+
+Final checks: compile 12.094 seconds, complete dynamic audit 12.496 seconds,
+each exit 0 with zero diagnostics. Times include resource admission. All three
+nonautomatic declarations, seven directly reused critical producers, and all
+13 applicable environment linters pass; all axiom closures use only the
+standard three axioms. The nonempty tetrahedral-circle instance was strengthened
+to construct target orientability as well as the actual diagram. Its declaration
+and two orientation producers pass the axiom audit, exit 0, zero diagnostics,
+12.006 seconds including admission.
+
+Evidence root:
+`C:/Users/liao9/AppData/Local/Temp/codex-s-mobius-torus-20260918`.
+`CylindricalMonodromy-verification.json` includes exact raw and normalized source
+hashes, private object identity, all receipts and timings, declaration/linter
+inventories, critical producers and the concrete instance. Source SHA256:
+`6D2CBEA4202874739E705127A2BE48C70C308827C5732CE889A43049339D1CB3`.
+Static checks pass and all 463 native imports avoid `HurewiczLowDegrees`.
+Source, root import, this handoff and the C.7 plan row are one commit; shared
+artifacts remain read-only and the integration root gate is separate.
+
+Remaining in this round: consume positive boundary monodromy to untwist the
+actual disk diagram and compare orientable diagram targets. The full original
+CST cyclic-decomposition/topological-solid-torus interface and the contractible
+polygon assembly remain beyond this completed layer.
+
+## Untwisting orientable disk cylinders and polygon neighborhoods (2026-09-18)
+
+Status: done for the assigned disk-diagram round. `CylindricalClassification.lean`
+contains four public endpoints, without unproved parameters:
+
+- `IsCylindricalDiagram.isPLPseudoIsotopicToId_endMap`: an actual bottom-to-top
+  end map of an orientable disk cylindrical diagram is PL pseudo-isotopic to
+  the identity. The base is any set `P` with `IsPLBall 2 P`; a finite disk
+  triangulation is constructed internally rather than required from the caller.
+- `IsCylindricalDiagram.exists_endMap_id_of_isOrientable`: constructs a new
+  actual diagram with the same disk base and target, and proves the pointwise
+  equation `g (x, 0) = g (x, 1)` for every base point.
+- `exists_isPLHomeomorphOn_of_isOrientable_cylindricalDiagrams`: constructs a PL
+  homeomorphism between the targets of any two orientable disk cylindrical
+  diagrams. The bases and target ambient spaces may differ. No end map,
+  positivity, pseudo-isotopy or base comparison map is assumed; those objects
+  are produced within the proof from the two actual diagrams and PL disks.
+- `exists_cylindricalDiagram_derivedNeighborhood_circle_eq_ends`: for a finite
+  orientable combinatorial 3-manifold with boundary and a connected closed
+  combinatorial 1-manifold subcomplex, constructs an actual disk diagram of
+  its derived neighborhood with both end maps pointwise equal. This consumes
+  the existing actual neighborhood and orientation producers, including the
+  proved restriction of orientation to subcomplexes.
+
+The diagram's target hypotheses remain finite combinatorial 3-manifold with
+boundary and orientability. The argument never infers side containment from
+`IsCylindricalDiagram` alone: it uses `2ff5e3e07`, then the actual boundary-circle
+and positivity results in `a314556b3`, then the checked disk pseudo-isotopy and
+comparison machinery. Both pointwise end-map conventions have explicit inverse
+conversion. There is no assumption that intermediate levels remain horizontal.
+
+Final focused compile: exit 0, zero diagnostics, 16.171 seconds. Complete dynamic
+audit: exit 0, zero diagnostics, 73.711 seconds. All four nonautomatic declarations,
+six directly reused critical producers, and all 13 applicable environment
+linters pass. Every axiom closure uses only the standard three axioms.
+The concrete tetrahedral-circle probe consumes the final neighborhood endpoint
+and produces a nonempty target diagram with pointwise equal ends. Its declaration
+and the final producer pass the axiom audit, exit 0, zero diagnostics,
+28.193 seconds. All reported times include resource admission.
+
+Evidence root:
+`C:/Users/liao9/AppData/Local/Temp/codex-s-mobius-torus-20260918`.
+`CylindricalClassification-verification.json` preserves raw/normalized source
+hashes, object identity, receipts, timings, complete declaration/linter census,
+reused producers, and the concrete application. Source SHA256:
+`3A84B0EDC4EA5A5A790504F62086CE7135CACBC0329789F9277569684C801BA4`.
+The 481-module native import closure excludes `HurewiczLowDegrees`; static
+hygiene and whitespace checks pass. Source, root import, this record and the
+C.6/C.7 plan updates are one mathematical commit. All verification used one
+S worker and private artifacts; shared outputs were read-only. External Lean
+probes are removed after preserving evidence. The integration root build and
+independent integration replay remain the coordinator's separate gates.
+
+Round total: three new modules, 3 + 3 + 4 = 10 nonautomatic declarations,
+including the private open-height boundary lemma. Each module passes all
+13 environment linters; critical-producer audit counts are 5, 7 and 6.
+The nonempty concrete family and its final untwisted diagram are verified.
+
+C.6/C.7 remain partial at the book-level endpoint: the original CST cyclic
+cell-decomposition interface and its standard topological solid-torus product
+identification still need assembly. The orientable actual-diagram comparison
+and the untwisted orientable polygon-neighborhood diagram are now delivered.
+For 24.12, transfer of orientability for a contractible polygon through the
+already available orientation covering also remains to be connected. These
+are the next mathematical interfaces; no extra conditional wrapper is submitted.
