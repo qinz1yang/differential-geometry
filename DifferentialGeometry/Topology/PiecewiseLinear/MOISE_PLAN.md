@@ -1390,3 +1390,13 @@ pass together. The renamed cap theorem is not a new theorem count. The actual
 solid-torus fixtures remain untwisted. Arbitrary prescribed-shell geometry and
 Moise304 remain open. New-stage accounting is in RESUMED_ACCEPTANCE_20260919.md;
 the prior morning report is unchanged. See integration handoff section 70.
+
+### Finite surface-splitting representation and cap gate
+
+E3 through 5877584aa is independently accepted with canonical gluing reuse.
+An actual three-dimensional prism and actual solid-torus compression test
+exercise the new physical caps and finite surface representation. Five public
+results and one private helper are new; duplicated old gluing proofs are not
+new results. General 30.3 still needs the relative chart identifying original
+surface end circles with prism slices. See integration section 71 and the
+resumed-stage acceptance ledger. No full-root compilation is claimed.

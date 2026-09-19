@@ -8967,6 +8967,8 @@ import DifferentialGeometry.Topology.FundamentalGroup.Nullhomotopy
 import DifferentialGeometry.Topology.PiecewiseLinear.TorusMeridian
 import DifferentialGeometry.Topology.Morse.CubicCancellation
 import DifferentialGeometry.Topology.PiecewiseLinear.CylindricalMeridian
+import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceSplitCapping
+import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceSplitRealization
 
 /-!
 # Differential geometry and geometric analysis

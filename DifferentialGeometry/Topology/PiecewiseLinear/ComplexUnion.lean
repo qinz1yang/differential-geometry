@@ -127,4 +127,56 @@ theorem exists_simplicialComplex_space_union [FiniteDimensional ℝ E]
     · obtain ⟨t, ht, hxt⟩ := L.mem_space_iff.mp hx
       exact mem_iUnion.mpr ⟨Sum.inr ⟨t, ht⟩, hxt⟩
 
+theorem exists_simplicialComplex_space_iUnion [FiniteDimensional ℝ E]
+    {ι : Type*} [Finite ι] (K : ι → Geometry.SimplicialComplex ℝ E)
+    [∀ i, Finite (K i).faces] :
+    ∃ R : Geometry.SimplicialComplex ℝ E, R.faces.Finite ∧
+      R.space = ⋃ i, (K i).space ∧
+      ∀ i, IsSubdivision (restrict R (K i).space) (K i) := by
+  let C : (Σ i, (K i).faces) → Set E := fun s =>
+    convexHull ℝ ((s.2 : Finset E) : Set E)
+  have hC : ∀ s, IsHPolytope (C s) := fun s =>
+    isHPolytope_convexHull_of_affineIndependent _ ((K s.1).indep s.2.2)
+  obtain ⟨R, hfin, hspace, hcover⟩ := exists_simplicialComplex_of_forall_isHPolytope C hC
+  refine ⟨R, hfin, ?_, fun i =>
+    restrict_isSubdivision (K i) (fun s hs => hcover ⟨i, ⟨s, hs⟩⟩)⟩
+  rw [hspace]
+  ext x
+  constructor
+  · intro hx
+    obtain ⟨⟨i, s⟩, hxs⟩ := mem_iUnion.mp hx
+    exact mem_iUnion.mpr ⟨i, (K i).convexHull_subset_space s.2 hxs⟩
+  · intro hx
+    obtain ⟨i, hxi⟩ := mem_iUnion.mp hx
+    obtain ⟨s, hs, hxs⟩ := (K i).mem_space_iff.mp hxi
+    exact mem_iUnion.mpr ⟨⟨i, ⟨s, hs⟩⟩, hxs⟩
+
+theorem exists_simplicialComplex_space_union_three [FiniteDimensional ℝ E]
+    (K L M : Geometry.SimplicialComplex ℝ E)
+    [Finite K.faces] [Finite L.faces] [Finite M.faces] :
+    ∃ R : Geometry.SimplicialComplex ℝ E, R.faces.Finite ∧
+      R.space = K.space ∪ L.space ∪ M.space ∧
+      IsSubdivision (restrict R K.space) K ∧
+      IsSubdivision (restrict R L.space) L ∧
+      IsSubdivision (restrict R M.space) M := by
+  let C : Fin 3 → Geometry.SimplicialComplex ℝ E := ![K, L, M]
+  let _ : ∀ i, Finite (C i).faces := by
+    intro i
+    fin_cases i <;> dsimp [C] <;> infer_instance
+  obtain ⟨R, hfin, hspace, hsub⟩ := exists_simplicialComplex_space_iUnion C
+  refine ⟨R, hfin, ?_, hsub 0, hsub 1, hsub 2⟩
+  rw [hspace]
+  ext x
+  constructor
+  · intro hx
+    obtain ⟨i, hxi⟩ := mem_iUnion.mp hx
+    fin_cases i
+    · exact Or.inl (Or.inl hxi)
+    · exact Or.inl (Or.inr hxi)
+    · exact Or.inr hxi
+  · rintro ((hx | hx) | hx)
+    · exact mem_iUnion.mpr ⟨0, hx⟩
+    · exact mem_iUnion.mpr ⟨1, hx⟩
+    · exact mem_iUnion.mpr ⟨2, hx⟩
+
 end DifferentialGeometry.Topology.PiecewiseLinear
