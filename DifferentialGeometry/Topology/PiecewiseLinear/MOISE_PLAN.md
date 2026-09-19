@@ -1162,6 +1162,7 @@ Compact smoothing is not claimed complete.
 - 2026-09-19（H 车道 35.1 有限刺穿层）：`DualCellPiercing.lean` 的
   `IsCombinatorialManifold.exists_graphDualCell_piercing` 将标准 2-单形的仿射内缩边界搬到实际 splitting disk 的相对内部，再用 `BoundaryInwardPush` 只固定该圆并内推相邻图双胞腔；所得像仍是包含于原胞腔的 PL 3-球，且与中心胞腔精确交于该圆。`exists_graphDualCell_piercings_of_trivalent_vertex` 对邻点恰由一个单射 `Fin 3` 枚举的真实三价顶点同时构造三条刺穿圆，并由不同 splitting disk 的不交性证明它们两两不交。没有结论型输入。聚焦检查零诊断；严格审计模块 12 项与 14 项直接复用声明，仅标准三公理，13 项 linter 全过。35.1 尚缺嵌套正则邻域及四个边界环带、局部有限误差选择和逐胞腔逼近拼接。
 - 2026-09-19（H 车道 35.1 刺穿边界环带）：`NestedCircleBicollar.lean` 从球面圆的实际 PL 双领口生产任意指定相对邻域内的内外嵌套环带，用开集 `O` 显式证明内环带落在外环带的球面相对内部。`DualCellPiercingAnnuli.lean` 将其应用到实际中心 `graphDualCell` 边界和内推后邻胞腔的搬运边界，给出 Figure 35.1 的四条边界环带；三价端点同时产生三组数据并保留刺穿圆两两不交。聚焦检查零诊断；严格审计两模块 5 项新声明及 12 项关键复用声明，仅标准三公理，13 项 linter 全过。四环带仍未识别为同一对三维正则邻域 `T_e ⊂ Int S_e` 的截迹；这一公共实心环面对、局部有限误差选择与逐胞腔拼接仍开。
+- 2026-09-19（H 车道 35.1 公共派生邻域）：`DerivedNeighborhoodRestriction.lean` 证明环境派生邻域与子复形的交精确等于子复形内的派生邻域。`CommonCircleDerivedNeighborhood.lean` 同时三角剖分公共核与两个紧多面体，在任意指定开集内生产环境派生邻域，并证明其两个截迹的精确等式和原环境中的相对邻域性。两模块私有检查零诊断；严格审计 3 项新声明和 10 项关键复用声明，仅 `propext`、`Classical.choice`、`Quot.sound`，13 项 linter 全过。已闭合公共正则邻域的组合层；环带分类端点需要刷新当前 H 授权之外的 `Topology/LoopSpace/CircleLiftOrientation.olean`，因此嵌套四环带结论尚未作为本检查点声称。
 
 ### Half-prism acceptance update (2026-09-19 UTC)
 

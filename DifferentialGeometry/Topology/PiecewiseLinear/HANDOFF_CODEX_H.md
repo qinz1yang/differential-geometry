@@ -3879,3 +3879,35 @@ identify them as intersections with a common pair of ambient three-dimensional
 regular neighborhoods `T_e ⊂ Int S_e`; producing that common solid-torus pair
 remains the next geometric obligation, followed by the locally finite
 simultaneous error choice and cellwise approximation/gluing.
+
+## 77. 2026-09-19 common derived neighborhoods with exact surface traces — done
+
+`DerivedNeighborhoodRestriction.lean` proves the natural restriction formula
+`restrict (derivedNeighborhood K L) S.space = derivedNeighborhood S L` whenever
+`S` is a subcomplex of `K`.  Consequently the intersection of the ambient
+derived-neighborhood space with `S.space` is exactly the derived neighborhood
+computed inside `S`.  The result does not require `L` to have been declared a
+subcomplex of `S`; that relation is recovered in the applications from one
+simultaneous triangulation.
+
+`CommonCircleDerivedNeighborhood.lean` simultaneously triangulates two compact
+subpolyhedra and their common compact core in one finite ambient complex.  An
+arbitrarily fine subdivision produces an ambient derived neighborhood contained
+in any prescribed open set, and the theorem proves it is a relative neighborhood
+of the core in the original ambient space.  Its intersections with both
+subpolyhedra are exactly their intrinsic derived neighborhoods, with the common
+core a subcomplex of both restricted triangulations.
+
+Both private focused checks exited zero with no diagnostics and left shared
+outputs unchanged.  The strict external audit checked all three non-automatic
+declarations plus ten directly reused declarations.  Every axiom closure was
+contained in `{propext, Classical.choice, Quot.sound}`, and all thirteen
+applicable environment linters passed.
+
+This closes the common ambient regular-neighborhood and exact-trace interface.
+The separate classification of the two intrinsic surface traces as standard PL
+annuli is not claimed here.  Its existing endpoint currently needs a refreshed
+`Topology/LoopSpace/CircleLiftOrientation.olean`; the H private compiler scope
+does not include that module.  Once that artifact is available, applying the
+surface endpoint twice and repeating inside the relative-neighborhood open set
+gives the required nested pair and four exact annular traces.
