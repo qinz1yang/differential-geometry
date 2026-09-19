@@ -22,7 +22,8 @@ again as open prerequisites of this conditional sphere endpoint.
 F retains actual NormalSystem boundary/transition normalization. E3's physical
 surface splitting and original-target separation throughc347/c10 are now
 independently accepted in section92, including an actual three-dimensional
-torus/meridian model. Q.2a1dff is delivered pending replay; E3 continues section32 Q.2b after that delivery.
+torus/meridian model. Q.2a1dff is independently accepted in section95, including
+an exact infinite nonstationary limit model. E3 continues section32 Q.2b.
 M304's original toroidal-shell incompressibility/parity and sphere-exclusion
 through878 are frozen pending replay; genuine torus recognition remains open.
 The direction remains30.6 ->30.7.30.8 still needs the already-notified

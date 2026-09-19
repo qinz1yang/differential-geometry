@@ -4565,3 +4565,49 @@ The renewable E3 compiler lease ends2026-09-20 01:17 UTC, not a user deadline.
 
 M304 was checked once after its new878 delivery and remains active on the same
 torus-recognition round; no continuation message or extra lane was sent.
+
+## 95. Independent locally finite separating-limit acceptance
+
+The sixty-second integration batch accepts E3's1dff5b63c abstract Q.2a layer.
+The support endpoint starts with closed separating sets containing a fixed
+closed exceptional set, and actual change supports locally finite in its
+complement. It produces local eventual agreement, a closed limiting set,
+uniform eventual agreement on every compact set away from the exceptional set,
+and separation of the same original targets. The last step uses a compact
+path in the hypothetical connected complement to contradict an earlier
+separator. Final closedness, separation and compact uniformity are outputs,
+not replacement hypotheses. The natural local connectivity/path hypotheses
+and preconnected targets remain explicit.
+
+The new generic Connected.LimitSeparation module retains all three native
+declarations, including its private eventual-membership helper. Both public
+signatures, scopes and full proof bodies match the frozen author source.
+The private real-line example and its T2-space helper move to the external
+audit, removing model-only SpecificLimits and LocallyConvex imports from
+foundational topology. This is source placement cleanup, not a weaker theorem.
+Notify E3 of that canonical placement only at its next delivery boundary.
+
+One fresh module compiles in9.483108 seconds including admission, with zero
+diagnostics. The combined audit takes22.3340732 seconds. All three native
+declarations, seven key reuses, one actual infinite-model assertion and one
+external model helper pass13 applicable linters and have only propext,
+Classical.choice and Quot.sound in their transitive axiom closures.
+The model has C_n={0,1/(n+1)}, consecutive-point supports locally finite off0,
+and fixed nonempty targets{-1} and{2}. Every stage changes. The independent
+strengthening proves that the same limit returned by the support endpoint is
+exactly{0}; it is nonempty and has no extra points. The helper is not a second
+model, and this real-line example is not an annulus or pseudocell construction.
+
+Git Lean delta is+171/-0:170 lines in the generic leaf and one flat root import.
+One previously accepted source-matching Separation object is reused; both
+actual setup files bind only canonical private objects and integration source.
+Static root reachability has9662 modules/37531 edges without missing sources
+or cycles. No full-root build was run. Receipt and full frozen evidence are
+.lake/verified-sixtysecond-lane-delivery-20260919.json and
+C:/Users/liao9/AppData/Local/Temp/codex-integration-sixtysecond-batch-20260919.
+
+The compact five-task snapshot found every task active. None was interrupted
+or given another lane. E3 already continues Q.2b; actual two-ended annulus
+gluing, adding the center and exact open-disk closure remain open. Q.2c must
+still produce that family from the original geometry. This acceptance does
+not close32.1,25.2, unconditional30.4, general approximation or compact smoothing.

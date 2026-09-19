@@ -18,7 +18,7 @@ verification history; their old ownership, running-build and source-style
 statements are not current instructions. The six subject labels in the detailed
 Phase 3 table are mathematical categories, not six active tasks.
 
-### Latest live frontier (2026-09-19, physical surface splitting independently accepted)
+### Latest live frontier (2026-09-19, locally finite separating limits accepted)
 
 This snapshot and the latest integration-handoff sections supersede dated
 paragraphs below. The resumed stage has no new deadline. Five existing tasks
@@ -28,7 +28,7 @@ keep one lane each; F/S/M304 use Astra max and h/E3 use Sol max.
 |---|---|---|
 | F | through71b0b003e | Actual arbitrary boundary-chart normalization and joint protection/transition/core coverage.06a/d68 are queued. The later protected-polyhedron layer has an author audit; two old consumer formatting repairs are authorized at its idle boundary before checkpointing. |
 | h | throughe85a235df | Produce actual nonstationary locally finite supported modifications with compatible subdivisions, original graph and transported neighborhoods.72fa/c1bd finite solid-torus and generic limit layers are frozen pending replay; a single-increment model does not close arbitrary-stage geometry. |
-| E3 | throughc34726180 includingc10 | Actual finite-surface physical caps and original-target separation are independently accepted in section92. Q.2a1dff5b63c is newly delivered and frozen pending replay. At that delivery E3 continued Q.2b: two-ended annular exhaustion, adding the center, actual open disk and exact closure. |
+| E3 | through1dff5b63c | Physical caps and original-target separation are accepted in section92; Q.2a locally finite separating limits are independently accepted in section95. E3 continues Q.2b: two-ended annular exhaustion, adding the center, actual open disk and exact closure. |
 | M304 | through3717074e9 | Exact Moise252-to-Moise304 is accepted.6f/823/878 original toroidal-shell incompressibility, parity and actual sphere exclusion are frozen pending replay. Genuine PL torus recognition is still open; author continues the same30.6 lane. |
 | S | throughc0f4df1b1 | Produce original-function extended-arc and relative normal-form geometry in an adequate support region.5b/c011/2544 common coordinates,876 small-frame obstruction andc60 cubic lowering in a produced enlarged strip are frozen pending replay. General finite cancellation/compact smoothing remain open. |
 
@@ -76,11 +76,19 @@ The h limit theorem consumes genuine increments satisfying its core equations;
 the one-increment trivalent model does not produce arbitrary infinitely many
 compatible modifications. Both distinctions remain explicit in the queue.
 
-Root source reachability is9661 modules with no missing imports or cycles;
+Section95 independently accepts the abstract locally finite separating-limit
+producer. All three native declarations and seven key reuses pass13 linters
+and foundational-axiom checks. The infinite real-line fixture is moved outside
+the generic topology module; its strengthened assertion proves the produced
+limit is exactly{0}, while both original targets remain nonempty and every
+stage changes. The two public signatures and proof bodies are unchanged.
+This supplies Q.2a, not the actual annulus family, open disk or32.1.
+
+Root source reachability is9662 modules with no missing imports or cycles;
 this is not full-root compilation. The full-root check remains deferred under
 the discretionary compatibility policy. Two private checkers, three total Lean
 processes, renewable leases and quiet hourly delivery-boundary coordination
-remain unchanged. See integration sections92–93 and the resumed-stage ledger.
+remain unchanged. See integration sections92–95 and the resumed-stage ledger.
 
 ### Section32 research and an additional upstream contract gate
 
