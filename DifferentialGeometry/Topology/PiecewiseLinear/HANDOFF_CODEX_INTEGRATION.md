@@ -3879,3 +3879,48 @@ The current queue is M304 through41220900e including7a/96, h e85a235df,
 E3 c10b83586, and S5b7117893. F71 and S throughc0 are independently accepted.
 All five existing lanes continue; no new task, routine active-round status
 request, new deadline or full-root restart was introduced.
+
+## 80. Original essential disks queued; actual compression neighborhood next
+
+M304 delivered and pushed 06af1e40d after 41220900e. The clean author checkout
+matches origin. The source now applies explicit h252 : Moise252 to the actual
+cut boundary kernel, producing a PL embedded disk for the same original K/L.
+It proves avoidance of the old K boundary, the exact disk/surface boundary
+trace and non-nullhomotopy in the original L. A connected finite neighborhood
+retains the actual nullhomotopy, enabling the same construction inside a
+prescribed simply connected open set and the interior of the original shell.
+
+The original-shell consumer keeps X/S/B0/B1 and produces the essential disk
+and a centered annulus. Its final compression conclusion still requires an
+actual three-dimensional ball, wall and two caps with the exact trace and
+endpoint equations. These geometric inputs have not yet been produced for an
+arbitrary new essential disk. Moise252 itself, full arbitrary-component and
+nonseparating Moise264, and general Moise304 remain open.
+
+The complete author evidence was copied to
+codex-integration-m304-essential-disk-handoff-20260919/frozen-evidence:
+147 files, 11,945,912 bytes, with all copy hashes verified. Its manifest hash is
+4c0794faac0c53e13ef333d6fce8388e3ad08f80cc44a4379a7f6757ca7266b9.
+All 23 frozen source bodies match their committed normalized bytes and author
+raw sources. The author reports 15 nonautomatic declarations across changed
+modules and the unchanged actual consumer, 74 critical reuse entries, two
+unconditional and two h252-conditional models, plus three helpers, with clean
+axiom and 13-linter audits. The author Lean delta is +230/-6. This is frozen
+source and author verification evidence; independent integration acceptance
+has not yet occurred and no Lean integration source changed at this handoff.
+
+At the completed delivery boundary, the existing Astra max task received the
+next full round: produce the actual compression ball, side wall and disjoint
+caps around the same disk, in the original shell. Choose the surface annulus
+and ball together, proving exact traces, endpoint compatibility and any
+shrinkage/transport equations. An arbitrary earlier annulus is not automatically
+compatible with a later ball. Reuse the existing spanning-disk neighborhood
+and collar results, distinguishing their two-dimensional outputs from the
+missing three-dimensional ball. Do not assume the final product neighborhood
+or a compression package. Feed the existing target-preserving separation and
+strict Betti descent only after producing their actual geometry.
+
+The independent queue now contains M304 through06af1e40d including7a/96/412,
+h e85a235df, E3 c10b83586, and S5b7117893. The other four active rounds were
+not contacted. Hourly follow-up, the existing five task/model assignments,
+no new deadline, and the current compiler limits remain in force.

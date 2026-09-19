@@ -1634,3 +1634,16 @@ point. See integration section79 for frozen evidence and the completed-boundary
 handoff. The current independent queue is M304 through412, h e85, E3 c10 and
 S5b; earlier F71 and S throughc0 are accepted. All five lanes retain their
 existing models, scopes and resource policy.
+
+### Essential disk delivered; compatible compression ball is the next producer
+
+M30406af1e40d is frozen after412, pending independent acceptance of the full
+7a/96/412/06 chain. It produces the actual original K/L essential embedded
+disk with explicit Moise252, exact boundary trace and old-boundary avoidance,
+and retains the original shell in its annulus/compression consumer. The author
+Lean delta is +230/-6; no independent mathematical acceptance is added yet.
+The next dispatched round constructs the actual three-dimensional compression
+ball, wall and caps around that same disk, choosing the annulus compatibly
+and proving the exact trace equations before consuming existing separation
+and strict Betti descent. See integration section80 for frozen identities and
+scope. Other active lanes continue without mid-round messages.
