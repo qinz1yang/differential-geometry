@@ -8958,6 +8958,11 @@ import DifferentialGeometry.Topology.Morse.RelativeApproximation
 import DifferentialGeometry.Topology.Morse.CriticalNeighborhood
 import DifferentialGeometry.Topology.Morse.CompactCriticalValues
 import DifferentialGeometry.Topology.PiecewiseLinear.TorusShell
+import DifferentialGeometry.Topology.PiecewiseLinear.InvolutionTriangulation
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ProjectedCellCrossing
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ProjectedCellInDouble
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ProjectedDoubleSheets
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ProjectedDoubleTriangulation
 
 /-!
 # Differential geometry and geometric analysis

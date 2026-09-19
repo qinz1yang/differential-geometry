@@ -1955,3 +1955,62 @@ general singular elimination Moise264 remain open. TameNestedCells compiles
 with the combined imports but its Moise304 input remains explicit. Later
 M304 work stays in its existing concrete compression lane until the final
 checkpoint; no new lane or interruption was introduced.
+
+## Equivariant double sheets and true-carrier interior normalization (2026-09-19 UTC)
+
+The frozen F delivery through f5436defe is independently accepted, including
+10dfda8ea,2f3f2f478 and41dbb350a. Five new leaves are registered in the flat
+root. Exact committed source bytes and the author's separately verified raw
+receipt bytes are retained; mixed line endings normalize to the same source.
+
+Symmetrized hyperplane arrangements and paired averaged cell centers construct
+an actual finite triangulation invariant under an affine involution, relative
+to any prescribed finite polyhedral family. Applying this to the swapped-pair
+double-point relation gives a free simplicial exchange on the actual source
+double locus, disjoint paired simplices, and the exact boundary subcomplex.
+Finite polyhedral sheet pairs then give actual relative neighborhoods at every
+double point, two PL homeomorphisms to the same image, and exact saturation of
+the whole fiber preimage by those two sheets.
+
+For a supplied genuine cover diagram and upstairs EmbeddedDisk, the projected
+disk is constructed as a SingularTwoCell in the actual downstairs manifold
+double. Its original domain, every projected point and fiber, actual second-
+copy frontier, exact source-boundary preimage, loop class and subgroup avoidance
+are preserved. Local injectivity and at-most-two fibers come from that real
+projection. Moving into the double does not repair bad fibers.
+
+At an actual interior double point, the single-chart producer constructs an
+arbitrarily small supported modification with a finite one-dimensional local
+crossing locus. It fixes the original boundary pointwise, retains the true
+carrier and exact boundary preimage, and preserves all fibers outside the
+chosen interior support, local injectivity and at-most-two fibers.
+
+Five focused checks took 57.898 seconds; the combined audit took
+51.825 seconds including admission. All nine new native nonautomatic
+declarations,26 critical reuse entries(23 distinct) and thirteen classified
+probe declarations pass the three approved foundational axiom bound and all
+thirteen applicable linters. Final output has zero diagnostics. The probes
+contain four actual geometric theorem entries, five conditional consumers,
+two helper definitions, one concrete fixture property and one local instance.
+Thirty exact-source prerequisite objects were reused. New public full names
+are unique, including the root Convex theorem.
+
+The actual two-rectangle folding model verifies a nonempty equivariant
+triangulation, exact bottom-edge subcomplex and paired relative-neighborhood
+sheets. Its double-point image is still a whole two-dimensional rectangle.
+A separate planar disk has distinct interior and boundary points. The five
+NormalSystem consumers take a given R and D; there is no independent full
+NormalSystem avoidance model or nontrivial actual interior-double-point model
+in this acceptance. They are not counted as actual geometry instances.
+
+The Lean delta is+743/-0, including five root imports. Static root closure
+reaches 9599 project modules including the root; 0 existing
+leaves became newly reachable. No missing project sources or cycles were
+found. The full root build remains stopped. Receipt:
+.lake/verified-fortyfourth-lane-delivery-20260919.json.
+
+Global finite-chart preservation on overlaps, actual boundary half-space charts,
+four-case surgery/elimination and the full Moise264 remain open. F's later
+boundary-relative layers through56bd63a74 are queued separately, with active
+boundary-collar work left undisturbed. These nine declarations do not establish
+a global regular disk or the loop theorem endpoint.

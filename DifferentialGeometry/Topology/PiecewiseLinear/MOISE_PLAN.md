@@ -262,7 +262,7 @@ its active 30.3 round without interruption. The private checker limit stays two.
 | Task / model | Current round | Delivery gate and next boundary |
 | --- | --- | --- |
 | h / gpt-5.6-sol max | Contracts and actual neighborhoods accepted; finite disjoint nested neighborhoods and genuinely locally finite disjoint open supports through e8ffd9c5d independently verified. | Localize splitting-disk ballness to finite cofaces without changing the actual disk. Stability, compatible approximation and Moise351 remain open. Checkpoint by14:05 UTC. |
-| F / gpt-6-astra max | Actual spherical EmbeddedDisk/return and projected double-cover/partner-involution layers through 8a00ab535 independently accepted. | Continue equivariant relative triangulation on the actual free collision relation in the same descent lane. The rectangle model permits two-dimensional double sets; crossing, geometric elimination and downstairs embedding remain open. |
+| F / gpt-6-astra max | Actual projected-disk production, equivariant sheets and true-carrier interior local normalization through f5436defe independently accepted. | Later boundary-relative layers through56bd63a74 await replay. Actual boundary half-space collar, overlap-preserving global normalization and four-case elimination remain open. Finish current round safely. |
 | E3 / gpt-5.6-sol max | WB3 interior boundary/prism/local traces and original ambient separation through ff304a1b2 independently accepted, with actual 3D WB3 local-trace model. | Produce finite replacement surface/manifold and actual disjoint caps with face equations. Canonical restriction merge assigned at delivery; checkpoint by 14:05 UTC. Full 30.3 remains open. |
 | M304 / gpt-6-astra max | Own30.4. Essential filling and actual torus compression through7c38f9f1c independently accepted, including common ball targets and one produced spherical shell. | General prescribed-shell target preservation and zero-Betti descent remain open. Continue only existing concrete compression round; checkpoint by14:05 UTC. |
 | S / gpt-6-astra max | Fixed-old-atlas planar smoothing and relative Morse approximation with distinct finite critical values through fa9f81cbf independently accepted. | Relative critical-region cancellation and whole-strip product remain open. Continue only existing level/handle investigation and checkpoint by14:05 UTC. |
@@ -432,6 +432,19 @@ a PL sphere by comparison with the actual capped sphere. General prescribed-
 shell target preservation and zero-Betti descent remain open; this specific
 example does not close Moise304. Six fresh modules,31 native declarations,
 57 reused entries and nine actual certificates pass; see handoff section63.
+
+### Equivariant double-sheet and interior-normalization gate (2026-09-19 UTC)
+
+F through f5436defe is independently accepted: relative equivariant finite
+triangulations of actual double-point involutions, finite saturated polyhedral
+sheet neighborhoods, and the projected disk in the actual double with its
+exact boundary and fibers. At interior double points a small single-chart
+modification preserves the carrier, fixes the boundary and produces local
+crossings. Five leaves and nine native declarations pass. Four actual model
+theorems are distinct from five conditional NormalSystem consumers. Global
+overlap-preserving normalization, boundary chart production and four-case
+elimination remain open; later source through56bd63a74 is queued separately.
+See handoff section64. Moving to the double alone leaves fibers unchanged.
 
 ## 1. 目标与接口
 
