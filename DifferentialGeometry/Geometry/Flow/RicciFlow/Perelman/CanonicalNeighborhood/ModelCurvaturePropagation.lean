@@ -179,3 +179,151 @@ theorem NormalizedSequence.pinching_error_eventually
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
 
 end
+
+noncomputable section
+open Filter Set
+open scoped Topology Manifold ContDiff ENNReal
+
+namespace DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
+
+open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.CheegerGromovCompactness
+open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
+universe u
+attribute [local instance] PointedFlowData.topology PointedFlowData.charted
+  PointedFlowData.smooth PointedFlowData.t2 PointedFlowData.sigmaCompact
+
+private theorem pinching_term_le_of_scale_ge_one
+    {Phi : ℝ → ℝ} (hPhi : AdmissiblePinchingFunction Phi)
+    {scale Q L : ℝ} (hs : 1 ≤ scale) (hQ : 1 ≤ Q) (hL : L ≤ 3 * Q) :
+    (Phi (4 * scale * L) + Phi 0) / scale ≤ 13 * Phi 1 * Q := by
+  have hspos : 0 < scale := zero_lt_one.trans_le hs
+  have hQpos : 0 < Q := zero_lt_one.trans_le hQ
+  have hsq : 1 ≤ scale * Q := one_le_mul_of_one_le_of_one_le hs hQ
+  have harg : 1 ≤ 12 * scale * Q := by nlinarith
+  have hquot := hPhi.quotientAntitoneOn (by norm_num : (1 : ℝ) ∈ Ioi 0)
+    (show 12 * scale * Q ∈ Ioi 0 from by change 0 < 12 * scale * Q; positivity) harg
+  have hquot' : Phi (12 * scale * Q) / (12 * scale * Q) ≤ Phi 1 := by
+    simpa using hquot
+  have hPhiarg : Phi (12 * scale * Q) ≤ Phi 1 * (12 * scale * Q) :=
+    (div_le_iff₀ (show 0 < 12 * scale * Q by positivity)).mp hquot'
+  have hmono := hPhi.mono (show 4 * scale * L ≤ 12 * scale * Q by nlinarith)
+  have hzero : Phi 0 ≤ Phi 1 := hPhi.mono (by norm_num)
+  have hPhi1 : 0 < Phi 1 := hPhi.pos 1
+  rw [div_le_iff₀ hspos]
+  nlinarith
+
+theorem exists_local_curvature_cylinder_at_scale
+    {kappa : ℝ} (hmod : ModelCurvatureBoundNearBase.{u, 0, 0} I3 kappa) :
+    ∃ epsStar c C : ℝ, 0 < epsStar ∧ 0 < c ∧ 0 < C ∧
+      ∀ eps : ℝ, 0 < eps → eps ≤ epsStar → ∀ sigma : ℝ, 0 < sigma →
+        ∀ Phi : ℝ → ℝ, AdmissiblePinchingFunction Phi →
+          ∀ X : NormalizedSequence.{u} eps kappa sigma Phi, ∀ᶠ i in atTop,
+            ∀ Q : ℝ, 1 ≤ Q → ∀ z : (X.term i).M,
+              |(X.term i).S.scalar 0 z| ≤ 2 * Q →
+              Icc (-(c / (3 * Q))) 0 ⊆ (X.interval i).carrier ∧
+              ∀ y : (X.term i).M, ∀ t ∈ Icc (-(c / (3 * Q))) 0,
+                y ∈ riemannianClosedBallOf ((X.term i).S.base.metric 0) z
+                  (c / Real.sqrt (3 * Q)) →
+                (X.term i).S.scalar t y ≤ 12 * Q ∧
+                Real.sqrt (FlowMetricBall.rmNormSq (X.term i).S t y) ≤
+                  C * (3 + 13 * Phi 1) * Q := by
+  obtain ⟨epsStar, c, C, hepsStar, hc, hC, hprop⟩ := local_propagation_of_modelBound hmod
+  refine ⟨epsStar, c, C, hepsStar, hc, hC, ?_⟩
+  intro eps heps hepsStar' sigma hsigma Phi hPhi X
+  filter_upwards [hprop eps heps hepsStar' sigma hsigma Phi hPhi X,
+    X.scale_tendsto.eventually_ge_atTop 1] with i hi hscale
+  intro Q hQ z hz
+  let L := 1 + |(X.term i).S.scalar 0 z|
+  have hL : 0 < L := by dsimp [L]; positivity
+  have hLQ : L ≤ 3 * Q := by dsimp [L]; linarith
+  have hQpos : 0 < Q := zero_lt_one.trans_le hQ
+  have htime : Icc (-(c / (3 * Q))) 0 ⊆ Icc (0 - c / L) 0 := by
+    have hdiv : c / (3 * Q) ≤ c / L :=
+      div_le_div_of_nonneg_left hc.le hL hLQ
+    exact Icc_subset_Icc (by linarith) le_rfl
+  have hrad : c / Real.sqrt (3 * Q) ≤ c / Real.sqrt L :=
+    div_le_div_of_nonneg_left hc.le (Real.sqrt_pos.mpr hL) (Real.sqrt_le_sqrt hLQ)
+  have hzero : (0 : ℝ) ∈ Icc (-(X.depth i / 2)) 0 :=
+    ⟨by linarith [X.depth_pos i], le_rfl⟩
+  have hpi := hi 0 hzero z
+  refine ⟨htime.trans hpi.1, ?_⟩
+  intro y t ht hy
+  have hmem : (y, t) ∈ frozenBackwardCylinder (X.term i).S z 0 c c L :=
+    ⟨hy.trans (ENNReal.ofReal_le_ofReal hrad), htime ht⟩
+  obtain ⟨_, hsc, hrm⟩ := hpi.2 y t hmem
+  have hPhiBound := pinching_term_le_of_scale_ge_one hPhi hscale hQ hLQ
+  have hcurv : C * (L + (Phi (4 * X.scale i * L) + Phi 0) / X.scale i) ≤
+      C * (3 + 13 * Phi 1) * Q := by
+    calc _ ≤ C * (3 * Q + 13 * Phi 1 * Q) := by gcongr
+      _ = _ := by ring
+  exact ⟨by linarith, hrm.trans hcurv⟩
+
+theorem exists_rescaled_local_curvature_cylinder
+    {kappa : ℝ} (hmod : ModelCurvatureBoundNearBase.{u, 0, 0} I3 kappa) :
+    ∃ epsStar c C : ℝ, 0 < epsStar ∧ 0 < c ∧ 0 < C ∧
+      ∀ eps : ℝ, 0 < eps → eps ≤ epsStar → ∀ sigma : ℝ, 0 < sigma →
+        ∀ Phi : ℝ → ℝ, AdmissiblePinchingFunction Phi →
+          ∀ X : NormalizedSequence.{u} eps kappa sigma Phi, ∀ᶠ i in atTop,
+            ∀ Q : ℝ, ∀ hQ : 0 < Q, 1 ≤ Q → ∀ z : (X.term i).M,
+              |(X.term i).S.scalar 0 z| ≤ 2 * Q →
+              ∀ hzero : (0 : ℝ) ∈ (X.interval i).carrier,
+                let S := parabolicSolution (X.term i).S 0 Q hQ hzero
+                Icc (-(c / 3)) 0 ⊆
+                  (parabolicInterval (X.interval i) 0 Q hzero).carrier ∧
+                ∀ y : (X.term i).M, ∀ t ∈ Icc (-(c / 3)) 0,
+                  y ∈ riemannianClosedBallOf (S.base.metric 0) z (c / Real.sqrt 3) →
+                  S.scalar t y ≤ 12 ∧
+                  Real.sqrt (FlowMetricBall.rmNormSq S t y) ≤ C * (3 + 13 * Phi 1) := by
+  obtain ⟨epsStar, c, C, hepsStar, hc, hC, hbound⟩ :=
+    exists_local_curvature_cylinder_at_scale hmod
+  refine ⟨epsStar, c, C, hepsStar, hc, hC, ?_⟩
+  intro eps heps hle sigma hsigma Phi hPhi X
+  filter_upwards [hbound eps heps hle sigma hsigma Phi hPhi X] with i hi
+  intro Q hQ hQone z hz hzero
+  let S := parabolicSolution (X.term i).S 0 Q hQ hzero
+  obtain ⟨hwindow, hlocal⟩ := hi Q hQone z hz
+  have htime : ∀ t ∈ Icc (-(c / 3)) 0,
+      parabolicTime 0 Q t ∈ Icc (-(c / (3 * Q))) 0 := by
+    intro t ht
+    dsimp only [parabolicTime]
+    rw [zero_add]
+    constructor
+    · rw [le_div_iff₀ hQ]
+      have heq : -(c / (3 * Q)) * Q = -(c / 3) := by field_simp
+      rw [heq]
+      exact ht.1
+    · exact div_nonpos_of_nonpos_of_nonneg ht.2 hQ.le
+  refine ⟨fun t ht => ?_, ?_⟩
+  · rw [parabolicInterval_carrier]
+    exact hwindow (htime t ht)
+  · intro y t ht hy
+    have hsqrtQ : 0 < Real.sqrt Q := Real.sqrt_pos.mpr hQ
+    have hrad : Real.sqrt Q * (c / Real.sqrt (3 * Q)) = c / Real.sqrt 3 := by
+      rw [Real.sqrt_mul (by norm_num : (0 : ℝ) ≤ 3)]
+      field_simp
+    have hball := riemannianClosedBallOf_scaleMetric Q hQ
+      ((X.term i).S.base.metric 0) z (c / Real.sqrt (3 * Q))
+    rw [hrad] at hball
+    have hy' : y ∈ riemannianClosedBallOf ((X.term i).S.base.metric 0) z
+        (c / Real.sqrt (3 * Q)) := by
+      change y ∈ riemannianClosedBallOf (scaleMetric Q hQ
+        ((X.term i).S.base.metric (parabolicTime 0 Q 0))) z _ at hy
+      rw [parabolicTime_zero] at hy
+      rwa [← hball]
+    obtain ⟨hsc, hrm⟩ := hlocal y _ (htime t ht) hy'
+    constructor
+    · change S.scalar t y ≤ 12
+      rw [parabolicSolution_scalar]
+      calc Q⁻¹ * (X.term i).S.scalar (parabolicTime 0 Q t) y
+          ≤ Q⁻¹ * (12 * Q) := mul_le_mul_of_nonneg_left hsc (inv_nonneg.mpr hQ.le)
+        _ = 12 := by field_simp
+    · change Real.sqrt (FlowMetricBall.rmNormSq S t y) ≤ _
+      rw [rmNormSq_paraSolution, Real.sqrt_mul (sq_nonneg Q⁻¹),
+        Real.sqrt_sq (inv_nonneg.mpr hQ.le)]
+      calc Q⁻¹ * Real.sqrt (FlowMetricBall.rmNormSq (X.term i).S (parabolicTime 0 Q t) y)
+          ≤ Q⁻¹ * (C * (3 + 13 * Phi 1) * Q) :=
+            mul_le_mul_of_nonneg_left hrm (inv_nonneg.mpr hQ.le)
+        _ = C * (3 + 13 * Phi 1) := by field_simp
+
+end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn

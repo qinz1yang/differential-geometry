@@ -74,4 +74,49 @@ theorem NormalizedSequence.metric_noncollapsed_of_canonical_convergence
   simpa only [hdim, ENNReal.ofReal_mul' (pow_nonneg hr.le 3),
     ENNReal.ofReal_pow hr.le] using h
 
+open Set in
+theorem NormalizedSequence.metric_noncollapsed_scaleMetric
+    {eps kappa sigma : ℝ} {Phi : ℝ → ℝ}
+    (X : NormalizedSequence.{u} eps kappa sigma Phi) (i : ℕ)
+    {Q : ℝ} (hQ : 0 < Q) (p : (X.term i).M) :
+    MetricNoncollapsed
+      { (X.term i).atTime 0 with
+        basepoint := p
+        metric := scaleMetric Q hQ ((X.term i).S.base.metric 0) }
+      kappa (Ioc 0 (Real.sqrt Q * (Real.sqrt (X.scale i) * sigma))) := by
+  let _ : IsManifold I3 1 (X.term i).M := IsManifold.of_le (n := ∞) (by decide)
+  have hzero : (0 : ℝ) ∈ (X.interval i).carrier := by
+    rw [X.carrier_eq]
+    exact ⟨by linarith [X.depth_pos i], le_rfl⟩
+  let P := parabolicSolution (X.term i).S 0 Q hQ hzero
+  have hPzero : (0 : ℝ) ∈ (parabolicInterval (X.interval i) 0 Q hzero).carrier := by
+    change parabolicTime 0 Q 0 ∈ (X.interval i).carrier
+    rwa [parabolicTime_zero]
+  have hmetric : P.base.metric 0 = scaleMetric Q hQ ((X.term i).S.base.metric 0) := by
+    change scaleMetric Q hQ ((X.term i).S.base.metric (parabolicTime 0 Q 0)) = _
+    rw [parabolicTime_zero]
+  have hnc := parabolic_spatial_noncollapse (X.term i).S 0 Q hQ hzero kappa
+    (Real.sqrt (X.scale i) * sigma) (X.noncollapse i)
+  intro y r hrs hr hcurv
+  let B : FlowMetricBall P ⟨0, hPzero⟩ := ⟨y, r, hr⟩
+  have hcontrol : B.IsSpatiallyRmControlled := by
+    intro z hz
+    change r ^ 4 * Tensor0SBundle.normSq0S (P.base.metric 0) z 4
+      (metricRm04At (P.base.metric 0) z) ≤ 1
+    change riemannianEDistOf (P.base.metric 0) y z < ENNReal.ofReal r at hz
+    rw [hmetric] at hz ⊢
+    exact hcurv z hz
+  have hv := hnc.2 ⟨0, hPzero⟩ B hrs.2 hcontrol
+  have hvol : ENNReal.ofReal (kappa * r ^ 3) ≤
+      riemannianVolumeMeasure I3 (X.term i).M (P.base.metric 0)
+        (riemannianBallOf (P.base.metric 0) y r) := by
+    rw [ENNReal.ofReal_mul hv.1.le, ENNReal.ofReal_pow hr.le]
+    have hdim : Module.finrank ℝ ThreeSpace = 3 := by simp [ThreeSpace]
+    simpa only [hdim, B, FlowMetricBall.volume, FlowMetricBall.set,
+      FlowMetricBall.setAt, volumeMeasureOn_eq_metric, SolutionOn.family_metric,
+      riemannianBallOf] using hv.2
+  rw [hmetric] at hvol
+  exact hvol
+
+
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn

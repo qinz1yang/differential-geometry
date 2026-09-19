@@ -11489,3 +11489,5 @@ import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakDerivative.Mixed
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakDerivative.Spacetime
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Embedding.FiniteOrder
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.SpacetimeRegularity
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Derivatives.TerminalBall
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.LocalInverseCapture
