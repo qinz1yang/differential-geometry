@@ -428,3 +428,35 @@ Both leaves are registered in the flat root. Source snapshots, raw and
 normalized hashes, object files, receipts and audit census are frozen in
 `moise304-reading/disk-capping-checkpoint/`. The owner-stopped root build
 remains stopped, and no shared E: artifact was written.
+
+## Betti formulas for actual split-and-cap data (2026-09-19 UTC)
+
+`SurfaceSplitBetti.lean` adds four corollaries of the existing proved
+`SurfaceSplitAndCap.eulerChar_eq_add_two`. The source is a finite connected
+orientable closed combinatorial surface. If the actual result is also
+connected and orientable, its first Betti number plus two equals the
+source's first Betti number, hence it is strictly smaller. If the result's
+faces are the disjoint union of two connected orientable closed surfaces,
+their first Betti numbers sum to the source's first Betti number. If neither
+component is a PL sphere, sphere recognition and the Euler-Betti formula
+make both Betti numbers positive, so each is strictly smaller than the
+source's.
+
+These statements consume the actual split-and-cap structure, manifold,
+orientation, connectedness and face-decomposition data. No Euler equality
+or Betti inequality is assumed. The non-spherical component hypotheses
+still need to come from the geometric capping obstruction. The two-component
+strict inequality proved here is sufficient for natural-number descent;
+this layer does not claim the book's stronger bound of a decrease by at
+least two in each component.
+
+The module compiles with zero diagnostics in 11.173 seconds including
+admission. Its final silent audit takes 56.595 seconds: all four declarations
+and five critical reused entries have only standard foundational axioms,
+and all 13 applicable linters pass. No new geometric model is claimed for
+these conditional corollaries; their verification is compilation, statement
+review, the full transitive axiom audit and the standard linter suite.
+The new leaf is registered in the flat root. Source and object snapshots,
+raw and normalized hashes, receipts and census are frozen in
+`moise304-reading/surface-split-betti-checkpoint/`. The root build remains
+stopped and no shared artifact was written.

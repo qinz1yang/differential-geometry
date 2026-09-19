@@ -127,7 +127,13 @@ cylinders ending in them, including transport from the capped sphere's
 complement. Six declarations, ten reused entries, three geometric models
 and 13 applicable linters pass. The actual capped components and their
 maps back to the source surface still have to be constructed before this
-can exclude spherical components in compression. Full nonorientable 28.19
+can exclude spherical components in compression. Four checked Betti
+corollaries now consume actual `SurfaceSplitAndCap` data: a connected
+orientable result has first Betti number exactly two below the source;
+for a disjoint union of two connected orientable non-spheres each first
+Betti number is strictly below the source. Their full axiom and 13-linter
+audit passes. Construction of the required decomposition and exclusion
+of spherical components remains open. Full nonorientable 28.19
 and the spherical-shell
 endpoint remain open. Exact evidence
 and the source route are in HANDOFF_CODEX_M304.md. This explicitly authorized

@@ -93,6 +93,11 @@ ten reused entries, three geometric models and 13 linters pass. This supplies
 the topological obstruction for an essential circle once the actual capped
 component and its return map have been produced; those geometric inputs
 are not assumed to have been constructed.
+Four checked `SurfaceSplitAndCap` corollaries compute the connected-result
+Betti drop of exactly two and the two-component sum formula, giving strict
+descent in each of two non-spherical components. Five reused entries and
+13 linters pass. These consume the actual split-and-cap data and component
+hypotheses; production of that geometry is still open.
 E3 retains 30.3. Compression via 26.4, full nonorientable 28.19,
 strict Betti descent and the full PL-sphere endpoint 30.4 remain open.
 See HANDOFF_CODEX_M304.md for exact signatures and evidence.
