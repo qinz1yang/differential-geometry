@@ -1400,3 +1400,36 @@ results and one private helper are new; duplicated old gluing proofs are not
 new results. General 30.3 still needs the relative chart identifying original
 surface end circles with prism slices. See integration section 71 and the
 resumed-stage acceptance ledger. No full-root compilation is claimed.
+
+### Actual boundary charts and the remaining relative normalization gate
+
+The four F boundary-chart leaves through f0482b620 are independently accepted:
+actual bicollar, open product with the original PL parameter, compatible
+boundary-plane chart, and exact half-space sign. An actual tetrahedron vertex
+lies on the tested double frontier. Ten native declarations pass complete
+axiom and thirteen-linter checks, together with six existing declarations
+from two previously unreachable prerequisites. Those modules now have
+required headers and direct root imports. One old unused finite-dimensional
+hypothesis was removed, preserving the proof and old caller. See integration section72 and the resumed
+ledger. The earlier boundary perturbation/homotopy queue and the new
+a50bc58dd/44d4e28ef consumers still await independent replay.
+
+The current F lane must produce relative crossing control in the active
+transition annulus, or a finite protected-core invariant with a proved cover
+of the original target. Closed-region protection outside the new point alone
+does not establish overlap preservation. The fixed-vertex obstruction to
+the older face-transversality interface must remain explicit. Neither
+global normal form nor the loop theorem is complete. Other current lanes
+continue original-surface prism compatibility (E3), prescribed-shell
+separation-preserving compression (M304), graph-fixed compatible PL
+neighborhood modifications (h), and actual relative critical-pair normal
+form geometry (S). No full-root compilation is claimed.
+
+
+Latest unaccepted checkpoints are h d2c94f911, M304 f2338f0d and S f15aad47d.
+Source review distinguishes h's graph-fixed external homeomorphism from a
+self-homeomorphism of the original K.space; the latter is its next producer.
+M304's new finite polyhedral separator is not yet a capped closed surface.
+S's actual compact regular-band product still needs critical endpoint gluing
+and genuine cancellation incidence. These are next-round obligations, not
+independently verified theorem completions of their final goals.

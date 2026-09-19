@@ -8969,6 +8969,12 @@ import DifferentialGeometry.Topology.Morse.CubicCancellation
 import DifferentialGeometry.Topology.PiecewiseLinear.CylindricalMeridian
 import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceSplitCapping
 import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceSplitRealization
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ProjectedBoundaryCollar
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ProjectedBoundaryOpenCollar
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ProjectedBoundaryChart
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ProjectedBoundaryHalfSpace
+import DifferentialGeometry.Topology.Connected.FiniteCover
+import DifferentialGeometry.Topology.PiecewiseLinear.PolyhedralManifoldTopology
 
 /-!
 # Differential geometry and geometric analysis

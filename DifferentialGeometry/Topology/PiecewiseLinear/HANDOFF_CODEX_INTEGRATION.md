@@ -3308,3 +3308,62 @@ reachability is 9605 project modules including the root, without missing
 sources or cycles. Full-root compilation remains stopped and unclaimed.
 Receipt: .lake/verified-fiftieth-lane-delivery-20260919.json. General 30.3
 requires the missing relative chart; 30.4 remains M304's separate lane.
+
+## 72. Actual manifold-double boundary charts
+
+F's four frozen leaves from 19a63a713, fd39b5cf3, fa361d39c and f0482b620
+are independently accepted. They construct a PL bicollar of the actual
+manifold copy in its double, restrict the same PL parameter to an open
+product neighborhood, construct compatible Euclidean PL charts, and prove
+that the actual copy is exactly the nonnegative half-space in each produced
+chart. Boundary membership is exactly the zero level. The regular-closed
+carrier and the two signs are established geometrically.
+
+Four actual tetrahedron-double tests exercise these producers. Integration
+strengthens the half-space test by exhibiting a specific tetrahedron vertex
+on the actual frontier, so the chart conclusion is used on a nonempty
+boundary. One additional probe declaration is only a local equality instance.
+The NormalSystem corollary is checked, but no full NormalSystem with genuine
+normal-subgroup avoidance is claimed as a fixture.
+
+Six modules compiled in 112.999 seconds and their joint audit
+took 48.615 seconds, including admission. All sixteen native
+declarations (ten new, six existing), 23 distinct critical reuse entries
+and five classified probe declarations have only approved foundational
+axioms. All native/probe declarations pass thirteen applicable linters; final
+checks exit 0 with zero diagnostics. Five new declarations are public and
+five are private. The four author leaves are accepted byte-for-byte.
+36 exact-source accepted prerequisite objects were reused.
+
+Root review found two previously unreachable existing prerequisites:
+Connected.FiniteCover and PolyhedralManifoldTopology. Both now have direct
+root imports and required headers; one overlong declaration line is wrapped.
+The audit removed an unused finite-dimensional hypothesis from the old
+closed-component-complement theorem; its proof is unchanged. Its sole old
+caller remains compatible. Their six declarations and the four
+new downstream leaves were freshly checked together. Earlier successful
+four-module checks and the first model audit are preserved in the receipt;
+they are not counted as extra declarations. The one old generalization is
+recorded separately from ten new declarations.
+
+Accepted Lean delta: +647/-2, consisting of 620 frozen author lines, six
+root imports, eighteen header lines, one wrap and one hypothesis removal. This integrates earlier
+source and is not a current typing count. Static root coverage is 9611
+project modules including the root, without missing sources or cycles.
+Full-root compilation remains stopped and unclaimed.
+Receipt: .lake/verified-fiftyfirst-lane-delivery-20260919.json.
+
+The remaining F boundary-position, loop-homotopy and relative-normalization
+queue through 44d4e28ef is not covered by this acceptance. That delivery
+protects a closed region disjoint from the new point; it does not yet solve
+activity in the transition annulus. F's next round now targets that actual
+two-sheet geometry or a sufficient finite protected-core induction with
+proved coverage. Global normalization and four-case elimination remain open.
+Further frozen deliveries are queued separately: h through d2c94f911,
+M304 through f2338f0d and S through f15aad47d. They are not counted as
+independently accepted here. At their completed deliveries, h continues
+original-carrier-preserving PL motion (its current map only preserves the
+graph in the external realization), M304 tackles separation by the actual
+two-cap surface, and S tackles critical-endpoint/regular-middle gluing with
+genuine cancellability. E3's active original-end-circle/prism round receives
+no interruption. All five existing tasks retain one lane each.
