@@ -1279,3 +1279,33 @@ are frozen at `moise304-reading/torus-meridian-checkpoint/` with raw and normali
 source hashes. Root builds remain stopped; shared E outputs are unchanged.
 This is an actual solid-torus instance, not a general embedded-disk producer for
 arbitrary three-manifolds or a proof of arbitrary-shell Moise304.
+
+### M304 essential meridians at every cylinder height (2026-09-19 UTC)
+
+`IsCylindricalDiagram.exists_essential_slice_disk` is a generic producer for
+finite embedded cylindrical three-manifolds with a PL disk as cross-section and
+pointwise identified ends. For every t in the closed interval [0,1], it supplies
+an actual parametrized slice disk, its exact boundary circle and exact ambient
+frontier trace. The disk minus its boundary is nonempty and lies in the ambient
+manifold interior. The boundary circle is nonseparating and not nullhomotopic in
+the manifold frontier, but is nullhomotopic inside the same manifold through
+that slice disk. No torus or compression conclusion is assumed.
+
+`IsCylindricalDiagram.isConnected_sdiff_slice` now accepts the closed interval,
+including the glued end slices. Its assumptions still require neither untwisted
+ends nor a finite-dimensional target. The original two other CylindricalCircle
+signatures are unchanged. CylindricalFrontier and all three existing torus
+consumers were privately rebuilt after this deliberate hypothesis weakening.
+The new CylindricalMeridian leaf is registered in the flat root.
+
+Six modules compile without diagnostics. The audit covers all four native
+declarations in the two changed/new leaves, 12 critical reuses and two actual
+model certificates. The first constructs one embedded solid torus and validates
+all its slice disks simultaneously. The second checks both glued ends, their
+nonempty disk interiors and disjointness from the middle disk. All 13 applicable
+linters pass and every axiom closure uses only standard foundational axioms.
+The reachable native graph is acyclic with 479 modules and 922 edges. Six complete
+source/object/receipt sets and the audit are frozen with raw and normalized
+source hashes at `moise304-reading/cylindrical-meridian-checkpoint/`.
+Root builds remain stopped and shared E outputs remain untouched. Arbitrary-shell
+Moise304 and a general embedded-disk producer remain separate open gates.
