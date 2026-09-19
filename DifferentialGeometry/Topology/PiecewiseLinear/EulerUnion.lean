@@ -50,6 +50,22 @@ theorem eulerChar_eq_add_sub_of_space_union (R A B I : Geometry.SimplicialComple
     ← eulerChar_eq_singular A ℚ, ← eulerChar_eq_singular B ℚ] at h
   omega
 
+theorem IsPolyhedron.eulerChar_union_of_disjoint {P Q : Set E}
+    (hP : IsPolyhedron P) (hQ : IsPolyhedron Q) (hdis : Disjoint P Q)
+    (k : Type) [Field k] :
+    Homology.eulerChar k (TopCat.of ↥(P ∪ Q)) =
+      Homology.eulerChar k (TopCat.of P) + Homology.eulerChar k (TopCat.of Q) := by
+  let _ : IsEmpty ↥(P ∩ Q) := ⟨fun x => disjoint_left.mp hdis x.property.1 x.property.2⟩
+  have h := hP.eulerChar_union_add_inter hQ k
+  simpa only [Homology.eulerChar_of_isEmpty, add_zero] using h
+
+theorem eulerChar_eq_add_of_space_disjoint_union
+    (R A B : Geometry.SimplicialComplex ℝ E) [Finite R.faces] [Finite A.faces] [Finite B.faces]
+    (hR : R.space = A.space ∪ B.space) (hdis : Disjoint A.space B.space) :
+    eulerChar R = eulerChar A + eulerChar B := by
+  rw [eulerChar_eq_singular R ℚ, eulerChar_eq_singular A ℚ, eulerChar_eq_singular B ℚ, hR]
+  exact (isPolyhedron_space A).eulerChar_union_of_disjoint (isPolyhedron_space B) hdis ℚ
+
 theorem eulerChar_eq_add_of_space_union_of_isPLSphere_one
     (R A B : Geometry.SimplicialComplex ℝ E) [Finite R.faces] [Finite A.faces] [Finite B.faces]
     (hR : R.space = A.space ∪ B.space) (hI : IsPLSphere 1 (A.space ∩ B.space)) :

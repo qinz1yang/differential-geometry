@@ -721,3 +721,44 @@ These are actual complement producers, not a completed nonseparating-circle
 compression: the annulus boundary, connected core and subsequent caps still
 need to be assembled. The root build remains stopped and shared artifacts
 remain untouched.
+
+
+## Connected complements of nonseparating annuli (2026-09-19 UTC)
+
+`CurvePrism.lean` constructs manifold products of finite curves with intervals
+and identifies their actual boundary carriers, including curves with boundary.
+`AnnulusComplement.lean` constructs a finite annulus and its complementary
+surface from an actual embedded PL circle-times-interval map. Both boundary
+carriers and their intersection are exactly the two endpoint circles.
+
+`Connected/BicollarComplement.lean` proves the general topological connectedness
+step from a compact connected core, an actual bicollar and preconnectedness of
+the complement of its middle core. It uses two closed-cover removals. The
+Euler union API gains disjoint-union additivity, and `AnnulusEuler.lean` proves
+that deleting an actual annulus preserves the Euler characteristic.
+
+`IsCombinatorialManifold.exists_connected_annulus_complement` in
+`SurfaceAnnulusComplement.lean` now constructs the actual finite connected
+orientable surface with boundary obtained from a nonseparating circle in a
+closed orientable surface. The annulus can lie in any prescribed relative
+neighborhood. The theorem retains the actual bicollar map, its fixed middle
+circle, the exact closed complement, both disjoint PL boundary circles, and
+the equation that the Euler characteristic is unchanged.
+
+The six changed modules compile without diagnostics in 11.498, 11.111,
+8.383, 10.016, 11.774 and 12.123 seconds including admission. The final silent
+audit takes 186.473 seconds. All twelve declarations in those modules (nine
+new and three retained), twelve critical reused entries and three models have
+only standard foundational axioms, and all 13 applicable linters pass. The
+models verify a rectangle's four-edge boundary, the disconnected two-cap
+complement of the vertical annulus on a cube boundary with Euler characteristic
+two, and the connected complement of a point bicollar in a square boundary.
+The last model is one-dimensional, not a nonseparating torus example. Two
+external-model elaboration errors were corrected before the passing audit.
+
+All five new leaves are registered in the flat root. Frozen source identities,
+private artifacts, receipts, audit and census are under
+`moise304-reading/annulus-complement-checkpoint/`. The root build remains stopped
+by the owner; shared artifacts are untouched. Disjoint cap construction and
+their attachment remain the next layer. This is not yet the full nonseparating
+compression or 30.4, and does not assert preservation of ambient separation.

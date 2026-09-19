@@ -652,3 +652,16 @@ nine critical reused entries and three models pass the standard-axiom and
 13-linter audit with zero diagnostics. Frozen evidence is in
 `moise304-reading/surface-complement-checkpoint/`. The connected annulus core
 and nonseparating-circle caps are still in progress; full 30.4 remains open.
+
+
+### M304 nonseparating annulus complement checkpoint (2026-09-19 UTC)
+
+`SurfaceAnnulusComplement.lean` constructs a finite connected orientable
+surface with boundary as the exact closed complement of an arbitrarily small
+PL annulus around a nonseparating circle. It retains the actual bicollar and
+both disjoint endpoint circles, and proves the Euler characteristic is
+unchanged. Twelve declarations (nine new), twelve critical reused entries,
+three models and all 13 applicable linters pass with standard axioms and zero
+diagnostics. Frozen evidence is under
+`moise304-reading/annulus-complement-checkpoint/`. Disjoint cap attachment,
+ambient separation preservation and full 30.4 remain open.
