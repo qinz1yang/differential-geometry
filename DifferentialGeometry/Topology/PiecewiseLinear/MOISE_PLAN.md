@@ -873,3 +873,13 @@ inline comments and declaration docstrings remain disallowed.
   `secondDerived_isSubdivision`、`IsCombinatorialManifoldWithBoundary.derivedNeighborhood`、有限片流形桥、内部弧生产者、
   `arcComplexIn` 面接口、`chartPieceOfComplex` 与 `subset_interior_iff_mem_nhdsSet` 等 15 个复用声明。全部仅依赖
   `propext`、`Classical.choice`、`Quot.sound`，13 项适用 linter 全通过。
+- 2026-09-19（H 车道 35.1 全局正则邻域修正）：复核原书书页 155、247–248 后确认，仅有逐层二次导出邻域与
+  `IsGlueIso` 不足以保证无限并集为同一个正则邻域：后层新增图顶点会改变旧层重心投影，且没有相对邻域穷竭时逐层连续映射
+  无法保证在并集上连续。新增 `RegularNeighborhoodRetraction.lean` 的
+  `CompatibleStrongDeformationRetractSystem`，记录逐层强形变收缩、全对阶段相容性和下一层相对总并集的邻域性质；
+  `toStrongDeformationRetract` 用最早出现层和 `continuous_of_cover_nhds` 实际粘出总并集到核心并集的强形变收缩。
+  `IsLocallyFiniteRegularNeighborhoodOf.nonempty_strongDeformationRetract` / `strongDeformationRetract` 因而给出 `N ↘ K`。
+  有限构造把 `derivedNeighborhoodStrongDeformationRetract` 经 `PLPieceIn.isClosedEmbedding` 搬到片像并取常值相容系统；
+  内部非空弧实例与 `MoiseChain` 均重编通过。四模块聚焦检查 exit=0、零 warning；严格审计动态覆盖 69 个本模块声明及
+  14 个直接复用声明，公理仅 `propext`、`Classical.choice`、`Quot.sound`，13 项适用 linter 全通过。35.1 本身仍开：
+  非恒定生产者必须从单个局部有限直线三角剖分与相容对偶胞腔改造构造该系统，不能把全局收缩另作结论型假设。

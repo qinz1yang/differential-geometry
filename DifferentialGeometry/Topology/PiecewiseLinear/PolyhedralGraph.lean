@@ -5,7 +5,10 @@ Authors: DifferentialGeometry contributors
 -/
 import DifferentialGeometry.Topology.PiecewiseLinear.GeneratedSubcomplex
 import DifferentialGeometry.Topology.PiecewiseLinear.DerivedNeighborhoodManifold
+import DifferentialGeometry.Topology.PiecewiseLinear.DerivedNeighborhoodRetraction
 import DifferentialGeometry.Topology.PiecewiseLinear.LocallyFinitePieceTower
+import DifferentialGeometry.Topology.PiecewiseLinear.PieceParametrization
+import DifferentialGeometry.Topology.PiecewiseLinear.RegularNeighborhoodRetraction
 import DifferentialGeometry.Topology.PiecewiseLinear.SimplexBoundary
 import DifferentialGeometry.Topology.SimplicialComplex.ConnectedSpace
 
@@ -13,7 +16,8 @@ import DifferentialGeometry.Topology.SimplicialComplex.ConnectedSpace
 # Locally finite polyhedral graphs and regular neighborhoods
 -/
 
-open Set
+open Set Topology
+open DifferentialGeometry.Topology.Homotopy
 
 namespace DifferentialGeometry.Topology.PiecewiseLinear
 
@@ -144,6 +148,9 @@ def IsLocallyFiniteRegularNeighborhoodOf (N K U : Set X) : Prop :=
       (EuclideanSpace ℝ (Fin (T.piece (i + 1)).ambientDim)))
     (DImage : ∀ i, Geometry.SimplicialComplex ℝ
       (EuclideanSpace ℝ (Fin (T.piece (i + 1)).ambientDim))),
+    Nonempty (CompatibleStrongDeformationRetractSystem
+      (fun i => (T.piece i).piece.map '' (G i).space)
+      (T.derivedNeighborhoodImage G)) ∧
     (∀ i, IsCombinatorialManifoldWithBoundary n (T.piece i).piece.complex) ∧
     (∀ i, (G i).faces ⊆ (T.core i).faces) ∧
     (∀ i s, s ∈ (G i).faces → s.card ≤ 2) ∧
@@ -168,22 +175,43 @@ def IsLocallyFiniteRegularNeighborhoodOf (N K U : Set X) : Prop :=
 
 theorem IsLocallyFiniteRegularNeighborhoodOf.mem_nhdsSet {N K U : Set X}
     (h : IsLocallyFiniteRegularNeighborhoodOf (n := n) N K U) : N ∈ nhdsSet K := by
-  obtain ⟨T, G, GImage, DImage, -, -, -, -, -, -, -, -, -, -, -, hN, -, -⟩ := h
-  exact hN
+  obtain ⟨T, G, GImage, DImage, hR, hambient, hG, hcard, hGImage, hGGlue,
+    hDImage, hDGlue, hK, hderived, hmono, hN, hnhds, hNU, hmanifold⟩ := h
+  exact hnhds
 
 theorem IsLocallyFiniteRegularNeighborhoodOf.subset {N K U : Set X}
     (h : IsLocallyFiniteRegularNeighborhoodOf (n := n) N K U) : N ⊆ U := by
-  obtain ⟨T, G, GImage, DImage, -, -, -, -, -, -, -, -, -, -, -, -, hNU, -⟩ := h
+  obtain ⟨T, G, GImage, DImage, hR, hambient, hG, hcard, hGImage, hGGlue,
+    hDImage, hDGlue, hK, hderived, hmono, hN, hnhds, hNU, hmanifold⟩ := h
   exact hNU
 
 theorem IsLocallyFiniteRegularNeighborhoodOf.isLocallyFinitePolyhedralManifoldWithBoundary
     {N K U : Set X} (h : IsLocallyFiniteRegularNeighborhoodOf (n := n) N K U) :
     IsLocallyFinitePolyhedralManifoldWithBoundary (n := n) n N := by
-  obtain ⟨T, G, GImage, DImage, -, -, -, -, -, -, -, -, -, -, -, -, -, hN⟩ := h
-  exact hN
+  obtain ⟨T, G, GImage, DImage, hR, hambient, hG, hcard, hGImage, hGGlue,
+    hDImage, hDGlue, hK, hderived, hmono, hN, hnhds, hNU, hmanifold⟩ := h
+  exact hmanifold
+
+open Classical in
+theorem IsLocallyFiniteRegularNeighborhoodOf.nonempty_strongDeformationRetract
+    {N K U : Set X} (h : IsLocallyFiniteRegularNeighborhoodOf (n := n) N K U) :
+    Nonempty (StrongDeformationRetract {x : N | (x : X) ∈ K}) := by
+  obtain ⟨T, G, GImage, DImage, hR, hambient, hG, hcard, hGImage, hGGlue,
+    hDImage, hDGlue, hK, hderived, hmono, hN, hnhds, hNU, hmanifold⟩ := h
+  let R := Classical.choice hR
+  subst K
+  subst N
+  exact ⟨R.toStrongDeformationRetract⟩
+
+open Classical in
+noncomputable def IsLocallyFiniteRegularNeighborhoodOf.strongDeformationRetract
+    {N K U : Set X} (h : IsLocallyFiniteRegularNeighborhoodOf (n := n) N K U) :
+    StrongDeformationRetract {x : N | (x : X) ∈ K} :=
+  Classical.choice h.nonempty_strongDeformationRetract
 
 open Classical in
 theorem PLPiece.isLocallyFiniteRegularNeighborhoodOf_derivedNeighborhood {U : Set X}
+    [T2Space X]
     (P : PLPiece n X U)
     (G : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin P.ambientDim)))
     (hG : G.faces ⊆ P.piece.complex.faces)
@@ -200,7 +228,45 @@ theorem PLPiece.isLocallyFiniteRegularNeighborhoodOf_derivedNeighborhood {U : Se
       (P.piece.map '' G.space) U := by
   let D := @derivedNeighborhood _ _ _ (Classical.decEq _) P.piece.complex G
   let _ : Finite P.piece.complex.faces := P.piece.finite_faces.to_subtype
-  refine ⟨LocallyFinitePieceTower.ofPiece P, (fun _ => G), (fun _ => G), (fun _ => D),
+  have hDspace : D.space ⊆ P.piece.complex.space := by
+    change (@derivedNeighborhood _ _ _ (Classical.decEq _)
+      P.piece.complex G).space ⊆ P.piece.complex.space
+    exact @derivedNeighborhood_space_subset _ _ _ (Classical.decEq _)
+      P.piece.complex G
+  let f : D.space → X :=
+    (fun x : P.piece.complex.space => P.piece.map x) ∘ Set.inclusion hDspace
+  have hf : IsEmbedding f :=
+    P.piece.isClosedEmbedding.isEmbedding.comp (IsEmbedding.inclusion hDspace)
+  have hfrange : Set.range f = P.piece.map '' D.space := by
+    ext y
+    constructor
+    · rintro ⟨x, rfl⟩
+      exact ⟨x, x.2, rfl⟩
+    · rintro ⟨x, hx, rfl⟩
+      exact ⟨⟨x, hx⟩, rfl⟩
+  have hfcore : f '' derivedNeighborhoodSubcomplex P.piece.complex G =
+      P.piece.map '' G.space := by
+    ext y
+    constructor
+    · rintro ⟨x, hx, rfl⟩
+      exact ⟨x, hx, rfl⟩
+    · rintro ⟨x, hx, rfl⟩
+      let y : D.space := ⟨x, subcomplex_space_subset_derivedNeighborhood hG hx⟩
+      exact ⟨y, hx, rfl⟩
+  have rstage : StrongDeformationRetract
+      (regularNeighborhoodStageCore (P.piece.map '' G.space)
+        (P.piece.map '' D.space)) := by
+    rw [← hfcore, ← hfrange]
+    exact (derivedNeighborhoodStrongDeformationRetract hG).embeddingImage f hf
+  let R := CompatibleStrongDeformationRetractSystem.const
+    (Set.image_mono (subcomplex_space_subset_derivedNeighborhood hG)) rstage
+  have hR : CompatibleStrongDeformationRetractSystem
+      (fun _ => P.piece.map '' G.space)
+      ((LocallyFinitePieceTower.ofPiece P).derivedNeighborhoodImage (fun _ => G)) := by
+    change CompatibleStrongDeformationRetractSystem
+      (fun _ => P.piece.map '' G.space) (fun _ => P.piece.map '' D.space)
+    exact R
+  refine ⟨LocallyFinitePieceTower.ofPiece P, (fun _ => G), (fun _ => G), (fun _ => D), ⟨hR⟩,
     fun _ => hambient,
     fun _ => hG, fun _ => hcard, fun _ => Subset.rfl, ?_, fun _ => Subset.rfl,
     ?_, ?_, fun _ => hderived, ?_, ?_, hnhds, ?_, ?_⟩

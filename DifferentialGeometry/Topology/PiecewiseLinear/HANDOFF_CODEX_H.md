@@ -3472,3 +3472,60 @@ compatibility of the stage deformation retractions/collapses, followed by the
 pointwise-error PL-homeomorphism construction.  `Moise351` therefore remains a
 noncompact, pointwise-error `Prop` awaiting proof; none of these obligations
 has been repackaged as an equivalent premise.
+
+## 67. 2026-09-19 Moise 35.1 global regular-neighborhood correction — done
+
+The interface in §66 was still insufficient at the infinite union.  Book page
+155 defines a regular neighborhood in one second-derived triangulation, and
+pages 247–248 use one locally finite triangulation of the open ambient set.
+Stagewise derived neighborhoods and `IsGlueIso` data alone do not recover this
+global property.  In particular, canonical barycentric retractions need not
+agree when a later graph has new vertices in an old ambient simplex, and mere
+nestedness supplies no neighborhood on which the set-theoretically glued map
+is continuous.  At the abstract topological level, nested closed arcs can
+cover a circle while every stage contracts to one point; this is the missing
+relative-neighborhood hypothesis in its simplest form.
+
+`RegularNeighborhoodRetraction.lean` now contains the reusable correction.
+`CompatibleStrongDeformationRetractSystem A B` carries a strong deformation
+retract of the stage core `A i` inside `B i`, the core containment, agreement
+of retractions and relative homotopies on every pair of stages containing the
+same point, and the assertion that `B (i+1)` is a neighborhood of `B i`
+relative to `⋃ i, B i`.  The construction chooses the least stage containing
+each point.  `continuous_of_cover_nhds` then proves continuity locally on the
+next stage, both for the retraction and for the product homotopy.  The endpoint
+`CompatibleStrongDeformationRetractSystem.toStrongDeformationRetract` is an
+actual global strong deformation retract of the core union inside the ambient
+union, not a conclusion field.
+
+`IsLocallyFiniteRegularNeighborhoodOf` now requires a nonempty compatible
+system whose stage cores are precisely the mapped graph complexes and whose
+ambient stages are precisely `derivedNeighborhoodImage`.  Its public endpoints
+`nonempty_strongDeformationRetract` and `strongDeformationRetract` therefore
+give `N` as a global strong deformation retract onto `K`.  The use of
+`Nonempty` inside the proposition avoids illegal large elimination; the
+noncomputable endpoint selects the verified witness by `Classical.choice`.
+
+The finite constructor remains geometric.  It transports
+`derivedNeighborhoodStrongDeformationRetract` through the embedding supplied
+by `PLPieceIn.isClosedEmbedding`, forms the constant compatible system, and
+thereby proves the strengthened relation.  Consequently
+`exists_isLocallyFiniteRegularNeighborhoodOf_nonempty_arc` still supplies its
+nonempty three-dimensional model, now with a genuine global contraction.
+`MoiseChain` consumes the strengthened relation without weakening its
+noncompact or pointwise-error contract.
+
+Private checks of `RegularNeighborhoodRetraction`, `PolyhedralGraph`,
+`ArcChainNeighborhood`, and `MoiseChain` all exited zero with no diagnostics
+and left shared outputs unchanged.  The external silent audit dynamically
+checked all sixty-nine non-automatic declarations in those four modules and
+fourteen directly reused continuity, deformation-retract, embedding, and
+derived-neighborhood declarations.  Every axiom closure was contained in
+`{propext, Classical.choice, Quot.sound}`, and all thirteen applicable
+environment linters passed.
+
+This correction still does not prove Moise 35.1.  Its remaining geometric
+producer must obtain the compatible system from the book's single locally
+finite rectilinear triangulation and compatible dual-cell modifications, then
+construct the pointwise-error PL homeomorphism.  It may not merely postulate a
+global contraction or revert to unrelated stagewise neighborhoods.

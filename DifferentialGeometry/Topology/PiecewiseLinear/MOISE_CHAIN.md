@@ -27,7 +27,7 @@ remaining input or final assembly.
 | 32.1–32.4 | 管、对偶胞腔、伪胞腔 | `Moise321` | 开。定义层可先建（F4.3 partial） |
 | 33.1 | 线性图的正则邻域逼近 | `Moise331` ✔陈述已按原书修正 | 开。输入直接要求面至多二点、存在边、载体连通且每个顶点邻居数不为 1，允许 §34 所需的分叉顶点；输出选择 `U` 中的三维环境三角剖分、图的细分及其 derived regular neighborhood。四面体一骨架已验证可实例化该陈述，经典定理证明仍开 |
 | 34.1 | PL 球上的逼近 | `Moise341` ✔已陈述 | 开 |
-| 35.1 | 流形中 1 维多面体的正则邻域逼近 | `Moise351` ✔陈述已按原书修正 | 开。固定三维 PL 流形；`K` 是可非紧的局部有限 1-维多面体且相对闭于 `U`；输出显式携带相对 `U` 的局部有限正则邻域关系 |
+| 35.1 | 流形中 1 维多面体的正则邻域逼近 | `Moise351` ✔陈述已按原书修正 | 开。固定三维 PL 流形；`K` 是可非紧的局部有限 1-维多面体且相对闭于 `U`；输出的正则邻域关系现含相对内点穷竭、相容逐层收缩及实际全局强形变收缩 |
 | 35.2 | 局部有限多面体 3-流形上的逼近 | `Moise352` ✔已陈述 | 开；`Transition361.lean` 已定义 |
 | 36.1 | 开集上的逼近 | — | **已证**，条件于 `Moise352`（`Transition361.lean`、`Endgame.lean`） |
 | Book node | Source interface / construction | Current obligation |
@@ -44,7 +44,7 @@ remaining input or final assembly.
 | 31--32 | Canonical configurations, tubes and pseudocells | Follow the detailed plan; definitions/conditional infrastructure do not certify endpoints. |
 | 33.1 | Moise331 | Statement repaired: native graph conditions allow branching and exclude the isolated graph and degree-one endpoints; the output chooses a genuine regular neighborhood inside U with actual three-dimensional ambient data. The classical proof remains open. |
 | 34.1 | Moise341 | Open; consumes corrected 33.1 and the tame neighborhood inputs. |
-| 35.1 | Moise351 | h repairs the one-dimensional locally finite polyhedral input and regular-neighborhood relation. Keep noncompact scope and pointwise error; proof remains open. |
+| 35.1 | Moise351 | h repairs the one-dimensional locally finite polyhedral input and the global regular-neighborhood relation. The latter now constructs a global strong deformation retract from compatible stage contractions and a relative-neighborhood exhaustion. Keep noncompact scope and pointwise error; proof remains open. |
 | 35.2 | Moise352 in Transition361 | Open classical approximation input. |
 | 36.1 / PL atlas | Transition361, Endgame, ChartGluing | Compiled conditional consumers; they do not produce Moise352. |
 | Compact smoothability | Smoothing and a future compact PL smoothing producer | Separate open input, assigned as S's next lane after 24.12. |
@@ -1099,9 +1099,13 @@ See [ROUTE_AUDIT_20260919.md](ROUTE_AUDIT_20260919.md). The H-lane source now
 contains the assigned contract repairs for Moise252, Moise331, and Moise351;
 integration acceptance remains a separate review gate. In particular,
 `IsLocallyFiniteRegularNeighborhoodOf` uses actual second-derived neighborhoods,
-explicit graph and neighborhood `IsGlueIso` transition data, and an actual
-nonempty interior-arc model. `Moise351` retains the relatively closed locally
-finite graph input, noncompact scope, and pointwise error, but is not proved.
+explicit graph and neighborhood `IsGlueIso` transition data, a compatible
+stagewise strong-deformation-retract system with relative-neighborhood
+exhaustion, and an actual nonempty interior-arc model.  The relation now
+constructs a global strong deformation retract of `N` onto `K`; `IsGlueIso`
+alone is not treated as sufficient at infinity. `Moise351` retains the
+relatively closed locally finite graph input, noncompact scope, and pointwise
+error, but is not proved.
 Normalization should first produce the Lemma 2 input by projecting the
 inductively embedded disk from the actual two-sheeted cover; the arbitrary
 original NormalSystem need not have two-point fibers. The cover and restricted
