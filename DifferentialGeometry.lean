@@ -1149,6 +1149,7 @@ import DifferentialGeometry.Analysis.Parabolic.Dirichlet.GradientTensorEquation
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.GradientTimeDual
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.GradientTimeEquation
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.GradientTimeRegularity
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.HeatC1TimeRegularity
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.HeatEvolution
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.HeatFourthOrderRegularity
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.HeatFourthWeakDerivative
@@ -1666,6 +1667,7 @@ import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeH1Multiplication
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeMeasureRestrict
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeOperatorH1
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeOperatorNaturality
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeSecondWeakDerivative
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeWeakDerivativeProduct
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeWeakDerivativeUniqueness
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeWeakDual
