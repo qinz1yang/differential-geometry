@@ -35,7 +35,7 @@ A compiling Prop is not an accepted theorem statement or a proof of it.
 | h / gpt-5.6-sol max | Repair the three contracts and their genuine geometric witnesses. | Source-faithful statements, nonvacuous instances and rebuilt consumers. Full-arc simultaneous normalization remains deferred. |
 | F / gpt-6-astra max | Construct the embedded-disk projection used by the original section 25 cover induction. | Prove local injectivity and fibers of size at most two for the projected disk; construct PL, lift, boundary and subgroup compatibility with strict complexity descent. Then close the remaining Lemma 2 branch-separation producer. |
 | E3 / gpt-5.6-sol max | Own 30.4, starting with actual geometric splitting and separation in 30.3. Path-replacement layer b5e36cfe5 delivered; next connect the actual split cells. | Construct the split surface, connected safe boundary and equality outside the local cell; show separation survives. Euler bookkeeping alone is insufficient. Full 30.4 also awaits 26.4 and 28.19. |
-| S / gpt-6-astra max | Compact PL three-manifold smoothing, assigned after 434d5352c's reported finite 24.12 delivery. | Audit actual triangulation/handle/circle/sphere producers, then construct the first missing mathematical layer. 24.12 delivery awaits independent acceptance; smoothing is independently open. |
+| S / gpt-6-astra max | Compact PL three-manifold smoothing, following accepted finite 24.11/24.12 through 434d5352c. | Audit actual triangulation/handle/circle/sphere producers, then construct the first missing mathematical layer. Finite native 24.11/24.12 through 434d5352c are independently accepted; smoothing is independently open. |
 
 F must distinguish the full two-sheeted ambient cover from the smaller regular
 neighborhood for the next normal system: restriction need not preserve
@@ -86,10 +86,11 @@ no acceptance of these contracts is claimed.
 
 E3 b195204ed and b5e36cfe5 are independently accepted: two modules, 35
 nonautomatic declarations and 12 key reused declarations pass the axiom/lint
-audit. h 0a0876425, F 495a3e343 and eefa65bae, and S aa6ff83be/434d5352c still await
-independent integration acceptance. S reports the actual disk-times-circle
-product, finite 24.11 CST and finite 24.12 constructions; these remain
-reported deliveries until independent integration acceptance. Preserve S's
+audit. h 0a0876425 and F through 51b4ee8ad still await
+independent integration acceptance. S's actual disk-times-circle product and
+finite native 24.11/24.12 through 434d5352c are independently accepted: ten
+modules, 41 declarations, 33 critical reused declarations, 13 clean linters
+and a nonempty endpoint instance. Preserve S's
 extraction of IsTopologicalSolidTorus when integrating h's separate MoiseChain
 repairs.
 

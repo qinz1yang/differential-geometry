@@ -203,3 +203,15 @@ S reported finite 24.12 at 434d5352c and was assigned the independent compact
 PL-smoothing lane at that delivery boundary. Its CST endpoints await independent
 acceptance. E3's newer sphere-minus-two-disks producer 18f861c89 also awaits
 acceptance and does not complete the actual splitting geometry of 30.3.
+
+## Finite CST acceptance update (2026-09-19 03:00 UTC)
+
+The earlier pending status for S through 434d5352c is superseded: finite native
+24.11/24.12 are independently accepted. Ten changed modules compile cleanly;
+all 41 module declarations and 33 distinct critical reused declarations have
+only standard axioms, all 13 applicable linters pass, and the concrete tetrahedral
+nullhomotopic polygon produces a nonempty CST. Its 521-project-module import
+closure excludes HurewiczLowDegrees. Receipt: .lake/verified-ninth-lane-delivery-20260919.json.
+General CST classification, infinite-triangulation versions and compact smoothability
+remain open. Root static coverage now reaches 9303 project modules; the root
+build remains stopped and this does not certify a full-source build.

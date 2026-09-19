@@ -30,16 +30,17 @@ remaining input or final assembly.
 | 35.1 | Moise351 | h repairs the one-dimensional locally finite polyhedral input and regular-neighborhood relation. Keep noncompact scope and pointwise error; proof remains open. |
 | 35.2 | Moise352 in Transition361 | Open classical approximation input. |
 | 36.1 / PL atlas | Transition361, Endgame, ChartGluing | Compiled conditional consumers; they do not produce Moise352. |
-| Compact smoothability | Smoothing and a future compact PL smoothing producer | Separate active S lane after reported finite 24.12 delivery 434d5352c; neither that delivery nor smoothing is integration-accepted. |
+| Compact smoothability | Smoothing and a future compact PL smoothing producer | Separate active S lane after accepted finite 24.11/24.12 through 434d5352c; compact smoothing remains open. |
 
 ## Side inputs and exact distinctions
 
 - Current source has an unconditional three-dimensional PL Schoenflies
   producer, included in the fresh endpoint audit; it is no longer an open lane.
 - S's accepted cylindrical classification constructs equal-end diagrams.
-  The later product and finite 24.11 CST delivery aa6ff83be awaits independent
-  acceptance. S also reports finite 24.12 at 434d5352c, pending acceptance,
-  and now works on compact PL smoothing. Full 24.9/24.10
+  The later product and finite native 24.11/24.12 through 434d5352c are now
+  independently accepted (41 module declarations, 33 critical reused
+  declarations, 13 clean linters and an actual nonempty instance). S now works
+  on compact PL smoothing. Full 24.9/24.10
   equivalence does not follow merely from that special construction.
 - The accepted trimmed-arc ball pair omits both endpoint vertex cells.
   h's full-arc containment 0a0876425 awaits acceptance; it does not supply

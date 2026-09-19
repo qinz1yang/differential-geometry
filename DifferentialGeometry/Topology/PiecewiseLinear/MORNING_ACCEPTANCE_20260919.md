@@ -16,6 +16,19 @@ proof output. The total 35 includes eight previously existing declarations.
 Audit wall time including admission: 59.968 seconds.
 Receipt: .lake/verified-eighth-lane-delivery-20260919.json.
 
+S through 434d5352c is now independently accepted: ten freshly compiled modules,
+41 nonautomatic declarations (15 new, one relocated unchanged, 25 unchanged
+MoiseChain consumers), 33 distinct critical reused declarations, 13 clean
+environment linters and an actual nonempty tetrahedral polygon/CST instance.
+All checks have zero diagnostics and only standard foundational axioms. The
+finite native 24.11/24.12 producers are complete in this scope; general CST
+classification and compact PL smoothing remain open.
+
+Accepted integration diff: +503/-4 Lean lines, including headers and imports.
+Against S's overnight starting head f54be2f43, the newly committed source delta
+is +103/-4; the remainder was queued before this window. These are different
+diff baselines and should not be summed. Receipt: .lake/verified-ninth-lane-delivery-20260919.json.
+
 ## Continuing priorities
 
 h: correct the held Moise331/351 repairs; F: actual ambient-cover reduction
@@ -26,7 +39,7 @@ Handoff only on delivery or urgent stop/restart.
 
 Pending source acceptance is tracked in .lake/pending-lane-checkpoints.json.
 Retain full-root build artifacts; that build is stopped. Six endpoint imports
-are now registered and statically reachable (9265 project modules, no missing
+are now registered and statically reachable (9303 project modules, no missing
 project source). The seven previously audited endpoint leaves retain their
 exact checked Git blobs; no full-root success is claimed. Focused checks do not
 certify a full-source build or the remaining classical input propositions.
@@ -36,8 +49,8 @@ certify a full-source build or the remaining classical input propositions.
 h 585cc71a0 is held: the 33.1 one-manifold hypothesis wrongly excludes
 branching graphs, and the proposed 35.1 raw-star tower does not yet establish
 a genuine global regular-neighborhood relation. h continues corrections.
-S 434d5352c reports a finite native 24.12 endpoint, pending independent
-acceptance. E3 18f861c89 reports the sphere-minus-two-disks connectedness
+F 51b4ee8ad's actual covering projection is queued for independent acceptance.
+E3 18f861c89 reports the sphere-minus-two-disks connectedness
 producer, also pending acceptance. None is counted as an accepted endpoint.
 
 ## Required final update

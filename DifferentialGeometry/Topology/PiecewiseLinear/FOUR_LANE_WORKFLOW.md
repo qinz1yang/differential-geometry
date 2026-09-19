@@ -13,8 +13,8 @@ handoff and the individual lane handoffs.
 - E3: Moise 30.4 assembly, starting with the 30.3 splitting/separation step,
   gpt-5.6-sol, max.
 - S: compact PL three-manifold smoothing, gpt-6-astra, max; assigned at the
-  reported finite 24.12 delivery 434d5352c. The CST deliveries await independent
-  acceptance; the new smoothing lane is separate and remains open.
+  finite 24.12 delivery 434d5352c. The finite CST deliveries are independently
+  accepted; the smoothing lane is separate and remains open.
 - The coordinator validates, integrates, records decisions, and supplies exact
   interfaces. It does not write the main mathematical proofs.
 
