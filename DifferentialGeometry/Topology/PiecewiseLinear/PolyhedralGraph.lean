@@ -680,6 +680,18 @@ private theorem isCombinatorialManifoldWithBoundary_three_disjointUnionComplex
   exact hC i v hvi
 
 open Classical in
+private theorem isCombinatorialManifold_three_disjointUnionComplex
+    {ι E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {C : ι → Geometry.SimplicialComplex ℝ E}
+    {hdis : Pairwise fun i j => Disjoint (C i).space (C j).space} {I : Set ι}
+    (hC : ∀ i, IsCombinatorialManifold 3 (C i)) :
+    IsCombinatorialManifold 3 (disjointUnionComplex C hdis I) := by
+  intro v hv
+  obtain ⟨i, hi, hvi⟩ := mem_disjointUnionComplex_faces_iff.mp hv
+  rw [geometricLink_disjointUnionComplex hi hvi]
+  exact hC i v hvi
+
+open Classical in
 private theorem exists_translated_arc_component_family :
     ∃ (C H : ℤ → Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3)))
       (w : ℤ → EuclideanSpace ℝ (Fin 3)) (S : ℝ)
@@ -867,6 +879,151 @@ theorem exists_noncompact_locallyFinite_simplicialComplex_three_with_edge :
     mem_disjointUnionComplex_faces_iff.mpr
       ⟨0, Set.mem_univ 0, hHC 0 hedge⟩
   exact ⟨J, hJlocal, hJnoncompact, {p, q}, hedgeJ, Finset.card_pair hpq⟩
+
+open Classical in
+theorem exists_noncompact_locallyFinite_combinatorialManifold_three_with_edge :
+    ∃ J : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 4)),
+      LocallyFinite (fun s : J.faces =>
+        (Subtype.val : J.space → EuclideanSpace ℝ (Fin 4)) ⁻¹'
+          convexHull ℝ ((s : Finset (EuclideanSpace ℝ (Fin 4))) :
+            Set (EuclideanSpace ℝ (Fin 4)))) ∧
+      ¬ IsCompact J.space ∧ IsCombinatorialManifold 3 J ∧
+      ∃ e ∈ J.faces, e.card = 2 := by
+  let E := EuclideanSpace ℝ (Fin 4)
+  obtain ⟨T, hT, hTcard, -, -, -⟩ :=
+    exists_affineIndependent_openSimplex_subset (E := E) (n := 3)
+      (by simp [E]) (0 : E) Filter.univ_mem
+  let B := simplexBoundary T hT
+  have hBfin : B.faces.Finite := simplexBoundary_faces_finite T hT
+  let _ : Finite B.faces := hBfin.to_subtype
+  have hBsphere : IsPLSphere 3 B.space := by
+    rw [simplexBoundary_space T hT (by omega)]
+    exact isPLSphere_biUnion_erase T hT hTcard
+  have hBman : IsCombinatorialManifold 3 B := hBsphere.isCombinatorialManifold
+  obtain ⟨p, hpT⟩ := Finset.card_pos.mp (by omega : 0 < T.card)
+  have hTerase : (T.erase p).Nonempty := by
+    rw [← Finset.card_pos, Finset.card_erase_of_mem hpT, hTcard]
+    omega
+  obtain ⟨q, hqerase⟩ := hTerase
+  have hqp : q ≠ p := (Finset.mem_erase.mp hqerase).1
+  have hqT : q ∈ T := (Finset.mem_erase.mp hqerase).2
+  have hpq : p ≠ q := hqp.symm
+  have hedgeB : ({p, q} : Finset E) ∈ B.faces := by
+    apply mem_simplexBoundary_faces_iff.mpr
+    refine ⟨?_, Finset.insert_nonempty _ _, ?_⟩
+    · intro x hx
+      simp only [Finset.mem_insert, Finset.mem_singleton] at hx
+      rcases hx with rfl | rfl
+      · exact hpT
+      · exact hqT
+    · intro heq
+      have hc := congrArg Finset.card heq
+      rw [Finset.card_pair hpq, hTcard] at hc
+      omega
+  obtain ⟨R, hR, hBR⟩ :=
+    (isPolyhedron_space B).isCompact.isBounded.subset_closedBall_lt 0 (0 : E)
+  let S : ℝ := 2 * R + 1
+  have hS : 0 < S := by
+    dsimp only [S]
+    linarith
+  let shift : ℤ → E ≃ᵃ[ℝ] E := fun z =>
+    AffineEquiv.constVAdd ℝ E (EuclideanSpace.single (0 : Fin 4) ((z : ℝ) * S))
+  let C : ℤ → Geometry.SimplicialComplex ℝ E := fun z => affineImage B (shift z)
+  let w : ℤ → E := fun z => shift z p
+  have hCfin (z : ℤ) : (C z).faces.Finite := affineImage_faces_finite B (shift z)
+  have hCman (z : ℤ) : IsCombinatorialManifold 3 (C z) := by
+    let _ : Finite (C z).faces := (hCfin z).to_subtype
+    exact hBman.of_isPLHomeomorphOn (isPLHomeomorphOn_affineImage B (shift z))
+  have hCcoord (z : ℤ) {x : E} (hx : x ∈ (C z).space) :
+      x 0 ∈ Set.Icc ((z : ℝ) * S - R) ((z : ℝ) * S + R) := by
+    change x ∈ (affineImage B (shift z)).space at hx
+    rw [affineImage_space] at hx
+    obtain ⟨y, hyB, rfl⟩ := hx
+    have hynorm : ‖y‖ ≤ R := by
+      simpa only [Metric.mem_closedBall, dist_zero_right] using hBR hyB
+    have hycoord : |y 0| ≤ ‖y‖ := by
+      simpa only [Real.norm_eq_abs] using (PiLp.norm_apply_le y (0 : Fin 4))
+    simp only [shift, AffineEquiv.constVAdd_apply, vadd_eq_add]
+    rw [PiLp.add_apply, PiLp.single_eq_same]
+    constructor <;> nlinarith [abs_le.mp hycoord |>.1, abs_le.mp hycoord |>.2]
+  have hCdis : Pairwise (fun z z' => Disjoint (C z).space (C z').space) := by
+    intro z z' hzz'
+    apply Set.disjoint_left.mpr
+    intro x hxz hxz'
+    have hz := hCcoord z hxz
+    have hz' := hCcoord z' hxz'
+    rcases lt_or_gt_of_ne hzz' with hlt | hgt
+    · have hcast : (z : ℝ) + 1 ≤ (z' : ℝ) := by
+        exact_mod_cast (Int.add_one_le_iff.mpr hlt)
+      have hmul := mul_le_mul_of_nonneg_right hcast hS.le
+      dsimp only [S] at hmul
+      nlinarith [hz.2, hz'.1]
+    · have hcast : (z' : ℝ) + 1 ≤ (z : ℝ) := by
+        exact_mod_cast (Int.add_one_le_iff.mpr hgt)
+      have hmul := mul_le_mul_of_nonneg_right hcast hS.le
+      dsimp only [S] at hmul
+      nlinarith [hz.1, hz'.2]
+  have hintervals : LocallyFinite
+      (fun z : ℤ => Set.Icc ((z : ℝ) * S - R) ((z : ℝ) * S + R)) := by
+    have htop : Filter.Tendsto (fun z : ℤ => (z : ℝ)) Filter.atTop Filter.atTop :=
+      tendsto_intCast_atTop_atTop
+    have hbot : Filter.Tendsto (fun z : ℤ => (z : ℝ)) Filter.atBot Filter.atBot :=
+      tendsto_intCast_atBot_iff.mpr Filter.tendsto_id
+    apply locallyFinite_Icc_of_tendsto
+    · simpa only [sub_eq_add_neg] using
+        Filter.tendsto_atTop_add_const_right Filter.atTop (-R) (htop.atTop_mul_const hS)
+    · exact Filter.tendsto_atBot_add_const_right Filter.atBot R (hbot.atBot_mul_const hS)
+  have hCloc : LocallyFinite (fun z => (C z).space) := by
+    have hpre := hintervals.preimage_continuous
+      (EuclideanSpace.proj (0 : Fin 4)).continuous
+    exact hpre.subset fun z x hx => hCcoord z hx
+  have hw (z : ℤ) : w z ∈ (C z).space := by
+    change shift z p ∈ (affineImage B (shift z)).space
+    rw [affineImage_space]
+    exact ⟨p, B.subset_space hedgeB (Finset.mem_insert_self p {q}), rfl⟩
+  have hwcoord (z : ℤ) : (w z) 0 = (w 0) 0 + (z : ℝ) * S := by
+    simp only [w, shift, AffineEquiv.constVAdd_apply, vadd_eq_add]
+    rw [PiLp.add_apply, PiLp.single_eq_same, PiLp.add_apply, PiLp.single_eq_same]
+    norm_num
+    ring
+  let J : Geometry.SimplicialComplex ℝ E := disjointUnionComplex C hCdis Set.univ
+  have hJlocal : LocallyFinite (fun s : J.faces =>
+      (Subtype.val : J.space → E) ⁻¹' convexHull ℝ ((s : Finset E) : Set E)) := by
+    simpa only [J] using
+      (locallyFinite_faces_disjointUnionComplex_univ
+        (C := C) (hdis := hCdis) hCloc hCfin)
+  have hwJ (z : ℤ) : w z ∈ J.space := by
+    rw [disjointUnionComplex_space C hCdis Set.univ]
+    exact Set.mem_iUnion₂.mpr ⟨z, Set.mem_univ z, hw z⟩
+  have hJnoncompact : ¬ IsCompact J.space := by
+    intro hcompact
+    obtain ⟨A, hJA⟩ := hcompact.isBounded.subset_closedBall (0 : E)
+    obtain ⟨i, hi⟩ := exists_nat_gt ((A - (w 0) 0) / S)
+    have hmul : A - (w 0) 0 < (i : ℝ) * S := (div_lt_iff₀ hS).mp hi
+    have hlarge : A < (w (i : ℤ)) 0 := by
+      rw [hwcoord]
+      norm_num
+      linarith
+    have hball := hJA (hwJ (i : ℤ))
+    have hnorm : ‖w (i : ℤ)‖ ≤ A := by
+      simpa only [Metric.mem_closedBall, dist_zero_right] using hball
+    have habs : |(w (i : ℤ)) 0| ≤ ‖w (i : ℤ)‖ := by
+      simpa only [Real.norm_eq_abs] using (PiLp.norm_apply_le (w (i : ℤ)) (0 : Fin 4))
+    have hcoord : (w (i : ℤ)) 0 ≤ ‖w (i : ℤ)‖ := (le_abs_self _).trans habs
+    linarith
+  let p₀ := shift 0 p
+  let q₀ := shift 0 q
+  have hpq₀ : p₀ ≠ q₀ := (shift 0).injective.ne hpq
+  have hedgeC : ({p₀, q₀} : Finset E) ∈ (C 0).faces := by
+    apply (mem_affineImage_faces_iff B (shift 0)).mpr
+    refine ⟨{p, q}, hedgeB, ?_⟩
+    ext x
+    simp [p₀, q₀]
+  have hedgeJ : ({p₀, q₀} : Finset E) ∈ J.faces :=
+    mem_disjointUnionComplex_faces_iff.mpr ⟨0, Set.mem_univ 0, hedgeC⟩
+  exact ⟨J, hJlocal, hJnoncompact,
+    isCombinatorialManifold_three_disjointUnionComplex hCman,
+    {p₀, q₀}, hedgeJ, Finset.card_pair hpq₀⟩
 
 private def symmetricIntegerInterval (i : ℕ) : Set ℤ :=
   Set.Icc (-(i : ℤ)) (i : ℤ)

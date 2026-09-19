@@ -471,6 +471,15 @@ essential meridian, including both glued ends. The connected-complement API
 now includes endpoints; all six affected module suites pass together. General
 prescribed-shell cylinder production and Moise304 remain open. See section 67.
 
+### Locally finite disk-ball gate (2026-09-19 UTC)
+
+h through bbd11df3b is independently accepted: ballness of the original
+splitting disk now follows from local finiteness and the actual combinatorial
+manifold, without global finite faces or assumed ballness. The noncompact
+example is an explicit disconnected family of three-spheres in R4. All 85
+declarations in three modules pass; nine are new. h stopped cleanly. Stability,
+compatible modifications and Moise351 remain open; see handoff section 68.
+
 ## 1. 目标与接口
 
 - 数学目标：Hausdorff、第二可数的紧致无边界拓扑三维流形 `M`，在同一 carrier、同一拓扑上存在光滑结构。

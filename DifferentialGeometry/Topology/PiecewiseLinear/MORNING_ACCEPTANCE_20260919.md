@@ -2109,3 +2109,37 @@ is 9603 modules including the root, with no missing source or cycle. Receipt:
 .lake/verified-fortyseventh-lane-delivery-20260919.json. The full root build
 remains stopped. General cylinder production for arbitrary shells and Moise304
 remain open. Later boundary-only and capped-surface source is queued separately.
+
+## 68. Locally finite splitting-disk ballness on the original ambient (2026-09-19 UTC)
+
+h source bbd11df3b is independently accepted. Finitely many cofaces of each
+actual face follow from local finiteness and compactness of that face. This
+gives finite geometric links and dual cells. Combinatorial manifold links,
+a PL equivalence requiring only finite upper-link faces, and closed-star
+ballness prove that the original splittingDisk T.complex e he is a PL ball.
+There is no global finite-face assumption, assumed link-sphere conclusion or
+assumed disk-ballness conclusion. Both old public signatures are retained.
+
+The native noncompact instance is a countable disjoint union of translated
+PL three-spheres in R4, with a witnessed edge and a genuine two-ball splitting
+disk in that same ambient complex. It is disconnected; neither connectedness
+nor an open ambient realization in R3 is claimed. The two actual native model
+theorems are counted among the native declarations, not as external probes.
+
+Three modules compiled in 37.146 seconds; the combined audit took
+46.017 seconds including admission. All 85 nonautomatic native
+declarations and 24 critical reuses pass the approved foundational axiom
+bound. All 85 declarations pass thirteen applicable linters with zero
+diagnostics. Nine declarations are new, including one private helper; eight
+new public full names are unique. 8 exact-source private prerequisite objects
+were reused.
+
+Lean delta: +341/-36, including seven required UpperLink header lines. All three modules were already root-reachable; static
+coverage remains 9603 modules including the root, without missing source or
+cycle. Receipt: .lake/verified-fortyeighth-lane-delivery-20260919.json. The full
+root build remains stopped. h delivered clean, pushed and stopped.
+
+The metric-free locally finite separation helper still needs its natural
+Topology home and shared finite consumers. Cross-layer compatible changes,
+positive stability radii for conditions 2-8, actual ambient solid-torus inputs
+and Moise351 remain open.
