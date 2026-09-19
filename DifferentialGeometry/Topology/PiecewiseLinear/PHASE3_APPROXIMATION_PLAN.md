@@ -102,8 +102,13 @@ The actual circle complement now has at most two components, with a proved
 two-component decomposition and exact closure intersection in the
 separating case. The same result applies to interior circles in surfaces
 with boundary. Eight declarations, eight reused entries, three concrete
-models and 13 linters pass. The manifold structure of the closures and the
-capped-component geometry are next.
+models and 13 linters pass. Local disk pairs now produce the manifold
+structure of the actual component closures and their exact boundaries:
+the original circle, together with inherited boundary parts when present.
+Both closures are finite, connected and orientable. Seven new declarations
+and one retained declaration, ten reused entries, three geometric models
+and 13 linters pass; both old neighborhood consumers compile unchanged.
+Attaching caps and the capped-component geometry are next.
 E3 retains 30.3. Compression via 26.4, full nonorientable 28.19,
 strict Betti descent and the full PL-sphere endpoint 30.4 remain open.
 See HANDOFF_CODEX_M304.md for exact signatures and evidence.

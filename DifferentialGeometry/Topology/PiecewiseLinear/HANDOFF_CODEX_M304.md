@@ -521,3 +521,54 @@ All 12 declarations, 12 critical reused entries, three geometric models
 and 13 linters pass, with only standard foundational axioms and zero
 diagnostics in 48.010 seconds. Evidence is frozen in
 `moise304-reading/interval-name-checkpoint/`. The root build stays stopped.
+
+## Manifold closures and exact boundaries of circle complements (2026-09-19 UTC)
+
+`BicollarDiskPair.lean` constructs a local PL disk around every point of a
+circle bicollar. The disk minus the circle has two actual components. Each
+component closure is a PL disk, the two closures cover the neighborhood,
+and their intersection is precisely its trace on the circle, a PL arc.
+The construction takes a small PL arc in the core and maps its product
+with the full, negative and positive intervals through the given bicollar.
+Connectedness, closure equations and component identities are all proved.
+
+`Connected/ComponentNeighborhood.lean` gains the natural purely topological
+neighborhood statement away from a closed deleted set in a locally connected
+ambient set. The existing local-component neighborhood theorem keeps its
+signature and proof. The two pre-existing consumers SurfaceComponentClosure
+and SurfaceFilling were recompiled without source changes.
+
+The main endpoints are
+`IsCombinatorialManifoldWithBoundary.exists_manifold_pair_of_separating_circle`
+and `IsCombinatorialManifold.exists_manifold_pair_of_separating_circle` in
+`CircleComponentClosure.lean`. For a PL circle separating a connected
+orientable finite surface, they produce two finite connected orientable
+combinatorial surfaces with boundary. Their carriers are the closures of
+actual complementary components, their union is the source surface, and
+their intersection is the original circle. In a closed source surface,
+both new boundaries are exactly that circle. For an interior circle in a
+surface with boundary, each new boundary is the circle union the part of
+the original boundary contained in that component closure. Neither the
+manifold property nor these boundary equations are hypotheses.
+
+The three source modules compile with zero diagnostics: ComponentNeighborhood
+6.375 seconds, BicollarDiskPair 12.657 seconds, and CircleComponentClosure
+22.333 seconds including admission. The final silent audit takes 49.146
+seconds. All eight declarations in these modules (seven new, including
+three private helpers, and one retained declaration), ten critical reused
+entries and three concrete models have only standard foundational axioms.
+All 13 applicable environment linters pass. Models verify the local disk
+pair in the standard annulus, both manifold closures of the middle circle
+in a prism sphere, and the exact inherited boundary formula for an inner
+square circle in a square disk. Initial external-model decidable-instance
+and line-length errors were corrected. The two old consumer checks pass
+in 11.429 and 11.109 seconds with zero diagnostics.
+
+Both new leaves are registered in the flat root. Raw and normalized source
+identities, objects, receipts, the audit source and census are frozen in
+`moise304-reading/circle-component-closure-checkpoint/`. The root build
+remains stopped and shared artifacts remain untouched. This closes the
+actual separating-circle component-closure obligation in dimension two.
+Attaching caps, proving their closed-manifold structure and descent,
+compression via 26.4, E3's separation-preserving geometry and the full
+30.4 endpoint remain open.

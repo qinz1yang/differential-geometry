@@ -8792,3 +8792,5 @@ import DifferentialGeometry.Topology.PiecewiseLinear.DiskCapping
 import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceSplitBetti
 import DifferentialGeometry.Topology.Connected.BicollarSeparation
 import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceCircleComplement
+import DifferentialGeometry.Topology.PiecewiseLinear.BicollarDiskPair
+import DifferentialGeometry.Topology.PiecewiseLinear.CircleComponentClosure

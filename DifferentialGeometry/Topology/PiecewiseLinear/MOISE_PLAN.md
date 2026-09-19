@@ -137,9 +137,14 @@ description of a surface minus a PL circle. In the separating case the
 actual two component closures cover the surface and meet exactly in the
 circle. This uses the produced bicollar, not a supplied decomposition.
 Eight declarations, eight reused entries, three concrete models and all
-13 applicable linters pass. The local manifold structure of these closures,
-the required capped decomposition and exclusion of spherical components
-remain open. Full nonorientable 28.19
+13 applicable linters pass. Actual local disk pairs now prove that the
+separating-circle component closures are finite connected orientable
+surfaces with boundary. For a closed source both boundaries are precisely
+the original circle; the version with boundary also identifies the inherited
+old-boundary parts. Seven new declarations and one retained declaration,
+ten reused entries, three concrete models and 13 linters pass; two old
+consumers compile unchanged. Attaching caps, the closed capped-manifold
+structure and exclusion of spherical components remain open. Full nonorientable 28.19
 and the spherical-shell
 endpoint remain open. Exact evidence
 and the source route are in HANDOFF_CODEX_M304.md. This explicitly authorized
