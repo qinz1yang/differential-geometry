@@ -1178,3 +1178,30 @@ the geometric disk/cap producers for this torus. It does not supply arbitrary
 The unrestricted embedded-disk producer and general separation-preserving
 compression remain upstream obligations. Root builds remain stopped; shared
 E outputs and other lanes' source files were not changed.
+
+
+### M304 full frontier of a disk cylindrical diagram (2026-09-19 UTC)
+
+`IsCylindricalDiagram.image_side_eq_boundaryComplex` and
+`IsCylindricalDiagram.frontier_eq_image_side` identify the entire boundary
+of a finite embedded three-manifold carried by a disk cylindrical diagram
+with the actual cylindrical side image. No pointwise untwisted-end hypothesis
+is needed. Interior strip charts first put any remaining frontier in the
+bottom disk. The native closed-surface complement producer would turn an
+extra boundary component into a nonempty closed surface inside that disk;
+the new general `IsCombinatorialManifold.not_subset_of_isPLBall` excludes
+this by invariance of domain. It applies in every positive dimension.
+
+Both new leaves are registered in the flat root. Their final source bytes
+compile with zero diagnostics. The audit checks all four native declarations,
+nine critical reused declarations and an actual triangle solid-torus example
+with nonempty interior and exact full frontier, all with only standard
+foundational axioms. All 13 applicable linters pass. The reachable native
+import graph has 477 modules and 919 edges and is acyclic. Sources, objects,
+receipts, audit and raw/normalized hashes are frozen at
+`moise304-reading/cylindrical-frontier-checkpoint/`.
+
+This supplies the missing ambient-boundary identity for the concrete torus
+compression. Common actual separator targets are the next obligation; this
+checkpoint does not assert general separation-preserving compression or
+close Moise 30.4. Root builds remain stopped and shared E outputs are unchanged.
