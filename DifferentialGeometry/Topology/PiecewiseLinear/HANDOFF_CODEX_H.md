@@ -2877,3 +2877,81 @@ linters other than `docBlame` and `docBlameThm`.
 The remaining obligation is to use these data with
 `exists_isPLHomeomorphOn_coneSet_pair_of_disk_marked` and the combined cut model
 to carry out the normalized induction over cells `1` through `2 * n - 1`.
+
+## 47. 2026-09-18 Marked-point equality from the relative cone extension — done
+
+`exists_isPLHomeomorphOn_coneSet_pair_of_disk_marked` now also returns
+`G y = y'`.  The sphere-level marked extension already supplied this equality;
+the cone extension agrees with that sphere map on the base.  The only extra
+proof step observes that `y ∈ closure (Lc.space \ D)` lies in `Lc.space`, because
+the PL sphere `Lc.space` is closed.  No hypothesis was added.
+
+The two consumers in `BallPairRelativeGluing.lean` were synchronized with the
+stronger result.  Strict private verification used token
+`H-MarkedPoint-20260918` and output root
+`C:\Users\liao9\AppData\Local\Temp\codex-h-cutmodel-private`.
+`ConeDiskPairExtension` and `BallPairRelativeGluing` compiled in dependency
+order, and the external silent audit also passed; all three checks exited 0 with
+zero diagnostics and unchanged shared outputs.  The audit dynamically enumerated
+all five non-automatic declarations across the two modules, checked the two
+direct extension producers, found only `{propext, Classical.choice, Quot.sound}`,
+and passed all default environment linters other than `docBlame` and
+`docBlameThm`.
+
+This equality is the missing invariant field needed to keep the near endpoint of
+the marked arc fixed while the trimmed-union induction repeatedly normalizes the
+new outer interface.
+
+## 48. 2026-09-18 Trimmed arc-cell union bookkeeping — done
+
+`ArcCellUnion.lean` defines
+`trimmedArcCellUnion K v k = ⋃ i : Fin k, cell (i + 1)`, so it contains exactly
+the first `k` non-endpoint cells.  Its API proves the set identities and
+disjointness facts needed by the normalized induction:
+
+- the successor union is the previous union plus cell `k + 1`;
+- for `1 ≤ k`, the previous union meets cell `k + 1` exactly in the standard
+  interface cone at `arcCellCrossing v k`;
+- the previous union is disjoint from the following interface between cells
+  `k + 1` and `k + 2`;
+- intersection with the arc complex distributes across the successor step;
+- the fixed near crossing `arcCellCrossing v 0` and the current outgoing
+  crossing `arcCellCrossing v k` lie in the appropriate trimmed union.
+
+All far-intersection exclusions use
+`disjoint_derivedNeighborhoodCell_arcChainFace`; no ball-pair conclusion or
+hidden nondegeneracy assumption is used.  The module is registered directly in
+`DifferentialGeometry.lean`.
+
+Strict private verification used token `H-ArcCellUnion-20260918` and output root
+`C:\Users\liao9\AppData\Local\Temp\codex-h-cutmodel-private`.  The module check
+and external silent audit both exited 0 with zero diagnostics and unchanged
+shared outputs.  The audit dynamically enumerated all nine non-automatic
+declarations, checked the three direct arc-cell intersection producers, found
+only `{propext, Classical.choice, Quot.sound}`, and passed all default
+environment linters other than `docBlame` and `docBlameThm`.
+
+The remaining proof layer is now purely the relative-extension construction:
+build the base normalized state at `k = 1`, advance it with the two marked cone
+extensions at each successor, and extract the ball-pair conclusion at
+`k = 2 * n - 1`.
+
+## 49. 2026-09-18 Natural preceding-crossing bound — done
+
+The upper index hypothesis of
+`previous_arcCellCrossing_not_mem_interface` and
+`previous_arcCellCrossing_mem_closure_diff_interface` is now the natural
+`j + 1 ≤ 2 * n`.  Their proofs only use the three cells at indices `j - 1`,
+`j`, and `j + 1`; the former `j + 2 ≤ 2 * n` assumption was unused.  This
+weakening is essential at the base state `j = 1` when `n = 1`, where the two
+non-endpoint cells consist of the single cell at index one.
+
+There are no committed downstream call sites of these two declarations yet;
+the source-ready normalized base state is their first consumer.  Strict private
+verification used round token `h-round-20260919` and output root
+`C:\Users\liao9\AppData\Local\Temp\codex-h-cutmodel-private`.
+The module check and external silent audit both exited 0 with zero diagnostics
+and unchanged shared outputs.  The audit dynamically enumerated all twenty
+non-automatic declarations, checked sixteen direct reused declarations, found
+only `{propext, Classical.choice, Quot.sound}`, and passed all thirteen
+applicable environment linters.
