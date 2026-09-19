@@ -1015,13 +1015,363 @@ theorem finite_horn_barriers_of_hornRadialExitPositionAtEndChart
   finite_horn_barriers_of_hornRadialPosition H endData ray d hd hzero
     (hornRadialPosition_of_hornRadialExitPositionAtEndChart g H ray d hd hzero hlarge hexit)
 
+section
+
+open Filter Manifold Set DifferentialGeometry.Toponogov
+
+omit [SigmaCompactSpace W] in
+theorem eventually_endChart_tip_side_subset_subend {g : SmoothRiemannianMetric I3 W}
+    {ι : Type*} {l : Filter ι} (H : FiniteHorn g) (w : ι → W)
+    (hw : Filter.Tendsto (fun i => (w i : UniformSpace.Completion W))
+      l (nhds H.endpoint)) (j : ℕ) :
+    ∀ᶠ i in l,
+      ∀ (hx : w i ∈ H.subend (tailIndex g H))
+        (E : EndChart g H (w i) hx),
+        {x : W | E.cross.tube.height x ≤ 1 / 2} ⊆ H.subend j := by
+  obtain ⟨delta, hdelta, hball⟩ := finiteHorn_ball_subset_subend g H j
+  obtain ⟨k, hk⟩ := H.curvature_diverges
+    ((2 * transverseShortcutConstant W / delta) ^ 2 + 1)
+  obtain ⟨deltaK, hdeltaK, hballK⟩ := finiteHorn_ball_subset_subend g H k
+  filter_upwards [hw.eventually (Metric.ball_mem_nhds H.endpoint hdeltaK),
+    hw.eventually (Metric.ball_mem_nhds H.endpoint (half_pos hdelta))] with i hi hdi
+  intro hx E x hxle
+  have hbig := hk (w i) (hballK (w i) hi)
+  have hroot : 2 * transverseShortcutConstant W / delta <
+      Real.sqrt (metricScalarAt g (w i)) := by
+    rw [Real.lt_sqrt (div_nonneg
+      (mul_nonneg (by norm_num) (transverseShortcutConstant_pos W).le) hdelta.le)]
+    linarith
+  have hdiam : transverseShortcutConstant W /
+      Real.sqrt (metricScalarAt g (w i)) < delta / 2 := by
+    apply (div_lt_iff₀ (Real.sqrt_pos.mpr E.Q_pos)).mpr
+    have h := (div_lt_iff₀ hdelta).mp hroot
+    nlinarith
+  have hcenter : ∀ p : Sphere 2, E.F (p, 0) ∈ H.subend j := by
+    intro p
+    apply hball
+    have hmem : E.F (p, 0) ∈ E.cross.tube.sectionSet (1 / 2) := by
+      refine ⟨(p, 1 / 2), ⟨Set.mem_univ _, rfl⟩, ?_⟩
+      exact E.cross.center_eq p
+    have hnear := E.section_diameter_le (E.F (p, 0)) hmem
+    have htri := dist_triangle (E.F (p, 0) : UniformSpace.Completion W)
+      (w i : UniformSpace.Completion W) H.endpoint
+    rw [UniformSpace.Completion.dist_eq, dist_comm (E.F (p, 0))] at htri
+    have hsmall : dist (w i : UniformSpace.Completion W) H.endpoint < delta / 2 := hdi
+    linarith
+  by_contra hxnot
+  exact (not_lt.mpr hxle) (E.cross.outer_side_of_center_in_subend g H j hcenter x hxnot)
+
+omit [SigmaCompactSpace W] in
+theorem eventually_endChart_tip_side_radial_lt {g : SmoothRiemannianMetric I3 W}
+    {ι : Type*} {l : Filter ι} (H : FiniteHorn g) (w : ι → W)
+    (hw : Filter.Tendsto (fun i => (w i : UniformSpace.Completion W))
+      l (nhds H.endpoint)) {R : ℝ} (hR : 0 < R) :
+    ∀ᶠ i in l,
+      ∀ (hx : w i ∈ H.subend (tailIndex g H))
+        (E : EndChart g H (w i) hx), ∀ x : W,
+        E.cross.tube.height x ≤ 1 / 2 →
+          dist (x : UniformSpace.Completion W) H.endpoint < R := by
+  obtain ⟨j, hj⟩ := finiteHorn_subend_radial_small g H hR
+  filter_upwards [eventually_endChart_tip_side_subset_subend H w hw j] with i hi
+  intro hx E x hxle
+  exact hj x (hi hx E hxle)
+
+
+omit [SigmaCompactSpace W] in
+theorem endRay_dist_lt_sum_of_scalar_radius_tendsto_atTop
+    {g : SmoothRiemannianMetric I3 W} (H : FiniteHorn g)
+    (ray : EndRay H.endpoint) (d : ℕ → ℝ)
+    (hd : ∀ i, d i ∈ Set.Ioc 0 ray.length)
+    (hzero : Filter.Tendsto d Filter.atTop (nhds 0))
+    (hlarge : Filter.Tendsto (fun i => metricScalarAt g (ray.point (d i)) * d i ^ 2)
+      Filter.atTop Filter.atTop) (a b : EndRay H.endpoint) :
+    dist (a.point a.length) (b.point b.length) < a.length + b.length := by
+  have hconv : Filter.Tendsto
+      (fun i => (ray.point (d i) : UniformSpace.Completion W)) Filter.atTop
+      (nhds H.endpoint) := by
+    apply (tendsto_iff_dist_tendsto_zero).mpr
+    simpa only [ray.radial _ (hd _)] using hzero
+  have hR : 0 < min a.length b.length / 2 :=
+    half_pos (lt_min a.length_pos b.length_pos)
+  obtain ⟨i, hi, hgood, hbig⟩ := ((eventually_endChart_tip_side_radial_lt H
+    (fun i => ray.point (d i)) hconv hR).and
+      ((eventually_mem_tail g H ray d hd hzero).and
+        (hlarge.eventually_gt_atTop ((4 * transverseShortcutConstant W) ^ 2)))).exists
+  let E := endChart g H (ray.point (d i)) hgood
+  have hdiam : transverseShortcutConstant W /
+      Real.sqrt (metricScalarAt g (ray.point (d i))) < d i / 4 := by
+    have hspread : transverseShortcutConstant W /
+        Real.sqrt (metricScalarAt g (ray.point (d i)) * d i ^ 2) < (1 / 2 : ℝ) / 2 := by
+      apply sqrt_ratio_bound (transverseShortcutConstant_pos W) (by norm_num)
+      have heq : (2 * transverseShortcutConstant W / (1 / 2 : ℝ)) ^ 2 =
+          (4 * transverseShortcutConstant W) ^ 2 := by ring
+      rw [heq]
+      exact hbig
+    have h := div_sqrt_lt_mul E.Q_pos (hd i).1 hspread
+    linarith
+  have houter (c : EndRay H.endpoint) (hRc : min a.length b.length / 2 < c.length) :
+      (1 / 2 : ℝ) < E.cross.tube.height (c.point c.length) := by
+    apply lt_of_not_ge
+    intro hc
+    have h := hi hgood E (c.point c.length) hc
+    rw [c.radial c.length ⟨c.length_pos, le_rfl⟩] at h
+    linarith
+  have haout : (1 / 2 : ℝ) < E.cross.tube.height (a.point a.length) :=
+    houter a (by linarith [min_le_left a.length b.length])
+  have hbout : (1 / 2 : ℝ) < E.cross.tube.height (b.point b.length) :=
+    houter b (by linarith [min_le_right a.length b.length])
+  obtain ⟨s, hs, p, hp⟩ := E.cross.endRay_meets_center g H a haout
+  obtain ⟨t, ht, q, hq⟩ := E.cross.endRay_meets_center g H b hbout
+  have hnear (c : EndRay H.endpoint) (u : ℝ) (v : Sphere 2)
+      (hv : E.F (v, 0) = c.point u) :
+      dist (ray.point (d i)) (c.point u) ≤ transverseShortcutConstant W /
+        Real.sqrt (metricScalarAt g (ray.point (d i))) := by
+    apply E.section_diameter_le
+    refine ⟨(v, 1 / 2), ⟨Set.mem_univ _, rfl⟩, ?_⟩
+    rw [E.cross.center_eq, hv]
+  have has := hnear a s p hp
+  have hbt := hnear b t q hq
+  have hsrad : d i - dist (ray.point (d i)) (a.point s) ≤ s := by
+    have h := dist_triangle (ray.point (d i) : UniformSpace.Completion W)
+      (a.point s : UniformSpace.Completion W) H.endpoint
+    rw [UniformSpace.Completion.dist_eq, ray.radial _ (hd i), a.radial s hs] at h
+    linarith
+  have htrad : d i - dist (ray.point (d i)) (b.point t) ≤ t := by
+    have h := dist_triangle (ray.point (d i) : UniformSpace.Completion W)
+      (b.point t : UniformSpace.Completion W) H.endpoint
+    rw [UniformSpace.Completion.dist_eq, ray.radial _ (hd i), b.radial t ht] at h
+    linarith
+  have hshort : dist (a.point s) (b.point t) < s + t := by
+    have htri := dist_triangle (a.point s) (ray.point (d i)) (b.point t)
+    rw [dist_comm (a.point s) (ray.point (d i))] at htri
+    linarith [hd i |>.1]
+  have hleft : dist (a.point a.length) (a.point s) = a.length - s := by
+    rw [a.minimizing a.length ⟨a.length_pos, le_rfl⟩ s hs,
+      abs_of_nonneg (sub_nonneg.mpr hs.2)]
+  have hright : dist (b.point t) (b.point b.length) = b.length - t := by
+    rw [b.minimizing t ht b.length ⟨b.length_pos, le_rfl⟩,
+      abs_of_nonpos (sub_nonpos.mpr ht.2)]
+    ring
+  have htri1 := dist_triangle (a.point a.length) (a.point s) (b.point b.length)
+  have htri2 := dist_triangle (a.point s) (b.point t) (b.point b.length)
+  rw [hleft] at htri1
+  rw [hright] at htri2
+  linarith
+
+omit [SigmaCompactSpace W] in
+theorem endRay_point_dist_div_tendsto_zero_of_scalar_radius_tendsto_atTop
+    {g : SmoothRiemannianMetric I3 W} (H : FiniteHorn g)
+    (ray : EndRay H.endpoint) (d : ℕ → ℝ)
+    (hd : ∀ i, d i ∈ Set.Ioc 0 ray.length)
+    (hzero : Filter.Tendsto d Filter.atTop (nhds 0))
+    (hlarge : Filter.Tendsto (fun i => metricScalarAt g (ray.point (d i)) * d i ^ 2)
+      Filter.atTop Filter.atTop) (a : EndRay H.endpoint) :
+    Filter.Tendsto (fun i => dist (ray.point (d i)) (a.point (d i)) / d i)
+      Filter.atTop (nhds 0) := by
+  have hconv : Filter.Tendsto
+      (fun i => (ray.point (d i) : UniformSpace.Completion W)) Filter.atTop
+      (nhds H.endpoint) := by
+    apply (tendsto_iff_dist_tendsto_zero).mpr
+    simpa only [ray.radial _ (hd _)] using hzero
+  rw [Metric.tendsto_nhds]
+  intro eps heps
+  filter_upwards [eventually_endChart_tip_side_radial_lt H (fun i => ray.point (d i)) hconv
+      (half_pos a.length_pos), eventually_mem_tail g H ray d hd hzero,
+    hzero.eventually (eventually_lt_nhds a.length_pos),
+    hlarge.eventually_gt_atTop ((2 * transverseShortcutConstant W / eps) ^ 2)]
+      with i htip hgood hdlen hbig
+  let E := endChart g H (ray.point (d i)) hgood
+  have hdiam : transverseShortcutConstant W /
+      Real.sqrt (metricScalarAt g (ray.point (d i))) < d i * (eps / 2) := by
+    apply div_sqrt_lt_mul E.Q_pos (hd i).1
+    exact sqrt_ratio_bound (transverseShortcutConstant_pos W) heps hbig
+  have haout : (1 / 2 : ℝ) < E.cross.tube.height (a.point a.length) := by
+    apply lt_of_not_ge
+    intro ha
+    have h := htip hgood E (a.point a.length) ha
+    rw [a.radial a.length ⟨a.length_pos, le_rfl⟩] at h
+    linarith [a.length_pos]
+  obtain ⟨s, hs, p, hp⟩ := E.cross.endRay_meets_center g H a haout
+  have hnear : dist (ray.point (d i)) (a.point s) ≤ transverseShortcutConstant W /
+      Real.sqrt (metricScalarAt g (ray.point (d i))) := by
+    apply E.section_diameter_le
+    refine ⟨(p, 1 / 2), ⟨Set.mem_univ _, rfl⟩, ?_⟩
+    rw [E.cross.center_eq, hp]
+  have hds : |d i - s| ≤ dist (ray.point (d i)) (a.point s) := by
+    have h := abs_dist_sub_le (ray.point (d i) : UniformSpace.Completion W)
+      (a.point s : UniformSpace.Completion W) H.endpoint
+    rwa [UniformSpace.Completion.dist_eq, ray.radial _ (hd i), a.radial s hs] at h
+  have htri := dist_triangle (ray.point (d i)) (a.point s) (a.point (d i))
+  rw [a.minimizing s hs (d i) ⟨(hd i).1, hdlen.le⟩, abs_sub_comm s (d i)] at htri
+  have hbound : dist (ray.point (d i)) (a.point (d i)) / d i < eps := by
+    apply (div_lt_iff₀ (hd i).1).mpr
+    nlinarith
+  rw [Real.dist_eq, sub_zero, abs_of_nonneg (div_nonneg dist_nonneg (hd i).1.le)]
+  exact hbound
+
+omit [SigmaCompactSpace W] in
+theorem endComparisonAngle_tendsto_zero_of_scalar_radius_tendsto_atTop
+    {g : SmoothRiemannianMetric I3 W} (H : FiniteHorn g)
+    (ray : EndRay H.endpoint) (d : ℕ → ℝ)
+    (hd : ∀ i, d i ∈ Set.Ioc 0 ray.length)
+    (hzero : Filter.Tendsto d Filter.atTop (nhds 0))
+    (hlarge : Filter.Tendsto (fun i => metricScalarAt g (ray.point (d i)) * d i ^ 2)
+      Filter.atTop Filter.atTop) (a : EndRay H.endpoint) :
+    Filter.Tendsto (fun i => endComparisonAngle ray a (d i) (d i))
+      Filter.atTop (nhds 0) := by
+  have hdist := endRay_point_dist_div_tendsto_zero_of_scalar_radius_tendsto_atTop
+    H ray d hd hzero hlarge a
+  have harg : Filter.Tendsto
+      (fun i => 1 - (dist (ray.point (d i)) (a.point (d i)) / d i) ^ 2 / 2)
+      Filter.atTop (nhds 1) := by
+    simpa only [zero_pow (by norm_num : (2 : ℕ) ≠ 0), zero_div, sub_zero] using
+      ((tendsto_const_nhds (x := (1 : ℝ))).sub ((hdist.pow 2).div_const 2))
+  have hlim := Real.continuous_arccos.continuousAt.tendsto.comp harg
+  have heq : (fun i => endComparisonAngle ray a (d i) (d i)) =
+      (fun i => Real.arccos (1 - (dist (ray.point (d i)) (a.point (d i)) / d i) ^ 2 / 2)) := by
+    funext i
+    unfold endComparisonAngle
+    congr 1
+    field_simp [(hd i).1.ne']
+    ring
+  rw [heq]
+  convert! hlim using 1
+  rw [Real.arccos_one]
+
+
+omit [SigmaCompactSpace W] in
+private theorem endRay_point_eq_of_scalar_radius_tendsto_atTop
+    {g : SmoothRiemannianMetric I3 W} (H : FiniteHorn g)
+    (ray : EndRay H.endpoint) (d : ℕ → ℝ)
+    (hd : ∀ i, d i ∈ Ioc 0 ray.length)
+    (hzero : Tendsto d atTop (nhds 0))
+    (hlarge : Tendsto (fun i => metricScalarAt g (ray.point (d i)) * d i ^ 2) atTop atTop)
+    {D : ℝ} (hmono : ∀ a b : EndRay H.endpoint,
+      CoordinatewiseNonincreasingOn (endRayLength H.endpoint D a) (endRayLength H.endpoint D b)
+        (radialComparisonAngle (endRayFamily H.endpoint) a b))
+    (a : EndRay H.endpoint) {s : ℝ}
+    (hsray : s ∈ Ioc 0 (min ray.length D)) (hsa : s ≤ a.length) :
+    ray.point s = a.point s := by
+  have hsA : s ∈ Ioc 0 (min a.length D) := ⟨hsray.1, le_min hsa (hsray.2.trans (min_le_right _ _))⟩
+  have hevent : ∀ᶠ i in atTop,
+      endComparisonAngle ray a s s ≤ endComparisonAngle ray a (d i) (d i) := by
+    filter_upwards [hzero.eventually (eventually_lt_nhds hsray.1)] with i hi
+    have hiR : d i ∈ Ioc 0 (endRayLength H.endpoint D ray) :=
+      ⟨(hd i).1, hi.le.trans hsray.2⟩
+    have hiA : d i ∈ Ioc 0 (endRayLength H.endpoint D a) :=
+      ⟨(hd i).1, hi.le.trans hsA.2⟩
+    have h1 := (hmono ray a).1 hiR hsray hsA hi.le
+    have h2 := (hmono ray a).2 hiR hiA hsA hi.le
+    simpa only [radialComparisonAngle_endRay] using h1.trans h2
+  have hangle : endComparisonAngle ray a s s ≤ 0 :=
+    le_of_tendsto_of_tendsto tendsto_const_nhds
+      (endComparisonAngle_tendsto_zero_of_scalar_radius_tendsto_atTop H ray d hd hzero hlarge a)
+      hevent
+  have hupper : dist (ray.point s) (a.point s) ≤ s + s := by
+    have h := dist_triangle (ray.point s : UniformSpace.Completion W) H.endpoint
+      (a.point s : UniformSpace.Completion W)
+    rw [UniformSpace.Completion.dist_eq, ray.radial s ⟨hsray.1, hsray.2.trans (min_le_left _ _)⟩,
+      dist_comm H.endpoint, a.radial s ⟨hsray.1, hsa⟩] at h
+    exact h
+  have hsquare := sq_le_cos_of_comparisonAngle_le hsray.1 hsray.1
+    (by simp) hupper
+    Real.pi_pos.le hangle
+  rw [Real.cos_zero] at hsquare
+  apply dist_eq_zero.mp
+  nlinarith [dist_nonneg (x := ray.point s) (y := a.point s)]
+
+omit [SigmaCompactSpace W] in
+theorem hornRadialExitPositionAtEndChart_of_scalar_radius_tendsto_atTop
+    {g : SmoothRiemannianMetric I3 W} (H : FiniteHorn g)
+    (ray : EndRay H.endpoint) (d : ℕ → ℝ)
+    (hd : ∀ i, d i ∈ Ioc 0 ray.length)
+    (hzero : Tendsto d atTop (nhds 0))
+    (hlarge : Tendsto (fun i => metricScalarAt g (ray.point (d i)) * d i ^ 2) atTop atTop) :
+    HornRadialExitPositionAtEndChart g H ray d := by
+  let : LocallyCompactSpace H.tube.map.source := H.tube.map.open_source.locallyCompactSpace
+  have hsource : IsSigmaCompact H.tube.map.source :=
+    isSigmaCompact_iff_sigmaCompactSpace.mpr inferInstance
+  have himage := hsource.image_of_continuousOn H.tube.map.contMDiffOn_toFun.continuousOn
+  rw [H.tube.map.toPartialEquiv.image_source_eq_target, H.tube.target_eq] at himage
+  let : SigmaCompactSpace W := isSigmaCompact_univ_iff.mp himage
+  obtain ⟨D, hD, hmono⟩ := finiteHorn_end_angle_monotone_of_endRay_dist_lt_sum g H
+    (endRay_dist_lt_sum_of_scalar_radius_tendsto_atTop H ray d hd hzero hlarge)
+  obtain ⟨rho, hrho, hrays⟩ := finiteHorn_exists_intrinsic_endRay_near_endpoint g H
+  let T : ℝ := min ray.length D / 2
+  have hT : 0 < T := half_pos (lt_min ray.length_pos hD)
+  have hTlen : T ≤ ray.length :=
+    (half_le_self (lt_min ray.length_pos hD).le).trans (min_le_left _ _)
+  have hTD : T ≤ D :=
+    (half_le_self (lt_min ray.length_pos hD).le).trans (min_le_right _ _)
+  have hconv : Tendsto (fun i => (ray.point (d i) : UniformSpace.Completion W)) atTop
+      (nhds H.endpoint) := by
+    apply (tendsto_iff_dist_tendsto_zero).mpr
+    simpa only [ray.radial _ (hd _)] using hzero
+  intro e he he10
+  filter_upwards [eventually_endChart_tip_side_radial_lt H (fun i => ray.point (d i)) hconv
+      (lt_min hT hrho),
+    hlarge.eventually_gt_atTop ((2 * transverseShortcutConstant W / e) ^ 2)] with i htip hbig
+  intro hx x hxrad
+  let E := endChart g H (ray.point (d i)) hx
+  by_contra hxnot
+  have hxle : E.cross.tube.height x ≤ 1 / 2 := le_of_not_gt hxnot
+  let r : ℝ := dist (x : UniformSpace.Completion W) H.endpoint
+  have hr : 0 < r := dist_pos.mpr (H.endpoint_missing x)
+  have hrsmall : r < min T rho := htip hx E x hxle
+  obtain ⟨a, ha⟩ := hrays x (hrsmall.trans_le (min_le_right _ _))
+  have hlength : a.length = r := by
+    have h := a.radial a.length ⟨a.length_pos, le_rfl⟩
+    rw [ha] at h
+    exact h.symm
+  have hxray : ray.point r = x := by
+    have h := endRay_point_eq_of_scalar_radius_tendsto_atTop H ray d hd hzero hlarge hmono a
+      (s := r) ⟨hr, le_min ((hrsmall.trans_le (min_le_left _ _)).le.trans hTlen)
+        ((hrsmall.trans_le (min_le_left _ _)).le.trans hTD)⟩ (by rw [hlength])
+    calc ray.point r = a.point r := h
+      _ = x := by rw [← hlength, ha]
+  have hout : (1 / 2 : ℝ) < E.cross.tube.height (ray.point T) := by
+    apply lt_of_not_ge
+    intro hle
+    have h := htip hx E (ray.point T) hle
+    rw [ray.radial T ⟨hT, hTlen⟩] at h
+    exact (not_lt_of_ge (min_le_left _ _)) h
+  have hLip : LipschitzOnWith 1 ray.point (Ioc (0 : ℝ) ray.length) := by
+    apply LipschitzOnWith.of_dist_le_mul
+    intro s hs t ht
+    simpa only [ray.minimizing s hs t ht, NNReal.coe_one, one_mul, Real.dist_eq] using
+      (le_rfl : |s - t| ≤ |s - t|)
+  have hrT : r ≤ T := (hrsmall.trans_le (min_le_left _ _)).le
+  have hcont : ContinuousOn (E.cross.tube.height ∘ ray.point) (Icc r T) :=
+    E.cross.tube.continuous_height.comp_continuousOn
+      (hLip.continuousOn.mono (fun u hu => ⟨hr.trans_le hu.1, hu.2.trans hTlen⟩))
+  obtain ⟨u, hu, hlevel⟩ := intermediate_value_Icc hrT hcont
+    (show (1 / 2 : ℝ) ∈ Icc ((E.cross.tube.height ∘ ray.point) r)
+      ((E.cross.tube.height ∘ ray.point) T) from by
+      simpa only [Function.comp_apply, hxray, mem_Icc] using And.intro hxle hout.le)
+  have hmem : ray.point u ∈ E.cross.tube.sectionSet (1 / 2) :=
+    (E.cross.tube.mem_sectionSet_iff (by norm_num) (ray.point u)).mpr hlevel
+  have hdist := E.section_diameter_le (ray.point u) hmem
+  have hdiam : transverseShortcutConstant W /
+      Real.sqrt (metricScalarAt g (ray.point (d i))) < d i * (e / 2) :=
+    div_sqrt_lt_mul E.Q_pos (hd i).1
+      (sqrt_ratio_bound (transverseShortcutConstant_pos W) he hbig)
+  have htri := dist_triangle (ray.point u : UniformSpace.Completion W)
+    (ray.point (d i) : UniformSpace.Completion W) H.endpoint
+  rw [UniformSpace.Completion.dist_eq, ray.radial u ⟨hr.trans_le hu.1, hu.2.trans hTlen⟩,
+    ray.radial _ (hd i), dist_comm (ray.point u) (ray.point (d i))] at htri
+  change (1 + e) * d i < r at hxrad
+  nlinarith [hu.1, (hd i).1]
+
+end
+
 theorem finite_horn_barriers {g : SmoothRiemannianMetric I3 W}
     (H : FiniteHorn g) (endData : EndGeometry H) (ray : EndRay H.endpoint)
     (d : ℕ → ℝ) (hd : ∀ i, d i ∈ Set.Ioc 0 ray.length)
     (hzero : Filter.Tendsto d Filter.atTop (nhds 0))
     (hlarge : Filter.Tendsto (fun i => metricScalarAt g (ray.point (d i)) * d i ^ 2)
       Filter.atTop Filter.atTop) : Nonempty (HornBarriers H ray d) := by
-  sorry
+  exact finite_horn_barriers_of_hornRadialExitPositionAtEndChart H endData ray d hd hzero hlarge
+    (hornRadialExitPositionAtEndChart_of_scalar_radius_tendsto_atTop H ray d hd hzero hlarge)
 
 structure ScaleCurvatureUpperBound {g : SmoothRiemannianMetric I3 W} (H : FiniteHorn g)
     (ray : EndRay H.endpoint) (d : ℕ → ℝ) : Prop where

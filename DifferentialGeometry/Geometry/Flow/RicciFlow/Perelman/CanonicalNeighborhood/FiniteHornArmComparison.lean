@@ -147,4 +147,77 @@ theorem exists_finiteHorn_arm_comparison_depth :
     (arm 1 b2) (hSarm 1 b2 ⟨(hb1.trans_le hb12).le, hbL⟩)).1
   simpa only [hd₁, hd₂, ENNReal.toReal_ofReal dist_nonneg] using h
 
+
+omit [SigmaCompactSpace W] in
+theorem finiteHorn_arm_comparison_of_endRay_dist_lt_sum
+    (g : SmoothRiemannianMetric I3 W) (H : FiniteHorn g)
+    (hsave : ∀ a b : EndRay H.endpoint,
+      dist (a.point a.length) (b.point b.length) < a.length + b.length) :
+    ∃ inner : ℕ,
+        ∀ (arm : Fin 2 → ℝ → W) (L : Fin 2 → ℝ),
+          (∀ k s, s ∈ Icc 0 (L k) → arm k s ∈ H.subend inner) →
+          arm 0 0 = arm 1 0 →
+          (∀ k s, s ∈ Icc 0 (L k) → ∀ t ∈ Icc 0 (L k),
+            dist (arm k s) (arm k t) = |s - t|) →
+          ∀ a1 a2 b1 b2 : ℝ, 0 < a1 → a1 ≤ a2 → a2 ≤ L 0 →
+            0 < b1 → b1 ≤ b2 → b2 ≤ L 1 →
+            comparisonAngle a2 b2 (dist (arm 0 a2) (arm 1 b2)) ≤
+              comparisonAngle a1 b1 (dist (arm 0 a1) (arm 1 b1)) := by
+  let : LocallyCompactSpace H.tube.map.source := H.tube.map.open_source.locallyCompactSpace
+  have hsource : IsSigmaCompact H.tube.map.source :=
+    isSigmaCompact_iff_sigmaCompactSpace.mpr inferInstance
+  have himage := hsource.image_of_continuousOn H.tube.map.contMDiffOn_toFun.continuousOn
+  rw [H.tube.map.toPartialEquiv.image_source_eq_target, H.tube.target_eq] at himage
+  let : SigmaCompactSpace W := isSigmaCompact_univ_iff.mp himage
+  obtain ⟨inner, _hbuffer, hfamily⟩ :=
+    finiteHorn_compact_complete_metric_of_endRay_dist_lt_sum g H hsave 0
+  refine ⟨inner, ?_⟩
+  intro arm L hmem hstart hmetric a1 a2 b1 b2 ha1 ha12 haL hb1 hb12 hbL
+  have hL (k : Fin 2) : 0 < L k := by
+    fin_cases k
+    · exact ha1.trans_le (ha12.trans haL)
+    · exact hb1.trans_le (hb12.trans hbL)
+  have hcont (k : Fin 2) : ContinuousOn (arm k) (Icc 0 (L k)) := by
+    have hLip : LipschitzOnWith 1 (arm k) (Icc 0 (L k)) := by
+      apply LipschitzOnWith.of_dist_le_mul
+      intro s hs t ht
+      simpa only [hmetric k s hs t ht, NNReal.coe_one, one_mul, Real.dist_eq] using
+        (le_rfl : |s - t| ≤ |s - t|)
+    exact hLip.continuousOn
+  let S : Set W := arm 0 '' Icc 0 (L 0) ∪ arm 1 '' Icc 0 (L 1)
+  have hS : IsCompact S :=
+    (isCompact_Icc.image_of_continuousOn (hcont 0)).union
+      (isCompact_Icc.image_of_continuousOn (hcont 1))
+  have hSin : S ⊆ H.subend inner := by
+    intro x hx
+    rcases hx with ⟨s, hs, rfl⟩ | ⟨t, ht, rfl⟩
+    · exact hmem 0 s hs
+    · exact hmem 1 t ht
+  have hSarm (k : Fin 2) (s : ℝ) (hs : s ∈ Icc 0 (L k)) : arm k s ∈ S := by
+    fin_cases k
+    · exact Or.inl ⟨s, hs, rfl⟩
+    · exact Or.inr ⟨s, hs, rfl⟩
+  obtain ⟨g', U, K, eta, hcomplete', hU, _hK, heta, hKU, _hSU, heq, hle, hdata⟩ :=
+    hfamily S S hS hS hSin hSin
+  let : ConnectedSpace W := connectedSpace_iff_univ.mpr H.tube.isConnected_univ
+  have hmetric' (k : Fin 2) (s : ℝ) (hs : s ∈ Icc 0 (L k)) (t : ℝ) (ht : t ∈ Icc 0 (L k)) :
+      riemannianEDistOf g' (arm k s) (arm k t) = ENNReal.ofReal |s - t| := by
+    simpa only [hmetric k s hs t ht] using
+      (hdata (arm k s) (hSarm k s hs) (arm k t) (hSarm k t ht)).1
+  have hsec (s : ℝ) (hs : s ∈ Icc 0 (L 0)) (t : ℝ) (ht : t ∈ Icc 0 (L 1))
+      (y : W) (hy : riemannianEDistOf g' (arm 0 s) y + riemannianEDistOf g' y (arm 1 t) =
+        riemannianEDistOf g' (arm 0 s) (arm 1 t)) :
+      metricRm04At (I := I3) g' y ∈ tensor04SectionalNonnegativeCone (I := I3) (M := W) := by
+    have hpair := hdata (arm 0 s) (hSarm 0 s hs) (arm 1 t) (hSarm 1 t ht)
+    exact auxiliary_sectional_nonnegative_of_distance_add g H g' hU heq hle
+      hpair.1 heta.le (fun z hz => hKU ((hpair.2.1 z hz).2)) hy
+  have h := comparison_of_complete_metric_segments g' hcomplete' arm L hL hstart hmetric' hsec
+    a1 a2 b1 b2 ha1 ha12 haL hb1 hb12 hbL
+  have hd₁ := (hdata (arm 0 a1) (hSarm 0 a1 ⟨ha1.le, ha12.trans haL⟩)
+    (arm 1 b1) (hSarm 1 b1 ⟨hb1.le, hb12.trans hbL⟩)).1
+  have hd₂ := (hdata (arm 0 a2) (hSarm 0 a2 ⟨(ha1.trans_le ha12).le, haL⟩)
+    (arm 1 b2) (hSarm 1 b2 ⟨(hb1.trans_le hb12).le, hbL⟩)).1
+  simpa only [hd₁, hd₂, ENNReal.toReal_ofReal dist_nonneg] using h
+
+
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn

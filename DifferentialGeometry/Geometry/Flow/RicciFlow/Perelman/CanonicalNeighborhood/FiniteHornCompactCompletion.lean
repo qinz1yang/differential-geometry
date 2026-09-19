@@ -146,4 +146,122 @@ theorem auxiliary_sectional_nonnegative_of_distance_add
     fin_cases i <;> rfl
   simpa only [zero_mul, metricRm04StandardAt_apply, hslots] using H.nonnegative z (mem_univ z) v w
 
+
+theorem finiteHorn_compact_complete_metric_of_endRay_dist_lt_sum
+    (g : SmoothRiemannianMetric I3 W) (H : FiniteHorn g)
+    (hsave : ∀ a b : EndRay H.endpoint,
+      dist (a.point a.length) (b.point b.length) < a.length + b.length) :
+    ∀ outer : ℕ, ∃ inner : ℕ,
+        closure (H.subend inner) ⊆ H.subend outer ∧
+        ∀ A B : Set W, IsCompact A → IsCompact B →
+          A ⊆ H.subend inner → B ⊆ H.subend inner →
+          ∃ (g' : SmoothRiemannianMetric I3 W) (U K : Set W) (eta : ℝ),
+            RiemannianMetricComplete g' ∧ IsOpen U ∧ IsCompact K ∧ 0 < eta ∧
+            K ⊆ U ∧ A ∪ B ⊆ U ∧
+            (∀ z ∈ U, g'.inner z = g.inner z) ∧
+            (∀ z (v : TangentSpace I3 z), g.inner z v v ≤ g'.inner z v v) ∧
+            ∀ x ∈ A, ∀ y ∈ B,
+              riemannianEDistOf g' x y = ENNReal.ofReal (dist x y) ∧
+              (∀ z : W, dist x z + dist z y ≤ dist x y + eta →
+                z ∈ H.subend outer ∩ K) ∧
+              ∀ gamma : ℝ → W,
+                ContMDiffOn 𝓘(ℝ, ℝ) I3 1 gamma (Icc (0 : ℝ) 1) →
+                gamma 0 = x → gamma 1 = y →
+                metricPathELength g gamma 0 1 ≤
+                  ENNReal.ofReal (dist x y) + ENNReal.ofReal eta →
+                ∀ s ∈ Icc (0 : ℝ) 1, gamma s ∈ H.subend outer ∩ K := by
+  intro outer
+  obtain ⟨j, hjheight⟩ :=
+    ((tendsto_order.1 H.cut_height_zero).2 _ (H.cut_height_mem outer).1).exists
+  have hj : closure (H.subend j) ⊆ H.subend outer := by
+    have hclosed : IsClosed {z : W | H.tube.height z ≤ H.cut_height j} :=
+      isClosed_le H.tube.continuous_height continuous_const
+    have hsub : H.subend j ⊆ {z : W | H.tube.height z ≤ H.cut_height j} := by
+      intro z hz
+      rw [H.subend_eq j] at hz
+      change H.tube.height z < H.cut_height j at hz
+      exact hz.le
+    intro z hz
+    rw [H.subend_eq outer]
+    exact (closure_minimal hsub hclosed hz).trans_lt hjheight
+  obtain ⟨d, hd, hrays⟩ := finiteHorn_exists_intrinsic_endRay_near_endpoint g H
+  obtain ⟨delta, hdelta, hball⟩ := finiteHorn_ball_subset_subend g H outer
+  obtain ⟨k, hk⟩ := finiteHorn_subend_radial_small g H
+    (lt_min hd (by positivity : 0 < delta / 8))
+  have hmono : Antitone H.subend := antitone_nat_of_succ_le H.nested
+  refine ⟨max j k, (closure_mono (hmono (le_max_left j k))).trans hj, ?_⟩
+  intro A B hA hB hAin hBin
+  have hsmall (z : W) (hz : z ∈ H.subend (max j k)) :
+      dist (z : UniformSpace.Completion W) H.endpoint < min d (delta / 8) :=
+    hk z (hmono (le_max_right j k) hz)
+  have hgap : ∀ x ∈ A, ∀ y ∈ B,
+      dist x y < dist (x : UniformSpace.Completion W) H.endpoint +
+        dist (y : UniformSpace.Completion W) H.endpoint := by
+    intro x hx y hy
+    obtain ⟨a, ha⟩ := hrays x ((hsmall x (hAin hx)).trans_le (min_le_left _ _))
+    obtain ⟨b, hb⟩ := hrays y ((hsmall y (hBin hy)).trans_le (min_le_left _ _))
+    have haRad := a.radial a.length ⟨a.length_pos, le_rfl⟩
+    have hbRad := b.radial b.length ⟨b.length_pos, le_rfl⟩
+    rw [ha] at haRad
+    rw [hb] at hbRad
+    have h := hsave a b
+    rwa [ha, hb, ← haRad, ← hbRad] at h
+  obtain ⟨eps, heps, K₀, hK₀, hcapture⟩ :=
+    finiteHorn_exists_compact_near_minimizing_hull g H outer hA hB hgap
+  let eta : ℝ := min eps (delta / 4)
+  have heta : 0 < eta := lt_min heps (by positivity)
+  let K : Set W := K₀ ∪ (A ∪ B)
+  have hK : IsCompact K := hK₀.union (hA.union hB)
+  have hpointTrap : ∀ x ∈ A, ∀ y ∈ B, ∀ z : W,
+      dist x z + dist z y ≤ dist x y + eta → z ∈ H.subend outer ∩ K := by
+    intro x hx y hy z hlength
+    have hxrad := (hsmall x (hAin hx)).trans_le (min_le_right _ _)
+    have hyrad := (hsmall y (hBin hy)).trans_le (min_le_right _ _)
+    have hxy := hgap x hx y hy
+    have htri := dist_triangle (z : UniformSpace.Completion W)
+      (x : UniformSpace.Completion W) H.endpoint
+    rw [UniformSpace.Completion.dist_eq, dist_comm z x] at htri
+    have hetadelta : eta ≤ delta / 4 := min_le_right _ _
+    have hrad : dist (z : UniformSpace.Completion W) H.endpoint < delta := by
+      linarith [dist_nonneg (x := z) (y := y)]
+    have houter : z ∈ H.subend outer := hball _ hrad
+    refine ⟨houter, Or.inl (hcapture x hx y hy z houter ?_)⟩
+    exact hlength.trans (by
+      dsimp only [eta]
+      gcongr
+      exact min_le_left _ _)
+  have htrap : ∀ x ∈ A, ∀ y ∈ B, ∀ gamma : ℝ → W,
+      ContMDiffOn 𝓘(ℝ, ℝ) I3 1 gamma (Icc (0 : ℝ) 1) → gamma 0 = x → gamma 1 = y →
+      metricPathELength g gamma 0 1 ≤ riemannianEDistOf g x y + ENNReal.ofReal eta →
+      ∀ s ∈ Icc (0 : ℝ) 1, gamma s ∈ H.subend outer ∩ K := by
+    intro x hx y hy gamma hsmooth hstart hend hnear s hs
+    have hleft := edistOf_le_metricPathELength g hs.1
+      (hsmooth.mono (Icc_subset_Icc le_rfl hs.2))
+    have hright := edistOf_le_metricPathELength g hs.2
+      (hsmooth.mono (Icc_subset_Icc hs.1 le_rfl))
+    rw [hstart, H.edist_eq_ofReal_dist] at hleft
+    rw [hend, H.edist_eq_ofReal_dist] at hright
+    have hsum := ((add_le_add hleft hright).trans_eq
+      (metricPathELength_add g gamma hs.1 hs.2)).trans hnear
+    rw [← ENNReal.ofReal_add dist_nonneg dist_nonneg, H.edist_eq_ofReal_dist,
+      ← ENNReal.ofReal_add dist_nonneg heta.le] at hsum
+    have hlength : dist x (gamma s) + dist (gamma s) y ≤ dist x y + eta :=
+      (ENNReal.ofReal_le_ofReal_iff (by positivity)).mp hsum
+    exact hpointTrap x hx y hy (gamma s) hlength
+  obtain ⟨g', U, hcomplete, hU, hKU, heq, hle⟩ :=
+    exists_riemannianMetricComplete_eqOn_of_isCompact g hK
+  refine ⟨g', U, K, eta, hcomplete, hU, hK, heta, hKU,
+    fun z hz => hKU (Or.inr hz), heq, hle, ?_⟩
+  intro x hx y hy
+  have hfinite : riemannianEDistOf g x y ≠ ⊤ := by
+    rw [H.edist_eq_ofReal_dist]
+    exact ENNReal.ofReal_ne_top
+  have hdist := riemannianEDistOf_eq_of_near_minimizer_trapping g g' heta hfinite
+    (fun z hz => heq z (hKU hz)) hle
+    (fun gamma hsmooth hstart hend hnear s hs =>
+      (htrap x hx y hy gamma hsmooth hstart hend hnear s hs).2)
+  refine ⟨hdist.trans (edist_eq_ofReal_dist g H x y), hpointTrap x hx y hy, ?_⟩
+  simpa only [H.edist_eq_ofReal_dist] using htrap x hx y hy
+
+
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn

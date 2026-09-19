@@ -208,4 +208,37 @@ theorem finite_horn_end_angle_of_depth :
   obtain ⟨d, hd, hmono'⟩ := hmono g H hdepth
   exact finite_horn_end_angle_of_monotone H d hd hmono'
 
+
+omit [SigmaCompactSpace W] in
+theorem finiteHorn_end_angle_monotone_of_endRay_dist_lt_sum
+    (g : SmoothRiemannianMetric I3 W) (H : FiniteHorn g)
+    (hsave : ∀ a b : EndRay H.endpoint,
+      dist (a.point a.length) (b.point b.length) < a.length + b.length) :
+    ∃ d : ℝ, 0 < d ∧ ∀ a b : EndRay H.endpoint,
+      CoordinatewiseNonincreasingOn (endRayLength H.endpoint d a) (endRayLength H.endpoint d b)
+        (radialComparisonAngle (endRayFamily H.endpoint) a b) := by
+  obtain ⟨inner, hcmp⟩ := finiteHorn_arm_comparison_of_endRay_dist_lt_sum g H hsave
+  obtain ⟨d, hd, hlocal⟩ :=
+    finiteHorn_ray_approximation_in_subend_of_endRay_dist_lt_sum g H hsave inner
+  have hfull : ∀ a b : EndRay H.endpoint,
+      CoordinatewiseNonincreasingOn (min a.length d) (min b.length d) (endComparisonAngle a b) := by
+    intro a b
+    constructor
+    · intro s1 s2 t hs1 hs2 ht hs12
+      exact endComparisonAngle_mono_of_ray_approximation H
+        (fun arm L _hL _hsmooth hmem hstart hmetric => hcmp arm L hmem hstart hmetric)
+        (fun a b lo hi hlo _hlohi hia hib hid => hlocal a b lo hi hlo hia hib hid) a b
+        hs1.1 hs12 hs2.2 ht.1 le_rfl ht.2
+    · intro s t1 t2 hs ht1 ht2 ht12
+      exact endComparisonAngle_mono_of_ray_approximation H
+        (fun arm L _hL _hsmooth hmem hstart hmetric => hcmp arm L hmem hstart hmetric)
+        (fun a b lo hi hlo _hlohi hia hib hid => hlocal a b lo hi hlo hia hib hid) a b
+        hs.1 le_rfl hs.2 ht1.1 ht12 ht2.2
+  refine ⟨d, hd, fun a b => ?_⟩
+  have hfun : radialComparisonAngle (endRayFamily H.endpoint) a b = endComparisonAngle a b :=
+    funext fun s => funext fun t => radialComparisonAngle_endRay a b s t
+  rw [endRayLength, endRayLength, hfun]
+  exact hfull a b
+
+
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
