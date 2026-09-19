@@ -5690,3 +5690,40 @@ and the untwisted orientable polygon-neighborhood diagram are now delivered.
 For 24.12, transfer of orientability for a contractible polygon through the
 already available orientation covering also remains to be connected. These
 are the next mathematical interfaces; no extra conditional wrapper is submitted.
+
+## Compact cylindrical diagrams with equal ends have a circle product (2026-09-19)
+
+Status: done. `CylindricalProduct.lean` proves
+`IsCylindricalDiagram.eq_iff_fst_eq_and_circle_eq` and
+`IsCylindricalDiagram.exists_homeomorph_prod_circle_of_eq_ends`.
+An actual cylindrical diagram on a compact base with pointwise equal ends
+produces a homeomorphism from its target onto `P × loopCircle`, with the exact
+inverse coordinate formula for every base point and interval parameter.
+The fiber lemma needs only real normed spaces; the product theorem needs a
+finite-dimensional source for the diagram's continuous PL map, but no
+finite-dimensional target, disk, manifold or orientability assumption.
+The map is constructed by quotient descent from `P × [0,1]`; equality of
+circle coordinates is proved equivalent to the diagram's actual fibers.
+
+Focused compilation: 19.505 seconds; complete dynamic audit: 28.704 seconds.
+Both exit 0 with zero diagnostics. The two public declarations, six critical
+reused quotient/circle producers and all 13 applicable environment linters
+pass. All axiom closures are within the standard three axioms. The concrete
+triangle circle on a tetrahedral face produces a nonempty derived neighborhood
+and its actual disk-times-circle homeomorphism: exit 0, zero diagnostics,
+27.871 seconds, with its declaration and both applied producers audited.
+Times include resource admission. An initial external probe lacked a final
+newline and failed the whitespace gate; the final corrected probe is clean.
+
+Evidence: `C:/Users/liao9/AppData/Local/Temp/codex-s-mobius-torus-20260918/`
+`CylindricalProduct-verification.json`, with raw/normalized source identity,
+private object hash, receipts, timings, declarations, linters and the concrete
+instance. Source SHA256: `01C5A93D25A406A4D60F13EDBB645A30EC667B7C7F114E06E933AC83221E792F`.
+The native import closure excludes `HurewiczLowDegrees`; static checks pass.
+Source, root import, this handoff and the C.6/C.7 plan updates are one commit.
+Shared artifacts were read-only; the integration root gate remains separate.
+
+Next in this round: convert the disk and circle models to the existing
+`IsTopologicalSolidTorus` definition and assemble the source-faithful CST
+cyclic decomposition of the actual regular neighborhood. Full 24.9/24.10
+and the 24.12 contractible-polygon interface remain distinct obligations.
