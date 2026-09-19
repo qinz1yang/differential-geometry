@@ -4157,3 +4157,42 @@ This closes the API-placement and proof-duplication gap recorded in Section
 83.  Compatible cellwise modifications, positive geometric stability radii
 for Conditions (2)--(8), the standard PL solid-torus input, and `Moise351`
 remain open.
+
+## 85. 2026-09-19 finite piercing-neighborhood perturbation radius — done
+
+`DualCellPiercingStability.lean` now proves
+`exists_perturbation_radius_of_pairwise_disjoint_nested_common_neighborhoods`.
+For a finite family of nested common annular derived neighborhoods whose
+compact outer layers `A i` are pairwise disjoint and contained in an open set
+`U`, it constructs one positive radius `δ`.  Every family of maps moving each
+point of each `A i` by less than `δ` still sends all outer layers into `U`,
+keeps the outer-layer images pairwise disjoint, and also keeps the inner-layer
+images pairwise disjoint.  The proof obtains individual open-containment and
+compact-separation radii from metric thickenings and takes an actual finite
+positive minimum; none of the three conclusions is supplied as a hypothesis.
+
+`exists_trivalent_graphDualCell_piercing_neighborhood_stability_model` applies
+the theorem to the actual standard 4-simplex-boundary trivalent graph.  Its
+specified open set is `Metric.thickening 1 K.space`, and the splitting disks,
+piercing circles, modified neighboring balls, nested common neighborhoods,
+pairwise-disjoint layers, positive radius, and universal perturbation
+conclusion are all constructed.  Thus the stability statement has a concrete
+nonempty geometric consumer rather than only a conditional interface.  The
+new leaf is registered in `DifferentialGeometry.lean`.
+
+Both target modules passed the isolated private checker with no diagnostics
+and left shared outputs unchanged.  The strict external audit dynamically
+checked all five non-automatic declarations in the two modules together with
+twelve critical compactness, thickening, derived-neighborhood, and piercing
+declarations.  Every axiom closure was contained in
+`{propext, Classical.choice, Quot.sound}`, and all thirteen applicable
+environment linters passed.
+
+This closes only the positive-radius stability of open containment and
+pairwise-disjoint finite supports.  It does not assert that the perturbed
+images remain derived neighborhoods or PL maps, nor does it prove Moise 35.1
+Conditions (3)--(8): boundary-intersection inclusions, opposite-side and
+component statements, neighborhood coverage and avoidance, exceptional
+component counts, and general position remain open.  Cross-stage compatible
+modifications, the standard PL solid-torus input, and `Moise351` also remain
+open.
