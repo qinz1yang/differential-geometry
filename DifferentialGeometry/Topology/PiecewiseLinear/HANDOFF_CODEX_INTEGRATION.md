@@ -3088,3 +3088,32 @@ four-case surgery/elimination and the full Moise264 remain open. F's later
 boundary-relative layers through56bd63a74 are queued separately, with active
 boundary-collar work left undisturbed. These nine declarations do not establish
 a global regular disk or the loop theorem endpoint.
+
+## 65. An actual essential meridian and boundary-inclusion kernel (2026-09-19 UTC)
+
+M304 source 6fa7957c9 is independently accepted. The actual finite embedded
+solid torus and its quarter-parameter meridian disk are the same objects as in
+the verified compression geometry. The exact frontier trace is the disk
+boundary; its nonempty disk interior lies in the solid torus interior. The
+boundary complement of the circle is connected and the boundary has first
+Betti number two.
+
+One actual loop on that circle is nontrivial in the fundamental group of the
+torus boundary and trivial in the same solid torus, via the disk contraction.
+An independent consumer proves a nontrivial kernel, hence noninjectivity, of
+the boundary inclusion. The general nullhomotopic-map lemma has no connectivity
+assumptions and is placed under Topology/FundamentalGroup.
+
+Both new modules compiled in 20.566 seconds; the combined
+audit took 49.805 seconds including admission. All two native
+declarations, eight key reuses and three probe declarations pass the approved
+axiom bound; both native declarations and all probes pass thirteen applicable
+linters with zero diagnostics. Two probes are actual geometric consequences;
+one checks the general nullhomotopic-map API. 59 exact-source private
+prerequisites were reused.
+
+Lean delta: +114/-0, including two root imports. Static root reachability is
+9601 modules including the root, with no missing project source or cycle.
+Receipt: .lake/verified-fortyfifth-lane-delivery-20260919.json. The full root
+build remains stopped. This concrete meridian does not prove the loop theorem
+for arbitrary essential boundary loops or Moise304 for a prescribed shell.

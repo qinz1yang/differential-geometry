@@ -8963,6 +8963,8 @@ import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ProjectedCellCr
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ProjectedCellInDouble
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ProjectedDoubleSheets
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ProjectedDoubleTriangulation
+import DifferentialGeometry.Topology.FundamentalGroup.Nullhomotopy
+import DifferentialGeometry.Topology.PiecewiseLinear.TorusMeridian
 
 /-!
 # Differential geometry and geometric analysis

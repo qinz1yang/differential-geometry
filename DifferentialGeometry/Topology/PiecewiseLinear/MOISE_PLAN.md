@@ -446,6 +446,14 @@ overlap-preserving normalization, boundary chart production and four-case
 elimination remain open; later source through56bd63a74 is queued separately.
 See handoff section64. Moving to the double alone leaves fibers unchanged.
 
+### Actual meridian gate (2026-09-19 UTC)
+
+M304 through 6fa7957c9 is independently accepted: the actual embedded meridian
+is essential in the same torus boundary and bounds its actual interior disk.
+The boundary inclusion has a nontrivial fundamental-group kernel. General
+loop-theorem production and prescribed-shell Moise304 remain open. Two new
+leaves, two native declarations and three probes pass; see handoff section 65.
+
 ## 1. 目标与接口
 
 - 数学目标：Hausdorff、第二可数的紧致无边界拓扑三维流形 `M`，在同一 carrier、同一拓扑上存在光滑结构。
