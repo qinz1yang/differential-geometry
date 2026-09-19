@@ -8043,6 +8043,7 @@ import DifferentialGeometry.Geometry.Operator.CutoffSupport
 import DifferentialGeometry.Geometry.Operator.Cylinder
 import DifferentialGeometry.Geometry.Operator.DirectionalDerivative
 import DifferentialGeometry.Geometry.Operator.Divergence
+import DifferentialGeometry.Geometry.Operator.DivergenceMetricChange
 import DifferentialGeometry.Geometry.Operator.DivergenceNaturality
 import DifferentialGeometry.Geometry.Operator.Family.Basic
 import DifferentialGeometry.Geometry.Operator.Family.Gram.Basic
