@@ -322,7 +322,7 @@ theorem dirichletMassCompl_smoothMul_volumeDensity_swap
   rw [dirichletMassLp_apply_eq_integral] at hp
   exact hp
 
-private theorem dirichletWeakFormCompl_volumeDensity_laplacian_adjoint
+theorem dirichletWeakFormCompl_volumeDensity_eq_integral_laplacian_adjoint
     {q : SmoothRiemannianMetric (I_half n) M}
     (h : SmoothRiemannianMetric (I_half n) M)
     {Cg : ℝ} (hCg : 1 ≤ Cg)
@@ -399,7 +399,7 @@ theorem eq_dirichletWeakFormCompl_of_heat_adjoint
     inner ℝ (smoothMulLp q a (H1ComplDirichletToLp q u))
       (H1ComplDirichletToLp q (smoothToH1ComplDirichlet q v)) +
     F (smoothToH1ComplDirichlet q v)
-  rw [heq, dirichletWeakFormCompl_volumeDensity_laplacian_adjoint]
+  rw [heq, dirichletWeakFormCompl_volumeDensity_eq_integral_laplacian_adjoint]
   have hpot : inner ℝ (smoothMulLp q a (H1ComplDirichletToLp q u))
       (H1ComplDirichletToLp q (smoothToH1ComplDirichlet q v)) =
       ∫ x, H1ComplDirichletToLp q u x * (a x * v.toFun x)
