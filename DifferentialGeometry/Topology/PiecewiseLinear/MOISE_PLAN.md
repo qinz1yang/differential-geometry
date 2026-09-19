@@ -80,6 +80,17 @@ no acceptance of these contracts is claimed.
 
 ### Subsequent mathematical gates
 
+The owner added one independent M304 lane on 2026-09-19 UTC, leaving E3
+on actual 30.3 geometry and all other existing lanes unchanged. M304's
+first checked layer constructs finite connected orientable two-sided
+polyhedral surfaces separating arbitrary disjoint compact/closed connected
+sets, with arbitrary neighborhood control. Five new declarations, ten
+critical reuse entries, one nonempty geometric model and 13 applicable
+environment linters pass; only standard axioms occur. The shell-interior
+specialization and compression argument are not yet claimed. Exact evidence
+and the source route are in HANDOFF_CODEX_M304.md. This explicitly authorized
+addition supersedes the older four-lane count, without authorizing subagents.
+
 1. Accept corrected contracts and a real cover/projection construction; complete
    Lemmas 1 and 2 and the covering induction before claiming 25.1/25.2.
    Boundary non-nullhomotopy/subgroup avoidance must survive actual operations.

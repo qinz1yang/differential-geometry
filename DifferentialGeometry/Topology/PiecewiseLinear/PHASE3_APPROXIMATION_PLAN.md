@@ -50,6 +50,16 @@ queue are in MOISE_PLAN.md.
 
 ## 0. 目标命题与已证消费者
 
+Owner-authorized M304 addition, 2026-09-19 UTC: the first independent layer
+constructs a finite connected orientable two-sided polyhedral separator of
+a compact connected set and a disjoint closed connected set, inside any
+specified neighborhood of the former. `SeparatingSurface.lean` and
+`Connected/SeparatorLocation.lean` pass focused checks, all-declaration
+axiom audit, a nonempty concentric-ball model and 13 environment linters.
+E3 retains 30.3. Locating the constructed surface inside a spherical shell,
+26.4 compression, 28.19 and the full 30.4 remain distinct obligations.
+See HANDOFF_CODEX_M304.md for exact signatures and evidence.
+
 Phase 3 的唯一终点是一条定理：
 
 ```lean
