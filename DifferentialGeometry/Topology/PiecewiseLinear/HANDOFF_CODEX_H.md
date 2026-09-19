@@ -4046,3 +4046,43 @@ one vertex.  It does not yet provide compatible modifications across the
 nonconstant locally finite exhaustion, nor the positive perturbation radii
 which preserve Conditions (2)--(8).  Those remain the first genuine global
 geometric blockers for the proof of `Moise351`.
+
+## 82. 2026-09-19 locally finite splitting-disk neighborhoods — done
+
+`LocallyFiniteSplittingDisks.lean` removes the global-finiteness hypothesis
+from the first separation layer.  For every `LocallyFinitePLPieceIn`, the
+splitting disks indexed by all edges of its single ambient triangulation form
+a locally finite, pairwise disjoint family of closed subsets.  Each individual
+splitting disk has finitely many faces: compactness of the edge carrier and
+local finiteness leave only finitely many cofaces, and the dual-cell flags and
+barycentric star are then finite.
+
+In any prescribed common open set containing those disks,
+`LocallyFinitePLPieceIn.exists_locallyFinite_pairwise_disjoint_open_splittingDisk_neighborhoods`
+constructs open supersets which remain locally finite, are pairwise disjoint,
+and stay inside the prescribed set.  The proof uses a precise locally finite
+refinement and the shrinking lemma; it neither decomposes the family into
+finite stages nor assumes the desired separation as input.
+
+`PolyhedralGraph.lean` now exports
+`exists_noncompact_locallyFinite_simplicialComplex_three_with_edge`, and
+`exists_noncompact_splittingDisk_neighborhood_family_three` applies the new
+theorem to that genuinely noncompact complex in Euclidean three-space.  The
+example has a nonempty edge type and hence tests an actual, nonvacuous
+splitting-disk family rather than a finite or empty surrogate.
+
+The two modules passed the isolated private checker with no diagnostics and
+left shared outputs unchanged.  The strict external audit dynamically checked
+all sixty-three non-automatic declarations in the two target modules together
+with eighteen directly reused compactness, refinement, dual-cell, and
+polyhedral declarations.  Every axiom closure was contained in
+`{propext, Classical.choice, Quot.sound}`, and all thirteen applicable
+environment linters passed.
+
+This closes locally finite open support separation for all splitting disks of
+one triangulation.  It does not yet prove the locally finite version of
+`IsCombinatorialManifold.isPLBall_splittingDisk`: the existing ball theorem
+still assumes a globally finite ambient face set.  Nor does it provide
+cross-stage identity of finite restrictions, compatible cellwise
+modifications, positive stability radii for Conditions (2)--(8), a standard
+PL solid-torus classification, or `Moise351`.
