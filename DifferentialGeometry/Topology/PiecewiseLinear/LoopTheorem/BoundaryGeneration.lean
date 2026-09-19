@@ -747,7 +747,8 @@ theorem isClosed_diskAttachmentStage [FiniteDimensional ℝ E]
   induction l with
   | nil => exact isClosed_sphereWithDiskInteriorsRemoved D hB
   | cons i l ih =>
-      exact ih.union (show IsClosed (D i) from (show IsPLBall 2 (D i) from ⟨q i, hq i⟩).isPolyhedron.isClosed)
+      exact ih.union
+        (show IsClosed (D i) from (show IsPLBall 2 (D i) from ⟨q i, hq i⟩).isPolyhedron.isClosed)
 
 open Classical in
 theorem disk_inter_sphereWithDiskInteriorsRemoved [FiniteDimensional ℝ E]

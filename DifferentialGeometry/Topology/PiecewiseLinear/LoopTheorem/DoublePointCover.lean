@@ -417,7 +417,7 @@ theorem doublePointProjection_connected_or_two_components [T2Space M]
         ∃ e : connectedComponent y ≃ₜ J,
           ∀ z : connectedComponent y,
             e z = J.restrictPreimage (doublePointProjection D D.domain) z := by
-  apply DifferentialGeometry.Topology.Covering.connectedSpace_or_exists_exactly_two_components_restrictPreimage
+  apply Topology.Covering.connectedSpace_or_exists_exactly_two_components_restrictPreimage
     J hD.doublePointProjection_isCoveringMap hD.doublePointProjection_isClosedMap
   intro y
   exact hD.doublePointProjection_fiber_encard_eq_two y

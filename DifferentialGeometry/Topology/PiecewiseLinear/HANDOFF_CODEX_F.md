@@ -4755,3 +4755,36 @@ coveringBaseMap∘simplicialMap A ψ 在 A.space 上精确等于 simplicialMap A
 **partial：完整 NormalSystem 与覆盖归纳。** 源提升已生产，仍需实现提升像及边界环子复形、
 相容小正规邻域与边界邻域，进而提供实际边界投影、基点和正规子群数据。
 严格复杂度下降消费者仍以完整 DoubleCoverDiagram 为输入；本层没有声称已经填好该输入。
+
+### 19.167 NormalSystem 采用实际兼容邻域的公共接口迁移（2026-09-19 UTC）
+
+**done：SingularCell、DoubleCoverProjection、BoundaryWordLoopClass 的接口迁移。**
+`NormalSystem.neighborhood` 现在承载 §19.164 实际生产的 DerivedNeighborhoodTriangulation，
+替代 §19.162 已否定的固定相对导出邻域公式。`.manifoldComplex`、`.boundaryComplex`、
+`.boundaryNeighborhood` 与空间 API 保留；`NormalSystem.manifold_space` 由真实对象的 space_eq
+证明，精确等于原普通导出邻域。原面包含、有限性来自该对象；SDR、源提升、边界环、正规子群及
+严格复杂度契约没有删去。没有把假的固定公式载体等式或所需覆盖图当作新假设。
+
+十三个直接 NormalSystem 消费者的完整拓扑下游闭包五十五模块全部聚焦检查 exit=0、零诊断；
+核对每份回执的源码 SHA 与当前源码相同。环境 linter 发现的两项旧冗余有限维实例经协调者逐项
+批准删除：exists_boundary_word_loop_dichotomy_of_four_arcs / of_boundaryBranch。它们的全部
+其它假设、结论与证明保持不变，BoundaryWordDoubleCell 随后再次通过。
+其余八个消费者仅作实际 longLine 修复：纯空白调整、一个保持所指常量的资格名缩短，以及协调者
+独立检查并逐项批准的两个 innermost decomposition with_coordinate 定理名删去输入后缀。
+全部引用同步，无旧名 alias；除这些精确更名外已核对证明 token 完全一致。
+
+AuditF305 exit=0、零诊断；三个语义变更模块的一百二十一项非自动声明、八项关键依赖和一个实际
+非空盘/邻域模型，共一百三十项传递公理闭包仅含标准三公理；十三项适用环境 linters 全过。
+模型包含新 normalSystemManifoldComplex 的真实三维带边载体、精确边界与 SDR，但不冒充带有
+正规子群/避让条件的完整 NormalSystem 非空实例。回执 AuditF305.json、各模块同名 .json 与
+NormalSystem-consumer-migration.json；sourceStable=true，共享产物只读。源码与本记录同次提交，
+整库根检由协调者负责。先前 AuditF302 中应用旧 NormalSystem.manifold_space 的示例属于旧接口
+历史证据；固定公式的几何反例定理本身仍有效。
+
+**partial：初始奇异盘的相对 PL 边界推入。** 当前 image_inter_boundary 只约束像集：
+f(P)∩∂M=f(∂P)，不能直接把任意覆盖提升后的 g(P)∩∂X 认作 g(∂P)。CutAndPaste 的
+NormalSingularCellData.fiber_subset_frontier_of_mem_image_inter_boundary 为正规 hD 生产源边界
+适当性，但一般 NormalSystem 未携带这种正规数据。没有宣称完整 NormalSystem 的反例已证。
+协调者复核后指定更窄预处理：在开始源顶点复杂度归纳之前，实际产生保持源边界映射的 PL f'，
+使源内部进入流形内部；允许重新选择初始复杂度。采用源参数依赖的领口高度，不能用固定边界像的
+环境后复合冒充。一般 NormalSystem 的既有归纳仍是条件消费者；不添 properness 字段声称已闭合。

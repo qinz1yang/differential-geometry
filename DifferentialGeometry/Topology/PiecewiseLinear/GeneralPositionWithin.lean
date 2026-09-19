@@ -65,7 +65,8 @@ theorem exists_small_simplicialMap_doublePointSet_manifold_mapsTo
   have hcompact : IsCompact (f '' K.space) :=
     (isPolyhedron_space K).isCompact.image_of_continuousOn hf.continuousOn
   obtain ⟨δ, hδ, hδU⟩ := hcompact.exists_cthickening_subset_open hU hmap.image_subset
-  obtain ⟨R, φ, G, hR, hfinite, hpl, hclose, hstar, hlocal, hfiber, hGfinite, hGspace, hGman, hcross⟩ :=
+  obtain ⟨R, φ, G, hR, hfinite, hpl, hclose, hstar, hlocal, hfiber,
+    hGfinite, hGspace, hGman, hcross⟩ :=
     exists_small_simplicialMap_doublePointSet_manifold K hK hdim f hf hloc hcard (lt_min hε hδ)
   refine ⟨R, φ, G, hR, hfinite, hpl, fun x hx => (hclose x hx).trans_le (min_le_left ε δ),
     ?_, hstar, hlocal, hfiber, hGfinite, hGspace, hGman, hcross⟩

@@ -278,7 +278,7 @@ theorem exists_innermost_isPLBall_doublePointPreimage_decomposition_of_exists_no
   exact ⟨c, J, Q, hc, hJ, hQ, hQsub, hfrontier, hfull, hsplit⟩
 
 open Classical in
-theorem exists_innermost_isPLBall_doublePointPreimage_decomposition_with_coordinate_of_exists_not_boundaryBranch
+theorem exists_innermost_isPLBall_doublePointPreimage_decomposition_with_coordinate
     [T2Space M] (hD : NormalSingularCellData D BdM B)
     (hclosed : ∃ c : hD.singularSet.Branch,
       ¬hD.singularSet.IsBoundaryBranch c) :
@@ -295,7 +295,7 @@ theorem exists_innermost_isPLBall_doublePointPreimage_decomposition_with_coordin
                   IsPLHomeomorphOn (hD.branchCoordinate c) T
                     (hD.singularSet.branchComplex c).space) := by
   obtain ⟨c, J, Q, hc, hJ, hQ, hQsub, hfrontier, hclosedInter, hsplit⟩ :=
-    hD.exists_innermost_isPLBall_branchPreimage_decomposition_with_coordinate_of_exists_not_boundaryBranch
+    hD.exists_innermost_isPLBall_branchPreimage_decomposition_with_coordinate
       hclosed
   have hJsub : J ⊆ hD.branchPreimage c := by
     rcases hsplit with hsingle | ⟨T, -, -, hcover, -, -⟩
@@ -326,7 +326,7 @@ theorem exists_innermost_isPLBall_doublePointPreimage_with_nonsingular_case_two
                   A.IsNonsingular ∧ A '' A.domain = D '' Q ∧
                     Set.range A.boundary = D '' J) := by
   obtain ⟨c, J, Q, hc, hJ, hQ, hQsub, hfrontier, hfull, hsplit⟩ :=
-    hD.exists_innermost_isPLBall_doublePointPreimage_decomposition_with_coordinate_of_exists_not_boundaryBranch
+    hD.exists_innermost_isPLBall_doublePointPreimage_decomposition_with_coordinate
       hclosed
   refine ⟨c, J, Q, hc, hJ, hQ, hQsub, hfrontier, hfull, ?_⟩
   rcases hsplit with hsingle | ⟨T, hT, hdisjoint, hcover, hJcoordinate, hTcoordinate⟩

@@ -156,7 +156,8 @@ theorem locallyInjective_of_glue_boundary_arc {D D₁ D₂ : SingularTwoCell M}
         · exact absurd hab.symm (hcross b hbP a haQ haP)
         · exact injOn_of_subset_second_piece (U := Q \ P) hf₂ hDQ hD₂inj
             (fun z hz => hz.1) ⟨haQ, haP⟩ ⟨hbQ, hbP⟩ hab
-    · refine ⟨Q \ P, ?_, injOn_of_subset_second_piece (U := Q \ P) hf₂ hDQ hD₂inj (fun z hz => hz.1)⟩
+    · refine ⟨Q \ P, ?_,
+        injOn_of_subset_second_piece (U := Q \ P) hf₂ hDQ hD₂inj (fun z hz => hz.1)⟩
       rw [hdom]
       refine mem_nhdsWithin.mpr ⟨Pᶜ, hPclosed.isOpen_compl, hxP, ?_⟩
       rintro z ⟨hzP, hzPQ | hzQ⟩
