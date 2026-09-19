@@ -1342,3 +1342,85 @@ complete audit are frozen with raw and normalized source hashes at
 `moise304-reading/cylindrical-boundary-checkpoint/`. No root build or shared E
 output write was performed. Arbitrary-shell Moise304 and the remaining upstream
 embedded-disk and replacement-neighborhood producers are not claimed complete.
+
+## Common annular solid torus neighborhoods in a prescribed shell (2026-09-19 UTC)
+
+This round consumes integration `20d59136a23b53e0b700c8f8c5c20516cbabbe4c`,
+whose common-circle construction originates in `77b982ae8`. The integration
+merge is `5a419f176`; the four mathematical files from `734c87b5f` were preserved.
+The exact integration sources and blob identities are frozen outside the
+project at `moise304-reading/common-neighborhood-integration-baseline/`.
+
+The only cross-lane mathematical edit is `CommonCircleNeighborhood.lean`.
+`exists_common_annular_derivedNeighborhood_of_isOrientable` now constructs the
+same common ambient derived neighborhood for two arbitrary finite orientable
+combinatorial surfaces with boundary. Manifold structure and orientation are
+transported through the actual identity PL homeomorphisms of their common
+triangulations. The nested version is also generalized. Both old sphere-only
+signatures are byte-for-byte unchanged after newline normalization; the old
+single-neighborhood proof is a corollary of the general producer, and the old
+nested proof consumes that corollary. `CommonCircleDerivedNeighborhood.lean`
+and `DerivedNeighborhoodRestriction.lean` are unchanged from integration.
+
+`CommonCircleSolidTorus.lean` proves that this same derived neighborhood in an
+orientable finite three-manifold has an actual finite WB3 triangulation, is a
+topological solid torus, and admits an untwisted PL disk cylindrical diagram.
+If the given circle lies in the ambient interior, it lies in the constructed
+neighborhood interior. `exists_common_solid_torus_neighborhood` retains the
+given ambient complex and open U. Its three-dimensional ambient-space variant
+constructs an enclosing simplex from the two supplied surfaces and shrinks the
+neighborhood into the original U; it does not replace U by a newly chosen shell.
+
+`IsCombinatorialManifoldWithBoundary.exists_spanning_disk_annular_neighborhood`
+in `SpanningDiskNeighborhood.lean` starts with an actual parametrized disk D
+whose intersection with the supplied surface is exactly its boundary circle J.
+It produces the common solid torus N in the prescribed open U, disjoint from
+a prescribed closed forbidden set F. A point in D minus J is produced from the
+disk parametrization and excluded during neighborhood construction, so
+`(D \ N.space).Nonempty` is proved rather than assumed. The same ambient
+derived neighborhood has exact annular traces on the surface and the disk.
+Only J must lie in U; the theorem does not infer containment of all of D in U.
+
+`IsSphericalShell.exists_spanning_disk_annular_neighborhood` consumes the
+original shell X, its original boundary components B0 and B1, and a connected
+closed surface separating those targets. It derives containment of the original
+disk boundary in the shell interior and produces N entirely within that same
+interior, disjoint from both original targets. No round-shell substitution,
+new target selection, or hypothesis asserting the resulting neighborhood is used.
+
+The audit checks all 19 nonautomatic declarations in the three changed/new
+leaves and the two unchanged common-derived dependencies, 18 critical reused
+results including the old sphere-interface consumers, and two new external
+nondegeneracy certificates. The first certificate applies the new theorem to
+the existing positive-genus torus, its actual essential spanning disk and its
+same spherical shell, retaining first Betti number two, essentiality, the full
+disk's containment in that shell, and the original nonempty boundary targets.
+The second extracts both actual annulus parametrizations and proves their
+intersection is exactly the nonempty original essential circle, with a point
+of the same disk still outside N. These are external certificates, not additional
+premise-free native torus models. All 13 applicable linters pass; every audited
+axiom closure contains only `propext`, `Classical.choice`, and `Quot.sound`.
+
+The three changed/new modules, two unchanged common-derived modules, and nine
+readonly dependency/consumer refreshes compile with zero diagnostics. This
+includes `DualCellPiercingNeighborhoods` and the actual trivalent model using
+the retained sphere interface. The reachable native import graph has 600
+modules and 1201 edges, is acyclic, and avoids `HurewiczLowDegrees`. Both new
+leaves are registered in the flat root. Fourteen source/object/receipt sets,
+the complete audit and raw/normalized hashes are frozen at
+`moise304-reading/common-spanning-checkpoint/`.
+
+The integration's `PolyhedralGraph` and `MoiseChain` objects were reused only
+after matching exact verified source bytes and object hashes; the source
+newline adjustment has no Git content diff. Origin receipts are preserved in
+the integration-baseline evidence. Missing readonly dependencies were rebuilt
+privately. No shared outputs or other lanes' worktrees were modified, and the
+owner-stopped full-root build was not restarted.
+
+This closes the common annular regular-neighborhood input for actual supplied
+surface/disk data, including prescribed-shell containment and target avoidance.
+It does not mark the abstract annulus parametrizations by the original surface
+bicollar or align their endpoint circles with a splitting prism. E3 retains
+that compatibility task. No disjoint cap pair or separation of a capped union
+is produced here; unrestricted embedded-disk production and the subsequent
+separation-preserving compression remain necessary for arbitrary-shell 30.4.

@@ -1837,3 +1837,29 @@ the accepted frontiers. Continue actual geometric producers at their recorded
 gaps; no new tasks/subagents, no routine mid-round status requests and no
 automatic full-root rebuild. New-stage receipts live in
 .lake/resumed-stage-20260919.json; the prior morning accounting is preserved.
+
+### M304 prescribed-shell common annular neighborhood (2026-09-19 UTC)
+
+The canonical common-circle construction now covers arbitrary finite orientable
+surfaces with boundary, preserving both old sphere-only signatures as consumers.
+The same common derived neighborhood is constructed as a finite WB3 solid torus
+inside any prescribed open U, with actual annular traces on both supplied surfaces.
+For an actual spanning disk, it avoids a prescribed closed forbidden set and
+leaves a proved nonempty part of the disk outside the neighborhood. The spherical
+shell specialization retains the given shell and its original inner/outer
+boundary targets and constructs the neighborhood in that shell's interior.
+
+All 19 declarations in the three changed/new and two unchanged dependency leaves,
+18 critical reuses, two actual essential-torus-disk certificates and 13 linters
+pass with standard axioms and zero diagnostics. The older nested sphere consumer
+and its trivalent graph model also compile unchanged. Fourteen private module
+checks and the complete audit are frozen at
+`moise304-reading/common-spanning-checkpoint/`; the native reachable graph has
+600 modules and 1201 edges without cycles. No full-root verification is claimed.
+
+The annuli are not yet marked by the original surface bicollar or aligned with
+the splitting-prism endpoints. E3 retains that interface. The input embedded
+disk is supplied; no general embedded-disk producer, disjoint caps, or proof
+that a capped union separates the original targets is inferred. Arbitrary-shell
+Moise 30.4 remains open. See `HANDOFF_CODEX_M304.md` for the exact native APIs,
+integration provenance, concrete nondegeneracy evidence and remaining gates.
