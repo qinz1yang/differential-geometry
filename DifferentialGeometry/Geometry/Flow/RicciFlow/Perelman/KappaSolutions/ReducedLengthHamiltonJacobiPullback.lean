@@ -2,12 +2,14 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Redu
 import DifferentialGeometry.Geometry.Operator.GradientPullback
 import DifferentialGeometry.Geometry.Operator.NormGradSqScaling
 import Mathlib.Geometry.Manifold.LocalDiffeomorph
+import DifferentialGeometry.Geometry.Curvature.Naturality.Pullback.LocalCross
+import DifferentialGeometry.Geometry.Curvature.Metric.Scaling
 
 set_option autoImplicit false
 noncomputable section
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 open Filter Set
-open DifferentialGeometry.Geometry.Operator
+open DifferentialGeometry.Geometry.Operator DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.CheegerGromovCompactness CanonicalNeighborhood
 open scoped Manifold ContDiff _root_.Topology
 universe u uE uH
@@ -283,5 +285,61 @@ theorem ancient_redLength_hamilton_jacobi_lower_test_pullback
     rfl
   rw [hnorm, ← heq] at h
   simpa only [psi, deriv_add_const] using h
+
+theorem ancient_redLength_hamilton_jacobi_upper_test_of_local_pullback_metric
+    [J.Boundaryless] [T2Space M]
+    {kappa : ℝ} (hF : IsAncientKappaSolution kappa F)
+    (p : F.M) (Φ : PartialDiffeomorph J I M F.M ∞)
+    (U : TopologicalSpace.Opens M) (hU : (U : Set M) ⊆ Φ.source) {x : M} (hx : x ∈ U)
+    {c theta : ℝ} (hc : 0 < c) (htheta : 0 < theta)
+    (g : SmoothRiemannianMetric J M)
+    (hg : ∀ y ∈ U, ∀ v w : TangentSpace J y,
+      g.inner y v w = c⁻¹ * (F.S.base.metric (-(c * theta))).inner (Φ y)
+        (mfderiv J I Φ y v) (mfderiv J I Φ y w))
+    (phi : ℝ → M → ℝ)
+    (hphi : MDifferentiableAt (𝓘(ℝ, ℝ).prod J) 𝓘(ℝ, ℝ)
+      (fun z : ℝ × M => phi z.1 z.2) (theta, x))
+    (htest : IsLocalMax (fun z : ℝ × M =>
+      redLength F.S 0 p (Φ z.2) (c * z.1) - phi z.1 z.2) (theta, x)) :
+    deriv (fun a => phi a x) theta + (1 / 2 : ℝ) * normGradSqFun g (phi theta) x -
+      (1 / 2 : ℝ) * metricScalarAt g x +
+      redLength F.S 0 p (Φ x) (c * theta) / (2 * theta) ≤ 0 := by
+  have hscalar : metricScalarAt g x = c * F.S.scalar (-(c * theta)) (Φ x) := by
+    have h := metricScalarAt_eq_of_partialDiffeomorph_inner g
+      (scaleMetric c⁻¹ (inv_pos.mpr hc) (F.S.base.metric (-(c * theta)))) Φ U hU
+      (by intro y hy v w; rw [scaleMetric_inner]; exact hg y hy v w) hx
+    simpa only [metricScalarAt_scaleMetric, inv_inv, SolutionOn.scalar, SolutionFamily.scalar] using h
+  have h := ancient_redLength_hamilton_jacobi_upper_test_pullback
+    F hF p Φ (hU hx) hc htheta g (hg x hx) phi hphi htest
+  rw [hscalar]
+  nlinarith
+
+theorem ancient_redLength_hamilton_jacobi_lower_test_of_local_pullback_metric
+    [J.Boundaryless] [T2Space M]
+    {kappa : ℝ} (hF : IsAncientKappaSolution kappa F)
+    (p : F.M) (Φ : PartialDiffeomorph J I M F.M ∞)
+    (U : TopologicalSpace.Opens M) (hU : (U : Set M) ⊆ Φ.source) {x : M} (hx : x ∈ U)
+    {c theta : ℝ} (hc : 0 < c) (htheta : 0 < theta)
+    (g : SmoothRiemannianMetric J M)
+    (hg : ∀ y ∈ U, ∀ v w : TangentSpace J y,
+      g.inner y v w = c⁻¹ * (F.S.base.metric (-(c * theta))).inner (Φ y)
+        (mfderiv J I Φ y v) (mfderiv J I Φ y w))
+    (phi : ℝ → M → ℝ)
+    (hphi : MDifferentiableAt (𝓘(ℝ, ℝ).prod J) 𝓘(ℝ, ℝ)
+      (fun z : ℝ × M => phi z.1 z.2) (theta, x))
+    (htest : IsLocalMin (fun z : ℝ × M =>
+      redLength F.S 0 p (Φ z.2) (c * z.1) - phi z.1 z.2) (theta, x)) :
+    0 ≤ deriv (fun a => phi a x) theta + (1 / 2 : ℝ) * normGradSqFun g (phi theta) x -
+      (1 / 2 : ℝ) * metricScalarAt g x +
+      redLength F.S 0 p (Φ x) (c * theta) / (2 * theta) := by
+  have hscalar : metricScalarAt g x = c * F.S.scalar (-(c * theta)) (Φ x) := by
+    have h := metricScalarAt_eq_of_partialDiffeomorph_inner g
+      (scaleMetric c⁻¹ (inv_pos.mpr hc) (F.S.base.metric (-(c * theta)))) Φ U hU
+      (by intro y hy v w; rw [scaleMetric_inner]; exact hg y hy v w) hx
+    simpa only [metricScalarAt_scaleMetric, inv_inv, SolutionOn.scalar, SolutionFamily.scalar] using h
+  have h := ancient_redLength_hamilton_jacobi_lower_test_pullback
+    F hF p Φ (hU hx) hc htheta g (hg x hx) phi hphi htest
+  rw [hscalar]
+  nlinarith
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions

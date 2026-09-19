@@ -125,6 +125,7 @@ theorem uniform_tensor02_covariant_norm_on_compact_time {D : RealTimeInterval}
   exact solution_chartGram_mapCInf_of_carrier_time_sequence L hL hcarrier hregular
     (hJb ht) z τ (fun n => hJb (hτ n)) hτt i j Q hQ hQt m
 
+omit [BoundarylessManifold I M] in
 theorem uniform_tensor02_covariant_norm_on_compact_time_of_closed_interval {D : RealTimeInterval}
     (L : SolutionOn (I := I) (M := M) D) (hL : IsSolutionOn L)
     {d c b : ℝ} (hdc : d < c) (hcb : c < b)

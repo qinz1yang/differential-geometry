@@ -5,7 +5,7 @@ import DifferentialGeometry.Geometry.Operator.Scalar.Calculus
 import DifferentialGeometry.Geometry.Operator.Laplacian.VossWeylFormula
 import DifferentialGeometry.Geometry.Operator.TimeLaplacian
 import DifferentialGeometry.Geometry.Operator.Laplacian.LeviCivitaIdentification
-import DifferentialGeometry.Geometry.Operator.Gradient.NormSquared
+import DifferentialGeometry.Geometry.Operator.Gradient.Coordinates
 import DifferentialGeometry.Geometry.Operator.Hessian.Trace.Inequality
 import DifferentialGeometry.Geometry.Curvature.Bochner.Scalar.CoordinateFormula
 import DifferentialGeometry.Analysis.Calculus.Extrema
@@ -1180,61 +1180,14 @@ theorem normGradSqFun_eq_chartInvGram_sum
         chartInvGramMatrix (I := I) g α x k i *
           DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (scalarOnE (I := I) α f) (extChartAt I α x) *
           DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (scalarOnE (I := I) α f) (extChartAt I α x) := by
-  classical
   have hxsrc : x ∈ (chartAt H α).source := by
-    simpa [trivializationAt_baseSet_eq_chartAt_source (I := I) α] using hx
-  have hx_int : (extChartAt I α) x ∈ interior (extChartAt I α).target := by
+    simpa only [trivializationAt_baseSet_eq_chartAt_source (I := I) α] using hx
+  have hxint : extChartAt I α x ∈ interior (extChartAt I α).target := by
     rw [(isOpen_extChartAt_target (I := I) α).interior_eq]
     exact (extChartAt I α).map_source
-      (by rw [extChartAt_source_eq_chartAt_source (I := I) α]; exact hxsrc)
-  have hg : gradChartLocal (I := I) g α f x = gradFun (I := I) g f x :=
-    gradChartLocal_eq_gradFun (I := I) g α (hf.mdifferentiableAt (x := x) (by simp)) hx hx_int
-  have hinner : g.inner x (gradChartLocal (I := I) g α f x) (gradChartLocal (I := I) g α f x) =
-      ∑ k : Fin (Module.finrank ℝ E),
-        gradChartCoeff (I := I) g α f k x *
-          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (scalarOnE (I := I) α f) (extChartAt I α x) := by
-    nth_rewrite 2 [show gradChartLocal (I := I) g α f x =
-        ∑ k : Fin (Module.finrank ℝ E),
-          gradChartCoeff (I := I) g α f k x • chartBasisVecFiber (I := I) α k x by
-        rfl]
-    have hlin : (g.inner x (gradChartLocal (I := I) g α f x))
-        (∑ k : Fin (Module.finrank ℝ E),
-          gradChartCoeff (I := I) g α f k x • chartBasisVecFiber (I := I) α k x) =
-        ∑ k : Fin (Module.finrank ℝ E),
-          gradChartCoeff (I := I) g α f k x *
-            (g.inner x (gradChartLocal (I := I) g α f x)) (chartBasisVecFiber (I := I) α k x) := by
-      rw [map_sum]
-      refine Finset.sum_congr rfl ?_
-      intro k _
-      rw [map_smul, smul_eq_mul]
-    rw [hlin]
-    refine Finset.sum_congr rfl ?_
-    intro k _
-    rw [inner_gradChartLocal_chartBasis (I := I) g α f hx k]
-  have hcoeff : ∀ k : Fin (Module.finrank ℝ E),
-      gradChartCoeff (I := I) g α f k x =
-        ∑ i : Fin (Module.finrank ℝ E),
-          chartInvGramMatrix (I := I) g α x k i *
-            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (scalarOnE (I := I) α f) (extChartAt I α x) :=
-    fun k => rfl
-  calc
-    normGradSqFun (I := I) g f x
-        = g.inner x (gradFun (I := I) g f x) (gradFun (I := I) g f x) := by
-            rw [normGradSqFun]
-    _ = g.inner x (gradChartLocal (I := I) g α f x) (gradChartLocal (I := I) g α f x) := by
-            rw [hg]
-    _ = ∑ k : Fin (Module.finrank ℝ E),
-          gradChartCoeff (I := I) g α f k x *
-            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (scalarOnE (I := I) α f) (extChartAt I α x) := hinner
-    _ = ∑ k : Fin (Module.finrank ℝ E),
-          ∑ i : Fin (Module.finrank ℝ E),
-            chartInvGramMatrix (I := I) g α x k i *
-              DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (scalarOnE (I := I) α f) (extChartAt I α x) *
-              DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (scalarOnE (I := I) α f) (extChartAt I α x) := by
-            refine Finset.sum_congr rfl ?_
-            intro k _
-            rw [hcoeff k]
-            rw [Finset.sum_mul]
+      (by simpa only [extChartAt_source_eq_chartAt_source (I := I)] using hxsrc)
+  exact DifferentialGeometry.Geometry.Operator.normGradSqFun_eq_chartInvGram_sum
+    g α (hf.mdifferentiableAt (by simp)) hx hxint
 
 omit [FiniteDimensional ℝ E] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
 theorem timeDeriv_joint_contDiffAt
