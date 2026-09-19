@@ -4522,3 +4522,38 @@ AuditF297 exit=0、零诊断、47.11 秒；三模块全部四十九项非自动�
 LemmaThree-checkpoint.json、DoubleCoverProjection-checkpoint.json、
 MoiseChain-consumer-checkpoint.json 与 AuditF297.json。
 源码、根登记与本记录同次提交；H 源码未修改；整库根检由协调者负责。下一审计 AuditF298。
+
+### 19.158 固定边界子多面体的向内 PL 嵌入（2026-09-19 UTC）
+
+**done：CollarInwardMap.lean、BoundaryInwardPush.lean、LoopTheorem/ProjectedBoundary.lean。**
+`IsCombinatorialManifoldWithBoundary.exists_isPLHomeomorphOn_inward` 对每个有限组合三维带边流形 K
+和任意边界子多面体 A，实际生产 f：f 是 K 到自身中其像的 PL 同胚，逐点固定 A，
+每个 x∈K 满足 f x∈∂K 当且仅当 x∈A，而且 f(K)∩∂K=A。没有新增领口、可推离性或结论型假设。
+
+构造消费已证的全边界 SurfaceCollar 及其补核 R。领口的相对邻域性质证明 R 与原边界不交；
+紧性在领口与 R 的交上给逆领口高度的正下界 a。对精确零集为 A 的非负逐片仿射 g，显式公式
+`collarInwardMap g a (u,t) = (u, max t (min (t + g u) ((t + a) / 2)))`
+全局单射、逐片仿射，固定所有高度至少 a 的点，固定 g=0 的纵向纤维，零高度原像精确可控。
+共轭到领口并与 R 上恒等拼接；薄领口的像不会撞进补核，故全局单射由构造证明。
+`exists_isPLHomeomorphOn_eqOn_preimage_boundary` 把它推广为任意有限维源多面体嵌入的相对版本，
+返回指定源子多面体 C 的逐点固定及精确边界原像 C。
+
+`NormalSystem.NonsingularCell.exists_isPLHomeomorphOn_eqOn_boundary` 实际应用该生产者：
+不修改 NonsingularCell 的字段，从现有 D 得到新的盘嵌入 f，像仍在 S.manifoldComplex 中，
+源边界逐点保持原 simplicialMap，流形边界的源原像恰为源边界，像与流形边界的交恰为源边界像。
+原 D.boundaryLoop 的像等式原样保留，因此原连接路径和正规子群避开资料无需改动。
+此输出是实际 PL 映射，不声称它在未细分的原目标复形上已经单纯。
+
+三模块聚焦检查全部 exit=0、零诊断。AuditF298 exit=0、零诊断；十四项新非自动声明、
+七项关键复用生产者及三项模型声明，共二十四项传递公理闭包仅标准三公理；十三项适用环境
+linters 全通过。模型包含实数乘积领口中的实际非零位移，以及标准三维单形的真实有限三角剖分，
+在一个原边界顶点固定时把另一个顶点移入内部。模型的有限函数空间相等判定实例已显式统一，
+未提高资源预算。严格语法/header/longLine 开启，sourceStable=true，共享产物只读。
+回执为 codex-f-boundary-private 下 CollarInwardMap-checkpoint.json、
+BoundaryInwardPush-checkpoint.json、ProjectedBoundary-checkpoint.json、AuditF298.json。
+源码、根登记及本记录同次提交；旧模块签名未变；整库根检由协调者负责。下一审计 AuditF299。
+
+**partial：投影盘的 proper 边界及整体归纳。** 楼上盘的 proper 条件已由真实生产者闭合；
+下一步证明局部单射 PL 映射把源内部送进同维目标内部，消费该边界单调性把新盘投影到楼下。
+这只需要小正规邻域的组合流形性，不要求额外假设完整覆盖环境已是组合流形。
+完整 DoubleCoverDiagram 的构造、严格复杂度下降与 crossing 正规化仍分别待完成。

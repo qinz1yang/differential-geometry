@@ -8736,3 +8736,6 @@ import DifferentialGeometry.Topology.PiecewiseLinear.SimplexCollapse
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.DoubleCoverProjection
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ProjectedCell
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.SourceCollapse
+import DifferentialGeometry.Topology.PiecewiseLinear.CollarInwardMap
+import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryInwardPush
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ProjectedBoundary
