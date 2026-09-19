@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized.FirstVariation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.CarrierJoinCost
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Geodesic.ExponentialMap
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedLength.Defs
@@ -50,7 +51,7 @@ private theorem hasDerivAt_lRegularizedAction_tail_eq_endpoint_inner
   have hfirst := lRegularizedAction_first_variation (I := I) S hS T f hf c b ht
   simpa only [hzero, map_zero, zero_apply, hint, sub_zero] using hfirst
 
-theorem exists_redLength_upper_support_of_fixed_germ_variation
+theorem redLength_upper_support_of_fixed_germ_variation
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T b : ℝ) {c : ℝ} (hc : 0 < c) (hcb : c < b)
     (alpha : ℝ → M) (halpha : ContMDiff 𝓘(ℝ, ℝ) I 1 alpha)
@@ -61,8 +62,11 @@ theorem exists_redLength_upper_support_of_fixed_germ_variation
     (hfix : ∀ u, f u =ᶠ[𝓝 c] alpha)
     (hback : ∀ s ∈ Icc (0 : ℝ) b, T - s ^ 2 ∈ D.carrier)
     (hRm : ∃ B : ℝ, ∀ t ∈ Icc (T - b ^ 2) T, ∀ y : M,
-      DifferentialGeometry.Tensor0SBundle.normSq0S (I := I) (S.base.metric t) y 4 (S.base.rm04 t y) ≤ B) :
-    ∃ phi : ℝ → ℝ,
+      DifferentialGeometry.Tensor0SBundle.normSq0S (I := I)
+        (S.base.metric t) y 4 (S.base.rm04 t y) ≤ B) :
+    let phi : ℝ → ℝ := fun u ↦
+      (lRegularizedAction S T alpha 0 c + lRegularizedAction S T (f u) c b) / (2 * b)
+    ContDiff ℝ 2 phi ∧
       phi 0 = redLength S T (alpha 0) (alpha b) (b ^ 2) ∧
       (∀ u, redLength S T (alpha 0) (f u b) (b ^ 2) ≤ phi u) ∧
       HasDerivAt phi
@@ -90,16 +94,25 @@ theorem exists_redLength_upper_support_of_fixed_germ_variation
   have hadd := lRegularizedAction_add (I := I) S T alpha 0 c b hheadInt htailInt
   let phi : ℝ → ℝ := fun u ↦
     (lRegularizedAction S T alpha 0 c + lRegularizedAction S T (f u) c b) / (2 * b)
-  refine ⟨phi, ?_, ?_, ?_⟩
-  · simp only [phi, hcentral, hadd, hmin, redLength, Real.sqrt_sq hb.le]
+  refine ⟨?_, ?_, ?_, ?_⟩
+  · have ht : ∀ s ∈ uIcc c b, T - s ^ 2 ∈ D.regular := by
+      intro s hs
+      exact (hgeo s (by simpa only [uIcc_of_le hcb.le] using hs)).1
+    exact (contDiff_const.add
+      (contDiff_lRegularizedAction (I := I) S hS T f hf c b ht)).div_const (2 * b)
+  · simp only [hcentral, hadd, hmin, redLength, Real.sqrt_sq hb.le]
   · intro u
     have hfu : ContMDiff 𝓘(ℝ, ℝ) I 1 (f u) :=
       (hf.comp (contMDiff_const.prodMk contMDiff_id)).of_le (by norm_num)
     let eta : ℝ → M := (Iic c).piecewise alpha (f u)
     have heta : ContMDiff 𝓘(ℝ, ℝ) I 1 eta :=
       halpha.piecewise_Iic hfu (hfix u).symm
-    have heta0 : eta 0 = alpha 0 := by simp only [eta, Set.piecewise_eq_of_mem (Iic c) alpha (f u) (hc.le : (0 : ℝ) ∈ Iic c)]
-    have hetab : eta b = f u b := by simp only [eta, Set.piecewise_eq_of_notMem (Iic c) alpha (f u) (not_le.mpr hcb : b ∉ Iic c)]
+    have heta0 : eta 0 = alpha 0 := by
+      simp only [eta, Set.piecewise_eq_of_mem (Iic c) alpha (f u)
+        (hc.le : (0 : ℝ) ∈ Iic c)]
+    have hetab : eta b = f u b := by
+      simp only [eta, Set.piecewise_eq_of_notMem (Iic c) alpha (f u)
+        (not_le.mpr hcb : b ∉ Iic c)]
     have hetaHead : lRegularizedAction S T eta 0 c = lRegularizedAction S T alpha 0 c := by
       apply lRegularizedAction_congr
       intro s hs
@@ -138,6 +151,31 @@ theorem exists_redLength_upper_support_of_fixed_germ_variation
       (by simpa only [uIcc_of_le hcb.le] using hgeo)
       (fun u ↦ (hfix u).self_of_nhds.trans (hfix 0).self_of_nhds.symm)
     convert (hd.const_add (lRegularizedAction S T alpha 0 c)).div_const (2 * b) using 1
+
+
+theorem exists_redLength_upper_support_of_fixed_germ_variation
+    (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
+    (T b : ℝ) {c : ℝ} (hc : 0 < c) (hcb : c < b)
+    (alpha : ℝ → M) (halpha : ContMDiff 𝓘(ℝ, ℝ) I 1 alpha)
+    (hmin : lRegularizedAction S T alpha 0 b = lCost S T (alpha 0) (alpha b) (b ^ 2))
+    (f : ℝ → ℝ → M) (hf : IsSmoothVariation (I := I) f)
+    (hcenter : EqOn (f 0) alpha (Icc c b))
+    (hgeo : IsLRegularizedGeodesicOn S T (f 0) (Icc c b))
+    (hfix : ∀ u, f u =ᶠ[𝓝 c] alpha)
+    (hback : ∀ s ∈ Icc (0 : ℝ) b, T - s ^ 2 ∈ D.carrier)
+    (hRm : ∃ B : ℝ, ∀ t ∈ Icc (T - b ^ 2) T, ∀ y : M,
+      DifferentialGeometry.Tensor0SBundle.normSq0S (I := I) (S.base.metric t) y 4 (S.base.rm04 t y) ≤ B) :
+    ∃ phi : ℝ → ℝ,
+      phi 0 = redLength S T (alpha 0) (alpha b) (b ^ 2) ∧
+      (∀ u, redLength S T (alpha 0) (f u b) (b ^ 2) ≤ phi u) ∧
+      HasDerivAt phi
+        ((S.base.metric (T - b ^ 2)).inner (f 0 b)
+          (lVelocity (I := I) (fun u ↦ f u b) 0)
+          (lVelocity (I := I) (f 0) b) / (2 * b)) 0 := by
+  refine ⟨fun u ↦
+    (lRegularizedAction S T alpha 0 c + lRegularizedAction S T (f u) c b) / (2 * b), ?_⟩
+  exact (redLength_upper_support_of_fixed_germ_variation (I := I) S hS T b hc hcb
+    alpha halpha hmin f hf hcenter hgeo hfix hback hRm).2
 
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman
