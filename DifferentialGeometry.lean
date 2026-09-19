@@ -8889,6 +8889,16 @@ import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceSplitBoundaryTrace
 import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceSplitBallPair
 import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceSplitPrismChart
 import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceSplitLocalTrace
+import DifferentialGeometry.Topology.Homeomorph.LipschitzFamily
+import DifferentialGeometry.Topology.Homeomorph.LocalizedGraph
+import DifferentialGeometry.Topology.Manifold.FramedCornerSmoothing
+import DifferentialGeometry.Topology.Homeomorph.ConjugateFamily
+import DifferentialGeometry.Topology.Manifold.ChartCornerSmoothing
+import DifferentialGeometry.Topology.Manifold.CollaredCornerSmoothing
+import DifferentialGeometry.Topology.PiecewiseLinear.CornerBandSmoothing
+import DifferentialGeometry.Topology.Homeomorph.DisjointFamily
+import DifferentialGeometry.Topology.PiecewiseLinear.TriangleCornerSmoothing
+import DifferentialGeometry.Topology.PiecewiseLinear.TriangleAnnulusSmoothing
 
 /-!
 # Differential geometry and geometric analysis

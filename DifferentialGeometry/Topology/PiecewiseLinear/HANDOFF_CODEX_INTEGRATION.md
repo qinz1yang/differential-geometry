@@ -2208,3 +2208,91 @@ and df2e1691a, the consistent-witness spanning-disk enlargement, queued with
 not disjoint caps. M304 continues separating annulus-complement component/cap
 correspondence. S and h retain their existing rounds. No new task or checker
 was added, and no active task received a routine status request.
+
+## 53. Supported corner and complete triangular-annulus smoothing (2026-09-19 UTC)
+
+S's supported corner and whole triangular-annulus smoothing through
+29fc463ce and adefc71d0 is independently accepted. Ten new leaves construct
+jointly continuous ambient homeomorphism families and their inverses, localize
+the nonsmooth absolute-value corner, preserve a positive-width transverse band,
+and smooth all three corners of the actual triangular annulus at every height.
+The annulus theorem supplies local straightening at every point of the image
+in the fixed Euclidean smooth atlas. The height coordinate is preserved.
+
+The chart-conjugation theorem assumes its input chart is already compatible
+with the old smooth atlas. It cannot supply smoothing for an arbitrary
+topological attaching chart. The old-atlas 0-handle, relative strip, actual
+attachment-seam charts and compact PL three-manifold smoothing remain open.
+
+The project-wide name review found that the new general
+OpenPartialHomeomorph.continuous_conjugateMap_family repeated an existing
+unitInterval-only public name in SlabWedgeEndpointConjugation. The general
+theorem now has its natural Homeomorph home; the old module imports it and
+removes the specialized duplicate. Its four proof calls are unchanged and
+compile against the general theorem. Thus the ten leaves contain 26 new
+declarations and one generalized, relocated existing declaration, not 27 new
+public results. The private Diffeomorph exists_addLipschitz_family helper has
+a different namespace and a genuinely smooth conclusion; it is not a clash.
+
+All fifteen freshly checked modules took 159.780 seconds including
+admission. The final combined audit took 44.725 seconds and covers
+152 native nonautomatic declarations (2 private), 52 critical reused
+entries (41 distinct) and 15 concrete-model declarations. All have only standard
+foundational axioms, and all thirteen applicable environment linters pass.
+Final checks have zero errors, warnings, information messages or suggestions.
+
+The 152 native declarations comprise the 27 in the new leaves, 24 in the old
+conjugation consumer and 101 in four unchanged slab-wedge prerequisites. Those
+four old sources had missing shared objects and were freshly compiled into the
+private integration output. The initial missing-object failure is retained;
+it was not a mathematical proof failure. Two other accepted private prerequisites
+were reused with exact raw source/object identities. The first 27-declaration
+focused audit also passed in 42.972 seconds before the name review; it did not
+cover the conflicting old module and is not the final compatibility audit.
+
+The concrete tests cover a nonempty nonsmooth PL corner, positive-width bands,
+a moved point with fixed edge, the actual identity chart, the collared half-space,
+and the full triangular annulus including all three vertices and every height.
+There are twelve test theorems and three helper definitions across these
+concrete corner and annulus scenarios, no conditional input-system test and no
+model local instance. Twelve test theorems are not twelve independent geometric
+constructions; none supplies the arbitrary old-atlas attachment.
+
+Accepted Lean delta: +1292/-31. The ten author leaves contribute +1281/-0,
+the flat root adds ten imports, and canonical reuse adds one import and removes
+the 31-line old specialized theorem. Markdown and external probes are excluded.
+Receipt: .lake/verified-thirtythird-lane-delivery-20260919.json. It freezes exact
+raw probes, normalized and raw source identities, objects, complete declaration
+types and axiom closures, lint results, failures, successful replays and timings.
+The root reaches 9493 project modules including itself: ten new leaves
+and the pre-existing DisjointGluing are newly reachable, with no missing project
+sources or cycles. The full-root build remains stopped; this is focused
+compatibility acceptance, not a complete fresh transitive rebuild.
+
+At completed delivery 45c848746, E3 was assigned the real ambient bridge for
+30.3. Its delivered separation theorem works in a finite closed combinatorial
+three-manifold K.space; a nonempty such carrier cannot be the required ambient
+subset of R^3. The next round must construct the local interior situation in a
+manifold with boundary or another actually realizable R^3 environment and apply
+the original separation data. Replacement manifold structure and physical cap
+separation remain explicit obligations. The one-dimensional replacement test
+does not certify a full three-dimensional disk-pair model. This queued relative
+separation result does not mark Moise303 or Moise304 complete.
+
+S delivered 619ec24f6 and f88028fd8 (sync 0af777267): actual Alexander localization
+for bounded displacement and a whole-plane extension agreeing with an arbitrary
+planar local homeomorphism on an entire compact Jordan disk and both local germs.
+They await independent replay. The extension does not provide bounded
+displacement. At that delivery S continued the single old-atlas lane through
+actual orientation-compatible compactly supported germ extension and the
+required relative planar annulus construction.
+
+F delivered 4ded8cd37 and 8a00ab535, queued with the earlier sphere/return layer.
+The latest layer produces the actual off-diagonal double relation and a free
+PL partner involution, including its actual frontier correspondence. Its
+two-rectangle model has a two-dimensional double-point image, so polyhedrality
+does not imply normal curves or crossing. At that checkpoint the coordinator
+authorized the sole new InvolutionTriangulation module after all six checkouts
+were clear. F continues actual equivariant triangulation in the same descent
+lane, consuming CellComplex and CellMapTriangulation read-only. h and M304 keep
+their current rounds; no new task or private checker was added.
