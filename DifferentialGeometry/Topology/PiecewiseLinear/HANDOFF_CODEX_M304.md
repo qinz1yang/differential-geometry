@@ -94,12 +94,12 @@ the project in `moise304-reading/spherical-shell-checkpoint/`, including
 source snapshots, the census, receipts, private object hashes and exact
 source hashes. No root build or shared artifact write was performed.
 
-The disconnected compression paragraph on printed page 216 has an overly
-strong strict inequality: choosing a torus after compressing a genus-two
-surface gives Betti numbers 2 and 4, so 2 is not strictly less than 4 - 2.
-The needed descent is strictly below the original Betti number; a weak
-bound by the original number minus two suffices in this case. The formal
-descent must use the valid inequality rather than repeat that printed one.
+The disconnected compression paragraph on printed page 216 gives the
+correct weak inequality: the new first Betti number is at most the old
+number minus two, hence strictly smaller than the old number. An earlier
+text-extraction reading incorrectly reported a strict inequality in the
+book. Enlarged inspection of the printed formula confirms the weak
+inequality; the earlier report of a book error is withdrawn.
 
 The spherical-shell checkpoint is
 0289bdaf43bb4f8447fb4c19ac20c319448ba35b, pushed on codex/moise-304.
@@ -152,3 +152,61 @@ must be removed naturally and its current consumers rechecked. The
 compressing-disk theorem 26.4, annular-neighborhood construction 28.19,
 E3's actual 30.3 splitting geometry and strict Betti descent remain distinct
 obligations before the PL-sphere endpoint can be claimed.
+
+## Cyclic surface neighborhoods and prescribed boundary arcs (2026-09-19 UTC)
+
+The cyclic derived-cell construction now works in every ambient dimension
+at least two. The existing three-dimensional ball-chain signatures are
+preserved. Their proofs and the new two-dimensional disk-chain theorems
+share the same finite-chain induction, instantiated with the existing
+proved gluing theorems. A surface circle's derived neighborhood is actually
+decomposed into two PL disks meeting in two disjoint PL arcs, with both arcs
+in the combinatorial boundaries of both disks.
+
+`IntervalHomeomorph.lean` constructs endpoint-preserving PL maps taking a
+specified interior subinterval to another. `CircleArcPair.lean` transports
+this construction through the complementary arc of a PL circle: one arc
+can be held pointwise fixed while another disjoint arc is moved. Together
+with the existing one-arc extension and boundary extension, it constructs
+circle and disk maps prescribing the first arc pointwise and the second
+arc as a set. `RectangleArcPair.lean` gives rectangle parametrizations of
+disks with those two opposite boundary arcs. `IntervalCylinder.lean` glues
+the two actual parametrizations. The endpoint
+`exists_cylindricalDiagram_Icc_derivedNeighborhood_circle` in
+`SurfaceCircleNeighborhood.lean` constructs an interval-fiber cylindrical
+diagram directly from a finite polygonal circle in a surface.
+
+This layer does not assume a disk-pair decomposition, rectangular charts or
+a cylindrical diagram in the neighborhood endpoint. The private shared
+inductions are instantiated by proved lower gluing operations. The output
+still allows a reversing end map. Excluding the Mobius case by orientability,
+straightening the end map and obtaining the annulus remain the next layer.
+No core-preserving annular parametrization, spanning-disk compatibility,
+full 28.19 or 30.4 is claimed here.
+
+All seven mathematical modules compile with zero diagnostics. Final check
+times including admission were 22.230 seconds for BallChain, 71.021 for
+NeighborhoodCycle, 11.042 for IntervalHomeomorph, 12.331 for CircleArcPair,
+12.624 for RectangleArcPair, 11.799 for IntervalCylinder and 11.790 for
+SurfaceCircleNeighborhood. All five direct existing consumers were also
+checked: ArcDerivedNeighborhood (27.676), BallCyclePair (11.490),
+PolygonCircleParametrization (11.751), NeighborhoodSolidTorus (11.452) and
+NeighborhoodCylinder (12.632). Two consumers only needed existing long
+lines wrapped. The twelve missing unchanged dependencies of the solid-torus
+consumer were reused from the accepted ninth integration batch after
+independent receipt, object-hash, raw-source and normalized-source checks.
+Original and rebound receipts retain that provenance in the private output.
+
+The silent final audit took 47.735 seconds including admission. It checks
+all 28 nonautomatic declarations in the seven mathematical modules,
+including retained declarations, ten critical reused producers and three
+concrete models. The models construct a nontrivial interval-subarc move, a
+rectangle with prescribed opposite arcs and the cyclic disk decomposition
+and cylindrical diagram around the actual boundary of the unit square.
+Only standard foundational axioms occur; all 13 applicable environment
+linters pass. Early external-model errors concerned numeral types and
+decidable-instance selection and have been corrected. All five new leaves
+are registered in the flat root. Evidence, source snapshots, object hashes,
+receipts and the dependency-reuse manifest are frozen outside the project
+in `moise304-reading/circle-neighborhood-checkpoint/`. The full root build
+remains stopped by the owner's instruction; no shared artifact was written.

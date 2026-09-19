@@ -64,6 +64,12 @@ gates. The finite-ambient input to compression is also constructed: actual
 nullhomotopies are captured in a finite polyhedral neighborhood inside the
 specified open set, and every connected non-spherical closed surface there
 has a nontrivial fundamental-group element killed by that inclusion.
+The surface-circle neighborhood now has an actual cyclic two-disk
+decomposition and interval-fiber cylindrical diagram, using newly proved
+disjoint-arc extensions and rectangle parametrizations. Seven mathematical
+modules, all 28 declarations, ten reused producers, three concrete models
+and 13 applicable linters pass; five old consumers were rechecked. The
+end-map orientation and annulus identification remain to be proved.
 E3 retains 30.3. Compression via 26.4, the annular construction 28.19,
 strict Betti descent and the full PL-sphere endpoint 30.4 remain open.
 See HANDOFF_CODEX_M304.md for exact signatures and evidence.

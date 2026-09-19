@@ -95,7 +95,14 @@ and the PL-sphere endpoint remain open. A third source-checked layer captures
 actual nullhomotopies in finite polyhedral neighborhoods and constructs a
 nontrivial inclusion-kernel element for each non-spherical connected closed
 surface inside a simply connected open set. It supplies the finite ambient
-inputs to 26.4 without assuming 26.4 or a compressing disk. Exact evidence
+inputs to 26.4 without assuming 26.4 or a compressing disk. A fourth checked
+layer constructs the cyclic two-disk neighborhood of a surface circle,
+prescribed disjoint boundary-arc maps, rectangle parametrizations and the
+actual interval-fiber cylindrical diagram of that neighborhood. All 28
+declarations in seven mathematical modules, ten reused producers, three
+nondegenerate models and 13 applicable linters pass; all five direct old
+consumers compile. The reversing end map is not yet excluded, and full
+28.19 and the spherical-shell endpoint remain open. Exact evidence
 and the source route are in HANDOFF_CODEX_M304.md. This explicitly authorized
 addition supersedes the older four-lane count, without authorizing subagents.
 

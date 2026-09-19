@@ -17,7 +17,8 @@ noncomputable def barycentricVertexEquiv (K : Geometry.SimplicialComplex ℝ E) 
     ⟨fun s t h => Subtype.ext (injOn_faces_of_mem_openSimplex K
       (centroid_mem_openSimplex_of_mem_faces K) s.property t.property (congrArg Subtype.val h)),
       fun v => by
-        obtain ⟨s, hs, hsv⟩ := exists_eq_centroid_of_singleton_mem_barycentricSubdivision K v.property
+        obtain ⟨s, hs, hsv⟩ :=
+          exists_eq_centroid_of_singleton_mem_barycentricSubdivision K v.property
         exact ⟨⟨s, hs⟩, Subtype.ext hsv⟩⟩
 
 open Classical in
@@ -51,7 +52,8 @@ theorem exists_cyclic_face_order [FiniteDimensional ℝ E]
   let _ : Fintype B.vertices := (SimplicialComplex.finite_vertices B).fintype
   have hB : IsCombinatorialManifold 1 B := hL.barycentricSubdivision
   have hBc : (SimplicialComplex.edgeGraph B).Connected :=
-    edgeGraph_connected_of_isConnected_space B ((barycentricSubdivision_isSubdivision L).space_eq.symm ▸ hconn)
+    edgeGraph_connected_of_isConnected_space B
+      ((barycentricSubdivision_isSubdivision L).space_eq.symm ▸ hconn)
   have hdegree (v : B.vertices) : ((SimplicialComplex.edgeGraph B).neighborSet v).ncard = 2 := by
     rw [SimplicialComplex.ncard_neighborSet_edgeGraph]
     obtain ⟨a, b, hab, hpair⟩ := (isCombinatorialManifold_one_iff B).mp hB |>.2 v v.property
@@ -67,26 +69,26 @@ theorem exists_cyclic_face_order [FiniteDimensional ℝ E]
   exact g.map_rel_iff.symm
 
 open Classical in
-theorem exists_cyclic_derivedNeighborhoodCell_decomposition [FiniteDimensional ℝ E]
+theorem exists_cyclic_derivedNeighborhoodCell_decomposition [FiniteDimensional ℝ E] {d : ℕ}
     (K L : Geometry.SimplicialComplex ℝ E) [Finite K.faces] [Finite L.faces]
-    (hK : IsCombinatorialManifoldWithBoundary 3 K) (hLK : L.faces ⊆ K.faces)
+    (hK : IsCombinatorialManifoldWithBoundary (d + 2) K) (hLK : L.faces ⊆ K.faces)
     (hL : IsCombinatorialManifold 1 L) (hconn : IsConnected L.space) :
     ∃ n : ℕ, 3 ≤ n ∧ ∃ e : Fin n ≃ L.faces,
       (⋃ i, (derivedNeighborhoodCell K (e i).val).space) = (derivedNeighborhood K L).space ∧
-      (∀ i, IsPLBall 3 (derivedNeighborhoodCell K (e i).val).space) ∧
+      (∀ i, IsPLBall (d + 2) (derivedNeighborhoodCell K (e i).val).space) ∧
       ∀ i j, i ≠ j →
         (((derivedNeighborhoodCell K (e i).val).space ∩
           (derivedNeighborhoodCell K (e j).val).space).Nonempty ↔
             (SimpleGraph.cycleGraph n).Adj i j) ∧
         ((SimpleGraph.cycleGraph n).Adj i j →
-          IsPLBall 2 ((derivedNeighborhoodCell K (e i).val).space ∩
+          IsPLBall (d + 1) ((derivedNeighborhoodCell K (e i).val).space ∩
             (derivedNeighborhoodCell K (e j).val).space) ∧
           (derivedNeighborhoodCell K (e i).val).space ∩
             (derivedNeighborhoodCell K (e j).val).space ⊆
-              (boundaryComplex 3 (derivedNeighborhoodCell K (e i).val)).space ∧
+              (boundaryComplex (d + 2) (derivedNeighborhoodCell K (e i).val)).space ∧
           (derivedNeighborhoodCell K (e i).val).space ∩
             (derivedNeighborhoodCell K (e j).val).space ⊆
-              (boundaryComplex 3 (derivedNeighborhoodCell K (e j).val)).space) := by
+              (boundaryComplex (d + 2) (derivedNeighborhoodCell K (e j).val)).space) := by
   obtain ⟨n, hn, e, hadj⟩ := exists_cyclic_face_order L hL hconn
   refine ⟨n, hn, e, ?_, fun i => hK.isPLBall_derivedNeighborhoodCell (hLK (e i).property), ?_⟩
   · calc
@@ -106,7 +108,8 @@ theorem exists_cyclic_derivedNeighborhoodCell_decomposition [FiniteDimensional �
       fun h => (hball ((hadj i j).mp h).2).nonempty⟩, fun h =>
         ⟨hball ((hadj i j).mp h).2,
           hK.derivedNeighborhoodCell_inter_subset_boundaryComplex hs ht hne, ?_⟩⟩
-    simpa only [inter_comm] using hK.derivedNeighborhoodCell_inter_subset_boundaryComplex ht hs hne.symm
+    simpa only [inter_comm] using
+      hK.derivedNeighborhoodCell_inter_subset_boundaryComplex ht hs hne.symm
 
 open Classical in
 theorem disjoint_derivedNeighborhoodCell_inter_of_card_le_two
@@ -156,15 +159,23 @@ private theorem cycleGraph_adj_last_iff {n : ℕ} (i : Fin (n + 2)) :
   · rintro (rfl | rfl) <;> simp
 
 open Classical in
-theorem exists_isPLBall_pair_cover_derivedNeighborhood_circle_with_boundary [FiniteDimensional ℝ E]
+private theorem exists_isPLBall_pair_cover_derivedNeighborhood_circle_of_chain
+    [FiniteDimensional ℝ E] {d : ℕ}
     (K L : Geometry.SimplicialComplex ℝ E) [Finite K.faces] [Finite L.faces]
-    (hK : IsCombinatorialManifoldWithBoundary 3 K) (hLK : L.faces ⊆ K.faces)
-    (hL : IsCombinatorialManifold 1 L) (hconn : IsConnected L.space) :
+    (hK : IsCombinatorialManifoldWithBoundary (d + 2) K) (hLK : L.faces ⊆ K.faces)
+    (hL : IsCombinatorialManifold 1 L) (hconn : IsConnected L.space)
+    (hchain : ∀ {m : ℕ} (C : Fin (m + 3) → Set E),
+      (∀ i, IsPLBall (d + 2) (C i)) → (∀ i, C i ⊆ K.space) →
+      (∀ i j, (SimpleGraph.cycleGraph (m + 3)).Adj i j →
+        IsPLBall (d + 1) (C i ∩ C j)) →
+      (∀ i j, i ≠ j → ¬ (SimpleGraph.cycleGraph (m + 3)).Adj i j → Disjoint (C i) (C j)) →
+      IsPLBall (d + 2) (⋃ i : Fin (m + 2), C i.castSucc)) :
     ∃ A B D₀ D₁ : Set E,
-      IsPLBall 3 A ∧ IsPLBall 3 B ∧ IsPLBall 2 D₀ ∧ IsPLBall 2 D₁ ∧ Disjoint D₀ D₁ ∧
+      IsPLBall (d + 2) A ∧ IsPLBall (d + 2) B ∧
+      IsPLBall (d + 1) D₀ ∧ IsPLBall (d + 1) D₁ ∧ Disjoint D₀ D₁ ∧
       A ∪ B = (derivedNeighborhood K L).space ∧ A ∩ B = D₀ ∪ D₁ ∧
       ∃ Q : Geometry.SimplicialComplex ℝ E, Q.faces.Finite ∧ Q.space = B ∧
-        D₀ ⊆ (boundaryComplex 3 Q).space ∧ D₁ ⊆ (boundaryComplex 3 Q).space := by
+        D₀ ⊆ (boundaryComplex (d + 2) Q).space ∧ D₁ ⊆ (boundaryComplex (d + 2) Q).space := by
   classical
   obtain ⟨n, hn, e, hcover, hball, hpair⟩ :=
     exists_cyclic_derivedNeighborhoodCell_decomposition K L hK hLK hL hconn
@@ -183,8 +194,8 @@ theorem exists_isPLBall_pair_cover_derivedNeighborhood_circle_with_boundary [Fin
     (cycleGraph_adj_last_iff (0 : Fin (m + 2))).mpr (Or.inl rfl)
   have hbc_adj : (SimpleGraph.cycleGraph (m + 3)).Adj b c :=
     (cycleGraph_adj_last_iff (Fin.last (m + 1))).mpr (Or.inr rfl)
-  have hA : IsPLBall 3 (⋃ i : Fin (m + 2), C i.castSucc) :=
-    hK.isPLBall_iUnion_castSucc_of_cycle C hball
+  have hA : IsPLBall (d + 2) (⋃ i : Fin (m + 2), C i.castSucc) :=
+    hchain C hball
       (fun i => derivedNeighborhoodCell_space_subset K (e i).val)
       (fun i j hij => ((hpair i j (SimpleGraph.Adj.ne hij)).2 hij).1)
       (fun i j hij hnot => disjoint_left.mpr fun x hxi hxj =>
@@ -226,9 +237,37 @@ theorem exists_isPLBall_pair_cover_derivedNeighborhood_circle_with_boundary [Fin
     · rintro x (hx | hx)
       · exact ⟨mem_iUnion.mpr ⟨0, hx.1⟩, hx.2⟩
       · exact ⟨mem_iUnion.mpr ⟨Fin.last (m + 1), hx.1⟩, hx.2⟩
-  · exact ⟨derivedNeighborhoodCell K (e c).val, derivedNeighborhoodCell_faces_finite K (e c).val, rfl,
+  · exact ⟨derivedNeighborhoodCell K (e c).val,
+      derivedNeighborhoodCell_faces_finite K (e c).val, rfl,
       ((hpair a c hac).2 hac_adj).2.2, ((hpair b c hbc).2 hbc_adj).2.2⟩
 
+
+open Classical in
+theorem exists_isPLBall_pair_cover_derivedNeighborhood_circle_with_boundary [FiniteDimensional ℝ E]
+    (K L : Geometry.SimplicialComplex ℝ E) [Finite K.faces] [Finite L.faces]
+    (hK : IsCombinatorialManifoldWithBoundary 3 K) (hLK : L.faces ⊆ K.faces)
+    (hL : IsCombinatorialManifold 1 L) (hconn : IsConnected L.space) :
+    ∃ A B D₀ D₁ : Set E,
+      IsPLBall 3 A ∧ IsPLBall 3 B ∧ IsPLBall 2 D₀ ∧ IsPLBall 2 D₁ ∧ Disjoint D₀ D₁ ∧
+      A ∪ B = (derivedNeighborhood K L).space ∧ A ∩ B = D₀ ∪ D₁ ∧
+      ∃ Q : Geometry.SimplicialComplex ℝ E, Q.faces.Finite ∧ Q.space = B ∧
+        D₀ ⊆ (boundaryComplex 3 Q).space ∧ D₁ ⊆ (boundaryComplex 3 Q).space :=
+  exists_isPLBall_pair_cover_derivedNeighborhood_circle_of_chain K L hK hLK hL hconn
+    hK.isPLBall_iUnion_castSucc_of_cycle
+
+open Classical in
+theorem exists_isPLBall_two_pair_cover_derivedNeighborhood_circle_with_boundary
+    [FiniteDimensional ℝ E]
+    (K L : Geometry.SimplicialComplex ℝ E) [Finite K.faces] [Finite L.faces]
+    (hK : IsCombinatorialManifoldWithBoundary 2 K) (hLK : L.faces ⊆ K.faces)
+    (hL : IsCombinatorialManifold 1 L) (hconn : IsConnected L.space) :
+    ∃ A B D₀ D₁ : Set E,
+      IsPLBall 2 A ∧ IsPLBall 2 B ∧ IsPLBall 1 D₀ ∧ IsPLBall 1 D₁ ∧ Disjoint D₀ D₁ ∧
+      A ∪ B = (derivedNeighborhood K L).space ∧ A ∩ B = D₀ ∪ D₁ ∧
+      ∃ Q : Geometry.SimplicialComplex ℝ E, Q.faces.Finite ∧ Q.space = B ∧
+        D₀ ⊆ (boundaryComplex 2 Q).space ∧ D₁ ⊆ (boundaryComplex 2 Q).space :=
+  exists_isPLBall_pair_cover_derivedNeighborhood_circle_of_chain K L hK hLK hL hconn
+    hK.isPLBall_two_iUnion_castSucc_of_cycle
 open Classical in
 theorem exists_isPLBall_pair_cover_derivedNeighborhood_circle [FiniteDimensional ℝ E]
     (K L : Geometry.SimplicialComplex ℝ E) [Finite K.faces] [Finite L.faces]

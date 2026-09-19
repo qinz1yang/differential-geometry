@@ -40,7 +40,8 @@ theorem space_subset_arcCarrier [FiniteDimensional ℝ E] [Finite K.faces]
   intro x hx
   obtain ⟨s, hs, hxs⟩ := Geometry.SimplicialComplex.mem_space_iff.mp hx
   have hcard : s.card ≤ 2 := ((isCombinatorialManifold_one_iff K).mp hK).1 s hs
-  have hpos : 1 ≤ s.card := Finset.card_pos.mpr (Geometry.SimplicialComplex.nonempty_of_mem_faces hs)
+  have hpos : 1 ≤ s.card :=
+    Finset.card_pos.mpr (Geometry.SimplicialComplex.nonempty_of_mem_faces hs)
   interval_cases hc : s.card
   · obtain ⟨y, rfl⟩ := Finset.card_eq_one.mp hc
     have hy : y ∈ K.vertices := hs
