@@ -1,8 +1,17 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.OrderedChainCoordinates
 import DifferentialGeometry.Topology.PiecewiseLinear.BettiPolyhedra
 import DifferentialGeometry.Topology.PiecewiseLinear.ComponentComplex
 import DifferentialGeometry.Topology.PiecewiseLinear.ManifoldConnectivity
 import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceSphereRecognition
+
+/-!
+# Boundary homology of finite oriented manifolds
+-/
 
 noncomputable section
 
@@ -1020,7 +1029,8 @@ noncomputable def topBoundaryAndBoundaryComponentsToCycles
     (({s : Finset E // s ∈ K.faces ∧ s.card = 4} → k) ×
       (OtherBoundaryComponent B c₀ → k)) →ₗ[k]
       LinearMap.ker
-        (((SimplicialComplex.orderedSimplicialSet K.toPreAbstractSimplicialComplex).normalizedChainComplex
+        (((SimplicialComplex.orderedSimplicialSet
+          K.toPreAbstractSimplicialComplex).normalizedChainComplex
           (ModuleCat.of k k)).d 2 1).hom := by
   dsimp
   let _ := o.vertexOrder
@@ -1214,7 +1224,8 @@ theorem normalizedChainDifferential_three_two_injective
     (c₀ : ConnectedComponents (boundaryComplex 3 K).space) :
     let _ := o.vertexOrder
     Function.Injective
-      (((SimplicialComplex.orderedSimplicialSet K.toPreAbstractSimplicialComplex).normalizedChainComplex
+      (((SimplicialComplex.orderedSimplicialSet
+          K.toPreAbstractSimplicialComplex).normalizedChainComplex
         (ModuleCat.of k k)).d 3 2).hom := by
   dsimp
   have hcoord := orderedNormalizedBoundary_two_injective (k := k) K hK hconn o c₀

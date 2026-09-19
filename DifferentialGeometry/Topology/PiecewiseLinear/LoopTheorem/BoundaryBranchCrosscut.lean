@@ -1,7 +1,16 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BranchBoundary
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BranchPreimage
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BoundaryCrossing
 import DifferentialGeometry.Topology.PiecewiseLinear.DiskCrosscut
+
+/-!
+# Boundary branch crosscut
+-/
 
 open Set Topology
 
@@ -91,7 +100,7 @@ private theorem disjoint_isPLBall_of_isCrosscut_of_subset_interior
 
 open Classical in
 theorem exists_isCrosscut_of_isPLBall_subset_branchPreimage
-    [T2Space M] (hD : NormalSingularCellData D BdM B)
+    (hD : NormalSingularCellData D BdM B)
     (c : hD.singularSet.Branch)
     {A : Set (EuclideanSpace ℝ (Fin 2))} (hA : IsPLBall 1 A)
     (hAsub : A ⊆ hD.branchPreimage c)
@@ -278,7 +287,7 @@ theorem exists_innermost_isPLBall_doublePointPreimage_decomposition_of_exists_no
   exact ⟨c, J, Q, hc, hJ, hQ, hQsub, hfrontier, hfull, hsplit⟩
 
 open Classical in
-theorem exists_innermost_isPLBall_doublePointPreimage_decomposition_with_coordinate_of_exists_not_boundaryBranch
+theorem exists_innermost_isPLBall_doublePointPreimage_decomposition_with_coordinate
     [T2Space M] (hD : NormalSingularCellData D BdM B)
     (hclosed : ∃ c : hD.singularSet.Branch,
       ¬hD.singularSet.IsBoundaryBranch c) :
@@ -295,7 +304,7 @@ theorem exists_innermost_isPLBall_doublePointPreimage_decomposition_with_coordin
                   IsPLHomeomorphOn (hD.branchCoordinate c) T
                     (hD.singularSet.branchComplex c).space) := by
   obtain ⟨c, J, Q, hc, hJ, hQ, hQsub, hfrontier, hclosedInter, hsplit⟩ :=
-    hD.exists_innermost_isPLBall_branchPreimage_decomposition_with_coordinate_of_exists_not_boundaryBranch
+    hD.exists_innermost_isPLBall_branchPreimage_decomposition_with_coordinate
       hclosed
   have hJsub : J ⊆ hD.branchPreimage c := by
     rcases hsplit with hsingle | ⟨T, -, -, hcover, -, -⟩
@@ -326,7 +335,7 @@ theorem exists_innermost_isPLBall_doublePointPreimage_with_nonsingular_case_two
                   A.IsNonsingular ∧ A '' A.domain = D '' Q ∧
                     Set.range A.boundary = D '' J) := by
   obtain ⟨c, J, Q, hc, hJ, hQ, hQsub, hfrontier, hfull, hsplit⟩ :=
-    hD.exists_innermost_isPLBall_doublePointPreimage_decomposition_with_coordinate_of_exists_not_boundaryBranch
+    hD.exists_innermost_isPLBall_doublePointPreimage_decomposition_with_coordinate
       hclosed
   refine ⟨c, J, Q, hc, hJ, hQ, hQsub, hfrontier, hfull, ?_⟩
   rcases hsplit with hsingle | ⟨T, hT, hdisjoint, hcover, hJcoordinate, hTcoordinate⟩

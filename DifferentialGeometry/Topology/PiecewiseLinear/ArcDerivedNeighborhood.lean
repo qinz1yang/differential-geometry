@@ -1,6 +1,13 @@
+/-
+Copyright (c) 2026 Yuan Liao. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Yuan Liao
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.BallChain
 import DifferentialGeometry.Topology.PiecewiseLinear.DerivedNeighborhoodAttachments
 import DifferentialGeometry.Topology.PiecewiseLinear.DerivedNeighborhoodCells
+
+/-! Arc Derived Neighborhood. -/
 
 open Set
 

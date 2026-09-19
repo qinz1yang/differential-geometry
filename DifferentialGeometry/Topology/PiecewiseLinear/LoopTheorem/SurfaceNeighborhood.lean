@@ -1,9 +1,18 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.DerivedNeighborhoodManifold
 import DifferentialGeometry.Topology.PiecewiseLinear.LevelPolygons
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.SingularCell
 import DifferentialGeometry.Topology.PiecewiseLinear.SphereSchoenflies
 import DifferentialGeometry.Topology.PiecewiseLinear.SphericalDiskComplement
 import Mathlib.Topology.Connected.PathConnected
+
+/-!
+# Surface neighborhood
+-/
 
 open Set Topology
 

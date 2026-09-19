@@ -1,5 +1,14 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.BranchComplexityDrop
 import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryWordFourArcs
+
+/-!
+# Branch case three four
+-/
 
 open Set Topology
 

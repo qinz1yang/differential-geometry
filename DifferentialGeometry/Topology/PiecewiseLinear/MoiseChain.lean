@@ -12,6 +12,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.SolidTorus
 import DifferentialGeometry.Topology.PiecewiseLinear.Transition361
 import DifferentialGeometry.Topology.PiecewiseLinear.MapApproximation
 import DifferentialGeometry.Topology.PiecewiseLinear.ManifoldApproximation
+import DifferentialGeometry.Topology.PiecewiseLinear.PolyhedralGraph
 import DifferentialGeometry.Topology.PiecewiseLinear.SimplicialApproximation
 
 /-!
@@ -45,9 +46,12 @@ def Moise252 : Prop :=
       ∃ (Δ : Set E) (r : (Fin 3 → ℝ) → E),
         IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Δ ∧
         Δ ⊆ K.space ∧
-        r '' stdSimplexBoundary 2 ⊆
-          (connectedComponentComplex (boundaryComplex 3 K) c).space ∧
-        Δ ∩ (boundaryComplex 3 K).space = r '' stdSimplexBoundary 2
+        Δ ∩ (boundaryComplex 3 K).space = r '' stdSimplexBoundary 2 ∧
+        ∃ hboundary : r '' stdSimplexBoundary 2 ⊆
+            (connectedComponentComplex (boundaryComplex 3 K) c).space,
+          ¬ (⟨Set.inclusion hboundary, continuous_inclusion hboundary⟩ :
+            C(r '' stdSimplexBoundary 2,
+              (connectedComponentComplex (boundaryComplex 3 K) c).space)).Nullhomotopic
 
 open Classical in
 def Moise264 : Prop :=
@@ -130,34 +134,73 @@ def Moise307 : Prop :=
 
 open Classical in
 def Moise331 : Prop :=
-  ∀ (T : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3)))
-    (_ : Finite T.faces) (L : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3))),
-    L.faces ⊆ T.faces → (∀ s ∈ L.faces, s.card ≤ 2) → IsConnected L.space →
+  ∀ (L : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3))) (_ : Finite L.faces),
+    (∀ s ∈ L.faces, s.card ≤ 2) →
+    (∃ e ∈ L.faces, e.card = 2) →
+    IsConnected L.space →
+    (∀ v : L.vertices,
+      ((SimplicialComplex.edgeGraph L).neighborSet v).ncard ≠ 1) →
     ∀ U : Set (EuclideanSpace ℝ (Fin 3)), IsOpen U → L.space ⊆ U →
     ∀ h : EuclideanSpace ℝ (Fin 3) → EuclideanSpace ℝ (Fin 3),
-      ContinuousOn h U → InjOn h U →
+      Topology.IsEmbedding (U.domRestrict h) →
     ∀ ε : ℝ, 0 < ε →
-      ∃ f : EuclideanSpace ℝ (Fin 3) → EuclideanSpace ℝ (Fin 3),
-        (derivedNeighborhood T L).space ⊆ U ∧
-        IsPLHomeomorphOn f (derivedNeighborhood T L).space
-          (f '' (derivedNeighborhood T L).space) ∧
-        f '' (derivedNeighborhood T L).space ∈ nhdsSet (h '' L.space) ∧
-        ∀ x ∈ (derivedNeighborhood T L).space, dist (f x) (h x) < ε
+      ∃ (T L' : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3))),
+        T.faces.Finite ∧
+        IsSubdivision L' L ∧
+        L'.faces ⊆ T.faces ∧
+        IsCombinatorialManifoldWithBoundary 3 T ∧
+        T.space ∈ nhdsSet L.space ∧
+        IsCombinatorialManifoldWithBoundary 3 (derivedNeighborhood T L') ∧
+        (derivedNeighborhood T L').space ∈ nhdsSet L.space ∧
+        (derivedNeighborhood T L').space ⊆ U ∧
+        ∃ f : EuclideanSpace ℝ (Fin 3) → EuclideanSpace ℝ (Fin 3),
+          IsPLHomeomorphOn f (derivedNeighborhood T L').space
+            (f '' (derivedNeighborhood T L').space) ∧
+          f '' (derivedNeighborhood T L').space ∈ nhdsSet (h '' L.space) ∧
+          ∀ x ∈ (derivedNeighborhood T L').space, dist (f x) (h x) < ε
 
 open Classical in
-def Moise351 (n : ℕ) : Prop :=
+theorem Moise331.applies_to_tetrahedron_oneSkeleton (h331 : Moise331) :
+    ∃ L : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3)),
+      L.faces.Finite ∧
+      (∃ v : L.vertices,
+        ((SimplicialComplex.edgeGraph L).neighborSet v).ncard = 3) ∧
+      ∀ U : Set (EuclideanSpace ℝ (Fin 3)), IsOpen U → L.space ⊆ U →
+      ∀ h : EuclideanSpace ℝ (Fin 3) → EuclideanSpace ℝ (Fin 3),
+        Topology.IsEmbedding (U.domRestrict h) →
+      ∀ ε : ℝ, 0 < ε →
+        ∃ (T L' : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3))),
+          T.faces.Finite ∧
+          IsSubdivision L' L ∧
+          L'.faces ⊆ T.faces ∧
+          IsCombinatorialManifoldWithBoundary 3 T ∧
+          T.space ∈ nhdsSet L.space ∧
+          IsCombinatorialManifoldWithBoundary 3 (derivedNeighborhood T L') ∧
+          (derivedNeighborhood T L').space ∈ nhdsSet L.space ∧
+          (derivedNeighborhood T L').space ⊆ U ∧
+          ∃ f : EuclideanSpace ℝ (Fin 3) → EuclideanSpace ℝ (Fin 3),
+            IsPLHomeomorphOn f (derivedNeighborhood T L').space
+              (f '' (derivedNeighborhood T L').space) ∧
+            f '' (derivedNeighborhood T L').space ∈ nhdsSet (h '' L.space) ∧
+            ∀ x ∈ (derivedNeighborhood T L').space, dist (f x) (h x) < ε := by
+  obtain ⟨L, hfin, hdim, hedge, hconn, hend, hbranch⟩ := exists_tetrahedron_oneSkeleton
+  let _ : Finite L.faces := hfin.to_subtype
+  exact ⟨L, hfin, hbranch, h331 L inferInstance hdim hedge hconn hend⟩
+
+open Classical in
+def Moise351 : Prop :=
   ∀ {M₁ M₂ : Type u} [TopologicalSpace M₁] [T2Space M₁] [SecondCountableTopology M₁]
     [MetricSpace M₂] [SecondCountableTopology M₂]
-    [ChartedSpace (EuclideanSpace ℝ (Fin n)) M₁]
-    [ChartedSpace (EuclideanSpace ℝ (Fin n)) M₂]
-    [HasGroupoid M₁ (plGroupoid n)] [HasGroupoid M₂ (plGroupoid n)]
+    [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M₁]
+    [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M₂]
+    [HasGroupoid M₁ (plGroupoid 3)] [HasGroupoid M₂ (plGroupoid 3)]
     {U : Set M₁} (_ : IsOpen U) {K : Set M₁} (_ : K ⊆ U) (_ : IsClosed (((↑) : U → M₁) ⁻¹' K))
+    (_ : IsLocallyFinitePolyhedralGraph (n := 3) K)
     {h : M₁ → M₂} (_ : Topology.IsEmbedding (U.domRestrict h))
     (φ : M₁ → ℝ) (_ : ContinuousOn φ U) (_ : ∀ x ∈ U, 0 < φ x),
     ∃ N : Set M₁,
-      IsLocallyFinitePolyhedralManifoldWithBoundary (n := n) n N ∧
-      K ⊆ interior N ∧ N ⊆ U ∧
-      ∃ f : M₁ → M₂, IsPLHomeomorphInto n f N ∧
+      IsLocallyFiniteRegularNeighborhoodOf (n := 3) N K U ∧
+      ∃ f : M₁ → M₂, IsPLHomeomorphInto 3 f N ∧
         f '' N ∈ nhdsSet (h '' K) ∧ ∀ x ∈ N, dist (f x) (h x) < φ x
 
 def PLMapApproximation : Prop :=

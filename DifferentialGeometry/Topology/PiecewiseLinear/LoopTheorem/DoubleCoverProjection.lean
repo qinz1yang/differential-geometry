@@ -62,8 +62,9 @@ variable {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 
 open Classical in
 theorem manifoldComplex_space_subset_ambient (S : NormalSystem E) :
-    S.manifoldComplex.space ⊆ S.ambientComplex.space :=
-  relativeDerivedNeighborhood_space_subset S.image_faces_subset_ambient S.imageComplex
+    S.manifoldComplex.space ⊆ S.ambientComplex.space := by
+  rw [S.manifold_space]
+  exact derivedNeighborhood_space_subset S.ambientComplex S.imageComplex
 
 open Classical in
 theorem DoubleCoverDiagram.complexity_le {S : NormalSystem E} {T : NormalSystem F}

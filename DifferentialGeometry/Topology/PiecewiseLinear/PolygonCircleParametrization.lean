@@ -1,7 +1,14 @@
+/-
+Copyright (c) 2026 Yuan Liao. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Yuan Liao
+-/
 import Mathlib.Combinatorics.SimpleGraph.Matching
 import DifferentialGeometry.Topology.FundamentalGroup.CircleLoopGenerator
 import DifferentialGeometry.Topology.PiecewiseLinear.NeighborhoodCycle
 import DifferentialGeometry.Topology.PiecewiseLinear.WalkArcPath
+
+/-! Polygon Circle Parametrization. -/
 
 namespace DifferentialGeometry.Topology.PiecewiseLinear
 

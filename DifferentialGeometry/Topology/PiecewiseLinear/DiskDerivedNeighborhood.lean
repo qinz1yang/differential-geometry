@@ -1,6 +1,13 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.FreeTriangleNeighborhood
 import DifferentialGeometry.Topology.PiecewiseLinear.FreeFaceTransport
 import DifferentialGeometry.Topology.PiecewiseLinear.PlanarDiskSubdivision
+
+/-! Three-ball neighborhoods of boundary disks. -/
 
 open Set
 
@@ -111,7 +118,8 @@ theorem IsCombinatorialManifoldWithBoundary.exists_isPLBall_containing_boundary_
       exact hDK hxD
     exact mem_faces_of_mem_openSimplex_of_mem_space (boundaryComplex_faces_subset 3 R)
       (hAR hs) hx hxB
-  have hball := (hK.of_isSubdivision hR).isPLBall_derivedNeighborhood_of_isGlueIso_planar hAK hL hIso
+  have hball :=
+    (hK.of_isSubdivision hR).isPLBall_derivedNeighborhood_of_isGlueIso_planar hAK hL hIso
   have hsub : A.space ⊆ (PiecewiseLinear.derivedNeighborhood R A).space := by
     rw [← iUnion_derivedNeighborhoodCell_space R A hAR]
     exact space_subset_iUnion_derivedNeighborhoodCell_space R A hAR

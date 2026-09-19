@@ -1,8 +1,15 @@
+/-
+Copyright (c) 2026 Yuan Liao. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Yuan Liao
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.NeighborhoodCycle
 import DifferentialGeometry.Topology.PiecewiseLinear.BallIntersectionBoundary
 import DifferentialGeometry.Topology.PiecewiseLinear.CylindricalDiagram
 import DifferentialGeometry.Topology.PiecewiseLinear.DerivedNeighborhoodManifold
 import DifferentialGeometry.Topology.PiecewiseLinear.Orientation
+
+/-! Neighborhood Cylinder. -/
 
 open Set
 

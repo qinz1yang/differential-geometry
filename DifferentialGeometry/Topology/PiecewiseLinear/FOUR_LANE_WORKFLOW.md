@@ -1,6 +1,8 @@
-# Four-lane round workflow
+# Moise lane round workflow
 
 Effective 2026-09-19 UTC, following the owner's supplied four-lane workflow.
+The owner explicitly authorized one additional 30.4 task at 04:24 UTC. The five
+tasks below are current; the existing filename is retained for linked references.
 This file governs coordination; mathematical status remains in the integration
 handoff and the individual lane handoffs.
 
@@ -10,8 +12,12 @@ handoff and the individual lane handoffs.
   gpt-6-astra, max.
 - h: repair the Moise252/331/351 contracts and regular-neighborhood witnesses,
   gpt-5.6-sol, max.
-- E3: Moise 30.4 assembly, starting with the 30.3 splitting/separation step,
+- E3: the actual 30.3 splitting/separation construction,
   gpt-5.6-sol, max.
+- M304: Moise 30.4 spherical-shell theorem, gpt-6-astra, max; task
+  01a0b7e8-6789-72c2-afe3-522847f439bb, branch codex/moise-304. Construct an
+  independent actual producer while E3 finishes 30.3. In particular, 28.19 and
+  the initial separating surface are legitimate dependencies within this lane.
 - S: compact PL three-manifold smoothing, gpt-6-astra, max; assigned at the
   finite 24.12 delivery 434d5352c. The finite CST deliveries are independently
   accepted; the smoothing lane is separate and remains open.
@@ -22,7 +28,9 @@ The owner upgraded h and E3 to Sol max for subsequent assignments on 2026-09-19
 UTC. Apply the explicit model and effort on their next dispatch; do not interrupt
 an active round merely to change its setting.
 
-Use the four existing tasks, with one lane per task. Do not create subagents.
+Use these five tasks, with one lane per task. Do not create subagents or further
+tasks without a new owner instruction. The fifth task does not increase the
+two-private-checker or three-total-Lean-process limits.
 Give each lane a dependency-aware mathematical round, normally 15--60 minutes of
 work, rather than requiring a new assignment for every small lemma. This is a
 planning scale, not a forced time limit. Checkpoint each dependency-closed,
@@ -35,6 +43,11 @@ stop/restart. Interface corrections that would invalidate active work qualify
 as urgent; routine requests and unchanged reports do not. While waiting for
 verification, continue independent source work when possible. Never count an
 active turn containing waits as continuous mathematical work.
+
+The owner changed scheduled follow-up to hourly checks on 2026-09-19 UTC.
+The existing automation runs at minute 19 of each hour, with its final check
+at 14:19 UTC / 07:19 America/Los_Angeles. It retains quiet notifications for
+unchanged state. This cadence does not add mid-round task interventions.
 
 ## Assignment and evidence
 
@@ -105,3 +118,29 @@ remaining obligations. Distinguish newly written source, verified deliveries,
 unverified drafts, and completed headline theorems. Commit counts and module
 counts are not proof-completion percentages. Record decisions, corrections,
 and negative results with enough evidence to avoid repeating a false route.
+
+## 2026-09-19 cutoff
+
+The authorized window ended at 14:19 UTC. All five tasks are idle and the
+heartbeat is PAUSED. The requested cadence is hourly when next authorized;
+this does not authorize a new run. No active compiler leases remain. Preserve
+all source checkpoints and pre-existing stashes. Resume requires a new owner
+instruction and starts from MORNING_ACCEPTANCE_20260919.md, with pending F,
+E3 and M304 source independently replayed before new cross-lane consumption.
+
+
+## Owner-authorized resumption after the overnight cutoff
+
+At 2026-09-19T14:32:35.604282+00:00 the owner explicitly requested checking tools and continuing work.
+The tools and Lean 4.33.1 are available. The previous twelve-hour window and
+its morning report remain closed historical records. This new stage resumes
+the same five tasks, one mathematical lane each, with hourly quiet follow-up
+and no newly inferred deadline. Existing compiler leases are renewed under
+the same two-private-checker and three-total-Lean limits. The h lane may now
+place its general helper in Topology/LocallyFiniteSeparation.
+
+First independently replay M304 734c87b5f, E3 5877584aa and F f0482b620 beyond
+the accepted frontiers. Continue actual geometric producers at their recorded
+gaps; no new tasks/subagents, no routine mid-round status requests and no
+automatic full-root rebuild. New-stage receipts live in
+.lake/resumed-stage-20260919.json; the prior morning accounting is preserved.

@@ -1,5 +1,13 @@
+/-
+Copyright (c) 2026 Yuan Liao. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Yuan Liao
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.FreeTriangleFaces
 import DifferentialGeometry.Topology.PiecewiseLinear.SimplexDerivedNeighborhood
+import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceSplitDerivedCellBase
+
+/-! Derived neighborhoods under free-triangle removal. -/
 
 open Set
 
@@ -32,7 +40,7 @@ theorem derivedNeighborhoodCell_inter_derivedNeighborhood_eq_subfaces
     exact ⟨hxs, mem_iUnion₂.mpr ⟨r, (Finset.mem_filter.mp hr).2, hxr⟩⟩
 
 open Classical in
-private theorem face_subset_of_sdiff_subset_free_triangle
+theorem face_subset_of_sdiff_subset_free_triangle
     (A : Geometry.SimplicialComplex ℝ E) [Finite A.faces] (hA : IsPLBall 2 A.space)
     {t s r : Finset E} (htcard : t.card = 3)
     (hst : s ⊆ t) (hscard : s.card = 1 ∨ s.card = 2)
@@ -66,22 +74,25 @@ open Classical in
 private theorem isPLBall_derivedNeighborhoodCell_inter_edge
     {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces]
     (hK : IsCombinatorialManifoldWithBoundary 3 K)
-    {t s : Finset E} (ht : t ∈ (boundaryComplex 3 K).faces)
+    {t s : Finset E} (ht : t ∈ K.faces)
     (hs : s ∈ K.faces) (htcard : t.card = 3) (hscard : s.card = 2)
     (hst : s ⊆ t) :
     IsPLBall 2 ((derivedNeighborhoodCell K t).space ∩
       ((derivedNeighborhoodCell K s).space ∪
         ⋃ v ∈ s, (derivedNeighborhoodCell K {v}).space)) := by
   classical
+  let _ : Finite (derivedNeighborhoodCellBase K t).faces :=
+    (upperLink_faces_finite (PiecewiseLinear.barycentricSubdivision K)
+      {t.centroid ℝ id}).to_subtype
   let C := fun r : Finset E => (derivedNeighborhoodCell K r).space
   let B := (derivedNeighborhoodCellBase K t).space
   let A := fun v : E => C t ∩ C {v}
-  have htK := boundaryComplex_faces_subset 3 K ht
+  have htK := ht
   have hts : t ≠ s := by
     intro heq
     have hc := congrArg Finset.card heq
     omega
-  have hbase : IsPLBall 2 B := hK.isPLBall_derivedNeighborhoodCellBase ht
+  have hbase := hK.isCombinatorialManifoldWithBoundary_derivedNeighborhoodCellBase htK
   have hcenter : IsPLBall 2 (C t ∩ C s) :=
     hK.isPLBall_derivedNeighborhoodCell_inter htK hs hts (Or.inr hst)
   have hcenterB : C t ∩ C s ⊆ B :=
@@ -122,12 +133,12 @@ private theorem isPLBall_derivedNeighborhoodCell_inter_edge
       (by simpa only [Finset.singleton_subset_iff, Finset.mem_singleton] using hvw)
       (by simpa only [Finset.singleton_subset_iff, Finset.mem_singleton] using hvw.symm)).mono
         inter_subset_right inter_subset_right
-  have hball := isPLBall_union_iUnion_of_pairwiseDisjoint_in_ball hbase hcenter hcenterB
+  have hball := hbase.isPLBall_union_iUnion_of_pairwiseDisjoint_in_surface hcenter hcenterB
     s A hA hAB hI hdis
   simpa only [C, A, inter_union_distrib_left, inter_iUnion] using hball
 
 open Classical in
-private theorem iUnion_eraseTriangleComplex_subfaces_eq_edge
+theorem iUnion_eraseTriangleComplex_subfaces_eq_edge
     (A : Geometry.SimplicialComplex ℝ E) [Finite A.faces] (hA : IsPLBall 2 A.space)
     {t s : Finset E} (ht : t ∈ A.faces) (htcard : t.card = 3)
     (hst : s ⊆ t) (hscard : s.card = 2)
@@ -200,7 +211,7 @@ open Classical in
 private theorem isPLBall_derivedNeighborhoodCell_inter_erase_of_s_card_two
     {K A : Geometry.SimplicialComplex ℝ E} [Finite K.faces] [Finite A.faces]
     (hK : IsCombinatorialManifoldWithBoundary 3 K) (hA : IsPLBall 2 A.space)
-    (hAK : A.faces ⊆ (boundaryComplex 3 K).faces)
+    (hAK : A.faces ⊆ K.faces)
     {t s : Finset E} (ht : t ∈ A.faces) (htcard : t.card = 3)
     (hst : s ⊆ t) (hscard : s.card = 2)
     (htrace : (boundaryComplex 2 A).space ∩ convexHull ℝ (t : Set E) =
@@ -212,8 +223,8 @@ private theorem isPLBall_derivedNeighborhoodCell_inter_erase_of_s_card_two
   classical
   let A' := eraseTriangleComplex A t
   have hA'K : A'.faces ⊆ K.faces :=
-    (eraseTriangleComplex_faces_subset A t).trans (hAK.trans (boundaryComplex_faces_subset 3 K))
-  have htK := boundaryComplex_faces_subset 3 K (hAK ht)
+    (eraseTriangleComplex_faces_subset A t).trans hAK
+  have htK := hAK ht
   have htA' : t ∉ A'.faces := by
     intro ht'
     exact ((mem_eraseTriangleComplex_triangle_iff A t
@@ -223,11 +234,10 @@ private theorem isPLBall_derivedNeighborhoodCell_inter_erase_of_s_card_two
     htrace hinter (fun r => (derivedNeighborhoodCell K r).space)
   rw [heq, hunion]
   exact isPLBall_derivedNeighborhoodCell_inter_edge hK (hAK ht)
-    (boundaryComplex_faces_subset 3 K (hAK (A.down_closed ht hst
-      (Finset.card_pos.mp (by omega))))) htcard hscard hst
+    (hAK (A.down_closed ht hst (Finset.card_pos.mp (by omega)))) htcard hscard hst
 
 open Classical in
-private theorem iUnion_eraseTriangleComplex_subfaces_eq_vertex
+theorem iUnion_eraseTriangleComplex_subfaces_eq_vertex
     (A : Geometry.SimplicialComplex ℝ E) [Finite A.faces] (hA : IsPLBall 2 A.space)
     {t s : Finset E} (ht : t ∈ A.faces) (htcard : t.card = 3)
     (hst : s ⊆ t) (hscard : s.card = 1)
@@ -329,7 +339,7 @@ open Classical in
 private theorem isPLBall_derivedNeighborhoodCell_inter_vertex
     {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces]
     (hK : IsCombinatorialManifoldWithBoundary 3 K)
-    {t s : Finset E} (ht : t ∈ (boundaryComplex 3 K).faces)
+    {t s : Finset E} (ht : t ∈ K.faces)
     (htcard : t.card = 3) (hscard : s.card = 1) (hst : s ⊆ t) :
     let q := t \ s
     let edges := t.powersetCard 2 |>.filter (fun e => s ⊆ e)
@@ -338,6 +348,9 @@ private theorem isPLBall_derivedNeighborhoodCell_inter_vertex
         ⋃ e ∈ edges, (derivedNeighborhoodCell K e).space) ∪
           ⋃ v ∈ q, (derivedNeighborhoodCell K {v}).space)) := by
   classical
+  let _ : Finite (derivedNeighborhoodCellBase K t).faces :=
+    (upperLink_faces_finite (PiecewiseLinear.barycentricSubdivision K)
+      {t.centroid ℝ id}).to_subtype
   dsimp only
   obtain ⟨a, rfl⟩ := Finset.card_eq_one.mp hscard
   let q := t \ {a}
@@ -346,7 +359,7 @@ private theorem isPLBall_derivedNeighborhoodCell_inter_vertex
   let B := (derivedNeighborhoodCellBase K t).space
   let D := C t ∩ (C {a} ∪ ⋃ e ∈ edges, C e)
   let A := fun v : E => C t ∩ C {v}
-  have htK := boundaryComplex_faces_subset 3 K ht
+  have htK := ht
   have hat : a ∈ t := Finset.singleton_subset_iff.mp hst
   have haK : {a} ∈ K.faces := K.down_closed htK hst (Finset.singleton_nonempty a)
   have htneA : t ≠ {a} := by
@@ -354,7 +367,7 @@ private theorem isPLBall_derivedNeighborhoodCell_inter_vertex
     have hc := congrArg Finset.card heq
     simp only [Finset.card_singleton, htcard] at hc
     omega
-  have hbase : IsPLBall 2 B := hK.isPLBall_derivedNeighborhoodCellBase ht
+  have hbase := hK.isCombinatorialManifoldWithBoundary_derivedNeighborhoodCellBase htK
   have hcenter : IsPLBall 2 (C t ∩ C {a}) :=
     hK.isPLBall_derivedNeighborhoodCell_inter htK haK htneA
       (Or.inr (Finset.singleton_subset_iff.mpr hat))
@@ -401,7 +414,7 @@ private theorem isPLBall_derivedNeighborhoodCell_inter_vertex
         (by rw [(hedge f hf).2.1, (hedge e he).2.1])).symm)).mono
         inter_subset_right inter_subset_right
   have hD : IsPLBall 2 D := by
-    have h := isPLBall_union_iUnion_of_pairwiseDisjoint_in_ball hbase hcenter hcenterB
+    have h := hbase.isPLBall_union_iUnion_of_pairwiseDisjoint_in_surface hcenter hcenterB
       edges P hP hPB hPI hPdis
     simpa only [D, C, P, inter_union_distrib_left, inter_iUnion] using h
   have hDB : D ⊆ B := by
@@ -446,7 +459,9 @@ private theorem isPLBall_derivedNeighborhoodCell_inter_vertex
         have hright : x ∈ C e := by
           rcases hxD.2 with hxa | hxe
           · have hdis := disjoint_derivedNeighborhoodCell_space K haK (hvK v hv)
-                (by simpa only [Finset.singleton_subset_iff, Finset.mem_singleton] using (hvne v hv).symm)
+                (by
+                  simpa only [Finset.singleton_subset_iff, Finset.mem_singleton] using
+                    (hvne v hv).symm)
                 (by simpa only [Finset.singleton_subset_iff, Finset.mem_singleton] using hvne v hv)
             exact (hdis.le_bot ⟨hxa, hxv⟩).elim
           · obtain ⟨f, hf, hxf⟩ := mem_iUnion₂.mp hxe
@@ -474,14 +489,15 @@ private theorem isPLBall_derivedNeighborhoodCell_inter_vertex
       (by intro heq'; have hc := congrArg Finset.card heq';
           simp only [Finset.card_singleton, hecard] at hc; omega)
       (Or.inr het) (Or.inr (Finset.singleton_subset_iff.mpr (Finset.mem_sdiff.mp hv).1))
-      (Or.inr (Finset.singleton_subset_iff.mpr (Finset.mem_insert_of_mem (Finset.mem_singleton_self v))))
+      (Or.inr (Finset.singleton_subset_iff.mpr
+        (Finset.mem_insert_of_mem (Finset.mem_singleton_self v))))
   have hAdis (v : E) (hv : v ∈ q) (w : E) (hw : w ∈ q) (hvw : v ≠ w) :
       Disjoint (A v) (A w) :=
     (disjoint_derivedNeighborhoodCell_space K (hvK v hv) (hvK w hw)
       (by simpa only [Finset.singleton_subset_iff, Finset.mem_singleton] using hvw)
       (by simpa only [Finset.singleton_subset_iff, Finset.mem_singleton] using hvw.symm)).mono
         inter_subset_right inter_subset_right
-  have hball := isPLBall_union_iUnion_of_pairwiseDisjoint_in_ball hbase hD hDB
+  have hball := hbase.isPLBall_union_iUnion_of_pairwiseDisjoint_in_surface hD hDB
     q A hA hAB hDI hAdis
   simpa only [D, C, A, inter_union_distrib_left, inter_iUnion, union_assoc] using hball
 
@@ -489,7 +505,7 @@ open Classical in
 private theorem isPLBall_derivedNeighborhoodCell_inter_erase_of_s_card_one
     {K A : Geometry.SimplicialComplex ℝ E} [Finite K.faces] [Finite A.faces]
     (hK : IsCombinatorialManifoldWithBoundary 3 K) (hA : IsPLBall 2 A.space)
-    (hAK : A.faces ⊆ (boundaryComplex 3 K).faces)
+    (hAK : A.faces ⊆ K.faces)
     {t s : Finset E} (ht : t ∈ A.faces) (htcard : t.card = 3)
     (hst : s ⊆ t) (hscard : s.card = 1)
     (htrace : (boundaryComplex 2 A).space ∩ convexHull ℝ (t : Set E) =
@@ -501,8 +517,8 @@ private theorem isPLBall_derivedNeighborhoodCell_inter_erase_of_s_card_one
   classical
   let A' := eraseTriangleComplex A t
   have hA'K : A'.faces ⊆ K.faces :=
-    (eraseTriangleComplex_faces_subset A t).trans (hAK.trans (boundaryComplex_faces_subset 3 K))
-  have htK := boundaryComplex_faces_subset 3 K (hAK ht)
+    (eraseTriangleComplex_faces_subset A t).trans hAK
+  have htK := hAK ht
   have htA' : t ∉ A'.faces := by
     intro ht'
     exact ((mem_eraseTriangleComplex_triangle_iff A t
@@ -514,7 +530,7 @@ private theorem isPLBall_derivedNeighborhoodCell_inter_erase_of_s_card_one
   exact isPLBall_derivedNeighborhoodCell_inter_vertex hK (hAK ht) htcard hscard hst
 
 open Classical in
-private theorem iUnion_eraseTriangleComplex_subfaces_free_edge
+theorem iUnion_eraseTriangleComplex_subfaces_free_edge
     (A : Geometry.SimplicialComplex ℝ E) [Finite A.faces] (hA : IsPLBall 2 A.space)
     {t s : Finset E} (ht : t ∈ A.faces) (htcard : t.card = 3)
     (hst : s ⊆ t) (hscard : s.card = 1)
@@ -568,10 +584,11 @@ private theorem iUnion_eraseTriangleComplex_subfaces_free_edge
         (hfree {v}).mpr ⟨hvA, hqn⟩⟩, hxv⟩
 
 open Classical in
-private theorem IsCombinatorialManifoldWithBoundary.isPLBall_derivedNeighborhood_of_free_triangle_one
+private theorem
+    IsCombinatorialManifoldWithBoundary.isPLBall_derivedNeighborhood_of_free_triangle_one
     {K A : Geometry.SimplicialComplex ℝ E} [Finite K.faces] [Finite A.faces]
     (hK : IsCombinatorialManifoldWithBoundary 3 K) (hA : IsPLBall 2 A.space)
-    (hAK : A.faces ⊆ (boundaryComplex 3 K).faces)
+    (hAK : A.faces ⊆ K.faces)
     {t s : Finset E} (ht : t ∈ A.faces) (htcard : t.card = 3)
     (hst : s ⊆ t) (hscard : s.card = 1)
     (htrace : (boundaryComplex 2 A).space ∩ convexHull ℝ (t : Set E) =
@@ -586,10 +603,9 @@ private theorem IsCombinatorialManifoldWithBoundary.isPLBall_derivedNeighborhood
   let q := t \ s
   let C := fun r : Finset E => (derivedNeighborhoodCell K r).space
   let N := (PiecewiseLinear.derivedNeighborhood K A').space
-  have hAKK : A.faces ⊆ K.faces := hAK.trans (boundaryComplex_faces_subset 3 K)
+  have hAKK : A.faces ⊆ K.faces := hAK
   have hA'K : A'.faces ⊆ K.faces := (eraseTriangleComplex_faces_subset A t).trans hAKK
-  have htB := hAK ht
-  have htK := boundaryComplex_faces_subset 3 K htB
+  have htK := hAKK ht
   have htball : IsPLBall 3 (C t) := hK.isPLBall_derivedNeighborhoodCell htK
   have hD : IsPLBall 2 (C t ∩ N) :=
     isPLBall_derivedNeighborhoodCell_inter_erase_of_s_card_one hK hA hAK ht htcard
@@ -605,8 +621,7 @@ private theorem IsCombinatorialManifoldWithBoundary.isPLBall_derivedNeighborhood
     rw [Finset.card_sdiff_of_subset hst, htcard, hscard]
   have hqne : q.Nonempty := Finset.card_pos.mp (by omega)
   have hqA : q ∈ A.faces := A.down_closed ht Finset.sdiff_subset hqne
-  have hqB := hAK hqA
-  have hqK := boundaryComplex_faces_subset 3 K hqB
+  have hqK := hAK hqA
   have hqball : IsPLBall 3 (C q) := hK.isPLBall_derivedNeighborhoodCell hqK
   have hfree (r : Finset E) : r ∈ A'.faces ↔ r ∈ A.faces ∧ ¬q ⊆ r :=
     mem_eraseTriangleComplex_iff_of_free_triangle A hA ht htcard hst
@@ -666,7 +681,7 @@ private theorem IsCombinatorialManifoldWithBoundary.isPLBall_derivedNeighborhood
     obtain ⟨b, hb, rfl⟩ := Finset.mem_image.mp hv
     simp only [Finset.singleton_subset_iff, Finset.mem_singleton]
     exact ⟨fun h => huv (h ▸ rfl), fun h => huv (h.symm ▸ rfl)⟩
-  have hattach₀ := hK.isPLBall_derivedNeighborhoodCell_inter_union hqB htK hqt
+  have hattach₀ := hK.isPLBall_derivedNeighborhoodCell_inter_union_of_mem_faces hqK htK hqt
     (Or.inl Finset.sdiff_subset) d hd hdne hdcomp hdincomp
   rw [hdspace] at hattach₀
   have hI₂ : IsPLBall 2 ((N ∪ C t) ∩ C q) := hmeet₂ ▸ hattach₀
@@ -703,10 +718,11 @@ private theorem IsCombinatorialManifoldWithBoundary.isPLBall_derivedNeighborhood
   exact hspace.symm ▸ hfinal
 
 open Classical in
-private theorem IsCombinatorialManifoldWithBoundary.isPLBall_derivedNeighborhood_of_free_triangle_two
+private theorem
+    IsCombinatorialManifoldWithBoundary.isPLBall_derivedNeighborhood_of_free_triangle_two
     {K A : Geometry.SimplicialComplex ℝ E} [Finite K.faces] [Finite A.faces]
     (hK : IsCombinatorialManifoldWithBoundary 3 K) (hA : IsPLBall 2 A.space)
-    (hAK : A.faces ⊆ (boundaryComplex 3 K).faces)
+    (hAK : A.faces ⊆ K.faces)
     {t s : Finset E} (ht : t ∈ A.faces) (htcard : t.card = 3)
     (hst : s ⊆ t) (hscard : s.card = 2)
     (htrace : (boundaryComplex 2 A).space ∩ convexHull ℝ (t : Set E) =
@@ -725,7 +741,7 @@ private theorem IsCombinatorialManifoldWithBoundary.isPLBall_derivedNeighborhood
   let C := fun r : Finset E => (derivedNeighborhoodCell K r).space
   let N := (PiecewiseLinear.derivedNeighborhood K A').space
   let e := fun v : E => ({a, v} : Finset E)
-  have hAKK : A.faces ⊆ K.faces := hAK.trans (boundaryComplex_faces_subset 3 K)
+  have hAKK : A.faces ⊆ K.faces := hAK
   have hA'K : A'.faces ⊆ K.faces := (eraseTriangleComplex_faces_subset A t).trans hAKK
   have hN : N = ⋃ r ∈ A'.faces, C r := (iUnion_derivedNeighborhoodCell_space K A' hA'K).symm
   have hfree (r : Finset E) : r ∈ A'.faces ↔ r ∈ A.faces ∧ a ∉ r := by
@@ -734,7 +750,6 @@ private theorem IsCombinatorialManifoldWithBoundary.isPLBall_derivedNeighborhood
         (Or.inr hscard) htrace hinter :
         r ∈ A'.faces ↔ r ∈ A.faces ∧ ¬t \ s ⊆ r)
   have htK := hAKK ht
-  have htB := hAK ht
   have htball : IsPLBall 3 (C t) := hK.isPLBall_derivedNeighborhoodCell htK
   have hD : IsPLBall 2 (C t ∩ N) :=
     isPLBall_derivedNeighborhoodCell_inter_erase_of_s_card_two hK hA hAK ht htcard
@@ -757,7 +772,6 @@ private theorem IsCombinatorialManifoldWithBoundary.isPLBall_derivedNeighborhood
   have hvA (v : E) (hv : v ∈ s) : {v} ∈ A.faces :=
     A.down_closed ht (Finset.singleton_subset_iff.mpr (hst hv)) (Finset.singleton_nonempty v)
   have heK (v : E) (hv : v ∈ s) : e v ∈ K.faces := hAKK (heA v hv)
-  have heB (v : E) (hv : v ∈ s) : e v ∈ (boundaryComplex 3 K).faces := hAK (heA v hv)
   have hetne (v : E) (hv : v ∈ s) : e v ≠ t := by
     intro h
     have hc := congrArg Finset.card h
@@ -788,7 +802,7 @@ private theorem IsCombinatorialManifoldWithBoundary.isPLBall_derivedNeighborhood
       exact mem_iUnion₂.mpr ⟨{v}, (hfree {v}).mpr ⟨hvA v hv, by
         simpa only [Finset.mem_singleton] using hav v hv⟩, hxv⟩
   have hattach (v : E) (hv : v ∈ s) : IsPLBall 2 ((N ∪ C t) ∩ C (e v)) := by
-    have hgroup := hK.isPLBall_derivedNeighborhoodCell_inter_union (heB v hv) htK
+    have hgroup := hK.isPLBall_derivedNeighborhoodCell_inter_union_of_mem_faces (heK v hv) htK
       (hetne v hv) (Or.inl (het v hv)) {{v}}
       (by intro u hu; simp only [Finset.mem_singleton] at hu; subst u; exact hAKK (hvA v hv))
       (by
@@ -835,7 +849,6 @@ private theorem IsCombinatorialManifoldWithBoundary.isPLBall_derivedNeighborhood
   have haA : {a} ∈ A.faces := A.down_closed ht (Finset.singleton_subset_iff.mpr ha.1)
     (Finset.singleton_nonempty a)
   have haK := hAKK haA
-  have haB := hAK haA
   have haN : Disjoint (C {a}) N := by
     rw [Set.disjoint_left]
     intro x hxa hxN
@@ -862,7 +875,7 @@ private theorem IsCombinatorialManifoldWithBoundary.isPLBall_derivedNeighborhood
     have hc := congrArg Finset.card h
     simp only [Finset.card_singleton, htcard] at hc
     omega
-  have hgroup := hK.isPLBall_derivedNeighborhoodCell_inter_union haB htK hatne
+  have hgroup := hK.isPLBall_derivedNeighborhoodCell_inter_union_of_mem_faces haK htK hatne
     (Or.inl (Finset.singleton_subset_iff.mpr ha.1)) d
     (by intro u hu; obtain ⟨v, hv, rfl⟩ := Finset.mem_image.mp hu; exact heK v hv)
     (by
@@ -914,7 +927,8 @@ private theorem IsCombinatorialManifoldWithBoundary.isPLBall_derivedNeighborhood
         have hrcard : r.card = 1 ∨ r.card = 2 ∨ r.card = 3 := by omega
         rcases hrcard with hrcard | hrcard | hrcard
         · have heq : r = {a} := (Finset.eq_of_subset_of_card_le
-            (Finset.singleton_subset_iff.mpr har) (by simp only [Finset.card_singleton]; omega)).symm
+            (Finset.singleton_subset_iff.mpr har)
+            (by simp only [Finset.card_singleton]; omega)).symm
           exact Or.inr (heq ▸ hxr)
         · obtain ⟨v, hva, hrv⟩ := Finset.exists_eq_insert_iff.mpr
             ⟨Finset.singleton_subset_iff.mpr har, by simp only [Finset.card_singleton]; omega⟩
@@ -943,10 +957,10 @@ private theorem IsCombinatorialManifoldWithBoundary.isPLBall_derivedNeighborhood
   exact hspace.symm ▸ hfinal
 
 open Classical in
-theorem IsCombinatorialManifoldWithBoundary.isPLBall_derivedNeighborhood_of_free_triangle
+theorem IsCombinatorialManifoldWithBoundary.isPLBall_derivedNeighborhood_of_free_triangle_subcomplex
     {K A : Geometry.SimplicialComplex ℝ E} [Finite K.faces] [Finite A.faces]
     (hK : IsCombinatorialManifoldWithBoundary 3 K) (hA : IsPLBall 2 A.space)
-    (hAK : A.faces ⊆ (boundaryComplex 3 K).faces)
+    (hAK : A.faces ⊆ K.faces)
     {t s : Finset E} (ht : t ∈ A.faces) (htcard : t.card = 3)
     (hst : s ⊆ t) (hscard : s.card = 1 ∨ s.card = 2)
     (htrace : (boundaryComplex 2 A).space ∩ convexHull ℝ (t : Set E) =
@@ -961,4 +975,21 @@ theorem IsCombinatorialManifoldWithBoundary.isPLBall_derivedNeighborhood_of_free
       hscard htrace hinter hprev
   · exact hK.isPLBall_derivedNeighborhood_of_free_triangle_two hA hAK ht htcard hst
       hscard htrace hinter hprev
+
+open Classical in
+theorem IsCombinatorialManifoldWithBoundary.isPLBall_derivedNeighborhood_of_free_triangle
+    {K A : Geometry.SimplicialComplex ℝ E} [Finite K.faces] [Finite A.faces]
+    (hK : IsCombinatorialManifoldWithBoundary 3 K) (hA : IsPLBall 2 A.space)
+    (hAK : A.faces ⊆ (boundaryComplex 3 K).faces)
+    {t s : Finset E} (ht : t ∈ A.faces) (htcard : t.card = 3)
+    (hst : s ⊆ t) (hscard : s.card = 1 ∨ s.card = 2)
+    (htrace : (boundaryComplex 2 A).space ∩ convexHull ℝ (t : Set E) =
+      ⋃ v ∈ s, convexHull ℝ ((t.erase v : Finset E) : Set E))
+    (hinter : ∀ u ∈ A.faces, u.card = 3 → ¬s ⊆ u →
+      (u ∩ t).card ≤ 1 ∧ (s.card = 2 → u ∩ t ⊆ s))
+    (hprev : IsPLBall 3 (PiecewiseLinear.derivedNeighborhood K
+      (eraseTriangleComplex A t)).space) :
+    IsPLBall 3 (PiecewiseLinear.derivedNeighborhood K A).space :=
+  hK.isPLBall_derivedNeighborhood_of_free_triangle_subcomplex hA
+    (hAK.trans (boundaryComplex_faces_subset 3 K)) ht htcard hst hscard htrace hinter hprev
 end DifferentialGeometry.Topology.PiecewiseLinear

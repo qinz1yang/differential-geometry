@@ -1,7 +1,14 @@
+/-
+Copyright (c) 2026 Yuan Liao. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Yuan Liao
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.BallChain
 import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryDerivedNeighborhood
 import DifferentialGeometry.Topology.PiecewiseLinear.OneManifoldClassification
 import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceSpanningTrees
+
+/-! Neighborhood Cycle. -/
 
 open Set
 
