@@ -8829,3 +8829,5 @@ import DifferentialGeometry.Topology.PiecewiseLinear.CylindricalFrontier
 import DifferentialGeometry.Topology.PiecewiseLinear.PrismFrontier
 import DifferentialGeometry.Topology.PiecewiseLinear.CylindricalSeparation
 import DifferentialGeometry.Topology.PiecewiseLinear.TorusShell
+import DifferentialGeometry.Topology.FundamentalGroup.Nullhomotopy
+import DifferentialGeometry.Topology.PiecewiseLinear.TorusMeridian

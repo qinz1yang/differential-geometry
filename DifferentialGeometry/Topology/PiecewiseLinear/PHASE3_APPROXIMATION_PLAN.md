@@ -944,3 +944,34 @@ This is a concrete positive-genus instance with an actual Moise304 shell input.
 It does not prove Moise304 for an arbitrary supplied shell. General embedded-disk
 and safe replacement-neighborhood producers remain upstream gates. Root builds
 remain stopped as instructed.
+
+### M304 embedded meridian and nontrivial boundary kernel (2026-09-19 UTC)
+
+The premise-free `exists_embedded_solid_torus_meridian` projects the same
+embedded solid torus, quarter-height circle and spanning disk from the actual
+torus-compression producer. It retains the exact disk-boundary parametrization,
+frontier intersection, connected boundary complement and first Betti number two.
+The disk minus its boundary lies in the solid torus interior and is nonempty.
+The same circle inclusion is not nullhomotopic in the torus boundary, but is
+nullhomotopic inside the solid torus through that embedded disk. A loop on this
+circle has nontrivial image in the boundary fundamental group and trivial image
+in the solid torus fundamental group.
+
+The general `fundamentalGroup_map_eq_one_of_nullhomotopic` belongs in
+Topology/FundamentalGroup/Nullhomotopy. It works for arbitrary topological spaces
+and every basepoint, without connectivity or separation hypotheses. It uses the
+existing free-to-based nullhomotopy equivalence; no new contraction assumptions
+are introduced into the concrete meridian producer. Both new leaves are in the
+flat root aggregate.
+
+Both modules compile with zero diagnostics. All two native declarations, eight
+critical reuses and three independent certificates have only standard
+foundational axioms. All 13 applicable linters pass. The certificates preserve
+the same nonempty proper disk and circle, derive a genuinely nontrivial kernel
+and noninjective boundary inclusion, and check that the generic nullhomotopy
+lemma does not need connectivity. The native import graph is acyclic with 571
+modules and 1128 edges. Two complete source/object/receipt sets and the audit
+are frozen at `moise304-reading/torus-meridian-checkpoint/` with raw and normalized
+source hashes. Root builds remain stopped; shared E outputs are unchanged.
+This is an actual solid-torus instance, not a general embedded-disk producer for
+arbitrary three-manifolds or a proof of arbitrary-shell Moise304.
