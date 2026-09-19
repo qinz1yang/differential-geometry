@@ -4425,3 +4425,38 @@ R 是原单形的剖分、载体相同，恰有七个二维面，每个面包含
 回执 `codex-f-boundary-private/SimplexCollapse-checkpoint.json`、`AuditF294.json`。
 外部探针检查后删除；共享产物只读；源码、根登记与本记录同次提交。整库根检仍由协调者负责。
 下一审计 AuditF295。
+
+### 19.155 从每个实际 NormalSystem 生产保留全数据的退化系统（2026-09-19 UTC）
+
+**done：LoopTheorem/SourceCollapse.lean，`NormalSystem.exists_source_collapse`。**
+给定任意有效 S，先由 `S.source_isPLBall` 的非空性及组合流形纯维性生产真实二维面，
+再消费 §19.154 的三次内部 stellar 塌缩，构造完整的 `S' : NormalSystem E`。
+没有永久假设二维面的存在，没有抽象反例字段，没有要求原 S 的映射已局部单射或纤维至多二。
+
+端点明确保留 ambientComplex、imageComplex、loopComplex、实际 manifoldComplex、
+boundaryComplex 和 boundaryNeighborhood；源载体相同、确为源复形剖分，二维面恰增加六个。
+新旧 singularMap 在整个源拓扑边界 EqOn，boundaryParam 的欧氏坐标逐点相同。
+basepoint、boundaryLoop、connector、normalSubgroup、loopConjugacyClass 以 HEq 明确保留；
+它们在实际构造中原样使用 S 的字段，故 normal 与 loopClass_avoids_normal 也由原记录保持。
+新 image_space 由已证的离散面映射/满面及任意原顶点映射的像保持定理重建，
+并非默认非单射的旧映射允许逐点逆搬运。
+
+新源含真实三顶点二维面 u，整个闭凸包严格位于源载体内部，singularMap 在其上恒等于某 y。
+端点证明 y 的源纤维无限，并否定逐点存在相对邻域使映射单射的完整局部单射谓词。
+此为 `∀ S, ∃ S'` 的构造；未独立生产初始有效 S，故不声称无条件 `Nonempty NormalSystem`。
+它正式实现 §19.152 原来仅有几何论证的退化机制；也不把此结果称为 Moise251 的反例。
+
+**仍未闭合的实际生产义务：** 一般 S 的原映射经 double 的单射搬运仍不能自动具备正规化所需
+局部单射与二重纤维；本轮现在在真实 NormalSystem 内形式化了这一障碍。仍须生产允许改变的
+圆盘映射、真实载体内的边界相对条件、边界邻域中保留避开正规子群的自由环路同伦，
+再实现所需正规形式。普通一般位置不自动消除三重点。本轮未重新假设原映射的局部单射，
+未改 S/H/E3 源码，未消费未经证明的全局正规化。
+
+最终聚焦检查 exit=0、零诊断、19.07 秒；AuditF295 exit=0、零诊断、45.50 秒。
+全部一项新非自动声明加六项关键复用生产者，共七项传递公理闭包仅标准三公理；
+十三项适用环境 linters 全通过，严格语法/header/longLine 开启。额外检查实际三维欧氏目标类型的
+条件消费者，不虚构初始 S 的非空实例。sourceStable=true，源码 SHA256：
+`EDD1208C08A7650A3B103A649E9C91E2F3E5DADD6D2FF9B00E758660A80C5AA4`。
+私有回执 `codex-f-boundary-private/SourceCollapse-checkpoint.json`、`AuditF295.json`。
+树外探针检查后删除，共享产物未改写；源码、根登记和本记录同次提交。没有旧消费者签名变化，
+整库根检仍由协调者负责。下一审计 AuditF296。本轮请求的实际三角形及完整 S' 构造均已闭合。

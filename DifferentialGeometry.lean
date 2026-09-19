@@ -8722,3 +8722,4 @@ import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryDouble
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.DoubleCarrier
 import DifferentialGeometry.Topology.PiecewiseLinear.RelativeSimplexSubdivision
 import DifferentialGeometry.Topology.PiecewiseLinear.SimplexCollapse
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.SourceCollapse
