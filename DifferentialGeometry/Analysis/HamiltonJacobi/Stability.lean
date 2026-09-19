@@ -17,13 +17,13 @@ variable {E ι : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   {Hn : ι → E → ℝ → (E →L[ℝ] ℝ) → ℝ} {H : E → ℝ → (E →L[ℝ] ℝ) → ℝ}
 
 theorem upper_test_le_of_tendstoLocallyUniformlyOn
-    (hU : IsOpen U) (hF : ∀ i, ContinuousOn (F i) U)
+    (hU : IsOpen U) (hF : ∀ᶠ i in l, ContinuousOn (F i) U)
     (hconv : TendstoLocallyUniformlyOn F f l U)
     (hH : ContinuousOn (fun z : E × ℝ × (E →L[ℝ] ℝ) => H z.1 z.2.1 z.2.2) (U ×ˢ univ))
     (hHconv : TendstoLocallyUniformlyOn
       (fun i (z : E × ℝ × (E →L[ℝ] ℝ)) => Hn i z.1 z.2.1 z.2.2)
       (fun z => H z.1 z.2.1 z.2.2) l (U ×ˢ univ))
-    (hsub : ∀ i x, x ∈ U → ∀ phi : E → ℝ, ContDiffAt ℝ 1 phi x →
+    (hsub : ∀ᶠ i in l, ∀ x, x ∈ U → ∀ phi : E → ℝ, ContDiffAt ℝ 1 phi x →
       IsLocalMax (fun y => F i y - phi y) x → Hn i x (F i x) (fderiv ℝ phi x) ≤ 0)
     {x : E} (hx : x ∈ U) (phi : E → ℝ) (hphi : ContDiffAt ℝ 1 phi x)
     (hmax : IsLocalMax (fun y => f y - phi y) x) :
@@ -63,7 +63,7 @@ theorem upper_test_le_of_tendstoLocallyUniformlyOn
     intro V hV
     exact Eventually.of_forall (fun _ _ _ => refl_mem_uniformity hV)
   obtain ⟨z, hz, hzmax, hzlocal⟩ := hK.exists_tendsto_isLocalMax_of_tendstoUniformlyOn hxK
-    (fun i => ((hF i).mono hKU).sub hpsiC) hstrict
+    (hF.mono fun _ hi => (hi.mono hKU).sub hpsiC) hstrict
     (hcompact.sub hconst)
   have hpenD : HasFDerivAt (fun y : E => ‖e (y - x)‖ ^ 2) (0 : E →L[ℝ] ℝ) x := by
     have heD := e.hasFDerivAt.comp x ((hasFDerivAt_id x).sub_const x)
@@ -79,27 +79,27 @@ theorem upper_test_le_of_tendstoLocallyUniformlyOn
     rw [← hderiv]
     exact ((hphi.add hpen.contDiffAt).continuousAt_fderiv (by norm_num)).tendsto.comp hz
   have hzU : Tendsto z l (𝓝[U] x) := tendsto_nhdsWithin_iff.mpr
-    ⟨hz, Eventually.of_forall (fun i => hKU (hzmax i).1)⟩
-  have hf : ContinuousOn f U := hconv.continuousOn (Eventually.of_forall hF).frequently
+    ⟨hz, hzmax.mono (fun _ hi => hKU hi.1)⟩
+  have hf : ContinuousOn f U := hconv.continuousOn hF.frequently
   have hvalue : Tendsto (fun i => F i (z i)) l (𝓝 (f x)) := hconv.tendsto_comp (hf x hx) hx hzU
   have hjets : Tendsto (fun i => (z i, F i (z i), fderiv ℝ psi (z i))) l
       (𝓝[U ×ˢ univ] (x, f x, fderiv ℝ phi x)) := tendsto_nhdsWithin_iff.mpr
     ⟨hz.prodMk_nhds (hvalue.prodMk_nhds hgrad),
-      Eventually.of_forall (fun i => ⟨hKU (hzmax i).1, mem_univ _⟩)⟩
+      hzmax.mono (fun _ hi => ⟨hKU hi.1, mem_univ _⟩)⟩
   have hlimit := hHconv.tendsto_comp (hH (x, f x, fderiv ℝ phi x) ⟨hx, mem_univ _⟩)
     ⟨hx, mem_univ _⟩ hjets
   apply le_of_tendsto hlimit
-  filter_upwards [hzlocal] with i hi
-  exact hsub i (z i) (hKU (hzmax i).1) psi (hpsi _ (hzmax i).1) hi
+  filter_upwards [hzlocal, hsub, hzmax] with i hi hsubi hzi
+  exact hsubi (z i) (hKU hzi.1) psi (hpsi _ hzi.1) hi
 
 theorem lower_test_ge_of_tendstoLocallyUniformlyOn
-    (hU : IsOpen U) (hF : ∀ i, ContinuousOn (F i) U)
+    (hU : IsOpen U) (hF : ∀ᶠ i in l, ContinuousOn (F i) U)
     (hconv : TendstoLocallyUniformlyOn F f l U)
     (hH : ContinuousOn (fun z : E × ℝ × (E →L[ℝ] ℝ) => H z.1 z.2.1 z.2.2) (U ×ˢ univ))
     (hHconv : TendstoLocallyUniformlyOn
       (fun i (z : E × ℝ × (E →L[ℝ] ℝ)) => Hn i z.1 z.2.1 z.2.2)
       (fun z => H z.1 z.2.1 z.2.2) l (U ×ˢ univ))
-    (hsuper : ∀ i x, x ∈ U → ∀ phi : E → ℝ, ContDiffAt ℝ 1 phi x →
+    (hsuper : ∀ᶠ i in l, ∀ x, x ∈ U → ∀ phi : E → ℝ, ContDiffAt ℝ 1 phi x →
       IsLocalMin (fun y => F i y - phi y) x → 0 ≤ Hn i x (F i x) (fderiv ℝ phi x))
     {x : E} (hx : x ∈ U) (phi : E → ℝ) (hphi : ContDiffAt ℝ 1 phi x)
     (hmin : IsLocalMin (fun y => f y - phi y) x) :
@@ -109,15 +109,16 @@ theorem lower_test_ge_of_tendstoLocallyUniformlyOn
   have hJ : Continuous J := continuous_fst.prodMk
     ((continuous_fst.comp continuous_snd).neg.prodMk (continuous_snd.comp continuous_snd).neg)
   have hJU : MapsTo J (U ×ˢ univ) (U ×ˢ univ) := fun _ hz => ⟨hz.1, mem_univ _⟩
-  have htest : ∀ i y, y ∈ U → ∀ psi : E → ℝ, ContDiffAt ℝ 1 psi y →
+  have htest : ∀ᶠ i in l, ∀ y, y ∈ U → ∀ psi : E → ℝ, ContDiffAt ℝ 1 psi y →
       IsLocalMax (fun z => -F i z - psi z) y →
         -Hn i y (-(-F i y)) (-fderiv ℝ psi y) ≤ 0 := by
-    intro i y hy psi hpsi hmax
+    filter_upwards [hsuper] with i hsuperi
+    intro y hy psi hpsi hmax
     have hlocal : IsLocalMin (fun z => F i z - (-psi) z) y := by
       filter_upwards [hmax] with z hz
       dsimp only [Pi.neg_apply]
       linarith
-    have h := hsuper i y hy (-psi) hpsi.neg hlocal
+    have h := hsuperi y hy (-psi) hpsi.neg hlocal
     rw [fderiv_neg] at h
     simpa only [neg_neg] using neg_nonpos.mpr h
   have hlocal : IsLocalMax (fun y => -f y - (-phi) y) x := by
@@ -126,7 +127,7 @@ theorem lower_test_ge_of_tendstoLocallyUniformlyOn
     linarith
   have h := upper_test_le_of_tendstoLocallyUniformlyOn
     (Hn := fun i y r p => -Hn i y (-r) (-p))
-    (H := fun y r p => -H y (-r) (-p)) hU (fun i => (hF i).neg) hconv.neg
+    (H := fun y r p => -H y (-r) (-p)) hU (hF.mono fun _ hi => hi.neg) hconv.neg
     (hH.comp hJ.continuousOn hJU).neg (hHconv.comp J hJU hJ.continuousOn).neg
     htest hx (-phi) hphi.neg hlocal
   simpa only [J, Function.comp_apply, Pi.neg_apply, fderiv_neg, neg_neg, neg_nonpos] using h

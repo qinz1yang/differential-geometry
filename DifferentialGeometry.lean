@@ -9889,6 +9889,7 @@ import DifferentialGeometry.Topology.ThreeManifold.Surgery.FiniteCap.SelectedInc
 import DifferentialGeometry.Topology.ThreeManifold.Surgery.FiniteCap.SelectedInclusionOrientation
 import DifferentialGeometry.Topology.ThreeManifold.Surgery.FiniteCap.SphericalCutCore
 import DifferentialGeometry.Topology.ThreeManifold.schoenflies
+import DifferentialGeometry.Topology.LocallyUniformConvergence
 import DifferentialGeometry.Topology.UniformConvergence
 import DifferentialGeometry.Topology.VanKampen.AmalgamatedProduct
 import DifferentialGeometry.Topology.VanKampen.BallChartEmbeddedCellCollar

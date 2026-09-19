@@ -63,38 +63,45 @@ theorem tendsto_of_isMinOn_of_tendstoUniformlyOn
 
 theorem exists_tendsto_isLocalMax_of_tendstoUniformlyOn [l.NeBot]
     (hK : IsCompact K) (hx : K ∈ 𝓝 x)
-    (hF : ∀ i, ContinuousOn (F i) K)
+    (hF : ∀ᶠ i in l, ContinuousOn (F i) K)
     (hstrict : ∀ y ∈ K, y ≠ x → f y < f x)
     (hconv : TendstoUniformlyOn F f l K) :
     ∃ z : ι → X, Tendsto z l (𝓝 x) ∧
-      (∀ i, z i ∈ K ∧ IsMaxOn (F i) K (z i)) ∧
+      (∀ᶠ i in l, z i ∈ K ∧ IsMaxOn (F i) K (z i)) ∧
       ∀ᶠ i in l, IsLocalMax (F i) (z i) := by
   classical
   have hxK : x ∈ K := mem_of_mem_nhds hx
-  choose z hz hmax using fun i => hK.exists_isMaxOn ⟨x, hxK⟩ (hF i)
+  have hex (i : ι) : ∃ y, y ∈ K ∧ (ContinuousOn (F i) K → IsMaxOn (F i) K y) := by
+    by_cases hi : ContinuousOn (F i) K
+    · obtain ⟨y, hy, hmax⟩ := hK.exists_isMaxOn ⟨x, hxK⟩ hi
+      exact ⟨y, hy, fun _ => hmax⟩
+    · exact ⟨x, hxK, fun h => False.elim (hi h)⟩
+  choose z hz hmax using hex
+  have hmaxTail : ∀ᶠ i in l, z i ∈ K ∧ IsMaxOn (F i) K (z i) :=
+    hF.mono fun i hi => ⟨hz i, hmax i hi⟩
   have hlim : Tendsto z l (𝓝 x) := hK.tendsto_of_isMaxOn_of_tendstoUniformlyOn
-    (hconv.continuousOn (Eventually.of_forall hF).frequently).upperSemicontinuousOn hxK hstrict hconv
-    (Eventually.of_forall (fun i => ⟨hz i, hmax i⟩))
-  refine ⟨z, hlim, fun i => ⟨hz i, hmax i⟩, ?_⟩
-  filter_upwards [hlim.eventually (interior_mem_nhds.mpr hx)] with i hi
-  exact (hmax i).isLocalMax (mem_interior_iff_mem_nhds.mp hi)
+    (hconv.continuousOn hF.frequently).upperSemicontinuousOn hxK hstrict hconv
+    hmaxTail
+  refine ⟨z, hlim, hmaxTail, ?_⟩
+  filter_upwards [hlim.eventually (interior_mem_nhds.mpr hx), hF] with i hi hFi
+  exact (hmax i hFi).isLocalMax (mem_interior_iff_mem_nhds.mp hi)
 
 theorem exists_tendsto_isLocalMin_of_tendstoUniformlyOn [l.NeBot]
     (hK : IsCompact K) (hx : K ∈ 𝓝 x)
-    (hF : ∀ i, ContinuousOn (F i) K)
+    (hF : ∀ᶠ i in l, ContinuousOn (F i) K)
     (hstrict : ∀ y ∈ K, y ≠ x → f x < f y)
     (hconv : TendstoUniformlyOn F f l K) :
     ∃ z : ι → X, Tendsto z l (𝓝 x) ∧
-      (∀ i, z i ∈ K ∧ IsMinOn (F i) K (z i)) ∧
+      (∀ᶠ i in l, z i ∈ K ∧ IsMinOn (F i) K (z i)) ∧
       ∀ᶠ i in l, IsLocalMin (F i) (z i) := by
   obtain ⟨z, hlim, hmax, hlocal⟩ := hK.exists_tendsto_isLocalMax_of_tendstoUniformlyOn hx
-    (fun i => (hF i).neg) (fun y hy hne => neg_lt_neg (hstrict y hy hne)) hconv.neg
+    (hF.mono fun _ hi => hi.neg) (fun y hy hne => neg_lt_neg (hstrict y hy hne)) hconv.neg
   refine ⟨z, hlim, ?_, ?_⟩
-  · intro i
-    refine ⟨(hmax i).1, ?_⟩
+  · filter_upwards [hmax] with i hi
+    refine ⟨hi.1, ?_⟩
     intro y hy
     change F i (z i) ≤ F i y
-    exact neg_le_neg_iff.mp ((hmax i).2 hy)
+    exact neg_le_neg_iff.mp (hi.2 hy)
   · filter_upwards [hlocal] with i hi
     filter_upwards [hi] with y hy
     exact neg_le_neg_iff.mp hy
