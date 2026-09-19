@@ -148,4 +148,62 @@ theorem ae_memWkp_and_memLp_wkpNorm_of_weak_partial_tree
   exact ae_memWkp_and_memLp_wkpNorm_of_finite_weak_partial_tree hp hpt hΩ k u
     (fun n _ => hLp n) (fun n _ => hweak n)
 
+theorem eq_of_finite_weak_partial_trees
+    {Z : Type*} [MeasurableSpace Z] {μ : Measure Z}
+    {p : ℝ≥0∞} (hp : 1 ≤ p) {Ω : Set E} (hΩ : IsOpen Ω) (N : ℕ)
+    (P Q : ∀ m : ℕ, (Fin m → Fin d) → Lp ℝ p (μ.prod (volume.restrict Ω)))
+    (hP : ∀ m < N, ∀ β i, ∀ᵐ t ∂μ, DeGiorgi.HasWeakPartialDeriv i
+      (fun z => P (m + 1) (Fin.cons i β) (t, z)) (fun z => P m β (t, z)) Ω)
+    (hQ : ∀ m < N, ∀ β i, ∀ᵐ t ∂μ, DeGiorgi.HasWeakPartialDeriv i
+      (fun z => Q (m + 1) (Fin.cons i β) (t, z)) (fun z => Q m β (t, z)) Ω)
+    (hroot : P 0 (fun i => Fin.elim0 i) = Q 0 (fun i => Fin.elim0 i)) :
+    ∀ m ≤ N, ∀ β, P m β = Q m β := by
+  have hslice (V : Lp ℝ p (μ.prod (volume.restrict Ω))) :
+      ∀ᵐ t ∂μ, MemLp (fun z => V (t, z)) p (volume.restrict Ω) := by
+    by_cases hpt : p = ⊤
+    · subst p
+      exact (Lp.memLp V).prodMk_left_top
+    · exact (Lp.memLp V).prodMk_left hpt
+  intro m
+  induction m with
+  | zero =>
+    intro hm β
+    have he : β = (fun i => Fin.elim0 i) := Subsingleton.elim _ _
+    simpa only [he] using hroot
+  | succ m ih =>
+    intro hm β
+    obtain ⟨i, γ, rfl⟩ : ∃ (i : Fin d) (γ : Fin m → Fin d), β = Fin.cons i γ :=
+      ⟨β 0, Fin.tail β, (Fin.cons_self_tail β).symm⟩
+    have hprev := ih (by omega) γ
+    have hqw := hQ m (by omega) γ i
+    rw [← hprev] at hqw
+    apply Lp.ext_curry
+    filter_upwards [hP m (by omega) γ i, hqw,
+      hslice (P (m + 1) (Fin.cons i γ)), hslice (Q (m + 1) (Fin.cons i γ))] with t ht hu hv hw
+    exact DeGiorgi.HasWeakPartialDeriv.ae_eq hΩ ht hu (hv.locallyIntegrable hp) (hw.locallyIntegrable hp)
+
+theorem exists_lp_weak_partial_tree_of_finite_orders
+    {Z : Type*} [MeasurableSpace Z] {μ : Measure Z}
+    {p : ℝ≥0∞} (hp : 1 ≤ p) {Ω : Set E} (hΩ : IsOpen Ω)
+    (U : Z × E → ℝ)
+    (h : ∀ N : ℕ, ∃ P : ∀ m : ℕ, (Fin m → Fin d) → Lp ℝ p (μ.prod (volume.restrict Ω)),
+      (P 0 (fun i => Fin.elim0 i) =ᵐ[μ.prod (volume.restrict Ω)] U) ∧
+      ∀ m < N, ∀ β i, ∀ᵐ t ∂μ, DeGiorgi.HasWeakPartialDeriv i
+        (fun z => P (m + 1) (Fin.cons i β) (t, z)) (fun z => P m β (t, z)) Ω) :
+    ∃ P : ∀ m : ℕ, (Fin m → Fin d) → Lp ℝ p (μ.prod (volume.restrict Ω)),
+      (P 0 (fun i => Fin.elim0 i) =ᵐ[μ.prod (volume.restrict Ω)] U) ∧
+      ∀ m β i, ∀ᵐ t ∂μ, DeGiorgi.HasWeakPartialDeriv i
+        (fun z => P (m + 1) (Fin.cons i β) (t, z)) (fun z => P m β (t, z)) Ω := by
+  choose T hT hTw using h
+  let P := fun m β => T m m β
+  refine ⟨P, hT 0, ?_⟩
+  intro m β i
+  have hroot : T (m + 1) 0 (fun i => Fin.elim0 i) = T m 0 (fun i => Fin.elim0 i) :=
+    Lp.ext ((hT (m + 1)).trans (Filter.EventuallyEq.symm (hT m)))
+  have he := eq_of_finite_weak_partial_trees hp hΩ m (T (m + 1)) (T m)
+    (fun k hk γ j => hTw (m + 1) k (by omega) γ j) (hTw m) hroot m le_rfl β
+  have hw := hTw (m + 1) m (by omega) β i
+  rw [he] at hw
+  exact hw
+
 end DifferentialGeometry.Analysis.Sobolev.Euclidean

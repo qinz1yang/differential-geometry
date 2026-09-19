@@ -582,4 +582,127 @@ theorem exists_local_weak_time_deriv_and_memWkp_of_metric_divergence_equation
     filter_upwards [Measure.ae_ae_of_ae_prod hP] with t he
     exact congrArg ENNReal.toReal (wkpNorm_congr_ae (by norm_num) hΩ₀ he)
 
+theorem exists_local_weak_partial_trees_of_all_orders_of_metric_divergence_equation
+    {D : RealTimeInterval} {g : ℝ → SmoothRiemannianMetric I_hs M}
+    (hG : MetricFamilySmoothOn (I := I_hs) (M := M) D g)
+    {a b : ℝ} (hab : a < b) (hreg : Icc a b ⊆ D.regular)
+    (α : M) {Ω Ω₀ : Set EuStd} (hΩ : IsOpen Ω) (hΩc : IsCompact (closure Ω))
+    (hΩs : closure Ω ⊆ toEuclidean (E := EuN) '' interior (extChartAt I_hs α).target)
+    (hΩ₀ : IsOpen Ω₀) (hΩ₀Ω : closure Ω₀ ⊆ Ω)
+    {c d : ℝ} (hac : a < c) (hdb : d < b) (hcd : c < d) :
+    let μ := volume.restrict (Icc a b)
+    let ν := μ.prod (volume.restrict Ω)
+    let ρ := fun p : ℝ × EuStd => densityOnEuclid (I := I_hs) (g p.1) α p.2
+    let A := fun i j (p : ℝ × EuStd) => weightedInvGramOnEuclid (I := I_hs) (g p.1) α i j p.2
+    ∀ U : Lp ℝ 2 ν, ∀ K : Fin (Module.finrank ℝ EuN) → Lp ℝ 2 ν,
+      ∀ F : ∀ m : ℕ, (Fin m → Fin (Module.finrank ℝ EuN)) → Lp ℝ 2 ν,
+      (∀ i, ∀ᵐ t ∂μ, DeGiorgi.HasWeakPartialDeriv i
+        (fun z => K i (t, z)) (fun z => U (t, z)) Ω) →
+      (∀ m β i, ∀ᵐ t ∂μ, DeGiorgi.HasWeakPartialDeriv i
+        (fun z => F (m + 1) (Fin.cons i β) (t, z)) (fun z => F m β (t, z)) Ω) →
+      (∀ φ : ℝ × EuStd → ℝ, ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ →
+        tsupport φ ⊆ Ioo a b ×ˢ Ω →
+        (∫ p, ρ p * U p * fderiv ℝ φ p (1, 0) ∂ν) =
+          (∑ i, ∑ j, ∫ p, A i j p * K i p * fderiv ℝ φ p (0, EuclideanSpace.single j 1) ∂ν) -
+            ∫ p, F 0 (fun i => Fin.elim0 i) p * φ p ∂ν) →
+      let μ₀ := μ.restrict (Icc c d)
+      let ν₀ := μ₀.prod (volume.restrict Ω₀)
+      ∃ P Q : ∀ m : ℕ, (Fin m → Fin (Module.finrank ℝ EuN)) → Lp ℝ 2 ν₀,
+        (P 0 (fun i => Fin.elim0 i) =ᵐ[ν₀] U) ∧
+        (∀ m β i, ∀ᵐ t ∂μ₀, DeGiorgi.HasWeakPartialDeriv i
+          (fun z => P (m + 1) (Fin.cons i β) (t, z)) (fun z => P m β (t, z)) Ω₀) ∧
+        (∀ m β i, ∀ᵐ t ∂μ₀, DeGiorgi.HasWeakPartialDeriv i
+          (fun z => Q (m + 1) (Fin.cons i β) (t, z)) (fun z => Q m β (t, z)) Ω₀) ∧
+        ∀ φ : ℝ × EuStd → ℝ, ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ →
+          tsupport φ ⊆ Ioo c d ×ˢ Ω₀ →
+          (∫ p, U p * fderiv ℝ φ p (1, 0) ∂ν₀) =
+            -∫ p, Q 0 (fun i => Fin.elim0 i) p * φ p ∂ν₀ := by
+  intro μ ν ρ A U K F hK hF hweak μ₀ ν₀
+  have hfinite (N : ℕ) := exists_local_weak_partial_trees_of_metric_divergence_equation
+    hG hab hreg α hΩ hΩc hΩs hΩ₀ hΩ₀Ω hac hdb hcd N U K F hK
+    (fun m _ β i => hF m β i) hweak
+  choose P Q hP hPweak hQweak hQtime using hfinite
+  let e : Fin 0 → Fin (Module.finrank ℝ EuN) := fun i => Fin.elim0 i
+  let R := Q 0 0 e
+  have hmem : ∀ᵐ p ∂ν₀, p ∈ Ioo c d ×ˢ Ω₀ := by
+    have htime : μ₀ = volume.restrict (Ioo c d) := by
+      change (volume.restrict (Icc a b)).restrict (Icc c d) = volume.restrict (Ioo c d)
+      rw [Measure.restrict_restrict measurableSet_Icc,
+        inter_eq_left.mpr (Icc_subset_Icc hac.le hdb.le)]
+      exact Measure.restrict_congr_set Ioo_ae_eq_Icc.symm
+    change ∀ᵐ p ∂μ₀.prod (volume.restrict Ω₀), p ∈ Ioo c d ×ˢ Ω₀
+    rw [htime]
+    apply (Measure.ae_prod_iff_ae_ae (measurableSet_Ioo.prod hΩ₀.measurableSet)).mpr
+    filter_upwards [ae_restrict_mem measurableSet_Ioo] with t ht
+    exact (ae_restrict_mem hΩ₀.measurableSet).mono fun z hz => ⟨ht, hz⟩
+  have hQroot (N : ℕ) : Q N 0 e = R := Sobolev.lp_eq_of_weak_deriv_integral
+    (isOpen_Ioo.prod hΩ₀) hmem (by norm_num) (1, 0) (hQtime N) (hQtime 0)
+  obtain ⟨P₀, hP₀, hP₀weak⟩ := exists_lp_weak_partial_tree_of_finite_orders
+    (by norm_num : (1 : ℝ≥0∞) ≤ 2) hΩ₀ (fun p => U p)
+    (fun N => ⟨P N, hP N, fun m hm β i => hPweak N m (by omega) β i⟩)
+  obtain ⟨Q₀, hQ₀, hQ₀weak⟩ := exists_lp_weak_partial_tree_of_finite_orders
+    (by norm_num : (1 : ℝ≥0∞) ≤ 2) hΩ₀ (fun p => R p)
+    (fun N => ⟨Q N, by rw [hQroot N], hQweak N⟩)
+  refine ⟨P₀, Q₀, hP₀, hP₀weak, hQ₀weak, ?_⟩
+  intro φ hφ hφc hφs
+  refine (hQtime 0 φ hφ hφc hφs).trans ?_
+  congr 1
+  apply integral_congr_ae
+  filter_upwards [hQ₀] with p hp
+  rw [hp]
+
+theorem exists_local_weak_time_deriv_and_forall_memWkp_of_metric_divergence_equation
+    {D : RealTimeInterval} {g : ℝ → SmoothRiemannianMetric I_hs M}
+    (hG : MetricFamilySmoothOn (I := I_hs) (M := M) D g)
+    {a b : ℝ} (hab : a < b) (hreg : Icc a b ⊆ D.regular)
+    (α : M) {Ω Ω₀ : Set EuStd} (hΩ : IsOpen Ω) (hΩc : IsCompact (closure Ω))
+    (hΩs : closure Ω ⊆ toEuclidean (E := EuN) '' interior (extChartAt I_hs α).target)
+    (hΩ₀ : IsOpen Ω₀) (hΩ₀Ω : closure Ω₀ ⊆ Ω)
+    {c d : ℝ} (hac : a < c) (hdb : d < b) (hcd : c < d) :
+    let μ := volume.restrict (Icc a b)
+    let ν := μ.prod (volume.restrict Ω)
+    let ρ := fun p : ℝ × EuStd => densityOnEuclid (I := I_hs) (g p.1) α p.2
+    let A := fun i j (p : ℝ × EuStd) => weightedInvGramOnEuclid (I := I_hs) (g p.1) α i j p.2
+    ∀ U : Lp ℝ 2 ν, ∀ K : Fin (Module.finrank ℝ EuN) → Lp ℝ 2 ν,
+      ∀ F : ∀ m : ℕ, (Fin m → Fin (Module.finrank ℝ EuN)) → Lp ℝ 2 ν,
+      (∀ i, ∀ᵐ t ∂μ, DeGiorgi.HasWeakPartialDeriv i
+        (fun z => K i (t, z)) (fun z => U (t, z)) Ω) →
+      (∀ m β i, ∀ᵐ t ∂μ, DeGiorgi.HasWeakPartialDeriv i
+        (fun z => F (m + 1) (Fin.cons i β) (t, z)) (fun z => F m β (t, z)) Ω) →
+      (∀ φ : ℝ × EuStd → ℝ, ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ →
+        tsupport φ ⊆ Ioo a b ×ˢ Ω →
+        (∫ p, ρ p * U p * fderiv ℝ φ p (1, 0) ∂ν) =
+          (∑ i, ∑ j, ∫ p, A i j p * K i p * fderiv ℝ φ p (0, EuclideanSpace.single j 1) ∂ν) -
+            ∫ p, F 0 (fun i => Fin.elim0 i) p * φ p ∂ν) →
+      let μ₀ := μ.restrict (Icc c d)
+      let ν₀ := μ₀.prod (volume.restrict Ω₀)
+      ∃ R : Lp ℝ 2 ν₀,
+        (∀ N : ℕ, (∀ᵐ t ∂μ₀, MemWkp N 2 (fun z => U (t, z)) Ω₀) ∧
+          MemLp (fun t => (iteratedWeakSobolevNorm N 2
+            (fun z => U (t, z)) Ω₀).toReal) 2 μ₀) ∧
+        (∀ N : ℕ, (∀ᵐ t ∂μ₀, MemWkp N 2 (fun z => R (t, z)) Ω₀) ∧
+          MemLp (fun t => (iteratedWeakSobolevNorm N 2
+            (fun z => R (t, z)) Ω₀).toReal) 2 μ₀) ∧
+        ∀ φ : ℝ × EuStd → ℝ, ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ →
+          tsupport φ ⊆ Ioo c d ×ˢ Ω₀ →
+          (∫ p, U p * fderiv ℝ φ p (1, 0) ∂ν₀) = -∫ p, R p * φ p ∂ν₀ := by
+  intro μ ν ρ A U K F hK hF hweak μ₀ ν₀
+  obtain ⟨P, Q, hP, hPweak, hQweak, hQtime⟩ :=
+    exists_local_weak_partial_trees_of_all_orders_of_metric_divergence_equation
+      hG hab hreg α hΩ hΩc hΩs hΩ₀ hΩ₀Ω hac hdb hcd U K F hK hF hweak
+  have hregP := ae_memWkp_and_memLp_wkpNorm_of_weak_partial_tree
+    (by norm_num : (1 : ℝ≥0∞) ≤ 2) (by norm_num) hΩ₀
+    (fun m β p => P m β p) (fun m β => Lp.memLp (P m β)) hPweak
+  have hregQ := ae_memWkp_and_memLp_wkpNorm_of_weak_partial_tree
+    (by norm_num : (1 : ℝ≥0∞) ≤ 2) (by norm_num) hΩ₀
+    (fun m β p => Q m β p) (fun m β => Lp.memLp (Q m β)) hQweak
+  refine ⟨Q 0 (fun i => Fin.elim0 i), ?_, hregQ, hQtime⟩
+  intro N
+  constructor
+  · filter_upwards [(hregP N).1, Measure.ae_ae_of_ae_prod hP] with t ht he
+    exact (MemWkp_congr_ae (by norm_num) hΩ₀ he).mp ht
+  · apply (hregP N).2.ae_eq
+    filter_upwards [Measure.ae_ae_of_ae_prod hP] with t he
+    exact congrArg ENNReal.toReal (wkpNorm_congr_ae (by norm_num) hΩ₀ he)
+
 end DifferentialGeometry.Analysis.Parabolic
