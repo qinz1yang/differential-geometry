@@ -112,4 +112,59 @@ theorem laplacian_eq_divergence_add_volumeDensity_drift
   rw [← inner_gradientFun h (riemannianVolumeDensity q h),
     ← inner_gradientFun h f, h.symm]
 
+theorem riemannianVolumeDensity_mul_laplacian_div
+    (q h : SmoothRiemannianMetric I M)
+    {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ) ∞ f) (x : M) :
+    riemannianVolumeDensity q h x *
+        laplacian (leviCivitaConnectionOfMetric h) h
+          (fun y => f y / riemannianVolumeDensity q h y) x =
+      divergence (leviCivitaConnectionOfMetric q) (gradientFun h f) x -
+        mvfderiv (I := I) f x
+          (gradientFun h (fun y => Real.log (riemannianVolumeDensity q h y)) x) -
+        f x * divergence (leviCivitaConnectionOfMetric q)
+          (gradientFun h (fun y => Real.log (riemannianVolumeDensity q h y))) x := by
+  let ρ := riemannianVolumeDensity q h
+  have hρ := riemannianVolumeDensity_contMDiff q h
+  have hn (y : M) : ρ y ≠ 0 := ne_of_gt (riemannianVolumeDensity_pos q h y)
+  let ψ := fun y => f y / ρ y
+  have hψ : ContMDiff I 𝓘(ℝ) ∞ ψ := hf.div₀ hρ hn
+  have hlog : ContMDiff I 𝓘(ℝ) ∞ (fun y => Real.log (ρ y)) := by
+    intro y
+    exact (Real.contDiffAt_log.mpr (hn y)).contMDiffAt.comp y (hρ y)
+  let Y := gradientFun h (fun y => Real.log (ρ y))
+  have hY := gradientFun_smooth h hlog
+  have hgrad (y : M) : ρ y • gradientFun h ψ y =
+      gradientFun h f y - f y • Y y := by
+    have heq : (fun z => ρ z * ψ z) = f := by
+      funext z
+      exact mul_div_cancel₀ _ (hn z)
+    have hm := gradientFun_mul h (hρ.mdifferentiable (by simp) y)
+      (hψ.mdifferentiable (by simp) y)
+    rw [heq] at hm
+    apply eq_sub_iff_add_eq.mpr
+    calc
+      _ = ρ y • gradientFun h ψ y + ψ y • gradientFun h ρ y := by
+        dsimp only [Y]
+        rw [gradientFun_log h (hρ.mdifferentiable (by simp) y)
+          (riemannianVolumeDensity_pos q h y), smul_smul]
+        rfl
+      _ = gradientFun h f y := hm.symm
+  have heq := divergence_riemannianVolumeDensity_smul q h
+    ⟨gradientFun h ψ, gradientFun_smooth h hψ⟩ x
+  change divergence (leviCivitaConnectionOfMetric q)
+      (fun y => ρ y • gradientFun h ψ y) x = _ at heq
+  rw [funext hgrad] at heq
+  change divergence (leviCivitaConnectionOfMetric q)
+    (gradientFun h f - f • Y) x = _ at heq
+  have hfY : MDiffAt (T% (f • Y)) x :=
+    (hf.smul_section hY).mdifferentiable (by simp) x
+  rw [divergence_sub _ ((gradientFun_smooth h hf).mdifferentiable (by simp) x) hfY,
+    divergence_smul _ inferInstance (hf.mdifferentiable (by simp) x)
+      (hY.mdifferentiable (by simp) x)] at heq
+  calc
+    _ = divergence (leviCivitaConnectionOfMetric q) (gradientFun h f) x -
+        (f x * divergence (leviCivitaConnectionOfMetric q) Y x +
+          mvfderiv (I := I) f x (Y x)) := heq.symm
+    _ = _ := by ring
+
 end DifferentialGeometry.Geometry.Operator
