@@ -828,3 +828,9 @@ has not been applied. Automatic review rejected interrupting the active root
 build; no stop executed. Apply the patch at a noninterrupting build boundary
 and run the expanded root gate. The current root gate continues and does not
 cover those five modules; its completion is not claimed.
+
+F delivered its source-collapse layer through `495a3e343` before this audit
+closed. Its three checkpoints are pending independent integration acceptance.
+At that delivery boundary F immediately began the actual projected embedded-disk
+and source-faithful cover-reduction round on Astra max. Thus the queued priority
+above is now dispatched, without an in-flight interruption.

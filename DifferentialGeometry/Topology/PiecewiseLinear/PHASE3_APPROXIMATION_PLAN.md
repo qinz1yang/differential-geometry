@@ -19,8 +19,8 @@ for locally injective maps with fibers at most two; Section 25, Lemma 3 supplies
 by projecting an embedded disk from a two-sheeted cover after induction. The
 cover, PL projection, smaller normal-system neighborhood, boundary and subgroup
 relations must be constructed. Do not infer those properties for an arbitrary
-original NormalSystem or from DoubleCarrier. F receives this priority at its next
-delivery; no running round is interrupted. E3 owns I.4 through I.3, while S keeps
+original NormalSystem or from DoubleCarrier. F received this priority after
+delivering 495a3e343; no running round was interrupted. E3 owns I.4 through I.3, while S keeps
 the actual CST lane. The dependency direction is 30.6 -> 30.7, never the reverse.
 
 Phase 3 proves only PL approximation and the resulting PL atlas. Compact PL

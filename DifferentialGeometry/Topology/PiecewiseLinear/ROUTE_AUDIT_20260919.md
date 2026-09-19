@@ -149,10 +149,11 @@ Do not claim the currently running root gate covers the five disconnected module
    witnesses and importing consumers. Assigned at the completed `0a0876425`
    delivery boundary. Its verified trimmed ball pair remains accepted; the later
    full-arc containment delivery awaits independent integration acceptance.
-2. F, Astra max: at its next delivery, replace the invalid direct-original-map
-   normalization route with a source-faithful projection/cover producer audit and
-   implementation. A collapse example can certify a failed route, not complete
-   the positive producer. Do not interrupt the current round for this handoff.
+2. F, Astra max: delivered source-collapse construction `495a3e343` during this
+   audit, then received the source-faithful projection/cover producer round at
+   that completed-work boundary. Its collapse delivery awaits independent
+   integration acceptance and is not counted as the positive producer. No active
+   round was interrupted.
 3. E3, Sol max: owns 30.4, first the genuine 30.3 splitting/separation step; 26.4
    and 28.19 remain explicit dependencies. This owner was assigned when E3
    delivered its conjugation layer, before the current audit arrived.
