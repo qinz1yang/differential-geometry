@@ -1,5 +1,5 @@
-import DifferentialGeometry.Analysis.Parabolic.Dirichlet.HeatHessianScalarSource
-import DifferentialGeometry.Analysis.Parabolic.Dirichlet.LocalSecondDerivative
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.HeatHessianEquation
+import DifferentialGeometry.Analysis.Parabolic.MetricDivergenceRegularity
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeMeasureRestrict
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakDerivative.Basic
 
@@ -13,7 +13,6 @@ namespace DifferentialGeometry.Analysis.Parabolic.Dirichlet
 open DifferentialGeometry.Analysis.Laplacian.WithBoundary.Dirichlet
 open DifferentialGeometry.Analysis.Sobolev.Euclidean
 open DifferentialGeometry.Analysis.Parabolic.TimeSobolev
-open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Integral.Measure
 
@@ -84,19 +83,11 @@ theorem exists_local_fourth_weak_derivative_of_heat_timeH1
             (fun z => L i j k l (t, z)) (fun z => K₀ i j k (t, z)) Ω₀ := by
   intro F Df hDf DDf hDDf μ₀ H₀ hH₀ K₀ hK₀
   classical
-  let G : MetricConnectionFamilyOn (I := I_hs) (M := M) D :=
-    { metric := g
-      connection := fun t => leviCivitaConnectionOfMetric (g t)
-      metricCompatible := fun t => leviCivitaConnectionOfMetric_isMetricCompatible (g t) }
   have hΩ₀c : IsCompact (closure Ω₀) :=
     hΩc.of_isClosed_subset isClosed_closure (hΩ₀Ω.trans subset_closure)
   obtain ⟨Ω₁, hΩ₁, hΩ₀₁, hΩ₁Ω, hΩ₁c⟩ :=
     exists_open_between_and_isCompact_closure hΩ₀c hΩ hΩ₀Ω
   have hΩ₁s := hΩ₁Ω.trans (subset_closure.trans hΩs)
-  obtain ⟨δ, η, _, _, hη, _, _, hηone, hηs⟩ :=
-    exists_smooth_cutoff_with_neighborhood hΩ₀c hΩ₁ hΩ₀₁
-  have hηone' : ∀ z ∈ Ω₀, η z = 1 := fun z hz =>
-    hηone z (Metric.self_subset_cthickening (closure Ω₀) (subset_closure hz))
   let s₀ := a / 2
   let s₁ := (b + T) / 2
   have hs₀ : 0 < s₀ := by dsimp [s₀]; linarith
@@ -124,17 +115,16 @@ theorem exists_local_fourth_weak_derivative_of_heat_timeH1
       Measure.ae_ae_of_ae_prod hcoe] with t ht he
     exact (DeGiorgi.HasWeakPartialDeriv.restrict hΩ₁ hsub ht).congr_ae
       Filter.EventuallyEq.rfl (Filter.EventuallyEq.symm he)
-  have hex := exists_timeH1_cutoff_hessian_scalar_source_of_heat_timeH1
+  have hex := exists_lp_weak_hessian_equation_of_heat_timeH1
     hG hT hreg q hCg hequiv Cv hCv0 hCvtop hvol α hΩ hΩc hΩs
-    hΩ₁ hΩ₁Ω hs₀ hs₁ hs₀₁ u f w hwmass hwderiv hη hηs Df hDf DDf₁ hDDf₁
+    hΩ₁ hΩ₁Ω hs₀ hs₁ hs₀₁.le u f w hwmass hwderiv Df hDf DDf₁ hDDf₁
   let H := hex.choose
+  let K := hex.choose_spec.choose
+  let S := hex.choose_spec.choose_spec.choose
   have hp := hex.choose_spec.choose_spec.choose_spec
   have hH := hp.1
-  have hpacket := hp.2.2.2.2.2
-  let v := hpacket.choose
-  have hrep := hpacket.choose_spec.1
-  have htime := hpacket.choose_spec.2
-  choose ℓ w β f hwmass hwderiv hpair hf hsource using htime
+  have hK := hp.2.2.1
+  have hS := hp.2.2.2.2
   have hμ₀ : μ₀ = volume.restrict (Icc a b) :=
     timeMeasure_restrict_Icc_eq_volume_restrict_Icc
       (Icc_subset_Icc ha.le hb.le)
@@ -145,14 +135,14 @@ theorem exists_local_fourth_weak_derivative_of_heat_timeH1
   have hLexist (i j) : ∃ L : Fin (Module.finrank ℝ EuN) →
         Fin (Module.finrank ℝ EuN) → Lp ℝ 2 (μ₀.prod (volume.restrict Ω₀)),
       ∀ k l, ∀ᵐ t ∂μ₀, DeGiorgi.HasWeakPartialDeriv l
-        (fun z => L k l (t, z))
-        (dirichletLocalWeakPartialLp q α hΩ₁ hΩ₁c hΩ₁s k (v i j t)) Ω₀ := by
-    have hexL := exists_local_dirichlet_second_weak_derivative_of_timeH1_of_measure_eq_volume
-      (G := G) hG hs₀₁.le (hI.trans hreg) q α hΩ₁ hΩ₁c hΩ₁s hs₀a hbs₁ hμ
-      (v i j) (f i j) (ℓ i j) (β i j) (w i j) (hwmass i j) (hwderiv i j) (hpair i j)
-      (hsource i j) hΩ₀ hΩ₀₁
-    rw [hμrestrict] at hexL
-    obtain ⟨L, hL, _⟩ := hexL
+        (fun z => L k l (t, z)) (fun z => K i j k (t, z)) Ω₀ := by
+    have hregular := exists_local_second_weak_derivative_of_metric_divergence_equation
+      hG hs₀₁ (hI.trans hreg) α hΩ₁ hΩ₁c hΩ₁s hΩ₀ hΩ₀₁ hs₀a hbs₁
+    dsimp only at hregular
+    rw [← hμ] at hregular
+    have hregularH := hregular (H i j) (S i j) (K i j) (hK i j) (hS i j)
+    rw [hμrestrict'] at hregularH
+    obtain ⟨L, hL, _, _⟩ := hregularH
     exact ⟨L, hL⟩
   choose L hL using hLexist
   have hsub₀₁ : Ω₀ ⊆ Ω₁ := subset_closure.trans hΩ₀₁
@@ -169,16 +159,15 @@ theorem exists_local_fourth_weak_derivative_of_heat_timeH1
       ((hm.mono_measure (Measure.restrict_mono hsub₀₁ le_rfl)).locallyIntegrable (by norm_num))
       (hm₀.locallyIntegrable (by norm_num))
   have halign (i j k) : ∀ᵐ t ∂μ₀,
-      (dirichletLocalWeakPartialLp q α hΩ₁ hΩ₁c hΩ₁s k (v i j t) : EuStd → ℝ)
-        =ᵐ[volume.restrict Ω₀] fun z => K₀ i j k (t, z) := by
-    apply ae_dirichletLocalWeakPartialLp_eq_of_chartPullback_mul_eq_one q α
-      hΩ₁ hΩ₁c hΩ₁s hΩ₀ hsub₀₁ (fun t => v i j t)
-      (fun t z => H i j (t, z)) k (fun t z => K₀ i j k (t, z))
-      hηone' ((hrep i j).filter_mono (ae_mono hμle))
-      (((Lp.memLp (K₀ i j k)).prodMk_left (by norm_num)).mono
-        (fun _ ht => ht.locallyIntegrable (by norm_num)))
-    filter_upwards [hK₀ i j k, hHeq i j] with t ht he
-    exact hasWeakPartialDeriv_congr_ae hΩ₀ k (Filter.EventuallyEq.symm he) ht
+      (fun z => K i j k (t, z)) =ᵐ[volume.restrict Ω₀] fun z => K₀ i j k (t, z) := by
+    filter_upwards [(hK i j k).filter_mono (ae_mono hμle), hK₀ i j k, hHeq i j,
+      ((Lp.memLp (K i j k)).prodMk_left (by norm_num)).filter_mono (ae_mono hμle),
+      (Lp.memLp (K₀ i j k)).prodMk_left (by norm_num)] with t ht ha he hm hm₀
+    have ht' := hasWeakPartialDeriv_congr_ae hΩ₀ k he
+      (DeGiorgi.HasWeakPartialDeriv.restrict hΩ₀ hsub₀₁ ht)
+    exact DeGiorgi.HasWeakPartialDeriv.ae_eq hΩ₀ ht' ha
+      ((hm.mono_measure (Measure.restrict_mono hsub₀₁ le_rfl)).locallyIntegrable (by norm_num))
+      (hm₀.locallyIntegrable (by norm_num))
   refine ⟨L, ?_⟩
   intro i j k l
   filter_upwards [hL i j k l, halign i j k] with t ht he
