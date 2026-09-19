@@ -2801,3 +2801,79 @@ parameterization. The already active strip lane continues toward its stated
 14:05 UTC checkpoint and 14:19 UTC deadline; no new task or extra lane was
 started. M304's exact cylindrical-frontier checkpoint 109bab2c4 is likewise
 queued independently of this acceptance.
+
+## 60. Actual torus compression, essential filling and common targets (2026-09-19 UTC)
+
+M304's frozen committed source through 1c43107f3 is independently accepted,
+including b80e381fc essential singular filling, fd77b6549 actual torus
+compression, and 109bab2c4 exact cylindrical frontiers. The seventeen selected
+source files are byte-identical to that checkpoint. Fourteen are new leaves
+registered in the flat root; three existing modules are extended or refactored.
+
+The first producer fills a polygonal boundary map by a PL map into a simply
+connected open target while fixing the boundary exactly. For a nonspherical
+closed connected surface, it produces a nontrivial original based loop, a
+finite WB3 neighborhood containing both the original surface and the whole
+filling image in its interior, and a boundary map freely homotopic to that
+loop and non-null in the original surface. The induced fundamental-group
+image is proved trivial using that same disk and same neighborhood. This
+is a singular disk, with no injectivity conclusion.
+
+Separately, the standard triangular circle produces an actual embedded solid
+torus neighborhood and untwisted disk cylindrical diagram. A middle disk
+cross-section is an embedded compressing disk with essential nonseparating
+boundary on the actual torus. A surrounding annular band has an explicit
+closure complement. Two distinct disk cross-sections give physically
+disjoint cap disks, with exact intersection and boundary equations against
+both the entire torus and the complementary annulus. Their capped union is
+an actual finite PL sphere. The first Betti number decreases from two to zero.
+The headline existence theorem has no geometric input premises.
+
+The entire cylindrical side, not just a subset of it, is proved to equal the
+ambient frontier of the finite solid torus in real dimension three. The proof
+excludes additional closed boundary components inside the bottom disk using
+invariance of domain and compactness. The capped sphere is the exact frontier
+of the remaining PL three-ball. A point inside that ball and a point outside
+the solid torus are produced, proved distinct, and separated by both surfaces.
+Actual external fixtures also construct common nonempty open regions and two
+disjoint PL three-ball targets with nonempty interiors for the same pair.
+
+The independent audit adds a further real consumer absent from the original
+disk-filling test: the full essential-singular-disk theorem is applied to the
+actual nonspherical embedded torus. Its nontrivial original loop, free boundary
+homotopy, non-null boundary, entire filling and trivial induced class all live
+in the same produced finite neighborhood. This avoids testing that new surface
+headline only on a lower-dimensional circle example.
+
+Twenty fresh module checks, including three unchanged prerequisites/consumers,
+took 229.399 seconds including admission. The combined audit took
+53.199 seconds. It covers all 35 native nonautomatic declarations
+(26 new, two private), 65 critical reuse entries (43 distinct), and thirteen
+external fixture declarations. Nine are actual geometric producer applications,
+two are fixture properties and two are helper definitions. There are no
+conditional-consumer fixtures. All transitive axioms are contained in the
+three approved foundational axioms. Thirteen applicable environment linters
+pass; all final checks have zero errors, warnings, info or other diagnostics.
+
+All 24 new public full names have unique namespace-aware source locations.
+The old accepted public signatures match their earlier elaborated types.
+AnnulusBoundary extracts the reusable actual annulus triangulation and
+intrinsic-boundary proof from AnnulusComplement, whose public statement is
+preserved; its existing connected-annulus and spanning-disk consumers are
+freshly checked together. Sixty-three private prerequisite objects were reused
+only after matching current raw source and independently accepted object hashes.
+
+Accepted integration Lean delta is +1356/-27, including fourteen root imports.
+The selected author files have window-start delta
++1574/-0; these different baselines are not additive.
+Static root closure reaches 9589 project modules including the root,
+with no missing project sources or cycles; 0 already-existing dependency modules
+became newly reachable. This is not a fresh full dependency or root build.
+Receipt: .lake/verified-fortieth-lane-delivery-20260919.json.
+
+The general 26.4 loop theorem, 30.3 surgery construction and 30.4 spherical-shell
+theorem remain open. Embedded compression is produced for this actual untwisted
+solid-torus family; arbitrary prescribed shell targets and the general minimum-
+Betti argument are not supplied by this example. M304's subsequent native
+ball-target strengthening 815c38869 is queued separately while the same concrete
+shell-model lane continues. No active task was interrupted or given another lane.

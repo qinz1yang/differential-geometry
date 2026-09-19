@@ -3,7 +3,7 @@ Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: DifferentialGeometry contributors
 -/
-import DifferentialGeometry.Topology.PiecewiseLinear.CurvePrism
+import DifferentialGeometry.Topology.PiecewiseLinear.AnnulusBoundary
 import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceSubcomplexComplement
 import DifferentialGeometry.Topology.PiecewiseLinear.ManifoldRelativeTopology
 
@@ -30,33 +30,8 @@ theorem IsCombinatorialManifold.exists_annulus_complement
       (boundaryComplex 2 A).space = ρ '' (J ×ˢ {a, b}) ∧
       (boundaryComplex 2 R).space = ρ '' (J ×ˢ {a, b}) ∧
       A.space ∩ R.space = ρ '' (J ×ˢ {a, b}) ∧ A.space ∪ R.space = K.space := by
-  let _ : DecidableEq (F × ℝ) := Classical.decEq _
-  obtain ⟨L, hLfin, hLspace⟩ := hJ.isPolyhedron.exists_simplicialComplex
-  let _ : Finite L.faces := hLfin.to_subtype
-  have hL : IsCombinatorialManifold 1 L := (hLspace.symm ▸ hJ).isCombinatorialManifold
-  have hLbd : (boundaryComplex 1 L).space = ∅ := by
-    rw [Geometry.SimplicialComplex.space, hL.boundaryComplex_faces_eq_empty L]
-    simp
-  obtain ⟨P, hPfin, hPspace⟩ :=
-    (hJ.isPolyhedron.prod (isPLBall_Icc hab).isPolyhedron).exists_simplicialComplex
-  let _ : Finite P.faces := hPfin.to_subtype
-  have hLP : P.space = L.space ×ˢ Icc a b := by rw [hLspace, hPspace]
-  have hP := hL.isCombinatorialManifoldWithBoundary.prod_Icc_one L hab P hLP
-  have hPbd : (boundaryComplex 2 P).space = J ×ˢ {a, b} := by
-    rw [boundaryComplex_space_prod_Icc_one L hL.isCombinatorialManifoldWithBoundary hab P hLP,
-      hLbd, empty_prod, union_empty, hLspace]
-  have hW : IsPolyhedron W :=
-    hρ.image_eq ▸
-      (hJ.isPolyhedron.prod (isPLBall_Icc hab).isPolyhedron).image_of_isPiecewiseAffineOn
-        hρ.isPiecewiseAffineOn hρ.bijOn.injOn
-  obtain ⟨A, hAfin, hAspace⟩ := hW.exists_simplicialComplex
+  obtain ⟨A, hAfin, hA, -, hAspace, hAbd⟩ := hρ.exists_annulus_complex hJ hab
   let _ : Finite A.faces := hAfin.to_subtype
-  have hmap : IsPLHomeomorphOn ρ P.space A.space := by
-    rw [hPspace, hAspace]
-    exact hρ
-  have hA := hP.of_isPLHomeomorphOn hmap
-  have hAbd : (boundaryComplex 2 A).space = ρ '' (J ×ˢ {a, b}) := by
-    rw [boundaryComplex_space_of_isPLHomeomorphOn P A hP hmap, hPbd]
   have hAK : A.space ⊆ K.space := hAspace.subset.trans hWK
   obtain ⟨R, hRfin, hR, hRspace, hRbd⟩ :=
     hK.exists_isCombinatorialManifoldWithBoundary_closure_sdiff_two hA hAK

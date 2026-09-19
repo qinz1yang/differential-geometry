@@ -213,12 +213,23 @@ entries, 39 classified probes and thirteen applicable linters pass with zero
 diagnostics and standard axioms. The enlarged spanning disks still share the
 original disk; the later compression theorem explicitly requires disjoint
 caps and separation of their capped union. The general shell minimizer is not
-known to have beta zero. M304's actual essential-boundary PL singular filling
-inside one finite ambient neighborhood b80e381fc is delivered and queued for
-independent replay. At that delivery M304 continued a real positive-genus
-compression configuration to exercise the strict Betti descent. Embedded
-compression disk existence, actual 30.3 splitting and the final 30.4 induction
-remain open. See integration handoff section 56.
+known to have beta zero. M304's essential singular filling b80e381fc and the
+actual concrete torus compression/frontier/common-target chain through
+1c43107f3 are now independently accepted. A nonspherical closed connected
+surface in a simply connected open ambient has an actual essential-boundary
+singular PL disk in one finite neighborhood,
+with the nontrivial original loop killed by that same disk. Independently,
+the concrete triangular-circle solid torus has an essential nonseparating
+compressing disk, two actual disjoint caps, an actual capped sphere, and
+first Betti number two decreasing to zero. Exact ambient frontier equalities
+produce common distinct points separated by both surfaces; external fixtures
+also produce common nonempty regions and disjoint three-ball targets. The
+full general filling producer is additionally tested on that real torus.
+Twenty fresh modules, all 35 native declarations (26 new), 65 critical reuse
+entries and thirteen classified fixtures pass with approved axioms, thirteen
+linters and zero diagnostics. Native ball-target strengthening 815c38869 is
+queued separately. This concrete compression does not settle arbitrary-shell
+target preservation, general 26.4/30.3 or Moise304. See handoff section 60.
 
 The held E3 disk-neighborhood chain through 8e0373385 is now independently
 accepted: fifteen fresh modules and all 81 native declarations (58 new),
@@ -253,7 +264,7 @@ its active 30.3 round without interruption. The private checker limit stays two.
 | h / gpt-5.6-sol max | Piercings, nested common annular traces, real trivalent model and numerical scales through c08f3a8d5 accepted. Finite pairwise-disjoint neighborhood upgrade 3bcaead58 delivered and queued. | At the clean boundary continued actual locally finite geometric control. Preserve real source/overlap relations; geometric stability, approximating maps and Moise351 remain open. Checkpoint by 14:05 UTC. |
 | F / gpt-6-astra max | Actual spherical EmbeddedDisk/return and projected double-cover/partner-involution layers through 8a00ab535 independently accepted. | Continue equivariant relative triangulation on the actual free collision relation in the same descent lane. The rectangle model permits two-dimensional double sets; crossing, geometric elimination and downstairs embedding remain open. |
 | E3 / gpt-5.6-sol max | WB3 interior boundary/prism/local traces and original ambient separation through ff304a1b2 independently accepted, with actual 3D WB3 local-trace model. | Produce finite replacement surface/manifold and actual disjoint caps with face equations. Canonical restriction merge assigned at delivery; checkpoint by 14:05 UTC. Full 30.3 remains open. |
-| M304 / gpt-6-astra max | Own 30.4. Through ac3673685 independently accepted; actual essential singular filling b80e381fc and concrete essential torus compression fd77b6549 delivered and queued. | Continue the same concrete model toward actual ambient separation targets. Preserve E3 general physical-cap/separation and F26.4 ownership. General beta-zero and full 30.4 remain open. |
+| M304 / gpt-6-astra max | Own 30.4. Essential singular filling and actual torus compression/frontier/common targets through 1c43107f3 independently accepted. Native ball-target strengthening 815c38869 queued. | Continue the same concrete shell instance. General arbitrary-shell beta-zero descent and full Moise304 remain open; preserve E3 general surgery and F26.4 ownership. Checkpoint by 14:05 UTC. |
 | S / gpt-6-astra max | Actual fixed-old-atlas local chart smoothing and planar/Jordan extension through c4c935995 independently accepted. Later relative Morse approximation 5beeda255 queued. | Continue relative strip: actual neighborhood control, critical-point elimination and end-collar-preserving noncritical parameterization. Local chart smoothing does not close compact PL smoothing. Checkpoint 14:05 UTC. |
 
 F must distinguish the full two-sheeted ambient cover from the smaller regular
