@@ -26,6 +26,7 @@ theorem exists_common_derivedNeighborhood_with_surface_traces
     ∃ R L P₀ P₁ : Geometry.SimplicialComplex ℝ E,
       R.faces.Finite ∧ L.faces.Finite ∧ P₀.faces.Finite ∧ P₁.faces.Finite ∧
       IsSubdivision R K ∧ L.space = J ∧ P₀.space = S₀ ∧ P₁.space = S₁ ∧
+      P₀.faces ⊆ R.faces ∧ P₁.faces ⊆ R.faces ∧
       L.faces ⊆ P₀.faces ∧ L.faces ⊆ P₁.faces ∧
       (derivedNeighborhood R L).space ⊆ U ∧
       (derivedNeighborhood R L).space ∈ nhdsSetWithin J K.space ∧
@@ -114,6 +115,7 @@ theorem exists_common_derivedNeighborhood_with_surface_traces
     exact derivedNeighborhood_space_inter_subcomplex R P₁ L
       (restrict_faces_subset R Q₁.space)
   exact ⟨R, L, P₀, P₁, hRfin, hLfin, hP₀fin, hP₁fin, hRK, hLspace,
-    hP₀space, hP₁space, hLP₀, hLP₁, hNsubU, hNnhds, htrace₀, htrace₁⟩
+    hP₀space, hP₁space, restrict_faces_subset R Q₀.space,
+    restrict_faces_subset R Q₁.space, hLP₀, hLP₁, hNsubU, hNnhds, htrace₀, htrace₁⟩
 
 end DifferentialGeometry.Topology.PiecewiseLinear

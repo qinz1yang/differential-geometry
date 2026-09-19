@@ -8831,6 +8831,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.DerivedNeighborhoodHandleAt
 import DifferentialGeometry.Topology.PiecewiseLinear.DerivedNeighborhoodHandleFiltration
 import DifferentialGeometry.Topology.PiecewiseLinear.DerivedNeighborhoodRestriction
 import DifferentialGeometry.Topology.PiecewiseLinear.CommonCircleDerivedNeighborhood
+import DifferentialGeometry.Topology.PiecewiseLinear.CommonCircleNeighborhood
 import DifferentialGeometry.Topology.PiecewiseLinear.AnnulusCylinder
 import DifferentialGeometry.Topology.PiecewiseLinear.CircleArcPair
 import DifferentialGeometry.Topology.PiecewiseLinear.DiskBoundaryBicollar
@@ -8870,6 +8871,8 @@ import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.SourceNormalSys
 import DifferentialGeometry.Topology.PiecewiseLinear.DualCellDecomposition
 import DifferentialGeometry.Topology.PiecewiseLinear.DualCellPiercing
 import DifferentialGeometry.Topology.PiecewiseLinear.DualCellPiercingAnnuli
+import DifferentialGeometry.Topology.PiecewiseLinear.DualCellPiercingNeighborhoods
+import DifferentialGeometry.Topology.PiecewiseLinear.TrivalentDualCellNeighborhoodModel
 
 /-!
 # Differential geometry and geometric analysis
