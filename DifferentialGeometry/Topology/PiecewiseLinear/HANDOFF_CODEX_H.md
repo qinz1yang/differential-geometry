@@ -2988,3 +2988,38 @@ The remaining construction is the successor step: map the next cell to the
 second cut-model lobe relative to the current outgoing disk, glue the two maps,
 and normalize the resulting outer ball back to the first lobe while preserving
 the fixed near marked point.
+
+## 51. 2026-09-18 Normalization induction over trimmed arc cells — done
+
+`ArcCellNormalizationInduction.lean` proves
+`exists_normalized_trimmedArcCellUnion_of_cutModel`.  Given the geometric data
+produced by `exists_cutModel_data`, every trimmed union with
+`1 ≤ k` and `k + 1 ≤ 2 * n` admits a PL homeomorphism to the first cut-model
+lobe.  It sends the arc trace to the standard marked arc, sends the outgoing
+interface disk to the fixed cut disk, sends the current crossing to the cut
+apex, and keeps the near crossing at the fixed marked point.
+
+The theorem performs the finite induction internally; no normalized state or
+ball-pair conclusion occurs among its hypotheses.  The base case uses the
+verified `k = 1` normalization and aligns its model with the supplied fixed cut
+model.  Each successor uses exactly two marked cone extensions.  The first
+extends the current interface map across the next cell into the second lobe and
+then glues it to the old map.  The second transports the new outgoing disk in
+the outer sphere back to the fixed cut disk and normalizes the union to the
+first lobe.  Injectivity of the glued homeomorphism proves that the near marked
+point is outside the new outgoing disk, while the cut-model containment
+`L₂.space ⊆ L.space ∪ coneSet z L₀.space` and disjointness from the old
+interface put that disk in the outer sphere.
+
+The module is registered directly in `DifferentialGeometry.lean`.  Strict
+private verification used round token `h-round-20260919` and output root
+`C:\Users\liao9\AppData\Local\Temp\codex-h-cutmodel-private`.
+The module check and external silent audit both exited 0 with zero diagnostics
+and unchanged shared outputs.  The audit dynamically enumerated the module's
+single non-automatic declaration, checked thirty-two reused declarations,
+found only `{propext, Classical.choice, Quot.sound}`, and passed all thirteen
+applicable environment linters.
+
+The remaining layer is to instantiate this theorem with
+`exists_cutModel_data` and extract `IsPLBallPair 2 1` for the final trimmed
+union at `k = 2 * n - 1`.
