@@ -8,21 +8,26 @@ handoff and the individual lane handoffs.
 
 ## Ownership and round boundaries
 
-- F: projected embedded disks and source-faithful double-cover reduction,
-  gpt-6-astra, max.
-- h: repair the Moise252/331/351 contracts and regular-neighborhood witnesses,
-  gpt-5.6-sol, max.
-- E3: the actual 30.3 splitting/separation construction,
-  gpt-5.6-sol, max.
-- M304: Moise 30.4 spherical-shell theorem, gpt-6-astra, max; task
-  01a0b7e8-6789-72c2-afe3-522847f439bb, branch codex/moise-304. Construct an
-  independent actual producer while E3 finishes 30.3. In particular, 28.19 and
-  the initial separating surface are legitimate dependencies within this lane.
-- S: compact PL three-manifold smoothing, gpt-6-astra, max; assigned at the
-  finite 24.12 delivery 434d5352c. The finite CST deliveries are independently
-  accepted; the smoothing lane is separate and remains open.
-- The coordinator validates, integrates, records decisions, and supplies exact
+The latest mathematical assignments are in
+[MOISE_PLAN.md](MOISE_PLAN.md) and the owner-approved risk allocation in
+[LOOP_THEOREM_RISK_PLAN_20260919.md](LOOP_THEOREM_RISK_PLAN_20260919.md).
+Historical task names identify existing tasks, not permanent subject ownership.
+
+At each task's next explicit delivery or genuine blocking handoff:
+
+- F, Astra max: actual projected embedded-disk relative normal structure.
+- M304, Astra max: upstairs Lemma 2/L2 surgery in the original double cover.
+- h, Sol max: compatible simultaneous two-sheet charts along a whole branch.
+- E3, Sol max: actual sphere-base and tower-interface assembly.
+- S, Astra max: retain the independent compact PL smoothing producer lane.
+- The coordinator validates, integrates, records decisions and supplies exact
   interfaces. It does not write the main mathematical proofs.
+
+The current 30.6, infinite-modification and Q.2b rounds finish a saveable layer
+before those task handoffs. Do not send the new lane while the old round is
+active. The target is four tasks on 25.2 and one on independent smoothing;
+no new task, subagent or compiler slot is authorized. Preserve all frozen
+downstream work and its honest pending-acceptance status.
 
 The owner upgraded h and E3 to Sol max for subsequent assignments on 2026-09-19
 UTC. Apply the explicit model and effort on their next dispatch; do not interrupt

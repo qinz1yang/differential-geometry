@@ -8,6 +8,12 @@
 ## 2026-09-19 audited priorities (supersedes stale status prose)
 
 Current acceptance and lane scopes are in MOISE_PLAN.md's latest live frontier.
+The owner risk decision in LOOP_THEOREM_RISK_PLAN_20260919.md takes priority
+over older next-round allocations: at explicit delivery boundaries F/M304/h/E3
+focus respectively on projected-disk normal structure, upstairs L2 surgery,
+whole-branch charts and actual sphere/tower assembly; S keeps compact smoothing.
+Current rounds continue to a safe delivery. Do not launch new downstream rounds
+in place of the recorded25.2 assignments.
 The corrected Moise252/331/351 contracts are independently accepted; their
 unconditional theorem producers remain open. The original source/book audit
 remains historical evidence of why these repairs were needed.

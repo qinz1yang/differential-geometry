@@ -8,12 +8,17 @@ F through d68c5adc5 is independently accepted in integration section 96.
 The quantitative same-perturbation and W union N crossing layer remains local;
 full projected-disk normal structure and descent are open.
 
+The owner has raised 25.2 to the first risk priority; the next-round four-to-one
+allocation and upstairs-surgery obligations are in
+[LOOP_THEOREM_RISK_PLAN_20260919.md](LOOP_THEOREM_RISK_PLAN_20260919.md).
+Current active rounds are not interrupted.
+
 ## Current main chain
 
 | Book node | Source interface / construction | Current obligation |
 | --- | --- | --- |
-| 25.1 | Moise251 and conditional Stallings induction | F: actual NormalSystem relative normalization, cover/projection and singularity removal remain open. |
-| 25.2 | Corrected Moise252 | Essential boundary condition is present and accepted. The unconditional Loop Theorem producer remains open. |
+| 25.1 | Moise251 and conditional Stallings induction | Actual projected embedded-disk normal structure and Lemma2 descent remain open. Four tasks target distinct25.2 obligations at their next delivery; the sphere EmbeddedDisk and actual cover producers already exist. |
+| 25.2 | Corrected orientable Moise252 | Essential boundary condition is present and accepted. The unconditional Loop Theorem producer remains open. |
 | 26.4 | Corrected Moise264 | General interior-surface kernel-to-disk theorem remains open. The implemented spherical-shell route uses the narrower proved conditional producers directly. |
 | 30.3 | Actual geometric splitting and separation | Independently accepted throughc347/c10: actual finite-surface caps and separation by the same result for the original targets, with a full R3 model. Still relevant to later local surgery and section32. |
 | 30.4 | moise304_of_moise252 : Moise252 -> Moise304 | Independently accepted from 3717074e9. Exact original shell and targets; least-Betti separator and actual compression. No Moise303 or broad Moise264 dependency in kernel type/body closure. |

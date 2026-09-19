@@ -4668,3 +4668,55 @@ the surjectivity input is path connectedness. Abelianization isomorphism,
 rational Betti bounds and torus recognition are explicitly not claimed.
 This is frozen evidence only, pending independent integration acceptance.
 The author continues the existing 30.6 round; no extra task was sent.
+
+## 97. Owner-directed risk reallocation toward 25.2
+
+The owner supplied a fresh audit and requested greater weight for 25.2. The
+source review and concrete next-round plan are in
+LOOP_THEOREM_RISK_PLAN_20260919.md. This supersedes earlier future assignments;
+it does not interrupt an active round. At the next explicit delivery or
+genuine blocking handoff, F handles actual projected embedded-disk normal
+structure, M304 takes upstairs Lemma2/L2 surgery, h takes the whole-branch
+simultaneous two-sheet chart, and E3 takes actual spherical EmbeddedDisk/tower
+assembly. S retains independent compact smoothing. Model settings remain
+Astra max for F/M304/S and Sol max for h/E3. No extra task or compiler is added.
+The corresponding deferred handoffs are recorded as pending, not dispatched.
+
+The audit's main projection insight is supported by existing source: the
+actual cover projection already produces local injectivity, fibers at most
+two, proper boundary trace and subgroup avoidance from an EmbeddedDisk. It
+does not produce the full normal-crossing field. SphereCase now has actual
+finite spherical-domain and inward-push producers, including an EmbeddedDisk
+endpoint; the old hpush consumer is not its current complete dependency story.
+The corrected orientable Moise252 contract is already accepted. The generic
+Stallings interface still needs its actual invariants and output assembled;
+it must not be declared closed from these separate producers.
+
+Upstairs L2 is the preferred next construction, with an actual deck action,
+embedded replacement disk, compatible complete branch neighborhoods, exact
+new intersections and boundary-word avoidance, then one canonical projection.
+Normal-disk branch count and tower vertex-collision complexity are distinct.
+Their respective induction obligations and upstairs/downstairs branch-orbit
+identifications remain explicit. The strategy reduces repeated bookkeeping;
+it does not prove absence of new crossings or strict descent automatically.
+25.2 is the sole unresolved theorem input of the accepted conditional304
+endpoint, not the only outstanding input of all of section34 or smoothing.
+
+S delivered e24808bce during this decision. Its 622481-byte source/evidence
+receipt has SHA256 f2aa33c9d244c823b71aac4d07a514c88e29f3d52444c35bc541839020f9e5d7.
+Nine embedded evidence records and all four compiled objects were frozen and
+hash checked in the sixty-third batch. The author reports +762/-33 Lean,
+17 native declarations, 10 native reuses and 42 actual-model declarations;
+the whole chain afterc0 still awaits independent integration replay.
+The actual descending-branch theorem explicitly assumes a compact inward
+barrier region and adapted local radial field data, and produces a branch
+reaching below the original minimum level. Those inputs are not produced
+by the compact smoothing endpoint yet.
+
+At this explicit S delivery, the same task was continued to smooth gluing of
+the actual opposite branch with the original gamma through the same critical
+points, retaining the original quadratic germs, then the actual relative
+h(u)+z^2 normal form. Its local radial-line formula alone does not identify
+the original gamma with the other radial side; that is the next real local
+dynamics obligation. No other active task received a routine message or a
+second lane. The four-to-one allocation remains pending their own boundaries.
