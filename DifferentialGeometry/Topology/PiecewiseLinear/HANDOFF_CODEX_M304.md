@@ -2261,3 +2261,76 @@ input; Moise305Tame retains its bicollared-outer-frontier condition. Neither
 unconditional Moise304 nor general Moise305 is claimed. The arbitrary-shell
 conditional endpoint is now closed in the author lane, pending the
 coordinator's independent replay and integration acceptance.
+
+
+### M304 original toroidal-shell incompressibility and fundamental groups (2026-09-19 UTC)
+
+Author-verified mathematical checkpoint; Moise306 and Moise307 remain open.
+Six new leaves and one existing leaf contribute 595 added native lines,
+zero deleted native lines, 34 source declarations and one generated local
+notation constant. The flat aggregate gains exactly six imports. Existing
+declarations in SurfaceEssentialDisk and all other earlier APIs are unchanged.
+MoiseChain and other lanes are unchanged; independent integration is pending.
+
+The new actual-kernel disk producer in SurfaceEssentialDisk takes a nonidentity
+loop killed by the inclusion into its prescribed open neighborhood, without
+an ambient simple-connectivity assumption. SurfaceIncompressibility then
+constructs a lower-Betti connected separator for the same two targets from
+that kernel. A minimal separator consequently has injective inclusion on
+fundamental groups. All disk and compression geometry is produced using the
+explicit upstream Moise252 input and the existing checked relative machinery.
+
+Manifold.CylinderImage proves the interior and frontier formulas for embedded
+compact manifold cylinders by invariance of domain. ToroidalShell applies
+them to the original homeomorphism in IsToroidalShell Y T0 T1: frontier Y is
+exactly T0 union T1, and interior Y is homeomorphic to the torus times (0,1).
+It constructs a finite connected oriented two-sided PL2 separator in this
+original interior and an actual minimum of bettiOne for these original
+targets. ToroidalShellCompression's
+IsToroidalShell.exists_connected_separating_surface_fundamentalGroup_map_injective
+produces that separator with injective inclusion into interior Y from h252.
+No minimum, sphere, torus, compression disk or classification is assumed.
+
+FundamentalGroup.Torus computes the torus group at every basepoint as Z x Z.
+ToroidalShellFundamentalGroup transfers this to both Y and interior Y and
+proves both actual endpoint inclusions T0 -> Y and T1 -> Y induce bijections
+on fundamental groups. These are the native group inputs for the book's
+sphere-exclusion argument, not a completed sphere-exclusion theorem.
+
+The new unconditional model starts from the existing actual embedded PL
+torus, constructs its ambient bicollar, and restricts that embedding to a
+closed unit cylinder. Its shell, interior and both targets are nonempty;
+the targets are disjoint; its interior is proved not simply connected.
+A second unconditional model constructs its minimum separator. A third,
+with explicit h252, constructs an incompressible separator of exactly those
+same targets and proves its fundamental group commutative. No standard
+shell is substituted for the arbitrary shell in the public results.
+
+The cumulative audit checks 66 nonautomatic native constants (including the
+local notation constant), 106 critical reuse entries, thirteen models (five
+unconditional, eight with explicit h252), and four model helpers. Every
+checked transitive axiom closure uses only the approved foundational axioms,
+and all 13 applicable linters pass. Every changed leaf has a private compile
+receipt with zero diagnostics. Kernel type-and-body traversals for the
+separator, interior group computation and left endpoint inclusion contain
+no Moise303 or wide Moise264. The source import closure has 912 native
+modules and 1938 edges, no cycles or HurewiczLowDegrees.
+
+Frozen evidence: C:/Users/liao9/AppData/Local/Temp/moise304-reading/toroidal-checkpoint
+contains 39 source/receipt sets, raw and normalized source identities,
+AuditToroidal.lean, toroidal-census.json, ToroidalModels.lean, source review,
+compiled dependency closures and timing. Manifest SHA256: 215C4D6BFEE73F394D4B8908EB424E518FD5BFAEDAB99EABAE3827865521560C.
+Final zero-diagnostic audit: 2026-09-19T21:07:56.0084065Z. The compile-to-audit window is
+1660.493 seconds, not total effort.
+The owner-stopped root build remains stopped; shared artifacts are untouched.
+
+The remaining geometric obligations are exact: (1) a PL2 sphere in interior Y
+cannot separate T0 and T1, using the actual cut sides and the endpoint group
+isomorphisms; (2) a connected closed orientable finite PL2 surface with the
+resulting nontrivial fundamental group embedded in Z x Z is homeomorphic to
+S1 x S1. The current SurfaceInvariants API computes counts from an already
+supplied handle profile; it does not construct that profile or a torus
+homeomorphism. SurfaceSphereRecognition handles Euler characteristic two,
+not the required Euler-zero orientable case. Betti number two alone has not
+been used as torus recognition. Work toward these obligations continues;
+this checkpoint does not claim Moise306, Moise307 or Moise252 complete.
