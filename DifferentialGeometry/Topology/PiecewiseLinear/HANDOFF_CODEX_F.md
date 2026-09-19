@@ -4393,3 +4393,35 @@ sourceStable=true。源码 SHA256 为
 私有回执 `codex-f-boundary-private/RelativeSimplexSubdivision-checkpoint.json`、`AuditF293.json`。
 外部探针检查后删除；源码、根登记和本记录同次提交。无旧消费者改签名，整库根检由协调者负责。
 下一层继续实际塌缩的边界固定、满像、内三角形常值与真实源复形搬运；下一审计 AuditF294。
+
+### 19.154 七三角形上的边界固定 PL 塌缩（2026-09-19 UTC）
+
+**done：SimplexCollapse.lean。** 主端点 `exists_boundary_fixed_collapse_of_triangle`
+从真实二维赋范空间中的任意仿射独立三点单形，生产有限复形 R 和实际自映射 q：
+R 是原单形的剖分、载体相同，恰有七个二维面，每个面包含在一个二维面内，q 在各面仿射，
+连续且 PL，整体像等于原单形，在整个拓扑边界逐点恒等。一个三顶点内面 u 的闭凸包严格位于
+载体内部，q 在它上恒等于原顶点 a；其余六个二维面均与 openSimplex u 不交。
+端点还明确输出无限纤维、三个两两不同的同纤维点，以及局部单射谓词的否定。
+相交相容性、仿射独立、覆盖与七面计数均由实际构造证明，没有作为输入假设。
+
+本实现使用三个连续的重心 stellar 插点，以避免手工假设 §19.152 同心模型的兼容性。
+令 p₁=centroid[a,b,c]、p₂=centroid[p₁,a,b]、p₃=centroid[p₂,p₁,a]。
+内面为 [p₃,p₂,p₁]，其余六面为 [p₁,a,c]、[p₁,b,c]、[p₂,a,b]、[p₂,b,p₁]、
+[p₃,p₁,a]、[p₃,p₂,a]；插点均映到 a，旧顶点固定。形状与 §19.152 的同心选择不同，
+但实现同一真实的内部三角形塌缩。面关系来自 §19.153 的精确判据；每次三角形数增加二。
+
+`exists_inner_triangle_collapse` 已在任意有限平面复形的实际二维面上实现相对版本，
+保留所有其它旧面，返回到旧复形的面映射及每个旧面的原像面；新旧源载体相等，新增六面。
+`image_simplicialMap_eq_of_faces_image` 证明它与任意原顶点映射复合后保持整体像，
+不要求原映射单射；`frontier_subset_geometricFaceCostar` 给出全边界固定所需的实际包含。
+`infinite_fiber_and_not_locally_injective_of_constant_triangle` 使用真实开三角形邻域，
+证明无限纤维与局部单射失败。下一步把该层接到完整 NormalSystem，尚不宣称该记录已检查。
+
+最终聚焦检查 exit=0、零诊断、13.67 秒；最终 AuditF294 exit=0、零诊断、33.97 秒。
+全部十项非自动声明（七公开、三私有）和六项关键复用结果，共十六项传递公理闭包仅标准三公理；
+十三项适用环境 linters 全通过。审计另在标准实际平面三角形上生产七面剖分和无限纤维，输入非空。
+严格语法/header/longLine 开启；sourceStable=true。源码 SHA256：
+`1033434F35480AC94AEF347DDC9FCF22F5F06FF4569341E9452FF8542A98B1B8`。
+回执 `codex-f-boundary-private/SimplexCollapse-checkpoint.json`、`AuditF294.json`。
+外部探针检查后删除；共享产物只读；源码、根登记与本记录同次提交。整库根检仍由协调者负责。
+下一审计 AuditF295。
