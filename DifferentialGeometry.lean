@@ -7293,6 +7293,7 @@ import DifferentialGeometry.Topology.Compactness.Strip
 import DifferentialGeometry.Topology.Compactness.UniformBounds
 import DifferentialGeometry.Topology.Compactness.UniformInjectivity
 import DifferentialGeometry.Topology.Connected.BallComplement
+import DifferentialGeometry.Topology.Connected.BoundaryReplacement
 import DifferentialGeometry.Topology.Connected.CollarCover
 import DifferentialGeometry.Topology.Connected.Dense
 import DifferentialGeometry.Topology.Connected.DomainEquality
@@ -8876,6 +8877,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.ManifoldCapping
 import DifferentialGeometry.Topology.PiecewiseLinear.SphereGluing
 import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceCapping
 import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceCappingBetti
+import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceCappingSeparation
 import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceCircleComplement
 import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceSplitBetti
 import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceSubcomplexComplement

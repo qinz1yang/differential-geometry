@@ -1891,3 +1891,36 @@ remain the canonical consumers after E3's original-boundary marking is
 available. A separation proof for that actual capped surface and a general
 embedded essential-disk producer remain open; arbitrary-shell 30.4 is not
 marked complete.
+
+### M304 separation of a genuine capped surface (2026-09-19 UTC)
+
+`SurfaceCappingSeparation` now proves separation of the literal retained
+surface union two end disks, given an actual PL compression ball N with
+S intersect N = W and frontier N = W union D0 union D1. The shell theorem
+retains the original X,B0,B1, proves containment in interior X and agreement
+with S outside N, and proves separation of those same original targets.
+Separation of the final union is not an input.
+
+The proof derives the needed one-sided local behavior from the native PL
+surface neighborhood and complement-component theorems. It constructs
+U minus N on one original side and proves its frontier lies in the actual
+capped union. Its generic topological calculation and its regular-closed
+region version are reusable beyond the PL ball corollary. This does not use
+separation of the previous, larger polyhedral P to infer separation of the
+smaller final surface.
+
+All 18 declarations in five mathematical modules, 16 critical reuses, an
+actual essential-torus compression in its original shell, and 13 linters
+pass with standard axioms and zero diagnostics. The test discards the
+model's previous post-capping separation and proves it again by the new
+transport theorem, retaining nonempty targets, disjoint disks, Betti numbers
+2 and 0, the proper essential spanning disk, and the exact prism traces.
+Thirteen private module checks include the eight direct dependents. The
+native graph has 545 modules and 1085 edges without cycles. No full-root
+build is claimed. See `HANDOFF_CODEX_M304.md` for proof and receipt details.
+
+The remaining arbitrary-shell 30.4 gates are production of the embedded
+essential disk and alignment of the original surface with the actual
+compression wall/end circles. Separation transport is now proved once those
+geometric inputs exist; the accepted capping/realization APIs still provide
+the canonical closed-manifold realization. No E3 geometric file is changed.

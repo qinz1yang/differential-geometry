@@ -10,10 +10,11 @@ namespace DifferentialGeometry.Topology.PiecewiseLinear
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
 
 open Classical in
-private theorem local_separation_in_ambient_of_surface
+theorem IsCombinatorialManifold.exists_connected_neighborhood_pair_sdiff
     (L : Geometry.SimplicialComplex ℝ E) [Finite L.faces]
-    (hL : IsCombinatorialManifold 2 L) (hdim : Module.finrank ℝ E = 3) :
-    ∀ p ∈ L.space, ∃ C ∈ 𝓝[(univ : Set E)] p, C ⊆ univ ∧
+    (hL : IsCombinatorialManifold 2 L) (hdim : Module.finrank ℝ E = 3)
+    {p : E} (hp : p ∈ L.space) {U : Set E} (hU : U ∈ 𝓝 p) :
+    ∃ C ∈ 𝓝 p, C ⊆ U ∧
       ∃ A B : Set E, IsConnected A ∧ IsConnected B ∧ A ∪ B = C \ L.space ∧
         C ∩ L.space ⊆ closure A ∧ C ∩ L.space ⊆ closure B := by
   obtain ⟨T, hT, hTcard, hLT⟩ := exists_affineIndependent_openSimplex_superset 3 hdim
@@ -28,14 +29,14 @@ private theorem local_separation_in_ambient_of_surface
   have hint : interior K.space = openSimplex T := by
     rw [hKspace, interior_convexHull_eq_openSimplex hT (by omega)]
   have hLint : L.space ⊆ interior K.space := hLT.trans hint.symm.subset
-  intro p hp
   have hpB : p ∉ (boundaryComplex 3 K).space := by
     rw [← frontier_space_eq_boundaryComplex_space_of_finrank hdim K hK]
     exact fun h => h.2 (hLint hp)
-  obtain ⟨C, _, _, hCnhds, _, a, ha, b, hb, _, hunion, _, _, _, hinter⟩ :=
-    hK.exists_isPLBall_neighborhood_pair_sdiff hL (hLint.trans interior_subset) hp hpB Filter.univ_mem
+  obtain ⟨C, _, hCU, hCnhds, _, a, ha, b, hb, _, hunion, _, _, _, hinter⟩ :=
+    hK.exists_isPLBall_neighborhood_pair_sdiff hL (hLint.trans interior_subset) hp hpB
+      (nhdsWithin_le_nhds hU)
   rw [nhdsWithin_eq_nhds.mpr (mem_interior_iff_mem_nhds.mp (hLint hp))] at hCnhds
-  refine ⟨C, by simpa only [nhdsWithin_univ] using hCnhds, subset_univ _,
+  refine ⟨C, hCnhds, hCU.trans inter_subset_right,
     connectedComponentIn (C \ L.space) a, connectedComponentIn (C \ L.space) b,
     isConnected_connectedComponentIn_iff.mpr ha, isConnected_connectedComponentIn_iff.mpr hb,
     hunion, hinter.symm.subset.trans inter_subset_left, hinter.symm.subset.trans inter_subset_right⟩
@@ -56,7 +57,9 @@ theorem IsCombinatorialManifold.exists_connectedComponentIn_pair_compl
   obtain ⟨a, ha, b, hb, hdis, hunion, hclunion, hinter⟩ :=
     Topology.exists_connectedComponentIn_pair_sdiff_of_local_separation isPreconnected_univ
       isClosed_univ hconn (isPolyhedron_space L).isClosed (subset_univ L.space)
-      (local_separation_in_ambient_of_surface L hL hdim) hsep
+      (fun p hp => by
+        simpa only [nhdsWithin_univ] using
+          hL.exists_connected_neighborhood_pair_sdiff L hdim hp Filter.univ_mem) hsep
   simp only [← compl_eq_univ_sdiff] at ha hb hdis hunion hclunion hinter
   have hfront (c : E) (hsub : L.space ⊆ closure (connectedComponentIn L.spaceᶜ c)) :
       frontier (connectedComponentIn L.spaceᶜ c) = L.space := by

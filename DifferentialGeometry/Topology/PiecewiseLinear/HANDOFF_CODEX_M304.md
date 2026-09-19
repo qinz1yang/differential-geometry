@@ -1496,3 +1496,92 @@ separation of its capped union. This round does not duplicate those modules
 or E3's relative-prism/end-circle marking work. That marking and a separation
 argument for the actual capped surface, together with general production of
 the embedded essential disk, remain the precise upstream gates for 30.4.
+
+## Separation of the actual capped surface (2026-09-19 UTC)
+
+`SurfaceCappingSeparation.lean` proves the missing separation transfer once
+an actual compression region and its original-surface traces are supplied.
+It does not consume the larger polyhedral separator from the previous round.
+
+The primary theorem is
+`IsCombinatorialManifold.separates_of_boundary_replacement`. Its old surface
+S is finite, connected and a closed PL two-manifold in a three-dimensional
+real normed space. It assumes the original separation of arbitrary H,T,
+a closed candidate C, and a region N satisfying
+closure(interior N) = N and preconnected interior. The geometric equations
+are S intersect N subset frontier N, frontier N subset S union C, and
+S minus N = C minus N. Both original targets avoid N. It proves
+`Separates C H T`; no separation of C is an input, and the targets need not
+be connected. The PL three-ball version derives both interior conditions.
+
+The proof constructs a separating region, rather than inferring separation
+of a smaller set from separation of a larger set. The actual interior of N
+lies in one of the two open regions U,V of the original separation. The
+canonical two complement components of the connected closed PL surface
+show that S is contained in the closure of either nonempty region. At each
+point of the old wall away from C, native PL local separation supplies a
+small neighborhood with two preconnected complement pieces. One meets
+interior N and the other meets V. Since frontier N is contained in S union C,
+the first piece cannot cross frontier N, so it lies entirely inside N.
+Consequently frontier(U minus N) is contained in C. The original H and T
+are on opposite sides of this newly constructed frontier. Only then does
+`Separates.mono` enlarge that frontier into C, in the valid direction.
+
+The reusable topological calculation is
+`Topology.frontier_sdiff_subset_of_local_separation` in
+`Connected/BoundaryReplacement.lean`. It only needs the local separation and
+opposite-side closure conditions on S intersect N, and inclusion of S minus N
+in C. `SurfaceComplement` generalizes its former private local lemma to
+`IsCombinatorialManifold.exists_connected_neighborhood_pair_sdiff` inside any
+prescribed ambient neighborhood, and reuses it in the existing complement
+pair theorem. Existing public signatures are retained. `BallRegularClosed`
+adds `IsPLBall.isConnected_interior_of_finrank`; the existing Euclidean
+`isConnected_interior_of_isPLBall` is now its corollary.
+
+`IsCombinatorialManifold.separates_capped_surface` applies the result to the
+literal union R.space union D0 union D1, using a real PL three-ball N, two
+PL disks, S intersect N = W, W union R.space = S, and
+frontier N = W union D0 union D1. The stronger disjoint-cap, annulus and
+boundary-marking data required for the manifold realization are compatible
+inputs, but separation itself does not need those extra assumptions.
+`IsSphericalShell.separates_capped_surface` keeps the supplied X,B0,B1. From
+N subset interior X it proves separation of those same B0,B1, containment
+of the capped union in interior X, and exact agreement with S outside N.
+
+The external test uses the existing embedded essential-torus compression
+model, including its proper middle spanning disk with nonempty interior away
+from S, non-nullhomotopic boundary circle, nonempty disjoint caps and actual
+annular wall. It derives the compression-region trace using the cylindrical
+slice intersection theorem and derives its frontier using the PL prism
+frontier theorem. It discards the model's supplied separation of the capped
+surface. In the original spherical shell chosen for the model, the new
+theorem re-proves separation of the same two nonempty boundary targets by
+the same finite sphere P = R union D0 union D1. The test retains Betti numbers
+2 for S and 0 for P, shell containment and outside agreement.
+
+The five mathematical modules contain 18 nonautomatic declarations. All 18,
+16 critical reuses and the actual model pass the axiom audit with only
+standard foundational axioms. All 13 applicable linters pass. The five
+modules and eight direct dependent modules pass private compilation with
+zero diagnostics. The native source graph has 545 reachable modules and
+1085 edges, is acyclic and avoids HurewiczLowDegrees. Both new leaves are
+registered in the flat root. The owner-stopped root build is not restarted;
+no shared E output is written. Frozen receipts are recorded below.
+
+The 13 source/object/receipt sets, complete external audit, census and source
+review are frozen at `moise304-reading/capping-separation-checkpoint/`.
+Manifest SHA256:
+`F89F34F3073B370BC754499102908695823F6601874DA8C873B6C71256316DC8`.
+The source review also verifies all 11 pre-existing public signatures in the
+three edited foundational files are unchanged. Final audit completion is
+2026-09-19T16:20:27.4702876Z.
+
+This closes separation transport for a genuine wall-to-caps compression.
+It does not produce the original-surface wall/end-circle marking from the
+previous common derived neighborhood, nor does it produce an embedded
+essential disk for an arbitrary prescribed shell. Those geometric producers
+remain the upstream obligations for arbitrary-shell Moise 30.4. The accepted
+SurfaceSplitRealization/SurfaceSplitCapping APIs remain the canonical
+manifold-realization consumers; their capped-space equation rewrites the
+literal union in the new separation theorem. No E3 geometric source or
+existing native torus-model theorem is modified in this round.
