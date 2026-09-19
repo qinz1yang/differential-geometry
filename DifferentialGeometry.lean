@@ -7328,6 +7328,7 @@ import DifferentialGeometry.Topology.Covering.QuotientDiffeomorph
 import DifferentialGeometry.Topology.Covering.RealDeckCircle
 import DifferentialGeometry.Topology.Covering.Section
 import DifferentialGeometry.Topology.Covering.SectionSplit
+import DifferentialGeometry.Topology.Covering.TwoSheetSection
 import DifferentialGeometry.Topology.Covering.Sections
 import DifferentialGeometry.Topology.Covering.SemilocallySimplyConnected
 import DifferentialGeometry.Topology.Covering.Separation
@@ -8740,3 +8741,5 @@ import DifferentialGeometry.Topology.PiecewiseLinear.CollarInwardMap
 import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryInwardPush
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ProjectedBoundary
 import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryLocalEmbedding
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.LiftedImage
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CoverComplexity

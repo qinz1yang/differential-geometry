@@ -4587,3 +4587,28 @@ ProjectedBoundary-proper-checkpoint.json、AuditF299.json。源码、根登记�
 **partial：完整覆盖图与严格下降。** proper 投影盘已闭合，但 crossing 正规形式仍未生产。
 下一层从复杂度相等推导真实奇异像上的 PL 截面，再沿已证的正规邻域变形收缩提升同伦，
 以连通二重覆盖不容全局截面推出严格下降；覆盖图的全部数据仍须由实际覆盖构造组装。
+
+### 19.160 连通二重覆盖的严格复杂度下降（2026-09-19 UTC）
+
+**done：Covering/TwoSheetSection.lean、LoopTheorem/LiftedImage.lean 与 CoverComplexity.lean。**
+`DoubleCoverDiagram.complexity_lt_of_isPreconnected` 从现有真实完整覆盖图及楼上完整环境的连通性，
+生产严格不等式 T.complexity < S.complexity；没有把分离的一对顶点或严格下降再当作输入。
+
+`exists_isPLHomeomorphOn_image_of_complexity_eq` 先从复杂度相等证明提升后的顶点值在楼下顶点
+碰撞上恒定，实际构造奇异像之间的 PL 同胚 s，满足 p(s x)=x 及 s∘S.singularMap=T.singularMap。
+逐源面用仿射重心公式验证，允许源面在目标里降维。`exists_continuous_section_of_homotopic_lift`
+通过覆盖同伦提升把该截面沿正规邻域的真实强变形收缩延拓到整个楼下流形。
+`injective_of_continuous_section` 证明连通 Hausdorff 局部同胚有连续截面时投影单射；
+`not_exists_continuous_section_of_fiber_card_two` 因而排除该全局截面，得到严格下降。
+
+三个模块聚焦检查 exit=0、零诊断；AuditF300 exit=0、零诊断。
+五项新非自动声明、六项关键依赖和一项具体非空离散覆盖模型，共十二项传递公理闭包仅标准三公理；
+十三项适用环境 linters 全过。模型检验实际覆盖同伦截面生产者；没有将它称作完整 NormalSystem
+或连通 DoubleCoverDiagram 的非空实例。sourceStable=true、共享产物只读。
+回执：TwoSheetSection-checkpoint.json、LiftedImage-checkpoint.json、CoverComplexity-checkpoint.json、
+AuditF300.json。源码、根登记与本记录同次提交；整库根检由协调者负责。下一审计 AuditF301。
+
+**partial：完整覆盖归纳的生产。** 严格下降已消去独立的下降假设，但仍条件于真实 DoubleCoverDiagram
+和完整楼上覆盖的连通性。下一步把实际有限覆盖的既有三角剖分实现为全局逐片仿射投影，并保留实际
+投影交换等式、纤维基数和连通性；随后组装小正规邻域、边界邻域与正规子群资料。
+小正规邻域不能被当成满的二重覆盖，crossing 正规化也未由本层完成。
