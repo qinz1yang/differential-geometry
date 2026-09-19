@@ -93,8 +93,7 @@ theorem exists_embedded_torus_compression_separating_points :
     rw [boundaryComplex_space_of_isPLHomeomorphOn_stdSimplex D hp,
       simplexBoundary_stdVertices_space, image_id]
   have hfD : IsCylindricalDiagram f D.space N.space := hDsp.symm ▸ hf
-  have hendsD : ∀ x ∈ D.space, f (x, 0) = f (x, 1) := hDsp.symm ▸ hends
-  have hcompression := hfD.exists_capped_surface_of_eq_ends D hp hendsD
+  have hcompression := hfD.exists_capped_surface D hp
     (by simp) (a := 1 / 2) (by norm_num)
   simp only [hDsp, hDJ, id_eq] at hcompression
   obtain ⟨K, R, P, hKfin, hRfin, hPfin, hK, hKc, hKsp, hR, hRc, hRsp,
@@ -144,7 +143,7 @@ theorem exists_embedded_torus_compression_separating_points :
     (t := 1 / 4) (by norm_num)
   have hDmeet : K.space ∩ f '' (stdSimplex ℝ (Fin 3) ×ˢ {(1 / 4 : ℝ)}) = C := by
     rw [hKsp]
-    exact hf.image_subcylinder_inter_slice hJsub hends (by norm_num)
+    exact hf.image_subcylinder_inter_slice hJsub hside.image_top_eq_bottom (by norm_num)
   have hWnhds : ∀ x ∈ C, f '' (J ×ˢ Icc (0 : ℝ) (1 / 2)) ∈ 𝓝[K.space] x := by
     rintro x ⟨z, hz, rfl⟩
     have hzt : z.2 = 1 / 4 := hz.2

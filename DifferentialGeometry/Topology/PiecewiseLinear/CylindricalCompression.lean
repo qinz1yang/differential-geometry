@@ -9,7 +9,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.AnnulusCapping
 import DifferentialGeometry.Topology.PiecewiseLinear.PrismSphere
 
 /-!
-# Compression of untwisted cylindrical surfaces to spheres
+# Compression of cylindrical surfaces to spheres
 -/
 
 open Set
@@ -20,11 +20,10 @@ variable {E F : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensio
   [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
 
 open Classical in
-theorem IsCylindricalDiagram.exists_capped_surface_of_eq_ends
+theorem IsCylindricalDiagram.exists_capped_surface
     (D : Geometry.SimplicialComplex ℝ E) [Finite D.faces]
     {p : (Fin 3 → ℝ) → E} (hp : IsPLHomeomorphOn p (stdSimplex ℝ (Fin 3)) D.space)
     {f : E × ℝ → F} {S : Set F} (hf : IsCylindricalDiagram f D.space S)
-    (hends : ∀ x ∈ D.space, f (x, 0) = f (x, 1))
     (hdim : Module.finrank ℝ F = 3) {a : ℝ} (ha : a ∈ Ioo (0 : ℝ) 1) :
     let J := (boundaryComplex 2 D).space
     let D₀ := f '' (D.space ×ˢ {0})
@@ -87,7 +86,7 @@ theorem IsCylindricalDiagram.exists_capped_surface_of_eq_ends
       K.space ∩ f '' (D.space ×ˢ {t}) =
         (fun x => f (p x, t)) '' stdSimplexBoundary 2 := by
     rw [hKsp, hcapbd]
-    exact hf.image_subcylinder_inter_slice hJP hends ht
+    exact hf.image_subcylinder_inter_slice hJP hside.image_top_eq_bottom ht
   have hmeet (t : ℝ) (ht : t = 0 ∨ t = a) :
       R.space ∩ f '' (D.space ×ˢ {t}) =
         (fun x => f (p x, t)) '' stdSimplexBoundary 2 := by
@@ -96,7 +95,8 @@ theorem IsCylindricalDiagram.exists_capped_surface_of_eq_ends
       rcases ht with rfl | rfl <;> constructor <;> linarith [ha.1, ha.2]
     apply Subset.antisymm
     · intro z hz
-      exact (hf.image_subcylinder_inter_slice hJP hends htI).subset ⟨hRside hz.1, hz.2⟩
+      exact (hf.image_subcylinder_inter_slice hJP hside.image_top_eq_bottom htI).subset
+        ⟨hRside hz.1, hz.2⟩
     · rintro z ⟨x, hx, rfl⟩
       refine ⟨boundaryComplex_space_subset 2 R (hRbd.symm.subset ?_),
         ⟨x, ⟨hJP hx.1, hx.2⟩, rfl⟩⟩

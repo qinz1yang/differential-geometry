@@ -1381,3 +1381,12 @@ the accepted frontiers. Continue actual geometric producers at their recorded
 gaps; no new tasks/subagents, no routine mid-round status requests and no
 automatic full-root rebuild. New-stage receipts live in
 .lake/resumed-stage-20260919.json; the prior morning accounting is preserved.
+
+### Resumed-stage cylinder gluing gate
+
+M304 734c87b5f is independently accepted: three existing cylinder/meridian
+interfaces have weaker gluing hypotheses, and all seven affected module suites
+pass together. The renamed cap theorem is not a new theorem count. The actual
+solid-torus fixtures remain untwisted. Arbitrary prescribed-shell geometry and
+Moise304 remain open. New-stage accounting is in RESUMED_ACCEPTANCE_20260919.md;
+the prior morning report is unchanged. See integration handoff section 70.

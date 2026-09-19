@@ -6,7 +6,6 @@ Authors: DifferentialGeometry contributors
 import DifferentialGeometry.Topology.PiecewiseLinear.AnnulusBoundary
 import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryGluing
 import DifferentialGeometry.Topology.PiecewiseLinear.CylinderCut
-import DifferentialGeometry.Topology.PiecewiseLinear.CylindricalProduct
 
 /-!
 # Closed surfaces and complementary annuli in cylindrical diagrams
@@ -60,13 +59,28 @@ theorem IsCylindricalDiagram.exists_surface_annulus_pair {J : Set E} (hJ : IsPLS
 omit [FiniteDimensional ℝ E] [FiniteDimensional ℝ F] in
 theorem IsCylindricalDiagram.image_subcylinder_inter_slice {P J : Set E} {S : Set F}
     {f : E × ℝ → F} (hf : IsCylindricalDiagram f P S) (hJP : J ⊆ P)
-    (hends : ∀ x ∈ P, f (x, 0) = f (x, 1)) {t : ℝ} (ht : t ∈ Icc (0 : ℝ) 1) :
+    (hends : f '' (J ×ˢ {(1 : ℝ)}) = f '' (J ×ˢ {(0 : ℝ)}))
+    {t : ℝ} (ht : t ∈ Icc (0 : ℝ) 1) :
     f '' (J ×ˢ Icc (0 : ℝ) 1) ∩ f '' (P ×ˢ {t}) = f '' (J ×ˢ {t}) := by
+  have hinj₀ : InjOn f (P ×ˢ {(0 : ℝ)}) := by
+    simpa only [Icc_self] using hf.injOn_strip (a := 0) (b := 0)
+      le_rfl zero_le_one (Or.inr zero_lt_one)
+  have hinj₁ : InjOn f (P ×ˢ {(1 : ℝ)}) := by
+    simpa only [Icc_self] using hf.injOn_strip (a := 1) (b := 1)
+      zero_le_one le_rfl (Or.inl zero_lt_one)
   apply Subset.antisymm
   · rintro z ⟨⟨x, hx, rfl⟩, y, hy, hyx⟩
-    have hxy := ((hf.eq_iff_fst_eq_and_circle_eq hends
-      ⟨hJP hx.1, hx.2⟩ ⟨hy.1, hy.2.symm ▸ ht⟩).mp hyx.symm).1
-    exact ⟨y, ⟨hxy ▸ hx.1, hy.2⟩, hyx⟩
+    rcases hf.eq_or_endpoints x ⟨hJP hx.1, hx.2⟩ y ⟨hy.1, hy.2.symm ▸ ht⟩
+      hyx.symm with hxy | hend | hend
+    · exact ⟨y, ⟨(congrArg Prod.fst hxy) ▸ hx.1, hy.2⟩, hyx⟩
+    · have hx0 : f x ∈ f '' (J ×ˢ {(0 : ℝ)}) := ⟨x, ⟨hx.1, hend.1⟩, rfl⟩
+      obtain ⟨w, hw, hwx⟩ := hends.symm ▸ hx0
+      have hwy := hinj₁ ⟨hJP hw.1, hw.2⟩ ⟨hy.1, hend.2⟩ (hwx.trans hyx.symm)
+      exact ⟨y, ⟨(congrArg Prod.fst hwy) ▸ hw.1, hy.2⟩, hyx⟩
+    · have hx1 : f x ∈ f '' (J ×ˢ {(1 : ℝ)}) := ⟨x, ⟨hx.1, hend.1⟩, rfl⟩
+      obtain ⟨w, hw, hwx⟩ := hends ▸ hx1
+      have hwy := hinj₀ ⟨hJP hw.1, hw.2⟩ ⟨hy.1, hend.2⟩ (hwx.trans hyx.symm)
+      exact ⟨y, ⟨(congrArg Prod.fst hwy) ▸ hw.1, hy.2⟩, hyx⟩
   · rintro z ⟨x, hx, rfl⟩
     exact ⟨⟨x, ⟨hx.1, hx.2.symm ▸ ht⟩, rfl⟩, ⟨x, ⟨hJP hx.1, hx.2⟩, rfl⟩⟩
 
