@@ -2881,3 +2881,21 @@ step 2 只做了 grep 与接口陈述，没有动工（月牙是一个项目，�
   与 `C:\Users\liao9\AppData\Local\Temp\codex-e3-slab-private\external-audit.json`。
 - 未闭合：把这两张新推移装进 Bool 标记源片并推出 `doublePointSet = ∅`；连续同伦、自由环类保持及支撑外
   基点的定基同伦；F 的实际迹/双端面图卡仍是一般环境提升的下游输入。
+
+## 88. 2026-09-18 E3-M3：端面可动楔形模型的空双点集
+
+状态：**已闭合**。新模块 `SlabWedgeEndpointDoublePoint.lean` 复用 §85 的 Bool 标记源片，把 §87 的
+正、负缓冲推移合成一张模型映射。
+
+- `doublePointSet_bufferedSlabWedgeTaggedMap`：对任意源片 `A B`，双点集精确等于
+  `positiveBufferedWedgePush c ρ '' A ∩ negativeBufferedWedgePush c ρ '' B`；两张片内的单射性来自
+  §87 的两个全局同胚，跨片双点仍由同一个通用双点集分解引理给出。
+- `doublePointSet_bufferedSlabWedgeTaggedMap_closed`：当 `0 < ρ` 时，在完整闭折片
+  `positiveSlabFold c`、`negativeSlabFold c`（含两个端点）上的双点集严格等于 `∅`，无额外分离假设。
+- 隔离严格检查：模块 exit `0`、零诊断、共享产物未改动；动态 census 核对本模块恰有 7 条非自动声明，
+  另审计 5 条关键复用声明；全部传递公理闭包只含 `propext / Classical.choice / Quot.sound` 的子集，
+  13 个适用环境 linter 零诊断。模块与外部审计收据分别在
+  `C:\Users\liao9\AppData\Local\Temp\codex-e3-slab-private\DifferentialGeometry\Topology\PiecewiseLinear\SlabWedgeEndpointDoublePoint.json`
+  与 `C:\Users\liao9\AppData\Local\Temp\codex-e3-slab-private\external-audit.json`。
+- 未闭合：连续紧支撑同伦与环类保持；F 的实际迹/双端面图卡仍是把此空双点集提升为一般环境
+  `exists_separated_along_branch` 的下游输入。
