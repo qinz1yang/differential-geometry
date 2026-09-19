@@ -17,12 +17,13 @@ namespace DifferentialGeometry.Topology.PiecewiseLinear
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 
 open Classical in
-theorem exists_normalized_trimmedArcCellUnion_one [FiniteDimensional ℝ E]
+theorem exists_normalized_trimmedArcCellUnion_one_of_interior [FiniteDimensional ℝ E]
     {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces]
-    (hK : IsCombinatorialManifold 3 K) {n : ℕ} {v : ℕ → E}
+    (hK : IsCombinatorialManifoldWithBoundary 3 K) {n : ℕ} {v : ℕ → E}
     (hvert : ∀ i ≤ n, ({v i} : Finset E) ∈ K.faces)
     (hedge : ∀ i < n, ({v i, v (i + 1)} : Finset E) ∈ K.faces)
     (hinj : ∀ i ≤ n, ∀ j ≤ n, v i = v j → i = j)
+    (h1B : arcChainFace v 1 ∉ (boundaryComplex 3 K).faces)
     (hnpos : 0 < n) (hn : Module.finrank ℝ E = 3) :
     ∃ (p z y : E) (L L₀ : Geometry.SimplicialComplex ℝ E) (G : E → E),
       L.faces.Finite ∧ L₀.faces.Finite ∧
@@ -47,9 +48,10 @@ theorem exists_normalized_trimmedArcCellUnion_one [FiniteDimensional ℝ E]
   have _ : Finite L₀.faces := hfin₀.to_subtype
   have htwo : 2 ≤ 2 * n := by omega
   have hLc := isConeBase_arcCellBase (K := K) hvert hedge (j := 1) (by omega)
-  have hSph := hK.isPLSphere_arcCellBase hvert hedge (j := 1) (by omega)
+  have hSph := hK.isPLSphere_arcCellBase_of_interior hvert hedge (j := 1) (by omega) h1B
   have hLd := isConeBase_arcCellInterfaceBase (K := K) hvert hedge hinj (j := 1) htwo
-  have hSd := hK.isPLSphere_arcCellInterfaceBase hvert hedge hinj (j := 1) htwo
+  have hSd := hK.isPLSphere_arcCellInterfaceBase_of_interior_left
+    hvert hedge hinj (j := 1) htwo h1B
   have hDS := arcCellInterface_subset_arcCellBase_left
     (K := K) hvert hedge hinj (j := 1) htwo
   have hzS : arcCellCrossing v 1 ∈ (arcCellBase K v 1).space :=
@@ -105,5 +107,33 @@ theorem exists_normalized_trimmedArcCellUnion_one [FiniteDimensional ℝ E]
   · rwa [hA]
   · exact hGeq.image_eq.trans hg.image_eq
   · exact (hGeq (apex_mem_coneSet _ _)).trans hgz
+
+open Classical in
+theorem exists_normalized_trimmedArcCellUnion_one [FiniteDimensional ℝ E]
+    {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces]
+    (hK : IsCombinatorialManifold 3 K) {n : ℕ} {v : ℕ → E}
+    (hvert : ∀ i ≤ n, ({v i} : Finset E) ∈ K.faces)
+    (hedge : ∀ i < n, ({v i, v (i + 1)} : Finset E) ∈ K.faces)
+    (hinj : ∀ i ≤ n, ∀ j ≤ n, v i = v j → i = j)
+    (hnpos : 0 < n) (hn : Module.finrank ℝ E = 3) :
+    ∃ (p z y : E) (L L₀ : Geometry.SimplicialComplex ℝ E) (G : E → E),
+      L.faces.Finite ∧ L₀.faces.Finite ∧
+      IsConeBase p L ∧ IsConeBase z L₀ ∧
+      IsPLSphere 2 L.space ∧ IsPLSphere 1 L₀.space ∧
+      coneSet z L₀.space ⊆ L.space ∧
+      y ∈ closure (L.space \ coneSet z L₀.space) \ coneSet z L₀.space ∧
+      IsPLHomeomorphOn G (trimmedArcCellUnion K v 1) (coneSet p L.space) ∧
+      G '' (trimmedArcCellUnion K v 1 ∩ (arcComplexIn K v n).space) =
+        coneSet p {z, y} ∧
+      G '' coneSet (arcCellCrossing v 1) (arcCellInterfaceBase K v 1).space =
+        coneSet z L₀.space ∧
+      G (arcCellCrossing v 1) = z ∧ G (arcCellCrossing v 0) = y := by
+  apply exists_normalized_trimmedArcCellUnion_one_of_interior
+    hK.isCombinatorialManifoldWithBoundary hvert hedge hinj
+  · rw [hK.boundaryComplex_faces_eq_empty]
+    intro h
+    exact h
+  · exact hnpos
+  · exact hn
 
 end DifferentialGeometry.Topology.PiecewiseLinear

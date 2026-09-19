@@ -3145,3 +3145,30 @@ environment linters.
 The normalization base and successor can therefore replace global closedness
 by `IsCombinatorialManifoldWithBoundary 3 K` plus interiority of the retained
 chain faces.
+
+## 56. 2026-09-18 Boundary-manifold normalization base — done
+
+`ArcCellNormalization.lean` now makes
+`exists_normalized_trimmedArcCellUnion_one_of_interior` the primary base
+construction.  It assumes a finite combinatorial 3-manifold with boundary and
+that `arcChainFace v 1` is outside the boundary complex.  The local results of
+§55 provide exactly the PL 2-sphere cell base and PL 1-sphere outgoing
+interface needed by the unchanged marked relative cone-extension argument.
+
+The original `exists_normalized_trimmedArcCellUnion_one` is retained as a
+stronger-hypothesis corollary.  A closed combinatorial manifold is a manifold
+with boundary whose boundary-complex face set is empty, so the old statement
+now delegates to the realizable primary theorem instead of carrying a separate
+proof.
+
+Strict private verification used round token `h-round-20260919` and output root
+`C:\Users\liao9\AppData\Local\Temp\codex-h-cutmodel-private`.  The module
+compiled with zero diagnostics and unchanged shared outputs.  The external
+silent audit dynamically enumerated both non-automatic declarations, checked
+the twenty-five direct reused declarations, found only
+`{propext, Classical.choice, Quot.sound}`, and passed all thirteen applicable
+environment linters.
+
+The remaining migration is the successor induction, with an interiority
+hypothesis for every retained face `1 ≤ j ≤ 2 * n - 1`, followed by the final
+ball-pair extraction.
