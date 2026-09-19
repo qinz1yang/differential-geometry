@@ -8899,6 +8899,8 @@ import DifferentialGeometry.Topology.PiecewiseLinear.CornerBandSmoothing
 import DifferentialGeometry.Topology.Homeomorph.DisjointFamily
 import DifferentialGeometry.Topology.PiecewiseLinear.TriangleCornerSmoothing
 import DifferentialGeometry.Topology.PiecewiseLinear.TriangleAnnulusSmoothing
+import DifferentialGeometry.Topology.PiecewiseLinear.PolyhedralGraph
+import DifferentialGeometry.Topology.PiecewiseLinear.ArcChainNeighborhood
 
 /-!
 # Differential geometry and geometric analysis

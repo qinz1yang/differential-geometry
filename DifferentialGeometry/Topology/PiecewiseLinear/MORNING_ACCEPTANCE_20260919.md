@@ -41,7 +41,7 @@ time of typing; a post-start commit may contain earlier uncommitted work.
 
 ## Continuing priorities
 
-h: correct the held Moise331/351 repairs; F: actual ambient-cover reduction
+h: actual common nested neighborhoods and annular traces after corrected-contract acceptance; F: actual ambient-cover reduction
 and descent; E3: actual geometric 30.3 data; M304: the independent 30.4 spherical-shell
 theorem; S: compact PL smoothing, assigned after reported finite 24.12 delivery
 434d5352c. The owner authorized M304 at 04:24 UTC; task
@@ -51,16 +51,17 @@ Handoff only on delivery or urgent stop/restart.
 
 Pending source acceptance is tracked in .lake/pending-lane-checkpoints.json.
 Retain full-root build artifacts; that build is stopped. Six endpoint imports
-are now registered and statically reachable (9493 project modules including the root, no missing
+are now registered and statically reachable (9495 project modules including the root, no missing
 project source). The seven previously audited endpoint leaves retain their
 exact checked Git blobs; no full-root success is claimed. Focused checks do not
 certify a full-source build or the remaining classical input propositions.
 
 ## Held and newly queued deliveries
 
-h 585cc71a0 is held: the 33.1 one-manifold hypothesis wrongly excludes
-branching graphs, and the proposed 35.1 raw-star tower does not yet establish
-a genuine global regular-neighborhood relation. h continues corrections.
+The held h 585cc71a0 formulation is superseded by the independently accepted
+corrected source through 2086d1064. Branching graph input and a genuine
+same-PL-triangulation exhaustion replace the faulty statements. The continuous
+error specialization and the unproved Moise headlines remain explicit below.
 F through 3c7d44e19 is accepted, including the inward-push/proper-projection
 layer. S 4627710d3 cap comparison and 3c08c2aba actual graph handles are now accepted.
 E3 1cea2fbe7 half-prism cut cells from a supplied compatible
@@ -1221,3 +1222,86 @@ authorized the sole new InvolutionTriangulation module after all six checkouts
 were clear. F continues actual equivariant triangulation in the same descent
 lane, consuming CellComplex and CellMapTriangulation read-only. h and M304 keep
 their current rounds; no new task or private checker was added.
+
+## Corrected contracts and regular-neighborhood layer accepted
+
+The corrected h layer through 2086d1064 is independently accepted from the
+frozen 347cb4d3e source. Eight changed leaves preserve the current S additions
+in MoiseChain. Moise252 now requires the produced proper disk boundary to be
+non-nullhomotopic in the specified original boundary component. Moise331
+existentially chooses a finite three-dimensional ambient neighborhood and a
+subdivision, with the actual derived neighborhood contained in the prescribed
+open U. Its no-endpoint graph hypothesis admits the constructed trivalent
+tetrahedron skeleton. The application theorem still assumes Moise331.
+
+Moise351 now has the intended dimension-three locally finite graph input and
+a regular-neighborhood relation in the same locally finite PL triangulation
+of U. The original book was checked on printed pages 183, 230, 247 and 248.
+The retained continuous positive error function is a specialization of the
+book's strongly positive function condition. All three headline propositions
+remain unproved; accepting these corrected contracts is not proving them.
+
+The actual new constructions include compatible canonical derived retractions,
+their global strong-deformation-retraction gluing across neighborhood stages,
+finite internal arc ball neighborhoods, and finite graph dual-cell ballness.
+The noncompact three-dimensional model has actual nondegenerate edge cores,
+one PL ambient triangulation and a global SDR. Its ambient is a disconnected
+union of closed balls; it does not construct a regular neighborhood for an
+arbitrary graph inside an arbitrary open ambient set.
+
+The eight final source checks took 92.781 seconds including admission.
+The final combined audit took 51.023 seconds. It covers all 212 native
+nonautomatic declarations (24 private), 89 critical reused entries (81 distinct),
+four concrete geometric consumer theorems and all thirteen applicable
+environment linters. Every final check has zero diagnostics and only approved
+foundational axioms. Of the native declarations, 98 are new to integration:
+81 explicit declarations and 17 structure-generated constructors, recursors
+or projections. This is not a count of 98 new mathematical theorems.
+
+The concrete tests consume the real noncompact edge-core example through the
+global SDR API, the nonempty finite regular arc neighborhood, a nondegenerate
+internal segment through the ball-neighborhood producer, and a nontrivial
+one-skeleton in the actual standard three-sphere through graph dual-cell
+ballness. The last ambient is the boundary of a four-simplex in R^5, so it
+does not assume a nonempty closed three-manifold carrier inside R^3. The
+tetrahedron branching model and conditional Moise331 consumer are also in the
+complete native census. No full Moise351 open-ambient instance is claimed.
+
+The source search found no old Lean consumer outside the defining module for
+the three changed Moise contracts or the strengthened interior-edge existence
+signature. The new all-interior-arc consumer was freshly compiled. Ten accepted
+private prerequisite objects were reused with exact raw source and object
+identities; no shared artifacts were written. The four repeated public
+basenames belong to distinct mathematical namespaces and are not collisions.
+Two failed external probe attempts and the successful pre-header audit are
+retained with the final successful evidence. Required headers were added to
+three old changed leaves, without changing their mathematical source.
+
+Accepted integration Lean delta: +2161/-29. Frozen author leaves contribute
++2132/-29, two new flat-root imports contribute +2/-0, and integration adds
+27 required header lines. Markdown and external probes are excluded. Relative
+to h's window-start 99a766f5b, these same eight branch files have a committed
+delta of +1911/-47; that includes integration merges and uses a different
+baseline, so it is not added to the integration total or called typing time.
+The receipt is .lake/verified-thirtyfourth-lane-delivery-20260919.json. It freezes
+exact source and object identities, all declaration types and axiom closures,
+probe sources, lint results, source review, failed attempts and final timings.
+The flat root reaches 9495 project modules including itself, with no missing
+project sources or cycles. The full-root build remains stopped; this is focused
+compatibility acceptance, not a complete fresh transitive build.
+
+h's subsequent actual graph piercing, nested bicollar and common derived
+restriction layers through 347cb4d3e remain queued. At its completed blocked
+round, the coordinator granted a read-only private refresh of the unchanged
+CircleLiftOrientation dependency after matching source hashes in all six
+checkouts. h resumed the same round toward two common ambient neighborhoods
+with four exact annular surface traces. Solid-torus PL type, arbitrary
+open-ambient construction and locally finite error control remain explicit.
+No active task received a routine status request.
+
+M304 delivered e248c9ccd and 73bb953a8 during this acceptance: exact disjoint
+cap/Euler/Betti consumers and a smaller separating-surface compression
+consumer. They require actual physical caps and separation of their union;
+they do not construct those upstream data. Independent replay is pending.
+M304 continues an actual minimum-Betti separator construction in the same 30.4
+lane. F, E3 and S retain their current rounds; no task or checker was added.
