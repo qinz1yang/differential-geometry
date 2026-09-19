@@ -5903,3 +5903,43 @@ Source, flat root import, this entry and the C.7 plan update form one commit.
 All verification used private artifacts; the independent integration root gate
 remains separate. The polygon generation and final 24.12 CST application are
 being completed in the same assigned round.
+
+## Null cyclic generators annihilate loop maps across base points (2026-09-19)
+
+Status: done for the general transport layer of the 24.12 round.
+`Topology/Homotopy/CyclicLoopMap.lean` is its natural home.
+
+`loopZPow_homotopic_refl` proves nullhomotopy of every integer power of
+a null loop, including negative powers, by the existing exact correspondence
+between path powers and fundamental-group powers.
+`map_homotopic_refl_of_generating_loop` takes a continuous map, an actual
+loop generating the homotopy classes at one base point, nullhomotopy of its
+image and a path-connected second base point. It proves nullhomotopy of the
+image of every loop at that second point. The conjugate is formed in the
+source and its image is identified with the existing
+`fundamentalGroupChangeBasepoint` in the target, whose injectivity transports
+the identity back. The reverse-path mapping direction and quotient notation
+are explicit in the proof. Both spaces are arbitrary topological spaces;
+generation is assumed only in this general algebraic/topological lemma and
+will be produced from the actual spanning polygon in the consumer.
+
+Focused compile 9.375 seconds; complete dynamic audit 8.156 seconds,
+both exit 0 with zero diagnostics. All 2 nonautomatic declarations,
+3 critical reused producers and all 13 applicable environment linters
+pass. Axiom closures contain only the standard three axioms.
+The common finite nonempty input test constructs a spanning simple cycle
+of length at least three around a tetrahedral face, its free nullhomotopy
+in the tetrahedron, and nullhomotopies for all base points via the new
+transport. The test and five critical producers pass the axiom audit,
+exit 0, zero diagnostics, 11.824 seconds. Times include admission.
+This fixes the input contract before assembling the geometric consumer.
+
+Evidence: `C:/Users/liao9/AppData/Local/Temp/codex-s-mobius-torus-20260918/`
+`CyclicLoopMap-verification.json`, with raw/normalized source and object identities,
+receipts, timings, complete audit/linter censuses and the concrete input.
+Source SHA256: `C317A5DD6AA487915863DC87311207AB117DC0A368F9F0187044A09228DBF215`.
+Static checks pass; the native import closure excludes HurewiczLowDegrees.
+Source, flat root import, this entry and the C.7 plan update form one commit.
+All verification used private artifacts; the independent integration root gate
+remains separate. The polygon generation and final 24.12 CST application are
+being completed in the same assigned round.
