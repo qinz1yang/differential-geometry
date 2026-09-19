@@ -1,3 +1,4 @@
+import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Duhamel.AddCircleDifferentiation
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Duhamel.LinearTransport
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Scalar.AddCircleIteratedDerivative
 
@@ -85,5 +86,19 @@ theorem iteratedParameterDerivative_duhamel_vector_eq
           (by push_cast; linarith :
             ((n + 2 + m : ℕ) : ℝ) ≤ ((m + n : ℕ) : ℝ) + 2) (f i))
       simpa only [← tensorHsInclusion_trans_apply] using hi.symm) F
+
+theorem iteratedParameterDerivativeDuhamelForcing_one
+    {ι : Type*} [Fintype ι]
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ)))
+    {T : ℝ} (hT : 0 < T)
+    (F : timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 ((1 : ℕ) : ℝ))) T) :
+    iteratedParameterDerivativeDuhamelForcing g 0 1 hT F =
+      parameterDerivativeDuhamelForcing g 0 hT F := by
+  simp only [iteratedParameterDerivativeDuhamelForcing, parameterDerivativeDuhamelForcing,
+    AddCircle.iteratedParameterDerivativeHs, AddCircle.parameterDerivativeHsPi,
+    ContinuousLinearMap.piLpMap_comp, ContinuousLinearMap.id_comp,
+    ContinuousLinearMap.comp_assoc, ← tensorHsInclusion_trans,
+    tensorHsInclusion_refl, ContinuousLinearMap.comp_id, Nat.add_zero]
+
 
 end DifferentialGeometry.Analysis.Parabolic.QuasiLinear

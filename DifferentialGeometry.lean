@@ -184,6 +184,7 @@ import DifferentialGeometry.Analysis.Calculus.TimeJet.EndpointTower
 import DifferentialGeometry.Analysis.Calculus.TimeJet.Evolution
 import DifferentialGeometry.Analysis.Calculus.TimeJet.EvolutionJets
 import DifferentialGeometry.Analysis.Calculus.TimeJet.Matching
+import DifferentialGeometry.Analysis.Calculus.TimeJet.MixedJets
 import DifferentialGeometry.Analysis.Calculus.TimeJet.PolynomialEvolution
 import DifferentialGeometry.Analysis.Calculus.TimeJet.SliceBootstrap
 import DifferentialGeometry.Analysis.Calculus.TimeJet.SliceSwap
@@ -1461,6 +1462,7 @@ import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.Semigroup.BoundedC0Se
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.Semigroup.Contraction
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.Semigroup.DuhamelMap
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.Semigroup.MildSolutionExistence
+import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Duhamel.AddCircleForcingContinuity
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Duhamel.AddCircleSecondDerivativeSource
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Duhamel.Estimates
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Duhamel.StrongBackwardIdentification
@@ -5450,6 +5452,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborho
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHornSectionOrder
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHornSegmentLift
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHornSourceTail
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHornSourceTailSubsequence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHornStructure
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHornStructureHonest
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHornStructureReduction

@@ -1,3 +1,4 @@
+import Mathlib.Topology.UniformSpace.CompactConvergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Basic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.Loops
 import DifferentialGeometry.Geometry.Comparison.Variation.FirstVariation.Basic
@@ -442,3 +443,53 @@ theorem local_solution_starting_time_uniform
   h t₀ c₀ N e
 
 end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening
+
+section
+
+
+namespace DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening
+
+variable {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  [TopologicalSpace M] [ChartedSpace H M]
+
+theorem continuous_smoothCylinderTopology_of_continuousOn_jets
+    {P : Type*} [TopologicalSpace P] {N : ℕ}
+    (e : Width.SmoothLoopEmbedding (I := I) (Q := M) N)
+    {J : Set ℝ} (hJ : IsCompact J) {c : P → CurveMap M}
+    (hjet : ∀ m : ℕ, ContinuousOn
+      (fun q : P × ℝ × ℝ => iteratedFDerivWithin ℝ m
+        (fun v : ℝ × ℝ => e.map ((c q.1).lift v.1 v.2)) (univ ×ˢ J) q.2)
+      (univ ×ˢ Icc (0 : ℝ) 1 ×ˢ J)) :
+    @Continuous P (CurveMap M) inferInstance (smoothCylinderTopology e J) c := by
+  let : TopologicalSpace (CurveMap M) := smoothCylinderTopology e J
+  apply continuous_iff_continuousAt.mpr
+  intro p
+  rw [ContinuousAt, TopologicalSpace.tendsto_nhds_generateFrom_iff]
+  rintro V ⟨d, m, ε, _, rfl⟩ ⟨ρ, hρε, hρ⟩
+  let K : Set (ℝ × ℝ) := Icc (0 : ℝ) 1 ×ˢ J
+  let : CompactSpace K := isCompact_iff_compactSpace.mp (show IsCompact K from isCompact_Icc.prod hJ)
+  let jet (p : P) : C(K, (ℝ × ℝ) [×m]→L[ℝ] EuclideanSpace ℝ (Fin N)) :=
+    ⟨fun q => iteratedFDerivWithin ℝ m
+      (fun v : ℝ × ℝ => e.map ((c p).lift v.1 v.2)) (univ ×ˢ J) q.1,
+      (hjet m).comp_continuous (continuous_const.prodMk continuous_subtype_val)
+        (fun q => ⟨mem_univ _, q.2⟩)⟩
+  have hj : Continuous jet := ContinuousMap.continuous_of_continuous_uncurry _
+    ((hjet m).comp_continuous (continuous_fst.prodMk (continuous_subtype_val.comp continuous_snd))
+      (fun q => ⟨mem_univ _, q.2.2⟩))
+  have hu := ContinuousMap.tendsto_iff_tendstoUniformly.mp (hj.tendsto p)
+  have hb := (Metric.tendstoUniformly_iff.mp hu) ((ε - ρ) / 2) (by linarith)
+  filter_upwards [hb] with q hq
+  refine ⟨ρ + (ε - ρ) / 2, by linarith, ?_⟩
+  intro v hv
+  have hnear : ‖jet q ⟨v, hv⟩ - jet p ⟨v, hv⟩‖ < (ε - ρ) / 2 := by
+    rw [← dist_eq_norm, dist_comm]
+    exact hq ⟨v, hv⟩
+  have hbase := hρ v hv
+  change ‖jet q ⟨v, hv⟩ - _‖ ≤ _
+  exact (norm_sub_le_norm_sub_add_norm_sub _ (jet p ⟨v, hv⟩) _).trans
+    ((add_le_add hnear.le hbase).trans_eq (add_comm _ _))
+
+end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening
+
+end
