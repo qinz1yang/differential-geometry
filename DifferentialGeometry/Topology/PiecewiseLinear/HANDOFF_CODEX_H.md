@@ -3054,3 +3054,39 @@ This closes the assigned normalized arc-cell round: the natural preceding
 crossing bound, the `k = 1` base, the two-extension successor induction, and
 the final `IsPLBallPair 2 1` extraction are all source-complete, strictly
 verified, and externally audited.
+
+## 53. 2026-09-18 Interior-face links in manifolds with boundary — done
+
+The realizability review invalidates one applicability claim in §§50–52.  A
+finite closed combinatorial 3-manifold embedded in a three-dimensional normed
+space has no intended geometric instance: its compact underlying space would
+also have to be open.  Thus the three compiled closed-manifold theorems remain
+valid conditional statements, but their hypotheses do not supply the actual
+ambient-dimension-three `n = 1` case claimed there.  Those statements are not
+accepted as the geometric arc-chain endpoint.  They are retained only as
+stronger-hypothesis corollary candidates while the primary APIs are migrated to
+finite combinatorial 3-manifolds with boundary and interior retained faces.
+
+`BoundaryFaces.lean` and `DerivedCellCone.lean` now provide the reusable local
+replacement.  If a face of a finite combinatorial manifold with boundary is not
+a face of its boundary complex, then its geometric link and upper link are PL
+spheres of the expected dimension.  In dimension three this gives a PL
+2-sphere for the upper link of the barycentric vertex of an interior face.  For
+two distinct comparable faces, interiority of the first face gives a PL
+1-sphere for the upper link of their barycentric edge.  The latter proof uses
+downward closure of the boundary complex, so no global closedness assumption is
+introduced.
+
+Strict private verification used round token `h-round-20260919` and output root
+`C:\Users\liao9\AppData\Local\Temp\codex-h-cutmodel-private`.
+`BoundaryFaces` and `DerivedCellCone` compiled in dependency order with zero
+diagnostics and unchanged shared outputs.  The external silent audit dynamically
+enumerated all sixteen non-automatic declarations in the two modules, checked
+six direct reused declarations, found only
+`{propext, Classical.choice, Quot.sound}`, and passed all thirteen applicable
+environment linters.
+
+The next closed result is a concrete nonvacuous `n = 1` chain in the
+barycentric subdivision of a solid affine tetrahedron.  Its middle chain face
+will be proved outside the boundary complex before any normalization theorem is
+migrated.
