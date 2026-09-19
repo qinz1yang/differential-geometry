@@ -94,6 +94,18 @@ theorem IsCombinatorialManifold.isPLSphere_arcCellBase [FiniteDimensional ℝ E]
     hK.isPLSphere_upperLink_centroid (arcChainFace_mem_faces hvert hedge hj)
 
 open Classical in
+theorem IsCombinatorialManifoldWithBoundary.isPLSphere_arcCellBase_of_interior
+    [FiniteDimensional ℝ E] {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces]
+    (hK : IsCombinatorialManifoldWithBoundary 3 K) {n : ℕ} {v : ℕ → E}
+    (hvert : ∀ i ≤ n, ({v i} : Finset E) ∈ K.faces)
+    (hedge : ∀ i < n, ({v i, v (i + 1)} : Finset E) ∈ K.faces)
+    {j : ℕ} (hj : j ≤ 2 * n) (hjB : arcChainFace v j ∉ (boundaryComplex 3 K).faces) :
+    IsPLSphere 2 (arcCellBase K v j).space := by
+  simpa only [arcCellApex, arcCellBase] using
+    hK.isPLSphere_upperLink_centroid_of_not_mem_boundaryComplex
+      (arcChainFace_mem_faces hvert hedge hj) hjB
+
+open Classical in
 theorem isConeBase_arcCellInterfaceBase {K : Geometry.SimplicialComplex ℝ E}
     {n : ℕ} {v : ℕ → E}
     (hvert : ∀ i ≤ n, ({v i} : Finset E) ∈ K.faces)
@@ -129,6 +141,28 @@ theorem IsCombinatorialManifold.isPLSphere_arcCellInterfaceBase [FiniteDimension
     (arcChainFace_comparable_iff hinj (by omega) (by omega)).mpr (by omega)
   simpa only [arcCellApex, arcCellInterfaceBase] using
     hK.isPLSphere_upperLink_pair_centroid hs ht hne hcomp
+
+open Classical in
+theorem IsCombinatorialManifoldWithBoundary.isPLSphere_arcCellInterfaceBase_of_interior_left
+    [FiniteDimensional ℝ E] {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces]
+    (hK : IsCombinatorialManifoldWithBoundary 3 K) {n : ℕ} {v : ℕ → E}
+    (hvert : ∀ i ≤ n, ({v i} : Finset E) ∈ K.faces)
+    (hedge : ∀ i < n, ({v i, v (i + 1)} : Finset E) ∈ K.faces)
+    (hinj : ∀ i ≤ n, ∀ k ≤ n, v i = v k → i = k)
+    {j : ℕ} (hj : j + 1 ≤ 2 * n)
+    (hjB : arcChainFace v j ∉ (boundaryComplex 3 K).faces) :
+    IsPLSphere 1 (arcCellInterfaceBase K v j).space := by
+  have hs := arcChainFace_mem_faces hvert hedge (j := j) (by omega)
+  have ht := arcChainFace_mem_faces hvert hedge (j := j + 1) (by omega)
+  have hne : arcChainFace v j ≠ arcChainFace v (j + 1) := by
+    intro h
+    have := arcChainFace_injective hinj (by omega) (by omega) h
+    omega
+  have hcomp : arcChainFace v j ⊆ arcChainFace v (j + 1) ∨
+      arcChainFace v (j + 1) ⊆ arcChainFace v j :=
+    (arcChainFace_comparable_iff hinj (by omega) (by omega)).mpr (by omega)
+  simpa only [arcCellApex, arcCellInterfaceBase] using
+    hK.isPLSphere_upperLink_pair_centroid_of_interior_face hs ht hjB hne hcomp
 
 open Classical in
 theorem arcCellInterface_subset_arcCellBase_left {K : Geometry.SimplicialComplex ℝ E}

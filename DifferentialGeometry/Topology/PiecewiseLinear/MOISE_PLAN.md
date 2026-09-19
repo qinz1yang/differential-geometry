@@ -3,6 +3,18 @@
 统一记录本任务的目标、复用审计、证明路线、阶段与验证。其他文档只引用本文件，不另开状态表。
 日期均为绝对日期。路径省略 `DifferentialGeometry/` 前缀时指本库源码树。
 
+## 2026-09-19 source-audited status and scope
+
+The classical route is retained, but remains core proof construction. Follow
+[ROUTE_AUDIT_20260919.md](ROUTE_AUDIT_20260919.md) for current statement defects,
+producer gaps, original-book evidence and acceptance coverage. Phase 3's
+Moise352/PL approximation input and Phase 2's PL-to-smooth input are independent;
+neither is supplied by the conditional final assembly. Phase 2 may target only
+compact PL three-manifolds because the final consumer is compact. Phase 3 must
+still treat noncompact chart overlaps and variable positive approximation error.
+Older claims below that all listed Phase 1 leaves are registered at the root
+are superseded by the explicit import-graph audit and its coverage repair.
+
 ## 1. 目标与接口
 
 - 数学目标：Hausdorff、第二可数的紧致无边界拓扑三维流形 `M`，在同一 carrier、同一拓扑上存在光滑结构。
@@ -138,9 +150,11 @@
 验收：每个模块按模块名构建通过、零警告；端点 `#print axioms` 只含标准公理；条件性由签名显式表达。
 已证生产者：1–4、6 的桥与归纳、7 的装配。条件性消费者：6、7 的端点（依赖 A、B）。
 
-### Phase 2（候选，待 Phase 1 验收后定）：B′ `PLSmoothingModel 3`（蕴含 B）
+### Phase 2（独立开放输入，2026-09-19 核实）：紧致 PL 三维流形的光滑化
 
-路线：PL 3-流形的柄分解（来自三角剖分的二次导出细分）+ 本库光滑柄粘接
+优先生产紧致情形的 B′，并给当前紧致最终消费者单独的装配定理；这不等于生产现有不要求紧致的 `PLSmoothingModel 3`。
+
+候选路线：紧致 PL 3-流形的有限柄分解（来自三角剖分的二次导出细分）+ 本库光滑柄粘接
 （`Topology/Handle/*`, `Topology/Morse/Attachment/*`）；0/1-柄直接光滑，2-柄需光滑曲面中 PL 圆周的光滑化与框架，
 3-柄需“同胚于 S² 的光滑闭曲面微分同胚于 S²”（`Γ₂ = 0` 型 2D 输入）。这些 2D 输入是 B 的真实数学成本，须先审计
 本库 `Topology/Manifold/Sphere*`、`ClosedBall`、`Morse` 现有生产者。B 也需要 Phase 3 的“PL 图册 ⇔ 组合三角剖分”桥。
