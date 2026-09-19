@@ -2043,3 +2043,93 @@ S continues its finite relative annulus smoothing round. No new task, subagent
 or compiler slot was added. F/S/M304 remain on Astra max. The remaining 26.4,
 30.3/30.4, regular-neighborhood, loop-theorem and compact-smoothing headlines
 remain explicit proof frontiers.
+
+## 51. Actual circle cutting, caps and essential Betti descent (2026-09-19 UTC)
+
+The M304 circle-cutting and capping chain through a10d3b2df is independently
+accepted, including 26215354f, 2eecb1a86, 9ee4df017, 5e695768f, e4a3f74eb and
+afddb98a4. Canonical ClosedCover was already accepted separately; interval
+monodromy synchronization is excluded from this new source count.
+
+The actual bicollar gives the two possible circle-complement components and
+precise closure identities. Local disk pairs then construct the component
+closures as finite connected orientable surfaces, with their exact intrinsic
+boundary. Common triangulations support actual whole-boundary sphere/manifold
+gluing. For a supplied separating embedded disk, the caps are the actual branch
+closures union that disk, with exact union/intersection and Euler identities.
+If its original boundary inclusion is non-nullhomotopic, both caps are proved
+nonspherical and their Betti numbers strictly decrease. The nonsphericity is
+proved by recovering a complementary disk from a hypothetical spherical cap.
+
+This does not construct the essential compression disk. The two raw caps share
+the supplied disk; they are not the disjoint pushed surfaces needed by 30.3,
+and no preservation of ambient separation is claimed. SurfaceSplitBetti is a
+separate conditional consumer of SurfaceSplitAndCap, not its producer. The
+circle-arc and surface-complement theorems also construct actual complementary
+polyhedral carriers, with exact closure and intrinsic boundary.
+
+Seventeen author leaves and two existing consumers were freshly compiled in
+205.432 seconds including admission. The combined independent audit took
+54.114 seconds. It covers all 49 nonautomatic native declarations
+(42 new, six private), 64 critical reuse entries representing 59 distinct names,
+and all 27 probe declarations. Every axiom set is a subset of
+propext/Classical.choice/Quot.sound. All thirteen applicable environment linters
+pass; final source and audit checks contain zero diagnostics.
+
+The independent probe census added all nine local instances omitted from the
+author model arrays. An anonymous generated instance name failed the naming
+linter; explicit lowerCamelCase names and two declaration line wraps repaired
+the external probes. Their mathematical bodies and project source were
+unchanged. The initial failure and final successful replay are both retained.
+
+The probes comprise seventeen geometric theorem declarations over reused
+concrete scenarios, one explicitly conditional closed-union consumer, and nine
+local instances. They include actual prism/cube caps, standard annuli, square
+circle complements, the zero-dimensional sphere gluing case, and overlapping
+interval triangulations. The cube's middle circle is inessential and its two
+cap Betti numbers are zero. It is not a nontrivial model of essential-circle
+strict descent; no such concrete model is supplied by this batch.
+
+SurfaceComponentClosure and SurfaceFilling are real existing consumers of the
+changed neighborhood import boundary. Both were freshly checked and their six
+declarations enter the full audit. Their only edits are required file headers;
+all noncomment tokens are unchanged. The old ComponentNeighborhood endpoint
+also retains its exact nonwhitespace signature and proof tokens. Twenty-three
+accepted private prerequisites were reused only after checking exact source
+and object identities against successful independent receipts.
+
+Accepted Lean delta: +1602/-3. This consists of the author mathematical/header
+layer and sixteen root imports (+1588/-3), plus fourteen required header lines
+for the two old consumers. Markdown and scratch probes are excluded. Receipt:
+.lake/verified-thirtyfirst-lane-delivery-20260919.json. It retains exact probe
+bytes, source/object hashes, complete types/axiom/lint census, provenance and
+timings. The flat root now reaches 9472 project modules including itself: the
+sixteen new leaves also connect the existing SurfaceHomology and
+SurfaceSplitEuler modules. There are no missing project sources or cycles.
+The full-root build remains stopped;
+focused acceptance does not certify a complete fresh transitive build.
+
+M304 delivered the actual nonseparating annulus-complement source 48b42db09,
+queued separately for independent replay, and continues actual disjoint-capping
+geometry. Its author models do not supply a nonseparating 2D torus instance.
+Moise304 remains open: compression disk existence,
+geometric separation transfer, and the induction/terminal shell are still
+required. E3 retains the actual 30.3 push-apart and separation lane.
+
+At S's completed-round boundary e3be9a9e9, the coordinator queued its actual
+whole triangular-annulus smoothing layer adefc71d0 and preceding local corner
+layer 29fc463ce. S resumed one fixed-old-smooth-atlas 0-handle smoothing round,
+with the relative strip step only after that producer closes. Existing PL
+attachment data and the new-cell atlas do not supply old-atlas smoothness.
+These queued S results are not certified by the M304 replay.
+
+F delivered finite punctured-sphere boundary-neighborhood geometry 35e6ac172
+and the actual sphere-boundary disk producer dfd523647, also queued. Live
+review confirmed that an arbitrary PL embedded
+disk need not map its simplices to faces of the fixed target complex. The
+coordinator authorized a natural actual PL embedded-disk interface and an old
+NonsingularCell adapter, preserving the old interface and consumers. Exact
+boundary preimage and normal-subgroup avoidance remain geometric obligations;
+fixed-target-face realization and covering desingularization remain separate
+open steps. This resolves an actual interface obstacle within F's existing
+lane; no extra task or simultaneous proof lane was created.

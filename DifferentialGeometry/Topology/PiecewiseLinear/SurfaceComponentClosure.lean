@@ -1,9 +1,16 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.ComplementComponents
 import DifferentialGeometry.Topology.PiecewiseLinear.ManifoldNeighborhood
 import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceComponents
 import DifferentialGeometry.Topology.PiecewiseLinear.SubcomplexBallGluing
 import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryMonotonicity
 import DifferentialGeometry.Topology.Connected.ComponentNeighborhood
+
+/-! PL manifold structure of complementary component closures. -/
 
 open Set Topology
 

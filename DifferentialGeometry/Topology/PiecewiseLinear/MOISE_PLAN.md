@@ -111,8 +111,12 @@ relative inward push and boundary monotonicity return a PL embedded disk with
 exact original-boundary preimage/intersection and original subgroup avoidance.
 All four native declarations, eight critical reused entries and five probe
 declarations pass with zero diagnostics and all thirteen applicable linters.
-The fixed target-face condition in NonsingularCell must be reconciled with
-actual PL disks and refinements, rather than silently assumed.
+The fixed target-face condition in NonsingularCell cannot be inferred from
+arbitrary PL disk containment. The authorized repair preserves that old API
+and adds a natural actual PL embedded-disk interface with an old-interface
+adapter. Exact source boundary preimage and original subgroup avoidance must
+be proved. F's sphere/punctured-neighborhood source through dfd523647 is queued
+for independent acceptance; covering desingularization remains open.
 
 
 The finite global PL handle-filtration producer is now independently accepted
@@ -130,9 +134,14 @@ the combined axiom/lint replay with zero diagnostics. The new-cell neighborhood
 contains the entire attaching annulus, including all polygon vertices at all
 heights. Its parameter identity g((d x).val.val) = x.val.val ties the atlas to
 the original PL attachment. The neighborhood is open in that cell only.
-Compatibility with a fixed old-neighborhood atlas, actual relative smoothing
-of the attaching embedding and framing, and crossing-seam open charts remain
-the current S round; compact PL smoothing is not closed by this atlas.
+The full triangular-annulus smoothing layer adefc71d0 and preceding local
+corner layer 29fc463ce are delivered and queued for independent replay.
+They work in the fixed Euclidean atlas, retaining the original framing at
+every height and all three corners. This does not give relative smoothing in
+an arbitrary old atlas or charts across an actual gluing seam. At completed
+round e3be9a9e9, S resumed the real fixed-old-surface-atlas 0-handle smoothing
+producer, followed by the relative strip step only after that producer closes.
+Compact PL smoothing remains open.
 
 h completed and pushed the next full round through 2086d1064. Its delivered
 source strengthens the locally finite ambient relation with a single PL
@@ -158,8 +167,18 @@ All final checks have zero diagnostics and standard axioms. The combined audit
 caught and repaired the new interval/disk monodromy name collision; the new
 interval name ends in _interval, and the established disk API is unchanged.
 The E3 refinement consumer is identified but its accepted instantiation remains
-pending. Actual compression disk existence, geometric splitting and the 30.4
-induction are still open. Later disk-capping and Betti consumers are queued.
+pending. The later circle-complement, component-closure, actual capping and
+essential separating-circle Betti chain through a10d3b2df is now independently
+accepted: nineteen fresh modules, all 49 native nonautomatic declarations
+(42 new), 64 reuse entries, 27 probe declarations and thirteen applicable
+linters pass with zero diagnostics and standard axioms. Two old consumers
+were rechecked with required headers only. The essential Betti theorem starts
+from an actual separating compression disk with exact boundary intersection;
+its existence is not supplied. The raw caps share that disk and do not give
+ambient separation transfer. The concrete cube tests have zero Betti numbers
+and do not instantiate strict essential-circle descent. M304 continues the
+nonseparating annulus-complement and actual disjoint-capping round. Compression
+disk existence, actual 30.3 splitting and the final 30.4 induction remain open.
 
 ### Five tasks: one current lane each
 
@@ -170,10 +189,10 @@ its active 30.3 round without interruption. The private checker limit stays two.
 | Task / model | Current round | Delivery gate and next boundary |
 | --- | --- | --- |
 | h / gpt-5.6-sol max | Actual locally finite PL exhaustion, noncompact 3D one-edge model and finite graph dual-ball theorem through 2086d1064 delivered; independent replay pending. At full-round completion, continued actual edgewise piercing and nested-annulus geometry for 35.1. | Keep original graph, regular-neighborhood relation and error data tied together. The disconnected closed-ball model does not supply arbitrary open-ambient graph neighborhoods. Preserve S changes in MoiseChain; general contracts and full 35.1 remain unaccepted. |
-| F / gpt-6-astra max | Raw-disk initialization, original-boundary control and conditional solution return through 584a5cfa0 are accepted. Connected-interior e50dbf499 is queued. Current round constructs sphere complementary disks and the sphere-boundary NonsingularCell. | Produce actual finite complementary disks and boundary-generation geometry. Reconcile fixed target faces with PL disk refinements; no assumed hpush or normal form. Cover desingularization and the final loop theorem remain open. |
+| F / gpt-6-astra max | Raw-disk initialization and conditional return through 584a5cfa0 accepted. Connected interior, finite punctured-sphere neighborhood and sphere disk producer through dfd523647 queued; current round continues into the authorized natural PL embedded-disk interface. | Preserve old NonsingularCell, bind the actual source/map/boundary loop/subgroup, and prove exact boundary preimage. Fixed-target-face realization and cover desingularization remain separate open obligations. |
 | E3 / gpt-5.6-sol max | Actual disk-neighborhood, ball pair, centered prism and local cut traces through 0f25c93e8 delivered; independent acceptance held for 917 duplicated FreeTriangleNeighborhood lines. At full-round completion, canonical core generalization was assigned and exclusive scope granted. | Preserve old boundary API and scopes, remove cloned development, then prove true frontier/safety conditions and transfer the original separation using the exact local traces and unchanged outside carrier. Actual local traces alone do not prove separation. |
-| M304 / gpt-6-astra max | Own 30.4 directly. Separator, exact shell, finite nullhomotopy/kernel and the annulus/core-fixed-bicollar/spanning-disk-pair chain through 4400e3465 are independently accepted. Disk-capping 26215354f, conditional Betti descent 2eecb1a86, circle-complement layer 9ee4df017 and actual branch-closure surfaces 5e695768f and full-boundary ball/manifold gluing e4a3f74eb and actual separating essential-circle capping/Betti descent afddb98a4 are queued. Canonical closed-cover prerequisite 12622df49 is independently accepted. | Current round addresses the nonseparating circle and annulus complement; independently verify the delivered separating-circle caps. Raw caps share their disk and are not E3 disjoint pushed surfaces; retain exact intrinsic boundary and nonspherical-branch conditions. E3 consumer instantiation awaits its accepted canonical repair. Keep 26.4 and actual 30.3 open; the final PL-sphere theorem remains unproved. |
-| S / gpt-6-astra max | Compact PL smoothing. Finite handles and new-cell annulus atlases through ada7fd321 are accepted. Actual local corner/framing smoothing in the fixed old atlas 29fc463ce is delivered and queued. | At its completed round, continued finite relative modifications around the actual attaching annulus. Produce old-coordinate straightening and framing compatibility from the real atlas construction; then crossing-seam open charts. |
+| M304 / gpt-6-astra max | Own 30.4 directly. Initial separator/shell/kernel, annular neighborhoods and disk pairs, canonical ClosedCover, and actual circle/capping/essential Betti/complement chain through a10d3b2df independently accepted. Nonseparating annulus complement 48b42db09 is queued. | Continue actual disjoint caps. Supplied essential disks, raw shared-disk caps and conditional SurfaceSplitAndCap consumers do not close compression disk existence, actual 30.3 separation or final 30.4 induction. |
+| S / gpt-6-astra max | Finite handles and new-cell annulus atlases accepted. Fixed Euclidean whole triangular-annulus smoothing through adefc71d0 delivered and queued, with 29fc463ce. At completed round e3be9a9e9, resumed actual old-atlas 0-handle smoothing. | Construct supported smoothing from a real topological disk chart in a fixed old smooth surface; only after closure proceed to the relative strip producer. No assumed old-atlas smoothness, no claim of seam charts or compact 3D smoothing. |
 
 F must distinguish the full two-sheeted ambient cover from the smaller regular
 neighborhood for the next normal system: restriction need not preserve
