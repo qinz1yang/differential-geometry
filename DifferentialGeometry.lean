@@ -9122,6 +9122,7 @@ import DifferentialGeometry.Topology.Manifold.ChartSupportedIsotopy
 import DifferentialGeometry.Topology.Manifold.ClopenDecomposition
 import DifferentialGeometry.Topology.Manifold.ClopenOrientation
 import DifferentialGeometry.Topology.Manifold.ClosedBall
+import DifferentialGeometry.Topology.Manifold.ClosedBall.ChartMap
 import DifferentialGeometry.Topology.Manifold.ClosedBall.Coordinates
 import DifferentialGeometry.Topology.Manifold.ClosedBallBoundaryOrientation
 import DifferentialGeometry.Topology.Manifold.ClosedBallInducedBoundaryOrientation
