@@ -4654,3 +4654,32 @@ solid-torus neighborhoods, compatible subdivisions and exact surface traces.
 The present protected graph is a compact polygonal segment; it does not yet
 assemble the locally finite trivalent dual-cell data of Sections 93--94 into
 the shells.  Conditions (3)--(8) and `Moise351` remain open.
+
+## 97. 2026-09-19 parametrized solid tori in arbitrary open sets — done
+
+`SolidTorusOpenNeighborhood.lean` supplies the missing localization statement
+for the standard-solid-torus input.  Every nonempty open subset of a
+three-dimensional finite-dimensional real normed space contains the carrier
+of a finite combinatorial 3-manifold with boundary that is a standard
+topological solid torus and has a cylindrical parametrization by the standard
+PL 2-disk with equal ends.  The proof constructs an actual polygonal circle,
+uses the existing solid-torus-neighborhood theorem once, and then applies a
+positive affine contraction and translation so that the whole finite complex,
+not merely its core circle, lies in the prescribed open set.  The transported
+complex retains an explicitly nonempty ambient interior.
+
+The module also proves the reusable affine-transport lemmas for cylindrical
+diagrams and standard topological solid tori.  Its isolated private check had
+no diagnostics and left shared outputs unchanged.  The strict audit covered
+all three module declarations and nine critical reused declarations; every
+axiom closure was contained in `{propext, Classical.choice, Quot.sound}`, and
+all thirteen applicable environment linters passed.  The leaf is registered
+in the flat root aggregate; no full-root build was run under the standing
+owner instruction.
+
+This closes local placement of a parametrized standard solid torus in every
+nonempty exhaustion shell.  The next layer must choose the supported
+nonidentity increment inside that torus and package its source and target at
+every stage.  It still does not supply the two graph-dual-cell boundary
+surfaces, their exact annular traces, the common compatible subdivision, or
+Moise 35.1 Conditions (3)--(8).

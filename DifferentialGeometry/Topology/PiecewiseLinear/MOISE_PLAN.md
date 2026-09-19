@@ -1710,3 +1710,23 @@ compatible subdivisions and exact surface traces supplied in the finite
 trivalent model. The current infinite consumer protects a compact segment and
 does not yet assemble a locally finite trivalent dual-cell family. Conditions
 (3)--(8) and `Moise351` remain open.
+
+
+### Parametrized solid tori localized in arbitrary open sets
+
+The standard-solid-torus input is now local.  Every nonempty open subset of a
+three-dimensional finite-dimensional real normed space contains a finite
+combinatorial 3-manifold with boundary whose carrier is a standard
+topological solid torus, has nonempty ambient interior, and carries a standard
+PL 2-disk cylindrical parametrization with equal ends.  The construction uses
+an actual polygonal circle and the existing solid-torus theorem, then moves
+the entire finite complex into the requested open set by a positive affine
+contraction and translation.  Affine transport preserves both the
+cylindrical diagram and the standard solid-torus type.
+
+All three declarations and nine key reuses pass the standard-three-axiom
+audit and all thirteen linters.  This gives a standard solid torus in every
+nonempty compact-exhaustion shell, but does not yet couple it to the supported
+nonidentity increment at that stage.  It also does not provide the two
+graph-dual-cell boundary surfaces, their exact annular traces, a common
+compatible subdivision, or Conditions (3)--(8).
