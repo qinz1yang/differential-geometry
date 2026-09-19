@@ -8862,6 +8862,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.PrismCornerChart
 import DifferentialGeometry.Topology.PiecewiseLinear.PrismCornerTransport
 import DifferentialGeometry.Topology.PiecewiseLinear.CellMapTriangulation
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.SourceNormalSystem
+import DifferentialGeometry.Topology.Connected.ClosedCover
 
 /-!
 # Differential geometry and geometric analysis

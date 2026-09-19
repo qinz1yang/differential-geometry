@@ -1991,3 +1991,55 @@ e50dbf499 is queued separately. M304 has delivered the actual separating-circle
 raw-capping and essential Betti layer afddb98a4, also awaiting independent replay;
 its raw caps share a disk and do not supply E3's disjoint pushed surfaces.
 M304 continues the nonseparating case. Other current rounds are unchanged.
+
+## 50. Canonical closed-cover dependency and completed-round handoffs (2026-09-19 UTC)
+
+The canonical shared dependency from M304 12622df49 is independently accepted.
+Topology.isPreconnected_left_of_isClosed_union proves preconnectedness of a
+closed summand A from preconnectedness of A union B and A intersection B, with
+B closed. No connectedness or nonemptiness of B is assumed. The existing
+connectedComponentIn_sdiff_inter_eq_sdiff signature and entire proof body are
+unchanged. The complete source equals the frozen author commit; it adds the
+required headers and an explicit flat-root import.
+
+Fresh source compilation took 6.201 seconds, and the independent combined audit took
+13.821 seconds, including admission. Both nonautomatic declarations (one new), six
+critical reuses and every probe declaration have only standard foundational
+axioms. All thirteen applicable environment linters pass. Final source and
+audit checks contain zero errors, warnings, information messages or suggestions.
+Two nonempty real-line models test actual interval attachment and separated
+components. One empty-set test checks the degenerate case. The fourth probe is
+a conditional two-attachment consumer, not a fourth concrete geometric model.
+
+This dependency was separated after source inspection found F and M304 proving
+the same connectedness result. M304 owns the existing natural module; F withdrew
+ClosedAttachment publication and retained its draft evidence externally. Both
+continue their existing geometry rounds. F's actual sphere consumers and M304's
+later circle/capping geometry are not certified by this small general theorem.
+
+Accepted Lean delta: +45/-1, including the one root import. Receipt:
+.lake/verified-thirtieth-lane-delivery-20260919.json. Exact source/object hashes,
+raw and normalized frozen probe bytes, full declaration/axiom/lint census and
+timings are retained. The root statically reaches 9454 project modules including
+itself, with no missing project sources or cycles. ClosedCover was already
+reachable transitively. The full-source root build remains stopped.
+
+At their completed-round boundaries, h and E3 were resumed using 5.6 Sol max.
+h's delivered ac2639d4d, 40cb4733c and 2086d1064 are queued for independent
+replay: actual locally finite PL ambient/exhaustion, a noncompact 3D model with
+one-edge cores, and finite graph dual-cell ballness. The example uses a disjoint
+union of closed balls; arbitrary open-ambient regular neighborhoods remain open.
+h continues actual edgewise piercing and nested annuli for 35.1.
+
+E3 delivered actual disk/ball/prism geometry and precise local cut traces through
+0f25c93e8. Acceptance is still held for the duplicated canonical free-triangle
+development. E3 now owns the precise FreeTriangleNeighborhood generalization;
+other five worktrees were clean for that file at the grant. It must preserve the
+old boundary API and eliminate the copied proofs before continuing the same
+30.3 separation-transfer round. Frontier/safety and original-separation transfer
+are not implied merely by the delivered trace equalities.
+
+S continues its finite relative annulus smoothing round. No new task, subagent
+or compiler slot was added. F/S/M304 remain on Astra max. The remaining 26.4,
+30.3/30.4, regular-neighborhood, loop-theorem and compact-smoothing headlines
+remain explicit proof frontiers.
