@@ -359,3 +359,38 @@ The image, crop and source record are retained with the acceptance receipt.
 M304 has separately delivered 7c051baf7 compact nullhomotopy capture and a
 nontrivial surface kernel element; independent acceptance is queued. It
 continues the actual annular-neighborhood producer within the same 30.4 lane.
+
+## Actual maximal-cell and three-handle attachments
+
+S 78d96386b is independently accepted. Two modules freshly compiled in
+22.730 seconds; all four nonautomatic declarations, twelve distinct critical
+reused declarations, nine model declarations and 13 environment linters
+pass the 46.662-second silent audit. Every final check exits 0 with zero
+diagnostics and only standard foundational axioms. Three previously accepted
+private prerequisites were reused after source/object identity checks; other
+upstream objects remain shared read-only. This is focused verification.
+
+For a maximal face in a finite closed combinatorial (n+2)-manifold, the new
+cell meets the lower neighborhood in exactly its whole intrinsic boundary.
+The actual ball/sphere parametrization supplies a closed attaching embedding
+into the old boundary and a quotient homeomorphism to the exact successor
+neighborhood, fixing the old carrier. The lower subcomplex has no unnecessary
+dimension bound. In dimension three, a genuine four-vertex face automatically
+supplies maximality, giving a three-handle. No preconstructed handle pair or
+handle decomposition is assumed. The actual four-simplex-boundary model has
+distinct boundary image points and proves the cell-center image is outside
+the old neighborhood, so the construction adds an actual new interior point.
+
+Lean +156/-0 includes two flat-root imports; Markdown and external models are
+excluded. Receipt: .lake/verified-twentyfirst-lane-delivery-20260919.json.
+Exact source/object identities, model source, full census, timings and logs
+are retained. Static root closure contains 9352 project modules including
+the root, without missing project sources or cycles. Full-root compilation
+remains stopped.
+
+Actual local zero-, one-, two- and three-handle producers are now independently
+accepted. A finite global handle sequence is not yet produced. S continues
+finite face ordering and actual stage assembly; its one added compiler permit
+is the natural metric-free SimplicialComplex.FaceFiltration module. Smooth
+attaching/framing, corner rounding, smooth two-sphere classification and the
+compact smoothing endpoint remain open.
