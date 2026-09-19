@@ -4013,3 +4013,36 @@ pairwise disjoint, nor does it construct compatible cellwise modifications.
 Those require the still-missing positive geometric stability thresholds for
 Conditions (2)--(8); only the piercing circles themselves are currently
 proved pairwise disjoint.
+
+## 81. 2026-09-19 pairwise-disjoint finite piercing neighborhoods — done
+
+`DualCellPiercingNeighborhoods.lean` now closes the first sentence of the
+preceding limitation for every finite incident family.  A finite pairwise
+disjoint family of compact subsets of a metric space admits pairwise disjoint
+open thickenings inside any prescribed common open neighborhood.  Applying
+this to the actual splitting disks gives
+`IsCombinatorialManifold.exists_piercings_with_pairwise_disjoint_nested_common_neighborhoods`.
+The theorem constructs the same full piercing data as the arbitrary-family
+endpoint, but the outer common derived neighborhoods `A i` and inner common
+derived neighborhoods `B i` are now each pairwise disjoint families.  Their
+containment in the original open set is retained, as are the exact four
+surface traces at every edge.
+
+`TrivalentDualCellNeighborhoodModel.lean` now consumes this stronger theorem,
+so its standard 4-simplex-boundary graph is a concrete three-dimensional
+instance with pairwise disjoint piercing circles and both pairwise disjoint
+nested ambient-neighborhood layers.  This is a constructed instance, not a
+conditional consumer.
+
+Both changed modules passed the private focused checker with no diagnostics.
+The strict external audit dynamically checked all eight non-automatic
+declarations in the two modules together with seven directly reused compact
+separation, thickening, splitting-disk, and piercing declarations.  Every
+axiom closure was contained in `{propext, Classical.choice, Quot.sound}`, and
+all thirteen applicable environment linters passed.
+
+This isolates simultaneous modifications around the finitely many edges at
+one vertex.  It does not yet provide compatible modifications across the
+nonconstant locally finite exhaustion, nor the positive perturbation radii
+which preserve Conditions (2)--(8).  Those remain the first genuine global
+geometric blockers for the proof of `Moise351`.
