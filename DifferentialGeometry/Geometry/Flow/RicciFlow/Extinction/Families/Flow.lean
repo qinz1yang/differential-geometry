@@ -1,3 +1,5 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.PreparedGlobalFlow
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProjectedFamilies
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProjectedAreaBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.SweptAnnulus
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.LoopFamilyContinuity
@@ -27,11 +29,12 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 
 include hT2 hCompact hConnected hBoundary
 
+omit [SigmaCompactSpace Q] in
 theorem rfs_prepared_family_flow (B : RicciBackground (I := I) (M := Q) D a b)
     {d : ℕ} (e : SmoothLoopEmbedding (I := I) (Q := Q) d)
     (prepared : RegularFamily (I := I) (Q := Q) (Sphere 2))
     (hsmooth : HasContinuousSmoothLoopJets e prepared)
-    (lambda : ℝ) (hlambda : 0 < lambda) (hlambda_one : lambda ≤ 1) :
+    (lambda : ℝ) (hlambda : 0 < lambda) :
     ∃ solutions : Sphere 2 → ProductCurve Q,
       ∃ projected : C(Icc a b, RegularFamily (I := I) (Q := Q) (Sphere 2)),
         @Continuous (Sphere 2) (ProductCurve Q) inferInstance
@@ -47,7 +50,12 @@ theorem rfs_prepared_family_flow (B : RicciBackground (I := I) (M := Q) D a b)
         ∀ t : Icc a b,
           FreeHomotopyClass.mk (contractibleRegularLoopInclusion.comp (projected t)) =
             FreeHomotopyClass.mk (contractibleRegularLoopInclusion.comp prepared) := by
-  sorry
+  obtain ⟨solutions, hcont, hsol⟩ :=
+    exists_continuous_prepared_ramp_family_on_Icc B lambda hlambda e prepared hsmooth
+  obtain ⟨projected, hproj, hstart, hsmooth', hclass⟩ :=
+    exists_projected_regular_family e B.lt solutions hcont (fun p => (hsol p).1.smooth)
+      prepared (fun p z => congrArg Prod.fst ((hsol p).2.2.2 z))
+  exact ⟨solutions, projected, hcont, hsol, hproj, hstart, hsmooth', hclass⟩
 
 
 private def rampThetabar (B₀ C L₀ Θ₀ a b : ℝ) : ℝ :=
