@@ -60,7 +60,11 @@ The next checked layer constructs radial annulus coordinates, identifies
 the shell frontier and simply connected interior, and locates the actual
 initial separating surface inside that interior. Its 24 declarations, ten
 reused entries and three radial-shell models pass the same axiom and linter
-gates. E3 retains 30.3. Compression via 26.4, the annular construction 28.19,
+gates. The finite-ambient input to compression is also constructed: actual
+nullhomotopies are captured in a finite polyhedral neighborhood inside the
+specified open set, and every connected non-spherical closed surface there
+has a nontrivial fundamental-group element killed by that inclusion.
+E3 retains 30.3. Compression via 26.4, the annular construction 28.19,
 strict Betti descent and the full PL-sphere endpoint 30.4 remain open.
 See HANDOFF_CODEX_M304.md for exact signatures and evidence.
 

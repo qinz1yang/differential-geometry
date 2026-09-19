@@ -91,8 +91,12 @@ constructs the radial annulus homeomorphism, proves the exact shell frontier
 and simple connectivity of its interior, and constructs the initial
 separating surface inside that interior. Its 24 declarations, ten reused
 entries, three geometric models and 13 applicable linters pass. Compression
-and the PL-sphere endpoint remain open. Exact evidence and the source route
-are in HANDOFF_CODEX_M304.md. This explicitly authorized
+and the PL-sphere endpoint remain open. A third source-checked layer captures
+actual nullhomotopies in finite polyhedral neighborhoods and constructs a
+nontrivial inclusion-kernel element for each non-spherical connected closed
+surface inside a simply connected open set. It supplies the finite ambient
+inputs to 26.4 without assuming 26.4 or a compressing disk. Exact evidence
+and the source route are in HANDOFF_CODEX_M304.md. This explicitly authorized
 addition supersedes the older four-lane count, without authorizing subagents.
 
 1. Accept corrected contracts and a real cover/projection construction; complete
