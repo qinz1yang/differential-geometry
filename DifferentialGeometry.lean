@@ -1117,6 +1117,7 @@ import DifferentialGeometry.Analysis.Parabolic.Dirichlet.DriftSubPotential
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.DriftSubPotentialFamily
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.Energy
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.EnergyEstimate
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.EnergyTrace
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.EnergyVariation
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.FixedDensityCoefficientBounds
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.FixedMassTrace

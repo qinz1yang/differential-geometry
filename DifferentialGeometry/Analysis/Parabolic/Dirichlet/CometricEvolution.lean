@@ -1,5 +1,6 @@
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.CometricDifferenceFamily
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.DriftSubPotentialFamily
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.EnergyTrace
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.MaximalRegularity.Nonautonomous
 
 noncomputable section
@@ -118,12 +119,12 @@ theorem exists_local_dirichlet_cometric_weak_solution
     ∃ T : ℝ, 0 < T ∧ Icc (0 : ℝ) T ⊆ D.regular ∧
       ∀ (u₀ : DirichletHs q 0) (f₀ : timeL2 (DirichletHs q (-1)) T),
         ∃ (u : timeH1 (DirichletHs q (-1)) T)
-          (U₂ : timeL2 (DirichletHs q 1) T) (U₀ : timeL2 (DirichletHs q 0) T),
-          u.initial = dirichletHsInclusion (show (-1 : ℝ) ≤ 0 by norm_num) u₀ ∧
+          (U₂ : timeL2 (DirichletHs q 1) T) (U₀ : ℝ → DirichletHs q 0),
+          ContinuousOn U₀ (Icc (0 : ℝ) T) ∧ U₀ 0 = u₀ ∧
           (fun t => dirichletHsInclusion (show (0 : ℝ) ≤ 1 by norm_num) (U₂ t))
             =ᵐ[timeMeasure T] U₀ ∧
-          (fun t => dirichletHsInclusion (show (-1 : ℝ) ≤ 0 by norm_num) (U₀ t))
-            =ᵐ[timeMeasure T] u.toFun ∧
+          (∀ t ∈ Icc (0 : ℝ) T,
+            dirichletHsInclusion (show (-1 : ℝ) ≤ 0 by norm_num) (U₀ t) = u.toFun t) ∧
           ∀ᵐ t ∂timeMeasure T, ∀ φ : SmoothScalarDirichlet q,
             dirichletHsNegOneEquivH1Dual q (u.deriv t) (smoothToH1ComplDirichlet q φ) =
               (∫ x, dirichletHsZeroEquivL2 q (U₀ t) x *
@@ -167,8 +168,14 @@ theorem exists_local_dirichlet_cometric_weak_solution
     apply DirichletHs.dirichletHsInclusion_injective (show (-1 : ℝ) ≤ 0 by norm_num)
     rw [← DirichletHs.dirichletHsInclusion_trans_apply]
     exact ht₂.trans ht₀.symm
-  refine ⟨u, U₂, U₀, hinitial, hfield, hfield₀, ?_⟩
-  filter_upwards [heq, hfield, ae_restrict_mem measurableSet_Icc] with t ht hU htmem
+  obtain ⟨V, hVcont, hVae, hVpoint, hVenergy⟩ :=
+    exists_continuous_dirichletHs_zero_representative q hT u U₂ hfield₂
+  have hV₀ : V =ᵐ[timeMeasure T] U₀ := hVae.trans hfield
+  refine ⟨u, U₂, V, hVcont, ?_, hVae.symm, hVpoint, ?_⟩
+  · apply DirichletHs.dirichletHsInclusion_injective (show (-1 : ℝ) ≤ 0 by norm_num)
+    rw [hVpoint 0 ⟨le_rfl, hT.le⟩, timeH1.toFun_zero, hinitial]
+  filter_upwards [heq, hVae, hV₀, ae_restrict_mem measurableSet_Icc] with t ht hVt hV₀t htmem
+  have hU := hVt.symm
   intro φ
   have ht₀ := hsub htmem
   have hprincipal := hmetric t ht₀ (U₂ t) φ
@@ -176,7 +183,7 @@ theorem exists_local_dirichlet_cometric_weak_solution
   have hbase : dirichletHsNegOneEquivH1Dual q
       (dirichletBilinearFormToHs q (-dirichletEnergyForm q) (U₂ t))
       (smoothToH1ComplDirichlet q φ) =
-      ∫ x, dirichletHsZeroEquivL2 q (U₀ t) x *
+      ∫ x, dirichletHsZeroEquivL2 q (V t) x *
         WithBoundary.ΔGWithBoundary (I := I_half n) q φ.smooth φ.interior_support x
         ∂riemannianVolumeMeasure (I := I_half n) (M := M) q := by
     rw [dirichletHsNegOneEquivH1Dual_bilinearFormToHs]
@@ -185,10 +192,10 @@ theorem exists_local_dirichlet_cometric_weak_solution
     rw [dirichletEnergyForm_apply_smooth_right, neg_neg,
       H1ComplDirichletToLp_dirichletHsOneEquivH1Compl, hU]
   have hlower := dirichletHsNegOneEquivH1Dual_driftSubPotential_apply_smooth_right
-    q (Y t) (a t) (U₀ t) φ
+    q (Y t) (a t) (V t) φ
   have hA₁t : A₁ t = dirichletDriftSubPotential q (Y t) (a t) :=
     dirichletDriftSubPotentialOnIcc_eq q Y a ht₀
-  rw [ht]
+  rw [ht, ← hV₀t]
   simp only [map_add, add_apply]
   rw [hbase, hprincipal, hA₁t, hlower]
   rfl
