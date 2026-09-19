@@ -98,6 +98,12 @@ Betti drop of exactly two and the two-component sum formula, giving strict
 descent in each of two non-spherical components. Five reused entries and
 13 linters pass. These consume the actual split-and-cap data and component
 hypotheses; production of that geometry is still open.
+The actual circle complement now has at most two components, with a proved
+two-component decomposition and exact closure intersection in the
+separating case. The same result applies to interior circles in surfaces
+with boundary. Eight declarations, eight reused entries, three concrete
+models and 13 linters pass. The manifold structure of the closures and the
+capped-component geometry are next.
 E3 retains 30.3. Compression via 26.4, full nonorientable 28.19,
 strict Betti descent and the full PL-sphere endpoint 30.4 remain open.
 See HANDOFF_CODEX_M304.md for exact signatures and evidence.

@@ -460,3 +460,43 @@ The new leaf is registered in the flat root. Source and object snapshots,
 raw and normalized hashes, receipts and census are frozen in
 `moise304-reading/surface-split-betti-checkpoint/`. The root build remains
 stopped and no shared artifact was written.
+
+## Complementary components of surface circles (2026-09-19 UTC)
+
+`Connected/BicollarSeparation.lean` proves that the images of the negative
+and positive half intervals of a bicollar are connected, disjoint, cover
+the bicollar minus its core, and both accumulate on the whole core. This
+first result requires only a topological space, a connected core and a
+continuous bijection fixing the core; compactness and separation axioms
+are unnecessary. In a locally connected, preconnected ambient set, a
+closed core with such a relative bicollar has at most two complementary
+components. If the ambient set is closed and the complement is not
+preconnected, there are exactly two components: their closures cover the
+ambient set and meet exactly in the core.
+
+`SurfaceCircleComplement.lean` constructs the required bicollar for each
+PL circle in a finite connected orientable combinatorial surface, then
+applies these topological results. It gives both the at-most-two and
+separating-circle conclusions, for closed surfaces and for circles avoiding
+the boundary of surfaces with boundary. The two representatives in the
+at-most-two conclusion may represent the same component. The separating
+versions produce actual disjoint nonempty components and exact closure
+equations; they do not assume a two-component decomposition.
+
+Both modules compile with zero diagnostics: BicollarSeparation 8.511 seconds
+and SurfaceCircleComplement 11.252 seconds including admission. The final
+silent audit takes 47.886 seconds. All eight declarations, including the
+private local-separation lemma, eight critical reused entries and three
+concrete models have only standard foundational axioms. All 13 applicable
+environment linters pass. The models cover an unbounded straight core in
+the plane, the actual separating middle circle of a prism sphere (with
+separation proved by the height intermediate-value theorem), and the inner
+square circle inside a square disk. Initial external-model elaboration
+and style errors were corrected; no proof debt remains.
+
+Both leaves are registered in the flat root. Sources, raw and normalized
+hashes, objects, receipts and the census are frozen in
+`moise304-reading/circle-complement-checkpoint/`. The root build remains
+stopped. These are actual two-dimensional complement results. The local
+manifold structure of the closures, the eventual capped components,
+compression via 26.4, and the full 30.4 endpoint remain separate obligations.

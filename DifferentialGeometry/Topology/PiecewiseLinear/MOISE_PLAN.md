@@ -132,8 +132,14 @@ corollaries now consume actual `SurfaceSplitAndCap` data: a connected
 orientable result has first Betti number exactly two below the source;
 for a disjoint union of two connected orientable non-spheres each first
 Betti number is strictly below the source. Their full axiom and 13-linter
-audit passes. Construction of the required decomposition and exclusion
-of spherical components remains open. Full nonorientable 28.19
+audit passes. A further checked layer constructs the at-most-two component
+description of a surface minus a PL circle. In the separating case the
+actual two component closures cover the surface and meet exactly in the
+circle. This uses the produced bicollar, not a supplied decomposition.
+Eight declarations, eight reused entries, three concrete models and all
+13 applicable linters pass. The local manifold structure of these closures,
+the required capped decomposition and exclusion of spherical components
+remain open. Full nonorientable 28.19
 and the spherical-shell
 endpoint remain open. Exact evidence
 and the source route are in HANDOFF_CODEX_M304.md. This explicitly authorized
