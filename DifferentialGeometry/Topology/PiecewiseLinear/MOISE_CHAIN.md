@@ -920,6 +920,11 @@ F 局部板图卡（2026-09-18，**局部生产层 done；完整链 partial**）
 一致源侧标签由生产者给出；相邻环境胞腔片迹匹配及全局图卡仍 partial。
 聚焦检查和 `AuditF288` 均 exit=0、零诊断；2 项本模块声明与 3 项复用端点仅标准三公理，
 13 项适用环境 linters 全通过。端点为 `NormalSingularCellData.exists_polyhedral_sheet_neighborhoods_of_boundaryBranch`。
+`BoundaryBranchCrossing.lean` 的固定源片 crossing germ 对齐层 **done**（§19.149）。
+端点 `NormalSingularCellData.exists_polyhedral_crossing_sheets_of_boundaryBranch` 在整条分支上
+使用同一 `S/T` 标签，并保留源片生产者的分支坐标、全纤维覆盖和精确双点集公式。
+聚焦检查 13.22 秒、`AuditF289` 46.19 秒，均 exit=0、零诊断；7 项本模块声明及 4 项直接复用
+端点仅标准三公理，13 项适用环境 linters 通过。真实载体/边界兼容、环境胞腔片迹及全局图卡仍 partial。
 
 ## 2026-09-18 Codex: essential boundary in the extended loop theorem
 

@@ -4166,3 +4166,38 @@ F 检查进程已结束；源码、根登记、本记录与 `MOISE_CHAIN.md` 状
 源码、根登记、交接与计划同提交交付。完整板图卡仍 partial，下一步是固定源片与既有 crossing
 片的局部 germ 对齐，再生产相邻胞腔片迹匹配；真实载体/边界兼容继续保持显式。
 下一审计编号为 `AuditF289.lean`。
+
+### 19.149 固定分支源片的 crossing germ 对齐（2026-09-18）
+
+§19.148 的一致多面体源片生产者已在 `f774beb3e` 推送。本层保持同一 `S/T` 标签，
+从 `NormalSingularCellData.crossing` 的逐点局部源片导出它们在这些固定片上的 crossing。
+
+**固定源片 crossing germ 对齐层 done：`BoundaryBranchCrossing.lean`。** 端点
+`NormalSingularCellData.exists_polyhedral_crossing_sheets_of_boundaryBranch` 保留原生产者的
+两条源弧及共同分支坐标、不交多面体邻域、各片嵌入、整条分支附近的全纤维覆盖和精确双点集等式，
+再对每个分支点给出同序的固定 `S/T` 图卡像 crossing。内点得到 `HasPLCrossingAt`；
+触边点得到相对于已有存在量化载体的 `HasPLBoundaryCrossingAt`，不把该载体认作真实 `M`。
+
+证明使用 Mathlib 的 `IsInducing.image_mem_nhdsWithin`：同一原像点的两个嵌入相对邻域
+有相同像 germ。两张逐点 crossing 源片的基点不能落在同一固定片上，否则与该片单射性矛盾；
+按这个判别排序后，复用现有 crossing `congr` 搬运。`CutAndPaste` 的源坐标变换与标记锥延拓
+未改动或复制。固定片先于分支点量化，故标签不会随逐点选择交换。
+
+验证：统一私有检查脚本在 `F-BranchCrossing-20260918` 窗口内于
+2026-09-18 23:56:59 UTC 完成模块检查，最终一次用时 13.22 秒，exit=0、零诊断、
+sourceStable=true；标准语法 linter 集、header 与 longLine 均启用。初检的两处 elaboration
+问题仅涉及集合子类型标注和交子空间交换后的秩等式，修正后未改变陈述。
+外部静默 `AuditF289.lean` 于 23:58:12 UTC 完成，用时 46.19 秒：全部七项非自动声明
+（一个公开生产者、六个私有引理）及四项直接复用端点，共十一项传递公理闭包仅含
+`propext`、`Classical.choice`、`Quot.sound`。复用项为 §19.148 源片生产者、Mathlib 的
+`IsInducing.image_mem_nhdsWithin` 及两种 crossing 的 `congr`。
+默认环境 linter 集仅排除 `docBlame`、`docBlameThm`，显式断言恰有十三项且全部通过；
+审计 exit=0、零诊断。最终源码 SHA256 为
+`6B49F2ED351C8077422DF39C4D9348C6AEF9D43129385DC898D20E15CBDA1E6D`。
+回执、空日志、importArts 与私有产物位于
+`C:\Users\liao9\AppData\Local\Temp\codex-f-boundary-private`；共享对象未改写。
+外部审计探针检查后移除，保留 `AuditF289.json` 与 `branch-crossing-checkpoint.json`。
+本轮复用源 hash 匹配的私有依赖和既有共享对象；不宣称完整传递源码已重编，独立根检查由协调者负责。
+源码、根登记、交接与计划同一数学提交交付。完整图卡仍 partial：环境胞腔的边界片迹匹配、
+保持两片的相邻过渡、全局单射性，以及真实 carrier/boundary 兼容均未由本层解决。
+下一审计编号为 `AuditF290.lean`。
