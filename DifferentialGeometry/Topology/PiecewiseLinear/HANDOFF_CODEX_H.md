@@ -3722,3 +3722,43 @@ non-automatic declarations in the six relevant modules plus twenty-eight
 directly reused declarations.  Every axiom closure was contained in
 `{propext, Classical.choice, Quot.sound}`, and all thirteen applicable
 environment linters passed.
+
+## 73. 2026-09-19 noncompact three-dimensional PL exhaustion with an edge — done
+
+`PolyhedralGraph.lean` now proves
+`exists_noncompact_isPLDerivedNeighborhoodExhaustion_three_with_edge`.  The
+construction starts with a finite combinatorial 3-ball containing an interior
+one-edge arc, takes pairwise disjoint integer translates, and uses symmetric
+finite intervals of translates as the ambient and graph stages.  Their full
+disjoint union is one locally finite simplicial complex in
+`EuclideanSpace ℝ (Fin 3)`, with the identity as one locally finite PL
+parametrization.  Thus this is a model of the strengthened
+`IsPLDerivedNeighborhoodExhaustion`, not merely of its topology-only
+forgetful image.
+
+Flags in a disjoint union stay in a unique component.  This gives an exact
+componentwise formula for both the faces and the space of every derived
+neighborhood.  It also proves the old-face restriction condition exactly.
+For the relative-neighborhood condition, the derived-neighborhood component
+family is locally finite and closed; the complement of the union of all
+components outside the next finite interval is an open neighborhood of every
+point in the current stage.  Hence the canonical finite-stage retractions
+glue through the existing compatible-exhaustion theorem.
+
+The endpoint simultaneously proves that the total derived-neighborhood union
+is noncompact, that its graph core contains a nondegenerate line segment, and
+that the core inclusion has a global strong deformation retract.  The earlier
+zero-dimensional `noncompact_derivedNeighborhoodExhaustion_nat` remains only
+an interface sanity check.
+
+The private focused check of `PolyhedralGraph` exited zero with no diagnostics
+and left shared outputs unchanged.  The external strict audit dynamically
+checked all one hundred ninety-six non-automatic declarations in the six
+relevant modules plus thirty-nine directly reused declarations.  Every axiom
+closure was contained in `{propext, Classical.choice, Quot.sound}`, and all
+thirteen applicable environment linters passed.
+
+This closes the requested nonconstant noncompact 3-dimensional model, not
+Moise 35.1.  The next geometric obligation is still the locally finite
+dual-cell modification of the actual graph, followed by the pointwise-error
+PL homeomorphism.

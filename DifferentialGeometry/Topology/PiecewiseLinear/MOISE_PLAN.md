@@ -913,3 +913,5 @@ inline comments and declaration docstrings remain disallowed.
   旧 `IsDerivedNeighborhoodExhaustion` 中的单个拓扑嵌入只足以搬运 SDR。新 `LocallyFinitePLPieceIn` 记录局部有限复形到 `U` 的嵌入参数化及正反图卡逐片仿射性；
   `IsPLDerivedNeighborhoodExhaustion` 将全部有限环境层、图层和导出邻域绑定到该单一实现，并证明忘却到纯拓扑穷尽及 `N ⊆ U`。`IsLocallyFiniteRegularNeighborhoodOf` 现消费这一加强层，
   `PLPieceIn.toLocallyFinite` 给出有限生产者，弧模型与 `Moise351` 公开签名不变。三个消费模块聚焦检查零诊断；严格审计 176 个模块声明加 28 个直接复用声明，仅标准三公理，13 项 linter 全过。
+- 2026-09-19（H 车道非紧三维 PL 导出邻域模型）：`PolyhedralGraph.lean` 的
+  `exists_noncompact_isPLDerivedNeighborhoodExhaustion_three_with_edge` 从一个含内部单边弧的有限组合 3-球出发，取整数方向彼此分离的仿射平移，并以对称有限区间形成非恒定环境层与图层。全体分量组成同一个局部有限欧氏复形，恒等映射给 `LocallyFinitePLPieceIn`；旗标的分量唯一性给导出邻域的逐分量面/空间公式和严格旧面限制，局部有限闭分量族的外部并之补集给下一层相对邻域。端点同时证明总导出邻域非紧、核心含非退化线段，并由规范相容穷竭得到全局强形变收缩。私有聚焦检查 exit=0、零诊断；严格审计六模块 196 项及 39 项直接复用声明，仅 `propext`、`Classical.choice`、`Quot.sound`，13 项 linter 全过。零维实例继续只作接口 sanity check；35.1 的实际对偶胞腔改造与逐点误差 PL 同胚仍未证明。
