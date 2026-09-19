@@ -23,7 +23,7 @@ theorem IsCylindricalDiagram.exists_essential_slice_disk
     [Finite D.faces] [Finite M.faces] (hD : IsPLBall 2 D.space)
     (hM : IsCombinatorialManifoldWithBoundary 3 M)
     {f : E × ℝ → F} (hf : IsCylindricalDiagram f D.space M.space)
-    (hends : ∀ x ∈ D.space, f (x, 0) = f (x, 1))
+    (hends : ∀ x ∈ (boundaryComplex 2 D).space, f (x, 0) = f (x, 1))
     (hdim : Module.finrank ℝ F = 3) {t : ℝ} (ht : t ∈ Icc (0 : ℝ) 1) :
     let C := f '' ((boundaryComplex 2 D).space ×ˢ {t})
     let B := f '' (D.space ×ˢ {t})
@@ -63,7 +63,7 @@ theorem IsCylindricalDiagram.exists_essential_slice_disk
     exact image_mono (fun _ hx => ⟨hx.1, hx.2.symm ▸ ht⟩)
   have hmeet : frontier M.space ∩ B = C := by
     rw [hfront]
-    exact hf.image_subcylinder_inter_slice hJD hends ht
+    exact hf.image_subcylinder_inter_slice hJD hside.image_top_eq_bottom ht
   have hBint : B \ C ⊆ interior M.space := by
     intro x hx
     by_contra hnot
@@ -76,7 +76,7 @@ theorem IsCylindricalDiagram.exists_essential_slice_disk
     intro hn
     let w : C(frontier M.space, f '' (J ×ˢ Icc (0 : ℝ) 1)) := Homeomorph.setCongr hfront
     have hn' := (hn.comp_left (hcore.homeomorph : C(J, C))).comp_right w
-    apply hside.not_nullhomotopic_slice hJ (fun x hx => hends x (hJD hx)) ht
+    apply hside.not_nullhomotopic_slice hJ hends ht
     convert hn' using 1
     apply ContinuousMap.ext
     intro x

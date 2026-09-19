@@ -1309,3 +1309,36 @@ source/object/receipt sets and the audit are frozen with raw and normalized
 source hashes at `moise304-reading/cylindrical-meridian-checkpoint/`.
 Root builds remain stopped and shared E outputs remain untouched. Arbitrary-shell
 Moise304 and a general embedded-disk producer remain separate open gates.
+
+### M304 boundary-only endpoint data and general cylindrical compression (2026-09-19 UTC)
+
+`IsCylindricalDiagram.image_subcylinder_inter_slice` now requires only equality
+of the two endpoint images of the subcylinder. Its conclusion no longer assumes
+pointwise endpoint agreement on the entire cylinder cross-section. The proof
+uses endpoint injectivity and the actual invariant endpoint sets. It still
+requires no finite-dimensional source or target. Its former CylindricalProduct
+import has been removed.
+
+This removes the endpoint agreement hypothesis entirely from the capping
+producer. Its canonical name is now `IsCylindricalDiagram.exists_capped_surface`,
+replacing `exists_capped_surface_of_eq_ends`. For any embedded PL disk cylindrical
+diagram in a three-dimensional real normed space, the same actual annulus,
+complement and two disjoint caps produce a PL sphere, with exact cap traces and
+first Betti numbers two and zero. No pointwise endpoint agreement is assumed.
+All existing Lean callers have been updated; the three TorusCompression public
+statements remain exactly unchanged.
+
+The essential-slice-disk producer now requires pointwise endpoint agreement
+only on the disk boundary circle. The interior of the cross-section is no longer
+constrained by that additional equation. All closed-interval heights, exact
+proper disk traces and both nullhomotopy conclusions are retained.
+
+Seven affected modules and the final external audit compile without diagnostics.
+All eight native declarations in the four changed leaves, 12 critical reuses
+and two actual all-height/glued-end model certificates have only standard
+foundational axioms. All 13 applicable linters pass. The native import graph is
+acyclic with 566 modules and 1120 edges. Seven source/object/receipt sets and the
+complete audit are frozen with raw and normalized source hashes at
+`moise304-reading/cylindrical-boundary-checkpoint/`. No root build or shared E
+output write was performed. Arbitrary-shell Moise304 and the remaining upstream
+embedded-disk and replacement-neighborhood producers are not claimed complete.
