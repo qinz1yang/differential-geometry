@@ -7577,6 +7577,7 @@ import DifferentialGeometry.Geometry.Metric.Family.Product
 import DifferentialGeometry.Geometry.Metric.Family.Pullback
 import DifferentialGeometry.Geometry.Metric.Family.QuadraticBounds
 import DifferentialGeometry.Geometry.Metric.Family.Regularity.DifferentialOperator
+import DifferentialGeometry.Geometry.Metric.Family.Regularity.Gradient
 import DifferentialGeometry.Geometry.Metric.Family.Regularity.JointDifferentialOperator
 import DifferentialGeometry.Geometry.Metric.Family.Regularity.Pair
 import DifferentialGeometry.Geometry.Metric.Family.Stationary
