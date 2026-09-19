@@ -120,7 +120,15 @@ Their union is a relative neighborhood of the disk in the surface-disk
 union, with prescribed neighborhood control on the added parts. All five
 new declarations, ten reused entries, three models and 13 linters pass.
 Instantiation into E3's later disk-pair subdivision endpoint awaits accepted
-downstream artifacts. Full nonorientable 28.19 and the spherical-shell
+downstream artifacts. An eighth checked layer extracts an actual disk
+parametrization from a sphere capped by a disk with the exact boundary
+intersection. It constructs nullhomotopies through PL balls and along
+cylinders ending in them, including transport from the capped sphere's
+complement. Six declarations, ten reused entries, three geometric models
+and 13 applicable linters pass. The actual capped components and their
+maps back to the source surface still have to be constructed before this
+can exclude spherical components in compression. Full nonorientable 28.19
+and the spherical-shell
 endpoint remain open. Exact evidence
 and the source route are in HANDOFF_CODEX_M304.md. This explicitly authorized
 addition supersedes the older four-lane count, without authorizing subagents.

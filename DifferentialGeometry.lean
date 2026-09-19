@@ -8787,3 +8787,5 @@ import DifferentialGeometry.Topology.PiecewiseLinear.PrismDiskBoundary
 import DifferentialGeometry.Topology.PiecewiseLinear.DiskBoundaryCollar
 import DifferentialGeometry.Topology.PiecewiseLinear.DiskBoundaryBicollar
 import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceSpanningDisk
+import DifferentialGeometry.Topology.PiecewiseLinear.BallHomotopy
+import DifferentialGeometry.Topology.PiecewiseLinear.DiskCapping

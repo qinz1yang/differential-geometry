@@ -86,6 +86,13 @@ exactly the original disk, which avoids both intrinsic boundary circles;
 their union is a relative neighborhood in the surface-disk union. All five
 new declarations, ten reused entries, three models and 13 linters pass.
 The E3 disk-pair consumer awaits independently accepted downstream artifacts.
+The next checked layer extracts a PL disk from the complement of a disk cap
+in a sphere and constructs nullhomotopies through that disk, including an
+actual cylinder and PL transport back into an ambient set. Six declarations,
+ten reused entries, three geometric models and 13 linters pass. This supplies
+the topological obstruction for an essential circle once the actual capped
+component and its return map have been produced; those geometric inputs
+are not assumed to have been constructed.
 E3 retains 30.3. Compression via 26.4, full nonorientable 28.19,
 strict Betti descent and the full PL-sphere endpoint 30.4 remain open.
 See HANDOFF_CODEX_M304.md for exact signatures and evidence.

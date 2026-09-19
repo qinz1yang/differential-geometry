@@ -385,3 +385,46 @@ The next obligations remain the essential-circle obstruction needed in
 Betti descent, the actual compressing-disk producer 26.4, E3's subsequent
 splitting geometry, and the final induction. This checkpoint does not
 claim the full theorem 30.4.
+
+## Disk extraction and nullhomotopies from spherical cappings (2026-09-19 UTC)
+
+`BallHomotopy.lean` proves that every PL ball is contractible and constructs
+a nullhomotopy of any inclusion factoring through a PL ball. Its cylinder
+theorem starts with a continuous map of J times [0,1] into S, fixes J at
+height zero, and assumes the height-one image lies in a PL ball contained
+in S. It constructs the homotopy explicitly and concludes that the
+inclusion J into S is nullhomotopic. The cylinder is only required to be
+continuous; injectivity and a PL parametrization are not needed.
+
+`DiskCapping.lean` proves
+`IsPLSphere.exists_isPLHomeomorphOn_of_union_disk`: if A union D is a PL
+two-sphere, D has a PL disk parametrization r, and A intersect D is exactly
+`r '' stdSimplexBoundary 2`, then A has an actual disk parametrization q
+with the same boundary image. It does not assume A is closed or polyhedral;
+these follow by identifying A with the closure of the sphere minus D.
+The inclusion of this boundary into any set containing A is therefore
+nullhomotopic. A further theorem transports A by a given PL homeomorphism
+and uses a given continuous cylinder from J into that transported disk to
+nullhomotope J in the original ambient set.
+
+This supplies an obstruction to a spherical capped component when the
+original circle inclusion is non-nullhomotopic, as required by 26.4.
+The capping, exact boundary intersection, PL return map and cylinder are
+actual mathematical inputs to these lemmas. They still need to be produced
+for the eventual split surface; this layer does not claim those geometric
+inputs, component exclusion, or the completed Betti descent.
+
+Both modules pass zero-diagnostic focused checks: BallHomotopy 9.900 seconds
+and DiskCapping 10.650 seconds including admission. The silent final audit
+took 44.511 seconds. All six declarations, ten critical reused entries and
+three concrete models have only standard foundational axioms, and all 13
+applicable linters pass. The models contract the boundary of the unit
+square through the square, recover the top disk from a capped prism sphere
+with its exact boundary, and explicitly contract the bottom circle along
+the prism side into that recovered top disk. Initial external-model syntax
+and set-normalization errors were corrected. No proof debt remains.
+
+Both leaves are registered in the flat root. Source snapshots, raw and
+normalized hashes, object files, receipts and audit census are frozen in
+`moise304-reading/disk-capping-checkpoint/`. The owner-stopped root build
+remains stopped, and no shared E: artifact was written.
