@@ -221,15 +221,20 @@ and all thirteen applicable linters pass with standard axioms and no final
 diagnostics. The canonical free-triangle proof is generalized and reused;
 the copied chain is removed and both old boundary signatures are preserved.
 Actual middle-disk ball pairs and centered prism charts are now producers.
-Exact local replacement traces are accepted. E3 subsequently delivered relative
-frontier/safety and separation transfer at 45c848746, queued for independent
-replay. That endpoint assumes a finite closed combinatorial three-manifold
-K.space, which does not directly realize the R^3 shell ambient. The interior
-WB3 boundary trace 8ad00b74a is delivered and queued. At completed be67795fa
-the coordinator corrected an old whole-branch-chart detour and resumed the
-actual interior prism/local-trace bridge and original ambient separation
-consumer. Replacement manifold structure, physical cap separation and full
-Moise303 remain open. See handoff sections 52, 53 and 55 and the morning ledger.
+Exact local replacement traces are accepted. The subsequent relative
+separation 45c848746 and actual interior WB3 boundary/prism/local-trace bridge
+through ff304a1b2 are now independently accepted. Original-ambient separation
+is proved in real dimension three, using the actual ball's frontier and
+explicit outside equality. Five modules, 25 native declarations (six new),
+27 critical reuse entries and three real probes pass the combined audit with
+thirteen applicable linters, approved axioms and zero final diagnostics.
+The strengthened three-dimensional probe constructs a finite WB3 ambient
+around two nondegenerate disks and consumes the full local-trace producer.
+It does not instantiate nonempty H,Q for the full separation endpoint.
+Physical disjoint caps, a finite replacement surface with manifold structure,
+and complete Moise303 remain open. At completed delivery E3 continued exactly
+that construction and merged the canonical restriction change. See integration
+handoff section 58 and the morning ledger.
 
 ### Five tasks: one current lane each
 
@@ -239,10 +244,10 @@ its active 30.3 round without interruption. The private checker limit stays two.
 
 | Task / model | Current round | Delivery gate and next boundary |
 | --- | --- | --- |
-| h / gpt-5.6-sol max | Corrected contracts, exhaustion and graph dual-cell balls accepted. Piercing, nested common neighborhoods with four annular traces, real trivalent model and numerical scales through c08f3a8d5 now independently accepted. | Continue the current geometric stability/control round. Relative nesting is explicit; solid-torus PL type, disjoint edge neighborhoods, actual approximating maps and compatible gluing remain open. No Moise351 proof. |
+| h / gpt-5.6-sol max | Piercings, nested common annular traces, real trivalent model and numerical scales through c08f3a8d5 accepted. Finite pairwise-disjoint neighborhood upgrade 3bcaead58 delivered and queued. | At the clean boundary continued actual locally finite geometric control. Preserve real source/overlap relations; geometric stability, approximating maps and Moise351 remain open. Checkpoint by 14:05 UTC. |
 | F / gpt-6-astra max | Actual spherical EmbeddedDisk/return and projected double-cover/partner-involution layers through 8a00ab535 independently accepted. | Continue equivariant relative triangulation on the actual free collision relation in the same descent lane. The rectangle model permits two-dimensional double sets; crossing, geometric elimination and downstairs embedding remain open. |
-| E3 / gpt-5.6-sol max | Actual local traces through 8e0373385 accepted. Relative closed-carrier separation 45c848746 and interior-WB3 boundary trace 8ad00b74a queued. At be67795fa completed delivery resumed the current 30.3 interior bridge. | Construct interior prism/local traces and original R3 separation with a genuine 3D disk-pair model. Old whole-branch chart issue is not this lane's prerequisite. Physical cap separation and full 30.3 remain open. |
-| M304 / gpt-6-astra max | Own 30.4. Annulus components, conditional strict compression and actual minimum-Betti separators through ac3673685 independently accepted. Actual essential PL singular disk b80e381fc delivered and queued. | Construct an actual positive-genus essential-circle compression configuration and consume the existing strict Betti theorem. Preserve F's embedded-disk and E3's general physical-cap/separation ownership. No general beta-zero or full 30.4 claim. |
+| E3 / gpt-5.6-sol max | WB3 interior boundary/prism/local traces and original ambient separation through ff304a1b2 independently accepted, with actual 3D WB3 local-trace model. | Produce finite replacement surface/manifold and actual disjoint caps with face equations. Canonical restriction merge assigned at delivery; checkpoint by 14:05 UTC. Full 30.3 remains open. |
+| M304 / gpt-6-astra max | Own 30.4. Through ac3673685 independently accepted; actual essential singular filling b80e381fc and concrete essential torus compression fd77b6549 delivered and queued. | Continue the same concrete model toward actual ambient separation targets. Preserve E3 general physical-cap/separation and F26.4 ownership. General beta-zero and full 30.4 remain open. |
 | S / gpt-6-astra max | Finite 24.11/24.12 accepted. Planar localization, Jordan annuli and actual old-atlas local disk smoothing c4c935995 author-verified and queued. | At the completed clean delivery, continue one relative-strip round from actual end collars to whole-core smoothing. Checkpoint by 14:05 UTC. Preserve the old atlas; strip, seam charts and compact 3D smoothing remain open. |
 
 F must distinguish the full two-sheeted ambient cover from the smaller regular

@@ -1,8 +1,15 @@
+/-
+Copyright (c) 2026 Yuan Liao. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Yuan Liao
+-/
 import Mathlib.Topology.Connected.LocallyConnected
 import Mathlib.Topology.Connected.PathConnected
 import Mathlib.Topology.Order.Compact
 import Mathlib.Topology.Order.DenselyOrdered
 import Mathlib.Topology.Subpath
+
+/-! Separation of subsets and preservation under local replacement. -/
 
 open Set Topology
 
@@ -223,5 +230,52 @@ theorem Separates.of_frontier_replacement [LocallyConnectedSpace X]
       exact (separates_empty_left hC' hHC').symm
   · rw [not_nonempty_iff_eq_empty.mp hHne]
     exact separates_empty_left hC' hKC'
+
+theorem Separates.of_frontier_subset_replacement
+    {C C' H K N : Set X} (h : Separates C H K) (hC' : IsClosed C')
+    (hN : IsClosed N) (hout : C \ N = C' \ N) (hfrontier : frontier N ⊆ C')
+    (hHN : H ⊆ Nᶜ) (hKN : K ⊆ Nᶜ) :
+    Separates C' H K := by
+  obtain ⟨U, V, hU, hV, hdis, hcover, hHU, hKV⟩ := h
+  let U' := (U \ N) ∪ (interior N \ C')
+  let V' := V \ N
+  have hU' : IsOpen U' := (hU.sdiff hN).union (isOpen_interior.sdiff hC')
+  have hV' : IsOpen V' := hV.sdiff hN
+  have hdis' : Disjoint U' V' := by
+    rw [Set.disjoint_left]
+    rintro x (hxU | hxN) hxV
+    · exact Set.disjoint_left.mp hdis hxU.1 hxV.1
+    · exact hxV.2 (interior_subset hxN.1)
+  have hUcomp : U ⊆ Cᶜ := subset_union_left.trans hcover.subset
+  have hVcomp : V ⊆ Cᶜ := subset_union_right.trans hcover.subset
+  have hcover' : U' ∪ V' = C'ᶜ := by
+    apply Subset.antisymm
+    · rintro x (hxU | hxV)
+      · rcases hxU with hxU | hxN
+        · intro hxC'
+          have hxout : x ∈ C' \ N := ⟨hxC', hxU.2⟩
+          rw [← hout] at hxout
+          exact hUcomp hxU.1 hxout.1
+        · exact hxN.2
+      · intro hxC'
+        have hxout : x ∈ C' \ N := ⟨hxC', hxV.2⟩
+        rw [← hout] at hxout
+        exact hVcomp hxV.1 hxout.1
+    · intro x hxC'
+      by_cases hxN : x ∈ N
+      · have hxfrontier : x ∉ frontier N := fun hx => hxC' (hfrontier hx)
+        have hxinterior : x ∈ interior N :=
+          (mem_interior_iff_notMem_frontier hxN).2 hxfrontier
+        exact Or.inl (Or.inr ⟨hxinterior, hxC'⟩)
+      · have hxC : x ∈ Cᶜ := by
+          intro hxC
+          have hxout : x ∈ C \ N := ⟨hxC, hxN⟩
+          rw [hout] at hxout
+          exact hxC' hxout.1
+        rcases hcover.symm.subset hxC with hxU | hxV
+        · exact Or.inl (Or.inl ⟨hxU, hxN⟩)
+        · exact Or.inr ⟨hxV, hxN⟩
+  exact ⟨U', V', hU', hV', hdis', hcover',
+    fun x hx => Or.inl ⟨hHU hx, hHN hx⟩, fun x hx => ⟨hKV hx, hKN hx⟩⟩
 
 end DifferentialGeometry.Topology

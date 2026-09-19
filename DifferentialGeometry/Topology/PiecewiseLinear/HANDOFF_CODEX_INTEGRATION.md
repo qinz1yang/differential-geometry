@@ -2651,3 +2651,77 @@ The new round must produce whole-core relative smoothing from actual end
 collars, without assuming a diffeomorphism or compatibility. E3's interior
 separation bridge and M304's actual singular filling also remain queued.
 These reported deliverables are not independently accepted by this receipt.
+
+## 58. Interior WB3 splitting and original ambient separation (2026-09-19 UTC)
+
+E3's committed source 45c848746, 8ad00b74a and ff304a1b2 is independently
+accepted. The WB3 boundary-trace, centered-prism and exact local-trace producers
+now work inside a finite combinatorial three-manifold with boundary, away from
+its actual combinatorial boundary. The old closed-manifold signatures are
+retained as corollaries. The original-ambient separation theorem works in a
+real vector space of dimension three. It constructs the local neighborhood
+away from both closed target sets and the ambient boundary, identifies the
+frontier of the produced PL ball in the original ambient space, and proves
+closedness and separation for the explicitly constructed replacement.
+
+The separate general topological theorem constructs open separating sets from
+closedness, agreement outside the actual closed replacement region and its
+frontier containment. Those last two facts are proved from the geometric
+construction in each surface-splitting endpoint. The old relative theorem
+still has a finite closed-manifold carrier; it does not receive a vacuous
+same-dimensional Euclidean embedding assumption.
+
+Integration preserves the stronger canonical derived-neighborhood restriction
+from 77b982ae8. Six recorded expression migrations retain the earlier removal
+of the redundant hAB binder and migrate the four calls in the three updated
+WB3 files. The old EndpointDisk duplicate remains absent. The old connected
+separation source is unchanged except for the added theorem and required
+header; old public geometric type strings match the prior accepted census.
+
+All five changed/new modules compile with zero diagnostics in
+59.420 seconds including admission. The combined audit took
+54.134 seconds and covers all 25 native nonautomatic declarations
+(1 private), 27 critical reuse entries (26 distinct), three actual
+geometric probe theorems and thirteen applicable linters. All transitive axiom
+closures are contained in the three approved foundational axioms. Six native
+declarations are genuinely new. All six new full names have a unique source
+location in the namespace-aware library-wide scan.
+
+The three probes are separately classified. The first replaces a point
+separator by a nonempty closed interval between two nonempty target singletons.
+The second constructs a three-dimensional disk pair with exact common disk,
+two nonempty wings, and the common disk inside both larger disks' interiors.
+The third constructs an actual finite WB3 neighborhood containing that pair
+in its interior and applies the new full local-trace producer, obtaining the
+actual local PL balls, exact replacement boundary and unchanged outside set.
+Thus the model is stronger than the author's original disk-intersection-only
+test. These probes do not supply a single fixture combining the full
+original-ambient separation endpoint with nonempty H and Q; no such combined
+fixture is claimed. Two early external-probe failures concerned a concrete
+product-space DecidableEq mismatch; the final statement uses the intrinsic
+topological frontier. The fixed probe and failed evidence are
+frozen. No project-source proof repair was needed.
+
+Accepted integration Lean delta is +529/-53: +521/-53 across the five selected
+leaf developments, seven required header/module-documentation lines and one
+flat-root import. The selected five author files have window-start delta
++1240/-0; these differently based figures are not additive.
+Thirty-two private prerequisite objects were reused only after matching both
+current raw source and independently accepted object hashes. Receipt:
+.lake/verified-thirtyeighth-lane-delivery-20260919.json.
+Static root closure reaches 9520 project modules including the root, with no
+missing project source or import cycle. The full-root build remains stopped.
+
+Complete Moise303 remains open: no finite result complex with the required
+two-dimensional manifold structure and no two physical mutually disjoint cap
+disks with the full face equations have yet been accepted. At the completed
+ff304a1b2 safe point E3 was assigned exactly that next round and the canonical
+integration merge, with a 14:05 UTC checkpoint target and 14:19 UTC deadline.
+h likewise delivered finite pairwise-disjoint nested neighborhoods 3bcaead58
+and continued actual locally finite geometric control at its clean boundary.
+M304's new unconditional concrete torus compression fd77b6549 is delivered
+and queued: its reported essentiality, beta 2 to 0 and actual disjoint caps
+are not independently accepted by this receipt. It continues the same
+concrete-model ambient-separation question. S's old-atlas disk smoothing and
+F's later triangulation remain separate queues/current rounds. No active task
+received a routine status request or second lane.

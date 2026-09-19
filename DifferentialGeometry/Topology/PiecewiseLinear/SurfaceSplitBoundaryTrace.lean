@@ -176,6 +176,93 @@ theorem derivedNeighborhood_surface_inter_boundaryComplex
   · rintro ⟨hxQ, -, hxC⟩
     exact ⟨hxQ, hQN hxQ, hxC⟩
 
+namespace IsCombinatorialManifoldWithBoundary
+
+open Classical in
+theorem exists_isSubdivision_disk_pair_with_derivedNeighborhood_boundary_trace
+    {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces]
+    (hK : IsCombinatorialManifoldWithBoundary 3 K) {Δ D₁ D₂ U : Set E}
+    (hΔ : IsPLBall 2 Δ) (hD₁ : IsPLBall 2 D₁)
+    {r₂ : (Fin 3 → ℝ) → E}
+    (hr₂ : IsPLHomeomorphOn r₂ (stdSimplex ℝ (Fin 3)) D₂)
+    (hΔintD₂ : Δ ⊆ r₂ '' openSimplex (stdVertices 1))
+    (hΔD₁ : Δ ⊆ D₁) (hΔD₂ : Δ ⊆ D₂) (hD₁D₂ : D₁ ∩ D₂ = Δ)
+    (hD₁K : D₁ ⊆ K.space) (hD₂K : D₂ ⊆ K.space) (hU : U ∈ 𝓝ˢ[K.space] Δ)
+    (hUdis : Disjoint U (boundaryComplex 3 K).space) :
+    ∃ (R A A₁ A₂ : Geometry.SimplicialComplex ℝ E)
+      (L : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2)))
+      (φ : E → EuclideanSpace ℝ (Fin 2)) (ψ : EuclideanSpace ℝ (Fin 2) → E),
+      IsSubdivision R K ∧ R.faces.Finite ∧
+      A.faces ⊆ R.faces ∧ A.faces.Finite ∧ A.space = Δ ∧
+      A₁.faces ⊆ R.faces ∧ A₁.faces.Finite ∧ A₁.space = D₁ ∧
+      A₂.faces ⊆ R.faces ∧ A₂.faces.Finite ∧ A₂.space = D₂ ∧
+      A.faces ⊆ A₁.faces ∧ A.faces ⊆ A₂.faces ∧ A₁.space ∩ A₂.space = A.space ∧
+      L.faces.Finite ∧ IsPLBall 2 L.space ∧ IsGlueIso A L φ ψ ∧
+      IsPLBall 3 (PiecewiseLinear.derivedNeighborhood R A).space ∧
+      Δ ⊆ (PiecewiseLinear.derivedNeighborhood R A).space ∧
+      (PiecewiseLinear.derivedNeighborhood R A).space ⊆ K.space ∧
+      (PiecewiseLinear.derivedNeighborhood R A).space ⊆ U ∧
+      (∀ x ∈ Δ, (PiecewiseLinear.derivedNeighborhood R A).space ∈ 𝓝[K.space] x) ∧
+      IsPLBall 2 (D₂ ∩ (PiecewiseLinear.derivedNeighborhood R A).space) ∧
+      (D₂ ∩ (PiecewiseLinear.derivedNeighborhood R A).space) ∩
+          (boundaryComplex 3 (PiecewiseLinear.derivedNeighborhood R A)).space =
+        (boundaryComplex 2 (PiecewiseLinear.derivedNeighborhood A₂ A)).space := by
+  classical
+  let J := r₂ '' stdSimplexBoundary 2
+  have hD₂ : IsPLBall 2 D₂ := ⟨r₂, hr₂⟩
+  have hJclosed : IsClosed J := hr₂.isPLSphere_image_stdSimplexBoundary.isPolyhedron.isClosed
+  have hΔJ : Δ ⊆ Jᶜ := by
+    intro x hx
+    have hx' := hΔintD₂ hx
+    rw [hr₂.image_openSimplex_stdVertices] at hx'
+    exact hx'.2
+  have hJnhds : Jᶜ ∈ 𝓝ˢ Δ := mem_nhdsSet_iff_forall.mpr fun x hx =>
+    hJclosed.isOpen_compl.mem_nhds (hΔJ hx)
+  have hV : U ∩ Jᶜ ∈ 𝓝ˢ[K.space] Δ :=
+    Filter.inter_mem hU (Filter.mem_inf_of_left hJnhds)
+  obtain ⟨R, A, A₁, A₂, L, φ, ψ, hR, hRfin, hAR, hAfin, hAΔ,
+      hA₁R, hA₁fin, hA₁D₁, hA₂R, hA₂fin, hA₂D₂, hAA₁, hAA₂, hmeet,
+      hLfin, hL, hIso, hNball, hcontains, hNK, hNV, hnhds, hBball⟩ :=
+    hK.exists_isSubdivision_disk_pair_with_derivedNeighborhood_endpoint_disk
+      hΔ hD₁ hD₂ hΔD₁ hΔD₂ hD₁D₂ hD₁K hD₂K hV
+  let _ : Finite R.faces := hRfin.to_subtype
+  let _ : Finite A.faces := hAfin.to_subtype
+  let _ : Finite A₂.faces := hA₂fin.to_subtype
+  let N := PiecewiseLinear.derivedNeighborhood R A
+  let Q := PiecewiseLinear.derivedNeighborhood A₂ A
+  have hNU : N.space ⊆ U := hNV.trans inter_subset_left
+  have hNJ : Disjoint N.space J := by
+    apply disjoint_left.mpr
+    intro x hxN hxJ
+    exact (hNV hxN).2 hxJ
+  have hRman : IsCombinatorialManifoldWithBoundary 3 R := hK.of_isSubdivision hR
+  have hRB : (boundaryComplex 3 R).space = (boundaryComplex 3 K).space :=
+    boundaryComplex_space_of_isSubdivision K R hK hR
+  have hNdis : Disjoint N.space (boundaryComplex 3 R).space := by
+    rw [hRB]
+    exact hUdis.mono_left hNU
+  have hmiddle : D₂ ∩ N.space = Q.space := by
+    rw [← hA₂D₂, inter_comm]
+    exact derivedNeighborhood_space_inter_subcomplex R A₂ A hA₂R
+  have hQN : Q.space ⊆ N.space := hmiddle.symm.subset.trans inter_subset_right
+  have hA₂boundary : J = (boundaryComplex 2 A₂).space :=
+    hr₂.image_stdSimplexBoundary_eq_boundaryComplex A₂ hA₂D₂
+  have hQdis : Disjoint Q.space (boundaryComplex 2 A₂).space := by
+    rw [← hA₂boundary]
+    exact hNJ.mono_left hQN
+  have hA₂ball : IsPLBall 2 A₂.space := hA₂D₂.symm ▸ hD₂
+  have htrace := derivedNeighborhood_surface_inter_boundaryComplex R A A₂
+    hRman
+    hA₂ball.isCombinatorialManifoldWithBoundary
+    hA₂R hNdis hQdis
+  refine ⟨R, A, A₁, A₂, L, φ, ψ, hR, hRfin, hAR, hAfin, hAΔ,
+    hA₁R, hA₁fin, hA₁D₁, hA₂R, hA₂fin, hA₂D₂, hAA₁, hAA₂, hmeet,
+    hLfin, hL, hIso, hNball, hcontains, hNK, hNU, hnhds, hBball, ?_⟩
+  rw [hmiddle]
+  exact htrace
+
+end IsCombinatorialManifoldWithBoundary
+
 open Classical in
 theorem
     IsCombinatorialManifold.exists_isSubdivision_disk_pair_with_derivedNeighborhood_boundary_trace
@@ -206,60 +293,16 @@ theorem
           (boundaryComplex 3 (derivedNeighborhood R A)).space =
         (boundaryComplex 2 (derivedNeighborhood A₂ A)).space := by
   classical
-  let J := r₂ '' stdSimplexBoundary 2
-  have hD₂ : IsPLBall 2 D₂ := ⟨r₂, hr₂⟩
-  have hJclosed : IsClosed J := hr₂.isPLSphere_image_stdSimplexBoundary.isPolyhedron.isClosed
-  have hΔJ : Δ ⊆ Jᶜ := by
-    intro x hx
-    have hx' := hΔintD₂ hx
-    rw [hr₂.image_openSimplex_stdVertices] at hx'
-    exact hx'.2
-  have hJnhds : Jᶜ ∈ 𝓝ˢ Δ := mem_nhdsSet_iff_forall.mpr fun x hx =>
-    hJclosed.isOpen_compl.mem_nhds (hΔJ hx)
-  have hV : U ∩ Jᶜ ∈ 𝓝ˢ[K.space] Δ :=
-    Filter.inter_mem hU (Filter.mem_inf_of_left hJnhds)
-  obtain ⟨R, A, A₁, A₂, L, φ, ψ, hR, hRfin, hAR, hAfin, hAΔ,
-      hA₁R, hA₁fin, hA₁D₁, hA₂R, hA₂fin, hA₂D₂, hAA₁, hAA₂, hmeet,
-      hLfin, hL, hIso, hNball, hcontains, hNK, hNV, hnhds, hBball⟩ :=
-    hK.isCombinatorialManifoldWithBoundary
-      |>.exists_isSubdivision_disk_pair_with_derivedNeighborhood_endpoint_disk
-        hΔ hD₁ hD₂ hΔD₁ hΔD₂ hD₁D₂ hD₁K hD₂K hV
-  let _ : Finite R.faces := hRfin.to_subtype
-  let _ : Finite A.faces := hAfin.to_subtype
-  let _ : Finite A₂.faces := hA₂fin.to_subtype
-  let N := derivedNeighborhood R A
-  let Q := derivedNeighborhood A₂ A
-  have hNU : N.space ⊆ U := hNV.trans inter_subset_left
-  have hNJ : Disjoint N.space J := by
-    apply disjoint_left.mpr
-    intro x hxN hxJ
-    exact (hNV hxN).2 hxJ
-  have hRman : IsCombinatorialManifold 3 R := hK.of_isSubdivision hR
-  have hRB : (boundaryComplex 3 R).space = ∅ := by
-    change (⋃ t ∈ (boundaryComplex 3 R).faces, convexHull ℝ (t : Set E)) = ∅
-    rw [hRman.boundaryComplex_faces_eq_empty]
+  have hboundary : (boundaryComplex 3 K).space = ∅ := by
+    change (⋃ t ∈ (boundaryComplex 3 K).faces, convexHull ℝ (t : Set E)) = ∅
+    rw [hK.boundaryComplex_faces_eq_empty]
     simp
-  have hNdis : Disjoint N.space (boundaryComplex 3 R).space := by
-    rw [hRB]
-    exact disjoint_empty N.space
-  have hmiddle : D₂ ∩ N.space = Q.space := by
-    rw [← hA₂D₂, inter_comm]
-    exact derivedNeighborhood_space_inter_subcomplex R A₂ A hA₂R
-  have hQN : Q.space ⊆ N.space := hmiddle.symm.subset.trans inter_subset_right
-  have hA₂boundary : J = (boundaryComplex 2 A₂).space :=
-    hr₂.image_stdSimplexBoundary_eq_boundaryComplex A₂ hA₂D₂
-  have hQdis : Disjoint Q.space (boundaryComplex 2 A₂).space := by
-    rw [← hA₂boundary]
-    exact hNJ.mono_left hQN
-  have hA₂ball : IsPLBall 2 A₂.space := hA₂D₂.symm ▸ hD₂
-  have htrace := derivedNeighborhood_surface_inter_boundaryComplex R A A₂
-    hRman.isCombinatorialManifoldWithBoundary
-    hA₂ball.isCombinatorialManifoldWithBoundary
-    hA₂R hNdis hQdis
-  refine ⟨R, A, A₁, A₂, L, φ, ψ, hR, hRfin, hAR, hAfin, hAΔ,
-    hA₁R, hA₁fin, hA₁D₁, hA₂R, hA₂fin, hA₂D₂, hAA₁, hAA₂, hmeet,
-    hLfin, hL, hIso, hNball, hcontains, hNK, hNU, hnhds, hBball, ?_⟩
-  rw [hmiddle]
-  exact htrace
+  have hUdis : Disjoint U (boundaryComplex 3 K).space := by
+    rw [hboundary]
+    exact disjoint_empty U
+  have hKb : IsCombinatorialManifoldWithBoundary 3 K :=
+    hK.isCombinatorialManifoldWithBoundary
+  exact hKb.exists_isSubdivision_disk_pair_with_derivedNeighborhood_boundary_trace hΔ hD₁ hr₂
+    hΔintD₂ hΔD₁ hΔD₂ hD₁D₂ hD₁K hD₂K hU hUdis
 
 end DifferentialGeometry.Topology.PiecewiseLinear

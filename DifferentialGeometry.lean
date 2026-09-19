@@ -8925,6 +8925,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.DualCellPiercingNeighborhoo
 import DifferentialGeometry.Topology.PiecewiseLinear.LocallyFiniteErrorControl
 import DifferentialGeometry.Topology.PiecewiseLinear.NestedCircleBicollar
 import DifferentialGeometry.Topology.PiecewiseLinear.TrivalentDualCellNeighborhoodModel
+import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceSplitSeparation
 
 /-!
 # Differential geometry and geometric analysis
