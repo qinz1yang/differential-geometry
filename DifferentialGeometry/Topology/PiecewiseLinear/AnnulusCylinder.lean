@@ -86,7 +86,7 @@ theorem IsCylindricalDiagram.exists_isPLHomeomorphOn_annulus_of_isOrientable
     (hK : IsCombinatorialManifoldWithBoundary 2 K) (hor : IsOrientable 2 K)
     {f : ℝ × ℝ → E} {S : Set E} (hf : IsCylindricalDiagram f (Icc 0 1) S) (hSK : S ⊆ K.space) :
     ∃ H : (Fin 3 → ℝ) × ℝ → E, IsPLHomeomorphOn H (stdSimplexBoundary 2 ×ˢ Icc 0 1) S := by
-  obtain ⟨g, hg, hends⟩ := hf.exists_endMap_id_of_isOrientable K hK hor hSK
+  obtain ⟨g, hg, hends⟩ := hf.exists_endMap_id_of_isOrientable_interval K hK hor hSK
   obtain ⟨H, hH, _⟩ := hg.exists_isPLHomeomorphOn_annulus_of_eq_ends hends
   exact ⟨H, hH⟩
 

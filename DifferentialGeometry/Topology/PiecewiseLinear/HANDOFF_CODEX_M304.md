@@ -500,3 +500,24 @@ hashes, objects, receipts and the census are frozen in
 stopped. These are actual two-dimensional complement results. The local
 manifold structure of the closures, the eventual capped components,
 compression via 26.4, and the full 30.4 endpoint remain separate obligations.
+
+## Interval and disk monodromy name compatibility (2026-09-19 UTC)
+
+The integration audit at `1e691da48917bc2418c8310e45e0cc33f261645a`
+found a genuine shared-name collision with the previously accepted
+two-dimensional disk-fiber theorem in `CylindricalClassification.lean`.
+The interval-fiber declaration in `IntervalMonodromy.lean` is now named
+`IsCylindricalDiagram.exists_endMap_id_of_isOrientable_interval`; its one
+consumer in `AnnulusCylinder.lean` uses the new name. The existing disk
+declaration and its consumers retain their public names.
+
+This lane independently recompiled the two changed modules and the four
+downstream modules SurfaceCircleNeighborhood, SurfaceCircleBicollar,
+SurfaceSpanningDisk and SurfaceCircleComplement, all with zero diagnostics
+(12.102, 11.989, 11.532, 12.179, 12.180 and 11.319 seconds respectively).
+The annular-neighborhood audit was rerun while also importing the existing
+SolidTorusProduct chain, so both theorem families coexist in one environment.
+All 12 declarations, 12 critical reused entries, three geometric models
+and 13 linters pass, with only standard foundational axioms and zero
+diagnostics in 48.010 seconds. Evidence is frozen in
+`moise304-reading/interval-name-checkpoint/`. The root build stays stopped.

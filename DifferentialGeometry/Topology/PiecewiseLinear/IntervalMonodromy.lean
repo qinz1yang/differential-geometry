@@ -107,7 +107,7 @@ theorem IsCylindricalDiagram.endMap_endpoints_of_isOrientable
       hu hfu hends.1 hends.2
     exact (not_isPLHomeomorphOn_mobiusComplex_of_isOrientable K hK hor hSK j hj).elim
 
-theorem IsCylindricalDiagram.exists_endMap_id_of_isOrientable
+theorem IsCylindricalDiagram.exists_endMap_id_of_isOrientable_interval
     (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
     (hK : IsCombinatorialManifoldWithBoundary 2 K) (hor : IsOrientable 2 K)
     {f : ℝ × ℝ → E} {S : Set E} (hf : IsCylindricalDiagram f (Icc 0 1) S) (hSK : S ⊆ K.space) :
