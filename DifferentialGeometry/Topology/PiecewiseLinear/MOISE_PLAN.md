@@ -1863,3 +1863,31 @@ disk is supplied; no general embedded-disk producer, disjoint caps, or proof
 that a capped union separates the original targets is inferred. Arbitrary-shell
 Moise 30.4 remains open. See `HANDOFF_CODEX_M304.md` for the exact native APIs,
 integration provenance, concrete nondegeneracy evidence and remaining gates.
+
+### M304 local separation transfer along the original disk (2026-09-19 UTC)
+
+The supplied common annular neighborhood now feeds the actual enlarged-disk
+and splitting-ball producers. `SpanningDiskSeparation` constructs a finite
+PL ball B in the prescribed open region and a finite polyhedral separator
+P = closure(S minus B) union frontier B. It proves original-disk containment
+in frontier B, exact original-surface traces in B, agreement with S outside
+B, separation of the original targets, and a nonempty added part. The shell
+version constructs the common solid torus and retains the original X,B0,B1;
+the full disk's containment in interior X is an explicit geometric input.
+
+The general producer only assumes a compact relative neighborhood A; the
+common-annular case is its corollary. The two mathematical modules contribute
+four new declarations. All 15 declarations in those modules, 18 critical reuses,
+two actual essential-disk
+models and 13 linters pass with standard axioms and zero diagnostics.
+Thirteen private module checks and the complete audit are frozen at
+`moise304-reading/spanning-separation-final-checkpoint/`. The native graph has
+848 modules and 1789 edges without cycles. No full-root build is claimed.
+
+P is not asserted to be a closed surface. The local boundary disks M,Q meet
+on a proved nonempty circle, so they are not the required disjoint final caps.
+The accepted integration capping/realization interfaces were inspected and
+remain the canonical consumers after E3's original-boundary marking is
+available. A separation proof for that actual capped surface and a general
+embedded essential-disk producer remain open; arbitrary-shell 30.4 is not
+marked complete.

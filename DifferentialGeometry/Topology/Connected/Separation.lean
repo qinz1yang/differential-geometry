@@ -31,6 +31,23 @@ theorem Separates.left_subset_compl {C H K : Set X} (h : Separates C H K) : H �
 theorem Separates.right_subset_compl {C H K : Set X} (h : Separates C H K) : K ⊆ Cᶜ :=
   h.symm.left_subset_compl
 
+theorem Separates.mono {C C' H K : Set X} (h : Separates C H K)
+    (hC' : IsClosed C') (hCC' : C ⊆ C') (hH : H ⊆ C'ᶜ) (hK : K ⊆ C'ᶜ) :
+    Separates C' H K := by
+  obtain ⟨U, V, hU, hV, hd, heq, hHU, hKV⟩ := h
+  refine ⟨U ∩ C'ᶜ, V ∩ C'ᶜ, hU.inter hC'.isOpen_compl, hV.inter hC'.isOpen_compl,
+    hd.mono inter_subset_left inter_subset_left, ?_,
+    fun x hx => ⟨hHU hx, hH hx⟩, fun x hx => ⟨hKV hx, hK hx⟩⟩
+  apply Subset.antisymm
+  · rintro x (hx | hx)
+    · exact hx.2
+    · exact hx.2
+  · intro x hx
+    have hxC : x ∈ Cᶜ := fun hxC => hx (hCC' hxC)
+    rcases heq.symm.subset hxC with hxU | hxV
+    · exact Or.inl ⟨hxU, hx⟩
+    · exact Or.inr ⟨hxV, hx⟩
+
 theorem Separates.not_mem_connectedComponentIn {C H K : Set X} (h : Separates C H K)
     {x y : X} (hx : x ∈ H) (hy : y ∈ K) : y ∉ connectedComponentIn Cᶜ x := by
   obtain ⟨U, V, hU, hV, hd, heq, hH, hK⟩ := h

@@ -1424,3 +1424,75 @@ bicollar or align their endpoint circles with a splitting prism. E3 retains
 that compatibility task. No disjoint cap pair or separation of a capped union
 is produced here; unrestricted embedded-disk production and the subsequent
 separation-preserving compression remain necessary for arbitrary-shell 30.4.
+
+## Local separation transfer for the original spanning disk (2026-09-19 UTC)
+
+`SpanningDiskSeparation.lean` consumes the common annular neighborhood from
+the previous checkpoint and the existing `SurfaceSpanningDisk` and
+`SurfaceSplitSeparation` producers. No E3 geometric source is changed.
+
+`IsCombinatorialManifoldWithBoundary.exists_polyhedral_separator_of_spanning_disk`
+retains the supplied surface S, disk parametrization r, compact neighborhood A,
+open U and targets H,T. It allows a finite orientable surface with boundary,
+provided the original disk boundary avoids that surface boundary. Only
+compactness and the relative-neighborhood condition on A are required; no
+triangulation or annular structure of A is assumed. The entire disk and A must
+lie in U and avoid the two closed targets. The proof constructs the two
+enlarged disks inside D union (S intersect A), then a finite ambient WB3
+neighborhood inside the same U away from the targets, and invokes the existing
+local splitting-ball producer. This ambient complex need not contain the whole
+surface. `IsCommonAnnularDerivedNeighborhood.exists_polyhedral_separator_of_spanning_disk`
+is a corollary that derives these inputs from the actual common triangulation.
+
+The result is an actual finite PL three-ball B and a finite polyhedral
+separator P. It proves all of the following for those same objects:
+
+- The original D lies in a parametrized disk M in the boundary of B.
+- The other disk Q satisfies boundary B = M union Q and
+  M intersect Q = q(image of the standard disk boundary).
+- M minus D and the removed local piece V lie in S intersect A.
+- S intersect B = (M intersect S) union V.
+- P = closure(S minus B) union boundary B, P intersect B = boundary B,
+  and P minus B = S minus B.
+- P separates the original H,T, and P minus S is nonempty. The latter is
+  witnessed by the image of the original disk's standard interior point.
+
+`IsSphericalShell.exists_polyhedral_separator_of_spanning_disk` constructs A
+using the actual common-annular solid-torus producer and applies this transfer
+in the original shell X. The hypothesis D subset interior X is explicit;
+containment of D's boundary alone is not promoted to containment of D. Both A
+and B avoid the original B0,B1, and P lies in that same shell interior and
+separates the same targets. The conclusion uses the intrinsic frontier of B.
+`Separates.mono` is the only addition in the general topology file; no existing
+separation declaration or signature changes.
+
+Thirteen private module checks, including the current E3 dependency chain,
+pass with zero diagnostics. The audit checks all 15 nonautomatic declarations
+in the two changed/new mathematical modules, 18 critical reuses and two actual
+essential-torus-disk certificates. The first retains the original positive
+genus surface, its essential disk, its original shell and nonempty targets.
+The second starts from the same supplied common annular neighborhood and
+checks the exact local traces, nonempty M intersect Q, and the inclusion of
+D minus S in P minus S. All 13 applicable linters pass, and all axiom closures
+contain only standard foundational axioms. The reused SurfaceSpanningDisk,
+common-neighborhood, SeparatingSurface, SphericalShell and TorusShell receipts
+match their current source bytes. The reachable native graph has 848 modules
+and 1789 edges, is acyclic, and avoids HurewiczLowDegrees.
+
+Source/object/receipt sets for all 13 checks and the complete external audit
+are frozen at `moise304-reading/spanning-separation-final-checkpoint/`. Its manifest
+SHA256 is `DD2BAA3BB8A125C327C9BABAED04C73BF46603A943852F33DC7A038B1D7A9BBF`.
+The new leaf is registered in the flat root. The owner-stopped root build is
+not restarted, and no shared E output is written.
+
+The resulting P is a polyhedral separator, not a proved closed two-manifold.
+Its whole local boundary sphere cannot be substituted for the desired pair
+of disjoint caps: the produced M and Q have a proved nonempty intersection.
+Thus no Betti decrease or final compression is claimed. The accepted
+`ab29b2d71` SurfaceSplitRealization/SurfaceSplitCapping declarations were
+inspected at that exact integration commit. They require an actual disjoint
+cap pair with the original split-surface boundary equations and do not supply
+separation of its capped union. This round does not duplicate those modules
+or E3's relative-prism/end-circle marking work. That marking and a separation
+argument for the actual capped surface, together with general production of
+the embedded essential disk, remain the precise upstream gates for 30.4.
