@@ -618,7 +618,7 @@ private theorem locallyFinite_faces_disjointUnionComplex_univ
   exact Set.mem_iUnion₂.mpr ⟨i, hi, hsi⟩
 
 open Classical in
-private noncomputable def euclideanLocallyFinitePLPieceIn {m : ℕ}
+noncomputable def euclideanLocallyFinitePLPieceIn {m : ℕ}
     (J : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin m)))
     (hloc : LocallyFinite (fun s : J.faces =>
       (Subtype.val : J.space → EuclideanSpace ℝ (Fin m)) ⁻¹'
@@ -820,6 +820,53 @@ private theorem exists_translated_arc_component_family :
       · exact Or.inr rfl
   exact ⟨C, H, w, S, p, q, hS, hCfin, hHfin, hHC, hHcard, hCman,
     hCdis, hCsucc, hw, hwcoord, hpq', hedgeH⟩
+
+open Classical in
+theorem exists_noncompact_locallyFinite_simplicialComplex_three_with_edge :
+    ∃ J : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3)),
+      LocallyFinite (fun s : J.faces =>
+        (Subtype.val : J.space → EuclideanSpace ℝ (Fin 3)) ⁻¹'
+          convexHull ℝ ((s : Finset (EuclideanSpace ℝ (Fin 3))) :
+            Set (EuclideanSpace ℝ (Fin 3)))) ∧
+      ¬ IsCompact J.space ∧
+      ∃ e ∈ J.faces, e.card = 2 := by
+  let E := EuclideanSpace ℝ (Fin 3)
+  obtain ⟨C, H, w, S, p, q, hS, hCfin, -, hHC, -, -, hCdis,
+    hCloc, hw, hwcoord, hpq, hedge⟩ := exists_translated_arc_component_family
+  let J : Geometry.SimplicialComplex ℝ E :=
+    disjointUnionComplex C hCdis Set.univ
+  have hJlocal : LocallyFinite (fun s : J.faces =>
+      (Subtype.val : J.space → E) ⁻¹'
+        convexHull ℝ ((s : Finset E) : Set E)) := by
+    simpa only [J] using
+      (locallyFinite_faces_disjointUnionComplex_univ
+        (C := C) (hdis := hCdis) hCloc hCfin)
+  have hwJ (z : ℤ) : w z ∈ J.space := by
+    rw [disjointUnionComplex_space C hCdis Set.univ]
+    exact Set.mem_iUnion₂.mpr
+      ⟨z, Set.mem_univ z, space_mono_of_faces_subset (hHC z) (hw z)⟩
+  have hJnoncompact : ¬ IsCompact J.space := by
+    intro hcompact
+    obtain ⟨R, hJR⟩ := hcompact.isBounded.subset_closedBall (0 : E)
+    obtain ⟨i, hi⟩ := exists_nat_gt ((R - (w 0) 0) / S)
+    have hmul : R - (w 0) 0 < (i : ℝ) * S := (div_lt_iff₀ hS).mp hi
+    have hlarge : R < (w (i : ℤ)) 0 := by
+      rw [hwcoord]
+      norm_num
+      linarith
+    have hball := hJR (hwJ (i : ℤ))
+    have hnorm : ‖w (i : ℤ)‖ ≤ R := by
+      simpa only [Metric.mem_closedBall, dist_zero_right] using hball
+    have habs : |(w (i : ℤ)) 0| ≤ ‖w (i : ℤ)‖ := by
+      simpa only [Real.norm_eq_abs] using
+        (PiLp.norm_apply_le (w (i : ℤ)) (0 : Fin 3))
+    have hcoord : (w (i : ℤ)) 0 ≤ ‖w (i : ℤ)‖ :=
+      (le_abs_self _).trans habs
+    linarith
+  have hedgeJ : ({p, q} : Finset E) ∈ J.faces :=
+    mem_disjointUnionComplex_faces_iff.mpr
+      ⟨0, Set.mem_univ 0, hHC 0 hedge⟩
+  exact ⟨J, hJlocal, hJnoncompact, {p, q}, hedgeJ, Finset.card_pair hpq⟩
 
 private def symmetricIntegerInterval (i : ℕ) : Set ℤ :=
   Set.Icc (-(i : ℤ)) (i : ℤ)

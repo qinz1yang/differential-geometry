@@ -8953,6 +8953,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.ManifoldBallInclusion
 import DifferentialGeometry.Topology.PiecewiseLinear.OpenTargetApproximation
 import DifferentialGeometry.Topology.PiecewiseLinear.PrismFrontier
 import DifferentialGeometry.Topology.PiecewiseLinear.TorusCompression
+import DifferentialGeometry.Topology.PiecewiseLinear.LocallyFiniteSplittingDisks
 
 /-!
 # Differential geometry and geometric analysis

@@ -116,16 +116,18 @@ theorem exists_trivalent_graphDualCell_piercing_neighborhood_model :
             (graphDualCell K L v)).space
           (f i '' (@boundaryComplex (Fin 5 → ℝ) _ _ (Classical.decEq _) 3
             (graphDualCell K L (w i))).space)) ∧
-      Pairwise fun i j => Disjoint (J i) (J j) := by
+      Pairwise (fun i j => Disjoint (J i) (J j)) ∧
+      Pairwise (fun i j => Disjoint (A i) (A j)) ∧
+      Pairwise fun i j => Disjoint (B i) (B j) := by
   let _ : DecidableEq (Fin 5 → ℝ) := Classical.decEq _
   obtain ⟨K, L, v, w, hKfin, hLfin, hK, hLK, hcard, hwinj, hvw, hneighbors⟩ :=
     exists_trivalent_graph_subcomplex_model
   let _ : Finite K.faces := hKfin.to_subtype
-  obtain ⟨J, C, f, A, B, hdata, hpair⟩ :=
-    hK.exists_trivalent_piercings_with_nested_common_neighborhoods K L hLK hcard w
+  obtain ⟨J, C, f, A, B, hdata, hpairJ, hpairA, hpairB⟩ :=
+    hK.exists_piercings_with_pairwise_disjoint_nested_common_neighborhoods K L hLK hcard w
       hwinj hvw hneighbors isOpen_univ (fun _ => subset_univ _)
   refine ⟨K, L, v, w, J, C, f, A, B, hKfin, hLfin, hK, hLK, hcard, hwinj, hvw,
-    hneighbors, ?_, hpair⟩
+    hneighbors, ?_, hpairJ, hpairA, hpairB⟩
   intro i
   rcases hdata i with ⟨hJ, -, -, hf, hCsub, hfix, hC, hinter, -, hAB⟩
   exact ⟨hJ, hf, hCsub, hfix, hC, hinter, hAB⟩

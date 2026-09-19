@@ -261,7 +261,7 @@ its active 30.3 round without interruption. The private checker limit stays two.
 
 | Task / model | Current round | Delivery gate and next boundary |
 | --- | --- | --- |
-| h / gpt-5.6-sol max | Piercings, nested common annular traces, real trivalent model and numerical scales through c08f3a8d5 accepted. Finite pairwise-disjoint neighborhood upgrade 3bcaead58 delivered and queued. | At the clean boundary continued actual locally finite geometric control. Preserve real source/overlap relations; geometric stability, approximating maps and Moise351 remain open. Checkpoint by 14:05 UTC. |
+| h / gpt-5.6-sol max | Contracts and actual neighborhoods accepted; finite disjoint nested neighborhoods and genuinely locally finite disjoint open supports through e8ffd9c5d independently verified. | Localize splitting-disk ballness to finite cofaces without changing the actual disk. Stability, compatible approximation and Moise351 remain open. Checkpoint by14:05 UTC. |
 | F / gpt-6-astra max | Actual spherical EmbeddedDisk/return and projected double-cover/partner-involution layers through 8a00ab535 independently accepted. | Continue equivariant relative triangulation on the actual free collision relation in the same descent lane. The rectangle model permits two-dimensional double sets; crossing, geometric elimination and downstairs embedding remain open. |
 | E3 / gpt-5.6-sol max | WB3 interior boundary/prism/local traces and original ambient separation through ff304a1b2 independently accepted, with actual 3D WB3 local-trace model. | Produce finite replacement surface/manifold and actual disjoint caps with face equations. Canonical restriction merge assigned at delivery; checkpoint by 14:05 UTC. Full 30.3 remains open. |
 | M304 / gpt-6-astra max | Own 30.4. Essential singular filling and actual torus compression/frontier/common targets through 1c43107f3 independently accepted. Native ball-target strengthening 815c38869 queued. | Continue the same concrete shell instance. General arbitrary-shell beta-zero descent and full Moise304 remain open; preserve E3 general surgery and F26.4 ownership. Checkpoint by 14:05 UTC. |
@@ -393,6 +393,19 @@ are met, reuse retained artifacts and check the expanded import graph before
 treating a root success as endpoint coverage.
 Current AGENTS allows required copyright/authors headers and module docstrings;
 inline comments and declaration docstrings remain disallowed.
+
+### Locally finite support-separation gate (2026-09-19 UTC)
+
+The finite incident family now has pairwise-disjoint outer and inner actual
+piercing neighborhoods. For every locally finite PL ambient, all splitting
+disks have finite faces and form a locally finite closed disjoint family;
+locally finite disjoint open supports are constructed in any prescribed
+containing open set. Both a compact trivalent three-sphere model and a
+noncompact R3 model with nonempty disks and supports are independently checked.
+Through e8ffd9c5d, four modules, all71 native declarations,26 reused entries
+and two actual probes pass the axiom/lint gate. The same-disk local PL-ball
+bridge, solid-torus classification, geometric stability and Moise351 remain
+open. h continues that same lane until the final checkpoint; see section61.
 
 ## 1. 目标与接口
 

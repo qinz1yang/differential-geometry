@@ -1803,3 +1803,52 @@ solid-torus family; arbitrary prescribed shell targets and the general minimum-
 Betti argument are not supplied by this example. M304's subsequent native
 ball-target strengthening 815c38869 is queued separately while the same concrete
 shell-model lane continues. No active task was interrupted or given another lane.
+
+## Locally finite splitting-disk supports and disjoint piercing neighborhoods (2026-09-19 UTC)
+
+The frozen h checkpoints 3bcaead58 and e8ffd9c5d are independently accepted.
+Four changed leaves include one new LocallyFiniteSplittingDisks module, now
+registered in the flat root. Their bytes match the delivered checkpoint.
+
+For a finite incident edge family, both layers of the actual nested common
+piercing neighborhoods are now pairwise disjoint, while the same piercing
+circles, modified balls, original open-set containment and four exact annular
+traces remain recorded. The standard three-edge model in the boundary of a
+four-simplex constructs a real nonempty instance of all three disjoint families.
+
+For a locally finite ambient triangulation, compactness of an edge carrier
+leaves only finitely many cofaces. Its splitting disk therefore has finitely
+many faces. All edge-indexed disks form a locally finite pairwise-disjoint
+closed family in the same ambient carrier. Precise refinement and shrinking
+produce locally finite pairwise-disjoint open supports inside any prescribed
+common open set containing those disks. No finite global ambient is assumed.
+
+The actual unbounded translated complex in R3 has a nonempty edge type. An
+independent strengthened application proves that every resulting open support
+is nonempty, using its edge centroid, and verifies finite splitting-disk faces
+for that very same locally finite complex. This is distinct from the compact
+three-sphere model used for the finite piercing layer.
+
+Four focused checks took 47.978 seconds; the combined audit took
+49.080 seconds, including admission. All 71 native nonautomatic
+declarations, 26 critical reuse entries (25 distinct) and two actual
+geometric probes pass. Eleven declarations are new (eight public, three
+private); the existing Euclidean PL-piece constructor is promoted unchanged.
+The trivalent model conclusion is strengthened, and its actual consumer is
+checked. All thirteen applicable linters pass, all axiom closures use only
+approved foundational axioms, and every final check has zero diagnostics.
+Thirty-three prerequisite objects were reused only with exact current raw
+source and previously accepted object identities.
+
+The accepted Lean delta is +452/-5, including one root import. Root static
+closure reaches 9590 project modules including the root, with no missing
+project sources or cycles. The full root build remains stopped. Receipt:
+.lake/verified-fortyfirst-lane-delivery-20260919.json.
+
+Open support separation does not yet prove local PL ballness, standard solid-
+torus type, geometric stability radii for Conditions (2)--(8), compatible
+cellwise approximations or Moise351. At the clean completed delivery h resumed
+the same lane to localize the ball theorem to finite cofaces, preserving the
+same actual disk and links. Reusable metric-free separation is also to be
+moved to its natural Topology home at that coherent boundary. Checkpoint target
+is 14:05 UTC; the autonomous window ends at 14:19 UTC.
