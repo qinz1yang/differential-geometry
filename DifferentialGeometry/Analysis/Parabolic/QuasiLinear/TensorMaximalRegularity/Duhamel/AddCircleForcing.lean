@@ -539,3 +539,210 @@ theorem parameterDerivativeDuhamelForcing_ae_eq_of_one_le
     (f₀ i) (U t i) (a t) (b t i) (F t i) (ht i)
 
 end DifferentialGeometry.Analysis.Parabolic.QuasiLinear
+
+noncomputable section
+
+open scoped Manifold ContDiff
+
+namespace AddCircle
+
+open DifferentialGeometry
+open DifferentialGeometry.Analysis.Spectral
+open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
+open DifferentialGeometry.Analysis.Parabolic.MaximalRegularity
+
+private local instance : NeZero (Module.finrank ℝ ℝ) := ⟨by simp⟩
+
+private theorem parabolic_equation_of_tensorHsInclusion
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ)))
+    {n m : ℕ} (hn : 1 ≤ n) (hnm : n ≤ m)
+    (f U : TensorHs g 0 0 ((m : ℝ) + 2)) (F a b : TensorHs g 0 0 (m : ℝ)) :
+    let J := tensorHsInclusion (g := g) (r := 0) (s := 0)
+      (show (n : ℝ) ≤ (m : ℝ) by exact_mod_cast hnm)
+    let K := tensorHsInclusion (g := g) (r := 0) (s := 0)
+      (show (n : ℝ) + 2 ≤ (m : ℝ) + 2 by exact_mod_cast Nat.add_le_add_right hnm 2)
+    tensorScaleLaplacian (g := g) (r := 0) (s := 0) (n : ℝ) (K U) + J F =
+      scalarHsMul g n (by simpa using hn) (J a)
+        (parameterSecondDerivativeHs g n (K f + K U)) + J b →
+    tensorScaleLaplacian (g := g) (r := 0) (s := 0) (m : ℝ) U + F =
+      scalarHsMul g m (by simpa using hn.trans hnm) a
+        (parameterSecondDerivativeHs g m (f + U)) + b := by
+  intro J K hPDE
+  have hL : J (tensorScaleLaplacian (g := g) (r := 0) (s := 0) (m : ℝ) U) =
+      tensorScaleLaplacian (g := g) (r := 0) (s := 0) (n : ℝ) (K U) := by
+    apply TensorHs.ext
+    funext i
+    simp only [J, K, tensorHsInclusion_coeff_apply, tensorScaleLaplacian_coeff]
+  have hQ : J (parameterSecondDerivativeHs g m (f + U)) =
+      parameterSecondDerivativeHs g n (K (f + U)) :=
+    (parameterSecondDerivativeHs_tensorHsInclusion g hnm (f + U)).symm
+  have hM := tensorHsInclusion_scalarHsMul g (by simpa using hn) hnm a
+    (parameterSecondDerivativeHs g m (f + U))
+  apply tensorHsInclusion_injective
+    (show (n : ℝ) ≤ (m : ℝ) by exact_mod_cast hnm)
+  change J (_ + F) = J (_ + b)
+  rw [J.map_add, J.map_add, hL, hM, hQ, K.map_add]
+  exact hPDE
+
+end AddCircle
+
+end
+
+
+noncomputable section
+
+open MeasureTheory Set Filter
+open scoped Manifold ContDiff Topology
+
+namespace DifferentialGeometry.Analysis.Parabolic.QuasiLinear
+
+open DifferentialGeometry.Analysis.Spectral
+open TensorHeatEquation TensorSpectral TimeSobolev MaximalRegularity
+open AddCircle
+
+private local instance : NeZero (Module.finrank ℝ ℝ) := ⟨by simp⟩
+
+private theorem duhamel_parabolic_equation_of_forcing_projection
+    {ι : Type*} [Fintype ι]
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ)))
+    {n m : ℕ} (hn : 1 ≤ n) (hnm : n ≤ m) {T : ℝ} (hT : 0 < T)
+    (f : PiLp 2 (fun _ : ι => TensorHs g 0 0 ((m : ℝ) + 2)))
+    (fLow : PiLp 2 (fun _ : ι => TensorHs g 0 0 ((n : ℝ) + 2)))
+    (F : timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 (m : ℝ))) T)
+    (FLow : timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 (n : ℝ))) T)
+    (a : ℝ → TensorHs g 0 0 (m : ℝ))
+    (b : ℝ → PiLp 2 (fun _ : ι => TensorHs g 0 0 (m : ℝ)))
+    (aLow : ℝ → TensorHs g 0 0 (n : ℝ))
+    (bLow : ℝ → PiLp 2 (fun _ : ι => TensorHs g 0 0 (n : ℝ))) :
+    let J := tensorHsInclusion (g := g) (r := 0) (s := 0)
+      (show (n : ℝ) ≤ (m : ℝ) by exact_mod_cast hnm)
+    let K := tensorHsInclusion (g := g) (r := 0) (s := 0)
+      (show (n : ℝ) + 2 ≤ (m : ℝ) + 2 by exact_mod_cast Nat.add_le_add_right hnm 2)
+    let U := maximalRegularityDuhamelVectorField hT 0 F
+    let ULow := maximalRegularityDuhamelVectorField hT 0 FLow
+    ContinuousLinearMap.piLpMap 2 (fun _ : ι => K) f = fLow →
+    (ContinuousLinearMap.piLpMap 2 (fun _ : ι => J)).compLpL 2 (timeMeasure T) F = FLow →
+    (∀ᵐ t ∂timeMeasure T, J (a t) = aLow t) →
+    (∀ᵐ t ∂timeMeasure T, ∀ i, J (b t i) = bLow t i) →
+    (∀ᵐ t ∂timeMeasure T, ∀ i,
+      tensorScaleLaplacian (g := g) (r := 0) (s := 0) (n : ℝ) (ULow t i) + FLow t i =
+        scalarHsMul g n (by simpa using hn) (aLow t)
+          (parameterSecondDerivativeHs g n (fLow i + ULow t i)) + bLow t i) →
+    ∀ᵐ t ∂timeMeasure T, ∀ i,
+      tensorScaleLaplacian (g := g) (r := 0) (s := 0) (m : ℝ) (U t i) + F t i =
+        scalarHsMul g m (by simpa using hn.trans hnm) (a t)
+          (parameterSecondDerivativeHs g m (f i + U t i)) + b t i := by
+  intro J K U ULow hf hF ha hb hPDE
+  let JV := ContinuousLinearMap.piLpMap 2 (fun _ : ι => J)
+  let KV := ContinuousLinearMap.piLpMap 2 (fun _ : ι => K)
+  change JV.compLpL 2 (timeMeasure T) F = FLow at hF
+  have hU : KV.compLpL 2 (timeMeasure T) U = ULow := by
+    have hnat : KV.compLpL 2 (timeMeasure T) U =
+        maximalRegularityDuhamelVectorField hT (KV 0)
+          (JV.compLpL 2 (timeMeasure T) F) :=
+      maximalRegularityDuhamelVectorField_compLpL_tensorHsInclusion
+        (g := g) (r := 0) (s := 0) (ι := ι)
+        (show (n : ℝ) ≤ (m : ℝ) by exact_mod_cast hnm) hT
+        (tensorResolventL2_isCompactOperator g 0 0) 0 F
+    rw [map_zero, hF] at hnat
+    exact hnat
+  have hFae := JV.coeFn_compLpL (p := 2) (μ := timeMeasure T) F
+  have hUae := KV.coeFn_compLpL (p := 2) (μ := timeMeasure T) U
+  rw [hF] at hFae
+  rw [hU] at hUae
+  filter_upwards [ha, hb, hPDE, hFae, hUae] with t hat hbt hpt hft hut
+  intro i
+  apply parabolic_equation_of_tensorHsInclusion g hn hnm (f i) (U t i) (F t i) (a t) (b t i)
+  have hfi := congrArg (fun z => z i) hf
+  have hFi := congrArg (fun z => z i) hft
+  have hUi := congrArg (fun z => z i) hut
+  change K (f i) = fLow i at hfi
+  change FLow t i = J (F t i) at hFi
+  change ULow t i = K (U t i) at hUi
+  rw [← hUi, ← hFi, hat, hbt i, hfi]
+  exact hpt i
+
+end DifferentialGeometry.Analysis.Parabolic.QuasiLinear
+
+end
+
+namespace DifferentialGeometry.Analysis.Parabolic.QuasiLinear
+
+open MeasureTheory Filter Set
+open scoped ENNReal
+open TensorHeatEquation TimeSobolev MaximalRegularity
+open DifferentialGeometry.Analysis.Spectral
+open AddCircle
+
+private local instance : NeZero (Module.finrank ℝ ℝ) := ⟨by simp⟩
+
+private theorem duhamel_parabolic_equation_of_common_baseline
+    {ι : Type*} [Fintype ι]
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) (k : ℕ)
+    {T : ℝ} (hT : 0 < T)
+    (fbase : PiLp 2 (fun _ : ι => TensorHs g 0 0 (((1 : ℕ) : ℝ) + 2)))
+    (H : PiLp 2 (fun _ : ι => TensorHs g 0 0 (((k + 3 : ℕ) : ℝ) + 2)))
+    (f₀ : PiLp 2 (fun _ : ι => TensorHs g 0 0 (((2 : ℕ) : ℝ) + 2)))
+    (force : timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 ((k + 2 : ℕ) : ℝ))) T)
+    (F₂ : timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 ((2 : ℕ) : ℝ))) T)
+    (a : ℝ → TensorHs g 0 0 ((k + 3 : ℕ) : ℝ))
+    (b : ℝ → PiLp 2 (fun _ : ι => TensorHs g 0 0 ((k + 3 : ℕ) : ℝ)))
+    (a₂ : ℝ → TensorHs g 0 0 ((2 : ℕ) : ℝ))
+    (b₂ : ℝ → PiLp 2 (fun _ : ι => TensorHs g 0 0 ((2 : ℕ) : ℝ))) :
+    let J := tensorHsInclusion (g := g) (r := 0) (s := 0)
+      (by exact_mod_cast (show k + 2 ≤ k + 3 by omega) :
+        ((k + 2 : ℕ) : ℝ) ≤ ((k + 3 : ℕ) : ℝ))
+    let P := tensorHsInclusion (g := g) (r := 0) (s := 0)
+      (by push_cast; linarith : ((k + 2 : ℕ) : ℝ) + 2 ≤ ((k + 3 : ℕ) : ℝ) + 2)
+    let P₂ := tensorHsInclusion (g := g) (r := 0) (s := 0)
+      (by exact_mod_cast (show 2 ≤ k + 3 by omega) :
+        ((2 : ℕ) : ℝ) ≤ ((k + 3 : ℕ) : ℝ))
+    let R := tensorHsInclusion (g := g) (r := 0) (s := 0)
+      (by exact_mod_cast (show 2 ≤ k + 2 by omega) :
+        ((2 : ℕ) : ℝ) ≤ ((k + 2 : ℕ) : ℝ))
+    let BH := ContinuousLinearMap.piLpMap 2 (fun _ : ι =>
+      tensorHsInclusion (g := g) (r := 0) (s := 0)
+        (by have := Nat.cast_nonneg (α := ℝ) k; push_cast; linarith :
+          ((1 : ℕ) : ℝ) + 2 ≤ ((k + 3 : ℕ) : ℝ) + 2))
+    let B₀ := ContinuousLinearMap.piLpMap 2 (fun _ : ι =>
+      tensorHsInclusion (g := g) (r := 0) (s := 0)
+        (by norm_num : ((1 : ℕ) : ℝ) + 2 ≤ ((2 : ℕ) : ℝ) + 2))
+    let U := maximalRegularityDuhamelVectorField hT 0 force
+    let U₂ := maximalRegularityDuhamelVectorField hT 0 F₂
+    BH H = fbase → B₀ f₀ = fbase →
+    (ContinuousLinearMap.piLpMap 2 (fun _ : ι => R)).compLpL
+      2 (timeMeasure T) force = F₂ →
+    (fun t => P₂ (a t)) =ᵐ[timeMeasure T] a₂ →
+    (fun t => ContinuousLinearMap.piLpMap 2 (fun _ : ι => P₂) (b t))
+      =ᵐ[timeMeasure T] b₂ →
+    (∀ᵐ t ∂timeMeasure T, ∀ i,
+      tensorScaleLaplacian (g := g) (r := 0) (s := 0) ((2 : ℕ) : ℝ) (U₂ t i) + F₂ t i =
+        scalarHsMul g 2 (by norm_num) (a₂ t)
+          (parameterSecondDerivativeHs g 2 (f₀ i + U₂ t i)) + b₂ t i) →
+    ∀ᵐ t ∂timeMeasure T, ∀ i,
+      tensorScaleLaplacian (g := g) (r := 0) (s := 0) ((k + 2 : ℕ) : ℝ) (U t i) + force t i =
+        scalarHsMul g (k + 2) (by simp) (J (a t))
+          (parameterSecondDerivativeHs g (k + 2) (P (H i) + U t i)) + J (b t i) := by
+  intro J P P₂ R BH B₀ U U₂ hH hf₀ hforce₂ ha₂proj hb₂proj hPDE₂
+  apply duhamel_parabolic_equation_of_forcing_projection
+    g (by norm_num : 1 ≤ 2) (by omega : 2 ≤ k + 2) hT
+    (ContinuousLinearMap.piLpMap 2 (fun _ : ι => P) H) f₀
+    force F₂ (fun t => J (a t))
+    (fun t => ContinuousLinearMap.piLpMap 2 (fun _ : ι => J) (b t)) a₂ b₂
+  · apply PiLp.ext
+    intro i
+    apply tensorHsInclusion_injective
+      (by norm_num : ((1 : ℕ) : ℝ) + 2 ≤ ((2 : ℕ) : ℝ) + 2)
+    have hi := congrArg (fun z => z i) (hH.trans hf₀.symm)
+    simpa only [BH, B₀, P, ContinuousLinearMap.piLpMap_apply,
+      ← tensorHsInclusion_trans_apply] using hi
+  · exact hforce₂
+  · filter_upwards [ha₂proj] with t ht
+    simpa only [J, P₂, ← tensorHsInclusion_trans_apply] using ht
+  · filter_upwards [hb₂proj] with t ht
+    intro i
+    simpa only [J, P₂, ContinuousLinearMap.piLpMap_apply,
+      ← tensorHsInclusion_trans_apply] using congrArg (fun z => z i) ht
+  · exact hPDE₂
+
+end DifferentialGeometry.Analysis.Parabolic.QuasiLinear
