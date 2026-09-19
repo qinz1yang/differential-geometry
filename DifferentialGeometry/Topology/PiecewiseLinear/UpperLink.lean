@@ -123,13 +123,14 @@ theorem upperLink_faces_subset_geometricLink [DecidableEq E]
         · exact Or.inr (hlt s hs').subset
         · exact hd.subset_or_subset hs' ht'
 
-theorem exists_isPLHomeomorphOn_upperLink [FiniteDimensional ℝ E] [DecidableEq E]
-    (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces] {e : Finset E} (he : e ∈ K.faces) :
+theorem exists_isPLHomeomorphOn_upperLink_of_faces_finite [FiniteDimensional ℝ E]
+    [DecidableEq E] (K : Geometry.SimplicialComplex ℝ E) {e : Finset E} (he : e ∈ K.faces)
+    (hfinite : (upperLink K e).faces.Finite) :
     ∃ f : E → E, IsPLHomeomorphOn f (upperLink K e).space
       (SimplicialComplex.geometricLink K e).space := by
+  let _ : Finite (upperLink K e).faces := hfinite.to_subtype
   have hene : e.Nonempty := K.nonempty_of_mem_faces he
   have hapos : (0 : ℝ) < (e.card : ℝ) := Nat.cast_pos.mpr (Finset.card_pos.mpr hene)
-  have : Finite (upperLink K e).faces := (upperLink_faces_finite K e).to_subtype
   have hlinksub : (SimplicialComplex.geometricLink K e).faces ⊆ (starAvoiding K e).faces := by
     intro r hr
     obtain ⟨hrne, hdisj, hunion⟩ := (mem_geometricLink_faces_iff K).mp hr
@@ -264,5 +265,11 @@ theorem exists_isPLHomeomorphOn_upperLink [FiniteDimensional ℝ E] [DecidableEq
     rw [Finset.sum_congr rfl hcongr, Finset.sum_add_distrib, ← Finset.mul_sum, ← Finset.mul_sum,
       hSdef, hw1, mul_one]
     linarith
+
+theorem exists_isPLHomeomorphOn_upperLink [FiniteDimensional ℝ E] [DecidableEq E]
+    (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces] {e : Finset E} (he : e ∈ K.faces) :
+    ∃ f : E → E, IsPLHomeomorphOn f (upperLink K e).space
+      (SimplicialComplex.geometricLink K e).space :=
+  exists_isPLHomeomorphOn_upperLink_of_faces_finite K he (upperLink_faces_finite K e)
 
 end DifferentialGeometry.Topology.PiecewiseLinear

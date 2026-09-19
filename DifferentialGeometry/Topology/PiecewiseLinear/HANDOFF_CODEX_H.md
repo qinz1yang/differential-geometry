@@ -4086,3 +4086,44 @@ still assumes a globally finite ambient face set.  Nor does it provide
 cross-stage identity of finite restrictions, compatible cellwise
 modifications, positive stability radii for Conditions (2)--(8), a standard
 PL solid-torus classification, or `Moise351`.
+
+## 83. 2026-09-19 locally finite splitting-disk ballness — done
+
+`LocallyFiniteSplittingDisks.lean` now derives the PL type of the exact
+splitting disk used by the locally finite support construction.  For any face
+of a `LocallyFinitePLPieceIn`, compactness of its carrier and local finiteness
+make its coface set finite.  This gives finite geometric links and finite dual
+cells without a global `Finite K.faces` instance.  The combinatorial-manifold
+vertex-link condition then yields the face-link sphere, the finite upper-link
+radial homeomorphism identifies the link in the dual cell, and the
+barycentric closed-star theorem proves
+`LocallyFinitePLPieceIn.isPLBall_splittingDisk`.  Ballness is derived from the
+same face and the same local link; it is not supplied as an input.
+
+`UpperLink.lean` exposes
+`exists_isPLHomeomorphOn_upperLink_of_faces_finite`, whose finiteness input is
+only the upper link itself; the previous globally finite theorem remains its
+compatibility corollary.  `PolyhedralGraph.lean` constructs a countable
+locally finite disjoint union of translated finite combinatorial PL
+three-spheres in Euclidean four-space, proves the union noncompact, and
+exhibits an actual edge.  The endpoint
+`exists_noncompact_locallyFinite_splittingDisk_isPLBall_model` applies the new
+theorem to that edge, so the test is a real noncompact combinatorial
+three-manifold rather than a conditional or finite surrogate.
+
+All three changed modules passed the isolated private checker with no
+diagnostics and left shared outputs unchanged.  The strict external audit
+dynamically checked all eighty-five non-automatic declarations in the three
+modules together with twenty-four directly reused declarations.  Every axiom
+closure was contained in `{propext, Classical.choice, Quot.sound}`, and all
+thirteen applicable environment linters passed.
+
+The remaining geometric obligations are compatible cellwise modifications,
+positive stability radii for Conditions (2)--(8), the standard PL solid-torus
+input, and `Moise351`.  A reusable metric-free locally finite separation
+theorem has been proved as an external zero-diagnostic probe, but moving it to
+`Topology/LocallyFiniteSeparation.lean` and replacing the older finite metric
+proof is not part of this checkpoint: the current H compiler lease admits
+only `Topology.(PiecewiseLinear|Homotopy).*`, so that natural top-level module
+cannot yet receive a focused module check.  No duplicate public conclusion is
+introduced here.
