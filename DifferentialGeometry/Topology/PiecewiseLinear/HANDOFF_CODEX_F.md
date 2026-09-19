@@ -4460,3 +4460,33 @@ basepoint、boundaryLoop、connector、normalSubgroup、loopConjugacyClass 以 H
 私有回执 `codex-f-boundary-private/SourceCollapse-checkpoint.json`、`AuditF295.json`。
 树外探针检查后删除，共享产物未改写；源码、根登记和本记录同次提交。没有旧消费者签名变化，
 整库根检仍由协调者负责。下一审计 AuditF296。本轮请求的实际三角形及完整 S' 构造均已闭合。
+
+### 19.156 真实 PL 二重覆盖下嵌入盘的投影（2026-09-19 UTC）
+
+**done：Covering/EmbeddedProjection.lean 与 LoopTheorem/ProjectedCell.lean。**
+按 ROUTE_AUDIT_20260919.md 及原书第 184、188–189 页，优先从归纳得到的楼上嵌入盘生产楼下盘。
+`SingularTwoCell.map` 实际构造 p ∘ D，源域保持不变；PL 性由已有 PL 复合定理证明。
+`exists_projected_singular_two_cell` 从真实 PL 覆盖 p、楼上嵌入盘 D 和每个覆盖纤维恰二点，
+证明实际投影盘在每一点的源相对邻域上单射、每个源纤维 encard ≤ 2，且边界像恰为原边界像的投影。
+没有假设原 NormalSystem 的映射已经具有这些性质；没有额外假设投影盘的局部单射或纤维界。
+覆盖层 `locally_injective_fiber_le_of_isCoveringMap` 对任意拓扑空间和任意 ℕ∞ 纤维界成立，
+只要求原映射在给定子集上连续且单射；更低层局部结论只要求投影局部单射。
+
+审计中的具体非空模型为两份三维欧氏空间的不交并，投影为 Sum.elim id id；实际构造其全局
+Bool 纤维平凡化、证明每个纤维恰二点，并用不交并的标准图卡证明 PL 性。
+源域取标准二维三角形（由标准二维单形的线性投影构造），嵌入第一份欧氏空间的坐标平面，
+再实际调用端点生产楼下 SingularTwoCell。模型所有假设均有构造，未使用条件式非空断言。
+
+最终两模块检查 exit=0、零诊断，分别 7.17 秒与 11.39 秒。
+AuditF296 exit=0、零诊断、43.69 秒；九项新非自动声明、四项关键复用结果和具体模型，
+共十四项传递公理闭包仅标准三公理，十三项适用环境 linters 全过。
+严格语法/header/longLine 开启，sourceStable=true。私有回执为
+`codex-f-boundary-private/EmbeddedProjection-checkpoint.json`、`ProjectedCell-checkpoint.json`
+及 `AuditF296.json`。共享产物只读；源码、根登记、本记录同次提交；整库根检仍由协调者负责。
+
+**partial：源书的整体归纳下降。** 此端点供应 Lemma 2 的 PL、局部单射、二重纤维三项，
+不供应 crossing 正规形式。下一层须修复 DoubleCoverReduction 的完整覆盖/小正规邻域混同，
+并连接实际投影、边界邻域映射及正规子群拉回。
+当前 NonsingularCell 只有边界环路的像等式，没有盘内部避开边界的结论；现有
+`exists_isPLHomeomorphOn_push_boundary_disk` 只处理整盘在边界里的输入，不能直接用于任意归纳盘。
+不得把 proper 边界结论新增为未生产的输出字段。下一审计 AuditF297。
