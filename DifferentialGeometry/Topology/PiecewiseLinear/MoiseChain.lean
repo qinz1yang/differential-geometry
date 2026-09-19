@@ -138,7 +138,11 @@ def Moise307 : Prop :=
 open Classical in
 def Moise331 : Prop :=
   ∀ (L : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3))) (_ : Finite L.faces),
-    IsCombinatorialManifold 1 L → IsConnected L.space →
+    (∀ s ∈ L.faces, s.card ≤ 2) →
+    (∃ e ∈ L.faces, e.card = 2) →
+    IsConnected L.space →
+    (∀ v : L.vertices,
+      ((SimplicialComplex.edgeGraph L).neighborSet v).ncard ≠ 1) →
     ∀ U : Set (EuclideanSpace ℝ (Fin 3)), IsOpen U → L.space ⊆ U →
     ∀ h : EuclideanSpace ℝ (Fin 3) → EuclideanSpace ℝ (Fin 3),
       Topology.IsEmbedding (U.domRestrict h) →
@@ -157,6 +161,34 @@ def Moise331 : Prop :=
             (f '' (derivedNeighborhood T L').space) ∧
           f '' (derivedNeighborhood T L').space ∈ nhdsSet (h '' L.space) ∧
           ∀ x ∈ (derivedNeighborhood T L').space, dist (f x) (h x) < ε
+
+open Classical in
+theorem Moise331.applies_to_tetrahedron_oneSkeleton (h331 : Moise331) :
+    ∃ L : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3)),
+      L.faces.Finite ∧
+      (∃ v : L.vertices,
+        ((SimplicialComplex.edgeGraph L).neighborSet v).ncard = 3) ∧
+      ∀ U : Set (EuclideanSpace ℝ (Fin 3)), IsOpen U → L.space ⊆ U →
+      ∀ h : EuclideanSpace ℝ (Fin 3) → EuclideanSpace ℝ (Fin 3),
+        Topology.IsEmbedding (U.domRestrict h) →
+      ∀ ε : ℝ, 0 < ε →
+        ∃ (T L' : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3))),
+          T.faces.Finite ∧
+          IsSubdivision L' L ∧
+          L'.faces ⊆ T.faces ∧
+          IsCombinatorialManifoldWithBoundary 3 T ∧
+          T.space ∈ nhdsSet L.space ∧
+          IsCombinatorialManifoldWithBoundary 3 (derivedNeighborhood T L') ∧
+          (derivedNeighborhood T L').space ∈ nhdsSet L.space ∧
+          (derivedNeighborhood T L').space ⊆ U ∧
+          ∃ f : EuclideanSpace ℝ (Fin 3) → EuclideanSpace ℝ (Fin 3),
+            IsPLHomeomorphOn f (derivedNeighborhood T L').space
+              (f '' (derivedNeighborhood T L').space) ∧
+            f '' (derivedNeighborhood T L').space ∈ nhdsSet (h '' L.space) ∧
+            ∀ x ∈ (derivedNeighborhood T L').space, dist (f x) (h x) < ε := by
+  obtain ⟨L, hfin, hdim, hedge, hconn, hend, hbranch⟩ := exists_tetrahedron_oneSkeleton
+  let _ : Finite L.faces := hfin.to_subtype
+  exact ⟨L, hfin, hbranch, h331 L inferInstance hdim hedge hconn hend⟩
 
 open Classical in
 def Moise351 : Prop :=

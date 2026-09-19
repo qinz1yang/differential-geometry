@@ -25,7 +25,7 @@ remaining input or final assembly.
 | 30.8 | 脊生成 `π(S)`（218） | `Moise308` | 开。用 §31 |
 | 31.1–31.2 | 典范实心环面构形 | `Moise311` | 开 |
 | 32.1–32.4 | 管、对偶胞腔、伪胞腔 | `Moise321` | 开。定义层可先建（F4.3 partial） |
-| 33.1 | 线性图的正则邻域逼近 | `Moise331` ✔陈述已按原书修正 | 开。输入是有限连通无端点线性图；输出选择 `U` 中的三维环境三角剖分、图的细分及其 derived regular neighborhood，不再固定事先给定的 `derivedNeighborhood T L` |
+| 33.1 | 线性图的正则邻域逼近 | `Moise331` ✔陈述已按原书修正 | 开。输入直接要求面至多二点、存在边、载体连通且每个顶点邻居数不为 1，允许 §34 所需的分叉顶点；输出选择 `U` 中的三维环境三角剖分、图的细分及其 derived regular neighborhood。四面体一骨架已验证可实例化该陈述，经典定理证明仍开 |
 | 34.1 | PL 球上的逼近 | `Moise341` ✔已陈述 | 开 |
 | 35.1 | 流形中 1 维多面体的正则邻域逼近 | `Moise351` ✔陈述已按原书修正 | 开。固定三维 PL 流形；`K` 是可非紧的局部有限 1-维多面体且相对闭于 `U`；输出显式携带相对 `U` 的局部有限正则邻域关系 |
 | 35.2 | 局部有限多面体 3-流形上的逼近 | `Moise352` ✔已陈述 | 开；`Transition361.lean` 已定义 |
@@ -42,7 +42,7 @@ remaining input or final assembly.
 | 30.7 | Moise307 | Open; uses 30.6, 28.1 and relevant CST constructions. |
 | 30.8 | Moise308 | Defined, unproved; spine/generator construction remains. |
 | 31--32 | Canonical configurations, tubes and pseudocells | Follow the detailed plan; definitions/conditional infrastructure do not certify endpoints. |
-| 33.1 | Moise331 | Current fixed-neighborhood statement is invalid. h must choose a genuine regular neighborhood inside U with actual three-dimensional ambient neighborhood data. |
+| 33.1 | Moise331 | Statement repaired: native graph conditions allow branching and exclude the isolated graph and degree-one endpoints; the output chooses a genuine regular neighborhood inside U with actual three-dimensional ambient data. The classical proof remains open. |
 | 34.1 | Moise341 | Open; consumes corrected 33.1 and the tame neighborhood inputs. |
 | 35.1 | Moise351 | h repairs the one-dimensional locally finite polyhedral input and regular-neighborhood relation. Keep noncompact scope and pointwise error; proof remains open. |
 | 35.2 | Moise352 in Transition361 | Open classical approximation input. |

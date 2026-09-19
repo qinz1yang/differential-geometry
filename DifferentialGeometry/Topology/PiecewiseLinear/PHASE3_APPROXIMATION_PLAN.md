@@ -476,6 +476,14 @@ AuditS62 的 16 项传递公理闭包均仅 `propext`、`Classical.choice`、`Qu
 | G.6 | L13 + 定理收尾：PLH `f : Bd N ↔ Bd X`，`f(A_v) = A'_v`（P.2 反复、Figure 33.2–33.3 的盘拼接），Q.5 替换 `E ∩ X` 为多面体盘，延拓到分裂盘与 3-胞腔（S.7） | **33.1** `theorem exists_regularNeighborhood_plh_approx (K : finite connected linear graph ⊆ ℝ³ without end-points) (U : Opens ℝ³) (hKU : K ⊆ U) (h : U → ℝ³) (hh : IsOpenEmbedding-like homeomorphism onto image) (ε) : ∃ N (regular nbhd of K in U) (f : ℝ³ → ℝ³), IsPLHomeomorphOn f N (f '' N) ∧ f '' N ∈ 𝓝ˢ (h '' K) ∧ ∀ P ∈ N, dist (h P) (f P) < ε` | §34 L1 | statement corrected（2026-09-18）：`Moise331` 显式选择有限三维环境复形 `T`、`K` 的细分 `L'` 及 `derivedNeighborhood T L' ⊆ U`，并记录它是 `K` 的普通邻域和组合带边 3-流形；不再用假的固定环境复形版本。证明仍 new | 4k–6k |
 | G.6 | L13 + 定理收尾：PLH `f : Bd N ↔ Bd X`，`f(A_v) = A'_v`（P.2 反复、Figure 33.2–33.3 的盘拼接），Q.5 替换 `E ∩ X` 为多面体盘，延拓到分裂盘与 3-胞腔（S.7） | **33.1** `theorem exists_regularNeighborhood_plh_approx (K : finite connected linear graph ⊆ ℝ³ without end-points) (U : Opens ℝ³) (hKU : K ⊆ U) (h : U → ℝ³) (hh : IsOpenEmbedding-like homeomorphism onto image) (ε) : ∃ N (regular nbhd of K in U) (f : ℝ³ → ℝ³), IsPLHomeomorphOn f N (f '' N) ∧ f '' N ∈ 𝓝ˢ (h '' K) ∧ ∀ P ∈ N, dist (h P) (f P) < ε` | §34 L1 | h repairs Moise331 first: choose a genuine regular neighborhood in U with actual ambient neighborhood data. Classical proof remains open. | 4k–6k |
 
+**G.6 陈述复核（2026-09-19）。** `Moise331` 现以“面至多二点 + 存在边 +
+载体连通 + 每个顶点邻居数不为 1”直接表达有限连通无端点线性图，
+不再错用排除分叉的 `IsCombinatorialManifold 1`。
+`exists_tetrahedron_oneSkeleton` 证明四面体一骨架具有 3 度分叉顶点且
+无 1 度端点，`Moise331.applies_to_tetrahedron_oneSkeleton` 已实例化修正后陈述。
+输出仍选择有限三维环境复形 `T`、图的细分 `L'` 及
+`derivedNeighborhood T L' ⊆ U`；经典逼近定理的证明仍开。
+
 ### 4.13 车道 I（5）：§34 多面体 3-胞腔的 PLH 逼近
 
 | 编号 | 内容 | 拟定 Lean | 消费者 | 状态 | 行数 |

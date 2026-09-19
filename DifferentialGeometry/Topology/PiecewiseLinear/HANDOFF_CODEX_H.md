@@ -3392,3 +3392,37 @@ seven and twenty-six non-automatic declarations respectively, checked the
 four foundational and six semantic reused declarations, found only
 `{propext, Classical.choice, Quot.sound}`, and passed all thirteen applicable
 environment linters.
+
+## 65. 2026-09-19 Moise 33.1 graph-domain correction — done
+
+The input description in §62 was too strong. A combinatorial one-manifold has
+exactly two neighbors at every vertex, whereas the finite connected linear
+graphs used by §34 may have branching vertices. `Moise331` now states the
+book's native graph conditions directly: every face has at most two vertices,
+at least one two-vertex face exists, the carrier is connected, and no vertex
+has neighbor-set cardinality one. The edge requirement expresses dimension
+exactly one and, together with connectedness, excludes an isolated graph. The
+final condition is exactly Moise's definition of “without end-points” on book
+page 73; isolated vertices are not silently reclassified as endpoints.
+
+`exists_tetrahedron_oneSkeleton` constructs the full one-skeleton of a
+four-vertex affine simplex in `EuclideanSpace ℝ (Fin 3)`. It proves finiteness,
+the face-cardinality bound, existence of an edge, connectedness, absence of
+degree-one vertices, and the existence of a degree-three branching vertex.
+`Moise331.applies_to_tetrahedron_oneSkeleton` then instantiates the corrected
+contract on this graph, so the change is checked on a genuinely branching
+nonempty example rather than only by a vacuous signature.
+
+The existential ambient triangulation `T`, subdivision `L'`, and actual
+`derivedNeighborhood T L'` output from §62 are unchanged. This commit repairs
+the statement and its applicability witness; it does not prove the classical
+approximation theorem itself. The remaining proof obligations are the
+construction of the ambient triangulation and its regular neighborhood, and
+the PL-homeomorphism approximation on that selected neighborhood.
+
+The private checks for `PolyhedralGraph` and `MoiseChain` both exited zero
+with no diagnostics and left shared outputs unchanged. The external silent
+audit dynamically enumerated all thirty-five non-automatic declarations in
+the two modules, checked twelve directly reused graph and simplicial-complex
+declarations, found only `{propext, Classical.choice, Quot.sound}`, and passed
+all thirteen applicable environment linters.
