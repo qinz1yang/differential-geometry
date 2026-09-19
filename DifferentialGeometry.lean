@@ -11492,3 +11492,6 @@ import DifferentialGeometry.Analysis.Sobolev.Euclidean.SpacetimeRegularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Derivatives.TerminalBall
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.LocalInverseCapture
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.DiscardedCapDiffeomorph
+import DifferentialGeometry.Analysis.Integration.Measure.ContinuousRepresentative
+import DifferentialGeometry.Topology.MetricSpace.HolderContinuity
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.WitnessCongruence
