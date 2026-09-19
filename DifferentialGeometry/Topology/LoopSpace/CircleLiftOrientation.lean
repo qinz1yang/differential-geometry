@@ -1,4 +1,11 @@
+/-
+Copyright (c) 2026 Yuan Liao. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Yuan Liao
+-/
 import DifferentialGeometry.Topology.LoopSpace.HomeomorphismOrientation
+
+/-! Orientation and composition of periodic lifts of circle homeomorphisms. -/
 
 noncomputable section
 
@@ -389,5 +396,23 @@ theorem exists_fixed_of_not_hasIncreasingCircleLift (ψ : loopCircle ≃ₜ loop
     simp only [hGdef] at hGt
     push_cast
     linarith
+
+theorem hasIncreasingCircleLift_neg_of_not_hasIncreasingCircleLift
+    (ψ : loopCircle ≃ₜ loopCircle) (hψ : ¬ HasIncreasingCircleLift ψ) :
+    HasIncreasingCircleLift (fun θ => -ψ θ) := by
+  rcases circleHomeomorph_affineLift_or_neg ψ with
+    ⟨F, hp, hm, hval⟩ | ⟨F, hp, hm, hval⟩
+  · exact (hψ ⟨F, hm, hp, fun t => by simp [hval]⟩).elim
+  · exact ⟨F, hm, hp, fun t => by simp [hval]⟩
+
+theorem hasIncreasingCircleLift_comp_of_not_hasIncreasingCircleLift
+    (ψ χ : loopCircle ≃ₜ loopCircle)
+    (hψ : ¬ HasIncreasingCircleLift ψ) (hχ : ¬ HasIncreasingCircleLift χ) :
+    HasIncreasingCircleLift (ψ ∘ χ) := by
+  have hψneg := hasIncreasingCircleLift_neg_of_not_hasIncreasingCircleLift ψ hψ
+  have hχneg := hasIncreasingCircleLift_neg_of_not_hasIncreasingCircleLift χ hχ
+  refine (hψneg.negConj.comp hχneg).congr fun θ => ?_
+  change ψ (χ θ) = -(-ψ (-(-χ θ)))
+  simp only [neg_neg]
 
 end DifferentialGeometry.Topology

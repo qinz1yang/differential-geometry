@@ -7,12 +7,16 @@ handoff and the individual lane handoffs.
 ## Ownership and round boundaries
 
 - F: boundary geometry and branch charts, gpt-6-astra, max.
-- h: arc-cell and ball-pair constructions, gpt-5.6-sol, high.
-- E3: branch separation, cut-and-paste, and complexity reduction,
-  gpt-5.6-sol, high.
+- h: arc-cell and ball-pair constructions, gpt-5.6-sol, max.
+- E3: Moise 30.4 assembly, starting with the 30.3 splitting/separation step,
+  gpt-5.6-sol, max.
 - S: mapping-torus, Moebius, and orientation constructions, gpt-6-astra, max.
 - The coordinator validates, integrates, records decisions, and supplies exact
   interfaces. It does not write the main mathematical proofs.
+
+The owner upgraded h and E3 to Sol max for subsequent assignments on 2026-09-19
+UTC. Apply the explicit model and effort on their next dispatch; do not interrupt
+an active round merely to change its setting.
 
 Use the four existing tasks, with one lane per task. Do not create subagents.
 Give each lane a dependency-aware mathematical round, normally 15--60 minutes of
