@@ -3268,3 +3268,21 @@ silent audit dynamically enumerated all three non-automatic declarations,
 checked fourteen direct reused declarations, found only
 `{propext, Classical.choice, Quot.sound}`, and passed all thirteen applicable
 environment linters.  The new leaf is registered in the flat root aggregate.
+
+## 61. 2026-09-18 Corrected contract for Moise 25.2 — done
+
+`Moise252` now records the conclusion stated on book page 183: the produced
+proper polyhedral disk meets the ambient boundary exactly in its own boundary,
+that boundary lies in the original connected boundary component, and its
+inclusion into that component is not nullhomotopic.  The contract deliberately
+does not assert that the new boundary represents the input loop's homotopy
+class, since Theorem 25.2 does not claim this.  This is the same boundary
+noncontractibility interface already used by the corrected `Moise264`.
+
+There are no Lean consumers that destructure `Moise252`; `TameNestedCells`
+imports `MoiseChain` but does not use this declaration.  Both `MoiseChain` and
+that direct downstream module compiled with zero diagnostics and unchanged
+shared outputs under round token `h-round-20260919`.  The external audit
+dynamically enumerated all twenty-six non-automatic declarations of
+`MoiseChain`, found only `{propext, Classical.choice, Quot.sound}`, and passed
+all thirteen applicable environment linters.

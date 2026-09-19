@@ -44,9 +44,12 @@ def Moise252 : Prop :=
       ∃ (Δ : Set E) (r : (Fin 3 → ℝ) → E),
         IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Δ ∧
         Δ ⊆ K.space ∧
-        r '' stdSimplexBoundary 2 ⊆
-          (connectedComponentComplex (boundaryComplex 3 K) c).space ∧
-        Δ ∩ (boundaryComplex 3 K).space = r '' stdSimplexBoundary 2
+        Δ ∩ (boundaryComplex 3 K).space = r '' stdSimplexBoundary 2 ∧
+        ∃ hboundary : r '' stdSimplexBoundary 2 ⊆
+            (connectedComponentComplex (boundaryComplex 3 K) c).space,
+          ¬ (⟨Set.inclusion hboundary, continuous_inclusion hboundary⟩ :
+            C(r '' stdSimplexBoundary 2,
+              (connectedComponentComplex (boundaryComplex 3 K) c).space)).Nullhomotopic
 
 open Classical in
 def Moise264 : Prop :=
