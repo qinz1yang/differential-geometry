@@ -4490,3 +4490,35 @@ AuditF296 exit=0、零诊断、43.69 秒；九项新非自动声明、四项关�
 当前 NonsingularCell 只有边界环路的像等式，没有盘内部避开边界的结论；现有
 `exists_isPLHomeomorphOn_push_boundary_disk` 只处理整盘在边界里的输入，不能直接用于任意归纳盘。
 不得把 proper 边界结论新增为未生产的输出字段。下一审计 AuditF297。
+
+### 19.157 完整覆盖与小正规邻域的分离及实际投影（2026-09-19 UTC）
+
+**done：LoopTheorem/LemmaThree.lean 的包含图修正与 DoubleCoverProjection.lean。**
+`DoubleCoverDiagram S T` 的真实二重覆盖定义在 T.ambientComplex.space 上；
+T.manifoldComplex.space 只是相对导出正规邻域，其包含由
+`manifoldComplex_space_subset_ambient` 证明，不再误称这个小邻域仍覆盖整个楼下。
+资料明确包含实际逐片仿射投影、源复形相等、源映射提升等式、边界邻域映射与投影的逐点相等、
+基点相等，以及正规子群沿实际基本群映射的 comap 等式。
+`DoubleCoverReduction` 在此几何图上另加严格复杂度下降；不是严格下降的无条件生产者。
+
+`DoubleCoverDiagram.exists_projected_disk` 从楼上 NonsingularCell 实际构造投影盘、投影边界环路
+和搬运的连接路径，证明逐片仿射、像仍在楼下流形中、源相对局部单射、源纤维 encard ≤ 2、
+边界环路的像等于源边界的像，及继续避开楼下正规子群。
+局部单射与纤维界由 Covering/EmbeddedProjection.lean 的一般子集限制定理生产；
+`mapOfEq_loopRepresentativeAlong` 和 `normalSystemLoopConjugacyClass_map_avoids`
+直接证明基本群自然性与 comap 的避开性质，没有把结论放进输入。
+`DoubleCoverDiagram.complexity_le` 由源提升等式在顶点上的因子分解证明复杂度不增。
+
+**partial：整体 Lemma 3 生产。** 此层没有生产完整覆盖图及严格复杂度下降。
+NonsingularCell 原字段保持不变，仍未包含盘内部避开流形边界；新投影定理也未声称 proper 边界条件
+或 crossing 正规形式。下一步尝试消费已证的全边界 PL 领口与多面体精确零集函数，构造固定指定
+边界子多面体的真实向内嵌入；还须证明实际覆盖的边界兼容性，而不能新增所需结论字段。
+
+三个变更模块及只读消费者 MoiseChain 均以私有产物检查，exit=0、零诊断。
+AuditF297 exit=0、零诊断、47.11 秒；三模块全部四十九项非自动声明（含结构投影）及七项
+关键复用结果，共五十六项传递公理闭包仅标准三公理，十三项适用环境 linters 全通过。
+严格语法/header/longLine 开启，sourceStable=true，共享产物只读。
+回执为 codex-f-boundary-private 下 EmbeddedProjection-restrict-checkpoint.json、
+LemmaThree-checkpoint.json、DoubleCoverProjection-checkpoint.json、
+MoiseChain-consumer-checkpoint.json 与 AuditF297.json。
+源码、根登记与本记录同次提交；H 源码未修改；整库根检由协调者负责。下一审计 AuditF298。
