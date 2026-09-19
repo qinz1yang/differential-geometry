@@ -4685,3 +4685,31 @@ A.space 的 ε 闭加厚。`exists_isSubdivision_regularNeighborhoodIn_subset_of
 继续对 Q=closure(K.space \ N.space)、N=derivedNeighborhood K A 构造保持 A 的细分，
 再用同维带边组合流形的 closure(K.space \ Q)=N.space，生产载体精确等于 N 的有限邻域剖分。
 尚未修改 NormalSystem 的固定邻域公式；不得把本层当成该公共接口已经修复。
+
+### 19.164 保留原面的精确导出邻域三角剖分（2026-09-19 UTC）
+
+**done：RelativeSimplexTriangulation.lean。**
+`IsCombinatorialManifoldWithBoundary.exists_triangulation_derivedNeighborhood` 从有限组合 (n+1) 维带边
+流形 K 与子复形 A 实际构造有限 T：A 的原各面属于 T，T.space 精确等于原 derivedNeighborhood K A，
+T 是组合 (n+1) 维带边流形，其 boundaryComplex 载体精确等于原导出邻域的组合边界。
+先把 A 的闭星缩进 Q=closure(K.space \ N.space) 的补集，再消费真实相对细分延拓以实现 Q；
+由同维带边组合流形的双重闭补公式，restrict R N.space 恰覆盖 N。一般的中间结论是保持 A 的
+正则闭多面体邻域剖分，不要求预先给出该相容剖分。
+
+`DerivedNeighborhoodTriangulation K A` 记录这个实际几何对象；构造函数
+`IsCombinatorialManifoldWithBoundary.derivedNeighborhoodTriangulation` 从上述真实输入生产它，
+不是为绕过缺口而单加结论字段。其 `isCombinatorialManifoldWithBoundary`、`boundaryComplex_space`
+证明流形性与精确边界关系；`strongDeformationRetract` 将原导出邻域的实际强形变收缩搬到 T 的载体，
+固定的收缩目标仍是 A.space。
+
+模块检查 exit=0、零诊断；AuditF304 exit=0、零诊断。十四项非自动声明、五项关键依赖及一个实际
+非空模型，共二十项传递公理闭包只含标准三公理；十三项适用环境 linters 全过。模型以标准四面体
+与其三角形面为输入，实际构造非空 T，验证组合三维带边流形、精确载体/边界以及强形变收缩。
+这验证新的盘/邻域几何入口；尚未声称该模型携带完整 NormalSystem 的正规子群与边界环资料。
+回执 RelativeSimplexTriangulation-checkpoint.json、AuditF304.json；sourceStable=true，共享产物只读。
+源码、根登记及本记录同次提交。下一审计 AuditF305。
+
+**partial：NormalSystem 字段迁移。** 已取得实际生产者，下一步才移除旧固定邻域公式的依赖。
+保留 .manifoldComplex、精确 manifold_space、SDR、源提升、边界环与严格复杂度契约；旧公式的反例
+仍是有效历史障碍。本次检索共有十三个直接 NormalSystem 消费者，与 SingularCell 相连的最小重编
+依赖闭包为二十八模块；协调者已授权私有重编及 BoundaryWordLoopClass 两处保义兼容改动。
