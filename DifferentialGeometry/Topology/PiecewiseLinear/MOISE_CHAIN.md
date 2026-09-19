@@ -947,7 +947,9 @@ integration source dependency graph.
 ## 2026-09-19 Negative result: abstract boundary data does not determine the carrier germ
 
 F delivered `85d0c909b`, `BoundaryCarrierCompatibility.lean`, with strict lane
-verification and complete axiom/linter receipts. Integration acceptance is pending.
+verification and complete axiom/linter receipts. The fourth integration batch
+independently accepted this module at source checkpoint `eed5083b5`; see
+`HANDOFF_CODEX_INTEGRATION.md` section 17.
 The coordinator has read the proof and matched its current source hash to the
 module receipt. The formal result starts with any valid boundary-branch instance
 `hD` and constructs another complete `NormalSingularCellData` for
@@ -974,3 +976,17 @@ relation between its frontier and the actual boundary Bd. Do not add these
 missing outputs as consumer hypotheses and call the producer complete.
 E3 independently advances a model that moves collision endpoints tangentially
 within their end faces, so it need not wait for this carrier repair.
+
+## 2026-09-19 Arc-cell normalization: nonvacuity correction
+
+The general marked-extension and trimmed cell-interface layers through h's
+`ac97849d4` are independently integration-verified. The subsequent normalized
+base, successor, and ball-pair endpoint (`edf2e00c0`, `b78e98dd9`, `122939e1b`)
+are withheld. Their finite closed three-manifold, ambient-dimension-three,
+and nonempty-chain hypotheses have no simultaneous geometric instance. Do
+not count their compilation or an n=1 index calculation as a usable endpoint.
+The intended repair uses a three-manifold with boundary and retained interior
+chain faces, first demonstrated by an actual nonempty n=1 complex and chain.
+Both endpoint vertex cells remain omitted. The closed higher-ambient-dimensional
+local cell-pair API is not invalidated by this finding. See integration handoff
+section 17 for the exact acceptance boundary and ongoing task assignment.
