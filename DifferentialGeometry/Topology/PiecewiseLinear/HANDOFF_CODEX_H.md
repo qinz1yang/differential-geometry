@@ -3023,3 +3023,34 @@ applicable environment linters.
 The remaining layer is to instantiate this theorem with
 `exists_cutModel_data` and extract `IsPLBallPair 2 1` for the final trimmed
 union at `k = 2 * n - 1`.
+
+## 52. 2026-09-18 Trimmed arc-cell union ball pair — done
+
+`ArcCellUnionBallPair.lean` proves
+`IsCombinatorialManifold.isPLBallPair_trimmedArcCellUnion`.  For a nonempty
+injective simplicial arc chain in a finite closed combinatorial 3-manifold of
+ambient dimension three, the union of exactly the non-endpoint cells
+`1 ≤ j ≤ 2 * n - 1`, paired with its trace on `arcComplexIn K v n`, is an
+`IsPLBallPair 2 1`.
+
+The proof obtains the standard cut model, instantiates the verified finite
+normalization induction at `k = 2 * n - 1`, and transports the first cut-model
+lobe's ball-pair structure back along the inverse PL homeomorphism.  The
+`n = 1` case is included: the trimmed union is then the single middle cell.
+Neither endpoint cell is introduced, and no ball-pair or normalized-state
+hypothesis is assumed.
+
+The module is registered directly in `DifferentialGeometry.lean`.  Strict
+private verification used round token `h-round-20260919` and output root
+`C:\Users\liao9\AppData\Local\Temp\codex-h-cutmodel-private`.
+The module check and external silent audit both exited 0 with zero diagnostics
+and unchanged shared outputs.  The audit dynamically enumerated the module's
+single non-automatic declaration, checked the cut-model producer, the finite
+normalization theorem, and ball-pair transport, found only
+`{propext, Classical.choice, Quot.sound}`, and passed all thirteen applicable
+environment linters.
+
+This closes the assigned normalized arc-cell round: the natural preceding
+crossing bound, the `k = 1` base, the two-extension successor induction, and
+the final `IsPLBallPair 2 1` extraction are all source-complete, strictly
+verified, and externally audited.
