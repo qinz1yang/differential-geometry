@@ -2922,3 +2922,28 @@ step 2 只做了 grep 与接口陈述，没有动工（月牙是一个项目，�
   与 `C:\Users\liao9\AppData\Local\Temp\codex-e3-slab-private\external-audit.json`。
 - 一般环境仍未闭合：F 的实际迹/双端面图卡是把 §87–§89 模型产物接成
   `exists_separated_along_branch` 的必要下游输入；本轮没有越过这一表示层缺口。
+
+## 90. 2026-09-18 E3-M3：端面可动推移的实际 PL 图卡共轭
+
+状态：**已闭合**。新模块 `SlabWedgeEndpointConjugation.lean` 把 §87–§89 的缓冲闭折叠推移和
+紧支撑同伦经内、外两张真实 PL 开图卡共轭回一般 PL 3-流形。
+
+- `OpenPartialHomeomorph.continuous_conjugateMap_family` 是真的时间依赖共轭定理：由
+  `unitInterval × Y → Y` 的联合连续性、紧支撑和每时刻目标保持，得到
+  `unitInterval × X → X` 的联合连续性。图卡源内用偏同胚的局部连续性，图卡源外用紧支撑拉回的
+  闭性与支撑外恒等性粘合，没有把联合连续当成假设。
+- `mapsTo_positiveBufferedWedgeHomotopy_target` 与负向版本先证缓冲支撑凸，再由直线插值和
+  终点同胚保持支撑，确实证明整条坐标同伦留在图卡目标中；未把目标保持性外加为黑箱假设。
+- `continuous_positiveBufferedSlabWedgeConjugateHomotopy` 与负向版本给出两张实际环境联合连续同伦；
+  `*_zero`/`*_one` 标明恒等与最终共轭端点，`eqOn_*_compl_support` 证同一拉回紧支撑外全程逐点不动。
+- `positiveBufferedSlabWedgeConjugateHomotopy_mem_boundary_iff` 与负向版本由第一坐标不变及两层
+  `conjugateMap_mem_iff` 证实际边界点集在每一时刻都双向保持。
+- `buffered_slab_wedge_conjugate_properties` 保留 §86 的旧开端点 API，对新闭折叠版本另给出两张最终
+  共轭的 PL 性、单射性、紧支撑外恒等、支撑保持，以及 `0 < ρ` 时正负闭折叠的实际像不交。
+- 隔离严格检查：模块 exit `0`、零诊断、共享产物未改动；动态 census 核对本模块恰有 25 条
+  非自动声明，另审计 12 条关键复用声明；全部传递公理闭包只含
+  `propext / Classical.choice / Quot.sound` 的子集，13 个适用环境 linter 零诊断。模块与外部审计收据分别在
+  `C:\Users\liao9\AppData\Local\Temp\codex-e3-slab-private\DifferentialGeometry\Topology\PiecewiseLinear\SlabWedgeEndpointConjugation.json`
+  与 `C:\Users\liao9\AppData\Local\Temp\codex-e3-slab-private\external-audit.json`。
+- 本层不修改 `NormalSystem` 生产者，也不声称 `exists_separated_along_branch`。下一层必须把正、负两张同伦粘成
+  **同一张**改动后的源盘映射，并在现有源片邻域契约上核对重叠相等、边界参数和原边界邻域内的自由同伦。
