@@ -900,3 +900,47 @@ native modules and 1119 edges. Three source/object/receipt sets and the audit
 are frozen at `moise304-reading/torus-ball-targets-checkpoint/` with raw and
 normalized source hashes. Root builds remain stopped and shared E outputs
 are unchanged. General 26.4/30.3 and arbitrary-shell 30.4 remain open gates.
+
+
+### M304 positive-genus compression in an actual spherical shell (2026-09-19 UTC)
+
+The premise-free `exists_embedded_torus_compression_in_spherical_shell`
+retains every original same-object torus, essential nonseparating circle,
+annulus, complement, proper spanning disk, exact disjoint caps and first-Betti
+2-to-0 field. It constructs a positive-width distance-band spherical shell.
+The torus, capped PL sphere, entire left compression three-ball and middle
+spanning disk lie in this shell's interior. Both surfaces separate the shell's
+actual inner and outer metric boundary spheres.
+
+The general `exists_isSphericalShell_separating_frontiers` only assumes a
+compact outer set N, a subset B of N and a nonempty interior of B. It constructs
+a round shell containing N minus interior B and both frontiers in its interior,
+and proves that both frontiers separate the shell boundary spheres. B need
+not be closed. Spherical shells are also transported through embeddings, and
+the standard norm-band example is extended to distance bands about any center.
+All earlier SphericalShell declarations are retained unchanged; TorusShell is
+registered in the flat root.
+
+The new combined import first exposed a stale inherited MoiseChain object that
+still defined IsTopologicalSolidTorus internally. Current source already
+imports the canonical SolidTorus definition. A readonly private refresh of
+MoiseChain resolved the collision; SphericalShell, TorusShell and the existing
+TameNestedCells consumer then compiled with zero diagnostics. Neither readonly
+source nor any MoiseChain contract was edited, and shared E outputs remain
+unchanged.
+
+The final audit covers all 20 native declarations in the two changed/new
+leaves, 31 critical reuses and nine concrete certificates, with all 13 applicable
+linters and only standard foundational axioms. The certificates keep the same
+essential disk inside the actual shell, check an open inner set for the general
+frontier producer, and instantiate the existing Betti-minimal separator producer
+on this shell: its first Betti number is zero and native sphere recognition
+proves it is a PL sphere. The reachable native graph has 618 modules and 1236
+edges and is acyclic. Four source/object/receipt sets, including the two readonly
+refreshes, are frozen with audit and raw/normalized hashes at
+`moise304-reading/torus-shell-checkpoint/`.
+
+This is a concrete positive-genus instance with an actual Moise304 shell input.
+It does not prove Moise304 for an arbitrary supplied shell. General embedded-disk
+and safe replacement-neighborhood producers remain upstream gates. Root builds
+remain stopped as instructed.
