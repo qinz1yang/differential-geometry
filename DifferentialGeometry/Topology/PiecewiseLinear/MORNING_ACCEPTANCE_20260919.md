@@ -42,14 +42,16 @@ time of typing; a post-start commit may contain earlier uncommitted work.
 ## Continuing priorities
 
 h: correct the held Moise331/351 repairs; F: actual ambient-cover reduction
-and descent; E3: actual geometric 30.3 data before 30.4; S: compact PL smoothing,
-assigned after reported finite 24.12 delivery 434d5352c. Use existing tasks,
-F/S Astra max and h/E3 Sol max.
+and descent; E3: actual geometric 30.3 data; M304: the independent 30.4 spherical-shell
+theorem; S: compact PL smoothing, assigned after reported finite 24.12 delivery
+434d5352c. The owner authorized M304 at 04:24 UTC; task
+01a0b7e8-6789-72c2-afe3-522847f439bb starts from cbfe4a73f in codex/moise-304.
+F/S/M304 use Astra max and h/E3 use Sol max. Compiler concurrency is unchanged.
 Handoff only on delivery or urgent stop/restart.
 
 Pending source acceptance is tracked in .lake/pending-lane-checkpoints.json.
 Retain full-root build artifacts; that build is stopped. Six endpoint imports
-are now registered and statically reachable (9320 project modules including the root, no missing
+are now registered and statically reachable (9321 project modules including the root, no missing
 project source). The seven previously audited endpoint leaves retain their
 exact checked Git blobs; no full-root success is claimed. Focused checks do not
 certify a full-source build or the remaining classical input propositions.

@@ -1,6 +1,8 @@
-# Four-lane round workflow
+# Moise lane round workflow
 
 Effective 2026-09-19 UTC, following the owner's supplied four-lane workflow.
+The owner explicitly authorized one additional 30.4 task at 04:24 UTC. The five
+tasks below are current; the existing filename is retained for linked references.
 This file governs coordination; mathematical status remains in the integration
 handoff and the individual lane handoffs.
 
@@ -10,8 +12,12 @@ handoff and the individual lane handoffs.
   gpt-6-astra, max.
 - h: repair the Moise252/331/351 contracts and regular-neighborhood witnesses,
   gpt-5.6-sol, max.
-- E3: Moise 30.4 assembly, starting with the 30.3 splitting/separation step,
+- E3: the actual 30.3 splitting/separation construction,
   gpt-5.6-sol, max.
+- M304: Moise 30.4 spherical-shell theorem, gpt-6-astra, max; task
+  01a0b7e8-6789-72c2-afe3-522847f439bb, branch codex/moise-304. Construct an
+  independent actual producer while E3 finishes 30.3. In particular, 28.19 and
+  the initial separating surface are legitimate dependencies within this lane.
 - S: compact PL three-manifold smoothing, gpt-6-astra, max; assigned at the
   finite 24.12 delivery 434d5352c. The finite CST deliveries are independently
   accepted; the smoothing lane is separate and remains open.
@@ -22,7 +28,9 @@ The owner upgraded h and E3 to Sol max for subsequent assignments on 2026-09-19
 UTC. Apply the explicit model and effort on their next dispatch; do not interrupt
 an active round merely to change its setting.
 
-Use the four existing tasks, with one lane per task. Do not create subagents.
+Use these five tasks, with one lane per task. Do not create subagents or further
+tasks without a new owner instruction. The fifth task does not increase the
+two-private-checker or three-total-Lean-process limits.
 Give each lane a dependency-aware mathematical round, normally 15--60 minutes of
 work, rather than requiring a new assignment for every small lemma. This is a
 planning scale, not a forced time limit. Checkpoint each dependency-closed,

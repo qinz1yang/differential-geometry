@@ -30,10 +30,13 @@ open. Inward embeddings and proper projection through 3c7d44e19 are also
 accepted: five modules, 23 declarations, 13 critical reuse entries, four
 nonempty models and 13 clean linters. The boundary condition is constructed,
 not added as a DoubleCoverDiagram or NonsingularCell hypothesis.
-E3 owns I.4 through I.3. S's product and finite native 24.11/24.12 through
+E3 owns actual I.3 geometry. The owner authorized the separate M304 task on
+Astra max at 04:24 UTC to own I.4; it can construct the initial separating
+surface, compression induction or actual T.8 independently of E3's active round.
+S's product and finite native 24.11/24.12 through
 434d5352c are independently accepted; S now owns compact PL smoothing.
 E3's path replacement and annulus connectivity through 18f861c89 are accepted;
-its half-prism cut-cell construction 1cea2fbe7 is queued. The compatible local
+its half-prism cut-cell construction 1cea2fbe7 is accepted. The compatible local
 neighborhood and exact trace equations from the original disk pair remain open. The direction is 30.6 -> 30.7.
 
 Phase 3 proves only PL approximation and the resulting PL atlas. Compact PL
@@ -41,7 +44,7 @@ smoothing is an independent open phase with its own producer and acceptance.
 The approximation stage must retain noncompact open sets and pointwise shrinking
 error control. Five existing endpoint-chain modules were missing from root
 reachability; all six planned direct imports are now present and statically
-reachable, with 9314 project modules (including the root) in the root closure. The owner
+reachable, with 9321 project modules (including the root) in the root closure. The owner
 stopped the full-source build at 2026-09-19 02:00 UTC, retaining outputs with
 a discretionary restart only when compatibility verification or prolonged
 all-lane blockage warrants it. Seven leaves/26 declarations passed focused checks;
@@ -453,7 +456,7 @@ AuditS62 的 16 项传递公理闭包均仅 `propext`、`Classical.choice`、`Qu
 | I.1 | 30.1（书页 214）：X 单连通、局部连通且连通开集道路连通；H、K、C、D 是两两不交的闭集，H、K 连通；C ∪ D 分离 H、K 则 C 或 D 分离 H、K | 书上完整特化签名：`[SimplyConnectedSpace X] [LocallyConnectedSpace X] (hpath : ∀ U : Set X, IsOpen U → IsConnected U → IsPathConnected U) {H K C D : Set X} (hH : IsConnected H) (hK : IsConnected K) (hHclosed : IsClosed H) (hKclosed : IsClosed K) (hC : IsClosed C) (hD : IsClosed D) (hHK : Disjoint H K) (hHC : Disjoint H C) (hHD : Disjoint H D) (hKC : Disjoint K C) (hKD : Disjoint K D) (hCD : Disjoint C D) (hsep : Separates (C ∪ D) H K) : Separates C H K ∨ Separates D H K`；由 `separates_or_separates_of_union hpath hC hD hCD hH.isPreconnected hK.isPreconnected hsep` 直接得到 | I.2, §32 Step 2 | **done**。`6cf85c2d3`；`Connected/PhragmenBrouwer.lean` 的通用端点及局部道路连通版本 `phragmen_brouwer` 保留 H/K 的 `IsPreconnected` 假设，比书上允许更弱条件：无需闭、允许为空。书上 `IsConnected H/K` 蕴含这些假设；`Disjoint C D` 明确保留，其余不交条件由分离前提蕴含。两个模块 exit=0、零警告，AuditS147 九项仅标准三公理 | 3k–5k |
 | I.2 | 30.2：有限分支的闭集分离两个非空连通集 ⟹ 某分支分离 | `Connected/SeparatingComponent.lean`：`exists_separates_of_finite_iUnion`、`exists_separating_connectedComponentIn`、`exists_separating_component` | §30.4, §30.6, §33 L5/L6, §33 L10 | **done**。`bc20b0b45`；从 `[Finite (ConnectedComponents C)]`、`IsClosed C` 和 `Separates C H K` 实际产生 `x ∈ C`，使 `connectedComponentIn C x` 分离 H/K。先对有限个两两不交闭集归纳，再由真实连通分支构造该族。两种空间假设版本同 I.1，无未证参数。模块 exit=0、零警告，AuditS148 三项仅标准三公理 | 0.5k |
 | I.3 | 30.3：分裂运算保持分离性（`N(Δ)`、`Bd A_i`、`C'`） | T.8, T.9 | §30.4, §30.6, §30.7, §32 | **partial（2026-09-19）**：`Connected/Separation.lean` 已以 `JoinedIn.compl_of_frontier_replacement` 证明首入/末出参数间的道路可替换到安全边界，并以 `Separates.of_frontier_replacement` 导出局部替换保持分离；模块 exit 0、整模块 10 项审计仅标准三公理、13 linter 零诊断。`SurfaceSplitAnnulus.lean` 又把任意 PL 2-球面上两张不交 PL 2-胞腔搬到棱柱两端，将补集精确识别为 PL 圆与开区间的乘积，因而证明该补集道路连通；2 条新声明与 5 条关键复用声明审计仅标准三公理，13 linter 零诊断。`SurfaceSplitNeighborhood.lean` 现已从真实 `PLPieceIn` 棱柱图限制出半棱柱 3-胞腔与其两张实际边界端盘，证明两盘不交，并把安全 frontier 精确识别为侧环带的像；其道路连通性直接复用前一条球面删双盘定理。3 条新声明与 7 条关键复用声明审计仅标准三公理，13 linter 零诊断。仍缺从实际嵌入分裂盘和正则邻域产生与 `D₂ ∩ N(Δ)` 相容的该棱柱图及局部迹等式；因此邻域外精确相等和安全边界避开原曲面尚未接上，未被包装成输入 | 2k–3k |
-| I.4 | **30.4 球壳定理**：ℝ³ 中球壳 `X` 内有多面体 2-球面分离 `B₀` 与 `B₁` | `theorem exists_isPLSphere_separating_of_sphericalShell (X : Set ℝ³) (hX : IsSphericalShell X B₀ B₁) : ∃ S, IsPLSphere 2 S ∧ S ⊆ interior X ∧ Separates S B₀ B₁`；证明：F4.2 的多面体邻域 `N`、M.3、B.1、B.5、T.8、I.3、`p¹` 下降（H.4） | S.6, §34 L3 | E3 owns assembly, beginning with I.3. B.5 (26.4) and T.8 (28.19) remain explicit open gates; endpoint unproved. | 4k–6k |
+| I.4 | **30.4 球壳定理**：ℝ³ 中球壳 `X` 内有多面体 2-球面分离 `B₀` 与 `B₁` | `theorem exists_isPLSphere_separating_of_sphericalShell (X : Set ℝ³) (hX : IsSphericalShell X B₀ B₁) : ∃ S, IsPLSphere 2 S ∧ S ⊆ interior X ∧ Separates S B₀ B₁`；证明：F4.2 的多面体邻域 `N`、M.3、B.1、B.5、T.8、I.3、`p¹` 下降（H.4） | S.6, §34 L3 | M304 owns I.4 on Astra max, separately authorized at 2026-09-19 04:24 UTC; E3 retains actual I.3 geometry. Construct the initial separating surface, compression induction or actual T.8 in parallel. B.5 (26.4), T.8 (28.19) and I.3 remain explicit open gates; endpoint unproved. | 4k–6k |
 | I.5 | 30.6 环壳定理：ℝ³ 中环壳 `Y` 内有多面体环面分离 `T₀` 与 `T₁` | I.2, I.3, B.5, B.6, van Kampen 最简情形（本库 `VanKampen/FreeProduct.lean`，待审计）、H.4（`π(T)` 交换 ⟹ 环面，避免 26.8） | §30.7 | new | 5k–8k |
 | I.6 | 30.7：拓扑实心环面 `S₁ ⊆ Int S₂`、`Cl(S₂ − S₁)` 环壳 ⟹ 存在 CST `S`，`S₁ ⊆ Int S`，`S ⊆ S₂` | I.5, B.5, I.3, T.1 | §31.1 | new | 3k–4k |
 | I.7 | 30.8：脊 `J` 生成 `π(S)` | `π(S₂) ≅ ℤ` 与收缩核 | §31.2, §34 L1–L2 | new | 1k–2k |

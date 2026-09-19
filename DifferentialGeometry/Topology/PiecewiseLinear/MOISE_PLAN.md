@@ -42,13 +42,18 @@ add the false neighborhood hypothesis or treat another assumed package as a
 producer. This takes priority over further conditional cover assembly.
 
 
-### Four existing tasks: one current lane each
+### Five tasks: one current lane each
+
+At 2026-09-19 04:24 UTC the owner explicitly authorized a separate 30.4 lane.
+M304 starts from cbfe4a73f in its isolated codex/moise-304 worktree; E3 continues
+its active 30.3 round without interruption. The private checker limit stays two.
 
 | Task / model | Current round | Delivery gate and next boundary |
 | --- | --- | --- |
 | h / gpt-5.6-sol max | Repair the three contracts and their genuine geometric witnesses. | Source-faithful statements, nonvacuous instances and rebuilt consumers. Full-arc simultaneous normalization remains deferred. |
 | F / gpt-6-astra max | Repair the fixed normal-system neighborhood formula through an actual compatible triangulation, then construct the full cover diagram. Proper disks, conditional strict descent ec3b6b063 and finite-cover PL realization 52ead09cc are accepted. | Close the actual normal-system lift and boundary-compatible smaller neighborhood, then Lemma 2 branch separation. |
-| E3 / gpt-5.6-sol max | Own 30.4, starting with actual geometric splitting and separation in 30.3. Path replacement, annulus 18f861c89 and cut-cell layer 1cea2fbe7 are accepted. Next produce the compatible neighborhood from the original disk pair. | Construct the split surface, connected safe boundary and equality outside the local cell; show separation survives. Euler bookkeeping alone is insufficient. Full 30.4 also awaits 26.4 and 28.19. |
+| E3 / gpt-5.6-sol max | Actual geometric splitting and separation in 30.3. Path replacement, annulus 18f861c89 and cut-cell layer 1cea2fbe7 are accepted; disk-neighborhood producer ace162dcd awaits independent acceptance. Next produce the compatible neighborhood from the original disk pair. | Construct the split surface, connected safe boundary and equality outside the local cell; show separation survives. Euler bookkeeping alone is insufficient. |
+| M304 / gpt-6-astra max | Own 30.4 directly: read the original proof and construct an independent actual producer toward the spherical-shell theorem. | Initial separating surface, compression induction or the actual 28.19 annulus construction can proceed beside E3. Keep 26.4 and 30.3 as explicit open dependencies; do not count a conclusion-shaped wrapper as production. |
 | S / gpt-6-astra max | Compact PL three-manifold smoothing, following accepted finite 24.11/24.12 through 434d5352c. | Audit actual triangulation/handle/circle/sphere producers, then construct the first missing mathematical layer. Finite native 24.11/24.12 through 434d5352c are independently accepted; smoothing is independently open. |
 
 F must distinguish the full two-sheeted ambient cover from the smaller regular
@@ -83,7 +88,7 @@ no acceptance of these contracts is claimed.
 1. Accept corrected contracts and a real cover/projection construction; complete
    Lemmas 1 and 2 and the covering induction before claiming 25.1/25.2.
    Boundary non-nullhomotopy/subgroup avoidance must survive actual operations.
-2. Prove 26.4 and 28.19 and complete E3's 30.3/30.4 assembly. The accepted
+2. Prove 26.4 and 28.19; E3 completes actual 30.3 geometry and M304 owns 30.4. The accepted
    Moise304-to-Moise305Tame arrow has a bicollar hypothesis; general wild-cell
    Alexander duality is not an extra prerequisite of that tame arrow.
 3. Continue 30.6 -> 30.7, 30.8 and sections 31--35 with the open producers

@@ -1229,3 +1229,29 @@ Receipt: .lake/verified-fifteenth-lane-delivery-20260919.json. Lean +184/-0
 including one root import; 27 handoff Markdown lines excluded. This checkpoint
 records a negative result and repair obligation, not new progress toward an
 unconditional loop theorem. Full-root compilation remains stopped.
+
+
+## 33. Independent 30.4 lane authorized (2026-09-19 04:24 UTC)
+
+The owner explicitly requested an additional lane for Moise 30.4. New task
+`Moise 30.4 球壳定理`, `01a0b7e8-6789-72c2-afe3-522847f439bb`, uses
+`gpt-6-astra max` in `C:/Users/liao9/.codex/worktrees/ef23/differential-geometry-dev`,
+branch `codex/moise-304`, starting at `cbfe4a73f5c5074805cc4db729f8fed5146322ef`.
+The task is active and the M304 private compiler lease is granted to 14:19 UTC.
+
+E3 retains its current actual 30.3 splitting/trace construction. M304 owns the
+30.4 endpoint and independently available geometric inputs: the initial
+separating surface, compression induction, or actual 28.19 annular neighborhood.
+The task must read the original proof and keep 26.4/30.3 dependencies explicit.
+No mid-round interruption of E3 or reassignment of F/h/S was made. The original
+four-task restriction is superseded only by this explicit fifth-task request.
+Two private checkers, one per lane, and three total Lean processes remain the
+resource limits. The heartbeat and persistent ownership ledger now use five
+tasks, retaining the original 14:19 UTC deadline and delivery-only handoffs.
+
+The accepted carrier-obstruction checkpoint is integrated and pushed as
+`cbfe4a73f`. Its independent receipt is
+`.lake/verified-fifteenth-lane-delivery-20260919.json`; its temporary probe was
+removed after preserving the exact source. Static root reachability is now
+9321 project modules including the root, with no missing project sources.
+The full-source build remains stopped; no full-root acceptance is claimed.
