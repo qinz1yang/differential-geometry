@@ -16,6 +16,8 @@ open DifferentialGeometry.Analysis.Sobolev.Hs
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.Measure
 
 variable {n : ℕ} [NeZero n]
@@ -27,6 +29,9 @@ variable {M : Type*} [TopologicalSpace M]
 private abbrev I_half (n : ℕ) [NeZero n] :
     ModelWithCorners ℝ (EuclideanSpace ℝ (Fin n)) (EuclideanHalfSpace n) :=
   modelWithCornersEuclideanHalfSpace n
+
+private local instance : MeasurableSpace M := borel M
+private local instance : BorelSpace M := ⟨rfl⟩
 
 private local instance h1ComplDirichletBilinearSeminormed
     {q : SmoothRiemannianMetric (I_half n) M} :
@@ -209,12 +214,16 @@ theorem exists_dirichletCometricDifferenceLaplacianOnIcc
       0 < T ∧ Icc (0 : ℝ) T ⊆ D.regular ∧
         (∀ u, AEStronglyMeasurable (fun t => A t u) (timeMeasure T)) ∧
         (∀ t, ‖A t‖ ≤ eta) ∧
-        ∀ t ∈ Icc (0 : ℝ) T, ∀ u v : SmoothScalarDirichlet q,
-          dirichletHsNegOneEquivH1Dual q
-              (A t ((dirichletHsOneEquivH1Compl q).symm
-                (smoothToH1ComplDirichlet q u)))
-              (smoothToH1ComplDirichlet q v) =
-            -dirichletCometricDifferenceForm q (G.metric t) u v := by
+        ∀ t ∈ Icc (0 : ℝ) T, ∀ (u : DirichletHs q 1) (v : SmoothScalarDirichlet q),
+          dirichletHsNegOneEquivH1Dual q (A t u) (smoothToH1ComplDirichlet q v) =
+            ∫ x, dirichletHsZeroEquivL2 q
+                (dirichletHsInclusion (show (0 : ℝ) ≤ 1 by norm_num) u) x *
+              divergence (I := I_half n) (leviCivitaConnectionOfMetric (I := I_half n) q)
+                (WithBoundary.gradGWithBoundarySection (I := I_half n)
+                    (G.metric t) v.smooth v.interior_support -
+                  WithBoundary.gradGWithBoundarySection (I := I_half n) q
+                    v.smooth v.interior_support) x
+              ∂riemannianVolumeMeasure (I := I_half n) (M := M) q := by
   obtain ⟨a, b, h0ab, habreg⟩ := D.exists_Icc_regular h0reg
   have h0b : (0 : ℝ) < b := h0ab.2
   have hIco : Ico (0 : ℝ) b ⊆ D.regular := by
@@ -263,12 +272,8 @@ theorem exists_dirichletCometricDifferenceLaplacianOnIcc
       hdelta_lt hdelta_nn (hmetric t ht) from
         dirichletCometricDifferenceLaplacianOnIcc_eq q G.metric
           hdelta_lt hdelta_nn hmetric ht]
-    rw [dirichletHsNegOneEquivH1Dual_cometricDifferenceLaplacian,
-      LinearIsometryEquiv.apply_symm_apply]
-    change -(dirichletCometricDifferenceFormCompl q (G.metric t)
-      hdelta_lt hdelta_nn (hmetric t ht)
-      (smoothToH1ComplDirichlet q u) (smoothToH1ComplDirichlet q v)) = _
-    rw [dirichletCometricDifferenceFormCompl_apply_smooth]
+    exact dirichletHsNegOneEquivH1Dual_cometricDifferenceLaplacian_apply_smooth
+      q (G.metric t) hdelta_lt hdelta_nn (hmetric t ht) u v
 
 end DifferentialGeometry.Analysis.Parabolic.Dirichlet
 

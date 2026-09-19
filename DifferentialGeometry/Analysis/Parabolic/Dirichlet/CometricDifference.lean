@@ -1,3 +1,5 @@
+import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletWeakDerivative
+import DifferentialGeometry.Geometry.Operator.Divergence
 import DifferentialGeometry.Analysis.Sobolev.DirichletHs.EnergyDuality
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletFormCompletion
 import DifferentialGeometry.Analysis.Integration.Measure.Parametric.CompactIntegral
@@ -558,5 +560,133 @@ theorem norm_dirichletCometricDifferenceLaplacian_le
     _ ≤ delta / (1 - delta) :=
       norm_dirichletCometricDifferenceFormCompl_le q h
         hdelta_lt hdelta_nn hdelta
+
+theorem dirichletCometricDifferenceForm_eq_neg_integral_divergence
+    (q h : SmoothRiemannianMetric (I_half n) M)
+    (u v : SmoothScalarDirichlet q) :
+    dirichletCometricDifferenceForm q h u v =
+      -∫ x, u.toFun x * divergence (I := I_half n)
+        (leviCivitaConnectionOfMetric (I := I_half n) q)
+        (WithBoundary.gradGWithBoundarySection (I := I_half n) h v.smooth v.interior_support -
+          WithBoundary.gradGWithBoundarySection (I := I_half n) q v.smooth v.interior_support) x
+        ∂riemannianVolumeMeasure (I := I_half n) (M := M) q := by
+  let X := WithBoundary.gradGWithBoundarySection (I := I_half n) h v.smooth v.interior_support -
+    WithBoundary.gradGWithBoundarySection (I := I_half n) q v.smooth v.interior_support
+  have haction (x : M) :
+      q.inner x
+          (metricComparisonDifferenceEndomorphism (I := I_half n) q h x
+            (gradFun (I := I_half n) q v.toFun x))
+          (gradFun (I := I_half n) q u.toFun x) =
+        DifferentialGeometry.Integral.DivergenceTheorem.tangentSectionAction
+          (I := I_half n) X u.toFun x := by
+    rw [WithBoundary.tangentSectionAction_grad_g_with_boundary_eq_inner (I := I_half n) q X x]
+    have hgrad : metricComparisonDifferenceEndomorphism (I := I_half n) q h x
+        (gradFun (I := I_half n) q v.toFun x) =
+        gradFun (I := I_half n) h v.toFun x - gradFun (I := I_half n) q v.toFun x := by
+      have he := metricComparisonEndomorphism_gradFun q h v.toFun x
+      rw [metricComparisonEndomorphism_eq_diff_add_id] at he
+      exact eq_sub_of_add_eq he
+    rw [hgrad]
+    rfl
+  have hibp :=
+    DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary.integral_tangentSectionAction_eq_neg_integral_smul_divergence_with_boundary_of_hasCompactSupport
+      (I := I_half n) q u.smooth (HasCompactSupport.of_compactSpace _) u.interior_support X
+  calc
+    dirichletCometricDifferenceForm q h u v = dirichletCometricDifferenceForm q h v u :=
+      dirichletCometricDifferenceForm_symm q h u v
+    _ = ∫ x, DifferentialGeometry.Integral.DivergenceTheorem.tangentSectionAction
+        (I := I_half n) X u.toFun x
+          ∂riemannianVolumeMeasure (I := I_half n) (M := M) q :=
+      integral_congr_ae (Filter.Eventually.of_forall haction)
+    _ = -∫ x, u.toFun x * DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary.divergenceGWithBoundary (I := I_half n) q X x
+        ∂riemannianVolumeMeasure (I := I_half n) (M := M) q := hibp
+    _ = _ := by
+      congr 1
+      apply integral_congr_ae
+      apply Filter.Eventually.of_forall
+      intro x
+      change u.toFun x * DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary.divergenceGWithBoundary
+        (I := I_half n) q X x = u.toFun x * divergence (I := I_half n)
+          (leviCivitaConnectionOfMetric (I := I_half n) q) X x
+      by_cases hx : u.toFun x = 0
+      · simp only [hx, zero_mul]
+      · have hxi := u.interior_support (subset_tsupport u.toFun hx)
+        rw [DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary.divergence_g_with_boundary_eq_divergence_g_of_isInteriorPoint
+          (I := I_half n) q X hxi,
+          divergence_g_eq_leviCivita_divergence_of_isInteriorPoint (I := I_half n) q X hxi]
+
+theorem dirichletCometricDifferenceFormCompl_apply_smooth_right
+    (q h : SmoothRiemannianMetric (I_half n) M)
+    {delta : ℝ} (hdelta_lt : delta < 1) (hdelta_nn : 0 ≤ delta)
+    (hdelta : metricCauchySchwarzBound (I := I_half n) q
+      (fun x => h.inner x - q.inner x) delta)
+    (u : H1ComplDirichlet q) (v : SmoothScalarDirichlet q) :
+    dirichletCometricDifferenceFormCompl q h hdelta_lt hdelta_nn hdelta u
+        (smoothToH1ComplDirichlet q v) =
+      -∫ x, H1ComplDirichletToLp q u x * divergence (I := I_half n)
+        (leviCivitaConnectionOfMetric (I := I_half n) q)
+        (WithBoundary.gradGWithBoundarySection (I := I_half n) h v.smooth v.interior_support -
+          WithBoundary.gradGWithBoundarySection (I := I_half n) q v.smooth v.interior_support) x
+        ∂riemannianVolumeMeasure (I := I_half n) (M := M) q := by
+  let X := WithBoundary.gradGWithBoundarySection (I := I_half n) h v.smooth v.interior_support -
+    WithBoundary.gradGWithBoundarySection (I := I_half n) q v.smooth v.interior_support
+  let c := divergence (I := I_half n) (leviCivitaConnectionOfMetric (I := I_half n) q) X
+  let _ : IsFiniteMeasure (riemannianVolumeMeasure (I := I_half n) (M := M) q) :=
+    riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace (I := I_half n) (M := M) q
+  have hc : MemLp c 2 (riemannianVolumeMeasure (I := I_half n) (M := M) q) :=
+    (leviCivita_divergence_contMDiff q X).continuous.memLp_of_hasCompactSupport
+      (HasCompactSupport.of_compactSpace _)
+  let w := hc.toLp c
+  have hpair (U : H1ComplDirichlet q) :
+      -inner ℝ (H1ComplDirichletToLp q U) w =
+        -∫ x, H1ComplDirichletToLp q U x * c x
+          ∂riemannianVolumeMeasure (I := I_half n) (M := M) q := by
+    congr 1
+    rw [L2.inner_def]
+    apply integral_congr_ae
+    filter_upwards [hc.coeFn_toLp] with x hx
+    change inner ℝ (H1ComplDirichletToLp q U x) (w x) = _
+    rw [Real.inner_apply, hx, mul_comm]
+  change _ = -∫ x, H1ComplDirichletToLp q u x * c x
+    ∂riemannianVolumeMeasure (I := I_half n) (M := M) q
+  rw [← hpair u]
+  apply congrFun ((denseRange_smoothToH1ComplDirichlet q).equalizer
+    ((dirichletCometricDifferenceFormCompl q h hdelta_lt hdelta_nn hdelta).continuous.clm_apply
+      continuous_const)
+    (((H1ComplDirichletToLp q).continuous.inner continuous_const).neg) ?_) u
+  funext U
+  dsimp only [Function.comp_def]
+  rw [dirichletCometricDifferenceFormCompl_apply_smooth,
+    dirichletCometricDifferenceForm_eq_neg_integral_divergence]
+  simp only [Pi.neg_apply]
+  rw [hpair]
+  congr 1
+  apply integral_congr_ae
+  filter_upwards [U.memLp_two.coeFn_toLp] with x hx
+  rw [H1ComplDirichletToLp_smoothToH1ComplDirichlet]
+  change U.toFun x * c x = smoothToLpDirichlet q U x * c x
+  change smoothToLpDirichlet q U x = U.toFun x at hx
+  rw [hx]
+
+theorem dirichletHsNegOneEquivH1Dual_cometricDifferenceLaplacian_apply_smooth
+    (q h : SmoothRiemannianMetric (I_half n) M)
+    {delta : ℝ} (hdelta_lt : delta < 1) (hdelta_nn : 0 ≤ delta)
+    (hdelta : metricCauchySchwarzBound (I := I_half n) q
+      (fun x => h.inner x - q.inner x) delta)
+    (u : DirichletHs q 1) (v : SmoothScalarDirichlet q) :
+    dirichletHsNegOneEquivH1Dual q
+        (dirichletCometricDifferenceLaplacian q h hdelta_lt hdelta_nn hdelta u)
+        (smoothToH1ComplDirichlet q v) =
+      ∫ x, dirichletHsZeroEquivL2 q
+          (dirichletHsInclusion (show (0 : ℝ) ≤ 1 by norm_num) u) x *
+        divergence (I := I_half n) (leviCivitaConnectionOfMetric (I := I_half n) q)
+          (WithBoundary.gradGWithBoundarySection (I := I_half n) h v.smooth v.interior_support -
+            WithBoundary.gradGWithBoundarySection (I := I_half n) q v.smooth v.interior_support) x
+        ∂riemannianVolumeMeasure (I := I_half n) (M := M) q := by
+  rw [dirichletHsNegOneEquivH1Dual_cometricDifferenceLaplacian]
+  change -(dirichletCometricDifferenceFormCompl q h hdelta_lt hdelta_nn hdelta
+    (dirichletHsOneEquivH1Compl q u) (smoothToH1ComplDirichlet q v)) = _
+  rw [dirichletCometricDifferenceFormCompl_apply_smooth_right, neg_neg,
+    H1ComplDirichletToLp_dirichletHsOneEquivH1Compl]
 
 end DifferentialGeometry.Analysis.Parabolic.Dirichlet
