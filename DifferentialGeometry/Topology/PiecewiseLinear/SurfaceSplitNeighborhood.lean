@@ -191,4 +191,116 @@ theorem PLPieceIn.exists_prism_cut_cell_with_boundary_disks
   · rw [hfront]
     exact image_mono hQ₁B
 
+open Classical in
+theorem exists_disjoint_slice_disks_of_centered_prism
+    {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
+    {P : Set E} {r : (Fin 3 → ℝ) → E}
+    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) P)
+    {N : Set F} {ρ : E × ℝ → F}
+    (hρ : IsPLHomeomorphOn ρ (P ×ˢ Icc (-1 : ℝ) 1) N) :
+    ∃ (D₀ D₁ A : Set F) (q₀ q₁ : (Fin 3 → ℝ) → F),
+      D₀ = ρ '' (P ×ˢ {(-1 / 2 : ℝ)}) ∧
+      D₁ = ρ '' (P ×ˢ {(1 / 2 : ℝ)}) ∧
+      A = ρ '' ((r '' stdSimplexBoundary 2) ×ˢ Icc (-1 / 2 : ℝ) (1 / 2 : ℝ)) ∧
+      IsPLHomeomorphOn q₀ (stdSimplex ℝ (Fin 3)) D₀ ∧
+      IsPLHomeomorphOn q₁ (stdSimplex ℝ (Fin 3)) D₁ ∧
+      IsPLHomeomorphOn ρ
+        ((r '' stdSimplexBoundary 2) ×ˢ Icc (-1 / 2 : ℝ) (1 / 2 : ℝ)) A ∧
+      D₀ ⊆ N ∧ D₁ ⊆ N ∧ A ⊆ N ∧ Disjoint D₀ D₁ ∧
+      A ∩ D₀ = q₀ '' stdSimplexBoundary 2 ∧
+      A ∩ D₁ = q₁ '' stdSimplexBoundary 2 := by
+  let J := r '' stdSimplexBoundary 2
+  let Q₀ := P ×ˢ {(-1 / 2 : ℝ)}
+  let Q₁ := P ×ˢ {(1 / 2 : ℝ)}
+  let S := J ×ˢ Icc (-1 / 2 : ℝ) (1 / 2 : ℝ)
+  let q₀ := (ρ ∘ fun x : E => (x, (-1 / 2 : ℝ))) ∘ r
+  let q₁ := (ρ ∘ fun x : E => (x, (1 / 2 : ℝ))) ∘ r
+  have hP : IsPLBall 2 P := ⟨r, hr⟩
+  have hJ : IsPLSphere 1 J := by
+    let B := simplexBoundary (stdVertices 1) (stdVertices_affineIndependent 1)
+    let _ : Finite B.faces := (simplexBoundary_faces_finite _ _).to_subtype
+    have h := (isPLSphere_simplexBoundary_std 1).of_isPLHomeomorphOn
+      (hr.restrict (isPolyhedron_space B) (simplexBoundary_stdVertices_space_subset 1))
+    rwa [simplexBoundary_stdVertices_space] at h
+  have hJP : J ⊆ P := by
+    rintro x ⟨y, hy, rfl⟩
+    have hy' : y ∈
+        (simplexBoundary (stdVertices 1) (stdVertices_affineIndependent 1)).space := by
+      rwa [simplexBoundary_stdVertices_space]
+    exact hr.bijOn.mapsTo (simplexBoundary_stdVertices_space_subset 1 hy')
+  have hQ₀P : Q₀ ⊆ P ×ˢ Icc (-1 : ℝ) 1 := by
+    rintro ⟨x, t⟩ ⟨hx, ht⟩
+    have ht : t = -1 / 2 := by simpa only [mem_singleton_iff] using ht
+    subst t
+    exact ⟨hx, by norm_num⟩
+  have hQ₁P : Q₁ ⊆ P ×ˢ Icc (-1 : ℝ) 1 := by
+    rintro ⟨x, t⟩ ⟨hx, ht⟩
+    have ht : t = 1 / 2 := by simpa only [mem_singleton_iff] using ht
+    subst t
+    exact ⟨hx, by norm_num⟩
+  have hSP : S ⊆ P ×ˢ Icc (-1 : ℝ) 1 := by
+    rintro ⟨x, t⟩ ⟨hx, ht⟩
+    exact ⟨hJP hx, ht.1.trans' (by norm_num), ht.2.trans (by norm_num)⟩
+  have hq₀ : IsPLHomeomorphOn q₀ (stdSimplex ℝ (Fin 3)) (ρ '' Q₀) :=
+    hr.trans ((hP.isPolyhedron.isPLHomeomorphOn_prod_const (-1 / 2 : ℝ)).trans
+      (hρ.restrict
+        (hP.isPolyhedron.prod (isHPolytope_singleton (-1 / 2 : ℝ)).isPolyhedron) hQ₀P))
+  have hq₁ : IsPLHomeomorphOn q₁ (stdSimplex ℝ (Fin 3)) (ρ '' Q₁) :=
+    hr.trans ((hP.isPolyhedron.isPLHomeomorphOn_prod_const (1 / 2 : ℝ)).trans
+      (hρ.restrict
+        (hP.isPolyhedron.prod (isHPolytope_singleton (1 / 2 : ℝ)).isPolyhedron) hQ₁P))
+  have hρS : IsPLHomeomorphOn ρ S (ρ '' S) :=
+    hρ.restrict (hJ.isPolyhedron.prod isHPolytope_Icc.isPolyhedron) hSP
+  have hQdis : Disjoint (ρ '' Q₀) (ρ '' Q₁) := by
+    apply disjoint_left.mpr
+    rintro y ⟨u, hu, huy⟩ ⟨v, hv, hvy⟩
+    have huv := hρ.bijOn.injOn (hQ₀P hu) (hQ₁P hv) (huy.trans hvy.symm)
+    have ht := hu.2.symm.trans ((congrArg Prod.snd huv).trans hv.2)
+    norm_num at ht
+  have hS₀ : S ∩ Q₀ = J ×ˢ {(-1 / 2 : ℝ)} := by
+    ext z
+    rcases z with ⟨x, t⟩
+    constructor
+    · rintro ⟨⟨hx, -, -⟩, ⟨-, ht⟩⟩
+      exact ⟨hx, ht⟩
+    · rintro ⟨hx, ht⟩
+      have ht : t = -1 / 2 := by simpa only [mem_singleton_iff] using ht
+      subst t
+      exact ⟨⟨hx, by norm_num⟩, ⟨hJP hx, rfl⟩⟩
+  have hS₁ : S ∩ Q₁ = J ×ˢ {(1 / 2 : ℝ)} := by
+    ext z
+    rcases z with ⟨x, t⟩
+    constructor
+    · rintro ⟨⟨hx, -, -⟩, ⟨-, ht⟩⟩
+      exact ⟨hx, ht⟩
+    · rintro ⟨hx, ht⟩
+      have ht : t = 1 / 2 := by simpa only [mem_singleton_iff] using ht
+      subst t
+      exact ⟨⟨hx, by norm_num⟩, ⟨hJP hx, rfl⟩⟩
+  have hq₀boundary : q₀ '' stdSimplexBoundary 2 = ρ '' (J ×ˢ {(-1 / 2 : ℝ)}) := by
+    ext y
+    constructor
+    · rintro ⟨x, hx, rfl⟩
+      exact ⟨(r x, -1 / 2), ⟨⟨x, hx, rfl⟩, rfl⟩, rfl⟩
+    · rintro ⟨⟨z, t⟩, ⟨⟨x, hx, hxz⟩, ht⟩, rfl⟩
+      have ht : t = -1 / 2 := by simpa only [mem_singleton_iff] using ht
+      subst t
+      exact ⟨x, hx, by simp only [q₀, Function.comp_apply, hxz]⟩
+  have hq₁boundary : q₁ '' stdSimplexBoundary 2 = ρ '' (J ×ˢ {(1 / 2 : ℝ)}) := by
+    ext y
+    constructor
+    · rintro ⟨x, hx, rfl⟩
+      exact ⟨(r x, 1 / 2), ⟨⟨x, hx, rfl⟩, rfl⟩, rfl⟩
+    · rintro ⟨⟨z, t⟩, ⟨⟨x, hx, hxz⟩, ht⟩, rfl⟩
+      have ht : t = 1 / 2 := by simpa only [mem_singleton_iff] using ht
+      subst t
+      exact ⟨x, hx, by simp only [q₁, Function.comp_apply, hxz]⟩
+  refine ⟨ρ '' Q₀, ρ '' Q₁, ρ '' S, q₀, q₁, rfl, rfl, rfl,
+    hq₀, hq₁, hρS, ?_, ?_, ?_, hQdis, ?_, ?_⟩
+  · exact (image_mono hQ₀P).trans hρ.image_eq.subset
+  · exact (image_mono hQ₁P).trans hρ.image_eq.subset
+  · exact (image_mono hSP).trans hρ.image_eq.subset
+  · rw [← hρ.bijOn.injOn.image_inter hSP hQ₀P, hS₀, ← hq₀boundary]
+  · rw [← hρ.bijOn.injOn.image_inter hSP hQ₁P, hS₁, ← hq₁boundary]
+
 end DifferentialGeometry.Topology.PiecewiseLinear

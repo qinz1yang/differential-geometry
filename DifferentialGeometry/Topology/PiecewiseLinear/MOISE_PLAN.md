@@ -149,17 +149,23 @@ conjugate-family theorem. The old unitInterval consumers now reuse it without
 a name collision. These actual isotopies work in the fixed Euclidean atlas,
 retaining framing at every height and all three corners. They do not produce
 relative smoothing in an arbitrary old atlas or charts across a gluing seam.
-S subsequently delivered bounded-displacement Alexander localization,
-actual planar whole-disk/germ extension, supported germ isotopy linearization
-2086c2aac, and general nested Jordan annuli with simultaneous compatible
-boundary extension ab12b25d1. These author-verified layers await independent
-replay. S's actual old-atlas local disk smoothing c4c935995 is also
-author-verified and queued; the original maximal atlas is retained. At that
-completed clean delivery S continued one relative-strip round, from actual
-end collars to whole compact-core smoothing, with a 14:05 UTC checkpoint
-target. This must construct compatibility, not assume a Diffeomorph or the
-desired extension. Cross-seam charts and compact PL smoothing remain open.
-See integration handoff sections 53 and 56.
+S's subsequent bounded-displacement Alexander localization, planar whole-disk
+extension, arbitrarily small-support germ linearization, prescribed Jordan
+annulus boundary extension and old-atlas local disk smoothing through
+c4c935995 are now independently accepted. Thirteen new leaves plus one
+unchanged orientation prerequisite were freshly checked. All 92 native
+declarations (71 new), 66 critical reuse entries and 51 classified fixture
+declarations pass the combined axiom/lint audit with zero diagnostics. The
+fixed cusp-shear old-atlas fixture proves the original PL chart is not smooth
+and the correcting isotopy is nonidentity. The produced chart belongs to the
+original maximal atlas; both transition directions and exact original frames
+are retained. This is local zero-handle smoothing, not whole-strip or
+cross-seam smoothing. Relative Morse approximation 5beeda255 is subsequently
+reported and queued separately; critical-point elimination and a noncritical
+parameterization preserving both end collars remain open. S continues its
+single relative-strip lane toward the 14:05 UTC checkpoint and 14:19 UTC
+deadline. Compact PL smoothing remains unproved. See integration handoff
+section 59 and the morning ledger.
 
 h's corrected contracts, same-PL-triangulation exhaustion, real noncompact
 three-dimensional edge model and graph dual-cell ballness through 2086d1064
@@ -207,12 +213,23 @@ entries, 39 classified probes and thirteen applicable linters pass with zero
 diagnostics and standard axioms. The enlarged spanning disks still share the
 original disk; the later compression theorem explicitly requires disjoint
 caps and separation of their capped union. The general shell minimizer is not
-known to have beta zero. M304's actual essential-boundary PL singular filling
-inside one finite ambient neighborhood b80e381fc is delivered and queued for
-independent replay. At that delivery M304 continued a real positive-genus
-compression configuration to exercise the strict Betti descent. Embedded
-compression disk existence, actual 30.3 splitting and the final 30.4 induction
-remain open. See integration handoff section 56.
+known to have beta zero. M304's essential singular filling b80e381fc and the
+actual concrete torus compression/frontier/common-target chain through
+1c43107f3 are now independently accepted. A nonspherical closed connected
+surface in a simply connected open ambient has an actual essential-boundary
+singular PL disk in one finite neighborhood,
+with the nontrivial original loop killed by that same disk. Independently,
+the concrete triangular-circle solid torus has an essential nonseparating
+compressing disk, two actual disjoint caps, an actual capped sphere, and
+first Betti number two decreasing to zero. Exact ambient frontier equalities
+produce common distinct points separated by both surfaces; external fixtures
+also produce common nonempty regions and disjoint three-ball targets. The
+full general filling producer is additionally tested on that real torus.
+Twenty fresh modules, all 35 native declarations (26 new), 65 critical reuse
+entries and thirteen classified fixtures pass with approved axioms, thirteen
+linters and zero diagnostics. Native ball-target strengthening 815c38869 is
+queued separately. This concrete compression does not settle arbitrary-shell
+target preservation, general 26.4/30.3 or Moise304. See handoff section 60.
 
 The held E3 disk-neighborhood chain through 8e0373385 is now independently
 accepted: fifteen fresh modules and all 81 native declarations (58 new),
@@ -221,15 +238,20 @@ and all thirteen applicable linters pass with standard axioms and no final
 diagnostics. The canonical free-triangle proof is generalized and reused;
 the copied chain is removed and both old boundary signatures are preserved.
 Actual middle-disk ball pairs and centered prism charts are now producers.
-Exact local replacement traces are accepted. E3 subsequently delivered relative
-frontier/safety and separation transfer at 45c848746, queued for independent
-replay. That endpoint assumes a finite closed combinatorial three-manifold
-K.space, which does not directly realize the R^3 shell ambient. The interior
-WB3 boundary trace 8ad00b74a is delivered and queued. At completed be67795fa
-the coordinator corrected an old whole-branch-chart detour and resumed the
-actual interior prism/local-trace bridge and original ambient separation
-consumer. Replacement manifold structure, physical cap separation and full
-Moise303 remain open. See handoff sections 52, 53 and 55 and the morning ledger.
+Exact local replacement traces are accepted. The subsequent relative
+separation 45c848746 and actual interior WB3 boundary/prism/local-trace bridge
+through ff304a1b2 are now independently accepted. Original-ambient separation
+is proved in real dimension three, using the actual ball's frontier and
+explicit outside equality. Five modules, 25 native declarations (six new),
+27 critical reuse entries and three real probes pass the combined audit with
+thirteen applicable linters, approved axioms and zero final diagnostics.
+The strengthened three-dimensional probe constructs a finite WB3 ambient
+around two nondegenerate disks and consumes the full local-trace producer.
+It does not instantiate nonempty H,Q for the full separation endpoint.
+Physical disjoint caps, a finite replacement surface with manifold structure,
+and complete Moise303 remain open. At completed delivery E3 continued exactly
+that construction and merged the canonical restriction change. See integration
+handoff section 58 and the morning ledger.
 
 ### Five tasks: one current lane each
 
@@ -239,11 +261,11 @@ its active 30.3 round without interruption. The private checker limit stays two.
 
 | Task / model | Current round | Delivery gate and next boundary |
 | --- | --- | --- |
-| h / gpt-5.6-sol max | Corrected contracts, exhaustion and graph dual-cell balls accepted. Piercing, nested common neighborhoods with four annular traces, real trivalent model and numerical scales through c08f3a8d5 now independently accepted. | Continue the current geometric stability/control round. Relative nesting is explicit; solid-torus PL type, disjoint edge neighborhoods, actual approximating maps and compatible gluing remain open. No Moise351 proof. |
-| F / gpt-6-astra max | Actual spherical EmbeddedDisk/return and projected double-cover/partner-involution layers through 8a00ab535 independently accepted. | Continue equivariant relative triangulation on the actual free collision relation in the same descent lane. The rectangle model permits two-dimensional double sets; crossing, geometric elimination and downstairs embedding remain open. |
-| E3 / gpt-5.6-sol max | Actual local traces through 8e0373385 accepted. Relative closed-carrier separation 45c848746 and interior-WB3 boundary trace 8ad00b74a queued. At be67795fa completed delivery resumed the current 30.3 interior bridge. | Construct interior prism/local traces and original R3 separation with a genuine 3D disk-pair model. Old whole-branch chart issue is not this lane's prerequisite. Physical cap separation and full 30.3 remain open. |
-| M304 / gpt-6-astra max | Own 30.4. Annulus components, conditional strict compression and actual minimum-Betti separators through ac3673685 independently accepted. Actual essential PL singular disk b80e381fc delivered and queued. | Construct an actual positive-genus essential-circle compression configuration and consume the existing strict Betti theorem. Preserve F's embedded-disk and E3's general physical-cap/separation ownership. No general beta-zero or full 30.4 claim. |
-| S / gpt-6-astra max | Finite 24.11/24.12 accepted. Planar localization, Jordan annuli and actual old-atlas local disk smoothing c4c935995 author-verified and queued. | At the completed clean delivery, continue one relative-strip round from actual end collars to whole-core smoothing. Checkpoint by 14:05 UTC. Preserve the old atlas; strip, seam charts and compact 3D smoothing remain open. |
+| h / gpt-5.6-sol max | Contracts and actual neighborhoods accepted; finite disjoint nested neighborhoods and genuinely locally finite disjoint open supports through e8ffd9c5d independently verified. | Localize splitting-disk ballness to finite cofaces without changing the actual disk. Stability, compatible approximation and Moise351 remain open. Checkpoint by14:05 UTC. |
+| F / gpt-6-astra max | Actual projected-disk production, equivariant sheets and true-carrier interior local normalization through f5436defe independently accepted. | Later boundary-relative layers through56bd63a74 await replay. Actual boundary half-space collar, overlap-preserving global normalization and four-case elimination remain open. Finish current round safely. |
+| E3 / gpt-5.6-sol max | WB3 interior boundary/prism/local traces and original ambient separation through ff304a1b2 independently accepted, with actual 3D WB3 local-trace model. | Produce finite replacement surface/manifold and actual disjoint caps with face equations. Canonical restriction merge assigned at delivery; checkpoint by 14:05 UTC. Full 30.3 remains open. |
+| M304 / gpt-6-astra max | Own30.4. Essential filling and actual torus compression through7c38f9f1c independently accepted, including common ball targets and one produced spherical shell. | General prescribed-shell target preservation and zero-Betti descent remain open. Continue only existing concrete compression round; checkpoint by14:05 UTC. |
+| S / gpt-6-astra max | Fixed-old-atlas planar smoothing and relative Morse approximation with distinct finite critical values through fa9f81cbf independently accepted. | Relative critical-region cancellation and whole-strip product remain open. Continue only existing level/handle investigation and checkpoint by14:05 UTC. |
 
 F must distinguish the full two-sheeted ambient cover from the smaller regular
 neighborhood for the next normal system: restriction need not preserve
@@ -371,6 +393,92 @@ are met, reuse retained artifacts and check the expanded import graph before
 treating a root success as endpoint coverage.
 Current AGENTS allows required copyright/authors headers and module docstrings;
 inline comments and declaration docstrings remain disallowed.
+
+### Locally finite support-separation gate (2026-09-19 UTC)
+
+The finite incident family now has pairwise-disjoint outer and inner actual
+piercing neighborhoods. For every locally finite PL ambient, all splitting
+disks have finite faces and form a locally finite closed disjoint family;
+locally finite disjoint open supports are constructed in any prescribed
+containing open set. Both a compact trivalent three-sphere model and a
+noncompact R3 model with nonempty disks and supports are independently checked.
+Through e8ffd9c5d, four modules, all71 native declarations,26 reused entries
+and two actual probes pass the axiom/lint gate. The same-disk local PL-ball
+bridge, solid-torus classification, geometric stability and Moise351 remain
+open. h continues that same lane until the final checkpoint; see section61.
+
+### Relative Morse neighborhood gate (2026-09-19 UTC)
+
+Relative continuous-to-smooth Morse approximation and distinct critical values
+through S fa9f81cbf are independently accepted. The original atlas and regular
+closed collars stay fixed, and the whole compact core has an open neighborhood
+with compact closure inside a prescribed frame, finite nondegenerate critical
+points and distinct critical values. Proper input remains proper. The supported
+critical-value change preserves the entire ambient critical set, even when
+infinite. Actual nonsmooth cusp-shear and infinite-critical-set cosine models
+pass. This does not remove the critical points or supply the full strip product;
+relative cancellation and seam gluing remain the next smoothing gate. See
+handoff section62 for13 native declarations,45 reused entries and25 classified
+model declarations, all with approved axioms and thirteen applicable linters.
+
+### Concrete shell-compression gate (2026-09-19 UTC)
+
+The actual torus compression through M3047c38f9f1c now has common disjoint
+three-ball targets and an actual produced spherical shell. Both surfaces,
+the whole compression three-ball and the same essential spanning disk lie
+inside that shell, and both surfaces separate its real boundary spheres.
+For this shell the existing minimum-Betti separator is independently proved
+a PL sphere by comparison with the actual capped sphere. General prescribed-
+shell target preservation and zero-Betti descent remain open; this specific
+example does not close Moise304. Six fresh modules,31 native declarations,
+57 reused entries and nine actual certificates pass; see handoff section63.
+
+### Equivariant double-sheet and interior-normalization gate (2026-09-19 UTC)
+
+F through f5436defe is independently accepted: relative equivariant finite
+triangulations of actual double-point involutions, finite saturated polyhedral
+sheet neighborhoods, and the projected disk in the actual double with its
+exact boundary and fibers. At interior double points a small single-chart
+modification preserves the carrier, fixes the boundary and produces local
+crossings. Five leaves and nine native declarations pass. Four actual model
+theorems are distinct from five conditional NormalSystem consumers. Global
+overlap-preserving normalization, boundary chart production and four-case
+elimination remain open; later source through56bd63a74 is queued separately.
+See handoff section64. Moving to the double alone leaves fibers unchanged.
+
+### Actual meridian gate (2026-09-19 UTC)
+
+M304 through 6fa7957c9 is independently accepted: the actual embedded meridian
+is essential in the same torus boundary and bounds its actual interior disk.
+The boundary inclusion has a nontrivial fundamental-group kernel. General
+loop-theorem production and prescribed-shell Moise304 remain open. Two new
+leaves, two native declarations and three probes pass; see handoff section 65.
+
+### Planar cancellation gate (2026-09-19 UTC)
+
+S through f081c3b24 is independently accepted: an actual compactly supported
+critical-point-free replacement of every positive-parameter planar cubic pair,
+with an exact two-critical-point/nonidentical/exterior-fixed a=1 model. The
+support is not prescribed. General surface pairing and geometric reduction,
+finite iteration and strip assembly remain open. S stopped its round cleanly;
+see handoff section 66.
+
+### Closed-interval meridian gate (2026-09-19 UTC)
+
+M304 through e83d02f94 is independently accepted: every closed-interval
+height of an actual finite untwisted disk cylinder supplies its proper
+essential meridian, including both glued ends. The connected-complement API
+now includes endpoints; all six affected module suites pass together. General
+prescribed-shell cylinder production and Moise304 remain open. See section 67.
+
+### Locally finite disk-ball gate (2026-09-19 UTC)
+
+h through bbd11df3b is independently accepted: ballness of the original
+splitting disk now follows from local finiteness and the actual combinatorial
+manifold, without global finite faces or assumed ballness. The noncompact
+example is an explicit disconnected family of three-spheres in R4. All 85
+declarations in three modules pass; nine are new. h stopped cleanly. Stability,
+compatible modifications and Moise351 remain open; see handoff section 68.
 
 ## 1. 目标与接口
 
@@ -1323,3 +1431,43 @@ that real producer at its completed-round boundary. E3's ace162dcd is held
 because its 1206-line disk module duplicates 917 lines of canonical
 FreeTriangleNeighborhood; a generalization with boundary corollary is due at
 the next delivery, without interrupting the current geometric proof.
+
+## Autonomous-window final acceptance (2026-09-19)
+
+The final source checkpoint is 752c572ae822e48b99c3dbd00a8f6a0faaa439be. The morning report records 41 independent acceptances, the exact net Lean delta, pending F/E3/M304 source, and the remaining mathematical gates. No new proof rounds are assigned after 14:19 UTC. Full-root compilation remains unclaimed. See MORNING_ACCEPTANCE_20260919.md for the governing final snapshot; earlier active-round rows are historical.
+
+
+## Owner-authorized resumption after the overnight cutoff
+
+At 2026-09-19T14:32:35.604282+00:00 the owner explicitly requested checking tools and continuing work.
+The tools and Lean 4.33.1 are available. The previous twelve-hour window and
+its morning report remain closed historical records. This new stage resumes
+the same five tasks, one mathematical lane each, with hourly quiet follow-up
+and no newly inferred deadline. Existing compiler leases are renewed under
+the same two-private-checker and three-total-Lean limits. The h lane may now
+place its general helper in Topology/LocallyFiniteSeparation.
+
+First independently replay M304 734c87b5f, E3 5877584aa and F f0482b620 beyond
+the accepted frontiers. Continue actual geometric producers at their recorded
+gaps; no new tasks/subagents, no routine mid-round status requests and no
+automatic full-root rebuild. New-stage receipts live in
+.lake/resumed-stage-20260919.json; the prior morning accounting is preserved.
+
+### Resumed-stage cylinder gluing gate
+
+M304 734c87b5f is independently accepted: three existing cylinder/meridian
+interfaces have weaker gluing hypotheses, and all seven affected module suites
+pass together. The renamed cap theorem is not a new theorem count. The actual
+solid-torus fixtures remain untwisted. Arbitrary prescribed-shell geometry and
+Moise304 remain open. New-stage accounting is in RESUMED_ACCEPTANCE_20260919.md;
+the prior morning report is unchanged. See integration handoff section 70.
+
+### Finite surface-splitting representation and cap gate
+
+E3 through 5877584aa is independently accepted with canonical gluing reuse.
+An actual three-dimensional prism and actual solid-torus compression test
+exercise the new physical caps and finite surface representation. Five public
+results and one private helper are new; duplicated old gluing proofs are not
+new results. General 30.3 still needs the relative chart identifying original
+surface end circles with prism slices. See integration section 71 and the
+resumed-stage acceptance ledger. No full-root compilation is claimed.

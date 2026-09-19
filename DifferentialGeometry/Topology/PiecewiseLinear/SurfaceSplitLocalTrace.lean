@@ -107,9 +107,9 @@ private theorem not_mem_closure_sdiff_of_mem_nhdsWithin
   exact hy.2 (hOA ⟨hyO, hy.1⟩)
 
 open Classical in
-theorem IsCombinatorialManifold.exists_surface_split_local_traces
+theorem IsCombinatorialManifoldWithBoundary.exists_surface_split_local_traces
     {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces]
-    (hK : IsCombinatorialManifold 3 K) {C Δ D₁ D₂ U : Set E}
+    (hK : IsCombinatorialManifoldWithBoundary 3 K) {C Δ D₁ D₂ U : Set E}
     (hΔ : IsPLBall 2 Δ)
     {r₁ r₂ : (Fin 3 → ℝ) → E}
     (hr₁ : IsPLHomeomorphOn r₁ (stdSimplex ℝ (Fin 3)) D₁)
@@ -119,7 +119,8 @@ theorem IsCombinatorialManifold.exists_surface_split_local_traces
     (hΔD₁ : Δ ⊆ D₁) (hΔD₂ : Δ ⊆ D₂) (hD₁D₂ : D₁ ∩ D₂ = Δ)
     (hD₁K : D₁ ⊆ K.space) (hD₂K : D₂ ⊆ K.space)
     (hD₁C : D₁ ⊆ C) (hD₂C : D₂ ⊆ C)
-    (hlocal : D₁ ∪ D₂ ∈ 𝓝ˢ[C] Δ) (hU : U ∈ 𝓝ˢ[K.space] Δ) :
+    (hlocal : D₁ ∪ D₂ ∈ 𝓝ˢ[C] Δ) (hU : U ∈ 𝓝ˢ[K.space] Δ)
+    (hUdis : Disjoint U (boundaryComplex 3 K).space) :
     ∃ (N : Set E) (B : Geometry.SimplicialComplex ℝ E)
       (g : (Fin 3 → ℝ) → E) (A₁ Δ₁ C' : Set E),
       B.faces.Finite ∧ IsPLBall 3 N ∧ IsPLBall 3 B.space ∧
@@ -151,6 +152,8 @@ theorem IsCombinatorialManifold.exists_surface_split_local_traces
   have hV : V ∈ 𝓝ˢ[K.space] Δ :=
     Filter.inter_mem (Filter.inter_mem hU (Filter.mem_inf_of_left hOnhds))
       (Filter.mem_inf_of_left hJ₁nhds)
+  have hVdis : Disjoint V (boundaryComplex 3 K).space :=
+    hUdis.mono_left (inter_subset_left.trans inter_subset_left)
   have hD₁ : IsPLBall 2 D₁ := ⟨r₁, hr₁⟩
   obtain ⟨R, A, A₁c, A₂c, K₀, K₁, L, φ, ψ, g, ρ,
       hR, hRfin, hAR, hAfin, hAΔ, hA₁R, hA₁fin, hA₁D₁,
@@ -159,14 +162,14 @@ theorem IsCombinatorialManifold.exists_surface_split_local_traces
       hg, hgboundary, hK₀fin, hK₁fin, hK₀, hK₁, hcover, hinter,
       hmiddleK₀, hmiddleK₁, hρ, hρmid, hρ₀, hρ₁⟩ :=
     hK.exists_isSubdivision_disk_pair_with_centered_prism hΔ hD₁ hr₂ hΔintD₂
-      hΔD₁ hΔD₂ hD₁D₂ hD₁K hD₂K hV
+      hΔD₁ hΔD₂ hD₁D₂ hD₁K hD₂K hV hVdis
   let _ : Finite R.faces := hRfin.to_subtype
   let _ : Finite A.faces := hAfin.to_subtype
   let _ : Finite A₁c.faces := hA₁fin.to_subtype
   let _ : Finite A₂c.faces := hA₂fin.to_subtype
   let _ : Finite L.faces := hLfin.to_subtype
-  let N := derivedNeighborhood R A
-  let Q₁ := derivedNeighborhood A₁c A
+  let N := PiecewiseLinear.derivedNeighborhood R A
+  let Q₁ := PiecewiseLinear.derivedNeighborhood A₁c A
   let _ : Finite N.faces := (derivedNeighborhood_faces_finite R A).to_subtype
   let _ : Finite Q₁.faces := (derivedNeighborhood_faces_finite A₁c A).to_subtype
   have hNU : N.space ⊆ U := hNV.trans (inter_subset_left.trans inter_subset_left)
@@ -385,5 +388,47 @@ theorem IsCombinatorialManifold.exists_surface_split_local_traces
   rcases hside with hA₁K₀ | hA₁K₁
   · exact finish K₀ hK₀fin hK₀ (subset_union_left.trans hcover.subset) hmiddleK₀ hA₁K₀
   · exact finish K₁ hK₁fin hK₁ (subset_union_right.trans hcover.subset) hmiddleK₁ hA₁K₁
+
+open Classical in
+theorem IsCombinatorialManifold.exists_surface_split_local_traces
+    {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces]
+    (hK : IsCombinatorialManifold 3 K) {C Δ D₁ D₂ U : Set E}
+    (hΔ : IsPLBall 2 Δ)
+    {r₁ r₂ : (Fin 3 → ℝ) → E}
+    (hr₁ : IsPLHomeomorphOn r₁ (stdSimplex ℝ (Fin 3)) D₁)
+    (hr₂ : IsPLHomeomorphOn r₂ (stdSimplex ℝ (Fin 3)) D₂)
+    (hΔintD₁ : Δ ⊆ r₁ '' openSimplex (stdVertices 1))
+    (hΔintD₂ : Δ ⊆ r₂ '' openSimplex (stdVertices 1))
+    (hΔD₁ : Δ ⊆ D₁) (hΔD₂ : Δ ⊆ D₂) (hD₁D₂ : D₁ ∩ D₂ = Δ)
+    (hD₁K : D₁ ⊆ K.space) (hD₂K : D₂ ⊆ K.space)
+    (hD₁C : D₁ ⊆ C) (hD₂C : D₂ ⊆ C)
+    (hlocal : D₁ ∪ D₂ ∈ 𝓝ˢ[C] Δ) (hU : U ∈ 𝓝ˢ[K.space] Δ) :
+    ∃ (N : Set E) (B : Geometry.SimplicialComplex ℝ E)
+      (g : (Fin 3 → ℝ) → E) (A₁ Δ₁ C' : Set E),
+      B.faces.Finite ∧ IsPLBall 3 N ∧ IsPLBall 3 B.space ∧
+      Δ ⊆ N ∧ N ⊆ K.space ∧ N ⊆ U ∧
+      (∀ x ∈ Δ, N ∈ 𝓝[K.space] x) ∧ B.space ⊆ N ∧
+      IsPLHomeomorphOn g (stdSimplex ℝ (Fin 3)) (D₂ ∩ N) ∧
+      D₂ ∩ N ⊆ (boundaryComplex 3 B).space ∧
+      A₁ = N ∩ closure (D₁ \ Δ) ∧ A₁ ⊆ B.space ∧
+      IsPLBall 2 Δ₁ ∧ Δ₁ ⊆ (boundaryComplex 3 B).space ∧
+      (boundaryComplex 3 B).space = (D₂ ∩ N) ∪ Δ₁ ∧
+      (D₂ ∩ N) ∩ Δ₁ = g '' stdSimplexBoundary 2 ∧
+      C' = (C \ (A₁ \ ((D₂ ∩ N) ∪ Δ₁))) ∪ Δ₁ ∧
+      C ∩ B.space = (D₂ ∩ N) ∪ A₁ ∧
+      C' ∩ B.space = (D₂ ∩ N) ∪ Δ₁ ∧
+      C' \ B.space = C \ B.space := by
+  classical
+  have hboundary : (boundaryComplex 3 K).space = ∅ := by
+    change (⋃ t ∈ (boundaryComplex 3 K).faces, convexHull ℝ (t : Set E)) = ∅
+    rw [hK.boundaryComplex_faces_eq_empty]
+    simp
+  have hUdis : Disjoint U (boundaryComplex 3 K).space := by
+    rw [hboundary]
+    exact disjoint_empty U
+  have hKb : IsCombinatorialManifoldWithBoundary 3 K :=
+    hK.isCombinatorialManifoldWithBoundary
+  exact hKb.exists_surface_split_local_traces hΔ hr₁ hr₂ hΔintD₁ hΔintD₂ hΔD₁ hΔD₂
+    hD₁D₂ hD₁K hD₂K hD₁C hD₂C hlocal hU hUdis
 
 end DifferentialGeometry.Topology.PiecewiseLinear

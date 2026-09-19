@@ -218,4 +218,83 @@ theorem IsSphericalShell.exists_connected_separating_surface_bettiOne_min
   intro M hMfin hM hMc hMsep
   exact hmin M hMfin hM hMc (subset_univ _) hMsep
 
+theorem IsSphericalShell.image_of_isEmbedding {F : Type*} [TopologicalSpace F]
+    (h : IsSphericalShell X B₀ B₁) {f : E → F} (hf : _root_.Topology.IsEmbedding f) :
+    IsSphericalShell (f '' X) (f '' B₀) (f '' B₁) := by
+  obtain ⟨φ, rfl, rfl⟩ := h
+  have heq (A : Set (SphereTwo × unitInterval)) :
+      f '' (Subtype.val '' (φ '' A)) =
+        Subtype.val '' ((φ.trans (hf.homeomorphImage X)) '' A) := by
+    ext y
+    constructor
+    · rintro ⟨x, ⟨x', ⟨p, hp, rfl⟩, rfl⟩, rfl⟩
+      exact ⟨_, ⟨p, hp, rfl⟩, rfl⟩
+    · rintro ⟨y', ⟨p, hp, rfl⟩, rfl⟩
+      exact ⟨_, ⟨_, ⟨p, hp, rfl⟩, rfl⟩, rfl⟩
+  exact ⟨φ.trans (hf.homeomorphImage X), heq _, heq _⟩
+
+theorem isSphericalShell_dist_band (q : EuclideanSpace ℝ (Fin 3))
+    {a b : ℝ} (ha : 0 < a) (hab : a < b) :
+    IsSphericalShell {x : EuclideanSpace ℝ (Fin 3) | dist x q ∈ Icc a b}
+      (Metric.sphere q a) (Metric.sphere q b) := by
+  let e := Homeomorph.addRight q
+  have h := (isSphericalShell_norm_band ha hab).image_of_isEmbedding e.isEmbedding
+  have hX : e '' {x : EuclideanSpace ℝ (Fin 3) | ‖x‖ ∈ Icc a b} =
+      {x | dist x q ∈ Icc a b} := by
+    rw [e.image_eq_preimage_symm]
+    ext x
+    change ‖x - q‖ ∈ Icc a b ↔ dist x q ∈ Icc a b
+    rw [dist_eq_norm]
+  have hS (r : ℝ) : e '' Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) r =
+      Metric.sphere q r := by
+    rw [e.image_eq_preimage_symm]
+    ext x
+    change dist (x - q) 0 = r ↔ dist x q = r
+    rw [dist_zero_right, dist_eq_norm]
+  rwa [hX, hS a, hS b] at h
+
+theorem exists_isSphericalShell_separating_frontiers
+    {B N : Set (EuclideanSpace ℝ (Fin 3))} (hN : IsCompact N)
+    (hBN : B ⊆ N) (hB : (interior B).Nonempty) :
+    ∃ (q : EuclideanSpace ℝ (Fin 3)) (a b : ℝ), 0 < a ∧ a < b ∧
+      let X := {x : EuclideanSpace ℝ (Fin 3) | dist x q ∈ Icc a b}
+      IsSphericalShell X (Metric.sphere q a) (Metric.sphere q b) ∧
+      Metric.closedBall q a ⊆ interior B ∧ N ⊆ Metric.ball q b ∧
+      N \ interior B ⊆ interior X ∧ frontier N ⊆ interior X ∧ frontier B ⊆ interior X ∧
+      Separates (frontier N) (Metric.sphere q a) (Metric.sphere q b) ∧
+      Separates (frontier B) (Metric.sphere q a) (Metric.sphere q b) := by
+  obtain ⟨q, hq⟩ := hB
+  obtain ⟨δ, hδ, hδsub⟩ := Metric.mem_nhds_iff.mp (isOpen_interior.mem_nhds hq)
+  let a := δ / 2
+  have ha : 0 < a := by dsimp [a]; positivity
+  have haδ : a < δ := by dsimp [a]; linarith
+  have hsmall : Metric.closedBall q a ⊆ interior B :=
+    (Metric.closedBall_subset_ball haδ).trans hδsub
+  obtain ⟨b, hab, hlarge⟩ := hN.isBounded.subset_ball_lt a q
+  let X := {x : EuclideanSpace ℝ (Fin 3) | dist x q ∈ Icc a b}
+  have hd : Continuous (fun x : EuclideanSpace ℝ (Fin 3) => dist x q) :=
+    continuous_id.dist continuous_const
+  have hband : {x : EuclideanSpace ℝ (Fin 3) | a < dist x q ∧ dist x q < b} ⊆
+      interior X := interior_maximal (fun _ hx => ⟨hx.1.le, hx.2.le⟩)
+        ((isOpen_lt continuous_const hd).inter (isOpen_lt hd continuous_const))
+  have hremaining : N \ interior B ⊆ interior X := by
+    intro x hx
+    exact hband ⟨lt_of_not_ge (fun h => hx.2 (hsmall h)), hlarge hx.1⟩
+  have hNfront : frontier N ⊆ interior X := by
+    intro x hx
+    exact hremaining ⟨hN.isClosed.closure_eq ▸ hx.1,
+      fun hxB => hx.2 (interior_mono hBN hxB)⟩
+  have hBfront : frontier B ⊆ interior X := by
+    intro x hx
+    exact hremaining ⟨closure_minimal hBN hN.isClosed hx.1, hx.2⟩
+  have hinner : Metric.sphere q a ⊆ interior B :=
+    Metric.sphere_subset_closedBall.trans hsmall
+  have houter : Metric.sphere q b ⊆ interior Nᶜ := by
+    rw [hN.isClosed.isOpen_compl.interior_eq]
+    intro x hx hxN
+    exact (hlarge hxN).ne hx
+  exact ⟨q, a, b, ha, hab, isSphericalShell_dist_band q ha hab, hsmall, hlarge,
+    hremaining, hNfront, hBfront, separates_frontier (hinner.trans (interior_mono hBN)) houter,
+    separates_frontier hinner (houter.trans (interior_mono (compl_subset_compl.mpr hBN)))⟩
+
 end DifferentialGeometry.Topology.PiecewiseLinear

@@ -8,6 +8,7 @@ import DifferentialGeometry.Topology.Connected.PhragmenBrouwer
 import DifferentialGeometry.Topology.PiecewiseLinear.NullhomotopyNeighborhood
 import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceSimplyConnected
 import DifferentialGeometry.Topology.PiecewiseLinear.AnnulusCapping
+import DifferentialGeometry.Topology.Homotopy.FreeLoopNullhomotopy
 
 /-!
 # Compression and essential loops on closed surfaces
@@ -49,6 +50,66 @@ theorem IsCombinatorialManifold.exists_neighborhood_nontrivial_fundamentalGroup_
   refine ⟨interior_subset (hLN hy), ?_⟩
   rw [← frontier_space_eq_boundaryComplex_space_of_finrank hdim N hN]
   exact fun hfront => hfront.2 (hLN hy)
+
+theorem IsCombinatorialManifold.exists_essential_singular_disk_in_neighborhood
+    {n : ℕ} (hdim : Module.finrank ℝ E = n + 1)
+    (L : Geometry.SimplicialComplex ℝ E) [Finite L.faces]
+    (hL : IsCombinatorialManifold 2 L) (hconn : IsConnected L.space)
+    (hnot : ¬ IsPLSphere 2 L.space) {U : Set E} (hU : IsOpen U)
+    (hLU : L.space ⊆ U) [SimplyConnectedSpace U] (x : L.space) :
+    ∃ p : Path x x, Path.Homotopic.Quotient.mk p ≠ (1 : FundamentalGroup L.space x) ∧
+      ∃ N : Geometry.SimplicialComplex ℝ E, N.faces.Finite ∧
+        IsCombinatorialManifoldWithBoundary (n + 1) N ∧
+        L.space ⊆ interior N.space ∧ N.space ⊆ U ∧
+        (∀ hLN : L.space ⊆ N.space,
+          FundamentalGroup.map (⟨Set.inclusion hLN, continuous_inclusion hLN⟩ :
+            C(L.space, N.space)) x (Path.Homotopic.Quotient.mk p) = 1) ∧
+        ∃ (P : Set (EuclideanSpace ℝ (Fin 2))) (f : EuclideanSpace ℝ (Fin 2) → E),
+          IsPLBall 2 P ∧ IsPiecewiseAffineOn f P ∧ MapsTo f P (interior N.space) ∧
+          ∃ (b : C(frontier P, L.space)) (e : loopCircle ≃ₜ frontier P),
+            (∀ z : frontier P, f z = (b z : E)) ∧
+            (pathToCircle p).Homotopic (b.comp (e : C(loopCircle, frontier P))) ∧
+            ¬ b.Nullhomotopic := by
+  obtain ⟨g, hg, -⟩ := hL.exists_neighborhood_nontrivial_fundamentalGroup_kernel
+    hdim L hconn hnot hU hLU x
+  obtain ⟨p, rfl⟩ := Path.Homotopic.Quotient.mk_surjective g
+  let a : (ℝ × ℝ) ≃L[ℝ] EuclideanSpace ℝ (Fin 2) :=
+    (ContinuousLinearEquiv.finTwoArrow ℝ ℝ).symm.trans (EuclideanSpace.equiv (Fin 2) ℝ).symm
+  let C := Icc (0 : ℝ) 1 ×ˢ Icc (0 : ℝ) 1
+  have ha : IsPLHomeomorphOn a C (a '' C) :=
+    isPLHomeomorphOn_of_isPiecewiseAffineOn_of_bijOn isPLBall_unit_square.isPolyhedron
+      ((isPiecewiseAffineOn_of_affine a.toLinearMap.toAffineMap isOpen_univ).mono_of_isPolyhedron
+        isPLBall_unit_square.isPolyhedron (subset_univ _)) a.injective.injOn.bijOn_image
+  have hP : IsPLBall 2 (a '' C) := isPLBall_unit_square.of_isPLHomeomorphOn ha
+  obtain ⟨N, hNfin, hN, hLN, hNU, f, hf, hfN, b, e, htrace, hhom⟩ :=
+    exists_neighborhood_isPiecewiseAffineOn_filling hdim L hU hLU hP (pathToCircle p)
+  have hnon : ¬ b.Nullhomotopic := by
+    intro hb
+    have hnull := FreeLoop.nullhomotopic_of_homotopic hhom.symm (hb.comp_left
+      (e : C(loopCircle, frontier (a '' C))))
+    exact hg (Path.Homotopic.Quotient.eq.mpr ((pathToCircle_nullhomotopic_iff p).mp hnull))
+  refine ⟨p, hg, N, hNfin, hN, hLN, hNU, ?_, a '' C, f, hP, hf, hfN,
+    b, e, htrace, hhom, hnon⟩
+  intro hLN'
+  let i : C(L.space, N.space) := ⟨Set.inclusion hLN', continuous_inclusion hLN'⟩
+  let F : C(a '' C, N.space) :=
+    ⟨fun z => ⟨f z, interior_subset (hfN z.property)⟩, hf.continuousOn.domRestrict.subtype_mk _⟩
+  let j : C(frontier (a '' C), a '' C) :=
+    ⟨Set.inclusion hP.isPolyhedron.isClosed.frontier_subset, continuous_inclusion _⟩
+  have hboundary : i.comp b = F.comp j := by
+    ext z
+    exact (htrace z).symm
+  let _ := hP.contractibleSpace
+  have hb : (i.comp b).Nullhomotopic := by
+    rw [hboundary]
+    exact ((id_nullhomotopic (a '' C)).comp_right F).comp_left j
+  have hnull := FreeLoop.nullhomotopic_of_homotopic
+    ((ContinuousMap.Homotopic.refl i).comp hhom).symm
+    (by simpa only [ContinuousMap.comp_assoc] using
+      (hb.comp_left (e : C(loopCircle, frontier (a '' C)))))
+  rw [← pathToCircle_natural i x p] at hnull
+  exact Path.Homotopic.Quotient.eq.mpr
+    ((pathToCircle_nullhomotopic_iff (p.map i.continuous)).mp hnull)
 
 open Classical in
 theorem IsCombinatorialManifold.exists_separating_surface_bettiOne_lt_of_annulus_capping

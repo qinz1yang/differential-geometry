@@ -1,7 +1,14 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.FaceLink
 import DifferentialGeometry.Topology.PiecewiseLinear.Mesh
 import DifferentialGeometry.Topology.PiecewiseLinear.RadialProjection
 import DifferentialGeometry.Topology.PiecewiseLinear.StarAvoiding
+
+/-! PL comparison of finite upper links and geometric links. -/
 
 open Set
 
