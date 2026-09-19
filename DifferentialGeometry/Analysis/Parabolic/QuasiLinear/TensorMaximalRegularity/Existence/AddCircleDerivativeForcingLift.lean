@@ -1508,6 +1508,75 @@ theorem exists_parameterDerivative_forcing_lift_of_principal_norm_lt_one
     unfold timeH1ToH0 at ht
     with_reducible_and_instances exact ht
 
+section
+
+open private tendsto_iteratedParameterDerivativeDuhamelForcing from
+DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Duhamel.AddCircleIteratedDifferentiation
+
+open AddCircle (parameterSecondDerivativeHs parameterPrincipalOperatorHsPi
+  parameterPrincipalOperatorH0Pi)
+
+private theorem exists_tendsto_iteratedParameterDerivative_forcing_lift
+    {X ι : Type*} [Fintype ι] {l : Filter X}
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) (k : ℕ)
+    {T : ℝ} (hT : 0 < T) (x₀ : X)
+    (F : X → timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 ((k + 2 : ℕ) : ℝ))) T)
+    (f : X → PiLp 2 (fun _ : ι => TensorHs g 0 0 (((k + 3 : ℕ) : ℝ) + 2)))
+    (W : X → ℝ → PiLp 2 (fun _ : ι => TensorHs g 0 0 ((k + 3 : ℕ) : ℝ)))
+    (hW : ∀ x, ContinuousOn (W x) (Icc 0 T))
+    (a : X → timeL2 (TensorHs g 0 0 ((k + 3 : ℕ) : ℝ)) T)
+    (b : X → timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 ((k + 3 : ℕ) : ℝ))) T)
+    (aTop : X → Lp (TensorHs g 0 0 ((1 : ℕ) : ℝ)) ∞ (timeMeasure T))
+    (Ch Cl : X → ℝ≥0)
+    (hF : Tendsto F l (𝓝 (F x₀))) (hf : Tendsto f l (𝓝 (f x₀)))
+    (ha : Tendsto a l (𝓝 (a x₀))) (hb : Tendsto b l (𝓝 (b x₀)))
+    (hWlim : TendstoUniformlyOn W (W x₀) l (Icc 0 T))
+    (haToplim : Tendsto aTop l (𝓝 (aTop x₀))) :
+    let J := tensorHsInclusion (g := g) (r := 0) (s := 0)
+      (by exact_mod_cast (show k + 2 ≤ k + 3 by omega) :
+        ((k + 2 : ℕ) : ℝ) ≤ ((k + 3 : ℕ) : ℝ))
+    let A := tensorHsInclusion (g := g) (r := 0) (s := 0)
+      (by exact_mod_cast (show 1 ≤ k + 3 by omega) : ((1 : ℕ) : ℝ) ≤ ((k + 3 : ℕ) : ℝ))
+    let P := tensorHsInclusion (g := g) (r := 0) (s := 0)
+      (by push_cast; linarith :
+        ((k + 2 : ℕ) : ℝ) + 2 ≤ ((k + 3 : ℕ) : ℝ) + 2)
+    let K := tensorHsInclusion (g := g) (r := 0) (s := 0)
+      (by push_cast; linarith : ((k + 3 : ℕ) : ℝ) ≤ ((k + 2 : ℕ) : ℝ) + 2)
+    let Z := tensorHsInclusion (g := g) (r := 0) (s := 0)
+      (by norm_num : ((0 : ℕ) : ℝ) ≤ ((1 : ℕ) : ℝ))
+    let U := fun x => maximalRegularityDuhamelVectorField hT 0 (F x)
+    (∀ x, ∀ᵐ t ∂timeMeasure T, ∀ i, W x t i = K (U x t i)) →
+    (∀ x, ∀ᵐ t ∂timeMeasure T, ∀ i,
+      tensorScaleLaplacian (g := g) (r := 0) (s := 0) ((k + 2 : ℕ) : ℝ) (U x t i) +
+        F x t i = scalarHsMul g (k + 2) (by simp) (J (a x t))
+          (parameterSecondDerivativeHs g (k + 2) (P (f x i) + U x t i)) + J (b x t i)) →
+    (∀ x, aTop x =ᵐ[timeMeasure T] (fun t => A (a x t))) →
+    (∀ x, ∀ᵐ t ∂timeMeasure T,
+      ‖parameterPrincipalOperatorHsPi (ι := ι) g (A (a x t))‖ ≤ Ch x) →
+    (∀ x, ∀ᵐ t ∂timeMeasure T,
+      ‖parameterPrincipalOperatorH0Pi (ι := ι) g (A (a x t))‖ ≤ Cl x) →
+    (∀ x, (Ch x : ℝ) < 1) → (∀ x, (Cl x : ℝ) < 1) →
+    ∃ FH : X → timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 ((1 : ℕ) : ℝ))) T,
+      (∀ x, iteratedParameterDerivativeDuhamelForcing g 0 (k + 2) hT (F x) =
+        (ContinuousLinearMap.piLpMap 2 (fun _ : ι => Z)).compLpL
+          2 (timeMeasure T) (FH x)) ∧
+      Tendsto FH l (𝓝 (FH x₀)) := by
+  intro J A P K Z U hWU hPDE haTop hCh hCl hChlt hCllt
+  classical
+  have hex (x : X) := exists_iteratedParameterDerivative_forcing_lift_of_principal_norm_lt_one
+    g k hT (F x) (f x) (W x) (hW x) (a x) (b x)
+    (fun t => ContinuousLinearMap.piLpMap 2 (fun _ : ι => J) (b x t))
+    (Ch x) (Cl x) (Eventually.of_forall fun _ _ => rfl)
+    (hWU x) (hPDE x) (hCh x) (hCl x) (hChlt x) (hCllt x)
+  choose FH hFH using hex
+  refine ⟨FH, hFH, ?_⟩
+  apply tendsto_iteratedParameterDerivative_forcing_lift
+    g k hT x₀ F f W hW a b FH aTop Ch Cl hf ha hb hWlim haToplim
+    hWU hPDE haTop hCh hCl (hChlt x₀) (hCllt x₀) hFH
+  exact tendsto_iteratedParameterDerivativeDuhamelForcing g 0 (k + 2) hT (F x₀) F hF
+
+end
+
 end DifferentialGeometry.Analysis.Parabolic.QuasiLinear
 
 end

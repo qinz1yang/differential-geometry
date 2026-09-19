@@ -1,3 +1,4 @@
+import Mathlib.MeasureTheory.Measure.OpenPos
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Solution.RepresentativeDependence
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Scalar.AddCircleIteratedDerivativeNorm
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Scalar.AddCircleIteratedDerivativeLift
@@ -946,6 +947,516 @@ theorem tendsto_timeL2_duhamel_lifts_of_tendsto_forcing
     have hlimit : D V₀ = maximalRegularityDuhamelVectorField hT 0 FH₀ := hD₀
     exact hlimit.symm ▸ hbase.congr' (Eventually.of_forall fun p => (hD p).symm)
   exact tendsto_iterated_graph (ι := ι) (P := P) (l := l) g m T V₀ V hprojection hDF
+
+section
+
+open Set
+
+private theorem tendsto_duhamel_successor_field
+    {ι X : Type*} [Fintype ι] {l : Filter X}
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) (m : ℕ)
+    {T : ℝ} (hT : 0 < T) (x₀ : X)
+    (F : X → timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 (m : ℝ))) T)
+    (FH : X → timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 (1 : ℝ))) T)
+    (V : X → timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 ((m : ℝ) + 3))) T)
+    (hF : Tendsto F l (𝓝 (F x₀)))
+    (hFH : Tendsto FH l (𝓝 (FH x₀)))
+    (hlift : ∀ x, iteratedParameterDerivativeDuhamelForcing g 0 m hT (F x) =
+      (ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion
+        (g := g) (r := 0) (s := 0)
+          (by norm_num : ((0 : ℕ) : ℝ) ≤ (1 : ℝ)))).compLpL
+            2 (timeMeasure T) (FH x)) :
+    let R := ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion
+      (g := g) (r := 0) (s := 0)
+        (by linarith : (m : ℝ) + 2 ≤ (m : ℝ) + 3))
+    (∀ x, R.compLpL 2 (timeMeasure T) (V x) =
+      maximalRegularityDuhamelVectorField hT 0 (F x)) →
+    Tendsto V l (𝓝 (V x₀)) := by
+  intro R hV
+  let S := maximalRegularityVectorFieldL
+    (ι := ι) (g := g) (r := 0) (s := 0) (m : ℝ) hT.le
+  have hS : Tendsto (fun x => S (F x)) l (𝓝 (S (F x₀))) :=
+    (S.continuous.tendsto (F x₀)).comp hF
+  have heq (f : timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 (m : ℝ))) T) :
+      S f = maximalRegularityDuhamelVectorField hT 0 f :=
+    maximalRegularityVectorFieldL_eq_duhamel hT f
+  have hU : Tendsto (fun x => maximalRegularityDuhamelVectorField hT 0 (F x)) l
+      (𝓝 (maximalRegularityDuhamelVectorField hT 0 (F x₀))) := by
+    simpa only [heq] using hS
+  have hprojection : Tendsto (fun x => R.compLpL 2 (timeMeasure T) (V x)) l
+      (𝓝 (R.compLpL 2 (timeMeasure T) (V x₀))) := by
+    simpa only [hV] using hU
+  apply tendsto_timeL2_duhamel_lifts_of_tendsto_forcing
+    (ι := ι) (P := X) (l := l) g m hT (F x₀) F (FH x₀) FH (V x₀) V
+      (hlift x₀) hlift (hFH := hFH)
+  · exact hV x₀
+  · exact hV
+  · exact hprojection
+
+private theorem tendstoUniformlyOn_duhamel_successor_representatives
+    {ι X : Type*} [Fintype ι] {l : Filter X}
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) (m : ℕ)
+    {T : ℝ} (hT : 0 < T) (x₀ : X)
+    (F : X → timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 (m : ℝ))) T)
+    (FH : X → timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 (1 : ℝ))) T)
+    (W : X → ℝ → PiLp 2 (fun _ : ι => TensorHs g 0 0 ((m : ℝ) + 2)))
+    (hW : ∀ x, ContinuousOn (W x) (Icc 0 T))
+    (hWpin : ∀ x, W x =ᵐ[timeMeasure T]
+      maximalRegularityDuhamelVectorField hT 0 (F x))
+    (hF : Tendsto F l (𝓝 (F x₀)))
+    (hFH : Tendsto FH l (𝓝 (FH x₀)))
+    (hlift : ∀ x, iteratedParameterDerivativeDuhamelForcing g 0 m hT (F x) =
+      (ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion
+        (g := g) (r := 0) (s := 0)
+          (by norm_num : ((0 : ℕ) : ℝ) ≤ (1 : ℝ)))).compLpL
+            2 (timeMeasure T) (FH x)) :
+    TendstoUniformlyOn W (W x₀) l (Icc 0 T) := by
+  let J := ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion
+    (g := g) (r := 0) (s := 0)
+      (by linarith : (m : ℝ) + 1 ≤ (m : ℝ) + 2))
+  have hJpin (x : X) : (fun t => J (W x t)) =ᵐ[timeMeasure T]
+      fun t => J (maximalRegularityDuhamelVectorField hT 0 (F x) t) := by
+    filter_upwards [hWpin x] with t ht
+    exact congrArg J ht
+  have hJ : TendstoUniformlyOn (fun x t => J (W x t))
+      (fun t => J (W x₀ t)) l (Icc 0 T) :=
+    tendstoUniformlyOn_continuousOn_duhamel_representatives hT
+      (F x₀) F (fun t => J (W x₀ t)) (fun x t => J (W x t))
+      (J.continuous.comp_continuousOn (hW x₀))
+      (fun x => J.continuous.comp_continuousOn (hW x))
+      (hJpin x₀) hJpin hF
+  exact tendstoUniformlyOn_duhamel_representatives_of_iterated_forcing_lift
+    g m hT (F x₀) F (FH x₀) FH (W x₀) W (hW x₀) hW
+    (hlift x₀) hlift (hWpin x₀) hWpin hJ hFH
+
+private theorem exists_tendsto_duhamel_successor_states
+    {ι X : Type*} [Fintype ι] {l : Filter X}
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) (m : ℕ)
+    {T : ℝ} (hT : 0 < T) (x₀ : X)
+    (F : X → timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 (m : ℝ))) T)
+    (FH : X → timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 (1 : ℝ))) T)
+    (hF : Tendsto F l (𝓝 (F x₀)))
+    (hFH : Tendsto FH l (𝓝 (FH x₀)))
+    (hlift : ∀ x, iteratedParameterDerivativeDuhamelForcing g 0 m hT (F x) =
+      (ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion
+        (g := g) (r := 0) (s := 0)
+          (by norm_num : ((0 : ℕ) : ℝ) ≤ (1 : ℝ)))).compLpL
+            2 (timeMeasure T) (FH x)) :
+    let R := ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion
+      (g := g) (r := 0) (s := 0)
+        (by linarith : (m : ℝ) + 2 ≤ (m : ℝ) + 3))
+    ∃ V : X → timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 ((m : ℝ) + 3))) T,
+      ∃ W : X → ℝ → PiLp 2 (fun _ : ι => TensorHs g 0 0 ((m : ℝ) + 2)),
+        (∀ x, R.compLpL 2 (timeMeasure T) (V x) =
+          maximalRegularityDuhamelVectorField hT 0 (F x)) ∧
+        (∀ x, ContinuousOn (W x) (Icc 0 T)) ∧
+        (∀ x t, t ∈ Icc 0 T →
+          (ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion
+            (g := g) (r := 0) (s := 0)
+              (by linarith : (m : ℝ) ≤ (m : ℝ) + 2))) (W x t) =
+            (maximalRegularityDuhamelVectorMap hT 0 (F x)).toFun t) ∧
+        (∀ x, W x =ᵐ[timeMeasure T]
+          maximalRegularityDuhamelVectorField hT 0 (F x)) ∧
+        (∀ x, W x =ᵐ[timeMeasure T] fun t => R (V x t)) ∧
+        Tendsto V l (𝓝 (V x₀)) ∧
+        TendstoUniformlyOn W (W x₀) l (Icc 0 T) := by
+  classical
+  intro R
+  choose V hV using fun x =>
+    exists_timeL2_tensorHsInclusion_eq_of_iteratedParameterDerivative_forcing_lift
+      g m hT (F x) (FH x) (hlift x)
+  choose W hW hWmap hWpin using fun x =>
+    exists_continuousOn_representative_of_iteratedParameterDerivative_forcing_lift
+      g m hT (F x) (FH x) (hlift x)
+  change ∀ x, R.compLpL 2 (timeMeasure T) (V x) =
+    maximalRegularityDuhamelVectorField hT 0 (F x) at hV
+  refine ⟨V, W, hV, hW, hWmap, hWpin, ?_, ?_, ?_⟩
+  · intro x
+    have hRV : maximalRegularityDuhamelVectorField hT 0 (F x) =ᵐ[timeMeasure T]
+        fun t => R (V x t) := by
+      rw [← hV x]
+      exact R.coeFn_compLpL (p := 2) (μ := timeMeasure T) (V x)
+    exact (hWpin x).trans hRV
+  · exact tendsto_duhamel_successor_field g m hT x₀ F FH V hF hFH hlift hV
+  · exact tendstoUniformlyOn_duhamel_successor_representatives
+      g m hT x₀ F FH W hW hWpin hF hFH hlift
+
+private theorem duhamel_successor_representative_projection
+    {ι : Type*} [Fintype ι]
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) (k : ℕ)
+    {T : ℝ} (hT : 0 < T)
+    (F : timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 ((k + 2 : ℕ) : ℝ))) T)
+    (W : ℝ → PiLp 2 (fun _ : ι => TensorHs g 0 0 ((k + 3 : ℕ) : ℝ)))
+    (Wnew : ℝ → PiLp 2 (fun _ : ι => TensorHs g 0 0 (((k + 2 : ℕ) : ℝ) + 2)))
+    (hW : ContinuousOn W (Icc 0 T)) (hWnew : ContinuousOn Wnew (Icc 0 T))
+    (hWnewF : Wnew =ᵐ[timeMeasure T] maximalRegularityDuhamelVectorField hT 0 F) :
+    let K := tensorHsInclusion (g := g) (r := 0) (s := 0)
+      (by push_cast; linarith : ((k + 3 : ℕ) : ℝ) ≤ ((k + 2 : ℕ) : ℝ) + 2)
+    (∀ᵐ t ∂timeMeasure T, ∀ i,
+      W t i = K (maximalRegularityDuhamelVectorField hT 0 F t i)) →
+    ∀ t ∈ Icc 0 T, ContinuousLinearMap.piLpMap 2 (fun _ : ι => K) (Wnew t) = W t := by
+  intro K hWF
+  let P := ContinuousLinearMap.piLpMap 2 (fun _ : ι => K)
+  apply Measure.eqOn_Icc_of_ae_eq (μ := (volume : Measure ℝ)) (ne_of_lt hT)
+    _ (P.continuous.comp_continuousOn hWnew) hW
+  filter_upwards [hWnewF, hWF] with t ht hwt
+  apply PiLp.ext
+  intro i
+  change K (Wnew t i) = W t i
+  rw [ht]
+  exact (hwt i).symm
+
+end
+
+section
+
+attribute [local instance] vectorTensorHsNormedSpace
+
+private theorem compLpL_piLp_tensorHsInclusion_trans
+    {ι : Type*} [Fintype ι]
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ)))
+    {a b c T : ℝ} (hab : a ≤ b) (hbc : b ≤ c)
+    (F : timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 c)) T) :
+    let A := ContinuousLinearMap.piLpMap (𝕜 := ℝ)
+      (E := fun _ : ι => TensorHs g 0 0 c)
+      (F := fun _ : ι => TensorHs g 0 0 a) 2 (fun _ : ι => tensorHsInclusion
+      (g := g) (r := 0) (s := 0) (hab.trans hbc))
+    let B := ContinuousLinearMap.piLpMap (𝕜 := ℝ)
+      (E := fun _ : ι => TensorHs g 0 0 b)
+      (F := fun _ : ι => TensorHs g 0 0 a) 2 (fun _ : ι => tensorHsInclusion
+      (g := g) (r := 0) (s := 0) hab)
+    let C := ContinuousLinearMap.piLpMap (𝕜 := ℝ)
+      (E := fun _ : ι => TensorHs g 0 0 c)
+      (F := fun _ : ι => TensorHs g 0 0 b) 2 (fun _ : ι => tensorHsInclusion
+      (g := g) (r := 0) (s := 0) hbc)
+    A.compLpL 2 (timeMeasure T) F =
+      B.compLpL 2 (timeMeasure T) (C.compLpL 2 (timeMeasure T) F) := by
+  intro A B C
+  apply Lp.ext
+  have hA := A.coeFn_compLpL (p := 2) (μ := timeMeasure T) F
+  have hB := B.coeFn_compLpL (p := 2) (μ := timeMeasure T)
+    (C.compLpL 2 (timeMeasure T) F)
+  have hC := C.coeFn_compLpL (p := 2) (μ := timeMeasure T) F
+  filter_upwards [hA, hB, hC] with t ha hb hc
+  rw [ha, hb, hc]
+  apply PiLp.ext
+  intro i
+  apply TensorHs.ext
+  rfl
+
+private theorem compLpL_tensorHsInclusion_nat_one
+    {ι : Type*} [Fintype ι]
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) (T : ℝ)
+    (F : timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 ((1 : ℕ) : ℝ))) T) :
+    let N := ContinuousLinearMap.piLpMap (𝕜 := ℝ)
+      (E := fun _ : ι => TensorHs g 0 0 ((1 : ℕ) : ℝ))
+      (F := fun _ : ι => TensorHs g 0 0 (1 : ℝ)) 2 (fun _ : ι => tensorHsInclusion
+      (g := g) (r := 0) (s := 0) (by norm_num : (1 : ℝ) ≤ ((1 : ℕ) : ℝ)))
+    let ZN := ContinuousLinearMap.piLpMap (𝕜 := ℝ)
+      (E := fun _ : ι => TensorHs g 0 0 ((1 : ℕ) : ℝ))
+      (F := fun _ : ι => TensorHs g 0 0 ((0 : ℕ) : ℝ)) 2 (fun _ : ι => tensorHsInclusion
+      (g := g) (r := 0) (s := 0) (by norm_num : ((0 : ℕ) : ℝ) ≤ ((1 : ℕ) : ℝ)))
+    let ZR := ContinuousLinearMap.piLpMap (𝕜 := ℝ)
+      (E := fun _ : ι => TensorHs g 0 0 (1 : ℝ))
+      (F := fun _ : ι => TensorHs g 0 0 ((0 : ℕ) : ℝ)) 2 (fun _ : ι => tensorHsInclusion
+      (g := g) (r := 0) (s := 0) (by norm_num : ((0 : ℕ) : ℝ) ≤ (1 : ℝ)))
+    ZN.compLpL 2 (timeMeasure T) F =
+      ZR.compLpL 2 (timeMeasure T) (N.compLpL 2 (timeMeasure T) F) := by
+  intro N ZN ZR
+  exact compLpL_piLp_tensorHsInclusion_trans g
+    (by norm_num : ((0 : ℕ) : ℝ) ≤ (1 : ℝ))
+    (by norm_num : (1 : ℝ) ≤ ((1 : ℕ) : ℝ)) F
+
+end
+
+section
+
+
+private theorem exists_tendsto_duhamel_successor_states_nat
+    {ι X : Type*} [Fintype ι] {l : Filter X}
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) (m : ℕ)
+    {T : ℝ} (hT : 0 < T) (x₀ : X)
+    (F : X → timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 (m : ℝ))) T)
+    (FH : X → timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 ((1 : ℕ) : ℝ))) T)
+    (hF : Tendsto F l (𝓝 (F x₀)))
+    (hFH : Tendsto FH l (𝓝 (FH x₀)))
+    (hlift : ∀ x, iteratedParameterDerivativeDuhamelForcing g 0 m hT (F x) =
+      (ContinuousLinearMap.piLpMap (𝕜 := ℝ)
+        (E := fun _ : ι => TensorHs g 0 0 ((1 : ℕ) : ℝ))
+        (F := fun _ : ι => TensorHs g 0 0 ((0 : ℕ) : ℝ)) 2 (fun _ : ι => tensorHsInclusion
+        (g := g) (r := 0) (s := 0)
+          (by norm_num : ((0 : ℕ) : ℝ) ≤ ((1 : ℕ) : ℝ)))).compLpL
+            2 (timeMeasure T) (FH x)) :
+    let R := ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion
+      (g := g) (r := 0) (s := 0)
+        (by linarith : (m : ℝ) + 2 ≤ (m : ℝ) + 3))
+    ∃ V : X → timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 ((m : ℝ) + 3))) T,
+      ∃ W : X → ℝ → PiLp 2 (fun _ : ι => TensorHs g 0 0 ((m : ℝ) + 2)),
+        (∀ x, R.compLpL 2 (timeMeasure T) (V x) =
+          maximalRegularityDuhamelVectorField hT 0 (F x)) ∧
+        (∀ x, ContinuousOn (W x) (Icc 0 T)) ∧
+        (∀ x t, t ∈ Icc 0 T →
+          (ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion
+            (g := g) (r := 0) (s := 0)
+              (by linarith : (m : ℝ) ≤ (m : ℝ) + 2))) (W x t) =
+            (maximalRegularityDuhamelVectorMap hT 0 (F x)).toFun t) ∧
+        (∀ x, W x =ᵐ[timeMeasure T]
+          maximalRegularityDuhamelVectorField hT 0 (F x)) ∧
+        (∀ x, W x =ᵐ[timeMeasure T] fun t => R (V x t)) ∧
+        Tendsto V l (𝓝 (V x₀)) ∧
+        TendstoUniformlyOn W (W x₀) l (Icc 0 T) := by
+  let N := ContinuousLinearMap.piLpMap (𝕜 := ℝ)
+    (E := fun _ : ι => TensorHs g 0 0 ((1 : ℕ) : ℝ))
+    (F := fun _ : ι => TensorHs g 0 0 (1 : ℝ)) 2 (fun _ : ι => tensorHsInclusion
+    (g := g) (r := 0) (s := 0) (by norm_num : (1 : ℝ) ≤ ((1 : ℕ) : ℝ)))
+  let ZR := ContinuousLinearMap.piLpMap (𝕜 := ℝ)
+    (E := fun _ : ι => TensorHs g 0 0 (1 : ℝ))
+    (F := fun _ : ι => TensorHs g 0 0 ((0 : ℕ) : ℝ)) 2 (fun _ : ι => tensorHsInclusion
+    (g := g) (r := 0) (s := 0) (by norm_num : ((0 : ℕ) : ℝ) ≤ (1 : ℝ)))
+  let FHr := fun x => N.compLpL 2 (timeMeasure T) (FH x)
+  have hFHr : Tendsto FHr l (𝓝 (FHr x₀)) :=
+    ((N.compLpL 2 (timeMeasure T)).continuous.tendsto (FH x₀)).comp hFH
+  have hliftR (x : X) : iteratedParameterDerivativeDuhamelForcing g 0 m hT (F x) =
+      ZR.compLpL 2 (timeMeasure T) (FHr x) := by
+    rw [hlift x]
+    exact compLpL_tensorHsInclusion_nat_one g T (FH x)
+  exact exists_tendsto_duhamel_successor_states g m hT x₀ F FHr hF hFHr hliftR
+
+private theorem exists_tendsto_timeL2_intermediate_inclusion
+    {ι X : Type*} [Fintype ι] {l : Filter X}
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ)))
+    {a b c T : ℝ} (hab : a ≤ b) (hbc : b ≤ c) (x₀ : X)
+    (U : X → timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 a)) T)
+    (V : X → timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 c)) T)
+    (hVlim : Tendsto V l (𝓝 (V x₀))) :
+    let R := ContinuousLinearMap.piLpMap (𝕜 := ℝ)
+      (E := fun _ : ι => TensorHs g 0 0 c)
+      (F := fun _ : ι => TensorHs g 0 0 a) 2
+      (fun _ : ι => tensorHsInclusion (g := g) (r := 0) (s := 0) (hab.trans hbc))
+    let P := ContinuousLinearMap.piLpMap (𝕜 := ℝ)
+      (E := fun _ : ι => TensorHs g 0 0 b)
+      (F := fun _ : ι => TensorHs g 0 0 a) 2
+      (fun _ : ι => tensorHsInclusion (g := g) (r := 0) (s := 0) hab)
+    (∀ x, R.compLpL 2 (timeMeasure T) (V x) = U x) →
+    ∃ W : X → timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 b)) T,
+      (∀ x, P.compLpL 2 (timeMeasure T) (W x) = U x) ∧
+      Tendsto W l (𝓝 (W x₀)) := by
+  intro R P hV
+  let E := ContinuousLinearMap.piLpMap (𝕜 := ℝ)
+    (E := fun _ : ι => TensorHs g 0 0 c)
+    (F := fun _ : ι => TensorHs g 0 0 b) 2
+    (fun _ : ι => tensorHsInclusion (g := g) (r := 0) (s := 0) hbc)
+  refine ⟨fun x => E.compLpL 2 (timeMeasure T) (V x), ?_, ?_⟩
+  · intro x
+    exact (compLpL_piLp_tensorHsInclusion_trans g hab hbc (V x)).symm.trans (hV x)
+  · exact tendsto_compLpL E (V x₀) V hVlim
+
+end
+
+section
+
+attribute [local instance] vectorTensorHsNormedSpace
+
+private theorem exists_tendsto_normalized_duhamel_successor_states
+    {ι X : Type*} [Fintype ι] {l : Filter X}
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) (k : ℕ)
+    {T : ℝ} (hT : 0 < T) (x₀ : X)
+    (F : X → timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 ((k + 2 : ℕ) : ℝ))) T)
+    (FH : X → timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 ((1 : ℕ) : ℝ))) T)
+    (W : X → ℝ → PiLp 2 (fun _ : ι => TensorHs g 0 0 ((k + 3 : ℕ) : ℝ)))
+    (hW : ∀ x, ContinuousOn (W x) (Icc 0 T))
+    (hF : Tendsto F l (𝓝 (F x₀))) (hFH : Tendsto FH l (𝓝 (FH x₀)))
+    (hlift : ∀ x, iteratedParameterDerivativeDuhamelForcing g 0 (k + 2) hT (F x) =
+      (ContinuousLinearMap.piLpMap (𝕜 := ℝ)
+        (E := fun _ : ι => TensorHs g 0 0 ((1 : ℕ) : ℝ))
+        (F := fun _ : ι => TensorHs g 0 0 ((0 : ℕ) : ℝ)) 2 (fun _ : ι => tensorHsInclusion
+        (g := g) (r := 0) (s := 0)
+          (by norm_num : ((0 : ℕ) : ℝ) ≤ ((1 : ℕ) : ℝ)))).compLpL
+            2 (timeMeasure T) (FH x)) :
+    let P := tensorHsInclusion (g := g) (r := 0) (s := 0)
+      (by push_cast; linarith : ((k + 2 : ℕ) : ℝ) + 2 ≤ ((k + 3 : ℕ) : ℝ) + 2)
+    let K := tensorHsInclusion (g := g) (r := 0) (s := 0)
+      (by push_cast; linarith : ((k + 3 : ℕ) : ℝ) ≤ ((k + 2 : ℕ) : ℝ) + 2)
+    let U := fun x => maximalRegularityDuhamelVectorField hT 0 (F x)
+    (∀ x, ∀ᵐ t ∂timeMeasure T, ∀ i, W x t i = K (U x t i)) →
+    ∃ (Vnext : X → timeL2
+        (PiLp 2 (fun _ : ι => TensorHs g 0 0 (((k + 3 : ℕ) : ℝ) + 2))) T)
+      (Wnext : X → ℝ → PiLp 2 (fun _ : ι => TensorHs g 0 0 (((k + 2 : ℕ) : ℝ) + 2))),
+      (∀ x, (ContinuousLinearMap.piLpMap (𝕜 := ℝ)
+        (E := fun _ : ι => TensorHs g 0 0 (((k + 3 : ℕ) : ℝ) + 2))
+        (F := fun _ : ι => TensorHs g 0 0 (((k + 2 : ℕ) : ℝ) + 2)) 2 (fun _ : ι => P)).compLpL
+        2 (timeMeasure T) (Vnext x) = U x) ∧
+      (∀ x, ContinuousOn (Wnext x) (Icc 0 T)) ∧
+      (∀ x t, t ∈ Icc 0 T →
+        ContinuousLinearMap.piLpMap (𝕜 := ℝ)
+        (E := fun _ : ι => TensorHs g 0 0 (((k + 2 : ℕ) : ℝ) + 2))
+        (F := fun _ : ι => TensorHs g 0 0 ((k + 3 : ℕ) : ℝ)) 2 (fun _ : ι => K) (Wnext x t) = W x t) ∧
+      (∀ x, Wnext x =ᵐ[timeMeasure T]
+        fun t => ContinuousLinearMap.piLpMap (𝕜 := ℝ)
+        (E := fun _ : ι => TensorHs g 0 0 (((k + 3 : ℕ) : ℝ) + 2))
+        (F := fun _ : ι => TensorHs g 0 0 (((k + 2 : ℕ) : ℝ) + 2)) 2 (fun _ : ι => P) (Vnext x t)) ∧
+      Tendsto Vnext l (𝓝 (Vnext x₀)) ∧
+      TendstoUniformlyOn Wnext (Wnext x₀) l (Icc 0 T) := by
+  intro P K U hWU
+  obtain ⟨Vraw, Wnext, hVraw, hWnext, _, hWnextU, _, hVrawlim, hWnextlim⟩ :=
+    exists_tendsto_duhamel_successor_states_nat g (k + 2) hT x₀ F FH hF hFH hlift
+  have hWproject (x : X) : ∀ t ∈ Icc 0 T,
+      ContinuousLinearMap.piLpMap (𝕜 := ℝ)
+        (E := fun _ : ι => TensorHs g 0 0 (((k + 2 : ℕ) : ℝ) + 2))
+        (F := fun _ : ι => TensorHs g 0 0 ((k + 3 : ℕ) : ℝ)) 2 (fun _ : ι => K) (Wnext x t) = W x t :=
+    duhamel_successor_representative_projection g k hT (F x) (W x) (Wnext x)
+      (hW x) (hWnext x) (hWnextU x) (hWU x)
+  obtain ⟨Vnext, hVnext, hVnextlim⟩ := exists_tendsto_timeL2_intermediate_inclusion g
+    (by push_cast; linarith :
+      ((k + 2 : ℕ) : ℝ) + 2 ≤ ((k + 3 : ℕ) : ℝ) + 2)
+    (by push_cast; linarith :
+      ((k + 3 : ℕ) : ℝ) + 2 ≤ ((k + 2 : ℕ) : ℝ) + 3) x₀ U Vraw hVrawlim hVraw
+  let PV := ContinuousLinearMap.piLpMap (𝕜 := ℝ)
+    (E := fun _ : ι => TensorHs g 0 0 (((k + 3 : ℕ) : ℝ) + 2))
+    (F := fun _ : ι => TensorHs g 0 0 (((k + 2 : ℕ) : ℝ) + 2)) 2 (fun _ : ι => P)
+  refine ⟨Vnext, Wnext, hVnext, hWnext, hWproject, ?_, hVnextlim, hWnextlim⟩
+  · intro x
+    have hv := PV.coeFn_compLpL (p := 2) (μ := timeMeasure T) (Vnext x)
+    rw [hVnext x] at hv
+    exact (hWnextU x).trans hv
+
+end
+
+section
+
+variable {ι : Type*} [Fintype ι]
+variable (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ)))
+variable {T : ℝ} (hT : 0 < T)
+
+private def firstDerivativeForcingNormalization :
+    timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 ((1 : ℕ) : ℝ))) T →L[ℝ]
+      timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 (1 : ℝ))) T :=
+  (ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion
+    (g := g) (r := 0) (s := 0)
+    (by norm_num : (1 : ℝ) ≤ ((1 : ℕ) : ℝ)))).compLpL 2 (timeMeasure T)
+
+private theorem firstDerivative_forcing_lift_normalized
+    (F FH : timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 ((1 : ℕ) : ℝ))) T)
+    (hlift : parameterDerivativeDuhamelForcing g 0 hT F =
+      (ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion
+        (g := g) (r := 0) (s := 0)
+        (by norm_num : ((0 : ℕ) : ℝ) ≤ ((1 : ℕ) : ℝ)))).compLpL 2 (timeMeasure T) FH) :
+    iteratedParameterDerivativeDuhamelForcing g 0 1 hT F =
+      (ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion
+        (g := g) (r := 0) (s := 0)
+        (by norm_num : ((0 : ℕ) : ℝ) ≤ (1 : ℝ)))).compLpL 2 (timeMeasure T)
+          (firstDerivativeForcingNormalization g FH) := by
+  rw [iteratedParameterDerivativeDuhamelForcing_one, hlift]
+  let A := ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion
+    (g := g) (r := 0) (s := 0) (by norm_num : ((0 : ℕ) : ℝ) ≤ ((1 : ℕ) : ℝ)))
+  let B := ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion
+    (g := g) (r := 0) (s := 0) (by norm_num : ((0 : ℕ) : ℝ) ≤ (1 : ℝ)))
+  let C := ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion
+    (g := g) (r := 0) (s := 0) (by norm_num : (1 : ℝ) ≤ ((1 : ℕ) : ℝ)))
+  change A.compLpL 2 (timeMeasure T) FH =
+    B.compLpL 2 (timeMeasure T) (C.compLpL 2 (timeMeasure T) FH)
+  apply Lp.ext
+  filter_upwards [A.coeFn_compLpL FH, B.coeFn_compLpL (C.compLpL 2 (timeMeasure T) FH),
+    C.coeFn_compLpL FH] with t hA hB hC
+  have hpoint : A (FH t) = B (C (FH t)) := by
+    apply PiLp.ext
+    intro i
+    simp only [A, B, C, ContinuousLinearMap.piLpMap_apply, ← tensorHsInclusion_trans_apply]
+  exact hA.trans (hpoint.trans (hB.trans (congrArg B hC)).symm)
+
+theorem exists_representatives_of_parameterDerivative_forcing_lift
+    (F FH : timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 ((1 : ℕ) : ℝ))) T)
+    (hlift : parameterDerivativeDuhamelForcing g 0 hT F =
+      (ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion
+        (g := g) (r := 0) (s := 0)
+        (by norm_num : ((0 : ℕ) : ℝ) ≤ ((1 : ℕ) : ℝ)))).compLpL 2 (timeMeasure T) FH) :
+    ∃ V : timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 (((1 : ℕ) : ℝ) + 3))) T,
+    ∃ W : ℝ → PiLp 2 (fun _ : ι => TensorHs g 0 0 (((1 : ℕ) : ℝ) + 2)),
+      (ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion
+        (g := g) (r := 0) (s := 0)
+        (by norm_num : ((1 : ℕ) : ℝ) + 2 ≤ ((1 : ℕ) : ℝ) + 3))).compLpL
+          2 (timeMeasure T) V = maximalRegularityDuhamelVectorField hT 0 F ∧
+      ContinuousOn W (Icc 0 T) ∧
+      (∀ t ∈ Icc 0 T, ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion
+        (g := g) (r := 0) (s := 0)
+        (by norm_num : ((1 : ℕ) : ℝ) ≤ ((1 : ℕ) : ℝ) + 2)) (W t) =
+          (maximalRegularityDuhamelVectorMap hT 0 F).toFun t) ∧
+      W =ᵐ[timeMeasure T] maximalRegularityDuhamelVectorField hT 0 F := by
+  let FH' := firstDerivativeForcingNormalization g FH
+  have hi := firstDerivative_forcing_lift_normalized g hT F FH hlift
+  obtain ⟨V, hV⟩ := exists_timeL2_tensorHsInclusion_eq_of_iteratedParameterDerivative_forcing_lift
+    g 1 hT F FH' hi
+  obtain ⟨W, hW, hWlo, hWae⟩ :=
+    exists_continuousOn_representative_of_iteratedParameterDerivative_forcing_lift g 1 hT F FH' hi
+  exact ⟨V, W, hV, hW, hWlo, hWae⟩
+
+theorem tendsto_duhamel_representatives_of_parameterDerivative_forcing_lift
+    {X : Type*} {l : Filter X}
+    (F₀ FH₀ : timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 ((1 : ℕ) : ℝ))) T)
+    (F FH : X → timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 ((1 : ℕ) : ℝ))) T)
+    (V₀ : timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 (((1 : ℕ) : ℝ) + 3))) T)
+    (V : X → timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 (((1 : ℕ) : ℝ) + 3))) T)
+    (W₀ : ℝ → PiLp 2 (fun _ : ι => TensorHs g 0 0 (((1 : ℕ) : ℝ) + 2)))
+    (W : X → ℝ → PiLp 2 (fun _ : ι => TensorHs g 0 0 (((1 : ℕ) : ℝ) + 2)))
+    (hlift₀ : parameterDerivativeDuhamelForcing g 0 hT F₀ =
+      (ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion
+        (g := g) (r := 0) (s := 0)
+        (by norm_num : ((0 : ℕ) : ℝ) ≤ ((1 : ℕ) : ℝ)))).compLpL 2 (timeMeasure T) FH₀)
+    (hlift : ∀ x, parameterDerivativeDuhamelForcing g 0 hT (F x) =
+      (ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion
+        (g := g) (r := 0) (s := 0)
+        (by norm_num : ((0 : ℕ) : ℝ) ≤ ((1 : ℕ) : ℝ)))).compLpL 2 (timeMeasure T) (FH x))
+    (hV₀ : (ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion
+      (g := g) (r := 0) (s := 0)
+      (by norm_num : ((1 : ℕ) : ℝ) + 2 ≤ ((1 : ℕ) : ℝ) + 3))).compLpL
+        2 (timeMeasure T) V₀ = maximalRegularityDuhamelVectorField hT 0 F₀)
+    (hV : ∀ x, (ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion
+      (g := g) (r := 0) (s := 0)
+      (by norm_num : ((1 : ℕ) : ℝ) + 2 ≤ ((1 : ℕ) : ℝ) + 3))).compLpL
+        2 (timeMeasure T) (V x) = maximalRegularityDuhamelVectorField hT 0 (F x))
+    (hW₀ : ContinuousOn W₀ (Icc 0 T))
+    (hW : ∀ x, ContinuousOn (W x) (Icc 0 T))
+    (hpin₀ : W₀ =ᵐ[timeMeasure T] maximalRegularityDuhamelVectorField hT 0 F₀)
+    (hpin : ∀ x, W x =ᵐ[timeMeasure T] maximalRegularityDuhamelVectorField hT 0 (F x))
+    (hF : Tendsto F l (𝓝 F₀)) (hFH : Tendsto FH l (𝓝 FH₀)) :
+    Tendsto V l (𝓝 V₀) ∧ TendstoUniformlyOn W W₀ l (Icc 0 T) := by
+  let FH₀' := firstDerivativeForcingNormalization g FH₀
+  let FH' := fun x => firstDerivativeForcingNormalization g (FH x)
+  have hlift₀' := firstDerivative_forcing_lift_normalized g hT F₀ FH₀ hlift₀
+  have hlift' := fun x => firstDerivative_forcing_lift_normalized g hT (F x) (FH x) (hlift x)
+  have hFH' : Tendsto FH' l (𝓝 FH₀') :=
+    ((firstDerivativeForcingNormalization g).continuous.tendsto FH₀).comp hFH
+  let SD := maximalRegularityVectorFieldL (ι := ι) (g := g) (r := 0) (s := 0)
+    ((1 : ℕ) : ℝ) hT.le
+  have hSD : Tendsto (fun x => SD (F x)) l (𝓝 (SD F₀)) :=
+    (SD.continuous.tendsto F₀).comp hF
+  have hSD_eq (z : timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 ((1 : ℕ) : ℝ))) T) :
+      SD z = maximalRegularityDuhamelVectorField hT 0 z :=
+    maximalRegularityVectorFieldL_eq_duhamel hT z
+  have hD : Tendsto (fun x => maximalRegularityDuhamelVectorField hT 0 (F x)) l
+      (𝓝 (maximalRegularityDuhamelVectorField hT 0 F₀)) := by
+    simpa only [hSD_eq] using hSD
+  constructor
+  · apply tendsto_timeL2_duhamel_lifts_of_tendsto_forcing
+      g 1 hT F₀ F FH₀' FH' V₀ V hlift₀' hlift' hV₀ hV
+    · simpa only [hV, hV₀] using hD
+    · exact hFH'
+  · apply tendstoUniformlyOn_duhamel_representatives_of_iterated_forcing_lift
+      g 1 hT F₀ F FH₀' FH' W₀ W hW₀ hW hlift₀' hlift' hpin₀ hpin
+    · let J := ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion
+        (g := g) (r := 0) (s := 0)
+        (by norm_num : ((1 : ℕ) : ℝ) + 1 ≤ ((1 : ℕ) : ℝ) + 2))
+      apply tendstoUniformlyOn_continuousOn_duhamel_representatives hT F₀ F
+        (fun t => J (W₀ t)) (fun x t => J (W x t))
+        (J.continuous.comp_continuousOn hW₀)
+        (fun x => J.continuous.comp_continuousOn (hW x))
+      · exact hpin₀.fun_comp J
+      · intro x
+        exact (hpin x).fun_comp J
+      · exact hF
+    · exact hFH'
+
+end
 
 end DifferentialGeometry.Analysis.Parabolic.QuasiLinear
 

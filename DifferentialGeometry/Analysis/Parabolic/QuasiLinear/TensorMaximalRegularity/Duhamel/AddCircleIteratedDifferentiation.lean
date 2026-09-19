@@ -100,5 +100,32 @@ theorem iteratedParameterDerivativeDuhamelForcing_one
     ContinuousLinearMap.comp_assoc, ← tensorHsInclusion_trans,
     tensorHsInclusion_refl, ContinuousLinearMap.comp_id, Nat.add_zero]
 
+open scoped _root_.Topology in
+private theorem tendsto_iteratedParameterDerivativeDuhamelForcing
+    {ι P : Type*} [Fintype ι] {l : Filter P}
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ))) (n m : ℕ)
+    {T : ℝ} (hT : 0 < T)
+    (F₀ : timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 ((m + n : ℕ) : ℝ))) T)
+    (F : P → timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 ((m + n : ℕ) : ℝ))) T)
+    (hF : Tendsto F l (𝓝 F₀)) :
+    Tendsto (fun p => iteratedParameterDerivativeDuhamelForcing g n m hT (F p)) l
+      (𝓝 (iteratedParameterDerivativeDuhamelForcing g n m hT F₀)) := by
+  let S := maximalRegularityVectorFieldL
+    (ι := ι) (g := g) (r := 0) (s := 0) ((m + n : ℕ) : ℝ) hT.le
+  have hS : Tendsto (fun p => S (F p)) l (𝓝 (S F₀)) :=
+    (S.continuous.tendsto F₀).comp hF
+  have heq (f : timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0
+      ((m + n : ℕ) : ℝ))) T) :
+      S f = maximalRegularityDuhamelVectorField hT 0 f :=
+    maximalRegularityVectorFieldL_eq_duhamel hT f
+  have hU : Tendsto (fun p => maximalRegularityDuhamelVectorField hT 0 (F p)) l
+      (𝓝 (maximalRegularityDuhamelVectorField hT 0 F₀)) := by
+    simpa only [heq] using hS
+  unfold iteratedParameterDerivativeDuhamelForcing
+  dsimp only
+  apply Filter.Tendsto.add
+  · exact ((ContinuousLinearMap.continuous _).tendsto F₀).comp hF
+  · exact ((ContinuousLinearMap.continuous _).tendsto
+      (maximalRegularityDuhamelVectorField hT 0 F₀)).comp hU
 
 end DifferentialGeometry.Analysis.Parabolic.QuasiLinear
