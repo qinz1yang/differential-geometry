@@ -11450,3 +11450,5 @@ import DifferentialGeometry.Geometry.Metric.Pullback.ProductReal
 import DifferentialGeometry.Geometry.Comparison.Splitting.WarpedProduct
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.ProductRankPersistence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.AncientProduct
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientSplitting.Basic
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientRankProduct
