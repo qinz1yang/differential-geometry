@@ -127,3 +127,20 @@ this does not authorize a new run. No active compiler leases remain. Preserve
 all source checkpoints and pre-existing stashes. Resume requires a new owner
 instruction and starts from MORNING_ACCEPTANCE_20260919.md, with pending F,
 E3 and M304 source independently replayed before new cross-lane consumption.
+
+
+## Owner-authorized resumption after the overnight cutoff
+
+At 2026-09-19T14:32:35.604282+00:00 the owner explicitly requested checking tools and continuing work.
+The tools and Lean 4.33.1 are available. The previous twelve-hour window and
+its morning report remain closed historical records. This new stage resumes
+the same five tasks, one mathematical lane each, with hourly quiet follow-up
+and no newly inferred deadline. Existing compiler leases are renewed under
+the same two-private-checker and three-total-Lean limits. The h lane may now
+place its general helper in Topology/LocallyFiniteSeparation.
+
+First independently replay M304 734c87b5f, E3 5877584aa and F f0482b620 beyond
+the accepted frontiers. Continue actual geometric producers at their recorded
+gaps; no new tasks/subagents, no routine mid-round status requests and no
+automatic full-root rebuild. New-stage receipts live in
+.lake/resumed-stage-20260919.json; the prior morning accounting is preserved.

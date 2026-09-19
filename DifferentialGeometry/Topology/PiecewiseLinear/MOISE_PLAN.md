@@ -1364,3 +1364,20 @@ the next delivery, without interrupting the current geometric proof.
 ## Autonomous-window final acceptance (2026-09-19)
 
 The final source checkpoint is 752c572ae822e48b99c3dbd00a8f6a0faaa439be. The morning report records 41 independent acceptances, the exact net Lean delta, pending F/E3/M304 source, and the remaining mathematical gates. No new proof rounds are assigned after 14:19 UTC. Full-root compilation remains unclaimed. See MORNING_ACCEPTANCE_20260919.md for the governing final snapshot; earlier active-round rows are historical.
+
+
+## Owner-authorized resumption after the overnight cutoff
+
+At 2026-09-19T14:32:35.604282+00:00 the owner explicitly requested checking tools and continuing work.
+The tools and Lean 4.33.1 are available. The previous twelve-hour window and
+its morning report remain closed historical records. This new stage resumes
+the same five tasks, one mathematical lane each, with hourly quiet follow-up
+and no newly inferred deadline. Existing compiler leases are renewed under
+the same two-private-checker and three-total-Lean limits. The h lane may now
+place its general helper in Topology/LocallyFiniteSeparation.
+
+First independently replay M304 734c87b5f, E3 5877584aa and F f0482b620 beyond
+the accepted frontiers. Continue actual geometric producers at their recorded
+gaps; no new tasks/subagents, no routine mid-round status requests and no
+automatic full-root rebuild. New-stage receipts live in
+.lake/resumed-stage-20260919.json; the prior morning accounting is preserved.
