@@ -3190,3 +3190,27 @@ silent audit dynamically enumerated the single non-automatic declaration,
 checked thirty-two direct reused declarations, found only
 `{propext, Classical.choice, Quot.sound}`, and passed all thirteen applicable
 environment linters.
+
+## 58. 2026-09-18 Interior trimmed arc union ball pair — done
+
+`ArcCellUnionBallPair.lean` now proves the primary endpoint
+`IsCombinatorialManifoldWithBoundary.isPLBallPair_trimmedArcCellUnion_of_interior`.
+For a nonempty injective simplicial arc in a finite combinatorial 3-manifold
+with boundary, if every retained chain face is outside the boundary complex,
+then the union of exactly the non-endpoint derived-neighborhood cells, paired
+with its arc trace, is an `IsPLBallPair 2 1`.
+
+The proof instantiates the migrated induction of §57 at `k = 2 * n - 1` and
+transports the cut-model ball pair back through the resulting PL homeomorphism.
+The previous closed-manifold endpoint is retained as a corollary by observing
+that its boundary-complex face set is empty.  Unlike the old applicability
+claim corrected in §53, the primary theorem has the concrete `n = 1` instance
+constructed in §54.
+
+Strict private verification used round token `h-round-20260919` and output root
+`C:\Users\liao9\AppData\Local\Temp\codex-h-cutmodel-private`.  The module
+compiled with zero diagnostics and unchanged shared outputs.  Its external
+silent audit dynamically enumerated both non-automatic declarations, checked
+five direct reused declarations, found only
+`{propext, Classical.choice, Quot.sound}`, and passed all thirteen applicable
+environment linters.
