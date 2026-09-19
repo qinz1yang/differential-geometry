@@ -54,6 +54,37 @@ theorem integral_fderiv_prod_eq_neg_of_hasWeakPartialDeriv
     exact congrArg (fun L => L (EuclideanSpace.single i 1)) h.fderiv
   simpa only [hd] using ht (fun x => φ (t, x)) hslice hslice_c hslice_s
 
+theorem integral_fderiv_prod_left_eq_neg_of_weak_partials
+    {μ : Measure Z} {W : Set Z} {Ω : Set E} {U V R DR : Z × E → ℝ}
+    (v : Z) (i : Fin d)
+    (hU : LocallyIntegrable U (μ.prod (volume.restrict Ω)))
+    (hV : LocallyIntegrable V (μ.prod (volume.restrict Ω)))
+    (hR : LocallyIntegrable R (μ.prod (volume.restrict Ω)))
+    (hDR : LocallyIntegrable DR (μ.prod (volume.restrict Ω)))
+    (hspace : ∀ᵐ t ∂μ, DeGiorgi.HasWeakPartialDeriv i
+      (fun x => V (t, x)) (fun x => U (t, x)) Ω)
+    (hRspace : ∀ᵐ t ∂μ, DeGiorgi.HasWeakPartialDeriv i
+      (fun x => DR (t, x)) (fun x => R (t, x)) Ω)
+    (htime : ∀ ψ : Z × E → ℝ, ContDiff ℝ (⊤ : ℕ∞) ψ → HasCompactSupport ψ →
+      tsupport ψ ⊆ W ×ˢ Ω →
+      (∫ p, U p * fderiv ℝ ψ p (v, 0) ∂μ.prod (volume.restrict Ω)) =
+        -∫ p, R p * ψ p ∂μ.prod (volume.restrict Ω))
+    {φ : Z × E → ℝ} (hφ : ContDiff ℝ (⊤ : ℕ∞) φ)
+    (hφc : HasCompactSupport φ) (hφs : tsupport φ ⊆ W ×ˢ Ω) :
+    (∫ p, V p * fderiv ℝ φ p (v, 0) ∂μ.prod (volume.restrict Ω)) =
+      -∫ p, DR p * φ p ∂μ.prod (volume.restrict Ω) := by
+  have hs : ∀ ψ : Z × E → ℝ, ContDiff ℝ (⊤ : ℕ∞) ψ → HasCompactSupport ψ →
+      tsupport ψ ⊆ W ×ˢ Ω →
+      (∫ p, U p * fderiv ℝ ψ p (0, EuclideanSpace.single i 1) ∂μ.prod (volume.restrict Ω)) =
+        -∫ p, V p * ψ p ∂μ.prod (volume.restrict Ω) := by
+    intro ψ hψ hψc hψs
+    exact integral_fderiv_prod_eq_neg_of_hasWeakPartialDeriv hU hV i hspace ψ hψ hψc
+      (hψs.trans (prod_mono (subset_univ _) Subset.rfl))
+  exact (integral_weak_deriv_fderiv_comm (0, EuclideanSpace.single i 1) (v, 0)
+    hs htime hφ hφc hφs).trans
+      (integral_fderiv_prod_eq_neg_of_hasWeakPartialDeriv hR hDR i hRspace φ hφ hφc
+        (hφs.trans (prod_mono (subset_univ _) Subset.rfl)))
+
 theorem integral_fderiv_prod_left_eq_neg_of_finite_weak_partial_trees
     {μ : Measure Z} {W : Set Z} {Ω : Set E} (K : ℕ) (v : Z)
     (U R : ∀ n : ℕ, (Fin n → Fin d) → Z × E → ℝ)
@@ -83,21 +114,10 @@ theorem integral_fderiv_prod_left_eq_neg_of_finite_weak_partial_trees
       intro hn α φ hφ hφc hφs
       obtain ⟨i, β, rfl⟩ : ∃ (i : Fin d) (β : Fin n → Fin d), α = Fin.cons i β :=
         ⟨α 0, Fin.tail α, (Fin.cons_self_tail α).symm⟩
-      have hsp : ∀ ψ : Z × E → ℝ, ContDiff ℝ (⊤ : ℕ∞) ψ → HasCompactSupport ψ →
-          tsupport ψ ⊆ W ×ˢ Ω →
-          (∫ q, U n β q * fderiv ℝ ψ q (0, EuclideanSpace.single i 1)
-            ∂μ.prod (volume.restrict Ω)) =
-            -∫ q, U (n + 1) (Fin.cons i β) q * ψ q ∂μ.prod (volume.restrict Ω) := by
-        intro ψ hψ hψc hψs
-        exact integral_fderiv_prod_eq_neg_of_hasWeakPartialDeriv
-          (hU n (by omega) β) (hU (n + 1) hn (Fin.cons i β)) i
-          (hUweak n (by omega) β i) ψ hψ hψc
-          (hψs.trans (prod_mono (subset_univ _) Subset.rfl))
-      exact (integral_weak_deriv_fderiv_comm (0, EuclideanSpace.single i 1) (v, 0)
-        hsp (ih (by omega) β) hφ hφc hφs).trans
-          (integral_fderiv_prod_eq_neg_of_hasWeakPartialDeriv
-            (hR n (by omega) β) (hR (n + 1) hn (Fin.cons i β)) i
-            (hRweak n (by omega) β i) φ hφ hφc
-            (hφs.trans (prod_mono (subset_univ _) Subset.rfl)))
+      exact integral_fderiv_prod_left_eq_neg_of_weak_partials v i
+        (hU n (by omega) β) (hU (n + 1) hn (Fin.cons i β))
+        (hR n (by omega) β) (hR (n + 1) hn (Fin.cons i β))
+        (hUweak n (by omega) β i) (hRweak n (by omega) β i)
+        (ih (by omega) β) hφ hφc hφs
 
 end DifferentialGeometry.Analysis.Sobolev.Euclidean

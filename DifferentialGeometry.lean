@@ -1168,6 +1168,7 @@ import DifferentialGeometry.Analysis.Parabolic.Dirichlet.HeatHessianTimeRegulari
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.HeatInteriorRegularity
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.HeatMixedTimeSpatialRegularity
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.HeatNirenbergEnergy
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.HeatSecondTimeDerivative
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.HeatThirdOrderRegularity
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.HeatThirdWeakDerivative
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.HeatTimeDerivativeHessian
@@ -2152,6 +2153,7 @@ import DifferentialGeometry.Analysis.Sobolev.Tools.SteklovAverage
 import DifferentialGeometry.Analysis.Sobolev.Tools.StrictStrongSupport
 import DifferentialGeometry.Analysis.Sobolev.Tools.Translation
 import DifferentialGeometry.Analysis.Sobolev.WeakDerivativeCommutation
+import DifferentialGeometry.Analysis.Sobolev.WeakDerivativeFiniteSum
 import DifferentialGeometry.Analysis.Sobolev.WeakDerivativeUniqueness
 import DifferentialGeometry.Analysis.Sobolev.WeakDerivativeWeight
 import DifferentialGeometry.Analysis.Sobolev.WithBoundary.Chart.Banach

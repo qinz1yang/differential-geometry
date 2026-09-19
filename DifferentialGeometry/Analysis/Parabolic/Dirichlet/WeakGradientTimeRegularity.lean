@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.WeakEquationLocal
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeWeakDerivativeProduct
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeMeasureRestrict
-import DifferentialGeometry.Analysis.Sobolev.WeakDerivativeCommutation
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakDerivativeProduct
 
 noncomputable section
 
@@ -73,25 +73,16 @@ theorem exists_timeH1_localWeakPartial_of_spatial_weak_deriv_time_deriv
     filter_upwards [(hasWeakPartialDeriv_dirichletLocalSpacetimeWeakPartialLp q α
       hΩ hΩc hΩs (timeMeasure T) i u).filter_mono (ae_mono hμle)] with t ht
     exact ht.restrict hΩ₀ hsub
-  have hspace : ∀ ψ : ℝ × EuStd → ℝ, ContDiff ℝ (⊤ : ℕ∞) ψ →
-      HasCompactSupport ψ → tsupport ψ ⊆ Ioo a b ×ˢ Ω₀ →
-      (∫ p, U p * fderiv ℝ ψ p (0, EuclideanSpace.single i 1) ∂ν) =
-        -∫ p, V i p * ψ p ∂ν := by
-    intro ψ hψ hψc hψs
-    exact Sobolev.Euclidean.integral_fderiv_prod_eq_neg_of_hasWeakPartialDeriv
-      hU ((hV i).locallyIntegrable (by norm_num)) i hfirst ψ hψ hψc
-      (hψs.trans (Set.prod_mono (subset_univ _) Subset.rfl))
   have hweak : ∀ φ : ℝ × EuStd → ℝ, ContDiff ℝ (⊤ : ℕ∞) φ →
       HasCompactSupport φ → tsupport φ ⊆ Ioo a b ×ˢ Ω₀ →
       (∫ p, V₀ p * fderiv ℝ φ p (1, 0) ∂ν) = -∫ p, DR i p * φ p ∂ν := by
     intro φ hφ hφc hφs
-    have hcomm := Sobolev.integral_weak_deriv_fderiv_comm
-      (0, EuclideanSpace.single i 1) (1, 0) hspace hR hφ hφc hφs
-    have hrspace := Sobolev.Euclidean.integral_fderiv_prod_eq_neg_of_hasWeakPartialDeriv
-      ((Lp.memLp R).locallyIntegrable (by norm_num))
-      ((Lp.memLp (DR i)).locallyIntegrable (by norm_num)) i (hDR i) φ hφ hφc
-      (hφs.trans (Set.prod_mono (subset_univ _) Subset.rfl))
-    refine (integral_congr_ae ?_).trans (hcomm.trans hrspace)
+    refine (integral_congr_ae ?_).trans
+      (Sobolev.Euclidean.integral_fderiv_prod_left_eq_neg_of_weak_partials (1 : ℝ) i
+        hU ((hV i).locallyIntegrable (by norm_num))
+        ((Lp.memLp R).locallyIntegrable (by norm_num))
+        ((Lp.memLp (DR i)).locallyIntegrable (by norm_num))
+        hfirst (hDR i) hR hφ hφc hφs)
     filter_upwards [(hV i).coeFn_toLp] with p hp
     exact congrArg (fun v => v * fderiv ℝ φ p (1, 0)) hp
   obtain ⟨w, hwae⟩ := exists_timeH1_of_spacetime_weak_deriv hab hΩ₀ V₀ (DR i) hweak
