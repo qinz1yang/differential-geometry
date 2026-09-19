@@ -118,6 +118,32 @@ private local instance smooth : IsManifold I ∞ F.M := F.smooth
 private local instance t2 : T2Space F.M := F.t2
 private local instance sigma : SigmaCompactSpace F.M := F.sigmaCompact
 
+theorem abs_sqrt_redLength_sub_le_rescaled_distance
+    {kappa : ℝ} (hF : IsAncientKappaSolution kappa F)
+    (p x y : F.M) {tau : ℝ} (htau : 0 < tau) :
+    |Real.sqrt (redLength F.S 0 p x tau) - Real.sqrt (redLength F.S 0 p y tau)| ≤
+      Real.sqrt 3 / 2 * (riemannianEDistOf
+        (scaleMetric tau⁻¹ (inv_pos.mpr htau) (F.S.base.metric (-tau))) x y).toReal := by
+  let _ : CompleteSpace E := FiniteDimensional.complete ℝ E
+  let _ : T2Space (TangentBundle I F.M) := F.t2TangentBundle
+  let _ : NeZero (Module.finrank ℝ E) := by
+    obtain ⟨t, _ht, z, hz⟩ := hF.notFlat
+    exact ⟨Tensor0SBundle.finrank_ne_zero_of_normSq0S_ne_zero
+      (F.S.base.metric t) z (by norm_num : 0 < 4) _ hz⟩
+  have hroot (a b : F.M) := sqrt_redLength_sub_le_distance_of_continuous_and_minimizers
+    F hF p a b htau (continuous_redLength_of_ancient F hF p htau)
+    (fun z => exists_lRegularized_minimizer_of_ancient F hF p z htau)
+  have hxy := hroot x y
+  have hyx := hroot y x
+  rw [riemannianEDistOf_comm] at hyx
+  rw [edistOf_scale, ENNReal.toReal_mul, ENNReal.toReal_ofReal (Real.sqrt_nonneg _), Real.sqrt_inv]
+  have heq : Real.sqrt 3 / 2 * ((Real.sqrt tau)⁻¹ *
+      (riemannianEDistOf (F.S.base.metric (-tau)) x y).toReal) =
+      Real.sqrt 3 / (2 * Real.sqrt tau) *
+        (riemannianEDistOf (F.S.base.metric (-tau)) x y).toReal := by ring
+  rw [heq]
+  exact abs_le.mpr ⟨by linarith, by linarith⟩
+
 theorem redLength_le_of_rescaled_distance_le
     {kappa : ℝ} (hF : IsAncientKappaSolution kappa F)
     (p q x : F.M) {tau A D : ℝ} (htau : 0 < tau) (hD : 0 ≤ D)

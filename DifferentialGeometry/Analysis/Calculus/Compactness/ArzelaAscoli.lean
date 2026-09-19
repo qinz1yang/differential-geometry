@@ -2,6 +2,8 @@ import Mathlib.Analysis.Normed.Group.Basic
 import Mathlib.Topology.ContinuousMap.Bounded.ArzelaAscoli
 import Mathlib.Topology.ContinuousMap.Compact
 import Mathlib.Topology.MetricSpace.ProperSpace
+import Mathlib.Topology.MetricSpace.Lipschitz
+import Mathlib.Topology.MetricSpace.UniformConvergence
 import Mathlib.Topology.Metrizable.ContinuousMap
 import Mathlib.Topology.Order.Compact
 import Mathlib.Topology.Sequences
@@ -275,3 +277,65 @@ alias arzela_ascoli_subseq_tendsto_locally_uniformly :=
   CheegerGromovCompactness.arzelaAscoli_subseq_vec
 
 end DifferentialGeometry.Analysis
+
+namespace ArzelaAscoli
+open Filter Set
+open scoped Topology NNReal
+
+variable {X : Type*} [PseudoMetricSpace X] [LocallyCompactSpace X] [SigmaCompactSpace X]
+
+theorem exists_lipschitz_subseq_limit_of_eventually_lipschitzOn_closedBall
+    (f : ℕ → X → ℝ) (p : X) (K : ℝ≥0)
+    (hLip : ∀ R : ℝ, 0 ≤ R → ∀ᶠ n in atTop,
+      LipschitzOnWith K (f n) (Metric.closedBall p R))
+    (hbdd : ∃ B : ℝ, ∀ᶠ n in atTop, |f n p| ≤ B) :
+    ∃ (phi : ℕ → ℕ) (g : C(X, ℝ)), StrictMono phi ∧ LipschitzWith K g ∧
+      ∀ A : Set X, IsCompact A → TendstoUniformlyOn (fun n => f (phi n)) g atTop A := by
+  classical
+  obtain ⟨B, hB⟩ := hbdd
+  obtain ⟨Nb, hNb⟩ := eventually_atTop.mp hB
+  choose N hN using fun n : ℕ => eventually_atTop.mp (hLip n (Nat.cast_nonneg n))
+  let u : ℕ → ℕ := fun n => max n (max (N n) Nb)
+  obtain ⟨rho, hrho, hurho⟩ := strictMono_subseq_of_id_le (u := u) (fun n => le_max_left _ _)
+  let psi := u ∘ rho
+  have hpsi : StrictMono psi := hurho
+  have hLipPsi (n : ℕ) : LipschitzOnWith K (f (psi n)) (Metric.closedBall p (n : ℝ)) := by
+    have hindex : N (rho n) ≤ psi n := (le_max_left _ _).trans (le_max_right _ _)
+    apply (hN (rho n) (psi n) hindex).mono
+    exact Metric.closedBall_subset_closedBall (by exact_mod_cast hrho.id_le n)
+  choose g hg heq using fun n => (hLipPsi n).extend_real
+  let G : ℕ → C(X, ℝ) := fun n => ⟨g n, (hg n).continuous⟩
+  have hbase (n : ℕ) : |g n p| ≤ B := by
+    rw [← heq n (Metric.mem_closedBall_self (Nat.cast_nonneg n))]
+    apply hNb
+    exact (le_max_right _ _).trans (le_max_right _ _)
+  have hbound (x : X) : BddAbove (range fun n => |G n x|) := by
+    refine ⟨(K : ℝ) * dist x p + B, ?_⟩
+    rintro _ ⟨n, rfl⟩
+    change |g n x| ≤ _
+    calc
+      _ ≤ |g n x - g n p| + |g n p| := by
+        simpa only [sub_add_cancel] using abs_add_le (g n x - g n p) (g n p)
+      _ ≤ (K : ℝ) * dist x p + B :=
+        add_le_add (by simpa only [Real.dist_eq] using (hg n).dist_le_mul x p) (hbase n)
+  have hequi : Equicontinuous (fun n => (G n : X → ℝ)) :=
+    (LipschitzWith.uniformEquicontinuous _ K hg).equicontinuous
+  obtain ⟨sigma, limit, hsigma, hconv⟩ :=
+    DifferentialGeometry.CheegerGromovCompactness.arzelaAscoli_subseq_tendstoUniformlyOnCompacts
+      G hequi hbound
+  have hpoint (x : X) : Tendsto (fun n => G (sigma n) x) atTop (𝓝 (limit x)) :=
+    (hconv {x} isCompact_singleton).tendsto_at (mem_singleton x)
+  have hlimit : LipschitzWith K limit := LipschitzWith.of_dist_le_mul fun x y =>
+    le_of_tendsto ((hpoint x).dist (hpoint y))
+      (Eventually.of_forall fun n => (hg (sigma n)).dist_le_mul x y)
+  refine ⟨psi ∘ sigma, limit, hpsi.comp hsigma, hlimit, ?_⟩
+  intro A hA
+  obtain ⟨R, hR⟩ := hA.isBounded.subset_closedBall p
+  have hlarge : ∀ᶠ n in atTop, R ≤ (sigma n : ℝ) :=
+    ((tendsto_natCast_atTop_atTop.comp hsigma.tendsto_atTop) (eventually_ge_atTop R))
+  apply (hconv A hA).congr
+  filter_upwards [hlarge] with n hn
+  intro x hx
+  exact (heq (sigma n) (Metric.closedBall_subset_closedBall hn (hR hx))).symm
+
+end ArzelaAscoli
