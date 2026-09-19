@@ -4713,3 +4713,21 @@ T 是组合 (n+1) 维带边流形，其 boundaryComplex 载体精确等于原导
 保留 .manifoldComplex、精确 manifold_space、SDR、源提升、边界环与严格复杂度契约；旧公式的反例
 仍是有效历史障碍。本次检索共有十三个直接 NormalSystem 消费者，与 SingularCell 相连的最小重编
 依赖闭包为二十八模块；协调者已授权私有重编及 BoundaryWordLoopClass 两处保义兼容改动。
+
+### 19.165 兼容导出邻域在原子复形上的精确边界迹（2026-09-19 UTC）
+
+**done：RelativeSimplexBoundary.lean。**
+`DerivedNeighborhoodTriangulation.mem_boundaryComplex_iff` 对任意原子复形点 x∈A.space，证明
+x∈∂T 当且仅当 x∈∂K；`inter_boundaryComplex_space` 给集合等式 A∩∂T=A∩∂K。
+`faces_subset_boundaryComplex` 从 C≤A 及 C.space⊆∂K，实际推出 C 原有各面属于 ∂T。
+证明使用普通导出邻域在 A 上的相对邻域性质和同维组合流形的局部边界判据；未假设所需边界结论。
+
+模块聚焦检查 exit=0、零诊断；AuditF306 exit=0、零诊断。三项非自动声明、三项关键依赖和一个实际
+标准四面体/三角形面模型，共七项传递公理闭包仅含标准三公理；十三项适用环境 linters 全过。
+模型实际构造非空三维带边邻域 T，证明原三角形面的全部子面属于 T 的边界并验证边界迹等式。
+回执 RelativeSimplexBoundary-checkpoint.json、AuditF306.json；sourceStable=true，共享产物只读。
+源码、根登记与本记录同次提交，整库根检由协调者负责。AuditF305 的公共接口消费者复验仍在进行。
+
+**partial：完整覆盖图的边界兼容。** 本层提供提升像/边界环的边界对应工具；仍须构造实际提升像与
+边界环复形、控制其边界邻域在原边界邻域内的投影，并组装基点、正规子群和覆盖图。
+不能把逐点边界迹当成整个边界邻域的投影包含关系。

@@ -8747,3 +8747,4 @@ import DifferentialGeometry.Topology.Covering.PLTriangulation
 import DifferentialGeometry.Topology.PiecewiseLinear.RelativeSimplexNeighborhood
 import DifferentialGeometry.Topology.PiecewiseLinear.RelativeSimplexRefinement
 import DifferentialGeometry.Topology.PiecewiseLinear.RelativeSimplexTriangulation
+import DifferentialGeometry.Topology.PiecewiseLinear.RelativeSimplexBoundary
