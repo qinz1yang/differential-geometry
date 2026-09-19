@@ -3798,3 +3798,41 @@ This closes the ballness prerequisite for the §35.1 dual-cell modification,
 not the modification itself.  The next geometric steps remain the edgewise
 piercing and nested annuli, the locally finite simultaneous error choices, and
 the cellwise approximation and gluing from Moise 35.1.
+
+## 75. 2026-09-19 edgewise graph-dual-cell piercing — done
+
+`DualCellPiercing.lean` now constructs the Figure 35.1 piercing geometry from
+the actual graph dual cells.  `standardTriangleShrink` sends the standard
+2-simplex affinely into its open simplex; its boundary is a PL 1-sphere
+disjoint from the original simplex boundary.  Transporting this construction
+through a parametrization of a splitting disk gives a polygonal circle in the
+relative interior of that disk.
+
+`IsCombinatorialManifold.exists_graphDualCell_piercing` first uses
+`IsCombinatorialManifold.isPLBall_graphDualCell` for the adjacent vertex cell.
+It then applies the proved boundary-inward PL embedding with exactly the inner
+circle fixed.  The resulting image `C` is a PL 3-ball contained in the original
+neighbor cell, is PL homeomorphic to that cell, and satisfies the exact
+piercing equation
+`(graphDualCell K L v).space ∩ C = J`.  Thus neither the circle nor the
+modified cell is supplied as a hypothesis.
+
+`IsCombinatorialManifold.exists_graphDualCell_piercings_of_trivalent_vertex`
+simultaneously chooses this data for the three actual neighbors of a trivalent
+vertex.  The exact-neighbor hypothesis is an equality with the range of an
+injective `Fin 3` enumeration.  The three piercing circles lie in the three
+actual splitting disks and are pairwise disjoint because distinct equal-cardinal
+splitting disks are disjoint.  This exercises a genuine branch point rather
+than a disjoint union of one-edge components.
+
+The private focused check exited zero with no diagnostics and left shared
+outputs unchanged.  The external strict audit dynamically checked all twelve
+non-automatic declarations in the module plus fourteen directly reused
+declarations.  Every axiom closure was contained in
+`{propext, Classical.choice, Quot.sound}`, and all thirteen applicable
+environment linters passed.
+
+This closes the finite edgewise piercing and controlled-cell-modification
+layer.  The nested regular neighborhoods `T_e ⊂ Int S_e`, their four boundary
+annuli, the locally finite simultaneous error choice, and the cellwise
+approximation/gluing remain separate obligations for §35.1.

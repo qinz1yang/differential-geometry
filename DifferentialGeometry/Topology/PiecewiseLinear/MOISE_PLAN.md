@@ -1159,6 +1159,8 @@ Compact smoothing is not claimed complete.
   `exists_noncompact_isPLDerivedNeighborhoodExhaustion_three_with_edge` 从一个含内部单边弧的有限组合 3-球出发，取整数方向彼此分离的仿射平移，并以对称有限区间形成非恒定环境层与图层。全体分量组成同一个局部有限欧氏复形，恒等映射给 `LocallyFinitePLPieceIn`；旗标的分量唯一性给导出邻域的逐分量面/空间公式和严格旧面限制，局部有限闭分量族的外部并之补集给下一层相对邻域。端点同时证明总导出邻域非紧、核心含非退化线段，并由规范相容穷竭得到全局强形变收缩。私有聚焦检查 exit=0、零诊断；严格审计六模块 196 项及 39 项直接复用声明，仅 `propext`、`Classical.choice`、`Quot.sound`，13 项 linter 全过。零维实例继续只作接口 sanity check；35.1 的实际对偶胞腔改造与逐点误差 PL 同胚仍未证明。
 - 2026-09-19（H 车道 F4.3 顶点对偶胞腔球性）：`DualCellDecomposition.lean` 的
   `IsCombinatorialManifold.isPLBall_graphDualCell` 已证明有限组合 3-流形中图的每个 `graphDualCell` 是 PL 3-球。证明在粗顶点对偶球内把它分解为中心顶点与各关联边形心的对偶球；中心交集是 PL 2-球，不同关联边形心不可比较，故附加球两两不交，再用有限边界盘粘合。聚焦检查零诊断；严格审计模块 11 项与 19 项直接复用声明，只含标准三公理且 13 项 linter 全过。F4.3 与计划 R8 由此闭合；35.1 尚需逐边穿孔、环带嵌套、局部有限误差选择及逐胞腔逼近拼接。
+- 2026-09-19（H 车道 35.1 有限刺穿层）：`DualCellPiercing.lean` 的
+  `IsCombinatorialManifold.exists_graphDualCell_piercing` 将标准 2-单形的仿射内缩边界搬到实际 splitting disk 的相对内部，再用 `BoundaryInwardPush` 只固定该圆并内推相邻图双胞腔；所得像仍是包含于原胞腔的 PL 3-球，且与中心胞腔精确交于该圆。`exists_graphDualCell_piercings_of_trivalent_vertex` 对邻点恰由一个单射 `Fin 3` 枚举的真实三价顶点同时构造三条刺穿圆，并由不同 splitting disk 的不交性证明它们两两不交。没有结论型输入。聚焦检查零诊断；严格审计模块 12 项与 14 项直接复用声明，仅标准三公理，13 项 linter 全过。35.1 尚缺嵌套正则邻域及四个边界环带、局部有限误差选择和逐胞腔逼近拼接。
 
 ### Half-prism acceptance update (2026-09-19 UTC)
 

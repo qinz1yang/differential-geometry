@@ -619,3 +619,5 @@ AuditS62 的 16 项传递公理闭包均仅 `propext`、`Classical.choice`、`Qu
 - **R11 固定折边的相对正规形式（2026-09-15）。** §15 球图卡路线的混合三角形可有固定折边与可动对顶点；两张片的固定折边原来重合时，完整相对通用位置条件仍允许两张在该边处同时折叠。固定边逐点不变不保证曲面芽不变，不能直接用于 crossing 的图卡搬运。FoldCrossing.lean 已闭合单折/平片引理；RelativeNormalForm.lean 仅有四个已验证支撑声明，不是相对正规形式。须生产固定折边处双折构型的处理，或使过渡部分的整片曲面芽恒同并证明缓冲层覆盖。AuditF120 六项仅标准三公理；F5.2 保持 partial，按 HANDOFF_CODEX_F.md §16.2 报告后暂停。
 - **R12 非紧三维 PL 导出邻域穷竭模型（已闭合，2026-09-19）。**
   `exists_noncompact_isPLDerivedNeighborhoodExhaustion_three_with_edge` 在一个固定、局部有限、同环境 PL 三角剖分中，以整数平移的有限组合 3-球和内部单边弧构造非恒定有限层；导出邻域逐分量分解，旧面限制严格成立，下一层由局部有限闭分量族给出相对邻域。结论同时给非紧总邻域、核心中的非退化线段与全局强形变收缩。私有聚焦检查零诊断；严格审计六模块 196 项及 39 项直接复用声明，仅标准三公理，13 项 linter 全过。该模型只解除表示层与相容性 sanity check；35.1 的实际对偶胞腔改造和逐点误差 PL 同胚仍开。
+- **R13 逐边刺穿与三价分支（有限层已闭合，2026-09-19）。**
+  `DualCellPiercing.lean` 的 `exists_graphDualCell_piercing` 在实际 splitting disk 的相对内部构造 PL 1-球面，并用边界内推把相邻 `graphDualCell` 改成包含于原胞腔的 PL 3-球，精确证明中心胞腔与改造胞腔交于该圆。`exists_graphDualCell_piercings_of_trivalent_vertex` 对一个由 `Fin 3` 精确枚举邻点的三价顶点同时给出三条两两不交的实际刺穿圆；不把圆、改造胞腔或刺穿等式当作输入。聚焦检查零诊断；严格审计 12 项模块声明与 14 项直接复用声明，仅标准三公理，13 项 linter 全过。`T_e ⊂ Int S_e` 的嵌套正则邻域及其边界环带、局部有限误差选择、逐胞腔逼近拼接仍开。
