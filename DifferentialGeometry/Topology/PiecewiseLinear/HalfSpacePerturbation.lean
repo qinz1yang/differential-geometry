@@ -1,4 +1,11 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.GeneralPosition
+
+/-! Small piecewise affine perturbations preserving a half-space. -/
 
 open Set Topology Metric
 
@@ -7,17 +14,20 @@ namespace DifferentialGeometry.Topology.PiecewiseLinear
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 
 open Classical in
-theorem exists_piecewiseAffine_lipschitz_vertex_function_vanishing_on_hyperplane [FiniteDimensional ℝ E]
+theorem exists_piecewiseAffine_lipschitz_vertex_function_vanishing_on_hyperplane
+  [FiniteDimensional ℝ E]
     (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces] (ℓ : E →ₗ[ℝ] ℝ)
     (hℓ : ∀ v ∈ K.vertices, 0 ≤ ℓ v) (v : E) (hv : 0 < ℓ v)
     {U : Set E} (hU : IsOpen U) (hKU : K.space ⊆ U) :
     ∃ (b : E → ℝ) (k : NNReal), IsPiecewiseAffineOn b univ ∧ LipschitzWith k b ∧
       EqOn b (simplicialMap K (fun w => if w = v then 1 else 0)) K.space ∧
         EqOn b (fun _ => 0) Uᶜ ∧ (∀ x, 0 ≤ b x ∧ b x ≤ 1) ∧ ∀ x, ℓ x = 0 → b x = 0 := by
-  obtain ⟨b, k, hb, hk, hfix, hzero, hbound⟩ := exists_piecewiseAffine_lipschitz_vertex_function K v hU hKU
+  obtain ⟨b, k, hb, hk, hfix, hzero, hbound⟩ :=
+    exists_piecewiseAffine_lipschitz_vertex_function K v hU hKU
   let A : E →L[ℝ] ℝ := (ℓ v)⁻¹ • ℓ.toContinuousLinearMap
   let c : E → ℝ := fun x => min (b x) (max 0 (A x))
-  have hA : IsPiecewiseAffineOn A univ := isPiecewiseAffineOn_of_affine A.toLinearMap.toAffineMap isOpen_univ
+  have hA : IsPiecewiseAffineOn A univ := isPiecewiseAffineOn_of_affine
+    A.toLinearMap.toAffineMap isOpen_univ
   have hc : IsPiecewiseAffineOn c univ := hb.min
     ((isPiecewiseAffineOn_of_affine (AffineMap.const ℝ E (0 : ℝ)) isOpen_univ).max hA)
   have hclip : ∀ x ∈ K.space, b x ≤ A x := by
@@ -42,7 +52,8 @@ theorem exists_piecewiseAffine_lipschitz_vertex_function_vanishing_on_hyperplane
     change b x ≤ (ℓ v)⁻¹ * ℓ x
     rw [mul_comm, ← div_eq_mul_inv]
     exact (le_div_iff₀ hv).mpr hbℓ
-  refine ⟨c, max k (max 0 ‖A‖₊), hc, hk.min ((LipschitzWith.const 0).max A.lipschitz), ?_, ?_, ?_, ?_⟩
+  refine ⟨c, max k (max 0 ‖A‖₊), hc, hk.min ((LipschitzWith.const 0).max A.lipschitz), ?_, ?_,
+    ?_, ?_⟩
   · intro x hx
     change min (b x) (max 0 (A x)) = _
     rw [min_eq_left ((hclip x hx).trans (le_max_right _ _)), hfix hx]
@@ -57,7 +68,8 @@ theorem exists_piecewiseAffine_lipschitz_vertex_function_vanishing_on_hyperplane
     rw [hAx, max_self, min_eq_right (hbound x).1]
 
 open Classical in
-theorem exists_isPLHomeomorphOn_extension_of_small_vertex_perturbation_preserving_halfSpace [FiniteDimensional ℝ E]
+theorem exists_isPLHomeomorphOn_extension_of_small_vertex_perturbation_preserving_halfSpace
+  [FiniteDimensional ℝ E]
     (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces] (ℓ : E →ₗ[ℝ] ℝ) (hℓ : ℓ ≠ 0)
     (hKℓ : ∀ v ∈ K.vertices, 0 ≤ ℓ v) {U : Set E} (hU : IsOpen U) (hKU : K.space ⊆ U)
     {ε : ℝ} (hε : 0 < ε) :
@@ -74,7 +86,8 @@ theorem exists_isPLHomeomorphOn_extension_of_small_vertex_perturbation_preservin
     · obtain ⟨b, k, hb, hk, hfix, hzero, hbound, hplane⟩ :=
         exists_piecewiseAffine_lipschitz_vertex_function_vanishing_on_hyperplane K ℓ hKℓ v hv hU hKU
       exact ⟨b, k, hb, hk, hfix, hzero, hbound, fun _ => hplane⟩
-    · obtain ⟨b, k, hb, hk, hfix, hzero, hbound⟩ := exists_piecewiseAffine_lipschitz_vertex_function K v hU hKU
+    · obtain ⟨b, k, hb, hk, hfix, hzero, hbound⟩ :=
+      exists_piecewiseAffine_lipschitz_vertex_function K v hU hKU
       exact ⟨b, k, hb, hk, hfix, hzero, hbound, fun hv' => (hv hv').elim⟩
   choose b k hb hk hfix hzero hbound hplane using hfunctions
   have hvertices : K.vertices.Finite :=
@@ -121,7 +134,8 @@ theorem exists_isPLHomeomorphOn_extension_of_small_vertex_perturbation_preservin
   have hd : IsPiecewiseAffineOn d univ := by
     apply IsPiecewiseAffineOn.sum V isOpen_univ
     intro v _
-    exact ((hb v).affine_comp (LinearMap.toSpanSingleton ℝ E (φ v - v)).toAffineMap).congr (fun _ _ => rfl)
+    exact ((hb v).affine_comp (LinearMap.toSpanSingleton ℝ E (φ v - v)).toAffineMap).congr
+      (fun _ _ => rfl)
   have hdlip : LipschitzWith kd d := by
     apply LipschitzWith.of_dist_le_mul
     intro x y
@@ -184,7 +198,8 @@ theorem exists_isPLHomeomorphOn_extension_of_small_vertex_perturbation_preservin
     · have h := abs_lt.mp (hstrict (ne_of_lt hx))
       rw [abs_of_neg hx] at h
       have hsum : ℓ x + ℓ (d x) < 0 := by linarith [h.2]
-      exact ⟨iff_of_false (ne_of_lt hsum) (ne_of_lt hx), iff_of_false (not_le_of_gt hsum) (not_le_of_gt hx)⟩
+      exact ⟨iff_of_false (ne_of_lt hsum) (ne_of_lt hx), iff_of_false (not_le_of_gt hsum)
+        (not_le_of_gt hx)⟩
     · simp only [hx, hdplane x hx, add_zero, and_self]
     · have h := abs_lt.mp (hstrict (ne_of_gt hx))
       rw [abs_of_pos hx] at h

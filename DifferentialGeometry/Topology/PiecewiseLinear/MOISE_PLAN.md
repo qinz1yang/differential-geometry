@@ -1433,3 +1433,38 @@ M304's new finite polyhedral separator is not yet a capped closed surface.
 S's actual compact regular-band product still needs critical endpoint gluing
 and genuine cancellation incidence. These are next-round obligations, not
 independently verified theorem completions of their final goals.
+
+### Boundary homotopy accepted; original geometric producers still required
+
+Integration section73 independently accepts F's nine frozen boundary
+perturbation/loop/homotopy/relative modules through44d4e28ef, together with
+two previously unreachable half-space prerequisites. All 38 native
+declarations, 48 key reuse entries, thirteen linters and classified probes
+pass. Twenty-five declarations are new; old code and conditional fixtures
+are counted separately. Supported local perturbation now preserves the
+actual boundary loop class inside its original normal neighborhood.
+Closed-set protection leaves the active transition region open, and the
+embedded disk in the smaller normal system is still an input. Global
+normalization and the loop-theorem endpoint remain incomplete.
+
+E3's latest source throughddade8562 remains queued for independent acceptance.
+Its source audit corrects the proposed outer-circle marking: those circles
+avoid the small neighborhood. Continue with actual inner-disk boundary
+traces, the produced half-ball outer-boundary inclusion, sphere disk choice,
+and original external-annulus gluing. Do not infer that original outer
+circles lie inside that local neighborhood. Canonical finite realization
+and manifold capping from ab29 remain the downstream implementation.
+
+M304's bed13ca15 is a queued genuine capped-union separation proof, not
+completion of arbitrary-shell30.4. The native Betti and separating-component
+consumer already exists; its next round advances the actual original-wall
+and complement geometry rather than duplicating that chain. S's ec69dc759
+produces a real saddle section from original Morse data and a unique
+descending trajectory, still queued. The minimum end and two-end relative
+flow strip must preserve that same trajectory/field and original atlas.
+The regular-band theorem's separately constructed field cannot supply the
+original trajectory's incidence without a proved comparison.
+
+Five tasks remain authorized without a new deadline. Administrative leases
+are renewable and are not owner deadlines. Existing hourly quiet follow-up,
+two private checker slots and no unsolicited full-root rebuild continue.

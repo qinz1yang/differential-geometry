@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.HalfSpacePerturbation
 import DifferentialGeometry.Topology.PiecewiseLinear.SingularGeneralPosition
+
+/-! Relative general position for surfaces in a half-space. -/
 
 open Set Topology Metric
 
@@ -19,14 +26,17 @@ theorem exists_small_vertexMaps_transverse_in_halfSpace [FiniteDimensional ℝ E
               ∀ s : Finset E, s ⊆ V → ∀ t : Finset E, t ⊆ W →
                 (convexHull ℝ (s.image φ : Set E) ∩ convexHull ℝ (t.image ψ : Set E)).Nonempty →
                   vectorSpan ℝ (s.image φ : Set E) ⊔ vectorSpan ℝ (t.image ψ : Set E) =
-                    if (∀ v ∈ s, ℓ (φ v) = 0) ∧ (∀ w ∈ t, ℓ (ψ w) = 0) then LinearMap.ker ℓ else ⊤ := by
+                    if (∀ v ∈ s, ℓ (φ v) = 0) ∧ (∀ w ∈ t, ℓ (ψ w) = 0) then LinearMap.ker ℓ
+                      else ⊤ := by
   let : DecidableEq (E ⊕ E) := Classical.typeDecidableEq _
   let A : Finset (E ⊕ E) := V.image Sum.inl ∪ W.image Sum.inr
   let f : E ⊕ E → E := Sum.elim id id
   let B : Finset (E ⊕ E) := A.filter fun v => ℓ (f v) = 0
   have hBA : B ⊆ A := Finset.filter_subset _ _
-  have hVA : ∀ v ∈ V, Sum.inl v ∈ A := fun v hv => Finset.mem_union.mpr (Or.inl (Finset.mem_image_of_mem _ hv))
-  have hWA : ∀ v ∈ W, Sum.inr v ∈ A := fun v hv => Finset.mem_union.mpr (Or.inr (Finset.mem_image_of_mem _ hv))
+  have hVA : ∀ v ∈ V, Sum.inl v ∈ A := fun v hv => Finset.mem_union.mpr (Or.inl
+    (Finset.mem_image_of_mem _ hv))
+  have hWA : ∀ v ∈ W, Sum.inr v ∈ A := fun v hv => Finset.mem_union.mpr (Or.inr
+    (Finset.mem_image_of_mem _ hv))
   have hA : ∀ v ∈ A, 0 ≤ ℓ (f v) := by
     intro v hv
     rcases Finset.mem_union.mp hv with hv | hv
@@ -52,7 +62,8 @@ theorem exists_small_vertexMaps_transverse_in_halfSpace [FiniteDimensional ℝ E
       exact ⟨iff_of_false (ne_of_gt h) hv0, h.le⟩
   have hker : Module.finrank ℝ (LinearMap.ker ℓ) = 2 := by
     have h := LinearMap.finrank_range_add_finrank_ker ℓ
-    rw [LinearMap.range_eq_top.mpr (LinearMap.surjective_of_ne_zero hℓ), finrank_top, Module.finrank_self, hdim] at h
+    rw [LinearMap.range_eq_top.mpr (LinearMap.surjective_of_ne_zero hℓ), finrank_top,
+      Module.finrank_self, hdim] at h
     omega
   have hinl : ∀ s : Finset E, s ⊆ V → s.image Sum.inl ⊆ A := by
     intro s hs z hz
@@ -75,7 +86,10 @@ theorem exists_small_vertexMaps_transverse_in_halfSpace [FiniteDimensional ℝ E
   · intro s hs hcard
     have hi := hind (s.image Sum.inl) (hinl s hs)
       (by rw [hdim]; exact (Finset.card_image_le.trans hcard).trans (by norm_num))
-      (by rw [hker]; exact (Finset.card_le_card Finset.inter_subset_left).trans (Finset.card_image_le.trans hcard))
+      (by
+        rw [hker]
+        exact (Finset.card_le_card Finset.inter_subset_left).trans
+          (Finset.card_image_le.trans hcard))
     have hφinj : InjOn φ (s : Set E) := by
       intro a ha b hb hab
       have heq := hi.injective (a₁ := ⟨Sum.inl a, Finset.mem_image_of_mem _ ha⟩)
@@ -88,7 +102,10 @@ theorem exists_small_vertexMaps_transverse_in_halfSpace [FiniteDimensional ℝ E
   · intro t ht hcard
     have hi := hind (t.image Sum.inr) (hinr t ht)
       (by rw [hdim]; exact (Finset.card_image_le.trans hcard).trans (by norm_num))
-      (by rw [hker]; exact (Finset.card_le_card Finset.inter_subset_left).trans (Finset.card_image_le.trans hcard))
+      (by
+        rw [hker]
+        exact (Finset.card_le_card Finset.inter_subset_left).trans
+          (Finset.card_image_le.trans hcard))
     have hψinj : InjOn ψ (t : Set E) := by
       intro a ha b hb hab
       have heq := hi.injective (a₁ := ⟨Sum.inr a, Finset.mem_image_of_mem _ ha⟩)
@@ -114,14 +131,18 @@ theorem exists_small_vertexMaps_transverse_in_halfSpace [FiniteDimensional ℝ E
         (∀ v ∈ s, ℓ (φ v) = 0) ∧ (∀ w ∈ t, ℓ (ψ w) = 0) := by
       constructor
       · intro hsub
-        exact ⟨fun v hv => hzero (Sum.inl v) (hsub (Finset.mem_union.mpr (Or.inl (Finset.mem_image_of_mem _ hv)))),
-          fun w hw => hzero (Sum.inr w) (hsub (Finset.mem_union.mpr (Or.inr (Finset.mem_image_of_mem _ hw))))⟩
+        exact ⟨fun v hv => hzero (Sum.inl v) (hsub (Finset.mem_union.mpr (Or.inl
+          (Finset.mem_image_of_mem _ hv)))),
+          fun w hw => hzero (Sum.inr w) (hsub (Finset.mem_union.mpr (Or.inr
+            (Finset.mem_image_of_mem _ hw))))⟩
       · rintro ⟨hφ0, hψ0⟩ z hz
         rcases Finset.mem_union.mp hz with hz | hz
         · obtain ⟨v, hv, rfl⟩ := Finset.mem_image.mp hz
-          exact Finset.mem_filter.mpr ⟨hVA v (hs hv), (hθ (Sum.inl v) (hVA v (hs hv))).1.mp (hφ0 v hv)⟩
+          exact Finset.mem_filter.mpr ⟨hVA v (hs hv), (hθ (Sum.inl v) (hVA v (hs hv))).1.mp
+            (hφ0 v hv)⟩
         · obtain ⟨w, hw, rfl⟩ := Finset.mem_image.mp hz
-          exact Finset.mem_filter.mpr ⟨hWA w (ht hw), (hθ (Sum.inr w) (hWA w (ht hw))).1.mp (hψ0 w hw)⟩
+          exact Finset.mem_filter.mpr ⟨hWA w (ht hw), (hθ (Sum.inr w) (hWA w (ht hw))).1.mp
+            (hψ0 w hw)⟩
     change vectorSpan ℝ (s.image φ : Set E) ⊔ vectorSpan ℝ (t.image ψ : Set E) =
       (if s.image Sum.inl ∪ t.image Sum.inr ⊆ B then LinearMap.ker ℓ else ⊤) at h
     simpa only [hiff] using h
@@ -143,13 +164,18 @@ theorem exists_small_homeomorphs_transverse_in_halfSpace [FiniteDimensional ℝ 
                   ∀ s ∈ K.faces, ∀ t ∈ L.faces,
                     (convexHull ℝ (s.image φ : Set E) ∩ convexHull ℝ (t.image ψ : Set E)).Nonempty →
                       vectorSpan ℝ (s.image φ : Set E) ⊔ vectorSpan ℝ (t.image ψ : Set E) =
-                        if (∀ v ∈ s, ℓ (φ v) = 0) ∧ (∀ w ∈ t, ℓ (ψ w) = 0) then LinearMap.ker ℓ else ⊤ := by
-  obtain ⟨ηK, hηK, hExtK⟩ := exists_isPLHomeomorphOn_extension_of_small_vertex_perturbation_preserving_halfSpace
+                        if (∀ v ∈ s, ℓ (φ v) = 0) ∧ (∀ w ∈ t, ℓ (ψ w) = 0) then LinearMap.ker
+                          ℓ else ⊤ := by
+  obtain ⟨ηK, hηK, hExtK⟩ :=
+    exists_isPLHomeomorphOn_extension_of_small_vertex_perturbation_preserving_halfSpace
     K ℓ hℓ hKℓ hU hKU hε
-  obtain ⟨ηL, hηL, hExtL⟩ := exists_isPLHomeomorphOn_extension_of_small_vertex_perturbation_preserving_halfSpace
+  obtain ⟨ηL, hηL, hExtL⟩ :=
+    exists_isPLHomeomorphOn_extension_of_small_vertex_perturbation_preserving_halfSpace
     L ℓ hℓ hLℓ hU hLU hε
-  have hKV : K.vertices.Finite := Set.Finite.preimage Finset.singleton_injective.injOn (Set.toFinite K.faces)
-  have hLV : L.vertices.Finite := Set.Finite.preimage Finset.singleton_injective.injOn (Set.toFinite L.faces)
+  have hKV : K.vertices.Finite := Set.Finite.preimage Finset.singleton_injective.injOn
+    (Set.toFinite K.faces)
+  have hLV : L.vertices.Finite := Set.Finite.preimage Finset.singleton_injective.injOn
+    (Set.toFinite L.faces)
   let V := hKV.toFinset
   let W := hLV.toFinset
   have hV : ∀ v, v ∈ V ↔ v ∈ K.vertices := fun _ => hKV.mem_toFinset
@@ -168,7 +194,8 @@ theorem exists_small_homeomorphs_transverse_in_halfSpace [FiniteDimensional ℝ 
   have hfaceL : ∀ t ∈ L.faces, t ⊆ W := fun t ht v hv => (hW v).mpr
     (L.down_closed ht (Finset.singleton_subset_iff.mpr hv) (Finset.singleton_nonempty v))
   exact ⟨φ, ψ, h, g, hh, hg, hhclose, hgclose, hhfix, hgfix, hhmap, hgmap, hhheight, hgheight,
-    fun s hs => hφind s (hfaceK s hs) (hKcard s hs), fun t ht => hψind t (hfaceL t ht) (hLcard t ht),
+    fun s hs => hφind s (hfaceK s hs) (hKcard s hs), fun t ht => hψind t (hfaceL t ht) (hLcard
+      t ht),
     fun s hs t ht => htrans s (hfaceK s hs) t (hfaceL t ht)⟩
 
 open Classical in
@@ -188,7 +215,8 @@ theorem exists_small_homeomorphs_generalPosition_in_halfSpace [FiniteDimensional
               G.faces.Finite ∧ G.space = h '' K.space ∩ g '' L.space ∧
                 IsCombinatorialManifoldWithBoundary 1 G ∧
                   ∀ y ∈ G.space,
-                    (ℓ y = 0 ∧ HasPLBoundaryCrossingAt {x : E | 0 ≤ ℓ x} (h '' K.space) (g '' L.space) y) ∨
+                    (ℓ y = 0 ∧ HasPLBoundaryCrossingAt {x : E | 0 ≤ ℓ x} (h '' K.space) (g ''
+                      L.space) y) ∨
                     (0 < ℓ y ∧ HasPLCrossingAt (h '' K.space) (g '' L.space) y) := by
   obtain ⟨φ, ψ, h, g, hh, hg, hhclose, hgclose, hhfix, hgfix, hhmap, hgmap, hhheight, hgheight,
       hφind, hψind, htrans⟩ := exists_small_homeomorphs_transverse_in_halfSpace K L
@@ -199,8 +227,10 @@ theorem exists_small_homeomorphs_generalPosition_in_halfSpace [FiniteDimensional
   have hψinj : InjOn (simplicialMap L ψ) L.space := by
     intro x hx y hy hxy
     exact hg.bijOn.injOn (mem_univ _) (mem_univ _) ((hgmap hx).trans (hxy.trans (hgmap hy).symm))
-  obtain ⟨K', hKfinite, hKspace, hKPL, hKfaces⟩ := exists_simplicialImage_of_faces_subset K K Subset.rfl φ hφind hφinj
-  obtain ⟨L', hLfinite, hLspace, hLPL, hLfaces⟩ := exists_simplicialImage_of_faces_subset L L Subset.rfl ψ hψind hψinj
+  obtain ⟨K', hKfinite, hKspace, hKPL, hKfaces⟩ := exists_simplicialImage_of_faces_subset K K
+    Subset.rfl φ hφind hφinj
+  obtain ⟨L', hLfinite, hLspace, hLPL, hLfaces⟩ := exists_simplicialImage_of_faces_subset L L
+    Subset.rfl ψ hψind hψinj
   have : Finite K'.faces := hKfinite.to_subtype
   have : Finite L'.faces := hLfinite.to_subtype
   have hKman : IsCombinatorialManifoldWithBoundary 2 K' := hK.of_isPLHomeomorphOn hKPL
@@ -277,7 +307,8 @@ theorem exists_small_homeomorphs_generalPosition_in_halfSpace [FiniteDimensional
           exact htzero w hw
     simpa only [hiff] using heq
   obtain ⟨G, hGfinite, hGspace, hGman, _⟩ :=
-    exists_isCombinatorialManifoldWithBoundary_inter_in_halfSpace_of_boundary_edges K' L' hKman hLman
+    exists_isCombinatorialManifoldWithBoundary_inter_in_halfSpace_of_boundary_edges K' L'
+      hKman hLman
       hdim ℓ hKnonneg hLnonneg (hzeroFace K' hKzero) (hzeroFace L' hLzero) htrans'
   refine ⟨h, g, G, hh, hg, hhclose, hgclose, hhfix, hgfix, hhheight, hgheight,
     hGfinite, hGspace.trans (by rw [hKspace', hLspace']), hGman, ?_⟩
@@ -301,12 +332,14 @@ theorem exists_small_homeomorph_generalPosition_in_halfSpace [FiniteDimensional 
     ∃ (h : E → E) (G : Geometry.SimplicialComplex ℝ E), IsPLHomeomorphOn h univ univ ∧
       (∀ x, dist (h x) x < ε) ∧ EqOn h id Uᶜ ∧
         (∀ x, (ℓ (h x) = 0 ↔ ℓ x = 0) ∧ (0 ≤ ℓ (h x) ↔ 0 ≤ ℓ x)) ∧
-          G.faces.Finite ∧ G.space = h '' K.space ∩ L.space ∧ IsCombinatorialManifoldWithBoundary 1 G ∧
+          G.faces.Finite ∧ G.space = h '' K.space ∩ L.space ∧
+            IsCombinatorialManifoldWithBoundary 1 G ∧
             ∀ y ∈ G.space,
               (ℓ y = 0 ∧ HasPLBoundaryCrossingAt {x : E | 0 ≤ ℓ x} (h '' K.space) L.space y) ∨
               (0 < ℓ y ∧ HasPLCrossingAt (h '' K.space) L.space y) := by
   obtain ⟨h, g, H, hh, hg, hhclose, hgclose, hhfix, hgfix, hhheight, hgheight,
-      hHfinite, hHspace, hHman, hHcross⟩ := exists_small_homeomorphs_generalPosition_in_halfSpace K L hK hL
+      hHfinite, hHspace, hHman, hHcross⟩ :=
+        exists_small_homeomorphs_generalPosition_in_halfSpace K L hK hL
     hdim ℓ hℓ hKℓ hLℓ hKboundary hLboundary hU hKU hLU (half_pos hε)
   have : Finite H.faces := hHfinite.to_subtype
   let e := hg.toOpenPartialHomeomorph isOpen_univ isOpen_univ
@@ -316,7 +349,8 @@ theorem exists_small_homeomorph_generalPosition_in_halfSpace [FiniteDimensional 
   have hinvHeight : ∀ y, (ℓ (e.symm y) = 0 ↔ ℓ y = 0) ∧ (0 ≤ ℓ (e.symm y) ↔ 0 ≤ ℓ y) := by
     intro y
     have hp := hgheight (e.symm y)
-    change (ℓ (e (e.symm y)) = 0 ↔ ℓ (e.symm y) = 0) ∧ (0 ≤ ℓ (e (e.symm y)) ↔ 0 ≤ ℓ (e.symm y)) at hp
+    change (ℓ (e (e.symm y)) = 0 ↔ ℓ (e.symm y) = 0) ∧ (0 ≤ ℓ (e (e.symm y)) ↔ 0 ≤ ℓ (e.symm
+      y)) at hp
     rw [e.right_inv (mem_univ y)] at hp
     exact ⟨hp.1.symm, hp.2.symm⟩
   have hinvClose : ∀ y, dist (e.symm y) y < ε / 2 := by
@@ -327,7 +361,8 @@ theorem exists_small_homeomorph_generalPosition_in_halfSpace [FiniteDimensional 
   have huPL : IsPLHomeomorphOn u univ univ := hh.trans hg.symm
   have huclose : ∀ x, dist (u x) x < ε := by
     intro x
-    have hp := (dist_triangle (e.symm (h x)) (h x) x).trans_lt (add_lt_add (hinvClose (h x)) (hhclose x))
+    have hp := (dist_triangle (e.symm (h x)) (h x) x).trans_lt (add_lt_add (hinvClose (h x))
+      (hhclose x))
     rw [add_halves] at hp
     exact hp
   have hufix : EqOn u id Uᶜ := by

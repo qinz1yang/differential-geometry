@@ -137,3 +137,86 @@ graph in the external realization), M304 tackles separation by the actual
 two-cap surface, and S tackles critical-endpoint/regular-middle gluing with
 genuine cancellability. E3's active original-end-circle/prism round receives
 no interruption. All five existing tasks retain one lane each.
+
+## 73. Supported boundary normalization and original-loop homotopy
+
+F's frozen boundary-position, loop-lift, homotopy and relative-normalization
+layer through 44d4e28ef is independently accepted. The nine author modules
+are copied from their exact frozen source. Two existing half-space
+prerequisites are also checked and registered after root-coverage review.
+The supported local construction changes the actual disk map on one isolated
+sheet, fixes the seam and exterior fibers, and preserves boundary properness,
+local injectivity and the two-preimage bound. Its boundary homotopy remains
+on the actual boundary throughout. It is a continuous homotopy; no isotopy
+claim is made for the intermediate straight-line maps.
+
+The covering construction now keeps the projection of the produced boundary
+neighborhood in the relative interior of the original one. Compactness gives
+a positive uniform buffer. The original boundary loop is lifted surjectively
+to the actual source circle; applying the disk homotopy to that same lift
+produces a loop homotopic inside the original boundary neighborhood. Exact
+boundary image equalities and avoidance of the original normal subgroup are
+retained. The five pre-existing public cover signatures are preserved.
+
+The relative variant protects an open neighborhood O of a given closed Q
+which excludes the newly handled point y. All fibers in O remain unchanged,
+so both crossing types are preserved there in every chart. The active
+transition region is still uncontrolled. The concrete positive-interval
+obstruction shows why an arbitrary previously open protected region cannot
+be used in place of this closed-set condition.
+
+All eleven modules pass fresh compilation in 147.609 seconds,
+and the final joint audit takes 55.198 seconds including admission.
+The audit covers all 38 nonautomatic native declarations, 48 distinct key
+reuse entries and sixteen classified probe declarations. All transitive
+axioms are approved foundations; thirteen applicable linters pass and final
+diagnostics are zero. Twenty-five declarations are new: seventeen public
+theorems, six private mathematical helpers and two private local instances.
+Thirteen old declarations are checked for compatibility and are not counted
+as new. 62 accepted private prerequisite objects are reused only with exact
+raw source and recorded object identities.
+
+Probe accounting is deliberately separate: five actual geometric theorems
+exercise a nonempty triangle, a planar disk and circle parametrization, and
+two rectangle sheets with a specific double point. One theorem proves the
+open-region obstruction. Six fixtures are conditional NormalSystem/cover/
+embedded-disk consumers. One local instance and three helper definitions
+are not geometric models. There is no full nonempty NormalSystem fixture
+with subgroup avoidance, and no assertion that the final intersection in
+the triangle perturbation test is nonempty.
+
+Root review adds the previously unreachable HalfSpacePerturbation and
+HalfSpaceGeneralPosition modules and all seven new leaves. Their old six
+proofs receive required headers and long-line layout repairs. An initial
+integration line wrap caused a Lean layout error; its exact failing source,
+log and receipt are retained. Expanding the two affected tactic sequences
+resolved it, and all downstream modules were rechecked. The earlier nine-
+module success and audit are retained without double-counting declarations.
+The root graph reaches 9620 project modules including the root, with no
+missing source or cycles. No full-root compilation is claimed.
+
+Accepted Lean delta is +1783/-70: +1692/-38 frozen author code and +91/-32
+root/header/layout repair. These are integrated source differences, not
+typing counts for this heartbeat. Receipt:
+.lake/verified-fiftysecond-lane-delivery-20260919.json.
+
+Global relative normalization, the transition-annulus step or a sufficient
+finite protected-core induction, and loop-theorem branch elimination remain
+open. The smaller normal system's embedded disk is still an induction input.
+Neither Moise252 nor the global loop theorem follows from this acceptance.
+
+At completed deliveries only, E3, M304 and S received their next rounds.
+E3 through ddade8562 is queued and corrects the earlier outer-circle plan:
+the original outer annulus circles avoid the small derived neighborhood.
+The next producer must use inner-disk boundary traces and glue back the
+original external annuli. Its read-only derived-restriction compiler grant
+removes an administrative blocker, and ab29's canonical finite-union/gluing
+repairs are handed back without overwriting E3's newer geometry.
+M304 bed13ca15 is queued for independent replay of genuine wall-to-caps
+separation; its next round uses the existing Betti/component-selection chain
+and advances the missing original-wall geometric producer. S ec69dc759 is
+queued for its actual saddle section and unique descending-trajectory
+calculus. Its next relative strip must use the same original descending
+field, not infer incidence from a separately constructed regular-band field.
+F and h were not interrupted. Five tasks retain one lane each, with hourly
+quiet follow-up and renewed administrative compiler leases.
