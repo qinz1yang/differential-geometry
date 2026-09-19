@@ -463,6 +463,14 @@ support is not prescribed. General surface pairing and geometric reduction,
 finite iteration and strip assembly remain open. S stopped its round cleanly;
 see handoff section 66.
 
+### Closed-interval meridian gate (2026-09-19 UTC)
+
+M304 through e83d02f94 is independently accepted: every closed-interval
+height of an actual finite untwisted disk cylinder supplies its proper
+essential meridian, including both glued ends. The connected-complement API
+now includes endpoints; all six affected module suites pass together. General
+prescribed-shell cylinder production and Moise304 remain open. See section 67.
+
 ## 1. 目标与接口
 
 - 数学目标：Hausdorff、第二可数的紧致无边界拓扑三维流形 `M`，在同一 carrier、同一拓扑上存在光滑结构。

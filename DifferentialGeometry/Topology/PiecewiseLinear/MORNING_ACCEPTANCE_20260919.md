@@ -2077,3 +2077,35 @@ Arbitrary surface critical-region pairing and connecting arcs, geometric
 reduction into this model with support in a specified frame, finite iteration,
 the original strip product/isotopy, crossing seams and compact PL3 smoothing
 remain open. S has delivered a clean checkpoint and stopped its round.
+
+## 67. Essential slice disks through the glued cylinder ends (2026-09-19 UTC)
+
+M304 source e83d02f94 is independently accepted. An actual finite PL disk
+cylinder with a three-dimensional manifold target and pointwise equal ends
+now supplies the parametrized proper nonempty meridian disk at every height
+in the closed unit interval. Each has its exact frontier circle, connected
+boundary complement, non-null inclusion into the boundary and null inclusion
+into the same manifold.
+
+The existing connected-complement theorem is generalized from the open to
+the closed interval without adding equal-end or finite-dimensional target
+assumptions. Its existing compression consumer compiles unchanged. The actual
+torus model checks every height and both glued endpoints; a separate probe
+checks equal endpoint disk images, nonempty disk interiors and disjointness
+from the middle disk.
+
+Six modules compiled in 73.380 seconds; the combined audit took
+51.528 seconds including admission. All 12 nonautomatic native
+declarations in those six modules, twelve critical reuse entries and two
+actual geometric probes pass the approved axiom bound. All native/probe
+declarations pass thirteen applicable linters with zero diagnostics. This
+includes the complete unchanged frontier, compression, shell and meridian
+consumer suites. One native theorem is new and one existing theorem is
+generalized; the other 10 are compatibility checks. 72 exact-source private
+prerequisite objects were reused.
+
+Lean delta: +123/-1, including one new root import. Static root reachability
+is 9603 modules including the root, with no missing source or cycle. Receipt:
+.lake/verified-fortyseventh-lane-delivery-20260919.json. The full root build
+remains stopped. General cylinder production for arbitrary shells and Moise304
+remain open. Later boundary-only and capped-surface source is queued separately.
