@@ -5,6 +5,7 @@ Authors: DifferentialGeometry contributors
 -/
 import DifferentialGeometry.Topology.FundamentalGroup.SimplyConnected
 import DifferentialGeometry.Topology.Connected.PhragmenBrouwer
+import DifferentialGeometry.Topology.Connected.ClosedCover
 import DifferentialGeometry.Topology.PiecewiseLinear.NullhomotopyNeighborhood
 import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceSimplyConnected
 import DifferentialGeometry.Topology.PiecewiseLinear.AnnulusCapping
@@ -112,6 +113,76 @@ theorem IsCombinatorialManifold.exists_essential_singular_disk_in_neighborhood
     ((pathToCircle_nullhomotopic_iff (p.map i.continuous)).mp hnull)
 
 open Classical in
+theorem IsCombinatorialManifold.exists_separating_component_bettiOne_lt_of_annulus_capping
+    (K R : Geometry.SimplicialComplex ℝ E) [Finite K.faces] [Finite R.faces]
+    (hK : IsCombinatorialManifold 2 K) (hKc : IsConnected K.space)
+    (hdim : Module.finrank ℝ E = 3) (hR : IsCombinatorialManifoldWithBoundary 2 R)
+    {J W : Set E} (hJ : IsPLSphere 1 J) (hJK : J ⊆ K.space) {ρ : E × ℝ → E}
+    (hρ : IsPLHomeomorphOn ρ (J ×ˢ Icc (-1 : ℝ) 1) W)
+    (hzero : ∀ x ∈ J, ρ (x, 0) = x) (hWnhds : W ∈ 𝓝ˢ[K.space] J)
+    (hcover : W ∪ R.space = K.space)
+    (htrace : W ∩ R.space = ρ '' (J ×ˢ {(-1 : ℝ), 1}))
+    (hboundary : (boundaryComplex 2 R).space = ρ '' (J ×ˢ {(-1 : ℝ), 1}))
+    (hnon : ¬ (⟨Set.inclusion hJK, continuous_inclusion hJK⟩ : C(J, K.space)).Nullhomotopic)
+    {D₀ D₁ : Set E} {r₀ r₁ : (Fin 3 → ℝ) → E}
+    (hr₀ : IsPLHomeomorphOn r₀ (stdSimplex ℝ (Fin 3)) D₀)
+    (hr₁ : IsPLHomeomorphOn r₁ (stdSimplex ℝ (Fin 3)) D₁) (hdis : Disjoint D₀ D₁)
+    (hmeet₀ : R.space ∩ D₀ = r₀ '' stdSimplexBoundary 2)
+    (hmeet₁ : R.space ∩ D₁ = r₁ '' stdSimplexBoundary 2)
+    (hbd₀ : r₀ '' stdSimplexBoundary 2 = ρ '' (J ×ˢ {(-1 : ℝ)}))
+    (hbd₁ : r₁ '' stdSimplexBoundary 2 = ρ '' (J ×ˢ {(1 : ℝ)}))
+    {H T : Set E} (hH : IsPreconnected H) (hT : IsPreconnected T)
+    (hsep : Separates (R.space ∪ D₀ ∪ D₁) H T) :
+    ∃ (P : Geometry.SimplicialComplex ℝ E) (hPfin : P.faces.Finite),
+      letI := hPfin.to_subtype
+      IsCombinatorialManifold 2 P ∧ IsConnected P.space ∧ IsOrientable 2 P ∧
+      IsTwoSided P.space ∧ P.space ⊆ R.space ∪ D₀ ∪ D₁ ∧ Separates P.space H T ∧
+      Homology.bettiOne P.space < Homology.bettiOne K.space ∧
+      ∀ x ∈ P.space, connectedComponentIn (R.space ∪ D₀ ∪ D₁) x = P.space := by
+  by_cases hcircle : IsPreconnected (K.space \ J)
+  · have hRc := Topology.isConnected_complement_of_bicollar hJ.isConnected
+      hJ.isPolyhedron.isCompact (isPolyhedron_space R).isClosed
+      (by rwa [union_comm]) (by rwa [inter_comm])
+      hρ.isPiecewiseAffineOn.continuousOn hρ.bijOn hzero hcircle
+    obtain ⟨P, hPfin, hP, hPc, hPo, -, -, hβ, hPspace⟩ :=
+      hK.exists_capped_annulus_complement K R hKc hdim hR hRc hJ
+        (by norm_num : (-1 : ℝ) < 1) hρ hcover htrace hboundary
+        hr₀ hr₁ hdis hmeet₀ hmeet₁ hbd₀ hbd₁
+    let _ : Finite P.faces := hPfin.to_subtype
+    refine ⟨P, hPfin, hP, hPc, hPo, hP.isTwoSided P hdim hPc,
+      hPspace.subset, hPspace.symm ▸ hsep, hβ, ?_⟩
+    intro x hx
+    rw [← hPspace]
+    exact hPc.isPreconnected.connectedComponentIn hx
+  · obtain ⟨P, Q, hPfin, hQfin, hP, hQ, hPc, hQc, hPo, hQo, -, -, hPQ, -, -, hPβ, hQβ,
+        hPQspace⟩ := hK.exists_capped_pair_of_separating_essential_annulus K R hKc hdim hR
+      hJ hJK hρ hzero hWnhds hcover htrace hboundary hcircle hnon
+      hr₀ hr₁ hdis hmeet₀ hmeet₁ hbd₀ hbd₁
+    let _ : Finite P.faces := hPfin.to_subtype
+    let _ : Finite Q.faces := hQfin.to_subtype
+    have hcomponent {A B : Set E} (hA : IsClosed A) (hB : IsClosed B)
+        (hc : IsPreconnected A) (hd : Disjoint A B) {x : E} (hx : x ∈ A) :
+        connectedComponentIn (A ∪ B) x = A := by
+      have hsdiff : A \ B = A := sdiff_eq_left.mpr hd
+      have h := connectedComponentIn_sdiff_inter_eq_sdiff hA hB
+        (hsdiff.symm ▸ hc) ⟨hx, disjoint_left.mp hd hx⟩
+      simpa only [hd.inter_eq, sdiff_empty, hsdiff] using h
+    rcases phragmen_brouwer (isPolyhedron_space P).isClosed (isPolyhedron_space Q).isClosed
+      hPQ hH hT (hPQspace.symm ▸ hsep) with hPsep | hQsep
+    · refine ⟨P, hPfin, hP, hPc, hPo, hP.isTwoSided P hdim hPc,
+        subset_union_left.trans hPQspace.subset, hPsep, hPβ, ?_⟩
+      intro x hx
+      rw [← hPQspace]
+      exact hcomponent (isPolyhedron_space P).isClosed (isPolyhedron_space Q).isClosed
+        hPc.isPreconnected hPQ hx
+    · refine ⟨Q, hQfin, hQ, hQc, hQo, hQ.isTwoSided Q hdim hQc,
+        subset_union_right.trans hPQspace.subset, hQsep, hQβ, ?_⟩
+      intro x hx
+      rw [← hPQspace, union_comm]
+      exact hcomponent (isPolyhedron_space Q).isClosed (isPolyhedron_space P).isClosed
+        hQc.isPreconnected hPQ.symm hx
+
+open Classical in
 theorem IsCombinatorialManifold.exists_separating_surface_bettiOne_lt_of_annulus_capping
     (K R : Geometry.SimplicialComplex ℝ E) [Finite K.faces] [Finite R.faces]
     (hK : IsCombinatorialManifold 2 K) (hKc : IsConnected K.space)
@@ -137,29 +208,10 @@ theorem IsCombinatorialManifold.exists_separating_surface_bettiOne_lt_of_annulus
       IsCombinatorialManifold 2 P ∧ IsConnected P.space ∧ IsOrientable 2 P ∧
       IsTwoSided P.space ∧ P.space ⊆ R.space ∪ D₀ ∪ D₁ ∧ Separates P.space H T ∧
       Homology.bettiOne P.space < Homology.bettiOne K.space := by
-  by_cases hcircle : IsPreconnected (K.space \ J)
-  · have hRc := Topology.isConnected_complement_of_bicollar hJ.isConnected
-      hJ.isPolyhedron.isCompact (isPolyhedron_space R).isClosed
-      (by rwa [union_comm]) (by rwa [inter_comm])
-      hρ.isPiecewiseAffineOn.continuousOn hρ.bijOn hzero hcircle
-    obtain ⟨P, hPfin, hP, hPc, hPo, -, -, hβ, hPspace⟩ :=
-      hK.exists_capped_annulus_complement K R hKc hdim hR hRc hJ
-        (by norm_num : (-1 : ℝ) < 1) hρ hcover htrace hboundary
-        hr₀ hr₁ hdis hmeet₀ hmeet₁ hbd₀ hbd₁
-    let _ : Finite P.faces := hPfin.to_subtype
-    exact ⟨P, hPfin, hP, hPc, hPo, hP.isTwoSided P hdim hPc,
-      hPspace.subset, hPspace.symm ▸ hsep, hβ⟩
-  · obtain ⟨P, Q, hPfin, hQfin, hP, hQ, hPc, hQc, hPo, hQo, -, -, hPQ, -, -, hPβ, hQβ,
-        hPQspace⟩ := hK.exists_capped_pair_of_separating_essential_annulus K R hKc hdim hR
-      hJ hJK hρ hzero hWnhds hcover htrace hboundary hcircle hnon
-      hr₀ hr₁ hdis hmeet₀ hmeet₁ hbd₀ hbd₁
-    let _ : Finite P.faces := hPfin.to_subtype
-    let _ : Finite Q.faces := hQfin.to_subtype
-    rcases phragmen_brouwer (isPolyhedron_space P).isClosed (isPolyhedron_space Q).isClosed
-      hPQ hH hT (hPQspace.symm ▸ hsep) with hPsep | hQsep
-    · exact ⟨P, hPfin, hP, hPc, hPo, hP.isTwoSided P hdim hPc,
-        subset_union_left.trans hPQspace.subset, hPsep, hPβ⟩
-    · exact ⟨Q, hQfin, hQ, hQc, hQo, hQ.isTwoSided Q hdim hQc,
-        subset_union_right.trans hPQspace.subset, hQsep, hQβ⟩
+  obtain ⟨P, hPfin, hP, hPc, hPo, hPt, hPsub, hPsep, hβ, _⟩ :=
+    hK.exists_separating_component_bettiOne_lt_of_annulus_capping K R hKc hdim hR
+      hJ hJK hρ hzero hWnhds hcover htrace hboundary hnon hr₀ hr₁ hdis
+      hmeet₀ hmeet₁ hbd₀ hbd₁ hH hT hsep
+  exact ⟨P, hPfin, hP, hPc, hPo, hPt, hPsub, hPsep, hβ⟩
 
 end DifferentialGeometry.Topology.PiecewiseLinear

@@ -1411,8 +1411,8 @@ axiom and thirteen-linter checks, together with six existing declarations
 from two previously unreachable prerequisites. Those modules now have
 required headers and direct root imports. One old unused finite-dimensional
 hypothesis was removed, preserving the proof and old caller. See integration section72 and the resumed
-ledger. The earlier boundary perturbation/homotopy queue and the new
-a50bc58dd/44d4e28ef consumers still await independent replay.
+ledger. At that checkpoint the boundary perturbation/homotopy queue and
+a50bc58dd/44d4e28ef consumers awaited replay; section 73 records acceptance.
 
 The current F lane must produce relative crossing control in the active
 transition annulus, or a finite protected-core invariant with a proved cover
@@ -1426,7 +1426,8 @@ neighborhood modifications (h), and actual relative critical-pair normal
 form geometry (S). No full-root compilation is claimed.
 
 
-Latest unaccepted checkpoints are h d2c94f911, M304 f2338f0d and S f15aad47d.
+The historical unaccepted queue at section 72 contained h d2c94f911, M304
+f2338f0d and S f15aad47d; sections 73-74 supersede that queue.
 Source review distinguishes h's graph-fixed external homeomorphism from a
 self-homeomorphism of the original K.space; the latter is its next producer.
 M304's new finite polyhedral separator is not yet a capped closed surface.
@@ -1468,3 +1469,33 @@ original trajectory's incidence without a proved comparison.
 Five tasks remain authorized without a new deadline. Administrative leases
 are renewable and are not owner deadlines. Existing hourly quiet follow-up,
 two private checker slots and no unsolicited full-root rebuild continue.
+
+
+### Actual compression component accepted; interior essential disk is next
+
+Integration section 74 accepts M304 through 01fc05b8c, including its preceding
+common solid-torus neighborhood, polyhedral separator and genuine wall-to-caps
+separation checkpoints. From an actual original essential disk/circle and the
+marked compression ball/caps, the endpoint produces a connected closed PL2
+component of the literal capped union, separates the original targets and
+strictly lowers the first Betti number. The result surface and final separation
+are not hypotheses. The exact component equation is proved, with the previous
+selection signature retained. All 68 declarations in fifteen fresh modules,
+63 critical reuses and six actual model assertions pass axiom and lint audit.
+The six assertions share one concrete nonseparating torus family.
+
+Do not repeat the existing minimum-Betti selection or capping arithmetic.
+M304 now advances actual cutting along an internal two-sided surface and the
+fundamental-group kernel bridge from the corrected boundary-loop theorem to
+the corrected Moise264 contract. Moise252 may be a named, explicit unresolved
+upstream input; a proper embedded disk or equivalent final kernel witness may
+not be assumed as the new producer's conclusion in disguise. Preserve the
+original K, L and ambient neighborhood. E3 independently retains original-wall
+alignment, inner-disk traces and physical cap gluing. Both gaps remain needed
+for arbitrary-shell Moise304.
+
+Pending independent acceptance is E3 through ddade8562, h through d2c94f911
+and S through ec69dc759. F's boundary layer through 44d4e28ef and M304 through
+01fc05b8c are accepted. Later active-round source must be frozen at delivery
+before integration. Required dependency refresh is authorized privately and
+on demand; source ownership, hourly quiet follow-up and checker limits remain.

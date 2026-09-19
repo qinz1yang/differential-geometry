@@ -3450,3 +3450,80 @@ calculus. Its next relative strip must use the same original descending
 field, not infer incidence from a separately constructed regular-band field.
 F and h were not interrupted. Five tasks retain one lane each, with hourly
 quiet follow-up and renewed administrative compiler leases.
+
+## 74. Original-shell compression produces a separating component of lower Betti number
+
+M304 checkpoints eb74775d5, f2338f0d, bed13ca15 and 01fc05b8c are independently
+accepted together. The common derived neighborhood now applies to finite
+orientable surfaces with boundary, preserves both exact annular traces and
+has an actual solid-torus realization. Given a proper spanning disk, it can
+avoid a prescribed closed obstacle and an interior point of that same disk.
+The earlier local replacement produces an actual finite polyhedral separator
+with exact outside agreement in the original shell; that intermediate result
+is not asserted to be a closed surface.
+
+The wall-to-caps theorem proves separation of the actual capped union. Its
+generic topological argument proves frontier(U minus N) lies in the replacement
+before applying separation monotonicity. The original connected closed PL
+surface supplies two local complementary regions, and an actual full-dimensional
+PL ball supplies a regular closed set with connected interior.
+
+The new compression endpoint starts with the original essential circle or
+proper embedded disk, a centered annulus in the original surface, an actual
+PL three-ball, two disjoint cap disks and the exact wall/frontier/rim equations.
+It constructs the finite annulus complement, its WB2 structure and cap traces.
+It then produces a finite closed connected orientable two-sided PL surface P
+inside C = closure(S minus W) union D0 union D1. P separates the original
+targets, has strictly smaller first Betti number, and satisfies
+connectedComponentIn C x = P.space for every x in P.space. Neither the result
+manifold, final separation nor Betti descent is an input.
+
+The existing capping chain is reused. A nonseparating essential circle gives
+beta(P)+2=beta(S). In the separating case the actual half-annulus and spherical
+disk complement would contract the original essential circle if either capped
+component were spherical. Thus both Betti numbers are positive and strictly
+smaller; Phragmen-Brouwer selects one still separating the original targets.
+DiskCapping and AnnulusCapping are freshly compiled and their complete native
+suites audited with the new modules. The original shell X and targets B0,B1
+are retained, and the produced P lies inside interior X.
+
+All fifteen fresh module checks pass in 176.941 seconds;
+the final joint audit takes 70.604 seconds including admission.
+All 68 nonautomatic declarations, 63 distinct critical reuse entries and six
+actual producer/model assertions have only approved foundational axioms.
+All thirteen applicable linters pass, with zero final diagnostics. There are
+23 new public declaration names and 45 retained declarations. One new name
+promotes and generalizes an existing private local-separation lemma; the old
+private name is removed, so the net declaration increase is 22. All 37 former
+public theorem signatures in changed files are preserved. The stronger
+component-selection result keeps its former surface-selection API as a corollary.
+
+The six model assertions use the same explicit nonseparating essential-torus
+family, not six independent geometries. They witness nonempty original targets,
+proper disk interior, exact annular traces and actual disjoint caps. The final
+test discards the old final separation, calls the new producer to obtain P,
+then identifies P with the literal capped sphere and verifies beta 2 to 0.
+The separating-circle proof is audited generally; no genus-two concrete model
+is claimed.
+
+The author-approved SphericalDiskComplement repair preserves all proof/import
+tokens. Integration also adds required headers to BallRegularClosed,
+BallStarring and SurfaceComplement, preserving their proof/import tokens and
+refreshing these modules and the two new separation consumers. Earlier check
+timings are retained without double counting. 118 private prerequisite
+objects are reused only with exact raw source and recorded object identities.
+Accepted Lean delta is +1120/-39: +1093/-39 frozen author source, 21 integration
+header lines and six root imports. This is integrated source, not typing during
+this delivery turn. The root graph reaches 9626 project modules including the
+root, with no missing source or cycles. Full-root compilation remains pending.
+Receipt: .lake/verified-fiftythird-lane-delivery-20260919.json.
+
+Arbitrary-shell Moise304 remains open. Its essential embedded-disk producer
+and E3's original-wall/end-rim geometry are still genuine upstream obligations.
+At its completed delivery boundary, M304 was assigned the actual interior
+surface cutting and fundamental-group kernel bridge for Moise264, treating
+the named Moise252 theorem as an explicit unresolved upstream input. Existing
+minimum-Betti and compression algebra are not reassigned. E3 keeps physical
+capping and received dependency-closed read-only private refresh authority for
+demonstrated missing/stale imports; this is not an eager full rebuild or source
+edit grant. Other active lanes are not interrupted.

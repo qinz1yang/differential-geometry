@@ -8984,6 +8984,12 @@ import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ProjectedBounda
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ProjectedBoundaryRelative
 import DifferentialGeometry.Topology.PiecewiseLinear.HalfSpacePerturbation
 import DifferentialGeometry.Topology.PiecewiseLinear.HalfSpaceGeneralPosition
+import DifferentialGeometry.Topology.PiecewiseLinear.CommonCircleSolidTorus
+import DifferentialGeometry.Topology.PiecewiseLinear.SpanningDiskNeighborhood
+import DifferentialGeometry.Topology.PiecewiseLinear.SpanningDiskSeparation
+import DifferentialGeometry.Topology.Connected.BoundaryReplacement
+import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceCappingSeparation
+import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceCompressionSeparation
 
 /-!
 # Differential geometry and geometric analysis

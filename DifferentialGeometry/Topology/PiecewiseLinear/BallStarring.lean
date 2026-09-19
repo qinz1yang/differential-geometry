@@ -1,8 +1,16 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.BallInterior
 import DifferentialGeometry.Topology.PiecewiseLinear.BallFrontier
+import DifferentialGeometry.Topology.PiecewiseLinear.BallRegularClosed
 import DifferentialGeometry.Topology.PiecewiseLinear.AmbientPointMove
 import DifferentialGeometry.Topology.PiecewiseLinear.ConePairExtension
 import DifferentialGeometry.Topology.PiecewiseLinear.StdSimplexCone
+
+/-! Piecewise linear parametrizations of balls with a prescribed interior point. -/
 
 open Set
 
@@ -18,10 +26,8 @@ theorem IsPLHomeomorphOn.image_openSimplex_eq_interior {n : ℕ}
     hP.isPolyhedron.isCompact.isClosed.frontier_eq, sdiff_sdiff_cancel_left interior_subset]
 
 theorem isConnected_interior_of_isPLBall {n : ℕ} {P : Set (EuclideanSpace ℝ (Fin (n + 1)))}
-    (hP : IsPLBall (n + 1) P) : IsConnected (interior P) := by
-  obtain ⟨f, hf⟩ := hP
-  rw [← hf.image_openSimplex_eq_interior, hf.image_openSimplex_stdVertices]
-  exact hf.isConnected_sdiff_image_stdSimplexBoundary
+    (hP : IsPLBall (n + 1) P) : IsConnected (interior P) :=
+  hP.isConnected_interior_of_finrank (by simp)
 
 theorem IsPLBall.exists_isPLHomeomorphOn_stdSimplex_stdCenter_eq {n : ℕ}
     {P : Set (EuclideanSpace ℝ (Fin (n + 1)))} (hP : IsPLBall (n + 1) P)
@@ -109,8 +115,10 @@ theorem IsPLHomeomorphOn.image_openSimplex_eq_sdiff_boundaryComplex {E : Type*}
   rw [hg.image_openSimplex_stdVertices, hg.image_stdSimplexBoundary_eq_boundaryComplex K hK]
 
 theorem IsPLBall.exists_isPLHomeomorphOn_stdSimplex_stdCenter_eq_of_notMem_boundaryComplex
-    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E] [DecidableEq E]
-    {m : ℕ} {P : Set E} (hP : IsPLBall (m + 1) P) (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    [DecidableEq E]
+    {m : ℕ} {P : Set E} (hP : IsPLBall (m + 1) P)
+    (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
     (hK : K.space = P) {x : E} (hx : x ∈ P \ (boundaryComplex (m + 1) K).space) :
     ∃ f : (Fin (m + 2) → ℝ) → E,
       IsPLHomeomorphOn f (stdSimplex ℝ (Fin (m + 2))) P ∧ f (stdCenter m) = x := by
