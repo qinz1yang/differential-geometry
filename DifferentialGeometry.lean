@@ -8991,6 +8991,9 @@ import DifferentialGeometry.Topology.Connected.BoundaryReplacement
 import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceCappingSeparation
 import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceCompressionSeparation
 
+import DifferentialGeometry.Topology.LocallyFiniteSeparation
+import DifferentialGeometry.Topology.PiecewiseLinear.DualCellPiercingStability
+import DifferentialGeometry.Topology.PiecewiseLinear.TrivalentDualCellPerturbationModel
 /-!
 # Differential geometry and geometric analysis
 -/

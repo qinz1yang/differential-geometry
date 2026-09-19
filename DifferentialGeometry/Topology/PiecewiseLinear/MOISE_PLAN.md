@@ -1522,3 +1522,26 @@ M304's original-shell compression component layer remains accepted, while
 actual Moise264 cutting/kernel production is open. Existing five tasks retain
 their lanes, with no new deadline, no routine mid-round messages and no
 time-triggered full-root rebuild.
+
+
+### Relative perturbation stability accepted; next actual geometric gates
+
+Integration section 76 accepts h through d2c94f911: finite perturbation radii,
+actual supported PL moves fixing the original graph, and image-neighborhood
+trace transport. Eight fresh modules, 33 native declarations, seventeen key
+reuses and thirteen linters pass independent verification. Of twelve newly
+placed declarations, two are relocated proofs; ten are new mathematics.
+The original three-dimensional carrier is not proved invariant. Continue h's
+active carrier-preserving self-homeomorphism and compatible-subdivision round.
+
+Independent acceptance now queues S through c0f4df1b1 (including d77f16c3c and
+earlier unaccepted prerequisites), F through 71b0b003e, and M304 7a1632779.
+S has delivered actual open smooth strip coordinates and has resumed full
+Morse endpoint gluing and supported cancellation. M304 has delivered actual
+finite cut pieces and open-side kernels and has resumed the compatible maps
+from open sides to the same closed boundary components; corrected Moise252
+remains explicit unresolved upstream. F owns the controlled canonical half-space
+extension/general-position implementation for the same actual perturbations.
+E3 remains on original inner traces and physical caps. These are completed-round
+handoffs, not new parallel lanes. No full-root restart is triggered by elapsed
+time, and no new deadline has been inferred.

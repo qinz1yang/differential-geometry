@@ -365,3 +365,77 @@ preserving old public signatures and checking actual consumers. This does not
 claim the whole transition annulus or global loop-theorem normalization.
 S through d77f16c3c and h through d2c94f911 also await independent replay.
 Five existing lanes and hourly quiet follow-up remain; no new tasks are added.
+
+## 76. Relative supported perturbations and finite neighborhood stability
+
+h checkpoints d8a0118fb, 1a8a1b422, 6ed79b213 and d2c94f911 are independently
+accepted. A natural metric theorem produces one positive radius preserving
+containment and pairwise disjointness for arbitrary uniformly small maps of
+finite compact families and their subordinate inner sets. No continuity of
+those maps is needed. Actual nested piercing neighborhoods supply the required
+compactness and containment, rather than assuming stability as an input.
+
+Supported PL point moves produce genuinely nonidentity ambient homeomorphisms
+of arbitrarily small displacement, fixing a specified closed obstacle and
+the complement of a specified open region. The actual trivalent graph in the
+boundary of a four-simplex gives three nonempty circle piercings and disjoint
+nested neighborhoods. A point on the first circle is chosen away from its
+splitting-disk centroid and proved outside the original graph; the resulting
+supported perturbation fixes that graph and moves the chosen point.
+
+The conclusion is carefully limited: transported open nesting lives in
+h(K.space), and image trace certificates describe images of the original
+derived neighborhoods. They do not prove h(K.space)=K.space or produce new
+canonical derived neighborhoods in a compatible subdivision. h's active next
+round remains the actual self-homeomorphism of the original carrier and its
+compatible triangulation. Moise331 and Moise351 are not completed here.
+
+Locally finite separation is centralized in its general topological home.
+The metric-free result is an existing private proof promoted and reused by
+both finite piercing neighborhoods and noncompact splitting-disk families.
+The private finite-uniform-radius lemma is also relocated. These two moved
+declarations are not new mathematical proof progress. Later author bytes had
+reintroduced two obsolete private helpers removed in d8a0118fb; integration
+restores the original 67-line deletion and rebuilds the four affected modules.
+No public signature is changed, and no parallel author worktree is modified.
+
+Eight modules compile freshly in 81.695 seconds; the complete final audit takes
+48.784 seconds including resource admission. All 33 native nonautomatic declarations,
+17 distinct critical reuses and one external concrete model have only approved
+foundational axioms and pass all thirteen applicable linters, with zero final
+diagnostics. Twenty-one old public signatures are retained. Twelve declarations
+appear in new module positions: eleven public and one private; two are the
+relocations above, leaving ten new mathematical declarations (nine theorems
+and one definition). The native census includes three new trivalent-model
+assertions and four retained model assertions. The external model is an actual
+nonidentity PL homeomorphism of R, fixing 0 and the complement of the prescribed
+radius-one-half ball about 1, with displacement below one eighth. Model assertions
+and helper declarations are not counted as independent Moise completions.
+
+Accepted Lean delta is +646/-144, including three root imports and relocated
+proofs; this is source accepted, not code typed during this heartbeat.
+All three new leaves are registered once in the root import header. Static
+reachability is 9629 project modules including the root, with no missing source
+or cycles. 38 private prerequisite objects match exact raw source and accepted
+object hashes. Full-root compilation remains pending; receipt:
+.lake/verified-fiftyfifth-lane-delivery-20260919.json.
+
+Two further completed deliveries are frozen and queued, not independently
+accepted: M304 7a1632779 gives actual finite cut pieces of the original K/L,
+boundary-component labels and a prescribed-neighborhood bicollar, plus an
+open-cover kernel theorem. Its next round constructs compatible collar maps
+to transport the kernel to the actual closed cut boundary before consuming
+the still-unproved Moise252. S c0f4df1b1 (mathematics d07d5e6e4) gives actual
+open smooth coordinates around the entire original-flow closed rectangle,
+including the two end overlaps, without an assumed immersion. Its next round
+glues the full Morse endpoint neighborhoods and performs actual supported
+cancellation for the same function, atlas and frame. Earlier S checkpoints
+through d77f16c3c remain in that same independent-acceptance dependency queue.
+
+F's existing round now owns canonical HalfSpacePerturbation and
+HalfSpaceGeneralPosition edits in its own checkout, preserving old public
+signatures while exposing controlled Lipschitz displacements of the same
+actual inner perturbations. Its previous 71b0b003e flat-sheet source remains
+frozen for independent replay. E3 continues actual physical caps from the
+inner-disk trace and original external annuli. No new task, second lane or
+routine status request is introduced; next handoffs occur at deliveries.
