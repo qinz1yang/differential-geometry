@@ -1,13 +1,17 @@
-# 到 36.1 的条件骨架（2026-09-16）
+# Current Moise dependency chain (2026-09-19 UTC)
 
-Phase 3 的终点已经归约成一句话：`plApproximationManifold_three_of_moise352 : Moise352 3 → PLApproximationManifold 3`
-（`Endgame.lean`，已证，仅标准三公理）。所以整个工程只差 `Moise352`。
+This is the dependency summary. Current execution and ownership are in
+[MOISE_PLAN.md](MOISE_PLAN.md); source/book evidence is in
+[ROUTE_AUDIT_20260919.md](ROUTE_AUDIT_20260919.md).
 
-但 `Moise352` 是一个巨大的洞。本文件把这个洞拆成书上关键路径的一条具名链：每个结点是 Moise 书里的一条定理，
-在 `MoiseChain.lean` 里写成显式 `Prop`，箭头是书里真正做的归约。目标是让最终陈述读作
-"三维 PL 逼近定理成立，只要下面这些经典命题成立"，每条都带页码，任何人都可以独立地去消掉其中一条。
+The compiled plApproximationManifold_three_of_moise352 consumes Moise352 3.
+It proves conditional PL approximation assembly, not Moise352. A smooth
+structure also needs an independent PL-to-smooth producer. Compact smoothing
+suffices for the final compact consumer; approximation must retain noncompact
+domains and variable positive error. The project is not reduced to a single
+remaining input or final assembly.
 
-## 主链（自下而上）
+## Current main chain
 
 | 结点 | 书中定理（页） | Lean `Prop` | 现状 |
 |---|---|---|---|
@@ -26,28 +30,66 @@ Phase 3 的终点已经归约成一句话：`plApproximationManifold_three_of_mo
 | 35.1 | 流形中 1 维多面体的正则邻域逼近 | `Moise351` ✔陈述已按原书修正 | 开。固定三维 PL 流形；`K` 是可非紧的局部有限 1-维多面体且相对闭于 `U`；输出显式携带相对 `U` 的局部有限正则邻域关系 |
 | 35.2 | 局部有限多面体 3-流形上的逼近 | `Moise352` ✔已陈述 | 开；`Transition361.lean` 已定义 |
 | 36.1 | 开集上的逼近 | — | **已证**，条件于 `Moise352`（`Transition361.lean`、`Endgame.lean`） |
+| Book node | Source interface / construction | Current obligation |
+| --- | --- | --- |
+| 25.1 | Moise251 and conditional Stallings induction | Open. F constructs the actual cover and projected embedded disk for Lemma 2; Lemma 1 and whole-branch separation remain obligations. |
+| 25.2 | Moise252 | h repairs non-nullhomotopy of the new disk boundary. The arrow from 25.1 still needs proper boundary push-off and proof. |
+| 26.4 | Moise264 | Boundary non-nullhomotopy is recorded; proof is open. Needs corrected 25.2, relative subdivision and compression, not just a bicollar. |
+| 30.3 | Geometric splitting and separation | E3: connect the actual split cells to the delivered path-replacement lemmas. Euler data alone do not construct the separating surface. |
+| 30.4 | Moise304 | E3 owns assembly; 26.4, 28.19 and 30.3 remain open dependencies. |
+| 30.5 | moise305_tame_of_moise304 | Accepted conditional tame arrow and bicollar producers; Moise304 remains an input. General wild Moise305 is open and is not an extra prerequisite of this tame arrow. |
+| 30.6 | Moise306 | Open; compression/separation, 26.4, van Kampen and surface inputs. It does not depend on 30.7. |
+| 30.7 | Moise307 | Open; uses 30.6, 28.1 and relevant CST constructions. |
+| 30.8 | Moise308 | Defined, unproved; spine/generator construction remains. |
+| 31--32 | Canonical configurations, tubes and pseudocells | Follow the detailed plan; definitions/conditional infrastructure do not certify endpoints. |
+| 33.1 | Moise331 | Current fixed-neighborhood statement is invalid. h must choose a genuine regular neighborhood inside U with actual three-dimensional ambient neighborhood data. |
+| 34.1 | Moise341 | Open; consumes corrected 33.1 and the tame neighborhood inputs. |
+| 35.1 | Moise351 | h repairs the one-dimensional locally finite polyhedral input and regular-neighborhood relation. Keep noncompact scope and pointwise error; proof remains open. |
+| 35.2 | Moise352 in Transition361 | Open classical approximation input. |
+| 36.1 / PL atlas | Transition361, Endgame, ChartGluing | Compiled conditional consumers; they do not produce Moise352. |
+| Compact smoothability | Smoothing and a future compact PL smoothing producer | Separate open input, assigned as S's next lane after 24.12. |
 
-## 侧向输入（不在主链上，但被多个结点消费）
+## Side inputs and exact distinctions
 
-- §17：17.12 PL Schoenflies —— F 车道进行中；17.2–17.11 已交付。`SchoenfliesInput` 是它的接口结构。
-- §22：22.5–22.7（条件于显式 `IsRefinement` 见证）、22.11 已证；22.8–22.10 分类仍开。
-- §23：23.9–23.11（条件于 17.12）、23.17（`IsOrientable.of_le`）、23.18′、23.19′ 已证。
-- §24：24.1–24.6 已证；24.8 = C.5 已证；24.7 = C.4 partial；24.9–24.12 partial（S）。
-- §26：26.1、26.2、26.3、26.6 已证（S）；26.7、26.8 —— 26.8 已证（H）。
-- §28：28.11、28.20 已证（H）；28.1–28.10、28.19 开。
+- Current source has an unconditional three-dimensional PL Schoenflies
+  producer, included in the fresh endpoint audit; it is no longer an open lane.
+- S's accepted cylindrical classification constructs equal-end diagrams.
+  The later product and finite 24.11 CST delivery aa6ff83be awaits independent
+  acceptance. S now proves the 24.12 generating-loop bridge. Full 24.9/24.10
+  equivalence does not follow merely from that special construction.
+- The accepted trimmed-arc ball pair omits both endpoint vertex cells.
+  h's full-arc containment 0a0876425 awaits acceptance; it does not supply
+  simultaneous normalization or two compatible branch sheets.
+- E3's conjugated homotopies b195204ed and path replacement b5e36cfe5 are
+  independently accepted: 35 declarations plus 12 critical reused declarations
+  pass standard-axiom and 13-linter checks. A compatible global branch chart
+  and actual geometric 30.3 split data remain open.
+- F's collapse delivery 495a3e343 awaits acceptance and diagnoses unrestricted
+  source fibers. The positive route projects the inductively embedded disk,
+  distinguishing the full cover from the smaller regular neighborhood.
+- 26.4 and 28.19 remain gates for 30.4. The 28.20 Euler identity alone is not
+  the geometric 30.3 separation argument.
+- Section 33 homology/PL surface-classification inputs remain explicit in the
+  detailed plan; old dated estimates do not close them.
 
-## 便宜的箭头（一条车道优先做这些）
+## Acceptance and change rules
 
-1. `Moise252` ← `Moise251`（书页 183 末段）：把 25.1 用在 `N = ⟨1⟩`，再用 I2 把 `Int |D₁|` 推离 `Bd M`。
-2. `Moise305` ← `Moise304`（书页 216）：取 `B` 分离 `Bd C₁` 与 `Bd C₂`，`C` 取 `ℝ³ − B` 中含 `C₁` 的分支的闭包。
-3. `Moise264` ← `Moise252` + 26.3（书页 193）：四种情形的归纳，材料都在树上。
+Repair defective public contracts deliberately and rebuild actual consumers;
+a consumed signature is not a reason to preserve an invalid statement. Do not
+weaken the classical conclusion or package it as a hypothesis.
+A disk's boundary is its parametrized source boundary, not its ambient frontier
+in three-space.
 
-## 规矩
+Five endpoint-chain modules lack root coverage. The six-import repair also
+registers PLSchoenflies directly; it is prepared but unapplied. The owner stopped
+the full-source build on 2026-09-19 at 02:00 UTC; outputs are retained with no
+automatic restart. Seven-leaf/26-declaration focused checks passed, but no
+full-source success is claimed.
 
-- 每个 `Prop` 的陈述一旦被别的定理消费就冻结；改动必须回写本表与 `PHASE3_APPROXIMATION_PLAN.md` §4。
-- 陈述必须是书上的定理本身，不得为了好证而弱化，也不得把结论塞进假设。
-- 箭头证明只能用已证的东西与本表里明确列出的 `Prop`，不得引入新的未证假设。
+## Dated history below (not current assignments or acceptance)
 
+These notes preserve earlier reasoning and discoveries, including superseded
+status and tentative cost estimates. Current scope and ownership are above.
 
 ## 已在 `MoiseChain.lean` 里陈述并通过编译的结点（2026-09-16 夜）
 
@@ -1050,3 +1092,14 @@ and the compatible two-sheet branch chart remain open.
 E3 owns 30.4 from the delivery of `b195204ed`, beginning with the actual 30.3
 splitting/separation construction. The 26.4 and 28.19 prerequisites remain open.
 The previous T delivery proves only `Moise304 -> Moise305Tame`.
+
+## Route audit corrections (2026-09-19)
+
+See [ROUTE_AUDIT_20260919.md](ROUTE_AUDIT_20260919.md). Moise252, Moise331 and
+Moise351 are not accepted source-faithful contracts until h's assigned repairs
+land. Normalization should first produce the Lemma 2 input by projecting the
+inductively embedded disk from the actual two-sheeted cover; the arbitrary
+original NormalSystem need not have two-point fibers. The cover and restricted
+regular neighborhood must remain distinct. The verified original-book order is
+30.6 -> 30.7. Compact PL smoothing is independently open, and full-root coverage
+must include the currently disconnected approximation/smoothing consumer chain.

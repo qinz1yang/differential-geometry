@@ -1,8 +1,16 @@
 # 整合车道交接（2026-09-18 晚，交给 Codex）
 
-写于用量耗尽时。本文件是整合层的单点入口：先读它，再按 §4 进各车道的 HANDOFF 最后几节。
-主链结构与今日全部决定的原文在 `MOISE_CHAIN.md`（本目录）末尾七节，此处只给可执行的摘要。
-四车道**怎么运作**（节奏、任务书模板、核验清单、今日抓到的失效类型与对应检查、换人信号、专用分支）在同目录 `FOUR_LANE_PLAYBOOK.md`。
+This handoff preserves integration decisions and acceptance evidence. Current
+mathematical work is governed by MOISE_PLAN.md; current coordination follows
+FOUR_LANE_WORKFLOW.md. The dated original handoff remains below as history.
+
+## Current entry point (2026-09-19 UTC)
+
+Read [MOISE_PLAN.md](MOISE_PLAN.md)'s current plan and section 22 below before
+historical sections 0--8. The owner stopped the full-source build; retain its
+artifacts with no automatic restart. F, h, E3 and S each run one existing-task
+lane under FOUR_LANE_WORKFLOW.md. Old cleanup snapshots are not instructions
+to interrupt or stash an active task's files.
 
 ## 0. 进入时立刻做的事
 
@@ -801,3 +809,128 @@ normal-form work. E3 now owns Moise 30.4 assembly on Sol max, first the genuine
 30.3 geometric splitting/separation step. Original T owned 30.5's conditional
 tame arrow, not 30.4. F/h/S keep their current lanes. h's subsequent full-arc
 containment checkpoint `0a0876425` is received but not yet independently accepted.
+
+## 21. Owner audit verified and route reprioritized (2026-09-19)
+
+See [ROUTE_AUDIT_20260919.md](ROUTE_AUDIT_20260919.md) for exact source and
+original-book evidence. The three reported Moise252/331/351 contract defects are
+confirmed; h began their repair at its completed 0a0876425 delivery boundary.
+The normalization remedy is sharpened: original pp184,188-189 apply Lemma 2 to
+a newly embedded disk projected from a two-sheeted cover after induction, not
+to the unchanged arbitrary NormalSystem map. PL projection, boundary/subgroup
+compatibility, and the distinction between the full cover and its smaller regular
+neighborhood are missing from the current reduction interface. This priority
+is queued for F's next delivery, without interrupting its current work.
+
+The original-book dependency is 30.6 -> 30.7; the reverse table edge was removed.
+Compact PL smoothing is an independent open producer. Noncompact variable-error
+PL approximation stays in scope. Five approximation/smoothing chain modules
+are absent from root reachability. The coordinator freshly compiled those five
+and PLSchoenflies/TameNestedCells, audited all 26 declarations with standard
+axioms and 13 applicable environment linters, and obtained zero diagnostics.
+Only one pre-existing ChartGluing long line needed wrapping. Receipt:
+`.lake/verified-route-audit-20260919.json`. No classical input Prop was proved.
+
+The exact root-import patch is prepared under the external audit directory and
+has not been applied. Automatic review rejected interrupting the active root
+build; no stop executed. Apply the patch at a noninterrupting build boundary
+and run the expanded root gate. The current root gate continues and does not
+cover those five modules; its completion is not claimed.
+
+F delivered its source-collapse layer through `495a3e343` before this audit
+closed. Its three checkpoints are pending independent integration acceptance.
+At that delivery boundary F immediately began the actual projected embedded-disk
+and source-faithful cover-reduction round on Astra max. Thus the queued priority
+above is now dispatched, without an in-flight interruption.
+
+## 22. Owner-stopped root build and corrected plan (2026-09-19 UTC)
+
+The owner requested stopping the full-source rebuild and correcting the plan
+first. At 02:00 UTC the coordinator stopped the identified root Lake process
+4636 and Lean child 5520. Wrapper 8748 exited and released its claim; no owned
+root worker remained. Completed outputs are retained. The local root status
+records interrupted_by_owner and automaticRestart=false. This supersedes
+section 21's historical keep-running instruction/rejection. No full-root success
+is claimed and no replacement root build was started.
+
+MOISE_PLAN, MOISE_CHAIN and the detailed Phase 3 plan now replace obsolete
+"only Moise352 remains" and six-lane launch instructions. h repairs
+Moise252/331/351; F constructs the actual cover-projected Lemma 2 input.
+E3 owns 30.4 through 30.3, with 26.4/28.19 still open. S closes the 24.12
+generating-loop bridge, then takes compact PL smoothing as a separate lane.
+F/S use Astra max; h/E3 use Sol max. No active round was interrupted or given
+a simultaneous lane for this plan correction.
+
+The chain retains 30.6 -> 30.7. Accepted Moise304 -> Moise305Tame does not
+require a general wild-cell theorem. Compact PL smoothing still needs its own
+producer and compact assembly; noncompact variable-error approximation remains
+required for chart overlaps.
+
+Pending independent integration acceptance:
+
+| Task | Delivered checkpoint | Scope and limitation |
+| --- | --- | --- |
+| E3 | b195204ed; b5e36cfe5 | Conjugated supported homotopies still need a compatible whole-branch chart. New path replacement still needs actual geometric split data. |
+| h | 0a0876425 | Full-arc containment, not simultaneous arc-pair normalization. |
+| F | 495a3e343 | Collapse diagnostic with its two prerequisites, not positive normalization. |
+| S | aa6ff83be | Actual product/finite 24.11 CST, with 701d48343 and 10f680db7; not yet integration-accepted or a proof of 24.12. |
+
+E3 delivered b5e36cfe5 during this plan correction. At that natural boundary it
+continued the same 30.3 lane: construct the actual split cells, connected safe
+boundary and equality outside the local cell, then apply path replacement.
+No mid-round intervention occurred.
+
+Preserve S's unchanged extraction of IsTopologicalSolidTorus when integrating
+h's different MoiseChain edits. Review source/receipts and independently replay
+each accepted layer; task reports alone are not acceptance.
+
+The root patch remains prepared and unapplied in the external route-audit
+directory. It adds the five disconnected endpoint-chain leaves and directly
+registers PLSchoenflies. Apply and recheck coverage at the next source integration
+stage. The seven-leaf, 26-declaration focused audit remains valid only in its
+recorded scope. This checkpoint changes documentation only: no Lean source,
+root imports or compilation were changed/launched for plan correction.
+
+## 23. Twelve-hour authorization and eighth acceptance (2026-09-19 UTC)
+
+The owner authorized autonomous preparation, parallel scheduling and acceptance
+for twelve hours from 02:19 UTC, through 14:19 UTC (07:19 Los Angeles).
+The thread heartbeat Moise twelve-hour advancement checks at fifteen-minute
+intervals and handles delivery/idle/blocker transitions; it does not interrupt
+active rounds. F/S remain Astra max and h/E3 Sol max, one lane each.
+Existing private compiler leases extend to that deadline with concurrency
+limits unchanged. The full-source build remains stopped with outputs retained.
+
+E3's b195204ed and b5e36cfe5 are independently accepted in the integration
+checkout. Separation adds actual first/last-hit path replacement and the
+resulting separation-preservation theorem. SlabWedgeEndpointConjugation proves
+joint continuity of the transported homotopies, compact support, preservation
+of boundary membership, and PL/injective/disjoint final maps, from explicitly
+supplied compatible charts. It does not construct the whole-branch chart or
+the actual local split-cell geometry required for 30.3.
+
+Both modules compiled with exit 0 and zero diagnostics. The independent silent
+audit covers all 10 + 25 = 35 nonautomatic module declarations (27 newly added),
+12 critical reused declarations, standard foundational axioms only and all
+13 applicable environment linters. Audit wall time including admission:
+59.968 seconds. Six unchanged private prerequisites were reused
+only after comparing successful receipts, current source identities, normalized
+integration source and object hashes; other upstream imports remain shared.
+This is focused acceptance, not a completed full-source build.
+
+Receipt: .lake/verified-eighth-lane-delivery-20260919.json.
+Objects and audit evidence: external codex-integration-eighth-batch-20260919
+directory. The audit source is preserved in the receipt and its temporary Lean
+probe removed. The merge keeps the already corrected Phase 3 plan when resolving
+its single documentation conflict. One new leaf is registered in the flat root.
+
+The accepted source diff is +643/-0 Lean lines, including one root import.
+These proofs were authored before this overnight window; count them as newly
+accepted queued work, not newly written overnight proofs. E3 continues actual
+geometric split data at the previously dispatched natural delivery boundary.
+F eefa65bae's projected embedded-disk layer is newly queued for independent
+acceptance; its requested read-only MoiseChain compilation permission is granted.
+
+Morning accounting is recorded in MORNING_ACCEPTANCE_20260919.md and the local
+overnight campaign ledger. At the deadline stop starting new proof rounds,
+record remaining active work and delivery points, and prepare the final review.
