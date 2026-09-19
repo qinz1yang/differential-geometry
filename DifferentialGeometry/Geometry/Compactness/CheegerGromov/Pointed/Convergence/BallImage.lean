@@ -3,6 +3,7 @@ import DifferentialGeometry.Geometry.Metric.Comparison.PartialDiffeomorphDistanc
 import DifferentialGeometry.Geometry.Comparison.Distance.Continuity
 import DifferentialGeometry.Geometry.Comparison.HopfRinow.Proper
 import DifferentialGeometry.Geometry.Metric.Distance.Finiteness
+import DifferentialGeometry.Geometry.Metric.Comparison.IntrinsicBallImage
 
 set_option autoImplicit false
 noncomputable section
@@ -155,5 +156,46 @@ theorem PointedRiemannianConvergenceMaps.exists_eventually_image_compact_subset_
   intro z hz v
   have herr := (abs_le.mp ((hN i hi).2 z hz v)).2
   nlinarith
+
+theorem PointedRiemannianConvergenceMaps.eventually_ball_subset_image_closed_ball
+    (F : PointedRiemannianConvergenceMaps X P phi)
+    (C : MetricConvergenceData F)
+    (href : ∀ i, (C.domain i).referenceMetric = (C.domain i).limitMetric)
+    (hcomplete : MetricComplete P) (p : P.M) {A R L : ℝ}
+    (hL : 1 < L) (hmargin : L * A < R) :
+    ∀ᶠ i in atTop, riemannianClosedBallOf P.metric p R ⊆ F.source i ∧
+      riemannianBallOf (X.obj (phi i)).metric (F.map i p) A ⊆
+        F.map i '' riemannianClosedBallOf P.metric p R := by
+  let _ : TopologicalSpace.MetrizableSpace P.M := _root_.Manifold.metrizableSpace I P.M
+  have hc : RiemannianMetricComplete (I := I) P.metric :=
+    ⟨MetricComplete.complete P hcomplete⟩
+  let K := riemannianClosedBallOf P.metric p R
+  have hK : IsCompact K := hc.closedEBall_isCompact p R
+  have hLsq : 0 < L ^ 2 := sq_pos_of_pos (by linarith)
+  have heps : 0 < 1 - (L ^ 2)⁻¹ :=
+    sub_pos.mpr ((inv_lt_one₀ hLsq).mpr (by nlinarith))
+  obtain ⟨N, hN⟩ := exists_pointed_full_ambient_quadratic_control C href K hK
+    (1 - (L ^ 2)⁻¹) heps
+  filter_upwards [eventually_ge_atTop N] with i hi
+  let _ : TopologicalSpace.MetrizableSpace (X.obj (phi i)).M :=
+    _root_.Manifold.metrizableSpace I (X.obj (phi i)).M
+  refine ⟨(hN i hi).1, ?_⟩
+  apply PartialDiffeomorph.riemannianBallOf_subset_image_of_metric_lower
+    P.metric (X.obj (phi i)).metric (F.partialDiffeomorph i)
+    (r := (R - L * A) / 2) (C := L) (by linarith) hK (hN i hi).1
+  · intro z hz v
+    have hh := (abs_le.mp ((hN i hi).2 z hz v)).1
+    have hquad : (L ^ 2)⁻¹ * P.metric.inner z v v ≤
+        (X.obj (phi i)).metric.inner (F.map i z)
+          (mfderiv I I (F.map i) z v) (mfderiv I I (F.map i) z v) := by
+      linarith
+    calc
+      _ = L ^ 2 * ((L ^ 2)⁻¹ * P.metric.inner z v v) := by
+        rw [← mul_assoc, mul_inv_cancel₀ hLsq.ne', one_mul]
+      _ ≤ _ := mul_le_mul_of_nonneg_left hquad (sq_nonneg L)
+  · change riemannianEDistOf P.metric p p < ENNReal.ofReal ((R - L * A) / 2)
+    rw [riemannianEDistOf_self]
+    exact ENNReal.ofReal_pos.mpr (by linarith)
+  · linarith
 
 end DifferentialGeometry.CheegerGromovCompactness

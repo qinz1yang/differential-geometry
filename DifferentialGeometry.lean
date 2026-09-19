@@ -7374,6 +7374,7 @@ import DifferentialGeometry.Geometry.Metric.CompactSourceEllipticity
 import DifferentialGeometry.Geometry.Metric.CompactSourceLipschitz
 import DifferentialGeometry.Geometry.Metric.CompactTangentBall
 import DifferentialGeometry.Geometry.Metric.Comparison.BallImage
+import DifferentialGeometry.Geometry.Metric.Comparison.IntrinsicBallImage
 import DifferentialGeometry.Geometry.Metric.Comparison.BallMonotonicity
 import DifferentialGeometry.Geometry.Metric.Comparison.CompactLowerBound
 import DifferentialGeometry.Geometry.Metric.Comparison.CurveCompactness
