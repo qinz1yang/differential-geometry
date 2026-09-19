@@ -51,7 +51,7 @@ Handoff only on delivery or urgent stop/restart.
 
 Pending source acceptance is tracked in .lake/pending-lane-checkpoints.json.
 Retain full-root build artifacts; that build is stopped. Six endpoint imports
-are now registered and statically reachable (9443 project modules including the root, no missing
+are now registered and statically reachable (9452 project modules including the root, no missing
 project source). The seven previously audited endpoint leaves retain their
 exact checked Git blobs; no full-root success is claimed. Focused checks do not
 certify a full-source build or the remaining classical input propositions.
@@ -717,3 +717,69 @@ relative smoothing and h/E3/M304 current rounds continue without interruption.
 M304 synchronized the accepted interval-monodromy API name at 751f0e925; its
 later capping, conditional Betti and actual circle-complement deliveries remain
 separately queued. No task or checker was added, and no full build was started.
+
+## Compatible local corner and full-annulus atlases on PL two-handles (2026-09-19 UTC)
+
+S 2162e20eb, 8ee999276 and ada7fd321 are independently accepted.
+The local construction gives explicit polynomial quadrant-to-half-plane
+coordinates with a continuous inverse, smooth away from the corner. It
+identifies the attaching side, end and intrinsic boundary, and transports
+the chart to an actual derived-neighborhood triangle two-handle.
+
+The later construction gives one compatible atlas on a relatively open
+neighborhood of the entire attaching annulus in the original new cell.
+Its two normal-strip charts cover both ends and have a proved smooth
+transition on their actual nonempty overlap, away from the inverse-map
+singularity. A radial collar homeomorphism and stereographic angular charts
+produce the product atlas. All polygon vertices at every height are covered.
+The result retains the original parameter equation g((d x).val.val) = x.val.val,
+the exact old-set trace, intrinsic boundary and membership of every pulled
+chart in that single atlas. Smooth compatibility is constructed, not assumed.
+
+All nine source files match the frozen author delivery; no integration proof
+or header modification was needed. Fresh compilation took 98.077 seconds
+including admission, and the combined audit took 49.763 seconds. Every check
+finished with zero errors, warnings or info diagnostics. The full census
+contains 101 new nonautomatic declarations, including six private helpers.
+Fifty distinct critical reused entries and all 29 probe declarations have only
+standard foundational axioms; all thirteen applicable environment linters
+pass for the source and model declarations.
+
+There are three actual geometric test endpoints. The local corner test uses
+a triangle in the boundary of a four-simplex and distinguishes the corner,
+attaching side, end face and interior by exact coordinates. The strip test
+has exclusive lower/upper points and a shared point with distinct chart
+images. The full-annulus test uses the same four-simplex geometry, covers
+every polygon vertex at every height, proves distinct angular/end choices,
+exhibits a genuine overlap and tests its actual smooth transition. Support
+definitions, helper proofs and four local instances are included in the
+29-declaration audit; that is not a count of 29 independent geometric models.
+
+Six accepted private prerequisites were reused after exact raw source and
+object identity checks. Shared artifacts remain read-only. Accepted Lean
+delta: +1294/-0, comprising 1285 new source lines and nine root imports.
+Receipt: .lake/verified-twentyseventh-lane-delivery-20260919.json. It freezes
+the combined probe and three original model sources with exact raw bytes,
+source/object hashes, declaration and axiom/lint census, provenance and timing.
+Only isolated model namespaces and the external audit harness changed.
+
+The root statically reaches 9452 project modules including itself, without
+missing project sources or cycles. All nine new leaves are directly registered;
+no additional existing leaf becomes newly reachable. Full-root compilation
+remains stopped, so this is scoped source and combined-import verification.
+
+U is open in the new cell only. Compatibility with a fixed old-neighborhood
+smooth atlas and openness across the attached union are not conclusions here.
+The earlier explicit single-edge chart and the full-annulus atlas are distinct
+coordinate results; compatibility between those two constructions is not
+asserted. Relative smoothing of the actual annular embedding and framing,
+crossing-seam charts, terminal smooth two-sphere classification and compact
+atlas assembly remain open. S continues the already assigned old-atlas round;
+no new assignment or checker was added.
+
+F's exact noninjective-map triangulation 27cf1c243 is queued with 921aa49bd;
+its current initial-system construction continues. M304's actual branch-closure
+surfaces 5e695768f are queued with the earlier circle-complement/capping/Betti
+layers; its current capped-surface and essential-circle round continues.
+These author deliveries are not counted as independently accepted mathematics.
+h and E3 remain on their current rounds without a status prompt or interruption.

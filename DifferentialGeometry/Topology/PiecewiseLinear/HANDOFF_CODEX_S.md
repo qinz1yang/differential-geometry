@@ -6654,3 +6654,301 @@ atlas remain distinct obligations. These must be produced before claiming
 compact PL three-manifold smoothing. The triangle cap for the original-boundary
 case is also still open. No unrestricted PLSmoothing 3 or noncompact
 approximation result is claimed by this delivery.
+
+## Rounded local corners on actual PL two-handles (2026-09-19)
+
+Status: closed for the explicit local corner-rounding input. This constructs
+local smooth geometry on an actual cell with its original topology; it does
+not supply an atlas on the attached union or compatibility with an already
+chosen smooth atlas on the old neighborhood. Integration was merged at
+`61f722644` from `b67a3b5cd`; the plan conflict retained both sides. Previously
+published handle and finite-filtration sources remain unchanged.
+
+### Input audit and chosen mathematical step
+
+The live source review confirms that `Handle.standardHandleIsManifold` and
+`attachingRegionInclusion_isSmoothEmbedding` provide standard smooth models.
+The existing Morse attachment needs an already smooth ambient manifold and
+its Morse data, while the boundary-collar attachment extends an existing
+smooth manifold. Neither directly constructs the missing smooth attaching
+map from the produced PL annulus. No general relative smoothing producer or
+general corner-rounding map was found. The nine selected input/model checks
+passed with standard axioms and zero diagnostics before this construction.
+The chosen step constructs the local corner coordinates explicitly instead
+of assuming a smooth attachment, smoothing predicate or sphere classification.
+
+### Explicit rounding and its regularity
+
+`Topology/Manifold/CornerRounding.lean` constructs `cornerSquaring`:
+(x,y) maps to (2xy, x^2-y^2). `quadrantHalfPlaneHomeomorph` proves it is a
+homeomorphism from x,y >= 0 to the half-plane whose first coordinate is >= 0.
+The inverse is explicit: for (b,a), put R = sqrt(b^2+a^2) and return
+(sqrt((R+a)/2), sqrt((R-a)/2)). Both inverse equations and continuity are
+proved. The forward map is polynomial and smooth. The inverse is smooth
+within the half-plane away from (0,0), including its boundary rays; two local
+formulas replace the vanishing square root by b/(2x) or b/(2y). This is not a
+claim that the inverse is smooth at the original corner.
+
+The exact face equations identify x=0 with b=0,a<=0, y=0 with b=0,a>=0,
+and their common corner with b=a=0. Thus no points are identified or collapsed.
+
+`PrismCornerChart.lean` makes this into an actual three-dimensional chart on
+P = stdSimplex(Fin 3) times [0,1]. Its relatively open source is
+u_1>0, u_2>0, t<1. Set r=u_0 and z=u_1-u_2; the chart is
+(2rt, r^2-t^2, z). The inverse recovers r,t by `cornerRoot` and uses
+(u_0,u_1,u_2) = (r,(1-r+z)/2,(1-r-z)/2). Its explicit relatively open target
+in EuclideanHalfSpace 3 is r+abs(z)<1 and t<1. Exact two-sided inverses,
+continuity and all source/target inequalities are proved.
+
+`prismCornerChartedSpace`, `prismCorner_isManifold` and
+`prismCornerDiffeomorph` construct the smooth structure on this same open
+source. `prismCorner_boundary_iff` identifies its intrinsic smooth boundary
+with the union of the simplex-boundary face and t=0.
+`prismCornerHomeomorph_attaching_iff`, `_end_iff` and `_corner_iff` give the
+precise negative-half, positive-half and intersection-line equations. The
+forward coordinates are smooth in the original affine variables, and
+`contDiffOn_prismCornerInv` proves smooth inverse transitions away from the
+corner line. The zero target point has inverse ([0,1/2,1/2],0).
+
+### Actual PL attachment consumer
+
+`PrismCornerTransport.lean` proves
+`IsPLHomeomorphOn.exists_rounded_corner_chart`. Its inputs are the actual PL
+prism map g onto C and the exact image equation for its attaching annulus.
+It constructs an open U in C, a ChartedSpace on U, an IsManifold proof and a
+diffeomorphism to the explicit standard target. The topology of U is the
+original subtype topology. The intersection with the prescribed lower set
+is exactly the coordinate locus b=0,a<=0, and the intrinsic smooth boundary
+of U is exactly b=0. A specified point maps to the coordinate origin and is
+exactly g([0,1/2,1/2],0), so the chart is nonempty.
+
+`DerivedNeighborhoodCorner.lean` supplies the downstream geometric producer
+`exists_rounded_derivedNeighborhood_triangle_corner`. It constructs g and
+the chart from a finite closed combinatorial three-manifold, a triangle,
+and the actual proper-face/old-face conditions supplied by the finite face
+filtration. The lower set is the actual old derived neighborhood and C is
+the actual new triangle cell. No smooth atlas, collar, Schoenflies theorem,
+PLSmoothing predicate or smooth two-sphere classification is an input.
+
+### Verification and nondegenerate actual model
+
+| Module | Compile seconds | Audit seconds | Nonautomatic declarations | Critical reuse entries |
+|---|---:|---:|---:|---:|
+| `CornerRounding` | 52.659 | 26.513 | 16 | 4 |
+| `PrismCornerChart` | 11.045 | 11.672 | 24 | 7 |
+| `PrismCornerTransport` | 10.165 | 11.305 | 1 | 6 |
+| `DerivedNeighborhoodCorner` | 11.302 | 11.283 | 1 | 2 |
+
+All four final native checks and complete dynamic audits exited 0 with zero
+errors, warnings or info diagnostics. All 42 nonautomatic declarations
+(including three private helpers), 19 critical reuse entries and all 13
+applicable environment linters per module passed. Every transitive axiom
+set is a subset of propext/Classical.choice/Quot.sound. Durations include
+resource admission.
+
+The actual model uses a triangle in the boundary of a four-simplex, with
+its own boundary subcomplex as the old input. It retains the full lower
+trace and intrinsic boundary formulas, includes the coordinate origin, and
+constructs three distinct points with coordinates (0,-1/16,0), (0,1/16,0)
+and (1/8,0,0). The first lies in the old neighborhood and the new boundary;
+the second lies in the new boundary but outside the old neighborhood; the
+third is an interior point outside the old neighborhood. This tests both
+boundary faces and the actual new-cell interior. Its 10 declarations,
+6 critical reuse entries and 13 linters passed in 13.141
+seconds with exit 0 and zero diagnostics.
+
+Raw source SHA256 values:
+
+- `CornerRounding`: `57BF94F11C42CFFCFD94661F7C98AA565C9B07D84B8CF30BCA504B5996E960B7`.
+- `PrismCornerChart`: `F60CCD684B05C0A7A94ECFED053298B7376A0DAD5D0203B3831A7B760A74A096`.
+- `PrismCornerTransport`: `C050CBAB329B0E39DF45F5A9576766E7ADDF4BC68DBB0588E4E4B73CAAC7A825`.
+- `DerivedNeighborhoodCorner`: `E85AA6F686BA5AD7DAF41E75C8B3AE2A19FFCCAF0A05FBBE27062243C615DB86`.
+
+Evidence: `C:/Users/liao9/AppData/Local/Temp/codex-s-mobius-torus-20260918/`
+`CornerRounding-round-verification.json`, containing exact native/audit/input/
+actual-model bytes, raw and LF hashes, private olean identities, receipts,
+setup records, logs, timings and full declaration/reuse/linter censuses.
+Audited bodies equal native sources. All four leaves are registered once in
+the root, native import closures exclude `HurewiczLowDegrees`, and shared
+artifacts were unchanged. Independent integration replay and the stopped
+full-root gate remain separate. Source, root imports, this handoff and the
+plan record form one mathematical commit; no vendored source changed.
+
+### Exact remaining frontier
+
+U is relatively open in the new cell C, not asserted to be open in the whole
+attached union. The next obligation is a compatible family of such local
+smooth structures around the attaching annulus, including polygon vertices,
+and compatibility with a chosen smooth atlas on the old neighborhood. The
+actual framed attaching-map smoothing and attached-union atlas must still
+be constructed. Smooth two-sphere classification and final compact atlas
+assembly remain open. Neither compact PL smoothing nor unrestricted
+PLSmoothing 3 is declared complete by this local construction.
+
+## Compatible rounded strip charts (2026-09-19)
+
+Status: the two-dimensional normal strip is closed. This is a genuine smooth
+transition producer for the full annular corner family; the annular product,
+actual-cell transport and compatibility with a fixed old-neighborhood atlas
+remain distinct downstream obligations. Integration was merged at `3de9be6c1`
+from `c7c290f195`; both sides of the plan conflict were retained.
+
+`Topology/Manifold/RoundedStrip.lean` constructs the original-topology strip
+[0,1) times [0,1], with lower chart on t<1 and upper chart on t>0. The lower
+chart applies (r,t) to (2rt,r^2-t^2), and the upper chart first reflects t to
+1-t. Their union covers the full strip, including both corner points.
+`halfOpenStripChart_transition_eq` gives the actual overlap map: recover r,t
+by the explicit square-root inverse, then square (r,1-t).
+`halfOpenStripChart_overlap_root_pos` proves that overlaps avoid the singular
+inverse point. `halfOpenStripChart_transition_contDiffOn` proves every chart
+transition smooth, including both directions of the nontrivial overlap.
+`halfOpenStrip_isManifold` uses these proved transitions to construct one
+compatible smooth structure, rather than assuming chart compatibility.
+
+`halfOpenStripChart_attaching_iff` identifies r=0 precisely with normal
+coordinate zero and tangential coordinate nonpositive in either chart.
+`halfOpenStrip_boundary_iff` identifies the intrinsic boundary with r=0 or
+t=0 or t=1. No pre-existing smooth atlas or smoothing result is assumed.
+
+All 25 nonautomatic declarations (including 2 private helpers),
+8 key reused declarations and 13 applicable environment linters passed.
+Final compile/audit: 10.619/10.536 seconds, both exit 0 and zero diagnostics.
+The external model uses (0,0), (0,1), (0,1/4), (1/2,1/2): it checks exclusive
+lower/upper chart points, a point lying in both charts with distinct images
+(0,-1/16) and (0,-9/16), three boundary points and an interior point. Its
+1 declaration, 4 key reuses and 13 linters passed in 9.711 seconds, exit 0.
+All audited axiom sets are subsets of propext/Classical.choice/Quot.sound.
+
+Frozen evidence: `C:/Users/liao9/AppData/Local/Temp/`
+`codex-s-mobius-torus-20260918/RoundedStrip-round-verification.json` contains
+exact source/audit/model bytes, raw/LF hashes, olean identity, receipts,
+setups, logs, timings and complete declaration/reuse/linter censuses.
+Raw source SHA256: `DC4A2A2ACC916E0F1B3A2A78806F10F88B51F335F09B44402BB77F5A343C65B3`.
+The audited body equals native source. The module is registered once in the
+flat root; its native closure excludes HurewiczLowDegrees. Shared artifacts
+are unchanged. Source, root and both records form one mathematical commit.
+The complete root build and independent integration replay remain separate.
+
+## Full annular corner atlases on actual two-handles (2026-09-19)
+
+Status: done for one compatible smooth atlas on a relatively open neighborhood
+of the entire attaching annulus inside the new cell. The fixed old-neighborhood
+atlas and an open atlas on the attached union remain outside this result.
+This extends the coverage of 2162e20eb; compatibility with that earlier isolated
+edge chart is not asserted or used. The normal-strip producer was published
+with its records in 8ee999276. No h-lane source or previously published handle
+producer was changed.
+
+### Construction and exact overlap equations
+
+`Manifold/RoundedCylinder.lean` constructs a radial homeomorphism from
+S^n times ([0,1) times [0,1]) onto the unit-ball prism with its central axial
+line removed. In source coordinates (theta,r,t), the disk point is
+(1-r)*theta and the height is t. The inverse is normalization together with
+r=1-norm(x). The domain is open in the prism and contains its entire side.
+The topological construction works for every real normed space; the smooth
+construction works for Euclidean balls in every dimension n+1.
+
+The smooth model is (R^n).prod (EuclideanHalfSpace 2), a boundary model of
+dimension n+2. The sphere atlas is the existing stereographic atlas, while
+the normal-strip atlas is the proved lower/upper rounded atlas. These are
+one product atlas. `ballPrismCollarChart_transition_eq` identifies each
+actual change of coordinates with the product of a sphere transition and
+the explicit strip transition. `ballPrismCollarChart_transition_mem` proves
+all such transitions belong to the smooth groupoid. Chart coverage,
+attaching-side equations and the intrinsic boundary are also proved.
+
+`PrismAnnulusChart.lean` uses the existing whole-simplex/round-ball
+homeomorphism and its exact boundary correspondence. Its collar source is
+the inverse image of that radial collar. `mem_prismAnnulusSource_of_boundary`
+proves that every point of the entire polygonal side lies in the source;
+this includes polygon vertices at every height. `prismAnnulusChart_cover`
+covers this full source by the actual angular/lower-upper chart family.
+`prismAnnulusChart_mem_source_iff` identifies angular exclusion of one
+antipode and the explicit conditions t<1 or t>0. The overlap theorem proves
+smoothness in both directions within the single atlas. In every chart the
+attaching annulus is exactly normal coordinate zero and second strip
+coordinate nonpositive. `prismAnnulus_boundary_iff` identifies the intrinsic
+boundary with the side or either end face. No PL-to-smooth transition for an
+arbitrarily chosen old atlas is inferred from the simplex homeomorphism.
+
+### Actual consumer and parameter identity
+
+`IsPLHomeomorphOn.exists_rounded_annulus_atlas` constructs U open in C,
+containing all of C intersect A, from an actual PL prism parameter g and its
+exact attaching-image equation. It provides a ChartedSpace, IsManifold proof
+and diffeomorphism d from U to the standard annular source. Crucially,
+g((d x).val.val)=x.val.val for every x, tying all chart witnesses to that
+original parameterization. It retains the exact lower-trace and intrinsic
+boundary formulas and proves that every pulled angular/end chart belongs
+to this one atlas. Smooth chart compatibility is proved, not assumed.
+
+`exists_rounded_derivedNeighborhood_triangle_annulus` constructs these inputs
+from the actual triangle two-handle producer in a finite closed combinatorial
+three-manifold. Its old set is exactly N(K,L); its new cell is exactly C_s.
+There is no smooth-attachment, compatible-atlas, Schoenflies, PLSmoothing or
+smooth sphere-classification hypothesis.
+
+### Verification and actual four-simplex model
+
+| Module | Compile seconds | Audit seconds | Nonautomatic declarations | Critical reuse entries |
+|---|---:|---:|---:|---:|
+| `RoundedCylinder` | 10.861 | 10.798 | 17 | 9 |
+| `PrismAnnulusChart` | 10.974 | 11.332 | 15 | 8 |
+| `PrismAnnulusTransport` | 10.647 | 10.485 | 1 | 6 |
+| `DerivedNeighborhoodAnnulus` | 11.132 | 10.961 | 1 | 2 |
+
+All four native checks and complete dynamic audits exited 0 with zero errors,
+warnings or info diagnostics. All 34 nonautomatic declarations, including one
+private helper, 25 critical reuse entries and 13 applicable environment linters
+per module passed. All transitive axiom sets are subsets of
+propext/Classical.choice/Quot.sound. Together with 8ee999276 this round supplies
+59 native declarations and 33 critical reuse entries in five modules.
+
+The concrete model is again a triangle in the boundary of a four-simplex,
+with the triangle's boundary subcomplex as the old input. It retains the
+whole-annulus coverage and original-parameter identity. It additionally
+proves that every polygon vertex at every height has an actual point in U.
+North/south angular points test different angular chart blocks and different
+lower/upper end charts. An east angular point at height 1/4 lies in a genuine
+nonempty overlap between the north/lower and south/upper charts; the actual
+pulled transition belongs to the smooth groupoid. Three points lie in the
+old set and intrinsic boundary. A radial-depth 1/2, height 1/2 point lies in
+the interior and outside the old set. Required distinctness is proved.
+The model's 18 declarations, 8 critical reuse entries and 13 linters passed
+in 39.803 seconds with exit 0 and zero diagnostics.
+
+Raw source SHA256 values:
+
+- `RoundedCylinder`: `539B6B47927EFEFDC854BDDACE5B9166428802E88BB059A84E470A4EF4845300`.
+- `PrismAnnulusChart`: `47CB34815901C2BAA1251017DBE174886109AE031FA8F328FBA570B74F4CFADE`.
+- `PrismAnnulusTransport`: `AFC288775E4EB6E5B523CB38A0C856C7B814EBD6ABC6E8D36D8921EACE141C34`.
+- `DerivedNeighborhoodAnnulus`: `720381ECD1066239FE9B9AFD7281EA33216A919642E42D8C8B11FC4BCE775E1E`.
+
+Frozen evidence: `C:/Users/liao9/AppData/Local/Temp/`
+`codex-s-mobius-torus-20260918/Annulus-round-verification.json` contains exact
+native/audit/model bytes, raw/LF hashes, private olean identities, receipts,
+setups, logs, timings and complete declaration/reuse/linter censuses. Audited
+bodies equal native sources. All four leaves are registered once in the flat
+root, their native closures exclude HurewiczLowDegrees, and shared artifacts
+were unchanged. Source, root and both records form one mathematical commit.
+Independent integration replay and the stopped full-root gate remain separate.
+
+### Remaining relative smoothing obligation
+
+U is open in the new cell C. It is not asserted open in the whole attached
+union, and no fixed smooth structure on N(K,L) is changed or manufactured.
+The unresolved producer must smooth the actual annular attaching embedding
+and its PL framing relative to the specified old-neighborhood atlas, then
+construct crossing-seam open charts with smooth transitions to that atlas.
+Separate pullbacks do not establish this: a PL parameterization is not thereby
+smooth in an unrelated existing atlas. The live source audit found standard
+smooth handles, a smooth-open-cover assembly requiring actual transitions,
+and boundary-collar extension of an already smooth manifold; these APIs do
+not produce this missing relative attaching-map smoothing.
+
+The full annular new-cell atlas is therefore delivered; relative old-atlas
+compatibility and the attached-union construction remain an explicit frontier.
+Neither a smooth framed attachment nor compact three-manifold smoothing nor
+unrestricted PLSmoothing 3 is declared complete. Smooth terminal two-sphere
+classification and final compact atlas assembly remain separate obligations.

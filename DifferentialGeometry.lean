@@ -8851,6 +8851,15 @@ import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CoverReduction
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.NormalBasepoint
 import DifferentialGeometry.Topology.PiecewiseLinear.RelativeSimplexBoundaryNeighborhood
 import DifferentialGeometry.Topology.PiecewiseLinear.SimplicialImageIn
+import DifferentialGeometry.Topology.Manifold.CornerRounding
+import DifferentialGeometry.Topology.Manifold.RoundedCylinder
+import DifferentialGeometry.Topology.Manifold.RoundedStrip
+import DifferentialGeometry.Topology.PiecewiseLinear.DerivedNeighborhoodAnnulus
+import DifferentialGeometry.Topology.PiecewiseLinear.DerivedNeighborhoodCorner
+import DifferentialGeometry.Topology.PiecewiseLinear.PrismAnnulusChart
+import DifferentialGeometry.Topology.PiecewiseLinear.PrismAnnulusTransport
+import DifferentialGeometry.Topology.PiecewiseLinear.PrismCornerChart
+import DifferentialGeometry.Topology.PiecewiseLinear.PrismCornerTransport
 
 /-!
 # Differential geometry and geometric analysis

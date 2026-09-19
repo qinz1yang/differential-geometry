@@ -98,14 +98,27 @@ nonautomatic declarations, thirty critical reuses, three model declarations and
 thirteen applicable linters pass the combined replay. This does not supply the
 smooth attaching/atlas compatibility needed by compact smoothing.
 
+The local corner, rounded strip and complete new-cell annulus atlas through
+S ada7fd321 are now independently accepted. Nine new modules construct actual
+charts and their smooth transitions; 101 nonautomatic declarations, six private
+helpers, fifty critical reused entries and three actual geometric tests pass
+the combined axiom/lint replay with zero diagnostics. The new-cell neighborhood
+contains the entire attaching annulus, including all polygon vertices at all
+heights. Its parameter identity g((d x).val.val) = x.val.val ties the atlas to
+the original PL attachment. The neighborhood is open in that cell only.
+Compatibility with a fixed old-neighborhood atlas, actual relative smoothing
+of the attaching embedding and framing, and crossing-seam open charts remain
+the current S round; compact PL smoothing is not closed by this atlas.
+
 h's completed 12f8f0727 round supplies a one-triangulation exhaustion interface
 and an actual noncompact n=0 sanity model, still awaiting independent acceptance.
 Its next round constructs actual three-dimensional noncompact graph-neighborhood
 geometry and checks the ambient regular-neighborhood semantics. F's source-proper
 cover reduction and basepoint transport are accepted. Its arbitrary-cell-center
-generalization 921aa49bd is separately queued; the active CellMapTriangulation
-round must produce exact triangulation of a nonconstant, noninjective actual
-map while preserving default CellComplex semantics and rebuilding consumers.
+generalization 921aa49bd and exact noninjective map triangulation 27cf1c243 are
+delivered and separately queued for independent acceptance. The current
+SourceNormalSystem round constructs the initial system from the original PL
+disk through actual relative boundary push and those exact triangulations.
 
 M304 through 4400e3465 is now independently accepted: actual arbitrarily
 small annular neighborhoods, original-circle-fixed bicollars and larger disk
@@ -128,10 +141,10 @@ its active 30.3 round without interruption. The private checker limit stays two.
 | Task / model | Current round | Delivery gate and next boundary |
 | --- | --- | --- |
 | h / gpt-5.6-sol max | Repair the three contracts and their genuine geometric witnesses. | Source-faithful statements, nonvacuous instances and rebuilt consumers. Full-arc simultaneous normalization remains deferred. |
-| F / gpt-6-astra max | Compatible NormalSystem migration and the boundary-push, lift, basepoint and actual cover-reduction chain through 9bd8d23a7 are accepted. Arbitrary-cell-center layer 921aa49bd is queued; active round constructs exact triangulation of general noninjective PL maps. | Preserve default CellComplex semantics and demonstrate a nonconstant noninjective actual map. Initial normalization and Lemma 2 branch separation remain open. |
+| F / gpt-6-astra max | Compatible NormalSystem migration and the boundary-push, lift, basepoint and actual cover-reduction chain through 9bd8d23a7 are accepted. Arbitrary-cell-center layer 921aa49bd and exact noninjective-map triangulation 27cf1c243 are queued. Current round constructs the actual initial NormalSystem. | Verify the new exact-map producer and its nonconstant noninjective model; preserve source properness, boundary subgroup and parameter identities in initialization. General normalization and Lemma 2 branch separation remain open. |
 | E3 / gpt-5.6-sol max | Actual geometric splitting and separation in 30.3. Path replacement, annulus 18f861c89 and cut-cell layer 1cea2fbe7 are accepted; disk-neighborhood producer ace162dcd is held for duplicated free-triangle proofs; return the generalization correction at E3's next delivery. Next produce the compatible neighborhood from the original disk pair. | Construct the split surface, connected safe boundary and equality outside the local cell; show separation survives. Euler bookkeeping alone is insufficient. |
-| M304 / gpt-6-astra max | Own 30.4 directly. Separator, exact shell, finite nullhomotopy/kernel and the annulus/core-fixed-bicollar/spanning-disk-pair chain through 4400e3465 are independently accepted. Disk-capping 26215354f, conditional Betti descent 2eecb1a86 and actual circle-complement/closure-intersection layer 9ee4df017 are queued. | Produce closure manifolds with exact intrinsic boundary, then compression geometry and nonspherical-branch descent. E3 consumer instantiation awaits its accepted canonical repair. Keep 26.4 and actual 30.3 open; the final PL-sphere theorem remains unproved. |
-| S / gpt-6-astra max | Compact PL three-manifold smoothing. Complete finite PL handles through 6690962e1 are accepted. Local corners 2162e20eb and compatible full-annulus new-cell atlases through ada7fd321 are queued. | At the completed round, continued toward actual relative smoothing of the attaching annulus and framing in the old atlas, with controlled isotopy when needed, then crossing-seam open charts. A smooth new-cell atlas alone does not supply old-atlas compatibility. |
+| M304 / gpt-6-astra max | Own 30.4 directly. Separator, exact shell, finite nullhomotopy/kernel and the annulus/core-fixed-bicollar/spanning-disk-pair chain through 4400e3465 are independently accepted. Disk-capping 26215354f, conditional Betti descent 2eecb1a86, circle-complement layer 9ee4df017 and actual branch-closure surfaces 5e695768f are queued. | Produce actual capped surfaces and essential-circle/compression descent; retain exact intrinsic boundary and nonspherical-branch conditions. E3 consumer instantiation awaits its accepted canonical repair. Keep 26.4 and actual 30.3 open; the final PL-sphere theorem remains unproved. |
+| S / gpt-6-astra max | Compact PL three-manifold smoothing. Complete finite PL handles through 6690962e1 and local-corner/full-annulus new-cell atlases through ada7fd321 are independently accepted. | Current round constructs actual relative smoothing of the attaching annulus and framing in the old atlas, with a controlled isotopy when needed, then crossing-seam open charts. The accepted new-cell atlas does not establish old-atlas compatibility. |
 
 F must distinguish the full two-sheeted ambient cover from the smaller regular
 neighborhood for the next normal system: restriction need not preserve
