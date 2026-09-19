@@ -8743,3 +8743,4 @@ import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ProjectedBounda
 import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryLocalEmbedding
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.LiftedImage
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CoverComplexity
+import DifferentialGeometry.Topology.Covering.PLTriangulation
