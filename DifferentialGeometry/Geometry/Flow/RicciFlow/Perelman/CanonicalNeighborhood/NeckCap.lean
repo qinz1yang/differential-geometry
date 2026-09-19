@@ -1,3 +1,5 @@
+import DifferentialGeometry.Geometry.Comparison.Soul.SbrBusemannData
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.AncientExtensionBufferedCanonical
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHornGeometry
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph
 import DifferentialGeometry.Topology.SphereSeparation.HalfSpaceClosure
@@ -347,5 +349,116 @@ end StrongNeck
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
 
 end
+
+end
+
+noncomputable section
+
+open Set Bundle
+open scoped Manifold ContDiff Topology NNReal
+
+namespace DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
+
+open Geometry.Curvature (RealTimeInterval)
+open Surgery.Topology (ThreeSpace)
+open DifferentialGeometry.Topology.SphereSeparation (axialZero)
+
+universe u
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem exists_busemann_upper_bound_on_compactSide :
+    ∃ C : ℝ, 0 < C ∧
+      ∀ (M : Type u) [MetricSpace M] [ChartedSpace ThreeSpace M] [IsManifold I3 ∞ M]
+        [CompleteSpace M] (J : RealTimeInterval) (S : SolutionOn (I := I3) (M := M) J)
+        (eps time : ℝ) (v : M) (nk : StrongNeck S eps v time)
+        (psi : Diffeomorph I3 I3 M ThreeSpace ∞),
+        (∀ x y : M, dist x y = metricDistance (S.base.metric time) x y) →
+        ∀ c : ℝ≥0 → M, Isometry c →
+          ∀ x ∈ closure (nk.bicollarSides psi (axialZero (inv_pos.mpr nk.eps_pos))).compactSide,
+            Geometry.Topology.busemann c x ≤ Geometry.Topology.busemann c v +
+              C / Real.sqrt (S.scalar time v) := by
+  obtain ⟨C, hC, hdiam⟩ := metricDistance_core_le_of_neckCoreDiameterBound.{u}
+    neckCoreDiameterBound_holds
+  refine ⟨C, hC, ?_⟩
+  intro M _ _ _ _ J S eps time v nk psi hintrinsic c hc x hx
+  let _ : SigmaCompactSpace M := psi.toHomeomorph.isClosedEmbedding.sigmaCompactSpace
+  let _ : ConnectedSpace M := psi.toHomeomorph.connectedSpace_iff.mpr inferInstance
+  let g := S.base.metric time
+  let : RiemannianBundle (fun x : M => TangentSpace I3 x) := ⟨g.toRiemannianMetric⟩
+  let : IsContinuousRiemannianBundle ThreeSpace (fun x : M => TangentSpace I3 x) :=
+    ⟨⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩⟩
+  have hnorm : Geometry.Riemannian.IsMetricNorm (I := I3) g :=
+    Geometry.Riemannian.isMetricNorm_of_riemannianBundle g
+  let : IsRiemannianManifold I3 M := by
+    refine ⟨fun y z => ?_⟩
+    rw [edist_dist, hintrinsic]
+    rw [metricDistance, riemannianEDistOf_eq_riemannianEDist g hnorm]
+    exact ENNReal.ofReal_toReal (Geometry.Riemannian.Exponential.riemannianEDist_ne_top y z)
+  let side := nk.bicollarSides psi (axialZero (inv_pos.mpr nk.eps_pos))
+  obtain ⟨y, hy, hmax⟩ := Geometry.Topology.exists_busemann_maximum_on_frontier g hnorm hc
+    side.isCompact_closure_compactSide side.isConnected_compactSide.nonempty.closure
+  have hySphere : y ∈ nk.map '' (univ ×ˢ ({0} : Set ℝ)) := by
+    rw [side.frontier_closure_compactSide] at hy
+    rw [nk.bicollar_slice] at hy
+    exact hy
+  have hvSphere : v ∈ nk.map '' (univ ×ˢ ({0} : Set ℝ)) :=
+    ⟨(nk.center, 0), ⟨mem_univ _, rfl⟩, nk.center_eq⟩
+  have hslab : nk.map '' (univ ×ˢ ({0} : Set ℝ)) ⊆
+      nk.map '' (univ ×ˢ Icc (-10 : ℝ) 10) := by
+    apply image_mono
+    rintro z ⟨hz, heq⟩
+    exact ⟨hz, heq.symm ▸ (by norm_num : (0 : ℝ) ∈ Icc (-10 : ℝ) 10)⟩
+  have hd := hdiam M J S eps v time nk y (hslab hySphere) v (hslab hvSphere)
+  have hb := (Geometry.Topology.lipschitzWith_busemann hc).dist_le_mul y v
+  rw [Real.dist_eq, NNReal.coe_one, one_mul, hintrinsic] at hb
+  exact (hmax x hx).trans (by linarith [(abs_le.mp hb).2])
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem exists_busemann_upper_bound_on_localCapOfCompactSide :
+    ∃ C : ℝ, 0 < C ∧
+      ∀ (M : Type u) [MetricSpace M] [ChartedSpace ThreeSpace M] [IsManifold I3 ∞ M]
+        [CompleteSpace M] (J : RealTimeInterval) (S : SolutionOn (I := I3) (M := M) J)
+        (eps time : ℝ) (v : M) (nk : StrongNeck S eps v time)
+        (psi : Diffeomorph I3 I3 M ThreeSpace ∞)
+        (ho : DifferentialGeometry.Topology.SphereSeparation.IsAxiallyOriented
+          nk.bicollar (nk.bicollarSides psi))
+        (core : CapCore (closure
+          (nk.bicollarSides psi (axialZero (inv_pos.mpr nk.eps_pos))).compactSide))
+        (p : M) (hp : p ∈ (nk.bicollarSides psi
+          (axialZero (inv_pos.mpr nk.eps_pos))).compactSide),
+        (∀ x y : M, dist x y = metricDistance (S.base.metric time) x y) →
+        ∀ c : ℝ≥0 → M, Isometry c →
+          let cap := nk.localCapOfCompactSide psi ho core p hp
+          ∀ x ∈ cap.core.carrier ∪ cap.tube,
+            Geometry.Topology.busemann c x ≤ Geometry.Topology.busemann c v +
+              C / Real.sqrt (S.scalar time v) := by
+  obtain ⟨Cs, hCs, hside⟩ := exists_busemann_upper_bound_on_compactSide.{u}
+  obtain ⟨Cd, hCd, hdiam⟩ := metricDistance_core_le_of_neckCoreDiameterBound.{u}
+    neckCoreDiameterBound_holds
+  refine ⟨max Cs Cd, lt_max_of_lt_left hCs, ?_⟩
+  intro M _ _ _ _ J S eps time v nk psi ho core p hp hintrinsic c hc
+  dsimp only
+  intro x hx
+  let _ : SigmaCompactSpace M := psi.toHomeomorph.isClosedEmbedding.sigmaCompactSpace
+  rcases hx with hx | hx
+  · have hb := hside M J S eps time v nk psi hintrinsic c hc x hx
+    exact hb.trans (add_le_add_right
+      (div_le_div_of_nonneg_right (le_max_left _ _) (Real.sqrt_nonneg _)) _)
+  · have hcore : x ∈ nk.map '' (univ ×ˢ Icc (-10 : ℝ) 10) := by
+      obtain ⟨z, hz, rfl⟩ := hx
+      exact ⟨z, ⟨hz.1, by constructor <;> linarith [hz.2.1, hz.2.2]⟩, rfl⟩
+    have hv : v ∈ nk.map '' (univ ×ˢ Icc (-10 : ℝ) 10) :=
+      ⟨(nk.center, 0), ⟨mem_univ _, by norm_num⟩, nk.center_eq⟩
+    have hd := hdiam M J S eps v time nk x hcore v hv
+    have hb := (Geometry.Topology.lipschitzWith_busemann hc).dist_le_mul x v
+    rw [Real.dist_eq, NNReal.coe_one, one_mul, hintrinsic] at hb
+    have hbound : Geometry.Topology.busemann c x ≤ Geometry.Topology.busemann c v +
+        Cd / Real.sqrt (S.scalar time v) := by linarith [(abs_le.mp hb).2]
+    exact hbound.trans (add_le_add_right
+      (div_le_div_of_nonneg_right (le_max_right _ _) (Real.sqrt_nonneg _)) _)
+
+end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
 
 end
