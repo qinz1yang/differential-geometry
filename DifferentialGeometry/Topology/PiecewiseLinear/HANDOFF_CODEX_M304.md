@@ -2532,3 +2532,58 @@ Frozen evidence: C:/Users/liao9/AppData/Local/Temp/moise304-reading/hurewicz-one
 Main audit: 2026-09-19T22:35:19.9060986Z.
 Circle model audit: 2026-09-19T22:39:46.2922313Z.
 Kernel dependency audit: 2026-09-19T22:33:14.9531106Z.
+
+
+## M304 original-shell Betti-two checkpoint, 2026-09-19
+
+The actual incompressible separator in the original prescribed toroidal shell
+now has rational first Betti number exactly 2 and Euler characteristic 0.
+IsToroidalShell.bettiOne_eq_two_of_separates_of_fundamentalGroup_map_injective
+uses injectivity of the actual inclusion at one actual basepoint. It requires
+no Loop Theorem input once that injectivity is supplied. The existence endpoint
+IsToroidalShell.exists_separating_surface_bettiOne_eq_two retains the explicit
+unresolved h252 : Moise252 and returns the same original-shell separation,
+containment, two-sidedness and every-basepoint inclusion injectivity.
+
+FieldCycles gives the linear cycle quotient. FieldHurewiczOne constructs the
+field-coefficient degree-one map and proves that its image spans first homology
+for every PathConnectedSpace. This is a spanning statement, not set surjectivity
+over an arbitrary field. FundamentalGroupRank proves the natural upper bound
+when the fundamental group embeds in the multiplicative group of a finitely
+generated torsion-free abelian group: use its finite free integer basis and the
+field spanning theorem. For the actual shell inclusion the target is Z x Z,
+so Betti one is at most 2. The checked embedded-surface parity and original-shell
+sphere exclusion then give equality. No abelianization-isomorphism theorem or
+unproved coefficient-comparison theorem is assumed.
+
+Four new leaf modules, 408 native source lines, twenty public and four
+private declarations; all four are registered in the flat root. Each compiled
+with zero diagnostics. The cumulative main audit checks 133 native constants,
+143 reuse entries, twenty-four models and four helpers under all thirteen
+applicable linters. The retained independent integral-circle unit-coordinate
+model adds two reuse entries and one model: total 145 reuse entries and twenty-five
+models (fifteen unconditional, ten retaining h252). New models check arbitrary
+field rank bounds on Circle and Circle x Circle, the actual original-shell
+Betti-two separator, and a nonzero rational Hurewicz image on an independently
+constructed actual embedded torus.
+
+All checked axiom closures contain only a subset of propext, Classical.choice
+and Quot.sound. Sixteen kernel type/body closures are nonempty and avoid
+Moise303 and wide Moise264. The native import graph has 958 modules and
+2060 edges, no cycle, and no HurewiczLowDegrees dependency.
+No shared outputs changed. The explicit owner root-build stop remains active;
+integration replay is pending.
+
+Actual torus recognition remains open: no homeomorphism has yet been produced
+from these numerical invariants, so Moise306 is partial and Moise307 has not
+started. A concrete next route is an actual essential spanning disk (using
+h252), nonseparating compression to a sphere, then the checked spherical disk-pair
+matching, cylindrical gluing and orientable monodromy APIs to reconstruct the
+surface-to-torus homeomorphism. These are remaining obligations, not conclusions
+of this checkpoint. MoiseChain, the original-inner-spine Moise308 obligation,
+and other lanes remain unchanged.
+
+Frozen evidence: C:/Users/liao9/AppData/Local/Temp/moise304-reading/shell-homology-checkpoint
+52 source/receipt groups. Manifest SHA256: C94B17E527CA290BE0D767A75548E3235E77ED4723C30B6D456E4A4E1307A751.
+Main audit: 2026-09-19T23:03:40.1144416Z.
+Kernel dependency audit: 2026-09-19T23:05:08.6478958Z.
