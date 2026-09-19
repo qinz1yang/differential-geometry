@@ -8797,3 +8797,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.CircleComponentClosure
 import DifferentialGeometry.Topology.PiecewiseLinear.ComplexUnion
 import DifferentialGeometry.Topology.PiecewiseLinear.SphereGluing
 import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryGluing
+import DifferentialGeometry.Topology.PiecewiseLinear.ManifoldCapping
+import DifferentialGeometry.Topology.PiecewiseLinear.EulerUnion
+import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceCapping
+import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceCappingBetti

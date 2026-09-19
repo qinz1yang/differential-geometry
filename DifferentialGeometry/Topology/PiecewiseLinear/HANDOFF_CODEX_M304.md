@@ -614,3 +614,56 @@ No existing public signature changed. The root build remains stopped and
 shared artifacts remain untouched. Instantiation on the actual separating
 circle components, their cap Euler identities and strict descent are next;
 26.4 compression, E3's separation-preserving geometry and full 30.4 remain open.
+
+## Actual separating-circle cappings and strict descent (2026-09-19 UTC)
+
+`ManifoldCapping.lean` constructs a closed manifold by attaching an actual
+parametrized ball along the entire boundary of a finite combinatorial
+manifold. It applies in every positive dimension. `EulerUnion.lean` proves
+Euler additivity for actual polyhedral unions and intersections over every
+field, without assuming compatible input triangulations, and exposes the
+corresponding finite-complex carrier formulas.
+
+`IsCombinatorialManifold.exists_capped_pair_of_separating_circle` in
+`SurfaceCapping.lean` starts with a finite connected orientable closed
+surface, an actual spanning PL disk whose boundary is its exact intersection
+with that surface, and separation of the surface by this circle. It
+constructs two finite connected closed surfaces. Each is the actual closure
+of one complementary component union the original disk; the two caps meet
+exactly in that disk and cover the source-surface/disk union. The proof
+constructs the component closures, applies entire-boundary gluing, and proves
+that the sum of the two Euler characteristics is the source Euler
+characteristic plus two. None of the capped manifolds or this Euler equation
+is supplied as an input.
+
+`IsCombinatorialManifold.exists_capped_pair_of_separating_essential_circle`
+in `SurfaceCappingBetti.lean` specializes to ambient dimension three and a
+non-nullhomotopic boundary inclusion, exactly as in the 26.4 disk contract.
+It produces orientable closed connected caps P and Q, proves that neither
+is a PL sphere, proves `bettiOne P.space + bettiOne Q.space = bettiOne K.space`,
+and proves strict descent for both. If a cap were spherical, the actual
+disk-complement theorem would contract the original circle in the original
+surface. The already checked sphere-recognition and surface-homology
+theorems then give positive Betti number for each cap and the strict drops.
+No quantitative drop of two for each separated component is asserted here.
+
+The four modules compile with zero diagnostics in 10.058, 10.139, 11.835
+and 10.849 seconds, respectively, including admission. The final silent
+audit takes 86.152 seconds. All six new declarations, eleven critical reused
+entries and three geometric models have only standard foundational axioms;
+all 13 applicable environment linters pass. The models cap an explicit
+standard simplex hemisphere in every positive dimension, cap both sides
+of the middle disk of a cube boundary, and compute Euler additivity for
+overlapping intervals. The cube model produces two closed connected surfaces
+with zero first Betti numbers and Euler sum four; its circle is inessential,
+so it is a test of the actual cap producer rather than a nontrivial example
+of the strict essential-circle theorem. External-model namespace and line
+length issues were corrected before the passing audit.
+
+All four leaves are registered in the flat root. Frozen source identities,
+private objects, receipts, audit and census are under
+`moise304-reading/surface-capping-checkpoint/`. The root build stays stopped
+and shared artifacts remain untouched. These raw caps share the original
+disk: they are not a claim of E3's disjoint pushed surfaces or of preservation
+of the original separating property. Nonseparating-circle compression,
+26.4 production, E3's separation step and full 30.4 remain open.

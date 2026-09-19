@@ -147,8 +147,14 @@ consumers compile unchanged. General entire-boundary gluing is now checked
 in every dimension: two balls give a sphere, and two manifolds with boundary
 give a closed manifold on their actual union, even with initially unrelated
 triangulations. Eight new declarations, ten reused entries, three geometric
-models and 13 linters pass. Instantiation on the actual capped components,
-their Euler identities and exclusion of spherical components remain open. Full nonorientable 28.19
+models and 13 linters pass. Actual separating-circle component closures are
+now capped by the given spanning disk to produce two connected closed
+surfaces with Euler sum equal to the source Euler characteristic plus two.
+In ambient dimension three, essentiality excludes both caps from being
+spheres and gives an exact Betti sum and strict descent for each. Six new
+declarations, eleven reused entries, three models and 13 linters pass.
+The raw caps share the given disk; nonseparating compression and preservation
+of the original separation are still open. Full nonorientable 28.19
 and the spherical-shell
 endpoint remain open. Exact evidence
 and the source route are in HANDOFF_CODEX_M304.md. This explicitly authorized

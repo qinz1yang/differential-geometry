@@ -112,10 +112,16 @@ Entire-boundary gluing now proves the closed-manifold structure of the
 actual union in every dimension, using a constructed common triangulation.
 Two balls meeting in their entire boundaries give a sphere, including
 dimension zero. Eight declarations, ten reused entries, three geometric
-models and 13 linters pass. Instantiating caps on the actual component
-closures and proving their Euler identities are next.
+models and 13 linters pass. The actual separating-circle closures are now
+capped by the original spanning disk, giving two finite connected closed
+surfaces, their exact component-closure carrier equations and the Euler
+sum increase of two. In ambient dimension three, a non-nullhomotopic circle
+inclusion excludes spherical caps and gives strict Betti descent for both.
+Six declarations, eleven reused entries, three models and 13 linters pass.
+These caps share the original disk; preservation of separation and the
+nonseparating-circle case remain open.
 E3 retains 30.3. Compression via 26.4, full nonorientable 28.19,
-strict Betti descent and the full PL-sphere endpoint 30.4 remain open.
+the remaining compression geometry and the full PL-sphere endpoint 30.4 remain open.
 See HANDOFF_CODEX_M304.md for exact signatures and evidence.
 
 Phase 3 的唯一终点是一条定理：
