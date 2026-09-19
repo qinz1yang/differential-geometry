@@ -1,3 +1,5 @@
+import DifferentialGeometry.Topology.Compactness.TimeInterval
+import Mathlib.Algebra.Field.Periodic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.LocalExistenceFrontier
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Connection
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.CalculusGeometry
@@ -120,6 +122,37 @@ theorem curveShorteningImmersedPersistence :
     exact ((hXper.int_mul n) x).symm
   rw [hXyx]
   exact hτ y (⟨hyI.1, hyI.2.le⟩) t htI
+
+namespace CurveMap
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] in
+theorem exists_immersedOn_Icc_superset {a b : ℝ} (hab : a ≤ b)
+    (c : CurveMap M) (hc : c.SmoothOn (I := I) univ)
+    (hi : c.ImmersedOn (I := I) (Icc a b)) :
+    ∃ lo hi : ℝ, lo < a ∧ b < hi ∧ c.ImmersedOn (I := I) (Icc lo hi) := by
+  let F : ℝ × ℝ → TangentBundle I M := fun p =>
+    ⟨c.lift p.1 p.2, c.X p.1 p.2⟩
+  let U : Set (TangentBundle I M) := {v | v.2 ≠ 0}
+  have hU : IsOpen U := isOpen_setOf_tangentBundle_snd_ne_zero (I := I) (M := M)
+  have hF : Continuous F := by
+    simpa only [univ_prod_univ, continuousOn_univ] using
+      (Field.smoothOn_X c univ hc).continuousOn
+  have htrace : Icc (0 : ℝ) 1 ×ˢ Icc a b ⊆ F ⁻¹' U :=
+    fun p hp => hi p.1 p.2 hp.2
+  obtain ⟨lo, hi, hlo, hhi, hlarge⟩ :=
+    (isCompact_Icc : IsCompact (Icc (0 : ℝ) 1)).exists_prod_Icc_superset_of_isOpen
+      hab (hU.preimage hF) htrace
+  refine ⟨lo, hi, hlo, hhi, ?_⟩
+  intro x t ht
+  have hspace : ContMDiff 𝓘(ℝ, ℝ) I ∞ (fun y : ℝ => c.lift y t) :=
+    contMDiffOn_univ.mp (space_slice_contMDiffOn c univ hc t (mem_univ t))
+  have hper : Function.Periodic (fun y : ℝ => c.X (I := I) y t) 1 :=
+    fun y => X_add_period c t y ((hspace (y + 1)).mdifferentiableAt (by simp))
+  obtain ⟨y, hy, hxy⟩ := hper.exists_mem_Ico₀ (by norm_num) x
+  rw [hxy]
+  exact hlarge (show (y, t) ∈ Icc (0 : ℝ) 1 ×ˢ Icc lo hi from ⟨⟨hy.1, hy.2.le⟩, ht⟩)
+
+end CurveMap
 
 theorem exists_curveShorteningImmersedPersistence_addCircle :
     ∃ c : CurveMap (AddCircle (1 : ℝ)),

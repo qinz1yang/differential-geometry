@@ -1,3 +1,4 @@
+import DifferentialGeometry.Analysis.Calculus.Cutoff.Clamp.Smooth
 import DifferentialGeometry.Analysis.Calculus.SmoothExtension.Quadrant
 import DifferentialGeometry.Analysis.Calculus.Cutoff.Compact
 import Mathlib.Geometry.Manifold.Instances.Real
@@ -338,3 +339,75 @@ theorem exists_contMDiff_extension_Icc_halfspace
 end
 
 end Manifold
+
+noncomputable section
+
+open Set
+open scoped Manifold ContDiff Topology
+
+namespace Manifold
+
+variable {E H X F E' H' Y : Type*}
+  [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+  [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+  [TopologicalSpace X] [ChartedSpace H X] [IsManifold I ∞ X]
+  [T2Space X] [CompactSpace X]
+  [NormedAddCommGroup F] [NormedSpace ℝ F] [CompleteSpace F]
+  [NormedAddCommGroup E'] [NormedSpace ℝ E']
+  [TopologicalSpace H'] {J : ModelWithCorners ℝ E' H'}
+  [TopologicalSpace Y] [ChartedSpace H' Y]
+
+theorem exists_contMDiff_extension_Icc_of_retraction
+    {a b : ℝ} {f : ℝ × X → Y} {e : Y → F}
+    (he : ContMDiff J 𝓘(ℝ, F) ∞ e)
+    (r : F → Y) (U : Set F) (hU : IsOpen U) (heU : range e ⊆ U)
+    (hr : ContMDiffOn 𝓘(ℝ, F) J ∞ r U) (hre : Function.LeftInverse r e)
+    (hf : ContMDiffOn (𝓘(ℝ, ℝ).prod I) J ∞ f (Icc a b ×ˢ univ)) :
+    ∃ G : ℝ × X → Y, ContMDiff (𝓘(ℝ, ℝ).prod I) J ∞ G ∧
+      EqOn G f (Icc a b ×ˢ univ) := by
+  rcases lt_trichotomy a b with hab | hab | hab
+  · obtain ⟨G, hG, hGeq⟩ := exists_contMDiff_extension_Icc (he.comp_contMDiffOn hf)
+    have htrace : Icc a b ×ˢ (univ : Set X) ⊆ G ⁻¹' U := by
+      intro q hq
+      rw [mem_preimage, hGeq hq]
+      exact heU ⟨f q, rfl⟩
+    obtain ⟨V, W, hV, _, hseg, hW, hVW⟩ := generalized_tube_lemma isCompact_Icc
+      (isCompact_univ (X := X)) (hU.preimage hG.continuous) htrace
+    obtain ⟨ρ, lo, hi, hlo, hhi, hρ, hρid, _, hρV⟩ :=
+      DifferentialGeometry.exists_smooth_time_clamp_range_subset hV hab hseg
+    let ψ : ℝ × X → ℝ × X := fun q => (ρ q.1, q.2)
+    have hψ : ContMDiff (𝓘(ℝ, ℝ).prod I) (𝓘(ℝ, ℝ).prod I) ∞ ψ :=
+      (hρ.contMDiff.comp contMDiff_fst).prodMk contMDiff_snd
+    have hGU : MapsTo (G ∘ ψ) univ U := by
+      intro q _
+      exact hVW ⟨hρV q.1, hW (mem_univ q.2)⟩
+    refine ⟨r ∘ G ∘ ψ, ?_, ?_⟩
+    · rw [← contMDiffOn_univ]
+      exact hr.comp (hG.comp hψ).contMDiffOn hGU
+    · intro q hq
+      have hρq : ρ q.1 = q.1 := hρid ⟨hlo.le.trans hq.1.1, hq.1.2.trans hhi.le⟩
+      change r (G (ρ q.1, q.2)) = f q
+      rw [hρq, hGeq hq]
+      exact hre (f q)
+  · subst b
+    have hslice : ContMDiff I J ∞ (fun x => f (a, x)) := by
+      rw [← contMDiffOn_univ]
+      exact hf.comp (contMDiff_const.prodMk contMDiff_id).contMDiffOn
+        (fun x _ => ⟨⟨le_rfl, le_rfl⟩, mem_univ x⟩)
+    refine ⟨fun q => f (a, q.2), hslice.comp contMDiff_snd, ?_⟩
+    intro q hq
+    change f (a, q.2) = f (q.1, q.2)
+    rw [show q.1 = a from le_antisymm hq.1.2 hq.1.1]
+  · rcases isEmpty_or_nonempty X with hX | hX
+    · let _ := hX
+      refine ⟨f, ?_, ?_⟩
+      · intro q
+        exact isEmptyElim q.2
+      · simp only [Icc_eq_empty_of_lt hab, empty_prod, eqOn_empty]
+    · let _ := hX
+      refine ⟨fun _ => f (a, Classical.arbitrary X), contMDiff_const, ?_⟩
+      simp only [Icc_eq_empty_of_lt hab, empty_prod, eqOn_empty]
+
+end Manifold
+
+end

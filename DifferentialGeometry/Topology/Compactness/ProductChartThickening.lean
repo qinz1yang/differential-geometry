@@ -1,4 +1,5 @@
 import DifferentialGeometry.Topology.Compactness.ProductChartBand
+import DifferentialGeometry.Topology.Compactness.TimeInterval
 import DifferentialGeometry.Topology.Compactness.FiniteSeparation
 import Mathlib.AlgebraicTopology.FundamentalGroupoid.SimplyConnected
 import Mathlib.Analysis.Convex.Contractible
@@ -9,21 +10,6 @@ open Set
 open scoped ContinuousMap
 
 namespace DifferentialGeometry.Topology.Compactness
-
-theorem exists_larger_interval_subset_of_isOpen
-    {a b : ℝ} (hab : a ≤ b) {V : Set ℝ} (hV : IsOpen V) (hsub : Icc a b ⊆ V) :
-    ∃ a' b', a' < a ∧ b < b' ∧ Ioo a' b' ⊆ V := by
-  obtain ⟨a', c, ha, hac⟩ := mem_nhds_iff_exists_Ioo_subset.mp
-    (hV.mem_nhds (hsub ⟨le_rfl, hab⟩))
-  obtain ⟨d, b', hb, hdb⟩ := mem_nhds_iff_exists_Ioo_subset.mp
-    (hV.mem_nhds (hsub ⟨hab, le_rfl⟩))
-  refine ⟨a', b', ha.1, hb.2, ?_⟩
-  intro t ht
-  by_cases hta : t < a
-  · exact hac ⟨ht.1, hta.trans ha.2⟩
-  · by_cases hbt : b < t
-    · exact hdb ⟨hb.1.trans hbt, ht.2⟩
-    · exact hsub ⟨le_of_not_gt hta, le_of_not_gt hbt⟩
 
 theorem exists_larger_product_chart_band
     {N M : Type*} [TopologicalSpace N] [CompactSpace N] [TopologicalSpace M]

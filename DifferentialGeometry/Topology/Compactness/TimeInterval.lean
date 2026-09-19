@@ -1,4 +1,5 @@
 import Mathlib.Topology.Compactness.Compact
+import Mathlib.Topology.Order.Compact
 import Mathlib.Topology.Instances.Real.Lemmas
 
 
@@ -47,3 +48,37 @@ theorem IsCompact.exists_Icc_mapsTo_of_continuousOn
     refine ⟨htI.1, ?_⟩
     linarith [htI.2, min_le_right (ε / 2) (T - t₀)]
   exact hVsub ⟨hUV ⟨hKUx hx, htt⟩, ⟨hx, htT⟩⟩
+
+namespace DifferentialGeometry.Topology.Compactness
+
+theorem exists_larger_interval_subset_of_isOpen
+    {a b : ℝ} (hab : a ≤ b) {V : Set ℝ} (hV : IsOpen V) (hsub : Icc a b ⊆ V) :
+    ∃ a' b', a' < a ∧ b < b' ∧ Ioo a' b' ⊆ V := by
+  obtain ⟨a', c, ha, hac⟩ := mem_nhds_iff_exists_Ioo_subset.mp
+    (hV.mem_nhds (hsub ⟨le_rfl, hab⟩))
+  obtain ⟨d, b', hb, hdb⟩ := mem_nhds_iff_exists_Ioo_subset.mp
+    (hV.mem_nhds (hsub ⟨hab, le_rfl⟩))
+  refine ⟨a', b', ha.1, hb.2, ?_⟩
+  intro t ht
+  by_cases hta : t < a
+  · exact hac ⟨ht.1, hta.trans ha.2⟩
+  · by_cases hbt : b < t
+    · exact hdb ⟨hb.1.trans hbt, ht.2⟩
+    · exact hsub ⟨le_of_not_gt hta, le_of_not_gt hbt⟩
+
+end DifferentialGeometry.Topology.Compactness
+
+theorem IsCompact.exists_prod_Icc_superset_of_isOpen
+    {X : Type*} [TopologicalSpace X] {K : Set X} (hK : IsCompact K)
+    {a b : ℝ} (hab : a ≤ b) {U : Set (X × ℝ)} (hU : IsOpen U)
+    (hsub : K ×ˢ Icc a b ⊆ U) :
+    ∃ lo hi : ℝ, lo < a ∧ b < hi ∧ K ×ˢ Icc lo hi ⊆ U := by
+  obtain ⟨A, V, _, hV, hKA, hseg, hAV⟩ :=
+    generalized_tube_lemma hK isCompact_Icc hU hsub
+  obtain ⟨l, u, hl, hu, hlu⟩ :=
+    DifferentialGeometry.Topology.Compactness.exists_larger_interval_subset_of_isOpen
+      hab hV hseg
+  obtain ⟨lo, hllo, hloa⟩ := exists_between hl
+  obtain ⟨hi, hbhi, hhiu⟩ := exists_between hu
+  exact ⟨lo, hi, hloa, hbhi,
+    fun p hp => hAV ⟨hKA hp.1, hlu (Icc_subset_Ioo hllo hhiu hp.2)⟩⟩

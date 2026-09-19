@@ -11463,5 +11463,9 @@ import DifferentialGeometry.Topology.Manifold.MapPerturbation
 import DifferentialGeometry.Topology.Manifold.TransversePerturbation
 import DifferentialGeometry.Topology.LoopSpace.FamilyDerivatives
 import DifferentialGeometry.Topology.LoopSpace.TransversePerturbation
+import DifferentialGeometry.Geometry.Metric.Family.OpenSubtypeCoefficients
+import DifferentialGeometry.Geometry.Curve.NormalVelocityErrorDensity
+import DifferentialGeometry.Topology.LoopSpace.ContractibleNearby
 import DifferentialGeometry.Topology.LoopSpace.ImmersionStability
 import DifferentialGeometry.Topology.LoopSpace.GenericApproximation
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.LoopFamilyExtension
