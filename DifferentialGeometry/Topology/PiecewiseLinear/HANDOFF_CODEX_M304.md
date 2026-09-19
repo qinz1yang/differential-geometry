@@ -1019,3 +1019,59 @@ minimizer for the 30.4 argument but does not prove that the general shell
 minimizer has Betti zero. Essential spanning disks, physical disjoint caps,
 and separation by their union remain the upstream obligations. Root builds
 remain stopped and shared outputs are unchanged.
+
+
+## Essential singular disk in a finite neighborhood (2026-09-19 UTC)
+
+`IsCombinatorialManifold.exists_essential_singular_disk_in_neighborhood`
+now produces the actual singular filling needed before applying 26.4. From
+a finite connected closed combinatorial surface which is not a PL sphere,
+contained in an open simply connected U, it constructs a nontrivial based
+loop p, a finite combinatorial manifold-with-boundary N contained in U,
+and a piecewise affine map f from a genuine PL two-ball P in the Euclidean
+plane into the interior of N. The whole surface also lies in that same
+interior. Ambient dimension three gives a finite WB3 neighborhood.
+
+The output includes b : C(frontier P, L.space), a homeomorphism e from the
+loop circle onto frontier P, the pointwise equation f(z) = b(z), and a
+free homotopy from pathToCircle p to b composed with e. It proves that b
+is not nullhomotopic in L and that the original nontrivial class of p maps
+to one in this same N for every proof of the inclusion. No singular disk,
+embedding, or nullhomotopy is assumed as a new premise. The first N chosen
+by the older kernel producer is not reused as an unverified target: the
+final N is built around the surface together with the actual PL disk image.
+
+The reusable chain consists of OpenTargetApproximation (relative PL
+approximation retaining an open target), DiskFilling (exact boundary
+extension on any planar PL two-ball), FreeLoopFilling (PL boundary freely
+homotopic to the specified loop), and the new neighborhood filling producer
+in NullhomotopyNeighborhood. General disk extension transports from a convex
+model, while the open-target estimate preserves the full prescribed boundary.
+The three new leaves are registered in the flat root aggregate. The native
+reachable import graph has 538 modules and 1052 edges with no cycles.
+
+All five changed/new modules compile with zero diagnostics. The existing
+Homotopy.FreeLoopNullhomotopy module was separately compiled, without source
+changes, under the coordinator's exact-module private lease; its original
+source SHA256 is 0C86E609F45B37A8450C9068555AF9034E07DDEBFE621C3098E751D056BBB745.
+The final silent audit takes 51.721 seconds including admission. It checks
+all 11 native nonautomatic declarations (five new public, two private,
+four retained), 13 critical reused declarations including the full axiom
+closure of pathToCircle_nullhomotopic_iff, and six external declarations.
+Those external declarations include two nondegenerate geometric models:
+a fixed square boundary with a nonconstant PL filling, and an essential
+polygonal circle in actual three-dimensional Euclidean space filled inside
+an actual finite WB3 neighborhood. The circle's nontrivial fundamental group
+and three supporting model declarations are also checked. All 13 applicable
+linters pass, with only the standard foundational axioms.
+
+Frozen raw/normalized source identities, six source/object/receipt sets and
+the complete passing audit are under
+`moise304-reading/essential-singular-disk-checkpoint/`. All four retained
+public signatures are unchanged. Root builds remain stopped, the shared E
+output library is unchanged, and no other lane's source was edited.
+
+This closes actual essential singular disk production. It does not turn
+the map into an embedded spanning disk: the unrestricted 26.4 producer is
+still required. Physical disjoint caps and preservation of ambient
+separation remain E3 obligations. Full 30.4 remains open.

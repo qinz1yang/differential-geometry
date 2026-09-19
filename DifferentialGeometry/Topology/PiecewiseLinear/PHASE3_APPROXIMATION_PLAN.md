@@ -751,3 +751,23 @@ is a PL sphere. Frozen evidence is under
 `moise304-reading/minimal-separator-checkpoint/`. The general shell minimizer
 is not yet proved spherical; the essential disk and separation-preserving
 disjoint cap producers are still needed for full 30.4.
+
+
+### M304 essential singular disk production (2026-09-19 UTC)
+
+From a finite connected nonspherical closed surface inside an open simply
+connected U, the new SurfaceCompression producer constructs an actual PL
+singular disk with a planar PL two-ball domain and an actual finite WB3
+neighborhood N contained in U. Both the entire surface and disk image lie
+in the same N interior. Exact boundary equations and a free homotopy to
+the original nontrivial loop retain non-nullhomotopy on the surface; that
+original class is also proved trivial in the same N. Reusable open-target
+relative approximation, arbitrary planar PL disk extension, and free-loop
+filling are separate native leaves. Five changed/new sources and one
+unchanged key dependency compile without diagnostics. The audit covers
+11 native declarations, 13 reused entries, two nondegenerate geometric
+models with four supporting declarations, and all 13 applicable linters;
+all axiom closures are standard. Frozen evidence is under
+`moise304-reading/essential-singular-disk-checkpoint/`. This is singular disk
+production only: embedded disks from 26.4, physical disjoint caps and ambient
+separation are still needed for full 30.4. Root builds remain stopped.

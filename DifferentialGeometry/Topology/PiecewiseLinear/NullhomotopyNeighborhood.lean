@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: DifferentialGeometry contributors
 -/
 import DifferentialGeometry.Topology.PiecewiseLinear.SeparatingSurface
+import DifferentialGeometry.Topology.PiecewiseLinear.FreeLoopFilling
 import Mathlib.AlgebraicTopology.FundamentalGroupoid.FundamentalGroup
 import Mathlib.AlgebraicTopology.FundamentalGroupoid.SimplyConnected
 
@@ -70,5 +71,29 @@ theorem exists_neighborhood_fundamentalGroup_map_eq_one_of_simplyConnectedSpace 
           C(S, N.space)) x g = 1 :=
   exists_neighborhood_fundamentalGroup_map_eq_one hdim hS hU hSU x g
     (Subsingleton.elim _ _)
+
+theorem exists_neighborhood_isPiecewiseAffineOn_filling {n : ℕ}
+    (hdim : Module.finrank ℝ E = n + 1)
+    (L : Geometry.SimplicialComplex ℝ E) [Finite L.faces]
+    {U : Set E} (hU : IsOpen U) (hLU : L.space ⊆ U) [SimplyConnectedSpace U]
+    {P : Set (EuclideanSpace ℝ (Fin 2))} (hP : IsPLBall 2 P) (γ : freeLoop L.space) :
+    ∃ N : Geometry.SimplicialComplex ℝ E, N.faces.Finite ∧
+      IsCombinatorialManifoldWithBoundary (n + 1) N ∧
+      L.space ⊆ interior N.space ∧ N.space ⊆ U ∧
+      ∃ f : EuclideanSpace ℝ (Fin 2) → E,
+        IsPiecewiseAffineOn f P ∧ MapsTo f P (interior N.space) ∧
+        ∃ (b : C(frontier P, L.space)) (e : loopCircle ≃ₜ frontier P),
+          (∀ z : frontier P, f z = (b z : E)) ∧
+          γ.Homotopic (b.comp (e : C(loopCircle, frontier P))) := by
+  obtain ⟨f, hf, hfU, b, e, htrace, hhom⟩ :=
+    hP.exists_isPiecewiseAffineOn_filling_freeLoop_homotopic L hU hLU γ
+  have hC : IsCompact (L.space ∪ f '' P) :=
+    (isPolyhedron_space L).isCompact.union (hP.isPolyhedron.isCompact.image_of_continuousOn
+      hf.continuousOn)
+  have hCU : L.space ∪ f '' P ⊆ U := union_subset hLU hfU.image_subset
+  obtain ⟨N, hNfin, hN, hCN, hNU⟩ :=
+    exists_isCombinatorialManifoldWithBoundary_neighborhood hdim hC hU hCU
+  exact ⟨N, hNfin, hN, subset_union_left.trans hCN, hNU, f, hf,
+    fun z hz => hCN (Or.inr (mem_image_of_mem f hz)), b, e, htrace, hhom⟩
 
 end DifferentialGeometry.Topology.PiecewiseLinear
