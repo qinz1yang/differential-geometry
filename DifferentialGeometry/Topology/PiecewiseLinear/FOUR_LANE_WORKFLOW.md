@@ -12,7 +12,9 @@ handoff and the individual lane handoffs.
   gpt-5.6-sol, max.
 - E3: Moise 30.4 assembly, starting with the 30.3 splitting/separation step,
   gpt-5.6-sol, max.
-- S: mapping-torus, Moebius, and orientation constructions, gpt-6-astra, max.
+- S: 24.12, from one generating polygon's nullhomotopy to an actual CST
+  neighborhood, gpt-6-astra, max. Compact PL smoothing is a separate next
+  lane at delivery or a genuine blocker, not a simultaneous assignment.
 - The coordinator validates, integrates, records decisions, and supplies exact
   interfaces. It does not write the main mathematical proofs.
 
@@ -50,17 +52,19 @@ verify its actual consumers, including fixed-length destructuring patterns.
 Do not assume that strengthening a conclusion preserves all consumers.
 
 Required copyright/authors headers and brief module documentation are allowed
-by the owner's explicit exception. Other project source and soundness rules
+by the current AGENTS source rules. Other project source and soundness rules
 remain binding. Register new leaves in the flat root aggregate. Keep diagnostic
 Lean probes outside the project tree. These current rules supersede the older
 workflow's no-header, no-root-import, and in-tree-scratch instructions.
 
 ## Compiler trial
 
-The independent full-source build continues with one Lean worker. The trial
-allows at most two lane checkers and three total Lean processes, below the
-owner's ceiling of four. Each lane has at most one checker. A named mutex and
-per-process reservations coordinate admission; at least 12 GiB of free commit
+The owner stopped the full-source build on 2026-09-19 at 02:00 UTC. Artifacts
+are retained with no automatic restart. The trial still allows at most two
+private lane checkers; stopping the root does not raise that limit. When root
+verification is resumed, it uses one Lean worker, at most three total Lean
+processes, below the owner's ceiling of four. Each lane has at most one checker.
+A named mutex and per-process reservations coordinate admission; at least 12 GiB of free commit
 headroom and 4 GiB of free physical memory are required before another checker
 starts, with a 4 GiB reservation for each pending startup.
 
@@ -87,9 +91,10 @@ a trial to be assessed at delivery boundaries, without routine lane interruption
 Review the complete scoped diff, worktree ownership, source provenance, branch
 and remote state, prohibited constructs, and exact mathematical claims.
 Recompile every changed leaf in the integration checkout, and audit cross-import
-compatibility. Keep local verification separate from the continuing independent
-full-source gate. Preserve raw and normalized source identities when Windows
-line endings differ. A clean Git push is archival evidence, not proof evidence.
+compatibility. Keep focused verification separate from the incomplete, stopped
+full-source gate. Repair disconnected endpoint imports before the future root
+gate is counted as endpoint coverage. Preserve raw and normalized source
+identities when Windows line endings differ. A clean Git push is archival evidence, not proof evidence.
 
 Report exact declarations, check durations and exit codes, audit coverage, and
 remaining obligations. Distinguish newly written source, verified deliveries,
