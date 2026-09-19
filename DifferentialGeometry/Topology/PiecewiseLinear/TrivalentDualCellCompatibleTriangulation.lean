@@ -149,6 +149,13 @@ theorem exists_trivalent_graphDualCell_compatible_triangulation_model :
             (graphDualCell K L v)).space
           (f i '' (@boundaryComplex (Fin 5 → ℝ) _ _ (Classical.decEq _) 3
             (graphDualCell K L (w i))).space)) ∧
+      IsPLSphere 2 (@boundaryComplex (Fin 5 → ℝ) _ _ (Classical.decEq _) 3
+        (graphDualCell K L v)).space ∧
+      (∀ i, IsPLSphere 2
+        (f i '' (@boundaryComplex (Fin 5 → ℝ) _ _ (Classical.decEq _) 3
+          (graphDualCell K L (w i))).space)) ∧
+      Pairwise (fun i j => Disjoint (A i) (A j)) ∧
+      Pairwise (fun i j => Disjoint (B i) (B j)) ∧
       (p : Fin 5 → ℝ) ∈ J 0 ∧ (p : Fin 5 → ℝ) ∉ L.space ∧
       (let _ : DecidableEq (Fin 5 → ℝ) := Classical.decEq _
        let _ : Finite K.faces := hKfin.to_subtype
@@ -194,6 +201,27 @@ theorem exists_trivalent_graphDualCell_compatible_triangulation_model :
           (graphDualCell K L (w i))).space) := by
     rcases hdata i with ⟨hJ, hf, hCsub, hfixf, hCball, hinter, hAU, hAB⟩
     exact ⟨hJ, hAB⟩
+  have hedge (i : Fin 3) : {v, w i} ∈ L.faces :=
+    (hneighbors (w i) (hvw i).symm).mpr ⟨i, rfl⟩
+  have hv : {v} ∈ L.faces :=
+    L.down_closed (hedge 0) (by simp) (Finset.singleton_nonempty v)
+  have hcentralSphere : IsPLSphere 2 (boundaryComplex 3 (graphDualCell K L v)).space := by
+    let _ : Finite (graphDualCell K L v).faces :=
+      (graphDualCell_faces_finite K L v).to_subtype
+    exact isPLSphere_boundaryComplex_space_of_isPLBall _
+      (hK.isPLBall_graphDualCell K L hLK hcard hv)
+  have hbranchSphere (i : Fin 3) :
+      IsPLSphere 2 (f i '' (boundaryComplex 3 (graphDualCell K L (w i))).space) := by
+    let _ : Finite (graphDualCell K L (w i)).faces :=
+      (graphDualCell_faces_finite K L (w i)).to_subtype
+    have hw : {w i} ∈ L.faces :=
+      L.down_closed (hedge i) (by simp) (Finset.singleton_nonempty (w i))
+    have hball : IsPLBall 3 (graphDualCell K L (w i)).space :=
+      hK.isPLBall_graphDualCell K L hLK hcard hw
+    have hf := (hdata i).2.1
+    exact (isPLSphere_boundaryComplex_space_of_isPLBall _ hball).of_isPLHomeomorphOn
+      (hf.restrict (isPolyhedron_space (boundaryComplex 3 (graphDualCell K L (w i))))
+        (boundaryComplex_space_subset 3 (graphDualCell K L (w i))))
   let T := combinatorialPLPieceIn K hK p
   obtain ⟨K₀, K₁, q', D, hK₀K, hK₀fin, hK₁K, hK₁fin, hglue, hsimple,
     hsource, htarget⟩ :=
@@ -202,7 +230,8 @@ theorem exists_trivalent_graphDualCell_compatible_triangulation_model :
       (isPolyhedron_trivalentPiercingSet K L v w J f A B hfamily)
       (trivalentPiercingSet_subset K L hLK v w J f A B fun i => (hfamily i).2)
   refine ⟨K, L, hKfin, hLfin, hK, v, w, J, f, A, B, p, h, K₀, K₁, q', D,
-    hLK, hcard, hwinj, hvw, hneighbors, hfamily, hpJ, hpL, ?_⟩
+    hLK, hcard, hwinj, hvw, hneighbors, hfamily, hcentralSphere, hbranchSphere,
+    hpairA, hpairB, hpJ, hpL, ?_⟩
   exact ⟨hh, hh', hmove, hfixL, hK₀K, hK₀fin, hK₁K, hK₁fin, hglue,
     hsimple, hsource, htarget⟩
 

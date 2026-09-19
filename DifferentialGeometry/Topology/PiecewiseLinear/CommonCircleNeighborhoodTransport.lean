@@ -5,6 +5,7 @@ Authors: DifferentialGeometry contributors
 -/
 import DifferentialGeometry.Topology.PiecewiseLinear.CommonCircleNeighborhood
 import DifferentialGeometry.Topology.PiecewiseLinear.DerivedNeighborhoodTransport
+import DifferentialGeometry.Topology.PiecewiseLinear.StarComplex
 
 /-!
 # Transported common circle neighborhoods
@@ -16,6 +17,50 @@ namespace DifferentialGeometry.Topology.PiecewiseLinear
 
 variable {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [NormedAddCommGroup F] [NormedSpace ℝ F]
+
+open Classical in
+theorem IsNestedCommonAnnularDerivedNeighborhood.image_of_isPLHomeomorphOn
+    [FiniteDimensional ℝ E] [FiniteDimensional ℝ F]
+    {K : Geometry.SimplicialComplex ℝ E} {K' : Geometry.SimplicialComplex ℝ F}
+    {f : E → F} {A B J S₀ S₁ : Set E}
+    (h : IsNestedCommonAnnularDerivedNeighborhood K A B J S₀ S₁)
+    (hf : IsPLHomeomorphOn f K.space K'.space) (hJK : J ⊆ K.space)
+    (hA : IsCommonAnnularDerivedNeighborhood K' (f '' A) (f '' J)
+      (f '' S₀) (f '' S₁))
+    (hB : IsCommonAnnularDerivedNeighborhood K' (f '' B) (f '' J)
+      (f '' S₀) (f '' S₁)) :
+    IsNestedCommonAnnularDerivedNeighborhood K' (f '' A) (f '' B) (f '' J)
+      (f '' S₀) (f '' S₁) := by
+  obtain ⟨-, hBsource, O, hOopen, hJO, hBO, hOA⟩ := h
+  let e : K.space ≃ₜ K'.space := hf.homeomorph
+  let W : Set K.space := (Subtype.val : K.space → E) ⁻¹' O
+  have hWopen : IsOpen W := hOopen.preimage continuous_subtype_val
+  have heWopen : IsOpen (e '' W) := e.isOpenMap W hWopen
+  obtain ⟨V, hVopen, hVeW⟩ := isOpen_induced_iff.mp heWopen
+  refine ⟨hA, hB, V, hVopen, ?_, ?_, ?_⟩
+  · rintro y ⟨x, hxJ, rfl⟩
+    have hxK : x ∈ K.space := hJK hxJ
+    have hxeW : e ⟨x, hxK⟩ ∈ e '' W :=
+      ⟨⟨x, hxK⟩, hJO hxJ, rfl⟩
+    have hxeV : e ⟨x, hxK⟩ ∈ (Subtype.val : K'.space → F) ⁻¹' V := by
+      rw [hVeW]
+      exact hxeW
+    exact hxeV
+  · rintro y ⟨x, hxB, rfl⟩
+    have hxK : x ∈ K.space := hBsource.subset_ambient hxB
+    have hxeW : e ⟨x, hxK⟩ ∈ e '' W :=
+      ⟨⟨x, hxK⟩, (hBO hxB).1, rfl⟩
+    have hxeV : e ⟨x, hxK⟩ ∈ (Subtype.val : K'.space → F) ⁻¹' V := by
+      rw [hVeW]
+      exact hxeW
+    exact ⟨hxeV, hf.bijOn.mapsTo hxK⟩
+  · rintro y ⟨hyV, hyK'⟩
+    have hyeW : (⟨y, hyK'⟩ : K'.space) ∈ e '' W := by
+      rw [← hVeW]
+      exact hyV
+    obtain ⟨x, hxW, hxy⟩ := hyeW
+    refine ⟨x, hOA ⟨hxW, x.2⟩, ?_⟩
+    exact congrArg Subtype.val hxy
 
 open Classical in
 theorem IsGlueIso.exists_common_annular_derivedNeighborhood_transport
@@ -153,5 +198,43 @@ theorem IsGlueIso.exists_common_annular_derivedNeighborhood_transport
       hL'space, hP₀'space, hP₁'space, hP₀'R', hP₁'R', hL'P₀', hL'P₁',
       hR'N, hN'nhds, htrace₀', htrace₁', ⟨H₀', htrace₀' ▸ hH₀'⟩,
       H₁', htrace₁' ▸ hH₁'⟩
+
+open Classical in
+theorem IsGlueIso.exists_nested_common_annular_derivedNeighborhood_transport
+    [FiniteDimensional ℝ E] [FiniteDimensional ℝ F]
+    {K : Geometry.SimplicialComplex ℝ E} {K' : Geometry.SimplicialComplex ℝ F}
+    [Finite K.faces] {φ : E → F} {ψ : F → E} (hK : IsGlueIso K K' φ ψ)
+    {J S₀ S₁ U V : Set E}
+    (hJ : IsPLSphere 1 J) (hS₀ : IsPLSphere 2 S₀) (hS₁ : IsPLSphere 2 S₁)
+    (hJK : J ⊆ K.space) (hS₀K : S₀ ⊆ K.space) (hS₁K : S₁ ⊆ K.space)
+    (hJS₀ : J ⊆ S₀) (hJS₁ : J ⊆ S₁)
+    (hU : IsOpen U) (hJU : J ⊆ U) (hV : IsOpen V) (hJV : J ⊆ V) :
+    ∃ A B : Set E,
+      IsNestedCommonAnnularDerivedNeighborhood K A B J S₀ S₁ ∧
+        A ⊆ U ∧ B ⊆ V ∧
+        IsNestedCommonAnnularDerivedNeighborhood K'
+          (simplicialMap K φ '' A) (simplicialMap K φ '' B)
+          (simplicialMap K φ '' J) (simplicialMap K φ '' S₀)
+          (simplicialMap K φ '' S₁) := by
+  obtain ⟨A, hA, hAU, hA'⟩ :=
+    hK.exists_common_annular_derivedNeighborhood_transport hJ hS₀ hS₁
+      hJK hS₀K hS₁K hJS₀ hJS₁ hU hJU
+  obtain ⟨O, hOopen, hJO, hOKA⟩ := mem_nhdsSetWithin.mp hA.mem_nhdsSetWithin
+  obtain ⟨B, hB, hBOV, hB'⟩ :=
+    hK.exists_common_annular_derivedNeighborhood_transport hJ hS₀ hS₁
+      hJK hS₀K hS₁K hJS₀ hJS₁ (hOopen.inter hV) (subset_inter hJO hJV)
+  have hBO : B ⊆ O := hBOV.trans inter_subset_left
+  have hBV : B ⊆ V := hBOV.trans inter_subset_right
+  have hAB : IsNestedCommonAnnularDerivedNeighborhood K A B J S₀ S₁ :=
+    ⟨hA, hB, O, hOopen, hJO,
+      fun x hx => ⟨hBO hx, hB.subset_ambient hx⟩, hOKA⟩
+  have hK'fin : K'.faces.Finite := by
+    rw [hK.faces_eq_simplicialImageFaces]
+    refine ((Set.toFinite K.faces).image fun s => s.image φ).subset ?_
+    rintro t ⟨s, hs, rfl⟩
+    exact ⟨s, hs, rfl⟩
+  let _ : Finite K'.faces := hK'fin.to_subtype
+  exact ⟨A, B, hAB, hAU, hBV,
+    hAB.image_of_isPLHomeomorphOn hK.isPLHomeomorphOn hJK hA' hB'⟩
 
 end DifferentialGeometry.Topology.PiecewiseLinear

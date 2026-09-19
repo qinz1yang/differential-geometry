@@ -4481,3 +4481,41 @@ open neighborhood of the fresh outer set with one lying in the old inner
 stability neighborhood.  This will give fresh nested source neighborhoods and
 their exactly transported nested target neighborhoods; containment and
 pairwise disjointness then descend from the old stable families by subset.
+
+## 93. 2026-09-19 actual trivalent transported neighborhood families — done
+
+`CommonCircleNeighborhoodTransport.lean` now transports the full nesting
+condition, not merely the two individual common neighborhoods.
+`IsNestedCommonAnnularDerivedNeighborhood.image_of_isPLHomeomorphOn` sends an
+ambient open nesting witness through the homeomorphism of the two complex
+carriers and lifts the resulting open subset of the target carrier back to an
+ambient open set.  `IsGlueIso.exists_nested_common_annular_derivedNeighborhood_transport`
+therefore constructs fresh outer and inner source neighborhoods inside two
+independently prescribed open sets and proves that both the source pair and
+its exact simplicial-map image satisfy the complete nested predicate.
+
+`exists_trivalent_graphDualCell_compatible_triangulation_model` now retains
+the already proved central and branch PL 2-sphere facts and the two pairwise
+disjoint old stability families.  The new leaf
+`TrivalentDualCellTransportedNeighborhoods.lean` consumes that strengthened
+interface.  For each of the three actual piercing circles it chooses source
+open sets whose relative traces lie in the old outer and inner neighborhoods,
+rebuilds a fresh canonical pair, and proves containment in those old stable
+families.  Hence both fresh source families are pairwise disjoint.  Injectivity
+of the actual glue-isomorphism simplicial map then proves pairwise disjointness
+of both exact target-image families.  The endpoint retains the nonidentity
+carrier PL self-homeomorphism, its pointwise fixing of the original graph, the
+finite source and target subdivisions, and the exact affine coordinate map.
+
+All three changed modules passed the isolated private checker with no
+diagnostics and left shared outputs unchanged.  The strict external audit
+covered all twenty-one non-automatic declarations in the three modules plus
+fifteen critical reused declarations; every axiom closure was contained in
+`{propext, Classical.choice, Quot.sound}`, and all thirteen applicable
+environment linters passed.  The new leaf is registered in the flat root
+aggregate.  No root build was run under the standing owner instruction.
+
+This closes the representation gap recorded in Sections 88--92 for the real
+trivalent model.  It does not yet identify these three-dimensional common
+neighborhoods as standard PL solid tori, construct cross-stage locally finite
+compatible modifications, or prove Conditions (3)--(8) and `Moise351`.
