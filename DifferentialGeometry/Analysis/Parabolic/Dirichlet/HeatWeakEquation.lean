@@ -138,6 +138,106 @@ theorem integral_spacetime_test_of_heat_weak_solution
     rw [hzdt, hw ht]
     simpa only [hv] using (heqt (v t)).symm
 
+theorem integral_spacetime_test_evolving_volume_of_heat_weak_solution
+    (q : SmoothRiemannianMetric I_hs M)
+    (g : ℝ → SmoothRiemannianMetric I_hs M)
+    {D : RealTimeInterval}
+    (hG : MetricFamilySmoothOn (I := I_hs) (M := M) D g)
+    (a : ℝ → M → ℝ)
+    {T : ℝ} (hT : 0 ≤ T) (hreg : Icc (0 : ℝ) T ⊆ D.regular)
+    (u : timeH1 (DirichletHs q (-1)) T) (U₀ f : ℝ → DirichletHs q 0)
+    (hpoint : ∀ t ∈ Icc (0 : ℝ) T,
+      dirichletHsInclusion (show (-1 : ℝ) ≤ 0 by norm_num) (U₀ t) = u.toFun t)
+    (heq : ∀ᵐ t ∂timeMeasure T, ∀ v : SmoothScalarDirichlet q,
+      dirichletHsNegOneEquivH1Dual q (u.deriv t) (smoothToH1ComplDirichlet q v) =
+        (∫ x, dirichletHsZeroEquivL2 q (U₀ t) x *
+          (riemannianVolumeDensity q (g t) x *
+            laplacian (leviCivitaConnectionOfMetric (g t)) (g t)
+              (fun y => v.toFun y / riemannianVolumeDensity q (g t) y) x -
+            a t x * v.toFun x)
+          ∂riemannianVolumeMeasure (I := I_hs) (M := M) q) +
+        ∫ x, dirichletHsZeroEquivL2 q (f t) x * v.toFun x
+          ∂riemannianVolumeMeasure (I := I_hs) (M := M) q)
+    {φ : ℝ × M → ℝ} (hφ : ContMDiff (𝓘(ℝ).prod I_hs) 𝓘(ℝ) ∞ φ)
+    (hφc : HasCompactSupport φ) (hφi : tsupport φ ⊆ D.regular ×ˢ (I_hs).interior M)
+    (hφT : ∀ x, φ (T, x) = 0) :
+    (∫ t, ∫ x, dirichletHsZeroEquivL2 q (U₀ t) x *
+      (deriv (fun s => φ (s, x)) t + (1 / 2) * traceTimeDerivMetric (I := I_hs) g t x * φ (t, x))
+      ∂riemannianVolumeMeasure (I := I_hs) (M := M) (g t) ∂timeMeasure T) +
+    (∫ t, (∫ x, dirichletHsZeroEquivL2 q (U₀ t) x *
+        (laplacian (leviCivitaConnectionOfMetric (g t)) (g t) (fun y => φ (t, y)) x -
+          a t x * φ (t, x))
+        ∂riemannianVolumeMeasure (I := I_hs) (M := M) (g t)) +
+      ∫ x, dirichletHsZeroEquivL2 q (f t) x * φ (t, x)
+        ∂riemannianVolumeMeasure (I := I_hs) (M := M) (g t) ∂timeMeasure T) =
+      -(∫ x, dirichletHsZeroEquivL2 q (U₀ 0) x * φ (0, x)
+        ∂riemannianVolumeMeasure (I := I_hs) (M := M) (g 0)) := by
+  let G : MetricConnectionFamilyOn (I := I_hs) (M := M) D :=
+    { metric := g
+      connection := fun t => leviCivitaConnectionOfMetric (g t)
+      metricCompatible := fun t => leviCivitaConnectionOfMetric_isMetricCompatible (g t) }
+  have hgram := fun α i j => MetricFamilySmoothOn.chartGramMatrix_contDiffOn (G := G)
+    hG (J := D.regular) Subset.rfl α i j
+  let ρ := fun p : ℝ × M => riemannianVolumeDensity q (g p.1) p.2
+  let ψ := fun p : ℝ × M => ρ p * φ p
+  have hρ := riemannianVolumeDensity_contMDiffOn_of_metricFamilySmoothOn (G := G) hG q
+  have hψs : tsupport ψ ⊆ tsupport φ := tsupport_mul_subset_right
+  have hψ : ContMDiff (𝓘(ℝ).prod I_hs) 𝓘(ℝ) ∞ ψ := by
+    intro p
+    by_cases hp : p.1 ∈ D.regular
+    · exact (hρ.contMDiffAt ((D.regular_isOpen.prod isOpen_univ).mem_nhds
+        ⟨hp, mem_univ _⟩)).mul (hφ p)
+    · have hn : p ∉ tsupport φ := fun hs => hp (hφi hs).1
+      apply (contMDiffAt_const (c := (0 : ℝ))).congr_of_eventuallyEq
+      filter_upwards [(isClosed_tsupport φ).isOpen_compl.mem_nhds hn] with z hz
+      dsimp only [ψ]
+      rw [image_eq_zero_of_notMem_tsupport hz, mul_zero]
+  have hψc : HasCompactSupport ψ := hφc.of_isClosed_subset (isClosed_tsupport _) hψs
+  have hψi : tsupport ψ ⊆ univ ×ˢ (I_hs).interior M :=
+    hψs.trans (hφi.trans (prod_mono (subset_univ _) Subset.rfl))
+  have hψT (x : M) : ψ (T, x) = 0 := by simp only [ψ, hφT, mul_zero]
+  have h := integral_spacetime_test_of_heat_weak_solution q g a hT u U₀ f hpoint heq
+    hψ hψc hψi hψT
+  have hzero : (∫ x, dirichletHsZeroEquivL2 q (U₀ 0) x * ψ (0, x)
+      ∂riemannianVolumeMeasure (I := I_hs) (M := M) q) =
+      ∫ x, dirichletHsZeroEquivL2 q (U₀ 0) x * φ (0, x)
+        ∂riemannianVolumeMeasure (I := I_hs) (M := M) (g 0) := by
+    rw [integral_riemannianVolumeMeasure_eq_integral_volumeDensity_smul q (g 0)]
+    apply integral_congr_ae
+    exact Eventually.of_forall fun x => by dsimp only [ψ, ρ, smul_eq_mul]; ring
+  rw [hzero] at h
+  refine Eq.trans ?_ h
+  apply congrArg₂ (fun b c : ℝ => b + c)
+  · apply integral_congr_ae
+    filter_upwards [ae_restrict_mem measurableSet_Icc] with t ht
+    rw [integral_riemannianVolumeMeasure_eq_integral_volumeDensity_smul q (g t)]
+    apply integral_congr_ae
+    exact Eventually.of_forall fun x => by
+      have hdρ := hasDerivAt_riemannianVolumeDensity_of_chartGram_contMDiffOn q
+        D.regular_isOpen hgram (hreg ht) x
+      have hdφ : HasDerivAt (fun s => φ (s, x)) (deriv (fun s => φ (s, x)) t) t :=
+        ((hφ.comp (contMDiff_id.prodMk contMDiff_const)).contDiff.differentiable
+          (by simp) t).hasDerivAt
+      have hd := (hdρ.fun_mul hdφ).deriv
+      dsimp only [G] at hd
+      dsimp only [ψ, ρ, smul_eq_mul]
+      rw [hd]
+      ring
+  · apply integral_congr_ae
+    exact Eventually.of_forall fun t => by
+      dsimp only
+      have hquot : (fun y => ψ (t, y) / riemannianVolumeDensity q (g t) y) =
+          fun y => φ (t, y) := by
+        funext y
+        exact mul_div_cancel_left₀ _ (ne_of_gt (riemannianVolumeDensity_pos q (g t) y))
+      rw [hquot, integral_riemannianVolumeMeasure_eq_integral_volumeDensity_smul q (g t),
+        integral_riemannianVolumeMeasure_eq_integral_volumeDensity_smul q (g t)]
+      apply congrArg₂ (fun b c : ℝ => b + c)
+      · apply integral_congr_ae
+        exact Eventually.of_forall fun x => by dsimp only [ψ, ρ, smul_eq_mul]; ring
+      · apply integral_congr_ae
+        exact Eventually.of_forall fun x => by dsimp only [ψ, ρ, smul_eq_mul]; ring
+
 theorem exists_local_dirichlet_heat_distribution_solution
     {D : RealTimeInterval}
     {g : ℝ → SmoothRiemannianMetric I_hs M}
