@@ -1,6 +1,13 @@
+/-
+Copyright (c) 2026 Yuan Liao. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Yuan Liao
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.BallInterior
 import DifferentialGeometry.Topology.PiecewiseLinear.TetrahedronPush
 import DifferentialGeometry.Topology.PiecewiseLinear.SimplexFacetComplement
+
+/-! Disk complements in piecewise linear two-spheres. -/
 
 open Set
 
@@ -53,7 +60,8 @@ theorem IsPLSphere.isPLBall_closure_sdiff {S D : Set E}
   obtain ⟨T, a, f, hT, hTcard, ha, hf, hfD⟩ :=
     exists_isPLHomeomorphOn_sphere_disk_to_simplex hS hD hDS
   let B := frontier (convexHull ℝ (T : Set (EuclideanSpace ℝ (Fin 3))))
-  let F : Set (EuclideanSpace ℝ (Fin 3)) := convexHull ℝ (T.erase a : Set (EuclideanSpace ℝ (Fin 3)))
+  let F : Set (EuclideanSpace ℝ (Fin 3)) :=
+    convexHull ℝ (T.erase a : Set (EuclideanSpace ℝ (Fin 3)))
   have hF : IsPLBall 2 F := isPLBall_convexHull_of_affineIndependent (T.erase a)
     (affineIndependent_of_subset hT (Finset.erase_subset a T))
       (by rw [Finset.card_erase_of_mem ha, hTcard])
@@ -120,7 +128,8 @@ theorem IsPLSphere.inter_closure_sdiff_eq_image_stdSimplexBoundary {S D : Set E}
     obtain ⟨y, hy, hyx⟩ := himage ▸ (show f x ∈ f '' (D ∩ closure (S \ D)) from ⟨x, hx, rfl⟩)
     exact (hf.bijOn.injOn (hJsub hy) (hDS hx.1) hyx) ▸ hy
   · intro x hx
-    obtain ⟨y, hy, hyx⟩ := himage.symm ▸ (show f x ∈ f '' (q '' stdSimplexBoundary 2) from ⟨x, hx, rfl⟩)
+    obtain ⟨y, hy, hyx⟩ :=
+      himage.symm ▸ (show f x ∈ f '' (q '' stdSimplexBoundary 2) from ⟨x, hx, rfl⟩)
     exact (hf.bijOn.injOn (hDS hy.1) (hJsub hx) hyx) ▸ hy
 
 theorem IsPLSphere.closure_sdiff_eq_sdiff_image_stdSimplexBoundary {S D : Set E}

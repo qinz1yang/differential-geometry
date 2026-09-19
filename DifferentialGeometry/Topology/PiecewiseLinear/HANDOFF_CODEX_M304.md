@@ -1585,3 +1585,113 @@ SurfaceSplitRealization/SurfaceSplitCapping APIs remain the canonical
 manifold-realization consumers; their capped-space equation rewrites the
 literal union in the new separation theorem. No E3 geometric source or
 existing native torus-model theorem is modified in this round.
+
+## Connected separating component with strict Betti descent (2026-09-19 UTC)
+
+`SurfaceCompressionSeparation.lean` closes the conditional compression step
+from actual marked wall, ball and cap geometry. Its primary theorem is
+`IsCombinatorialManifold.exists_separating_component_bettiOne_lt_of_annulus_replacement`.
+It starts with the supplied finite connected closed surface S, the original
+separation of preconnected H,T, an essential PL circle J in S, a centered PL
+annulus parametrization rho, and an actual PL three-ball N. The geometric
+equations are S intersect N = W, frontier N = W union D0 union D1,
+W intersect Di = the parametrized boundary of Di, and those boundaries equal
+the two endpoint circles of rho. The supplied PL disks D0,D1 are disjoint,
+and the original targets avoid N.
+
+The result constructs a finite closed connected PL surface P, orientable and
+two-sided, contained in C = closure(S minus W) union D0 union D1. It proves
+that P separates the original H,T and has strictly smaller first Betti number
+than S. It also identifies P as an actual connected component: for every
+x in P, connectedComponentIn C x = P. Neither a result manifold, separation
+of the capped union, nor any Betti descent is an input.
+
+The nearest missing upstream step was construction of the retained surface
+and its compatibility data. The proof uses the existing
+`IsCombinatorialManifold.exists_annulus_complement` to produce the finite WB2
+complex R with R.space = closure(S minus W). Injectivity of the centered
+annulus proves that J avoids R. The open complement of R then supplies the
+relative-neighborhood condition on W. The actual wall equation and the
+produced boundary of R derive the cap traces R intersect Di = boundary Di.
+The preceding `separates_capped_surface` theorem proves separation of the
+literal capped union from the original separation.
+
+The hard capping and Betti arguments already existed in the native chain;
+they are reused. `SurfaceCompression` strengthens its existing selection
+theorem to
+`IsCombinatorialManifold.exists_separating_component_bettiOne_lt_of_annulus_capping`,
+adding the exact connected-component equation. Its former public theorem
+remains a corollary with the same signature. In the nonseparating case,
+`exists_capped_annulus_complement` constructs the entire connected capped
+surface with beta(result) + 2 = beta(S). In the separating case,
+`exists_capped_pair_of_separating_essential_annulus` constructs two disjoint
+closed connected surfaces P,Q and proves both nonspherical. If either were
+a sphere, its disk complement and the actual half-annulus cylinder would
+make the original inclusion J into S nullhomotopic, contradicting the
+original essential-circle hypothesis. Their positive Betti numbers sum to
+beta(S), so both are strictly smaller. Phragmen-Brouwer selects one still
+separating the original targets. The native closed-cover component theorem
+identifies it as a connected component of the actual cap union.
+
+`IsCombinatorialManifold.exists_separating_component_bettiOne_lt_of_spanning_disk`
+ties J to the boundary of the original supplied embedded disk, whose
+intersection with S is exactly that boundary. The shell specialization
+`IsSphericalShell.exists_separating_component_bettiOne_lt_of_spanning_disk`
+retains the original X,B0,B1 and proves P lies in interior X and separates
+those same boundary targets. It derives their avoidance from N subset
+interior X. The disk boundary data are not used to assert containment of the
+whole disk in N or in X; the disk-to-wall geometry remains an upstream task.
+
+The actual essential-torus test invokes this new shell producer. It retains
+the original proper middle disk, the original shell and nonempty targets,
+the same actual end disks, and the wall/frontier equations. It derives the
+centered annulus parametrization on the actual original boundary circle and
+discards the model's previous final separation. The producer constructs a
+new finite surface P'. Its component equation then identifies P' with the
+original literal capped sphere; the original sphere is a geometric reference
+after production, never an input to the new producer. The test verifies
+source beta 2, result beta 0, strict descent, original separation, shell
+containment and exact equality to the cap union. This is a concrete
+nonseparating model; the separating case is established by the audited
+general native proof, not by a claimed second model.
+
+The accepted `ab29b2d71de0bb8dc92ab6a9906137d2244235ef` realization/capping
+interfaces were inspected. The physical capping chain in `AnnulusCapping`,
+`DiskCapping` and `SurfaceBoundaryCapping` is unchanged from that integration
+commit, and no deleted private gluing proof was copied. General
+`SeparatingComponent`, the existing `SurfaceSplitBetti` consumers and the
+original-shell minimum-Betti producer were inspected rather than duplicated.
+The optional verification of the critical `SphericalDiskComplement` exposed
+two pre-existing long lines. The coordinator authorized their formatting
+repair and the required standard header. No imports, statements or proof
+tokens change; the before/after source hashes and complete seven-declaration
+audit are retained in the evidence package.
+
+The remaining arbitrary-shell 30.4 obligations are production of an embedded
+essential disk and production of the actual compression ball with its wall
+marked by the original surface bicollar and its two disjoint cap rims.
+E3 retains that geometric interface. Once these genuine inputs are supplied,
+the new theorem produces the connected closed separator and strict Betti
+descent in the original shell. Arbitrary-shell Moise 30.4 remains open.
+
+All 14 nonautomatic declarations in the three changed/new mathematical
+modules, 26 critical reused declarations and the actual torus model pass
+the axiom audit with only propext, Classical.choice and Quot.sound. All 13
+applicable linters pass. The three mathematical modules and the downstream
+DiskCapping/AnnulusCapping chain pass fresh private compilation with zero
+diagnostics. Ten former public signatures are unchanged. The new leaf is
+registered once in the flat root; the reachable native graph contains 605
+modules and 1216 edges, is acyclic and avoids HurewiczLowDegrees. The stopped
+root build is not restarted, and shared E outputs are untouched.
+
+Fourteen source-matching source/object/receipt sets, the complete external
+audit, declaration census, source review, and before/after formatting
+evidence are frozen at `moise304-reading/compression-separation-checkpoint/`.
+Manifest SHA256:
+`1CFD2E35A20139953B6018EECF6C975CB686E266BD62D97BA3C85A5AF614BFC1`.
+Final audit completion is 2026-09-19T16:55:49.8860324Z. The frozen manifest
+records the individual receipt times, including valid earlier unchanged
+dependency receipts. SphericalDiskComplement's raw source SHA256 changes
+from `95EB5E0587DB26D1D6496B52C17D5CF2985C2DB607441298282ED77CCFB988CC`
+to `9A815DA01518E972B5C5B166EB5BC2DC3C08E7B9F170B7A352C483FB6D43EFC2`;
+its source tokens agree after removing whitespace and required headers.

@@ -1924,3 +1924,43 @@ essential disk and alignment of the original surface with the actual
 compression wall/end circles. Separation transport is now proved once those
 geometric inputs exist; the accepted capping/realization APIs still provide
 the canonical closed-manifold realization. No E3 geometric file is changed.
+
+### M304 connected separating component and strict Betti descent (2026-09-19 UTC)
+
+`SurfaceCompressionSeparation` now constructs the finite connected closed
+surface P from an original separator S, an essential circle with centered
+annulus, and actual PL compression-ball/disjoint-cap geometry. It constructs
+the retained WB2 surface R, derives the annular neighborhood and cap traces,
+proves separation of the cap union, and selects an actual connected component
+P that still separates the original targets and has strictly smaller first
+Betti number. The original-shell version retains X,B0,B1 and proves P lies
+in interior X. No result manifold, final separation or Betti decrease is an
+input to these new producers.
+
+Both essential-circle cases use the pre-existing native capping chain.
+The nonseparating case decreases beta by two. In the separating case the
+original essential circle, the actual half-annulus cylinder and spherical
+disk-complement theorem prove that neither capped component is a sphere;
+their positive Betti numbers sum to the original one. Phragmen-Brouwer
+selects a component preserving separation. The former `SurfaceCompression`
+consumer retains its public signature and now follows the stronger component
+theorem. The actual torus test discards its old final separation and invokes
+the new original-shell producer, verifies the produced component equals the
+literal capped sphere, and retains source/result beta 2/0 and the original
+proper essential disk, caps and nonempty targets.
+
+The critical `SphericalDiskComplement` receives only coordinator-authorized
+line wrapping and its required header. The physical capping proofs remain
+canonical native reuses. See `HANDOFF_CODEX_M304.md` for exact theorem names,
+proof mechanisms, model scope and verification receipts. General production
+of an embedded essential disk and E3's actual original-wall/cap marking
+remain open; unrestricted arbitrary-shell Moise 30.4 is not complete.
+
+All 14 declarations in the three changed/new mathematical modules, 26
+critical reuses, the actual torus model and 13 applicable linters pass with
+standard axioms and zero diagnostics. The new leaf is registered in the
+flat root; ten former public signatures are unchanged. The reachable native
+graph has 605 modules and 1216 edges without cycles. Fourteen source-matching
+module receipt sets and the final audit are frozen at
+`moise304-reading/compression-separation-checkpoint/`. No full-root build or
+independent integration acceptance is claimed.
