@@ -4392,3 +4392,27 @@ two-private/three-total Lean limits. The resumed-stage ledger and actual saved
 hourly automation retain these boundaries; the completed morning report is
 unchanged. Later author deliveries are queued separately from the accepted
 sphere endpoint.
+
+## 91. Physical30.3 delivered; E3 advances to the independent section32 limit gate
+
+After section90 dispatch, E3 delivered clean pushed c34726180. The coordinator
+read the complete endpoint signature and final proof: the same actual
+SurfaceSplitAndCap result preserves Separates for the original H/T. It uses
+outside-carrier equality and the actual safe path-connected frontier of the
+same selected ball; it does not assert the generally false C'=result.space.
+Six source snapshots and32 compiler/audit/model artifacts were frozen in
+the sixtieth batch. The new source and earlierc10 remain queued for independent
+replay; the author's21-native/12-reuse/4-model audit is not yet integration
+acceptance. The four-source delta is+484/-50, separate from batch60's+13/-0.
+
+At this explicit completed boundary, the same E3 task received section32 Q.2a:
+construct a closed limiting separator from actual locally finite changes
+away from a closed exceptional set, derive uniform eventual agreement on
+compact sets away from it, and preserve separation of the original targets.
+Prove the compact-path argument and a genuinely infinite nonstationary model.
+The final set's closedness/separation or the needed compact uniformity must
+not be assumed as substitute outputs. The natural new Connected.LimitSeparation
+leaf has an exact module grant; h's existing LocallyFiniteSeparation source
+remains untouched. This is a replacement lane after delivery, not a sixth task.
+The integer annulus family, actual open2-disk topology, pseudocell and32.1
+remain open. The same resource policy and three-hour renewable lease apply.

@@ -17,7 +17,7 @@ compiled declarations and transitive axioms outrank historical route notes.
 | 30.6 | Moise306 | M304: original toroidal-shell incompressibility/parity through 823 delivered pending replay. Actual sphere exclusion and genuine torus recognition remain open. No30.7 dependency. |
 | 30.7 | Moise307 | Open; follows30.6 and relevant collar/CST constructions. |
 | 30.8 | Moise308 | Current intermediate-spine premise is too weak for the book consumer. Needs generation via inclusion from the original inner spine; notified at M304 delivery. |
-| 31--32 | Configurations, tubes and pseudocells | Two-ended annulus gluing, local stabilization, actual open body and exact closure remain open.32.4 may consume a given pseudocell independently. |
+| 31--32 | Configurations, tubes and pseudocells | E3 now owns the independent locally stable limit-separation gate. Two-ended annulus gluing, actual open body and exact closure remain open.32.4 may consume a given pseudocell independently. |
 | 33.1 | Corrected Moise331 | The existential small regular-neighborhood contract and branching graph inputs are accepted; unconditional theorem remains open. |
 | 34.1 | Moise341 | Open; consumes genuine33.1 and tame neighborhood results. |
 | 35.1 | Corrected Moise351 | Actual locally finite graph/regular-neighborhood input is accepted. h constructs compatible local modifications; Conditions3–8 and endpoint remain open. |

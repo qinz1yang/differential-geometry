@@ -28,7 +28,7 @@ existing tasks keep one lane each; F/S/M304 use Astra max and h/E3 use Sol max.
 |---|---|---|
 | F | through 71b0b003e | Finish protected-polyhedron relative general position and its full consumer/lint gate, then actual boundary-chart transition coverage.06a/d68 are queued; later source is still a separate author layer. |
 | h | throughe85a235df | Actual locally finite compatible modifications preserving the original carrier/graph and transported neighborhoods. Finite trivalent solid-torus layer72fa711aa is delivered, frozen and queued. |
-| E3 | throughddade8562 | The same physical capped result must separate original H/Q, then Moise303. c10 is queued; the later four-file separation bridge remains in the author checkout. |
+| E3 | throughddade8562 | Physical30.3 separation throughc34726180, includingc10, is delivered and frozen pending replay. At that completed boundary E3 moved to section32 Q.2a: actual closed-separator limits from locally finite changes, preserving original targets. |
 | M304 | through 3717074e9 | Exact Moise252-to-Moise304 is independently accepted. Later 6f/823 original-toroidal-shell incompressibility/parity is frozen, pending replay; next construct actual sphere-cut sides and endpoint factorization, then genuine torus recognition for 30.6. |
 | S | throughc0f4df1b1 | Correct the support geometry and produce actual cancellation in a sufficiently controlled regular-level region.5b/c011/2544 common coordinates and876 support obstruction are frozen, pending independent acceptance. |
 
@@ -90,8 +90,8 @@ exact closure.32.4 is an independent consumer of a given pseudocell.
 Moise308 currently assumes the original circle is already a spine of the
 intermediate torus. The book needs generation in every admissible intermediate
 torus from a spine of the inner torus. Preserve this missing inclusion-map
-bridge before consuming31.2/31.4. It is deferred to M304's next delivery;
-the active30.6 round is not interrupted. Q's old18–27k estimate is historical,
+bridge before consuming31.2/31.4. It was delivered at M304's823 completed boundary for later30.7/30.8 work;
+it does not interrupt the new actual30.6 sphere-cut round. Q's old18–27k estimate is historical,
 not an execution budget or completion metric. No sixth task was started.
 
 Current source and receipts remain authoritative. Full-root compilation stays
