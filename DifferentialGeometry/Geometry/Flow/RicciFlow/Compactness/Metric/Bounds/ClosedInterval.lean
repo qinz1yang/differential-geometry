@@ -97,3 +97,47 @@ theorem FlowCurvatureBoundedOnCompactWindows.metric_equiv_on_closed_interval
   exact mul_le_mul_of_nonneg_left hdist (mul_nonneg (by norm_num) hA)
 
 end DifferentialGeometry.CheegerGromovCompactness
+
+end
+
+set_option autoImplicit false
+
+noncomputable section
+
+namespace DifferentialGeometry.PDE.RicciFlow
+
+open Set DifferentialGeometry.Tensor0SBundle
+open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.CheegerGromovCompactness
+open scoped Manifold ContDiff
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
+
+theorem exists_uniform_metric_equivalence_on_closed_interval_of_curvature_bound
+    {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
+    (hS : IsSolutionOn S) {a b R : ℝ} (hab : a < b)
+    (hcarrier : Icc a b ⊆ D.carrier) (hregular : Ioo a b ⊆ D.regular)
+    (hcurv : ∀ t ∈ Icc a b, ∀ x : M,
+      normSq0S (I := I) (S.base.metric t) x 4 (S.base.rm04 t x) ≤ R) :
+    ∃ C : ℝ, 1 ≤ C ∧ ∀ t ∈ Icc a b,
+      MetricUniformEquivalentOn (I := I) univ (S.base.metric a) (S.base.metric t) C := by
+  let _ : CompleteSpace E := FiniteDimensional.complete ℝ E
+  let A : ℝ := (Module.finrank ℝ E : ℝ) ^ 2 * Real.sqrt R
+  have hA : 0 ≤ A := mul_nonneg (sq_nonneg _) (Real.sqrt_nonneg _)
+  let C : ℝ := Real.exp (2 * A * (b - a))
+  have hC : 1 ≤ C := Real.one_le_exp
+    (mul_nonneg (mul_nonneg (by norm_num) hA) (sub_nonneg.mpr hab.le))
+  have hquad := twoTensorQuadBound_of_solutions (I := I) (fun _ => S) univ a b R
+    (fun _ t ht x _ => hcurv t ht x)
+  have hEq := metric_uniform_equivalent_on_closed_interval_of_solution
+    S hS hab hcarrier hregular (left_mem_Icc.mpr hab.le) hA
+    (fun t ht x hx v => hquad.2 0 t ht x hx v)
+  refine ⟨C, hC, fun t ht => ?_⟩
+  apply metricUniformEquivalentOn_of_le (hEq 0 t ht)
+  simp only [metricEquivalenceFactor, one_mul]
+  apply Real.exp_le_exp.mpr
+  rw [abs_of_nonneg (sub_nonneg.mpr ht.1)]
+  exact mul_le_mul_of_nonneg_left (sub_le_sub_right ht.2 a) (mul_nonneg (by norm_num) hA)
+
+end DifferentialGeometry.PDE.RicciFlow

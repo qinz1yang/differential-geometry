@@ -57,6 +57,117 @@ private theorem weighted_differentiable_derivative
       mvfderiv_eq_zero_of_eventually_zero hρzero, image_eq_zero_of_notMem_tsupport hx]
     simp
 
+theorem mvfderiv_partition_finsum
+    (ρ : SmoothPartitionOfUnity ι I M) (g : ι → M → ℝ) (x : M)
+    (hg : ∀ i, x ∈ tsupport (ρ i) → MDifferentiableAt I 𝓘(ℝ) (g i) x)
+    (v : TangentSpace I x) (c : ℝ) :
+    mvfderiv I (fun y ↦ ∑ᶠ i, ρ i y * g i y) x v =
+      (∑ᶠ i, ρ i x * mvfderiv I (g i) x v) +
+      ∑ᶠ i, mvfderiv I (ρ i) x v * (g i x - c) := by
+  classical
+  let t := ρ.fintsupport x
+  have hρ (i : ι) : MDifferentiableAt I 𝓘(ℝ) (ρ i) x :=
+    (ρ i).contMDiff.mdifferentiable (by simp) x
+  have heq : (fun y ↦ ∑ᶠ i, ρ i y * g i y) =ᶠ[𝓝 x]
+      (fun y ↦ ∑ i ∈ t, ρ i y * g i y) := by
+    filter_upwards [ρ.eventually_fintsupport_subset x] with y hy
+    apply finsum_eq_sum_of_support_subset
+    intro i hi
+    apply hy
+    rw [ρ.mem_fintsupport_iff]
+    exact subset_tsupport (ρ i) (mul_ne_zero_iff.mp hi).1
+  have hsum : (fun y ↦ ∑ i ∈ t, ρ i y) =ᶠ[𝓝 x] (fun _ ↦ (1 : ℝ)) := by
+    filter_upwards [ρ.eventually_finsupport_subset x] with y hy
+    exact ρ.sum_finsupport' y (mem_univ y) hy
+  have hcancel : ∑ i ∈ t, mvfderiv I (ρ i) x v = 0 := by
+    have h := congrArg (fun L : TangentSpace I x →L[ℝ] ℝ ↦ L v)
+      (sum_differentiable_derivative t (fun i _ ↦ hρ i)).2
+    have hz : mvfderiv I (fun y ↦ ∑ i ∈ t, ρ i y) x v = 0 := by
+      change (show ℝ from mfderiv I 𝓘(ℝ) (fun y ↦ ∑ i ∈ t, ρ i y) x v) = 0
+      rw [hsum.mfderiv_eq, mfderiv_const]
+      rfl
+    simpa only [hz, sum_apply] using h.symm
+  have hmain : Function.support (fun i ↦ ρ i x * mvfderiv I (g i) x v) ⊆ t := by
+    intro i hi
+    change i ∈ ρ.fintsupport x
+    rw [ρ.mem_fintsupport_iff]
+    exact subset_tsupport (ρ i) (mul_ne_zero_iff.mp hi).1
+  have herror : Function.support (fun i ↦ mvfderiv I (ρ i) x v * (g i x - c)) ⊆ t := by
+    intro i hi
+    by_contra hit
+    have hx : x ∉ tsupport (ρ i) := by
+      change i ∉ ρ.fintsupport x at hit
+      rw [ρ.mem_fintsupport_iff] at hit
+      exact hit
+    have hz := mvfderiv_eq_zero_of_eventually_zero (I := I)
+      (notMem_tsupport_iff_eventuallyEq.mp hx)
+    exact hi (by simp only [hz, zero_apply, zero_mul])
+  have hderiv : mvfderiv I (fun y ↦ ∑ᶠ i, ρ i y * g i y) x =
+      mvfderiv I (fun y ↦ ∑ i ∈ t, ρ i y * g i y) x := by
+    ext w
+    change (show ℝ from mfderiv I 𝓘(ℝ) (fun y ↦ ∑ᶠ i, ρ i y * g i y) x w) = _
+    rw [heq.mfderiv_eq]
+    rfl
+  rw [hderiv, (sum_differentiable_derivative t
+    (fun i _ ↦ (weighted_differentiable_derivative ρ g i x (hg i)).1)).2,
+    sum_apply]
+  simp_rw [(weighted_differentiable_derivative ρ g _ x (hg _)).2 v]
+  rw [finsum_eq_sum_of_support_subset _ hmain, finsum_eq_sum_of_support_subset _ herror,
+    Finset.sum_add_distrib]
+  congr 1
+  simp_rw [mul_sub]
+  rw [Finset.sum_sub_distrib, ← Finset.sum_mul, hcancel, zero_mul, sub_zero]
+  apply Finset.sum_congr rfl
+  intro i _
+  ring
+
+theorem abs_mvfderiv_partition_finsum_le
+    (ρ : SmoothPartitionOfUnity ι I M) (g : ι → M → ℝ) (x : M)
+    (hg : ∀ i, x ∈ tsupport (ρ i) → MDifferentiableAt I 𝓘(ℝ) (g i) x)
+    (v : TangentSpace I x) (c L : ℝ)
+    (hbound : ∀ i, ρ i x ≠ 0 → |mvfderiv I (g i) x v| ≤ L) :
+    |mvfderiv I (fun y ↦ ∑ᶠ i, ρ i y * g i y) x v| ≤ L +
+      ∑ i ∈ ρ.fintsupport x, |mvfderiv I (ρ i) x v| * |g i x - c| := by
+  classical
+  let t := ρ.fintsupport x
+  have hweights : ∑ i ∈ t, ρ i x = 1 :=
+    ρ.sum_finsupport' x (mem_univ x) (ρ.finsupport_subset_fintsupport x)
+  have hmain : Function.support (fun i ↦ ρ i x * mvfderiv I (g i) x v) ⊆ t := by
+    intro i hi
+    change i ∈ ρ.fintsupport x
+    rw [ρ.mem_fintsupport_iff]
+    exact subset_tsupport (ρ i) (mul_ne_zero_iff.mp hi).1
+  have herror : Function.support (fun i ↦ mvfderiv I (ρ i) x v * (g i x - c)) ⊆ t := by
+    intro i hi
+    by_contra hit
+    have hx : x ∉ tsupport (ρ i) := by
+      change i ∉ ρ.fintsupport x at hit
+      rw [ρ.mem_fintsupport_iff] at hit
+      exact hit
+    have hz := mvfderiv_eq_zero_of_eventually_zero (I := I)
+      (notMem_tsupport_iff_eventuallyEq.mp hx)
+    exact hi (by simp only [hz, zero_apply, zero_mul])
+  have hmainBound : |∑ᶠ i, ρ i x * mvfderiv I (g i) x v| ≤ L := by
+    rw [finsum_eq_sum_of_support_subset _ hmain]
+    calc
+      _ ≤ ∑ i ∈ t, |ρ i x * mvfderiv I (g i) x v| :=
+        Finset.abs_sum_le_sum_abs _ _
+      _ ≤ ∑ i ∈ t, ρ i x * L := by
+        apply Finset.sum_le_sum
+        intro i hi
+        rw [abs_mul, abs_of_nonneg (ρ.nonneg i x)]
+        by_cases hz : ρ i x = 0
+        · simp only [hz, zero_mul, le_refl]
+        · exact mul_le_mul_of_nonneg_left (hbound i hz) (ρ.nonneg i x)
+      _ = L := by rw [← Finset.sum_mul, hweights, one_mul]
+  have herrorBound : |∑ᶠ i, mvfderiv I (ρ i) x v * (g i x - c)| ≤
+      ∑ i ∈ t, |mvfderiv I (ρ i) x v| * |g i x - c| := by
+    rw [finsum_eq_sum_of_support_subset _ herror]
+    simpa only [abs_mul] using
+      Finset.abs_sum_le_sum_abs (fun i ↦ mvfderiv I (ρ i) x v * (g i x - c)) t
+  rw [mvfderiv_partition_finsum ρ g x hg v c]
+  exact (abs_add_le _ _).trans (add_le_add hmainBound herrorBound)
+
 theorem mvfderiv_partition_sum [Fintype ι]
     (ρ : SmoothPartitionOfUnity ι I M) (g : ι → M → ℝ) (x : M)
     (hg : ∀ i, x ∈ tsupport (ρ i) → MDifferentiableAt I 𝓘(ℝ) (g i) x)
@@ -64,26 +175,7 @@ theorem mvfderiv_partition_sum [Fintype ι]
     mvfderiv I (fun y ↦ ∑ i, ρ i y * g i y) x v =
       (∑ i, ρ i x * mvfderiv I (g i) x v) +
       ∑ i, mvfderiv I (ρ i) x v * (g i x - c) := by
-  have hweights : (fun y ↦ ∑ i, ρ i y) = fun _ ↦ (1 : ℝ) := by
-    funext y
-    simpa only [finsum_eq_sum_of_fintype] using ρ.sum_eq_one (mem_univ y)
-  have hsum := (sum_differentiable_derivative Finset.univ
-    (fun i _ ↦ (ρ i).contMDiff.mdifferentiable (by simp) x)).2
-  have hcancel : ∑ i, mvfderiv I (ρ i) x v = 0 := by
-    have h := congrArg (fun L : TangentSpace I x →L[ℝ] ℝ ↦ L v) hsum
-    simpa only [hweights, mvfderiv_const, zero_apply,
-      sum_apply] using h.symm
-  rw [(sum_differentiable_derivative Finset.univ
-    (fun i _ ↦ (weighted_differentiable_derivative ρ g i x (hg i)).1)).2,
-    sum_apply]
-  simp_rw [(weighted_differentiable_derivative ρ g _ x (hg _)).2 v]
-  rw [Finset.sum_add_distrib]
-  congr 1
-  simp_rw [mul_sub]
-  rw [Finset.sum_sub_distrib, ← Finset.sum_mul, hcancel, zero_mul, sub_zero]
-  apply Finset.sum_congr rfl
-  intro i _
-  ring
+  simpa only [finsum_eq_sum_of_fintype] using mvfderiv_partition_finsum ρ g x hg v c
 
 theorem mvfderiv_partition_sum_pos_of_error_lt [Fintype ι]
     (ρ : SmoothPartitionOfUnity ι I M) (g : ι → M → ℝ) (x : M)

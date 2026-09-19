@@ -1028,3 +1028,37 @@ lemma hasCompactSupport_grad_g [I.Boundaryless] [T2Space M]
 end Operator
 end Geometry
 end DifferentialGeometry
+
+end
+
+open Manifold
+open scoped ContDiff Manifold NNReal
+
+noncomputable section
+
+variable {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E] [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+
+open DifferentialGeometry.Geometry.Operator
+
+theorem grad_norm_le_of_mvfderiv_bound
+    (metric : DifferentialGeometry.SmoothRiemannianMetric I M)
+    {u : M → ℝ} {x : M} {C : ℝ} (hC : 0 ≤ C)
+    (hu : ∀ v : TangentSpace I x,
+      |mvfderiv (I := I) u x v| ≤ C * Real.sqrt (metric.inner x v v)) :
+    Real.sqrt (metric.inner x (gradFun metric u x) (gradFun metric u x)) ≤ C := by
+  let v : TangentSpace I x := gradFun metric u x
+  have hpos : 0 ≤ metric.inner x v v := by
+    rcases eq_or_ne v 0 with hv | hv
+    · simp [hv]
+    · exact (metric.pos x v hv).le
+  have hdu : metric.inner x v v = mvfderiv (I := I) u x v := by
+    exact inner_gradFun metric u x v
+  have hh := hu v
+  rw [← hdu, abs_of_nonneg hpos] at hh
+  have hs := Real.sq_sqrt hpos
+  change Real.sqrt (metric.inner x v v) ≤ C
+  nlinarith [Real.sqrt_nonneg (metric.inner x v v)]
+
+end

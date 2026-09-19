@@ -11372,3 +11372,9 @@ import DifferentialGeometry.Analysis.Integration.SqrtIntegrability
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.TimeIntegrability
 import DifferentialGeometry.Geometry.Connection.VariationNorm
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Connection.TimeIntegrability
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.ConnectionDifferenceBound
+import DifferentialGeometry.Geometry.Connection.LeviCivita.DifferenceNormBounds
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Energy.DensityBounds
+import DifferentialGeometry.Analysis.Calculus.LipschitzApproximation
+import DifferentialGeometry.Geometry.Metric.Distance.Lipschitz
+import DifferentialGeometry.Geometry.Metric.Approximation.LocalLipschitz

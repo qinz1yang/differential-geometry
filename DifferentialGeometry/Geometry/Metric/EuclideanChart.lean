@@ -148,3 +148,54 @@ theorem eventually_norm_fderiv_euclideanChartExpression_le
   exact h1.trans (h2.trans (h3.trans_eq hlast))
 
 end DifferentialGeometry.Geometry.Metric
+
+end
+
+set_option autoImplicit false
+noncomputable section
+open Bundle Manifold Filter Set DifferentialGeometry
+open scoped Manifold ContDiff Topology
+
+namespace DifferentialGeometry.Geometry.Metric
+
+variable {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E] [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+
+theorem mfderiv_metricChartEuclideanEquiv_extChartAt
+    (g : SmoothRiemannianMetric I M) (p y : M)
+    (hy : y ∈ (chartAt H p).source) :
+    mfderiv I 𝓘(ℝ, EuclideanSpace ℝ (Fin (Module.finrank ℝ E)))
+        (fun z => metricChartEuclideanEquiv g p (extChartAt I p z)) y =
+      (metricChartEuclideanEquiv g p).toContinuousLinearMap.comp
+        ((trivializationAt E (TangentSpace I) p).continuousLinearMapAt ℝ y) := by
+  let A := metricChartEuclideanEquiv g p
+  have hA : HasMFDerivAt 𝓘(ℝ, E)
+      𝓘(ℝ, EuclideanSpace ℝ (Fin (Module.finrank ℝ E))) A
+      (extChartAt I p y) A.toContinuousLinearMap :=
+    A.hasFDerivAt.hasMFDerivAt
+  have hφ := (mdifferentiableAt_extChartAt (I := I) hy).hasMFDerivAt
+  have hd := (hA.comp y hφ).mfderiv
+  change mfderiv I 𝓘(ℝ, EuclideanSpace ℝ (Fin (Module.finrank ℝ E)))
+    (A ∘ extChartAt I p) y = _ at hd
+  rw [← TangentBundle.continuousLinearMapAt_trivializationAt hy] at hd
+  exact hd
+
+theorem eventually_norm_mfderiv_metricChartEuclideanEquiv_extChartAt_le
+    (g : SmoothRiemannianMetric I M) (p : M) {K : ℝ} (hK : 1 < K) :
+    ∀ᶠ y in 𝓝 p, y ∈ (chartAt H p).source ∧
+      ∀ v : TangentSpace I y,
+        ‖mfderiv I 𝓘(ℝ, EuclideanSpace ℝ (Fin (Module.finrank ℝ E)))
+          (fun z => metricChartEuclideanEquiv g p (extChartAt I p z)) y v‖ ≤
+            K * Real.sqrt (g.inner y v v) := by
+  filter_upwards [eventually_tangent_transport_le g p hK] with y hy
+  refine ⟨hy.1, fun v => ?_⟩
+  rw [mfderiv_metricChartEuclideanEquiv_extChartAt g p y hy.1]
+  let w : E := (trivializationAt E (TangentSpace I) p).continuousLinearMapAt ℝ y v
+  change ‖metricChartEuclideanEquiv g p w‖ ≤ K * Real.sqrt (g.inner y v v)
+  rw [metricChartEuclideanEquiv_norm]
+  exact hy.2.1 v
+
+end DifferentialGeometry.Geometry.Metric
+
+end
