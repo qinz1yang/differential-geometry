@@ -1098,12 +1098,13 @@ The previous T delivery proves only `Moise304 -> Moise305Tame`.
 See [ROUTE_AUDIT_20260919.md](ROUTE_AUDIT_20260919.md). The H-lane source now
 contains the assigned contract repairs for Moise252, Moise331, and Moise351;
 integration acceptance remains a separate review gate. In particular,
-`IsLocallyFiniteRegularNeighborhoodOf` uses actual second-derived neighborhoods,
-explicit graph and neighborhood `IsGlueIso` transition data, a compatible
-stagewise strong-deformation-retract system with relative-neighborhood
-exhaustion, and an actual nonempty interior-arc model.  The relation now
-constructs a global strong deformation retract of `N` onto `K`; `IsGlueIso`
-alone is not treated as sufficient at infinity. `Moise351` retains the
+`IsLocallyFiniteRegularNeighborhoodOf` uses actual second-derived neighborhoods
+in one locally finite PL triangulation of its open ambient set, exact old-face
+restriction, relative-neighborhood exhaustion, and an actual nonempty
+interior-arc model.  Its PL exhaustion forgets to a topology-only exhaustion
+that constructs a global strong deformation retract of `N` onto `K`; a bare
+topological embedding is not treated as a rectilinear ambient triangulation.
+`Moise351` retains the
 relatively closed locally finite graph input, noncompact scope, and pointwise
 error, but is not proved.
 Normalization should first produce the Lemma 2 input by projecting the

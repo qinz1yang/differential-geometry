@@ -909,3 +909,7 @@ inline comments and declaration docstrings remain disallowed.
   的同胚及 core 等于全空间；结论同时给 `IsDerivedNeighborhoodExhaustion (n := 0) univ univ` 与目标非紧性。
   `PolyhedralGraph` 私有聚焦检查 exit=0、零诊断；严格审计动态覆盖六模块 160 个声明与 27 个直接复用声明，公理仅标准三公理，
   13 项适用 linter 全通过。这是新接口的实际 sanity check；35.1 的一维对偶胞腔改造与逐点误差 PL 同胚仍开。
+- 2026-09-19（H 车道同环境 PL 正则邻域）：原书 155、247–248 页的文本与页面复核确认，35.1 的正则邻域必须来自 `U` 的同一个相对环境为 PL 的三角剖分；
+  旧 `IsDerivedNeighborhoodExhaustion` 中的单个拓扑嵌入只足以搬运 SDR。新 `LocallyFinitePLPieceIn` 记录局部有限复形到 `U` 的嵌入参数化及正反图卡逐片仿射性；
+  `IsPLDerivedNeighborhoodExhaustion` 将全部有限环境层、图层和导出邻域绑定到该单一实现，并证明忘却到纯拓扑穷尽及 `N ⊆ U`。`IsLocallyFiniteRegularNeighborhoodOf` 现消费这一加强层，
+  `PLPieceIn.toLocallyFinite` 给出有限生产者，弧模型与 `Moise351` 公开签名不变。三个消费模块聚焦检查零诊断；严格审计 176 个模块声明加 28 个直接复用声明，仅标准三公理，13 项 linter 全过。

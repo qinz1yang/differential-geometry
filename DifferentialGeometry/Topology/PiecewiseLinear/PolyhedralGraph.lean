@@ -36,6 +36,38 @@ theorem PLPiece.isLocallyFinitePolyhedralGraph {K : Set X} (P : PLPiece n X K)
     IsLocallyFinitePolyhedralGraph (n := n) K :=
   ⟨LocallyFinitePieceTower.ofPiece P, fun _ => hP⟩
 
+structure LocallyFinitePLPieceIn (E : Type*) [NormedAddCommGroup E] [NormedSpace ℝ E]
+    (n : ℕ) (X : Type u) [TopologicalSpace X]
+    [ChartedSpace (EuclideanSpace ℝ (Fin n)) X] (Y : Set X) where
+  complex : Geometry.SimplicialComplex ℝ E
+  locallyFinite : LocallyFinite (fun s : complex.faces =>
+    (Subtype.val : complex.space → E) ⁻¹'
+      convexHull ℝ ((s : Finset E) : Set E))
+  map : E → X
+  bijOn : BijOn map complex.space Y
+  continuousOn : ContinuousOn map complex.space
+  isEmbedding : IsEmbedding (fun x : complex.space => map x)
+  isPiecewiseAffineOn_chart : ∀ e ∈ atlas (EuclideanSpace ℝ (Fin n)) X,
+    IsPiecewiseAffineOn (e ∘ map) (complex.space ∩ map ⁻¹' e.source)
+  isPiecewiseAffineOn_chart_symm : ∀ e ∈ atlas (EuclideanSpace ℝ (Fin n)) X,
+    IsPiecewiseAffineOn (Function.invFunOn map complex.space ∘ e.symm)
+      (e.target ∩ e.symm ⁻¹' Y)
+
+open Classical in
+def PLPieceIn.toLocallyFinite {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [FiniteDimensional ℝ E] [T2Space X] {Y : Set X}
+    (T : PLPieceIn E n X Y) : LocallyFinitePLPieceIn E n X Y := by
+  let _ : Finite T.complex.faces := T.finite_faces.to_subtype
+  exact
+    { complex := T.complex
+      locallyFinite := locallyFinite_of_finite _
+      map := T.map
+      bijOn := T.bijOn
+      continuousOn := T.continuousOn
+      isEmbedding := T.isClosedEmbedding.isEmbedding
+      isPiecewiseAffineOn_chart := T.isPiecewiseAffineOn_chart
+      isPiecewiseAffineOn_chart_symm := T.isPiecewiseAffineOn_chart_symm }
+
 open Classical in
 theorem exists_tetrahedron_oneSkeleton :
     ∃ L : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3)),
@@ -170,10 +202,71 @@ def IsDerivedNeighborhoodExhaustion (N K : Set X) : Prop :=
     f '' derivedNeighborhoodExhaustionCore A L = K
 
 open Classical in
+def IsPLDerivedNeighborhoodExhaustion (N K U : Set X) : Prop :=
+  ∃ (m : ℕ)
+    (T : LocallyFinitePLPieceIn (EuclideanSpace ℝ (Fin m)) n X U)
+    (A L : ℕ → Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin m))),
+    T.complex.faces = ⋃ i, (A i).faces ∧
+    (∀ i, (A i).faces.Finite) ∧
+    (∀ i, (L i).faces ⊆ (A i).faces) ∧
+    (∀ i s, s ∈ (L i).faces → s.card ≤ 2) ∧
+    (∀ i, IsCombinatorialManifoldWithBoundary n (A i)) ∧
+    (∀ i, IsCombinatorialManifoldWithBoundary n
+      (@derivedNeighborhood _ _ _ (Classical.decEq _) (A i) (L i))) ∧
+    Monotone (fun i => (A i).faces) ∧
+    Monotone (fun i => (L i).faces) ∧
+    (∀ {i j}, i ≤ j → ∀ s ∈ (A i).faces,
+      s ∈ (L j).faces → s ∈ (L i).faces) ∧
+    (∀ i {x : EuclideanSpace ℝ (Fin m)},
+      x ∈ (@derivedNeighborhood _ _ _ (Classical.decEq _) (A i) (L i)).space →
+        (@derivedNeighborhood _ _ _ (Classical.decEq _) (A (i + 1)) (L (i + 1))).space ∈
+          nhdsWithin x (derivedNeighborhoodExhaustionAmbient A L)) ∧
+    Set.range (fun x : derivedNeighborhoodExhaustionAmbient A L => T.map x) = N ∧
+    (fun x : derivedNeighborhoodExhaustionAmbient A L => T.map x) ''
+      derivedNeighborhoodExhaustionCore A L = K
+
+open Classical in
+private theorem derivedNeighborhoodExhaustionAmbient_subset_complex
+    {m : ℕ} {J : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin m))}
+    {A L : ℕ → Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin m))}
+    (hJ : J.faces = ⋃ i, (A i).faces) :
+    derivedNeighborhoodExhaustionAmbient A L ⊆ J.space := by
+  intro x hx
+  obtain ⟨i, hxi⟩ := Set.mem_iUnion.mp hx
+  apply space_mono_of_faces_subset (K := J)
+  · intro s hs
+    rw [hJ]
+    exact Set.mem_iUnion.mpr ⟨i, hs⟩
+  · exact (@derivedNeighborhood_space_subset _ _ _ (Classical.decEq _) (A i) (L i)) hxi
+
+open Classical in
+theorem IsPLDerivedNeighborhoodExhaustion.isDerivedNeighborhoodExhaustion
+    {N K U : Set X} (h : IsPLDerivedNeighborhoodExhaustion (n := n) N K U) :
+    IsDerivedNeighborhoodExhaustion (n := n) N K := by
+  obtain ⟨m, T, A, L, hJ, hfinite, hLA, hcard, hambient, hderived,
+    hAmono, hLmono, hrestrict, hnhds, hN, hK⟩ := h
+  have hsub : derivedNeighborhoodExhaustionAmbient A L ⊆ T.complex.space :=
+    derivedNeighborhoodExhaustionAmbient_subset_complex hJ
+  let f : derivedNeighborhoodExhaustionAmbient A L → X :=
+    (fun x : T.complex.space => T.map x) ∘ Set.inclusion hsub
+  have hf : IsEmbedding f := T.isEmbedding.comp (IsEmbedding.inclusion hsub)
+  exact ⟨m, T.complex, A, L, f, hJ, T.locallyFinite, hfinite, hLA, hcard,
+    hambient, hderived, hAmono, hLmono, hrestrict, hnhds, hf, hN, hK⟩
+
+open Classical in
+theorem IsPLDerivedNeighborhoodExhaustion.subset_ambient
+    {N K U : Set X} (h : IsPLDerivedNeighborhoodExhaustion (n := n) N K U) : N ⊆ U := by
+  obtain ⟨m, T, A, L, hJ, -, -, -, -, -, -, -, -, -, hN, -⟩ := h
+  have hsub : derivedNeighborhoodExhaustionAmbient A L ⊆ T.complex.space :=
+    derivedNeighborhoodExhaustionAmbient_subset_complex hJ
+  rw [← hN]
+  rintro _ ⟨x, rfl⟩
+  exact T.bijOn.mapsTo (hsub x.2)
+
+open Classical in
 def IsLocallyFiniteRegularNeighborhoodOf (N K U : Set X) : Prop :=
-  IsDerivedNeighborhoodExhaustion (n := n) N K ∧
+  IsPLDerivedNeighborhoodExhaustion (n := n) N K U ∧
     N ∈ nhdsSet K ∧
-    N ⊆ U ∧
     IsLocallyFinitePolyhedralManifoldWithBoundary (n := n) n N
 
 theorem IsLocallyFiniteRegularNeighborhoodOf.mem_nhdsSet {N K U : Set X}
@@ -182,12 +275,12 @@ theorem IsLocallyFiniteRegularNeighborhoodOf.mem_nhdsSet {N K U : Set X}
 
 theorem IsLocallyFiniteRegularNeighborhoodOf.subset {N K U : Set X}
     (h : IsLocallyFiniteRegularNeighborhoodOf (n := n) N K U) : N ⊆ U := by
-  exact h.2.2.1
+  exact h.1.subset_ambient
 
 theorem IsLocallyFiniteRegularNeighborhoodOf.isLocallyFinitePolyhedralManifoldWithBoundary
     {N K U : Set X} (h : IsLocallyFiniteRegularNeighborhoodOf (n := n) N K U) :
     IsLocallyFinitePolyhedralManifoldWithBoundary (n := n) n N := by
-  exact h.2.2.2
+  exact h.2.2
 
 omit [ChartedSpace (EuclideanSpace ℝ (Fin n)) X] in
 open Classical in
@@ -206,7 +299,7 @@ open Classical in
 theorem IsLocallyFiniteRegularNeighborhoodOf.nonempty_strongDeformationRetract
     {N K U : Set X} (h : IsLocallyFiniteRegularNeighborhoodOf (n := n) N K U) :
     Nonempty (StrongDeformationRetract {x : N | (x : X) ∈ K}) := by
-  exact h.1.nonempty_strongDeformationRetract
+  exact h.1.isDerivedNeighborhoodExhaustion.nonempty_strongDeformationRetract
 
 open Classical in
 noncomputable def IsLocallyFiniteRegularNeighborhoodOf.strongDeformationRetract
@@ -237,22 +330,10 @@ theorem PLPiece.isLocallyFiniteRegularNeighborhoodOf_derivedNeighborhood {U : Se
   let L : ℕ → Geometry.SimplicialComplex ℝ
       (EuclideanSpace ℝ (Fin P.ambientDim)) := fun _ => G
   let _ : Finite P.piece.complex.faces := P.piece.finite_faces.to_subtype
-  have hDspace : D.space ⊆ P.piece.complex.space := by
-    change (@derivedNeighborhood _ _ _ (Classical.decEq _)
-      P.piece.complex G).space ⊆ P.piece.complex.space
-    exact @derivedNeighborhood_space_subset _ _ _ (Classical.decEq _)
-      P.piece.complex G
-  have hExhaustionSpace : derivedNeighborhoodExhaustionAmbient A L ⊆
-      P.piece.complex.space := by
-    intro x hx
-    obtain ⟨i, hxi⟩ := Set.mem_iUnion.mp hx
-    exact hDspace (by simpa only [A, L, D] using hxi)
-  let f : derivedNeighborhoodExhaustionAmbient A L → X :=
-    (fun x : P.piece.complex.space => P.piece.map x) ∘
-      Set.inclusion hExhaustionSpace
-  have hf : IsEmbedding f :=
-    P.piece.isClosedEmbedding.isEmbedding.comp (IsEmbedding.inclusion hExhaustionSpace)
-  have hfrange : Set.range f = P.piece.map '' D.space := by
+  let T := P.piece.toLocallyFinite
+  have hfrange : Set.range
+      (fun x : derivedNeighborhoodExhaustionAmbient A L => T.map x) =
+      P.piece.map '' D.space := by
     ext y
     constructor
     · rintro ⟨x, rfl⟩
@@ -262,7 +343,8 @@ theorem PLPiece.isLocallyFiniteRegularNeighborhoodOf_derivedNeighborhood {U : Se
       let y : derivedNeighborhoodExhaustionAmbient A L :=
         ⟨x, Set.mem_iUnion.mpr ⟨0, by simpa only [A, L, D] using hx⟩⟩
       exact ⟨y, rfl⟩
-  have hfcore : f '' derivedNeighborhoodExhaustionCore A L =
+  have hfcore : (fun x : derivedNeighborhoodExhaustionAmbient A L => T.map x) ''
+      derivedNeighborhoodExhaustionCore A L =
       P.piece.map '' G.space := by
     ext y
     constructor
@@ -277,9 +359,9 @@ theorem PLPiece.isLocallyFiniteRegularNeighborhoodOf_derivedNeighborhood {U : Se
       refine ⟨z, ?_, rfl⟩
       change (z : EuclideanSpace ℝ (Fin P.ambientDim)) ∈ ⋃ i, (L i).space
       exact Set.mem_iUnion.mpr ⟨0, by simpa only [L] using hx⟩
-  refine ⟨⟨P.ambientDim, P.piece.complex, A, L, f, ?_, locallyFinite_of_finite _,
+  refine ⟨⟨P.ambientDim, T, A, L, ?_,
     fun _ => P.piece.finite_faces, fun _ => hG, fun _ => hcard, fun _ => hambient,
-    fun _ => hderived, ?_, ?_, ?_, ?_, hf, hfrange, hfcore⟩, hnhds, ?_, ?_⟩
+    fun _ => hderived, ?_, ?_, ?_, ?_, hfrange, hfcore⟩, hnhds, ?_⟩
   · exact (iUnion_const (ι := ℕ) P.piece.complex.faces).symm
   · intro i j hij
     exact Subset.rfl
@@ -290,9 +372,6 @@ theorem PLPiece.isLocallyFiniteRegularNeighborhoodOf_derivedNeighborhood {U : Se
   · intro i x hx
     simpa only [derivedNeighborhoodExhaustionAmbient, A, L, iUnion_const] using
       (self_mem_nhdsWithin : D.space ∈ nhdsWithin x D.space)
-  · rintro x ⟨y, hy, rfl⟩
-    let _ : DecidableEq (EuclideanSpace ℝ (Fin P.ambientDim)) := Classical.decEq _
-    exact P.piece.bijOn.mapsTo (derivedNeighborhood_space_subset P.piece.complex G hy)
   · let _ : DecidableEq (EuclideanSpace ℝ (Fin P.ambientDim)) := Classical.decEq _
     let P' := P.piece.subdivide (secondDerived P.piece.complex)
       (secondDerived_isSubdivision P.piece.complex) (Set.toFinite _)

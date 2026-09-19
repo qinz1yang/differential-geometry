@@ -3681,3 +3681,44 @@ This zero-dimensional model is an interface sanity check, not the geometric
 producer for Moise 35.1.  The remaining 35.1 work is still the locally finite
 one-dimensional dual-cell modification followed by the pointwise-error PL
 homeomorphism.
+
+## 72. 2026-09-19 same-ambient PL regular-neighborhood refinement — done
+
+A direct text and page-image check of book pages 155 and 247–248 shows that a
+regular neighborhood is formed in the second barycentric subdivision of one
+triangulation in which the graph is a subcomplex.  In the relatively closed
+case, the book first triangulates the open set `U` rectilinearly relative to
+the ambient PL manifold.  Consequently the single `IsEmbedding` in the
+topological `IsDerivedNeighborhoodExhaustion` is sufficient to transport its
+global strong deformation retract, but it does not certify the PL
+compatibility required by the regular-neighborhood output of `Moise351`.
+
+`PolyhedralGraph.lean` now separates these two strengths.  The original
+`IsDerivedNeighborhoodExhaustion N K` remains the topology-only realization
+and continues to supply the canonical global strong deformation retract.
+`LocallyFinitePLPieceIn E n X U` records one locally finite complex together
+with a parametrization onto `U`, its embedding property, and the forward and
+inverse chartwise piecewise-affine conditions.  The stronger
+`IsPLDerivedNeighborhoodExhaustion N K U` requires all finite ambient stages,
+graph stages, and derived neighborhoods to lie in this one PL realization.
+Its forgetful theorem
+`IsPLDerivedNeighborhoodExhaustion.isDerivedNeighborhoodExhaustion` produces
+the topology-only exhaustion, while `subset_ambient` proves `N ⊆ U` from the
+same realization rather than accepting it as independent data.
+
+`IsLocallyFiniteRegularNeighborhoodOf` now consumes the stronger relation.
+Thus the unchanged `Moise351` conclusion denotes a regular neighborhood in an
+actual triangulation of its given open ambient set.  The finite constructor
+`PLPiece.isLocallyFiniteRegularNeighborhoodOf_derivedNeighborhood` uses
+`PLPieceIn.toLocallyFinite`; the nonempty arc model and the public `Moise351`
+signature remain unchanged.  The zero-dimensional noncompact theorem remains
+a topology-only sanity check, as intended, and is not promoted to a Moise
+regular-neighborhood producer.
+
+Private focused checks of `PolyhedralGraph`, `ArcChainNeighborhood`, and
+`MoiseChain` exited zero with no diagnostics and left shared outputs unchanged.
+The external strict audit dynamically checked one hundred seventy-six
+non-automatic declarations in the six relevant modules plus twenty-eight
+directly reused declarations.  Every axiom closure was contained in
+`{propext, Classical.choice, Quot.sound}`, and all thirteen applicable
+environment linters passed.
