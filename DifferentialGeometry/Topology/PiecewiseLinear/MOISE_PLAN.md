@@ -180,6 +180,17 @@ and do not instantiate strict essential-circle descent. M304 continues the
 nonseparating annulus-complement and actual disjoint-capping round. Compression
 disk existence, actual 30.3 splitting and the final 30.4 induction remain open.
 
+The held E3 disk-neighborhood chain through 8e0373385 is now independently
+accepted: fifteen fresh modules and all 81 native declarations (58 new),
+23 critical reuses, two actual geometry models plus their helper declarations,
+and all thirteen applicable linters pass with standard axioms and no final
+diagnostics. The canonical free-triangle proof is generalized and reused;
+the copied chain is removed and both old boundary signatures are preserved.
+Actual middle-disk ball pairs and centered prism charts are now producers.
+Exact local replacement traces are accepted, but replacement manifold structure,
+ambient frontier/safety and original separation transfer remain E3's current
+obligations. See HANDOFF_CODEX_INTEGRATION section 52 and the morning ledger.
+
 ### Five tasks: one current lane each
 
 At 2026-09-19 04:24 UTC the owner explicitly authorized a separate 30.4 lane.
@@ -189,9 +200,9 @@ its active 30.3 round without interruption. The private checker limit stays two.
 | Task / model | Current round | Delivery gate and next boundary |
 | --- | --- | --- |
 | h / gpt-5.6-sol max | Actual locally finite PL exhaustion, noncompact 3D one-edge model and finite graph dual-ball theorem through 2086d1064 delivered; independent replay pending. At full-round completion, continued actual edgewise piercing and nested-annulus geometry for 35.1. | Keep original graph, regular-neighborhood relation and error data tied together. The disconnected closed-ball model does not supply arbitrary open-ambient graph neighborhoods. Preserve S changes in MoiseChain; general contracts and full 35.1 remain unaccepted. |
-| F / gpt-6-astra max | Raw-disk initialization and conditional return through 584a5cfa0 accepted. Connected interior, finite punctured-sphere neighborhood and sphere disk producer through dfd523647 queued; current round continues into the authorized natural PL embedded-disk interface. | Preserve old NonsingularCell, bind the actual source/map/boundary loop/subgroup, and prove exact boundary preimage. Fixed-target-face realization and cover desingularization remain separate open obligations. |
-| E3 / gpt-5.6-sol max | Actual disk-neighborhood, ball pair, centered prism and local cut traces through 0f25c93e8 delivered; independent acceptance held for 917 duplicated FreeTriangleNeighborhood lines. At full-round completion, canonical core generalization was assigned and exclusive scope granted. | Preserve old boundary API and scopes, remove cloned development, then prove true frontier/safety conditions and transfer the original separation using the exact local traces and unchanged outside carrier. Actual local traces alone do not prove separation. |
-| M304 / gpt-6-astra max | Own 30.4 directly. Initial separator/shell/kernel, annular neighborhoods and disk pairs, canonical ClosedCover, and actual circle/capping/essential Betti/complement chain through a10d3b2df independently accepted. Nonseparating annulus complement 48b42db09 is queued. | Continue actual disjoint caps. Supplied essential disks, raw shared-disk caps and conditional SurfaceSplitAndCap consumers do not close compression disk existence, actual 30.3 separation or final 30.4 induction. |
+| F / gpt-6-astra max | Raw-disk initialization and conditional return through 584a5cfa0 accepted. Connected interior, finite punctured sphere and natural EmbeddedDisk sphere solution through 9658ad75b delivered and queued. At completed clean delivery resumed actual covering descent/desingularization. | Preserve original boundary/subgroup and prove downstairs embedding; projection alone need not embed. No assumed normalization or triple-point elimination. The old fixed-target-face API remains compatible and its stronger realization is separately open. |
+| E3 / gpt-5.6-sol max | Canonical core repair and actual disk-neighborhood, endpoint disk, ball pair, centered prism and local cut traces through 8e0373385 independently accepted: 15 fresh modules, 81 native declarations, two actual geometric models, standard axioms and 13 linters. | Preserve old boundary API. Continue true frontier/safety conditions and transfer original separation using exact local traces and unchanged outside carrier. Replacement manifold structure and full 30.3 remain open. |
+| M304 / gpt-6-astra max | Own 30.4 directly. Initial shell/annulus/disk-pair and actual circle/capping/essential Betti/complement chain through a10d3b2df accepted. Annulus complement, disjoint-cap consumer and same-witness spanning-disk enlargement through df2e1691a delivered and queued. | Continue separating annulus-complement component/cap correspondence. The enlarged disks still intersect in the original disk; supplied disjoint caps do not construct ambient placement. Compression disk existence, actual separation and final 30.4 induction remain open. |
 | S / gpt-6-astra max | Finite handles and new-cell annulus atlases accepted. Fixed Euclidean whole triangular-annulus smoothing through adefc71d0 delivered and queued, with 29fc463ce. At completed round e3be9a9e9, resumed actual old-atlas 0-handle smoothing. | Construct supported smoothing from a real topological disk chart in a fixed old smooth surface; only after closure proceed to the relative strip producer. No assumed old-atlas smoothness, no claim of seam charts or compact 3D smoothing. |
 
 F must distinguish the full two-sheeted ambient cover from the smaller regular

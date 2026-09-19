@@ -2133,3 +2133,78 @@ boundary preimage and normal-subgroup avoidance remain geometric obligations;
 fixed-target-face realization and covering desingularization remain separate
 open steps. This resolves an actual interface obstacle within F's existing
 lane; no extra task or simultaneous proof lane was created.
+
+## 52. Actual disk neighborhoods, ball splitting and local cut traces (2026-09-19 UTC)
+
+E3's complete held disk-neighborhood, ball-pair, centered-prism and local-trace
+chain through 8e0373385 is independently accepted. The canonical
+FreeTriangleNeighborhood proof now handles arbitrary disk subcomplexes, and
+the two existing public boundary signatures are unchanged. Four existing
+private combinatorial identities are public with unique project-wide names.
+DiskDerivedNeighborhood and BoundaryDiskPush retain every mathematical token;
+the former also receives a line wrap, and both receive required headers.
+
+The author removed the cloned canonical chain: SurfaceSplitDiskNeighborhood
+shrinks from 1206 to 241 lines. Those 965 author deletions were never accepted
+into integration, so they are not counted as integration deletions. The
+two-dimensional endpoint-disk shelling proof is a distinct dimension-specific
+development and reuses the common combinatorial identities.
+
+The accepted chain constructs compatible disk subdivisions and arbitrarily
+small relative derived neighborhoods, proves their three-ball property,
+constructs the endpoint disk, and derives the exact boundary trace. A proper
+PL middle disk actually splits a three-ball into two balls via the proved
+PL Schoenflies theorem. Their boundary parameterizations extend and glue to
+an actual centered prism chart with exact middle and half-prism images.
+
+The local-trace endpoint constructs a replacement carrier from the original
+disk pair and its local covering hypothesis. It proves the actual inside-ball
+traces and equality outside that ball. It does not yet prove manifold structure
+of the replacement, the required ambient frontier/safety statement, or transfer
+of the original separation. E3 continues those obligations. Neither Moise303
+nor Moise304 is declared complete.
+
+Fifteen fresh module checks took 184.730 seconds including admission;
+the combined independent audit took 57.624 seconds. All 81 native
+nonautomatic declarations (58 new, 38 private), 23 critical reused entries
+and all five probe declarations have only standard foundational axioms.
+All thirteen applicable environment linters pass. Every final source and
+audit check has zero errors, warnings, information messages or suggestions.
+
+The two concrete geometric probes construct an interior triangular disk in the
+standard PL three-sphere, and a standard triangular prism split at its middle
+disk with an actual centered chart. The latter lies in a four-dimensional
+ambient vector space, checking that the general theorem correctly uses intrinsic
+boundary. Two helper definitions and one explicitly named local instance also
+enter the audit. There is no independent full peeled-sheet/local-trace example;
+these models do not establish the remaining ambient separation statement.
+
+The first local-trace check found a missing old SurfaceSplitAnnulus artifact.
+That exact accepted source and its existing SurfaceSplitNeighborhood consumer
+were recompiled and their five declarations included in the audit. No source
+change or root rebuild was needed. Seven other accepted private prerequisites
+were reused with exact raw source/object identities and successful independent
+receipts. An initial external prism-probe instance mismatch was repaired by
+explicit local classical equality instances; project mathematics was unchanged.
+Failure evidence and the final successful replay are retained.
+
+Accepted Lean delta: +3333/-43, including ten new flat-root imports and fourteen
+required header lines added by integration. The author layer plus root imports
+accounts for +3319/-43; Markdown and probes are excluded. Receipt:
+.lake/verified-thirtysecond-lane-delivery-20260919.json, with frozen raw probes,
+source/object identities, complete declaration types and axioms, linters and
+timings. The flat root reaches 9482 project modules including itself,
+with no missing project sources or cycles. The full-root build remains stopped;
+this is focused acceptance, not a complete fresh transitive build.
+
+F delivered the complete natural EmbeddedDisk sphere case and original-subgroup
+return at 9658ad75b, now queued with its earlier sphere geometry. At that clean
+completed-round boundary F resumed actual covering descent/desingularization.
+The natural interface preserves the old fixed-target-face API; the latter's
+strong realization is not inferred from arbitrary PL containment. M304 delivered
+1ec520bde, actual double-cap/Euler/Betti machinery from supplied disjoint caps,
+and df2e1691a, the consistent-witness spanning-disk enlargement, queued with
+48b42db09. The enlarged disks still intersect in the original disk; they are
+not disjoint caps. M304 continues separating annulus-complement component/cap
+correspondence. S and h retain their existing rounds. No new task or checker
+was added, and no active task received a routine status request.
