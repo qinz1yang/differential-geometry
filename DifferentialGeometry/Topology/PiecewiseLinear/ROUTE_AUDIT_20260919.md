@@ -3,8 +3,9 @@
 Baseline: integration source `982dd6062c3fc8e637a6015f6173122657d3d37a`,
 with documentation published at `a05c940eb`. This review distinguishes mathematical
 statement review, actual source constructions, focused compiler evidence and the
-still-running independent full-source build. It does not certify the classical
-endpoints merely because their propositions or conditional consumers compile.
+independent full-source build, stopped by the owner after this audit. It does
+not certify classical endpoints merely because their propositions or
+conditional consumers compile.
 
 ## Statement defects confirmed
 
@@ -103,8 +104,9 @@ open overlap and an error controlled by distance to its complement.
 Book pp216-218 verifies the direction `30.6 -> 30.7`: Theorem 30.6 uses compression,
 separation, van Kampen and surface-group identification; the proof of 30.7 then
 explicitly starts from 30.6. Remove the reverse edge from the chain table.
-Keep original CST production separate from the weaker existence of a cylindrical
-diagram; S's current lane is closing that exact distinction.
+Keep original CST production separate from a cylindrical diagram. S has since
+delivered aa6ff83be for the actual product/finite 24.11 construction, pending
+independent acceptance; its current lane is the 24.12 generating-loop bridge.
 
 The source contains genuine unconditional PL Schoenflies endpoints in
 `PLSchoenflies.lean`, using the actual `schoenflies_input` constructor.
@@ -136,12 +138,19 @@ Evidence is in `.lake/verified-route-audit-20260919.json` and
 
 The root coverage fix is prepared as `RootEndpointImports.patch` in that external
 directory: five missing chain imports plus direct registration of PLSchoenflies.
-It is not applied. Automatic review rejected stopping/restarting the current
-root build because the owner asked to keep that build running; no stop operation
-was executed. Keep the active build and its completed outputs. Apply this exact
-reviewable patch at a subsequent noninterrupting build boundary, verify the new
-root reachability, then run the root gate with the expanded dependency graph.
-Do not claim the currently running root gate covers the five disconnected modules.
+It is not applied. The earlier stop attempt was rejected by automatic review
+because the owner had asked to retain the build; no stop executed at that time.
+The later explicit owner stop superseded that instruction: the coordinator
+stopped the owned Lake/Lean processes at 2026-09-19 02:00 UTC, the wrapper
+exited and no owned root workers remained. Outputs are preserved; local status
+records interrupted_by_owner and automaticRestart=false.
+
+Plan correction precedes further integration. Next accept pending source
+deliveries, apply the six-import patch, verify reachability and check affected
+modules/consumers. Keep the root stopped under the owner's instruction.
+When it is resumed, reuse retained artifacts and the expanded import graph.
+Neither the interrupted root nor focused leaf checks establish full-source
+success.
 
 ## Priority and ownership decisions
 
@@ -157,9 +166,10 @@ Do not claim the currently running root gate covers the five disconnected module
 3. E3, Sol max: owns 30.4, first the genuine 30.3 splitting/separation step; 26.4
    and 28.19 remain explicit dependencies. This owner was assigned when E3
    delivered its conjugation layer, before the current audit arrived.
-4. S, Astra max: complete the actual product/CST endpoint and 24.12 connections.
-   Compact PL smoothing is a separate next-lane candidate at a delivery boundary;
-   it is not simultaneously assigned on top of the active CST lane.
-5. Coordinator: correct plans and coverage, independently verify delivered source,
-   retain the single continuing full-source build, and report conditional versus
-   unconditional progress honestly. The project remains in core proof construction.
+4. S, Astra max: after product/CST delivery aa6ff83be, close 24.12 from one
+   generating loop's nullhomotopy to all loops and actual CST. Compact PL
+   smoothing is a separate next lane at delivery or a genuine blocker.
+5. Coordinator: correct plans first, independently accept pending deliveries,
+   and repair coverage. Keep the root stopped and artifacts retained.
+   Distinguish conditional consumers from completed producers. The project
+   remains in core proof construction.

@@ -1,8 +1,16 @@
 # 整合车道交接（2026-09-18 晚，交给 Codex）
 
-写于用量耗尽时。本文件是整合层的单点入口：先读它，再按 §4 进各车道的 HANDOFF 最后几节。
-主链结构与今日全部决定的原文在 `MOISE_CHAIN.md`（本目录）末尾七节，此处只给可执行的摘要。
-四车道**怎么运作**（节奏、任务书模板、核验清单、今日抓到的失效类型与对应检查、换人信号、专用分支）在同目录 `FOUR_LANE_PLAYBOOK.md`。
+This handoff preserves integration decisions and acceptance evidence. Current
+mathematical work is governed by MOISE_PLAN.md; current coordination follows
+FOUR_LANE_WORKFLOW.md. The dated original handoff remains below as history.
+
+## Current entry point (2026-09-19 UTC)
+
+Read [MOISE_PLAN.md](MOISE_PLAN.md)'s current plan and section 22 below before
+historical sections 0--8. The owner stopped the full-source build; retain its
+artifacts with no automatic restart. F, h, E3 and S each run one existing-task
+lane under FOUR_LANE_WORKFLOW.md. Old cleanup snapshots are not instructions
+to interrupt or stash an active task's files.
 
 ## 0. 进入时立刻做的事
 
@@ -834,3 +842,51 @@ closed. Its three checkpoints are pending independent integration acceptance.
 At that delivery boundary F immediately began the actual projected embedded-disk
 and source-faithful cover-reduction round on Astra max. Thus the queued priority
 above is now dispatched, without an in-flight interruption.
+
+## 22. Owner-stopped root build and corrected plan (2026-09-19 UTC)
+
+The owner requested stopping the full-source rebuild and correcting the plan
+first. At 02:00 UTC the coordinator stopped the identified root Lake process
+4636 and Lean child 5520. Wrapper 8748 exited and released its claim; no owned
+root worker remained. Completed outputs are retained. The local root status
+records interrupted_by_owner and automaticRestart=false. This supersedes
+section 21's historical keep-running instruction/rejection. No full-root success
+is claimed and no replacement root build was started.
+
+MOISE_PLAN, MOISE_CHAIN and the detailed Phase 3 plan now replace obsolete
+"only Moise352 remains" and six-lane launch instructions. h repairs
+Moise252/331/351; F constructs the actual cover-projected Lemma 2 input.
+E3 owns 30.4 through 30.3, with 26.4/28.19 still open. S closes the 24.12
+generating-loop bridge, then takes compact PL smoothing as a separate lane.
+F/S use Astra max; h/E3 use Sol max. No active round was interrupted or given
+a simultaneous lane for this plan correction.
+
+The chain retains 30.6 -> 30.7. Accepted Moise304 -> Moise305Tame does not
+require a general wild-cell theorem. Compact PL smoothing still needs its own
+producer and compact assembly; noncompact variable-error approximation remains
+required for chart overlaps.
+
+Pending independent integration acceptance:
+
+| Task | Delivered checkpoint | Scope and limitation |
+| --- | --- | --- |
+| E3 | b195204ed; b5e36cfe5 | Conjugated supported homotopies still need a compatible whole-branch chart. New path replacement still needs actual geometric split data. |
+| h | 0a0876425 | Full-arc containment, not simultaneous arc-pair normalization. |
+| F | 495a3e343 | Collapse diagnostic with its two prerequisites, not positive normalization. |
+| S | aa6ff83be | Actual product/finite 24.11 CST, with 701d48343 and 10f680db7; not yet integration-accepted or a proof of 24.12. |
+
+E3 delivered b5e36cfe5 during this plan correction. At that natural boundary it
+continued the same 30.3 lane: construct the actual split cells, connected safe
+boundary and equality outside the local cell, then apply path replacement.
+No mid-round intervention occurred.
+
+Preserve S's unchanged extraction of IsTopologicalSolidTorus when integrating
+h's different MoiseChain edits. Review source/receipts and independently replay
+each accepted layer; task reports alone are not acceptance.
+
+The root patch remains prepared and unapplied in the external route-audit
+directory. It adds the five disconnected endpoint-chain leaves and directly
+registers PLSchoenflies. Apply and recheck coverage at the next source integration
+stage. The seven-leaf, 26-declaration focused audit remains valid only in its
+recorded scope. This checkpoint changes documentation only: no Lean source,
+root imports or compilation were changed/launched for plan correction.

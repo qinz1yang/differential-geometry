@@ -3,17 +3,104 @@
 统一记录本任务的目标、复用审计、证明路线、阶段与验证。其他文档只引用本文件，不另开状态表。
 日期均为绝对日期。路径省略 `DifferentialGeometry/` 前缀时指本库源码树。
 
-## 2026-09-19 source-audited status and scope
+## Current plan after source audit and owner build stop (2026-09-19 UTC)
 
-The classical route is retained, but remains core proof construction. Follow
-[ROUTE_AUDIT_20260919.md](ROUTE_AUDIT_20260919.md) for current statement defects,
-producer gaps, original-book evidence and acceptance coverage. Phase 3's
-Moise352/PL approximation input and Phase 2's PL-to-smooth input are independent;
-neither is supplied by the conditional final assembly. Phase 2 may target only
-compact PL three-manifolds because the final consumer is compact. Phase 3 must
-still treat noncompact chart overlaps and variable positive approximation error.
-Older claims below that all listed Phase 1 leaves are registered at the root
-are superseded by the explicit import-graph audit and its coverage repair.
+The classical route is retained; the project remains in core proof construction.
+[The source/book audit](ROUTE_AUDIT_20260919.md) records the evidence. There are
+two independent missing inputs: general PL approximation and compact PL
+three-manifold smoothing. Conditional Endgame and Smoothing theorems supply
+neither. Compactness suffices for the final smoothing consumer; approximation
+must cover noncompact chart overlaps and positive error tending to zero at
+their boundary.
+
+This is the current execution plan. Sections 2 and 6 retain dated baselines and
+verification history; their old ownership, running-build and source-style
+statements are not current instructions. The six subject labels in the detailed
+Phase 3 table are mathematical categories, not six active tasks.
+
+### First gate: repair contracts before consuming them
+
+h owns Moise252, Moise331 and Moise351. Restore non-nullhomotopy of the produced
+disk boundary in 25.2; existentially choose a genuine sufficiently small regular
+neighborhood in an actual three-dimensional ambient neighborhood in 33.1;
+restore the one-dimensional locally finite polyhedral input and the
+regular-neighborhood relation in 35.1. Preserve noncompact scope and pointwise
+error in 35.1. Check quantifiers, nonempty instances and actual consumers.
+A compiling Prop is not an accepted theorem statement or a proof of it.
+
+### Four existing tasks: one current lane each
+
+| Task / model | Current round | Delivery gate and next boundary |
+| --- | --- | --- |
+| h / gpt-5.6-sol max | Repair the three contracts and their genuine geometric witnesses. | Source-faithful statements, nonvacuous instances and rebuilt consumers. Full-arc simultaneous normalization remains deferred. |
+| F / gpt-6-astra max | Construct the embedded-disk projection used by the original section 25 cover induction. | Prove local injectivity and fibers of size at most two for the projected disk; construct PL, lift, boundary and subgroup compatibility with strict complexity descent. Then close the remaining Lemma 2 branch-separation producer. |
+| E3 / gpt-5.6-sol max | Own 30.4, starting with actual geometric splitting and separation in 30.3. Path-replacement layer b5e36cfe5 delivered; next connect the actual split cells. | Construct the split surface, connected safe boundary and equality outside the local cell; show separation survives. Euler bookkeeping alone is insufficient. Full 30.4 also awaits 26.4 and 28.19. |
+| S / gpt-6-astra max | Close 24.12 from nullhomotopy of one actual generating polygon loop. | Derive all-loop nullhomotopy with basepoint/generator control, then apply the actual CST producer. At delivery or a genuine blocker, hand off to the separate compact PL smoothing lane. |
+
+F must distinguish the full two-sheeted ambient cover from the smaller regular
+neighborhood for the next normal system: restriction need not preserve
+two-sheeted surjectivity. The upstairs disk must have the boundary/properness
+properties needed by descent; current NonsingularCell fields do not themselves
+assert proper interior placement. Lemma 2 starts with local injectivity and
+two-point fibers. Neither arbitrary NormalSystem data nor the fiber-preserving
+DoubleCarrier transport produces them. Generic surface position in dimension
+three does not remove triple points. More conditional wrappers do not close
+this producer.
+
+The compatible chart along a whole branch remains a separate Lemma 2 gap;
+a finite pointwise chart cover does not supply compatible normal directions.
+F's source-collapse delivery is diagnostic evidence, not a positive
+normalization theorem or a disproof of Moise251.
+
+Existing rounds continue. Handoff at delivery or an urgent stop/restart; do not
+send routine status prompts, add a simultaneous lane, or create subagents.
+See [FOUR_LANE_WORKFLOW.md](FOUR_LANE_WORKFLOW.md).
+
+### Subsequent mathematical gates
+
+1. Accept corrected contracts and a real cover/projection construction; complete
+   Lemmas 1 and 2 and the covering induction before claiming 25.1/25.2.
+   Boundary non-nullhomotopy/subgroup avoidance must survive actual operations.
+2. Prove 26.4 and 28.19 and complete E3's 30.3/30.4 assembly. The accepted
+   Moise304-to-Moise305Tame arrow has a bicollar hypothesis; general wild-cell
+   Alexander duality is not an extra prerequisite of that tame arrow.
+3. Continue 30.6 -> 30.7, 30.8 and sections 31--35 with the open producers
+   listed in the detailed Phase 3 table. There is no 30.7 -> 30.6 edge.
+4. Run compact PL smoothing as a separate phase after S's current round.
+   First audit finite triangulation, handle attachment, circle/framing and
+   sphere-extension producers. This candidate construction remains to be
+   established. Its compact theorem needs a compact assembly theorem and
+   does not prove the unrestricted PLSmoothing 3.
+5. Only after both inputs are produced, assemble a smooth structure on the
+   same carrier and topology and audit its transitive axioms.
+
+### Acceptance queue and full-root hold
+
+E3 b195204ed and b5e36cfe5, h 0a0876425, F 495a3e343 and S aa6ff83be await
+independent integration acceptance. S reports the actual disk-times-circle
+product and finite 24.11 CST construction; this is not an integration-accepted
+24.11 or a proof of 24.12. Preserve S's extraction of IsTopologicalSolidTorus
+when integrating h's separate MoiseChain repairs.
+
+The owner stopped the independent full-source build at 2026-09-19 02:00 UTC.
+Completed artifacts are retained; no automatic restart is scheduled. The run
+is incomplete, not a successful full-root gate. Lane checks continue under
+the existing two-private-checker admission policy.
+
+The six-import root coverage patch is prepared but UNAPPLIED: Approximation,
+ApproximationManifold, ChartGluing, Endgame, Smoothing and PLSchoenflies.
+The first five were unreachable; PLSchoenflies was reachable transitively but
+lacked direct flat-root registration. Seven relevant leaves have fresh focused
+checks covering 26 nonautomatic declarations, standard axioms and all 13
+applicable environment linters; this does not establish full-source success.
+
+Next integration work is to review and replay pending deliveries, repair
+flat-root coverage, and check changed modules, dependents and endpoint axioms.
+The root build stays stopped under the owner's instruction. When verification
+is resumed, reuse retained artifacts and check the expanded import graph before
+treating a root success as endpoint coverage.
+Current AGENTS allows required copyright/authors headers and module docstrings;
+inline comments and declaration docstrings remain disallowed.
 
 ## 1. 目标与接口
 
@@ -130,7 +217,7 @@ are superseded by the explicit import-graph audit and its coverage repair.
 
 ### Phase 1（进行中，2026-09-11 起）：PL 基础 + 图卡拼接桥 + 条件性端点
 
-文件（新目录 `Topology/PiecewiseLinear/`，均登记到根聚合）：
+文件（`Topology/PiecewiseLinear/`；根登记缺口及待应用修复见本文件当前计划）：
 
 1. `Polytope.lean` — `IsHPolytope` 及其封闭性、立方体邻域。
 2. `PiecewiseAffine.lean` — `IsPiecewiseAffineOn`：id、congr、限制、局部性、复合、连续性、同胚之逆。
@@ -167,11 +254,11 @@ are superseded by the explicit import-graph audit and its coverage repair.
 - 终点只有一条定理 `plApproximationManifold_three : PLApproximationManifold.{u} 3`；A′ → A → 拼接桥 → 图册已证，
   Phase 3 结束时补两条无条件推论 `plApproximation_three`、`exists_chartedSpace_hasGroupoid_plGroupoid_three` 并做公理审计。
 - A′ 是 Moise 36.1 取 `U = M₁` 的情形，必须覆盖非紧致 `M₁`；推导顺序 35.1 → 35.2 → 36.1（穷竭 + 不变域）。
-- 六条车道：F 基础（多面体/细分/公共细分/PL 映射单纯化/link 唯一性/正则邻域/一般位置/穷竭/T1、T2）、
+- 原始六类数学工作（非当前任务分派）：F 基础（多面体/细分/公共细分/PL 映射单纯化/link 唯一性/正则邻域/一般位置/穷竭/T1、T2）、
   H 同调与曲面（§21–22、23.14–19、28.11）、S Schoenflies（2D 输入 3.3/3.6/5.3/5.4/10.8 → §17 → 23.9–11）、
   C 覆盖/环定理/环带/实心环面（§24–28 关键子集；27.5 Dehn 引理与 28.5, 28.12–18 不在关键路径）、
   I 插值与逼近（§30–34）、E 终局（不变域移植、§35–36、端点）。
-- 规模重估：约 200k–330k 行（早先 110k–210k 的估计在通读 §24–35 之前给出）；4 车道并行约 6–9 个月。
+- 原始规模/工期估算保留在详细计划的历史分解中，不作当前剩余工作或完成比例的依据。
 - 拓扑不变域定理按 classification-of-surfaces 的 `Topology/InvarianceOfDomain.lean`（813 行，维数无关）单文件移植。
 - 与光滑 Schoenflies 负责人的接口见该文件 §7：本链自证 PL 版（§17），其证明确实依赖平面多边形 Schoenflies（3.6）；
   不消费光滑版；光滑版若要经 PL 版导出需 Phase 2 级别的 PL/光滑比较。
