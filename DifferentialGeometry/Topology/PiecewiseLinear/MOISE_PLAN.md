@@ -18,6 +18,41 @@ verification history; their old ownership, running-build and source-style
 statements are not current instructions. The six subject labels in the detailed
 Phase 3 table are mathematical categories, not six active tasks.
 
+### Latest live frontier (2026-09-19, h e85 acceptance)
+
+This snapshot and the latest integration-handoff sections take precedence over
+dated development paragraphs below, including their old deadlines and active
+assignments. The resumed stage has no new deadline. Five existing tasks keep
+one lane each; F/S/M304 use Astra max and h/E3 use Sol max.
+
+| Lane | Independently accepted frontier | Current mathematical gate |
+|---|---|---|
+| F | through71b0b003e | Relative general position fixing an actual protected polyhedron; exact whole-transition coverage for the same disk. New06a/d68 source is queued. |
+| h | throughe85a235df | Actual standard solid-torus identification of the newly transported neighborhoods, then compatible locally finite modifications. |
+| E3 | throughddade8562 | Prove the same physical capped result separates the original H/Q, then Moise303. Newc10 is queued. |
+| M304 | through01fc05b8c | Construct the compression ball/wall/caps around the same essential disk with a jointly compatible annulus. New7a/96/412/06 is queued; Moise252 stays explicit unresolved upstream. |
+| S | throughc0f4df1b1 | Globally injective common cancellation domain joining the original Morse ends and strip, then supported cancellation. New5b is queued. |
+
+h's accepted seven-module layer has 36 audited native entries, including
+seventeen new reusable theorems and three new actual-model assertions. It
+constructs an original-carrier PL homeomorphism, compatible triangulations and
+exact transport of newly chosen nested circle neighborhoods. It does not close
+Moise351 or certify the later solid-torus layer. Lean +1302/-1 and root source
+reachability 9649 are verification accounting, not theorem-completion metrics.
+See integration section81 for full axiom, model and thirteen-linter evidence.
+
+F's frozen explicit kink counterexample rules out inferring a small Lipschitz
+displacement after arbitrary PL coordinate conjugation. Its new round instead
+fixes a closed protective polyhedral neighborhood, retains the fixed/mixed-face
+condition in canonical GeneralPosition, and proves actual coverage. This is a
+change of local strategy; full relative normalization remains open. Canonical
+GeneralPosition author-only write ownership is recorded. See section82.
+
+Current source and receipts remain authoritative. Full-root compilation stays
+deferred and may restart only for a concrete compatibility or stalled-work
+reason. Handoff notices wait for completed deliveries; no new task, mid-round
+status request or elapsed-time build trigger is introduced.
+
 ### First gate: repair contracts before consuming them
 
 The corrected Moise252/331/351 contracts and actual regular-neighborhood

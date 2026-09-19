@@ -9008,6 +9008,12 @@ import DifferentialGeometry.Topology.Manifold.FlowSection
 import DifferentialGeometry.Topology.Morse.SaddleImmersion
 import DifferentialGeometry.Topology.Morse.SaddleMinimumCoordinates
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ProjectedSheetPerturbation
+import DifferentialGeometry.Topology.PiecewiseLinear.ManifoldPointMove
+import DifferentialGeometry.Topology.PiecewiseLinear.ManifoldHomeomorphTriangulation
+import DifferentialGeometry.Topology.PiecewiseLinear.TrivalentDualCellCompatibleTriangulation
+import DifferentialGeometry.Topology.PiecewiseLinear.DerivedNeighborhoodTransport
+import DifferentialGeometry.Topology.PiecewiseLinear.CommonCircleNeighborhoodTransport
+import DifferentialGeometry.Topology.PiecewiseLinear.TrivalentDualCellTransportedNeighborhoods
 /-!
 # Differential geometry and geometric analysis
 -/

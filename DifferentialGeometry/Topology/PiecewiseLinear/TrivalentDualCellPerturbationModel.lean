@@ -3,7 +3,7 @@ Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: DifferentialGeometry contributors
 -/
-import DifferentialGeometry.Topology.PiecewiseLinear.AmbientPointMove
+import DifferentialGeometry.Topology.PiecewiseLinear.ManifoldPointMove
 import DifferentialGeometry.Topology.PiecewiseLinear.CircleIntersection
 import DifferentialGeometry.Topology.PiecewiseLinear.TrivalentDualCellNeighborhoodModel
 
@@ -215,5 +215,196 @@ theorem exists_trivalent_graphDualCell_relative_supported_perturbation_model :
   · intro i
     exact ⟨(hAB i).1.hasImageDerivedNeighborhoodSurfaceTraces h,
       (hAB i).2.1.hasImageDerivedNeighborhoodSurfaceTraces h⟩
+
+open Classical in
+theorem exists_trivalent_graphDualCell_carrier_supported_perturbation_model :
+    ∃ (K L : Geometry.SimplicialComplex ℝ (Fin 5 → ℝ))
+        (hKfin : K.faces.Finite) (hLfin : L.faces.Finite)
+        (hK : IsCombinatorialManifold 3 K)
+        (v : Fin 5 → ℝ) (w : Fin 3 → Fin 5 → ℝ)
+        (J C : Fin 3 → Set (Fin 5 → ℝ))
+        (f : Fin 3 → (Fin 5 → ℝ) → Fin 5 → ℝ)
+        (A B : Fin 3 → Set (Fin 5 → ℝ)) (U : Set (Fin 5 → ℝ)) (δ : ℝ),
+      L.faces ⊆ K.faces ∧ (∀ s ∈ L.faces, s.card ≤ 2) ∧
+      Function.Injective w ∧ (∀ i, v ≠ w i) ∧
+      (∀ u, u ≠ v →
+        (@insert (Fin 5 → ℝ) (Finset (Fin 5 → ℝ))
+          (@Finset.instInsert (Fin 5 → ℝ) (Classical.decEq _)) v {u} ∈ L.faces ↔
+          u ∈ Set.range w)) ∧
+      U = Metric.thickening 1 K.space ∧
+      (∀ i,
+        IsPLSphere 1 (J i) ∧
+        IsPLHomeomorphOn (f i) (graphDualCell K L (w i)).space (C i) ∧
+        C i ⊆ (graphDualCell K L (w i)).space ∧ EqOn (f i) id (J i) ∧
+        IsPLBall 3 (C i) ∧ (graphDualCell K L v).space ∩ C i = J i ∧
+        A i ⊆ U ∧
+        IsNestedCommonAnnularDerivedNeighborhood K (A i) (B i) (J i)
+          (@boundaryComplex (Fin 5 → ℝ) _ _ (Classical.decEq _) 3
+            (graphDualCell K L v)).space
+          (f i '' (@boundaryComplex (Fin 5 → ℝ) _ _ (Classical.decEq _) 3
+            (graphDualCell K L (w i))).space)) ∧
+      Pairwise (fun i j => Disjoint (J i) (J j)) ∧
+      Pairwise (fun i j => Disjoint (A i) (A j)) ∧
+      Pairwise (fun i j => Disjoint (B i) (B j)) ∧ 0 < δ ∧
+      (let _ : Finite K.faces := hKfin.to_subtype
+       let _ : Finite L.faces := hLfin.to_subtype
+       let _ := combinatorialChartedSpace K hK
+       let _ := combinatorialChartedSpace_hasGroupoid K hK
+       ∃ (p : K.space) (S : Set K.space) (h : K.space ≃ₜ K.space)
+          (g : (Fin 5 → ℝ) → Fin 5 → ℝ),
+        (p : Fin 5 → ℝ) ∈ J 0 ∧ (p : Fin 5 → ℝ) ∉ L.space ∧
+        IsCompact S ∧
+        S ⊆ (Subtype.val : K.space → Fin 5 → ℝ) ⁻¹' (U \ L.space) ∧
+        IsPL 3 3 h ∧ IsPL 3 3 h.symm ∧ h p ≠ p ∧
+        EqOn h id Sᶜ ∧
+        EqOn h id ((Subtype.val : K.space → Fin 5 → ℝ) ⁻¹' L.space) ∧
+        EqOn h id ((Subtype.val : K.space → Fin 5 → ℝ) ⁻¹' U)ᶜ ∧
+        (∀ x, dist (h x) x < δ) ∧
+        (∀ x (hx : x ∈ K.space), g x = (h ⟨x, hx⟩ : K.space)) ∧
+        EqOn g id K.spaceᶜ ∧ Function.Bijective g ∧ g '' K.space = K.space ∧
+        g p ≠ p ∧ EqOn g id L.space ∧ EqOn g id Uᶜ ∧
+        (∀ x, dist (g x) x < δ) ∧
+        (∀ i, g '' A i ⊆ U) ∧
+        Pairwise (fun i j => Disjoint (g '' A i) (g '' A j)) ∧
+        Pairwise (fun i j => Disjoint (g '' B i) (g '' B j)) ∧
+        ∀ i, ∃ O : Set K.space,
+          IsOpen O ∧
+          h '' ((Subtype.val : K.space → Fin 5 → ℝ) ⁻¹' J i) ⊆ O ∧
+          h '' ((Subtype.val : K.space → Fin 5 → ℝ) ⁻¹' B i) ⊆ O ∧
+          O ⊆ h '' ((Subtype.val : K.space → Fin 5 → ℝ) ⁻¹' A i)) := by
+  let _ : DecidableEq (Fin 5 → ℝ) := Classical.decEq _
+  obtain ⟨K, L, v, w, J, C, f, A, B, U, δ, r, p, k,
+    hKfin, hLfin, hK, hLK, hcard, hwinj, hvw, hneighbors, hU,
+    hdata, hpairJ, hpairA, hpairB, hδ, hpJ, hpL, hr, hrU,
+    hk, hkmove, hkfix, hkfixL, hkfixU, hkclose, hkAU, hkpairA, hkpairB,
+    hkopen, hktrace⟩ :=
+    exists_trivalent_graphDualCell_relative_supported_perturbation_model
+  let _ : Finite K.faces := hKfin.to_subtype
+  let _ : Finite L.faces := hLfin.to_subtype
+  have hJK (i : Fin 3) : J i ⊆ K.space := by
+    rcases hdata i with ⟨-, -, -, -, -, -, -, hAB⟩
+    rcases hAB.1 with ⟨R, M, P₀, P₁, -, -, -, -, hRK, hMJ, -, -, hP₀R, -, hMP₀, -,
+      -, -, -, -⟩
+    rw [← hMJ, ← hRK.space_eq]
+    exact space_mono_of_faces_subset (hMP₀.trans hP₀R)
+  have hpK : p ∈ K.space := hJK 0 hpJ
+  let _ := combinatorialChartedSpace K hK
+  let _ := combinatorialChartedSpace_hasGroupoid K hK
+  let F : Set K.space := (Subtype.val : K.space → Fin 5 → ℝ) ⁻¹' L.space
+  let V : Set K.space := (Subtype.val : K.space → Fin 5 → ℝ) ⁻¹' U
+  let pK : K.space := ⟨p, hpK⟩
+  have hF : IsClosed F :=
+    (isPolyhedron_space L).isClosed.preimage continuous_subtype_val
+  have hV : IsOpen V := by
+    change IsOpen ((Subtype.val : K.space → Fin 5 → ℝ) ⁻¹' U)
+    rw [hU]
+    exact Metric.isOpen_thickening.preimage continuous_subtype_val
+  have hpU : p ∈ U := (hrU (Metric.mem_ball_self hr)).1
+  have hpV : pK ∈ V := hpU
+  have hpF : pK ∉ F := hpL
+  obtain ⟨S, h, hS, hSVF, hh, hhi, hhmove, hhfix, hhfixF, hhfixV, hhclose⟩ :=
+    exists_isPL_homeomorph_moves_point_dist_lt_eqOn
+      (n := 3) (by norm_num) hF hV hpV hpF hδ
+  let g : (Fin 5 → ℝ) → Fin 5 → ℝ := fun x =>
+    if hx : x ∈ K.space then (h ⟨x, hx⟩ : K.space) else x
+  have hgK (x : Fin 5 → ℝ) (hx : x ∈ K.space) :
+      g x = (h ⟨x, hx⟩ : K.space) := by
+    simp [g, hx]
+  have hgOff : EqOn g id K.spaceᶜ := by
+    intro x hx
+    have hxK : x ∉ K.space := hx
+    simp [g, hxK]
+  have hgmem (x : Fin 5 → ℝ) : g x ∈ K.space ↔ x ∈ K.space := by
+    by_cases hx : x ∈ K.space
+    · simp [g, hx, (h ⟨x, hx⟩).property]
+    · simp [g, hx]
+  have hginj : Function.Injective g := by
+    intro x y hxy
+    by_cases hx : x ∈ K.space
+    · have hy : y ∈ K.space := (hgmem y).mp (hxy ▸ (hgmem x).mpr hx)
+      rw [hgK x hx, hgK y hy] at hxy
+      exact congrArg Subtype.val (h.injective (Subtype.ext hxy))
+    · have hy : y ∉ K.space := by
+        intro hy
+        exact hx ((hgmem x).mp (hxy.symm ▸ (hgmem y).mpr hy))
+      simpa [g, hx, hy] using hxy
+  have hgsurj : Function.Surjective g := by
+    intro y
+    by_cases hy : y ∈ K.space
+    · let x := h.symm ⟨y, hy⟩
+      refine ⟨(x : Fin 5 → ℝ), ?_⟩
+      rw [hgK x x.property]
+      exact congrArg Subtype.val (h.apply_symm_apply ⟨y, hy⟩)
+    · exact ⟨y, by simp [g, hy]⟩
+  have hgimageK : g '' K.space = K.space := by
+    apply Subset.antisymm
+    · rintro y ⟨x, hx, rfl⟩
+      exact (hgmem x).mpr hx
+    · intro y hy
+      let x := h.symm ⟨y, hy⟩
+      refine ⟨(x : Fin 5 → ℝ), x.property, ?_⟩
+      rw [hgK x x.property]
+      exact congrArg Subtype.val (h.apply_symm_apply ⟨y, hy⟩)
+  have hgmove : g p ≠ p := by
+    intro hgp
+    apply hhmove
+    apply Subtype.ext
+    simpa [pK, hgK p hpK] using hgp
+  have hgfixL : EqOn g id L.space := by
+    intro x hx
+    have hxK : x ∈ K.space := space_mono_of_faces_subset hLK hx
+    rw [hgK x hxK]
+    exact congrArg Subtype.val (hhfixF hx)
+  have hKU : K.space ⊆ U := by
+    rw [hU]
+    exact Metric.self_subset_thickening zero_lt_one K.space
+  have hgfixU : EqOn g id Uᶜ := by
+    intro x hx
+    apply hgOff
+    exact fun hxK => hx (hKU hxK)
+  have hgclose : ∀ x, dist (g x) x < δ := by
+    intro x
+    by_cases hx : x ∈ K.space
+    · rw [hgK x hx]
+      simpa only [Subtype.dist_eq] using hhclose ⟨x, hx⟩
+    · simpa [g, hx] using hδ
+  have hgAU : ∀ i, g '' A i ⊆ U := by
+    intro i y hy
+    obtain ⟨x, hx, rfl⟩ := hy
+    have hxK : x ∈ K.space := by
+      rcases hdata i with ⟨-, -, -, -, -, -, -, hAB⟩
+      exact hAB.1.subset_ambient hx
+    exact hKU ((hgmem x).mpr hxK)
+  have hgpair (D : Fin 3 → Set (Fin 5 → ℝ))
+      (hD : Pairwise fun i j => Disjoint (D i) (D j)) :
+      Pairwise fun i j => Disjoint (g '' D i) (g '' D j) := by
+    intro i j hij
+    rw [Set.disjoint_left]
+    rintro y ⟨x, hx, hxy⟩ ⟨z, hz, hzy⟩
+    have hxz : x = z := hginj (hxy.trans hzy.symm)
+    exact Set.disjoint_left.mp (hD hij) hx (hxz ▸ hz)
+  have hnested : ∀ i, ∃ O : Set K.space,
+      IsOpen O ∧
+      h '' ((Subtype.val : K.space → Fin 5 → ℝ) ⁻¹' J i) ⊆ O ∧
+      h '' ((Subtype.val : K.space → Fin 5 → ℝ) ⁻¹' B i) ⊆ O ∧
+      O ⊆ h '' ((Subtype.val : K.space → Fin 5 → ℝ) ⁻¹' A i) := by
+    intro i
+    rcases hdata i with ⟨-, -, -, -, -, -, -, hAB⟩
+    obtain ⟨O, hO, hJO, hBO, hOA⟩ := hAB.2.2
+    let O' : Set K.space := (Subtype.val : K.space → Fin 5 → ℝ) ⁻¹' O
+    refine ⟨h '' O', h.isOpenMap O' (hO.preimage continuous_subtype_val),
+      image_mono ?_, image_mono ?_, image_mono ?_⟩
+    · intro x hx
+      exact hJO hx
+    · intro x hx
+      exact (hBO hx).1
+    · intro x hx
+      exact hOA ⟨hx, x.property⟩
+  refine ⟨K, L, hKfin, hLfin, hK, v, w, J, C, f, A, B, U, δ,
+    hLK, hcard, hwinj, hvw, hneighbors, hU, hdata,
+    hpairJ, hpairA, hpairB, hδ, ?_⟩
+  exact ⟨pK, S, h, g, hpJ, hpL, hS, hSVF, hh, hhi, hhmove, hhfix,
+    hhfixF, hhfixV, hhclose, hgK, hgOff, ⟨hginj, hgsurj⟩, hgimageK,
+    hgmove, hgfixL, hgfixU, hgclose, hgAU, hgpair A hpairA, hgpair B hpairB, hnested⟩
 
 end DifferentialGeometry.Topology.PiecewiseLinear

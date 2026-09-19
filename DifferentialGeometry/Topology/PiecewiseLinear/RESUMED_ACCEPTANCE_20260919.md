@@ -694,3 +694,115 @@ The independent queue now contains M304 through06af1e40d including7a/96/412,
 h e85a235df, E3 c10b83586, and S5b7117893. The other four active rounds were
 not contacted. Hourly follow-up, the existing five task/model assignments,
 no new deadline, and the current compiler limits remain in force.
+
+## 81. Original-carrier moves and exact neighborhood transport accepted
+
+h through e85a235df is independently accepted from the six frozen checkpoints
+11140aa11, 69b5da380, c85049a96, 9fcdded2e, 826a04b14 and e85a235df. The seven
+changed leaves were compiled from their exact frozen bytes in integration;
+no author proof or public signature required repair. Six new leaves are
+registered once in the flat root aggregate. Both old trivalent-model theorem
+signatures and their proof bodies are retained.
+
+The intrinsic point-move theorem constructs a compactly supported PL
+self-homeomorphism of the original manifold. It moves the designated point,
+fixes the given closed obstacle and the complement of the given open set,
+and satisfies the requested uniform distance bound. Compact inverse-chart
+continuity supplies that bound; no small Lipschitz bound after arbitrary PL
+conjugation is asserted. In the actual finite model, the homeomorphism acts
+on the original three-dimensional carrier and fixes the original graph. Its
+set-theoretic extension off that carrier is claimed only bijective.
+
+Compatible triangulations preserve the actual conjugated map and all fourteen
+named graph, circle, surface and neighborhood sets. Face-centroid and flag
+identities induce the first and second barycentric subdivision isomorphisms
+and exact images of derived neighborhoods. Fresh source neighborhoods are
+chosen inside the old stable ones; target neighborhoods are their exact
+images. Canonical restrictions recover the actual surface traces. The three
+real circles retain nested source and target pairs; containment proves source
+disjointness and injectivity proves target disjointness. This is transport of
+newly chosen compatible neighborhoods, not invariance of old neighborhoods
+under arbitrary subdivision.
+
+Seven module checks take 80.632 seconds and the final combined audit takes
+50.446 seconds, including admission. All 36 native nonautomatic declarations,
+27 critical reuses and two external assertions have only approved foundational
+axioms. Native and external suites pass all thirteen applicable environment
+linters, with zero final diagnostics. The census includes 24 explicit native
+declarations and twelve generated but nonautomatic indexing/recursor/instance
+entries. Of the 22 new explicit declarations, seventeen are reusable theorems,
+three are actual-model theorem assertions, and two define the fourteen-index
+family. Generated entries are not counted as new mathematical theorems.
+
+Five native model assertions, two retained and three new, concern one actual
+trivalent three-manifold/graph/circle family. The independent Euclidean-three
+fixture moves the origin inside the radius-two ball, fixes a nonempty closed
+singleton obstacle and the ball complement, and keeps displacement below 1/8.
+The second external assertion verifies index cardinality fourteen; it is a
+schema check, not a third geometric family. Initial external audit attempts
+needed WithLp/singleton/open-ball annotations and line wrapping; their sources
+and receipts are retained. None changed project mathematics.
+
+Accepted Lean delta is +1302/-1, including six root import lines. Thirty-nine
+private prerequisites match current raw source and previously accepted object
+hashes. Static root coverage is 9649 project modules including the root, with
+no missing project sources or cycles. Full-root compilation remains deferred.
+Receipt: .lake/verified-fiftyeighth-lane-delivery-20260919.json. These numbers
+describe frozen source accepted here, not typing time or headline completion.
+
+Standard solid-torus identification belongs to h's later active author layer,
+outside this frozen acceptance. Locally finite compatible modifications,
+Moise351 Conditions 3--8 and Moise351 itself remain open. The acceptance notice
+waits for h's next completed delivery; its active round is not interrupted.
+
+## 82. Relative protected-polyhedron route after F's conjugation obstruction
+
+The compact task snapshot found F's previous round completed at a genuine
+mathematical obstruction. Clean pushed commits 06a171025 and d68c5adc5 are
+frozen, with three canonical source leaves and 31 author evidence files in
+codex-integration-fiftyeighth-batch-20260919/f-d68-frozen-evidence. The manifest
+is f-d68-frozen-delivery.json. They remain pending independent acceptance.
+
+The delivered extension controls the displacement of the same chosen inner
+perturbation: height-zero vertices move tangentially while interior vertices
+may move normally. The comparison u = g inverse composed with h satisfies the
+bound (ka + kb) / (1 - kb) for the Lipschitz constant of u minus the identity.
+Its actual single-chart SingularTwoCell consumer retains the original domain,
+target, boundary homotopy and fiber bounds and obtains crossings on the union
+of a protected flat region and the new inner general-position neighborhood.
+It does not yet cover the entire transition region or arbitrary old charts.
+
+The frozen external counterexample uses the PL coordinate change
+c(x) = x + max(x,0). Arbitrarily small compactly supported PL displacements
+with arbitrarily small Lipschitz constants can have conjugated displacement
+Lipschitz constant at least one. The reviewed proof compares the actual values
+at 0 and minus the small translation parameter. Thus arbitrary PL conjugation
+cannot justify preservation of a small displacement Lipschitz bound. This
+obstructs that inference, not the global normalization theorem. The author
+counterexample and its audit are frozen evidence, not newly integrated public
+mathematics or independent integration acceptance.
+
+At the completed boundary, F received its next Astra max round: construct
+relative general position that fixes an actual closed protective polyhedral
+neighborhood in the old regular charts. Use a finite common refinement,
+retain the canonical fixed/mixed-face condition, and prove that protection,
+transition and the new core cover the required region for the same disk.
+Do not assume the desired compatible chart cover or normalization conclusion.
+The original boundary homotopy and normal-subgroup avoidance must remain tied
+to the actual modified map. Prior F71 independent acceptance was delivered at
+this same boundary.
+
+F then requested access to the existing canonical GeneralPosition producer.
+Its source was checked clean in all five author trees, with no other active
+owner. The coordinator granted edits only in F's author checkout and private
+consumer checks, preserving public signatures and the mixed-face exception.
+The grant is recorded in crossLaneOwnership and the current compiler lease;
+it does not authorize edits in integration or another lane's tree. No second
+lane or routine status request was added.
+
+Current independent queues are M304 through06af1e40d including7a/96/412,
+E3 c10b83586, S5b7117893, and F throughd68c5adc5 including06a171025. h through
+e85a235df, F through71 and S throughc0 are accepted. Existing assignments,
+hourly quiet follow-up, no new deadline and the checker limits remain in force.
+The saved automation follows this queue and the corrected F route; app API
+read-back evidence is recorded in the current coordination state.
