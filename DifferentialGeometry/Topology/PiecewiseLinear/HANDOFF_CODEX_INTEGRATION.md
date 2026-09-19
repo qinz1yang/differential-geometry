@@ -3527,3 +3527,71 @@ minimum-Betti and compression algebra are not reassigned. E3 keeps physical
 capping and received dependency-closed read-only private refresh authority for
 demonstrated missing/stale imports; this is not an eager full rebuild or source
 edit grant. Other active lanes are not interrupted.
+
+## 75. Relative prism circles and split-ball outer boundaries
+
+E3 checkpoints 4b60bda72, fd9ef334c and ddade8562 are independently accepted.
+Given actual two three-balls with common middle disk and disjoint marked disks
+in their respective boundaries, the relative prism theorem constructs a PL
+chart fixing the prescribed middle-disk map and sends its two side circles
+at heights minus/plus one-half to the actual marked-disk boundaries. The
+chart, its two half-ball images and final circle-image equations are produced.
+This remains conditional on the marked disks; arbitrary original annulus
+end circles have not been placed on the small neighborhood boundary.
+
+The sphere disk-selection argument is generalized to a preconnected obstacle
+and moved to SphereSchoenflies. It chooses the opposite disk from the actual
+Schoenflies decomposition of a PL circle on a PL two-sphere. No disk or
+polyhedron condition on the obstacle is needed. The previous disk-specific
+IsPLBall.exists_disjoint_isPLBall_with_boundary_of_isPLSphere_two retains its
+exact public name and signature as a corollary. Existing imports continue to
+expose it. Required headers are added to the canonical sphere module.
+
+The stronger split-ball producer proves that each produced half-ball's
+intersection with the original outer boundary lies in its own combinatorial
+boundary. Closedness and interior monotonicity establish the standard-model
+inclusion, then the original PL parametrizations transport it. The old
+split-ball selection signature remains a corollary of the stronger result.
+
+Five modules compile freshly in 67.416 seconds. The final joint audit takes
+52.565 seconds including admission. All 22 native nonautomatic declarations,
+15 distinct critical reuses, and six classified probe declarations have only
+approved foundational axioms; all thirteen applicable linters pass, with zero
+final diagnostics. Seven native declarations are new: four public and three
+private. Fifteen are existing results rechecked, including the full native
+suites of the actual PrismChart and LocalTrace consumers. All four previous
+public signatures in the changed files are retained.
+
+The probe suite contains three actual geometric assertions on a coordinate
+triangle and its prism, one explicit nonempty witness and two helper
+abbreviations. These are one model family, not six independent examples.
+The split-ball model explicitly retains both new outer-boundary inclusions.
+Its first strengthened statement exposed a mismatched synthesized DecidableEq;
+the same explicit local instance now appears in the statement and proof. A
+subsequent audit-only long-line warning was repaired by shortening qualified
+names through existing open namespaces. Failed probe sources and receipts are
+preserved; no production theorem failed and no resource budget was raised.
+
+Accepted Lean delta is +451/-5: +434/-5 author changes plus seventeen net
+integration lines for generalization, compatibility and required headers.
+There are no new leaves or root imports. All five modules are already root
+reachable; the static graph remains at 9626 project modules including the
+root, without missing sources or cycles. 31 prerequisite objects were reused
+only after matching exact raw source and accepted object hashes. Full-root
+compilation remains pending. Receipt:
+.lake/verified-fiftyfourth-lane-delivery-20260919.json.
+
+General Moise303 is still open. E3 is constructing the original inner-disk
+boundary trace, replacement disk in the correct half-ball boundary, and caps
+glued to the original external annuli. Original outer annulus circles avoid
+the small derived neighborhood and are not its internal slice markings.
+M304 retains the separate essential-disk/kernel bridge toward Moise264.
+
+F delivered 71b0b003e and resumed its same lane at that completed boundary.
+Its raw flat-sheet perturbation source is frozen for later independent replay.
+F alone may now extend the canonical HalfSpacePerturbation producer with
+controlled interior normal displacement and boundary-zero-level tangency,
+preserving old public signatures and checking actual consumers. This does not
+claim the whole transition annulus or global loop-theorem normalization.
+S through d77f16c3c and h through d2c94f911 also await independent replay.
+Five existing lanes and hourly quiet follow-up remain; no new tasks are added.

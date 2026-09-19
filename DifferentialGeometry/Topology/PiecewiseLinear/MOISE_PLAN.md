@@ -1499,3 +1499,26 @@ and S through ec69dc759. F's boundary layer through 44d4e28ef and M304 through
 01fc05b8c are accepted. Later active-round source must be frozen at delivery
 before integration. Required dependency refresh is authorized privately and
 on demand; source ownership, hourly quiet follow-up and checker limits remain.
+
+
+### Relative prism and outer-boundary layer accepted
+
+Integration section 75 accepts E3 through ddade8562, including actual marked
+boundary-circle prism coordinates and stronger split-ball outer-boundary
+inclusions. The sphere disk selector now works for any preconnected obstacle
+and lives in SphereSchoenflies; its earlier disk-specific interface is retained.
+Five fresh modules, all 22 native declarations, fifteen key reuses and thirteen
+linters pass independent verification. This does not supply the actual marked
+disks or physical caps from all Moise303 data. Continue E3's inner-disk boundary
+replacement and gluing of original outer annuli. Do not place the original
+outer circles inside the small derived neighborhood that avoids them.
+
+The independent acceptance queue is h through d2c94f911, S through d77f16c3c
+and F through 71b0b003e. F's completed flat-sheet round has resumed toward a
+controlled extension matching actual inner perturbations, then compatible
+transition-region coverage; its prior crossing layer through44d4 is accepted.
+S is on actual strip differential invertibility and critical-endpoint gluing.
+M304's original-shell compression component layer remains accepted, while
+actual Moise264 cutting/kernel production is open. Existing five tasks retain
+their lanes, with no new deadline, no routine mid-round messages and no
+time-triggered full-root rebuild.
