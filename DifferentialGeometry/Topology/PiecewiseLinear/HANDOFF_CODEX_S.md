@@ -5779,3 +5779,90 @@ Shared artifacts were read-only; the integration root gate remains separate.
 
 The next layer assembles the book's cyclic 3-cell/2-disk CST conditions.
 This product result does not by itself claim general 24.9/24.10 or 24.12.
+
+## Cyclic regular neighborhoods are combinatorial solid tori (2026-09-19)
+
+Status: done for the assigned actual solid-torus/CST assembly and the finite
+regular-neighborhood form of Moise 24.11.
+
+`CombinatorialSolidTorus.lean` defines `IsCombinatorialSolidTorus` from the
+original definition on book page 178: an actual topological solid torus with
+a cyclic cover by at least three finite combinatorial 3-cells; two distinct
+cells intersect exactly when they are cyclic neighbors, and every neighboring
+intersection is a PL 2-disk in the intrinsic boundary of both cells. This is
+a predicate on the subset, independent of a caller-supplied triangulation.
+Each cell carries its own finite triangulation. The standard product is part
+of the definition and is produced by the neighborhood theorem; a cylindrical
+diagram alone has not been relabeled as a CST.
+
+`NeighborhoodSolidTorus.lean` proves two public endpoints:
+
+- `exists_cyclic_derivedNeighborhoodCell_decomposition_disjoint`: the actual
+  cells `derivedNeighborhoodCell K (e i).val` cover the actual derived
+  neighborhood; each is a 3-ball, each neighboring intersection is a 2-disk
+  in both boundaries, nonneighbors are disjoint, and all intersections of
+  three distinct cells are empty. The last statement is an extra property
+  of this construction; it is not silently added to the book's CST definition.
+  This decomposition does not require orientability.
+- `isCombinatorialSolidTorus_derivedNeighborhood_circle`: for finite `K` and `L`,
+  `IsCombinatorialManifoldWithBoundary 3 K`, `L.faces ⊆ K.faces`, a connected
+  closed combinatorial 1-manifold `L`, and `IsOrientable 3 K`, the actual
+  derived neighborhood is a CST. The proof assembles the actual cyclic pieces,
+  their finite triangulations, intersections and the standard product proved
+  in `10f680db7`. No cylindrical diagram, product map, positive monodromy,
+  pseudo-isotopy or Schoenflies conclusion is assumed.
+
+Book pages 178-179 were read from the local Moise PDF; page 178 was also
+rendered and visually inspected. No vendored source was edited or copied.
+The finite derived-neighborhood statement is the native form of the regular
+neighborhood in a subdivision in which the polygon is a subcomplex.
+
+| Module | Declarations | Critical reused producers | Compile seconds | Audit seconds |
+|---|---:|---:|---:|---:|
+| CombinatorialSolidTorus | 1 | 1 | 10.399 | 10.527 |
+| NeighborhoodSolidTorus | 2 | 3 | 12.376 | 17.378 |
+
+All three nonautomatic declarations, four reused-producer entries and all
+13 applicable environment linters for each module pass, exit 0 and zero
+diagnostics. The concrete triangle circle on a tetrahedral face gives a
+nonempty actual CST. That application, the two new geometric producers and
+three existing polygon-orientation producers pass a combined axiom and
+cross-import audit with `MoiseChain`, exit 0, zero diagnostics,
+11.985 seconds. Every axiom closure uses only the standard three
+axioms. Times include resource admission.
+
+The existing `DerivedNeighborhoodPolygon.lean` input was independently read
+and inspected, including `DerivedNeighborhoodHomology.lean`. Its 490-module
+native import closure excludes `HurewiczLowDegrees`; textual debt candidates
+were documentation only. The critical declarations
+`exists_isGeneratedByPolygon_derivedNeighborhood`,
+`isOrientable_derivedNeighborhood_of_ambient_nullHomotopic_polygon`, and
+`exists_cylindricalDiagram_isOrientable_derivedNeighborhood_of_nullHomotopic_polygon`
+all have clean standard-axiom closures in the combined probe. Their current
+`hnull` quantifies over every based loop in the polygon and every base point.
+They must not be reported as taking only one generator's ambient nullhomotopy.
+No replacement orientation-cover argument was introduced.
+
+Evidence: `C:/Users/liao9/AppData/Local/Temp/codex-s-mobius-torus-20260918/`
+`NeighborhoodSolidTorus-verification.json`, including raw/normalized source
+and private object identities, receipts, timings, all declarations and linters,
+the concrete CST instance, source-page correspondence and existing-producer
+review. NeighborhoodSolidTorus source SHA256:
+`37880F8F42B5A623CC0746F36F7CBC5D1AF9486537ED8400B168BF1EFE2E79A9`.
+Static and whitespace checks pass; new leaves are in the flat root. Source,
+root imports, this handoff and both plan rows are one mathematical commit.
+Shared artifacts remained read-only. The independent integration root build
+and integration replay remain separate coordinator gates.
+
+Round total: five new modules and the unchanged-definition consumer migration,
+six modules checked and audited, 34 nonautomatic declarations (including the
+25 declarations of `MoiseChain`), 17 critical reused-producer entries, and
+all 13 environment linters for every module. Three successive nonempty
+concrete applications check the circle product, standard solid torus and CST.
+Earlier checkpoints are `701d48343` and `10f680db7`.
+
+Remaining: general 24.9 (book CST cyclic decomposition versus cylindrical
+diagram) and 24.10 (comparison of arbitrary book CSTs) are still partial.
+24.12 still needs the single-generator ambient-nullhomotopy-to-all-loops
+producer and the final CST application. The existing orientation input is
+now source-reviewed and axiom-verified, not a missing or assumed covering.

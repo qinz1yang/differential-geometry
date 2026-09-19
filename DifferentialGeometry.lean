@@ -8729,3 +8729,5 @@ import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.DoubleCarrier
 import DifferentialGeometry.Topology.PiecewiseLinear.CylindricalProduct
 import DifferentialGeometry.Topology.PiecewiseLinear.SolidTorus
 import DifferentialGeometry.Topology.PiecewiseLinear.SolidTorusProduct
+import DifferentialGeometry.Topology.PiecewiseLinear.CombinatorialSolidTorus
+import DifferentialGeometry.Topology.PiecewiseLinear.NeighborhoodSolidTorus
